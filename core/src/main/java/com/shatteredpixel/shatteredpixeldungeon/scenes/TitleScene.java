@@ -28,8 +28,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
-import com.shatteredpixel.shatteredpixeldungeon.effects.BannerSprites;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Fireball;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Languages;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.News;
@@ -39,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ExitButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
+import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.TitleBackground;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
@@ -50,7 +49,6 @@ import com.watabou.input.PointerEvent;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
-import com.watabou.noosa.Image;
 import com.watabou.noosa.PointerArea;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.tweeners.Tweener;
@@ -63,10 +61,7 @@ import java.util.Date;
 
 public class TitleScene extends PixelScene {
 
-	private Image title;
-	private Fireball leftFB;
-	private Fireball rightFB;
-	private Image signs;
+	private RenderedTextBlock title;
 
 	private StyledButton btnPlay;
 	private StyledButton btnSupport;
@@ -104,43 +99,17 @@ public class TitleScene extends PixelScene {
 		w -= insets.left + insets.right;
 		h -= insets.top + insets.bottom;
 
-		title = BannerSprites.get( landscape() ? BannerSprites.Type.TITLE_LAND : BannerSprites.Type.TITLE_PORT);
+		//APD: plain text title for now, no banner art, torches or glowing signs
+		title = PixelScene.renderTextBlock( "ADHD\nPIXEL DUNGEON", 16 );
+		title.hardlight( Window.TITLE_COLOR );
+		title.align( RenderedTextBlock.CENTER_ALIGN );
 		add( title );
 
-		float topRegion = Math.max(title.height - 6, h*0.45f);
+		float topRegion = Math.max(title.height() + 12, h*0.45f);
 
-		title.x = insets.left + (w - title.width()) / 2f;
-		title.y = insets.top + 2 + (topRegion - title.height()) / 2f;
+		title.setPos( insets.left + (w - title.width()) / 2f, insets.top + 2 + (topRegion - title.height()) / 2f );
 
 		align(title);
-
-		if (landscape()){
-			leftFB = placeTorch(title.x + 30, title.y + 35);
-			rightFB = placeTorch(title.x + title.width - 30, title.y + 35);
-		} else {
-			leftFB = placeTorch(title.x + 16, title.y + 70);
-			rightFB = placeTorch(title.x + title.width - 16, title.y + 70);
-		}
-
-		signs = new Image(BannerSprites.get( landscape() ? BannerSprites.Type.TITLE_GLOW_LAND : BannerSprites.Type.TITLE_GLOW_PORT)){
-			private float time = 0;
-			@Override
-			public void update() {
-				super.update();
-				am = Math.max(0f, (float)Math.sin( time += Game.elapsed ));
-				am = Math.min(am, title.am);
-				if (time >= 1.5f*Math.PI) time = 0;
-			}
-			@Override
-			public void draw() {
-				Blending.setLightMode();
-				super.draw();
-				Blending.setNormalMode();
-			}
-		};
-		signs.x = title.x + (title.width() - signs.width())/2f;
-		signs.y = title.y;
-		add( signs );
 
 		final Chrome.Type GREY_TR = Chrome.Type.GREY_BUTTON_TR;
 		
@@ -242,7 +211,8 @@ public class TitleScene extends PixelScene {
 			btnAbout.setRect(btnSettings.right()+2, btnSettings.top(), btnSettings.width(), BTN_HEIGHT);
 		}
 
-		version = new BitmapText( "v" + Game.version, pixelFont);
+		//APD: version string
+		version = new BitmapText( "APD INDEV", pixelFont);
 		version.measure();
 		version.hardlight( 0x888888 );
 		version.x = insets.left + w - version.width() - (DeviceCompat.isDesktop() ? 4 : 8);
@@ -309,10 +279,7 @@ public class TitleScene extends PixelScene {
 	public void updateFade() {
 		float alpha = GameMath.gate(0f, uiAlpha, 1f);
 
-		title.am = alpha;
-		leftFB.am = alpha;
-		rightFB.am = alpha;
-		//signs.am = alpha; handles this itself
+		title.alpha(alpha);
 
 		btnPlay.enable(alpha != 0);
 		btnSupport.enable(alpha != 0);
@@ -339,16 +306,6 @@ public class TitleScene extends PixelScene {
 			btnExit.icon().alpha(alpha);
 		}
 
-	}
-
-	private Fireball placeTorch(float x, float y ) {
-		Fireball fb = new Fireball();
-		fb.x = x - fb.width()/2f;
-		fb.y = y - fb.height();
-
-		align(fb);
-		add( fb );
-		return fb;
 	}
 
 	private static class NewsButton extends StyledButton {

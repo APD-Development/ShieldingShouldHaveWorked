@@ -1,3 +1,12 @@
+# ADHD Pixel Dungeon (APD)
+
+Private fork of [Shattered Pixel Dungeon](https://github.com/00-Evan/shattered-pixel-dungeon), based on upstream tag v4.0.0.
+Upstream license and copyright notices (see `LICENSE.txt` and the file headers) are kept unchanged.
+APD changes are documented in `docs/` (e.g. `docs/APD-0001.md`); signing notes are in `docs/SIGNING.md`.
+Every push to `main` builds a debug APK and publishes it as a GitHub Release.
+
+---
+
 # Shattered Pixel Dungeon
 
 [Shattered Pixel Dungeon](https://shatteredpixel.com/shatteredpd/) is an open-source traditional roguelike dungeon crawler with randomized levels and enemies, and hundreds of items to collect and use. It's based on the [source code of Pixel Dungeon](https://github.com/00-Evan/pixel-dungeon-gradle), by [Watabou](https://watabou.itch.io/).

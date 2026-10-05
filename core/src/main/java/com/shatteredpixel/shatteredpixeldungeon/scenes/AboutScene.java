@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ExitButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
+import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.TitleBackground;
@@ -256,7 +257,35 @@ public class AboutScene extends PixelScene {
 
 		content.setSize( fullWidth, freesound.bottom()+10 + insets.bottom );
 
-		list.setRect( 0, 0, w, h );
+		//APD: News and Changes buttons in a bar along the bottom, the credits scroll above it
+		final float apdBarHeight = 22 + insets.bottom;
+		final float apdBtnWidth = Math.min(colWidth, (w - 6) / 2f - 1);
+
+		add(new ColorBlock(w, apdBarHeight, 0xFF000000){
+			{ y = h - apdBarHeight; }
+		});
+
+		RedButton btnApdNews = new RedButton("APD News"){
+			@Override
+			protected void onClick() {
+				APDTextScene.page = APDTextScene.Page.NEWS;
+				ShatteredPixelDungeon.switchScene(APDTextScene.class);
+			}
+		};
+		btnApdNews.setRect(w/2f - apdBtnWidth - 1, h - apdBarHeight + 1, apdBtnWidth, 20);
+		add(btnApdNews);
+
+		RedButton btnApdChanges = new RedButton("APD Changes"){
+			@Override
+			protected void onClick() {
+				APDTextScene.page = APDTextScene.Page.CHANGES;
+				ShatteredPixelDungeon.switchScene(APDTextScene.class);
+			}
+		};
+		btnApdChanges.setRect(w/2f + 1, btnApdNews.top(), apdBtnWidth, 20);
+		add(btnApdChanges);
+
+		list.setRect( 0, 0, w, h - apdBarHeight );
 		list.scrollTo(0, 0);
 
 		ExitButton btnExit = new ExitButton();

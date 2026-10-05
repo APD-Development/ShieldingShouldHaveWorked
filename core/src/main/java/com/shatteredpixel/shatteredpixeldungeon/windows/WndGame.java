@@ -61,6 +61,16 @@ public class WndGame extends Window {
 		});
 		curBtn.icon(Icons.get(Icons.PREFS));
 
+		//APD settings
+		addButton( curBtn = new RedButton( "APD Settings" ) {
+			@Override
+			protected void onClick() {
+				hide();
+				GameScene.show(new WndAPDSettings());
+			}
+		});
+		curBtn.icon(Icons.get(Icons.PREFS));
+
 		// Challenges window
 		if (Dungeon.challenges > 0) {
 			addButton( curBtn = new RedButton( Messages.get(this, "challenges") ) {
