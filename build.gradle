@@ -11,12 +11,12 @@ buildscript {
 allprojects {
 
     ext {
-        appName = 'Shattered Pixel Dungeon'
-        appPackageName = 'com.shatteredpixel.shatteredpixeldungeon'
+        appName = 'ADHD Pixel Dungeon'
+        appPackageName = 'com.charltonchris29.adhdpixeldungeon'
 
         //Full releases gets +2 on version code, needed for an F-Droid quirk
-        appVersionCode = 912
-        appVersionName = '4.0.0'
+        appVersionCode = 920
+        appVersionName = '4.0.8-apd'
 
         appJavaCompatibility = JavaVersion.VERSION_11
 

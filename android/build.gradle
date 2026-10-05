@@ -23,8 +23,19 @@ android {
         targetSdkVersion appAndroidTargetSDK
     }
 
+    signingConfigs {
+        //APD: committed keystore so every debug build is signed with the same key, see docs/SIGNING.md
+        apdDebug {
+            storeFile rootProject.file('keystore/apd-debug.jks')
+            storePassword 'apdpassword'
+            keyAlias 'apd'
+            keyPassword 'apdpassword'
+        }
+    }
+
     buildTypes {
         debug {
+            signingConfig signingConfigs.apdDebug
             applicationIdSuffix ".indev"
             versionNameSuffix '-INDEV'
             dependencies {
