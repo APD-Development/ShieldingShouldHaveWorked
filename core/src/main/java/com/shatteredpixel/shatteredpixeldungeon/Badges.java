@@ -207,7 +207,10 @@ public class Badges {
 		GAMES_PLAYED_5              ( 124, BadgeType.GLOBAL ),
 		HIGH_SCORE_5                ( 125 ),
 		CHAMPION_2                  ( 126 ),
-		CHAMPION_3                  ( 127 );
+		CHAMPION_3                  ( 127 ),
+
+		//APD, journal type so the custom seed check can't block it
+		APD_FUCK_CLERIC             ( 121, BadgeType.JOURNAL );
 
 		public boolean meta;
 

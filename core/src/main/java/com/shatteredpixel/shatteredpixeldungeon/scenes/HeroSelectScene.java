@@ -44,6 +44,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndChallenges;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndClericRemoved;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHeroInfo;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndKeyBindings;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
@@ -153,6 +154,12 @@ public class HeroSelectScene extends PixelScene {
 				super.onClick();
 
 				if (GamesInProgress.selectedClass == null) return;
+
+				//APD: Cleric is deliberately blocked, see WndClericRemoved
+				if (GamesInProgress.selectedClass == HeroClass.CLERIC){
+					WndClericRemoved.trigger();
+					return;
+				}
 
 				Dungeon.hero = null;
 				Dungeon.daily = Dungeon.dailyReplay = false;
