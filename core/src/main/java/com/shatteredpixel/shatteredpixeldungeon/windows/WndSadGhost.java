@@ -81,6 +81,10 @@ public class WndSadGhost extends Window {
 		message.setPos(0, titlebar.bottom() + GAP);
 		add( message );
 
+		//APD: show the real upgrade level of the offered gear (enchant/glyph and curse state stay hidden)
+		Ghost.Quest.weapon.levelKnown = true;
+		Ghost.Quest.armor.levelKnown = true;
+
 		ItemButton btnWeapon = new ItemButton(){
 			@Override
 			protected void onClick() {
