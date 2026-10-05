@@ -107,10 +107,7 @@ public abstract class ShieldBuff extends Buff {
 	}
 
 	public static int processDamage( Char target, int damage, Object src ){
-		//hunger damage is not affected by shielding
-		if (src instanceof Hunger){
-			return damage;
-		}
+		//APD-0001: hunger damage is absorbed by shielding like any other damage, see docs/APD-0001.md
 
 		ArrayList<ShieldBuff> buffs = new ArrayList<>(target.buffs(ShieldBuff.class));
 		if (!buffs.isEmpty()){
