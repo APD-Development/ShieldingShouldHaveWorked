@@ -292,6 +292,30 @@ public class SPDSettings extends GameSettings {
 		return getInt(KEY_VAULT_INJURE_WARNS, 0);
 	}
 
+	//APD
+
+	public static final String KEY_APD_EXOTIC_CHANCE    = "apd_exotic_chance";
+	public static final String KEY_APD_CLERIC_ATTEMPTS  = "apd_cleric_attempts";
+
+	public static final int APD_EXOTIC_CHANCE_MAX = 80;
+
+	//percent chance (0-80) that a generated potion/scroll is exotic, 0 is the vanilla behaviour
+	public static void apdExoticChance( int value ){
+		put( KEY_APD_EXOTIC_CHANCE, value );
+	}
+
+	public static int apdExoticChance(){
+		return getInt( KEY_APD_EXOTIC_CHANCE, 0, 0, APD_EXOTIC_CHANCE_MAX );
+	}
+
+	public static void apdClericAttempts( int value ){
+		put( KEY_APD_CLERIC_ATTEMPTS, value );
+	}
+
+	public static int apdClericAttempts(){
+		return getInt( KEY_APD_CLERIC_ATTEMPTS, 0, 0, Integer.MAX_VALUE );
+	}
+
 	//Input
 
 	public static final String KEY_CONTROLLER_SENS  = "controller_sens";

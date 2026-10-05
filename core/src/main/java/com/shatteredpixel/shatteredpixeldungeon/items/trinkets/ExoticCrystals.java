@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.trinkets;
 
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
@@ -46,7 +47,9 @@ public class ExoticCrystals extends Trinket {
 	}
 
 	public static float consumableExoticChance(){
-		return consumableExoticChance(trinketLevel(ExoticCrystals.class));
+		//APD: the player setting acts as a floor, crystals can still raise the chance above it
+		return Math.max(consumableExoticChance(trinketLevel(ExoticCrystals.class)),
+				SPDSettings.apdExoticChance() / 100f);
 	}
 
 	public static float consumableExoticChance( int level ){
