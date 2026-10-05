@@ -29,8 +29,6 @@ import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.Rankings;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
-import com.shatteredpixel.shatteredpixeldungeon.effects.BannerSprites;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Fireball;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Journal;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -38,14 +36,13 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.TitleBackground;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndError;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHardNotification;
-import com.watabou.glwrap.Blending;
 import com.watabou.input.ControllerHandler;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.Game;
-import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Music;
 import com.watabou.utils.FileUtils;
 import com.watabou.utils.RectF;
@@ -81,7 +78,14 @@ public class WelcomeScene extends PixelScene {
 			return;
 		}
 
-		if (ShatteredPixelDungeon.versionCode == previousVersion && !SPDSettings.intro()) {
+		//APD: a fresh install (or any launch of the current version) goes straight to the title menu,
+		//the forced intro -> hero select path is skipped. See docs/APD-FIRST-LAUNCH.md
+		if (previousVersion == 0){
+			SPDSettings.version(ShatteredPixelDungeon.versionCode);
+			ShatteredPixelDungeon.switchNoFade(TitleScene.class);
+			return;
+		}
+		if (ShatteredPixelDungeon.versionCode == previousVersion) {
 			ShatteredPixelDungeon.switchNoFade(TitleScene.class);
 			return;
 		}
@@ -106,43 +110,18 @@ public class WelcomeScene extends PixelScene {
 		w -= insets.left + insets.right;
 		h -= insets.top + insets.bottom;
 
-		Image title = BannerSprites.get( landscape() ? BannerSprites.Type.TITLE_LAND : BannerSprites.Type.TITLE_PORT);
+		//APD: plain text title, no banner art, torches or glowing signs
+		RenderedTextBlock title = PixelScene.renderTextBlock( "ADHD\nPIXEL DUNGEON", 16 );
+		title.hardlight( Window.TITLE_COLOR );
+		title.align( RenderedTextBlock.CENTER_ALIGN );
 		add( title );
 
-		float topRegion = Math.max(title.height - 6, h*0.45f);
+		float topRegion = Math.max(title.height() + 12, h*0.45f);
 
-		title.x = insets.left + (w - title.width()) / 2f;
-		title.y = insets.top + 2 + (topRegion - title.height()) / 2f;
+		title.setPos( insets.left + (w - title.width()) / 2f, insets.top + 2 + (topRegion - title.height()) / 2f );
 
 		align(title);
 
-		if (landscape()){
-			placeTorch(title.x + 30, title.y + 35);
-			placeTorch(title.x + title.width - 30, title.y + 35);
-		} else {
-			placeTorch(title.x + 16, title.y + 70);
-			placeTorch(title.x + title.width - 16, title.y + 70);
-		}
-
-		Image signs = new Image(BannerSprites.get( landscape() ? BannerSprites.Type.TITLE_GLOW_LAND : BannerSprites.Type.TITLE_GLOW_PORT)){
-			private float time = 0;
-			@Override
-			public void update() {
-				super.update();
-				am = Math.max(0f, (float)Math.sin( time += Game.elapsed ));
-				if (time >= 1.5f*Math.PI) time = 0;
-			}
-			@Override
-			public void draw() {
-				Blending.setLightMode();
-				super.draw();
-				Blending.setNormalMode();
-			}
-		};
-		signs.x = title.x + (title.width() - signs.width())/2f;
-		signs.y = title.y;
-		add( signs );
-		
 		StyledButton okay = new StyledButton(Chrome.Type.GREY_BUTTON_TR, Messages.get(this, "continue")){
 			@Override
 			protected void onClick() {
@@ -217,7 +196,7 @@ public class WelcomeScene extends PixelScene {
 		}
 
 		text.text(message, Math.min(w-20, 300));
-		float titleBottom = title.y + title.height();
+		float titleBottom = title.bottom();
 		float textSpace = okay.top() - titleBottom - 4;
 		text.setPos(insets.left + (w - text.width()) / 2f, (titleBottom + 2) + (textSpace - text.height())/2);
 		add(text);
@@ -234,15 +213,6 @@ public class WelcomeScene extends PixelScene {
 				}
 			});
 		}
-	}
-
-	private void placeTorch( float x, float y ) {
-		Fireball fb = new Fireball();
-		fb.x = x - fb.width()/2f;
-		fb.y = y - fb.height();
-
-		align(fb);
-		add( fb );
 	}
 
 	private void updateVersion(int previousVersion){
