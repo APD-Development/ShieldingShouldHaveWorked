@@ -237,6 +237,101 @@ public final class ApdRecorder {
 
 	private static void refreshItemFlag(){
 		ApdItems.active = usable() && active != null && !active.ended && active.items != null;
+		ApdCombat.active = usable() && active != null && !active.ended && active.combat != null;
+	}
+
+	private static CombatTracker combat(){
+		return usable() && active != null && !active.ended ? active.combat : null;
+	}
+
+	static synchronized void combatAttackRolled( com.shatteredpixel.shatteredpixeldungeon.actors.Char a, com.shatteredpixel.shatteredpixeldungeon.actors.Char d, boolean hit ){
+		try {
+			inject();
+			CombatTracker t = combat();
+			if (t != null) t.onAttackRolled(a, d, hit);
+		} catch (Throwable t){
+			failed(t);
+		}
+	}
+
+	static synchronized void combatAttackDetail( com.shatteredpixel.shatteredpixeldungeon.actors.Char a, com.shatteredpixel.shatteredpixeldungeon.actors.Char d, int rolled, int dr, int effective ){
+		try {
+			inject();
+			CombatTracker t = combat();
+			if (t != null) t.onAttackDetail(a, d, rolled, dr, effective);
+		} catch (Throwable t){
+			failed(t);
+		}
+	}
+
+	static synchronized void combatMagicRoll( com.shatteredpixel.shatteredpixeldungeon.actors.Char a, com.shatteredpixel.shatteredpixeldungeon.actors.Char d, boolean hit ){
+		try {
+			inject();
+			CombatTracker t = combat();
+			if (t != null) t.onMagicRoll(a, d, hit);
+		} catch (Throwable t){
+			failed(t);
+		}
+	}
+
+	static synchronized void combatDamage( com.shatteredpixel.shatteredpixeldungeon.actors.Char target, Object src, int requested, int hpBefore, int shieldBefore, int absorbed, int hpLost ){
+		try {
+			inject();
+			CombatTracker t = combat();
+			if (t != null) t.onDamage(target, src, requested, hpBefore, shieldBefore, absorbed, hpLost);
+		} catch (Throwable t){
+			failed(t);
+		}
+	}
+
+	static synchronized void combatCharDied( com.shatteredpixel.shatteredpixeldungeon.actors.Char ch, Object src ){
+		try {
+			inject();
+			CombatTracker t = combat();
+			if (t != null) t.onCharDied(ch, src);
+		} catch (Throwable t){
+			failed(t);
+		}
+	}
+
+	static synchronized void combatHeroDying( Object cause ){
+		try {
+			inject();
+			CombatTracker t = combat();
+			if (t != null) t.onHeroDying(cause);
+		} catch (Throwable t){
+			failed(t);
+		}
+	}
+
+	static synchronized void combatHeroRevived( int kind ){
+		try {
+			inject();
+			CombatTracker t = combat();
+			if (t != null) t.onHeroRevived(kind);
+		} catch (Throwable t){
+			failed(t);
+		}
+	}
+
+	static synchronized void combatXp( com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero hero, int amount, Class<?> source ){
+		try {
+			inject();
+			CombatTracker t = combat();
+			if (t != null) t.onXp(hero, amount, source);
+		} catch (Throwable t){
+			failed(t);
+		}
+	}
+
+	static synchronized void combatHunger( float energy, int before, int after ){
+		try {
+			inject();
+			CombatTracker t = combat();
+			if (t != null) t.onHungerChanged(energy, before, after);
+		} catch (Throwable t){
+			failed(t);
+		}
 	}
 
 	static synchronized void itemNoteAction( Item item, String action ){
@@ -320,6 +415,8 @@ public final class ApdRecorder {
 	static synchronized void itemHeroTurn(){
 		try {
 			inject();
+			CombatTracker c = combat();
+			if (c != null) c.poll();
 			ItemTracker t = items();
 			if (t != null) t.poll(false, false);
 		} catch (Throwable t){

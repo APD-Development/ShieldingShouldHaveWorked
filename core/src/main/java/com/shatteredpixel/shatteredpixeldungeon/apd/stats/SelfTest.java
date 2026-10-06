@@ -78,6 +78,7 @@ public final class SelfTest {
 			writeAndReadBack(r, dir, eventCount);
 			lifecycleRoundTrip(r, dir);
 			itemEventsRoundTrip(r, dir);
+			combatEventsRoundTrip(r, dir);
 			damage(r, dir, eventCount);
 			concurrency(r, dir);
 			store(r, dir);
@@ -195,6 +196,44 @@ public final class SelfTest {
 			if (ok) r.pass("item events round trip, seen state keeps what the player knew then"); else r.fail("item events did not round trip");
 		} catch (Throwable t){
 			r.fail("item events round trip threw " + t);
+		}
+	}
+
+	//combat and health events (telemetry 1.3): a burst of fight events, timed on this device, read back exactly
+	private static void combatEventsRoundTrip( Report r, File dir ){
+		File f = new File(dir, "combat.apdlog");
+		RunLogWriter w = RunLogWriter.create(f, TelemetryVersion.CURRENT, "selftestcombat", "selftest", 1,
+				new RunLogWriter.Options().queueCapacity(1 << 20));
+		int rounds = 1500;
+		CombatEvents.Where where = new CombatEvents.Where();
+		where.depth = 3;
+		long t0 = System.nanoTime();
+		for (int i = 0; i < rounds; i++){
+			CombatEvents.Attack a = new CombatEvents.Attack();
+			a.where = where; a.attacker.name = "you"; a.defender.name = "rat"; a.defender.kind = CombatEvents.KIND_ENEMY; a.hit = true; a.weaponName = "sword";
+			CombatEvents.emitAttack(w, i, a);
+			CombatEvents.AttackDetail ad = new CombatEvents.AttackDetail();
+			ad.where = where; ad.attackerClass = "Hero"; ad.defenderClass = "actors.mobs.Rat"; ad.hit = true; ad.rolled = 6; ad.effective = 5; ad.publicEmitted = true;
+			CombatEvents.emitAttackDetail(w, i, ad);
+			CombatEvents.Damage d = new CombatEvents.Damage();
+			d.where = where; d.target.name = "rat"; d.shown = 5;
+			CombatEvents.emitDamage(w, i, d);
+			CombatEvents.DamageDetail dd = new CombatEvents.DamageDetail();
+			dd.where = where; dd.targetClass = "actors.mobs.Rat"; dd.hpBefore = 8; dd.hpAfter = 3; dd.hpMax = 8; dd.requested = 5; dd.hpLost = 5; dd.publicEmitted = true;
+			CombatEvents.emitDamageDetail(w, i, dd);
+		}
+		long t1 = System.nanoTime();
+		w.close();
+		try {
+			ReadResult rd = RunLogReader.read(f);
+			boolean ok = rd.status == ReadStatus.SEALED && rd.events.size() == rounds * 4
+					&& CombatEvents.decodeDamageDetail(rd.events.get(3), rd).hpBefore == 8
+					&& CombatEvents.decodeAttack(rd.events.get(0), rd).defender.name.equals("rat")
+					&& EventTypes.visibility(EventTypes.DAMAGE_DETAIL) == EventTypes.Visibility.INTERNAL;
+			if (ok) r.pass("combat events round trip (" + (f.length() / rounds) + " bytes per attack with its damage)"); else r.fail("combat events did not round trip");
+			r.info("combat events: " + ((t1 - t0) / (rounds * 4L)) + " ns/event caller cost");
+		} catch (Throwable t){
+			r.fail("combat events round trip threw " + t);
 		}
 	}
 

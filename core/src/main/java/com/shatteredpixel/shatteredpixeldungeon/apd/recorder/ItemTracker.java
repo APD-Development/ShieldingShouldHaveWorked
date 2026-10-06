@@ -594,6 +594,23 @@ final class ItemTracker {
 		return w;
 	}
 
+	//what the game said it was doing with an item this turn (read by the health tracker to explain a change)
+	String hintedAction(){
+		return hintAction == null ? "" : hintAction;
+	}
+
+	String hintedItemName(){
+		try {
+			return hintItem == null ? "" : String.valueOf(hintItem.name());
+		} catch (Throwable t){
+			return "";
+		}
+	}
+
+	String hintedItemUid(){
+		return hintItem == null || hintItem.apdUid == null ? "" : hintItem.apdUid;
+	}
+
 	//test and diagnostic access
 	int heldCount(){
 		return held.size();

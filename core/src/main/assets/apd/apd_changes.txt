@@ -1,5 +1,6 @@
 APD 4.0.8-apd
 Added:
+- Run history now also records fights and health: attacks, damage (including what shielding absorbed), kills, experience, hunger, healing (marked as inferred) and deaths, keeping what you could see apart from hidden enemy details
 - Run history now gives every item you meet a persistent identity (apd_uid) and records seeing, picking up, equipping, learning about and losing it, without ever recording what you could not have known yet
 - APD Settings in the pause menu
 - Exotic crystal conversion chance setting (0-80%, 10% steps)

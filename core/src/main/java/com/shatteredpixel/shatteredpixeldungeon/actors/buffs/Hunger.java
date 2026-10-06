@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdCombat;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
@@ -163,6 +164,7 @@ public class Hunger extends Buff implements Hero.Doom {
 			target.damage( 1, this );
 		}
 
+		ApdCombat.onHungerChanged( energy, (int)Math.ceil(oldLevel), hunger() );
 		BuffIndicator.refreshHero();
 	}
 

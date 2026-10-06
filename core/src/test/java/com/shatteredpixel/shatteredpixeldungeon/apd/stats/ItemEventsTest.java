@@ -127,6 +127,9 @@ public class ItemEventsTest {
 		internal.add(EventTypes.ITEM_REGISTERED);
 		internal.add(EventTypes.ITEM_LINEAGE);
 		internal.add(EventTypes.ITEM_TRUTH_CHANGED);
+		internal.add(EventTypes.ATTACK_DETAIL);
+		internal.add(EventTypes.DAMAGE_DETAIL);
+		internal.add(EventTypes.KILL_DETAIL);
 		for (int type : EventTypes.all().keySet()){
 			EventTypes.Visibility v = EventTypes.visibility(type);
 			assertEquals(EventTypes.name(type), internal.contains(type) ? EventTypes.Visibility.INTERNAL : EventTypes.Visibility.PUBLIC, v);

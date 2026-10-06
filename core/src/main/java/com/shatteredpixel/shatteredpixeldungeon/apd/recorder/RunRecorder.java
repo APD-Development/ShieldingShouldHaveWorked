@@ -58,6 +58,7 @@ final class RunRecorder {
 	int segment;
 	RunLogWriter writer;
 	ItemTracker items;
+	CombatTracker combat;
 	boolean ended;
 
 	private boolean levelOpen;
@@ -122,6 +123,8 @@ final class RunRecorder {
 		//item identity: a new run starts with its kit, a run picked up from a save is caught up with what the hero holds
 		r.items = new ItemTracker(r.writer);
 		r.items.poll(startKind == LifecycleEvents.START_NEW_RUN, startKind != LifecycleEvents.START_NEW_RUN);
+		r.combat = new CombatTracker(r.writer, r.items);
+		r.combat.baseline();
 		return r;
 	}
 
@@ -192,6 +195,8 @@ final class RunRecorder {
 			r.emitSessionStart(GameSnapshot.turn());
 			r.items = new ItemTracker(r.writer);
 			r.items.poll(false, true);
+			r.combat = new CombatTracker(r.writer, r.items);
+			r.combat.baseline();
 			return r;
 		}
 		RunTimeline timeline = RunTimeline.of(log.events);
@@ -258,6 +263,9 @@ final class RunRecorder {
 		r.items = new ItemTracker(w);
 		r.items.replay(log, timeline, matched != null ? matched.index : -1);
 		r.items.poll(false, true);
+		//combat state needs no replay: what changed while away is unknown, so "unchanged" starts from the loaded hero
+		r.combat = new CombatTracker(w, r.items);
+		r.combat.baseline();
 		store.refreshIndex(logId);
 		return r;
 	}
@@ -286,6 +294,7 @@ final class RunRecorder {
 	void saved( long lastPlayed ){
 		if (writer == null || writer.isDisabled() || ended) return;
 		long clock = GameSnapshot.turn();
+		if (combat != null) combat.poll();
 		if (items != null) items.poll(false, false);
 		//the checkpoint first, the SAVE marker last: the marker is the final event of a save
 		checkpoint(LifecycleEvents.CP_SAVE);
@@ -302,6 +311,7 @@ final class RunRecorder {
 	void levelSwitched(){
 		if (writer == null || writer.isDisabled() || ended) return;
 		long clock = GameSnapshot.turn();
+		if (combat != null) combat.poll();
 		if (items != null) items.poll(false, false);
 
 		if (levelOpen){
@@ -350,6 +360,7 @@ final class RunRecorder {
 			return;
 		}
 		long clock = GameSnapshot.turn();
+		if (combat != null) combat.poll();
 		if (items != null) items.poll(false, false);
 		if (levelOpen){
 			LifecycleEvents.LevelExit x = new LifecycleEvents.LevelExit();

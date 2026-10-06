@@ -56,6 +56,9 @@ example the exotic setting) writes `RULESET_CHANGE`.
 See `docs/APD-STATS-ITEMS.md`. The recorder also writes item events and saves `apd_uid` on items; `Hero.act`, `Dungeon.saveGame`
 and a few item methods call the recorder's `ApdItems` entry points.
 
+## Combat and health (telemetry 1.3)
+See `docs/APD-STATS-COMBAT.md`.
+
 ## Known limitations
 - A log left OPEN with no save slot (crash before the first save) is not yet classified as orphaned.
 - The exit checkpoint is captured when the next level is entered, so a death on a level has its last checkpoint from the level entry.

@@ -74,6 +74,26 @@ public final class EventTypes {
 	public static final int ITEM_LINEAGE = 273;
 	public static final int ITEM_TRUTH_CHANGED = 274;
 
+	//---- combat and health events (telemetry 1.3), payloads are defined and tested in CombatEvents ----
+	//PUBLIC ones only carry what the player can see (names the game shows, damage numbers, their own HP). The *_DETAIL events
+	//are INTERNAL: true classes, ids, exact enemy HP and the numbers behind a hit.
+	public static final int ATTACK = 275;
+	public static final int ATTACK_DETAIL = 276;
+	public static final int DAMAGE = 277;
+	public static final int DAMAGE_DETAIL = 278;
+	public static final int HEAL = 279;               //hero healing, inferred in 1.3 (flag INFERRED); exact sources come in Phase 9
+	public static final int MAX_HP_CHANGE = 280;
+	public static final int SHIELD_GAIN = 281;
+	public static final int HUNGER_CHANGE = 282;      //hunger was changed by eating or an effect (exact)
+	public static final int HUNGER_STATE = 283;       //hunger crossed between well fed / normal / hungry / starving
+	public static final int XP_GAIN = 284;
+	public static final int LEVEL_UP = 285;
+	public static final int KILL = 286;
+	public static final int KILL_DETAIL = 287;
+	public static final int HERO_DEATH = 288;
+	public static final int HERO_REVIVED = 289;
+	public static final int HP_CHANGE_INFERRED = 290; //hero HP went down with no damage event explaining it (inferred)
+
 	//Who may be shown an event's contents. Anything that is not PUBLIC must never reach a player-facing view, an export
 	//meant for players, or a run-replication package without being filtered first.
 	public enum Visibility {
@@ -104,6 +124,22 @@ public final class EventTypes {
 		m.put(ITEM_REGISTERED, "ITEM_REGISTERED");
 		m.put(ITEM_LINEAGE, "ITEM_LINEAGE");
 		m.put(ITEM_TRUTH_CHANGED, "ITEM_TRUTH_CHANGED");
+		m.put(ATTACK, "ATTACK");
+		m.put(ATTACK_DETAIL, "ATTACK_DETAIL");
+		m.put(DAMAGE, "DAMAGE");
+		m.put(DAMAGE_DETAIL, "DAMAGE_DETAIL");
+		m.put(HEAL, "HEAL");
+		m.put(MAX_HP_CHANGE, "MAX_HP_CHANGE");
+		m.put(SHIELD_GAIN, "SHIELD_GAIN");
+		m.put(HUNGER_CHANGE, "HUNGER_CHANGE");
+		m.put(HUNGER_STATE, "HUNGER_STATE");
+		m.put(XP_GAIN, "XP_GAIN");
+		m.put(LEVEL_UP, "LEVEL_UP");
+		m.put(KILL, "KILL");
+		m.put(KILL_DETAIL, "KILL_DETAIL");
+		m.put(HERO_DEATH, "HERO_DEATH");
+		m.put(HERO_REVIVED, "HERO_REVIVED");
+		m.put(HP_CHANGE_INFERRED, "HP_CHANGE_INFERRED");
 		NAMES = Collections.unmodifiableMap(m);
 	}
 
@@ -123,11 +159,17 @@ public final class EventTypes {
 			case ITEM_REGISTERED:
 			case ITEM_LINEAGE:
 			case ITEM_TRUTH_CHANGED:
+			case ATTACK_DETAIL:
+			case DAMAGE_DETAIL:
+			case KILL_DETAIL:
 				return Visibility.INTERNAL;
 			case GAP: case RUN_START: case RUN_END: case SAVE: case LEVEL_ENTER: case LEVEL_EXIT:
 			case SESSION_START: case ROLLBACK: case RULESET_CHANGE:
 			case ITEM_SEEN: case ITEM_ACQUIRED: case ITEM_LEFT: case ITEM_EQUIPPED: case ITEM_UNEQUIPPED:
 			case ITEM_KNOWLEDGE: case ITEM_CLASS_KNOWN:
+			case ATTACK: case DAMAGE: case HEAL: case MAX_HP_CHANGE: case SHIELD_GAIN: case HUNGER_CHANGE:
+			case HUNGER_STATE: case XP_GAIN: case LEVEL_UP: case KILL: case HERO_DEATH: case HERO_REVIVED:
+			case HP_CHANGE_INFERRED:
 				return Visibility.PUBLIC;
 			default:
 				return Visibility.INTERNAL;

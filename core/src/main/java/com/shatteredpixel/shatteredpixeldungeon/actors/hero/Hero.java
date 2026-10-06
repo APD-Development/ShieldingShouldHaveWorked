@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdCombat;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.ItemEvents;
 import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdItems;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -2015,6 +2016,8 @@ public class Hero extends Char {
 	
 	public void earnExp( int exp, Class source ) {
 
+		ApdCombat.onXp( this, exp, source );
+
 		//xp granted by ascension challenge is only for on-exp gain effects
 		if (source != AscensionChallenge.class) {
 			this.exp += exp;
@@ -2175,6 +2178,8 @@ public class Hero extends Char {
 
 	@Override
 	public void die( Object cause ) {
+
+		ApdCombat.onHeroDying( cause );
 		
 		curAction = null;
 
@@ -2192,6 +2197,7 @@ public class Hero extends Char {
 
 			if (ankh.isBlessed()) {
 				this.HP = HT / 4;
+				ApdCombat.onHeroRevived( ApdCombat.REVIVE_BLESSED_ANKH );
 
 				PotionOfHealing.cure(this);
 				Buff.prolong(this, Invulnerability.class, Invulnerability.DURATION);
@@ -2646,6 +2652,7 @@ public class Hero extends Char {
 	
 	public void resurrect() {
 		HP = HT;
+		ApdCombat.onHeroRevived( ApdCombat.REVIVE_RESURRECT );
 		live();
 
 		MagicalHolster holster = belongings.getItem(MagicalHolster.class);

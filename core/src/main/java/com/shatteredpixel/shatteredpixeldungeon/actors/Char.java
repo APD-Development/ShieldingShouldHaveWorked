@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdCombat;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -386,7 +387,10 @@ public abstract class Char extends Actor {
 			return false;
 
 		} else if (hit( this, enemy, accMulti, false )) {
-			
+
+			//APD: the player sees the strike land before anything it sets off (a mimic revealing itself)
+			ApdCombat.onAttackRolled( this, enemy, true );
+
 			int dr = Math.round(enemy.drRoll() * AscensionChallenge.statModifier(enemy));
 			
 			if (this instanceof Hero){
@@ -509,6 +513,7 @@ public abstract class Char extends Actor {
 				return true;
 			}
 
+			ApdCombat.onAttackDetail( this, enemy, Math.round(dmg), dr, effectiveDamage );
 			enemy.damage( effectiveDamage, this );
 
 			if (buff(FireImbue.class) != null)  buff(FireImbue.class).proc(enemy);
@@ -582,6 +587,7 @@ public abstract class Char extends Actor {
 			
 		} else if (!Char.hasProp(enemy, Property.OBJECT)) {
 
+			ApdCombat.onAttackRolled( this, enemy, false );
 			if (enemy.sprite != null){
 				if (hitMissIcon != -1){
 					//dooking is a playful sound Ferrets can make, like low pitched chirping
@@ -604,6 +610,7 @@ public abstract class Char extends Actor {
 			return false;
 			
 		} else {
+			ApdCombat.onAttackRolled( this, enemy, false );
 			return false;
 		}
 
@@ -613,7 +620,10 @@ public abstract class Char extends Actor {
 	public static int INFINITE_EVASION = 1_000_000;
 
 	final public static boolean hit( Char attacker, Char defender, boolean magic ) {
-		return hit(attacker, defender, magic ? 2f : 1f, magic);
+		boolean result = hit(attacker, defender, magic ? 2f : 1f, magic);
+		//APD: spells and bolts roll to hit through here, not through Char.attack
+		ApdCombat.onMagicRoll( attacker, defender, result );
+		return result;
 	}
 
 	public static boolean hit( Char attacker, Char defender, float accMulti, boolean magic ) {
@@ -979,6 +989,11 @@ public abstract class Char extends Actor {
 			return;
 		}
 
+		//APD: what the recorder needs to describe this damage afterwards (plain reads)
+		int apdRequested = dmg;
+		int apdHpBefore = HP;
+		int apdShieldBefore = shielding();
+
 		int shielded = dmg;
 		dmg = ShieldBuff.processDamage(this, dmg, src);
 		shielded -= dmg;
@@ -1064,6 +1079,8 @@ public abstract class Char extends Actor {
 
 		if (HP < 0) HP = 0;
 
+		ApdCombat.onDamage( this, src, apdRequested, apdHpBefore, apdShieldBefore, shielded, dmg );
+
 		if (!isAlive()) {
 			die( src );
 		} else if (HP == 0 && buff(DeathMark.DeathMarkTracker.class) != null){
@@ -1117,6 +1134,7 @@ public abstract class Char extends Actor {
 	}
 	
 	public void die( Object src ) {
+		ApdCombat.onCharDied( this, src );
 		//something else is forcing death, so remove death mark to prevent conflicts
 		if (buff(DeathMark.DeathMarkTracker.class) != null){
 			buff(DeathMark.DeathMarkTracker.class).detachOnDeath();

@@ -72,4 +72,32 @@ public class ItemHookWiringTest {
 			has(p, "ApdItems.onClassKnown(");
 		}
 	}
+
+	@Test
+	public void combatAndHealthHooksAreConnected() throws Exception {
+		has("actors/Char.java",
+				"ApdCombat.onAttackRolled( this, enemy, true )",
+				"ApdCombat.onAttackRolled( this, enemy, false )",
+				"ApdCombat.onAttackDetail( this, enemy, Math.round(dmg), dr, effectiveDamage )",
+				"ApdCombat.onMagicRoll( attacker, defender, result )",
+				"ApdCombat.onDamage( this, src, apdRequested, apdHpBefore, apdShieldBefore, shielded, dmg )",
+				"ApdCombat.onCharDied( this, src )");
+		has("actors/hero/Hero.java",
+				"ApdCombat.onHeroDying( cause )", "ApdCombat.onHeroRevived( ApdCombat.REVIVE_BLESSED_ANKH )",
+				"ApdCombat.onHeroRevived( ApdCombat.REVIVE_RESURRECT )", "ApdCombat.onXp( this, exp, source )");
+		has("actors/buffs/Hunger.java", "ApdCombat.onHungerChanged(");
+		//the damage hook sits after shielding was applied and before death is processed, so it sees the real numbers
+		String c = src("actors/Char.java");
+		int shield = c.indexOf("dmg = ShieldBuff.processDamage(this, dmg, src);");
+		int hook = c.indexOf("ApdCombat.onDamage(");
+		int die = c.indexOf("die( src );", hook);
+		assertTrue(shield > 0 && hook > shield && die > hook);
+		//the public attack is recorded as soon as the roll is known, before the hit's consequences (defenseProc can reveal a
+		//mimic); the numbers are recorded just before the damage is dealt
+		int rolled = c.indexOf("ApdCombat.onAttackRolled( this, enemy, true )");
+		int defense = c.indexOf("enemy.defenseProc( this, Math.round(dmg) )");
+		int detail = c.indexOf("ApdCombat.onAttackDetail(");
+		int deal = c.indexOf("enemy.damage( effectiveDamage, this );");
+		assertTrue(rolled > 0 && defense > rolled && detail > defense && deal > detail);
+	}
 }
