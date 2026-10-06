@@ -2,8 +2,8 @@
 
 This records the decisions made before implementation. Core rule: **"Record broadly. Query freely. Cross-reference
 everything."** Raw evidence is the source of truth. Rollups, fact tables and indexes are caches that can be rebuilt.
-"Statistics" is a working name; the final player-facing name is undecided (Records, Analytics, ...). Do not rename the
-title screen button yet.
+The system is named **UIMSD, the Ultimate Infinite Mega Statistics Database** (decided after Phase 2; the title screen
+button says "UIMSD"). "Statistics" below still describes what it does. Its name can change again only if the project owner says so.
 
 ## Telemetry version
 The recording system has its own version, "Telemetry 1.0", 1.1, 2.0 ..., independent of the APD game version
@@ -82,7 +82,7 @@ old runs.
 A versioned, maintainable feature history separate from the APD changelog, explaining what SPD retained, why APD keeps
 history, and when raw events, item identity/lineage, new datasets/queries, legacy imports and global statistics arrive, and
 why older runs hold less. Stored as `core/src/main/assets/apd/apd_records_history.txt` (one block per milestone, newest
-first, milestone ids never reused). No History UI until the Statistics screen exists.
+first, milestone ids never reused). No History UI until the UIMSD screen exists.
 
 ## Title button
 When the system is ready, only the click target of the existing title button changes (from Rankings to the new scene). The

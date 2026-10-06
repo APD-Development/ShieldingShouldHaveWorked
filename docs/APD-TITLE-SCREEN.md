@@ -11,12 +11,16 @@
 | `assets/splashes/title/apd_bg_port.png` | 200x360 | portrait background plate |
 | `assets/splashes/title/apd_bg_land.png` | 400x200 | landscape background plate |
 
-Layout: portrait stacks logo, version text, a 2x3 grid (Play/Statistics, Badges/Journal, Options/Quit), the APD Settings row and a bottom row
+Layout: portrait stacks logo, version text, a 2x3 grid (Play/UIMSD, Badges/Journal, Options/Quit), the APD Settings row and a bottom row
 (News/Changes/About). Landscape puts the logo on the left and the same grid on the right. Space the plate doesn't cover is
 filled with `#08110D`.
 
 - "APD Settings" is a full-width row under the 2x3 grid and above News/Changes/About; it opens the APD Settings window (separate from Options).
-- Statistics opens the Rankings screen until real APD statistics exist.
+- UIMSD (Ultimate Infinite Mega Statistics Database, formerly "Statistics") opens the Rankings screen until the real database exists.
+- A joke annotation, "HEY, GO HERE FOR DRUGS", sits in its own strip directly above the grid with a bobbing pink arrow pointing
+  down at the UIMSD button (top row, right column). It is not interactive, fades with the rest of the menu, uses one line when the
+  text fits the grid width and two otherwise, and only takes room from the main button rows when the screen has no spare height
+  (rows are 24-36px, so tall phones keep the old sizes). The logo, version text and every button are untouched.
 - Badges opens the journal scene on its badges tab, Journal opens it on the catalog tab.
 - The Support button is not on the home screen any more.
 - Version text is `v4.0.8-apd-INDEV`. Stock menu icons are reused.

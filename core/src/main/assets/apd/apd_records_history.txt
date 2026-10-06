@@ -1,5 +1,5 @@
 APD records history, format 2
-One block per milestone, newest first. Not shown in the game yet: the Statistics/Records screen will display this
+One block per milestone, newest first. Not shown in the game yet: the UIMSD (Ultimate Infinite Mega Statistics Database) screen will display this
 later. Each block is a header line with four fields separated by vertical bars (milestone id, telemetry version or a dash,
 APD version, date) followed by "- " lines. Never edit or reuse an old milestone id, add a new block at the top.
 
@@ -7,6 +7,10 @@ The telemetry version is the version of APD's recording system (Telemetry 1.0, 1
 APD game version, and every recorded run keeps the telemetry version that recorded it. "-" means the milestone is not
 tied to a version of the recorded data. Minor versions only add things, a new major version changes what existing
 data means.
+
+uimsd-name | - | APD 4.0.8-apd | 2026-10-06
+- The statistics / records / query system is named UIMSD, the Ultimate Infinite Mega Statistics Database. The title
+  screen button that used to say "Statistics" now says "UIMSD". This changes a name only, no recorded data.
 
 telemetry-1.1-run-lifecycle | telemetry 1.1 | APD 4.0.8-apd | 2026-10-06
 - Telemetry 1.1 is the first version that records real runs. Each run now has a log with: RUN_START (APD version, seed,

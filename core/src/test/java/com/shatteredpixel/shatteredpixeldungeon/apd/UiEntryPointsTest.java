@@ -59,6 +59,33 @@ public class UiEntryPointsTest {
 	}
 
 	@Test
+	public void theStatisticsButtonIsNamedUimsdAndTheAnnotationPointsAtIt() throws Exception {
+		String title = scene("TitleScene.java");
+		assertTrue(title.contains("new APDMenuButton( \"UIMSD\", Icons.STATS"));
+		assertTrue("old name must be gone", !title.contains("new APDMenuButton( \"Statistics\""));
+		assertTrue(title.contains("ANNOTATION_TEXT = \"HEY, GO HERE FOR DRUGS\""));
+		assertTrue(title.contains("add( annotation )"));
+		assertTrue("must be placed relative to the grid", title.contains("annotation.place("));
+		assertTrue("must fade with the menu", title.contains("annotation.alpha(alpha)"));
+		assertTrue("its strip must be part of the grid height", title.contains("annotation.height() + 3*mainH"));
+		//the annotation is a plain Component with no PointerArea or button, so it can't take taps from anything
+		int a = title.indexOf("class APDAnnotation");
+		int b = title.indexOf("class APDMenuButton");
+		assertTrue(a > 0 && b > a);
+		assertTrue(!title.substring(a, b).contains("PointerArea") && !title.substring(a, b).contains("Button"));
+	}
+
+	@Test
+	public void apdDocsUseTheUimsdName() throws Exception {
+		for (String p : new String[]{"apd/apd_changes.txt", "apd/apd_news.txt", "apd/apd_records_history.txt"}){
+			String t = read(new File(p)); //tests run from the assets folder
+			assertTrue(p + " should mention UIMSD", t.contains("UIMSD"));
+			assertTrue(p + " should say what it stands for", t.contains("Ultimate Infinite Mega Statistics Database"));
+		}
+		assertTrue(!read(new File("apd/apd_changes.txt")).contains("Play / Statistics"));
+	}
+
+	@Test
 	public void theInGameMenuAlsoOpensThePane() throws Exception {
 		assertTrue(windows("WndGame.java").contains("new WndAPDSettings()"));
 		assertTrue(windows("WndAPDSettings.java").contains("new APDSettingsPane()"));

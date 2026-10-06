@@ -48,6 +48,7 @@ import com.watabou.noosa.PointerArea;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.tweeners.Tweener;
+import com.watabou.noosa.ui.Component;
 import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.GameMath;
 import com.watabou.utils.RectF;
@@ -75,6 +76,9 @@ public class TitleScene extends PixelScene {
 	//APD: the full-width APD Settings row sits between the 2x3 grid and the News/Changes/About row
 	private static final int APD_ROW_H = BOTTOM_H + MAIN_GAP;
 
+	//APD: joke annotation pointing at the UIMSD button
+	private static final String ANNOTATION_TEXT = "HEY, GO HERE FOR DRUGS";
+
 	private Image logo;
 	private Image glow;
 	private APDFlame leftFlame;
@@ -90,6 +94,7 @@ public class TitleScene extends PixelScene {
 	private APDMenuButton btnChanges;
 	private APDMenuButton btnAbout;
 	private APDMenuButton btnAPDSettings;
+	private APDAnnotation annotation;
 
 	private BitmapText version;
 	private IconButton btnFade;
@@ -177,8 +182,8 @@ public class TitleScene extends PixelScene {
 		};
 		add( btnPlay );
 
-		//Statistics replaces Rankings, until the real APD statistics exist it opens the Rankings screen
-		btnStatistics = new APDMenuButton( "Statistics", Icons.STATS, true ){
+		//UIMSD (Ultimate Infinite Mega Statistics Database) replaces Rankings, until the real database exists it opens the Rankings screen
+		btnStatistics = new APDMenuButton( "UIMSD", Icons.STATS, true ){
 			@Override
 			protected void onClick() {
 				super.onClick();
@@ -288,13 +293,15 @@ public class TitleScene extends PixelScene {
 			float totalW = LOGO_W + 8 + gridWidth;
 			float left = insets.left + (w - totalW) / 2f;
 
-			float mainH = mainHeight( h - 8 );
-			float gridH = 3*mainH + 3*MAIN_GAP + APD_ROW_H + BOTTOM_H;
+			annotation = new APDAnnotation( ANNOTATION_TEXT, gridWidth );
+			add( annotation );
+			float mainH = mainHeightWith( h - 8, annotation.height() );
+			float gridH = annotation.height() + 3*mainH + 3*MAIN_GAP + APD_ROW_H + BOTTOM_H;
 
 			logoX = left;
 			logoY = insets.top + (h - (LOGO_H + versionGap)) / 2f;
 			gridLeft = left + LOGO_W + 8;
-			gridTop = insets.top + (h - gridH) / 2f;
+			gridTop = insets.top + (h - gridH) / 2f + annotation.height();
 			layoutGrid( gridLeft, gridTop, gridWidth, mainH );
 		} else {
 			gridWidth = Math.min(w - 8, 150);
@@ -302,13 +309,15 @@ public class TitleScene extends PixelScene {
 
 			float topPad = 6;
 			float availForGrid = h - topPad - LOGO_H - versionGap - 6 - 4;
-			float mainH = mainHeight( availForGrid );
-			float gridH = 3*mainH + 3*MAIN_GAP + APD_ROW_H + BOTTOM_H;
+			annotation = new APDAnnotation( ANNOTATION_TEXT, gridWidth );
+			add( annotation );
+			float mainH = mainHeightWith( availForGrid, annotation.height() );
+			float gridH = annotation.height() + 3*mainH + 3*MAIN_GAP + APD_ROW_H + BOTTOM_H;
 			float contentH = LOGO_H + versionGap + 4 + gridH;
 
 			logoX = insets.left + (w - LOGO_W) / 2f;
 			logoY = insets.top + Math.max(topPad, (h - contentH) * 0.35f);
-			gridTop = logoY + LOGO_H + versionGap + 4;
+			gridTop = logoY + LOGO_H + versionGap + 4 + annotation.height();
 			layoutGrid( gridLeft, gridTop, gridWidth, mainH );
 		}
 
@@ -390,6 +399,14 @@ public class TitleScene extends PixelScene {
 		return GameMath.gate( 24, (float)Math.floor(h), 36 );
 	}
 
+	//the main rows keep their normal height when the screen has room for the annotation, otherwise they give up the space it needs
+	private static float mainHeightWith( float availableForGrid, float annotationH ){
+		float normal = mainHeight( availableForGrid );
+		float used = 3*normal + 3*MAIN_GAP + APD_ROW_H + BOTTOM_H;
+		if (availableForGrid - used >= annotationH) return normal;
+		return mainHeight( availableForGrid - annotationH );
+	}
+
 	//2 columns x 3 rows, then a row of three smaller buttons
 	private void layoutGrid( float left, float top, float width, float mainH ){
 		float colW = (float)Math.floor((width - MAIN_GAP) / 2f);
@@ -400,6 +417,9 @@ public class TitleScene extends PixelScene {
 			main[i].setRect( left + col*(colW + MAIN_GAP), top + row*(mainH + MAIN_GAP), colW, mainH );
 			align( main[i] );
 		}
+
+		//the arrow points down at the UIMSD button (top row, right column), the text sits above it in the space reserved over the grid
+		annotation.place( left, width, (float)Math.floor((width - MAIN_GAP) / 2f) + MAIN_GAP, top );
 
 		float apdY = top + 3*(mainH + MAIN_GAP);
 		btnAPDSettings.setRect( left, apdY, width, BOTTOM_H );
@@ -433,6 +453,7 @@ public class TitleScene extends PixelScene {
 			b.alpha(alpha);
 		}
 
+		annotation.alpha(alpha);
 		version.alpha(alpha);
 		btnFade.icon().alpha(alpha);
 		if (btnExit != null){
@@ -457,6 +478,116 @@ public class TitleScene extends PixelScene {
 				curFrame = 12;
 				frame( curAnim.frames[curFrame] );
 			}
+		}
+	}
+
+	//Deliberately out of place: hot pink text and a bobbing arrow pointing down at the UIMSD button. The text breaks into
+	//two lines only when one line is wider than the grid. It is not interactive and sits in its own strip above the grid.
+	private static class APDAnnotation extends Component {
+
+		private static final int COLOR = 0xFF4FD8;
+		private static final int SHADOW = 0xFF000000;
+		private static final int HEAD_ROWS = 4;  //arrow head is 7,5,3,1 pixels wide
+		private static final int SHAFT_H = 3;
+		private static final int ARROW_H = HEAD_ROWS + SHAFT_H;
+		private static final int BOB = 2;        //the arrow only bobs upwards, so it never touches the button
+
+		private final BitmapText[] lines;
+		private final BitmapText[] shadows;
+		private final ColorBlock[] arrow;
+		private final ColorBlock[] arrowShadow;
+		private final float textH;
+		private float arrowX, arrowY;
+		private float time;
+
+		APDAnnotation( String text, float maxWidth ){
+			String[] parts = { text };
+			BitmapText probe = new BitmapText( text, pixelFont );
+			probe.measure();
+			if (probe.width() > maxWidth){
+				int cut = text.indexOf( ' ', text.indexOf( "HERE" ) );
+				parts = new String[]{ text.substring( 0, cut ), text.substring( cut + 1 ) };
+			}
+			lines = new BitmapText[parts.length];
+			shadows = new BitmapText[parts.length];
+			float lh = 0;
+			for (int i = 0; i < parts.length; i++){
+				shadows[i] = new BitmapText( parts[i], pixelFont );
+				shadows[i].hardlight( SHADOW );
+				shadows[i].measure();
+				add( shadows[i] );
+				lines[i] = new BitmapText( parts[i], pixelFont );
+				lines[i].hardlight( COLOR );
+				lines[i].measure();
+				add( lines[i] );
+				lh = lines[i].height();
+			}
+			textH = lh * parts.length + 1;
+
+			arrow = new ColorBlock[HEAD_ROWS + 1];
+			arrowShadow = new ColorBlock[HEAD_ROWS + 1];
+			for (int i = 0; i <= HEAD_ROWS; i++){
+				int wid = i < HEAD_ROWS ? 7 - 2*i : 3; //shaft 3 wide, then head rows 7,5,3,1 wide (pointing down)
+				arrowShadow[i] = new ColorBlock( wid, i < HEAD_ROWS ? 1 : SHAFT_H, SHADOW );
+				add( arrowShadow[i] );
+				arrow[i] = new ColorBlock( wid, i < HEAD_ROWS ? 1 : SHAFT_H, COLOR );
+				add( arrow[i] );
+			}
+			setSize( maxWidth, height() );
+		}
+
+		//the strip this takes above the grid, including the room the arrow bobs in
+		@Override
+		public float height() {
+			return (float)Math.ceil( textH + 1 + ARROW_H + 1 + BOB );
+		}
+
+		//gridLeft/gridWidth: the grid's span. rightColOffset: where the right column starts. gridTop: top of the buttons.
+		void place( float gridLeft, float gridWidth, float rightColOffset, float gridTop ){
+			float colW = gridWidth - rightColOffset;
+			float centre = gridLeft + rightColOffset + colW / 2f;
+			arrowX = (float)Math.floor( centre - 3.5f );
+			//rest position: the tip is 1px above the button
+			arrowY = gridTop - 1 - ARROW_H;
+			float textRight = gridLeft + gridWidth;
+			float top = gridTop - height();
+			for (int i = 0; i < lines.length; i++){
+				float x = Math.max( gridLeft, textRight - lines[i].width() );
+				float y = top + i * lines[i].height();
+				lines[i].x = (float)Math.floor( x );
+				lines[i].y = (float)Math.floor( y );
+				shadows[i].x = lines[i].x + 1;
+				shadows[i].y = lines[i].y + 1;
+			}
+			positionArrow( 0 );
+		}
+
+		private void positionArrow( float lift ){
+			float y = arrowY - lift;
+			for (int i = 0; i < arrow.length; i++){
+				//the shaft is on top, the head rows hang below it
+				float rowY = i < HEAD_ROWS ? y + SHAFT_H + i : y;
+				float wid = arrow[i].width();
+				float x = arrowX + (7 - wid) / 2f;
+				arrow[i].x = (float)Math.floor( x );
+				arrow[i].y = (float)Math.floor( rowY );
+				arrowShadow[i].x = arrow[i].x + 1;
+				arrowShadow[i].y = arrow[i].y + 1;
+			}
+		}
+
+		void alpha( float value ){
+			for (BitmapText t : lines) t.alpha( value );
+			for (BitmapText t : shadows) t.alpha( value );
+			for (ColorBlock b : arrow) b.am = value;
+			for (ColorBlock b : arrowShadow) b.am = value;
+		}
+
+		@Override
+		public void update() {
+			super.update();
+			time += Game.elapsed;
+			positionArrow( Math.round( Math.abs( (float)Math.sin( time * 4f ) ) * BOB ) );
 		}
 	}
 
