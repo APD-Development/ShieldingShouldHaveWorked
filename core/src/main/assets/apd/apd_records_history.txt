@@ -1,0 +1,16 @@
+APD records history, format 1
+One block per milestone, newest first. Not shown in the game yet: the Statistics/Records screen will display this
+later. Each block is: a title line "<milestone id> | <APD version> | <date>", then "- " lines. Never edit or reuse an
+old milestone id, add a new block at the top.
+
+phase0-baseline | APD 4.0.8-apd | 2026-10-06
+- Test harness and golden seeded-level baseline added before any recorder code, so later builds can prove that
+  recording does not change how dungeons are generated.
+
+why-apd-keeps-history | APD 4.0.8-apd | 2026-10-06
+- Shattered Pixel Dungeon only keeps a top-11 list of runs, a total and win count, lifetime item-use and enemy-kill
+  totals, and which badges are unlocked. Every other run, and all detail about how a run went, is lost when it ends.
+- APD is being built to keep the raw history of every run so that statistics can be calculated from it, including
+  statistics nobody has thought of yet.
+- Runs that were played before APD recorded history can only ever contain what SPD kept, so they hold less
+  information than runs recorded by APD itself. Missing information stays missing, it is never guessed.
