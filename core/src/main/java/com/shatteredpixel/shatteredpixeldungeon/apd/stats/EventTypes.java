@@ -94,6 +94,13 @@ public final class EventTypes {
 	public static final int HERO_REVIVED = 289;
 	public static final int HP_CHANGE_INFERRED = 290; //hero HP went down with no damage event explaining it (inferred)
 
+	//---- generation provenance events (telemetry 1.4), payloads are defined and tested in GenerationEvents ----
+	//All INTERNAL: they describe what the game placed in a level, including everything the player has not found.
+	public static final int LEVEL_GENERATED = 291;
+	public static final int ITEM_GENERATED = 292;
+	public static final int MOB_GENERATED = 293;
+	public static final int MOB_ID_ASSIGNED = 294;   //links a generated creature to the id the game gives it when the level is entered
+
 	//Who may be shown an event's contents. Anything that is not PUBLIC must never reach a player-facing view, an export
 	//meant for players, or a run-replication package without being filtered first.
 	public enum Visibility {
@@ -140,6 +147,10 @@ public final class EventTypes {
 		m.put(HERO_DEATH, "HERO_DEATH");
 		m.put(HERO_REVIVED, "HERO_REVIVED");
 		m.put(HP_CHANGE_INFERRED, "HP_CHANGE_INFERRED");
+		m.put(LEVEL_GENERATED, "LEVEL_GENERATED");
+		m.put(ITEM_GENERATED, "ITEM_GENERATED");
+		m.put(MOB_GENERATED, "MOB_GENERATED");
+		m.put(MOB_ID_ASSIGNED, "MOB_ID_ASSIGNED");
 		NAMES = Collections.unmodifiableMap(m);
 	}
 
@@ -162,6 +173,10 @@ public final class EventTypes {
 			case ATTACK_DETAIL:
 			case DAMAGE_DETAIL:
 			case KILL_DETAIL:
+			case LEVEL_GENERATED:
+			case ITEM_GENERATED:
+			case MOB_GENERATED:
+			case MOB_ID_ASSIGNED:
 				return Visibility.INTERNAL;
 			case GAP: case RUN_START: case RUN_END: case SAVE: case LEVEL_ENTER: case LEVEL_EXIT:
 			case SESSION_START: case ROLLBACK: case RULESET_CHANGE:

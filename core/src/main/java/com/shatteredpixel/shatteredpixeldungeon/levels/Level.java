@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdGen;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -219,6 +220,7 @@ public abstract class Level implements Bundlable {
 
 		TargetedCell.cells.clear();
 		Random.pushGenerator( Dungeon.seedCurDepth() );
+		ApdGen.onLevelCreateStart();
 
 		//TODO maybe just make this part of RegularLevel?
 		if (!Dungeon.bossLevel() && Dungeon.branch == 0) {
@@ -300,6 +302,7 @@ public abstract class Level implements Bundlable {
 		}
 		
 		do {
+			ApdGen.onBuildAttempt();
 			width = height = length = 0;
 
 			transitions = new ArrayList<>();
@@ -318,8 +321,11 @@ public abstract class Level implements Bundlable {
 		buildFlagMaps();
 		cleanWalls();
 		
+		ApdGen.setStage( ApdGen.STAGE_MOBS );
 		createMobs();
+		ApdGen.setStage( ApdGen.STAGE_ITEMS );
 		createItems();
+		ApdGen.setStage( ApdGen.STAGE_NONE );
 
 		Random.popGenerator();
 	}

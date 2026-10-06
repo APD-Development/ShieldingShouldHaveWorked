@@ -25,6 +25,8 @@ public class RecorderIsolationTest {
 			"Actor.", ".damage(", ".spend(", ".heal(", ".die(", ".live(", ".attach", ".detach(", ".collect(", ".drop(",
 			"Dungeon.hero =", "Dungeon.level =", "Dungeon.depth =", "Dungeon.branch =", "Dungeon.seed =", "Dungeon.gold =",
 			"Statistics.duration =", "Statistics.deepestFloor =", "Dungeon.challenges =",
+			//Actor.id() hands out the next id from a global counter the first time it is called: that is game state, use apdPeekId()
+			".id()",
 			//APIs missing on Android 5.0
 			"java.nio.file", "String.join", "computeIfAbsent", "getOrDefault", ".stream(", "Optional", "List.of(", "Map.of(",
 			"java.util.function", "removeIf", "forEach(",

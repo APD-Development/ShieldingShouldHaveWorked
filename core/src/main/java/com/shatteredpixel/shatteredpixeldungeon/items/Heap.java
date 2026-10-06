@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdGen;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -108,6 +109,7 @@ public class Heap implements Bundlable {
 		type = Type.HEAP;
 		ArrayList<Item> bonus = RingOfWealth.tryForBonusDrop(hero, 1);
 		if (bonus != null && !bonus.isEmpty()) {
+			for (Item b : bonus) ApdGen.onBonusDrop( b, pos );
 			items.addAll(0, bonus);
 			RingOfWealth.showFlareForBonusDrop(sprite);
 		}

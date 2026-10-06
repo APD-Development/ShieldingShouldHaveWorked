@@ -59,6 +59,7 @@ final class RunRecorder {
 	RunLogWriter writer;
 	ItemTracker items;
 	CombatTracker combat;
+	GenerationTracker generation;
 	boolean ended;
 
 	private boolean levelOpen;
@@ -125,6 +126,7 @@ final class RunRecorder {
 		r.items.poll(startKind == LifecycleEvents.START_NEW_RUN, startKind != LifecycleEvents.START_NEW_RUN);
 		r.combat = new CombatTracker(r.writer, r.items);
 		r.combat.baseline();
+		r.generation = new GenerationTracker(r.writer, r.items);
 		return r;
 	}
 
@@ -197,6 +199,7 @@ final class RunRecorder {
 			r.items.poll(false, true);
 			r.combat = new CombatTracker(r.writer, r.items);
 			r.combat.baseline();
+			r.generation = new GenerationTracker(r.writer, r.items);
 			return r;
 		}
 		RunTimeline timeline = RunTimeline.of(log.events);
@@ -266,6 +269,7 @@ final class RunRecorder {
 		//combat state needs no replay: what changed while away is unknown, so "unchanged" starts from the loaded hero
 		r.combat = new CombatTracker(w, r.items);
 		r.combat.baseline();
+		r.generation = new GenerationTracker(w, r.items);
 		store.refreshIndex(logId);
 		return r;
 	}
@@ -336,6 +340,8 @@ final class RunRecorder {
 			rulesetId = rules.id;
 			rulesetChanges++;
 		}
+
+		if (generation != null) generation.levelEntered(Dungeon.level);
 
 		LifecycleEvents.LevelEnter e = new LifecycleEvents.LevelEnter();
 		e.depth = Dungeon.depth;

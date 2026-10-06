@@ -79,6 +79,7 @@ public final class SelfTest {
 			lifecycleRoundTrip(r, dir);
 			itemEventsRoundTrip(r, dir);
 			combatEventsRoundTrip(r, dir);
+			generationEventsRoundTrip(r, dir);
 			damage(r, dir, eventCount);
 			concurrency(r, dir);
 			store(r, dir);
@@ -234,6 +235,36 @@ public final class SelfTest {
 			r.info("combat events: " + ((t1 - t0) / (rounds * 4L)) + " ns/event caller cost");
 		} catch (Throwable t){
 			r.fail("combat events round trip threw " + t);
+		}
+	}
+
+	//generation provenance events (telemetry 1.4): one level's worth of generated items, timed on this device
+	private static void generationEventsRoundTrip( Report r, File dir ){
+		File f = new File(dir, "generation.apdlog");
+		RunLogWriter w = RunLogWriter.create(f, TelemetryVersion.CURRENT, "selftestgen", "selftest", 1,
+				new RunLogWriter.Options().queueCapacity(1 << 20));
+		int items = 600;
+		GenerationEvents.Where where = new GenerationEvents.Where();
+		where.depth = 4;
+		long t0 = System.nanoTime();
+		for (int i = 0; i < items; i++){
+			GenerationEvents.ItemGenerated g = new GenerationEvents.ItemGenerated();
+			g.uid = "uid" + i; g.where = where; g.container = GenerationEvents.C_HEAP; g.pos = i; g.stage = GenerationEvents.STAGE_ITEMS;
+			g.drawKind = GenerationEvents.DRAW_CATEGORY; g.requestedCategory = "POTION"; g.actualCategory = "POTION";
+			g.trueClass = "items.potions.PotionOfHealing"; g.quantity = 1;
+			GenerationEvents.emitItemGenerated(w, i, g);
+		}
+		long t1 = System.nanoTime();
+		w.close();
+		try {
+			ReadResult rd = RunLogReader.read(f);
+			boolean ok = rd.status == ReadStatus.SEALED && rd.events.size() == items
+					&& GenerationEvents.decodeItemGenerated(rd.events.get(items - 1), rd).uid.equals("uid" + (items - 1))
+					&& EventTypes.visibility(EventTypes.ITEM_GENERATED) == EventTypes.Visibility.INTERNAL;
+			if (ok) r.pass("generation events round trip (" + (f.length() / items) + " bytes per generated item)"); else r.fail("generation events did not round trip");
+			r.info("generation events: " + ((t1 - t0) / items) + " ns/event caller cost");
+		} catch (Throwable t){
+			r.fail("generation events round trip threw " + t);
 		}
 	}
 

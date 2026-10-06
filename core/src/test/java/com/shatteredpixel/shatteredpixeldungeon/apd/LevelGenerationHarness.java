@@ -238,6 +238,9 @@ public final class LevelGenerationHarness {
 				//It is not derived from the dungeon seed (it differs between generations of the same seed) and does
 				//not affect generation, so it is left out of the fingerprint.
 				if (key.equals("set_id")) continue;
+				//apd_uid is the statistics recorder's item id (a random UUID, assigned to generated items since Phase 5). It is
+				//not part of the dungeon, so it must not be part of the fingerprint.
+				if (key.equals("apd_uid")) continue;
 				Object val = obj.opt(key);
 				//ShopRoom.ChooseBag picks the bag for sale from a HashMap keyed by Bag objects, and ties between bags
 				//are broken by that map's iteration order, which depends on object identity hashes. Which bag a shop

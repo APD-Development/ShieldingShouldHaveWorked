@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdGen;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
@@ -1064,6 +1065,7 @@ public abstract class Mob extends Char {
 			if (Random.Float() < lootChance()) {
 				Item loot = createLoot();
 				if (loot != null) {
+					ApdGen.onLootCreated( this, loot );
 					Dungeon.level.drop(loot, pos).sprite.drop();
 				}
 			}

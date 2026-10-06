@@ -59,6 +59,9 @@ and a few item methods call the recorder's `ApdItems` entry points.
 ## Combat and health (telemetry 1.3)
 See `docs/APD-STATS-COMBAT.md`.
 
+## Generation provenance (telemetry 1.4)
+See `docs/APD-STATS-GENERATION.md`.
+
 ## Known limitations
 - A log left OPEN with no save slot (crash before the first save) is not yet classified as orphaned.
 - The exit checkpoint is captured when the next level is entered, so a death on a level has its last checkpoint from the level entry.

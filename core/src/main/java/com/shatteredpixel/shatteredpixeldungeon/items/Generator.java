@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdGen;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClericArmor;
@@ -672,7 +673,19 @@ public class Generator {
 		}
 	}
 	
+	//APD: the public draws below only report the item that comes back (see apd/recorder/ApdGen), they change nothing
 	public static Item random() {
+		int apd = ApdGen.begin();
+		Item r = null;
+		try {
+			r = randomImpl();
+			return r;
+		} finally {
+			ApdGen.end( apd, ApdGen.KIND_RANDOM, null, r );
+		}
+	}
+
+	private static Item randomImpl() {
 		Category cat = Random.chances( categoryProbs );
 		if (cat == null){
 			usingFirstDeck = !usingFirstDeck;
@@ -692,10 +705,32 @@ public class Generator {
 	}
 
 	public static Item randomUsingDefaults(){
+		int apd = ApdGen.begin();
+		Item r = null;
+		try {
+			r = randomUsingDefaultsImpl();
+			return r;
+		} finally {
+			ApdGen.end( apd, ApdGen.KIND_DEFAULTS, null, r );
+		}
+	}
+
+	private static Item randomUsingDefaultsImpl(){
 		return randomUsingDefaults(Random.chances( defaultCatProbs ));
 	}
 	
 	public static Item random( Category cat ) {
+		int apd = ApdGen.begin();
+		Item r = null;
+		try {
+			r = randomImpl( cat );
+			return r;
+		} finally {
+			ApdGen.end( apd, ApdGen.KIND_CATEGORY, cat, r );
+		}
+	}
+
+	private static Item randomImpl( Category cat ) {
 		switch (cat) {
 			case ARMOR:
 				return randomArmor();
@@ -744,6 +779,17 @@ public class Generator {
 	//overrides any deck systems and always uses default probs
 	// except for artifacts, which must always use a deck
 	public static Item randomUsingDefaults( Category cat ){
+		int apd = ApdGen.begin();
+		Item r = null;
+		try {
+			r = randomUsingDefaultsImpl( cat );
+			return r;
+		} finally {
+			ApdGen.end( apd, ApdGen.KIND_DEFAULTS_CATEGORY, cat, r );
+		}
+	}
+
+	private static Item randomUsingDefaultsImpl( Category cat ){
 		if (cat == Category.WEAPON){
 			return randomWeapon(true);
 		} else if (cat == Category.MISSILE){
@@ -770,6 +816,17 @@ public class Generator {
 	}
 	
 	public static Item random( Class<? extends Item> cl ) {
+		int apd = ApdGen.begin();
+		Item r = null;
+		try {
+			r = randomImpl( cl );
+			return r;
+		} finally {
+			ApdGen.end( apd, ApdGen.KIND_CLASS, null, r );
+		}
+	}
+
+	private static Item randomImpl( Class<? extends Item> cl ) {
 		return Reflection.newInstance(cl).random();
 	}
 
@@ -854,6 +911,17 @@ public class Generator {
 
 	//enforces uniqueness of artifacts throughout a run.
 	public static Artifact randomArtifact() {
+		int apd = ApdGen.begin();
+		Artifact r = null;
+		try {
+			r = randomArtifactImpl();
+			return r;
+		} finally {
+			ApdGen.end( apd, ApdGen.KIND_ARTIFACT, Category.ARTIFACT, r );
+		}
+	}
+
+	private static Artifact randomArtifactImpl() {
 
 		Category cat = Category.ARTIFACT;
 

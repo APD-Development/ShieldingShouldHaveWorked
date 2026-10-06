@@ -238,6 +238,88 @@ public final class ApdRecorder {
 	private static void refreshItemFlag(){
 		ApdItems.active = usable() && active != null && !active.ended && active.items != null;
 		ApdCombat.active = usable() && active != null && !active.ended && active.combat != null;
+		ApdGen.active = usable() && active != null && !active.ended && active.generation != null;
+	}
+
+	private static GenerationTracker gen(){
+		return usable() && active != null && !active.ended ? active.generation : null;
+	}
+
+	static synchronized int genBegin(){
+		try {
+			GenerationTracker g = gen();
+			return g == null ? -1 : g.begin();
+		} catch (Throwable t){
+			failed(t);
+			return -1;
+		}
+	}
+
+	static synchronized void genEnd( int depth, int kind, com.shatteredpixel.shatteredpixeldungeon.items.Generator.Category requested, Item result ){
+		try {
+			GenerationTracker g = gen();
+			if (g != null) g.end(depth, kind, requested, result);
+		} catch (Throwable t){
+			failed(t);
+		}
+	}
+
+	static synchronized void genLevelStart(){
+		try {
+			inject();
+			GenerationTracker g = gen();
+			if (g != null) g.levelStart();
+		} catch (Throwable t){
+			failed(t);
+		}
+	}
+
+	static synchronized void genBuildAttempt(){
+		try {
+			GenerationTracker g = gen();
+			if (g != null) g.buildAttempt();
+		} catch (Throwable t){
+			failed(t);
+		}
+	}
+
+	static synchronized void genStage( int stage ){
+		try {
+			GenerationTracker g = gen();
+			if (g != null) g.setStage(stage);
+		} catch (Throwable t){
+			failed(t);
+		}
+	}
+
+	static synchronized void genLevelGenerated( com.shatteredpixel.shatteredpixeldungeon.levels.Level level ){
+		try {
+			inject();
+			GenerationTracker g = gen();
+			if (g != null) g.levelGenerated(level);
+		} catch (Throwable t){
+			failed(t);
+		}
+	}
+
+	static synchronized void genLoot( com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob mob, Item item ){
+		try {
+			inject();
+			GenerationTracker g = gen();
+			if (g != null) g.loot(mob, item);
+		} catch (Throwable t){
+			failed(t);
+		}
+	}
+
+	static synchronized void genBonus( Item item, int pos ){
+		try {
+			inject();
+			GenerationTracker g = gen();
+			if (g != null) g.bonus(item, pos);
+		} catch (Throwable t){
+			failed(t);
+		}
 	}
 
 	private static CombatTracker combat(){

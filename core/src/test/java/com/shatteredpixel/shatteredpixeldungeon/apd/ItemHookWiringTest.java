@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.apd;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -99,5 +100,30 @@ public class ItemHookWiringTest {
 		int detail = c.indexOf("ApdCombat.onAttackDetail(");
 		int deal = c.indexOf("enemy.damage( effectiveDamage, this );");
 		assertTrue(rolled > 0 && defense > rolled && detail > defense && deal > detail);
+	}
+
+	@Test
+	public void generationProvenanceHooksAreConnected() throws Exception {
+		has("Dungeon.java", "ApdGen.onLevelGenerated( level )");
+		has("levels/Level.java", "ApdGen.onLevelCreateStart()", "ApdGen.onBuildAttempt()", "ApdGen.setStage( ApdGen.STAGE_MOBS )",
+				"ApdGen.setStage( ApdGen.STAGE_ITEMS )");
+		has("actors/mobs/Mob.java", "ApdGen.onLootCreated( this, loot )");
+		has("items/Heap.java", "ApdGen.onBonusDrop( b, pos )");
+		has("actors/Actor.java", "public int apdPeekId()");
+		//the finished level is read after create() and before it is returned
+		String d = src("Dungeon.java");
+		int create = d.indexOf("level.create();");
+		int hook = d.indexOf("ApdGen.onLevelGenerated( level )");
+		int ret = d.indexOf("return level;", hook);
+		assertTrue(create > 0 && hook > create && ret > hook);
+		//every public generator draw reports through the same wrapper pattern, and the real work stays in the Impl methods
+		String g = src("items/Generator.java");
+		for (String m : new String[]{"randomImpl()", "randomUsingDefaultsImpl()", "randomImpl( Category cat )",
+				"randomUsingDefaultsImpl( Category cat )", "randomImpl( Class<? extends Item> cl )", "randomArtifactImpl()"}){
+			assertTrue("Generator lost its wrapped method " + m, g.contains("private static") && g.contains(m));
+		}
+		int begins = 0, from = 0;
+		while ((from = g.indexOf("ApdGen.begin()", from)) >= 0){ begins++; from++; }
+		assertEquals(6, begins);
 	}
 }

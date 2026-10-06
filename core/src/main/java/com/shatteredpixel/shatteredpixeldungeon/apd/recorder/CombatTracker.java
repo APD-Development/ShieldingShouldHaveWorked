@@ -204,9 +204,9 @@ final class CombatTracker {
 		CombatEvents.AttackDetail x = new CombatEvents.AttackDetail();
 		x.where = where();
 		x.attackerClass = trueClass(a);
-		x.attackerId = a.id();
+		x.attackerId = a.apdPeekId();
 		x.defenderClass = trueClass(d);
-		x.defenderId = d.id();
+		x.defenderId = d.apdPeekId();
 		x.hit = hit;
 		x.magic = magic;
 		x.rolled = rolled;
@@ -250,7 +250,7 @@ final class CombatTracker {
 		CombatEvents.DamageDetail d = new CombatEvents.DamageDetail();
 		d.where = where;
 		d.targetClass = trueClass(target);
-		d.targetId = target.id();
+		d.targetId = target.apdPeekId();
 		d.targetPos = target.pos;
 		d.hpBefore = hpBefore;
 		d.hpAfter = target.HP;
@@ -262,7 +262,7 @@ final class CombatTracker {
 		d.hpLost = hpLost;
 		d.srcKind = describe(src).kind;
 		d.srcClass = trueClass(src);
-		d.srcCharId = srcChar == null ? -1 : srcChar.id();
+		d.srcCharId = srcChar == null ? -1 : srcChar.apdPeekId();
 		d.srcPos = srcChar == null ? -1 : srcChar.pos;
 		d.publicEmitted = show;
 		CombatEvents.emitDamageDetail(w, clock(), d);
@@ -293,7 +293,7 @@ final class CombatTracker {
 		CombatEvents.KillDetail d = new CombatEvents.KillDetail();
 		d.where = where;
 		d.victimClass = trueClass(ch);
-		d.victimId = ch.id();
+		d.victimId = ch.apdPeekId();
 		d.victimKind = kindOf(ch);
 		d.expValue = ch instanceof Mob ? ((Mob) ch).EXP : 0;
 		d.killerClass = trueClass(src);

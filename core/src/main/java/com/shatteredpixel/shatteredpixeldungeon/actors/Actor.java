@@ -138,6 +138,13 @@ public abstract class Actor implements Bundlable {
 		}
 	}
 
+	//APD: reads the id WITHOUT handing one out. id() assigns the next number from a global counter the first time it is
+	//called, which is game state (it is saved, and it decides the ids of everything created later), so the statistics
+	//recorder must never call it. 0 means "not assigned yet".
+	public int apdPeekId() {
+		return id;
+	}
+
 	public int id() {
 		if (id > 0) {
 			return id;

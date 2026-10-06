@@ -63,7 +63,7 @@ public final class ItemEvents {
 
 	//ITEM_REGISTERED.origin: how the recorder first met the item
 	public static final int ORIGIN_OBSERVED = 0, ORIGIN_START_KIT = 1, ORIGIN_ADOPTED = 2, ORIGIN_SPLIT = 3, ORIGIN_COPY = 4,
-			ORIGIN_TRANSFORMED = 5, ORIGIN_CRAFTED = 6;
+			ORIGIN_TRANSFORMED = 5, ORIGIN_CRAFTED = 6, ORIGIN_GENERATED = 7;
 
 	//ITEM_LINEAGE.kind
 	public static final int LIN_SPLIT = 0;      //from: parent stack, to: the new piece
