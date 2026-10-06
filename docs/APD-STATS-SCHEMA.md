@@ -5,6 +5,12 @@ everything."** Raw evidence is the source of truth. Rollups, fact tables and ind
 "Statistics" is a working name; the final player-facing name is undecided (Records, Analytics, ...). Do not rename the
 title screen button yet.
 
+## Telemetry version
+The recording system has its own version, "Telemetry 1.0", 1.1, 2.0 ..., independent of the APD game version
+(`TelemetryVersion`). Every run records the version it was recorded under in its log header and keeps it for ever.
+Minor versions only add; a major version changes the meaning of existing data. Readers may derive newer representations
+but never relabel old runs. Each version has a milestone in the Records history. Details in `docs/APD-STATS-STORAGE.md`.
+
 ## Storage and recording
 - New files under an `apd/` folder, one append-only, length-prefixed event log per run plus a small run index. SPD's own
   files (`rankings.dat`, `badges.dat`, `journal.dat`, saves) are not changed.
@@ -83,7 +89,7 @@ When the system is ready, only the click target of the existing title button cha
 title screen visuals stay frozen.
 
 ## Phases
-0 harness and baseline (done) - 1 storage library, no game hooks - 2 run lifecycle, `apd_run_id`, rollback handling -
+0 harness and baseline (done) - 1 storage library, no game hooks (done) - 2 run lifecycle, `apd_run_id`, rollback handling -
 3 item identity and lineage - 4 combat/health events - 5 generation provenance - 6 importer and derivation - 7 query
 engine and generic UI - 8 export/import and storage tools - 9 exact healing, benchmark, title button.
 Each phase waits for approval.
