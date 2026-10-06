@@ -65,6 +65,35 @@ public class AboutScene extends PixelScene {
 		Component content = list.content();
 		content.clear();
 
+		//*** ADHD Pixel Dungeon ***
+
+		final int APD_COLOR = 0x44DD88; //differs from the stock SHPX, Pixel Dungeon and libGDX colors
+		CreditsBlock apd = new CreditsBlock(true, APD_COLOR,
+				"ADHD Pixel Dungeon",
+				null,
+				"APD created by Chris (charltonchris29)\n" +
+				"A private fork of Shattered Pixel Dungeon\n" +
+				"Version 4.0.8-apd INDEV\n" +
+				"Founded on the principle that shielding should have fucking worked.",
+				null,
+				null);
+		apd.setRect((w - colWidth)/2f, insets.top + 6, colWidth, 0);
+		content.add(apd);
+
+		CreditsBlock apdLicense = new CreditsBlock(true, -1,
+				null,
+				null,
+				"Based on Shattered Pixel Dungeon by Evan Debenham, licensed GPLv3.",
+				null,
+				null);
+		apdLicense.setRect((w - colWidth)/2f, apd.bottom() + 4, colWidth, 0);
+		content.add(apdLicense);
+
+		addLine(apdLicense.bottom() + 4, content);
+
+		//the stock credits start below the APD section
+		final float creditsTop = apdLicense.bottom() + 12;
+
 		//*** Shattered Pixel Dungeon Credits ***
 
 		CreditsBlock shpx = new CreditsBlock(true, Window.SHPX_COLOR,
@@ -74,9 +103,9 @@ public class AboutScene extends PixelScene {
 				"ShatteredPixel.com",
 				"https://ShatteredPixel.com");
 		if (landscape()){
-			shpx.setRect((w - fullWidth)/2f - 6, insets.top + 26, 120, 0);
+			shpx.setRect((w - fullWidth)/2f - 6, creditsTop + 20, 120, 0);
 		} else {
-			shpx.setRect((w - fullWidth)/2f, insets.top + 6, 120, 0);
+			shpx.setRect((w - fullWidth)/2f, creditsTop, 120, 0);
 		}
 		content.add(shpx);
 
@@ -88,7 +117,7 @@ public class AboutScene extends PixelScene {
 				"https://www.alekskomitov.com/");
 		aleks.setSize(colWidth/2f, 0);
 		if (landscape()){
-			aleks.setPos(shpx.right(), insets.top+6);
+			aleks.setPos(shpx.right(), creditsTop);
 		} else {
 			aleks.setPos(w/2f - colWidth/2f, shpx.bottom()+6);
 		}
