@@ -96,7 +96,7 @@ public class APDSettingsPane extends Component {
 		};
 		add( btnTest );
 
-		btnImport = new RedButton( "Import SPD records" ) {
+		btnImport = new RedButton( "Import APD rankings" ) {
 			@Override
 			protected void onClick() {
 				runImport( this );
@@ -133,7 +133,7 @@ public class APDSettingsPane extends Component {
 			public void run() {
 				String result;
 				try {
-					result = ApdRecorder.importLegacyRecords() + "\n\n" + ApdRecorder.historyOverview();
+					result = ApdRecorder.importApdRankings() + "\n\n" + ApdRecorder.historyOverview();
 				} catch (Throwable e) {
 					result = "Import failed: " + e;
 				}
@@ -141,7 +141,7 @@ public class APDSettingsPane extends Component {
 				Game.runOnRenderThread( new Callback() {
 					@Override
 					public void call() {
-						button.text( "Import SPD records" );
+						button.text( "Import APD rankings" );
 						button.enable( true );
 						ShatteredPixelDungeon.scene().addToFront( new WndMessage( shown ) );
 					}

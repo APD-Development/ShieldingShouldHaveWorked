@@ -138,8 +138,8 @@ public class ItemHookWiringTest {
 		int seal = r.indexOf("writer.close(true, CLOSE_WAIT_MILLIS);", link);
 		assertTrue(end > 0 && link > end && seal > link);
 		//the settings pane offers the import and it goes through the recorder facade
-		has("windows/APDSettingsPane.java", "Import SPD records", "ApdRecorder.importLegacyRecords()", "ApdRecorder.historyOverview()");
-		//the importer reads, it does not touch SPD's rankings or saves
+		has("windows/APDSettingsPane.java", "Import APD rankings", "ApdRecorder.importApdRankings()", "ApdRecorder.historyOverview()");
+		//the importer reads, it does not touch the rankings file or the saves
 		String imp = src("apd/recorder/LegacyImporter.java");
 		assertFalse(imp.contains("Rankings.INSTANCE"));
 		assertFalse(imp.contains("bundleToFile"));

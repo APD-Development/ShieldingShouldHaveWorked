@@ -120,7 +120,7 @@ public class AutoImportTest {
 			ApdRecorder.onBeforeRankingSubmit();
 			ApdRecorder.awaitAutoImportForTests();
 		}
-		ApdRecorder.importLegacyRecords();
+		ApdRecorder.importApdRankings();
 		assertEquals(2, legacyTable(s.root).legacyRows.size());
 		assertEquals("one import file, the repeats wrote nothing", 1, new File(s.root, "legacy").listFiles().length);
 	}
@@ -134,7 +134,7 @@ public class AutoImportTest {
 			threads[i] = new Thread(new Runnable(){
 				@Override
 				public void run(){
-					ApdRecorder.importLegacyRecords();
+					ApdRecorder.importApdRankings();
 				}
 			});
 		}

@@ -29,7 +29,7 @@ import java.util.Map;
 
 //Encoders and decoders for the legacy import events of telemetry 1.5, and RANKING_LINK. Pure data, no game classes.
 //
-//A legacy record is what the old game kept about a finished run: the rankings entry and the statistics saved with it.
+//A legacy record is what APD's own rankings file kept about a finished run ("legacy" is only the name of the import path): the rankings entry and the statistics saved with it.
 //Fields are written one by one as (key, kind, value). A field the old record did not contain is written with kind
 //UNKNOWN, so a reader can tell "the old game never recorded this" from "the value is zero". Keys are free text so a newer
 //importer can add fields without changing the format.

@@ -279,7 +279,7 @@ public class LegacyImporterTest {
 		assertFalse(r.fileFound);
 		assertEquals(0, r.imported);
 		assertFalse(new File(root, "legacy").exists());
-		assertTrue(r.summary(), r.summary().startsWith("No SPD rankings"));
+		assertTrue(r.summary(), r.summary().startsWith("No APD rankings"));
 	}
 
 	@Test

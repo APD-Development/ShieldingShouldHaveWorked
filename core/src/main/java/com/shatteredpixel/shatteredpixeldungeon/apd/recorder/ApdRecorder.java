@@ -675,9 +675,10 @@ public final class ApdRecorder {
 		return s;
 	}
 
-	//Copies SPD's rankings.dat records into the history as raw import events (see LegacyImporter) and says what happened.
+	//Copies the records of APD's OWN rankings.dat (the file APD's Rankings class writes in APD's private storage) into the history as
+	//raw import events (see LegacyImporter) and says what happened. It cannot see another app's files, official SPD's included.
 	//Not synchronized with the recorder: it never blocks recording. Never throws.
-	public static String importLegacyRecords(){
+	public static String importApdRankings(){
 		try {
 			File base = historyRoot();
 			if (base == null) return "History is not set up, nothing imported.";
@@ -698,7 +699,7 @@ public final class ApdRecorder {
 			int linked = 0;
 			for (RunFacts leg : t.legacyRows) if (leg.isKnown(FactKeys.LINKED_RUN)) linked++;
 			StringBuilder b = new StringBuilder();
-			b.append(t.apdRows.size()).append(" recorded runs, ").append(t.legacyRows.size()).append(" imported SPD records");
+			b.append(t.apdRows.size()).append(" recorded runs, ").append(t.legacyRows.size()).append(" imported APD ranking records");
 			if (linked > 0) b.append(" (").append(linked).append(" are also recorded runs)");
 			b.append(". ").append(rows.size()).append(" distinct runs in total.\n");
 			if (!rows.isEmpty()){
@@ -707,9 +708,9 @@ public final class ApdRecorder {
 				b.append(FactTable.coverage(rows, FactKeys.GEN_ITEMS)).append(".\n");
 			}
 			if (t.legacyTotals != null && t.legacyTotals.isKnown("legacy.totalNumber")){
-				b.append("SPD counted ").append(t.legacyTotals.numOr("legacy.totalNumber", 0)).append(" games");
+				b.append("APD's rankings counted ").append(t.legacyTotals.numOr("legacy.totalNumber", 0)).append(" games");
 				if (t.legacyTotals.isKnown("legacy.wonNumber")) b.append(", ").append(t.legacyTotals.numOr("legacy.wonNumber", 0)).append(" won");
-				b.append(" (SPD only kept its best 11 records).\n");
+				b.append(" (the rankings file only keeps the best 11 records).\n");
 			}
 			b.append("Facts ready in ").append(derived.lastMillis()).append(" ms (").append(derived.lastSource()).append(").");
 			return b.toString();

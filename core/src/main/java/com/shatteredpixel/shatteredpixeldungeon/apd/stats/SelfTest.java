@@ -301,8 +301,8 @@ public final class SelfTest {
 					&& !built.legacyRows.get(0).isKnown(FactKeys.DATE)
 					&& built.legacyRows.get(3).numOr(FactKeys.SCORE, -1) == 1003
 					&& !built.legacyRows.get(0).isKnown(FactKeys.HERO_ATTACKS);
-			if (ok) r.pass("legacy import and fact derivation round trip"); else r.fail("legacy import or fact derivation did not round trip");
-			r.info("fact derivation: " + ((t1 - t0) / 1000L) + " us to rebuild " + records + " imported records");
+			if (ok) r.pass("legacy-record import and fact derivation round trip (synthetic records, not your rankings)"); else r.fail("legacy import or fact derivation did not round trip");
+			r.info("fact derivation: " + ((t1 - t0) / 1000L) + " us to rebuild " + records + " synthetic test records (made and deleted by the self-test)");
 			deleteTree(root);
 		} catch (Throwable t){
 			r.fail("legacy import round trip threw " + t);

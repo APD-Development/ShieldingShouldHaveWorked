@@ -59,8 +59,8 @@ is not "modded". Queries must not silently mix incompatible rulesets.
 ## Legacy and incomplete data
 Only data that exists is stored. Unknown stays unknown/null, never zero, never guessed without an explicit provenance
 marker. Queries show coverage ("17 of 28 runs contain this statistic"). The old `totalNumber` / `wonNumber` appear as
-separate aggregate historical information. Importing from a separately installed stock SPD is a later possibility; keep
-the model able to hold it. Per-field provenance/known status is required.
+separate aggregate historical information. Importing from a separately installed stock SPD is a later possibility (Android keeps it
+in a separate sandbox, so it needs a user-provided file; not done in Phase 6); keep the model able to hold it. Per-field provenance/known status is required.
 
 ## Event schema extensibility
 Versioned and append-only. Old readers must skip unknown future event types. An event type ID is never reused with a

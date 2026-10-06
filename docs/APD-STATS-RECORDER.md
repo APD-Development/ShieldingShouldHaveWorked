@@ -62,8 +62,8 @@ See `docs/APD-STATS-COMBAT.md`.
 ## Generation provenance (telemetry 1.4)
 See `docs/APD-STATS-GENERATION.md`.
 
-## Legacy import and derived facts (telemetry 1.5)
-See `docs/APD-STATS-LEGACY.md`.
+## APD rankings import and derived facts (telemetry 1.5)
+See `docs/APD-STATS-LEGACY.md`. The import reads APD's own `rankings.dat` only, not official SPD's.
 
 ## Known limitations
 - A log left OPEN with no save slot (crash before the first save) is not yet classified as orphaned.

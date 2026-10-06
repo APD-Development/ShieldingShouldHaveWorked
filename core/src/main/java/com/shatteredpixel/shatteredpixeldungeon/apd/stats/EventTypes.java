@@ -102,7 +102,7 @@ public final class EventTypes {
 	public static final int MOB_ID_ASSIGNED = 294;   //links a generated creature to the id the game gives it when the level is entered
 
 	//---- legacy import and ranking link (telemetry 1.5), payloads are defined and tested in LegacyEvents ----
-	//LEGACY_* events live in their own import logs (legacy/), never in a run log. They carry what the old SPD records
+	//LEGACY_* events live in their own import logs (legacy/), never in a run log. They carry what the records in APD's own rankings file
 	//held, field by field, with fields the old record did not contain marked UNKNOWN (never zero).
 	public static final int LEGACY_RECORD = 295;
 	public static final int LEGACY_TOTALS = 296;       //SPD's own played / won counters

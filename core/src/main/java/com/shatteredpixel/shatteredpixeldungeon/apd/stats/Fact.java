@@ -30,7 +30,7 @@ public final class Fact {
 
 	//where the value comes from
 	public static final int PROV_RECORDED = 1;    //counted or read from events APD recorded
-	public static final int PROV_LEGACY = 2;      //copied from an old SPD record, the old game's own number
+	public static final int PROV_LEGACY = 2;      //copied from a record in APD's own rankings file
 	public static final int PROV_INFERRED = 3;    //derived from events the recorder itself flagged as inferred
 	public static final int PROV_INCOMPLETE = 4;  //recorded, but the log has gaps: the real number may be higher
 

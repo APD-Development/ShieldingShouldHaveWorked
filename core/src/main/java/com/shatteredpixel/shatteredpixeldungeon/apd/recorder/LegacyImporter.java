@@ -40,14 +40,16 @@ import java.util.List;
 import java.util.Set;
 import java.util.zip.CRC32;
 
-//Copies what SPD's own rankings file holds into APD's history as raw import events (legacy/import-*.apdlog).
+//Copies what APD's OWN rankings file (rankings.dat in APD's private app storage, written by APD's copy of SPD's Rankings class)
+//holds into APD's history as raw import events (legacy/import-*.apdlog). It does NOT read official Shattered Pixel Dungeon's
+//data: that is a different Android app with a different sandbox, which no app can read on an unrooted phone.
 //
 //It only READS: the rankings bundle is navigated as plain data (no game objects are created, Rankings itself is not
 //touched, rankings.dat is not changed). Every field is imported only if the old record actually contains it; a field the
 //old record lacks is written as UNKNOWN, never as zero. Importing twice imports nothing the second time (records are
 //recognised by SPD's game id). Imported records are raw evidence like run logs: derived facts are rebuilt from them.
 //
-//SPD keeps only the best 11 runs, so older runs are gone for good: this can only preserve what is still there.
+//The rankings file keeps only the best 11 runs, so older runs are gone for good: this can only preserve what is still there.
 public final class LegacyImporter {
 
 	private LegacyImporter(){}
@@ -70,14 +72,14 @@ public final class LegacyImporter {
 
 		public String summary(){
 			if (!problem.isEmpty()) return "Import failed: " + problem;
-			if (!fileFound) return "No SPD rankings file found. Nothing to import.";
+			if (!fileFound) return "No APD rankings file yet (it appears after you finish a run in APD). Nothing to import.";
 			if (imported == 0 && !totalsImported && dailyScoresImported == 0){
-				return "Nothing new: " + alreadyKnown + " of " + records + " records were already imported"
+				return "Nothing new: " + alreadyKnown + " of " + records + " APD ranking records were already imported"
 						+ (unreadable > 0 ? ", " + unreadable + " unreadable" : "") + ".";
 			}
-			return "Imported " + imported + " new record" + (imported == 1 ? "" : "s") + " (" + alreadyKnown + " already known"
+			return "Imported " + imported + " new APD ranking record" + (imported == 1 ? "" : "s") + " (" + alreadyKnown + " already known"
 					+ (unreadable > 0 ? ", " + unreadable + " unreadable" : "") + "). "
-					+ fieldsUnknown + " of " + (fieldsKnown + fieldsUnknown) + " fields were not in the old records and stay unknown.";
+					+ fieldsUnknown + " of " + (fieldsKnown + fieldsUnknown) + " fields were missing from those ranking records and stay unknown.";
 		}
 	}
 
