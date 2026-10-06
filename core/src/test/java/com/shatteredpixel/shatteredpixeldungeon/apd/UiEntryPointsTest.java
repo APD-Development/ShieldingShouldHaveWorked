@@ -11,10 +11,15 @@ import java.nio.charset.Charset;
 //in the in-game menu, not in Options. Windows can't be rendered headless, so this checks the wiring in the source.
 public class UiEntryPointsTest {
 
+	private static String scene( String name ) throws Exception {
+		return read(new File(System.getProperty("apd.windows.src"), "../scenes/" + name));
+	}
+
 	private static String windows( String name ) throws Exception {
-		File f = new File("../core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/" + name);
-		if (!f.exists()) f = new File("src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/" + name);
-		if (!f.exists()) f = new File(System.getProperty("apd.windows.src"), name);
+		return read(new File(System.getProperty("apd.windows.src"), name));
+	}
+
+	private static String read( File f ) throws Exception {
 		java.io.FileInputStream in = new java.io.FileInputStream(f);
 		try {
 			java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
@@ -42,11 +47,15 @@ public class UiEntryPointsTest {
 	}
 
 	@Test
-	public void optionsHasAnApdTabThatShowsThePane() throws Exception {
-		String s = windows("WndSettings.java");
-		assertTrue(s.contains("new APDSettingsPane()"));
-		assertTrue(s.contains("add( apd )"));
-		assertTrue(s.contains("new LabeledTab(\"APD\")"));
+	public void theTitleScreenHasADirectApdSettingsEntryAndOptionsDoesNot() throws Exception {
+		String title = scene("TitleScene.java");
+		assertTrue(title.contains("new APDMenuButton( \"APD Settings\""));
+		assertTrue(title.contains("new WndAPDSettings()"));
+		assertTrue(title.contains("add( btnAPDSettings )"));
+		assertTrue("must be laid out", title.contains("btnAPDSettings.setRect("));
+		assertTrue("must fade with the rest of the menu", title.contains("btnAPDSettings, btnNews"));
+		String options = windows("WndSettings.java");
+		assertTrue("APD settings must stay out of Options", !options.contains("APDSettingsPane") && !options.contains("\"APD\""));
 	}
 
 	@Test

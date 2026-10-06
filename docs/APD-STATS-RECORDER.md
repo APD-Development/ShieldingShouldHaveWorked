@@ -6,7 +6,7 @@ The recorder turns the Phase 1 storage library into a record of each run. It onl
 - Never changes gameplay, never uses SPD's random numbers, never changes game state (checked by `RecorderNeverAffectsTheGameTest`,
   the recorder-on golden test, and `RecorderIsolationTest`, which scans the recorder source).
 - Never fails a run: every hook catches everything. After 5 errors it switches itself off for the session (`ApdRecorder.MAX_ERRORS`).
-- Recording is on by default. Options -> "APD" tab (also in-game menu -> "APD Settings") -> "Record run history" turns it off (applies from the next start).
+- Recording is on by default. Title screen -> "APD Settings" (also in-game menu -> "APD Settings") -> "Record run history" turns it off (applies from the next start).
 - Raw logs are never deleted automatically. Unknown values stay unknown (a partial `RUN_START`/`RUN_END` carries a flag, never a fake zero).
 
 ## The one save change
@@ -48,7 +48,7 @@ example the exotic setting) writes `RULESET_CHANGE`.
 
 ## Validation on a real Android runtime
 - `SelfTest` (storage library: write/read, lifecycle codec, truncation/corruption/repair, concurrency, index rebuild) runs on desktop in `:core:test`,
-  inside the game (Options -> "APD" tab -> "Run self-test"), and as an instrumented test (`ApdStatsDeviceTest`) on emulators API 21 and 34 via
+  inside the game (title screen -> "APD Settings" -> "Run self-test"), and as an instrumented test (`ApdStatsDeviceTest`) on emulators API 21 and 34 via
   `.github/workflows/android-tests.yml` (separate from the release build).
 - A physical phone run is the in-game button; emulator results are not a substitute for it.
 

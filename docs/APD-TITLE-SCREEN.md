@@ -11,10 +11,11 @@
 | `assets/splashes/title/apd_bg_port.png` | 200x360 | portrait background plate |
 | `assets/splashes/title/apd_bg_land.png` | 400x200 | landscape background plate |
 
-Layout: portrait stacks logo, version text, a 2x3 grid (Play/Statistics, Badges/Journal, Options/Quit) and a bottom row
+Layout: portrait stacks logo, version text, a 2x3 grid (Play/Statistics, Badges/Journal, Options/Quit), the APD Settings row and a bottom row
 (News/Changes/About). Landscape puts the logo on the left and the same grid on the right. Space the plate doesn't cover is
 filled with `#08110D`.
 
+- "APD Settings" is a full-width row under the 2x3 grid and above News/Changes/About; it opens the APD Settings window (separate from Options).
 - Statistics opens the Rankings screen until real APD statistics exist.
 - Badges opens the journal scene on its badges tab, Journal opens it on the catalog tab.
 - The Support button is not on the home screen any more.

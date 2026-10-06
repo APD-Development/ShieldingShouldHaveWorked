@@ -32,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.ExitButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndAPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndSettings;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndVictoryCongrats;
 import com.watabou.glwrap.Blending;
@@ -71,6 +72,8 @@ public class TitleScene extends PixelScene {
 
 	private static final int MAIN_GAP = 3;
 	private static final int BOTTOM_H = 20;
+	//APD: the full-width APD Settings row sits between the 2x3 grid and the News/Changes/About row
+	private static final int APD_ROW_H = BOTTOM_H + MAIN_GAP;
 
 	private Image logo;
 	private Image glow;
@@ -86,6 +89,7 @@ public class TitleScene extends PixelScene {
 	private APDMenuButton btnNews;
 	private APDMenuButton btnChanges;
 	private APDMenuButton btnAbout;
+	private APDMenuButton btnAPDSettings;
 
 	private BitmapText version;
 	private IconButton btnFade;
@@ -224,6 +228,16 @@ public class TitleScene extends PixelScene {
 		if (DeviceCompat.isiOS()) btnQuit.visible = btnQuit.active = false;
 		add( btnQuit );
 
+		//APD: APD-specific settings have their own entry, separate from Options
+		btnAPDSettings = new APDMenuButton( "APD Settings", Icons.PREFS, false ){
+			@Override
+			protected void onClick() {
+				super.onClick();
+				ShatteredPixelDungeon.scene().add(new WndAPDSettings());
+			}
+		};
+		add( btnAPDSettings );
+
 		//APD: News and Changes open the offline APD screens, not the stock internet/upstream ones
 		btnNews = new APDMenuButton( "News", Icons.NEWS, false ){
 			@Override
@@ -275,7 +289,7 @@ public class TitleScene extends PixelScene {
 			float left = insets.left + (w - totalW) / 2f;
 
 			float mainH = mainHeight( h - 8 );
-			float gridH = 3*mainH + 3*MAIN_GAP + BOTTOM_H;
+			float gridH = 3*mainH + 3*MAIN_GAP + APD_ROW_H + BOTTOM_H;
 
 			logoX = left;
 			logoY = insets.top + (h - (LOGO_H + versionGap)) / 2f;
@@ -289,7 +303,7 @@ public class TitleScene extends PixelScene {
 			float topPad = 6;
 			float availForGrid = h - topPad - LOGO_H - versionGap - 6 - 4;
 			float mainH = mainHeight( availForGrid );
-			float gridH = 3*mainH + 3*MAIN_GAP + BOTTOM_H;
+			float gridH = 3*mainH + 3*MAIN_GAP + APD_ROW_H + BOTTOM_H;
 			float contentH = LOGO_H + versionGap + 4 + gridH;
 
 			logoX = insets.left + (w - LOGO_W) / 2f;
@@ -372,7 +386,7 @@ public class TitleScene extends PixelScene {
 
 	//height of each of the three main button rows, given the vertical space available for the whole grid
 	private static float mainHeight( float availableForGrid ){
-		float h = (availableForGrid - BOTTOM_H - 3*MAIN_GAP) / 3f;
+		float h = (availableForGrid - APD_ROW_H - BOTTOM_H - 3*MAIN_GAP) / 3f;
 		return GameMath.gate( 24, (float)Math.floor(h), 36 );
 	}
 
@@ -387,7 +401,11 @@ public class TitleScene extends PixelScene {
 			align( main[i] );
 		}
 
-		float bottomY = top + 3*(mainH + MAIN_GAP);
+		float apdY = top + 3*(mainH + MAIN_GAP);
+		btnAPDSettings.setRect( left, apdY, width, BOTTOM_H );
+		align( btnAPDSettings );
+
+		float bottomY = apdY + APD_ROW_H;
 		float smallW = (float)Math.floor((width - 2*MAIN_GAP) / 3f);
 		APDMenuButton[] bottom = { btnNews, btnChanges, btnAbout };
 		for (int i = 0; i < bottom.length; i++){
@@ -407,7 +425,7 @@ public class TitleScene extends PixelScene {
 		//glow handles its own alpha
 
 		APDMenuButton[] all = { btnPlay, btnStatistics, btnBadges, btnJournal, btnOptions, btnQuit,
-				btnNews, btnChanges, btnAbout };
+				btnAPDSettings, btnNews, btnChanges, btnAbout };
 		for (APDMenuButton b : all){
 			//Quit is hidden on iOS, enable() would make it tappable again
 			if (b == btnQuit && DeviceCompat.isiOS()) continue;
