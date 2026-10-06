@@ -8,17 +8,36 @@ import java.util.List;
 //(HashMap/HashSet iteration), which varies with the history of the JVM. The golden file records which levels came out
 //identical across many JVMs that were deliberately perturbed (argument 0 = number of throw-away hashCode() calls made
 //before anything else), and only those levels are compared later.
+//
+//Optional second argument: "rec" runs with APD run recording switched on, "flow" additionally makes the hero arrive on
+//every level (which saves the game), "flowrec" does both. "flow" and "flowrec" cover only the first FLOW_CASES cases
+//and FLOW_DEPTH levels.
 public final class GoldenChildMain {
+
+	static final int FLOW_CASES = 3;
+	static final int FLOW_DEPTH = 8;
 
 	public static void main( String[] args ) throws Exception {
 		int perturb = Integer.parseInt(args[0]);
 		for (int i = 0; i < perturb; i++){
 			new Object().hashCode();
 		}
+		String mode = args.length > 1 ? args[1] : "";
+		boolean record = mode.equals("rec") || mode.equals("flowrec");
+		boolean flow = mode.equals("flow") || mode.equals("flowrec");
 
+		HeadlessTestSupport.start();
+		if (record){
+			com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder.configure(
+					new java.io.File(HeadlessTestSupport.tempDir(), "history"), true);
+		}
+
+		int caseNumber = 0;
 		for (GoldenCases.Case c : GoldenCases.all()){
-			List<LevelGenerationHarness.LevelPrint> prints =
-					LevelGenerationHarness.generate(c.seed, c.challenges, c.heroClass, c.context, GoldenCases.MAX_DEPTH);
+			if (flow && caseNumber++ >= FLOW_CASES) break;
+			List<LevelGenerationHarness.LevelPrint> prints = flow
+					? LevelGenerationHarness.generateFlow(c.seed, c.challenges, c.heroClass, c.context, FLOW_DEPTH)
+					: LevelGenerationHarness.generate(c.seed, c.challenges, c.heroClass, c.context, GoldenCases.MAX_DEPTH);
 			for (LevelGenerationHarness.LevelPrint p : prints){
 				System.out.println("APDLINE " + c.label() + "|" + p.depth + "|" + p.line());
 			}

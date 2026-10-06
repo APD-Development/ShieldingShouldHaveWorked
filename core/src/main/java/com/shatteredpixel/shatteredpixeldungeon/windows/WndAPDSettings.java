@@ -24,7 +24,15 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder;
+import com.shatteredpixel.shatteredpixeldungeon.apd.stats.SelfTest;
+import com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox;
 import com.shatteredpixel.shatteredpixeldungeon.ui.OptionSlider;
+import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
+import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.watabou.noosa.Game;
+import com.watabou.utils.Callback;
+import com.watabou.utils.FileUtils;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 
@@ -62,6 +70,61 @@ public class WndAPDSettings extends Window {
 		info.setPos( 0, optExotic.bottom() + GAP );
 		add( info );
 
-		resize( WIDTH, (int)info.bottom() );
+		//recording and diagnostics
+		CheckBox chkRecord = new CheckBox( "Record run history" ) {
+			@Override
+			protected void onClick() {
+				super.onClick();
+				SPDSettings.apdRecording( checked() );
+				ShatteredPixelDungeon.scene().addToFront( new WndMessage( "Takes effect the next time the game starts." ) );
+			}
+		};
+		chkRecord.checked( SPDSettings.apdRecording() );
+		chkRecord.setRect( 0, info.bottom() + GAP, WIDTH, 16 );
+		add( chkRecord );
+
+		RenderedTextBlock status = PixelScene.renderTextBlock( ApdRecorder.status().summary(), 5 );
+		status.maxWidth( WIDTH );
+		status.setPos( 0, chkRecord.bottom() + GAP );
+		add( status );
+
+		RedButton btnTest = new RedButton( "Run self-test" ) {
+			@Override
+			protected void onClick() {
+				text( "Running..." );
+				enable( false );
+				final RedButton self = this;
+				Thread t = new Thread( new Runnable() {
+					@Override
+					public void run() {
+						String result;
+						try {
+							java.io.File base = ApdRecorder.historyRoot();
+							if (base == null) base = FileUtils.getFileHandle( "apd" ).file();
+							java.io.File work = new java.io.File( base, "selftest-work" );
+							work.mkdirs();
+							result = SelfTest.run( work ).text();
+							work.delete();
+						} catch (Throwable e) {
+							result = "SELF-TEST FAILED\n" + e;
+						}
+						final String shown = result;
+						Game.runOnRenderThread( new Callback() {
+							@Override
+							public void call() {
+								self.text( "Run self-test" );
+								self.enable( true );
+								ShatteredPixelDungeon.scene().addToFront( new WndMessage( shown ) );
+							}
+						} );
+					}
+				} );
+				t.start();
+			}
+		};
+		btnTest.setRect( 0, status.bottom() + GAP, WIDTH, 16 );
+		add( btnTest );
+
+		resize( WIDTH, (int)btnTest.bottom() );
 	}
 }

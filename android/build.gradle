@@ -21,6 +21,9 @@ android {
 
         minSdkVersion appAndroidMinSDK
         targetSdkVersion appAndroidTargetSDK
+
+        //APD: instrumented tests, see .github/workflows/android-tests.yml
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     signingConfigs {
@@ -83,6 +86,9 @@ dependencies {
     natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86"
     natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86_64"
     implementation "com.badlogicgames.gdx-controllers:gdx-controllers-android:$gdxControllersVersion"
+
+    androidTestImplementation "androidx.test.ext:junit:1.2.1"
+    androidTestImplementation "androidx.test:runner:1.6.2"
 }
 
 // called every time gradle gets executed, takes the native dependencies of

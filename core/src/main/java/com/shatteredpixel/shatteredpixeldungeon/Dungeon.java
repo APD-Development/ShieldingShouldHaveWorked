@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
@@ -284,6 +285,9 @@ public class Dungeon {
 		Badges.reset();
 		
 		GamesInProgress.selectedClass.initHero( hero );
+
+		//APD: start recording this run's history (does nothing unless recording is set up)
+		ApdRecorder.onNewRun();
 	}
 
 	public static boolean isChallenged( int mask ) {
@@ -508,6 +512,8 @@ public class Dungeon {
 		hero.curAction = hero.lastAction = null;
 
 		observe();
+		//APD: record arriving on this level, before the save that follows
+		ApdRecorder.onLevelSwitched();
 		try {
 			saveAll();
 		} catch (IOException e) {
@@ -620,6 +626,8 @@ public class Dungeon {
 	private static final String CHAPTERS	= "chapters";
 	private static final String QUESTS		= "quests";
 	private static final String BADGES		= "badges";
+	//APD: names the run history log this save belongs to (older saves do not have it)
+	private static final String APD_RUN_ID	= "apd_run_id";
 	
 	public static void saveGame( int save ) {
 		try {
@@ -688,7 +696,12 @@ public class Dungeon {
 			Badges.saveLocal( badges );
 			bundle.put( BADGES, badges );
 			
+			//APD: link this save to its run history
+			String apdRunId = ApdRecorder.currentRunId();
+			if (apdRunId != null) bundle.put( APD_RUN_ID, apdRunId );
+
 			FileUtils.bundleToFile( GamesInProgress.gameFile(save), bundle);
+			ApdRecorder.onGameSaved( lastPlayed );
 			
 		} catch (IOException e) {
 			GamesInProgress.setUnknown( save );
@@ -821,6 +834,12 @@ public class Dungeon {
 		Statistics.restoreFromBundle( bundle );
 		Generator.restoreFromBundle( bundle );
 
+		//APD: continue (or start recording) this run's history
+		if (fullLoad) {
+			ApdRecorder.onGameLoaded( save, bundle.contains( APD_RUN_ID ) ? bundle.getString( APD_RUN_ID ) : null,
+					bundle.getLong( LAST_PLAYED ) );
+		}
+
 	}
 	
 	public static Level loadLevel( int save ) throws IOException {
@@ -840,6 +859,9 @@ public class Dungeon {
 	}
 	
 	public static void deleteGame( int save, boolean deleteLevels ) {
+
+		//APD: a run whose save is deleted while it is still open ends as abandoned
+		ApdRecorder.onSlotDeleted( save );
 
 		if (deleteLevels) {
 			String folder = GamesInProgress.gameFolder(save);
@@ -874,6 +896,7 @@ public class Dungeon {
 			updateLevelExplored();
 			Statistics.gameWon = false;
 			Rankings.INSTANCE.submit( false, cause );
+			ApdRecorder.onRunEnded( false, cause );
 		}
 	}
 	
@@ -885,6 +908,7 @@ public class Dungeon {
 		hero.belongings.identify();
 
 		Rankings.INSTANCE.submit( true, cause );
+		ApdRecorder.onRunEnded( true, cause );
 	}
 
 	public static void updateLevelExplored(){

@@ -299,6 +299,17 @@ public class SPDSettings extends GameSettings {
 
 	public static final int APD_EXOTIC_CHANCE_MAX = 80;
 
+	public static final String KEY_APD_RECORDING = "apd_recording";
+
+	//APD run history recording, on by default
+	public static void apdRecording( boolean value ){
+		put( KEY_APD_RECORDING, value );
+	}
+
+	public static boolean apdRecording(){
+		return getBoolean( KEY_APD_RECORDING, true );
+	}
+
 	//percent chance (0-80) that a generated potion/scroll is exotic, 0 is the vanilla behaviour
 	public static void apdExoticChance( int value ){
 		put( KEY_APD_EXOTIC_CHANCE, value );

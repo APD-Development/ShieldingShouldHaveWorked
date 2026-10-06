@@ -32,7 +32,7 @@ public class GoldenLevelHashTest {
 	private static final int RECORD_JVMS = 24;
 
 	//one level as seen by one run: key is "label|depth", value is the harness line
-	private static Map<String, String> parse( List<String> lines ){
+	static Map<String, String> parse( List<String> lines ){
 		Map<String, String> out = new LinkedHashMap<>();
 		for (String l : lines){
 			if (!l.startsWith("APDLINE ")) continue;
@@ -45,9 +45,13 @@ public class GoldenLevelHashTest {
 	}
 
 	private static List<String> runChild( int perturb ) throws Exception {
+		return runChild(perturb, "");
+	}
+
+	static List<String> runChild( int perturb, String mode ) throws Exception {
 		String java = new File(new File(System.getProperty("java.home"), "bin"), "java").getAbsolutePath();
 		ProcessBuilder pb = new ProcessBuilder(java, "-cp", System.getProperty("apd.test.classpath"),
-				GoldenChildMain.class.getName(), Integer.toString(perturb));
+				GoldenChildMain.class.getName(), Integer.toString(perturb), mode);
 		pb.redirectErrorStream(true);
 		Process process = pb.start();
 		List<String> lines = new ArrayList<>();
@@ -59,7 +63,7 @@ public class GoldenLevelHashTest {
 		return lines;
 	}
 
-	private static String hashOf( String harnessLine ){
+	static String hashOf( String harnessLine ){
 		return harnessLine.substring(harnessLine.indexOf("sha256=") + 7);
 	}
 
@@ -114,5 +118,25 @@ public class GoldenLevelHashTest {
 			compared++;
 		}
 		System.out.println("APD-GOLDEN compared " + compared + " stable levels of " + expected.size());
+	}
+
+	//The same baseline, but with APD run recording switched on while the dungeons are generated.
+	//Dungeon.init() starts a recorded run for every case, so the recorder hooks really run.
+	@Test
+	public void stableLevelsStillMatchTheGoldenBaselineWithTheRecorderOn() throws Exception {
+		File golden = new File(System.getProperty("apd.golden.file"));
+		if (Boolean.parseBoolean(System.getProperty("apd.golden.update", "false"))) return;
+		List<String> expected = Files.readAllLines(golden.toPath(), StandardCharsets.UTF_8);
+		Map<String, String> actual = parse(runChild(0, "rec"));
+		assertEquals("number of generated levels", expected.size(), actual.size());
+		int compared = 0, i = 0;
+		for (Map.Entry<String, String> e : actual.entrySet()){
+			String exp = expected.get(i++);
+			if (!exp.contains(" STABLE ")) continue;
+			assertEquals("recording changed level generation for " + e.getKey() + " (line " + i + ")",
+					hashOf(exp), hashOf(e.getValue()));
+			compared++;
+		}
+		System.out.println("APD-GOLDEN (recorder on) compared " + compared + " stable levels of " + expected.size());
 	}
 }

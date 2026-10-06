@@ -213,4 +213,28 @@ public class WriterThreadTest {
 		}
 		assertEquals(before, liveWriterThreads());
 	}
+
+	@Test
+	public void closeWithATimeoutDoesNotHoldTheCallerWhenTheWriterThreadIsStuck() throws Exception {
+		CountDownLatch gate = new CountDownLatch(1);
+		RunLogWriter.Options o = new RunLogWriter.Options();
+		o.workerGate = gate; //the writer thread is "stuck"
+		RunLogWriter w = create("stuck", o);
+		w.event(LogTestSupport.T_PLAIN).unsigned(1).emit();
+		long start = System.currentTimeMillis();
+		w.close(true, 150);
+		long took = System.currentTimeMillis() - start;
+		assertTrue("close must give up waiting: took " + took + " ms", took < 3000);
+
+		//when the thread recovers it still finishes the job: events written and the log sealed
+		gate.countDown();
+		ReadResult r = null;
+		for (int i = 0; i < 100; i++){
+			r = RunLogReader.read(w.file());
+			if (r.status == ReadStatus.SEALED) break;
+			Thread.sleep(50);
+		}
+		assertEquals(ReadStatus.SEALED, r.status);
+		assertEquals(1, r.events.size());
+	}
 }

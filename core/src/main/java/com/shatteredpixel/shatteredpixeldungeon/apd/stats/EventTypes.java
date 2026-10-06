@@ -48,11 +48,32 @@ public final class EventTypes {
 	public static final int GAP_DROPPED_EVENTS = 1;  //amount = events lost because the write queue was full
 	public static final int GAP_RECOVERED_TAIL = 2;  //amount = bytes of damaged tail cut off when the log was reopened
 	public static final int GAP_WRITER_FAILED = 3;   //amount = events lost after the writer failed
+	public static final int GAP_RECORDING_BEHIND_SAVE = 4; //the game save is further on than the log, amount = game turns missing
+
+	//---- run lifecycle events (telemetry 1.1), payloads are defined and tested in LifecycleEvents ----
+	public static final int RUN_START = 256;
+	public static final int RUN_END = 257;
+	public static final int SAVE = 258;
+	public static final int LEVEL_ENTER = 259;
+	public static final int LEVEL_EXIT = 260;
+	public static final int CHECKPOINT = 261;
+	public static final int SESSION_START = 262;
+	public static final int ROLLBACK = 263;
+	public static final int RULESET_CHANGE = 264;
 
 	private static final Map<Integer, String> NAMES;
 	static {
 		Map<Integer, String> m = new LinkedHashMap<>();
 		m.put(GAP, "GAP");
+		m.put(RUN_START, "RUN_START");
+		m.put(RUN_END, "RUN_END");
+		m.put(SAVE, "SAVE");
+		m.put(LEVEL_ENTER, "LEVEL_ENTER");
+		m.put(LEVEL_EXIT, "LEVEL_EXIT");
+		m.put(CHECKPOINT, "CHECKPOINT");
+		m.put(SESSION_START, "SESSION_START");
+		m.put(ROLLBACK, "ROLLBACK");
+		m.put(RULESET_CHANGE, "RULESET_CHANGE");
 		NAMES = Collections.unmodifiableMap(m);
 	}
 

@@ -418,13 +418,19 @@ public final class RunLogWriter {
 	//is left unsealed so recording can continue later with openForAppend. Safe to call repeatedly.
 	//Returns true if everything was written without a failure.
 	public boolean close( boolean seal ){
+		return close(seal, 30_000);
+	}
+
+	//Like close(seal) but waits at most about timeoutMillis for the writer thread, so a stuck disk cannot hold the
+	//caller. If the wait runs out the thread still finishes writing (and sealing) in the background.
+	public boolean close( boolean seal, long timeoutMillis ){
 		try {
 			synchronized (lock){
 				if (closed) return !disabled;
 				closed = true; //from now on accept() refuses events
 			}
 			CloseRequest req = new CloseRequest();
-			long deadline = System.currentTimeMillis() + 10_000;
+			long deadline = System.currentTimeMillis() + Math.max(1, timeoutMillis);
 			boolean queued = false;
 			while (!queued){
 				synchronized (lock){
@@ -448,8 +454,9 @@ public final class RunLogWriter {
 				}
 			}
 			if (queued && worker != null){
-				req.done.await(30, TimeUnit.SECONDS);
-				worker.join(5_000);
+				if (req.done.await(Math.max(1, timeoutMillis), TimeUnit.MILLISECONDS)){
+					worker.join(Math.max(1, Math.min(timeoutMillis, 5_000)));
+				}
 			}
 			return queued && !disabled;
 		} catch (Throwable t){

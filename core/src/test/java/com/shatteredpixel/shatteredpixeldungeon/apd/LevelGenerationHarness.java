@@ -146,6 +146,35 @@ public final class LevelGenerationHarness {
 		}
 	}
 
+	//Like generate(), but the hero really arrives on each level (Dungeon.switchLevel, which saves the game), the way a
+	//played run reaches the next depth. Used to check that recording does not change what happens between levels.
+	public static List<LevelPrint> generateFlow( long seed, int challenges, HeroClass heroClass, Context context, int maxDepth ) throws Exception {
+		HeadlessTestSupport.start();
+		applyContext(context);
+
+		SPDSettings.challenges(challenges);
+		Dungeon.daily = false;
+		Dungeon.dailyReplay = false;
+		Dungeon.customSeedText = "";
+		Dungeon.seed = seed;
+		GamesInProgress.selectedClass = heroClass;
+		GamesInProgress.randomizedClass = false;
+		GamesInProgress.curSlot = 1;
+
+		Dungeon.init();
+
+		List<LevelPrint> out = new ArrayList<>();
+		for (int depth = 1; depth <= maxDepth; depth++){
+			Dungeon.depth = depth;
+			Dungeon.branch = 0;
+			Dungeon.level = Dungeon.newLevel();
+			removeUnseededHeaps(Dungeon.level);
+			out.add(new LevelPrint(seed, challenges, depth, Dungeon.level, fingerprint(Dungeon.level)));
+			Dungeon.switchLevel(Dungeon.level, -1);
+		}
+		return out;
+	}
+
 	public static String fingerprint( Level level ) throws Exception {
 		return sha256(canonicalJson(level));
 	}

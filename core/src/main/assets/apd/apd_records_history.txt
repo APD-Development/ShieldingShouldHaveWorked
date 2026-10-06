@@ -8,6 +8,19 @@ APD game version, and every recorded run keeps the telemetry version that record
 tied to a version of the recorded data. Minor versions only add things, a new major version changes what existing
 data means.
 
+telemetry-1.1-run-lifecycle | telemetry 1.1 | APD 4.0.8-apd | 2026-10-06
+- Telemetry 1.1 is the first version that records real runs. Each run now has a log with: RUN_START (APD version, seed,
+  seed type, challenges, hero class, ruleset id), SAVE markers, LEVEL_ENTER and LEVEL_EXIT, compact CHECKPOINTs (hero
+  stats, equipment and a backpack list), SESSION_START for every time the app opened the run, and RUN_END.
+- Each run is identified by a run id that is also stored in the game save (apd_run_id), so a run can be followed across
+  app restarts.
+- When a game is loaded from an older save than the end of its log, the play after that save is kept but marked as an
+  abandoned branch (ROLLBACK event). Normal statistics leave abandoned branches out, history tools can still read them.
+- Runs that were already in progress when recording started are recorded as partial runs and never get invented history.
+- A ruleset id describes the gameplay-affecting rules in force (APD-0001 shield rule, Cleric blocked, exotic crystal
+  chance, challenges). A RULESET_CHANGE event is written if one changes during a run.
+- Still not recorded: combat, health, hunger, item and loot events. They arrive in later 1.x versions.
+
 telemetry-1.0-storage | telemetry 1.0 | APD 4.0.8-apd | 2026-10-06
 - Telemetry 1.0 defines how a run is stored: one append-only log per run whose header names the telemetry version, made
   of individually checksummed, length-prefixed frames, with a per-log string table and a seal frame at the end of a
