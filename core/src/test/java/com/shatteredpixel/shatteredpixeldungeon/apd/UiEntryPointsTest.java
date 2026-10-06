@@ -67,7 +67,7 @@ public class UiEntryPointsTest {
 		assertTrue(title.contains("add( annotation )"));
 		assertTrue("must be placed relative to the grid", title.contains("annotation.place("));
 		assertTrue("must fade with the menu", title.contains("annotation.alpha(alpha)"));
-		assertTrue("its strip must be part of the grid height", title.contains("annotation.height() + 3*mainH"));
+		assertTrue("layout must come from the tested TitleGeometry", title.contains("TitleGeometry.portrait(") && title.contains("TitleGeometry.landscape("));
 		//the annotation is a plain Component with no PointerArea or button, so it can't take taps from anything
 		int a = title.indexOf("class APDAnnotation");
 		int b = title.indexOf("class APDMenuButton");
