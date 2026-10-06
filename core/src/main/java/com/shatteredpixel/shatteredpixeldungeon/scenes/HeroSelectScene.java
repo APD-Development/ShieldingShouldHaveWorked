@@ -366,7 +366,7 @@ public class HeroSelectScene extends PixelScene {
 		int ofs = PixelScene.landscape() ? 0 : 4;
 		btnExit.setPos( Camera.main.width - btnExit.width() - ofs, ofs );
 		add( btnExit );
-		btnExit.visible = btnExit.active = true; //APD: always allow going back to the title menu
+		btnExit.visible = btnExit.active = !SPDSettings.intro();
 
 		PointerArea fadeResetter = new PointerArea(0, 0, Camera.main.width, Camera.main.height){
 			@Override
@@ -494,7 +494,7 @@ public class HeroSelectScene extends PixelScene {
 		if (SPDSettings.intro() && Rankings.INSTANCE.totalNumber > 0){
 			SPDSettings.intro(false);
 		}
-		btnExit.visible = btnExit.active = true; //APD: always allow going back to the title menu
+		btnExit.visible = btnExit.active = !SPDSettings.intro();
 		//do not fade when a window is open
 		for (Object v : members){
 			if (v instanceof Window) resetFade();

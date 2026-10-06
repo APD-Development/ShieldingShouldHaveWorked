@@ -38,17 +38,16 @@ public class APDTextScene extends PixelScene {
 
 	public enum Page {
 		NEWS("APD News",
-				"_ADHD Pixel Dungeon (APD)_ is a private fork of Shattered Pixel Dungeon, built on upstream v4.0.0.\n\n" +
-				"This is an INDEV build: expect rough edges, and expect things to change.\n\n" +
-				"APD only changes what is listed on the Changes screen. Everything else is the stock game.\n\n" +
-				"There is no APD art yet, the title is plain text."),
+				"_ADHD Pixel Dungeon_ is a private fork of Shattered Pixel Dungeon, built on v4.0.0.\n\n" +
+				"This is an INDEV build. Expect rough edges, and expect things to change.\n\n" +
+				"Plain text title for now, there is no APD art yet."),
 		CHANGES("APD Changes",
 				"_APD 4.0.8-apd_\n\n" +
 				"_APD-0001:_ starvation damage now consumes shielding before HP. Shielding does not cure hunger.\n\n" +
 				"_Sad Ghost:_ the offered weapon and armor now show their real upgrade level.\n\n" +
-				"_Exotic chance:_ new setting (pause menu > APD Settings), 0% to 80%, a minimum chance that generated potions and scrolls are exotic. Exotic Crystals can still raise it higher.\n\n" +
-				"_Cleric:_ removed. Selecting it and pressing Start leads to a black screen. Try it 10 times for an achievement.\n\n" +
-				"_Menus:_ APD title text and INDEV version string, APD News and Changes on the title screen and in About, the title menu is shown on first launch, and hero select always has a back button.");
+				"_Exotic chance:_ new APD setting (pause menu > APD Settings), 0% to 80%, a minimum chance that generated potions and scrolls are exotic. Exotic Crystals can still raise it higher.\n\n" +
+				"_Cleric:_ removed. Do not try it.\n\n" +
+				"_Menus:_ APD settings, APD News and APD Changes screens, APD title text and INDEV version string.");
 
 		final String title;
 		final String text;
@@ -60,7 +59,6 @@ public class APDTextScene extends PixelScene {
 	}
 
 	public static Page page = Page.NEWS;
-	public static Class<? extends PixelScene> backTo = AboutScene.class;
 
 	@Override
 	public void create() {
@@ -110,6 +108,6 @@ public class APDTextScene extends PixelScene {
 
 	@Override
 	protected void onBackPressed() {
-		ShatteredPixelDungeon.switchScene( backTo );
+		ShatteredPixelDungeon.switchScene( AboutScene.class );
 	}
 }

@@ -158,10 +158,7 @@ public class WelcomeScene extends PixelScene {
 				protected void onClick() {
 					super.onClick();
 					updateVersion(previousVersion);
-					//APD: show the APD changes, not the stock upstream history
-					APDTextScene.page = APDTextScene.Page.CHANGES;
-					APDTextScene.backTo = TitleScene.class;
-					ShatteredPixelDungeon.switchScene(APDTextScene.class);
+					ShatteredPixelDungeon.switchScene(ChangesScene.class);
 				}
 			};
 			okay.setRect(btnAreaLeft, buttonY, (buttonAreaWidth/2)-1, 20);
