@@ -212,7 +212,8 @@ final class ItemTracker {
 		for (int tries = 0; tries < 20; tries++){
 			UUID u = UUID.randomUUID(); //its own generator, never the game's
 			long bits = u.getMostSignificantBits() ^ u.getLeastSignificantBits();
-			String uid = String.format("%016x", bits);
+			String hex = Long.toHexString(bits);
+			String uid = "0000000000000000".substring(hex.length()) + hex;
 			if (!registered.contains(uid) && !retired.contains(uid) && !held.containsKey(uid)) return uid;
 		}
 		return UUID.randomUUID().toString();
@@ -479,8 +480,9 @@ final class ItemTracker {
 			emitLeft(uid, d, d.visible, false, 0);
 		}
 
-		//5. what lies in sight on the floor
-		scanFloor(flags);
+		//5. what lies in sight on the floor. Not when the run is just being set up or caught up with a load: Dungeon.level
+		//may still be the previous game's level then, and nothing the player has not looked at yet can be "seen".
+		if (!startKit && !reconciled) scanFloor(flags);
 
 		hintItem = null;
 		hintAction = "";

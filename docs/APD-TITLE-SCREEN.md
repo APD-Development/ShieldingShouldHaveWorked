@@ -1,3 +1,6 @@
+> **FROZEN.** The title/home screen design was approved on build 15. Do not change it unless the project owner explicitly asks for
+> a change or there is a real bug. (Phase 3 and later work leaves it alone.)
+
 # APD title/home screen
 
 `TitleScene` uses six APD art files (all 1x pixel art, scaled by the game's whole-number zoom):

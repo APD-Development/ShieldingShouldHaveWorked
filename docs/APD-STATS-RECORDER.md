@@ -52,6 +52,10 @@ example the exotic setting) writes `RULESET_CHANGE`.
   `.github/workflows/android-tests.yml` (separate from the release build).
 - A physical phone run is the in-game button; emulator results are not a substitute for it.
 
+## Item identity (telemetry 1.2)
+See `docs/APD-STATS-ITEMS.md`. The recorder also writes item events and saves `apd_uid` on items; `Hero.act`, `Dungeon.saveGame`
+and a few item methods call the recorder's `ApdItems` entry points.
+
 ## Known limitations
 - A log left OPEN with no save slot (crash before the first save) is not yet classified as orphaned.
 - The exit checkpoint is captured when the next level is entered, so a death on a level has its last checkpoint from the level entry.

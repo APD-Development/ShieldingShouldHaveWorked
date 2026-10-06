@@ -77,6 +77,7 @@ public final class SelfTest {
 			}
 			writeAndReadBack(r, dir, eventCount);
 			lifecycleRoundTrip(r, dir);
+			itemEventsRoundTrip(r, dir);
 			damage(r, dir, eventCount);
 			concurrency(r, dir);
 			store(r, dir);
@@ -158,6 +159,42 @@ public final class SelfTest {
 			if (ok) r.pass("lifecycle events round trip"); else r.fail("lifecycle events did not round trip");
 		} catch (Throwable t){
 			r.fail("lifecycle round trip threw " + t);
+		}
+	}
+
+	//item identity events (telemetry 1.2): what is written for the player stays free of hidden facts, history is derived
+	private static void itemEventsRoundTrip( Report r, File dir ){
+		File f = new File(dir, "items.apdlog");
+		RunLogWriter w = RunLogWriter.create(f, TelemetryVersion.CURRENT, "selftestitems", "selftest", 1);
+		ItemEvents.Where where = new ItemEvents.Where();
+		where.depth = 4;
+		where.pos = 77;
+		ItemEvents.Registered reg = new ItemEvents.Registered();
+		reg.uid = "aaaa"; reg.where = where; reg.trueClass = "items.rings.RingOfWealth"; reg.trueLevel = 3; reg.quantity = 1;
+		ItemEvents.emitRegistered(w, 1, 0, reg);
+		ItemEvents.Seen seen = new ItemEvents.Seen();
+		seen.uid = "aaaa"; seen.where = where;
+		seen.state.category = ItemEvents.CAT_RING; seen.state.name = "ruby ring";
+		seen.state.levelKnown = false; seen.state.visibleLevel = 3; //must not be stored
+		ItemEvents.emitSeen(w, 2, 0, seen);
+		ItemEvents.Knowledge k = new ItemEvents.Knowledge();
+		k.uid = "aaaa"; k.where = where;
+		k.state.category = ItemEvents.CAT_RING; k.state.name = "Ring of Wealth"; k.state.levelKnown = true; k.state.cursedKnown = true;
+		k.state.visibleLevel = 3; k.state.identified = true;
+		ItemEvents.emitKnowledge(w, 9, 0, k);
+		w.close();
+		try {
+			ReadResult rd = RunLogReader.read(f);
+			ItemEvents.Seen s = ItemEvents.decodeSeen(rd.events.get(1), rd);
+			ItemEvents.VisibleState then = ItemHistory.visibleStateAt(rd.events, rd, "aaaa", rd.events.get(1).index);
+			ItemEvents.VisibleState now = ItemHistory.visibleStateAt(rd.events, rd, "aaaa", Long.MAX_VALUE);
+			boolean ok = rd.status == ReadStatus.SEALED && rd.events.size() == 3 && s.state.visibleLevel == 0
+					&& "ruby ring".equals(then.name) && "Ring of Wealth".equals(now.name) && now.visibleLevel == 3
+					&& EventTypes.visibility(EventTypes.ITEM_REGISTERED) == EventTypes.Visibility.INTERNAL
+					&& EventTypes.visibility(EventTypes.ITEM_SEEN) == EventTypes.Visibility.PUBLIC;
+			if (ok) r.pass("item events round trip, seen state keeps what the player knew then"); else r.fail("item events did not round trip");
+		} catch (Throwable t){
+			r.fail("item events round trip threw " + t);
 		}
 	}
 

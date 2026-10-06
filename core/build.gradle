@@ -25,6 +25,7 @@ test {
     systemProperty 'apd.golden.update', project.findProperty('apd.golden.update') ?: 'false'
     systemProperty 'apd.golden.file', file('src/test/resources/apd/golden_levels.txt').absolutePath
     systemProperty 'apd.event.manifest', file('src/test/resources/apd/event_type_manifest.txt').absolutePath
+    systemProperty 'apd.game.src', file('src/main/java/com/shatteredpixel/shatteredpixeldungeon').absolutePath
     systemProperty 'apd.windows.src', file('src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows').absolutePath
     systemProperty 'apd.recorder.src', file('src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder').absolutePath
     systemProperty 'apd.stats.src', file('src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats').absolutePath

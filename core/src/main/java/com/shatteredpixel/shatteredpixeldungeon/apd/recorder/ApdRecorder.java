@@ -389,6 +389,11 @@ public final class ApdRecorder {
 		}
 	}
 
+	//tests: write out what is queued so the log file can be read while the run goes on
+	static synchronized void flushForTests(){
+		if (active != null && active.writer != null) active.writer.flush(5000, false);
+	}
+
 	//---- diagnostics ---------------------------------------------------------------------------------------
 
 	public static synchronized RecorderStatus status(){

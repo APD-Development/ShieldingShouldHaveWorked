@@ -1,0 +1,75 @@
+package com.shatteredpixel.shatteredpixeldungeon.apd;
+
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.nio.charset.Charset;
+
+//The item identity hooks are one-line calls inside game classes. If a later edit drops one, identity quietly stops working
+//on a real device where no test plays the game, so the presence of each one is checked here.
+public class ItemHookWiringTest {
+
+	private static String src( String path ) throws Exception {
+		FileInputStream in = new FileInputStream(new File(System.getProperty("apd.game.src"), path));
+		try {
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			byte[] buf = new byte[8192];
+			int n;
+			while ((n = in.read(buf)) > 0) out.write(buf, 0, n);
+			return new String(out.toByteArray(), Charset.forName("UTF-8"));
+		} finally {
+			in.close();
+		}
+	}
+
+	private static void has( String path, String... needles ) throws Exception {
+		String s = src(path);
+		for (String n : needles) assertTrue(path + " is missing: " + n, s.contains(n));
+	}
+
+	@Test
+	public void itemKeepsItsIdentityHooksAndClearsItOnCopies() throws Exception {
+		has("items/Item.java",
+				"public String apdUid", "public String apdCopyOf",
+				"bundle.put(APD_UID, apdUid)", "apdUid = bundle.getString(APD_UID)", "\"apd_uid\"",
+				"ApdItems.noteAction( this, action )", "ApdItems.noteAction( this, ApdItems.ACTION_DROP )",
+				"ApdItems.onMerge( this, other, other.quantity )", "ApdItems.onSplit( this, split, amount )",
+				"ApdItems.onDetached( this, detached )", "ApdItems.onDetached( this, this )");
+		String item = src("items/Item.java");
+		//split and duplicate copy through a bundle: the copy must lose the identity it just inherited
+		int split = item.indexOf("public Item split(");
+		int dupe = item.indexOf("public Item duplicate()");
+		assertTrue(item.substring(split, dupe).contains("split.apdUid = null"));
+		int detach = item.indexOf("public final Item detach(");
+		assertTrue(item.substring(dupe, detach).contains("dupe.apdUid = null"));
+		//reset() makes a bones item fit for a new run: it must not keep the old run's identity
+		int reset = item.indexOf("public void reset()");
+		assertTrue(item.substring(reset, reset + 400).contains("apdUid = null"));
+		//both throw paths announce the throw before taking the item out of the bag
+		int count = 0, from = 0;
+		while ((from = item.indexOf("ApdItems.noteAction( Item.this, ApdItems.ACTION_THROW )", from)) >= 0){ count++; from++; }
+		assertTrue(count == 2);
+	}
+
+	@Test
+	public void theGameLoopAndSavesAreConnected() throws Exception {
+		has("actors/hero/Hero.java", "ApdItems.onHeroTurn()", "ApdItems.noteAcquireContext( ItemEvents.ACQ_PICKUP )");
+		has("Dungeon.java", "ApdRecorder.onBeforeGameSave()", "ApdRecorder.onGameSaved(");
+		has("windows/WndTradeItem.java", "ApdItems.noteAcquireContext( ItemEvents.ACQ_SHOP )");
+	}
+
+	@Test
+	public void transformationsCraftingAndDiscoveriesAreConnected() throws Exception {
+		has("items/scrolls/ScrollOfTransmutation.java", "ApdItems.onTransformed( item, result, \"TRANSMUTE\" )");
+		has("items/armor/ClassArmor.java", "ApdItems.onTransformed( armor, classArmor, \"CLASS_ARMOR\" )");
+		has("scenes/AlchemyScene.java", "ApdItems.onCrafted( ingredients, result )");
+		for (String p : new String[]{"items/potions/Potion.java", "items/scrolls/Scroll.java", "items/rings/Ring.java",
+				"items/potions/exotic/ExoticPotion.java", "items/scrolls/exotic/ExoticScroll.java"}){
+			has(p, "ApdItems.onClassKnown(");
+		}
+	}
+}

@@ -1,5 +1,6 @@
 APD 4.0.8-apd
 Added:
+- Run history now gives every item you meet a persistent identity (apd_uid) and records seeing, picking up, equipping, learning about and losing it, without ever recording what you could not have known yet
 - APD Settings in the pause menu
 - Exotic crystal conversion chance setting (0-80%, 10% steps)
 - Custom APD title/home screen: stone ADHD PIXEL DUNGEON logo, animated green flames, new background and stone buttons. Two-column menu (Play / UIMSD, Badges / Journal, Options / Quit) with News / Changes / About below. Landscape puts the logo and menu side by side.
