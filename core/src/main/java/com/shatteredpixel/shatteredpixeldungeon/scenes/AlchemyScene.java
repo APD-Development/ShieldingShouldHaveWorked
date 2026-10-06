@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdItems;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
@@ -716,6 +717,7 @@ public class AlchemyScene extends PixelScene {
 			align(energyAdd);
 			
 			result = recipe.brew(ingredients);
+			ApdItems.onCrafted( ingredients, result );
 		}
 		
 		if (result != null){

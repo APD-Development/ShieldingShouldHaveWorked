@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.stats.ItemEvents;
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdItems;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -298,6 +300,7 @@ public class WndTradeItem extends WndInfoItem {
 		Dungeon.gold -= price;
 		Catalog.countUses(Gold.class, price);
 		
+		ApdItems.noteAcquireContext( ItemEvents.ACQ_SHOP );
 		if (!item.doPickUp( Dungeon.hero )) {
 			Dungeon.level.drop( item, heap.pos ).sprite.drop();
 		}

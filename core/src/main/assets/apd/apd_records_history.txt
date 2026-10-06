@@ -12,6 +12,21 @@ uimsd-name | - | APD 4.0.8-apd | 2026-10-06
 - The statistics / records / query system is named UIMSD, the Ultimate Infinite Mega Statistics Database. The title
   screen button that used to say "Statistics" now says "UIMSD". This changes a name only, no recorded data.
 
+telemetry-1.2-item-identity | telemetry 1.2 | APD 4.0.8-apd | 2026-10-06
+- Telemetry 1.2 adds item identity and lineage. Items get a persistent id (apd_uid, saved with the item) the first time
+  the recorder meets them. Ids are random and never touch the game's seeded random numbers.
+- New events: ITEM_SEEN (an item became visible where it lay), ITEM_ACQUIRED and ITEM_LEFT (it entered or left the
+  hero's hands, with why when known), ITEM_EQUIPPED and ITEM_UNEQUIPPED (each wearing interval is kept, with the slot),
+  ITEM_KNOWLEDGE (the player learned its level or curse), ITEM_CLASS_KNOWN (the player learned what a whole potion colour,
+  scroll rune or ring gem is).
+- Those events only contain what the player could see at that moment (the name shown, "unidentified ring" stays that way
+  in old events even after it is identified later). Hidden truth and identity links live in separate INTERNAL events:
+  ITEM_REGISTERED (true class and level), ITEM_LINEAGE (split, merge, copy, transform, craft) and ITEM_TRUTH_CHANGED.
+  Player-facing views and player exports must leave INTERNAL events out.
+- A run in progress that was recorded under telemetry 1.1 continues in a new log segment after updating, because a run
+  keeps the telemetry version that recorded it.
+- Still not recorded: combat, health, hunger, loot generation provenance (arrive in later 1.x versions).
+
 telemetry-1.1-run-lifecycle | telemetry 1.1 | APD 4.0.8-apd | 2026-10-06
 - Telemetry 1.1 is the first version that records real runs. Each run now has a log with: RUN_START (APD version, seed,
   seed type, challenges, hero class, ruleset id), SAVE markers, LEVEL_ENTER and LEVEL_EXIT, compact CHECKPOINTs (hero

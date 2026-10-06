@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.stats.ItemEvents;
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdItems;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
@@ -835,6 +837,9 @@ public class Hero extends Char {
 	
 	@Override
 	public boolean act() {
+
+		//APD: statistics recorder looks at what the hero holds and sees (it only reads)
+		ApdItems.onHeroTurn();
 		
 		//calls to dungeon.observe will also update hero's local FOV.
 		fieldOfView = Dungeon.level.heroFOV;
@@ -1118,6 +1123,7 @@ public class Hero extends Char {
 			Heap heap = Dungeon.level.heaps.get( pos );
 			if (heap != null) {
 				Item item = heap.peek();
+				ApdItems.noteAcquireContext( ItemEvents.ACQ_PICKUP );
 				if (item.doPickUp( this )) {
 					heap.pickUp();
 

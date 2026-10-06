@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.potions;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdItems;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -353,6 +354,7 @@ public class Potion extends Item {
 	public void setKnown() {
 		if (!anonymous) {
 			if (!isKnown()) {
+				ApdItems.onClassKnown(getClass(), name(), this);
 				handler.know(this);
 				updateQuickslot();
 			}

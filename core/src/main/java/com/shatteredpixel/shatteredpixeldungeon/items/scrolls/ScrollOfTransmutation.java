@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.scrolls;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdItems;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -100,6 +101,7 @@ public class ScrollOfTransmutation extends InventoryScroll {
 	protected void onItemSelected(Item item) {
 		
 		Item result = changeItem(item);
+		ApdItems.onTransformed( item, result, "TRANSMUTE" );
 		
 		if (result == null){
 			//This shouldn't ever trigger

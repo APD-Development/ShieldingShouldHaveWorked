@@ -60,7 +60,7 @@ public class RecorderNeverAffectsTheGameTest {
 			Iterator<?> keys = o.keys();
 			while (keys.hasNext()){
 				String k = (String) keys.next();
-				if (k.equals("apd_run_id") || k.equals("last_played") || k.equals("set_id")) continue;
+				if (k.equals("apd_run_id") || k.equals("apd_uid") || k.equals("last_played") || k.equals("set_id")) continue;
 				sorted.put(k, o.opt(k));
 			}
 			out.append('{');
@@ -150,7 +150,7 @@ public class RecorderNeverAffectsTheGameTest {
 		assertEquals("test precondition: an unrecorded run is not reproducible", off1, off2);
 
 		String on = savedGame(true, 4711L);
-		assertEquals("recording must not change what is saved (apart from apd_run_id)", off1, on);
+		assertEquals("recording must not change what is saved (apart from apd_run_id and apd_uid)", off1, on);
 	}
 
 	private static String savedGame( boolean record, long seed ) throws Exception {

@@ -23,7 +23,9 @@
 package com.shatteredpixel.shatteredpixeldungeon.apd.recorder;
 
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.EventTypes;
+import com.shatteredpixel.shatteredpixeldungeon.apd.stats.ItemEvents;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.LifecycleEvents;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.ReadResult;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.RunLogReader;
@@ -34,6 +36,7 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.FileUtils;
 
 import java.io.File;
+import java.util.List;
 
 //The one door between the game and APD run recording.
 //
@@ -79,6 +82,7 @@ public final class ApdRecorder {
 		lastError = "";
 		active = null;
 		failureInjection = null;
+		refreshItemFlag();
 	}
 
 	//the app's normal location: an "apd" folder in the game's data folder
@@ -102,6 +106,7 @@ public final class ApdRecorder {
 		} catch (Throwable ignored){
 		}
 		active = null;
+		refreshItemFlag();
 	}
 
 	private static boolean usable(){
@@ -136,6 +141,7 @@ public final class ApdRecorder {
 		} catch (Throwable t){
 			failed(t);
 		}
+		refreshItemFlag();
 	}
 
 	//a saved game was loaded (Dungeon.loadGame). savedRunId is the apd_run_id stored in that save, null for older saves.
@@ -151,6 +157,19 @@ public final class ApdRecorder {
 			} else {
 				active = RunRecorder.resume(store, slot, savedRunId, lastPlayed);
 			}
+		} catch (Throwable t){
+			failed(t);
+		}
+		refreshItemFlag();
+	}
+
+	//the game is about to be written to a save slot: items get their identity first so it is part of the save
+	public static synchronized void onBeforeGameSave(){
+		if (!usable() || active == null) return;
+		try {
+			inject();
+			ItemTracker t = items();
+			if (t != null) t.poll(false, false);
 		} catch (Throwable t){
 			failed(t);
 		}
@@ -189,6 +208,7 @@ public final class ApdRecorder {
 			failed(t);
 			active = null;
 		}
+		refreshItemFlag();
 	}
 
 	//a save slot is about to be deleted (Dungeon.deleteGame): its run, if still open, ends as abandoned
@@ -199,10 +219,109 @@ public final class ApdRecorder {
 			if (active != null && !active.ended && active.slot() == slot){
 				active.end(LifecycleEvents.OUTCOME_ABANDONED, null);
 				active = null;
+				refreshItemFlag();
 				return;
 			}
 			String id = readSavedRunId(slot);
 			if (id != null) abandonStoredRun(id);
+		} catch (Throwable t){
+			failed(t);
+		}
+	}
+
+	//---- item identity (see ApdItems) ----------------------------------------------------------------------------
+
+	private static ItemTracker items(){
+		return usable() && active != null && !active.ended ? active.items : null;
+	}
+
+	private static void refreshItemFlag(){
+		ApdItems.active = usable() && active != null && !active.ended && active.items != null;
+	}
+
+	static synchronized void itemNoteAction( Item item, String action ){
+		try {
+			ItemTracker t = items();
+			if (t != null) t.noteAction(item, action);
+		} catch (Throwable t){
+			failed(t);
+		}
+	}
+
+	static synchronized void itemNoteAcquire( int context ){
+		try {
+			ItemTracker t = items();
+			if (t != null) t.noteAcquireContext(context);
+		} catch (Throwable t){
+			failed(t);
+		}
+	}
+
+	static synchronized void itemSplit( Item parent, Item child, int amount ){
+		try {
+			inject();
+			ItemTracker t = items();
+			if (t != null) t.onSplit(parent, child, amount);
+		} catch (Throwable t){
+			failed(t);
+		}
+	}
+
+	static synchronized void itemMerge( Item survivor, Item absorbed, int amount ){
+		try {
+			inject();
+			ItemTracker t = items();
+			if (t != null) t.onMerge(survivor, absorbed, amount);
+		} catch (Throwable t){
+			failed(t);
+		}
+	}
+
+	static synchronized void itemDetached( Item original, Item piece ){
+		try {
+			inject();
+			ItemTracker t = items();
+			if (t != null) t.onDetached(original, piece);
+		} catch (Throwable t){
+			failed(t);
+		}
+	}
+
+	static synchronized void itemTransformed( Item oldItem, Item newItem, String cause ){
+		try {
+			inject();
+			ItemTracker t = items();
+			if (t != null) t.onTransformed(oldItem, newItem, cause);
+		} catch (Throwable t){
+			failed(t);
+		}
+	}
+
+	static synchronized void itemCrafted( List<Item> ingredients, Item result ){
+		try {
+			inject();
+			ItemTracker t = items();
+			if (t != null) t.onCrafted(ingredients, result);
+		} catch (Throwable t){
+			failed(t);
+		}
+	}
+
+	static synchronized void itemClassKnown( Class<?> cls, String labelBefore, Item sample ){
+		try {
+			inject();
+			ItemTracker t = items();
+			if (t != null) t.onClassKnown(cls, labelBefore, sample == null ? ItemEvents.CAT_OTHER : ItemFacts.category(sample));
+		} catch (Throwable t){
+			failed(t);
+		}
+	}
+
+	static synchronized void itemHeroTurn(){
+		try {
+			inject();
+			ItemTracker t = items();
+			if (t != null) t.poll(false, false);
 		} catch (Throwable t){
 			failed(t);
 		}
@@ -215,6 +334,7 @@ public final class ApdRecorder {
 			active.pause();
 			active = null;
 		}
+		refreshItemFlag();
 	}
 
 	private static String readSavedRunId( int slot ){
@@ -258,6 +378,7 @@ public final class ApdRecorder {
 			sessionDisabled = true;
 			shutdownKeepId();
 		}
+		refreshItemFlag();
 	}
 
 	//stop writing but remember the run id, so game saves stay linked to the log

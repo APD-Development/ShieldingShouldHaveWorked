@@ -57,6 +57,7 @@ final class RunRecorder {
 	String runId;
 	int segment;
 	RunLogWriter writer;
+	ItemTracker items;
 	boolean ended;
 
 	private boolean levelOpen;
@@ -118,6 +119,9 @@ final class RunRecorder {
 		s.realTimeMillis = System.currentTimeMillis();
 		LifecycleEvents.emitRunStart(r.writer, clock, partial, s);
 		r.checkpoint(LifecycleEvents.CP_RUN_START);
+		//item identity: a new run starts with its kit, a run picked up from a save is caught up with what the hero holds
+		r.items = new ItemTracker(r.writer);
+		r.items.poll(startKind == LifecycleEvents.START_NEW_RUN, startKind != LifecycleEvents.START_NEW_RUN);
 		return r;
 	}
 
@@ -186,6 +190,8 @@ final class RunRecorder {
 		} catch (Throwable t){
 			//cannot read it back, carry on appending without the analysis
 			r.emitSessionStart(GameSnapshot.turn());
+			r.items = new ItemTracker(r.writer);
+			r.items.poll(false, true);
 			return r;
 		}
 		RunTimeline timeline = RunTimeline.of(log.events);
@@ -247,6 +253,11 @@ final class RunRecorder {
 			}
 		}
 		r.emitSessionStart(GameSnapshot.turn());
+		//what the tracker knows is what the log says up to the loaded save (a rollback leaves later play out), then the
+		//game is looked at and any difference is written, marked as reconciled
+		r.items = new ItemTracker(w);
+		r.items.replay(log, timeline, matched != null ? matched.index : -1);
+		r.items.poll(false, true);
 		store.refreshIndex(logId);
 		return r;
 	}
@@ -275,6 +286,7 @@ final class RunRecorder {
 	void saved( long lastPlayed ){
 		if (writer == null || writer.isDisabled() || ended) return;
 		long clock = GameSnapshot.turn();
+		if (items != null) items.poll(false, false);
 		//the checkpoint first, the SAVE marker last: the marker is the final event of a save
 		checkpoint(LifecycleEvents.CP_SAVE);
 		LifecycleEvents.Save s = new LifecycleEvents.Save();
@@ -290,6 +302,7 @@ final class RunRecorder {
 	void levelSwitched(){
 		if (writer == null || writer.isDisabled() || ended) return;
 		long clock = GameSnapshot.turn();
+		if (items != null) items.poll(false, false);
 
 		if (levelOpen){
 			LifecycleEvents.LevelExit x = new LifecycleEvents.LevelExit();
@@ -337,6 +350,7 @@ final class RunRecorder {
 			return;
 		}
 		long clock = GameSnapshot.turn();
+		if (items != null) items.poll(false, false);
 		if (levelOpen){
 			LifecycleEvents.LevelExit x = new LifecycleEvents.LevelExit();
 			x.depth = curDepth;

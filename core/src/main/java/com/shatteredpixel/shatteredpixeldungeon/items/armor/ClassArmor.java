@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.armor;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdItems;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -139,6 +140,8 @@ abstract public class ClassArmor extends Armor {
 		}
 
 		classArmor.charge = 50;
+
+		ApdItems.onTransformed( armor, classArmor, "CLASS_ARMOR" );
 		
 		return classArmor;
 	}

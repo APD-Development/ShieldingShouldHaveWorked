@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.rings;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdItems;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -158,6 +159,7 @@ public class Ring extends KindofMisc {
 	public void setKnown() {
 		if (!anonymous) {
 			if (!isKnown()) {
+				ApdItems.onClassKnown(getClass(), name(), this);
 				handler.know(this);
 			}
 

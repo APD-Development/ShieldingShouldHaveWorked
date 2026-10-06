@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdItems;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -99,6 +100,14 @@ public class Item implements Bundlable {
 	public boolean bones = false;
 
 	public int customNoteID = -1;
+
+	//APD: persistent item identity, assigned lazily by the statistics recorder (never by the game itself, never from
+	//SPD's random numbers). Null on items nobody has observed yet and on every item in a save made before APD.
+	//Saved as apd_uid. Any copy made through a bundle (split, duplicate) must clear it, see below.
+	public String apdUid = null;
+	//APD: set on duplicate(): the uid of the item this one is a copy of, so the copy's lineage can be recorded if it
+	//is ever observed. Not saved.
+	public String apdCopyOf = null;
 	
 	public static final Comparator<Item> itemComparator = new Comparator<Item>() {
 		@Override
@@ -138,12 +147,16 @@ public class Item implements Bundlable {
 	public void doDrop( Hero hero ) {
 		hero.spendAndNext(TIME_TO_DROP);
 		int pos = hero.pos;
+		ApdItems.noteAction( this, ApdItems.ACTION_DROP );
 		Dungeon.level.drop(detachAll(hero.belongings.backpack), pos).sprite.drop(pos);
 	}
 
 	//resets an item's properties, to ensure consistency between runs
 	public void reset(){
 		keptThoughLostInvent = false;
+		//APD: reset() is how an item from another run (bones) is made fit for this one, it must not keep that run's identity
+		apdUid = null;
+		apdCopyOf = null;
 	}
 
 	public boolean keptThroughLostInventory(){
@@ -159,6 +172,7 @@ public class Item implements Bundlable {
 		GameScene.cancel();
 		curUser = hero;
 		curItem = this;
+		ApdItems.noteAction( this, action );
 		
 		if (action.equals( AC_DROP )) {
 			
@@ -197,6 +211,7 @@ public class Item implements Bundlable {
 	//takes two items and merges them (if possible)
 	public Item merge( Item other ){
 		if (isSimilar( other )){
+			ApdItems.onMerge( this, other, other.quantity );
 			quantity += other.quantity;
 			other.quantity = 0;
 		}
@@ -300,6 +315,11 @@ public class Item implements Bundlable {
 			split.restoreFromBundle(copy);
 			split.quantity(amount);
 			quantity -= amount;
+
+			//APD: the piece is a new item, it must not share this stack's identity
+			split.apdUid = null;
+			split.apdCopyOf = null;
+			ApdItems.onSplit( this, split, amount );
 			
 			return split;
 		}
@@ -313,6 +333,9 @@ public class Item implements Bundlable {
 		Bundle copy = new Bundle();
 		this.storeInBundle(copy);
 		dupe.restoreFromBundle(copy);
+		//APD: a copy is a different object, so it gets its own identity (lazily), linked to its source
+		dupe.apdUid = null;
+		dupe.apdCopyOf = this.apdUid;
 		return dupe;
 	}
 	
@@ -337,6 +360,7 @@ public class Item implements Bundlable {
 			Item detached = split(1);
 			updateQuickslot();
 			if (detached != null) detached.onDetach( );
+			ApdItems.onDetached( this, detached );
 			return detached;
 			
 		}
@@ -349,6 +373,7 @@ public class Item implements Bundlable {
 			if (item == this) {
 				container.items.remove(this);
 				item.onDetach();
+				ApdItems.onDetached( this, this );
 				container.grabItems(); //try to put more items into the bag as it now has free space
 				updateQuickslot();
 				return this;
@@ -585,6 +610,7 @@ public class Item implements Bundlable {
 	private static final String QUICKSLOT		= "quickslotpos";
 	private static final String KEPT_LOST       = "kept_lost";
 	private static final String CUSTOM_NOTE_ID = "custom_note_id";
+	private static final String APD_UID = "apd_uid";
 	
 	@Override
 	public void storeInBundle( Bundle bundle ) {
@@ -598,6 +624,7 @@ public class Item implements Bundlable {
 		}
 		bundle.put( KEPT_LOST, keptThoughLostInvent );
 		if (customNoteID != -1)     bundle.put(CUSTOM_NOTE_ID, customNoteID);
+		if (apdUid != null)         bundle.put(APD_UID, apdUid);
 	}
 	
 	@Override
@@ -624,6 +651,8 @@ public class Item implements Bundlable {
 
 		keptThoughLostInvent = bundle.getBoolean( KEPT_LOST );
 		if (bundle.contains(CUSTOM_NOTE_ID))    customNoteID = bundle.getInt(CUSTOM_NOTE_ID);
+		//APD: saves made before item identity have no apd_uid, the item simply stays without one until it is observed
+		if (bundle.contains(APD_UID))           apdUid = bundle.getString(APD_UID);
 	}
 
 	public int targetingPos( Hero user, int dst ){
@@ -660,6 +689,7 @@ public class Item implements Bundlable {
 						@Override
 						public void call() {
 							curUser = user;
+							ApdItems.noteAction( Item.this, ApdItems.ACTION_THROW );
 							Item i = Item.this.detach(user.belongings.backpack);
 							if (i != null) i.onThrow(cell);
 							if (curUser.hasTalent(Talent.IMPROVISED_PROJECTILES)
@@ -688,6 +718,7 @@ public class Item implements Bundlable {
 						@Override
 						public void call() {
 							curUser = user;
+							ApdItems.noteAction( Item.this, ApdItems.ACTION_THROW );
 							Item i = Item.this.detach(user.belongings.backpack);
 							user.spend(delay);
 							if (i != null) i.onThrow(cell);

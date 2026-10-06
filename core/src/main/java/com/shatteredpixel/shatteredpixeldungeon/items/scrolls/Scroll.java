@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.scrolls;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdItems;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -215,6 +216,7 @@ public abstract class Scroll extends Item {
 	public void setKnown() {
 		if (!anonymous) {
 			if (!isKnown()) {
+				ApdItems.onClassKnown(getClass(), name(), this);
 				handler.know(this);
 				updateQuickslot();
 			}

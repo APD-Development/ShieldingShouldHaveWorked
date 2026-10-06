@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdItems;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Recipe;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
@@ -92,6 +93,7 @@ public abstract class ExoticScroll extends Scroll {
 	@Override
 	public void setKnown() {
 		if (!isKnown()) {
+			ApdItems.onClassKnown(getClass(), name(), this);
 			handler.know(exoToReg.get(this.getClass()));
 			updateQuickslot();
 		}

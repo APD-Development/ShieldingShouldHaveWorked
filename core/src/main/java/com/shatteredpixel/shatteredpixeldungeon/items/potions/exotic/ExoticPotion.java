@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdItems;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Recipe;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
@@ -96,6 +97,7 @@ public class ExoticPotion extends Potion {
 	@Override
 	public void setKnown() {
 		if (!isKnown()) {
+			ApdItems.onClassKnown(getClass(), name(), this);
 			handler.know(exoToReg.get(this.getClass()));
 			updateQuickslot();
 		}

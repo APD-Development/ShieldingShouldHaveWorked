@@ -61,6 +61,26 @@ public final class EventTypes {
 	public static final int ROLLBACK = 263;
 	public static final int RULESET_CHANGE = 264;
 
+	//---- item identity and lineage events (telemetry 1.2), payloads are defined and tested in ItemEvents ----
+	//PUBLIC ones only carry what the player could see at that moment. INTERNAL ones carry hidden truth and lineage.
+	public static final int ITEM_SEEN = 265;
+	public static final int ITEM_ACQUIRED = 266;
+	public static final int ITEM_LEFT = 267;
+	public static final int ITEM_EQUIPPED = 268;
+	public static final int ITEM_UNEQUIPPED = 269;
+	public static final int ITEM_KNOWLEDGE = 270;
+	public static final int ITEM_CLASS_KNOWN = 271;
+	public static final int ITEM_REGISTERED = 272;
+	public static final int ITEM_LINEAGE = 273;
+	public static final int ITEM_TRUTH_CHANGED = 274;
+
+	//Who may be shown an event's contents. Anything that is not PUBLIC must never reach a player-facing view, an export
+	//meant for players, or a run-replication package without being filtered first.
+	public enum Visibility {
+		PUBLIC,   //only things the player could legitimately see or do at that moment
+		INTERNAL  //may contain hidden information (true item class, true level, generation facts)
+	}
+
 	private static final Map<Integer, String> NAMES;
 	static {
 		Map<Integer, String> m = new LinkedHashMap<>();
@@ -74,6 +94,16 @@ public final class EventTypes {
 		m.put(SESSION_START, "SESSION_START");
 		m.put(ROLLBACK, "ROLLBACK");
 		m.put(RULESET_CHANGE, "RULESET_CHANGE");
+		m.put(ITEM_SEEN, "ITEM_SEEN");
+		m.put(ITEM_ACQUIRED, "ITEM_ACQUIRED");
+		m.put(ITEM_LEFT, "ITEM_LEFT");
+		m.put(ITEM_EQUIPPED, "ITEM_EQUIPPED");
+		m.put(ITEM_UNEQUIPPED, "ITEM_UNEQUIPPED");
+		m.put(ITEM_KNOWLEDGE, "ITEM_KNOWLEDGE");
+		m.put(ITEM_CLASS_KNOWN, "ITEM_CLASS_KNOWN");
+		m.put(ITEM_REGISTERED, "ITEM_REGISTERED");
+		m.put(ITEM_LINEAGE, "ITEM_LINEAGE");
+		m.put(ITEM_TRUTH_CHANGED, "ITEM_TRUTH_CHANGED");
 		NAMES = Collections.unmodifiableMap(m);
 	}
 
@@ -84,6 +114,24 @@ public final class EventTypes {
 	public static String name( int type ){
 		String n = NAMES.get(type);
 		return n != null ? n : "UNKNOWN_" + type;
+	}
+
+	//Every known type has exactly one visibility (a test enforces it). Unknown types are INTERNAL: when in doubt, hide.
+	public static Visibility visibility( int type ){
+		switch (type){
+			case CHECKPOINT:        //stores true item levels
+			case ITEM_REGISTERED:
+			case ITEM_LINEAGE:
+			case ITEM_TRUTH_CHANGED:
+				return Visibility.INTERNAL;
+			case GAP: case RUN_START: case RUN_END: case SAVE: case LEVEL_ENTER: case LEVEL_EXIT:
+			case SESSION_START: case ROLLBACK: case RULESET_CHANGE:
+			case ITEM_SEEN: case ITEM_ACQUIRED: case ITEM_LEFT: case ITEM_EQUIPPED: case ITEM_UNEQUIPPED:
+			case ITEM_KNOWLEDGE: case ITEM_CLASS_KNOWN:
+				return Visibility.PUBLIC;
+			default:
+				return Visibility.INTERNAL;
+		}
 	}
 
 	//id -> name, in registration order

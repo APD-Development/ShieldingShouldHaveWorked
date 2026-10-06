@@ -630,6 +630,8 @@ public class Dungeon {
 	private static final String APD_RUN_ID	= "apd_run_id";
 	
 	public static void saveGame( int save ) {
+		//APD: give every item the hero holds its identity before it is written (the recorder only reads and labels)
+		ApdRecorder.onBeforeGameSave();
 		try {
 			Bundle bundle = new Bundle();
 
