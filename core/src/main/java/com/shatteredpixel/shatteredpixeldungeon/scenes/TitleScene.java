@@ -28,43 +28,64 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Languages;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ExitButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
-import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
-import com.shatteredpixel.shatteredpixeldungeon.ui.TitleBackground;
-import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndSettings;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndVictoryCongrats;
 import com.watabou.glwrap.Blending;
 import com.watabou.input.PointerEvent;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Camera;
+import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.Image;
+import com.watabou.noosa.MovieClip;
+import com.watabou.noosa.NinePatch;
 import com.watabou.noosa.PointerArea;
+import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.tweeners.Tweener;
-import com.watabou.utils.ColorMath;
 import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.GameMath;
 import com.watabou.utils.RectF;
 
+//APD: the title/home screen uses the APD art in assets (apd_logo, apd_logo_glow, apd_flame, apd_button,
+//apd_bg_port, apd_bg_land). Portrait stacks the logo over the buttons, landscape puts them side by side.
 public class TitleScene extends PixelScene {
 
-	private RenderedTextBlock title;
+	//art dimensions, see docs/APD-TITLE-SCREEN.md
+	private static final int LOGO_W = 139;
+	private static final int LOGO_H = 100;
+	private static final int FLAME_SIZE = 47;
+	private static final int FLAME_BASE_X = 23; //flame base is bottom-centre of the 47x47 cell
+	private static final int FLAME_BASE_Y = 46;
 
-	private StyledButton btnPlay;
-	private StyledButton btnSupport;
-	private StyledButton btnRankings;
-	private StyledButton btnJournal;
-	private StyledButton btnNews;
-	private StyledButton btnChanges;
-	private StyledButton btnSettings;
-	private StyledButton btnAbout;
+	//brazier bowl anchors inside apd_logo.png, from the asset notes. Tweak these if the flames look off.
+	private static final int LEFT_FLAME_X = 10;
+	private static final int RIGHT_FLAME_X = 129;
+	private static final int FLAME_Y = 67;
+
+	private static final int BG_COLOR = 0xFF08110D;
+
+	private static final int MAIN_GAP = 3;
+	private static final int BOTTOM_H = 20;
+
+	private Image logo;
+	private Image glow;
+	private APDFlame leftFlame;
+	private APDFlame rightFlame;
+
+	private APDMenuButton btnPlay;
+	private APDMenuButton btnStatistics;
+	private APDMenuButton btnBadges;
+	private APDMenuButton btnJournal;
+	private APDMenuButton btnOptions;
+	private APDMenuButton btnQuit;
+	private APDMenuButton btnNews;
+	private APDMenuButton btnChanges;
+	private APDMenuButton btnAbout;
 
 	private BitmapText version;
 	private IconButton btnFade;
@@ -82,34 +103,53 @@ public class TitleScene extends PixelScene {
 
 		uiCamera.visible = false;
 		
-		int w = Camera.main.width;
-		int h = Camera.main.height;
+		int fullW = Camera.main.width;
+		int fullH = Camera.main.height;
 
 		RectF insets = getCommonInsets();
 
-		TitleBackground BG = new TitleBackground( w, h );
-		add( BG );
+		//flat fill for any space the background plate doesn't cover, the plate edges fade to this colour
+		add( new ColorBlock( fullW, fullH, BG_COLOR ) );
 
-		w -= insets.left + insets.right;
-		h -= insets.top + insets.bottom;
+		Image plate = new Image( landscape() ? "splashes/title/apd_bg_land.png" : "splashes/title/apd_bg_port.png" );
+		plate.x = (fullW - plate.width()) / 2f;
+		plate.y = (fullH - plate.height()) / 2f;
+		align( plate );
+		add( plate );
 
-		//APD: plain text title for now, no banner art, torches or glowing signs
-		title = PixelScene.renderTextBlock( "ADHD\nPIXEL DUNGEON", 16 );
-		title.hardlight( Window.TITLE_COLOR );
-		title.align( RenderedTextBlock.CENTER_ALIGN );
-		add( title );
+		int w = (int)(fullW - insets.left - insets.right);
+		int h = (int)(fullH - insets.top - insets.bottom);
 
-		float topRegion = Math.max(title.height() + 12, h*0.45f);
+		logo = new Image( "interfaces/apd_logo.png" );
+		add( logo );
 
-		title.setPos( insets.left + (w - title.width()) / 2f, insets.top + 2 + (topRegion - title.height()) / 2f );
+		glow = new Image( "interfaces/apd_logo_glow.png" ){
+			private float time = 0;
+			@Override
+			public void update() {
+				super.update();
+				am = Math.max(0f, (float)Math.sin( time += Game.elapsed ));
+				am = Math.min(am, logo.am);
+				if (time >= 1.5f*Math.PI) time = 0;
+			}
+			@Override
+			public void draw() {
+				Blending.setLightMode();
+				super.draw();
+				Blending.setNormalMode();
+			}
+		};
+		add( glow );
 
-		align(title);
+		leftFlame = new APDFlame( false );
+		rightFlame = new APDFlame( true );
+		add( leftFlame );
+		add( rightFlame );
 
-		final Chrome.Type GREY_TR = Chrome.Type.GREY_BUTTON_TR;
-		
-		btnPlay = new StyledButton(GREY_TR, Messages.get(this, "enter")){
+		btnPlay = new APDMenuButton( "Play", Icons.ENTER, true ){
 			@Override
 			protected void onClick() {
+				super.onClick();
 				if (GamesInProgress.checkAll().size() == 0){
 					GamesInProgress.selectedClass = null;
 					GamesInProgress.curSlot = 1;
@@ -118,7 +158,7 @@ public class TitleScene extends PixelScene {
 					ShatteredPixelDungeon.switchNoFade( StartScene.class );
 				}
 			}
-			
+
 			@Override
 			protected boolean onLongClick() {
 				//making it easier to start runs quickly while debugging
@@ -131,102 +171,149 @@ public class TitleScene extends PixelScene {
 				return super.onLongClick();
 			}
 		};
-		btnPlay.icon(Icons.get(Icons.ENTER));
-		add(btnPlay);
+		add( btnPlay );
 
-		btnSupport = new SupportButton(GREY_TR, Messages.get(this, "support"));
-		add(btnSupport);
-
-		btnRankings = new StyledButton(GREY_TR,Messages.get(this, "rankings")){
+		//Statistics replaces Rankings, until the real APD statistics exist it opens the Rankings screen
+		btnStatistics = new APDMenuButton( "Statistics", Icons.STATS, true ){
 			@Override
 			protected void onClick() {
+				super.onClick();
 				ShatteredPixelDungeon.switchNoFade( RankingsScene.class );
 			}
 		};
-		btnRankings.icon(Icons.get(Icons.RANKINGS));
-		add(btnRankings);
+		add( btnStatistics );
 		Dungeon.daily = Dungeon.dailyReplay = false;
 
-		btnJournal = new StyledButton(GREY_TR, Messages.get(this, "journal")){
+		btnBadges = new APDMenuButton( "Badges", Icons.BADGES, true ){
 			@Override
 			protected void onClick() {
+				super.onClick();
+				JournalScene.lastIDX = 0; //badges tab
 				ShatteredPixelDungeon.switchNoFade( JournalScene.class );
 			}
 		};
-		btnJournal.icon(Icons.get(Icons.JOURNAL));
-		add(btnJournal);
+		add( btnBadges );
 
-		//APD: News and Changes open the offline APD screens, not the stock internet/upstream ones
-		btnNews = new StyledButton(GREY_TR, Messages.get(this, "news")){
+		btnJournal = new APDMenuButton( "Journal", Icons.JOURNAL, true ){
 			@Override
 			protected void onClick() {
+				super.onClick();
+				if (JournalScene.lastIDX == 0) JournalScene.lastIDX = 1; //catalog tab, badges has its own button
+				ShatteredPixelDungeon.switchNoFade( JournalScene.class );
+			}
+		};
+		add( btnJournal );
+
+		btnOptions = new APDMenuButton( "Options", Icons.PREFS, true ){
+			@Override
+			protected void onClick() {
+				super.onClick();
+				ShatteredPixelDungeon.scene().add(new WndSettings());
+			}
+		};
+		add( btnOptions );
+
+		btnQuit = new APDMenuButton( "Quit", Icons.EXIT, true ){
+			@Override
+			protected void onClick() {
+				super.onClick();
+				Game.instance.finish();
+			}
+		};
+		//iOS apps don't quit themselves
+		if (DeviceCompat.isiOS()) btnQuit.visible = btnQuit.active = false;
+		add( btnQuit );
+
+		//APD: News and Changes open the offline APD screens, not the stock internet/upstream ones
+		btnNews = new APDMenuButton( "News", Icons.NEWS, false ){
+			@Override
+			protected void onClick() {
+				super.onClick();
 				APDTextScene.page = APDTextScene.Page.NEWS;
 				APDTextScene.backTo = TitleScene.class;
 				ShatteredPixelDungeon.switchNoFade( APDTextScene.class );
 			}
 		};
-		btnNews.icon(Icons.get(Icons.NEWS));
-		add(btnNews);
+		add( btnNews );
 
-		btnChanges = new StyledButton(GREY_TR, Messages.get(this, "changes")){
+		btnChanges = new APDMenuButton( "Changes", Icons.CHANGES, false ){
 			@Override
 			protected void onClick() {
+				super.onClick();
 				APDTextScene.page = APDTextScene.Page.CHANGES;
 				APDTextScene.backTo = TitleScene.class;
 				ShatteredPixelDungeon.switchNoFade( APDTextScene.class );
 			}
 		};
-		btnChanges.icon(Icons.get(Icons.CHANGES));
-		add(btnChanges);
+		add( btnChanges );
 
-		btnSettings = new SettingsButton(GREY_TR, Messages.get(this, "settings"));
-		add(btnSettings);
-
-		btnAbout = new StyledButton(GREY_TR, Messages.get(this, "about")){
+		btnAbout = new APDMenuButton( "About", Icons.INFO, false ){
 			@Override
 			protected void onClick() {
+				super.onClick();
 				ShatteredPixelDungeon.switchScene( AboutScene.class );
 			}
 		};
-		btnAbout.icon(Icons.get(Icons.SHPX));
-		add(btnAbout);
-		
-		final int BTN_HEIGHT = 20;
-		int GAP = (int)(h - topRegion - (landscape() ? 3 : 4)*BTN_HEIGHT)/3;
-		GAP /= landscape() ? 3 : 5;
-		GAP = Math.max(GAP, 2);
+		add( btnAbout );
 
-		float buttonAreaWidth = landscape() ? PixelScene.MIN_WIDTH_L-6 : PixelScene.MIN_WIDTH_P-2;
-		float btnAreaLeft = insets.left + (w - buttonAreaWidth) / 2f;
-		if (landscape()) {
-			btnPlay.setRect(btnAreaLeft, insets.top + topRegion+GAP, (buttonAreaWidth/2)-1, BTN_HEIGHT);
-			align(btnPlay);
-			btnSupport.setRect(btnPlay.right()+2, btnPlay.top(), btnPlay.width(), BTN_HEIGHT);
-			btnRankings.setRect(btnPlay.left(), btnPlay.bottom()+ GAP, (float) (Math.floor(buttonAreaWidth/3f)-1), BTN_HEIGHT);
-			btnJournal.setRect(btnRankings.right()+2, btnRankings.top(), btnRankings.width(), BTN_HEIGHT);
-			btnNews.setRect(btnJournal.right()+2, btnJournal.top(), btnRankings.width(), BTN_HEIGHT);
-			btnSettings.setRect(btnRankings.left(), btnRankings.bottom() + GAP, btnRankings.width(), BTN_HEIGHT);
-			btnChanges.setRect(btnSettings.right()+2, btnSettings.top(), btnRankings.width(), BTN_HEIGHT);
-			btnAbout.setRect(btnChanges.right()+2, btnSettings.top(), btnRankings.width(), BTN_HEIGHT);
+		version = new BitmapText( "v4.0.8-apd-INDEV", pixelFont);
+		version.measure();
+		version.hardlight( 0x8C938C );
+		add( version );
+
+		//*** layout ***
+
+		float logoX, logoY;
+		float gridLeft, gridWidth, gridTop;
+		float versionGap = version.height() + 2;
+
+		if (landscape()){
+			//logo on the left, button grid on the right
+			float gridMax = 150;
+			gridWidth = Math.min(gridMax, w - LOGO_W - 12);
+			float totalW = LOGO_W + 8 + gridWidth;
+			float left = insets.left + (w - totalW) / 2f;
+
+			float mainH = mainHeight( h - 8 );
+			float gridH = 3*mainH + 3*MAIN_GAP + BOTTOM_H;
+
+			logoX = left;
+			logoY = insets.top + (h - (LOGO_H + versionGap)) / 2f;
+			gridLeft = left + LOGO_W + 8;
+			gridTop = insets.top + (h - gridH) / 2f;
+			layoutGrid( gridLeft, gridTop, gridWidth, mainH );
 		} else {
-			btnPlay.setRect(btnAreaLeft, insets.top + topRegion+GAP, buttonAreaWidth, BTN_HEIGHT);
-			align(btnPlay);
-			btnSupport.setRect(btnPlay.left(), btnPlay.bottom()+ GAP, btnPlay.width(), BTN_HEIGHT);
-			btnRankings.setRect(btnPlay.left(), btnSupport.bottom()+ GAP, (btnPlay.width()/2)-1, BTN_HEIGHT);
-			btnJournal.setRect(btnRankings.right()+2, btnRankings.top(), btnRankings.width(), BTN_HEIGHT);
-			btnNews.setRect(btnRankings.left(), btnRankings.bottom()+ GAP, btnRankings.width(), BTN_HEIGHT);
-			btnChanges.setRect(btnNews.right()+2, btnNews.top(), btnNews.width(), BTN_HEIGHT);
-			btnSettings.setRect(btnNews.left(), btnNews.bottom()+GAP, btnRankings.width(), BTN_HEIGHT);
-			btnAbout.setRect(btnSettings.right()+2, btnSettings.top(), btnSettings.width(), BTN_HEIGHT);
+			gridWidth = Math.min(w - 8, 150);
+			gridLeft = insets.left + (w - gridWidth) / 2f;
+
+			float topPad = 6;
+			float availForGrid = h - topPad - LOGO_H - versionGap - 6 - 4;
+			float mainH = mainHeight( availForGrid );
+			float gridH = 3*mainH + 3*MAIN_GAP + BOTTOM_H;
+			float contentH = LOGO_H + versionGap + 4 + gridH;
+
+			logoX = insets.left + (w - LOGO_W) / 2f;
+			logoY = insets.top + Math.max(topPad, (h - contentH) * 0.35f);
+			gridTop = logoY + LOGO_H + versionGap + 4;
+			layoutGrid( gridLeft, gridTop, gridWidth, mainH );
 		}
 
-		//APD: version string
-		version = new BitmapText( "APD INDEV", pixelFont);
-		version.measure();
-		version.hardlight( 0x888888 );
-		version.x = insets.left + w - version.width() - (DeviceCompat.isDesktop() ? 4 : 8);
-		version.y = insets.top + h - version.height() - (DeviceCompat.isDesktop() ? 2 : 4);
-		add( version );
+		logo.x = logoX;
+		logo.y = logoY;
+		align( logo );
+		glow.x = logo.x;
+		glow.y = logo.y;
+
+		leftFlame.x = logo.x + LEFT_FLAME_X - FLAME_BASE_X;
+		leftFlame.y = logo.y + FLAME_Y - FLAME_BASE_Y;
+		rightFlame.x = logo.x + RIGHT_FLAME_X - FLAME_BASE_X;
+		rightFlame.y = logo.y + FLAME_Y - FLAME_BASE_Y;
+		align( leftFlame );
+		align( rightFlame );
+
+		version.x = logo.x + (LOGO_W - version.width()) / 2f;
+		version.y = logo.y + LOGO_H - 1;
+		align( version );
 
 		btnFade = new IconButton(Icons.CHEVRON.get()){
 			@Override
@@ -245,7 +332,7 @@ public class TitleScene extends PixelScene {
 		};
 		btnFade.icon().originToCenter();
 		btnFade.icon().angle = 180f;
-		btnFade.setRect(btnAreaLeft + (buttonAreaWidth-16)/2, camera.main.height - 16 - insets.bottom, 16, 16);
+		btnFade.setRect(insets.left + (w-16)/2f, Camera.main.height - 16 - insets.bottom, 16, 16);
 		add(btnFade);
 
 		PointerArea fadeResetter = new PointerArea(0, 0, Camera.main.width, Camera.main.height){
@@ -270,7 +357,7 @@ public class TitleScene extends PixelScene {
 
 		if (DeviceCompat.isDesktop()) {
 			btnExit = new ExitButton();
-			btnExit.setPos( w - btnExit.width(), 0 );
+			btnExit.setPos( insets.left + w - btnExit.width(), insets.top );
 			add( btnExit );
 		}
 
@@ -283,30 +370,48 @@ public class TitleScene extends PixelScene {
 		fadeIn();
 	}
 
+	//height of each of the three main button rows, given the vertical space available for the whole grid
+	private static float mainHeight( float availableForGrid ){
+		float h = (availableForGrid - BOTTOM_H - 3*MAIN_GAP) / 3f;
+		return GameMath.gate( 24, (float)Math.floor(h), 36 );
+	}
+
+	//2 columns x 3 rows, then a row of three smaller buttons
+	private void layoutGrid( float left, float top, float width, float mainH ){
+		float colW = (float)Math.floor((width - MAIN_GAP) / 2f);
+
+		APDMenuButton[] main = { btnPlay, btnStatistics, btnBadges, btnJournal, btnOptions, btnQuit };
+		for (int i = 0; i < main.length; i++){
+			int col = i % 2, row = i / 2;
+			main[i].setRect( left + col*(colW + MAIN_GAP), top + row*(mainH + MAIN_GAP), colW, mainH );
+			align( main[i] );
+		}
+
+		float bottomY = top + 3*(mainH + MAIN_GAP);
+		float smallW = (float)Math.floor((width - 2*MAIN_GAP) / 3f);
+		APDMenuButton[] bottom = { btnNews, btnChanges, btnAbout };
+		for (int i = 0; i < bottom.length; i++){
+			bottom[i].setRect( left + i*(smallW + MAIN_GAP), bottomY, smallW, BOTTOM_H );
+			align( bottom[i] );
+		}
+	}
+
 	private float uiAlpha;
 
 	public void updateFade() {
 		float alpha = GameMath.gate(0f, uiAlpha, 1f);
 
-		title.alpha(alpha);
+		logo.am = alpha;
+		leftFlame.am = alpha;
+		rightFlame.am = alpha;
+		//glow handles its own alpha
 
-		btnPlay.enable(alpha != 0);
-		btnSupport.enable(alpha != 0);
-		btnRankings.enable(alpha != 0);
-		btnJournal.enable(alpha != 0);
-		btnNews.enable(alpha != 0);
-		btnChanges.enable(alpha != 0);
-		btnSettings.enable(alpha != 0);
-		btnAbout.enable(alpha != 0);
-
-		btnPlay.alpha(alpha);
-		btnSupport.alpha(alpha);
-		btnRankings.alpha(alpha);
-		btnJournal.alpha(alpha);
-		btnNews.alpha(alpha);
-		btnChanges.alpha(alpha);
-		btnSettings.alpha(alpha);
-		btnAbout.alpha(alpha);
+		APDMenuButton[] all = { btnPlay, btnStatistics, btnBadges, btnJournal, btnOptions, btnQuit,
+				btnNews, btnChanges, btnAbout };
+		for (APDMenuButton b : all){
+			b.enable(alpha != 0);
+			b.alpha(alpha);
+		}
 
 		version.alpha(alpha);
 		btnFade.icon().alpha(alpha);
@@ -317,47 +422,56 @@ public class TitleScene extends PixelScene {
 
 	}
 
-	private static class SettingsButton extends StyledButton {
+	//animated green flame, 24 frames of 47x47 in a 5x5 sheet. The second flame is mirrored and offset.
+	private static class APDFlame extends MovieClip {
 
-		public SettingsButton( Chrome.Type type, String label ){
-			super(type, label);
-			if (Messages.lang().status() == Languages.Status.X_UNFINISH){
-				icon(Icons.get(Icons.LANGS));
-				icon.hardlight(1.5f, 0, 0);
-			} else {
-				icon(Icons.get(Icons.PREFS));
+		APDFlame( boolean second ){
+			texture( "effects/apd_flame.png" );
+			TextureFilm frames = new TextureFilm( texture, FLAME_SIZE, FLAME_SIZE );
+			MovieClip.Animation anim = new MovieClip.Animation( 24, true );
+			anim.frames( frames, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 );
+			play( anim );
+
+			if (second){
+				flipHorizontal = true;
+				curFrame = 12;
+				frame( curAnim.frames[curFrame] );
 			}
-		}
-
-		@Override
-		public void update() {
-			super.update();
-
-			if (Messages.lang().status() == Languages.Status.X_UNFINISH){
-				textColor(ColorMath.interpolate( 0xFFFFFF, CharSprite.NEGATIVE, 0.5f + (float)Math.sin(Game.timeTotal*5)/2f));
-			}
-		}
-
-		@Override
-		protected void onClick() {
-			if (Messages.lang().status() == Languages.Status.X_UNFINISH){
-				WndSettings.last_index = 5;
-			}
-			ShatteredPixelDungeon.scene().add(new WndSettings());
 		}
 	}
 
-	private static class SupportButton extends StyledButton{
+	//stone button using apd_button.png as a 9-patch (8px margins). Main buttons stack the icon above the
+	//label, the bottom row puts the icon beside it.
+	private static class APDMenuButton extends StyledButton {
 
-		public SupportButton( Chrome.Type type, String label ){
-			super(type, label);
-			icon(Icons.get(Icons.GOLD));
-			textColor(Window.TITLE_COLOR);
+		private final boolean stacked;
+
+		APDMenuButton( String label, Icons icon, boolean stacked ){
+			super( Chrome.Type.GREY_BUTTON_TR, label, 6 );
+			this.stacked = stacked;
+
+			remove( bg );
+			bg = new NinePatch( "interfaces/apd_button.png", 8 );
+			addToBack( bg );
+
+			icon( Icons.get( icon ) );
 		}
 
 		@Override
-		protected void onClick() {
-			ShatteredPixelDungeon.switchNoFade(SupporterScene.class);
+		protected void layout() {
+			super.layout();
+
+			if (stacked && icon != null && text != null){
+				float contentH = icon.height() + 2 + text.height();
+				float top = y + (height - contentH) / 2f;
+
+				icon.x = x + (width - icon.width()) / 2f;
+				icon.y = top;
+				PixelScene.align( icon );
+
+				text.setPos( x + (width - text.width()) / 2f, top + icon.height() + 2 );
+				PixelScene.align( text );
+			}
 		}
 	}
 }
