@@ -62,6 +62,9 @@ See `docs/APD-STATS-COMBAT.md`.
 ## Generation provenance (telemetry 1.4)
 See `docs/APD-STATS-GENERATION.md`.
 
+## Legacy import and derived facts (telemetry 1.5)
+See `docs/APD-STATS-LEGACY.md`.
+
 ## Known limitations
 - A log left OPEN with no save slot (crash before the first save) is not yet classified as orphaned.
 - The exit checkpoint is captured when the next level is entered, so a death on a level has its last checkpoint from the level entry.

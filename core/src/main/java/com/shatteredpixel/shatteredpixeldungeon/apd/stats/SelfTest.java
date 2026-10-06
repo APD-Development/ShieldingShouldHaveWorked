@@ -80,6 +80,7 @@ public final class SelfTest {
 			itemEventsRoundTrip(r, dir);
 			combatEventsRoundTrip(r, dir);
 			generationEventsRoundTrip(r, dir);
+			legacyImportRoundTrip(r, dir);
 			damage(r, dir, eventCount);
 			concurrency(r, dir);
 			store(r, dir);
@@ -265,6 +266,46 @@ public final class SelfTest {
 			r.info("generation events: " + ((t1 - t0) / items) + " ns/event caller cost");
 		} catch (Throwable t){
 			r.fail("generation events round trip threw " + t);
+		}
+	}
+
+	//legacy import events and the derived fact table (telemetry 1.5): import records, rebuild the table from the raw files,
+	//delete the cache and rebuild again, and check both give the same answer and that unknown stays unknown
+	private static void legacyImportRoundTrip( Report r, File dir ){
+		try {
+			File root = new File(dir, "derive-root");
+			File legacy = new File(root, DerivedStore.LEGACY_DIR);
+			File f = new File(legacy, "legacy-import-1.apdlog");
+			RunLogWriter w = RunLogWriter.create(f, TelemetryVersion.CURRENT, "legacy-import-1", "selftest", 1);
+			int records = 40;
+			for (int i = 0; i < records; i++){
+				LegacyEvents.Record rec = new LegacyEvents.Record();
+				rec.gameId = "g" + i; rec.source = "rankings.dat";
+				rec.putNum(FactKeys.SCORE, 1000 + i);
+				rec.putNum(FactKeys.OUTCOME, i % 2);
+				rec.putText(FactKeys.HERO_CLASS, "MAGE");
+				rec.putUnknown(FactKeys.DATE);
+				LegacyEvents.emitRecord(w, i, rec);
+			}
+			w.close(true);
+			DerivedStore store = new DerivedStore(root);
+			long t0 = System.nanoTime();
+			FactTable built = store.rebuild();
+			long t1 = System.nanoTime();
+			FactTable cached = store.load();
+			boolean fromCache = store.lastSource() == DerivedStore.Source.CACHE;
+			store.deleteCache();
+			FactTable again = store.load();
+			boolean ok = built.legacyRows.size() == records && cached.legacyRows.equals(built.legacyRows)
+					&& again.legacyRows.equals(built.legacyRows) && fromCache
+					&& !built.legacyRows.get(0).isKnown(FactKeys.DATE)
+					&& built.legacyRows.get(3).numOr(FactKeys.SCORE, -1) == 1003
+					&& !built.legacyRows.get(0).isKnown(FactKeys.HERO_ATTACKS);
+			if (ok) r.pass("legacy import and fact derivation round trip"); else r.fail("legacy import or fact derivation did not round trip");
+			r.info("fact derivation: " + ((t1 - t0) / 1000L) + " us to rebuild " + records + " imported records");
+			deleteTree(root);
+		} catch (Throwable t){
+			r.fail("legacy import round trip threw " + t);
 		}
 	}
 

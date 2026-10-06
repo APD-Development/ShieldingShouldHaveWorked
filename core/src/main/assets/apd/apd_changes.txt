@@ -1,5 +1,6 @@
 APD 4.0.8-apd
 Added:
+- APD Settings can now import your old SPD rankings into your history (nothing is guessed: anything the old record lacked stays unknown), and recorded runs remember which ranking entry they produced so they are never counted twice
 - Run history now also records what the game generated for each level: every item with its true identity and where it was placed, every enemy, and how the level was built, kept strictly separate from what you could see
 - Run history now also records fights and health: attacks, damage (including what shielding absorbed), kills, experience, hunger, healing (marked as inferred) and deaths, keeping what you could see apart from hidden enemy details
 - Run history now gives every item you meet a persistent identity (apd_uid) and records seeing, picking up, equipping, learning about and losing it, without ever recording what you could not have known yet

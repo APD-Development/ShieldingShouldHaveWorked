@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.apd;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -125,5 +126,22 @@ public class ItemHookWiringTest {
 		int begins = 0, from = 0;
 		while ((from = g.indexOf("ApdGen.begin()", from)) >= 0){ begins++; from++; }
 		assertEquals(6, begins);
+	}
+
+	@Test
+	public void legacyImportAndRankingLinkAreConnected() throws Exception {
+		has("apd/recorder/RunRecorder.java", "emitRankingLink(clock, outcome)", "LegacyEvents.emitRankingLink");
+		//the link is written after the run end event and before the log is sealed
+		String r = src("apd/recorder/RunRecorder.java");
+		int end = r.indexOf("LifecycleEvents.emitRunEnd(writer, clock, e);");
+		int link = r.indexOf("emitRankingLink(clock, outcome);", end);
+		int seal = r.indexOf("writer.close(true, CLOSE_WAIT_MILLIS);", link);
+		assertTrue(end > 0 && link > end && seal > link);
+		//the settings pane offers the import and it goes through the recorder facade
+		has("windows/APDSettingsPane.java", "Import SPD records", "ApdRecorder.importLegacyRecords()", "ApdRecorder.historyOverview()");
+		//the importer reads, it does not touch SPD's rankings or saves
+		String imp = src("apd/recorder/LegacyImporter.java");
+		assertFalse(imp.contains("Rankings.INSTANCE"));
+		assertFalse(imp.contains("bundleToFile"));
 	}
 }

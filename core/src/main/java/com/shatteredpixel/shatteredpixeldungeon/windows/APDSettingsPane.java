@@ -51,6 +51,7 @@ public class APDSettingsPane extends Component {
 	private CheckBox chkRecord;
 	private RenderedTextBlock status;
 	private RedButton btnTest;
+	private RedButton btnImport;
 
 	@Override
 	protected void createChildren() {
@@ -94,6 +95,14 @@ public class APDSettingsPane extends Component {
 			}
 		};
 		add( btnTest );
+
+		btnImport = new RedButton( "Import SPD records" ) {
+			@Override
+			protected void onClick() {
+				runImport( this );
+			}
+		};
+		add( btnImport );
 	}
 
 	@Override
@@ -111,7 +120,35 @@ public class APDSettingsPane extends Component {
 		status.setPos( x, pos );
 		pos = status.bottom() + GAP;
 		btnTest.setRect( x, pos, width, 16 );
-		height = btnTest.bottom() - y;
+		pos = btnTest.bottom() + GAP;
+		btnImport.setRect( x, pos, width, 16 );
+		height = btnImport.bottom() - y;
+	}
+
+	private static void runImport( final RedButton button ) {
+		button.text( "Importing..." );
+		button.enable( false );
+		Thread t = new Thread( new Runnable() {
+			@Override
+			public void run() {
+				String result;
+				try {
+					result = ApdRecorder.importLegacyRecords() + "\n\n" + ApdRecorder.historyOverview();
+				} catch (Throwable e) {
+					result = "Import failed: " + e;
+				}
+				final String shown = result;
+				Game.runOnRenderThread( new Callback() {
+					@Override
+					public void call() {
+						button.text( "Import SPD records" );
+						button.enable( true );
+						ShatteredPixelDungeon.scene().addToFront( new WndMessage( shown ) );
+					}
+				} );
+			}
+		} );
+		t.start();
 	}
 
 	private static void runSelfTest( final RedButton button ) {

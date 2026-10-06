@@ -23,9 +23,11 @@
 package com.shatteredpixel.shatteredpixeldungeon.apd.recorder;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Rankings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.ApdEvent;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.EventTypes;
+import com.shatteredpixel.shatteredpixeldungeon.apd.stats.LegacyEvents;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.LifecycleEvents;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.ReadResult;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.RunLogReader;
@@ -391,8 +393,33 @@ final class RunRecorder {
 		e.turns = clock;
 		e.rulesetChanges = rulesetChanges;
 		LifecycleEvents.emitRunEnd(writer, clock, e);
+		emitRankingLink(clock, outcome);
 		writer.close(true, CLOSE_WAIT_MILLIS);
 		store.refreshIndex(logId);
+	}
+
+	//SPD has just written this run's rankings record (Dungeon.fail / Dungeon.win call Rankings.submit first): remember its id
+	//so the run and the old-style record are known to be the same run. Reads only; a record that does not match this run
+	//(score or outcome) is not linked.
+	private void emitRankingLink( long clock, int outcome ){
+		try {
+			Rankings rankings = Rankings.INSTANCE;
+			Rankings.Record rec = null;
+			if (Dungeon.daily){
+				rec = Dungeon.dailyReplay ? rankings.latestDailyReplay : rankings.latestDaily;
+			} else if (rankings.records != null && rankings.lastRecord >= 0 && rankings.lastRecord < rankings.records.size()){
+				rec = rankings.records.get(rankings.lastRecord);
+			}
+			if (rec == null || rec.gameID == null || rec.gameID.isEmpty()) return;
+			if (rec.score != Statistics.totalScore || rec.win != (outcome == LifecycleEvents.OUTCOME_WON)) return;
+			LegacyEvents.RankingLink link = new LegacyEvents.RankingLink();
+			link.gameId = rec.gameID;
+			link.daily = Dungeon.daily;
+			link.dailyReplay = Dungeon.dailyReplay;
+			LegacyEvents.emitRankingLink(writer, clock, link);
+		} catch (Throwable ignored){
+			//the link is a convenience, a run is still linked later by its score and class
+		}
 	}
 
 	//the app is moving on to another run or shutting down: leave the log resumable

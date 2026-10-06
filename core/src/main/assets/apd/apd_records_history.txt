@@ -12,6 +12,21 @@ uimsd-name | - | APD 4.0.8-apd | 2026-10-06
 - The statistics / records / query system is named UIMSD, the Ultimate Infinite Mega Statistics Database. The title
   screen button that used to say "Statistics" now says "UIMSD". This changes a name only, no recorded data.
 
+telemetry-1.5-legacy-import | telemetry 1.5 | APD 4.0.8-apd | 2026-10-06
+- Telemetry 1.5 lets APD keep what SPD itself remembered. "Import SPD records" in APD Settings copies the entries of the old
+  rankings table (class, outcome, depth, level, score, killer, date and version when the old record had them, the saved game
+  statistics and the final equipment) into APD's history as raw import records. Importing twice adds nothing new.
+- SPD only keeps its best 11 runs, so older runs are already gone. The import can only preserve what is still there, and it keeps
+  SPD's own played/won counters as separate aggregate information.
+- A field the old record did not contain stays unknown. It is never turned into zero, and nothing is guessed. Imported numbers are
+  marked as coming from the old game, and screens that show statistics will say how many runs actually contain each one.
+- Runs recorded by APD now note the id SPD gave their ranking entry, so a recorded run and its old-style record are recognised as the
+  same run and never counted twice. Older recorded runs are matched by class, outcome, depth, level and score only when exactly one
+  run fits.
+- From the raw logs and import records APD derives a table of facts per run (rebuildable at any time, never the source of truth).
+  Statistics a run's telemetry version could not record are unknown rather than zero, and counts from logs with gaps are marked as
+  possibly too low.
+
 telemetry-1.4-generation-provenance | telemetry 1.4 | APD 4.0.8-apd | 2026-10-06
 - Telemetry 1.4 records where everything in a level came from. When a level is built for the first time, every item placed in it
   (on the floor, in chests, in mimics, held by statues, as quest rewards) gets its apd_uid and an ITEM_GENERATED event with its

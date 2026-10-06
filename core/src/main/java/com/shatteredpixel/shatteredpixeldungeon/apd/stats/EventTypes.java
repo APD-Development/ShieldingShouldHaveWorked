@@ -101,6 +101,14 @@ public final class EventTypes {
 	public static final int MOB_GENERATED = 293;
 	public static final int MOB_ID_ASSIGNED = 294;   //links a generated creature to the id the game gives it when the level is entered
 
+	//---- legacy import and ranking link (telemetry 1.5), payloads are defined and tested in LegacyEvents ----
+	//LEGACY_* events live in their own import logs (legacy/), never in a run log. They carry what the old SPD records
+	//held, field by field, with fields the old record did not contain marked UNKNOWN (never zero).
+	public static final int LEGACY_RECORD = 295;
+	public static final int LEGACY_TOTALS = 296;       //SPD's own played / won counters
+	public static final int LEGACY_DAILY_SCORE = 297;
+	public static final int RANKING_LINK = 298;        //in a run log: the id SPD gave the ranking record this run produced
+
 	//Who may be shown an event's contents. Anything that is not PUBLIC must never reach a player-facing view, an export
 	//meant for players, or a run-replication package without being filtered first.
 	public enum Visibility {
@@ -151,6 +159,10 @@ public final class EventTypes {
 		m.put(ITEM_GENERATED, "ITEM_GENERATED");
 		m.put(MOB_GENERATED, "MOB_GENERATED");
 		m.put(MOB_ID_ASSIGNED, "MOB_ID_ASSIGNED");
+		m.put(LEGACY_RECORD, "LEGACY_RECORD");
+		m.put(LEGACY_TOTALS, "LEGACY_TOTALS");
+		m.put(LEGACY_DAILY_SCORE, "LEGACY_DAILY_SCORE");
+		m.put(RANKING_LINK, "RANKING_LINK");
 		NAMES = Collections.unmodifiableMap(m);
 	}
 
@@ -177,6 +189,7 @@ public final class EventTypes {
 			case ITEM_GENERATED:
 			case MOB_GENERATED:
 			case MOB_ID_ASSIGNED:
+			case RANKING_LINK:
 				return Visibility.INTERNAL;
 			case GAP: case RUN_START: case RUN_END: case SAVE: case LEVEL_ENTER: case LEVEL_EXIT:
 			case SESSION_START: case ROLLBACK: case RULESET_CHANGE:
@@ -185,6 +198,7 @@ public final class EventTypes {
 			case ATTACK: case DAMAGE: case HEAL: case MAX_HP_CHANGE: case SHIELD_GAIN: case HUNGER_CHANGE:
 			case HUNGER_STATE: case XP_GAIN: case LEVEL_UP: case KILL: case HERO_DEATH: case HERO_REVIVED:
 			case HP_CHANGE_INFERRED:
+			case LEGACY_RECORD: case LEGACY_TOTALS: case LEGACY_DAILY_SCORE: //everything the old Rankings screens showed
 				return Visibility.PUBLIC;
 			default:
 				return Visibility.INTERNAL;

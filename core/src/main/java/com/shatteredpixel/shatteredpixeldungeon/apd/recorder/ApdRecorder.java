@@ -24,7 +24,11 @@ package com.shatteredpixel.shatteredpixeldungeon.apd.recorder;
 
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.apd.stats.DerivedStore;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.EventTypes;
+import com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKeys;
+import com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactTable;
+import com.shatteredpixel.shatteredpixeldungeon.apd.stats.RunFacts;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.ItemEvents;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.LifecycleEvents;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.ReadResult;
@@ -609,6 +613,49 @@ public final class ApdRecorder {
 			s.lastError = String.valueOf(t);
 		}
 		return s;
+	}
+
+	//Copies SPD's rankings.dat records into the history as raw import events (see LegacyImporter) and says what happened.
+	//Not synchronized with the recorder: it never blocks recording. Never throws.
+	public static String importLegacyRecords(){
+		try {
+			File base = historyRoot();
+			if (base == null) return "History is not set up, nothing imported.";
+			return LegacyImporter.importRankingsFile(base, System.currentTimeMillis()).summary();
+		} catch (Throwable t){
+			return "Import failed: " + t;
+		}
+	}
+
+	//A few lines about what the history holds, from the derived fact table (rebuilt from the raw files when needed).
+	public static String historyOverview(){
+		try {
+			File base = historyRoot();
+			if (base == null) return "History is not set up.";
+			DerivedStore derived = new DerivedStore(base);
+			FactTable t = derived.load();
+			java.util.List<RunFacts> rows = t.rows();
+			int linked = 0;
+			for (RunFacts leg : t.legacyRows) if (leg.isKnown(FactKeys.LINKED_RUN)) linked++;
+			StringBuilder b = new StringBuilder();
+			b.append(t.apdRows.size()).append(" recorded runs, ").append(t.legacyRows.size()).append(" imported SPD records");
+			if (linked > 0) b.append(" (").append(linked).append(" are also recorded runs)");
+			b.append(". ").append(rows.size()).append(" distinct runs in total.\n");
+			if (!rows.isEmpty()){
+				b.append(FactTable.coverage(rows, FactKeys.OUTCOME)).append(".\n");
+				b.append(FactTable.coverage(rows, FactKeys.HERO_ATTACKS)).append(".\n");
+				b.append(FactTable.coverage(rows, FactKeys.GEN_ITEMS)).append(".\n");
+			}
+			if (t.legacyTotals != null && t.legacyTotals.isKnown("legacy.totalNumber")){
+				b.append("SPD counted ").append(t.legacyTotals.numOr("legacy.totalNumber", 0)).append(" games");
+				if (t.legacyTotals.isKnown("legacy.wonNumber")) b.append(", ").append(t.legacyTotals.numOr("legacy.wonNumber", 0)).append(" won");
+				b.append(" (SPD only kept its best 11 records).\n");
+			}
+			b.append("Facts ready in ").append(derived.lastMillis()).append(" ms (").append(derived.lastSource()).append(").");
+			return b.toString();
+		} catch (Throwable t){
+			return "Could not read the history: " + t;
+		}
 	}
 
 	//where history is kept, null if not set up

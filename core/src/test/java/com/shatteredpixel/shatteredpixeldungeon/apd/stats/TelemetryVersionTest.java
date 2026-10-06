@@ -12,8 +12,8 @@ public class TelemetryVersionTest {
 
 	@Test
 	public void currentVersionIsTelemetry1Point4(){
-		assertEquals(new TelemetryVersion(1, 4), TelemetryVersion.CURRENT);
-		assertEquals("1.4", TelemetryVersion.CURRENT.toString());
+		assertEquals(new TelemetryVersion(1, 5), TelemetryVersion.CURRENT);
+		assertEquals("1.5", TelemetryVersion.CURRENT.toString());
 	}
 
 	@Test
