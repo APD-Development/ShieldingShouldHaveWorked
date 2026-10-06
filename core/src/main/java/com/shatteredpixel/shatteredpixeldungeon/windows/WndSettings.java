@@ -68,6 +68,7 @@ public class WndSettings extends WndTabbed {
 	private DataTab     data;
 	private AudioTab    audio;
 	private LangsTab    langs;
+	private APDSettingsPane apd;
 
 	public static int last_index = 0;
 
@@ -186,13 +187,30 @@ public class WndSettings extends WndTabbed {
 		};
 		add( langsTab );
 
+		//APD: the APD settings tab, always last so the other tab indexes don't change
+		apd = new APDSettingsPane();
+		apd.setSize(width, 0);
+		height = Math.max(height, apd.height());
+		add( apd );
+
+		add( new LabeledTab("APD"){
+			@Override
+			protected void select(boolean value) {
+				super.select(value);
+				apd.visible = apd.active = value;
+				if (value) last_index = 6;
+			}
+		});
+
 		resize(width, (int)Math.ceil(height));
 
 		layoutTabs();
 
-		if (tabs.size() == 5 && last_index >= 3){
+		if (tabs.size() == 6 && last_index >= 3 && last_index < 6){
 			//input tab isn't visible
 			select(last_index-1);
+		} else if (tabs.size() == 6 && last_index == 6){
+			select(5);
 		} else {
 			select(last_index);
 		}
