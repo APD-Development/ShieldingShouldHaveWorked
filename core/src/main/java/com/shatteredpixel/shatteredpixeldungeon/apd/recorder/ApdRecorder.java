@@ -203,7 +203,11 @@ public final class ApdRecorder {
 
 	//the run ended in death or victory (Dungeon.fail / Dungeon.win)
 	public static synchronized void onRunEnded( boolean won, Object cause ){
-		if (!usable() || active == null) return;
+		if (!usable()) return;
+		if (active == null){
+			autoImportRankings();   //a run APD was not following still produced a ranking record
+			return;
+		}
 		try {
 			inject();
 			active.end(won ? LifecycleEvents.OUTCOME_WON : LifecycleEvents.OUTCOME_DIED, cause);
@@ -213,6 +217,62 @@ public final class ApdRecorder {
 			active = null;
 		}
 		refreshItemFlag();
+		autoImportRankings();
+	}
+
+	//Rankings.submit is about to add this run's record and trim SPD's table to 11 records: whatever the file holds now is read
+	//first, so a record that is about to be dropped has already been copied (Dungeon.fail / Dungeon.win)
+	public static void onBeforeRankingSubmit(){
+		autoImportRankings();
+	}
+
+	private static Thread importThread;
+
+	//Copies SPD's ranking records into the history without ever getting in the way of the game. The file is read here (a few
+	//small reads, read-only) and the history is written on a background thread. Duplicates are impossible (records are
+	//recognised by their id) and any problem is dropped silently: this is not allowed to count against the recorder or
+	//touch the run being finished.
+	private static void autoImportRankings(){
+		try {
+			final File base;
+			synchronized (ApdRecorder.class){
+				if (!usable()) return;
+				base = root;
+			}
+			if (base == null) return;
+			final long now = System.currentTimeMillis();
+			final LegacyImporter.Extract x = LegacyImporter.extractRankingsFile(now);
+			if (x == null || !x.fileFound) return;
+			Thread t = new Thread(new Runnable(){
+				@Override
+				public void run(){
+					try {
+						LegacyImporter.write(base, x, now);
+					} catch (Throwable ignored){
+						//never reported against the recorder
+					}
+				}
+			}, "apd-legacy-import");
+			t.setDaemon(true);
+			synchronized (ApdRecorder.class){
+				importThread = t;
+			}
+			t.start();
+		} catch (Throwable ignored){
+			//importing is optional, finishing the run is not
+		}
+	}
+
+	//tests: wait for the automatic import to finish writing
+	static void awaitAutoImportForTests(){
+		Thread t;
+		synchronized (ApdRecorder.class){
+			t = importThread;
+		}
+		try {
+			if (t != null) t.join(15000);
+		} catch (InterruptedException ignored){
+		}
 	}
 
 	//a save slot is about to be deleted (Dungeon.deleteGame): its run, if still open, ends as abandoned

@@ -900,6 +900,7 @@ public class Dungeon {
 		if (WndResurrect.instance == null) {
 			updateLevelExplored();
 			Statistics.gameWon = false;
+			ApdRecorder.onBeforeRankingSubmit();
 			Rankings.INSTANCE.submit( false, cause );
 			ApdRecorder.onRunEnded( false, cause );
 		}
@@ -912,6 +913,7 @@ public class Dungeon {
 
 		hero.belongings.identify();
 
+		ApdRecorder.onBeforeRankingSubmit();
 		Rankings.INSTANCE.submit( true, cause );
 		ApdRecorder.onRunEnded( true, cause );
 	}

@@ -148,6 +148,19 @@ public final class DerivedStore {
 				table.apdRows.add(bad);
 			}
 		}
+		readLegacy(table);
+		table.link();
+		return table;
+	}
+
+	//only the imported records, totals and daily scores (a few small files): cheap enough to ask for at any time
+	public synchronized FactTable buildLegacyOnly(){
+		FactTable table = new FactTable();
+		readLegacy(table);
+		return table;
+	}
+
+	private void readLegacy( FactTable table ){
 		LegacyEvents.Totals latest = null;
 		java.util.Set<String> seenIds = new java.util.HashSet<>();
 		java.util.Set<Long> seenDays = new java.util.HashSet<>();
@@ -177,8 +190,6 @@ public final class DerivedStore {
 			}
 		}
 		if (latest != null) table.legacyTotals = LegacyFacts.fromTotals(latest);
-		table.link();
-		return table;
 	}
 
 	//---- cache file ----------------------------------------------------------------------------------------------

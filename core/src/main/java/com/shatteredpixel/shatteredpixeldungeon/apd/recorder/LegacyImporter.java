@@ -83,124 +83,159 @@ public final class LegacyImporter {
 
 	//Reads rankings.dat with the game's own file API and imports it. Never throws.
 	public static Report importRankingsFile( File root, long nowMillis ){
-		Report r = new Report();
-		try {
-			Bundle b;
-			try {
-				b = com.watabou.utils.FileUtils.bundleFromFile(com.shatteredpixel.shatteredpixeldungeon.Rankings.RANKINGS_FILE);
-			} catch (java.io.IOException missing){
-				return r;
-			}
-			return importFrom(b, root, nowMillis);
-		} catch (Throwable t){
-			r.problem = String.valueOf(t);
-			return r;
-		}
+		Extract x = extractRankingsFile(nowMillis);
+		if (x == null) return new Report();
+		return write(root, x, nowMillis);
 	}
 
-	//Imports a rankings bundle into the history at 'root'. Never throws.
-	public static Report importFrom( Bundle rankings, File root, long nowMillis ){
-		Report report = new Report();
-		long t0 = System.nanoTime();
-		try {
-			if (rankings == null || rankings.isNull()){
-				return report;
-			}
-			report.fileFound = true;
-			DerivedStore derived = new DerivedStore(root);
-			FactTable existing = derived.build();
-			Set<String> knownIds = new HashSet<>();
-			for (RunFacts f : existing.legacyRows) knownIds.add(f.id.substring("legacy:".length()));
-			Set<Long> knownDays = new HashSet<>();
-			for (long[] d : existing.dailyScores) knownDays.add(d[0]);
+	//what was read from a rankings bundle, before anything is written
+	public static final class Extract {
+		public boolean fileFound;
+		public int records;
+		public int unreadable;
+		public final List<LegacyEvents.Record> fresh = new ArrayList<>();
+		public LegacyEvents.Totals totals;
+		public final List<LegacyEvents.DailyScore> days = new ArrayList<>();
+	}
 
-			List<LegacyEvents.Record> fresh = new ArrayList<>();
+	//only one import writes at a time (the button and the automatic import after a run can overlap), so the second one
+	//sees what the first wrote and adds nothing twice
+	private static final Object WRITE_LOCK = new Object();
+
+	//Reads a rankings bundle into plain records. Cheap (no history is read) and read-only. Never throws.
+	public static Extract extract( Bundle rankings, long nowMillis ){
+		Extract x = new Extract();
+		try {
+			if (rankings == null || rankings.isNull()) return x;
+			x.fileFound = true;
 			List<Bundle> sources = new ArrayList<>();
 			if (rankings.contains("records")){
 				Bundle[] arr = rankings.getBundleArray("records");
 				if (arr != null) for (Bundle b : arr) sources.add(b);
 			}
 			if (rankings.contains("latest_daily")) sources.add(rankings.getBundle("latest_daily"));
-			report.records = sources.size();
-			Set<String> batchIds = new HashSet<>();
+			x.records = sources.size();
 			for (Bundle b : sources){
-				LegacyEvents.Record rec;
 				try {
-					rec = readRecord(b, nowMillis);
+					x.fresh.add(readRecord(b, nowMillis));
 				} catch (Throwable bad){
-					report.unreadable++;
-					continue;
+					x.unreadable++;
 				}
-				if (knownIds.contains(rec.gameId) || !batchIds.add(rec.gameId)){
-					report.alreadyKnown++;
-					continue;
-				}
-				for (LegacyEvents.Value v : rec.fields.values()){
-					if (v.isKnown()) report.fieldsKnown++; else report.fieldsUnknown++;
-				}
-				fresh.add(rec);
 			}
-
-			LegacyEvents.Totals totals = readTotals(rankings, nowMillis);
-			boolean writeTotals = totals != null && !sameTotals(existing.legacyTotals, totals);
-
-			List<LegacyEvents.DailyScore> days = new ArrayList<>();
+			x.totals = readTotals(rankings, nowMillis);
 			if (rankings.contains("daily_history_dates") && rankings.contains("daily_history_scores")){
 				long[] dates = rankings.getLongArray("daily_history_dates");
 				int[] scores = rankings.getIntArray("daily_history_scores");
 				if (dates != null && scores != null){
 					for (int i = 0; i < dates.length && i < scores.length; i++){
-						if (knownDays.add(dates[i])){
-							LegacyEvents.DailyScore d = new LegacyEvents.DailyScore();
-							d.day = dates[i];
-							d.score = scores[i];
-							d.importedAtMillis = nowMillis;
-							days.add(d);
-						}
+						LegacyEvents.DailyScore d = new LegacyEvents.DailyScore();
+						d.day = dates[i];
+						d.score = scores[i];
+						d.importedAtMillis = nowMillis;
+						x.days.add(d);
 					}
 				}
 			}
-
-			if (fresh.isEmpty() && !writeTotals && days.isEmpty()) return report;
-
-			File dir = derived.legacyDir();
-			File file = null;
-			String id = null;
-			for (int n = 0; n < 1000 && file == null; n++){
-				String candidate = "legacy-import-" + nowMillis + (n == 0 ? "" : "-" + n);
-				File f = new File(dir, candidate + ".apdlog");
-				if (!f.exists()){
-					file = f;
-					id = candidate;
-				}
-			}
-			if (file == null){
-				report.problem = "could not choose an import file name";
-				return report;
-			}
-			RunLogWriter w = RunLogWriter.create(file, TelemetryVersion.CURRENT, id, "legacy-import", nowMillis);
-			if (w.isDisabled()){
-				report.problem = "could not open " + file.getName() + ": " + w.failure();
-				return report;
-			}
-			long clock = 0;
-			boolean ok = true;
-			for (LegacyEvents.Record rec : fresh) ok &= LegacyEvents.emitRecord(w, clock++, rec);
-			if (writeTotals) ok &= LegacyEvents.emitTotals(w, clock++, totals);
-			for (LegacyEvents.DailyScore d : days) ok &= LegacyEvents.emitDailyScore(w, clock++, d);
-			ok &= w.close(true, 10000);
-			if (!ok || w.isDisabled()){
-				report.problem = "writing the import file failed";
-				return report;
-			}
-			report.imported = fresh.size();
-			report.totalsImported = writeTotals;
-			report.dailyScoresImported = days.size();
-			report.importFile = file.getName();
 		} catch (Throwable t){
-			report.problem = String.valueOf(t);
-		} finally {
-			report.millis = (System.nanoTime() - t0) / 1000000L;
+			//whatever was read so far is kept
+		}
+		return x;
+	}
+
+	//The same, reading rankings.dat with the game's own file API. Null when there is no file. Never throws.
+	public static Extract extractRankingsFile( long nowMillis ){
+		try {
+			Bundle b;
+			try {
+				b = com.watabou.utils.FileUtils.bundleFromFile(com.shatteredpixel.shatteredpixeldungeon.Rankings.RANKINGS_FILE);
+			} catch (java.io.IOException missing){
+				return null;
+			}
+			return extract(b, nowMillis);
+		} catch (Throwable t){
+			return null;
+		}
+	}
+
+	//Imports a rankings bundle into the history at 'root'. Never throws.
+	public static Report importFrom( Bundle rankings, File root, long nowMillis ){
+		return write(root, extract(rankings, nowMillis), nowMillis);
+	}
+
+	//Writes what is not in the history yet. Never throws.
+	public static Report write( File root, Extract x, long nowMillis ){
+		Report report = new Report();
+		long t0 = System.nanoTime();
+		synchronized (WRITE_LOCK){
+			try {
+				report.fileFound = x.fileFound;
+				report.records = x.records;
+				report.unreadable = x.unreadable;
+				if (!x.fileFound) return report;
+				DerivedStore derived = new DerivedStore(root);
+				FactTable existing = derived.buildLegacyOnly();
+				Set<String> knownIds = new HashSet<>();
+				for (RunFacts f : existing.legacyRows) knownIds.add(f.id.substring("legacy:".length()));
+				Set<Long> knownDays = new HashSet<>();
+				for (long[] d : existing.dailyScores) knownDays.add(d[0]);
+
+				List<LegacyEvents.Record> fresh = new ArrayList<>();
+				Set<String> batchIds = new HashSet<>();
+				for (LegacyEvents.Record rec : x.fresh){
+					if (knownIds.contains(rec.gameId) || !batchIds.add(rec.gameId)){
+						report.alreadyKnown++;
+						continue;
+					}
+					for (LegacyEvents.Value v : rec.fields.values()){
+						if (v.isKnown()) report.fieldsKnown++; else report.fieldsUnknown++;
+					}
+					fresh.add(rec);
+				}
+				boolean writeTotals = x.totals != null && !sameTotals(existing.legacyTotals, x.totals);
+				List<LegacyEvents.DailyScore> days = new ArrayList<>();
+				for (LegacyEvents.DailyScore d : x.days) if (knownDays.add(d.day)) days.add(d);
+
+				if (fresh.isEmpty() && !writeTotals && days.isEmpty()) return report;
+
+				File dir = derived.legacyDir();
+				File file = null;
+				String id = null;
+				for (int n = 0; n < 1000 && file == null; n++){
+					String candidate = "legacy-import-" + nowMillis + (n == 0 ? "" : "-" + n);
+					File f = new File(dir, candidate + ".apdlog");
+					if (!f.exists()){
+						file = f;
+						id = candidate;
+					}
+				}
+				if (file == null){
+					report.problem = "could not choose an import file name";
+					return report;
+				}
+				RunLogWriter w = RunLogWriter.create(file, TelemetryVersion.CURRENT, id, "legacy-import", nowMillis);
+				if (w.isDisabled()){
+					report.problem = "could not open " + file.getName() + ": " + w.failure();
+					return report;
+				}
+				long clock = 0;
+				boolean ok = true;
+				for (LegacyEvents.Record rec : fresh) ok &= LegacyEvents.emitRecord(w, clock++, rec);
+				if (writeTotals) ok &= LegacyEvents.emitTotals(w, clock++, x.totals);
+				for (LegacyEvents.DailyScore d : days) ok &= LegacyEvents.emitDailyScore(w, clock++, d);
+				ok &= w.close(true, 10000);
+				if (!ok || w.isDisabled()){
+					report.problem = "writing the import file failed";
+					return report;
+				}
+				report.imported = fresh.size();
+				report.totalsImported = writeTotals;
+				report.dailyScoresImported = days.size();
+				report.importFile = file.getName();
+			} catch (Throwable t){
+				report.problem = String.valueOf(t);
+			} finally {
+				report.millis = (System.nanoTime() - t0) / 1000000L;
+			}
 		}
 		return report;
 	}
