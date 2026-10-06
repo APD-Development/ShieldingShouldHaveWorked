@@ -1,0 +1,15 @@
+APD 4.0.8-apd
+Added:
+- APD Settings in the pause menu
+- Exotic crystal conversion chance setting (0-80%, 10% steps)
+- Plain APD text title and APD INDEV version string
+- APD News and APD Changes screens
+- Sad Ghost now shows the real upgrade level of the gear it offers
+- Cleric attempt counter and the achievement "FUCK CLERIC, THAT'S WHY" (10 attempts)
+- Fresh installs go straight to the title menu
+Changed:
+- Selecting Cleric and pressing Start now leads to a black screen until the app is closed
+Fixed:
+- Starvation damage now consumes shielding before HP (APD-0001). Shielding does not cure hunger.
+Removed:
+- Cleric as a playable class

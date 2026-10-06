@@ -22,6 +22,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
+import com.badlogic.gdx.Gdx;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ExitButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
@@ -36,29 +37,31 @@ import com.watabou.utils.RectF;
 //APD: a plain scrolling text screen used for APD News and APD Changes
 public class APDTextScene extends PixelScene {
 
+	//the text of each page is a plain file in core/src/main/assets/apd, add a new block at the top of
+	//apd_changes.txt for every build
 	public enum Page {
-		NEWS("APD News",
-				"_ADHD Pixel Dungeon_ is a private fork of Shattered Pixel Dungeon, built on v4.0.0.\n\n" +
-				"This is an INDEV build. Expect rough edges, and expect things to change.\n\n" +
-				"Plain text title for now, there is no APD art yet."),
-		CHANGES("APD Changes",
-				"_APD 4.0.8-apd_\n\n" +
-				"_APD-0001:_ starvation damage now consumes shielding before HP. Shielding does not cure hunger.\n\n" +
-				"_Sad Ghost:_ the offered weapon and armor now show their real upgrade level.\n\n" +
-				"_Exotic chance:_ new APD setting (pause menu > APD Settings), 0% to 80%, a minimum chance that generated potions and scrolls are exotic. Exotic Crystals can still raise it higher.\n\n" +
-				"_Cleric:_ removed. Do not try it.\n\n" +
-				"_Menus:_ APD settings, APD News and APD Changes screens, APD title text and INDEV version string.");
+		NEWS("APD News", "apd/apd_news.txt"),
+		CHANGES("APD Changes", "apd/apd_changes.txt");
 
 		final String title;
-		final String text;
+		final String file;
 
-		Page( String title, String text ){
+		Page( String title, String file ){
 			this.title = title;
-			this.text = text;
+			this.file = file;
+		}
+
+		String text(){
+			try {
+				return Gdx.files.internal(file).readString("UTF-8");
+			} catch (Exception e) {
+				return "Could not read " + file;
+			}
 		}
 	}
 
 	public static Page page = Page.NEWS;
+	public static Class<? extends PixelScene> backTo = AboutScene.class;
 
 	@Override
 	public void create() {
@@ -89,8 +92,7 @@ public class APDTextScene extends PixelScene {
 		align( title );
 		content.add( title );
 
-		RenderedTextBlock body = PixelScene.renderTextBlock( page.text, 6 );
-		body.setHightlighting( true, Window.TITLE_COLOR );
+		RenderedTextBlock body = PixelScene.renderTextBlock( page.text(), 6 );
 		body.maxWidth( (int)colWidth );
 		body.setPos( (w - colWidth)/2f, title.bottom() + 8 );
 		content.add( body );
@@ -108,6 +110,6 @@ public class APDTextScene extends PixelScene {
 
 	@Override
 	protected void onBackPressed() {
-		ShatteredPixelDungeon.switchScene( AboutScene.class );
+		ShatteredPixelDungeon.switchScene( backTo );
 	}
 }

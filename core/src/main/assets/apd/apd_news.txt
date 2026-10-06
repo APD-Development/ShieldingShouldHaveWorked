@@ -1,0 +1,11 @@
+ADHD Pixel Dungeon (APD)
+
+APD is a private fork of Shattered Pixel Dungeon, built on upstream v4.0.0.
+
+This is an INDEV build. Expect rough edges, and expect things to change.
+
+APD only changes what is listed on the Changes screen. Everything else is the stock game.
+
+There is no APD art yet, the title is plain text.
+
+This screen and the Changes screen are plain text files stored inside the app, so they work offline. Nothing is downloaded.

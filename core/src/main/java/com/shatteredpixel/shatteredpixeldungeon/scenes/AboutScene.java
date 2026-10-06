@@ -269,6 +269,7 @@ public class AboutScene extends PixelScene {
 			@Override
 			protected void onClick() {
 				APDTextScene.page = APDTextScene.Page.NEWS;
+				APDTextScene.backTo = AboutScene.class;
 				ShatteredPixelDungeon.switchScene(APDTextScene.class);
 			}
 		};
@@ -279,6 +280,7 @@ public class AboutScene extends PixelScene {
 			@Override
 			protected void onClick() {
 				APDTextScene.page = APDTextScene.Page.CHANGES;
+				APDTextScene.backTo = AboutScene.class;
 				ShatteredPixelDungeon.switchScene(APDTextScene.class);
 			}
 		};
