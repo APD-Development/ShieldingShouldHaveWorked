@@ -409,6 +409,8 @@ public class TitleScene extends PixelScene {
 		APDMenuButton[] all = { btnPlay, btnStatistics, btnBadges, btnJournal, btnOptions, btnQuit,
 				btnNews, btnChanges, btnAbout };
 		for (APDMenuButton b : all){
+			//Quit is hidden on iOS, enable() would make it tappable again
+			if (b == btnQuit && DeviceCompat.isiOS()) continue;
 			b.enable(alpha != 0);
 			b.alpha(alpha);
 		}

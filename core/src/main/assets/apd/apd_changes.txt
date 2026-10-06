@@ -2,7 +2,9 @@ APD 4.0.8-apd
 Added:
 - APD Settings in the pause menu
 - Exotic crystal conversion chance setting (0-80%, 10% steps)
-- Plain APD text title and APD INDEV version string
+- Custom APD title/home screen: stone ADHD PIXEL DUNGEON logo, animated green flames, new background and stone buttons. Two-column menu (Play / Statistics, Badges / Journal, Options / Quit) with News / Changes / About below. Landscape puts the logo and menu side by side.
+- Statistics button on the home screen (replaces Rankings, opens the Rankings screen for now)
+- APD INDEV version string (v4.0.8-apd-INDEV)
 - APD News and APD Changes screens
 - Sad Ghost now shows the real upgrade level of the gear it offers
 - Cleric attempt counter and the achievement "FUCK CLERIC, THAT'S WHY" (10 attempts)
@@ -13,3 +15,4 @@ Fixed:
 - Starvation damage now consumes shielding before HP (APD-0001). Shielding does not cure hunger.
 Removed:
 - Cleric as a playable class
+- Support button on the home screen
