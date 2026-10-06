@@ -65,6 +65,22 @@ public class AboutScene extends PixelScene {
 		Component content = list.content();
 		content.clear();
 
+		//*** APD About ***
+
+		CreditsBlock apd = new CreditsBlock(true, Window.TITLE_COLOR,
+				"ADHD Pixel Dungeon",
+				null,
+				"This is _ADHD Pixel Dungeon_ (APD), a private fork of _Shattered Pixel Dungeon_ by _Evan Debenham_ (00-Evan), licensed under the GNU GPLv3.\n\nThe original credits are kept below.",
+				null,
+				null);
+		apd.setRect((w - colWidth)/2f, insets.top + 6, colWidth, 0);
+		content.add(apd);
+
+		addLine(apd.bottom() + 4, content);
+
+		//the original credits start below the APD block
+		final float creditsTop = apd.bottom() + 12;
+
 		//*** Shattered Pixel Dungeon Credits ***
 
 		CreditsBlock shpx = new CreditsBlock(true, Window.SHPX_COLOR,
@@ -74,9 +90,9 @@ public class AboutScene extends PixelScene {
 				"ShatteredPixel.com",
 				"https://ShatteredPixel.com");
 		if (landscape()){
-			shpx.setRect((w - fullWidth)/2f - 6, insets.top + 26, 120, 0);
+			shpx.setRect((w - fullWidth)/2f - 6, creditsTop + 20, 120, 0);
 		} else {
-			shpx.setRect((w - fullWidth)/2f, insets.top + 6, 120, 0);
+			shpx.setRect((w - fullWidth)/2f, creditsTop, 120, 0);
 		}
 		content.add(shpx);
 
@@ -88,7 +104,7 @@ public class AboutScene extends PixelScene {
 				"https://www.alekskomitov.com/");
 		aleks.setSize(colWidth/2f, 0);
 		if (landscape()){
-			aleks.setPos(shpx.right(), insets.top+6);
+			aleks.setPos(shpx.right(), creditsTop);
 		} else {
 			aleks.setPos(w/2f - colWidth/2f, shpx.bottom()+6);
 		}
@@ -269,6 +285,7 @@ public class AboutScene extends PixelScene {
 			@Override
 			protected void onClick() {
 				APDTextScene.page = APDTextScene.Page.NEWS;
+				APDTextScene.backTo = AboutScene.class;
 				ShatteredPixelDungeon.switchScene(APDTextScene.class);
 			}
 		};
@@ -279,6 +296,7 @@ public class AboutScene extends PixelScene {
 			@Override
 			protected void onClick() {
 				APDTextScene.page = APDTextScene.Page.CHANGES;
+				APDTextScene.backTo = AboutScene.class;
 				ShatteredPixelDungeon.switchScene(APDTextScene.class);
 			}
 		};
