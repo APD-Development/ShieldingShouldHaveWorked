@@ -60,3 +60,12 @@ Minimal narration; batch related work; do not poll CI repeatedly (estimate the f
 work meanwhile); continue autonomously inside approved scope and stop only for genuine product/design decisions, destructive actions,
 architectural changes, conflicts with requirements or the end of a phase; testing standards stay exactly as strong (full core suite,
 API 26 + API 34 device tests, no weakened assertions or hidden-by-timeout fixes); keep this file updated.
+
+## Splitting work with ChatGPT (user's rule, to save Claude usage)
+ChatGPT has no access to this session or repo; every handoff must be self-contained. Offload only when it clearly saves effort:
+architecture/design review, specs and requirements, test-plan and regression-test design (before implementing), edge-case analysis,
+review of a diff or of Claude's completion report, documentation drafting, bug analysis from logs/code the user pastes.
+Keep for Claude: editing the repo, repo-wide searches for implementation, building, running tests, fixing compile/test failures,
+git, CI/releases, implementation that needs the surrounding source. At the start of a substantial task, say in one or two lines whether
+a meaningful part can be offloaded; if so give ONE copy/paste package (task, context, which files/diffs to attach). No pointless
+handoffs. Splitting never reduces tests, verification or quality.
