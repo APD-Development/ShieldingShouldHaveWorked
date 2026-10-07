@@ -154,7 +154,12 @@ public class UimsdScene extends PixelScene {
 
 		RenderedTextBlock title = text("UIMSD", 12, Window.TITLE_COLOR, contentW);
 		title.setPos(x0, y);
-		y = title.bottom() + 3;
+		y = title.bottom() + 1;
+
+		//which build this is, so a device test can tell what is installed
+		RenderedTextBlock build = text("build " + com.watabou.noosa.Game.version, 5, 0x999999, contentW);
+		build.setPos(x0, y);
+		y = build.bottom() + 3;
 
 		if (model == null){
 			RenderedTextBlock t = text("History recording is not set up, so there is nothing to show yet.", 7, 0xFFFFFF, contentW);

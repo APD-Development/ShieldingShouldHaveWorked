@@ -1,0 +1,175 @@
+package com.shatteredpixel.shatteredpixeldungeon.apd;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import com.badlogic.gdx.Preferences;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.RankingsScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.UimsdScene;
+import com.watabou.noosa.Game;
+import com.watabou.utils.Reflection;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.io.File;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+//Behavioural check of the title screen's UIMSD button. It does not read source text: it takes the COMPILED click handler of the
+//button (the same class the APK contains), runs its onClick(), and looks at which scene the game was then asked to show.
+//
+//The title scene itself needs graphics to be built, so the handler object is created without running its constructor; its
+//onClick() only needs the static scene-switching state.
+public class TitleButtonWiringTest {
+
+	private Game previousInstance;
+	private Preferences previousPrefs;
+
+	@Before
+	public void setUp() throws Exception {
+		previousInstance = Game.instance;
+		new Game(TitleScene.class, null);
+		SPDSettings.set(defaultsOnlyPreferences());
+	}
+
+	@After
+	public void tearDown() {
+		Game.instance = previousInstance;
+		SPDSettings.set(null);
+	}
+
+	//settings that were never saved: every read gives the default it was asked with
+	private static Preferences defaultsOnlyPreferences(){
+		return (Preferences) Proxy.newProxyInstance(Preferences.class.getClassLoader(), new Class[]{ Preferences.class }, new InvocationHandler(){
+			@Override
+			public Object invoke( Object proxy, Method m, Object[] args ){
+				if (m.getName().startsWith("get") && args != null && args.length == 2) return args[1];
+				if (m.getName().equals("contains")) return false;
+				Class<?> r = m.getReturnType();
+				if (r == boolean.class) return false;
+				if (r == int.class) return 0;
+				if (r == long.class) return 0L;
+				if (r == float.class) return 0f;
+				return null;
+			}
+		});
+	}
+
+	private static Object allocate( Class<?> c ) throws Exception {
+		Class<?> unsafeClass = Class.forName("sun.misc.Unsafe");
+		Field f = unsafeClass.getDeclaredField("theUnsafe");
+		f.setAccessible(true);
+		Object unsafe = f.get(null);
+		return unsafeClass.getMethod("allocateInstance", Class.class).invoke(unsafe, c);
+	}
+
+	private static Class<?> requestedScene() throws Exception {
+		Field f = Game.class.getDeclaredField("sceneClass");
+		f.setAccessible(true);
+		return (Class<?>) f.get(null);
+	}
+
+	private static void forgetRequest() throws Exception {
+		Field f = Game.class.getDeclaredField("sceneClass");
+		f.setAccessible(true);
+		f.set(null, TitleScene.class);
+		Field r = Game.class.getDeclaredField("requestedReset");
+		r.setAccessible(true);
+		r.set(Game.instance, false);
+	}
+
+	//the compiled anonymous classes of TitleScene's buttons, in the order the compiler numbered them (source order)
+	private static List<Class<?>> clickHandlers() throws Exception {
+		List<Class<?>> out = new ArrayList<>();
+		for (int i = 1; i < 40; i++){
+			Class<?> c;
+			try {
+				c = Class.forName(TitleScene.class.getName() + "$" + i);
+			} catch (ClassNotFoundException e){
+				continue;
+			}
+			try {
+				c.getDeclaredMethod("onClick");
+				out.add(c);
+			} catch (NoSuchMethodException ignored){
+			}
+		}
+		return out;
+	}
+
+	//which scene the button handler asks for
+	private static Class<?> sceneAfterClick( Class<?> handler ) throws Exception {
+		forgetRequest();
+		Method onClick = handler.getDeclaredMethod("onClick");
+		onClick.setAccessible(true);
+		onClick.invoke(allocate(handler));
+		return requestedScene();
+	}
+
+	//the number javac gave the UIMSD button's class: the buttons are the anonymous classes of the scene, numbered in source order
+	private static int uimsdButtonNumber() throws Exception {
+		String src = new String(Files.readAllBytes(new File(System.getProperty("apd.game.src"), "scenes/TitleScene.java").toPath()), "UTF-8");
+		int at = src.indexOf("new APDMenuButton( \"UIMSD\"");
+		assertTrue("the UIMSD button is declared in TitleScene", at > 0);
+		//count the anonymous classes ('new X(...){') that open before it
+		Matcher m = Pattern.compile("new\\s+[A-Za-z_.]+\\s*\\([^;{}]*\\)\\s*\\{").matcher(src.substring(0, at));
+		int n = 0;
+		while (m.find()) n++;
+		return n + 1;
+	}
+
+	@Test
+	public void theUimsdButtonsHandlerAsksForTheUimsdScreen() throws Exception {
+		Class<?> handler = Class.forName(TitleScene.class.getName() + "$" + uimsdButtonNumber());
+		Class<?> scene = sceneAfterClick(handler);
+		assertEquals("tapping the title screen's UIMSD button", UimsdScene.class, scene);
+		assertFalse(scene == RankingsScene.class);
+	}
+
+	@Test
+	public void noCompiledTitleCodeReachesTheOldRankingsScreen() throws Exception {
+		//Only the UIMSD handler is run above (the other buttons open windows and need the running game, and starting them here
+		//would break class loading for other tests). The compiled title classes, which are what the APK contains, are checked
+		//for any reference at all to the old Rankings screen.
+		List<Class<?>> handlers = clickHandlers();
+		assertTrue("found the title buttons' click handlers", handlers.size() >= 8);
+		List<Class<?>> all = new ArrayList<>(handlers);
+		all.add(TitleScene.class);
+		for (Class<?> c : all){
+			java.io.InputStream in = c.getResourceAsStream("/" + c.getName().replace('.', '/') + ".class");
+			assertNotNull(c.getName(), in);
+			java.io.ByteArrayOutputStream bytes = new java.io.ByteArrayOutputStream();
+			byte[] buf = new byte[4096];
+			for (int n; (n = in.read(buf)) > 0; ) bytes.write(buf, 0, n);
+			in.close();
+			assertFalse(c.getName() + " refers to the old Rankings screen", new String(bytes.toByteArray(), "ISO-8859-1").contains("RankingsScene"));
+		}
+	}
+
+	@Test
+	public void theGameCanActuallyCreateTheUimsdScreen() {
+		//Game.step() silently ignores a scene change when the scene cannot be created, so this must work
+		assertNotNull(Reflection.newInstance(UimsdScene.class));
+	}
+
+	@Test
+	public void openingFromTheTitleMakesBackReturnToTheTitle() throws Exception {
+		forgetRequest();
+		UimsdScene.open(TitleScene.class);
+		assertEquals(UimsdScene.class, requestedScene());
+		assertEquals(TitleScene.class, UimsdScene.backTo);
+	}
+}

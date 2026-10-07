@@ -40,7 +40,8 @@ android {
         debug {
             signingConfig signingConfigs.apdDebug
             applicationIdSuffix ".indev"
-            versionNameSuffix '-INDEV'
+            //APD: CI passes -PapdBuild=<run number> so the installed app says which build it is (shown in UIMSD and in Android's app info)
+            versionNameSuffix '-INDEV' + (project.hasProperty('apdBuild') ? '-b' + project.property('apdBuild') : '')
             dependencies {
                 debugImplementation project(':services:updates:debugUpdates')
                 debugImplementation project(':services:news:debugNews')

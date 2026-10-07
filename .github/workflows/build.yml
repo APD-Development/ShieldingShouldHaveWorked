@@ -25,7 +25,7 @@ jobs:
       - name: Run tests
         run: ./gradlew :core:test
       - name: Build debug APK
-        run: ./gradlew :android:assembleDebug
+        run: ./gradlew :android:assembleDebug -PapdBuild=${{ github.run_number }}
       - name: Rename APK
         run: cp android/build/outputs/apk/debug/android-debug.apk ADHD-Pixel-Dungeon-4.0.8-apd-${{ github.run_number }}.apk
       - name: Publish release
