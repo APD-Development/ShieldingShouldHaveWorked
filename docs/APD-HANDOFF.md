@@ -38,6 +38,8 @@ logcat tags APDMIG/APDPERF into the job log and uploads logcat artifacts.
   20k-turn run). Possible later trade-off: one summary event per stretch of regeneration (loses per-tick history). Not done.
 
 ## Decisions that must not be accidentally reversed
+- **Non-P2W (permanent design constraint): money may never provide gameplay, progression, statistical, competitive or UIMSD advantages.**
+  Applies to every feature, including reports/export, UIMSD and any future store, supporter perk or donation flow.
 - Raw per-run logs are the source of truth; every cache/index/fact is derived and rebuildable. Never weaken that.
 - Hidden information: INTERNAL events/columns are never shown for unfinished runs; exports carry unfinished runs only as redacted
   copies (INTERNAL events dropped, seed removed). New event types default to INTERNAL; PUBLIC ones must be audited in LogRedactor.
@@ -74,6 +76,7 @@ Pending, bundled for the next PHONE-CHECK build (none blocking):
 - Home layout
 - Guide/tour overlay and interaction
 - Seed floors screen (Runs row -> Seed floors (canonical)): labels, ~ marks, notice line, comparison table
+- Reports: Home Report button, Options -> Share a report, run/group window report buttons, the share sheet and saving each format to a file
 
 ## Floor replay (user approved all 3 decisions; Phase A -> B -> C autonomous; A green at 4e43ce250, B+C implemented and verified at 8dbbadf69 (milestone complete, awaiting approval), see docs/APD-FLOOR-REPLAY.md; physical check of the Seed floors screen joins the PHONE-CHECK bundle)
 Decisions: canonical seed floors always labelled (never "the exact counterfactual"); unreached floors of FINISHED runs may be
@@ -85,6 +88,11 @@ Phase C: recorded-vs-canonical comparison. Keep provenance (RECORDED vs CANONICA
 Before starting any task expected to produce a build, output exactly one short line: "ETA: ~X-Y min" (based on real work/tests/CI), then begin.
 If the rule is learned mid-work, give one estimate for the remaining time. Update only if a material problem changes it; no routine
 progress reports or repeated ETA checks. When the build finishes, report actual elapsed time if known.
+
+## UIMSD reports/export (milestone implemented; see docs/APD-REPORTS.md)
+Format: Markdown / plain text / HTML (print to PDF) / CSV from one `Report` model; share as text or save via the system picker; no native PDF
+(investigated). Reports: lifetime, view, run, group, run comparison, seed floors (canonical clearly separated). Marks + legend + canonical
+notice in every format. Physical check joins the PHONE-CHECK bundle: Report buttons/windows, share sheet, saving a file.
 
 ## Working rules the user set (usage efficiency)
 Minimal narration; batch related work; do not poll CI repeatedly (estimate the finish, check once around then, do independent approved

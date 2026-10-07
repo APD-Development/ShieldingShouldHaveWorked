@@ -77,6 +77,22 @@ public class WndUimsdRow extends Window {
 				body.append('\n');
 			}
 			if (!row.telemetry.isEmpty()) body.append("\nRecorded with telemetry ").append(row.telemetry).append('\n');
+			if (WndUimsdReport.isRunsTable(def)){
+				actions.add(new Action("Report for this run", new Runnable(){
+					@Override
+					public void run(){
+						WndUimsdReport.ofRun(m, row);
+					}
+				}));
+				if (row.finished){
+					actions.add(new Action("Compare with another run...", new Runnable(){
+						@Override
+						public void run(){
+							WndUimsdReport.compareWith(m, row);
+						}
+					}));
+				}
+			}
 			if (m.canSeedFloors(row)){
 				actions.add(new Action("Seed floors (canonical)", new Runnable(){
 					@Override
@@ -100,6 +116,12 @@ public class WndUimsdRow extends Window {
 			GroupDetail detail = GroupDetail.build(r, g);
 			title = detail.title;
 			body.append(detail.text());
+			actions.add(new Action("Report for this group", new Runnable(){
+				@Override
+				public void run(){
+					WndUimsdReport.ofGroup(m, g);
+				}
+			}));
 			if (m.canOpenGroups()){
 				int n = g.n;
 				actions.add(new Action("The " + n + " " + (n == 1 ? singular(def.countLabel) : def.countLabel.toLowerCase()), new Runnable(){

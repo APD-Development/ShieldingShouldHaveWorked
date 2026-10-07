@@ -52,6 +52,34 @@ public class AndroidFileProvider implements ApdFiles.Provider, AndroidEventListe
 
 	@Override
 	public void chooseExport( final String suggestedName, final ApdFiles.ExportTarget target ){
+		chooseExport( suggestedName, "application/zip", target );
+	}
+
+	@Override
+	public boolean shareText( final String subject, final String text ){
+		try {
+			activity.runOnUiThread( new Runnable() {
+				@Override
+				public void run() {
+					try {
+						Intent send = new Intent( Intent.ACTION_SEND );
+						send.setType( "text/plain" );
+						send.putExtra( Intent.EXTRA_SUBJECT, subject );
+						send.putExtra( Intent.EXTRA_TEXT, text );
+						activity.startActivity( Intent.createChooser( send, subject ) );
+					} catch (Throwable ignored) {
+						//no app to share with: the report can still be saved as a file
+					}
+				}
+			} );
+			return true;
+		} catch (Throwable e) {
+			return false;
+		}
+	}
+
+	@Override
+	public void chooseExport( final String suggestedName, final String mimeType, final ApdFiles.ExportTarget target ){
 		pendingExport = target;
 		activity.runOnUiThread( new Runnable() {
 			@Override
@@ -59,7 +87,7 @@ public class AndroidFileProvider implements ApdFiles.Provider, AndroidEventListe
 				try {
 					Intent intent = new Intent( Intent.ACTION_CREATE_DOCUMENT );
 					intent.addCategory( Intent.CATEGORY_OPENABLE );
-					intent.setType( "application/zip" );
+					intent.setType( mimeType );
 					intent.putExtra( Intent.EXTRA_TITLE, suggestedName );
 					activity.startActivityForResult( intent, REQUEST_EXPORT );
 				} catch (Throwable e) {

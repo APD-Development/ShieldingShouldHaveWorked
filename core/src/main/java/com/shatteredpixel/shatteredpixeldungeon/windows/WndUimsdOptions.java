@@ -82,6 +82,12 @@ public final class WndUimsdOptions {
 		actions.add(new Runnable(){ public void run(){ coverage(m); } });
 		labels.add("What the markers mean");
 		actions.add(new Runnable(){ public void run(){ legend(); } });
+		labels.add("Share a report of this view...");
+		actions.add(new Runnable(){ public void run(){ WndUimsdReport.ofView(m); } });
+		if (WndUimsdReport.isSeedView(m)){
+			labels.add("Share the seed floors report...");
+			actions.add(new Runnable(){ public void run(){ WndUimsdReport.ofSeedFloors(m, WndUimsdReport.seedRunId(m)); } });
+		}
 		labels.add("Reset this view");
 		actions.add(new Runnable(){ public void run(){ m.resetView(); } });
 

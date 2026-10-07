@@ -49,6 +49,7 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdColumns;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdFilter;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdGuide;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdReport;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdOptions;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdRow;
@@ -319,7 +320,8 @@ public class UimsdScene extends PixelScene {
 		float rowH = 16;
 		float guideW = 36;
 		float gap = 2;
-		float each = (contentW - guideW - 2 * gap) / 2f;
+		float reportW = 34;
+		float each = (contentW - guideW - reportW - 3 * gap) / 2f;
 		RedButton guide = new RedButton("Guide", 8){
 			@Override
 			protected void onClick(){
@@ -336,7 +338,16 @@ public class UimsdScene extends PixelScene {
 				dirty = true;
 			}
 		};
-		rules.setRect(x0 + guideW + gap, y, each, rowH);
+		RedButton report = new RedButton("Report", 8){
+			@Override
+			protected void onClick(){
+				WndUimsdReport.ofLifetime(model, homeAllRules);
+			}
+		};
+		report.setRect(x0 + guideW + gap, y, reportW, rowH);
+		ui.add(report);
+		reg("report", x0 + guideW + gap, y, reportW, rowH);
+		rules.setRect(x0 + guideW + reportW + 2 * gap, y, each, rowH);
 		ui.add(rules);
 		RedButton tables = new RedButton("All tables", 8){
 			@Override
@@ -345,9 +356,9 @@ public class UimsdScene extends PixelScene {
 				dirty = true;
 			}
 		};
-		tables.setRect(x0 + guideW + gap + each + gap, y, each, rowH);
+		tables.setRect(x0 + guideW + reportW + 3 * gap + each, y, each, rowH);
 		ui.add(tables);
-		reg("tables", x0 + guideW + gap + each + gap, y, each, rowH);
+		reg("tables", x0 + guideW + reportW + 3 * gap + each, y, each, rowH);
 		y += rowH + 2;
 
 		UimsdHome home = homeData();

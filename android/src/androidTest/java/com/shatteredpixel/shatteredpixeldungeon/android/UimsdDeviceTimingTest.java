@@ -92,6 +92,30 @@ public class UimsdDeviceTimingTest {
 			assertTrue("Home has nothing on it", !home.isEmpty() && home.cards.size() >= 5);
 			assertTrue("Home too slow: " + homeMs + " ms", homeMs < 3000);
 
+			//reports from the same catalog, in all four formats
+			long rp0 = System.nanoTime();
+			com.shatteredpixel.shatteredpixeldungeon.apd.report.Report life = com.shatteredpixel.shatteredpixeldungeon.apd.report.ReportBuilder
+					.lifetime(warm, rules.id, "", true, System.currentTimeMillis(), "device");
+			ViewDef runsView = warm.view("runs");
+			QueryResult runsRes = QueryEngine.run(warm.datasetOf(runsView), runsView.initialQuery().withScope(Scope.DEFAULT.withUnfinished(true)
+					.withRules(Scope.Rules.ALL, "")), rules.id);
+			com.shatteredpixel.shatteredpixeldungeon.apd.report.Report viewReport = com.shatteredpixel.shatteredpixeldungeon.apd.report.ReportBuilder
+					.view(runsRes, "Runs", "", System.currentTimeMillis(), "device");
+			com.shatteredpixel.shatteredpixeldungeon.apd.query.Row someRun = warm.dataset("runs").rows.get(0);
+			com.shatteredpixel.shatteredpixeldungeon.apd.report.Report runReport = com.shatteredpixel.shatteredpixeldungeon.apd.report.ReportBuilder
+					.run(warm, someRun, false, rules.id, System.currentTimeMillis(), "device");
+			int chars = 0;
+			for (com.shatteredpixel.shatteredpixeldungeon.apd.report.Report rep : new com.shatteredpixel.shatteredpixeldungeon.apd.report.Report[]{ life, viewReport, runReport }){
+				for (com.shatteredpixel.shatteredpixeldungeon.apd.report.ReportExport.Format f : com.shatteredpixel.shatteredpixeldungeon.apd.report.ReportExport.Format.values()){
+					String out = com.shatteredpixel.shatteredpixeldungeon.apd.report.ReportExport.render(rep, f);
+					assertTrue(rep.title + " as " + f + " is empty", out.length() > 100);
+					chars += out.length();
+				}
+			}
+			long reportMs = (System.nanoTime() - rp0) / 1000000;
+			Log.w(TAG, "3 reports in 4 formats built in " + reportMs + " ms (" + chars + " chars)");
+			assertTrue("reports too slow: " + reportMs + " ms", reportMs < 5000);
+
 			//the tour's sample history: made, readable, marked, and removable without touching the demo or real history
 			File sample = DemoData.sampleRootFor(new File(base, "apd"));
 			long m0 = System.nanoTime();

@@ -52,6 +52,14 @@ public final class ApdFiles {
 
 	public interface Provider {
 		void chooseExport( String suggestedName, ExportTarget target );
+		//the same for a file of another type (a report); a provider that cannot tell the system the type just saves the file
+		default void chooseExport( String suggestedName, String mimeType, ExportTarget target ){
+			chooseExport(suggestedName, target);
+		}
+		//Hands a piece of text to the system's share sheet (messaging, mail, notes...). False when this platform has none.
+		default boolean shareText( String subject, String text ){
+			return false;
+		}
 		void chooseImport( ImportSource source );
 		//a few words on where files go, for the confirmation messages ("the folder you choose", ...)
 		String where();
