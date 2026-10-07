@@ -13,8 +13,9 @@ logcat tags APDMIG/APDPERF into the job log and uploads logcat artifacts.
 - **Home/Guide milestone: COMPLETE, awaiting approval.** Verified on commit 80ef188f8 = **apd-build-37**: core 509 tests green; device tests green API 26 + 34.
 - Stability pass (CI green): per-run balance revision persisted/used everywhere; UIMSD-from-game cannot start a floor replay; seed floors refuse imported/unrecorded-challenge/unknown-revision runs. Product notes: none needed. New phone check: none.
 - Stability pass 2 (CI green, superseded by the integrity audit below): Catalog synchronized (real race shown by test), reports from demo/sample data carry a SYNTHETIC notice, unfinished-comparison hidden-info regression test. No new phone checks.
-- **THE PHONE-CHECK BUILD = apd-build-60 = commit 3a35441a7** (integrity audit; core tests green, device tests green API 26 + 34; replaces build 57). No new phone checks.
-- **Decisions 1-5 (pending CI; replaces build 60 as THE PHONE-CHECK build once green):**
+- Previous PHONE-CHECK build: apd-build-60 = commit 3a35441a7 (integrity audit; core tests green, device tests green API 26 + 34; replaces build 57). No new phone checks.
+- **THE PHONE-CHECK BUILD = apd-build-62 = commit 56ecf99d9** (Decisions 1-5; core tests green, device tests green API 26 + 34; replaces build 60).
+- **Decisions 1-5:**
   1. Exotic setting is part of the run: `Dungeon.apdExotic` snapshot at run start, saved as `apd_exotic`; gameplay and ruleset identity use it, never the live slider
      (`SPDSettings.apdExoticChance()` = the run's value; `apdExoticSetting()` = the slider = next run; slider label says "new runs").
   2. Old/adopted runs (save without `apd_exotic`) keep playing with the live setting but are recorded with NO ruleset and NO exotic value (telemetry: empty ruleset id,
