@@ -165,6 +165,16 @@ logcat tags APDMIG/APDPERF into the job log and uploads logcat artifacts.
   fucking lunatic?", or longer: "...You just asked UIMSD to cross-reference 7 different things. Anyway, the answer is 3."), then answers normally. Based on query complexity (Question.complexity()),
   never a hard-coded list; rare enough that power users do not constantly see it; never interferes with the result; respects Adult/Clean. Philosophy: most absurd edge-case queries will never be
   used, but if a deranged question is asked and the facts were recorded, UIMSD should have a serious chance of answering it.
+- **UIMSD UNUSUAL-QUERY REACTION: PERSONALITY AND TRIGGER CLARIFIED (user; supersedes the "lunatic" framing above; future feature, not started, do not interrupt current work).**
+  PERSONALITY: UIMSD itself is SURPRISED by a question it never expected anyone to ask (it was built to answer anything constructible from recorded facts, yet the player managed something so
+  unusual that even UIMSD is taken aback). Example: "Wait... nobody's ever asked me that before. Give me a second. ...huh. The answer is 3." The joke is NOT "you are a lunatic for using too many
+  filters". Never fake a global claim ("no player has ever asked this") unless APD really has global data; for a local-only system phrase it as UIMSD meeting a question/query SHAPE it has not
+  seen before. TRIGGER = sufficiently COMPLEX AND sufficiently NOVEL: (1) the query exceeds a meaningful complexity/specificity floor (complexity is NOT just a filter count and must not be hard-coded
+  as "3 filters = simple"; it can include filters, dimensions, grouping, measures, cross-referenced fact types, unusual conditions, per-floor/per-run/per-hour calculations ...), AND (2) the query's
+  structure/combination is genuinely novel according to whatever history UIMSD can legitimately know (e.g. a locally remembered fingerprint of query shapes it has already answered). Novelty
+  alone is never enough: a basic question with 2-3 filters must not make UIMSD act surprised just because that exact combination is new. The floor is high so the reaction feels exceptional and
+  ordinary power-user queries never trigger it; very rare so players can forget it exists. Never interferes with the result (the answer still follows); respects Adult/Clean. Question.complexity()
+  stays as one INPUT to the complexity floor, not the trigger. This does not change the universal UIMSD architecture.
 - **OPEN BUG (user-confirmed; do not assume the universal-UIMSD work fixed it):** the previously reported UIMSD sorting problem when sorting highest-to-lowest. Treat as confirmed until a build
   specifically fixes it and a test pins the behaviour. Build 69 did not specifically address it.
 - **CURRENT PRIORITY ORDER:** (1) Build 69 is the PHONE-CHECK build. (2) Wait for the user's physical Build 69 feedback. (3) Fix what the phone check exposes (including the sorting bug).
