@@ -61,7 +61,19 @@ public class ApdSettingsClickDeviceTest {
 				}
 			}
 		});
-		assertTrue("the render thread did not answer", done.await(60, TimeUnit.SECONDS));
+		if (!done.await(60, TimeUnit.SECONDS)){
+			//say where the game thread is stuck
+			for (java.util.Map.Entry<Thread, StackTraceElement[]> e : Thread.getAllStackTraces().entrySet()){
+				String n = e.getKey().getName();
+				if (n.contains("GL") || n.contains("Render") || n.contains("main")){
+					StringBuilder sb = new StringBuilder("thread " + n + " " + e.getKey().getState());
+					int k = 0;
+					for (StackTraceElement el : e.getValue()) if (k++ < 14) sb.append("\n   at ").append(el);
+					Log.w(TAG, sb.toString());
+				}
+			}
+		}
+		assertTrue("the render thread did not answer", done.getCount() == 0);
 		if (failure.get() != null) throw new AssertionError("failed on the render thread: " + failure.get(), failure.get());
 	}
 
