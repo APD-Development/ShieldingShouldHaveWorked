@@ -182,6 +182,8 @@ public class AndroidBackDeviceTest {
 			while (uimsd("tutorial") != null && presses <= open){
 				pressBack();
 				presses++;
+				Log.w(TAG, "after Back " + presses + ": scene=" + (Game.scene() == null ? "none" : Game.scene().getClass().getSimpleName()) + ", windows=" + windows()
+						+ ", tutorial=" + (uimsd("tutorial") != null) + ", atHome=" + uimsd("atHome"));
 				assertTrue("Back ends the tour first (press " + presses + ")", Game.scene() instanceof UimsdScene);
 			}
 			Log.w(TAG, "the tour ended after " + presses + " Back press(es); windows now " + windows());
