@@ -64,6 +64,16 @@ No optimisation was warranted beyond slimming HEAL_DETAIL (19 -> 14 B).
 docs/APD-FUTURE-FLOORS-FEASIBILITY.md: floors are not f(seed,depth); exact only as in-order replay 1..N under a fixed reference context
 (harness proves it). Needs replay-only init + statics snapshot/restore; finished runs only. Awaiting user decisions listed there.
 
+## Phone checks (user workflow)
+Do NOT ask the user to install/test each build; intermediate builds need no install. Keep automated core/device/CI testing as strong.
+Request a physical test only when (1) blocked without it, (2) a major milestone needs final physical approval, or (3) several pending
+checks can be bundled into one designated PHONE-CHECK build. Accumulate non-blocking checks here; keep working meanwhile.
+Pending, bundled for the next PHONE-CHECK build (none blocking):
+- Phase 8 system file picker (export/import)
+- Phase 9 healing columns in UIMSD
+- Home layout
+- Guide/tour overlay and interaction
+
 ## Working rules the user set (usage efficiency)
 Minimal narration; batch related work; do not poll CI repeatedly (estimate the finish, check once around then, do independent approved
 work meanwhile); continue autonomously inside approved scope and stop only for genuine product/design decisions, destructive actions,
