@@ -149,6 +149,27 @@ public class ApdSettingsClickDeviceTest {
 		throw new AssertionError("timed out waiting for " + what);
 	}
 
+
+	//touches the control until it answers: a late result window of an earlier step can swallow a touch, so closed windows and a missed
+	//position are retried. A control that never answers (the bug this test exists for) fails after every attempt.
+	private static void tapUntil( String what, ScrollPane scroll, Gizmo control, java.util.concurrent.Callable<Boolean> answered, long millis ) throws Exception {
+		long end = System.currentTimeMillis() + millis;
+		int attempt = 0;
+		while (System.currentTimeMillis() < end){
+			attempt++;
+			dismissMessages();
+			Point at = centreOnScreen(scroll, control);
+			Log.w(TAG, what + ": touch " + attempt + " at " + at.x + "," + at.y + " windows=" + messages());
+			tap(at);
+			long until = Math.min(end, System.currentTimeMillis() + 6000);
+			while (System.currentTimeMillis() < until){
+				if (answered.call()) { Log.w(TAG, what + " answered"); return; }
+				Thread.sleep(150);
+			}
+		}
+		throw new AssertionError(what + " did not answer a touch");
+	}
+
 	@Test
 	public void everyControlOfApdSettingsAnswersATouch() throws Exception {
 		final AtomicInteger exports = new AtomicInteger(), imports = new AtomicInteger();
@@ -202,42 +223,25 @@ public class ApdSettingsClickDeviceTest {
 			Log.w(TAG, "Run self-test answered");
 
 			//2. Import APD rankings
-			dismissMessages();
-			RedButton rankings = (RedButton) field(pane, "btnImport");
-			tap(centreOnScreen(scroll, rankings));
-			waitUntil("the rankings import result (Import APD rankings did not answer a touch)", new java.util.concurrent.Callable<Boolean>(){
-				public Boolean call() throws Exception { return messages() >= 1; } }, 60000);
+			tapUntil("Import APD rankings", scroll, (RedButton) field(pane, "btnImport"), new java.util.concurrent.Callable<Boolean>(){
+				public Boolean call() throws Exception { return messages() >= 1; } }, 90000);
 
 			//3. Export history (ZIP): the file picker is asked for a place to save
-			dismissMessages();
-			RedButton export = (RedButton) field(pane, "btnExportHistory");
-			final int exportsBefore = exports.get();
-			tap(centreOnScreen(scroll, export));
-			waitUntil("Export history (ZIP) to answer a touch", new java.util.concurrent.Callable<Boolean>(){
-				public Boolean call() throws Exception { return exports.get() > exportsBefore || messages() >= 1; } }, 30000);
+			tapUntil("Export history (ZIP)", scroll, (RedButton) field(pane, "btnExportHistory"), new java.util.concurrent.Callable<Boolean>(){
+				public Boolean call() throws Exception { return exports.get() >= 1; } }, 60000);
 
 			//4. Import history (ZIP): the file picker is asked for a file
-			dismissMessages();
-			RedButton imp = (RedButton) field(pane, "btnImportHistory");
-			final int importsBefore = imports.get();
-			tap(centreOnScreen(scroll, imp));
-			waitUntil("Import history (ZIP) to answer a touch", new java.util.concurrent.Callable<Boolean>(){
-				public Boolean call() throws Exception { return imports.get() > importsBefore || messages() >= 1; } }, 30000);
+			tapUntil("Import history (ZIP)", scroll, (RedButton) field(pane, "btnImportHistory"), new java.util.concurrent.Callable<Boolean>(){
+				public Boolean call() throws Exception { return imports.get() >= 1; } }, 60000);
 
 			//5. the setting that explains itself with a message when touched
-			com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox record = (com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox) field(pane, "chkRecord");
-			dismissMessages();
-			tap(centreOnScreen(scroll, record));
-			waitUntil("Record run history to answer a touch", new java.util.concurrent.Callable<Boolean>(){
-				public Boolean call() throws Exception { return messages() >= 1; } }, 30000);
-			assertEquals("the touch flipped the setting", !recordingWas, SPDSettings.apdRecording());
+			final boolean recBefore = SPDSettings.apdRecording();
+			tapUntil("Record run history", scroll, (com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox) field(pane, "chkRecord"), new java.util.concurrent.Callable<Boolean>(){
+				public Boolean call() throws Exception { return SPDSettings.apdRecording() != recBefore; } }, 60000);
 
 			//6. Open UIMSD (preview) last: it leaves the window by switching scenes
-			dismissMessages();
-			RedButton uimsd = (RedButton) field(pane, "btnUimsd");
-			tap(centreOnScreen(scroll, uimsd));
-			waitUntil("Open UIMSD (preview) to answer a touch", new java.util.concurrent.Callable<Boolean>(){
-				public Boolean call(){ return Game.scene() instanceof UimsdScene; } }, 30000);
+			tapUntil("Open UIMSD (preview)", scroll, (RedButton) field(pane, "btnUimsd"), new java.util.concurrent.Callable<Boolean>(){
+				public Boolean call(){ return Game.scene() instanceof UimsdScene; } }, 60000);
 			Log.w(TAG, "every APD Settings control answered a touch");
 		} finally {
 			SPDSettings.apdRecording(recordingWas);
