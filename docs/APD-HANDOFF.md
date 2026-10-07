@@ -14,7 +14,12 @@ logcat tags APDMIG/APDPERF into the job log and uploads logcat artifacts.
 - Stability pass (CI green): per-run balance revision persisted/used everywhere; UIMSD-from-game cannot start a floor replay; seed floors refuse imported/unrecorded-challenge/unknown-revision runs. Product notes: none needed. New phone check: none.
 - Stability pass 2 (CI green, superseded by the integrity audit below): Catalog synchronized (real race shown by test), reports from demo/sample data carry a SYNTHETIC notice, unfinished-comparison hidden-info regression test. No new phone checks.
 - Previous PHONE-CHECK build: apd-build-60 = commit 3a35441a7 (integrity audit; core tests green, device tests green API 26 + 34; replaces build 57). No new phone checks.
-- **THE PHONE-CHECK BUILD = apd-build-67 = commit 802a8789d** (same code as build 66 / commit 4a39871c1; 67 is the docs-only rebuild and is the one the user installs; replaces build 64, which had a BLOCKER: every action button in APD Settings was dead). Core + device tests green
+- **THE PHONE-CHECK BUILD = apd-build-69** (UIMSD universal architecture; same code as apd-build-68 = commit 857851043, 69 is the docs-only rebuild carrying this note and is the one to install). Core 628 tests
+  green; device tests green API 26 + 34 on main. NEW phone checks: (a) UIMSD Home: an "Ask a question" card under the overview; (b) tap it: the sentence builder (About / Measure / Per / Split by /
+  Only where / Which runs / Hidden details / Show the answer), then the answer and "Open as a table"; (c) UIMSD Tables picker has new sections "Play by play" (Floors, Attacks, Damage, Healing,
+  Shielding, Experience, Kills, Equipment) and "Details: ..." (steps, rests, item actions, effects, gold, trades ...) once you have played a run on this build (older runs show nothing for the new
+  details: unknown, never zero); (d) Guide > "Asking a question"; (e) APD Settings still responds (build 66 fix). Play a run first: the new facts are recorded from this build on.
+- Previous PHONE-CHECK build (before the universal architecture): **apd-build-67 = commit 802a8789d** (same code as build 66 / commit 4a39871c1; 67 is the docs-only rebuild and is the one the user installs; replaces build 64, which had a BLOCKER: every action button in APD Settings was dead). Core + device tests green
   (API 26 + API 34), including the new ApdSettingsClickDeviceTest. Everything below for build 64 applies unchanged to build 66, plus the APD Settings click check:
   (0) Options > APD Settings on a fresh launch: Run self-test, Import APD rankings, Export history (ZIP), Import history (ZIP), the "Record run history" tick box and Open UIMSD
   (preview) must each respond (result window / file picker / scene change).
