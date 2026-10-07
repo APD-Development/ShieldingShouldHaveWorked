@@ -99,6 +99,17 @@ logcat tags APDMIG/APDPERF into the job log and uploads logcat artifacts.
   The examples are NOT a requirements list and capabilities must NOT be limited by the questions we think of during development: "average Guiding Light casts per floor" must emerge
   from recorded facts (spell casts + character + floor + run) being cross-referenceable, not from anyone predicting that question. Character statistics are one part of the one
   universal data model, never a separate feature or database. Long-term goal: any reasonable question about the player's APD history that APD had the information to answer, UIMSD can answer.
+- **UIMSD UNIVERSAL ARCHITECTURE: APPROVED by the user, in progress (design: docs/APD-UIMSD-UNIVERSAL.md). Order: (1) fact-kind registry + generic fact event, (2) Floors dataset + per-run/
+  per-floor/per-turn/per-hour/ratio measures, (3) expand recording in batches, measuring storage/performance after each, (4) question/sentence builder as the primary UI. Advanced
+  tables/query tools STAY and coexist with the simple interface. Hidden information stays protected while a run is active ("record everything" is not "reveal everything").
+  LOSSLESS RULE (user, permanent): RAW HISTORY AS LOSSLESS AS REASONABLY PRACTICAL; summaries/caches exist only to make it FAST; the player UI exists to make it UNDERSTANDABLE. Never
+  replace raw high-frequency facts (movement etc.) with summaries just because no query needs them yet: try compact encoding, batching, delta encoding, compression of completed
+  runs, rebuildable summaries/indexes first. If full resolution would truly hurt performance, storage, save integrity or gameplay, STOP and show the user the tradeoff before
+  discarding anything. Survey the WHOLE game for observable facts; the examples (spells, movement, shops, talents, status effects) are not the boundary; the registry must let future
+  mechanics register facts with no UIMSD surgery. Stop for the user only on a real product decision, destructive change, architectural conflict or a lossy tradeoff.
+  FUTURE UI EASTER EGG (recorded, NOT to be built in this pass): if a player constructs an exceptionally absurd/complex query, UIMSD may VERY occasionally say "Are you a fucking
+  lunatic?" and then give the answer normally. Triggered by query COMPLEXITY (not a hand-written list), rare, respects the Adult/Clean humor setting (clean mode: a mild line), never
+  interferes with the result.
 - Owner decision left open by Phase 9: natural regeneration is the biggest log cost (32 B/heal exact vs 18 B inferred, ~70 KiB per
   20k-turn run). Possible later trade-off: one summary event per stretch of regeneration (loses per-tick history). Not done.
 
