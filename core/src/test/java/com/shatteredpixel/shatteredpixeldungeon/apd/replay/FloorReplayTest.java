@@ -54,6 +54,16 @@ public class FloorReplayTest {
 
 	@Test
 	public void replayMatchesTheGamesOwnGenerationFloorForFloor() throws Exception {
+		//the game breaks shop-bag ties by object identity (different every run); both sides use the one deterministic order here
+		ReplayContext.forceDeterministicBags = true;
+		try {
+			matchesGame();
+		} finally {
+			ReplayContext.forceDeterministicBags = false;
+		}
+	}
+
+	private void matchesGame() throws Exception {
 		long[] seeds = { 12345L, 987654321L, 55555L, 2024L, 31L, 777L };
 		int[] challenges = { 0, 0, 3, 0, 0, 0 };
 		HeroClass[] classes = { HeroClass.WARRIOR, HeroClass.MAGE, HeroClass.ROGUE, HeroClass.HUNTRESS, HeroClass.DUELIST, HeroClass.CLERIC };

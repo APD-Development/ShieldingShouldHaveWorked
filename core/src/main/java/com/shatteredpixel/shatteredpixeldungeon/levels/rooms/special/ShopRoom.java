@@ -361,7 +361,10 @@ public class ShopRoom extends SpecialRoom {
 	protected static Bag ChooseBag(Belongings pack){
 
 		//generate a hashmap of all valid bags.
-		HashMap<Bag, Integer> bags = new HashMap<>();
+		//APD: when several bags would save the same number of slots the game takes whichever comes first in a HashMap keyed by object
+		//identity, which differs from run to run. A floor replay needs one answer, so it (and only it) iterates in insertion order.
+		HashMap<Bag, Integer> bags = com.shatteredpixel.shatteredpixeldungeon.apd.replay.ReplayContext.deterministicBags()
+				? new java.util.LinkedHashMap<Bag, Integer>() : new HashMap<Bag, Integer>();
 		if (!Dungeon.LimitedDrops.VELVET_POUCH.dropped()) bags.put(new VelvetPouch(), 1);
 		if (!Dungeon.LimitedDrops.SCROLL_HOLDER.dropped()) bags.put(new ScrollHolder(), 0);
 		if (!Dungeon.LimitedDrops.POTION_BANDOLIER.dropped()) bags.put(new PotionBandolier(), 0);

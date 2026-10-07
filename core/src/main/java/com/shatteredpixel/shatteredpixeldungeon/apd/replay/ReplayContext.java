@@ -31,4 +31,11 @@ public final class ReplayContext {
 	}
 
 	public static final boolean TUTORIAL = false;
+
+	//Tests that compare a replay with the game's own generation set this, so both break shop-bag ties the same (deterministic) way.
+	public static volatile boolean forceDeterministicBags;
+
+	public static boolean deterministicBags(){
+		return forceDeterministicBags || active();
+	}
 }

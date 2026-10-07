@@ -67,6 +67,15 @@ public class FloorReplayDeviceTest {
 			assertEquals("levels.LastLevel", a.get(25).levelClass);
 			assertTrue("replay too slow: " + ms + " ms", ms < 60000);
 			assertNull("the replay must leave the lock free", FloorReplay.refusal());
+
+			//repeatability across more seeds and classes (object-identity ordering inside the game differs from run to run on a device)
+			long[] seeds = { 7L, 99999L, 123456789L, 5550123L };
+			HeroClass[] classes = { HeroClass.ROGUE, HeroClass.HUNTRESS, HeroClass.DUELIST, HeroClass.CLERIC };
+			for (int i = 0; i < seeds.length; i++){
+				String first = signature(FloorReplay.replay(seeds[i], 0, classes[i], FloorReplay.LAST_FLOOR));
+				String second = signature(FloorReplay.replay(seeds[i], 0, classes[i], FloorReplay.LAST_FLOOR));
+				assertEquals("replay of seed " + seeds[i] + " not repeatable", first, second);
+			}
 		}
 	}
 }
