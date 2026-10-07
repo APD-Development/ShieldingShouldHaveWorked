@@ -110,6 +110,8 @@ logcat tags APDMIG/APDPERF into the job log and uploads logcat artifacts.
   FUTURE UI EASTER EGG (recorded, NOT to be built in this pass): if a player constructs an exceptionally absurd/complex query, UIMSD may VERY occasionally say "Are you a fucking
   lunatic?" and then give the answer normally. Triggered by query COMPLEXITY (not a hand-written list), rare, respects the Adult/Clean humor setting (clean mode: a mild line), never
   interferes with the result.
+- **UIMSD universal architecture: IMPLEMENTED on the claude branch (U1-U4), see docs/APD-UIMSD-UNIVERSAL.md "Status".** Telemetry 1.8. Core tests 628 green, device tests green on
+  API 26 + 34 for U1-U3 (U4 running). Remaining: more recording batches (backlog list in that doc), the absurd-query easter egg, and the user's physical check of the Ask card.
 - Owner decision left open by Phase 9: natural regeneration is the biggest log cost (32 B/heal exact vs 18 B inferred, ~70 KiB per
   20k-turn run). Possible later trade-off: one summary event per stretch of regeneration (loses per-tick history). Not done.
 

@@ -61,3 +61,37 @@ front door in favour of the question builder; Guide/tour text generated from the
 U1 registry + generic fact event + context join + manifest/leak tests (no new gameplay hooks). U2 Floors dataset + "per" measures + event datasets for what is already recorded
 (attacks, damage, heals, shields, XP, hunger). U3 choke-point instrumentation in batches, each with a perf/storage gate (actions, buffs, talents/subclass, gold/shops, spells,
 level summaries). U4 the question builder and topic pages. Each step ends with core + API 26 + API 34 tests and one PHONE-CHECK build.
+
+---
+
+# Status: implemented on the claude branch (U1-U4), see below
+
+## What exists now
+- **Registry and generic fact event (telemetry 1.8).** `stats/FactKind`, `FactKinds`, `GameFacts` (the game's own kinds), `FactEvents` (FACT / FACT_INTERNAL / FACT_SERIES /
+  FACT_SERIES_INTERNAL). A kind is declared once; its dataset, columns, filters, aggregates, topic table, question-builder choices and guide wording follow from the declaration.
+- **Lossless high-frequency facts.** A SERIES holds every observation (each step, each rest turn). Columns are written as steps between rows with zero runs and a choice of
+  steps-of-steps, so a step costs about 1.4 bytes (FactStorageTest: 20,000 steps = 27 KB) and the new facts of a 20,000-turn run total about 72 KB. Nothing is summarised, and no
+  lossy trade-off was needed. Pending series are written before every save, floor change and run end, so a series never crosses a save marker (rollback depends on it).
+- **Datasets:** Floors (every visit, quiet ones included, with counts of every fact kind and time played), Attacks, Damage, Healing, Shielding, Experience, Kills, Equipment
+  (what was worn and for how long), and one dataset per registered fact kind. Each gets a table in the Tables picker automatically (sections "Play by play" and "Details: <topic>").
+- **Measures:** count, total, average, highest, lowest, median over any recorded number, grouped by any recorded column, filtered by anything; `PerUnit` divides by runs, floor
+  visits, turns, 1,000 turns or hours played, measured against the Floors table so quiet floors count.
+- **Question builder:** Home card "Ask a question" (`WndUimsdAsk`, `Question`, `Questions`); "Open as a table" hands the same question to the full table tools (`UimsdModel.showQuery`).
+- **Recorded in this pass (PUBLIC unless noted):** steps, rest turns, searches, containers opened, traps triggered, item actions (+ INTERNAL true item, level, charges), status effects
+  by their shown name (+ INTERNAL true class of every effect), talent points, subclass and armor-ability choices, spell casts, armor-ability uses, every gold change with its cause, shop
+  trades, played time. Plus row-level views of everything already recorded.
+
+## How a new mechanic or character adds its history (no UIMSD change)
+1. Declare a kind: `FactKinds.register(FactKind.builder("area.name", "Label").area("Topic").subject("What").value("key", "Label")...build())` (see `GameFacts`). A kind with hidden
+   truth is `.internal()`; a high-frequency one is `.series()`. Add a line to `core/src/test/resources/apd/fact_kind_manifest.txt` (keys are permanent, fields only get added at the END).
+2. Call it where it happens: `ApdFacts.record(kind, subject, values...)` (guarded, never throws, never touches the game's random numbers).
+3. Done: it appears as a dataset, a table, a Floors count column, a choice in the question builder, and in reports' generic machinery. Public kinds must carry only what the player
+   could know at that moment.
+
+## Not yet recorded (observable; candidates for the next batches, each needs its own hook and a hidden-information review)
+Doors and secret doors found, keys, levers and wells used, per-enemy state changes and enemy abilities, boss phase changes, NPC interactions and quest steps, artifact charge (no public
+accessor), plant and seed interactions, level feelings acted on, auto-explore and travel usage, throws and targeting, shop stock seen, ally summons and their fates, alchemy details,
+fall and trap damage sources beyond damage events, per-turn hero state (HP/hunger sampled), and anything a future character adds.
+
+## Absurd-query easter egg (recorded requirement, not built)
+`Question.complexity()` is the hook: it grows with everything a question asks for. A rare acknowledgement line for an extreme score, Adult/Clean aware, is still to be built.

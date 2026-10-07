@@ -67,6 +67,19 @@ public final class UimsdGuide {
 						+ "The Report button turns this page into something you can share.\n\n"
 						+ "Home shows runs played under your own rules by default. \"Rules: all (mixed)\" adds runs played under other rules, and says so, because "
 						+ "numbers from different rules are not directly comparable.", "home"));
+		t.add(new Topic("ask", start, "Asking a question",
+				"The Ask a question card on Home is the easy way in. A question is a sentence with blanks: how many, or the average, total, highest or lowest of a number; "
+						+ "of what; per floor, per run, per turn or per hour you played; split by class, spell, floor and so on; only where some condition is true.\n\n"
+						+ "# What it can answer\n"
+						+ "APD writes down what happens while you play: every step, rest and search, every item you use, every effect that starts or ends, every talent, spell and "
+						+ "ability, every change in your gold and every trade, as well as the fights, healing and floors. If it was recorded, you can ask about it, including questions "
+						+ "nobody thought of when the game was made.\n\n"
+						+ "# Per floor, per run, per hour\n"
+						+ "When you divide by what you did, every floor, run, turn or hour counts, including the quiet ones where nothing happened, so averages are fair.\n\n"
+						+ "# Going further\n"
+						+ "Open as a table gives the very same question in the table tools, with every filter, sort and column, for anyone who wants to keep digging. "
+						+ "Things you could not have known during a run (what an unidentified item really was) are shown only once the run is over and only if you switch hidden "
+						+ "details on.", ""));
 		t.add(new Topic("datasets", read, "Tables",
 				"UIMSD keeps four kinds of record: Runs, Items, Enemies and Deaths. A table is one way of looking at a record: Weapons and Armor are tables of Items, "
 						+ "Characters is a table of Runs.\n\n"
