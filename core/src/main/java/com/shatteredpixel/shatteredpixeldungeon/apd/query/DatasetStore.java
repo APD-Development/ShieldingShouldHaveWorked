@@ -260,7 +260,9 @@ public final class DatasetStore {
 		//ruleset list
 		Map<String, int[]> rulesetRuns = new LinkedHashMap<>();
 		Map<String, String> rulesetLabels = new LinkedHashMap<>();
-		int ci = runsDef.indexOf(FactKeys.CHALLENGES), ei = runsDef.indexOf(FactKeys.EXOTIC_CHANCE);
+		int ci = runsDef.indexOf(FactKeys.CHALLENGES), ei = runsDef.indexOf(FactKeys.EXOTIC_CHANCE), di = runsDef.indexOf(FactKeys.DIFFICULTY);
+		Map<String, java.util.TreeSet<Long>> rulesetLevels = new LinkedHashMap<>();
+		java.util.Set<String> rulesetUnrecorded = new java.util.HashSet<>();
 		for (Row r : runRows){
 			if (r.ruleset == null || r.ruleset.equals(Row.RULESET_MIXED)) continue;
 			int[] n = rulesetRuns.get(r.ruleset);
@@ -270,8 +272,24 @@ public final class DatasetStore {
 				rulesetLabels.put(r.ruleset, "challenges " + (r.isKnown(ci) ? r.num(ci) : 0) + ", exotic " + (r.isKnown(ei) ? r.num(ei) : 0) + "%");
 			}
 			n[0]++;
+			//difficulty is part of the ruleset: name the recorded ones (runs of the standard difficulty share their ruleset with older runs
+			//that never recorded one, so those show as "not recorded")
+			if (di >= 0){
+				java.util.TreeSet<Long> set = rulesetLevels.get(r.ruleset);
+				if (set == null) rulesetLevels.put(r.ruleset, set = new java.util.TreeSet<>());
+				if (r.isKnown(di)) set.add(r.num(di)); else rulesetUnrecorded.add(r.ruleset);
+			}
 		}
-		for (Map.Entry<String, int[]> e : rulesetRuns.entrySet()) cat.rulesets.add(new Catalog.RulesetInfo(e.getKey(), rulesetLabels.get(e.getKey()), e.getValue()[0]));
+		for (Map.Entry<String, int[]> e : rulesetRuns.entrySet()){
+			String label = rulesetLabels.get(e.getKey());
+			java.util.TreeSet<Long> levels = rulesetLevels.get(e.getKey());
+			if (levels != null && !levels.isEmpty()){
+				StringBuilder d = new StringBuilder();
+				for (Long l : levels) d.append(d.length() > 0 ? "/" : "").append(l);
+				label += ", difficulty " + d + (rulesetUnrecorded.contains(e.getKey()) ? " (older runs: not recorded)" : "");
+			}
+			cat.rulesets.add(new Catalog.RulesetInfo(e.getKey(), label, e.getValue()[0]));
+		}
 
 		//datasets, with the runs each one can have rows for
 		for (Map.Entry<String, List<Row>> e : merged.entrySet()){

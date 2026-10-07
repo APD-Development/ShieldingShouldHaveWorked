@@ -25,7 +25,7 @@ A new dataset = a `DatasetDef` + a row builder + (optionally) views, with no scr
 ## Datasets and views
 Datasets: **Runs**, **Items**, **Enemies**, **Deaths**. Views (a view is a dataset plus a starting query, it stores nothing): Runs, Items,
 Weapons (melee + thrown), Armor, Rings, Trinkets, Artifacts (item category filters), Enemies, Deaths, **Characters** (runs grouped by class),
-**Challenges** (runs grouped by challenges + exotic chance, which together are exactly what makes a ruleset, over all rulesets).
+**Challenges** (runs grouped by challenges + exotic chance, which together are exactly what makes a ruleset, over all rulesets), **Difficulty** (runs grouped by difficulty and balance version over all rulesets; runs from before telemetry 1.7 form the "not recorded" group). Seed floors views (items, creatures, recorded-vs-canonical) are added for one finished run on request: see APD-FLOOR-REPLAY.md. Reports: APD-REPORTS.md.
 Bosses are not included: the boss flag is not recorded. Links move between datasets ("Items in this run" ...) from the dataset definition.
 
 ## Hidden information (the strict rule)
@@ -78,7 +78,7 @@ device self-test, and performance (printed as APD-PERF lines).
 ## Limitations
 - The screen cannot be exercised headless: its layout is covered by geometry tests, the drawing by the phone.
 - Table cells are cut to the column width; the detail window shows everything. Column widths are estimated from text length.
-- Paged at 50 lines; no charts, no export (Phase 8), no saved-query UI, no custom expression language, no global statistics.
+- Paged at 50 lines; no charts, no saved-query UI, no custom expression language. (History export is Phase 8; shareable reports are APD-REPORTS.md.)
 - Group-by in the UI picks one column with generic aggregates; richer grouping is a `GroupBy` away but has no screen yet.
 - Enemy rows pair each public combat event with the detail event written right after it; if telemetry ever interleaves more events there,
   the hidden class column of an enemy row may be missing (the public numbers do not depend on it).

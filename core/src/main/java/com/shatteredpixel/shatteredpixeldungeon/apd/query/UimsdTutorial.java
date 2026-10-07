@@ -74,6 +74,8 @@ public final class UimsdTutorial {
 		s.add(new Step("sample", "Sample size", "Numbers based on fewer than 5 values are shown dimmed: a 100% win rate from 2 runs means little.", Expect.NEXT, "table.header"));
 		s.add(new Step("coverage", "Coverage", "The Notes button says what you are looking at, what was left out, and how much of the data "
 				+ "each column is based on. Older runs lack some details, which is why some cells show ?.", Expect.NEXT, "notes"));
+		s.add(new Step("reports", "Sharing a report", "Options has 'Share a report of this view': the table you are looking at, with its filters, as text, Markdown, "
+				+ "a web page or CSV. Home has a Report button for your overall numbers. Reports keep the marks and say what is canonical.", Expect.NEXT, "options"));
 		s.add(new Step("home", "Home and Guide", "The Home button returns to the summary. The ? button opens the Guide, where you can read any topic "
 				+ "again or take this tour again.", Expect.NEXT, "home"));
 		STEPS = Collections.unmodifiableList(s);

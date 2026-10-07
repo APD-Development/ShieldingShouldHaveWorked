@@ -103,7 +103,7 @@ public final class UimsdHome {
 		this.runsElsewhere = runsElsewhere;
 		this.allRules = allRules;
 		this.scopeNote = (allRules ? "All finished runs, whatever rules they were played under." : "Finished runs played under your current rules.")
-				+ (!allRules && runsElsewhere > 0 ? " " + runsElsewhere + (runsElsewhere == 1 ? " run was" : " runs were") + " played under other rules." : "");
+				+ (!allRules && runsElsewhere > 0 ? " " + runsElsewhere + (runsElsewhere == 1 ? " run was" : " runs were") + " played under other rules (another difficulty, challenges or exotic setting): tap Rules to include them." : "");
 	}
 
 	public boolean isEmpty(){
@@ -134,6 +134,8 @@ public final class UimsdHome {
 
 		h.cards.add(overview(runsDs, rq, runs));
 		Card c = characters(cat, scope, currentRuleset);
+		if (c != null) h.cards.add(c);
+		c = difficulty(cat, currentRuleset);
 		if (c != null) h.cards.add(c);
 		c = gear(cat, scope, currentRuleset);
 		if (c != null) h.cards.add(c);
@@ -213,6 +215,30 @@ public final class UimsdHome {
 			c.line(keyText(r, g), g.n + (g.n == 1 ? " run" : " runs") + ", " + win + " won, deepest floor " + deepest, "", state);
 		}
 		c.link("All characters", "characters");
+		return c;
+	}
+
+	//Runs by difficulty, across every ruleset (each difficulty is its own ruleset, so the page's rules choice would hide the others). Only shown when
+	//there is something to compare: at least two groups (for example runs from before difficulty existed next to recorded ones).
+	private static Card difficulty( Catalog cat, String ruleset ){
+		QueryResult r = viewRows(cat, "difficulty", Scope.DEFAULT.withRules(Scope.Rules.ALL, ""), ruleset);
+		if (r == null || !r.isGrouped() || r.groups.size() < 2) return null;
+		Card c = new Card("difficulty", "Difficulty");
+		DatasetDef def = r.def;
+		for (int i = 0; i < r.groups.size() && i < LIST + 2; i++){
+			GroupRow g = r.groups.get(i);
+			ColumnDef level = r.groupKeys.get(0);
+			String label = g.sample.isKnown(level.index()) ? CellFormatter.cell(r.query, g.sample, level).text : "Not recorded (older runs)";
+			if (r.groupKeys.size() > 1 && g.sample.isKnown(r.groupKeys.get(1).index()) && g.sample.num(r.groupKeys.get(1).index()) > 0){
+				label += " (balance " + g.sample.num(r.groupKeys.get(1).index()) + ")";
+			}
+			int[] st = new int[1];
+			String[] d1 = new String[]{ "" };
+			String win = num(def, r.query, Aggregate.rate(FactKeys.OUTCOME, 1), g.rows, st, d1);
+			int state = st[0] == CellText.HIDDEN ? CellText.EXACT : st[0];
+			c.line(label, g.n + (g.n == 1 ? " run" : " runs") + ", " + win + " won", "", state);
+		}
+		c.link("Difficulty table", "difficulty");
 		return c;
 	}
 
@@ -326,7 +352,7 @@ public final class UimsdHome {
 			CellText deep = CellFormatter.cell(r.query, row, def.column(FactKeys.DEEPEST));
 			CellText score = CellFormatter.cell(r.query, row, def.column(FactKeys.SCORE));
 			int state = worst(worst(out.state, deep.state), score.state);
-			c.line(date.text + "  " + cls.text, out.text + ", floor " + deep.text + ", score " + score.text, "", state == CellText.HIDDEN ? CellText.EXACT : state);
+			c.line(date.text + " - " + cls.text, out.text + ", floor " + deep.text + ", score " + score.text, "", state == CellText.HIDDEN ? CellText.EXACT : state);
 		}
 		c.link("All runs", "runs");
 		return c;

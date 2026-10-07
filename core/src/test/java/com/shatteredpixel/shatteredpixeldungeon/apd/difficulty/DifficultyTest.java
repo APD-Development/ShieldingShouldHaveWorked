@@ -349,6 +349,17 @@ public class DifficultyTest {
 		assertEquals(old.runId, unknown.rows.get(0).runId);
 		assertEquals("in the current rules only the difficulty-3 runs are in scope", 2, QueryEngine.run(runs, q, r3).rows.size());
 
+		//the ruleset list names the difficulty: runs of the standard difficulty share their ruleset with older runs that never recorded one
+		String label3 = null, label4 = null;
+		for (Catalog.RulesetInfo ri : cat.rulesets){
+			if (ri.id.equals(r3)) label3 = ri.label;
+			if (ri.id.equals(d4.ruleset)) label4 = ri.label;
+		}
+		assertNotNull(label3);
+		assertTrue(label3, label3.contains("difficulty 3") && label3.contains("older runs: not recorded"));
+		assertTrue(String.valueOf(label4), label4 != null && label4.contains("difficulty 4") && !label4.contains("not recorded"));
+		assertEquals("a hero class is shown as a word, not as a key", "Warrior", CellFormatter.cell(q, d3, runs.def.column(FactKeys.HERO_CLASS)).text);
+
 		ViewDef view = cat.view("difficulty");
 		assertNotNull(view);
 		QueryResult grouped = QueryEngine.run(runs, view.initialQuery().withMinSample(0), r3);

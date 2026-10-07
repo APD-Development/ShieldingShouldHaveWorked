@@ -37,8 +37,8 @@ public final class ColumnDef {
 
 	public enum Type { NUM, TEXT, ENUM }
 
-	//how a number is shown (CLASS_NAME is for a TEXT column holding a stable item class key: shown as a readable name)
-	public enum Format { PLAIN, DATE_MILLIS, HUNDREDTHS, THOUSANDTHS, CLASS_NAME }
+	//how a number is shown (CLASS_NAME is for a TEXT column holding a stable item class key: shown as a readable name; TITLE_CASE is for a TEXT column of CAPITAL_WORDS keys such as a hero class: shown as "Capital words")
+	public enum Format { PLAIN, DATE_MILLIS, HUNDREDTHS, THOUSANDTHS, CLASS_NAME, TITLE_CASE }
 
 	//how the values of one logical row that was recorded in several log segments combine (see RowMerger). LOWER is for the
 	//number of DISTINCT things: with more than one segment it is the largest part and only ever a lower bound.

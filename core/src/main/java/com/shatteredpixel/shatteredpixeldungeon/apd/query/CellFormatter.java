@@ -46,7 +46,7 @@ public final class CellFormatter {
 		int i = col.index;
 		if (!row.isKnown(i)) return new CellText(UNKNOWN_TEXT, CellText.UNKNOWN);
 		int prov = row.prov(i);
-		String body = row.kind(i) == Row.K_TEXT ? (col.format == ColumnDef.Format.CLASS_NAME ? className(row.text(i)) : row.text(i)) : value(col, row.num(i));
+		String body = row.kind(i) == Row.K_TEXT ? (col.format == ColumnDef.Format.CLASS_NAME ? className(row.text(i)) : col.format == ColumnDef.Format.TITLE_CASE ? titleCase(row.text(i)) : row.text(i)) : value(col, row.num(i));
 		switch (prov){
 			case Fact.PROV_INCOMPLETE: return new CellText(">=" + body, CellText.LOWER);
 			case Fact.PROV_INFERRED: return new CellText("~" + body, CellText.INFERRED);
@@ -114,6 +114,13 @@ public final class CellFormatter {
 		long m = mp < 10 ? mp + 3 : mp - 9;
 		if (m <= 2) y++;
 		return y + "-" + (m < 10 ? "0" : "") + m + "-" + (d < 10 ? "0" : "") + d;
+	}
+
+	//"WARRIOR" -> "Warrior", "DEAD_END" -> "Dead end": a key of capital words shown as words
+	static String titleCase( String key ){
+		if (key == null || key.isEmpty()) return "";
+		String t = key.replace('_', ' ').toLowerCase(java.util.Locale.ROOT);
+		return Character.toUpperCase(t.charAt(0)) + t.substring(1);
 	}
 
 	//what a cell's state means, in a sentence

@@ -83,7 +83,7 @@ public final class WndUimsdReport {
 		show("The table you are looking at, with its filters, sorting, columns and scope.", new Source(){
 			@Override
 			public Report build(){
-				return ReportBuilder.view(q, title, "", System.currentTimeMillis(), Game.version);
+				return ReportBuilder.view(q, title, m.currentRulesetLabel(), System.currentTimeMillis(), Game.version);
 			}
 		});
 	}
@@ -94,7 +94,7 @@ public final class WndUimsdReport {
 		show("A summary of your runs: wins, deaths, characters, gear, enemies and records.", new Source(){
 			@Override
 			public Report build(){
-				return ReportBuilder.lifetime(cat, m.currentRuleset(), "", allRules, System.currentTimeMillis(), Game.version);
+				return ReportBuilder.lifetime(cat, m.currentRuleset(), m.currentRulesetLabel(), allRules, System.currentTimeMillis(), Game.version);
 			}
 		});
 	}
@@ -105,7 +105,7 @@ public final class WndUimsdReport {
 		show("This group and its statistics.", new Source(){
 			@Override
 			public Report build(){
-				return ReportBuilder.group(q, g, "", System.currentTimeMillis(), Game.version);
+				return ReportBuilder.group(q, g, m.currentRulesetLabel(), System.currentTimeMillis(), Game.version);
 			}
 		});
 	}

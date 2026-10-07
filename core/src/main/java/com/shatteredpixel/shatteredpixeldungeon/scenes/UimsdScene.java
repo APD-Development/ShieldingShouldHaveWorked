@@ -116,7 +116,9 @@ public class UimsdScene extends PixelScene {
 		}
 		Ruleset rules = from == GameScene.class ? Ruleset.current() : Ruleset.forNewRun();
 		rulesId = rules.id;
-		rulesLabel = "challenges " + SPDSettings.challenges() + ", exotic " + rules.exoticChance + "%";
+		int level = from == GameScene.class ? com.shatteredpixel.shatteredpixeldungeon.Dungeon.difficulty : SPDSettings.apdDifficulty();
+		boolean levelKnown = from != GameScene.class || com.shatteredpixel.shatteredpixeldungeon.Dungeon.difficultyKnown;
+		rulesLabel = "challenges " + SPDSettings.challenges() + ", exotic " + rules.exoticChance + "%, difficulty " + level + (levelKnown ? "" : " (older run)");
 		endTutorial();
 		removeLeftoverSample();
 		atHome = true;

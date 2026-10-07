@@ -55,6 +55,7 @@ public final class ReportBuilder {
 	public static Report lifetime( Catalog cat, String currentRuleset, String rulesLabel, boolean allRules, long now, String version ){
 		UimsdHome home = UimsdHome.build(cat, currentRuleset, allRules);
 		Report r = start("UIMSD summary", now, version, home.scopeNote);
+		if (rulesLabel != null && !rulesLabel.isEmpty()) r.about.add("Your current rules: " + rulesLabel + ".");
 		if (home.isEmpty()){
 			r.add(new Report.Note(Report.NoteKind.NOTE, "There are no finished runs in scope yet."));
 			return r;
@@ -235,6 +236,22 @@ public final class ReportBuilder {
 
 	public static Report seedFloors( Catalog cat, String runId, String currentRuleset, long now, String version ){
 		Report r = start("Seed floors", now, version, "Run " + runId);
+		//the rules the run was played under: its difficulty and balance version decide what the canonical floors are built from
+		Dataset runs = cat.dataset(Datasets.RUNS);
+		if (runs != null){
+			for (Row run : runs.rows){
+				if (!runId.equals(run.runId)) continue;
+				Query rq = Query.of(Datasets.RUNS);
+				ColumnDef dc = runs.def.column(com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKeys.DIFFICULTY);
+				ColumnDef bc = runs.def.column(com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKeys.DIFFICULTY_BALANCE);
+				if (dc != null){
+					String d = CellFormatter.cell(rq, run, dc).text;
+					String b = bc != null && run.isKnown(bc.index()) ? ", balance version " + run.num(bc.index()) : "";
+					r.about.add("Difficulty: " + (run.isKnown(dc.index()) ? d + b : "not recorded (the run is older than difficulty); canonical floors are built for the standard difficulty 3"));
+				}
+				break;
+			}
+		}
 		if (cat.dataset(SeedFloors.ITEMS) == null){
 			r.add(new Report.Note(Report.NoteKind.NOTE, "The seed floors of this run have not been built yet. Open them from the run first."));
 			return r;

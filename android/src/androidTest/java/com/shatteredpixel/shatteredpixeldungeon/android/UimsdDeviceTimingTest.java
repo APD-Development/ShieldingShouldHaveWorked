@@ -104,6 +104,11 @@ public class UimsdDeviceTimingTest {
 			assertTrue("demo history should record several difficulties: " + levels, levels.size() >= 3);
 			assertTrue("older demo runs must show an unknown difficulty", unknownDiff > 0);
 			assertTrue(warm.view("difficulty") != null);
+			com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdHome homeWithLevels = com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdHome.build(warm, rules.id, true);
+			assertTrue("Home should offer the difficulty card", homeWithLevels.card("difficulty") != null);
+			boolean namesDifficulty = false;
+			for (Catalog.RulesetInfo ri : warm.rulesets) if (ri.label.contains("difficulty")) namesDifficulty = true;
+			assertTrue("the rules list should name the difficulty", namesDifficulty);
 			assertTrue("difficulty 3 keeps the id the rules had before", "r1-37d60350c6b1".equals(Ruleset.of(30, 0).id)
 					&& Ruleset.of(30, 0).id.equals(Ruleset.of(30, 0, 3).id) && !Ruleset.of(30, 0, 4).id.equals(Ruleset.of(30, 0).id));
 

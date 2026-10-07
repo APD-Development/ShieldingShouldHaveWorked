@@ -82,11 +82,40 @@ public class UimsdHomeTourTest {
 		Set<String> ids = new HashSet<>();
 		for (UimsdGuide.Topic t : UimsdGuide.topics()){
 			assertTrue(ids.add(t.id));
-			assertTrue(t.id, UimsdTutorial.indexOf(t.tourStep) >= 0);
+			//a topic is either shown on the real screen by a tour step, or has none ("")
+			assertTrue(t.id, t.tourStep.isEmpty() || UimsdTutorial.indexOf(t.tourStep) >= 0);
 			assertFalse(t.text.isEmpty());
 		}
 		String marks = UimsdGuide.topic("marks").text;
 		for (String s : new String[]{ "?", ">=", "~" }) assertTrue(s, marks.contains(s));
+	}
+
+	@Test
+	public void guideCoversTheNewerFeaturesAndTheMarksTheyUse() {
+		for (String id : new String[]{ "reports", "seedfloors", "difficulty" }){
+			UimsdGuide.Topic t = UimsdGuide.topic(id);
+			assertNotNull(id, t);
+			assertTrue(id, t.text.length() > 200);
+		}
+		assertTrue(UimsdGuide.topic("seedfloors").text.contains("CANONICAL"));
+		assertTrue(UimsdGuide.topic("seedfloors").text.contains("not what the run would have met"));
+		assertTrue(UimsdGuide.topic("difficulty").text.contains("?"));
+		assertTrue(UimsdGuide.topic("reports").text.contains("hidden information"));
+		assertTrue(UimsdTutorial.indexOf("reports") > UimsdTutorial.indexOf("coverage"));
+		assertTrue(UimsdTutorial.indexOf("reports") < UimsdTutorial.indexOf("home"));
+	}
+
+	@Test
+	public void homeShowsTheDifficultyCardWhenThereIsSomethingToCompare() {
+		UimsdHome h = UimsdHome.build(cat, RULES.id, false);
+		UimsdHome.Card c = h.card("difficulty");
+		assertNotNull("the sample history has several difficulties", c);
+		assertTrue(c.lines.size() >= 2);
+		assertEquals("difficulty", c.links.get(0).viewId);
+		boolean unknownGroup = false;
+		for (UimsdHome.Line l : c.lines) if (l.label.startsWith("Not recorded")) unknownGroup = true;
+		assertTrue("older runs are labelled not recorded, never as a level", unknownGroup);
+		assertTrue(h.scopeNote, h.scopeNote.isEmpty() || !h.scopeNote.contains("balance revision"));
 	}
 
 	@Test

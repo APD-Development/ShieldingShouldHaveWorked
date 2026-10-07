@@ -173,6 +173,11 @@ public final class UimsdModel {
 		return page;
 	}
 
+	//the current rules in words (for notes and reports)
+	public String currentRulesetLabel(){
+		return currentRulesetLabel == null ? "" : currentRulesetLabel;
+	}
+
 	public String currentRuleset(){
 		return currentRuleset;
 	}

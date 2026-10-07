@@ -58,7 +58,8 @@ public final class UimsdGuide {
 		t.add(new Topic("home", "The Home page",
 				"Home sums up your finished runs in a few cards: how many you played and won, how each character does, the gear you use, "
 						+ "what ended your runs, your recent runs and your records.\n\n"
-						+ "Every card has buttons that open the full table behind it. The Home button on the other screens brings you back.\n\n"
+						+ "Every card has buttons that open the full table behind it. The Home button on the other screens brings you back. "
+						+ "The Report button turns the page into something you can share.\n\n"
 						+ "Home shows runs played under your current rules by default. 'All rules' includes runs played under other rules.", "home"));
 		t.add(new Topic("datasets", "Datasets and views",
 				"A dataset is one kind of thing UIMSD keeps: Runs, Items, Enemies or Deaths. A view is a way of looking at a dataset: "
@@ -101,6 +102,26 @@ public final class UimsdGuide {
 				"Coverage is how much of the data a number is based on. Runs recorded with older versions of APD lack some details, so some cells "
 						+ "show ?. The Notes button lists what you are looking at: which runs are included, what was left out and why, "
 						+ "and how many of the shown rows know each column. Lines marked > can be tapped to include what was left out.", "coverage"));
+		t.add(new Topic("reports", "Sharing: reports",
+				"A report is a readable summary you can send to someone or keep: your overall numbers, the table you are looking at, one run, a group "
+						+ "(a character, an item kind, an enemy), two runs side by side, or the seed floors of a run.\n\n"
+						+ "Find it under Options (Share a report of this view), on Home (Report), and in the window of a run or a group. Share it as text, or "
+						+ "save it as Markdown, a web page (open it in a browser and print it to PDF) or CSV for a spreadsheet.\n\n"
+						+ "Reports keep the marks (?, >=, ~) and a legend, and say clearly which data is canonical. They never include hidden information "
+						+ "of a run you are still playing; hidden information of finished runs is included only if you switched it on, and then the report says so.", "reports"));
+		t.add(new Topic("seedfloors", "Seed floors and canonical data",
+				"Every dungeon grows from a seed. For a finished run, open its window and choose Seed floors to see what every floor of its seed holds, "
+						+ "including floors the run never reached.\n\n"
+						+ "Floors the run actually played show what the run recorded: that is history. All other floors are CANONICAL: they are what the seed "
+						+ "gives when its floors are built in order under fixed rules. That is not what the run would have met, because play changes later floors "
+						+ "(items used, loot taken, monsters killed). Canonical rows carry the ~ mark and a Basis column, and are never mixed up with recorded ones.\n\n"
+						+ "Seed floors need a finished run and are not available while a game is open.", ""));
+		t.add(new Topic("difficulty", "Difficulty in UIMSD",
+				"Each run records the difficulty it was started with (1 to 5, 3 is the normal game) and the balance version of that difficulty. "
+						+ "Runs recorded before difficulty existed show a ? there: they were played with normal balance, but their difficulty was never recorded.\n\n"
+						+ "Every difficulty counts as its own set of rules, so Home and the tables show your current rules by default and the notes tell you how many runs "
+						+ "were played under other rules. The Difficulty card on Home and the Difficulty view compare them side by side; you can also filter or group any "
+						+ "table by the Difficulty column.", ""));
 		TOPICS = Collections.unmodifiableList(t);
 	}
 
