@@ -11,7 +11,7 @@ logcat tags APDMIG/APDPERF into the job log and uploads logcat artifacts.
   Verified on commit a19c9c00e = **apd-build-36**: full core suite 501 tests green; device tests green on API 26 and API 34
   (8 tests each, incl. the migration test with heals and UimsdDeviceTimingTest).
 - **Home/Guide milestone: COMPLETE, awaiting approval.** Verified on commit 80ef188f8 = **apd-build-37**: core 509 tests green; device tests green API 26 + 34.
-- Latest known-good commit: **8dbbadf69** (floor replay A-C): core 528 tests green; device tests green API 26 + 34; APK built (its "Publish release" step failed transiently, as in build 31, so no apd-build-47 release; apd-build-46 = 5a86b42a9 is published). Previous: apd-build-37 (80ef188f8, Home/Guide).
+- Latest known-good: **apd-build-49 = commit 0994586d1** (UIMSD reports/export): core 539 tests green; device tests green API 26 + 34. Previous: 8dbbadf69 (floor replay A-C), apd-build-37 (Home/Guide).
 - Frozen: Phases 0-7 (Phase 7 UIMSD approved/frozen at build 28). Phase 8 (export/import ZIP, storage meter, Android file picker):
   automated verification complete; NOT permanently frozen until the user's physical picker check.
 - Telemetry version now 1.6. UIMSD = one major feature; these phases are milestones inside it.
@@ -89,7 +89,7 @@ Before starting any task expected to produce a build, output exactly one short l
 If the rule is learned mid-work, give one estimate for the remaining time. Update only if a material problem changes it; no routine
 progress reports or repeated ETA checks. When the build finishes, report actual elapsed time if known.
 
-## UIMSD reports/export (milestone implemented; see docs/APD-REPORTS.md)
+## UIMSD reports/export (milestone COMPLETE at 0994586d1, awaiting approval; see docs/APD-REPORTS.md)
 Format: Markdown / plain text / HTML (print to PDF) / CSV from one `Report` model; share as text or save via the system picker; no native PDF
 (investigated). Reports: lifetime, view, run, group, run comparison, seed floors (canonical clearly separated). Marks + legend + canonical
 notice in every format. Physical check joins the PHONE-CHECK bundle: Report buttons/windows, share sheet, saving a file.
