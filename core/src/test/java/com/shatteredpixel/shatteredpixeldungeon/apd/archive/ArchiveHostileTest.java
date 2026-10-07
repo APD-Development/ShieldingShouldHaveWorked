@@ -122,15 +122,16 @@ public class ArchiveHostileTest {
 		List<String> n = new ArrayList<>(names(ArchiveManifest.ENTRY_NAME, "runs/a.apdlog", "runs/extra.apdlog", "../../outside.txt"));
 		Map<String, byte[]> parts = new ArchiveRoundTripEntries().read(base);
 		ArchiveImporter.Report r = run(zip(n, Arrays.asList(parts.get(ArchiveManifest.ENTRY_NAME), a, extra, "x".getBytes("UTF-8"))));
+		assertTrue(r.summary(), r.ok);
 		assertEquals(1, r.imported);
-		assertEquals(2, r.rejected);
+		assertEquals("unlisted entries are ignored, they do not spoil the rest", 0, r.rejected);
 		assertTrue(new File(root, "runs/a.apdlog").isFile());
 		assertFalse(new File(root, "runs/extra.apdlog").exists());
 		assertFalse(new File(root.getParentFile(), "outside.txt").exists());
 	}
 
 	@Test
-	public void aFileThatDoesNotMatchItsChecksumIsDroppedAndTheOthersStillImport() throws Exception {
+	public void oneFileThatDoesNotMatchItsChecksumMeansNothingAtAllIsImported() throws Exception {
 		byte[] a = good("a", "run-a"), b = good("b", "run-b");
 		Map<String, byte[]> files = new LinkedHashMap<>();
 		files.put("runs/a.apdlog", a);
@@ -139,17 +140,15 @@ public class ArchiveHostileTest {
 		ids.put("runs/a.apdlog", "run-a");
 		ids.put("runs/b.apdlog", "run-b");
 		byte[] archive = archiveOf(files, ids);
-		//flip a byte of a's content inside the zip (the entries are stored uncompressed only if tiny, so rebuild instead)
 		Map<String, byte[]> parts = new ArchiveRoundTripEntries().read(archive);
 		byte[] bad = a.clone();
 		bad[bad.length - 9] ^= 0x55;
 		ArchiveImporter.Report r = run(zip(names(ArchiveManifest.ENTRY_NAME, "runs/a.apdlog", "runs/b.apdlog"),
 				Arrays.asList(parts.get(ArchiveManifest.ENTRY_NAME), bad, b)));
-		assertEquals(r.summary(), 1, r.imported);
+		assertFalse(r.ok);
+		assertEquals(0, r.imported);
 		assertEquals(1, r.rejected);
-		assertFalse(new File(root, "runs/a.apdlog").exists());
-		assertArrayEquals(b, files(root).get("runs/b.apdlog"));
-		assertFalse(new File(root, "import-tmp").exists());
+		assertNothingWritten();   //b was perfectly good, and is not imported either
 	}
 
 	@Test
@@ -214,7 +213,7 @@ public class ArchiveHostileTest {
 	}
 
 	@Test
-	public void aTruncatedArchiveKeepsOnlyWhatWasCompleteAndVerifiedAndLeavesNoLitter() throws Exception {
+	public void aTruncatedArchiveChangesNothingAndLeavesNoLitter() throws Exception {
 		byte[] a = good("a", "run-a"), b = good("b", "run-b");
 		Map<String, byte[]> files = new LinkedHashMap<>();
 		files.put("runs/a.apdlog", a);
@@ -225,14 +224,37 @@ public class ArchiveHostileTest {
 		byte[] archive = archiveOf(files, ids);
 		for (int cut : new int[]{ archive.length - 5, archive.length / 2, archive.length / 3, 60, 10 }){
 			ArchiveImporter.Report r = run(Arrays.copyOf(archive, cut));
-			assertTrue("cut " + cut, r.imported <= 2);
-			//every log that did land is a complete, valid one
-			for (Map.Entry<String, byte[]> e : files(root).entrySet()){
-				if (e.getKey().equals("runs/a.apdlog")) assertArrayEquals(a, e.getValue());
-				if (e.getKey().equals("runs/b.apdlog")) assertArrayEquals(b, e.getValue());
+			if (r.ok){
+				//only the zip's table of contents at the very end was cut: every file arrived whole and verified, so all of it is imported
+				assertEquals("cut " + cut, 2, r.imported);
+				assertArrayEquals(a, files(root).get("runs/a.apdlog"));
+				assertArrayEquals(b, files(root).get("runs/b.apdlog"));
+			} else {
+				assertEquals("cut " + cut, 0, r.imported);
+				assertNothingWritten();
 			}
 			assertFalse(new File(root, "import-tmp").exists());
 		}
+	}
+
+	@Test
+	public void aCommitThatFailsHalfWayTakesBackEverythingItPlaced() throws Exception {
+		//the second log's folder cannot be created (a plain file is in the way), so putting the files in place fails after the first one
+		byte[] a = good("a", "run-a"), b = good("b", "run-b");
+		Map<String, byte[]> files = new LinkedHashMap<>();
+		files.put("legacy/a.apdlog", a);
+		files.put("runs/b.apdlog", b);
+		Map<String, String> ids = new LinkedHashMap<>();
+		ids.put("legacy/a.apdlog", "run-a");
+		ids.put("runs/b.apdlog", "run-b");
+		byte[] archive = archiveOf(files, ids);
+		root = tmp.newFolder("device-block");
+		java.nio.file.Files.write(new File(root, "runs").toPath(), new byte[]{ 1 });   //"runs" is a file, so runs/b.apdlog cannot be created
+		ArchiveImporter.Report r = ArchiveImporter.importArchive(root, new ByteArrayInputStream(archive));
+		assertFalse(r.ok);
+		assertEquals(0, r.imported);
+		assertFalse("the first file was taken out again", new File(root, "legacy/a.apdlog").exists());
+		assertFalse(new File(root, "import-tmp").exists());
 	}
 
 	@Test
@@ -246,7 +268,7 @@ public class ArchiveHostileTest {
 	}
 
 	@Test
-	public void aListedFileThatNeverArrivedIsReported() throws Exception {
+	public void aListedFileThatNeverArrivedIsReportedAndNothingIsImported() throws Exception {
 		byte[] a = good("a", "run-a"), b = good("b", "run-b");
 		Map<String, byte[]> files = new LinkedHashMap<>();
 		files.put("runs/a.apdlog", a);
@@ -256,9 +278,11 @@ public class ArchiveHostileTest {
 		ids.put("runs/b.apdlog", "run-b");
 		Map<String, byte[]> parts = new ArchiveRoundTripEntries().read(archiveOf(files, ids));
 		ArchiveImporter.Report r = run(zip(names(ArchiveManifest.ENTRY_NAME, "runs/a.apdlog"), Arrays.asList(parts.get(ArchiveManifest.ENTRY_NAME), a)));
-		assertEquals(1, r.imported);
+		assertFalse(r.ok);
+		assertEquals(0, r.imported);
 		assertEquals(1, r.rejected);
 		assertTrue(r.summary().contains("missing"));
+		assertNothingWritten();
 	}
 
 	// ---- synthetic demo data never travels ----

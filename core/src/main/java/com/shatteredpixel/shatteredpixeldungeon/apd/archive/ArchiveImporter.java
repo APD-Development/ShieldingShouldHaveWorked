@@ -42,10 +42,12 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-//Adds the history of an archive to this device's history. It only ever ADDS:
+//Adds the history of an archive to this device's history. It only ever ADDS, and it is all or nothing:
 //  - the manifest is checked first (its own checksum, format, totals); a damaged or newer one stops everything before anything is written;
 //  - every file is streamed to a temporary file and must match the manifest's size and SHA-256 and be a readable APD log of the run the
-//    manifest says (a file that does not is dropped and reported, the others continue);
+//    manifest says; if ANY file fails, or the archive ends early, or a listed file is missing, NOTHING is imported (the history is exactly
+//    as it was) and the problems are reported. Only when everything has been verified are the files put in place, and if that fails
+//    half way the files already put in place are taken out again;
 //  - a log that already exists is NEVER replaced: an identical one is skipped, a different one is kept as it is and reported;
 //  - only "runs/<id>.apdlog" and "legacy/<id>.apdlog" with plain ids can be written, whatever the archive's entry names say;
 //  - synthetic demo data is rejected, and a folder that carries the demo marker is refused;
@@ -72,7 +74,11 @@ public final class ArchiveImporter {
 		public final List<String> details = new ArrayList<>();
 
 		public String summary(){
-			if (!ok && imported == 0 && skippedAlreadyHere == 0) return "Nothing was imported: " + problem;
+			if (!ok && imported == 0 && skippedAlreadyHere == 0){
+				StringBuilder n = new StringBuilder("Nothing was imported: " + problem);
+				for (String d : details) n.append("\n- ").append(d);
+				return n.toString();
+			}
 			StringBuilder b = new StringBuilder();
 			b.append("Imported ").append(imported).append(imported == 1 ? " log" : " logs").append(".");
 			if (skippedAlreadyHere > 0) b.append("\n").append(skippedAlreadyHere).append(" already here (identical), skipped.");
@@ -146,30 +152,39 @@ public final class ArchiveImporter {
 					return report;
 				}
 				Set<String> seen = new HashSet<>();
+				List<Staged> staged = new ArrayList<>();
 				ZipEntry entry;
+				int problems = 0;
 				while ((entry = zip.getNextEntry()) != null){
 					String name = entry.getName();
 					ArchiveManifest.Entry e = manifest.find(name);
 					if (e == null || !seen.add(name)){
-						report.rejected++;
+						//something the manifest does not list is never written, and does not spoil the rest
 						report.details.add("not in the manifest or repeated, ignored: " + safe(name));
 						continue;
 					}
-					handle(root, tmpDir, zip, e, report);
+					Staged st = stage(root, tmpDir, zip, e, staged.size(), report);
+					if (st == null) problems++;
+					else staged.add(st);
 				}
 				for (ArchiveManifest.Entry e : manifest.files){
 					if (!seen.contains(e.path)){
-						report.rejected++;
+						problems++;
 						report.details.add("listed but missing from the archive: " + e.path);
 					}
 				}
+				if (problems > 0){
+					report.rejected = problems;
+					report.problem = "the archive has " + problems + (problems == 1 ? " problem" : " problems") + ", so nothing was imported.";
+					return report;
+				}
+				commit(root, staged, report);
 				report.ok = true;
 				rebuildIndex(root);
 				return report;
 			} catch (Throwable t){
 				report.ok = false;
 				report.problem = String.valueOf(t);
-				try { rebuildIndex(root); } catch (Throwable ignored){}
 				return report;
 			} finally {
 				if (tmpDir != null) deleteTree(tmpDir);
@@ -177,8 +192,22 @@ public final class ArchiveImporter {
 		}
 	}
 
-	private static void handle( File root, File tmpDir, ZipInputStream zip, ArchiveManifest.Entry e, Report report ) throws IOException {
-		File tmp = new File(tmpDir, "entry-" + report.imported + "-" + report.rejected + "-" + report.skippedAlreadyHere + ".tmp");
+	//a file that has been read from the archive and fully verified, waiting for the rest
+	private static final class Staged {
+		final ArchiveManifest.Entry entry;
+		final File tmp;
+		final boolean newerThanReader;
+
+		Staged( ArchiveManifest.Entry entry, File tmp, boolean newerThanReader ){
+			this.entry = entry;
+			this.tmp = tmp;
+			this.newerThanReader = newerThanReader;
+		}
+	}
+
+	//Streams one entry to a temporary file and verifies it. Returns null (and says why in the report) if it cannot be trusted.
+	private static Staged stage( File root, File tmpDir, ZipInputStream zip, ArchiveManifest.Entry e, int number, Report report ) throws IOException {
+		File tmp = new File(tmpDir, "entry-" + number + ".tmp");
 		MessageDigest digest = newDigest();
 		long size = 0;
 		boolean tooBig = false;
@@ -201,9 +230,8 @@ public final class ArchiveImporter {
 		}
 		if (tooBig || size != e.size || !ArchiveManifest.hex(digest.digest()).equalsIgnoreCase(e.sha256)){
 			tmp.delete();
-			report.rejected++;
-			report.details.add(e.path + ": does not match the manifest (size or checksum), not imported.");
-			return;
+			report.details.add(e.path + ": does not match the manifest (size or checksum).");
+			return null;
 		}
 		//it must be a readable APD log, of the run the manifest says, and never demo data
 		ReadResult r;
@@ -214,9 +242,8 @@ public final class ArchiveImporter {
 		}
 		if (r == null || r.header == null || r.status == ReadStatus.BAD_HEADER || r.status == ReadStatus.UNSUPPORTED_CONTAINER){
 			tmp.delete();
-			report.rejected++;
-			report.details.add(e.path + ": not a readable APD log, not imported.");
-			return;
+			report.details.add(e.path + ": not a readable APD log.");
+			return null;
 		}
 		String startedRun = null;
 		for (com.shatteredpixel.shatteredpixeldungeon.apd.stats.ApdEvent ev : r.events){
@@ -234,36 +261,54 @@ public final class ArchiveImporter {
 				|| (startedRun != null && startedRun.startsWith(DatasetStore.DEMO_LOG_PREFIX))
 				|| r.header.writerBuild.contains("SYNTHETIC-DEMO") || !runMatches){
 			tmp.delete();
-			report.rejected++;
-			report.details.add(e.path + ": its header does not match the manifest or it is demo data, not imported.");
-			return;
+			report.details.add(e.path + ": its header does not match the manifest, or it is demo data.");
+			return null;
 		}
-		File target = new File(root, e.path);
-		File folder = target.getParentFile();
-		if (!folder.isDirectory() && !folder.mkdirs()){
-			tmp.delete();
-			report.rejected++;
-			report.details.add(e.path + ": cannot create its folder.");
-			return;
-		}
-		//claim the name atomically: an existing log is never replaced
-		if (!target.createNewFile()){
-			if (sameContent(target, e.sha256)) report.skippedAlreadyHere++;
-			else {
-				report.keptDifferentExisting++;
-				report.details.add(e.path + ": a different log with this name is already here, yours was kept.");
+		return new Staged(e, tmp, r.newerThanReader());
+	}
+
+	//Puts the verified files in place. A name that is taken is never replaced. If something fails half way, everything this import
+	//put in place is taken out again.
+	private static void commit( File root, List<Staged> staged, Report report ) throws IOException {
+		List<File> placed = new ArrayList<>();
+		int imported = 0, already = 0, kept = 0, redacted = 0, newer = 0;
+		List<String> notes = new ArrayList<>();
+		try {
+			for (Staged st : staged){
+				File target = new File(root, st.entry.path);
+				File folder = target.getParentFile();
+				if (!folder.isDirectory() && !folder.mkdirs()) throw new IOException("cannot create " + folder);
+				//claim the name atomically: an existing log is never replaced
+				if (!target.createNewFile()){
+					if (sameContent(target, st.entry.sha256)) already++;
+					else {
+						kept++;
+						notes.add(st.entry.path + ": a different log with this name is already here, yours was kept.");
+					}
+					st.tmp.delete();
+					continue;
+				}
+				placed.add(target);
+				if (!st.tmp.renameTo(target)){
+					//the claim is an empty file we created ourselves: replace it by copying
+					copy(st.tmp, target);
+					st.tmp.delete();
+				}
+				imported++;
+				if (st.entry.redacted) redacted++;
+				if (st.newerThanReader) newer++;
 			}
-			tmp.delete();
-			return;
+		} catch (IOException | RuntimeException failure){
+			for (File f : placed) f.delete();
+			report.problem = "putting the files in place failed (" + failure + "); nothing was imported.";
+			throw new IOException(report.problem);
 		}
-		if (!tmp.renameTo(target)){
-			//the claim is an empty file we created ourselves: replace it by copying
-			copy(tmp, target);
-			tmp.delete();
-		}
-		report.imported++;
-		if (e.redacted) report.redactedImported++;
-		if (r.newerThanReader()) report.newerThanThisBuild++;
+		report.imported = imported;
+		report.skippedAlreadyHere = already;
+		report.keptDifferentExisting = kept;
+		report.redactedImported = redacted;
+		report.newerThanThisBuild = newer;
+		report.details.addAll(notes);
 	}
 
 	private static boolean sameContent( File f, String sha256 ){

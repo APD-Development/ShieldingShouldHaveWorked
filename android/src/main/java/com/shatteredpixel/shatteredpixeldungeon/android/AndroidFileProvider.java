@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.android;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 
@@ -99,36 +100,44 @@ public class AndroidFileProvider implements ApdFiles.Provider, AndroidEventListe
 		if (requestCode == REQUEST_EXPORT){
 			ApdFiles.ExportTarget target = pendingExport;
 			pendingExport = null;
-			if (target == null) return;
-			if (resultCode != Activity.RESULT_OK || data == null || data.getData() == null){
-				target.onCancelled();
-				return;
-			}
-			try {
-				Uri uri = data.getData();
-				//"wt": a new or existing document is written from the start, never appended to
-				OutputStream out = activity.getContentResolver().openOutputStream( uri, "wt" );
-				if (out == null) target.onFailed( "the file could not be opened for writing" );
-				else target.onStream( out, String.valueOf( uri.getLastPathSegment() ) );
-			} catch (Throwable e) {
-				target.onFailed( String.valueOf( e ) );
-			}
+			if (target != null) deliverExport( activity.getContentResolver(), target, resultCode, data );
 		} else if (requestCode == REQUEST_IMPORT){
 			ApdFiles.ImportSource source = pendingImport;
 			pendingImport = null;
-			if (source == null) return;
-			if (resultCode != Activity.RESULT_OK || data == null || data.getData() == null){
-				source.onCancelled();
-				return;
-			}
-			try {
-				Uri uri = data.getData();
-				InputStream in = activity.getContentResolver().openInputStream( uri );
-				if (in == null) source.onFailed( "the file could not be opened for reading" );
-				else source.onStream( in, String.valueOf( uri.getLastPathSegment() ) );
-			} catch (Throwable e) {
-				source.onFailed( String.valueOf( e ) );
-			}
+			if (source != null) deliverImport( activity.getContentResolver(), source, resultCode, data );
+		}
+	}
+
+	//What happens when the picker has answered, apart from the picker itself: open exactly the file the player chose and hand over its
+	//stream, or say they cancelled or that it failed. Separate so that the device tests run this same code with a file chosen by the test.
+	public static void deliverExport( ContentResolver resolver, ApdFiles.ExportTarget target, int resultCode, Intent data ){
+		if (resultCode != Activity.RESULT_OK || data == null || data.getData() == null){
+			target.onCancelled();
+			return;
+		}
+		try {
+			Uri uri = data.getData();
+			//"wt": a new or existing document is written from the start, never appended to
+			OutputStream out = resolver.openOutputStream( uri, "wt" );
+			if (out == null) target.onFailed( "the file could not be opened for writing" );
+			else target.onStream( out, String.valueOf( uri.getLastPathSegment() ) );
+		} catch (Throwable e) {
+			target.onFailed( String.valueOf( e ) );
+		}
+	}
+
+	public static void deliverImport( ContentResolver resolver, ApdFiles.ImportSource source, int resultCode, Intent data ){
+		if (resultCode != Activity.RESULT_OK || data == null || data.getData() == null){
+			source.onCancelled();
+			return;
+		}
+		try {
+			Uri uri = data.getData();
+			InputStream in = resolver.openInputStream( uri );
+			if (in == null) source.onFailed( "the file could not be opened for reading" );
+			else source.onStream( in, String.valueOf( uri.getLastPathSegment() ) );
+		} catch (Throwable e) {
+			source.onFailed( String.valueOf( e ) );
 		}
 	}
 }

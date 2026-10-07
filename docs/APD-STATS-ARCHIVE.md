@@ -31,12 +31,14 @@ and schema/version information are in the logs and the manifest (telemetry versi
 * Synthetic demo data is never exported (a folder with the demo marker is refused, `demo-` logs are skipped) and never imported.
 
 ## Import (`ArchiveImporter`)
-Only ever adds. The manifest is checked first (its checksum, format, totals, that every listed path is `runs/<id>.apdlog` or `legacy/<id>.apdlog` with a plain
-id, sizes, no demo data, enough free space); a bad manifest stops everything before anything is written. Each file is then streamed to a temporary file
-(one at a time, never held in memory), and must match the manifest's size and SHA-256 and be a readable APD log of the run the manifest says; a file that
-does not is dropped and reported, the others continue. A log that already exists is **never replaced**: an identical one is skipped, a different one is kept as
-it is and reported (the name is claimed atomically). Entries the manifest does not list are ignored, whatever their name. A truncated archive keeps only
-complete, verified files. The index is rebuilt afterwards. Recording is never interrupted: the importer only creates files that do not exist.
+Only ever adds, and is **all or nothing**: it stages and verifies everything first, and only then places any file. The manifest is checked first (its
+checksum, format, totals, that every listed path is `runs/<id>.apdlog` or `legacy/<id>.apdlog` with a plain id, sizes, no demo data, enough free space); a bad
+manifest stops everything before anything is written. Each file is then streamed to a temporary folder (one at a time, never held in memory), and must match the
+manifest's size and SHA-256 and be a readable APD log of the run the manifest says. If **any** file fails (damaged, mismatching, missing from the archive,
+truncated, demo-named) nothing at all is imported, the temporary folder is removed and the problems are reported. Only a fully verified archive is committed:
+a log that already exists is **never replaced** (an identical one is skipped, a different one is kept as it is and reported; the name is claimed atomically),
+and if placing a file fails half way, everything this import placed is taken back. Entries the manifest does not list are ignored, whatever their name. The
+index is rebuilt afterwards. Recording is never interrupted: the importer only creates files that do not exist.
 
 ## Storage meter (`StorageMeter`)
 Shown in APD Settings: runs and bytes of evidence, imported records, rebuildable caches, free space on the device. Warnings, never limits: the history is
@@ -54,4 +56,9 @@ gets a stream to exactly that file; no storage permission is needed. The core on
 `ArchiveManifestTest`, `ArchiveRoundTripTest` (a history moves to another device and UIMSD reads the same; finished runs identical files; unfinished runs
 redacted; twice adds nothing; never overwrites; merges; exporting while recording; caches rebuilt), `ArchiveHostileTest` (garbage, tampered manifest or file,
 zip-slip paths, unlisted entries, wrong size or header, a 70 MB entry, truncation, newer format, missing files, demo data), `StorageMeterTest`,
-`HistoryTransferTest`, `ArchiveSelfTestTest`; `ArchiveSelfTest` also runs on the emulator (`ApdStatsDeviceTest`) and from "Run self-test".
+`HistoryTransferTest`, `ArchiveSelfTestTest`;
+`ArchiveMigrationDeviceTest` runs the whole migration on the emulators (API 21 and 34): realistic history, export through `HistoryTransfer` and the same
+`ContentResolver` stream code the file picker's answer uses (`AndroidFileProvider.deliverExport/deliverImport`, with the file chosen by the test), ZIP and
+manifest checks, import into a clean install, derived data deleted and rebuilt, UIMSD-visible history compared with the source, second import changes nothing,
+unfinished-run redaction, lossless finished runs, demo data never in or out, damaged archives changing nothing, cancel and error paths, then the self-test.
+**Not automated:** only the system file picker's own screens (showing and tapping them) remain for a physical-phone check; `ArchiveSelfTest` also runs on the emulator (`ApdStatsDeviceTest`) and from "Run self-test".
