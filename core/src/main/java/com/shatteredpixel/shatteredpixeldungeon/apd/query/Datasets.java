@@ -442,10 +442,10 @@ public final class Datasets {
 		v.add(new ViewDef("characters", "Characters", "Runs grouped by hero class.",
 				Query.of(RUNS).withGroup(runStats(FactKeys.HERO_CLASS)).withMinSample(DEFAULT_MIN_SAMPLE)
 						.withSorts(Arrays.asList(new Sort("count", true)))));
-		//challenges and the exotic chance are exactly what makes up a ruleset, so grouping by them never mixes rulesets
-		v.add(new ViewDef("challenges", "Challenges", "Runs grouped by challenge setup (all rulesets, each group is one ruleset).",
+		//challenges, the exotic chance, the difficulty and its balance revision are what make up a ruleset, so grouping by all of them never mixes rulesets
+		v.add(new ViewDef("challenges", "Challenges", "Runs grouped by challenge setup, exotic chance and difficulty (all rulesets, each group is one ruleset).",
 				Query.of(RUNS).withScope(Scope.DEFAULT.withRules(Scope.Rules.ALL, ""))
-						.withGroup(runStats(FactKeys.CHALLENGES, FactKeys.EXOTIC_CHANCE)).withMinSample(DEFAULT_MIN_SAMPLE)
+						.withGroup(runStats(FactKeys.CHALLENGES, FactKeys.EXOTIC_CHANCE, FactKeys.DIFFICULTY, FactKeys.DIFFICULTY_BALANCE)).withMinSample(DEFAULT_MIN_SAMPLE)
 						.withSorts(Arrays.asList(new Sort("count", true)))));
 		//difficulty is part of the ruleset identity, so each group of a non-baseline level is its own ruleset; level 3 shares its ruleset with
 		//runs recorded before difficulty existed (same balance), which show as the unknown group

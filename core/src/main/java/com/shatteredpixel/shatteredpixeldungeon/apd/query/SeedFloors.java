@@ -158,6 +158,10 @@ public final class SeedFloors {
 		return d.indexOf(col) >= 0 && r.isKnown(d.indexOf(col)) ? r : null;
 	}
 
+	public static boolean isSeedView( String viewId ){
+		return ITEMS.equals(viewId) || MOBS.equals(viewId) || COMPARE.equals(viewId);
+	}
+
 	public static Spec spec( Catalog cat, Row run ) throws NotAvailable {
 		Dataset runs = cat == null ? null : cat.dataset(Datasets.RUNS);
 		if (runs == null || run == null) throw new NotAvailable("No run to replay.");
@@ -165,8 +169,10 @@ public final class SeedFloors {
 		if (!run.finished) throw new NotAvailable("This run is not finished. Seed floors are only shown for runs that are over.");
 		if (val(run, d, FactKeys.SEED) == null) throw new NotAvailable("This run's seed was not recorded, so its floors cannot be rebuilt.");
 		if (val(run, d, FactKeys.HERO_CLASS) == null) throw new NotAvailable("This run's hero class was not recorded, so its floors cannot be rebuilt.");
+		if (Row.RULESET_MIXED.equals(run.ruleset)) throw new NotAvailable("This run's rules changed while it was being played, so there is no single set of rules to rebuild its floors with.");
 		if (run.imported) throw new NotAvailable("This is an imported ranking record, not a recorded run, so its floors cannot be rebuilt.");
 		if (val(run, d, FactKeys.CHALLENGES) == null) throw new NotAvailable("This run's challenge settings were not recorded, so its floors cannot be rebuilt reliably.");
+		if (val(run, d, FactKeys.EXOTIC_CHANCE) == null) throw new NotAvailable("This run's exotic-item setting was not recorded, so its floors cannot be rebuilt reliably.");
 		Spec s = new Spec();
 		s.runId = run.runId;
 		s.seed = run.num(d.indexOf(FactKeys.SEED));
@@ -312,7 +318,7 @@ public final class SeedFloors {
 			for (ReplayFloor.Item it : f.items){
 				Row r = row(new Dataset(idef, null, null), "sfc" + (n++), spec);
 				put(r, idef, "sf.run", spec.runId, Fact.PROV_RECORDED);
-				put(r, idef, "sf.floor", f.depth, Fact.PROV_RECORDED);
+				put(r, idef, "sf.floor", f.depth, basisCode == BASIS_RECORDED ? Fact.PROV_RECORDED : Fact.PROV_INFERRED);
 				put(r, idef, "sf.basis", basisCode, Fact.PROV_RECORDED);
 				put(r, idef, "sf.item", it.trueClass, Fact.PROV_INFERRED);
 				put(r, idef, "sf.kind", kindOf(it.trueClass), Fact.PROV_INFERRED);

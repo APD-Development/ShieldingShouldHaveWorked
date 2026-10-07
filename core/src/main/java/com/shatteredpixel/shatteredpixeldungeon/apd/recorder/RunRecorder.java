@@ -306,6 +306,7 @@ final class RunRecorder {
 		if (combat != null) combat.poll();
 		if (items != null) items.poll(false, false);
 		//the checkpoint first, the SAVE marker last: the marker is the final event of a save
+		checkRuleset(clock);
 		checkpoint(LifecycleEvents.CP_SAVE);
 		LifecycleEvents.Save s = new LifecycleEvents.Save();
 		s.slot = Math.max(0, slot);
@@ -315,6 +316,22 @@ final class RunRecorder {
 		s.turn = clock;
 		LifecycleEvents.emitSave(writer, clock, s);
 		writer.flush(FLUSH_WAIT_MILLIS, false);
+	}
+
+	//the rules in force now against the rules the run has been recorded under: a difference is written down, never ignored. Called when a level
+	//is entered, when the game is saved and when the run ends, so a setting changed in the middle of a level is seen before the run is sealed.
+	private void checkRuleset( long clock ){
+		Ruleset rules = Ruleset.current();
+		if (!rules.id.equals(rulesetId)){
+			LifecycleEvents.RulesetChange c = new LifecycleEvents.RulesetChange();
+			c.oldId = rulesetId;
+			c.newId = rules.id;
+			c.newText = rules.text;
+			c.depth = Dungeon.depth;
+			LifecycleEvents.emitRulesetChange(writer, clock, c);
+			rulesetId = rules.id;
+			rulesetChanges++;
+		}
 	}
 
 	void levelSwitched(){
@@ -334,17 +351,7 @@ final class RunRecorder {
 			checkpoint(LifecycleEvents.CP_LEVEL_EXIT);
 		}
 
-		Ruleset rules = Ruleset.current();
-		if (!rules.id.equals(rulesetId)){
-			LifecycleEvents.RulesetChange c = new LifecycleEvents.RulesetChange();
-			c.oldId = rulesetId;
-			c.newId = rules.id;
-			c.newText = rules.text;
-			c.depth = Dungeon.depth;
-			LifecycleEvents.emitRulesetChange(writer, clock, c);
-			rulesetId = rules.id;
-			rulesetChanges++;
-		}
+		checkRuleset(clock);
 
 		if (generation != null) generation.levelEntered(Dungeon.level);
 
@@ -382,6 +389,7 @@ final class RunRecorder {
 			LifecycleEvents.emitLevelExit(writer, clock, x);
 			levelOpen = false;
 		}
+		checkRuleset(clock);
 		checkpoint(LifecycleEvents.CP_RUN_END);
 
 		LifecycleEvents.RunEnd e = new LifecycleEvents.RunEnd();

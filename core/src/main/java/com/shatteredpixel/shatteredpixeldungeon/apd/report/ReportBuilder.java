@@ -91,8 +91,10 @@ public final class ReportBuilder {
 			if (!row.isKnown(basis.index())) continue;
 			long v = row.num(basis.index());
 			if (v == SeedFloors.BASIS_RECORDED) recorded = true;
-			else canonical = true;
-			if (v == SeedFloors.BASIS_COMPARISON) recorded = true;
+			else if (v == SeedFloors.BASIS_COMPARISON){
+				recorded = true;      //a comparison sets the run's own floors beside the replay: both kinds of data
+				canonical = true;
+			} else canonical = true;
 		}
 		if (canonical && recorded) return Report.Provenance.MIXED;
 		return canonical ? Report.Provenance.CANONICAL : Report.Provenance.RECORDED;

@@ -233,6 +233,23 @@ public class ReportTest {
 	}
 
 	@Test
+	public void aSeedComparisonTableIsNotLabelledRecordedOnly() {
+		List<ReplayFloor> canonical = new ArrayList<>();
+		for (int d = 1; d <= 3; d++) canonical.add(floor(d, "items.food.Food"));
+		List<SeedFloors.Recorded> recorded = new ArrayList<>();
+		SeedFloors.Recorded x = new SeedFloors.Recorded();
+		x.floor = 1;
+		x.trueClass = "items.food.Food";
+		recorded.add(x);
+		Catalog c = new Catalog();
+		SeedFloors.install(c, SeedFloors.assemble(spec(), recorded, canonical));
+		com.shatteredpixel.shatteredpixeldungeon.apd.query.ViewDef v = c.view(SeedFloors.COMPARE);
+		QueryResult res = QueryEngine.run(c.dataset(SeedFloors.COMPARE), v.initialQuery(), RULES.id);
+		assertFalse(res.rows.isEmpty());
+		assertEquals(Report.Provenance.MIXED, ReportBuilder.provenanceOf(res));
+	}
+
+	@Test
 	public void seedFloorsReportKeepsRecordedAndCanonicalApartEverywhere() {
 		List<ReplayFloor> canonical = new ArrayList<>();
 		for (int d = 1; d <= 6; d++) canonical.add(floor(d, "items.food.Food", "items.potions.PotionOfHealing"));

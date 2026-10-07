@@ -367,6 +367,27 @@ public class AggregateFirstViewsTest {
 
 	// ---- hidden information ----
 
+	@Test
+	public void openingTheHiddenGroupOfAnUnfinishedRunNeverTurnsItsTrueValueIntoAFilter() throws Exception {
+		Catalog c = new DatasetStore(history("leak", "items.rings.RingOfHaste", true)).load();
+		UimsdModel m = model(c);
+		m.selectView("rings");
+		m.setScope(new Scope(Scope.Rules.ALL, "", true, true, true, true));
+		m.setShowInternal(true);
+		m.setGroup(new GroupBy(java.util.Arrays.asList("item.trueClass"), java.util.Arrays.asList(Aggregate.count())));
+		assertTrue(m.canOpenGroups());
+		int tried = 0;
+		for (GroupRow g : m.result().groups){
+			m.openGroupRows(g);
+			for (Filter f : m.query().filters){
+				assertFalse("a hidden value became a filter: " + f, String.valueOf(f).contains("RingOfHaste") || String.valueOf(f).contains("RingOfWealth"));
+			}
+			while (m.back()) {}
+			tried++;
+		}
+		assertTrue(tried > 0);
+	}
+
 	private File history( String name, String secretClass, boolean extraHidden ) throws Exception {
 		root = new File(tmp.getRoot(), name);
 		SyntheticLog fin = log("fin", 100).start("run-fin", 0, "WARRIOR", RS, 0, 0, false).enter(1);

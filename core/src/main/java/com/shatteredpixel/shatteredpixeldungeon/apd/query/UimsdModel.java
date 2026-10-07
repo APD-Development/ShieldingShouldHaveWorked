@@ -263,6 +263,8 @@ public final class UimsdModel {
 		final SeedFloors.Provider provider;
 		synchronized (this){
 			if (!canSeedFloors(run)) return;
+			//the seed views are replaced by each run's: places that point at an earlier run's would show this run's data
+			for (int i = back.size() - 1; i >= 0; i--) if (SeedFloors.isSeedView(back.get(i).viewId)) back.remove(i);
 			cat = catalog;
 			provider = seedFloors;
 			notice = "Replaying the seed (this takes a few seconds)...";
@@ -444,6 +446,13 @@ public final class UimsdModel {
 		Query iq = view().instanceQuery();
 		Query q = query.withGroup(null).withSorts(iq.sorts).withColumns(iq.columns).withMinSample(0);
 		for (ColumnDef c : result.groupKeys){
+			//the sample of a group stands for its rows only where the key is shown: the "hidden" bucket holds rows of runs that are not over, and
+			//their real value must not become a filter the player can read
+			if (!QueryEngine.open(query, g.sample, c)){
+				notice = "That group is hidden information of runs that are not over, so its rows cannot be listed.";
+				fire();
+				return;
+			}
 			if (!g.sample.isKnown(c.index)) q = q.addFilter(Filter.unknown(c.id));
 			else if (c.type == ColumnDef.Type.TEXT) q = q.addFilter(Filter.text(c.id, Op.EQ, g.sample.text(c.index)));
 			else q = q.addFilter(Filter.num(c.id, Op.EQ, g.sample.num(c.index)));

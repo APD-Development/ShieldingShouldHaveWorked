@@ -231,6 +231,22 @@ public class RecorderLifecycleTest {
 	}
 
 	@Test
+	public void aSettingChangedInTheLastLevelIsStillRecordedWhenTheRunEnds() throws Exception {
+		Session s = new Session();
+		newRun(s, 12L);
+		String id = ApdRecorder.currentRunId();
+		enterLevel(1);
+		SPDSettings.apdExoticChance(30);     //changed while playing, and the run ends before another level is entered
+		Dungeon.fail(Hunger.class);
+
+		ReadResult r = s.read(id);
+		List<ApdEvent> changes = ofType(r, EventTypes.RULESET_CHANGE);
+		assertEquals("the run is not left looking as if it had one ruleset", 1, changes.size());
+		assertTrue(changes.get(0).index < ofType(r, EventTypes.RUN_END).get(0).index);
+		assertEquals(1, LifecycleEvents.decodeRunEnd(ofType(r, EventTypes.RUN_END).get(0), r).rulesetChanges);
+	}
+
+	@Test
 	public void rulesetIdsDependOnlyOnTheRules(){
 		Ruleset a = Ruleset.of(0, 0), b = Ruleset.of(0, 0), exotic = Ruleset.of(30, 0), chal = Ruleset.of(0, 5);
 		assertEquals(a.id, b.id);

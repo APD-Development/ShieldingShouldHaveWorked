@@ -13,6 +13,21 @@ logcat tags APDMIG/APDPERF into the job log and uploads logcat artifacts.
 - **Home/Guide milestone: COMPLETE, awaiting approval.** Verified on commit 80ef188f8 = **apd-build-37**: core 509 tests green; device tests green API 26 + 34.
 - Stability pass (CI green): per-run balance revision persisted/used everywhere; UIMSD-from-game cannot start a floor replay; seed floors refuse imported/unrecorded-challenge/unknown-revision runs. Product notes: none needed. New phone check: none.
 - Stability pass 2 (pending CI; replaces build 57 as THE PHONE-CHECK build once green): Catalog synchronized (real race shown by test), reports from demo/sample data carry a SYNTHETIC notice, unfinished-comparison hidden-info regression test. No new phone checks.
+- Integrity audit (invariants 1-12; 3 read-only audits, then verified): FIXED (tests added; leak and ruleset-gap reproduced before the fix): hidden-group
+  drill-down copied an unfinished run's true value into a visible filter; a ruleset change in the last level / between saves was not recorded until now
+  (checked at save and run end too); Challenges view merged difficulties (now also groups by difficulty + balance); seed floors refuse MIXED-rules runs and
+  runs with unrecorded exotic setting; canonical seed floor numbers are "~" when grouped; seed comparison table is MIXED provenance in reports; stale
+  seed Back places dropped when another run's seed floors open; UIMSD rules label used the wrong challenges from a running game.
+  ENFORCED with tests: raw logs only appended (LogRecovery tail-repair keeps the cut bytes), cache rebuild identical, demo isolation, imports never replace,
+  finished/unfinished masking in tables/filters/sorts/aggregates/reports/exports, Catalog sync.
+  NEED A PRODUCT DECISION (not changed): (a) exotic chance is a live setting, not stored in the run (changing it mid-run changes generation; now always
+  recorded as a ruleset change, but a change-and-revert within one save interval is invisible) - persist it per run?; (b) runs adopted from an old save / log-missing
+  take the CURRENT exotic setting as their ruleset - mark unknown?; (c) Difficulty view groups ignore challenges/exotic, Home "all rules" records mix rulesets
+  (disclosed in text only); (d) seed-floor "recorded" item truth is the item's FINAL state, so comparing to the canonical (as generated) counts play-changed
+  items as different - needs generation-time columns (builder version bump); (e) seed views force hidden information on and carry it through Back.
+  Known low risks left: unreadable run log is dropped from datasets without a notice; row-cache validity = log length + manual BUILDER_VERSION/DERIVATION_VERSION
+  bumps (nothing couples them to code edits); legacy ranking records without gameID can import twice; stale seed-floor worker has no epoch check; tour worker
+  writes non-volatile statics; unknown balance revision >=2 plays as revision 1 in live play (replay refuses it).
 - Previous PHONE-CHECK build: **apd-build-57 = commit 3212b882a** (stability pass; core 567 tests, device tests green API 26 + 34). Previous: apd-build-53 = commit 9ff719889 (Difficulty balance pass 1): core 560 tests green; device tests green API 26 + 34. Previous: apd-build-51 (difficulty framework), 49 (reports), 8dbbadf69 (floor replay).
 - Frozen: Phases 0-7 (Phase 7 UIMSD approved/frozen at build 28). Phase 8 (export/import ZIP, storage meter, Android file picker):
   automated verification complete; NOT permanently frozen until the user's physical picker check.

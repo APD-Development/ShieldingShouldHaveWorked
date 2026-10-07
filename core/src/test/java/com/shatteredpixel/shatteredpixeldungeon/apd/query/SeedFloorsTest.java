@@ -190,6 +190,34 @@ public class SeedFloorsTest {
 	}
 
 	@Test
+	public void specRefusesARunWhoseRulesChangedAndOneWhoseRulesWereNeverRecorded() throws Exception {
+		File sampleRoot = DemoData.sampleRootFor(new File(tmp.newFolder("data3"), "apd"));
+		DemoGenerator.generateSample(sampleRoot, RULES, 1_800_000_000_000L);
+		Catalog cat = new DatasetStore(sampleRoot).load();
+		Row run = null;
+		for (Row r : cat.dataset(Datasets.RUNS).rows) if (r.finished){ run = r; break; }
+		String was = run.ruleset;
+		run.ruleset = Row.RULESET_MIXED;
+		try {
+			SeedFloors.spec(cat, run);
+			fail("a run whose rules changed has no single set of rules to replay");
+		} catch (SeedFloors.NotAvailable expected){
+			assertTrue(expected.getMessage().contains("rules changed"));
+		} finally {
+			run.ruleset = was;
+		}
+		run.imported = true;
+		try {
+			SeedFloors.spec(cat, run);
+			fail("an imported record is not a recorded run");
+		} catch (SeedFloors.NotAvailable expected){
+			assertTrue(expected.getMessage().contains("imported"));
+		} finally {
+			run.imported = false;
+		}
+	}
+
+	@Test
 	public void aFinishedRunOfTheSampleHistoryBuildsAndOpensThroughTheModel() throws Exception {
 		File sampleRoot = DemoData.sampleRootFor(new File(tmp.newFolder("data2"), "apd"));
 		DemoGenerator.generateSample(sampleRoot, RULES, 1_800_000_000_000L);
