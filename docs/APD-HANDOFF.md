@@ -128,10 +128,40 @@ logcat tags APDMIG/APDPERF into the job log and uploads logcat artifacts.
   1-5 in this change; UIMSD/telemetry keep recording the actual selected difficulty and balance revision; private INDEV builds may keep direct difficulty controls elsewhere for testing.
   General rule: APD Settings = application preferences, storage/data, accessibility and appropriate developer controls. Run setup = choices that define the upcoming run: character,
   difficulty, challenges and future run-specific modifiers.
-- **CLERIC JOKE (recorded for later, HUMOR ONLY, after the run-setup work):** when the player selects Cleric, APD may occasionally visually mess with the difficulty display (the real difficulty
-  might be 3 but the UI briefly shows something absurd like "Difficulty: 5.0 / 10"). Never secretly change the player's real selected difficulty. Never mechanically punish Cleric: Cleric stays
-  a legitimate, fairly balanced character. May later be accompanied by a developer message. Respects the Adult/Clean humor setting. Must not distract from the run-setup UI work. The running
-  joke: APD treats the user's hatred of Cleric as information of extreme importance.
+- **CLERIC IS NO LONGER BANNED (user decision; supersedes any earlier requirement).** Remove any design requirement that Cleric be banned or excluded from APD. Cleric must be fully playable,
+  legitimately supported, fairly balanced, eligible for normal statistics/progression, and mechanically treated like every other character. The user's hatred of Cleric becomes APD HUMOR AND
+  LORE, never a gameplay punishment. NOTE FOR THE IMPLEMENTER: the current build still blocks Cleric and the ruleset identity text contains "cleric=blocked" (recorder/Ruleset.java). Un-blocking
+  Cleric changes that rule text, so ruleset ids of old and new runs would differ unless handled deliberately (a ruleset id version bump with a documented compatibility story). That is a design
+  step to propose first, not something to do silently. Not started.
+- **CLERIC HUMOR (recorded for later; none of it implemented; none of it may change anything mechanically or distract from stabilization):**
+  (1) FIRST CLERIC RUN WARNING, shown once, the first time the player commits to entering the dungeon as Cleric: a developer message along the lines of "You have chosen Cleric. I fucking hate
+  Cleric. It took me 225 attempts to finally ascend with this fucking class. I'm not going to stop you from playing it because apparently some people enjoy suffering. Good luck. You'll need
+  it." (wording/UI polished later). Not every Cleric run.
+  (2) RANDOM CLERIC SLANDER: very rare developer announcements ("IMPORTANT DEVELOPER ANNOUNCEMENT: It has been 47 days since I last reminded you that Cleric should not be a fucking class. I still
+  believe this. Thank you.", "Developer Reminder: Just checking in. I still fucking hate Cleric. Carry on.", "IMPORTANT APD ANNOUNCEMENT: Cleric still sucks. Thank you for your attention.", and unrelated
+  moments like "You're playing Warrior. This has nothing to do with your run. I just remembered Cleric exists and got annoyed."; contextual milestones such as "You have played Cleric 100 times. I
+  fundamentally do not understand you."). Needs: MUCH rarer than once per 10-20 runs: real-world days, weeks or months apart, long randomized real-time cooldowns (not per-run spam) so the player
+  forgets the system exists; the player need not be playing Cleric; NEVER during combat, bosses or important dialogue/interactions, wait for a safe moment; no repeats until the pool has
+  substantially cycled; a large pool eventually; some messages with contextual eligibility; the player can disable Cleric-slander messages; respects Adult/Clean humor (clean mode needs
+  alternate wording).
+  (3) CLERIC DIFFICULTY DISPLAY GAG: once difficulty is visible at run setup, selecting Cleric may occasionally VISUALLY mess with the display (real difficulty 3 but the UI briefly shows
+  something absurd like "Difficulty: 5.0 / 10", or behaves as if APD disapproves). PRESENTATION ONLY. ABSOLUTE RULE: selecting Cleric must NEVER change the actual selected difficulty; it may snap
+  back, disappear, or come with a developer message. Players must never have to wonder whether their run was secretly modified.
+  (4) CLERIC LORE: occasional harmless references in flavor text, descriptions, very rare messages or developer notes, as recurring lore. The joke is the absurd disproportion (Cleric is a fair,
+  legitimate character; APD lore treats it as a historical catastrophe). Do not flood the game; rare finds are funnier.
+- **CLERIC BALANCE IS SEPARATE FROM CLERIC HUMOR.** The user's actual gameplay complaint is Guiding Light (it displayed/did 2-8 damage without the Tome-level damage progression expected). Do NOT
+  invent a formula from that. Before any change: inspect the actual current Cleric source, Guiding Light, Tome progression, every Cleric spell, talents, subclasses, interactions and existing
+  scaling, then PROPOSE a balance pass and wait for approval. The user liked some Cleric spells: "I hate Cleric" does not mean buff everything or redesign everything. The humor is subjective,
+  the balance work is evidence/source-driven.
+- **UIMSD ABSURD-QUERY EASTER EGG (preserved; not built):** if a player constructs an exceptionally absurd/complex query, UIMSD may VERY occasionally acknowledge it before the result ("Are you a
+  fucking lunatic?", or longer: "...You just asked UIMSD to cross-reference 7 different things. Anyway, the answer is 3."), then answers normally. Based on query complexity (Question.complexity()),
+  never a hard-coded list; rare enough that power users do not constantly see it; never interferes with the result; respects Adult/Clean. Philosophy: most absurd edge-case queries will never be
+  used, but if a deranged question is asked and the facts were recorded, UIMSD should have a serious chance of answering it.
+- **OPEN BUG (user-confirmed; do not assume the universal-UIMSD work fixed it):** the previously reported UIMSD sorting problem when sorting highest-to-lowest. Treat as confirmed until a build
+  specifically fixes it and a test pins the behaviour. Build 69 did not specifically address it.
+- **CURRENT PRIORITY ORDER:** (1) Build 69 is the PHONE-CHECK build. (2) Wait for the user's physical Build 69 feedback. (3) Fix what the phone check exposes (including the sorting bug).
+  (4) Then the difficulty / run-setup change. (5) Cleric humor and lore are preserved for later implementation. (6) Cleric balance is a separate future source audit and proposal. (7) Jokes never
+  interfere with legitimate gameplay, statistics, balance or UIMSD integrity.
 - Owner decision left open by Phase 9: natural regeneration is the biggest log cost (32 B/heal exact vs 18 B inferred, ~70 KiB per
   20k-turn run). Possible later trade-off: one summary event per stretch of regeneration (loses per-tick history). Not done.
 
