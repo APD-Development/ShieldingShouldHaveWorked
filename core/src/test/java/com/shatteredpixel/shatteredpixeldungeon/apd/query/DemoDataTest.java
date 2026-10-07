@@ -304,4 +304,54 @@ public class DemoDataTest {
 		}
 		assertTrue("the demo data has unfinished runs with hidden columns to protect", checked > 0);
 	}
+
+	// ---- aggregate-first views of the demo data ----
+
+	@Test
+	public void theDemoDataGivesDenseAggregateTablesWithEveryTypeOnce() throws Exception {
+		generate();
+		Catalog cat = new DatasetStore(demoRoot).load();
+		Scope all = Scope.DEFAULT.withRules(Scope.Rules.ALL, "").withUnfinished(true);
+		for (String id : new String[]{ "weapons", "armor", "rings", "trinkets", "artifacts", "items", "enemies" }){
+			ViewDef v = cat.view(id);
+			QueryResult r = QueryEngine.run(cat.datasetOf(v), v.initialQuery().withScope(all), RULES.id);
+			assertTrue(id + " is grouped", r.isGrouped());
+			assertTrue(id + " has several kinds: " + r.groups.size(), r.groups.size() >= 3);
+			assertEquals("no type is hidden for having few instances", 0, r.stats.hiddenSmallGroups);
+			//one row per kind: the same kind never appears twice
+			Set<String> seen = new HashSet<>();
+			for (GroupRow g : r.groups){
+				StringBuilder k = new StringBuilder();
+				for (ColumnDef c : r.groupKeys) k.append(CellFormatter.cell(r.query, g.sample, c).text).append('|');
+				assertTrue(id + " lists " + k + " twice", seen.add(k.toString()));
+			}
+		}
+		//enchanted weapons ("blazing sword") are the same type as plain ones: no more weapon types than weapon kinds exist in the demo
+		ViewDef weapons = cat.view("weapons");
+		QueryResult w = QueryEngine.run(cat.datasetOf(weapons), weapons.initialQuery().withScope(all), RULES.id);
+		assertTrue("weapon types: " + w.groups.size(), w.groups.size() <= 12);
+		for (GroupRow g : w.groups){
+			String type = CellFormatter.cell(w.query, g.sample, w.groupKeys.get(0)).text.toLowerCase();
+			for (String enchant : new String[]{ "blazing", "chilling", "vampiric", "shocking", "grim", "lucky", "projecting", "unstable" }){
+				assertFalse("an enchantment became part of a type: " + type, type.startsWith(enchant));
+			}
+		}
+		//the full path works on the demo data: type -> statistics -> instances -> run, and type -> runs -> run
+		UimsdModel m = new UimsdModel(RULES.id, "demo");
+		m.setCatalog(cat);
+		m.setScope(all);
+		m.selectView("weapons");
+		GroupRow biggest = m.result().groups.get(0);
+		assertTrue(GroupDetail.build(m.result(), biggest).lines.size() > 10);
+		m.openGroupRows(biggest);
+		assertEquals(biggest.n, m.result().rows.size());
+		m.openLink(m.result().rows.get(0), m.dataset().def.links.get(0));
+		assertEquals("runs", m.viewId());
+		assertEquals(1, m.result().rows.size());
+		m.back();
+		m.back();
+		int runs = m.groupRunCount(biggest);
+		assertEquals(runs, m.openGroupRuns(biggest));
+		assertEquals(runs, m.result().rows.size());
+	}
 }

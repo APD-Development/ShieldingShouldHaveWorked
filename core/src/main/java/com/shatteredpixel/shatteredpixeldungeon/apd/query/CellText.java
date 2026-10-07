@@ -30,10 +30,17 @@ public final class CellText {
 
 	public final String text;
 	public final int state;
+	//the value rests on very few known values (see CellFormatter.SMALL_SAMPLE): shown dimmed, never as confident as the rest
+	public final boolean small;
 
 	public CellText( String text, int state ){
+		this(text, state, false);
+	}
+
+	public CellText( String text, int state, boolean small ){
 		this.text = text;
 		this.state = state;
+		this.small = small;
 	}
 
 	@Override

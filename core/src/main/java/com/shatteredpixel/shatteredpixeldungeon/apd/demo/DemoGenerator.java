@@ -76,6 +76,7 @@ public final class DemoGenerator {
 			{ "dwarf warlock", "actors.mobs.Warlock", 11, 16 }, { "dwarf monk", "actors.mobs.Monk", 11, 16 }, { "stone golem", "actors.mobs.Golem", 12, 18 },
 			{ "ghoul", "actors.mobs.Ghoul", 16, 22 }, { "evil eye", "actors.mobs.Eye", 17, 24 }, { "succubus", "actors.mobs.Succubus", 17, 24 },
 			{ "scorpio", "actors.mobs.Scorpio", 18, 25 }, { "demon spawner", "actors.mobs.DemonSpawner", 21, 26 }, { "ripper demon", "actors.mobs.RipperDemon", 21, 26 } };
+	private static final String[] ENCHANTS = { "blazing", "chilling", "shocking", "vampiric", "grim", "lucky", "projecting", "unstable" };
 	private static final String[] ODD_CAUSES = { "starvation", "fall", "toxic trap", "burning", "explosion", "drowning" };
 
 	private final File root;
@@ -159,6 +160,7 @@ public final class DemoGenerator {
 		String lastEnemy = "rat";
 		int uidCounter = 0;
 		String weaponUid = null, armorUid = null, ringUid = null;
+		java.util.Set<String> knownRings = new java.util.HashSet<>();
 		int logs = 1;
 
 		for (int d = 1; d <= deepest; d++){
@@ -175,6 +177,17 @@ public final class DemoGenerator {
 					String cls2 = (String) it[0];
 					String shown = (String) it[1];
 					int cat = (Integer) it[2];
+					//a known enchantment changes the name the game shows, not the kind of item
+					if ((cat == ItemEvents.CAT_WEAPON || cat == ItemEvents.CAT_MISSILE) && pick(3) == 0) shown = ENCHANTS[pick(ENCHANTS.length)] + " " + shown;
+					//a ring shows its gem until the player learns its kind
+					if (cat == ItemEvents.CAT_RING){
+						String real = (String) it[3];
+						if (!knownRings.contains(cls2) && pick(3) == 0){
+							log.classKnown(shown, cls2, cat);
+							knownRings.add(cls2);
+						}
+						if (knownRings.contains(cls2)) shown = real;
+					}
 					int trueLevel = cat == ItemEvents.CAT_TRINKET || cat == ItemEvents.CAT_ARTIFACT ? pick(4) : pick(6) - 1;
 					boolean cursed = trueLevel < 0 && pick(2) == 0;
 					boolean known = pick(3) == 0;
@@ -275,7 +288,7 @@ public final class DemoGenerator {
 		if (kind < 5) return ARMOR[pick(ARMOR.length)];
 		if (kind < 7){
 			int r = pick(RINGS.length);
-			return new Object[]{ "items.rings.RingOf" + RINGS[r], GEMS[r] + " ring", ItemEvents.CAT_RING };
+			return new Object[]{ "items.rings.RingOf" + RINGS[r], GEMS[r] + " ring", ItemEvents.CAT_RING, "ring of " + RINGS[r].toLowerCase() };
 		}
 		if (kind < 8) return new Object[]{ "items.trinkets." + TRINKETS[pick(TRINKETS.length)].replace(" ", ""), TRINKETS[pick(TRINKETS.length)], ItemEvents.CAT_TRINKET };
 		if (kind < 9) {

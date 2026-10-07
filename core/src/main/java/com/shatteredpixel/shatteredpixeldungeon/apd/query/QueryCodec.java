@@ -81,7 +81,11 @@ public final class QueryCodec {
 			for (String k : q.group.keys) b.append('\t').append(esc(k));
 			b.append('\n');
 			for (Aggregate a : q.group.aggregates){
-				b.append("agg\t").append(a.fn.name()).append('\t').append(esc(a.column)).append('\t').append(a.target).append('\n');
+				b.append("agg\t").append(a.fn.name()).append('\t').append(esc(a.column)).append('\t').append(a.target);
+				if (!a.over.isEmpty() || !a.whereColumn.isEmpty() || !a.distinctBy.isEmpty() || !a.label.isEmpty()){
+					b.append('\t').append(esc(a.over)).append('\t').append(esc(a.whereColumn)).append('\t').append(a.whereValue).append('\t').append(esc(a.distinctBy)).append('\t').append(esc(a.label));
+				}
+				b.append('\n');
 			}
 		}
 		b.append("show\t").append(q.showInternal ? 1 : 0).append('\n');
@@ -132,7 +136,10 @@ public final class QueryCodec {
 						keys = new ArrayList<>();
 						for (int i = 1; i < p.length; i++) keys.add(unesc(p[i]));
 						break;
-					case "agg": aggs.add(new Aggregate(Aggregate.Fn.valueOf(p[1]), unesc(p[2]), Long.parseLong(p[3]))); break;
+					case "agg":
+						if (p.length >= 8) aggs.add(new Aggregate(Aggregate.Fn.valueOf(p[1]), unesc(p[2]), Long.parseLong(p[3]), unesc(p[4]), unesc(p[5]), Long.parseLong(p[6]), unesc(p[7]), p.length >= 9 ? unesc(p[8]) : ""));
+						else aggs.add(new Aggregate(Aggregate.Fn.valueOf(p[1]), unesc(p[2]), Long.parseLong(p[3])));
+						break;
 					case "show": show = p[1].equals("1"); break;
 					case "min": min = Integer.parseInt(p[1]); break;
 					default: //a line from a newer writer

@@ -130,7 +130,14 @@ public final class StatusText {
 		StringBuilder b = new StringBuilder(col).append(' ').append(f.op.word);
 		if (f.op.takesValue()){
 			if (c != null && c.type == ColumnDef.Type.TEXT){
-				for (int i = 0; i < f.texts.length; i++) b.append(i > 0 ? ", " : " ").append('"').append(f.texts[i]).append('"');
+				if (f.texts.length > 3){
+					b.append(' ').append(f.texts.length).append(" values");   //"runs containing it" can name hundreds
+				} else {
+					for (int i = 0; i < f.texts.length; i++){
+						String t = c.format == ColumnDef.Format.CLASS_NAME ? CellFormatter.className(f.texts[i]) : f.texts[i];
+						b.append(i > 0 ? ", " : " ").append('"').append(t).append('"');
+					}
+				}
 			} else {
 				for (int i = 0; i < f.nums.length; i++){
 					String v = c == null ? Long.toString(f.nums[i]) : CellFormatter.value(c, f.nums[i]);

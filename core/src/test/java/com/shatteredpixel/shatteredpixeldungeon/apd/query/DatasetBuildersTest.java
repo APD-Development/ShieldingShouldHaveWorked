@@ -523,9 +523,13 @@ public class DatasetBuildersTest {
 	public void weaponsIsAnItemsViewAndCharactersIsARunsGrouping() throws Exception {
 		someHistory();
 		Catalog cat = load();
+		//weapons start as one row per kind of weapon, and the individual weapons are one level down
 		QueryResult weapons = QueryEngine.run(cat.dataset(Datasets.ITEMS), cat.view("weapons").initialQuery(), RS);
-		assertEquals(1, weapons.rows.size());
-		QueryResult armor = QueryEngine.run(cat.dataset(Datasets.ITEMS), cat.view("armor").initialQuery(), RS);
+		assertTrue(weapons.isGrouped());
+		assertEquals(1, weapons.groups.size());
+		QueryResult individual = QueryEngine.run(cat.dataset(Datasets.ITEMS), cat.view("weapons").instanceQuery(), RS);
+		assertEquals(1, individual.rows.size());
+		QueryResult armor = QueryEngine.run(cat.dataset(Datasets.ITEMS), cat.view("armor").instanceQuery(), RS);
 		assertEquals(0, armor.rows.size());
 		Query chars = cat.view("characters").initialQuery().withMinSample(0).withScope(Scope.DEFAULT.withUnfinished(true));
 		QueryResult g = QueryEngine.run(cat.dataset(Datasets.RUNS), chars, RS);

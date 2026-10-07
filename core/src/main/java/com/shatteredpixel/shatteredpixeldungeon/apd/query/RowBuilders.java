@@ -55,7 +55,7 @@ public final class RowBuilders {
 
 	private RowBuilders(){}
 
-	public static final int BUILDER_VERSION = 1;
+	public static final int BUILDER_VERSION = 2;
 
 	private static final DatasetDef RUNS = Datasets.runs();
 	private static final DatasetDef ITEMS = Datasets.items();
@@ -175,6 +175,19 @@ public final class RowBuilders {
 			"For sale", "Mimic", "Statue", "Quest reward", "Enemy loot", "Bonus drop" };
 	private static final String[] DRAWS = { "Any item", "From a category", "From defaults", "From defaults, category", "By class", "Artifact" };
 
+	//Kinds of item whose class is plain to see in the game: a weapon, armor, wand, artifact or trinket always shows what it is. Rings,
+	//potions and scrolls (unlearned colours, gems and runes) are not here, and neither is "other", which is not understood well enough.
+	private static boolean kindIsVisible( int category ){
+		switch (category){
+			case ItemEvents.CAT_WEAPON: case ItemEvents.CAT_MISSILE: case ItemEvents.CAT_ARMOR: case ItemEvents.CAT_ARTIFACT:
+			case ItemEvents.CAT_TRINKET: case ItemEvents.CAT_WAND: case ItemEvents.CAT_FOOD: case ItemEvents.CAT_BAG:
+			case ItemEvents.CAT_STONE: case ItemEvents.CAT_SPELL: case ItemEvents.CAT_BOMB: case ItemEvents.CAT_TOOL: case ItemEvents.CAT_SEED:
+				return true;
+			default:
+				return false;
+		}
+	}
+
 	private static ItemAcc acc( Map<String, ItemAcc> m, String uid ){
 		ItemAcc a = m.get(uid);
 		if (a == null){
@@ -191,6 +204,8 @@ public final class RowBuilders {
 	private static List<Row> itemRows( List<ApdEvent> events, ReadResult r, LogMeta meta, long endClock, boolean ended, int countProv ){
 		Map<String, ItemAcc> items = new LinkedHashMap<>();
 		Set<ItemAcc> open = new HashSet<>();
+		//kinds of unidentified items (ring gems, potion colours, scroll runes) the player has learned so far, from ITEM_CLASS_KNOWN
+		Set<String> knownKinds = new HashSet<>();
 		int curDepth = 0;
 		for (ApdEvent e : events){
 			try {
@@ -205,6 +220,10 @@ public final class RowBuilders {
 					case EventTypes.LEVEL_ENTER: {
 						curDepth = LifecycleEvents.decodeLevelEnter(e, r).depth;
 						for (ItemAcc a : open) a.floors.add(curDepth);
+						break;
+					}
+					case EventTypes.ITEM_CLASS_KNOWN: {
+						knownKinds.add(ItemEvents.decodeClassKnown(e, r).className);
 						break;
 					}
 					case EventTypes.ITEM_REGISTERED: {
@@ -323,6 +342,14 @@ public final class RowBuilders {
 			if (player && a.last != null){
 				put(row, "item.name", a.last.name, Fact.PROV_RECORDED);
 				put(row, "item.category", a.last.category, Fact.PROV_RECORDED);
+				//The stable kind is built from hidden truth (the true class), so it is only used where the player knows it: always for
+				//kinds that show what they are (a weapon is a Glaive however it is enchanted), and for a ring, potion or scroll only once
+				//its kind was learned. Otherwise the name the player saw stands in, and is marked as such.
+				if (a.hasTruth && !a.trueClass.isEmpty() && (kindIsVisible(a.last.category) || knownKinds.contains(a.trueClass))){
+					put(row, "item.type", a.trueClass, Fact.PROV_RECORDED);
+				} else if (!a.last.name.isEmpty()){
+					put(row, "item.type", CellFormatter.NAME_KEY_PREFIX + a.last.name, Fact.PROV_INFERRED);
+				}
 				put(row, "item.identified", a.last.identified ? 1 : 0, Fact.PROV_RECORDED);
 				if (a.last.levelKnown) put(row, "item.visibleLevel", a.last.visibleLevel, Fact.PROV_RECORDED);
 			}

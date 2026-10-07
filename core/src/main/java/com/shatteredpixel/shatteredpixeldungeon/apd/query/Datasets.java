@@ -183,6 +183,10 @@ public final class Datasets {
 		ColumnDef cat = ColumnDef.enumeration("item.category", "Kind").shown().merge(Merge.LAST).group("Item");
 		for (Map.Entry<Long, String> e : categories().entrySet()) cat.label(e.getKey(), e.getValue());
 		d.add(cat);
+		d.add(ColumnDef.text("item.type", "Type").shown().merge(Merge.LAST).format(ColumnDef.Format.CLASS_NAME).group("Item")
+				.describe("The kind of item, as the game defines it, once the player knows it: every glaive is a Glaive whatever its enchantment, "
+						+ "and a ring or potion is its real kind once its kind is known. Until then (and for runs recorded before the kind was "
+						+ "recorded) it is the name the player saw, which is the best that can honestly be said."));
 		d.add(ColumnDef.enumeration("item.fate", "What happened").shown().merge(Merge.MAX).group("Journey")
 				.label(FATE_NEVER_SEEN, "Never seen").label(FATE_LEFT_BEHIND, "Seen, left behind")
 				.label(FATE_NEVER_EQUIPPED, "Acquired, never equipped").label(FATE_EQUIPPED, "Equipped"));
@@ -214,8 +218,24 @@ public final class Datasets {
 		d.add(ColumnDef.text("item.room", "Room").internal().group("Hidden"));
 		d.add(ColumnDef.text("item.drawKind", "How it was drawn").internal().group("Hidden"));
 		d.add(ColumnDef.text("item.requestedCategory", "Category asked for").internal().group("Hidden"));
+		addRunFacts(d, "item");
+		d.countLabel = "Instances";
+		itemSheet(d);
 		d.link(new LinkDef("The run", RUNS, "item.run", FactKeys.RUN_ID));
 		return d;
+	}
+
+	//The facts of the run an item or enemy row belongs to, so that "how did runs with this end" can be asked of the row itself.
+	//Filled in when the datasets are put together (see DatasetStore), with the run's own provenance; unknown when the run's is.
+	static final String[][] RUN_FACTS = {
+			{ "runOutcome", FactKeys.OUTCOME }, { "runClass", FactKeys.HERO_CLASS }, { "runDeepest", FactKeys.DEEPEST }, { "runChallenges", FactKeys.CHALLENGES } };
+
+	static void addRunFacts( DatasetDef d, String prefix ){
+		d.add(ColumnDef.enumeration(prefix + ".runOutcome", "Run outcome").label(0, "Died").label(1, "Won").label(2, "Abandoned").group("Run")
+				.describe("How the run this row belongs to ended. Unknown while the run is not over."));
+		d.add(ColumnDef.text(prefix + ".runClass", "Run class").group("Run"));
+		d.add(ColumnDef.num(prefix + ".runDeepest", "Run deepest floor").group("Run"));
+		d.add(ColumnDef.num(prefix + ".runChallenges", "Run challenges").group("Run"));
 	}
 
 	//---- Enemies ----
@@ -237,6 +257,9 @@ public final class Datasets {
 		d.add(ColumnDef.text("enemy.class", "True kind").internal().group("Hidden"));
 		d.add(ColumnDef.num("enemy.spawned", "Generated (all)").internal().merge(Merge.SUM).since(1, 4).group("Hidden"));
 		d.add(ColumnDef.num("enemy.expValue", "XP value").internal().group("Hidden"));
+		addRunFacts(d, "enemy");
+		d.countLabel = "Encounters";
+		enemySheet(d);
 		d.link(new LinkDef("The run", RUNS, "enemy.run", FactKeys.RUN_ID));
 		return d;
 	}
@@ -269,9 +292,119 @@ public final class Datasets {
 				Aggregate.of(Aggregate.Fn.MAX, FactKeys.DEEPEST), Aggregate.of(Aggregate.Fn.AVG, FactKeys.HERO_LEVEL)));
 	}
 
+	//---- statistics sheets and the dense aggregates of the aggregate-first tables ----
+
+	private static final String IRUN = "item.run";
+
+	//each run counted once however many instances it had
+	private static Aggregate perRun( Aggregate a, String runColumn ){
+		return a.perDistinct(runColumn);
+	}
+
+	private static Aggregate acquiredRate(){
+		return Aggregate.rate("item.acquired", 1).where("item.seen", 1).labeled("Acq %");
+	}
+
+	private static Aggregate equippedRate(){
+		return Aggregate.rate("item.equipped", 1).where("item.acquired", 1).labeled("Equip %");
+	}
+
+	private static Aggregate itemRuns(){
+		return Aggregate.distinct(IRUN).labeled("Runs");
+	}
+
+	private static Aggregate itemWins(){
+		return perRun(Aggregate.count().where("item.runOutcome", 1), IRUN).labeled("Wins");
+	}
+
+	private static Aggregate itemWinRate(){
+		return perRun(Aggregate.rate("item.runOutcome", 1), IRUN).labeled("Win %");
+	}
+
+	private static void itemSheet( DatasetDef d ){
+		d.stat(StatLine.section("How many"));
+		d.stat(StatLine.of("Instances", Aggregate.count(), "Every individual one of them the player met, in all runs shown."));
+		d.stat(StatLine.of("Runs containing it", Aggregate.distinct(IRUN), "In how many different runs at least one turned up."));
+		d.stat(StatLine.section("What the player did with them"));
+		d.stat(StatLine.of("Acquired", Aggregate.rate("item.acquired", 1).where("item.seen", 1), "Of the instances seen, how many were picked up."));
+		d.stat(StatLine.of("Equipped", Aggregate.rate("item.equipped", 1).where("item.acquired", 1), "Of the instances acquired, how many were ever equipped."));
+		d.stat(StatLine.of("Equipped, of those seen", Aggregate.rate("item.equipped", 1).where("item.seen", 1), "Of the instances seen (not only acquired), how many were ever equipped."));
+		d.stat(StatLine.of("Identified", Aggregate.rate("item.identified", 1), "Of the instances, how many the player had identified when last looked at."));
+		d.stat(StatLine.section("How the runs went (each run counted once)"));
+		d.stat(StatLine.of("Runs won", perRun(Aggregate.count().where("item.runOutcome", 1), IRUN), "Runs containing it that were won."));
+		d.stat(StatLine.of("Runs died in", perRun(Aggregate.count().where("item.runOutcome", 0), IRUN), "Runs containing it that ended in death."));
+		d.stat(StatLine.of("Win rate, runs containing it", perRun(Aggregate.rate("item.runOutcome", 1), IRUN), "Of the runs where one turned up, how many were won."));
+		d.stat(StatLine.of("Win rate, runs that acquired it", perRun(Aggregate.rate("item.runOutcome", 1).where("item.acquired", 1), IRUN), "Of the runs that picked one up, how many were won."));
+		d.stat(StatLine.of("Win rate, runs that equipped it", perRun(Aggregate.rate("item.runOutcome", 1).where("item.equipped", 1), IRUN), "Of the runs that equipped one, how many were won."));
+		d.stat(StatLine.section("Where"));
+		d.stat(StatLine.of("Floor first seen, average", Aggregate.of(Aggregate.Fn.AVG, "item.firstSeenDepth"), ""));
+		d.stat(StatLine.of("Floor first seen, median", Aggregate.of(Aggregate.Fn.MEDIAN, "item.firstSeenDepth"), ""));
+		d.stat(StatLine.of("Floor acquired, average", Aggregate.of(Aggregate.Fn.AVG, "item.acquiredDepth"), "Instances that were never acquired have none."));
+		d.stat(StatLine.of("Floor acquired, median", Aggregate.of(Aggregate.Fn.MEDIAN, "item.acquiredDepth"), ""));
+		d.stat(StatLine.section("Time equipped (only instances that were equipped)"));
+		d.stat(StatLine.of("Turns equipped, average", Aggregate.of(Aggregate.Fn.AVG, "item.turnsEquipped").where("item.equipped", 1), "A run that was still going counts only up to its last recorded moment."));
+		d.stat(StatLine.of("Turns equipped, median", Aggregate.of(Aggregate.Fn.MEDIAN, "item.turnsEquipped").where("item.equipped", 1), ""));
+		d.stat(StatLine.of("Times equipped, average", Aggregate.of(Aggregate.Fn.AVG, "item.equipCount").where("item.equipped", 1), ""));
+		d.stat(StatLine.of("Floors equipped on, average", Aggregate.of(Aggregate.Fn.AVG, "item.floorsEquipped").where("item.equipped", 1), ""));
+		d.stat(StatLine.section("Upgrades (only where the player knew the level)"));
+		d.stat(StatLine.of("Level, average", Aggregate.of(Aggregate.Fn.AVG, "item.visibleLevel"), "Levels the player never learned are not counted, and never counted as zero."));
+		d.stat(StatLine.of("Level, median", Aggregate.of(Aggregate.Fn.MEDIAN, "item.visibleLevel"), ""));
+		d.stat(StatLine.of("Level, highest", Aggregate.of(Aggregate.Fn.MAX, "item.visibleLevel"), ""));
+		d.stat(StatLine.of("Instances with a known level", Aggregate.of(Aggregate.Fn.COUNT_KNOWN, "item.visibleLevel"), ""));
+	}
+
+	private static final String ERUN = "enemy.run";
+
+	private static void enemySheet( DatasetDef d ){
+		d.stat(StatLine.section("How many"));
+		d.stat(StatLine.of("Encounters", Aggregate.count(), "One per run in which it was met."));
+		d.stat(StatLine.of("Runs met in", Aggregate.distinct(ERUN), "In how many different runs it turned up."));
+		d.stat(StatLine.section("Its attacks on the hero"));
+		d.stat(StatLine.of("Its hit rate on the hero", Aggregate.ratio("enemy.hitsOnHero", "enemy.attacksOnHero"), "Hits per attack."));
+		d.stat(StatLine.of("Attacks per encounter", Aggregate.of(Aggregate.Fn.AVG, "enemy.attacksOnHero"), ""));
+		d.stat(StatLine.of("Damage to the hero per encounter", Aggregate.of(Aggregate.Fn.AVG, "enemy.damageToHero"), ""));
+		d.stat(StatLine.of("Damage to the hero, median", Aggregate.of(Aggregate.Fn.MEDIAN, "enemy.damageToHero"), ""));
+		d.stat(StatLine.section("The hero's attacks on it"));
+		d.stat(StatLine.of("The hero's hit rate on it", Aggregate.ratio("enemy.hitsByHero", "enemy.attacksByHero"), "Hits per attack."));
+		d.stat(StatLine.of("Damage from the hero per encounter", Aggregate.of(Aggregate.Fn.AVG, "enemy.damageFromHero"), ""));
+		d.stat(StatLine.of("Killed by the hero, total", Aggregate.of(Aggregate.Fn.SUM, "enemy.kills"), ""));
+		d.stat(StatLine.of("Killed by the hero per encounter", Aggregate.of(Aggregate.Fn.AVG, "enemy.kills"), ""));
+		d.stat(StatLine.section("Deadliness"));
+		d.stat(StatLine.of("Times it killed the hero", Aggregate.of(Aggregate.Fn.SUM, "enemy.heroDeaths"), ""));
+		d.stat(StatLine.of("Killed the hero, per encounter", Aggregate.of(Aggregate.Fn.AVG, "enemy.heroDeaths"), ""));
+		d.stat(StatLine.section("How the runs went (each run counted once)"));
+		d.stat(StatLine.of("Runs won", perRun(Aggregate.count().where("enemy.runOutcome", 1), ERUN), "Runs it was met in that were won."));
+		d.stat(StatLine.of("Runs died in", perRun(Aggregate.count().where("enemy.runOutcome", 0), ERUN), "Runs it was met in that ended in death."));
+		d.stat(StatLine.of("Win rate, runs it was met in", perRun(Aggregate.rate("enemy.runOutcome", 1), ERUN), ""));
+	}
+
+	//the dense columns of an aggregate-first item table: Type | Instances | Runs | Acq % | Equip % | Wins | Win % | Floor | Level | Turns | ID %
+	private static GroupBy itemTable( String... keys ){
+		return new GroupBy(Arrays.asList(keys), Arrays.asList(Aggregate.count(), itemRuns(), acquiredRate(), equippedRate(), itemWins(), itemWinRate(),
+				Aggregate.of(Aggregate.Fn.AVG, "item.firstSeenDepth").labeled("Avg floor"),
+				Aggregate.of(Aggregate.Fn.AVG, "item.visibleLevel").labeled("Avg lvl"),
+				Aggregate.of(Aggregate.Fn.AVG, "item.turnsEquipped").where("item.equipped", 1).labeled("Avg turns"),
+				Aggregate.rate("item.identified", 1).labeled("ID %")));
+	}
+
+	private static GroupBy enemyTable(){
+		return new GroupBy(Arrays.asList("enemy.name"), Arrays.asList(Aggregate.count(), Aggregate.distinct(ERUN).labeled("Runs"),
+				Aggregate.ratio("enemy.hitsOnHero", "enemy.attacksOnHero").labeled("Hit %"),
+				Aggregate.ratio("enemy.hitsByHero", "enemy.attacksByHero").labeled("Our hit %"),
+				Aggregate.of(Aggregate.Fn.AVG, "enemy.damageToHero").labeled("Dmg taken"),
+				Aggregate.of(Aggregate.Fn.AVG, "enemy.damageFromHero").labeled("Dmg dealt"),
+				Aggregate.of(Aggregate.Fn.SUM, "enemy.kills").labeled("Kills"),
+				Aggregate.of(Aggregate.Fn.SUM, "enemy.heroDeaths").labeled("Killed us"),
+				perRun(Aggregate.rate("enemy.runOutcome", 1), ERUN).labeled("Win %")));
+	}
+
+	//every kind of thing is shown, however few there are (each statistic says how many values it rests on)
+	private static final int ALL_TYPES = 1;
+
 	private static ViewDef itemView( String id, String title, String description, long... categories ){
-		Query q = Query.of(ITEMS).addFilter(Filter.num("item.category", Op.IN, categories));
-		return new ViewDef(id, title, description, q);
+		Query instances = Query.of(ITEMS).addFilter(Filter.num("item.category", Op.IN, categories));
+		Query q = instances.withGroup(itemTable("item.type")).withMinSample(ALL_TYPES).withSorts(Arrays.asList(new Sort("count", true)));
+		return new ViewDef(id, title, description, q).withInstances(instances);
 	}
 
 	public static final int DEFAULT_MIN_SAMPLE = 5;
@@ -279,13 +412,17 @@ public final class Datasets {
 	static List<ViewDef> views(){
 		List<ViewDef> v = new ArrayList<>();
 		v.add(new ViewDef("runs", "Runs", "Every run.", Query.of(RUNS).withSorts(Arrays.asList(new Sort(FactKeys.START_MILLIS, true)))));
-		v.add(new ViewDef("items", "Items", "Every item of every run.", Query.of(ITEMS)));
-		v.add(itemView("weapons", "Weapons", "Melee and thrown weapons.", ItemEvents.CAT_WEAPON, ItemEvents.CAT_MISSILE));
-		v.add(itemView("armor", "Armor", "Armor.", ItemEvents.CAT_ARMOR));
-		v.add(itemView("rings", "Rings", "Rings.", ItemEvents.CAT_RING));
-		v.add(itemView("trinkets", "Trinkets", "Trinkets.", ItemEvents.CAT_TRINKET));
-		v.add(itemView("artifacts", "Artifacts", "Artifacts.", ItemEvents.CAT_ARTIFACT));
-		v.add(new ViewDef("enemies", "Enemies", "Enemy types per run.", Query.of(ENEMIES)));
+		v.add(new ViewDef("items", "Items", "Every kind of item, with what became of each.",
+				Query.of(ITEMS).withGroup(itemTable("item.category", "item.type")).withMinSample(ALL_TYPES).withSorts(Arrays.asList(new Sort("count", true))))
+				.withInstances(Query.of(ITEMS)));
+		v.add(itemView("weapons", "Weapons", "Each kind of weapon: tap one for its statistics, then its individual weapons and the runs it was in.", ItemEvents.CAT_WEAPON, ItemEvents.CAT_MISSILE));
+		v.add(itemView("armor", "Armor", "Each kind of armor, with its statistics, individual pieces and runs.", ItemEvents.CAT_ARMOR));
+		v.add(itemView("rings", "Rings", "Each kind of ring.", ItemEvents.CAT_RING));
+		v.add(itemView("trinkets", "Trinkets", "Each kind of trinket.", ItemEvents.CAT_TRINKET));
+		v.add(itemView("artifacts", "Artifacts", "Each kind of artifact.", ItemEvents.CAT_ARTIFACT));
+		v.add(new ViewDef("enemies", "Enemies", "Each kind of enemy: tap one for its statistics, then its encounters (one per run) and the runs.",
+				Query.of(ENEMIES).withGroup(enemyTable()).withMinSample(ALL_TYPES).withSorts(Arrays.asList(new Sort("count", true))))
+				.withInstances(Query.of(ENEMIES)));
 		v.add(new ViewDef("deaths", "Deaths", "Every death.", Query.of(DEATHS)));
 		v.add(new ViewDef("characters", "Characters", "Runs grouped by hero class.",
 				Query.of(RUNS).withGroup(runStats(FactKeys.HERO_CLASS)).withMinSample(DEFAULT_MIN_SAMPLE)

@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.query.CellFormatter;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.CellText;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.ColumnDef;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.DatasetDef;
+import com.shatteredpixel.shatteredpixeldungeon.apd.query.GroupDetail;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.GroupRow;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.LinkDef;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.QueryResult;
@@ -58,7 +59,7 @@ public class WndUimsdRow extends Window {
 		DatasetDef def = r.def;
 
 		StringBuilder body = new StringBuilder();
-		final List<LinkDef> links = new ArrayList<>();
+		final List<Action> actions = new ArrayList<>();
 		final Row row = line.row;
 		String title;
 		if (row != null){
@@ -76,28 +77,38 @@ public class WndUimsdRow extends Window {
 				body.append('\n');
 			}
 			if (!row.telemetry.isEmpty()) body.append("\nRecorded with telemetry ").append(row.telemetry).append('\n');
-			for (LinkDef l : def.links){
-				if (m.catalog() != null && m.catalog().view(l.targetView) != null && row.isKnown(def.indexOf(l.ourColumn))) links.add(l);
+			for (final LinkDef l : def.links){
+				if (m.catalog() != null && m.catalog().view(l.targetView) != null && row.isKnown(def.indexOf(l.ourColumn))){
+					actions.add(new Action(l.label, new Runnable(){
+						@Override
+						public void run(){
+							m.openLink(row, l);
+						}
+					}));
+				}
 			}
 		} else {
-			GroupRow g = line.group;
-			title = "Group";
-			for (int i = 0; i < r.groupKeys.size(); i++){
-				ColumnDef c = r.groupKeys.get(i);
-				CellText t = CellFormatter.cell(r.query, g.sample, c);
-				body.append(c.label).append(": ").append(t.text);
-				if (t.state != CellText.EXACT) body.append("  (").append(CellFormatter.explain(t.state)).append(")");
-				body.append('\n');
+			final GroupRow g = line.group;
+			GroupDetail detail = GroupDetail.build(r, g);
+			title = detail.title;
+			body.append(detail.text());
+			if (m.canOpenGroups()){
+				int n = g.n;
+				actions.add(new Action("The " + n + " " + (n == 1 ? singular(def.countLabel) : def.countLabel.toLowerCase()), new Runnable(){
+					@Override
+					public void run(){
+						m.openGroupRows(g);
+					}
+				}));
 			}
-			body.append("Rows in the group: ").append(g.n).append('\n');
-			for (int i = 0; i < r.aggregates.size(); i++){
-				Aggregate a = r.aggregates.get(i);
-				if (a.fn == Aggregate.Fn.COUNT) continue;
-				CellFormatter.AggText at = CellFormatter.aggregate(def, a, g.aggregates.get(i));
-				body.append(CellFormatter.aggregateLabel(def, a)).append(": ").append(at.text).append("  (").append(at.detail);
-				if (g.aggregates.get(i).isLowerBound()) body.append("; at least this much, some values were lower bounds");
-				if (g.aggregates.get(i).isInferred()) body.append("; includes inferred values");
-				body.append(")\n");
+			final int runs = m.groupRunCount(g);
+			if (runs > 0 && m.canOpenGroups()){
+				actions.add(new Action("The " + runs + (runs == 1 ? " run" : " runs") + " containing it", new Runnable(){
+					@Override
+					public void run(){
+						m.openGroupRuns(g);
+					}
+				}));
 			}
 		}
 
@@ -108,7 +119,7 @@ public class WndUimsdRow extends Window {
 		add(tt);
 		float pos = tt.bottom() + 2 * MARGIN;
 
-		float buttonsH = links.size() * 18f;
+		float buttonsH = actions.size() * 18f;
 		final Component content = new Component();
 		RenderedTextBlock text = PixelScene.renderTextBlock(body.toString(), 6);
 		text.maxWidth(width - 2 * MARGIN - 2);
@@ -117,25 +128,41 @@ public class WndUimsdRow extends Window {
 		content.setSize(width, text.bottom() + 2);
 		ScrollPane pane = new ScrollPane(content);
 		float h = WindowGeometry.paneHeight(content.height(), WindowGeometry.maxPane(PixelScene.uiCamera.height, pos, buttonsH + MARGIN));
-		float total = pos + h + MARGIN + links.size() * 18f;
+		float total = pos + h + MARGIN + actions.size() * 18f;
 		//size the window first: it moves the window's camera, and the pane works out its screen position when it is placed
 		resize(width, (int) total);
 		add(pane);
 		pane.setRect(0, pos, width, h);
 		pos += h + MARGIN;
 
-		for (final LinkDef l : links){
-			RedButton b = new RedButton(l.label){
+		for (final Action act : actions){
+			RedButton b = new RedButton(act.label){
 				@Override
 				protected void onClick(){
 					WndUimsdRow.this.hide();
-					m.openLink(row, l);
+					act.run.run();
 				}
 			};
 			b.setRect(0, pos, width, 16);
 			add(b);
 			pos += 18;
 		}
+	}
+
+	private static final class Action {
+		final String label;
+		final Runnable run;
+
+		Action( String label, Runnable run ){
+			this.label = label;
+			this.run = run;
+		}
+	}
+
+	//"Instances" is "instance", "Encounters" is "encounter", "Rows" is "row"
+	private static String singular( String plural ){
+		String p = plural.toLowerCase();
+		return p.endsWith("s") ? p.substring(0, p.length() - 1) : p;
 	}
 
 	public static void show( UimsdModel m, ResultTable.Line line ){

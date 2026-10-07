@@ -102,6 +102,14 @@ final class SyntheticLog {
 		return this;
 	}
 
+	SyntheticLog classKnown( String label, String className, int category ){
+		ItemEvents.ClassKnown c = new ItemEvents.ClassKnown();
+		c.where = iw();
+		c.category = category; c.label = label; c.className = className;
+		ItemEvents.emitClassKnown(w, clock++, c);
+		return this;
+	}
+
 	SyntheticLog truthChanged( String uid, int newLevel, boolean newCursed ){
 		ItemEvents.TruthChanged t = new ItemEvents.TruthChanged();
 		t.uid = uid; t.where = iw(); t.newLevel = newLevel; t.newCursed = newCursed;

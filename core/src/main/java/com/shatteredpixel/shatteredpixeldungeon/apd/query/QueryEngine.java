@@ -396,31 +396,92 @@ public final class QueryEngine {
 
 	//---- aggregates ----
 
-	private static boolean aggregateOk( DatasetDef def, Query q, Aggregate a ){
-		if (a.fn == Aggregate.Fn.COUNT) return true;
-		ColumnDef c = def.column(a.column);
-		if (c == null || (c.isInternal() && !q.showInternal)) return false;
-		if (a.fn == Aggregate.Fn.COUNT_KNOWN) return true;
-		return c.type != ColumnDef.Type.TEXT;
+	//One aggregate over some rows (the rows of a group), under the query's hidden-information setting: what a statistics sheet
+	//shows. Null when the aggregate cannot be computed under this query (it uses a hidden column while hidden information is off).
+	public static AggValue evaluate( DatasetDef def, Query q, Aggregate a, List<Row> rows ){
+		return aggregateOk(def, q, a) ? aggregate(def, q, a, rows) : null;
 	}
 
-	private static AggValue aggregate( DatasetDef def, Query q, Aggregate a, List<Row> rows ){
-		int total = rows.size();
-		if (a.fn == Aggregate.Fn.COUNT) return new AggValue(true, total, 0, total, total, 0);
+	private static boolean usable( DatasetDef def, Query q, String column ){
+		ColumnDef c = def.column(column);
+		return c != null && !(c.isInternal() && !q.showInternal);
+	}
+
+	private static boolean aggregateOk( DatasetDef def, Query q, Aggregate a ){
+		if (!a.whereColumn.isEmpty() && (!usable(def, q, a.whereColumn) || def.column(a.whereColumn).type == ColumnDef.Type.TEXT)) return false;
+		if (!a.distinctBy.isEmpty() && !usable(def, q, a.distinctBy)) return false;
+		if (a.fn == Aggregate.Fn.COUNT) return true;
+		if (!usable(def, q, a.column)) return false;
 		ColumnDef c = def.column(a.column);
-		int contributing = 0, flags = 0;
-		double sum = 0, min = 0, max = 0;
+		if (a.fn == Aggregate.Fn.COUNT_KNOWN || a.fn == Aggregate.Fn.COUNT_DISTINCT) return true;
+		if (c.type == ColumnDef.Type.TEXT) return false;
+		if (a.fn == Aggregate.Fn.RATIO){
+			ColumnDef o = def.column(a.over);
+			return o != null && usable(def, q, a.over) && o.type != ColumnDef.Type.TEXT;
+		}
+		return true;
+	}
+
+	//the rows an aggregate looks at: those that pass its condition, then one per distinct value of its "per" column
+	private static List<Row> selected( DatasetDef def, Query q, Aggregate a, List<Row> rows, int[] unsure ){
+		List<Row> sel = rows;
+		if (!a.whereColumn.isEmpty()){
+			ColumnDef wc = def.column(a.whereColumn);
+			sel = new ArrayList<>();
+			for (Row r : rows){
+				if (!open(q, r, wc) || !r.isKnown(wc.index) || r.prov(wc.index) == Fact.PROV_INCOMPLETE){
+					unsure[0]++;   //cannot be judged, so it is not counted either way
+					continue;
+				}
+				if (r.num(wc.index) == a.whereValue) sel.add(r);
+			}
+		}
+		if (!a.distinctBy.isEmpty()){
+			ColumnDef dc = def.column(a.distinctBy);
+			Map<String, Row> first = new LinkedHashMap<>();
+			int loose = 0;
+			for (Row r : sel){
+				String key;
+				if (open(q, r, dc) && r.isKnown(dc.index)) key = "K" + r.asText(dc.index);
+				else key = "R" + (loose++);   //no value to share: it stands for itself
+				if (!first.containsKey(key)) first.put(key, r);
+			}
+			sel = new ArrayList<>(first.values());
+		}
+		return sel;
+	}
+
+	private static AggValue aggregate( DatasetDef def, Query q, Aggregate a, List<Row> all ){
+		int[] unsure = new int[1];
+		List<Row> rows = selected(def, q, a, all, unsure);
+		int total = rows.size();
+		int baseFlags = unsure[0] > 0 ? AggValue.UNSURE : 0;
+		if (a.fn == Aggregate.Fn.COUNT) return new AggValue(true, total, 0, total, total, baseFlags);
+		ColumnDef c = def.column(a.column);
+		ColumnDef over = a.over.isEmpty() ? null : def.column(a.over);
+		int contributing = 0, flags = baseFlags;
+		double sum = 0, sumOver = 0, min = 0, max = 0;
 		long hits = 0;
+		java.util.Set<String> distinct = new java.util.HashSet<>();
+		List<Double> values = new ArrayList<>();
 		for (Row r : rows){
 			if (!open(q, r, c) || !r.isKnown(c.index)) continue;
 			int prov = r.prov(c.index);
 			boolean lb = prov == Fact.PROV_INCOMPLETE;
-			if (a.fn == Aggregate.Fn.RATE && lb) continue;   //a lower bound cannot be judged against a target
+			if ((a.fn == Aggregate.Fn.RATE || a.fn == Aggregate.Fn.RATIO) && lb) continue;   //a lower bound cannot be judged against a target
+			if (a.fn == Aggregate.Fn.RATIO){
+				if (!open(q, r, over) || !r.isKnown(over.index) || r.prov(over.index) == Fact.PROV_INCOMPLETE) continue;
+				sumOver += r.num(over.index);
+			}
 			if (lb) flags |= AggValue.LOWER;
 			if (prov == Fact.PROV_INFERRED) flags |= AggValue.INFERRED;
 			if (prov == Fact.PROV_LEGACY) flags |= AggValue.LEGACY;
 			contributing++;
 			if (a.fn == Aggregate.Fn.COUNT_KNOWN) continue;
+			if (a.fn == Aggregate.Fn.COUNT_DISTINCT){
+				distinct.add(r.asText(c.index));
+				continue;
+			}
 			double v = r.num(c.index);
 			if (contributing == 1){
 				min = max = v;
@@ -429,15 +490,27 @@ public final class QueryEngine {
 				if (v > max) max = v;
 			}
 			sum += v;
+			if (a.fn == Aggregate.Fn.MEDIAN) values.add(v);
 			if (a.fn == Aggregate.Fn.RATE && r.num(c.index) == a.target) hits++;
 		}
-		if (contributing == 0) return new AggValue(false, 0, 0, 0, total, flags);
+		//"how many are known" is a count: none known is a known zero. Every other aggregate over nothing is unknown, never zero.
+		if (contributing == 0) return a.fn == Aggregate.Fn.COUNT_KNOWN ? new AggValue(true, 0, 0, 0, total, flags) : new AggValue(false, 0, 0, 0, total, flags);
 		switch (a.fn){
 			case COUNT_KNOWN: return new AggValue(true, contributing, 0, contributing, total, flags);
+			case COUNT_DISTINCT: return new AggValue(true, distinct.size(), 0, contributing, total, flags);
 			case SUM: return new AggValue(true, sum, 0, contributing, total, flags);
 			case AVG: return new AggValue(true, sum / contributing, 0, contributing, total, flags);
 			case MIN: return new AggValue(true, min, 0, contributing, total, flags);
 			case MAX: return new AggValue(true, max, 0, contributing, total, flags);
+			case MEDIAN: {
+				Collections.sort(values);
+				int n = values.size();
+				double m = n % 2 == 1 ? values.get(n / 2) : (values.get(n / 2 - 1) + values.get(n / 2)) / 2.0;
+				return new AggValue(true, m, 0, contributing, total, flags);
+			}
+			case RATIO:
+				if (sumOver == 0) return new AggValue(false, 0, 0, 0, total, flags);   //nothing to divide by: not zero, not known
+				return new AggValue(true, sum / sumOver, Math.round(sum), contributing, total, flags, Math.round(sumOver));
 			default: return new AggValue(true, (double) hits / contributing, hits, contributing, total, flags);
 		}
 	}

@@ -332,6 +332,83 @@ public final class UimsdModel {
 
 	//Follow a link from a row to the matching rows of another dataset. The scope is widened just enough for the row's own run to
 	//be in it, so a drill-down never comes up empty because of a scope the player did not choose.
+	//the scope widened just enough for this row's own run to be in it
+	private Scope widen( Scope s, Row row ){
+		if (!row.finished) s = s.withUnfinished(true);
+		if (row.ruleset == null) s = s.withUnknownRuleset(true);
+		else if (row.ruleset.equals(Row.RULESET_MIXED)) s = s.withMixedRuleset(true);
+		else if (s.rules == Scope.Rules.CURRENT && !row.ruleset.equals(currentRuleset)) s = s.withRules(Scope.Rules.SPECIFIC, row.ruleset);
+		else if (s.rules == Scope.Rules.SPECIFIC && !row.ruleset.equals(s.ruleset)) s = s.withRules(Scope.Rules.ALL, "");
+		if (row.duplicate) s = s.withDuplicates(true);
+		return s;
+	}
+
+	//Aggregate-first views: a grouped table (one row per kind of thing) whose groups can be opened. True when the table on screen
+	//is a group table of a view that declares individual rows behind its groups.
+	public synchronized boolean canOpenGroups(){
+		ViewDef v = view();
+		return v != null && v.instanceQuery() != null && query.group != null && result != null && result.isGrouped();
+	}
+
+	//Open the individual rows of one group: the same query without the grouping, with the group's key values as filters (so every
+	//filter and scope the player set still applies, and the numbers match the group's). The instances can be sorted, filtered and
+	//opened like any other rows, and each leads on to its run.
+	public synchronized void openGroupRows( GroupRow g ){
+		if (!canOpenGroups()) return;
+		Query iq = view().instanceQuery();
+		Query q = query.withGroup(null).withSorts(iq.sorts).withColumns(iq.columns).withMinSample(0);
+		for (ColumnDef c : result.groupKeys){
+			if (!g.sample.isKnown(c.index)) q = q.addFilter(Filter.unknown(c.id));
+			else if (c.type == ColumnDef.Type.TEXT) q = q.addFilter(Filter.text(c.id, Op.EQ, g.sample.text(c.index)));
+			else q = q.addFilter(Filter.num(c.id, Op.EQ, g.sample.num(c.index)));
+		}
+		back.add(new Place(viewId, query, page));
+		apply(q);
+	}
+
+	//the link from the rows of the open dataset to the Runs, null when there is none
+	public synchronized LinkDef runsLink(){
+		Dataset ds = dataset();
+		if (ds == null || catalog == null) return null;
+		for (LinkDef l : ds.def.links) if (l.targetView.equals("runs") && catalog.view("runs") != null) return l;
+		return null;
+	}
+
+	//how many different runs the rows of a group come from
+	public synchronized int groupRunCount( GroupRow g ){
+		LinkDef link = runsLink();
+		if (link == null || result == null) return 0;
+		Dataset from = dataset();
+		int col = from.def.indexOf(link.ourColumn);
+		if (col < 0) return 0;
+		java.util.Set<String> ids = new java.util.HashSet<>();
+		for (Row r : g.rows) if (QueryEngine.open(query, r, from.def.column(col)) && r.isKnown(col)) ids.add(r.text(col));
+		return ids.size();
+	}
+
+	//Open the runs that contain the rows of one group (the distinct runs of its rows). The scope is widened just enough for every one
+	//of those runs to be in it. Returns how many runs there are, 0 when nothing was opened.
+	public synchronized int openGroupRuns( GroupRow g ){
+		LinkDef link = runsLink();
+		if (link == null || result == null) return 0;
+		Dataset from = dataset();
+		int col = from.def.indexOf(link.ourColumn);
+		if (col < 0) return 0;
+		ViewDef target = catalog.view(link.targetView);
+		java.util.Set<String> ids = new java.util.LinkedHashSet<>();
+		Scope s = query.scope;
+		for (Row r : g.rows){
+			if (!QueryEngine.open(query, r, from.def.column(col)) || !r.isKnown(col)) continue;
+			if (ids.add(r.text(col))) s = widen(s, r);
+		}
+		if (ids.isEmpty()) return 0;
+		back.add(new Place(viewId, query, page));
+		viewId = target.id;
+		apply(target.initialQuery().withScope(s).withShowInternal(query.showInternal)
+				.addFilter(Filter.text(link.targetColumn, Op.IN, ids.toArray(new String[0]))));
+		return ids.size();
+	}
+
 	public synchronized void openLink( Row row, LinkDef link ){
 		if (catalog == null || catalog.view(link.targetView) == null) return;
 		Dataset from = dataset();
@@ -342,12 +419,7 @@ public final class UimsdModel {
 		Dataset to = catalog.datasetOf(target);
 		ColumnDef tc = to.def.column(link.targetColumn);
 		if (tc == null) return;
-		Scope s = query.scope;
-		if (!row.finished) s = s.withUnfinished(true);
-		if (row.ruleset == null) s = s.withUnknownRuleset(true);
-		else if (row.ruleset.equals(Row.RULESET_MIXED)) s = s.withMixedRuleset(true);
-		else if (s.rules == Scope.Rules.CURRENT && !row.ruleset.equals(currentRuleset)) s = s.withRules(Scope.Rules.SPECIFIC, row.ruleset);
-		if (row.duplicate) s = s.withDuplicates(true);
+		Scope s = widen(query.scope, row);
 		Filter f = tc.type == ColumnDef.Type.TEXT ? Filter.text(tc.id, Op.EQ, row.text(col)) : Filter.num(tc.id, Op.EQ, row.num(col));
 		back.add(new Place(viewId, query, page));
 		viewId = target.id;

@@ -46,7 +46,7 @@ public final class CellFormatter {
 		int i = col.index;
 		if (!row.isKnown(i)) return new CellText(UNKNOWN_TEXT, CellText.UNKNOWN);
 		int prov = row.prov(i);
-		String body = row.kind(i) == Row.K_TEXT ? row.text(i) : value(col, row.num(i));
+		String body = row.kind(i) == Row.K_TEXT ? (col.format == ColumnDef.Format.CLASS_NAME ? className(row.text(i)) : row.text(i)) : value(col, row.num(i));
 		switch (prov){
 			case Fact.PROV_INCOMPLETE: return new CellText(">=" + body, CellText.LOWER);
 			case Fact.PROV_INFERRED: return new CellText("~" + body, CellText.INFERRED);
@@ -54,6 +54,25 @@ public final class CellFormatter {
 			default: return new CellText(body, CellText.EXACT);
 		}
 	}
+
+	//A stable class key as a readable name: "items.weapon.melee.WarHammer" is "War Hammer", "items.rings.RingOfHaste" is "Ring of Haste".
+	//A key that is only the name the player saw ("name:ruby ring", used when the real kind was not known) is shown as that name.
+	public static String className( String key ){
+		if (key.startsWith(NAME_KEY_PREFIX)) return key.substring(NAME_KEY_PREFIX.length());
+		String simple = key.substring(key.lastIndexOf('.') + 1);
+		StringBuilder b = new StringBuilder();
+		for (int i = 0; i < simple.length(); i++){
+			char c = simple.charAt(i);
+			boolean boundary = i > 0 && Character.isUpperCase(c) && (Character.isLowerCase(simple.charAt(i - 1))
+					|| (Character.isUpperCase(simple.charAt(i - 1)) && i + 1 < simple.length() && Character.isLowerCase(simple.charAt(i + 1))));
+			if (boundary) b.append(' ');
+			b.append(c);
+		}
+		return b.toString().replace(" Of ", " of ").replace(" The ", " the ").replace(" In ", " in ");
+	}
+
+	//the start of a type key made from a shown name (see RowBuilders)
+	public static final String NAME_KEY_PREFIX = "name:";
 
 	public static String value( ColumnDef col, long n ){
 		if (col.type == ColumnDef.Type.ENUM) return col.labelFor(n);
@@ -142,16 +161,28 @@ public final class CellFormatter {
 		public final String text;
 		public final String detail;
 		public final int state;
+		public final boolean small;
+		//the same value as short as it can be for a dense table: a rate is just its percentage ("64%", the counts are in 'detail')
+		public final String compact;
 
-		AggText( String text, String detail, int state ){
+		AggText( String text, String detail, int state, boolean small ){
+			this(text, text, detail, state, small);
+		}
+
+		AggText( String text, String compact, String detail, int state, boolean small ){
+			this.compact = compact;
 			this.text = text;
 			this.detail = detail;
 			this.state = state;
+			this.small = small;
 		}
 	}
 
+	//an aggregate of fewer known values than this is shown as low-confidence
+	public static final int SMALL_SAMPLE = 5;
+
 	public static AggText aggregate( DatasetDef def, Aggregate a, AggValue v ){
-		if (!v.known) return new AggText(UNKNOWN_TEXT, "0 of " + v.total + " known", CellText.UNKNOWN);
+		if (!v.known) return new AggText(UNKNOWN_TEXT, "0 of " + v.total + " known" + (v.isUnsure() ? ", some rows could not be judged" : ""), CellText.UNKNOWN, false);
 		String prefix = "";
 		int state = CellText.EXACT;
 		if (v.isLowerBound()){
@@ -173,20 +204,37 @@ public final class CellFormatter {
 			case COUNT_KNOWN:
 				body = Long.toString((long) v.value);
 				break;
+			case COUNT_DISTINCT:
+				body = Long.toString((long) v.value);
+				break;
 			case RATE:
-				body = Math.round(v.value * 100) + "% (" + v.hits + "/" + v.contributing + ")";
+			case RATIO:
+				body = Math.round(v.value * 100) + "% (" + v.hits + "/" + (a.fn == Aggregate.Fn.RATE ? v.contributing : v.outOf) + ")";
 				break;
 			case AVG:
-				body = fixed(Math.round(v.value * 10), 10, 1);
+			case MEDIAN:
+				body = oneDecimal(v.value);
 				break;
 			default:
 				body = c != null && c.type == ColumnDef.Type.NUM ? value(c, Math.round(v.value)) : Long.toString(Math.round(v.value));
 		}
-		return new AggText(prefix + body, detail, state);
+		if (v.isUnsure()) detail += "; some rows could not be judged";
+		boolean small = a.fn != Aggregate.Fn.COUNT && v.contributing < SMALL_SAMPLE;
+		if (small) detail += "; small sample";
+		String compactBody = body;
+		if (a.fn == Aggregate.Fn.RATE || a.fn == Aggregate.Fn.RATIO) compactBody = Math.round(v.value * 100) + "%";
+		return new AggText(prefix + body, prefix + compactBody, detail, state, small);
+	}
+
+	//whole numbers without a decimal, others with one
+	private static String oneDecimal( double v ){
+		long tenths = Math.round(v * 10);
+		return tenths % 10 == 0 ? Long.toString(tenths / 10) : fixed(tenths, 10, 1);
 	}
 
 	//a short name for an aggregate column header
 	public static String aggregateLabel( DatasetDef def, Aggregate a ){
+		if (!a.label.isEmpty()) return a.label;
 		ColumnDef c = a.column.isEmpty() ? null : def.column(a.column);
 		String col = c == null ? "" : c.label;
 		switch (a.fn){
@@ -196,6 +244,9 @@ public final class CellFormatter {
 			case AVG: return "Avg " + col;
 			case MIN: return "Min " + col;
 			case MAX: return "Max " + col;
+			case MEDIAN: return "Median " + col;
+			case COUNT_DISTINCT: return "Distinct " + col;
+			case RATIO: return col + " per " + (def.column(a.over) == null ? a.over : def.column(a.over).label);
 			default: return col + " rate";
 		}
 	}

@@ -140,7 +140,7 @@ public class UimsdSafetyTest {
 	@Test
 	public void theUnfinishedRunsHiddenItemsAndEnemiesAreNeverListedNorCounted() throws Exception {
 		Catalog c = new DatasetStore(history("c", "items.rings.RingOfHaste", 1, true, true)).load();
-		Query q = c.view("items").initialQuery().withShowInternal(true).withScope(new Scope(Scope.Rules.ALL, "", true, true, true, true));
+		Query q = c.view("items").instanceQuery().withShowInternal(true).withScope(new Scope(Scope.Rules.ALL, "", true, true, true, true));
 		QueryResult r = QueryEngine.run(c.dataset("items"), q, RS);
 		List<String> ids = new ArrayList<>();
 		for (Row row : r.rows) ids.add(row.id);
@@ -156,7 +156,7 @@ public class UimsdSafetyTest {
 		assertEquals(CellText.HIDDEN, CellFormatter.cell(q, ring, trueClass).state);
 		assertEquals("ruby ring", CellFormatter.cell(q, ring, c.dataset("items").def.column("item.name")).text);
 
-		QueryResult en = QueryEngine.run(c.dataset("enemies"), c.view("enemies").initialQuery().withShowInternal(true)
+		QueryResult en = QueryEngine.run(c.dataset("enemies"), c.view("enemies").instanceQuery().withShowInternal(true)
 				.withScope(new Scope(Scope.Rules.ALL, "", true, true, true, true)), RS);
 		for (Row row : en.rows) assertFalse("an enemy the player never met in the unfinished run is not listed", row.id.contains("run-open|actors.mobs.Goo"));
 		assertTrue(en.rows.size() >= 2);
@@ -176,7 +176,7 @@ public class UimsdSafetyTest {
 		LifecycleEvents.emitRunEnd(w, 90, e);
 		w.close(true);
 		Catalog after = new DatasetStore(root).load();
-		Query q = after.view("items").initialQuery().withShowInternal(true).withScope(Scope.DEFAULT);
+		Query q = after.view("items").instanceQuery().withShowInternal(true).withScope(Scope.DEFAULT);
 		QueryResult r = QueryEngine.run(after.dataset("items"), q, RS);
 		List<String> ids = new ArrayList<>();
 		for (Row row : r.rows) ids.add(row.id);
@@ -208,7 +208,7 @@ public class UimsdSafetyTest {
 	@Test
 	public void theCombatNamesInEnemyRowsAreOnlyWhatThePlayerSaw() throws Exception {
 		Catalog c = new DatasetStore(history("f", "items.rings.RingOfHaste", 1, false, true)).load();
-		Query q = c.view("enemies").initialQuery().withShowInternal(false).withScope(new Scope(Scope.Rules.ALL, "", true, true, true, true));
+		Query q = c.view("enemies").instanceQuery().withShowInternal(false).withScope(new Scope(Scope.Rules.ALL, "", true, true, true, true));
 		QueryResult r = QueryEngine.run(c.dataset("enemies"), q, RS);
 		for (ColumnDef col : r.columns) assertFalse(col.id, col.isInternal());
 		for (Row row : r.rows){

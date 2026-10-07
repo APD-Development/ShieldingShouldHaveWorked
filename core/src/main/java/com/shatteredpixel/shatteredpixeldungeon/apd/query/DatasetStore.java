@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -245,6 +246,7 @@ public final class DatasetStore {
 		//imported ranking records (each once), and which of them are the same run as a recorded one
 		DatasetDef runsDef = defs.get(Datasets.RUNS);
 		List<Row> runRows = merged.get(Datasets.RUNS);
+		copyRunFacts(defs, merged, runsDef, runRows);
 		List<Row> legacy = new ArrayList<>();
 		Set<String> seen = new HashSet<>();
 		for (LogRows lr : imported){
@@ -285,6 +287,31 @@ public final class DatasetStore {
 			}
 			for (Row r : legacy) runs.add(new Dataset.RunInfo(r.runId, true, null, e.getKey().equals(Datasets.RUNS), r.duplicate));
 			cat.add(new Dataset(def, e.getValue(), runs));
+		}
+	}
+
+	//Item and enemy rows carry a few facts of their run (how it ended, the class, the deepest floor, the challenges) so that the
+	//outcome of the runs they belong to can be asked of the rows themselves. They are the run's own values with the run's own
+	//provenance, and unknown wherever the run's are.
+	private static void copyRunFacts( Map<String, DatasetDef> defs, Map<String, List<Row>> merged, DatasetDef runsDef, List<Row> runRows ){
+		Map<String, Row> byRun = new HashMap<>();
+		for (Row r : runRows) byRun.put(r.runId, r);
+		String[][] sets = { { Datasets.ITEMS, "item" }, { Datasets.ENEMIES, "enemy" } };
+		for (String[] set : sets){
+			DatasetDef d = defs.get(set[0]);
+			List<Row> rows = merged.get(set[0]);
+			if (d == null || rows == null) continue;
+			for (String[] fact : Datasets.RUN_FACTS){
+				int to = d.indexOf(set[1] + "." + fact[0]);
+				int from = runsDef.indexOf(fact[1]);
+				if (to < 0 || from < 0) continue;
+				for (Row r : rows){
+					Row run = byRun.get(r.runId);
+					if (run == null || !run.isKnown(from)) continue;
+					if (run.kind(from) == Row.K_TEXT) r.setText(to, run.text(from), run.prov(from));
+					else r.setNum(to, run.num(from), run.prov(from));
+				}
+			}
 		}
 	}
 

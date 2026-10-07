@@ -113,9 +113,9 @@ public final class ResultTable {
 			}
 		} else {
 			for (ColumnDef c : r.groupKeys) t.headers.add(new Header(c.id, c.label, true, ""));
-			t.headers.add(new Header("count", "Rows", true, ""));
+			t.headers.add(new Header("count", r.def.countLabel, true, ""));
 			for (Aggregate a : r.aggregates){
-				if (a.fn == Aggregate.Fn.COUNT) continue;
+				if (a.isPlainCount()) continue;
 				t.headers.add(new Header(a.id(), CellFormatter.aggregateLabel(r.def, a), true, ""));
 			}
 			for (int i = start; i < end; i++){
@@ -127,9 +127,9 @@ public final class ResultTable {
 				for (int k = 0; k < cells.size(); k++) details.add("");
 				for (int k = 0; k < r.aggregates.size(); k++){
 					Aggregate a = r.aggregates.get(k);
-					if (a.fn == Aggregate.Fn.COUNT) continue;
+					if (a.isPlainCount()) continue;
 					CellFormatter.AggText at = CellFormatter.aggregate(r.def, a, g.aggregates.get(k));
-					cells.add(new CellText(at.text, at.state));
+					cells.add(new CellText(at.compact, at.state, at.small));
 					details.add(at.detail);
 				}
 				t.lines.add(new Line(null, g, cells.toArray(new CellText[0]), details.toArray(new String[0])));

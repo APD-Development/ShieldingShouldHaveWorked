@@ -31,12 +31,25 @@ public final class ViewDef {
 	public final String title;
 	public final String description;
 	private final Query initial;
+	//An aggregate-first view starts grouped (one row per kind of thing). This is the query for its individual rows: tapping a group
+	//opens it with the group's key values as filters. Null for a view whose rows are already individual.
+	private Query instances;
 
 	public ViewDef( String id, String title, String description, Query initial ){
 		this.id = id;
 		this.title = title;
 		this.description = description;
 		this.initial = initial;
+	}
+
+	public ViewDef withInstances( Query q ){
+		this.instances = q;
+		return this;
+	}
+
+	//the query for the individual rows behind this view's groups, or null
+	public Query instanceQuery(){
+		return instances;
 	}
 
 	public String dataset(){

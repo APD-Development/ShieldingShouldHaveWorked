@@ -53,6 +53,12 @@ public class UimsdTable extends Component {
 		}
 	}
 
+	//the colour of a value that rests on very few known values: the same colour, clearly fainter
+	public static int dim( int rgb ){
+		int r = ((rgb >> 16) & 0xFF) * 55 / 100, g = ((rgb >> 8) & 0xFF) * 55 / 100, b = (rgb & 0xFF) * 55 / 100;
+		return (r << 16) | (g << 8) | b;
+	}
+
 	private static final int HEADER_COLOR = 0xFFFF88;
 	private static final int STRIPE = 0x14FFFFFF;
 
@@ -259,7 +265,7 @@ public class UimsdTable extends Component {
 				float left = c == 0 ? 0 : geo.lefts[c] - geo.firstWidth();
 				int chars = Math.max(3, (int) ((w - TableGeometry.PAD) / TableGeometry.CHAR_WIDTH));
 				RenderedTextBlock t = PixelScene.renderTextBlock(TableGeometry.fit(cell.text, chars), 6);
-				t.hardlight(color(cell.state));
+				t.hardlight(cell.small ? dim(color(cell.state)) : color(cell.state));
 				t.setPos(left + 2, r * rowH + 2);
 				(c == 0 ? firstCol.content() : body.content()).add(t);
 			}

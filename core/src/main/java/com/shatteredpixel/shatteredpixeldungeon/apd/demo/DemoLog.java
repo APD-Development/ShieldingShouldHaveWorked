@@ -105,6 +105,15 @@ public final class DemoLog {
 		return this;
 	}
 
+	//the player learned what a kind of unidentified item is (public)
+	public DemoLog classKnown( String label, String className, int category ){
+		ItemEvents.ClassKnown c = new ItemEvents.ClassKnown();
+		c.where = iw();
+		c.category = category; c.label = label; c.className = className;
+		ItemEvents.emitClassKnown(w, clock++, c);
+		return this;
+	}
+
 	public DemoLog truthChanged( String uid, int newLevel, boolean newCursed ){
 		ItemEvents.TruthChanged t = new ItemEvents.TruthChanged();
 		t.uid = uid; t.where = iw(); t.newLevel = newLevel; t.newCursed = newCursed;

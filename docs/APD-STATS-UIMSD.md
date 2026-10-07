@@ -104,3 +104,32 @@ Development builds (version name ending in `INDEV`) have three extra buttons in 
   `demo-` log found in it and a demo folder reads nothing else, and removal only deletes a folder that has the demo folder's name
   and the marker. Code that exports, uploads, ranks or otherwise treats history as legitimate must reject anything for which
   `DemoData.isSyntheticRoot / isSyntheticLogId / isSyntheticBuild` is true.
+
+## Aggregate-first views
+
+Items, Weapons, Armor, Rings, Trinkets, Artifacts and Enemies start as one row per KIND of thing, in the same dense table style as the
+rest of UIMSD, and the individual rows are one level down:
+
+    Weapons -> Sword (statistics sheet) -> its individual swords -> one sword -> its run
+                                        -> the runs containing a sword      -> one run
+
+* A view is a grouped query (`ViewDef`) that also names the query for its individual rows. Tapping a group opens its statistics sheet
+  (`GroupDetail`, from the dataset's `StatLine`s) with buttons for the individual rows (`UimsdModel.openGroupRows`: the same query
+  without the grouping, the group's type as a filter, so every filter and scope the player set still applies and the counts match) and
+  for the runs containing it (`openGroupRuns`: the distinct runs of the group's rows, the scope widened just enough to contain them).
+  An individual row still leads to its run through the existing link. Runs, Deaths, Characters and Challenges are unchanged.
+* **The type is the game's own class, not a name.** `item.type` is the item's true class (recorded since telemetry 1.2) once the player
+  knows it: always for weapons, armor, wands, artifacts, trinkets and the like (a glaive is a Glaive however it is enchanted, so
+  "glaive" and "blazing glaive" are one type), and for rings, potions and scrolls only after `ITEM_CLASS_KNOWN` says the kind was
+  learned. Otherwise, and for runs recorded without item identity, it is the name the player saw, shown with `~` (inferred). No new
+  telemetry was needed, and nothing is guessed. The readable name ("War Hammer") is made from the class when shown.
+* Every type is listed, however rare. Statistics resting on fewer than 5 known values are drawn dimmed, and every statistic keeps its
+  known/total counts, lower-bound (`>=`), inferred (`~`) and "some rows could not be judged" marks. Unknown is never zero (the one
+  exception is "instances with a known level", a count, where none is a true zero).
+* Denominators match the question: acquired % = acquired / seen, equipped % = equipped / acquired (equipped / seen is a separate
+  statistic). Win rates are per run: a run that had three of something counts once.
+* New generic aggregates: `COUNT_DISTINCT`, `MEDIAN`, `RATIO`, and two refinements on any aggregate, "only rows where column = value"
+  and "one row per distinct value of a column". Item and enemy rows also carry their run's outcome, class, deepest floor and
+  challenges (the run's own values and provenance; unknown while the run is not over).
+* Hidden information: the type, the sheets and the run facts are built only from what the player could see, the differential leak
+  test (hidden information of an unfinished run changed, nothing observable may change) covers every view, the sheets and the demo data.

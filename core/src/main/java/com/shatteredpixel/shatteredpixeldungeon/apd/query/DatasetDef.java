@@ -37,6 +37,10 @@ public final class DatasetDef {
 	private final List<ColumnDef> columns = new ArrayList<>();
 	private final Map<String, ColumnDef> byId = new HashMap<>();
 	public final List<LinkDef> links = new ArrayList<>();
+	//what a row is called when a group of them is counted ("Instances", "Encounters"), shown as the count column of grouped tables
+	public String countLabel = "Rows";
+	//the statistics sheet shown for a group of rows (empty: the group's table aggregates only)
+	public final List<StatLine> sheet = new ArrayList<>();
 	//the telemetry version whose logs can supply rows at all (older logs have no rows: unknown, not "none")
 	public com.shatteredpixel.shatteredpixeldungeon.apd.stats.TelemetryVersion minTelemetry;
 
@@ -51,6 +55,11 @@ public final class DatasetDef {
 		c.index = columns.size();
 		columns.add(c);
 		byId.put(c.id, c);
+		return this;
+	}
+
+	public DatasetDef stat( StatLine l ){
+		sheet.add(l);
 		return this;
 	}
 
