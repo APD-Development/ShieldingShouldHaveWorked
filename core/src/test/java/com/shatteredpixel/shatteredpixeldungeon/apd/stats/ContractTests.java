@@ -79,15 +79,20 @@ public class ContractTests {
 			"com.badlogic", "Gdx", "com.watabou", "Dungeon", "Actor", "Statistics", "Rankings",
 			//APIs missing on Android 5.0 (minSdk 21)
 			"java.nio.file", "String.join", "computeIfAbsent", "getOrDefault", ".stream(", "Optional", "List.of(",
-			"Map.of(", "Set.of(", "java.util.function", "Math.floorMod", "removeIf", "forEach(",
+			"Map.of(", "Set.of(", "java.util.function", "Math.floorMod", "Math.floorDiv", "removeIf", "forEach(",
 	};
 
 	@Test
 	public void libraryUsesNoRandomnessNoGameClassesAndNoApisMissingOnAndroid5() throws Exception {
-		File dir = new File(System.getProperty("apd.stats.src"));
-		File[] sources = dir.listFiles((d, name) -> name.endsWith(".java"));
-		assertNotNull(sources);
-		assertTrue(sources.length > 10);
+		//the storage library and the query library (UIMSD's engine) are both pure: no game, no randomness, no newer-Android APIs
+		List<File> all = new ArrayList<>();
+		for (String prop : new String[]{"apd.stats.src", "apd.query.src"}){
+			File[] some = new File(System.getProperty(prop)).listFiles((d, name) -> name.endsWith(".java"));
+			assertNotNull(some);
+			assertTrue(some.length > 10);
+			for (File f : some) all.add(f);
+		}
+		File[] sources = all.toArray(new File[0]);
 		List<String> problems = new ArrayList<>();
 		for (File src : sources){
 			boolean inBlockComment = false;
@@ -111,7 +116,8 @@ public class ContractTests {
 				for (String bad : FORBIDDEN){
 					if (line.contains(bad)) problems.add(src.getName() + ":" + n + " uses \"" + bad + "\": " + line);
 				}
-				if (line.startsWith("import com.shatteredpixel") && !line.contains("shatteredpixeldungeon.apd.stats.")){
+				if (line.startsWith("import com.shatteredpixel") && !line.contains("shatteredpixeldungeon.apd.stats.")
+						&& !line.contains("shatteredpixeldungeon.apd.query.")){
 					problems.add(src.getName() + ":" + n + " imports game code: " + line);
 				}
 			}

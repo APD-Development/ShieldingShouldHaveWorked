@@ -1,0 +1,162 @@
+/*
+ * Pixel Dungeon
+ * Copyright (C) 2012-2015 Oleg Dolya
+ *
+ * Shattered Pixel Dungeon
+ * Copyright (C) 2014-2026 Evan Debenham
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
+
+
+package com.shatteredpixel.shatteredpixeldungeon.apd.query;
+
+import com.shatteredpixel.shatteredpixeldungeon.apd.stats.Fact;
+
+//Turns cells and aggregates into text. Plain ASCII markers only (the game's pixel font has few symbols):
+//  ?      unknown: the game never recorded it
+//  hidden hidden information that may not be shown (unfinished run, or hidden information off)
+//  >=12   only a lower bound (the log has gaps or older telemetry could not count it)
+//  ~6     inferred rather than recorded exactly
+public final class CellFormatter {
+
+	private CellFormatter(){}
+
+	public static final String UNKNOWN_TEXT = "?";
+	public static final String HIDDEN_TEXT = "hidden";
+
+	public static CellText cell( Query q, Row row, ColumnDef col ){
+		if (!QueryEngine.open(q, row, col)) return new CellText(HIDDEN_TEXT, CellText.HIDDEN);
+		return cellOpen(row, col);
+	}
+
+	//a cell that is known to be open
+	public static CellText cellOpen( Row row, ColumnDef col ){
+		int i = col.index;
+		if (!row.isKnown(i)) return new CellText(UNKNOWN_TEXT, CellText.UNKNOWN);
+		int prov = row.prov(i);
+		String body = row.kind(i) == Row.K_TEXT ? row.text(i) : value(col, row.num(i));
+		switch (prov){
+			case Fact.PROV_INCOMPLETE: return new CellText(">=" + body, CellText.LOWER);
+			case Fact.PROV_INFERRED: return new CellText("~" + body, CellText.INFERRED);
+			case Fact.PROV_LEGACY: return new CellText(body, CellText.LEGACY);
+			default: return new CellText(body, CellText.EXACT);
+		}
+	}
+
+	public static String value( ColumnDef col, long n ){
+		if (col.type == ColumnDef.Type.ENUM) return col.labelFor(n);
+		switch (col.format){
+			case DATE_MILLIS: return date(n);
+			case HUNDREDTHS: return fixed(n, 100, 2);
+			case THOUSANDTHS: return fixed(n, 1000, 1);
+			default: return Long.toString(n);
+		}
+	}
+
+	private static String fixed( long n, int div, int decimals ){
+		boolean neg = n < 0;
+		long a = Math.abs(n);
+		long whole = a / div;
+		long frac = a % div;
+		if (decimals == 1) frac = frac / (div / 10);
+		String f = Long.toString(frac);
+		while (f.length() < decimals) f = "0" + f;
+		return (neg ? "-" : "") + whole + "." + f;
+	}
+
+	private static long floorDiv( long a, long b ){
+		long q = a / b;
+		return (a % b != 0 && ((a < 0) != (b < 0))) ? q - 1 : q;
+	}
+
+	//yyyy-MM-dd in UTC, without any locale or time zone machinery
+	public static String date( long millis ){
+		long days = floorDiv(millis, 86400000L);
+		long z = days + 719468;
+		long era = floorDiv(z, 146097L);
+		long doe = z - era * 146097;
+		long yoe = (doe - doe / 1460 + doe / 36524 - doe / 146096) / 365;
+		long y = yoe + era * 400;
+		long doy = doe - (365 * yoe + yoe / 4 - yoe / 100);
+		long mp = (5 * doy + 2) / 153;
+		long d = doy - (153 * mp + 2) / 5 + 1;
+		long m = mp < 10 ? mp + 3 : mp - 9;
+		if (m <= 2) y++;
+		return y + "-" + (m < 10 ? "0" : "") + m + "-" + (d < 10 ? "0" : "") + d;
+	}
+
+	//the value of an aggregate, and in 'detail' how many values it is made of
+	public static final class AggText {
+		public final String text;
+		public final String detail;
+		public final int state;
+
+		AggText( String text, String detail, int state ){
+			this.text = text;
+			this.detail = detail;
+			this.state = state;
+		}
+	}
+
+	public static AggText aggregate( DatasetDef def, Aggregate a, AggValue v ){
+		if (!v.known) return new AggText(UNKNOWN_TEXT, "0 of " + v.total + " known", CellText.UNKNOWN);
+		String prefix = "";
+		int state = CellText.EXACT;
+		if (v.isLowerBound()){
+			prefix = ">=";
+			state = CellText.LOWER;
+		}
+		if (v.isInferred()){
+			prefix = prefix + "~";
+			if (state == CellText.EXACT) state = CellText.INFERRED;
+		}
+		String body;
+		String detail = v.contributing + " of " + v.total + " known";
+		ColumnDef c = a.column.isEmpty() ? null : def.column(a.column);
+		switch (a.fn){
+			case COUNT:
+				body = Long.toString((long) v.value);
+				detail = v.total + " rows";
+				break;
+			case COUNT_KNOWN:
+				body = Long.toString((long) v.value);
+				break;
+			case RATE:
+				body = Math.round(v.value * 100) + "% (" + v.hits + "/" + v.contributing + ")";
+				break;
+			case AVG:
+				body = fixed(Math.round(v.value * 10), 10, 1);
+				break;
+			default:
+				body = c != null && c.type == ColumnDef.Type.NUM ? value(c, Math.round(v.value)) : Long.toString(Math.round(v.value));
+		}
+		return new AggText(prefix + body, detail, state);
+	}
+
+	//a short name for an aggregate column header
+	public static String aggregateLabel( DatasetDef def, Aggregate a ){
+		ColumnDef c = a.column.isEmpty() ? null : def.column(a.column);
+		String col = c == null ? "" : c.label;
+		switch (a.fn){
+			case COUNT: return "Rows";
+			case COUNT_KNOWN: return "Known " + col;
+			case SUM: return "Total " + col;
+			case AVG: return "Avg " + col;
+			case MIN: return "Min " + col;
+			case MAX: return "Max " + col;
+			default: return col + " rate";
+		}
+	}
+}
