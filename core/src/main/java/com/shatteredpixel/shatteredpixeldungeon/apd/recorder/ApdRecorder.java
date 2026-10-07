@@ -126,6 +126,23 @@ public final class ApdRecorder {
 		return usable();
 	}
 
+	//A floor replay generates levels and builds a hero kit through game code that is hooked for recording. While it runs, every
+	//hook is off, so nothing it does can reach an open run log; resumeHooks puts the flags back exactly as they were.
+	public static synchronized boolean[] suspendHooks(){
+		boolean[] was = { ApdGen.active, ApdItems.active, ApdCombat.active };
+		ApdGen.active = false;
+		ApdItems.active = false;
+		ApdCombat.active = false;
+		return was;
+	}
+
+	public static synchronized void resumeHooks( boolean[] was ){
+		if (was == null || was.length != 3) return;
+		ApdGen.active = was[0];
+		ApdItems.active = was[1];
+		ApdCombat.active = was[2];
+	}
+
 	//---- what the game save stores -----------------------------------------------------------------------------
 
 	//The id to write into the game save as apd_run_id, null if no run is being tracked. Never throws.

@@ -16,7 +16,8 @@ It is never "what this run would have met". Floors the run reached come from the
 level equals the game's own generation (harness context REFERENCE). Also repeatable, prefix-stable, content checks.
 
 ## Isolation
-- Refuses while a game scene (GameScene/InterlevelScene) is on screen, while a run is being recorded, or while another replay runs.
+- Refuses while a game scene (GameScene/InterlevelScene) is on screen or while another replay runs. Every recording hook is switched off
+  while it runs (`ApdRecorder.suspendHooks/resumeHooks`), so an open run log (a run saved and left) can never receive replay events.
   `Dungeon.init`/`loadGame` call `FloorReplay.awaitIdle()` so a game start never overlaps a replay.
 - Reference journal/tutorial are answered only to the replay thread (`ReplayContext`): `Document.isPageFound/isPageRead`,
   `SPDSettings.intro`. Nothing is written; `Catalog.setSeen` is a no-op on the replay thread; the kit is built while the hero counts as

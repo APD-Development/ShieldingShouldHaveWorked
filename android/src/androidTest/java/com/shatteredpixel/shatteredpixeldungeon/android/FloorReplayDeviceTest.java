@@ -49,6 +49,7 @@ public class FloorReplayDeviceTest {
 				Thread.sleep(250);
 			}
 			assertNotNull("the game did not start", Game.scene());
+			com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder.reset();
 			assertNull("no game should be live on the title screen", FloorReplay.refusal());
 
 			long t0 = System.nanoTime();

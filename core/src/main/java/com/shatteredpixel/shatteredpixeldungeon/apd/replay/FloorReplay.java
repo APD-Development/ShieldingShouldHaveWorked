@@ -33,7 +33,7 @@ import java.util.List;
 //play-time loot, and no branch levels. It is the exact counterfactual of nothing: a floor the run really met is described by the run's
 //own recorded telemetry, never by this.
 //
-//ISOLATION: it refuses to run while a game could be live (see refusal()), runs one at a time, never records, never touches the
+//ISOLATION: it refuses to run while a game could be live (see refusal()), runs one at a time, switches every recording hook off while it runs, never touches the
 //journal or settings, and puts back what it found: the Dungeon fields, the three item identity tables, the limited-drop counters,
 //the item generator, the statistics, the quest state and the notes. What it leaves is state that every new or continued game
 //replaces before reading it (ReplayIsolationTest pins exactly which).
@@ -69,7 +69,6 @@ public final class FloorReplay {
 	//null when a replay may run now, else the reason it may not
 	public static String refusal(){
 		if (running) return "another replay is running";
-		if (ApdRecorder.isRecording()) return "a run is being recorded";
 		//a game scene on screen (the level is being played or built): never borrow the game's state then
 		try {
 			com.watabou.noosa.Scene scene = com.watabou.noosa.Game.scene();
@@ -123,6 +122,7 @@ public final class FloorReplay {
 			if (why != null) throw new Refused(why);
 			running = true;
 			Saved saved = null;
+			boolean[] hooks = ApdRecorder.suspendHooks();
 			try {
 				saved = new Saved();
 				ReplayContext.enter();
@@ -132,6 +132,7 @@ public final class FloorReplay {
 				try {
 					if (saved != null) saved.restore();
 				} finally {
+					ApdRecorder.resumeHooks(hooks);
 					running = false;
 				}
 			}
