@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.apd.demo.DemoData;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.Filter;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.ResultTable;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.StatusText;
@@ -62,6 +63,8 @@ public class UimsdScene extends PixelScene {
 	public static Class<? extends PixelScene> backTo = TitleScene.class;
 	//the model outlives the scene so a screen rotation (which rebuilds the scene) keeps where the player was
 	private static UimsdModel model;
+	//INDEV only: the screen is showing the synthetic demo data instead of the real history
+	private static boolean showingDemo;
 
 	private volatile boolean dirty = true;
 	private Group ui;
@@ -70,7 +73,12 @@ public class UimsdScene extends PixelScene {
 	//Opens UIMSD from a screen. 'from' is where Back returns to.
 	public static void open( Class<? extends PixelScene> from ){
 		backTo = from == GameScene.class ? GameScene.class : TitleScene.class;
+		showingDemo = DemoData.available() && DemoData.viewingDemo();
 		File root = ApdRecorder.historyRoot();
+		if (showingDemo){
+			root = DemoData.demoRootFor(root);
+			if (!DemoData.isSyntheticRoot(root)) root = null;   //no demo data has been generated
+		}
 		Ruleset rules = from == GameScene.class ? Ruleset.current() : Ruleset.of(SPDSettings.apdExoticChance(), SPDSettings.challenges());
 		model = new UimsdModel(rules.id, "challenges " + SPDSettings.challenges() + ", exotic " + rules.exoticChance + "%");
 		if (root == null){
@@ -161,8 +169,14 @@ public class UimsdScene extends PixelScene {
 		build.setPos(x0, y);
 		y = build.bottom() + 3;
 
+		if (showingDemo){
+			RenderedTextBlock demo = text("DEMO DATA - made up for testing, NOT your real history", 6, 0xFF6666, contentW);
+			demo.setPos(x0, y);
+			y = demo.bottom() + 2;
+		}
+
 		if (model == null){
-			RenderedTextBlock t = text("History recording is not set up, so there is nothing to show yet.", 7, 0xFFFFFF, contentW);
+			RenderedTextBlock t = text(showingDemo ? "No demo data yet. Generate it in APD Settings." : "History recording is not set up, so there is nothing to show yet.", 7, 0xFFFFFF, contentW);
 			t.setPos(x0, y);
 			return;
 		}

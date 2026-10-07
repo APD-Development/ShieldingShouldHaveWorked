@@ -52,6 +52,11 @@ public final class DatasetStore {
 
 	public static final String ROWS_DIR = "derived/rows";
 
+	//INDEV-only synthetic demo data (see the demo package) is kept in its own folder, marked by this file, with logs named like this.
+	//A folder of real history never reads a log named like demo data, and a demo folder reads nothing else, so the two never mix.
+	public static final String DEMO_MARKER_FILE = "SYNTHETIC-DEMO-DATA.txt";
+	public static final String DEMO_LOG_PREFIX = "demo-";
+
 	private final File root;
 
 	public DatasetStore( File root ){
@@ -94,11 +99,14 @@ public final class DatasetStore {
 		Map<String, DatasetDef> defs = defs();
 		List<LogRows> recorded = new ArrayList<>();
 		List<LogRows> imported = new ArrayList<>();
+		boolean demoFolder = new File(root, DEMO_MARKER_FILE).isFile();
 		for (File f : logs(new File(root, "runs"))){
+			if (idOf(f).startsWith(DEMO_LOG_PREFIX) != demoFolder) continue;
 			LogRows lr = rowsFor(f, false, defs, cat);
 			if (lr != null) recorded.add(lr);
 		}
 		for (File f : logs(new File(root, "legacy"))){
+			if (idOf(f).startsWith(DEMO_LOG_PREFIX) != demoFolder) continue;
 			LogRows lr = rowsFor(f, true, defs, cat);
 			if (lr != null) imported.add(lr);
 		}

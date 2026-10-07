@@ -24,7 +24,10 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.apd.demo.DemoData;
+import com.shatteredpixel.shatteredpixeldungeon.apd.demo.DemoGenerator;
 import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder;
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.Ruleset;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.SelfTest;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -56,6 +59,10 @@ public class APDSettingsPane extends Component {
 	private RedButton btnTest;
 	private RedButton btnImport;
 	private RedButton btnUimsd;
+	//INDEV builds only (null in other builds): synthetic demo data for testing UIMSD, see DemoData
+	private RedButton btnDemoGenerate;
+	private RedButton btnDemoRemove;
+	private RedButton btnDemoView;
 
 	@Override
 	protected void createChildren() {
@@ -115,6 +122,77 @@ public class APDSettingsPane extends Component {
 			}
 		};
 		add( btnUimsd );
+
+		if (DemoData.available()) {
+			btnDemoGenerate = new RedButton( "DEMO data: generate / reset" ) {
+				@Override
+				protected void onClick() {
+					generateDemo( this );
+				}
+			};
+			add( btnDemoGenerate );
+
+			btnDemoRemove = new RedButton( "DEMO data: remove all" ) {
+				@Override
+				protected void onClick() {
+					DemoData.viewDemo( false );
+					boolean gone = DemoData.delete( demoRoot() );
+					btnDemoView.text( demoViewText() );
+					ShatteredPixelDungeon.scene().addToFront( new WndMessage( gone
+							? "All demo data removed. Your real history was not touched. UIMSD shows real data."
+							: "Nothing was removed: that folder is not demo data." ) );
+				}
+			};
+			add( btnDemoRemove );
+
+			btnDemoView = new RedButton( demoViewText() ) {
+				@Override
+				protected void onClick() {
+					DemoData.viewDemo( !DemoData.viewingDemo() );
+					text( demoViewText() );
+				}
+			};
+			add( btnDemoView );
+		}
+	}
+
+	private static String demoViewText() {
+		return DemoData.viewingDemo() ? "UIMSD shows: DEMO data" : "UIMSD shows: REAL data";
+	}
+
+	private static java.io.File demoRoot() {
+		java.io.File base = ApdRecorder.historyRoot();
+		if (base == null) base = FileUtils.getFileHandle( "apd" ).file();
+		return DemoData.demoRootFor( base );
+	}
+
+	private void generateDemo( final RedButton button ) {
+		button.text( "Generating..." );
+		button.enable( false );
+		Thread t = new Thread( new Runnable() {
+			@Override
+			public void run() {
+				String result;
+				try {
+					int runs = DemoGenerator.generate( demoRoot(), Ruleset.of( SPDSettings.apdExoticChance(), SPDSettings.challenges() ), System.currentTimeMillis() );
+					DemoData.viewDemo( true );
+					result = runs + " made-up runs written. UIMSD now shows DEMO data (the button below switches back to your real data). Your real history was not touched.";
+				} catch (Throwable e) {
+					result = "Demo data failed: " + e;
+				}
+				final String shown = result;
+				Game.runOnRenderThread( new Callback() {
+					@Override
+					public void call() {
+						button.text( "DEMO data: generate / reset" );
+						button.enable( true );
+						btnDemoView.text( demoViewText() );
+						ShatteredPixelDungeon.scene().addToFront( new WndMessage( shown ) );
+					}
+				} );
+			}
+		} );
+		t.start();
 	}
 
 	@Override
@@ -137,6 +215,15 @@ public class APDSettingsPane extends Component {
 		pos = btnImport.bottom() + GAP;
 		btnUimsd.setRect( x, pos, width, 16 );
 		height = btnUimsd.bottom() - y;
+		if (btnDemoGenerate != null) {
+			pos = btnUimsd.bottom() + GAP;
+			btnDemoGenerate.setRect( x, pos, width, 16 );
+			pos = btnDemoGenerate.bottom() + GAP;
+			btnDemoRemove.setRect( x, pos, width, 16 );
+			pos = btnDemoRemove.bottom() + GAP;
+			btnDemoView.setRect( x, pos, width, 16 );
+			height = btnDemoView.bottom() - y;
+		}
 	}
 
 	private static void runImport( final RedButton button ) {

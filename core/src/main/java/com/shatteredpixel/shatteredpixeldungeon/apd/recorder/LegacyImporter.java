@@ -167,6 +167,8 @@ public final class LegacyImporter {
 	//Writes what is not in the history yet. Never throws.
 	public static Report write( File root, Extract x, long nowMillis ){
 		Report report = new Report();
+		//synthetic demo data is never a place for real records
+		if (com.shatteredpixel.shatteredpixeldungeon.apd.demo.DemoData.isSyntheticRoot(root)) return report;
 		long t0 = System.nanoTime();
 		synchronized (WRITE_LOCK){
 			try {

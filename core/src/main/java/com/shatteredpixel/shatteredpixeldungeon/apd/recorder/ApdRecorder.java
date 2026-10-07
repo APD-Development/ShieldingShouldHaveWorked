@@ -77,6 +77,11 @@ public final class ApdRecorder {
 	//simulate an app restart).
 	public static synchronized void configure( File historyRoot, boolean enable ){
 		shutdownQuietly();
+		//synthetic demo data is never real history: nothing is ever recorded into it
+		if (com.shatteredpixel.shatteredpixeldungeon.apd.demo.DemoData.isSyntheticRoot(historyRoot)){
+			historyRoot = null;
+			enable = false;
+		}
 		root = historyRoot;
 		store = historyRoot == null ? null : new StatsStore(historyRoot);
 		configured = historyRoot != null;

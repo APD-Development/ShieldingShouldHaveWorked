@@ -83,3 +83,24 @@ device self-test, and performance (printed as APD-PERF lines).
 - Enemy rows pair each public combat event with the detail event written right after it; if telemetry ever interleaves more events there,
   the hidden class column of an enemy row may be missing (the public numbers do not depend on it).
 - The first open after an update rebuilds the row caches (a short wait); the screen says "Reading your history...".
+
+## INDEV-only demo data
+
+Development builds (version name ending in `INDEV`) have three extra buttons in APD Settings: **DEMO data: generate / reset**,
+**DEMO data: remove all** and **UIMSD shows: REAL / DEMO data**. Release builds never show them.
+
+* Generating writes 72 made-up runs (about 1,600 item rows, 650 enemy rows, 47 deaths) through the real log writer, so the demo
+  history goes through exactly the same reading, merging and hidden-information masking as real history. It covers every class,
+  wins, deaths and abandoned runs, floors 1 to 26, short and very long runs, several challenge sets and rulesets (most match the
+  current one, some do not), weapons, armor, rings, trinkets and artifacts, enemies of every depth, runs recorded by older
+  telemetry (unknown values), runs resumed in several segments, runs that started recording part-way (lower bounds), a gap, a
+  ruleset change, and three unfinished runs for the hidden-information rules to protect.
+* UIMSD shows **either** real data **or** demo data, never both (demo-only isolation). Generating switches the view to demo; the
+  setting is not saved, so every start of the app shows real data. A red "DEMO DATA" line is shown under the UIMSD title.
+* Demo data lives in its own folder (`apd-demo-data`, next to the real `apd` folder). The folder has a marker file; every demo log is
+  named `demo-...` and says `SYNTHETIC-DEMO-DATA` in its header, its run start (platform, seed text, ruleset text) and its game
+  version (`SYNTHETIC-DEMO`, visible in the Runs table).
+* The recorder refuses to record into a marked folder, the importer refuses to write into one, a real folder's dataset store skips any
+  `demo-` log found in it and a demo folder reads nothing else, and removal only deletes a folder that has the demo folder's name
+  and the marker. Code that exports, uploads, ranks or otherwise treats history as legitimate must reject anything for which
+  `DemoData.isSyntheticRoot / isSyntheticLogId / isSyntheticBuild` is true.
