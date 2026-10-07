@@ -183,12 +183,12 @@ public class TitleScene extends PixelScene {
 		};
 		add( btnPlay );
 
-		//UIMSD (Ultimate Infinite Mega Statistics Database) replaces Rankings, until the real database exists it opens the Rankings screen
+		//UIMSD (Ultimate Infinite Mega Statistics Database) replaces Rankings and opens the UIMSD screen
 		btnStatistics = new APDMenuButton( "UIMSD", Icons.STATS, true ){
 			@Override
 			protected void onClick() {
 				super.onClick();
-				ShatteredPixelDungeon.switchNoFade( RankingsScene.class );
+				UimsdScene.open( TitleScene.class );
 			}
 		};
 		add( btnStatistics );

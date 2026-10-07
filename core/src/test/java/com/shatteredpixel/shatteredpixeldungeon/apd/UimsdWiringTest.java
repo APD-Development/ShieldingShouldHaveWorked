@@ -10,8 +10,8 @@ import java.io.File;
 import java.nio.file.Files;
 import java.security.MessageDigest;
 
-//UIMSD's screen is wired in through APD Settings only. The title screen stays exactly as approved, and the screen's generic
-//parts do not know any particular dataset.
+//UIMSD's screen is opened by the title screen's UIMSD button and by APD Settings. The title screen stays exactly as approved apart from
+//that click target, and the screen's generic parts do not know any particular dataset.
 public class UimsdWiringTest {
 
 	private static String src( String relative ) throws Exception {
@@ -25,11 +25,28 @@ public class UimsdWiringTest {
 		return b.toString();
 	}
 
+	private static String shaOf( String text ) throws Exception {
+		byte[] d = MessageDigest.getInstance("SHA-256").digest(text.getBytes("UTF-8"));
+		StringBuilder b = new StringBuilder();
+		for (byte x : d) b.append(String.format("%02x", x));
+		return b.toString();
+	}
+
 	@Test
-	public void theTitleScreenIsExactlyAsApprovedAndFrozen() throws Exception {
-		//If this fails the frozen title screen was edited. Update these only when the project owner asked for a title change.
-		assertEquals("2c4c5f3b063380385da9318d62e58d2ab0b63c0b433bb2815006ced9f416cd90", sha("scenes/TitleScene.java"));
+	public void theTitleScreenIsStillExactlyAsApprovedExceptForWhereTheUimsdButtonGoes() throws Exception {
+		//The only change since the title screen was frozen is the click target of the UIMSD button (the project owner asked for it).
+		//Putting the two changed lines back as they were must give exactly the approved file, so layout, text, arrow and annotation
+		//are provably untouched. If this fails the frozen title screen was edited.
+		String title = src("scenes/TitleScene.java");
+		assertTrue(title.contains("UimsdScene.open( TitleScene.class );"));
+		String restored = title
+				.replace("//UIMSD (Ultimate Infinite Mega Statistics Database) replaces Rankings and opens the UIMSD screen",
+						"//UIMSD (Ultimate Infinite Mega Statistics Database) replaces Rankings, until the real database exists it opens the Rankings screen")
+				.replace("UimsdScene.open( TitleScene.class );", "ShatteredPixelDungeon.switchNoFade( RankingsScene.class );");
+		assertEquals("2c4c5f3b063380385da9318d62e58d2ab0b63c0b433bb2815006ced9f416cd90", shaOf(restored));
+		//the geometry (arrow, annotation, layout) file is byte for byte as approved
 		assertEquals("627e2dae33f1173fd88548f4217dbc505ef02b8dcbe70dbfe4d71aab9b792134", sha("apd/TitleGeometry.java"));
+		assertTrue(title.contains("HEY, GO HERE FOR DRUGS") || src("apd/TitleGeometry.java").contains("HEY, GO HERE FOR DRUGS") || title.contains("apd.title"));
 	}
 
 	@Test
@@ -40,8 +57,9 @@ public class UimsdWiringTest {
 		String scene = src("scenes/UimsdScene.java");
 		assertTrue(scene.contains("backTo"));
 		assertTrue(scene.contains("onBackPressed"));
-		//the title scene does not know about the new scene
-		assertFalse(src("scenes/TitleScene.java").contains("UimsdScene"));
+		//the title screen's UIMSD button opens it, and goes back to the title
+		assertTrue(src("scenes/TitleScene.java").contains("UimsdScene.open( TitleScene.class )"));
+		assertTrue(scene.contains("switchNoFade(backTo)"));
 	}
 
 	@Test

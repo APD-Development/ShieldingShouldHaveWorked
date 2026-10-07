@@ -19,7 +19,7 @@ Layout: portrait stacks logo, version text, a 2x3 grid (Play/UIMSD, Badges/Journ
 filled with `#08110D`.
 
 - "APD Settings" is a full-width row under the 2x3 grid and above News/Changes/About; it opens the APD Settings window (separate from Options).
-- UIMSD (Ultimate Infinite Mega Statistics Database, formerly "Statistics") opens the Rankings screen until the real database exists.
+- UIMSD (Ultimate Infinite Mega Statistics Database, formerly "Statistics") opens the UIMSD screen (`UimsdScene`). Only the button's click target was changed, at the project owner's request; the layout, text, arrow and annotation are unchanged and still frozen. SPD's old Rankings screen is no longer reachable from the title screen.
 - A joke annotation, "HEY, GO HERE FOR DRUGS", sits in its own strip directly above the grid with a bobbing pink arrow pointing
   down at the UIMSD button (top row, right column). It is not interactive, fades with the rest of the menu, uses one line when the
   text fits the grid width and two otherwise, and only takes room from the main button rows when the screen has no spare height

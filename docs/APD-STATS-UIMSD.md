@@ -4,8 +4,9 @@ UIMSD (Ultimate Infinite Mega Statistics Database) shows what the raw telemetry 
 everything on screen is built from the raw logs, can be rebuilt, and is never a second source of truth.
 
 ## Opening it
-"Open UIMSD (preview)" in APD Settings (title screen or pause menu). The title screen itself is frozen and was not touched (a test pins its
-files); the title button is retargeted in a later phase. Back returns to where UIMSD was opened from.
+The **UIMSD button on the title screen** is the primary entry point. "Open UIMSD (preview)" in APD Settings (title screen or pause menu) also
+opens it. Only the title button's click target changed; the title layout, text, arrow and annotation are untouched and a test pins the
+title files. Back returns to where UIMSD was opened from.
 
 ## Layers (all pure Java except the last two)
 | layer | what | where |

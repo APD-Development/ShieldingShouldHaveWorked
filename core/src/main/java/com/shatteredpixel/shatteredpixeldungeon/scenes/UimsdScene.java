@@ -55,7 +55,8 @@ import java.util.List;
 //APD: UIMSD, the Ultimate Infinite Mega Statistics Database. This scene is only a screen for a UimsdModel: it draws the model's
 //status, filters and table and passes taps back to it. It knows nothing about any particular dataset.
 //
-//For now it is opened from APD Settings (the title screen stays as it is until the retarget of its button, a later phase).
+//It is opened by the UIMSD button of the title screen (the primary entry point) and, for testing, by "Open UIMSD (preview)" in
+//APD Settings.
 public class UimsdScene extends PixelScene {
 
 	public static Class<? extends PixelScene> backTo = TitleScene.class;
@@ -78,7 +79,9 @@ public class UimsdScene extends PixelScene {
 			ApdRecorder.flushForReading();
 			model.load(root);
 		}
-		ShatteredPixelDungeon.switchScene(UimsdScene.class);
+		//from the title screen it switches the way the other title screens do (no fade through black)
+		if (backTo == TitleScene.class) ShatteredPixelDungeon.switchNoFade(UimsdScene.class);
+		else ShatteredPixelDungeon.switchScene(UimsdScene.class);
 	}
 
 	@Override
@@ -329,6 +332,7 @@ public class UimsdScene extends PixelScene {
 			return;
 		}
 		if (model != null) model.setListener(null);
-		ShatteredPixelDungeon.switchScene(backTo);
+		if (backTo == TitleScene.class) ShatteredPixelDungeon.switchNoFade(backTo);
+		else ShatteredPixelDungeon.switchScene(backTo);
 	}
 }
