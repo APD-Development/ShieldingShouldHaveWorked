@@ -1,0 +1,242 @@
+package com.shatteredpixel.shatteredpixeldungeon.android;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import android.util.Log;
+
+import androidx.test.core.app.ActivityScenario;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+import com.badlogic.gdx.Gdx;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.apd.archive.ApdFiles;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.UimsdScene;
+import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
+import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
+import com.shatteredpixel.shatteredpixeldungeon.windows.APDSettingsPane;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndAPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
+import com.watabou.input.PointerEvent;
+import com.watabou.noosa.Game;
+import com.watabou.noosa.Gizmo;
+import com.watabou.noosa.Group;
+import com.watabou.utils.Point;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+
+//Touching the controls of APD Settings, for real. Building the screen (UimsdScreensDeviceTest) cannot tell whether a button answers a touch: a button inside a
+//scrolling pane only gets its touches if it was created AFTER the pane's own touch area (the newest touch area is asked first, and the pane's covers all of it).
+//This opens the real window, scrolls each control into view, sends real pointer events (the same ones the touch screen produces) and checks the response.
+@RunWith(AndroidJUnit4.class)
+public class ApdSettingsClickDeviceTest {
+
+	private static final String TAG = "APDUI";
+
+	private static void onRender( final Runnable r ) throws Exception {
+		final CountDownLatch done = new CountDownLatch(1);
+		final AtomicReference<Throwable> failure = new AtomicReference<>();
+		Game.runOnRenderThread(new com.watabou.utils.Callback(){
+			@Override
+			public void call(){
+				try {
+					r.run();
+				} catch (Throwable t){
+					failure.set(t);
+				} finally {
+					done.countDown();
+				}
+			}
+		});
+		assertTrue("the render thread did not answer", done.await(60, TimeUnit.SECONDS));
+		if (failure.get() != null) throw new AssertionError("failed on the render thread: " + failure.get(), failure.get());
+	}
+
+	@SuppressWarnings("unchecked")
+	private static List<Gizmo> membersOf( Group g ) throws Exception {
+		Field f = Group.class.getDeclaredField("members");
+		f.setAccessible(true);
+		return new ArrayList<>((List<Gizmo>) f.get(g));
+	}
+
+	private static <T> T find( Gizmo g, Class<T> type ) throws Exception {
+		if (type.isInstance(g)) return type.cast(g);
+		if (g instanceof Group){
+			for (Gizmo m : membersOf((Group) g)){
+				T t = find(m, type);
+				if (t != null) return t;
+			}
+		}
+		return null;
+	}
+
+	private static int count( Group g, Class<?> type ) throws Exception {
+		int n = 0;
+		for (Gizmo m : membersOf(g)) if (type.isInstance(m)) n++;
+		return n;
+	}
+
+	private static Object field( Object o, String name ) throws Exception {
+		Field f = o.getClass().getDeclaredField(name);
+		f.setAccessible(true);
+		return f.get(o);
+	}
+
+	//scrolls the control into view and returns the screen point of its centre
+	private static Point centreOnScreen( final ScrollPane scroll, final Gizmo control ) throws Exception {
+		final AtomicReference<Point> p = new AtomicReference<>();
+		onRender(new Runnable(){
+			public void run(){
+				com.watabou.noosa.ui.Component c = (com.watabou.noosa.ui.Component) control;
+				scroll.scrollTo(0, Math.max(0, c.top() - 20));
+			}
+		});
+		Thread.sleep(400);
+		onRender(new Runnable(){
+			public void run(){
+				com.watabou.noosa.ui.Component c = (com.watabou.noosa.ui.Component) control;
+				p.set(c.camera().cameraToScreen(c.left() + c.width() / 2f, c.top() + c.height() / 2f));
+			}
+		});
+		return p.get();
+	}
+
+	private static void tap( Point at ) throws Exception {
+		PointerEvent.addPointerEvent(new PointerEvent(at.x, at.y, 9, PointerEvent.Type.DOWN, PointerEvent.LEFT));
+		Thread.sleep(150);
+		PointerEvent.addPointerEvent(new PointerEvent(at.x, at.y, 9, PointerEvent.Type.UP, PointerEvent.LEFT));
+		Thread.sleep(400);
+	}
+
+	private static int messages() throws Exception {
+		return count(Game.scene(), WndMessage.class);
+	}
+
+	//a result window is modal: close them so the next touch reaches the settings window again
+	private static void dismissMessages() throws Exception {
+		onRender(new Runnable(){
+			public void run(){
+				try {
+					for (Gizmo m : membersOf(Game.scene())) if (m instanceof WndMessage) ((WndMessage) m).hide();
+				} catch (Exception e){
+					throw new RuntimeException(e);
+				}
+			}
+		});
+		Thread.sleep(300);
+	}
+
+	private static void waitUntil( String what, java.util.concurrent.Callable<Boolean> c, long millis ) throws Exception {
+		long end = System.currentTimeMillis() + millis;
+		while (System.currentTimeMillis() < end){
+			if (c.call()) return;
+			Thread.sleep(150);
+		}
+		throw new AssertionError("timed out waiting for " + what);
+	}
+
+	@Test
+	public void everyControlOfApdSettingsAnswersATouch() throws Exception {
+		final AtomicInteger exports = new AtomicInteger(), imports = new AtomicInteger();
+		ApdFiles.Provider before = ApdFiles.provider;
+		//the system file picker is replaced by one that records the request and says the player cancelled, so the test can see the click arrive
+		ApdFiles.provider = new ApdFiles.Provider(){
+			public void chooseExport( String suggestedName, ApdFiles.ExportTarget target ){
+				exports.incrementAndGet();
+				target.onCancelled();
+			}
+
+			public void chooseImport( ApdFiles.ImportSource source ){
+				imports.incrementAndGet();
+				source.onCancelled();
+			}
+
+			public String where(){
+				return "test";
+			}
+		};
+		boolean recordingWas = SPDSettings.apdRecording();
+		try (ActivityScenario<AndroidLauncher> scenario = ActivityScenario.launch(AndroidLauncher.class)){
+			long end = System.currentTimeMillis() + 120000;
+			while ((Gdx.app == null || Gdx.files == null || Game.scene() == null) && System.currentTimeMillis() < end) Thread.sleep(250);
+			assertNotNull("the game did not start", Game.scene());
+
+			final AtomicReference<WndAPDSettings> window = new AtomicReference<>();
+			onRender(new Runnable(){
+				public void run(){
+					WndAPDSettings w = new WndAPDSettings();
+					ShatteredPixelDungeon.scene().add(w);
+					window.set(w);
+				}
+			});
+			Thread.sleep(800);
+			final ScrollPane scroll = find(window.get(), ScrollPane.class);
+			final APDSettingsPane pane = find(window.get(), APDSettingsPane.class);
+			assertNotNull("the window has a scrolling pane", scroll);
+			assertNotNull("the window holds the APD settings", pane);
+
+			//1. Run self-test: a result window follows
+			dismissMessages();
+			RedButton test = (RedButton) field(pane, "btnTest");
+			tap(centreOnScreen(scroll, test));
+			waitUntil("the self-test result (Run self-test did not answer a touch)", new java.util.concurrent.Callable<Boolean>(){
+				public Boolean call() throws Exception { return messages() >= 1; } }, 120000);
+			Log.w(TAG, "Run self-test answered");
+
+			//2. Import APD rankings
+			dismissMessages();
+			RedButton rankings = (RedButton) field(pane, "btnImport");
+			tap(centreOnScreen(scroll, rankings));
+			waitUntil("the rankings import result (Import APD rankings did not answer a touch)", new java.util.concurrent.Callable<Boolean>(){
+				public Boolean call() throws Exception { return messages() >= 1; } }, 60000);
+
+			//3. Export history (ZIP): the file picker is asked for a place to save
+			dismissMessages();
+			RedButton export = (RedButton) field(pane, "btnExportHistory");
+			final int exportsBefore = exports.get();
+			tap(centreOnScreen(scroll, export));
+			waitUntil("Export history (ZIP) to answer a touch", new java.util.concurrent.Callable<Boolean>(){
+				public Boolean call() throws Exception { return exports.get() > exportsBefore || messages() >= 1; } }, 30000);
+
+			//4. Import history (ZIP): the file picker is asked for a file
+			dismissMessages();
+			RedButton imp = (RedButton) field(pane, "btnImportHistory");
+			final int importsBefore = imports.get();
+			tap(centreOnScreen(scroll, imp));
+			waitUntil("Import history (ZIP) to answer a touch", new java.util.concurrent.Callable<Boolean>(){
+				public Boolean call() throws Exception { return imports.get() > importsBefore || messages() >= 1; } }, 30000);
+
+			//5. the setting that explains itself with a message when touched
+			com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox record = (com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox) field(pane, "chkRecord");
+			dismissMessages();
+			tap(centreOnScreen(scroll, record));
+			waitUntil("Record run history to answer a touch", new java.util.concurrent.Callable<Boolean>(){
+				public Boolean call() throws Exception { return messages() >= 1; } }, 30000);
+			assertEquals("the touch flipped the setting", !recordingWas, SPDSettings.apdRecording());
+
+			//6. Open UIMSD (preview) last: it leaves the window by switching scenes
+			dismissMessages();
+			RedButton uimsd = (RedButton) field(pane, "btnUimsd");
+			tap(centreOnScreen(scroll, uimsd));
+			waitUntil("Open UIMSD (preview) to answer a touch", new java.util.concurrent.Callable<Boolean>(){
+				public Boolean call(){ return Game.scene() instanceof UimsdScene; } }, 30000);
+			Log.w(TAG, "every APD Settings control answered a touch");
+		} finally {
+			SPDSettings.apdRecording(recordingWas);
+			ApdFiles.provider = before;
+		}
+	}
+}
