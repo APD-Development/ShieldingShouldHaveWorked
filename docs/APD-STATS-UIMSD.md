@@ -64,6 +64,12 @@ is only a lower bound. The raw logs are untouched; merging happens when the data
 `derived/rows/<log>.apdr`, one per log, valid while the log has exactly the same size and the builder the same version; otherwise rebuilt from
 the log. A new run or a run that went on costs one log. Deleting the folder loses nothing; deleting a raw log removes its rows.
 
+## Dialog layout
+UIMSD's dialogs (`WndUimsd*`) are sized by `WindowGeometry` from the screen they open on: width follows the screen with a margin on each side,
+the list is as tall as its content up to 85% of the screen and scrolls beyond that, rows wrap their text and stack without gaps. A window
+with a scroll pane is **resized before the pane is placed** (resizing moves the window's camera, and a pane works out its screen position
+when it is placed; doing it the other way round left the Views list far to the right of its window in build 22). A test pins that order.
+
 ## Tests
 Engine semantics, disclosure (including the differential leak test), merging, builders (each dataset), caches, model, geometry, UI wiring, a
 device self-test, and performance (printed as APD-PERF lines).

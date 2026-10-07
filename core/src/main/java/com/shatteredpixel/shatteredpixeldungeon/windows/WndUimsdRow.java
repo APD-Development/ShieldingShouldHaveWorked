@@ -34,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.query.QueryResult;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.ResultTable;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.Row;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdModel;
+import com.shatteredpixel.shatteredpixeldungeon.apd.query.WindowGeometry;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
@@ -52,7 +53,7 @@ public class WndUimsdRow extends Window {
 
 	public WndUimsdRow( final UimsdModel m, ResultTable.Line line ){
 		super();
-		int width = PixelScene.landscape() ? WndUimsdList.WIDTH_L : WndUimsdList.WIDTH_P;
+		int width = WndUimsdList.windowWidth();
 		QueryResult r = m.result();
 		DatasetDef def = r.def;
 
@@ -115,9 +116,11 @@ public class WndUimsdRow extends Window {
 		content.add(text);
 		content.setSize(width, text.bottom() + 2);
 		ScrollPane pane = new ScrollPane(content);
+		float h = WindowGeometry.paneHeight(content.height(), WindowGeometry.maxPane(PixelScene.uiCamera.height, pos, buttonsH + MARGIN));
+		float total = pos + h + MARGIN + links.size() * 18f;
+		//size the window first: it moves the window's camera, and the pane works out its screen position when it is placed
+		resize(width, (int) total);
 		add(pane);
-		float maxH = PixelScene.uiCamera.height * 0.8f - pos - buttonsH;
-		float h = Math.min(content.height(), Math.max(40, maxH));
 		pane.setRect(0, pos, width, h);
 		pos += h + MARGIN;
 
@@ -133,7 +136,6 @@ public class WndUimsdRow extends Window {
 			add(b);
 			pos += 18;
 		}
-		resize(width, (int) pos);
 	}
 
 	public static void show( UimsdModel m, ResultTable.Line line ){

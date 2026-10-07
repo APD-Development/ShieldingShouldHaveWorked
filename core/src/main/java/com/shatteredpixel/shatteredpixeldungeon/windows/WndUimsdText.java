@@ -22,6 +22,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.query.WindowGeometry;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
@@ -35,7 +36,7 @@ public class WndUimsdText extends Window {
 
 	public WndUimsdText( String title, String text ){
 		super();
-		int width = PixelScene.landscape() ? WndUimsdList.WIDTH_L : WndUimsdList.WIDTH_P;
+		int width = WndUimsdList.windowWidth();
 		RenderedTextBlock tt = PixelScene.renderTextBlock(title, 9);
 		tt.hardlight(TITLE_COLOR);
 		tt.maxWidth(width - 2 * MARGIN);
@@ -50,9 +51,10 @@ public class WndUimsdText extends Window {
 		content.add(body);
 		content.setSize(width, body.bottom() + 2);
 		ScrollPane pane = new ScrollPane(content);
-		add(pane);
-		float h = Math.min(content.height(), Math.max(40, PixelScene.uiCamera.height * 0.8f - pos));
-		pane.setRect(0, pos, width, h);
+		float h = WindowGeometry.paneHeight(content.height(), WindowGeometry.maxPane(PixelScene.uiCamera.height, pos, 0));
+		//size the window first: it moves the window's camera, and the pane works out its screen position when it is placed
 		resize(width, (int) (pos + h));
+		add(pane);
+		pane.setRect(0, pos, width, h);
 	}
 }

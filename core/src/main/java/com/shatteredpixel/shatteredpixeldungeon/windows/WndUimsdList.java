@@ -22,6 +22,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.query.WindowGeometry;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
@@ -41,8 +42,7 @@ public class WndUimsdList extends Window {
 		void onPick( int index, boolean checked );
 	}
 
-	public static final int WIDTH_P = 130, WIDTH_L = 190;
-	private static final int MARGIN = 2, PAD = 3;
+	private static final int MARGIN = 2;
 
 	private final Picker picker;
 	private final boolean switches;
@@ -59,7 +59,7 @@ public class WndUimsdList extends Window {
 		this.switches = checks != null;
 		this.labels = new ArrayList<>(labels);
 		this.checks = checks == null ? null : new ArrayList<>(checks);
-		int width = PixelScene.landscape() ? WIDTH_L : WIDTH_P;
+		int width = windowWidth();
 
 		float pos = MARGIN;
 		if (title != null && !title.isEmpty()){
@@ -78,30 +78,41 @@ public class WndUimsdList extends Window {
 			pos = m.bottom() + 2 * MARGIN;
 		}
 
+		//The window is sized BEFORE the list is placed: resizing a window moves its camera, and a scroll pane works out where it is on
+		//screen when it is placed, so placing it first leaves its contents offset from the window.
 		pane = new ListPane();
-		add(pane);
 		Component content = pane.content();
-		float y = 0;
 		int n = labels.size() + (switches ? 1 : 0);
+		float[] heights = new float[n];
+		List<RenderedTextBlock> made = new ArrayList<>();
 		for (int i = 0; i < n; i++){
 			String text = i < labels.size() ? line(i) : "Done";
 			RenderedTextBlock t = PixelScene.renderTextBlock(text, 7);
-			t.maxWidth(width - 2 * PAD - 4);
-			float h = Math.max(15, t.height() + 2 * PAD);
-			ColorBlock bg = new ColorBlock(width, h - 1, i < labels.size() ? 0x66332B27 : 0x66553322);
-			bg.y = y;
+			t.maxWidth(WindowGeometry.rowTextWidth(width));
+			heights[i] = WindowGeometry.rowHeight(t.height());
+			made.add(t);
+		}
+		float[] tops = WindowGeometry.stack(heights);
+		for (int i = 0; i < n; i++){
+			RenderedTextBlock t = made.get(i);
+			ColorBlock bg = new ColorBlock(width, heights[i] - 1, i < labels.size() ? 0x66332B27 : 0x66553322);
+			bg.y = tops[i];
 			content.add(bg);
-			t.setPos(PAD + 1, y + (h - 1 - t.height()) / 2f);
+			t.setPos(WindowGeometry.ROW_PAD + 1, tops[i] + (heights[i] - 1 - t.height()) / 2f);
 			content.add(t);
 			texts.add(t);
-			spans.add(new float[]{y, h});
-			y += h;
+			spans.add(new float[]{tops[i], heights[i]});
 		}
-		content.setSize(width, y);
-		float maxH = PixelScene.uiCamera.height * 0.78f - pos;
-		float h = Math.min(y, Math.max(40, maxH));
-		pane.setRect(0, pos, width, h);
+		content.setSize(width, tops[n]);
+		float h = WindowGeometry.paneHeight(tops[n], WindowGeometry.maxPane(PixelScene.uiCamera.height, pos, 0));
 		resize(width, (int) (pos + h));
+		add(pane);
+		pane.setRect(0, pos, width, h);
+	}
+
+	//the width every UIMSD dialog uses on this screen
+	public static int windowWidth(){
+		return WindowGeometry.width(PixelScene.landscape(), PixelScene.uiCamera.width);
 	}
 
 	private String line( int i ){
