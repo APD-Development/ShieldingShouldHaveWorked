@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.demo.DemoData;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.Filter;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.ResultTable;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.StatusText;
+import com.shatteredpixel.shatteredpixeldungeon.apd.query.TitleFit;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdModel;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.ViewDef;
 import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder;
@@ -59,6 +60,9 @@ import java.util.List;
 //It is opened by the UIMSD button of the title screen (the primary entry point) and, for testing, by "Open UIMSD (preview)" in
 //APD Settings.
 public class UimsdScene extends PixelScene {
+
+	//UIMSD is the short name (buttons, navigation); the header of this screen shows the full name
+	public static final String FULL_NAME = "Ultimate Infinite Mega Statistics Database";
 
 	public static Class<? extends PixelScene> backTo = TitleScene.class;
 	//the model outlives the scene so a screen rotation (which rebuilds the scene) keeps where the player was
@@ -160,7 +164,9 @@ public class UimsdScene extends PixelScene {
 		contentW = w - insets.left - insets.right - 2 * margin;
 		y = insets.top + 4;
 
-		RenderedTextBlock title = text("UIMSD", 12, Window.TITLE_COLOR, contentW);
+		//the header is the full name, sized to fit in the room left of the exit button (UIMSD stays the short name elsewhere)
+		float room = contentW - Math.max(0, btnExit.width() - margin) - 2;
+		RenderedTextBlock title = text(FULL_NAME, TitleFit.size(room, FULL_NAME), Window.TITLE_COLOR, room);
 		title.setPos(x0, y);
 		y = title.bottom() + 1;
 

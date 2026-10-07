@@ -34,14 +34,6 @@ public class WriterThreadTest {
 		return w;
 	}
 
-	private static int liveWriterThreads(){
-		int n = 0;
-		for (Thread t : Thread.getAllStackTraces().keySet()){
-			if (t.isAlive() && "apd-stats-writer".equals(t.getName())) n++;
-		}
-		return n;
-	}
-
 	@Test
 	public void flushMakesEverythingVisibleInTheFile() throws Exception {
 		RunLogWriter w = create("flush", new RunLogWriter.Options());
@@ -58,12 +50,14 @@ public class WriterThreadTest {
 
 	@Test
 	public void closeSealsStopsTheThreadAndRefusesLaterEvents() throws Exception {
-		int before = liveWriterThreads();
+		//The writer's OWN thread is checked, never a count of all writer threads: another writer's thread (of an earlier test) may still
+		//be finishing when this test starts, so a global count races with it. close() returns only after joining its own thread.
 		RunLogWriter w = create("close", new RunLogWriter.Options());
-		assertEquals(before + 1, liveWriterThreads());
+		Thread worker = w.workerThread();
+		assertTrue(worker != null && worker.isAlive());
 		for (int i = 0; i < 50; i++) w.event(LogTestSupport.T_PLAIN).unsigned(i).emit();
 		assertTrue(w.close());
-		assertEquals("worker thread must be gone after close", before, liveWriterThreads());
+		assertFalse("worker thread must be gone after close", worker.isAlive());
 
 		ReadResult r = RunLogReader.read(w.file());
 		assertEquals(ReadStatus.SEALED, r.status);
@@ -75,6 +69,79 @@ public class WriterThreadTest {
 		assertTrue("closing twice is harmless", w.close());
 		assertEquals(50, RunLogReader.read(w.file()).events.size());
 		assertFalse(w.isDisabled());
+	}
+
+	//---- persistence: everything accepted before the close is in the file, in order, before the seal; nothing after it is ----
+
+	@Test
+	public void everyEventAcceptedBeforeCloseIsPersistedBeforeTheSealAndLaterOnesAreRefused() throws Exception {
+		//the writer thread is held back, so ALL events are still queued when close() is called: the worst case for losing them
+		CountDownLatch gate = new CountDownLatch(1);
+		RunLogWriter.Options o = new RunLogWriter.Options().queueCapacity(1 << 16);
+		o.workerGate = gate;
+		final RunLogWriter w = create("queued", o);
+		for (int i = 0; i < 5000; i++) assertTrue(w.event(LogTestSupport.T_PLAIN).clock(i).unsigned(i).emit());
+		Thread closer = new Thread(() -> w.close(true, 20_000));
+		closer.start();
+		//close() refuses new events as soon as it begins: keep offering until that is seen. Offers that were accepted before it began
+		//count too, and must be in the file like the first 5000
+		int extra = 0;
+		while (w.event(LogTestSupport.T_PLAIN).unsigned(999_999).emit()) extra++;
+		gate.countDown();
+		closer.join(20_000);
+		assertFalse(closer.isAlive());
+		assertFalse("the writer thread has stopped", w.workerThread().isAlive());
+		ReadResult r = RunLogReader.read(w.file());
+		assertEquals("sealed, so the seal came after every event", ReadStatus.SEALED, r.status);
+		assertEquals("every event accepted before the close is in the file", 5000 + extra, r.events.size());
+		for (int i = 0; i < 5000; i++) assertEquals(i, r.events.get(i).reader(r).unsigned());
+		for (int i = 5000; i < 5000 + extra; i++) assertEquals(999_999, r.events.get(i).reader(r).unsigned());
+		assertFalse(w.event(LogTestSupport.T_PLAIN).unsigned(1).emit());
+	}
+
+	@Test
+	public void producersRacingAGapCloseNeverLoseAnAcceptedEvent() throws Exception {
+		//Producers keep emitting while another thread closes the writer. However they interleave, every emit() that returned true is in
+		//the file when close() has returned, every one that returned false is not, and the log is sealed. Repeated to shake out races.
+		for (int round = 0; round < 60; round++){
+			final RunLogWriter.Options o = new RunLogWriter.Options().queueCapacity(1 << 18);
+			final RunLogWriter w = create("race" + round, o);
+			final int producers = 4;
+			final CountDownLatch go = new CountDownLatch(1);
+			final AtomicInteger accepted = new AtomicInteger();
+			final AtomicInteger refusedAfterClose = new AtomicInteger();
+			final java.util.concurrent.atomic.AtomicBoolean closeReturned = new java.util.concurrent.atomic.AtomicBoolean();
+			List<Thread> ts = new ArrayList<>();
+			for (int t = 0; t < producers; t++){
+				final int id = t;
+				Thread th = new Thread(() -> {
+					try { go.await(); } catch (InterruptedException e){ return; }
+					for (int i = 0; i < 3000; i++){
+						boolean afterClose = closeReturned.get();
+						if (w.event(LogTestSupport.T_PLAIN).unsigned(id).emit()){
+							accepted.incrementAndGet();
+							if (afterClose) refusedAfterClose.incrementAndGet();   //accepted although close() had already returned: must never happen
+						}
+					}
+				});
+				ts.add(th);
+				th.start();
+			}
+			Thread closer = new Thread(() -> {
+				try { go.await(); } catch (InterruptedException e){ return; }
+				w.close(true, 20_000);
+				closeReturned.set(true);
+			});
+			closer.start();
+			go.countDown();
+			for (Thread th : ts) th.join();
+			closer.join();
+			assertEquals("an event was accepted after close() returned (round " + round + ")", 0, refusedAfterClose.get());
+			assertFalse(w.workerThread().isAlive());
+			ReadResult r = RunLogReader.read(w.file());
+			assertEquals(ReadStatus.SEALED, r.status);
+			assertEquals("accepted events and persisted events differ (round " + round + ")", accepted.get(), r.events.size());
+		}
 	}
 
 	@Test
@@ -205,13 +272,13 @@ public class WriterThreadTest {
 
 	@Test
 	public void manyOpenAndCloseCyclesLeakNoThreads() throws Exception {
-		int before = liveWriterThreads();
 		for (int i = 0; i < 30; i++){
 			RunLogWriter w = create("cycle" + i, new RunLogWriter.Options());
+			Thread worker = w.workerThread();
 			w.event(LogTestSupport.T_PLAIN).unsigned(i).emit();
 			assertTrue(w.close());
+			assertFalse("cycle " + i + " left its writer thread running", worker.isAlive());
 		}
-		assertEquals(before, liveWriterThreads());
 	}
 
 	@Test
@@ -236,5 +303,8 @@ public class WriterThreadTest {
 		}
 		assertEquals(ReadStatus.SEALED, r.status);
 		assertEquals(1, r.events.size());
+		//and its thread ends: wait for exactly that thread, so it is not still finishing when the next test starts
+		w.workerThread().join(10_000);
+		assertFalse(w.workerThread().isAlive());
 	}
 }

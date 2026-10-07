@@ -469,6 +469,11 @@ public final class RunLogWriter {
 		return close(true);
 	}
 
+	//the writer's own thread, so a test can wait for exactly it (null if it never started)
+	Thread workerThread(){
+		return worker;
+	}
+
 	//---- status --------------------------------------------------------------------------------------------
 
 	public OpenStatus openStatus(){

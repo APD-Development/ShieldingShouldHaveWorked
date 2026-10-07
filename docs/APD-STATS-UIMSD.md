@@ -133,3 +133,15 @@ rest of UIMSD, and the individual rows are one level down:
   challenges (the run's own values and provenance; unknown while the run is not over).
 * Hidden information: the type, the sheets and the run facts are built only from what the player could see, the differential leak
   test (hidden information of an unfinished run changed, nothing observable may change) covers every view, the sheets and the demo data.
+
+## Phase 7 freeze checks
+
+* `ItemKindVisibilityTest` pins UIMSD's "the kind of an item is public once the player knows it" rule to the game: only Potion, Scroll
+  and Ring keep an `ItemStatusHandler` (kind hidden until identified), their categories are the ones treated as hidden until
+  `ITEM_CLASS_KNOWN`, every such family reports learning its kind, and no item class that needs identification maps to a category
+  treated as visible. A new or changed family fails the test until UIMSD and the recorder are reviewed.
+* `WriterThreadTest` waits for each writer's own thread (not a count of all writer threads, which raced with a previous test's thread
+  still finishing) and has deterministic persistence tests: every event accepted before a close is in the file before the seal and
+  later ones are refused, also with producers racing the close.
+* The header of the UIMSD screen is the full name, sized to fit beside the exit button (`TitleFit`); UIMSD stays the short name in
+  buttons and navigation.

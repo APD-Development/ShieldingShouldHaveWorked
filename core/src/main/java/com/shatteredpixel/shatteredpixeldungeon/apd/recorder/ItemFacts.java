@@ -61,21 +61,26 @@ final class ItemFacts {
 	}
 
 	static int category( Item item ){
-		if (item instanceof MissileWeapon) return ItemEvents.CAT_MISSILE;
-		if (item instanceof Weapon || item instanceof MagesStaff) return ItemEvents.CAT_WEAPON;
-		if (item instanceof Armor) return ItemEvents.CAT_ARMOR;
-		if (item instanceof Ring) return ItemEvents.CAT_RING;
-		if (item instanceof Artifact) return ItemEvents.CAT_ARTIFACT;
-		if (item instanceof Wand) return ItemEvents.CAT_WAND;
-		if (item instanceof Potion) return ItemEvents.CAT_POTION;
-		if (item instanceof Scroll) return ItemEvents.CAT_SCROLL;
-		if (item instanceof Plant.Seed) return ItemEvents.CAT_SEED;
-		if (item instanceof Runestone) return ItemEvents.CAT_STONE;
-		if (item instanceof Food) return ItemEvents.CAT_FOOD;
-		if (item instanceof Bag) return ItemEvents.CAT_BAG;
-		if (item instanceof Trinket) return ItemEvents.CAT_TRINKET;
-		if (item instanceof Spell) return ItemEvents.CAT_SPELL;
-		if (item instanceof Bomb) return ItemEvents.CAT_BOMB;
+		return categoryOfClass(item.getClass());
+	}
+
+	//the same answer from the class alone, so it can be checked for every item class without making any item
+	static int categoryOfClass( Class<?> c ){
+		if (MissileWeapon.class.isAssignableFrom(c)) return ItemEvents.CAT_MISSILE;
+		if (Weapon.class.isAssignableFrom(c) || MagesStaff.class.isAssignableFrom(c)) return ItemEvents.CAT_WEAPON;
+		if (Armor.class.isAssignableFrom(c)) return ItemEvents.CAT_ARMOR;
+		if (Ring.class.isAssignableFrom(c)) return ItemEvents.CAT_RING;
+		if (Artifact.class.isAssignableFrom(c)) return ItemEvents.CAT_ARTIFACT;
+		if (Wand.class.isAssignableFrom(c)) return ItemEvents.CAT_WAND;
+		if (Potion.class.isAssignableFrom(c)) return ItemEvents.CAT_POTION;
+		if (Scroll.class.isAssignableFrom(c)) return ItemEvents.CAT_SCROLL;
+		if (Plant.Seed.class.isAssignableFrom(c)) return ItemEvents.CAT_SEED;
+		if (Runestone.class.isAssignableFrom(c)) return ItemEvents.CAT_STONE;
+		if (Food.class.isAssignableFrom(c)) return ItemEvents.CAT_FOOD;
+		if (Bag.class.isAssignableFrom(c)) return ItemEvents.CAT_BAG;
+		if (Trinket.class.isAssignableFrom(c)) return ItemEvents.CAT_TRINKET;
+		if (Spell.class.isAssignableFrom(c)) return ItemEvents.CAT_SPELL;
+		if (Bomb.class.isAssignableFrom(c)) return ItemEvents.CAT_BOMB;
 		return ItemEvents.CAT_OTHER;
 	}
 

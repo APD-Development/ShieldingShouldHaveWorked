@@ -177,7 +177,7 @@ public final class RowBuilders {
 
 	//Kinds of item whose class is plain to see in the game: a weapon, armor, wand, artifact or trinket always shows what it is. Rings,
 	//potions and scrolls (unlearned colours, gems and runes) are not here, and neither is "other", which is not understood well enough.
-	private static boolean kindIsVisible( int category ){
+	public static boolean kindIsVisible( int category ){
 		switch (category){
 			case ItemEvents.CAT_WEAPON: case ItemEvents.CAT_MISSILE: case ItemEvents.CAT_ARMOR: case ItemEvents.CAT_ARTIFACT:
 			case ItemEvents.CAT_TRINKET: case ItemEvents.CAT_WAND: case ItemEvents.CAT_FOOD: case ItemEvents.CAT_BAG:
