@@ -91,6 +91,14 @@ logcat tags APDMIG/APDPERF into the job log and uploads logcat artifacts.
 - Future UIMSD work (tracked, not started): plain-English Summary/Home view; interactive tutorial/guide (datasets, drill-downs, filters,
   sorting, meaning of ? >= ~ coverage); final language/UX polish pass; shareable/PDF reports; post-run whole-seed/future-floor
   interrogation (needs a proper technical feasibility study first).
+- **Character UIMSD (REQUIREMENT, CORRECTED by the user; NOT started, design/survey first, waits for the user's go):** do NOT design around Cleric (Cleric spells/Tome were only
+  examples). It must cover EVERY playable character, including all FUTURE APD characters: per-character historical statistics for that character's own actions, abilities, resources,
+  mechanics, equipment interactions, subclasses and anything else meaningful (examples, not a schema: Cleric spell casts/Tome; Mage wand/staff mechanics; Rogue cloak; Huntress bow;
+  Warrior mechanics; Duelist weapon abilities). Where the data allows: lifetime total, per-run average, per-floor average, highest/lowest, individual-run history, and breakdowns by
+  floor, difficulty, outcome, subclass, date/period, equipment, challenges and any other recorded dimension. These facts live in the SAME telemetry/query system (same engine, datasets,
+  filters, provenance marks, hidden-information rules, reports), never isolated databases. Architecture goal: a character/mechanic ADDS its own facts through a registration point
+  (declare fact kinds + dimensions + measures) without UIMSD being reinvented; no hard-coded question list. Overall goal unchanged: any question the player can reasonably ask about
+  what they did, that APD recorded the facts for, UIMSD can answer. Needs a survey of each character's mechanics, the telemetry schema/version impact, legacy-log compatibility, and an ETA before coding.
 - Owner decision left open by Phase 9: natural regeneration is the biggest log cost (32 B/heal exact vs 18 B inferred, ~70 KiB per
   20k-turn run). Possible later trade-off: one summary event per stretch of regeneration (loses per-tick history). Not done.
 
