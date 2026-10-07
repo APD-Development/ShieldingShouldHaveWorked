@@ -1,0 +1,1 @@
+# One line per shipped fact kind: key|P(ublic)/I(nternal)|S(eries)/-|value field keys|tag field keys. Keys are never removed or renamed; fields are only added at the END.

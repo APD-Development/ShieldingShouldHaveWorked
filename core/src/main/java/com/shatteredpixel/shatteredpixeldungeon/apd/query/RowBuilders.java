@@ -55,7 +55,7 @@ public final class RowBuilders {
 
 	private RowBuilders(){}
 
-	public static final int BUILDER_VERSION = 4;
+	public static final int BUILDER_VERSION = 5;
 
 	private static final DatasetDef RUNS = Datasets.runs();
 	private static final DatasetDef ITEMS = Datasets.items();
@@ -67,7 +67,11 @@ public final class RowBuilders {
 			case Datasets.RUNS: return RUNS;
 			case Datasets.ITEMS: return ITEMS;
 			case Datasets.ENEMIES: return ENEMIES;
-			default: return DEATHS;
+			case Datasets.DEATHS: return DEATHS;
+			default: {
+				DatasetDef d = FactDatasets.def(dataset);
+				return d != null ? d : DEATHS;
+			}
 		}
 	}
 
@@ -119,6 +123,7 @@ public final class RowBuilders {
 		if (atLeast(v, 1, 2)) out.rows.put(Datasets.ITEMS, itemRows(events, r, meta, endClock >= 0 ? endClock : lastClock, endClock >= 0, countProv));
 		if (atLeast(v, 1, 3)) out.rows.put(Datasets.ENEMIES, enemyRows(events, r, meta, v, countProv));
 		if (atLeast(v, 1, 1)) out.rows.put(Datasets.DEATHS, deathRows(events, r, meta, v));
+		if (atLeast(v, 1, 8)) FactDatasets.addRows(out, events, r, meta);
 		return out;
 	}
 

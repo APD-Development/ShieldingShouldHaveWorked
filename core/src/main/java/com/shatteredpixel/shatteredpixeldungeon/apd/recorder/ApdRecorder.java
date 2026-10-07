@@ -129,18 +129,20 @@ public final class ApdRecorder {
 	//A floor replay generates levels and builds a hero kit through game code that is hooked for recording. While it runs, every
 	//hook is off, so nothing it does can reach an open run log; resumeHooks puts the flags back exactly as they were.
 	public static synchronized boolean[] suspendHooks(){
-		boolean[] was = { ApdGen.active, ApdItems.active, ApdCombat.active };
+		boolean[] was = { ApdGen.active, ApdItems.active, ApdCombat.active, ApdFacts.active };
 		ApdGen.active = false;
 		ApdItems.active = false;
 		ApdCombat.active = false;
+		ApdFacts.active = false;
 		return was;
 	}
 
 	public static synchronized void resumeHooks( boolean[] was ){
-		if (was == null || was.length != 3) return;
+		if (was == null || was.length != 4) return;
 		ApdGen.active = was[0];
 		ApdItems.active = was[1];
 		ApdCombat.active = was[2];
+		ApdFacts.active = was[3];
 	}
 
 	//---- what the game save stores -----------------------------------------------------------------------------
@@ -325,6 +327,7 @@ public final class ApdRecorder {
 		ApdItems.active = usable() && active != null && !active.ended && active.items != null;
 		ApdCombat.active = usable() && active != null && !active.ended && active.combat != null;
 		ApdGen.active = usable() && active != null && !active.ended && active.generation != null;
+		ApdFacts.active = usable() && active != null && !active.ended && active.facts != null;
 	}
 
 	private static GenerationTracker gen(){
@@ -507,6 +510,16 @@ public final class ApdRecorder {
 			inject();
 			CombatTracker t = combat();
 			if (t != null) t.onHungerChanged(energy, before, after);
+		} catch (Throwable t){
+			failed(t);
+		}
+	}
+
+	static synchronized void factRecord( com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKind kind, String subject, String actor, long[] values, String[] tags ){
+		try {
+			RunRecorder r = active;
+			if (r == null || r.ended || r.facts == null || !usable()) return;
+			r.facts.record(kind, GameSnapshot.turn(), subject, actor, values, tags);
 		} catch (Throwable t){
 			failed(t);
 		}

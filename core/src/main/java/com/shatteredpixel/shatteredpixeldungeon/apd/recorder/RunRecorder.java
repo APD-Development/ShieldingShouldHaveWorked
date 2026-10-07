@@ -62,6 +62,7 @@ final class RunRecorder {
 	ItemTracker items;
 	CombatTracker combat;
 	GenerationTracker generation;
+	FactTracker facts;
 	boolean ended;
 
 	private boolean levelOpen;
@@ -132,6 +133,7 @@ final class RunRecorder {
 		r.combat = new CombatTracker(r.writer, r.items);
 		r.combat.baseline();
 		r.generation = new GenerationTracker(r.writer, r.items);
+		r.facts = new FactTracker(r.writer);
 		return r;
 	}
 
@@ -205,6 +207,7 @@ final class RunRecorder {
 			r.combat = new CombatTracker(r.writer, r.items);
 			r.combat.baseline();
 			r.generation = new GenerationTracker(r.writer, r.items);
+			r.facts = new FactTracker(r.writer);
 			return r;
 		}
 		RunTimeline timeline = RunTimeline.of(log.events);
@@ -275,6 +278,7 @@ final class RunRecorder {
 		r.combat = new CombatTracker(w, r.items);
 		r.combat.baseline();
 		r.generation = new GenerationTracker(w, r.items);
+		r.facts = new FactTracker(w);
 		store.refreshIndex(logId);
 		return r;
 	}
@@ -305,6 +309,7 @@ final class RunRecorder {
 		long clock = GameSnapshot.turn();
 		if (combat != null) combat.poll();
 		if (items != null) items.poll(false, false);
+		if (facts != null) facts.flushAll();
 		//the checkpoint first, the SAVE marker last: the marker is the final event of a save
 		checkRuleset(clock);
 		checkpoint(LifecycleEvents.CP_SAVE);
@@ -339,6 +344,7 @@ final class RunRecorder {
 		long clock = GameSnapshot.turn();
 		if (combat != null) combat.poll();
 		if (items != null) items.poll(false, false);
+		if (facts != null) facts.flushAll();
 
 		if (levelOpen){
 			LifecycleEvents.LevelExit x = new LifecycleEvents.LevelExit();
@@ -380,6 +386,7 @@ final class RunRecorder {
 		long clock = GameSnapshot.turn();
 		if (combat != null) combat.poll();
 		if (items != null) items.poll(false, false);
+		if (facts != null) facts.flushAll();
 		if (levelOpen){
 			LifecycleEvents.LevelExit x = new LifecycleEvents.LevelExit();
 			x.depth = curDepth;

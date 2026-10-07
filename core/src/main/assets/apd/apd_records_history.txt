@@ -23,6 +23,13 @@ uimsd-first-screen | - | APD 4.0.8-apd | 2026-10-07
   item is never shown for a run that is still going, even with hidden information switched on. After a run is over it can be revealed.
 - Runs played under different rules are never mixed unless you choose to; rows whose ruleset is unknown are kept apart and counted.
 
+telemetry-1.8-facts | telemetry 1.8 | APD 4.0.8-apd | 2026-10-07
+- Telemetry 1.8 adds a general way to record anything the game can observe: a "fact" names what happened (a spell cast, a step, a status effect),
+  what it was about, and a few numbers. New kinds of fact can be added without changing how history is stored or queried.
+- Facts are kept at full detail: even something that happens every turn, such as taking a step, is written down one observation at a time,
+  just stored compactly. Nothing is summarised away.
+- Runs recorded before 1.8 have no such facts: they show as unknown (?), never as zero.
+
 telemetry-1.7-difficulty | telemetry 1.7 | APD 4.0.8-apd | 2026-10-07
 - Telemetry 1.7 records the difficulty (1-5) a run was started with, and which balance revision that difficulty had. Difficulty is part of the
   run's rules: runs at different difficulties are different rulesets and are never mixed unless you choose to. Difficulty 3 is the game as it is.

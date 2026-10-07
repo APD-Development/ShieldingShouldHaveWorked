@@ -71,6 +71,7 @@ public final class DatasetStore {
 	private static Map<String, DatasetDef> defs(){
 		Map<String, DatasetDef> m = new LinkedHashMap<>();
 		for (String id : new String[]{Datasets.RUNS, Datasets.ITEMS, Datasets.ENEMIES, Datasets.DEATHS}) m.put(id, RowBuilders.def(id));
+		for (DatasetDef d : FactDatasets.defs()) m.put(d.id, d);
 		return m;
 	}
 
@@ -315,7 +316,10 @@ public final class DatasetStore {
 	private static void copyRunFacts( Map<String, DatasetDef> defs, Map<String, List<Row>> merged, DatasetDef runsDef, List<Row> runRows ){
 		Map<String, Row> byRun = new HashMap<>();
 		for (Row r : runRows) byRun.put(r.runId, r);
-		String[][] sets = { { Datasets.ITEMS, "item" }, { Datasets.ENEMIES, "enemy" } };
+		List<String[]> sets = new ArrayList<>();
+		sets.add(new String[]{ Datasets.ITEMS, "item" });
+		sets.add(new String[]{ Datasets.ENEMIES, "enemy" });
+		for (String id : merged.keySet()) if (FactDatasets.isFactDataset(id)) sets.add(new String[]{ id, "fact" });
 		for (String[] set : sets){
 			DatasetDef d = defs.get(set[0]);
 			List<Row> rows = merged.get(set[0]);
@@ -329,6 +333,14 @@ public final class DatasetStore {
 					if (run == null || !run.isKnown(from)) continue;
 					if (run.kind(from) == Row.K_TEXT) r.setText(to, run.text(from), run.prov(from));
 					else r.setNum(to, run.num(from), run.prov(from));
+				}
+			}
+			if (set[1].equals("fact")){
+				int to = d.indexOf(FactDatasets.RUN_DIFFICULTY);
+				int from = runsDef.indexOf(FactKeys.DIFFICULTY);
+				if (to >= 0 && from >= 0) for (Row r : rows){
+					Row run = byRun.get(r.runId);
+					if (run != null && run.isKnown(from)) r.setNum(to, run.num(from), run.prov(from));
 				}
 			}
 		}

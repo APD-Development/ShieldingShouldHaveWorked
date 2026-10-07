@@ -114,6 +114,16 @@ public final class EventTypes {
 	//how much the hero's HP went up, which the HP bar shows anyway.
 	public static final int HEAL_DETAIL = 299;
 
+	//---- generic facts (telemetry 1.8), payloads are defined and tested in FactEvents ----
+	//One observation of any registered kind of fact (see FactKinds): what happened is named by the kind's key inside the payload, so a new
+	//mechanic never needs a new event type. A kind is PUBLIC or INTERNAL; the event type carries that, so hidden truth is filtered by
+	//the type like every other event. A SERIES is many observations of one kind packed into one event (delta encoded, lossless): it is
+	//how high-frequency facts such as the hero's steps are kept at full resolution for a few bytes each.
+	public static final int FACT = 300;
+	public static final int FACT_INTERNAL = 301;
+	public static final int FACT_SERIES = 302;
+	public static final int FACT_SERIES_INTERNAL = 303;
+
 	//Who may be shown an event's contents. Anything that is not PUBLIC must never reach a player-facing view, an export
 	//meant for players, or a run-replication package without being filtered first.
 	public enum Visibility {
@@ -169,6 +179,10 @@ public final class EventTypes {
 		m.put(LEGACY_DAILY_SCORE, "LEGACY_DAILY_SCORE");
 		m.put(RANKING_LINK, "RANKING_LINK");
 		m.put(HEAL_DETAIL, "HEAL_DETAIL");
+		m.put(FACT, "FACT");
+		m.put(FACT_INTERNAL, "FACT_INTERNAL");
+		m.put(FACT_SERIES, "FACT_SERIES");
+		m.put(FACT_SERIES_INTERNAL, "FACT_SERIES_INTERNAL");
 		NAMES = Collections.unmodifiableMap(m);
 	}
 
@@ -196,6 +210,8 @@ public final class EventTypes {
 			case MOB_GENERATED:
 			case MOB_ID_ASSIGNED:
 			case RANKING_LINK:
+			case FACT_INTERNAL:
+			case FACT_SERIES_INTERNAL:
 				return Visibility.INTERNAL;
 			case GAP: case RUN_START: case RUN_END: case SAVE: case LEVEL_ENTER: case LEVEL_EXIT:
 			case SESSION_START: case ROLLBACK: case RULESET_CHANGE:
@@ -204,6 +220,7 @@ public final class EventTypes {
 			case ATTACK: case DAMAGE: case HEAL: case MAX_HP_CHANGE: case SHIELD_GAIN: case HUNGER_CHANGE:
 			case HUNGER_STATE: case XP_GAIN: case LEVEL_UP: case KILL: case HERO_DEATH: case HERO_REVIVED:
 			case HP_CHANGE_INFERRED:
+			case FACT: case FACT_SERIES:
 			case LEGACY_RECORD: case LEGACY_TOTALS: case LEGACY_DAILY_SCORE: //everything the old Rankings screens showed
 				return Visibility.PUBLIC;
 			default:

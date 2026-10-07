@@ -72,6 +72,9 @@ public final class LogRedactor {
 			case EventTypes.HUNGER_CHANGE: case EventTypes.HUNGER_STATE: case EventTypes.XP_GAIN: case EventTypes.LEVEL_UP:
 			case EventTypes.KILL: case EventTypes.HERO_DEATH: case EventTypes.HERO_REVIVED: case EventTypes.HP_CHANGE_INFERRED:
 			case EventTypes.LEGACY_RECORD: case EventTypes.LEGACY_TOTALS: case EventTypes.LEGACY_DAILY_SCORE:
+			//generic facts: a PUBLIC kind only ever carries what its declaration says the player could know (a kind with hidden truth is INTERNAL
+			//and uses the other event types, which are never kept)
+			case EventTypes.FACT: case EventTypes.FACT_SERIES:
 				return true;
 			default:
 				return false;
@@ -114,6 +117,7 @@ public final class LogRedactor {
 			case EventTypes.HERO_DEATH: CombatEvents.decodeHeroDeath(e, lookup); break;
 			case EventTypes.HERO_REVIVED: CombatEvents.decodeHeroRevived(e, lookup); break;
 			case EventTypes.HP_CHANGE_INFERRED: CombatEvents.decodeHpChangeInferred(e, lookup); break;
+			case EventTypes.FACT: case EventTypes.FACT_SERIES: com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactEvents.decode(e, lookup); break;
 			case EventTypes.LEGACY_RECORD: LegacyEvents.decodeRecord(e, lookup); break;
 			case EventTypes.LEGACY_TOTALS: LegacyEvents.decodeTotals(e, lookup); break;
 			case EventTypes.LEGACY_DAILY_SCORE: LegacyEvents.decodeDailyScore(e, lookup); break;

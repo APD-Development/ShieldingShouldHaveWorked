@@ -66,6 +66,8 @@ public final class RowCodec {
 		out.writeBytes(MAGIC);
 		out.writeUnsigned(FORMAT);
 		out.writeUnsigned(RowBuilders.BUILDER_VERSION);
+		//the rows of fact datasets depend on the registry: a different registry is a different cache
+		out.writeString(com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKinds.fingerprint());
 		out.writeUnsigned(logLength);
 		out.writeUnsigned(table.size());
 		for (String s : table.keySet()) out.writeString(s);
@@ -115,6 +117,7 @@ public final class RowCodec {
 			for (byte b : MAGIC) if (in.readByte() != (b & 0xFF)) return null;
 			if (in.readUnsignedInt() != FORMAT) return null;
 			if (in.readUnsignedInt() != RowBuilders.BUILDER_VERSION) return null;
+			if (!com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKinds.fingerprint().equals(in.readString())) return null;
 			if (in.readUnsigned() != logLength) return null;
 			int n = in.readUnsignedInt();
 			String[] table = new String[n];
