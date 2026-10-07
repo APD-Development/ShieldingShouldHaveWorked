@@ -29,7 +29,17 @@ public class UimsdWordingTest {
 	private static final String[] BANNED = { "PROV_", "INFERRED", "UNKNOWN", "CellText", "mergeKey", "null", "TODO", "FIXME", "placeholder", "Lorem",
 			"undefined", "NaN", "Exception", "java.", "com.shatteredpixel" };
 
+	//words of the database or of the code that a player should never have to learn: the Guide's glossary explains the real terms in plain words
+	private static final String[] JARGON = { "ruleset", "instance", "dataset", "telemetry", "provenance", "bit mask", "enum", "query", "schema" };
+
+	private static void jargon( List<String> problems, String where, String text ){
+		if (text == null) return;
+		String lower = text.toLowerCase();
+		for (String j : JARGON) if (lower.contains(j)) problems.add(where + ": jargon '" + j + "' in: " + text);
+	}
+
 	private static void check( List<String> problems, String where, String text ){
+		jargon(problems, where, text);
 		if (text == null || text.trim().isEmpty()){
 			problems.add(where + ": empty");
 			return;
@@ -66,10 +76,16 @@ public class UimsdWordingTest {
 			check(problems, "dataset " + d.def.id + " description", d.def.description);
 			for (ColumnDef c : d.def.columns()){
 				check(problems, d.def.id + "." + c.id + " label", c.label);
+				if (!c.group.isEmpty()) check(problems, d.def.id + "." + c.id + " group", c.group);
 				if (!c.description.isEmpty()) check(problems, d.def.id + "." + c.id + " description", c.description);
 				for (String w : c.labels.values()) check(problems, d.def.id + "." + c.id + " value label", w);
 			}
 		}
+		for (Op o : Op.values()){
+			check(problems, "operator " + o.name() + " word", o.word);
+			check(problems, "operator " + o.name() + " hint", o.hint);
+		}
+		for (ViewDef v : cat.views()) check(problems, "view " + v.id + " section", v.group.isEmpty() ? "Other" : v.group);
 		UimsdHome home = UimsdHome.build(cat, rules.id, true);
 		check(problems, "home note", home.scopeNote);
 		for (UimsdHome.Card c : home.cards){
@@ -83,6 +99,10 @@ public class UimsdWordingTest {
 		ViewDef runs = cat.view("runs");
 		QueryResult res = QueryEngine.run(cat.datasetOf(runs), runs.initialQuery(), rules.id);
 		for (StatusText.Line l : StatusText.lines(res, "Runs", "")) check(problems, "status", l.text);
+		//and the broadest table, which carries every kind of note
+		QueryResult broad = QueryEngine.run(cat.datasetOf(runs), runs.initialQuery().withScope(Scope.DEFAULT.withRules(Scope.Rules.ALL, "").withUnfinished(true)
+				.withUnknownRuleset(false)), rules.id);
+		for (StatusText.Line l : StatusText.lines(broad, "Runs", "challenges 0, exotic 30%, difficulty 3")) check(problems, "status (all rules)", l.text);
 		for (Report r : new Report[]{ ReportBuilder.lifetime(cat, rules.id, "", true, 0L, "test"), ReportBuilder.view(res, "Runs", "", 0L, "test") }){
 			String md = ReportRenderer.markdown(r);
 			check(problems, "report " + r.title, md.replace("\n", " ").replace("|", " ").replaceAll("\\s+", " ").trim());

@@ -78,14 +78,14 @@ public final class SeedFloors {
 	//---- schema ----
 
 	private static ColumnDef basis( String id ){
-		return ColumnDef.enumeration(id, "Basis").shown().group("Provenance")
+		return ColumnDef.enumeration(id, "Basis").shown().group("Where it comes from")
 				.label(BASIS_RECORDED, "Recorded (the run's own log)")
-				.label(BASIS_UNREACHED, "Canonical (floor never reached)")
-				.label(BASIS_UNRECORDED, "Canonical (reached, not recorded)")
-				.label(BASIS_REACH_UNKNOWN, "Canonical (reach not known)")
+				.label(BASIS_UNREACHED, "Canonical (run never got here)")
+				.label(BASIS_UNRECORDED, "Canonical (run was here, floor not recorded)")
+				.label(BASIS_REACH_UNKNOWN, "Canonical (how deep the run got is unknown)")
 				.label(BASIS_COMPARISON, "Comparison")
-				.describe("Where the row comes from. Recorded rows are what the run's log says. Canonical rows are what the seed gives in an in-order "
-						+ "replay under a reference context: never the exact counterfactual of this run.");
+				.describe("Where the entry comes from. Recorded entries are what the run's own log says. Canonical entries are what the seed gives when its floors are "
+						+ "built in order under fixed, standard rules: never exactly what this run would have met.");
 	}
 
 	private static ColumnDef yesNo( ColumnDef c ){
@@ -94,16 +94,16 @@ public final class SeedFloors {
 
 	static DatasetDef itemsDef(){
 		DatasetDef d = new DatasetDef(ITEMS, "Seed floors: items",
-				"What every floor of this run's seed holds. Recorded floors show the run's log; other floors are canonical (a replay of the seed under a reference context).");
+				"What every floor of this run's seed holds. Floors the run played show its own recorded log; every other floor is canonical: rebuilt from the seed under fixed, standard rules, and marked ~.");
 		d.countLabel = "Items";
-		d.add(ColumnDef.text("sf.run", "Run").group("Provenance"));
+		d.add(ColumnDef.text("sf.run", "Run").group("Where it comes from"));
 		d.add(ColumnDef.num("sf.floor", "Floor").shown().group("Where"));
 		d.add(basis("sf.basis"));
 		d.add(ColumnDef.text("sf.item", "Item").shown().format(ColumnDef.Format.CLASS_NAME).internal().group("What"));
 		d.add(ColumnDef.text("sf.kind", "Kind").shown().internal().group("What"));
-		d.add(ColumnDef.num("sf.level", "True level").shown().internal().group("What"));
-		d.add(yesNo(ColumnDef.enumeration("sf.cursed", "Truly cursed")).shown().internal().group("What"));
-		d.add(ColumnDef.text("sf.enchant", "Enchantment").internal().group("What"));
+		d.add(ColumnDef.num("sf.level", "Level when generated").shown().internal().group("What"));
+		d.add(yesNo(ColumnDef.enumeration("sf.cursed", "Cursed when generated")).shown().internal().group("What"));
+		d.add(ColumnDef.text("sf.enchant", "Enchantment when generated").internal().group("What"));
 		d.add(ColumnDef.num("sf.qty", "Quantity").internal().group("What"));
 		d.add(ColumnDef.text("sf.container", "Placed in").shown().internal().group("Where"));
 		d.add(ColumnDef.text("sf.room", "Room").internal().group("Where"));
@@ -113,9 +113,9 @@ public final class SeedFloors {
 
 	static DatasetDef mobsDef(){
 		DatasetDef d = new DatasetDef(MOBS, "Seed floors: creatures",
-				"Creatures placed when a canonical floor is generated. Floors the run recorded are not listed here: their creatures are in the run's own history.");
+				"Creatures placed on the canonical floors (rebuilt from the seed, marked ~). Floors the run played are not listed here: their creatures are in the run's own history.");
 		d.countLabel = "Creatures";
-		d.add(ColumnDef.text("sm.run", "Run").group("Provenance"));
+		d.add(ColumnDef.text("sm.run", "Run").group("Where it comes from"));
 		d.add(ColumnDef.num("sm.floor", "Floor").shown().group("Where"));
 		d.add(basis("sm.basis"));
 		d.add(ColumnDef.text("sm.mob", "Creature").shown().format(ColumnDef.Format.CLASS_NAME).internal().group("What"));
@@ -128,10 +128,10 @@ public final class SeedFloors {
 
 	static DatasetDef compareDef(){
 		DatasetDef d = new DatasetDef(COMPARE, "Seed floors: recorded vs canonical",
-				"For every floor the run recorded: how many items the run's log has, how many the canonical replay gives, and how many are the same. "
-						+ "It shows how far play moved the floors away from the seed's starting point.");
+				"For every floor the run played: how many items its own log has, how many a canonical rebuild of the seed gives, and how many are the same. "
+						+ "Items whose state when generated was not recorded are matched by kind only. It shows how far play moved the floors away from the seed's starting point.");
 		d.countLabel = "Floors";
-		d.add(ColumnDef.text("sc.run", "Run").group("Provenance"));
+		d.add(ColumnDef.text("sc.run", "Run").group("Where it comes from"));
 		d.add(ColumnDef.num("sc.floor", "Floor").shown().group("Where"));
 		d.add(basis("sc.basis"));
 		d.add(ColumnDef.num("sc.recorded", "Recorded items").shown().internal().group("Counts"));
@@ -147,11 +147,11 @@ public final class SeedFloors {
 	static List<ViewDef> views(){
 		Scope all = Scope.DEFAULT.withRules(Scope.Rules.ALL, "");
 		List<ViewDef> v = new ArrayList<>();
-		v.add(new ViewDef(ITEMS, "Seed floors: items", "Every item on every floor of the seed. Recorded floors are the run's own log, the rest are canonical.",
+		v.add(new ViewDef(ITEMS, "Seed floors: items", "Every item on every floor of the seed. Floors the run played show its own log; the rest are canonical (rebuilt from the seed, marked ~).",
 				Query.of(ITEMS).withScope(all).withSorts(Arrays.asList(new Sort("sf.floor", false)))).group("Seed floors (canonical, not recorded history)"));
-		v.add(new ViewDef(MOBS, "Seed floors: creatures", "Creatures on the canonical floors.",
+		v.add(new ViewDef(MOBS, "Seed floors: creatures", "Creatures on the canonical floors, rebuilt from the seed (marked ~).",
 				Query.of(MOBS).withScope(all).withSorts(Arrays.asList(new Sort("sm.floor", false)))).group("Seed floors (canonical, not recorded history)"));
-		v.add(new ViewDef(COMPARE, "Seed floors: compare", "Recorded against canonical, floor by floor.",
+		v.add(new ViewDef(COMPARE, "Seed floors: compare", "The run's own recorded floors set against a canonical rebuild, floor by floor.",
 				Query.of(COMPARE).withScope(all).withSorts(Arrays.asList(new Sort("sc.floor", false)))).group("Seed floors (canonical, not recorded history)"));
 		return v;
 	}

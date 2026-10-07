@@ -78,7 +78,7 @@ public class WndUimsdRow extends Window {
 				}
 				sheet.add(new SheetLine(c.label, t.text, t.state == CellText.EXACT ? "" : CellFormatter.explain(t.state), t.state, t.small));
 			}
-			if (!row.telemetry.isEmpty()) sheet.add(new SheetLine("Recorded with", "telemetry " + row.telemetry, "", CellText.EXACT, false));
+			if (!row.telemetry.isEmpty()) sheet.add(new SheetLine("Recorded with", "recording version " + row.telemetry, "", CellText.EXACT, false));
 			if (m.canSeedFloors(row)){
 				actions.add(new Action("Seed floors (canonical)", new Runnable(){
 					@Override

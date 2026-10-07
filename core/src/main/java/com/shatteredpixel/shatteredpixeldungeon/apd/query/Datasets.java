@@ -112,7 +112,7 @@ public final class Datasets {
 		d.add(ColumnDef.num(FactKeys.XP_GAINED, "XP gained").merge(Merge.SUM).since(1, 3).group(c));
 		d.add(ColumnDef.num(FactKeys.LEVEL_UPS, "Level ups").merge(Merge.SUM).since(1, 3).group(c));
 		d.add(ColumnDef.num(FactKeys.HEALED, "Healed").merge(Merge.SUM).since(1, 3).group(c)
-				.describe("HP the hero healed. Exact for runs recorded since telemetry 1.6; a ~ means part of it was only inferred from the hero's HP between turns (older runs, or a heal the game's hooks do not report)."));
+				.describe("HP the hero healed. Exact for runs recorded with recording version 1.6 or later; a ~ means part of it was only worked out from changes in the hero's health between turns (older runs, or a heal the game does not report)."));
 		d.add(ColumnDef.num(FactKeys.HEALED_INFERRED, "Healed (worked-out part)").merge(Merge.SUM).since(1, 3).group(c)
 				.describe("The part of the healing that was worked out from changes in the hero's health between turns, not recorded exactly."));
 		d.add(ColumnDef.num(FactKeys.HERO_DEATHS, "Hero deaths").merge(Merge.SUM).since(1, 3).group(c));
@@ -132,7 +132,7 @@ public final class Datasets {
 		for (int h = 0; h < healLabels.length; h++){
 			d.add(ColumnDef.num(FactKeys.healedFrom(com.shatteredpixel.shatteredpixeldungeon.apd.stats.CombatEvents.HEAL_CATEGORIES[h]),
 					"Healed by " + healLabels[h]).internal().merge(Merge.SUM).since(1, 6).group("Hidden")
-					.describe("HP healed by this kind of source (exact, runs recorded since telemetry 1.6). Which source healed can be hidden information, so this is shown only for finished runs."));
+					.describe("HP healed by this kind of source (exact, for runs recorded with recording version 1.6 or later). Which source healed can be hidden information, so this is shown only for finished runs."));
 		}
 		d.add(ColumnDef.num(FactKeys.SEED, "Seed").internal().group("Hidden"));
 		d.add(ColumnDef.text(FactKeys.CUSTOM_SEED, "Custom seed").internal().group("Hidden"));

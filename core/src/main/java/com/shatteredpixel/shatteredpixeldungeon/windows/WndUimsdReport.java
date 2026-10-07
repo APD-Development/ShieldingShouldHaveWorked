@@ -52,7 +52,7 @@ public final class WndUimsdReport {
 		String[] options = new String[formats.length + 1];
 		options[0] = "Share as text";
 		for (int i = 0; i < formats.length; i++) options[i + 1] = "Save: " + formats[i].label;
-		ShatteredPixelDungeon.scene().addToFront(new WndOptions("Report", what + "\n\nReports keep the marks (? unknown, >= at least, ~ inferred) and say which data is canonical.", options){
+		ShatteredPixelDungeon.scene().addToFront(new WndOptions("Report", what + "\n\nReports keep the marks (? unknown, >= at least, ~ worked out) and say which data is canonical.", options){
 			@Override
 			protected void onSelect( int index ){
 				Report r;
@@ -82,7 +82,7 @@ public final class WndUimsdReport {
 		final QueryResult q = m.result();
 		if (q == null) return;
 		final String title = m.view() == null ? q.def.title : m.view().title;
-		show(m, "The table you are looking at, with its filters, sorting, columns and scope.", new Source(){
+		show(m, "The table you are looking at, with its filters, sorting, columns and the choice of which runs count.", new Source(){
 			@Override
 			public Report build(){
 				return ReportBuilder.view(q, title, m.currentRulesetLabel(), System.currentTimeMillis(), Game.version);
@@ -153,7 +153,7 @@ public final class WndUimsdReport {
 	public static void ofSeedFloors( final UimsdModel m, final String runId ){
 		final Catalog cat = m.catalog();
 		if (cat == null) return;
-		show(m, "Every floor of the seed: recorded floors from the run's log, other floors canonical (a replay, not history), and how they compare.", new Source(){
+		show(m, "Every floor of the seed: recorded floors from the run's log, other floors canonical (rebuilt from the seed, not history), and how they compare.", new Source(){
 			@Override
 			public Report build(){
 				return ReportBuilder.seedFloors(cat, runId, m.currentRuleset(), System.currentTimeMillis(), Game.version);

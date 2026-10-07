@@ -131,7 +131,8 @@ public final class WndUimsdFilter {
 	}
 
 	//step 2: how to compare
-	private static void pickOp( final UimsdModel m, final int index, final Filter existing, final ColumnDef col ){
+	//(public so a device test can build every step of the workflow for every column)
+	public static void pickOp( final UimsdModel m, final int index, final Filter existing, final ColumnDef col ){
 		final Op[] ops = Op.ops(col.type);
 		List<Entry> entries = new ArrayList<>();
 		for (Op o : ops){
@@ -160,7 +161,7 @@ public final class WndUimsdFilter {
 	}
 
 	//step 3: the value
-	private static void pickValue( final UimsdModel m, final int index, final Filter existing, final ColumnDef col, final Op op ){
+	public static void pickValue( final UimsdModel m, final int index, final Filter existing, final ColumnDef col, final Op op ){
 		final String sentence = col.label + " " + op.word;
 		if (col.type == ColumnDef.Type.ENUM && !col.labels.isEmpty()){
 			final List<Long> values = new ArrayList<>(col.labels.keySet());

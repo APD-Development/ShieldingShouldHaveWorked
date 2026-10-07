@@ -267,7 +267,7 @@ public class ReportTest {
 			assertTrue("not the exact counterfactual", out.contains("NOT what this run would have met"));
 		}
 		String md = ReportRenderer.markdown(r);
-		assertTrue(md.contains("Canonical (floor never reached)"));
+		assertTrue(md.contains("Canonical (run never got here)"));
 		assertTrue(md.contains("Recorded (the run's own log)"));
 		assertTrue(md.contains("RECORDED and CANONICAL entries"));
 		//canonical values carry the ~ mark in every format, recorded ones do not

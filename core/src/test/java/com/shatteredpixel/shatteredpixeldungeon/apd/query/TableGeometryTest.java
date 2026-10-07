@@ -82,4 +82,21 @@ public class TableGeometryTest {
 		}
 		assertTrue(TableGeometry.HEADER_HEIGHT >= 22);
 	}
+
+	@Test
+	public void aLongHeadingBreaksAtASpaceInsteadOfBeingCut() {
+		String[] one = TableGeometry.twoLines("Score", 18);
+		assertEquals("Score", one[0]);
+		assertEquals("", one[1]);
+		String[] two = TableGeometry.twoLines("True enchantment when generated", 18);
+		assertEquals("True enchantment", two[0]);
+		assertEquals("when generated", two[1]);
+		String[] word = TableGeometry.twoLines("Supercalifragilisticexpialidocious", 10);
+		assertEquals(10, word[0].length());
+		assertTrue(word[1].length() <= 10);
+		for (String label : new String[]{ "Healed (worked-out part)", "Cursed when generated", "Same kind, state not recorded" }){
+			String[] l = TableGeometry.twoLines(label, 14);
+			assertTrue(label, l[0].length() <= 14 && l[1].length() <= 14);
+		}
+	}
 }

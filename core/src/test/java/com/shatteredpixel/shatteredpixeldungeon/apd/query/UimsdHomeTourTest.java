@@ -17,6 +17,7 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -117,6 +118,24 @@ public class UimsdHomeTourTest {
 		assertEquals(3, h.runs);
 		assertFalse(h.mixedRulesets);
 		assertFalse(h.scopeNote.contains("MIXED"));
+	}
+
+	@Test
+	public void theGuideIsInSectionsHasAGlossaryAndEveryTableIsListedUnderASection() {
+		java.util.Set<String> ids = new java.util.HashSet<>();
+		java.util.List<String> sections = new ArrayList<>();
+		for (UimsdGuide.Topic t : UimsdGuide.topics()){
+			assertTrue("duplicate topic " + t.id, ids.add(t.id));
+			assertFalse(t.id + " has no section", t.section.isEmpty());
+			if (sections.isEmpty() || !sections.get(sections.size() - 1).equals(t.section)){
+				assertFalse("section " + t.section + " is split in two", sections.contains(t.section));
+				sections.add(t.section);
+			}
+		}
+		assertTrue(ids.contains("glossary") && ids.contains("options") && ids.contains("marks"));
+		String glossary = UimsdGuide.topic("glossary").text;
+		for (String term : new String[]{ "Canonical", "Unknown", "At least", "Worked out", "Rules", "Hidden", "Recorded", "Known" }) assertTrue(term, glossary.contains(term));
+		for (ViewDef v : cat.views()) assertFalse("table " + v.id + " is not listed under a section", v.group.isEmpty());
 	}
 
 	@Test

@@ -310,4 +310,37 @@ public class UimsdModelTest {
 		}
 		assertEquals(null, failure.get());
 	}
+
+	@Test
+	public void filterChoicesAreTheValuesTheDataReallyHoldMostFrequentFirstAndNeverTheHiddenOnesOfARunStillGoing() {
+		List<Row> rows = new ArrayList<>();
+		String[] names = { "mage", "warrior", "mage", "rogue", "mage", "warrior" };
+		for (int i = 0; i < names.length; i++){
+			boolean finished = i != 5;      //the last warrior is still going
+			Row r = row(things, "c" + i, names[i], (long) i, 0L, 1L, finished, R);
+			r.setText(NOTE, (finished ? "secret-" : "open-secret-") + names[i], Fact.PROV_RECORDED);
+			rows.add(r);
+		}
+		Catalog c = new Catalog();
+		c.add(dataset(things, rows));
+		c.add(new ViewDef("all", "All", "x", Query.of("things").withScope(Scope.DEFAULT.withUnfinished(true))));
+		UimsdModel m = new UimsdModel(R, "");
+		m.setCatalog(c);
+		ColumnDef name = things.column("name"), note = things.column("note");
+		List<UimsdModel.Choice> ch = m.choicesFor(name, 10);
+		assertEquals(3, ch.size());
+		assertEquals("mage", ch.get(0).value);
+		assertEquals(3, ch.get(0).count);
+		assertEquals("warrior", ch.get(1).value);
+		assertEquals(2, ch.get(1).count);
+		assertEquals("rogue", ch.get(2).value);
+		assertEquals(1, m.choicesFor(name, 1).size());
+		//a hidden column offers nothing while hidden information is off, and never the value of a run that is not over
+		assertTrue(m.choicesFor(note, 10).isEmpty());
+		m.setShowInternal(true);
+		for (UimsdModel.Choice x : m.choicesFor(note, 10)) assertFalse("a run still going leaked: " + x.value, x.value.startsWith("open-"));
+		assertFalse(m.choicesFor(note, 10).isEmpty());
+		//only text columns have choices (numbers and enumerations have their own)
+		assertTrue(m.choicesFor(things.column("score"), 10).isEmpty());
+	}
 }

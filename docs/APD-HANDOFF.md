@@ -14,7 +14,13 @@ logcat tags APDMIG/APDPERF into the job log and uploads logcat artifacts.
 - Stability pass (CI green): per-run balance revision persisted/used everywhere; UIMSD-from-game cannot start a floor replay; seed floors refuse imported/unrecorded-challenge/unknown-revision runs. Product notes: none needed. New phone check: none.
 - Stability pass 2 (CI green, superseded by the integrity audit below): Catalog synchronized (real race shown by test), reports from demo/sample data carry a SYNTHETIC notice, unfinished-comparison hidden-info regression test. No new phone checks.
 - Previous PHONE-CHECK build: apd-build-60 = commit 3a35441a7 (integrity audit; core tests green, device tests green API 26 + 34; replaces build 57). No new phone checks.
-- **THE PHONE-CHECK BUILD = apd-build-62 = commit 56ecf99d9** (Decisions 1-5; core tests green, device tests green API 26 + 34; replaces build 60).
+- **UIMSD UI/wording polish pass (pending CI; its build becomes THE PHONE-CHECK build once green):** see docs/APD-UIMSD-UI.md. Phone-check list for it (all subjective, none blocking):
+  (a) first-run Home (history empty) reads well and the tour button is prominent; (b) Home cards: grey labels / coloured values; (c) the filter flow: column list grouped, plain
+  comparison words, Class offers your real classes with counts, Outcome Won/Died/Abandoned, Difficulty 1-5, "Something else...", "is one of" tick list; (d) tables: two-line headings,
+  swipe-sideways line and edge marks, selected row highlight; (e) the "Tables" picker is grouped and marks the current table; (f) Options in sections with [x] switches and
+  descriptions; Sort/Columns/Notes dialogs; (g) row sheet and group sheet two-column look; (h) Guide in sections with a glossary; all 15 tour steps read well; (i) MIXED RULES lines are
+  amber and visible; (j) nothing is cut off or overlapping in portrait.
+- Previous PHONE-CHECK build (before the polish): **apd-build-62 = commit 56ecf99d9** (Decisions 1-5; core tests green, device tests green API 26 + 34; replaces build 60).
 - **Decisions 1-5:**
   1. Exotic setting is part of the run: `Dungeon.apdExotic` snapshot at run start, saved as `apd_exotic`; gameplay and ruleset identity use it, never the live slider
      (`SPDSettings.apdExoticChance()` = the run's value; `apdExoticSetting()` = the slider = next run; slider label says "new runs").
