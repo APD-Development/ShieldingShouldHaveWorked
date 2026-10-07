@@ -80,6 +80,11 @@ interrogated; replay only when no live game is loaded; for reached floors record
 floors that never existed). Phase A (FloorReplay + isolation + device test) -> docs/APD-FLOOR-REPLAY.md. Phase B: "Seed floors" dataset;
 Phase C: recorded-vs-canonical comparison. Keep provenance (RECORDED vs CANONICAL) explicit everywhere.
 
+## ETA rule (permanent)
+Before starting any task expected to produce a build, output exactly one short line: "ETA: ~X-Y min" (based on real work/tests/CI), then begin.
+If the rule is learned mid-work, give one estimate for the remaining time. Update only if a material problem changes it; no routine
+progress reports or repeated ETA checks. When the build finishes, report actual elapsed time if known.
+
 ## Working rules the user set (usage efficiency)
 Minimal narration; batch related work; do not poll CI repeatedly (estimate the finish, check once around then, do independent approved
 work meanwhile); continue autonomously inside approved scope and stop only for genuine product/design decisions, destructive actions,
