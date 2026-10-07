@@ -166,7 +166,7 @@ public final class Datasets {
 
 	//---- Items ----
 
-	private static Map<Long, String> categories(){
+	static Map<Long, String> categories(){
 		Map<Long, String> m = new LinkedHashMap<>();
 		m.put((long) ItemEvents.CAT_OTHER, "Other");
 		m.put((long) ItemEvents.CAT_WEAPON, "Weapon");

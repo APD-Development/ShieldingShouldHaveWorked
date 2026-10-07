@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.stats.Fact;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactEvents;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKind;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKinds;
+import com.shatteredpixel.shatteredpixeldungeon.apd.stats.ItemEvents;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.LifecycleEvents;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.ReadResult;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.TelemetryVersion;
@@ -51,9 +52,9 @@ public final class EventDatasets {
 	private EventDatasets(){}
 
 	public static final String FLOORS = "floors", ATTACKS = "attacks", DAMAGE = "damage", HEALS = "heals", SHIELDS = "shields",
-			XP = "xp", KILLS = "kills";
+			XP = "xp", KILLS = "kills", EQUIPMENT = "equipment";
 
-	public static final String[] IDS = { FLOORS, ATTACKS, DAMAGE, HEALS, SHIELDS, XP, KILLS };
+	public static final String[] IDS = { FLOORS, ATTACKS, DAMAGE, HEALS, SHIELDS, XP, KILLS, EQUIPMENT };
 
 	private static final TelemetryVersion V11 = new TelemetryVersion(1, 1), V12 = new TelemetryVersion(1, 2), V13 = new TelemetryVersion(1, 3);
 
@@ -71,6 +72,7 @@ public final class EventDatasets {
 			case HEALS: return "heal";
 			case SHIELDS: return "shield";
 			case XP: return "xp";
+			case EQUIPMENT: return "equip";
 			default: return "kill";
 		}
 	}
@@ -238,6 +240,33 @@ public final class EventDatasets {
 		return d;
 	}
 
+	static DatasetDef equipment(){
+		DatasetDef d = new DatasetDef(EQUIPMENT, "Equipment", "Everything the hero actually wore or wielded, and for how long.");
+		d.minTelemetry = V12;
+		d.countLabel = "Times worn";
+		d.add(ColumnDef.text("equip.run", "Run").group("When"));
+		d.add(ColumnDef.text("equip.item", "Item").shown().group("Item").describe("What the game called it when it was put on."));
+		ColumnDef cat = ColumnDef.enumeration("equip.category", "Kind").shown().group("Item");
+		for (Map.Entry<Long, String> e : Datasets.categories().entrySet()) cat.label(e.getKey(), e.getValue());
+		d.add(cat);
+		d.add(ColumnDef.enumeration("equip.slot", "Worn as").shown().group("Item").label(com.shatteredpixel.shatteredpixeldungeon.apd.stats.ItemEvents.SLOT_WEAPON, "Weapon")
+				.label(com.shatteredpixel.shatteredpixeldungeon.apd.stats.ItemEvents.SLOT_ARMOR, "Armor").label(com.shatteredpixel.shatteredpixeldungeon.apd.stats.ItemEvents.SLOT_ARTIFACT, "Artifact")
+				.label(com.shatteredpixel.shatteredpixeldungeon.apd.stats.ItemEvents.SLOT_MISC, "Misc").label(com.shatteredpixel.shatteredpixeldungeon.apd.stats.ItemEvents.SLOT_RING, "Ring")
+				.label(com.shatteredpixel.shatteredpixeldungeon.apd.stats.ItemEvents.SLOT_SECOND_WEAPON, "Second weapon"));
+		d.add(ColumnDef.num("equip.level", "Level you could see").group("Item").describe("Only when the level was known at the time."));
+		d.add(yesNo(ColumnDef.enumeration("equip.cursedKnown", "Curse known")).group("Item"));
+		d.add(yesNo(ColumnDef.enumeration("equip.identified", "Identified")).group("Item"));
+		d.add(ColumnDef.text("equip.uid", "Item id").group("Item").describe("Joins this row to the item's whole history."));
+		d.add(ColumnDef.num("equip.depth", "Floor put on").shown().group("When"));
+		d.add(ColumnDef.num("equip.start", "Put on at turn").shown().group("When"));
+		d.add(ColumnDef.num("equip.end", "Taken off at turn").group("When"));
+		d.add(ColumnDef.num("equip.turns", "Turns worn").shown().group("When").describe("A lower bound while it is still worn."));
+		d.add(yesNo(ColumnDef.enumeration("equip.stillWorn", "Still worn")).group("When"));
+		context(d, "equip");
+		d.link(new LinkDef("The run", Datasets.RUNS, "equip.run", com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKeys.RUN_ID));
+		return d;
+	}
+
 	static DatasetDef kills(){
 		DatasetDef d = new DatasetDef(KILLS, "Kills", "Everything you saw die.");
 		d.minTelemetry = V13;
@@ -263,6 +292,7 @@ public final class EventDatasets {
 		l.add(shields());
 		l.add(xp());
 		l.add(kills());
+		l.add(equipment());
 		return l;
 	}
 
@@ -285,6 +315,7 @@ public final class EventDatasets {
 				case SHIELDS: d = shields(); break;
 				case XP: d = xp(); break;
 				case KILLS: d = kills(); break;
+				case EQUIPMENT: d = equipment(); break;
 				default: return null;
 			}
 			CACHE.put(id, d);
@@ -350,10 +381,13 @@ public final class EventDatasets {
 
 	//Adds the rows of every event dataset for one log. 'events' is the canonical timeline. Never throws for a bad event: it is skipped.
 	static void addRows( LogRows out, List<ApdEvent> events, ReadResult r, LogMeta meta, TelemetryVersion v, int countProv ){
-		DatasetDef fl = def(FLOORS), at = def(ATTACKS), dm = def(DAMAGE), he = def(HEALS), sh = def(SHIELDS), xpD = def(XP), ki = def(KILLS);
+		DatasetDef eq = def(EQUIPMENT), fl = def(FLOORS), at = def(ATTACKS), dm = def(DAMAGE), he = def(HEALS), sh = def(SHIELDS), xpD = def(XP), ki = def(KILLS);
 		boolean combat = atLeast(v, V13), items = atLeast(v, V12);
 		List<Row> floorRows = new ArrayList<>(), atRows = new ArrayList<>(), dmRows = new ArrayList<>(), heRows = new ArrayList<>(),
 				shRows = new ArrayList<>(), xpRows = new ArrayList<>(), kiRows = new ArrayList<>();
+		List<Row> eqRows = new ArrayList<>();
+		Map<String, Row> worn = new HashMap<>();
+		int nEq = 0;
 		Visit cur = null;
 		int visits = 0, nAt = 0, nDm = 0, nHe = 0, nSh = 0, nXp = 0, nKi = 0;
 		long lastClock = 0;
@@ -504,6 +538,36 @@ public final class EventDatasets {
 						kiRows.add(row);
 						break;
 					}
+					case EventTypes.ITEM_EQUIPPED: {
+						if (!items) break;
+						ItemEvents.Equip q = ItemEvents.decodeEquip(e, r);
+						if (worn.containsKey(q.uid)) break;   //already worn: nothing new
+						Row row = newRow(eq, meta, "equip", nEq++);
+						text(row, eq, "equip.run", meta.runId, Fact.PROV_RECORDED);
+						text(row, eq, "equip.item", q.state.name, Fact.PROV_RECORDED);
+						num(row, eq, "equip.category", q.state.category, Fact.PROV_RECORDED);
+						num(row, eq, "equip.slot", q.slot, Fact.PROV_RECORDED);
+						if (q.state.levelKnown) num(row, eq, "equip.level", q.state.visibleLevel, Fact.PROV_RECORDED);
+						num(row, eq, "equip.cursedKnown", q.state.cursedKnown ? 1 : 0, Fact.PROV_RECORDED);
+						num(row, eq, "equip.identified", q.state.identified ? 1 : 0, Fact.PROV_RECORDED);
+						text(row, eq, "equip.uid", q.uid, Fact.PROV_RECORDED);
+						num(row, eq, "equip.depth", q.where.depth, Fact.PROV_RECORDED);
+						num(row, eq, "equip.start", e.clock, Fact.PROV_RECORDED);
+						num(row, eq, "equip.stillWorn", 1, Fact.PROV_RECORDED);
+						worn.put(q.uid, row);
+						eqRows.add(row);
+						break;
+					}
+					case EventTypes.ITEM_UNEQUIPPED: {
+						if (!items) break;
+						ItemEvents.Equip q = ItemEvents.decodeEquip(e, r);
+						Row row = worn.remove(q.uid);
+						if (row == null) break;   //taken off something the log never saw put on
+						num(row, eq, "equip.end", e.clock, Fact.PROV_RECORDED);
+						num(row, eq, "equip.turns", Math.max(0, e.clock - row.num(eq.indexOf("equip.start"))), Fact.PROV_RECORDED);
+						num(row, eq, "equip.stillWorn", 0, Fact.PROV_RECORDED);
+						break;
+					}
 					case EventTypes.ITEM_SEEN:
 						if (items && cur != null) cur.sums[SEEN]++;
 						break;
@@ -532,9 +596,12 @@ public final class EventDatasets {
 				//an event this reader cannot decode contributes nothing
 			}
 		}
+		//still worn when the log ends: how long so far is only a lower bound
+		for (Row row : worn.values()) num(row, eq, "equip.turns", Math.max(0, lastClock - row.num(eq.indexOf("equip.start"))), Fact.PROV_INCOMPLETE);
 		//a floor the hero was still on when the log ends: how long so far is only a lower bound
 		if (cur != null) floorRows.add(closeVisit(fl, meta, v, cur, lastClock, 2, countProv, true, activeTotal, haveActive));
 		if (atLeast(v, V11)) out.rows.put(FLOORS, floorRows);
+		if (items) out.rows.put(EQUIPMENT, eqRows);
 		if (combat){
 			out.rows.put(ATTACKS, atRows);
 			out.rows.put(DAMAGE, dmRows);

@@ -158,4 +158,21 @@ public class FloorsAndPerUnitTest {
 		PerUnit.Result perHour = PerUnit.compute(catalog(), q, QueryEngine.run(casts, q, RS), PerUnit.Unit.HOUR, RS);
 		assertEquals(9100 / 3_600_000d, perHour.denominators[0], 1e-9);
 	}
+
+	@Test
+	public void whatWasWornAndForHowLongIsADataset(){
+		log("a", "run-a", "WARRIOR").enter(1).equip("w1", "worn shortsword", com.shatteredpixel.shatteredpixeldungeon.apd.stats.ItemEvents.CAT_WEAPON).tick(40)
+				.unequip("w1", "worn shortsword", com.shatteredpixel.shatteredpixeldungeon.apd.stats.ItemEvents.CAT_WEAPON)
+				.equip("a1", "leather armor", com.shatteredpixel.shatteredpixeldungeon.apd.stats.ItemEvents.CAT_ARMOR).tick(10).leave()
+				.end(LifecycleEvents.OUTCOME_DIED, "rat", 1, 1, 10).close(true);
+		Dataset eq = catalog().dataset(EventDatasets.EQUIPMENT);
+		assertEquals(2, eq.rows.size());
+		DatasetDef d = eq.def;
+		Row sword = eq.rows.get(0), armor = eq.rows.get(1);
+		assertEquals("worn shortsword", sword.text(d.indexOf("equip.item")));
+		assertEquals(0, sword.num(d.indexOf("equip.stillWorn")));
+		assertTrue(sword.num(d.indexOf("equip.turns")) >= 40);
+		assertEquals("armor still worn when the run ended: a lower bound", 1, armor.num(d.indexOf("equip.stillWorn")));
+		assertEquals(com.shatteredpixel.shatteredpixeldungeon.apd.stats.Fact.PROV_INCOMPLETE, armor.prov(d.indexOf("equip.turns")));
+	}
 }

@@ -92,6 +92,13 @@ public final class ApdPlay {
 		try { p.onHeroSearched(intentional, found); } catch (Throwable ignored){}
 	}
 
+	//Heap.open: the hero opened a container
+	public static void onHeapOpened( com.shatteredpixel.shatteredpixeldungeon.items.Heap heap ){
+		PlayTracker p = t();
+		if (p == null) return;
+		try { p.onHeapOpened(heap); } catch (Throwable ignored){}
+	}
+
 	public static void onTrapTriggered( Trap trap, Char who ){
 		PlayTracker p = t();
 		if (p == null) return;

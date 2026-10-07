@@ -7,8 +7,8 @@ item.use|P|-|quantity|action
 item.useTruth|I|-|level,charges|action
 status.start|P|-|duration|
 status.end|P|-|remaining|
-status.startHidden|I|-|duration|
-status.endHidden|I|-|remaining|
+status.startTruth|I|-|duration|
+status.endTruth|I|-|remaining|
 talent.upgrade|P|-|points,tier|
 subclass.choose|P|-||
 ability.choose|P|-||
@@ -17,3 +17,4 @@ ability.use|P|-|cost|
 economy.gold|P|-|delta,total|cause
 economy.trade|P|-|price,quantity|side
 time.active|P|-|millis|
+explore.open|P|-|items|

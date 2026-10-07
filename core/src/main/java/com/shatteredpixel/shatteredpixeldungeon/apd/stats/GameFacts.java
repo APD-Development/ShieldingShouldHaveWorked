@@ -55,6 +55,11 @@ public final class GameFacts {
 			.value("intentional", "On purpose", "1 when the hero chose to search.", FactKind.PLAIN)
 			.value("found", "Found something", "1 when it turned something up.", FactKind.PLAIN).build());
 
+	//a chest, tomb, skeleton or other container was opened
+	public static final FactKind OPEN = FactKinds.register(FactKind.builder("explore.open", "Container opened").plural("Containers opened").area("Movement")
+			.description("Every chest, tomb, skeleton or pile of remains the hero opened.").subject("Container")
+			.value("items", "Items inside", "How many items were in it when it was opened.", FactKind.PLAIN).build());
+
 	public static final FactKind TRAP = FactKinds.register(FactKind.builder("trap.trigger", "Trap triggered").plural("Traps triggered").area("Movement")
 			.description("Every trap that went off where the hero could see it.").subject("Trap").actor()
 			.value("hero", "Hero set it off", "1 when the hero triggered it, 0 for someone else.", FactKind.PLAIN).build());
@@ -84,13 +89,13 @@ public final class GameFacts {
 			.description("Every status effect with an icon that ended.").subject("Effect").actor()
 			.value("remaining", "Turns left", "In turns; -1 when it has no fixed length.", FactKind.PLAIN).build());
 
-	//effects with no icon (some ring and armor effects) can give away what an unidentified item is, so they are hidden information
-	public static final FactKind STATUS_START_HIDDEN = FactKinds.register(FactKind.builder("status.startHidden", "Hidden effect began").plural("Hidden effects began")
-			.area("Status effects").description("Status effects with no icon that began.").subject("Effect").actor().internal()
+	//the real class of every effect: some effects (ring and armor ones) can give away what an unidentified item is, so this is hidden information
+	public static final FactKind STATUS_START_TRUTH = FactKinds.register(FactKind.builder("status.startTruth", "Effect began (true effect)").plural("Effects began (true effect)")
+			.area("Status effects").description("Every status effect that began, including ones with no icon, by what it really was.").subject("True effect").actor().internal()
 			.value("duration", "Duration", "", FactKind.PLAIN).build());
 
-	public static final FactKind STATUS_END_HIDDEN = FactKinds.register(FactKind.builder("status.endHidden", "Hidden effect ended").plural("Hidden effects ended")
-			.area("Status effects").description("Status effects with no icon that ended.").subject("Effect").actor().internal()
+	public static final FactKind STATUS_END_TRUTH = FactKinds.register(FactKind.builder("status.endTruth", "Effect ended (true effect)").plural("Effects ended (true effect)")
+			.area("Status effects").description("Every status effect that ended, including ones with no icon, by what it really was.").subject("True effect").actor().internal()
 			.value("remaining", "Turns left", "", FactKind.PLAIN).build());
 
 	//---- character ----

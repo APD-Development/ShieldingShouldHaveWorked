@@ -28,9 +28,11 @@ import java.util.List;
 //no game classes. What a kind means is declared in FactKinds; these events only carry the key and the values.
 //
 //FACT:    key, subject, actor, number of values + signed values, number of tags + tag strings
-//SERIES:  key, subject, actor, tags (shared by every row), number of values, number of rows, then per row: the clock step since the
-//         previous row (signed) and each value as the signed step since the previous row (the first row steps from zero).
-//         A series is exactly the observations it expands to: nothing is summarised, only written compactly.
+//SERIES:  key, subject, actor, tags (shared by every row), number of values, number of rows, then one block of bytes holding the columns
+//         (the clock first, then each value). A column is written as steps between rows (the first step is from zero), and a run of
+//         equal steps is cheap: each column picks the smaller of two codings, steps (mode 0) or steps of steps (mode 1, a steady walk costs
+//         almost nothing), and zero steps are written as run lengths. A series is exactly the observations it expands to: nothing is
+//         summarised, only written compactly.
 //
 //Field order is part of the format. Later versions may only ADD fields at the END of a payload.
 public final class FactEvents {
@@ -90,16 +92,15 @@ public final class FactEvents {
 		b.unsigned(tags.length);
 		for (String t : tags) b.string(t);
 		b.unsigned(valueCount).unsigned(rowCount);
-		long prevClock = clocks[0];
-		long[] prev = new long[valueCount];
-		for (int i = 0; i < rowCount; i++){
-			b.signed(clocks[i] - prevClock);
-			prevClock = clocks[i];
-			for (int j = 0; j < valueCount; j++){
-				b.signed(rows[i][j] - prev[j]);
-				prev[j] = rows[i][j];
-			}
+		ByteSink blob = new ByteSink(rowCount * 2 + 16);
+		long[] col = new long[rowCount];
+		for (int i = 0; i < rowCount; i++) col[i] = clocks[i] - clocks[0];
+		writeColumn(blob, col, rowCount);
+		for (int j = 0; j < valueCount; j++){
+			for (int i = 0; i < rowCount; i++) col[i] = rows[i][j];
+			writeColumn(blob, col, rowCount);
 		}
+		b.bytes(blob.toByteArray());
 		return b.emit();
 	}
 
@@ -138,18 +139,75 @@ public final class FactEvents {
 		int rows = p.unsignedInt();
 		limit(nv, MAX_FIELDS);
 		limit(rows, MAX_ROWS);
-		long clock = e.clock;
-		long[] prev = new long[nv];
+		ByteSource blob = new ByteSource(p.bytes());
+		long[] clocks = readColumn(blob, rows);
+		long[][] cols = new long[nv][];
+		for (int j = 0; j < nv; j++) cols[j] = readColumn(blob, rows);
 		for (int i = 0; i < rows; i++){
-			clock += p.signed();
 			long[] v = new long[nv];
-			for (int j = 0; j < nv; j++){
-				prev[j] += p.signed();
-				v[j] = prev[j];
-			}
-			out.add(new Observation(key, subject, actor, clock, v, tags));
+			for (int j = 0; j < nv; j++) v[j] = cols[j][i];
+			out.add(new Observation(key, subject, actor, e.clock + clocks[i], v, tags));
 		}
 		return out;
+	}
+
+	// ---- columns ----
+
+	//mode 0: steps between rows. mode 1: steps of the steps. Zero steps are written as run lengths, so a column that rarely changes costs a few bytes.
+	private static void writeColumn( ByteSink out, long[] v, int n ){
+		long[] steps = new long[n], second = new long[n];
+		long prev = 0, prevStep = 0;
+		for (int i = 0; i < n; i++){
+			steps[i] = v[i] - prev;
+			second[i] = steps[i] - prevStep;
+			prev = v[i];
+			prevStep = steps[i];
+		}
+		ByteSink a = new ByteSink(n + 8), b = new ByteSink(n + 8);
+		writeZeroRuns(a, steps, n);
+		writeZeroRuns(b, second, n);
+		if (b.size() < a.size()){
+			out.writeByte(1);
+			out.writeBytes(b.toByteArray());
+		} else {
+			out.writeByte(0);
+			out.writeBytes(a.toByteArray());
+		}
+	}
+
+	private static void writeZeroRuns( ByteSink out, long[] s, int n ){
+		int i = 0;
+		while (i < n){
+			int run = 0;
+			while (i + run < n && s[i + run] == 0) run++;
+			out.writeUnsigned(run);
+			i += run;
+			if (i < n){
+				out.writeSigned(s[i]);
+				i++;
+			}
+		}
+	}
+
+	private static long[] readColumn( ByteSource in, int n ){
+		int mode = in.readByte();
+		if (mode != 0 && mode != 1) throw new FormatException("unknown fact column coding " + mode);
+		long[] s = new long[n];
+		int i = 0;
+		while (i < n){
+			long run = in.readUnsigned();
+			if (run < 0 || run > n - i) throw new FormatException("fact column run out of range");
+			i += (int) run;
+			if (i < n) s[i++] = in.readSigned();
+		}
+		long[] v = new long[n];
+		long prev = 0, step = 0;
+		for (int k = 0; k < n; k++){
+			step = mode == 1 ? step + s[k] : s[k];
+			prev += step;
+			v[k] = prev;
+		}
+		return v;
 	}
 
 	//a damaged payload must not make the reader allocate without limit

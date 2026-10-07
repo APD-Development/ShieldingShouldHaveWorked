@@ -98,7 +98,7 @@ public class FactEventsTest {
 		w.close(false, 5000);
 		File f = new File(tmp.getRoot(), "small.apdlog");
 		long perStep = f.length() / n;
-		assertTrue("a series costs a few bytes per step, was " + perStep, perStep <= 6);
+		assertTrue("a series costs a few bytes per step, was " + perStep, perStep <= 4);
 	}
 
 	@Test

@@ -94,6 +94,11 @@ final class PlayTracker {
 		facts.record(GameFacts.SEARCH, GameSnapshot.turn(), "", "", new long[]{ intentional ? 1 : 0, found ? 1 : 0 }, null);
 	}
 
+	void onHeapOpened( com.shatteredpixel.shatteredpixeldungeon.items.Heap heap ){
+		if (heap == null) return;
+		facts.record(GameFacts.OPEN, GameSnapshot.turn(), String.valueOf(heap.type), "", new long[]{ heap.items.size() }, null);
+	}
+
 	void onTrapTriggered( Trap trap, Char who ){
 		if (trap == null) return;
 		boolean byHero = who == Dungeon.hero;
@@ -133,10 +138,19 @@ final class PlayTracker {
 		boolean shownToPlayer = buff.icon() != BuffIndicator.NONE;
 		String who = target == Dungeon.hero ? "" : CombatTracker.nameOf(target);
 		long[] v = new long[]{ Math.round(turns) };
-		com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKind kind = began
-				? (shownToPlayer ? GameFacts.STATUS_START : GameFacts.STATUS_START_HIDDEN)
-				: (shownToPlayer ? GameFacts.STATUS_END : GameFacts.STATUS_END_HIDDEN);
-		facts.record(kind, GameSnapshot.turn(), name(buff.getClass()), who, v, null);
+		long clock = GameSnapshot.turn();
+		//what the player saw: the effect's shown name, and only for an effect with an icon. The class says more (an armor glyph, a ring), so it
+		//goes only in the hidden record, which has every effect.
+		if (shownToPlayer){
+			String shown;
+			try {
+				shown = buff.toString();
+			} catch (Throwable t){
+				shown = "";
+			}
+			facts.record(began ? GameFacts.STATUS_START : GameFacts.STATUS_END, clock, shown, who, v, null);
+		}
+		facts.record(began ? GameFacts.STATUS_START_TRUTH : GameFacts.STATUS_END_TRUTH, clock, name(buff.getClass()), who, v, null);
 	}
 
 	// ---- character ----
