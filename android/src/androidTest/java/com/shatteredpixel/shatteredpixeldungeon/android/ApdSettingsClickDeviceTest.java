@@ -186,8 +186,9 @@ public class ApdSettingsClickDeviceTest {
 	public void everyControlOfApdSettingsAnswersATouch() throws Exception {
 		final AtomicInteger exports = new AtomicInteger(), imports = new AtomicInteger();
 		ApdFiles.Provider before = ApdFiles.provider;
+		final ApdFiles.Provider fake;
 		//the system file picker is replaced by one that records the request and says the player cancelled, so the test can see the click arrive
-		ApdFiles.provider = new ApdFiles.Provider(){
+		fake = new ApdFiles.Provider(){
 			public void chooseExport( String suggestedName, ApdFiles.ExportTarget target ){
 				exports.incrementAndGet();
 				target.onCancelled();
@@ -207,6 +208,8 @@ public class ApdSettingsClickDeviceTest {
 			long end = System.currentTimeMillis() + 120000;
 			while ((Gdx.app == null || Gdx.files == null || Game.scene() == null) && System.currentTimeMillis() < end) Thread.sleep(250);
 			assertNotNull("the game did not start", Game.scene());
+			//the launcher installs the real file picker when it starts: put the stand-in in only now, or the touch opens the system picker
+			ApdFiles.provider = fake;
 			//the first scene (welcome / splash) is replaced by the title: a window added before that is destroyed with it
 			waitUntil("the title scene", new java.util.concurrent.Callable<Boolean>(){
 				public Boolean call() throws Exception { return Game.scene() instanceof com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene; } }, 120000);
