@@ -299,6 +299,17 @@ public class SPDSettings extends GameSettings {
 
 	public static final int APD_EXOTIC_CHANCE_MAX = 80;
 
+	//APD: the UIMSD tour has been offered once (taken or declined); the Guide stays available whatever this says
+	public static final String KEY_APD_UIMSD_GUIDE_SEEN = "apd_uimsd_guide_seen";
+
+	public static void apdUimsdGuideSeen( boolean value ){
+		put( KEY_APD_UIMSD_GUIDE_SEEN, value );
+	}
+
+	public static boolean apdUimsdGuideSeen(){
+		return getBoolean( KEY_APD_UIMSD_GUIDE_SEEN, false );
+	}
+
 	public static final String KEY_APD_RECORDING = "apd_recording";
 
 	//APD run history recording, on by default

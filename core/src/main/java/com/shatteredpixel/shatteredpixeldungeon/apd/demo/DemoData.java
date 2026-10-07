@@ -48,6 +48,8 @@ public final class DemoData {
 	public static final String RUN_PREFIX = DatasetStore.DEMO_LOG_PREFIX;
 	public static final String MARKER_FILE = DatasetStore.DEMO_MARKER_FILE;
 	public static final String DIR_NAME = "apd-demo-data";
+	//the tutorial's sample history (same protections, its own folder, deleted when the tutorial ends)
+	public static final String SAMPLE_DIR_NAME = "apd-tutorial-sample";
 
 	//which data UIMSD shows. Not saved: every start of the app shows real data again.
 	private static volatile boolean viewingDemo;
@@ -74,6 +76,12 @@ public final class DemoData {
 		if (realRoot == null) return null;
 		File parent = realRoot.getAbsoluteFile().getParentFile();
 		return parent == null ? null : new File(parent, DIR_NAME);
+	}
+
+	public static File sampleRootFor( File realRoot ){
+		if (realRoot == null) return null;
+		File parent = realRoot.getAbsoluteFile().getParentFile();
+		return parent == null ? null : new File(parent, SAMPLE_DIR_NAME);
 	}
 
 	public static boolean isSyntheticRoot( File root ){
@@ -103,7 +111,7 @@ public final class DemoData {
 	//left alone and false is returned. Returns true when the demo data is gone (also when there was none).
 	public static boolean delete( File root ){
 		if (root == null || !root.exists()) return true;
-		if (!DIR_NAME.equals(root.getName()) || !isSyntheticRoot(root)) return false;
+		if ((!DIR_NAME.equals(root.getName()) && !SAMPLE_DIR_NAME.equals(root.getName())) || !isSyntheticRoot(root)) return false;
 		deleteTree(root);
 		return !root.exists();
 	}

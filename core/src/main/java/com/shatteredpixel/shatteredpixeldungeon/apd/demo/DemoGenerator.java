@@ -44,6 +44,8 @@ import java.util.Random;
 public final class DemoGenerator {
 
 	public static final int RUNS = 72;
+	//enough for every kind of view (wins and deaths, several classes, items, enemies, an unfinished run) without being a lot to read
+	public static final int SAMPLE_RUNS = 30;
 
 	private static final String[] CLASSES = { "WARRIOR", "MAGE", "ROGUE", "HUNTRESS", "DUELIST" };
 	private static final int[] CHALLENGE_SETS = { 0, 0, 0, 0, 1, 2, 4, 8, 16, 3, 5, 32, 64 };
@@ -90,29 +92,44 @@ public final class DemoGenerator {
 			"regen", "regen", "regen", "regen", "potion.healing", "potion.healing", "food.wellFed", "food.supplyRation", "food.phantomMeat",
 			"plant.sungrass", "plant.dewdrop", "plant.dewdrop", "gear.chalice", "gear.vampiric", "skill.heartyMeal", "wand.transfusion", "other.sleep" };
 
-	private DemoGenerator( File root, Ruleset current, long now ){
+	private final int runs;
+
+	private DemoGenerator( File root, Ruleset current, long now, int runs ){
 		this.root = root;
 		this.current = current;
 		this.base = now;
+		this.runs = runs;
 	}
 
 	//Wipes any earlier demo data in 'root' and writes a new demo history there. 'root' must be a demo folder (named like it, empty
 	//or carrying the marker); anything else is refused and nothing is written. Returns the number of runs written.
 	public static int generate( File root, Ruleset current, long now ) throws IOException {
 		if (root == null || !DemoData.DIR_NAME.equals(root.getName())) throw new IOException("not a demo folder: " + root);
+		return write(root, current, now, RUNS);
+	}
+
+	//The small made-up history the UIMSD tutorial uses when the player has too little of their own: the same generator and the same
+	//protections as demo data (its own marked folder, "demo-" logs, never recorded into, exported, imported or counted as history),
+	//in a folder of its own so it never touches the demo data a development build may be showing. Release builds use it too.
+	public static int generateSample( File root, Ruleset current, long now ) throws IOException {
+		if (root == null || !DemoData.SAMPLE_DIR_NAME.equals(root.getName())) throw new IOException("not a tutorial sample folder: " + root);
+		return write(root, current, now, SAMPLE_RUNS);
+	}
+
+	private static int write( File root, Ruleset current, long now, int runs ) throws IOException {
 		if (root.exists() && !DemoData.isSyntheticRoot(root)){
 			String[] kids = root.list();
 			if (kids != null && kids.length > 0) throw new IOException("refusing to write into a folder that is not demo data: " + root);
 		}
 		if (root.exists() && !DemoData.delete(root)) throw new IOException("could not clear the old demo data");
 		DemoData.writeMarker(root);
-		return new DemoGenerator(root, current, now).run();
+		return new DemoGenerator(root, current, now, runs).run();
 	}
 
 	private int run() throws IOException {
 		int logs = 0;
-		for (int i = 0; i < RUNS; i++) logs += oneRun(i);
-		return RUNS;
+		for (int i = 0; i < runs; i++) logs += oneRun(i);
+		return runs;
 	}
 
 	private int pick( int n ){
@@ -144,7 +161,7 @@ public final class DemoGenerator {
 		String rules = currentRules ? current.id : Ruleset.of(exotic, challenges).id;
 		int ch = currentRules ? 0 : challenges;
 		int ex = currentRules ? current.exoticChance : exotic;
-		long created = base - (long) (RUNS - i) * 86_400_000L / 2 + pick(3_000_000);
+		long created = base - (long) (runs - i) * 86_400_000L / 2 + pick(3_000_000);
 
 		//how it ends
 		int roll = pick(100);

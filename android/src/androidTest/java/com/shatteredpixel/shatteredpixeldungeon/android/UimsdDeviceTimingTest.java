@@ -83,6 +83,27 @@ public class UimsdDeviceTimingTest {
 			assertTrue("first build too slow: " + coldMs + " ms", coldMs < 30000);
 			assertTrue("reload from the cache too slow: " + warmMs + " ms", warmMs < 5000);
 			assertTrue("one view too slow: " + slowestView + " " + slowest + " ms", slowest < 3000);
+
+			//the Home page, built from the same catalog
+			long h0 = System.nanoTime();
+			com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdHome home = com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdHome.build(warm, rules.id, true);
+			long homeMs = (System.nanoTime() - h0) / 1000000;
+			Log.w(TAG, "Home built in " + homeMs + " ms (" + home.cards.size() + " cards, " + home.runs + " runs)");
+			assertTrue("Home has nothing on it", !home.isEmpty() && home.cards.size() >= 5);
+			assertTrue("Home too slow: " + homeMs + " ms", homeMs < 3000);
+
+			//the tour's sample history: made, readable, marked, and removable without touching the demo or real history
+			File sample = DemoData.sampleRootFor(new File(base, "apd"));
+			long m0 = System.nanoTime();
+			DemoGenerator.generateSample(sample, rules, System.currentTimeMillis());
+			Catalog sc = new DatasetStore(sample).load();
+			long sampleMs = (System.nanoTime() - m0) / 1000000;
+			Log.w(TAG, "tour sample made and read in " + sampleMs + " ms");
+			assertTrue("sample history empty", com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdHome.build(sc, rules.id, true).runs > 0);
+			assertTrue("sample too slow: " + sampleMs + " ms", sampleMs < 20000);
+			DemoData.delete(sample);
+			assertTrue("sample folder not removed", !sample.exists());
+			assertTrue("demo must survive removing the sample", demo.exists());
 		} finally {
 			delete(base);
 		}

@@ -51,8 +51,10 @@ logcat tags APDMIG/APDPERF into the job log and uploads logcat artifacts.
 - Title button label/target: the UIMSD button opens UimsdScene (TitleButtonWiringTest).
 
 ## Next approved work
-Nothing is approved yet. The user must approve the next step after reading the Phase 9 report. Candidates they named: the adult-humor
-preference (above), the future UIMSD items (above), Phase 8 picker sign-off.
+Home/Guide milestone implemented (see docs/APD-UIMSD-HOME-GUIDE.md): UimsdHome, UimsdGuide, UimsdTutorial, tour sample data,
+UimsdScene Home + tour overlay. Awaiting user approval of the milestone report. Wording is placeholder (final polish pass pending).
+Still pending (user, non-blocking): Phase 8 picker check, Phase 9 healing-column phone check, plus a phone look at Home and the tour.
+Not started: adult-humor preference, language polish, shareable/PDF reports, whole-seed interrogation, archive-and-remove.
 Measured in Phase 9 (for reference): desktop 50,000-row scan 50 ms; emulator demo history first build 183 ms (API 26) / 630 ms (API 34),
 cache reload 22 / 61 ms, slowest view 11 / 54 ms; exact healing 32 B per heal (inferred was 18 B), ~70 KiB per 20k-turn run.
 No optimisation was warranted beyond slimming HEAL_DETAIL (19 -> 14 B).

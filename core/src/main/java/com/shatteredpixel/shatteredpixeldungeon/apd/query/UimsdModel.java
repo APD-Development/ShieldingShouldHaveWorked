@@ -186,6 +186,11 @@ public final class UimsdModel {
 		return result == null ? new ArrayList<StatusText.Line>() : StatusText.lines(result, v == null ? "" : v.title, currentRulesetLabel);
 	}
 
+	//how many places Back would pass through (0 at the top): the tutorial watches it to see a drill-down or a Back happen
+	public synchronized int depth(){
+		return back.size();
+	}
+
 	public synchronized boolean canGoBack(){
 		return !back.isEmpty();
 	}
@@ -220,6 +225,14 @@ public final class UimsdModel {
 	public synchronized void selectView( String id ){
 		if (catalog == null || catalog.view(id) == null) return;
 		back.add(new Place(viewId, query, page));
+		viewId = id;
+		apply(catalog.view(id).initialQuery().withShowInternal(query.showInternal));
+	}
+
+	//open a view as a new starting point, with nothing to go Back to (used from Home, so Back from there leads to Home)
+	public synchronized void showRoot( String id ){
+		if (catalog == null || catalog.view(id) == null) return;
+		back.clear();
 		viewId = id;
 		apply(catalog.view(id).initialQuery().withShowInternal(query.showInternal));
 	}
