@@ -71,6 +71,7 @@ public final class DatasetStore {
 	private static Map<String, DatasetDef> defs(){
 		Map<String, DatasetDef> m = new LinkedHashMap<>();
 		for (String id : new String[]{Datasets.RUNS, Datasets.ITEMS, Datasets.ENEMIES, Datasets.DEATHS}) m.put(id, RowBuilders.def(id));
+		for (String id : EventDatasets.IDS) m.put(id, EventDatasets.def(id));
 		for (DatasetDef d : FactDatasets.defs()) m.put(d.id, d);
 		return m;
 	}
@@ -316,10 +317,18 @@ public final class DatasetStore {
 	private static void copyRunFacts( Map<String, DatasetDef> defs, Map<String, List<Row>> merged, DatasetDef runsDef, List<Row> runRows ){
 		Map<String, Row> byRun = new HashMap<>();
 		for (Row r : runRows) byRun.put(r.runId, r);
+		//every dataset that has a "<prefix>.runClass" column carries the facts of its run
 		List<String[]> sets = new ArrayList<>();
-		sets.add(new String[]{ Datasets.ITEMS, "item" });
-		sets.add(new String[]{ Datasets.ENEMIES, "enemy" });
-		for (String id : merged.keySet()) if (FactDatasets.isFactDataset(id)) sets.add(new String[]{ id, "fact" });
+		for (String id : merged.keySet()){
+			DatasetDef dd = defs.get(id);
+			if (dd == null || id.equals(Datasets.RUNS)) continue;
+			for (ColumnDef c : dd.columns()){
+				if (c.id.endsWith(".runClass")){
+					sets.add(new String[]{ id, c.id.substring(0, c.id.length() - ".runClass".length()) });
+					break;
+				}
+			}
+		}
 		for (String[] set : sets){
 			DatasetDef d = defs.get(set[0]);
 			List<Row> rows = merged.get(set[0]);
@@ -335,8 +344,8 @@ public final class DatasetStore {
 					else r.setNum(to, run.num(from), run.prov(from));
 				}
 			}
-			if (set[1].equals("fact")){
-				int to = d.indexOf(FactDatasets.RUN_DIFFICULTY);
+			{
+				int to = d.indexOf(set[1] + ".runDifficulty");
 				int from = runsDef.indexOf(FactKeys.DIFFICULTY);
 				if (to >= 0 && from >= 0) for (Row r : rows){
 					Row run = byRun.get(r.runId);

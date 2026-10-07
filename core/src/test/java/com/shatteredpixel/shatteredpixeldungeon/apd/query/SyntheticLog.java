@@ -41,6 +41,15 @@ final class SyntheticLog {
 		return this;
 	}
 
+	//leaves the current floor (the game writes this when the hero goes up or down, saves aside)
+	SyntheticLog leave(){
+		LifecycleEvents.LevelExit x = new LifecycleEvents.LevelExit();
+		x.depth = depth;
+		x.reason = LifecycleEvents.EXIT_LEAVING;
+		LifecycleEvents.emitLevelExit(w, clock++, x);
+		return this;
+	}
+
 	//one generic fact observation of a registered kind, on the next clock tick
 	SyntheticLog fact( com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKind k, String subject, long... values ){
 		com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactEvents.emit(w, k.eventType(), clock,
