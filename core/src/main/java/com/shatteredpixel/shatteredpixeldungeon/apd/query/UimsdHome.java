@@ -107,7 +107,7 @@ public final class UimsdHome {
 		this.allRules = allRules;
 		this.mixedRulesets = allRules && rulesets > 1;
 		this.scopeNote = (allRules ? (mixedRulesets
-				? "MIXED RULESETS: all finished runs, played under " + rulesets + " different sets of rules (difficulty, challenges, exotic setting). The numbers below are not directly comparable: tap Rules to see only your current rules, or open Difficulty to compare like with like."
+				? "MIXED RULES: all finished runs, played under " + rulesets + " different sets of rules (difficulty, challenges, exotic-item setting). The numbers below are not directly comparable: tap Rules to see only your own, or open the Difficulty table to compare like with like."
 				: "All finished runs, whatever rules they were played under.") : "Finished runs played under your current rules.")
 				+ (!allRules && runsElsewhere > 0 ? " " + runsElsewhere + (runsElsewhere == 1 ? " run was" : " runs were") + " played under other rules (another difficulty, challenges or exotic setting): tap Rules to include them." : "");
 	}
@@ -152,7 +152,7 @@ public final class UimsdHome {
 		if (c != null) h.cards.add(c);
 		//a record or a difficulty comparison taken across rulesets must say so on the card itself
 		if (h.mixedRulesets){
-			for (Card card : h.cards) if ((card.id.equals("records") || card.id.equals("difficulty")) && !card.title.endsWith("(mixed rulesets)")) card.title += " (mixed rulesets)";
+			for (Card card : h.cards) if ((card.id.equals("records") || card.id.equals("difficulty")) && !card.title.endsWith("(mixed rules)")) card.title += " (mixed rules)";
 		}
 		return h;
 	}
@@ -250,8 +250,8 @@ public final class UimsdHome {
 		}
 		//a group is one difficulty, but its runs can still differ in challenges or exotic setting: say so instead of implying they are alike
 		if (r.stats.rulesetsInScope > r.groups.size()){
-			c.title = "Difficulty (mixed rulesets)";
-			c.lines.add(0, new Line(false, "Mixed rulesets", "not directly comparable",
+			c.title = "Difficulty (mixed rules)";
+			c.lines.add(0, new Line(false, "Mixed rules", "not directly comparable",
 					"some of these runs used other challenges or exotic settings; open the Challenges table to compare like with like", CellText.EXACT));
 		}
 		c.link("Difficulty table", "difficulty");

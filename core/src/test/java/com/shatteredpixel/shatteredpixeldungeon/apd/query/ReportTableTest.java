@@ -24,7 +24,7 @@ public class ReportTableTest {
 		Report r = ReportBuilder.view(q, "Things", "", 0L, "t");
 		assertEquals(ReportBuilder.MAX_ROWS, r.firstTable().rows.size());
 		assertEquals(500, r.firstTable().omitted);
-		assertTrue(ReportRenderer.markdown(r).contains("500 more rows are not listed"));
+		assertTrue(ReportRenderer.markdown(r).contains("500 more entries are not listed"));
 	}
 
 	@Test

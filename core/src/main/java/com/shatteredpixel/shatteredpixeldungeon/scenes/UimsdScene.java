@@ -40,6 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder;
 import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.Ruleset;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ExitButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
+import com.shatteredpixel.shatteredpixeldungeon.ui.UimsdStyle;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.TitleBackground;
 import com.shatteredpixel.shatteredpixeldungeon.ui.UimsdHomePane;
@@ -280,7 +281,7 @@ public class UimsdScene extends PixelScene {
 			return;
 		}
 		if (state == UimsdModel.State.FAILED){
-			RenderedTextBlock t = text("UIMSD could not read the history:\n" + model.failure(), 7, 0xFF8888, contentW);
+			RenderedTextBlock t = text("UIMSD could not read your history, and nothing was changed.\n" + model.failure(), 7, 0xFF8888, contentW);
 			t.setPos(x0, y + 20);
 			return;
 		}
@@ -339,7 +340,7 @@ public class UimsdScene extends PixelScene {
 		guide.setRect(x0, y, guideW, rowH);
 		ui.add(guide);
 		reg("guide", x0, y, guideW, rowH);
-		RedButton rules = new RedButton(homeAllRules ? "Rules: all" : "Rules: current", 7){
+		RedButton rules = new RedButton(homeAllRules ? "Rules: all (mixed)" : "Rules: yours", 7){
 			@Override
 			protected void onClick(){
 				homeAllRules = !homeAllRules;
@@ -377,17 +378,7 @@ public class UimsdScene extends PixelScene {
 		y = note.bottom() + 3;
 
 		if (home.isEmpty()){
-			RenderedTextBlock none = text("No finished runs to show here yet. Play a run, or take the tour to see how UIMSD works on sample data.", 7, 0xFFFFFF, contentW);
-			none.setPos(x0, y + 4);
-			y = none.bottom() + 6;
-			RedButton tour = new RedButton("Take the tour", 8){
-				@Override
-				protected void onClick(){
-					startTour(0);
-				}
-			};
-			tour.setRect(x0, y, Math.min(contentW, 90), 16);
-			ui.add(tour);
+			buildFirstRun(home, bottom);
 			return bottom;
 		}
 
@@ -413,6 +404,63 @@ public class UimsdScene extends PixelScene {
 		return bottom;
 	}
 
+	//What the Home page shows before there is anything to count: what UIMSD is, what will appear here, and the tour as the main thing to do.
+	private void buildFirstRun( UimsdHome home, float bottom ){
+		boolean elsewhere = home.runsElsewhere > 0 && !homeAllRules;
+		RenderedTextBlock welcome = text("Welcome to UIMSD", UimsdStyle.SIZE_TITLE, UimsdStyle.TITLE, contentW);
+		welcome.setPos(x0, y + 2);
+		y = welcome.bottom() + 2;
+		RenderedTextBlock what = text(elsewhere
+				? "No finished run was played under your current rules yet, but " + home.runsElsewhere + (home.runsElsewhere == 1 ? " was" : " were")
+						+ " played under other rules (a different difficulty, challenges or exotic-item setting). Tap \"Rules: yours\" above to include them."
+				: "UIMSD is the game's statistics system. Every run you play is recorded, and this page turns your history into numbers: "
+						+ "how each class does, what you lean on, what ends your runs, and how difficulty changes your odds.",
+				UimsdStyle.SIZE_HELP, UimsdStyle.TEXT, contentW);
+		what.setPos(x0, y);
+		y = what.bottom() + 4;
+		if (!elsewhere){
+			RenderedTextBlock fills = text("WHEN YOU HAVE FINISHED A RUN, THIS PAGE FILLS WITH", UimsdStyle.SIZE_HELP, UimsdStyle.HEADING, contentW);
+			fills.setPos(x0, y);
+			y = fills.bottom() + 2;
+			String[] bullets = {
+					"Your runs: wins, deaths, win rate, deepest floor",
+					"Characters and difficulty: how each class and level does",
+					"Gear and enemies: what you use, what you meet, what kills you",
+					"Recent runs and records",
+			};
+			for (String b : bullets){
+				RenderedTextBlock t = text("- " + b, UimsdStyle.SIZE_HELP, UimsdStyle.MUTED, contentW - 4);
+				t.setPos(x0 + 4, y);
+				y = t.bottom() + 1;
+			}
+			y += 4;
+			RenderedTextBlock ongoing = text("A run still going counts when it ends. Recording is automatic (see History recording in APD Settings).", UimsdStyle.SIZE_META, UimsdStyle.FAINT, contentW);
+			ongoing.setPos(x0, y);
+			y = ongoing.bottom() + 6;
+		}
+		RedButton tour = new RedButton("Take the tour (2 minutes)", 8){
+			@Override
+			protected void onClick(){
+				startTour(0);
+			}
+		};
+		tour.setRect(x0, y, contentW, 22);
+		ui.add(tour);
+		reg("tour", x0, y, contentW, 22);
+		y += 24;
+		RenderedTextBlock sampleNote = text("The tour uses a small made-up history, so it works even before you have played. It never touches your own.", UimsdStyle.SIZE_META, UimsdStyle.FAINT, contentW);
+		sampleNote.setPos(x0, y);
+		y = sampleNote.bottom() + 4;
+		RedButton read = new RedButton("Read the Guide", 7){
+			@Override
+			protected void onClick(){
+				openGuide();
+			}
+		};
+		read.setRect(x0, y, contentW, 16);
+		ui.add(read);
+	}
+
 	//---- the advanced tables (everything UIMSD could always do) ----
 
 	private float buildAdvanced( int h, RectF insets ){
@@ -432,7 +480,7 @@ public class UimsdScene extends PixelScene {
 		ui.add(homeBtn);
 		reg("home", cx0, y, homeW, 16);
 		cx0 += homeW + gap;
-		RedButton viewBtn = new RedButton((view == null ? "View" : view.title) + "  (change)", 8){
+		RedButton viewBtn = new RedButton((view == null ? "Table" : view.title) + "  (change table)", 8){
 			@Override
 			protected void onClick(){
 				pickView();
@@ -465,21 +513,37 @@ public class UimsdScene extends PixelScene {
 		reg("guide", cx0, y, helpW, 16);
 		y += 18;
 
+		//what this table is, in a line (so the player never has to guess what they are looking at)
+		if (view != null && !view.description.isEmpty()){
+			RenderedTextBlock d = text(view.description, UimsdStyle.SIZE_META, UimsdStyle.MUTED, contentW);
+			d.setPos(x0, y);
+			y = d.bottom() + 2;
+		}
+
 		//work in progress / why something is unavailable (seed floors)
 		String notice = model.notice();
 		if (!notice.isEmpty()){
-			RenderedTextBlock n = text(notice, 6, 0xFFDD66, contentW);
+			RenderedTextBlock n = text(notice, UimsdStyle.SIZE_HELP, UimsdStyle.WARN, contentW);
 			n.setPos(x0, y);
 			y = n.bottom() + 3;
 		}
 
-		//status
+		//status: the headline, then the most important note (a warning if there is one)
 		List<StatusText.Line> lines = model.status();
-		StringBuilder brief = new StringBuilder();
-		for (int i = 0; i < lines.size() && i < 2; i++) brief.append(i > 0 ? "\n" : "").append(lines.get(i).text);
-		RenderedTextBlock st = text(brief.toString(), 5, 0xDDDDDD, contentW - 46);
-		st.setPos(x0, y);
-		int notes = lines.size() - 2;
+		RenderedTextBlock head = text(lines.isEmpty() ? "" : lines.get(0).text, UimsdStyle.SIZE_HELP, UimsdStyle.TEXT, contentW - 46);
+		head.setPos(x0, y);
+		float statusBottom = head.bottom();
+		int shown = 1;
+		StatusText.Line second = null;
+		for (StatusText.Line l : lines) if (l.kind == StatusText.WARN){ second = l; break; }
+		if (second == null && lines.size() > 1) second = lines.get(1);
+		if (second != null){
+			RenderedTextBlock sec = text(second.text, UimsdStyle.SIZE_META, second.kind == StatusText.WARN ? UimsdStyle.WARN : UimsdStyle.MUTED, contentW - 46);
+			sec.setPos(x0, statusBottom + 1);
+			statusBottom = sec.bottom();
+			shown = 2;
+		}
+		int notes = lines.size() - shown;
 		RedButton statusBtn = new RedButton(notes > 0 ? "Notes (" + notes + ")" : "Notes", 6){
 			@Override
 			protected void onClick(){
@@ -489,8 +553,8 @@ public class UimsdScene extends PixelScene {
 		statusBtn.setRect(x0 + contentW - 44, y, 44, 14);
 		ui.add(statusBtn);
 		reg("notes", x0 + contentW - 44, y, 44, 14);
-		reg("status", x0, y, contentW - 46, Math.max(st.height(), 10));
-		y = Math.max(st.bottom(), y + 14) + 3;
+		reg("status", x0, y, contentW - 46, Math.max(statusBottom - y, 10));
+		y = Math.max(statusBottom, y + 14) + 3;
 
 		//filter chips
 		float cx = x0;
@@ -526,7 +590,10 @@ public class UimsdScene extends PixelScene {
 		float bwid = (contentW - 6) / 4f;
 		for (int i = 0; i < 4; i++){
 			final int which = i;
-			RedButton b = new RedButton(names[i], 8){
+			String shownName = names[i];
+			if (i == 0 && !model.query().filters.isEmpty()) shownName += " (" + model.query().filters.size() + ")";
+			if (i == 1 && !model.query().sorts.isEmpty()) shownName += " (" + model.query().sorts.size() + ")";
+			RedButton b = new RedButton(shownName, 8){
 				@Override
 				protected void onClick(){
 					switch (which){
@@ -563,12 +630,21 @@ public class UimsdScene extends PixelScene {
 			next.enable(table.page() < table.pageCount() - 1);
 			ui.add(next);
 			int from = table.pageStart + 1, to = table.pageStart + table.lines.size();
-			RenderedTextBlock pg = text("Rows " + from + "-" + to + " of " + table.total + "  (page " + (table.page() + 1) + "/" + table.pageCount() + ")", 6, 0xDDDDDD, contentW - 46);
+			RenderedTextBlock pg = text((table.grouped ? "Groups " : model.dataset().def.countLabel + " ") + from + "-" + to + " of " + table.total + "   (page " + (table.page() + 1) + " of " + table.pageCount() + ")", UimsdStyle.SIZE_HELP, UimsdStyle.MUTED, contentW - 46);
 			pg.setPos(x0 + (contentW - pg.width()) / 2f, py + (14 - pg.height()) / 2f);
 			tableBottom = py - 2;
 		}
 
 		if (table == null) return barTop;
+		//a table wider than the screen says so, and how many columns are off to the right
+		com.shatteredpixel.shatteredpixeldungeon.apd.query.TableGeometry geoNow = com.shatteredpixel.shatteredpixeldungeon.apd.query.TableGeometry.of(table);
+		if (geoNow.totalWidth > contentW + 1){
+			int off = 0;
+			for (int c = 0; c < geoNow.lefts.length; c++) if (geoNow.lefts[c] + geoNow.widths[c] > contentW + 1) off++;
+			RenderedTextBlock more = text("Swipe the table sideways: " + off + (off == 1 ? " more column" : " more columns") + " to the right.", UimsdStyle.SIZE_META, UimsdStyle.FAINT, contentW);
+			more.setPos(x0, y);
+			y = more.bottom() + 2;
+		}
 		UimsdTable t = new UimsdTable();
 		t.setListener(new UimsdTable.Listener(){
 			@Override
@@ -588,7 +664,7 @@ public class UimsdScene extends PixelScene {
 		reg("table.firstRow", x0, y + com.shatteredpixel.shatteredpixeldungeon.apd.query.TableGeometry.HEADER_HEIGHT, contentW,
 				com.shatteredpixel.shatteredpixeldungeon.apd.query.TableGeometry.ROW_HEIGHT);
 		if (table.lines.isEmpty()){
-			RenderedTextBlock none = text("Nothing matches. The notes above say what was left out.", 7, 0xCCCCCC, contentW);
+			RenderedTextBlock none = text("Nothing matches. Open Notes to see what is being left out, or Options to widen what counts.", 7, UimsdStyle.MUTED, contentW);
 			none.setPos(x0, y + TableGeometryHeader() + 6);
 		}
 		return barTop;

@@ -41,10 +41,18 @@ public final class WndUimsdGuide {
 
 	public static void show( final Starter starter ){
 		final List<UimsdGuide.Topic> topics = UimsdGuide.topics();
-		List<String> labels = new ArrayList<>();
-		labels.add("> Take the interactive tour");
-		for (UimsdGuide.Topic t : topics) labels.add(t.title);
-		ShatteredPixelDungeon.scene().addToFront(new WndUimsdList("Guide", "Read a topic, or be shown it on the real screen.", labels, null, new WndUimsdList.Picker(){
+		List<WndUimsdList.Entry> entries = new ArrayList<>();
+		entries.add(WndUimsdList.Entry.heading("Take the tour"));
+		entries.add(WndUimsdList.Entry.item("Interactive tour", "about two minutes, on the real screens (sample data if you have no runs)"));
+		String last = null;
+		for (UimsdGuide.Topic t : topics){
+			if (!t.section.equals(last)){
+				entries.add(WndUimsdList.Entry.heading(t.section));
+				last = t.section;
+			}
+			entries.add(WndUimsdList.Entry.item(t.title));
+		}
+		ShatteredPixelDungeon.scene().addToFront(WndUimsdList.menu("Guide", "Read a topic, or have it shown on the real screen.", entries, new WndUimsdList.Picker(){
 			@Override
 			public void onPick( int i, boolean checked ){
 				if (i == 0){

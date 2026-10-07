@@ -162,8 +162,8 @@ public final class ReportBuilder {
 		GroupDetail da = GroupDetail.build(q, a), db = GroupDetail.build(q, b);
 		Report r = start("Group comparison", now, version);
 		for (StatusText.Line l : StatusText.lines(q, q.def.title, rulesLabel)) r.about.add(l.text);
-		r.about.add("A: " + groupName(q, a) + " (" + a.n + (a.n == 1 ? " row)" : " rows)"));
-		r.about.add("B: " + groupName(q, b) + " (" + b.n + (b.n == 1 ? " row)" : " rows)"));
+		r.about.add("A: " + groupName(q, a) + " (" + a.n + (a.n == 1 ? " " + q.def.unitSingular() + ")" : " " + q.def.unitPlural() + ")"));
+		r.about.add("B: " + groupName(q, b) + " (" + b.n + (b.n == 1 ? " " + q.def.unitSingular() + ")" : " " + q.def.unitPlural() + ")"));
 		Report.Table t = new Report.Table("", provenanceOf(q));
 		t.headers.add("");
 		t.headers.add("A: " + groupName(q, a));

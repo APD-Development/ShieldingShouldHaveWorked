@@ -56,6 +56,7 @@ public final class Datasets {
 
 	static DatasetDef runs(){
 		DatasetDef d = new DatasetDef(RUNS, "Runs", "Every run: recorded by APD, or taken from APD's own rankings file.");
+		d.countLabel = "Runs";
 		d.add(ColumnDef.text(FactKeys.RUN_ID, "Run id").group("Run").describe("The run's identifier."));
 		d.add(ColumnDef.num(FactKeys.START_MILLIS, "Started").format(ColumnDef.Format.DATE_MILLIS).shown().group("Run"));
 		d.add(ColumnDef.text(FactKeys.HERO_CLASS, "Class").shown().format(ColumnDef.Format.TITLE_CASE).group("Run"));
@@ -69,21 +70,21 @@ public final class Datasets {
 		d.add(ColumnDef.text(FactKeys.CAUSE, "Ended by").merge(Merge.LAST).group("Result"));
 		d.add(ColumnDef.enumeration("run.source", "Source").label(1, "Recorded").label(2, "Imported ranking").group("Run"));
 		d.add(ColumnDef.text(FactKeys.STATUS, "Status").merge(Merge.LAST).group("Run"));
-		d.add(ColumnDef.num("run.segments", "Log segments").merge(Merge.SUM).group("Run")
-				.describe("A run recorded by several telemetry versions has several log segments; they are shown as one run."));
-		d.add(ColumnDef.num(FactKeys.CHALLENGES, "Challenges").group("Rules").describe("The challenge bit mask."));
-		d.add(ColumnDef.num(FactKeys.EXOTIC_CHANCE, "Exotic %").group("Rules"));
+		d.add(ColumnDef.num("run.segments", "Recording parts").merge(Merge.SUM).group("Run")
+				.describe("A run recorded by several versions of APD is recorded in several parts. They are shown as one run."));
+		d.add(ColumnDef.num(FactKeys.CHALLENGES, "Challenges").group("Rules").describe("Which challenges were on. The number adds up the challenges chosen; 0 means none."));
+		d.add(ColumnDef.num(FactKeys.EXOTIC_CHANCE, "Exotic chance %").group("Rules").describe("The exotic potion and scroll chance that was set when the run began. ? means the run never recorded it."));
 		//unknown (?) for a run recorded before telemetry 1.7: such a run was played at the baseline balance but its difficulty was never recorded
 		d.add(ColumnDef.enumeration(FactKeys.DIFFICULTY, "Difficulty").since(1, 7).group("Rules")
 				.label(1, "1 - Easiest").label(2, "2 - Easier").label(3, "3 - Standard").label(4, "4 - Harder").label(5, "5 - Hardest")
 				.describe("The difficulty the run was started with. ? means it was not recorded (a run from before difficulty existed)."));
 		d.add(ColumnDef.num(FactKeys.DIFFICULTY_BALANCE, "Balance revision").since(1, 7).group("Rules")
 				.describe("Which version of the difficulty balance the run was played with: 0 = none (difficulty 3, the normal game), 1 and up = a balance version. Runs of different versions are never counted together unless you choose all rules."));
-		d.add(ColumnDef.text(FactKeys.RULESET, "Ruleset").group("Rules"));
+		d.add(ColumnDef.text(FactKeys.RULESET, "Rules code").group("Rules").describe("A code for the exact rules the run was played under: difficulty, challenges and exotic-item chance. Runs with the same code were played the same way."));
 		d.add(yesNo(ColumnDef.enumeration(FactKeys.DAILY, "Daily")).group("Rules"));
 		d.add(ColumnDef.text(FactKeys.APD_VERSION, "APD version").group("Run"));
-		d.add(ColumnDef.text("run.telemetry", "Telemetry").group("Run").describe("The recording version(s) this run was recorded with."));
-		d.add(ColumnDef.num(FactKeys.INITIAL_VERSION, "Game version code").group("Run"));
+		d.add(ColumnDef.text("run.telemetry", "Recording version").group("Run").describe("The version of APD's recording this run was recorded with. Older versions recorded less detail."));
+		d.add(ColumnDef.num(FactKeys.INITIAL_VERSION, "Game build number").group("Run"));
 		d.add(ColumnDef.text(FactKeys.GAME_VERSION, "Game version").group("Run"));
 		d.add(yesNo(ColumnDef.enumeration(FactKeys.PARTIAL, "Started mid-run")).merge(Merge.ANY).group("Run"));
 		d.add(ColumnDef.num(FactKeys.ABANDONED_EVENTS, "Rolled-back events").internal().merge(Merge.SUM).group("Hidden")
@@ -112,8 +113,8 @@ public final class Datasets {
 		d.add(ColumnDef.num(FactKeys.LEVEL_UPS, "Level ups").merge(Merge.SUM).since(1, 3).group(c));
 		d.add(ColumnDef.num(FactKeys.HEALED, "Healed").merge(Merge.SUM).since(1, 3).group(c)
 				.describe("HP the hero healed. Exact for runs recorded since telemetry 1.6; a ~ means part of it was only inferred from the hero's HP between turns (older runs, or a heal the game's hooks do not report)."));
-		d.add(ColumnDef.num(FactKeys.HEALED_INFERRED, "Healed (guessed part)").merge(Merge.SUM).since(1, 3).group(c)
-				.describe("The part of the healing that was only inferred from the hero's HP between turns, not seen exactly."));
+		d.add(ColumnDef.num(FactKeys.HEALED_INFERRED, "Healed (worked-out part)").merge(Merge.SUM).since(1, 3).group(c)
+				.describe("The part of the healing that was worked out from changes in the hero's health between turns, not recorded exactly."));
 		d.add(ColumnDef.num(FactKeys.HERO_DEATHS, "Hero deaths").merge(Merge.SUM).since(1, 3).group(c));
 		d.add(ColumnDef.num(FactKeys.REVIVALS, "Revivals").merge(Merge.SUM).since(1, 3).group(c));
 		//items (telemetry 1.2)
@@ -121,7 +122,7 @@ public final class Datasets {
 		d.add(ColumnDef.num(FactKeys.ITEMS_EQUIPPED, "Items equipped").merge(Merge.LOWER).since(1, 2).group("Items"));
 		d.add(ColumnDef.num(FactKeys.EQUIP_EVENTS, "Equip actions").merge(Merge.SUM).since(1, 2).group("Items"));
 		//hidden truth
-		d.add(ColumnDef.num(FactKeys.ITEMS_REGISTERED, "Items in the run (all)").internal().merge(Merge.LOWER).since(1, 2).group("Hidden")
+		d.add(ColumnDef.num(FactKeys.ITEMS_REGISTERED, "All items in the run").internal().merge(Merge.LOWER).since(1, 2).group("Hidden")
 				.describe("Every item the run ever contained, seen or not."));
 		d.add(ColumnDef.num(FactKeys.GEN_LEVELS, "Levels generated").internal().merge(Merge.SUM).since(1, 4).group("Hidden"));
 		d.add(ColumnDef.num(FactKeys.GEN_ITEMS, "Items generated").internal().merge(Merge.SUM).since(1, 4).group("Hidden"));
@@ -215,7 +216,7 @@ public final class Datasets {
 		d.add(yesNo(ColumnDef.enumeration("item.seen", "Ever seen")).merge(Merge.ANY).group("Journey"));
 		d.add(yesNo(ColumnDef.enumeration("item.acquired", "Ever acquired")).merge(Merge.ANY).group("Journey"));
 		d.add(yesNo(ColumnDef.enumeration("item.equipped", "Ever equipped")).merge(Merge.ANY).group("Equipment"));
-		d.add(ColumnDef.num("item.visibleLevel", "Level (as known)").merge(Merge.LAST).group("Item")
+		d.add(ColumnDef.num("item.visibleLevel", "Level (as you knew it)").merge(Merge.LAST).group("Item")
 				.describe("Only when the player knew the item's level. Never revealed afterwards."));
 		d.add(yesNo(ColumnDef.enumeration("item.identified", "Identified")).merge(Merge.LAST).group("Item"));
 		//hidden truth
@@ -238,7 +239,7 @@ public final class Datasets {
 		d.add(ColumnDef.text("item.drawKind", "How it was drawn").internal().group("Hidden"));
 		d.add(ColumnDef.text("item.requestedCategory", "Category asked for").internal().group("Hidden"));
 		addRunFacts(d, "item");
-		d.countLabel = "Instances";
+		d.countLabel = "Items";
 		itemSheet(d);
 		d.link(new LinkDef("The run", RUNS, "item.run", FactKeys.RUN_ID));
 		return d;
@@ -274,7 +275,7 @@ public final class Datasets {
 		d.add(ColumnDef.num("enemy.deaths", "Seen dying").merge(Merge.SUM).group("Fights"));
 		d.add(ColumnDef.num("enemy.heroDeaths", "Times it killed the hero").merge(Merge.SUM).group("Fights"));
 		d.add(ColumnDef.text("enemy.class", "True kind").internal().group("Hidden"));
-		d.add(ColumnDef.num("enemy.spawned", "Generated (all)").internal().merge(Merge.SUM).since(1, 4).group("Hidden"));
+		d.add(ColumnDef.num("enemy.spawned", "Generated in total").internal().merge(Merge.SUM).since(1, 4).group("Hidden"));
 		d.add(ColumnDef.num("enemy.expValue", "XP value").internal().group("Hidden"));
 		addRunFacts(d, "enemy");
 		d.countLabel = "Encounters";
@@ -287,6 +288,7 @@ public final class Datasets {
 
 	static DatasetDef deaths(){
 		DatasetDef d = new DatasetDef(DEATHS, "Deaths", "Every time the hero died, and what ended each run.");
+		d.countLabel = "Deaths";
 		d.minTelemetry = new com.shatteredpixel.shatteredpixeldungeon.apd.stats.TelemetryVersion(1, 1);
 		d.add(ColumnDef.text("death.run", "Run").group("Death"));
 		d.add(ColumnDef.num("death.depth", "Floor").shown().group("Death"));
@@ -342,13 +344,13 @@ public final class Datasets {
 
 	private static void itemSheet( DatasetDef d ){
 		d.stat(StatLine.section("How many"));
-		d.stat(StatLine.of("Instances", Aggregate.count(), "Every individual one of them the player met, in all runs shown."));
+		d.stat(StatLine.of("Items", Aggregate.count(), "Every individual one of them that the player met, in all runs shown."));
 		d.stat(StatLine.of("Runs containing it", Aggregate.distinct(IRUN), "In how many different runs at least one turned up."));
 		d.stat(StatLine.section("What the player did with them"));
-		d.stat(StatLine.of("Acquired", Aggregate.rate("item.acquired", 1).where("item.seen", 1), "Of the instances seen, how many were picked up."));
-		d.stat(StatLine.of("Equipped", Aggregate.rate("item.equipped", 1).where("item.acquired", 1), "Of the instances acquired, how many were ever equipped."));
-		d.stat(StatLine.of("Equipped, of those seen", Aggregate.rate("item.equipped", 1).where("item.seen", 1), "Of the instances seen (not only acquired), how many were ever equipped."));
-		d.stat(StatLine.of("Identified", Aggregate.rate("item.identified", 1), "Of the instances, how many the player had identified when last looked at."));
+		d.stat(StatLine.of("Acquired", Aggregate.rate("item.acquired", 1).where("item.seen", 1), "Of the items seen, how many were picked up."));
+		d.stat(StatLine.of("Equipped", Aggregate.rate("item.equipped", 1).where("item.acquired", 1), "Of the items acquired, how many were ever equipped."));
+		d.stat(StatLine.of("Equipped, of those seen", Aggregate.rate("item.equipped", 1).where("item.seen", 1), "Of the items seen (not only acquired), how many were ever equipped."));
+		d.stat(StatLine.of("Identified", Aggregate.rate("item.identified", 1), "Of the items, how many the player had identified when last looked at."));
 		d.stat(StatLine.section("How the runs went (each run counted once)"));
 		d.stat(StatLine.of("Runs won", perRun(Aggregate.count().where("item.runOutcome", 1), IRUN), "Runs containing it that were won."));
 		d.stat(StatLine.of("Runs died in", perRun(Aggregate.count().where("item.runOutcome", 0), IRUN), "Runs containing it that ended in death."));
@@ -358,9 +360,9 @@ public final class Datasets {
 		d.stat(StatLine.section("Where"));
 		d.stat(StatLine.of("Floor first seen, average", Aggregate.of(Aggregate.Fn.AVG, "item.firstSeenDepth"), ""));
 		d.stat(StatLine.of("Floor first seen, median", Aggregate.of(Aggregate.Fn.MEDIAN, "item.firstSeenDepth"), ""));
-		d.stat(StatLine.of("Floor acquired, average", Aggregate.of(Aggregate.Fn.AVG, "item.acquiredDepth"), "Instances that were never acquired have none."));
+		d.stat(StatLine.of("Floor acquired, average", Aggregate.of(Aggregate.Fn.AVG, "item.acquiredDepth"), "Items that were never acquired have none."));
 		d.stat(StatLine.of("Floor acquired, median", Aggregate.of(Aggregate.Fn.MEDIAN, "item.acquiredDepth"), ""));
-		d.stat(StatLine.section("Time equipped (only instances that were equipped)"));
+		d.stat(StatLine.section("Time equipped (only items that were equipped)"));
 		d.stat(StatLine.of("Turns equipped, average", Aggregate.of(Aggregate.Fn.AVG, "item.turnsEquipped").where("item.equipped", 1), "A run that was still going counts only up to its last recorded moment."));
 		d.stat(StatLine.of("Turns equipped, median", Aggregate.of(Aggregate.Fn.MEDIAN, "item.turnsEquipped").where("item.equipped", 1), ""));
 		d.stat(StatLine.of("Times equipped, average", Aggregate.of(Aggregate.Fn.AVG, "item.equipCount").where("item.equipped", 1), ""));
@@ -369,7 +371,7 @@ public final class Datasets {
 		d.stat(StatLine.of("Level, average", Aggregate.of(Aggregate.Fn.AVG, "item.visibleLevel"), "Levels the player never learned are not counted, and never counted as zero."));
 		d.stat(StatLine.of("Level, median", Aggregate.of(Aggregate.Fn.MEDIAN, "item.visibleLevel"), ""));
 		d.stat(StatLine.of("Level, highest", Aggregate.of(Aggregate.Fn.MAX, "item.visibleLevel"), ""));
-		d.stat(StatLine.of("Instances with a known level", Aggregate.of(Aggregate.Fn.COUNT_KNOWN, "item.visibleLevel"), ""));
+		d.stat(StatLine.of("Items with a known level", Aggregate.of(Aggregate.Fn.COUNT_KNOWN, "item.visibleLevel"), ""));
 	}
 
 	private static final String ERUN = "enemy.run";
@@ -430,16 +432,16 @@ public final class Datasets {
 
 	static List<ViewDef> views(){
 		List<ViewDef> v = new ArrayList<>();
-		v.add(new ViewDef("runs", "Runs", "Every run.", Query.of(RUNS).withSorts(Arrays.asList(new Sort(FactKeys.START_MILLIS, true)))));
+		v.add(new ViewDef("runs", "Runs", "Every run, newest first.", Query.of(RUNS).withSorts(Arrays.asList(new Sort(FactKeys.START_MILLIS, true)))));
 		v.add(new ViewDef("items", "Items", "Every kind of item, with what became of each.",
 				Query.of(ITEMS).withGroup(itemTable("item.category", "item.type")).withMinSample(ALL_TYPES).withSorts(Arrays.asList(new Sort("count", true))))
 				.withInstances(Query.of(ITEMS)));
-		v.add(itemView("weapons", "Weapons", "Each kind of weapon: tap one for its statistics, then its individual weapons and the runs it was in.", ItemEvents.CAT_WEAPON, ItemEvents.CAT_MISSILE));
+		v.add(itemView("weapons", "Weapons", "Each kind of weapon. Tap one for its statistics, then its individual weapons and the runs it was in.", ItemEvents.CAT_WEAPON, ItemEvents.CAT_MISSILE));
 		v.add(itemView("armor", "Armor", "Each kind of armor, with its statistics, individual pieces and runs.", ItemEvents.CAT_ARMOR));
 		v.add(itemView("rings", "Rings", "Each kind of ring.", ItemEvents.CAT_RING));
 		v.add(itemView("trinkets", "Trinkets", "Each kind of trinket.", ItemEvents.CAT_TRINKET));
 		v.add(itemView("artifacts", "Artifacts", "Each kind of artifact.", ItemEvents.CAT_ARTIFACT));
-		v.add(new ViewDef("enemies", "Enemies", "Each kind of enemy: tap one for its statistics, then its encounters (one per run) and the runs.",
+		v.add(new ViewDef("enemies", "Enemies", "Each kind of enemy. Tap one for its statistics, then each meeting with it (one per run) and the runs.",
 				Query.of(ENEMIES).withGroup(enemyTable()).withMinSample(ALL_TYPES).withSorts(Arrays.asList(new Sort("count", true))))
 				.withInstances(Query.of(ENEMIES)));
 		v.add(new ViewDef("deaths", "Deaths", "Every death.", Query.of(DEATHS)));
@@ -447,13 +449,13 @@ public final class Datasets {
 				Query.of(RUNS).withGroup(runStats(FactKeys.HERO_CLASS)).withMinSample(DEFAULT_MIN_SAMPLE)
 						.withSorts(Arrays.asList(new Sort("count", true)))));
 		//challenges, the exotic chance, the difficulty and its balance revision are what make up a ruleset, so grouping by all of them never mixes rulesets
-		v.add(new ViewDef("challenges", "Challenges", "Runs grouped by challenge setup, exotic chance and difficulty (all rulesets, each group is one ruleset).",
+		v.add(new ViewDef("challenges", "Challenges", "Runs grouped by challenges, exotic-item chance and difficulty. Each group was played under one set of rules.",
 				Query.of(RUNS).withScope(Scope.DEFAULT.withRules(Scope.Rules.ALL, ""))
 						.withGroup(runStats(FactKeys.CHALLENGES, FactKeys.EXOTIC_CHANCE, FactKeys.DIFFICULTY, FactKeys.DIFFICULTY_BALANCE)).withMinSample(DEFAULT_MIN_SAMPLE)
 						.withSorts(Arrays.asList(new Sort("count", true)))));
 		//difficulty is part of the ruleset identity, so each group of a non-baseline level is its own ruleset; level 3 shares its ruleset with
 		//runs recorded before difficulty existed (same balance), which show as the unknown group
-		v.add(new ViewDef("difficulty", "Difficulty", "Runs grouped by difficulty (all rulesets). The unknown group is runs recorded before difficulty existed.",
+		v.add(new ViewDef("difficulty", "Difficulty", "Runs grouped by difficulty, whatever other rules they used. The unknown group is runs recorded before difficulty existed.",
 				Query.of(RUNS).withScope(Scope.DEFAULT.withRules(Scope.Rules.ALL, ""))
 						.withGroup(runStats(FactKeys.DIFFICULTY, FactKeys.DIFFICULTY_BALANCE)).withMinSample(DEFAULT_MIN_SAMPLE)
 						.withSorts(Arrays.asList(new Sort("count", true)))));

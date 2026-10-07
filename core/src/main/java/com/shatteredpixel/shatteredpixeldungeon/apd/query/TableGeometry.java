@@ -33,7 +33,7 @@ public final class TableGeometry {
 	public static final float MAX_COLUMN = 84f;
 	public static final float MAX_FIRST = 64f;
 	public static final float ROW_HEIGHT = 11f;
-	public static final float HEADER_HEIGHT = 22f;
+	public static final float HEADER_HEIGHT = 30f;     //two lines of label and a line of "how much is known"
 
 	public final float[] widths;
 	//left edge of each column within the whole table
@@ -91,6 +91,17 @@ public final class TableGeometry {
 	//the longest text a cell of this column can show (the rest is cut)
 	public int maxChars( int column ){
 		return Math.max(3, (int) ((widths[column] - PAD) / CHAR_WIDTH));
+	}
+
+	//A header label on at most two lines of 'maxChars': it breaks at a space, so a long heading ("True enchantment when generated") is read in full
+	//instead of being cut. Only a label too long even for two lines is cut (and then with "..").
+	public static String[] twoLines( String label, int maxChars ){
+		if (label.length() <= maxChars) return new String[]{ label, "" };
+		int cut = label.lastIndexOf(' ', maxChars);
+		if (cut <= 0) cut = maxChars;      //one long word: break it
+		String first = label.substring(0, cut).trim();
+		String rest = label.substring(cut).trim();
+		return new String[]{ first, fit(rest, maxChars) };
 	}
 
 	public static String fit( String text, int maxChars ){

@@ -241,8 +241,8 @@ public class UimsdModelTest {
 		StringBuilder all = new StringBuilder();
 		for (StatusText.Line l : m.status()) all.append(l.text).append('\n');
 		String text = all.toString();
-		assertTrue(text, text.contains("not known"));
-		assertTrue(text, text.contains("not finished"));
+		assertTrue(text, text.contains("never recorded"));
+		assertTrue(text, text.contains("still going"));
 		assertTrue(text, text.contains("All things"));
 	}
 

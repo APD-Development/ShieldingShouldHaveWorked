@@ -39,6 +39,17 @@ public final class DatasetDef {
 	public final List<LinkDef> links = new ArrayList<>();
 	//what a row is called when a group of them is counted ("Instances", "Encounters"), shown as the count column of grouped tables
 	public String countLabel = "Rows";
+
+	//what one and several of them are called in a sentence ("run", "runs"): the count label, lower case
+	public String unitPlural(){
+		return countLabel.toLowerCase();
+	}
+
+	public String unitSingular(){
+		String p = unitPlural();
+		if (p.endsWith("ies")) return p.substring(0, p.length() - 3) + "y";
+		return p.endsWith("s") ? p.substring(0, p.length() - 1) : p;
+	}
 	//the statistics sheet shown for a group of rows (empty: the group's table aggregates only)
 	public final List<StatLine> sheet = new ArrayList<>();
 	//the telemetry version whose logs can supply rows at all (older logs have no rows: unknown, not "none")

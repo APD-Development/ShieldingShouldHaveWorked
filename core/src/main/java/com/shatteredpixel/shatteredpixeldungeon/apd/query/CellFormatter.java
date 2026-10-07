@@ -126,11 +126,11 @@ public final class CellFormatter {
 	//what a cell's state means, in a sentence
 	public static String explain( int state ){
 		switch (state){
-			case CellText.LOWER: return "at least this much: the log has gaps, or an older recording version could not count all of it";
-			case CellText.INFERRED: return "inferred, not recorded exactly";
-			case CellText.LEGACY: return "taken from an imported ranking record";
-			case CellText.UNKNOWN: return "unknown: it was never recorded";
-			case CellText.HIDDEN: return "hidden information";
+			case CellText.LOWER: return "at least this much: the real value may be higher, because the recording has gaps or an older version could not count all of it";
+			case CellText.INFERRED: return "worked out, not recorded exactly";
+			case CellText.LEGACY: return "taken from an imported ranking record, so only what that record holds";
+			case CellText.UNKNOWN: return "unknown: it was never recorded (this is not zero)";
+			case CellText.HIDDEN: return "hidden: the run is not finished, or hidden information is off";
 			default: return "recorded exactly";
 		}
 	}
@@ -189,7 +189,7 @@ public final class CellFormatter {
 	public static final int SMALL_SAMPLE = 5;
 
 	public static AggText aggregate( DatasetDef def, Aggregate a, AggValue v ){
-		if (!v.known) return new AggText(UNKNOWN_TEXT, "0 of " + v.total + " known" + (v.isUnsure() ? ", some rows could not be judged" : ""), CellText.UNKNOWN, false);
+		if (!v.known) return new AggText(UNKNOWN_TEXT, "0 of " + v.total + " known" + (v.isUnsure() ? ", some entries could not be judged" : ""), CellText.UNKNOWN, false);
 		String prefix = "";
 		int state = CellText.EXACT;
 		if (v.isLowerBound()){
@@ -206,7 +206,7 @@ public final class CellFormatter {
 		switch (a.fn){
 			case COUNT:
 				body = Long.toString((long) v.value);
-				detail = v.total + " rows";
+				detail = v.total + (v.total == 1 ? " entry" : " entries");
 				break;
 			case COUNT_KNOWN:
 				body = Long.toString((long) v.value);
@@ -225,7 +225,7 @@ public final class CellFormatter {
 			default:
 				body = c != null && c.type == ColumnDef.Type.NUM ? value(c, Math.round(v.value)) : Long.toString(Math.round(v.value));
 		}
-		if (v.isUnsure()) detail += "; some rows could not be judged";
+		if (v.isUnsure()) detail += "; some entries could not be judged";
 		boolean small = a.fn != Aggregate.Fn.COUNT && v.contributing < SMALL_SAMPLE;
 		if (small) detail += "; small sample";
 		String compactBody = body;

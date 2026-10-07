@@ -163,7 +163,7 @@ public class AggregateFirstViewsTest {
 		ResultTable t = ResultTable.build(r, 0, 50);
 		List<String> labels = new ArrayList<>();
 		for (ResultTable.Header h : t.headers) labels.add(h.label);
-		assertEquals("[Type, Instances, Runs, Acq %, Equip %, Wins, Win %, Avg floor, Avg lvl, Avg turns, ID %]", labels.toString());
+		assertEquals("[Type, Items, Runs, Acq %, Equip %, Wins, Win %, Avg floor, Avg lvl, Avg turns, ID %]", labels.toString());
 		ResultTable.Line line = t.lines.get(0);
 		assertEquals("Sword", line.cells[0].text);
 		assertEquals("1", line.cells[1].text);   //instances
@@ -191,7 +191,7 @@ public class AggregateFirstViewsTest {
 		b.end(LifecycleEvents.OUTCOME_DIED, "Rat", 3, 4, 6).close(true);
 		Catalog c = load();
 		GroupDetail d = detailOf(c, "weapons", "Sword");
-		assertEquals("4", value(d, "Instances"));
+		assertEquals("4", value(d, "Items"));
 		assertEquals("2", value(d, "Runs containing it"));
 		assertEquals("acquired / seen = 3/4", "75% (3/4)", value(d, "Acquired"));
 		assertEquals("equipped / acquired = 2/3", "67% (2/3)", value(d, "Equipped"));
@@ -213,7 +213,7 @@ public class AggregateFirstViewsTest {
 		GroupDetail d = detailOf(c, "weapons", "Sword");
 		assertEquals("?", value(d, "Level, average"));
 		assertEquals("?", value(d, "Level, median"));
-		assertEquals("0", value(d, "Instances with a known level"));
+		assertEquals("0", value(d, "Items with a known level"));
 		assertEquals("never equipped, so no time equipped to average", "?", value(d, "Turns equipped, average"));
 	}
 

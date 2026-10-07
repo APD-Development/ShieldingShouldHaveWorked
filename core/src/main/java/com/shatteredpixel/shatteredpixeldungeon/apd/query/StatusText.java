@@ -54,50 +54,53 @@ public final class StatusText {
 		return n + " " + (n == 1 ? one : many);
 	}
 
-	//rulesetLabel: how the player's current ruleset reads ("challenges 0, exotic 30%"), may be empty
+	//rulesetLabel: how the player's current rules read ("challenges 0, exotic 30%, difficulty 3"), may be empty
 	public static List<Line> lines( QueryResult r, String viewTitle, String rulesetLabel ){
 		List<Line> out = new ArrayList<>();
 		QueryResult.Stats s = r.stats;
 		Query q = r.query;
+		String one = r.def.unitSingular(), many = r.def.unitPlural();
 		if (r.isGrouped()){
-			out.add(new Line(viewTitle + ": " + plural(r.groups.size(), "group", "groups") + " from " + s.matching + " of "
-					+ plural(s.total, "row", "rows"), INFO, ACT_NONE));
+			out.add(new Line(viewTitle + ": " + plural(r.groups.size(), "group", "groups") + ", counting " + s.matching + " of " + s.total + " " + many, INFO, ACT_NONE));
 		} else {
-			out.add(new Line(viewTitle + ": " + s.matching + " of " + plural(s.total, "row", "rows")
-					+ (s.matching == s.inScope ? "" : " (" + s.inScope + " in scope)"), INFO, ACT_NONE));
+			out.add(new Line(viewTitle + ": " + s.matching + " of " + s.total + " " + many
+					+ (s.matching == s.inScope ? "" : " (your filters removed " + (s.inScope - s.matching) + ")"), INFO, ACT_NONE));
 		}
 		String rules;
 		switch (q.scope.rules){
-			case ALL: rules = "all rulesets"; break;
-			case SPECIFIC: rules = "ruleset " + q.scope.ruleset; break;
-			default: rules = "your current ruleset" + (rulesetLabel == null || rulesetLabel.isEmpty() ? "" : " (" + rulesetLabel + ")");
+			case ALL: rules = "all rules, mixed together"; break;
+			case SPECIFIC: rules = "one set of rules"; break;
+			default: rules = "your current rules" + (rulesetLabel == null || rulesetLabel.isEmpty() ? "" : " (" + rulesetLabel + ")");
 		}
-		out.add(new Line("Showing " + rules + (q.scope.includeUnfinished ? ", unfinished runs included" : ", finished runs only"), INFO, ACT_NONE));
+		out.add(new Line("Showing " + rules + (q.scope.includeUnfinished ? ", runs still going included" : ", finished runs only"), INFO, ACT_NONE));
 
 		if (s.rulesetsInScope > 1){
-			out.add(new Line("MIXED RULESETS: these rows were played under " + s.rulesetsInScope + " different sets of rules (difficulty, challenges, exotic setting), "
-					+ "so they are not directly comparable. Narrow Rules, or group or filter by Difficulty, to compare like with like.", WARN, ACT_NONE));
+			out.add(new Line("MIXED RULES: these " + many + " were played under " + s.rulesetsInScope + " different sets of rules (difficulty, challenges, exotic-item setting), "
+					+ "so they are not directly comparable. Narrow the rules in Options, or group or filter by Difficulty, to compare like with like.", WARN, ACT_NONE));
 		}
-		if (s.otherRulesets > 0) out.add(new Line(plural(s.otherRulesets, "row is", "rows are") + " from other rulesets (another difficulty, challenges or exotic setting) and left out.", NOTE, ACT_OTHER_RULESETS));
+		if (s.otherRulesets > 0){
+			out.add(new Line(plural(s.otherRulesets, one + " was", many + " were") + " played under other rules (another difficulty, challenges or exotic-item setting) and "
+					+ (s.otherRulesets == 1 ? "is" : "are") + " left out. Tap to include " + (s.otherRulesets == 1 ? "it" : "them") + ".", NOTE, ACT_OTHER_RULESETS));
+		}
 		if (s.unknownRuleset > 0){
-			out.add(new Line(plural(s.unknownRuleset, "row has", "rows have") + " an unknown ruleset and "
-					+ (s.unknownRuleset == 1 ? "is" : "are") + " left out (tap to include).", NOTE, ACT_UNKNOWN_RULESET));
+			out.add(new Line(plural(s.unknownRuleset, one, many) + (s.unknownRuleset == 1 ? " is" : " are") + " from runs that never recorded their rules, so "
+					+ (s.unknownRuleset == 1 ? "it is" : "they are") + " left out. Tap to include " + (s.unknownRuleset == 1 ? "it" : "them") + ".", NOTE, ACT_UNKNOWN_RULESET));
 		}
 		if (s.mixedRuleset > 0){
-			out.add(new Line(plural(s.mixedRuleset, "run", "runs") + " changed rules while being played and "
-					+ (s.mixedRuleset == 1 ? "is" : "are") + " left out (tap to include).", NOTE, ACT_MIXED_RULESET));
+			out.add(new Line(plural(s.mixedRuleset, "run", "runs") + " had its rules changed while being played, so "
+					+ (s.mixedRuleset == 1 ? "it is" : "they are") + " left out. Tap to include " + (s.mixedRuleset == 1 ? "it" : "them") + ".", NOTE, ACT_MIXED_RULESET));
 		}
 		if (s.unfinished > 0){
-			out.add(new Line(plural(s.unfinished, "row belongs", "rows belong") + " to a run that is not finished and "
-					+ (s.unfinished == 1 ? "is" : "are") + " left out (tap to include).", NOTE, ACT_UNFINISHED));
+			out.add(new Line(plural(s.unfinished, one, many) + (s.unfinished == 1 ? " belongs" : " belong") + " to a run that is still going, so "
+					+ (s.unfinished == 1 ? "it is" : "they are") + " left out. Tap to include " + (s.unfinished == 1 ? "it" : "them") + ".", NOTE, ACT_UNFINISHED));
 		}
 		if (s.duplicates > 0){
-			out.add(new Line(plural(s.duplicates, "imported record is", "imported records are") + " the same run as a recorded one and "
-					+ (s.duplicates == 1 ? "is" : "are") + " counted once (tap to show them too).", NOTE, ACT_DUPLICATES));
+			out.add(new Line(plural(s.duplicates, "imported ranking record is", "imported ranking records are") + " the same run as one APD recorded itself, so "
+					+ (s.duplicates == 1 ? "it is" : "they are") + " counted once. Tap to show " + (s.duplicates == 1 ? "it" : "them") + " too.", NOTE, ACT_DUPLICATES));
 		}
 		if (s.hiddenRows > 0){
-			out.add(new Line(plural(s.hiddenRows, "row exists", "rows exist") + " only as hidden information of finished runs. "
-					+ "Turn hidden information on to see " + (s.hiddenRows == 1 ? "it" : "them") + ".", NOTE, ACT_HIDDEN_INFO));
+			out.add(new Line(plural(s.hiddenRows, one + " exists", many + " exist") + " only as hidden information of finished runs. "
+					+ "Turn on \"Show hidden information\" in Options to see " + (s.hiddenRows == 1 ? "it" : "them") + ".", NOTE, ACT_HIDDEN_INFO));
 		}
 		for (QueryResult.FilterReport f : s.filters){
 			int lost = f.unknown + f.uncertain + f.hidden;
@@ -105,23 +108,23 @@ public final class StatusText {
 			StringBuilder b = new StringBuilder(describe(r.def, f.filter)).append(": ");
 			boolean first = true;
 			if (f.unknown > 0){
-				b.append(f.unknown).append(" not known");
+				b.append(f.unknown).append(" never recorded");
 				first = false;
 			}
 			if (f.uncertain > 0){
-				b.append(first ? "" : ", ").append(f.uncertain).append(" undecidable (only a lower bound)");
+				b.append(first ? "" : ", ").append(f.uncertain).append(" cannot be decided (only an \"at least\" value)");
 				first = false;
 			}
 			if (f.hidden > 0) b.append(first ? "" : ", ").append(f.hidden).append(" hidden");
-			b.append(" - left out, not counted as a mismatch.");
+			b.append(". Left out, not counted as a mismatch.");
 			out.add(new Line(b.toString(), NOTE, ACT_NONE));
 		}
 		if (r.isGrouped() && s.hiddenSmallGroups > 0){
-			out.add(new Line(plural(s.hiddenSmallGroups, "group is", "groups are") + " hidden because they have fewer than " + q.minSample
-					+ " rows (" + s.hiddenSmallGroupRows + " rows). Tap to show all.", NOTE, ACT_SMALL_GROUPS));
+			out.add(new Line(plural(s.hiddenSmallGroups, "group is", "groups are") + " hidden because " + (s.hiddenSmallGroups == 1 ? "it has" : "they have") + " fewer than " + q.minSample
+					+ " " + many + " (" + s.hiddenSmallGroupRows + " in all). Tap to show all groups.", NOTE, ACT_SMALL_GROUPS));
 		}
 		if (s.runsInScope > 0 && s.runsCovered < s.runsInScope){
-			out.add(new Line("Rows come from " + s.runsCovered + " of " + plural(s.runsInScope, "run", "runs") + " in scope; the others were recorded before this data existed.", WARN, ACT_NONE));
+			out.add(new Line("This table has " + many + " from " + s.runsCovered + " of " + plural(s.runsInScope, "run", "runs") + " in scope; the others were recorded before this kind of detail existed.", WARN, ACT_NONE));
 		}
 		if (q.showInternal) out.add(new Line("Hidden information is on. It is shown for finished runs only, never for a run that is still going.", INFO, ACT_NONE));
 		for (String p : r.problems) out.add(new Line(p, WARN, ACT_NONE));

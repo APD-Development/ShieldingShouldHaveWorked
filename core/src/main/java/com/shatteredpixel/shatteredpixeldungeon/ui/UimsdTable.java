@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.query.ResultTable;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.TableGeometry;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.watabou.input.PointerEvent;
+import com.shatteredpixel.shatteredpixeldungeon.ui.UimsdStyle;
 import com.watabou.input.ScrollEvent;
 import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.ui.Component;
@@ -70,6 +71,11 @@ public class UimsdTable extends Component {
 
 	private ClickPane corner, header, firstCol;
 	private BodyPane body;
+	//the row last tapped stays marked while its details are open
+	private int selected = -1;
+	private ColorBlock selFirst, selBody;
+	//soft edges that show the table goes on sideways
+	private ColorBlock moreRight, moreLeft;
 
 	public UimsdTable(){
 		super();
@@ -111,6 +117,11 @@ public class UimsdTable extends Component {
 			}
 		};
 		add(corner);
+		moreRight = new ColorBlock(3, 1, 0x66FFE066);
+		moreLeft = new ColorBlock(3, 1, 0x66FFE066);
+		moreRight.visible = moreLeft.visible = false;
+		add(moreRight);
+		add(moreLeft);
 	}
 
 	private float firstWidth(){
@@ -132,7 +143,25 @@ public class UimsdTable extends Component {
 	private void rowTapped( float contentY ){
 		if (geo == null || table == null || listener == null) return;
 		int r = geo.rowAt(contentY);
-		if (r >= 0 && r < table.lines.size()) listener.onRow(table.lines.get(r));
+		if (r >= 0 && r < table.lines.size()){
+			select(r);
+			listener.onRow(table.lines.get(r));
+		}
+	}
+
+	private void select( int r ){
+		selected = r;
+		if (selFirst != null) selFirst.killAndErase();
+		if (selBody != null) selBody.killAndErase();
+		selFirst = selBody = null;
+		if (r < 0 || geo == null) return;
+		float rowH = TableGeometry.ROW_HEIGHT;
+		selFirst = new ColorBlock(firstWidth(), rowH, UimsdStyle.ROW_SELECTED);
+		selFirst.y = r * rowH;
+		firstCol.content().add(selFirst);
+		selBody = new ColorBlock(geo.scrollingWidth(), rowH, UimsdStyle.ROW_SELECTED);
+		selBody.y = r * rowH;
+		body.content().add(selBody);
 	}
 
 	private class BodyPane extends ScrollPane {
@@ -181,6 +210,18 @@ public class UimsdTable extends Component {
 			float sx = body.content().camera.scroll.x, sy = body.content().camera.scroll.y;
 			header.scrollTo(sx, 0);
 			firstCol.scrollTo(0, sy);
+			//an edge mark on the side where more columns wait
+			float room = body.width();
+			float more = geo.scrollingWidth() - room;
+			boolean right = more > 1 && sx < more - 1, left = more > 1 && sx > 1;
+			moreRight.visible = right;
+			moreLeft.visible = left;
+			moreRight.size(3, body.height() + TableGeometry.HEADER_HEIGHT);
+			moreRight.x = x + width - 3;
+			moreRight.y = y;
+			moreLeft.size(3, body.height() + TableGeometry.HEADER_HEIGHT);
+			moreLeft.x = x + firstWidth();
+			moreLeft.y = y;
 		}
 	}
 
@@ -207,6 +248,8 @@ public class UimsdTable extends Component {
 	}
 
 	private void clearContents(){
+		selFirst = selBody = null;
+		selected = -1;
 		for (ScrollPane p : new ScrollPane[]{corner, header, firstCol, body}) p.content().clear();
 	}
 
@@ -227,14 +270,22 @@ public class UimsdTable extends Component {
 			float w = c == 0 ? first : geo.widths[c];
 			int chars = Math.max(3, (int) ((w - TableGeometry.PAD) / TableGeometry.CHAR_WIDTH));
 			String arrow = h.sortDirection == 0 ? "" : (h.sortDirection > 0 ? " ^" : " v") + (h.sortRank > 1 ? h.sortRank : "");
-			RenderedTextBlock label = PixelScene.renderTextBlock(TableGeometry.fit(h.label + arrow, chars), 6);
-			label.hardlight(h.sortDirection == 0 ? HEADER_COLOR : 0xFFFFFF);
+			String[] lines = TableGeometry.twoLines(h.label + arrow, chars);
+			int labelColor = h.sortDirection == 0 ? HEADER_COLOR : 0xFFFFFF;
+			RenderedTextBlock label = PixelScene.renderTextBlock(lines[0], 6);
+			label.hardlight(labelColor);
 			label.setPos(left + 2, 2);
 			target.add(label);
+			if (!lines[1].isEmpty()){
+				RenderedTextBlock label2 = PixelScene.renderTextBlock(lines[1], 6);
+				label2.hardlight(labelColor);
+				label2.setPos(left + 2, 9.5f);
+				target.add(label2);
+			}
 			if (!h.coverage.isEmpty()){
 				RenderedTextBlock cov = PixelScene.renderTextBlock(TableGeometry.fit(h.coverage, chars), 5);
 				cov.hardlight(0x999999);
-				cov.setPos(left + 2, 12);
+				cov.setPos(left + 2, 19.5f);
 				target.add(cov);
 			}
 			ColorBlock line = new ColorBlock(1, headerH, 0x33FFFFFF);

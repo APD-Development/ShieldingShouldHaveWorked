@@ -74,13 +74,13 @@ public class UimsdHomeTourTest {
 		//all rules over a history that was played under several: the page, the cards and the report say so
 		UimsdHome all = UimsdHome.build(cat, RULES.id, true);
 		assertTrue(all.mixedRulesets);
-		assertTrue(all.scopeNote, all.scopeNote.startsWith("MIXED RULESETS"));
+		assertTrue(all.scopeNote, all.scopeNote.startsWith("MIXED RULES"));
 		assertTrue(all.scopeNote.contains("not directly comparable"));
-		assertTrue(all.card("records").title, all.card("records").title.endsWith("(mixed rulesets)"));
-		assertTrue(all.text().contains("MIXED RULESETS"));
+		assertTrue(all.card("records").title, all.card("records").title.endsWith("(mixed rules)"));
+		assertTrue(all.text().contains("MIXED RULES"));
 		String report = com.shatteredpixel.shatteredpixeldungeon.apd.report.ReportRenderer.markdown(
 				com.shatteredpixel.shatteredpixeldungeon.apd.report.ReportBuilder.lifetime(cat, RULES.id, "", true, 1_800_000_000_000L, "test"));
-		assertTrue(report.contains("MIXED RULESETS"));
+		assertTrue(report.contains("MIXED RULES"));
 
 		//only the player's own rules: nothing to compare across, no claim of mixing
 		UimsdHome mine = UimsdHome.build(cat, RULES.id, false);
@@ -93,15 +93,15 @@ public class UimsdHomeTourTest {
 		m.selectView("runs");
 		StringBuilder before = new StringBuilder();
 		for (StatusText.Line l : StatusText.lines(m.result(), "Runs", "")) before.append(l.text).append('\n');
-		assertFalse(before.toString(), before.toString().contains("MIXED RULESETS"));
+		assertFalse(before.toString(), before.toString().contains("MIXED RULES"));
 		m.setScope(m.query().scope.withRules(Scope.Rules.ALL, ""));
 		StringBuilder broad = new StringBuilder();
 		for (StatusText.Line l : StatusText.lines(m.result(), "Runs", "")) broad.append(l.text).append('\n');
-		assertTrue(broad.toString(), broad.toString().contains("MIXED RULESETS"));
+		assertTrue(broad.toString(), broad.toString().contains("MIXED RULES"));
 		m.setScope(m.query().scope.withRules(Scope.Rules.SPECIFIC, RULES.id));
 		StringBuilder one = new StringBuilder();
 		for (StatusText.Line l : StatusText.lines(m.result(), "Runs", "")) one.append(l.text).append('\n');
-		assertFalse("narrowing to one ruleset is the way to compare like with like", one.toString().contains("MIXED RULESETS"));
+		assertFalse("narrowing to one ruleset is the way to compare like with like", one.toString().contains("MIXED RULES"));
 	}
 
 	@Test

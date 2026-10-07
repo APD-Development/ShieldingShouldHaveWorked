@@ -117,7 +117,7 @@ public class WndUimsdRow extends Window {
 			final GroupRow g = line.group;
 			GroupDetail detail = GroupDetail.build(r, g);
 			title = detail.title;
-			sheet.add(SheetLine.section(detail.rows + (detail.rows == 1 ? " " + singular(def.countLabel) : " " + def.countLabel.toLowerCase()) + " in this group"));
+			sheet.add(SheetLine.section(detail.rows + " " + (detail.rows == 1 ? def.unitSingular() : def.unitPlural()) + " in this group"));
 			for (GroupDetail.Line k : detail.keys) sheet.add(new SheetLine(k.label, k.value, k.detail, k.state, false));
 			for (GroupDetail.Line l : detail.lines){
 				if (l.section) sheet.add(SheetLine.section(l.label));
@@ -125,7 +125,7 @@ public class WndUimsdRow extends Window {
 			}
 			if (m.canOpenGroups()){
 				int n = g.n;
-				actions.add(new Action("The " + n + " " + (n == 1 ? singular(def.countLabel) : def.countLabel.toLowerCase()), new Runnable(){
+				actions.add(new Action((n == 1 ? "Open the " : "Open all ") + n + " " + (n == 1 ? def.unitSingular() : def.unitPlural()), new Runnable(){
 					@Override
 					public void run(){
 						m.openGroupRows(g);
@@ -134,7 +134,7 @@ public class WndUimsdRow extends Window {
 			}
 			final int runs = m.groupRunCount(g);
 			if (runs > 0 && m.canOpenGroups()){
-				actions.add(new Action("The " + runs + (runs == 1 ? " run" : " runs") + " containing it", new Runnable(){
+				actions.add(new Action("Open the " + runs + (runs == 1 ? " run" : " runs") + " it appears in", new Runnable(){
 					@Override
 					public void run(){
 						m.openGroupRuns(g);

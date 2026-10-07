@@ -106,27 +106,53 @@ public class UimsdHomePane extends ScrollPane {
 			ColorBlock bg = new ColorBlock(w, 10, CARD_COLOR);
 			bg.y = top;
 			content.add(bg);
+			ColorBlock accent = new ColorBlock(2, 10, UimsdStyle.HEADING);
+			accent.y = top;
+			content.add(accent);
 			y += PAD;
-			RenderedTextBlock title = PixelScene.renderTextBlock(card.title, 8);
-			title.hardlight(TITLE_COLOR);
-			title.maxWidth((int) (w - 2 * PAD));
-			title.setPos(PAD, y);
+			RenderedTextBlock title = PixelScene.renderTextBlock(card.title, UimsdStyle.SIZE_TEXT + 1);
+			title.hardlight(UimsdStyle.TITLE);
+			title.maxWidth((int) (w - 2 * PAD - 2));
+			title.setPos(PAD + 2, y);
 			content.add(title);
-			y = title.bottom() + 2;
+			y = title.bottom() + 1;
+			ColorBlock rule = new ColorBlock(w - 2 * PAD - 2, 1, UimsdStyle.RULE);
+			rule.x = PAD + 2;
+			rule.y = y;
+			content.add(rule);
+			y += 3;
+			//labels in grey on the left, values in the colour of what kind of knowledge they are on the right, with the small print under the value
+			float labelW = (w - 2 * PAD - 2) * 0.46f, valueW = (w - 2 * PAD - 2) - labelW - 2;
 			for (UimsdHome.Line line : card.lines){
-				RenderedTextBlock t;
 				if (line.heading){
-					t = PixelScene.renderTextBlock(line.label, 6);
-					t.hardlight(HEADING_COLOR);
-				} else {
-					String text = line.label + ": " + line.value + (line.detail.isEmpty() ? "" : " (" + line.detail + ")");
-					t = PixelScene.renderTextBlock(text, 6);
-					t.hardlight(UimsdTable.color(line.state));
+					RenderedTextBlock h = PixelScene.renderTextBlock(line.label.toUpperCase(), UimsdStyle.SIZE_META);
+					h.hardlight(UimsdStyle.HEADING);
+					h.maxWidth((int) (w - 2 * PAD - 2));
+					h.setPos(PAD + 2, y + 1);
+					content.add(h);
+					y = h.bottom() + 2;
+					continue;
 				}
-				t.maxWidth((int) (w - 2 * PAD));
-				t.setPos(PAD, y);
-				content.add(t);
-				y = t.bottom() + 1.5f;
+				RenderedTextBlock label = PixelScene.renderTextBlock(line.label, UimsdStyle.SIZE_HELP);
+				label.hardlight(UimsdStyle.MUTED);
+				label.maxWidth((int) labelW);
+				label.setPos(PAD + 2, y);
+				content.add(label);
+				RenderedTextBlock value = PixelScene.renderTextBlock(line.value, UimsdStyle.SIZE_HELP);
+				value.hardlight(UimsdTable.color(line.state));
+				value.maxWidth((int) valueW);
+				value.setPos(PAD + 2 + labelW + 2, y);
+				content.add(value);
+				float lineH = Math.max(label.height(), value.height());
+				if (!line.detail.isEmpty()){
+					RenderedTextBlock detail = PixelScene.renderTextBlock(line.detail, UimsdStyle.SIZE_META);
+					detail.hardlight(UimsdStyle.FAINT);
+					detail.maxWidth((int) valueW);
+					detail.setPos(PAD + 2 + labelW + 2, y + value.height() + 0.5f);
+					content.add(detail);
+					lineH = Math.max(label.height(), value.height() + 0.5f + detail.height());
+				}
+				y += lineH + 2;
 			}
 			y += 2;
 			float bx = PAD;
@@ -151,6 +177,7 @@ public class UimsdHomePane extends ScrollPane {
 			}
 			y = rowTop + (card.links.isEmpty() ? 0 : 15) + PAD;
 			bg.size(w, y - top);
+			accent.size(2, y - top);
 			y += 3;
 		}
 		content.setSize(w, y);

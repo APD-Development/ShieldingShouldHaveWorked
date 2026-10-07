@@ -13,7 +13,7 @@ public final class ReportRenderer {
 
 	public static final String SYNTHETIC_NOTICE = "SYNTHETIC DEMO DATA: made up for testing. This is NOT real play history.";
 
-	public static final String CANONICAL_NOTICE = "CANONICAL DATA: rows marked canonical are what the run's seed gives in an in-order replay under APD's "
+	public static final String CANONICAL_NOTICE = "CANONICAL DATA: entries marked canonical are what the run's seed gives in an in-order replay under APD's "
 			+ "reference rules. They are NOT recorded history and NOT what this run would have met: play changes what later floors hold. "
 			+ "Rows marked recorded come from the run's own log and are authoritative.";
 
@@ -42,7 +42,7 @@ public final class ReportRenderer {
 	private static String provLabel( Report.Provenance p ){
 		switch (p){
 			case CANONICAL: return "CANONICAL (seed replay, not recorded history)";
-			case MIXED: return "RECORDED and CANONICAL rows: see each row's Basis";
+			case MIXED: return "both RECORDED and CANONICAL entries: see the Basis column";
 			default: return "RECORDED";
 		}
 	}
@@ -118,7 +118,7 @@ public final class ReportRenderer {
 					for (Report.Cell c : row) sb.append(' ').append(md(c.text)).append(c.small ? " (small sample)" : "").append(" |");
 					sb.append("\n");
 				}
-				if (t.omitted > 0) sb.append("\n_").append(t.omitted).append(" more rows are not listed._\n");
+				if (t.omitted > 0) sb.append("\n_").append(t.omitted).append(" more entries are not listed._\n");
 				StringBuilder cov = new StringBuilder();
 				for (int i = 0; i < t.coverage.size(); i++){
 					if (!t.coverage.get(i).isEmpty()) cov.append(cov.length() > 0 ? "; " : "").append(t.headers.get(i)).append(" ").append(t.coverage.get(i));
@@ -176,7 +176,7 @@ public final class ReportRenderer {
 					}
 					sb.append("\n");
 				}
-				if (t.omitted > 0) sb.append("  (").append(t.omitted).append(" more rows are not listed)\n");
+				if (t.omitted > 0) sb.append("  (").append(t.omitted).append(" more entries are not listed)\n");
 			}
 		}
 		appendLegend(sb, r, "\nMARKS\n", "  ", " = ", "\n");
@@ -264,7 +264,7 @@ public final class ReportRenderer {
 					sb.append("</tr>\n");
 				}
 				sb.append("</table>\n");
-				if (t.omitted > 0) sb.append("<p class=\"prov\">").append(t.omitted).append(" more rows are not listed.</p>\n");
+				if (t.omitted > 0) sb.append("<p class=\"prov\">").append(t.omitted).append(" more entries are not listed.</p>\n");
 			}
 		}
 		String[][] legend = legend(r.statesUsed());

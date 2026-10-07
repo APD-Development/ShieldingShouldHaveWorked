@@ -55,27 +55,29 @@ public final class UimsdTutorial {
 	private static final List<Step> STEPS;
 	static {
 		List<Step> s = new ArrayList<>();
-		s.add(new Step("welcome", "Welcome", "This is UIMSD, the record of your runs. The Home page shows the numbers most people want. "
-				+ "This tour walks you through the real screens in a few minutes. You can skip any step.", Expect.NEXT, "home.cards"));
-		s.add(new Step("view", "Open a view", "Each card has buttons that open the full table behind it. Tap Weapons on the Gear card.", Expect.VIEW, "home.gear"));
-		s.add(new Step("table", "Reading the table", "Each row is one TYPE of weapon, with numbers about all of them. "
-				+ "The columns can be sorted by tapping a heading. Tap Next.", Expect.NEXT, "table.header"));
-		s.add(new Step("open", "Open a row", "Tap the first row. In the window that opens, choose the button that lists its individual items.", Expect.DRILL, "table.firstRow"));
-		s.add(new Step("deeper", "One level down", "You are now looking at the individual items of that type, not the type itself. "
-				+ "The line under the view button says where you are.", Expect.NEXT, "status"));
-		s.add(new Step("back", "Back", "Tap Back to go up one level.", Expect.BACK, "back"));
-		s.add(new Step("filter", "A filter", "Tap Filter, choose a column, how to compare and a value. Only rows that match stay.", Expect.FILTER, "filter"));
-		s.add(new Step("filter2", "Stacked filters", "Add a second filter. Filters stack: a row must pass all of them. "
-				+ "Tap a filter's button under the view button to change or remove it.", Expect.FILTER, "filter"));
-		s.add(new Step("sort", "Sorting", "Tap a column heading to sort by it. Tap again to reverse it.", Expect.SORT, "table.header"));
-		s.add(new Step("columns", "Columns", "Tap Columns and switch a column on or off.", Expect.COLUMNS, "columns"));
-		s.add(new Step("marks", "The marks", "? means unknown (never recorded, not zero). >=12 means at least 12. ~6 means inferred, worked out rather "
-				+ "than recorded exactly. A number with no mark was recorded exactly. Hidden means it belongs to a run you are still playing.", Expect.NEXT, "table.firstRow"));
-		s.add(new Step("sample", "Sample size", "Numbers based on fewer than 5 values are shown dimmed: a 100% win rate from 2 runs means little.", Expect.NEXT, "table.header"));
-		s.add(new Step("coverage", "Coverage", "The Notes button says what you are looking at, what was left out, and how much of the data "
-				+ "each column is based on. Older runs lack some details, which is why some cells show ?.", Expect.NEXT, "notes"));
-		s.add(new Step("reports", "Sharing a report", "Options has 'Share a report of this view': the table you are looking at, with its filters, as text, Markdown, "
-				+ "a web page or CSV. Home has a Report button for your overall numbers. Reports keep the marks and say what is canonical.", Expect.NEXT, "options"));
+		s.add(new Step("welcome", "Welcome", "This is UIMSD, the game's statistics system. The Home page sums up your finished runs. "
+				+ "This tour walks you through the real screens in about two minutes. Tap Next to move on, or skip any step.", Expect.NEXT, "home.cards"));
+		s.add(new Step("view", "Open a table", "Each card has buttons that open the full table behind it. Tap Weapons on the Gear card.", Expect.VIEW, "home.gear"));
+		s.add(new Step("table", "Reading a table", "Each line is one KIND of weapon, with numbers about all of them: how many you met, how often you equipped them, how often you won. "
+				+ "Tap a column heading to sort. Tap Next.", Expect.NEXT, "table.header"));
+		s.add(new Step("open", "Open a line", "Tap the first line to see everything known about it. Then choose the button that opens its individual weapons (it starts with \"Open all\").",
+				Expect.DRILL, "table.firstRow"));
+		s.add(new Step("deeper", "One level down", "Now you are looking at the individual weapons of that kind, not the kind itself. "
+				+ "The line under the table's name says where you are.", Expect.NEXT, "status"));
+		s.add(new Step("back", "Going back", "Tap Back to go up one level.", Expect.BACK, "back"));
+		s.add(new Step("filter", "A filter", "Tap Filter. Step 1: choose what to filter on. Step 2: choose how to compare. Step 3: choose a value. "
+				+ "Only the lines that match stay in the table.", Expect.FILTER, "filter"));
+		s.add(new Step("filter2", "More than one filter", "Add a second filter. Filters stack: a line has to pass all of them. "
+				+ "Tap a filter's button above the table to change or remove it.", Expect.FILTER, "filter"));
+		s.add(new Step("sort", "Sorting", "Tap a column heading to sort by it. Tap again to reverse it. Lines where the value is unknown (?) always come last.", Expect.SORT, "table.header"));
+		s.add(new Step("columns", "Columns", "Tap Columns and switch a column on or off. There are far more columns than fit on the screen; they are grouped by topic.", Expect.COLUMNS, "columns"));
+		s.add(new Step("marks", "The marks", "12 was recorded exactly. >=12 means at least 12. ~6 was worked out, not recorded exactly. ? means unknown: never recorded, and not zero. "
+				+ "Hidden means it belongs to a run you are still playing.", Expect.NEXT, "table.firstRow"));
+		s.add(new Step("sample", "Small samples", "A number based on fewer than 5 values is shown dimmed: a 100% win rate from 2 runs means little.", Expect.NEXT, "table.header"));
+		s.add(new Step("coverage", "How much is known", "The Notes button says what you are looking at and what is being left out. Options > How much is known shows, column by column, "
+				+ "how many values were recorded. Older runs lack some details, which is why some cells show ?.", Expect.NEXT, "notes"));
+		s.add(new Step("reports", "Sharing a report", "Options has \"Share a report of this table\": the table you are looking at, with its filters, as text, Markdown, a web page or CSV. "
+				+ "Home has a Report button for your overall numbers. Reports keep the marks and say which data is canonical (rebuilt from a seed) rather than recorded.", Expect.NEXT, "options"));
 		s.add(new Step("home", "Home and Guide", "The Home button returns to the summary. The ? button opens the Guide, where you can read any topic "
 				+ "again or take this tour again.", Expect.NEXT, "home"));
 		STEPS = Collections.unmodifiableList(s);

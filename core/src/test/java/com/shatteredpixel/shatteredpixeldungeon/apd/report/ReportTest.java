@@ -269,7 +269,7 @@ public class ReportTest {
 		String md = ReportRenderer.markdown(r);
 		assertTrue(md.contains("Canonical (floor never reached)"));
 		assertTrue(md.contains("Recorded (the run's own log)"));
-		assertTrue(md.contains("RECORDED and CANONICAL rows"));
+		assertTrue(md.contains("RECORDED and CANONICAL entries"));
 		//canonical values carry the ~ mark in every format, recorded ones do not
 		Report.Table items = r.firstTable();
 		int basisCol = items.headers.indexOf("Basis"), itemCol = items.headers.indexOf("Item");
