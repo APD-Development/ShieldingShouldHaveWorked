@@ -117,6 +117,21 @@ logcat tags APDMIG/APDPERF into the job log and uploads logcat artifacts.
   interferes with the result.
 - **UIMSD universal architecture: IMPLEMENTED on the claude branch (U1-U4), see docs/APD-UIMSD-UNIVERSAL.md "Status".** Telemetry 1.8. Core tests 628 green, device tests green on
   API 26 + 34 for U1-U3 (U4 running). Remaining: more recording batches (backlog list in that doc), the absurd-query easter egg, and the user's physical check of the Ask card.
+- **BUILD 69 PHONE CHECK IN PROGRESS (user). FROZEN until the user's feedback: do not change the universal-UIMSD architecture from this pass unless the check finds an actual problem; do not
+  start new code.** Being checked: Home > Ask a question (builder, answer, Open as a table carrying into the advanced tools); Tables picker sections (Floors, Attacks, Damage, Healing,
+  Shielding, Experience, Kills, Equipment, new fact tables); APD Settings responds to touch; plus broken sorting, bad wrapping, awkward navigation, wrong/empty results, clunky feel, and any
+  hidden information exposed. Older runs showing the new details as unknown is expected.
+- **NEXT PRODUCT CHANGE (approved, NOT started; wait for Build 69 feedback): DIFFICULTY MOVES TO RUN SETUP.** Difficulty is a run configuration choice, not an application setting.
+  Flow: Play > choose character > choose Difficulty 1-5 > start the run; ideally difficulty is directly visible on the character/run-start screen, not in another menu.
+  Requirements: remove "Difficulty (new runs)" from normal/public APD Settings; difficulty stays stored per run; once a run begins its difficulty is LOCKED and changing the future selection
+  never modifies an active run; existing/legacy run behavior stays compatible; difficulty 3 is clearly labelled Normal and stays EXACTLY the current normal SPD/APD balance; do NOT rebalance
+  1-5 in this change; UIMSD/telemetry keep recording the actual selected difficulty and balance revision; private INDEV builds may keep direct difficulty controls elsewhere for testing.
+  General rule: APD Settings = application preferences, storage/data, accessibility and appropriate developer controls. Run setup = choices that define the upcoming run: character,
+  difficulty, challenges and future run-specific modifiers.
+- **CLERIC JOKE (recorded for later, HUMOR ONLY, after the run-setup work):** when the player selects Cleric, APD may occasionally visually mess with the difficulty display (the real difficulty
+  might be 3 but the UI briefly shows something absurd like "Difficulty: 5.0 / 10"). Never secretly change the player's real selected difficulty. Never mechanically punish Cleric: Cleric stays
+  a legitimate, fairly balanced character. May later be accompanied by a developer message. Respects the Adult/Clean humor setting. Must not distract from the run-setup UI work. The running
+  joke: APD treats the user's hatred of Cleric as information of extreme importance.
 - Owner decision left open by Phase 9: natural regeneration is the biggest log cost (32 B/heal exact vs 18 B inferred, ~70 KiB per
   20k-turn run). Possible later trade-off: one summary event per stretch of regeneration (loses per-tick history). Not done.
 
