@@ -67,7 +67,7 @@ public final class UimsdHome {
 
 	public static final class Card {
 		public final String id;
-		public final String title;
+		public String title;
 		public final List<Line> lines = new ArrayList<>();
 		public final List<Link> links = new ArrayList<>();
 
@@ -98,11 +98,17 @@ public final class UimsdHome {
 
 	private static final int LIST = 4;
 
-	private UimsdHome( int runs, int runsElsewhere, boolean allRules ){
+	//true when the page covers runs played under more than one set of rules (only possible with all rules shown): its numbers are not comparable
+	public final boolean mixedRulesets;
+
+	private UimsdHome( int runs, int runsElsewhere, boolean allRules, int rulesets ){
 		this.runs = runs;
 		this.runsElsewhere = runsElsewhere;
 		this.allRules = allRules;
-		this.scopeNote = (allRules ? "All finished runs, whatever rules they were played under." : "Finished runs played under your current rules.")
+		this.mixedRulesets = allRules && rulesets > 1;
+		this.scopeNote = (allRules ? (mixedRulesets
+				? "MIXED RULESETS: all finished runs, played under " + rulesets + " different sets of rules (difficulty, challenges, exotic setting). The numbers below are not directly comparable: tap Rules to see only your current rules, or open Difficulty to compare like with like."
+				: "All finished runs, whatever rules they were played under.") : "Finished runs played under your current rules.")
 				+ (!allRules && runsElsewhere > 0 ? " " + runsElsewhere + (runsElsewhere == 1 ? " run was" : " runs were") + " played under other rules (another difficulty, challenges or exotic setting): tap Rules to include them." : "");
 	}
 
@@ -120,7 +126,7 @@ public final class UimsdHome {
 	public static UimsdHome build( Catalog cat, String currentRuleset, boolean allRules ){
 		Scope scope = allRules ? Scope.DEFAULT.withRules(Scope.Rules.ALL, "") : Scope.DEFAULT;
 		Dataset runsDs = cat == null ? null : cat.dataset(Datasets.RUNS);
-		if (runsDs == null) return new UimsdHome(0, 0, allRules);
+		if (runsDs == null) return new UimsdHome(0, 0, allRules, 0);
 
 		Query rq = Query.of(Datasets.RUNS).withScope(scope).withMinSample(0);
 		QueryResult runs = QueryEngine.run(runsDs, rq, currentRuleset);
@@ -129,7 +135,7 @@ public final class UimsdHome {
 			Query all = Query.of(Datasets.RUNS).withScope(Scope.DEFAULT.withRules(Scope.Rules.ALL, "")).withMinSample(0);
 			elsewhere = Math.max(0, QueryEngine.run(runsDs, all, currentRuleset).rows.size() - runs.rows.size());
 		}
-		UimsdHome h = new UimsdHome(runs.rows.size(), elsewhere, allRules);
+		UimsdHome h = new UimsdHome(runs.rows.size(), elsewhere, allRules, runs.stats.rulesetsInScope);
 		if (h.runs == 0) return h;
 
 		h.cards.add(overview(runsDs, rq, runs));
@@ -144,6 +150,10 @@ public final class UimsdHome {
 		h.cards.add(recent(cat, runsDs, scope, currentRuleset));
 		c = records(runsDs, rq, runs);
 		if (c != null) h.cards.add(c);
+		//a record or a difficulty comparison taken across rulesets must say so on the card itself
+		if (h.mixedRulesets){
+			for (Card card : h.cards) if ((card.id.equals("records") || card.id.equals("difficulty")) && !card.title.endsWith("(mixed rulesets)")) card.title += " (mixed rulesets)";
+		}
 		return h;
 	}
 
@@ -237,6 +247,12 @@ public final class UimsdHome {
 			String win = num(def, r.query, Aggregate.rate(FactKeys.OUTCOME, 1), g.rows, st, d1);
 			int state = st[0] == CellText.HIDDEN ? CellText.EXACT : st[0];
 			c.line(label, g.n + (g.n == 1 ? " run" : " runs") + ", " + win + " won", "", state);
+		}
+		//a group is one difficulty, but its runs can still differ in challenges or exotic setting: say so instead of implying they are alike
+		if (r.stats.rulesetsInScope > r.groups.size()){
+			c.title = "Difficulty (mixed rulesets)";
+			c.lines.add(0, new Line(false, "Mixed rulesets", "not directly comparable",
+					"some of these runs used other challenges or exotic settings; open the Challenges table to compare like with like", CellText.EXACT));
 		}
 		c.link("Difficulty table", "difficulty");
 		return c;

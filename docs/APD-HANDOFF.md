@@ -14,6 +14,19 @@ logcat tags APDMIG/APDPERF into the job log and uploads logcat artifacts.
 - Stability pass (CI green): per-run balance revision persisted/used everywhere; UIMSD-from-game cannot start a floor replay; seed floors refuse imported/unrecorded-challenge/unknown-revision runs. Product notes: none needed. New phone check: none.
 - Stability pass 2 (CI green, superseded by the integrity audit below): Catalog synchronized (real race shown by test), reports from demo/sample data carry a SYNTHETIC notice, unfinished-comparison hidden-info regression test. No new phone checks.
 - **THE PHONE-CHECK BUILD = apd-build-60 = commit 3a35441a7** (integrity audit; core tests green, device tests green API 26 + 34; replaces build 57). No new phone checks.
+- **Decisions 1-5 (pending CI; replaces build 60 as THE PHONE-CHECK build once green):**
+  1. Exotic setting is part of the run: `Dungeon.apdExotic` snapshot at run start, saved as `apd_exotic`; gameplay and ruleset identity use it, never the live slider
+     (`SPDSettings.apdExoticChance()` = the run's value; `apdExoticSetting()` = the slider = next run; slider label says "new runs").
+  2. Old/adopted runs (save without `apd_exotic`) keep playing with the live setting but are recorded with NO ruleset and NO exotic value (telemetry: empty ruleset id,
+     exotic = 255 "not recorded"): unknown, outside "my rules" scope, refused by seed floors. Logs already written by earlier builds are left as they are.
+  3. Broad views say so: status line "MIXED RULESETS ..." whenever the rows in scope span more than one ruleset, Home note + "(mixed rulesets)" on Records/Difficulty
+     cards, same text in the lifetime report. Narrowing Rules/difficulty removes it; drill-downs unchanged.
+  4. Seed floors: recorded item state = state AT GENERATION (new internal columns item.genLevel/genCursed/genEnchant, only for items first recorded at generation;
+     builder version 4 rebuilds caches). Items without it show ? for level/curse/enchant and are compared by kind only ("Same kind, state not recorded"), never a mismatch.
+  5. Seed floors remembers the hidden-information choice and restores it on Back / any other view.
+  NEW PHONE-CHECK ITEMS: (a) APD Settings exotic slider reads "(new runs)"; (b) a game saved by build 60 or older, continued, shows "exotic not recorded (older run)" in UIMSD
+  rules text and its new log is unknown-ruleset; (c) Home with all rules on shows the MIXED RULESETS note; (d) Seed floors comparison table has the new "Same kind, state
+  not recorded" column; (e) hidden information is back to your own setting after leaving Seed floors.
 - Integrity audit (invariants 1-12; 3 read-only audits, then verified): FIXED (tests added; leak and ruleset-gap reproduced before the fix): hidden-group
   drill-down copied an unfinished run's true value into a visible filter; a ruleset change in the last level / between saves was not recorded until now
   (checked at save and run end too); Challenges view merged difficulties (now also groups by difficulty + balance); seed floors refuse MIXED-rules runs and
@@ -21,11 +34,8 @@ logcat tags APDMIG/APDPERF into the job log and uploads logcat artifacts.
   seed Back places dropped when another run's seed floors open; UIMSD rules label used the wrong challenges from a running game.
   ENFORCED with tests: raw logs only appended (LogRecovery tail-repair keeps the cut bytes), cache rebuild identical, demo isolation, imports never replace,
   finished/unfinished masking in tables/filters/sorts/aggregates/reports/exports, Catalog sync.
-  NEED A PRODUCT DECISION (not changed): (a) exotic chance is a live setting, not stored in the run (changing it mid-run changes generation; now always
-  recorded as a ruleset change, but a change-and-revert within one save interval is invisible) - persist it per run?; (b) runs adopted from an old save / log-missing
-  take the CURRENT exotic setting as their ruleset - mark unknown?; (c) Difficulty view groups ignore challenges/exotic, Home "all rules" records mix rulesets
-  (disclosed in text only); (d) seed-floor "recorded" item truth is the item's FINAL state, so comparing to the canonical (as generated) counts play-changed
-  items as different - needs generation-time columns (builder version bump); (e) seed views force hidden information on and carry it through Back.
+  PRODUCT DECISIONS (all five decided and implemented, see "Decisions 1-5" below): exotic setting per run, unknown for old runs, mixed-ruleset labelling,
+  as-generated item state in seed floors, hidden-information choice restored after seed floors.
   Known low risks left: unreadable run log is dropped from datasets without a notice; row-cache validity = log length + manual BUILDER_VERSION/DERIVATION_VERSION
   bumps (nothing couples them to code edits); legacy ranking records without gameID can import twice; stale seed-floor worker has no epoch check; tour worker
   writes non-volatile statics; unknown balance revision >=2 plays as revision 1 in live play (replay refuses it).

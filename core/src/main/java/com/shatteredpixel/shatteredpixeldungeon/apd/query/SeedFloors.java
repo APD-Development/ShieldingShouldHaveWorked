@@ -64,6 +64,9 @@ public final class SeedFloors {
 		public String enchant = "";
 		public String container = "";
 		public String room = "";
+		//true when level/cursed/enchant are the item's state AT GENERATION (recorded then). Otherwise they are unknown: the log only has a later
+		//state, which is no proof of how the game generated the item.
+		public boolean stateKnown;
 	}
 
 	public static final class Built {
@@ -134,6 +137,7 @@ public final class SeedFloors {
 		d.add(ColumnDef.num("sc.recorded", "Recorded items").shown().internal().group("Counts"));
 		d.add(ColumnDef.num("sc.canonical", "Canonical items").shown().internal().group("Counts"));
 		d.add(ColumnDef.num("sc.same", "Same in both").shown().internal().group("Counts"));
+		d.add(ColumnDef.num("sc.kindOnly", "Same kind, state not recorded").shown().internal().group("Counts"));
 		d.add(ColumnDef.num("sc.onlyRecorded", "Only recorded").shown().internal().group("Counts"));
 		d.add(ColumnDef.num("sc.onlyCanonical", "Only canonical").shown().internal().group("Counts"));
 		d.add(ColumnDef.num("sc.agree", "Agreement %").shown().format(ColumnDef.Format.HUNDREDTHS).internal().group("Counts"));
@@ -199,17 +203,20 @@ public final class SeedFloors {
 		Dataset items = cat == null ? null : cat.dataset(Datasets.ITEMS);
 		if (items == null) return out;
 		DatasetDef d = items.def;
-		int gen = d.indexOf("item.genDepth"), cls = d.indexOf("item.trueClass"), lvl = d.indexOf("item.trueLevel"), cur = d.indexOf("item.cursed"),
-				ench = d.indexOf("item.enchant"), cont = d.indexOf("item.container"), room = d.indexOf("item.room");
+		int gen = d.indexOf("item.genDepth"), cls = d.indexOf("item.trueClass"),
+				ench = d.indexOf("item.genEnchant"), genLvl = d.indexOf("item.genLevel"), genCur = d.indexOf("item.genCursed"), cont = d.indexOf("item.container"), room = d.indexOf("item.room");
 		if (gen < 0 || cls < 0) return out;
 		for (Row r : items.rows){
 			if (!runId.equals(r.runId) || r.duplicate || !r.isKnown(gen) || !r.isKnown(cls)) continue;
 			Recorded x = new Recorded();
 			x.floor = (int) r.num(gen);
 			x.trueClass = r.text(cls);
-			x.level = lvl >= 0 && r.isKnown(lvl) ? (int) r.num(lvl) : 0;
-			x.cursed = cur >= 0 && r.isKnown(cur) && r.num(cur) != 0;
-			x.enchant = ench >= 0 && r.isKnown(ench) ? r.text(ench) : "";
+			x.stateKnown = genLvl >= 0 && r.isKnown(genLvl) && genCur >= 0 && r.isKnown(genCur) && ench >= 0 && r.isKnown(ench);
+			if (x.stateKnown){
+				x.level = (int) r.num(genLvl);
+				x.cursed = r.num(genCur) != 0;
+				x.enchant = r.text(ench);
+			}
 			x.container = cont >= 0 && r.isKnown(cont) ? r.text(cont) : "";
 			x.room = room >= 0 && r.isKnown(room) ? r.text(room) : "";
 			out.add(x);
@@ -266,9 +273,11 @@ public final class SeedFloors {
 				put(r, idef, "sf.basis", BASIS_RECORDED, Fact.PROV_RECORDED);
 				put(r, idef, "sf.item", x.trueClass, Fact.PROV_RECORDED);
 				put(r, idef, "sf.kind", kindOf(x.trueClass), Fact.PROV_RECORDED);
-				put(r, idef, "sf.level", x.level, Fact.PROV_RECORDED);
-				put(r, idef, "sf.cursed", x.cursed ? 1 : 0, Fact.PROV_RECORDED);
-				put(r, idef, "sf.enchant", x.enchant, Fact.PROV_RECORDED);
+				if (x.stateKnown){
+					put(r, idef, "sf.level", x.level, Fact.PROV_RECORDED);
+					put(r, idef, "sf.cursed", x.cursed ? 1 : 0, Fact.PROV_RECORDED);
+					put(r, idef, "sf.enchant", x.enchant, Fact.PROV_RECORDED);
+				}
 				if (!x.container.isEmpty()) put(r, idef, "sf.container", x.container, Fact.PROV_RECORDED);
 				if (!x.room.isEmpty()) put(r, idef, "sf.room", x.room, Fact.PROV_RECORDED);
 				irows.add(r);
@@ -278,13 +287,17 @@ public final class SeedFloors {
 		for (ReplayFloor f : canonical){
 			List<Recorded> rec = byFloor.get(f.depth);
 			if (rec != null){
-				//recorded floor: the canonical floor is only compared
-				Map<String, Integer> count = new HashMap<>();
-				for (Recorded x : rec) count.put(key(x.trueClass, x.level, x.cursed, x.enchant), 0);
-				Map<String, Integer> recCount = new LinkedHashMap<>(), canCount = new LinkedHashMap<>();
+				//recorded floor: the canonical floor is only compared. An item whose state at generation was recorded is compared in full; one whose
+				//state was not recorded is compared by kind only (its later state proves nothing about how it was generated), and is never a mismatch
+				//on level, curse or enchantment.
+				Map<String, Integer> recCount = new LinkedHashMap<>(), canCount = new LinkedHashMap<>(), recClass = new LinkedHashMap<>();
 				for (Recorded x : rec){
-					String k = key(x.trueClass, x.level, x.cursed, x.enchant);
-					recCount.put(k, recCount.containsKey(k) ? recCount.get(k) + 1 : 1);
+					if (x.stateKnown){
+						String k = key(x.trueClass, x.level, x.cursed, x.enchant);
+						recCount.put(k, recCount.containsKey(k) ? recCount.get(k) + 1 : 1);
+					} else {
+						recClass.put(x.trueClass, recClass.containsKey(x.trueClass) ? recClass.get(x.trueClass) + 1 : 1);
+					}
 				}
 				int canTotal = 0;
 				for (ReplayFloor.Item it : f.items){
@@ -296,7 +309,22 @@ public final class SeedFloors {
 				int same = 0;
 				for (Map.Entry<String, Integer> e : recCount.entrySet()){
 					Integer o = canCount.get(e.getKey());
-					if (o != null) same += Math.min(e.getValue(), o);
+					if (o == null) continue;
+					int used = Math.min(e.getValue(), o);
+					same += used;
+					canCount.put(e.getKey(), o - used);
+				}
+				//what is left of the canonical floor, by kind
+				Map<String, Integer> canClass = new LinkedHashMap<>();
+				for (Map.Entry<String, Integer> e : canCount.entrySet()){
+					if (e.getValue() <= 0) continue;
+					String cls = e.getKey().substring(0, e.getKey().indexOf('|'));
+					canClass.put(cls, canClass.containsKey(cls) ? canClass.get(cls) + e.getValue() : e.getValue());
+				}
+				int classOnly = 0;
+				for (Map.Entry<String, Integer> e : recClass.entrySet()){
+					Integer o = canClass.get(e.getKey());
+					if (o != null) classOnly += Math.min(e.getValue(), o);
 				}
 				int recTotal = rec.size();
 				Row r = row(new Dataset(cdef, null, null), "scr" + (c++), spec);
@@ -306,9 +334,11 @@ public final class SeedFloors {
 				put(r, cdef, "sc.recorded", recTotal, Fact.PROV_RECORDED);
 				put(r, cdef, "sc.canonical", canTotal, Fact.PROV_INFERRED);
 				put(r, cdef, "sc.same", same, Fact.PROV_INFERRED);
-				put(r, cdef, "sc.onlyRecorded", recTotal - same, Fact.PROV_INFERRED);
-				put(r, cdef, "sc.onlyCanonical", canTotal - same, Fact.PROV_INFERRED);
-				int denom = Math.max(recTotal, canTotal);
+				put(r, cdef, "sc.kindOnly", classOnly, Fact.PROV_INFERRED);
+				put(r, cdef, "sc.onlyRecorded", recTotal - same - classOnly, Fact.PROV_INFERRED);
+				put(r, cdef, "sc.onlyCanonical", canTotal - same - classOnly, Fact.PROV_INFERRED);
+				//agreement is over the items whose state could be compared
+				int denom = Math.max(recTotal, canTotal) - classOnly;
 				if (denom > 0) put(r, cdef, "sc.agree", (long) same * 10000L / denom, Fact.PROV_INFERRED);
 				crows.add(r);
 				continue;

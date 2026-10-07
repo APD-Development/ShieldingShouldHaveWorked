@@ -70,6 +70,56 @@ public class UimsdHomeTourTest {
 	}
 
 	@Test
+	public void broadViewsOverSeveralRulesetsSayMixedAndNarrowOnesDoNot() throws Exception {
+		//all rules over a history that was played under several: the page, the cards and the report say so
+		UimsdHome all = UimsdHome.build(cat, RULES.id, true);
+		assertTrue(all.mixedRulesets);
+		assertTrue(all.scopeNote, all.scopeNote.startsWith("MIXED RULESETS"));
+		assertTrue(all.scopeNote.contains("not directly comparable"));
+		assertTrue(all.card("records").title, all.card("records").title.endsWith("(mixed rulesets)"));
+		assertTrue(all.text().contains("MIXED RULESETS"));
+		String report = com.shatteredpixel.shatteredpixeldungeon.apd.report.ReportRenderer.markdown(
+				com.shatteredpixel.shatteredpixeldungeon.apd.report.ReportBuilder.lifetime(cat, RULES.id, "", true, 1_800_000_000_000L, "test"));
+		assertTrue(report.contains("MIXED RULESETS"));
+
+		//only the player's own rules: nothing to compare across, no claim of mixing
+		UimsdHome mine = UimsdHome.build(cat, RULES.id, false);
+		assertFalse(mine.mixedRulesets);
+		assertFalse(mine.scopeNote.contains("MIXED"));
+		assertFalse(mine.card("records").title.contains("mixed"));
+
+		//a table over all rulesets says it; the default table does not, and a table narrowed to one ruleset does not
+		UimsdModel m = model();
+		m.selectView("runs");
+		StringBuilder before = new StringBuilder();
+		for (StatusText.Line l : StatusText.lines(m.result(), "Runs", "")) before.append(l.text).append('\n');
+		assertFalse(before.toString(), before.toString().contains("MIXED RULESETS"));
+		m.setScope(m.query().scope.withRules(Scope.Rules.ALL, ""));
+		StringBuilder broad = new StringBuilder();
+		for (StatusText.Line l : StatusText.lines(m.result(), "Runs", "")) broad.append(l.text).append('\n');
+		assertTrue(broad.toString(), broad.toString().contains("MIXED RULESETS"));
+		m.setScope(m.query().scope.withRules(Scope.Rules.SPECIFIC, RULES.id));
+		StringBuilder one = new StringBuilder();
+		for (StatusText.Line l : StatusText.lines(m.result(), "Runs", "")) one.append(l.text).append('\n');
+		assertFalse("narrowing to one ruleset is the way to compare like with like", one.toString().contains("MIXED RULESETS"));
+	}
+
+	@Test
+	public void aHistoryPlayedUnderOneRulesetIsNeverCalledMixed() throws Exception {
+		File root = tmp.newFolder("one");
+		for (int i = 0; i < 3; i++){
+			new SyntheticLog(root, "l" + i, com.shatteredpixel.shatteredpixeldungeon.apd.stats.TelemetryVersion.CURRENT, 100L * (i + 1))
+					.start("run-" + i, 0, "WARRIOR", RULES.id, 0, 30, false).enter(1)
+					.end(com.shatteredpixel.shatteredpixeldungeon.apd.stats.LifecycleEvents.OUTCOME_DIED, "Rat", 1, 1, 1).close(true);
+		}
+		Catalog one = new DatasetStore(root).load();
+		UimsdHome h = UimsdHome.build(one, RULES.id, true);
+		assertEquals(3, h.runs);
+		assertFalse(h.mixedRulesets);
+		assertFalse(h.scopeNote.contains("MIXED"));
+	}
+
+	@Test
 	public void homeWithNoRunsIsEmptyNotBroken() {
 		Catalog empty = new DatasetStore(new File(tmp.getRoot(), "nothing")).load();
 		UimsdHome h = UimsdHome.build(empty, RULES.id, false);

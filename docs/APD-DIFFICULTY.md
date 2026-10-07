@@ -55,5 +55,8 @@ replay all use the run's own revision, so a later balance pass never changes a r
 old revisions stay in the class. Seed floors refuse imported records, runs whose challenge settings were not recorded, and unknown revisions.
 UIMSD opened from a running game never starts a floor replay (live-game check).
 
+## Exotic setting identity
+Like difficulty, the exotic chance is part of the run (`Dungeon.apdExotic`, `apd_exotic` in the save). Saves without it are "not recorded" (never today's value).
+
 ## Non-P2W (permanent)
 Difficulty is a free gameplay setting. Nothing may ever be sold that selects, unlocks or alters it or its results.

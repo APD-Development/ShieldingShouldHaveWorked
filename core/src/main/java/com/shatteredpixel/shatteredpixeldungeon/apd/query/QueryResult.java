@@ -71,6 +71,8 @@ public final class QueryResult {
 		public int unknownRuleset;
 		public int mixedRuleset;
 		public int unfinished;
+		//how many different rulesets the rows in scope were played under (rows with an unknown ruleset count as one more)
+		public int rulesetsInScope;
 		public int duplicates;
 		//rows of FINISHED runs that exist only as hidden information (shown when hidden information is on)
 		public int hiddenRows;

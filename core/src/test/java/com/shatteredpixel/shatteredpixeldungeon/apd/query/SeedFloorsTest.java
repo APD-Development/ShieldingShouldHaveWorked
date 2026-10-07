@@ -61,6 +61,7 @@ public class SeedFloorsTest {
 		r.floor = floor;
 		r.trueClass = cls;
 		r.container = "Heap";
+		r.stateKnown = true;     //recorded at generation (level 0, not cursed, no enchantment)
 		return r;
 	}
 
@@ -148,6 +149,82 @@ public class SeedFloorsTest {
 		//recorded counts are recorded facts, canonical counts are marked as worked out
 		assertEquals(Fact.PROV_RECORDED, r.prov(d.indexOf("sc.recorded")));
 		assertEquals(Fact.PROV_INFERRED, r.prov(d.indexOf("sc.canonical")));
+	}
+
+	@Test
+	public void anItemWhoseGeneratedStateWasNotRecordedIsComparedByKindAndNeverCountedAsAMismatch() {
+		ReplayFloor f = floor(1, "items.weapon.melee.Sword");
+		ReplayFloor.Item ring = new ReplayFloor.Item();
+		ring.trueClass = "items.rings.RingOfHaste";
+		ring.level = 2;
+		ring.container = "HEAP";
+		ring.quantity = 1;
+		f.items.add(ring);
+		List<ReplayFloor> canonical = new ArrayList<>();
+		canonical.add(f);
+		List<SeedFloors.Recorded> recorded = new ArrayList<>();
+		recorded.add(rec(1, "items.weapon.melee.Sword"));                 //state at generation recorded: level 0, same as canonical
+		SeedFloors.Recorded ringSeen = rec(1, "items.rings.RingOfHaste");  //only a later state was recorded
+		ringSeen.stateKnown = false;
+		recorded.add(ringSeen);
+		SeedFloors.Recorded wand = rec(1, "items.wands.WandOfFire");     //not on the canonical floor at all
+		wand.stateKnown = false;
+		recorded.add(wand);
+		SeedFloors.Built b = SeedFloors.assemble(spec(3), recorded, canonical);
+		Row r = b.compare.rows.get(0);
+		DatasetDef d = b.compare.def;
+		assertEquals(3, r.num(d.indexOf("sc.recorded")));
+		assertEquals(2, r.num(d.indexOf("sc.canonical")));
+		assertEquals(1, r.num(d.indexOf("sc.same")));
+		assertEquals("same kind, state not recorded", 1, r.num(d.indexOf("sc.kindOnly")));
+		assertEquals("only the wand, whose kind is genuinely not there", 1, r.num(d.indexOf("sc.onlyRecorded")));
+		assertEquals(0, r.num(d.indexOf("sc.onlyCanonical")));
+		assertEquals("agreement is over the items whose state could be compared", 5000, r.num(d.indexOf("sc.agree")));
+		//the recorded item rows leave the unrecorded state unknown, not 0
+		DatasetDef id = b.items.def;
+		int unknownState = 0;
+		for (Row row : b.items.rows){
+			if (basisOf(row, id, "sf.basis") != SeedFloors.BASIS_RECORDED) continue;
+			boolean known = row.isKnown(id.indexOf("sf.level"));
+			assertEquals(row.text(id.indexOf("sf.item")).contains("Sword"), known);
+			if (!known) unknownState++;
+		}
+		assertEquals(2, unknownState);
+	}
+
+	@Test
+	public void recordedStateIsTheStateWhenGeneratedNeverTheFinalOneAndOnlyForItemsFirstRecordedAtGeneration() throws Exception {
+		File root = tmp.newFolder("gen");
+		com.shatteredpixel.shatteredpixeldungeon.apd.stats.TelemetryVersion v = com.shatteredpixel.shatteredpixeldungeon.apd.stats.TelemetryVersion.CURRENT;
+		SyntheticLog log = new SyntheticLog(root, "g1", v, 100L);
+		log.start("run-g", 0, "WARRIOR", RULES.id, 0, 30, false).enter(1)
+				.registered("a", "items.weapon.melee.Sword", 0, false, com.shatteredpixel.shatteredpixeldungeon.apd.stats.ItemEvents.ORIGIN_GENERATED)
+				.generated("a", com.shatteredpixel.shatteredpixeldungeon.apd.stats.GenerationEvents.C_CHEST, "Vault")
+				.truthChanged("a", 3, true)       //play upgraded and cursed it afterwards
+				.registered("b", "items.weapon.melee.Dagger", 2, false, com.shatteredpixel.shatteredpixeldungeon.apd.stats.ItemEvents.ORIGIN_OBSERVED)
+				.generated("b", com.shatteredpixel.shatteredpixeldungeon.apd.stats.GenerationEvents.C_CHEST, "Vault")
+				.end(com.shatteredpixel.shatteredpixeldungeon.apd.stats.LifecycleEvents.OUTCOME_DIED, "Rat", 1, 1, 1).close(true);
+		Catalog cat = new DatasetStore(root).load();
+		DatasetDef id = cat.dataset(Datasets.ITEMS).def;
+		for (Row row : cat.dataset(Datasets.ITEMS).rows){
+			if (row.text(id.indexOf("item.trueClass")).contains("Sword")){
+				assertEquals("the final state is what the Items table shows", 3, row.num(id.indexOf("item.trueLevel")));
+				assertEquals("the state at generation is kept apart", 0, row.num(id.indexOf("item.genLevel")));
+			} else {
+				assertFalse("first recorded some other way: how it was generated is not known", row.isKnown(id.indexOf("item.genLevel")));
+			}
+		}
+		List<SeedFloors.Recorded> rec = SeedFloors.recorded(cat, "run-g");
+		assertEquals(2, rec.size());
+		for (SeedFloors.Recorded x : rec){
+			if (x.trueClass.contains("Sword")){
+				assertTrue(x.stateKnown);
+				assertEquals(0, x.level);
+				assertFalse(x.cursed);
+			} else {
+				assertFalse(x.stateKnown);
+			}
+		}
 	}
 
 	@Test

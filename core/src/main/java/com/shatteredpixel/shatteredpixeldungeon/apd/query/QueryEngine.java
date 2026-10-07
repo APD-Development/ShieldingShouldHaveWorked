@@ -120,6 +120,9 @@ public final class QueryEngine {
 			candidates.add(r);
 		}
 		stats.inScope = candidates.size();
+		java.util.Set<String> rulesetKinds = new java.util.HashSet<>();
+		for (Row r : candidates) rulesetKinds.add(r.ruleset == null ? "" : r.ruleset);
+		stats.rulesetsInScope = rulesetKinds.size();
 		for (Dataset.RunInfo ri : ds.runs){
 			if (scopeReason(q.scope, ri.duplicate, ri.finished, ri.ruleset, currentRuleset) != 0) continue;
 			stats.runsInScope++;

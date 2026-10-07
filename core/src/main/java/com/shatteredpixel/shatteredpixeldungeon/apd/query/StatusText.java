@@ -74,6 +74,10 @@ public final class StatusText {
 		}
 		out.add(new Line("Showing " + rules + (q.scope.includeUnfinished ? ", unfinished runs included" : ", finished runs only"), INFO, ACT_NONE));
 
+		if (s.rulesetsInScope > 1){
+			out.add(new Line("MIXED RULESETS: these rows were played under " + s.rulesetsInScope + " different sets of rules (difficulty, challenges, exotic setting), "
+					+ "so they are not directly comparable. Narrow Rules, or group or filter by Difficulty, to compare like with like.", WARN, ACT_NONE));
+		}
 		if (s.otherRulesets > 0) out.add(new Line(plural(s.otherRulesets, "row is", "rows are") + " from other rulesets (another difficulty, challenges or exotic setting) and left out.", NOTE, ACT_OTHER_RULESETS));
 		if (s.unknownRuleset > 0){
 			out.add(new Line(plural(s.unknownRuleset, "row has", "rows have") + " an unknown ruleset and "

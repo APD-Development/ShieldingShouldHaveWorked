@@ -223,6 +223,10 @@ public final class Datasets {
 		d.add(ColumnDef.num("item.trueLevel", "True level").internal().merge(Merge.LAST).group("Hidden"));
 		d.add(yesNo(ColumnDef.enumeration("item.cursed", "Truly cursed")).internal().merge(Merge.LAST).group("Hidden"));
 		d.add(ColumnDef.text("item.enchant", "True enchantment").internal().merge(Merge.LAST).group("Hidden"));
+		//what the item was when the game generated it (only where the log's first record of it is its generation): never the later state
+		d.add(ColumnDef.num("item.genLevel", "True level when generated").internal().merge(Merge.SAME).group("Hidden"));
+		d.add(yesNo(ColumnDef.enumeration("item.genCursed", "Truly cursed when generated")).internal().merge(Merge.SAME).group("Hidden"));
+		d.add(ColumnDef.text("item.genEnchant", "True enchantment when generated").internal().merge(Merge.SAME).group("Hidden"));
 		d.add(ColumnDef.enumeration("item.origin", "Origin").internal().group("Hidden")
 				.label(ItemEvents.ORIGIN_OBSERVED, "Observed").label(ItemEvents.ORIGIN_START_KIT, "Start kit")
 				.label(ItemEvents.ORIGIN_ADOPTED, "Adopted").label(ItemEvents.ORIGIN_SPLIT, "Split").label(ItemEvents.ORIGIN_COPY, "Copy")

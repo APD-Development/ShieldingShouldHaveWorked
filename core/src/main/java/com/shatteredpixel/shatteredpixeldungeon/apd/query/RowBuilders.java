@@ -55,7 +55,7 @@ public final class RowBuilders {
 
 	private RowBuilders(){}
 
-	public static final int BUILDER_VERSION = 3;
+	public static final int BUILDER_VERSION = 4;
 
 	private static final DatasetDef RUNS = Datasets.runs();
 	private static final DatasetDef ITEMS = Datasets.items();
@@ -154,6 +154,11 @@ public final class RowBuilders {
 		//order never depends on hidden events
 		long firstPublic = -1;
 		boolean hasTruth;
+		//the state the item was registered in when it was GENERATED (before play could change it): only then is it the as-generated state
+		boolean genState;
+		int genLevel;
+		boolean genCursed;
+		String genEnchant = "";
 		int origin;
 		String trueClass = "";
 		int trueLevel;
@@ -235,6 +240,12 @@ public final class RowBuilders {
 						a.trueLevel = g.trueLevel;
 						a.cursed = g.cursed;
 						a.enchant = g.enchant;
+						if (g.origin == ItemEvents.ORIGIN_GENERATED){
+							a.genState = true;
+							a.genLevel = g.trueLevel;
+							a.genCursed = g.cursed;
+							a.genEnchant = g.enchant;
+						}
 						break;
 					}
 					case EventTypes.ITEM_TRUTH_CHANGED: {
@@ -372,6 +383,12 @@ public final class RowBuilders {
 				put(row, "item.cursed", a.cursed ? 1 : 0, Fact.PROV_RECORDED);
 				put(row, "item.enchant", a.enchant, Fact.PROV_RECORDED);
 				put(row, "item.origin", a.origin, Fact.PROV_RECORDED);
+				//the state at generation is recorded only for an item whose first record was its generation; for any other the later state says nothing about it
+				if (a.genState){
+					put(row, "item.genLevel", a.genLevel, Fact.PROV_RECORDED);
+					put(row, "item.genCursed", a.genCursed ? 1 : 0, Fact.PROV_RECORDED);
+					put(row, "item.genEnchant", a.genEnchant, Fact.PROV_RECORDED);
+				}
 			}
 			if (a.hasGen){
 				put(row, "item.genDepth", a.genDepth, Fact.PROV_RECORDED);
