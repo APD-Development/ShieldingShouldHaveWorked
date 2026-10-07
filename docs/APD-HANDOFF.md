@@ -11,7 +11,7 @@ logcat tags APDMIG/APDPERF into the job log and uploads logcat artifacts.
   Verified on commit a19c9c00e = **apd-build-36**: full core suite 501 tests green; device tests green on API 26 and API 34
   (8 tests each, incl. the migration test with heals and UimsdDeviceTimingTest).
 - **Home/Guide milestone: COMPLETE, awaiting approval.** Verified on commit 80ef188f8 = **apd-build-37**: core 509 tests green; device tests green API 26 + 34.
-- Latest known-good: **apd-build-51 = commit 4b8a0dde1** (Difficulty framework): core 555 tests green; device tests green API 26 + 34. Previous: apd-build-49 (reports), 8dbbadf69 (floor replay).
+- Latest known-good: **apd-build-53 = commit 9ff719889** (Difficulty balance pass 1): core 560 tests green; device tests green API 26 + 34. Previous: apd-build-51 (difficulty framework), 49 (reports), 8dbbadf69 (floor replay).
 - Frozen: Phases 0-7 (Phase 7 UIMSD approved/frozen at build 28). Phase 8 (export/import ZIP, storage meter, Android file picker):
   automated verification complete; NOT permanently frozen until the user's physical picker check.
 - Telemetry version now 1.6. UIMSD = one major feature; these phases are milestones inside it.
@@ -95,7 +95,7 @@ Format: Markdown / plain text / HTML (print to PDF) / CSV from one `Report` mode
 (investigated). Reports: lifetime, view, run, group, run comparison, seed floors (canonical clearly separated). Marks + legend + canonical
 notice in every format. Physical check joins the PHONE-CHECK bundle: Report buttons/windows, share sheet, saving a file.
 
-## Difficulty system (balance pass 1 IMPLEMENTED; see docs/APD-DIFFICULTY.md)
+## Difficulty system (balance pass 1 IMPLEMENTED and verified at 9ff719889; see docs/APD-DIFFICULTY.md)
 Levels 1-5, 3 = baseline (never changes, revision 0). Revision 1 (levels 1,2,4,5): enemy HP, enemy damage, ordinary-item count at 70/70/140, 85/85/120,
 120/120/85, 150/150/70 %. Healing, food, spawns, bosses, champions, traps stay neutral (do NOT add effects without approval). Setting = new runs only; run keeps its
 difficulty (saved); legacy runs unknown (?) and play as 3. Telemetry 1.7; UIMSD columns + "Difficulty" view; FloorReplay uses the run's difficulty.
