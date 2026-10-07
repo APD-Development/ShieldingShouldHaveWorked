@@ -80,6 +80,41 @@ public class FloorReplayTest {
 	}
 
 	@Test
+	public void replayUsesTheRunsOwnDifficultyAndMatchesTheGameAtEveryLevel() throws Exception {
+		ReplayContext.forceDeterministicBags = true;
+		int was = SPDSettings.apdDifficulty();
+		try {
+			List<String> threeReplay = replayFingerprints(8642L, 0, HeroClass.MAGE, FloorReplay.LAST_FLOOR);
+			for (int level : new int[]{ 1, 2, 4, 5 }){
+				SPDSettings.apdDifficulty(level);
+				List<LevelGenerationHarness.LevelPrint> game = LevelGenerationHarness.generate(8642L, 0, HeroClass.MAGE,
+						LevelGenerationHarness.Context.REFERENCE, FloorReplay.LAST_FLOOR);
+				final List<String> replay = new ArrayList<>();
+				final int lvl = level;
+				FloorReplay.replay(8642L, 0, 0, level, HeroClass.MAGE, FloorReplay.LAST_FLOOR, new FloorReplay.Observer(){
+					@Override
+					public void level( int d, Level l ){
+						try {
+							replay.add(LevelGenerationHarness.fingerprint(l));
+						} catch (Exception e){
+							throw new RuntimeException(e);
+						}
+					}
+				});
+				boolean differsFromThree = false;
+				for (int d = 0; d < game.size(); d++){
+					assertEquals("level " + lvl + " floor " + (d + 1), game.get(d).hash, replay.get(d));
+					if (!game.get(d).hash.equals(threeReplay.get(d))) differsFromThree = true;
+				}
+				assertTrue("level " + level + " must really differ from level 3", differsFromThree);
+			}
+		} finally {
+			SPDSettings.apdDifficulty(was);
+			ReplayContext.forceDeterministicBags = false;
+		}
+	}
+
+	@Test
 	public void replayIsRepeatableAndPrefixStable() throws Exception {
 		List<String> a = replayFingerprints(777L, 0, HeroClass.WARRIOR, 12);
 		List<String> b = replayFingerprints(777L, 0, HeroClass.WARRIOR, 26);

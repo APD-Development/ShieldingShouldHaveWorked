@@ -7,8 +7,19 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.replay.ReplayContext;
 //level changes: gameplay code asks for a Modifier and never looks at the level itself, so a later balance pass edits the table below and
 //nothing else (the few seams in the game call DifficultyHooks, which call here).
 //
-//STATE: no balance values are approved yet. Every level's modifiers are neutral (1.0) and every level but 3 has balance revision 0, "placeholder".
+//STATE (balance revision 1, the first real pass): only ENEMY_HP, ENEMY_DAMAGE and RESOURCES are active; every other modifier is neutral (1.0).
 //Level 3 is neutral by definition, whatever the table says, and its balance revision is always 0: the baseline never changes.
+//
+//WHAT THE ACTIVE MODIFIERS MEAN (exactly; see docs/APD-DIFFICULTY.md):
+// ENEMY_HP      the health of ordinary creatures when Level.createMob makes them (the level's population and later respawns). Not bosses,
+//               not creatures made any other way (mimics, statues, quest givers, summoned minions), not champions' own bonuses.
+// ENEMY_DAMAGE  the damage of attacks resolved by Char.attack that a hostile non-boss creature makes. Not magic, gas, fire, traps or other
+//               damage that bypasses Char.attack, and not the hero's or allies' attacks.
+// RESOURCES     the NUMBER of ordinary random items RegularLevel.createItems places (its 3-5 Generator draws, +2 on a Large level).
+//               Not the guaranteed per-floor items (food, strength potions, scrolls of upgrade, stylus, enchantment/intuition stones, trinket
+//               catalyst), not special rooms, shops, quest rewards, bones, journal pages, monster loot, gold or any unique item.
+//ROUNDING: counts and health are scaled as round-half-up(value * modifier) with a 1e-9 allowance so exact halves (5 x 0.7 = 3.5) always round up,
+//never to chance; damage is a float and is not rounded here. Nothing here draws a random number.
 //
 //IDENTITY: a run's difficulty is fixed when it starts (Dungeon.difficulty, saved with the run) and is part of its ruleset identity, so UIMSD
 //always knows it. Changing the setting only affects runs started afterwards. The balance revision is recorded too, so runs played with
@@ -34,14 +45,24 @@ public final class Difficulty {
 		TRAPS            //trap frequency and strength
 	}
 
-	//modifier by level (row = level 1..5, column = Modifier ordinal). PLACEHOLDER: all neutral until the owner approves values.
+	//modifier by level (row = level 1..5, column = Modifier ordinal). Approved values, balance revision 1.
 	private static final double[][] TABLE = new double[MAX][Modifier.values().length];
 
-	//balance revision by level (index = level - 1): 0 = placeholder (no modifiers applied), 1+ = an approved balance pass.
-	private static final int[] REVISION = new int[MAX];
+	//balance revision by level (index = level - 1): 0 = no modifiers applied, 1+ = an approved balance pass. Level 3 is always 0.
+	private static final int[] REVISION = { 1, 1, 0, 1, 1 };
 
 	static {
 		for (double[] row : TABLE) java.util.Arrays.fill(row, 1.0);
+		set(1, 0.70, 0.70, 1.40);
+		set(2, 0.85, 0.85, 1.20);
+		set(4, 1.20, 1.20, 0.85);
+		set(5, 1.50, 1.50, 0.70);
+	}
+
+	private static void set( int level, double enemyHp, double enemyDamage, double resources ){
+		TABLE[level - 1][Modifier.ENEMY_HP.ordinal()] = enemyHp;
+		TABLE[level - 1][Modifier.ENEMY_DAMAGE.ordinal()] = enemyDamage;
+		TABLE[level - 1][Modifier.RESOURCES.ordinal()] = resources;
 	}
 
 	public static int normalize( int level ){
@@ -79,11 +100,15 @@ public final class Difficulty {
 	}
 
 	public static int scale( Modifier m, int v ){
-		double k = modifier(m);
-		return k == 1.0 ? v : (int) Math.round(v * k);
+		return scale(modifier(m), v);
 	}
 
-	//true when this level changes nothing yet (every level now, until balance is approved)
+	//round-half-up(v * k); the allowance makes exact halves (5 x 0.7) round up whatever the binary error of the product
+	static int scale( double k, int v ){
+		return k == 1.0 ? v : (int) Math.floor(v * k + 0.5 + 1e-9);
+	}
+
+	//true when this level changes nothing (level 3)
 	public static boolean isNeutral( int level ){
 		for (Modifier m : Modifier.values()) if (modifier(level, m) != 1.0) return false;
 		return true;

@@ -1,40 +1,52 @@
-# APD difficulty system (framework)
+# APD difficulty system
 
-Levels 1-5. **3 = the game as it is** (the baseline; it never changes). 1-2 easier, 4-5 harder. **No balance values are approved yet:** every level is a
-neutral placeholder, so every level currently plays exactly like 3. The framework is ready for the owner to choose the actual modifiers.
+Levels 1-5. **3 = the game as it is** (the baseline; it never changes). 1-2 easier, 4-5 harder.
+**Balance revision 1 (first real pass)** is active for levels 1, 2, 4 and 5; level 3 stays revision 0 and exactly current gameplay.
+
+## The first balance pass (approved values)
+| Level | Enemy HP | Enemy damage | Resources |
+|---|---|---|---|
+| 1 | 70% | 70% | 140% |
+| 2 | 85% | 85% | 120% |
+| 3 | 100% | 100% | 100% (exactly current APD) |
+| 4 | 120% | 120% | 85% |
+| 5 | 150% | 150% | 70% |
+Neutral on purpose (not part of this pass): healing, food, enemy spawn rate/number, bosses, champions, traps. Challenges are a separate system and unchanged.
+
+## Exactly what each active modifier touches
+- **ENEMY_HP**: the health of ordinary creatures when `Level.createMob` makes them (a level's population and later respawns). Applied once, at creation;
+  a loaded level keeps the health its creatures have. Not bosses, not creatures made another way (mimics, statues, quest givers, summoned minions).
+  Champion bonuses are applied before scaling, so a champion's health scales with the rest.
+- **ENEMY_DAMAGE**: the damage of an attack resolved by `Char.attack` made by a hostile creature that is not a boss. Not magic, gas, fire, traps or other
+  damage that bypasses `Char.attack`, and never the hero's or allies' attacks.
+- **RESOURCES**: the NUMBER of ordinary random items `RegularLevel.createItems` places (its 3-5 Generator draws, +2 on a Large level), changed before
+  the draws. NOT scaled: the guaranteed per-floor items (food, strength potions, scrolls of upgrade, stylus, enchantment/intuition stones, trinket catalyst),
+  special rooms and shops, quest rewards, bones, journal pages, monster loot, gold, unique items and boss floors. So no seed can lose progression items.
+- **Rounding**: `round-half-up(value * modifier)` with a 1e-9 allowance so exact halves (5 x 0.7 = 3.5) always round up; item counts never drop below 1; health
+  never below 1; damage is a float. Deterministic: no random number is drawn, so difficulty 3 consumes exactly the random numbers it always did. Every
+  integer 0-600 is pinned for each percentage in the tests.
 
 ## Architecture (one place to edit)
-- `apd.difficulty.Difficulty`: the level range, `Modifier` (ENEMY_HP, ENEMY_DAMAGE, RESOURCES, HEALING, FOOD, ENEMY_SPAWN, BOSS, CHAMPION, TRAPS), the
-  modifier table (rows = levels, all 1.0 now) and the balance revision per level (0 = placeholder). Level 3 returns 1.0 whatever the table holds, and
-  scaling is exact (no float rounding) when a modifier is neutral. Gameplay asks for a Modifier, never for the level.
-- `apd.difficulty.DifficultyHooks`: the game's seams, each called from ONE place: `Level.createMob` (enemy HP; champion/boss rules join here) and
-  `Char.attack` (damage of hostile creatures only). A new difficulty-sensitive system = add a Modifier, add one hook call, set the table.
-  Resources/healing/food/spawns/boss/champion/traps are named modifiers with no seam yet: they are wired when their values are approved.
-- Neutral at 3 and at every other level today: pinned by tests (level generation hashes, scaling exactness, seams are identity); a test marked
-  REPLACE-WHEN-APPROVED asserts the placeholder state.
+- `apd.difficulty.Difficulty`: levels, `Modifier` enum, the table, balance revisions. Level 3 returns 1.0 whatever the table holds (tested with a corrupted table).
+- `apd.difficulty.DifficultyHooks`: the three seams: `Level.createMob` (HP), `Char.attack` (damage), `RegularLevel.createItems` (item count). Gameplay asks
+  for a Modifier, never for the level; a test fails if gameplay code reads `Dungeon.difficulty` directly.
+- Next systems (healing, food, spawns, bosses, champions, traps) = set the table, add one hook call, bump the revision.
 
 ## Identity and persistence
-- Setting: `SPDSettings.apdDifficulty()` (1-5, default 3) in APD Settings: "Difficulty (new runs)". It only affects runs started afterwards.
-- Run: `Dungeon.difficulty` is set from the setting when a run starts and is saved with the run (`apd_difficulty`). Changing the setting never changes
-  a run that exists. A save from before difficulty existed loads as `difficultyKnown = false`: it plays as 3 but is never labelled with a difficulty.
-- Ruleset: difficulty 3 adds nothing to the rule text, so its id is exactly the id those rules had before (older runs and new difficulty-3 runs share a
-  ruleset: same balance). Any other level adds `difficulty=N;balance=R` to the text, so every level (and every balance revision) is its own ruleset and the
-  default scope never mixes them. `Ruleset.current()` is the run in progress, `Ruleset.forNewRun()` is what the settings would give.
-- Telemetry 1.7: RUN_START gets two appended fields (difficulty, balance revision); 0 = not recorded. Older logs end before them and read as not recorded.
-  Archive redaction copies them (not hidden information).
+- Setting `SPDSettings.apdDifficulty()` (new runs only). `Dungeon.difficulty` is set when a run starts, saved with the run (`apd_difficulty`), and never follows the
+  setting again. A save from before difficulty existed loads as `difficultyKnown = false`: it plays as 3, is never labelled with a difficulty.
+- Ruleset: difficulty 3 adds nothing to the rule text (its id is the id those rules had before). Other levels add `difficulty=N;balance=R` (R = 1 now), so each
+  level and each balance revision is its own ruleset; runs recorded under the earlier placeholder revision 0 stay revision 0 and are never mixed with revision 1.
+- Telemetry 1.7 stores difficulty and balance revision in RUN_START (0 = not recorded). UIMSD: runs columns Difficulty and Balance revision (`?` for older runs),
+  view "Difficulty" (grouped by both).
+- `FloorReplay` uses the run's difficulty (`ReplayContext`), so seed floors and the recorded-vs-canonical comparison follow the run's rules; a replay is
+  tested equal to the game's own generation at every level.
 
-## UIMSD
-- Runs column `Difficulty` (1 - Easiest ... 5 - Hardest; `?` for runs recorded before 1.7, never 3) and `Balance revision`; both filterable/sortable/groupable.
-- View "Difficulty": runs grouped by difficulty and balance revision across all rulesets; the unknown group is runs from before difficulty existed.
-- Floor replay uses the run's difficulty (a replay of a run recorded without one uses 3).
-
-## Honesty about the placeholder
-The selector says that levels other than 3 currently play like 3 but are recorded as chosen. Their runs have balance revision 0 and their own ruleset, so
-they can never be confused with runs played under approved balance.
+## Verification
+Pinned values and revisions; rounding for every integer and every boundary; item counts for bases 3-7 at all levels; HP and damage at all levels (bosses and
+allies unaffected); level generation at 3 unchanged (golden); other levels change only creature health and ordinary loot (guaranteed items identical on every
+floor, floor-1 creatures identical); loot totals fall as difficulty rises; replay equals the game at every level; save/load keeps a run's difficulty when the
+setting changes; legacy saves stay unlabelled.
 
 ## Non-P2W (permanent)
 Difficulty is a free gameplay setting. Nothing may ever be sold that selects, unlocks or alters it or its results.
-
-## Needed from the owner
-The actual modifier values per level (and which systems to bring under control first). Then: fill the table, add seams, set balance revisions to 1, and
-replace the placeholder test.

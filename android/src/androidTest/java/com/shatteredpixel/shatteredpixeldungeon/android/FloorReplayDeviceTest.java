@@ -79,6 +79,14 @@ public class FloorReplayDeviceTest {
 			assertTrue("replay too slow: " + ms + " ms", ms < 60000);
 			assertNull("the replay must leave the lock free", FloorReplay.refusal());
 
+			//difficulty: the run's own level is used by the replay, differs from level 3, and is repeatable on the device
+			String three = signature(FloorReplay.replay(5150L, 0, 0, 3, HeroClass.WARRIOR, FloorReplay.LAST_FLOOR, null));
+			String hard1 = signature(FloorReplay.replay(5150L, 0, 0, 5, HeroClass.WARRIOR, FloorReplay.LAST_FLOOR, null));
+			String hard2 = signature(FloorReplay.replay(5150L, 0, 0, 5, HeroClass.WARRIOR, FloorReplay.LAST_FLOOR, null));
+			assertEquals("difficulty 5 replay not repeatable", hard1, hard2);
+			assertTrue("difficulty 5 must differ from 3 (less loot)", !three.equals(hard1));
+			assertEquals("difficulty 3 replay equals the plain replay", three, signature(FloorReplay.replay(5150L, 0, 0, HeroClass.WARRIOR, FloorReplay.LAST_FLOOR, null)));
+
 			//the seed floors datasets built from a device replay: every row labelled, nothing recorded passed off as canonical
 			com.shatteredpixel.shatteredpixeldungeon.apd.query.SeedFloors.Spec spec = new com.shatteredpixel.shatteredpixeldungeon.apd.query.SeedFloors.Spec();
 			spec.runId = "device-run";

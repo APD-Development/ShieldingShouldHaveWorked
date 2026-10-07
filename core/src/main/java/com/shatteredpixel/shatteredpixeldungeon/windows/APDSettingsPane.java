@@ -103,10 +103,10 @@ public class APDSettingsPane extends Component {
 		optDifficulty.setSelectedValue( SPDSettings.apdDifficulty() );
 		add( optDifficulty );
 
-		//placeholder wording. Honest about the state: no balance for levels other than 3 is approved yet, so they play like 3 (but are recorded as chosen)
+		//placeholder wording (final language pass later)
 		difficultyInfo = PixelScene.renderTextBlock(
-				"3 is the normal game. Applies to runs you start from now on; a run in progress keeps its difficulty. "
-						+ "Balance for the other levels is not decided yet: for now they play like 3, but runs are recorded with the level you chose.", 5 );
+				"3 is the normal game. Lower levels: weaker enemies and more loot. Higher levels: tougher enemies and less loot. "
+						+ "Applies to runs you start from now on; a run in progress keeps its difficulty.", 5 );
 		add( difficultyInfo );
 
 		chkRecord = new CheckBox( "Record run history" ) {

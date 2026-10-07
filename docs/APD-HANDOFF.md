@@ -95,10 +95,11 @@ Format: Markdown / plain text / HTML (print to PDF) / CSV from one `Report` mode
 (investigated). Reports: lifetime, view, run, group, run comparison, seed floors (canonical clearly separated). Marks + legend + canonical
 notice in every format. Physical check joins the PHONE-CHECK bundle: Report buttons/windows, share sheet, saving a file.
 
-## Difficulty system (framework COMPLETE and verified at 4b8a0dde1, awaiting the owner's modifier values; see docs/APD-DIFFICULTY.md)
-Levels 1-5, 3 = baseline (never changes). No balance approved: all levels are neutral placeholders (play like 3, recorded as chosen, own ruleset,
-balance revision 0). Setting = new runs only; run keeps its difficulty (saved); legacy runs unknown (?), never 3. Telemetry 1.7. UIMSD: runs column,
-"Difficulty" view. Do NOT implement final 1/2/4/5 values until approved. Non-P2W applies. Physical check joins PHONE-CHECK: APD Settings difficulty slider + text.
+## Difficulty system (balance pass 1 IMPLEMENTED; see docs/APD-DIFFICULTY.md)
+Levels 1-5, 3 = baseline (never changes, revision 0). Revision 1 (levels 1,2,4,5): enemy HP, enemy damage, ordinary-item count at 70/70/140, 85/85/120,
+120/120/85, 150/150/70 %. Healing, food, spawns, bosses, champions, traps stay neutral (do NOT add effects without approval). Setting = new runs only; run keeps its
+difficulty (saved); legacy runs unknown (?) and play as 3. Telemetry 1.7; UIMSD columns + "Difficulty" view; FloorReplay uses the run's difficulty.
+Physical check joins PHONE-CHECK: difficulty slider text; feel of levels 1 and 5 in a real run (enemy toughness, loot amount). Non-P2W applies.
 
 ## Working rules the user set (usage efficiency)
 Minimal narration; batch related work; do not poll CI repeatedly (estimate the finish, check once around then, do independent approved

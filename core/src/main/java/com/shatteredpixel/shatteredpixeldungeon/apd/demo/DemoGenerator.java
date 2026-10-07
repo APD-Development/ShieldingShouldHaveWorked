@@ -183,6 +183,7 @@ public final class DemoGenerator {
 		String mainId = runId;
 		DemoLog log = new DemoLog(root, mainId, v, created);
 		log.difficulty = diff;
+		log.difficultyBalance = diff == 0 ? 0 : com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.Difficulty.balanceRevision(diff);
 		log.start(runId, 0, cls, rules, ch, ex, partial);
 		boolean items = has(v, 2), combat = has(v, 3), generation = has(v, 4);
 		String lastEnemy = "rat";

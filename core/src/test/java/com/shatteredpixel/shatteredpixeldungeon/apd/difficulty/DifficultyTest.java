@@ -102,12 +102,84 @@ public class DifficultyTest {
 	}
 
 	@Test
-	public void noBalanceIsApprovedYetSoEveryLevelIsAPlaceholder() {
-		//REPLACE THIS TEST when the owner approves values: until then no level may change gameplay or claim a balance revision
+	public void theFirstBalancePassIsExactlyTheApprovedValues() {
+		double[][] want = {   // enemy HP, enemy damage, resources
+				{ 0.70, 0.70, 1.40 }, { 0.85, 0.85, 1.20 }, { 1.0, 1.0, 1.0 }, { 1.20, 1.20, 0.85 }, { 1.50, 1.50, 0.70 } };
+		int[] revision = { 1, 1, 0, 1, 1 };
 		for (int l = 1; l <= 5; l++){
-			assertTrue("level " + l + " must be neutral until approved", Difficulty.isNeutral(l));
-			assertEquals(0, Difficulty.balanceRevision(l));
+			assertEquals(want[l - 1][0], Difficulty.modifier(l, Difficulty.Modifier.ENEMY_HP), 0.0);
+			assertEquals(want[l - 1][1], Difficulty.modifier(l, Difficulty.Modifier.ENEMY_DAMAGE), 0.0);
+			assertEquals(want[l - 1][2], Difficulty.modifier(l, Difficulty.Modifier.RESOURCES), 0.0);
+			assertEquals("balance revision of level " + l, revision[l - 1], Difficulty.balanceRevision(l));
+			//everything else stays neutral in this pass: healing, food, spawns, bosses, champions, traps
+			for (Difficulty.Modifier m : Difficulty.Modifier.values()){
+				if (m == Difficulty.Modifier.ENEMY_HP || m == Difficulty.Modifier.ENEMY_DAMAGE || m == Difficulty.Modifier.RESOURCES) continue;
+				assertEquals(m + " must stay neutral at level " + l, 1.0, Difficulty.modifier(l, m), 0.0);
+			}
 		}
+		assertTrue(Difficulty.isNeutral(3));
+		for (int l : new int[]{ 1, 2, 4, 5 }) assertFalse(Difficulty.isNeutral(l));
+	}
+
+	@Test
+	public void roundingIsHalfUpWithExactHalvesAndEveryBoundaryIsPinned() {
+		int[] pct = { 70, 85, 100, 120, 150, 140 };
+		double[] k = { 0.70, 0.85, 1.0, 1.20, 1.50, 1.40 };
+		for (int i = 0; i < pct.length; i++){
+			for (int v = 0; v <= 600; v++){
+				int expected = (v * pct[i] + 50) / 100;     //exact integer half-up
+				assertEquals(v + " x " + pct[i] + "%", expected, Difficulty.scale(k[i], v));
+			}
+		}
+		//the exact halves that binary floating point gets wrong
+		assertEquals(4, Difficulty.scale(0.70, 5));    //3.5 -> 4
+		assertEquals(9, Difficulty.scale(0.85, 10));   //8.5 -> 9
+		assertEquals(1, Difficulty.scale(0.70, 1));    //0.7 -> 1
+		assertEquals(7, Difficulty.scale(0.70, 10));
+		assertEquals(12, Difficulty.scale(1.20, 10));
+		assertEquals(15, Difficulty.scale(1.50, 10));
+	}
+
+	@Test
+	public void ordinaryItemCountsAtEveryLevelForEveryPossibleBase() {
+		//a regular level draws 3-5 ordinary items (+2 on a Large level): bases 3..7. Rows: level 1, 2, 3, 4, 5.
+		int[][] want = { { 4, 6, 7, 8, 10 }, { 4, 5, 6, 7, 8 }, { 3, 4, 5, 6, 7 }, { 3, 3, 4, 5, 6 }, { 2, 3, 4, 4, 5 } };
+		for (int level = 1; level <= 5; level++){
+			Dungeon.difficulty = level;
+			for (int base = 3; base <= 7; base++){
+				assertEquals("level " + level + " base " + base, want[level - 1][base - 3], DifficultyHooks.ordinaryItemCount(base));
+			}
+			assertEquals("never below one item", true, DifficultyHooks.ordinaryItemCount(1) >= 1);
+		}
+		Dungeon.difficulty = 3;
+		assertEquals(0, DifficultyHooks.ordinaryItemCount(0));
+	}
+
+	@Test
+	public void enemyHealthAndDamageAtEveryLevel() {
+		Rat base = new Rat();
+		int ht = base.HT;
+		float[] dmgK = { 0.70f, 0.85f, 1.0f, 1.20f, 1.50f };
+		for (int level = 1; level <= 5; level++){
+			Dungeon.difficulty = level;
+			Rat m = new Rat();
+			DifficultyHooks.onMobCreated(m);
+			assertEquals("health at level " + level, Difficulty.scale(Difficulty.modifier(level, Difficulty.Modifier.ENEMY_HP), ht), m.HT);
+			assertEquals(m.HT, m.HP);
+			assertEquals(10f * dmgK[level - 1], DifficultyHooks.attackDamage(m, 10f), 1e-4f);
+			assertEquals(1f * dmgK[level - 1], DifficultyHooks.attackDamage(m, 1f), 1e-5f);
+		}
+		Dungeon.difficulty = 3;
+		Rat m = new Rat();
+		DifficultyHooks.onMobCreated(m);
+		assertEquals(ht, m.HT);
+		//a boss is never scaled
+		com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo boss = new com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo();
+		int bossHt = boss.HT;
+		Dungeon.difficulty = 5;
+		DifficultyHooks.onMobCreated(boss);
+		assertEquals(bossHt, boss.HT);
+		assertEquals(10f, DifficultyHooks.attackDamage(boss, 10f), 0f);
 	}
 
 	@Test
@@ -143,7 +215,7 @@ public class DifficultyTest {
 		java.util.Set<String> ids = new java.util.HashSet<>();
 		for (int l = 1; l <= 5; l++) ids.add(Ruleset.of(30, 0, l).id);
 		assertEquals("every level is its own ruleset", 5, ids.size());
-		assertTrue(Ruleset.of(30, 0, 4).text.contains("difficulty=4") && Ruleset.of(30, 0, 4).text.contains("balance=0"));
+		assertTrue(Ruleset.of(30, 0, 4).text.contains("difficulty=4") && Ruleset.of(30, 0, 4).text.contains("balance=1"));
 		assertNotEquals(Ruleset.of(30, 0, 4).id, Ruleset.of(0, 0, 4).id);
 		assertNotEquals(Ruleset.of(30, 0, 4).id, Ruleset.of(30, 1, 4).id);
 		assertEquals("a level that does not exist is the baseline", Ruleset.of(30, 0).id, Ruleset.of(30, 0, 9).id);
@@ -227,6 +299,7 @@ public class DifficultyTest {
 	private void log( String id, TelemetryVersion v, int difficulty, Ruleset rules ) throws Exception {
 		DemoLog l = new DemoLog(root(), id, v, 1_700_000_000_000L);
 		l.difficulty = difficulty;
+		l.difficultyBalance = difficulty == 0 ? 0 : Difficulty.balanceRevision(difficulty);
 		l.start(id, 0, "WARRIOR", rules.id, 0, 30, false).enter(1).tick(100).heroDies("rat", 0).end(LifecycleEvents.OUTCOME_DIED, "Rat", 1, 1, 10).close(true);
 	}
 
@@ -253,7 +326,8 @@ public class DifficultyTest {
 		Row d3 = find(runs, "demo-d3"), d4 = find(runs, "demo-d4"), old = find(runs, "demo-old");
 		assertEquals(3, d3.num(dc));
 		assertEquals(4, d4.num(dc));
-		assertEquals(0, d4.num(bc));
+		assertEquals("difficulty 4 was played with balance revision 1", 1, d4.num(bc));
+		assertEquals("difficulty 3 is always revision 0", 0, d3.num(bc));
 		assertFalse("a run recorded before 1.7 has no difficulty: unknown, never 3", old.isKnown(dc));
 		//the table says what each is
 		Query q = Query.of(Datasets.RUNS);
@@ -295,17 +369,110 @@ public class DifficultyTest {
 
 	//---- difficulty 3 changes nothing ----
 
-	@Test
-	public void everyLevelBuildsTheSameFloorsAsThreeUntilBalanceIsApproved() throws Exception {
-		List<LevelGenerationHarness.LevelPrint> baseline = new ArrayList<>();
-		SPDSettings.apdDifficulty(3);
-		baseline.addAll(LevelGenerationHarness.generate(2468L, 0, HeroClass.WARRIOR, LevelGenerationHarness.Context.REFERENCE, 12));
-		for (int level : new int[]{ 1, 2, 4, 5 }){
-			SPDSettings.apdDifficulty(level);
-			List<LevelGenerationHarness.LevelPrint> got = LevelGenerationHarness.generate(2468L, 0, HeroClass.WARRIOR, LevelGenerationHarness.Context.REFERENCE, 12);
-			assertEquals(Dungeon.difficulty, level);
-			for (int i = 0; i < baseline.size(); i++) assertEquals("level " + level + " floor " + (i + 1), baseline.get(i).hash, got.get(i).hash);
+	//the progression items the game only ever places on purpose (never drawn at random); stones and the catalyst can also be random draws
+	private static final java.util.Set<String> GUARANTEED = new java.util.HashSet<>(java.util.Arrays.asList(
+			"items.potions.PotionOfStrength", "items.scrolls.ScrollOfUpgrade", "items.Stylus"));
+
+	//what one generated floor looks like for the checks below
+	private static final class FloorLook {
+		final java.util.List<String> mobs = new ArrayList<>();      //class@pos, in a fixed order
+		final java.util.List<Integer> mobHt = new ArrayList<>();
+		final java.util.List<Boolean> scalable = new ArrayList<>();
+		final java.util.Map<String, Integer> guaranteed = new java.util.TreeMap<>();
+		int items;
+		String hash;
+	}
+
+	private List<FloorLook> looks( long seed, int level, int depth ) throws Exception {
+		SPDSettings.apdDifficulty(level);
+		final List<FloorLook> out = new ArrayList<>();
+		LevelGenerationHarness.levelObserver = new java.util.function.BiConsumer<Integer, Level>(){
+			@Override
+			public void accept( Integer d, Level l ){
+				FloorLook f = new FloorLook();
+				java.util.List<com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob> ms = new ArrayList<>(l.mobs);
+				java.util.Collections.sort(ms, new java.util.Comparator<com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob>(){
+					@Override
+					public int compare( com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob a, com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob b ){
+						return a.pos != b.pos ? Integer.compare(a.pos, b.pos) : a.getClass().getName().compareTo(b.getClass().getName());
+					}
+				});
+				for (com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob m : ms){
+					//mimics are made while the level's items are placed, so how many there are follows the item count (loot), not the spawns
+					if (m instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic) continue;
+					f.mobs.add(m.getClass().getName() + "@" + m.pos);
+					f.mobHt.add(m.HT);
+				}
+				for (com.shatteredpixel.shatteredpixeldungeon.items.Heap h : l.heaps.valueList()){
+					for (com.shatteredpixel.shatteredpixeldungeon.items.Item i : h.items){
+						f.items++;
+						String n = i.getClass().getName().replace("com.shatteredpixel.shatteredpixeldungeon.", "");
+						if (GUARANTEED.contains(n)) f.guaranteed.put(n, (f.guaranteed.containsKey(n) ? f.guaranteed.get(n) : 0) + 1);
+					}
+				}
+				out.add(f);
+			}
+		};
+		try {
+			List<LevelGenerationHarness.LevelPrint> prints = LevelGenerationHarness.generate(seed, 0, HeroClass.WARRIOR, LevelGenerationHarness.Context.REFERENCE, depth);
+			for (int i = 0; i < prints.size(); i++) out.get(i).hash = prints.get(i).hash;
+		} finally {
+			LevelGenerationHarness.levelObserver = null;
 		}
+		return out;
+	}
+
+	@Test
+	public void levelThreeBuildsTheFloorsOfBeforeAndOtherLevelsChangeOnlyHealthAndOrdinaryLoot() throws Exception {
+		int hpChanged = 0, comparable = 0;
+		long[] seeds = { 2468L, 13579L, 777L, 31337L };
+		long itemsLow = 0, itemsMid = 0, itemsHigh = 0;
+		for (long seed : seeds){
+			List<FloorLook> base = looks(seed, 3, 26);
+			for (int level : new int[]{ 1, 2, 4, 5 }){
+				List<FloorLook> got = looks(seed, level, 26);
+				assertEquals(base.size(), got.size());
+				for (int d = 0; d < base.size(); d++){
+					String where = "seed " + seed + " level " + level + " floor " + (d + 1);
+					//the guaranteed items (progression) are the same on every floor, whatever the loot setting
+					assertEquals(where, base.get(d).guaranteed, got.get(d).guaranteed);
+					//Floor 1 starts from nothing, so it has the same creatures in the same places: difficulty never adds, removes or moves a spawn.
+					//Later floors can differ in layout, because the item decks drawn from on earlier floors hold different cards when fewer or more
+					//items were drawn; where the creatures do match, their health is compared.
+					if (d == 0) assertEquals(where, base.get(d).mobs, got.get(d).mobs);
+					if (!base.get(d).mobs.equals(got.get(d).mobs)) continue;
+					comparable++;
+					for (int m = 0; m < base.get(d).mobHt.size(); m++){
+						int b = base.get(d).mobHt.get(m), g = got.get(d).mobHt.get(m);
+						int scaled = Difficulty.scale(Difficulty.modifier(level, Difficulty.Modifier.ENEMY_HP), b);
+						//an ordinary creature is scaled; a boss, mimic, statue or quest giver (not made by createMob) keeps its health
+						assertTrue(where + " mob " + m + ": " + b + " -> " + g, g == b || g == Math.max(1, scaled));
+						if (g != b) hpChanged++;
+					}
+				}
+				long total = 0;
+				for (FloorLook f : got) total += f.items;
+				if (level == 1) itemsLow += total;
+				if (level == 5) itemsHigh += total;
+			}
+			for (FloorLook f : base) itemsMid += f.items;
+		}
+		assertTrue("floors with matching creatures: " + comparable, comparable > 40);
+		assertTrue("health must actually change somewhere", hpChanged > 100);
+		//more loot at the easy end, less at the hard end (ordinary items only, so the difference is a share of the total)
+		assertTrue("level 1 " + itemsLow + " vs level 3 " + itemsMid, itemsLow > itemsMid * 1.02);
+		assertTrue("level 5 " + itemsHigh + " vs level 3 " + itemsMid, itemsHigh < itemsMid * 0.98);
+	}
+
+	@Test
+	public void itemTotalsFallAsDifficultyRises() throws Exception {
+		long[] total = new long[6];
+		for (long seed : new long[]{ 11L, 22L, 33L, 44L, 55L, 66L }){
+			for (int level = 1; level <= 5; level++){
+				for (FloorLook f : looks(seed, level, 20)) total[level] += f.items;
+			}
+		}
+		for (int level = 1; level < 5; level++) assertTrue("level " + level + " (" + total[level] + ") must have more items than level " + (level + 1) + " (" + total[level + 1] + ")", total[level] > total[level + 1]);
 	}
 
 	@Test
@@ -352,6 +519,8 @@ public class DifficultyTest {
 		if (!level.isFile()) return;
 		assertTrue(new String(Files.readAllBytes(level.toPath()), "UTF-8").contains("DifficultyHooks.onMobCreated(m)"));
 		assertTrue(new String(Files.readAllBytes(ch.toPath()), "UTF-8").contains("DifficultyHooks.attackDamage(this, dmg)"));
+		File regular = new File(base + "levels/RegularLevel.java");
+		assertTrue(new String(Files.readAllBytes(regular.toPath()), "UTF-8").contains("DifficultyHooks.ordinaryItemCount(nItems)"));
 		//and difficulty is read through Difficulty only: gameplay code never touches Dungeon.difficulty directly
 		int direct = 0;
 		for (String f : new String[]{ "actors/mobs/Mob.java", "levels/RegularLevel.java", "items/Generator.java", "actors/buffs/Hunger.java" }){

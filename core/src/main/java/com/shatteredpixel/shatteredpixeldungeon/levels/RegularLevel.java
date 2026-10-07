@@ -382,6 +382,8 @@ public abstract class RegularLevel extends Level {
 		if (feeling == Feeling.LARGE){
 			nItems += 2;
 		}
+		//APD: difficulty scales how many ORDINARY random items this level gets (identity at difficulty 3); guaranteed items are added elsewhere
+		nItems = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.DifficultyHooks.ordinaryItemCount(nItems);
 		
 		for (int i=0; i < nItems; i++) {
 
