@@ -11,7 +11,7 @@ logcat tags APDMIG/APDPERF into the job log and uploads logcat artifacts.
   Verified on commit a19c9c00e = **apd-build-36**: full core suite 501 tests green; device tests green on API 26 and API 34
   (8 tests each, incl. the migration test with heals and UimsdDeviceTimingTest).
 - **Home/Guide milestone: COMPLETE, awaiting approval.** Verified on commit 80ef188f8 = **apd-build-37**: core 509 tests green; device tests green API 26 + 34.
-- Latest known-good build: **apd-build-37** (commit 80ef188f8). Later commits are docs only.
+- Latest known-good commit: **8dbbadf69** (floor replay A-C): core 528 tests green; device tests green API 26 + 34; APK built (its "Publish release" step failed transiently, as in build 31, so no apd-build-47 release; apd-build-46 = 5a86b42a9 is published). Previous: apd-build-37 (80ef188f8, Home/Guide).
 - Frozen: Phases 0-7 (Phase 7 UIMSD approved/frozen at build 28). Phase 8 (export/import ZIP, storage meter, Android file picker):
   automated verification complete; NOT permanently frozen until the user's physical picker check.
 - Telemetry version now 1.6. UIMSD = one major feature; these phases are milestones inside it.
@@ -75,7 +75,7 @@ Pending, bundled for the next PHONE-CHECK build (none blocking):
 - Guide/tour overlay and interaction
 - Seed floors screen (Runs row -> Seed floors (canonical)): labels, ~ marks, notice line, comparison table
 
-## Floor replay (user approved all 3 decisions; Phase A -> B -> C autonomous; A green at 4e43ce250, B+C implemented, see docs/APD-FLOOR-REPLAY.md; physical check of the Seed floors screen joins the PHONE-CHECK bundle)
+## Floor replay (user approved all 3 decisions; Phase A -> B -> C autonomous; A green at 4e43ce250, B+C implemented and verified at 8dbbadf69 (milestone complete, awaiting approval), see docs/APD-FLOOR-REPLAY.md; physical check of the Seed floors screen joins the PHONE-CHECK bundle)
 Decisions: canonical seed floors always labelled (never "the exact counterfactual"); unreached floors of FINISHED runs may be
 interrogated; replay only when no live game is loaded; for reached floors recorded telemetry is authoritative (canonical only fills
 floors that never existed). Phase A (FloorReplay + isolation + device test) -> docs/APD-FLOOR-REPLAY.md. Phase B: "Seed floors" dataset;
