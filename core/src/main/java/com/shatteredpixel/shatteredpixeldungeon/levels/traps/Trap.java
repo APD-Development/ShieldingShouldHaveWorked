@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels.traps;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdPlay;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
@@ -95,6 +96,7 @@ public abstract class Trap implements Bundlable {
 			if (Dungeon.level.heroFOV[pos]) {
 				Sample.INSTANCE.play(Assets.Sounds.TRAP);
 			}
+			ApdPlay.onTrapTriggered( this, com.shatteredpixel.shatteredpixeldungeon.actors.Actor.findChar( pos ) );
 			if (disarmedByActivation) disarm();
 			Dungeon.level.discover(pos);
 			Bestiary.setSeen(getClass());

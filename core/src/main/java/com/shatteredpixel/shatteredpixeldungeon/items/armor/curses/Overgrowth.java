@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.armor.curses;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdPlay;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
@@ -47,8 +48,10 @@ public class Overgrowth extends Armor.Glyph {
 			//momentarily revoke warden benefits, otherwise this curse would be incredibly powerful
 			if (defender instanceof Hero && ((Hero) defender).subClass == HeroSubClass.WARDEN){
 				((Hero) defender).subClass = HeroSubClass.NONE;
+				ApdPlay.onSubclassChosen( HeroSubClass.NONE );
 				p.activate( defender );
 				((Hero) defender).subClass = HeroSubClass.WARDEN;
+				ApdPlay.onSubclassChosen( HeroSubClass.WARDEN );
 			} else {
 				p.activate( defender );
 			}

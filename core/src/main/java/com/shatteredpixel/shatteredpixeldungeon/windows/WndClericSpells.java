@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdPlay;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
@@ -194,6 +195,7 @@ public class WndClericSpells extends Window {
 				if(!tome.canCast(Dungeon.hero, spell)){
 					GLog.w(Messages.get(HolyTome.class, "no_spell"));
 				} else {
+					ApdPlay.onSpellCast( spell, spell.chargeUse(Dungeon.hero) );
 					spell.onCast(tome, Dungeon.hero);
 
 					if (spell.targetingFlags() != -1 && Dungeon.quickslot.contains(tome)){
@@ -231,6 +233,7 @@ public class WndClericSpells extends Window {
 							if(!tome.canCast(Dungeon.hero, spell)){
 								GLog.w(Messages.get(HolyTome.class, "no_spell"));
 							} else {
+								ApdPlay.onSpellCast( spell, spell.chargeUse(Dungeon.hero) );
 								spell.onCast(tome, Dungeon.hero);
 
 								if (spell.targetingFlags() != -1 && Dungeon.quickslot.contains(tome)){

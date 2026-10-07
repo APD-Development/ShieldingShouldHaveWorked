@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdPlay;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -63,6 +64,7 @@ public class Gold extends Item {
 		Statistics.itemTypesDiscovered.add(getClass());
 
 		Dungeon.gold += quantity;
+		ApdPlay.onGoldChanged( ApdPlay.goldCauseOr( "pickup" ) );
 		Statistics.goldCollected += quantity;
 		Badges.validateGoldCollected();
 

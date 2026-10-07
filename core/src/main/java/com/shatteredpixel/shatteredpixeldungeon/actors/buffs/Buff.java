@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdPlay;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -74,6 +75,7 @@ public class Buff extends Actor {
 
 		if (target.add( this )){
 			if (target.sprite != null) fx( true );
+			ApdPlay.onBuffAttached( this, target );
 			return true;
 		} else {
 			this.target = null;
@@ -82,7 +84,9 @@ public class Buff extends Actor {
 	}
 	
 	public void detach() {
-		if (target.remove( this ) && target.sprite != null) fx( false );
+		boolean removed = target.remove( this );
+		if (removed) ApdPlay.onBuffDetached( this, target );
+		if (removed && target.sprite != null) fx( false );
 	}
 	
 	@Override

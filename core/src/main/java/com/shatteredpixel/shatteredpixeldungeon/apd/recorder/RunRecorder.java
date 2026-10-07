@@ -63,6 +63,7 @@ final class RunRecorder {
 	CombatTracker combat;
 	GenerationTracker generation;
 	FactTracker facts;
+	PlayTracker play;
 	boolean ended;
 
 	private boolean levelOpen;
@@ -134,6 +135,8 @@ final class RunRecorder {
 		r.combat.baseline();
 		r.generation = new GenerationTracker(r.writer, r.items);
 		r.facts = new FactTracker(r.writer);
+		r.play = new PlayTracker(r.facts);
+		r.play.recordTime();
 		return r;
 	}
 
@@ -208,6 +211,7 @@ final class RunRecorder {
 			r.combat.baseline();
 			r.generation = new GenerationTracker(r.writer, r.items);
 			r.facts = new FactTracker(r.writer);
+			r.play = new PlayTracker(r.facts);
 			return r;
 		}
 		RunTimeline timeline = RunTimeline.of(log.events);
@@ -279,6 +283,8 @@ final class RunRecorder {
 		r.combat.baseline();
 		r.generation = new GenerationTracker(w, r.items);
 		r.facts = new FactTracker(w);
+		r.play = new PlayTracker(r.facts);
+		r.play.recordTime();
 		store.refreshIndex(logId);
 		return r;
 	}
@@ -309,6 +315,7 @@ final class RunRecorder {
 		long clock = GameSnapshot.turn();
 		if (combat != null) combat.poll();
 		if (items != null) items.poll(false, false);
+		if (play != null){ play.pollGold("other"); play.recordTime(); }
 		if (facts != null) facts.flushAll();
 		//the checkpoint first, the SAVE marker last: the marker is the final event of a save
 		checkRuleset(clock);
@@ -344,6 +351,7 @@ final class RunRecorder {
 		long clock = GameSnapshot.turn();
 		if (combat != null) combat.poll();
 		if (items != null) items.poll(false, false);
+		if (play != null){ play.pollGold("other"); play.recordTime(); }
 		if (facts != null) facts.flushAll();
 
 		if (levelOpen){
@@ -386,6 +394,7 @@ final class RunRecorder {
 		long clock = GameSnapshot.turn();
 		if (combat != null) combat.poll();
 		if (items != null) items.poll(false, false);
+		if (play != null){ play.pollGold("other"); play.recordTime(); }
 		if (facts != null) facts.flushAll();
 		if (levelOpen){
 			LifecycleEvents.LevelExit x = new LifecycleEvents.LevelExit();

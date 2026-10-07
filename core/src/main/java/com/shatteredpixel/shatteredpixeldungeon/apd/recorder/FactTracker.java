@@ -91,7 +91,7 @@ final class FactTracker {
 		return out;
 	}
 
-	void record( FactKind k, long clock, String subject, String actor, long[] values, String[] tags ){
+	synchronized void record( FactKind k, long clock, String subject, String actor, long[] values, String[] tags ){
 		if (k == null) return;
 		long[] v = fitValues(k, values);
 		String[] t = fitTags(k, tags);
@@ -113,7 +113,7 @@ final class FactTracker {
 		if (s.count >= FLUSH_ROWS) flush(s);
 	}
 
-	private void flush( Series s ){
+	private synchronized void flush( Series s ){
 		if (s.count == 0) return;
 		FactEvents.emitSeries(w, s.kind.eventType(), s.kind.key, s.subject, s.actor, s.tags, s.kind.values().size(), s.clocks, s.rows, s.count);
 		s.count = 0;
@@ -121,7 +121,7 @@ final class FactTracker {
 	}
 
 	//write everything pending, in the order the series were started
-	void flushAll(){
+	synchronized void flushAll(){
 		try {
 			for (Series s : series.values()) flush(s);
 		} catch (Throwable ignored){

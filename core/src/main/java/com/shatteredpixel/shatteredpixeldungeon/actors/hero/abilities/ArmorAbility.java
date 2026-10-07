@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdPlay;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
@@ -39,11 +40,13 @@ public abstract class ArmorAbility implements Bundlable {
 
 	public void use( ClassArmor armor, Hero hero ){
 		if (targetingPrompt() == null){
+			ApdPlay.onAbilityUsed( this, chargeUse(hero) );
 			activate(armor, hero, hero.pos);
 		} else {
 			GameScene.selectCell(new CellSelector.Listener() {
 				@Override
 				public void onSelect(Integer cell) {
+					ApdPlay.onAbilityUsed( ArmorAbility.this, chargeUse(hero) );
 					activate(armor, hero, cell);
 				}
 

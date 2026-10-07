@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdPlay;
 import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdCombat;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.ItemEvents;
 import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdItems;
@@ -383,6 +384,7 @@ public class Hero extends Char {
 			}
 		}
 		Talent.onTalentUpgraded(this, talent);
+		ApdPlay.onTalentUpgraded( this, talent );
 	}
 
 	public int talentPointsSpent(int tier){
@@ -841,6 +843,7 @@ public class Hero extends Char {
 
 		//APD: statistics recorder looks at what the hero holds and sees (it only reads)
 		ApdItems.onHeroTurn();
+		ApdPlay.onHeroTurn();
 		
 		//calls to dungeon.observe will also update hero's local FOV.
 		fieldOfView = Dungeon.level.heroFOV;
@@ -1510,6 +1513,7 @@ public class Hero extends Char {
 	}
 	
 	public void rest( boolean fullRest ) {
+		ApdPlay.onHeroRested( fullRest );
 		spendAndNextConstant( TIME_TO_REST );
 		if (hasTalent(Talent.HOLD_FAST)){
 			if (heroClass != HeroClass.WARRIOR || buff(BrokenSeal.WarriorShield.class) != null) {
@@ -2342,6 +2346,7 @@ public class Hero extends Char {
 		boolean wasHighGrass = Dungeon.level.map[step] == Terrain.HIGH_GRASS;
 
 		super.move( step, travelling);
+		ApdPlay.onHeroMoved( this, pos, travelling );
 		
 		if (!flying && travelling) {
 			if (Dungeon.level.water[pos]) {
@@ -2647,6 +2652,7 @@ public class Hero extends Char {
 			talisman.checkAwareness();
 		}
 		
+		ApdPlay.onHeroSearched( intentional, smthFound );
 		return smthFound;
 	}
 	

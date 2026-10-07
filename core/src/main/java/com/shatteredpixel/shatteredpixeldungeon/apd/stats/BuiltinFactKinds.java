@@ -28,5 +28,6 @@ final class BuiltinFactKinds {
 	private BuiltinFactKinds(){}
 
 	static void register(){
+		GameFacts.init();
 	}
 }

@@ -328,6 +328,7 @@ public final class ApdRecorder {
 		ApdCombat.active = usable() && active != null && !active.ended && active.combat != null;
 		ApdGen.active = usable() && active != null && !active.ended && active.generation != null;
 		ApdFacts.active = usable() && active != null && !active.ended && active.facts != null;
+		ApdFacts.play = ApdFacts.active ? active.play : null;
 	}
 
 	private static GenerationTracker gen(){
@@ -723,6 +724,7 @@ public final class ApdRecorder {
 	//UIMSD is about to read the logs: write out what is queued so the run in progress shows up (a short wait at most). Never throws.
 	public static synchronized void flushForReading(){
 		try {
+			if (active != null && active.facts != null) active.facts.flushAll();
 			if (active != null && active.writer != null) active.writer.flush(300, false);
 		} catch (Throwable ignored){
 		}

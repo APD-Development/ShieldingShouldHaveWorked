@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdPlay;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -265,6 +266,8 @@ public class Shopkeeper extends NPC {
 							GLog.i(Messages.get(Shopkeeper.this, "buyback"));
 							Item returned = buybackItems.remove(index-2);
 							Dungeon.gold -= returned.value();
+							ApdPlay.onGoldChanged( "shop.buyback" );
+							ApdPlay.onTrade( "buyback", returned, returned.value(), returned.quantity() );
 							Statistics.goldCollected -= returned.value();
 							if (returned instanceof MissileWeapon && returned.isUpgradable()){
 								Buff.affect(Dungeon.hero, MissileWeapon.UpgradedSetTracker.class).levelThresholds.put(((MissileWeapon) returned).setID, returned.level());

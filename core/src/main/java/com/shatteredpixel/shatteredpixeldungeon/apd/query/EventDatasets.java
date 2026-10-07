@@ -327,6 +327,8 @@ public final class EventDatasets {
 		int n, depth, branch;
 		String entry = "", levelClass = "", feeling = "";
 		long enter;
+		long activeStart;
+		boolean activeStartKnown;
 		long[] sums = new long[SUM_COLUMNS.length];
 		Map<String, Integer> facts = new HashMap<>();
 	}
@@ -355,13 +357,17 @@ public final class EventDatasets {
 		Visit cur = null;
 		int visits = 0, nAt = 0, nDm = 0, nHe = 0, nSh = 0, nXp = 0, nKi = 0;
 		long lastClock = 0;
+		//time actually played: the log holds the running total of the current stretch (it starts again after the app was closed), so a lower
+		//value than the one before is a new stretch and counts from zero
+		long activeTotal = 0, activePrev = -1;
+		boolean haveActive = false;
 		for (int i = 0; i < events.size(); i++){
 			ApdEvent e = events.get(i);
 			lastClock = Math.max(lastClock, e.clock);
 			try {
 				switch (e.type){
 					case EventTypes.LEVEL_ENTER: {
-						if (cur != null) floorRows.add(closeVisit(fl, meta, v, cur, e.clock, 2, countProv, true));
+						if (cur != null) floorRows.add(closeVisit(fl, meta, v, cur, e.clock, 2, countProv, true, activeTotal, haveActive));
 						LifecycleEvents.LevelEnter l = LifecycleEvents.decodeLevelEnter(e, r);
 						cur = new Visit();
 						cur.n = visits++;
@@ -371,12 +377,14 @@ public final class EventDatasets {
 						cur.levelClass = l.levelClass;
 						cur.feeling = l.feeling;
 						cur.enter = e.clock;
+						cur.activeStart = activeTotal;
+						cur.activeStartKnown = haveActive;
 						break;
 					}
 					case EventTypes.LEVEL_EXIT: {
 						LifecycleEvents.LevelExit x = LifecycleEvents.decodeLevelExit(e);
 						if (cur != null){
-							floorRows.add(closeVisit(fl, meta, v, cur, e.clock, x.reason == LifecycleEvents.EXIT_RUN_ENDED ? 1 : 0, countProv, false));
+							floorRows.add(closeVisit(fl, meta, v, cur, e.clock, x.reason == LifecycleEvents.EXIT_RUN_ENDED ? 1 : 0, countProv, false, activeTotal, haveActive));
 							cur = null;
 						}
 						break;
@@ -509,13 +517,23 @@ public final class EventDatasets {
 								cur.facts.put(o.key, c == null ? 1 : c + 1);
 							}
 						}
+						if (FactEvents.isFactEvent(e.type)){
+							for (FactEvents.Observation o : FactEvents.decode(e, r)){
+								if (o.key.equals("time.active") && o.values.length > 0){
+									long v2 = o.values[0];
+									activeTotal += activePrev >= 0 && v2 >= activePrev ? v2 - activePrev : v2;
+									activePrev = v2;
+									haveActive = true;
+								}
+							}
+						}
 				}
 			} catch (RuntimeException bad){
 				//an event this reader cannot decode contributes nothing
 			}
 		}
 		//a floor the hero was still on when the log ends: how long so far is only a lower bound
-		if (cur != null) floorRows.add(closeVisit(fl, meta, v, cur, lastClock, 2, countProv, true));
+		if (cur != null) floorRows.add(closeVisit(fl, meta, v, cur, lastClock, 2, countProv, true, activeTotal, haveActive));
 		if (atLeast(v, V11)) out.rows.put(FLOORS, floorRows);
 		if (combat){
 			out.rows.put(ATTACKS, atRows);
@@ -527,7 +545,8 @@ public final class EventDatasets {
 		}
 	}
 
-	private static Row closeVisit( DatasetDef d, LogMeta meta, TelemetryVersion v, Visit c, long exitClock, int exit, int countProv, boolean open ){
+	private static Row closeVisit( DatasetDef d, LogMeta meta, TelemetryVersion v, Visit c, long exitClock, int exit, int countProv, boolean open,
+	                              long activeTotal, boolean haveActive ){
 		Row row = newRow(d, meta, "floor", c.n);
 		text(row, d, "floor.run", meta.runId, Fact.PROV_RECORDED);
 		num(row, d, "floor.visit", c.n + 1, Fact.PROV_RECORDED);
@@ -541,6 +560,7 @@ public final class EventDatasets {
 		if (!open) num(row, d, "floor.exitTurn", exitClock, Fact.PROV_RECORDED);
 		num(row, d, "floor.turns", Math.max(0, exitClock - c.enter), tprov);
 		num(row, d, "floor.exit", exit, Fact.PROV_RECORDED);
+		if (c.activeStartKnown && haveActive) num(row, d, "floor.activeMillis", Math.max(0, activeTotal - c.activeStart), tprov);
 		boolean combat = atLeast(v, V13), items = atLeast(v, V12);
 		for (int i = 0; i < SUM_COLUMNS.length; i++){
 			boolean known = i >= SEEN ? items : combat;

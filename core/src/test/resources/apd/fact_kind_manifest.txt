@@ -1,1 +1,19 @@
 # One line per shipped fact kind: key|P(ublic)/I(nternal)|S(eries)/-|value field keys|tag field keys. Keys are never removed or renamed; fields are only added at the END.
+move.step|P|S|cell,width,travelling|
+explore.rest|P|S|full|
+explore.search|P|-|intentional,found|
+trap.trigger|P|-|hero|
+item.use|P|-|quantity|action
+item.useTruth|I|-|level,charges|action
+status.start|P|-|duration|
+status.end|P|-|remaining|
+status.startHidden|I|-|duration|
+status.endHidden|I|-|remaining|
+talent.upgrade|P|-|points,tier|
+subclass.choose|P|-||
+ability.choose|P|-||
+spell.cast|P|-|cost|
+ability.use|P|-|cost|
+economy.gold|P|-|delta,total|cause
+economy.trade|P|-|price,quantity|side
+time.active|P|-|millis|

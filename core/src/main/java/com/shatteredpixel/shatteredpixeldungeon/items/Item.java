@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdPlay;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -173,6 +174,7 @@ public class Item implements Bundlable {
 		curUser = hero;
 		curItem = this;
 		ApdItems.noteAction( this, action );
+		ApdPlay.onItemAction( this, action );
 		
 		if (action.equals( AC_DROP )) {
 			

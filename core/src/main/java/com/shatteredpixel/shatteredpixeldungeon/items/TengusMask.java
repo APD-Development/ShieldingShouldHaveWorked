@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdPlay;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -100,6 +101,7 @@ public class TengusMask extends Item {
 		curUser.busy();
 		
 		curUser.subClass = way;
+		ApdPlay.onSubclassChosen( way );
 		Talent.initSubclassTalents(curUser);
 
 		if (way == HeroSubClass.ASSASSIN && curUser.invisible > 0){

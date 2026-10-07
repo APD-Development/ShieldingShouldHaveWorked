@@ -35,6 +35,8 @@ public final class ApdFacts {
 
 	//true while a run is being recorded. Written by ApdRecorder only.
 	static volatile boolean active;
+	//what ApdPlay records through. Written by ApdRecorder only.
+	static volatile PlayTracker play;
 
 	public static boolean isActive(){
 		return active;

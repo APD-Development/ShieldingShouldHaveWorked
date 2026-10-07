@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdPlay;
 import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdCombat;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
@@ -359,10 +360,16 @@ public abstract class Char extends Actor {
 		HP = bundle.getInt( TAG_HP );
 		HT = bundle.getInt( TAG_HT );
 		
-		for (Bundlable b : bundle.getCollection( BUFFS )) {
-			if (b != null) {
-				((Buff)b).attachTo( this );
+		//effects put back from a save did not just begin
+		ApdPlay.restoreBegin();
+		try {
+			for (Bundlable b : bundle.getCollection( BUFFS )) {
+				if (b != null) {
+					((Buff)b).attachTo( this );
+				}
 			}
+		} finally {
+			ApdPlay.restoreEnd();
 		}
 	}
 

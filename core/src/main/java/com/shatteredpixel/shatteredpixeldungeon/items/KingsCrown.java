@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdPlay;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -120,6 +121,7 @@ public class KingsCrown extends Item {
 		}
 
 		hero.armorAbility = ability;
+		ApdPlay.onAbilityChosen( ability );
 		Talent.initArmorTalents(hero);
 
 		hero.sprite.operate( hero.pos );

@@ -88,7 +88,7 @@ final class CombatTracker {
 		return CombatEvents.KIND_NEUTRAL;
 	}
 
-	private static String nameOf( Char c ){
+	static String nameOf( Char c ){
 		try {
 			String n = c.name();
 			return n == null ? "" : n;
@@ -107,7 +107,7 @@ final class CombatTracker {
 	}
 
 	//can the player see this creature right now (the hero always counts: its own state is always on screen)
-	private static boolean visible( Char c ){
+	static boolean visible( Char c ){
 		if (c == null) return false;
 		if (c == Dungeon.hero) return true;
 		Level l = Dungeon.level;

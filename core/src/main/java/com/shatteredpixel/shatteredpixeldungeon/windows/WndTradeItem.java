@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdPlay;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.ItemEvents;
 import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdItems;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -253,7 +254,10 @@ public class WndTradeItem extends WndInfoItem {
 		//selling items in the sell interface doesn't spend time
 		hero.spend(-hero.cooldown());
 
+		ApdPlay.onTrade( "sell", item, item.value(), item.quantity() );
+		ApdPlay.setGoldCause( "shop.sell" );
 		new Gold( item.value() ).doPickUp( hero );
+		ApdPlay.clearGoldCause();
 
 		if (shop != null){
 			shop.buybackItems.add(item);
@@ -280,7 +284,10 @@ public class WndTradeItem extends WndInfoItem {
 			//selling items in the sell interface doesn't spend time
 			hero.spend(-hero.cooldown());
 
+			ApdPlay.onTrade( "sell", item, item.value(), item.quantity() );
+			ApdPlay.setGoldCause( "shop.sell" );
 			new Gold( item.value() ).doPickUp( hero );
+			ApdPlay.clearGoldCause();
 
 			if (shop != null){
 				shop.buybackItems.add(item);
@@ -298,6 +305,8 @@ public class WndTradeItem extends WndInfoItem {
 		
 		int price = Shopkeeper.sellPrice( item );
 		Dungeon.gold -= price;
+		ApdPlay.onGoldChanged( "shop.buy" );
+		ApdPlay.onTrade( "buy", item, price, item.quantity() );
 		Catalog.countUses(Gold.class, price);
 		
 		ApdItems.noteAcquireContext( ItemEvents.ACQ_SHOP );

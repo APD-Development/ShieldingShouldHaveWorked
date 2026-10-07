@@ -139,4 +139,23 @@ public class FloorsAndPerUnitTest {
 		for (double d : perHour.denominators) assertTrue(Double.isNaN(d));
 		assertFalse(Double.isNaN(PerUnit.compute(c, q, res, PerUnit.Unit.TURN, RS).denominators[0]));
 	}
+
+	@Test
+	public void timePlayedOnAFloorComesFromTheRunningTotalAndSurvivesARestart(){
+		com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKind T = com.shatteredpixel.shatteredpixeldungeon.apd.stats.GameFacts.TIME_ACTIVE;
+		log("a", "run-a", "CLERIC").fact(T, "", 0).enter(1).fact(CAST, "Smite", 1).fact(T, "", 5000).leave()
+				.enter(2).fact(T, "", 9000).leave()
+				.enter(3).fact(T, "", 100).leave()   //the app was closed and opened again: the total started over
+				.end(LifecycleEvents.OUTCOME_DIED, "rat", 3, 2, 10).close(true);
+		Dataset f = catalog().dataset(EventDatasets.FLOORS);
+		int col = f.def.indexOf("floor.activeMillis");
+		assertEquals(5000, f.rows.get(0).num(col));
+		assertEquals(4000, f.rows.get(1).num(col));
+		assertEquals("a restart counts from zero, it is never negative", 100, f.rows.get(2).num(col));
+		//and it is the "per hour" denominator
+		Dataset casts = catalog().dataset(FactDatasets.idOf(CAST));
+		Query q = all(casts.def.id).withGroup(new GroupBy(Arrays.asList(FactDatasets.SUBJECT), Arrays.asList(Aggregate.count())));
+		PerUnit.Result perHour = PerUnit.compute(catalog(), q, QueryEngine.run(casts, q, RS), PerUnit.Unit.HOUR, RS);
+		assertEquals(9100 / 3_600_000d, perHour.denominators[0], 1e-9);
+	}
 }

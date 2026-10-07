@@ -72,12 +72,12 @@ public class RollbackTest {
 		ApdEvent matchedSave = r.events.get((int) rb.matchedSaveIndex);
 		assertEquals(EventTypes.SAVE, matchedSave.type);
 		assertEquals(2, LifecycleEvents.decodeSave(matchedSave).depth);
-		//2 unsaved level switches = EXIT+CHECKPOINT+RULESET? no: EXIT, CP, ENTER, CP each = 8 events
-		assertEquals(8, rb.abandonedEvents);
+		//2 unsaved level switches = FACT (time played), EXIT, CP, ENTER, CP each = 10 events
+		assertEquals(10, rb.abandonedEvents);
 		assertEquals(80, rb.lastAbandonedClock);
 
 		RunTimeline timeline = RunTimeline.of(r.events);
-		assertEquals(8, timeline.abandonedCount());
+		assertEquals(10, timeline.abandonedCount());
 		for (ApdEvent e : timeline.abandoned()){
 			assertTrue(e.index > matchedSave.index && e.index < rollbacks.get(0).index);
 		}
@@ -132,18 +132,20 @@ public class RollbackTest {
 		LifecycleEvents.Rollback r1 = LifecycleEvents.decodeRollback(rollbacks.get(0));
 		LifecycleEvents.Rollback r2 = LifecycleEvents.decodeRollback(rollbacks.get(1));
 		assertEquals(r1.matchedSaveIndex, r2.matchedSaveIndex);
-		assertEquals(4, r1.abandonedEvents);          //1 unsaved switch: EXIT, CP, ENTER, CP
-		assertEquals(6, r2.abandonedEvents);          //the resumed session has no open level: ENTER, CP then EXIT, CP, ENTER, CP
+		assertEquals(5, r1.abandonedEvents);          //1 unsaved switch: FACT (time played), EXIT, CP, ENTER, CP
+		assertEquals(9, r2.abandonedEvents);          //the resumed session: FACT (time played, written when it resumed), then ENTER, CP, EXIT, CP, ENTER, CP and one FACT per switch
+		//(the resumed session has no open level: ENTER, CP then EXIT, CP, ENTER, CP, and one time-played FACT per switch)
 
 		RunTimeline t = RunTimeline.of(r.events);
-		assertEquals(4 + 6, t.abandonedCount());
+		assertEquals(5 + 9, t.abandonedCount());
 		assertEquals(2, t.rollbackCount());
 		//no abandoned event is a recording-meta event
 		for (ApdEvent e : t.abandoned()) assertFalse(LifecycleEvents.isRecordingMetaEvent(e.type));
 		//canonical timeline has no unsaved play at all
 		long gameEvents = countGameEvents(t.canonical());
 		long upToSave = countGameEvents(r.events.subList(0, (int) r1.matchedSaveIndex + 1));
-		assertEquals(upToSave, gameEvents);
+		//plus the one "time played" FACT the surviving session wrote when it resumed (it starts the played-time total over): not unsaved play
+		assertEquals(upToSave + 1, gameEvents);
 	}
 
 	@Test

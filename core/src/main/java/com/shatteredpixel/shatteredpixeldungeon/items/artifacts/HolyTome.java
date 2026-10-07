@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.artifacts;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdPlay;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
@@ -361,6 +362,7 @@ public class HolyTome extends Artifact {
 					GameScene.handleCell( QuickSlotButton.lastTarget.pos );
 				}
 			} else {
+				ApdPlay.onSpellCast( quickSpell, quickSpell.chargeUse(Dungeon.hero) );
 				quickSpell.onCast(HolyTome.this, Dungeon.hero);
 
 				if (quickSpell.targetingFlags() != -1 && Dungeon.quickslot.contains(HolyTome.this)){
