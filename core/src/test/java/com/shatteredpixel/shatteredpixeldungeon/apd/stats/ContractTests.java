@@ -77,7 +77,8 @@ public class ContractTests {
 			"com.watabou.utils.Random", "java.util.Random", "ThreadLocalRandom", "Math.random", "SecureRandom",
 			//the game and its engine
 			"com.badlogic", "Gdx", "com.watabou", "Dungeon", "Actor", "Statistics", "Rankings",
-			//APIs missing on Android 5.0 (minSdk 21)
+			//APIs missing on Android 5.0: the conservative set the library was written against (APD's minSdk is now 26, so most of these
+			//could be relaxed; kept for now, see docs/APD-MIN-ANDROID.md)
 			"java.nio.file", "String.join", "computeIfAbsent", "getOrDefault", ".stream(", "Optional", "List.of(",
 			"Map.of(", "Set.of(", "java.util.function", "Math.floorMod", "Math.floorDiv", "removeIf", "forEach(",
 	};

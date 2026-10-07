@@ -403,4 +403,60 @@ public class ArchiveHostileTest {
 		ArchiveImporter.Report again = ArchiveImporter.importArchive(tmp.newFolder("device-after-stall"), new ByteArrayInputStream(archive));
 		assertTrue(again.summary(), again.ok);
 	}
+
+	//The raw source can stop answering too (a file picker's stream, a damaged file): it gives 0 bytes for ever instead of data or -1.
+	//Nothing in the zip classes copes with that, and the import must neither spin nor keep its lock.
+	private static final class StallingSource extends InputStream {
+		private final byte[] data;
+		private final int limit;
+		private int pos;
+
+		StallingSource( byte[] data, int limit ){
+			this.data = data;
+			this.limit = limit;
+		}
+
+		@Override
+		public int read() {
+			return pos < limit ? (data[pos++] & 0xff) : -1;
+		}
+
+		@Override
+		public int read( byte[] b, int off, int len ) {
+			if (len == 0) return 0;
+			if (pos >= limit) return 0;   //the stall
+			int n = Math.min(len, limit - pos);
+			System.arraycopy(data, pos, b, off, n);
+			pos += n;
+			return n;
+		}
+	}
+
+	@Test(timeout = 30000)
+	public void aSourceThatStopsAnsweringStopsTheImportInsteadOfSpinning() throws Exception {
+		byte[] log = good("a", "run-a");
+		Map<String, byte[]> files = new LinkedHashMap<>();
+		files.put("runs/a.apdlog", log);
+		byte[] archive = archiveOf(files, java.util.Collections.singletonMap("runs/a.apdlog", "run-a"));
+		//cut inside the manifest or inside a file's data: nothing at all may be imported
+		for (int cut : new int[]{ 10, 60, archive.length / 3, archive.length / 2 }){
+			root = tmp.newFolder("device-stall-source-" + cut);
+			ArchiveImporter.Report r = ArchiveImporter.importArchive(root, new StallingSource(archive, cut));
+			assertFalse("cut at " + cut + ": " + r.summary(), r.ok);
+			assertEquals(0, r.imported);
+			assertNothingWritten();
+		}
+		//cut only in the zip's trailing directory (every file already arrived and was verified): all or nothing, never half
+		root = tmp.newFolder("device-stall-source-tail");
+		ArchiveImporter.Report tail = ArchiveImporter.importArchive(root, new StallingSource(archive, archive.length - 30));
+		if (tail.ok){
+			assertEquals(1, tail.imported);
+			assertArrayEquals(log, java.nio.file.Files.readAllBytes(new File(root, "runs/a.apdlog").toPath()));
+		} else {
+			assertEquals(0, tail.imported);
+			assertNothingWritten();
+		}
+		//the importer is free for a good archive afterwards
+		assertTrue(ArchiveImporter.importArchive(tmp.newFolder("device-after-source-stall"), new ByteArrayInputStream(archive)).ok);
+	}
 }

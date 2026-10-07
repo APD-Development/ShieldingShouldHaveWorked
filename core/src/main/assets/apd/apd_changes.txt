@@ -17,6 +17,7 @@ Added:
 - Cleric attempt counter and the achievement "FUCK CLERIC, THAT'S WHY" (10 attempts)
 - Fresh installs go straight to the title menu
 Changed:
+- APD now requires Android 8.0 or newer (up from Android 5.0)
 - Selecting Cleric and pressing Start now leads to a black screen until the app is closed
 Fixed:
 - Starvation damage now consumes shielding before HP (APD-0001). Shielding does not cure hunger.

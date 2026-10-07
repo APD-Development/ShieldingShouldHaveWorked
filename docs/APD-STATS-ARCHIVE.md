@@ -37,7 +37,7 @@ manifest stops everything before anything is written. Each file is then streamed
 manifest's size and SHA-256 and be a readable APD log of the run the manifest says. If **any** file fails (damaged, mismatching, missing from the archive,
 truncated, demo-named) nothing at all is imported, the temporary folder is removed and the problems are reported. Only a fully verified archive is committed:
 a log that already exists is **never replaced** (an identical one is skipped, a different one is kept as it is and reported; the name is claimed atomically),
-and if placing a file fails half way, everything this import placed is taken back. Entries the manifest does not list are ignored, whatever their name. A zip stream that answers a read with zero bytes (old Android 5 does, for an entry that is cut short, and its `getNextEntry()` then spins for ever) is treated as a damaged archive and stops the import at once (`readChunk`; regression test `aStreamThatStallsMidEntryStopsTheImportInsteadOfSpinning`). The
+and if placing a file fails half way, everything this import placed is taken back. Entries the manifest does not list are ignored, whatever their name. A zip stream that answers a read with zero bytes (Android 5 did, for an entry that is cut short, and its `getNextEntry()` then spun for ever; APD no longer supports Android 5, but the guard stays: a stream is never trusted to make progress) is treated as a damaged archive and stops the import at once (`readChunk`, and `ProgressGuardInputStream` around the raw source; regression tests `aStreamThatStallsMidEntryStopsTheImportInsteadOfSpinning` and `aSourceThatStopsAnsweringStopsTheImportInsteadOfSpinning`). The
 index is rebuilt afterwards. Recording is never interrupted: the importer only creates files that do not exist.
 
 ## Storage meter (`StorageMeter`)
@@ -57,7 +57,7 @@ gets a stream to exactly that file; no storage permission is needed. The core on
 redacted; twice adds nothing; never overwrites; merges; exporting while recording; caches rebuilt), `ArchiveHostileTest` (garbage, tampered manifest or file,
 zip-slip paths, unlisted entries, wrong size or header, a 70 MB entry, truncation, newer format, missing files, demo data), `StorageMeterTest`,
 `HistoryTransferTest`, `ArchiveSelfTestTest`;
-`ArchiveMigrationDeviceTest` runs the whole migration on the emulators (API 21 and 34): realistic history, export through `HistoryTransfer` and the same
+`ArchiveMigrationDeviceTest` runs the whole migration on the emulators (API 26, the oldest supported, and 34): realistic history, export through `HistoryTransfer` and the same
 `ContentResolver` stream code the file picker's answer uses (`AndroidFileProvider.deliverExport/deliverImport`, with the file chosen by the test), ZIP and
 manifest checks, import into a clean install, derived data deleted and rebuilt, UIMSD-visible history compared with the source, second import changes nothing,
 unfinished-run redaction, lossless finished runs, demo data never in or out, damaged archives changing nothing, cancel and error paths, then the self-test.

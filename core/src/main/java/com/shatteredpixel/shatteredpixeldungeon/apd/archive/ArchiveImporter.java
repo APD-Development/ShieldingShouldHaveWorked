@@ -95,7 +95,7 @@ public final class ArchiveImporter {
 	private static final Object LOCK = new Object();
 
 	public static Report importArchive( File root, InputStream in ){
-		return importZip(root, new ZipInputStream(in));
+		return importZip(root, new ZipInputStream(new ProgressGuardInputStream(in)));
 	}
 
 	//the same, from an already opened zip stream (tests give it streams that misbehave the way old Android's does)

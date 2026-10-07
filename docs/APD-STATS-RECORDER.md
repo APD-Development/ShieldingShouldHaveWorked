@@ -48,7 +48,7 @@ example the exotic setting) writes `RULESET_CHANGE`.
 
 ## Validation on a real Android runtime
 - `SelfTest` (storage library: write/read, lifecycle codec, truncation/corruption/repair, concurrency, index rebuild) runs on desktop in `:core:test`,
-  inside the game (title screen -> "APD Settings" -> "Run self-test"), and as an instrumented test (`ApdStatsDeviceTest`) on emulators API 21 and 34 via
+  inside the game (title screen -> "APD Settings" -> "Run self-test"), and as an instrumented test (`ApdStatsDeviceTest`) on emulators API 26 (the minimum supported) and 34 via
   `.github/workflows/android-tests.yml` (separate from the release build).
 - A physical phone run is the in-game button; emulator results are not a substitute for it.
 

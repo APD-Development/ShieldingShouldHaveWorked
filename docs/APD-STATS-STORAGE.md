@@ -2,7 +2,7 @@
 
 Package `com.shatteredpixel.shatteredpixeldungeon.apd.stats` (new files only). Nothing in the game calls it yet: no
 gameplay hooks, no save changes (`apd_run_id` and `apd_uid` are later phases). It is plain `java.io`, uses no game
-classes, no randomness, and only APIs that exist on Android 5.0. Tests enforce all three (`ContractTests`).
+classes, no randomness, and only APIs that exist on Android 5.0 (a deliberately conservative set that was the minimum when the library was written; APD now requires Android 8.0, so the set may be relaxed, see `docs/APD-MIN-ANDROID.md`). Tests enforce all three (`ContractTests`).
 
 ## Two separate version numbers
 | Name | Meaning | Where |

@@ -1,6 +1,6 @@
 name: Android device tests
 
-#Runs the statistics self-test on real Android emulators (oldest supported and a recent one). It does not publish anything
+#Runs the statistics self-test on real Android emulators (the oldest supported, Android 8.0 / API 26, and a recent one). It does not publish anything
 #and is separate from the release build so a flaky emulator can never block a release.
 on:
   push:
@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        api-level: [21, 34]
+        api-level: [26, 34]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
