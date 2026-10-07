@@ -7,9 +7,10 @@ CI: "Build APK" ~3 min, "Android device tests" ~4-5 min (emulators API 26 = mini
 logcat tags APDMIG/APDPERF into the job log and uploads logcat artifacts.
 
 ## Status
-- **Current phase: 9 (exact healing + measured optimisation), implementation done, commit a19c9c00e pushed, CI result pending.**
-  After CI is green: write the Phase 9 completion report to the user and STOP (no new phase without approval).
-- Latest known-good build: **apd-build-35** (commit 468abc8b9, Phase 8 + API 26 minimum, all green).
+- **Phase 9 (exact healing + measured optimisation): COMPLETE and verified; waiting for the user's approval before anything else.**
+  Verified on commit a19c9c00e = **apd-build-36**: full core suite 501 tests green; device tests green on API 26 and API 34
+  (8 tests each, incl. the migration test with heals and UimsdDeviceTimingTest).
+- Latest known-good build: **apd-build-36** (commit a19c9c00e, Phase 9). Later commits are docs only.
 - Frozen: Phases 0-7 (Phase 7 UIMSD approved/frozen at build 28). Phase 8 (export/import ZIP, storage meter, Android file picker):
   automated verification complete; NOT permanently frozen until the user's physical picker check.
 - Telemetry version now 1.6. UIMSD = one major feature; these phases are milestones inside it.
@@ -50,10 +51,11 @@ logcat tags APDMIG/APDPERF into the job log and uploads logcat artifacts.
 - Title button label/target: the UIMSD button opens UimsdScene (TitleButtonWiringTest).
 
 ## Next approved work
-1. Confirm CI green for a19c9c00e (Build APK + device tests API 26 and 34; read APDPERF numbers from the job log), then report Phase 9
-   to the user and stop.
-2. Then only what the user approves. Candidates they have named: the adult-humor preference (above), the future UIMSD items (above),
-   Phase 8 picker sign-off.
+Nothing is approved yet. The user must approve the next step after reading the Phase 9 report. Candidates they named: the adult-humor
+preference (above), the future UIMSD items (above), Phase 8 picker sign-off.
+Measured in Phase 9 (for reference): desktop 50,000-row scan 50 ms; emulator demo history first build 183 ms (API 26) / 630 ms (API 34),
+cache reload 22 / 61 ms, slowest view 11 / 54 ms; exact healing 32 B per heal (inferred was 18 B), ~70 KiB per 20k-turn run.
+No optimisation was warranted beyond slimming HEAL_DETAIL (19 -> 14 B).
 
 ## Working rules the user set (usage efficiency)
 Minimal narration; batch related work; do not poll CI repeatedly (estimate the finish, check once around then, do independent approved
