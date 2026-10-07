@@ -141,9 +141,17 @@ logcat tags APDMIG/APDPERF into the job log and uploads logcat artifacts.
   believe this. Thank you.", "Developer Reminder: Just checking in. I still fucking hate Cleric. Carry on.", "IMPORTANT APD ANNOUNCEMENT: Cleric still sucks. Thank you for your attention.", and unrelated
   moments like "You're playing Warrior. This has nothing to do with your run. I just remembered Cleric exists and got annoyed."; contextual milestones such as "You have played Cleric 100 times. I
   fundamentally do not understand you."). Needs: MUCH rarer than once per 10-20 runs: real-world days, weeks or months apart, long randomized real-time cooldowns (not per-run spam) so the player
-  forgets the system exists; the player need not be playing Cleric; NEVER during combat, bosses or important dialogue/interactions, wait for a safe moment; no repeats until the pool has
-  substantially cycled; a large pool eventually; some messages with contextual eligibility; the player can disable Cleric-slander messages; respects Adult/Clean humor (clean mode needs
-  alternate wording).
+  forgets the system exists; the player need not be playing Cleric; NEVER during combat, bosses or important dialogue/interactions, wait for a safe moment; the player can disable
+  Cleric-slander messages; respects Adult/Clean humor (clean mode needs alternate wording). VARIETY IS NOT A FIXED POOL: see (2b).
+  (2b) EFFECTIVELY UNLIMITED VARIETY, EXTREMELY LIMITED FREQUENCY (user requirement). Not a small fixed pool a player can exhaust; design so new jokes can be added indefinitely with no redesign, and
+  so that years of play make MORE jokes possible, never fewer. Combine: authored messages, contextual TEMPLATES, milestone messages, player-history-driven messages, current-character context, run
+  outcome context, time since the last Cleric reminder, number of Cleric runs, spell/ability usage, UIMSD-recorded Cleric history, and other safe recorded context. Examples: "You have cast
+  Guiding Light 4,812 times. This has not improved my opinion of Cleric."; "You have now won 50 Cleric runs. I am beginning to suspect the problem may be me. I still hate Cleric."; "You are
+  currently playing Huntress. Unfortunately, Cleric still exists." Several tone/categories so messages are not all structurally identical. Strong anti-repeat (avoid recently seen lines AND
+  templates, no obvious cycling order); templates x context greatly expand the combinations; new messages/templates addable later without changing the system. UIMSD history may personalize jokes
+  ONLY where safe and accurate: NEVER fabricate a statistic (any number or history fact in a joke must come from actual recorded data), NEVER expose hidden information through a joke, and
+  Adult/Clean presentation applies to every generated/contextual variant. A player may see one message every few weeks or months but, even after years, should still have a realistic chance of
+  seeing one they have never seen. Intentionally absurd recurring lore, not a notification system to become numb to.
   (3) CLERIC DIFFICULTY DISPLAY GAG: once difficulty is visible at run setup, selecting Cleric may occasionally VISUALLY mess with the display (real difficulty 3 but the UI briefly shows
   something absurd like "Difficulty: 5.0 / 10", or behaves as if APD disapproves). PRESENTATION ONLY. ABSOLUTE RULE: selecting Cleric must NEVER change the actual selected difficulty; it may snap
   back, disappear, or come with a developer message. Players must never have to wonder whether their run was secretly modified.
