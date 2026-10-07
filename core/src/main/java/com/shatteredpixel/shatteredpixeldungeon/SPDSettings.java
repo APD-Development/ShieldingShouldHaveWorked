@@ -329,6 +329,8 @@ public class SPDSettings extends GameSettings {
 	}
 
 	public static int apdExoticChance(){
+		//APD: a floor replay uses the exotic chance of the run it replays, not this install's setting
+		if (com.shatteredpixel.shatteredpixeldungeon.apd.replay.ReplayContext.active()) return com.shatteredpixel.shatteredpixeldungeon.apd.replay.ReplayContext.exoticChance();
 		return getInt( KEY_APD_EXOTIC_CHANCE, 0, 0, APD_EXOTIC_CHANCE_MAX );
 	}
 

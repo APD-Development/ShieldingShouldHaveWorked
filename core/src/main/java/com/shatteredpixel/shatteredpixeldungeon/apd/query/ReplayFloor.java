@@ -1,4 +1,4 @@
-package com.shatteredpixel.shatteredpixeldungeon.apd.replay;
+package com.shatteredpixel.shatteredpixeldungeon.apd.query;
 
 import java.util.ArrayList;
 import java.util.List;

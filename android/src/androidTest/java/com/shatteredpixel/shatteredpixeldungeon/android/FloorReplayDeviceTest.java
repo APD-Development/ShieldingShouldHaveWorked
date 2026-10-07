@@ -13,7 +13,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import com.badlogic.gdx.Gdx;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.apd.replay.FloorReplay;
-import com.shatteredpixel.shatteredpixeldungeon.apd.replay.ReplayFloor;
+import com.shatteredpixel.shatteredpixeldungeon.apd.query.ReplayFloor;
 import com.watabou.noosa.Game;
 
 import org.junit.Test;
@@ -67,6 +67,18 @@ public class FloorReplayDeviceTest {
 			assertEquals("levels.LastLevel", a.get(25).levelClass);
 			assertTrue("replay too slow: " + ms + " ms", ms < 60000);
 			assertNull("the replay must leave the lock free", FloorReplay.refusal());
+
+			//the seed floors datasets built from a device replay: every row labelled, nothing recorded passed off as canonical
+			com.shatteredpixel.shatteredpixeldungeon.apd.query.SeedFloors.Spec spec = new com.shatteredpixel.shatteredpixeldungeon.apd.query.SeedFloors.Spec();
+			spec.runId = "device-run";
+			spec.heroClass = "WARRIOR";
+			spec.reached = 3;
+			spec.ruleset = "r";
+			com.shatteredpixel.shatteredpixeldungeon.apd.query.SeedFloors.Built built =
+					com.shatteredpixel.shatteredpixeldungeon.apd.query.SeedFloors.assemble(spec, new java.util.ArrayList<com.shatteredpixel.shatteredpixeldungeon.apd.query.SeedFloors.Recorded>(), a);
+			assertTrue("seed floors have no items", built.items.rows.size() > 50);
+			assertTrue("seed floors have no creatures", built.mobs.rows.size() > 20);
+			assertEquals(26, built.canonicalFloors);
 
 			//repeatability across more seeds and classes (object-identity ordering inside the game differs from run to run on a device)
 			long[] seeds = { 7L, 99999L, 123456789L, 5550123L };

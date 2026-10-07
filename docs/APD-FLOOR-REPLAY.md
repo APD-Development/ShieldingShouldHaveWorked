@@ -31,3 +31,16 @@ level equals the game's own generation (harness context REFERENCE). Also repeata
 ## Limits
 Branch levels (mines 11-14, vaults 16-19) are not generated. Bones, daily seeds' calendar state, hero talents and play-time loot are not
 modelled. An upstream change to level generation changes results: bump `ENGINE_VERSION` / the golden test guards it.
+
+## Phase B/C: Seed floors in UIMSD
+- Entry: Runs row of a finished run -> "Seed floors (canonical)". Needs seed + hero class in the run's row (older/imported runs without them say so).
+  The exotic chance and challenges are the run's own (the replay never reads the install's setting: `ReplayContext.exoticChance`).
+- Pure assembly `apd.query.SeedFloors` (datasets seedfloors / seedmobs / seedcompare, views of the same names); game-aware
+  `apd.replay.SeedFloorsRunner` (replay + in-memory cache of 4 runs). `UimsdModel.setSeedFloorsProvider` keeps the generic model free of game code.
+- Provenance: column `Basis` on every row: Recorded (the run's log, authoritative), Canonical (floor never reached), Canonical (reached,
+  not recorded), Canonical (reach not known). Canonical cells use the ~ mark (PROV_INFERRED). A floor with any recorded item shows ONLY the log's
+  items; its canonical items appear only in the comparison. Creatures are listed for canonical floors only.
+- Comparison (seedcompare): per recorded floor, recorded vs canonical item counts, same / only-recorded / only-canonical, agreement %.
+- Only finished runs; a loaded/live game gives a notice, never a replay. Everything is INTERNAL (hidden-information) columns, opened with
+  hidden information on.
+- Tests: SeedFloorsTest (provenance, authority of recorded floors, comparison maths, model flow, live-game notice), device repeatability + assembly.

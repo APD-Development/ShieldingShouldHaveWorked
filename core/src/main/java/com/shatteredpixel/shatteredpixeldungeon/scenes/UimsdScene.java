@@ -120,6 +120,7 @@ public class UimsdScene extends PixelScene {
 		removeLeftoverSample();
 		atHome = true;
 		model = new UimsdModel(rulesId, rulesLabel);
+		model.setSeedFloorsProvider(com.shatteredpixel.shatteredpixeldungeon.apd.replay.SeedFloorsRunner.INSTANCE);
 		if (root == null){
 			model = null;
 		} else {
@@ -444,6 +445,14 @@ public class UimsdScene extends PixelScene {
 		ui.add(help);
 		reg("guide", cx0, y, helpW, 16);
 		y += 18;
+
+		//work in progress / why something is unavailable (seed floors)
+		String notice = model.notice();
+		if (!notice.isEmpty()){
+			RenderedTextBlock n = text(notice, 6, 0xFFDD66, contentW);
+			n.setPos(x0, y);
+			y = n.bottom() + 3;
+		}
 
 		//status
 		List<StatusText.Line> lines = model.status();

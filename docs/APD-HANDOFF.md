@@ -73,8 +73,9 @@ Pending, bundled for the next PHONE-CHECK build (none blocking):
 - Phase 9 healing columns in UIMSD
 - Home layout
 - Guide/tour overlay and interaction
+- Seed floors screen (Runs row -> Seed floors (canonical)): labels, ~ marks, notice line, comparison table
 
-## Floor replay (user approved all 3 decisions; Phase A -> B -> C autonomous)
+## Floor replay (user approved all 3 decisions; Phase A -> B -> C autonomous; A green at 4e43ce250, B+C implemented, see docs/APD-FLOOR-REPLAY.md; physical check of the Seed floors screen joins the PHONE-CHECK bundle)
 Decisions: canonical seed floors always labelled (never "the exact counterfactual"); unreached floors of FINISHED runs may be
 interrogated; replay only when no live game is loaded; for reached floors recorded telemetry is authoritative (canonical only fills
 floors that never existed). Phase A (FloorReplay + isolation + device test) -> docs/APD-FLOOR-REPLAY.md. Phase B: "Seed floors" dataset;

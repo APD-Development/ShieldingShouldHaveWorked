@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.apd.replay;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.apd.query.ReplayFloor;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -29,7 +30,7 @@ import java.util.List;
 //Generates the floors of a seed in order, outside any game, under a fixed reference context, and returns them as plain data.
 //
 //WHAT THE RESULT MEANS: canonical seed floors. Floor N is what the seed gives after floors 1..N-1 were generated in order with the
-//reference hero (the run's class with its starting kit, no talent points), reference journal and tutorial (ReplayContext), the run's challenges, no bones, no
+//reference hero (the run's class with its starting kit, no talent points), reference journal and tutorial (ReplayContext), the run's challenges and exotic chance, no bones, no
 //play-time loot, and no branch levels. It is the exact counterfactual of nothing: a floor the run really met is described by the run's
 //own recorded telemetry, never by this.
 //
@@ -111,10 +112,15 @@ public final class FloorReplay {
 
 	//Floors 1..maxDepth (at most LAST_FLOOR) of a seed.
 	public static List<ReplayFloor> replay( long seed, int challenges, HeroClass heroClass, int maxDepth ) throws Refused {
-		return replay(seed, challenges, heroClass, maxDepth, null);
+		return replay(seed, challenges, 0, heroClass, maxDepth, null);
 	}
 
 	public static List<ReplayFloor> replay( long seed, int challenges, HeroClass heroClass, int maxDepth, Observer observer ) throws Refused {
+		return replay(seed, challenges, 0, heroClass, maxDepth, observer);
+	}
+
+	//exoticChance: the run's own "exotic potions/scrolls" percent (0 = vanilla)
+	public static List<ReplayFloor> replay( long seed, int challenges, int exoticChance, HeroClass heroClass, int maxDepth, Observer observer ) throws Refused {
 		String why = refusal();
 		if (why != null) throw new Refused(why);
 		synchronized (LOCK){
@@ -125,6 +131,7 @@ public final class FloorReplay {
 			boolean[] hooks = ApdRecorder.suspendHooks();
 			try {
 				saved = new Saved();
+				ReplayContext.exoticChance(Math.max(0, Math.min(80, exoticChance)));
 				ReplayContext.enter();
 				return generate(seed, challenges, heroClass, Math.max(1, Math.min(LAST_FLOOR, maxDepth)), observer);
 			} finally {

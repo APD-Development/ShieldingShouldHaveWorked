@@ -222,6 +222,74 @@ public final class UimsdModel {
 	}
 
 	//open a view. The player's wish for hidden information carries over; everything else starts from the view.
+	//---- seed floors (canonical replay of a finished run's seed) ----
+
+	private String notice = "";
+
+	//a short line for the screen about work in progress or why something is unavailable ("" when there is none)
+	public synchronized String notice(){
+		return notice;
+	}
+
+	public synchronized void clearNotice(){
+		if (!notice.isEmpty()){
+			notice = "";
+			fire();
+		}
+	}
+
+	private SeedFloors.Provider seedFloors;
+
+	//the game-aware layer that can replay a run's seed (null: the feature is off, as in plain library tests)
+	public synchronized void setSeedFloorsProvider( SeedFloors.Provider p ){
+		seedFloors = p;
+	}
+
+	//true for a row that seed floors can be asked for (a finished run)
+	public synchronized boolean canSeedFloors( Row row ){
+		Dataset ds = dataset();
+		return seedFloors != null && seedFloors.applies(catalog, ds, row);
+	}
+
+	//Replays the run's seed on a worker thread and opens the seed floors. Never throws: a run that cannot be replayed (or a replay that is
+	//refused because a game is live) becomes a notice.
+	public void startSeedFloors( final Row run ){
+		final Catalog cat;
+		final SeedFloors.Provider provider;
+		synchronized (this){
+			if (!canSeedFloors(run)) return;
+			cat = catalog;
+			provider = seedFloors;
+			notice = "Replaying the seed (this takes a few seconds)...";
+		}
+		fire();
+		Thread t = new Thread(new Runnable(){
+			@Override
+			public void run(){
+				String result = "";
+				try {
+					SeedFloors.Built b = provider.build(cat, run);
+					synchronized (UimsdModel.this){
+						SeedFloors.install(cat, b);
+						back.add(new Place(viewId, query, page));
+						viewId = SeedFloors.ITEMS;
+						apply(cat.view(SeedFloors.ITEMS).initialQuery().withShowInternal(true));
+					}
+				} catch (SeedFloors.NotAvailable e){
+					result = e.getMessage();
+				} catch (Throwable e){
+					result = "Seed floors failed: " + e;
+				}
+				synchronized (UimsdModel.this){
+					notice = result;
+				}
+				fire();
+			}
+		}, "uimsd-seed-floors");
+		t.setDaemon(true);
+		t.start();
+	}
+
 	public synchronized void selectView( String id ){
 		if (catalog == null || catalog.view(id) == null) return;
 		back.add(new Place(viewId, query, page));

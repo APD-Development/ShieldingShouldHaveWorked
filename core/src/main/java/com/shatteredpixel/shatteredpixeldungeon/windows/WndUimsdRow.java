@@ -77,6 +77,14 @@ public class WndUimsdRow extends Window {
 				body.append('\n');
 			}
 			if (!row.telemetry.isEmpty()) body.append("\nRecorded with telemetry ").append(row.telemetry).append('\n');
+			if (m.canSeedFloors(row)){
+				actions.add(new Action("Seed floors (canonical)", new Runnable(){
+					@Override
+					public void run(){
+						m.startSeedFloors(row);
+					}
+				}));
+			}
 			for (final LinkDef l : def.links){
 				if (m.catalog() != null && m.catalog().view(l.targetView) != null && row.isKnown(def.indexOf(l.ourColumn))){
 					actions.add(new Action(l.label, new Runnable(){

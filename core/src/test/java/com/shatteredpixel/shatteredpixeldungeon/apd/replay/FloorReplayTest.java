@@ -8,6 +8,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.apd.query.ReplayFloor;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.apd.HeadlessTestSupport;
@@ -85,6 +86,34 @@ public class FloorReplayTest {
 		assertEquals(a, b.subList(0, 12));
 		assertEquals(a, replayFingerprints(777L, 0, HeroClass.WARRIOR, 12));
 		assertFalse(a.equals(replayFingerprints(778L, 0, HeroClass.WARRIOR, 12)));
+	}
+
+	@Test
+	public void exoticChanceBelongsToTheRunNotToTheInstall() throws Exception {
+		List<String> none = new ArrayList<>(), many = new ArrayList<>();
+		for (ReplayFloor f : FloorReplay.replay(2121L, 0, 0, HeroClass.WARRIOR, 12, null)) none.add(items(f));
+		for (ReplayFloor f : FloorReplay.replay(2121L, 0, 80, HeroClass.WARRIOR, 12, null)) many.add(items(f));
+		assertFalse("exotic chance 0 and 80 must give different floors", none.equals(many));
+		//the player's own setting never leaks in
+		int installValue = SPDSettings.apdExoticChance();
+		try {
+			SPDSettings.apdExoticChance(80);
+			List<String> again = new ArrayList<>();
+			for (ReplayFloor f : FloorReplay.replay(2121L, 0, 0, HeroClass.WARRIOR, 12, null)) again.add(items(f));
+			assertEquals(none, again);
+			assertEquals(80, SPDSettings.apdExoticChance());
+		} finally {
+			SPDSettings.apdExoticChance(installValue);
+		}
+		List<String> repeat = new ArrayList<>();
+		for (ReplayFloor f : FloorReplay.replay(2121L, 0, 80, HeroClass.WARRIOR, 12, null)) repeat.add(items(f));
+		assertEquals(many, repeat);
+	}
+
+	private static String items( ReplayFloor f ){
+		StringBuilder sb = new StringBuilder();
+		for (ReplayFloor.Item i : f.items) sb.append(i.trueClass).append(i.pos).append(';');
+		return sb.toString();
 	}
 
 	@Test

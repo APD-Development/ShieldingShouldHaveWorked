@@ -32,6 +32,17 @@ public final class ReplayContext {
 
 	public static final boolean TUTORIAL = false;
 
+	//the run's exotic-item chance (percent), which is part of its rules: set by FloorReplay for the replay thread
+	private static volatile int exoticChance;
+
+	static void exoticChance( int percent ){
+		exoticChance = percent;
+	}
+
+	public static int exoticChance(){
+		return exoticChance;
+	}
+
 	//Tests that compare a replay with the game's own generation set this, so both break shop-bag ties the same (deterministic) way.
 	public static volatile boolean forceDeterministicBags;
 
