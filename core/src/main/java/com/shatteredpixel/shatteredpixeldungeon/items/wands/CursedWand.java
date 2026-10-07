@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.wands;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdCombat;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
@@ -485,7 +486,9 @@ public class CursedWand {
 					toHeal = target;
 					toDamage = user;
 				}
+				int apdHpBefore = toHeal.HP;
 				toHeal.HP = Math.min(toHeal.HT, toHeal.HP + damage/2);
+				ApdCombat.onHeal( toHeal, apdHpBefore, ApdCombat.HEAL_WAND_CURSED, damage/2 );
 				toHeal.sprite.emitter().burst(Speck.factory(Speck.HEALING), 3);
 				toHeal.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString(damage/2), FloatingText.HEALING );
 

@@ -162,7 +162,7 @@ public class DerivedStoreTest {
 
 		//a cache cut short
 		FileOutputStream out = new FileOutputStream(store.cacheFile());
-		out.write("APDD\t1\t1\nR\t1\tx\nF\trun.id\t2\t1\tx".getBytes("UTF-8"));
+		out.write(("APDD\t1\t" + DerivedStore.DERIVATION_VERSION + "\nR\t1\tx\nF\trun.id\t2\t1\tx").getBytes("UTF-8"));
 		out.close();
 		FactTable repaired = store.load();
 		assertEquals(DerivedStore.Source.REBUILT_BAD_CACHE, store.lastSource());

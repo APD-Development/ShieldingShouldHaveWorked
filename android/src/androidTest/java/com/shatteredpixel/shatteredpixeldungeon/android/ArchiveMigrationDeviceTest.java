@@ -80,6 +80,8 @@ public class ArchiveMigrationDeviceTest {
 	private static final String SECRET_CLASS = "items.rings.RingOfSecretHaste";
 	private static final String SECRET_ROOM = "Treasury of Secrets";
 	private static final String SECRET_SEED = "TOP-SECRET-SEED";
+	//what healed an unfinished run: hidden information (an unidentified enchantment or potion would give itself away)
+	private static final String SECRET_HEAL = "gear.vampiric";
 	private static final String RS = "r1-aaaaaaaaaaaa";
 	private static final TelemetryVersion V = TelemetryVersion.CURRENT;
 	//finished runs in the source history
@@ -196,6 +198,7 @@ public class ArchiveMigrationDeviceTest {
 						.acquired(uid, k % 2 == 0 ? "sword" : "ruby ring", k % 2 == 0 ? ItemEvents.CAT_WEAPON : ItemEvents.CAT_RING, false, 0);
 				if (k == 0) l.equip(uid, "sword", ItemEvents.CAT_WEAPON).tick(20);
 			}
+			l.heal(3, true, "regen").heal(5, i % 2 == 0, i % 2 == 0 ? "food.pasty" : "").heal(2, true, SECRET_HEAL);
 			l.mobGenerated("actors.mobs.Gnoll").heroAttacks("rat", "actors.mobs.Rat", true).damageFromHero("rat", "actors.mobs.Rat", 3)
 					.heroKills("rat", "actors.mobs.Rat", 1).tick(30).enter(2);
 			l.end(i % 4 == 0 ? LifecycleEvents.OUTCOME_WON : LifecycleEvents.OUTCOME_DIED, "rat", 1 + i % 9, 2 + i % 7, 100 + i).close(true);
@@ -207,6 +210,7 @@ public class ArchiveMigrationDeviceTest {
 			o.registered("o-ring", SECRET_CLASS, 3, true, ItemEvents.ORIGIN_GENERATED).generated("o-ring", GenerationEvents.C_CHEST, SECRET_ROOM)
 					.seen("o-ring", "ruby ring", ItemEvents.CAT_RING).acquired("o-ring", "ruby ring", ItemEvents.CAT_RING, false, 0)
 					.registered("o-secret", "items.armor.PlateArmor", 9, false, ItemEvents.ORIGIN_GENERATED).mobGenerated("actors.mobs.Goo")
+					.heal(4, true, SECRET_HEAL).heal(2, true, "potion.healing")
 					.heroAttacks("rat", "actors.mobs.Rat", true).tick(20).enter(2).close(false);
 		}
 		//a run recorded in two segments that ended in the second
@@ -429,10 +433,11 @@ public class ArchiveMigrationDeviceTest {
 		for (int i = 0; i < 3; i++){
 			byte[] open = parts.get("runs/open" + i + ".apdlog");
 			assertNotNull(open);
-			for (String hidden : new String[]{ SECRET_CLASS, SECRET_ROOM, SECRET_SEED + i, "actors.mobs.Goo", "items.armor.PlateArmor" }){
+			for (String hidden : new String[]{ SECRET_CLASS, SECRET_ROOM, SECRET_SEED + i, "actors.mobs.Goo", "items.armor.PlateArmor", SECRET_HEAL, "potion.healing" }){
 				assertFalse(hidden, contains(open, hidden));
 			}
 			assertTrue("the raw log does hold it", contains(read(new File(source, "runs/open" + i + ".apdlog")), SECRET_CLASS));
+			assertTrue("and the source of its healing", contains(read(new File(source, "runs/open" + i + ".apdlog")), SECRET_HEAL));
 		}
 
 		step("migration: import");
@@ -452,6 +457,7 @@ public class ArchiveMigrationDeviceTest {
 				ReadResult r = RunLogReader.parse(e.getValue());
 				assertTrue(r.header.writerBuild.startsWith("REDACTED:"));
 				assertFalse(contains(e.getValue(), SECRET_CLASS));
+				assertFalse(contains(e.getValue(), SECRET_HEAL));
 			} else {
 				assertTrue(e.getKey() + " is lossless", Arrays.equals(e.getValue(), sourceBefore.get(e.getKey())));
 			}

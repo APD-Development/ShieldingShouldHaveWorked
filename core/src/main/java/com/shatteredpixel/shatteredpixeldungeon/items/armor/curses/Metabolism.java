@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.armor.curses;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdCombat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
@@ -54,7 +55,9 @@ public class Metabolism extends Glyph {
 					
 					hunger.affectHunger( healing * -10 );
 					
+					int apdHpBefore = defender.HP;
 					defender.HP += healing;
+					ApdCombat.onHeal( defender, apdHpBefore, ApdCombat.HEAL_GEAR_METABOLISM, healing );
 					defender.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString( healing ), FloatingText.HEALING);
 				}
 			}

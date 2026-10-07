@@ -135,6 +135,7 @@ public class ItemEventsTest {
 		internal.add(EventTypes.MOB_GENERATED);
 		internal.add(EventTypes.MOB_ID_ASSIGNED);
 		internal.add(EventTypes.RANKING_LINK);
+		internal.add(EventTypes.HEAL_DETAIL);
 		for (int type : EventTypes.all().keySet()){
 			EventTypes.Visibility v = EventTypes.visibility(type);
 			assertEquals(EventTypes.name(type), internal.contains(type) ? EventTypes.Visibility.INTERNAL : EventTypes.Visibility.PUBLIC, v);

@@ -179,6 +179,19 @@ final class SyntheticLog {
 		return this;
 	}
 
+	//the hero heals: one HEAL, and for an exact heal (telemetry 1.6) the hidden HEAL_DETAIL with the true source beside it
+	SyntheticLog heal( int amount, boolean exact, String source ){
+		CombatEvents.Heal h = new CombatEvents.Heal();
+		h.where = cw(); h.amount = amount; h.hpAfter = 10 + amount; h.hpMax = 30;
+		CombatEvents.emitHeal(w, clock++, h, exact);
+		if (exact){
+			CombatEvents.HealDetail d = new CombatEvents.HealDetail();
+			d.source = source; d.requested = amount; d.applied = amount;
+			CombatEvents.emitHealDetail(w, clock - 1, d);
+		}
+		return this;
+	}
+
 	SyntheticLog mobGenerated( String mobClass ){
 		GenerationEvents.MobGenerated m = new GenerationEvents.MobGenerated();
 		m.mobClass = mobClass; m.where = new GenerationEvents.Where();

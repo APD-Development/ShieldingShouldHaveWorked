@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdCombat;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -270,7 +271,9 @@ public class Challenge extends ArmorAbility {
 						hpToHeal += 5*Dungeon.hero.pointsInTalent(Talent.INVIGORATING_VICTORY);
 						hpToHeal = Math.min(hpToHeal, Dungeon.hero.HT - Dungeon.hero.HP);
 						if (hpToHeal > 0){
+							int apdHpBefore = Dungeon.hero.HP;
 							Dungeon.hero.HP += hpToHeal;
+							ApdCombat.onHeal( Dungeon.hero, apdHpBefore, ApdCombat.HEAL_SKILL_INVIGORATING_VICTORY, hpToHeal );
 							Dungeon.hero.sprite.emitter().start( Speck.factory( Speck.HEALING ), 0.33f, 6 );
 							Dungeon.hero.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString(hpToHeal), FloatingText.HEALING );
 						}

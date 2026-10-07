@@ -43,7 +43,7 @@ import java.util.List;
 public final class DerivedStore {
 
 	//bump when facts are derived differently, so every old cache is rebuilt
-	public static final int DERIVATION_VERSION = 1;
+	public static final int DERIVATION_VERSION = 2;
 
 	public static final String CACHE_DIR = "derived";
 	public static final String CACHE_FILE = "runfacts.apdd";

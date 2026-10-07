@@ -83,6 +83,12 @@ public final class DemoGenerator {
 	private final Ruleset current;
 	private final long base;
 	private final Random rnd = new Random(20260607L);
+	//healing has its own random numbers so adding it did not change how any other part of the demo history looks
+	private final Random healRnd = new Random(20261007L);
+
+	private static final String[] HEAL_SOURCES = {
+			"regen", "regen", "regen", "regen", "potion.healing", "potion.healing", "food.wellFed", "food.supplyRation", "food.phantomMeat",
+			"plant.sungrass", "plant.dewdrop", "plant.dewdrop", "gear.chalice", "gear.vampiric", "skill.heartyMeal", "wand.transfusion", "other.sleep" };
 
 	private DemoGenerator( File root, Ruleset current, long now ){
 		this.root = root;
@@ -236,6 +242,16 @@ public final class DemoGenerator {
 					}
 					if (!(unfinished && d == deepest && f == fights - 1)) log.heroKills(name, ecls, 1 + d / 2 + pick(5));
 					log.tick(3 + pick(10));
+				}
+				//healing: exact (with the true source, hidden) since telemetry 1.6, inferred before; the odd heal is still only inferred
+				for (int hl = 0, heals = healRnd.nextInt(4); hl < heals; hl++){
+					int amount = 1 + healRnd.nextInt(12);
+					if (has(v, 6)){
+						log.heal(amount, healRnd.nextInt(8) != 0, HEAL_SOURCES[healRnd.nextInt(HEAL_SOURCES.length)]);
+					} else {
+						log.heal(amount, false, "");
+					}
+					log.tick(1 + healRnd.nextInt(4));
 				}
 			}
 		}

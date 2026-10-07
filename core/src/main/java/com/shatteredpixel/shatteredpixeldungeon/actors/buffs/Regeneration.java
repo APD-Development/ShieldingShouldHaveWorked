@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdCombat;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.SpiritForm;
@@ -85,12 +86,14 @@ public class Regeneration extends Buff {
 				partialRegen += 1f / delay;
 
 				if (partialRegen >= 1) {
+					int apdHpBefore = target.HP;
 					target.HP += (int)partialRegen;
 					partialRegen -= (int)partialRegen;
 					if (target.HP >= regencap()) {
 						target.HP = regencap();
 						((Hero) target).resting = false;
 					}
+					ApdCombat.onHeal( target, apdHpBefore, ApdCombat.HEAL_REGEN, -1 );
 				}
 
 			}

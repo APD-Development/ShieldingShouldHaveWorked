@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.plants;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdCombat;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -98,6 +99,7 @@ public class Sungrass extends Plant {
 
 				if (target.HP < target.HT) {
 
+					int apdHpBefore = target.HP;
 					target.HP += healThisTurn;
 					target.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(healThisTurn), FloatingText.HEALING);
 
@@ -107,6 +109,7 @@ public class Sungrass extends Plant {
 							((Hero) target).resting = false;
 						}
 					}
+					ApdCombat.onHeal( target, apdHpBefore, ApdCombat.HEAL_PLANT_SUNGRASS, healThisTurn );
 				}
 			}
 			

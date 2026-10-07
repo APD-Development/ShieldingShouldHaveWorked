@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.food;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdCombat;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -58,7 +59,9 @@ public class SupplyRation extends Food {
 	protected void satisfy(Hero hero) {
 		super.satisfy(hero);
 
+		int apdHpBefore = hero.HP;
 		hero.HP = Math.min(hero.HP + 5, hero.HT);
+		ApdCombat.onHeal( hero, apdHpBefore, ApdCombat.HEAL_FOOD_SUPPLY_RATION, 5 );
 		hero.sprite.showStatusWithIcon( CharSprite.POSITIVE, "5", FloatingText.HEALING );
 
 		CloakOfShadows cloak = hero.belongings.getItem(CloakOfShadows.class);

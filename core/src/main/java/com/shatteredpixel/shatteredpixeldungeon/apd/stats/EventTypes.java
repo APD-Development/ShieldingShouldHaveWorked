@@ -81,7 +81,7 @@ public final class EventTypes {
 	public static final int ATTACK_DETAIL = 276;
 	public static final int DAMAGE = 277;
 	public static final int DAMAGE_DETAIL = 278;
-	public static final int HEAL = 279;               //hero healing, inferred in 1.3 (flag INFERRED); exact sources come in Phase 9
+	public static final int HEAL = 279;               //hero healing: inferred in 1.3 (flag INFERRED); exact since 1.6 (no INFERRED flag), see HEAL_DETAIL
 	public static final int MAX_HP_CHANGE = 280;
 	public static final int SHIELD_GAIN = 281;
 	public static final int HUNGER_CHANGE = 282;      //hunger was changed by eating or an effect (exact)
@@ -108,6 +108,11 @@ public final class EventTypes {
 	public static final int LEGACY_TOTALS = 296;       //SPD's own played / won counters
 	public static final int LEGACY_DAILY_SCORE = 297;
 	public static final int RANKING_LINK = 298;        //in a run log: the id SPD gave the ranking record this run produced
+
+	//---- exact healing (telemetry 1.6), payload is defined and tested in CombatEvents ----
+	//INTERNAL: the true source of an exact heal (which item, effect or ability, and what it asked for). The PUBLIC HEAL beside it only says
+	//how much the hero's HP went up, which the HP bar shows anyway.
+	public static final int HEAL_DETAIL = 299;
 
 	//Who may be shown an event's contents. Anything that is not PUBLIC must never reach a player-facing view, an export
 	//meant for players, or a run-replication package without being filtered first.
@@ -163,6 +168,7 @@ public final class EventTypes {
 		m.put(LEGACY_TOTALS, "LEGACY_TOTALS");
 		m.put(LEGACY_DAILY_SCORE, "LEGACY_DAILY_SCORE");
 		m.put(RANKING_LINK, "RANKING_LINK");
+		m.put(HEAL_DETAIL, "HEAL_DETAIL");
 		NAMES = Collections.unmodifiableMap(m);
 	}
 

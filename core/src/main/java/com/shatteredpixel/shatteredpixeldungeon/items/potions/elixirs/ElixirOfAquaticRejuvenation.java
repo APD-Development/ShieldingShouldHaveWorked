@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdCombat;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -84,6 +85,7 @@ public class ElixirOfAquaticRejuvenation extends Elixir {
 				} else {
 					healAmt = (float)Math.floor(healAmt);
 				}
+				int apdHpBefore = target.HP;
 				target.HP += (int)healAmt;
 				left -= (int)healAmt;
 				target.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString((int)healAmt), FloatingText.HEALING );
@@ -94,6 +96,7 @@ public class ElixirOfAquaticRejuvenation extends Elixir {
 						((Hero) target).resting = false;
 					}
 				}
+				ApdCombat.onHeal( target, apdHpBefore, ApdCombat.HEAL_POTION_AQUATIC, (int)healAmt );
 			}
 			
 			if (left <= 0){

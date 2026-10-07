@@ -41,6 +41,7 @@ public final class RunFactsBuilder {
 	private static final TelemetryVersion V_COMBAT = new TelemetryVersion(1, 3);
 	private static final TelemetryVersion V_GENERATION = new TelemetryVersion(1, 4);
 	private static final TelemetryVersion V_LINK = new TelemetryVersion(1, 5);
+	private static final TelemetryVersion V_EXACT_HEAL = new TelemetryVersion(1, 6);
 
 	public static RunFacts fromLog( ReadResult r, String logId ){
 		RunFacts f = new RunFacts(RunFacts.SOURCE_APD, logId);
@@ -69,7 +70,12 @@ public final class RunFactsBuilder {
 		int countProv = (r.gapEvents > 0 || partial) ? Fact.PROV_INCOMPLETE : Fact.PROV_RECORDED;
 
 		boolean wantItems = v.compareTo(V_ITEMS) >= 0, wantCombat = v.compareTo(V_COMBAT) >= 0,
-				wantGen = v.compareTo(V_GENERATION) >= 0, wantLink = v.compareTo(V_LINK) >= 0;
+				wantGen = v.compareTo(V_GENERATION) >= 0, wantLink = v.compareTo(V_LINK) >= 0,
+				wantExactHeal = v.compareTo(V_EXACT_HEAL) >= 0;
+		//a copy made for an archive of a run that was not finished has no INTERNAL events: its sources are unknown, not zero
+		boolean redacted = r.header.writerBuild != null && r.header.writerBuild.startsWith(LogHeader.REDACTED_PREFIX);
+		long healedInferred = 0;
+		long[] healedFrom = new long[CombatEvents.HEAL_CATEGORIES.length];
 
 		long levelsEntered = 0, deepest = -1;
 		long heroAttacks = 0, heroHits = 0, onHero = 0, hitsOnHero = 0, dealt = 0, taken = 0, heroKills = 0, enemyDeaths = 0,
@@ -150,9 +156,18 @@ public final class RunFactsBuilder {
 					case EventTypes.LEVEL_UP:
 						levelUps++;
 						break;
-					case EventTypes.HEAL:
-						healed += Math.max(0, CombatEvents.decodeHeal(e, r).amount);
+					case EventTypes.HEAL: {
+						int amount = Math.max(0, CombatEvents.decodeHeal(e, r).amount);
+						healed += amount;
+						if ((e.flags & CombatEvents.FLAG_INFERRED) != 0) healedInferred += amount;
 						break;
+					}
+					case EventTypes.HEAL_DETAIL: {
+						CombatEvents.HealDetail d = CombatEvents.decodeHealDetail(e, r);
+						String cat = CombatEvents.healCategory(d.source);
+						for (int c = 0; c < healedFrom.length; c++) if (CombatEvents.HEAL_CATEGORIES[c].equals(cat)) healedFrom[c] += d.applied();
+						break;
+					}
 					case EventTypes.HERO_DEATH:
 						deaths++;
 						break;
@@ -225,7 +240,14 @@ public final class RunFactsBuilder {
 			f.num(FactKeys.ENEMY_DEATHS, enemyDeaths, countProv);
 			f.num(FactKeys.XP_GAINED, xp, countProv);
 			f.num(FactKeys.LEVEL_UPS, levelUps, countProv);
-			f.num(FactKeys.HEALED, healed, countProv == Fact.PROV_INCOMPLETE ? Fact.PROV_INCOMPLETE : Fact.PROV_INFERRED);
+			//Exact when the run was recorded with exact healing (1.6) and nothing was left to infer; a lower bound if events were lost
+			int healProv = countProv == Fact.PROV_INCOMPLETE ? Fact.PROV_INCOMPLETE
+					: (wantExactHeal && healedInferred == 0 ? Fact.PROV_RECORDED : Fact.PROV_INFERRED);
+			f.num(FactKeys.HEALED, healed, healProv);
+			f.num(FactKeys.HEALED_INFERRED, healedInferred, countProv == Fact.PROV_INCOMPLETE ? Fact.PROV_INCOMPLETE : Fact.PROV_RECORDED);
+			if (wantExactHeal && !redacted){
+				for (int c = 0; c < healedFrom.length; c++) f.num(FactKeys.healedFrom(CombatEvents.HEAL_CATEGORIES[c]), healedFrom[c], countProv);
+			}
 			f.num(FactKeys.HERO_DEATHS, deaths, countProv);
 			f.num(FactKeys.REVIVALS, revivals, countProv);
 		}

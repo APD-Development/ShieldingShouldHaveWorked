@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdCombat;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -50,7 +51,9 @@ public class WellFed extends Buff {
 			}
 			return true;
 		} else if (left % 18 == 0 && target.HP < target.HT){
+			int apdHpBefore = target.HP;
 			target.HP += 1;
+			ApdCombat.onHeal( target, apdHpBefore, ApdCombat.HEAL_FOOD_WELL_FED, 1 );
 			target.sprite.showStatusWithIcon(CharSprite.POSITIVE, "1", FloatingText.HEALING);
 
 			if (target.HP == target.HT && target instanceof Hero) {

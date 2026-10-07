@@ -271,7 +271,7 @@ public class ArchiveRoundTripTest {
 			assertEquals(e.path, e.size, parts.get(e.path).length);
 			assertEquals(e.path, e.sha256, ArchiveManifest.sha256Hex(parts.get(e.path)));
 		}
-		assertEquals("1.5", m.telemetry);
+		assertEquals(com.shatteredpixel.shatteredpixeldungeon.apd.stats.TelemetryVersion.CURRENT.toString(), m.telemetry);
 		assertTrue(m.find("runs/open.apdlog").redacted);
 		assertFalse(m.find("runs/fin.apdlog").redacted);
 		assertEquals("1.1", m.find("runs/old.apdlog").telemetry);

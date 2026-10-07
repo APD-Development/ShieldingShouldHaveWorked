@@ -23,7 +23,8 @@ hunger changes by eating/effects, the hero's HP and shield after damage, death a
 so the recorder compares the hero between turns. A rise in HP is a HEAL (amount exact, source a guess from what the hero just did or
 which healing buff is active, overheal unknown = -1, never 0); a rise that came with a higher maximum is a MAX_HP_CHANGE (levelling
 up), not a heal; a fall with no damage event is HP_CHANGE_INFERRED; a grown shield effect is SHIELD_GAIN named by the effect.
-Exact healing sources are a later phase and will not replace these events, they will add exact ones.
+Exact healing sources arrived in telemetry 1.6 and did not replace these events, they added exact ones (see "Exact healing" below): whatever the
+hooks do not report is still noticed here and marked inferred.
 
 Damage the game explained is never reported again as a change: the damage hook resets what "unchanged" means. A load, a new run and
 a revival do the same, so none of them invents a heal.
@@ -60,3 +61,35 @@ attack with recording on (148 vs 163 us in a test that runs the real combat code
 - Wand, spell and bomb damage appears as DAMAGE with the item as source, but has no ATTACK event (they do not roll to hit).
 - Thrown weapons: the weapon name and apd_uid are on the ATTACK event; if the thrown piece had no id the recorder gives it one.
 - Hero death itself needs the game scene and is covered by hook-wiring tests rather than a full headless death.
+
+## Exact healing (Phase 9, telemetry 1.6)
+Every place in the game that raises the **hero's** HP now calls `ApdCombat.onHeal(target, hpBefore, source, requested)` right after the heal
+(`hpBefore` is captured on the line before, so the recorder reads the amount the game really applied, the maximum HP cap included). The recorder
+writes, for a heal of the hero:
+
+| Event | Visibility | Holds |
+|---|---|---|
+| `HEAL` (279) | PUBLIC | the same payload as the inferred one: amount, HP after, maximum, the visible-context hint. **No `FLAG_INFERRED`** means exact. |
+| `HEAL_DETAIL` (299) | INTERNAL | the true source key (`ApdCombat.HEAL_*`, stored in the log, never renamed), what the source asked for before the cap (`requested`, -1 if it has no such number), and `applied` (repeats the HEAL's amount). It is written right after its HEAL and says only what the HEAL does not, which keeps it to about 14 bytes. |
+
+The source is hidden information (an unidentified potion or enchantment would give itself away through "healed by Vampiric"), so it lives only in the
+INTERNAL event: `LogRedactor` leaves it out of the copy of an unfinished run, UIMSD masks it until the run is finished. The look between turns moves its
+baseline past every reported heal, so nothing is counted twice, and whatever the hooks do not know about is still found and marked inferred. A damage
+event no longer swallows an earlier heal of the same turn for the reported sources.
+
+**Sources hooked (key -> where):** `regen` (Regeneration), `potion.healing` (the Healing effect: Potion of Healing and Vial of Blood dewdrop bursts),
+`potion.aquaticElixir`, `food.wellFed`, `food.pasty`, `food.supplyRation`, `food.phantomMeat`, `food.frozenCarpaccio`, `plant.sungrass`, `plant.dewdrop`,
+`gear.chalice`, `gear.vampiric`, `gear.metabolism`, `gear.tornPage`, `skill.heartyMeal`, `skill.soulSiphon`, `skill.invigoratingVictory`,
+`skill.elementalStrike`, `wand.transfusion`, `wand.cursed`, `other.sleep`, `other.fullHeal` (the vault exits), `other.wellOfHealth`. Bless, Lay on Hands and
+Hallowed Ground only ever heal allies (the hero gets a shield), and heals of other creatures are not recorded at all. `ExactHealingWiringTest` reads the
+game's source and fails if any line that raises an HP is neither one of these hooks nor an explained exemption.
+
+**Facts and UIMSD (Runs dataset, additive):** `Healed` (exact when the run was recorded since 1.6 and nothing was left to infer, `~` when part of it was
+guessed, shown as a lower bound when events were lost), `Healed (guessed part)`, and eight INTERNAL columns "Healed by <kind>" (regeneration, potions and
+elixirs, food, plants, gear, skills and talents, wands, other), shown only for finished runs, summed across segments. Runs from before 1.6 keep their
+inferred healing and show the per-kind columns as unknown (`?`), never zero; a redacted copy keeps the healed amounts but cannot say what healed.
+
+**Cost (measured, `HealingVolumeTest`):** a 20,000-turn run with natural regeneration (one HP every 9 turns, the biggest source by far) writes 2,222 heals:
+18 bytes per heal as inferred events (before 1.6) and 32 bytes per heal as an exact HEAL plus HEAL_DETAIL, about 70 KiB of log for the whole run. The
+per-event frame overhead is most of what is left, so going lower would mean writing fewer events (for instance one summary event per stretch of
+regeneration), which would trade away per-tick history; that is a decision for the owner, not something Phase 9 did.

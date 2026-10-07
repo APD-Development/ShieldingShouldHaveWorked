@@ -42,7 +42,7 @@ UPGRADED / IDENTIFIED / TRANSFORMED.
   happened while equipped, seen but left behind, acquired but never equipped.
 
 ## Healing
-HEAL events should carry source, exact amount, overheal, target, turn and context. Inferred healing is allowed during
+HEAL events should carry source, exact amount, overheal, target, turn and context (done in telemetry 1.6: see APD-STATS-COMBAT.md, "Exact healing"). Inferred healing is allowed during
 development only if every such event is explicitly marked inferred. Significant sources must be instrumented exactly
 before public 1.0, incrementally, with no giant rewrite of HP handling. Rare unavoidable inferred events stay marked.
 

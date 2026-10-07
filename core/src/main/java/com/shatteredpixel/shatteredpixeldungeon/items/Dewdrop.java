@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdCombat;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -108,7 +109,9 @@ public class Dewdrop extends Item {
 				Healing healing = Buff.affect(hero, Healing.class);
 				healing.setHeal(heal, 0, VialOfBlood.maxHealPerTurn(), true);
 			} else {
+				int apdHpBefore = hero.HP;
 				hero.HP += heal;
+				ApdCombat.onHeal( hero, apdHpBefore, ApdCombat.HEAL_PLANT_DEWDROP, heal );
 				if (heal > 0){
 					hero.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString(heal), FloatingText.HEALING);
 				}

@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdCombat;
 import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdGen;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
@@ -853,7 +854,9 @@ public abstract class Mob extends Char {
 
 				if (Dungeon.hero.HP < Dungeon.hero.HT) {
 					int heal = (int)Math.ceil(restoration * 0.4f);
+					int apdHpBefore = Dungeon.hero.HP;
 					Dungeon.hero.HP = Math.min(Dungeon.hero.HT, Dungeon.hero.HP + heal);
+					ApdCombat.onHeal( Dungeon.hero, apdHpBefore, ApdCombat.HEAL_SKILL_SOUL_SIPHON, heal );
 					Dungeon.hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(heal), FloatingText.HEALING);
 				}
 			}

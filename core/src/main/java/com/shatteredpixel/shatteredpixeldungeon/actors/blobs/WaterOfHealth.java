@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.blobs;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdCombat;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -62,7 +63,9 @@ public class WaterOfHealth extends WellWater {
 			Healing healing = Buff.affect(hero, Healing.class);
 			healing.setHeal(hero.HT, 0, VialOfBlood.maxHealPerTurn(), true);
 		} else {
+			int apdHpBefore = hero.HP;
 			hero.HP = hero.HT;
+			ApdCombat.onHeal( hero, apdHpBefore, ApdCombat.HEAL_OTHER_WELL_OF_HEALTH, -1 );
 			hero.sprite.emitter().start(Speck.factory(Speck.HEALING), 0.4f, 4);
 			hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(hero.HT), FloatingText.HEALING);
 		}

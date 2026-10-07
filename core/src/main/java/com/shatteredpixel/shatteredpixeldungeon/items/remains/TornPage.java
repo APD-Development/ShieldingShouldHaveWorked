@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.remains;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdCombat;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
@@ -37,7 +38,9 @@ public class TornPage extends RemainsItem {
 	@Override
 	protected void doEffect(Hero hero) {
 		int toHeal = Math.round(hero.HT/10f);
+		int apdHpBefore = hero.HP;
 		hero.HP = Math.min(hero.HP + toHeal, hero.HT);
+		ApdCombat.onHeal( hero, apdHpBefore, ApdCombat.HEAL_GEAR_TORN_PAGE, toHeal );
 		hero.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString(toHeal), FloatingText.HEALING );
 		Sample.INSTANCE.play( Assets.Sounds.READ );
 	}

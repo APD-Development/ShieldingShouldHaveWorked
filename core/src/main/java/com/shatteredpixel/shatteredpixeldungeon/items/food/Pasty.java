@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.food;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdCombat;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -155,7 +156,9 @@ public class Pasty extends Food {
 			case HALLOWEEN:
 				//heals for 5% max hp, min of 3
 				int toHeal = Math.max(3, hero.HT/20);
+				int apdHpBefore = hero.HP;
 				hero.HP = Math.min(hero.HP + toHeal, hero.HT);
+				ApdCombat.onHeal( hero, apdHpBefore, ApdCombat.HEAL_FOOD_PASTY, toHeal );
 				hero.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString(toHeal), FloatingText.HEALING );
 				break;
 			case WINTER_HOLIDAYS:

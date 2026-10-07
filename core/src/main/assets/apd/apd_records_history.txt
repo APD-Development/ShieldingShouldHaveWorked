@@ -23,6 +23,15 @@ uimsd-first-screen | - | APD 4.0.8-apd | 2026-10-07
   item is never shown for a run that is still going, even with hidden information switched on. After a run is over it can be revealed.
 - Runs played under different rules are never mixed unless you choose to; rows whose ruleset is unknown are kept apart and counted.
 
+telemetry-1.6-exact-healing | telemetry 1.6 | APD 4.0.8-apd | 2026-10-07
+- Telemetry 1.6 records healing exactly. Every way the game heals the hero (natural regeneration, the Healing effect of potions,
+  food, Sungrass, Dewdrops, the Chalice of Blood, Vampiric weapons, talents and abilities that heal, wands, wells) now reports the HP
+  it really gave, instead of APD guessing from the hero's HP bar between turns. What healed the hero is kept apart from what you could
+  see: the amount is visible history, the exact source is hidden information that only finished runs show.
+- A heal the game does not report to APD is still noticed and marked as inferred, so no healing is ever missed. Runs recorded before
+  1.6 keep their inferred healing exactly as it was, marked with a ~.
+- UIMSD shows "Healed" (exact when nothing was guessed), the guessed part, and, for finished runs, the healing by kind of source.
+
 telemetry-1.5-legacy-import | telemetry 1.5 | APD 4.0.8-apd | 2026-10-06
 - Telemetry 1.5 lets APD keep the entries of its own rankings table. "Import APD rankings" in APD Settings copies the records in APD's
   own rankings file (class, outcome, depth, level, score, killer, date and version when the record has them, the saved game

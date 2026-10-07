@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.wands;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdCombat;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -101,7 +102,9 @@ public class WandOfTransfusion extends DamageWand {
 					shielding = 0;
 				}
 				
+				int apdHpBefore = ch.HP;
 				ch.HP += healing;
+				ApdCombat.onHeal( ch, apdHpBefore, ApdCombat.HEAL_WAND_TRANSFUSION, healing );
 				
 				ch.sprite.emitter().burst(Speck.factory(Speck.HEALING), 2 + buffedLvl() / 2);
 				if (healing > 0) {

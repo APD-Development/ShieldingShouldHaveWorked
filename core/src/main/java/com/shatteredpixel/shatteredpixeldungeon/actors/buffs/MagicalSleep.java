@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdCombat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -66,7 +67,9 @@ public class MagicalSleep extends Buff {
 			return true;
 		}
 		if (target.alignment == Char.Alignment.ALLY) {
+			int apdHpBefore = target.HP;
 			target.HP = Math.min(target.HP+1, target.HT);
+			ApdCombat.onHeal( target, apdHpBefore, ApdCombat.HEAL_OTHER_SLEEP, 1 );
 			if (target instanceof  Hero) ((Hero) target).resting = true;
 			if (target.HP == target.HT) {
 				if (target instanceof  Hero) GLog.p(Messages.get(this, "wakeup"));

@@ -275,6 +275,34 @@ final class CombatTracker {
 		}
 	}
 
+	//---- exact healing ---------------------------------------------------------------------------------------------
+
+	//The game healed a creature: only the hero's HP is recorded. The amount is what the game really applied (HP now minus HP before).
+	//The baseline moves past it, so the look between turns does not count it a second time; whatever heals the hooks do not know about
+	//still shows up there as an inferred heal.
+	void onHeal( Char target, int hpBefore, String source, int requested ){
+		Hero h = Dungeon.hero;
+		if (target == null || target != h) return;
+		int applied = h.HP - hpBefore;
+		if (applied <= 0) return;
+		if (!haveBaseline) baseline();   //the heal is already part of the baseline it takes
+		else lastHp += applied;
+		long clock = clock();
+		CombatEvents.Where where = where();
+		CombatEvents.Heal e = new CombatEvents.Heal();
+		e.where = where;
+		e.amount = applied;
+		e.hpAfter = h.HP;
+		e.hpMax = h.HT;
+		e.guess = guessHealSource(h, applied);
+		CombatEvents.emitHeal(w, clock, e, true);
+		CombatEvents.HealDetail d = new CombatEvents.HealDetail();
+		d.source = source == null ? "" : source;
+		d.requested = requested;
+		d.applied = applied;
+		CombatEvents.emitHealDetail(w, clock, d);
+	}
+
 	//---- deaths --------------------------------------------------------------------------------------------------
 
 	//a creature other than the hero died

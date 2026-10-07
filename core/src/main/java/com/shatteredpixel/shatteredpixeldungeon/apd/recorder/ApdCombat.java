@@ -76,6 +76,41 @@ public final class ApdCombat {
 		if (active) ApdRecorder.combatXp(hero, amount, source);
 	}
 
+	//The keys stored in the log for each heal source (HEAL_DETAIL), so they never change meaning. The part before the first dot is the
+	//category UIMSD sums them into (CombatEvents.healCategory). Heals of other creatures than the hero are not recorded, so Bless, Lay on
+	//Hands and Hallowed Ground (which only ever heal allies; the hero gets a shield) have no key.
+	public static final String
+			HEAL_REGEN = "regen",                                       //natural regeneration (the Chalice of Blood speeds it up)
+			HEAL_POTION_HEALING = "potion.healing",                     //the Healing effect: Potion of Healing, and Vial of Blood dewdrop bursts
+			HEAL_POTION_AQUATIC = "potion.aquaticElixir",
+			HEAL_FOOD_WELL_FED = "food.wellFed",
+			HEAL_FOOD_PASTY = "food.pasty",
+			HEAL_FOOD_SUPPLY_RATION = "food.supplyRation",
+			HEAL_FOOD_PHANTOM_MEAT = "food.phantomMeat",
+			HEAL_FOOD_FROZEN_CARPACCIO = "food.frozenCarpaccio",
+			HEAL_PLANT_SUNGRASS = "plant.sungrass",
+			HEAL_PLANT_DEWDROP = "plant.dewdrop",
+			HEAL_GEAR_CHALICE = "gear.chalice",
+			HEAL_GEAR_VAMPIRIC = "gear.vampiric",
+			HEAL_GEAR_METABOLISM = "gear.metabolism",
+			HEAL_GEAR_TORN_PAGE = "gear.tornPage",
+			HEAL_SKILL_HEARTY_MEAL = "skill.heartyMeal",
+			HEAL_SKILL_SOUL_SIPHON = "skill.soulSiphon",
+			HEAL_SKILL_INVIGORATING_VICTORY = "skill.invigoratingVictory",
+			HEAL_SKILL_ELEMENTAL_STRIKE = "skill.elementalStrike",
+			HEAL_WAND_TRANSFUSION = "wand.transfusion",
+			HEAL_WAND_CURSED = "wand.cursed",
+			HEAL_OTHER_SLEEP = "other.sleep",
+			HEAL_OTHER_FULL_HEAL = "other.fullHeal",                   //the vault exits (City level, Escape Crystal)
+			HEAL_OTHER_WELL_OF_HEALTH = "other.wellOfHealth";
+
+	//The hero was healed by 'source' (one of the HEAL_* keys below): called right AFTER the game applied the heal, with the HP from just
+	//BEFORE it. The recorder reads the HP now, so the amount is exactly what the game applied (the maximum HP cap included).
+	//'requested' is what the source asked for before that cap, or -1.
+	public static void onHeal( Char target, int hpBefore, String source, int requested ){
+		if (active) ApdRecorder.combatHeal(target, hpBefore, source, requested);
+	}
+
 	//Hunger.affectHunger: hunger was changed by eating or an effect
 	public static void onHungerChanged( float energy, int before, int after ){
 		if (active) ApdRecorder.combatHunger(energy, before, after);

@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.food;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdCombat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
@@ -67,7 +68,9 @@ public class FrozenCarpaccio extends Food {
 				break;
 			case 3:
 				GLog.i( Messages.get(FrozenCarpaccio.class, "better") );
+				int apdHpBefore = hero.HP;
 				hero.HP = Math.min( hero.HP + hero.HT / 4, hero.HT );
+				ApdCombat.onHeal( hero, apdHpBefore, ApdCombat.HEAL_FOOD_FROZEN_CARPACCIO, hero.HT / 4 );
 				hero.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString(hero.HT / 4), FloatingText.HEALING );
 				break;
 		}

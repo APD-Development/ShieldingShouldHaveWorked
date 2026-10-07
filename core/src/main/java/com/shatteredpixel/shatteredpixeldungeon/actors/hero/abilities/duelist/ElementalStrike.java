@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdCombat;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -279,7 +280,9 @@ public class ElementalStrike extends ArmorAbility {
 				int heal = Math.round(2.5f*targetsHit*powerMulti);
 				heal = Math.min( heal, hero.HT - hero.HP );
 				if (heal > 0){
+					int apdHpBefore = hero.HP;
 					hero.HP += heal;
+					ApdCombat.onHeal( hero, apdHpBefore, ApdCombat.HEAL_SKILL_ELEMENTAL_STRIKE, heal );
 					hero.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString( heal ), FloatingText.HEALING );
 				}
 			}

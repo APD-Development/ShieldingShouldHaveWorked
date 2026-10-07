@@ -6,13 +6,18 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.ApdEvent;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.EventTypes;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.ReadResult;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.RunTimeline;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.PhantomMeat;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.watabou.utils.Random;
 
 import org.junit.After;
@@ -104,6 +109,64 @@ public class CombatSafetyTest {
 		ApdCombat.onXp(null, 5, null);
 		ApdCombat.onHungerChanged(0, 0, 0);
 		ApdCombat.onHeroDying(null);
+		ItemTestSupport.turn();
+		assertEquals(0, ApdRecorder.status().errorCount);
+		ItemTestSupport.finish(s);
+	}
+
+
+	//a scripted run of the game's own healing (potion, food, regeneration), under a seeded generator: every HP, and the next random numbers
+	private static List<String> healingTranscript( boolean record, boolean failing ) throws Exception {
+		RecorderTestSupport.Session s = new RecorderTestSupport.Session();
+		ApdRecorder.configure(s.root, record);
+		RecorderTestSupport.newRun(s, 5151L);
+		RecorderTestSupport.enterLevel(1);
+		new QuietSprite(Dungeon.hero);
+		Dungeon.hero.damageInterrupt = false;
+		if (failing) ApdRecorder.failureInjection = new RuntimeException("injected");
+		List<String> out = new ArrayList<>();
+		Random.pushGenerator(135792468L);
+		try {
+			Hero hero = Dungeon.hero;
+			for (int round = 0; round < 40; round++){
+				hero.HP = Math.max(1, hero.HP - 7);
+				ItemTestSupport.turn();
+				if (round % 3 == 0){
+					PotionOfHealing.heal(hero);
+					Healing healing = hero.buff(Healing.class);
+					for (int i = 0; i < 20 && healing != null && hero.buff(Healing.class) != null; i++) healing.act();
+				} else if (round % 3 == 1){
+					PhantomMeat.effect(hero);
+				} else {
+					Regeneration regen = Buff.affect(hero, Regeneration.class);
+					for (int i = 0; i < 60; i++) regen.act();
+				}
+				out.add(round + ": heroHP=" + hero.HP + "/" + hero.HT);
+				ItemTestSupport.turn();
+			}
+			out.add("next=" + Random.Int() + "," + Random.Int() + "," + Random.Float());
+		} finally {
+			Random.popGenerator();
+			ApdRecorder.reset();
+		}
+		return out;
+	}
+
+	@Test
+	public void healingIsIdenticalWithTheRecorderOnOffOrFailing() throws Exception {
+		List<String> off = healingTranscript(false, false);
+		assertEquals(off, healingTranscript(true, false));
+		assertEquals(off, healingTranscript(true, true));
+		assertTrue(off.size() > 40);
+	}
+
+	@Test
+	public void oddHealArgumentsNeverCountAsFailures() throws Exception {
+		RecorderTestSupport.Session s = startFight(74L);
+		ApdCombat.onHeal(null, 0, null, 0);
+		ApdCombat.onHeal(hero(), 0, null, -1);
+		ApdCombat.onHeal(hero(), Integer.MIN_VALUE, "", Integer.MAX_VALUE);
+		ApdCombat.onHeal(hero(), Integer.MAX_VALUE, "regen", 1);
 		ItemTestSupport.turn();
 		assertEquals(0, ApdRecorder.status().errorCount);
 		ItemTestSupport.finish(s);

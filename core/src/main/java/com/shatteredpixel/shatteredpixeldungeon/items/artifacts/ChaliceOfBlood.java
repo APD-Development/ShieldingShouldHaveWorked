@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.artifacts;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdCombat;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -201,12 +202,14 @@ public class ChaliceOfBlood extends Artifact {
 			heal++;
 		}
 		if (heal >= 1f && target.HP < target.HT) {
+			int apdHpBefore = target.HP;
 			target.HP = Math.min(target.HT, target.HP + (int)heal);
 			target.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString((int)heal), FloatingText.HEALING);
 
 			if (target.HP == target.HT && target instanceof Hero) {
 				((Hero) target).resting = false;
 			}
+			ApdCombat.onHeal( target, apdHpBefore, ApdCombat.HEAL_GEAR_CHALICE, (int)heal );
 		}
 	}
 	

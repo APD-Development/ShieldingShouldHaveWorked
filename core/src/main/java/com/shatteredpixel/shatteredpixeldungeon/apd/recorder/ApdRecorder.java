@@ -435,6 +435,16 @@ public final class ApdRecorder {
 		}
 	}
 
+	static synchronized void combatHeal( com.shatteredpixel.shatteredpixeldungeon.actors.Char target, int hpBefore, String source, int requested ){
+		try {
+			inject();
+			CombatTracker t = combat();
+			if (t != null) t.onHeal(target, hpBefore, source, requested);
+		} catch (Throwable t){
+			failed(t);
+		}
+	}
+
 	static synchronized void combatCharDied( com.shatteredpixel.shatteredpixeldungeon.actors.Char ch, Object src ){
 		try {
 			inject();

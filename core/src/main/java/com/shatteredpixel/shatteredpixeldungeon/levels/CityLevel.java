@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdCombat;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -160,7 +161,9 @@ public class CityLevel extends RegularLevel {
 							if (index == 0){
 
 								Dungeon.hero.live(); //clears all non-persist buffs, resets hunger/regen
+								int apdHpBefore = hero.HP;
 								hero.HP = hero.HT; //full heal
+								ApdCombat.onHeal( hero, apdHpBefore, ApdCombat.HEAL_OTHER_FULL_HEAL, -1 );
 
 								EscapeCrystal crystal = hero.belongings.getItem(EscapeCrystal.class);
 								if (crystal == null) {

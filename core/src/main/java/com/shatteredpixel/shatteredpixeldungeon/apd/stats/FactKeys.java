@@ -82,7 +82,12 @@ public final class FactKeys {
 	public static final String ENEMY_DEATHS = "combat.enemyDeaths";
 	public static final String XP_GAINED = "combat.xpGained";
 	public static final String LEVEL_UPS = "combat.levelUps";
-	public static final String HEALED = "combat.healed";              //inferred from the hero's HP between turns
+	public static final String HEALED = "combat.healed";              //all HP healed: exact since telemetry 1.6 (except the part in HEALED_INFERRED)
+	public static final String HEALED_INFERRED = "combat.healedInferred"; //the part of HEALED only inferred from the hero's HP between turns
+	//HP healed by one kind of source (telemetry 1.6, from the INTERNAL HEAL_DETAIL events): one key per CombatEvents.HEAL_CATEGORIES entry
+	public static String healedFrom( String category ){
+		return "combat.healedFrom." + category;
+	}
 	public static final String HERO_DEATHS = "combat.heroDeaths";
 	public static final String REVIVALS = "combat.revivals";
 

@@ -55,7 +55,7 @@ public final class RowBuilders {
 
 	private RowBuilders(){}
 
-	public static final int BUILDER_VERSION = 2;
+	public static final int BUILDER_VERSION = 3;
 
 	private static final DatasetDef RUNS = Datasets.runs();
 	private static final DatasetDef ITEMS = Datasets.items();

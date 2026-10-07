@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdCombat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
@@ -55,7 +56,9 @@ public class Vampiric extends Weapon.Enchantment {
 			
 			if (healAmt > 0 && attacker.isAlive()) {
 				
+				int apdHpBefore = attacker.HP;
 				attacker.HP += healAmt;
+				ApdCombat.onHeal( attacker, apdHpBefore, ApdCombat.HEAL_GEAR_VAMPIRIC, healAmt );
 				attacker.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString( healAmt ), FloatingText.HEALING );
 				
 			}

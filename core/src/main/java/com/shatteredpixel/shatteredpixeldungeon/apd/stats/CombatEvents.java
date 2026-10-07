@@ -29,7 +29,7 @@ package com.shatteredpixel.shatteredpixeldungeon.apd.stats;
 //hold the truth behind them: exact classes, ids, enemy HP, the numbers that went into a hit.
 //
 //Hero healing is INFERRED in this version: the recorder sees the hero's HP rise between two looks and names the likely source,
-//and every such event carries FLAG_INFERRED. Exact healing sources are a later phase.
+//and every such event carries FLAG_INFERRED, except the heals the game's hooks report exactly (telemetry 1.6, HEAL_DETAIL).
 //
 //Field order inside a payload is part of the format. A telemetry 1.x version may only ADD fields at the END of a payload.
 public final class CombatEvents {
@@ -284,8 +284,14 @@ public final class CombatEvents {
 		public int overheal = -1;
 	}
 
+	//an inferred heal (found by looking at the hero's HP between turns)
 	public static boolean emitHeal( RunLogWriter w, long clock, Heal h ){
-		EventBuilder b = w.event(EventTypes.HEAL).clock(clock).flags(FLAG_INFERRED);
+		return emitHeal(w, clock, h, false);
+	}
+
+	//exact = a hook saw the game heal the hero (telemetry 1.6): the same payload, without the INFERRED flag
+	public static boolean emitHeal( RunLogWriter w, long clock, Heal h, boolean exact ){
+		EventBuilder b = w.event(EventTypes.HEAL).clock(clock).flags(exact ? 0 : FLAG_INFERRED);
 		putWhere(b, h.where);
 		b.unsigned(Math.max(0, h.amount)).signed(h.hpAfter).signed(h.hpMax).string(h.guess).signed(h.overheal);
 		return b.emit();
@@ -301,6 +307,51 @@ public final class CombatEvents {
 		h.guess = str(p.string());
 		h.overheal = (int) p.signed();
 		return h;
+	}
+
+	//The hidden half of an exact heal (telemetry 1.6): what healed the hero, and what it asked for before the maximum HP capped it (-1 when
+	//the source has no such number). INTERNAL, because the source can be hidden information (an unidentified potion or enchantment).
+	//It is written right after the PUBLIC HEAL it belongs to and says only what that event does not (where, the HP before and after and the
+	//maximum are all in the HEAL), which keeps it small: natural regeneration alone writes thousands of these in a long run (measured by
+	//HealingVolumeTest). 'applied' repeats the HEAL's amount so the pair can still be read if either of them is ever lost.
+	public static final class HealDetail {
+		public String source = "";
+		public int requested = -1;
+		public int applied;
+
+		public int applied(){
+			return Math.max(0, applied);
+		}
+	}
+
+	public static boolean emitHealDetail( RunLogWriter w, long clock, HealDetail h ){
+		EventBuilder b = w.event(EventTypes.HEAL_DETAIL).clock(clock);
+		b.string(h.source).signed(h.requested).unsigned(Math.max(0, h.applied));
+		return b.emit();
+	}
+
+	public static HealDetail decodeHealDetail( ApdEvent e, StringLookup strings ){
+		PayloadReader p = e.reader(strings);
+		HealDetail h = new HealDetail();
+		h.source = str(p.string());
+		h.requested = (int) p.signed();
+		h.applied = p.unsignedInt();
+		return h;
+	}
+
+	//The heal sources the game's hooks name (the keys are stored in the log, so they never change meaning), and the few categories UIMSD
+	//sums them into. A source this build does not know, from a newer one, counts as OTHER.
+	public static final String HC_REGEN = "regen", HC_POTION = "potion", HC_FOOD = "food", HC_PLANT = "plant", HC_GEAR = "gear",
+			HC_SKILL = "skill", HC_WAND = "wand", HC_OTHER = "other";
+	public static final String[] HEAL_CATEGORIES = { HC_REGEN, HC_POTION, HC_FOOD, HC_PLANT, HC_GEAR, HC_SKILL, HC_WAND, HC_OTHER };
+
+	//the category is the part of the key before the first dot: "potion.healing" -> potion
+	public static String healCategory( String source ){
+		if (source == null) return HC_OTHER;
+		int dot = source.indexOf('.');
+		String c = dot < 0 ? source : source.substring(0, dot);
+		for (String known : HEAL_CATEGORIES) if (known.equals(c)) return known;
+		return HC_OTHER;
 	}
 
 	public static final class MaxHpChange {

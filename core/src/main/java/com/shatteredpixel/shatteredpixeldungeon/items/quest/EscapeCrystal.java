@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.quest;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdCombat;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -259,7 +260,9 @@ public class EscapeCrystal extends Item {
 		Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
 
 		Dungeon.hero.live(); //clears all non-persist buffs, resets hunger/regen
+		int apdHpBefore = Dungeon.hero.HP;
 		Dungeon.hero.HP = Dungeon.hero.HT; //full heal
+		ApdCombat.onHeal( Dungeon.hero, apdHpBefore, ApdCombat.HEAL_OTHER_FULL_HEAL, -1 );
 
 		//logic for removing Warrior's Seal or Mage's staff
 		if (preserve instanceof Armor && ((Armor) preserve).checkSeal() != null){
