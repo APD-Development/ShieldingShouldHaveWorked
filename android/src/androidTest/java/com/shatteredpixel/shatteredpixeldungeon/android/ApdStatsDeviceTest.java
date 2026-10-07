@@ -26,6 +26,7 @@ public class ApdStatsDeviceTest {
 		assertTrue(work.isDirectory() || work.mkdirs());
 		SelfTest.Report r = SelfTest.run(work, 20000);
 		com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdSelfTest.run(work, r);
+		com.shatteredpixel.shatteredpixeldungeon.apd.archive.ArchiveSelfTest.run(work, r);
 		for (String line : r.text().split("\n")) Log.i("APD-SELFTEST", line);
 		assertTrue(r.text(), r.passed);
 		work.delete();

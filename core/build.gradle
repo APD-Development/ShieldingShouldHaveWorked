@@ -30,6 +30,7 @@ test {
     systemProperty 'apd.recorder.src', file('src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder').absolutePath
     systemProperty 'apd.stats.src', file('src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats').absolutePath
     systemProperty 'apd.query.src', file('src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query').absolutePath
+    systemProperty 'apd.archive.src', file('src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/archive').absolutePath
     //recording the golden file starts fresh JVMs, which need the test classpath
     systemProperty 'apd.test.classpath', sourceSets.test.runtimeClasspath.asPath
     testLogging {

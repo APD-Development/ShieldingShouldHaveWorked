@@ -22,7 +22,11 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.query.WindowGeometry;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
+import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.watabou.noosa.ui.Component;
 
 //APD: the in-game menu's "APD Settings" window. The same pane is also the "APD" tab of Options (WndSettings).
 public class WndAPDSettings extends Window {
@@ -34,8 +38,17 @@ public class WndAPDSettings extends Window {
 
 		APDSettingsPane pane = new APDSettingsPane();
 		pane.setSize( WIDTH, 0 );
-		add( pane );
 
-		resize( WIDTH, (int)Math.ceil( pane.height() ) );
+		//the pane has grown with the storage meter and the history buttons: when it is taller than the screen it scrolls
+		Component content = new Component();
+		content.add( pane );
+		float contentHeight = (float)Math.ceil( pane.height() );
+		content.setSize( WIDTH, contentHeight );
+		float height = WindowGeometry.paneHeight( contentHeight, WindowGeometry.maxPane( PixelScene.uiCamera.height, 0, 0 ) );
+		//size the window first: it moves the window's camera, and the pane works out its screen position when it is placed
+		resize( WIDTH, (int)height );
+		ScrollPane scroll = new ScrollPane( content );
+		add( scroll );
+		scroll.setRect( 0, 0, WIDTH, height );
 	}
 }

@@ -40,7 +40,7 @@ public class UiEntryPointsTest {
 		assertTrue(pane.contains("\"Run self-test\""));
 		assertTrue(pane.contains("SPDSettings.apdRecording("));
 		//every control must be added to the pane and positioned
-		for (String c : new String[]{"optExotic", "info", "chkRecord", "status", "btnTest", "btnImport", "btnUimsd"}){
+		for (String c : new String[]{"optExotic", "info", "chkRecord", "status", "btnTest", "btnImport", "btnUimsd", "storage", "btnExportHistory", "btnImportHistory"}){
 			assertTrue(c + " not added", pane.contains("add( " + c + " )"));
 			assertTrue(c + " not laid out", pane.contains(c + ".setRect(") || pane.contains(c + ".setPos("));
 		}

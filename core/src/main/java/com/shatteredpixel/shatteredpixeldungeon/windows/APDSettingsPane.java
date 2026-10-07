@@ -26,7 +26,9 @@ import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.apd.demo.DemoData;
 import com.shatteredpixel.shatteredpixeldungeon.apd.demo.DemoGenerator;
+import com.shatteredpixel.shatteredpixeldungeon.apd.archive.StorageMeter;
 import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder;
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.HistoryTransfer;
 import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.Ruleset;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.SelfTest;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -56,7 +58,10 @@ public class APDSettingsPane extends Component {
 	private RenderedTextBlock info;
 	private CheckBox chkRecord;
 	private RenderedTextBlock status;
+	private RenderedTextBlock storage;
 	private RedButton btnTest;
+	private RedButton btnExportHistory;
+	private RedButton btnImportHistory;
 	private RedButton btnImport;
 	private RedButton btnUimsd;
 	//INDEV builds only (null in other builds): synthetic demo data for testing UIMSD, see DemoData
@@ -99,6 +104,16 @@ public class APDSettingsPane extends Component {
 		status = PixelScene.renderTextBlock( ApdRecorder.status().summary(), 5 );
 		add( status );
 
+		//measured once when the pane opens (a few directory listings), so the window is sized for the text it holds
+		String meter;
+		try {
+			meter = HistoryTransfer.storage().summary();
+		} catch (Throwable e) {
+			meter = "History: could not be measured (" + e + ")";
+		}
+		storage = PixelScene.renderTextBlock( meter, 5 );
+		add( storage );
+
 		btnTest = new RedButton( "Run self-test" ) {
 			@Override
 			protected void onClick() {
@@ -114,6 +129,22 @@ public class APDSettingsPane extends Component {
 			}
 		};
 		add( btnImport );
+
+		btnExportHistory = new RedButton( "Export history (ZIP)" ) {
+			@Override
+			protected void onClick() {
+				runTransfer( this, "Export history (ZIP)", true );
+			}
+		};
+		add( btnExportHistory );
+
+		btnImportHistory = new RedButton( "Import history (ZIP)" ) {
+			@Override
+			protected void onClick() {
+				runTransfer( this, "Import history (ZIP)", false );
+			}
+		};
+		add( btnImportHistory );
 
 		btnUimsd = new RedButton( "Open UIMSD (preview)" ) {
 			@Override
@@ -209,10 +240,17 @@ public class APDSettingsPane extends Component {
 		status.maxWidth( (int)width );
 		status.setPos( x, pos );
 		pos = status.bottom() + GAP;
+		storage.maxWidth( (int)width );
+		storage.setPos( x, pos );
+		pos = storage.bottom() + GAP;
 		btnTest.setRect( x, pos, width, 16 );
 		pos = btnTest.bottom() + GAP;
 		btnImport.setRect( x, pos, width, 16 );
 		pos = btnImport.bottom() + GAP;
+		btnExportHistory.setRect( x, pos, width, 16 );
+		pos = btnExportHistory.bottom() + GAP;
+		btnImportHistory.setRect( x, pos, width, 16 );
+		pos = btnImportHistory.bottom() + GAP;
 		btnUimsd.setRect( x, pos, width, 16 );
 		height = btnUimsd.bottom() - y;
 		if (btnDemoGenerate != null) {
@@ -224,6 +262,25 @@ public class APDSettingsPane extends Component {
 			btnDemoView.setRect( x, pos, width, 16 );
 			height = btnDemoView.bottom() - y;
 		}
+	}
+
+	//export or import the whole history through the platform's file chooser; the result is shown in plain words
+	private void runTransfer( final RedButton button, final String label, boolean export ) {
+		button.enable( false );
+		HistoryTransfer.Listener done = new HistoryTransfer.Listener() {
+			@Override
+			public void finished( final String message ) {
+				Game.runOnRenderThread( new Callback() {
+					@Override
+					public void call() {
+						button.enable( true );
+						ShatteredPixelDungeon.scene().addToFront( new WndMessage( message ) );
+					}
+				} );
+			}
+		};
+		if (export) HistoryTransfer.export( done );
+		else HistoryTransfer.importHistory( done );
 	}
 
 	private static void runImport( final RedButton button ) {
@@ -266,6 +323,7 @@ public class APDSettingsPane extends Component {
 					work.mkdirs();
 					SelfTest.Report report = SelfTest.run( work );
 					com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdSelfTest.run( work, report );
+					com.shatteredpixel.shatteredpixeldungeon.apd.archive.ArchiveSelfTest.run( work, report );
 					result = report.text();
 					work.delete();
 				} catch (Throwable e) {

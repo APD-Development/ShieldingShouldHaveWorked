@@ -69,6 +69,7 @@ public final class PayloadReader {
 	//a string table reference, null if the log is damaged and the definition is missing
 	public String string(){
 		int id = src.readUnsignedInt();
+		if (strings instanceof PositionedStringLookup) return ((PositionedStringLookup) strings).get(id, src.position());
 		return strings == null ? null : strings.get(id);
 	}
 }

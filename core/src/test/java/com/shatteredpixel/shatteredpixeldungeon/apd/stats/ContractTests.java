@@ -84,12 +84,12 @@ public class ContractTests {
 
 	@Test
 	public void libraryUsesNoRandomnessNoGameClassesAndNoApisMissingOnAndroid5() throws Exception {
-		//the storage library and the query library (UIMSD's engine) are both pure: no game, no randomness, no newer-Android APIs
+		//the storage library, the query library (UIMSD's engine) and the archive library are all pure: no game, no randomness, no newer-Android APIs
 		List<File> all = new ArrayList<>();
-		for (String prop : new String[]{"apd.stats.src", "apd.query.src"}){
+		for (String prop : new String[]{"apd.stats.src", "apd.query.src", "apd.archive.src"}){
 			File[] some = new File(System.getProperty(prop)).listFiles((d, name) -> name.endsWith(".java"));
 			assertNotNull(some);
-			assertTrue(some.length > 10);
+			assertTrue(some.length > 5);
 			for (File f : some) all.add(f);
 		}
 		File[] sources = all.toArray(new File[0]);
@@ -117,7 +117,7 @@ public class ContractTests {
 					if (line.contains(bad)) problems.add(src.getName() + ":" + n + " uses \"" + bad + "\": " + line);
 				}
 				if (line.startsWith("import com.shatteredpixel") && !line.contains("shatteredpixeldungeon.apd.stats.")
-						&& !line.contains("shatteredpixeldungeon.apd.query.")){
+						&& !line.contains("shatteredpixeldungeon.apd.query.") && !line.contains("shatteredpixeldungeon.apd.archive.")){
 					problems.add(src.getName() + ":" + n + " imports game code: " + line);
 				}
 			}

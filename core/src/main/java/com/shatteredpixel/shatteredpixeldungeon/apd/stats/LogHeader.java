@@ -25,6 +25,10 @@ package com.shatteredpixel.shatteredpixeldungeon.apd.stats;
 //The fixed start of every run log. It records which telemetry version recorded the run, and never changes.
 public final class LogHeader {
 
+	//a log whose writer-build text starts with this is a copy made for an archive of a run that was not finished, with the hidden
+	//information (and the run start's seed) taken out
+	public static final String REDACTED_PREFIX = "REDACTED:";
+
 	public final int containerFormat;
 	public final TelemetryVersion telemetryVersion;
 	public final long createdAtMillis;

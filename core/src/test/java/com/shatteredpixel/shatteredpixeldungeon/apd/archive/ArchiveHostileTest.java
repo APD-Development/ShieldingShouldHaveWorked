@@ -1,0 +1,327 @@
+package com.shatteredpixel.shatteredpixeldungeon.apd.archive;
+
+import static com.shatteredpixel.shatteredpixeldungeon.apd.archive.ArchiveSupport.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import com.shatteredpixel.shatteredpixeldungeon.apd.query.DatasetStore;
+
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+//An archive is a file from outside: a damaged, tampered or hostile one must never write outside the history, never replace anything,
+//never crash, and never leave half-written files behind.
+public class ArchiveHostileTest {
+
+	@Rule
+	public TemporaryFolder tmp = new TemporaryFolder();
+
+	private File root;
+
+	private ArchiveImporter.Report run( byte[] archive ) throws Exception {
+		root = tmp.newFolder("device-" + System.nanoTime());
+		return ArchiveImporter.importArchive(root, new ByteArrayInputStream(archive));
+	}
+
+	private void assertNothingWritten() throws Exception {
+		Map<String, byte[]> f = files(root);
+		for (String k : f.keySet()) assertFalse("left behind: " + k, k.startsWith("runs/") || k.startsWith("legacy/") || k.startsWith("import-tmp"));
+		assertFalse(new File(root, "import-tmp").exists());
+	}
+
+	private byte[] good( String id, String runId ) throws Exception {
+		return smallLog(tmp.newFolder("scratch-" + id), id, runId);
+	}
+
+	@Test
+	public void garbageAndEmptyInputsAreRefusedWithoutThrowing() throws Exception {
+		for (byte[] bad : new byte[][]{ new byte[0], "not a zip at all".getBytes("UTF-8"), new byte[]{ 'P', 'K', 3, 4, 0, 0 }, new byte[2000] }){
+			ArchiveImporter.Report r = run(bad);
+			assertFalse(r.ok);
+			assertEquals(0, r.imported);
+			assertNothingWritten();
+		}
+	}
+
+	@Test
+	public void aZipWithoutAManifestFirstIsRefused() throws Exception {
+		byte[] log = good("a", "run-a");
+		ArchiveImporter.Report r = run(zip(names("runs/a.apdlog"), Arrays.asList(log)));
+		assertFalse(r.ok);
+		assertNothingWritten();
+	}
+
+	@Test
+	public void aTamperedManifestStopsEverythingBeforeAnythingIsWritten() throws Exception {
+		byte[] log = good("a", "run-a");
+		Map<String, byte[]> files = new LinkedHashMap<>();
+		files.put("runs/a.apdlog", log);
+		byte[] archive = archiveOf(files, java.util.Collections.singletonMap("runs/a.apdlog", "run-a"));
+		Map<String, byte[]> parts = new ArchiveRoundTripEntries().read(archive);
+		//change one character of the manifest text (a size digit), keeping the old checksum line
+		String text = new String(parts.get(ArchiveManifest.ENTRY_NAME), "UTF-8");
+		String tamperedText = text.replace("run-a", "run-b");
+		ArchiveImporter.Report r = run(zip(names(ArchiveManifest.ENTRY_NAME, "runs/a.apdlog"), Arrays.asList(tamperedText.getBytes("UTF-8"), log)));
+		assertFalse(r.summary(), r.ok);
+		assertEquals(0, r.imported);
+		assertNothingWritten();
+	}
+
+	private static int indexOf( byte[] data, byte[] t ){
+		outer:
+		for (int i = 0; i + t.length <= data.length; i++){
+			for (int j = 0; j < t.length; j++) if (data[i + j] != t[j]) continue outer;
+			return i;
+		}
+		throw new IllegalStateException("marker not found");
+	}
+
+	@Test
+	public void aManifestThatListsAPathOutsideTheHistoryIsRefusedWhole() throws Exception {
+		byte[] log = good("a", "run-a");
+		for (String evil : new String[]{ "../evil.apdlog", "runs/../../evil.apdlog", "/etc/evil.apdlog", "derived/rows/x.apdr", "index.apdi", "runs/sub/x.apdlog" }){
+			ArchiveManifest m = new ArchiveManifest();
+			ArchiveManifest.Entry e = new ArchiveManifest.Entry();
+			e.path = evil;
+			e.size = log.length;
+			e.sha256 = ArchiveManifest.sha256Hex(log);
+			e.runId = "run-a";
+			m.files.add(e);
+			byte[] archive = zip(names(ArchiveManifest.ENTRY_NAME, evil), Arrays.asList(m.encode().getBytes(ArchiveManifest.utf8()), log));
+			ArchiveImporter.Report r = run(archive);
+			assertFalse(evil, r.ok);
+			assertEquals(evil, 0, r.imported);
+			assertNothingWritten();
+			assertFalse(new File(root.getParentFile(), "evil.apdlog").exists());
+			assertFalse(new File("/etc/evil.apdlog").exists());
+		}
+	}
+
+	@Test
+	public void anEntryTheManifestDoesNotListIsIgnoredEvenWithAnInnocentName() throws Exception {
+		byte[] a = good("a", "run-a"), extra = good("extra", "run-extra");
+		Map<String, byte[]> files = new LinkedHashMap<>();
+		files.put("runs/a.apdlog", a);
+		byte[] base = archiveOf(files, java.util.Collections.singletonMap("runs/a.apdlog", "run-a"));
+		//re-zip the same entries and add one more that the manifest never mentions
+		List<String> n = new ArrayList<>(names(ArchiveManifest.ENTRY_NAME, "runs/a.apdlog", "runs/extra.apdlog", "../../outside.txt"));
+		Map<String, byte[]> parts = new ArchiveRoundTripEntries().read(base);
+		ArchiveImporter.Report r = run(zip(n, Arrays.asList(parts.get(ArchiveManifest.ENTRY_NAME), a, extra, "x".getBytes("UTF-8"))));
+		assertEquals(1, r.imported);
+		assertEquals(2, r.rejected);
+		assertTrue(new File(root, "runs/a.apdlog").isFile());
+		assertFalse(new File(root, "runs/extra.apdlog").exists());
+		assertFalse(new File(root.getParentFile(), "outside.txt").exists());
+	}
+
+	@Test
+	public void aFileThatDoesNotMatchItsChecksumIsDroppedAndTheOthersStillImport() throws Exception {
+		byte[] a = good("a", "run-a"), b = good("b", "run-b");
+		Map<String, byte[]> files = new LinkedHashMap<>();
+		files.put("runs/a.apdlog", a);
+		files.put("runs/b.apdlog", b);
+		Map<String, String> ids = new LinkedHashMap<>();
+		ids.put("runs/a.apdlog", "run-a");
+		ids.put("runs/b.apdlog", "run-b");
+		byte[] archive = archiveOf(files, ids);
+		//flip a byte of a's content inside the zip (the entries are stored uncompressed only if tiny, so rebuild instead)
+		Map<String, byte[]> parts = new ArchiveRoundTripEntries().read(archive);
+		byte[] bad = a.clone();
+		bad[bad.length - 9] ^= 0x55;
+		ArchiveImporter.Report r = run(zip(names(ArchiveManifest.ENTRY_NAME, "runs/a.apdlog", "runs/b.apdlog"),
+				Arrays.asList(parts.get(ArchiveManifest.ENTRY_NAME), bad, b)));
+		assertEquals(r.summary(), 1, r.imported);
+		assertEquals(1, r.rejected);
+		assertFalse(new File(root, "runs/a.apdlog").exists());
+		assertArrayEquals(b, files(root).get("runs/b.apdlog"));
+		assertFalse(new File(root, "import-tmp").exists());
+	}
+
+	@Test
+	public void aFileOfTheWrongSizeIsDropped() throws Exception {
+		byte[] a = good("a", "run-a");
+		Map<String, byte[]> files = new LinkedHashMap<>();
+		files.put("runs/a.apdlog", a);
+		byte[] archive = archiveOf(files, java.util.Collections.singletonMap("runs/a.apdlog", "run-a"));
+		Map<String, byte[]> parts = new ArchiveRoundTripEntries().read(archive);
+		byte[] longer = Arrays.copyOf(a, a.length + 10);
+		ArchiveImporter.Report shorter = run(zip(names(ArchiveManifest.ENTRY_NAME, "runs/a.apdlog"), Arrays.asList(parts.get(ArchiveManifest.ENTRY_NAME), Arrays.copyOf(a, a.length - 3))));
+		assertEquals(1, shorter.rejected);
+		ArchiveImporter.Report bigger = run(zip(names(ArchiveManifest.ENTRY_NAME, "runs/a.apdlog"), Arrays.asList(parts.get(ArchiveManifest.ENTRY_NAME), longer)));
+		assertEquals(1, bigger.rejected);
+		assertNothingWritten();
+	}
+
+	@Test
+	public void aFileWhoseHeaderNamesAnotherRunIsDropped() throws Exception {
+		byte[] a = good("a", "run-actually-a");
+		Map<String, byte[]> files = new LinkedHashMap<>();
+		files.put("runs/a.apdlog", a);
+		ArchiveImporter.Report r = run(archiveOf(files, java.util.Collections.singletonMap("runs/a.apdlog", "run-says-something-else")));
+		assertEquals(1, r.rejected);
+		assertEquals(0, r.imported);
+		assertNothingWritten();
+	}
+
+	@Test
+	public void somethingThatIsNotALogIsDropped() throws Exception {
+		Map<String, byte[]> files = new LinkedHashMap<>();
+		files.put("runs/junk.apdlog", "this is definitely not an APD log".getBytes("UTF-8"));
+		ArchiveImporter.Report r = run(archiveOf(files, java.util.Collections.<String, String>emptyMap()));
+		assertEquals(1, r.rejected);
+		assertNothingWritten();
+	}
+
+	@Test
+	public void aHugeEntryIsNeverBufferedOrWritten() throws Exception {
+		//declared tiny, actually 70 MB of zeros (a few dozen KB zipped): the import stops reading it and writes nothing
+		byte[] a = good("a", "run-a");
+		Map<String, byte[]> files = new LinkedHashMap<>();
+		files.put("runs/a.apdlog", a);
+		byte[] archive = archiveOf(files, java.util.Collections.singletonMap("runs/a.apdlog", "run-a"));
+		Map<String, byte[]> parts = new ArchiveRoundTripEntries().read(archive);
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		ZipOutputStream z = new ZipOutputStream(out);
+		z.putNextEntry(new ZipEntry(ArchiveManifest.ENTRY_NAME));
+		z.write(parts.get(ArchiveManifest.ENTRY_NAME));
+		z.closeEntry();
+		z.putNextEntry(new ZipEntry("runs/a.apdlog"));
+		byte[] zeros = new byte[1 << 20];
+		for (int i = 0; i < 70; i++) z.write(zeros);
+		z.closeEntry();
+		z.finish();
+		long start = System.currentTimeMillis();
+		ArchiveImporter.Report r = run(out.toByteArray());
+		assertTrue("took " + (System.currentTimeMillis() - start) + " ms", System.currentTimeMillis() - start < 30000);
+		assertFalse(r.ok);
+		assertEquals(0, r.imported);
+		assertNothingWritten();
+	}
+
+	@Test
+	public void aTruncatedArchiveKeepsOnlyWhatWasCompleteAndVerifiedAndLeavesNoLitter() throws Exception {
+		byte[] a = good("a", "run-a"), b = good("b", "run-b");
+		Map<String, byte[]> files = new LinkedHashMap<>();
+		files.put("runs/a.apdlog", a);
+		files.put("runs/b.apdlog", b);
+		Map<String, String> ids = new LinkedHashMap<>();
+		ids.put("runs/a.apdlog", "run-a");
+		ids.put("runs/b.apdlog", "run-b");
+		byte[] archive = archiveOf(files, ids);
+		for (int cut : new int[]{ archive.length - 5, archive.length / 2, archive.length / 3, 60, 10 }){
+			ArchiveImporter.Report r = run(Arrays.copyOf(archive, cut));
+			assertTrue("cut " + cut, r.imported <= 2);
+			//every log that did land is a complete, valid one
+			for (Map.Entry<String, byte[]> e : files(root).entrySet()){
+				if (e.getKey().equals("runs/a.apdlog")) assertArrayEquals(a, e.getValue());
+				if (e.getKey().equals("runs/b.apdlog")) assertArrayEquals(b, e.getValue());
+			}
+			assertFalse(new File(root, "import-tmp").exists());
+		}
+	}
+
+	@Test
+	public void aNewerArchiveFormatIsRefused() throws Exception {
+		ArchiveManifest m = new ArchiveManifest();
+		m.format = 7;
+		ArchiveImporter.Report r = run(zip(names(ArchiveManifest.ENTRY_NAME), Arrays.asList(m.encode().getBytes(ArchiveManifest.utf8()))));
+		assertFalse(r.ok);
+		assertTrue(r.problem, r.problem.contains("newer"));
+		assertNothingWritten();
+	}
+
+	@Test
+	public void aListedFileThatNeverArrivedIsReported() throws Exception {
+		byte[] a = good("a", "run-a"), b = good("b", "run-b");
+		Map<String, byte[]> files = new LinkedHashMap<>();
+		files.put("runs/a.apdlog", a);
+		files.put("runs/b.apdlog", b);
+		Map<String, String> ids = new LinkedHashMap<>();
+		ids.put("runs/a.apdlog", "run-a");
+		ids.put("runs/b.apdlog", "run-b");
+		Map<String, byte[]> parts = new ArchiveRoundTripEntries().read(archiveOf(files, ids));
+		ArchiveImporter.Report r = run(zip(names(ArchiveManifest.ENTRY_NAME, "runs/a.apdlog"), Arrays.asList(parts.get(ArchiveManifest.ENTRY_NAME), a)));
+		assertEquals(1, r.imported);
+		assertEquals(1, r.rejected);
+		assertTrue(r.summary().contains("missing"));
+	}
+
+	// ---- synthetic demo data never travels ----
+
+	@Test
+	public void demoDataIsNeverExportedAndNeverImported() throws Exception {
+		File a = tmp.newFolder("real");
+		history(a);
+		//a demo-named log that ended up among real logs
+		java.nio.file.Files.copy(new File(a, "runs/fin.apdlog").toPath(), new File(a, "runs/demo-000.apdlog").toPath());
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		ArchiveExporter.Report r = ArchiveExporter.export(a, out, "t", 1);
+		assertTrue(r.ok);
+		assertEquals(1, r.skippedDemo);
+		assertFalse(new ArchiveRoundTripEntries().read(out.toByteArray()).containsKey("runs/demo-000.apdlog"));
+
+		//a folder that carries the demo marker can be neither exported nor imported into
+		File demo = tmp.newFolder("apd-demo-data");
+		new File(demo, DatasetStore.DEMO_MARKER_FILE).createNewFile();
+		history(demo);
+		ArchiveExporter.Report refused = ArchiveExporter.export(demo, new ByteArrayOutputStream(), "t", 1);
+		assertFalse(refused.ok);
+		ArchiveImporter.Report into = ArchiveImporter.importArchive(demo, new ByteArrayInputStream(out.toByteArray()));
+		assertFalse(into.ok);
+
+		//an archive that holds demo data is refused whole
+		byte[] demoLog = good("demo-007", "demo-007");
+		Map<String, byte[]> files = new LinkedHashMap<>();
+		files.put("runs/demo-007.apdlog", demoLog);
+		ArchiveImporter.Report bad = run(archiveOf(files, java.util.Collections.singletonMap("runs/demo-007.apdlog", "demo-007")));
+		assertFalse(bad.ok);
+		assertNothingWritten();
+	}
+
+	@Test
+	public void aLogMarkedAsSyntheticInItsHeaderIsDroppedEvenWithAPlainName() throws Exception {
+		File scratch = tmp.newFolder("scratch-demo");
+		com.shatteredpixel.shatteredpixeldungeon.apd.stats.RunLogWriter w = com.shatteredpixel.shatteredpixeldungeon.apd.stats.RunLogWriter.create(
+				new File(new File(scratch, "runs"), "plain.apdlog"), ArchiveSupport.V, "plain", "SYNTHETIC-DEMO-DATA", 5);
+		w.event(1).unsigned(1).emit();
+		w.close(true);
+		byte[] bytes = java.nio.file.Files.readAllBytes(new File(scratch, "runs/plain.apdlog").toPath());
+		Map<String, byte[]> files = new LinkedHashMap<>();
+		files.put("runs/plain.apdlog", bytes);
+		ArchiveImporter.Report r = run(archiveOf(files, java.util.Collections.<String, String>emptyMap()));
+		assertEquals(1, r.rejected);
+		assertNothingWritten();
+	}
+
+	//reads the entries of an archive (the tests' own tool)
+	static final class ArchiveRoundTripEntries {
+		Map<String, byte[]> read( byte[] archive ) throws Exception {
+			Map<String, byte[]> out = new LinkedHashMap<>();
+			java.util.zip.ZipInputStream z = new java.util.zip.ZipInputStream(new ByteArrayInputStream(archive));
+			ZipEntry e;
+			while ((e = z.getNextEntry()) != null){
+				ByteArrayOutputStream o = new ByteArrayOutputStream();
+				byte[] buf = new byte[4096];
+				int n;
+				while ((n = z.read(buf)) > 0) o.write(buf, 0, n);
+				out.put(e.getName(), o.toByteArray());
+			}
+			return out;
+		}
+	}
+}

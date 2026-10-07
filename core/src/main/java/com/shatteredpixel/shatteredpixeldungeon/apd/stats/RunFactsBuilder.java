@@ -91,9 +91,13 @@ public final class RunFactsBuilder {
 						f.num(FactKeys.SEGMENT, s.segment, Fact.PROV_RECORDED);
 						f.text(FactKeys.APD_VERSION, s.apdVersionName, Fact.PROV_RECORDED);
 						f.num(FactKeys.INITIAL_VERSION, s.initialVersion, Fact.PROV_RECORDED);
-						f.num(FactKeys.SEED, s.seed, Fact.PROV_RECORDED);
+						//a redacted copy (from an archive of a run that was not finished) has its seed taken out: unknown, not 0
+						boolean redactedCopy = r.header != null && r.header.writerBuild != null && r.header.writerBuild.startsWith(LogHeader.REDACTED_PREFIX);
+						if (!redactedCopy){
+							f.num(FactKeys.SEED, s.seed, Fact.PROV_RECORDED);
+							f.text(FactKeys.CUSTOM_SEED, s.customSeedText, Fact.PROV_RECORDED);
+						}
 						f.num(FactKeys.SEED_TYPE, s.seedType, Fact.PROV_RECORDED);
-						f.text(FactKeys.CUSTOM_SEED, s.customSeedText, Fact.PROV_RECORDED);
 						f.num(FactKeys.DAILY, s.seedType == LifecycleEvents.SEED_DAILY || s.seedType == LifecycleEvents.SEED_DAILY_REPLAY ? 1 : 0, Fact.PROV_RECORDED);
 						f.num(FactKeys.CHALLENGES, s.challenges, Fact.PROV_RECORDED);
 						f.text(FactKeys.HERO_CLASS, s.heroClass, Fact.PROV_RECORDED);
