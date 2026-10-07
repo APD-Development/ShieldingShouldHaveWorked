@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.query.WindowGeometry;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
+import com.shatteredpixel.shatteredpixeldungeon.ui.UimsdStyle;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.ui.Component;
@@ -33,75 +34,233 @@ import com.watabou.noosa.ui.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-//APD: the one list window all the UIMSD pickers use (columns, operators, values, views, options and so on). Plain lines of text,
-//scrolled when there are many, tapped with the same coordinate test the game's own scrolling lists use. A list is either a
-//menu (tapping an item closes the window and reports it) or a set of switches (tapping toggles in place, "Done" closes).
+//APD: the one list window all the UIMSD pickers use (columns, operators, values, views, options and so on). A list is made of ENTRIES:
+//section headings and notes (not tappable), and items, each with a label, an optional grey description under it, and a marker for the
+//choice that is on now. It is either a menu (tapping an item closes the window and reports it) or a set of switches (tapping toggles in
+//place, "Done" closes). Scrolled when there are many, tapped with the same coordinate test the game's own scrolling lists use.
+//The index a Picker receives counts ITEMS only (headings and notes do not count).
 public class WndUimsdList extends Window {
 
 	public interface Picker {
 		void onPick( int index, boolean checked );
 	}
 
+	//one line (or small block) of a list
+	public static final class Entry {
+		public static final int HEADING = 0, ITEM = 1, NOTE = 2;
+
+		public final int kind;
+		public final String label;
+		public final String detail;
+		public boolean current;
+		//a note drawn as a warning
+		public boolean warn;
+		//switches: null for an entry that is not a switch
+		public Boolean checked;
+
+		private Entry( int kind, String label, String detail ){
+			this.kind = kind;
+			this.label = label == null ? "" : label;
+			this.detail = detail == null ? "" : detail;
+		}
+
+		public static Entry heading( String text ){
+			return new Entry(HEADING, text, "");
+		}
+
+		public static Entry note( String text ){
+			return new Entry(NOTE, text, "");
+		}
+
+		public static Entry warning( String text ){
+			Entry e = new Entry(NOTE, text, "");
+			e.warn = true;
+			return e;
+		}
+
+		public static Entry item( String label ){
+			return new Entry(ITEM, label, "");
+		}
+
+		public static Entry item( String label, String detail ){
+			return new Entry(ITEM, label, detail);
+		}
+
+		//marks the choice that is on now
+		public Entry current( boolean on ){
+			this.current = on;
+			return this;
+		}
+
+		public Entry checked( boolean on ){
+			this.checked = on;
+			return this;
+		}
+
+		public boolean isItem(){
+			return kind == ITEM;
+		}
+	}
+
+	//plain labels as entries, for the simple pickers
+	public static List<Entry> items( List<String> labels ){
+		List<Entry> out = new ArrayList<>();
+		for (String l : labels) out.add(Entry.item(l));
+		return out;
+	}
+
 	private static final int MARGIN = 2;
 
 	private final Picker picker;
 	private final boolean switches;
-	private final List<String> labels;
-	private final List<Boolean> checks;
-	private final List<RenderedTextBlock> texts = new ArrayList<>();
-	private final List<float[]> spans = new ArrayList<>();   //top and height of each row inside the list
+	private final List<Entry> entries;
+	//per entry: the label text and background (items only), and the span of the row inside the list (items and Done only, else null)
+	private final List<RenderedTextBlock> labelTexts = new ArrayList<>();
+	private final List<ColorBlock> backs = new ArrayList<>();
+	private final List<float[]> spans = new ArrayList<>();
+	private final List<Integer> itemIndexOfEntry = new ArrayList<>();
 	private ListPane pane;
 
-	//menu: checks == null. switches: one entry per label (the window stays open), an extra "Done" closes it.
+	//menu or switches of plain labels: checks == null makes a menu. One check per label makes switches (and an extra "Done" closes it).
 	public WndUimsdList( String title, String message, List<String> labels, List<Boolean> checks, Picker picker ){
+		this(title, message, checks != null, withChecks(items(labels), checks), picker);
+	}
+
+	private static List<Entry> withChecks( List<Entry> entries, List<Boolean> checks ){
+		if (checks != null) for (int i = 0; i < entries.size() && i < checks.size(); i++) entries.get(i).checked(checks.get(i));
+		return entries;
+	}
+
+	//a menu of entries
+	public static WndUimsdList menu( String title, String message, List<Entry> entries, Picker picker ){
+		return new WndUimsdList(title, message, false, entries, picker);
+	}
+
+	//a set of switches (every item needs checked(...)); Done closes it
+	public static WndUimsdList switches( String title, String message, List<Entry> entries, Picker picker ){
+		return new WndUimsdList(title, message, true, entries, picker);
+	}
+
+	protected WndUimsdList( String title, String message, boolean switches, List<Entry> entries, Picker picker ){
 		super();
 		this.picker = picker;
-		this.switches = checks != null;
-		this.labels = new ArrayList<>(labels);
-		this.checks = checks == null ? null : new ArrayList<>(checks);
+		this.switches = switches;
+		this.entries = new ArrayList<>(entries);
 		int width = windowWidth();
 
 		float pos = MARGIN;
 		if (title != null && !title.isEmpty()){
-			RenderedTextBlock t = PixelScene.renderTextBlock(title, 9);
-			t.hardlight(TITLE_COLOR);
+			RenderedTextBlock t = PixelScene.renderTextBlock(title, UimsdStyle.SIZE_TITLE);
+			t.hardlight(UimsdStyle.TITLE);
 			t.maxWidth(width - 2 * MARGIN);
 			t.setPos(MARGIN, pos);
 			add(t);
-			pos = t.bottom() + 2 * MARGIN;
+			pos = t.bottom() + MARGIN;
 		}
 		if (message != null && !message.isEmpty()){
-			RenderedTextBlock m = PixelScene.renderTextBlock(message, 6);
+			RenderedTextBlock m = PixelScene.renderTextBlock(message, UimsdStyle.SIZE_HELP);
+			m.hardlight(UimsdStyle.MUTED);
 			m.maxWidth(width - 2 * MARGIN);
 			m.setPos(MARGIN, pos);
 			add(m);
 			pos = m.bottom() + 2 * MARGIN;
+		} else {
+			pos += MARGIN;
 		}
 
 		//The window is sized BEFORE the list is placed: resizing a window moves its camera, and a scroll pane works out where it is on
 		//screen when it is placed, so placing it first leaves its contents offset from the window.
 		pane = new ListPane();
 		Component content = pane.content();
-		int n = labels.size() + (switches ? 1 : 0);
+		int n = this.entries.size() + (switches ? 1 : 0);
 		float[] heights = new float[n];
-		List<RenderedTextBlock> made = new ArrayList<>();
+		List<RenderedTextBlock> labelsMade = new ArrayList<>();
+		List<RenderedTextBlock> detailsMade = new ArrayList<>();
+		int textWidth = WindowGeometry.rowTextWidth(width);
 		for (int i = 0; i < n; i++){
-			String text = i < labels.size() ? line(i) : "Done";
-			RenderedTextBlock t = PixelScene.renderTextBlock(text, 7);
-			t.maxWidth(WindowGeometry.rowTextWidth(width));
-			heights[i] = WindowGeometry.rowHeight(t.height());
-			made.add(t);
+			Entry e = i < this.entries.size() ? this.entries.get(i) : null;
+			RenderedTextBlock label, detail = null;
+			if (e == null){
+				label = PixelScene.renderTextBlock("Done", UimsdStyle.SIZE_TEXT);
+				heights[i] = WindowGeometry.rowHeight(label.height());
+			} else if (e.kind == Entry.HEADING){
+				label = PixelScene.renderTextBlock(e.label.toUpperCase(), UimsdStyle.SIZE_HELP);
+				heights[i] = label.height() + 6;
+			} else if (e.kind == Entry.NOTE){
+				label = PixelScene.renderTextBlock(e.label, UimsdStyle.SIZE_META);
+				heights[i] = label.height() + 4;
+			} else {
+				label = PixelScene.renderTextBlock(itemText(e), UimsdStyle.SIZE_TEXT);
+				float h = label.height();
+				if (!e.detail.isEmpty()){
+					detail = PixelScene.renderTextBlock(e.detail, UimsdStyle.SIZE_META);
+					h += 1 + detail.height();
+				}
+				heights[i] = WindowGeometry.rowHeight(h);
+			}
+			label.maxWidth(textWidth);
+			if (detail != null) detail.maxWidth(textWidth);
+			//a text block lays itself out when its width is set, so the heights are taken again after it
+			if (e != null && e.kind == Entry.ITEM){
+				float h = label.height() + (detail == null ? 0 : 1 + detail.height());
+				heights[i] = WindowGeometry.rowHeight(h);
+			} else if (e == null){
+				heights[i] = WindowGeometry.rowHeight(label.height());
+			} else if (e.kind == Entry.HEADING){
+				heights[i] = label.height() + 6;
+			} else {
+				heights[i] = label.height() + 4;
+			}
+			labelsMade.add(label);
+			detailsMade.add(detail);
 		}
 		float[] tops = WindowGeometry.stack(heights);
+		int itemCount = 0;
 		for (int i = 0; i < n; i++){
-			RenderedTextBlock t = made.get(i);
-			ColorBlock bg = new ColorBlock(width, heights[i] - 1, i < labels.size() ? 0x66332B27 : 0x66553322);
+			Entry e = i < this.entries.size() ? this.entries.get(i) : null;
+			RenderedTextBlock label = labelsMade.get(i);
+			RenderedTextBlock detail = detailsMade.get(i);
+			if (e != null && e.kind == Entry.HEADING){
+				label.hardlight(UimsdStyle.HEADING);
+				label.setPos(WindowGeometry.ROW_PAD + 1, tops[i] + 3);
+				content.add(label);
+				ColorBlock rule = new ColorBlock(width - 2 * MARGIN, 1, UimsdStyle.RULE);
+				rule.x = MARGIN;
+				rule.y = tops[i] + heights[i] - 2;
+				content.add(rule);
+				labelTexts.add(null);
+				backs.add(null);
+				spans.add(null);
+				itemIndexOfEntry.add(-1);
+				continue;
+			}
+			if (e != null && e.kind == Entry.NOTE){
+				label.hardlight(e.warn ? UimsdStyle.WARN : UimsdStyle.MUTED);
+				label.setPos(WindowGeometry.ROW_PAD + 1, tops[i] + 2);
+				content.add(label);
+				labelTexts.add(null);
+				backs.add(null);
+				spans.add(null);
+				itemIndexOfEntry.add(-1);
+				continue;
+			}
+			ColorBlock bg = new ColorBlock(width, heights[i] - 1, e == null ? UimsdStyle.ROW_ACTION : backFor(e));
 			bg.y = tops[i];
 			content.add(bg);
-			t.setPos(WindowGeometry.ROW_PAD + 1, tops[i] + (heights[i] - 1 - t.height()) / 2f);
-			content.add(t);
-			texts.add(t);
+			float textH = label.height() + (detail == null ? 0 : 1 + detail.height());
+			float ty = tops[i] + (heights[i] - 1 - textH) / 2f;
+			label.hardlight(e == null ? UimsdStyle.TITLE : colorFor(e));
+			label.setPos(WindowGeometry.ROW_PAD + 1, ty);
+			content.add(label);
+			if (detail != null){
+				detail.hardlight(UimsdStyle.MUTED);
+				detail.setPos(WindowGeometry.ROW_PAD + 1, ty + label.height() + 1);
+				content.add(detail);
+			}
+			labelTexts.add(label);
+			backs.add(bg);
 			spans.add(new float[]{tops[i], heights[i]});
+			itemIndexOfEntry.add(e == null ? -2 : itemCount++);
 		}
 		content.setSize(width, tops[n]);
 		float h = WindowGeometry.paneHeight(tops[n], WindowGeometry.maxPane(PixelScene.uiCamera.height, pos, 0));
@@ -115,9 +274,19 @@ public class WndUimsdList extends Window {
 		return WindowGeometry.width(PixelScene.landscape(), PixelScene.uiCamera.width);
 	}
 
-	private String line( int i ){
-		if (!switches) return labels.get(i);
-		return (checks.get(i) ? "[x] " : "[ ] ") + labels.get(i);
+	private String itemText( Entry e ){
+		String t = e.label;
+		if (e.checked != null) t = (e.checked ? "[x] " : "[ ] ") + t;
+		if (e.current && e.checked == null) t += "   (current)";
+		return t;
+	}
+
+	private int backFor( Entry e ){
+		return e.current || Boolean.TRUE.equals(e.checked) ? UimsdStyle.ROW_ON : UimsdStyle.ROW;
+	}
+
+	private int colorFor( Entry e ){
+		return e.current || Boolean.TRUE.equals(e.checked) ? UimsdStyle.CURRENT : UimsdStyle.TEXT;
 	}
 
 	private class ListPane extends ScrollPane {
@@ -130,6 +299,7 @@ public class WndUimsdList extends Window {
 		public void onClick( float x, float y ){
 			for (int i = 0; i < spans.size(); i++){
 				float[] s = spans.get(i);
+				if (s == null) continue;
 				if (y >= s[0] && y < s[0] + s[1]){
 					picked(i);
 					return;
@@ -138,18 +308,22 @@ public class WndUimsdList extends Window {
 		}
 	}
 
-	private void picked( int i ){
-		if (switches){
-			if (i >= labels.size()){
-				hide();
-				return;
-			}
-			checks.set(i, !checks.get(i));
-			texts.get(i).text(line(i));
-			if (picker != null) picker.onPick(i, checks.get(i));
+	private void picked( int entry ){
+		if (entry >= entries.size()){
+			hide();      //Done
+			return;
+		}
+		Entry e = entries.get(entry);
+		int item = itemIndexOfEntry.get(entry);
+		if (switches && e.checked != null){
+			e.checked = !e.checked;
+			labelTexts.get(entry).text(itemText(e));
+			labelTexts.get(entry).hardlight(colorFor(e));
+			backs.get(entry).color(backFor(e));
+			if (picker != null) picker.onPick(item, e.checked);
 		} else {
 			hide();
-			if (picker != null) picker.onPick(i, false);
+			if (picker != null) picker.onPick(item, false);
 		}
 	}
 }

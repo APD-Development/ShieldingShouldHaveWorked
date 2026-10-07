@@ -43,13 +43,19 @@ public final class WndUimsdColumns {
 		}
 		final List<ColumnDef> cols = m.offeredColumns();
 		List<String> shown = m.query().columns.isEmpty() ? m.dataset().def.defaultColumnIds() : m.query().columns;
-		final List<String> labels = new ArrayList<>();
-		final List<Boolean> checks = new ArrayList<>();
+		List<WndUimsdList.Entry> entries = new ArrayList<>();
+		String last = null;
 		for (ColumnDef c : cols){
-			labels.add(c.label + (c.group.isEmpty() ? "" : "  (" + c.group + ")"));
-			checks.add(shown.contains(c.id));
+			String g = c.group.isEmpty() ? "Details" : c.group.equals("Hidden") ? "Hidden information (finished runs only)" : c.group;
+			if (!g.equals(last)){
+				entries.add(WndUimsdList.Entry.heading(g));
+				last = g;
+			}
+			String d = c.description;
+			entries.add(WndUimsdList.Entry.item(c.label, d.length() > 90 ? d.substring(0, 88) + ".." : d).checked(shown.contains(c.id)));
 		}
-		ShatteredPixelDungeon.scene().addToFront(new WndUimsdList("Columns", "Tick the columns to show. Tap Done when finished.", labels, checks,
+		ShatteredPixelDungeon.scene().addToFront(WndUimsdList.switches("Columns",
+				"Tick the columns you want in the table, then tap Done. The first column stays in place while the rest scroll sideways.", entries,
 				new WndUimsdList.Picker(){
 					@Override
 					public void onPick( int i, boolean checked ){

@@ -209,6 +209,50 @@ public final class UimsdModel {
 		return out;
 	}
 
+	//a value a TEXT column holds in the entries the player may look at: the raw value (what a filter compares), how it reads in the table, how often it occurs
+	public static final class Choice {
+		public final String value;
+		public final String label;
+		public final int count;
+
+		Choice( String value, String label, int count ){
+			this.value = value;
+			this.label = label;
+			this.count = count;
+		}
+	}
+
+	//The values a TEXT column actually holds, most frequent first (at most 'limit'), so a filter can offer them as choices instead of asking for typed text.
+	//Only values the player may see: a hidden column of a run that is not finished contributes nothing.
+	public synchronized List<Choice> choicesFor( ColumnDef c, int limit ){
+		List<Choice> out = new ArrayList<>();
+		Dataset ds = dataset();
+		if (ds == null || c == null || c.type != ColumnDef.Type.TEXT) return out;
+		java.util.Map<String, int[]> counts = new java.util.LinkedHashMap<>();
+		java.util.Map<String, String> labels = new java.util.HashMap<>();
+		for (Row r : ds.rows){
+			boolean legit = r.publicRow || (query.showInternal && r.finished);
+			if (!legit || !QueryEngine.open(query, r, c) || !r.isKnown(c.index())) continue;
+			String raw = r.text(c.index());
+			if (raw.isEmpty()) continue;
+			int[] n = counts.get(raw);
+			if (n == null){
+				counts.put(raw, n = new int[1]);
+				labels.put(raw, CellFormatter.cell(query, r, c).text);
+			}
+			n[0]++;
+		}
+		for (java.util.Map.Entry<String, int[]> e : counts.entrySet()) out.add(new Choice(e.getKey(), labels.get(e.getKey()), e.getValue()[0]));
+		java.util.Collections.sort(out, new java.util.Comparator<Choice>(){
+			@Override
+			public int compare( Choice a, Choice b ){
+				if (a.count != b.count) return a.count > b.count ? -1 : 1;
+				return a.label.compareTo(b.label);
+			}
+		});
+		return out.size() > limit ? new ArrayList<>(out.subList(0, limit)) : out;
+	}
+
 	//---- changing ----
 
 	private void recompute(){

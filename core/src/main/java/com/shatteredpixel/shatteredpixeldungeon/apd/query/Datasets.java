@@ -457,6 +457,15 @@ public final class Datasets {
 				Query.of(RUNS).withScope(Scope.DEFAULT.withRules(Scope.Rules.ALL, ""))
 						.withGroup(runStats(FactKeys.DIFFICULTY, FactKeys.DIFFICULTY_BALANCE)).withMinSample(DEFAULT_MIN_SAMPLE)
 						.withSorts(Arrays.asList(new Sort("count", true)))));
+		//the sections of the view picker
+		for (ViewDef view : v){
+			switch (view.id){
+				case "runs": case "characters": case "challenges": case "difficulty": case "deaths": view.group("Your runs"); break;
+				case "items": case "weapons": case "armor": case "rings": case "trinkets": case "artifacts": view.group("Your gear"); break;
+				case "enemies": view.group("Enemies"); break;
+				default:
+			}
+		}
 		return Collections.unmodifiableList(v);
 	}
 

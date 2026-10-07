@@ -40,7 +40,10 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
+import com.shatteredpixel.shatteredpixeldungeon.ui.UimsdStyle;
+import com.shatteredpixel.shatteredpixeldungeon.ui.UimsdTable;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.ui.Component;
 
 import java.util.ArrayList;
@@ -58,8 +61,9 @@ public class WndUimsdRow extends Window {
 		QueryResult r = m.result();
 		DatasetDef def = r.def;
 
-		StringBuilder body = new StringBuilder();
+		final List<SheetLine> sheet = new ArrayList<>();
 		final List<Action> actions = new ArrayList<>();
+		final List<Action> shareActions = new ArrayList<>();
 		final Row row = line.row;
 		String title;
 		if (row != null){
@@ -69,30 +73,12 @@ public class WndUimsdRow extends Window {
 				if (c.isInternal() && !r.query.showInternal) continue;
 				CellText t = CellFormatter.cell(r.query, row, c);
 				if (!c.group.equals(lastGroup)){
-					body.append(lastGroup == null ? "" : "\n").append("_").append(c.group.isEmpty() ? "Details" : c.group).append("_\n");
+					sheet.add(SheetLine.section(c.group.isEmpty() ? "Details" : c.group.equals("Hidden") ? "Hidden information" : c.group));
 					lastGroup = c.group;
 				}
-				body.append(c.label).append(": ").append(t.text);
-				if (t.state != CellText.EXACT) body.append("  (").append(CellFormatter.explain(t.state)).append(")");
-				body.append('\n');
+				sheet.add(new SheetLine(c.label, t.text, t.state == CellText.EXACT ? "" : CellFormatter.explain(t.state), t.state, t.small));
 			}
-			if (!row.telemetry.isEmpty()) body.append("\nRecorded with telemetry ").append(row.telemetry).append('\n');
-			if (WndUimsdReport.isRunsTable(def)){
-				actions.add(new Action("Report for this run", new Runnable(){
-					@Override
-					public void run(){
-						WndUimsdReport.ofRun(m, row);
-					}
-				}));
-				if (row.finished){
-					actions.add(new Action("Compare with another run...", new Runnable(){
-						@Override
-						public void run(){
-							WndUimsdReport.compareWith(m, row);
-						}
-					}));
-				}
-			}
+			if (!row.telemetry.isEmpty()) sheet.add(new SheetLine("Recorded with", "telemetry " + row.telemetry, "", CellText.EXACT, false));
 			if (m.canSeedFloors(row)){
 				actions.add(new Action("Seed floors (canonical)", new Runnable(){
 					@Override
@@ -111,23 +97,32 @@ public class WndUimsdRow extends Window {
 					}));
 				}
 			}
+			if (WndUimsdReport.isRunsTable(def)){
+				if (row.finished){
+					shareActions.add(new Action("Compare with another run...", new Runnable(){
+						@Override
+						public void run(){
+							WndUimsdReport.compareWith(m, row);
+						}
+					}));
+				}
+				shareActions.add(new Action("Report for this run", new Runnable(){
+					@Override
+					public void run(){
+						WndUimsdReport.ofRun(m, row);
+					}
+				}));
+			}
 		} else {
 			final GroupRow g = line.group;
 			GroupDetail detail = GroupDetail.build(r, g);
 			title = detail.title;
-			body.append(detail.text());
-			actions.add(new Action("Report for this group", new Runnable(){
-				@Override
-				public void run(){
-					WndUimsdReport.ofGroup(m, g);
-				}
-			}));
-			actions.add(new Action("Compare with another group...", new Runnable(){
-				@Override
-				public void run(){
-					WndUimsdReport.compareGroupWith(m, g);
-				}
-			}));
+			sheet.add(SheetLine.section(detail.rows + (detail.rows == 1 ? " " + singular(def.countLabel) : " " + def.countLabel.toLowerCase()) + " in this group"));
+			for (GroupDetail.Line k : detail.keys) sheet.add(new SheetLine(k.label, k.value, k.detail, k.state, false));
+			for (GroupDetail.Line l : detail.lines){
+				if (l.section) sheet.add(SheetLine.section(l.label));
+				else sheet.add(new SheetLine(l.label, l.value, (l.detail + (l.explanation.isEmpty() ? "" : (l.detail.isEmpty() ? "" : "; ") + l.explanation)), l.state, l.small));
+			}
 			if (m.canOpenGroups()){
 				int n = g.n;
 				actions.add(new Action("The " + n + " " + (n == 1 ? singular(def.countLabel) : def.countLabel.toLowerCase()), new Runnable(){
@@ -146,10 +141,24 @@ public class WndUimsdRow extends Window {
 					}
 				}));
 			}
+			shareActions.add(new Action("Compare with another group...", new Runnable(){
+				@Override
+				public void run(){
+					WndUimsdReport.compareGroupWith(m, g);
+				}
+			}));
+			shareActions.add(new Action("Report for this group", new Runnable(){
+				@Override
+				public void run(){
+					WndUimsdReport.ofGroup(m, g);
+				}
+			}));
 		}
+		//where to go first, then what to do with it
+		actions.addAll(shareActions);
 
-		RenderedTextBlock tt = PixelScene.renderTextBlock(title, 9);
-		tt.hardlight(TITLE_COLOR);
+		RenderedTextBlock tt = PixelScene.renderTextBlock(title, UimsdStyle.SIZE_TITLE);
+		tt.hardlight(UimsdStyle.TITLE);
 		tt.maxWidth(width - 2 * MARGIN);
 		tt.setPos(MARGIN, MARGIN);
 		add(tt);
@@ -157,11 +166,8 @@ public class WndUimsdRow extends Window {
 
 		float buttonsH = actions.size() * 18f;
 		final Component content = new Component();
-		RenderedTextBlock text = PixelScene.renderTextBlock(body.toString(), 6);
-		text.maxWidth(width - 2 * MARGIN - 2);
-		text.setPos(MARGIN, 0);
-		content.add(text);
-		content.setSize(width, text.bottom() + 2);
+		float contentH = sheet(content, width, sheet);
+		content.setSize(width, contentH);
 		ScrollPane pane = new ScrollPane(content);
 		float h = WindowGeometry.paneHeight(content.height(), WindowGeometry.maxPane(PixelScene.uiCamera.height, pos, buttonsH + MARGIN));
 		float total = pos + h + MARGIN + actions.size() * 18f;
@@ -183,6 +189,81 @@ public class WndUimsdRow extends Window {
 			add(b);
 			pos += 18;
 		}
+	}
+
+	//one line of the sheet: a section heading, or a label with its value (coloured by what kind of knowledge it is) and a small note under it
+	private static final class SheetLine {
+		final boolean section;
+		final String label, value, note;
+		final int state;
+		final boolean small;
+
+		SheetLine( String label, String value, String note, int state, boolean small ){
+			this.section = false;
+			this.label = label;
+			this.value = value;
+			this.note = note == null ? "" : note;
+			this.state = state;
+			this.small = small;
+		}
+
+		private SheetLine( String section ){
+			this.section = true;
+			this.label = section;
+			this.value = "";
+			this.note = "";
+			this.state = CellText.EXACT;
+			this.small = false;
+		}
+
+		static SheetLine section( String text ){
+			return new SheetLine(text);
+		}
+	}
+
+	//lays the sheet out in two columns (labels grey on the left, values on the right) and returns its height
+	private static float sheet( Component into, int width, List<SheetLine> lines ){
+		float labelW = (width - 3 * MARGIN) * 0.42f, valueW = (width - 3 * MARGIN) - labelW;
+		float y = MARGIN;
+		for (SheetLine l : lines){
+			if (l.section){
+				y += 3;
+				RenderedTextBlock t = PixelScene.renderTextBlock(l.label.toUpperCase(), UimsdStyle.SIZE_HELP);
+				t.hardlight(UimsdStyle.HEADING);
+				t.maxWidth(width - 2 * MARGIN);
+				t.setPos(MARGIN, y);
+				into.add(t);
+				y = t.bottom() + 1;
+				ColorBlock rule = new ColorBlock(width - 2 * MARGIN, 1, UimsdStyle.RULE);
+				rule.x = MARGIN;
+				rule.y = y;
+				into.add(rule);
+				y += 3;
+				continue;
+			}
+			RenderedTextBlock label = PixelScene.renderTextBlock(l.label, UimsdStyle.SIZE_HELP);
+			label.hardlight(UimsdStyle.MUTED);
+			label.maxWidth((int) labelW);
+			label.setPos(MARGIN, y);
+			into.add(label);
+			int color = UimsdTable.color(l.state);
+			RenderedTextBlock value = PixelScene.renderTextBlock(l.value, UimsdStyle.SIZE_HELP);
+			value.hardlight(l.small ? UimsdTable.dim(color) : color);
+			value.maxWidth((int) valueW);
+			value.setPos(2 * MARGIN + labelW, y);
+			into.add(value);
+			float h = Math.max(label.height(), value.height());
+			if (!l.note.isEmpty()){
+				RenderedTextBlock note = PixelScene.renderTextBlock(l.note, UimsdStyle.SIZE_META);
+				note.hardlight(UimsdStyle.FAINT);
+				note.maxWidth((int) valueW);
+				note.setPos(2 * MARGIN + labelW, y + value.height() + 1);
+				into.add(note);
+				h = Math.max(label.height(), value.height() + 1 + note.height());
+			}
+			y += h + 3;
+		}
+		return y + 2;
 	}
 
 	private static final class Action {

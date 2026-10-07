@@ -47,11 +47,7 @@ public class WndUimsdTopic extends Window {
 		float pos = tt.bottom() + 2 * MARGIN;
 
 		Component content = new Component();
-		RenderedTextBlock body = PixelScene.renderTextBlock(topic.text, 6);
-		body.maxWidth(width - 2 * MARGIN - 2);
-		body.setPos(MARGIN, 0);
-		content.add(body);
-		content.setSize(width, body.bottom() + 2);
+		content.setSize(width, UimsdText.layout(content, width, topic.text));
 		ScrollPane pane = new ScrollPane(content);
 		float h = WindowGeometry.paneHeight(content.height(), WindowGeometry.maxPane(PixelScene.uiCamera.height, pos, BUTTON_H + 2 * MARGIN));
 		//size the window first: it moves the window's camera, and the pane works out its screen position when it is placed

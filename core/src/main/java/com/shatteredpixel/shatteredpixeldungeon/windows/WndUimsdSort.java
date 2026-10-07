@@ -35,33 +35,48 @@ public final class WndUimsdSort {
 
 	private WndUimsdSort(){}
 
-	private static final String[] WAYS = { "lowest first", "highest first" };
-
 	private static String labelOf( ResultTable t, String id ){
 		for (ResultTable.Header h : t.headers) if (h.id.equals(id)) return h.label;
 		return id;
+	}
+
+	private static String way( boolean descending ){
+		return descending ? "highest first" : "lowest first";
 	}
 
 	public static void show( final UimsdModel m ){
 		final ResultTable table = m.table();
 		if (table == null) return;
 		final List<Sort> sorts = new ArrayList<>(m.query().sorts);
-		final List<String> labels = new ArrayList<>();
-		for (int i = 0; i < sorts.size(); i++){
-			labels.add((i + 1) + ". " + labelOf(table, sorts.get(i).column) + ", " + WAYS[sorts.get(i).descending ? 1 : 0]);
+		List<WndUimsdList.Entry> entries = new ArrayList<>();
+		final int[] keyAt = new int[8];
+		int n = 0;
+		if (sorts.isEmpty()){
+			entries.add(WndUimsdList.Entry.note("The table is not sorted: rows come in their natural order."));
+		} else {
+			entries.add(WndUimsdList.Entry.heading("Sorted by"));
+			for (int i = 0; i < sorts.size(); i++){
+				entries.add(WndUimsdList.Entry.item((i + 1) + ". " + labelOf(table, sorts.get(i).column) + ", " + way(sorts.get(i).descending),
+						i == 0 ? "tap to reverse or remove it" : "used when the keys above are equal; tap to reverse or remove it"));
+				keyAt[n++] = i;
+			}
 		}
-		final int addIndex = sorts.size() < 3 ? labels.size() : -1;
-		if (addIndex >= 0) labels.add("Add a sort key");
-		final int clearIndex = sorts.isEmpty() ? -1 : labels.size();
-		if (clearIndex >= 0) labels.add("Clear sorting");
-		ShatteredPixelDungeon.scene().addToFront(new WndUimsdList("Sort", "Unknown values always come last.", labels, null, new WndUimsdList.Picker(){
+		entries.add(WndUimsdList.Entry.heading("Change"));
+		final int addIndex = sorts.size() < 3 ? n++ : -1;
+		if (addIndex >= 0) entries.add(WndUimsdList.Entry.item("Add a sort key", "sort by another column as well (up to three)"));
+		final int clearIndex = sorts.isEmpty() ? -1 : n++;
+		if (clearIndex >= 0) entries.add(WndUimsdList.Entry.item("Clear sorting", "go back to the natural order"));
+		final int keys = sorts.size();
+		ShatteredPixelDungeon.scene().addToFront(WndUimsdList.menu("Sort",
+				"Tap a column heading in the table to sort by it quickly. Rows where the value is unknown always come last.", entries,
+				new WndUimsdList.Picker(){
 			@Override
 			public void onPick( int i, boolean checked ){
 				if (i == clearIndex){
 					m.setSorts(new ArrayList<Sort>());
 				} else if (i == addIndex){
 					pickColumn(m, table, sorts);
-				} else {
+				} else if (i < keys){
 					editKey(m, sorts, i);
 				}
 			}
@@ -69,10 +84,10 @@ public final class WndUimsdSort {
 	}
 
 	private static void editKey( final UimsdModel m, final List<Sort> sorts, final int index ){
-		List<String> options = new ArrayList<>();
-		options.add("Reverse it");
-		options.add("Remove it");
-		ShatteredPixelDungeon.scene().addToFront(new WndUimsdList("Sort key " + (index + 1), "", options, null, new WndUimsdList.Picker(){
+		List<WndUimsdList.Entry> options = new ArrayList<>();
+		options.add(WndUimsdList.Entry.item("Reverse it", "now " + way(!sorts.get(index).descending)));
+		options.add(WndUimsdList.Entry.item("Remove it", "stop sorting by this column"));
+		ShatteredPixelDungeon.scene().addToFront(WndUimsdList.menu("Sort key " + (index + 1), "", options, new WndUimsdList.Picker(){
 			@Override
 			public void onPick( int i, boolean checked ){
 				List<Sort> next = new ArrayList<>(sorts);
@@ -85,23 +100,23 @@ public final class WndUimsdSort {
 
 	private static void pickColumn( final UimsdModel m, final ResultTable table, final List<Sort> sorts ){
 		final List<ResultTable.Header> options = new ArrayList<>();
-		List<String> labels = new ArrayList<>();
+		List<WndUimsdList.Entry> entries = new ArrayList<>();
 		for (ResultTable.Header h : table.headers){
 			boolean used = false;
 			for (Sort s : sorts) if (s.column.equals(h.id)) used = true;
 			if (h.sortable && !used){
 				options.add(h);
-				labels.add(h.label);
+				entries.add(WndUimsdList.Entry.item(h.label));
 			}
 		}
-		ShatteredPixelDungeon.scene().addToFront(new WndUimsdList("Sort by", "", labels, null, new WndUimsdList.Picker(){
+		ShatteredPixelDungeon.scene().addToFront(WndUimsdList.menu("Sort by", "Only columns shown in the table can be sorted.", entries, new WndUimsdList.Picker(){
 			@Override
 			public void onPick( int i, boolean checked ){
 				final String id = options.get(i).id;
-				List<String> ways = new ArrayList<>();
-				ways.add(options.get(i).label + ", lowest first");
-				ways.add(options.get(i).label + ", highest first");
-				ShatteredPixelDungeon.scene().addToFront(new WndUimsdList("Sort order", "", ways, null, new WndUimsdList.Picker(){
+				List<WndUimsdList.Entry> ways = new ArrayList<>();
+				ways.add(WndUimsdList.Entry.item("Lowest first", "smallest numbers, earliest dates, A to Z"));
+				ways.add(WndUimsdList.Entry.item("Highest first", "biggest numbers, latest dates, Z to A"));
+				ShatteredPixelDungeon.scene().addToFront(WndUimsdList.menu("Sort " + options.get(i).label, "", ways, new WndUimsdList.Picker(){
 					@Override
 					public void onPick( int w, boolean c ){
 						List<Sort> next = new ArrayList<>(sorts);

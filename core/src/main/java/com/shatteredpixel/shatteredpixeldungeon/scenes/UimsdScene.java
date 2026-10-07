@@ -600,12 +600,24 @@ public class UimsdScene extends PixelScene {
 
 	private void pickView(){
 		final List<ViewDef> views = model.catalog() == null ? new ArrayList<ViewDef>() : model.catalog().views();
-		List<String> labels = new ArrayList<>();
-		for (ViewDef v : views) labels.add(v.title + " - " + v.description);
-		ShatteredPixelDungeon.scene().addToFront(new WndUimsdList("Views", "", labels, null, new WndUimsdList.Picker(){
+		//grouped by section, in the order the sections first appear; the table you are looking at is marked
+		List<String> sections = new ArrayList<>();
+		for (ViewDef v : views) if (!sections.contains(v.group)) sections.add(v.group);
+		final List<ViewDef> order = new ArrayList<>();
+		List<WndUimsdList.Entry> entries = new ArrayList<>();
+		for (String section : sections){
+			entries.add(WndUimsdList.Entry.heading(section.isEmpty() ? "More tables" : section));
+			for (ViewDef v : views){
+				if (!v.group.equals(section)) continue;
+				order.add(v);
+				entries.add(WndUimsdList.Entry.item(v.title, v.description).current(v.id.equals(model.viewId())));
+			}
+		}
+		ShatteredPixelDungeon.scene().addToFront(WndUimsdList.menu("Tables",
+				"Each table looks at your history in a different way. Tap one to open it.", entries, new WndUimsdList.Picker(){
 			@Override
 			public void onPick( int i, boolean checked ){
-				model.selectView(views.get(i).id);
+				model.selectView(order.get(i).id);
 			}
 		}));
 	}

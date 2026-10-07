@@ -38,18 +38,14 @@ public class WndUimsdText extends Window {
 		super();
 		int width = WndUimsdList.windowWidth();
 		RenderedTextBlock tt = PixelScene.renderTextBlock(title, 9);
-		tt.hardlight(TITLE_COLOR);
+		tt.hardlight(com.shatteredpixel.shatteredpixeldungeon.ui.UimsdStyle.TITLE);
 		tt.maxWidth(width - 2 * MARGIN);
 		tt.setPos(MARGIN, MARGIN);
 		add(tt);
 		float pos = tt.bottom() + 2 * MARGIN;
 
 		Component content = new Component();
-		RenderedTextBlock body = PixelScene.renderTextBlock(text, 6);
-		body.maxWidth(width - 2 * MARGIN - 2);
-		body.setPos(MARGIN, 0);
-		content.add(body);
-		content.setSize(width, body.bottom() + 2);
+		content.setSize(width, UimsdText.layout(content, width, text));
 		ScrollPane pane = new ScrollPane(content);
 		float h = WindowGeometry.paneHeight(content.height(), WindowGeometry.maxPane(PixelScene.uiCamera.height, pos, 0));
 		//size the window first: it moves the window's camera, and the pane works out its screen position when it is placed

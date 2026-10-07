@@ -34,12 +34,19 @@ public final class ViewDef {
 	//An aggregate-first view starts grouped (one row per kind of thing). This is the query for its individual rows: tapping a group
 	//opens it with the group's key values as filters. Null for a view whose rows are already individual.
 	private Query instances;
+	//the section of the view picker it is listed under ("" = Other)
+	public String group = "";
 
 	public ViewDef( String id, String title, String description, Query initial ){
 		this.id = id;
 		this.title = title;
 		this.description = description;
 		this.initial = initial;
+	}
+
+	public ViewDef group( String g ){
+		this.group = g;
+		return this;
 	}
 
 	public ViewDef withInstances( Query q ){

@@ -148,11 +148,11 @@ public final class SeedFloors {
 		Scope all = Scope.DEFAULT.withRules(Scope.Rules.ALL, "");
 		List<ViewDef> v = new ArrayList<>();
 		v.add(new ViewDef(ITEMS, "Seed floors: items", "Every item on every floor of the seed. Recorded floors are the run's own log, the rest are canonical.",
-				Query.of(ITEMS).withScope(all).withSorts(Arrays.asList(new Sort("sf.floor", false)))));
+				Query.of(ITEMS).withScope(all).withSorts(Arrays.asList(new Sort("sf.floor", false)))).group("Seed floors (canonical, not recorded history)"));
 		v.add(new ViewDef(MOBS, "Seed floors: creatures", "Creatures on the canonical floors.",
-				Query.of(MOBS).withScope(all).withSorts(Arrays.asList(new Sort("sm.floor", false)))));
+				Query.of(MOBS).withScope(all).withSorts(Arrays.asList(new Sort("sm.floor", false)))).group("Seed floors (canonical, not recorded history)"));
 		v.add(new ViewDef(COMPARE, "Seed floors: compare", "Recorded against canonical, floor by floor.",
-				Query.of(COMPARE).withScope(all).withSorts(Arrays.asList(new Sort("sc.floor", false)))));
+				Query.of(COMPARE).withScope(all).withSorts(Arrays.asList(new Sort("sc.floor", false)))).group("Seed floors (canonical, not recorded history)"));
 		return v;
 	}
 

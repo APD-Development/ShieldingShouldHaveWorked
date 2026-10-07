@@ -24,13 +24,25 @@ package com.shatteredpixel.shatteredpixeldungeon.apd.query;
 
 //What a filter does with its column. Which operators a column offers depends on its type (see ops()).
 public enum Op {
-	EQ("is"), NE("is not"), LT("<"), LE("<="), GT(">"), GE(">="), BETWEEN("between"), CONTAINS("contains"), IN("is one of"),
-	KNOWN("is known"), UNKNOWN("is unknown");
+	EQ("is", "exactly this"),
+	NE("is not", "anything except this"),
+	LT("is less than", "a smaller number"),
+	LE("is at most", "this or smaller"),
+	GT("is more than", "a bigger number"),
+	GE("is at least", "this or bigger"),
+	BETWEEN("is between", "from one value up to another, both included"),
+	CONTAINS("contains", "has this text somewhere in it"),
+	IN("is one of", "any of several values"),
+	KNOWN("is known", "only entries where this was recorded"),
+	UNKNOWN("is unknown", "only entries where this was never recorded");
 
+	//how a filter reads in a sentence ("Score is at least 100"), and what it does in a few words (for the picker)
 	public final String word;
+	public final String hint;
 
-	Op( String word ){
+	Op( String word, String hint ){
 		this.word = word;
+		this.hint = hint;
 	}
 
 	//the operators that make sense for a column type, in the order a picker should list them

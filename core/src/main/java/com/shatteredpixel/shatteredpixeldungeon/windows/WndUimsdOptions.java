@@ -33,21 +33,20 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.query.QueryResult;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.Scope;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdModel;
 
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.Entry;
+
 import java.util.ArrayList;
 import java.util.List;
 
-//APD: the options of a UIMSD screen: hidden information, which rulesets and which runs are in scope, the minimum sample size,
-//grouping, and the explanations of coverage and markers. Tapping an option applies it and reopens this list with the new state.
+//APD: the options of a UIMSD screen, in sections: what you can see (hidden information), which runs count (rules, unfinished runs, imported records), how the
+//table is built (grouping, smallest group), and how to read it (what is known, what the marks mean), plus sharing. A switch shows whether it is on; the line under
+//it says what it does and how many entries it is leaving out right now. Tapping an option applies it and reopens this list with the new state.
 public final class WndUimsdOptions {
 
 	private WndUimsdOptions(){}
 
-	private static String box( boolean on, String text ){
-		return (on ? "[x] " : "[ ] ") + text;
-	}
-
-	private static String count( int n ){
-		return n > 0 ? " (" + n + " left out)" : "";
+	private static String left( int n ){
+		return n > 0 ? "  Leaving out " + n + " now." : "";
 	}
 
 	public static void show( final UimsdModel m ){
@@ -55,68 +54,80 @@ public final class WndUimsdOptions {
 		if (r == null) return;
 		final Query q = m.query();
 		final Scope s = q.scope;
-		final List<String> labels = new ArrayList<>();
+		final List<Entry> entries = new ArrayList<>();
 		final List<Runnable> actions = new ArrayList<>();
 
-		labels.add(box(q.showInternal, "Show hidden information (finished runs only)"));
+		entries.add(Entry.heading("What you can see"));
+		entries.add(Entry.item("Show hidden information", "True identities of items and similar. Only for runs that are finished, never for a run still going.").checked(q.showInternal));
 		actions.add(new Runnable(){ public void run(){ m.setShowInternal(!q.showInternal); show(m); } });
 
-		String rules = s.rules == Scope.Rules.ALL ? "all rulesets" : s.rules == Scope.Rules.SPECIFIC ? s.ruleset : "your current ruleset";
-		labels.add("Rules in scope: " + rules + count(r.stats.otherRulesets));
+		entries.add(Entry.heading("Which runs count"));
+		String rules = s.rules == Scope.Rules.ALL ? "All rules (mixed)" : s.rules == Scope.Rules.SPECIFIC ? "One set of rules" : "Your current rules";
+		entries.add(Entry.item("Rules: " + rules,
+				"Rules = difficulty, challenges and exotic-item setting. Runs played under different rules are only counted together if you choose all rules." + left(r.stats.otherRulesets)));
 		actions.add(new Runnable(){ public void run(){ pickRuleset(m); } });
-
-		labels.add(box(s.includeUnfinished, "Include unfinished runs") + count(r.stats.unfinished));
+		entries.add(Entry.item("Include runs still going", "Only what you could see during play is used for them; their hidden information never is." + left(r.stats.unfinished))
+				.checked(s.includeUnfinished));
 		actions.add(new Runnable(){ public void run(){ m.setScope(s.withUnfinished(!s.includeUnfinished)); show(m); } });
-		labels.add(box(s.includeUnknownRuleset, "Include rows with an unknown ruleset") + count(r.stats.unknownRuleset));
+		entries.add(Entry.item("Include runs with unknown rules", "Older runs that never recorded their rules." + left(r.stats.unknownRuleset)).checked(s.includeUnknownRuleset));
 		actions.add(new Runnable(){ public void run(){ m.setScope(s.withUnknownRuleset(!s.includeUnknownRuleset)); show(m); } });
-		labels.add(box(s.includeMixedRuleset, "Include runs whose rules changed mid-run") + count(r.stats.mixedRuleset));
+		entries.add(Entry.item("Include runs whose rules changed", "Runs where a setting was changed while playing." + left(r.stats.mixedRuleset)).checked(s.includeMixedRuleset));
 		actions.add(new Runnable(){ public void run(){ m.setScope(s.withMixedRuleset(!s.includeMixedRuleset)); show(m); } });
-		labels.add(box(s.includeDuplicates, "Include imported records that are also recorded runs") + count(r.stats.duplicates));
+		entries.add(Entry.item("Include repeated ranking records", "Imported ranking records of a run that is also recorded; normally counted once." + left(r.stats.duplicates)).checked(s.includeDuplicates));
 		actions.add(new Runnable(){ public void run(){ m.setScope(s.withDuplicates(!s.includeDuplicates)); show(m); } });
 
-		labels.add("Smallest group shown: " + (q.minSample <= 1 ? "any" : q.minSample + " rows"));
-		actions.add(new Runnable(){ public void run(){ pickMinSample(m); } });
-		labels.add(q.group == null ? "Group by..." : "Grouping: change or remove...");
+		entries.add(Entry.heading("How the table is built"));
+		entries.add(Entry.item(q.group == null ? "Group by..." : "Grouping: change or remove...",
+				"Count entries with the same value together, like runs per class."));
 		actions.add(new Runnable(){ public void run(){ pickGroup(m); } });
-		labels.add("How much is known, per column");
+		entries.add(Entry.item("Smallest group shown: " + (q.minSample <= 1 ? "any size" : q.minSample + " or more"),
+				"Small groups give shaky averages, so you can hide them. They are counted, not dropped."));
+		actions.add(new Runnable(){ public void run(){ pickMinSample(m); } });
+
+		entries.add(Entry.heading("Understanding this table"));
+		entries.add(Entry.item("How much is known, per column", "How many values were recorded exactly, only partly, or not at all."));
 		actions.add(new Runnable(){ public void run(){ coverage(m); } });
-		labels.add("What the markers mean");
+		entries.add(Entry.item("What the marks mean", "?  >=  ~  and hidden, and the colours."));
 		actions.add(new Runnable(){ public void run(){ legend(); } });
-		labels.add("Share a report of this view...");
+
+		entries.add(Entry.heading("Share and reset"));
+		entries.add(Entry.item("Share a report of this table...", "As text, or saved as a file."));
 		actions.add(new Runnable(){ public void run(){ WndUimsdReport.ofView(m); } });
 		if (WndUimsdReport.isSeedView(m)){
-			labels.add("Share the seed floors report...");
+			entries.add(Entry.item("Share the seed floors report...", "Recorded and canonical floors, kept apart."));
 			actions.add(new Runnable(){ public void run(){ WndUimsdReport.ofSeedFloors(m, WndUimsdReport.seedRunId(m)); } });
 		}
-		labels.add("Reset this view");
+		entries.add(Entry.item("Reset this table", "Back to how it opened: no filters, sorting or grouping you added."));
 		actions.add(new Runnable(){ public void run(){ m.resetView(); } });
 
-		ShatteredPixelDungeon.scene().addToFront(new WndUimsdList("Options",
-				"Hidden information is shown only for runs that are finished, never for a run still going.", labels, null,
-				new WndUimsdList.Picker(){
-					@Override
-					public void onPick( int i, boolean checked ){
-						actions.get(i).run();
-					}
-				}));
+		ShatteredPixelDungeon.scene().addToFront(WndUimsdList.menu("Options", "", entries, new WndUimsdList.Picker(){
+			@Override
+			public void onPick( int i, boolean checked ){
+				actions.get(i).run();
+			}
+		}));
 	}
 
 	private static void pickRuleset( final UimsdModel m ){
 		final Catalog cat = m.catalog();
+		final Scope now = m.query().scope;
 		final List<String> ids = new ArrayList<>();
-		final List<String> labels = new ArrayList<>();
+		final List<Entry> entries = new ArrayList<>();
 		ids.add("*current");
-		labels.add("Your current ruleset");
+		entries.add(Entry.item("Your current rules", "The rules a new run would be played with now, or the run you are in.").current(now.rules == Scope.Rules.CURRENT));
 		ids.add("*all");
-		labels.add("All rulesets");
-		if (cat != null){
+		entries.add(Entry.item("All rules, mixed together", "Every run, whatever it was played with. The numbers then mix different rules and are not directly comparable.")
+				.current(now.rules == Scope.Rules.ALL));
+		if (cat != null && !cat.rulesets.isEmpty()){
+			entries.add(Entry.heading("Or one set of rules"));
 			for (Catalog.RulesetInfo ri : cat.rulesets){
 				ids.add(ri.id);
-				labels.add(ri.label + "  (" + ri.runs + (ri.runs == 1 ? " run)" : " runs)"));
+				entries.add(Entry.item(ri.label, ri.runs + (ri.runs == 1 ? " run" : " runs")).current(now.rules == Scope.Rules.SPECIFIC && ri.id.equals(now.ruleset)));
 			}
 		}
-		ShatteredPixelDungeon.scene().addToFront(new WndUimsdList("Rules in scope",
-				"Runs played under different rules are never mixed unless you choose all rulesets.", labels, null, new WndUimsdList.Picker(){
+		ShatteredPixelDungeon.scene().addToFront(WndUimsdList.menu("Rules",
+				"Rules are the difficulty, challenges and exotic-item setting a run was played with. Runs with different rules are kept apart so they are never compared by accident.",
+				entries, new WndUimsdList.Picker(){
 			@Override
 			public void onPick( int i, boolean checked ){
 				Scope s = m.query().scope;
@@ -131,10 +142,13 @@ public final class WndUimsdOptions {
 
 	private static void pickMinSample( final UimsdModel m ){
 		final int[] sizes = { 0, 3, 5, 10, 20, 50 };
-		List<String> labels = new ArrayList<>();
-		for (int n : sizes) labels.add(n == 0 ? "Show every group" : n + " rows or more");
-		ShatteredPixelDungeon.scene().addToFront(new WndUimsdList("Smallest group shown",
-				"Groups with fewer rows are listed as hidden, not dropped.", labels, null, new WndUimsdList.Picker(){
+		List<Entry> entries = new ArrayList<>();
+		int now = m.query().minSample;
+		for (int n : sizes){
+			entries.add(Entry.item(n == 0 ? "Show every group" : n + " or more", n == 0 ? "even a group of one" : "hide groups with fewer than " + n).current(n == now || (n == 0 && now <= 1)));
+		}
+		ShatteredPixelDungeon.scene().addToFront(WndUimsdList.menu("Smallest group shown",
+				"A group is a set of entries with the same value. Hidden groups are counted in the notes, not lost.", entries, new WndUimsdList.Picker(){
 			@Override
 			public void onPick( int i, boolean checked ){
 				m.setMinSample(sizes[i]);
@@ -145,13 +159,21 @@ public final class WndUimsdOptions {
 
 	private static void pickGroup( final UimsdModel m ){
 		final List<ColumnDef> cols = new ArrayList<>();
-		List<String> labels = new ArrayList<>();
-		labels.add("No grouping");
+		List<Entry> entries = new ArrayList<>();
+		entries.add(Entry.item("No grouping", "show every entry on its own line").current(m.query().group == null));
+		String last = null;
 		for (ColumnDef c : m.offeredColumns()){
+			String g = c.group.isEmpty() ? "Details" : c.group.equals("Hidden") ? "Hidden information (finished runs only)" : c.group;
+			if (!g.equals(last)){
+				entries.add(Entry.heading(g));
+				last = g;
+			}
 			cols.add(c);
-			labels.add("Group by " + c.label);
+			boolean on = m.query().group != null && m.query().group.keys.contains(c.id);
+			entries.add(Entry.item(c.label, "").current(on));
 		}
-		ShatteredPixelDungeon.scene().addToFront(new WndUimsdList("Group by", "Rows with the same value are counted together.", labels, null,
+		ShatteredPixelDungeon.scene().addToFront(WndUimsdList.menu("Group by",
+				"Entries with the same value are counted together, with their totals and averages.", entries,
 				new WndUimsdList.Picker(){
 					@Override
 					public void onPick( int i, boolean checked ){
@@ -183,11 +205,11 @@ public final class WndUimsdOptions {
 		for (ColumnDef c : m.offeredColumns()) ids.add(c.id);
 		QueryResult r = QueryEngine.run(m.dataset(), m.query().withColumns(ids).withGroup(null), m.currentRuleset());
 		StringBuilder b = new StringBuilder();
-		b.append(r.stats.matching).append(" rows in the current result.\n\n");
+		b.append("This table has ").append(r.stats.matching).append(r.stats.matching == 1 ? " entry" : " entries").append(" at the moment. For each column, how many of them have a recorded value:\n\n");
 		for (QueryResult.ColumnCoverage c : r.coverage){
-			b.append(c.column.label).append(": ").append(c.known).append(" of ").append(c.total).append(" known");
-			if (c.lowerBound > 0) b.append(", ").append(c.lowerBound).append(" only a lower bound");
-			if (c.inferred > 0) b.append(", ").append(c.inferred).append(" inferred");
+			b.append(c.column.label).append(": ").append(c.known).append(" of ").append(c.total).append(" recorded");
+			if (c.lowerBound > 0) b.append(", ").append(c.lowerBound).append(" only partly (at least)");
+			if (c.inferred > 0) b.append(", ").append(c.inferred).append(" worked out, not recorded");
 			if (c.hidden > 0) b.append(", ").append(c.hidden).append(" hidden");
 			b.append('\n');
 		}
@@ -195,13 +217,15 @@ public final class WndUimsdOptions {
 	}
 
 	private static void legend(){
-		ShatteredPixelDungeon.scene().addToFront(new WndUimsdText("What the markers mean",
-				"?  unknown: it was never recorded. This is not the same as zero.\n"
-						+ "hidden  hidden information that cannot be shown (the run is not finished, or hidden information is off).\n"
-						+ ">=12  at least 12: the log has gaps, or an older recording version could not count everything.\n"
-						+ "~6  inferred, not recorded exactly (healing, for example).\n"
-						+ "Blue values come from an imported ranking record.\n\n"
-						+ "Totals and averages use only the values that are known, and say how many that was. "
-						+ "A total that includes a lower bound is itself a lower bound."));
+		ShatteredPixelDungeon.scene().addToFront(new WndUimsdText("What the marks mean",
+				"# How sure a value is\n"
+						+ "[exact] 12   exact: recorded exactly.\n"
+						+ "[lower] >=12   at least 12: the real number may be higher, because the log has gaps or an older recording could not count everything.\n"
+						+ "[inferred] ~6   worked out, not recorded exactly: for example healing taken from changes in your health between turns, or a floor rebuilt from the seed.\n"
+						+ "[unknown] ?   unknown: it was never recorded. This is not the same as zero.\n"
+						+ "[hidden] hidden   not available: the run is not finished yet, or hidden information is off.\n"
+						+ "[legacy] Blue   comes from an imported ranking record.\n"
+						+ "# Totals and averages\n"
+						+ "They only use values that are known, and say how many that was. A total that includes an \"at least\" value is itself an \"at least\"."));
 	}
 }

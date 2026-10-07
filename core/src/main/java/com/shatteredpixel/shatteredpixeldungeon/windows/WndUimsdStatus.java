@@ -36,14 +36,27 @@ public final class WndUimsdStatus {
 
 	public static void show( final UimsdModel m ){
 		final List<StatusText.Line> lines = m.status();
-		List<String> labels = new ArrayList<>();
-		for (StatusText.Line l : lines) labels.add((l.action.isEmpty() ? "" : "> ") + l.text);
-		ShatteredPixelDungeon.scene().addToFront(new WndUimsdList("What you are looking at",
-				"Lines starting with > can be tapped to include what was left out.", labels, null, new WndUimsdList.Picker(){
+		List<WndUimsdList.Entry> entries = new ArrayList<>();
+		final List<String> actions = new ArrayList<>();
+		boolean anyAction = false;
+		for (StatusText.Line l : lines) if (!l.action.isEmpty()) anyAction = true;
+		entries.add(WndUimsdList.Entry.heading("This table"));
+		for (StatusText.Line l : lines){
+			if (l.action.isEmpty()) entries.add(l.kind == StatusText.WARN ? WndUimsdList.Entry.warning(l.text) : WndUimsdList.Entry.note(l.text));
+		}
+		if (anyAction){
+			entries.add(WndUimsdList.Entry.heading("Left out (tap to include)"));
+			for (StatusText.Line l : lines){
+				if (l.action.isEmpty()) continue;
+				entries.add(WndUimsdList.Entry.item(l.text));
+				actions.add(l.action);
+			}
+		}
+		ShatteredPixelDungeon.scene().addToFront(WndUimsdList.menu("Notes",
+				"What this table is showing, and what it is leaving out.", entries, new WndUimsdList.Picker(){
 			@Override
 			public void onPick( int i, boolean checked ){
-				String a = lines.get(i).action;
-				if (!a.isEmpty()) m.applyAction(a);
+				if (i < actions.size()) m.applyAction(actions.get(i));
 			}
 		}));
 	}
