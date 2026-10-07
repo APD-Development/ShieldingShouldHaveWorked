@@ -60,6 +60,10 @@ Measured in Phase 9 (for reference): desktop 50,000-row scan 50 ms; emulator dem
 cache reload 22 / 61 ms, slowest view 11 / 54 ms; exact healing 32 B per heal (inferred was 18 B), ~70 KiB per 20k-turn run.
 No optimisation was warranted beyond slimming HEAL_DETAIL (19 -> 14 B).
 
+## Future-floor feasibility (study done, not implemented)
+docs/APD-FUTURE-FLOORS-FEASIBILITY.md: floors are not f(seed,depth); exact only as in-order replay 1..N under a fixed reference context
+(harness proves it). Needs replay-only init + statics snapshot/restore; finished runs only. Awaiting user decisions listed there.
+
 ## Working rules the user set (usage efficiency)
 Minimal narration; batch related work; do not poll CI repeatedly (estimate the finish, check once around then, do independent approved
 work meanwhile); continue autonomously inside approved scope and stop only for genuine product/design decisions, destructive actions,
