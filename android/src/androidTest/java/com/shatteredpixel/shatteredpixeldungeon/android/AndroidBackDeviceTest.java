@@ -2,6 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.android;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import android.app.Instrumentation;
@@ -175,10 +176,16 @@ public class AndroidBackDeviceTest {
 			assertTrue(Game.scene() instanceof UimsdScene);
 			Log.w(TAG, "Back walked back through the question builder");
 
-			pressBack();
-			assertTrue("Back ends the tour first", Game.scene() instanceof UimsdScene);
-			waitUntil("the tour to end", new java.util.concurrent.Callable<Boolean>(){
-				public Boolean call() throws Exception { return uimsd("tutorial") == null; } }, 10000);
+			//a dialog the tour has open closes first (newest first); the tour itself ends on the Back after those, and the screen stays
+			int presses = 0, open = windows();
+			Log.w(TAG, "before ending the tour: " + open + " window(s), tutorial=" + uimsd("tutorial") + ", preparing=" + uimsd("tutorialPreparing"));
+			while (uimsd("tutorial") != null && presses <= open){
+				pressBack();
+				presses++;
+				assertTrue("Back ends the tour first (press " + presses + ")", Game.scene() instanceof UimsdScene);
+			}
+			Log.w(TAG, "the tour ended after " + presses + " Back press(es); windows now " + windows());
+			assertNull("the tour is over", uimsd("tutorial"));
 			pressBack();
 			waitUntil("the title again", new java.util.concurrent.Callable<Boolean>(){ public Boolean call(){ return Game.scene() instanceof TitleScene; } }, 15000);
 			Log.w(TAG, "Back left the tour, then UIMSD, one step each");
