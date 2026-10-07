@@ -41,10 +41,19 @@ jobs:
           arch: x86_64
           target: default
           disable-animations: true
-          script: ./gradlew :android:connectedDebugAndroidTest
+          script: bash .github/ci/run-device-tests.sh
       - name: Upload test report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: android-test-report-api${{ matrix.api-level }}
           path: android/build/reports/androidTests/
+      - name: Upload logcat
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-logcat-api${{ matrix.api-level }}
+          path: |
+            logcat.txt
+            logcat-final.txt
+          if-no-files-found: warn

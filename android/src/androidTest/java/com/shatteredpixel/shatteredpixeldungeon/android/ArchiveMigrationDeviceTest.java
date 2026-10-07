@@ -10,6 +10,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -96,6 +97,36 @@ public class ArchiveMigrationDeviceTest {
 	private File chosen;
 	private boolean cancel;
 
+
+	//---- diagnostics: every step is written to logcat; a watchdog dumps every thread if a test overruns ----
+	private static final String TAG = "APDMIG";
+	private static final long T0 = System.currentTimeMillis();
+	private volatile boolean testDone;
+
+	private static void step( String what ){
+		Log.w(TAG, "[" + (System.currentTimeMillis() - T0) + " ms] " + what);
+	}
+
+	private void startWatchdog(){
+		testDone = false;
+		Thread w = new Thread(new Runnable() {
+			@Override
+			public void run(){
+				try { Thread.sleep(150000); } catch (InterruptedException e){ return; }
+				if (testDone) return;
+				StringBuilder b = new StringBuilder("WATCHDOG: the test has run for 150 s. All threads:");
+				for (Map.Entry<Thread, StackTraceElement[]> e : Thread.getAllStackTraces().entrySet()){
+					b.append("\n== ").append(e.getKey().getName()).append(" (").append(e.getKey().getState()).append(")");
+					StackTraceElement[] st = e.getValue();
+					for (int i = 0; i < st.length && i < 14; i++) b.append("\n     at ").append(st[i]);
+				}
+				Log.e(TAG, b.toString());
+			}
+		}, "apdmig-watchdog");
+		w.setDaemon(true);
+		w.start();
+	}
+
 	@Before
 	public void setUp() throws Exception {
 		if (com.watabou.noosa.Game.version == null) com.watabou.noosa.Game.version = "4.0.8-apd-test";
@@ -107,10 +138,14 @@ public class ArchiveMigrationDeviceTest {
 		other = new File(base, "other/apd");
 		exports = new File(base, "exports");
 		assertTrue(exports.mkdirs());
+		startWatchdog();
+		step("setUp: building the source history");
 		buildHistory(source);
+		step("setUp: history built");
 		ApdFiles.provider = new ApdFiles.Provider() {
 			@Override
 			public void chooseExport( String suggestedName, ApdFiles.ExportTarget target ){
+				step("provider.chooseExport cancel=" + cancel + " chosen=" + chosen);
 				Intent answer = new Intent();
 				if (chosen != null) answer.setData(Uri.fromFile(chosen));
 				AndroidFileProvider.deliverExport(resolver, target, cancel ? Activity.RESULT_CANCELED : Activity.RESULT_OK, answer);
@@ -118,6 +153,7 @@ public class ArchiveMigrationDeviceTest {
 
 			@Override
 			public void chooseImport( ApdFiles.ImportSource src ){
+				step("provider.chooseImport cancel=" + cancel + " chosen=" + chosen);
 				Intent answer = new Intent();
 				if (chosen != null) answer.setData(Uri.fromFile(chosen));
 				AndroidFileProvider.deliverImport(resolver, src, cancel ? Activity.RESULT_CANCELED : Activity.RESULT_OK, answer);
@@ -132,6 +168,8 @@ public class ArchiveMigrationDeviceTest {
 
 	@After
 	public void tearDown(){
+		testDone = true;
+		step("tearDown");
 		ApdFiles.provider = null;
 		ApdRecorder.reset();
 		delete(base);
@@ -273,11 +311,13 @@ public class ArchiveMigrationDeviceTest {
 	}
 
 	private static String await( Action a ) throws Exception {
+		step("await: start");
 		final String[] out = new String[1];
 		final CountDownLatch done = new CountDownLatch(1);
 		a.run(new HistoryTransfer.Listener() {
 			@Override
 			public void finished( String message ){
+				step("listener.finished: " + String.valueOf(message).replace("\n", " / "));
 				out[0] = message;
 				done.countDown();
 			}
@@ -347,10 +387,13 @@ public class ArchiveMigrationDeviceTest {
 	public void aRealisticHistoryMigratesToACleanInstallLosslesslyAndSafely() throws Exception {
 		//a demo history exists next to the real one, and a demo-named log has even strayed into the real runs folder
 		File demoRoot = DemoData.demoRootFor(source);
+		step("migration: generating demo data");
 		DemoGenerator.generate(demoRoot, Ruleset.of(30, 0), System.currentTimeMillis());
+		step("migration: demo data generated");
 		put(new File(source, "runs"), "demo-stray.apdlog", read(new File(source, "runs/fin0.apdlog")));
 		Map<String, byte[]> sourceBefore = files(source);
 
+		step("migration: export");
 		// 2. export through the real path
 		ApdRecorder.configure(source, false);
 		File zip = new File(exports, "history.zip");
@@ -358,6 +401,7 @@ public class ArchiveMigrationDeviceTest {
 		assertTrue(exported, exported.startsWith("Exported 18 run logs and 1 imported-record file"));
 		assertTrue(exported, exported.contains("3 logs belong to runs that are not finished"));
 
+		step("migration: zip checks");
 		// 3. the produced ZIP and manifest
 		byte[] archive = read(zip);
 		Map<String, byte[]> parts = entries(archive);
@@ -380,6 +424,7 @@ public class ArchiveMigrationDeviceTest {
 		Map<String, byte[]> sourceAfter = files(source);
 		for (String k : sourceBefore.keySet()) if (!k.startsWith("derived/") && !k.equals("index.apdi")) assertTrue(k, Arrays.equals(sourceBefore.get(k), sourceAfter.get(k)));
 
+		step("migration: redaction checks");
 		// 8. unfinished runs: redacted in the archive, hidden information nowhere
 		for (int i = 0; i < 3; i++){
 			byte[] open = parts.get("runs/open" + i + ".apdlog");
@@ -390,12 +435,14 @@ public class ArchiveMigrationDeviceTest {
 			assertTrue("the raw log does hold it", contains(read(new File(source, "runs/open" + i + ".apdlog")), SECRET_CLASS));
 		}
 
+		step("migration: import");
 		// 4. import into a clean install
 		ApdRecorder.configure(clean, false);
 		String imported = importNow(zip);
 		assertTrue(imported, imported.startsWith("Imported 19 logs"));
 		assertTrue(imported, imported.contains("3 belong to runs that were not finished"));
 
+		step("migration: lossless checks");
 		// 9. finished runs, the two-segment run, the old run and the imported records are byte for byte the same files
 		Map<String, byte[]> cleanFiles = logsOnly(files(clean));
 		assertEquals(19, cleanFiles.size());
@@ -410,11 +457,13 @@ public class ArchiveMigrationDeviceTest {
 			}
 		}
 
+		step("migration: demo checks");
 		// 10. no demo data reached the clean install
 		assertFalse(cleanFiles.containsKey("runs/demo-stray.apdlog"));
 		for (String k : files(new File(base, "clean")).keySet()) assertFalse(k, k.contains("demo-"));
 		assertFalse(new File(new File(base, "clean"), DemoData.DIR_NAME).exists());
 
+		step("migration: rebuild");
 		// 5. rebuild every derived index and cache from the imported raw history
 		delete(new File(clean, "derived"));
 		new File(clean, "index.apdi").delete();
@@ -424,11 +473,13 @@ public class ArchiveMigrationDeviceTest {
 		Catalog rebuilt = new DatasetStore(clean).load();
 		assertTrue(rebuilt.logsRebuilt > 0);
 
+		step("migration: compare UIMSD");
 		// 6. what UIMSD shows is the same as at the source
 		ApdRecorder.reset();
 		assertEquals(publicDump(source), publicDump(clean));
 		assertFalse("the demo rows are not in the real history", publicDump(clean).contains("demo-"));
 
+		step("migration: import again");
 		// 7. importing the same archive again changes nothing
 		Map<String, byte[]> beforeAgain = logsOnly(files(clean));
 		ApdRecorder.configure(clean, false);
