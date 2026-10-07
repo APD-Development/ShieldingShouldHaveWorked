@@ -39,6 +39,12 @@ public final class WndUimsdGuide {
 		void startTour( int stepIndex );
 	}
 
+	//the Guide stays open under a topic, so Back from a topic returns to the list of topics
+	private static void keepGuide( WndUimsdList w ){
+		w.keepOpen();
+		ShatteredPixelDungeon.scene().addToFront(w);
+	}
+
 	public static void show( final Starter starter ){
 		final List<UimsdGuide.Topic> topics = UimsdGuide.topics();
 		List<WndUimsdList.Entry> entries = new ArrayList<>();
@@ -52,10 +58,11 @@ public final class WndUimsdGuide {
 			}
 			entries.add(WndUimsdList.Entry.item(t.title));
 		}
-		ShatteredPixelDungeon.scene().addToFront(WndUimsdList.menu("Guide", "Read a topic, or have it shown on the real screen.", entries, new WndUimsdList.Picker(){
+		keepGuide(WndUimsdList.menu("Guide", "Read a topic, or have it shown on the real screen.", entries, new WndUimsdList.Picker(){
 			@Override
 			public void onPick( int i, boolean checked ){
 				if (i == 0){
+					WndUimsdList.closeAll();
 					starter.startTour(0);
 					return;
 				}
@@ -64,6 +71,7 @@ public final class WndUimsdGuide {
 				ShatteredPixelDungeon.scene().addToFront(new WndUimsdTopic(topic, step >= 0, new Runnable(){
 					@Override
 					public void run(){
+						WndUimsdList.closeAll();
 						starter.startTour(step);
 					}
 				}));

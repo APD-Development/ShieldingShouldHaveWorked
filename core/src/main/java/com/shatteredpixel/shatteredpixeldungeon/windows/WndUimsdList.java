@@ -308,9 +308,59 @@ public class WndUimsdList extends Window {
 		}
 	}
 
+	// ---- going back through a chain of menus ----
+	//A menu that opens another menu (Add a filter: the column, then the comparison, then the value) stays open underneath, so Back from the second
+	//one returns to the first exactly as it was. When the chain ends in a choice, closeAll() closes every menu of it at once.
+	private static final List<WndUimsdList> CHAIN = new ArrayList<>();
+	private boolean keepOpen;
+
+	public WndUimsdList keepOpen(){
+		keepOpen = true;
+		synchronized (CHAIN){
+			if (!CHAIN.contains(this)) CHAIN.add(this);
+		}
+		return this;
+	}
+
+	//closes every menu that was kept open for a chain
+	public static void closeAll(){
+		List<WndUimsdList> all;
+		synchronized (CHAIN){
+			all = new ArrayList<>(CHAIN);
+			CHAIN.clear();
+		}
+		for (WndUimsdList w : all){
+			try {
+				w.hide();
+			} catch (RuntimeException ignored){
+			}
+		}
+	}
+
+	@Override
+	public void hide(){
+		synchronized (CHAIN){
+			CHAIN.remove(this);
+		}
+		super.hide();
+	}
+
+	@Override
+	public void destroy(){
+		synchronized (CHAIN){
+			CHAIN.remove(this);
+		}
+		super.destroy();
+	}
+
+	//the Done entry of a list of switches. Back closes the list without it.
+	protected void onDone(){
+		hide();
+	}
+
 	private void picked( int entry ){
 		if (entry >= entries.size()){
-			hide();      //Done
+			onDone();      //Done
 			return;
 		}
 		Entry e = entries.get(entry);
@@ -322,7 +372,7 @@ public class WndUimsdList extends Window {
 			backs.get(entry).color(backFor(e));
 			if (picker != null) picker.onPick(item, e.checked);
 		} else {
-			hide();
+			if (!keepOpen) hide();
 			if (picker != null) picker.onPick(item, false);
 		}
 	}

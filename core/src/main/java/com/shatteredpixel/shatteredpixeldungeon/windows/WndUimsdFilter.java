@@ -46,6 +46,8 @@ public final class WndUimsdFilter {
 	private static final int MAX_CHOICES = 60;
 
 	private static void show( com.shatteredpixel.shatteredpixeldungeon.ui.Window w ){
+		//a step stays open under the next, so Back returns to the step before
+		if (w instanceof WndUimsdList) ((WndUimsdList) w).keepOpen();
 		ShatteredPixelDungeon.scene().addToFront(w);
 	}
 
@@ -121,6 +123,7 @@ public final class WndUimsdFilter {
 			@Override
 			public void onPick( int i, boolean checked ){
 				if (i == 1){
+					WndUimsdList.closeAll();
 					m.removeFilter(index);
 				} else {
 					ColumnDef c = m.dataset().def.column(f.column);
@@ -264,8 +267,8 @@ public final class WndUimsdFilter {
 				}
 			}){
 				@Override
-				public void hide(){
-					super.hide();
+				protected void onDone(){
+					hide();
 					if (!picked.isEmpty()) finish(m, index, chosen.filter(picked));
 				}
 			});
@@ -319,6 +322,7 @@ public final class WndUimsdFilter {
 	}
 
 	private static void finish( UimsdModel m, int index, Filter f ){
+		WndUimsdList.closeAll();
 		if (index < 0) m.addFilter(f); else m.replaceFilter(index, f);
 	}
 }

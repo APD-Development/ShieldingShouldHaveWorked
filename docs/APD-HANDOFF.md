@@ -170,6 +170,16 @@ logcat tags APDMIG/APDPERF into the job log and uploads logcat artifacts.
 - **CURRENT PRIORITY ORDER:** (1) Build 69 is the PHONE-CHECK build. (2) Wait for the user's physical Build 69 feedback. (3) Fix what the phone check exposes (including the sorting bug).
   (4) Then the difficulty / run-setup change. (5) Cleric humor and lore are preserved for later implementation. (6) Cleric balance is a separate future source audit and proposal. (7) Jokes never
   interfere with legitimate gameplay, statistics, balance or UIMSD integrity.
+- **ANDROID BACK, APD-WIDE (user requirement; implemented on the claude branch, pending phone check):** Android's Back button/gesture must work wherever there is a meaningful previous
+  screen, menu, popup, dialog, submenu or navigation state: a dialog closes before the screen under it; a menu opened from a menu returns to that menu with its state; inside UIMSD Back walks
+  backward through UIMSD history before leaving it; a tour ends before UIMSD is left; a table opened from a question's answer returns to that answer; outside UIMSD Back behaves naturally; it
+  matches the visible Back/Close action; it never dumps the player out of APD when there is an obvious internal place to go back to. Implementation: one BackGate (SPD-classes) so one press is
+  ONE Back whichever route delivers it (the game's key path or the system back-gesture callback); WndUimsdList menus can stay open under the next one (keepOpen/closeAll) so Back returns to the
+  previous step; Done and Back are different (Back never applies a half-made choice); AndroidBackDeviceTest injects the real Back key. Treat any remaining Back problem as a bug.
+- **DIFFICULTY IS NOW CHOSEN AT RUN SETUP (implemented on the claude branch, pending phone check):** a 1-5 picker (ui/DifficultyBar) sits right above Start on the character screen ("Difficulty 3:
+  Normal"; tap the label for an explanation); "Difficulty (new runs)" is gone from APD Settings. It sets SPDSettings.apdDifficulty, which only the NEXT run reads (Dungeon.init); a run in progress
+  keeps Dungeon.difficulty, saved with it. Difficulty 3 is unchanged and still the baseline; nothing was rebalanced; telemetry and rulesets still record the real level and balance revision. Hidden
+  during the first-run intro. Cleric is still blocked in the build (WndClericRemoved) until the separate un-ban design step.
 - Owner decision left open by Phase 9: natural regeneration is the biggest log cost (32 B/heal exact vs 18 B inferred, ~70 KiB per
   20k-turn run). Possible later trade-off: one summary event per stretch of regeneration (loses per-tick history). Not done.
 

@@ -48,6 +48,7 @@ import com.shatteredpixel.shatteredpixeldungeon.services.news.NewsImpl;
 import com.shatteredpixel.shatteredpixeldungeon.services.updates.UpdateImpl;
 import com.shatteredpixel.shatteredpixeldungeon.services.updates.Updates;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Button;
+import com.watabou.input.BackGate;
 import com.watabou.input.KeyEvent;
 import com.watabou.noosa.Game;
 import com.watabou.utils.FileUtils;
@@ -144,8 +145,7 @@ public class AndroidLauncher extends AndroidApplication {
 					getOnBackInvokedDispatcher().registerOnBackInvokedCallback(OnBackInvokedDispatcher.PRIORITY_DEFAULT, new OnBackInvokedCallback() {
 						@Override
 						public void onBackInvoked() {
-							KeyEvent.addKeyEvent(new KeyEvent(Input.Keys.BACK, true));
-							KeyEvent.addKeyEvent(new KeyEvent(Input.Keys.BACK, false));
+							sendBack();
 						}
 					});
 				}
@@ -192,7 +192,15 @@ public class AndroidLauncher extends AndroidApplication {
 	@SuppressLint("GestureBackNavigation")
 	@Override
 	public void onBackPressed() {
-		//do nothing, game should catch all back presses
+		//the game normally catches Back itself; if the system hands it to the activity instead, it is the same press (BackGate drops a duplicate)
+		sendBack();
+	}
+
+	//one Back for the game, from whichever route it arrived by
+	private static void sendBack() {
+		if (!BackGate.accept()) return;
+		KeyEvent.addKeyEvent(new KeyEvent(Input.Keys.BACK, true));
+		KeyEvent.addKeyEvent(new KeyEvent(Input.Keys.BACK, false));
 	}
 
 	@Override

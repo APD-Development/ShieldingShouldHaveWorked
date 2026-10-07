@@ -53,10 +53,17 @@ public final class WndUimsdAsk {
 
 	public interface Host {
 		//open this question's query as a table with the full tools
-		void openAsTable( com.shatteredpixel.shatteredpixeldungeon.apd.query.Query q );
+		//'backToAnswer' reopens the answer the table came from (what Back should do from that table); may be null
+		void openAsTable( com.shatteredpixel.shatteredpixeldungeon.apd.query.Query q, Runnable backToAnswer );
 	}
 
 	private static final int MAX_LINES = 40;
+
+	//a window of the chain: it stays open under the next one, so Back returns to it
+	private static void showKept( WndUimsdList w ){
+		w.keepOpen();
+		ShatteredPixelDungeon.scene().addToFront(w);
+	}
 
 	private static void show( com.shatteredpixel.shatteredpixeldungeon.ui.Window w ){
 		ShatteredPixelDungeon.scene().addToFront(w);
@@ -79,6 +86,8 @@ public final class WndUimsdAsk {
 	//the question as it stands, one tap per blank
 	public static void builder( final Catalog cat, final String ruleset, final Host host, final Question q ){
 		last = q;
+		//a changed question replaces the builder (and any picker left open over it)
+		WndUimsdList.closeAll();
 		Dataset ds = cat.dataset(q.dataset);
 		if (ds == null) return;
 		final DatasetDef def = ds.def;
@@ -104,7 +113,7 @@ public final class WndUimsdAsk {
 		entries.add(Entry.heading("Then"));
 		entries.add(Entry.item("Show the answer", "")); ids.add(ASK);
 		final Question cur = q;
-		show(WndUimsdList.menu("Ask a question", "Everything UIMSD has recorded can be asked about. Change any part of the sentence, then show the answer.", entries,
+		showKept(WndUimsdList.menu("Ask a question", "Everything UIMSD has recorded can be asked about. Change any part of the sentence, then show the answer.", entries,
 				new WndUimsdList.Picker(){
 			@Override
 			public void onPick( int i, boolean checked ){
@@ -220,8 +229,8 @@ public final class WndUimsdAsk {
 			}
 		}){
 			@Override
-			public void hide(){
-				super.hide();
+			protected void onDone(){
+				hide();
 				builder(cat, ruleset, host, q.withGroupBy(chosen));
 			}
 		});
@@ -239,7 +248,7 @@ public final class WndUimsdAsk {
 		entries.add(Entry.heading("Add"));
 		entries.add(Entry.item("Add a condition", "for example: class is Cleric, difficulty is at least 4, floor is 5"));
 		final int count = q.filters.size();
-		show(WndUimsdList.menu("Only where", "Conditions narrow the question. All of them have to be true.", entries, new WndUimsdList.Picker(){
+		showKept(WndUimsdList.menu("Only where", "Conditions narrow the question. All of them have to be true.", entries, new WndUimsdList.Picker(){
 			@Override
 			public void onPick( int i, boolean checked ){
 				if (i < count){
@@ -278,13 +287,21 @@ public final class WndUimsdAsk {
 		entries.add(Entry.item("Open as a table", "the same question with every filter, sort and column tool"));
 		entries.add(Entry.item("Change the question", ""));
 		final List<Entry> all = entries;
-		show(WndUimsdList.menu("Answer", a.question + "?", entries, new WndUimsdList.Picker(){
+		showKept(WndUimsdList.menu("Answer", a.question + "?", entries, new WndUimsdList.Picker(){
 			@Override
 			public void onPick( int i, boolean checked ){
 				int items = 0;
 				for (Entry e : all) if (e.isItem()) items++;
 				if (i == items - 2){
-					if (host != null) host.openAsTable(a.query);
+					WndUimsdList.closeAll();
+					if (host != null) host.openAsTable(a.query, new Runnable(){
+						@Override
+						public void run(){
+							//Back from the table: the question and its answer, as they were
+							builder(cat, ruleset, host, q);
+							answer(cat, ruleset, host, q);
+						}
+					});
 				} else if (i == items - 1){
 					builder(cat, ruleset, host, q);
 				}

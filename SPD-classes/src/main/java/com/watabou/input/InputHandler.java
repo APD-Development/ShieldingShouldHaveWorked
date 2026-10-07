@@ -137,6 +137,8 @@ public class InputHandler extends InputAdapter {
 	
 	@Override
 	public synchronized boolean keyDown( int keyCode ) {
+		//one press of Back is one Back, whichever route it came by (see BackGate)
+		if (keyCode == Input.Keys.BACK && !BackGate.accept()) return true;
 		if (KeyBindings.isKeyBound( keyCode )) {
 			KeyEvent.addKeyEvent( new KeyEvent( keyCode, true ) );
 			return true;

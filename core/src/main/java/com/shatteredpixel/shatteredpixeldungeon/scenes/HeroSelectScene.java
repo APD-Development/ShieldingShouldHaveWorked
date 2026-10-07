@@ -40,6 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.OptionSlider;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
+import com.shatteredpixel.shatteredpixeldungeon.ui.DifficultyBar;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
@@ -88,6 +89,8 @@ public class HeroSelectScene extends PixelScene {
 	private RenderedTextBlock heroName; //only on landscape
 	private RenderedTextBlock heroDesc; //only on landscape
 	private StyledButton startBtn;
+	//APD: the difficulty of the run being set up, right above Start
+	private DifficultyBar difficultyBar;
 	private IconButton infoButton;
 	private IconButton btnOptions;
 	private GameOptions optionsPane;
@@ -175,6 +178,10 @@ public class HeroSelectScene extends PixelScene {
 		startBtn.textColor(Window.TITLE_COLOR);
 		add(startBtn);
 		startBtn.visible = startBtn.active = false;
+
+		difficultyBar = new DifficultyBar();
+		add(difficultyBar);
+		difficultyBar.visible = difficultyBar.active = false;
 
 		infoButton = new IconButton(Icons.get(Icons.INFO)){
 			@Override
@@ -305,6 +312,7 @@ public class HeroSelectScene extends PixelScene {
 			startBtn.setSize(startBtn.reqWidth()+8, 21);
 			startBtn.setPos(insets.left + (leftArea - startBtn.width())/2f, title.top() + uiHeight - startBtn.height());
 			align(startBtn);
+			placeDifficultyBar(insets.left + leftArea/2f, Math.min(130, leftArea - 8));
 
 			btnFade = new IconButton(Icons.CHEVRON.get()){
 				@Override
@@ -408,6 +416,17 @@ public class HeroSelectScene extends PixelScene {
 
 	}
 
+	//centred on 'centreX', just above Start
+	private void placeDifficultyBar( float centreX, float width ){
+		difficultyBar.setRect(centreX - width / 2f, startBtn.top() - DifficultyBar.HEIGHT - 3, width, DifficultyBar.HEIGHT);
+		align(difficultyBar);
+	}
+
+	//the top of what sits above Start (the difficulty bar, or Start itself while the first-run intro hides the bar)
+	private float difficultyTop(){
+		return difficultyBar.visible ? difficultyBar.top() : startBtn.top();
+	}
+
 	private void updateOptionsColor(){
 		if (!SPDSettings.customSeed().isEmpty()){
 			btnOptions.icon().hardlight(1f, 1.5f, 0.67f);
@@ -447,7 +466,9 @@ public class HeroSelectScene extends PixelScene {
 			heroDesc.setPos(insets.left +(leftPortion - heroDesc.width())/2f, heroName.bottom() + 5);
 			align(heroDesc);
 
-			while(startBtn.top() < heroDesc.bottom()){
+			difficultyBar.refresh();
+			difficultyBar.visible = difficultyBar.active = !SPDSettings.intro();
+			while(difficultyTop() < heroDesc.bottom()){
 				heroDesc.maxWidth(heroDesc.maxWidth()+10);
 				heroDesc.setPos(Math.max(insets.left, (leftPortion - heroDesc.width())/2f), heroName.bottom() + 5);
 				align(heroDesc);
@@ -472,6 +493,9 @@ public class HeroSelectScene extends PixelScene {
 
 			startBtn.setPos((Camera.main.width - startBtn.width())/2f, (Camera.main.height - insets.bottom - HeroBtn.HEIGHT + 2 - startBtn.height()));
 			PixelScene.align(startBtn);
+			placeDifficultyBar(Camera.main.width/2f, Math.min(130, Camera.main.width - 12));
+			difficultyBar.refresh();
+			difficultyBar.visible = difficultyBar.active = !SPDSettings.intro();
 
 			infoButton.visible = infoButton.active = true;
 			infoButton.setPos(startBtn.right(), startBtn.top());
@@ -479,7 +503,7 @@ public class HeroSelectScene extends PixelScene {
 			btnOptions.visible = btnOptions.active = !SPDSettings.intro();
 			btnOptions.setPos(startBtn.left()-btnOptions.width(), startBtn.top());
 
-			optionsPane.setPos(heroBtns.get(0).left(), startBtn.top() - optionsPane.height() - 2);
+			optionsPane.setPos(heroBtns.get(0).left(), difficultyTop() - optionsPane.height() - 2);
 			align(optionsPane);
 		}
 

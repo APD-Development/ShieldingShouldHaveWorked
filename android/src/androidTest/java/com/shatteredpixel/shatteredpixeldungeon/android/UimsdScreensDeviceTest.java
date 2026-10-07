@@ -149,7 +149,7 @@ public class UimsdScreensDeviceTest {
 				public void run(){
 					final com.shatteredpixel.shatteredpixeldungeon.apd.query.Catalog cat = m.catalog();
 					com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdAsk.Host host = new com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdAsk.Host(){
-						public void openAsTable( com.shatteredpixel.shatteredpixeldungeon.apd.query.Query q ){}
+						public void openAsTable( com.shatteredpixel.shatteredpixeldungeon.apd.query.Query q, Runnable back ){}
 					};
 					for (com.shatteredpixel.shatteredpixeldungeon.apd.query.Dataset d : com.shatteredpixel.shatteredpixeldungeon.apd.query.Questions.askable(cat)){
 						com.shatteredpixel.shatteredpixeldungeon.apd.query.Question q = com.shatteredpixel.shatteredpixeldungeon.apd.query.Question.about(d.def.id);

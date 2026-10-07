@@ -98,6 +98,8 @@ public class UimsdScene extends PixelScene {
 	private static boolean cachedAll;
 	//the interactive tour: runs on a model of its own, on the player's data or on a small sample history kept in a folder of its own
 	private static volatile UimsdTutorial tutorial;
+	//what Back does when a table was opened from a question's answer and there is no earlier table to go back to
+	private static Runnable returnTo;
 	private static volatile boolean tutorialPreparing;
 	private static volatile boolean showingSample;
 	private static File sampleRoot;
@@ -391,8 +393,9 @@ public class UimsdScene extends PixelScene {
 				if (UimsdHome.ASK_LINK.equals(viewId)){
 					WndUimsdAsk.open(model.catalog(), model.currentRuleset(), new WndUimsdAsk.Host(){
 						@Override
-						public void openAsTable( Query q ){
+						public void openAsTable( final Query q, final Runnable backToAnswer ){
 							model.showQuery(q);
+							returnTo = backToAnswer;
 							atHome = false;
 							dirty = true;
 						}
@@ -917,15 +920,27 @@ public class UimsdScene extends PixelScene {
 	@Override
 	protected void onBackPressed(){
 		if (tutorialPreparing) return;
+		//a tour in progress ends first: Back leaves the tour, it does not leave the screen
+		if (tutorial != null && !tutorial.isFinished()){
+			endTutorial();
+			atHome = true;
+			dirty = true;
+			return;
+		}
 		if (!atHome && model != null){
 			if (model.canGoBack()){
 				model.back();
 			} else {
+				//a table opened from a question's answer goes back to that answer, with the question as it was
+				Runnable back = returnTo;
+				returnTo = null;
 				atHome = true;
 				dirty = true;
+				if (back != null) back.run();
 			}
 			return;
 		}
+		returnTo = null;
 		endTutorial();
 		if (model != null) model.setListener(null);
 		if (backTo == TitleScene.class) ShatteredPixelDungeon.switchNoFade(backTo);

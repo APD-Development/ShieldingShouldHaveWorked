@@ -23,7 +23,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
-import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.Difficulty;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.apd.demo.DemoData;
 import com.shatteredpixel.shatteredpixeldungeon.apd.demo.DemoGenerator;
@@ -57,8 +56,6 @@ public class APDSettingsPane extends Component {
 	private RenderedTextBlock title;
 	private OptionSlider optExotic;
 	private RenderedTextBlock info;
-	private OptionSlider optDifficulty;
-	private RenderedTextBlock difficultyInfo;
 	private CheckBox chkRecord;
 	private RenderedTextBlock status;
 	private RenderedTextBlock storage;
@@ -92,22 +89,6 @@ public class APDSettingsPane extends Component {
 		info = PixelScene.renderTextBlock(
 				"Minimum chance that a generated potion or scroll is exotic. 0% is the normal game.", 5 );
 		add( info );
-
-		optDifficulty = new OptionSlider( "Difficulty (new runs)",
-				"1", "5", Difficulty.MIN, Difficulty.MAX ) {
-			@Override
-			protected void onChange() {
-				SPDSettings.apdDifficulty( getSelectedValue() );
-			}
-		};
-		optDifficulty.setSelectedValue( SPDSettings.apdDifficulty() );
-		add( optDifficulty );
-
-		//placeholder wording (final language pass later)
-		difficultyInfo = PixelScene.renderTextBlock(
-				"3 is the normal game. Lower levels: weaker enemies and more loot. Higher levels: tougher enemies and less loot. "
-						+ "Applies to runs you start from now on; a run in progress keeps its difficulty.", 5 );
-		add( difficultyInfo );
 
 		chkRecord = new CheckBox( "Record run history" ) {
 			@Override
@@ -254,11 +235,6 @@ public class APDSettingsPane extends Component {
 		info.maxWidth( (int)width );
 		info.setPos( x, pos );
 		pos = info.bottom() + GAP;
-		optDifficulty.setRect( x, pos, width, 24 );
-		pos = optDifficulty.bottom() + GAP;
-		difficultyInfo.maxWidth( (int)width );
-		difficultyInfo.setPos( x, pos );
-		pos = difficultyInfo.bottom() + GAP;
 		chkRecord.setRect( x, pos, width, 16 );
 		pos = chkRecord.bottom() + GAP;
 		status.maxWidth( (int)width );
