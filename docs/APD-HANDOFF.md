@@ -65,6 +65,12 @@ work meanwhile); continue autonomously inside approved scope and stop only for g
 architectural changes, conflicts with requirements or the end of a phase; testing standards stay exactly as strong (full core suite,
 API 26 + API 34 device tests, no weakened assertions or hidden-by-timeout fixes); keep this file updated.
 
+Communication: ultra-terse by default. No narration of routine actions, obvious commands/edits/tests/CI states, or repeats of known
+info; no running commentary unless attention is needed. Routine updates 1-3 short sentences ("Implemented. 509 tests green. CI running.").
+Tell the user once when waiting on CI, check at an appropriate time, don't re-narrate. Continue autonomously in approved scope; don't ask
+needless confirmation. Full detail only for: decisions needed, bugs/risks/unexpected behavior, milestone/phase reports, details needed to
+resume safely. Never shorten code, tests, reasoning, verification or docs to save usage. Keep this file concise and authoritative.
+
 ## Splitting work with ChatGPT (user's rule, to save Claude usage)
 ChatGPT has no access to this session or repo; every handoff must be self-contained. Offload only when it clearly saves effort:
 architecture/design review, specs and requirements, test-plan and regression-test design (before implementing), edge-case analysis,
