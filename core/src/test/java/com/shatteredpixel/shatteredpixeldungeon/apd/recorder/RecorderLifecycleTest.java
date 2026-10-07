@@ -212,7 +212,7 @@ public class RecorderLifecycleTest {
 		newRun(s, 11L);
 		String id = ApdRecorder.currentRunId();
 		enterLevel(1);
-		SPDSettings.apdExoticChance(30);
+		Dungeon.apdExotic = 30;      //the rules in force change (the setting alone no longer can: see exoticSettingBelongsToTheRun)
 		enterLevel(2);
 		enterLevel(3); //no further change
 		Dungeon.fail(Hunger.class);
@@ -231,12 +231,26 @@ public class RecorderLifecycleTest {
 	}
 
 	@Test
+	public void exoticSettingBelongsToTheRunSoMovingTheSliderRecordsNoRulesetChange() throws Exception {
+		Session s = new Session();
+		newRun(s, 13L);
+		String id = ApdRecorder.currentRunId();
+		enterLevel(1);
+		SPDSettings.apdExoticChance(30);     //the player moves the slider: it is for the next run
+		enterLevel(2);
+		Dungeon.fail(Hunger.class);
+		ReadResult r = s.read(id);
+		assertEquals(0, ofType(r, EventTypes.RULESET_CHANGE).size());
+		assertEquals("the run is recorded with the exotic setting it started with", 0, runStart(r).exoticChance);
+	}
+
+	@Test
 	public void aSettingChangedInTheLastLevelIsStillRecordedWhenTheRunEnds() throws Exception {
 		Session s = new Session();
 		newRun(s, 12L);
 		String id = ApdRecorder.currentRunId();
 		enterLevel(1);
-		SPDSettings.apdExoticChance(30);     //changed while playing, and the run ends before another level is entered
+		Dungeon.apdExotic = 30;     //changed while playing, and the run ends before another level is entered
 		Dungeon.fail(Hunger.class);
 
 		ReadResult r = s.read(id);

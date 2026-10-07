@@ -107,8 +107,9 @@ public final class RunFactsBuilder {
 						f.num(FactKeys.DAILY, s.seedType == LifecycleEvents.SEED_DAILY || s.seedType == LifecycleEvents.SEED_DAILY_REPLAY ? 1 : 0, Fact.PROV_RECORDED);
 						f.num(FactKeys.CHALLENGES, s.challenges, Fact.PROV_RECORDED);
 						f.text(FactKeys.HERO_CLASS, s.heroClass, Fact.PROV_RECORDED);
-						f.text(FactKeys.RULESET, s.rulesetId, Fact.PROV_RECORDED);
-						f.num(FactKeys.EXOTIC_CHANCE, s.exoticChance, Fact.PROV_RECORDED);
+						//a run whose rules were not recorded (saved before they were part of the run) has neither: unknown, never today's setting
+						if (!s.rulesetId.isEmpty()) f.text(FactKeys.RULESET, s.rulesetId, Fact.PROV_RECORDED);
+						if (s.exoticChance != LifecycleEvents.EXOTIC_NOT_RECORDED) f.num(FactKeys.EXOTIC_CHANCE, s.exoticChance, Fact.PROV_RECORDED);
 						//only a run that recorded its difficulty has the fact: for an older run it is unknown, never "3"
 						if (s.difficulty > 0){
 							f.num(FactKeys.DIFFICULTY, s.difficulty, Fact.PROV_RECORDED);

@@ -224,6 +224,18 @@ public final class UimsdModel {
 		page = 0;
 		recompute();
 		fire();
+		restoreHiddenAfterSeed();
+	}
+
+	//Seed floors turns hidden information on because that view needs it; the player's own choice comes back when they leave the seed views
+	//(by Back, by opening another view, or by following a link out of them).
+	private Boolean hiddenBeforeSeed;
+
+	private void restoreHiddenAfterSeed(){
+		if (hiddenBeforeSeed == null || SeedFloors.isSeedView(viewId)) return;
+		boolean previous = hiddenBeforeSeed;
+		hiddenBeforeSeed = null;
+		if (query.showInternal != previous) setShowInternal(previous);
 	}
 
 	//open a view. The player's wish for hidden information carries over; everything else starts from the view.
@@ -278,6 +290,7 @@ public final class UimsdModel {
 					SeedFloors.Built b = provider.build(cat, run);
 					synchronized (UimsdModel.this){
 						SeedFloors.install(cat, b);
+						if (!SeedFloors.isSeedView(viewId)) hiddenBeforeSeed = query.showInternal;
 						back.add(new Place(viewId, query, page));
 						viewId = SeedFloors.ITEMS;
 						apply(cat.view(SeedFloors.ITEMS).initialQuery().withShowInternal(true));
@@ -529,6 +542,7 @@ public final class UimsdModel {
 		page = p.page;
 		recompute();
 		fire();
+		restoreHiddenAfterSeed();
 		return true;
 	}
 

@@ -251,6 +251,56 @@ public class SeedFloorsTest {
 		assertEquals("runs", m.viewId());
 	}
 
+	private UimsdModel modelAtRuns( String folder, boolean hiddenOn, Row[] runOut ) throws Exception {
+		File sampleRoot = DemoData.sampleRootFor(new File(tmp.newFolder(folder), "apd"));
+		DemoGenerator.generateSample(sampleRoot, RULES, 1_800_000_000_000L);
+		Catalog cat = new DatasetStore(sampleRoot).load();
+		DatasetDef d = cat.dataset(Datasets.RUNS).def;
+		for (Row r : cat.dataset(Datasets.RUNS).rows){
+			if (r.finished && r.isKnown(d.indexOf("run.seed")) && r.isKnown(d.indexOf("run.heroClass")) && r.isKnown(d.indexOf("run.exoticChance"))){
+				runOut[0] = r;
+				break;
+			}
+		}
+		UimsdModel m = new UimsdModel(RULES.id, "sample");
+		m.setCatalog(cat);
+		m.setSeedFloorsProvider(com.shatteredpixel.shatteredpixeldungeon.apd.replay.SeedFloorsRunner.INSTANCE);
+		m.selectView("runs");
+		m.setShowInternal(hiddenOn);
+		return m;
+	}
+
+	private static void openSeedFloors( UimsdModel m, Row run ) throws Exception {
+		m.startSeedFloors(run);
+		long end = System.currentTimeMillis() + 60000;
+		while (!SeedFloors.ITEMS.equals(m.viewId()) && System.currentTimeMillis() < end) Thread.sleep(50);
+		assertEquals("notice: " + m.notice(), SeedFloors.ITEMS, m.viewId());
+		assertTrue("the seed view shows what it needs", m.query().showInternal);
+	}
+
+	@Test
+	public void leavingSeedFloorsRestoresThePlayersHiddenInformationChoice() throws Exception {
+		Row[] run = new Row[1];
+		//off before: Back and opening another view both bring it back off
+		UimsdModel m = modelAtRuns("hid1", false, run);
+		openSeedFloors(m, run[0]);
+		assertTrue(m.back());
+		assertEquals("runs", m.viewId());
+		assertFalse("Back restores the choice", m.query().showInternal);
+
+		openSeedFloors(m, run[0]);
+		m.selectView("characters");
+		assertFalse("another view starts from the player's own choice, not from the seed view's", m.query().showInternal);
+		m.selectView("runs");
+		assertFalse("and it stays off", m.query().showInternal);
+
+		//on before: it stays on
+		UimsdModel on = modelAtRuns("hid2", true, run);
+		openSeedFloors(on, run[0]);
+		assertTrue(on.back());
+		assertTrue(on.query().showInternal);
+	}
+
 	@Test
 	public void aLiveGameMakesItANoticeNotACrash() throws Exception {
 		File sampleRoot = DemoData.sampleRootFor(new File(tmp.newFolder("data3"), "apd"));

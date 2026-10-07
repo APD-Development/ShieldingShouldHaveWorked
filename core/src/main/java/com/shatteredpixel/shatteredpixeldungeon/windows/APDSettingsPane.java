@@ -78,7 +78,7 @@ public class APDSettingsPane extends Component {
 		title.hardlight( Window.TITLE_COLOR );
 		add( title );
 
-		optExotic = new OptionSlider( "Exotic potion/scroll chance",
+		optExotic = new OptionSlider( "Exotic potion/scroll chance (new runs)",
 				"0%", SPDSettings.APD_EXOTIC_CHANCE_MAX + "%",
 				0, SPDSettings.APD_EXOTIC_CHANCE_MAX / STEP ) {
 			@Override
@@ -86,7 +86,7 @@ public class APDSettingsPane extends Component {
 				SPDSettings.apdExoticChance( getSelectedValue() * STEP );
 			}
 		};
-		optExotic.setSelectedValue( SPDSettings.apdExoticChance() / STEP );
+		optExotic.setSelectedValue( SPDSettings.apdExoticSetting() / STEP );
 		add( optExotic );
 
 		info = PixelScene.renderTextBlock(

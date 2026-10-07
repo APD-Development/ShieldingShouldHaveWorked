@@ -339,10 +339,17 @@ public class SPDSettings extends GameSettings {
 				com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.Difficulty.MIN, com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.Difficulty.MAX );
 	}
 
-	public static int apdExoticChance(){
-		//APD: a floor replay uses the exotic chance of the run it replays, not this install's setting
-		if (com.shatteredpixel.shatteredpixeldungeon.apd.replay.ReplayContext.active()) return com.shatteredpixel.shatteredpixeldungeon.apd.replay.ReplayContext.exoticChance();
+	//the player's setting: what the NEXT run will be started with
+	public static int apdExoticSetting(){
 		return getInt( KEY_APD_EXOTIC_CHANCE, 0, 0, APD_EXOTIC_CHANCE_MAX );
+	}
+
+	//the exotic chance in force for gameplay: a floor replay uses the run it replays; a run uses the one it was started with (never the setting as
+	//it is now); only a run that never recorded one (saved by an older version) or no run at all falls back to the setting
+	public static int apdExoticChance(){
+		if (com.shatteredpixel.shatteredpixeldungeon.apd.replay.ReplayContext.active()) return com.shatteredpixel.shatteredpixeldungeon.apd.replay.ReplayContext.exoticChance();
+		if (com.shatteredpixel.shatteredpixeldungeon.Dungeon.apdExoticKnown) return com.shatteredpixel.shatteredpixeldungeon.Dungeon.apdExotic;
+		return apdExoticSetting();
 	}
 
 	public static void apdClericAttempts( int value ){

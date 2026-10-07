@@ -7,6 +7,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.Fact;
+import com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKeys;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.GenerationEvents;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.ItemEvents;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.LifecycleEvents;
@@ -363,6 +364,39 @@ public class AggregateFirstViewsTest {
 		m.selectView("enemies");
 		m.openGroupRows(m.result().groups.get(0));
 		assertEquals(3, m.result().rows.size());
+	}
+
+	// ---- unknown rules ----
+
+	@Test
+	public void aRunThatNeverRecordedItsExoticSettingHasUnknownRulesAndIsNeverGivenTodaysSetting() throws Exception {
+		root = tmp.newFolder("unk");
+		log("a", 100).start("run-known", 0, "WARRIOR", RS, 0, 30, false).enter(1).end(LifecycleEvents.OUTCOME_DIED, "Rat", 1, 1, 1).close(true);
+		//what the recorder writes for a run saved before the exotic setting was part of the run: no ruleset, no exotic value
+		log("b", 200).start("run-old", 0, "MAGE", "", 0, LifecycleEvents.EXOTIC_NOT_RECORDED, false).enter(1).end(LifecycleEvents.OUTCOME_DIED, "Rat", 1, 1, 1).close(true);
+		Catalog c = load();
+		Dataset runs = c.dataset(Datasets.RUNS);
+		Row known = null, old = null;
+		for (Row r : runs.rows){
+			if ("run-known".equals(r.runId)) known = r;
+			if ("run-old".equals(r.runId)) old = r;
+		}
+		int exotic = runs.def.indexOf(FactKeys.EXOTIC_CHANCE);
+		assertTrue(known.isKnown(exotic));
+		assertEquals(30, known.num(exotic));
+		assertEquals("not recorded: unknown, not 0 and not the setting of today", false, old.isKnown(exotic));
+		assertEquals("no ruleset", null, old.ruleset);
+		//it is outside "my rules" and shows up only when unknown rules are asked for
+		QueryResult mine = QueryEngine.run(runs, Query.of(Datasets.RUNS), RS);
+		assertEquals(1, mine.rows.size());
+		QueryResult withUnknown = QueryEngine.run(runs, Query.of(Datasets.RUNS).withScope(Scope.DEFAULT.withUnknownRuleset(true)), RS);
+		assertEquals(2, withUnknown.rows.size());
+		try {
+			SeedFloors.spec(c, old);
+			org.junit.Assert.fail("a run without a recorded exotic setting cannot be replayed with a guess");
+		} catch (SeedFloors.NotAvailable expected){
+			assertTrue(expected.getMessage().contains("not recorded"));
+		}
 	}
 
 	// ---- hidden information ----

@@ -329,6 +329,49 @@ public class DifficultyTest {
 	}
 
 	@Test
+	public void aRunKeepsItsExoticSettingAcrossSettingChangesAndSaveLoadAndALegacySaveIsNeverGivenOne() throws Exception {
+		GamesInProgress.selectedClass = HeroClass.WARRIOR;
+		GamesInProgress.curSlot = 1;
+		int was = SPDSettings.apdExoticSetting();
+		try {
+			SPDSettings.apdExoticChance(30);
+			Dungeon.init();
+			assertTrue(Dungeon.apdExoticKnown);
+			assertEquals(30, Dungeon.apdExotic);
+			String id = Ruleset.current().id;
+			assertEquals(Ruleset.of(30, Dungeon.challenges, Dungeon.difficulty, Dungeon.difficultyBalance).id, id);
+
+			SPDSettings.apdExoticChance(80);     //the player moves the slider in the middle of the run
+			assertEquals("gameplay keeps the run's own value", 30, SPDSettings.apdExoticChance());
+			assertEquals("the setting is what the NEXT run gets", 80, SPDSettings.apdExoticSetting());
+			assertEquals("identity does not follow the setting", id, Ruleset.current().id);
+			assertEquals(80, Ruleset.forNewRun().exoticChance);
+
+			Dungeon.depth = 1;
+			Dungeon.saveGame(1);
+			Dungeon.apdExotic = 0;
+			Dungeon.apdExoticKnown = false;
+			Dungeon.loadGame(1);
+			assertTrue(Dungeon.apdExoticKnown);
+			assertEquals("saved with the run", 30, Dungeon.apdExotic);
+			assertEquals(id, Ruleset.current().id);
+
+			//a save from before the exotic setting was part of the run
+			Bundle old = new Bundle();
+			old.put("apd_difficulty", 3);
+			Dungeon.apdRestoreDifficulty(old);
+			assertFalse(Dungeon.apdExoticKnown);
+			assertTrue("its rules are unknown, not today's", Ruleset.current().isUnknown());
+			assertEquals(Ruleset.EXOTIC_NOT_RECORDED, Ruleset.current().exoticChance);
+			assertEquals("it still plays with the live setting, as it always did", 80, SPDSettings.apdExoticChance());
+		} finally {
+			SPDSettings.apdExoticChance(was);
+			Dungeon.apdExoticKnown = false;
+			Dungeon.apdExotic = 0;
+		}
+	}
+
+	@Test
 	public void revisionZeroIsNeutralAtEveryLevelAndRevisionOneIsTheApprovedPass() {
 		for (int level = 1; level <= 5; level++){
 			for (Difficulty.Modifier m : Difficulty.Modifier.values()){

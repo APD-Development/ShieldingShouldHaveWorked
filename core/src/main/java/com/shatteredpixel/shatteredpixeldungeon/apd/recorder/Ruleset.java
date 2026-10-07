@@ -55,12 +55,26 @@ public final class Ruleset {
 
 	//reads the rules from the game right now (the run being played: its own difficulty, not the setting)
 	public static Ruleset current(){
-		return of(SPDSettings.apdExoticChance(), Dungeon.challenges, Dungeon.difficulty, Dungeon.difficultyBalance);
+		//a run that never recorded its exotic setting (saved by an older version) has no known ruleset: it is not given today's setting
+		if (!Dungeon.apdExoticKnown) return unknown();
+		return of(Dungeon.apdExotic, Dungeon.challenges, Dungeon.difficulty, Dungeon.difficultyBalance);
 	}
 
 	//the rules a NEW run would be played under, from the settings
 	public static Ruleset forNewRun(){
-		return of(SPDSettings.apdExoticChance(), SPDSettings.challenges(), SPDSettings.apdDifficulty());
+		return of(SPDSettings.apdExoticSetting(), SPDSettings.challenges(), SPDSettings.apdDifficulty());
+	}
+
+	//stored in place of the exotic chance when it was not recorded (a real chance is 0-80)
+	public static final int EXOTIC_NOT_RECORDED = com.shatteredpixel.shatteredpixeldungeon.apd.stats.LifecycleEvents.EXOTIC_NOT_RECORDED;
+
+	//rules that are not known: empty id (a run recorded with it has an unknown ruleset, which no scope of "my rules" includes)
+	public static Ruleset unknown(){
+		return new Ruleset("", "unknown", EXOTIC_NOT_RECORDED);
+	}
+
+	public boolean isUnknown(){
+		return id.isEmpty();
 	}
 
 	//difficulty 3 (the game as it is)

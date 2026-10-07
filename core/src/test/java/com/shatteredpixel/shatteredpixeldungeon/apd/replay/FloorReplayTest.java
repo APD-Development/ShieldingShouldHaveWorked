@@ -130,13 +130,13 @@ public class FloorReplayTest {
 		for (ReplayFloor f : FloorReplay.replay(2121L, 0, 80, HeroClass.WARRIOR, 12, null)) many.add(items(f));
 		assertFalse("exotic chance 0 and 80 must give different floors", none.equals(many));
 		//the player's own setting never leaks in
-		int installValue = SPDSettings.apdExoticChance();
+		int installValue = SPDSettings.apdExoticSetting();
 		try {
 			SPDSettings.apdExoticChance(80);
 			List<String> again = new ArrayList<>();
 			for (ReplayFloor f : FloorReplay.replay(2121L, 0, 0, HeroClass.WARRIOR, 12, null)) again.add(items(f));
 			assertEquals(none, again);
-			assertEquals(80, SPDSettings.apdExoticChance());
+			assertEquals(80, SPDSettings.apdExoticSetting());
 		} finally {
 			SPDSettings.apdExoticChance(installValue);
 		}

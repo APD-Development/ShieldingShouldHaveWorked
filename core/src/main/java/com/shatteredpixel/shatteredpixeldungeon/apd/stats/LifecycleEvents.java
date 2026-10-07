@@ -33,6 +33,8 @@ import java.util.List;
 //payload (older readers stop reading early), never reorder or change existing ones.
 public final class LifecycleEvents {
 
+	public static final int EXOTIC_NOT_RECORDED = 255;
+
 	private LifecycleEvents(){}
 
 	//event flag bits
@@ -88,6 +90,7 @@ public final class LifecycleEvents {
 		public String heroClass = "";
 		public String rulesetId = "";
 		public String rulesetText = "";
+		//EXOTIC_NOT_RECORDED when the run did not record its exotic setting (a real chance is 0-80, the demo data uses up to 100)
 		public int exoticChance;
 		public boolean introActive;
 		public boolean externalModsPresent;

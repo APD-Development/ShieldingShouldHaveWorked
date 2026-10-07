@@ -216,6 +216,12 @@ public class Dungeon {
 	//and the balance revision of that difficulty the run is played with (0 = no modifiers). Fixed for the run, like the difficulty itself.
 	public static int difficultyBalance = 0;
 
+	//APD: the exotic potion/scroll chance (0-80) this run was started with. Part of the run's identity (saved with it): changing the setting later never
+	//changes a run that exists. apdExoticKnown is false until a run is started or loaded, and for a run saved before this was stored: such a run plays with
+	//the live setting (as it always did) but its exotic setting is NOT recorded, so it is never given today's value as its identity.
+	public static int apdExotic = 0;
+	public static boolean apdExoticKnown = false;
+
 	public static boolean daily;
 	public static boolean dailyReplay;
 	public static String customSeedText = "";
@@ -248,6 +254,8 @@ public class Dungeon {
 		difficulty = SPDSettings.apdDifficulty();
 		difficultyKnown = true;
 		difficultyBalance = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.Difficulty.balanceRevision(difficulty);
+		apdExotic = SPDSettings.apdExoticSetting();
+		apdExoticKnown = true;
 		mobsToChampion = 1;
 
 		Actor.clear();
@@ -645,7 +653,8 @@ public class Dungeon {
 	private static final String APD_RUN_ID	= "apd_run_id";
 	private static final String APD_DIFFICULTY	= "apd_difficulty";
 	private static final String APD_DIFFICULTY_BALANCE	= "apd_difficulty_balance";
-	
+	private static final String APD_EXOTIC	= "apd_exotic";
+
 	public static void saveGame( int save ) {
 		//APD: give every item the hero holds its identity before it is written (the recorder only reads and labels)
 		ApdRecorder.onBeforeGameSave();
@@ -665,6 +674,8 @@ public class Dungeon {
 				bundle.put( APD_DIFFICULTY, difficulty );
 				bundle.put( APD_DIFFICULTY_BALANCE, difficultyBalance );
 			}
+			//APD: the exotic setting the run started with (a run saved without it stays "not recorded")
+			if (apdExoticKnown) bundle.put( APD_EXOTIC, apdExotic );
 			bundle.put( MOBS_TO_CHAMPION, mobsToChampion );
 			bundle.put( HERO, hero );
 			bundle.put( DEPTH, depth );
@@ -756,6 +767,14 @@ public class Dungeon {
 	//APD: the run's difficulty from a save. A save with a difficulty but no balance revision was written by the early build whose levels had no
 	//modifiers: revision 0. A save with neither is from before difficulty existed: it plays as 3 and is never labelled with a difficulty.
 	public static void apdRestoreDifficulty( Bundle bundle ){
+		//the exotic setting is restored the same way: a save without it is not given today's value
+		if (bundle.contains( APD_EXOTIC )){
+			Dungeon.apdExotic = Math.max( 0, Math.min( SPDSettings.APD_EXOTIC_CHANCE_MAX, bundle.getInt( APD_EXOTIC ) ) );
+			Dungeon.apdExoticKnown = true;
+		} else {
+			Dungeon.apdExotic = 0;
+			Dungeon.apdExoticKnown = false;
+		}
 		if (bundle.contains( APD_DIFFICULTY )){
 			Dungeon.difficulty = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.Difficulty.normalize( bundle.getInt( APD_DIFFICULTY ) );
 			Dungeon.difficultyBalance = bundle.contains( APD_DIFFICULTY_BALANCE ) ? bundle.getInt( APD_DIFFICULTY_BALANCE ) : 0;
