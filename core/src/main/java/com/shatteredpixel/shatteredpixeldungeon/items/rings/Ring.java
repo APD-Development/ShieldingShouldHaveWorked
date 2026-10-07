@@ -86,6 +86,16 @@ public class Ring extends KindofMisc {
 		handler = null;
 	}
 	
+	//APD: a floor replay puts the identity table back as it found it
+	public static Object apdHandler(){
+		return handler;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static void apdHandler( Object h ){
+		handler = (ItemStatusHandler<Ring>) h;
+	}
+
 	public static void save( Bundle bundle ) {
 		handler.save( bundle );
 	}

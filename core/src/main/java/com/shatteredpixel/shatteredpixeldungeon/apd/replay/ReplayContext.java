@@ -1,0 +1,34 @@
+package com.shatteredpixel.shatteredpixeldungeon.apd.replay;
+
+import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
+
+//The reference context a floor replay runs in. Level generation reads two pieces of INSTALL state that have nothing to do with a run:
+//the journal (which guide/lore pages the player has found) and the tutorial flag. A replay must not depend on them (the answer would
+//change as the player progresses) and must not change them, so it never writes them: instead, while the replay thread is running,
+//reads of those two things are answered with fixed reference values. Only the replay thread sees them.
+public final class ReplayContext {
+
+	private ReplayContext(){}
+
+	private static volatile Thread thread;
+
+	static void enter(){
+		thread = Thread.currentThread();
+	}
+
+	static void exit(){
+		thread = null;
+	}
+
+	//true only on the thread that is currently replaying
+	public static boolean active(){
+		return thread == Thread.currentThread();
+	}
+
+	//Reference journal: every Adventurer's Guide and Alchemy Guide page found (and read), no lore page found. The tutorial is off.
+	public static boolean pageFound( Document doc ){
+		return doc == Document.ADVENTURERS_GUIDE || doc == Document.ALCHEMY_GUIDE;
+	}
+
+	public static final boolean TUTORIAL = false;
+}

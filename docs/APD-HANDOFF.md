@@ -74,6 +74,12 @@ Pending, bundled for the next PHONE-CHECK build (none blocking):
 - Home layout
 - Guide/tour overlay and interaction
 
+## Floor replay (user approved all 3 decisions; Phase A -> B -> C autonomous)
+Decisions: canonical seed floors always labelled (never "the exact counterfactual"); unreached floors of FINISHED runs may be
+interrogated; replay only when no live game is loaded; for reached floors recorded telemetry is authoritative (canonical only fills
+floors that never existed). Phase A (FloorReplay + isolation + device test) -> docs/APD-FLOOR-REPLAY.md. Phase B: "Seed floors" dataset;
+Phase C: recorded-vs-canonical comparison. Keep provenance (RECORDED vs CANONICAL) explicit everywhere.
+
 ## Working rules the user set (usage efficiency)
 Minimal narration; batch related work; do not poll CI repeatedly (estimate the finish, check once around then, do independent approved
 work meanwhile); continue autonomously inside approved scope and stop only for genuine product/design decisions, destructive actions,

@@ -40,7 +40,9 @@ public final class LevelGenerationHarness {
 		//a brand new install: intro still on, no journal pages found
 		FRESH,
 		//a veteran player: intro off, all adventurer's guide and alchemy guide pages found
-		VETERAN
+		VETERAN,
+		//what a floor replay uses (ReplayContext): guide pages found, NO lore page found, intro off
+		REFERENCE
 	}
 
 	private static java.util.Map<Document, java.util.Map<String, Integer>> initialPageStates;
@@ -62,7 +64,16 @@ public final class LevelGenerationHarness {
 			states.putAll(initialPageStates.get(doc));
 		}
 
-		if (context == Context.VETERAN){
+		if (context == Context.REFERENCE){
+			for (Document doc : Document.values()){
+				boolean guide = doc == Document.ADVENTURERS_GUIDE || doc == Document.ALCHEMY_GUIDE;
+				for (String page : doc.pageNames().toArray(new String[0])){
+					if (guide) doc.findPage(page);
+					else doc.deletePage(page);
+				}
+			}
+			SPDSettings.intro(false);
+		} else if (context == Context.VETERAN){
 			for (Document doc : new Document[]{Document.ADVENTURERS_GUIDE, Document.ALCHEMY_GUIDE}){
 				for (String page : doc.pageNames()) doc.findPage(page);
 			}
@@ -103,6 +114,9 @@ public final class LevelGenerationHarness {
 		}
 	}
 
+	//tests that need to look at each level the harness builds (after the unseeded heaps are removed) set this
+	public static java.util.function.BiConsumer<Integer, Level> levelObserver;
+
 	//Generates depths 1..maxDepth in order, the way a real run reaches them.
 	//The default RNG is not touched: Dungeon.init and Level.create seed their own generators from the dungeon seed.
 	public static List<LevelPrint> generate( long seed, int challenges, HeroClass heroClass, Context context, int maxDepth ) throws Exception {
@@ -126,6 +140,7 @@ public final class LevelGenerationHarness {
 			Dungeon.level = Dungeon.newLevel();
 			removeUnseededHeaps(Dungeon.level);
 			out.add(new LevelPrint(seed, challenges, depth, Dungeon.level, fingerprint(Dungeon.level)));
+			if (levelObserver != null) levelObserver.accept(depth, Dungeon.level);
 		}
 		return out;
 	}

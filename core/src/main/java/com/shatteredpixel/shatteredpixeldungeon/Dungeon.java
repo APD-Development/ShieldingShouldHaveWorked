@@ -233,6 +233,8 @@ public class Dungeon {
 	}
 	
 	public static void init() {
+		//APD: never overlap a floor replay (it borrows the same static state)
+		com.shatteredpixel.shatteredpixeldungeon.apd.replay.FloorReplay.awaitIdle();
 
 		initialVersion = version = Game.versionCode;
 		challenges = SPDSettings.challenges();
@@ -739,6 +741,7 @@ public class Dungeon {
 	}
 	
 	public static void loadGame( int save, boolean fullLoad ) throws IOException {
+		com.shatteredpixel.shatteredpixeldungeon.apd.replay.FloorReplay.awaitIdle();
 		
 		Bundle bundle = FileUtils.bundleFromFile( GamesInProgress.gameFile( save ) );
 

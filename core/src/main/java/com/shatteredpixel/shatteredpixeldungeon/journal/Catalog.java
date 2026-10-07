@@ -306,6 +306,8 @@ public enum Catalog {
 	}
 	
 	public static void setSeen(Class<?> cls){
+		//APD: a floor replay never records discoveries in the player's journal
+		if (com.shatteredpixel.shatteredpixeldungeon.apd.replay.ReplayContext.active()) return;
 		for (Catalog cat : values()) {
 			if (cat.seen.containsKey(cls) && !cat.seen.get(cls)) {
 				cat.seen.put(cls, true);

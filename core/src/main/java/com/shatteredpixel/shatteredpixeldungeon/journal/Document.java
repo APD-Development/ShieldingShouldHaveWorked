@@ -104,6 +104,10 @@ public enum Document {
 	}
 
 	public boolean isPageFound( String page ){
+		//APD: a floor replay sees a fixed reference journal and never the player's
+		if (com.shatteredpixel.shatteredpixeldungeon.apd.replay.ReplayContext.active()){
+			return pagesStates.containsKey(page) && com.shatteredpixel.shatteredpixeldungeon.apd.replay.ReplayContext.pageFound(this);
+		}
 		return pagesStates.containsKey(page) && pagesStates.get(page) > NOT_FOUND;
 	}
 
@@ -144,6 +148,9 @@ public enum Document {
 	}
 
 	public boolean isPageRead( String page ){
+		if (com.shatteredpixel.shatteredpixeldungeon.apd.replay.ReplayContext.active()){
+			return pagesStates.containsKey(page) && com.shatteredpixel.shatteredpixeldungeon.apd.replay.ReplayContext.pageFound(this);
+		}
 		return pagesStates.containsKey(page) && pagesStates.get(page) == READ;
 	}
 

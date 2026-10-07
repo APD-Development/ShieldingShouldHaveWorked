@@ -233,6 +233,8 @@ public class SPDSettings extends GameSettings {
 	}
 	
 	public static boolean intro() {
+		//APD: a floor replay uses the reference context, not this install's tutorial flag
+		if (com.shatteredpixel.shatteredpixeldungeon.apd.replay.ReplayContext.active()) return com.shatteredpixel.shatteredpixeldungeon.apd.replay.ReplayContext.TUTORIAL;
 		return getBoolean( KEY_INTRO, true );
 	}
 	
