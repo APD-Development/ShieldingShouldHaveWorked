@@ -11,7 +11,7 @@ logcat tags APDMIG/APDPERF into the job log and uploads logcat artifacts.
   Verified on commit a19c9c00e = **apd-build-36**: full core suite 501 tests green; device tests green on API 26 and API 34
   (8 tests each, incl. the migration test with heals and UimsdDeviceTimingTest).
 - **Home/Guide milestone: COMPLETE, awaiting approval.** Verified on commit 80ef188f8 = **apd-build-37**: core 509 tests green; device tests green API 26 + 34.
-- Latest known-good: **apd-build-49 = commit 0994586d1** (UIMSD reports/export): core 539 tests green; device tests green API 26 + 34. Previous: 8dbbadf69 (floor replay A-C), apd-build-37 (Home/Guide).
+- Latest known-good: **apd-build-51 = commit 4b8a0dde1** (Difficulty framework): core 555 tests green; device tests green API 26 + 34. Previous: apd-build-49 (reports), 8dbbadf69 (floor replay).
 - Frozen: Phases 0-7 (Phase 7 UIMSD approved/frozen at build 28). Phase 8 (export/import ZIP, storage meter, Android file picker):
   automated verification complete; NOT permanently frozen until the user's physical picker check.
 - Telemetry version now 1.6. UIMSD = one major feature; these phases are milestones inside it.
@@ -95,7 +95,7 @@ Format: Markdown / plain text / HTML (print to PDF) / CSV from one `Report` mode
 (investigated). Reports: lifetime, view, run, group, run comparison, seed floors (canonical clearly separated). Marks + legend + canonical
 notice in every format. Physical check joins the PHONE-CHECK bundle: Report buttons/windows, share sheet, saving a file.
 
-## Difficulty system (framework COMPLETE, awaiting the owner's modifier values; see docs/APD-DIFFICULTY.md)
+## Difficulty system (framework COMPLETE and verified at 4b8a0dde1, awaiting the owner's modifier values; see docs/APD-DIFFICULTY.md)
 Levels 1-5, 3 = baseline (never changes). No balance approved: all levels are neutral placeholders (play like 3, recorded as chosen, own ruleset,
 balance revision 0). Setting = new runs only; run keeps its difficulty (saved); legacy runs unknown (?), never 3. Telemetry 1.7. UIMSD: runs column,
 "Difficulty" view. Do NOT implement final 1/2/4/5 values until approved. Non-P2W applies. Physical check joins PHONE-CHECK: APD Settings difficulty slider + text.
