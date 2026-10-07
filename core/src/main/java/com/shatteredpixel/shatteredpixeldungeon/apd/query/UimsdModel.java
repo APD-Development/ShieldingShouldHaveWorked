@@ -369,6 +369,15 @@ public final class UimsdModel {
 		apply(catalog.view(id).initialQuery().withShowInternal(query.showInternal));
 	}
 
+	//Opens a question's query as an ordinary table, with the full query tools. The table is the one for the question's dataset; the question's
+	//conditions, grouping and sorting are applied on top. Back from there leads to where the player was.
+	public synchronized void showQuery( Query q ){
+		if (catalog == null || catalog.view(q.dataset) == null) return;
+		back.clear();
+		viewId = q.dataset;
+		apply(q);
+	}
+
 	//back to how the open view started
 	public synchronized void resetView(){
 		ViewDef v = view();

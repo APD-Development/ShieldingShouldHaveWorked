@@ -480,6 +480,12 @@ public final class Datasets {
 		return l;
 	}
 
+	//A table for a dataset that is generated rather than hand-made (the play-by-play datasets and one per registered kind of fact), so the
+	//advanced tools see every new dataset the moment it has rows. Newest runs' rows come first as they were recorded; sorting is up to the player.
+	public static ViewDef generatedView( DatasetDef def, String group ){
+		return new ViewDef(def.id, def.title, def.description, Query.of(def.id)).group(group);
+	}
+
 	public static List<ViewDef> allViews(){
 		return views();
 	}

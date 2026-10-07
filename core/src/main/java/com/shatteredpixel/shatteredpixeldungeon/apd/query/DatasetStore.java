@@ -116,6 +116,15 @@ public final class DatasetStore {
 		}
 		assemble(cat, defs, recorded, imported);
 		for (ViewDef v : Datasets.allViews()) cat.add(v);
+		//every generated dataset that has rows gets a table, under the topic it belongs to
+		for (Dataset ds : cat.datasets()){
+			if (ds.rows.isEmpty()) continue;
+			if (EventDatasets.isEventDataset(ds.def.id)) cat.add(Datasets.generatedView(ds.def, "Play by play"));
+			else if (FactDatasets.isFactDataset(ds.def.id)){
+				com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKind k = com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKinds.get(ds.def.id.substring(FactDatasets.PREFIX.length()));
+				cat.add(Datasets.generatedView(ds.def, "Details: " + (k == null ? "Other" : k.area)));
+			}
+		}
 		cat.millis = (System.nanoTime() - t0) / 1000000L;
 		return cat;
 	}

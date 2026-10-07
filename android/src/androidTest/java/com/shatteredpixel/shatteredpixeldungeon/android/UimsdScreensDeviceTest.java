@@ -143,6 +143,38 @@ public class UimsdScreensDeviceTest {
 			});
 			Thread.sleep(500);
 
+			//3b. the question builder: the sentence and its answer for every dataset that has rows, with a total, a split and a "per"
+			final int[] asked = new int[1];
+			onRender(new Runnable(){
+				public void run(){
+					final com.shatteredpixel.shatteredpixeldungeon.apd.query.Catalog cat = m.catalog();
+					com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdAsk.Host host = new com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdAsk.Host(){
+						public void openAsTable( com.shatteredpixel.shatteredpixeldungeon.apd.query.Query q ){}
+					};
+					for (com.shatteredpixel.shatteredpixeldungeon.apd.query.Dataset d : com.shatteredpixel.shatteredpixeldungeon.apd.query.Questions.askable(cat)){
+						com.shatteredpixel.shatteredpixeldungeon.apd.query.Question q = com.shatteredpixel.shatteredpixeldungeon.apd.query.Question.about(d.def.id);
+						com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdAsk.builder(cat, m.currentRuleset(), host, q);
+						com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdAsk.answer(cat, m.currentRuleset(), host, q);
+						java.util.List<ColumnDef> numbers = com.shatteredpixel.shatteredpixeldungeon.apd.query.Questions.measurable(d.def, false);
+						java.util.List<ColumnDef> splits = com.shatteredpixel.shatteredpixeldungeon.apd.query.Questions.groupable(d.def, false);
+						if (!numbers.isEmpty() && !splits.isEmpty()){
+							q = q.withMeasure(com.shatteredpixel.shatteredpixeldungeon.apd.query.Question.Measure.AVERAGE, numbers.get(0).id).withGroupBy(java.util.Arrays.asList(splits.get(0).id));
+							com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdAsk.answer(cat, m.currentRuleset(), host, q);
+						}
+						for (com.shatteredpixel.shatteredpixeldungeon.apd.query.PerUnit.Unit u : com.shatteredpixel.shatteredpixeldungeon.apd.query.Questions.unitsFor(
+								com.shatteredpixel.shatteredpixeldungeon.apd.query.Question.about(d.def.id))){
+							com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdAsk.answer(cat, m.currentRuleset(), host,
+									com.shatteredpixel.shatteredpixeldungeon.apd.query.Question.about(d.def.id).withPer(u));
+							asked[0]++;
+						}
+						asked[0]++;
+					}
+				}
+			});
+			Log.w(TAG, asked[0] + " questions asked");
+			assertTrue(asked[0] >= 1);
+			Thread.sleep(500);
+
 			//4. every step of the filter workflow for every column (hidden information on, so the hidden columns too), on the runs table
 			onRender(new Runnable(){
 				public void run(){

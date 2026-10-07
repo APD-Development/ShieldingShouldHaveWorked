@@ -22,6 +22,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.query.Query;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdAsk;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.apd.demo.DemoData;
@@ -386,6 +388,17 @@ public class UimsdScene extends PixelScene {
 		pane.setListener(new UimsdHomePane.Listener(){
 			@Override
 			public void onLink( String viewId ){
+				if (UimsdHome.ASK_LINK.equals(viewId)){
+					WndUimsdAsk.open(model.catalog(), model.currentRuleset(), new WndUimsdAsk.Host(){
+						@Override
+						public void openAsTable( Query q ){
+							model.showQuery(q);
+							atHome = false;
+							dirty = true;
+						}
+					});
+					return;
+				}
 				openView(viewId);
 			}
 		});

@@ -64,10 +64,13 @@ public class UimsdHomeTourTest {
 		UimsdHome h = UimsdHome.build(cat, RULES.id, true);
 		assertFalse(h.isEmpty());
 		assertTrue(h.runs > 0);
-		for (String id : new String[]{ "runs", "characters", "gear", "enemies", "recent", "records" }) assertNotNull(id, h.card(id));
+		for (String id : new String[]{ "runs", "ask", "characters", "gear", "enemies", "recent", "records" }) assertNotNull(id, h.card(id));
 		assertFalse(h.text().isEmpty());
 		//every link goes to a view that exists
-		for (UimsdHome.Card c : h.cards) for (UimsdHome.Link l : c.links) assertNotNull(l.viewId, cat.view(l.viewId));
+		for (UimsdHome.Card c : h.cards) for (UimsdHome.Link l : c.links){
+			if (UimsdHome.ASK_LINK.equals(l.viewId)) continue;   //opens the question builder, not a table
+			assertNotNull(l.viewId, cat.view(l.viewId));
+		}
 	}
 
 	@Test

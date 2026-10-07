@@ -98,6 +98,9 @@ public final class UimsdHome {
 
 	private static final int LIST = 4;
 
+	//not a table: the link on the Ask card opens the question builder
+	public static final String ASK_LINK = "!ask";
+
 	//true when the page covers runs played under more than one set of rules (only possible with all rules shown): its numbers are not comparable
 	public final boolean mixedRulesets;
 
@@ -139,6 +142,12 @@ public final class UimsdHome {
 		if (h.runs == 0) return h;
 
 		h.cards.add(overview(runsDs, rq, runs));
+		//the friendly front door to everything recorded
+		Card ask = new Card("ask", "Ask a question");
+		ask.heading("Count it, add it up, average it, compare it");
+		ask.line("Ask about", "anything you did", "Pick what you want to know in a few taps: how many casts per floor, your best floor as a Cleric, what you wore when you won.", CellText.EXACT);
+		ask.link("Ask a question", ASK_LINK);
+		h.cards.add(ask);
 		Card c = characters(cat, scope, currentRuleset);
 		if (c != null) h.cards.add(c);
 		c = difficulty(cat, currentRuleset);
