@@ -101,6 +101,16 @@ Levels 1-5, 3 = baseline (never changes, revision 0). Revision 1 (levels 1,2,4,5
 difficulty (saved); legacy runs unknown (?) and play as 3. Telemetry 1.7; UIMSD columns + "Difficulty" view; FloorReplay uses the run's difficulty.
 Physical check joins PHONE-CHECK: difficulty slider text; feel of levels 1 and 5 in a real run (enemy toughness, loot amount). Non-P2W applies.
 
+## UIMSD sweep (safe work done; see below for what is NOT done)
+Done: Home difficulty card; difficulty named in the rules list/notes/reports; class names as words; Guide topics for reports, seed floors/canonical data and
+difficulty; tour reports step; run and group comparisons in reports; wording lint test (UimsdWordingTest); docs refreshed. Reviewed for TODOs: none open.
+NOT done on purpose (each needs the owner's decision, none is a TODO in the code): bosses in UIMSD (boss flag is not recorded: telemetry change); saved
+queries UI; richer multi-column grouping UI; recorded per-floor creatures in seed floors (needs a new row source); final language/style pass (the text is
+functional and lint-clean, not final); archive-and-remove; adult-humor preference (not UIMSD); exact hooks for other inferred signals.
+**PHONE-CHECK build** = the CI build of the commit named in "Latest known-good" below; it carries the whole bundled checklist (Phase 8 file picker, Phase 9
+healing columns, Home layout (incl. Report and Difficulty card), Guide/tour overlay (15 steps), Seed floors screen, Reports (buttons, share sheet, saving each
+format, comparisons), APD Settings difficulty slider and text, feel of difficulty levels 1 and 5). Do not install intermediate builds.
+
 ## Working rules the user set (usage efficiency)
 Minimal narration; batch related work; do not poll CI repeatedly (estimate the finish, check once around then, do independent approved
 work meanwhile); continue autonomously inside approved scope and stop only for genuine product/design decisions, destructive actions,

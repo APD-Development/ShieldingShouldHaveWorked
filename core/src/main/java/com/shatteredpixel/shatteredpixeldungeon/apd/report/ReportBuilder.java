@@ -144,6 +144,42 @@ public final class ReportBuilder {
 		return r;
 	}
 
+	//what a group is called: its key values ("Mage", "3 - Standard / 1")
+	public static String groupName( QueryResult q, GroupRow g ){
+		StringBuilder b = new StringBuilder();
+		for (ColumnDef c : q.groupKeys){
+			if (b.length() > 0) b.append(" / ");
+			b.append(CellFormatter.cell(q.query, g.sample, c).text);
+		}
+		return b.length() == 0 ? "group" : b.toString();
+	}
+
+	//---- comparing two groups of the same table (two characters, two item kinds, two enemies...) ----
+
+	public static Report compareGroups( QueryResult q, GroupRow a, GroupRow b, String rulesLabel, long now, String version ){
+		GroupDetail da = GroupDetail.build(q, a), db = GroupDetail.build(q, b);
+		Report r = start("Group comparison", now, version);
+		for (StatusText.Line l : StatusText.lines(q, q.def.title, rulesLabel)) r.about.add(l.text);
+		r.about.add("A: " + groupName(q, a) + " (" + a.n + (a.n == 1 ? " row)" : " rows)"));
+		r.about.add("B: " + groupName(q, b) + " (" + b.n + (b.n == 1 ? " row)" : " rows)"));
+		Report.Table t = new Report.Table("", provenanceOf(q));
+		t.headers.add("");
+		t.headers.add("A: " + groupName(q, a));
+		t.headers.add("B: " + groupName(q, b));
+		for (int i = 0; i < 3; i++) t.coverage.add("");
+		//the two sheets are computed under the same query, so their lines match one for one; match by label to be safe
+		java.util.Map<String, GroupDetail.Line> other = new java.util.HashMap<>();
+		for (GroupDetail.Line l : db.lines) if (!l.section) other.put(l.label, l);
+		for (GroupDetail.Line l : da.lines){
+			if (l.section) continue;
+			GroupDetail.Line o = other.get(l.label);
+			Report.Cell cb = o == null ? new Report.Cell("?", CellText.UNKNOWN) : new Report.Cell(o.value, o.state, o.small);
+			t.rows.add(new Report.Cell[]{ new Report.Cell(l.label, CellText.EXACT), new Report.Cell(l.value, l.state, l.small), cb });
+		}
+		r.add(t);
+		return r;
+	}
+
 	//---- one run ----
 
 	//a run in a few words (class, outcome, date: the first shown columns), for lists and report headings

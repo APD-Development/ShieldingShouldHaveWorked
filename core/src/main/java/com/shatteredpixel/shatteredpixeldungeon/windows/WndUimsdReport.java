@@ -110,6 +110,32 @@ public final class WndUimsdReport {
 		});
 	}
 
+	//a list of the other groups of this table, to compare this one with
+	public static void compareGroupWith( final UimsdModel m, final GroupRow g ){
+		final QueryResult q = m.result();
+		if (q == null || !q.isGrouped()) return;
+		final List<GroupRow> others = new ArrayList<>();
+		for (GroupRow o : q.groups) if (o != g) others.add(o);
+		if (others.isEmpty()){
+			tell("This table has no other group to compare with.");
+			return;
+		}
+		final List<GroupRow> shown = others.size() > 40 ? others.subList(0, 40) : others;
+		List<String> labels = new ArrayList<>();
+		for (GroupRow o : shown) labels.add(ReportBuilder.groupName(q, o) + "  (" + o.n + ")");
+		ShatteredPixelDungeon.scene().addToFront(new WndUimsdList("Compare with", "Choose another group of this table.", labels, null, new WndUimsdList.Picker(){
+			@Override
+			public void onPick( final int i, boolean checked ){
+				show("These two groups side by side.", new Source(){
+					@Override
+					public Report build(){
+						return ReportBuilder.compareGroups(q, g, shown.get(i), m.currentRulesetLabel(), System.currentTimeMillis(), Game.version);
+					}
+				});
+			}
+		}));
+	}
+
 	public static void ofRun( final UimsdModel m, final Row run ){
 		final Catalog cat = m.catalog();
 		if (cat == null) return;

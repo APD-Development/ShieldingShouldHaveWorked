@@ -137,6 +137,16 @@ public class ReportTest {
 		String groupText = ReportRenderer.text(ReportBuilder.group(res, g, "", NOW, "test"));
 		assertTrue(groupText, groupText.contains("Runs") || groupText.length() > 100);
 
+		//two groups of the same table side by side (two characters)
+		if (res.groups.size() >= 2){
+			Report gc = ReportBuilder.compareGroups(res, res.groups.get(0), res.groups.get(1), "", NOW, "test");
+			Report.Table gt = gc.firstTable();
+			assertEquals(3, gt.headers.size());
+			assertTrue(gt.rows.size() > 3);
+			assertTrue(ReportRenderer.markdown(gc).contains("A: " + ReportBuilder.groupName(res, res.groups.get(0))));
+			assertTrue(gt.headers.get(2).startsWith("B: "));
+		}
+
 		Row a = null, b = null;
 		for (Row r : cat.dataset(Datasets.RUNS).rows){
 			if (!r.finished) continue;

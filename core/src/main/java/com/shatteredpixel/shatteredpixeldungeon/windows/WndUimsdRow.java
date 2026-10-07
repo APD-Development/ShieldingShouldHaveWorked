@@ -122,6 +122,12 @@ public class WndUimsdRow extends Window {
 					WndUimsdReport.ofGroup(m, g);
 				}
 			}));
+			actions.add(new Action("Compare with another group...", new Runnable(){
+				@Override
+				public void run(){
+					WndUimsdReport.compareGroupWith(m, g);
+				}
+			}));
 			if (m.canOpenGroups()){
 				int n = g.n;
 				actions.add(new Action("The " + n + " " + (n == 1 ? singular(def.countLabel) : def.countLabel.toLowerCase()), new Runnable(){

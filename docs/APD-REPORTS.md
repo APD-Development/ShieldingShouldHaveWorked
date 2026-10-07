@@ -19,6 +19,7 @@ Reports are built from the same data as the UIMSD screens (`apd.report`); there 
 | Individual run (details, items, enemies, how it ended) | `run` | run row -> Report for this run |
 | Character / item / enemy / death statistics | `group` (the group's statistics sheet) | group row -> Report for this group |
 | Comparison of two runs | `compareRuns` (with a difference column) | run row -> Compare with another run |
+| Comparison of two groups (two characters, item kinds, enemies...) | `compareGroups` (the groups' statistics sheets side by side) | group row -> Compare with another group |
 | Seed floors + recorded vs canonical | `seedFloors` | Options (in a seed floors view) -> Share the seed floors report |
 
 ## Provenance rules

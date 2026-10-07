@@ -104,7 +104,7 @@ public final class UimsdGuide {
 						+ "and how many of the shown rows know each column. Lines marked > can be tapped to include what was left out.", "coverage"));
 		t.add(new Topic("reports", "Sharing: reports",
 				"A report is a readable summary you can send to someone or keep: your overall numbers, the table you are looking at, one run, a group "
-						+ "(a character, an item kind, an enemy), two runs side by side, or the seed floors of a run.\n\n"
+						+ "(a character, an item kind, an enemy), two runs or two groups side by side, or the seed floors of a run.\n\n"
 						+ "Find it under Options (Share a report of this view), on Home (Report), and in the window of a run or a group. Share it as text, or "
 						+ "save it as Markdown, a web page (open it in a browser and print it to PDF) or CSV for a spreadsheet.\n\n"
 						+ "Reports keep the marks (?, >=, ~) and a legend, and say clearly which data is canonical. They never include hidden information "
