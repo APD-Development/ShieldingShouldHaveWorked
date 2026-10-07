@@ -69,7 +69,8 @@ public class ApdSettingsClickDeviceTest {
 	private static List<Gizmo> membersOf( Group g ) throws Exception {
 		Field f = Group.class.getDeclaredField("members");
 		f.setAccessible(true);
-		return new ArrayList<>((List<Gizmo>) f.get(g));
+		List<Gizmo> list = (List<Gizmo>) f.get(g);
+		return list == null ? new ArrayList<Gizmo>() : new ArrayList<>(list);
 	}
 
 	private static <T> T find( Gizmo g, Class<T> type ) throws Exception {
