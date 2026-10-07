@@ -209,6 +209,11 @@ public class Dungeon {
 	public static int initialVersion;
 	public static int version;
 
+	//APD: the difficulty (1-5) this run was started with. It is part of the run (saved with it) and never follows the setting afterwards.
+	//difficultyKnown is false for a run that was started before difficulty existed: it plays as 3, but its difficulty was never recorded.
+	public static int difficulty = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.Difficulty.DEFAULT;
+	public static boolean difficultyKnown = true;
+
 	public static boolean daily;
 	public static boolean dailyReplay;
 	public static String customSeedText = "";
@@ -238,6 +243,8 @@ public class Dungeon {
 
 		initialVersion = version = Game.versionCode;
 		challenges = SPDSettings.challenges();
+		difficulty = SPDSettings.apdDifficulty();
+		difficultyKnown = true;
 		mobsToChampion = 1;
 
 		Actor.clear();
@@ -633,6 +640,7 @@ public class Dungeon {
 	private static final String BADGES		= "badges";
 	//APD: names the run history log this save belongs to (older saves do not have it)
 	private static final String APD_RUN_ID	= "apd_run_id";
+	private static final String APD_DIFFICULTY	= "apd_difficulty";
 	
 	public static void saveGame( int save ) {
 		//APD: give every item the hero holds its identity before it is written (the recorder only reads and labels)
@@ -648,6 +656,8 @@ public class Dungeon {
 			bundle.put( DAILY_REPLAY, dailyReplay );
 			bundle.put( LAST_PLAYED, lastPlayed = Game.realTime);
 			bundle.put( CHALLENGES, challenges );
+			//APD: only a run whose difficulty was recorded writes it (an older run stays "not recorded")
+			if (difficultyKnown) bundle.put( APD_DIFFICULTY, difficulty );
 			bundle.put( MOBS_TO_CHAMPION, mobsToChampion );
 			bundle.put( HERO, hero );
 			bundle.put( DEPTH, depth );
@@ -761,6 +771,13 @@ public class Dungeon {
 		Toolbar.swappedQuickslots = false;
 
 		Dungeon.challenges = bundle.getInt( CHALLENGES );
+		if (bundle.contains( APD_DIFFICULTY )){
+			Dungeon.difficulty = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.Difficulty.normalize( bundle.getInt( APD_DIFFICULTY ) );
+			Dungeon.difficultyKnown = true;
+		} else {
+			Dungeon.difficulty = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.Difficulty.DEFAULT;
+			Dungeon.difficultyKnown = false;
+		}
 		Dungeon.mobsToChampion = bundle.getFloat( MOBS_TO_CHAMPION );
 		
 		Dungeon.level = null;

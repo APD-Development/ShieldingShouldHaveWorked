@@ -76,6 +76,7 @@ Pending, bundled for the next PHONE-CHECK build (none blocking):
 - Home layout
 - Guide/tour overlay and interaction
 - Seed floors screen (Runs row -> Seed floors (canonical)): labels, ~ marks, notice line, comparison table
+- APD Settings: Difficulty slider (1-5) and its explanatory text fit and work
 - Reports: Home Report button, Options -> Share a report, run/group window report buttons, the share sheet and saving each format to a file
 
 ## Floor replay (user approved all 3 decisions; Phase A -> B -> C autonomous; A green at 4e43ce250, B+C implemented and verified at 8dbbadf69 (milestone complete, awaiting approval), see docs/APD-FLOOR-REPLAY.md; physical check of the Seed floors screen joins the PHONE-CHECK bundle)
@@ -93,6 +94,11 @@ progress reports or repeated ETA checks. When the build finishes, report actual 
 Format: Markdown / plain text / HTML (print to PDF) / CSV from one `Report` model; share as text or save via the system picker; no native PDF
 (investigated). Reports: lifetime, view, run, group, run comparison, seed floors (canonical clearly separated). Marks + legend + canonical
 notice in every format. Physical check joins the PHONE-CHECK bundle: Report buttons/windows, share sheet, saving a file.
+
+## Difficulty system (framework COMPLETE, awaiting the owner's modifier values; see docs/APD-DIFFICULTY.md)
+Levels 1-5, 3 = baseline (never changes). No balance approved: all levels are neutral placeholders (play like 3, recorded as chosen, own ruleset,
+balance revision 0). Setting = new runs only; run keeps its difficulty (saved); legacy runs unknown (?), never 3. Telemetry 1.7. UIMSD: runs column,
+"Difficulty" view. Do NOT implement final 1/2/4/5 values until approved. Non-P2W applies. Physical check joins PHONE-CHECK: APD Settings difficulty slider + text.
 
 ## Working rules the user set (usage efficiency)
 Minimal narration; batch related work; do not poll CI repeatedly (estimate the finish, check once around then, do independent approved

@@ -23,6 +23,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.Difficulty;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.apd.demo.DemoData;
 import com.shatteredpixel.shatteredpixeldungeon.apd.demo.DemoGenerator;
@@ -56,6 +57,8 @@ public class APDSettingsPane extends Component {
 	private RenderedTextBlock title;
 	private OptionSlider optExotic;
 	private RenderedTextBlock info;
+	private OptionSlider optDifficulty;
+	private RenderedTextBlock difficultyInfo;
 	private CheckBox chkRecord;
 	private RenderedTextBlock status;
 	private RenderedTextBlock storage;
@@ -89,6 +92,22 @@ public class APDSettingsPane extends Component {
 		info = PixelScene.renderTextBlock(
 				"Minimum chance that a generated potion or scroll is exotic. 0% is the normal game.", 5 );
 		add( info );
+
+		optDifficulty = new OptionSlider( "Difficulty (new runs)",
+				"1", "5", Difficulty.MIN, Difficulty.MAX ) {
+			@Override
+			protected void onChange() {
+				SPDSettings.apdDifficulty( getSelectedValue() );
+			}
+		};
+		optDifficulty.setSelectedValue( SPDSettings.apdDifficulty() );
+		add( optDifficulty );
+
+		//placeholder wording. Honest about the state: no balance for levels other than 3 is approved yet, so they play like 3 (but are recorded as chosen)
+		difficultyInfo = PixelScene.renderTextBlock(
+				"3 is the normal game. Applies to runs you start from now on; a run in progress keeps its difficulty. "
+						+ "Balance for the other levels is not decided yet: for now they play like 3, but runs are recorded with the level you chose.", 5 );
+		add( difficultyInfo );
 
 		chkRecord = new CheckBox( "Record run history" ) {
 			@Override
@@ -205,7 +224,7 @@ public class APDSettingsPane extends Component {
 			public void run() {
 				String result;
 				try {
-					int runs = DemoGenerator.generate( demoRoot(), Ruleset.of( SPDSettings.apdExoticChance(), SPDSettings.challenges() ), System.currentTimeMillis() );
+					int runs = DemoGenerator.generate( demoRoot(), Ruleset.forNewRun(), System.currentTimeMillis() );
 					DemoData.viewDemo( true );
 					result = runs + " made-up runs written. UIMSD now shows DEMO data (the button below switches back to your real data). Your real history was not touched.";
 				} catch (Throwable e) {
@@ -235,6 +254,11 @@ public class APDSettingsPane extends Component {
 		info.maxWidth( (int)width );
 		info.setPos( x, pos );
 		pos = info.bottom() + GAP;
+		optDifficulty.setRect( x, pos, width, 24 );
+		pos = optDifficulty.bottom() + GAP;
+		difficultyInfo.maxWidth( (int)width );
+		difficultyInfo.setPos( x, pos );
+		pos = difficultyInfo.bottom() + GAP;
 		chkRecord.setRect( x, pos, width, 16 );
 		pos = chkRecord.bottom() + GAP;
 		status.maxWidth( (int)width );

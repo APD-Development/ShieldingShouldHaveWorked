@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.apd.recorder;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.Difficulty;
 
 import java.security.MessageDigest;
 
@@ -52,13 +53,28 @@ public final class Ruleset {
 		this.exoticChance = exoticChance;
 	}
 
-	//reads the rules from the game right now
+	//reads the rules from the game right now (the run being played: its own difficulty, not the setting)
 	public static Ruleset current(){
-		return of(SPDSettings.apdExoticChance(), Dungeon.challenges);
+		return of(SPDSettings.apdExoticChance(), Dungeon.challenges, Dungeon.difficulty);
 	}
 
+	//the rules a NEW run would be played under, from the settings
+	public static Ruleset forNewRun(){
+		return of(SPDSettings.apdExoticChance(), SPDSettings.challenges(), SPDSettings.apdDifficulty());
+	}
+
+	//difficulty 3 (the game as it is)
 	public static Ruleset of( int exoticChance, int challenges ){
+		return of(exoticChance, challenges, Difficulty.DEFAULT);
+	}
+
+	//Difficulty is part of the identity. Difficulty 3 adds nothing to the rule text, so its id is exactly the id the same rules had before
+	//difficulty existed (older runs stay in the same ruleset as new difficulty-3 runs: same balance). Any other level adds its number and its
+	//balance revision (0 = placeholder), so runs of different difficulty or different balance can never share an id.
+	public static Ruleset of( int exoticChance, int challenges, int difficulty ){
 		String text = "base=spd-4.0.0;apd0001=on;cleric=blocked;exotic=" + exoticChance + ";challenges=" + challenges;
+		int level = Difficulty.isValid(difficulty) ? difficulty : Difficulty.DEFAULT;
+		if (level != Difficulty.DEFAULT) text += ";difficulty=" + level + ";balance=" + Difficulty.balanceRevision(level);
 		return new Ruleset(ID_VERSION + "-" + hash12(text), text, exoticChance);
 	}
 

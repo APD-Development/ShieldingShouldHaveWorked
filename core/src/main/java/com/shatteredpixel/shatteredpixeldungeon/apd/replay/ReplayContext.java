@@ -46,6 +46,17 @@ public final class ReplayContext {
 		return exoticChance;
 	}
 
+	//the run's difficulty for the replay thread (see apd.difficulty.Difficulty)
+	private static volatile int difficulty = 3;
+
+	static void difficulty( int level ){
+		difficulty = level;
+	}
+
+	public static int difficulty(){
+		return difficulty;
+	}
+
 	//Tests that compare a replay with the game's own generation set this, so both break shop-bag ties the same (deterministic) way.
 	public static volatile boolean forceDeterministicBags;
 

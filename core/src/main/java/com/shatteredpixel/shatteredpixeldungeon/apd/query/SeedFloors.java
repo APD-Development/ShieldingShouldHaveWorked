@@ -42,12 +42,14 @@ public final class SeedFloors {
 		public int challenges;
 		public int exoticChance;
 		public boolean exoticKnown;
+		//the run's difficulty (3 when it was not recorded: such a run was played at the baseline balance)
+		public int difficulty = 3;
 		//the deepest floor the run entered, -1 when the log does not say
 		public int reached = -1;
 		public String ruleset;
 		//what a replay of this run depends on (the replay engine adds its own version to it)
 		public String key(){
-			return seed + "|" + heroClass + "|" + challenges + "|" + exoticChance;
+			return seed + "|" + heroClass + "|" + challenges + "|" + exoticChance + "|" + difficulty;
 		}
 	}
 
@@ -168,6 +170,7 @@ public final class SeedFloors {
 		s.challenges = val(run, d, FactKeys.CHALLENGES) != null ? (int) run.num(d.indexOf(FactKeys.CHALLENGES)) : 0;
 		s.exoticKnown = val(run, d, FactKeys.EXOTIC_CHANCE) != null;
 		s.exoticChance = s.exoticKnown ? (int) run.num(d.indexOf(FactKeys.EXOTIC_CHANCE)) : 0;
+		if (val(run, d, FactKeys.DIFFICULTY) != null) s.difficulty = (int) run.num(d.indexOf(FactKeys.DIFFICULTY));
 		int reached = -1;
 		for (String k : new String[]{ FactKeys.DEEPEST, FactKeys.DEEPEST_ENTERED }){
 			if (val(run, d, k) != null) reached = Math.max(reached, (int) run.num(d.indexOf(k)));

@@ -73,6 +73,12 @@ public final class Datasets {
 				.describe("A run recorded by several telemetry versions has several log segments; they are shown as one run."));
 		d.add(ColumnDef.num(FactKeys.CHALLENGES, "Challenges").group("Rules").describe("The challenge bit mask."));
 		d.add(ColumnDef.num(FactKeys.EXOTIC_CHANCE, "Exotic %").group("Rules"));
+		//unknown (?) for a run recorded before telemetry 1.7: such a run was played at the baseline balance but its difficulty was never recorded
+		d.add(ColumnDef.enumeration(FactKeys.DIFFICULTY, "Difficulty").since(1, 7).group("Rules")
+				.label(1, "1 - Easiest").label(2, "2 - Easier").label(3, "3 - Standard").label(4, "4 - Harder").label(5, "5 - Hardest")
+				.describe("The difficulty the run was started with. ? means it was not recorded (a run from before difficulty existed)."));
+		d.add(ColumnDef.num(FactKeys.DIFFICULTY_BALANCE, "Balance revision").since(1, 7).group("Rules")
+				.describe("0 = the difficulty had no balance changes yet (placeholder); 1 and up = an approved balance pass. Runs of different revisions are never the same ruleset."));
 		d.add(ColumnDef.text(FactKeys.RULESET, "Ruleset").group("Rules"));
 		d.add(yesNo(ColumnDef.enumeration(FactKeys.DAILY, "Daily")).group("Rules"));
 		d.add(ColumnDef.text(FactKeys.APD_VERSION, "APD version").group("Run"));
@@ -440,6 +446,12 @@ public final class Datasets {
 		v.add(new ViewDef("challenges", "Challenges", "Runs grouped by challenge setup (all rulesets, each group is one ruleset).",
 				Query.of(RUNS).withScope(Scope.DEFAULT.withRules(Scope.Rules.ALL, ""))
 						.withGroup(runStats(FactKeys.CHALLENGES, FactKeys.EXOTIC_CHANCE)).withMinSample(DEFAULT_MIN_SAMPLE)
+						.withSorts(Arrays.asList(new Sort("count", true)))));
+		//difficulty is part of the ruleset identity, so each group of a non-baseline level is its own ruleset; level 3 shares its ruleset with
+		//runs recorded before difficulty existed (same balance), which show as the unknown group
+		v.add(new ViewDef("difficulty", "Difficulty", "Runs grouped by difficulty (all rulesets). The unknown group is runs recorded before difficulty existed.",
+				Query.of(RUNS).withScope(Scope.DEFAULT.withRules(Scope.Rules.ALL, ""))
+						.withGroup(runStats(FactKeys.DIFFICULTY, FactKeys.DIFFICULTY_BALANCE)).withMinSample(DEFAULT_MIN_SAMPLE)
 						.withSorts(Arrays.asList(new Sort("count", true)))));
 		return Collections.unmodifiableList(v);
 	}

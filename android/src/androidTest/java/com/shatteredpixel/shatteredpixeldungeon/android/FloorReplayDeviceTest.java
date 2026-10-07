@@ -52,6 +52,17 @@ public class FloorReplayDeviceTest {
 			com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder.reset();
 			assertNull("no game should be live on the title screen", FloorReplay.refusal());
 
+			//the difficulty setting is stored and validated on the device (the game's own preferences), and put back
+			int difficultyWas = com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdDifficulty();
+			try {
+				com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdDifficulty(4);
+				assertEquals(4, com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdDifficulty());
+				com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdDifficulty(42);
+				assertEquals(3, com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdDifficulty());
+			} finally {
+				com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdDifficulty(difficultyWas);
+			}
+
 			long t0 = System.nanoTime();
 			List<ReplayFloor> a = FloorReplay.replay(424242L, 0, HeroClass.WARRIOR, FloorReplay.LAST_FLOOR);
 			long t1 = System.nanoTime();

@@ -46,6 +46,8 @@ public final class FactKeys {
 	public static final String HERO_CLASS = "run.heroClass";
 	public static final String RULESET = "run.ruleset";
 	public static final String EXOTIC_CHANCE = "run.exoticChance";
+	public static final String DIFFICULTY = "run.difficulty";                  //num 1-5, absent = not recorded (telemetry 1.7+)
+	public static final String DIFFICULTY_BALANCE = "run.difficultyBalance";    //num: 0 = placeholder balance, 1+ = an approved balance revision
 	public static final String START_MILLIS = "run.startMillis";
 	public static final String DATE = "run.date";                 //text yyyy-MM-dd, legacy records only
 	public static final String GAME_VERSION = "run.gameVersion";  //text "v3.1.1", legacy records only

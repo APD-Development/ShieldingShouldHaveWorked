@@ -300,6 +300,8 @@ public class SPDSettings extends GameSettings {
 	public static final String KEY_APD_CLERIC_ATTEMPTS  = "apd_cleric_attempts";
 
 	public static final int APD_EXOTIC_CHANCE_MAX = 80;
+	//APD: difficulty 1-5 for NEW runs (3 = the game as it is); an existing run keeps the difficulty it started with
+	public static final String KEY_APD_DIFFICULTY       = "apd_difficulty";
 
 	//APD: the UIMSD tour has been offered once (taken or declined); the Guide stays available whatever this says
 	public static final String KEY_APD_UIMSD_GUIDE_SEEN = "apd_uimsd_guide_seen";
@@ -326,6 +328,15 @@ public class SPDSettings extends GameSettings {
 	//percent chance (0-80) that a generated potion/scroll is exotic, 0 is the vanilla behaviour
 	public static void apdExoticChance( int value ){
 		put( KEY_APD_EXOTIC_CHANCE, value );
+	}
+
+	public static void apdDifficulty( int value ){
+		put( KEY_APD_DIFFICULTY, com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.Difficulty.normalize( value ) );
+	}
+
+	public static int apdDifficulty(){
+		return getInt( KEY_APD_DIFFICULTY, com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.Difficulty.DEFAULT,
+				com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.Difficulty.MIN, com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.Difficulty.MAX );
 	}
 
 	public static int apdExoticChance(){

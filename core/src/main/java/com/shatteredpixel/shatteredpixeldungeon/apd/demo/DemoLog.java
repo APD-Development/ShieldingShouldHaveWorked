@@ -19,6 +19,8 @@ public final class DemoLog {
 	public final File file;
 	final long createdAt;
 	public long clock = 1;
+	//telemetry 1.7 runs only: the difficulty written into the next run start (0 = not recorded)
+	public int difficulty;
 	public int depth = 1;
 
 	public DemoLog( File root, String logId, TelemetryVersion v, long createdAt ){
@@ -32,6 +34,7 @@ public final class DemoLog {
 		s.runId = runId; s.segment = segment; s.heroClass = heroClass; s.rulesetId = ruleset; s.challenges = challenges; s.exoticChance = exotic;
 		s.seed = 4242; s.apdVersionName = DemoData.VERSION_MARK; s.platform = DemoData.BUILD_MARK; s.customSeedText = DemoData.BUILD_MARK;
 		s.rulesetText = DemoData.BUILD_MARK; s.realTimeMillis = createdAt;
+		s.difficulty = difficulty;
 		LifecycleEvents.emitRunStart(w, clock++, partial, s);
 		return this;
 	}

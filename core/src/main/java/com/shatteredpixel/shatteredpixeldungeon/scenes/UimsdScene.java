@@ -114,7 +114,7 @@ public class UimsdScene extends PixelScene {
 			root = DemoData.demoRootFor(root);
 			if (!DemoData.isSyntheticRoot(root)) root = null;   //no demo data has been generated
 		}
-		Ruleset rules = from == GameScene.class ? Ruleset.current() : Ruleset.of(SPDSettings.apdExoticChance(), SPDSettings.challenges());
+		Ruleset rules = from == GameScene.class ? Ruleset.current() : Ruleset.forNewRun();
 		rulesId = rules.id;
 		rulesLabel = "challenges " + SPDSettings.challenges() + ", exotic " + rules.exoticChance + "%";
 		endTutorial();
@@ -730,7 +730,7 @@ public class UimsdScene extends PixelScene {
 						root = mainRoot;
 					} else {
 						root = DemoData.sampleRootFor(ApdRecorder.historyRoot() != null ? ApdRecorder.historyRoot() : mainRoot);
-						DemoGenerator.generateSample(root, Ruleset.of(SPDSettings.apdExoticChance(), SPDSettings.challenges()), System.currentTimeMillis());
+						DemoGenerator.generateSample(root, Ruleset.forNewRun(), System.currentTimeMillis());
 						sampleRoot = root;
 					}
 					UimsdModel tm = new UimsdModel(rulesId, rulesLabel);

@@ -92,6 +92,21 @@ public class UimsdDeviceTimingTest {
 			assertTrue("Home has nothing on it", !home.isEmpty() && home.cards.size() >= 5);
 			assertTrue("Home too slow: " + homeMs + " ms", homeMs < 3000);
 
+			//difficulty: the demo history has recorded and unknown difficulties, and the difficulty view runs
+			com.shatteredpixel.shatteredpixeldungeon.apd.query.Dataset runsDs = warm.dataset("runs");
+			int diffCol = runsDs.def.indexOf(com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKeys.DIFFICULTY);
+			java.util.Set<Long> levels = new java.util.HashSet<>();
+			int unknownDiff = 0;
+			for (com.shatteredpixel.shatteredpixeldungeon.apd.query.Row rr : runsDs.rows){
+				if (rr.isKnown(diffCol)) levels.add(rr.num(diffCol)); else unknownDiff++;
+			}
+			Log.w(TAG, "difficulty levels in the demo history: " + levels + ", unknown on " + unknownDiff + " runs");
+			assertTrue("demo history should record several difficulties: " + levels, levels.size() >= 3);
+			assertTrue("older demo runs must show an unknown difficulty", unknownDiff > 0);
+			assertTrue(warm.view("difficulty") != null);
+			assertTrue("difficulty 3 keeps the id the rules had before", "r1-37d60350c6b1".equals(Ruleset.of(30, 0).id)
+					&& Ruleset.of(30, 0).id.equals(Ruleset.of(30, 0, 3).id) && !Ruleset.of(30, 0, 4).id.equals(Ruleset.of(30, 0).id));
+
 			//reports from the same catalog, in all four formats
 			long rp0 = System.nanoTime();
 			com.shatteredpixel.shatteredpixeldungeon.apd.report.Report life = com.shatteredpixel.shatteredpixeldungeon.apd.report.ReportBuilder

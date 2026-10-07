@@ -23,6 +23,12 @@ uimsd-first-screen | - | APD 4.0.8-apd | 2026-10-07
   item is never shown for a run that is still going, even with hidden information switched on. After a run is over it can be revealed.
 - Runs played under different rules are never mixed unless you choose to; rows whose ruleset is unknown are kept apart and counted.
 
+telemetry-1.7-difficulty | telemetry 1.7 | APD 4.0.8-apd | 2026-10-07
+- Telemetry 1.7 records the difficulty (1-5) a run was started with, and which balance revision that difficulty had. Difficulty is part of the
+  run's rules: runs at different difficulties are different rulesets and are never mixed unless you choose to. Difficulty 3 is the game as it is.
+- A run recorded before 1.7 shows its difficulty as unknown (?), never as 3: it was played at the baseline balance, but its difficulty was not
+  recorded. UIMSD can filter and group runs by difficulty.
+
 telemetry-1.6-exact-healing | telemetry 1.6 | APD 4.0.8-apd | 2026-10-07
 - Telemetry 1.6 records healing exactly. Every way the game heals the hero (natural regeneration, the Healing effect of potions,
   food, Sungrass, Dewdrops, the Chalice of Blood, Vampiric weapons, talents and abilities that heal, wands, wells) now reports the HP

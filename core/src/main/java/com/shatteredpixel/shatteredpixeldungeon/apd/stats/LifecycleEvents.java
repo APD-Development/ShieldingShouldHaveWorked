@@ -93,6 +93,9 @@ public final class LifecycleEvents {
 		public boolean externalModsPresent;
 		public String platform = "";
 		public long realTimeMillis;
+		//telemetry 1.7: the run's difficulty 1-5 (0 = not recorded: a run from before difficulty existed) and the balance revision it was played with
+		public int difficulty;
+		public int difficultyBalance;
 	}
 
 	public static boolean emitRunStart( RunLogWriter w, long clock, boolean partial, RunStart s ){
@@ -102,6 +105,7 @@ public final class LifecycleEvents {
 				.signed(s.seed).unsigned(s.seedType).string(s.customSeedText).unsigned(Math.max(0, s.challenges))
 				.string(s.heroClass).string(s.rulesetId).string(s.rulesetText).unsigned(Math.max(0, s.exoticChance))
 				.bool(s.introActive).bool(s.externalModsPresent).string(s.platform).unsigned(Math.max(0, s.realTimeMillis))
+				.unsigned(Math.max(0, s.difficulty)).unsigned(Math.max(0, s.difficultyBalance))
 				.emit();
 	}
 
@@ -127,6 +131,11 @@ public final class LifecycleEvents {
 		s.externalModsPresent = p.bool();
 		s.platform = str(p.string());
 		s.realTimeMillis = p.unsigned();
+		//1.7 appended these; an older log ends here and its difficulty stays 0 (not recorded)
+		if (p.hasRemaining()){
+			s.difficulty = p.unsignedInt();
+			s.difficultyBalance = p.hasRemaining() ? p.unsignedInt() : 0;
+		}
 		return s;
 	}
 

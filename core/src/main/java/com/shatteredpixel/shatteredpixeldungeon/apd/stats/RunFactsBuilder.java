@@ -109,6 +109,11 @@ public final class RunFactsBuilder {
 						f.text(FactKeys.HERO_CLASS, s.heroClass, Fact.PROV_RECORDED);
 						f.text(FactKeys.RULESET, s.rulesetId, Fact.PROV_RECORDED);
 						f.num(FactKeys.EXOTIC_CHANCE, s.exoticChance, Fact.PROV_RECORDED);
+						//only a run that recorded its difficulty has the fact: for an older run it is unknown, never "3"
+						if (s.difficulty > 0){
+							f.num(FactKeys.DIFFICULTY, s.difficulty, Fact.PROV_RECORDED);
+							f.num(FactKeys.DIFFICULTY_BALANCE, s.difficultyBalance, Fact.PROV_RECORDED);
+						}
 						f.num(FactKeys.START_MILLIS, s.realTimeMillis, Fact.PROV_RECORDED);
 						break;
 					}

@@ -420,6 +420,8 @@ public abstract class Char extends Actor {
 			}
 
 			dmg = dmg*dmgMulti;
+			//APD: difficulty seam (identity at difficulty 3)
+			dmg = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.DifficultyHooks.attackDamage(this, dmg);
 
 			//flat damage bonus is affected by multipliers
 			dmg += dmgBonus;

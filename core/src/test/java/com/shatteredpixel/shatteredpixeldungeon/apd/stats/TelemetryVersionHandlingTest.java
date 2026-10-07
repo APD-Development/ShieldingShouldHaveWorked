@@ -37,11 +37,11 @@ public class TelemetryVersionHandlingTest {
 
 	@Test
 	public void newerMinorIsReadableAndFlagged() throws Exception {
-		File f = writeWith("minor", new TelemetryVersion(1, 7), true);
+		File f = writeWith("minor", new TelemetryVersion(1, 8), true);
 		ReadResult r = RunLogReader.read(f);
 		assertEquals(ReadStatus.SEALED, r.status);
 		assertTrue(r.newerThanReader());
-		assertEquals(new TelemetryVersion(1, 7), r.header.telemetryVersion);
+		assertEquals(new TelemetryVersion(1, 8), r.header.telemetryVersion);
 		assertEquals(1, r.events.size());
 	}
 

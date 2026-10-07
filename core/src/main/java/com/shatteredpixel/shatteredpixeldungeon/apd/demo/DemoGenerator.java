@@ -158,7 +158,11 @@ public final class DemoGenerator {
 		int exotic = EXOTIC[pick(EXOTIC.length)];
 		//most runs use the ruleset the player is on now, so the default view is full; the rest are other rulesets
 		boolean currentRules = i % 5 != 0;
-		String rules = currentRules ? current.id : Ruleset.of(exotic, challenges).id;
+		//difficulty (telemetry 1.7 runs only; older runs never recorded it). Runs on the current rules are difficulty 3; some of the others
+		//were played at other levels, which makes them other rulesets. No random draw: the demo history's other content stays as it was.
+		int[] otherLevels = { 2, 4, 5, 1 };
+		int diff = !has(v, 7) ? 0 : currentRules ? 3 : otherLevels[(i / 5) % otherLevels.length];
+		String rules = currentRules ? current.id : Ruleset.of(exotic, challenges, diff == 0 ? 3 : diff).id;
 		int ch = currentRules ? 0 : challenges;
 		int ex = currentRules ? current.exoticChance : exotic;
 		long created = base - (long) (runs - i) * 86_400_000L / 2 + pick(3_000_000);
@@ -178,6 +182,7 @@ public final class DemoGenerator {
 
 		String mainId = runId;
 		DemoLog log = new DemoLog(root, mainId, v, created);
+		log.difficulty = diff;
 		log.start(runId, 0, cls, rules, ch, ex, partial);
 		boolean items = has(v, 2), combat = has(v, 3), generation = has(v, 4);
 		String lastEnemy = "rat";

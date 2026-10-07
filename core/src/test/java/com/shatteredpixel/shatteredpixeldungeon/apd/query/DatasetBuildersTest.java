@@ -510,7 +510,7 @@ public class DatasetBuildersTest {
 	public void everyShippedViewRunsWithoutProblemsOnRealRows() throws Exception {
 		someHistory();
 		Catalog cat = load();
-		assertEquals(11, cat.views().size());
+		assertEquals(12, cat.views().size());
 		for (ViewDef v : cat.views()){
 			Dataset ds = cat.datasetOf(v);
 			assertNotNull(v.id, ds);
@@ -553,6 +553,6 @@ public class DatasetBuildersTest {
 	public void anEmptyHistoryGivesEmptyDatasets(){
 		Catalog cat = load();
 		for (Dataset d : cat.datasets()) assertEquals(0, d.rows.size());
-		assertEquals(11, cat.views().size());
+		assertEquals(12, cat.views().size());
 	}
 }

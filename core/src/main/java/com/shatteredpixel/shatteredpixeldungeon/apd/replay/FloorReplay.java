@@ -10,6 +10,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.Difficulty;
 import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder;
 import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ReplayScan;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
@@ -121,6 +122,11 @@ public final class FloorReplay {
 
 	//exoticChance: the run's own "exotic potions/scrolls" percent (0 = vanilla)
 	public static List<ReplayFloor> replay( long seed, int challenges, int exoticChance, HeroClass heroClass, int maxDepth, Observer observer ) throws Refused {
+		return replay(seed, challenges, exoticChance, Difficulty.DEFAULT, heroClass, maxDepth, observer);
+	}
+
+	//difficulty: the run's own difficulty (1-5); only what the difficulty system changes is affected (nothing at 3, and nothing yet at the others)
+	public static List<ReplayFloor> replay( long seed, int challenges, int exoticChance, int difficulty, HeroClass heroClass, int maxDepth, Observer observer ) throws Refused {
 		String why = refusal();
 		if (why != null) throw new Refused(why);
 		synchronized (LOCK){
@@ -132,6 +138,7 @@ public final class FloorReplay {
 			try {
 				saved = new Saved();
 				ReplayContext.exoticChance(Math.max(0, Math.min(80, exoticChance)));
+				ReplayContext.difficulty(Difficulty.normalize(difficulty));
 				ReplayContext.enter();
 				return generate(seed, challenges, heroClass, Math.max(1, Math.min(LAST_FLOOR, maxDepth)), observer);
 			} finally {

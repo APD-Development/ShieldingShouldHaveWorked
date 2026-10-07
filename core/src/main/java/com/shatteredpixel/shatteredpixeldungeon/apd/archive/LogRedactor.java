@@ -275,6 +275,11 @@ public final class LogRedactor {
 		o.writeBoolean(p.bool());                  //externalModsPresent
 		o.writeUnsigned(id(p.string()));           //platform
 		o.writeUnsigned(p.unsigned());             //realTimeMillis
+		//telemetry 1.7 appended the run's difficulty and balance revision (not hidden information: copied as they are); older starts end above
+		if (p.hasRemaining()){
+			o.writeUnsigned(p.unsigned());         //difficulty
+			if (p.hasRemaining()) o.writeUnsigned(p.unsigned());   //difficultyBalance
+		}
 		if (p.hasRemaining()) throw new IllegalStateException("run start has fields this redactor does not know");
 		return o.toByteArray();
 	}
