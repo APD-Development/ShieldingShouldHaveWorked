@@ -53,7 +53,7 @@ public final class SeedFloorsRunner implements SeedFloors.Provider {
 		}
 		if (floors == null){
 			try {
-				floors = FloorReplay.replay(spec.seed, spec.challenges, spec.exoticChance, spec.difficulty, cls, FloorReplay.LAST_FLOOR, null);
+				floors = FloorReplay.replay(spec.seed, spec.challenges, spec.exoticChance, spec.difficulty, spec.balance, cls, FloorReplay.LAST_FLOOR, null);
 			} catch (FloorReplay.Refused e){
 				throw new SeedFloors.NotAvailable("Seed floors cannot be built right now: " + e.getMessage() + ".");
 			}

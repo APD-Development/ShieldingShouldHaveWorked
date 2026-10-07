@@ -213,6 +213,8 @@ public class Dungeon {
 	//difficultyKnown is false for a run that was started before difficulty existed: it plays as 3, but its difficulty was never recorded.
 	public static int difficulty = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.Difficulty.DEFAULT;
 	public static boolean difficultyKnown = true;
+	//and the balance revision of that difficulty the run is played with (0 = no modifiers). Fixed for the run, like the difficulty itself.
+	public static int difficultyBalance = 0;
 
 	public static boolean daily;
 	public static boolean dailyReplay;
@@ -245,6 +247,7 @@ public class Dungeon {
 		challenges = SPDSettings.challenges();
 		difficulty = SPDSettings.apdDifficulty();
 		difficultyKnown = true;
+		difficultyBalance = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.Difficulty.balanceRevision(difficulty);
 		mobsToChampion = 1;
 
 		Actor.clear();
@@ -641,6 +644,7 @@ public class Dungeon {
 	//APD: names the run history log this save belongs to (older saves do not have it)
 	private static final String APD_RUN_ID	= "apd_run_id";
 	private static final String APD_DIFFICULTY	= "apd_difficulty";
+	private static final String APD_DIFFICULTY_BALANCE	= "apd_difficulty_balance";
 	
 	public static void saveGame( int save ) {
 		//APD: give every item the hero holds its identity before it is written (the recorder only reads and labels)
@@ -657,7 +661,10 @@ public class Dungeon {
 			bundle.put( LAST_PLAYED, lastPlayed = Game.realTime);
 			bundle.put( CHALLENGES, challenges );
 			//APD: only a run whose difficulty was recorded writes it (an older run stays "not recorded")
-			if (difficultyKnown) bundle.put( APD_DIFFICULTY, difficulty );
+			if (difficultyKnown){
+				bundle.put( APD_DIFFICULTY, difficulty );
+				bundle.put( APD_DIFFICULTY_BALANCE, difficultyBalance );
+			}
 			bundle.put( MOBS_TO_CHAMPION, mobsToChampion );
 			bundle.put( HERO, hero );
 			bundle.put( DEPTH, depth );
@@ -746,6 +753,20 @@ public class Dungeon {
 		}
 	}
 	
+	//APD: the run's difficulty from a save. A save with a difficulty but no balance revision was written by the early build whose levels had no
+	//modifiers: revision 0. A save with neither is from before difficulty existed: it plays as 3 and is never labelled with a difficulty.
+	public static void apdRestoreDifficulty( Bundle bundle ){
+		if (bundle.contains( APD_DIFFICULTY )){
+			Dungeon.difficulty = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.Difficulty.normalize( bundle.getInt( APD_DIFFICULTY ) );
+			Dungeon.difficultyBalance = bundle.contains( APD_DIFFICULTY_BALANCE ) ? bundle.getInt( APD_DIFFICULTY_BALANCE ) : 0;
+			Dungeon.difficultyKnown = true;
+		} else {
+			Dungeon.difficulty = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.Difficulty.DEFAULT;
+			Dungeon.difficultyBalance = 0;
+			Dungeon.difficultyKnown = false;
+		}
+	}
+
 	public static void loadGame( int save ) throws IOException {
 		loadGame( save, true );
 	}
@@ -771,13 +792,8 @@ public class Dungeon {
 		Toolbar.swappedQuickslots = false;
 
 		Dungeon.challenges = bundle.getInt( CHALLENGES );
-		if (bundle.contains( APD_DIFFICULTY )){
-			Dungeon.difficulty = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.Difficulty.normalize( bundle.getInt( APD_DIFFICULTY ) );
-			Dungeon.difficultyKnown = true;
-		} else {
-			Dungeon.difficulty = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.Difficulty.DEFAULT;
-			Dungeon.difficultyKnown = false;
-		}
+		apdRestoreDifficulty( bundle );
+
 		Dungeon.mobsToChampion = bundle.getFloat( MOBS_TO_CHAMPION );
 		
 		Dungeon.level = null;

@@ -48,5 +48,12 @@ allies unaffected); level generation at 3 unchanged (golden); other levels chang
 floor, floor-1 creatures identical); loot totals fall as difficulty rises; replay equals the game at every level; save/load keeps a run's difficulty when the
 setting changes; legacy saves stay unlabelled.
 
+## Per-run balance revision (stability pass)
+A run stores its difficulty AND the balance revision it started with (`Dungeon.difficultyBalance`, save key `apd_difficulty_balance`; a save with a
+difficulty but no revision = revision 0 = no modifiers; a save with neither = legacy, plays as 3, unlabelled). Modifiers, ruleset id, telemetry and floor
+replay all use the run's own revision, so a later balance pass never changes a run in progress or its replay. `Difficulty.modifier(level, revision, m)`;
+old revisions stay in the class. Seed floors refuse imported records, runs whose challenge settings were not recorded, and unknown revisions.
+UIMSD opened from a running game never starts a floor replay (live-game check).
+
 ## Non-P2W (permanent)
 Difficulty is a free gameplay setting. Nothing may ever be sold that selects, unlocks or alters it or its results.

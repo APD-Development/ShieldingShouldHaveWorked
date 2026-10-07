@@ -105,6 +105,11 @@ public class UimsdScene extends PixelScene {
 	private Group ui;
 	private ExitButton btnExit;
 
+	//A replay borrows the game's static state: never while a game is open behind this screen.
+	public static com.shatteredpixel.shatteredpixeldungeon.apd.replay.FloorReplay.LiveGameCheck liveGameCheck(){
+		return () -> backTo == GameScene.class ? "a game is open behind this screen" : null;
+	}
+
 	//Opens UIMSD from a screen. 'from' is where Back returns to.
 	public static void open( Class<? extends PixelScene> from ){
 		backTo = from == GameScene.class ? GameScene.class : TitleScene.class;
@@ -124,6 +129,7 @@ public class UimsdScene extends PixelScene {
 		atHome = true;
 		model = new UimsdModel(rulesId, rulesLabel);
 		model.setSeedFloorsProvider(com.shatteredpixel.shatteredpixeldungeon.apd.replay.SeedFloorsRunner.INSTANCE);
+		com.shatteredpixel.shatteredpixeldungeon.apd.replay.FloorReplay.setLiveGameCheck(liveGameCheck());
 		if (root == null){
 			model = null;
 		} else {

@@ -127,6 +127,13 @@ public final class FloorReplay {
 
 	//difficulty: the run's own difficulty (1-5); only what the difficulty system changes is affected (nothing at 3, and nothing yet at the others)
 	public static List<ReplayFloor> replay( long seed, int challenges, int exoticChance, int difficulty, HeroClass heroClass, int maxDepth, Observer observer ) throws Refused {
+		int level = Difficulty.normalize(difficulty);
+		return replay(seed, challenges, exoticChance, level, Difficulty.balanceRevision(level), heroClass, maxDepth, observer);
+	}
+
+	//balance: the balance revision the run was played with (0 = no modifiers). A revision this build does not know is refused, not guessed.
+	public static List<ReplayFloor> replay( long seed, int challenges, int exoticChance, int difficulty, int balance, HeroClass heroClass, int maxDepth, Observer observer ) throws Refused {
+		if (!Difficulty.supportsRevision(Difficulty.normalize(difficulty), balance)) throw new Refused("the run was played with a difficulty balance this version does not know");
 		String why = refusal();
 		if (why != null) throw new Refused(why);
 		synchronized (LOCK){
@@ -139,6 +146,7 @@ public final class FloorReplay {
 				saved = new Saved();
 				ReplayContext.exoticChance(Math.max(0, Math.min(80, exoticChance)));
 				ReplayContext.difficulty(Difficulty.normalize(difficulty));
+				ReplayContext.balance(balance);
 				ReplayContext.enter();
 				return generate(seed, challenges, heroClass, Math.max(1, Math.min(LAST_FLOOR, maxDepth)), observer);
 			} finally {

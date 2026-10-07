@@ -57,6 +57,17 @@ public final class ReplayContext {
 		return difficulty;
 	}
 
+	//and the balance revision that run was played with
+	private static volatile int balance;
+
+	static void balance( int revision ){
+		balance = revision;
+	}
+
+	public static int balance(){
+		return balance;
+	}
+
 	//Tests that compare a replay with the game's own generation set this, so both break shop-bag ties the same (deterministic) way.
 	public static volatile boolean forceDeterministicBags;
 

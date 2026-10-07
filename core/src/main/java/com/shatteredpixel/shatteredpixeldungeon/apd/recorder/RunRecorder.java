@@ -123,7 +123,7 @@ final class RunRecorder {
 		s.realTimeMillis = System.currentTimeMillis();
 		//a run from before difficulty existed (loaded from an older save) stays "not recorded"
 		s.difficulty = Dungeon.difficultyKnown ? Dungeon.difficulty : 0;
-		s.difficultyBalance = Dungeon.difficultyKnown ? com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.Difficulty.balanceRevision(Dungeon.difficulty) : 0;
+		s.difficultyBalance = Dungeon.difficultyKnown ? Dungeon.difficultyBalance : 0;
 		LifecycleEvents.emitRunStart(r.writer, clock, partial, s);
 		r.checkpoint(LifecycleEvents.CP_RUN_START);
 		//item identity: a new run starts with its kit, a run picked up from a save is caught up with what the hero holds

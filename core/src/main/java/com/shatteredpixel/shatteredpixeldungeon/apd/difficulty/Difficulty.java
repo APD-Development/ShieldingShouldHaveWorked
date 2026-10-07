@@ -21,9 +21,10 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.replay.ReplayContext;
 //ROUNDING: counts and health are scaled as round-half-up(value * modifier) with a 1e-9 allowance so exact halves (5 x 0.7 = 3.5) always round up,
 //never to chance; damage is a float and is not rounded here. Nothing here draws a random number.
 //
-//IDENTITY: a run's difficulty is fixed when it starts (Dungeon.difficulty, saved with the run) and is part of its ruleset identity, so UIMSD
-//always knows it. Changing the setting only affects runs started afterwards. The balance revision is recorded too, so runs played with
-//placeholder balance can never be mixed with runs played with approved balance.
+//IDENTITY: a run's difficulty AND balance revision are fixed when it starts (Dungeon.difficulty / Dungeon.difficultyBalance, saved with the run) and are
+//part of its ruleset identity, so UIMSD always knows them. Changing the setting, or a later build with a newer balance pass, only affects runs started
+//afterwards: a run keeps playing with the revision it began with (revision 0 = no modifiers, the early placeholder; revision 1 = the first pass).
+//Old revisions are never deleted from this class: they are what an old run, and a replay of it, is played with.
 //
 //NON-P2W (permanent): difficulty is a plain gameplay setting, free for everyone, and nothing may ever be sold that changes it or its results.
 public final class Difficulty {
@@ -48,7 +49,8 @@ public final class Difficulty {
 	//modifier by level (row = level 1..5, column = Modifier ordinal). Approved values, balance revision 1.
 	private static final double[][] TABLE = new double[MAX][Modifier.values().length];
 
-	//balance revision by level (index = level - 1): 0 = no modifiers applied, 1+ = an approved balance pass. Level 3 is always 0.
+	//The newest balance revision by level (index = level - 1): 0 = no modifiers applied, 1+ = an approved balance pass. Level 3 is always 0.
+	//TABLE holds revision 1. Revision 0 is neutral for every level. A future revision gets its own table and the older ones stay.
 	private static final int[] REVISION = { 1, 1, 0, 1, 1 };
 
 	static {
@@ -79,18 +81,36 @@ public final class Difficulty {
 		return Dungeon.difficulty;
 	}
 
+	//the balance revision the game is being played with now: the run's own, or the replayed run's
+	public static int revision(){
+		if (ReplayContext.active()) return ReplayContext.balance();
+		return Dungeon.difficultyBalance;
+	}
+
+	//the newest balance revision of a level (what a NEW run at that level is played with)
 	public static int balanceRevision( int level ){
 		return level == DEFAULT || !isValid(level) ? 0 : REVISION[level - 1];
 	}
 
-	//1.0 for the baseline level, whatever the table says
+	//true if this build knows how to play (or replay) a run with this difficulty and revision
+	public static boolean supportsRevision( int level, int revision ){
+		if (level == DEFAULT || !isValid(level)) return revision == 0;
+		return revision == 0 || revision == 1;
+	}
+
+	//1.0 for the baseline level and for revision 0, whatever the table says
+	public static double modifier( int level, int revision, Modifier m ){
+		if (level == DEFAULT || !isValid(level) || revision <= 0) return 1.0;
+		return TABLE[level - 1][m.ordinal()];     //revision 1 (the only one with values so far)
+	}
+
+	//a new run's modifier: the newest revision of the level
 	public static double modifier( int level, Modifier m ){
-		if (level == DEFAULT || !isValid(level)) return 1.0;
-		return TABLE[level - 1][m.ordinal()];
+		return modifier(level, balanceRevision(level), m);
 	}
 
 	public static double modifier( Modifier m ){
-		return modifier(level(), m);
+		return modifier(level(), revision(), m);
 	}
 
 	//v scaled by the current modifier; exactly v (no float rounding) when the modifier is neutral
@@ -108,7 +128,7 @@ public final class Difficulty {
 		return k == 1.0 ? v : (int) Math.floor(v * k + 0.5 + 1e-9);
 	}
 
-	//true when this level changes nothing (level 3)
+	//true when this level, at its newest revision, changes nothing (level 3)
 	public static boolean isNeutral( int level ){
 		for (Modifier m : Modifier.values()) if (modifier(level, m) != 1.0) return false;
 		return true;

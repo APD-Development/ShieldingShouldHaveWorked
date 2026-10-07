@@ -44,12 +44,14 @@ public final class SeedFloors {
 		public boolean exoticKnown;
 		//the run's difficulty (3 when it was not recorded: such a run was played at the baseline balance)
 		public int difficulty = 3;
+		//and the balance revision it was played with (0 when none was recorded: no modifiers)
+		public int balance;
 		//the deepest floor the run entered, -1 when the log does not say
 		public int reached = -1;
 		public String ruleset;
 		//what a replay of this run depends on (the replay engine adds its own version to it)
 		public String key(){
-			return seed + "|" + heroClass + "|" + challenges + "|" + exoticChance + "|" + difficulty;
+			return seed + "|" + heroClass + "|" + challenges + "|" + exoticChance + "|" + difficulty + "|" + balance;
 		}
 	}
 
@@ -163,6 +165,8 @@ public final class SeedFloors {
 		if (!run.finished) throw new NotAvailable("This run is not finished. Seed floors are only shown for runs that are over.");
 		if (val(run, d, FactKeys.SEED) == null) throw new NotAvailable("This run's seed was not recorded, so its floors cannot be rebuilt.");
 		if (val(run, d, FactKeys.HERO_CLASS) == null) throw new NotAvailable("This run's hero class was not recorded, so its floors cannot be rebuilt.");
+		if (run.imported) throw new NotAvailable("This is an imported ranking record, not a recorded run, so its floors cannot be rebuilt.");
+		if (val(run, d, FactKeys.CHALLENGES) == null) throw new NotAvailable("This run's challenge settings were not recorded, so its floors cannot be rebuilt reliably.");
 		Spec s = new Spec();
 		s.runId = run.runId;
 		s.seed = run.num(d.indexOf(FactKeys.SEED));
@@ -170,7 +174,10 @@ public final class SeedFloors {
 		s.challenges = val(run, d, FactKeys.CHALLENGES) != null ? (int) run.num(d.indexOf(FactKeys.CHALLENGES)) : 0;
 		s.exoticKnown = val(run, d, FactKeys.EXOTIC_CHANCE) != null;
 		s.exoticChance = s.exoticKnown ? (int) run.num(d.indexOf(FactKeys.EXOTIC_CHANCE)) : 0;
-		if (val(run, d, FactKeys.DIFFICULTY) != null) s.difficulty = (int) run.num(d.indexOf(FactKeys.DIFFICULTY));
+		if (val(run, d, FactKeys.DIFFICULTY) != null){
+			s.difficulty = (int) run.num(d.indexOf(FactKeys.DIFFICULTY));
+			s.balance = val(run, d, FactKeys.DIFFICULTY_BALANCE) != null ? (int) run.num(d.indexOf(FactKeys.DIFFICULTY_BALANCE)) : 0;
+		}
 		int reached = -1;
 		for (String k : new String[]{ FactKeys.DEEPEST, FactKeys.DEEPEST_ENTERED }){
 			if (val(run, d, k) != null) reached = Math.max(reached, (int) run.num(d.indexOf(k)));

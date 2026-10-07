@@ -55,7 +55,7 @@ public final class Ruleset {
 
 	//reads the rules from the game right now (the run being played: its own difficulty, not the setting)
 	public static Ruleset current(){
-		return of(SPDSettings.apdExoticChance(), Dungeon.challenges, Dungeon.difficulty);
+		return of(SPDSettings.apdExoticChance(), Dungeon.challenges, Dungeon.difficulty, Dungeon.difficultyBalance);
 	}
 
 	//the rules a NEW run would be played under, from the settings
@@ -72,9 +72,15 @@ public final class Ruleset {
 	//difficulty existed (older runs stay in the same ruleset as new difficulty-3 runs: same balance). Any other level adds its number and its
 	//balance revision (0 = placeholder), so runs of different difficulty or different balance can never share an id.
 	public static Ruleset of( int exoticChance, int challenges, int difficulty ){
+		int level = Difficulty.isValid(difficulty) ? difficulty : Difficulty.DEFAULT;
+		return of(exoticChance, challenges, level, Difficulty.balanceRevision(level));
+	}
+
+	//a run's own rules: its difficulty and the balance revision it was started with (which a later build's newer balance never changes)
+	public static Ruleset of( int exoticChance, int challenges, int difficulty, int balance ){
 		String text = "base=spd-4.0.0;apd0001=on;cleric=blocked;exotic=" + exoticChance + ";challenges=" + challenges;
 		int level = Difficulty.isValid(difficulty) ? difficulty : Difficulty.DEFAULT;
-		if (level != Difficulty.DEFAULT) text += ";difficulty=" + level + ";balance=" + Difficulty.balanceRevision(level);
+		if (level != Difficulty.DEFAULT) text += ";difficulty=" + level + ";balance=" + Math.max(0, balance);
 		return new Ruleset(ID_VERSION + "-" + hash12(text), text, exoticChance);
 	}
 

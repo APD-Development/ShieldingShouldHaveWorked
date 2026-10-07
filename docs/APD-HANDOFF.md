@@ -11,6 +11,7 @@ logcat tags APDMIG/APDPERF into the job log and uploads logcat artifacts.
   Verified on commit a19c9c00e = **apd-build-36**: full core suite 501 tests green; device tests green on API 26 and API 34
   (8 tests each, incl. the migration test with heals and UimsdDeviceTimingTest).
 - **Home/Guide milestone: COMPLETE, awaiting approval.** Verified on commit 80ef188f8 = **apd-build-37**: core 509 tests green; device tests green API 26 + 34.
+- Stability pass (pending CI; its build becomes THE PHONE-CHECK build once green): per-run balance revision persisted/used everywhere; UIMSD-from-game cannot start a floor replay; seed floors refuse imported/unrecorded-challenge/unknown-revision runs. Product notes: none needed. New phone check: none.
 - Latest known-good: **apd-build-53 = commit 9ff719889** (Difficulty balance pass 1): core 560 tests green; device tests green API 26 + 34. Previous: apd-build-51 (difficulty framework), 49 (reports), 8dbbadf69 (floor replay).
 - Frozen: Phases 0-7 (Phase 7 UIMSD approved/frozen at build 28). Phase 8 (export/import ZIP, storage meter, Android file picker):
   automated verification complete; NOT permanently frozen until the user's physical picker check.

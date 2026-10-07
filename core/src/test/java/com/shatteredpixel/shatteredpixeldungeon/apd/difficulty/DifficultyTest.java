@@ -36,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKeys;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.LifecycleEvents;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.TelemetryVersion;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.watabou.utils.Bundle;
 
 import org.junit.After;
 import org.junit.Before;
@@ -69,6 +70,13 @@ public class DifficultyTest {
 		SPDSettings.apdDifficulty(savedSetting);
 		Dungeon.difficulty = Difficulty.DEFAULT;
 		Dungeon.difficultyKnown = true;
+		Dungeon.difficultyBalance = 0;
+	}
+
+	//a run at this level with the newest balance, as a run started now would be
+	private static void level( int l ){
+		Dungeon.difficulty = l;
+		Dungeon.difficultyBalance = Difficulty.balanceRevision(l);
 	}
 
 	//---- levels and neutrality ----
@@ -145,13 +153,13 @@ public class DifficultyTest {
 		//a regular level draws 3-5 ordinary items (+2 on a Large level): bases 3..7. Rows: level 1, 2, 3, 4, 5.
 		int[][] want = { { 4, 6, 7, 8, 10 }, { 4, 5, 6, 7, 8 }, { 3, 4, 5, 6, 7 }, { 3, 3, 4, 5, 6 }, { 2, 3, 4, 4, 5 } };
 		for (int level = 1; level <= 5; level++){
-			Dungeon.difficulty = level;
+			level(level);
 			for (int base = 3; base <= 7; base++){
 				assertEquals("level " + level + " base " + base, want[level - 1][base - 3], DifficultyHooks.ordinaryItemCount(base));
 			}
 			assertEquals("never below one item", true, DifficultyHooks.ordinaryItemCount(1) >= 1);
 		}
-		Dungeon.difficulty = 3;
+		level(3);
 		assertEquals(0, DifficultyHooks.ordinaryItemCount(0));
 	}
 
@@ -161,7 +169,7 @@ public class DifficultyTest {
 		int ht = base.HT;
 		float[] dmgK = { 0.70f, 0.85f, 1.0f, 1.20f, 1.50f };
 		for (int level = 1; level <= 5; level++){
-			Dungeon.difficulty = level;
+			level(level);
 			Rat m = new Rat();
 			DifficultyHooks.onMobCreated(m);
 			assertEquals("health at level " + level, Difficulty.scale(Difficulty.modifier(level, Difficulty.Modifier.ENEMY_HP), ht), m.HT);
@@ -169,14 +177,14 @@ public class DifficultyTest {
 			assertEquals(10f * dmgK[level - 1], DifficultyHooks.attackDamage(m, 10f), 1e-4f);
 			assertEquals(1f * dmgK[level - 1], DifficultyHooks.attackDamage(m, 1f), 1e-5f);
 		}
-		Dungeon.difficulty = 3;
+		level(3);
 		Rat m = new Rat();
 		DifficultyHooks.onMobCreated(m);
 		assertEquals(ht, m.HT);
 		//a boss is never scaled
 		com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo boss = new com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo();
 		int bossHt = boss.HT;
-		Dungeon.difficulty = 5;
+		level(5);
 		DifficultyHooks.onMobCreated(boss);
 		assertEquals(bossHt, boss.HT);
 		assertEquals(10f, DifficultyHooks.attackDamage(boss, 10f), 0f);
@@ -184,7 +192,7 @@ public class DifficultyTest {
 
 	@Test
 	public void scalingIsExactWhenNeutralAndRoundsOnlyWhenNot() throws Exception {
-		Dungeon.difficulty = 3;
+		level(3);
 		for (float v : new float[]{ 0f, 1f, 7.3f, 123456.789f, Float.MIN_VALUE }) assertEquals(Float.floatToIntBits(v), Float.floatToIntBits(Difficulty.scale(Difficulty.Modifier.ENEMY_DAMAGE, v)));
 		for (int v : new int[]{ 0, 1, 17, Integer.MAX_VALUE }) assertEquals(v, Difficulty.scale(Difficulty.Modifier.ENEMY_HP, v));
 		Field f = Difficulty.class.getDeclaredField("TABLE");
@@ -193,10 +201,10 @@ public class DifficultyTest {
 		double was = table[3][0];
 		try {
 			table[3][0] = 1.5;
-			Dungeon.difficulty = 4;
+			level(4);
 			assertEquals(15, Difficulty.scale(Difficulty.Modifier.ENEMY_HP, 10));
 			assertEquals(15f, Difficulty.scale(Difficulty.Modifier.ENEMY_HP, 10f), 0f);
-			Dungeon.difficulty = 3;
+			level(3);
 			assertEquals(10, Difficulty.scale(Difficulty.Modifier.ENEMY_HP, 10));
 		} finally {
 			table[3][0] = was;
@@ -224,7 +232,7 @@ public class DifficultyTest {
 	@Test
 	public void theRulesetOfTheRunAndOfTheNextRunFollowTheRightSources() {
 		SPDSettings.apdDifficulty(5);
-		Dungeon.difficulty = 2;
+		level(2);
 		Dungeon.difficultyKnown = true;
 		assertEquals("the run in progress uses its own difficulty", 2, difficultyOf(Ruleset.current()));
 		assertEquals("a new run uses the setting", 5, difficultyOf(Ruleset.forNewRun()));
@@ -265,7 +273,7 @@ public class DifficultyTest {
 		assertEquals("changing the setting never changes a run that exists", 4, Dungeon.difficulty);
 		Dungeon.depth = 1;
 		Dungeon.saveGame(1);
-		Dungeon.difficulty = 3;
+		level(3);
 		Dungeon.difficultyKnown = false;
 		Dungeon.loadGame(1);
 		assertEquals(4, Dungeon.difficulty);
@@ -280,14 +288,88 @@ public class DifficultyTest {
 		SPDSettings.apdDifficulty(5);
 		Dungeon.init();
 		Dungeon.difficultyKnown = false;     //what an older save looks like when it is written back
-		Dungeon.difficulty = 3;
+		level(3);
 		Dungeon.depth = 1;
 		Dungeon.saveGame(1);
-		Dungeon.difficulty = 5;
+		level(5);
 		Dungeon.difficultyKnown = true;
 		Dungeon.loadGame(1);
 		assertEquals(3, Dungeon.difficulty);
 		assertFalse("never labelled with a difficulty it did not record", Dungeon.difficultyKnown);
+	}
+
+	@Test
+	public void aRunKeepsTheBalanceRevisionItStartedWithAndAnEarlySaveIsRevisionZero() throws Exception {
+		GamesInProgress.selectedClass = HeroClass.WARRIOR;
+		GamesInProgress.curSlot = 1;
+		SPDSettings.apdDifficulty(4);
+		Dungeon.init();
+		assertEquals(Difficulty.balanceRevision(4), Dungeon.difficultyBalance);
+		Dungeon.difficultyBalance = 0;       //a run started by the early build, whose levels had no modifiers
+		Dungeon.depth = 1;
+		Dungeon.saveGame(1);
+		Dungeon.difficultyBalance = 1;
+		Dungeon.loadGame(1);
+		assertEquals("the run's own revision comes back, not the newest", 0, Dungeon.difficultyBalance);
+		assertEquals(1.0, Difficulty.modifier(Difficulty.Modifier.ENEMY_HP), 0);
+		assertEquals(Ruleset.of(SPDSettings.apdExoticChance(), Dungeon.challenges, 4, 0).id, Ruleset.current().id);
+		assertNotEquals(Ruleset.of(SPDSettings.apdExoticChance(), Dungeon.challenges, 4, 1).id, Ruleset.current().id);
+
+		Bundle b = new Bundle();
+		b.put("apd_difficulty", 4);       //a save that has a difficulty but no revision at all
+		Dungeon.difficultyBalance = 1;
+		Dungeon.apdRestoreDifficulty(b);
+		assertEquals(0, Dungeon.difficultyBalance);
+		assertTrue(Dungeon.difficultyKnown);
+		b = new Bundle();
+		Dungeon.apdRestoreDifficulty(b);      //a save from before difficulty existed
+		assertEquals(3, Dungeon.difficulty);
+		assertEquals(0, Dungeon.difficultyBalance);
+		assertFalse(Dungeon.difficultyKnown);
+	}
+
+	@Test
+	public void revisionZeroIsNeutralAtEveryLevelAndRevisionOneIsTheApprovedPass() {
+		for (int level = 1; level <= 5; level++){
+			for (Difficulty.Modifier m : Difficulty.Modifier.values()){
+				assertEquals(1.0, Difficulty.modifier(level, 0, m), 0);
+				assertEquals(Difficulty.modifier(level, m), Difficulty.modifier(level, Difficulty.balanceRevision(level), m), 0);
+			}
+			assertTrue(Difficulty.supportsRevision(level, 0));
+			assertFalse(Difficulty.supportsRevision(level, 99));
+		}
+		assertTrue(Difficulty.supportsRevision(4, 1));
+		assertFalse("level 3 has only revision 0", Difficulty.supportsRevision(3, 1));
+	}
+
+	@Test
+	public void aReplayOfARevisionZeroRunUsesNoModifiersAndAnUnknownRevisionIsRefused() throws Exception {
+		long seed = 123456L;
+		List<com.shatteredpixel.shatteredpixeldungeon.apd.query.ReplayFloor> d3 = FloorReplay.replay(seed, 0, 30, 3, 0, HeroClass.WARRIOR, 3, null);
+		List<com.shatteredpixel.shatteredpixeldungeon.apd.query.ReplayFloor> d4r0 = FloorReplay.replay(seed, 0, 30, 4, 0, HeroClass.WARRIOR, 3, null);
+		assertEquals(d3.size(), d4r0.size());
+		for (int i = 0; i < d3.size(); i++){
+			assertEquals("a level-4 run with no modifiers builds the floors of level 3", d3.get(i).items.size(), d4r0.get(i).items.size());
+		}
+		try {
+			FloorReplay.replay(seed, 0, 30, 4, 99, HeroClass.WARRIOR, 3, null);
+			org.junit.Assert.fail("an unknown revision must be refused");
+		} catch (FloorReplay.Refused e){
+			assertTrue(e.getMessage().contains("balance"));
+		}
+	}
+
+	@Test
+	public void seedFloorsAreNeverReplayedWithAGameOpenBehindTheScreen() throws Exception {
+		Class<?> was = com.shatteredpixel.shatteredpixeldungeon.scenes.UimsdScene.backTo;
+		try {
+			com.shatteredpixel.shatteredpixeldungeon.scenes.UimsdScene.backTo = com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.class;
+			assertNotNull(com.shatteredpixel.shatteredpixeldungeon.scenes.UimsdScene.liveGameCheck().liveGame());
+			com.shatteredpixel.shatteredpixeldungeon.scenes.UimsdScene.backTo = com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene.class;
+			assertNull(com.shatteredpixel.shatteredpixeldungeon.scenes.UimsdScene.liveGameCheck().liveGame());
+		} finally {
+			com.shatteredpixel.shatteredpixeldungeon.scenes.UimsdScene.backTo = (Class) was;
+		}
 	}
 
 	//---- telemetry 1.7, facts, UIMSD ----
@@ -490,7 +572,7 @@ public class DifficultyTest {
 	public void theGameSeamsAreIdentityAtThreeAndScaleEnemiesOnlyWhenAModifierIsSet() throws Exception {
 		Rat mob = new Rat();
 		int hp = mob.HP, ht = mob.HT;
-		Dungeon.difficulty = 3;
+		level(3);
 		DifficultyHooks.onMobCreated(mob);
 		assertEquals(hp, mob.HP);
 		assertEquals(ht, mob.HT);
@@ -503,7 +585,7 @@ public class DifficultyTest {
 		try {
 			table[3][Difficulty.Modifier.ENEMY_HP.ordinal()] = 2.0;
 			table[3][Difficulty.Modifier.ENEMY_DAMAGE.ordinal()] = 1.5;
-			Dungeon.difficulty = 4;
+			level(4);
 			Rat scaled = new Rat();
 			DifficultyHooks.onMobCreated(scaled);
 			assertEquals(ht * 2, scaled.HT);
@@ -515,7 +597,7 @@ public class DifficultyTest {
 			ally.alignment = Char.Alignment.ALLY;
 			assertEquals(10f, DifficultyHooks.attackDamage(ally, 10f), 0f);
 			//at 3 the same table values change nothing
-			Dungeon.difficulty = 3;
+			level(3);
 			assertEquals(10f, DifficultyHooks.attackDamage(mob, 10f), 0f);
 		} finally {
 			table[3][Difficulty.Modifier.ENEMY_HP.ordinal()] = hpWas;
@@ -544,7 +626,7 @@ public class DifficultyTest {
 	@Test
 	public void aFloorReplayUsesTheRunsDifficultyNotTheInstalls() throws Exception {
 		SPDSettings.apdDifficulty(2);
-		Dungeon.difficulty = 5;
+		level(5);
 		final int[] seen = { -1 };
 		FloorReplay.replay(77L, 0, 0, 4, HeroClass.WARRIOR, 2, new FloorReplay.Observer(){
 			@Override
