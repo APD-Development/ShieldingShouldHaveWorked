@@ -14,7 +14,8 @@ logcat tags APDMIG/APDPERF into the job log and uploads logcat artifacts.
 - Stability pass (CI green): per-run balance revision persisted/used everywhere; UIMSD-from-game cannot start a floor replay; seed floors refuse imported/unrecorded-challenge/unknown-revision runs. Product notes: none needed. New phone check: none.
 - Stability pass 2 (CI green, superseded by the integrity audit below): Catalog synchronized (real race shown by test), reports from demo/sample data carry a SYNTHETIC notice, unfinished-comparison hidden-info regression test. No new phone checks.
 - Previous PHONE-CHECK build: apd-build-60 = commit 3a35441a7 (integrity audit; core tests green, device tests green API 26 + 34; replaces build 57). No new phone checks.
-- **UIMSD UI/wording polish pass (pending CI; its build becomes THE PHONE-CHECK build once green):** see docs/APD-UIMSD-UI.md. Phone-check list for it (all subjective, none blocking):
+- **THE PHONE-CHECK BUILD = apd-build-64 = commit 74b205f6f** (UIMSD UI/wording polish; core 585 tests green; device tests green API 26 + API 34, including the new
+  UimsdScreensDeviceTest that builds every screen/dialog on the engine; replaces build 62). Design notes: docs/APD-UIMSD-UI.md. Phone-check list for it (all subjective, none blocking):
   (a) first-run Home (history empty) reads well and the tour button is prominent; (b) Home cards: grey labels / coloured values; (c) the filter flow: column list grouped, plain
   comparison words, Class offers your real classes with counts, Outcome Won/Died/Abandoned, Difficulty 1-5, "Something else...", "is one of" tick list; (d) tables: two-line headings,
   swipe-sideways line and edge marks, selected row highlight; (e) the "Tables" picker is grouped and marks the current table; (f) Options in sections with [x] switches and
@@ -50,6 +51,18 @@ logcat tags APDMIG/APDPERF into the job log and uploads logcat artifacts.
 - Frozen: Phases 0-7 (Phase 7 UIMSD approved/frozen at build 28). Phase 8 (export/import ZIP, storage meter, Android file picker):
   automated verification complete; NOT permanently frozen until the user's physical picker check.
 - Telemetry version now 1.6. UIMSD = one major feature; these phases are milestones inside it.
+
+## Review later (decided: NOT to change now)
+- **Rankings navigation.** Upstream's title screen had a Rankings button (classic top-scores list, `RankingsScene`). APD's title menu (Play, UIMSD, Badges, Journal, Options, Quit,
+  APD Settings, News, Changes, About) has none. `RankingsScene` is still reachable only from inside a game (`WndGame`, the end screens `AmuletScene`/`SurfaceScene`). UIMSD already
+  imports APD's rankings file as "imported ranking records". Decide intentionally: keep it on the title, fold it into UIMSD, keep it only where it is now, or retire it.
+  Upstream's title-screen Support button, `NewsScene` (replaced by APD's own news text) and the in-title `ChangesScene` link are likewise unwired but still compiled.
+- **Upstream sync.** APD is forked from upstream tag v4.0.0 (2bb34a4e9, the last upstream commit in the history). Upstream has v4.0.1 and v4.0.2 which are NOT merged. Do a
+  deliberate upstream-sync review later (read their changes, merge or port selectively); do not merge as part of other work.
+- **APK size (investigated, no action).** APD ships a DEBUG APK (CI `assembleDebug`): no R8 or resource shrinking, all four CPU architectures, ~38.0 MB; the number Android shows
+  (38.04 MB) is essentially the APK file. SPD from Play is a release build (R8 + resource shrinking + one architecture) plus compiled-code files, so the two "App size" numbers
+  are not comparable. Versus upstream v4.0.0: zero files deleted or renamed, no build setting strips content, APD adds ~1.4 MB of class bytes (~0.8 MB dex) and ~0.3 MB of
+  images. User data (2.3 MB vs 274 KB) is APD's run history and caches. Size optimisation is not a priority; do not remove unused upstream code or resources for size.
 
 ## Pending manual checks (user)
 - Phase 8: physical phone check of the Android system file-picker screens (export save, import open). Everything else is automated.
