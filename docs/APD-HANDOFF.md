@@ -10,7 +10,8 @@ logcat tags APDMIG/APDPERF into the job log and uploads logcat artifacts.
 - **Phase 9 (exact healing + measured optimisation): COMPLETE and verified; waiting for the user's approval before anything else.**
   Verified on commit a19c9c00e = **apd-build-36**: full core suite 501 tests green; device tests green on API 26 and API 34
   (8 tests each, incl. the migration test with heals and UimsdDeviceTimingTest).
-- Latest known-good build: **apd-build-36** (commit a19c9c00e, Phase 9). Later commits are docs only.
+- **Home/Guide milestone: COMPLETE, awaiting approval.** Verified on commit 80ef188f8 = **apd-build-37**: core 509 tests green; device tests green API 26 + 34.
+- Latest known-good build: **apd-build-37** (commit 80ef188f8). Later commits are docs only.
 - Frozen: Phases 0-7 (Phase 7 UIMSD approved/frozen at build 28). Phase 8 (export/import ZIP, storage meter, Android file picker):
   automated verification complete; NOT permanently frozen until the user's physical picker check.
 - Telemetry version now 1.6. UIMSD = one major feature; these phases are milestones inside it.
