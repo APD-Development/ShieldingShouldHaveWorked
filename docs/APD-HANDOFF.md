@@ -12,7 +12,8 @@ logcat tags APDMIG/APDPERF into the job log and uploads logcat artifacts.
   (8 tests each, incl. the migration test with heals and UimsdDeviceTimingTest).
 - **Home/Guide milestone: COMPLETE, awaiting approval.** Verified on commit 80ef188f8 = **apd-build-37**: core 509 tests green; device tests green API 26 + 34.
 - Stability pass (CI green): per-run balance revision persisted/used everywhere; UIMSD-from-game cannot start a floor replay; seed floors refuse imported/unrecorded-challenge/unknown-revision runs. Product notes: none needed. New phone check: none.
-- Stability pass 2 (pending CI; replaces build 57 as THE PHONE-CHECK build once green): Catalog synchronized (real race shown by test), reports from demo/sample data carry a SYNTHETIC notice, unfinished-comparison hidden-info regression test. No new phone checks.
+- Stability pass 2 (CI green, superseded by the integrity audit below): Catalog synchronized (real race shown by test), reports from demo/sample data carry a SYNTHETIC notice, unfinished-comparison hidden-info regression test. No new phone checks.
+- **THE PHONE-CHECK BUILD = apd-build-60 = commit 3a35441a7** (integrity audit; core tests green, device tests green API 26 + 34; replaces build 57). No new phone checks.
 - Integrity audit (invariants 1-12; 3 read-only audits, then verified): FIXED (tests added; leak and ruleset-gap reproduced before the fix): hidden-group
   drill-down copied an unfinished run's true value into a visible filter; a ruleset change in the last level / between saves was not recorded until now
   (checked at save and run end too); Challenges view merged difficulties (now also groups by difficulty + balance); seed floors refuse MIXED-rules runs and
