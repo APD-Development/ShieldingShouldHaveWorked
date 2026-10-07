@@ -1,0 +1,63 @@
+# UIMSD universal recording and querying: survey and design (NOT implemented, awaiting the user's approval)
+
+Requirement (user): if APD can reasonably observe it, UIMSD records it, and anything recorded can be counted, totalled, averaged, sorted, filtered, grouped, compared and
+cross-referenced. This is UIMSD's core identity for the WHOLE game. Characters are only one part of it. No question list is hard-coded: "average Guiding Light casts per floor"
+must fall out of recorded facts (cast + spell + character + floor + run) being cross-referenceable.
+
+## 1. Does the current architecture support this cleanly?
+Partly. What is already right:
+- Append-only, versioned event log per run; event type IDs never reused; readers skip types they do not know; runs recorded before a type existed show as unknown (`?`), never as zero.
+- Every fact carries provenance; PUBLIC vs INTERNAL visibility is enforced per event type and per column (hidden truth never shown for an unfinished run).
+- The query side is data-driven: `ColumnDef`/`DatasetDef` describe columns, so filters, sorts, grouping, aggregates, scopes, minimum-sample rules, saved queries (`QueryCodec`), row
+  caches and the table widget all work for any column with no UI change. Reports, export/import archive and legacy import sit on top.
+What is NOT clean enough:
+- Recording is bespoke. Each new kind of fact needs: a hand-written payload codec (CombatEvents-style class), a tracker/hook in the game code, a `RunFactsBuilder` rollup and a
+  `RowBuilders` row builder, plus a telemetry version bump and tests. That is roughly four files per fact. "Record everything" cannot scale on that.
+- Only four datasets exist (Runs, Items, Enemies, Deaths). Attacks, damage, heals, shields, XP and hunger are recorded as events but only reach UIMSD as run-level totals, so they cannot be
+  sorted/grouped/averaged per floor, per fight or per item.
+- There is no Floors dataset and no "per what" (per run / per floor / per turn / per hour) measure, so "X per floor" cannot be asked at all today.
+- Not recorded as events at all (as far as the event list shows): spells and abilities used, talents chosen, subclass changes (only the checkpoint snapshot carries it), status effects
+  (buffs) gained/lost, wand/staff/artifact use beyond the damage they deal, gold gained/spent and shops, movement/exploration, searching, doors/traps, consumable use as an action.
+
+## 2. Architectural changes needed
+A. One generic, self-describing fact event next to the bespoke ones. A "fact kind" = stable string key (interned once per log), actor, subject, a few numeric measures, a few dimension
+   tags, visibility. New mechanics add a kind instead of a codec. Hot, structured events (attack, damage, heal) keep their compact bespoke form.
+B. A fact-kind registry (code, like `Datasets`): key, label, description, dimensions, measures, visibility, since-version. It drives the log, the dataset list, the Guide text and the
+   question builder, so adding a character or mechanic means declaring kinds and one recording call, never touching UIMSD screens.
+C. Instrument the central choke points once, keyed by class name, so content nobody has written yet is covered automatically: item actions (Item.execute with its action name),
+   buff attach/detach (every status effect, any class), damage/heal/shield (extend what exists), talent upgrades, subclass choice, spell/ability casts, gold changes and shop buy/sell,
+   level enter/exit summaries, trap/door triggers. Per-item or per-character code is the exception, not the rule.
+D. Event datasets plus a context join. Every kind becomes a dataset (rows = events) that carries run, floor/depth, turn, hero class, subclass, difficulty, challenges and equipped gear.
+   Context is resolved at read time from the run timeline (`RunTimeline` already exists) instead of being stored on every event, which keeps the log small.
+E. A Floors dataset (one row per level visit) and "per" denominators in the aggregate engine: count/sum/avg/min/max, per run, per floor, per turn, per hour, and ratio of two measures.
+   "Average Guiding Light casts per floor" = count(kind=cast, spell=Guiding Light) / floors entered, grouped as the player likes.
+F. Same rules everywhere: additive telemetry versions only, `?`/`>=`/`~` provenance and "since" columns for older logs, per-kind visibility with a leak test (no unidentified-item or
+   hidden-generation truth through any new kind), manifest test for kind keys (never reused), golden + round-trip + merge tests per kind, performance gate (APDPERF) per batch.
+
+## 3. Performance and storage expectations (estimates, to be measured before and after each batch)
+- Today: about 70 MB per 1,000 runs (archive estimate); a bespoke event costs 12-35 bytes, an attack with its damage 100-140 bytes; CPU ~1.5 microseconds per event.
+- Instrumenting every action, buff change, gold change and cast would roughly double to triple log size (about 150-250 MB per 1,000 runs). Per-step movement is the one thing that
+  would dominate (hundreds of KiB per long run), so movement, searching and regeneration-like high-frequency facts are recorded as per-floor summaries, not per step.
+- Mitigations: string interning per log (kind keys cost a few bytes), varints, per-floor summary events for high-frequency facts, optional compression of sealed logs (this kind of data
+  normally compresses several times over; to be measured), and the existing storage meter and export/archive tools. Nothing leaves the device.
+- Query cost scales with rows (an Attacks dataset could reach 10^5-10^6 rows over many runs). Mitigations already in place and to extend: aggregate-first tables, per-dataset lazy build,
+  row caches (reload today 20-60 ms), background build with the existing progress UI. Rule: every batch must stay inside today's budgets (phone-level view times, no gameplay hitch).
+
+## 4. Exposing the depth on a phone without a desktop-database feel
+- Ask, do not browse tables. A sentence builder as the front door: "Average [casts] of [Guiding Light] per [floor] by [difficulty]", each blank a chip picker that offers only what the
+  player really has (with counts); the result is one sentence plus a small chart, the table underneath.
+- Topic pages generated from the registry (Combat, Items, Character, Exploration, Economy, Deaths, ...), so a new character or mechanic appears by itself; empty kinds stay hidden.
+- Any number is tappable down to the rows behind it (provenance preserved); compare two groups side by side; save and pin questions; short search over kind names.
+- Progressive disclosure: simple by default, filters/group/sort/columns under "Options" exactly as they are now.
+
+## 5. Preserve versus eventually redesign
+Preserve: the event log format and versioning rules, skip-unknown, provenance marks, PUBLIC/INTERNAL enforcement, segment merging, the query engine core (filters, sorts, groups,
+aggregates, scopes, minimum sample), the data-driven `ColumnDef`/`DatasetDef` approach, row cache, reports, archive export/import, legacy importer, Seed floors and floor replay,
+ruleset/difficulty identity, self-tests, and the polished phone components (lists, dialogs, tour, guide).
+Redesign over time: the four hard-coded datasets become registry-driven; the hand-written per-run rollups (`RunFactsBuilder`) become generic measures; the Runs table stops being the
+front door in favour of the question builder; Guide/tour text generated from the registry; the fixed statistic sheets become instances of the measure engine.
+
+## Suggested order once approved (nothing started)
+U1 registry + generic fact event + context join + manifest/leak tests (no new gameplay hooks). U2 Floors dataset + "per" measures + event datasets for what is already recorded
+(attacks, damage, heals, shields, XP, hunger). U3 choke-point instrumentation in batches, each with a perf/storage gate (actions, buffs, talents/subclass, gold/shops, spells,
+level summaries). U4 the question builder and topic pages. Each step ends with core + API 26 + API 34 tests and one PHONE-CHECK build.

@@ -14,7 +14,7 @@ logcat tags APDMIG/APDPERF into the job log and uploads logcat artifacts.
 - Stability pass (CI green): per-run balance revision persisted/used everywhere; UIMSD-from-game cannot start a floor replay; seed floors refuse imported/unrecorded-challenge/unknown-revision runs. Product notes: none needed. New phone check: none.
 - Stability pass 2 (CI green, superseded by the integrity audit below): Catalog synchronized (real race shown by test), reports from demo/sample data carry a SYNTHETIC notice, unfinished-comparison hidden-info regression test. No new phone checks.
 - Previous PHONE-CHECK build: apd-build-60 = commit 3a35441a7 (integrity audit; core tests green, device tests green API 26 + 34; replaces build 57). No new phone checks.
-- **THE PHONE-CHECK BUILD = apd-build-66 = commit 4a39871c1** (replaces build 64, which had a BLOCKER: every action button in APD Settings was dead). Core + device tests green
+- **THE PHONE-CHECK BUILD = apd-build-67 = commit 802a8789d** (same code as build 66 / commit 4a39871c1; 67 is the docs-only rebuild and is the one the user installs; replaces build 64, which had a BLOCKER: every action button in APD Settings was dead). Core + device tests green
   (API 26 + API 34), including the new ApdSettingsClickDeviceTest. Everything below for build 64 applies unchanged to build 66, plus the APD Settings click check:
   (0) Options > APD Settings on a fresh launch: Run self-test, Import APD rankings, Export history (ZIP), Import history (ZIP), the "Record run history" tick box and Open UIMSD
   (preview) must each respond (result window / file picker / scene change).
@@ -91,14 +91,14 @@ logcat tags APDMIG/APDPERF into the job log and uploads logcat artifacts.
 - Future UIMSD work (tracked, not started): plain-English Summary/Home view; interactive tutorial/guide (datasets, drill-downs, filters,
   sorting, meaning of ? >= ~ coverage); final language/UX polish pass; shareable/PDF reports; post-run whole-seed/future-floor
   interrogation (needs a proper technical feasibility study first).
-- **Character UIMSD (REQUIREMENT, CORRECTED by the user; NOT started, design/survey first, waits for the user's go):** do NOT design around Cleric (Cleric spells/Tome were only
-  examples). It must cover EVERY playable character, including all FUTURE APD characters: per-character historical statistics for that character's own actions, abilities, resources,
-  mechanics, equipment interactions, subclasses and anything else meaningful (examples, not a schema: Cleric spell casts/Tome; Mage wand/staff mechanics; Rogue cloak; Huntress bow;
-  Warrior mechanics; Duelist weapon abilities). Where the data allows: lifetime total, per-run average, per-floor average, highest/lowest, individual-run history, and breakdowns by
-  floor, difficulty, outcome, subclass, date/period, equipment, challenges and any other recorded dimension. These facts live in the SAME telemetry/query system (same engine, datasets,
-  filters, provenance marks, hidden-information rules, reports), never isolated databases. Architecture goal: a character/mechanic ADDS its own facts through a registration point
-  (declare fact kinds + dimensions + measures) without UIMSD being reinvented; no hard-coded question list. Overall goal unchanged: any question the player can reasonably ask about
-  what they did, that APD recorded the facts for, UIMSD can answer. Needs a survey of each character's mechanics, the telemetry schema/version impact, legacy-log compatibility, and an ETA before coding.
+- **UIMSD CORE PHILOSOPHY (REQUIREMENT from the user, applies to THE ENTIRE GAME; NOT a "Character UIMSD" feature; survey/design first, NO coding until the user approves; design in docs/APD-UIMSD-UNIVERSAL.md):**
+  If APD can reasonably observe something, UIMSD records it. If it can be counted, totalled, averaged, sorted, filtered, grouped, compared or cross-referenced, the player can do that.
+  Applies to everything: characters and their unique mechanics (EVERY character, incl. future APD characters), items, equipment actually worn, upgrades, attacks, damage, misses,
+  healing, shielding, enemies, floors, movement, spells, abilities, talents, subclasses, consumables, hunger, status effects, shops, gold, identification, bosses, deaths, victories,
+  challenges, difficulty, turns, time, generation, and anything else recordable WITHOUT harming gameplay/performance/storage/privacy or revealing still-hidden information.
+  The examples are NOT a requirements list and capabilities must NOT be limited by the questions we think of during development: "average Guiding Light casts per floor" must emerge
+  from recorded facts (spell casts + character + floor + run) being cross-referenceable, not from anyone predicting that question. Character statistics are one part of the one
+  universal data model, never a separate feature or database. Long-term goal: any reasonable question about the player's APD history that APD had the information to answer, UIMSD can answer.
 - Owner decision left open by Phase 9: natural regeneration is the biggest log cost (32 B/heal exact vs 18 B inferred, ~70 KiB per
   20k-turn run). Possible later trade-off: one summary event per stretch of regeneration (loses per-tick history). Not done.
 
