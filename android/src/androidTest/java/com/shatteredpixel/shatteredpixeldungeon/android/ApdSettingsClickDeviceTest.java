@@ -174,6 +174,10 @@ public class ApdSettingsClickDeviceTest {
 			long end = System.currentTimeMillis() + 120000;
 			while ((Gdx.app == null || Gdx.files == null || Game.scene() == null) && System.currentTimeMillis() < end) Thread.sleep(250);
 			assertNotNull("the game did not start", Game.scene());
+			//the first scene (welcome / splash) is replaced by the title: a window added before that is destroyed with it
+			waitUntil("the title scene", new java.util.concurrent.Callable<Boolean>(){
+				public Boolean call() throws Exception { return Game.scene() instanceof com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene; } }, 120000);
+			Thread.sleep(2500);
 
 			final AtomicReference<WndAPDSettings> window = new AtomicReference<>();
 			onRender(new Runnable(){
