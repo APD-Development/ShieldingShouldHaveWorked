@@ -91,7 +91,7 @@ public class RunSetupDifficultyDeviceTest {
 		return null;
 	}
 
-	private static void tap( Point at ) throws Exception {
+	private static void tap( com.watabou.utils.Point at ) throws Exception {
 		PointerEvent.addPointerEvent(new PointerEvent(at.x, at.y, 9, PointerEvent.Type.DOWN, PointerEvent.LEFT));
 		Thread.sleep(150);
 		PointerEvent.addPointerEvent(new PointerEvent(at.x, at.y, 9, PointerEvent.Type.UP, PointerEvent.LEFT));
@@ -141,7 +141,7 @@ public class RunSetupDifficultyDeviceTest {
 			//touch each level for real; the setting follows, and the label says what it is
 			int[] levels = { 4, 1, 5, 3 };
 			for (final int level : levels){
-				final AtomicReference<Point> centre = new AtomicReference<>();
+				final AtomicReference<com.watabou.utils.Point> centre = new AtomicReference<>();
 				onRender(new Runnable(){
 					public void run(){
 						try {
