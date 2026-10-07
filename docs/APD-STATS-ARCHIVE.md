@@ -37,7 +37,7 @@ manifest stops everything before anything is written. Each file is then streamed
 manifest's size and SHA-256 and be a readable APD log of the run the manifest says. If **any** file fails (damaged, mismatching, missing from the archive,
 truncated, demo-named) nothing at all is imported, the temporary folder is removed and the problems are reported. Only a fully verified archive is committed:
 a log that already exists is **never replaced** (an identical one is skipped, a different one is kept as it is and reported; the name is claimed atomically),
-and if placing a file fails half way, everything this import placed is taken back. Entries the manifest does not list are ignored, whatever their name. The
+and if placing a file fails half way, everything this import placed is taken back. Entries the manifest does not list are ignored, whatever their name. A zip stream that answers a read with zero bytes (old Android 5 does, for an entry that is cut short, and its `getNextEntry()` then spins for ever) is treated as a damaged archive and stops the import at once (`readChunk`; regression test `aStreamThatStallsMidEntryStopsTheImportInsteadOfSpinning`). The
 index is rebuilt afterwards. Recording is never interrupted: the importer only creates files that do not exist.
 
 ## Storage meter (`StorageMeter`)

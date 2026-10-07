@@ -95,6 +95,11 @@ public final class ArchiveImporter {
 	private static final Object LOCK = new Object();
 
 	public static Report importArchive( File root, InputStream in ){
+		return importZip(root, new ZipInputStream(in));
+	}
+
+	//the same, from an already opened zip stream (tests give it streams that misbehave the way old Android's does)
+	static Report importZip( File root, ZipInputStream zip ){
 		Report report = new Report();
 		File tmpDir = null;
 		synchronized (LOCK){
@@ -107,7 +112,6 @@ public final class ArchiveImporter {
 					report.problem = "this folder holds demo data, which never receives history.";
 					return report;
 				}
-				ZipInputStream zip = new ZipInputStream(in);
 				ZipEntry first = zip.getNextEntry();
 				if (first == null || !ArchiveManifest.ENTRY_NAME.equals(first.getName())){
 					report.problem = "this is not an APD history archive (no manifest first).";
@@ -215,7 +219,7 @@ public final class ArchiveImporter {
 		try {
 			byte[] buf = new byte[16 * 1024];
 			int n;
-			while ((n = zip.read(buf)) > 0){
+			while ((n = readChunk(zip, buf)) > 0){
 				size += n;
 				if (size > e.size + (64L << 20)) throw new IOException("a file in the archive is far larger than the manifest says");
 				if (size > e.size || size > MAX_FILE_BYTES){
@@ -356,11 +360,21 @@ public final class ArchiveImporter {
 		}
 	}
 
+	//One read from the archive's zip stream: bytes, or -1 at the end of the entry. A stream that answers 0 to a read that asked for bytes
+	//breaks the contract: old Android (5.0) does that for an entry that is cut short, and its getNextEntry() would then spin for ever
+	//skipping the rest of the entry (and hold the importer's lock, so every later import would hang). It means the archive is damaged:
+	//stop right here.
+	static int readChunk( InputStream in, byte[] buf ) throws IOException {
+		int n = in.read(buf);
+		if (n == 0) throw new IOException("the archive is cut short or damaged (a file in it ends early)");
+		return n;
+	}
+
 	private static byte[] readLimited( InputStream in, int max ) throws IOException {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		byte[] buf = new byte[8192];
 		int n;
-		while ((n = in.read(buf)) > 0){
+		while ((n = readChunk(in, buf)) > 0){
 			if (out.size() + n > max) return null;
 			out.write(buf, 0, n);
 		}

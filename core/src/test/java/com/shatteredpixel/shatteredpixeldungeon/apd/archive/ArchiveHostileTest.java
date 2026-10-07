@@ -348,4 +348,59 @@ public class ArchiveHostileTest {
 			return out;
 		}
 	}
+
+	//Android 5's ZipInputStream answers a read of a CUT entry with 0 bytes (not -1), forever; and its getNextEntry() then skips the
+	//rest of the entry by reading until it gets -1, which never comes: the import thread spun for ever, holding the importer's lock,
+	//so every later import hung too (seen on the API 21 emulator). A zero-byte answer to a read that asked for bytes breaks the stream
+	//contract and means the archive is cut or damaged: the import must stop right there, never call getNextEntry() after it.
+	private static final class StallsAfter extends java.util.zip.ZipInputStream {
+		private final int limit;
+		private int served;
+		boolean stalled;
+
+		StallsAfter( InputStream in, int limit ){
+			super(in);
+			this.limit = limit;
+		}
+
+		@Override
+		public int read( byte[] b, int off, int len ) throws java.io.IOException {
+			if (served >= limit){
+				stalled = true;
+				return 0;
+			}
+			int n = super.read(b, off, Math.min(len, limit - served));
+			if (n > 0) served += n;
+			return n;
+		}
+
+		@Override
+		public ZipEntry getNextEntry() throws java.io.IOException {
+			if (stalled) throw new AssertionError("getNextEntry() after a stalled read: old Android's closeEntry() would spin here for ever");
+			return super.getNextEntry();
+		}
+	}
+
+	@Test
+	public void aStreamThatStallsMidEntryStopsTheImportInsteadOfSpinning() throws Exception {
+		byte[] log = good("a", "run-a");
+		Map<String, byte[]> files = new LinkedHashMap<>();
+		files.put("runs/a.apdlog", log);
+		byte[] archive = archiveOf(files, java.util.Collections.singletonMap("runs/a.apdlog", "run-a"));
+		int manifestBytes = new ArchiveRoundTripEntries().read(archive).get(ArchiveManifest.ENTRY_NAME).length;
+		assertTrue(log.length > 100);
+
+		root = tmp.newFolder("device-stall");
+		StallsAfter zip = new StallsAfter(new ByteArrayInputStream(archive), manifestBytes + 50);
+		ArchiveImporter.Report r = ArchiveImporter.importZip(root, zip);
+		assertTrue("the read did stall", zip.stalled);
+		assertFalse(r.summary(), r.ok);
+		assertEquals(0, r.imported);
+		assertFalse("stopped for the right reason: " + r.problem, r.problem.contains("AssertionError"));
+		assertTrue(r.problem, r.problem.contains("cut short"));
+		assertNothingWritten();
+		//and the importer is free again for the next archive
+		ArchiveImporter.Report again = ArchiveImporter.importArchive(tmp.newFolder("device-after-stall"), new ByteArrayInputStream(archive));
+		assertTrue(again.summary(), again.ok);
+	}
 }

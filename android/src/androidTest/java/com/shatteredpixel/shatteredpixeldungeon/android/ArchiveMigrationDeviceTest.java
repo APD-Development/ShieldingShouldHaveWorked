@@ -82,8 +82,8 @@ public class ArchiveMigrationDeviceTest {
 	private static final String SECRET_SEED = "TOP-SECRET-SEED";
 	private static final String RS = "r1-aaaaaaaaaaaa";
 	private static final TelemetryVersion V = TelemetryVersion.CURRENT;
-	//finished runs in the source history (kept modest: the oldest emulator is slow)
-	private static final int FINISHED = 12;
+	//finished runs in the source history
+	private static final int FINISHED = 25;
 
 	//a test that stops answering must fail with a message, never hold the whole job
 	@org.junit.Rule
@@ -398,7 +398,7 @@ public class ArchiveMigrationDeviceTest {
 		ApdRecorder.configure(source, false);
 		File zip = new File(exports, "history.zip");
 		String exported = exportNow(zip);
-		assertTrue(exported, exported.startsWith("Exported 18 run logs and 1 imported-record file"));
+		assertTrue(exported, exported.startsWith("Exported 31 run logs and 1 imported-record file"));
 		assertTrue(exported, exported.contains("3 logs belong to runs that are not finished"));
 
 		step("migration: zip checks");
@@ -408,7 +408,7 @@ public class ArchiveMigrationDeviceTest {
 		ZipInputStream first = new ZipInputStream(new ByteArrayInputStream(archive));
 		assertEquals(ArchiveManifest.ENTRY_NAME, first.getNextEntry().getName());
 		ArchiveManifest manifest = ArchiveManifest.parse(parts.get(ArchiveManifest.ENTRY_NAME));
-		assertEquals(19, manifest.files.size());
+		assertEquals(32, manifest.files.size());
 		int redacted = 0;
 		for (ArchiveManifest.Entry e : manifest.files){
 			assertTrue(e.path, ArchiveManifest.isValidPath(e.path));
@@ -439,13 +439,13 @@ public class ArchiveMigrationDeviceTest {
 		// 4. import into a clean install
 		ApdRecorder.configure(clean, false);
 		String imported = importNow(zip);
-		assertTrue(imported, imported.startsWith("Imported 19 logs"));
+		assertTrue(imported, imported.startsWith("Imported 32 logs"));
 		assertTrue(imported, imported.contains("3 belong to runs that were not finished"));
 
 		step("migration: lossless checks");
 		// 9. finished runs, the two-segment run, the old run and the imported records are byte for byte the same files
 		Map<String, byte[]> cleanFiles = logsOnly(files(clean));
-		assertEquals(19, cleanFiles.size());
+		assertEquals(32, cleanFiles.size());
 		for (Map.Entry<String, byte[]> e : cleanFiles.entrySet()){
 			if (e.getKey().startsWith("runs/open")){
 				assertFalse(e.getKey() + " is a redacted copy", Arrays.equals(e.getValue(), sourceBefore.get(e.getKey())));
@@ -485,7 +485,7 @@ public class ArchiveMigrationDeviceTest {
 		ApdRecorder.configure(clean, false);
 		String again = importNow(zip);
 		assertTrue(again, again.startsWith("Imported 0 logs"));
-		assertTrue(again, again.contains("19 already here"));
+		assertTrue(again, again.contains("32 already here"));
 		Map<String, byte[]> afterAgain = logsOnly(files(clean));
 		assertEquals(beforeAgain.keySet(), afterAgain.keySet());
 		for (String k : beforeAgain.keySet()) assertTrue(k, Arrays.equals(beforeAgain.get(k), afterAgain.get(k)));
