@@ -203,6 +203,29 @@ public class DatasetBuildersTest {
 	}
 
 	@Test
+	public void aHiddenEventLaterThanAnythingVisibleNeverMovesAPublicNumber(){
+		File a = new File(root(), "a"), b = new File(root(), "b");
+		new SyntheticLog(a, "x", V14, 100).start("run-x", 0, "WARRIOR", RS, 0, 0, false).enter(1)
+				.acquired("axe", "axe", ItemEvents.CAT_WEAPON, false, 0).equip("axe", "axe", ItemEvents.CAT_WEAPON).tick(40).close(false);
+		new SyntheticLog(b, "x", V14, 100).start("run-x", 0, "WARRIOR", RS, 0, 0, false).enter(1)
+				.acquired("axe", "axe", ItemEvents.CAT_WEAPON, false, 0).equip("axe", "axe", ItemEvents.CAT_WEAPON).tick(40).hiddenAt(900).close(false);
+		Dataset ia = new DatasetStore(a).load().dataset(Datasets.ITEMS), ib = new DatasetStore(b).load().dataset(Datasets.ITEMS);
+		assertEquals(num(ia, ia.rows.get(0), "item.turnsEquipped"), num(ib, ib.rows.get(0), "item.turnsEquipped"));
+	}
+
+	@Test
+	public void rowsAreListedInTheOrderThePlayerMetThemNotTheOrderTheGeneratorMadeThem(){
+		log("a", V14, 100).start("run-a", 0, "WARRIOR", RS, 0, 0, false).enter(1)
+				.registered("first-made", "items.A", 0, false, ItemEvents.ORIGIN_GENERATED)
+				.registered("second-made", "items.B", 0, false, ItemEvents.ORIGIN_GENERATED)
+				.seen("second-made", "b-item", ItemEvents.CAT_POTION).seen("first-made", "a-item", ItemEvents.CAT_POTION)
+				.end(LifecycleEvents.OUTCOME_DIED, "Rat", 1, 1, 1).close(true);
+		Dataset items = load().dataset(Datasets.ITEMS);
+		assertEquals("b-item", text(items, items.rows.get(0), "item.name"));
+		assertEquals("a-item", text(items, items.rows.get(1), "item.name"));
+	}
+
+	@Test
 	public void aKnownLevelIsKeptAndNeverRevealedAfterwards(){
 		log("a", V14, 100).start("run-a", 0, "WARRIOR", RS, 0, 0, false).enter(1).acquired("ring", "ring of haste +2", ItemEvents.CAT_RING, true, 2)
 				.registered("ring", "items.rings.RingOfHaste", 2, false, ItemEvents.ORIGIN_OBSERVED)
@@ -249,7 +272,7 @@ public class DatasetBuildersTest {
 				.heroDies("rat", CombatEvents.SRC_CHAR).end(LifecycleEvents.OUTCOME_DIED, "Rat", 1, 1, 1).close(true);
 		Dataset en = load().dataset(Datasets.ENEMIES);
 		assertEquals("the rat the player fought, and the gnoll nobody met", 2, en.rows.size());
-		Row rat = find(en, "Rat"), gnoll = find(en, "Gnoll");
+		Row rat = find(en, "|rat"), gnoll = find(en, "class:actors.mobs.Gnoll");
 		assertTrue(rat.publicRow);
 		assertEquals("rat", text(en, rat, "enemy.name"));
 		assertEquals(1, num(en, rat, "enemy.attacksByHero"));

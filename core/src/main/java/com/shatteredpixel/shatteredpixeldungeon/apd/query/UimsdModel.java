@@ -1,0 +1,382 @@
+/*
+ * Pixel Dungeon
+ * Copyright (C) 2012-2015 Oleg Dolya
+ *
+ * Shattered Pixel Dungeon
+ * Copyright (C) 2014-2026 Evan Debenham
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
+
+
+package com.shatteredpixel.shatteredpixeldungeon.apd.query;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+//Everything a UIMSD screen is, apart from the pixels: which view is open, the query being edited, the result, the page, and the
+//moves between them (open a view, add a filter, click a header, follow a link, go back). It knows nothing about any particular
+//dataset or any screen, so the same model drives every dataset and can be tested without a game. Not thread safe: use it from
+//one thread (the screen's), except load(), which builds the catalog on its own thread and hands it over through the listener.
+public final class UimsdModel {
+
+	public interface Listener {
+		//the state changed (called on the loading thread for the result of load(): a screen must hand over to its own thread)
+		void changed();
+	}
+
+	public enum State { EMPTY, LOADING, READY, FAILED }
+
+	public static final int PAGE_SIZE = 50;
+
+	private static final class Place {
+		final String viewId;
+		final Query query;
+		final int page;
+
+		Place( String viewId, Query query, int page ){
+			this.viewId = viewId;
+			this.query = query;
+			this.page = page;
+		}
+	}
+
+	private volatile State state = State.EMPTY;
+	private volatile String failure = "";
+	private volatile Catalog catalog;
+	private String viewId = "";
+	private Query query = Query.of("");
+	private QueryResult result;
+	private int page;
+	private final String currentRuleset;
+	private final String currentRulesetLabel;
+	private final List<Place> back = new ArrayList<>();
+	private Listener listener;
+	private volatile Thread loader;
+
+	public UimsdModel( String currentRuleset, String currentRulesetLabel ){
+		this.currentRuleset = currentRuleset;
+		this.currentRulesetLabel = currentRulesetLabel == null ? "" : currentRulesetLabel;
+	}
+
+	public void setListener( Listener l ){
+		this.listener = l;
+	}
+
+	private void fire(){
+		Listener l = listener;
+		if (l != null) l.changed();
+	}
+
+	//---- loading ----
+
+	//Builds the catalog from the raw logs on a background thread. Never throws.
+	public void load( final File root ){
+		state = State.LOADING;
+		failure = "";
+		Thread t = new Thread(new Runnable(){
+			@Override
+			public void run(){
+				try {
+					Catalog c = new DatasetStore(root).load();
+					synchronized (UimsdModel.this){
+						setCatalogLocked(c);
+					}
+				} catch (Throwable e){
+					failure = String.valueOf(e);
+					state = State.FAILED;
+				}
+				fire();
+			}
+		}, "uimsd-load");
+		t.setDaemon(true);
+		loader = t;
+		t.start();
+	}
+
+	public void awaitLoad( long millis ){
+		Thread t = loader;
+		try {
+			if (t != null) t.join(millis);
+		} catch (InterruptedException ignored){
+		}
+	}
+
+	public synchronized void setCatalog( Catalog c ){
+		setCatalogLocked(c);
+		fire();
+	}
+
+	private void setCatalogLocked( Catalog c ){
+		catalog = c;
+		ViewDef first = c.view(viewId) != null ? c.view(viewId) : c.views().isEmpty() ? null : c.views().get(0);
+		if (first == null){
+			state = State.FAILED;
+			failure = "There is nothing to show.";
+			return;
+		}
+		viewId = first.id;
+		query = first.initialQuery();
+		page = 0;
+		back.clear();
+		recompute();
+		state = State.READY;
+	}
+
+	public State state(){
+		return state;
+	}
+
+	public String failure(){
+		return failure;
+	}
+
+	public Catalog catalog(){
+		return catalog;
+	}
+
+	//---- reading ----
+
+	public synchronized Query query(){
+		return query;
+	}
+
+	public synchronized QueryResult result(){
+		return result;
+	}
+
+	public synchronized String viewId(){
+		return viewId;
+	}
+
+	public synchronized ViewDef view(){
+		return catalog == null ? null : catalog.view(viewId);
+	}
+
+	public synchronized Dataset dataset(){
+		return catalog == null ? null : catalog.dataset(query.dataset);
+	}
+
+	public synchronized int page(){
+		return page;
+	}
+
+	public String currentRuleset(){
+		return currentRuleset;
+	}
+
+	public synchronized ResultTable table(){
+		return result == null ? null : ResultTable.build(result, page, PAGE_SIZE);
+	}
+
+	public synchronized List<StatusText.Line> status(){
+		ViewDef v = view();
+		return result == null ? new ArrayList<StatusText.Line>() : StatusText.lines(result, v == null ? "" : v.title, currentRulesetLabel);
+	}
+
+	public synchronized boolean canGoBack(){
+		return !back.isEmpty();
+	}
+
+	//the columns that may be offered to the player right now (hidden ones only when hidden information is on)
+	public synchronized List<ColumnDef> offeredColumns(){
+		List<ColumnDef> out = new ArrayList<>();
+		Dataset ds = dataset();
+		if (ds == null) return out;
+		for (ColumnDef c : ds.def.columns()) if (!c.isInternal() || query.showInternal) out.add(c);
+		return out;
+	}
+
+	//---- changing ----
+
+	private void recompute(){
+		Dataset ds = catalog == null ? null : catalog.dataset(query.dataset);
+		result = ds == null ? null : QueryEngine.run(ds, query, currentRuleset);
+		int total = result == null ? 0 : result.isGrouped() ? result.groups.size() : result.rows.size();
+		int maxPage = Math.max(0, (total + PAGE_SIZE - 1) / PAGE_SIZE - 1);
+		if (page > maxPage) page = maxPage;
+	}
+
+	private void apply( Query q ){
+		query = q;
+		page = 0;
+		recompute();
+		fire();
+	}
+
+	//open a view. The player's wish for hidden information carries over; everything else starts from the view.
+	public synchronized void selectView( String id ){
+		if (catalog == null || catalog.view(id) == null) return;
+		back.add(new Place(viewId, query, page));
+		viewId = id;
+		apply(catalog.view(id).initialQuery().withShowInternal(query.showInternal));
+	}
+
+	//back to how the open view started
+	public synchronized void resetView(){
+		ViewDef v = view();
+		if (v != null) apply(v.initialQuery().withShowInternal(query.showInternal));
+	}
+
+	public synchronized void addFilter( Filter f ){
+		apply(query.addFilter(f));
+	}
+
+	public synchronized void replaceFilter( int index, Filter f ){
+		if (index >= 0 && index < query.filters.size()) apply(query.replaceFilter(index, f));
+	}
+
+	public synchronized void removeFilter( int index ){
+		if (index >= 0 && index < query.filters.size()) apply(query.removeFilter(index));
+	}
+
+	public synchronized void clearFilters(){
+		apply(query.withFilters(new ArrayList<Filter>()));
+	}
+
+	public synchronized void cycleSort( String column ){
+		apply(query.cycleSort(column));
+	}
+
+	public synchronized void setSorts( List<Sort> sorts ){
+		apply(query.withSorts(sorts));
+	}
+
+	public synchronized void setColumns( List<String> columns ){
+		apply(query.withColumns(columns));
+	}
+
+	public synchronized void toggleColumn( String id ){
+		Dataset ds = dataset();
+		if (ds == null) return;
+		List<String> cols = new ArrayList<>(query.columns.isEmpty() ? ds.def.defaultColumnIds() : query.columns);
+		if (cols.contains(id)){
+			if (cols.size() > 1) cols.remove(id);
+		} else {
+			cols.add(id);
+		}
+		apply(query.withColumns(cols));
+	}
+
+	public synchronized void setScope( Scope s ){
+		apply(query.withScope(s));
+	}
+
+	public synchronized void setMinSample( int n ){
+		apply(query.withMinSample(n));
+	}
+
+	public synchronized void setGroup( GroupBy g ){
+		List<Sort> sorts = new ArrayList<>();
+		apply(query.withGroup(g).withSorts(sorts));
+	}
+
+	//Hidden information on or off. Turning it off also takes out everything in the query that uses it.
+	public synchronized void setShowInternal( boolean on ){
+		Query q = query.withShowInternal(on);
+		if (!on){
+			Dataset ds = dataset();
+			if (ds != null){
+				List<Filter> filters = new ArrayList<>();
+				for (Filter f : q.filters){
+					ColumnDef c = ds.def.column(f.column);
+					if (c == null || !c.isInternal()) filters.add(f);
+				}
+				List<Sort> sorts = new ArrayList<>();
+				for (Sort s : q.sorts){
+					ColumnDef c = ds.def.column(s.column);
+					if (c == null || !c.isInternal()) sorts.add(s);
+				}
+				List<String> cols = new ArrayList<>();
+				for (String id : q.columns){
+					ColumnDef c = ds.def.column(id);
+					if (c == null || !c.isInternal()) cols.add(id);
+				}
+				GroupBy g = q.group;
+				if (g != null){
+					List<String> keys = new ArrayList<>();
+					for (String k : g.keys){
+						ColumnDef c = ds.def.column(k);
+						if (c == null || !c.isInternal()) keys.add(k);
+					}
+					List<Aggregate> aggs = new ArrayList<>();
+					for (Aggregate a : g.aggregates){
+						ColumnDef c = a.column.isEmpty() ? null : ds.def.column(a.column);
+						if (c == null || !c.isInternal()) aggs.add(a);
+					}
+					g = keys.isEmpty() && aggs.isEmpty() ? null : new GroupBy(keys, aggs);
+				}
+				q = q.withFilters(filters).withSorts(sorts).withColumns(cols).withGroup(g);
+			}
+		}
+		apply(q);
+	}
+
+	public synchronized void setPage( int p ){
+		page = Math.max(0, p);
+		recompute();
+		fire();
+	}
+
+	//Follow a link from a row to the matching rows of another dataset. The scope is widened just enough for the row's own run to
+	//be in it, so a drill-down never comes up empty because of a scope the player did not choose.
+	public synchronized void openLink( Row row, LinkDef link ){
+		if (catalog == null || catalog.view(link.targetView) == null) return;
+		Dataset from = dataset();
+		if (from == null) return;
+		int col = from.def.indexOf(link.ourColumn);
+		if (col < 0 || !row.isKnown(col)) return;
+		ViewDef target = catalog.view(link.targetView);
+		Dataset to = catalog.datasetOf(target);
+		ColumnDef tc = to.def.column(link.targetColumn);
+		if (tc == null) return;
+		Scope s = query.scope;
+		if (!row.finished) s = s.withUnfinished(true);
+		if (row.ruleset == null) s = s.withUnknownRuleset(true);
+		else if (row.ruleset.equals(Row.RULESET_MIXED)) s = s.withMixedRuleset(true);
+		else if (s.rules == Scope.Rules.CURRENT && !row.ruleset.equals(currentRuleset)) s = s.withRules(Scope.Rules.SPECIFIC, row.ruleset);
+		if (row.duplicate) s = s.withDuplicates(true);
+		Filter f = tc.type == ColumnDef.Type.TEXT ? Filter.text(tc.id, Op.EQ, row.text(col)) : Filter.num(tc.id, Op.EQ, row.num(col));
+		back.add(new Place(viewId, query, page));
+		viewId = target.id;
+		apply(target.initialQuery().withScope(s).withShowInternal(query.showInternal).addFilter(f));
+	}
+
+	public synchronized boolean back(){
+		if (back.isEmpty()) return false;
+		Place p = back.remove(back.size() - 1);
+		viewId = p.viewId;
+		query = p.query;
+		page = p.page;
+		recompute();
+		fire();
+		return true;
+	}
+
+	//Switches one of the scope's switches (what tapping a status line does).
+	public synchronized void applyAction( String action ){
+		Scope s = query.scope;
+		switch (action){
+			case StatusText.ACT_UNFINISHED: apply(query.withScope(s.withUnfinished(true))); break;
+			case StatusText.ACT_UNKNOWN_RULESET: apply(query.withScope(s.withUnknownRuleset(true))); break;
+			case StatusText.ACT_MIXED_RULESET: apply(query.withScope(s.withMixedRuleset(true))); break;
+			case StatusText.ACT_OTHER_RULESETS: apply(query.withScope(s.withRules(Scope.Rules.ALL, ""))); break;
+			case StatusText.ACT_DUPLICATES: apply(query.withScope(s.withDuplicates(true))); break;
+			case StatusText.ACT_SMALL_GROUPS: apply(query.withMinSample(0)); break;
+			case StatusText.ACT_HIDDEN_INFO: setShowInternal(true); break;
+			default:
+		}
+	}
+}

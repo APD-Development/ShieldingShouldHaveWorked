@@ -26,7 +26,10 @@ import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.SelfTest;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.UimsdScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox;
 import com.shatteredpixel.shatteredpixeldungeon.ui.OptionSlider;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
@@ -52,6 +55,7 @@ public class APDSettingsPane extends Component {
 	private RenderedTextBlock status;
 	private RedButton btnTest;
 	private RedButton btnImport;
+	private RedButton btnUimsd;
 
 	@Override
 	protected void createChildren() {
@@ -103,6 +107,14 @@ public class APDSettingsPane extends Component {
 			}
 		};
 		add( btnImport );
+
+		btnUimsd = new RedButton( "Open UIMSD (preview)" ) {
+			@Override
+			protected void onClick() {
+				UimsdScene.open( ShatteredPixelDungeon.scene().getClass() == GameScene.class ? GameScene.class : TitleScene.class );
+			}
+		};
+		add( btnUimsd );
 	}
 
 	@Override
@@ -122,7 +134,9 @@ public class APDSettingsPane extends Component {
 		btnTest.setRect( x, pos, width, 16 );
 		pos = btnTest.bottom() + GAP;
 		btnImport.setRect( x, pos, width, 16 );
-		height = btnImport.bottom() - y;
+		pos = btnImport.bottom() + GAP;
+		btnUimsd.setRect( x, pos, width, 16 );
+		height = btnUimsd.bottom() - y;
 	}
 
 	private static void runImport( final RedButton button ) {
@@ -163,7 +177,9 @@ public class APDSettingsPane extends Component {
 					if (base == null) base = FileUtils.getFileHandle( "apd" ).file();
 					java.io.File work = new java.io.File( base, "selftest-work" );
 					work.mkdirs();
-					result = SelfTest.run( work ).text();
+					SelfTest.Report report = SelfTest.run( work );
+					com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdSelfTest.run( work, report );
+					result = report.text();
 					work.delete();
 				} catch (Throwable e) {
 					result = "SELF-TEST FAILED\n" + e;

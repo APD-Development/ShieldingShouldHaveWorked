@@ -12,6 +12,17 @@ uimsd-name | - | APD 4.0.8-apd | 2026-10-06
 - The statistics / records / query system is named UIMSD, the Ultimate Infinite Mega Statistics Database. The title
   screen button that used to say "Statistics" now says "UIMSD". This changes a name only, no recorded data.
 
+uimsd-first-screen | - | APD 4.0.8-apd | 2026-10-07
+- UIMSD gets its first usable screen (opened from APD Settings for now). It reads the raw recorded history and the imported ranking records
+  and shows them as datasets: Runs, Items, Enemies and Deaths, with views for Weapons, Armor, Rings, Trinkets, Artifacts, Characters and
+  Challenges. No new data is recorded: everything shown is built from the raw logs and can be rebuilt.
+- Values nobody recorded show as unknown and are never turned into zero. Totals say how many values they are made of, a number that is only
+  a lower bound (a log with gaps, or an older recording version) is marked as one, and inferred numbers such as healing are marked as
+  inferred. Every table says how many of its runs could contain each statistic at all.
+- Information the player could not have known stays hidden: an item you never saw, an enemy you never met or the truth about an unidentified
+  item is never shown for a run that is still going, even with hidden information switched on. After a run is over it can be revealed.
+- Runs played under different rules are never mixed unless you choose to; rows whose ruleset is unknown are kept apart and counted.
+
 telemetry-1.5-legacy-import | telemetry 1.5 | APD 4.0.8-apd | 2026-10-06
 - Telemetry 1.5 lets APD keep the entries of its own rankings table. "Import APD rankings" in APD Settings copies the records in APD's
   own rankings file (class, outcome, depth, level, score, killer, date and version when the record has them, the saved game

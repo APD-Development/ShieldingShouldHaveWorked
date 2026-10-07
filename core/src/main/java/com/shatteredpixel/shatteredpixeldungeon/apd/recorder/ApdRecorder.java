@@ -675,6 +675,14 @@ public final class ApdRecorder {
 		return s;
 	}
 
+	//UIMSD is about to read the logs: write out what is queued so the run in progress shows up (a short wait at most). Never throws.
+	public static synchronized void flushForReading(){
+		try {
+			if (active != null && active.writer != null) active.writer.flush(300, false);
+		} catch (Throwable ignored){
+		}
+	}
+
 	//Copies the records of APD's OWN rankings.dat (the file APD's Rankings class writes in APD's private storage) into the history as
 	//raw import events (see LegacyImporter) and says what happened. It cannot see another app's files, official SPD's included.
 	//Not synchronized with the recorder: it never blocks recording. Never throws.

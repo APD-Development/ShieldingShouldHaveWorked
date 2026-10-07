@@ -11,7 +11,8 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.stats.TelemetryVersion;
 
 import java.io.File;
 
-//Writes small, realistic run logs for the dataset tests, through the real writer.
+//Writes small, realistic run logs for the dataset tests, through the real writer. Like the game, hidden (INTERNAL) events happen
+//on the turn they belong to and do not move the clock: only things the player could see advance it.
 final class SyntheticLog {
 
 	final RunLogWriter w;
@@ -60,7 +61,7 @@ final class SyntheticLog {
 	SyntheticLog registered( String uid, String trueClass, int trueLevel, boolean cursed, int origin ){
 		ItemEvents.Registered r = new ItemEvents.Registered();
 		r.uid = uid; r.trueClass = trueClass; r.trueLevel = trueLevel; r.cursed = cursed; r.origin = origin; r.where = iw();
-		ItemEvents.emitRegistered(w, clock++, 0, r);
+		ItemEvents.emitRegistered(w, clock, 0, r);
 		return this;
 	}
 
@@ -69,7 +70,7 @@ final class SyntheticLog {
 		g.uid = uid; g.container = container; g.room = room; g.drawKind = GenerationEvents.DRAW_CATEGORY; g.requestedCategory = "WEAPON";
 		g.where = new GenerationEvents.Where();
 		g.where.depth = depth;
-		GenerationEvents.emitItemGenerated(w, clock++, g);
+		GenerationEvents.emitItemGenerated(w, clock, g);
 		return this;
 	}
 
@@ -104,7 +105,7 @@ final class SyntheticLog {
 	SyntheticLog truthChanged( String uid, int newLevel, boolean newCursed ){
 		ItemEvents.TruthChanged t = new ItemEvents.TruthChanged();
 		t.uid = uid; t.where = iw(); t.newLevel = newLevel; t.newCursed = newCursed;
-		ItemEvents.emitTruthChanged(w, clock++, 0, t);
+		ItemEvents.emitTruthChanged(w, clock, 0, t);
 		return this;
 	}
 
@@ -122,7 +123,7 @@ final class SyntheticLog {
 		CombatEvents.emitAttack(w, clock++, a);
 		CombatEvents.AttackDetail d = new CombatEvents.AttackDetail();
 		d.where = cw(); d.attackerClass = "Hero"; d.defenderClass = enemyClass; d.hit = hit; d.publicEmitted = true;
-		CombatEvents.emitAttackDetail(w, clock++, d);
+		CombatEvents.emitAttackDetail(w, clock - 1, d);
 		return this;
 	}
 
@@ -133,7 +134,7 @@ final class SyntheticLog {
 		CombatEvents.emitAttack(w, clock++, a);
 		CombatEvents.AttackDetail d = new CombatEvents.AttackDetail();
 		d.where = cw(); d.attackerClass = enemyClass; d.defenderClass = "Hero"; d.hit = hit; d.publicEmitted = true;
-		CombatEvents.emitAttackDetail(w, clock++, d);
+		CombatEvents.emitAttackDetail(w, clock - 1, d);
 		return this;
 	}
 
@@ -144,7 +145,7 @@ final class SyntheticLog {
 		CombatEvents.emitDamage(w, clock++, dm);
 		CombatEvents.DamageDetail d = new CombatEvents.DamageDetail();
 		d.where = cw(); d.targetClass = "Hero"; d.srcClass = enemyClass; d.publicEmitted = true;
-		CombatEvents.emitDamageDetail(w, clock++, d);
+		CombatEvents.emitDamageDetail(w, clock - 1, d);
 		return this;
 	}
 
@@ -155,7 +156,7 @@ final class SyntheticLog {
 		CombatEvents.emitDamage(w, clock++, dm);
 		CombatEvents.DamageDetail d = new CombatEvents.DamageDetail();
 		d.where = cw(); d.targetClass = enemyClass; d.srcClass = "Hero"; d.publicEmitted = true;
-		CombatEvents.emitDamageDetail(w, clock++, d);
+		CombatEvents.emitDamageDetail(w, clock - 1, d);
 		return this;
 	}
 
@@ -166,7 +167,7 @@ final class SyntheticLog {
 		CombatEvents.emitKill(w, clock++, k);
 		CombatEvents.KillDetail d = new CombatEvents.KillDetail();
 		d.where = cw(); d.victimClass = enemyClass; d.expValue = exp; d.publicEmitted = true;
-		CombatEvents.emitKillDetail(w, clock++, d);
+		CombatEvents.emitKillDetail(w, clock - 1, d);
 		return this;
 	}
 
@@ -174,7 +175,7 @@ final class SyntheticLog {
 		GenerationEvents.MobGenerated m = new GenerationEvents.MobGenerated();
 		m.mobClass = mobClass; m.where = new GenerationEvents.Where();
 		m.where.depth = depth;
-		GenerationEvents.emitMobGenerated(w, clock++, m);
+		GenerationEvents.emitMobGenerated(w, clock, m);
 		return this;
 	}
 
@@ -197,6 +198,15 @@ final class SyntheticLog {
 		LifecycleEvents.RulesetChange c = new LifecycleEvents.RulesetChange();
 		c.oldId = from; c.newId = to; c.depth = depth;
 		LifecycleEvents.emitRulesetChange(w, clock++, c);
+		return this;
+	}
+
+	//a hidden event that happens LATER than anything the player has seen (the clock itself does not move)
+	SyntheticLog hiddenAt( long ahead ){
+		GenerationEvents.MobGenerated m = new GenerationEvents.MobGenerated();
+		m.mobClass = "actors.mobs.Goo"; m.where = new GenerationEvents.Where();
+		m.where.depth = depth;
+		GenerationEvents.emitMobGenerated(w, clock + ahead, m);
 		return this;
 	}
 

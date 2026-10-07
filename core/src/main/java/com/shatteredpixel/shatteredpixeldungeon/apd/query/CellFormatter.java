@@ -97,6 +97,46 @@ public final class CellFormatter {
 		return y + "-" + (m < 10 ? "0" : "") + m + "-" + (d < 10 ? "0" : "") + d;
 	}
 
+	//what a cell's state means, in a sentence
+	public static String explain( int state ){
+		switch (state){
+			case CellText.LOWER: return "at least this much: the log has gaps, or an older recording version could not count all of it";
+			case CellText.INFERRED: return "inferred, not recorded exactly";
+			case CellText.LEGACY: return "taken from an imported ranking record";
+			case CellText.UNKNOWN: return "unknown: it was never recorded";
+			case CellText.HIDDEN: return "hidden information";
+			default: return "recorded exactly";
+		}
+	}
+
+	//What a player typed for a column, as the number stored: plain numbers, dates as yyyy-MM-dd, decimals for columns shown with
+	//decimals. Null when it does not parse.
+	public static Long parse( ColumnDef col, String text ){
+		if (text == null) return null;
+		String t = text.trim().replace(",", "");
+		if (t.isEmpty()) return null;
+		try {
+			switch (col.format){
+				case DATE_MILLIS: {
+					if (t.length() != 10 || t.charAt(4) != '-' || t.charAt(7) != '-') return null;
+					long y = Long.parseLong(t.substring(0, 4)), m = Long.parseLong(t.substring(5, 7)), d = Long.parseLong(t.substring(8, 10));
+					if (m < 1 || m > 12 || d < 1 || d > 31) return null;
+					y -= m <= 2 ? 1 : 0;
+					long era = (y >= 0 ? y : y - 399) / 400;
+					long yoe = y - era * 400;
+					long doy = (153 * (m + (m > 2 ? -3 : 9)) + 2) / 5 + d - 1;
+					long doe = yoe * 365 + yoe / 4 - yoe / 100 + doy;
+					return (era * 146097 + doe - 719468) * 86400000L;
+				}
+				case HUNDREDTHS: return Math.round(Double.parseDouble(t) * 100);
+				case THOUSANDTHS: return Math.round(Double.parseDouble(t) * 1000);
+				default: return Long.parseLong(t);
+			}
+		} catch (NumberFormatException e){
+			return null;
+		}
+	}
+
 	//the value of an aggregate, and in 'detail' how many values it is made of
 	public static final class AggText {
 		public final String text;

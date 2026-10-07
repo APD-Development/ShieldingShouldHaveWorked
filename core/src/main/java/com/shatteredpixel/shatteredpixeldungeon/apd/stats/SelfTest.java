@@ -40,16 +40,16 @@ public final class SelfTest {
 		public boolean passed = true;
 		public final List<String> lines = new ArrayList<>();
 
-		void pass( String what ){
+		public void pass( String what ){
 			lines.add("PASS  " + what);
 		}
 
-		void fail( String what ){
+		public void fail( String what ){
 			passed = false;
 			lines.add("FAIL  " + what);
 		}
 
-		void info( String what ){
+		public void info( String what ){
 			lines.add("      " + what);
 		}
 

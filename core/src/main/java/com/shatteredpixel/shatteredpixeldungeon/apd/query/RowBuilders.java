@@ -102,7 +102,8 @@ public final class RowBuilders {
 		long endClock = -1;
 		long lastClock = 0;
 		for (ApdEvent e : events){
-			lastClock = Math.max(lastClock, e.clock);
+			//the moment a run "was last seen" comes only from events the player could see: a hidden event must not move a public number
+			if (EventTypes.visibility(e.type) == EventTypes.Visibility.PUBLIC) lastClock = Math.max(lastClock, e.clock);
 			if (e.type == EventTypes.RUN_END){
 				meta.hasRunEnd = true;
 				endClock = e.clock;
@@ -149,6 +150,9 @@ public final class RowBuilders {
 		long turnsEquipped;
 		long openSince = -1;
 		final Set<Integer> floors = new HashSet<>();
+		//index of the first event the player could see about this item (-1: none yet): rows are listed in that order, so the
+		//order never depends on hidden events
+		long firstPublic = -1;
 		boolean hasTruth;
 		int origin;
 		String trueClass = "";
@@ -190,6 +194,13 @@ public final class RowBuilders {
 		int curDepth = 0;
 		for (ApdEvent e : events){
 			try {
+				if (EventTypes.visibility(e.type) == EventTypes.Visibility.PUBLIC && isItemEvent(e.type)){
+					String uid = uidOf(e, r);
+					if (uid != null){
+						ItemAcc a = acc(items, uid);
+						if (a.firstPublic < 0) a.firstPublic = e.index;
+					}
+				}
 				switch (e.type){
 					case EventTypes.LEVEL_ENTER: {
 						curDepth = LifecycleEvents.decodeLevelEnter(e, r).depth;
@@ -288,8 +299,18 @@ public final class RowBuilders {
 		}
 		for (ItemAcc a : open) a.turnsEquipped += Math.max(0, endClock - a.openSince);
 
+		List<ItemAcc> ordered = new ArrayList<>(items.values());
+		java.util.Collections.sort(ordered, new java.util.Comparator<ItemAcc>(){
+			@Override
+			public int compare( ItemAcc a, ItemAcc b ){
+				boolean pa = a.firstPublic >= 0, pb = b.firstPublic >= 0;
+				if (pa != pb) return pa ? -1 : 1;
+				if (pa) return a.firstPublic < b.firstPublic ? -1 : a.firstPublic > b.firstPublic ? 1 : 0;
+				return a.uid.compareTo(b.uid);
+			}
+		});
 		List<Row> rows = new ArrayList<>();
-		for (ItemAcc a : items.values()){
+		for (ItemAcc a : ordered){
 			Row row = new Row(meta.runId + "/" + a.uid, meta.runId + "/" + a.uid, meta.runId, ITEMS.size());
 			row.finished = meta.hasRunEnd;
 			row.ruleset = meta.ruleset;
@@ -337,6 +358,23 @@ public final class RowBuilders {
 		return rows;
 	}
 
+	private static boolean isItemEvent( int type ){
+		return type == EventTypes.ITEM_SEEN || type == EventTypes.ITEM_ACQUIRED || type == EventTypes.ITEM_LEFT
+				|| type == EventTypes.ITEM_EQUIPPED || type == EventTypes.ITEM_UNEQUIPPED || type == EventTypes.ITEM_KNOWLEDGE;
+	}
+
+	private static String uidOf( ApdEvent e, ReadResult r ){
+		switch (e.type){
+			case EventTypes.ITEM_SEEN: return ItemEvents.decodeSeen(e, r).uid;
+			case EventTypes.ITEM_ACQUIRED: return ItemEvents.decodeAcquired(e, r).uid;
+			case EventTypes.ITEM_LEFT: return ItemEvents.decodeLeft(e, r).uid;
+			case EventTypes.ITEM_EQUIPPED:
+			case EventTypes.ITEM_UNEQUIPPED: return ItemEvents.decodeEquip(e, r).uid;
+			case EventTypes.ITEM_KNOWLEDGE: return ItemEvents.decodeKnowledge(e, r).uid;
+			default: return null;
+		}
+	}
+
 	private static void put( Row row, String col, long v, int prov ){
 		DatasetDef d = defOf(row);
 		int i = d.indexOf(col);
@@ -360,12 +398,13 @@ public final class RowBuilders {
 
 	//---- enemies ----
 
+	//One row per enemy NAME the player met (what the game called it): the identity of a public row is never a hidden class. The
+	//true classes behind a name are in a hidden column. Classes that were generated but never met in a fight get hidden rows.
 	private static final class EnemyAcc {
-		String key;
 		String name = "";
-		String cls = "";
-		boolean met;
-		long attacksOnHero, hitsOnHero, attacksByHero, hitsByHero, damageToHero, damageFromHero, kills, deaths, heroDeaths, spawned;
+		final Set<String> classes = new java.util.LinkedHashSet<>();
+		long firstPublic = -1;
+		long attacksOnHero, hitsOnHero, attacksByHero, hitsByHero, damageToHero, damageFromHero, kills, deaths, heroDeaths;
 		long expValue = -1;
 	}
 
@@ -374,16 +413,15 @@ public final class RowBuilders {
 		return dot >= 0 ? c.substring(dot + 1) : c;
 	}
 
-	private static EnemyAcc enemy( Map<String, EnemyAcc> m, String cls, String name ){
-		String key = cls.isEmpty() ? "name:" + name : cls;
-		EnemyAcc a = m.get(key);
+	private static EnemyAcc enemy( Map<String, EnemyAcc> m, String name, String cls, long index ){
+		EnemyAcc a = m.get(name);
 		if (a == null){
 			a = new EnemyAcc();
-			a.key = key;
-			a.cls = cls;
-			m.put(key, a);
+			a.name = name;
+			m.put(name, a);
 		}
-		if (a.name.isEmpty() && name != null && !name.isEmpty()) a.name = name;
+		if (a.firstPublic < 0) a.firstPublic = index;
+		if (cls != null && !cls.isEmpty()) a.classes.add(cls);
 		return a;
 	}
 
@@ -397,6 +435,7 @@ public final class RowBuilders {
 
 	private static List<Row> enemyRows( List<ApdEvent> events, ReadResult r, LogMeta meta, TelemetryVersion v, int countProv ){
 		Map<String, EnemyAcc> enemies = new LinkedHashMap<>();
+		Map<String, Long> generated = new LinkedHashMap<>();
 		Map<String, String> classOfName = new LinkedHashMap<>();
 		for (int i = 0; i < events.size(); i++){
 			ApdEvent e = events.get(i);
@@ -407,17 +446,15 @@ public final class RowBuilders {
 						ApdEvent de = detailAfter(events, i, EventTypes.ATTACK_DETAIL);
 						CombatEvents.AttackDetail d = de == null ? null : CombatEvents.decodeAttackDetail(de, r);
 						if (a.attacker.kind == CombatEvents.KIND_HERO && a.defender.kind == CombatEvents.KIND_ENEMY){
-							EnemyAcc x = enemy(enemies, d == null ? "" : d.defenderClass, a.defender.name);
-							x.met = true;
+							EnemyAcc x = enemy(enemies, a.defender.name, d == null ? "" : d.defenderClass, e.index);
 							x.attacksByHero++;
 							if (a.hit) x.hitsByHero++;
-							if (!x.cls.isEmpty()) classOfName.put(a.defender.name, x.cls);
+							if (d != null && !d.defenderClass.isEmpty()) classOfName.put(a.defender.name, d.defenderClass);
 						} else if (a.defender.kind == CombatEvents.KIND_HERO && a.attacker.kind == CombatEvents.KIND_ENEMY){
-							EnemyAcc x = enemy(enemies, d == null ? "" : d.attackerClass, a.attacker.name);
-							x.met = true;
+							EnemyAcc x = enemy(enemies, a.attacker.name, d == null ? "" : d.attackerClass, e.index);
 							x.attacksOnHero++;
 							if (a.hit) x.hitsOnHero++;
-							if (!x.cls.isEmpty()) classOfName.put(a.attacker.name, x.cls);
+							if (d != null && !d.attackerClass.isEmpty()) classOfName.put(a.attacker.name, d.attackerClass);
 						}
 						break;
 					}
@@ -427,14 +464,10 @@ public final class RowBuilders {
 						CombatEvents.DamageDetail d = de == null ? null : CombatEvents.decodeDamageDetail(de, r);
 						if (dm.target.kind == CombatEvents.KIND_HERO && dm.source.kind == CombatEvents.SRC_CHAR
 								&& dm.source.fighterKind == CombatEvents.KIND_ENEMY){
-							EnemyAcc x = enemy(enemies, d == null ? "" : d.srcClass, dm.source.label);
-							x.met = true;
-							x.damageToHero += dm.shown;
+							enemy(enemies, dm.source.label, d == null ? "" : d.srcClass, e.index).damageToHero += dm.shown;
 						} else if (dm.target.kind == CombatEvents.KIND_ENEMY && dm.source.kind == CombatEvents.SRC_CHAR
 								&& dm.source.fighterKind == CombatEvents.KIND_HERO){
-							EnemyAcc x = enemy(enemies, d == null ? "" : d.targetClass, dm.target.name);
-							x.met = true;
-							x.damageFromHero += dm.shown;
+							enemy(enemies, dm.target.name, d == null ? "" : d.targetClass, e.index).damageFromHero += dm.shown;
 						}
 						break;
 					}
@@ -443,22 +476,17 @@ public final class RowBuilders {
 						ApdEvent de = detailAfter(events, i, EventTypes.KILL_DETAIL);
 						CombatEvents.KillDetail d = de == null ? null : CombatEvents.decodeKillDetail(de, r);
 						if (k.victim.kind == CombatEvents.KIND_ENEMY){
-							EnemyAcc x = enemy(enemies, d == null ? "" : d.victimClass, k.victim.name);
-							x.met = true;
+							EnemyAcc x = enemy(enemies, k.victim.name, d == null ? "" : d.victimClass, e.index);
 							x.deaths++;
 							if (k.killer.kind == CombatEvents.SRC_CHAR && k.killer.fighterKind == CombatEvents.KIND_HERO) x.kills++;
 							if (d != null) x.expValue = d.expValue;
-							if (!x.cls.isEmpty()) classOfName.put(k.victim.name, x.cls);
 						}
 						break;
 					}
 					case EventTypes.HERO_DEATH: {
 						CombatEvents.HeroDeath hd = CombatEvents.decodeHeroDeath(e, r);
 						if (hd.cause.kind == CombatEvents.SRC_CHAR && hd.cause.fighterKind == CombatEvents.KIND_ENEMY){
-							String cls = classOfName.get(hd.cause.label);
-							EnemyAcc x = enemy(enemies, cls == null ? "" : cls, hd.cause.label);
-							x.met = true;
-							x.heroDeaths++;
+							enemy(enemies, hd.cause.label, classOfName.get(hd.cause.label), e.index).heroDeaths++;
 						}
 						break;
 					}
@@ -466,8 +494,8 @@ public final class RowBuilders {
 						GenerationEvents.MobGenerated g = GenerationEvents.decodeMobGenerated(e, r);
 						//allies and neutral creatures are not enemies
 						if (g.alignment == 0){
-							EnemyAcc x = enemy(enemies, g.mobClass, "");   //the name comes only from what the player saw
-							x.spawned++;
+							Long n = generated.get(g.mobClass);
+							generated.put(g.mobClass, n == null ? 1 : n + 1);
 						}
 						break;
 					}
@@ -478,30 +506,70 @@ public final class RowBuilders {
 			}
 		}
 		boolean gen = atLeast(v, 1, 4);
+		List<EnemyAcc> met = new ArrayList<>(enemies.values());
+		java.util.Collections.sort(met, new java.util.Comparator<EnemyAcc>(){
+			@Override
+			public int compare( EnemyAcc a, EnemyAcc b ){
+				return a.firstPublic < b.firstPublic ? -1 : a.firstPublic > b.firstPublic ? 1 : 0;
+			}
+		});
+		Set<String> metClasses = new HashSet<>();
 		List<Row> rows = new ArrayList<>();
-		for (EnemyAcc a : enemies.values()){
-			Row row = new Row(meta.runId + "|" + a.key, meta.runId + "|" + a.key, meta.runId, ENEMIES.size());
+		for (EnemyAcc a : met){
+			metClasses.addAll(a.classes);
+			Row row = new Row(meta.runId + "|" + a.name, meta.runId + "|" + a.name, meta.runId, ENEMIES.size());
 			row.finished = meta.hasRunEnd;
 			row.ruleset = meta.ruleset;
 			row.telemetry = meta.telemetry;
-			row.publicRow = a.met;
+			row.publicRow = true;
 			put(row, "enemy.run", meta.runId, Fact.PROV_RECORDED);
-			put(row, "enemy.name", a.name.isEmpty() ? shortClass(a.cls) : a.name, Fact.PROV_RECORDED);
-			put(row, "enemy.attacksOnHero", a.attacksOnHero, countProv);
-			put(row, "enemy.hitsOnHero", a.hitsOnHero, countProv);
-			put(row, "enemy.attacksByHero", a.attacksByHero, countProv);
-			put(row, "enemy.hitsByHero", a.hitsByHero, countProv);
-			put(row, "enemy.damageToHero", a.damageToHero, countProv);
-			put(row, "enemy.damageFromHero", a.damageFromHero, countProv);
-			put(row, "enemy.kills", a.kills, countProv);
-			put(row, "enemy.deaths", a.deaths, countProv);
-			put(row, "enemy.heroDeaths", a.heroDeaths, countProv);
-			if (!a.cls.isEmpty()) put(row, "enemy.class", a.cls, Fact.PROV_RECORDED);
-			if (gen) put(row, "enemy.spawned", a.spawned, countProv);
+			put(row, "enemy.name", a.name, Fact.PROV_RECORDED);
+			fightCells(row, a.attacksOnHero, a.hitsOnHero, a.attacksByHero, a.hitsByHero, a.damageToHero, a.damageFromHero, a.kills, a.deaths,
+					a.heroDeaths, countProv);
+			if (a.classes.size() == 1) put(row, "enemy.class", a.classes.iterator().next(), Fact.PROV_RECORDED);
+			else if (a.classes.size() > 1) put(row, "enemy.class", "(several)", Fact.PROV_RECORDED);
+			if (gen && !a.classes.isEmpty()){
+				long n = 0;
+				for (String c : a.classes){
+					Long g = generated.get(c);
+					if (g != null) n += g;
+				}
+				put(row, "enemy.spawned", n, countProv);
+			}
 			if (a.expValue >= 0) put(row, "enemy.expValue", a.expValue, Fact.PROV_RECORDED);
 			rows.add(row);
 		}
+		//kinds of enemy that were generated but never met in a fight: hidden rows
+		List<String> unmet = new ArrayList<>();
+		for (String c : generated.keySet()) if (!metClasses.contains(c)) unmet.add(c);
+		java.util.Collections.sort(unmet);
+		for (String c : unmet){
+			Row row = new Row(meta.runId + "|class:" + c, meta.runId + "|class:" + c, meta.runId, ENEMIES.size());
+			row.finished = meta.hasRunEnd;
+			row.ruleset = meta.ruleset;
+			row.telemetry = meta.telemetry;
+			row.publicRow = false;
+			put(row, "enemy.run", meta.runId, Fact.PROV_RECORDED);
+			put(row, "enemy.name", shortClass(c), Fact.PROV_RECORDED);
+			fightCells(row, 0, 0, 0, 0, 0, 0, 0, 0, 0, countProv);
+			put(row, "enemy.class", c, Fact.PROV_RECORDED);
+			if (gen) put(row, "enemy.spawned", generated.get(c), countProv);
+			rows.add(row);
+		}
 		return rows;
+	}
+
+	private static void fightCells( Row row, long onHero, long hitsOnHero, long byHero, long hitsByHero, long toHero, long fromHero,
+	                                long kills, long deaths, long heroDeaths, int prov ){
+		put(row, "enemy.attacksOnHero", onHero, prov);
+		put(row, "enemy.hitsOnHero", hitsOnHero, prov);
+		put(row, "enemy.attacksByHero", byHero, prov);
+		put(row, "enemy.hitsByHero", hitsByHero, prov);
+		put(row, "enemy.damageToHero", toHero, prov);
+		put(row, "enemy.damageFromHero", fromHero, prov);
+		put(row, "enemy.kills", kills, prov);
+		put(row, "enemy.deaths", deaths, prov);
+		put(row, "enemy.heroDeaths", heroDeaths, prov);
 	}
 
 	//---- deaths ----

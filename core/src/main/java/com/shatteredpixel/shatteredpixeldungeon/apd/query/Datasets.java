@@ -80,7 +80,8 @@ public final class Datasets {
 		d.add(ColumnDef.num(FactKeys.INITIAL_VERSION, "Game version code").group("Run"));
 		d.add(ColumnDef.text(FactKeys.GAME_VERSION, "Game version").group("Run"));
 		d.add(yesNo(ColumnDef.enumeration(FactKeys.PARTIAL, "Started mid-run")).merge(Merge.ANY).group("Run"));
-		d.add(ColumnDef.num(FactKeys.ABANDONED_EVENTS, "Rolled-back events").merge(Merge.SUM).group("Run"));
+		d.add(ColumnDef.num(FactKeys.ABANDONED_EVENTS, "Rolled-back events").internal().merge(Merge.SUM).group("Hidden")
+				.describe("How many recorded events were rolled back. It counts hidden events too."));
 		d.add(ColumnDef.num(FactKeys.ROLLBACKS, "Rollbacks").merge(Merge.SUM).group("Run"));
 		d.add(yesNo(ColumnDef.enumeration(FactKeys.ASCENDING, "Ascended")).group("Result"));
 		//journey
