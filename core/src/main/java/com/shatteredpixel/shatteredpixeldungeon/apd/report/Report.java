@@ -120,6 +120,9 @@ public final class Report {
 		return this;
 	}
 
+	//built from synthetic demo/sample data: every format says so, so it can never be mistaken for real play history
+	public boolean synthetic;
+
 	//true when anything in the report is canonical (a replay of a seed) rather than recorded history
 	public boolean hasCanonical(){
 		for (Block b : blocks){

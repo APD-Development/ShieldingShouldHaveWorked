@@ -45,40 +45,44 @@ public final class Catalog {
 
 	private final Map<String, Dataset> datasets = new LinkedHashMap<>();
 	private final Map<String, ViewDef> views = new LinkedHashMap<>();
+	//Seed floors are added to the live catalog from a worker thread while the screen reads it, so every access to the two maps is synchronized
+	//(shown to be needed by UimsdModelTest.theCatalogCanBeReadWhileSeedFloorsAreInstalled). The rest is built once and only read.
 	public final List<RulesetInfo> rulesets = new ArrayList<>();
 	//how it was built
 	public int logsCached;
 	public int logsRebuilt;
 	public long millis;
+	//built from synthetic demo/sample data (never real history)
+	public boolean synthetic;
 
-	public Catalog add( Dataset d ){
+	public synchronized Catalog add( Dataset d ){
 		datasets.put(d.def.id, d);
 		return this;
 	}
 
-	public Catalog add( ViewDef v ){
+	public synchronized Catalog add( ViewDef v ){
 		views.put(v.id, v);
 		return this;
 	}
 
-	public Dataset dataset( String id ){
+	public synchronized Dataset dataset( String id ){
 		return datasets.get(id);
 	}
 
-	public ViewDef view( String id ){
+	public synchronized ViewDef view( String id ){
 		return views.get(id);
 	}
 
-	public List<ViewDef> views(){
+	public synchronized List<ViewDef> views(){
 		return new ArrayList<>(views.values());
 	}
 
-	public List<Dataset> datasets(){
+	public synchronized List<Dataset> datasets(){
 		return new ArrayList<>(datasets.values());
 	}
 
 	//the dataset a view reads
-	public Dataset datasetOf( ViewDef v ){
+	public synchronized Dataset datasetOf( ViewDef v ){
 		return datasets.get(v.dataset());
 	}
 }

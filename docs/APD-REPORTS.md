@@ -33,3 +33,10 @@ Reports are built from the same data as the UIMSD screens (`apd.report`); there 
 
 ## Not done on purpose
 Final wording/layout (separate polish pass); native PDF; reports of live (unfinished) runs' hidden information; online upload.
+
+## Synthetic data and unfinished runs (stability pass 2)
+- A report built from the synthetic demo or tutorial sample data says "SYNTHETIC DEMO DATA ... NOT real play history" at the top of all four formats
+  (CSV: first comment line). `Catalog.synthetic` is set from the demo marker file; `WndUimsdReport.show` sets `Report.synthetic`.
+- Comparing runs when either is unfinished leaves out every hidden column for both, even if hidden information was asked for (regression-tested).
+- `Catalog` map access is synchronized: seed floors are installed from a worker thread while the screen reads (reproduced as an
+  ArrayIndexOutOfBounds in a stress test before the fix).

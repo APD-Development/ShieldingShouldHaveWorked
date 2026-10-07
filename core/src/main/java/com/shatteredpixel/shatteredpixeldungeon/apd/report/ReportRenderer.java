@@ -11,6 +11,8 @@ public final class ReportRenderer {
 
 	private ReportRenderer(){}
 
+	public static final String SYNTHETIC_NOTICE = "SYNTHETIC DEMO DATA: made up for testing. This is NOT real play history.";
+
 	public static final String CANONICAL_NOTICE = "CANONICAL DATA: rows marked canonical are what the run's seed gives in an in-order replay under APD's "
 			+ "reference rules. They are NOT recorded history and NOT what this run would have met: play changes what later floors hold. "
 			+ "Rows marked recorded come from the run's own log and are authoritative.";
@@ -76,6 +78,7 @@ public final class ReportRenderer {
 	public static String markdown( Report r ){
 		StringBuilder sb = new StringBuilder();
 		sb.append("# ").append(r.title).append("\n\n");
+		if (r.synthetic) sb.append("> **").append(SYNTHETIC_NOTICE).append("**\n\n");
 		for (String a : r.about) sb.append(a).append("  \n");
 		if (!r.about.isEmpty()) sb.append("\n");
 		if (r.hasCanonical()) sb.append("> **").append(CANONICAL_NOTICE).append("**\n\n");
@@ -140,6 +143,7 @@ public final class ReportRenderer {
 
 	public static String text( Report r ){
 		StringBuilder sb = new StringBuilder();
+		if (r.synthetic) sb.append(SYNTHETIC_NOTICE).append("\n\n");
 		sb.append(r.title.toUpperCase()).append("\n");
 		for (int i = 0; i < r.title.length(); i++) sb.append('=');
 		sb.append("\n");
@@ -223,6 +227,7 @@ public final class ReportRenderer {
 				.append(".lower{font-weight:bold}.inferred{font-style:italic;color:#8a4b00}.unknown{color:#777}.hidden{color:#777;background:#eee}.legacy{color:#2563eb}.small{opacity:.65}\n")
 				.append("footer{margin-top:2em;color:#555;font-size:.9em}\n@media print{body{max-width:none}}\n</style></head><body>\n");
 		sb.append("<h1>").append(esc(r.title)).append("</h1>\n");
+		if (r.synthetic) sb.append("<p class=\"warn\"><strong>").append(esc(SYNTHETIC_NOTICE)).append("</strong></p>\n");
 		for (String a : r.about) sb.append("<div>").append(esc(a)).append("</div>\n");
 		if (r.hasCanonical()) sb.append("<p class=\"canonical\">").append(esc(CANONICAL_NOTICE)).append("</p>\n");
 		for (Report.Block b : r.blocks){
@@ -298,6 +303,7 @@ public final class ReportRenderer {
 	public static String csv( Report r ){
 		StringBuilder sb = new StringBuilder();
 		boolean any = false;
+		if (r.synthetic) sb.append("# ").append(SYNTHETIC_NOTICE).append("\r\n");
 		for (Report.Block b : r.blocks){
 			if (!(b instanceof Report.Table)) continue;
 			Report.Table t = (Report.Table) b;

@@ -12,7 +12,8 @@ logcat tags APDMIG/APDPERF into the job log and uploads logcat artifacts.
   (8 tests each, incl. the migration test with heals and UimsdDeviceTimingTest).
 - **Home/Guide milestone: COMPLETE, awaiting approval.** Verified on commit 80ef188f8 = **apd-build-37**: core 509 tests green; device tests green API 26 + 34.
 - Stability pass (CI green): per-run balance revision persisted/used everywhere; UIMSD-from-game cannot start a floor replay; seed floors refuse imported/unrecorded-challenge/unknown-revision runs. Product notes: none needed. New phone check: none.
-- Latest known-good = THE PHONE-CHECK BUILD: **apd-build-57 = commit 3212b882a** (stability pass; core 567 tests, device tests green API 26 + 34). Previous: apd-build-53 = commit 9ff719889 (Difficulty balance pass 1): core 560 tests green; device tests green API 26 + 34. Previous: apd-build-51 (difficulty framework), 49 (reports), 8dbbadf69 (floor replay).
+- Stability pass 2 (pending CI; replaces build 57 as THE PHONE-CHECK build once green): Catalog synchronized (real race shown by test), reports from demo/sample data carry a SYNTHETIC notice, unfinished-comparison hidden-info regression test. No new phone checks.
+- Previous PHONE-CHECK build: **apd-build-57 = commit 3212b882a** (stability pass; core 567 tests, device tests green API 26 + 34). Previous: apd-build-53 = commit 9ff719889 (Difficulty balance pass 1): core 560 tests green; device tests green API 26 + 34. Previous: apd-build-51 (difficulty framework), 49 (reports), 8dbbadf69 (floor replay).
 - Frozen: Phases 0-7 (Phase 7 UIMSD approved/frozen at build 28). Phase 8 (export/import ZIP, storage meter, Android file picker):
   automated verification complete; NOT permanently frozen until the user's physical picker check.
 - Telemetry version now 1.6. UIMSD = one major feature; these phases are milestones inside it.

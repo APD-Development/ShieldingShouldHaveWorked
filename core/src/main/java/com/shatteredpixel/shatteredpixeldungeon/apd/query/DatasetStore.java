@@ -101,6 +101,7 @@ public final class DatasetStore {
 		List<LogRows> recorded = new ArrayList<>();
 		List<LogRows> imported = new ArrayList<>();
 		boolean demoFolder = new File(root, DEMO_MARKER_FILE).isFile();
+		cat.synthetic = demoFolder;
 		for (File f : logs(new File(root, "runs"))){
 			if (idOf(f).startsWith(DEMO_LOG_PREFIX) != demoFolder) continue;
 			LogRows lr = rowsFor(f, false, defs, cat);

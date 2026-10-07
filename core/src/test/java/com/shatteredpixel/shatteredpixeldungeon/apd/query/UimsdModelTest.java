@@ -277,4 +277,37 @@ public class UimsdModelTest {
 			}
 		}
 	}
+
+	//Seed floors are installed into the live catalog from a worker thread while the screen reads it.
+	@Test
+	public void theCatalogCanBeReadWhileSeedFloorsAreInstalled() throws Exception {
+		final Catalog c = catalog();
+		final java.util.concurrent.atomic.AtomicReference<Throwable> failure = new java.util.concurrent.atomic.AtomicReference<>();
+		final java.util.concurrent.atomic.AtomicBoolean stop = new java.util.concurrent.atomic.AtomicBoolean();
+		Thread reader = new Thread(new Runnable(){
+			@Override
+			public void run(){
+				try {
+					while (!stop.get()){
+						c.views();
+						c.datasets();
+						c.dataset("things");
+						c.view("all");
+					}
+				} catch (Throwable e){
+					failure.set(e);
+				}
+			}
+		});
+		reader.start();
+		try {
+			for (int i = 0; i < 20000 && failure.get() == null; i++){
+				c.add(new ViewDef("extra" + i, "Extra", "x", Query.of("parts")));
+			}
+		} finally {
+			stop.set(true);
+			reader.join();
+		}
+		assertEquals(null, failure.get());
+	}
 }

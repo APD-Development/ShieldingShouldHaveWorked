@@ -162,6 +162,52 @@ public class ReportTest {
 		assertTrue(ReportRenderer.markdown(cmp).contains("B minus A"));
 	}
 
+	@Test
+	public void aComparisonWithAnUnfinishedRunNeverCarriesHiddenInformationOfEitherRun() {
+		Row fin = null, other = null;
+		for (Row r : cat.dataset(Datasets.RUNS).rows){
+			if (!r.finished) continue;
+			if (fin == null) fin = r;
+			else if (other == null) other = r;
+		}
+		assertNotNull(other);
+		com.shatteredpixel.shatteredpixeldungeon.apd.query.DatasetDef d = cat.dataset(Datasets.RUNS).def;
+		//the baseline: two finished runs with hidden information asked for DO show it
+		String both = ReportRenderer.markdown(ReportBuilder.compareRuns(cat, fin, other, true, NOW, "test"));
+		assertTrue(both.contains("Seed"));
+		String seedA = String.valueOf(fin.num(d.indexOf(com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKeys.SEED)));
+
+		boolean was = other.finished;
+		other.finished = false;
+		try {
+			for (boolean unfinishedIsB : new boolean[]{ true, false }){
+				Report r = unfinishedIsB ? ReportBuilder.compareRuns(cat, fin, other, true, NOW, "test")
+						: ReportBuilder.compareRuns(cat, other, fin, true, NOW, "test");
+				String t = all(r);
+				assertFalse("no internal column when one run is unfinished", t.contains("Seed"));
+				assertFalse("the finished run's seed value stays out too", t.contains(seedA));
+				assertFalse(t.contains("Spoilers"));
+				assertTrue(t.contains("(not finished)"));
+			}
+		} finally {
+			other.finished = was;
+		}
+	}
+
+	@Test
+	public void reportsFromDemoOrSampleDataSayTheyAreSyntheticInEveryFormatAndRealDataDoesNot() {
+		assertTrue("the sample folder is synthetic", cat.synthetic);
+		Report r = ReportBuilder.lifetime(cat, RULES.id, "", true, NOW, "test");
+		assertFalse(r.synthetic);
+		r.synthetic = true;      //what the report window sets for a synthetic catalog
+		for (String out : new String[]{ ReportRenderer.markdown(r), ReportRenderer.text(r), ReportRenderer.html(r), ReportRenderer.csv(r) }){
+			assertTrue(out, out.contains("SYNTHETIC DEMO DATA") && out.contains("NOT real play history"));
+		}
+		r.synthetic = false;
+		assertFalse(all(r).contains("SYNTHETIC"));
+		assertFalse("a catalog that was not built from a demo folder is not synthetic", new Catalog().synthetic);
+	}
+
 	private static SeedFloors.Spec spec(){
 		SeedFloors.Spec s = new SeedFloors.Spec();
 		s.runId = "run-x";
