@@ -44,3 +44,9 @@ modelled. An upstream change to level generation changes results: bump `ENGINE_V
 - Only finished runs; a loaded/live game gives a notice, never a replay. Everything is INTERNAL (hidden-information) columns, opened with
   hidden information on.
 - Tests: SeedFloorsTest (provenance, authority of recorded floors, comparison maths, model flow, live-game notice), device repeatability + assembly.
+
+## Found by CI on API 34: the random-number stack is shared by every thread
+`com.watabou.utils.Random` keeps ONE generator stack for the whole process. A replay seeds it, but the render thread draws random numbers
+every frame (and pushes/pops generators), so on a running app the replay's numbers were being consumed by the UI: the same seed gave a
+different floor 2 the second time. Fix: `Random.isolateThread()/releaseThread()` give the replay thread its own stack (`ReplayContext.enter/exit`);
+all other threads keep the shared one. `otherThreadsUsingRandomNumbersCannotDisturbAReplay` fails without it (mutation-checked).

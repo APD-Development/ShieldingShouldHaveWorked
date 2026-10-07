@@ -117,6 +117,32 @@ public class FloorReplayTest {
 	}
 
 	@Test
+	public void otherThreadsUsingRandomNumbersCannotDisturbAReplay() throws Exception {
+		//a device's render thread draws random numbers (and pushes/pops generators) all the time while a replay runs
+		List<String> quiet = replayFingerprints(1357L, 0, HeroClass.ROGUE, 14);
+		final java.util.concurrent.atomic.AtomicBoolean stop = new java.util.concurrent.atomic.AtomicBoolean(false);
+		Thread noise = new Thread(new Runnable(){
+			@Override
+			public void run(){
+				while (!stop.get()){
+					com.watabou.utils.Random.Float();
+					com.watabou.utils.Random.Int(100);
+					com.watabou.utils.Random.pushGenerator(5L);
+					com.watabou.utils.Random.Int(10);
+					com.watabou.utils.Random.popGenerator();
+				}
+			}
+		});
+		noise.start();
+		try {
+			for (int i = 0; i < 3; i++) assertEquals(quiet, replayFingerprints(1357L, 0, HeroClass.ROGUE, 14));
+		} finally {
+			stop.set(true);
+			noise.join();
+		}
+	}
+
+	@Test
 	public void floorsHaveContent() throws Exception {
 		List<ReplayFloor> floors = FloorReplay.replay(4242L, 0, HeroClass.MAGE, FloorReplay.LAST_FLOOR);
 		assertEquals(26, floors.size());

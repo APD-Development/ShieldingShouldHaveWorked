@@ -39,17 +39,39 @@ public class Random {
 		resetGenerators();
 	}
 
+	//APD: the stack above is shared by every thread, so a thread that seeds it (a floor replay) would have its numbers drawn, and its
+	//generators pushed and popped, by whatever else is running (the render thread draws random numbers every frame). A thread can ask for
+	//a stack of its own: only that thread uses it, every other thread keeps the shared one untouched.
+	private static volatile Thread isolatedThread;
+	private static volatile ArrayDeque<java.util.Random> isolatedGenerators;
+
+	private static ArrayDeque<java.util.Random> gens(){
+		return Thread.currentThread() == isolatedThread ? isolatedGenerators : generators;
+	}
+
+	public static synchronized void isolateThread(){
+		ArrayDeque<java.util.Random> own = new ArrayDeque<>();
+		own.push(new java.util.Random());
+		isolatedGenerators = own;
+		isolatedThread = Thread.currentThread();
+	}
+
+	public static synchronized void releaseThread(){
+		isolatedThread = null;
+		isolatedGenerators = null;
+	}
+
 	public static synchronized void resetGenerators(){
 		generators = new ArrayDeque<>();
 		generators.push(new java.util.Random());
 	}
 
 	public static synchronized void pushGenerator(){
-		generators.push( new java.util.Random() );
+		gens().push( new java.util.Random() );
 	}
 
 	public static synchronized void pushGenerator( long seed ){
-		generators.push( new java.util.Random( scrambleSeed(seed) ) );
+		gens().push( new java.util.Random( scrambleSeed(seed) ) );
 	}
 
 	//scrambles a given seed, this helps eliminate patterns between the outputs of similar seeds
@@ -66,10 +88,10 @@ public class Random {
 	}
 
 	public static synchronized void popGenerator(){
-		if (generators.size() == 1){
+		if (gens().size() == 1){
 			Game.reportException( new RuntimeException("tried to pop the last random number generator!"));
 		} else {
-			generators.pop();
+			gens().pop();
 		}
 	}
 
@@ -79,8 +101,8 @@ public class Random {
 	}
 
 	public static synchronized float Float( boolean useGeneratorStack ) {
-		if (useGeneratorStack)  return generators.peekFirst().nextFloat();
-		else                    return generators.peekLast().nextFloat();
+		if (useGeneratorStack)  return gens().peekFirst().nextFloat();
+		else                    return gens().peekLast().nextFloat();
 	}
 
 	//returns a uniformly distributed float in the range [0, max)
@@ -106,8 +128,8 @@ public class Random {
 	//returns a uniformly distributed int in the range [-2^31, 2^31)
 	//can either use the current generator in the stack, or force the first generator (pure random)
 	public static synchronized int Int( boolean useGeneratorStack ) {
-		if (useGeneratorStack)  return generators.peekFirst().nextInt();
-		else                    return generators.peekLast().nextInt();
+		if (useGeneratorStack)  return gens().peekFirst().nextInt();
+		else                    return gens().peekLast().nextInt();
 	}
 
 	//returns a uniformly distributed int in the range [0, max)
@@ -119,8 +141,8 @@ public class Random {
 	//can either use the current generator in the stack, or force the first generator (pure random)
 	public static synchronized int Int( int max, boolean useGeneratorStack ) {
 		if (max <= 0)                   return 0;
-		else if (useGeneratorStack)     return generators.peekFirst().nextInt(max);
-		else                            return generators.peekLast().nextInt(max);
+		else if (useGeneratorStack)     return gens().peekFirst().nextInt(max);
+		else                            return gens().peekLast().nextInt(max);
 	}
 
 	//returns a uniformly distributed int in the range [min, max)
@@ -158,8 +180,8 @@ public class Random {
 	//returns a uniformly distributed long in the range [-2^63, 2^63)
 	//can either use the current generator in the stack, or force the first generator (pure random)
 	public static synchronized long Long( boolean useGeneratorStack ) {
-		if (useGeneratorStack)  return generators.peekFirst().nextLong();
-		else                    return generators.peekLast().nextLong();
+		if (useGeneratorStack)  return gens().peekFirst().nextLong();
+		else                    return gens().peekLast().nextLong();
 	}
 
 	//returns a mostly uniformly distributed long in the range [0, max)
@@ -254,7 +276,7 @@ public class Random {
 	}
 
 	public synchronized static<T> void shuffle( List<?extends T> list){
-		Collections.shuffle(list, generators.peek());
+		Collections.shuffle(list, gens().peek());
 	}
 
 	public static void shuffle( int[] array ) {

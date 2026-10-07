@@ -13,11 +13,14 @@ public final class ReplayContext {
 	private static volatile Thread thread;
 
 	static void enter(){
+		//its own random-number stack: the render thread draws from the shared one all the time, which would corrupt a seeded replay
+		com.watabou.utils.Random.isolateThread();
 		thread = Thread.currentThread();
 	}
 
 	static void exit(){
 		thread = null;
+		com.watabou.utils.Random.releaseThread();
 	}
 
 	//true only on the thread that is currently replaying
