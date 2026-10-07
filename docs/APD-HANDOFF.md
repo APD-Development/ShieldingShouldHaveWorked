@@ -14,7 +14,16 @@ logcat tags APDMIG/APDPERF into the job log and uploads logcat artifacts.
 - Stability pass (CI green): per-run balance revision persisted/used everywhere; UIMSD-from-game cannot start a floor replay; seed floors refuse imported/unrecorded-challenge/unknown-revision runs. Product notes: none needed. New phone check: none.
 - Stability pass 2 (CI green, superseded by the integrity audit below): Catalog synchronized (real race shown by test), reports from demo/sample data carry a SYNTHETIC notice, unfinished-comparison hidden-info regression test. No new phone checks.
 - Previous PHONE-CHECK build: apd-build-60 = commit 3a35441a7 (integrity audit; core tests green, device tests green API 26 + 34; replaces build 57). No new phone checks.
-- **THE PHONE-CHECK BUILD = apd-build-64 = commit 74b205f6f** (UIMSD UI/wording polish; core 585 tests green; device tests green API 26 + API 34, including the new
+- **THE PHONE-CHECK BUILD = apd-build-66 = commit 4a39871c1** (replaces build 64, which had a BLOCKER: every action button in APD Settings was dead). Core + device tests green
+  (API 26 + API 34), including the new ApdSettingsClickDeviceTest. Everything below for build 64 applies unchanged to build 66, plus the APD Settings click check:
+  (0) Options > APD Settings on a fresh launch: Run self-test, Import APD rankings, Export history (ZIP), Import history (ZIP), the "Record run history" tick box and Open UIMSD
+  (preview) must each respond (result window / file picker / scene change).
+  BUILD 64 BLOCKER, recorded: root cause = input order. WndAPDSettings created the settings pane BEFORE the ScrollPane that holds it. The newest touch area is asked first and the
+  ScrollPane's own touch area covers everything inside it, so it was asked before the buttons and swallowed every touch (sliders still drew; UIMSD from the title and Report > Save
+  worked because they are not under a ScrollPane). Fix (52b68ae9c): create the ScrollPane first, the controls after. Regression test: ApdSettingsClickDeviceTest sends real touch
+  events through the game's own pointer queue to each control (file picker replaced by a recording stand-in installed AFTER the launcher installs the real one). Verified red without
+  the fix ("Run self-test did not answer a touch") and green with it. Lesson: a screen-construction smoke test cannot catch dead input; any new window with a ScrollPane needs a click test.
+- Previous PHONE-CHECK build (had the APD Settings blocker): **apd-build-64 = commit 74b205f6f** (UIMSD UI/wording polish; core 585 tests green; device tests green API 26 + API 34, including the new
   UimsdScreensDeviceTest that builds every screen/dialog on the engine; replaces build 62). Design notes: docs/APD-UIMSD-UI.md. Phone-check list for it (all subjective, none blocking):
   (a) first-run Home (history empty) reads well and the tour button is prominent; (b) Home cards: grey labels / coloured values; (c) the filter flow: column list grouped, plain
   comparison words, Class offers your real classes with counts, Outcome Won/Died/Abandoned, Difficulty 1-5, "Something else...", "is one of" tick list; (d) tables: two-line headings,
