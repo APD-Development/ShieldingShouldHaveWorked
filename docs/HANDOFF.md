@@ -26,9 +26,8 @@ The long project handoff is `docs/APD-HANDOFF.md`; the canonical plan is `APD_Ca
 - Nothing. Device run 87 green (API 26 + 34, incl. PlayRunDeviceTest) at 513b4fc; main = apd-build-73 (76faff8), Build APK green. Recorded in docs/APD-HANDOFF.md. Run 86 was red before the fix (cause not read; superseded by 87).
 
 ## Next task (exact)
-- Owner said "restart": backend roadmap work resumes. Done this step: queued-run preview + withdraw (SubmissionQueue.isQueued/preview/withdraw, Outbox.remove, run-sheet actions), core tests green, device run 89 green; main = apd-build-74 (8f13fcf).
-- Next backend steps (all provider-neutral, local, nothing sent): (1) read-only queue status line in APD Settings (needs a click test; the pane had a touch-order bug before, so test it on device); (2) DONE: PrivacySummary + Options > Privacy entry (device-test pending); still to do before any real server: account export/deletion design; (3) evidence-request protocol design doc (decision 4 pending); (4) device run at the next checkpoint, then push a green sha to main.
-- Then the remaining recording candidates (levers, NPC/quest steps, shop stock seen, ally summons, alchemy details, level feelings), one small batch at a time.
+- BACKEND QUEUE FINISHED for everything that is approved and provider-neutral. Done in this round: queued-run preview/withdraw, PrivacySummary + Options > Privacy (also shows the queue count, so a separate APD Settings status line is not needed), account export/deletion rules (docs/APD-BACKEND.md). Main = apd-build-74 (8f13fcf), device run 89 green.
+- What remains needs the owner: backend decisions 1-6 in docs/APD-BACKEND.md (provider, sign-in, key custody, ranking verification/evidence protocol, retention, moderation), then a real Gateway/transport and sign-in UI. Marginal optional work: recording candidates (levers, NPC/quest steps, shop stock seen, ally summons, alchemy details, level feelings). No resume is scheduled.
 
 ## Decisions already made (do not ask again)
 - Local-first; backend owns shared authoritative state; raw UIMSD history stays local. Provider-neutral interfaces; the provider choice is NOT a blocker. No secret in the APK; gameplay cannot create developer grants. No public deployment, spending, credentials, hidden analytics or private history uploads.
