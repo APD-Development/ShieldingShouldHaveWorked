@@ -112,8 +112,9 @@ public class BackendFoundationsTest {
 		//nothing outside the backend package uses it yet except through the Gateway door; gameplay code must never reach grants or content approval
 		List<String> users = new ArrayList<>();
 		scan(root, new File[]{ main, new File(root, "apd/backendbridge") }, users);
-		//The only game-side entry point is the developer-preview "queue for submission" action in the run sheet, and it goes through the bridge, never the backend package itself.
+		//Game-side entry points, all through the bridge and never the backend package itself: the developer-preview "queue for submission" actions in the run sheet, and the read-only "what stays on this device" summary in the table options.
 		users.remove("WndUimsdRow.java");
+		users.remove("WndUimsdOptions.java");
 		assertTrue("game code must not use the backend package directly: " + users, users.isEmpty());
 	}
 

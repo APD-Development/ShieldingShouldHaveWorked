@@ -99,6 +99,10 @@ public final class WndUimsdOptions {
 		entries.add(Entry.item("Open a saved view...", "Asks one of your saved questions again, of your history as it is now."));
 		actions.add(new Runnable(){ public void run(){ openViews(m); } });
 
+		entries.add(Entry.heading("Privacy"));
+		entries.add(Entry.item("What stays on this device", "What APD holds, and that nothing is sent anywhere."));
+		actions.add(new Runnable(){ public void run(){ privacy(m); } });
+
 		entries.add(Entry.heading("Share and reset"));
 		entries.add(Entry.item("Share a report of this table...", "As text, or saved as a file."));
 		actions.add(new Runnable(){ public void run(){ WndUimsdReport.ofView(m); } });
@@ -166,6 +170,12 @@ public final class WndUimsdOptions {
 				viewActions(m, list.get(i));
 			}
 		}));
+	}
+
+	private static void privacy( UimsdModel m ){
+		StringBuilder sb = new StringBuilder();
+		for (String line : com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge.PrivacySummary.of(m.root()).lines()) sb.append(line).append("\n\n");
+		ShatteredPixelDungeon.scene().addToFront(new WndMessage(sb.toString().trim()));
 	}
 
 	private static void viewActions( final UimsdModel m, final SavedViews.View view ){

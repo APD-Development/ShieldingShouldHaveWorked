@@ -123,4 +123,22 @@ public class SubmissionQueueTest {
 		assertEquals(1, SubmissionQueue.pending(tmp.getRoot()));
 		assertFalse("a bad id is simply not queued", SubmissionQueue.withdraw(tmp.getRoot(), "../x"));
 	}
+
+	@Test
+	public void thePrivacySummaryCountsLogsAndQueueAndSaysNothingWasSent(){
+		PrivacySummary none = PrivacySummary.of(tmp.getRoot());
+		assertEquals(0, none.runLogs);
+		assertEquals(0, none.queued);
+		log("run-a", true, 3, 0);
+		log("run-b", false, 3, 0);
+		SubmissionQueue.enqueueRun(tmp.getRoot(), "run-a", "b", 1);
+		PrivacySummary s = PrivacySummary.of(tmp.getRoot());
+		assertEquals(2, s.runLogs);
+		assertTrue(s.runLogBytes > 0);
+		assertEquals(1, s.queued);
+		String all = String.join(" ", s.lines());
+		assertTrue(all.contains("Nothing is sent anywhere"));
+		assertTrue(all.contains("1 finished run is queued"));
+		assertEquals("a missing folder is simply empty", 0, PrivacySummary.of(null).runLogs);
+	}
 }
