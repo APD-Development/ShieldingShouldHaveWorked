@@ -81,6 +81,8 @@ public final class WndUimsdOptions {
 		entries.add(Entry.item(q.group == null ? "Group by..." : "Grouping: change or remove...",
 				"Count entries with the same value together, like runs per class."));
 		actions.add(new Runnable(){ public void run(){ pickGroup(m); } });
+		entries.add(Entry.item("Arrange the columns...", "Choose the order of the columns you show. Which columns show is in Columns."));
+		actions.add(new Runnable(){ public void run(){ WndUimsdColumns.arrange(m); } });
 		entries.add(Entry.item("Smallest group shown: " + (q.minSample <= 1 ? "any size" : q.minSample + " or more"),
 				"Small groups give shaky averages, so you can hide them. They are counted, not dropped."));
 		actions.add(new Runnable(){ public void run(){ pickMinSample(m); } });

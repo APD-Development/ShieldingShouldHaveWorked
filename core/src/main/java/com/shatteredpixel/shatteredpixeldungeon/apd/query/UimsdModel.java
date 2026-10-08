@@ -432,6 +432,15 @@ public final class UimsdModel {
 		apply(query.withColumns(cols));
 	}
 
+	//moves a shown column left or right; the first column is the one that stays fixed on screen
+	public synchronized void moveColumn( String id, int delta ){
+		Dataset ds = dataset();
+		if (ds == null) return;
+		List<String> cols = new ArrayList<>(query.columns.isEmpty() ? ds.def.defaultColumnIds() : query.columns);
+		List<String> moved = ColumnOrder.move(cols, id, delta);
+		if (!moved.equals(cols)) apply(query.withColumns(moved));
+	}
+
 	public synchronized void setScope( Scope s ){
 		apply(query.withScope(s));
 	}

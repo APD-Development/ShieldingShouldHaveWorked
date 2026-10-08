@@ -63,4 +63,40 @@ public final class WndUimsdColumns {
 					}
 				}));
 	}
+
+	//the shown columns in their order; tapping one offers to move it
+	public static void arrange( final UimsdModel m ){
+		if (m.dataset() == null) return;
+		if (m.result() != null && m.result().isGrouped()){
+			ShatteredPixelDungeon.scene().addToFront(new WndMessage("A grouped table has a fixed layout. Open another view to arrange its columns."));
+			return;
+		}
+		final List<String> shown = new ArrayList<>(m.query().columns.isEmpty() ? m.dataset().def.defaultColumnIds() : m.query().columns);
+		List<WndUimsdList.Entry> entries = new ArrayList<>();
+		for (int i = 0; i < shown.size(); i++){
+			ColumnDef c = null;
+			for (ColumnDef x : m.offeredColumns()) if (x.id.equals(shown.get(i))) c = x;
+			entries.add(WndUimsdList.Entry.item((i + 1) + ". " + (c == null ? shown.get(i) : c.label), "Tap to move it."));
+		}
+		ShatteredPixelDungeon.scene().addToFront(WndUimsdList.menu("Column order", "Left to right as in the table. Tap a column to move it.", entries, new WndUimsdList.Picker(){
+			@Override
+			public void onPick( int i, boolean checked ){
+				moveOne(m, shown.get(i));
+			}
+		}));
+	}
+
+	private static void moveOne( final UimsdModel m, final String id ){
+		List<WndUimsdList.Entry> entries = new ArrayList<>();
+		entries.add(WndUimsdList.Entry.item("Move left", "One place towards the front."));
+		entries.add(WndUimsdList.Entry.item("Move right", "One place towards the back."));
+		entries.add(WndUimsdList.Entry.item("Make first", "It becomes the first column, the one that stays in place while the rest scroll."));
+		ShatteredPixelDungeon.scene().addToFront(WndUimsdList.menu("Move column", "", entries, new WndUimsdList.Picker(){
+			@Override
+			public void onPick( int i, boolean checked ){
+				m.moveColumn(id, i == 0 ? -1 : i == 1 ? 1 : -1000);
+				arrange(m);
+			}
+		}));
+	}
 }
