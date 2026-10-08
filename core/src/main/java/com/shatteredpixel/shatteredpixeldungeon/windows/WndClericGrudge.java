@@ -92,7 +92,8 @@ public class WndClericGrudge extends Window {
 		int w = WIDTH - 2 * MARGIN;
 
 		Counter c = GrudgeHooks.counter();
-		String[] counters = { c.totalText(), c.heardText(), c.appreciationTotalText(), c.appreciationHeardText() };
+		//only what really happened to this player: how many different remarks they have been shown (never a made-up history, never how many exist)
+		String[] counters = { c.heardText(), c.appreciationHeardText() };
 		for (String text : counters){
 			RenderedTextBlock t = PixelScene.renderTextBlock( text, 6 );
 			t.maxWidth( w );
@@ -142,18 +143,12 @@ public class WndClericGrudge extends Window {
 		}
 		pos += MARGIN;
 
-		//the one shared humor preference: Clean unless the player chooses Adult (age is never inferred)
-		CheckBox adult = new CheckBox( "Adult humor (18+)" ){
-			@Override
-			protected void onClick(){
-				super.onClick();
-				SPDSettings.apdAdultHumor( checked() );
-			}
-		};
-		adult.checked( SPDSettings.apdAdultHumor() );
-		adult.setRect( 0, pos, w, BTN );
-		content.add( adult );
-		pos = adult.bottom() + MARGIN;
+		//the one shared humor preference lives in APD Settings only (age is never inferred); this page just says what it is
+		RenderedTextBlock humor = PixelScene.renderTextBlock( "Humor: " + (SPDSettings.apdAdultHumor() ? "Adult" : "Clean") + ". Change it in APD Settings.", 5 );
+		humor.maxWidth( w );
+		humor.setPos( 0, pos );
+		content.add( humor );
+		pos = humor.bottom() + MARGIN;
 
 		RedButton reset = new RedButton( "Forget what I've heard" ){
 			@Override

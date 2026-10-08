@@ -41,6 +41,9 @@ Built on the claude branch only, switched OFF, needs a local/authorized build:
 ## Private test APK (built 2026-10-08, ONE authorized Actions run; do not re-run without the owner)
 Run https://github.com/charltonchris29/ShieldingShouldHaveWorked/actions/runs/37808210230 (success, 2m13s, commit 04448a87d, claude branch). Artifact private-test-apk (zip with ADHD-Pixel-Dungeon-PRIVATE-TEST-1.apk), expires 2026-10-15. Workflow file .github/workflows/private-test-apk.yml is on main (added alone with [skip ci]). Checklist: docs/APD-PHONE-CHECKLIST-B69.md. The APK itself is untested on a device.
 
+## Fix pass after the owner's interim phone report (2026-10-08): see docs/APD-FIX-LOG-2026-10-08.md
+Fixed: tutorial trap (#1/#2/#3/#5, root cause SPD intro mode), Grudge counters (#6), duplicate Adult control (#7), popup gap pinned (#9). Not fixed: UIMSD state across app switch (#4), per-control Grudge test (#8), UIMSD scope wording (#10). NO new APK until the owner approves the breakdown. Remaining bug reports (steps 23-41) are still to come.
+
 ## DEFAULT RELEASE PROCESS (owner, 2026-10-08)
 Every authorized APK is delivered as an APK attached directly to a GitHub Release (the Releases page, no zip), like builds 69-80. Test builds are PRE-RELEASES titled "PRIVATE TEST", tag `apd-test-N` (N = run number of .github/workflows/private-test-apk.yml), never "latest". Workflow inputs (claude-branch version of the file; dispatch with ref = the claude branch, so no main change is needed beyond the file that already exists there): `publish` (default false), `from_run` (publish an already built APK without rebuilding). Never merge unfinished code to main to make a test APK; never run or publish without the owner's explicit authorization for THAT run/publish; ask first, every time. Existing APK: run 37808210230 (artifact private-test-apk, expires 2026-10-15): publishing it needs `publish=true, from_run=37808210230` and the owner's OK.
 
