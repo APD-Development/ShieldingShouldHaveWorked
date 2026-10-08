@@ -70,5 +70,13 @@ Phase 11 community: accounts/profiles (Accounts, LocalProfile), voting (Voting),
 2. Evidence-request protocol design (needs decision 4).
 3. After decisions 1-3: first real read-only feature (e.g. signed content catalogue / grants) so the verify path is exercised with real keys.
 
+## Account export and deletion (design only; needed before any real server)
+Rules the future server must meet (no code yet, nothing here needs a provider):
+- **Export:** a signed-in player can download everything the server holds about their account (profile, submitted run summaries, ballots, reports they filed, synced preferences) in the same wire forms the app already uses (`RunSubmissionCodec` key=value, envelopes with schema and version). Local-only data (`apd.run-log`, `apd.uimsd-history`, `apd.floor-replay`) is never on the server, so it is not part of an account export; it already has its own file export (archive).
+- **Deletion:** the player can delete their account. Preferences, ballots and reports are removed. Public run summaries are either removed or kept without a name; which one is a retention/legal decision (decision 5). Votes already counted in a closed round stay counted but lose their link to the account.
+- **Local first:** signing out or deleting the account never touches the device's history or saves. `LocalProfile.signOut()` already only forgets the player id.
+- **Audit:** deletion is recorded in the audit log by id and time only, not content.
+- **Client side to build later:** an "Account data" screen with Export and Delete, a pending-deletion state in the Outbox (the delete request is queued like any other item and is idempotent), and a `DataPolicy` entry for the delete request schema.
+
 ## Clans: NOT approved, documented option only
 The owner is not committed to Clans (plan 11.3-11.5 are EVENTUALLY / CONCEPT). Nothing Clan-specific is built. If Clans are ever approved, what already exists: `Groups` (membership, roles, audit), `Roles`/`Permission`, `Report`/`AuditLog` (moderation), `Voting`, `Leaderboard` (could rank a group's members' best runs on the same boards), `RunSubmission` + trust levels (same-condition events would reuse submissions with a shared seed/ruleset), `DataPolicy` (group data class would need adding). What would still be needed: a group-kind definition ("clan": naming/profanity rules, size, join policy), an event definition (shared seed + ruleset + attempt limit + scoring aggregate: needs the replay/evidence decision), group-level leaderboard boards, invitations/join requests, group moderation workflow, UI. None of it should start without approval; none of the generic parts above depends on it.
