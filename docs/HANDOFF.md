@@ -38,6 +38,9 @@ Built on the claude branch only, switched OFF, needs a local/authorized build:
 - Demo Unlock (docs/APD-DEMO-UNLOCK-CHECKLIST.md; switch `UimsdUnlock.ENFORCED`).
 - Cleric grudge (docs/APD-VENDETTA.md, review lines in docs/cleric-review/batch-NN.md; switch `ClericGrudge.ENABLED`): open APD Settings > About / Developer: The Grudge; four counters, frequency, five location switches (startup, main menu, during runs, after a run, statistics), Adult checkbox, reset; a surprise popup carries "Turn off these messages" which must stop all of them at once; nothing may ever appear mid-fight, on a boss floor, or over an open window.
 
+## Private test APK (built 2026-10-08, ONE authorized Actions run; do not re-run without the owner)
+Run https://github.com/charltonchris29/ShieldingShouldHaveWorked/actions/runs/37808210230 (success, 2m13s, commit 04448a87d, claude branch). Artifact private-test-apk (zip with ADHD-Pixel-Dungeon-PRIVATE-TEST-1.apk), expires 2026-10-15. Workflow file .github/workflows/private-test-apk.yml is on main (added alone with [skip ci]). Checklist: docs/APD-PHONE-CHECKLIST-B69.md. The APK itself is untested on a device.
+
 ## Next task (exact)
 Owner decisions (2026-10-08) are implemented on the claude branch: runtime switches (ApdFeatures, default off), `-PapdTestBuild` overlay, Cleric un-ban B behind `clericPlayable` (Cleric runs get `cleric=playable`; all other ids unchanged), docs/APD-PRIVATE-TEST-BUILD.md, exact marker design in docs/APD-HERO-MARKERS.md (awaiting "approve markers"). Waiting on the owner: how to get the APK built (allow dl.google.com, build locally on their computer, or authorize one Actions run), marker approval. Nothing else is blocked on the owner; stale branches left alone; backend deferred.
 
