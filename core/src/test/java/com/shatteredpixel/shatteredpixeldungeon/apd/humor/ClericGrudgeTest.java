@@ -69,7 +69,7 @@ public class ClericGrudgeTest {
 		GrudgePrefs prefs = HumorTestSupport.prefs( Frequency.RARE );
 		ClericGrudge off = grudge( lines, new Ledger( null ), 1, false );
 		for (int i = 0; i < 500; i++) assertNull( off.popup( Moment.MENU, Context.EMPTY, Safety.CALM, prefs, false, T0 + i * DAY ) );
-		assertNull( off.firstClericRun( false, T0 ) );
+		assertNull( off.firstClericRun( HumorTestSupport.prefs( Frequency.RARER ), false, T0 ) );
 		GrudgePrefs none = HumorTestSupport.prefs( Frequency.OFF );
 		ClericGrudge on = started( lines, new Ledger( null ), none );
 		for (int i = 0; i < 500; i++) assertNull( "Off means no surprise popups", on.popup( Moment.MENU, Context.EMPTY, Safety.CALM, none, false, T0 + i * DAY ) );
@@ -184,16 +184,16 @@ public class ClericGrudgeTest {
 		File f = new File( tmp.getRoot(), "l.txt" );
 		List<Line> lines = HumorTestSupport.shipped();
 		ClericGrudge g = grudge( lines, new Ledger( f ), 1, true );
-		Shown s = g.firstClericRun( false, T0 );
+		Shown s = g.firstClericRun( HumorTestSupport.prefs( Frequency.RARER ), false, T0 );
 		assertNotNull( s );
 		assertTrue( s.text.contains( "225" ) );
 		assertFalse( "clean wording by default", s.text.contains( "fucking" ) );
 		g.confirm( s, T0 );
-		assertNull( g.firstClericRun( false, T0 + 1 ) );
+		assertNull( g.firstClericRun( HumorTestSupport.prefs( Frequency.RARER ), false, T0 + 1 ) );
 		//also after a restart
-		assertNull( grudge( lines, new Ledger( f ), 9, true ).firstClericRun( true, T0 + 2 ) );
+		assertNull( grudge( lines, new Ledger( f ), 9, true ).firstClericRun( HumorTestSupport.prefs( Frequency.RARER ), true, T0 + 2 ) );
 		//an Adult player on a fresh install gets the Adult wording
-		Shown adult = grudge( lines, new Ledger( null ), 1, true ).firstClericRun( true, T0 );
+		Shown adult = grudge( lines, new Ledger( null ), 1, true ).firstClericRun( HumorTestSupport.prefs( Frequency.RARER ), true, T0 );
 		assertTrue( adult.text.contains( "fucking" ) );
 	}
 

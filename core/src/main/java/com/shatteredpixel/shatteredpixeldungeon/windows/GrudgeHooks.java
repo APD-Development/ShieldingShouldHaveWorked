@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import com.badlogic.gdx.Gdx;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -161,6 +162,25 @@ public final class GrudgeHooks {
 	// "Turn off these messages": immediate and saved
 	public static void turnOff(){
 		PREFS.turnOff();
+	}
+
+	// Called when the player starts a Cleric run. Returns true if the one-time warning was put on screen (the run then starts when it is
+	// dismissed, by `proceed`); false means nothing was shown and the caller starts the run itself. It never blocks and never fails the start.
+	public static boolean firstClericRun( final Runnable proceed ){
+		if (!ClericGrudge.ENABLED) return false;
+		try {
+			if (!clericAvailable()) return false;
+			ClericGrudge g = grudge();
+			long now = System.currentTimeMillis();
+			Shown shown = g.firstClericRun( PREFS, SPDSettings.apdAdultHumor(), now );
+			if (shown == null) return false;
+			ShatteredPixelDungeon.scene().addToFront( WndClericGrudge.firstRun( shown.text, proceed ) );
+			//only now, with the window really up, is the warning remembered as shown
+			g.confirm( shown, now );
+			return true;
+		} catch (Throwable t){
+			return false;
+		}
 	}
 
 	public static void resetHistory(){

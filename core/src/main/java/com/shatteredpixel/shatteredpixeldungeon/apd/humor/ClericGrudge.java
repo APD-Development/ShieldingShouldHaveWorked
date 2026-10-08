@@ -174,9 +174,11 @@ public final class ClericGrudge {
 		return s;
 	}
 
-	// The one-time warning when the player first picks Cleric to start a run.
-	public synchronized Shown firstClericRun( boolean adult, long now ){
-		if (!enabled || ledger.state( ST_FIRST_RUN ) != null) return null;
+	// The one-time warning when the player first starts a Cleric run. It does not depend on the surprise roll or the session limit (it is the
+	// player's own choice that triggers it), but it respects the master opt-out (frequency Off) and shows only once, remembered when the
+	// game confirms it was really displayed.
+	public synchronized Shown firstClericRun( GrudgePrefs prefs, boolean adult, long now ){
+		if (!enabled || prefs.frequency() == Frequency.OFF || ledger.state( ST_FIRST_RUN ) != null) return null;
 		return choose( Moment.FIRST_CLERIC_RUN, Context.EMPTY, adult, now );
 	}
 

@@ -28,7 +28,7 @@ recorded facts for the line to be eligible; `{name}` is filled from a recorded v
 | any.0007 | anytime | any time | Nothing important happened. I just wanted you to know I'm still thinking about Cleric. Carry on. |  |
 | any.0008 | anytime | any time | Somewhere out there, a Cleric is reading its own tooltip and feeling proud. I can't stop thinking about it. |  |
 | any.0009 | anytime | any time | I tried to take a relaxing walk today and a stranger was wearing a white robe. I immediately thought of Cleric. The walk was ruined. | I tried to take a relaxing walk today and a stranger was wearing a white robe. I thought of Cleric and spent the next hour calling a tree a hooded, healing son of a bitch. The tree did nothing wrong. The tree is not Cleric. I still owe it an apology. |
-| any.0010 | anytime | any time | The weather forecast for tonight: clear skies, a light breeze, and a seventy percent chance that I think about Cleric. |  |
+| any.0010 JOKE | anytime | any time | The weather forecast for tonight: clear skies, a light breeze, and a seventy percent chance that I think about Cleric. |  |
 | any.0011 | anytime | any time | If Cleric were a sandwich, it would be a plain slice of bread that somehow still has a bad attitude. | If Cleric were a sandwich, it would be a plain slice of bread with a shit attitude. |
 | any.0012 | anytime | any time | Fun fact: I have never once opened the Cleric tooltip and come away feeling better about myself. | Fun fact: I have never once opened the Cleric tooltip and not wanted to throw my phone into the sea. |
 | any.0020 | anytime | any time | Cleric walked into my dream last night, politely asked if it could help, and then did not help. I woke up furious. | Cleric walked into my dream last night, politely asked if it could help, and then did fuck all. I woke up furious. |
@@ -341,7 +341,7 @@ recorded facts for the line to be eligible; `{name}` is filled from a recorded v
 | joke.0006 JOKE | anytime | any time | I have complained about Cleric exactly 9,000 times today, which is a lie, because my fingers stopped at 8,973. |  |
 | joke.0007 JOKE | anytime | any time | My sources say Cleric won 4 games in a row once, in a dream I had, and I woke up feeling betrayed. |  |
 | joke.0008 JOKE | anytime | any time | According to the unofficial Cleric Index, Cleric is currently 2 out of 10. The other 8 is just me, being annoyed. |  |
-| first.0001 | first_run | any time | You have chosen Cleric. I really, really dislike Cleric. It took me 225 attempts to finally ascend with this class. I'm not going to stop you, because Cleric is a legitimate class and this grudge is mine, not yours. Good luck. You'll need it. | You have chosen Cleric. I fucking hate Cleric. It took me 225 attempts to finally ascend with this fucking class. I'm not going to stop you, because Cleric is a legitimate class and this grudge is mine, not yours. Good luck. You'll need it. |
+| first.0001 | first_run | any time | You have chosen Cleric. I really, really dislike Cleric. It took me 225 attempts to finally ascend with this class. I won't stop you: Cleric is a legitimate class, and this grudge is mine, not yours. Good luck. You'll need it. | You have chosen Cleric. I fucking hate Cleric. It took me 225 attempts to finally ascend with this fucking class. I won't stop you: Cleric is a legitimate class, and this grudge is mine, not yours. Good luck. You'll need it. |
 | meta.0001 | meta | any time | You found the counter. It only goes up. Like my blood pressure whenever Cleric is mentioned. |  |
 | meta.0002 | meta | any time | Yes, I keep count. Somebody has to hold Cleric accountable. |  |
 | meta.0003 | meta | any time | Yes, I counted. No, I will not be taking questions. |  |
@@ -354,11 +354,11 @@ recorded facts for the line to be eligible; `{name}` is filled from a recorded v
 | fmt.0002 | anytime | any time | Exception in thread "main": java.lang.TooMuchClericException: Cleric is still a class. Stack trace omitted for my own comfort. | Exception in thread "main": java.lang.TooMuchClericException: Cleric is still a class. Stack trace omitted for my own comfort. It was just the word fuck, over and over. |
 | fmt.0003 | anytime | any time | WARNING: this build contains Cleric. I have been notified. I am sighing. | WARNING: this build contains Cleric. I have been notified. I am holding my head in both hands. |
 | fmt.0004 | anytime | any time | Loading tip: Cleric is not a loading tip. Cleric is a loading problem. |  |
-| fmt.0005 | anytime | any time | Achievement unlocked: Thought About Cleric Again. Reward: nothing, forever. | Achievement unlocked: Thought About Cleric Again. Reward: nothing, forever, signed by me with a very tired hand. |
+| fmt.0005 | anytime | any time | Fake achievement unlocked: Thought About Cleric Again. Reward: nothing, forever. (Not a real achievement.) | Fake achievement unlocked: Thought About Cleric Again. Reward: nothing, forever, signed by me with a very tired hand. (Not a real achievement.) |
 | fmt.0006 | anytime | any time | Holy tome opens wide / the numbers do not change much / Cleric. Ugh. Again. | Holy tome opens wide / the numbers do not change much / Cleric. Fuck. Again. |
 | fmt.0007 | anytime | any time | FOR IMMEDIATE RELEASE: I remain unhappy with Cleric. Sources, meaning me, confirm I was also unhappy yesterday. | FOR IMMEDIATE RELEASE: I remain furious about Cleric. Sources, meaning me, confirm I was also furious yesterday and will be furious tomorrow, pending lunch. |
 | fmt.0008 | anytime | any time | By continuing to play you acknowledge that Cleric exists and that I am unable to make peace with it. |  |
-| fmt.0009 | anytime | any time | Today's horoscope: you will encounter a Cleric. It will not go well. Lucky number: anything but Cleric. | Today's horoscope: you will encounter a Cleric. Mercury is in retrograde, and so is your will to live. Lucky number: anything but Cleric. |
+| fmt.0009 | anytime | any time | Today's horoscope: you will encounter a Cleric. It will not go well. Lucky number: anything but Cleric. | Today's horoscope: you will encounter a Cleric. The stars advise you to smile politely and back away slowly. The stars have been through this with me. Lucky number: anything but Cleric. |
 | fmt.0010 | anytime | any time | Cleric: one star. Would not ascend again. (I did ascend, 225 attempts later. Still one star.) | Cleric: one star. Would not ascend again. (I did ascend, 225 attempts later. Still one star, and a bruise.) |
 | fmt.0011 | anytime | any time | Thank you for contacting Cleric Support. Your complaint is important to me. So is mine, and mine is longer. |  |
 | fmt.0012 | anytime | any time | Pro tip: if a Cleric ever offers to heal you, say thank you, then leave quickly. | Pro tip: if a Cleric ever offers to heal you, say thank you, then leave quickly, before the healing comes with a sermon. |
@@ -369,7 +369,7 @@ recorded facts for the line to be eligible; `{name}` is filled from a recorded v
 | fmt.0017 | anytime | any time | And here I see the Cleric in its natural habitat: confused, surrounded, and optimistic. |  |
 | fmt.0018 | anytime | any time | And the Cleric goes for the heal! It's... it's... no. It's not. Back to you in the studio. |  |
 | fmt.0019 | anytime | any time | I take thee, hatred of Cleric, to have and to hold, in sickness and in health, forever and ever. |  |
-| fmt.0020 | anytime | any time | Congratulations! You have been selected to ignore Cleric. Click here to continue ignoring it. |  |
+| fmt.0020 | anytime | any time | Congratulations! You have been selected to ignore Cleric. No action is required to continue ignoring it. |  |
 | fmt.0021 | anytime | any time | Once upon a time there was a Cleric. The end. I'm not telling you the rest, I'm still too mad. |  |
 | fmt.0022 | anytime | any time | I have gathered you here today to remember all the good times I had with Cleric. Okay. That took a while. I am done. |  |
 | fmt.0024 | anytime | clericAvailable=1 | Missing: one reason to pick Cleric. If found, please do not return it. |  |
@@ -377,7 +377,7 @@ recorded facts for the line to be eligible; `{name}` is filled from a recorded v
 | fmt.0028 | anytime | any time | A strongly worded letter to Cleric: no. Sincerely, me. | A strongly worded letter to Cleric: fuck no. Sincerely, me. |
 | fmt.0029 | anytime | any time | Cleric's official motto, as translated by me: "I do my best, and my best is a polite suggestion." |  |
 | fmt.0031 | anytime | any time | Lost and found: one Tome, slightly used, heavily regretted. Owner: Cleric. Reward: none. | Lost and found: one Tome, slightly used, heavily regretted. Owner: Cleric. Reward: none. Do not call me. |
-| fmt.0032 | anytime | any time | Breaking news: Cleric has once again been described as "fine" by a person who has never played it for more than a minute. | Breaking news: Cleric has once again been described as "fine" by a person who has never played it for more than a minute. Honestly, I envy that person's ignorance. |
+| fmt.0032 | anytime | any time | Hypothetical breaking news: Cleric has once again been described as "fine" by an imaginary person who has never played it for more than a minute. | Hypothetical breaking news: Cleric has once again been described as "fine" by an imaginary person who has never played it for more than a minute. Honestly, I envy that imaginary person's ignorance. |
 | abl.0016 | ability | lastHero=CLERIC & spell!=none & runVerified=1 | \{spell}: a Cleric spell so confident that I'd like to see it audited. |  |
 | abl.0017 | ability | lastHero=CLERIC & spell!=none & runVerified=1 | Cleric used \{spell} this run. In its defense, it also tried. |  |
 | abl.0018 | ability | lastHero=CLERIC & guidingLightCasts>=1 & runVerified=1 | \{guidingLightCasts} casts of Guiding Light. The light has yet to guide me toward forgiving Cleric. |  |

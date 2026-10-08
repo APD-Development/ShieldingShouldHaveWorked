@@ -52,6 +52,30 @@ public class WndClericGrudge extends Window {
 		};
 	}
 
+	// The one-time warning when a Cleric run is started: one button, and the run starts however it is closed (button or Back).
+	static Window firstRun( String text, final Runnable proceed ){
+		return new WndOptions( "A WORD ABOUT CLERIC", text, "Fine." ) {
+			private boolean started;
+
+			private void go(){
+				if (started) return;
+				started = true;
+				proceed.run();
+			}
+
+			@Override
+			protected void onSelect( int index ){
+				go();
+			}
+
+			@Override
+			public void onBackPressed(){
+				super.onBackPressed();
+				go();
+			}
+		};
+	}
+
 	private RedButton btnFrequency;
 
 	public WndClericGrudge(){

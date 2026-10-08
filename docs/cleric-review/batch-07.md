@@ -31,8 +31,8 @@ Lines 301 to 348 of 348. Reply with the ids to keep, cut or rewrite.
 - Adult: (same as Clean)
 
 ### first.0001  (Hatred, first_run, any time)
-- Clean: You have chosen Cleric. I really, really dislike Cleric. It took me 225 attempts to finally ascend with this class. I'm not going to stop you, because Cleric is a legitimate class and this grudge is mine, not yours. Good luck. You'll need it.
-- Adult: You have chosen Cleric. I fucking hate Cleric. It took me 225 attempts to finally ascend with this fucking class. I'm not going to stop you, because Cleric is a legitimate class and this grudge is mine, not yours. Good luck. You'll need it.
+- Clean: You have chosen Cleric. I really, really dislike Cleric. It took me 225 attempts to finally ascend with this class. I won't stop you: Cleric is a legitimate class, and this grudge is mine, not yours. Good luck. You'll need it.
+- Adult: You have chosen Cleric. I fucking hate Cleric. It took me 225 attempts to finally ascend with this fucking class. I won't stop you: Cleric is a legitimate class, and this grudge is mine, not yours. Good luck. You'll need it.
 
 ### meta.0001  (counter screen, meta, any time)
 - Clean: You found the counter. It only goes up. Like my blood pressure whenever Cleric is mentioned.
@@ -63,8 +63,8 @@ Lines 301 to 348 of 348. Reply with the ids to keep, cut or rewrite.
 - Adult: (same as Clean)
 
 ### fmt.0005  (Hatred, anytime, any time)
-- Clean: Achievement unlocked: Thought About Cleric Again. Reward: nothing, forever.
-- Adult: Achievement unlocked: Thought About Cleric Again. Reward: nothing, forever, signed by me with a very tired hand.
+- Clean: Fake achievement unlocked: Thought About Cleric Again. Reward: nothing, forever. (Not a real achievement.)
+- Adult: Fake achievement unlocked: Thought About Cleric Again. Reward: nothing, forever, signed by me with a very tired hand. (Not a real achievement.)
 
 ### fmt.0006  (Hatred, anytime, any time)
 - Clean: Holy tome opens wide / the numbers do not change much / Cleric. Ugh. Again.
@@ -80,7 +80,7 @@ Lines 301 to 348 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### fmt.0009  (Hatred, anytime, any time)
 - Clean: Today's horoscope: you will encounter a Cleric. It will not go well. Lucky number: anything but Cleric.
-- Adult: Today's horoscope: you will encounter a Cleric. Mercury is in retrograde, and so is your will to live. Lucky number: anything but Cleric.
+- Adult: Today's horoscope: you will encounter a Cleric. The stars advise you to smile politely and back away slowly. The stars have been through this with me. Lucky number: anything but Cleric.
 
 ### fmt.0010  (Hatred, anytime, any time)
 - Clean: Cleric: one star. Would not ascend again. (I did ascend, 225 attempts later. Still one star.)
@@ -123,7 +123,7 @@ Lines 301 to 348 of 348. Reply with the ids to keep, cut or rewrite.
 - Adult: (same as Clean)
 
 ### fmt.0020  (Hatred, anytime, any time)
-- Clean: Congratulations! You have been selected to ignore Cleric. Click here to continue ignoring it.
+- Clean: Congratulations! You have been selected to ignore Cleric. No action is required to continue ignoring it.
 - Adult: (same as Clean)
 
 ### fmt.0021  (Hatred, anytime, any time)
@@ -155,8 +155,8 @@ Lines 301 to 348 of 348. Reply with the ids to keep, cut or rewrite.
 - Adult: Lost and found: one Tome, slightly used, heavily regretted. Owner: Cleric. Reward: none. Do not call me.
 
 ### fmt.0032  (Hatred, anytime, any time)
-- Clean: Breaking news: Cleric has once again been described as "fine" by a person who has never played it for more than a minute.
-- Adult: Breaking news: Cleric has once again been described as "fine" by a person who has never played it for more than a minute. Honestly, I envy that person's ignorance.
+- Clean: Hypothetical breaking news: Cleric has once again been described as "fine" by an imaginary person who has never played it for more than a minute.
+- Adult: Hypothetical breaking news: Cleric has once again been described as "fine" by an imaginary person who has never played it for more than a minute. Honestly, I envy that imaginary person's ignorance.
 
 ### abl.0016  (Hatred, ability, only when lastHero=CLERIC & spell!=none & runVerified=1)
 - Clean: {spell}: a Cleric spell so confident that I'd like to see it audited.

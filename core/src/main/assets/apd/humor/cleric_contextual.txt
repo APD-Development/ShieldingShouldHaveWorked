@@ -146,7 +146,7 @@ joke.0007 | anytime | since=4.8,joke | - | 8 | My sources say Cleric won 4 games
 joke.0008 | anytime | since=4.8,joke | - | 8 | According to the unofficial Cleric Index, Cleric is currently 2 out of 10. The other 8 is just me, being annoyed. |
 
 # ---- the one-time warning when the player first starts a Cleric run
-first.0001 | first_run | since=4.8 | - | 10 | You have chosen Cleric. I really, really dislike Cleric. It took me 225 attempts to finally ascend with this class. I'm not going to stop you, because Cleric is a legitimate class and this grudge is mine, not yours. Good luck. You'll need it. | You have chosen Cleric. I fucking hate Cleric. It took me 225 attempts to finally ascend with this fucking class. I'm not going to stop you, because Cleric is a legitimate class and this grudge is mine, not yours. Good luck. You'll need it.
+first.0001 | first_run | since=4.8 | - | 10 | You have chosen Cleric. I really, really dislike Cleric. It took me 225 attempts to finally ascend with this class. I won't stop you: Cleric is a legitimate class, and this grudge is mine, not yours. Good luck. You'll need it. | You have chosen Cleric. I fucking hate Cleric. It took me 225 attempts to finally ascend with this fucking class. I won't stop you: Cleric is a legitimate class, and this grudge is mine, not yours. Good luck. You'll need it.
 
 # ---- the grudge counter screen (shown once, never drawn by the normal picker)
 meta.0001 | meta | since=4.8,meta | - | 10 | You found the counter. It only goes up. Like my blood pressure whenever Cleric is mentioned. |

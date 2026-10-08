@@ -79,6 +79,10 @@ public final class LinePack {
 	static final Pattern ASCENSION = Pattern.compile( "\\bascen(d|ded|ds|ding|sion)\\b(?! Form)", Pattern.CASE_INSENSITIVE );
 	static final Pattern PICKING = Pattern.compile( "\\b(pick|picking)\\b|begins a Cleric run", Pattern.CASE_INSENSITIVE );
 
+	// Fiction is labelled as fiction: a line that sounds like a statistic must be a flagged joke, and an "achievement" must say it is fake.
+	static final Pattern STATISTICSY = Pattern.compile( "\\b(percent|out of \\d+|exactly [\\d,]+|on average|\\d+%)", Pattern.CASE_INSENSITIVE );
+	static final Pattern ACHIEVEMENT = Pattern.compile( "\\bachievement\\b", Pattern.CASE_INSENSITIVE );
+
 	// every line is about Cleric: it names Cleric or something that only Cleric has
 	static final Pattern ABOUT_CLERIC = Pattern.compile(
 			"cleric|priest|paladin|holy tome|\\btome\\b|guiding light|ascended form|trinity|power of many",
@@ -272,6 +276,11 @@ public final class LinePack {
 				throw new IllegalArgumentException( "a line that tells the player not to pick Cleric must require clericAvailable=1" );
 		}
 		if (used.contains( "boss" ) && cat != Category.BOSS) throw new IllegalArgumentException( "the boss fact belongs to the boss category" );
+		for (String t : new String[]{ clean, adult == null ? "" : adult }){
+			if (!joke && STATISTICSY.matcher( t ).find()) throw new IllegalArgumentException( "a line that sounds like a statistic must be flagged joke (it is fiction)" );
+			if (ACHIEVEMENT.matcher( t ).find() && !t.toLowerCase().contains( "fake" ) && !t.toLowerCase().contains( "not a real" ))
+				throw new IllegalArgumentException( "a line about an achievement must say it is fake" );
+		}
 		if (joke && !cleanKeys.isEmpty()) throw new IllegalArgumentException( "a joke with invented numbers cannot use recorded {placeholders}" );
 
 		return new Line( id, cat, since, !meta, joke, weight, appreciation ? Pool.APPRECIATION : Pool.HATRED, after, nextSession, delay, setup, requires, clean, adult );

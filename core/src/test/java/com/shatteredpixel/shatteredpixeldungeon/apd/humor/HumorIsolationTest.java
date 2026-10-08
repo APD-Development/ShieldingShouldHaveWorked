@@ -65,7 +65,7 @@ public class HumorIsolationTest {
 					g.inlineAlways( Moment.RUN_END_DEATH, ctx, i );
 					g.counter();
 				}
-				g.firstClericRun( false, 1 );
+				g.firstClericRun( HumorTestSupport.prefs( Frequency.RARE ), false, 1 );
 			}
 			for (int i = 5; i < 10; i++) out[i] = Random.Int( 1000 );
 			return out;
@@ -109,7 +109,7 @@ public class HumorIsolationTest {
 	@Test
 	public void onlyTheIntendedFilesCallTheGamesSideOfTheGrudge() throws Exception {
 		Set<String> allowed = new HashSet<>( Arrays.asList( "Dungeon.java", "ShatteredPixelDungeon.java", "windows/APDSettingsPane.java",
-				"windows/WndClericGrudge.java", "windows/GrudgeHooks.java" ) );
+				"windows/WndClericGrudge.java", "windows/GrudgeHooks.java", "scenes/HeroSelectScene.java" ) );
 		File root = new File( System.getProperty( "apd.game.src" ) );
 		List<String> offenders = new ArrayList<>();
 		scanFor( "GrudgeHooks", root, root, allowed, offenders );

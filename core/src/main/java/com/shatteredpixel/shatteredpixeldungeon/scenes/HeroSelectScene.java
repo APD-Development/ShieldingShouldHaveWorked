@@ -89,6 +89,17 @@ public class HeroSelectScene extends PixelScene {
 	private RenderedTextBlock heroName; //only on landscape
 	private RenderedTextBlock heroDesc; //only on landscape
 	private StyledButton startBtn;
+
+	//start a normal (non-daily) run with the selected class
+	private void startRun(){
+		Dungeon.hero = null;
+		Dungeon.daily = Dungeon.dailyReplay = false;
+		Dungeon.initSeed();
+		ActionIndicator.clearAction();
+		InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+
+		Game.switchScene( InterlevelScene.class );
+	}
 	//APD: the difficulty of the run being set up, right above Start
 	private DifficultyBar difficultyBar;
 	private IconButton infoButton;
@@ -164,13 +175,16 @@ public class HeroSelectScene extends PixelScene {
 					return;
 				}
 
-				Dungeon.hero = null;
-				Dungeon.daily = Dungeon.dailyReplay = false;
-				Dungeon.initSeed();
-				ActionIndicator.clearAction();
-				InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+				//APD: the one-time Cleric grudge warning (reachable only once Cleric is un-banned, and inert while the grudge is switched off).
+				//The run starts when the player dismisses it, so it can never stop anyone from playing Cleric.
+				if (GamesInProgress.selectedClass == HeroClass.CLERIC && com.shatteredpixel.shatteredpixeldungeon.windows.GrudgeHooks.firstClericRun( new Runnable(){
+					@Override
+					public void run(){
+						startRun();
+					}
+				} )) return;
 
-				Game.switchScene( InterlevelScene.class );
+				startRun();
 			}
 		};
 		startBtn.icon(Icons.get(Icons.ENTER));

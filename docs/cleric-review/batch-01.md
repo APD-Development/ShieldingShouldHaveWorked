@@ -38,7 +38,7 @@ Lines 1 to 50 of 348. Reply with the ids to keep, cut or rewrite.
 - Clean: I tried to take a relaxing walk today and a stranger was wearing a white robe. I immediately thought of Cleric. The walk was ruined.
 - Adult: I tried to take a relaxing walk today and a stranger was wearing a white robe. I thought of Cleric and spent the next hour calling a tree a hooded, healing son of a bitch. The tree did nothing wrong. The tree is not Cleric. I still owe it an apology.
 
-### any.0010  (Hatred, anytime, any time)
+### any.0010  (Hatred, anytime, any time) [invented-number joke]
 - Clean: The weather forecast for tonight: clear skies, a light breeze, and a seventy percent chance that I think about Cleric.
 - Adult: (same as Clean)
 

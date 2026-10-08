@@ -375,4 +375,58 @@ public class GrudgeSettingsTest {
 		assertEquals( 2, migrated.get( "app.0142" ).count );
 		assertEquals( 5000, migrated.get( "app.0142" ).firstAt );
 	}
+
+	@Test
+	public void theFirstClericRunWarningIsIndependentOfTheRollAndRespectsTheOptOutAndIsRememberedOnlyWhenShown() throws Exception {
+		List<Line> lines = HumorTestSupport.shipped();
+		GrudgePrefs prefs = HumorTestSupport.prefs( Frequency.RARER );
+		File f = new File( tmp.getRoot(), "apd-humor/ledger.txt" );
+		//a session whose surprise roll failed and that already used its one popup: the warning still comes (it is the player's own choice)
+		ClericGrudge g = new ClericGrudge( lines, new Ledger( f ), rng( 1 ), true, LATER );
+		Shown shown = g.firstClericRun( prefs, false, LATER );
+		assertNotNull( shown );
+		assertEquals( Category.FIRST_RUN, shown.category );
+		assertTrue( shown.text.contains( "legitimate class" ) );
+		//chosen but never displayed: not remembered, so it can still come later
+		assertNotNull( new ClericGrudge( lines, new Ledger( f ), rng( 2 ), true, LATER ).firstClericRun( prefs, false, LATER + 1 ) );
+		//displayed: remembered across a restart, and never again
+		g.confirm( shown, LATER );
+		assertNull( new ClericGrudge( lines, new Ledger( f ), rng( 3 ), true, LATER + DAY ).firstClericRun( prefs, true, LATER + DAY ) );
+		//the master opt-out wins, and the warning is then still available if the player turns messages back on
+		GrudgePrefs off = HumorTestSupport.prefs( Frequency.OFF );
+		File g2 = new File( tmp.getRoot(), "other/ledger.txt" );
+		assertNull( new ClericGrudge( lines, new Ledger( g2 ), rng( 4 ), true, LATER ).firstClericRun( off, false, LATER ) );
+		assertNotNull( new ClericGrudge( lines, new Ledger( g2 ), rng( 4 ), true, LATER ).firstClericRun( prefs, false, LATER ) );
+		//the switch for the whole feature wins too
+		assertNull( new ClericGrudge( lines, new Ledger( null ), rng( 5 ), false, LATER ).firstClericRun( prefs, false, LATER ) );
+	}
+
+	@Test
+	public void theRunStartHookKeepsTheClericBlockAndNeverStopsAStart() throws Exception {
+		String hero = new String( java.nio.file.Files.readAllBytes( new File( System.getProperty( "apd.game.src" ), "scenes/HeroSelectScene.java" ).toPath() ), java.nio.charset.StandardCharsets.UTF_8 );
+		int block = hero.indexOf( "WndClericRemoved.trigger();" );
+		int hook = hero.indexOf( "GrudgeHooks.firstClericRun" );
+		assertTrue( "the Cleric block is still there (the un-ban is the owner's decision)", block > 0 );
+		assertTrue( "the warning hook comes after the block, so it is only reachable once Cleric can be started", hook > block );
+		//the run is started by the same method whether or not the warning was shown
+		assertTrue( hero.contains( "private void startRun()" ) );
+		assertTrue( hero.indexOf( "startRun();", hook ) > hook );
+		//the hook window starts the run however it is closed
+		String wnd = new String( java.nio.file.Files.readAllBytes( new File( System.getProperty( "apd.game.src" ), "windows/WndClericGrudge.java" ).toPath() ), java.nio.charset.StandardCharsets.UTF_8 );
+		assertTrue( wnd.contains( "onBackPressed" ) && wnd.contains( "proceed.run()" ) );
+	}
+
+	@Test
+	public void fictionIsLabelledAsFictionAndTheGrudgeNeverTouchesAchievementsOrStatistics() throws Exception {
+		for (Line l : HumorTestSupport.shipped()){
+			boolean statsy = LinePack.STATISTICSY.matcher( l.clean ).find();
+			if (statsy) assertTrue( l.id + " sounds like a statistic and must be a flagged joke", l.joke );
+			if (LinePack.ACHIEVEMENT.matcher( l.clean ).find()) assertTrue( l.id, l.clean.toLowerCase().contains( "fake" ) && l.clean.toLowerCase().contains( "not a real" ) );
+		}
+		//the humor code cannot reach badges, rankings or the recorder: it is plain Java and writes only its own ledger
+		for (File src : new File( System.getProperty( "apd.game.src" ), "apd/humor" ).listFiles()){
+			String text = new String( java.nio.file.Files.readAllBytes( src.toPath() ), java.nio.charset.StandardCharsets.UTF_8 );
+			assertFalse( src.getName(), text.contains( "Badges" ) || text.contains( "Rankings" ) || text.contains( "ApdRecorder" ) );
+		}
+	}
 }
