@@ -314,6 +314,26 @@ public class SPDSettings extends GameSettings {
 		return getBoolean( KEY_APD_UIMSD_GUIDE_SEEN, false );
 	}
 
+	//UIMSD Demo Unlock: both flags are permanent (nothing ever sets them back), so deleting runs or demo data cannot lock UIMSD again or bring the demo button back
+	public static final String KEY_APD_UIMSD_UNLOCKED = "apd_uimsd_unlocked";
+	public static final String KEY_APD_DEMO_UNLOCK_USED = "apd_demo_unlock_used";
+
+	public static boolean apdUimsdUnlocked(){
+		return getBoolean( KEY_APD_UIMSD_UNLOCKED, false );
+	}
+
+	public static void apdUimsdUnlocked( boolean value ){
+		put( KEY_APD_UIMSD_UNLOCKED, value );
+	}
+
+	public static boolean apdDemoUnlockUsed(){
+		return getBoolean( KEY_APD_DEMO_UNLOCK_USED, false );
+	}
+
+	public static void apdDemoUnlockUsed( boolean value ){
+		put( KEY_APD_DEMO_UNLOCK_USED, value );
+	}
+
 	public static final String KEY_APD_SENDING = "apd_sending";
 	public static final String KEY_APD_SERVER = "apd_server";
 

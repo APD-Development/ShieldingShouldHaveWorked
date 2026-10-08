@@ -115,11 +115,22 @@ public class UimsdScene extends PixelScene {
 		return () -> backTo == GameScene.class ? "a game is open behind this screen" : null;
 	}
 
-	//Opens UIMSD from a screen. 'from' is where Back returns to.
+	//Opens UIMSD again where Back would have gone (after switching between demo and real data, or deleting the demo data).
+	public static void reopen(){
+		openNow(backTo);
+	}
+
+	//Every way into UIMSD comes here; the gate decides whether it is open yet (it always is while the unlock gate is off).
 	public static void open( Class<? extends PixelScene> from ){
+		com.shatteredpixel.shatteredpixeldungeon.windows.UimsdGate.open(from);
+	}
+
+	//Opens UIMSD from a screen. 'from' is where Back returns to.
+	public static void openNow( Class<? extends PixelScene> from ){
 		backTo = from == GameScene.class ? GameScene.class : TitleScene.class;
-		showingDemo = DemoData.available() && DemoData.viewingDemo();
 		File root = ApdRecorder.historyRoot();
+		//demo data can be shown in any build once it exists (the Demo Unlock makes it in release builds too)
+		showingDemo = DemoData.viewingDemo() && (DemoData.available() || DemoData.isSyntheticRoot(DemoData.demoRootFor(root)));
 		if (showingDemo){
 			root = DemoData.demoRootFor(root);
 			if (!DemoData.isSyntheticRoot(root)) root = null;   //no demo data has been generated

@@ -25,6 +25,10 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.apd.backend.Gateways;
+import com.shatteredpixel.shatteredpixeldungeon.apd.demo.DemoData;
+import com.shatteredpixel.shatteredpixeldungeon.apd.demo.UimsdUnlock;
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.UimsdScene;
 import com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge.AccountActions;
 import com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge.BackendClient;
 import com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge.EvidenceFlow;
@@ -114,6 +118,15 @@ public final class WndUimsdOptions {
 		entries.add(Entry.item("What stays on this device", "What APD holds, and that nothing is sent anywhere."));
 		actions.add(new Runnable(){ public void run(){ privacy(m); } });
 
+		final java.io.File realRoot = ApdRecorder.historyRoot();
+		if (realRoot != null && DemoData.isSyntheticRoot(DemoData.demoRootFor(realRoot))){
+			entries.add(Entry.heading("Demo data"));
+			entries.add(Entry.item(DemoData.viewingDemo() ? "Showing: demo data (made up)" : "Showing: your own history", "Tap to switch. Demo data is made up and never mixed with your own history, ranked or sent anywhere."));
+			actions.add(new Runnable(){ public void run(){ DemoData.viewDemo(!DemoData.viewingDemo()); UimsdScene.reopen(); } });
+			entries.add(Entry.item("Delete all demo data...", "Removes only the made-up runs. Your own history and saves are not touched, and UIMSD stays unlocked."));
+			actions.add(new Runnable(){ public void run(){ deleteDemoData(realRoot); } });
+		}
+
 		entries.add(Entry.heading("Share and reset"));
 		entries.add(Entry.item("Share a report of this table...", "As text, or saved as a file."));
 		actions.add(new Runnable(){ public void run(){ WndUimsdReport.ofView(m); } });
@@ -181,6 +194,19 @@ public final class WndUimsdOptions {
 				viewActions(m, list.get(i));
 			}
 		}));
+	}
+
+	private static void deleteDemoData( final java.io.File realRoot ){
+		ShatteredPixelDungeon.scene().addToFront(new WndOptions("Delete all demo data?", "This removes the made-up demo runs. Your own history and your saves are not touched, and UIMSD stays unlocked.", "Delete the demo data", "Keep it"){
+			@Override
+			protected void onSelect( int index ){
+				if (index != 0) return;
+				boolean gone = UimsdUnlock.deleteDemoData(realRoot);
+				DemoData.viewDemo(false);
+				if (gone) UimsdScene.reopen();
+				else say("The demo data could not be removed.");
+			}
+		});
 	}
 
 	private static void privacy( final UimsdModel m ){
