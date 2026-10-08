@@ -45,7 +45,9 @@ public final class Context {
 				"killer", "boss",    // what killed the hero; the boss involved
 				"subclass", "spell", "weapon", "armorAbility",
 				"clericRuns", "clericWins", "clericDeaths", "clericStreak",
-				"guidingLightCasts" );
+				"guidingLightCasts",
+				//what the grudge itself has really shown this player (for the game to notice how often it complains)
+				"complaintsHeard", "complaintsTotal", "appreciationsHeard", "appreciationsTotal" );
 		KEYS = Collections.unmodifiableSet( k );
 	}
 

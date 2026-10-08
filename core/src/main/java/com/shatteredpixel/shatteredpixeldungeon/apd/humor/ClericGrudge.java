@@ -194,7 +194,11 @@ public final class ClericGrudge {
 			} catch (IllegalArgumentException ignored){
 			}
 		}
-		Line l = Picker.pick( lines, moment, ctx, ledger, rng, avoid, sessionStart );
+		Counter counts = counter();
+		//the grudge's own real totals are available to lines that remark on the grudge itself
+		ctx = ctx.with( "complaintsHeard", counts.heard ).with( "complaintsTotal", counts.total )
+				.with( "appreciationsHeard", counts.appreciationHeard ).with( "appreciationsTotal", counts.appreciationTotal );
+		Line l = Picker.pick( lines, moment, ctx, ledger, rng, avoid, sessionStart, now );
 		if (l == null) return null;
 		String text = l.render( ctx, adult );
 		if (text == null) return null;

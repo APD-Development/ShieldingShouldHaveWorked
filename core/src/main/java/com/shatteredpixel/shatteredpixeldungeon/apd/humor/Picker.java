@@ -38,13 +38,17 @@ public final class Picker {
 	private Picker(){}
 
 	public static Line pick( List<Line> pool, Moment moment, Context ctx, Ledger ledger, Random rng, Category avoid ){
-		return pick( pool, moment, ctx, ledger, rng, avoid, Long.MAX_VALUE );
+		return pick( pool, moment, ctx, ledger, rng, avoid, Long.MAX_VALUE, Long.MAX_VALUE );
 	}
 
-	// sessionStart: see Line.eligible
 	public static Line pick( List<Line> pool, Moment moment, Context ctx, Ledger ledger, Random rng, Category avoid, long sessionStart ){
+		return pick( pool, moment, ctx, ledger, rng, avoid, sessionStart, Long.MAX_VALUE );
+	}
+
+	// sessionStart and now: see Line.eligible
+	public static Line pick( List<Line> pool, Moment moment, Context ctx, Ledger ledger, Random rng, Category avoid, long sessionStart, long now ){
 		List<Line> eligible = new ArrayList<>();
-		for (Line l : pool) if (l.eligible( moment, ctx, ledger, sessionStart )) eligible.add( l );
+		for (Line l : pool) if (l.eligible( moment, ctx, ledger, sessionStart, now )) eligible.add( l );
 		if (eligible.isEmpty()) return null;
 
 		//not the same kind of joke twice running, when there is a choice

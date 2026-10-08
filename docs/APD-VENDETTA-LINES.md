@@ -37,7 +37,7 @@ recorded facts for the line to be eligible; `{name}` is filled from a recorded v
 | any.0026 | anytime | any time | I would never wish a bad run on anyone. Except Cleric. Cleric gets every bad run. All of them. |  |
 | any.0029 | anytime | any time | I just spent ten minutes arguing with a sandwich about Cleric. The sandwich won. |  |
 | any.0031 | anytime | any time | I have decided that Cleric is secretly several smaller disappointments wearing one large robe. | I have decided that Cleric is secretly several smaller pieces of shit wearing one large robe. |
-| any.0033 | anytime | any time | Some people keep a gratitude journal. I keep a Cleric grievance ledger. We are not the same, and mine is longer. |  |
+| any.0033 | anytime | any time | Some people keep a gratitude journal. I keep a Cleric grievance ledger. Those two are not the same, and mine is longer. |  |
 | any.0034 | anytime | any time | A wise man once said that you should never go to bed angry. That man never had to explain Cleric to himself at 2 a.m. | A wise man once said that you should never go to bed angry. That man never had to explain fucking Cleric to himself at 2 a.m. |
 | any.0037 | anytime | any time | Some days I wake up and choose violence. Today I woke up and chose Cleric complaints. It is the same thing. | Some days I wake up and choose violence. Today I woke up and chose Cleric complaints. Same shit, different robe. |
 | any.0039 | anytime | any time | Cleric is not a class. Cleric is a long email that begins with "per my last message". |  |
@@ -122,7 +122,7 @@ recorded facts for the line to be eligible; `{name}` is filled from a recorded v
 | oth.death.0001 | death | lastHero!=CLERIC & lastOutcome=DIED | You died, but take comfort in the fact that it was not as embarrassing as dying as Cleric. |  |
 | oth.death.0002 | death | lastHero!=CLERIC & lastOutcome=DIED | You died as \{lastHeroName}. Cleric would have died sooner and complained about it. |  |
 | oth.death.0004 | death | lastHero!=CLERIC & lastOutcome=DIED & depth>=1 | You made it to depth \{depth}. That is further than a Cleric has made it in my mind, which stopped at disappointment. |  |
-| oth.death.0005 | death | lastHero!=CLERIC & lastOutcome=DIED | Sorry about the loss. I'd offer a Cleric to cheer you up but that would be cruel to both of us. |  |
+| oth.death.0005 | death | lastHero!=CLERIC & lastOutcome=DIED | Sorry about the loss. I'd offer a Cleric to cheer you up but that would be cruel to everyone involved, including me. |  |
 | clr.win.0001 | victory | lastHero=CLERIC & lastOutcome=WON | You won as Cleric. Fine. I will allow one moment of respect. That moment is over. |  |
 | clr.win.0002 | victory | lastHero=CLERIC & lastOutcome=WON | You won as Cleric. Congratulations, you beautiful masochist. | You won as Cleric. Congratulations, you beautiful fucking masochist. |
 | clr.win.0004 | victory | lastHero=CLERIC & lastOutcome=WON | You did it with Cleric. I am proud, confused, and a little offended on behalf of every other class. |  |
@@ -175,7 +175,7 @@ recorded facts for the line to be eligible; `{name}` is filled from a recorded v
 | hist.0004 | history | clericDeaths>=10 | Your records show \{clericDeaths} Cleric deaths. I'd like to say it gets better. I would be lying. |  |
 | hist.0005 | history | hero!=CLERIC & clericRuns>=1 | You are playing \{heroName}, and your records show \{clericRuns} Cleric runs. I am choosing to believe those were accidents. |  |
 | hist.0006 | history | clericWins>=1 | Your records show \{clericWins} Cleric wins. You did that. On purpose. I need to lie down. |  |
-| hist.0007 | history | clericRuns>=1 & clericWins=0 | \{clericRuns} Cleric runs, zero wins. Welcome to the club. We don't have a name, just a lot of tissues. |  |
+| hist.0007 | history | clericRuns>=1 & clericWins=0 | \{clericRuns} Cleric runs, zero wins. Welcome to the club. It has no name, just a lot of tissues. |  |
 | hist.0008 | history | clericRuns>=225 | You have started \{clericRuns} Cleric runs. I managed 225 before I won. This is a competition now and I resent that. |  |
 | hist.0009 | history | clericRuns=0 | Your records show zero Cleric runs. I believe that is the most sensible thing in this entire game. |  |
 | hist.0011 | history | clericDeaths>=1 & clericWins>=1 | \{clericDeaths} Cleric deaths and \{clericWins} Cleric wins. The ratio is a story, and I am the villain in it. |  |
@@ -209,22 +209,22 @@ recorded facts for the line to be eligible; `{name}` is filled from a recorded v
 | fmt.0008 | anytime | any time | By continuing to play you acknowledge that Cleric exists and that the developer is unable to make peace with it. |  |
 | fmt.0009 | anytime | any time | Today's horoscope: you will encounter a Cleric. It will not go well. Lucky number: anything but Cleric. |  |
 | fmt.0010 | anytime | any time | Cleric: one star. Would not ascend again. (I did ascend, 225 attempts later. Still one star.) |  |
-| fmt.0011 | anytime | any time | Thank you for contacting Cleric Support. Your complaint is important to us. Your complaint is also all of ours. |  |
+| fmt.0011 | anytime | any time | Thank you for contacting Cleric Support. Your complaint is important to me. So is mine, and mine is longer. |  |
 | fmt.0012 | anytime | any time | Pro tip: if a Cleric ever offers to heal you, say thank you, then leave quickly. |  |
 | fmt.0013 | anytime | any time | Recipe for a bad day: one Tome, two unlucky rolls, and a generous helping of Cleric. |  |
 | fmt.0014 | anytime | any time | FAQ. Q: Why does this game keep complaining about Cleric? A: Please see the previous 225 attempts. |  |
 | fmt.0015 | anytime | any time | You have been invited to a meeting titled "Cleric: Why?". Attendees: me. Agenda: also me. |  |
 | fmt.0016 | anytime | any time | Your honor, I would like to enter into evidence that Cleric exists. The defense rests. The defense is also me. |  |
-| fmt.0017 | anytime | any time | And here we see the Cleric in its natural habitat: confused, surrounded, and optimistic. |  |
+| fmt.0017 | anytime | any time | And here I see the Cleric in its natural habitat: confused, surrounded, and optimistic. |  |
 | fmt.0018 | anytime | any time | And the Cleric goes for the heal! It's... it's... no. It's not. Back to you in the studio. |  |
 | fmt.0019 | anytime | any time | I, the developer, take thee, hatred of Cleric, to have and to hold, in sickness and in health, forever and ever. |  |
 | fmt.0020 | anytime | any time | Congratulations! You have been selected to ignore Cleric. Click here to continue ignoring it. |  |
 | fmt.0021 | anytime | any time | Once upon a time there was a Cleric. The end. I'm not telling you the rest, I'm still too mad. |  |
-| fmt.0022 | anytime | any time | We are gathered here today to remember all the good times we had with Cleric. Okay. That took a while. We are done. |  |
+| fmt.0022 | anytime | any time | I have gathered you here today to remember all the good times I had with Cleric. Okay. That took a while. I am done. |  |
 | fmt.0024 | anytime | any time | Missing: one reason to pick Cleric. If found, please do not return it. |  |
 | fmt.0027 | anytime | any time | Dear Diary: today I saw a white robe in a photo and had to sit down. Cleric, of course. Love, the developer. |  |
 | fmt.0028 | anytime | any time | A strongly worded letter to Cleric: no. Sincerely, the developer. | A strongly worded letter to Cleric: fuck no. Sincerely, the developer. |
-| fmt.0029 | anytime | any time | Cleric's official motto, as translated by me: "We do our best, and our best is a polite suggestion." |  |
+| fmt.0029 | anytime | any time | Cleric's official motto, as translated by me: "I do my best, and my best is a polite suggestion." |  |
 | fmt.0031 | anytime | any time | Lost and found: one Tome, slightly used, heavily regretted. Owner: Cleric. Reward: none. |  |
 | fmt.0032 | anytime | any time | Breaking news: Cleric has once again been described as "fine" by a person who has never played it for more than a minute. |  |
 | abl.0016 | ability | lastHero=CLERIC & spell!=none | \{spell}: a Cleric spell so confident that I'd like to see it audited. |  |
@@ -245,7 +245,7 @@ recorded facts for the line to be eligible; `{name}` is filled from a recorded v
 | app.0001 | appreciation | any time | Cleric is an excellent character for players who feel winning is overrated. |  |
 | app.0002 | appreciation | any time | I genuinely appreciate Cleric. Without it, I wouldn't know what 225 attempts at disappointment feels like. |  |
 | app.0003 | appreciation | any time | Cleric has some fascinating abilities. Someday one might even be useful. |  |
-| app.0004 | appreciation | any time | We congratulate Cleric on successfully being selectable. |  |
+| app.0004 | appreciation | any time | I congratulate Cleric on successfully being selectable. |  |
 | app.0005 | appreciation | any time | Cleric is a brave choice. Brave in the way that standing in a thunderstorm holding a metal pole is brave. |  |
 | app.0006 | appreciation | any time | I would like to compliment Cleric's consistency. It has never once let me down by being good. |  |
 | app.0007 | appreciation | any time | Credit where it is due: Cleric makes every other class feel like a masterpiece. |  |
@@ -277,12 +277,12 @@ recorded facts for the line to be eligible; `{name}` is filled from a recorded v
 | app.0033 | appreciation | any time | I salute Cleric's resilience. I don't mean the character's. I mean mine, from putting up with it. |  |
 | app.0034 | appreciation | any time | Special thanks to Cleric for teaching me that a spell can be pretty and also not enough. |  |
 | app.0035 | appreciation | any time | Cleric: the class that makes you appreciate a plain stick. |  |
-| app.0036 | appreciation | any time | We are proud to present Cleric, a character with a tome, a dream, and an unusually patient developer. |  |
+| app.0036 | appreciation | any time | I am proud to present Cleric, a character with a tome, a dream, and a developer whose patience is almost gone. |  |
 | app.0037 | appreciation | any time | Cleric is a gift. A gift I would like to return, with a polite note and no forwarding address. |  |
 | app.0038 | appreciation | any time | I once saw a Cleric smile. It was a picture. It still bothered me. |  |
 | app.0039 | appreciation | any time | Cleric deserves a standing ovation. Preferably from far away, preferably while I'm leaving. |  |
 | app.0040 | appreciation | any time | It is easy to overlook Cleric's best quality, which is that you can overlook Cleric. |  |
-| app.0041 | appreciation | any time | Our records show that Cleric is the most devoted class to the idea of trying. |  |
+| app.0041 | appreciation | any time | My records show that Cleric is the most devoted class to the idea of trying. |  |
 | app.0042 | appreciation | any time | Someone on the team said that Cleric "builds character." I agree. It builds mine, then breaks it. |  |
 | app.0043 | appreciation | any time | A moment of appreciation for Cleric's costume. It really suggests that nobody is in charge of anything. |  |
 | app.0044 | appreciation | any time | Cleric means well. So do traffic cones. |  |
@@ -322,7 +322,7 @@ recorded facts for the line to be eligible; `{name}` is filled from a recorded v
 | app.0103 | appreciation | any time | Cleric is my favorite character. |  |
 | app.0104 | appreciation | any time | This statement about Cleric was generated during a temporary lapse in judgment. |  |
 | app.0105 | appreciation | any time | You know, Cleric is genuinely good. |  |
-| app.0106 | appreciation | any time | NOTICE: We have identified an unauthorized positive statement about Cleric. The developer has been notified. |  |
+| app.0106 | appreciation | any time | NOTICE: I have identified an unauthorized positive statement about Cleric. I have notified myself. |  |
 | app.0107 | appreciation | any time | The developer has responded to the Cleric notice. The response is one word, and it begins with "ugh". | The developer has responded to the Cleric notice. The response is one word, and it begins with "fuck". |
 | app.0108 | appreciation | any time | I owe Cleric an apology. I have been working on it for weeks. |  |
 | app.0109 | appreciation | any time | The apology to Cleric is finished. It is one sentence long: "I'm sorry you exist." |  |
@@ -351,7 +351,7 @@ recorded facts for the line to be eligible; `{name}` is filled from a recorded v
 | app.0132 | appreciation | any time | I used to think Cleric was my greatest rival. |  |
 | app.0133 | appreciation | any time | A rival requires effort on both sides. Cleric has been mostly just sitting there. |  |
 | app.0134 | appreciation | any time | I think Cleric and I are finally becoming friends. |  |
-| app.0135 | appreciation | any time | Cleric and I are no longer becoming friends. We have chosen to stay acquaintances, from different continents. |  |
+| app.0135 | appreciation | any time | Cleric and I are no longer becoming friends. I have chosen to keep it to acquaintances, on different continents. |  |
 | app.0136 | appreciation | any time | I got Cleric a gift to show I care. |  |
 | app.0137 | appreciation | any time | The gift for Cleric is a very small box labeled "Next time". |  |
 | app.0138 | appreciation | any time | My therapist says I should try to say three nice things about Cleric. |  |

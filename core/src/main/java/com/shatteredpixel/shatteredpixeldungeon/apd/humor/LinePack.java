@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
 //
 //   id | category | flags | requires | weight | clean text | adult text
 //
-// flags: '-' or a comma list of  since=1.10  joke  meta.   requires: '-' or conditions joined by '&' (see Term).   weight: 1-100.
+// flags: '-' or a comma list of  since=4.8  joke  meta  appreciation  setup  after=<id>  nextsession  delay=<days>.   requires: '-' or conditions joined by '&' (see Term).   weight: 1-100.
 // adult text may be empty (the clean text is then used for everyone). Lines starting with '#' and blank lines are ignored.
 //
 // Parsing is also the lint: a pack with a duplicate id, a missing clean text, profanity in the clean text, an unknown key, a joke that
@@ -56,6 +56,15 @@ public final class LinePack {
 
 	// the humor never says the game was changed: no buff/nerf/patch claims in a line (real patch notes are written separately and truthfully)
 	static final Pattern BALANCE_CLAIM = Pattern.compile( "\\b(nerf(ed|s)?|buff(ed|s)?|patch(ed)?|hotfix(ed)?|rebalanc\\w*|next update|next patch)\\b", Pattern.CASE_INSENSITIVE );
+
+	// The developer speaks in the first person: "I", "me", "my", never "we", "us" or "our" (APD is his game).
+	static final Pattern PLURAL_VOICE = Pattern.compile( "\\b(we|us|our|ours|ourselves)\\b|\\blet's\\b", Pattern.CASE_INSENSITIVE );
+
+	// No invented community: a line may not talk about forums, streams, other players' messages or a community. Real community-inspired
+	// jokes need the owner's approval first, and this check is changed then, deliberately.
+	static final Pattern COMMUNITY = Pattern.compile(
+			"\\b(community|communities|reddit|discord|forums?|twitter|tweets?|streamers?|youtubers?|players (have )?(told|said|wrote|emailed|messaged|reported|asked))\\b",
+			Pattern.CASE_INSENSITIVE );
 
 	// every line is about Cleric: it names Cleric or something that only Cleric has
 	static final Pattern ABOUT_CLERIC = Pattern.compile(
@@ -146,6 +155,7 @@ public final class LinePack {
 
 		int since = 0;
 		boolean joke = false, meta = false, appreciation = false, setup = false, nextSession = false;
+		int delay = 0;
 		String after = null;
 		if (!f[2].equals( "-" )){
 			for (String flag : f[2].split( "," )){
@@ -155,6 +165,14 @@ public final class LinePack {
 				else if (flag.equals( "appreciation" )) appreciation = true;
 				else if (flag.equals( "setup" )) setup = true;
 				else if (flag.equals( "nextsession" )) nextSession = true;
+				else if (flag.startsWith( "delay=" )){
+					try {
+						delay = Integer.parseInt( flag.substring( 6 ).trim() );
+					} catch (NumberFormatException e){
+						throw new IllegalArgumentException( "bad delay '" + flag + "'" );
+					}
+					if (delay < 1 || delay > 3650) throw new IllegalArgumentException( "delay is 1-3650 days" );
+				}
 				else if (flag.startsWith( "after=" )){
 					after = flag.substring( 6 ).trim();
 					if (!ID.matcher( after ).matches()) throw new IllegalArgumentException( "bad prerequisite id '" + after + "'" );
@@ -164,7 +182,7 @@ public final class LinePack {
 				else throw new IllegalArgumentException( "unknown flag '" + flag + "'" );
 			}
 		}
-		if (nextSession && after == null) throw new IllegalArgumentException( "nextsession needs after=<id>" );
+		if ((nextSession || delay > 0) && after == null) throw new IllegalArgumentException( "nextsession and delay need after=<id>" );
 		if (appreciation != id.startsWith( "app." )) throw new IllegalArgumentException( "appreciation lines, and only those, have ids starting 'app.'" );
 		if (meta && (appreciation || after != null || setup)) throw new IllegalArgumentException( "a meta line stands alone" );
 		if (meta != (cat == Category.META)) throw new IllegalArgumentException( "the meta flag and the META category go together" );
@@ -195,6 +213,12 @@ public final class LinePack {
 			Matcher claim = BALANCE_CLAIM.matcher( t );
 			if (claim.find()) throw new IllegalArgumentException( "a line must not claim a balance or patch change ('" + claim.group() + "')" );
 		}
+		for (String t : new String[]{ clean, adult == null ? "" : adult }){
+			Matcher plural = PLURAL_VOICE.matcher( t );
+			if (plural.find()) throw new IllegalArgumentException( "the developer speaks as 'I', never '" + plural.group() + "'" );
+			Matcher invented = COMMUNITY.matcher( t );
+			if (invented.find()) throw new IllegalArgumentException( "a line must not invent or quote a community ('" + invented.group() + "')" );
+		}
 		Matcher bad = PROFANITY.matcher( clean );
 		if (bad.find()) throw new IllegalArgumentException( "clean wording contains '" + bad.group() + "'" );
 
@@ -212,7 +236,7 @@ public final class LinePack {
 			if (!Context.KEYS.contains( k )) throw new IllegalArgumentException( "unknown placeholder {" + k + "}" );
 		if (joke && !cleanKeys.isEmpty()) throw new IllegalArgumentException( "a joke with invented numbers cannot use recorded {placeholders}" );
 
-		return new Line( id, cat, since, !meta, joke, weight, appreciation ? Pool.APPRECIATION : Pool.HATRED, after, nextSession, setup, requires, clean, adult );
+		return new Line( id, cat, since, !meta, joke, weight, appreciation ? Pool.APPRECIATION : Pool.HATRED, after, nextSession, delay, setup, requires, clean, adult );
 	}
 
 	private static Set<String> placeholders( String text ){

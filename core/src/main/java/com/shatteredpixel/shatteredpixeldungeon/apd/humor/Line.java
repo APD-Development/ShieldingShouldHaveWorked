@@ -43,6 +43,8 @@ public final class Line {
 	// a follow-up: shown only after this line (by id) has really been seen, and with nextSession only in a later session than that
 	public final String after;
 	public final boolean nextSession;
+	// a long-delayed punchline: at least this many days after the first part was last seen (0: no delay)
+	public final int delayDays;
 	// the first part of a story: some other line must follow it (checked when the packs load)
 	public final boolean setup;
 	final List<Term> requires;
@@ -51,7 +53,7 @@ public final class Line {
 	public final String adult;
 
 	Line( String id, Category category, int since, boolean counted, boolean joke, int weight, Pool pool, String after, boolean nextSession,
-	      boolean setup, List<Term> requires, String clean, String adult ){
+	      int delayDays, boolean setup, List<Term> requires, String clean, String adult ){
 		this.id = id;
 		this.category = category;
 		this.since = since;
@@ -61,6 +63,7 @@ public final class Line {
 		this.pool = pool;
 		this.after = after;
 		this.nextSession = nextSession;
+		this.delayDays = delayDays;
 		this.setup = setup;
 		this.requires = requires;
 		this.clean = clean;
@@ -68,12 +71,13 @@ public final class Line {
 	}
 
 	// sessionStart: when this run of the game began; a nextSession follow-up needs its prerequisite to have been seen before that
-	public boolean eligible( Moment m, Context c, Ledger ledger, long sessionStart ){
+	public boolean eligible( Moment m, Context c, Ledger ledger, long sessionStart, long now ){
 		if (!category.allows( m )) return false;
 		if (after != null){
 			Ledger.Seen first = ledger.get( after );
 			if (first == null) return false;
 			if (nextSession && first.lastAt >= sessionStart) return false;
+			if (delayDays > 0 && now - first.lastAt < delayDays * 86_400_000L) return false;
 		}
 		for (Term t : requires) if (!t.holds( c )) return false;
 		return render( c, false ) != null;

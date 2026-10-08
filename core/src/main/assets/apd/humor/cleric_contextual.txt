@@ -57,7 +57,7 @@ clr.death.0023 | death | since=4.8 | lastHero=CLERIC & lastOutcome=DIED & depth>
 oth.death.0001 | death | since=4.8 | lastHero!=CLERIC & lastOutcome=DIED | 8 | You died, but take comfort in the fact that it was not as embarrassing as dying as Cleric. |
 oth.death.0002 | death | since=4.8 | lastHero!=CLERIC & lastOutcome=DIED | 8 | You died as {lastHeroName}. Cleric would have died sooner and complained about it. |
 oth.death.0004 | death | since=4.8 | lastHero!=CLERIC & lastOutcome=DIED & depth>=1 | 8 | You made it to depth {depth}. That is further than a Cleric has made it in my mind, which stopped at disappointment. |
-oth.death.0005 | death | since=4.8 | lastHero!=CLERIC & lastOutcome=DIED | 8 | Sorry about the loss. I'd offer a Cleric to cheer you up but that would be cruel to both of us. |
+oth.death.0005 | death | since=4.8 | lastHero!=CLERIC & lastOutcome=DIED | 8 | Sorry about the loss. I'd offer a Cleric to cheer you up but that would be cruel to everyone involved, including me. |
 
 # ---- after a Cleric victory
 clr.win.0001 | victory | since=4.8 | lastHero=CLERIC & lastOutcome=WON | 10 | You won as Cleric. Fine. I will allow one moment of respect. That moment is over. |
@@ -126,7 +126,7 @@ hist.0002 | history | since=4.8 | clericWins>=50 | 10 | You have won {clericWins
 hist.0004 | history | since=4.8 | clericDeaths>=10 | 8 | Your records show {clericDeaths} Cleric deaths. I'd like to say it gets better. I would be lying. |
 hist.0005 | history | since=4.8 | hero!=CLERIC & clericRuns>=1 | 8 | You are playing {heroName}, and your records show {clericRuns} Cleric runs. I am choosing to believe those were accidents. |
 hist.0006 | history | since=4.8 | clericWins>=1 | 8 | Your records show {clericWins} Cleric wins. You did that. On purpose. I need to lie down. |
-hist.0007 | history | since=4.8 | clericRuns>=1 & clericWins=0 | 8 | {clericRuns} Cleric runs, zero wins. Welcome to the club. We don't have a name, just a lot of tissues. |
+hist.0007 | history | since=4.8 | clericRuns>=1 & clericWins=0 | 8 | {clericRuns} Cleric runs, zero wins. Welcome to the club. It has no name, just a lot of tissues. |
 hist.0008 | history | since=4.8 | clericRuns>=225 | 10 | You have started {clericRuns} Cleric runs. I managed 225 before I won. This is a competition now and I resent that. |
 hist.0009 | history | since=4.8 | clericRuns=0 | 8 | Your records show zero Cleric runs. I believe that is the most sensible thing in this entire game. |
 hist.0011 | history | since=4.8 | clericDeaths>=1 & clericWins>=1 | 8 | {clericDeaths} Cleric deaths and {clericWins} Cleric wins. The ratio is a story, and I am the villain in it. |
