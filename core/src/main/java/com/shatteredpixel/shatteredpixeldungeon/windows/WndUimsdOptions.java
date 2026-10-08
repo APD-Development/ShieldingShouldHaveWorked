@@ -32,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge.EvidenceInbox;
 import com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge.PrivacyReport;
 import com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge.PrivacySummary;
 import com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge.SessionStore;
+import com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge.VoteActions;
 import com.watabou.noosa.Game;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.Aggregate;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.Catalog;
@@ -196,6 +197,8 @@ public final class WndUimsdOptions {
 				: "Tap to sign out. Signing out never touches your history or saves."));
 		entries.add(Entry.item("Ask for a copy of my account data", session == null ? "Needs an account; none can be made in this version." : "Queues a request. It is sent the next time you press Send."));
 		entries.add(Entry.item("Delete my account", session == null ? "Needs an account; none can be made in this version." : "Queues a request to delete your account on the server. Your history and saves here are not touched."));
+		final int open = VoteActions.offers(m.root()).size();
+		entries.add(Entry.item("Community votes (" + open + ")", open == 0 ? "No vote is open. Votes the server opens appear here after you press Send." : "Votes the server has opened. Needs an account to cast."));
 		ShatteredPixelDungeon.scene().addToFront(WndUimsdList.menu("Privacy", "", entries, new WndUimsdList.Picker(){
 			@Override
 			public void onPick( int i, boolean checked ){
@@ -215,6 +218,8 @@ public final class WndUimsdOptions {
 							return PrivacyReport.build(m.root(), SPDSettings.apdSending(), System.currentTimeMillis(), Game.version);
 						}
 					});
+				} else if (i == 9){
+					communityVotes(m);
 				} else if (i == 7 || i == 8){
 					accountRequest(m, i == 7 ? com.shatteredpixel.shatteredpixeldungeon.apd.backend.AccountRequests.Kind.EXPORT : com.shatteredpixel.shatteredpixeldungeon.apd.backend.AccountRequests.Kind.DELETE);
 				} else if (i == 6){
@@ -275,6 +280,54 @@ public final class WndUimsdOptions {
 					case UNSUPPORTED: msg = "That kind of data is not supported. Nothing was sent."; break;
 					case TOO_LARGE: msg = "The log is too large to send. Nothing was sent."; break;
 					default: msg = "It could not be answered. Try again.";
+				}
+				say(msg);
+			}
+		});
+	}
+
+	private static void communityVotes( final UimsdModel m ){
+		final List<com.shatteredpixel.shatteredpixeldungeon.apd.backend.VoteMessages.Offer> offers = VoteActions.offers(m.root());
+		if (offers.isEmpty()){
+			say("No vote is open. Votes the server opens appear here after you press Send.");
+			return;
+		}
+		List<Entry> entries = new ArrayList<>();
+		for (com.shatteredpixel.shatteredpixeldungeon.apd.backend.VoteMessages.Offer o : offers){
+			entries.add(Entry.item(o.title.isEmpty() ? "Vote " + o.round.id.value : o.title, "Pick up to " + o.round.maxChoices + " of " + o.round.options.size() + "."));
+		}
+		ShatteredPixelDungeon.scene().addToFront(WndUimsdList.menu("Community votes", "Tap a vote to choose.", entries, new WndUimsdList.Picker(){
+			@Override
+			public void onPick( int i, boolean checked ){
+				castVote(m, offers.get(i));
+			}
+		}));
+	}
+
+	private static void castVote( final UimsdModel m, final com.shatteredpixel.shatteredpixeldungeon.apd.backend.VoteMessages.Offer offer ){
+		final List<String> options = new ArrayList<>(offer.round.options);
+		final java.util.Set<String> chosen = new java.util.TreeSet<>();
+		List<Entry> entries = new ArrayList<>();
+		for (String o : options) entries.add(Entry.item(o).checked(false));
+		ShatteredPixelDungeon.scene().addToFront(new WndUimsdList(offer.title.isEmpty() ? "Vote" : offer.title,
+				"Tick up to " + offer.round.maxChoices + ", then tap Done. Nothing is sent until you press Send. Back leaves without voting.", true, entries, new WndUimsdList.Picker(){
+			@Override
+			public void onPick( int i, boolean checked ){
+				if (checked) chosen.add(options.get(i)); else chosen.remove(options.get(i));
+			}
+		}){
+			@Override
+			protected void onDone(){
+				super.onDone();
+				String msg;
+				switch (VoteActions.cast(m.root(), offer.round.id, chosen, System.currentTimeMillis())){
+					case QUEUED: msg = "Your choice is queued. Nothing has been sent yet."; break;
+					case NOT_SIGNED_IN: msg = "You are not signed in, so you cannot vote yet."; break;
+					case NOT_OPEN: msg = "This vote has not opened yet."; break;
+					case CLOSED: msg = "This vote has closed."; break;
+					case TOO_MANY_CHOICES: msg = "You picked too many. Pick up to " + offer.round.maxChoices + "."; break;
+					case EMPTY: msg = "You did not pick anything."; break;
+					default: msg = "Your choice could not be queued.";
 				}
 				say(msg);
 			}

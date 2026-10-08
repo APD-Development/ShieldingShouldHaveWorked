@@ -283,6 +283,9 @@ public class PrivacyAndHeroBackDeviceTest {
 			assertTrue("a confirmation opened", top() instanceof com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions);
 			pressBack();
 			assertTrue("Back leaves the confirmation without queueing anything", top() instanceof WndUimsdList);
+			pickItem(9);   //community votes: none open
+			assertTrue("a message says no vote is open", top() instanceof WndMessage);
+			pressBack();
 			pickItem(1);   //back off
 			assertFalse("sending is off again", SPDSettings.apdSending());
 			Log.w(TAG, "Privacy menu: summary, switch on/off, send-now refusal and address box all worked");
