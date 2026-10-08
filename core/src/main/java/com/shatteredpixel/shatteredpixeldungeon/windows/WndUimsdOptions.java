@@ -26,6 +26,8 @@ import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.apd.backend.Gateways;
 import com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge.BackendClient;
+import com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge.EvidenceFlow;
+import com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge.EvidenceInbox;
 import com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge.PrivacySummary;
 import com.watabou.noosa.Game;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.Aggregate;
@@ -183,6 +185,8 @@ public final class WndUimsdOptions {
 		entries.add(Entry.item("Sending to a server: " + (SPDSettings.apdSending() ? "on" : "off"), BackendClient.status(SPDSettings.apdSending(), SPDSettings.apdServer())));
 		entries.add(Entry.item("Server address...", "Where queued runs go when you press Send. Must start with https://."));
 		entries.add(Entry.item("Send queued runs now", "Sends only what you queued, only when you press this."));
+		final int asked = EvidenceInbox.pending(m.root());
+		entries.add(Entry.item("Evidence requests (" + asked + ")", asked == 0 ? "Nothing is waiting for your answer." : "A server asked to see the full log of a run you submitted. Nothing is sent unless you agree."));
 		ShatteredPixelDungeon.scene().addToFront(WndUimsdList.menu("Privacy", "", entries, new WndUimsdList.Picker(){
 			@Override
 			public void onPick( int i, boolean checked ){
@@ -193,6 +197,8 @@ public final class WndUimsdOptions {
 					say("Sending is now " + (SPDSettings.apdSending() ? "on. Nothing is sent until you press \"Send queued runs now\"." : "off. Nothing leaves this device."));
 				} else if (i == 2){
 					serverAddress();
+				} else if (i == 4){
+					evidenceRequests(m);
 				} else {
 					BackendClient.sendNow(m.root(), SPDSettings.apdSending(), SPDSettings.apdServer(), new BackendClient.Done(){
 						@Override
@@ -208,6 +214,46 @@ public final class WndUimsdOptions {
 				}
 			}
 		}));
+	}
+
+	private static void evidenceRequests( final UimsdModel m ){
+		final List<EvidenceInbox.Entry> list = EvidenceInbox.list(m.root());
+		if (list.isEmpty()){
+			say("Nothing is waiting for your answer.");
+			return;
+		}
+		List<Entry> entries = new ArrayList<>();
+		for (EvidenceInbox.Entry e : list) entries.add(Entry.item("Run " + e.asked.runId, "Asked for: " + (e.asked.request.kind == com.shatteredpixel.shatteredpixeldungeon.apd.backend.Evidence.Kind.FULL_RUN_LOG ? "the full run log" : "other data (not supported)")));
+		ShatteredPixelDungeon.scene().addToFront(WndUimsdList.menu("Evidence requests", "Tap one to decide.", entries, new WndUimsdList.Picker(){
+			@Override
+			public void onPick( int i, boolean checked ){
+				answerRequest(m, list.get(i));
+			}
+		}));
+	}
+
+	private static void answerRequest( final UimsdModel m, final EvidenceInbox.Entry entry ){
+		ShatteredPixelDungeon.scene().addToFront(new WndOptions("Share this run's full log?",
+				"A server asked to check the run you submitted (" + entry.asked.runId + "). Agreeing queues its complete recorded log for sending the next time you press Send. Declining sends nothing.",
+				"Agree", "Decline", "Decide later"){
+			@Override
+			protected void onSelect( int index ){
+				if (index == 2) return;
+				EvidenceFlow.Result r = EvidenceFlow.answer(m.root(), entry.asked, index == 0, System.currentTimeMillis());
+				String msg;
+				switch (r){
+					case QUEUED: msg = "Queued. It is sent the next time you press \"Send queued runs now\"."; break;
+					case DECLINED: msg = "Declined. Nothing will be sent."; break;
+					case EXPIRED: msg = "That request has expired."; break;
+					case LOG_CHANGED: msg = "The log on this device no longer matches what was submitted, so it was not sent."; break;
+					case NOT_SUBMITTED: msg = "This device did not submit that run, so there is nothing to send."; break;
+					case UNSUPPORTED: msg = "That kind of data is not supported. Nothing was sent."; break;
+					case TOO_LARGE: msg = "The log is too large to send. Nothing was sent."; break;
+					default: msg = "It could not be answered. Try again.";
+				}
+				say(msg);
+			}
+		});
 	}
 
 	private static void serverAddress(){

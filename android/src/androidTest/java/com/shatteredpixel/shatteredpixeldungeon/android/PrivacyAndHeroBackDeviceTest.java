@@ -232,6 +232,9 @@ public class PrivacyAndHeroBackDeviceTest {
 			assertTrue("the address box opened", top() instanceof WndTextInput);
 			pressBack();
 			assertEquals("an empty address was not invented", "", SPDSettings.apdServer());
+			pickItem(4);   //evidence requests: none waiting
+			assertTrue("a message says nothing is waiting", top() instanceof WndMessage);
+			pressBack();
 			pickItem(1);   //back off
 			assertFalse("sending is off again", SPDSettings.apdSending());
 			Log.w(TAG, "Privacy menu: summary, switch on/off, send-now refusal and address box all worked");
