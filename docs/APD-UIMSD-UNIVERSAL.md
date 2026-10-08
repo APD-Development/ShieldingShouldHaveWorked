@@ -95,7 +95,7 @@ level summaries). U4 the question builder and topic pages. Each step ends with c
 - Batch G (telemetry 1.9): `journal.page` (a journal page found, or read for the first time; hook in `Document.findPage/readPage`).
 
 ## Not yet recorded (observable; candidates for the next batches, each needs its own hook and a hidden-information review)
-Levers, per-enemy state changes and enemy abilities, boss phase changes, NPC interactions and quest steps, artifact charge (no public
+Levers, per-enemy state changes and enemy abilities, boss phase changes, NPC interactions beyond quest steps (quest steps given/ready/done are recorded since telemetry 1.10), artifact charge (no public
 accessor), plant and seed interactions, level feelings acted on, auto-explore and travel usage, throws and targeting, shop stock seen, ally summons and their fates, alchemy details,
 fall and trap damage sources beyond damage events, and anything a future character adds.
 
