@@ -74,11 +74,11 @@ recorded facts for the line to be eligible; `{name}` is filled from a recorded v
 
 | id | category | when | Clean | Adult |
 |---|---|---|---|---|
-| app.0101 | appreciation | any time | After careful consideration, I've decided Cleric deserves more respect. | After careful consideration, I've decided Cleric deserves more respect. I held a meeting with myself. It ended in a fistfight. |
+| app.0101 | appreciation | any time | After careful consideration, I've decided Cleric deserves more respect. | After careful consideration, I've decided Cleric deserves more respect. I held a meeting with myself about it. The minutes are sealed. |
 | app.0102 | appreciation | any time | Update on the respect for Cleric: it was reviewed, found to be a clerical error, and returned to the store. | Update on the respect for Cleric: it was reviewed, found to be a clerical error, and returned to the store. I got store credit. I spent it on spite. |
-| app.0103 | appreciation | any time | Cleric is my favorite character. | Cleric is my favorite character. I am saying this out loud so I can hear what a liar sounds like. |
+| app.0103 | appreciation | any time | Cleric is my favorite character. | Cleric is my favorite character. I said it out loud, calmly, like a man with nothing to hide. |
 | app.0104 | appreciation | any time | This statement about Cleric was generated during a temporary lapse in judgment. | This statement about Cleric was generated during a temporary lapse in judgment. The lapse has been located and punched. |
-| app.0105 | appreciation | any time | You know, Cleric is genuinely good. | You know, Cleric is genuinely good. Wait. Hold on. Let me say that again so I can hear how insane it sounds. |
+| app.0105 | appreciation | any time | You know, Cleric is genuinely good. | You know, Cleric is genuinely good. I've thought about this a lot, and I'm surprisingly calm. |
 | app.0106 | appreciation | any time | NOTICE: I have identified an unauthorized positive statement about Cleric. I have notified myself. |  |
 | app.0107 | appreciation | any time | I have responded to my own notice about Cleric. My response is one word, and it begins with "ugh". | I have responded to my own notice about Cleric. My response is one word, and it begins with "fuck". |
 | app.0108 | appreciation | any time | I owe Cleric an apology. I have been working on it for weeks. |  |
@@ -86,35 +86,43 @@ recorded facts for the line to be eligible; `{name}` is filled from a recorded v
 | app.0110 | appreciation | any time | Today I decided to give Cleric a fair chance and read every spell in the Tome. Wish me luck. | Today I decided to give Cleric a fair chance and read every spell in the Tome. Wish me luck. I'll need it, and a drink. |
 | app.0111 | appreciation | any time | Update: I reached the second spell on Cleric's list. My left eye has been twitching since. | Update: I reached the second spell on Cleric's list. My left eye has been twitching since. I have also said a word my mother wouldn't recognize. |
 | app.0112 | appreciation | any time | Final update: the Tome and I have agreed to never speak of the Cleric experiment again. | Final update: the Tome and I have agreed to never speak of the Cleric experiment again. A handshake sealed it. I washed my hand for ten minutes. |
-| app.0113 | appreciation | any time | Big news, everyone: I've decided to forgive Cleric. | Big news, everyone: I've decided to forgive Cleric. I feel lighter. I feel free. I feel like I'm lying through my teeth. |
+| app.0113 | appreciation | any time | I have something personal to announce: I've decided to forgive Cleric. | I have something personal to announce: I've decided to forgive Cleric. I feel lighter. I feel free. I feel like a better person. |
 | app.0114 | appreciation | any time | Never mind about forgiving Cleric. | Never mind about forgiving Cleric. Fuck that. What was I thinking. |
-| app.0115 | appreciation | any time | I would like to announce a statue in Cleric's honor. | I would like to announce a statue in Cleric's honor. Don't ask me what it's holding. It's holding my middle finger. |
+| app.0115 | appreciation | any time | I would like to announce a statue in Cleric's honor. | I would like to announce a statue in Cleric's honor. I have already commissioned it. Don't ask what the sculptor was told. |
 | app.0116 | appreciation | any time | The Cleric statue has been built. It stands in a closet, facing the wall, and I'm very happy about it. | The Cleric statue has been built. It stands in a closet, facing the wall, and I'm very fucking happy about it. |
 | app.0117 | appreciation | any time | Heads up: the next message will contain a compliment about Cleric. | Heads up: the next message will contain a compliment about Cleric. I need you to brace yourself. I did. |
 | app.0118 | appreciation | any time | That compliment about Cleric was a typo. The message was meant to say "complaint". | That compliment about Cleric was a typo. The message was meant to say "complaint". The typo has been fired. |
 | app.0119 | appreciation | any time | I have added Cleric to my list of people I admire. | I have added Cleric to my list of people I admire. The list is one name long. I'm in a very dark place. |
 | app.0120 | appreciation | any time | Cleric is on my admiration list as a warning. The list is called "Do not become". | Cleric is on my admiration list as a warning. The list is called "Do not fucking become". |
-| app.0121 | appreciation | any time | Cleric's Ascended Form is truly radiant. | Cleric's Ascended Form is truly radiant. I'd put it on a poster if I didn't have self-respect. |
+| app.0121 | appreciation | any time | Cleric's Ascended Form is truly radiant. | Cleric's Ascended Form is truly radiant. I stared at it for ten minutes and my eyes still hurt. |
 | app.0122 | appreciation | any time | By radiant I mean like a warning light. Please move away from the Cleric. |  |
-| app.0123 | appreciation | any time | Trinity is the most elegant thing Cleric does. | Trinity is the most elegant thing Cleric does. Fuck, I said it. Write it down. Frame it. Burn it. |
+| app.0123 | appreciation | any time | Trinity is the most elegant thing Cleric does. | Trinity is the most elegant thing Cleric does. Fuck, I said it. Write it down. Frame it. |
 | app.0124 | appreciation | any time | That is a very low bar for Cleric and I want you to know I checked it twice. | That is a very low bar for Cleric and I want you to know I checked it twice. It was on the floor. I tripped over it. |
-| app.0125 | appreciation | any time | On behalf of everyone, thank you for your service, Cleric. | On behalf of everyone, thank you for your service, Cleric. Now get the fuck out of my dungeon. |
+| app.0125 | appreciation | any time | Thank you for your service, Cleric. | Thank you for your service, Cleric. Now get the fuck out of my dungeon. |
 | app.0126 | appreciation | any time | Your service as Cleric is now complete. Please return the Tome. |  |
-| app.0127 | appreciation | any time | Breaking: Cleric has been named Employee of the Month. | Breaking: Cleric has been named Employee of the Month. I'm the manager and I did not approve this. |
+| app.0127 | appreciation | any time | Breaking: Cleric has been named Employee of the Month. | Breaking: Cleric has been named Employee of the Month. I'm the manager, and I signed the certificate myself with a very steady hand. |
 | app.0128 | appreciation | any time | Correction: Cleric was the only employee. The month was very long. | Correction: Cleric was the only employee. The month was very long. Fucking exhausting, really. |
-| app.0129 | appreciation | any time | I'm proud of Cleric. | I'm proud of Cleric. I don't know who said that, but I'm checking the cameras. |
+| app.0129 | appreciation | any time | I'm proud of Cleric. | I'm proud of Cleric. I want that on the record, in ink, with a witness. |
 | app.0130 | appreciation | any time | To clarify: I'm proud of the players who survive Cleric. Big difference. |  |
 | app.0131 | appreciation | any time | Please do not frame the previous Cleric message. It was not a compliment and I'll deny it. | Please do not frame the previous Cleric message. It was not a compliment and I'll deny it under oath. |
-| app.0132 | appreciation | any time | I used to think Cleric was my greatest rival. | I used to think Cleric was my greatest rival. Then I stopped being delusional. |
+| app.0132 | appreciation | any time | I used to think Cleric was my greatest rival. | I used to think Cleric was my greatest rival. I used to have a lot of hobbies, too. |
 | app.0133 | appreciation | any time | A rival requires effort on both sides. Cleric has been mostly just sitting there. |  |
-| app.0134 | appreciation | any time | I think Cleric and I are finally becoming friends. | I think Cleric and I are finally becoming friends. I've never felt so stupid and so hopeful. |
+| app.0134 | appreciation | any time | I think Cleric and I are finally becoming friends. | I think Cleric and I are finally becoming friends. I bought a card. |
 | app.0135 | appreciation | any time | Cleric and I are no longer becoming friends. I have chosen to keep it to acquaintances, on different continents. | Cleric and I are no longer becoming friends. I have chosen to keep it to acquaintances, on different continents, with a firewall. |
-| app.0136 | appreciation | any time | I got Cleric a gift to show I care. | I got Cleric a gift to show I care. I spent a lot of time wrapping it. The wrapping is the best part. |
+| app.0136 | appreciation | any time | I got Cleric a gift to show I care. | I got Cleric a gift to show I care. I spent a lot of time on the wrapping. |
 | app.0137 | appreciation | any time | The gift for Cleric is a very small box labeled "Next time". | The gift for Cleric is a very small box labeled "Next time". The box is empty, because fuck Cleric. |
 | app.0138 | appreciation | any time | My therapist says I should try to say three nice things about Cleric. | My therapist says I should try to say three nice things about Cleric. I told her I'd rather say three prayers. To a different god. |
 | app.0139 | appreciation | any time | Nice things about Cleric: one. It has a robe. Two. It has a book. Three. I ran out of time and patience. | Nice things about Cleric: one. It has a robe. Two. It has a book. Three. I ran out of time and fucks to give. |
 | app.0140 | appreciation | any time | I'm thinking of trying Cleric one more time, just for fun. | I'm thinking of trying Cleric one more time, just for fun. I'm a masochist and a fool, and my friends say so. |
-| app.0141 | appreciation | any time | The Cleric run was not fun. I had hoped for a better outcome and received my usual one. | The Cleric run was not fun. I had hoped for a better outcome and received my usual one: a big steaming pile of fuck-all. |
+| app.0141 | appreciation | any time | Update on trying Cleric one more time: I thought about it for roughly four seconds and regretted it immediately. No run took place. The regret did. | Update on trying Cleric one more time: I thought about it for roughly four seconds and regretted it immediately. No run took place. The regret was enough, and my head now feels like a fucking tome. |
+| app.0142 | appreciation | any time | I am going to be nice about Cleric from now on. Starting today. | I am going to be nice about Cleric from now on. Starting today. Watch me. I'm a fucking saint. |
+| app.0143 | appreciation | any time | Report on my plan to be nice about Cleric: it lasted until lunch on the first day. I have been lying to you for weeks. | Report on my plan to be nice about Cleric: it lasted until lunch on the first day. I have been lying to your face for weeks, and I feel fucking great about it. |
+| app.0144 | appreciation | any time | Cleric is really growing on me. |  |
+| app.0145 | appreciation | any time | A doctor looked at the Cleric thing that was growing on me. It is a rash. It is a rash, and I hate it. | A doctor looked at the Cleric thing that was growing on me. It is a rash. It is a goddamn rash, and I hate it. |
+| app.0146 | appreciation | any time | I wrote Cleric a fan letter. I'll share it once I'm sure it's finished. |  |
+| app.0147 | appreciation | any time | The Cleric fan letter is finished. It says "Dear Cleric" and nothing else, because I could not think of a second word that was kind. | The Cleric fan letter is finished. It says "Dear Cleric" and nothing else, because I could not think of a second word that wasn't "fuck". |
+| app.0148 | appreciation | any time | I am declaring one day a year as Cleric Appreciation Day. |  |
+| app.0149 | appreciation | any time | Cleric Appreciation Day has been scheduled for February 30th. It is the one day that never comes. | Cleric Appreciation Day has been scheduled for February 30th. It is the one day that never comes,, and I picked it on purpose. |
 | app.0001 | appreciation | any time | Cleric is an excellent character for players who feel winning is overrated. | Cleric is an excellent character for players who feel winning is overrated and who like a nice bowl of fucking disappointment. |
 | app.0002 | appreciation | any time | I genuinely appreciate Cleric. Without it, I wouldn't know what 225 attempts at disappointment feels like. | I genuinely appreciate Cleric. Without it, I wouldn't know what 225 attempts at fucking disappointment feels like. |
 | app.0003 | appreciation | any time | Cleric has some fascinating abilities. Someday one might even be useful. |  |
@@ -190,14 +198,6 @@ recorded facts for the line to be eligible; `{name}` is filled from a recorded v
 | app.0073 | menu | any time | Welcome back. Cleric has been waiting by the character select. It does not know why. Neither do I. |  |
 | app.0074 | menu | any time | The title screen is looking good today, thanks to Cleric. By being absent. |  |
 | app.0075 | equipment | lastHero=CLERIC & weapon!=none | \{weapon} on Cleric is a bold fashion statement and a worse decision. |  |
-| app.0142 | appreciation | any time | I am going to be nice about Cleric from now on. Starting today. | I am going to be nice about Cleric from now on. Starting today. Watch me. I'm a fucking saint. |
-| app.0143 | appreciation | any time | Report on my plan to be nice about Cleric: it lasted until lunch on the first day. I have been lying to you for weeks. | Report on my plan to be nice about Cleric: it lasted until lunch on the first day. I have been lying to your face for weeks, and I feel fucking great about it. |
-| app.0144 | appreciation | any time | Cleric is really growing on me. |  |
-| app.0145 | appreciation | any time | A doctor looked at the Cleric thing that was growing on me. It is a rash. It is a rash, and I hate it. | A doctor looked at the Cleric thing that was growing on me. It is a rash. It is a goddamn rash, and I hate it. |
-| app.0146 | appreciation | any time | I wrote Cleric a fan letter. I'll share it once I'm sure it's finished. |  |
-| app.0147 | appreciation | any time | The Cleric fan letter is finished. It says "Dear Cleric" and nothing else, because I could not think of a second word that was kind. | The Cleric fan letter is finished. It says "Dear Cleric" and nothing else, because I could not think of a second word that wasn't "fuck". |
-| app.0148 | appreciation | any time | I am declaring one day a year as Cleric Appreciation Day. |  |
-| app.0149 | appreciation | any time | Cleric Appreciation Day has been scheduled for February 30th. It is the one day that never comes. | Cleric Appreciation Day has been scheduled for February 30th. It is the one day that never comes,, and I picked it on purpose. |
 
 ## cleric_comparisons.txt
 

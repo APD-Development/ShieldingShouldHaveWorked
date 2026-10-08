@@ -60,6 +60,9 @@ public final class ClericGrudge {
 	private final Random rng;
 	private final boolean enabled;
 	private final long sessionStart;
+	//the same lines without the linked stories: contextual (inline) lines never draw from stories, so a story only ever comes through a
+	//surprise popup and therefore always obeys the player's popup setting
+	private final List<Line> noStories;
 	private boolean popupThisSession;
 
 	public ClericGrudge( List<Line> lines, Ledger ledger, Random rng, boolean enabled ){
@@ -72,6 +75,9 @@ public final class ClericGrudge {
 		this.rng = rng;
 		this.enabled = enabled;
 		this.sessionStart = sessionStart;
+		List<Line> plain = new ArrayList<>();
+		for (Line l : lines) if (!l.setup && l.after == null) plain.add( l );
+		this.noStories = plain;
 	}
 
 	// Loads every pack the source lists. A pack that fails its lint is refused whole and the others still load.
@@ -138,7 +144,7 @@ public final class ClericGrudge {
 		long last = ledger.stateLong( ST_LAST_POPUP, -1 );
 		if (last >= 0 && now - last < freq.minGapMs) return null;
 		if (rng.nextDouble() >= freq.chance) return null;
-		Shown s = choose( moment, ctx, adult, now );
+		Shown s = choose( moment, ctx, adult, now, true );
 		if (s == null) return null;
 		popupThisSession = true;
 		ledger.setState( ST_LAST_POPUP, Long.toString( now ) );
@@ -152,7 +158,7 @@ public final class ClericGrudge {
 		long last = ledger.stateLong( ST_LAST_INLINE, -1 );
 		if (last >= 0 && now - last < INLINE_GAP_MS) return null;
 		if (rng.nextDouble() >= INLINE_CHANCE) return null;
-		Shown s = choose( moment, ctx, adult, now );
+		Shown s = choose( moment, ctx, adult, now, false );
 		if (s == null) return null;
 		ledger.setState( ST_LAST_INLINE, Long.toString( now ) );
 		ledger.save();
@@ -162,13 +168,13 @@ public final class ClericGrudge {
 	// A line on request, ignoring the chance and the gap (for a page the player opens on purpose, and for tests). Still unseen-first.
 	synchronized Shown inlineAlways( Moment moment, Context ctx, long now ){
 		if (!enabled) return null;
-		return choose( moment, ctx, false, now );
+		return choose( moment, ctx, false, now, true );
 	}
 
 	// The one-time warning when the player first picks Cleric to start a run.
 	public synchronized Shown firstClericRun( boolean adult, long now ){
 		if (!enabled || ledger.state( ST_FIRST_RUN ) != null) return null;
-		Shown s = choose( Moment.FIRST_CLERIC_RUN, Context.EMPTY, adult, now );
+		Shown s = choose( Moment.FIRST_CLERIC_RUN, Context.EMPTY, adult, now, true );
 		if (s == null) return null;
 		ledger.setState( ST_FIRST_RUN, "1" );
 		ledger.save();
@@ -178,14 +184,14 @@ public final class ClericGrudge {
 	// The one-time joke the first time the counter screen is opened.
 	public synchronized Shown counterDiscovery( boolean adult, long now ){
 		if (!enabled || ledger.state( ST_COUNTER ) != null) return null;
-		Shown s = choose( Moment.COUNTER_SCREEN, Context.EMPTY, adult, now );
+		Shown s = choose( Moment.COUNTER_SCREEN, Context.EMPTY, adult, now, true );
 		if (s == null) return null;
 		ledger.setState( ST_COUNTER, "1" );
 		ledger.save();
 		return s;
 	}
 
-	private Shown choose( Moment moment, Context ctx, boolean adult, long now ){
+	private Shown choose( Moment moment, Context ctx, boolean adult, long now, boolean stories ){
 		Category avoid = null;
 		String last = ledger.state( ST_LAST_CATEGORY );
 		if (last != null){
@@ -198,7 +204,7 @@ public final class ClericGrudge {
 		//the grudge's own real totals are available to lines that remark on the grudge itself
 		ctx = ctx.with( "complaintsHeard", counts.heard ).with( "complaintsTotal", counts.total )
 				.with( "appreciationsHeard", counts.appreciationHeard ).with( "appreciationsTotal", counts.appreciationTotal );
-		Line l = Picker.pick( lines, moment, ctx, ledger, rng, avoid, sessionStart, now );
+		Line l = Picker.pick( stories ? lines : noStories, moment, ctx, ledger, rng, avoid, sessionStart, now );
 		if (l == null) return null;
 		String text = l.render( ctx, adult );
 		if (text == null) return null;

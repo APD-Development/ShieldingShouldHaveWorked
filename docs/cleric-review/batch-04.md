@@ -2,6 +2,38 @@
 
 Lines 151 to 200 of 348. Reply with the ids to keep, cut or rewrite.
 
+### app.0052  (Appreciation, appreciation, any time)
+- Clean: It's hard to say what I love most about Cleric: its robe, its Tome, or the way I can leave both behind.
+- Adult: (same as Clean)
+
+### app.0053  (Appreciation, appreciation, any time)
+- Clean: Cleric did not choose to be like this, and I find that comforting in a way that I'm not proud of.
+- Adult: (same as Clean)
+
+### app.0054  (Appreciation, appreciation, any time)
+- Clean: It turns out the nicest thing about Cleric is the title screen, because it means you are not currently in a Cleric run.
+- Adult: (same as Clean)
+
+### app.0055  (Appreciation, appreciation, any time)
+- Clean: Cleric is a very warm character: warm like a handshake from someone who just washed their hands in lava.
+- Adult: Cleric is a very warm character: warm like a handshake from someone who just washed their hands in lava, the psychopath.
+
+### app.0056  (Appreciation, appreciation, any time)
+- Clean: Applause for Cleric, the first character I think of when asked to name a character I'd like to apologize to.
+- Adult: Applause for Cleric, the first character I think of when asked to name a character I'd like to apologize to. Then I remember and un-apologize.
+
+### app.0057  (Appreciation, appreciation, any time)
+- Clean: I wanted to say something kind about Cleric. Then I remembered I make the rules about what is kind.
+- Adult: (same as Clean)
+
+### app.0058  (Appreciation, appreciation, any time)
+- Clean: Cleric is a perfect fit for any player looking for a challenge, a story, and a reason to call a friend.
+- Adult: (same as Clean)
+
+### app.0059  (Appreciation, appreciation, any time)
+- Clean: Honestly, props to Cleric for being a character at all.
+- Adult: (same as Clean)
+
 ### app.0060  (Appreciation, appreciation, any time)
 - Clean: A big thank-you to Cleric for existing in a way that I find insulting but cannot prove.
 - Adult: A big thank-you to Cleric for existing in a way that I find insulting but cannot prove, you smug little robe.
@@ -65,38 +97,6 @@ Lines 151 to 200 of 348. Reply with the ids to keep, cut or rewrite.
 ### app.0075  (Appreciation, equipment, only when lastHero=CLERIC & weapon!=none)
 - Clean: {weapon} on Cleric is a bold fashion statement and a worse decision.
 - Adult: (same as Clean)
-
-### app.0142  (Appreciation, appreciation, any time) [first part of a story]
-- Clean: I am going to be nice about Cleric from now on. Starting today.
-- Adult: I am going to be nice about Cleric from now on. Starting today. Watch me. I'm a fucking saint.
-
-### app.0143  (Appreciation, appreciation, any time) [follows app.0142]
-- Clean: Report on my plan to be nice about Cleric: it lasted until lunch on the first day. I have been lying to you for weeks.
-- Adult: Report on my plan to be nice about Cleric: it lasted until lunch on the first day. I have been lying to your face for weeks, and I feel fucking great about it.
-
-### app.0144  (Appreciation, appreciation, any time) [first part of a story]
-- Clean: Cleric is really growing on me.
-- Adult: (same as Clean)
-
-### app.0145  (Appreciation, appreciation, any time) [follows app.0144]
-- Clean: A doctor looked at the Cleric thing that was growing on me. It is a rash. It is a rash, and I hate it.
-- Adult: A doctor looked at the Cleric thing that was growing on me. It is a rash. It is a goddamn rash, and I hate it.
-
-### app.0146  (Appreciation, appreciation, any time) [first part of a story]
-- Clean: I wrote Cleric a fan letter. I'll share it once I'm sure it's finished.
-- Adult: (same as Clean)
-
-### app.0147  (Appreciation, appreciation, any time) [follows app.0146]
-- Clean: The Cleric fan letter is finished. It says "Dear Cleric" and nothing else, because I could not think of a second word that was kind.
-- Adult: The Cleric fan letter is finished. It says "Dear Cleric" and nothing else, because I could not think of a second word that wasn't "fuck".
-
-### app.0148  (Appreciation, appreciation, any time) [first part of a story]
-- Clean: I am declaring one day a year as Cleric Appreciation Day.
-- Adult: (same as Clean)
-
-### app.0149  (Appreciation, appreciation, any time) [follows app.0148; in a later session]
-- Clean: Cleric Appreciation Day has been scheduled for February 30th. It is the one day that never comes.
-- Adult: Cleric Appreciation Day has been scheduled for February 30th. It is the one day that never comes,, and I picked it on purpose.
 
 ### cmp.0001  (Hatred, anytime, any time)
 - Clean: Even Warrior is embarrassed to share a character-selection screen with Cleric.

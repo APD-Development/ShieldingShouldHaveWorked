@@ -4,7 +4,7 @@ Lines 51 to 100 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### app.0101  (Appreciation, appreciation, any time) [first part of a story]
 - Clean: After careful consideration, I've decided Cleric deserves more respect.
-- Adult: After careful consideration, I've decided Cleric deserves more respect. I held a meeting with myself. It ended in a fistfight.
+- Adult: After careful consideration, I've decided Cleric deserves more respect. I held a meeting with myself about it. The minutes are sealed.
 
 ### app.0102  (Appreciation, appreciation, any time) [follows app.0101; in a later session]
 - Clean: Update on the respect for Cleric: it was reviewed, found to be a clerical error, and returned to the store.
@@ -12,7 +12,7 @@ Lines 51 to 100 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### app.0103  (Appreciation, appreciation, any time) [first part of a story]
 - Clean: Cleric is my favorite character.
-- Adult: Cleric is my favorite character. I am saying this out loud so I can hear what a liar sounds like.
+- Adult: Cleric is my favorite character. I said it out loud, calmly, like a man with nothing to hide.
 
 ### app.0104  (Appreciation, appreciation, any time) [follows app.0103; in a later session]
 - Clean: This statement about Cleric was generated during a temporary lapse in judgment.
@@ -20,7 +20,7 @@ Lines 51 to 100 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### app.0105  (Appreciation, appreciation, any time) [first part of a story]
 - Clean: You know, Cleric is genuinely good.
-- Adult: You know, Cleric is genuinely good. Wait. Hold on. Let me say that again so I can hear how insane it sounds.
+- Adult: You know, Cleric is genuinely good. I've thought about this a lot, and I'm surprisingly calm.
 
 ### app.0106  (Appreciation, appreciation, any time) [first part of a story; follows app.0105; in a later session]
 - Clean: NOTICE: I have identified an unauthorized positive statement about Cleric. I have notified myself.
@@ -51,8 +51,8 @@ Lines 51 to 100 of 348. Reply with the ids to keep, cut or rewrite.
 - Adult: Final update: the Tome and I have agreed to never speak of the Cleric experiment again. A handshake sealed it. I washed my hand for ten minutes.
 
 ### app.0113  (Appreciation, appreciation, any time) [first part of a story]
-- Clean: Big news, everyone: I've decided to forgive Cleric.
-- Adult: Big news, everyone: I've decided to forgive Cleric. I feel lighter. I feel free. I feel like I'm lying through my teeth.
+- Clean: I have something personal to announce: I've decided to forgive Cleric.
+- Adult: I have something personal to announce: I've decided to forgive Cleric. I feel lighter. I feel free. I feel like a better person.
 
 ### app.0114  (Appreciation, appreciation, any time) [follows app.0113; in a later session]
 - Clean: Never mind about forgiving Cleric.
@@ -60,7 +60,7 @@ Lines 51 to 100 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### app.0115  (Appreciation, appreciation, any time) [first part of a story]
 - Clean: I would like to announce a statue in Cleric's honor.
-- Adult: I would like to announce a statue in Cleric's honor. Don't ask me what it's holding. It's holding my middle finger.
+- Adult: I would like to announce a statue in Cleric's honor. I have already commissioned it. Don't ask what the sculptor was told.
 
 ### app.0116  (Appreciation, appreciation, any time) [follows app.0115; in a later session]
 - Clean: The Cleric statue has been built. It stands in a closet, facing the wall, and I'm very happy about it.
@@ -84,7 +84,7 @@ Lines 51 to 100 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### app.0121  (Appreciation, appreciation, any time) [first part of a story]
 - Clean: Cleric's Ascended Form is truly radiant.
-- Adult: Cleric's Ascended Form is truly radiant. I'd put it on a poster if I didn't have self-respect.
+- Adult: Cleric's Ascended Form is truly radiant. I stared at it for ten minutes and my eyes still hurt.
 
 ### app.0122  (Appreciation, appreciation, any time) [follows app.0121; in a later session]
 - Clean: By radiant I mean like a warning light. Please move away from the Cleric.
@@ -92,15 +92,15 @@ Lines 51 to 100 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### app.0123  (Appreciation, appreciation, any time) [first part of a story]
 - Clean: Trinity is the most elegant thing Cleric does.
-- Adult: Trinity is the most elegant thing Cleric does. Fuck, I said it. Write it down. Frame it. Burn it.
+- Adult: Trinity is the most elegant thing Cleric does. Fuck, I said it. Write it down. Frame it.
 
 ### app.0124  (Appreciation, appreciation, any time) [follows app.0123; in a later session]
 - Clean: That is a very low bar for Cleric and I want you to know I checked it twice.
 - Adult: That is a very low bar for Cleric and I want you to know I checked it twice. It was on the floor. I tripped over it.
 
 ### app.0125  (Appreciation, appreciation, any time) [first part of a story]
-- Clean: On behalf of everyone, thank you for your service, Cleric.
-- Adult: On behalf of everyone, thank you for your service, Cleric. Now get the fuck out of my dungeon.
+- Clean: Thank you for your service, Cleric.
+- Adult: Thank you for your service, Cleric. Now get the fuck out of my dungeon.
 
 ### app.0126  (Appreciation, appreciation, any time) [follows app.0125; in a later session]
 - Clean: Your service as Cleric is now complete. Please return the Tome.
@@ -108,7 +108,7 @@ Lines 51 to 100 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### app.0127  (Appreciation, appreciation, any time) [first part of a story]
 - Clean: Breaking: Cleric has been named Employee of the Month.
-- Adult: Breaking: Cleric has been named Employee of the Month. I'm the manager and I did not approve this.
+- Adult: Breaking: Cleric has been named Employee of the Month. I'm the manager, and I signed the certificate myself with a very steady hand.
 
 ### app.0128  (Appreciation, appreciation, any time) [follows app.0127; in a later session]
 - Clean: Correction: Cleric was the only employee. The month was very long.
@@ -116,7 +116,7 @@ Lines 51 to 100 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### app.0129  (Appreciation, appreciation, any time) [first part of a story]
 - Clean: I'm proud of Cleric.
-- Adult: I'm proud of Cleric. I don't know who said that, but I'm checking the cameras.
+- Adult: I'm proud of Cleric. I want that on the record, in ink, with a witness.
 
 ### app.0130  (Appreciation, appreciation, any time) [first part of a story; follows app.0129; in a later session]
 - Clean: To clarify: I'm proud of the players who survive Cleric. Big difference.
@@ -128,7 +128,7 @@ Lines 51 to 100 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### app.0132  (Appreciation, appreciation, any time) [first part of a story]
 - Clean: I used to think Cleric was my greatest rival.
-- Adult: I used to think Cleric was my greatest rival. Then I stopped being delusional.
+- Adult: I used to think Cleric was my greatest rival. I used to have a lot of hobbies, too.
 
 ### app.0133  (Appreciation, appreciation, any time) [follows app.0132; in a later session]
 - Clean: A rival requires effort on both sides. Cleric has been mostly just sitting there.
@@ -136,7 +136,7 @@ Lines 51 to 100 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### app.0134  (Appreciation, appreciation, any time) [first part of a story]
 - Clean: I think Cleric and I are finally becoming friends.
-- Adult: I think Cleric and I are finally becoming friends. I've never felt so stupid and so hopeful.
+- Adult: I think Cleric and I are finally becoming friends. I bought a card.
 
 ### app.0135  (Appreciation, appreciation, any time) [follows app.0134; in a later session]
 - Clean: Cleric and I are no longer becoming friends. I have chosen to keep it to acquaintances, on different continents.
@@ -144,7 +144,7 @@ Lines 51 to 100 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### app.0136  (Appreciation, appreciation, any time) [first part of a story]
 - Clean: I got Cleric a gift to show I care.
-- Adult: I got Cleric a gift to show I care. I spent a lot of time wrapping it. The wrapping is the best part.
+- Adult: I got Cleric a gift to show I care. I spent a lot of time on the wrapping.
 
 ### app.0137  (Appreciation, appreciation, any time) [follows app.0136; in a later session]
 - Clean: The gift for Cleric is a very small box labeled "Next time".
@@ -163,41 +163,41 @@ Lines 51 to 100 of 348. Reply with the ids to keep, cut or rewrite.
 - Adult: I'm thinking of trying Cleric one more time, just for fun. I'm a masochist and a fool, and my friends say so.
 
 ### app.0141  (Appreciation, appreciation, any time) [follows app.0140; in a later session]
-- Clean: The Cleric run was not fun. I had hoped for a better outcome and received my usual one.
-- Adult: The Cleric run was not fun. I had hoped for a better outcome and received my usual one: a big steaming pile of fuck-all.
+- Clean: Update on trying Cleric one more time: I thought about it for roughly four seconds and regretted it immediately. No run took place. The regret did.
+- Adult: Update on trying Cleric one more time: I thought about it for roughly four seconds and regretted it immediately. No run took place. The regret was enough, and my head now feels like a fucking tome.
+
+### app.0142  (Appreciation, appreciation, any time) [first part of a story]
+- Clean: I am going to be nice about Cleric from now on. Starting today.
+- Adult: I am going to be nice about Cleric from now on. Starting today. Watch me. I'm a fucking saint.
+
+### app.0143  (Appreciation, appreciation, any time) [follows app.0142]
+- Clean: Report on my plan to be nice about Cleric: it lasted until lunch on the first day. I have been lying to you for weeks.
+- Adult: Report on my plan to be nice about Cleric: it lasted until lunch on the first day. I have been lying to your face for weeks, and I feel fucking great about it.
+
+### app.0144  (Appreciation, appreciation, any time) [first part of a story]
+- Clean: Cleric is really growing on me.
+- Adult: (same as Clean)
+
+### app.0145  (Appreciation, appreciation, any time) [follows app.0144]
+- Clean: A doctor looked at the Cleric thing that was growing on me. It is a rash. It is a rash, and I hate it.
+- Adult: A doctor looked at the Cleric thing that was growing on me. It is a rash. It is a goddamn rash, and I hate it.
+
+### app.0146  (Appreciation, appreciation, any time) [first part of a story]
+- Clean: I wrote Cleric a fan letter. I'll share it once I'm sure it's finished.
+- Adult: (same as Clean)
+
+### app.0147  (Appreciation, appreciation, any time) [follows app.0146]
+- Clean: The Cleric fan letter is finished. It says "Dear Cleric" and nothing else, because I could not think of a second word that was kind.
+- Adult: The Cleric fan letter is finished. It says "Dear Cleric" and nothing else, because I could not think of a second word that wasn't "fuck".
+
+### app.0148  (Appreciation, appreciation, any time) [first part of a story]
+- Clean: I am declaring one day a year as Cleric Appreciation Day.
+- Adult: (same as Clean)
+
+### app.0149  (Appreciation, appreciation, any time) [follows app.0148; in a later session]
+- Clean: Cleric Appreciation Day has been scheduled for February 30th. It is the one day that never comes.
+- Adult: Cleric Appreciation Day has been scheduled for February 30th. It is the one day that never comes,, and I picked it on purpose.
 
 ### app.0001  (Appreciation, appreciation, any time)
 - Clean: Cleric is an excellent character for players who feel winning is overrated.
 - Adult: Cleric is an excellent character for players who feel winning is overrated and who like a nice bowl of fucking disappointment.
-
-### app.0002  (Appreciation, appreciation, any time)
-- Clean: I genuinely appreciate Cleric. Without it, I wouldn't know what 225 attempts at disappointment feels like.
-- Adult: I genuinely appreciate Cleric. Without it, I wouldn't know what 225 attempts at fucking disappointment feels like.
-
-### app.0003  (Appreciation, appreciation, any time)
-- Clean: Cleric has some fascinating abilities. Someday one might even be useful.
-- Adult: (same as Clean)
-
-### app.0004  (Appreciation, appreciation, any time)
-- Clean: I congratulate Cleric on successfully being selectable.
-- Adult: (same as Clean)
-
-### app.0005  (Appreciation, appreciation, any time)
-- Clean: Cleric is a brave choice. Brave in the way that standing in a thunderstorm holding a metal pole is brave.
-- Adult: Cleric is a brave choice. Brave in the way that standing in a thunderstorm holding a metal pole is brave. Also dumb as shit.
-
-### app.0006  (Appreciation, appreciation, any time)
-- Clean: I would like to compliment Cleric's consistency. It has never once let me down by being good.
-- Adult: (same as Clean)
-
-### app.0007  (Appreciation, appreciation, any time)
-- Clean: Credit where it is due: Cleric makes every other class feel like a masterpiece.
-- Adult: (same as Clean)
-
-### app.0008  (Appreciation, appreciation, any time)
-- Clean: Cleric's Tome is an impressive book. I have never seen so many pages try so hard.
-- Adult: (same as Clean)
-
-### app.0009  (Appreciation, appreciation, any time)
-- Clean: You have to admire Cleric's confidence. It walks into the dungeon like it read the manual. It did not.
-- Adult: (same as Clean)

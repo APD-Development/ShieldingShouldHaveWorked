@@ -2,6 +2,38 @@
 
 Lines 101 to 150 of 348. Reply with the ids to keep, cut or rewrite.
 
+### app.0002  (Appreciation, appreciation, any time)
+- Clean: I genuinely appreciate Cleric. Without it, I wouldn't know what 225 attempts at disappointment feels like.
+- Adult: I genuinely appreciate Cleric. Without it, I wouldn't know what 225 attempts at fucking disappointment feels like.
+
+### app.0003  (Appreciation, appreciation, any time)
+- Clean: Cleric has some fascinating abilities. Someday one might even be useful.
+- Adult: (same as Clean)
+
+### app.0004  (Appreciation, appreciation, any time)
+- Clean: I congratulate Cleric on successfully being selectable.
+- Adult: (same as Clean)
+
+### app.0005  (Appreciation, appreciation, any time)
+- Clean: Cleric is a brave choice. Brave in the way that standing in a thunderstorm holding a metal pole is brave.
+- Adult: Cleric is a brave choice. Brave in the way that standing in a thunderstorm holding a metal pole is brave. Also dumb as shit.
+
+### app.0006  (Appreciation, appreciation, any time)
+- Clean: I would like to compliment Cleric's consistency. It has never once let me down by being good.
+- Adult: (same as Clean)
+
+### app.0007  (Appreciation, appreciation, any time)
+- Clean: Credit where it is due: Cleric makes every other class feel like a masterpiece.
+- Adult: (same as Clean)
+
+### app.0008  (Appreciation, appreciation, any time)
+- Clean: Cleric's Tome is an impressive book. I have never seen so many pages try so hard.
+- Adult: (same as Clean)
+
+### app.0009  (Appreciation, appreciation, any time)
+- Clean: You have to admire Cleric's confidence. It walks into the dungeon like it read the manual. It did not.
+- Adult: (same as Clean)
+
 ### app.0010  (Appreciation, appreciation, any time)
 - Clean: Someone had to design Cleric, and I'm grateful it was somebody else.
 - Adult: Someone had to design Cleric, and I'm so fucking grateful it was somebody else.
@@ -169,35 +201,3 @@ Lines 101 to 150 of 348. Reply with the ids to keep, cut or rewrite.
 ### app.0051  (Appreciation, appreciation, any time)
 - Clean: I'd say Cleric grows on you, but so does mold, and I have opinions about both.
 - Adult: I'd say Cleric grows on you, but so does mold, and I'd hit both with a shovel.
-
-### app.0052  (Appreciation, appreciation, any time)
-- Clean: It's hard to say what I love most about Cleric: its robe, its Tome, or the way I can leave both behind.
-- Adult: (same as Clean)
-
-### app.0053  (Appreciation, appreciation, any time)
-- Clean: Cleric did not choose to be like this, and I find that comforting in a way that I'm not proud of.
-- Adult: (same as Clean)
-
-### app.0054  (Appreciation, appreciation, any time)
-- Clean: It turns out the nicest thing about Cleric is the title screen, because it means you are not currently in a Cleric run.
-- Adult: (same as Clean)
-
-### app.0055  (Appreciation, appreciation, any time)
-- Clean: Cleric is a very warm character: warm like a handshake from someone who just washed their hands in lava.
-- Adult: Cleric is a very warm character: warm like a handshake from someone who just washed their hands in lava, the psychopath.
-
-### app.0056  (Appreciation, appreciation, any time)
-- Clean: Applause for Cleric, the first character I think of when asked to name a character I'd like to apologize to.
-- Adult: Applause for Cleric, the first character I think of when asked to name a character I'd like to apologize to. Then I remember and un-apologize.
-
-### app.0057  (Appreciation, appreciation, any time)
-- Clean: I wanted to say something kind about Cleric. Then I remembered I make the rules about what is kind.
-- Adult: (same as Clean)
-
-### app.0058  (Appreciation, appreciation, any time)
-- Clean: Cleric is a perfect fit for any player looking for a challenge, a story, and a reason to call a friend.
-- Adult: (same as Clean)
-
-### app.0059  (Appreciation, appreciation, any time)
-- Clean: Honestly, props to Cleric for being a character at all.
-- Adult: (same as Clean)
