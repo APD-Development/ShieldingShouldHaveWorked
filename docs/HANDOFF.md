@@ -9,7 +9,7 @@ The long project handoff is `docs/APD-HANDOFF.md`; the canonical plan is `APD_Ca
 - Unattended: no product decisions (record them under Open questions and move to a task that does not need them). Never force-push, change signing keys, or touch anything outside the current task. Never lower testing or code quality to save usage. If a step cannot be finished properly, stop at a clean commit.
 
 ## Limit info
-- Owner says the 5-hour usage window resets at 1 am (owner's time zone not stated; assume the 5 h 10 min rule unless a UTC reset time is shown).
+- Owner corrected: the 5-hour usage window resets about 2 h 30 min after 02:31 UTC on 2026-10-08, i.e. about 05:01 UTC. Resume is scheduled for reset + 10 min = 05:12 UTC (trigger trig_014mNf9ethg5uj2auYNGg3mP). The earlier 07:42 UTC resume was cancelled.
 
 ## Branches
 - Work on `claude/adhd-pixel-dungeon-setup-iszc3v`. `main` only gets a sha whose core tests and API 26 + 34 device tests are green (each main push builds `apd-build-N`).
