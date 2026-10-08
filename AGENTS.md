@@ -7,6 +7,7 @@ APD is a private fork of Shattered Pixel Dungeon 4.0.x (upstream licence/attribu
 - `main` holds only verified builds (up to apd-build-80) plus `.github/workflows/private-test-apk.yml`. Never merge unfinished code to main to get a test APK.
 
 ## Read first (in this order)
+0. `docs/WORK-COMPLETED-LEDGER.md`: everything already DONE (do not redo) vs NOT done. Check it before starting any task.
 1. `docs/KNOWN-ISSUES-AND-SOURCE-GUIDE.md`: current alpha configuration, known bugs, incomplete features, where things are.
 2. `docs/HANDOFF.md`: owner decisions, release process, history. (Written for Claude; ignore its mentions of an "hourly resume trigger", Claude tools and sandboxes. The decisions in it still hold.)
 3. `docs/APD-FIX-LOG-2026-10-08.md`: each recent fix with its root cause.
