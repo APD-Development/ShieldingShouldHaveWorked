@@ -42,6 +42,8 @@ The long project handoff is `docs/APD-HANDOFF.md`; the canonical plan is `APD_Ca
 ## Backlog additions
 - **UIMSD Demo Unlock** (owner request): fully written down in docs/APD-UIMSD-UNIVERSAL.md ("UIMSD Demo Unlock"). Lower priority than backend and pending tests. Note: the 10-genuine-run unlock gate does not exist yet and must be built as part of it; the demo generator exists but is INDEV-only and larger than 10 runs.
 
+- **Developer's Vendetta Against Cleric** (owner request): architecture + sample lines proposed in docs/APD-VENDETTA.md, AWAITING OWNER APPROVAL. Do not build the line library or popup runtime until approved.
+
 ## Decisions already made (do not ask again)
 - Local-first; backend owns shared authoritative state; raw UIMSD history stays local. Provider-neutral interfaces; the provider choice is NOT a blocker. No secret in the APK; gameplay cannot create developer grants. No public deployment, spending, credentials, hidden analytics or private history uploads.
 - Clans are NOT approved: only generic reusable group/role foundations.
