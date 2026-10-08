@@ -10,11 +10,11 @@ android {
     //APD: a PRIVATE TEST BUILD (-PapdTestBuild) adds one generated asset, apd/features.txt, that turns the owner-approved test features on
     //(see core/.../apd/ApdFeatures.java). The normal build has no such file, so every one of them stays off.
     if (project.hasProperty('apdTestBuild')) {
-        def apdFeaturesDir = new File(buildDir, 'apdTestAssets')
+        def apdFeaturesDir = project.layout.buildDirectory.dir('apdTestAssets').get().asFile
         def apdFeaturesFile = new File(apdFeaturesDir, 'apd/features.txt')
         apdFeaturesFile.parentFile.mkdirs()
         apdFeaturesFile.text = "testBuild\ngrudge\ndemoUnlock\nclericPlayable\n"
-        sourceSets.main.assets.srcDirs += [apdFeaturesDir]
+        sourceSets.main.assets.srcDir(apdFeaturesDir)
     }
 
     androidResources {
