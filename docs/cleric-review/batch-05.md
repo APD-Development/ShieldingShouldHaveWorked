@@ -3,12 +3,12 @@
 Lines 201 to 250 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### fw.0012  (Hatred, fourth_wall, any time)
-- Clean: You are playing a game made by someone who has strong opinions about Cleric and no ability to keep them to himself.
-- Adult: You are playing a game made by someone who has strong opinions about Cleric and no goddamn ability to keep them to himself.
+- Clean: You are playing a game made by me, a person with strong opinions about Cleric and no ability to keep them to myself.
+- Adult: You are playing a game made by me, a person with strong opinions about Cleric and the self-control of a toddler near a fire alarm.
 
 ### fw.0013  (Hatred, fourth_wall, any time)
 - Clean: In a world full of important problems, I chose Cleric. Look at me. I am the problem.
-- Adult: In a world full of important problems, I chose fucking Cleric. Look at me. I am the problem.
+- Adult: In a world full of important problems, I chose Cleric. I could be curing something. Instead I'm writing this.
 
 ### fw.0014  (Hatred, fourth_wall, any time)
 - Clean: I know this popup has nothing to do with the run. I know. I know. Cleric.
@@ -16,11 +16,11 @@ Lines 201 to 250 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### fw.0015  (Hatred, fourth_wall, any time)
 - Clean: Right now somewhere a QA tester is wondering why the game contains a recurring joke about Cleric. That tester is me, and I have no answer.
-- Adult: Right now somewhere a QA tester is wondering why the game contains a recurring joke about Cleric. That tester is me, and I have no fucking answer.
+- Adult: Right now somewhere a QA tester is wondering why the game contains a recurring joke about Cleric. That tester is me, and I'm also the one who filed the bug report: "too much Cleric". Closed as intended.
 
 ### fw.0018  (Hatred, fourth_wall, any time)
 - Clean: If you are looking for the part of the game where I stop being mad about Cleric, I have some bad news.
-- Adult: If you are looking for the part of the game where I stop being mad about Cleric, I have some bad news, and the bad news is fuck Cleric.
+- Adult: If you are looking for the part of the game where I stop being mad about Cleric, I have some bad news, and the bad news is the rest of my life.
 
 ### fw.0020  (Hatred, fourth_wall, any time)
 - Clean: Hello from the other side of the screen. I have never been more upset about a character class than I am about Cleric, and I am telling you in a game.
@@ -36,15 +36,15 @@ Lines 201 to 250 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### fw.0026  (Hatred, fourth_wall, any time)
 - Clean: It took me 225 attempts to ascend with Cleric. This popup is what happens when a person survives that and has no one to tell.
-- Adult: It took me 225 attempts to ascend with Cleric. This popup is what happens when a person survives that shit and has no one to tell.
+- Adult: It took me 225 attempts to ascend with Cleric. This popup is what happens when a person survives that and has absolutely no one to tell, so I told a phone.
 
 ### fw.0027  (Hatred, fourth_wall, any time)
 - Clean: I made this game partly out of love and partly out of a deep need to make my feelings about Cleric someone else's problem.
-- Adult: I made this game partly out of love and partly out of a deep fucking need to make my feelings about Cleric someone else's problem.
+- Adult: I made this game partly out of love and partly so I could make my feelings about Cleric a problem for strangers.
 
 ### fw.0029  (Hatred, fourth_wall, any time)
 - Clean: Do I understand that this is a lot of effort to spend insulting a fictional priest? Yes. Will I stop? Absolutely not.
-- Adult: Do I understand that this is a lot of effort to spend insulting a fictional priest? Yes. Will I stop? Absolutely fucking not.
+- Adult: Do I understand that this is a lot of effort to spend insulting a fictional priest? Yes. Will I stop? Fuck no. I'm going to write a sequel.
 
 ### fw.0030  (Hatred, fourth_wall, any time)
 - Clean: Dear player: this game is about dungeons, loot, and death. It is also about me and Cleric, but only in a small, unhealthy way.
@@ -96,7 +96,7 @@ Lines 201 to 250 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### clr.death.0002  (Hatred, death, only when lastHero=CLERIC & lastOutcome=DIED)
 - Clean: Another Cleric run, another death. At least it was consistent.
-- Adult: Another Cleric run, another death. At least it was consistent as fuck.
+- Adult: Another Cleric run, another death. Consistency is a virtue, and it is the only one Cleric has.
 
 ### clr.death.0003  (Hatred, death, only when lastHero=CLERIC & lastOutcome=DIED & killer!=nothing)
 - Clean: Cleric was killed by {killer}. The Tome was right there. Reading is hard.
@@ -104,15 +104,15 @@ Lines 201 to 250 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### clr.death.0004  (Hatred, death, only when lastHero=CLERIC & lastOutcome=DIED & depth>=1)
 - Clean: Depth {depth}. Not a record, not a disaster, just Cleric.
-- Adult: Depth {depth}. Not a record, not a disaster, just fucking Cleric.
+- Adult: Depth {depth}. Not a record, not a disaster, just the usual Cleric shit-show.
 
 ### clr.death.0007  (Hatred, death, only when lastHero=CLERIC & lastOutcome=DIED & killer!=nothing)
 - Clean: A {killer} did that. A {killer}. To Cleric. I don't know whether to laugh or to buy it a drink.
-- Adult: A {killer} did that. A {killer}. To Cleric. I don't know whether to laugh or to buy the bastard a drink.
+- Adult: A {killer} did that. A {killer}. To Cleric. I don't know whether to laugh or to send the {killer} a fruit basket.
 
 ### clr.death.0009  (Hatred, death, only when lastHero=CLERIC & lastOutcome=DIED & depth<=3)
 - Clean: Cleric died on depth {depth}. That is not a run. That is a rumor.
-- Adult: Cleric died on depth {depth}. That is not a run. That is a goddamn rumor.
+- Adult: Cleric died on depth {depth}. That is not a run. That is a rumor with a body count of one.
 
 ### clr.death.0010  (Hatred, death, only when lastHero=CLERIC & lastOutcome=DIED & depth>=10)
 - Clean: Cleric made it to depth {depth} and then died. I want you to know that I felt that in my teeth.
@@ -136,7 +136,7 @@ Lines 201 to 250 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### clr.death.0021  (Hatred, death, only when lastHero=CLERIC & lastOutcome=DIED & killer!=nothing)
 - Clean: Cleric versus {killer}: a story as old as time, and by that I mean the last five minutes.
-- Adult: Cleric versus {killer}: a story as old as time, and by that I mean the last five fucking minutes.
+- Adult: Cleric versus {killer}: a story as old as time, and by that I mean it was over before I finished my coffee.
 
 ### clr.death.0023  (Hatred, death, only when lastHero=CLERIC & lastOutcome=DIED & depth>=1)
 - Clean: Depth {depth} is a nice place to die. Quiet, scenic, and full of reminders that Cleric does not belong.
@@ -144,11 +144,11 @@ Lines 201 to 250 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### oth.death.0001  (Hatred, death, only when lastHero!=CLERIC & lastOutcome=DIED)
 - Clean: You died, but take comfort in the fact that it was not as embarrassing as dying as Cleric.
-- Adult: You died, but take comfort in the fact that it was not as embarrassing as dying as fucking Cleric.
+- Adult: You died, but take comfort in the fact that it was not as embarrassing as dying as Cleric: book in one hand, prayer on your lips, rat on your face.
 
 ### oth.death.0002  (Hatred, death, only when lastHero!=CLERIC & lastOutcome=DIED)
 - Clean: You died as {lastHeroName}. Cleric would have died sooner and complained about it.
-- Adult: You died as {lastHeroName}. Cleric would have died sooner and been a whiny little shit about it.
+- Adult: You died as {lastHeroName}. Cleric would have died sooner, and the death screen would have apologized.
 
 ### oth.death.0004  (Hatred, death, only when lastHero!=CLERIC & lastOutcome=DIED & depth>=1)
 - Clean: You made it to depth {depth}. That is further than a Cleric has made it in my mind, which stopped at disappointment.
@@ -164,7 +164,7 @@ Lines 201 to 250 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### clr.win.0002  (Hatred, victory, only when lastHero=CLERIC & lastOutcome=WON)
 - Clean: You won as Cleric. Congratulations, you beautiful masochist.
-- Adult: You won as Cleric. Congratulations, you beautiful fucking masochist.
+- Adult: You won as Cleric. Congratulations. I need to sit on the floor for a bit and re-evaluate my entire life.
 
 ### clr.win.0004  (Hatred, victory, only when lastHero=CLERIC & lastOutcome=WON)
 - Clean: You did it with Cleric. I am proud, confused, and a little offended on behalf of every other class.
@@ -172,11 +172,11 @@ Lines 201 to 250 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### clr.win.0006  (Hatred, victory, only when lastHero=CLERIC & lastOutcome=WON & clericWins>=2)
 - Clean: That is {clericWins} Cleric wins on record. I am starting to think I might be the problem. I am also still angry.
-- Adult: That is {clericWins} Cleric wins on record. I am starting to think I might be the problem. I am also still fucking angry.
+- Adult: That is {clericWins} Cleric wins on record. I am starting to think I might be the problem. Fuck. I might be the problem.
 
 ### clr.win.0009  (Hatred, victory, only when lastHero=CLERIC & lastOutcome=WON)
 - Clean: Please enjoy this victory. I will be in the corner, quietly rewriting my opinion of Cleric from "terrible" to "annoyingly capable".
-- Adult: Please enjoy this victory. I will be in the corner, quietly rewriting my opinion of Cleric from "terrible" to "annoyingly fucking capable".
+- Adult: Please enjoy this victory. I'll be in the corner, quietly rewriting my opinion of Cleric from "terrible" to "annoyingly capable", and crying a little.
 
 ### clr.win.0010  (Hatred, victory, only when lastHero=CLERIC & lastOutcome=WON)
 - Clean: You beat the dungeon as Cleric. I will not be congratulating the Tome. The Tome knows what it did.
@@ -184,11 +184,11 @@ Lines 201 to 250 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### clr.win.0012  (Hatred, victory, only when lastHero=CLERIC & lastOutcome=WON)
 - Clean: You ascended with Cleric. I will never forgive you for making it look possible.
-- Adult: You ascended with Cleric. I will never forgive you for making it look fucking possible.
+- Adult: You ascended with Cleric. I will never forgive you for making it look possible. I put the work in. I bled for this.
 
 ### clr.win.0014  (Hatred, victory, only when lastHero=CLERIC & lastOutcome=WON)
 - Clean: Well done. I mean it. I hate that I mean it, because it was Cleric.
-- Adult: Well done. I mean it. I fucking hate that I mean it, because it was Cleric.
+- Adult: Well done. I mean it. I hate that I mean it, because it was Cleric. Somebody fetch me a bucket.
 
 ### oth.win.0001  (Hatred, victory, only when lastHero!=CLERIC & lastOutcome=WON)
 - Clean: You won as {lastHeroName}. This is the best time to remember that Cleric exists. You're welcome.
@@ -196,7 +196,7 @@ Lines 201 to 250 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### oth.win.0002  (Hatred, victory, only when lastHero!=CLERIC & lastOutcome=WON)
 - Clean: A fine victory. Cleric would have celebrated by healing a wall.
-- Adult: A fine victory. Cleric would have celebrated by healing a fucking wall.
+- Adult: A fine victory. Cleric would have celebrated by healing a wall and calling it a night.
 
 ### oth.win.0003  (Hatred, victory, only when lastHero!=CLERIC & lastOutcome=WON)
 - Clean: Congratulations on the win. No Cleric was involved, and that is why it worked.

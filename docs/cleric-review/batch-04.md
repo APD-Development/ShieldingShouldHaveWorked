@@ -168,7 +168,7 @@ Lines 151 to 200 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### fw.0002  (Hatred, fourth_wall, any time)
 - Clean: Yes, I spent real development time on a message about Cleric. No, I do not regret it. Yes, I need a hobby.
-- Adult: Yes, I spent real development time on a message about Cleric. No, I do not regret it. Yes, I need a fucking hobby.
+- Adult: Yes, I spent real development time on a message about Cleric. No, I do not regret it. Yes, I need a hobby, a therapist, and a lawyer, in that order.
 
 ### fw.0003  (Hatred, fourth_wall, any time)
 - Clean: If this popup is annoying, there is a switch for it in APD Settings. Cleric has no such switch, which is exactly the problem.
@@ -176,15 +176,15 @@ Lines 151 to 200 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### fw.0004  (Hatred, fourth_wall, any time)
 - Clean: You are reading a message that someone had to type, test, and ship. All of it was about Cleric. Think about that.
-- Adult: You are reading a message that someone had to type, test, and ship. All of it was about fucking Cleric. Think about that.
+- Adult: You are reading a message that someone had to type, test, and ship. All of it was about Cleric. I did that. On purpose. Sober.
 
 ### fw.0005  (Hatred, fourth_wall, any time)
 - Clean: I can hear you thinking "does this guy have any other hobbies". The answer is, not at the moment, because Cleric.
-- Adult: I can hear you thinking "does this guy have any other hobbies". The answer is, not at the moment, because fucking Cleric.
+- Adult: I can hear you thinking "does this guy have any other hobbies". I did. Then Cleric happened, and now I have a thirst for revenge and no weekends.
 
 ### fw.0006  (Hatred, fourth_wall, any time)
 - Clean: Technically, this popup is a feature. Practically, it is a cry for help. Officially, it is about Cleric.
-- Adult: Technically, this popup is a feature. Practically, it is a cry for help. Officially, it is about fucking Cleric.
+- Adult: Technically, this popup is a feature. Practically, it is a cry for help. Officially, it is a restraining order against Cleric that I wrote myself.
 
 ### fw.0007  (Hatred, fourth_wall, any time)
 - Clean: Fact check: I wrote this message on purpose, with a clear head, and with my full legal name on the project. I regret nothing about Cleric.
@@ -192,11 +192,11 @@ Lines 151 to 200 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### fw.0008  (Hatred, fourth_wall, any time)
 - Clean: This message was written by a human being who is not okay about Cleric. Any resemblance to a rational complaint is accidental.
-- Adult: This message was written by a human being who is not okay about Cleric. Any resemblance to a rational complaint is a fucking accident.
+- Adult: This message was written by a human being who is not okay about Cleric. Any resemblance to a rational complaint is coincidental. The swearing is intentional.
 
 ### fw.0009  (Hatred, fourth_wall, any time)
 - Clean: Congratulations, you have found one of the Cleric complaints. There are more. You will meet them slowly, over time, like a recurring rash.
-- Adult: Congratulations, you have found one of the Cleric complaints. There are more. You will meet them slowly, over time, like a recurring fucking rash.
+- Adult: Congratulations, you have found one of the Cleric complaints. There are more. You will meet them slowly, over time, like a recurring rash. A rash with a Tome.
 
 ### fw.0010  (Hatred, fourth_wall, any time)
 - Clean: Imagine being so sure of yourself that you write a whole system just to keep complaining about Cleric. I am so sure of myself.
