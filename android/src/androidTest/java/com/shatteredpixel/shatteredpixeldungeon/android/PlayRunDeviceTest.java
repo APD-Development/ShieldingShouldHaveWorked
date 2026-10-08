@@ -175,4 +175,60 @@ public class PlayRunDeviceTest {
 			SPDSettings.intro(introWas);
 		}
 	}
+
+	//the other way a run ends: winning. The win must be recorded as a win and the log sealed, like a death.
+	@Test
+	public void aWonRunIsRecordedAsWonAndSealed() throws Exception {
+		boolean recordingWas = SPDSettings.apdRecording();
+		boolean introWas = SPDSettings.intro();
+		final int slot = 2;
+		try (ActivityScenario<AndroidLauncher> scenario = ActivityScenario.launch(AndroidLauncher.class)){
+			long end = System.currentTimeMillis() + 120000;
+			while ((Gdx.app == null || Gdx.files == null || Game.scene() == null) && System.currentTimeMillis() < end) Thread.sleep(250);
+			assertNotNull("the game did not start", Game.scene());
+			long titleBy = System.currentTimeMillis() + 60000;
+			while (!(Game.scene() instanceof TitleScene) && System.currentTimeMillis() < titleBy) Thread.sleep(250);
+			Thread.sleep(2500);
+			SPDSettings.apdRecording(true);
+			SPDSettings.intro(false);
+			onRender(new Runnable(){
+				public void run(){
+					GamesInProgress.curSlot = slot;
+					GamesInProgress.selectedClass = HeroClass.MAGE;
+					Dungeon.hero = null;
+					Dungeon.daily = Dungeon.dailyReplay = false;
+					Dungeon.initSeed();
+					ActionIndicator.clearAction();
+					InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+					Game.switchScene(InterlevelScene.class);
+				}
+			});
+			waitUntil("the first floor", new Callable<Boolean>(){
+				public Boolean call(){ return Game.scene() instanceof GameScene && Dungeon.hero != null && Dungeon.hero.ready; } }, 150000);
+			assertEquals(HeroClass.MAGE, Dungeon.hero.heroClass);
+			final String logPath = ApdRecorder.status().logPath;
+			assertNotNull(logPath);
+			for (int i = 0; i < 5; i++){
+				waitUntil("the hero to be ready", new Callable<Boolean>(){ public Boolean call(){ return Dungeon.hero.ready; } }, 30000);
+				onRender(new Runnable(){ public void run(){ Dungeon.hero.rest(false); } });
+				Thread.sleep(120);
+			}
+			waitUntil("the hero to be ready", new Callable<Boolean>(){ public Boolean call(){ return Dungeon.hero.ready; } }, 30000);
+			onRender(new Runnable(){ public void run(){ Dungeon.win(com.shatteredpixel.shatteredpixeldungeon.items.Amulet.class); } });
+			Thread.sleep(1500);
+			RunFacts done = factsOfLog(logPath);
+			assertEquals("the run was won", LifecycleEvents.OUTCOME_WON, done.numOr(FactKeys.OUTCOME, -1));
+			assertEquals("sealed", done.textOr(FactKeys.STATUS, "?"));
+			assertEquals("MAGE", done.textOr(FactKeys.HERO_CLASS, "?"));
+			Log.w(TAG, "the run was won and recorded as won");
+		} finally {
+			try {
+				GamesInProgress.delete(slot);
+				FileUtils.deleteDir(GamesInProgress.gameFolder(slot));
+			} catch (Throwable ignored){
+			}
+			SPDSettings.apdRecording(recordingWas);
+			SPDSettings.intro(introWas);
+		}
+	}
 }
