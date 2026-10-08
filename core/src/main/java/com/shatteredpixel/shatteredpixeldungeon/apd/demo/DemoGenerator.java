@@ -108,6 +108,15 @@ public final class DemoGenerator {
 		return write(root, current, now, RUNS);
 	}
 
+	public static final int UNLOCK_RUNS = 10;
+
+	//The ten demo runs that unlock UIMSD ("I LIKE CONFUSION"): the same generator, the same demo folder and the same protections as demo data,
+	//so they can never be mistaken for the player's own history. Release builds use it too.
+	public static int generateUnlockSet( File root, Ruleset current, long now ) throws IOException {
+		if (root == null || !DemoData.DIR_NAME.equals(root.getName())) throw new IOException("not a demo folder: " + root);
+		return write(root, current, now, UNLOCK_RUNS);
+	}
+
 	//The small made-up history the UIMSD tutorial uses when the player has too little of their own: the same generator and the same
 	//protections as demo data (its own marked folder, "demo-" logs, never recorded into, exported, imported or counted as history),
 	//in a folder of its own so it never touches the demo data a development build may be showing. Release builds use it too.

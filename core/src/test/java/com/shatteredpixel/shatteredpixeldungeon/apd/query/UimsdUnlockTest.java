@@ -1,0 +1,229 @@
+package com.shatteredpixel.shatteredpixeldungeon.apd.query;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import com.shatteredpixel.shatteredpixeldungeon.apd.HeadlessTestSupport;
+import com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge.SubmissionQueue;
+import com.shatteredpixel.shatteredpixeldungeon.apd.demo.DemoData;
+import com.shatteredpixel.shatteredpixeldungeon.apd.demo.DemoGenerator;
+import com.shatteredpixel.shatteredpixeldungeon.apd.demo.UimsdUnlock;
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder;
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.Ruleset;
+import com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKeys;
+import com.shatteredpixel.shatteredpixeldungeon.apd.stats.ItemEvents;
+import com.shatteredpixel.shatteredpixeldungeon.apd.stats.LifecycleEvents;
+import com.shatteredpixel.shatteredpixeldungeon.apd.stats.TelemetryVersion;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
+
+import java.io.File;
+import java.nio.file.Files;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+
+//UIMSD Demo Unlock: the demo runs are marked and kept apart, the unlock is permanent, the button is used up for good, deleting demo data is safe.
+public class UimsdUnlockTest {
+
+	private static final Ruleset RULES = Ruleset.of(30, 0);
+	private static final TelemetryVersion V = TelemetryVersion.CURRENT;
+	private static final long NOW = 1_800_000_000_000L;
+
+	@Rule
+	public TemporaryFolder tmp = new TemporaryFolder();
+
+	private File parent, realRoot, demoRoot;
+
+	//the two flags as the game keeps them: they survive "restarts" because tests copy them into a new object
+	private static final class MemFlags implements UimsdUnlock.Flags {
+		boolean unlocked, demoUsed;
+		public boolean unlocked(){ return unlocked; }
+		public void setUnlocked(){ unlocked = true; }
+		public boolean demoUsed(){ return demoUsed; }
+		public void setDemoUsed(){ demoUsed = true; }
+		MemFlags restart(){
+			MemFlags f = new MemFlags();
+			f.unlocked = unlocked;
+			f.demoUsed = demoUsed;
+			return f;
+		}
+	}
+
+	@Before
+	public void setUp() throws Exception {
+		HeadlessTestSupport.start();
+		parent = tmp.newFolder("data");
+		realRoot = new File(parent, "apd");
+		demoRoot = DemoData.demoRootFor(realRoot);
+	}
+
+	@After
+	public void tearDown(){
+		ApdRecorder.reset();
+	}
+
+	private void genuineRun( int n, boolean finished ){
+		SyntheticLog l = new SyntheticLog(realRoot, "real-" + n, V, 1000L * n).start("real-run-" + n, 0, "WARRIOR", RULES.id, 0, 30, false).enter(1)
+				.acquired("axe" + n, "axe", ItemEvents.CAT_WEAPON, false, 0);
+		if (finished) l.end(LifecycleEvents.OUTCOME_DIED, "Rat", 1, 1, 10);
+		l.close(finished);
+	}
+
+	private static Map<String, String> snapshot( File dir ) throws Exception {
+		Map<String, String> m = new TreeMap<>();
+		walk(dir, dir, m);
+		return m;
+	}
+
+	private static void walk( File base, File f, Map<String, String> m ) throws Exception {
+		File[] kids = f.listFiles();
+		if (kids == null) return;
+		for (File k : kids){
+			if (k.isDirectory()) walk(base, k, m);
+			else m.put(base.toURI().relativize(k.toURI()).getPath(), k.length() + ":" + java.util.Arrays.hashCode(Files.readAllBytes(k.toPath())));
+		}
+	}
+
+	// ---- the ten demo runs ----
+
+	@Test
+	public void theTenDemoRunsAreVariedMarkedAndTheSameEveryTime() throws Exception {
+		assertEquals(10, DemoGenerator.generateUnlockSet(demoRoot, RULES, NOW));
+		Catalog cat = new DatasetStore(demoRoot).load();
+		assertTrue("every row is flagged as made-up data", cat.synthetic);
+		assertTrue(DemoData.isSyntheticRoot(demoRoot));
+		Dataset runs = cat.dataset(Datasets.RUNS);
+		assertEquals(10, runs.rows.size());
+		Set<String> classes = new HashSet<>();
+		Set<Long> outcomes = new HashSet<>();
+		int cClass = runs.def.indexOf(FactKeys.HERO_CLASS), cOutcome = runs.def.indexOf(FactKeys.OUTCOME);
+		int finished = 0;
+		for (Row r : runs.rows){
+			if (r.finished){
+				finished++;
+				outcomes.add(r.num(cOutcome));
+			}
+			classes.add(r.text(cClass));
+		}
+		//nine finished and one still going, so the rules that hide a running game's secrets have something to show
+		assertEquals(9, finished);
+		assertTrue("several hero classes: " + classes, classes.size() >= 3);
+		assertTrue("both wins and losses: " + outcomes, outcomes.size() >= 2);
+		for (File f : new File(demoRoot, "runs").listFiles()){
+			if (f.getName().endsWith(".apdlog")) assertTrue("every log is named as demo data", f.getName().startsWith(DemoData.RUN_PREFIX));
+		}
+		//the logs are the history (the folder also holds rebuildable caches that the catalog load wrote)
+		Map<String, String> first = snapshot(new File(demoRoot, "runs"));
+		assertEquals(10, DemoGenerator.generateUnlockSet(demoRoot, RULES, NOW));
+		assertEquals("same input, same demo history", first, snapshot(new File(demoRoot, "runs")));
+	}
+
+	@Test
+	public void demoRunsNeverCountAsGenuineAndNeverReachTheRealCatalogOrTheSubmissionQueue() throws Exception {
+		genuineRun(1, true);
+		genuineRun(2, false);
+		DemoGenerator.generateUnlockSet(demoRoot, RULES, NOW);
+		assertEquals("only the one finished genuine run counts", 1, UimsdUnlock.genuineRuns(realRoot, 100));
+		Catalog real = new DatasetStore(realRoot).load();
+		assertFalse(real.synthetic);
+		assertEquals("the real catalog holds the player's own runs only", 2, real.dataset(Datasets.RUNS).rows.size());
+		//a demo run cannot be queued for submission, from either folder
+		File someDemoLog = new File(demoRoot, "runs").listFiles()[0];
+		String demoId = someDemoLog.getName().replace(".apdlog", "");
+		assertEquals(SubmissionQueue.Result.REFUSED, SubmissionQueue.enqueueRun(demoRoot, demoId, "b", 1).result);
+		assertEquals(0, SubmissionQueue.pending(demoRoot));
+		assertEquals(SubmissionQueue.Result.REFUSED, SubmissionQueue.enqueueRun(realRoot, demoId, "b", 1).result);
+	}
+
+	// ---- the unlock ----
+
+	@Test
+	public void theDemoRouteUnlocksOnceAndTheButtonNeverComesBack() throws Exception {
+		MemFlags flags = new MemFlags();
+		assertFalse("locked at first", UimsdUnlock.isUnlocked(flags, realRoot, true));
+		assertTrue(UimsdUnlock.demoButtonAvailable(flags, realRoot, true));
+		assertEquals(UimsdUnlock.Generated.DONE, UimsdUnlock.generateDemo(flags, realRoot, RULES, NOW, true));
+		assertTrue(UimsdUnlock.isUnlocked(flags, realRoot, true));
+		assertFalse("the button is gone", UimsdUnlock.demoButtonAvailable(flags, realRoot, true));
+		assertEquals("and cannot be used a second time", UimsdUnlock.Generated.NOT_AVAILABLE, UimsdUnlock.generateDemo(flags, realRoot, RULES, NOW, true));
+
+		//delete every demo run: UIMSD stays open and the button stays gone
+		assertTrue(UimsdUnlock.deleteDemoData(realRoot));
+		assertFalse(demoRoot.exists());
+		assertTrue(UimsdUnlock.isUnlocked(flags, realRoot, true));
+		assertFalse(UimsdUnlock.demoButtonAvailable(flags, realRoot, true));
+
+		//a restart: the flags come back from storage, the demo data is not needed for either
+		MemFlags after = flags.restart();
+		assertTrue(UimsdUnlock.isUnlocked(after, realRoot, true));
+		assertFalse(UimsdUnlock.demoButtonAvailable(after, realRoot, true));
+		assertEquals(0, UimsdUnlock.genuineRuns(realRoot, 100));
+	}
+
+	@Test
+	public void tenGenuineRunsUnlockForGoodAndDeletingThemDoesNotLockAgain() throws Exception {
+		MemFlags flags = new MemFlags();
+		for (int i = 1; i <= 9; i++) genuineRun(i, true);
+		assertFalse("nine are not enough", UimsdUnlock.isUnlocked(flags, realRoot, true));
+		assertTrue(UimsdUnlock.demoButtonAvailable(flags, realRoot, true));
+		genuineRun(10, false);
+		assertFalse("an unfinished run is not a completed one", UimsdUnlock.isUnlocked(flags, realRoot, true));
+		genuineRun(11, true);
+		assertTrue("ten finished runs open it", UimsdUnlock.isUnlocked(flags, realRoot, true));
+		assertTrue("and that is remembered", flags.unlocked);
+		assertFalse("the demo button is not offered once it is open", UimsdUnlock.demoButtonAvailable(flags, realRoot, true));
+		File[] logs = new File(realRoot, "runs").listFiles();
+		for (File f : logs) f.delete();
+		assertTrue("deleting the runs does not lock it again", UimsdUnlock.isUnlocked(flags.restart(), realRoot, true));
+	}
+
+	@Test
+	public void withTheGateOffEverythingStaysOpenAndNoButtonIsShown() throws Exception {
+		MemFlags flags = new MemFlags();
+		assertTrue(UimsdUnlock.isUnlocked(flags, realRoot, false));
+		assertFalse(UimsdUnlock.demoButtonAvailable(flags, realRoot, false));
+		assertEquals(UimsdUnlock.Generated.NOT_AVAILABLE, UimsdUnlock.generateDemo(flags, realRoot, RULES, NOW, false));
+		assertFalse("nothing was recorded", flags.unlocked || flags.demoUsed);
+		assertFalse(UimsdUnlock.ENFORCED);
+	}
+
+	@Test
+	public void aFailedGenerationChangesNothingAndNeverTouchesAForeignFolder() throws Exception {
+		//something that is not demo data is sitting where the demo folder would go
+		assertTrue(demoRoot.mkdirs());
+		File mine = new File(demoRoot, "important.txt");
+		Files.write(mine.toPath(), "keep".getBytes());
+		MemFlags flags = new MemFlags();
+		assertEquals(UimsdUnlock.Generated.FAILED, UimsdUnlock.generateDemo(flags, realRoot, RULES, NOW, true));
+		assertFalse("still locked, button still there", flags.unlocked || flags.demoUsed);
+		assertTrue(UimsdUnlock.demoButtonAvailable(flags, realRoot, true));
+		assertTrue("the foreign file is untouched", mine.isFile());
+	}
+
+	// ---- deleting is safe ----
+
+	@Test
+	public void deletingDemoDataLeavesGenuineHistoryAndSavesAlone() throws Exception {
+		genuineRun(1, true);
+		genuineRun(2, true);
+		File saves = new File(parent, "game1");
+		assertTrue(saves.mkdirs());
+		Files.write(new File(saves, "game.dat").toPath(), "an active save".getBytes());
+		DemoGenerator.generateUnlockSet(demoRoot, RULES, NOW);
+		Map<String, String> realBefore = snapshot(realRoot), savesBefore = snapshot(saves);
+		assertTrue(UimsdUnlock.deleteDemoData(realRoot));
+		assertFalse(demoRoot.exists());
+		assertEquals(realBefore, snapshot(realRoot));
+		assertEquals(savesBefore, snapshot(saves));
+		assertEquals("a second delete with nothing there is fine", true, UimsdUnlock.deleteDemoData(realRoot));
+		assertNotNull(new DatasetStore(realRoot).load().dataset(Datasets.RUNS));
+	}
+}
