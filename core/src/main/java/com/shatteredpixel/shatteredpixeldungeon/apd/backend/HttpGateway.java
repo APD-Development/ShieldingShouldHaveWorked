@@ -30,7 +30,7 @@ import java.nio.charset.StandardCharsets;
 // A Gateway that speaks plain HTTPS to whatever server the base URL points at. It knows no provider: the URL is configuration, there is no
 // credential in the app (an optional bearer token comes from a TokenSource the caller supplies, e.g. after sign-in), and without a URL the app
 // uses OfflineGateway instead (see Gateways).
-public final class HttpGateway implements Gateway {
+public final class HttpGateway implements Gateway, Mailbox {
 
 	//Supplies the signed-in player's session token, or null when nobody is signed in. Never stored by this class.
 	public interface TokenSource {
@@ -74,6 +74,35 @@ public final class HttpGateway implements Gateway {
 			return new Response(Status.OFFLINE, "no connection");
 		} catch (RuntimeException e){
 			return new Response(Status.RETRY_LATER, "unexpected failure");
+		} finally {
+			if (c != null) c.disconnect();
+		}
+	}
+
+	@Override
+	public Fetched fetch(){
+		HttpURLConnection c = null;
+		try {
+			c = (HttpURLConnection) java.net.URI.create(baseUrl + "/v1/requests").toURL().openConnection();
+			c.setConnectTimeout(timeoutMillis);
+			c.setReadTimeout(timeoutMillis);
+			c.setRequestMethod("GET");
+			String token = tokens == null ? null : tokens.token();
+			if (token != null && !token.isEmpty()) c.setRequestProperty("Authorization", "Bearer " + token);
+			int code = c.getResponseCode();
+			if (code == 401) return new Fetched(false, new java.util.ArrayList<Envelope>(), "sign-in needed");
+			if (code < 200 || code >= 300) return new Fetched(false, new java.util.ArrayList<Envelope>(), "server answered " + code);
+			StringBuilder sb = new StringBuilder();
+			try (InputStream in = c.getInputStream()){
+				byte[] buf = new byte[4096];
+				int n;
+				while ((n = in.read(buf)) > 0 && sb.length() < 1_000_000) sb.append(new String(buf, 0, n, StandardCharsets.UTF_8));
+			}
+			return new Fetched(true, MailboxCodec.decode(sb.toString()), "");
+		} catch (IOException e){
+			return new Fetched(false, new java.util.ArrayList<Envelope>(), "no connection");
+		} catch (RuntimeException e){
+			return new Fetched(false, new java.util.ArrayList<Envelope>(), "unexpected failure");
 		} finally {
 			if (c != null) c.disconnect();
 		}

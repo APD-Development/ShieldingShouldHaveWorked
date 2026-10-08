@@ -75,12 +75,24 @@ public class EndToEndSubmissionTest {
 	private final List<Leaderboard.Entry> stored = new ArrayList<>();
 	private final Map<String, String> sessions = new HashMap<>();
 	private int received;
+	private final List<Envelope> serverRequests = new ArrayList<>();
 
 	@Before
 	public void start() throws Exception {
 		sessions.put("tok-ann", "pl_ann");
 		server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
 		server.createContext("/v1/envelope", this::handle);
+		server.createContext("/v1/requests", ex -> {
+			String auth = ex.getRequestHeaders().getFirst("Authorization");
+			if (auth == null || !sessions.containsKey(auth.replace("Bearer ", ""))){
+				reply(ex, 401);
+				return;
+			}
+			byte[] body = com.shatteredpixel.shatteredpixeldungeon.apd.backend.MailboxCodec.encode(serverRequests).getBytes(StandardCharsets.UTF_8);
+			ex.sendResponseHeaders(200, body.length);
+			ex.getResponseBody().write(body);
+			ex.close();
+		});
 		server.start();
 		url = "http://127.0.0.1:" + server.getAddress().getPort();
 	}
@@ -208,5 +220,31 @@ public class EndToEndSubmissionTest {
 		assertEquals(Gateway.Status.OK, ann.send(mine.idempotencyKey(), AccountRequests.toEnvelope(mine)).status);
 		assertTrue(stored.isEmpty());
 		assertTrue("the player's own history is untouched on the device", logFile.exists());
+	}
+
+	@Test
+	public void theServerAsksForEvidenceTheClientFetchesItThePlayerAgreesAndTheDataIsChecked() throws Exception {
+		log("run-a");
+		SubmissionQueue.enqueueRun(tmp.getRoot(), "run-a", "4.0.8-apd", 1);
+		HttpGateway ann = new HttpGateway(url, () -> "tok-ann", 3000);
+		assertEquals(1, SubmissionQueue.flush(tmp.getRoot(), ann, 2_000_000_000L).sent);
+
+		//nothing asked yet
+		assertEquals(0, BackendClient.collectRequests(tmp.getRoot(), ann, 3));
+		//signed out: the client is told it could not ask, and nothing changes
+		assertEquals(-1, BackendClient.collectRequests(tmp.getRoot(), new HttpGateway(url, null, 3000), 3));
+
+		Evidence.Request req = new Evidence.Request(Id.of(Id.Kind.SUBMISSION, "sub_run-a"), Evidence.Kind.FULL_RUN_LOG, 100_000L);
+		serverRequests.add(EvidenceMessages.askedToEnvelope(new EvidenceMessages.Asked(req, "run-a")));
+		serverRequests.add(EvidenceMessages.requestToEnvelope(req));   //an old-style request that names no run: ignored
+		assertEquals("one readable request arrived", 1, BackendClient.collectRequests(tmp.getRoot(), ann, 4));
+		assertEquals("the same request is not added twice", 0, BackendClient.collectRequests(tmp.getRoot(), ann, 5));
+		assertEquals(1, EvidenceInbox.pending(tmp.getRoot()));
+		assertEquals("asking sent nothing and queued nothing", 0, SubmissionQueue.pending(tmp.getRoot()));
+
+		EvidenceInbox.Entry entry = EvidenceInbox.list(tmp.getRoot()).get(0);
+		assertEquals(EvidenceFlow.Result.QUEUED, EvidenceFlow.answer(tmp.getRoot(), entry.asked, true, 6));
+		assertEquals(1, SubmissionQueue.flush(tmp.getRoot(), ann, 3_000_000_000L).sent);
+		assertEquals("the server accepted the data because it matches what was submitted", TrustLevel.SERVER_CHECKED, stored.get(0).trust);
 	}
 }

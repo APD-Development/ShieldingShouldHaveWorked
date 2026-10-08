@@ -21,8 +21,10 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.backend.EvidenceMessages;
 import com.shatteredpixel.shatteredpixeldungeon.apd.backend.Gateway;
 import com.shatteredpixel.shatteredpixeldungeon.apd.backend.Gateways;
+import com.shatteredpixel.shatteredpixeldungeon.apd.backend.Mailbox;
 import com.shatteredpixel.shatteredpixeldungeon.apd.backend.Outbox;
 
 import java.io.File;
@@ -57,6 +59,19 @@ public final class BackendClient {
 		return sb.toString().trim();
 	}
 
+	//Asks the server for requests it has for this player and stores the readable evidence requests until the player answers them. Returns how
+	//many new ones were added, or -1 if the server could not be asked. Nothing is sent to the server and no data is built here.
+	public static int collectRequests( File historyRoot, Mailbox mailbox, long nowMillis ){
+		Mailbox.Fetched f = mailbox.fetch();
+		if (!f.ok) return -1;
+		int added = 0;
+		for (com.shatteredpixel.shatteredpixeldungeon.apd.backend.Envelope e : f.items){
+			EvidenceMessages.Asked asked = EvidenceMessages.askedFromEnvelope(e);
+			if (asked != null && EvidenceInbox.add(historyRoot, asked, nowMillis)) added++;
+		}
+		return added;
+	}
+
 	//Sends the queue on a background thread (never on the game thread) and reports once. Without sending on and a secure address it does
 	//nothing but say so.
 	public static void sendNow( final File historyRoot, boolean sendingOn, String address, final Done done ){
@@ -72,6 +87,10 @@ public final class BackendClient {
 				try {
 					Outbox.FlushResult r = SubmissionQueue.flush(historyRoot, gateway, System.currentTimeMillis(), true);
 					msg = describe(r, SubmissionQueue.pending(historyRoot));
+					if (gateway instanceof Mailbox){
+						int added = collectRequests(historyRoot, (Mailbox) gateway, System.currentTimeMillis());
+						if (added > 0) msg += " " + added + " new request" + (added == 1 ? "" : "s") + " for more information; see Evidence requests.";
+					}
 				} catch (Throwable e){
 					msg = "Sending failed; the queue is unchanged.";
 				}
