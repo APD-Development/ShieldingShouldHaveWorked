@@ -2,6 +2,14 @@
 
 Lines 251 to 300 of 348. Reply with the ids to keep, cut or rewrite.
 
+### oth.win.0002  (Hatred, victory, only when lastHero!=CLERIC & lastOutcome=WON & runVerified=1)
+- Clean: A fine victory. Cleric would have celebrated by healing a wall.
+- Adult: A fine victory. Cleric would have celebrated by healing a wall and calling it a night.
+
+### oth.win.0003  (Hatred, victory, only when lastHero!=CLERIC & lastOutcome=WON & runVerified=1)
+- Clean: Congratulations on the win. No Cleric was involved, and that is why it worked.
+- Adult: (same as Clean)
+
 ### oth.win.0004  (Hatred, victory, only when lastHero!=CLERIC & lastOutcome=WON & runVerified=1)
 - Clean: You won! Somewhere, a Cleric just sneezed, and I'm assuming it's out of jealousy.
 - Adult: (same as Clean)
@@ -15,20 +23,20 @@ Lines 251 to 300 of 348. Reply with the ids to keep, cut or rewrite.
 - Adult: (same as Clean)
 
 ### asc.0001  (Hatred, ascension, only when lastHero=CLERIC & lastOutcome=DIED & depth>=25 & runVerified=1)
-- Clean: You got that far with Cleric and still did not ascend. I know that feeling. It took me 225 attempts. I have not recovered.
-- Adult: You got that far with Cleric and still did not ascend. I know that feeling. It took me 225 attempts, and each of the failures ended with me asking the ceiling why.
+- Clean: You reached depth {depth} with Cleric and still did not ascend. I know that feeling. It took me 225 attempts. I have not recovered.
+- Adult: You reached depth {depth} with Cleric and still did not ascend. I know that feeling. It took me 225 attempts, and each of the failures ended with me asking the ceiling why.
 
-### asc.0002  (Hatred, ascension, only when lastHero=CLERIC & lastOutcome=DIED & depth>=25 & runVerified=1)
+### asc.0002  (Hatred, ascension, only when lastHero=CLERIC & lastOutcome=DIED & depth>=25 & lastAmulet=0 & runVerified=1)
 - Clean: So close to the Amulet with Cleric. I have been there. It does not get better.
 - Adult: So close to the Amulet with Cleric. I have been there. It does not get better. It gets angrier.
 
 ### asc.0003  (Hatred, ascension, only when lastHero=CLERIC & lastOutcome=DIED & depth>=25 & runVerified=1)
-- Clean: Depth {depth} with Cleric. You were nearly there. I'm choosing to believe that was the Tome's fault.
+- Clean: Depth {depth} with Cleric. That is deep enough to feel it. I'm choosing to blame the Tome.
 - Adult: (same as Clean)
 
-### asc.0004  (Hatred, ascension, only when lastHero=CLERIC & lastOutcome=DIED & depth>=25 & runVerified=1)
-- Clean: That was the closest a Cleric can get to the top without the top noticing. Take a moment. Now take another.
-- Adult: That was the closest a Cleric can get to the top without the top giving a shit. Take a moment. Now take another.
+### asc.0004  (Hatred, ascension, only when lastHero=CLERIC & lastOutcome=DIED & lastAmulet=1 & runVerified=1)
+- Clean: You had the Amulet with Cleric and still did not make it out. That was the closest a Cleric can get to the top without the top noticing. Take a moment. Now take another.
+- Adult: You had the Amulet with Cleric and still did not make it out. That was the closest a Cleric can get to the top without the top giving a shit. Take a moment. Now take another.
 
 ### asc.0005  (Hatred, ascension, only when lastHero=CLERIC & lastOutcome=DIED & lastAmulet=1 & runVerified=1)
 - Clean: Failed ascension with Cleric. I have a support group. It meets every time I look at the Tome.
@@ -74,17 +82,13 @@ Lines 251 to 300 of 348. Reply with the ids to keep, cut or rewrite.
 - Clean: You defeated {boss}. That's a good story. Compare it to the story of Cleric fighting anything, which is shorter.
 - Adult: (same as Clean)
 
-### boss.0008  (Hatred, death, only when lastHero!=CLERIC & lastOutcome=DIED & killer!=nothing & runVerified=1)
-- Clean: {killer} ended your run. If it helps, it would have ended a Cleric's run faster and with more paperwork.
-- Adult: (same as Clean)
-
 ### abl.0001  (Hatred, ability, only when lastHero=CLERIC & spell!=none & runVerified=1)
 - Clean: {spell}. Sure. Great spell. Very Cleric of you.
 - Adult: {spell}. Sure. Great spell. Very Cleric of you, casting it like a clerk stamping a form.
 
 ### abl.0002  (Hatred, ability, only when lastHero=CLERIC & spell!=none & runVerified=1)
-- Clean: You cast {spell} this run. It looked busy and accomplished nothing, which is Cleric's whole brand.
-- Adult: You cast {spell} this run. It looked very busy, like a clerk carrying a clipboard, and accomplished about as much. Very Cleric.
+- Clean: You cast {spell} this run. In my opinion it looked busy and accomplished very little, which is Cleric's whole brand.
+- Adult: You cast {spell} this run. In my biased opinion it looked like a clerk carrying a clipboard, accomplishing about as much. Very Cleric.
 
 ### abl.0003  (Hatred, ability, only when lastHero=CLERIC & lastOutcome=DIED & armorAbility!=none & runVerified=1)
 - Clean: {armorAbility}: a glorious moment of Cleric looking amazing before dying anyway.
@@ -99,11 +103,11 @@ Lines 251 to 300 of 348. Reply with the ids to keep, cut or rewrite.
 - Adult: (same as Clean)
 
 ### abl.0008  (Hatred, ability, only when lastHero=CLERIC & lastOutcome=DIED & armorAbility=Ascended Form & runVerified=1)
-- Clean: Ascended Form: ten turns of looking radiant before dying anyway.
-- Adult: Ascended Form: ten turns of looking radiant, which is a very long time to be a target.
+- Clean: Ascended Form: a short stretch of looking radiant before dying anyway.
+- Adult: Ascended Form: a short window of looking radiant, which is still a very long time to be a target.
 
 ### abl.0009  (Hatred, ability, only when lastHero=CLERIC & armorAbility=Power of Many & runVerified=1)
-- Clean: Power of Many: you made a friend out of light. You should try making one out of people.
+- Clean: Power of Many: Cleric made a friend out of light. It is the only friend willing to follow Cleric into a fight.
 - Adult: (same as Clean)
 
 ### abl.0010  (Hatred, ability, only when lastHero=CLERIC & armorAbility=Trinity & runVerified=1)
@@ -111,7 +115,7 @@ Lines 251 to 300 of 348. Reply with the ids to keep, cut or rewrite.
 - Adult: (same as Clean)
 
 ### abl.0011  (Hatred, ability, only when lastHero=CLERIC & runVerified=1)
-- Clean: Guiding Light looks nice. So does a crack in a wall, and it does just as much.
+- Clean: Guiding Light looks nice. So does a crack in a wall, and in my opinion they do about the same amount.
 - Adult: Guiding Light looks nice. So does a crack in a wall, and the wall has never once asked me to forgive it.
 
 ### abl.0012  (Hatred, ability, only when lastHero=CLERIC & subclass=PRIEST & runVerified=1)
@@ -156,7 +160,7 @@ Lines 251 to 300 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### hist.0004  (Hatred, history, only when clericDeaths>=10)
 - Clean: Your records show {clericDeaths} Cleric deaths. I'd like to say it gets better. I would be lying.
-- Adult: Your records show {clericDeaths} Cleric deaths. I'd like to say it gets better. I lived through 224 of my own before it did, and I am not a well man.
+- Adult: Your records show {clericDeaths} Cleric deaths. I'd like to say it gets better. It took me 225 attempts to ascend with Cleric, and I am still not sure it did.
 
 ### hist.0005  (Hatred, history, only when lastHero!=CLERIC & clericRuns>=1 & runVerified=1)
 - Clean: That run was {lastHeroName}, and your records show {clericRuns} Cleric runs. I am choosing to believe those were accidents.
@@ -197,7 +201,3 @@ Lines 251 to 300 of 348. Reply with the ids to keep, cut or rewrite.
 ### joke.0001  (Hatred, fourth_wall, any time) [invented-number joke]
 - Clean: Fun fact: if Cleric were a person, it would have died 17 floors ago. Anyway, carry on.
 - Adult: (same as Clean)
-
-### joke.0002  (Hatred, fourth_wall, any time) [invented-number joke]
-- Clean: Hypothetically, Cleric would have found the trap. Realistically, Cleric would have walked into it twice.
-- Adult: Hypothetically, Cleric would have found the trap. Realistically, Cleric would have walked into it twice, face first, like a dumbass.

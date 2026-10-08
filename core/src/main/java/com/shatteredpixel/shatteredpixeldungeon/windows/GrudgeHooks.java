@@ -88,9 +88,11 @@ public final class GrudgeHooks {
 	private static Moment pendingEnd;
 	//in play: how long things have been quiet, and whether a boss has fallen since the last chance
 	private static long calmSince;
-	private static int lastBossScore = -1;
+	//a boss counts as defeated when its score turns positive (each boss adds a large positive score only when it dies; before that only penalties)
+	private static final boolean[] bossDown = new boolean[5];
+	private static boolean bossBaseline;
 	private static boolean bossFell;
-	private static int bossDepth;
+	private static int bossIndex = -1;
 	private static Context pendingContext = Context.EMPTY;
 
 	private GrudgeHooks(){}
@@ -235,11 +237,11 @@ public final class GrudgeHooks {
 
 	// LEVEL_CALM after a continuous quiet stretch, BOSS_CLEARED the first time it is quiet after a boss fell; otherwise null.
 	private static Moment quietMoment( long now ){
-		if (lastBossScore < 0) lastBossScore = Statistics.totalBossScore;
-		if (Statistics.totalBossScore > lastBossScore){
-			lastBossScore = Statistics.totalBossScore;
+		int fallen = fallenBoss( Statistics.bossScores, bossDown, bossBaseline );
+		bossBaseline = true;
+		if (fallen >= 0){
 			bossFell = true;
-			bossDepth = Dungeon.depth;
+			bossIndex = fallen;
 		}
 		if (!quiet()){
 			calmSince = 0;
@@ -254,6 +256,23 @@ public final class GrudgeHooks {
 		return Moment.LEVEL_CALM;
 	}
 
+	// Which boss has just fallen, or -1. `down` remembers which bosses were already down at the last look (it is updated here); the first
+	// look only records the state, so loading a run that already beat a boss says nothing. A boss is down when its score is positive.
+	public static int fallenBoss( int[] scores, boolean[] down, boolean baselineKnown ){
+		int found = -1;
+		for (int i = 0; i < down.length && i < scores.length; i++){
+			boolean now = scores[i] > 0;
+			if (baselineKnown && now && !down[i]) found = i;
+			down[i] = now;
+		}
+		return found;
+	}
+
+	//the facts the game side passes in (everything else a line may use stays absent, so such lines never show)
+	public static final java.util.Set<String> SUPPLIED = java.util.Collections.unmodifiableSet( new java.util.HashSet<>( java.util.Arrays.asList(
+			"runVerified", "lastOutcome", "depth", "lastAscended", "lastAmulet", "lastHero", "hero", "lastHeroName", "heroName", "subclass", "killer",
+			"boss", "clericAvailable", "clericRuns", "clericWins", "clericDeaths" ) ) );
+
 	private static final String[] BOSSES = { "Goo", "Tengu", "DM-300", "the Dwarf King", "Yog-Dzewa" };
 
 	private static Context inPlayContext( Moment m ){
@@ -261,8 +280,7 @@ public final class GrudgeHooks {
 		try {
 			c = c.with( "depth", Dungeon.depth ).with( "hero", Dungeon.hero.heroClass.name() ).with( "heroName", Dungeon.hero.heroClass.title() );
 			if (Dungeon.hero.subClass != null && Dungeon.hero.subClass != HeroSubClass.NONE) c = c.with( "subclass", Dungeon.hero.subClass.name() );
-			if (m == Moment.BOSS_CLEARED && bossDepth > 0 && bossDepth % 5 == 0 && bossDepth / 5 <= BOSSES.length)
-				c = c.with( "boss", BOSSES[bossDepth / 5 - 1] );
+			if (m == Moment.BOSS_CLEARED && bossIndex >= 0 && bossIndex < BOSSES.length) c = c.with( "boss", BOSSES[bossIndex] );
 		} catch (Throwable ignored){
 		}
 		return c;

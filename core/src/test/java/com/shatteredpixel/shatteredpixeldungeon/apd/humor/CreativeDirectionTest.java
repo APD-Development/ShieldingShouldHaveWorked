@@ -217,4 +217,46 @@ public class CreativeDirectionTest {
 		//"not a record" is gone: no line claims a personal best that the game has not verified
 		for (Line l : byId.values()) assertFalse( l.id, l.clean.toLowerCase().contains( "not a record" ) );
 	}
+
+	@Test
+	public void aBossIsDefeatedExactlyWhenItsOwnScoreTurnsPositive(){
+		boolean[] down = new boolean[5];
+		//the first look only records the state: a loaded run that already beat the first boss says nothing
+		assertEquals( -1, com.shatteredpixel.shatteredpixeldungeon.windows.GrudgeHooks.fallenBoss( new int[]{ 900, 0, 0, 0, 0 }, down, false ) );
+		assertEquals( -1, com.shatteredpixel.shatteredpixeldungeon.windows.GrudgeHooks.fallenBoss( new int[]{ 900, 0, 0, 0, 0 }, down, true ) );
+		//penalties alone (a negative score) never count as a defeat
+		assertEquals( -1, com.shatteredpixel.shatteredpixeldungeon.windows.GrudgeHooks.fallenBoss( new int[]{ 900, -100, 0, 0, 0 }, down, true ) );
+		//the second boss dies: its score jumps positive
+		assertEquals( 1, com.shatteredpixel.shatteredpixeldungeon.windows.GrudgeHooks.fallenBoss( new int[]{ 900, 1900, 0, 0, 0 }, down, true ) );
+		assertEquals( "reported once", -1, com.shatteredpixel.shatteredpixeldungeon.windows.GrudgeHooks.fallenBoss( new int[]{ 900, 1900, 0, 0, 0 }, down, true ) );
+		//a new run resets the scores and the next boss is seen again
+		com.shatteredpixel.shatteredpixeldungeon.windows.GrudgeHooks.fallenBoss( new int[]{ 0, 0, 0, 0, 0 }, down, true );
+		assertEquals( 0, com.shatteredpixel.shatteredpixeldungeon.windows.GrudgeHooks.fallenBoss( new int[]{ 1000, 0, 0, 0, 0 }, down, true ) );
+	}
+
+	@Test
+	public void everyFactTheGameSuppliesIsReallyReadFromTheGameAndNothingElseIsInvented() throws Exception {
+		String hooks = new String( java.nio.file.Files.readAllBytes( new java.io.File( System.getProperty( "apd.game.src" ), "windows/GrudgeHooks.java" ).toPath() ),
+				java.nio.charset.StandardCharsets.UTF_8 );
+		java.util.Set<String> passed = new java.util.HashSet<>();
+		java.util.regex.Matcher m = java.util.regex.Pattern.compile( "\\.with\\( \"([A-Za-z]+)\"" ).matcher( hooks );
+		while (m.find()) passed.add( m.group( 1 ) );
+		assertEquals( "the list of supplied facts matches what the hooks really pass", passed, com.shatteredpixel.shatteredpixeldungeon.windows.GrudgeHooks.SUPPLIED );
+		//a line that uses any fact the game does not supply can never be shown, whatever the other facts say
+		java.util.Set<String> supplied = new java.util.HashSet<>( com.shatteredpixel.shatteredpixeldungeon.windows.GrudgeHooks.SUPPLIED );
+		Context everything = Context.EMPTY;
+		for (String k : supplied) everything = everything.with( k, k.equals( "lastOutcome" ) ? "DIED" : (k.endsWith( "Name" ) ? "Name" : "1") );
+		int silent = 0;
+		for (Line l : HumorTestSupport.shipped()){
+			java.util.Set<String> used = new java.util.HashSet<>();
+			java.util.regex.Matcher pm = Line.PLACEHOLDER.matcher( l.clean );
+			while (pm.find()) used.add( pm.group( 1 ) );
+			for (Term t : l.requires ) used.add( t.key );
+			used.removeAll( java.util.Arrays.asList( "complaintsHeard", "complaintsTotal", "appreciationsHeard", "appreciationsTotal" ) );
+			if (supplied.containsAll( used )) continue;
+			silent++;
+			for (Moment mo : Moment.values()) assertFalse( l.id + " uses facts the game does not supply", l.eligible( mo, everything, new Ledger( null ), Long.MAX_VALUE, Long.MAX_VALUE ) );
+		}
+		assertTrue( "some lines wait for facts that are not supplied yet (spells, weapons, abilities, streaks)", silent > 10 );
+	}
 }

@@ -158,6 +158,14 @@ Lines 201 to 250 of 348. Reply with the ids to keep, cut or rewrite.
 - Clean: Sorry about the loss. I'd offer a Cleric to cheer you up but that would be cruel to everyone involved, including me.
 - Adult: (same as Clean)
 
+### boss.0008  (Hatred, death, only when lastHero!=CLERIC & lastOutcome=DIED & killer!=nothing & runVerified=1)
+- Clean: {killer} ended your run. If it helps, it would have ended a Cleric's run faster and with more paperwork.
+- Adult: (same as Clean)
+
+### boss.0010  (Hatred, death, only when lastHero=CLERIC & lastOutcome=DIED & killer!=nothing & runVerified=1)
+- Clean: {killer} did not even need to try. That is the highest compliment a Cleric can receive from an enemy.
+- Adult: (same as Clean)
+
 ### clr.win.0001  (Hatred, victory, only when lastHero=CLERIC & lastOutcome=WON & runVerified=1)
 - Clean: You won as Cleric. Fine. I will allow one moment of respect. That moment is over.
 - Adult: You won as Cleric. Fine. I will allow one moment of respect. That moment is over. The grudge was waiting in the car with the engine running.
@@ -192,12 +200,4 @@ Lines 201 to 250 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### oth.win.0001  (Hatred, victory, only when lastHero!=CLERIC & lastOutcome=WON & runVerified=1)
 - Clean: You won as {lastHeroName}. This is the best time to remember that Cleric exists. You're welcome.
-- Adult: (same as Clean)
-
-### oth.win.0002  (Hatred, victory, only when lastHero!=CLERIC & lastOutcome=WON & runVerified=1)
-- Clean: A fine victory. Cleric would have celebrated by healing a wall.
-- Adult: A fine victory. Cleric would have celebrated by healing a wall and calling it a night.
-
-### oth.win.0003  (Hatred, victory, only when lastHero!=CLERIC & lastOutcome=WON & runVerified=1)
-- Clean: Congratulations on the win. No Cleric was involved, and that is why it worked.
 - Adult: (same as Clean)

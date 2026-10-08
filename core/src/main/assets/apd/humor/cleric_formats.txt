@@ -38,5 +38,4 @@ abl.0020 | ability | since=4.8 | lastHero=CLERIC & subclass=PALADIN & runVerifie
 eqp.0009 | equipment | since=4.8 | lastHero=CLERIC & weapon!=none & runVerified=1 | 8 | {weapon} in a Cleric's hands: the weapon forgave them, and I do not. |
 eqp.0011 | equipment | since=4.8 | lastHero=CLERIC & runVerified=1 | 6 | A Tome is a book you carry into a fight and hope it reads itself. |
 boss.0009 | boss | since=4.8 | boss!=none | 8 | {boss}: has been described as terrifying, ancient, and unfortunately more likable than Cleric. |
-boss.0010 | death | since=4.8 | lastHero=CLERIC & lastOutcome=DIED & killer!=nothing & runVerified=1 | 8 | {killer} did not even need to try. That is the highest compliment a Cleric can receive from an enemy. |
 boss.0011 | boss | since=4.8 | hero!=CLERIC & boss!=none | 8 | You defeated {boss} without Cleric. As the prophecy and I intended. |

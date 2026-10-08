@@ -2,6 +2,10 @@
 
 Lines 301 to 348 of 348. Reply with the ids to keep, cut or rewrite.
 
+### joke.0002  (Hatred, fourth_wall, any time) [invented-number joke]
+- Clean: Hypothetically, Cleric would have found the trap. Realistically, Cleric would have walked into it twice.
+- Adult: Hypothetically, Cleric would have found the trap. Realistically, Cleric would have walked into it twice, face first, like a dumbass.
+
 ### joke.0003  (Hatred, anytime, any time) [invented-number joke]
 - Clean: By my calculations, Cleric is worse than every other class by a margin of roughly eleven percent of my mood.
 - Adult: (same as Clean)
@@ -184,10 +188,6 @@ Lines 301 to 348 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### boss.0009  (Hatred, boss, only when boss!=none)
 - Clean: {boss}: has been described as terrifying, ancient, and unfortunately more likable than Cleric.
-- Adult: (same as Clean)
-
-### boss.0010  (Hatred, death, only when lastHero=CLERIC & lastOutcome=DIED & killer!=nothing & runVerified=1)
-- Clean: {killer} did not even need to try. That is the highest compliment a Cleric can receive from an enemy.
 - Adult: (same as Clean)
 
 ### boss.0011  (Hatred, boss, only when hero!=CLERIC & boss!=none)
