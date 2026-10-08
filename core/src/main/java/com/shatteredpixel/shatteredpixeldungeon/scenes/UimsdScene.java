@@ -161,7 +161,13 @@ public class UimsdScene extends PixelScene {
 
 		ui = new Group();
 		add(ui);
-		btnExit = new ExitButton();
+		//the visible exit button is the same as the Back key: it walks back through UIMSD, it does not jump out (its default goes straight to the title)
+		btnExit = new ExitButton(){
+			@Override
+			protected void onClick(){
+				onBackPressed();
+			}
+		};
 		RectF insets = getCommonInsets();
 		btnExit.setPos(insets.left + (w - insets.left - insets.right) - btnExit.width(), insets.top);
 		add(btnExit);

@@ -102,7 +102,13 @@ public class APDTextScene extends PixelScene {
 		list.setRect( 0, 0, w, h );
 		list.scrollTo( 0, 0 );
 
-		ExitButton btnExit = new ExitButton();
+		//the visible exit and the Back key are the same: back to where this screen was opened from (the default exit jumps to the title)
+		ExitButton btnExit = new ExitButton(){
+			@Override
+			protected void onClick(){
+				onBackPressed();
+			}
+		};
 		int ofs = PixelScene.landscape() ? 0 : 4;
 		btnExit.setPos( Camera.main.width - btnExit.width() - ofs, ofs );
 		add( btnExit );
