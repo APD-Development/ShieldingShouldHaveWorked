@@ -94,7 +94,7 @@ jobs:
           make_latest: false
           body: |
             PRIVATE TEST BUILD, not a stable or public release.
-            Cleric playable, Cleric Grudge and Demo Unlock are ON in this build only (off in normal builds).
+            Cleric playable and Demo Unlock are ON in this test build only (off in normal builds). The Cleric Grudge/Lore feature is postponed and OFF.
             Built from commit ${{ env.SRC_SHA }} (workflow run ${{ env.BUILT_FROM }}).
             Installs over the previous debug builds and keeps saved data (same signing key and app id). Do not uninstall first.
           files: ${{ env.APK }}
