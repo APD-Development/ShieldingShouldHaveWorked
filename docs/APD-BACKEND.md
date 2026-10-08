@@ -1,8 +1,6 @@
 # APD backend architecture (foundations; read this instead of the code)
 
-Status: contracts + tests only. NO server, NO provider, NO credentials, NO network code is in the game. Nothing in gameplay uses this package yet
-(BackendFoundationsTest fails if it does, until that is a deliberate step). Code: `core/.../apd/backend/` (pure Java, imports only `java.*`,
-Android API 26-safe). Tests: `core/src/test/.../apd/backend/`.
+Status: the client side is built and tested; there is NO server, NO provider and NO credential in the app. A plain HTTPS gateway exists (`HttpGateway`) but sending is OFF by default and only happens when the player turns it on, sets a secure address and presses "Send queued runs now" (UIMSD Options > Privacy). Gameplay never calls any of this; the only game-side entry points are explicit player actions in the run sheet and the Privacy menu (`BackendFoundationsTest` enforces it). Code: `core/.../apd/backend/` (pure Java, imports only `java.*`, Android API 26-safe) and `core/.../apd/backendbridge/` (the only door from the game). Tests: `core/src/test/.../apd/backend/` and `.../backendbridge/`.
 
 ## Principles (fixed)
 1. **Local-first.** Dungeon play, saves, raw run logs, UIMSD history, FloorReplay and reports stay on the device. No backend outage can stop play.
@@ -60,7 +58,7 @@ Schemas are `apd.<name>` + major.minor. Add a field = minor bump (append only). 
 No hidden analytics. Nothing is sent unless the player signs in AND chooses a feature (submit, vote, publish, sync preferences). Unfinished runs are never submitted (hidden information). Reports and ballots are not public. Account deletion/export are required before any real server (see decisions).
 
 ## Not built (needs a decision or later work)
-Wiring the game to the Outbox, real Gateway/transport, sign-in UI, replay-evidence protocol (what the server may ask for and the player consents to), anti-cheat beyond digest + policy, moderation tooling, cloud sync UI.
+A real server and its address, a sign-in method (what produces the session token), a sign-in screen, an "Account data" screen (export/delete buttons: the requests exist, nothing queues them yet), ballot/report screens (wire forms exist), cloud sync of preferences (needs tombstones in saved views and a signed-in session), anti-cheat beyond digest + policy, moderation tooling, secure token storage in the platform keystore.
 
 ## DECISIONS FOR THE OWNER (nothing here was guessed)
 1. **Hosting/database/auth provider (NOT a blocker: everything above is provider-neutral; only a concrete Gateway/transport and the real server need it)** (cost, lock-in, privacy jurisdiction). Contracts above are provider-neutral; options: (a) managed BaaS (fast, vendor lock-in), (b) small self-hosted service + SQL (portable, you operate it), (c) static-first (signed JSON files on a CDN for content/leaderboards, tiny API only for writes). Recommend deciding after (c)-style read paths are prototyped because reads are most of the load and are the cheapest to keep portable.
@@ -74,8 +72,8 @@ Wiring the game to the Outbox, real Gateway/transport, sign-in UI, replay-eviden
 Phase 11 community: accounts/profiles (Accounts, LocalProfile), voting (Voting), community content + mod downloads (ContentVersion, approval signatures, TrustRoot), leaderboards + run submission + blind/community review primitives (RunSubmission, evidenceDigest, Leaderboard, TrustLevel), developer achievements (AchievementGrant), moderation/reporting (Report, AuditLog), cross-device preferences (SyncRecord), offline-safe delivery (Outbox, Gateway, Backoff), privacy boundary (DataPolicy). Phase 10 mod support: content trust model (hash + approval) is the safety base for downloads.
 
 ## Recommended next steps
-1. DONE (preview): local queue + INDEV-only run-sheet action. Next: a flush step that sends the queue through a `Gateway` (still `OfflineGateway` until a transport exists) and shows queue status in APD Settings.
-2. Evidence-request protocol design (needs decision 4).
+1. DONE: local queue, preview/withdraw, privacy summary and report, gateway, manual send, session store, evidence request/answer/send, account request wire forms, ballot/report wire forms, reference-server e2e test.
+2. Needs the owner (decisions above), then: a real Gateway endpoint contract review against the reference server, sign-in, the Account data screen.
 3. After decisions 1-3: first real read-only feature (e.g. signed content catalogue / grants) so the verify path is exercised with real keys.
 
 ## Account export and deletion (design only; needed before any real server)
