@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge;
 
 import com.shatteredpixel.shatteredpixeldungeon.apd.backend.Canon;
+import com.shatteredpixel.shatteredpixeldungeon.apd.backend.Gateway;
 import com.shatteredpixel.shatteredpixeldungeon.apd.backend.Id;
 import com.shatteredpixel.shatteredpixeldungeon.apd.backend.Outbox;
 import com.shatteredpixel.shatteredpixeldungeon.apd.backend.OutboxStore;
@@ -106,6 +107,22 @@ public final class SubmissionQueue {
 			return new Queued(Result.QUEUED, null, "");
 		} catch (IOException e){
 			return new Queued(Result.FAILED, null, "the queue could not be saved: " + e.getMessage());
+		}
+	}
+
+	//Sends what is due through 'gateway' and saves what is left. With the offline gateway (the only one that exists) nothing changes. Never throws.
+	public static Outbox.FlushResult flush( File historyRoot, Gateway gateway, long nowMillis ){
+		Outbox.FlushResult none = new Outbox.FlushResult();
+		if (historyRoot == null) return none;
+		try {
+			Outbox box = new Outbox();
+			OutboxStore.load(box, fileIn(historyRoot));
+			if (box.size() == 0) return none;
+			Outbox.FlushResult r = box.flush(gateway, nowMillis);
+			OutboxStore.save(box, fileIn(historyRoot));
+			return r;
+		} catch (IOException e){
+			return none;
 		}
 	}
 

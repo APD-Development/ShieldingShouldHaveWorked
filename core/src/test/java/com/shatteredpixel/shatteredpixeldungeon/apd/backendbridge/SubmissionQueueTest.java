@@ -80,4 +80,25 @@ public class SubmissionQueueTest {
 		assertEquals(0, SubmissionQueue.pending(tmp.getRoot()));
 		assertFalse(SubmissionQueue.fileIn(tmp.getRoot()).exists());
 	}
+
+	@Test
+	public void flushingThroughTheOfflineGatewayKeepsTheQueueAndAWorkingGatewayEmptiesIt(){
+		log("run-a", true, 3, 0);
+		SubmissionQueue.enqueueRun(tmp.getRoot(), "run-a", "b", 1);
+		com.shatteredpixel.shatteredpixeldungeon.apd.backend.Outbox.FlushResult off = SubmissionQueue.flush(tmp.getRoot(), new com.shatteredpixel.shatteredpixeldungeon.apd.backend.OfflineGateway(), 10_000_000);
+		assertEquals(0, off.sent);
+		assertEquals(1, SubmissionQueue.pending(tmp.getRoot()));
+		final int[] got = new int[1];
+		com.shatteredpixel.shatteredpixeldungeon.apd.backend.Gateway ok = new com.shatteredpixel.shatteredpixeldungeon.apd.backend.Gateway(){
+			public Response send( String key, com.shatteredpixel.shatteredpixeldungeon.apd.backend.Envelope e ){
+				got[0]++;
+				return new Response(Status.OK, "");
+			}
+		};
+		assertEquals(1, SubmissionQueue.flush(tmp.getRoot(), ok, 1_000_000_000L).sent);
+		assertEquals(1, got[0]);
+		assertEquals(0, SubmissionQueue.pending(tmp.getRoot()));
+		assertEquals("an empty or missing queue is a no-op", 0, SubmissionQueue.flush(tmp.getRoot(), ok, 2_000_000_000L).sent);
+		assertEquals(1, got[0]);
+	}
 }
