@@ -56,6 +56,8 @@ public final class HttpGateway implements Gateway, Mailbox {
 			c.setConnectTimeout(timeoutMillis);
 			c.setReadTimeout(timeoutMillis);
 			c.setRequestMethod("POST");
+			//a redirect would resend the data somewhere the player never configured
+			c.setInstanceFollowRedirects(false);
 			c.setDoOutput(true);
 			c.setRequestProperty("Content-Type", "text/plain; charset=utf-8");
 			c.setRequestProperty("Idempotency-Key", idempotencyKey);
@@ -87,6 +89,7 @@ public final class HttpGateway implements Gateway, Mailbox {
 			c.setConnectTimeout(timeoutMillis);
 			c.setReadTimeout(timeoutMillis);
 			c.setRequestMethod("GET");
+			c.setInstanceFollowRedirects(false);
 			String token = tokens == null ? null : tokens.token();
 			if (token != null && !token.isEmpty()) c.setRequestProperty("Authorization", "Bearer " + token);
 			int code = c.getResponseCode();
@@ -112,6 +115,8 @@ public final class HttpGateway implements Gateway, Mailbox {
 	static Response fromStatus( int code, String detail ){
 		if (code >= 200 && code < 300) return new Response(Status.OK, "");
 		if (code == 409) return new Response(Status.OK, "already received");
+		//moved: the item is not at fault and nothing was sent anywhere else, so it stays queued until the address is corrected
+		if (code >= 300 && code < 400) return new Response(Status.RETRY_LATER, "server address moved (" + code + ")");
 		if (code == 408 || code == 425 || code == 429 || code >= 500) return new Response(Status.RETRY_LATER, "server busy (" + code + ")");
 		//not signed in (or the session ended): nothing is wrong with the item, so it stays queued
 		if (code == 401) return new Response(Status.RETRY_LATER, "sign-in needed");

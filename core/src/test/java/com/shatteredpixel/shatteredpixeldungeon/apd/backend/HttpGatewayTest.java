@@ -83,6 +83,10 @@ public class HttpGatewayTest {
 		assertTrue(bad.detail.contains("400"));
 		status = 403;
 		assertEquals(Gateway.Status.REJECTED, g.send("ob_r1", env()).status);
+		status = 301;
+		Gateway.Response moved = g.send("ob_r1", env());
+		assertEquals("a redirect is not followed and the item stays queued", Gateway.Status.RETRY_LATER, moved.status);
+		assertTrue(moved.detail.contains("moved"));
 		status = 401;
 		Gateway.Response signIn = g.send("ob_r1", env());
 		assertEquals("not signed in: the item stays queued", Gateway.Status.RETRY_LATER, signIn.status);
