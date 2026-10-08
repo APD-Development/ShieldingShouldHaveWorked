@@ -23,6 +23,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.HeroSelectScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.JournalScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.NewsScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.RankingsScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.StartScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene;
@@ -270,9 +271,15 @@ public class PrivacyAndHeroBackDeviceTest {
 			SPDSettings.intro(false);
 			final List<String> bad = new ArrayList<>();
 			try {
-				final Class<?>[] scenes = { RankingsScene.class, JournalScene.class, AboutScene.class, ChangesScene.class, StartScene.class, NewsScene.class };
-				for (final Class<?> sc : scenes){
-					onRender(new Runnable(){ public void run(){ ShatteredPixelDungeon.switchNoFade(sc.asSubclass(com.watabou.noosa.Scene.class)); } });
+				final List<Class<? extends PixelScene>> scenes = new ArrayList<>();
+				scenes.add(RankingsScene.class);
+				scenes.add(JournalScene.class);
+				scenes.add(AboutScene.class);
+				scenes.add(ChangesScene.class);
+				scenes.add(StartScene.class);
+				scenes.add(NewsScene.class);
+				for (final Class<? extends PixelScene> sc : scenes){
+					onRender(new Runnable(){ public void run(){ ShatteredPixelDungeon.switchNoFade(sc); } });
 					long by = System.currentTimeMillis() + 20000;
 					while (!sc.isInstance(Game.scene()) && System.currentTimeMillis() < by) Thread.sleep(200);
 					if (!sc.isInstance(Game.scene())){
