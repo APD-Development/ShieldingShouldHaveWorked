@@ -75,7 +75,7 @@ public final class BackendClient {
 	//Sends the queue on a background thread (never on the game thread) and reports once. Without sending on and a secure address it does
 	//nothing but say so.
 	public static void sendNow( final File historyRoot, boolean sendingOn, String address, final Done done ){
-		final Gateway gateway = Gateways.choose(sendingOn, address, null);
+		final Gateway gateway = Gateways.choose(sendingOn, address, new SessionStore(historyRoot).tokenSource());
 		if (!sendingOn || Gateways.cleanBaseUrl(address) == null){
 			done.finished(status(sendingOn, address));
 			return;

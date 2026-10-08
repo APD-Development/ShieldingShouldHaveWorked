@@ -235,6 +235,9 @@ public class PrivacyAndHeroBackDeviceTest {
 			pickItem(4);   //evidence requests: none waiting
 			assertTrue("a message says nothing is waiting", top() instanceof WndMessage);
 			pressBack();
+			pickItem(5);   //account: signed out, and no way to sign in yet
+			assertTrue("a message says there is no sign-in method", top() instanceof WndMessage);
+			pressBack();
 			pickItem(1);   //back off
 			assertFalse("sending is off again", SPDSettings.apdSending());
 			Log.w(TAG, "Privacy menu: summary, switch on/off, send-now refusal and address box all worked");

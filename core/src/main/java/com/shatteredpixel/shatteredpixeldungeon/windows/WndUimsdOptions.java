@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge.BackendClient;
 import com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge.EvidenceFlow;
 import com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge.EvidenceInbox;
 import com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge.PrivacySummary;
+import com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge.SessionStore;
 import com.watabou.noosa.Game;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.Aggregate;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.Catalog;
@@ -185,8 +186,11 @@ public final class WndUimsdOptions {
 		entries.add(Entry.item("Sending to a server: " + (SPDSettings.apdSending() ? "on" : "off"), BackendClient.status(SPDSettings.apdSending(), SPDSettings.apdServer())));
 		entries.add(Entry.item("Server address...", "Where queued runs go when you press Send. Must start with https://."));
 		entries.add(Entry.item("Send queued runs now", "Sends only what you queued, only when you press this."));
+		final SessionStore.Session session = new SessionStore(m.root()).current(System.currentTimeMillis());
 		final int asked = EvidenceInbox.pending(m.root());
 		entries.add(Entry.item("Evidence requests (" + asked + ")", asked == 0 ? "Nothing is waiting for your answer." : "A server asked to see the full log of a run you submitted. Nothing is sent unless you agree."));
+		entries.add(Entry.item(session == null ? "Account: signed out" : "Account: signed in", session == null ? "There is no sign-in method in this version, so nothing can be sent to an account yet."
+				: "Tap to sign out. Signing out never touches your history or saves."));
 		ShatteredPixelDungeon.scene().addToFront(WndUimsdList.menu("Privacy", "", entries, new WndUimsdList.Picker(){
 			@Override
 			public void onPick( int i, boolean checked ){
@@ -199,6 +203,13 @@ public final class WndUimsdOptions {
 					serverAddress();
 				} else if (i == 4){
 					evidenceRequests(m);
+				} else if (i == 5){
+					if (session == null){
+						say("There is no sign-in method in this version, so you cannot sign in yet.");
+					} else {
+						new SessionStore(m.root()).signOut();
+						say("Signed out. Your history and saves were not touched.");
+					}
 				} else {
 					BackendClient.sendNow(m.root(), SPDSettings.apdSending(), SPDSettings.apdServer(), new BackendClient.Done(){
 						@Override
