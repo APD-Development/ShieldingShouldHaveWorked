@@ -357,6 +357,18 @@ public class SPDSettings extends GameSettings {
 		put( KEY_APD_TENTH_SHOWN, value );
 	}
 
+	//The one shared humor preference: false = Clean (the default, and what applies whenever age eligibility is unknown or unavailable), true = Adult.
+	//Nothing ever infers it; only the player's own choice sets it.
+	public static final String KEY_APD_ADULT_HUMOR = "apd_adult_humor";
+
+	public static boolean apdAdultHumor(){
+		return getBoolean( KEY_APD_ADULT_HUMOR, false );
+	}
+
+	public static void apdAdultHumor( boolean value ){
+		put( KEY_APD_ADULT_HUMOR, value );
+	}
+
 	public static boolean apdDemoUnlockUsed(){
 		return getBoolean( KEY_APD_DEMO_UNLOCK_USED, false );
 	}

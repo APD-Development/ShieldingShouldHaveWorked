@@ -55,7 +55,7 @@ public final class UimsdUnlock {
 		// the guided tour: opened only by ten genuine runs, never by the demo route
 		boolean tourUnlocked();
 		void setTourUnlocked();
-		// the one-time title-screen prompt after the tenth genuine run
+		// the tenth-run arrow on the title screen: pending from the tenth genuine run, retired when UIMSD is opened
 		boolean promptPending();
 		void setPromptPending();
 		boolean promptShown();
@@ -111,9 +111,9 @@ public final class UimsdUnlock {
 	}
 
 	// Called once a run has ended and its log is sealed (never before: death, ascension, ranking and save work are all done by then). If this
-	// was the player's TENTH genuine run, UIMSD and the guided tour open and the one-time prompt is queued for the title screen. It looks at
+	// was the player's TENTH genuine run, UIMSD and the guided tour open and the arrow prompt is queued for the title screen. It looks at
 	// the count, so it fires for the tenth run exactly: never for demo runs (they are not counted), never for the 11th or later, never
-	// again once the prompt has been shown. Returns true when the prompt was just queued.
+	// again once the arrow has been retired. Returns true when the prompt was just queued.
 	public static boolean onRunEnded( Flags flags, File realRoot, boolean enforced ){
 		if (!enforced || flags.promptShown() || flags.promptPending()) return false;
 		if (genuineRuns(realRoot, TEN_RUNS + 1) != TEN_RUNS) return false;
@@ -123,9 +123,14 @@ public final class UimsdUnlock {
 		return true;
 	}
 
-	// The title screen asks this when it is built: true exactly once, for a queued prompt that has not been shown yet.
-	public static boolean takePrompt( Flags flags ){
-		if (!flags.promptPending() || flags.promptShown()) return false;
+	// Is the tenth-run arrow due? From the tenth genuine run until the player opens UIMSD for the first time after it.
+	public static boolean promptActive( Flags flags ){
+		return flags.promptPending() && !flags.promptShown();
+	}
+
+	// The player opened UIMSD: if the tenth-run arrow was due it is retired for good. Returns true when it was.
+	public static boolean retirePrompt( Flags flags ){
+		if (!promptActive(flags)) return false;
 		flags.setPromptShown();
 		return true;
 	}

@@ -297,14 +297,17 @@ public class UimsdUnlockTest {
 		assertTrue("and opens UIMSD and the tour", flags.unlocked && flags.tour);
 		assertFalse("asking again does not queue it twice", UimsdUnlock.onRunEnded(flags, realRoot, true));
 
-		//the title screen takes it exactly once
-		assertTrue(UimsdUnlock.takePrompt(flags));
-		assertFalse(UimsdUnlock.takePrompt(flags));
+		//the arrow stays due, however many times the title screen is built, until UIMSD is opened
+		assertTrue(UimsdUnlock.promptActive(flags));
+		assertTrue(UimsdUnlock.promptActive(flags.restart()));
+		assertTrue("opening UIMSD retires it", UimsdUnlock.retirePrompt(flags));
+		assertFalse(UimsdUnlock.promptActive(flags));
+		assertFalse("and only once", UimsdUnlock.retirePrompt(flags));
 		assertTrue(flags.shown);
 
-		//after a restart it is still used up, and later runs never bring it back
+		//after a restart it is still retired, and later runs never bring it back
 		MemFlags after = flags.restart();
-		assertFalse(UimsdUnlock.takePrompt(after));
+		assertFalse(UimsdUnlock.promptActive(after));
 		genuineRun(12, true);
 		assertFalse("the eleventh and later runs never prompt", UimsdUnlock.onRunEnded(after, realRoot, true));
 	}
@@ -315,8 +318,9 @@ public class UimsdUnlockTest {
 		for (int i = 1; i <= 10; i++) genuineRun(i, true);
 		assertTrue(UimsdUnlock.onRunEnded(flags, realRoot, true));
 		MemFlags restarted = flags.restart();
-		assertTrue("the game was closed before the title was seen: still waiting", UimsdUnlock.takePrompt(restarted));
-		assertFalse(UimsdUnlock.takePrompt(restarted.restart()));
+		assertTrue("the game was closed before UIMSD was opened: still due", UimsdUnlock.promptActive(restarted));
+		assertTrue(UimsdUnlock.retirePrompt(restarted));
+		assertFalse(UimsdUnlock.promptActive(restarted.restart()));
 	}
 
 	@Test
@@ -330,7 +334,8 @@ public class UimsdUnlockTest {
 		genuineRun(10, true);
 		assertTrue("the tenth genuine run still gets its prompt, after the demo shortcut", UimsdUnlock.onRunEnded(flags, realRoot, true));
 		assertTrue(flags.tour);
-		assertTrue(UimsdUnlock.takePrompt(flags));
+		assertTrue(UimsdUnlock.promptActive(flags));
+		assertFalse("exploring UIMSD through the demo before did not retire it", flags.shown);
 	}
 
 	@Test

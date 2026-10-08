@@ -254,6 +254,12 @@ public class ApdSettingsClickDeviceTest {
 			tapUntil("Record run history", scroll, (com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox) field(pane, "chkRecord"), new java.util.concurrent.Callable<Boolean>(){
 				public Boolean call() throws Exception { return SPDSettings.apdRecording() != recBefore; } }, 60000);
 
+			//5b. the humor setting: Clean by default, and a touch on it is the only thing that changes it
+			final boolean adultBefore = SPDSettings.apdAdultHumor();
+			tapUntil("Adult humor (18+)", scroll, (com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox) field(pane, "chkAdult"), new java.util.concurrent.Callable<Boolean>(){
+				public Boolean call() throws Exception { return SPDSettings.apdAdultHumor() != adultBefore; } }, 60000);
+			SPDSettings.apdAdultHumor(adultBefore);
+
 			//6. Open UIMSD (preview) last: it leaves the window by switching scenes
 			tapUntil("Open UIMSD (preview)", scroll, (RedButton) field(pane, "btnUimsd"), new java.util.concurrent.Callable<Boolean>(){
 				public Boolean call(){ return Game.scene() instanceof UimsdScene; } }, 60000);

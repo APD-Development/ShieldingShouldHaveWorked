@@ -2,6 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import com.shatteredpixel.shatteredpixeldungeon.apd.demo.UimsdUnlock;
 
@@ -50,23 +51,41 @@ public class UimsdGateTest {
 	}
 
 	@Test
-	public void theArrowSaysTheLockedMessageThenTheTenthRunPromptOnceThenItsUsualText() throws Exception {
-		assertEquals("HEY, YOU SHOULD PROBABLY GO HERE NOW.", UimsdGate.TENTH_RUN_ARROW_TEXT);
+	public void theArrowSaysTheLockedMessageThenTheHumorMessageUntilUimsdIsOpenedThenItsUsualText() throws Exception {
 		File empty = java.nio.file.Files.createTempDirectory("apd-arrow").toFile();
+		String locked = "THIS BUTTON IS EFFECTIVELY USELESS TILL 10 RUNS HAVE BEEN COMPLETED.";
 		Mem flags = new Mem();
-		assertEquals("fewer than ten runs: the locked message, exactly",
-				"THIS BUTTON IS EFFECTIVELY USELESS TILL 10 RUNS HAVE BEEN COMPLETED.", UimsdGate.annotationFor(flags, empty, true, "USUAL"));
-		assertEquals("gate off: always the usual text", "USUAL", UimsdGate.annotationFor(flags, empty, false, "USUAL"));
-		//the tenth run queued the prompt: it shows once
+		assertEquals("fewer than ten runs: the locked message, exactly", locked, UimsdGate.annotationFor(flags, empty, true, false, "USUAL"));
+		assertEquals("in Adult mode too", locked, UimsdGate.annotationFor(flags, empty, true, true, "USUAL"));
+		assertEquals("gate off: always the usual text", "USUAL", UimsdGate.annotationFor(flags, empty, false, false, "USUAL"));
+
+		//the tenth genuine run queued the arrow: Clean and Adult each get their own message, and it stays for every build of the title
 		flags.setUnlocked();
 		flags.setPromptPending();
-		assertEquals("HEY, YOU SHOULD PROBABLY GO HERE NOW.", UimsdGate.annotationFor(flags, empty, true, "USUAL"));
-		assertEquals("never again", "USUAL", UimsdGate.annotationFor(flags, empty, true, "USUAL"));
-		assertEquals("USUAL", UimsdGate.annotationFor(flags, empty, true, "USUAL"));
-		//opened through the demo shortcut: no locked message any more
+		for (int i = 0; i < 3; i++){
+			assertEquals("HEY, GO HERE FOR UNLIMITED DOPAMINE.", UimsdGate.annotationFor(flags, empty, true, false, "USUAL"));
+			assertEquals("HEY, GO HERE FOR DRUGS.", UimsdGate.annotationFor(flags, empty, true, true, "USUAL"));
+		}
+		//opening UIMSD retires it for good
+		assertTrue(UimsdUnlock.retirePrompt(flags));
+		assertEquals("USUAL", UimsdGate.annotationFor(flags, empty, true, false, "USUAL"));
+		assertEquals("USUAL", UimsdGate.annotationFor(flags, empty, true, true, "USUAL"));
+
+		//opened through the demo shortcut and no tenth run yet: no locked message and no humor message
 		Mem demo = new Mem();
 		demo.setUnlocked();
 		demo.setDemoUsed();
-		assertEquals("USUAL", UimsdGate.annotationFor(demo, empty, true, "USUAL"));
+		assertEquals("USUAL", UimsdGate.annotationFor(demo, empty, true, true, "USUAL"));
+		//the tenth genuine run comes later: the arrow appears for that player too
+		demo.setPromptPending();
+		assertEquals("HEY, GO HERE FOR DRUGS.", UimsdGate.annotationFor(demo, empty, true, true, "USUAL"));
 	}
+
+	@Test
+	public void theHumorSettingIsCleanUnlessThePlayerChoseAdult() throws Exception {
+		//nothing asks for or infers an age: the stored value defaults to false (Clean) and only the player's own choice sets it
+		String settings = new String(java.nio.file.Files.readAllBytes(new File(System.getProperty("apd.game.src"), "SPDSettings.java").toPath()), "UTF-8");
+		assertTrue(settings.contains("return getBoolean( KEY_APD_ADULT_HUMOR, false );"));
+	}
+
 }

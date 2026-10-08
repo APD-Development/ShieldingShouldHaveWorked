@@ -43,7 +43,9 @@ public final class UimsdGate {
 	static final String CHOICE_CONFUSION = "I LIKE CONFUSION";
 	static final String CHOICE_PLAY = "I'LL PLAY 10 RUNS";
 	// the arrow's message on the title screen while UIMSD is locked, exactly as the owner wrote it
-	static final String TENTH_RUN_ARROW_TEXT = "HEY, YOU SHOULD PROBABLY GO HERE NOW.";
+	// the arrow after the tenth genuine run, by the player's humor setting (Clean unless they chose Adult)
+	static final String TENTH_RUN_ARROW_ADULT = "HEY, GO HERE FOR DRUGS.";
+	static final String TENTH_RUN_ARROW_CLEAN = "HEY, GO HERE FOR UNLIMITED DOPAMINE.";
 	static final String LOCKED_ARROW_TEXT = "THIS BUTTON IS EFFECTIVELY USELESS TILL 10 RUNS HAVE BEEN COMPLETED.";
 
 	// the two permanent flags, kept in the game's settings
@@ -73,15 +75,15 @@ public final class UimsdGate {
 
 	private UimsdGate(){}
 
-	// The text under the title screen's arrow: the one-time prompt after the tenth genuine run (shown once, then never again), the owner's
-	// message while UIMSD is locked, the usual text otherwise.
+	// The text under the title screen's arrow: after the tenth genuine run the drugs/dopamine message (by humor setting) until UIMSD has been
+	// opened once; before ten runs the owner's locked message; otherwise the usual text.
 	public static String titleAnnotation( String usual ){
-		return annotationFor(FLAGS, ApdRecorder.historyRoot(), enforced(), usual);
+		return annotationFor(FLAGS, ApdRecorder.historyRoot(), enforced(), SPDSettings.apdAdultHumor(), usual);
 	}
 
-	static String annotationFor( UimsdUnlock.Flags flags, File root, boolean enforced, String usual ){
+	static String annotationFor( UimsdUnlock.Flags flags, File root, boolean enforced, boolean adultHumor, String usual ){
 		if (!enforced) return usual;
-		if (UimsdUnlock.takePrompt(flags)) return TENTH_RUN_ARROW_TEXT;
+		if (UimsdUnlock.promptActive(flags)) return adultHumor ? TENTH_RUN_ARROW_ADULT : TENTH_RUN_ARROW_CLEAN;
 		if (flags.unlocked()) return usual;
 		return UimsdUnlock.isUnlocked(flags, root, true) ? usual : LOCKED_ARROW_TEXT;
 	}
@@ -115,6 +117,8 @@ public final class UimsdGate {
 	public static void open( final Class<? extends PixelScene> from ){
 		final File root = ApdRecorder.historyRoot();
 		if (UimsdUnlock.isUnlocked(FLAGS, root, enforced())){
+			//opening UIMSD after the tenth genuine run is what retires the title arrow
+			UimsdUnlock.retirePrompt(FLAGS);
 			UimsdScene.openNow(from);
 			return;
 		}

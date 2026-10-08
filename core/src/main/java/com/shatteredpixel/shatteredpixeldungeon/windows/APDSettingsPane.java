@@ -57,6 +57,7 @@ public class APDSettingsPane extends Component {
 	private OptionSlider optExotic;
 	private RenderedTextBlock info;
 	private CheckBox chkRecord;
+	private CheckBox chkAdult;
 	private RenderedTextBlock status;
 	private RenderedTextBlock storage;
 	private RedButton btnTest;
@@ -100,6 +101,17 @@ public class APDSettingsPane extends Component {
 		};
 		chkRecord.checked( SPDSettings.apdRecording() );
 		add( chkRecord );
+
+		//the one shared humor preference: Clean unless the player chooses Adult here
+		chkAdult = new CheckBox( "Adult humor (18+)" ) {
+			@Override
+			protected void onClick() {
+				super.onClick();
+				SPDSettings.apdAdultHumor( checked() );
+			}
+		};
+		chkAdult.checked( SPDSettings.apdAdultHumor() );
+		add( chkAdult );
 
 		status = PixelScene.renderTextBlock( ApdRecorder.status().summary(), 5 );
 		add( status );
@@ -237,6 +249,8 @@ public class APDSettingsPane extends Component {
 		pos = info.bottom() + GAP;
 		chkRecord.setRect( x, pos, width, 16 );
 		pos = chkRecord.bottom() + GAP;
+		chkAdult.setRect( x, pos, width, 16 );
+		pos = chkAdult.bottom() + GAP;
 		status.maxWidth( (int)width );
 		status.setPos( x, pos );
 		pos = status.bottom() + GAP;
