@@ -18,7 +18,13 @@ import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdModel;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.AboutScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.HeroSelectScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.JournalScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.NewsScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.RankingsScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.StartScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.UimsdScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
@@ -252,6 +258,47 @@ public class PrivacyAndHeroBackDeviceTest {
 		} finally {
 			SPDSettings.apdSending(sendingWas);
 			SPDSettings.apdServer(serverWas);
+		}
+	}
+
+	//every screen the title opens must answer Back by returning to the title in at most two presses; all are tried and the ones that do not are listed together
+	@Test
+	public void everyScreenOpenedFromTheTitleGoesBackToTheTitle() throws Exception {
+		try (ActivityScenario<AndroidLauncher> scenario = ActivityScenario.launch(AndroidLauncher.class)){
+			start();
+			boolean introWas = SPDSettings.intro();
+			SPDSettings.intro(false);
+			final List<String> bad = new ArrayList<>();
+			try {
+				final Class<?>[] scenes = { RankingsScene.class, JournalScene.class, AboutScene.class, ChangesScene.class, StartScene.class, NewsScene.class };
+				for (final Class<?> sc : scenes){
+					onRender(new Runnable(){ public void run(){ ShatteredPixelDungeon.switchNoFade(sc.asSubclass(com.watabou.noosa.Scene.class)); } });
+					long by = System.currentTimeMillis() + 20000;
+					while (!sc.isInstance(Game.scene()) && System.currentTimeMillis() < by) Thread.sleep(200);
+					if (!sc.isInstance(Game.scene())){
+						bad.add(sc.getSimpleName() + " (did not open)");
+						onRender(new Runnable(){ public void run(){ ShatteredPixelDungeon.switchNoFade(TitleScene.class); } });
+						Thread.sleep(1500);
+						continue;
+					}
+					Thread.sleep(1500);
+					int presses = 0;
+					while (!(Game.scene() instanceof TitleScene) && presses < 3){
+						pressBack();
+						presses++;
+						Thread.sleep(1200);
+					}
+					Log.w(TAG, sc.getSimpleName() + ": Back reached " + Game.scene().getClass().getSimpleName() + " after " + presses);
+					if (!(Game.scene() instanceof TitleScene) || presses > 2){
+						bad.add(sc.getSimpleName() + " (ended on " + Game.scene().getClass().getSimpleName() + " after " + presses + ")");
+						onRender(new Runnable(){ public void run(){ ShatteredPixelDungeon.switchNoFade(TitleScene.class); } });
+						Thread.sleep(1500);
+					}
+				}
+			} finally {
+				SPDSettings.intro(introWas);
+			}
+			assertTrue("these screens did not go back to the title: " + bad, bad.isEmpty());
 		}
 	}
 }
