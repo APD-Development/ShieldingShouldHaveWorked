@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdPlay;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -209,6 +210,7 @@ public class Wandmaker extends NPC {
 			});
 
 			Quest.given = true;
+			ApdPlay.onQuest( "Wandmaker", "given" );
 		}
 
 		return true;
@@ -449,6 +451,7 @@ public class Wandmaker extends NPC {
 		}
 		
 		public static void complete() {
+			ApdPlay.onQuest( "Wandmaker", "done" );
 			wand1 = null;
 			wand2 = null;
 			

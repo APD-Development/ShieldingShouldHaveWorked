@@ -23,6 +23,11 @@ uimsd-first-screen | - | APD 4.0.8-apd | 2026-10-07
   item is never shown for a run that is still going, even with hidden information switched on. After a run is over it can be revealed.
 - Runs played under different rules are never mixed unless you choose to; rows whose ruleset is unknown are kept apart and counted.
 
+telemetry-1.10-quest-steps | telemetry 1.10 | APD 4.0.8-apd | 2026-10-08
+- Telemetry 1.10 records each step of the Sad ghost, Wandmaker, Blacksmith and Imp quests: when it was given, when what it asked for was found or
+  beaten, and when the reward stage was reached.
+- Runs recorded before 1.10 have no such record: they show as unknown (?), never as "no quest".
+
 telemetry-1.9-hero-state | telemetry 1.9 | APD 4.0.8-apd | 2026-10-08
 - Telemetry 1.9 records the hero's health, maximum health, shield and hunger at the start of every turn the hero takes, at full detail
   (stored compactly, one observation per turn). It makes questions like "how often was I below a third of my health" possible.

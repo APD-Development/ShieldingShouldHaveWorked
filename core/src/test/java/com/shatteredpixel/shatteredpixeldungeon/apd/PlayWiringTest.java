@@ -34,6 +34,10 @@ public class PlayWiringTest {
 		HOOKS.put("levels/Level.java", 1);             //secret revealed
 		HOOKS.put("actors/blobs/WellWater.java", 1);   //well used
 		HOOKS.put("journal/Document.java", 2);         //page found, page read
+		HOOKS.put("actors/mobs/npcs/Ghost.java", 3);      //quest given, ready, done
+		HOOKS.put("actors/mobs/npcs/Wandmaker.java", 2);  //quest given, done
+		HOOKS.put("actors/mobs/npcs/Blacksmith.java", 2); //quest given, done
+		HOOKS.put("actors/mobs/npcs/Imp.java", 4);        //quest given (old and new), done (old and new)
 		HOOKS.put("journal/Notes.java", 4);            //landmark added/removed, key added/used
 	}
 

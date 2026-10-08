@@ -133,6 +133,13 @@ public final class ApdPlay {
 		try { p.onWellUsed(well); } catch (Throwable ignored){}
 	}
 
+	//an NPC quest moved on: "given", "ready" (the thing asked for was found or beaten) or "done" (the reward stage was reached)
+	public static void onQuest( String npc, String step ){
+		PlayTracker p = t();
+		if (p == null || restoring > 0) return;
+		try { p.onQuest(npc, step); } catch (Throwable ignored){}
+	}
+
 	//Notes.add / Notes.remove for a landmark, after the journal changed
 	public static void onLandmark( String landmark, int depth, boolean added ){
 		PlayTracker p = t();

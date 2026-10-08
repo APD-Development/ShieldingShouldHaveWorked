@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdPlay;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -117,6 +118,7 @@ public class Blacksmith extends NPC {
 							super.hide();
 
 							Quest.given = true;
+							ApdPlay.onQuest( "Blacksmith", "given" );
 							Quest.completed = false;
 							Item pick = Quest.pickaxe != null ? Quest.pickaxe : new Pickaxe();
 							if (pick.doPickUp( Dungeon.hero )) {
@@ -442,6 +444,7 @@ public class Blacksmith extends NPC {
 
 		public static void complete(){
 			completed = true;
+			ApdPlay.onQuest( "Blacksmith", "done" );
 
 			favor = 0;
 			DarkGold gold = Dungeon.hero.belongings.getItem(DarkGold.class);

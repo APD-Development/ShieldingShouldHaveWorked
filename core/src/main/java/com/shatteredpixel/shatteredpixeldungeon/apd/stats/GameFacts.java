@@ -96,6 +96,12 @@ public final class GameFacts {
 			.value("depth", "Floor", "The floor the landmark is on.", FactKind.PLAIN)
 			.tag("action", "Change", "added or removed").since(1, 9).build());
 
+	//an NPC quest moved on a step: given, ready (what was asked for was found or beaten) or done (the reward stage was reached)
+	public static final FactKind QUEST = FactKinds.register(FactKind.builder("npc.quest", "Quest step").plural("Quest steps").area("Exploration")
+			.description("Each step of the Sad ghost, Wandmaker, Blacksmith and Imp quests as it happened.").subject("Quest giver")
+			.value("depth", "Floor", "The floor the player was on.", FactKind.PLAIN)
+			.tag("step", "Step", "given, ready or done").since(1, 10).build());
+
 	//a key was picked up or used
 	public static final FactKind KEY = FactKinds.register(FactKind.builder("journal.key", "Key").plural("Keys").area("Exploration")
 			.description("Every key picked up or used.").subject("Key")

@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdPlay;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -187,6 +188,7 @@ public class Ghost extends NPC {
 			if (questBoss.pos != -1) {
 				GameScene.add(questBoss);
 				Quest.given = true;
+				ApdPlay.onQuest( "Sad ghost", "given" );
 				Game.runOnRenderThread(new Callback() {
 					@Override
 					public void call() {
@@ -369,6 +371,7 @@ public class Ghost extends NPC {
 				GLog.n( Messages.get(Ghost.class, "find_me") );
 				Sample.INSTANCE.play( Assets.Sounds.GHOST );
 				processed = true;
+				ApdPlay.onQuest( "Sad ghost", "ready" );
 				Statistics.questScores[0] += 1000;
 
 				Game.runOnRenderThread(new Callback() {
@@ -394,6 +397,7 @@ public class Ghost extends NPC {
 		public static void complete() {
 			weapon = null;
 			armor = null;
+			ApdPlay.onQuest( "Sad ghost", "done" );
 			
 			Notes.remove( Notes.Landmark.GHOST );
 		}

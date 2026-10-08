@@ -136,6 +136,10 @@ final class PlayTracker {
 		facts.record(GameFacts.LANDMARK, GameSnapshot.turn(), landmark, "", new long[]{ depth }, new String[]{ added ? "added" : "removed" });
 	}
 
+	void onQuest( String npc, String step ){
+		facts.record(GameFacts.QUEST, GameSnapshot.turn(), npc, "", new long[]{ Dungeon.depth }, new String[]{ step });
+	}
+
 	void onKey( com.shatteredpixel.shatteredpixeldungeon.items.Item key, int depth, int quantity, boolean added ){
 		if (key == null) return;
 		facts.record(GameFacts.KEY, GameSnapshot.turn(), name(key.getClass()), "", new long[]{ depth, quantity }, new String[]{ added ? "added" : "used" });

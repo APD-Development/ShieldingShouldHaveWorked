@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdPlay;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -148,6 +149,7 @@ public class Imp extends NPC {
 						Messages.get(this, "old_monks_1", Messages.titleCase(Dungeon.hero.name()))
 						: Messages.get(this, "old_golems_1", Messages.titleCase(Dungeon.hero.name()))));
 				Quest.given = true;
+				ApdPlay.onQuest( "Ambitious imp", "given" );
 				Quest.completed = false;
 			}
 		} else {
@@ -161,6 +163,7 @@ public class Imp extends NPC {
 								super.hide();
 
 								Quest.given = true;
+								ApdPlay.onQuest( "Ambitious imp", "given" );
 								Quest.completed = false;
 
 								tell(Messages.get(Imp.this, "quest_intro_2"));
@@ -377,6 +380,7 @@ public class Imp extends NPC {
 		public static void oldComplete() {
 			reward = null;
 			completed = true;
+			ApdPlay.onQuest( "Ambitious imp", "done" );
 
 			Statistics.questScores[3] = 4000;
 			Notes.remove( Notes.Landmark.IMP );
@@ -384,6 +388,7 @@ public class Imp extends NPC {
 
 		public static void complete( int score ){
 			completed = true;
+			ApdPlay.onQuest( "Ambitious imp", "done" );
 
 			Imp.Quest.score = score;
 			Statistics.questScores[3] += score;
