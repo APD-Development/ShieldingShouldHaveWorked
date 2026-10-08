@@ -42,7 +42,13 @@ The long project handoff is `docs/APD-HANDOFF.md`; the canonical plan is `APD_Ca
 - Upstream support/Patreon text.
 - Backend: provider, sign-in methods, key custody, ranking verification level, retention, moderation.
 - Contact Evan Debenham; delete branches `tmp-red-click` and `tmp-red-click2`.
+- Hero-select completion marker design (look and placement).
 - Possible flake: `CombatTelemetryTest.theTruthBehindAFightIsInternalOnly` failed once locally, passed on rerun. If it recurs, pin the random generator; do not loosen the assertion.
+
+## Queue notes
+- Throws are already recorded as item actions (Item.execute) and travel as a flag on moves; trades are recorded. Do not re-add them.
+- Hero-select completion markers (plan 7.7): CompletionMarks computes the data but the marker look/placement is an open design choice, so no screen yet.
+- Next step for the resume: review the whole canonical plan (/tmp/gen/plan.txt may be gone; re-extract the docx) for any approved, unblocked task not yet done; then remaining recording candidates (levers, NPC/quest steps, shop stock seen, ally summons, alchemy details, level feelings), one small batch at a time.
 
 ## Final deliverable
 When the queue is finished, write ONE concise morning report: stable build and commit, completed work, tests passed or failed, bugs fixed, backend architecture and code, phone-check items, anything stopped or deferred and why, recommended next step.
