@@ -25,10 +25,18 @@ The long project handoff is `docs/APD-HANDOFF.md`; the canonical plan is `APD_Ca
 ## In flight
 - Nothing. Device run 87 green (API 26 + 34, incl. PlayRunDeviceTest) at 513b4fc; main = apd-build-73 (76faff8), Build APK green. Recorded in docs/APD-HANDOFF.md. Run 86 was red before the fix (cause not read; superseded by 87).
 
+## Phone-test checklist (owner, from about noon Eastern; the newest main build)
+- Options > Privacy (UIMSD table > Options): the four rows plus "Evidence requests (0)"; sending shows Off; turning it on and pressing Send with no address says there is no usable address; nothing is ever sent by itself.
+- Android Back on the character-selection screen: one Back with a dialog open closes only the dialog; Back with a hero picked leaves toward the title in one or two presses and never closes the app.
+- Back in UIMSD Home / a table / a submenu / Ask / the tour / APD Settings / Rankings (from builds 70-71, not yet checked on a phone).
+- Difficulty picker above Start (1-5), a started run keeps its difficulty.
+- Debug builds only: run sheet > Queue for submission / Show what is queued / Take this run out of the queue.
+
 ## Next task (exact)
-- Owner said the provider is NOT a blocker and asked for backend work to continue. Built since build 74 (core tests green, not yet on main): AccountRequests (export/delete), EvidenceMessages, HttpGateway + Gateways.choose (off unless enabled with a secure address), EndToEndSubmissionTest against a reference server. Commits 450153a, fb5d220 and the e2e test commit.
-- Still buildable without decisions: (1) a sending setting (off by default) and sign-in-ready TokenSource wiring, plus a flush call after a run ends / on the title screen, with a device test; (2) an "Account data" screen (export/delete buttons that queue the requests) behind the same switch; (3) a group/role + voting + content-approval client path using the same gateway; (4) the reference server as a standalone runnable (still test code) if the owner wants to try it locally.
-- Needs the owner: the real server and its address, the sign-in provider (what produces the session token), key custody for grants and content approval, retention numbers, moderation.
+- Owner (2026-10-09 ~09:15 UTC): resume without waiting; hourly resume trigger trig_018fkLK7mfJFyTjrj9gzS3Za (cron 15 * * * *) is active; do not cancel it.
+- Since build 74: main = e1ecea2 (device run 91 green). On the claude branch, core tests green, device run pending/verifying: Privacy + hero-select Back device tests (run 93 on ea7513c), evidence ledger/inbox/flow, Mailbox + HttpGateway.fetch, Evidence requests menu (8b5582d), ballot/report wire forms.
+- Next: read device run results, fix, push a green sha to main, record the build. Then: sync client for preferences over SyncRecord (needs session token interface), TokenSource/sign-in state in LocalProfile, recording batches (quest steps, shop stock seen, ally summons, alchemy, level feelings, boss phases), Cleric un-ban behind a default-off flag (ruleset id only, no balance), standalone runnable reference server (test scope), the codebase-wide comment pass (low).
+- Needs the owner: real server and address, sign-in provider, key custody, retention, moderation, Cleric ruleset identity, upstream support text, marker design.
 
 ## Decisions already made (do not ask again)
 - Local-first; backend owns shared authoritative state; raw UIMSD history stays local. Provider-neutral interfaces; the provider choice is NOT a blocker. No secret in the APK; gameplay cannot create developer grants. No public deployment, spending, credentials, hidden analytics or private history uploads.
