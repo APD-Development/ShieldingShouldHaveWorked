@@ -46,6 +46,8 @@ public final class Outbox {
 	public static final class FlushResult {
 		public int sent, kept, rejected;
 		public final List<String> rejectedDetails = new ArrayList<>();
+		//the items the server accepted, as they were queued (so the caller can record what was sent)
+		public final List<Item> sentItems = new ArrayList<>();
 	}
 
 	private final List<Item> items = new ArrayList<>();
@@ -110,6 +112,7 @@ public final class Outbox {
 				case OK:
 					items.remove(it);
 					r.sent++;
+					r.sentItems.add(it);
 					break;
 				case REJECTED:
 					items.remove(it);

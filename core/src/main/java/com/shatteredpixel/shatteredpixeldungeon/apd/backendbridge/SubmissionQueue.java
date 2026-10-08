@@ -169,9 +169,34 @@ public final class SubmissionQueue {
 			if (ignoreBackoff) for (Outbox.Item i : box.items()) i.nextAttemptAtMillis = nowMillis;
 			Outbox.FlushResult r = box.flush(gateway, nowMillis);
 			OutboxStore.save(box, fileIn(historyRoot));
+			for (Outbox.Item sent : r.sentItems) recordSent(historyRoot, sent, nowMillis);
 			return r;
 		} catch (IOException e){
 			return none;
+		}
+	}
+
+	//remembers what was sent so a later evidence request can be checked against it
+	private static void recordSent( File historyRoot, Outbox.Item sent, long nowMillis ){
+		if (!sent.id.value.startsWith("ob_")) return;
+		com.shatteredpixel.shatteredpixeldungeon.apd.backend.RunSubmission s = RunSubmissionCodec.fromEnvelope(sent.envelope);
+		if (s != null) SubmittedLedger.record(historyRoot, sent.id.value.substring(3), s.evidenceDigestHex, nowMillis);
+	}
+
+	static byte[] readAllBytes( File f ) throws IOException {
+		return readAll(f);
+	}
+
+	//queues an envelope that is not a run submission (evidence data the player agreed to send); false if it could not be queued or saved
+	static boolean enqueueEnvelope( File historyRoot, Id id, com.shatteredpixel.shatteredpixeldungeon.apd.backend.Envelope e, long nowMillis ){
+		try {
+			Outbox box = new Outbox();
+			OutboxStore.load(box, fileIn(historyRoot));
+			box.enqueue(id, e, nowMillis);
+			OutboxStore.save(box, fileIn(historyRoot));
+			return true;
+		} catch (IOException | IllegalArgumentException ex){
+			return false;
 		}
 	}
 
