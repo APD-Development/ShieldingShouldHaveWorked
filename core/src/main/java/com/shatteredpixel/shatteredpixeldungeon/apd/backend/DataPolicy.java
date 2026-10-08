@@ -46,6 +46,10 @@ public final class DataPolicy {
 		SCHEMAS.put("apd.content-submission", DataClass.PUBLIC_ON_SUBMIT);
 		SCHEMAS.put("apd.vote-ballot", DataClass.ACCOUNT_PRIVATE);        //who voted for what is not shown; only tallies are
 		SCHEMAS.put("apd.report", DataClass.ACCOUNT_PRIVATE);             //visible to moderators only
+		SCHEMAS.put(AccountRequests.EXPORT_SCHEMA, DataClass.ACCOUNT_PRIVATE);
+		SCHEMAS.put(AccountRequests.DELETE_SCHEMA, DataClass.ACCOUNT_PRIVATE);
+		SCHEMAS.put(EvidenceMessages.REQUEST_SCHEMA, DataClass.ACCOUNT_PRIVATE);
+		SCHEMAS.put(EvidenceMessages.DATA_SCHEMA, DataClass.ACCOUNT_PRIVATE);   //raw run data: only ever built for a request the player agreed to
 	}
 
 	private DataPolicy(){}
