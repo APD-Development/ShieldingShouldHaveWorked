@@ -111,21 +111,21 @@ public class PrivacyAndHeroBackDeviceTest {
 		Thread.sleep(2500);
 	}
 
-	private static void pick( int index ) throws Exception {
+	//what a tap on row 'index' of the list on top does: the list's own picker runs
+	private static void pickItem( final int index ) throws Exception {
 		final Window w = top();
 		assertTrue("a list is on top, but it is " + (w == null ? "nothing" : w.getClass().getSimpleName()), w instanceof WndUimsdList);
 		Field f = WndUimsdList.class.getDeclaredField("picker");
 		f.setAccessible(true);
 		final WndUimsdList.Picker p = (WndUimsdList.Picker) f.get(w);
-		onRender(new Runnable(){ public void run(){ p.onPick(index(), false); } private int index(){ return PICK; } });
+		onRender(new Runnable(){ public void run(){ p.onPick(index, false); } });
 		Thread.sleep(500);
 	}
 
-	private static int PICK;
-
-	private static void pickItem( int i ) throws Exception {
-		PICK = i;
-		pick(i);
+	private static Object uimsdModel() throws Exception {
+		Field f = UimsdScene.class.getDeclaredField("model");
+		f.setAccessible(true);
+		return f.get(null);
 	}
 
 	@Test
@@ -188,11 +188,8 @@ public class PrivacyAndHeroBackDeviceTest {
 			onRender(new Runnable(){ public void run(){ UimsdScene.open(TitleScene.class); } });
 			waitUntil("the UIMSD scene", new java.util.concurrent.Callable<Boolean>(){ public Boolean call(){ return Game.scene() instanceof UimsdScene; } }, 30000);
 			Thread.sleep(2500);
-			Field mf = UimsdScene.class.getDeclaredField("model");
-			mf.setAccessible(true);
-			waitUntil("the model", new java.util.concurrent.Callable<Boolean>(){ public Boolean call() throws Exception { return mf_get() != null; } private Object mf_get() throws Exception {
-				Field f = UimsdScene.class.getDeclaredField("model"); f.setAccessible(true); return f.get(null); } }, 60000);
-			final UimsdModel m = (UimsdModel) mf.get(null);
+			waitUntil("the model", new java.util.concurrent.Callable<Boolean>(){ public Boolean call() throws Exception { return uimsdModel() != null; } }, 60000);
+			final UimsdModel m = (UimsdModel) uimsdModel();
 
 			//the Options window itself builds, with the Privacy entry in it
 			final int base = windows().size();
