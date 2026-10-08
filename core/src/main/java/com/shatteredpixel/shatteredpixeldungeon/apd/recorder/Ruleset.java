@@ -57,7 +57,8 @@ public final class Ruleset {
 	public static Ruleset current(){
 		//a run that never recorded its exotic setting (saved by an older version) has no known ruleset: it is not given today's setting
 		if (!Dungeon.apdExoticKnown) return unknown();
-		return of(Dungeon.apdExotic, Dungeon.challenges, Dungeon.difficulty, Dungeon.difficultyBalance);
+		boolean clericRun = Dungeon.hero != null && Dungeon.hero.heroClass == com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.CLERIC;
+		return of(Dungeon.apdExotic, Dungeon.challenges, Dungeon.difficulty, Dungeon.difficultyBalance, clericRun);
 	}
 
 	//the rules a NEW run would be played under, from the settings
@@ -92,7 +93,14 @@ public final class Ruleset {
 
 	//a run's own rules: its difficulty and the balance revision it was started with (which a later build's newer balance never changes)
 	public static Ruleset of( int exoticChance, int challenges, int difficulty, int balance ){
-		String text = "base=spd-4.0.0;apd0001=on;cleric=blocked;exotic=" + exoticChance + ";challenges=" + challenges;
+		return of(exoticChance, challenges, difficulty, balance, false);
+	}
+
+	//A run played as Cleric (possible only when the test switch un-bans Cleric) says "cleric=playable" instead of "cleric=blocked".
+	//Every other run keeps exactly the text, and so the id, it always had: nothing already recorded changes identity, and the Cleric
+	//runs, whose rules were never played before, can never be mixed into the history of the others.
+	public static Ruleset of( int exoticChance, int challenges, int difficulty, int balance, boolean clericRun ){
+		String text = "base=spd-4.0.0;apd0001=on;cleric=" + (clericRun ? "playable" : "blocked") + ";exotic=" + exoticChance + ";challenges=" + challenges;
 		int level = Difficulty.isValid(difficulty) ? difficulty : Difficulty.DEFAULT;
 		if (level != Difficulty.DEFAULT) text += ";difficulty=" + level + ";balance=" + Math.max(0, balance);
 		return new Ruleset(ID_VERSION + "-" + hash12(text), text, exoticChance);

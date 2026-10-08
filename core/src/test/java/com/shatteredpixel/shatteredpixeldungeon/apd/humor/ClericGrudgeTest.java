@@ -64,7 +64,7 @@ public class ClericGrudgeTest {
 
 	@Test
 	public void disabledByDefaultAndWhenOffNothingEverAppears(){
-		assertFalse( "the shipped switch is off until the owner has reviewed the content", ClericGrudge.ENABLED );
+		assertFalse( "the shipped switch is off until the owner has reviewed the content", ClericGrudge.enabled() );
 		List<Line> lines = HumorTestSupport.shipped();
 		GrudgePrefs prefs = HumorTestSupport.prefs( Frequency.RARE );
 		ClericGrudge off = grudge( lines, new Ledger( null ), 1, false );

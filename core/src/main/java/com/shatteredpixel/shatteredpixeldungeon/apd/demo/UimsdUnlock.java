@@ -44,7 +44,9 @@ public final class UimsdUnlock {
 
 	// Until the owner switches the gate on, UIMSD stays open for everyone and no unlock screen is shown. (The gate is part of the Demo
 	// Unlock feature; the rules below are complete and tested, only the switch is kept off so nobody is locked out by surprise.)
-	public static final boolean ENFORCED = false;
+	public static boolean enforced(){
+		return com.shatteredpixel.shatteredpixeldungeon.apd.ApdFeatures.demoUnlock();
+	}
 
 	// Where the two permanent flags live (settings in the game, memory in tests).
 	public interface Flags {

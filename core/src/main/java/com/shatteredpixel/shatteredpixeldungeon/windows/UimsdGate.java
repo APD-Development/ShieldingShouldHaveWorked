@@ -33,7 +33,7 @@ import com.watabou.noosa.Game;
 
 import java.io.File;
 
-// The door to UIMSD. While the unlock gate is off (UimsdUnlock.ENFORCED) it simply opens UIMSD. When it is on and UIMSD is still closed, it
+// The door to UIMSD. While the unlock gate is off (UimsdUnlock.enforced()) it simply opens UIMSD. When it is on and UIMSD is still closed, it
 // says how many finished runs are needed and, once only, offers the demo route ("I LIKE CONFUSION") behind the warning below.
 public final class UimsdGate {
 
@@ -70,7 +70,7 @@ public final class UimsdGate {
 	}
 
 	private static boolean enforced(){
-		return UimsdUnlock.ENFORCED || forcedOn;
+		return UimsdUnlock.enforced() || forcedOn;
 	}
 
 	private UimsdGate(){}

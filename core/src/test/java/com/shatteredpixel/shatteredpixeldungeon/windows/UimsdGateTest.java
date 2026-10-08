@@ -27,7 +27,7 @@ public class UimsdGateTest {
 
 	@Test
 	public void theGateIsOffUntilTheOwnerSwitchesItOn(){
-		assertFalse(UimsdUnlock.ENFORCED);
+		assertFalse(UimsdUnlock.enforced());
 	}
 
 	@Test

@@ -169,8 +169,8 @@ public class HeroSelectScene extends PixelScene {
 
 				if (GamesInProgress.selectedClass == null) return;
 
-				//APD: Cleric is deliberately blocked, see WndClericRemoved
-				if (GamesInProgress.selectedClass == HeroClass.CLERIC){
+				//APD: Cleric is deliberately blocked, see WndClericRemoved, unless the private test build's switch un-bans it
+				if (GamesInProgress.selectedClass == HeroClass.CLERIC && !com.shatteredpixel.shatteredpixeldungeon.apd.ApdFeatures.clericPlayable()){
 					WndClericRemoved.trigger();
 					return;
 				}

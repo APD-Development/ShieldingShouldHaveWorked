@@ -126,7 +126,7 @@ public class HumorIsolationTest {
 		for (String method : new String[]{ "public static void onRunEnded", "public static void tick" }){
 			String body = hooks.substring( hooks.indexOf( method ) );
 			body = body.substring( body.indexOf( '{' ) + 1 ).trim();
-			assertTrue( method + " starts with the switch", body.startsWith( "if (!ClericGrudge.ENABLED) return;" ) );
+			assertTrue( method + " starts with the switch", body.startsWith( "if (!ClericGrudge.enabled()) return;" ) );
 		}
 	}
 

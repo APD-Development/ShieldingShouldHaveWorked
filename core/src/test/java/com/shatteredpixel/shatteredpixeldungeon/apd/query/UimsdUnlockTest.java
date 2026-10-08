@@ -205,7 +205,7 @@ public class UimsdUnlockTest {
 		assertFalse(UimsdUnlock.demoButtonAvailable(flags, realRoot, false));
 		assertEquals(UimsdUnlock.Generated.NOT_AVAILABLE, UimsdUnlock.generateDemo(flags, realRoot, RULES, NOW, false));
 		assertFalse("nothing was recorded", flags.unlocked || flags.demoUsed);
-		assertFalse(UimsdUnlock.ENFORCED);
+		assertFalse(UimsdUnlock.enforced());
 	}
 
 	@Test

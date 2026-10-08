@@ -38,8 +38,10 @@ import java.util.Set;
 // Choosing a line never uses it up; the game confirms() once the player was really shown it.
 public final class ClericGrudge {
 
-	// The owner's switch: the whole feature stays off until the content has been reviewed and tried on a phone.
-	public static final boolean ENABLED = false;
+	// The owner's switch: off in the normal build; only the private test build turns it on (ApdFeatures).
+	public static boolean enabled(){
+		return com.shatteredpixel.shatteredpixeldungeon.apd.ApdFeatures.grudge();
+	}
 
 	// nothing in the first twenty minutes after the feature first sees the player
 	static final long GRACE_MS = 20L * 60 * 1000;

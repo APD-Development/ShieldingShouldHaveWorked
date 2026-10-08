@@ -7,6 +7,16 @@ android {
 
     sourceSets.main.assets.srcDirs = [new File(project(':core').projectDir, "/src/main/assets")]
 
+    //APD: a PRIVATE TEST BUILD (-PapdTestBuild) adds one generated asset, apd/features.txt, that turns the owner-approved test features on
+    //(see core/.../apd/ApdFeatures.java). The normal build has no such file, so every one of them stays off.
+    if (project.hasProperty('apdTestBuild')) {
+        def apdFeaturesDir = new File(buildDir, 'apdTestAssets')
+        def apdFeaturesFile = new File(apdFeaturesDir, 'apd/features.txt')
+        apdFeaturesFile.parentFile.mkdirs()
+        apdFeaturesFile.text = "testBuild\ngrudge\ndemoUnlock\nclericPlayable\n"
+        sourceSets.main.assets.srcDirs += [apdFeaturesDir]
+    }
+
     androidResources {
         localeFilters += ['en', 'zh-rCN', 'ko', 'ru', 'es', 'pt', 'fr', 'de', 'zh-rTW', 'ja', 'pl',
                           'it', 'tr', 'vi', 'uk', 'id', 'cs', 'nl', 'sv', 'hu', 'fi', 'el', 'be', 'eo' ]
@@ -41,7 +51,7 @@ android {
             signingConfig signingConfigs.apdDebug
             applicationIdSuffix ".indev"
             //APD: CI passes -PapdBuild=<run number> so the installed app says which build it is (shown in UIMSD and in Android's app info)
-            versionNameSuffix '-INDEV' + (project.hasProperty('apdBuild') ? '-b' + project.property('apdBuild') : '')
+            versionNameSuffix '-INDEV' + (project.hasProperty('apdBuild') ? '-b' + project.property('apdBuild') : '') + (project.hasProperty('apdTestBuild') ? '-TEST' : '')
             dependencies {
                 debugImplementation project(':services:updates:debugUpdates')
                 debugImplementation project(':services:news:debugNews')

@@ -80,7 +80,7 @@ public class WndClericGrudge extends Window {
 
 	public WndClericGrudge(){
 		super();
-		RenderedTextBlock title = PixelScene.renderTextBlock( "THE GRUDGE", 9 );
+		RenderedTextBlock title = PixelScene.renderTextBlock( "THE GRUDGE" + (com.shatteredpixel.shatteredpixeldungeon.apd.ApdFeatures.testBuild() ? "\n(PRIVATE TEST BUILD)" : ""), 9 );
 		title.hardlight( 0xFFFF44 );
 		title.maxWidth( WIDTH - 2 * MARGIN );
 		title.setPos( MARGIN, MARGIN );

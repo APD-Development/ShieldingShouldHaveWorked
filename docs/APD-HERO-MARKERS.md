@@ -31,3 +31,18 @@ A tiny caption under the class name such as "Won ×3, best difficulty 4".
 
 ## Recommendation
 Option 1 (pips) with Option 2's star appearing beside the pips when the class has been won at all. It is the smallest design that shows both "have I won this?" and "how hard?", it needs no new data, and it stays quiet for new players. I will not build it until you choose, and it will wait behind the higher-priority work.
+
+## EXACT DESIGN for approval (pips + win star; owner tentatively approved the direction, 2026-10-08; NOT built)
+Per class, from `CompletionMarks` (genuine finished runs only; demo, duplicate and unfinished runs never count):
+```
+   [ portrait ]          portrait and its touch area: unchanged, nothing drawn on the face
+   Warrior               class name: unchanged
+   ■ ■ ■ □ □   ★         pips row, then the star, centered under the name
+```
+- **Pips:** five 3x3-pixel squares (6 px apart, one per difficulty 1-5). Filled (the hero's accent color) up to the highest difficulty WON with that class; hollow outline above it. Shape (filled vs hollow) carries the meaning, so it works without color.
+- **Star:** one 5x5-pixel star right of the pips, shown only if the class has at least one genuine win. Never a number; no count of wins.
+- **No data / no wins:** a class never run shows nothing (clean screen for a new player). A class run but never won shows five hollow pips and no star. A win recorded without a difficulty (older runs) shows the star with five hollow pips (never a guessed level).
+- **Layout:** drawn inside the existing class-name row height; pips are not touchable; the selected class's marker sits above the difficulty picker without overlapping it, on every screen size.
+- **Cleric:** identical treatment once Cleric is playable; no joke on the marker.
+- **Cost / risk:** one small view class plus a read of `CompletionMarks` when the scene opens; no new data, no balance effect, no effect on saved games. Tests: the pip count for fixture histories (none / run-not-won / won at 1, 3, 5 / win without difficulty / demo-only / duplicate), plus a source check that the marker never draws over the portrait rectangle.
+Reply "approve markers" (or changes) and it is built next; until then it stays unbuilt.

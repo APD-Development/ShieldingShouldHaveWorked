@@ -59,7 +59,7 @@ import java.util.List;
 import java.util.Random;
 
 // The game's side of the Cleric grudge: where its files live, what the game tells it, and the one place a popup is put on screen. The humor
-// code itself never sees the game. Everything here is a no-op while ClericGrudge.ENABLED is off, and a failure anywhere in it is swallowed:
+// code itself never sees the game. Everything here is a no-op while ClericGrudge.enabled() is off, and a failure anywhere in it is swallowed:
 // the grudge may never reach play.
 //
 // A surprise is shown only in a place the player switched on (startup, main menu, during runs, after a run, statistics screens), once the
@@ -118,13 +118,13 @@ public final class GrudgeHooks {
 			File history = ApdRecorder.historyRoot();
 			File file = history == null || history.getParentFile() == null ? null : new File( history.getParentFile(), "apd-humor/ledger.txt" );
 			ledger = new Ledger( file );
-			instance = new ClericGrudge( ClericGrudge.loadPacks( PACKS ), ledger, RNG, ClericGrudge.ENABLED );
+			instance = new ClericGrudge( ClericGrudge.loadPacks( PACKS ), ledger, RNG, ClericGrudge.enabled() );
 		}
 		return instance;
 	}
 
 	public static boolean available(){
-		return ClericGrudge.ENABLED;
+		return ClericGrudge.enabled();
 	}
 
 	public static Counter counter(){
@@ -167,7 +167,7 @@ public final class GrudgeHooks {
 	// Called when the player starts a Cleric run. Returns true if the one-time warning was put on screen (the run then starts when it is
 	// dismissed, by `proceed`); false means nothing was shown and the caller starts the run itself. It never blocks and never fails the start.
 	public static boolean firstClericRun( final Runnable proceed ){
-		if (!ClericGrudge.ENABLED) return false;
+		if (!ClericGrudge.enabled()) return false;
 		try {
 			if (!clericAvailable()) return false;
 			ClericGrudge g = grudge();
@@ -190,7 +190,7 @@ public final class GrudgeHooks {
 
 	// Called when a run has permanently ended. It only notes what happened; the results screen shows it if a popup is due.
 	public static void onRunEnded( boolean won, Object cause ){
-		if (!ClericGrudge.ENABLED) return;
+		if (!ClericGrudge.enabled()) return;
 		try {
 			//only a run the game itself ended the normal way counts: the recorded result agrees with the call, and a win has a living hero
 			if (Dungeon.hero == null || Statistics.gameWon != won || (won && !Dungeon.hero.isAlive())) return;
@@ -234,11 +234,10 @@ public final class GrudgeHooks {
 		t.start();
 	}
 
-	// Can Cleric be chosen for a run right now? Read from the ruleset's own statement (the identity text says "cleric=blocked" while it is
-	// blocked), so the un-ban flips this by itself and the two can never disagree.
+	// Can Cleric be chosen for a run right now? The same switch the hero select reads, so the two can never disagree.
 	static boolean clericAvailable(){
 		try {
-			return !Ruleset.of( 0, 0, 3 ).text.contains( "cleric=blocked" );
+			return com.shatteredpixel.shatteredpixeldungeon.apd.ApdFeatures.clericPlayable();
 		} catch (Throwable t){
 			return false;
 		}
@@ -308,7 +307,7 @@ public final class GrudgeHooks {
 
 	// Called every frame by the game; does nothing unless the feature is on and a quiet scene has settled.
 	public static void tick(){
-		if (!ClericGrudge.ENABLED) return;
+		if (!ClericGrudge.enabled()) return;
 		try {
 			Scene s = Game.scene();
 			long now = System.currentTimeMillis();
