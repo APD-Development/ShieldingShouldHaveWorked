@@ -26,7 +26,8 @@ The long project handoff is `docs/APD-HANDOFF.md`; the canonical plan is `APD_Ca
 - Nothing. Device run 87 green (API 26 + 34, incl. PlayRunDeviceTest) at 513b4fc; main = apd-build-73 (76faff8), Build APK green. Recorded in docs/APD-HANDOFF.md. Run 86 was red before the fix (cause not read; superseded by 87).
 
 ## Next task (exact)
-1. The rolling queue: small recording batches from "Not yet recorded" in docs/APD-UIMSD-UNIVERSAL.md (each with its storage gate and hidden-information review), then other approved plan tasks. Core tests locally; device runs only at checkpoints.
+- QUEUE FINISHED. Plan review done: every [APD 1.0] stats/data/identity item is implemented (see docs/APD-HANDOFF.md "Overnight 2026-10-08"); the rest of the plan is EVENTUALLY/CONCEPT and needs owner decisions, a server/provider, or new characters/mods. Remaining recording candidates (levers, NPC/quest steps, shop stock seen, ally summons, alchemy details, level feelings) are marginal and were not started to avoid busywork. No resume is scheduled.
+- To continue later, the owner picks from the open questions below or approves one of those recording candidates.
 
 ## Decisions already made (do not ask again)
 - Local-first; backend owns shared authoritative state; raw UIMSD history stays local. Provider-neutral interfaces; the provider choice is NOT a blocker. No secret in the APK; gameplay cannot create developer grants. No public deployment, spending, credentials, hidden analytics or private history uploads.
