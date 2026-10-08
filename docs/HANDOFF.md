@@ -23,12 +23,10 @@ The long project handoff is `docs/APD-HANDOFF.md`; the canonical plan is `APD_Ca
 - `PlayRunDeviceTest` (new): run 85 failed because the recorder forgets the log path once the run is sealed; fixed in 513b4fc (path kept from before the death).
 
 ## In flight
-- Device run 87 (android-tests.yml, head 513b4fc) on the claude branch. Run 86 (head 02a49fd) was red, cause not read (likely the same test).
+- Nothing. Device run 87 green (API 26 + 34, incl. PlayRunDeviceTest) at 513b4fc; main = apd-build-73 (76faff8), Build APK green. Recorded in docs/APD-HANDOFF.md. Run 86 was red before the fix (cause not read; superseded by 87).
 
 ## Next task (exact)
-1. Read run 87 for API 26 and 34. Green: `git push origin HEAD:main` for that sha, check main Build APK once, record `apd-build-N` in docs/APD-HANDOFF.md on the claude branch.
-2. Red: read the failure with `get_job_logs` (return_content, the saved file, python grep for `FAILED|AssertionError|APDUI`), fix the test mechanics or the real bug, rerun. Never weaken or skip a test. If run 86's failure was something other than PlayRunDeviceTest, fix that too.
-3. Then the rolling queue: small recording batches from "Not yet recorded" in docs/APD-UIMSD-UNIVERSAL.md (each with its storage gate and hidden-information review), then other approved plan tasks. Core tests locally; device runs only at checkpoints.
+1. The rolling queue: small recording batches from "Not yet recorded" in docs/APD-UIMSD-UNIVERSAL.md (each with its storage gate and hidden-information review), then other approved plan tasks. Core tests locally; device runs only at checkpoints.
 
 ## Decisions already made (do not ask again)
 - Local-first; backend owns shared authoritative state; raw UIMSD history stays local. Provider-neutral interfaces; the provider choice is NOT a blocker. No secret in the APK; gameplay cannot create developer grants. No public deployment, spending, credentials, hidden analytics or private history uploads.
