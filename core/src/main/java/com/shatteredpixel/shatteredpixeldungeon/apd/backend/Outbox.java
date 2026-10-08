@@ -69,6 +69,17 @@ public final class Outbox {
 		return it;
 	}
 
+	//true if the item was queued and is now gone (a player taking back something they queued)
+	public boolean remove( Id id ){
+		for (Item i : items){
+			if (i.id.equals(id)){
+				items.remove(i);
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public int size(){
 		return items.size();
 	}

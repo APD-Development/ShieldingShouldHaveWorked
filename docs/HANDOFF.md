@@ -19,15 +19,16 @@ The long project handoff is `docs/APD-HANDOFF.md`; the canonical plan is `APD_Ca
 - Back fix (exit button ate the Back key), difficulty on the character screen: green on API 26/34, shipped (apd-build-70/71).
 - Backend foundations, local submission queue, sync registry: main build 72 green.
 - UIMSD: saved views, column order, Bosses table, Run type / Modded columns (device runs 79, 83, 84 green).
-- Telemetry 1.9 (hero state, landmarks, keys, secrets, wells, pages): core tests green, NOT yet device-tested.
+- Telemetry 1.9 (hero state, landmarks, keys, secrets, wells, pages): core tests green; device run 87 green (API 26 + 34).
 - `PlayRunDeviceTest` (new): run 85 failed because the recorder forgets the log path once the run is sealed; fixed in 513b4fc (path kept from before the death).
 
 ## In flight
 - Nothing. Device run 87 green (API 26 + 34, incl. PlayRunDeviceTest) at 513b4fc; main = apd-build-73 (76faff8), Build APK green. Recorded in docs/APD-HANDOFF.md. Run 86 was red before the fix (cause not read; superseded by 87).
 
 ## Next task (exact)
-- QUEUE FINISHED. Plan review done: every [APD 1.0] stats/data/identity item is implemented (see docs/APD-HANDOFF.md "Overnight 2026-10-08"); the rest of the plan is EVENTUALLY/CONCEPT and needs owner decisions, a server/provider, or new characters/mods. Remaining recording candidates (levers, NPC/quest steps, shop stock seen, ally summons, alchemy details, level feelings) are marginal and were not started to avoid busywork. No resume is scheduled.
-- To continue later, the owner picks from the open questions below or approves one of those recording candidates.
+- Owner said "restart": backend roadmap work resumes. Done this step: queued-run preview + withdraw (SubmissionQueue.isQueued/preview/withdraw, Outbox.remove, run-sheet actions), core tests green, not yet device-tested.
+- Next backend steps (all provider-neutral, local, nothing sent): (1) read-only queue status line in APD Settings (needs a click test; the pane had a touch-order bug before, so test it on device); (2) local "what would leave this device" export/deletion helper built on DataPolicy (required before any real server); (3) evidence-request protocol design doc (decision 4 pending); (4) device run at the next checkpoint, then push a green sha to main.
+- Then the remaining recording candidates (levers, NPC/quest steps, shop stock seen, ally summons, alchemy details, level feelings), one small batch at a time.
 
 ## Decisions already made (do not ask again)
 - Local-first; backend owns shared authoritative state; raw UIMSD history stays local. Provider-neutral interfaces; the provider choice is NOT a blocker. No secret in the APK; gameplay cannot create developer grants. No public deployment, spending, credentials, hidden analytics or private history uploads.

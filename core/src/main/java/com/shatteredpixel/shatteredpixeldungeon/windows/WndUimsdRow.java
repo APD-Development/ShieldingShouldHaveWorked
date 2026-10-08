@@ -90,6 +90,22 @@ public class WndUimsdRow extends Window {
 			}
 			//Developer preview: queue this finished run locally for a future submission feature. Nothing is sent anywhere (no server exists yet).
 			if (com.watabou.utils.DeviceCompat.isDebug() && WndUimsdReport.isRunsTable(def) && row.finished && !row.imported && !row.runId.isEmpty() && m.root() != null){
+				if (SubmissionQueue.isQueued(m.root(), row.runId)){
+					actions.add(new Action("Show what is queued for this run", new Runnable(){
+						@Override
+						public void run(){
+							String text = SubmissionQueue.preview(m.root(), row.runId);
+							ShatteredPixelDungeon.scene().addToFront(new WndMessage(text == null ? "This run is not queued." : text));
+						}
+					}));
+					actions.add(new Action("Take this run out of the queue", new Runnable(){
+						@Override
+						public void run(){
+							boolean gone = SubmissionQueue.withdraw(m.root(), row.runId);
+							ShatteredPixelDungeon.scene().addToFront(new WndMessage(gone ? "Removed from the queue." : "It could not be removed."));
+						}
+					}));
+				}
 				actions.add(new Action("Queue for submission (preview, sends nothing)", new Runnable(){
 					@Override
 					public void run(){

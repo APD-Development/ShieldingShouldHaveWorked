@@ -101,4 +101,26 @@ public class SubmissionQueueTest {
 		assertEquals("an empty or missing queue is a no-op", 0, SubmissionQueue.flush(tmp.getRoot(), ok, 2_000_000_000L).sent);
 		assertEquals(1, got[0]);
 	}
+
+	@Test
+	public void aQueuedRunCanBeReadBeforeSendingAndTakenBack(){
+		log("run-a", true, 3, 0);
+		log("run-b", true, 2, 0);
+		assertFalse(SubmissionQueue.isQueued(tmp.getRoot(), "run-a"));
+		assertNull(SubmissionQueue.preview(tmp.getRoot(), "run-a"));
+		assertFalse("nothing to take back", SubmissionQueue.withdraw(tmp.getRoot(), "run-a"));
+		SubmissionQueue.enqueueRun(tmp.getRoot(), "run-a", "b", 1);
+		SubmissionQueue.enqueueRun(tmp.getRoot(), "run-b", "b", 2);
+		assertTrue(SubmissionQueue.isQueued(tmp.getRoot(), "run-a"));
+		String text = SubmissionQueue.preview(tmp.getRoot(), "run-a");
+		assertNotNull(text);
+		assertTrue(text.startsWith("apd.run-submission "));
+		assertTrue(text.contains("runId=run-a"));
+		assertTrue("a short summary, never the raw log", text.length() < 1000);
+		assertTrue(SubmissionQueue.withdraw(tmp.getRoot(), "run-a"));
+		assertFalse(SubmissionQueue.isQueued(tmp.getRoot(), "run-a"));
+		assertTrue("the other run stays queued", SubmissionQueue.isQueued(tmp.getRoot(), "run-b"));
+		assertEquals(1, SubmissionQueue.pending(tmp.getRoot()));
+		assertFalse("a bad id is simply not queued", SubmissionQueue.withdraw(tmp.getRoot(), "../x"));
+	}
 }

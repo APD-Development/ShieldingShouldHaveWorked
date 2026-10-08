@@ -108,6 +108,51 @@ public final class SubmissionQueue {
 		}
 	}
 
+	private static Id queueId( String runId ){
+		try {
+			return Id.of(Id.Kind.OUTBOX, "ob_" + runId);
+		} catch (IllegalArgumentException e){
+			return null;
+		}
+	}
+
+	private static Outbox.Item find( File historyRoot, String runId ){
+		Id id = queueId(runId);
+		if (historyRoot == null || id == null) return null;
+		try {
+			Outbox box = new Outbox();
+			OutboxStore.load(box, fileIn(historyRoot));
+			for (Outbox.Item i : box.items()) if (i.id.equals(id)) return i;
+		} catch (IOException ignored){
+		}
+		return null;
+	}
+
+	public static boolean isQueued( File historyRoot, String runId ){
+		return find(historyRoot, runId) != null;
+	}
+
+	//The exact text that would be sent for a queued run, so the player can read it before anything ever leaves the device. null if the run is not queued.
+	public static String preview( File historyRoot, String runId ){
+		Outbox.Item i = find(historyRoot, runId);
+		return i == null ? null : i.envelope.schema + " " + i.envelope.major + "." + i.envelope.minor + "\n" + i.envelope.payload;
+	}
+
+	//Takes a run back out of the queue. Returns false if it was not queued or the queue could not be saved.
+	public static boolean withdraw( File historyRoot, String runId ){
+		Id id = queueId(runId);
+		if (historyRoot == null || id == null) return false;
+		try {
+			Outbox box = new Outbox();
+			OutboxStore.load(box, fileIn(historyRoot));
+			if (!box.remove(id)) return false;
+			OutboxStore.save(box, fileIn(historyRoot));
+			return true;
+		} catch (IOException e){
+			return false;
+		}
+	}
+
 	//Sends what is due through 'gateway' and saves what is left. With the offline gateway (the only one that exists) nothing changes. Never throws.
 	public static Outbox.FlushResult flush( File historyRoot, Gateway gateway, long nowMillis ){
 		Outbox.FlushResult none = new Outbox.FlushResult();
