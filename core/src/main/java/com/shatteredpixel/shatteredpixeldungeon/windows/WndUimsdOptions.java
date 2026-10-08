@@ -25,6 +25,7 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.apd.backend.Gateways;
+import com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge.AccountActions;
 import com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge.BackendClient;
 import com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge.EvidenceFlow;
 import com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge.EvidenceInbox;
@@ -193,6 +194,8 @@ public final class WndUimsdOptions {
 		entries.add(Entry.item("Share what is queued and sent", "A readable copy of everything APD holds for sending: each queued item exactly as it would be sent, what was sent, and any requests. Makes no connection."));
 		entries.add(Entry.item(session == null ? "Account: signed out" : "Account: signed in", session == null ? "There is no sign-in method in this version, so nothing can be sent to an account yet."
 				: "Tap to sign out. Signing out never touches your history or saves."));
+		entries.add(Entry.item("Ask for a copy of my account data", session == null ? "Needs an account; none can be made in this version." : "Queues a request. It is sent the next time you press Send."));
+		entries.add(Entry.item("Delete my account", session == null ? "Needs an account; none can be made in this version." : "Queues a request to delete your account on the server. Your history and saves here are not touched."));
 		ShatteredPixelDungeon.scene().addToFront(WndUimsdList.menu("Privacy", "", entries, new WndUimsdList.Picker(){
 			@Override
 			public void onPick( int i, boolean checked ){
@@ -212,6 +215,8 @@ public final class WndUimsdOptions {
 							return PrivacyReport.build(m.root(), SPDSettings.apdSending(), System.currentTimeMillis(), Game.version);
 						}
 					});
+				} else if (i == 7 || i == 8){
+					accountRequest(m, i == 7 ? com.shatteredpixel.shatteredpixeldungeon.apd.backend.AccountRequests.Kind.EXPORT : com.shatteredpixel.shatteredpixeldungeon.apd.backend.AccountRequests.Kind.DELETE);
 				} else if (i == 6){
 					if (session == null){
 						say("There is no sign-in method in this version, so you cannot sign in yet.");
@@ -272,6 +277,25 @@ public final class WndUimsdOptions {
 					default: msg = "It could not be answered. Try again.";
 				}
 				say(msg);
+			}
+		});
+	}
+
+	private static void accountRequest( final UimsdModel m, final com.shatteredpixel.shatteredpixeldungeon.apd.backend.AccountRequests.Kind kind ){
+		final boolean delete = kind == com.shatteredpixel.shatteredpixeldungeon.apd.backend.AccountRequests.Kind.DELETE;
+		ShatteredPixelDungeon.scene().addToFront(new WndOptions(delete ? "Delete your account?" : "Ask for a copy of your account data?",
+				delete ? "This queues a request to delete your account and what the server holds about it. It is sent the next time you press Send. Your history and saves on this device stay as they are."
+						: "This queues a request for a copy of what the server holds about your account. It is sent the next time you press Send.",
+				delete ? "Queue the deletion" : "Queue the request", "Cancel"){
+			@Override
+			protected void onSelect( int index ){
+				if (index != 0) return;
+				switch (AccountActions.request(m.root(), kind, System.currentTimeMillis())){
+					case QUEUED: say("Queued. Nothing has been sent yet."); break;
+					case ALREADY_QUEUED: say("That request is already queued."); break;
+					case NOT_SIGNED_IN: say("You are not signed in, so there is no account to ask about."); break;
+					default: say("The request could not be queued.");
+				}
 			}
 		});
 	}

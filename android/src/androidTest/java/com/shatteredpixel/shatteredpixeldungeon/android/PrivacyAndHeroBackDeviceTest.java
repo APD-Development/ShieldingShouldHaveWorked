@@ -258,6 +258,10 @@ public class PrivacyAndHeroBackDeviceTest {
 			pickItem(6);   //account: signed out, and no way to sign in yet
 			assertTrue("a message says there is no sign-in method", top() instanceof WndMessage);
 			pressBack();
+			pickItem(8);   //delete my account: asks first
+			assertTrue("a confirmation opened", top() instanceof com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions);
+			pressBack();
+			assertTrue("Back leaves the confirmation without queueing anything", top() instanceof WndUimsdList);
 			pickItem(1);   //back off
 			assertFalse("sending is off again", SPDSettings.apdSending());
 			Log.w(TAG, "Privacy menu: summary, switch on/off, send-now refusal and address box all worked");

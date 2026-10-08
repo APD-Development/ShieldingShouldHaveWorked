@@ -164,6 +164,20 @@ public final class SubmissionQueue {
 		return out;
 	}
 
+	//is an item with this queue id waiting (any kind of item, not only runs)
+	static boolean hasItem( File historyRoot, Id id ){
+		if (historyRoot == null) return false;
+		synchronized (LOCK){
+			try {
+				Outbox box = new Outbox();
+				OutboxStore.load(box, fileIn(historyRoot));
+				for (Outbox.Item i : box.items()) if (i.id.equals(id)) return true;
+			} catch (IOException ignored){
+			}
+			return false;
+		}
+	}
+
 	public static boolean isQueued( File historyRoot, String runId ){
 		return find(historyRoot, runId) != null;
 	}
