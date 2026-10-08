@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.journal;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdPlay;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Foliage;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.SacrificialFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WaterOfAwareness;
@@ -563,6 +564,7 @@ public class Notes {
 		if (!records.contains(l)) {
 			boolean result = records.add(l);
 			Collections.sort(records, comparator);
+			if (result) ApdPlay.onLandmark( landmark.name(), depth, true );
 			return result;
 		}
 		return false;
@@ -581,11 +583,14 @@ public class Notes {
 	}
 
 	public static boolean remove( Landmark landmark, int depth ) {
-		return records.remove( new LandmarkRecord(landmark, depth) );
+		boolean removed = records.remove( new LandmarkRecord(landmark, depth) );
+		if (removed) ApdPlay.onLandmark( landmark.name(), depth, false );
+		return removed;
 	}
 	
 	public static boolean add( Key key ){
 		KeyRecord k = new KeyRecord(key);
+		ApdPlay.onKey( key, key.depth, key.quantity(), true );
 		if (!records.contains(k)){
 			boolean result = records.add(k);
 			Collections.sort(records, comparator);
@@ -600,6 +605,7 @@ public class Notes {
 	public static boolean remove( Key key ){
 		KeyRecord k = new KeyRecord( key );
 		if (records.contains(k)){
+			ApdPlay.onKey( key, key.depth, key.quantity(), false );
 			Catalog.countUses(key.getClass(), key.quantity());
 			k = (KeyRecord) records.get(records.indexOf(k));
 			k.quantity(k.quantity() - key.quantity());

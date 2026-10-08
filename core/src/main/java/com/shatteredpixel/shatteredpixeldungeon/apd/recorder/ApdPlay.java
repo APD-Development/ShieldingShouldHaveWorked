@@ -112,6 +112,20 @@ public final class ApdPlay {
 		try { p.onItemAction(item, action); } catch (Throwable ignored){}
 	}
 
+	//Notes.add / Notes.remove for a landmark, after the journal changed
+	public static void onLandmark( String landmark, int depth, boolean added ){
+		PlayTracker p = t();
+		if (p == null || restoring > 0) return;
+		try { p.onLandmark(landmark, depth, added); } catch (Throwable ignored){}
+	}
+
+	//Notes.add / Notes.remove for a key, after the journal changed
+	public static void onKey( Item key, int depth, int quantity, boolean added ){
+		PlayTracker p = t();
+		if (p == null || restoring > 0) return;
+		try { p.onKey(key, depth, quantity, added); } catch (Throwable ignored){}
+	}
+
 	//Buff.attachTo (after it worked) and Buff.detach (before it is removed)
 	public static void onBuffAttached( Buff buff, Char target ){
 		PlayTracker p = t();

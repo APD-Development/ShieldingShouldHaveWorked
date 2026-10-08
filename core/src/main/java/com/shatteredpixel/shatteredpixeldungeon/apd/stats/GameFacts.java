@@ -73,6 +73,21 @@ public final class GameFacts {
 			.description("Every trap that went off where the hero could see it.").subject("Trap").actor()
 			.value("hero", "Hero set it off", "1 when the hero triggered it, 0 for someone else.", FactKind.PLAIN).build());
 
+	//---- the journal: what the player learned about the dungeon, and keys ----
+
+	//a landmark was written in (or removed from) the journal: a shop, an alchemy pot, a well, a floor feeling
+	public static final FactKind LANDMARK = FactKinds.register(FactKind.builder("journal.landmark", "Journal landmark").plural("Journal landmarks").area("Exploration")
+			.description("Every landmark the journal noted or dropped: shops, alchemy, wells and what the floor felt like.").subject("Landmark")
+			.value("depth", "Floor", "The floor the landmark is on.", FactKind.PLAIN)
+			.tag("action", "Change", "added or removed").since(1, 9).build());
+
+	//a key was picked up or used
+	public static final FactKind KEY = FactKinds.register(FactKind.builder("journal.key", "Key").plural("Keys").area("Exploration")
+			.description("Every key picked up or used.").subject("Key")
+			.value("depth", "Floor", "The floor the key belongs to.", FactKind.PLAIN)
+			.value("quantity", "Number", "How many keys changed hands.", FactKind.PLAIN)
+			.tag("action", "Change", "added or used").since(1, 9).build());
+
 	//---- items ----
 
 	//an item action chosen by the hero (drink, read, zap, eat, equip, throw, drop, ...). The subject is the item's name as the player sees it

@@ -112,6 +112,17 @@ final class PlayTracker {
 		facts.record(GameFacts.TRAP, GameSnapshot.turn(), name(trap.getClass()), byHero || who == null ? "" : CombatTracker.nameOf(who), new long[]{ byHero ? 1 : 0 }, null);
 	}
 
+	// ---- journal ----
+
+	void onLandmark( String landmark, int depth, boolean added ){
+		facts.record(GameFacts.LANDMARK, GameSnapshot.turn(), landmark, "", new long[]{ depth }, new String[]{ added ? "added" : "removed" });
+	}
+
+	void onKey( com.shatteredpixel.shatteredpixeldungeon.items.Item key, int depth, int quantity, boolean added ){
+		if (key == null) return;
+		facts.record(GameFacts.KEY, GameSnapshot.turn(), name(key.getClass()), "", new long[]{ depth, quantity }, new String[]{ added ? "added" : "used" });
+	}
+
 	// ---- items ----
 
 	void onItemAction( Item item, String action ){

@@ -31,6 +31,7 @@ public class PlayWiringTest {
 		HOOKS.put("actors/mobs/npcs/Shopkeeper.java", 2);
 		HOOKS.put("levels/traps/Trap.java", 1);
 		HOOKS.put("items/Heap.java", 1);               //container opened
+		HOOKS.put("journal/Notes.java", 4);            //landmark added/removed, key added/used
 	}
 
 	@Test
