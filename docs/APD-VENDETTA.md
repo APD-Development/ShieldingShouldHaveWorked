@@ -67,3 +67,36 @@ First Cleric run (one-time, from the owner's own text, polished): "You have chos
 2. Approve tone of the samples; mark any that should never ship.
 3. Whether the difficulty-display gag (HANDOFF item 3) joins this engine (presentation only) or stays separate.
 4. Whether the seed pack is written by me for your review, or you supply lines.
+
+---
+## ADDENDUM (owner request: massive long-term dialogue system; proposal only, still nothing built)
+Lore review: Cleric's in-game identity is the divine spellcaster with the Holy Tome, spells learned/upgraded via talents, subclasses Priest and Paladin, armor abilities Ascended Form, Trinity and Power of Many (core/src/main/assets/messages/actors/actors.properties). That text is never edited. All mockery lives in separate humor packs shown as clearly labelled developer messages ("Developer note"), so the lore and descriptions stay intact and the joke is the disproportion between a legitimate class and the developer's grudge.
+
+### Scaling variety (hundreds of hours of Cleric play)
+1. **Authored lines** (thousands, appended over time) are the base.
+2. **Composable grammar**: pack files may also hold fragments (`opener`, `insult`, `subject`, `closer`, `aside`) with their own ids; a generated line is a combination ("Opener + subject-specific insult + closer"). Each fragment is tagged with context predicates, so combinations stay valid. 60 openers x 150 insults x 60 closers is already more than half a million distinct lines. The ledger tracks the combination key (fragment ids), plus each fragment individually, so the same insult core is not reused until the pool of cores is exhausted.
+3. **Context multipliers**: each recorded fact (depth, cause of death, boss, subclass Priest/Paladin, specific spell cast counts, armor ability, Tome level, repeat-attempt streak, attempt number since last Cleric win, time since last Cleric run) adds eligible lines. Lines for rare situations ("died to a rat on depth 1 as Cleric") are written once and surface when that situation actually happens.
+4. **Content growth never invalidates history**: ids are permanent, so shipping 500 new lines means the player's next messages are drawn from the unseen ones first.
+5. **Graceful exhaustion**: when every eligible id has been seen, order by oldest lastShown, skip those inside the recent window, and prefer combinations (grammar) that were never produced; if even those run out, repeat the least recently shown. Never an error, never a blank popup, never a freeze.
+
+### Frequency (reasonable, adaptive)
+- Delivery is capped by a budget, independent of how many lines exist: default max one popup per session and about one per 3 days of play, never within the first 20 minutes, never twice in a row at the same place (menu vs run end).
+- Playing Cleric does not spam: Cleric-specific moments (run end, first spell milestone) may raise priority, not the budget. A "Cleric humor" setting (Off / Rare / Less rare) and a one-tap "stop these" on the popup itself.
+- A low-key alternative surface for heavy Cleric players who WANT more: a "Developer's Grudge" page reachable from APD Settings (read-on-demand, same ledger, never interrupts). Proposed, optional.
+
+### Safety and isolation (unchanged, restated)
+Presentation only; own random source; no game save writes; no effect on achievements, rankings, UIMSD data, submissions or statistics; humor ledger is a separate local file excluded from exports and backend sync. Adult text is shown only when Adult humor is explicitly on; unknown eligibility = Clean; every line requires a Clean text.
+
+### More sample lines (tone check)
+Deaths: "Cleric died to a {killer}. The Tome was right there. Reading is hard." / "Depth {depth}. Not a record, not a disaster, just Cleric." / Adult: "Dead on depth {depth}. Cleric strikes again, you glorious idiot."
+Repeated attempts (needs recorded Cleric streak): "That is {clericStreak} Cleric runs in a row. I made it to 225 before I stopped being able to feel joy." / "Run {clericRuns} as Cleric. I would say 'try a different class', but I know you won't."
+Failed ascension: "So close to the Amulet. I have been there. It does not get better." 
+Victory: "You ascended with Cleric. I will never forgive you for making it look possible."
+Abilities: "Ascended Form: ten turns of looking radiant before dying anyway." (joke, no recorded number) / "Power of Many: you made a friend out of light. You should try making one out of people."
+Equipment: "A Cleric with a {weapon}. Brave. Wrong, but brave."
+Priest/Paladin: "Priest. Of course you picked Priest. Healing everyone but my opinion of this class."
+Fourth wall: "I wrote the Cleric lore text myself, you know. Okay, I did not. But I have strong feelings about it." (NOTE: only if true; lore text is upstream SPD, so this exact line is REJECTED; shown as an example of what lint/review must catch: never claim authorship of upstream text.)
+Any character: "You are playing {currentHero}. Somewhere, a Cleric is losing to a rat. I am at peace for a moment."
+
+### Tests (as listed above, plus)
+Combination-key non-repeat; fragment-level non-repeat before reuse; exhaustion order (oldest first, recent window respected, never blank); history preserved after adding new packs; ledger kept out of exports/sync/UIMSD; Clean/Adult per fragment and per combination (a generated line is Adult only if every part has Adult text and Adult is on).
