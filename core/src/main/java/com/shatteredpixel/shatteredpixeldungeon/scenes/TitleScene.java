@@ -286,7 +286,7 @@ public class TitleScene extends PixelScene {
 		float logoX, logoY;
 		float gridLeft, gridWidth, gridTop;
 
-		annotation = new APDAnnotation( ANNOTATION_TEXT, Math.min( 150, landscape() ? w - LOGO_W - 12 : w - 8 ) );
+		annotation = new APDAnnotation( com.shatteredpixel.shatteredpixeldungeon.windows.UimsdGate.titleAnnotation( ANNOTATION_TEXT ), Math.min( 150, landscape() ? w - LOGO_W - 12 : w - 8 ) );
 		add( annotation );
 		float textH = annotation.textHeight();
 

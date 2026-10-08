@@ -19,7 +19,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.UimsdScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.windows.UimsdGate;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDemoUnlock;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Gizmo;
 import com.watabou.noosa.Group;
@@ -29,7 +29,6 @@ import org.junit.runner.RunWith;
 
 import java.io.File;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -86,17 +85,16 @@ public class DemoUnlockDeviceTest {
 		return w;
 	}
 
-	private static void choose( final Window w, final int index ) throws Exception {
-		assertTrue("a choice window is on top", w instanceof WndOptions);
-		final Method m = WndOptions.class.getDeclaredMethod("onSelect", int.class);
-		m.setAccessible(true);
+	//what pressing one of the pop-up's two buttons does: it hides the card and runs the choice
+	private static void choose( final Window w, final boolean confusion ) throws Exception {
+		assertTrue("the pop-up is on top", w instanceof WndDemoUnlock);
+		Field f = WndDemoUnlock.class.getDeclaredField("choice");
+		f.setAccessible(true);
+		final WndDemoUnlock.Choice c = (WndDemoUnlock.Choice) f.get(w);
 		onRender(new Runnable(){
 			public void run(){
-				try {
-					m.invoke(w, index);
-				} catch (Exception e){
-					throw new RuntimeException(e);
-				}
+				w.hide();
+				if (confusion) c.confusion(); else c.playRuns();
 			}
 		});
 		Thread.sleep(400);
@@ -109,6 +107,8 @@ public class DemoUnlockDeviceTest {
 			public void setUnlocked(){ SPDSettings.apdUimsdUnlocked(true); }
 			public boolean demoUsed(){ return SPDSettings.apdDemoUnlockUsed(); }
 			public void setDemoUsed(){ SPDSettings.apdDemoUnlockUsed(true); }
+			public boolean tourUnlocked(){ return SPDSettings.apdUimsdTourUnlocked(); }
+			public void setTourUnlocked(){ SPDSettings.apdUimsdTourUnlocked(true); }
 		};
 	}
 
@@ -136,17 +136,15 @@ public class DemoUnlockDeviceTest {
 			SPDSettings.apdDemoUnlockUsed(false);
 			UimsdGate.forceGateOnForTest(true);
 
-			//locked: asking for UIMSD shows the locked window with the demo route
+			//locked: tapping UIMSD shows the warning pop-up (only then), not UIMSD
 			onRender(new Runnable(){ public void run(){ UimsdScene.open(TitleScene.class); } });
 			Thread.sleep(600);
-			Window locked = top();
-			assertTrue("UIMSD asked before opening", locked instanceof WndOptions);
-			assertFalse("and did not open", Game.scene() instanceof UimsdScene);
-			choose(locked, 1);   //Unlock it now with demo runs...
 			Window warning = top();
-			assertTrue("the warning is up", warning instanceof WndOptions && warning != locked);
+			assertTrue("the warning pop-up is up", warning instanceof WndDemoUnlock);
+			assertFalse("and UIMSD did not open", Game.scene() instanceof UimsdScene);
+			assertFalse("the tour is closed", UimsdGate.tourAvailable());
 			//declining first: nothing is made and nothing is used up
-			choose(warning, 1);   //I'LL PLAY 10 RUNS
+			choose(warning, false);   //I'LL PLAY 10 RUNS
 			assertFalse(demo.exists());
 			assertFalse(SPDSettings.apdUimsdUnlocked() || SPDSettings.apdDemoUnlockUsed());
 			assertFalse(Game.scene() instanceof UimsdScene);
@@ -155,17 +153,24 @@ public class DemoUnlockDeviceTest {
 			//now accept
 			onRender(new Runnable(){ public void run(){ UimsdScene.open(TitleScene.class); } });
 			Thread.sleep(600);
-			choose(top(), 1);
-			choose(top(), 0);   //I LIKE CONFUSION
+			assertTrue(top() instanceof WndDemoUnlock);
+			choose(top(), true);   //I LIKE CONFUSION
 			waitUntil("UIMSD to open on the demo data", new java.util.concurrent.Callable<Boolean>(){ public Boolean call(){ return Game.scene() instanceof UimsdScene; } }, 60000);
 			assertTrue("the ten demo runs are in their own marked folder", DemoData.isSyntheticRoot(demo));
 			File[] logs = new File(demo, "runs").listFiles();
 			int n = 0;
 			for (File f : logs) if (f.getName().endsWith(".apdlog")) n++;
-			assertTrue("ten demo runs plus the second part of one that was split in two (" + n + " logs)", n >= UimsdUnlock.DEMO_RUNS);
+			assertTrue("ten demo runs, one of them in two parts (" + n + " logs)", n >= UimsdUnlock.DEMO_RUNS);
 			assertTrue(SPDSettings.apdUimsdUnlocked());
 			assertTrue(SPDSettings.apdDemoUnlockUsed());
-			Log.w(TAG, "demo unlock: " + n + " demo logs made, UIMSD opened and the unlock is recorded");
+			assertFalse("UIMSD is open but the guided tour is still closed", UimsdGate.tourAvailable());
+			assertFalse(SPDSettings.apdUimsdTourUnlocked());
+			Log.w(TAG, "demo unlock: " + n + " demo logs made, UIMSD opened, the tour stayed closed");
+
+			//from now on the button just opens UIMSD, with no pop-up
+			onRender(new Runnable(){ public void run(){ UimsdScene.open(TitleScene.class); } });
+			Thread.sleep(600);
+			assertFalse("no pop-up any more", top() instanceof WndDemoUnlock);
 
 			//delete the demo data: UIMSD stays unlocked and the button stays gone
 			assertTrue(UimsdUnlock.deleteDemoData(real));

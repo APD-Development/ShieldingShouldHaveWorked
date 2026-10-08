@@ -51,6 +51,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdColumns;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdFilter;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdGuide;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdReport;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList;
@@ -193,7 +194,7 @@ public class UimsdScene extends PixelScene {
 		}
 		dirty = true;
 		//the tour is offered once, the first time UIMSD is opened; the Guide is always there
-		if (!SPDSettings.apdUimsdGuideSeen() && mainModel != null && tutorial == null){
+		if (!SPDSettings.apdUimsdGuideSeen() && mainModel != null && tutorial == null && com.shatteredpixel.shatteredpixeldungeon.windows.UimsdGate.tourAvailable()){
 			SPDSettings.apdUimsdGuideSeen(true);
 			offerPending = true;
 		}
@@ -832,6 +833,10 @@ public class UimsdScene extends PixelScene {
 	}
 
 	private void startTour( final int stepIndex ){
+		if (!com.shatteredpixel.shatteredpixeldungeon.windows.UimsdGate.tourAvailable()){
+			addToFront(new WndMessage("The guided tour opens after you finish 10 runs of your own. Demo runs do not count toward it."));
+			return;
+		}
 		if (mainModel == null || ApdRecorder.historyRoot() == null && mainRoot == null) return;
 		if (tutorial != null) endTutorial();
 		if (ownDataIsEnough()){

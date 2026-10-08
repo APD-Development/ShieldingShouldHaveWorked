@@ -15,8 +15,9 @@ public class UimsdGateTest {
 		assertEquals("ARE YOU SURE ABOUT THIS?", UimsdGate.WARNING_TITLE);
 		assertEquals("UIMSD is an absurdly detailed statistics database. You can unlock it immediately with 10 demo runs, but there's a very good chance you'll have absolutely no idea what you're looking at.\n\nI strongly recommend playing 10 actual runs first.",
 				UimsdGate.WARNING_TEXT);
-		assertEquals("I LIKE CONFUSION (generate demo runs)", UimsdGate.CHOICE_CONFUSION);
-		assertEquals("I'LL PLAY 10 RUNS (decline and return to normal gameplay)", UimsdGate.CHOICE_PLAY);
+		assertEquals("I LIKE CONFUSION", UimsdGate.CHOICE_CONFUSION);
+		assertEquals("I'LL PLAY 10 RUNS", UimsdGate.CHOICE_PLAY);
+		assertEquals("THIS BUTTON IS EFFECTIVELY USELESS TILL 10 RUNS HAVE BEEN COMPLETED.", UimsdGate.LOCKED_ARROW_TEXT);
 		assertEquals(10, UimsdUnlock.DEMO_RUNS);
 		assertEquals(10, UimsdUnlock.TEN_RUNS);
 	}
@@ -24,5 +25,11 @@ public class UimsdGateTest {
 	@Test
 	public void theGateIsOffUntilTheOwnerSwitchesItOn(){
 		assertFalse(UimsdUnlock.ENFORCED);
+	}
+
+	@Test
+	public void theTitleArrowKeepsItsUsualTextWhileTheGateIsOff(){
+		assertEquals("HEY, GO HERE FOR DRUGS", UimsdGate.titleAnnotation("HEY, GO HERE FOR DRUGS"));
+		assertEquals("the guided tour is open too", true, UimsdGate.tourAvailable());
 	}
 }

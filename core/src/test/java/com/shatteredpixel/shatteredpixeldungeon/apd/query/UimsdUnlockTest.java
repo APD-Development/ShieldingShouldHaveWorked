@@ -44,15 +44,18 @@ public class UimsdUnlockTest {
 
 	//the two flags as the game keeps them: they survive "restarts" because tests copy them into a new object
 	private static final class MemFlags implements UimsdUnlock.Flags {
-		boolean unlocked, demoUsed;
+		boolean unlocked, demoUsed, tour;
 		public boolean unlocked(){ return unlocked; }
 		public void setUnlocked(){ unlocked = true; }
 		public boolean demoUsed(){ return demoUsed; }
 		public void setDemoUsed(){ demoUsed = true; }
+		public boolean tourUnlocked(){ return tour; }
+		public void setTourUnlocked(){ tour = true; }
 		MemFlags restart(){
 			MemFlags f = new MemFlags();
 			f.unlocked = unlocked;
 			f.demoUsed = demoUsed;
+			f.tour = tour;
 			return f;
 		}
 	}
@@ -225,5 +228,48 @@ public class UimsdUnlockTest {
 		assertEquals(savesBefore, snapshot(saves));
 		assertEquals("a second delete with nothing there is fine", true, UimsdUnlock.deleteDemoData(realRoot));
 		assertNotNull(new DatasetStore(realRoot).load().dataset(Datasets.RUNS));
+	}
+
+	// ---- the guided tour ----
+
+	@Test
+	public void theTourStaysClosedAfterTheDemoRouteAndOpensOnlyWithTenGenuineRuns() throws Exception {
+		MemFlags flags = new MemFlags();
+		assertFalse("closed at first", UimsdUnlock.isTourUnlocked(flags, realRoot, true));
+		assertEquals(UimsdUnlock.Generated.DONE, UimsdUnlock.generateDemo(flags, realRoot, RULES, NOW, true));
+		assertTrue("UIMSD itself is open", UimsdUnlock.isUnlocked(flags, realRoot, true));
+		assertFalse("but the tour is not", UimsdUnlock.isTourUnlocked(flags, realRoot, true));
+		assertFalse(flags.tour);
+
+		//ten demo runs are not ten genuine runs, nine genuine runs are not enough
+		for (int i = 1; i <= 9; i++) genuineRun(i, true);
+		assertFalse("demo runs plus nine genuine runs: still closed", UimsdUnlock.isTourUnlocked(flags, realRoot, true));
+
+		//deleting the demo data and restarting change nothing
+		assertTrue(UimsdUnlock.deleteDemoData(realRoot));
+		MemFlags restarted = flags.restart();
+		assertFalse(UimsdUnlock.isTourUnlocked(restarted, realRoot, true));
+		assertTrue(UimsdUnlock.isUnlocked(restarted, realRoot, true));
+
+		//the tenth genuine run opens the tour, even though UIMSD was unlocked by the demo route
+		genuineRun(10, true);
+		assertTrue(UimsdUnlock.isTourUnlocked(restarted, realRoot, true));
+		assertTrue("and that is remembered", restarted.tour);
+
+		//deleting the runs afterwards does not close it again, also after a restart
+		for (File f : new File(realRoot, "runs").listFiles()) f.delete();
+		assertTrue(UimsdUnlock.isTourUnlocked(restarted.restart(), realRoot, true));
+	}
+
+	@Test
+	public void tenGenuineRunsOpenUimsdAndTheTourTogetherAndTheGateOffOpensBoth() throws Exception {
+		MemFlags flags = new MemFlags();
+		for (int i = 1; i <= 10; i++) genuineRun(i, true);
+		assertTrue(UimsdUnlock.isUnlocked(flags, realRoot, true));
+		assertTrue(flags.tour);
+		assertTrue(UimsdUnlock.isTourUnlocked(new MemFlags(), realRoot, false));
+		MemFlags fresh = new MemFlags();
+		assertTrue("gate off: the tour is open for everyone", UimsdUnlock.isTourUnlocked(fresh, tmp.newFolder("empty"), false));
+		assertFalse("and nothing was recorded", fresh.tour);
 	}
 }

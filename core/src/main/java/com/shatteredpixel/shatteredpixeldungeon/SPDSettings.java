@@ -326,6 +326,17 @@ public class SPDSettings extends GameSettings {
 		put( KEY_APD_UIMSD_UNLOCKED, value );
 	}
 
+	//the guided tour opens only after ten GENUINE runs; the demo route never sets this
+	public static final String KEY_APD_UIMSD_TOUR_UNLOCKED = "apd_uimsd_tour_unlocked";
+
+	public static boolean apdUimsdTourUnlocked(){
+		return getBoolean( KEY_APD_UIMSD_TOUR_UNLOCKED, false );
+	}
+
+	public static void apdUimsdTourUnlocked( boolean value ){
+		put( KEY_APD_UIMSD_TOUR_UNLOCKED, value );
+	}
+
 	public static boolean apdDemoUnlockUsed(){
 		return getBoolean( KEY_APD_DEMO_UNLOCK_USED, false );
 	}

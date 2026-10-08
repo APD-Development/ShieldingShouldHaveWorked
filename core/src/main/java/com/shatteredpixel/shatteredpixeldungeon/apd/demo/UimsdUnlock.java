@@ -52,6 +52,9 @@ public final class UimsdUnlock {
 		void setUnlocked();
 		boolean demoUsed();
 		void setDemoUsed();
+		// the guided tour: opened only by ten genuine runs, never by the demo route
+		boolean tourUnlocked();
+		void setTourUnlocked();
 	}
 
 	public enum Generated { DONE, NOT_AVAILABLE, FAILED }
@@ -74,10 +77,23 @@ public final class UimsdUnlock {
 		return n;
 	}
 
-	// Is UIMSD open? Reaching TEN_RUNS opens it for good the first time it is seen.
+	// Is UIMSD open? Reaching TEN_RUNS opens it for good the first time it is seen (and opens the guided tour with it).
 	public static boolean isUnlocked( Flags flags, File realRoot, boolean enforced ){
 		if (!enforced || flags.unlocked()) return true;
 		if (genuineRuns(realRoot, TEN_RUNS) >= TEN_RUNS){
+			flags.setUnlocked();
+			flags.setTourUnlocked();
+			return true;
+		}
+		return false;
+	}
+
+	// Is the guided tour open? Only ten genuine runs open it. Opening UIMSD with demo runs does not, demo runs never count, and once it is
+	// open it stays open (deleting runs or demo data does not close it), just as it stays closed for a demo-unlocked player until then.
+	public static boolean isTourUnlocked( Flags flags, File realRoot, boolean enforced ){
+		if (!enforced || flags.tourUnlocked()) return true;
+		if (genuineRuns(realRoot, TEN_RUNS) >= TEN_RUNS){
+			flags.setTourUnlocked();
 			flags.setUnlocked();
 			return true;
 		}

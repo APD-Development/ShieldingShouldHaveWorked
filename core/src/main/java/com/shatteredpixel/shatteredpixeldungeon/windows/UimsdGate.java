@@ -40,11 +40,15 @@ public final class UimsdGate {
 	// the warning and the two choices, word for word as the owner wrote them
 	static final String WARNING_TITLE = "ARE YOU SURE ABOUT THIS?";
 	static final String WARNING_TEXT = "UIMSD is an absurdly detailed statistics database. You can unlock it immediately with 10 demo runs, but there's a very good chance you'll have absolutely no idea what you're looking at.\n\nI strongly recommend playing 10 actual runs first.";
-	static final String CHOICE_CONFUSION = "I LIKE CONFUSION (generate demo runs)";
-	static final String CHOICE_PLAY = "I'LL PLAY 10 RUNS (decline and return to normal gameplay)";
+	static final String CHOICE_CONFUSION = "I LIKE CONFUSION";
+	static final String CHOICE_PLAY = "I'LL PLAY 10 RUNS";
+	// the arrow's message on the title screen while UIMSD is locked, exactly as the owner wrote it
+	static final String LOCKED_ARROW_TEXT = "THIS BUTTON IS EFFECTIVELY USELESS TILL 10 RUNS HAVE BEEN COMPLETED.";
 
 	// the two permanent flags, kept in the game's settings
 	static final UimsdUnlock.Flags FLAGS = new UimsdUnlock.Flags(){
+		@Override public boolean tourUnlocked(){ return SPDSettings.apdUimsdTourUnlocked(); }
+		@Override public void setTourUnlocked(){ SPDSettings.apdUimsdTourUnlocked(true); }
 		@Override public boolean unlocked(){ return SPDSettings.apdUimsdUnlocked(); }
 		@Override public void setUnlocked(){ SPDSettings.apdUimsdUnlocked(true); }
 		@Override public boolean demoUsed(){ return SPDSettings.apdDemoUnlockUsed(); }
@@ -64,33 +68,36 @@ public final class UimsdGate {
 
 	private UimsdGate(){}
 
+	// The text under the title screen's arrow: the owner's message while UIMSD is locked, the usual text otherwise.
+	public static String titleAnnotation( String usual ){
+		if (!enforced() || FLAGS.unlocked()) return usual;
+		return UimsdUnlock.isUnlocked(FLAGS, ApdRecorder.historyRoot(), true) ? usual : LOCKED_ARROW_TEXT;
+	}
+
+	// May the guided tour start? Only after ten genuine runs; the demo route does not open it.
+	public static boolean tourAvailable(){
+		return UimsdUnlock.isTourUnlocked(FLAGS, ApdRecorder.historyRoot(), enforced());
+	}
+
+	// Every way into UIMSD comes here. Open: straight in. Locked: the warning pop-up, and only because the player tapped the locked button.
 	public static void open( final Class<? extends PixelScene> from ){
 		final File root = ApdRecorder.historyRoot();
 		if (UimsdUnlock.isUnlocked(FLAGS, root, enforced())){
 			UimsdScene.openNow(from);
 			return;
 		}
-		int done = UimsdUnlock.genuineRuns(root, UimsdUnlock.TEN_RUNS);
-		String message = "UIMSD, the statistics database, opens after you finish " + UimsdUnlock.TEN_RUNS + " runs. You have finished " + done + " so far.";
-		if (UimsdUnlock.demoButtonAvailable(FLAGS, root, enforced())){
-			ShatteredPixelDungeon.scene().addToFront(new WndOptions("UIMSD is locked", message, "Keep playing", "Unlock it now with demo runs...") {
-				@Override
-				protected void onSelect( int index ){
-					if (index == 1) confirm(from, root);
-				}
-			});
-		} else {
-			ShatteredPixelDungeon.scene().addToFront(new WndMessage(message));
-		}
-	}
-
-	private static void confirm( final Class<? extends PixelScene> from, final File root ){
-		ShatteredPixelDungeon.scene().addToFront(new WndOptions(WARNING_TITLE, WARNING_TEXT, CHOICE_CONFUSION, CHOICE_PLAY) {
+		if (!UimsdUnlock.demoButtonAvailable(FLAGS, root, enforced())) return;   //cannot happen: using the demo route opens UIMSD
+		ShatteredPixelDungeon.scene().addToFront(new WndDemoUnlock(new WndDemoUnlock.Choice(){
 			@Override
-			protected void onSelect( int index ){
-				if (index == 0) generate(from, root);
+			public void confusion(){
+				generate(from, root);
 			}
-		});
+
+			@Override
+			public void playRuns(){
+				//back to normal gameplay: nothing was made and nothing is used up
+			}
+		}));
 	}
 
 	//ten small made-up runs take a moment, so this is done off the game's thread

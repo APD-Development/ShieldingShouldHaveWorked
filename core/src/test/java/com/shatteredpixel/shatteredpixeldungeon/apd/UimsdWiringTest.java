@@ -35,13 +35,15 @@ public class UimsdWiringTest {
 	@Test
 	public void theTitleScreenIsStillExactlyAsApprovedExceptForWhereTheUimsdButtonGoes() throws Exception {
 		//The only change since the title screen was frozen is the click target of the UIMSD button (the project owner asked for it).
-		//Putting the two changed lines back as they were must give exactly the approved file, so layout, text, arrow and annotation
+		//(Since then the arrow's text has also been made to go through UimsdGate.titleAnnotation, which returns the same text while UIMSD is open.)
+		//Putting the changed lines back as they were must give exactly the approved file, so layout, text, arrow and annotation
 		//are provably untouched. If this fails the frozen title screen was edited.
 		String title = src("scenes/TitleScene.java");
 		assertTrue(title.contains("UimsdScene.open( TitleScene.class );"));
 		String restored = title
 				.replace("//UIMSD (Ultimate Infinite Mega Statistics Database) replaces Rankings and opens the UIMSD screen",
 						"//UIMSD (Ultimate Infinite Mega Statistics Database) replaces Rankings, until the real database exists it opens the Rankings screen")
+				.replace("com.shatteredpixel.shatteredpixeldungeon.windows.UimsdGate.titleAnnotation( ANNOTATION_TEXT )", "ANNOTATION_TEXT")
 				.replace("UimsdScene.open( TitleScene.class );", "ShatteredPixelDungeon.switchNoFade( RankingsScene.class );");
 		assertEquals("2c4c5f3b063380385da9318d62e58d2ab0b63c0b433bb2815006ced9f416cd90", shaOf(restored));
 		//the geometry (arrow, annotation, layout) file is byte for byte as approved
