@@ -525,12 +525,18 @@ public class HeroSelectScene extends PixelScene {
 	}
 
 	private float uiAlpha;
+	private boolean introChecked;
 
 	@Override
 	public void update() {
 		super.update();
 		if (SPDSettings.intro() && Rankings.INSTANCE.totalNumber > 0){
 			SPDSettings.intro(false);
+		}
+		//APD: also for an install that has been used before (see ApdIntro), re-checked each time hero select opens
+		if (!introChecked){
+			introChecked = true;
+			com.shatteredpixel.shatteredpixeldungeon.apd.ApdIntro.endIfNotNew();
 		}
 		btnExit.visible = btnExit.active = true; //APD: always allow going back to the title menu
 		//do not fade when a window is open

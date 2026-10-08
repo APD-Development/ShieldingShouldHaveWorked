@@ -79,6 +79,9 @@ public class ShatteredPixelDungeon extends Game {
 
 		//APD: set up run history recording (on by default, see SPDSettings.apdRecording)
 		ApdRecorder.configureDefault( SPDSettings.apdRecording() );
+
+		//APD: a used install is not a new player, so SPD's first-run tutorial (closed floor-1 start, no Main Menu) ends for it
+		com.shatteredpixel.shatteredpixeldungeon.apd.ApdIntro.endIfNotNew();
 		
 	}
 
