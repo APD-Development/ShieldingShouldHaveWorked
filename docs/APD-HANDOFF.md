@@ -97,6 +97,10 @@ Options: (A) bump to r2 and drop/rename the cleric token: simple and honest, but
 (C) leave the old text token in place forever and only flip the game rule (Cleric runs would be recorded under a text that says "blocked": rejected, it makes the identity lie).
 Nothing is implemented; the Cleric block, the black-screen gag and the badge stay until you choose. After the choice the code change is small (HeroSelectScene check, Ruleset text/id, recorder + row-builder normalisation, tests incl. old-log fixtures).
 
+## Attribution / licence status check (plan 1.2, 17.8; findings only, nothing changed)
+OK: LICENSE.txt (GPL) is in the repo; APD About screen credits Evan Debenham and says "Based on Shattered Pixel Dungeon by Evan Debenham, licensed GPLv3"; source headers keep the upstream copyright; applicationId has its own APD identity (".indev" suffix for debug).
+FOR THE OWNER (public-release items): (1) upstream first-person support/Patreon text is still reachable in APD: WndSupportPrompt (shown from WornKey, "Hello, I hope you're enjoying Shattered Pixel Dungeon! ... I depend on support"), SupporterScene (opened from the victory window) and TitleScene patreon text speak as Evan about HIS game and link to his support pages. Decide with Evan whether to keep, adapt ("support the original creator") or remove them in APD. (2) Several upstream messages (welcome/update screens) say "Shattered Pixel Dungeon has been updated" in APD builds. (3) Confirm the final app name/icon/package are clearly distinct before any store release. (4) Contact Evan before public release/importer work (plan 14.5/17.9).
+
 ## Review later (decided: NOT to change now)
 - **Rankings navigation.** Upstream's title screen had a Rankings button (classic top-scores list, `RankingsScene`). APD's title menu (Play, UIMSD, Badges, Journal, Options, Quit,
   APD Settings, News, Changes, About) has none. `RankingsScene` is still reachable only from inside a game (`WndGame`, the end screens `AmuletScene`/`SurfaceScene`). UIMSD already
