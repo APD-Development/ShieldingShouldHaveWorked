@@ -48,7 +48,7 @@ Lines 51 to 100 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### app.0112  (Appreciation, appreciation, any time) [follows app.0111; in a later session]
 - Clean: Final update: the Tome and I have agreed to never speak of the Cleric experiment again.
-- Adult: Final update: the Tome and I have agreed to never speak of the Cleric experiment again. The Tome and I shook hands. I washed mine for ten minutes.
+- Adult: Final update: the Tome and I have agreed to never speak of the Cleric experiment again. A handshake sealed it. I washed my hand for ten minutes.
 
 ### app.0113  (Appreciation, appreciation, any time) [first part of a story]
 - Clean: Big news, everyone: I've decided to forgive Cleric.
