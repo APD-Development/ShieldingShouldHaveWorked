@@ -43,3 +43,6 @@ Steps 1-6 of the checklist again from a clean first launch (including: floor 1 s
 ## Update: Cleric Grudge / Lore postponed (owner decision)
 Items 6, 7, 8 and 9 above all concern the Grudge page and popups. The whole feature is now off in every build behind one central switch (`ApdFeatures.GRUDGE_LORE_IN_THIS_RELEASE`, false): no Settings button, no page, popups, counters, first-Cleric-run warning, history reading or run-end/tick hooks. Everything is preserved so it can return at public release (items 6, 7 and 9's fixes are kept in the code). Item 8 is therefore moot for the alpha. Cleric stays playable. The Adult humor checkbox in APD Settings stays because Demo Unlock's arrow text uses the same preference.
 Related issues: with the Grudge off, the first-Cleric-run warning cannot appear, so starting Cleric is a single tap (no extra window to get wrong).
+
+## Update: floor-2 closed-start risk checked
+I flagged that SPD hides the floor-2 entrance door until the Searching guide page is found. Headless check (`FirstFloorExitTest`, 12 seeds, tutorial over, no guide pages found): floor 1 walkable from the start 12/12, floor 2 walkable 12/12. So the risk did not reproduce here; no change made. (The test only measures walkability without searching; it is not a substitute for playing floor 2 on the phone.)

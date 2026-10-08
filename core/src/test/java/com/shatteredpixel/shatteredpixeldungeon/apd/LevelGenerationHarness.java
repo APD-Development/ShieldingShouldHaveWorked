@@ -42,7 +42,9 @@ public final class LevelGenerationHarness {
 		//a veteran player: intro off, all adventurer's guide and alchemy guide pages found
 		VETERAN,
 		//what a floor replay uses (ReplayContext): guide pages found, NO lore page found, intro off
-		REFERENCE
+		REFERENCE,
+		//an install that has been used (tutorial over) but whose guidebook pages were never found: what a returning player who skipped them has
+		RETURNING
 	}
 
 	private static java.util.Map<Document, java.util.Map<String, Integer>> initialPageStates;
@@ -72,6 +74,8 @@ public final class LevelGenerationHarness {
 					else doc.deletePage(page);
 				}
 			}
+			SPDSettings.intro(false);
+		} else if (context == Context.RETURNING){
 			SPDSettings.intro(false);
 		} else if (context == Context.VETERAN){
 			for (Document doc : new Document[]{Document.ADVENTURERS_GUIDE, Document.ALCHEMY_GUIDE}){

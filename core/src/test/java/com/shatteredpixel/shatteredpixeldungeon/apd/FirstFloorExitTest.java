@@ -75,7 +75,7 @@ public class FirstFloorExitTest {
 				seen.put(depth, level);
 			}
 		};
-		LevelGenerationHarness.generate(seed, 0, HeroClass.WARRIOR, context, 1);
+		LevelGenerationHarness.generate(seed, 0, HeroClass.WARRIOR, context, 2);
 		return seen.get(1);
 	}
 
@@ -92,5 +92,17 @@ public class FirstFloorExitTest {
 		}
 		assertEquals("every tutorial floor 1 hides its way out (the tester's 'no exit' rooms)", 12, closed);
 		assertEquals("every normal floor 1 has a walkable way out", 12, open);
+	}
+
+	@Test
+	public void aReturningPlayerWithNoGuidePagesGetsAnOpenFloorOneAndWeSeeWhatFloorTwoDoes() throws Exception {
+		int open1 = 0, open2 = 0;
+		for (long seed = 1; seed <= 12; seed++){
+			Level one = floorOne(seed * 104729, LevelGenerationHarness.Context.RETURNING);
+			if (exitWalkable(one)) open1++;
+			if (exitWalkable(seen.get(2))) open2++;
+		}
+		System.out.println("APD-RETURNING floor1 walkable " + open1 + "/12, floor2 walkable " + open2 + "/12");
+		assertEquals("floor 1 must be open once the tutorial is over", 12, open1);
 	}
 }
