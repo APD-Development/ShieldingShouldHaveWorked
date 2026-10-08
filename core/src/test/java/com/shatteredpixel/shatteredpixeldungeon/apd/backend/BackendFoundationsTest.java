@@ -111,7 +111,7 @@ public class BackendFoundationsTest {
 		}
 		//nothing outside the backend package uses it yet except through the Gateway door; gameplay code must never reach grants or content approval
 		List<String> users = new ArrayList<>();
-		scan(root, main, users);
+		scan(root, new File[]{ main, new File(root, "apd/backendbridge") }, users);
 		assertTrue("gameplay code must not use the backend package directly yet: " + users, users.isEmpty());
 	}
 
@@ -125,9 +125,9 @@ public class BackendFoundationsTest {
 		throw new AssertionError("cannot find the core sources from " + new File(".").getAbsolutePath());
 	}
 
-	private static void scan( File dir, File skip, List<String> hits ) throws Exception {
+	private static void scan( File dir, File[] skip, List<String> hits ) throws Exception {
 		for (File f : dir.listFiles()){
-			if (f.equals(skip)) continue;
+			if (Arrays.asList(skip).contains(f)) continue;
 			if (f.isDirectory()) scan(f, skip, hits);
 			else if (f.getName().endsWith(".java")){
 				String src = new String(Files.readAllBytes(f.toPath()), StandardCharsets.UTF_8);

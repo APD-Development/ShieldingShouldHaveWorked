@@ -24,7 +24,7 @@ Android API 26-safe). Tests: `core/src/test/.../apd/backend/`.
 | Audit trail | server | hash chain (`AuditLog`); a published head hash makes edits/removals detectable |
 `TrustLevel`: CLIENT_CLAIM < SERVER_RECEIVED < SERVER_CHECKED < REPLAY_VERIFIED; DEVELOPER_ISSUED is a separate axis. Rankings can start lenient and tighten later without changing stored records.
 
-## What exists (all tested: BackendFoundationsTest, BackendTrustTest, BackendCommunityTest, BackendOutboxTest; 30 tests)
+## What exists (all tested: BackendFoundationsTest, BackendTrustTest, BackendCommunityTest, BackendOutboxTest; 33 tests)
 - `Id` typed opaque ids (player, device, run, submission, content, vote round, report, grant, achievement, audit, outbox). Existing run ids (`LogHeader.runId`) are accepted as `Id.of(RUN, ...)`.
 - `Canon` canonical, unambiguous bytes for hashing/signing (type + schema version in every signature, so a signature never validates another record kind).
 - `Envelope` schema + major/minor + payload. Minor = fields appended only, readers skip unknown; major = different contract, refused. Same rule as the run logs.
@@ -39,6 +39,7 @@ Android API 26-safe). Tests: `core/src/test/.../apd/backend/`.
 - `DataPolicy` (every schema classified: LOCAL_ONLY / ACCOUNT_PRIVATE / PUBLIC_ON_SUBMIT; unlisted schemas cannot be sent).
 - `Gateway` (OK / OFFLINE / RETRY_LATER / REJECTED, idempotency key), `Outbox` (queue; local-only refused; offline keeps items; permanent refusals dropped and explained; throwing gateway survived), `Backoff` (30 s doubling to 6 h).
 - `OutboxStore` (queue survives restarts: atomic temp-file+move write, damaged lines skipped and counted, local-only data re-checked on load) and `OfflineGateway` (always OFFLINE: lets the plumbing ship with zero behaviour change before any server exists).
+- `apd/backendbridge/RunSubmissionFactory` (the ONLY place local `RunFacts` become a `RunSubmission`: copies the fixed field set, refuses with a reason unless the run is an APD run with a complete sealed log, finished, with outcome/difficulty/balance/ruleset truly recorded - never inferred, never invented; play time stays 0 = not recorded). 3 tests. Nothing in gameplay calls it yet.
 - Test-only: `TestAuthority` (the only signer), a reference in-memory server in `BackendOutboxTest` (dedupe by idempotency key, server-attached identity and trust, lost-reply safety).
 
 ## Versioning / migration
@@ -62,6 +63,6 @@ Wiring the game to the Outbox, real Gateway/transport, sign-in UI, replay-eviden
 Phase 11 community: accounts/profiles (Accounts, LocalProfile), voting (Voting), community content + mod downloads (ContentVersion, approval signatures, TrustRoot), leaderboards + run submission + blind/community review primitives (RunSubmission, evidenceDigest, Leaderboard, TrustLevel), developer achievements (AchievementGrant), moderation/reporting (Report, AuditLog), cross-device preferences (SyncRecord), offline-safe delivery (Outbox, Gateway, Backoff), privacy boundary (DataPolicy). Phase 10 mod support: content trust model (hash + approval) is the safety base for downloads.
 
 ## Recommended next steps
-1. Wire the game to the door: at run end, build a `RunSubmission` from the finished run's facts and enqueue it (explicit player action only), using `OutboxStore` + `OfflineGateway`; off by default; no visible change.
+1. Wire the game to the door: at run end (or from UIMSD), build a `RunSubmission` with `RunSubmissionFactory` from the finished run's facts and enqueue it (explicit player action only), using `OutboxStore` + `OfflineGateway`; off by default; no visible change.
 2. Evidence-request protocol design (needs decision 4).
 3. After decisions 1-3: first real read-only feature (e.g. signed content catalogue / grants) so the verify path is exercised with real keys.
