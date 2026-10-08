@@ -82,6 +82,9 @@ public final class Datasets {
 				.describe("Which version of the difficulty balance the run was played with: 0 = none (difficulty 3, the normal game), 1 and up = a balance version. Runs of different versions are never counted together unless you choose all rules."));
 		d.add(ColumnDef.text(FactKeys.RULESET, "Rules code").group("Rules").describe("A code for the exact rules the run was played under: difficulty, challenges and exotic-item chance. Runs with the same code were played the same way."));
 		d.add(yesNo(ColumnDef.enumeration(FactKeys.DAILY, "Daily")).group("Rules"));
+		d.add(ColumnDef.enumeration(FactKeys.SEED_TYPE, "Run type").label(0, "Random").label(1, "Custom").label(2, "Daily").label(3, "Daily replay").group("Rules")
+				.describe("How the run's levels were chosen: at random, a custom seed, or the daily. The seed itself is hidden information."));
+		d.add(yesNo(ColumnDef.enumeration(FactKeys.EXTERNAL_MODS, "Modded")).group("Rules").describe("Yes if an unofficial mod was present. No until APD has a mod system."));
 		d.add(ColumnDef.text(FactKeys.APD_VERSION, "APD version").group("Run"));
 		d.add(ColumnDef.text("run.telemetry", "Recording version").group("Run").describe("The version of APD's recording this run was recorded with. Older versions recorded less detail."));
 		d.add(ColumnDef.num(FactKeys.INITIAL_VERSION, "Game build number").group("Run"));

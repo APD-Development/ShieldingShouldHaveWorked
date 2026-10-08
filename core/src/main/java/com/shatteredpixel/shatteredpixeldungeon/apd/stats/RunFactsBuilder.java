@@ -105,6 +105,7 @@ public final class RunFactsBuilder {
 						}
 						f.num(FactKeys.SEED_TYPE, s.seedType, Fact.PROV_RECORDED);
 						f.num(FactKeys.DAILY, s.seedType == LifecycleEvents.SEED_DAILY || s.seedType == LifecycleEvents.SEED_DAILY_REPLAY ? 1 : 0, Fact.PROV_RECORDED);
+						f.num(FactKeys.EXTERNAL_MODS, s.externalModsPresent ? 1 : 0, Fact.PROV_RECORDED);
 						f.num(FactKeys.CHALLENGES, s.challenges, Fact.PROV_RECORDED);
 						f.text(FactKeys.HERO_CLASS, s.heroClass, Fact.PROV_RECORDED);
 						//a run whose rules were not recorded (saved before they were part of the run) has neither: unknown, never today's setting

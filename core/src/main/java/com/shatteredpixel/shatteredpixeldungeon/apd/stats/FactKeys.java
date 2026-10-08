@@ -42,6 +42,7 @@ public final class FactKeys {
 	public static final String SEED_TYPE = "run.seedType";        //num: LifecycleEvents.SEED_*
 	public static final String CUSTOM_SEED = "run.customSeed";
 	public static final String DAILY = "run.daily";               //num 0/1
+	public static final String EXTERNAL_MODS = "run.externalMods"; //num 0/1: an unofficial mod was present (always 0 until a mod system exists)
 	public static final String CHALLENGES = "run.challenges";     //num: the challenge bit mask
 	public static final String HERO_CLASS = "run.heroClass";
 	public static final String RULESET = "run.ruleset";
