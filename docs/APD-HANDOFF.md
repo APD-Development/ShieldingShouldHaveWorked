@@ -67,6 +67,12 @@ logcat tags APDMIG/APDPERF into the job log and uploads logcat artifacts.
   automated verification complete; NOT permanently frozen until the user's physical picker check.
 - Telemetry version now 1.6. UIMSD = one major feature; these phases are milestones inside it.
 
+## Overnight 2026-10-08 (canonical plan = APD_Canonical_Design_and_Implementation_Plan.docx, user-supplied; summary of status vs plan)
+- Plan 1.0 stats items: DONE earlier: sortable/filterable tables (3.2-3.5), min-sample (3.6), column select (3.7), datasets (3.10), run history (3.11), raw evidence/turn-level facts (3.12-3.14), version+ruleset provenance (3.15), explicit coverage (3.16), data integrity (17.7). ADDED tonight: **Saved views** (3.9): UIMSD Options > "Saved views" (save this table under a name / open / delete); stored in the history folder as saved_views.txt (local only, a saved view is a question, never data); `SavedViews` + 5 tests. NOT yet: compare-subsets as its own screen (3.8; Ask/Compare partly covers), column REORDER (3.7 says "where practical").
+- Plan 1.0 non-code items needing the OWNER: attribution/licensing review (1.2, 17.8) and contacting Evan Debenham before any SPD-importer/distribution work (14.5, 17.9).
+- Backend foundations (plan 4.1 "design for eventual upload", sections 5, 8, 9, 10, 11 are EVENTUALLY): docs/APD-BACKEND.md + `apd/backend` (30 tests). Provider-neutral; decisions deferred to the owner are listed in that doc.
+- PHONE CHECK for tonight's saved-views change (not yet in a build): UIMSD table > Options > Saved views.
+
 ## Review later (decided: NOT to change now)
 - **Rankings navigation.** Upstream's title screen had a Rankings button (classic top-scores list, `RankingsScene`). APD's title menu (Play, UIMSD, Badges, Journal, Options, Quit,
   APD Settings, News, Changes, About) has none. `RankingsScene` is still reachable only from inside a game (`WndGame`, the end screens `AmuletScene`/`SurfaceScene`). UIMSD already

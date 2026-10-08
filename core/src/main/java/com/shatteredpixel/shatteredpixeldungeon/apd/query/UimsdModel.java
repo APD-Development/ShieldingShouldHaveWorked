@@ -66,6 +66,8 @@ public final class UimsdModel {
 	private Listener listener;
 	private volatile Thread loader;
 
+	private volatile File root;
+
 	public UimsdModel( String currentRuleset, String currentRulesetLabel ){
 		this.currentRuleset = currentRuleset;
 		this.currentRulesetLabel = currentRulesetLabel == null ? "" : currentRulesetLabel;
@@ -84,6 +86,7 @@ public final class UimsdModel {
 
 	//Builds the catalog from the raw logs on a background thread. Never throws.
 	public void load( final File root ){
+		this.root = root;
 		state = State.LOADING;
 		failure = "";
 		Thread t = new Thread(new Runnable(){
@@ -133,6 +136,11 @@ public final class UimsdModel {
 		back.clear();
 		recompute();
 		state = State.READY;
+	}
+
+	//the folder of the history this model shows (where the player's saved views are kept too); null before load
+	public File root(){
+		return root;
 	}
 
 	public State state(){

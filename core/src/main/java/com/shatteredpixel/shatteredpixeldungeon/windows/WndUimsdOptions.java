@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.query.GroupBy;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.Query;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.QueryEngine;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.QueryResult;
+import com.shatteredpixel.shatteredpixeldungeon.apd.query.SavedViews;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.Scope;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdModel;
 
@@ -90,6 +91,12 @@ public final class WndUimsdOptions {
 		entries.add(Entry.item("What the marks mean", "?  >=  ~  and hidden, and the colours."));
 		actions.add(new Runnable(){ public void run(){ legend(); } });
 
+		entries.add(Entry.heading("Saved views"));
+		entries.add(Entry.item("Save this table as a view...", "Keeps the table exactly as it is now (filters, sorting, columns, grouping, rules) under a name. It saves the question, not the numbers."));
+		actions.add(new Runnable(){ public void run(){ saveView(m); } });
+		entries.add(Entry.item("Open a saved view...", "Asks one of your saved questions again, of your history as it is now."));
+		actions.add(new Runnable(){ public void run(){ openViews(m); } });
+
 		entries.add(Entry.heading("Share and reset"));
 		entries.add(Entry.item("Share a report of this table...", "As text, or saved as a file."));
 		actions.add(new Runnable(){ public void run(){ WndUimsdReport.ofView(m); } });
@@ -104,6 +111,88 @@ public final class WndUimsdOptions {
 			@Override
 			public void onPick( int i, boolean checked ){
 				actions.get(i).run();
+			}
+		}));
+	}
+
+	//---- saved views ----
+
+	private static SavedViews views( UimsdModel m ){
+		return m.root() == null ? null : SavedViews.load(SavedViews.fileIn(m.root()));
+	}
+
+	private static void say( String text ){
+		ShatteredPixelDungeon.scene().addToFront(new WndMessage(text));
+	}
+
+	private static void saveView( final UimsdModel m ){
+		if (m.root() == null){
+			say("There is no history folder to keep views in yet.");
+			return;
+		}
+		ShatteredPixelDungeon.scene().addToFront(new WndTextInput("Save this view", "A name for this table (up to " + SavedViews.MAX_NAME + " characters). An existing view with the same name is replaced.",
+				"", SavedViews.MAX_NAME, false, "Save", "Cancel"){
+			@Override
+			public void onSelect( boolean positive, String text ){
+				if (!positive) return;
+				SavedViews v = views(m);
+				SavedViews.Result r = v.save(text, m.query(), System.currentTimeMillis());
+				try {
+					if (r == SavedViews.Result.SAVED || r == SavedViews.Result.REPLACED) v.store(SavedViews.fileIn(m.root()));
+				} catch (java.io.IOException e){
+					say("The view could not be saved: " + e.getMessage());
+					return;
+				}
+				say(r == SavedViews.Result.SAVED ? "Saved." : r == SavedViews.Result.REPLACED ? "Saved, replacing the view with that name."
+						: r == SavedViews.Result.TOO_MANY ? "You have " + SavedViews.MAX_VIEWS + " saved views. Delete one first." : "That is not a usable name.");
+			}
+		});
+	}
+
+	private static void openViews( final UimsdModel m ){
+		final SavedViews v = views(m);
+		if (v == null || v.list().isEmpty()){
+			say("You have no saved views yet. Use \"Save this table as a view...\" to make one.");
+			return;
+		}
+		final List<SavedViews.View> list = v.list();
+		final List<Entry> entries = new ArrayList<>();
+		for (SavedViews.View x : list) entries.add(Entry.item(x.name, x.query() == null ? "This build cannot read this view." : "Tap to open, then choose to open or delete it."));
+		ShatteredPixelDungeon.scene().addToFront(WndUimsdList.menu("Saved views", "", entries, new WndUimsdList.Picker(){
+			@Override
+			public void onPick( int i, boolean checked ){
+				viewActions(m, list.get(i));
+			}
+		}));
+	}
+
+	private static void viewActions( final UimsdModel m, final SavedViews.View view ){
+		final List<Entry> entries = new ArrayList<>();
+		entries.add(Entry.item("Open", "Shows this view now."));
+		entries.add(Entry.item("Delete", "Removes this saved view. Your history is not touched."));
+		showViewActions(view.name, entries, m, view);
+	}
+
+	private static void showViewActions( String title, List<Entry> entries, final UimsdModel m, final SavedViews.View view ){
+		ShatteredPixelDungeon.scene().addToFront(WndUimsdList.menu(title, "", entries, new WndUimsdList.Picker(){
+			@Override
+			public void onPick( int i, boolean checked ){
+				if (i == 0){
+					Query q = view.query();
+					if (q == null || m.catalog() == null || m.catalog().view(q.dataset) == null){
+						say("This view cannot be opened: the table it uses is not available in this version.");
+						return;
+					}
+					m.showQuery(q);
+				} else {
+					SavedViews v = views(m);
+					v.delete(view.name);
+					try {
+						v.store(SavedViews.fileIn(m.root()));
+					} catch (java.io.IOException e){
+						say("The view could not be deleted: " + e.getMessage());
+					}
+				}
 			}
 		}));
 	}
