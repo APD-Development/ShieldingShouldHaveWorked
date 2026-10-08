@@ -124,7 +124,7 @@ Lines 101 to 150 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### app.0032  (Appreciation, appreciation, any time)
 - Clean: You know what I love about Cleric? Nothing, but I love the feeling of that sentence.
-- Adult: You know what I love about Cleric? Nothing, but I love the feeling of that sentence, you glorious bastard.
+- Adult: You know what I love about Cleric? Nothing. Fuck, that felt good. I'm going to say it again.
 
 ### app.0033  (Appreciation, appreciation, any time)
 - Clean: I salute Cleric's resilience. I don't mean the character's. I mean mine, from putting up with it.

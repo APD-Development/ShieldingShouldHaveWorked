@@ -154,7 +154,7 @@ recorded facts for the line to be eligible; `{name}` is filled from a recorded v
 | app.0029 | appreciation | any time | I'd like to publicly applaud Cleric for something. I'll let you know when I think of it. |  |
 | app.0030 | appreciation | any time | Cleric gives every player the chance to experience hope. I'm deeply grateful for the free practice. |  |
 | app.0031 | appreciation | any time | Congratulations to Cleric on remaining undefeated in the category of "making me say words I can't repeat". | Congratulations to Cleric on remaining undefeated in the category of "making me say fucking everything". |
-| app.0032 | appreciation | any time | You know what I love about Cleric? Nothing, but I love the feeling of that sentence. | You know what I love about Cleric? Nothing, but I love the feeling of that sentence, you glorious bastard. |
+| app.0032 | appreciation | any time | You know what I love about Cleric? Nothing, but I love the feeling of that sentence. | You know what I love about Cleric? Nothing. Fuck, that felt good. I'm going to say it again. |
 | app.0033 | appreciation | any time | I salute Cleric's resilience. I don't mean the character's. I mean mine, from putting up with it. |  |
 | app.0034 | appreciation | any time | Special thanks to Cleric for teaching me that a spell can be pretty and also not enough. |  |
 | app.0035 | appreciation | any time | Cleric: the class that makes you appreciate a plain stick. | Cleric: the class that makes you appreciate a plain fucking stick. |
