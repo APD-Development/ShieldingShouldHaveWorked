@@ -23,6 +23,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge.SubmissionQueue;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.Aggregate;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.CellFormatter;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.CellText;
@@ -84,6 +85,23 @@ public class WndUimsdRow extends Window {
 					@Override
 					public void run(){
 						m.startSeedFloors(row);
+					}
+				}));
+			}
+			//Developer preview: queue this finished run locally for a future submission feature. Nothing is sent anywhere (no server exists yet).
+			if (com.watabou.utils.DeviceCompat.isDebug() && WndUimsdReport.isRunsTable(def) && row.finished && !row.imported && !row.runId.isEmpty() && m.root() != null){
+				actions.add(new Action("Queue for submission (preview, sends nothing)", new Runnable(){
+					@Override
+					public void run(){
+						SubmissionQueue.Queued q = SubmissionQueue.enqueueRun(m.root(), row.runId, com.watabou.noosa.Game.version, System.currentTimeMillis());
+						String msg;
+						switch (q.result){
+							case QUEUED: msg = "Queued on this device. Nothing was sent: there is no server yet."; break;
+							case ALREADY_QUEUED: msg = "This run is already queued."; break;
+							case REFUSED: msg = "This run cannot be queued: " + q.detail + "."; break;
+							default: msg = q.detail;
+						}
+						ShatteredPixelDungeon.scene().addToFront(new WndMessage(msg));
 					}
 				}));
 			}

@@ -112,7 +112,9 @@ public class BackendFoundationsTest {
 		//nothing outside the backend package uses it yet except through the Gateway door; gameplay code must never reach grants or content approval
 		List<String> users = new ArrayList<>();
 		scan(root, new File[]{ main, new File(root, "apd/backendbridge") }, users);
-		assertTrue("gameplay code must not use the backend package directly yet: " + users, users.isEmpty());
+		//The only game-side entry point is the developer-preview "queue for submission" action in the run sheet, and it goes through the bridge, never the backend package itself.
+		users.remove("WndUimsdRow.java");
+		assertTrue("game code must not use the backend package directly: " + users, users.isEmpty());
 	}
 
 	//the tests run from core/src/main/assets (see core/build.gradle), other tools from core/: look in both and fail loudly if neither has the sources
@@ -132,6 +134,7 @@ public class BackendFoundationsTest {
 			else if (f.getName().endsWith(".java")){
 				String src = new String(Files.readAllBytes(f.toPath()), StandardCharsets.UTF_8);
 				if (src.contains("apd.backend")) hits.add(f.getName());
+				if (f.getName().equals("WndUimsdRow.java")) assertFalse("the run sheet talks to the bridge only", src.contains("apd.backend."));
 			}
 		}
 	}
