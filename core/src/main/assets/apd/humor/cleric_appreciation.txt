@@ -75,7 +75,7 @@ app.0146 | appreciation | appreciation,setup,since=4.8 | - | 8 | I wrote Cleric 
 app.0147 | appreciation | appreciation,after=app.0146,delay=30,since=4.8 | - | 8 | The Cleric fan letter is finished. It says "Dear Cleric" and nothing else, because I could not think of a second word that was kind. | The Cleric fan letter is finished. It says "Dear Cleric" and nothing else, because I could not think of a second word that wasn't "fuck".
 # story 23: the holiday
 app.0148 | appreciation | appreciation,setup,since=4.8 | - | 8 | I am declaring one day a year as Cleric Appreciation Day. |
-app.0149 | appreciation | appreciation,after=app.0148,nextsession,since=4.8 | - | 8 | Cleric Appreciation Day has been scheduled for February 30th. It is the one day that never comes. | Cleric Appreciation Day has been scheduled for February 30th. It is the one day that never comes,, and I picked it on purpose.
+app.0149 | appreciation | appreciation,after=app.0148,nextsession,since=4.8 | - | 8 | Cleric Appreciation Day has been scheduled for February 30th. It is the one day that never comes. | Cleric Appreciation Day has been scheduled for February 30th. It is the one day that never comes, and I picked it on purpose.
 
 # ---- single lines
 app.0001 | appreciation | appreciation,since=4.8 | - | 10 | Cleric is an excellent character for players who feel winning is overrated. | Cleric is an excellent character for players who feel winning is overrated and who like a nice bowl of fucking disappointment.

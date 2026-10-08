@@ -196,7 +196,7 @@ Lines 51 to 100 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### app.0149  (Appreciation, appreciation, any time) [follows app.0148; in a later session]
 - Clean: Cleric Appreciation Day has been scheduled for February 30th. It is the one day that never comes.
-- Adult: Cleric Appreciation Day has been scheduled for February 30th. It is the one day that never comes,, and I picked it on purpose.
+- Adult: Cleric Appreciation Day has been scheduled for February 30th. It is the one day that never comes, and I picked it on purpose.
 
 ### app.0001  (Appreciation, appreciation, any time)
 - Clean: Cleric is an excellent character for players who feel winning is overrated.
