@@ -55,6 +55,11 @@ public final class UimsdUnlock {
 		// the guided tour: opened only by ten genuine runs, never by the demo route
 		boolean tourUnlocked();
 		void setTourUnlocked();
+		// the one-time title-screen prompt after the tenth genuine run
+		boolean promptPending();
+		void setPromptPending();
+		boolean promptShown();
+		void setPromptShown();
 	}
 
 	public enum Generated { DONE, NOT_AVAILABLE, FAILED }
@@ -103,6 +108,26 @@ public final class UimsdUnlock {
 	// Should the demo button be offered? Only while UIMSD is closed and the demo route has never been used.
 	public static boolean demoButtonAvailable( Flags flags, File realRoot, boolean enforced ){
 		return enforced && !flags.demoUsed() && !isUnlocked(flags, realRoot, true);
+	}
+
+	// Called once a run has ended and its log is sealed (never before: death, ascension, ranking and save work are all done by then). If this
+	// was the player's TENTH genuine run, UIMSD and the guided tour open and the one-time prompt is queued for the title screen. It looks at
+	// the count, so it fires for the tenth run exactly: never for demo runs (they are not counted), never for the 11th or later, never
+	// again once the prompt has been shown. Returns true when the prompt was just queued.
+	public static boolean onRunEnded( Flags flags, File realRoot, boolean enforced ){
+		if (!enforced || flags.promptShown() || flags.promptPending()) return false;
+		if (genuineRuns(realRoot, TEN_RUNS + 1) != TEN_RUNS) return false;
+		flags.setUnlocked();
+		flags.setTourUnlocked();
+		flags.setPromptPending();
+		return true;
+	}
+
+	// The title screen asks this when it is built: true exactly once, for a queued prompt that has not been shown yet.
+	public static boolean takePrompt( Flags flags ){
+		if (!flags.promptPending() || flags.promptShown()) return false;
+		flags.setPromptShown();
+		return true;
 	}
 
 	// "I LIKE CONFUSION": writes the DEMO_RUNS demo runs, and only if that worked opens UIMSD and uses up the button. A failure leaves both

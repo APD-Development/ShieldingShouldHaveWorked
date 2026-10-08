@@ -337,6 +337,26 @@ public class SPDSettings extends GameSettings {
 		put( KEY_APD_UIMSD_TOUR_UNLOCKED, value );
 	}
 
+	//the one-time "go to UIMSD now" prompt after the tenth genuine run: waiting to be shown, and already shown
+	public static final String KEY_APD_TENTH_PENDING = "apd_tenth_run_prompt_pending";
+	public static final String KEY_APD_TENTH_SHOWN = "apd_tenth_run_prompt_shown";
+
+	public static boolean apdTenthPending(){
+		return getBoolean( KEY_APD_TENTH_PENDING, false );
+	}
+
+	public static void apdTenthPending( boolean value ){
+		put( KEY_APD_TENTH_PENDING, value );
+	}
+
+	public static boolean apdTenthShown(){
+		return getBoolean( KEY_APD_TENTH_SHOWN, false );
+	}
+
+	public static void apdTenthShown( boolean value ){
+		put( KEY_APD_TENTH_SHOWN, value );
+	}
+
 	public static boolean apdDemoUnlockUsed(){
 		return getBoolean( KEY_APD_DEMO_UNLOCK_USED, false );
 	}

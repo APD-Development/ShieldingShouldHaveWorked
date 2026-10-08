@@ -109,6 +109,10 @@ public class DemoUnlockDeviceTest {
 			public void setDemoUsed(){ SPDSettings.apdDemoUnlockUsed(true); }
 			public boolean tourUnlocked(){ return SPDSettings.apdUimsdTourUnlocked(); }
 			public void setTourUnlocked(){ SPDSettings.apdUimsdTourUnlocked(true); }
+			public boolean promptPending(){ return SPDSettings.apdTenthPending(); }
+			public void setPromptPending(){ SPDSettings.apdTenthPending(true); }
+			public boolean promptShown(){ return SPDSettings.apdTenthShown(); }
+			public void setPromptShown(){ SPDSettings.apdTenthShown(true); }
 		};
 	}
 

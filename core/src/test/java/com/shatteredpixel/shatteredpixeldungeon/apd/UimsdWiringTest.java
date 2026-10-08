@@ -90,4 +90,28 @@ public class UimsdWiringTest {
 		String scene = src("scenes/UimsdScene.java");
 		assertTrue(scene.contains("flushForReading"));
 	}
+
+	@Test
+	public void theTenthRunHookRunsOnlyAfterTheRunIsSealedAndNeverNavigates() throws Exception {
+		String dungeon = src("Dungeon.java");
+		for (String method : new String[]{ "public static void fail( Object cause )", "public static void win( Object cause )" }){
+			int m = dungeon.indexOf(method);
+			assertTrue(method, m >= 0);
+			String body = dungeon.substring(m, dungeon.indexOf("\n\t}\n", m));
+			int sealed = body.indexOf("ApdRecorder.onRunEnded(");
+			int hook = body.indexOf("UimsdGate.onRunEnded()");
+			assertTrue("the hook is there", hook > 0);
+			assertTrue("and comes after the run's record is sealed", sealed > 0 && hook > sealed);
+			assertTrue("and is the last thing the method does", body.indexOf(";", hook) + 1 >= body.trim().length() - 8 || body.substring(hook).split(";").length <= 3);
+		}
+		//the hook only records state on its own thread: it changes no scene and touches no save
+		String gate = src("windows/UimsdGate.java");
+		int a = gate.indexOf("public static void onRunEnded()");
+		String hookBody = gate.substring(a, gate.indexOf("// May the guided tour start?"));
+		assertFalse(hookBody.contains("switchScene") || hookBody.contains("switchNoFade") || hookBody.contains("Dungeon.") || hookBody.contains("saveAll"));
+		assertTrue(hookBody.contains("new Thread("));
+		//every way out of the results screen goes to the title, where the prompt is shown
+		String rankings = src("scenes/RankingsScene.java");
+		assertTrue(rankings.contains("switchNoFade(TitleScene.class)"));
+	}
 }

@@ -44,18 +44,24 @@ public class UimsdUnlockTest {
 
 	//the two flags as the game keeps them: they survive "restarts" because tests copy them into a new object
 	private static final class MemFlags implements UimsdUnlock.Flags {
-		boolean unlocked, demoUsed, tour;
+		boolean unlocked, demoUsed, tour, pending, shown;
 		public boolean unlocked(){ return unlocked; }
 		public void setUnlocked(){ unlocked = true; }
 		public boolean demoUsed(){ return demoUsed; }
 		public void setDemoUsed(){ demoUsed = true; }
 		public boolean tourUnlocked(){ return tour; }
 		public void setTourUnlocked(){ tour = true; }
+		public boolean promptPending(){ return pending; }
+		public void setPromptPending(){ pending = true; }
+		public boolean promptShown(){ return shown; }
+		public void setPromptShown(){ shown = true; }
 		MemFlags restart(){
 			MemFlags f = new MemFlags();
 			f.unlocked = unlocked;
 			f.demoUsed = demoUsed;
 			f.tour = tour;
+			f.pending = pending;
+			f.shown = shown;
 			return f;
 		}
 	}
@@ -271,5 +277,67 @@ public class UimsdUnlockTest {
 		MemFlags fresh = new MemFlags();
 		assertTrue("gate off: the tour is open for everyone", UimsdUnlock.isTourUnlocked(fresh, tmp.newFolder("empty"), false));
 		assertFalse("and nothing was recorded", fresh.tour);
+	}
+
+	// ---- the tenth genuine run ----
+
+	@Test
+	public void theTenthGenuineRunQueuesTheOneTimePromptAndNothingElseDoes() throws Exception {
+		MemFlags flags = new MemFlags();
+		for (int i = 1; i <= 9; i++){
+			genuineRun(i, true);
+			assertFalse("run " + i + " is not the tenth", UimsdUnlock.onRunEnded(flags, realRoot, true));
+		}
+		assertFalse(flags.pending);
+		genuineRun(10, false);
+		assertFalse("a run that is not finished is not a completed run", UimsdUnlock.onRunEnded(flags, realRoot, true));
+		genuineRun(11, true);
+		assertTrue("the tenth finished run queues the prompt", UimsdUnlock.onRunEnded(flags, realRoot, true));
+		assertTrue(flags.pending);
+		assertTrue("and opens UIMSD and the tour", flags.unlocked && flags.tour);
+		assertFalse("asking again does not queue it twice", UimsdUnlock.onRunEnded(flags, realRoot, true));
+
+		//the title screen takes it exactly once
+		assertTrue(UimsdUnlock.takePrompt(flags));
+		assertFalse(UimsdUnlock.takePrompt(flags));
+		assertTrue(flags.shown);
+
+		//after a restart it is still used up, and later runs never bring it back
+		MemFlags after = flags.restart();
+		assertFalse(UimsdUnlock.takePrompt(after));
+		genuineRun(12, true);
+		assertFalse("the eleventh and later runs never prompt", UimsdUnlock.onRunEnded(after, realRoot, true));
+	}
+
+	@Test
+	public void aQueuedPromptSurvivesARestartUntilItIsShown() throws Exception {
+		MemFlags flags = new MemFlags();
+		for (int i = 1; i <= 10; i++) genuineRun(i, true);
+		assertTrue(UimsdUnlock.onRunEnded(flags, realRoot, true));
+		MemFlags restarted = flags.restart();
+		assertTrue("the game was closed before the title was seen: still waiting", UimsdUnlock.takePrompt(restarted));
+		assertFalse(UimsdUnlock.takePrompt(restarted.restart()));
+	}
+
+	@Test
+	public void demoRunsNeverTriggerThePromptAndTheDemoRouteDoesNotSpendIt() throws Exception {
+		MemFlags flags = new MemFlags();
+		assertEquals(UimsdUnlock.Generated.DONE, UimsdUnlock.generateDemo(flags, realRoot, RULES, NOW, true));
+		assertFalse("ten demo runs are not ten genuine runs", UimsdUnlock.onRunEnded(flags, realRoot, true));
+		assertFalse(flags.pending);
+		for (int i = 1; i <= 9; i++) genuineRun(i, true);
+		assertFalse(UimsdUnlock.onRunEnded(flags, realRoot, true));
+		genuineRun(10, true);
+		assertTrue("the tenth genuine run still gets its prompt, after the demo shortcut", UimsdUnlock.onRunEnded(flags, realRoot, true));
+		assertTrue(flags.tour);
+		assertTrue(UimsdUnlock.takePrompt(flags));
+	}
+
+	@Test
+	public void withTheGateOffNothingIsQueued() throws Exception {
+		MemFlags flags = new MemFlags();
+		for (int i = 1; i <= 10; i++) genuineRun(i, true);
+		assertFalse(UimsdUnlock.onRunEnded(flags, realRoot, false));
+		assertFalse(flags.pending);
 	}
 }

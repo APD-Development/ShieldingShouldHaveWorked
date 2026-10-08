@@ -43,10 +43,15 @@ public final class UimsdGate {
 	static final String CHOICE_CONFUSION = "I LIKE CONFUSION";
 	static final String CHOICE_PLAY = "I'LL PLAY 10 RUNS";
 	// the arrow's message on the title screen while UIMSD is locked, exactly as the owner wrote it
+	static final String TENTH_RUN_ARROW_TEXT = "HEY, YOU SHOULD PROBABLY GO HERE NOW.";
 	static final String LOCKED_ARROW_TEXT = "THIS BUTTON IS EFFECTIVELY USELESS TILL 10 RUNS HAVE BEEN COMPLETED.";
 
 	// the two permanent flags, kept in the game's settings
 	static final UimsdUnlock.Flags FLAGS = new UimsdUnlock.Flags(){
+		@Override public boolean promptPending(){ return SPDSettings.apdTenthPending(); }
+		@Override public void setPromptPending(){ SPDSettings.apdTenthPending(true); }
+		@Override public boolean promptShown(){ return SPDSettings.apdTenthShown(); }
+		@Override public void setPromptShown(){ SPDSettings.apdTenthShown(true); }
 		@Override public boolean tourUnlocked(){ return SPDSettings.apdUimsdTourUnlocked(); }
 		@Override public void setTourUnlocked(){ SPDSettings.apdUimsdTourUnlocked(true); }
 		@Override public boolean unlocked(){ return SPDSettings.apdUimsdUnlocked(); }
@@ -68,10 +73,37 @@ public final class UimsdGate {
 
 	private UimsdGate(){}
 
-	// The text under the title screen's arrow: the owner's message while UIMSD is locked, the usual text otherwise.
+	// The text under the title screen's arrow: the one-time prompt after the tenth genuine run (shown once, then never again), the owner's
+	// message while UIMSD is locked, the usual text otherwise.
 	public static String titleAnnotation( String usual ){
-		if (!enforced() || FLAGS.unlocked()) return usual;
-		return UimsdUnlock.isUnlocked(FLAGS, ApdRecorder.historyRoot(), true) ? usual : LOCKED_ARROW_TEXT;
+		return annotationFor(FLAGS, ApdRecorder.historyRoot(), enforced(), usual);
+	}
+
+	static String annotationFor( UimsdUnlock.Flags flags, File root, boolean enforced, String usual ){
+		if (!enforced) return usual;
+		if (UimsdUnlock.takePrompt(flags)) return TENTH_RUN_ARROW_TEXT;
+		if (flags.unlocked()) return usual;
+		return UimsdUnlock.isUnlocked(flags, root, true) ? usual : LOCKED_ARROW_TEXT;
+	}
+
+	// Called from the end of a finished run, after everything the run needs is done. It only records the tenth-run state, on its own thread:
+	// it never changes scene, never touches the save, and the title screen shows the prompt the next time it is built.
+	public static void onRunEnded(){
+		final File root = ApdRecorder.historyRoot();
+		final boolean on = enforced();
+		if (!on || root == null) return;
+		Thread t = new Thread(new Runnable(){
+			@Override
+			public void run(){
+				try {
+					UimsdUnlock.onRunEnded(FLAGS, root, on);
+				} catch (Throwable ignored){
+					//a failure here must never reach the game
+				}
+			}
+		}, "apd-tenth-run");
+		t.setDaemon(true);
+		t.start();
 	}
 
 	// May the guided tour start? Only after ten genuine runs; the demo route does not open it.
