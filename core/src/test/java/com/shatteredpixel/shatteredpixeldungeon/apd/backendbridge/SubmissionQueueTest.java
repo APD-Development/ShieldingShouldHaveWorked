@@ -187,4 +187,31 @@ public class SubmissionQueueTest {
 		assertEquals("but a manual send tries it now", 1, SubmissionQueue.flush(tmp.getRoot(), ok, 102, true).sent);
 		assertEquals(1, tried[0]);
 	}
+
+	@Test
+	public void aRunQueuedOrTakenBackWhileASendIsInFlightIsNotLost(){
+		log("run-a", true, 3, 0);
+		log("run-b", true, 3, 0);
+		log("run-c", true, 3, 0);
+		SubmissionQueue.enqueueRun(tmp.getRoot(), "run-a", "b", 1);
+		SubmissionQueue.enqueueRun(tmp.getRoot(), "run-c", "b", 1);
+		final java.io.File root = tmp.getRoot();
+		com.shatteredpixel.shatteredpixeldungeon.apd.backend.Gateway slow = new com.shatteredpixel.shatteredpixeldungeon.apd.backend.Gateway(){
+			private boolean done;
+			public Response send( String key, com.shatteredpixel.shatteredpixeldungeon.apd.backend.Envelope e ){
+				if (!done){
+					done = true;
+					//while the server is being asked, the player queues another run and takes one back
+					assertEquals(SubmissionQueue.Result.QUEUED, SubmissionQueue.enqueueRun(root, "run-b", "b", 5).result);
+					assertTrue(SubmissionQueue.withdraw(root, "run-c"));
+				}
+				return key.equals("ob_run-a") ? new Response(Status.OK, "") : new Response(Status.RETRY_LATER, "busy");
+			}
+		};
+		SubmissionQueue.flush(root, slow, 100, true);
+		assertFalse("the sent run is gone", SubmissionQueue.isQueued(root, "run-a"));
+		assertTrue("the run queued during the send is still queued", SubmissionQueue.isQueued(root, "run-b"));
+		assertFalse("the run taken back during the send stays out", SubmissionQueue.isQueued(root, "run-c"));
+		assertEquals(1, SubmissionQueue.pending(root));
+	}
 }

@@ -58,6 +58,10 @@ public final class SubmissionQueue {
 		}
 	}
 
+	//The queue file is read, changed and written back by several callers (the run sheet, Send now on its own thread, evidence answers). Every
+	//change happens under this lock, and a send never holds it while it talks to the server.
+	private static final Object LOCK = new Object();
+
 	private SubmissionQueue(){}
 
 	public static File fileIn( File historyRoot ){
@@ -65,12 +69,14 @@ public final class SubmissionQueue {
 	}
 
 	public static int pending( File historyRoot ){
-		try {
-			Outbox box = new Outbox();
-			OutboxStore.load(box, fileIn(historyRoot));
-			return box.size();
-		} catch (IOException e){
-			return 0;
+		synchronized (LOCK){
+			try {
+				Outbox box = new Outbox();
+				OutboxStore.load(box, fileIn(historyRoot));
+				return box.size();
+			} catch (IOException e){
+				return 0;
+			}
 		}
 	}
 
@@ -95,16 +101,18 @@ public final class SubmissionQueue {
 		} catch (IllegalArgumentException e){
 			return new Queued(Result.REFUSED, null, "the run id is too long to queue");
 		}
-		try {
-			Outbox box = new Outbox();
-			OutboxStore.load(box, fileIn(historyRoot));
-			int before = box.size();
-			box.enqueue(id, RunSubmissionCodec.toEnvelope(o.submission), nowMillis);
-			if (box.size() == before) return new Queued(Result.ALREADY_QUEUED, null, "");
-			OutboxStore.save(box, fileIn(historyRoot));
-			return new Queued(Result.QUEUED, null, "");
-		} catch (IOException e){
-			return new Queued(Result.FAILED, null, "the queue could not be saved: " + e.getMessage());
+		synchronized (LOCK){
+			try {
+				Outbox box = new Outbox();
+				OutboxStore.load(box, fileIn(historyRoot));
+				int before = box.size();
+				box.enqueue(id, RunSubmissionCodec.toEnvelope(o.submission), nowMillis);
+				if (box.size() == before) return new Queued(Result.ALREADY_QUEUED, null, "");
+				OutboxStore.save(box, fileIn(historyRoot));
+				return new Queued(Result.QUEUED, null, "");
+			} catch (IOException e){
+				return new Queued(Result.FAILED, null, "the queue could not be saved: " + e.getMessage());
+			}
 		}
 	}
 
@@ -119,13 +127,15 @@ public final class SubmissionQueue {
 	private static Outbox.Item find( File historyRoot, String runId ){
 		Id id = queueId(runId);
 		if (historyRoot == null || id == null) return null;
-		try {
-			Outbox box = new Outbox();
-			OutboxStore.load(box, fileIn(historyRoot));
-			for (Outbox.Item i : box.items()) if (i.id.equals(id)) return i;
-		} catch (IOException ignored){
+		synchronized (LOCK){
+			try {
+				Outbox box = new Outbox();
+				OutboxStore.load(box, fileIn(historyRoot));
+				for (Outbox.Item i : box.items()) if (i.id.equals(id)) return i;
+			} catch (IOException ignored){
+			}
+			return null;
 		}
-		return null;
 	}
 
 	public static boolean isQueued( File historyRoot, String runId ){
@@ -142,14 +152,16 @@ public final class SubmissionQueue {
 	public static boolean withdraw( File historyRoot, String runId ){
 		Id id = queueId(runId);
 		if (historyRoot == null || id == null) return false;
-		try {
-			Outbox box = new Outbox();
-			OutboxStore.load(box, fileIn(historyRoot));
-			if (!box.remove(id)) return false;
-			OutboxStore.save(box, fileIn(historyRoot));
-			return true;
-		} catch (IOException e){
-			return false;
+		synchronized (LOCK){
+			try {
+				Outbox box = new Outbox();
+				OutboxStore.load(box, fileIn(historyRoot));
+				if (!box.remove(id)) return false;
+				OutboxStore.save(box, fileIn(historyRoot));
+				return true;
+			} catch (IOException e){
+				return false;
+			}
 		}
 	}
 
@@ -162,18 +174,46 @@ public final class SubmissionQueue {
 	public static Outbox.FlushResult flush( File historyRoot, Gateway gateway, long nowMillis, boolean ignoreBackoff ){
 		Outbox.FlushResult none = new Outbox.FlushResult();
 		if (historyRoot == null) return none;
-		try {
-			Outbox box = new Outbox();
-			OutboxStore.load(box, fileIn(historyRoot));
-			if (box.size() == 0) return none;
-			if (ignoreBackoff) for (Outbox.Item i : box.items()) i.nextAttemptAtMillis = nowMillis;
-			Outbox.FlushResult r = box.flush(gateway, nowMillis);
-			OutboxStore.save(box, fileIn(historyRoot));
-			for (Outbox.Item sent : r.sentItems) recordSent(historyRoot, sent, nowMillis);
-			return r;
-		} catch (IOException e){
-			return none;
+		Outbox box = new Outbox();
+		synchronized (LOCK){
+			try {
+				OutboxStore.load(box, fileIn(historyRoot));
+			} catch (IOException e){
+				return none;
+			}
 		}
+		if (box.size() == 0) return none;
+		if (ignoreBackoff) for (Outbox.Item i : box.items()) i.nextAttemptAtMillis = nowMillis;
+		//the copy 'box' is private to this call, so talking to the server does not hold the lock
+		Outbox.FlushResult r = box.flush(gateway, nowMillis);
+		synchronized (LOCK){
+			try {
+				//apply the outcome to the queue as it is NOW: runs queued or taken back while the server was being asked are not lost
+				Outbox now = new Outbox();
+				OutboxStore.load(now, fileIn(historyRoot));
+				java.util.Set<String> gone = new java.util.HashSet<>();
+				for (Outbox.Item i : r.sentItems) gone.add(i.id.value);
+				for (Outbox.Item i : r.rejectedItems) gone.add(i.id.value);
+				for (Outbox.Item i : new java.util.ArrayList<>(now.items())){
+					if (gone.contains(i.id.value)){
+						now.remove(i.id);
+						continue;
+					}
+					for (Outbox.Item tried : box.items()){
+						if (tried.id.equals(i.id)){
+							i.attempts = tried.attempts;
+							i.nextAttemptAtMillis = tried.nextAttemptAtMillis;
+							i.lastDetail = tried.lastDetail;
+						}
+					}
+				}
+				OutboxStore.save(now, fileIn(historyRoot));
+			} catch (IOException e){
+				return none;
+			}
+		}
+		for (Outbox.Item sent : r.sentItems) recordSent(historyRoot, sent, nowMillis);
+		return r;
 	}
 
 	//remembers what was sent so a later evidence request can be checked against it
@@ -189,14 +229,16 @@ public final class SubmissionQueue {
 
 	//queues an envelope that is not a run submission (evidence data the player agreed to send); false if it could not be queued or saved
 	static boolean enqueueEnvelope( File historyRoot, Id id, com.shatteredpixel.shatteredpixeldungeon.apd.backend.Envelope e, long nowMillis ){
-		try {
-			Outbox box = new Outbox();
-			OutboxStore.load(box, fileIn(historyRoot));
-			box.enqueue(id, e, nowMillis);
-			OutboxStore.save(box, fileIn(historyRoot));
-			return true;
-		} catch (IOException | IllegalArgumentException ex){
-			return false;
+		synchronized (LOCK){
+			try {
+				Outbox box = new Outbox();
+				OutboxStore.load(box, fileIn(historyRoot));
+				box.enqueue(id, e, nowMillis);
+				OutboxStore.save(box, fileIn(historyRoot));
+				return true;
+			} catch (IOException | IllegalArgumentException ex){
+				return false;
+			}
 		}
 	}
 

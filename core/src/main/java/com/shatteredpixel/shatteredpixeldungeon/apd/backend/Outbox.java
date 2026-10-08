@@ -48,6 +48,8 @@ public final class Outbox {
 		public final List<String> rejectedDetails = new ArrayList<>();
 		//the items the server accepted, as they were queued (so the caller can record what was sent)
 		public final List<Item> sentItems = new ArrayList<>();
+		//the items the server refused for good (removed from the queue)
+		public final List<Item> rejectedItems = new ArrayList<>();
 	}
 
 	private final List<Item> items = new ArrayList<>();
@@ -117,6 +119,7 @@ public final class Outbox {
 				case REJECTED:
 					items.remove(it);
 					r.rejected++;
+					r.rejectedItems.add(it);
 					r.rejectedDetails.add(resp.detail);
 					break;
 				case OFFLINE:
