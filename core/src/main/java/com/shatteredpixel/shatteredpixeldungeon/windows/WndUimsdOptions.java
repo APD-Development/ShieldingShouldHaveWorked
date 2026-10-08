@@ -190,6 +190,7 @@ public final class WndUimsdOptions {
 		entries.add(Entry.item("Server address...", "Where queued runs go when you press Send. Must start with https://."));
 		entries.add(Entry.item("Send queued runs now", "Sends only what you queued, only when you press this."));
 		final SessionStore.Session session = new SessionStore(m.root()).current(System.currentTimeMillis());
+		EvidenceInbox.prune(m.root(), System.currentTimeMillis());
 		final int asked = EvidenceInbox.pending(m.root());
 		entries.add(Entry.item("Evidence requests (" + asked + ")", asked == 0 ? "Nothing is waiting for your answer." : "A server asked to see the full log of a run you submitted. Nothing is sent unless you agree."));
 		entries.add(Entry.item("Share what is queued and sent", "A readable copy of everything APD holds for sending: each queued item exactly as it would be sent, what was sent, and any requests. Makes no connection."));

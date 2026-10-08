@@ -132,4 +132,14 @@ public class EvidenceFlowTest {
 		assertEquals("the log changed after it was submitted", EvidenceFlow.Result.LOG_CHANGED, EvidenceFlow.answer(tmp.getRoot(), ask("run-a", Evidence.Kind.FULL_RUN_LOG, 9_000), true, 100));
 		assertEquals(0, SubmissionQueue.pending(tmp.getRoot()));
 	}
+
+	@Test
+	public void requestsPastTheirDeadlineAreDropped(){
+		EvidenceInbox.add(tmp.getRoot(), ask("run-a", Evidence.Kind.FULL_RUN_LOG, 1_000L), 1);
+		EvidenceInbox.add(tmp.getRoot(), ask("run-b", Evidence.Kind.FULL_RUN_LOG, 9_000L), 1);
+		assertEquals(0, EvidenceInbox.prune(tmp.getRoot(), 500));
+		assertEquals(1, EvidenceInbox.prune(tmp.getRoot(), 2_000));
+		assertEquals(1, EvidenceInbox.pending(tmp.getRoot()));
+		assertEquals("run-b", EvidenceInbox.list(tmp.getRoot()).get(0).asked.runId);
+	}
 }

@@ -67,6 +67,20 @@ public final class EvidenceInbox {
 		return out;
 	}
 
+	//drops requests whose deadline has passed (they can no longer be answered); returns how many were dropped
+	public static int prune( File historyRoot, long nowMillis ){
+		List<Entry> all = list(historyRoot);
+		int dropped = 0;
+		for (int i = all.size() - 1; i >= 0; i--){
+			if (all.get(i).asked.request.deadlineMillis < nowMillis){
+				all.remove(i);
+				dropped++;
+			}
+		}
+		if (dropped > 0 && !save(historyRoot, all)) return 0;
+		return dropped;
+	}
+
 	public static int pending( File historyRoot ){
 		return list(historyRoot).size();
 	}

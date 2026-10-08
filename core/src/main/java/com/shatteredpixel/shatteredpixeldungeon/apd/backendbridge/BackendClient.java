@@ -62,6 +62,7 @@ public final class BackendClient {
 	//Asks the server for requests it has for this player and stores the readable evidence requests until the player answers them. Returns how
 	//many new ones were added, or -1 if the server could not be asked. Nothing is sent to the server and no data is built here.
 	public static int collectRequests( File historyRoot, Mailbox mailbox, long nowMillis ){
+		EvidenceInbox.prune(historyRoot, nowMillis);
 		Mailbox.Fetched f = mailbox.fetch();
 		if (!f.ok) return -1;
 		int added = 0;
