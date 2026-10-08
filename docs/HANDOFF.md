@@ -34,7 +34,7 @@ The long project handoff is `docs/APD-HANDOFF.md`; the canonical plan is `APD_Ca
 
 ## Next task (exact)
 - Owner (2026-10-09 ~09:15 UTC): resume without waiting; hourly resume trigger trig_018fkLK7mfJFyTjrj9gzS3Za (cron 15 * * * *) is active; do not cancel it.
-- Main = 22b91c8 (device run 100 green); builds: 75 = e1ecea2, 76 = f83839e (green), 77 = 22b91c8 (check Actions). Claude branch is ahead: account/vote actions, evidence inbox prune, redirect hardening, Community votes menu (run 102 on 3977dd0 pending).
+- Main = 3977dd0 = apd-build-78 (device run 102 green). Builds: 75 = e1ecea2, 76 = f83839e, 77 = 22b91c8, 78 = 3977dd0. Claude branch is ahead: account/vote actions, evidence inbox prune, redirect hardening, Community votes menu (run 102 on 3977dd0 pending).
 - Device run results so far: run 94 showed hero-select Back works (one press to the title); the Privacy test needed a mechanics fix (a text box ignores Back on purpose). Runs on b4fbeaa, d5f523c, f83839e are the verification of the rest; push the newest green sha to main and record the build.
 - Next: fix whatever the device runs show; then sync client for preferences (needs tombstones in SavedViews first, so it waits on sign-in existing), recording only where it adds real information (plants/seeds need a hidden-information design), Cleric un-ban behind a default-off flag (ruleset id only, owner decision pending), standalone runnable reference server (test scope), the codebase-wide comment pass (low).
 - Needs the owner: real server and address, sign-in provider, key custody, retention, moderation, Cleric ruleset identity, upstream support text, marker design.
