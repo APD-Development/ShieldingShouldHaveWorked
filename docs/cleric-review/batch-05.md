@@ -52,7 +52,7 @@ Lines 201 to 250 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### menu.0001  (Hatred, menu, any time)
 - Clean: Welcome back. No Cleric was harmed in the making of this title screen. Several were mentioned.
-- Adult: Welcome back. No Cleric was harmed in the making of this title screen. Several were mentioned, with feeling, and swearing.
+- Adult: Welcome back. No Cleric was harmed in the making of this title screen. Several were mentioned, in a tone I would call unprofessional.
 
 ### menu.0002  (Hatred, menu, any time)
 - Clean: The title screen is a quiet, peaceful place. I would like to keep it that way by not talking about Cleric, and yet.
@@ -80,7 +80,7 @@ Lines 201 to 250 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### menu.0011  (Hatred, menu, any time)
 - Clean: Don't mind me, I'm just hanging out in the menu, quietly resenting Cleric.
-- Adult: Don't mind me, I'm just hanging out in the menu, quietly resenting the shit out of Cleric.
+- Adult: Don't mind me, I'm just hanging out in the menu, having a long, quiet fight with the idea of Cleric.
 
 ### menu.0012  (Hatred, menu, any time)
 - Clean: You came back. Great. Cleric never does, because Cleric is still standing in the first room asking you for a second opinion.
@@ -100,7 +100,7 @@ Lines 201 to 250 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### clr.death.0003  (Hatred, death, only when lastHero=CLERIC & lastOutcome=DIED & killer!=nothing & runVerified=1)
 - Clean: Cleric was killed by {killer}. The Tome was right there. Reading is hard.
-- Adult: Cleric was killed by {killer}. The Tome was right there. Maybe try reading the damn thing.
+- Adult: Cleric was killed by {killer}. The Tome was right there. Cleric chose to die with a book unread.
 
 ### clr.death.0004  (Hatred, death, only when lastHero=CLERIC & lastOutcome=DIED & depth>=1 & runVerified=1)
 - Clean: Depth {depth}. Not a record, not a disaster, just Cleric.
@@ -120,11 +120,11 @@ Lines 201 to 250 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### clr.death.0012  (Hatred, death, only when lastHero=CLERIC & lastOutcome=DIED & clericDeaths>=2 & runVerified=1)
 - Clean: Dead again. Did the Tome at least say something nice at the end? It never does.
-- Adult: Dead again. Did the Tome at least say something nice at the end? It never does, the useless book.
+- Adult: Dead again. Did the Tome at least say something nice at the end? It never does. It just stays open, like a coworker who will not leave.
 
 ### clr.death.0014  (Hatred, death, only when lastHero=CLERIC & lastOutcome=DIED & subclass=PRIEST & runVerified=1)
 - Clean: A Priest, dead on depth {depth}. Healing everyone but the thing that mattered.
-- Adult: A Priest, dead on depth {depth}. Healing everyone but the one fucking thing that mattered.
+- Adult: A Priest, dead on depth {depth}. Healing everyone but the only patient who mattered.
 
 ### clr.death.0015  (Hatred, death, only when lastHero=CLERIC & lastOutcome=DIED & subclass=PALADIN & runVerified=1)
 - Clean: A Paladin, dead on depth {depth}. All that holy righteousness, and the holiest thing about it was the sound it made.
@@ -160,7 +160,7 @@ Lines 201 to 250 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### clr.win.0001  (Hatred, victory, only when lastHero=CLERIC & lastOutcome=WON & runVerified=1)
 - Clean: You won as Cleric. Fine. I will allow one moment of respect. That moment is over.
-- Adult: You won as Cleric. Fine. I will allow one moment of respect. That moment is over. Back to hating the shit out of it.
+- Adult: You won as Cleric. Fine. I will allow one moment of respect. That moment is over. The grudge was waiting in the car with the engine running.
 
 ### clr.win.0002  (Hatred, victory, only when lastHero=CLERIC & lastOutcome=WON & runVerified=1)
 - Clean: You won as Cleric. Congratulations, you beautiful masochist.
@@ -180,7 +180,7 @@ Lines 201 to 250 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### clr.win.0010  (Hatred, victory, only when lastHero=CLERIC & lastOutcome=WON & runVerified=1)
 - Clean: You beat the dungeon as Cleric. I will not be congratulating the Tome. The Tome knows what it did.
-- Adult: You beat the dungeon as Cleric. I will not be congratulating the Tome. The Tome knows what it did, the smug little shit.
+- Adult: You beat the dungeon as Cleric. I will not be congratulating the Tome. The Tome knows what it did, and it is smirking in book.
 
 ### clr.win.0012  (Hatred, victory, only when lastHero=CLERIC & lastOutcome=WON & runVerified=1)
 - Clean: You ascended with Cleric. I will never forgive you for making it look possible.
