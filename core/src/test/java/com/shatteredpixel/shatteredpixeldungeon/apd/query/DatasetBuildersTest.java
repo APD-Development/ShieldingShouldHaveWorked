@@ -513,7 +513,7 @@ public class DatasetBuildersTest {
 		//the hand-made views, plus a table for every generated dataset that has rows (the play-by-play ones and each registered kind of fact)
 		int generated = 0;
 		for (Dataset d : cat.datasets()) if (!d.rows.isEmpty() && (EventDatasets.isEventDataset(d.def.id) || FactDatasets.isFactDataset(d.def.id))) generated++;
-		assertEquals(12 + generated, cat.views().size());
+		assertEquals(13 + generated, cat.views().size());
 		for (ViewDef v : cat.views()){
 			Dataset ds = cat.datasetOf(v);
 			assertNotNull(v.id, ds);
@@ -556,6 +556,6 @@ public class DatasetBuildersTest {
 	public void anEmptyHistoryGivesEmptyDatasets(){
 		Catalog cat = load();
 		for (Dataset d : cat.datasets()) assertEquals(0, d.rows.size());
-		assertEquals(12, cat.views().size());
+		assertEquals(13, cat.views().size());
 	}
 }

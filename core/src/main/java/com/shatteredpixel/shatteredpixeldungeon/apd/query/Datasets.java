@@ -274,6 +274,7 @@ public final class Datasets {
 		d.add(ColumnDef.num("enemy.kills", "Killed by hero").shown().merge(Merge.SUM).group("Fights"));
 		d.add(ColumnDef.num("enemy.deaths", "Seen dying").merge(Merge.SUM).group("Fights"));
 		d.add(ColumnDef.num("enemy.heroDeaths", "Times it killed the hero").merge(Merge.SUM).group("Fights"));
+		d.add(ColumnDef.num("enemy.boss", "Boss").group("Enemy").describe("1 if this was a boss fight, 0 if not."));
 		d.add(ColumnDef.text("enemy.class", "True kind").internal().group("Hidden"));
 		d.add(ColumnDef.num("enemy.spawned", "Generated in total").internal().merge(Merge.SUM).since(1, 4).group("Hidden"));
 		d.add(ColumnDef.num("enemy.expValue", "XP value").internal().group("Hidden"));
@@ -444,6 +445,10 @@ public final class Datasets {
 		v.add(new ViewDef("enemies", "Enemies", "Each kind of enemy. Tap one for its statistics, then each meeting with it (one per run) and the runs.",
 				Query.of(ENEMIES).withGroup(enemyTable()).withMinSample(ALL_TYPES).withSorts(Arrays.asList(new Sort("count", true))))
 				.withInstances(Query.of(ENEMIES)));
+		v.add(new ViewDef("bosses", "Bosses", "Only the bosses, with how fights against each went. Tap one for its statistics, then each meeting and the runs.",
+				Query.of(ENEMIES).withFilters(Arrays.asList(Filter.num("enemy.boss", Op.EQ, 1))).withGroup(enemyTable()).withMinSample(ALL_TYPES)
+						.withSorts(Arrays.asList(new Sort("count", true))))
+				.withInstances(Query.of(ENEMIES).withFilters(Arrays.asList(Filter.num("enemy.boss", Op.EQ, 1)))));
 		v.add(new ViewDef("deaths", "Deaths", "Every death.", Query.of(DEATHS)));
 		v.add(new ViewDef("characters", "Characters", "Runs grouped by hero class.",
 				Query.of(RUNS).withGroup(runStats(FactKeys.HERO_CLASS)).withMinSample(DEFAULT_MIN_SAMPLE)
@@ -464,7 +469,7 @@ public final class Datasets {
 			switch (view.id){
 				case "runs": case "characters": case "challenges": case "difficulty": case "deaths": view.group("Your runs"); break;
 				case "items": case "weapons": case "armor": case "rings": case "trinkets": case "artifacts": view.group("Your gear"); break;
-				case "enemies": view.group("Enemies"); break;
+				case "enemies": case "bosses": view.group("Enemies"); break;
 				default:
 			}
 		}

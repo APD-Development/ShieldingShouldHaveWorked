@@ -55,7 +55,7 @@ public final class RowBuilders {
 
 	private RowBuilders(){}
 
-	public static final int BUILDER_VERSION = 6;
+	public static final int BUILDER_VERSION = 7;
 
 	private static final DatasetDef RUNS = Datasets.runs();
 	private static final DatasetDef ITEMS = Datasets.items();
@@ -577,6 +577,12 @@ public final class RowBuilders {
 			put(row, "enemy.name", a.name, Fact.PROV_RECORDED);
 			fightCells(row, a.attacksOnHero, a.hitsOnHero, a.attacksByHero, a.hitsByHero, a.damageToHero, a.damageFromHero, a.kills, a.deaths,
 					a.heroDeaths, countProv);
+			//Derived from the true class, which is hidden until the run is over (exports also leave it out of unfinished runs), so unfinished runs show "?"
+			if (meta.hasRunEnd && !a.classes.isEmpty()){
+				boolean boss = false;
+				for (String c : a.classes) boss |= BossClasses.isBoss(c);
+				put(row, "enemy.boss", boss ? 1 : 0, Fact.PROV_RECORDED);
+			}
 			if (a.classes.size() == 1) put(row, "enemy.class", a.classes.iterator().next(), Fact.PROV_RECORDED);
 			else if (a.classes.size() > 1) put(row, "enemy.class", "(several)", Fact.PROV_RECORDED);
 			if (gen && !a.classes.isEmpty()){
