@@ -258,6 +258,27 @@ public class PrivacyAndHeroBackDeviceTest {
 			pickItem(6);   //account: signed out, and no way to sign in yet
 			assertTrue("a message says there is no sign-in method", top() instanceof WndMessage);
 			pressBack();
+			//a waiting evidence request: the list of requests opens, picking one asks the player, Back leaves it with nothing sent
+			final java.io.File root = m.root();
+			assertTrue(com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge.EvidenceInbox.add(root,
+					new com.shatteredpixel.shatteredpixeldungeon.apd.backend.EvidenceMessages.Asked(new com.shatteredpixel.shatteredpixeldungeon.apd.backend.Evidence.Request(
+							com.shatteredpixel.shatteredpixeldungeon.apd.backend.Id.of(com.shatteredpixel.shatteredpixeldungeon.apd.backend.Id.Kind.SUBMISSION, "sub_devicetest"),
+							com.shatteredpixel.shatteredpixeldungeon.apd.backend.Evidence.Kind.FULL_RUN_LOG, System.currentTimeMillis() + 3_600_000L), "devicetest-run"), System.currentTimeMillis()));
+			try {
+				pickItem(4);
+				assertTrue("the requests are listed", top() instanceof WndUimsdList);
+				pickItem(0);
+				assertTrue("picking one asks the player", top() instanceof com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions);
+				pressBack();
+				assertTrue("Back leaves the question unanswered", top() instanceof WndUimsdList);
+				assertEquals("and the request is still waiting", 1, com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge.EvidenceInbox.pending(root));
+				pressBack();
+				assertTrue("Back returns to the Privacy list", top() instanceof WndUimsdList);
+			} finally {
+				com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge.EvidenceInbox.remove(root,
+						com.shatteredpixel.shatteredpixeldungeon.apd.backend.Id.of(com.shatteredpixel.shatteredpixeldungeon.apd.backend.Id.Kind.SUBMISSION, "sub_devicetest"),
+						com.shatteredpixel.shatteredpixeldungeon.apd.backend.Evidence.Kind.FULL_RUN_LOG);
+			}
 			pickItem(8);   //delete my account: asks first
 			assertTrue("a confirmation opened", top() instanceof com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions);
 			pressBack();
