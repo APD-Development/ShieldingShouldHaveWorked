@@ -73,6 +73,11 @@ logcat tags APDMIG/APDPERF into the job log and uploads logcat artifacts.
 - Backend foundations (plan 4.1 "design for eventual upload", sections 5, 8, 9, 10, 11 are EVENTUALLY): docs/APD-BACKEND.md + `apd/backend` (30 tests). Provider-neutral; decisions deferred to the owner are listed in that doc.
 - PHONE CHECKS for tonight's UIMSD additions (in the next main build): UIMSD table > Options > Saved views (save under a name, open, delete) and Options > Arrange the columns.
 
+## Source style rule (user, permanent, low priority): comments read like a normal maintained project
+Short, natural developer notes (WHY, TODO:, FIXME:, warnings). No chat/prompt-like text, no essays, no references to AI or to the conversation; comments document the software, not how it was made.
+Don't add comments just to have comments; don't invent history. Clean up unnatural comments only while already working in that subsystem. Known debt: the new apd/backend, apd/backendbridge and
+SavedViews comments are wordier than this standard; trim them next time those files are touched. Never delays bug fixes, tests, builds or features.
+
 ## Standing task: codebase-wide "why" comments (user-approved roadmap item, ongoing; behaviour-neutral)
 Applies to the WHOLE APD codebase, old and new. Add comments that explain WHY (architecture decisions, UIMSD universal-observability rules, telemetry/history integrity, run lifecycle,
 difficulty/ruleset identity, FloorReplay/provenance, backend trust boundaries, security, save compatibility/migrations, legacy behaviour that must stay, Android workarounds, unusual behaviour,
