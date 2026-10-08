@@ -84,7 +84,7 @@ Lines 251 to 300 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### abl.0002  (Hatred, ability, only when lastHero=CLERIC & spell!=none & runVerified=1)
 - Clean: You cast {spell} this run. It looked busy and accomplished nothing, which is Cleric's whole brand.
-- Adult: You cast {spell} this run. It looked very busy, like someone carrying a clipboard, and accomplished about as much.
+- Adult: You cast {spell} this run. It looked very busy, like a clerk carrying a clipboard, and accomplished about as much. Very Cleric.
 
 ### abl.0003  (Hatred, ability, only when lastHero=CLERIC & lastOutcome=DIED & armorAbility!=none & runVerified=1)
 - Clean: {armorAbility}: a glorious moment of Cleric looking amazing before dying anyway.

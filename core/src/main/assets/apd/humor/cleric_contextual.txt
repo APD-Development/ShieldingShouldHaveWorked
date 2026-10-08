@@ -101,7 +101,7 @@ boss.0008 | death | since=4.8 | lastHero!=CLERIC & lastOutcome=DIED & killer!=no
 
 # ---- abilities and spells (only when the spell or ability really was recorded)
 abl.0001 | ability | since=4.8 | lastHero=CLERIC & spell!=none & runVerified=1 | 8 | {spell}. Sure. Great spell. Very Cleric of you. | {spell}. Sure. Great spell. Very Cleric of you, casting it like a clerk stamping a form.
-abl.0002 | ability | since=4.8 | lastHero=CLERIC & spell!=none & runVerified=1 | 8 | You cast {spell} this run. It looked busy and accomplished nothing, which is Cleric's whole brand. | You cast {spell} this run. It looked very busy, like someone carrying a clipboard, and accomplished about as much.
+abl.0002 | ability | since=4.8 | lastHero=CLERIC & spell!=none & runVerified=1 | 8 | You cast {spell} this run. It looked busy and accomplished nothing, which is Cleric's whole brand. | You cast {spell} this run. It looked very busy, like a clerk carrying a clipboard, and accomplished about as much. Very Cleric.
 abl.0003 | ability | since=4.8 | lastHero=CLERIC & lastOutcome=DIED & armorAbility!=none & runVerified=1 | 8 | {armorAbility}: a glorious moment of Cleric looking amazing before dying anyway. |
 abl.0004 | ability | since=4.8 | lastHero=CLERIC & guidingLightCasts>=1 & runVerified=1 | 8 | You have cast Guiding Light {guidingLightCasts} times. This has not improved my opinion of Cleric. |
 abl.0005 | ability | since=4.8 | lastHero=CLERIC & guidingLightCasts>=100 & runVerified=1 | 8 | {guidingLightCasts} Guiding Lights cast. My opinion of Cleric has been consistent through all of them. |
