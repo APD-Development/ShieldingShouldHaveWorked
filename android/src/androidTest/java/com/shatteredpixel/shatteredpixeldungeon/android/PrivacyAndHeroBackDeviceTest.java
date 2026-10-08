@@ -106,8 +106,16 @@ public class PrivacyAndHeroBackDeviceTest {
 		long end = System.currentTimeMillis() + 120000;
 		while ((Gdx.app == null || Gdx.files == null || Game.scene() == null) && System.currentTimeMillis() < end) Thread.sleep(250);
 		assertNotNull("the game did not start", Game.scene());
-		waitUntil("the title scene", new java.util.concurrent.Callable<Boolean>(){
-			public Boolean call(){ return Game.scene() instanceof TitleScene; } }, 120000);
+		//normally the game opens on the title; when something else is showing (a first-run or news screen left by an earlier test), say which and go to the title
+		long titleBy = System.currentTimeMillis() + 45000;
+		while (!(Game.scene() instanceof TitleScene) && System.currentTimeMillis() < titleBy) Thread.sleep(250);
+		Log.w(TAG, "the game opened on " + (Game.scene() == null ? "no scene" : Game.scene().getClass().getSimpleName()));
+		if (!(Game.scene() instanceof TitleScene)){
+			Thread.sleep(2500);
+			onRender(new Runnable(){ public void run(){ ShatteredPixelDungeon.switchNoFade(TitleScene.class); } });
+			waitUntil("the title scene", new java.util.concurrent.Callable<Boolean>(){
+				public Boolean call(){ return Game.scene() instanceof TitleScene; } }, 60000);
+		}
 		Thread.sleep(2500);
 	}
 
