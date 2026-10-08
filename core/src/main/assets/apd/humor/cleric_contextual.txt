@@ -1,0 +1,201 @@
+# Cleric complaints that depend on what really happened. A line shows only when every condition in `requires` is true of recorded facts,
+# and a {placeholder} is filled only from a recorded value. Lines flagged joke use invented numbers on purpose and never use placeholders.
+# id | category | flags | requires | weight | clean wording | adult wording (optional)
+
+# ---- fourth wall: the developer talks about the game, the popup, and himself
+fw.0001 | fourth_wall | since=1.0 | - | 8 | As the developer, I want it on record that I made this popup on purpose. Cleric did this to me. |
+fw.0002 | fourth_wall | since=1.0 | - | 8 | Yes, I spent real development time on a message about Cleric. No, I do not regret it. Yes, I need a hobby. |
+fw.0003 | fourth_wall | since=1.0 | - | 8 | If this popup is annoying, there is a switch for it in APD Settings. Cleric has no such switch, which is exactly the problem. |
+fw.0004 | fourth_wall | since=1.0 | - | 8 | You are reading a message that someone had to type, test, and ship. All of it was about Cleric. Think about that. |
+fw.0005 | fourth_wall | since=1.0 | - | 8 | I can hear you thinking "does this guy have any other hobbies". The answer is, not at the moment, because Cleric. |
+fw.0006 | fourth_wall | since=1.0 | - | 8 | Technically, this popup is a feature. Practically, it is a cry for help. Officially, it is about Cleric. | Technically, this popup is a feature. Practically, it is a cry for help. Officially, it is about fucking Cleric.
+fw.0007 | fourth_wall | since=1.0 | - | 8 | Fact check: I wrote this message on purpose, with a clear head, and with my full legal name on the project. I regret nothing about Cleric. |
+fw.0008 | fourth_wall | since=1.0 | - | 8 | This message was written by a human being who is not okay about Cleric. Any resemblance to a rational complaint is accidental. |
+fw.0009 | fourth_wall | since=1.0 | - | 8 | Congratulations, you have found one of the Cleric complaints. There are more. You will meet them slowly, over time, like a recurring rash. |
+fw.0010 | fourth_wall | since=1.0 | - | 8 | Imagine being so sure of yourself that you write a whole system just to keep complaining about Cleric. I am so sure of myself. |
+fw.0011 | fourth_wall | since=1.0 | - | 8 | I could have spent this time fixing a bug. Instead I wrote a joke about Cleric. Please do not tell my to-do list. |
+fw.0012 | fourth_wall | since=1.0 | - | 8 | You are playing a game made by someone who has strong opinions about Cleric and no ability to keep them to himself. |
+fw.0013 | fourth_wall | since=1.0 | - | 8 | In a world full of important problems, I chose Cleric. Look at me. I am the problem. | In a world full of important problems, I chose fucking Cleric. Look at me. I am the problem.
+fw.0014 | fourth_wall | since=1.0 | - | 8 | I know this popup has nothing to do with the run. I know. I know. Cleric. |
+fw.0015 | fourth_wall | since=1.0 | - | 8 | Right now somewhere a QA tester is wondering why the game contains a recurring joke about Cleric. That tester is me, and I have no answer. |
+fw.0016 | fourth_wall | since=1.0 | - | 8 | The developer would like to thank you for tolerating this system. The developer would also like to complain about Cleric. |
+fw.0017 | fourth_wall | since=1.0 | - | 8 | Some games have an elegant tutorial. This game has a recurring grudge against Cleric and the confidence to put it in your face. |
+fw.0018 | fourth_wall | since=1.0 | - | 8 | If you are looking for the part of the game where I stop being mad about Cleric, I have some bad news. |
+fw.0019 | fourth_wall | since=1.0 | - | 8 | I wonder if the code reviewing this popup is also mad about Cleric. It does not matter. I am the code reviewer. I am mad. |
+fw.0020 | fourth_wall | since=1.0 | - | 8 | Hello from the other side of the screen. I have never been more upset about a character class than I am about Cleric, and I am telling you in a game. |
+fw.0021 | fourth_wall | since=1.0 | - | 6 | My commit history is basically a diary and the diary says "Cleric" in every other entry. |
+fw.0022 | fourth_wall | since=1.0 | - | 6 | Somewhere in the code there is a comment I thought about leaving, and the comment says only "ugh, Cleric". I'm keeping it in my heart. |
+fw.0023 | fourth_wall | since=1.0 | - | 6 | Are you having fun? Good. If you were having fun on Cleric I would be genuinely worried for you, and for me. |
+fw.0024 | fourth_wall | since=1.0 | - | 6 | This is the part where a professional developer would say something thoughtful about player feedback. Anyway: Cleric. |
+fw.0025 | fourth_wall | since=1.0 | - | 6 | I'm contractually obligated by my own feelings to remind you that Cleric is fine, actually. I said it. I hated saying it. |
+fw.0026 | fourth_wall | since=1.0 | - | 6 | It took me 225 attempts to ascend with Cleric. This popup is what happens when a person survives that and has no one to tell. |
+fw.0027 | fourth_wall | since=1.0 | - | 6 | I made this game partly out of love and partly out of a deep need to make my feelings about Cleric someone else's problem. | I made this game partly out of love and partly out of a deep fucking need to make my feelings about Cleric someone else's problem.
+fw.0028 | fourth_wall | since=1.0 | - | 6 | You can dismiss this message. You cannot dismiss the fact that I have a lot to say about Cleric. |
+fw.0029 | fourth_wall | since=1.0 | - | 6 | Do I understand that this is a lot of effort to spend insulting a fictional priest? Yes. Will I stop? Absolutely not. |
+fw.0030 | fourth_wall | since=1.0 | - | 6 | Dear player: this game is about dungeons, loot, and death. It is also about me and Cleric, but only in a small, unhealthy way. |
+
+# ---- title screen
+menu.0001 | menu | since=1.0 | - | 8 | Welcome back. No Cleric was harmed in the making of this title screen. Several were mentioned. |
+menu.0002 | menu | since=1.0 | - | 8 | The title screen is a quiet, peaceful place. I would like to keep it that way by not talking about Cleric, and yet. |
+menu.0003 | menu | since=1.0 | - | 8 | Before you start a run, a gentle reminder of what is in the character list: several fine options and Cleric. |
+menu.0004 | menu | since=1.0 | - | 8 | You have arrived at the main menu. Take a deep breath. Think of a place with no Cleric. Hold it. There. That is the whole message. |
+menu.0005 | menu | since=1.0 | - | 8 | Loading complete. Cleric still loading, as it has always been. |
+menu.0006 | menu | since=1.0 | - | 8 | Every time the title screen opens, a small part of me wonders if someone is about to pick Cleric. Please do not make me find out. |
+menu.0007 | menu | since=1.0 | - | 8 | Press any button to begin. Do not press the button that begins a Cleric run. I am looking at you through the screen. |
+menu.0008 | menu | since=1.0 | - | 8 | A warm welcome to the menu, the only place in the game where Cleric cannot hurt you. Probably. |
+menu.0009 | menu | since=1.0 | - | 8 | This is a title screen. It is full of possibility. Anything could happen. Unfortunately, one of the possibilities is Cleric. |
+menu.0010 | menu | since=1.0 | - | 8 | The menu music is calm. It is a conspiracy to make you relax before the Cleric mention. |
+menu.0011 | menu | since=1.0 | - | 8 | Don't mind me, I'm just hanging out in the menu, quietly resenting Cleric. |
+menu.0012 | menu | since=1.0 | - | 8 | You came back. Great. Cleric never does, because Cleric is still standing in the first room asking you for a second opinion. |
+menu.0013 | menu | since=1.0 | - | 8 | The title screen has been up for a while now and I have already thought about Cleric twice. It is a record. | The title screen has been up for a while now and I have already thought about Cleric twice. It is a fucking record.
+menu.0014 | menu | since=1.0 | - | 8 | If you made it to the menu, that is a good sign. If you are about to open the Cleric portrait, that is a sign of something else. |
+menu.0015 | menu | since=1.0 | - | 8 | Thank you for visiting the main menu. Please keep your hands inside the game at all times and your thoughts on Cleric to a minimum. |
+
+# ---- after a Cleric death (the run really was Cleric and really ended in death)
+clr.death.0001 | death | since=1.0 | lastHero=CLERIC & lastOutcome=DIED & depth>=1 | 10 | Cleric died on depth {depth}. I would say I'm sorry, but that would be lying, and I don't lie about Cleric. |
+clr.death.0002 | death | since=1.0 | lastHero=CLERIC & lastOutcome=DIED | 10 | Another Cleric run, another death. At least it was consistent. |
+clr.death.0003 | death | since=1.0 | lastHero=CLERIC & lastOutcome=DIED & killer!=nothing | 10 | Cleric was killed by {killer}. The Tome was right there. Reading is hard. |
+clr.death.0004 | death | since=1.0 | lastHero=CLERIC & lastOutcome=DIED & depth>=1 | 8 | Depth {depth}. Not a record, not a disaster, just Cleric. | Depth {depth}. Not a record, not a disaster, just fucking Cleric.
+clr.death.0005 | death | since=1.0 | lastHero=CLERIC & lastOutcome=DIED | 8 | Cleric has fallen. Please observe a brief period of mild satisfaction. |
+clr.death.0006 | death | since=1.0 | lastHero=CLERIC & lastOutcome=DIED | 8 | I have seen this ending before. Many times. It has not gotten better, and neither has my opinion of Cleric. |
+clr.death.0007 | death | since=1.0 | lastHero=CLERIC & lastOutcome=DIED & killer!=nothing | 8 | A {killer} did that. A {killer}. To Cleric. I don't know whether to laugh or to buy it a drink. | A {killer} did that. A {killer}. To Cleric. I don't know whether to laugh or to buy the bastard a drink.
+clr.death.0008 | death | since=1.0 | lastHero=CLERIC & lastOutcome=DIED | 8 | That was a Cleric death. You can tell because it somehow felt both preventable and inevitable. |
+clr.death.0009 | death | since=1.0 | lastHero=CLERIC & lastOutcome=DIED & depth<=3 | 8 | Cleric died on depth {depth}. That is not a run. That is a rumor. | Cleric died on depth {depth}. That is not a run. That is a goddamn rumor.
+clr.death.0010 | death | since=1.0 | lastHero=CLERIC & lastOutcome=DIED & depth>=10 | 8 | Cleric made it to depth {depth} and then died. I want you to know that I felt that in my teeth. |
+clr.death.0011 | death | since=1.0 | lastHero=CLERIC & lastOutcome=DIED | 8 | A moment to reflect: Cleric did exactly what Cleric does. |
+clr.death.0012 | death | since=1.0 | lastHero=CLERIC & lastOutcome=DIED | 8 | Dead again. Did the Tome at least say something nice at the end? It never does. |
+clr.death.0013 | death | since=1.0 | lastHero=CLERIC & lastOutcome=DIED | 8 | If you were hoping for a pep talk, this is not it. This is a quiet nod to the fact that Cleric did this to itself. |
+clr.death.0014 | death | since=1.0 | lastHero=CLERIC & lastOutcome=DIED & subclass=PRIEST | 8 | A Priest, dead on depth {depth}. Healing everyone but the thing that mattered. | A Priest, dead on depth {depth}. Healing everyone but the one fucking thing that mattered.
+clr.death.0015 | death | since=1.0 | lastHero=CLERIC & lastOutcome=DIED & subclass=PALADIN | 8 | A Paladin, dead on depth {depth}. All that holy armor, and the holiest thing about it was the sound it made. |
+clr.death.0016 | death | since=1.0 | lastHero=CLERIC & lastOutcome=DIED | 8 | Cleric died. The dungeon did not even gloat. It simply made a mental note to do it again. |
+clr.death.0017 | death | since=1.0 | lastHero=CLERIC & lastOutcome=DIED & clericStreak>=3 | 8 | That is {clericStreak} Cleric runs in a row, and it ended like this. I salute your stamina and question everything else. |
+clr.death.0018 | death | since=1.0 | lastHero=CLERIC & lastOutcome=DIED | 8 | Cleric's death was brought to you by a long line of "this should be fine". |
+clr.death.0019 | death | since=1.0 | lastHero=CLERIC & lastOutcome=DIED | 8 | The run is over. The Tome is closed. The developer is smiling in a way that should worry someone. |
+clr.death.0020 | death | since=1.0 | lastHero=CLERIC & lastOutcome=DIED | 8 | If you are feeling bad about this loss, remember that Cleric is fully responsible, and I mean that with love and no accountability. |
+clr.death.0021 | death | since=1.0 | lastHero=CLERIC & lastOutcome=DIED & killer!=nothing | 8 | Cleric versus {killer}: a story as old as time, and by that I mean the last five minutes. |
+clr.death.0022 | death | since=1.0 | lastHero=CLERIC & lastOutcome=DIED | 6 | I'd like to say Cleric deserved better. I'd like to say a lot of things. I'm not going to. |
+clr.death.0023 | death | since=1.0 | lastHero=CLERIC & lastOutcome=DIED & depth>=1 | 8 | Depth {depth} is a nice place to die. Quiet, scenic, and full of reminders that Cleric does not belong. |
+
+# ---- a death as someone else, with Cleric not involved at all
+oth.death.0001 | death | since=1.0 | lastHero!=CLERIC & lastOutcome=DIED | 8 | You died, but take comfort in the fact that it was not as embarrassing as dying as Cleric. |
+oth.death.0002 | death | since=1.0 | lastHero!=CLERIC & lastOutcome=DIED | 8 | You died as {lastHero}. Cleric would have died sooner and complained about it. |
+oth.death.0003 | death | since=1.0 | lastHero!=CLERIC & lastOutcome=DIED | 8 | A rough one. The good news is that at no point did Cleric make it worse. |
+oth.death.0004 | death | since=1.0 | lastHero!=CLERIC & lastOutcome=DIED & depth>=1 | 8 | You made it to depth {depth}. That is further than a Cleric has made it in my mind, which stopped at disappointment. |
+oth.death.0005 | death | since=1.0 | lastHero!=CLERIC & lastOutcome=DIED | 8 | Sorry about the loss. I'd offer a Cleric to cheer you up but that would be cruel to both of us. |
+oth.death.0006 | death | since=1.0 | lastHero!=CLERIC & lastOutcome=DIED | 8 | This message was not triggered by your death, it was triggered by the fact that I wanted to say something about Cleric while you were sad. |
+
+# ---- after a Cleric victory
+clr.win.0001 | victory | since=1.0 | lastHero=CLERIC & lastOutcome=WON | 10 | You won as Cleric. Fine. I will allow one moment of respect. That moment is over. |
+clr.win.0002 | victory | since=1.0 | lastHero=CLERIC & lastOutcome=WON | 8 | You won as Cleric. Congratulations, you beautiful masochist. | You won as Cleric. Congratulations, you beautiful fucking masochist.
+clr.win.0003 | victory | since=1.0 | lastHero=CLERIC & lastOutcome=WON | 8 | A Cleric victory. I would like to speak to the manager of reality. |
+clr.win.0004 | victory | since=1.0 | lastHero=CLERIC & lastOutcome=WON | 8 | You did it with Cleric. I am proud, confused, and a little offended on behalf of every other class. |
+clr.win.0005 | victory | since=1.0 | lastHero=CLERIC & lastOutcome=WON | 8 | A victory with Cleric. This is the first time my left eye has twitched in a good way. |
+clr.win.0006 | victory | since=1.0 | lastHero=CLERIC & lastOutcome=WON & clericWins>=2 | 8 | That is {clericWins} Cleric wins on record. I am starting to think I might be the problem. I am also still angry. |
+clr.win.0007 | victory | since=1.0 | lastHero=CLERIC & lastOutcome=WON | 8 | Cleric won. The universe did not collapse. The hate remains. Everything is fine. |
+clr.win.0008 | victory | since=1.0 | lastHero=CLERIC & lastOutcome=WON | 8 | If Cleric can win, then anything is possible. That thought keeps me awake. |
+clr.win.0009 | victory | since=1.0 | lastHero=CLERIC & lastOutcome=WON | 8 | Please enjoy this victory. I will be in the corner, quietly rewriting my opinion of Cleric from "terrible" to "annoyingly capable". | Please enjoy this victory. I will be in the corner, quietly rewriting my opinion of Cleric from "terrible" to "annoyingly fucking capable".
+clr.win.0010 | victory | since=1.0 | lastHero=CLERIC & lastOutcome=WON | 8 | You beat the dungeon as Cleric. I will not be congratulating the Tome. The Tome knows what it did. |
+clr.win.0011 | victory | since=1.0 | lastHero=CLERIC & lastOutcome=WON | 8 | It's a Cleric win, and the world keeps spinning. I'm choosing to be offended by that. |
+clr.win.0012 | victory | since=1.0 | lastHero=CLERIC & lastOutcome=WON | 8 | You ascended with Cleric. I will never forgive you for making it look possible. |
+clr.win.0013 | victory | since=1.0 | lastHero=CLERIC & lastOutcome=WON | 6 | Winning with Cleric is like finishing a marathon in a wedding dress: impressive, and I'd like to know who dressed you. |
+clr.win.0014 | victory | since=1.0 | lastHero=CLERIC & lastOutcome=WON | 6 | Well done. I mean it. I hate that I mean it, because it was Cleric. |
+
+# ---- a win as someone else
+oth.win.0001 | victory | since=1.0 | lastHero!=CLERIC & lastOutcome=WON | 8 | You won as {lastHero}. This is the best time to remember that Cleric exists. You're welcome. |
+oth.win.0002 | victory | since=1.0 | lastHero!=CLERIC & lastOutcome=WON | 8 | A fine victory. Cleric would have celebrated by healing a wall. |
+oth.win.0003 | victory | since=1.0 | lastHero!=CLERIC & lastOutcome=WON | 8 | Congratulations on the win. No Cleric was involved, and that is why it worked. |
+oth.win.0004 | victory | since=1.0 | lastHero!=CLERIC & lastOutcome=WON | 8 | You won! Somewhere, a Cleric just sneezed, and I'm assuming it's out of jealousy. |
+oth.win.0005 | victory | since=1.0 | lastHero!=CLERIC & lastOutcome=WON | 8 | Victory without Cleric. The way it should be, the way it was always meant to be. |
+oth.win.0006 | victory | since=1.0 | lastHero!=CLERIC & lastOutcome=WON | 8 | You won as {lastHero}, and I feel great, and I would like it noted that Cleric did not contribute. |
+
+# ---- close but no ascension
+asc.0001 | ascension | since=1.0 | lastHero=CLERIC & lastOutcome=DIED & depth>=24 | 10 | You got that far with Cleric and still did not ascend. I know that feeling. It took me 225 attempts. I have not recovered. |
+asc.0002 | ascension | since=1.0 | lastHero=CLERIC & lastOutcome=DIED & depth>=24 | 8 | So close to the Amulet with Cleric. I have been there. It does not get better. |
+asc.0003 | ascension | since=1.0 | lastHero=CLERIC & lastOutcome=DIED & depth>=24 | 8 | Depth {depth} with Cleric. You were nearly there. I'm choosing to believe that was the Tome's fault. |
+asc.0004 | ascension | since=1.0 | lastHero=CLERIC & lastOutcome=DIED & depth>=24 | 8 | That was the closest a Cleric can get to the top without the top noticing. Take a moment. Now take another. | That was the closest a Cleric can get to the top without the top giving a shit. Take a moment. Now take another.
+asc.0005 | ascension | since=1.0 | lastHero=CLERIC & lastOutcome=DIED & depth>=24 | 8 | Failed ascension with Cleric. I have a support group. It meets every time I look at the Tome. |
+asc.0006 | ascension | since=1.0 | lastHero=CLERIC & lastOutcome=DIED & depth>=24 | 8 | To have come so far with Cleric and lost: the dungeon sends its regards, and mine are less polite. |
+
+# ---- after any run
+post.0001 | postrun | since=1.0 | - | 8 | A run just ended. This is the best time to think about Cleric. Do not ask why. |
+post.0002 | postrun | since=1.0 | - | 8 | Run complete. Please rate your experience: it was either better than Cleric or it was not a run. |
+post.0003 | postrun | since=1.0 | - | 8 | Whatever happened out there, it was not Cleric's fault, but I'm going to blame Cleric anyway. |
+post.0004 | postrun | since=1.0 | - | 8 | That run is over. Cleric, however, remains. |
+post.0005 | postrun | since=1.0 | - | 8 | Thank you for finishing the run. I'd like to thank the dungeon, the loot, and no part of Cleric. |
+post.0006 | postrun | since=1.0 | - | 8 | Nice work. If you want to see something truly terrifying, look at Cleric's start-of-run kit. |
+post.0007 | postrun | since=1.0 | - | 8 | Rest up. The dungeon will be here later. So will Cleric, unfortunately. |
+post.0008 | postrun | since=1.0 | - | 8 | End of run. I just want to say that no matter what happened, I'd still rather be doing that than playing Cleric. |
+post.0009 | postrun | since=1.0 | - | 8 | You may now go back to the title screen and not pick Cleric. I believe in you. |
+post.0010 | postrun | since=1.0 | - | 8 | If you had a bad run, here's a tip: at least it wasn't Cleric. If you had a good run, here's a tip: that's because it wasn't Cleric. |
+
+# ---- bosses
+boss.0001 | boss | since=1.0 | lastHero!=CLERIC & boss!=none | 8 | Congratulations on facing {boss}. Cleric would have needed three tries and a nap. |
+boss.0002 | boss | since=1.0 | lastHero!=CLERIC & boss!=none | 8 | {boss}: scary, powerful, and still less intimidating than a Cleric build screen. |
+boss.0003 | boss | since=1.0 | lastHero=CLERIC & boss!=none | 8 | Cleric met {boss}. I have no insight. I just wanted to say Cleric met {boss}, and I felt something, and it was fear. |
+boss.0004 | boss | since=1.0 | lastHero=CLERIC & lastOutcome=DIED & boss!=none | 8 | {boss} is a boss. Cleric is not. This is not a surprise, but the sound that made me make was. |
+boss.0005 | boss | since=1.0 | lastHero=CLERIC & lastOutcome=WON & boss!=none | 8 | Cleric defeated {boss}. I'd like to see the footage again, slowly, with my hand over my mouth. |
+boss.0006 | boss | since=1.0 | boss!=none | 8 | You fought {boss}. That's a good story. Compare it to the story of Cleric fighting anything, which is shorter. |
+boss.0007 | boss | since=1.0 | boss!=none | 6 | I heard {boss} asked about Cleric and the answer was a polite cough. |
+boss.0008 | boss | since=1.0 | lastHero!=CLERIC & lastOutcome=DIED & boss!=none | 8 | {boss} ended your run. If it helps, it would have ended a Cleric's run faster and with more paperwork. |
+
+# ---- abilities and spells (only when the spell or ability really was recorded)
+abl.0001 | ability | since=1.0 | lastHero=CLERIC & spell!=none | 8 | {spell}. Sure. Great spell. Very Cleric of you. |
+abl.0002 | ability | since=1.0 | lastHero=CLERIC & spell!=none | 8 | You cast {spell} this run. It looked busy and accomplished nothing, which is Cleric's whole brand. |
+abl.0003 | ability | since=1.0 | lastHero=CLERIC & armorAbility!=none | 8 | {armorAbility}: ten glorious turns of Cleric looking amazing before dying anyway. |
+abl.0004 | ability | since=1.0 | lastHero=CLERIC & guidingLightCasts>=1 | 8 | You have cast Guiding Light {guidingLightCasts} times. This has not improved my opinion of Cleric. |
+abl.0005 | ability | since=1.0 | lastHero=CLERIC & guidingLightCasts>=100 | 8 | {guidingLightCasts} Guiding Lights cast. My opinion of Cleric has been consistent through all of them. |
+abl.0006 | ability | since=1.0 | lastHero=CLERIC & spell!=none | 8 | You cast {spell} as Cleric. I felt something. It was mild contempt. |
+abl.0007 | ability | since=1.0 | lastHero=CLERIC & armorAbility!=none | 8 | {armorAbility} is a real armor ability, in a real game, used by a real Cleric. I am not okay. |
+abl.0008 | ability | since=1.0 | lastHero=CLERIC | 8 | Ascended Form: ten turns of looking radiant before dying anyway. |
+abl.0009 | ability | since=1.0 | lastHero=CLERIC | 8 | Power of Many: you made a friend out of light. You should try making one out of people. |
+abl.0010 | ability | since=1.0 | lastHero=CLERIC | 8 | Trinity: three abilities, zero reasons for me to forgive Cleric. |
+abl.0011 | ability | since=1.0 | lastHero=CLERIC | 8 | Guiding Light looks nice. So does a crack in a wall, and it does just as much. |
+abl.0012 | ability | since=1.0 | lastHero=CLERIC & subclass=PRIEST | 8 | Priest. Of course you picked Priest. Healing everyone but my opinion of this class. |
+abl.0013 | ability | since=1.0 | lastHero=CLERIC & subclass=PALADIN | 8 | Paladin. A holy knight, a righteous cause, and a build that has the audacity to be fine. |
+abl.0014 | ability | since=1.0 | lastHero=CLERIC | 6 | Every Cleric spell is a small act of optimism. I'm allergic. |
+abl.0015 | ability | since=1.0 | lastHero=CLERIC | 6 | I used to think the Tome was cursed. Then I played with it. It is not cursed. It just doesn't care. |
+
+# ---- gear
+eqp.0001 | equipment | since=1.0 | lastHero=CLERIC & weapon!=none | 8 | A Cleric with a {weapon}. Brave. Wrong, but brave. |
+eqp.0002 | equipment | since=1.0 | lastHero=CLERIC & weapon!=none | 8 | You ran with {weapon} as Cleric. I respect that you tried. I do not respect Cleric. |
+eqp.0003 | equipment | since=1.0 | lastHero=CLERIC | 8 | That is a Cleric's book. I would like to speak to whoever gave it to you. |
+eqp.0004 | equipment | since=1.0 | lastHero=CLERIC | 8 | The Tome: a big magical book that never once told me the right answer. |
+eqp.0005 | equipment | since=1.0 | lastHero=CLERIC | 8 | Cleric's starting gear looks like the leftovers of a church bake sale. |
+eqp.0006 | equipment | since=1.0 | lastHero=CLERIC & weapon!=none | 6 | {weapon}. On a Cleric. In a dungeon. At this hour. |
+eqp.0007 | equipment | since=1.0 | lastHero=CLERIC | 6 | Cleric's robe is a statement, and the statement is "please do not look directly at the numbers". |
+eqp.0008 | equipment | since=1.0 | hero=CLERIC | 6 | If you are going to hold a book in a fight, at least pick one that fights back. The Tome does not. |
+
+# ---- the player's own history, from recorded totals only
+hist.0001 | history | since=1.0 | clericRuns>=100 | 10 | You have started {clericRuns} Cleric runs. I fundamentally do not understand you. |
+hist.0002 | history | since=1.0 | clericWins>=50 | 10 | You have won {clericWins} Cleric runs. I am beginning to suspect the problem may be me. I still hate Cleric. |
+hist.0003 | history | since=1.0 | clericRuns>=10 | 8 | {clericRuns} Cleric runs, according to your records. That is real commitment to a bad idea. |
+hist.0004 | history | since=1.0 | clericDeaths>=10 | 8 | Your records show {clericDeaths} Cleric deaths. I'd like to say it gets better. I would be lying. |
+hist.0005 | history | since=1.0 | hero!=CLERIC & clericRuns>=1 | 8 | You are playing {hero}, and your records show {clericRuns} Cleric runs. I am choosing to believe those were accidents. |
+hist.0006 | history | since=1.0 | clericWins>=1 | 8 | Your records show {clericWins} Cleric wins. You did that. On purpose. I need to lie down. |
+hist.0007 | history | since=1.0 | clericRuns>=1 & clericWins=0 | 8 | {clericRuns} Cleric runs, zero wins. Welcome to the club. We don't have a name, just a lot of tissues. |
+hist.0008 | history | since=1.0 | clericRuns>=225 | 10 | You have started {clericRuns} Cleric runs. I managed 225 before I won. This is a competition now and I resent that. |
+hist.0009 | history | since=1.0 | clericRuns=0 | 8 | Your records show zero Cleric runs. I believe that is the most sensible thing in this entire game. |
+hist.0010 | history | since=1.0 | clericRuns>=1 | 8 | You have {clericRuns} Cleric runs in your history. Each one is a small monument to hope. |
+hist.0011 | history | since=1.0 | clericDeaths>=1 & clericWins>=1 | 8 | {clericDeaths} Cleric deaths and {clericWins} Cleric wins. The ratio is a story, and I am the villain in it. |
+hist.0012 | history | since=1.0 | clericRuns>=50 | 8 | At {clericRuns} Cleric runs, I have to ask: are you okay? Because I am not, and I did this on purpose. |
+hist.0013 | history | since=1.0 | clericStreak>=5 | 8 | {clericStreak} Cleric runs in a row. At this point it's not a character, it's a lifestyle. |
+hist.0014 | history | since=1.0 | guidingLightCasts>=1000 | 8 | You have cast Guiding Light {guidingLightCasts} times. At some point it stopped being a spell and started being a personality. |
+hist.0015 | history | since=1.0 | clericRuns>=1 | 6 | I never thought I'd see someone start {clericRuns} Cleric runs voluntarily. Never doubt the human spirit. Doubt it a little. |
+
+# ---- jokes with invented numbers (always labelled as jokes, never records)
+joke.0001 | fourth_wall | since=1.0,joke | - | 8 | Fun fact: if Cleric were a person, it would have died 17 floors ago. Anyway, carry on. |
+joke.0002 | fourth_wall | since=1.0,joke | - | 8 | Hypothetically, Cleric would have found the trap. Realistically, Cleric would have walked into it twice. |
+joke.0003 | anytime | since=1.0,joke | - | 8 | By my calculations, Cleric is worse than every other class by a margin of roughly eleven percent of my mood. |
+joke.0004 | anytime | since=1.0,joke | - | 8 | Scientists estimate that Cleric will be good at some point in the year 4900. I'm optimistic, but not for me. |
+joke.0005 | anytime | since=1.0,joke | - | 8 | Somewhere, a Cleric is on its eighty-fourth attempt, and it is on a roll, and I would like to throw a plate. |
+joke.0006 | anytime | since=1.0,joke | - | 8 | I have complained about Cleric exactly 9,000 times today, which is a lie, because my fingers stopped at 8,973. |
+joke.0007 | anytime | since=1.0,joke | - | 8 | My sources say Cleric won 4 games in a row once, in a dream I had, and I woke up feeling betrayed. |
+joke.0008 | anytime | since=1.0,joke | - | 8 | According to the unofficial Cleric Index, Cleric is currently 2 out of 10. The other 8 is just me, being annoyed. |
+
+# ---- the one-time warning when the player first starts a Cleric run
+first.0001 | first_run | since=1.0 | - | 10 | You have chosen Cleric. I really, really dislike Cleric. It took me 225 attempts to finally ascend with this class. I'm not going to stop you, because apparently some people enjoy suffering. Good luck. You'll need it. | You have chosen Cleric. I fucking hate Cleric. It took me 225 attempts to finally ascend with this fucking class. I'm not going to stop you from playing it because apparently some people enjoy suffering. Good luck. You'll need it.
+
+# ---- the grudge counter screen (shown once, never drawn by the normal picker)
+meta.0001 | meta | since=1.0,meta | - | 10 | You found the counter. It only goes up. Like my blood pressure whenever Cleric is mentioned. |
+meta.0002 | meta | since=1.0,meta | - | 10 | Yes, I keep count. Somebody has to hold Cleric accountable. |
+meta.0003 | meta | since=1.0,meta | - | 10 | Yes, I counted. No, I will not be taking questions. |

@@ -2,6 +2,9 @@
 
 The long project handoff is `docs/APD-HANDOFF.md`; the canonical plan is `APD_Canonical_Design_and_Implementation_Plan1.docx`. This file is the quick resume note.
 
+## GITHUB ACTIONS FREEZE (owner, 2026-10-08)
+The owner's Actions minutes are over 90% used. DO NOT dispatch workflows and DO NOT push to `main` (a main push starts Build APK + device tests). Push only to the claude branch (no workflow runs on it). Local tests only (scratch gradle project). Until the owner explicitly authorizes: no device runs, no new apd-build. Latest verified main: 9447a5e = apd-build-80.
+
 ## Resume protocol (owner's standing rules)
 - After each completed step (tests pass, committed, pushed, this file updated): cancel the earlier resume and schedule ONE new one-shot `send_later` about 5 h 10 min ahead. Message: "Resume: read docs/HANDOFF.md, continue from the next task, don't redo finished work, don't ask me for decisions already recorded." When the queue is finished, cancel it and schedule nothing.
 - If a usage-limit message shows a reset time, record it here and schedule the resume for that time + 10 min (weekly limit: same with the weekly reset). Never retry requests while limited.
@@ -42,7 +45,7 @@ The long project handoff is `docs/APD-HANDOFF.md`; the canonical plan is `APD_Ca
 ## Backlog additions
 - **UIMSD Demo Unlock** (owner request): fully written down in docs/APD-UIMSD-UNIVERSAL.md ("UIMSD Demo Unlock"). Lower priority than backend and pending tests. Note: the 10-genuine-run unlock gate does not exist yet and must be built as part of it; the demo generator exists but is INDEV-only and larger than 10 runs.
 
-- **Developer's Vendetta Against Cleric** (owner request): architecture + sample lines proposed in docs/APD-VENDETTA.md, AWAITING OWNER APPROVAL (addenda 1-2 incl. complaint counter, patch-note footers, Cleric-only target). Do not build the line library or popup runtime until approved.
+- **Developer's Vendetta Against Cleric**: APPROVED (owner, 2026-10-08) as in docs/APD-VENDETTA.md. Build and test locally, feature DISABLED (master flag off) until the owner has reviewed the content and tried it on the phone. Frequency: conservative default, configurable (Off / Rare / Rarer), never more than one unsolicited popup per session, player can disable surprise popups; contextual jokes may appear in non-intrusive places. Write the first ~300 lines myself and present them for approval BEFORE shipping (originality over count; Adult profane, Clean not; roast Cleric never the player's real identity). Difficulty gag: separate, later. Counter under APD Settings > About/Developer. Cleric is the only target. Do not re-ask these questions.
 
 ## Decisions already made (do not ask again)
 - Local-first; backend owns shared authoritative state; raw UIMSD history stays local. Provider-neutral interfaces; the provider choice is NOT a blocker. No secret in the APK; gameplay cannot create developer grants. No public deployment, spending, credentials, hidden analytics or private history uploads.
