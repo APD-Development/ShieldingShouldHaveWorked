@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.blobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdPlay;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -59,6 +60,7 @@ public abstract class WellWater extends Blob {
 		
 		if (pos == Dungeon.hero.pos && affectHero( Dungeon.hero )) {
 			
+			ApdPlay.onWellUsed( this );
 			clear(pos);
 			return true;
 			

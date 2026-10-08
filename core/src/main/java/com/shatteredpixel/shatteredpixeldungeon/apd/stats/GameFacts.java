@@ -73,6 +73,16 @@ public final class GameFacts {
 			.description("Every trap that went off where the hero could see it.").subject("Trap").actor()
 			.value("hero", "Hero set it off", "1 when the hero triggered it, 0 for someone else.", FactKind.PLAIN).build());
 
+	//a hidden door or trap was revealed
+	public static final FactKind DISCOVER = FactKinds.register(FactKind.builder("explore.discover", "Secret revealed").plural("Secrets revealed").area("Movement")
+			.description("Every secret door or trap that was revealed, by searching or by magic.").subject("Secret")
+			.value("cell", "Cell", "The cell it was on.", FactKind.PLAIN)
+			.since(1, 9).build());
+
+	//the hero used a well
+	public static final FactKind WELL = FactKinds.register(FactKind.builder("explore.well", "Well used").plural("Wells used").area("Exploration")
+			.description("Every time the hero drank from a well.").subject("Well").since(1, 9).build());
+
 	//---- the journal: what the player learned about the dungeon, and keys ----
 
 	//a landmark was written in (or removed from) the journal: a shop, an alchemy pot, a well, a floor feeling

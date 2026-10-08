@@ -112,6 +112,20 @@ public final class ApdPlay {
 		try { p.onItemAction(item, action); } catch (Throwable ignored){}
 	}
 
+	//Level.discover: a secret cell is about to be revealed
+	public static void onSecretRevealed( int terrainBefore, int cell ){
+		PlayTracker p = t();
+		if (p == null || restoring > 0) return;
+		try { p.onSecretRevealed(terrainBefore, cell); } catch (Throwable ignored){}
+	}
+
+	//WellWater.affect: the hero used the well
+	public static void onWellUsed( Object well ){
+		PlayTracker p = t();
+		if (p == null || restoring > 0) return;
+		try { p.onWellUsed(well); } catch (Throwable ignored){}
+	}
+
 	//Notes.add / Notes.remove for a landmark, after the journal changed
 	public static void onLandmark( String landmark, int depth, boolean added ){
 		PlayTracker p = t();

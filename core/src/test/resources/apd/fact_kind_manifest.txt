@@ -21,3 +21,5 @@ explore.open|P|-|items|
 hero.state|P|S|hp,hpMax,shield,hunger|
 journal.landmark|P|-|depth|action
 journal.key|P|-|depth,quantity|action
+explore.discover|P|-|cell|
+explore.well|P|-||

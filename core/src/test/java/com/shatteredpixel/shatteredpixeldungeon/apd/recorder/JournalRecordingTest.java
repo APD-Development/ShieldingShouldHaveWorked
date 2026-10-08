@@ -6,7 +6,9 @@ import static org.junit.Assert.assertEquals;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.ApdEvent;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactEvents;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.ReadResult;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 
 import org.junit.After;
@@ -53,5 +55,28 @@ public class JournalRecordingTest {
 		assertArrayEquals(new long[]{ 7, 1 }, got.get(2).values);
 		assertArrayEquals(new String[]{ "added" }, got.get(2).tags);
 		assertArrayEquals(new String[]{ "used" }, got.get(3).tags);
+	}
+
+	@Test
+	public void revealedSecretsAreRecordedWithWhatTheyWere() throws Exception {
+		RecorderTestSupport.Session s = ItemTestSupport.startRun(44L);
+		String id = ApdRecorder.currentRunId();
+		int door = ItemTestSupport.freeCell(), trap = ItemTestSupport.freeCell(), plain = ItemTestSupport.freeCell();
+		Dungeon.level.map[door] = Terrain.SECRET_DOOR;
+		Dungeon.level.map[trap] = Terrain.SECRET_TRAP;
+		Dungeon.level.discover(door);
+		Dungeon.level.discover(trap);
+		Dungeon.level.discover(plain);                  //nothing hidden there: nothing to record
+		ApdRecorder.flushForReading();
+		ReadResult r = s.read(id);
+		List<FactEvents.Observation> got = new ArrayList<>();
+		for (ApdEvent e : r.events){
+			if (!FactEvents.isFactEvent(e.type)) continue;
+			for (FactEvents.Observation o : FactEvents.decode(e, r)) if (o.key.equals("explore.discover")) got.add(o);
+		}
+		assertEquals(2, got.size());
+		assertEquals("Secret door", got.get(0).subject);
+		assertArrayEquals(new long[]{ door }, got.get(0).values);
+		assertEquals("Secret trap", got.get(1).subject);
 	}
 }

@@ -112,6 +112,20 @@ final class PlayTracker {
 		facts.record(GameFacts.TRAP, GameSnapshot.turn(), name(trap.getClass()), byHero || who == null ? "" : CombatTracker.nameOf(who), new long[]{ byHero ? 1 : 0 }, null);
 	}
 
+	// ---- secrets and wells ----
+
+	void onSecretRevealed( int terrainBefore, int cell ){
+		String what = terrainBefore == com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.SECRET_DOOR ? "Secret door"
+				: terrainBefore == com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.SECRET_TRAP ? "Secret trap" : "";
+		if (what.isEmpty()) return;
+		facts.record(GameFacts.DISCOVER, GameSnapshot.turn(), what, "", new long[]{ cell }, null);
+	}
+
+	void onWellUsed( Object well ){
+		if (well == null) return;
+		facts.record(GameFacts.WELL, GameSnapshot.turn(), name(well.getClass()), "", new long[0], null);
+	}
+
 	// ---- journal ----
 
 	void onLandmark( String landmark, int depth, boolean added ){
