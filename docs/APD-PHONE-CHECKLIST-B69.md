@@ -9,7 +9,7 @@ Mark each item PASS / BUG. "BUG" lists what would count. A crash or lost data an
 | Feature | Test APK | Normal build |
 |---|---|---|
 | Cleric playable (un-ban) | ON | OFF (black "removed" screen) |
-| Cleric Grudge humor (348 lines), first-Cleric-run warning | ON | OFF |
+| Cleric Grudge / Lore (humor, popups, counters, first-Cleric-run warning) | OFF (postponed to public release; central switch `ApdFeatures.GRUDGE_LORE_IN_THIS_RELEASE`) | OFF |
 | Demo Unlock gate (UIMSD locked until 10 genuine runs) | ON | OFF (UIMSD open) |
 | "PRIVATE TEST BUILD" on the Grudge page; version ends `-TEST` | yes | no |
 | Everything from builds 70-80 (Back fix, difficulty picker, Privacy menu, saved views, etc.) | ON (always on) | ON |
@@ -37,12 +37,12 @@ Mark each item PASS / BUG. "BUG" lists what would count. A crash or lost data an
 
 ## D. Cleric playable (TEST APK ONLY)
 13. Character screen: Cleric is selectable (all classes are unlocked in debug builds). Tap Start with Cleric: **no black "removed" screen**. *Bug:* the black screen appears.
-14. **First-Cleric-run warning:** the very first time, a warning window appears (first person, from me). Dismissing it starts the run; it must never block starting. Second time: it does not reappear. *Bug:* warning blocks play, repeats every time, or appears for other classes.
+14. **No Grudge warning:** the first-Cleric-run warning is part of the postponed Grudge feature, so Cleric must start straight away with nothing extra. *Bug:* any warning or joke popup appears.
 15. Play 20+ turns as Cleric: cast a spell, use an ability. Cleric plays exactly as in vanilla (no balance changes). *Bug:* crash, missing spells.
 16. Die/quit the Cleric run. In UIMSD → Runs: the run shows with its class; **older runs still appear under their old rules** (Options > rules/scope: your earlier runs are not mixed with the Cleric run). *Bug:* old runs disappear or merge into the Cleric ruleset.
 17. Your old non-Cleric stats/win counts are unchanged from step 2.
 
-## E. Cleric Grudge (TEST APK ONLY; all 348 lines)
+## E. Cleric Grudge (POSTPONED: skip this whole section in the next APK; none of it is available)
 18. Settings → APD → **About / Developer: The Grudge**. The page title says "(PRIVATE TEST BUILD)". See the four counters, frequency (Off/Rarer/Rare), five location switches (startup, main menu, during runs, after a run, statistics; defaults on/on/on/on/off), the Adult checkbox, reset.
 19. Toggle each location; leave and return: the choices persist. Frequency Off: nothing ever appears.
 20. Play normally for a while. At most **one** unsolicited popup per app session; none in the first ~20 minutes after install; never mid-fight, on a boss floor, or over an open window. Each popup has **Fine.** and **Turn off these messages** (tap it: all grudge messages stop at once; check the page shows it off).

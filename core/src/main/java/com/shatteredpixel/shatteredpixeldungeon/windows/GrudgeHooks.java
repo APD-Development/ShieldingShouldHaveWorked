@@ -156,11 +156,13 @@ public final class GrudgeHooks {
 	}
 
 	public static void setFrequency( Frequency f ){
+		if (!ClericGrudge.enabled()) return;
 		PREFS.setFrequency( f );
 	}
 
 	// "Turn off these messages": immediate and saved
 	public static void turnOff(){
+		if (!ClericGrudge.enabled()) return;
 		PREFS.turnOff();
 	}
 
@@ -184,6 +186,7 @@ public final class GrudgeHooks {
 	}
 
 	public static void resetHistory(){
+		if (!ClericGrudge.enabled()) return;
 		grudge();
 		ledger.clear();
 	}

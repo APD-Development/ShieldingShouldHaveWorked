@@ -41,6 +41,11 @@ Built on the claude branch only, switched OFF, needs a local/authorized build:
 ## Private test APK (built 2026-10-08, ONE authorized Actions run; do not re-run without the owner)
 Run https://github.com/charltonchris29/ShieldingShouldHaveWorked/actions/runs/37808210230 (success, 2m13s, commit 04448a87d, claude branch). Artifact private-test-apk (zip with ADHD-Pixel-Dungeon-PRIVATE-TEST-1.apk), expires 2026-10-15. Workflow file .github/workflows/private-test-apk.yml is on main (added alone with [skip ci]). Checklist: docs/APD-PHONE-CHECKLIST-B69.md. The APK itself is untested on a device.
 
+## OWNER DECISIONS 2026-10-08 (latest)
+- Cleric Grudge / Lore is POSTPONED to the public release: one central switch `ApdFeatures.GRUDGE_LORE_IN_THIS_RELEASE = false` disables its UI, settings button, popups, counters, first-run warning, history tracking and hooks in every build. All code, messages (348 lines), tests and docs are preserved; re-enable by changing that one line. Cleric as a playable class is NOT affected.
+- FUTURE (do NOT implement now): at public release, 50 Cleric Lore entries, then 50 new entries every year for 20 years (1,000 total). Entries in corresponding positions across years share unlock conditions and later entries build on earlier ones. Full design to be finalized by the owner later.
+- NO APK until the owner finishes all 41 phone-test steps and explicitly authorizes one. Keep fixing source bugs meanwhile and log each fix with its root cause (docs/APD-FIX-LOG-2026-10-08.md). Fold in any newly reported bug that is a symptom of an already fixed root cause.
+
 ## Fix pass after the owner's interim phone report (2026-10-08): see docs/APD-FIX-LOG-2026-10-08.md
 Fixed: tutorial trap (#1/#2/#3/#5, root cause SPD intro mode), Grudge counters (#6), duplicate Adult control (#7), popup gap pinned (#9). Not fixed: UIMSD state across app switch (#4), per-control Grudge test (#8), UIMSD scope wording (#10). NO new APK until the owner approves the breakdown. Remaining bug reports (steps 23-41) are still to come.
 

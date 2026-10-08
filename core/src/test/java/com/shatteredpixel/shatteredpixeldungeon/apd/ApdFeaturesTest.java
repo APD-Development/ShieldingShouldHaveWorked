@@ -28,7 +28,9 @@ public class ApdFeaturesTest {
 	@Test
 	public void theFileTurnsOnOnlyWhatItNames(){
 		ApdFeatures.parse("# private test\ngrudge\r\nunknownThing\n  demoUnlock  \n");
-		assertTrue(ApdFeatures.grudge() && ClericGrudge.enabled());
+		//the Cleric Grudge / Lore is postponed: naming it in the file does nothing while the central release switch is off
+		assertFalse(ApdFeatures.GRUDGE_LORE_IN_THIS_RELEASE);
+		assertFalse(ApdFeatures.grudge() || ClericGrudge.enabled());
 		assertTrue(ApdFeatures.demoUnlock() && UimsdUnlock.enforced());
 		assertFalse(ApdFeatures.testBuild());
 		assertFalse(ApdFeatures.clericPlayable());

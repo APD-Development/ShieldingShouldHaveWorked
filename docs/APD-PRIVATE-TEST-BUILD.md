@@ -1,7 +1,7 @@
 # Private test build (owner phone test)
 
 The normal build has every test feature OFF. A private test build turns on, and only on, what the owner approved for the private APK:
-the Cleric Grudge humor (all 348 lines), Demo Unlock (the UIMSD unlock gate and its demo), and the Cleric un-ban (option B).
+Demo Unlock (the UIMSD unlock gate and its demo) and the Cleric un-ban (option B). The Cleric Grudge / Lore feature is POSTPONED until the public release and is off in every build (central switch `ApdFeatures.GRUDGE_LORE_IN_THIS_RELEASE = false`; all its code and lines are kept).
 Switches live in `core/.../apd/ApdFeatures.java`; they are read from the asset `apd/features.txt`, which exists only in a test build.
 
 ## Build (any machine with the Android SDK; NOT possible in the Claude cloud sandbox, see below)
