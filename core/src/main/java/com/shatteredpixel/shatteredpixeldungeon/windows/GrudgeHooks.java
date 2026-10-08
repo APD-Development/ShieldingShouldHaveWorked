@@ -23,6 +23,9 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import com.badlogic.gdx.Gdx;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.apd.humor.ClericGrudge;
@@ -65,6 +68,11 @@ public final class GrudgeHooks {
 	private static long sceneSince;
 	private static boolean decided;
 	private static Moment pendingEnd;
+	//in play: how long things have been quiet, and whether a boss has fallen since the last chance
+	private static long calmSince;
+	private static int lastBossScore = -1;
+	private static boolean bossFell;
+	private static int bossDepth;
 	private static Context pendingContext = Context.EMPTY;
 
 	private GrudgeHooks(){}
@@ -127,7 +135,8 @@ public final class GrudgeHooks {
 		try {
 			Context c = Context.EMPTY.with( "lastOutcome", won ? "WON" : "DIED" ).with( "depth", Dungeon.depth );
 			if (Dungeon.hero != null){
-				c = c.with( "lastHero", Dungeon.hero.heroClass.name() ).with( "hero", Dungeon.hero.heroClass.name() );
+				c = c.with( "lastHero", Dungeon.hero.heroClass.name() ).with( "hero", Dungeon.hero.heroClass.name() )
+						.with( "lastHeroName", Dungeon.hero.heroClass.title() ).with( "heroName", Dungeon.hero.heroClass.title() );
 				if (Dungeon.hero.subClass != null) c = c.with( "subclass", Dungeon.hero.subClass.name() );
 			}
 			if (cause instanceof Char) c = c.with( "killer", ((Char)cause).name() );
@@ -136,6 +145,52 @@ public final class GrudgeHooks {
 		} catch (Throwable ignored){
 			//never into the game
 		}
+	}
+
+	// Is the hero idle in a quiet place? Reads game state only; it changes none of it, spends no turn and draws no random number.
+	private static boolean quiet(){
+		if (Dungeon.hero == null || Dungeon.level == null || !Dungeon.hero.isAlive()) return false;
+		if (!Dungeon.hero.ready || Dungeon.hero.resting || Dungeon.hero.curAction != null) return false;
+		if (Dungeon.level.locked || Dungeon.bossLevel() || GameScene.showingWindow()) return false;
+		for (Mob m : Dungeon.level.mobs){
+			if (m.isAlive() && m.alignment == Char.Alignment.ENEMY && Dungeon.level.heroFOV[m.pos]) return false;
+		}
+		return true;
+	}
+
+	// LEVEL_CALM after a continuous quiet stretch, BOSS_CLEARED the first time it is quiet after a boss fell; otherwise null.
+	private static Moment quietMoment( long now ){
+		if (lastBossScore < 0) lastBossScore = Statistics.totalBossScore;
+		if (Statistics.totalBossScore > lastBossScore){
+			lastBossScore = Statistics.totalBossScore;
+			bossFell = true;
+			bossDepth = Dungeon.depth;
+		}
+		if (!quiet()){
+			calmSince = 0;
+			return null;
+		}
+		if (calmSince == 0) calmSince = now;
+		if (now - calmSince < 2500) return null;
+		if (bossFell){
+			bossFell = false;
+			return Moment.BOSS_CLEARED;
+		}
+		return Moment.LEVEL_CALM;
+	}
+
+	private static final String[] BOSSES = { "Goo", "Tengu", "DM-300", "the Dwarf King", "Yog-Dzewa" };
+
+	private static Context inPlayContext( Moment m ){
+		Context c = Context.EMPTY;
+		try {
+			c = c.with( "depth", Dungeon.depth ).with( "hero", Dungeon.hero.heroClass.name() ).with( "heroName", Dungeon.hero.heroClass.title() );
+			if (Dungeon.hero.subClass != null) c = c.with( "subclass", Dungeon.hero.subClass.name() );
+			if (m == Moment.BOSS_CLEARED && bossDepth > 0 && bossDepth % 5 == 0 && bossDepth / 5 <= BOSSES.length)
+				c = c.with( "boss", BOSSES[bossDepth / 5 - 1] );
+		} catch (Throwable ignored){
+		}
+		return c;
 	}
 
 	// Called every frame by the game; does nothing unless the feature is on and a quiet scene has settled.
@@ -158,6 +213,11 @@ public final class GrudgeHooks {
 			} else if (s instanceof RankingsScene && pendingEnd != null){
 				m = pendingEnd;
 				ctx = pendingContext;
+			} else if (s instanceof GameScene){
+				//in play only a long, quiet stretch counts, and it is looked at without ever touching the game
+				m = quietMoment( now );
+				if (m == null) return;
+				ctx = inPlayContext( m );
 			} else {
 				decided = true;
 				return;
@@ -174,7 +234,10 @@ public final class GrudgeHooks {
 				//a contextual line is the same window, only for lines that belong to this moment
 				shown = grudge().inline( m, ctx, SPDSettings.apdAdultHumor(), now );
 			}
-			if (shown != null) s.addToFront( WndClericGrudge.popup( shown.text ) );
+			if (shown != null){
+				if (s instanceof GameScene) GameScene.show( WndClericGrudge.popup( shown.text ) );
+				else s.addToFront( WndClericGrudge.popup( shown.text ) );
+			}
 		} catch (Throwable ignored){
 			//the grudge may never reach play
 		}

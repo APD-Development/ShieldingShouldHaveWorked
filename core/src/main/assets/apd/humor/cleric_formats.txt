@@ -22,18 +22,12 @@ fmt.0019 | anytime | since=4.8 | - | 8 | I, the developer, take thee, hatred of 
 fmt.0020 | anytime | since=4.8 | - | 8 | Congratulations! You have been selected to ignore Cleric. Click here to continue ignoring it. |
 fmt.0021 | anytime | since=4.8 | - | 8 | Once upon a time there was a Cleric. The end. I'm not telling you the rest, I'm still too mad. |
 fmt.0022 | anytime | since=4.8 | - | 8 | We are gathered here today to remember all the good times we had with Cleric. Okay. That took a while. We are done. |
-fmt.0023 | anytime | since=4.8 | - | 8 | Terms update: Cleric is now officially described as "a class". The developer objects, and the objection has been filed. |
 fmt.0024 | anytime | since=4.8 | - | 8 | Missing: one reason to pick Cleric. If found, please do not return it. |
-fmt.0025 | anytime | since=4.8 | - | 8 | Software update notes: improved stability, reduced crashes, and exactly zero change in my feelings about Cleric. |
-fmt.0026 | anytime | since=4.8 | - | 8 | This message will self-destruct in five seconds. Cleric will not. Cleric has never self-destructed when needed. |
 fmt.0027 | anytime | since=4.8 | - | 8 | Dear Diary: today I saw a white robe in a photo and had to sit down. Cleric, of course. Love, the developer. |
 fmt.0028 | anytime | since=4.8 | - | 8 | A strongly worded letter to Cleric: no. Sincerely, the developer. | A strongly worded letter to Cleric: fuck no. Sincerely, the developer.
 fmt.0029 | anytime | since=4.8 | - | 8 | Cleric's official motto, as translated by me: "We do our best, and our best is a polite suggestion." |
-fmt.0030 | anytime | since=4.8 | - | 8 | Please rate this message from one to five stars. Cleric rates it zero, because Cleric cannot do math either. |
 fmt.0031 | anytime | since=4.8 | - | 8 | Lost and found: one Tome, slightly used, heavily regretted. Owner: Cleric. Reward: none. |
 fmt.0032 | anytime | since=4.8 | - | 8 | Breaking news: Cleric has once again been described as "fine" by a person who has never played it for more than a minute. |
-fmt.0033 | anytime | since=4.8 | - | 8 | Cleric called to say it is sorry for everything. It did not say what everything meant, so I'm leaving it on read. |
-fmt.0034 | anytime | since=4.8 | - | 8 | Gentle reminder: your free trial of not playing Cleric has not expired. Please continue not playing Cleric. |
 
 # ---- more abilities, gear and bosses (only with real recorded facts)
 abl.0016 | ability | since=4.8 | lastHero=CLERIC & spell!=none | 8 | {spell}: a Cleric spell so confident that I'd like to see it audited. |
@@ -41,10 +35,7 @@ abl.0017 | ability | since=4.8 | lastHero=CLERIC & spell!=none | 8 | Cleric used
 abl.0018 | ability | since=4.8 | lastHero=CLERIC & guidingLightCasts>=1 | 8 | {guidingLightCasts} casts of Guiding Light. The light has yet to guide me toward forgiving Cleric. |
 abl.0019 | ability | since=4.8 | lastHero=CLERIC & subclass=PRIEST | 8 | Priest: the only Cleric subclass that can bless the very floor it is about to die on. |
 abl.0020 | ability | since=4.8 | lastHero=CLERIC & subclass=PALADIN | 8 | Paladin: shiny, righteous, and still carrying the whole weight of being Cleric. |
-abl.0021 | ability | since=4.8 | lastHero=CLERIC | 6 | The Tome's spells are like an apology note: lots of words, small result. |
-abl.0022 | ability | since=4.8 | lastHero=CLERIC | 6 | Somewhere a talent point was spent on Cleric and a tiny voice said "why". |
 eqp.0009 | equipment | since=4.8 | lastHero=CLERIC & weapon!=none | 8 | {weapon} in a Cleric's hands: the weapon forgave them, and I do not. |
-eqp.0010 | equipment | since=4.8 | lastHero=CLERIC | 6 | Cleric's armor is mostly a robe with commitment issues. |
 eqp.0011 | equipment | since=4.8 | lastHero=CLERIC | 6 | A Tome is a book you carry into a fight and hope it reads itself. |
 boss.0009 | boss | since=4.8 | boss!=none | 8 | {boss}: has been described as terrifying, ancient, and unfortunately more likable than Cleric. |
 boss.0010 | boss | since=4.8 | lastHero=CLERIC & lastOutcome=DIED & boss!=none | 8 | {boss} did not even need to try. That is the highest compliment a Cleric can receive from an enemy. |

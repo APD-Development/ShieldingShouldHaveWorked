@@ -39,25 +39,42 @@ public final class Line {
 	// an obvious exaggeration with invented numbers; never mixed with recorded data
 	public final boolean joke;
 	public final int weight;
+	public final Pool pool;
+	// a follow-up: shown only after this line (by id) has really been seen, and with nextSession only in a later session than that
+	public final String after;
+	public final boolean nextSession;
+	// the first part of a story: some other line must follow it (checked when the packs load)
+	public final boolean setup;
 	final List<Term> requires;
 	public final String clean;
 	// optional stronger wording, shown only when Adult humor is on
 	public final String adult;
 
-	Line( String id, Category category, int since, boolean counted, boolean joke, int weight, List<Term> requires, String clean, String adult ){
+	Line( String id, Category category, int since, boolean counted, boolean joke, int weight, Pool pool, String after, boolean nextSession,
+	      boolean setup, List<Term> requires, String clean, String adult ){
 		this.id = id;
 		this.category = category;
 		this.since = since;
 		this.counted = counted;
 		this.joke = joke;
 		this.weight = weight;
+		this.pool = pool;
+		this.after = after;
+		this.nextSession = nextSession;
+		this.setup = setup;
 		this.requires = requires;
 		this.clean = clean;
 		this.adult = adult;
 	}
 
-	public boolean eligible( Moment m, Context c ){
+	// sessionStart: when this run of the game began; a nextSession follow-up needs its prerequisite to have been seen before that
+	public boolean eligible( Moment m, Context c, Ledger ledger, long sessionStart ){
 		if (!category.allows( m )) return false;
+		if (after != null){
+			Ledger.Seen first = ledger.get( after );
+			if (first == null) return false;
+			if (nextSession && first.lastAt >= sessionStart) return false;
+		}
 		for (Term t : requires) if (!t.holds( c )) return false;
 		return render( c, false ) != null;
 	}

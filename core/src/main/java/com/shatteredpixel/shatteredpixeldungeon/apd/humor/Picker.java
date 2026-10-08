@@ -27,7 +27,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
-// Chooses which line to show. Unseen lines always come first (the newest unseen ones favoured); only when every eligible line has been
+// Chooses which line to show. Unseen lines always come first (the newest unseen ones favoured, and follow-ups whose first part was seen); only when every eligible line has been
 // seen does it repeat, and then it leaves out whatever was shown recently and takes among the longest-unseen. It uses only the random
 // source it is given, never the game's, so choosing a line cannot change anything in a run.
 public final class Picker {
@@ -38,8 +38,13 @@ public final class Picker {
 	private Picker(){}
 
 	public static Line pick( List<Line> pool, Moment moment, Context ctx, Ledger ledger, Random rng, Category avoid ){
+		return pick( pool, moment, ctx, ledger, rng, avoid, Long.MAX_VALUE );
+	}
+
+	// sessionStart: see Line.eligible
+	public static Line pick( List<Line> pool, Moment moment, Context ctx, Ledger ledger, Random rng, Category avoid, long sessionStart ){
 		List<Line> eligible = new ArrayList<>();
-		for (Line l : pool) if (l.eligible( moment, ctx )) eligible.add( l );
+		for (Line l : pool) if (l.eligible( moment, ctx, ledger, sessionStart )) eligible.add( l );
 		if (eligible.isEmpty()) return null;
 
 		//not the same kind of joke twice running, when there is a choice
@@ -70,7 +75,9 @@ public final class Picker {
 	}
 
 	private static long weightOf( Line l, int newest ){
-		return (l.since == newest && newest > 0) ? l.weight * 2L : l.weight;
+		long w = (l.since == newest && newest > 0) ? l.weight * 2L : l.weight;
+		//the second half of a story is favoured once it is possible, so the payoff does arrive
+		return l.after != null ? w * 4 : w;
 	}
 
 	private static Line longestUnseen( List<Line> eligible, final Ledger ledger, Random rng ){

@@ -24,7 +24,9 @@ package com.shatteredpixel.shatteredpixeldungeon.apd.humor;
 // Where a line belongs. A category also says at which moments it may be shown, so a death joke can only ever appear after a death.
 public enum Category {
 
-	ANYTIME( Moment.MENU, Moment.LEVEL_CALM, Moment.RUN_END_DEATH, Moment.RUN_END_VICTORY ),
+	ANYTIME( Moment.MENU, Moment.LEVEL_CALM, Moment.BOSS_CLEARED, Moment.RUN_END_DEATH, Moment.RUN_END_VICTORY ),
+	// used by the Appreciation pool for lines that fit anywhere
+	APPRECIATION( Moment.MENU, Moment.LEVEL_CALM, Moment.BOSS_CLEARED, Moment.RUN_END_DEATH, Moment.RUN_END_VICTORY ),
 	FOURTH_WALL( Moment.MENU, Moment.LEVEL_CALM, Moment.RUN_END_DEATH, Moment.RUN_END_VICTORY ),
 	MENU( Moment.MENU ),
 	DEATH( Moment.RUN_END_DEATH ),
@@ -32,7 +34,7 @@ public enum Category {
 	// reached the amulet floor or the last stretch and still did not ascend
 	ASCENSION( Moment.RUN_END_DEATH ),
 	POSTRUN( Moment.RUN_END_DEATH, Moment.RUN_END_VICTORY ),
-	BOSS( Moment.LEVEL_CALM, Moment.RUN_END_DEATH, Moment.RUN_END_VICTORY ),
+	BOSS( Moment.BOSS_CLEARED, Moment.RUN_END_DEATH, Moment.RUN_END_VICTORY ),
 	ABILITY( Moment.LEVEL_CALM, Moment.RUN_END_DEATH, Moment.RUN_END_VICTORY ),
 	EQUIPMENT( Moment.LEVEL_CALM, Moment.RUN_END_DEATH, Moment.RUN_END_VICTORY ),
 	HISTORY( Moment.MENU, Moment.RUN_END_DEATH, Moment.RUN_END_VICTORY ),

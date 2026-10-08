@@ -21,16 +21,20 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.apd.humor;
 
-// The two numbers on the counter screen. `total` is the count of authored complaints in the installed version; `heard` is how many
-// distinct ones this player has been shown (each counted once, however often it appeared).
+// The four numbers on the counter screen. Each pool has `total` (authored lines in the installed version) and `heard` (distinct ones this
+// player has been shown, each counted once however often it appeared). Only counts are ever shown, never which lines are still unseen.
 public final class Counter {
 
 	public final int total;
 	public final int heard;
+	public final int appreciationTotal;
+	public final int appreciationHeard;
 
-	Counter( int total, int heard ){
+	Counter( int total, int heard, int appreciationTotal, int appreciationHeard ){
 		this.total = total;
 		this.heard = heard;
+		this.appreciationTotal = appreciationTotal;
+		this.appreciationHeard = appreciationHeard;
 	}
 
 	public String totalText(){
@@ -39,5 +43,13 @@ public final class Counter {
 
 	public String heardText(){
 		return "YOU'VE HEARD ME COMPLAIN " + heard + " TIMES.";
+	}
+
+	public String appreciationTotalText(){
+		return "I'VE APPRECIATED CLERIC " + appreciationTotal + " TIMES.";
+	}
+
+	public String appreciationHeardText(){
+		return "YOU'VE WITNESSED " + appreciationHeard + " QUESTIONABLE COMPLIMENTS.";
 	}
 }

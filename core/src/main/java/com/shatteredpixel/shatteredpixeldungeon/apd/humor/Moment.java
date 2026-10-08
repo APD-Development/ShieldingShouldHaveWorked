@@ -28,6 +28,8 @@ public enum Moment {
 	MENU( true ),
 	// a new floor has fully loaded and the hero is idle with nothing hostile in view
 	LEVEL_CALM( true ),
+	// a boss was just defeated and the hero is idle again with nothing hostile in view
+	BOSS_CLEARED( true ),
 	// after the run has permanently ended and its results are on screen
 	RUN_END_DEATH( true ),
 	RUN_END_VICTORY( true ),

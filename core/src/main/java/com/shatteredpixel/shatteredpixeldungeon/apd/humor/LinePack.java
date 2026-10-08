@@ -54,6 +54,9 @@ public final class LinePack {
 			"\\b(fuck\\w*|shit\\w*|bitch\\w*|bastard\\w*|asshole\\w*|dick\\w*|piss\\w*|cunt\\w*|goddamn\\w*|bullshit|wank\\w*|twat\\w*|motherfuck\\w*|arse\\w*|slut\\w*|whore\\w*)\\b",
 			Pattern.CASE_INSENSITIVE );
 
+	// the humor never says the game was changed: no buff/nerf/patch claims in a line (real patch notes are written separately and truthfully)
+	static final Pattern BALANCE_CLAIM = Pattern.compile( "\\b(nerf(ed|s)?|buff(ed|s)?|patch(ed)?|hotfix(ed)?|rebalanc\\w*|next update|next patch)\\b", Pattern.CASE_INSENSITIVE );
+
 	// every line is about Cleric: it names Cleric or something that only Cleric has
 	static final Pattern ABOUT_CLERIC = Pattern.compile(
 			"cleric|priest|paladin|holy tome|\\btome\\b|guiding light|ascended form|trinity|power of many",
@@ -85,6 +88,48 @@ public final class LinePack {
 		return lines;
 	}
 
+	// Problems with how lines point at each other: a prerequisite that does not exist, a story with no second part, a loop.
+	// Returns the ids of lines that can never be shown (their prerequisite is missing, directly or further back).
+	public static Set<String> unreachable( List<Line> lines, List<String> problems ){
+		java.util.Map<String, Line> byId = new java.util.HashMap<>();
+		for (Line l : lines) byId.put( l.id, l );
+		Set<String> followed = new HashSet<>();
+		Set<String> bad = new HashSet<>();
+		for (Line l : lines){
+			if (l.after == null) continue;
+			followed.add( l.after );
+			Line p = byId.get( l.after );
+			if (p == null){
+				problems.add( l.id + " follows " + l.after + ", which does not exist" );
+				bad.add( l.id );
+			} else if (p.pool != l.pool){
+				problems.add( l.id + " follows a line of the other pool (" + p.id + ")" );
+				bad.add( l.id );
+			}
+			//a loop never starts
+			Set<String> seen = new HashSet<>();
+			Line cur = l;
+			while (cur != null && cur.after != null){
+				if (!seen.add( cur.id )){
+					problems.add( l.id + " is part of a loop" );
+					bad.add( l.id );
+					break;
+				}
+				cur = byId.get( cur.after );
+			}
+		}
+		for (Line l : lines){
+			if (l.setup && !followed.contains( l.id )) problems.add( l.id + " sets up a story but nothing follows it" );
+		}
+		//everything that depends on a bad line is unreachable too
+		boolean grew = true;
+		while (grew){
+			grew = false;
+			for (Line l : lines) if (l.after != null && bad.contains( l.after ) && bad.add( l.id )) grew = true;
+		}
+		return bad;
+	}
+
 	private static Line parseLine( String row ){
 		String[] f = row.split( "\\|", -1 );
 		if (f.length != 7) throw new IllegalArgumentException( "expected 7 fields separated by '|', found " + f.length );
@@ -100,16 +145,28 @@ public final class LinePack {
 		}
 
 		int since = 0;
-		boolean joke = false, meta = false;
+		boolean joke = false, meta = false, appreciation = false, setup = false, nextSession = false;
+		String after = null;
 		if (!f[2].equals( "-" )){
 			for (String flag : f[2].split( "," )){
 				flag = flag.trim();
 				if (flag.equals( "joke" )) joke = true;
 				else if (flag.equals( "meta" )) meta = true;
+				else if (flag.equals( "appreciation" )) appreciation = true;
+				else if (flag.equals( "setup" )) setup = true;
+				else if (flag.equals( "nextsession" )) nextSession = true;
+				else if (flag.startsWith( "after=" )){
+					after = flag.substring( 6 ).trim();
+					if (!ID.matcher( after ).matches()) throw new IllegalArgumentException( "bad prerequisite id '" + after + "'" );
+					if (after.equals( id )) throw new IllegalArgumentException( "a line cannot follow itself" );
+				}
 				else if (flag.startsWith( "since=" )) since = version( flag.substring( 6 ) );
 				else throw new IllegalArgumentException( "unknown flag '" + flag + "'" );
 			}
 		}
+		if (nextSession && after == null) throw new IllegalArgumentException( "nextsession needs after=<id>" );
+		if (appreciation != id.startsWith( "app." )) throw new IllegalArgumentException( "appreciation lines, and only those, have ids starting 'app.'" );
+		if (meta && (appreciation || after != null || setup)) throw new IllegalArgumentException( "a meta line stands alone" );
 		if (meta != (cat == Category.META)) throw new IllegalArgumentException( "the meta flag and the META category go together" );
 
 		List<Term> requires = new ArrayList<>();
@@ -134,6 +191,10 @@ public final class LinePack {
 		if (clean.isEmpty()) throw new IllegalArgumentException( "every line needs clean wording" );
 		if (clean.length() > MAX_CLEAN) throw new IllegalArgumentException( "clean wording is longer than " + MAX_CLEAN );
 		if (adult != null && adult.length() > MAX_ADULT) throw new IllegalArgumentException( "adult wording is longer than " + MAX_ADULT );
+		for (String t : new String[]{ clean, adult == null ? "" : adult }){
+			Matcher claim = BALANCE_CLAIM.matcher( t );
+			if (claim.find()) throw new IllegalArgumentException( "a line must not claim a balance or patch change ('" + claim.group() + "')" );
+		}
 		Matcher bad = PROFANITY.matcher( clean );
 		if (bad.find()) throw new IllegalArgumentException( "clean wording contains '" + bad.group() + "'" );
 
@@ -151,7 +212,7 @@ public final class LinePack {
 			if (!Context.KEYS.contains( k )) throw new IllegalArgumentException( "unknown placeholder {" + k + "}" );
 		if (joke && !cleanKeys.isEmpty()) throw new IllegalArgumentException( "a joke with invented numbers cannot use recorded {placeholders}" );
 
-		return new Line( id, cat, since, !meta, joke, weight, requires, clean, adult );
+		return new Line( id, cat, since, !meta, joke, weight, appreciation ? Pool.APPRECIATION : Pool.HATRED, after, nextSession, setup, requires, clean, adult );
 	}
 
 	private static Set<String> placeholders( String text ){

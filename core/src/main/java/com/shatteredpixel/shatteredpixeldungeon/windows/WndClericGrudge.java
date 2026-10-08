@@ -31,7 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 
-// APD Settings > About / Developer > "The Developer's grudge": the two counters and the player's control over the humor.
+// APD Settings > About / Developer > "The Developer's grudge": the four counters (Hatred and Appreciation, total and heard) and the player's control over the humor.
 // Opening it never triggers a popup; the first time, one small joke is shown in the text.
 public class WndClericGrudge extends Window {
 
@@ -63,17 +63,14 @@ public class WndClericGrudge extends Window {
 		pos = title.bottom() + 2 * MARGIN;
 
 		Counter c = GrudgeHooks.counter();
-		RenderedTextBlock total = PixelScene.renderTextBlock( c.totalText(), 6 );
-		total.maxWidth( WIDTH - 2 * MARGIN );
-		total.setPos( MARGIN, pos );
-		add( total );
-		pos = total.bottom() + MARGIN;
-
-		RenderedTextBlock heard = PixelScene.renderTextBlock( c.heardText(), 6 );
-		heard.maxWidth( WIDTH - 2 * MARGIN );
-		heard.setPos( MARGIN, pos );
-		add( heard );
-		pos = heard.bottom() + MARGIN;
+		String[] counters = { c.totalText(), c.heardText(), c.appreciationTotalText(), c.appreciationHeardText() };
+		for (String text : counters){
+			RenderedTextBlock t = PixelScene.renderTextBlock( text, 6 );
+			t.maxWidth( WIDTH - 2 * MARGIN );
+			t.setPos( MARGIN, pos );
+			add( t );
+			pos = t.bottom() + MARGIN;
+		}
 
 		String joke = GrudgeHooks.discovery();
 		if (joke != null){

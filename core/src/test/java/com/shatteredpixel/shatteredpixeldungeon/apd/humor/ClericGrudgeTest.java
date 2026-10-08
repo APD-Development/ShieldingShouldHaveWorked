@@ -228,8 +228,7 @@ public class ClericGrudgeTest {
 		for (Line l : lines) if (l.category == Category.META) meta++;
 		assertTrue( meta >= 1 );
 		ClericGrudge g = grudge( lines, new Ledger( null ), 1, true );
-		int total = g.counter().total;
-		assertEquals( lines.size() - meta, total );
+		assertEquals( lines.size() - meta, g.counter().total + g.counter().appreciationTotal );
 		assertNotNull( g.counterDiscovery( false, T0 ) );
 		assertNull( g.counterDiscovery( false, T0 + 1 ) );
 		assertEquals( "the discovery joke is not a counted complaint", 0, g.counter().heard );

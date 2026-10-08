@@ -36,7 +36,9 @@ public final class Context {
 	static {
 		Set<String> k = new HashSet<>();
 		Collections.addAll( k,
-				"hero",              // the class being played now
+				"hero",              // the class being played now, as its code name (for conditions)
+				"heroName",          // the same, as the player reads it (for {placeholders})
+				"lastHeroName",
 				"lastHero",          // the class of the run that just ended
 				"lastOutcome",       // DIED or WON
 				"depth",             // depth the run ended on (or the current depth)

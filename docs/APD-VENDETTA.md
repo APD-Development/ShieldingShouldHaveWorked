@@ -148,3 +148,24 @@ Not yet done (waits on approval of the lines, or needs a design step):
 3. Composable fragments (opener + insult + closer) are designed but not built; add after the authored lines are approved.
 4. Changelog footer: `python3 -I tools/humor_review.py` prints the real count of complaints added since the committed id list (`core/src/test/resources/apd/cleric_complaint_ids.txt`). Update that list when a release ships; quote only the printed number.
 5. The difficulty-display gag is separate and later.
+
+---
+## CONSOLIDATED APPROVAL (2026-10-08, supersedes earlier Cleric humor instructions where they conflict)
+The owner approved the full system: a permanent signature feature, Cleric the ONLY target. Two separate content pools sharing one engine:
+- **Cleric Hatred** (ids `any.`, `fw.`, `menu.`, `clr.`, `oth.`, `asc.`, `post.`, `boss.`, `abl.`, `eqp.`, `hist.`, `joke.`, `fmt.`, `first.`) and
+- **Cleric Appreciation** (ids `app.`, flag `appreciation`): sarcastic compliments, fake apologies, false redemption arcs; never sincere, never a statement about the game being changed.
+
+Built (all behind `ClericGrudge.ENABLED = false`, tested locally, nothing in any build until the owner flips it after reviewing the lines and a phone test):
+- Pools: `Pool.HATRED` / `Pool.APPRECIATION` per line; one picker, one ledger, separate counters.
+- Linked stories: `setup`, `after=<id>`, `nextsession` flags. A follow-up is eligible only when its prerequisite is really in the player's ledger (and, for `nextsession`, was seen before this session began); once possible it is favoured (x4) so the payoff arrives. Lint and loading enforce: no missing prerequisite, no loop, no cross-pool link, every `setup` has a follow-up; lines that could never be shown are dropped so the counters never promise them.
+- Lint also refuses any line that claims a balance or patch change (buff, nerf, patch, hotfix, rebalance, "next update").
+- Moments: MENU, LEVEL_CALM (a long quiet stretch on a non-boss floor: hero idle, nothing hostile in view, no window), BOSS_CLEARED (first quiet moment after a boss fell), RUN_END_DEATH/VICTORY (results screen). Popups in play are a window, shown only when quiet; nothing is shown mid-combat, mid-turn, on boss floors, or with a window open. At most one unsolicited popup per session, 20-minute grace, minimum gap 3 days (Rare) or 10 days (Rarer, default), Off available; contextual lines have their own small chance and a separate on/off.
+- Counter window (APD Settings > About / Developer, visible only while enabled), four counters with the owner's labels: I'VE COMPLAINED ABOUT CLERIC X TIMES. / YOU'VE HEARD ME COMPLAIN X TIMES. / I'VE APPRECIATED CLERIC X TIMES. / YOU'VE WITNESSED X QUESTIONABLE COMPLIMENTS. Distinct ids only; never reset by updates; no listing of undiscovered lines. The humor ledger is a separate local file (`apd-humor/ledger.txt`, beside the history folder, never exported, never in UIMSD or run logs).
+- Content pack version: each line carries `since=<APD version>`; `ClericGrudge.addedByVersion()` and `tools/humor_review.py` report counts per version and per pool, which is what a patch-note footer may quote.
+- Initial library: 205 Hatred + 116 Appreciation lines (+3 counter-screen jokes), all in `docs/APD-VENDETTA-LINES.md` for editorial review. The first drafts had ~300 Hatred lines; the weakest were cut before anything shipped (ids are only permanent once a release ships).
+
+Patch-note rules: real technical changes are listed accurately and separately; the Cleric commentary is an optional, clearly separate "Developer's grudge" footer. A number in a footer comes from `python3 -I tools/humor_review.py` (added since the committed `cleric_complaint_ids.txt`), never typed. Tone bank (NOT release notes): "Fixed three crashes. Cleric remains a disappointment." / "Added N Cleric complaints. Unfortunately, Cleric still exists." / "Improved UIMSD performance. Cleric contributed nothing." / "Fixed an issue where Cleric was accidentally complimented." / "After extensive consideration, I've decided to forgive Cleric. Never mind."
+
+Not built (needs approval or a design step): sharing/leaderboards/online anything (not wanted without separate approval); optional humor-collection achievements; the first-Cleric-run warning at hero select (text and once-only logic exist); UIMSD-backed history facts (clericRuns, wins, deaths, streak, Guiding Light casts) and spell/weapon/armor-ability facts, so lines that need them stay ineligible for now; composable fragments; the difficulty-display gag.
+
+Phone test (owner, after review): flip `ClericGrudge.ENABLED` (new build, and Actions minutes are frozen, so build locally or wait for authorization); open APD Settings > About / Developer: the grudge; check the four counters; set popups to Rare to see one on the title screen after 20 minutes; confirm nothing ever appears mid-fight, on a boss floor, or with a window open; confirm Off stops them.

@@ -1,3 +1,4 @@
 cleric_anytime.txt
 cleric_contextual.txt
 cleric_formats.txt
+cleric_appreciation.txt

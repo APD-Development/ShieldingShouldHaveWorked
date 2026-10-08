@@ -130,6 +130,19 @@ public class HumorIsolationTest {
 		}
 	}
 
+	@Test
+	public void theGamesSideCannotSpendATurnChangeStateOrTouchTheSave() throws Exception {
+		//GrudgeHooks only reads the game; none of the calls that act, change, roll dice or save appear in it
+		String hooks = new String( Files.readAllBytes( new File( System.getProperty( "apd.game.src" ), "windows/GrudgeHooks.java" ).toPath() ), StandardCharsets.UTF_8 );
+		hooks = hooks.substring( hooks.indexOf( "package " ) );
+		for (String forbidden : new String[]{ ".spend(", ".next()", "Actor.", "Random.", ".damage(", ".heal(", ".die(", ".move(", ".act(", "saveGame", "saveAll",
+				"Bundle", "GLog", "Badges.", "Rankings.", "Statistics.total = ", "Dungeon.hero.pos", "SPDSettings.put" }){
+			assertFalse( "GrudgeHooks must not use " + forbidden, hooks.contains( forbidden ) );
+		}
+		//and the humor ledger is the only file it writes, inside its own folder
+		assertTrue( hooks.contains( "apd-humor/ledger.txt" ) );
+	}
+
 	private static void scanFor( String needle, File root, File dir, Set<String> allowed, List<String> offenders ) throws Exception {
 		File[] list = dir.listFiles();
 		if (list == null) return;

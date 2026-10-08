@@ -88,6 +88,20 @@ public class LedgerTest {
 	}
 
 	@Test
+	public void savingWritesOnlyTheLedgerFileInItsOwnFolderAndLeavesNoTemporaryFile() throws Exception {
+		File dir = new File( tmp.getRoot(), "apd-humor" );
+		Ledger l = new Ledger( new File( dir, "ledger.txt" ) );
+		for (int i = 0; i < 20; i++){
+			l.markShown( "a." + i, i );
+			l.save();
+		}
+		String[] names = dir.list();
+		assertEquals( "only the ledger, no leftover temporary file", 1, names.length );
+		assertEquals( "ledger.txt", names[0] );
+		assertEquals( "nothing was written next to the folder", 1, tmp.getRoot().list().length );
+	}
+
+	@Test
 	public void theResetForgetsEverything() throws Exception {
 		File f = new File( tmp.getRoot(), "l.txt" );
 		Ledger l = new Ledger( f );

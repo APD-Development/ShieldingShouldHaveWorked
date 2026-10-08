@@ -59,13 +59,19 @@ public final class ClericGrudge {
 	private final Ledger ledger;
 	private final Random rng;
 	private final boolean enabled;
+	private final long sessionStart;
 	private boolean popupThisSession;
 
 	public ClericGrudge( List<Line> lines, Ledger ledger, Random rng, boolean enabled ){
+		this( lines, ledger, rng, enabled, System.currentTimeMillis() );
+	}
+
+	public ClericGrudge( List<Line> lines, Ledger ledger, Random rng, boolean enabled, long sessionStart ){
 		this.lines = lines;
 		this.ledger = ledger;
 		this.rng = rng;
 		this.enabled = enabled;
+		this.sessionStart = sessionStart;
 	}
 
 	// Loads every pack the source lists. A pack that fails its lint is refused whole and the others still load.
@@ -88,13 +94,35 @@ public final class ClericGrudge {
 		} catch (IOException e){
 			//no packs: no humor
 		}
+		//a line whose first part is missing could never be shown, so it is not counted or kept either
+		Set<String> never = LinePack.unreachable( all, new ArrayList<String>() );
+		if (!never.isEmpty()){
+			List<Line> kept = new ArrayList<>();
+			for (Line l : all) if (!never.contains( l.id )) kept.add( l );
+			all = kept;
+		}
 		return all;
 	}
 
 	public Counter counter(){
-		Set<String> counted = new HashSet<>();
-		for (Line l : lines) if (l.counted) counted.add( l.id );
-		return new Counter( counted.size(), ledger.distinctSeenAmong( counted ) );
+		Set<String> hatred = new HashSet<>(), appreciation = new HashSet<>();
+		for (Line l : lines){
+			if (!l.counted) continue;
+			(l.pool == Pool.APPRECIATION ? appreciation : hatred).add( l.id );
+		}
+		return new Counter( hatred.size(), ledger.distinctSeenAmong( hatred ), appreciation.size(), ledger.distinctSeenAmong( appreciation ) );
+	}
+
+	// how many counted lines each content version introduced, per pool (for truthful patch notes)
+	public java.util.Map<Integer, int[]> addedByVersion(){
+		java.util.Map<Integer, int[]> m = new java.util.TreeMap<>();
+		for (Line l : lines){
+			if (!l.counted) continue;
+			int[] c = m.get( l.since );
+			if (c == null) m.put( l.since, c = new int[2] );
+			c[l.pool == Pool.APPRECIATION ? 1 : 0]++;
+		}
+		return m;
 	}
 
 	// A surprise at a quiet moment, or null. Rolls once; at most one per session.
@@ -166,7 +194,7 @@ public final class ClericGrudge {
 			} catch (IllegalArgumentException ignored){
 			}
 		}
-		Line l = Picker.pick( lines, moment, ctx, ledger, rng, avoid );
+		Line l = Picker.pick( lines, moment, ctx, ledger, rng, avoid, sessionStart );
 		if (l == null) return null;
 		String text = l.render( ctx, adult );
 		if (text == null) return null;
