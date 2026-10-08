@@ -100,3 +100,37 @@ Any character: "You are playing {currentHero}. Somewhere, a Cleric is losing to 
 
 ### Tests (as listed above, plus)
 Combination-key non-repeat; fragment-level non-repeat before reuse; exhaustion order (oldest first, recent window respected, never blank); history preserved after adding new packs; ledger kept out of exports/sync/UIMSD; Clean/Adult per fragment and per combination (a generated line is Adult only if every part has Adult text and Adult is on).
+
+---
+## ADDENDUM 2 (owner: permanent expansion rules; proposal only, nothing built)
+### Permanent creative direction: Cleric is the ONLY target
+The earlier wording "extensible to other characters / other developer jokes" is WITHDRAWN. The engine is named and scoped for Cleric alone (`apd/humor/cleric`). No other class gets a developer-hatred system; other classes may get ordinary humor/personality through the normal text system, which is a separate thing. The "ANY_CHARACTER" category stays: it means Cleric complaints that may pop up while the player is using another class, not complaints about that class. A source-scan test fails the build if any pack line, tag or code path targets a non-Cleric hero.
+
+### Growth with every update, without resetting anyone
+- Packs are append-only; ids are permanent and never reused or renumbered (a lint compares the pack against the previous release's id list, committed as `core/src/test/resources/apd/cleric_complaint_ids.txt`, and fails if an id disappears or its meaning changes; removing a line retires the id, still counted as "heard" for players who saw it).
+- Players keep their seen history across updates. Picking is "unseen first", so a player who exhausted everything meets the newly added lines first (new ids are by definition unseen; ties favor the newest `since` version).
+- Each line carries `since=<APD version>`. The number added per update is entirely the owner's call; there is no quota and no test requiring one.
+
+### Patch notes and changelogs
+- In-game and repository changelogs keep two visibly separate parts: the real change list (accurate, never joked about inside the list) and an optional "Developer's grudge" footer line in a distinct style/label. Cleric jokes never replace, alter or sit inside a genuine change entry.
+- Example footers (tone only, NOT real notes): "Fixed three crashes. Cleric remains a disappointment." / "Improved UIMSD performance. Cleric contributed nothing." / "Fixed 0 Cleric problems. Added 63 reasons to hate Cleric."
+- Any NUMBER in a footer about complaints is generated from the real pack diff by a small build-time tool (`added = ids in this version minus ids in the previous list`), never typed by hand, so "Added 47 new Cleric complaints" can only be written when 47 were actually added. A test checks the footer's number against the id-list diff. Footers about other fixes only state what the real change list states.
+- I will never invent completed changes for a joke.
+
+### The official complaint counter
+- Where: APD Settings > About / Developer (an Easter-egg row, "Developer's grudge"), not on the main menu, not in gameplay. Opening it never triggers a popup by itself.
+- Shows exactly: "I'VE COMPLAINED ABOUT CLERIC X TIMES." and "YOU'VE HEARD ME COMPLAIN X TIMES."
+- X (official) = number of unique ids in the installed packs flagged `complaint` (authored complaints). Grammar-generated combinations are not counted toward either number, only authored ids, so the totals are stable and countable. Retired ids still count toward "heard" for players who saw them but the official total counts live ids only, so heard <= total is enforced by only counting ids that exist in the installed pack (a retired id never makes heard exceed total).
+- Y (player) = distinct complaint ids in the seen ledger, each counted once however many times it was shown. The ledger is never cleared by updates; only the player's explicit reset (or reinstall) clears it, with a confirmation.
+- No spoilers: only the two numbers are shown, never lists, titles, categories or "x remaining by category". The official total is the same for every player.
+- Not gameplay data: stored in the humor ledger, excluded from run logs, UIMSD, achievements, rankings, submissions, exports and sync.
+- A rare discovery joke (shown at most once, the first time the screen is opened, a ledger entry of its own): e.g. "Yes, I counted. No, I will not be taking questions." Never repeated, never spammy; the counter screen itself adds no further popups.
+
+### Additional sample lines
+- Counter discovery (once): "You found the counter. It only goes up. Like my blood pressure whenever Cleric is mentioned."
+- Counter discovery (alt): "Yes, I keep count. Somebody has to hold Cleric accountable."
+- Footers: see above (generated numbers only).
+- Any-class: "Whoever you are playing today, you are not Cleric. Good. That is the whole message."
+
+### Tests added to the list
+Id-list immutability against the previous release; new ids are served before old ones for exhausted players; counter totals equal live complaint ids in the installed packs; heard counts distinct ids only and never decreases across updates/restarts; retired ids never push heard above total; counter screen and discovery joke are one-time and gameplay-free; footer numbers equal the pack diff; source-scan that no non-Cleric target exists.
