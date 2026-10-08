@@ -11,6 +11,8 @@ import glob, os, sys
 ROOT = os.path.join('core', 'src', 'main', 'assets', 'apd', 'humor')
 IDS = os.path.join('core', 'src', 'test', 'resources', 'apd', 'cleric_complaint_ids.txt')
 OUT = os.path.join('docs', 'APD-VENDETTA-LINES.md')
+BATCH_DIR = os.path.join('docs', 'cleric-review')
+BATCH = 50
 
 
 def read_packs():
@@ -26,6 +28,33 @@ def read_packs():
             rows.append(f)
         packs.append((name, rows))
     return packs
+
+
+def write_batches(packs):
+    """Review batches of 50, in pack order, one readable page each (id, when, Clean, Adult)."""
+    rows = [f for _, rs in packs for f in rs]
+    os.makedirs(BATCH_DIR, exist_ok=True)
+    for old in os.listdir(BATCH_DIR):
+        if old.startswith('batch-'):
+            os.remove(os.path.join(BATCH_DIR, old))
+    total = (len(rows) + BATCH - 1) // BATCH
+    for b in range(total):
+        chunk = rows[b * BATCH:(b + 1) * BATCH]
+        out = [f'# Cleric lines for review: batch {b + 1} of {total}', '',
+               f'Lines {b * BATCH + 1} to {b * BATCH + len(chunk)} of {len(rows)}. Reply with the ids to keep, cut or rewrite.', '']
+        for f in chunk:
+            when = 'any time' if f[3] == '-' else 'only when ' + f[3]
+            kind = 'Appreciation' if f[0].startswith('app.') else ('counter screen' if f[1] == 'meta' else 'Hatred')
+            extra = []
+            if 'setup' in f[2]: extra.append('first part of a story')
+            for x in f[2].split(','):
+                x = x.strip()
+                if x.startswith('after='): extra.append('follows ' + x[6:])
+                if x == 'nextsession': extra.append('in a later session')
+                if x == 'joke': extra.append('invented-number joke')
+            note = (' [' + '; '.join(extra) + ']') if extra else ''
+            out += [f'### {f[0]}  ({kind}, {f[1]}, {when}){note}', f'- Clean: {f[5]}', f'- Adult: {f[6] if f[6] else "(same as Clean)"}', '']
+        open(os.path.join(BATCH_DIR, f'batch-{b + 1:02d}.md'), 'w', encoding='utf-8').write('\n'.join(out))
 
 
 def main():
@@ -66,6 +95,7 @@ def main():
             out.append(f'| {f[0]}{flags} | {f[1]} | {esc(f[3]) if f[3] != "-" else "any time"} | {esc(f[5])} | {esc(f[6])} |')
         out.append('')
     open(OUT, 'w', encoding='utf-8').write('\n'.join(out))
+    write_batches(packs)
     print(f'{len(hatred)} Hatred + {len(appreciation)} Appreciation counted; added since the previous release list: {len(added_h)} Hatred, {len(added_a)} Appreciation; wrote {OUT}')
 
 

@@ -1,20 +1,20 @@
 # Cleric complaints dressed up as something else: fake errors, notices, reviews and so on. Same rules as the other packs.
 # id | category | flags | requires | weight | clean wording | adult wording (optional)
-fmt.0001 | anytime | since=4.8 | - | 8 | ERROR 404: Cleric's redeeming qualities not found. |
-fmt.0002 | anytime | since=4.8 | - | 8 | Exception in thread "main": java.lang.TooMuchClericException: Cleric is still a class. Stack trace omitted for my own comfort. |
-fmt.0003 | anytime | since=4.8 | - | 8 | WARNING: this build contains Cleric. The developer has been notified. The developer is sighing. |
+fmt.0001 | anytime | since=4.8 | - | 8 | ERROR 404: Cleric's redeeming qualities not found. | ERROR 404: Cleric's redeeming qualities not found. Also not found: my chill.
+fmt.0002 | anytime | since=4.8 | - | 8 | Exception in thread "main": java.lang.TooMuchClericException: Cleric is still a class. Stack trace omitted for my own comfort. | Exception in thread "main": java.lang.TooMuchClericException: Cleric is still a class. Stack trace omitted for my own comfort. It was just the word fuck, over and over.
+fmt.0003 | anytime | since=4.8 | - | 8 | WARNING: this build contains Cleric. The developer has been notified. The developer is sighing. | WARNING: this build contains Cleric. The developer has been notified. The developer is fucking sighing.
 fmt.0004 | anytime | since=4.8 | - | 8 | Loading tip: Cleric is not a loading tip. Cleric is a loading problem. |
-fmt.0005 | anytime | since=4.8 | - | 8 | Achievement unlocked: Thought About Cleric Again. Reward: nothing, forever. |
+fmt.0005 | anytime | since=4.8 | - | 8 | Achievement unlocked: Thought About Cleric Again. Reward: nothing, forever. | Achievement unlocked: Thought About Cleric Again. Reward: absolutely fuck-all, forever.
 fmt.0006 | anytime | since=4.8 | - | 8 | Holy tome opens wide / the numbers do not change much / Cleric. Ugh. Again. | Holy tome opens wide / the numbers do not change much / Cleric. Fuck. Again.
-fmt.0007 | anytime | since=4.8 | - | 8 | FOR IMMEDIATE RELEASE: Local developer remains unhappy with Cleric. Sources confirm he was also unhappy yesterday. |
+fmt.0007 | anytime | since=4.8 | - | 8 | FOR IMMEDIATE RELEASE: Local developer remains unhappy with Cleric. Sources confirm he was also unhappy yesterday. | FOR IMMEDIATE RELEASE: Local developer remains pissed off at Cleric. Sources confirm he was also pissed off yesterday.
 fmt.0008 | anytime | since=4.8 | - | 8 | By continuing to play you acknowledge that Cleric exists and that the developer is unable to make peace with it. |
-fmt.0009 | anytime | since=4.8 | - | 8 | Today's horoscope: you will encounter a Cleric. It will not go well. Lucky number: anything but Cleric. |
-fmt.0010 | anytime | since=4.8 | - | 8 | Cleric: one star. Would not ascend again. (I did ascend, 225 attempts later. Still one star.) |
+fmt.0009 | anytime | since=4.8 | - | 8 | Today's horoscope: you will encounter a Cleric. It will not go well. Lucky number: anything but Cleric. | Today's horoscope: you will encounter a Cleric. It will go like shit. Lucky number: anything but Cleric.
+fmt.0010 | anytime | since=4.8 | - | 8 | Cleric: one star. Would not ascend again. (I did ascend, 225 attempts later. Still one star.) | Cleric: one star. Would not ascend again. (I did ascend, 225 attempts later. Still one fucking star.)
 fmt.0011 | anytime | since=4.8 | - | 8 | Thank you for contacting Cleric Support. Your complaint is important to me. So is mine, and mine is longer. |
-fmt.0012 | anytime | since=4.8 | - | 8 | Pro tip: if a Cleric ever offers to heal you, say thank you, then leave quickly. |
+fmt.0012 | anytime | since=4.8 | - | 8 | Pro tip: if a Cleric ever offers to heal you, say thank you, then leave quickly. | Pro tip: if a Cleric ever offers to heal you, say thank you, then get the fuck out of there.
 fmt.0013 | anytime | since=4.8 | - | 8 | Recipe for a bad day: one Tome, two unlucky rolls, and a generous helping of Cleric. |
-fmt.0014 | anytime | since=4.8 | - | 8 | FAQ. Q: Why does this game keep complaining about Cleric? A: Please see the previous 225 attempts. |
-fmt.0015 | anytime | since=4.8 | - | 8 | You have been invited to a meeting titled "Cleric: Why?". Attendees: me. Agenda: also me. |
+fmt.0014 | anytime | since=4.8 | - | 8 | FAQ. Q: Why does this game keep complaining about Cleric? A: Please see the previous 225 attempts. | FAQ. Q: Why does this game keep complaining about Cleric? A: Please see the previous 225 fucking attempts.
+fmt.0015 | anytime | since=4.8 | - | 8 | You have been invited to a meeting titled "Cleric: Why?". Attendees: me. Agenda: also me. | You have been invited to a meeting titled "Cleric: Why the Fuck?". Attendees: me. Agenda: also me.
 fmt.0016 | anytime | since=4.8 | - | 8 | Your honor, I would like to enter into evidence that Cleric exists. The defense rests. The defense is also me. |
 fmt.0017 | anytime | since=4.8 | - | 8 | And here I see the Cleric in its natural habitat: confused, surrounded, and optimistic. |
 fmt.0018 | anytime | since=4.8 | - | 8 | And the Cleric goes for the heal! It's... it's... no. It's not. Back to you in the studio. |
@@ -23,11 +23,11 @@ fmt.0020 | anytime | since=4.8 | - | 8 | Congratulations! You have been selected
 fmt.0021 | anytime | since=4.8 | - | 8 | Once upon a time there was a Cleric. The end. I'm not telling you the rest, I'm still too mad. |
 fmt.0022 | anytime | since=4.8 | - | 8 | I have gathered you here today to remember all the good times I had with Cleric. Okay. That took a while. I am done. |
 fmt.0024 | anytime | since=4.8 | - | 8 | Missing: one reason to pick Cleric. If found, please do not return it. |
-fmt.0027 | anytime | since=4.8 | - | 8 | Dear Diary: today I saw a white robe in a photo and had to sit down. Cleric, of course. Love, the developer. |
+fmt.0027 | anytime | since=4.8 | - | 8 | Dear Diary: today I saw a white robe in a photo and had to sit down. Cleric, of course. Love, the developer. | Dear Diary: today I saw a white robe in a photo and had to sit down. Cleric, of course. Fuck. Love, the developer.
 fmt.0028 | anytime | since=4.8 | - | 8 | A strongly worded letter to Cleric: no. Sincerely, the developer. | A strongly worded letter to Cleric: fuck no. Sincerely, the developer.
 fmt.0029 | anytime | since=4.8 | - | 8 | Cleric's official motto, as translated by me: "I do my best, and my best is a polite suggestion." |
-fmt.0031 | anytime | since=4.8 | - | 8 | Lost and found: one Tome, slightly used, heavily regretted. Owner: Cleric. Reward: none. |
-fmt.0032 | anytime | since=4.8 | - | 8 | Breaking news: Cleric has once again been described as "fine" by a person who has never played it for more than a minute. |
+fmt.0031 | anytime | since=4.8 | - | 8 | Lost and found: one Tome, slightly used, heavily regretted. Owner: Cleric. Reward: none. | Lost and found: one Tome, slightly used, heavily regretted. Owner: Cleric. Reward: none. Do not call me.
+fmt.0032 | anytime | since=4.8 | - | 8 | Breaking news: Cleric has once again been described as "fine" by a person who has never played it for more than a minute. | Breaking news: Cleric has once again been described as "fine" by a person who has never played it for more than a minute, the lucky bastard.
 
 # ---- more abilities, gear and bosses (only with real recorded facts)
 abl.0016 | ability | since=4.8 | lastHero=CLERIC & spell!=none | 8 | {spell}: a Cleric spell so confident that I'd like to see it audited. |
