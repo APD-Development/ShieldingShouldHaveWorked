@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.journal;
 
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdPlay;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
@@ -68,6 +69,7 @@ public enum Document {
 			pagesStates.put(page, FOUND);
 			Journal.saveNeeded = true;
 			Badges.validateCatalogBadges();
+			ApdPlay.onPage( name(), page, true );
 			return true;
 		}
 		return false;
@@ -135,7 +137,9 @@ public enum Document {
 
 	public boolean readPage( String page ) {
 		if (pagesStates.containsKey(page)){
+			boolean first = pagesStates.get(page) != READ;
 			pagesStates.put(page, READ);
+			if (first) ApdPlay.onPage( name(), page, false );
 			Journal.saveNeeded = true;
 			Badges.validateCatalogBadges();
 			return true;

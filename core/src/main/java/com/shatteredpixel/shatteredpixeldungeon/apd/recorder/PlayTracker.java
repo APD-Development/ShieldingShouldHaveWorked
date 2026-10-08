@@ -112,6 +112,10 @@ final class PlayTracker {
 		facts.record(GameFacts.TRAP, GameSnapshot.turn(), name(trap.getClass()), byHero || who == null ? "" : CombatTracker.nameOf(who), new long[]{ byHero ? 1 : 0 }, null);
 	}
 
+	void onPage( String document, String page, boolean found ){
+		facts.record(GameFacts.PAGE, GameSnapshot.turn(), document, "", new long[0], new String[]{ found ? "found" : "read", page });
+	}
+
 	// ---- secrets and wells ----
 
 	void onSecretRevealed( int terrainBefore, int cell ){

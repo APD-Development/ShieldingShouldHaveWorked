@@ -33,6 +33,7 @@ public class PlayWiringTest {
 		HOOKS.put("items/Heap.java", 1);               //container opened
 		HOOKS.put("levels/Level.java", 1);             //secret revealed
 		HOOKS.put("actors/blobs/WellWater.java", 1);   //well used
+		HOOKS.put("journal/Document.java", 2);         //page found, page read
 		HOOKS.put("journal/Notes.java", 4);            //landmark added/removed, key added/used
 	}
 

@@ -73,6 +73,11 @@ public final class GameFacts {
 			.description("Every trap that went off where the hero could see it.").subject("Trap").actor()
 			.value("hero", "Hero set it off", "1 when the hero triggered it, 0 for someone else.", FactKind.PLAIN).build());
 
+	//a page of a journal document (the guidebook, a region's notes) was found or read for the first time
+	public static final FactKind PAGE = FactKinds.register(FactKind.builder("journal.page", "Journal page").plural("Journal pages").area("Exploration")
+			.description("Every journal page found, and every page read for the first time.").subject("Document")
+			.tag("action", "Change", "found or read").tag("page", "Page", "The page's name in the journal.").since(1, 9).build());
+
 	//a hidden door or trap was revealed
 	public static final FactKind DISCOVER = FactKinds.register(FactKind.builder("explore.discover", "Secret revealed").plural("Secrets revealed").area("Movement")
 			.description("Every secret door or trap that was revealed, by searching or by magic.").subject("Secret")

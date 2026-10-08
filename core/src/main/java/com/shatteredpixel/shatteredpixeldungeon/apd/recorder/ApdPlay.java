@@ -112,6 +112,13 @@ public final class ApdPlay {
 		try { p.onItemAction(item, action); } catch (Throwable ignored){}
 	}
 
+	//Document.findPage / readPage: a page was found, or read for the first time
+	public static void onPage( String document, String page, boolean found ){
+		PlayTracker p = t();
+		if (p == null || restoring > 0) return;
+		try { p.onPage(document, page, found); } catch (Throwable ignored){}
+	}
+
 	//Level.discover: a secret cell is about to be revealed
 	public static void onSecretRevealed( int terrainBefore, int cell ){
 		PlayTracker p = t();

@@ -9,6 +9,7 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.stats.ReadResult;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 
 import org.junit.After;
@@ -78,5 +79,29 @@ public class JournalRecordingTest {
 		assertEquals("Secret door", got.get(0).subject);
 		assertArrayEquals(new long[]{ door }, got.get(0).values);
 		assertEquals("Secret trap", got.get(1).subject);
+	}
+
+	@Test
+	public void journalPagesFoundAndReadForTheFirstTimeAreRecorded() throws Exception {
+		RecorderTestSupport.Session s = ItemTestSupport.startRun(45L);
+		String id = ApdRecorder.currentRunId();
+		Document doc = Document.ADVENTURERS_GUIDE;
+		String page = doc.pageNames().iterator().next();
+		doc.deletePage(page);                          //back to "not found" (debug builds start with every page read)
+		assertEquals(true, doc.findPage(page));
+		doc.findPage(page);                            //already found: not a change
+		doc.readPage(page);
+		doc.readPage(page);                            //already read: not a change
+		ApdRecorder.flushForReading();
+		ReadResult r = s.read(id);
+		List<FactEvents.Observation> got = new ArrayList<>();
+		for (ApdEvent e : r.events){
+			if (!FactEvents.isFactEvent(e.type)) continue;
+			for (FactEvents.Observation o : FactEvents.decode(e, r)) if (o.key.equals("journal.page")) got.add(o);
+		}
+		assertEquals(2, got.size());
+		assertArrayEquals(new String[]{ "found", page }, got.get(0).tags);
+		assertArrayEquals(new String[]{ "read", page }, got.get(1).tags);
+		assertEquals("ADVENTURERS_GUIDE", got.get(0).subject);
 	}
 }

@@ -92,6 +92,7 @@ level summaries). U4 the question builder and topic pages. Each step ends with c
 - Batch D (telemetry 1.9): `hero.state`, one observation per hero turn with health, max health, shield and hunger counter (series, full resolution). Measured 0.38 bytes/turn in the storage gate (FactStorageTest). Hunger is already public in the log (HUNGER_CHANGE), so the value is not new information. Hook: `PlayTracker.onHeroTurn` (no new game-code hook).
 - Batch E (telemetry 1.9): `journal.landmark` (shops, alchemy, wells, floor feelings noted or dropped in the journal) and `journal.key` (keys picked up or used). Hook: 4 calls in `Notes` (`ApdPlay.onLandmark/onKey`); only what the journal already shows the player.
 - Batch F (telemetry 1.9): `explore.discover` (secret doors/traps revealed, by searching or magic; hook in `Level.discover`) and `explore.well` (a well was used; hook in `WellWater.affect`). Revealed at the moment the player sees them, so nothing hidden is exposed early.
+- Batch G (telemetry 1.9): `journal.page` (a journal page found, or read for the first time; hook in `Document.findPage/readPage`).
 
 ## Not yet recorded (observable; candidates for the next batches, each needs its own hook and a hidden-information review)
 Levers, per-enemy state changes and enemy abilities, boss phase changes, NPC interactions and quest steps, artifact charge (no public
