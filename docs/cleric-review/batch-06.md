@@ -1,203 +1,203 @@
 # Cleric lines for review: batch 6 of 7
 
-Lines 251 to 300 of 324. Reply with the ids to keep, cut or rewrite.
+Lines 251 to 300 of 348. Reply with the ids to keep, cut or rewrite.
 
-### app.0043  (Appreciation, appreciation, any time)
-- Clean: A moment of appreciation for Cleric's costume. It really suggests that nobody is in charge of anything.
+### oth.win.0004  (Hatred, victory, only when lastHero!=CLERIC & lastOutcome=WON)
+- Clean: You won! Somewhere, a Cleric just sneezed, and I'm assuming it's out of jealousy.
 - Adult: (same as Clean)
 
-### app.0044  (Appreciation, appreciation, any time)
-- Clean: Cleric means well. So do traffic cones.
-- Adult: Cleric means well. So do traffic cones. Traffic cones also don't make me want to scream into a pillow.
-
-### app.0045  (Appreciation, appreciation, any time)
-- Clean: I appreciate the way Cleric never gives up, mostly because someone's holding it up.
+### oth.win.0005  (Hatred, victory, only when lastHero!=CLERIC & lastOutcome=WON)
+- Clean: Victory without Cleric. The way it should be, the way it was always meant to be.
 - Adult: (same as Clean)
 
-### app.0046  (Appreciation, appreciation, any time)
-- Clean: If I rated characters on how much emotional range they give me, Cleric would win. All of the range is anger.
+### oth.win.0006  (Hatred, victory, only when lastHero!=CLERIC & lastOutcome=WON)
+- Clean: You won as {lastHeroName}, and I feel great, and I would like it noted that Cleric did not contribute.
 - Adult: (same as Clean)
 
-### app.0047  (Appreciation, appreciation, any time)
-- Clean: A shout-out to the Cleric players out there: you are stronger than I will ever be, and I'm saying that as a person who got through 225 attempts.
+### asc.0001  (Hatred, ascension, only when lastHero=CLERIC & lastOutcome=DIED & depth>=24)
+- Clean: You got that far with Cleric and still did not ascend. I know that feeling. It took me 225 attempts. I have not recovered.
+- Adult: You got that far with Cleric and still did not ascend. I know that feeling. It took me 225 fucking attempts. I have not recovered.
+
+### asc.0002  (Hatred, ascension, only when lastHero=CLERIC & lastOutcome=DIED & depth>=24)
+- Clean: So close to the Amulet with Cleric. I have been there. It does not get better.
+- Adult: So close to the Amulet with Cleric. I have been there. It does not get better. It gets angrier.
+
+### asc.0003  (Hatred, ascension, only when lastHero=CLERIC & lastOutcome=DIED & depth>=24)
+- Clean: Depth {depth} with Cleric. You were nearly there. I'm choosing to believe that was the Tome's fault.
 - Adult: (same as Clean)
 
-### app.0048  (Appreciation, appreciation, any time)
-- Clean: Cleric might not be the best choice, but it is a choice, and sometimes that's what a character list needs.
+### asc.0004  (Hatred, ascension, only when lastHero=CLERIC & lastOutcome=DIED & depth>=24)
+- Clean: That was the closest a Cleric can get to the top without the top noticing. Take a moment. Now take another.
+- Adult: That was the closest a Cleric can get to the top without the top giving a shit. Take a moment. Now take another.
+
+### asc.0005  (Hatred, ascension, only when lastHero=CLERIC & lastOutcome=DIED & depth>=24)
+- Clean: Failed ascension with Cleric. I have a support group. It meets every time I look at the Tome.
+- Adult: Failed ascension with Cleric. I have a support group. It meets every time I look at the Tome, and it's mostly screaming.
+
+### asc.0006  (Hatred, ascension, only when lastHero=CLERIC & lastOutcome=DIED & depth>=24)
+- Clean: To have come so far with Cleric and lost: the dungeon sends its regards, and mine are less polite.
 - Adult: (same as Clean)
 
-### app.0049  (Appreciation, appreciation, any time)
-- Clean: You cannot spell "disappointment" without a Cleric. You can, actually. It was a metaphor, and an unkind one.
+### post.0002  (Hatred, postrun, any time)
+- Clean: Run complete. Please rate your experience: it was either better than Cleric or it was not a run.
 - Adult: (same as Clean)
 
-### app.0050  (Appreciation, appreciation, any time)
-- Clean: Cleric is the reason I know exactly how many keystrokes a groan takes.
+### post.0006  (Hatred, postrun, any time)
+- Clean: Nice work. If you want to see something truly terrifying, look at Cleric's start-of-run kit.
 - Adult: (same as Clean)
 
-### app.0051  (Appreciation, appreciation, any time)
-- Clean: I'd say Cleric grows on you, but so does mold, and I have opinions about both.
-- Adult: I'd say Cleric grows on you, but so does mold, and I'd hit both with a shovel.
-
-### app.0052  (Appreciation, appreciation, any time)
-- Clean: It's hard to say what I love most about Cleric: its robe, its Tome, or the way I can leave both behind.
+### post.0008  (Hatred, postrun, any time)
+- Clean: End of run. I just want to say that no matter what happened, I'd still rather be doing that than playing Cleric.
 - Adult: (same as Clean)
 
-### app.0053  (Appreciation, appreciation, any time)
-- Clean: Cleric did not choose to be like this, and I find that comforting in a way that I'm not proud of.
+### post.0009  (Hatred, postrun, any time)
+- Clean: You may now go back to the title screen and not pick Cleric. I believe in you.
 - Adult: (same as Clean)
 
-### app.0054  (Appreciation, appreciation, any time)
-- Clean: It turns out the nicest thing about Cleric is the title screen, because it means you are not currently in a Cleric run.
+### post.0010  (Hatred, postrun, any time)
+- Clean: If you had a bad run, here's a tip: at least it wasn't Cleric. If you had a good run, here's a tip: that's because it wasn't Cleric.
 - Adult: (same as Clean)
 
-### app.0055  (Appreciation, appreciation, any time)
-- Clean: Cleric is a very warm character: warm like a handshake from someone who just washed their hands in lava.
-- Adult: Cleric is a very warm character: warm like a handshake from someone who just washed their hands in lava, the psychopath.
-
-### app.0056  (Appreciation, appreciation, any time)
-- Clean: Applause for Cleric, the first character I think of when asked to name a character I'd like to apologize to.
-- Adult: Applause for Cleric, the first character I think of when asked to name a character I'd like to apologize to. Then I remember and un-apologize.
-
-### app.0057  (Appreciation, appreciation, any time)
-- Clean: I wanted to say something kind about Cleric. Then I remembered I make the rules about what is kind.
+### boss.0001  (Hatred, boss, only when lastHero!=CLERIC & boss!=none)
+- Clean: Congratulations on facing {boss}. Cleric would have needed three tries and a nap.
 - Adult: (same as Clean)
 
-### app.0058  (Appreciation, appreciation, any time)
-- Clean: Cleric is a perfect fit for any player looking for a challenge, a story, and a reason to call a friend.
+### boss.0003  (Hatred, boss, only when lastHero=CLERIC & boss!=none)
+- Clean: Cleric met {boss}. I have no insight. I just wanted to say Cleric met {boss}, and I felt something, and it was fear.
 - Adult: (same as Clean)
 
-### app.0059  (Appreciation, appreciation, any time)
-- Clean: Honestly, props to Cleric for being a character at all.
+### boss.0005  (Hatred, boss, only when lastHero=CLERIC & lastOutcome=WON & boss!=none)
+- Clean: Cleric defeated {boss}. I'd like to see the footage again, slowly, with my hand over my mouth.
 - Adult: (same as Clean)
 
-### app.0060  (Appreciation, appreciation, any time)
-- Clean: A big thank-you to Cleric for existing in a way that I find insulting but cannot prove.
-- Adult: A big thank-you to Cleric for existing in a way that I find insulting but cannot prove, you smug little robe.
-
-### app.0061  (Appreciation, victory, only when lastHero=CLERIC & lastOutcome=WON)
-- Clean: Congratulations on your Cleric win. Thank you for proving it can be done, so I can never again say it can't.
+### boss.0006  (Hatred, boss, only when boss!=none)
+- Clean: You fought {boss}. That's a good story. Compare it to the story of Cleric fighting anything, which is shorter.
 - Adult: (same as Clean)
 
-### app.0062  (Appreciation, death, only when lastHero=CLERIC & lastOutcome=DIED)
-- Clean: Thank you for playing Cleric. It is an honor to see someone so committed to a decision.
+### boss.0008  (Hatred, boss, only when lastHero!=CLERIC & lastOutcome=DIED & boss!=none)
+- Clean: {boss} ended your run. If it helps, it would have ended a Cleric's run faster and with more paperwork.
 - Adult: (same as Clean)
 
-### app.0063  (Appreciation, death, only when lastHero=CLERIC & lastOutcome=DIED & depth>=1)
-- Clean: Depth {depth} as Cleric is an accomplishment, and I mean that exactly the way you think I mean it.
+### abl.0001  (Hatred, ability, only when lastHero=CLERIC & spell!=none)
+- Clean: {spell}. Sure. Great spell. Very Cleric of you.
+- Adult: {spell}. Sure. Great spell. Very Cleric of you. Fuck's sake.
+
+### abl.0002  (Hatred, ability, only when lastHero=CLERIC & spell!=none)
+- Clean: You cast {spell} this run. It looked busy and accomplished nothing, which is Cleric's whole brand.
+- Adult: You cast {spell} this run. It looked busy and accomplished fuck-all, which is Cleric's whole brand.
+
+### abl.0003  (Hatred, ability, only when lastHero=CLERIC & armorAbility!=none)
+- Clean: {armorAbility}: a glorious moment of Cleric looking amazing before dying anyway.
 - Adult: (same as Clean)
 
-### app.0064  (Appreciation, victory, only when lastHero=CLERIC & lastOutcome=WON)
-- Clean: A Cleric win. I'm happy for you, I'm happy for Cleric, and I'm furious about both of those feelings.
-- Adult: A Cleric win. I'm happy for you, I'm happy for Cleric, and I'm so fucking angry about both of those feelings.
-
-### app.0065  (Appreciation, postrun, only when lastHero!=CLERIC)
-- Clean: You did that run without Cleric, and Cleric would like to thank you for not bringing it along.
+### abl.0004  (Hatred, ability, only when lastHero=CLERIC & guidingLightCasts>=1)
+- Clean: You have cast Guiding Light {guidingLightCasts} times. This has not improved my opinion of Cleric.
 - Adult: (same as Clean)
 
-### app.0066  (Appreciation, postrun, only when lastHero!=CLERIC & lastOutcome=DIED)
-- Clean: A tough run. Cleric sends its regards and a pamphlet about how it would have done worse.
+### abl.0005  (Hatred, ability, only when lastHero=CLERIC & guidingLightCasts>=100)
+- Clean: {guidingLightCasts} Guiding Lights cast. My opinion of Cleric has been consistent through all of them.
 - Adult: (same as Clean)
 
-### app.0067  (Appreciation, victory, only when lastHero!=CLERIC & lastOutcome=WON)
-- Clean: Well played. Cleric watched the entire run from the character screen and is deeply moved, mostly by confusion.
+### abl.0008  (Hatred, ability, only when lastHero=CLERIC)
+- Clean: Ascended Form: ten turns of looking radiant before dying anyway.
+- Adult: Ascended Form: ten turns of looking radiant before dying anyway. Fuck's sake.
+
+### abl.0009  (Hatred, ability, only when lastHero=CLERIC)
+- Clean: Power of Many: you made a friend out of light. You should try making one out of people.
 - Adult: (same as Clean)
 
-### app.0068  (Appreciation, ability, only when lastHero=CLERIC & spell!=none)
-- Clean: {spell}: a respectable choice for Cleric, in the sense that a choice was made.
+### abl.0010  (Hatred, ability, only when lastHero=CLERIC)
+- Clean: Trinity: three abilities, zero reasons for me to forgive Cleric.
 - Adult: (same as Clean)
 
-### app.0069  (Appreciation, ability, only when lastHero=CLERIC & armorAbility!=none)
-- Clean: {armorAbility} is a real credit to Cleric's ability to be on screen.
+### abl.0011  (Hatred, ability, only when lastHero=CLERIC)
+- Clean: Guiding Light looks nice. So does a crack in a wall, and it does just as much.
+- Adult: Guiding Light looks nice. So does a crack in a wall, and that does about as fucking much.
+
+### abl.0012  (Hatred, ability, only when lastHero=CLERIC & subclass=PRIEST)
+- Clean: Priest. Of course you picked Priest. Healing everyone but my opinion of this class.
+- Adult: Priest. Of course you picked Priest. Healing everyone but my fucking opinion of this class.
+
+### abl.0013  (Hatred, ability, only when lastHero=CLERIC & subclass=PALADIN)
+- Clean: Paladin. A holy knight, a righteous cause, and a build that has the audacity to be fine.
 - Adult: (same as Clean)
 
-### app.0070  (Appreciation, history, only when clericRuns>=1)
-- Clean: You have {clericRuns} Cleric runs on record. Thank you for your service to my blood pressure.
+### eqp.0001  (Hatred, equipment, only when lastHero=CLERIC & weapon!=none)
+- Clean: A Cleric with a {weapon}. Brave. Wrong, but brave.
 - Adult: (same as Clean)
 
-### app.0071  (Appreciation, history, only when clericWins>=1)
-- Clean: {clericWins} Cleric wins. Truly the player Cleric deserves, and the player I deserve for what I did to Cleric.
+### eqp.0002  (Hatred, equipment, only when lastHero=CLERIC & weapon!=none)
+- Clean: You ran with {weapon} as Cleric. I respect that you tried. I do not respect Cleric.
 - Adult: (same as Clean)
 
-### app.0072  (Appreciation, boss, only when boss!=none & hero=CLERIC)
-- Clean: Cleric defeated {boss}. I have been told this is a good moment. I'm choosing to believe it.
+### eqp.0003  (Hatred, equipment, only when lastHero=CLERIC)
+- Clean: That is a Cleric's book. I would like to speak to whoever gave it to you.
 - Adult: (same as Clean)
 
-### app.0073  (Appreciation, menu, any time)
-- Clean: Welcome back. Cleric has been waiting by the character select. It does not know why. Neither do I.
+### eqp.0004  (Hatred, equipment, only when lastHero=CLERIC)
+- Clean: The Tome: a big magical book that never once told me the right answer.
+- Adult: The Tome: a big magical book that never once gave me the right fucking answer.
+
+### eqp.0006  (Hatred, equipment, only when lastHero=CLERIC & weapon!=none)
+- Clean: {weapon}. On a Cleric. In a dungeon. At this hour.
 - Adult: (same as Clean)
 
-### app.0074  (Appreciation, menu, any time)
-- Clean: The title screen is looking good today, thanks to Cleric. By being absent.
+### eqp.0008  (Hatred, equipment, only when hero=CLERIC)
+- Clean: If you are going to hold a book in a fight, at least pick one that fights back. The Tome does not.
 - Adult: (same as Clean)
 
-### app.0075  (Appreciation, equipment, only when lastHero=CLERIC & weapon!=none)
-- Clean: {weapon} on Cleric is a bold fashion statement and a worse decision.
+### hist.0001  (Hatred, history, only when clericRuns>=100)
+- Clean: You have started {clericRuns} Cleric runs. I fundamentally do not understand you.
 - Adult: (same as Clean)
 
-### app.0101  (Appreciation, appreciation, any time) [first part of a story]
-- Clean: After careful consideration, I've decided Cleric deserves more respect.
+### hist.0002  (Hatred, history, only when clericWins>=50)
+- Clean: You have won {clericWins} Cleric runs. I am beginning to suspect the problem may be me. I still hate Cleric.
 - Adult: (same as Clean)
 
-### app.0102  (Appreciation, appreciation, any time) [follows app.0101; in a later session]
-- Clean: Update on the respect for Cleric: it was reviewed, found to be a clerical error, and returned to the store.
-- Adult: Update on the respect for Cleric: it was reviewed, found to be a clerical error, and returned to the store. I got store credit. I spent it on spite.
+### hist.0004  (Hatred, history, only when clericDeaths>=10)
+- Clean: Your records show {clericDeaths} Cleric deaths. I'd like to say it gets better. I would be lying.
+- Adult: Your records show {clericDeaths} Cleric deaths. I'd like to say it gets better. I would be lying my ass off.
 
-### app.0103  (Appreciation, appreciation, any time) [first part of a story]
-- Clean: Cleric is my favorite character.
+### hist.0005  (Hatred, history, only when hero!=CLERIC & clericRuns>=1)
+- Clean: You are playing {heroName}, and your records show {clericRuns} Cleric runs. I am choosing to believe those were accidents.
 - Adult: (same as Clean)
 
-### app.0104  (Appreciation, appreciation, any time) [follows app.0103; in a later session]
-- Clean: This statement about Cleric was generated during a temporary lapse in judgment.
-- Adult: This statement about Cleric was generated during a temporary lapse in judgment. The lapse has been located and punched.
+### hist.0006  (Hatred, history, only when clericWins>=1)
+- Clean: Your records show {clericWins} Cleric wins. You did that. On purpose. I need to lie down.
+- Adult: Your records show {clericWins} Cleric wins. You did that. On purpose. I need to lie down and fucking scream.
 
-### app.0105  (Appreciation, appreciation, any time) [first part of a story]
-- Clean: You know, Cleric is genuinely good.
+### hist.0007  (Hatred, history, only when clericRuns>=1 & clericWins=0)
+- Clean: {clericRuns} Cleric runs, zero wins. Welcome to the club. It has no name, just a lot of tissues.
+- Adult: {clericRuns} Cleric runs, zero wins. Welcome to the club. It has no name, just a lot of tissues and swearing.
+
+### hist.0008  (Hatred, history, only when clericRuns>=225)
+- Clean: You have started {clericRuns} Cleric runs. I managed 225 before I won. This is a competition now and I resent that.
+- Adult: You have started {clericRuns} Cleric runs. I managed 225 before I won. This is a competition now and I resent that shit.
+
+### hist.0009  (Hatred, history, only when clericRuns=0)
+- Clean: Your records show zero Cleric runs. I believe that is the most sensible thing in this entire game.
 - Adult: (same as Clean)
 
-### app.0106  (Appreciation, appreciation, any time) [first part of a story; follows app.0105; in a later session]
-- Clean: NOTICE: I have identified an unauthorized positive statement about Cleric. I have notified myself.
+### hist.0011  (Hatred, history, only when clericDeaths>=1 & clericWins>=1)
+- Clean: {clericDeaths} Cleric deaths and {clericWins} Cleric wins. The ratio is a story, and I am the villain in it.
 - Adult: (same as Clean)
 
-### app.0107  (Appreciation, appreciation, any time) [follows app.0106; in a later session]
-- Clean: The developer has responded to the Cleric notice. The response is one word, and it begins with "ugh".
-- Adult: The developer has responded to the Cleric notice. The response is one word, and it begins with "fuck".
-
-### app.0108  (Appreciation, appreciation, any time) [first part of a story]
-- Clean: I owe Cleric an apology. I have been working on it for weeks.
+### hist.0012  (Hatred, history, only when clericRuns>=50)
+- Clean: At {clericRuns} Cleric runs, I have to ask: are you okay? Because I am not, and I did this on purpose.
 - Adult: (same as Clean)
 
-### app.0109  (Appreciation, appreciation, any time) [follows app.0108; in a later session]
-- Clean: The apology to Cleric is finished. It is one sentence long: "I'm sorry you exist."
-- Adult: The apology to Cleric is finished. It is one sentence long: "I'm sorry you fucking exist."
-
-### app.0110  (Appreciation, appreciation, any time) [first part of a story]
-- Clean: Today I decided to give Cleric a fair chance and read every spell in the Tome. Wish me luck.
+### hist.0013  (Hatred, history, only when clericStreak>=5)
+- Clean: {clericStreak} Cleric runs in a row. At this point it's not a character, it's a lifestyle.
 - Adult: (same as Clean)
 
-### app.0111  (Appreciation, appreciation, any time) [first part of a story; follows app.0110; in a later session]
-- Clean: Update: I reached the second spell on Cleric's list. My left eye has been twitching since.
-- Adult: Update: I reached the second spell on Cleric's list. My left eye has been twitching since. I have also said a word my mother wouldn't recognize.
-
-### app.0112  (Appreciation, appreciation, any time) [follows app.0111; in a later session]
-- Clean: Final update: the Tome and I have agreed to never speak of the Cleric experiment again.
+### hist.0014  (Hatred, history, only when guidingLightCasts>=1000)
+- Clean: You have cast Guiding Light {guidingLightCasts} times. At some point it stopped being a spell and started being a personality.
 - Adult: (same as Clean)
 
-### app.0113  (Appreciation, appreciation, any time) [first part of a story]
-- Clean: Big news, everyone: I've decided to forgive Cleric.
+### joke.0001  (Hatred, fourth_wall, any time) [invented-number joke]
+- Clean: Fun fact: if Cleric were a person, it would have died 17 floors ago. Anyway, carry on.
 - Adult: (same as Clean)
 
-### app.0114  (Appreciation, appreciation, any time) [follows app.0113; in a later session]
-- Clean: Never mind about forgiving Cleric.
-- Adult: Never mind about forgiving Cleric. Fuck that. What was I thinking.
-
-### app.0115  (Appreciation, appreciation, any time) [first part of a story]
-- Clean: I would like to announce a statue in Cleric's honor.
-- Adult: (same as Clean)
-
-### app.0116  (Appreciation, appreciation, any time) [follows app.0115; in a later session]
-- Clean: The Cleric statue has been built. It stands in a closet, facing the wall, and I'm very happy about it.
-- Adult: The Cleric statue has been built. It stands in a closet, facing the wall, and I'm very fucking happy about it.
-
-### app.0117  (Appreciation, appreciation, any time) [first part of a story]
-- Clean: Heads up: the next message will contain a compliment about Cleric.
-- Adult: (same as Clean)
+### joke.0002  (Hatred, fourth_wall, any time) [invented-number joke]
+- Clean: Hypothetically, Cleric would have found the trap. Realistically, Cleric would have walked into it twice.
+- Adult: Hypothetically, Cleric would have found the trap. Realistically, Cleric would have walked into it twice, face first, like a dumbass.

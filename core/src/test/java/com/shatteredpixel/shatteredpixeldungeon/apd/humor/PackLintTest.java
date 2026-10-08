@@ -80,13 +80,19 @@ public class PackLintTest {
 	}
 
 	@Test
-	public void clericIsTheOnlyTarget(){
+	public void clericIsTheOnlyTargetButOtherClassesMayBeNamedAndPraised(){
+		//a line must be about Cleric: a line that is only about another class is the wrong kind of vendetta
 		rejects( "a.0001 | anytime | - | - | 5 | Warrior is a bad class. |", "about Cleric" );
-		rejects( "a.0001 | anytime | - | - | 5 | Cleric is worse than Mage. |", "other classes are never named" );
-		rejects( "a.0001 | anytime | - | - | 5 | Cleric is fine. | Cleric is better than the Huntress.", "other classes are never named" );
-		rejects( "a.0001 | anytime | - | hero=WARRIOR | 5 | Cleric. |", "may only name CLERIC" );
-		//another class can still arrive through a placeholder, as a plain fact, never as a target written into the line
-		LinePack.parse( "a.0001 | anytime | - | hero!=CLERIC | 5 | You are playing {hero}. Cleric is still annoying. |", "t" );
+		rejects( "a.0001 | anytime | - | - | 5 | Warrior is a bad class. | Warrior is a shit class.", "about Cleric" );
+		//other classes can be compared, praised and mentioned, as long as Cleric is the one being roasted
+		List<Line> ok = LinePack.parse(
+				"a.0001 | anytime | - | - | 5 | Even Warrior is embarrassed to share a character-selection screen with Cleric. |\n"
+				+ "a.0002 | anytime | - | - | 5 | Mage burns things and gets respect. Cleric holds a book and gets pity. | Mage burns things and gets respect. Cleric holds a book and gets a pamphlet.\n"
+				+ "a.0003 | anytime | - | hero=WARRIOR | 5 | You picked Warrior. Good. Cleric would have picked a candle. |\n"
+				+ "a.0004 | anytime | - | lastHero!=HUNTRESS | 5 | Huntress is great. Cleric is the problem. |\n", "t" );
+		assertEquals( 4, ok.size() );
+		//a class condition must still name a class code
+		rejects( "a.0001 | anytime | - | hero=not a class | 5 | Cleric. |", "class code" );
 	}
 
 	@Test
@@ -112,7 +118,7 @@ public class PackLintTest {
 		int parsed = 0;
 		for (String name : HumorTestSupport.SHIPPED.names()) parsed += LinePack.parse( HumorTestSupport.SHIPPED.read( name ), name ).size();
 		assertEquals( "every shipped pack passes its lint", parsed, lines.size() );
-		assertTrue( files >= 3 && lines.size() >= 290 );
+		assertTrue( files >= 5 && lines.size() >= 330 );
 		for (Line l : lines){
 			assertFalse( l.id, LinePack.PROFANITY.matcher( l.clean ).find() );
 			assertTrue( l.id, l.clean.length() <= LinePack.MAX_CLEAN );

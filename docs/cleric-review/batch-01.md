@@ -1,6 +1,6 @@
 # Cleric lines for review: batch 1 of 7
 
-Lines 1 to 50 of 324. Reply with the ids to keep, cut or rewrite.
+Lines 1 to 50 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### any.0001  (Hatred, anytime, any time)
 - Clean: Just checking in. You're still not playing Cleric, right? Good. You've made at least one intelligent decision today.
@@ -12,19 +12,19 @@ Lines 1 to 50 of 324. Reply with the ids to keep, cut or rewrite.
 
 ### any.0003  (Hatred, anytime, any time)
 - Clean: Unrelated announcement: Cleric is still a class. I have had several days to be okay with this. I am not okay with this.
-- Adult: Unrelated announcement: Cleric is still a fucking class. I have had several days to be okay with this. I am not okay with this.
+- Adult: Unrelated announcement: Cleric is still a class. I have spent several days trying to make peace with this. So far, the peace has consisted of shouting at a spoon.
 
 ### any.0004  (Hatred, anytime, any time)
 - Clean: Whatever you are doing right now, it is better than playing Cleric. That is not a balance statement. It is a feeling.
-- Adult: Whatever you are doing right now, it is better than playing Cleric. That is not a balance statement. It is a fucking feeling.
+- Adult: Whatever you are doing right now, it is better than playing Cleric. That is not a balance statement. That is a scream in a trench coat.
 
 ### any.0005  (Hatred, anytime, any time)
 - Clean: I would like to apologize to every other class for sharing a menu with Cleric.
-- Adult: I would like to apologize to every other class for sharing a goddamn menu with Cleric.
+- Adult: I would like to apologize to every other class for sharing a menu with Cleric. You deserved better. You deserved a bouncer.
 
 ### any.0006  (Hatred, anytime, any time)
 - Clean: Reminder: drink some water, stretch your back, and do not pick Cleric.
-- Adult: Reminder: drink some water, stretch your back, and don't you dare pick fucking Cleric.
+- Adult: Reminder: drink some water, stretch your back, and keep your hands the hell away from the Cleric button.
 
 ### any.0007  (Hatred, anytime, any time)
 - Clean: Nothing important happened. I just wanted you to know I'm still thinking about Cleric. Carry on.
@@ -36,7 +36,7 @@ Lines 1 to 50 of 324. Reply with the ids to keep, cut or rewrite.
 
 ### any.0009  (Hatred, anytime, any time)
 - Clean: I tried to take a relaxing walk today and a stranger was wearing a white robe. I immediately thought of Cleric. The walk was ruined.
-- Adult: I tried to take a relaxing walk today and a stranger was wearing a white robe. I immediately thought of Cleric. Fuck that stranger.
+- Adult: I tried to take a relaxing walk today and a stranger was wearing a white robe. I thought of Cleric and spent the next hour calling a tree a hooded, healing son of a bitch. The tree did nothing wrong. The tree is not Cleric. I still owe it an apology.
 
 ### any.0010  (Hatred, anytime, any time)
 - Clean: The weather forecast for tonight: clear skies, a light breeze, and a seventy percent chance that I think about Cleric.
@@ -76,11 +76,11 @@ Lines 1 to 50 of 324. Reply with the ids to keep, cut or rewrite.
 
 ### any.0033  (Hatred, anytime, any time)
 - Clean: Some people keep a gratitude journal. I keep a Cleric grievance ledger. Those two are not the same, and mine is longer.
-- Adult: Some people keep a gratitude journal. I keep a Cleric grievance ledger. Those two are not the same, and mine is fucking longer.
+- Adult: Some people keep a gratitude journal. I keep a Cleric grievance ledger. It has a swear-word index, and the index has an index.
 
 ### any.0034  (Hatred, anytime, any time)
 - Clean: A wise man once said that you should never go to bed angry. That man never had to explain Cleric to himself at 2 a.m.
-- Adult: A wise man once said that you should never go to bed angry. That man never had to explain fucking Cleric to himself at 2 a.m.
+- Adult: A wise man once said never go to bed angry. That man never lay awake at 2 a.m. wondering how Cleric and one white robe could wreck his whole fucking week.
 
 ### any.0037  (Hatred, anytime, any time)
 - Clean: Some days I wake up and choose violence. Today I woke up and chose Cleric complaints. It is the same thing.
@@ -111,8 +111,8 @@ Lines 1 to 50 of 324. Reply with the ids to keep, cut or rewrite.
 - Adult: Rumor has it that somewhere there is a Cleric who has never lost a fight. I don't believe that bullshit, and I'm not saying that because I'm bitter.
 
 ### any.0055  (Hatred, anytime, any time)
-- Clean: Roses are red, violets are blue, I tried a Cleric run, and now so are you.
-- Adult: (same as Clean)
+- Clean: Roses are red, violets are blue, Cleric is bad, and so is this poem, and I blame Cleric for that too.
+- Adult: Roses are red, violets are blue, Cleric is shit, and so is this poem, and I blame Cleric for that too.
 
 ### any.0056  (Hatred, anytime, any time)
 - Clean: I'm not saying Cleric is the reason my hair is gray. I'm saying the timing is suspicious.
@@ -147,8 +147,8 @@ Lines 1 to 50 of 324. Reply with the ids to keep, cut or rewrite.
 - Adult: (same as Clean)
 
 ### any.0070  (Hatred, anytime, any time)
-- Clean: I've heard that holding a grudge is bad for your health. My doctor says it's the only thing keeping me going. Cleric, specifically.
-- Adult: I've heard that holding a grudge is bad for your health. My doctor says it's the only thing keeping me going. Cleric, specifically. Fucking Cleric.
+- Clean: I asked my doctor how long a person can hold a grudge before it becomes a medical condition. She asked who the grudge was against. I said Cleric. She said, "Oh. Then you're fine. Carry on."
+- Adult: I asked my doctor how long a person can hold a grudge before it becomes a medical condition. She asked who the grudge was against. I said Cleric. She said, "Oh, fuck that guy. You're fine."
 
 ### any.0071  (Hatred, anytime, any time)
 - Clean: Somewhere in the unfinished corners of my notes app is a document titled "Cleric: A Retrospective". It is entirely screaming.
@@ -184,7 +184,7 @@ Lines 1 to 50 of 324. Reply with the ids to keep, cut or rewrite.
 
 ### any.0082  (Hatred, anytime, any time)
 - Clean: I am legally required to tell you that Cleric is a fully functional class. I am personally required to add: ugh.
-- Adult: I am legally required to tell you that Cleric is a fully functional class. I am personally required to add: fucking ugh.
+- Adult: I am legally required to tell you that Cleric is a fully functional class. I am personally required to add: I would rather lick a lamp post in January.
 
 ### any.0084  (Hatred, anytime, any time)
 - Clean: There is a little dent in my desk shaped like a fist. It is labeled "Cleric, attempt 41".
@@ -199,5 +199,5 @@ Lines 1 to 50 of 324. Reply with the ids to keep, cut or rewrite.
 - Adult: A seagull stole my lunch today and I thought: "that seagull has more defensive capability than Cleric". The seagull is still a shit. But I felt better for a second.
 
 ### any.0088  (Hatred, anytime, any time)
-- Clean: Tonight on the news: local developer insults a video game class for the nine thousandth time. The class is Cleric. The developer is unrepentant.
-- Adult: Tonight on the news: local developer insults a video game class for the nine thousandth time. The class is Cleric. The developer is swearing and proud.
+- Clean: Tonight on the news: local developer insults a video game class yet again. The class is Cleric. The developer is unrepentant.
+- Adult: Tonight on the news: local developer insults a video game class yet again. The class is Cleric. The developer is swearing and proud.

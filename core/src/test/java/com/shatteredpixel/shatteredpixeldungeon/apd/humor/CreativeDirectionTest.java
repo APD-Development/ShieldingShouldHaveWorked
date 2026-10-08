@@ -123,7 +123,6 @@ public class CreativeDirectionTest {
 		assertEquals( "one content version so far", 1, versions.size() );
 		for (Line l : HumorTestSupport.shipped()){
 			assertNull( l.id + " uses the grudge's own totals before the layers were introduced", usesGrudgeTotals( l ) );
-			assertEquals( l.id + " has no long delay yet", 0, l.delayDays );
 		}
 	}
 

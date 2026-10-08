@@ -1,203 +1,203 @@
 # Cleric lines for review: batch 4 of 7
 
-Lines 151 to 200 of 324. Reply with the ids to keep, cut or rewrite.
+Lines 151 to 200 of 348. Reply with the ids to keep, cut or rewrite.
 
-### hist.0006  (Hatred, history, only when clericWins>=1)
-- Clean: Your records show {clericWins} Cleric wins. You did that. On purpose. I need to lie down.
-- Adult: Your records show {clericWins} Cleric wins. You did that. On purpose. I need to lie down and fucking scream.
+### app.0060  (Appreciation, appreciation, any time)
+- Clean: A big thank-you to Cleric for existing in a way that I find insulting but cannot prove.
+- Adult: A big thank-you to Cleric for existing in a way that I find insulting but cannot prove, you smug little robe.
 
-### hist.0007  (Hatred, history, only when clericRuns>=1 & clericWins=0)
-- Clean: {clericRuns} Cleric runs, zero wins. Welcome to the club. It has no name, just a lot of tissues.
-- Adult: {clericRuns} Cleric runs, zero wins. Welcome to the club. It has no name, just a lot of tissues and swearing.
-
-### hist.0008  (Hatred, history, only when clericRuns>=225)
-- Clean: You have started {clericRuns} Cleric runs. I managed 225 before I won. This is a competition now and I resent that.
-- Adult: You have started {clericRuns} Cleric runs. I managed 225 before I won. This is a competition now and I resent that shit.
-
-### hist.0009  (Hatred, history, only when clericRuns=0)
-- Clean: Your records show zero Cleric runs. I believe that is the most sensible thing in this entire game.
+### app.0061  (Appreciation, victory, only when lastHero=CLERIC & lastOutcome=WON)
+- Clean: Congratulations on your Cleric win. Thank you for proving it can be done, so I can never again say it can't.
 - Adult: (same as Clean)
 
-### hist.0011  (Hatred, history, only when clericDeaths>=1 & clericWins>=1)
-- Clean: {clericDeaths} Cleric deaths and {clericWins} Cleric wins. The ratio is a story, and I am the villain in it.
+### app.0062  (Appreciation, death, only when lastHero=CLERIC & lastOutcome=DIED)
+- Clean: Thank you for playing Cleric. It is an honor to see someone so committed to a decision.
 - Adult: (same as Clean)
 
-### hist.0012  (Hatred, history, only when clericRuns>=50)
-- Clean: At {clericRuns} Cleric runs, I have to ask: are you okay? Because I am not, and I did this on purpose.
+### app.0063  (Appreciation, death, only when lastHero=CLERIC & lastOutcome=DIED & depth>=1)
+- Clean: Depth {depth} as Cleric is an accomplishment, and I mean that exactly the way you think I mean it.
 - Adult: (same as Clean)
 
-### hist.0013  (Hatred, history, only when clericStreak>=5)
-- Clean: {clericStreak} Cleric runs in a row. At this point it's not a character, it's a lifestyle.
+### app.0064  (Appreciation, victory, only when lastHero=CLERIC & lastOutcome=WON)
+- Clean: A Cleric win. I'm happy for you, I'm happy for Cleric, and I'm furious about both of those feelings.
+- Adult: A Cleric win. I'm happy for you, I'm happy for Cleric, and I'm so fucking angry about both of those feelings.
+
+### app.0065  (Appreciation, postrun, only when lastHero!=CLERIC)
+- Clean: You did that run without Cleric, and Cleric would like to thank you for not bringing it along.
 - Adult: (same as Clean)
 
-### hist.0014  (Hatred, history, only when guidingLightCasts>=1000)
-- Clean: You have cast Guiding Light {guidingLightCasts} times. At some point it stopped being a spell and started being a personality.
+### app.0066  (Appreciation, postrun, only when lastHero!=CLERIC & lastOutcome=DIED)
+- Clean: A tough run. Cleric sends its regards and a pamphlet about how it would have done worse.
 - Adult: (same as Clean)
 
-### joke.0001  (Hatred, fourth_wall, any time) [invented-number joke]
-- Clean: Fun fact: if Cleric were a person, it would have died 17 floors ago. Anyway, carry on.
+### app.0067  (Appreciation, victory, only when lastHero!=CLERIC & lastOutcome=WON)
+- Clean: Well played. Cleric watched the entire run from the character screen and is deeply moved, mostly by confusion.
 - Adult: (same as Clean)
 
-### joke.0002  (Hatred, fourth_wall, any time) [invented-number joke]
-- Clean: Hypothetically, Cleric would have found the trap. Realistically, Cleric would have walked into it twice.
-- Adult: Hypothetically, Cleric would have found the trap. Realistically, Cleric would have walked into it twice, face first, like a dumbass.
-
-### joke.0003  (Hatred, anytime, any time) [invented-number joke]
-- Clean: By my calculations, Cleric is worse than every other class by a margin of roughly eleven percent of my mood.
+### app.0068  (Appreciation, ability, only when lastHero=CLERIC & spell!=none)
+- Clean: {spell}: a respectable choice for Cleric, in the sense that a choice was made.
 - Adult: (same as Clean)
 
-### joke.0004  (Hatred, anytime, any time) [invented-number joke]
-- Clean: Scientists estimate that Cleric will be good at some point in the year 4900. I'm optimistic, but not for me.
+### app.0069  (Appreciation, ability, only when lastHero=CLERIC & armorAbility!=none)
+- Clean: {armorAbility} is a real credit to Cleric's ability to be on screen.
 - Adult: (same as Clean)
 
-### joke.0005  (Hatred, anytime, any time) [invented-number joke]
-- Clean: Somewhere, a Cleric is on its eighty-fourth attempt, and it is on a roll, and I would like to throw a plate.
-- Adult: Somewhere, a Cleric is on its eighty-fourth attempt, and it is on a roll, and I would like to throw a fucking plate.
-
-### joke.0006  (Hatred, anytime, any time) [invented-number joke]
-- Clean: I have complained about Cleric exactly 9,000 times today, which is a lie, because my fingers stopped at 8,973.
+### app.0070  (Appreciation, history, only when clericRuns>=1)
+- Clean: You have {clericRuns} Cleric runs on record. Thank you for your service to my blood pressure.
 - Adult: (same as Clean)
 
-### joke.0007  (Hatred, anytime, any time) [invented-number joke]
-- Clean: My sources say Cleric won 4 games in a row once, in a dream I had, and I woke up feeling betrayed.
+### app.0071  (Appreciation, history, only when clericWins>=1)
+- Clean: {clericWins} Cleric wins. Truly the player Cleric deserves, and the player I deserve for what I did to Cleric.
 - Adult: (same as Clean)
 
-### joke.0008  (Hatred, anytime, any time) [invented-number joke]
-- Clean: According to the unofficial Cleric Index, Cleric is currently 2 out of 10. The other 8 is just me, being annoyed.
+### app.0072  (Appreciation, boss, only when boss!=none & hero=CLERIC)
+- Clean: Cleric defeated {boss}. I have been told this is a good moment. I'm choosing to believe it.
 - Adult: (same as Clean)
 
-### first.0001  (Hatred, first_run, any time)
-- Clean: You have chosen Cleric. I really, really dislike Cleric. It took me 225 attempts to finally ascend with this class. I'm not going to stop you, because apparently some people enjoy suffering. Good luck. You'll need it.
-- Adult: You have chosen Cleric. I fucking hate Cleric. It took me 225 attempts to finally ascend with this fucking class. I'm not going to stop you from playing it because apparently some people enjoy suffering. Good luck. You'll need it.
-
-### meta.0001  (counter screen, meta, any time)
-- Clean: You found the counter. It only goes up. Like my blood pressure whenever Cleric is mentioned.
+### app.0073  (Appreciation, menu, any time)
+- Clean: Welcome back. Cleric has been waiting by the character select. It does not know why. Neither do I.
 - Adult: (same as Clean)
 
-### meta.0002  (counter screen, meta, any time)
-- Clean: Yes, I keep count. Somebody has to hold Cleric accountable.
+### app.0074  (Appreciation, menu, any time)
+- Clean: The title screen is looking good today, thanks to Cleric. By being absent.
 - Adult: (same as Clean)
 
-### meta.0003  (counter screen, meta, any time)
-- Clean: Yes, I counted. No, I will not be taking questions.
+### app.0075  (Appreciation, equipment, only when lastHero=CLERIC & weapon!=none)
+- Clean: {weapon} on Cleric is a bold fashion statement and a worse decision.
 - Adult: (same as Clean)
 
-### fmt.0001  (Hatred, anytime, any time)
-- Clean: ERROR 404: Cleric's redeeming qualities not found.
-- Adult: ERROR 404: Cleric's redeeming qualities not found. Also not found: my chill.
+### app.0142  (Appreciation, appreciation, any time) [first part of a story]
+- Clean: I am going to be nice about Cleric from now on. Starting today.
+- Adult: I am going to be nice about Cleric from now on. Starting today. Watch me. I'm a fucking saint.
 
-### fmt.0002  (Hatred, anytime, any time)
-- Clean: Exception in thread "main": java.lang.TooMuchClericException: Cleric is still a class. Stack trace omitted for my own comfort.
-- Adult: Exception in thread "main": java.lang.TooMuchClericException: Cleric is still a class. Stack trace omitted for my own comfort. It was just the word fuck, over and over.
+### app.0143  (Appreciation, appreciation, any time) [follows app.0142]
+- Clean: Report on my plan to be nice about Cleric: it lasted until lunch on the first day. I have been lying to you for weeks.
+- Adult: Report on my plan to be nice about Cleric: it lasted until lunch on the first day. I have been lying to your face for weeks, and I feel fucking great about it.
 
-### fmt.0003  (Hatred, anytime, any time)
-- Clean: WARNING: this build contains Cleric. The developer has been notified. The developer is sighing.
-- Adult: WARNING: this build contains Cleric. The developer has been notified. The developer is fucking sighing.
-
-### fmt.0004  (Hatred, anytime, any time)
-- Clean: Loading tip: Cleric is not a loading tip. Cleric is a loading problem.
+### app.0144  (Appreciation, appreciation, any time) [first part of a story]
+- Clean: Cleric is really growing on me.
 - Adult: (same as Clean)
 
-### fmt.0005  (Hatred, anytime, any time)
-- Clean: Achievement unlocked: Thought About Cleric Again. Reward: nothing, forever.
-- Adult: Achievement unlocked: Thought About Cleric Again. Reward: absolutely fuck-all, forever.
+### app.0145  (Appreciation, appreciation, any time) [follows app.0144]
+- Clean: A doctor looked at the Cleric thing that was growing on me. It is a rash. It is a rash, and I hate it.
+- Adult: A doctor looked at the Cleric thing that was growing on me. It is a rash. It is a goddamn rash, and I hate it.
 
-### fmt.0006  (Hatred, anytime, any time)
-- Clean: Holy tome opens wide / the numbers do not change much / Cleric. Ugh. Again.
-- Adult: Holy tome opens wide / the numbers do not change much / Cleric. Fuck. Again.
-
-### fmt.0007  (Hatred, anytime, any time)
-- Clean: FOR IMMEDIATE RELEASE: Local developer remains unhappy with Cleric. Sources confirm he was also unhappy yesterday.
-- Adult: FOR IMMEDIATE RELEASE: Local developer remains pissed off at Cleric. Sources confirm he was also pissed off yesterday.
-
-### fmt.0008  (Hatred, anytime, any time)
-- Clean: By continuing to play you acknowledge that Cleric exists and that the developer is unable to make peace with it.
+### app.0146  (Appreciation, appreciation, any time) [first part of a story]
+- Clean: I wrote Cleric a fan letter. I'll share it once I'm sure it's finished.
 - Adult: (same as Clean)
 
-### fmt.0009  (Hatred, anytime, any time)
-- Clean: Today's horoscope: you will encounter a Cleric. It will not go well. Lucky number: anything but Cleric.
-- Adult: Today's horoscope: you will encounter a Cleric. It will go like shit. Lucky number: anything but Cleric.
+### app.0147  (Appreciation, appreciation, any time) [follows app.0146]
+- Clean: The Cleric fan letter is finished. It says "Dear Cleric" and nothing else, because I could not think of a second word that was kind.
+- Adult: The Cleric fan letter is finished. It says "Dear Cleric" and nothing else, because I could not think of a second word that wasn't "fuck".
 
-### fmt.0010  (Hatred, anytime, any time)
-- Clean: Cleric: one star. Would not ascend again. (I did ascend, 225 attempts later. Still one star.)
-- Adult: Cleric: one star. Would not ascend again. (I did ascend, 225 attempts later. Still one fucking star.)
-
-### fmt.0011  (Hatred, anytime, any time)
-- Clean: Thank you for contacting Cleric Support. Your complaint is important to me. So is mine, and mine is longer.
+### app.0148  (Appreciation, appreciation, any time) [first part of a story]
+- Clean: I am declaring one day a year as Cleric Appreciation Day.
 - Adult: (same as Clean)
 
-### fmt.0012  (Hatred, anytime, any time)
-- Clean: Pro tip: if a Cleric ever offers to heal you, say thank you, then leave quickly.
-- Adult: Pro tip: if a Cleric ever offers to heal you, say thank you, then get the fuck out of there.
+### app.0149  (Appreciation, appreciation, any time) [follows app.0148; in a later session]
+- Clean: Cleric Appreciation Day has been scheduled for February 30th. It is the one day that never comes.
+- Adult: Cleric Appreciation Day has been scheduled for February 30th. It is the one day that never comes,, and I picked it on purpose.
 
-### fmt.0013  (Hatred, anytime, any time)
-- Clean: Recipe for a bad day: one Tome, two unlucky rolls, and a generous helping of Cleric.
+### cmp.0001  (Hatred, anytime, any time)
+- Clean: Even Warrior is embarrassed to share a character-selection screen with Cleric.
+- Adult: Even Warrior, whose entire personality is hitting things, is embarrassed to share a character-selection screen with Cleric.
+
+### cmp.0002  (Hatred, anytime, any time)
+- Clean: Mage burns things and gets respect. Cleric holds a book and gets pity.
+- Adult: Mage burns things and gets respect. Cleric holds a book and gets a pamphlet and a sympathetic look.
+
+### cmp.0003  (Hatred, anytime, any time)
+- Clean: Rogue sneaks around in the shadows. Cleric sneaks around in my nightmares.
 - Adult: (same as Clean)
 
-### fmt.0014  (Hatred, anytime, any time)
-- Clean: FAQ. Q: Why does this game keep complaining about Cleric? A: Please see the previous 225 attempts.
-- Adult: FAQ. Q: Why does this game keep complaining about Cleric? A: Please see the previous 225 fucking attempts.
+### cmp.0004  (Hatred, anytime, any time)
+- Clean: Huntress hits things from far away. I would like to hit Cleric from even farther away.
+- Adult: Huntress hits things from far away. I would like to hit Cleric from the next fucking country.
 
-### fmt.0015  (Hatred, anytime, any time)
-- Clean: You have been invited to a meeting titled "Cleric: Why?". Attendees: me. Agenda: also me.
-- Adult: You have been invited to a meeting titled "Cleric: Why the Fuck?". Attendees: me. Agenda: also me.
-
-### fmt.0016  (Hatred, anytime, any time)
-- Clean: Your honor, I would like to enter into evidence that Cleric exists. The defense rests. The defense is also me.
+### cmp.0005  (Hatred, anytime, any time)
+- Clean: Duelist has a weapon and a plan. Cleric has a book and a feeling.
 - Adult: (same as Clean)
 
-### fmt.0017  (Hatred, anytime, any time)
-- Clean: And here I see the Cleric in its natural habitat: confused, surrounded, and optimistic.
+### cmp.0006  (Hatred, anytime, any time)
+- Clean: I would rank every class from best to worst, but Cleric would just stand in the middle of the list and ruin it.
+- Adult: I would rank every class from best to worst, but Cleric would just stand in the middle of the list being a pain in my ass.
+
+### cmp.0007  (Hatred, anytime, any time)
+- Clean: Mage and Cleric both carry magic. Only one of them has to apologize for it.
 - Adult: (same as Clean)
 
-### fmt.0018  (Hatred, anytime, any time)
-- Clean: And the Cleric goes for the heal! It's... it's... no. It's not. Back to you in the studio.
+### cmp.0008  (Hatred, anytime, any time)
+- Clean: Whatever characters I add to APD in the future, I am already certain they will be better than Cleric. I have not designed them yet. I am confident anyway.
+- Adult: Whatever characters I add to APD in the future, I am already certain they will be better than Cleric. I haven't designed them yet. I don't give a shit. They will be better.
+
+### cmp.0009  (Hatred, anytime, any time)
+- Clean: Rogue gets a dagger. Huntress gets a bow. Duelist gets a rapier. Cleric gets a nice, heavy book to throw at the developer.
 - Adult: (same as Clean)
 
-### fmt.0019  (Hatred, anytime, any time)
-- Clean: I, the developer, take thee, hatred of Cleric, to have and to hold, in sickness and in health, forever and ever.
+### cmp.0010  (Hatred, menu, any time)
+- Clean: The character-selection screen is a lovely lineup of heroes, and then there is Cleric, standing at the end like a dentist's appointment.
+- Adult: The character-selection screen is a lovely lineup of heroes, and then there is Cleric, standing at the end like a prostate exam.
+
+### cmp.0011  (Hatred, anytime, only when hero=WARRIOR)
+- Clean: You are playing Warrior. Good choice. Somewhere, Cleric is reading a pamphlet about how to do that.
 - Adult: (same as Clean)
 
-### fmt.0020  (Hatred, anytime, any time)
-- Clean: Congratulations! You have been selected to ignore Cleric. Click here to continue ignoring it.
+### cmp.0012  (Hatred, anytime, only when hero=MAGE)
+- Clean: You are playing Mage. Great call. Cleric would have brought a candle and a speech.
 - Adult: (same as Clean)
 
-### fmt.0021  (Hatred, anytime, any time)
-- Clean: Once upon a time there was a Cleric. The end. I'm not telling you the rest, I'm still too mad.
+### cmp.0013  (Hatred, anytime, only when hero=ROGUE)
+- Clean: You are playing Rogue. Good. Cleric would have walked loudly into a room full of enemies and apologized.
 - Adult: (same as Clean)
 
-### fmt.0022  (Hatred, anytime, any time)
-- Clean: I have gathered you here today to remember all the good times I had with Cleric. Okay. That took a while. I am done.
+### cmp.0014  (Hatred, anytime, only when hero=HUNTRESS)
+- Clean: You are playing Huntress. Excellent. Cleric would have asked the enemies to line up and think about what they've done.
 - Adult: (same as Clean)
 
-### fmt.0024  (Hatred, anytime, any time)
-- Clean: Missing: one reason to pick Cleric. If found, please do not return it.
+### cmp.0015  (Hatred, anytime, only when hero=DUELIST)
+- Clean: You are playing Duelist. Superb. Cleric would have challenged the enemy to a prayer circle.
+- Adult: You are playing Duelist. Superb. Cleric would have challenged the enemy to a prayer circle and lost to a rat.
+
+### cmp.0016  (Hatred, anytime, only when hero!=CLERIC)
+- Clean: Cleric is the only character capable of disappointing me while someone else is playing {heroName}.
 - Adult: (same as Clean)
 
-### fmt.0027  (Hatred, anytime, any time)
-- Clean: Dear Diary: today I saw a white robe in a photo and had to sit down. Cleric, of course. Love, the developer.
-- Adult: Dear Diary: today I saw a white robe in a photo and had to sit down. Cleric, of course. Fuck. Love, the developer.
+### fw.0001  (Hatred, fourth_wall, any time)
+- Clean: As the developer, I want it on record that I made this popup on purpose. Cleric did this to me.
+- Adult: As the developer, I want it on record that I made this popup on purpose. Cleric did this to me, that robed bastard.
 
-### fmt.0028  (Hatred, anytime, any time)
-- Clean: A strongly worded letter to Cleric: no. Sincerely, the developer.
-- Adult: A strongly worded letter to Cleric: fuck no. Sincerely, the developer.
+### fw.0002  (Hatred, fourth_wall, any time)
+- Clean: Yes, I spent real development time on a message about Cleric. No, I do not regret it. Yes, I need a hobby.
+- Adult: Yes, I spent real development time on a message about Cleric. No, I do not regret it. Yes, I need a fucking hobby.
 
-### fmt.0029  (Hatred, anytime, any time)
-- Clean: Cleric's official motto, as translated by me: "I do my best, and my best is a polite suggestion."
+### fw.0003  (Hatred, fourth_wall, any time)
+- Clean: If this popup is annoying, there is a switch for it in APD Settings. Cleric has no such switch, which is exactly the problem.
 - Adult: (same as Clean)
 
-### fmt.0031  (Hatred, anytime, any time)
-- Clean: Lost and found: one Tome, slightly used, heavily regretted. Owner: Cleric. Reward: none.
-- Adult: Lost and found: one Tome, slightly used, heavily regretted. Owner: Cleric. Reward: none. Do not call me.
+### fw.0004  (Hatred, fourth_wall, any time)
+- Clean: You are reading a message that someone had to type, test, and ship. All of it was about Cleric. Think about that.
+- Adult: You are reading a message that someone had to type, test, and ship. All of it was about fucking Cleric. Think about that.
 
-### fmt.0032  (Hatred, anytime, any time)
-- Clean: Breaking news: Cleric has once again been described as "fine" by a person who has never played it for more than a minute.
-- Adult: Breaking news: Cleric has once again been described as "fine" by a person who has never played it for more than a minute, the lucky bastard.
+### fw.0005  (Hatred, fourth_wall, any time)
+- Clean: I can hear you thinking "does this guy have any other hobbies". The answer is, not at the moment, because Cleric.
+- Adult: I can hear you thinking "does this guy have any other hobbies". The answer is, not at the moment, because fucking Cleric.
 
-### abl.0016  (Hatred, ability, only when lastHero=CLERIC & spell!=none)
-- Clean: {spell}: a Cleric spell so confident that I'd like to see it audited.
+### fw.0006  (Hatred, fourth_wall, any time)
+- Clean: Technically, this popup is a feature. Practically, it is a cry for help. Officially, it is about Cleric.
+- Adult: Technically, this popup is a feature. Practically, it is a cry for help. Officially, it is about fucking Cleric.
+
+### fw.0007  (Hatred, fourth_wall, any time)
+- Clean: Fact check: I wrote this message on purpose, with a clear head, and with my full legal name on the project. I regret nothing about Cleric.
 - Adult: (same as Clean)
 
-### abl.0017  (Hatred, ability, only when lastHero=CLERIC & spell!=none)
-- Clean: Cleric used {spell} this run. In its defense, it also tried.
+### fw.0008  (Hatred, fourth_wall, any time)
+- Clean: This message was written by a human being who is not okay about Cleric. Any resemblance to a rational complaint is accidental.
+- Adult: This message was written by a human being who is not okay about Cleric. Any resemblance to a rational complaint is a fucking accident.
+
+### fw.0009  (Hatred, fourth_wall, any time)
+- Clean: Congratulations, you have found one of the Cleric complaints. There are more. You will meet them slowly, over time, like a recurring rash.
+- Adult: Congratulations, you have found one of the Cleric complaints. There are more. You will meet them slowly, over time, like a recurring fucking rash.
+
+### fw.0010  (Hatred, fourth_wall, any time)
+- Clean: Imagine being so sure of yourself that you write a whole system just to keep complaining about Cleric. I am so sure of myself.
 - Adult: (same as Clean)

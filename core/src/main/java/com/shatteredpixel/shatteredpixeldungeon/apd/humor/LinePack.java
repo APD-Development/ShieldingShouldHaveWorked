@@ -37,7 +37,8 @@ import java.util.regex.Pattern;
 // adult text may be empty (the clean text is then used for everyone). Lines starting with '#' and blank lines are ignored.
 //
 // Parsing is also the lint: a pack with a duplicate id, a missing clean text, profanity in the clean text, an unknown key, a joke that
-// mixes in recorded data, or anything that is not about Cleric is refused as a whole with the line number, so a bad pack never half-loads.
+// mixes in recorded data, a plural developer voice, a balance claim, an invented community, or a line that is not about Cleric is refused
+// with its line number. Other classes may appear in a line (praise, comparisons); Cleric stays the only target.
 public final class LinePack {
 
 	public static final class PackException extends RuntimeException {
@@ -48,6 +49,7 @@ public final class LinePack {
 
 	static final Pattern ID = Pattern.compile( "[a-z][a-z0-9]*(\\.[a-z0-9]+)+" );
 	static final int MAX_CLEAN = 240, MAX_ADULT = 280;
+	static final Pattern CLASS_CODE = Pattern.compile( "[A-Za-z_]+" );
 
 	// words that may not appear in the clean wording (whole-word, any case)
 	static final Pattern PROFANITY = Pattern.compile(
@@ -70,8 +72,8 @@ public final class LinePack {
 	static final Pattern ABOUT_CLERIC = Pattern.compile(
 			"cleric|priest|paladin|holy tome|\\btome\\b|guiding light|ascended form|trinity|power of many",
 			Pattern.CASE_INSENSITIVE );
-	// no other class is ever the target: other class names may only arrive through a {placeholder}, never written into a line
-	static final Pattern OTHER_CLASS = Pattern.compile( "\\b(warrior|mage|rogue|huntress|duelist)\\b", Pattern.CASE_INSENSITIVE );
+	// Other classes may be named, praised or used as comparisons. The vendetta itself has one target, so every line must still be about Cleric
+	// (above); a line that is only about another class is refused.
 
 	private LinePack(){}
 
@@ -191,8 +193,8 @@ public final class LinePack {
 		if (!f[3].equals( "-" )){
 			for (String t : f[3].split( "&" )){
 				Term term = Term.parse( t.trim() );
-				if ((term.key.equals( "hero" ) || term.key.equals( "lastHero" )) && !term.value.equalsIgnoreCase( "CLERIC" ))
-					throw new IllegalArgumentException( "conditions on the class may only name CLERIC" );
+				if ((term.key.equals( "hero" ) || term.key.equals( "lastHero" )) && !CLASS_CODE.matcher( term.value ).matches())
+					throw new IllegalArgumentException( "a class condition names a class code such as CLERIC or WARRIOR" );
 				requires.add( term );
 			}
 		}
@@ -225,7 +227,6 @@ public final class LinePack {
 		if (cat != Category.META){
 			for (String s : new String[]{ clean, adult == null ? "" : adult }){
 				if (!s.isEmpty() && !ABOUT_CLERIC.matcher( s ).find()) throw new IllegalArgumentException( "a line must be about Cleric" );
-				if (OTHER_CLASS.matcher( s ).find()) throw new IllegalArgumentException( "other classes are never named in a line" );
 			}
 		}
 
