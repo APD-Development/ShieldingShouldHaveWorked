@@ -31,8 +31,8 @@ Lines 301 to 348 of 348. Reply with the ids to keep, cut or rewrite.
 - Adult: (same as Clean)
 
 ### first.0001  (Hatred, first_run, any time)
-- Clean: You have chosen Cleric. I really, really dislike Cleric. It took me 225 attempts to finally ascend with this class. I'm not going to stop you, because apparently some people enjoy suffering. Good luck. You'll need it.
-- Adult: You have chosen Cleric. I fucking hate Cleric. It took me 225 attempts to finally ascend with this fucking class. I'm not going to stop you from playing it because apparently some people enjoy suffering. Good luck. You'll need it.
+- Clean: You have chosen Cleric. I really, really dislike Cleric. It took me 225 attempts to finally ascend with this class. I'm not going to stop you, because Cleric is a legitimate class and this grudge is mine, not yours. Good luck. You'll need it.
+- Adult: You have chosen Cleric. I fucking hate Cleric. It took me 225 attempts to finally ascend with this fucking class. I'm not going to stop you, because Cleric is a legitimate class and this grudge is mine, not yours. Good luck. You'll need it.
 
 ### meta.0001  (counter screen, meta, any time)
 - Clean: You found the counter. It only goes up. Like my blood pressure whenever Cleric is mentioned.
@@ -64,7 +64,7 @@ Lines 301 to 348 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### fmt.0005  (Hatred, anytime, any time)
 - Clean: Achievement unlocked: Thought About Cleric Again. Reward: nothing, forever.
-- Adult: Achievement unlocked: Thought About Cleric Again. Reward: absolutely fuck-all, forever.
+- Adult: Achievement unlocked: Thought About Cleric Again. Reward: nothing, forever, signed by me with a very tired hand.
 
 ### fmt.0006  (Hatred, anytime, any time)
 - Clean: Holy tome opens wide / the numbers do not change much / Cleric. Ugh. Again.
@@ -72,7 +72,7 @@ Lines 301 to 348 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### fmt.0007  (Hatred, anytime, any time)
 - Clean: FOR IMMEDIATE RELEASE: I remain unhappy with Cleric. Sources, meaning me, confirm I was also unhappy yesterday.
-- Adult: FOR IMMEDIATE RELEASE: I remain pissed off at Cleric. Sources, meaning me, confirm I was also pissed off yesterday.
+- Adult: FOR IMMEDIATE RELEASE: I remain furious about Cleric. Sources, meaning me, confirm I was also furious yesterday and will be furious tomorrow, pending lunch.
 
 ### fmt.0008  (Hatred, anytime, any time)
 - Clean: By continuing to play you acknowledge that Cleric exists and that I am unable to make peace with it.
@@ -80,7 +80,7 @@ Lines 301 to 348 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### fmt.0009  (Hatred, anytime, any time)
 - Clean: Today's horoscope: you will encounter a Cleric. It will not go well. Lucky number: anything but Cleric.
-- Adult: Today's horoscope: you will encounter a Cleric. It will go like shit. Lucky number: anything but Cleric.
+- Adult: Today's horoscope: you will encounter a Cleric. Mercury is in retrograde, and so is your will to live. Lucky number: anything but Cleric.
 
 ### fmt.0010  (Hatred, anytime, any time)
 - Clean: Cleric: one star. Would not ascend again. (I did ascend, 225 attempts later. Still one star.)
@@ -92,7 +92,7 @@ Lines 301 to 348 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### fmt.0012  (Hatred, anytime, any time)
 - Clean: Pro tip: if a Cleric ever offers to heal you, say thank you, then leave quickly.
-- Adult: Pro tip: if a Cleric ever offers to heal you, say thank you, then get the fuck out of there.
+- Adult: Pro tip: if a Cleric ever offers to heal you, say thank you, then leave quickly, before the healing comes with a sermon.
 
 ### fmt.0013  (Hatred, anytime, any time)
 - Clean: Recipe for a bad day: one Tome, two unlucky rolls, and a generous helping of Cleric.
@@ -104,7 +104,7 @@ Lines 301 to 348 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### fmt.0015  (Hatred, anytime, any time)
 - Clean: You have been invited to a meeting titled "Cleric: Why?". Attendees: me. Agenda: also me.
-- Adult: You have been invited to a meeting titled "Cleric: Why the Fuck?". Attendees: me. Agenda: also me.
+- Adult: You have been invited to a meeting titled "Cleric: Why?". Attendees: me. Agenda: also me. Snacks: rage.
 
 ### fmt.0016  (Hatred, anytime, any time)
 - Clean: Your honor, I would like to enter into evidence that Cleric exists. The defense rests. The defense is also me.
@@ -156,7 +156,7 @@ Lines 301 to 348 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### fmt.0032  (Hatred, anytime, any time)
 - Clean: Breaking news: Cleric has once again been described as "fine" by a person who has never played it for more than a minute.
-- Adult: Breaking news: Cleric has once again been described as "fine" by a person who has never played it for more than a minute, the lucky bastard.
+- Adult: Breaking news: Cleric has once again been described as "fine" by a person who has never played it for more than a minute. Honestly, I envy that person's ignorance.
 
 ### abl.0016  (Hatred, ability, only when lastHero=CLERIC & spell!=none & runVerified=1)
 - Clean: {spell}: a Cleric spell so confident that I'd like to see it audited.

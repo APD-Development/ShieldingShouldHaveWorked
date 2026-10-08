@@ -4,17 +4,17 @@ fmt.0001 | anytime | since=4.8 | - | 8 | ERROR 404: Cleric's redeeming qualities
 fmt.0002 | anytime | since=4.8 | - | 8 | Exception in thread "main": java.lang.TooMuchClericException: Cleric is still a class. Stack trace omitted for my own comfort. | Exception in thread "main": java.lang.TooMuchClericException: Cleric is still a class. Stack trace omitted for my own comfort. It was just the word fuck, over and over.
 fmt.0003 | anytime | since=4.8 | - | 8 | WARNING: this build contains Cleric. I have been notified. I am sighing. | WARNING: this build contains Cleric. I have been notified. I am holding my head in both hands.
 fmt.0004 | anytime | since=4.8 | - | 8 | Loading tip: Cleric is not a loading tip. Cleric is a loading problem. |
-fmt.0005 | anytime | since=4.8 | - | 8 | Achievement unlocked: Thought About Cleric Again. Reward: nothing, forever. | Achievement unlocked: Thought About Cleric Again. Reward: absolutely fuck-all, forever.
+fmt.0005 | anytime | since=4.8 | - | 8 | Achievement unlocked: Thought About Cleric Again. Reward: nothing, forever. | Achievement unlocked: Thought About Cleric Again. Reward: nothing, forever, signed by me with a very tired hand.
 fmt.0006 | anytime | since=4.8 | - | 8 | Holy tome opens wide / the numbers do not change much / Cleric. Ugh. Again. | Holy tome opens wide / the numbers do not change much / Cleric. Fuck. Again.
-fmt.0007 | anytime | since=4.8 | - | 8 | FOR IMMEDIATE RELEASE: I remain unhappy with Cleric. Sources, meaning me, confirm I was also unhappy yesterday. | FOR IMMEDIATE RELEASE: I remain pissed off at Cleric. Sources, meaning me, confirm I was also pissed off yesterday.
+fmt.0007 | anytime | since=4.8 | - | 8 | FOR IMMEDIATE RELEASE: I remain unhappy with Cleric. Sources, meaning me, confirm I was also unhappy yesterday. | FOR IMMEDIATE RELEASE: I remain furious about Cleric. Sources, meaning me, confirm I was also furious yesterday and will be furious tomorrow, pending lunch.
 fmt.0008 | anytime | since=4.8 | - | 8 | By continuing to play you acknowledge that Cleric exists and that I am unable to make peace with it. |
-fmt.0009 | anytime | since=4.8 | - | 8 | Today's horoscope: you will encounter a Cleric. It will not go well. Lucky number: anything but Cleric. | Today's horoscope: you will encounter a Cleric. It will go like shit. Lucky number: anything but Cleric.
+fmt.0009 | anytime | since=4.8 | - | 8 | Today's horoscope: you will encounter a Cleric. It will not go well. Lucky number: anything but Cleric. | Today's horoscope: you will encounter a Cleric. Mercury is in retrograde, and so is your will to live. Lucky number: anything but Cleric.
 fmt.0010 | anytime | since=4.8 | - | 8 | Cleric: one star. Would not ascend again. (I did ascend, 225 attempts later. Still one star.) | Cleric: one star. Would not ascend again. (I did ascend, 225 attempts later. Still one star, and a bruise.)
 fmt.0011 | anytime | since=4.8 | - | 8 | Thank you for contacting Cleric Support. Your complaint is important to me. So is mine, and mine is longer. |
-fmt.0012 | anytime | since=4.8 | - | 8 | Pro tip: if a Cleric ever offers to heal you, say thank you, then leave quickly. | Pro tip: if a Cleric ever offers to heal you, say thank you, then get the fuck out of there.
+fmt.0012 | anytime | since=4.8 | - | 8 | Pro tip: if a Cleric ever offers to heal you, say thank you, then leave quickly. | Pro tip: if a Cleric ever offers to heal you, say thank you, then leave quickly, before the healing comes with a sermon.
 fmt.0013 | anytime | since=4.8 | - | 8 | Recipe for a bad day: one Tome, two unlucky rolls, and a generous helping of Cleric. |
 fmt.0014 | anytime | since=4.8 | - | 8 | FAQ. Q: Why does this game keep complaining about Cleric? A: Please see the previous 225 attempts. | FAQ. Q: Why does this game keep complaining about Cleric? A: Please see the previous 225 attempts, then see a doctor, then see me.
-fmt.0015 | anytime | since=4.8 | - | 8 | You have been invited to a meeting titled "Cleric: Why?". Attendees: me. Agenda: also me. | You have been invited to a meeting titled "Cleric: Why the Fuck?". Attendees: me. Agenda: also me.
+fmt.0015 | anytime | since=4.8 | - | 8 | You have been invited to a meeting titled "Cleric: Why?". Attendees: me. Agenda: also me. | You have been invited to a meeting titled "Cleric: Why?". Attendees: me. Agenda: also me. Snacks: rage.
 fmt.0016 | anytime | since=4.8 | - | 8 | Your honor, I would like to enter into evidence that Cleric exists. The defense rests. The defense is also me. |
 fmt.0017 | anytime | since=4.8 | - | 8 | And here I see the Cleric in its natural habitat: confused, surrounded, and optimistic. |
 fmt.0018 | anytime | since=4.8 | - | 8 | And the Cleric goes for the heal! It's... it's... no. It's not. Back to you in the studio. |
@@ -27,7 +27,7 @@ fmt.0027 | anytime | since=4.8 | - | 8 | Dear Diary: today I saw a white robe in
 fmt.0028 | anytime | since=4.8 | - | 8 | A strongly worded letter to Cleric: no. Sincerely, me. | A strongly worded letter to Cleric: fuck no. Sincerely, me.
 fmt.0029 | anytime | since=4.8 | - | 8 | Cleric's official motto, as translated by me: "I do my best, and my best is a polite suggestion." |
 fmt.0031 | anytime | since=4.8 | - | 8 | Lost and found: one Tome, slightly used, heavily regretted. Owner: Cleric. Reward: none. | Lost and found: one Tome, slightly used, heavily regretted. Owner: Cleric. Reward: none. Do not call me.
-fmt.0032 | anytime | since=4.8 | - | 8 | Breaking news: Cleric has once again been described as "fine" by a person who has never played it for more than a minute. | Breaking news: Cleric has once again been described as "fine" by a person who has never played it for more than a minute, the lucky bastard.
+fmt.0032 | anytime | since=4.8 | - | 8 | Breaking news: Cleric has once again been described as "fine" by a person who has never played it for more than a minute. | Breaking news: Cleric has once again been described as "fine" by a person who has never played it for more than a minute. Honestly, I envy that person's ignorance.
 
 # ---- more abilities, gear and bosses (only with real recorded facts)
 abl.0016 | ability | since=4.8 | lastHero=CLERIC & spell!=none & runVerified=1 | 8 | {spell}: a Cleric spell so confident that I'd like to see it audited. |
