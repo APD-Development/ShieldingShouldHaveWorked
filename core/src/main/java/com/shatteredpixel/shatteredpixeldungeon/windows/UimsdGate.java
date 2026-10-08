@@ -51,17 +51,28 @@ public final class UimsdGate {
 		@Override public void setDemoUsed(){ SPDSettings.apdDemoUnlockUsed(true); }
 	};
 
+	//Lets a device test switch the gate on without changing the shipped default. Nothing in the game calls it.
+	private static volatile boolean forcedOn;
+
+	public static void forceGateOnForTest( boolean on ){
+		forcedOn = on;
+	}
+
+	private static boolean enforced(){
+		return UimsdUnlock.ENFORCED || forcedOn;
+	}
+
 	private UimsdGate(){}
 
 	public static void open( final Class<? extends PixelScene> from ){
 		final File root = ApdRecorder.historyRoot();
-		if (UimsdUnlock.isUnlocked(FLAGS, root, UimsdUnlock.ENFORCED)){
+		if (UimsdUnlock.isUnlocked(FLAGS, root, enforced())){
 			UimsdScene.openNow(from);
 			return;
 		}
 		int done = UimsdUnlock.genuineRuns(root, UimsdUnlock.TEN_RUNS);
 		String message = "UIMSD, the statistics database, opens after you finish " + UimsdUnlock.TEN_RUNS + " runs. You have finished " + done + " so far.";
-		if (UimsdUnlock.demoButtonAvailable(FLAGS, root, UimsdUnlock.ENFORCED)){
+		if (UimsdUnlock.demoButtonAvailable(FLAGS, root, enforced())){
 			ShatteredPixelDungeon.scene().addToFront(new WndOptions("UIMSD is locked", message, "Keep playing", "Unlock it now with demo runs...") {
 				@Override
 				protected void onSelect( int index ){
@@ -87,7 +98,7 @@ public final class UimsdGate {
 		Thread t = new Thread(new Runnable(){
 			@Override
 			public void run(){
-				final UimsdUnlock.Generated result = UimsdUnlock.generateDemo(FLAGS, root, Ruleset.forNewRun(), System.currentTimeMillis(), UimsdUnlock.ENFORCED);
+				final UimsdUnlock.Generated result = UimsdUnlock.generateDemo(FLAGS, root, Ruleset.forNewRun(), System.currentTimeMillis(), enforced());
 				Game.runOnRenderThread(new com.watabou.utils.Callback(){
 					@Override
 					public void call(){
