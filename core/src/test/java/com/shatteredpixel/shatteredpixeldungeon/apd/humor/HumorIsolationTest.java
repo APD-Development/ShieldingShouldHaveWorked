@@ -99,11 +99,49 @@ public class HumorIsolationTest {
 	@Test
 	public void onlyTheIntendedGameFilesTouchTheHumorPackage() throws Exception {
 		Set<String> allowed = new HashSet<>( Arrays.asList(
-				"windows/WndClericGrudge.java", "windows/GrudgeHooks.java", "windows/APDSettingsPane.java" ) );
+				"windows/WndClericGrudge.java", "windows/GrudgeHooks.java" ) );
 		File root = new File( System.getProperty( "apd.game.src" ) );
 		List<String> offenders = new ArrayList<>();
 		scan( root, root, allowed, offenders );
 		assertTrue( "game files that use the humor package without being meant to: " + offenders, offenders.isEmpty() );
+	}
+
+	@Test
+	public void onlyTheIntendedFilesCallTheGamesSideOfTheGrudge() throws Exception {
+		Set<String> allowed = new HashSet<>( Arrays.asList( "Dungeon.java", "ShatteredPixelDungeon.java", "windows/APDSettingsPane.java",
+				"windows/WndClericGrudge.java", "windows/GrudgeHooks.java" ) );
+		File root = new File( System.getProperty( "apd.game.src" ) );
+		List<String> offenders = new ArrayList<>();
+		scanFor( "GrudgeHooks", root, root, allowed, offenders );
+		assertTrue( "files calling GrudgeHooks without being meant to: " + offenders, offenders.isEmpty() );
+	}
+
+	@Test
+	public void theGamesSideDoesNothingWhileTheSwitchIsOff() throws Exception {
+		assertFalse( com.shatteredpixel.shatteredpixeldungeon.windows.GrudgeHooks.available() );
+		//both entry points return before looking at anything in the game
+		com.shatteredpixel.shatteredpixeldungeon.windows.GrudgeHooks.tick();
+		com.shatteredpixel.shatteredpixeldungeon.windows.GrudgeHooks.onRunEnded( true, null );
+		String hooks = new String( Files.readAllBytes( new File( System.getProperty( "apd.game.src" ), "windows/GrudgeHooks.java" ).toPath() ), StandardCharsets.UTF_8 );
+		for (String method : new String[]{ "public static void onRunEnded", "public static void tick" }){
+			String body = hooks.substring( hooks.indexOf( method ) );
+			body = body.substring( body.indexOf( '{' ) + 1 ).trim();
+			assertTrue( method + " starts with the switch", body.startsWith( "if (!ClericGrudge.ENABLED) return;" ) );
+		}
+	}
+
+	private static void scanFor( String needle, File root, File dir, Set<String> allowed, List<String> offenders ) throws Exception {
+		File[] list = dir.listFiles();
+		if (list == null) return;
+		for (File f : list){
+			if (f.isDirectory()){
+				scanFor( needle, root, f, allowed, offenders );
+			} else if (f.getName().endsWith( ".java" )){
+				String rel = root.toURI().relativize( f.toURI() ).getPath();
+				String src = new String( Files.readAllBytes( f.toPath() ), StandardCharsets.UTF_8 );
+				if (src.contains( needle ) && !allowed.contains( rel )) offenders.add( rel );
+			}
+		}
 	}
 
 	private static void scan( File root, File dir, Set<String> allowed, List<String> offenders ) throws Exception {

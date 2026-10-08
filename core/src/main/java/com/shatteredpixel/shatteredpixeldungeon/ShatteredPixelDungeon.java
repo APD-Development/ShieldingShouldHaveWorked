@@ -57,6 +57,13 @@ public class ShatteredPixelDungeon extends Game {
 	}
 	
 	@Override
+	protected void update() {
+		super.update();
+		//APD: the Cleric grudge (does nothing while its switch is off)
+		com.shatteredpixel.shatteredpixeldungeon.windows.GrudgeHooks.tick();
+	}
+
+	@Override
 	public void create() {
 		super.create();
 

@@ -959,6 +959,7 @@ public class Dungeon {
 			Rankings.INSTANCE.submit( false, cause );
 			ApdRecorder.onRunEnded( false, cause );
 			com.shatteredpixel.shatteredpixeldungeon.windows.UimsdGate.onRunEnded();
+			com.shatteredpixel.shatteredpixeldungeon.windows.GrudgeHooks.onRunEnded( false, cause );
 		}
 	}
 	
@@ -973,6 +974,7 @@ public class Dungeon {
 		Rankings.INSTANCE.submit( true, cause );
 		ApdRecorder.onRunEnded( true, cause );
 		com.shatteredpixel.shatteredpixeldungeon.windows.UimsdGate.onRunEnded();
+		com.shatteredpixel.shatteredpixeldungeon.windows.GrudgeHooks.onRunEnded( true, cause );
 	}
 
 	public static void updateLevelExplored(){

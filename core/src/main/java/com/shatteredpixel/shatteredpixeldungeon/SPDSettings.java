@@ -369,6 +369,26 @@ public class SPDSettings extends GameSettings {
 		put( KEY_APD_ADULT_HUMOR, value );
 	}
 
+	//The Cleric grudge's two preferences. Popups: Frequency name (Off / Rare / Rarer, Rarer by default). Contextual lines: on by default.
+	public static final String KEY_APD_GRUDGE_POPUPS = "apd_grudge_popups";
+	public static final String KEY_APD_GRUDGE_INLINE = "apd_grudge_inline";
+
+	public static String apdGrudgePopups(){
+		return getString( KEY_APD_GRUDGE_POPUPS, "RARER", 10 );
+	}
+
+	public static void apdGrudgePopups( String value ){
+		put( KEY_APD_GRUDGE_POPUPS, value );
+	}
+
+	public static boolean apdGrudgeInline(){
+		return getBoolean( KEY_APD_GRUDGE_INLINE, true );
+	}
+
+	public static void apdGrudgeInline( boolean value ){
+		put( KEY_APD_GRUDGE_INLINE, value );
+	}
+
 	public static boolean apdDemoUnlockUsed(){
 		return getBoolean( KEY_APD_DEMO_UNLOCK_USED, false );
 	}

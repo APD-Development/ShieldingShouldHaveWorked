@@ -65,6 +65,8 @@ public class APDSettingsPane extends Component {
 	private RedButton btnImportHistory;
 	private RedButton btnImport;
 	private RedButton btnUimsd;
+	//About / Developer: the Cleric grudge's page (null while the feature is switched off)
+	private RedButton btnGrudge;
 	//INDEV builds only (null in other builds): synthetic demo data for testing UIMSD, see DemoData
 	private RedButton btnDemoGenerate;
 	private RedButton btnDemoRemove;
@@ -165,6 +167,16 @@ public class APDSettingsPane extends Component {
 			}
 		};
 		add( btnUimsd );
+
+		if (GrudgeHooks.available()) {
+			btnGrudge = new RedButton( "About / Developer: the grudge" ) {
+				@Override
+				protected void onClick() {
+					ShatteredPixelDungeon.scene().addToFront( new WndClericGrudge() );
+				}
+			};
+			add( btnGrudge );
+		}
 
 		if (DemoData.available()) {
 			btnDemoGenerate = new RedButton( "DEMO data: generate / reset" ) {
@@ -267,8 +279,13 @@ public class APDSettingsPane extends Component {
 		pos = btnImportHistory.bottom() + GAP;
 		btnUimsd.setRect( x, pos, width, 16 );
 		height = btnUimsd.bottom() - y;
-		if (btnDemoGenerate != null) {
+		if (btnGrudge != null) {
 			pos = btnUimsd.bottom() + GAP;
+			btnGrudge.setRect( x, pos, width, 16 );
+			height = btnGrudge.bottom() - y;
+		}
+		if (btnDemoGenerate != null) {
+			pos = (btnGrudge != null ? btnGrudge : btnUimsd).bottom() + GAP;
 			btnDemoGenerate.setRect( x, pos, width, 16 );
 			pos = btnDemoGenerate.bottom() + GAP;
 			btnDemoRemove.setRect( x, pos, width, 16 );

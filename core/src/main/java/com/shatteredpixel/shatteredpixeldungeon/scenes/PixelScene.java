@@ -281,6 +281,15 @@ public class PixelScene extends Scene {
 		}
 	}
 
+	//APD: whether any window is open on the given scene (the Cleric grudge waits for none)
+	public static boolean hasWindow( com.watabou.noosa.Scene scene ){
+		if (!(scene instanceof PixelScene)) return false;
+		for (com.watabou.noosa.Gizmo g : ((PixelScene)scene).members){
+			if (g instanceof Window) return true;
+		}
+		return false;
+	}
+
 	//this system only preserves windows with a public zero-arg constructor
 	private static ArrayList<Class<?extends Window>> savedWindows = new ArrayList<>();
 	private static Class<?extends PixelScene> savedClass = null;

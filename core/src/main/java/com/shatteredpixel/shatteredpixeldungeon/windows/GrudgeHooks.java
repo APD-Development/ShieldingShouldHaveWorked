@@ -1,0 +1,182 @@
+/*
+ * Pixel Dungeon
+ * Copyright (C) 2012-2015 Oleg Dolya
+ *
+ * Shattered Pixel Dungeon
+ * Copyright (C) 2014-2026 Evan Debenham
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
+
+package com.shatteredpixel.shatteredpixeldungeon.windows;
+
+import com.badlogic.gdx.Gdx;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.apd.humor.ClericGrudge;
+import com.shatteredpixel.shatteredpixeldungeon.apd.humor.Context;
+import com.shatteredpixel.shatteredpixeldungeon.apd.humor.Counter;
+import com.shatteredpixel.shatteredpixeldungeon.apd.humor.Frequency;
+import com.shatteredpixel.shatteredpixeldungeon.apd.humor.Ledger;
+import com.shatteredpixel.shatteredpixeldungeon.apd.humor.Moment;
+import com.shatteredpixel.shatteredpixeldungeon.apd.humor.Safety;
+import com.shatteredpixel.shatteredpixeldungeon.apd.humor.Shown;
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.RankingsScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene;
+import com.watabou.noosa.Game;
+import com.watabou.noosa.Scene;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+// The game's side of the Cleric grudge: where its files live, what the game tells it, and the one place a popup is put on screen. The humor
+// code itself never sees the game. Everything here is a no-op while ClericGrudge.ENABLED is off, and a failure anywhere in it is swallowed:
+// the grudge may never reach play.
+//
+// Popups are shown only on the title screen and on the results screen after a run has ended, once the scene has been up for a moment and
+// no window is open. Nothing is shown during play.
+public final class GrudgeHooks {
+
+	private static final long SETTLE_MS = 1500;
+
+	private static ClericGrudge instance;
+	private static Ledger ledger;
+	//its own random source, nothing to do with the game's
+	private static final Random RNG = new Random();
+
+	private static Scene lastScene;
+	private static long sceneSince;
+	private static boolean decided;
+	private static Moment pendingEnd;
+	private static Context pendingContext = Context.EMPTY;
+
+	private GrudgeHooks(){}
+
+	private static final ClericGrudge.PackSource PACKS = new ClericGrudge.PackSource(){
+		@Override
+		public List<String> names() throws IOException {
+			List<String> names = new ArrayList<>();
+			for (String n : read( "packs.txt" ).split( "\r?\n" )) if (!n.trim().isEmpty()) names.add( n.trim() );
+			return names;
+		}
+
+		@Override
+		public String read( String name ) throws IOException {
+			return Gdx.files.internal( "apd/humor/" + name ).readString( "UTF-8" );
+		}
+	};
+
+	private static synchronized ClericGrudge grudge(){
+		if (instance == null){
+			//next to the history folder, not inside it, so exports and imports of history never carry it
+			File history = ApdRecorder.historyRoot();
+			File file = history == null || history.getParentFile() == null ? null : new File( history.getParentFile(), "apd-humor/ledger.txt" );
+			ledger = new Ledger( file );
+			instance = new ClericGrudge( ClericGrudge.loadPacks( PACKS ), ledger, RNG, ClericGrudge.ENABLED );
+		}
+		return instance;
+	}
+
+	public static boolean available(){
+		return ClericGrudge.ENABLED;
+	}
+
+	public static Counter counter(){
+		return grudge().counter();
+	}
+
+	//the one-time joke for opening the counter screen, or null
+	public static String discovery(){
+		Shown s = grudge().counterDiscovery( SPDSettings.apdAdultHumor(), System.currentTimeMillis() );
+		return s == null ? null : s.text;
+	}
+
+	public static Frequency frequency(){
+		return Frequency.of( SPDSettings.apdGrudgePopups() );
+	}
+
+	public static void setFrequency( Frequency f ){
+		SPDSettings.apdGrudgePopups( f.name() );
+	}
+
+	public static void resetHistory(){
+		grudge();
+		ledger.clear();
+	}
+
+	// Called when a run has permanently ended. It only notes what happened; the results screen shows it if a popup is due.
+	public static void onRunEnded( boolean won, Object cause ){
+		if (!ClericGrudge.ENABLED) return;
+		try {
+			Context c = Context.EMPTY.with( "lastOutcome", won ? "WON" : "DIED" ).with( "depth", Dungeon.depth );
+			if (Dungeon.hero != null){
+				c = c.with( "lastHero", Dungeon.hero.heroClass.name() ).with( "hero", Dungeon.hero.heroClass.name() );
+				if (Dungeon.hero.subClass != null) c = c.with( "subclass", Dungeon.hero.subClass.name() );
+			}
+			if (cause instanceof Char) c = c.with( "killer", ((Char)cause).name() );
+			pendingContext = c;
+			pendingEnd = won ? Moment.RUN_END_VICTORY : Moment.RUN_END_DEATH;
+		} catch (Throwable ignored){
+			//never into the game
+		}
+	}
+
+	// Called every frame by the game; does nothing unless the feature is on and a quiet scene has settled.
+	public static void tick(){
+		if (!ClericGrudge.ENABLED) return;
+		try {
+			Scene s = Game.scene();
+			long now = System.currentTimeMillis();
+			if (s != lastScene){
+				lastScene = s;
+				sceneSince = now;
+				decided = false;
+			}
+			if (s == null || decided || now - sceneSince < SETTLE_MS) return;
+
+			Moment m;
+			Context ctx = Context.EMPTY;
+			if (s instanceof TitleScene){
+				m = Moment.MENU;
+			} else if (s instanceof RankingsScene && pendingEnd != null){
+				m = pendingEnd;
+				ctx = pendingContext;
+			} else {
+				decided = true;
+				return;
+			}
+			//a window already open: wait, and ask again once it is gone
+			if (PixelScene.hasWindow( s )) return;
+			decided = true;
+			if (m != Moment.MENU){
+				pendingEnd = null;
+				pendingContext = Context.EMPTY;
+			}
+			Shown shown = grudge().popup( m, ctx, Safety.CALM, frequency(), SPDSettings.apdAdultHumor(), now );
+			if (shown == null && SPDSettings.apdGrudgeInline()){
+				//a contextual line is the same window, only for lines that belong to this moment
+				shown = grudge().inline( m, ctx, SPDSettings.apdAdultHumor(), now );
+			}
+			if (shown != null) s.addToFront( WndClericGrudge.popup( shown.text ) );
+		} catch (Throwable ignored){
+			//the grudge may never reach play
+		}
+	}
+}
