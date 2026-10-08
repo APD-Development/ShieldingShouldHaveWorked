@@ -246,6 +246,11 @@ public class PrivacyAndHeroBackDeviceTest {
 			pickItem(2);   //the address box
 			assertTrue("the address box opened", top() instanceof WndTextInput);
 			pressBack();
+			assertTrue("Back does not close a text box (it would lose what is being typed)", top() instanceof WndTextInput);
+			final Window box = top();
+			onRender(new Runnable(){ public void run(){ box.hide(); } });   //what its Cancel button does
+			Thread.sleep(400);
+			assertTrue("the Privacy list is back on top", top() instanceof WndUimsdList);
 			assertEquals("an empty address was not invented", "", SPDSettings.apdServer());
 			pickItem(4);   //evidence requests: none waiting
 			assertTrue("a message says nothing is waiting", top() instanceof WndMessage);
