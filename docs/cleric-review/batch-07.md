@@ -12,7 +12,7 @@ Lines 301 to 348 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### joke.0005  (Hatred, anytime, any time) [invented-number joke]
 - Clean: Somewhere, a Cleric is on its eighty-fourth attempt, and it is on a roll, and I would like to throw a plate.
-- Adult: Somewhere, a Cleric is on its eighty-fourth attempt, and it is on a roll, and I would like to throw a fucking plate.
+- Adult: Somewhere, a Cleric is on its eighty-fourth attempt, and it is on a roll, and I would like to throw a plate at one wall, then a different wall for balance.
 
 ### joke.0006  (Hatred, anytime, any time) [invented-number joke]
 - Clean: I have complained about Cleric exactly 9,000 times today, which is a lie, because my fingers stopped at 8,973.
@@ -52,7 +52,7 @@ Lines 301 to 348 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### fmt.0003  (Hatred, anytime, any time)
 - Clean: WARNING: this build contains Cleric. I have been notified. I am sighing.
-- Adult: WARNING: this build contains Cleric. I have been notified. I am fucking sighing.
+- Adult: WARNING: this build contains Cleric. I have been notified. I am holding my head in both hands.
 
 ### fmt.0004  (Hatred, anytime, any time)
 - Clean: Loading tip: Cleric is not a loading tip. Cleric is a loading problem.
@@ -80,7 +80,7 @@ Lines 301 to 348 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### fmt.0010  (Hatred, anytime, any time)
 - Clean: Cleric: one star. Would not ascend again. (I did ascend, 225 attempts later. Still one star.)
-- Adult: Cleric: one star. Would not ascend again. (I did ascend, 225 attempts later. Still one fucking star.)
+- Adult: Cleric: one star. Would not ascend again. (I did ascend, 225 attempts later. Still one star, and a bruise.)
 
 ### fmt.0011  (Hatred, anytime, any time)
 - Clean: Thank you for contacting Cleric Support. Your complaint is important to me. So is mine, and mine is longer.
@@ -96,7 +96,7 @@ Lines 301 to 348 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### fmt.0014  (Hatred, anytime, any time)
 - Clean: FAQ. Q: Why does this game keep complaining about Cleric? A: Please see the previous 225 attempts.
-- Adult: FAQ. Q: Why does this game keep complaining about Cleric? A: Please see the previous 225 fucking attempts.
+- Adult: FAQ. Q: Why does this game keep complaining about Cleric? A: Please see the previous 225 attempts, then see a doctor, then see me.
 
 ### fmt.0015  (Hatred, anytime, any time)
 - Clean: You have been invited to a meeting titled "Cleric: Why?". Attendees: me. Agenda: also me.
@@ -136,7 +136,7 @@ Lines 301 to 348 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### fmt.0027  (Hatred, anytime, any time)
 - Clean: Dear Diary: today I saw a white robe in a photo and had to sit down. Cleric, of course. Love, me.
-- Adult: Dear Diary: today I saw a white robe in a photo and had to sit down. Cleric, of course. Fuck. Love, me.
+- Adult: Dear Diary: today I saw a white robe in a photo and had to sit down on the kitchen floor. Cleric, of course. Love, me.
 
 ### fmt.0028  (Hatred, anytime, any time)
 - Clean: A strongly worded letter to Cleric: no. Sincerely, me.
@@ -154,31 +154,31 @@ Lines 301 to 348 of 348. Reply with the ids to keep, cut or rewrite.
 - Clean: Breaking news: Cleric has once again been described as "fine" by a person who has never played it for more than a minute.
 - Adult: Breaking news: Cleric has once again been described as "fine" by a person who has never played it for more than a minute, the lucky bastard.
 
-### abl.0016  (Hatred, ability, only when lastHero=CLERIC & spell!=none)
+### abl.0016  (Hatred, ability, only when lastHero=CLERIC & spell!=none & runVerified=1)
 - Clean: {spell}: a Cleric spell so confident that I'd like to see it audited.
 - Adult: (same as Clean)
 
-### abl.0017  (Hatred, ability, only when lastHero=CLERIC & spell!=none)
+### abl.0017  (Hatred, ability, only when lastHero=CLERIC & spell!=none & runVerified=1)
 - Clean: Cleric used {spell} this run. In its defense, it also tried.
 - Adult: (same as Clean)
 
-### abl.0018  (Hatred, ability, only when lastHero=CLERIC & guidingLightCasts>=1)
+### abl.0018  (Hatred, ability, only when lastHero=CLERIC & guidingLightCasts>=1 & runVerified=1)
 - Clean: {guidingLightCasts} casts of Guiding Light. The light has yet to guide me toward forgiving Cleric.
 - Adult: (same as Clean)
 
-### abl.0019  (Hatred, ability, only when lastHero=CLERIC & subclass=PRIEST)
-- Clean: Priest: the only Cleric subclass that can bless the very floor it is about to die on.
+### abl.0019  (Hatred, ability, only when lastHero=CLERIC & subclass=PRIEST & runVerified=1)
+- Clean: Priest: the subclass that is all about healing, and I have never once felt better.
 - Adult: (same as Clean)
 
-### abl.0020  (Hatred, ability, only when lastHero=CLERIC & subclass=PALADIN)
+### abl.0020  (Hatred, ability, only when lastHero=CLERIC & subclass=PALADIN & runVerified=1)
 - Clean: Paladin: shiny, righteous, and still carrying the whole weight of being Cleric.
 - Adult: (same as Clean)
 
-### eqp.0009  (Hatred, equipment, only when lastHero=CLERIC & weapon!=none)
+### eqp.0009  (Hatred, equipment, only when lastHero=CLERIC & weapon!=none & runVerified=1)
 - Clean: {weapon} in a Cleric's hands: the weapon forgave them, and I do not.
 - Adult: (same as Clean)
 
-### eqp.0011  (Hatred, equipment, only when lastHero=CLERIC)
+### eqp.0011  (Hatred, equipment, only when lastHero=CLERIC & runVerified=1)
 - Clean: A Tome is a book you carry into a fight and hope it reads itself.
 - Adult: (same as Clean)
 
@@ -186,10 +186,10 @@ Lines 301 to 348 of 348. Reply with the ids to keep, cut or rewrite.
 - Clean: {boss}: has been described as terrifying, ancient, and unfortunately more likable than Cleric.
 - Adult: (same as Clean)
 
-### boss.0010  (Hatred, boss, only when lastHero=CLERIC & lastOutcome=DIED & boss!=none)
-- Clean: {boss} did not even need to try. That is the highest compliment a Cleric can receive from an enemy.
+### boss.0010  (Hatred, death, only when lastHero=CLERIC & lastOutcome=DIED & killer!=nothing & runVerified=1)
+- Clean: {killer} did not even need to try. That is the highest compliment a Cleric can receive from an enemy.
 - Adult: (same as Clean)
 
-### boss.0011  (Hatred, boss, only when lastHero!=CLERIC & lastOutcome=WON & boss!=none)
+### boss.0011  (Hatred, boss, only when hero!=CLERIC & boss!=none)
 - Clean: You defeated {boss} without Cleric. As the prophecy and I intended.
 - Adult: (same as Clean)

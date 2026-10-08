@@ -71,6 +71,11 @@ public final class LinePack {
 			"\\b(community|communities|reddit|discord|forums?|twitter|tweets?|streamers?|youtubers?|players (have )?(told|said|wrote|emailed|messaged|reported|asked))\\b",
 			Pattern.CASE_INSENSITIVE );
 
+	// No personal information about the developer (real name, address and the like) in any line.
+	static final Pattern PERSONAL = Pattern.compile(
+			"\\b(legal name|full name|real name|home address|street address|phone number|email address|my email|social security|date of birth|my birthday)\\b",
+			Pattern.CASE_INSENSITIVE );
+
 	// every line is about Cleric: it names Cleric or something that only Cleric has
 	static final Pattern ABOUT_CLERIC = Pattern.compile(
 			"cleric|priest|paladin|holy tome|\\btome\\b|guiding light|ascended form|trinity|power of many",
@@ -223,6 +228,8 @@ public final class LinePack {
 			if (plural.find()) throw new IllegalArgumentException( "the developer speaks as 'I', never '" + plural.group() + "'" );
 			Matcher third = THIRD_PERSON.matcher( t );
 			if (third.find()) throw new IllegalArgumentException( "the developer speaks as 'I', never as '" + third.group() + "'" );
+			Matcher personal = PERSONAL.matcher( t );
+			if (personal.find()) throw new IllegalArgumentException( "a line must not expose personal information ('" + personal.group() + "')" );
 			Matcher invented = COMMUNITY.matcher( t );
 			if (invented.find()) throw new IllegalArgumentException( "a line must not invent or quote a community ('" + invented.group() + "')" );
 		}
@@ -240,6 +247,16 @@ public final class LinePack {
 			throw new IllegalArgumentException( "the clean and adult wording must use the same {placeholders}" );
 		for (String k : cleanKeys)
 			if (!Context.KEYS.contains( k )) throw new IllegalArgumentException( "unknown placeholder {" + k + "}" );
+		//facts about a finished run are only used when the game confirmed that run; a boss fact only in a line about a defeated boss
+		Set<String> used = new HashSet<>( cleanKeys );
+		boolean verified = false;
+		for (Term t : requires){
+			used.add( t.key );
+			if (t.key.equals( "runVerified" ) && t.op.equals( "=" ) && t.value.equals( "1" )) verified = true;
+		}
+		if ((used.contains( "lastHero" ) || used.contains( "lastOutcome" ) || used.contains( "lastHeroName" )) && !verified)
+			throw new IllegalArgumentException( "a line about a finished run must require runVerified=1" );
+		if (used.contains( "boss" ) && cat != Category.BOSS) throw new IllegalArgumentException( "the boss fact belongs to the boss category" );
 		if (joke && !cleanKeys.isEmpty()) throw new IllegalArgumentException( "a joke with invented numbers cannot use recorded {placeholders}" );
 
 		return new Line( id, cat, since, !meta, joke, weight, appreciation ? Pool.APPRECIATION : Pool.HATRED, after, nextSession, delay, setup, requires, clean, adult );

@@ -89,7 +89,7 @@ public class PackLintTest {
 				"a.0001 | anytime | - | - | 5 | Even Warrior is embarrassed to share a character-selection screen with Cleric. |\n"
 				+ "a.0002 | anytime | - | - | 5 | Mage burns things and gets respect. Cleric holds a book and gets pity. | Mage burns things and gets respect. Cleric holds a book and gets a pamphlet.\n"
 				+ "a.0003 | anytime | - | hero=WARRIOR | 5 | You picked Warrior. Good. Cleric would have picked a candle. |\n"
-				+ "a.0004 | anytime | - | lastHero!=HUNTRESS | 5 | Huntress is great. Cleric is the problem. |\n", "t" );
+				+ "a.0004 | anytime | - | lastHero!=HUNTRESS & runVerified=1 | 5 | Huntress is great. Cleric is the problem. |\n", "t" );
 		assertEquals( 4, ok.size() );
 		//a class condition must still name a class code
 		rejects( "a.0001 | anytime | - | hero=not a class | 5 | Cleric. |", "class code" );

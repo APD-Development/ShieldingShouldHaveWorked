@@ -12,7 +12,7 @@ Lines 201 to 250 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### fw.0014  (Hatred, fourth_wall, any time)
 - Clean: I know this popup has nothing to do with the run. I know. I know. Cleric.
-- Adult: I know this popup has nothing to do with the run. I know. I know. Cleric. Fuck.
+- Adult: I know this popup has nothing to do with the run. I know. I know. I could have said nothing. I chose violence. Specifically against Cleric.
 
 ### fw.0015  (Hatred, fourth_wall, any time)
 - Clean: Right now somewhere a QA tester is wondering why the game contains a recurring joke about Cleric. That tester is me, and I have no answer.
@@ -90,114 +90,114 @@ Lines 201 to 250 of 348. Reply with the ids to keep, cut or rewrite.
 - Clean: Thank you for visiting the main menu. Please keep your hands inside the game at all times and your thoughts on Cleric to a minimum.
 - Adult: (same as Clean)
 
-### clr.death.0001  (Hatred, death, only when lastHero=CLERIC & lastOutcome=DIED & depth>=1)
+### clr.death.0001  (Hatred, death, only when lastHero=CLERIC & lastOutcome=DIED & depth>=1 & runVerified=1)
 - Clean: Cleric died on depth {depth}. I would say I'm sorry, but that would be lying, and I don't lie about Cleric.
 - Adult: Cleric died on depth {depth}. I'd say I'm sorry, but that would be a lie, and I don't lie about Cleric. Honestly? Good.
 
-### clr.death.0002  (Hatred, death, only when lastHero=CLERIC & lastOutcome=DIED)
+### clr.death.0002  (Hatred, death, only when lastHero=CLERIC & lastOutcome=DIED & clericRuns>=2 & runVerified=1)
 - Clean: Another Cleric run, another death. At least it was consistent.
 - Adult: Another Cleric run, another death. Consistency is a virtue, and it is the only one Cleric has.
 
-### clr.death.0003  (Hatred, death, only when lastHero=CLERIC & lastOutcome=DIED & killer!=nothing)
+### clr.death.0003  (Hatred, death, only when lastHero=CLERIC & lastOutcome=DIED & killer!=nothing & runVerified=1)
 - Clean: Cleric was killed by {killer}. The Tome was right there. Reading is hard.
 - Adult: Cleric was killed by {killer}. The Tome was right there. Maybe try reading the damn thing.
 
-### clr.death.0004  (Hatred, death, only when lastHero=CLERIC & lastOutcome=DIED & depth>=1)
+### clr.death.0004  (Hatred, death, only when lastHero=CLERIC & lastOutcome=DIED & depth>=1 & runVerified=1)
 - Clean: Depth {depth}. Not a record, not a disaster, just Cleric.
 - Adult: Depth {depth}. Not a record, not a disaster, just the usual Cleric shit-show.
 
-### clr.death.0007  (Hatred, death, only when lastHero=CLERIC & lastOutcome=DIED & killer!=nothing)
+### clr.death.0007  (Hatred, death, only when lastHero=CLERIC & lastOutcome=DIED & killer!=nothing & runVerified=1)
 - Clean: A {killer} did that. A {killer}. To Cleric. I don't know whether to laugh or to buy it a drink.
 - Adult: A {killer} did that. A {killer}. To Cleric. I don't know whether to laugh or to send the {killer} a fruit basket.
 
-### clr.death.0009  (Hatred, death, only when lastHero=CLERIC & lastOutcome=DIED & depth<=3)
+### clr.death.0009  (Hatred, death, only when lastHero=CLERIC & lastOutcome=DIED & depth<=3 & runVerified=1)
 - Clean: Cleric died on depth {depth}. That is not a run. That is a rumor.
 - Adult: Cleric died on depth {depth}. That is not a run. That is a rumor with a body count of one.
 
-### clr.death.0010  (Hatred, death, only when lastHero=CLERIC & lastOutcome=DIED & depth>=10)
+### clr.death.0010  (Hatred, death, only when lastHero=CLERIC & lastOutcome=DIED & depth>=10 & runVerified=1)
 - Clean: Cleric made it to depth {depth} and then died. I want you to know that I felt that in my teeth.
-- Adult: Cleric made it to depth {depth} and then died. I want you to know that I felt that shit in my teeth.
+- Adult: Cleric made it to depth {depth} and then died. I felt it in my teeth, my knees, and a part of my soul I thought was reserved for my own mistakes.
 
-### clr.death.0012  (Hatred, death, only when lastHero=CLERIC & lastOutcome=DIED)
+### clr.death.0012  (Hatred, death, only when lastHero=CLERIC & lastOutcome=DIED & clericDeaths>=2 & runVerified=1)
 - Clean: Dead again. Did the Tome at least say something nice at the end? It never does.
 - Adult: Dead again. Did the Tome at least say something nice at the end? It never does, the useless book.
 
-### clr.death.0014  (Hatred, death, only when lastHero=CLERIC & lastOutcome=DIED & subclass=PRIEST)
+### clr.death.0014  (Hatred, death, only when lastHero=CLERIC & lastOutcome=DIED & subclass=PRIEST & runVerified=1)
 - Clean: A Priest, dead on depth {depth}. Healing everyone but the thing that mattered.
 - Adult: A Priest, dead on depth {depth}. Healing everyone but the one fucking thing that mattered.
 
-### clr.death.0015  (Hatred, death, only when lastHero=CLERIC & lastOutcome=DIED & subclass=PALADIN)
-- Clean: A Paladin, dead on depth {depth}. All that holy armor, and the holiest thing about it was the sound it made.
+### clr.death.0015  (Hatred, death, only when lastHero=CLERIC & lastOutcome=DIED & subclass=PALADIN & runVerified=1)
+- Clean: A Paladin, dead on depth {depth}. All that holy righteousness, and the holiest thing about it was the sound it made.
 - Adult: (same as Clean)
 
-### clr.death.0017  (Hatred, death, only when lastHero=CLERIC & lastOutcome=DIED & clericStreak>=3)
+### clr.death.0017  (Hatred, death, only when lastHero=CLERIC & lastOutcome=DIED & clericStreak>=3 & runVerified=1)
 - Clean: That is {clericStreak} Cleric runs in a row, and it ended like this. I salute your stamina and question everything else.
 - Adult: (same as Clean)
 
-### clr.death.0021  (Hatred, death, only when lastHero=CLERIC & lastOutcome=DIED & killer!=nothing)
+### clr.death.0021  (Hatred, death, only when lastHero=CLERIC & lastOutcome=DIED & killer!=nothing & runVerified=1)
 - Clean: Cleric versus {killer}: a story as old as time, and by that I mean the last five minutes.
 - Adult: Cleric versus {killer}: a story as old as time, and by that I mean it was over before I finished my coffee.
 
-### clr.death.0023  (Hatred, death, only when lastHero=CLERIC & lastOutcome=DIED & depth>=1)
+### clr.death.0023  (Hatred, death, only when lastHero=CLERIC & lastOutcome=DIED & depth>=1 & runVerified=1)
 - Clean: Depth {depth} is a nice place to die. Quiet, scenic, and full of reminders that Cleric does not belong.
 - Adult: (same as Clean)
 
-### oth.death.0001  (Hatred, death, only when lastHero!=CLERIC & lastOutcome=DIED)
+### oth.death.0001  (Hatred, death, only when lastHero!=CLERIC & lastOutcome=DIED & runVerified=1)
 - Clean: You died, but take comfort in the fact that it was not as embarrassing as dying as Cleric.
 - Adult: You died, but take comfort in the fact that it was not as embarrassing as dying as Cleric: book in one hand, prayer on your lips, rat on your face.
 
-### oth.death.0002  (Hatred, death, only when lastHero!=CLERIC & lastOutcome=DIED)
+### oth.death.0002  (Hatred, death, only when lastHero!=CLERIC & lastOutcome=DIED & runVerified=1)
 - Clean: You died as {lastHeroName}. Cleric would have died sooner and complained about it.
 - Adult: You died as {lastHeroName}. Cleric would have died sooner, and the death screen would have apologized.
 
-### oth.death.0004  (Hatred, death, only when lastHero!=CLERIC & lastOutcome=DIED & depth>=1)
+### oth.death.0004  (Hatred, death, only when lastHero!=CLERIC & lastOutcome=DIED & depth>=1 & runVerified=1)
 - Clean: You made it to depth {depth}. That is further than a Cleric has made it in my mind, which stopped at disappointment.
 - Adult: (same as Clean)
 
-### oth.death.0005  (Hatred, death, only when lastHero!=CLERIC & lastOutcome=DIED)
+### oth.death.0005  (Hatred, death, only when lastHero!=CLERIC & lastOutcome=DIED & runVerified=1)
 - Clean: Sorry about the loss. I'd offer a Cleric to cheer you up but that would be cruel to everyone involved, including me.
 - Adult: (same as Clean)
 
-### clr.win.0001  (Hatred, victory, only when lastHero=CLERIC & lastOutcome=WON)
+### clr.win.0001  (Hatred, victory, only when lastHero=CLERIC & lastOutcome=WON & runVerified=1)
 - Clean: You won as Cleric. Fine. I will allow one moment of respect. That moment is over.
 - Adult: You won as Cleric. Fine. I will allow one moment of respect. That moment is over. Back to hating the shit out of it.
 
-### clr.win.0002  (Hatred, victory, only when lastHero=CLERIC & lastOutcome=WON)
+### clr.win.0002  (Hatred, victory, only when lastHero=CLERIC & lastOutcome=WON & runVerified=1)
 - Clean: You won as Cleric. Congratulations, you beautiful masochist.
 - Adult: You won as Cleric. Congratulations. I need to sit on the floor for a bit and re-evaluate my entire life.
 
-### clr.win.0004  (Hatred, victory, only when lastHero=CLERIC & lastOutcome=WON)
+### clr.win.0004  (Hatred, victory, only when lastHero=CLERIC & lastOutcome=WON & runVerified=1)
 - Clean: You did it with Cleric. I am proud, confused, and a little offended on behalf of every other class.
 - Adult: (same as Clean)
 
-### clr.win.0006  (Hatred, victory, only when lastHero=CLERIC & lastOutcome=WON & clericWins>=2)
+### clr.win.0006  (Hatred, victory, only when lastHero=CLERIC & lastOutcome=WON & clericWins>=2 & runVerified=1)
 - Clean: That is {clericWins} Cleric wins on record. I am starting to think I might be the problem. I am also still angry.
 - Adult: That is {clericWins} Cleric wins on record. I am starting to think I might be the problem. Fuck. I might be the problem.
 
-### clr.win.0009  (Hatred, victory, only when lastHero=CLERIC & lastOutcome=WON)
+### clr.win.0009  (Hatred, victory, only when lastHero=CLERIC & lastOutcome=WON & runVerified=1)
 - Clean: Please enjoy this victory. I will be in the corner, quietly rewriting my opinion of Cleric from "terrible" to "annoyingly capable".
 - Adult: Please enjoy this victory. I'll be in the corner, quietly rewriting my opinion of Cleric from "terrible" to "annoyingly capable", and crying a little.
 
-### clr.win.0010  (Hatred, victory, only when lastHero=CLERIC & lastOutcome=WON)
+### clr.win.0010  (Hatred, victory, only when lastHero=CLERIC & lastOutcome=WON & runVerified=1)
 - Clean: You beat the dungeon as Cleric. I will not be congratulating the Tome. The Tome knows what it did.
 - Adult: You beat the dungeon as Cleric. I will not be congratulating the Tome. The Tome knows what it did, the smug little shit.
 
-### clr.win.0012  (Hatred, victory, only when lastHero=CLERIC & lastOutcome=WON)
+### clr.win.0012  (Hatred, victory, only when lastHero=CLERIC & lastOutcome=WON & runVerified=1)
 - Clean: You ascended with Cleric. I will never forgive you for making it look possible.
 - Adult: You ascended with Cleric. I will never forgive you for making it look possible. I put the work in. I bled for this.
 
-### clr.win.0014  (Hatred, victory, only when lastHero=CLERIC & lastOutcome=WON)
+### clr.win.0014  (Hatred, victory, only when lastHero=CLERIC & lastOutcome=WON & runVerified=1)
 - Clean: Well done. I mean it. I hate that I mean it, because it was Cleric.
 - Adult: Well done. I mean it. I hate that I mean it, because it was Cleric. Somebody fetch me a bucket.
 
-### oth.win.0001  (Hatred, victory, only when lastHero!=CLERIC & lastOutcome=WON)
+### oth.win.0001  (Hatred, victory, only when lastHero!=CLERIC & lastOutcome=WON & runVerified=1)
 - Clean: You won as {lastHeroName}. This is the best time to remember that Cleric exists. You're welcome.
 - Adult: (same as Clean)
 
-### oth.win.0002  (Hatred, victory, only when lastHero!=CLERIC & lastOutcome=WON)
+### oth.win.0002  (Hatred, victory, only when lastHero!=CLERIC & lastOutcome=WON & runVerified=1)
 - Clean: A fine victory. Cleric would have celebrated by healing a wall.
 - Adult: A fine victory. Cleric would have celebrated by healing a wall and calling it a night.
 
-### oth.win.0003  (Hatred, victory, only when lastHero!=CLERIC & lastOutcome=WON)
+### oth.win.0003  (Hatred, victory, only when lastHero!=CLERIC & lastOutcome=WON & runVerified=1)
 - Clean: Congratulations on the win. No Cleric was involved, and that is why it worked.
 - Adult: (same as Clean)

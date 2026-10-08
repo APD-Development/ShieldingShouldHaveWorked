@@ -28,7 +28,7 @@ Lines 51 to 100 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### app.0107  (Appreciation, appreciation, any time) [follows app.0106; in a later session]
 - Clean: I have responded to my own notice about Cleric. My response is one word, and it begins with "ugh".
-- Adult: I have responded to my own notice about Cleric. My response is one word, and it begins with "fuck".
+- Adult: I have responded to my own notice about Cleric. My response is one word, four letters, and it is not "ugh".
 
 ### app.0108  (Appreciation, appreciation, any time) [first part of a story]
 - Clean: I owe Cleric an apology. I have been working on it for weeks.
@@ -36,7 +36,7 @@ Lines 51 to 100 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### app.0109  (Appreciation, appreciation, any time) [follows app.0108; in a later session]
 - Clean: The apology to Cleric is finished. It is one sentence long: "I'm sorry you exist."
-- Adult: The apology to Cleric is finished. It is one sentence long: "I'm sorry you fucking exist."
+- Adult: The apology to Cleric is finished. It is one sentence long: "I'm sorry you exist." I'd like to be clear that I am only sorry about the second half.
 
 ### app.0110  (Appreciation, appreciation, any time) [first part of a story]
 - Clean: Today I decided to give Cleric a fair chance and read every spell in the Tome. Wish me luck.
@@ -64,7 +64,7 @@ Lines 51 to 100 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### app.0116  (Appreciation, appreciation, any time) [follows app.0115; in a later session]
 - Clean: The Cleric statue has been built. It stands in a closet, facing the wall, and I'm very happy about it.
-- Adult: The Cleric statue has been built. It stands in a closet, facing the wall, and I'm very fucking happy about it.
+- Adult: The Cleric statue has been built. It stands in a closet, facing the wall, and every time I walk past it I salute with one finger.
 
 ### app.0117  (Appreciation, appreciation, any time) [first part of a story]
 - Clean: Heads up: the next message will contain a compliment about Cleric.
@@ -80,7 +80,7 @@ Lines 51 to 100 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### app.0120  (Appreciation, appreciation, any time) [follows app.0119; in a later session]
 - Clean: Cleric is on my admiration list as a warning. The list is called "Do not become".
-- Adult: Cleric is on my admiration list as a warning. The list is called "Do not fucking become".
+- Adult: Cleric is on my admiration list as a warning. The list is called "Do not become", and Cleric is the cover art.
 
 ### app.0121  (Appreciation, appreciation, any time) [first part of a story]
 - Clean: Cleric's Ascended Form is truly radiant.
@@ -180,7 +180,7 @@ Lines 51 to 100 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### app.0145  (Appreciation, appreciation, any time) [follows app.0144]
 - Clean: A doctor looked at the Cleric thing that was growing on me. It is a rash. It is a rash, and I hate it.
-- Adult: A doctor looked at the Cleric thing that was growing on me. It is a rash. It is a goddamn rash, and I hate it.
+- Adult: A doctor looked at the Cleric thing that was growing on me. It is a rash. She prescribed cream and told me to stop touching it, which is the best advice I have ever ignored.
 
 ### app.0146  (Appreciation, appreciation, any time) [first part of a story]
 - Clean: I wrote Cleric a fan letter. I'll share it once I'm sure it's finished.

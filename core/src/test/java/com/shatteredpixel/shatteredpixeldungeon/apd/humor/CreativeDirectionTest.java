@@ -138,4 +138,40 @@ public class CreativeDirectionTest {
 	private static String usesGrudgeTotals( Line l ){
 		return (l.clean.contains( "{complaints" ) || l.clean.contains( "{appreciations" )) ? l.id : null;
 	}
+
+	@Test
+	public void factsAboutAFinishedRunNeedAVerifiedRun(){
+		rejects( "any.0001 | death | - | lastHero=CLERIC & lastOutcome=DIED | 5 | Cleric died. |", "runVerified" );
+		rejects( "any.0001 | victory | - | lastOutcome=WON | 5 | Cleric won. |", "runVerified" );
+		rejects( "any.0001 | death | - | depth>=1 | 5 | {lastHeroName} died. Cleric would not have. |", "runVerified" );
+		LinePack.parse( "any.0001 | death | - | lastHero=CLERIC & lastOutcome=DIED & runVerified=1 | 5 | Cleric died. |", "t" );
+		//the boss fact belongs to lines about a defeated boss
+		rejects( "any.0001 | anytime | - | boss!=none | 5 | Cleric versus {boss}. |", "boss category" );
+		LinePack.parse( "any.0001 | boss | - | boss!=none | 5 | You defeated {boss}. Cleric would not have. |", "t" );
+	}
+
+	@Test
+	public void noLineExposesPersonalInformation(){
+		for (String bad : new String[]{ "I wrote this with my full legal name on it, about Cleric.", "My home address is on the Cleric complaint form.",
+				"Email me at my email about Cleric.", "My real name is on the Cleric poster." }){
+			rejects( "any.0001 | anytime | - | - | 5 | " + bad + " |", "personal information" );
+		}
+	}
+
+	@Test
+	public void adultVariantsAreMoreThanCleanTextWithProfanityInserted(){
+		//where the swearing IS the punchline of a different sentence, the line is listed here on purpose
+		java.util.Set<String> swearIsTheJoke = new java.util.HashSet<>( java.util.Arrays.asList( "any.0043", "fmt.0028" ) );
+		java.util.regex.Pattern swear = java.util.regex.Pattern.compile( LinePack.PROFANITY.pattern() + "|\\b(damn\\w*|hell|ass|crap\\w*|dumbass)\\b", java.util.regex.Pattern.CASE_INSENSITIVE );
+		for (Line l : HumorTestSupport.shipped()){
+			if (l.adult == null || swearIsTheJoke.contains( l.id )) continue;
+			String a = norm( swear.matcher( l.adult ).replaceAll( "" ) ), c = norm( swear.matcher( l.clean ).replaceAll( "" ) );
+			boolean justInserted = a.equals( c ) || (a.startsWith( c ) && a.length() - c.length() < 8);
+			assertFalse( l.id + " Adult wording is just the Clean text with profanity added; give it its own punchline", justInserted );
+		}
+	}
+
+	private static String norm( String t ){
+		return t.toLowerCase().replaceAll( "[^a-z0-9 ]", "" ).replaceAll( "\\s+", " " ).trim();
+	}
 }

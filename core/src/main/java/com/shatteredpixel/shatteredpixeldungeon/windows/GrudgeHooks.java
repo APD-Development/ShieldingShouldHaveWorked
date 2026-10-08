@@ -168,7 +168,9 @@ public final class GrudgeHooks {
 	public static void onRunEnded( boolean won, Object cause ){
 		if (!ClericGrudge.ENABLED) return;
 		try {
-			Context c = Context.EMPTY.with( "lastOutcome", won ? "WON" : "DIED" ).with( "depth", Dungeon.depth );
+			//only a run the game itself ended the normal way counts: the recorded result agrees with the call, and a win has a living hero
+			if (Dungeon.hero == null || Statistics.gameWon != won || (won && !Dungeon.hero.isAlive())) return;
+			Context c = Context.EMPTY.with( "runVerified", 1 ).with( "lastOutcome", won ? "WON" : "DIED" ).with( "depth", Dungeon.depth );
 			if (Dungeon.hero != null){
 				c = c.with( "lastHero", Dungeon.hero.heroClass.name() ).with( "hero", Dungeon.hero.heroClass.name() )
 						.with( "lastHeroName", Dungeon.hero.heroClass.title() ).with( "heroName", Dungeon.hero.heroClass.title() );

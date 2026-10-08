@@ -38,39 +38,39 @@ Lines 151 to 200 of 348. Reply with the ids to keep, cut or rewrite.
 - Clean: A big thank-you to Cleric for existing in a way that I find insulting but cannot prove.
 - Adult: A big thank-you to Cleric for existing in a way that I find insulting but cannot prove, you smug little robe.
 
-### app.0061  (Appreciation, victory, only when lastHero=CLERIC & lastOutcome=WON)
+### app.0061  (Appreciation, victory, only when lastHero=CLERIC & lastOutcome=WON & runVerified=1)
 - Clean: Congratulations on your Cleric win. Thank you for proving it can be done, so I can never again say it can't.
 - Adult: (same as Clean)
 
-### app.0062  (Appreciation, death, only when lastHero=CLERIC & lastOutcome=DIED)
+### app.0062  (Appreciation, death, only when lastHero=CLERIC & lastOutcome=DIED & runVerified=1)
 - Clean: Thank you for playing Cleric. It is an honor to see someone so committed to a decision.
 - Adult: (same as Clean)
 
-### app.0063  (Appreciation, death, only when lastHero=CLERIC & lastOutcome=DIED & depth>=1)
+### app.0063  (Appreciation, death, only when lastHero=CLERIC & lastOutcome=DIED & depth>=1 & runVerified=1)
 - Clean: Depth {depth} as Cleric is an accomplishment, and I mean that exactly the way you think I mean it.
 - Adult: (same as Clean)
 
-### app.0064  (Appreciation, victory, only when lastHero=CLERIC & lastOutcome=WON)
+### app.0064  (Appreciation, victory, only when lastHero=CLERIC & lastOutcome=WON & runVerified=1)
 - Clean: A Cleric win. I'm happy for you, I'm happy for Cleric, and I'm furious about both of those feelings.
 - Adult: A Cleric win. I'm happy for you, I'm happy for Cleric, and I'm so fucking angry about both of those feelings.
 
-### app.0065  (Appreciation, postrun, only when lastHero!=CLERIC)
+### app.0065  (Appreciation, postrun, only when lastHero!=CLERIC & runVerified=1)
 - Clean: You did that run without Cleric, and Cleric would like to thank you for not bringing it along.
 - Adult: (same as Clean)
 
-### app.0066  (Appreciation, postrun, only when lastHero!=CLERIC & lastOutcome=DIED)
+### app.0066  (Appreciation, postrun, only when lastHero!=CLERIC & lastOutcome=DIED & runVerified=1)
 - Clean: A tough run. Cleric sends its regards and a pamphlet about how it would have done worse.
 - Adult: (same as Clean)
 
-### app.0067  (Appreciation, victory, only when lastHero!=CLERIC & lastOutcome=WON)
+### app.0067  (Appreciation, victory, only when lastHero!=CLERIC & lastOutcome=WON & runVerified=1)
 - Clean: Well played. Cleric watched the entire run from the character screen and is deeply moved, mostly by confusion.
 - Adult: (same as Clean)
 
-### app.0068  (Appreciation, ability, only when lastHero=CLERIC & spell!=none)
+### app.0068  (Appreciation, ability, only when lastHero=CLERIC & spell!=none & runVerified=1)
 - Clean: {spell}: a respectable choice for Cleric, in the sense that a choice was made.
 - Adult: (same as Clean)
 
-### app.0069  (Appreciation, ability, only when lastHero=CLERIC & armorAbility!=none)
+### app.0069  (Appreciation, ability, only when lastHero=CLERIC & armorAbility!=none & runVerified=1)
 - Clean: {armorAbility} is a real credit to Cleric's ability to be on screen.
 - Adult: (same as Clean)
 
@@ -94,7 +94,7 @@ Lines 151 to 200 of 348. Reply with the ids to keep, cut or rewrite.
 - Clean: The title screen is looking good today, thanks to Cleric. By being absent.
 - Adult: (same as Clean)
 
-### app.0075  (Appreciation, equipment, only when lastHero=CLERIC & weapon!=none)
+### app.0075  (Appreciation, equipment, only when lastHero=CLERIC & weapon!=none & runVerified=1)
 - Clean: {weapon} on Cleric is a bold fashion statement and a worse decision.
 - Adult: (same as Clean)
 
@@ -111,8 +111,8 @@ Lines 151 to 200 of 348. Reply with the ids to keep, cut or rewrite.
 - Adult: (same as Clean)
 
 ### cmp.0004  (Hatred, anytime, any time)
-- Clean: Huntress hits things from far away. I would like to hit Cleric from even farther away.
-- Adult: Huntress hits things from far away. I would like to hit Cleric from the next fucking country.
+- Clean: Huntress keeps a safe distance from danger. I keep a safe distance from Cleric. Both are well-reasoned tactical decisions.
+- Adult: Huntress keeps a safe distance from danger. I keep a safe distance from Cleric. Both are well-reasoned tactical decisions, and mine involves a restraining order.
 
 ### cmp.0005  (Hatred, anytime, any time)
 - Clean: Duelist has a weapon and a plan. Cleric has a book and a feeling.
@@ -138,27 +138,27 @@ Lines 151 to 200 of 348. Reply with the ids to keep, cut or rewrite.
 - Clean: The character-selection screen is a lovely lineup of heroes, and then there is Cleric, standing at the end like a dentist's appointment.
 - Adult: The character-selection screen is a lovely lineup of heroes, and then there is Cleric, standing at the end like a prostate exam.
 
-### cmp.0011  (Hatred, anytime, only when hero=WARRIOR)
+### cmp.0011  (Hatred, playing, only when hero=WARRIOR)
 - Clean: You are playing Warrior. Good choice. Somewhere, Cleric is reading a pamphlet about how to do that.
 - Adult: (same as Clean)
 
-### cmp.0012  (Hatred, anytime, only when hero=MAGE)
+### cmp.0012  (Hatred, playing, only when hero=MAGE)
 - Clean: You are playing Mage. Great call. Cleric would have brought a candle and a speech.
 - Adult: (same as Clean)
 
-### cmp.0013  (Hatred, anytime, only when hero=ROGUE)
+### cmp.0013  (Hatred, playing, only when hero=ROGUE)
 - Clean: You are playing Rogue. Good. Cleric would have walked loudly into a room full of enemies and apologized.
 - Adult: (same as Clean)
 
-### cmp.0014  (Hatred, anytime, only when hero=HUNTRESS)
+### cmp.0014  (Hatred, playing, only when hero=HUNTRESS)
 - Clean: You are playing Huntress. Excellent. Cleric would have asked the enemies to line up and think about what they've done.
 - Adult: (same as Clean)
 
-### cmp.0015  (Hatred, anytime, only when hero=DUELIST)
+### cmp.0015  (Hatred, playing, only when hero=DUELIST)
 - Clean: You are playing Duelist. Superb. Cleric would have challenged the enemy to a prayer circle.
 - Adult: You are playing Duelist. Superb. Cleric would have challenged the enemy to a prayer circle and lost to a rat.
 
-### cmp.0016  (Hatred, anytime, only when hero!=CLERIC)
+### cmp.0016  (Hatred, playing, only when hero!=CLERIC)
 - Clean: Cleric is the only character capable of disappointing me while someone else is playing {heroName}.
 - Adult: (same as Clean)
 
@@ -171,7 +171,7 @@ Lines 151 to 200 of 348. Reply with the ids to keep, cut or rewrite.
 - Adult: Yes, I spent real development time on a message about Cleric. No, I do not regret it. Yes, I need a hobby, a therapist, and a lawyer, in that order.
 
 ### fw.0003  (Hatred, fourth_wall, any time)
-- Clean: If this popup is annoying, there is a switch for it in APD Settings. Cleric has no such switch, which is exactly the problem.
+- Clean: If this popup is annoying, tap "Turn off these messages" on it and it stops for good, right now. Cleric offers no such button, which is exactly the problem.
 - Adult: (same as Clean)
 
 ### fw.0004  (Hatred, fourth_wall, any time)
@@ -187,7 +187,7 @@ Lines 151 to 200 of 348. Reply with the ids to keep, cut or rewrite.
 - Adult: Technically, this popup is a feature. Practically, it is a cry for help. Officially, it is a restraining order against Cleric that I wrote myself.
 
 ### fw.0007  (Hatred, fourth_wall, any time)
-- Clean: Fact check: I wrote this message on purpose, with a clear head, and with my full legal name on the project. I regret nothing about Cleric.
+- Clean: Fact check: I wrote this message on purpose, with a clear head and a fully functional keyboard. I regret nothing about Cleric.
 - Adult: (same as Clean)
 
 ### fw.0008  (Hatred, fourth_wall, any time)

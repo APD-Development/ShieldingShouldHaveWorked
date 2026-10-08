@@ -4,7 +4,7 @@ Lines 101 to 150 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### app.0002  (Appreciation, appreciation, any time)
 - Clean: I genuinely appreciate Cleric. Without it, I wouldn't know what 225 attempts at disappointment feels like.
-- Adult: I genuinely appreciate Cleric. Without it, I wouldn't know what 225 attempts at fucking disappointment feels like.
+- Adult: I genuinely appreciate Cleric. Without it, I wouldn't know what 225 attempts at disappointment feel like, or that my keyboard can survive a lot more abuse than my dignity.
 
 ### app.0003  (Appreciation, appreciation, any time)
 - Clean: Cleric has some fascinating abilities. Someday one might even be useful.
@@ -16,7 +16,7 @@ Lines 101 to 150 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### app.0005  (Appreciation, appreciation, any time)
 - Clean: Cleric is a brave choice. Brave in the way that standing in a thunderstorm holding a metal pole is brave.
-- Adult: Cleric is a brave choice. Brave in the way that standing in a thunderstorm holding a metal pole is brave. Also dumb as shit.
+- Adult: Cleric is a brave choice. Brave in the way that standing in a thunderstorm holding a metal pole is brave. Anyone can be brave with a lightning rod. It takes a Cleric to name it Guiding Light.
 
 ### app.0006  (Appreciation, appreciation, any time)
 - Clean: I would like to compliment Cleric's consistency. It has never once let me down by being good.
@@ -60,7 +60,7 @@ Lines 101 to 150 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### app.0016  (Appreciation, appreciation, any time)
 - Clean: Cleric has the heart of a hero and the survival plan of a candle in a hurricane.
-- Adult: Cleric has the heart of a hero and the survival plan of a candle in a goddamn hurricane.
+- Adult: Cleric has the heart of a hero and the survival plan of a candle in a hurricane, and the candle has a better sense of humor about it.
 
 ### app.0017  (Appreciation, appreciation, any time)
 - Clean: If I could say one nice thing about Cleric, it would be: it stays on the character list. That's it. That's the nice thing.
@@ -136,7 +136,7 @@ Lines 101 to 150 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### app.0035  (Appreciation, appreciation, any time)
 - Clean: Cleric: the class that makes you appreciate a plain stick.
-- Adult: Cleric: the class that makes you appreciate a plain fucking stick.
+- Adult: Cleric: the class that teaches you to love a stick. A plain stick. A stick with no opinions and no Tome.
 
 ### app.0036  (Appreciation, appreciation, any time)
 - Clean: I am proud to present Cleric, a character with a tome, a dream, and me, standing here with almost no patience left.

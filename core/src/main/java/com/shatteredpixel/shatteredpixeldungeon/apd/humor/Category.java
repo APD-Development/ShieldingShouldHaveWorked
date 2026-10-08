@@ -34,7 +34,10 @@ public enum Category {
 	// reached the amulet floor or the last stretch and still did not ascend
 	ASCENSION( Moment.RUN_END_DEATH ),
 	POSTRUN( Moment.RUN_END_DEATH, Moment.RUN_END_VICTORY ),
-	BOSS( Moment.BOSS_CLEARED, Moment.RUN_END_DEATH, Moment.RUN_END_VICTORY ),
+	// about a boss the hero has just defeated
+	BOSS( Moment.BOSS_CLEARED ),
+	// about the class being played right now (in play only)
+	PLAYING( Moment.LEVEL_CALM, Moment.BOSS_CLEARED ),
 	ABILITY( Moment.LEVEL_CALM, Moment.RUN_END_DEATH, Moment.RUN_END_VICTORY ),
 	EQUIPMENT( Moment.LEVEL_CALM, Moment.RUN_END_DEATH, Moment.RUN_END_VICTORY ),
 	HISTORY( Moment.STARTUP, Moment.MENU, Moment.STATS, Moment.RUN_END_DEATH, Moment.RUN_END_VICTORY ),

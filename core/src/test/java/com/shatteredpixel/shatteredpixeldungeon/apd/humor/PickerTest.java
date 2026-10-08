@@ -116,12 +116,12 @@ public class PickerTest {
 	public void aLineIsOnlyEligibleWhereItsCategoryAndConditionsAllow(){
 		List<Line> pool = new ArrayList<>();
 		pool.addAll( LinePack.parse(
-				"d.0001 | death | - | lastHero=CLERIC & lastOutcome=DIED | 5 | Cleric died on depth {depth}. |\n"
+				"d.0001 | death | - | lastHero=CLERIC & lastOutcome=DIED & runVerified=1 | 5 | Cleric died on depth {depth}. |\n"
 				+ "m.0001 | menu | - | - | 5 | Welcome. Cleric exists. |\n"
 				+ "h.0001 | history | - | clericRuns>=100 | 5 | {clericRuns} Cleric runs. |\n", "t" ) );
 		Random rng = new Random( 4 );
 		Ledger led = new Ledger( null );
-		Context died = Context.EMPTY.with( "lastHero", "CLERIC" ).with( "lastOutcome", "DIED" ).with( "depth", 7 );
+		Context died = Context.EMPTY.with( "runVerified", 1 ).with( "lastHero", "CLERIC" ).with( "lastOutcome", "DIED" ).with( "depth", 7 );
 		//the death line only at a death, never at the menu
 		assertEquals( "d.0001", Picker.pick( pool, Moment.RUN_END_DEATH, died, led, rng, null ).id );
 		assertEquals( "m.0001", Picker.pick( pool, Moment.MENU, died, led, rng, null ).id );

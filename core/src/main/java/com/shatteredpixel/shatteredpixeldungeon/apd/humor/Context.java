@@ -39,10 +39,12 @@ public final class Context {
 				"hero",              // the class being played now, as its code name (for conditions)
 				"heroName",          // the same, as the player reads it (for {placeholders})
 				"lastHeroName",
+				"runVerified",       // 1 only when the game itself confirmed a genuine, permanently ended run (every line about a finished run requires it)
 				"lastHero",          // the class of the run that just ended
 				"lastOutcome",       // DIED or WON
 				"depth",             // depth the run ended on (or the current depth)
-				"killer", "boss",    // what killed the hero; the boss involved
+				"killer",            // the creature that killed the hero (only when the cause was a creature)
+				"boss",              // a boss the hero has JUST defeated (only at the moment right after it fell)
 				"subclass", "spell", "weapon", "armorAbility",
 				"clericRuns", "clericWins", "clericDeaths", "clericStreak",
 				"guidingLightCasts",

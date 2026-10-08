@@ -199,3 +199,13 @@ Rules (`GrudgePrefs`, `ClericGrudge.popup`, tested in `GrudgeSettingsTest`):
 - Choosing a line does not use it up. The game calls `confirm()` only after the window is really up; only then does a line count as heard, a story move on, and the session's message be used up.
 - Moments map to locations: STARTUP (first title screen of the process, after a longer settle and with no window open), MENU (later title screens), RUN (LEVEL_CALM, BOSS_CLEARED: a long quiet stretch, hero idle, nothing hostile in view, not a boss floor, no window), AFTER_RUN (results screen after death/win/ascension), STATS (UIMSD and the records screen opened on purpose).
 - Existing settings migrate untouched: the frequency keeps its old key; the new location switches start at their defaults; the seen history file is never rewritten by the change.
+
+---
+## FACT SEMANTICS AND ACCURACY RULES (audit after batch 4)
+A contextual line may only claim what its conditions guarantee; a fact that is not supplied keeps the line ineligible. What each fact means:
+- Run-end moments (results screen): `runVerified=1` (the game confirmed a genuine, normally ended run: the recorded result agrees with the call, and a win has a living hero), `lastOutcome` (WON = ascended; DIED), `lastHero`/`lastHeroName`, `hero`/`heroName` (the same class), `depth`, `subclass`, `killer` (only when the cause was a creature). EVERY line that uses lastHero, lastOutcome or lastHeroName must require `runVerified=1` (lint). A demo run never reaches this path.
+- In play (LEVEL_CALM, BOSS_CLEARED): `hero`, `heroName`, `depth`, `subclass`; `boss` is a boss the hero has JUST defeated and only exists at BOSS_CLEARED (lint: the boss fact is for the BOSS category, which is shown only at BOSS_CLEARED).
+- Title, startup and statistics screens: only history facts (`clericRuns`, `clericWins`, `clericDeaths` from the recorded Runs history) and the grudge's own totals. No hero is known there.
+- Not supplied yet, so lines using them stay silent: `spell` (a Cleric spell cast in the run), `armorAbility` (an armor ability used, by its name: Ascended Form, Trinity, Power of Many), `weapon`, `clericStreak`, `guidingLightCasts`. Ability lines that name an ability require that ability by name; lines that imply dying require `lastOutcome=DIED`.
+- Lines about the class being played right now (the "You are playing X" comparisons) are in the PLAYING category and appear only in play.
+- No line mentions the developer's personal information (lint: PERSONAL), calls him "the developer" (lint), uses "we/us/our" (lint), or claims a balance or patch change (lint). Adult wording must be more than the Clean text with profanity inserted (test, with a short allow-list where the swearing is the punchline).

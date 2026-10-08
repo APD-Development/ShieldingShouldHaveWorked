@@ -56,7 +56,7 @@ Lines 1 to 50 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### any.0024  (Hatred, anytime, any time)
 - Clean: Cleric has the personality of a waiting room and the confidence of a final boss. I will not be taking questions.
-- Adult: Cleric has the personality of a waiting room and the confidence of a final boss. I will not be taking fucking questions.
+- Adult: Cleric has the personality of a waiting room and the confidence of a final boss. I will not be taking questions, but I will be taking a very long walk.
 
 ### any.0025  (Hatred, anytime, any time)
 - Clean: My therapist asked me to describe my feelings about Cleric in one word. I said a word. She asked me to use a different word.
@@ -116,7 +116,7 @@ Lines 1 to 50 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### any.0056  (Hatred, anytime, any time)
 - Clean: I'm not saying Cleric is the reason my hair is gray. I'm saying the timing is suspicious.
-- Adult: I'm not saying Cleric is the reason my hair is gray. I'm saying the timing is suspicious as hell.
+- Adult: I'm not saying Cleric is the reason my hair is gray. I'm saying my barber has started asking who hurt me.
 
 ### any.0058  (Hatred, anytime, any time)
 - Clean: Cleric has been in my head all day, rent-free. I am now charging it rent. It will not pay.
