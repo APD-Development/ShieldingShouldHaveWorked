@@ -24,8 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.apd.backend;
 import java.util.HashMap;
 import java.util.Map;
 
-//Where each kind of data may live. EVERY schema that can cross the boundary is listed here with its class; anything not listed cannot be
-//sent (a new schema must be classified on purpose). This is the privacy contract in one table: raw history stays on the device.
+// Where each schema may live. A schema that isn't listed can't be sent.
 public final class DataPolicy {
 
 	public enum DataClass {

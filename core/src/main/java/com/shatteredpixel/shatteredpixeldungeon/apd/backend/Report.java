@@ -24,9 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.apd.backend;
 import java.util.HashSet;
 import java.util.Set;
 
-//A player's report of content, a submission, a profile or another player, for moderators. One shared shape for every community system, so
-//moderation tooling is written once. The note is bounded (no way to push large or arbitrary data through it) and a repeat report of the same
-//target by the same reporter is a no-op, which both stops spam and makes retried sends harmless.
+// A player's report for moderators. The note is bounded and a repeat report of the same target by the same reporter is a no-op.
 public final class Report {
 
 	public enum TargetKind { CONTENT, SUBMISSION, PROFILE, VOTE_ROUND }

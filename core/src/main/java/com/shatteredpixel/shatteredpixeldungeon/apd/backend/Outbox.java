@@ -24,10 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.apd.backend;
 import java.util.ArrayList;
 import java.util.List;
 
-//What the game wants the server to know, waiting to be sent. The game ADDS to it and moves on - it never waits for the network, and a
-//server outage only means items wait longer. Nothing that is local-only can be queued, and an item that the server permanently refuses is
-//removed (and reported), not retried forever. This class is the in-memory logic; the stored copy of the queue (so it survives an app restart)
-//is a later, small, replaceable layer on top of the same Item data.
+// Items waiting to be sent. The game adds to it and moves on; an outage only means items wait longer. Local-only schemas are refused; permanent refusals are dropped and reported.
 public final class Outbox {
 
 	public static final class Item {

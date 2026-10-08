@@ -26,9 +26,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-//Ranking as a pure function of server-held records, so any server implementation ranks identically and the result can be re-computed (and
-//audited) at any time. A board only counts runs of ITS ruleset, balance revision and difficulty, and only at or above the trust level the
-//board demands, so a board can start strict (REPLAY_VERIFIED) or open (SERVER_CHECKED) without changing any stored record.
+// Ranking as a pure function of server-held records, so any server ranks the same way. A board only counts its own ruleset, balance revision and difficulty, at or above its minimum trust level.
 public final class Leaderboard {
 
 	public static final class Board {

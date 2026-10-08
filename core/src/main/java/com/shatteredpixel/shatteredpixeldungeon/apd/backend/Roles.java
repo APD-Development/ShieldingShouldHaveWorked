@@ -27,9 +27,7 @@ import java.util.EnumSet;
 import java.util.Map;
 import java.util.Set;
 
-//Roles and what they allow, in one table. Two separate scopes on purpose: PLATFORM roles belong to APD staff and are the only way to get platform
-//permissions (grants, content approval, moderation of the whole platform); GROUP roles exist inside one group and can never reach a platform permission.
-//Nothing here is specific to any one kind of group: a creator team, a reviewer pool, a mod-author circle or (if it ever ships) a clan all use the same table.
+// Roles and their permissions in one table. Platform (staff) and group roles are separate scopes; a group role can never reach a platform permission.
 public final class Roles {
 
 	public enum Platform { NONE, REVIEWER, MODERATOR, DEVELOPER }

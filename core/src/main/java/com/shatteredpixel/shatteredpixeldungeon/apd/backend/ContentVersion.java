@@ -26,9 +26,7 @@ import java.util.EnumSet;
 import java.util.Map;
 import java.util.Set;
 
-//One immutable version of a piece of community content (a character, a mod, a challenge pack). "Immutable" is the point: a published version
-//is identified by its content hash, so what a player downloads can be checked against what was reviewed, and a version can never be edited
-//after the fact - a fix is a new version. State changes follow a fixed table, and REVOKED (a security/safety pull) is terminal.
+// One immutable version of community content, identified by its package hash. A fix is a new version; REVOKED is terminal.
 public final class ContentVersion {
 
 	public enum Kind { CHARACTER, MOD, CHALLENGE, OTHER }

@@ -21,9 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.apd.backend;
 
-//How much a record can be believed, and by whom. The client may only ever LABEL what it sends as CLIENT_CLAIM: every higher level is
-//assigned by the server (or, for DEVELOPER_ISSUED, by developer authority) and is meaningless unless a signature or the server's own
-//storage says so. Anything shown as authoritative (rankings, achievements, approved content) must be at least the level its feature needs.
+// How far a record can be believed. The client may only label its own data CLIENT_CLAIM; higher levels are assigned server-side.
+// DEVELOPER_ISSUED is a separate axis (who issued it), not "above" a replay check.
 public enum TrustLevel {
 	//the app said so; anyone who can modify the app can say anything
 	CLIENT_CLAIM,

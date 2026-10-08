@@ -21,12 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.apd.backend;
 
-//What a player sends to take part in rankings: a SUMMARY of ONE FINISHED run, nothing else. Data minimisation is part of the contract:
-//  - never the raw run log, never UIMSD history (those stay on the device unless the player explicitly provides specific evidence later);
-//  - never anything hidden during play (unidentified item truths, unseen floor contents): only finished runs can be submitted;
-//  - never the player's identity: the server attaches the player from the authenticated session, so a submission cannot claim to be somebody else.
-//The fields below are the WHOLE contract; RunSubmissionTest fails if one is added without the contract (and the privacy table) being updated.
-//Everything in it is a CLAIM until the server says otherwise (see TrustLevel).
+// Summary of ONE finished run, nothing more: no raw log, no UIMSD history, no hidden information, no identity (the server takes the player from the session).
+// The field set is pinned by RunSubmissionTest. Everything in it is a claim until the server says otherwise. durationMillis 0 means not recorded.
 public final class RunSubmission {
 
 	public static final String SCHEMA = "apd.run-submission";

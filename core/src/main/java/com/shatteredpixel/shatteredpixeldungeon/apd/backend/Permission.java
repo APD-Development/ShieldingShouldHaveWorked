@@ -21,8 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.apd.backend;
 
-//What an actor may be allowed to do on the shared (server-side) systems. Checking a permission, never a role name, is how every community system
-//asks "may this happen?", so roles can be rearranged later without touching the systems that use them.
+// What an actor may do on shared systems. Systems check permissions, never role names.
 public enum Permission {
 	//platform level (APD staff): never granted by gameplay or by group membership
 	ISSUE_DEVELOPER_GRANT, APPROVE_CONTENT, REVOKE_CONTENT, TRIAGE_REPORTS, HIDE_SUBMISSION, VIEW_AUDIT_LOG,

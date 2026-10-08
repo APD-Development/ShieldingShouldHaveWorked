@@ -21,9 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.apd.backend;
 
-//Who this installation is, with NO account required. A device id is made on first use and is enough for everything that works offline;
-//a player id exists only after the player chooses to sign in somewhere, and signing in is always optional. Offline play, local history and
-//reports never depend on either id.
+// Who this installation is without an account: a device id always, a player id only after the player signs in (optional).
 public final class LocalProfile {
 
 	public final Id deviceId;

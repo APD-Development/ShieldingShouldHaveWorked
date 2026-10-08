@@ -36,11 +36,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-//The player's own named views: a saved query (QueryCodec text) under a name they chose, so an eleven-condition question is built once.
-//Stays on the device with the history it belongs to (never sent anywhere). A saved view is only a QUESTION, never data: opening it asks the
-//question again of the current history, so it stays correct as history grows and can never hold stale or hidden numbers.
-//The file is one line per view, written to a temporary file and moved over the old one (a crash leaves the old complete file); a damaged line
-//is skipped on reading, the rest is kept.
+// The player's named views: a saved query under a name. A view is a question, not data, so it stays correct as history grows. Local to the device; the file is replaced atomically and damaged lines are skipped on load.
 public final class SavedViews {
 
 	public static final int MAX_VIEWS = 100, MAX_NAME = 60;

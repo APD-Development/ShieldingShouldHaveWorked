@@ -30,10 +30,7 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.Base64;
 
-//Keeps the Outbox across app restarts: one line per item in a text file, written to a temporary file and then moved over the old one, so a crash
-//in the middle of saving leaves the previous complete file, never half of a new one. Reading is forgiving in the same way as the run logs: a
-//damaged line is skipped (and counted), the rest is kept; a missing file is simply an empty queue. Local-only data is re-checked on load, so a
-//hand-edited file cannot get it sent.
+// Persists the Outbox (one line per item, temp file then move). Damaged lines are skipped and counted; local-only data is re-checked on load.
 public final class OutboxStore {
 
 	public static final class Loaded {

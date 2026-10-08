@@ -26,8 +26,7 @@ import java.util.Map;
 import java.util.TreeSet;
 import java.util.Set;
 
-//What the app knows about its player's granted achievements. A grant is accepted only if it was signed for THIS player by a trusted,
-//unrevoked developer key; accepting the same grant twice changes nothing (grants are idempotent), so syncing or re-importing is safe.
+// The player's granted achievements. A grant is accepted only for this player, signed by a trusted unrevoked key; accepting it twice changes nothing.
 public final class GrantLedger {
 
 	public enum Result { ACCEPTED, ALREADY_HAVE, WRONG_PLAYER, REJECTED_SIGNATURE }

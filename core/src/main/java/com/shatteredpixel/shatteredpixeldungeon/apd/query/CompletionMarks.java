@@ -27,10 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.stats.LifecycleEvents;
 import java.util.Map;
 import java.util.TreeMap;
 
-//Per hero class: how many runs were won and the highest difficulty won (plan 7.7, character completion markers). Pure function of the Runs table,
-//so the character screen, a profile or a report can all show the same thing. Nothing is invented: a win from a run that never recorded its
-//difficulty is counted as a win but does not raise the highest difficulty. Repeated ranking records of a recorded run are counted once.
-//No screen uses this yet; how a marker should look is an open design question (see the canonical plan, 7.7 and 18.4).
+// Per hero class: wins and highest difficulty won, from the Runs table. A win without a recorded difficulty counts as a win but not toward the highest difficulty. No screen uses it yet (marker design is open).
 public final class CompletionMarks {
 
 	public static final class Mark {

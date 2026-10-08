@@ -25,8 +25,7 @@ import java.security.SecureRandom;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-//An opaque, typed identifier. The type is part of the identity, so a player id can never be passed where a run id is expected, and the
-//text is validated once here (no spaces, no control characters, bounded) so every later layer can treat it as safe to log and store.
+// Typed opaque id. The kind is part of the identity, so a player id can't be passed where a run id is expected.
 public final class Id implements Comparable<Id> {
 
 	public enum Kind {

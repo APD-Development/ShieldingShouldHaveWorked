@@ -29,12 +29,8 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKeys;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.LifecycleEvents;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.RunFacts;
 
-//The ONLY place where the player's local run facts are turned into something that could leave the device. It copies a fixed, small set of
-//facts (RunSubmission's fields) and nothing else, and it REFUSES, with a reason the player can be shown, instead of guessing:
-//  - only APD runs that were recorded completely (a sealed log: not damaged, not starting mid-run, not imported from SPD rankings);
-//  - only finished runs (died, won or abandoned), never one still going: their hidden information must stay hidden;
-//  - only values that were really recorded: outcome, ruleset, difficulty and its balance revision must be known and not inferred.
-//Nothing calls this yet. When a submit feature exists it must be an explicit player action (see docs/APD-BACKEND.md).
+// The only place local run facts become a RunSubmission. Copies a fixed set of facts and refuses (with a reason) anything that isn't a complete, finished, recorded APD run.
+// Nothing calls it yet.
 public final class RunSubmissionFactory {
 
 	public enum Refusal {

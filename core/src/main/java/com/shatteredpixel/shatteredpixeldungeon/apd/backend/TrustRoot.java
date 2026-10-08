@@ -26,9 +26,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-//The public keys the app trusts, each only for the purpose it was published for, with a validity window and a revocation list. Several keys
-//can be active at once, so a key can be rotated (or a leaked one revoked) by shipping a new trust root without breaking everything signed
-//earlier by a still-valid key. The trust root is data, not code: it can later be updated from a signed source without a new release.
+// Public keys the app trusts, each for one purpose, with a validity window and a revocation list. Several keys can be active at once so keys can be rotated.
 public final class TrustRoot {
 
 	public enum Purpose { DEVELOPER_GRANT, SERVER_RECEIPT, CONTENT_APPROVAL }

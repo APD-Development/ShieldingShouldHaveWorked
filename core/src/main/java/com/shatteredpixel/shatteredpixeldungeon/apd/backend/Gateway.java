@@ -21,9 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.apd.backend;
 
-//The ONE door between the game and any server. The game never calls a network API directly: it hands envelopes to the Outbox, and the
-//Outbox sends them through a Gateway when (and only when) there is a connection. A different server, provider or transport is a different
-//Gateway; nothing in gameplay changes. Every call is idempotent by key, so a retry after a lost reply cannot double-submit.
+// The one door between the game and any server. Calls are idempotent by key, so a retry after a lost reply can't double-submit.
 public interface Gateway {
 
 	enum Status {

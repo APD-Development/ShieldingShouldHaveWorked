@@ -26,11 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-//A generic group of players with roles: the shared building block for anything where people belong together (creator teams, reviewer pools, a
-//mod author's circle, a future clan if one is ever approved). It deliberately knows NOTHING about what a group is for: no scores, no rewards, no
-//competition, no chat. A feature layers its own rules on top. Server-side logic, shared here so every server implementation behaves the same.
-//Rules that hold for every group: every action is checked by permission, a group always has at least one owner, a player cannot raise their own
-//role, and every change is written to the audit log.
+// Generic group with members and roles. Knows nothing about what a group is for. Permission-checked, always has an owner, no self-promotion, audited.
 public final class Groups {
 
 	public enum Result { OK, NOT_ALLOWED, UNKNOWN_GROUP, UNKNOWN_MEMBER, ALREADY_MEMBER, LAST_OWNER, CANNOT_CHANGE_HIGHER_ROLE, GROUP_FULL }

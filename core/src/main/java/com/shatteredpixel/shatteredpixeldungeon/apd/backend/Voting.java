@@ -27,9 +27,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-//Community voting primitives: one round has a fixed set of options and an open/close time; each player has at most ONE ballot per round (a
-//new ballot replaces the old one until the round closes, so voting is idempotent and retried sends are harmless). There is intentionally no
-//weight field anywhere: every account counts exactly once, so nothing a player can buy or grind can count for more (APD stays non-pay-to-win).
+// One ballot per account per round, replaceable until the round closes, so retries are harmless. No weights anywhere (non-P2W).
 public final class Voting {
 
 	public static final class Round {

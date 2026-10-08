@@ -21,8 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.apd.backend;
 
-//How long to wait before trying a failed send again: doubles each time from 30 seconds up to 6 hours, so a long outage costs a few tries a day,
-//not a stream of them.
+// Retry delay: 30 s, doubling up to 6 h.
 public final class Backoff {
 
 	public static final long FIRST_MILLIS = 30_000L, MAX_MILLIS = 6L * 60 * 60 * 1000;

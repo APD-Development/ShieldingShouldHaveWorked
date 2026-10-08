@@ -21,9 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.apd.query;
 
-//Which enemy classes are bosses, for the Bosses table. Mirrors the mobs that carry Char.Property.BOSS in the game; the true class name is
-//hidden information, but "this fight was a boss" is visible during play (boss health bar), so only this yes/no is shown.
-//TODO: replace the list with a recorded flag if the game ever adds a boss that is not in it (BossClassesTest only checks the names below).
+// Boss enemy classes, for the Bosses table. Mirrors the mobs with Char.Property.BOSS. Only the yes/no is shown; the class itself stays hidden.
+// TODO: replace with a recorded flag if a boss is ever added that isn't in this list.
 public final class BossClasses {
 
 	private static final String[] SIMPLE_NAMES = { "Goo", "Tengu", "DM300", "DwarfKing", "YogDzewa", "YogFist",

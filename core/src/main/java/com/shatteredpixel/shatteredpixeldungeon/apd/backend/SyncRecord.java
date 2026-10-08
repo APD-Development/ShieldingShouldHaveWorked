@@ -21,10 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.apd.backend;
 
-//A record that is kept in step between a player's devices (settings, preferences, profile choices - NEVER raw run history or UIMSD data,
-//which are local-only by default; see DataPolicy). Each record has a per-collection key and a version the SERVER assigns, so two devices
-//that changed the same record offline are detected instead of one silently overwriting the other. A delete is a tombstone (a record with
-//'deleted' set), so a delete also syncs and an old copy cannot bring a deleted record back.
+// A preference-type record kept in step between a player's devices (never raw history). The server assigns the version; deletes are tombstones.
 public final class SyncRecord {
 
 	public enum Policy {

@@ -39,9 +39,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-//Local queue of runs the player asked to submit. Nothing here talks to a network: queuing a run only writes a line to a file in the history
-//folder, and nothing sends the queue yet (no server is chosen). The point is that the "submit" action, the minimal-data rule and the stored queue
-//exist and are tested before any provider does.
+// Local queue of runs the player asked to submit. Nothing here touches a network and nothing sends the queue yet.
 public final class SubmissionQueue {
 
 	public static final String FILE_NAME = "submission_queue.txt";

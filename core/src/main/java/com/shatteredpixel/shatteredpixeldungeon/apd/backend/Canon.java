@@ -26,8 +26,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.io.ByteArrayOutputStream;
 
-//Canonical bytes of a record, for hashing and signing. Every field is tagged and length-prefixed, so two different records can never produce
-//the same bytes (no "a|bc" versus "ab|c" ambiguity) and the encoding never depends on locale, map order or formatting.
+// Canonical bytes for hashing and signing. Fields are tagged and length-prefixed, so different records never produce the same bytes.
 public final class Canon {
 
 	private final ByteArrayOutputStream out = new ByteArrayOutputStream();

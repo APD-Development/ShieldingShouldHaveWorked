@@ -24,8 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.apd.query;
 import java.util.ArrayList;
 import java.util.List;
 
-//Reordering the visible columns (plan 3.7): pure list moves, so the rule is the same everywhere and easy to test. The list is never
-//changed in length or content, only in order; an unknown column or a move past either end changes nothing.
+// Reordering of the visible columns: pure list moves.
 public final class ColumnOrder {
 
 	private ColumnOrder(){}

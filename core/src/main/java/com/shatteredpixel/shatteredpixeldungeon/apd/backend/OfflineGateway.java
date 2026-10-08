@@ -21,8 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.apd.backend;
 
-//A Gateway that is never connected. Wiring the game to the Outbox with this gateway changes nothing for the player (everything just waits),
-//so the plumbing can ship and be tested long before any server exists.
+// A gateway that is never connected, so the plumbing can ship before any server exists.
 public final class OfflineGateway implements Gateway {
 
 	@Override

@@ -21,9 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.apd.backend;
 
-//Evidence a server may ask for to verify a submitted run. The player decides: nothing is ever attached to a submission up front, a request only
-//arrives later and the player can say no. The digest in the original submission pins exactly which log the server may ask for, so a different
-//(edited or swapped) log is rejected on both sides.
+// Evidence a server may ask for to verify a run. Only provided with the player's consent, before the deadline, and only if the local log still matches the submitted digest.
 public final class Evidence {
 
 	public enum Kind { FULL_RUN_LOG, FLOOR_REPLAY_DATA }

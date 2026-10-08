@@ -26,10 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-//The account model, independent of any sign-in provider. A PLAYER is a stable id of ours; a CREDENTIAL is "provider X knows this person as
-//Y" and is only a way IN. Many credentials can lead to one player, and credentials can be added or removed (never the last one), so changing
-//or adding a sign-in provider later never changes anyone's player id, rankings, content or votes. Which provider(s) to use is a decision
-//for the owner; this class only fixes the shape. (Server-side logic; shared here so every server implementation behaves the same.)
+// Account model independent of any sign-in provider: a player id of ours, with credentials as ways in. Credentials can be added or removed (never the last one) and are never moved between players silently.
 public final class Accounts {
 
 	public static final class Credential {

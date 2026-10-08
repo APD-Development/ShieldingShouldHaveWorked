@@ -24,8 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.apd.backend;
 import java.util.HashMap;
 import java.util.Map;
 
-//The wire form of a RunSubmission: plain "key=value" lines. Readers ignore keys they do not know (so a later MINOR version can add fields) and
-//refuse a submission that lacks a key they need; values can never contain a line break, so one value cannot smuggle in another key.
+// Wire form of a RunSubmission: key=value lines. Unknown keys are ignored (later minors may add fields); a missing key is refused.
 public final class RunSubmissionCodec {
 
 	private RunSubmissionCodec(){}

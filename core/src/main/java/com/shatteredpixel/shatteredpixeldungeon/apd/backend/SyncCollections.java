@@ -26,8 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-//Which collections of records may be synced between a player's devices, and how conflicts are settled. A collection that is not listed is not synced.
-//Only small preference-type data belongs here; raw history never does (see DataPolicy).
+// Collections that may sync between a player's devices. Only small account-private preference data; raw history never.
 public final class SyncCollections {
 
 	public static final class Spec {

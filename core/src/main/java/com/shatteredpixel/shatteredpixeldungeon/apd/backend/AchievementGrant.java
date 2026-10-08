@@ -21,8 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.apd.backend;
 
-//A developer-granted achievement. The grant is a SIGNED statement ("this player has this achievement") made by developer authority on the
-//server side; gameplay code cannot make one, because the app holds no signing key. The app only verifies and records grants.
+// A developer-granted achievement: a signed statement made server-side. The app only verifies and records grants; it has no signing key.
 public final class AchievementGrant {
 
 	public static final int SCHEMA_VERSION = 1;

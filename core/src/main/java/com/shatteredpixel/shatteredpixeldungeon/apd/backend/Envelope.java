@@ -21,9 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.apd.backend;
 
-//The wrapper of everything that crosses the client/server boundary: which schema it is, which version of it, and the payload. Versioning
-//rule (the same one the run logs use): a MINOR version only adds fields at the end, so a reader that knows the major version reads what it
-//knows and ignores the rest; a MAJOR version is a different contract and is refused, never guessed at.
+// Wrapper for everything crossing the client/server boundary. A minor version only appends fields (readers skip unknown ones); a different major is a different contract and is refused.
 public final class Envelope {
 
 	public enum Compat { SAME, NEWER_MINOR_READABLE, OLDER_MINOR_READABLE, UNSUPPORTED_MAJOR }

@@ -21,9 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.apd.backend;
 
-//The checks that need no secrets and no server state: they run on the device (so the player gets an immediate, honest "this cannot be
-//submitted because ...") AND on the server (which must never rely on the device having run them). Plausibility is deliberately simple here;
-//stronger verification belongs to the evidence/replay step, which this policy only makes possible.
+// Checks that need no secrets. Runs on the device (for a clear refusal) and must run again on the server.
 public final class SubmissionPolicy {
 
 	public enum Verdict { OK, NOT_FINISHED, BAD_FIELD, UNKNOWN_RULESET, DIFFICULTY_OUT_OF_RANGE, IMPOSSIBLE_VALUES, BAD_EVIDENCE_DIGEST }

@@ -25,9 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-//An append-only record of decisions that matter (approvals, revocations, grants, moderation, ranking corrections). Each entry carries the hash
-//of the one before it, so removing or editing any entry afterwards is detectable by anyone who holds a later hash (for example one that was
-//published or signed): the log can be trusted without trusting whoever stores it.
+// Append-only log of decisions. Each entry carries the hash of the previous one, so edits or removals are detectable.
 public final class AuditLog {
 
 	public static final class Entry {
