@@ -33,7 +33,7 @@ public enum Frequency {
 	public final String label;
 	// at least this long since the last surprise popup
 	public final long minGapMs;
-	// chance that a safe moment, once the gap has passed, actually shows one
+	// chance that a session, once the gap has passed, gets a popup at all (rolled once per session)
 	public final double chance;
 
 	Frequency( String label, long minGapMs, double chance ){
@@ -47,8 +47,12 @@ public enum Frequency {
 		return DEFAULT;
 	}
 
+	// the order the settings button cycles through
 	public Frequency next(){
-		Frequency[] all = values();
-		return all[(ordinal() + 1) % all.length];
+		switch (this){
+			case RARER: return RARE;
+			case RARE: return OFF;
+			default: return RARER;
+		}
 	}
 }

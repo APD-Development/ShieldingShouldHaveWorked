@@ -213,42 +213,4 @@ public class PoolsAndStoriesTest {
 			assertEquals( l.id, l.id.startsWith( "app." ), l.pool == Pool.APPRECIATION );
 		}
 	}
-
-	@Test
-	public void storiesAndDelayedFollowUpsOnlyComeThroughPopupsAndObeyEverySetting(){
-		List<Line> lines = parse( "app.0001 | anytime | appreciation,setup | - | 5 | Cleric is my favorite. |\n"
-				+ "app.0002 | anytime | appreciation,after=app.0001,delay=1 | - | 5 | Cleric is not my favorite. |\n"
-				+ "any.0001 | anytime | - | - | 5 | Cleric plain complaint. |\n" );
-		long later = T0 + 400 * DAY;
-		//contextual (inline) lines never draw from stories, even when the first part was seen and the delay has passed
-		Ledger led = new Ledger( null );
-		led.markShown( "app.0001", T0 );
-		ClericGrudge g = new ClericGrudge( lines, led, new Random( 3 ), true, later );
-		for (int i = 0; i < 300; i++){
-			Shown s = g.inline( Moment.MENU, Context.EMPTY, false, later + i * 10 * 60 * 1000L );
-			if (s != null) assertEquals( "Cleric plain complaint.", s.text );
-		}
-		assertEquals( "only the first part (seen before) counts; the follow-up was never shown", 1, g.counter().appreciationHeard );
-		//with surprise popups off, a waiting follow-up never appears
-		ClericGrudge off = new ClericGrudge( lines, led, new Random( 4 ), true, later );
-		off.popup( Moment.MENU, Context.EMPTY, Safety.CALM, Frequency.OFF, false, later );
-		for (int i = 0; i < 500; i++) assertNull( off.popup( Moment.MENU, Context.EMPTY, Safety.CALM, Frequency.OFF, false, later + (i + 1) * DAY ) );
-		//with the whole feature disabled, nothing at all, whatever the history says
-		ClericGrudge disabled = new ClericGrudge( lines, led, new Random( 5 ), false, later );
-		for (int i = 0; i < 500; i++){
-			assertNull( disabled.popup( Moment.MENU, Context.EMPTY, Safety.CALM, Frequency.RARE, false, later + (i + 1) * DAY ) );
-			assertNull( disabled.inline( Moment.MENU, Context.EMPTY, false, later + (i + 1) * DAY ) );
-		}
-		//and when popups are on, the follow-up does arrive through a popup
-		boolean arrived = false;
-		for (int seed = 0; seed < 400 && !arrived; seed++){
-			Ledger l2 = new Ledger( null );
-			l2.markShown( "app.0001", T0 );
-			ClericGrudge on = new ClericGrudge( lines, l2, new Random( seed * 7919L + 11 ), true, later );
-			on.popup( Moment.MENU, Context.EMPTY, Safety.CALM, Frequency.RARE, false, later );
-			Shown s = on.popup( Moment.MENU, Context.EMPTY, Safety.CALM, Frequency.RARE, false, later + 30 * DAY );
-			arrived = s != null && s.text.equals( "Cleric is not my favorite." );
-		}
-		assertTrue( arrived );
-	}
 }

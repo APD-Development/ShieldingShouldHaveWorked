@@ -60,8 +60,8 @@ public class HumorIsolationTest {
 				ClericGrudge g = new ClericGrudge( HumorTestSupport.shipped(), new Ledger( null ), new java.util.Random( 5 ), true );
 				Context ctx = Context.EMPTY.with( "lastHero", "CLERIC" ).with( "lastOutcome", "DIED" ).with( "depth", 12 );
 				for (int i = 0; i < 400; i++){
-					g.popup( Moment.RUN_END_DEATH, ctx, Safety.CALM, Frequency.RARE, i % 2 == 0, 1_000_000_000_000L + i * 86_400_000L );
-					g.inline( Moment.MENU, ctx, true, 1_000_000_000_000L + i * 1000L );
+					Shown shown = g.popup( Moment.RUN_END_DEATH, ctx, Safety.CALM, HumorTestSupport.prefs( Frequency.RARE ), i % 2 == 0, 1_000_000_000_000L + i * 86_400_000L );
+					if (shown != null) g.confirm( shown, 1_000_000_000_000L + i * 86_400_000L );
 					g.inlineAlways( Moment.RUN_END_DEATH, ctx, i );
 					g.counter();
 				}

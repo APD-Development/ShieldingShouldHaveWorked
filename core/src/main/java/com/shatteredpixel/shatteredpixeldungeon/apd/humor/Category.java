@@ -24,11 +24,11 @@ package com.shatteredpixel.shatteredpixeldungeon.apd.humor;
 // Where a line belongs. A category also says at which moments it may be shown, so a death joke can only ever appear after a death.
 public enum Category {
 
-	ANYTIME( Moment.MENU, Moment.LEVEL_CALM, Moment.BOSS_CLEARED, Moment.RUN_END_DEATH, Moment.RUN_END_VICTORY ),
+	ANYTIME( Moment.STARTUP, Moment.MENU, Moment.STATS, Moment.LEVEL_CALM, Moment.BOSS_CLEARED, Moment.RUN_END_DEATH, Moment.RUN_END_VICTORY ),
 	// used by the Appreciation pool for lines that fit anywhere
-	APPRECIATION( Moment.MENU, Moment.LEVEL_CALM, Moment.BOSS_CLEARED, Moment.RUN_END_DEATH, Moment.RUN_END_VICTORY ),
-	FOURTH_WALL( Moment.MENU, Moment.LEVEL_CALM, Moment.RUN_END_DEATH, Moment.RUN_END_VICTORY ),
-	MENU( Moment.MENU ),
+	APPRECIATION( Moment.STARTUP, Moment.MENU, Moment.STATS, Moment.LEVEL_CALM, Moment.BOSS_CLEARED, Moment.RUN_END_DEATH, Moment.RUN_END_VICTORY ),
+	FOURTH_WALL( Moment.STARTUP, Moment.MENU, Moment.STATS, Moment.LEVEL_CALM, Moment.RUN_END_DEATH, Moment.RUN_END_VICTORY ),
+	MENU( Moment.STARTUP, Moment.MENU ),
 	DEATH( Moment.RUN_END_DEATH ),
 	VICTORY( Moment.RUN_END_VICTORY ),
 	// reached the amulet floor or the last stretch and still did not ascend
@@ -37,7 +37,7 @@ public enum Category {
 	BOSS( Moment.BOSS_CLEARED, Moment.RUN_END_DEATH, Moment.RUN_END_VICTORY ),
 	ABILITY( Moment.LEVEL_CALM, Moment.RUN_END_DEATH, Moment.RUN_END_VICTORY ),
 	EQUIPMENT( Moment.LEVEL_CALM, Moment.RUN_END_DEATH, Moment.RUN_END_VICTORY ),
-	HISTORY( Moment.MENU, Moment.RUN_END_DEATH, Moment.RUN_END_VICTORY ),
+	HISTORY( Moment.STARTUP, Moment.MENU, Moment.STATS, Moment.RUN_END_DEATH, Moment.RUN_END_VICTORY ),
 	// the one-time warning when the player first commits to a Cleric run
 	FIRST_RUN( Moment.FIRST_CLERIC_RUN ),
 	// lines about the grudge system itself (the counter); never drawn by the normal picker

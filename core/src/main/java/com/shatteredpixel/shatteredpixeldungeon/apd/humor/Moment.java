@@ -24,7 +24,9 @@ package com.shatteredpixel.shatteredpixeldungeon.apd.humor;
 // The few places where a line may be shown. Each is a quiet point: no turn is running and nothing the player is deciding is waiting.
 public enum Moment {
 
-	// the title screen, built and idle
+	// the first title screen after the game starts, built and idle (never during loading or recovery)
+	STARTUP( true ),
+	// the title screen on later visits, built and idle
 	MENU( true ),
 	// a new floor has fully loaded and the hero is idle with nothing hostile in view
 	LEVEL_CALM( true ),
@@ -35,6 +37,8 @@ public enum Moment {
 	RUN_END_VICTORY( true ),
 	// the player just picked Cleric to start a run (their own choice)
 	FIRST_CLERIC_RUN( false ),
+	// a statistics screen (UIMSD, records) the player opened on purpose
+	STATS( true ),
 	// the player opened the counter screen
 	COUNTER_SCREEN( false );
 
@@ -43,5 +47,17 @@ public enum Moment {
 
 	Moment( boolean surprise ){
 		this.surprise = surprise;
+	}
+
+	// the player-facing place this moment belongs to (null for the one-off, player-initiated moments)
+	public Location location(){
+		switch (this){
+			case STARTUP: return Location.STARTUP;
+			case MENU: return Location.MENU;
+			case LEVEL_CALM: case BOSS_CLEARED: return Location.RUN;
+			case RUN_END_DEATH: case RUN_END_VICTORY: return Location.AFTER_RUN;
+			case STATS: return Location.STATS;
+			default: return null;
+		}
 	}
 }

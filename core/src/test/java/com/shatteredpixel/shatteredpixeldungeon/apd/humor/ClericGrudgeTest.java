@@ -26,6 +26,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -55,64 +56,67 @@ public class ClericGrudgeTest {
 	}
 
 	// a freshly installed feature: the first call only starts the grace period
-	private ClericGrudge started( List<Line> lines, Ledger led, Frequency f ){
+	private ClericGrudge started( List<Line> lines, Ledger led, GrudgePrefs prefs ){
 		ClericGrudge g = grudge( lines, led, 1, true );
-		assertNull( g.popup( Moment.MENU, Context.EMPTY, Safety.CALM, f, false, T0 ) );
+		assertNull( g.popup( Moment.MENU, Context.EMPTY, Safety.CALM, prefs, false, T0 ) );
 		return g;
-	}
-
-	/** the number of calls (each at a new moment) until a popup appears, up to a limit */
-	private int callsUntilPopup( ClericGrudge g, Frequency f, long startTime ){
-		for (int i = 0; i < 1000; i++){
-			Shown s = g.popup( Moment.MENU, Context.EMPTY, Safety.CALM, f, false, startTime + i * 1000L );
-			if (s != null) return i;
-		}
-		return -1;
 	}
 
 	@Test
 	public void disabledByDefaultAndWhenOffNothingEverAppears(){
 		assertFalse( "the shipped switch is off until the owner has reviewed the content", ClericGrudge.ENABLED );
 		List<Line> lines = HumorTestSupport.shipped();
+		GrudgePrefs prefs = HumorTestSupport.prefs( Frequency.RARE );
 		ClericGrudge off = grudge( lines, new Ledger( null ), 1, false );
-		for (int i = 0; i < 500; i++){
-			assertNull( off.popup( Moment.MENU, Context.EMPTY, Safety.CALM, Frequency.RARE, false, T0 + i * DAY ) );
-			assertNull( off.inline( Moment.MENU, Context.EMPTY, false, T0 + i * DAY ) );
-		}
+		for (int i = 0; i < 500; i++) assertNull( off.popup( Moment.MENU, Context.EMPTY, Safety.CALM, prefs, false, T0 + i * DAY ) );
 		assertNull( off.firstClericRun( false, T0 ) );
-		ClericGrudge on = started( lines, new Ledger( null ), Frequency.OFF );
-		for (int i = 0; i < 500; i++) assertNull( "Off means no surprise popups", on.popup( Moment.MENU, Context.EMPTY, Safety.CALM, Frequency.OFF, false, T0 + i * DAY ) );
+		GrudgePrefs none = HumorTestSupport.prefs( Frequency.OFF );
+		ClericGrudge on = started( lines, new Ledger( null ), none );
+		for (int i = 0; i < 500; i++) assertNull( "Off means no surprise popups", on.popup( Moment.MENU, Context.EMPTY, Safety.CALM, none, false, T0 + i * DAY ) );
 	}
 
 	@Test
 	public void noPopupInTheFirstTwentyMinutesAndAtMostOnePerSession(){
 		List<Line> lines = HumorTestSupport.shipped();
-		ClericGrudge g = started( lines, new Ledger( null ), Frequency.RARE );
-		for (int i = 0; i < 200; i++){
-			assertNull( "grace period", g.popup( Moment.MENU, Context.EMPTY, Safety.CALM, Frequency.RARE, false, T0 + 60_000 + i * 1000L ) );
+		GrudgePrefs prefs = HumorTestSupport.prefs( Frequency.RARE );
+		//a session that is going to get a popup: find a seed whose one roll succeeds
+		for (int seed = 0; seed < 100; seed++){
+			Ledger led = new Ledger( null );
+			ClericGrudge g = new ClericGrudge( lines, led, scrambled( seed ), true, T0 );
+			assertNull( g.popup( Moment.MENU, Context.EMPTY, Safety.CALM, prefs, false, T0 ) );
+			for (int i = 0; i < 200; i++){
+				assertNull( "grace period", g.popup( Moment.MENU, Context.EMPTY, Safety.CALM, prefs, false, T0 + 60_000 + i * 1000L ) );
+			}
+			long later = T0 + 30 * DAY;
+			Shown first = HumorTestSupport.popupAndShow( g, Moment.MENU, Context.EMPTY, Safety.CALM, prefs, false, later );
+			if (first == null) continue;
+			//a long time later, still the same session: never a second one
+			for (int i = 0; i < 1000; i++) assertNull( g.popup( Moment.RUN_END_DEATH, Context.EMPTY, Safety.CALM, prefs, false, later + (100 + i) * DAY ) );
+			return;
 		}
-		long later = T0 + 30 * DAY;
-		int first = callsUntilPopup( g, Frequency.RARE, later );
-		assertTrue( "a popup does appear in time", first >= 0 );
-		//a long time later, still the same session: never a second one
-		for (int i = 0; i < 1000; i++) assertNull( g.popup( Moment.RUN_END_DEATH, Context.EMPTY, Safety.CALM, Frequency.RARE, false, later + (100 + i) * DAY ) );
+		fail( "no session ever got a popup" );
 	}
 
 	@Test
 	public void theGapBetweenPopupsFollowsTheChosenFrequency(){
 		List<Line> lines = HumorTestSupport.shipped();
+		GrudgePrefs prefs = HumorTestSupport.prefs( Frequency.RARER );
 		Ledger led = new Ledger( null );
-		ClericGrudge g = started( lines, led, Frequency.RARER );
-		assertTrue( callsUntilPopup( g, Frequency.RARER, T0 + 40 * DAY ) >= 0 );
-		long shown = led.stateLong( "lastPopupAt", -1 );
+		started( lines, led, prefs );
+		long shown = -1;
+		for (int seed = 0; seed < 400 && shown < 0; seed++){
+			ClericGrudge g = grudge( lines, led, seed, true );
+			Shown s = HumorTestSupport.popupAndShow( g, Moment.MENU, Context.EMPTY, Safety.CALM, prefs, false, T0 + 40 * DAY );
+			if (s != null) shown = led.stateLong( "lastPopupAt", -1 );
+		}
 		assertTrue( shown > 0 );
 		//a new session (a new object, same ledger): too soon after, still nothing
 		for (int i = 0; i < 1000; i++){
-			assertNull( grudge( lines, led, i, true ).popup( Moment.MENU, Context.EMPTY, Safety.CALM, Frequency.RARER, false, shown + 9 * DAY ) );
+			assertNull( grudge( lines, led, i, true ).popup( Moment.MENU, Context.EMPTY, Safety.CALM, prefs, false, shown + 9 * DAY ) );
 		}
 		//and after the gap it can happen again
 		boolean again = false;
-		for (int i = 0; i < 1000 && !again; i++) again = grudge( lines, led, i, true ).popup( Moment.MENU, Context.EMPTY, Safety.CALM, Frequency.RARER, false, shown + 11 * DAY ) != null;
+		for (int i = 0; i < 1000 && !again; i++) again = grudge( lines, led, i, true ).popup( Moment.MENU, Context.EMPTY, Safety.CALM, prefs, false, shown + 11 * DAY ) != null;
 		assertTrue( again );
 	}
 
@@ -120,13 +124,14 @@ public class ClericGrudgeTest {
 	public void rarerReallyIsRarerThanRare(){
 		List<Line> lines = HumorTestSupport.shipped();
 		int rare = 0, rarer = 0;
+		GrudgePrefs pa = HumorTestSupport.prefs( Frequency.RARE ), pb = HumorTestSupport.prefs( Frequency.RARER );
 		for (int s = 0; s < 400; s++){
 			Ledger a = new Ledger( null ), b = new Ledger( null );
-			ClericGrudge ga = new ClericGrudge( lines, a, scrambled( s ), true ), gb = new ClericGrudge( lines, b, scrambled( s ), true );
-			ga.popup( Moment.MENU, Context.EMPTY, Safety.CALM, Frequency.RARE, false, T0 );
-			gb.popup( Moment.MENU, Context.EMPTY, Safety.CALM, Frequency.RARER, false, T0 );
-			if (ga.popup( Moment.MENU, Context.EMPTY, Safety.CALM, Frequency.RARE, false, T0 + 5 * DAY ) != null) rare++;
-			if (gb.popup( Moment.MENU, Context.EMPTY, Safety.CALM, Frequency.RARER, false, T0 + 5 * DAY ) != null) rarer++;
+			ClericGrudge ga = new ClericGrudge( lines, a, scrambled( s ), true, T0 ), gb = new ClericGrudge( lines, b, scrambled( s ), true, T0 );
+			ga.popup( Moment.MENU, Context.EMPTY, Safety.CALM, pa, false, T0 );
+			gb.popup( Moment.MENU, Context.EMPTY, Safety.CALM, pb, false, T0 );
+			if (ga.popup( Moment.MENU, Context.EMPTY, Safety.CALM, pa, false, T0 + 5 * DAY ) != null) rare++;
+			if (gb.popup( Moment.MENU, Context.EMPTY, Safety.CALM, pb, false, T0 + 5 * DAY ) != null) rarer++;
 		}
 		assertTrue( "rare " + rare + " rarer " + rarer, rare > rarer );
 		assertTrue( "the default is the most conservative setting that is on", Frequency.DEFAULT == Frequency.RARER );
@@ -135,6 +140,7 @@ public class ClericGrudgeTest {
 	@Test
 	public void anyBusyStateBlocksAPopup(){
 		List<Line> lines = HumorTestSupport.shipped();
+		GrudgePrefs prefs = HumorTestSupport.prefs( Frequency.RARE );
 		Safety[] busy = {
 				new Safety( true, false, false, false, false, false, false ),
 				new Safety( false, true, false, false, false, false, false ),
@@ -145,13 +151,13 @@ public class ClericGrudgeTest {
 				new Safety( false, false, false, false, false, false, true ) };
 		for (Safety s : busy){
 			Ledger led = new Ledger( null );
-			ClericGrudge g = started( lines, led, Frequency.RARE );
-			for (int i = 0; i < 2000; i++) assertNull( g.popup( Moment.MENU, Context.EMPTY, s, Frequency.RARE, false, T0 + 30 * DAY + i * 1000L ) );
+			ClericGrudge g = started( lines, led, prefs );
+			for (int i = 0; i < 2000; i++) assertNull( g.popup( Moment.MENU, Context.EMPTY, s, prefs, false, T0 + 30 * DAY + i * 1000L ) );
 			assertEquals( "nothing was recorded as shown", 0, led.distinctSeenAmong( idsOf( lines ) ) );
 		}
-		//the moment is also restricted: the one-off moments are not surprises
-		ClericGrudge g = started( lines, new Ledger( null ), Frequency.RARE );
-		for (int i = 0; i < 500; i++) assertNull( g.popup( Moment.FIRST_CLERIC_RUN, Context.EMPTY, Safety.CALM, Frequency.RARE, false, T0 + 30 * DAY + i ) );
+		//the one-off moments are not surprises
+		ClericGrudge g = started( lines, new Ledger( null ), prefs );
+		for (int i = 0; i < 500; i++) assertNull( g.popup( Moment.FIRST_CLERIC_RUN, Context.EMPTY, Safety.CALM, prefs, false, T0 + 30 * DAY + i ) );
 	}
 
 	@Test
@@ -182,6 +188,7 @@ public class ClericGrudgeTest {
 		assertNotNull( s );
 		assertTrue( s.text.contains( "225" ) );
 		assertFalse( "clean wording by default", s.text.contains( "fucking" ) );
+		g.confirm( s, T0 );
 		assertNull( g.firstClericRun( false, T0 + 1 ) );
 		//also after a restart
 		assertNull( grudge( lines, new Ledger( f ), 9, true ).firstClericRun( true, T0 + 2 ) );
@@ -229,7 +236,9 @@ public class ClericGrudgeTest {
 		assertTrue( meta >= 1 );
 		ClericGrudge g = grudge( lines, new Ledger( null ), 1, true );
 		assertEquals( lines.size() - meta, g.counter().total + g.counter().appreciationTotal );
-		assertNotNull( g.counterDiscovery( false, T0 ) );
+		Shown joke = g.counterDiscovery( false, T0 );
+		assertNotNull( joke );
+		g.confirm( joke, T0 );
 		assertNull( g.counterDiscovery( false, T0 + 1 ) );
 		assertEquals( "the discovery joke is not a counted complaint", 0, g.counter().heard );
 		//and the normal draw never produces one

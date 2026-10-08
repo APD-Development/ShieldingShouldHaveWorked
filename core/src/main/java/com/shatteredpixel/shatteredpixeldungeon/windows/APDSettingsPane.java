@@ -169,7 +169,7 @@ public class APDSettingsPane extends Component {
 		add( btnUimsd );
 
 		if (GrudgeHooks.available()) {
-			btnGrudge = new RedButton( "About / Developer: the grudge" ) {
+			btnGrudge = new RedButton( "About / Developer: The Grudge" ) {
 				@Override
 				protected void onClick() {
 					ShatteredPixelDungeon.scene().addToFront( new WndClericGrudge() );

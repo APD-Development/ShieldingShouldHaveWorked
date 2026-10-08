@@ -32,10 +32,10 @@ import java.util.Set;
 // caller shows it. It reads no game state itself (the caller passes the recorded facts and whether the moment is quiet), uses its own random
 // source, and writes only its own ledger file. Cleric is its only subject.
 //
-// Three kinds of appearance, all separate from play:
-//   popup()           a surprise, at a quiet moment; at most one per session, rare, and off if the player says so
-//   inline()          a small contextual line in a place the player is already looking (results, menu); never a window of its own
+// Two kinds of appearance, both separate from play:
+//   popup()           a surprise, at a quiet moment in a place the player switched on; at most one per session, rare, off if the player says so
 //   firstClericRun()  the one-time warning when the player picks Cleric to start a run
+// Choosing a line never uses it up; the game confirms() once the player was really shown it.
 public final class ClericGrudge {
 
 	// The owner's switch: the whole feature stays off until the content has been reviewed and tried on a phone.
@@ -43,11 +43,8 @@ public final class ClericGrudge {
 
 	// nothing in the first twenty minutes after the feature first sees the player
 	static final long GRACE_MS = 20L * 60 * 1000;
-	// a contextual inline line: how often a moment shows one, and never twice within this time
-	static final double INLINE_CHANCE = 0.25;
-	static final long INLINE_GAP_MS = 5L * 60 * 1000;
 
-	static final String ST_INSTALL = "installAt", ST_LAST_POPUP = "lastPopupAt", ST_LAST_INLINE = "lastInlineAt",
+	static final String ST_INSTALL = "installAt", ST_LAST_POPUP = "lastPopupAt",
 			ST_LAST_CATEGORY = "lastCategory", ST_FIRST_RUN = "firstRunShown", ST_COUNTER = "counterShown";
 
 	public interface PackSource {
@@ -60,10 +57,9 @@ public final class ClericGrudge {
 	private final Random rng;
 	private final boolean enabled;
 	private final long sessionStart;
-	//the same lines without the linked stories: contextual (inline) lines never draw from stories, so a story only ever comes through a
-	//surprise popup and therefore always obeys the player's popup setting
-	private final List<Line> noStories;
 	private boolean popupThisSession;
+	//this session's one roll: null until the grace period and gap allow it, then whether this session gets a popup at all
+	private Boolean armed;
 
 	public ClericGrudge( List<Line> lines, Ledger ledger, Random rng, boolean enabled ){
 		this( lines, ledger, rng, enabled, System.currentTimeMillis() );
@@ -75,9 +71,6 @@ public final class ClericGrudge {
 		this.rng = rng;
 		this.enabled = enabled;
 		this.sessionStart = sessionStart;
-		List<Line> plain = new ArrayList<>();
-		for (Line l : lines) if (!l.setup && l.after == null) plain.add( l );
-		this.noStories = plain;
 	}
 
 	// Loads every pack the source lists. A pack that fails its lint is refused whole and the others still load.
@@ -131,9 +124,16 @@ public final class ClericGrudge {
 		return m;
 	}
 
-	// A surprise at a quiet moment, or null. Rolls once; at most one per session.
-	public synchronized Shown popup( Moment moment, Context ctx, Safety safety, Frequency freq, boolean adult, long now ){
-		if (!enabled || !moment.surprise || freq == Frequency.OFF || !safety.ok() || popupThisSession) return null;
+	// A surprise at a quiet moment, or null. All of these must hold, and they are independent of each other:
+	//   - the feature is on, the frequency is not Off, and at least one location is switched on;
+	//   - this moment's location is switched on, and the moment is quiet (Safety);
+	//   - nothing has been shown yet this session, the first-time grace period is over, and the minimum gap since the last one has passed.
+	// Whether this session gets a popup at all is decided by ONE random roll per session (after the grace period and the gap), not by one per
+	// moment, so switching on more locations changes where a popup can appear, never how many sessions get one.
+	// Choosing does not use the line up: the caller shows it and then calls confirm().
+	public synchronized Shown popup( Moment moment, Context ctx, Safety safety, GrudgePrefs prefs, boolean adult, long now ){
+		Frequency freq = prefs.frequency();
+		if (!enabled || !moment.surprise || freq == Frequency.OFF || !prefs.anyLocation() || popupThisSession) return null;
 		long install = ledger.stateLong( ST_INSTALL, -1 );
 		if (install < 0){
 			ledger.setState( ST_INSTALL, Long.toString( now ) );
@@ -143,55 +143,50 @@ public final class ClericGrudge {
 		if (now - install < GRACE_MS) return null;
 		long last = ledger.stateLong( ST_LAST_POPUP, -1 );
 		if (last >= 0 && now - last < freq.minGapMs) return null;
-		if (rng.nextDouble() >= freq.chance) return null;
-		Shown s = choose( moment, ctx, adult, now, true );
-		if (s == null) return null;
-		popupThisSession = true;
-		ledger.setState( ST_LAST_POPUP, Long.toString( now ) );
-		ledger.save();
-		return s;
+		if (armed == null) armed = rng.nextDouble() < freq.chance;
+		if (!armed) return null;
+		Location where = moment.location();
+		if (where == null || !prefs.enabled( where ) || !safety.ok()) return null;
+		return choose( moment, ctx, adult, now );
 	}
 
-	// A small contextual line for a place the player is already looking at, or null.
-	public synchronized Shown inline( Moment moment, Context ctx, boolean adult, long now ){
-		if (!enabled || !moment.surprise) return null;
-		long last = ledger.stateLong( ST_LAST_INLINE, -1 );
-		if (last >= 0 && now - last < INLINE_GAP_MS) return null;
-		if (rng.nextDouble() >= INLINE_CHANCE) return null;
-		Shown s = choose( moment, ctx, adult, now, false );
-		if (s == null) return null;
-		ledger.setState( ST_LAST_INLINE, Long.toString( now ) );
+	// The game calls this once the player has really been shown the line (the window is up). Only now does a line count as heard, a story
+	// move on, and the session's popup be used up; a line that was chosen but never shown changes nothing.
+	public synchronized void confirm( Shown shown, long now ){
+		ledger.markShown( shown.id, now );
+		ledger.setState( ST_LAST_CATEGORY, shown.category.name() );
+		if (shown.moment.surprise){
+			popupThisSession = true;
+			ledger.setState( ST_LAST_POPUP, Long.toString( now ) );
+		} else if (shown.moment == Moment.FIRST_CLERIC_RUN){
+			ledger.setState( ST_FIRST_RUN, "1" );
+		} else if (shown.moment == Moment.COUNTER_SCREEN){
+			ledger.setState( ST_COUNTER, "1" );
+		}
 		ledger.save();
-		return s;
 	}
 
-	// A line on request, ignoring the chance and the gap (for a page the player opens on purpose, and for tests). Still unseen-first.
+	// A line on request, shown and counted at once, ignoring the chance and the gap (for tests and for a page the player opens on purpose).
 	synchronized Shown inlineAlways( Moment moment, Context ctx, long now ){
 		if (!enabled) return null;
-		return choose( moment, ctx, false, now, true );
+		Shown s = choose( moment, ctx, false, now );
+		if (s != null) confirm( s, now );
+		return s;
 	}
 
 	// The one-time warning when the player first picks Cleric to start a run.
 	public synchronized Shown firstClericRun( boolean adult, long now ){
 		if (!enabled || ledger.state( ST_FIRST_RUN ) != null) return null;
-		Shown s = choose( Moment.FIRST_CLERIC_RUN, Context.EMPTY, adult, now, true );
-		if (s == null) return null;
-		ledger.setState( ST_FIRST_RUN, "1" );
-		ledger.save();
-		return s;
+		return choose( Moment.FIRST_CLERIC_RUN, Context.EMPTY, adult, now );
 	}
 
 	// The one-time joke the first time the counter screen is opened.
 	public synchronized Shown counterDiscovery( boolean adult, long now ){
 		if (!enabled || ledger.state( ST_COUNTER ) != null) return null;
-		Shown s = choose( Moment.COUNTER_SCREEN, Context.EMPTY, adult, now, true );
-		if (s == null) return null;
-		ledger.setState( ST_COUNTER, "1" );
-		ledger.save();
-		return s;
+		return choose( Moment.COUNTER_SCREEN, Context.EMPTY, adult, now );
 	}
 
-	private Shown choose( Moment moment, Context ctx, boolean adult, long now, boolean stories ){
+	private Shown choose( Moment moment, Context ctx, boolean adult, long now ){
 		Category avoid = null;
 		String last = ledger.state( ST_LAST_CATEGORY );
 		if (last != null){
@@ -204,13 +199,10 @@ public final class ClericGrudge {
 		//the grudge's own real totals are available to lines that remark on the grudge itself
 		ctx = ctx.with( "complaintsHeard", counts.heard ).with( "complaintsTotal", counts.total )
 				.with( "appreciationsHeard", counts.appreciationHeard ).with( "appreciationsTotal", counts.appreciationTotal );
-		Line l = Picker.pick( stories ? lines : noStories, moment, ctx, ledger, rng, avoid, sessionStart, now );
+		Line l = Picker.pick( lines, moment, ctx, ledger, rng, avoid, sessionStart, now );
 		if (l == null) return null;
 		String text = l.render( ctx, adult );
 		if (text == null) return null;
-		ledger.markShown( l.id, now );
-		ledger.setState( ST_LAST_CATEGORY, l.category.name() );
-		ledger.save();
-		return new Shown( l.id, l.category, text );
+		return new Shown( l.id, l.category, moment, text );
 	}
 }

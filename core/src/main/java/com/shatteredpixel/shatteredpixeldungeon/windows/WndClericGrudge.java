@@ -21,30 +21,33 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.apd.humor.Counter;
-import com.shatteredpixel.shatteredpixeldungeon.apd.humor.Frequency;
+import com.shatteredpixel.shatteredpixeldungeon.apd.humor.Location;
+import com.shatteredpixel.shatteredpixeldungeon.apd.query.WindowGeometry;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
+import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
-import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
-import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.watabou.noosa.ui.Component;
 
-// APD Settings > About / Developer > "The Developer's grudge": the four counters (Hatred and Appreciation, total and heard) and the player's control over the humor.
-// Opening it never triggers a popup; the first time, one small joke is shown in the text.
+// APD Settings > About / Developer > The Grudge: how often (frequency) and where (five switches) the developer may interrupt with a
+// Cleric remark, the humor setting, and the four counters. Opening it never triggers a popup; the first time, one small joke is shown.
 public class WndClericGrudge extends Window {
 
 	private static final int WIDTH = 120;
 	private static final int MARGIN = 3;
 	private static final int BTN = 16;
 
-	// the popup shown at a quiet moment: the line, a plain acknowledgement, and a way to stop them
+	// The surprise popup: the line, a plain acknowledgement, and an immediate, saved way to stop all surprises.
 	static Window popup( String text ){
-		return new WndOptions( "DEVELOPER NOTE", text, "Fine.", "Stop these." ) {
+		return new WndOptions( "DEVELOPER NOTE", text, "Fine.", "Turn off these messages" ) {
 			@Override
 			protected void onSelect( int index ){
-				if (index == 1) GrudgeHooks.setFrequency( Frequency.OFF );
+				if (index == 1) GrudgeHooks.turnOff();
 			}
 		};
 	}
@@ -53,31 +56,33 @@ public class WndClericGrudge extends Window {
 
 	public WndClericGrudge(){
 		super();
-		float pos = MARGIN;
-
-		RenderedTextBlock title = PixelScene.renderTextBlock( "THE DEVELOPER'S GRUDGE", 9 );
+		RenderedTextBlock title = PixelScene.renderTextBlock( "THE GRUDGE", 9 );
 		title.hardlight( 0xFFFF44 );
 		title.maxWidth( WIDTH - 2 * MARGIN );
-		title.setPos( MARGIN, pos );
+		title.setPos( MARGIN, MARGIN );
 		add( title );
-		pos = title.bottom() + 2 * MARGIN;
+		float top = title.bottom() + 2 * MARGIN;
+
+		Component content = new Component();
+		float pos = 0;
+		int w = WIDTH - 2 * MARGIN;
 
 		Counter c = GrudgeHooks.counter();
 		String[] counters = { c.totalText(), c.heardText(), c.appreciationTotalText(), c.appreciationHeardText() };
 		for (String text : counters){
 			RenderedTextBlock t = PixelScene.renderTextBlock( text, 6 );
-			t.maxWidth( WIDTH - 2 * MARGIN );
-			t.setPos( MARGIN, pos );
-			add( t );
+			t.maxWidth( w );
+			t.setPos( 0, pos );
+			content.add( t );
 			pos = t.bottom() + MARGIN;
 		}
 
 		String joke = GrudgeHooks.discovery();
 		if (joke != null){
 			RenderedTextBlock j = PixelScene.renderTextBlock( joke, 5 );
-			j.maxWidth( WIDTH - 2 * MARGIN );
-			j.setPos( MARGIN, pos );
-			add( j );
+			j.maxWidth( w );
+			j.setPos( 0, pos );
+			content.add( j );
 			pos = j.bottom() + MARGIN;
 		}
 
@@ -88,27 +93,49 @@ public class WndClericGrudge extends Window {
 				text( frequencyLabel() );
 			}
 		};
-		btnFrequency.setRect( MARGIN, pos, WIDTH - 2 * MARGIN, BTN );
-		add( btnFrequency );
+		btnFrequency.setRect( 0, pos, w, BTN );
+		content.add( btnFrequency );
 		pos = btnFrequency.bottom() + MARGIN;
 
-		CheckBox inline = new CheckBox( "Contextual jokes" ){
+		RenderedTextBlock where = PixelScene.renderTextBlock( "Where the messages may appear:", 5 );
+		where.maxWidth( w );
+		where.setPos( 0, pos );
+		content.add( where );
+		pos = where.bottom() + MARGIN;
+
+		for (final Location loc : Location.values()){
+			CheckBox box = new CheckBox( loc.label ){
+				@Override
+				protected void onClick(){
+					super.onClick();
+					GrudgeHooks.prefs().setEnabled( loc, checked() );
+				}
+			};
+			box.checked( GrudgeHooks.prefs().enabled( loc ) );
+			box.setRect( 0, pos, w, BTN );
+			content.add( box );
+			pos = box.bottom() + 1;
+		}
+		pos += MARGIN;
+
+		//the one shared humor preference: Clean unless the player chooses Adult (age is never inferred)
+		CheckBox adult = new CheckBox( "Adult humor (18+)" ){
 			@Override
 			protected void onClick(){
 				super.onClick();
-				SPDSettings.apdGrudgeInline( checked() );
+				SPDSettings.apdAdultHumor( checked() );
 			}
 		};
-		inline.checked( SPDSettings.apdGrudgeInline() );
-		inline.setRect( MARGIN, pos, WIDTH - 2 * MARGIN, BTN );
-		add( inline );
-		pos = inline.bottom() + MARGIN;
+		adult.checked( SPDSettings.apdAdultHumor() );
+		adult.setRect( 0, pos, w, BTN );
+		content.add( adult );
+		pos = adult.bottom() + MARGIN;
 
 		RedButton reset = new RedButton( "Forget what I've heard" ){
 			@Override
 			protected void onClick(){
 				ShatteredPixelDungeon.scene().addToFront( new WndOptions( "FORGET EVERYTHING?",
-						"This clears the list of complaints you have heard, so they can all come back. It cannot be undone.",
+						"This clears the list of messages you have heard, so they can all come back. It cannot be undone.",
 						"Forget it", "Keep it" ){
 					@Override
 					protected void onSelect( int index ){
@@ -120,14 +147,20 @@ public class WndClericGrudge extends Window {
 				} );
 			}
 		};
-		reset.setRect( MARGIN, pos, WIDTH - 2 * MARGIN, BTN );
-		add( reset );
-		pos = reset.bottom() + MARGIN;
+		reset.setRect( 0, pos, w, BTN );
+		content.add( reset );
+		pos = reset.bottom();
 
-		resize( WIDTH, (int)pos );
+		content.setSize( w, pos );
+		ScrollPane pane = new ScrollPane( content );
+		float h = WindowGeometry.paneHeight( content.height(), WindowGeometry.maxPane( PixelScene.uiCamera.height, top, 0 ) );
+		//size the window first: it moves the window's camera, and the pane works out its screen position when it is placed
+		resize( WIDTH, (int)(top + h + MARGIN) );
+		add( pane );
+		pane.setRect( MARGIN, top, w, h );
 	}
 
 	private static String frequencyLabel(){
-		return "Surprise popups: " + GrudgeHooks.frequency().label;
+		return "Surprise messages: " + GrudgeHooks.frequency().label;
 	}
 }

@@ -32,7 +32,9 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.humor.ClericGrudge;
 import com.shatteredpixel.shatteredpixeldungeon.apd.humor.Context;
 import com.shatteredpixel.shatteredpixeldungeon.apd.humor.Counter;
 import com.shatteredpixel.shatteredpixeldungeon.apd.humor.Frequency;
+import com.shatteredpixel.shatteredpixeldungeon.apd.humor.GrudgePrefs;
 import com.shatteredpixel.shatteredpixeldungeon.apd.humor.Ledger;
+import com.shatteredpixel.shatteredpixeldungeon.apd.humor.Location;
 import com.shatteredpixel.shatteredpixeldungeon.apd.humor.Moment;
 import com.shatteredpixel.shatteredpixeldungeon.apd.humor.Safety;
 import com.shatteredpixel.shatteredpixeldungeon.apd.humor.Shown;
@@ -43,6 +45,7 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.RankingsScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.UimsdScene;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Scene;
 
@@ -56,11 +59,14 @@ import java.util.Random;
 // code itself never sees the game. Everything here is a no-op while ClericGrudge.ENABLED is off, and a failure anywhere in it is swallowed:
 // the grudge may never reach play.
 //
-// Popups are shown only on the title screen and on the results screen after a run has ended, once the scene has been up for a moment and
-// no window is open. Nothing is shown during play.
+// A surprise is shown only in a place the player switched on (startup, main menu, during runs, after a run, statistics screens), once the
+// scene has settled and no window is open; during a run only after a long, quiet stretch (hero idle, nothing hostile in view, not a boss
+// floor). The popup always carries "Turn off these messages".
 public final class GrudgeHooks {
 
 	private static final long SETTLE_MS = 1500;
+	//the very first title screen waits a little longer, so startup work and any recovery prompt are long finished
+	private static final long STARTUP_SETTLE_MS = 3500;
 
 	private static ClericGrudge instance;
 	private static Ledger ledger;
@@ -70,6 +76,9 @@ public final class GrudgeHooks {
 	//what the history really says about Cleric, worked out once per session on a background thread
 	private static volatile Context historyFacts;
 	private static boolean historyRequested;
+
+	//the first title screen of this process is "startup"; later visits are "main menu"
+	private static boolean startupSeen;
 
 	private static Scene lastScene;
 	private static long sceneSince;
@@ -119,16 +128,35 @@ public final class GrudgeHooks {
 
 	//the one-time joke for opening the counter screen, or null
 	public static String discovery(){
-		Shown s = grudge().counterDiscovery( SPDSettings.apdAdultHumor(), System.currentTimeMillis() );
-		return s == null ? null : s.text;
+		long now = System.currentTimeMillis();
+		Shown s = grudge().counterDiscovery( SPDSettings.apdAdultHumor(), now );
+		if (s == null) return null;
+		//the caller puts the text on the page straight away
+		grudge().confirm( s, now );
+		return s.text;
+	}
+
+	//the preferences live in the app settings; the rules about them are in GrudgePrefs
+	private static final GrudgePrefs PREFS = new GrudgePrefs( new GrudgePrefs.Store(){
+		@Override public String get( String key ){ return SPDSettings.apdGrudgePref( key ); }
+		@Override public void put( String key, String value ){ SPDSettings.apdGrudgePref( key, value ); }
+	} );
+
+	public static GrudgePrefs prefs(){
+		return PREFS;
 	}
 
 	public static Frequency frequency(){
-		return Frequency.of( SPDSettings.apdGrudgePopups() );
+		return PREFS.frequency();
 	}
 
 	public static void setFrequency( Frequency f ){
-		SPDSettings.apdGrudgePopups( f.name() );
+		PREFS.setFrequency( f );
+	}
+
+	// "Turn off these messages": immediate and saved
+	public static void turnOff(){
+		PREFS.turnOff();
 	}
 
 	public static void resetHistory(){
@@ -237,14 +265,18 @@ public final class GrudgeHooks {
 				decided = false;
 			}
 			if (s == null || decided || now - sceneSince < SETTLE_MS) return;
+			if (s instanceof TitleScene && !startupSeen && now - sceneSince < STARTUP_SETTLE_MS) return;
 
 			Moment m;
 			Context ctx = Context.EMPTY;
 			if (s instanceof TitleScene){
-				m = Moment.MENU;
+				//the first title screen of the process is startup; it is settled and has no window (loading and recovery are over)
+				m = startupSeen ? Moment.MENU : Moment.STARTUP;
 			} else if (s instanceof RankingsScene && pendingEnd != null){
 				m = pendingEnd;
 				ctx = pendingContext;
+			} else if (s instanceof RankingsScene || s instanceof UimsdScene){
+				m = Moment.STATS;
 			} else if (s instanceof GameScene){
 				//in play only a long, quiet stretch counts, and it is looked at without ever touching the game
 				m = quietMoment( now );
@@ -260,18 +292,18 @@ public final class GrudgeHooks {
 			if (historyFacts == null) return;
 			ctx = ctx.withAll( historyFacts );
 			decided = true;
-			if (m != Moment.MENU){
+			if (m == Moment.STARTUP) startupSeen = true;
+			if (m == Moment.RUN_END_DEATH || m == Moment.RUN_END_VICTORY){
 				pendingEnd = null;
 				pendingContext = Context.EMPTY;
 			}
-			Shown shown = grudge().popup( m, ctx, Safety.CALM, frequency(), SPDSettings.apdAdultHumor(), now );
-			if (shown == null && SPDSettings.apdGrudgeInline()){
-				//a contextual line is the same window, only for lines that belong to this moment
-				shown = grudge().inline( m, ctx, SPDSettings.apdAdultHumor(), now );
-			}
+			ClericGrudge g = grudge();
+			Shown shown = g.popup( m, ctx, Safety.CALM, PREFS, SPDSettings.apdAdultHumor(), now );
 			if (shown != null){
 				if (s instanceof GameScene) GameScene.show( WndClericGrudge.popup( shown.text ) );
 				else s.addToFront( WndClericGrudge.popup( shown.text ) );
+				//only now, with the window really up, does the line count as heard and a story move on
+				g.confirm( shown, now );
 			}
 		} catch (Throwable ignored){
 			//the grudge may never reach play

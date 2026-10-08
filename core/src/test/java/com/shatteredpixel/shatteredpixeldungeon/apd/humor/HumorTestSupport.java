@@ -47,6 +47,33 @@ final class HumorTestSupport {
 		}
 	};
 
+	// preferences kept in a plain map (a stand-in for the app settings)
+	static final class MapStore implements GrudgePrefs.Store {
+		final java.util.Map<String, String> map = new java.util.HashMap<>();
+		@Override public String get( String key ){ String v = map.get( key ); return v == null ? "" : v; }
+		@Override public void put( String key, String value ){ map.put( key, value ); }
+	}
+
+	static GrudgePrefs prefs( Frequency f ){
+		GrudgePrefs p = new GrudgePrefs( new MapStore() );
+		p.setFrequency( f );
+		return p;
+	}
+
+	static GrudgePrefs prefsOnly( Frequency f, Location... on ){
+		GrudgePrefs p = prefs( f );
+		for (Location l : Location.values()) p.setEnabled( l, false );
+		for (Location l : on) p.setEnabled( l, true );
+		return p;
+	}
+
+	// ask for a surprise and, if one is offered, show it (confirm), as the game does
+	static Shown popupAndShow( ClericGrudge g, Moment m, Context c, Safety s, GrudgePrefs p, boolean adult, long now ){
+		Shown shown = g.popup( m, c, s, p, adult, now );
+		if (shown != null) g.confirm( shown, now );
+		return shown;
+	}
+
 	static List<Line> shipped(){
 		return ClericGrudge.loadPacks( SHIPPED );
 	}

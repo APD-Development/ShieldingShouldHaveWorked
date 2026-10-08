@@ -21,16 +21,19 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.apd.humor;
 
-// A line chosen to be shown now.
+// A line chosen to be shown. Choosing does not use it up: it counts as heard (and a story moves on) only when the game confirms that the
+// player was really shown it (ClericGrudge.confirm).
 public final class Shown {
 
 	public final String id;
 	public final Category category;
+	public final Moment moment;
 	public final String text;
 
-	Shown( String id, Category category, String text ){
+	Shown( String id, Category category, Moment moment, String text ){
 		this.id = id;
 		this.category = category;
+		this.moment = moment;
 		this.text = text;
 	}
 }
