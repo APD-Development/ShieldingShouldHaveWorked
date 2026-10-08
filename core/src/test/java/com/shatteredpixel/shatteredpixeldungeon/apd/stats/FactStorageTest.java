@@ -113,4 +113,44 @@ public class FactStorageTest {
 		System.out.println("APDSTORAGE whole run of facts: " + f.length() + " bytes");
 		assertTrue("all the new facts of a 20,000 turn run should stay under 120 KiB, was " + f.length(), f.length() < 120 * 1024);
 	}
+
+	@Test
+	public void theHeroStateOfEveryTurnOfALongRunStaysCheap() throws Exception {
+		int turns = 20000;
+		Random rnd = new Random(21);
+		long[] clocks = new long[turns];
+		long[][] rows = new long[turns][];
+		long hp = 30, hunger = 0;
+		for (int i = 0; i < turns; i++){
+			clocks[i] = i + 1;
+			if (rnd.nextInt(6) == 0) hp = Math.max(1, Math.min(30, hp + rnd.nextInt(7) - 3));   //fights and regeneration
+			hunger = (hunger + 1) % 1800;                                                      //eating now and then
+			rows[i] = new long[]{ hp, 30, i % 500 < 40 ? 10 : 0, hunger };
+		}
+		File f = new File(tmp.getRoot(), "state.apdlog");
+		RunLogWriter w = RunLogWriter.create(f, TelemetryVersion.CURRENT, "state", "test", 1);
+		for (int at = 0; at < turns; at += 512){
+			int n = Math.min(512, turns - at);
+			long[] cl = new long[n];
+			long[][] rr = new long[n][];
+			System.arraycopy(clocks, at, cl, 0, n);
+			System.arraycopy(rows, at, rr, 0, n);
+			assertTrue(FactEvents.emitSeries(w, EventTypes.FACT_SERIES, "hero.state", "", "", new String[0], 4, cl, rr, n));
+		}
+		w.close(false, 5000);
+		double perTurn = f.length() / (double) turns;
+		System.out.println("APDSTORAGE hero state: " + turns + " turns cost " + f.length() + " bytes = " + String.format("%.2f", perTurn) + " bytes per turn");
+		assertTrue("the hero's state must stay cheap, was " + perTurn + " bytes per turn", perTurn <= 2.0);
+		ReadResult r = RunLogReader.read(f);
+		int got = 0;
+		for (ApdEvent e : r.events){
+			if (!FactEvents.isFactEvent(e.type)) continue;
+			for (FactEvents.Observation o : FactEvents.decode(e, r)){
+				assertEquals(rows[got][0], o.values[0]);
+				assertEquals(rows[got][3], o.values[3]);
+				got++;
+			}
+		}
+		assertEquals("every turn is there, none summarised", turns, got);
+	}
 }

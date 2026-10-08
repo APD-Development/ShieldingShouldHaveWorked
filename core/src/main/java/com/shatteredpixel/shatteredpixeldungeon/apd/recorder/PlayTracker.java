@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.GameFacts;
@@ -74,6 +75,11 @@ final class PlayTracker {
 		lastNano = now;
 		if (gap > 0) activeNanos += Math.min(gap, MAX_GAP_NANOS);
 		pollGold("other");
+		Hero h = Dungeon.hero;
+		if (h != null){
+			Hunger hunger = h.buff(Hunger.class);
+			facts.record(GameFacts.HERO_STATE, GameSnapshot.turn(), "", "", new long[]{ h.HP, h.HT, h.shielding(), hunger == null ? 0 : hunger.hunger() }, null);
+		}
 	}
 
 	void recordTime(){

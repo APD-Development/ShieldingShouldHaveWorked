@@ -18,3 +18,4 @@ economy.gold|P|-|delta,total|cause
 economy.trade|P|-|price,quantity|side
 time.active|P|-|millis|
 explore.open|P|-|items|
+hero.state|P|S|hp,hpMax,shield,hunger|

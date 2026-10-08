@@ -88,10 +88,13 @@ level summaries). U4 the question builder and topic pages. Each step ends with c
 3. Done: it appears as a dataset, a table, a Floors count column, a choice in the question builder, and in reports' generic machinery. Public kinds must carry only what the player
    could know at that moment.
 
+## Recording batches since U3
+- Batch D (telemetry 1.9): `hero.state`, one observation per hero turn with health, max health, shield and hunger counter (series, full resolution). Measured 0.38 bytes/turn in the storage gate (FactStorageTest). Hunger is already public in the log (HUNGER_CHANGE), so the value is not new information. Hook: `PlayTracker.onHeroTurn` (no new game-code hook).
+
 ## Not yet recorded (observable; candidates for the next batches, each needs its own hook and a hidden-information review)
 Doors and secret doors found, keys, levers and wells used, per-enemy state changes and enemy abilities, boss phase changes, NPC interactions and quest steps, artifact charge (no public
 accessor), plant and seed interactions, level feelings acted on, auto-explore and travel usage, throws and targeting, shop stock seen, ally summons and their fates, alchemy details,
-fall and trap damage sources beyond damage events, per-turn hero state (HP/hunger sampled), and anything a future character adds.
+fall and trap damage sources beyond damage events, and anything a future character adds.
 
 ## Absurd-query easter egg (recorded requirement, not built)
 `Question.complexity()` is the hook: it grows with everything a question asks for. A rare acknowledgement line for an extreme score, Adult/Clean aware, is still to be built.

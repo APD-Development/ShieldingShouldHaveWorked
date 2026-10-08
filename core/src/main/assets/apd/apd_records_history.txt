@@ -23,6 +23,11 @@ uimsd-first-screen | - | APD 4.0.8-apd | 2026-10-07
   item is never shown for a run that is still going, even with hidden information switched on. After a run is over it can be revealed.
 - Runs played under different rules are never mixed unless you choose to; rows whose ruleset is unknown are kept apart and counted.
 
+telemetry-1.9-hero-state | telemetry 1.9 | APD 4.0.8-apd | 2026-10-08
+- Telemetry 1.9 records the hero's health, maximum health, shield and hunger at the start of every turn the hero takes, at full detail
+  (stored compactly, one observation per turn). It makes questions like "how often was I below a third of my health" possible.
+- Runs recorded before 1.9 have no such record: they show as unknown (?), never as zero.
+
 telemetry-1.8-facts | telemetry 1.8 | APD 4.0.8-apd | 2026-10-07
 - Telemetry 1.8 adds a general way to record anything the game can observe: a "fact" names what happened (a spell cast, a step, a status effect),
   what it was about, and a few numbers. New kinds of fact can be added without changing how history is stored or queried.

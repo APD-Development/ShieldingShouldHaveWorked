@@ -44,6 +44,15 @@ public final class GameFacts {
 			.value("travelling", "Travelling", "1 when walking by travel or auto-explore, 0 for a single step.", FactKind.PLAIN)
 			.series().build());
 
+	//the hero's condition at the start of each turn the hero takes (hunger is the game's hunger counter, higher is hungrier)
+	public static final FactKind HERO_STATE = FactKinds.register(FactKind.builder("hero.state", "Hero state").plural("Hero states").area("Character")
+			.description("The hero's health, shield and hunger at the start of every turn the hero took.")
+			.value("hp", "Health", "Hit points at the start of the turn.", FactKind.PLAIN)
+			.value("hpMax", "Max health", "Maximum hit points at the start of the turn.", FactKind.PLAIN)
+			.value("shield", "Shield", "Shielding at the start of the turn.", FactKind.PLAIN)
+			.value("hunger", "Hunger", "The hunger counter at the start of the turn. It goes up as time passes, and is reset by eating.", FactKind.PLAIN)
+			.since(1, 9).series().build());
+
 	//a turn spent resting or waiting
 	public static final FactKind REST = FactKinds.register(FactKind.builder("explore.rest", "Rest turn").plural("Rest turns").area("Movement")
 			.description("Every turn the hero waited or rested.")

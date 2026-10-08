@@ -43,7 +43,11 @@ public class PlayTrackerTest {
 		w.close(false, 5000);
 		ReadResult r = RunLogReader.read(f);
 		List<FactEvents.Observation> out = new ArrayList<>();
-		for (ApdEvent e : r.events) if (FactEvents.isFactEvent(e.type)) out.addAll(FactEvents.decode(e, r));
+		//hero.state is checked in HeroStateRecordingTest; a hero left over from an earlier test would add one to every turn here
+		for (ApdEvent e : r.events){
+			if (!FactEvents.isFactEvent(e.type)) continue;
+			for (FactEvents.Observation o : FactEvents.decode(e, r)) if (!o.key.equals("hero.state")) out.add(o);
+		}
 		return out;
 	}
 
