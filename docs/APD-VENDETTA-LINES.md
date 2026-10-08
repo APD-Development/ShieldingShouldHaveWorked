@@ -68,7 +68,7 @@ recorded facts for the line to be eligible; `{name}` is filled from a recorded v
 | any.0084 | anytime | any time | There is a little dent in my desk shaped like a fist. It is labeled "Cleric, attempt 41". | There is a little dent in my desk shaped like a fist. It is labeled "Cleric, attempt 41". Attempts 42 through 225 are in the wall. |
 | any.0085 | anytime | any time | I'm told there's a spreadsheet tracking how many times I've insulted Cleric. The spreadsheet has not been shared with me, for my own safety. | I'm told there's a spreadsheet tracking how many times I've insulted Cleric. The spreadsheet has not been shared with me, for my own safety. It's mostly swear words. |
 | any.0086 | anytime | any time | A seagull stole my lunch today and I thought: "that seagull has more defensive capability than Cleric". I felt better for a second. | A seagull stole my lunch today and I thought: "that seagull has more defensive capability than Cleric". The seagull is still a shit. But I felt better for a second. |
-| any.0088 | anytime | any time | Tonight on the news: local developer insults a video game class yet again. The class is Cleric. The developer is unrepentant. | Tonight on the news: local developer insults a video game class yet again. The class is Cleric. The developer is swearing and proud. |
+| any.0088 | anytime | any time | Breaking news, reported by me, about me: I have insulted a video game class yet again. The class is Cleric. I am unrepentant. | Breaking news, reported by me, about me: I have insulted a video game class yet again. The class is Cleric. I am swearing and proud. |
 
 ## cleric_appreciation.txt
 
@@ -211,7 +211,7 @@ recorded facts for the line to be eligible; `{name}` is filled from a recorded v
 | cmp.0006 | anytime | any time | I would rank every class from best to worst, but Cleric would just stand in the middle of the list and ruin it. | I would rank every class from best to worst, but Cleric would just stand in the middle of the list being a pain in my ass. |
 | cmp.0007 | anytime | any time | Mage and Cleric both carry magic. Only one of them has to apologize for it. |  |
 | cmp.0008 | anytime | any time | Whatever characters I add to APD in the future, I am already certain they will be better than Cleric. I have not designed them yet. I am confident anyway. | Whatever characters I add to APD in the future, I am already certain they will be better than Cleric. I haven't designed them yet. I don't give a shit. They will be better. |
-| cmp.0009 | anytime | any time | Rogue gets a dagger. Huntress gets a bow. Duelist gets a rapier. Cleric gets a nice, heavy book to throw at the developer. |  |
+| cmp.0009 | anytime | any time | Rogue gets a dagger. Huntress gets a bow. Duelist gets a rapier. Cleric gets a nice, heavy book to throw at me. |  |
 | cmp.0010 | menu | any time | The character-selection screen is a lovely lineup of heroes, and then there is Cleric, standing at the end like a dentist's appointment. | The character-selection screen is a lovely lineup of heroes, and then there is Cleric, standing at the end like a prostate exam. |
 | cmp.0011 | anytime | hero=WARRIOR | You are playing Warrior. Good choice. Somewhere, Cleric is reading a pamphlet about how to do that. |  |
 | cmp.0012 | anytime | hero=MAGE | You are playing Mage. Great call. Cleric would have brought a candle and a speech. |  |
@@ -224,7 +224,7 @@ recorded facts for the line to be eligible; `{name}` is filled from a recorded v
 
 | id | category | when | Clean | Adult |
 |---|---|---|---|---|
-| fw.0001 | fourth_wall | any time | As the developer, I want it on record that I made this popup on purpose. Cleric did this to me. | As the developer, I want it on record that I made this popup on purpose. Cleric did this to me, that robed bastard. |
+| fw.0001 | fourth_wall | any time | I want it on record that I made this popup on purpose. Cleric did this to me. | I want it on record that I made this popup on purpose. Cleric did this to me, that robed bastard. |
 | fw.0002 | fourth_wall | any time | Yes, I spent real development time on a message about Cleric. No, I do not regret it. Yes, I need a hobby. | Yes, I spent real development time on a message about Cleric. No, I do not regret it. Yes, I need a fucking hobby. |
 | fw.0003 | fourth_wall | any time | If this popup is annoying, there is a switch for it in APD Settings. Cleric has no such switch, which is exactly the problem. |  |
 | fw.0004 | fourth_wall | any time | You are reading a message that someone had to type, test, and ship. All of it was about Cleric. Think about that. | You are reading a message that someone had to type, test, and ship. All of it was about fucking Cleric. Think about that. |
@@ -351,12 +351,12 @@ recorded facts for the line to be eligible; `{name}` is filled from a recorded v
 |---|---|---|---|---|
 | fmt.0001 | anytime | any time | ERROR 404: Cleric's redeeming qualities not found. | ERROR 404: Cleric's redeeming qualities not found. Also not found: my chill. |
 | fmt.0002 | anytime | any time | Exception in thread "main": java.lang.TooMuchClericException: Cleric is still a class. Stack trace omitted for my own comfort. | Exception in thread "main": java.lang.TooMuchClericException: Cleric is still a class. Stack trace omitted for my own comfort. It was just the word fuck, over and over. |
-| fmt.0003 | anytime | any time | WARNING: this build contains Cleric. The developer has been notified. The developer is sighing. | WARNING: this build contains Cleric. The developer has been notified. The developer is fucking sighing. |
+| fmt.0003 | anytime | any time | WARNING: this build contains Cleric. I have been notified. I am sighing. | WARNING: this build contains Cleric. I have been notified. I am fucking sighing. |
 | fmt.0004 | anytime | any time | Loading tip: Cleric is not a loading tip. Cleric is a loading problem. |  |
 | fmt.0005 | anytime | any time | Achievement unlocked: Thought About Cleric Again. Reward: nothing, forever. | Achievement unlocked: Thought About Cleric Again. Reward: absolutely fuck-all, forever. |
 | fmt.0006 | anytime | any time | Holy tome opens wide / the numbers do not change much / Cleric. Ugh. Again. | Holy tome opens wide / the numbers do not change much / Cleric. Fuck. Again. |
-| fmt.0007 | anytime | any time | FOR IMMEDIATE RELEASE: Local developer remains unhappy with Cleric. Sources confirm he was also unhappy yesterday. | FOR IMMEDIATE RELEASE: Local developer remains pissed off at Cleric. Sources confirm he was also pissed off yesterday. |
-| fmt.0008 | anytime | any time | By continuing to play you acknowledge that Cleric exists and that the developer is unable to make peace with it. |  |
+| fmt.0007 | anytime | any time | FOR IMMEDIATE RELEASE: I remain unhappy with Cleric. Sources, meaning me, confirm I was also unhappy yesterday. | FOR IMMEDIATE RELEASE: I remain pissed off at Cleric. Sources, meaning me, confirm I was also pissed off yesterday. |
+| fmt.0008 | anytime | any time | By continuing to play you acknowledge that Cleric exists and that I am unable to make peace with it. |  |
 | fmt.0009 | anytime | any time | Today's horoscope: you will encounter a Cleric. It will not go well. Lucky number: anything but Cleric. | Today's horoscope: you will encounter a Cleric. It will go like shit. Lucky number: anything but Cleric. |
 | fmt.0010 | anytime | any time | Cleric: one star. Would not ascend again. (I did ascend, 225 attempts later. Still one star.) | Cleric: one star. Would not ascend again. (I did ascend, 225 attempts later. Still one fucking star.) |
 | fmt.0011 | anytime | any time | Thank you for contacting Cleric Support. Your complaint is important to me. So is mine, and mine is longer. |  |
@@ -367,13 +367,13 @@ recorded facts for the line to be eligible; `{name}` is filled from a recorded v
 | fmt.0016 | anytime | any time | Your honor, I would like to enter into evidence that Cleric exists. The defense rests. The defense is also me. |  |
 | fmt.0017 | anytime | any time | And here I see the Cleric in its natural habitat: confused, surrounded, and optimistic. |  |
 | fmt.0018 | anytime | any time | And the Cleric goes for the heal! It's... it's... no. It's not. Back to you in the studio. |  |
-| fmt.0019 | anytime | any time | I, the developer, take thee, hatred of Cleric, to have and to hold, in sickness and in health, forever and ever. |  |
+| fmt.0019 | anytime | any time | I take thee, hatred of Cleric, to have and to hold, in sickness and in health, forever and ever. |  |
 | fmt.0020 | anytime | any time | Congratulations! You have been selected to ignore Cleric. Click here to continue ignoring it. |  |
 | fmt.0021 | anytime | any time | Once upon a time there was a Cleric. The end. I'm not telling you the rest, I'm still too mad. |  |
 | fmt.0022 | anytime | any time | I have gathered you here today to remember all the good times I had with Cleric. Okay. That took a while. I am done. |  |
 | fmt.0024 | anytime | any time | Missing: one reason to pick Cleric. If found, please do not return it. |  |
-| fmt.0027 | anytime | any time | Dear Diary: today I saw a white robe in a photo and had to sit down. Cleric, of course. Love, the developer. | Dear Diary: today I saw a white robe in a photo and had to sit down. Cleric, of course. Fuck. Love, the developer. |
-| fmt.0028 | anytime | any time | A strongly worded letter to Cleric: no. Sincerely, the developer. | A strongly worded letter to Cleric: fuck no. Sincerely, the developer. |
+| fmt.0027 | anytime | any time | Dear Diary: today I saw a white robe in a photo and had to sit down. Cleric, of course. Love, me. | Dear Diary: today I saw a white robe in a photo and had to sit down. Cleric, of course. Fuck. Love, me. |
+| fmt.0028 | anytime | any time | A strongly worded letter to Cleric: no. Sincerely, me. | A strongly worded letter to Cleric: fuck no. Sincerely, me. |
 | fmt.0029 | anytime | any time | Cleric's official motto, as translated by me: "I do my best, and my best is a polite suggestion." |  |
 | fmt.0031 | anytime | any time | Lost and found: one Tome, slightly used, heavily regretted. Owner: Cleric. Reward: none. | Lost and found: one Tome, slightly used, heavily regretted. Owner: Cleric. Reward: none. Do not call me. |
 | fmt.0032 | anytime | any time | Breaking news: Cleric has once again been described as "fine" by a person who has never played it for more than a minute. | Breaking news: Cleric has once again been described as "fine" by a person who has never played it for more than a minute, the lucky bastard. |

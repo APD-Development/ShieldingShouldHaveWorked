@@ -3,7 +3,7 @@
 # id | category | flags | requires | weight | clean wording | adult wording (optional)
 
 # ---- fourth wall: the developer talks about the game, the popup, and himself
-fw.0001 | fourth_wall | since=4.8 | - | 8 | As the developer, I want it on record that I made this popup on purpose. Cleric did this to me. | As the developer, I want it on record that I made this popup on purpose. Cleric did this to me, that robed bastard.
+fw.0001 | fourth_wall | since=4.8 | - | 8 | I want it on record that I made this popup on purpose. Cleric did this to me. | I want it on record that I made this popup on purpose. Cleric did this to me, that robed bastard.
 fw.0002 | fourth_wall | since=4.8 | - | 8 | Yes, I spent real development time on a message about Cleric. No, I do not regret it. Yes, I need a hobby. | Yes, I spent real development time on a message about Cleric. No, I do not regret it. Yes, I need a fucking hobby.
 fw.0003 | fourth_wall | since=4.8 | - | 8 | If this popup is annoying, there is a switch for it in APD Settings. Cleric has no such switch, which is exactly the problem. |
 fw.0004 | fourth_wall | since=4.8 | - | 8 | You are reading a message that someone had to type, test, and ship. All of it was about Cleric. Think about that. | You are reading a message that someone had to type, test, and ship. All of it was about fucking Cleric. Think about that.

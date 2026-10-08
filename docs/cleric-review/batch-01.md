@@ -199,5 +199,5 @@ Lines 1 to 50 of 348. Reply with the ids to keep, cut or rewrite.
 - Adult: A seagull stole my lunch today and I thought: "that seagull has more defensive capability than Cleric". The seagull is still a shit. But I felt better for a second.
 
 ### any.0088  (Hatred, anytime, any time)
-- Clean: Tonight on the news: local developer insults a video game class yet again. The class is Cleric. The developer is unrepentant.
-- Adult: Tonight on the news: local developer insults a video game class yet again. The class is Cleric. The developer is swearing and proud.
+- Clean: Breaking news, reported by me, about me: I have insulted a video game class yet again. The class is Cleric. I am unrepentant.
+- Adult: Breaking news, reported by me, about me: I have insulted a video game class yet again. The class is Cleric. I am swearing and proud.

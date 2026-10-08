@@ -62,6 +62,9 @@ public final class LinePack {
 	// The developer speaks in the first person: "I", "me", "my", never "we", "us" or "our" (APD is his game).
 	static final Pattern PLURAL_VOICE = Pattern.compile( "\\b(we|us|our|ours|ourselves)\\b|\\blet's\\b", Pattern.CASE_INSENSITIVE );
 
+	// The developer does not refer to himself as "the developer" in his own lines ("I", "me", "my" only).
+	static final Pattern THIRD_PERSON = Pattern.compile( "\\b(the|this|local|as the|your) (developer|dev|creator|author)\\b", Pattern.CASE_INSENSITIVE );
+
 	// No invented community: a line may not talk about forums, streams, other players' messages or a community. Real community-inspired
 	// jokes need the owner's approval first, and this check is changed then, deliberately.
 	static final Pattern COMMUNITY = Pattern.compile(
@@ -218,6 +221,8 @@ public final class LinePack {
 		for (String t : new String[]{ clean, adult == null ? "" : adult }){
 			Matcher plural = PLURAL_VOICE.matcher( t );
 			if (plural.find()) throw new IllegalArgumentException( "the developer speaks as 'I', never '" + plural.group() + "'" );
+			Matcher third = THIRD_PERSON.matcher( t );
+			if (third.find()) throw new IllegalArgumentException( "the developer speaks as 'I', never as '" + third.group() + "'" );
 			Matcher invented = COMMUNITY.matcher( t );
 			if (invented.find()) throw new IllegalArgumentException( "a line must not invent or quote a community ('" + invented.group() + "')" );
 		}

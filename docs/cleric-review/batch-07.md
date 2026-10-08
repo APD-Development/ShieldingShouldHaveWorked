@@ -51,8 +51,8 @@ Lines 301 to 348 of 348. Reply with the ids to keep, cut or rewrite.
 - Adult: Exception in thread "main": java.lang.TooMuchClericException: Cleric is still a class. Stack trace omitted for my own comfort. It was just the word fuck, over and over.
 
 ### fmt.0003  (Hatred, anytime, any time)
-- Clean: WARNING: this build contains Cleric. The developer has been notified. The developer is sighing.
-- Adult: WARNING: this build contains Cleric. The developer has been notified. The developer is fucking sighing.
+- Clean: WARNING: this build contains Cleric. I have been notified. I am sighing.
+- Adult: WARNING: this build contains Cleric. I have been notified. I am fucking sighing.
 
 ### fmt.0004  (Hatred, anytime, any time)
 - Clean: Loading tip: Cleric is not a loading tip. Cleric is a loading problem.
@@ -67,11 +67,11 @@ Lines 301 to 348 of 348. Reply with the ids to keep, cut or rewrite.
 - Adult: Holy tome opens wide / the numbers do not change much / Cleric. Fuck. Again.
 
 ### fmt.0007  (Hatred, anytime, any time)
-- Clean: FOR IMMEDIATE RELEASE: Local developer remains unhappy with Cleric. Sources confirm he was also unhappy yesterday.
-- Adult: FOR IMMEDIATE RELEASE: Local developer remains pissed off at Cleric. Sources confirm he was also pissed off yesterday.
+- Clean: FOR IMMEDIATE RELEASE: I remain unhappy with Cleric. Sources, meaning me, confirm I was also unhappy yesterday.
+- Adult: FOR IMMEDIATE RELEASE: I remain pissed off at Cleric. Sources, meaning me, confirm I was also pissed off yesterday.
 
 ### fmt.0008  (Hatred, anytime, any time)
-- Clean: By continuing to play you acknowledge that Cleric exists and that the developer is unable to make peace with it.
+- Clean: By continuing to play you acknowledge that Cleric exists and that I am unable to make peace with it.
 - Adult: (same as Clean)
 
 ### fmt.0009  (Hatred, anytime, any time)
@@ -115,7 +115,7 @@ Lines 301 to 348 of 348. Reply with the ids to keep, cut or rewrite.
 - Adult: (same as Clean)
 
 ### fmt.0019  (Hatred, anytime, any time)
-- Clean: I, the developer, take thee, hatred of Cleric, to have and to hold, in sickness and in health, forever and ever.
+- Clean: I take thee, hatred of Cleric, to have and to hold, in sickness and in health, forever and ever.
 - Adult: (same as Clean)
 
 ### fmt.0020  (Hatred, anytime, any time)
@@ -135,12 +135,12 @@ Lines 301 to 348 of 348. Reply with the ids to keep, cut or rewrite.
 - Adult: (same as Clean)
 
 ### fmt.0027  (Hatred, anytime, any time)
-- Clean: Dear Diary: today I saw a white robe in a photo and had to sit down. Cleric, of course. Love, the developer.
-- Adult: Dear Diary: today I saw a white robe in a photo and had to sit down. Cleric, of course. Fuck. Love, the developer.
+- Clean: Dear Diary: today I saw a white robe in a photo and had to sit down. Cleric, of course. Love, me.
+- Adult: Dear Diary: today I saw a white robe in a photo and had to sit down. Cleric, of course. Fuck. Love, me.
 
 ### fmt.0028  (Hatred, anytime, any time)
-- Clean: A strongly worded letter to Cleric: no. Sincerely, the developer.
-- Adult: A strongly worded letter to Cleric: fuck no. Sincerely, the developer.
+- Clean: A strongly worded letter to Cleric: no. Sincerely, me.
+- Adult: A strongly worded letter to Cleric: fuck no. Sincerely, me.
 
 ### fmt.0029  (Hatred, anytime, any time)
 - Clean: Cleric's official motto, as translated by me: "I do my best, and my best is a polite suggestion."

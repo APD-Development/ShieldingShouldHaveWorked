@@ -131,7 +131,7 @@ Lines 151 to 200 of 348. Reply with the ids to keep, cut or rewrite.
 - Adult: Whatever characters I add to APD in the future, I am already certain they will be better than Cleric. I haven't designed them yet. I don't give a shit. They will be better.
 
 ### cmp.0009  (Hatred, anytime, any time)
-- Clean: Rogue gets a dagger. Huntress gets a bow. Duelist gets a rapier. Cleric gets a nice, heavy book to throw at the developer.
+- Clean: Rogue gets a dagger. Huntress gets a bow. Duelist gets a rapier. Cleric gets a nice, heavy book to throw at me.
 - Adult: (same as Clean)
 
 ### cmp.0010  (Hatred, menu, any time)
@@ -163,8 +163,8 @@ Lines 151 to 200 of 348. Reply with the ids to keep, cut or rewrite.
 - Adult: (same as Clean)
 
 ### fw.0001  (Hatred, fourth_wall, any time)
-- Clean: As the developer, I want it on record that I made this popup on purpose. Cleric did this to me.
-- Adult: As the developer, I want it on record that I made this popup on purpose. Cleric did this to me, that robed bastard.
+- Clean: I want it on record that I made this popup on purpose. Cleric did this to me.
+- Adult: I want it on record that I made this popup on purpose. Cleric did this to me, that robed bastard.
 
 ### fw.0002  (Hatred, fourth_wall, any time)
 - Clean: Yes, I spent real development time on a message about Cleric. No, I do not regret it. Yes, I need a hobby.

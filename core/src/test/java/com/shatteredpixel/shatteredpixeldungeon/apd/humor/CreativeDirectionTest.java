@@ -65,6 +65,15 @@ public class CreativeDirectionTest {
 	}
 
 	@Test
+	public void theDeveloperNeverCallsHimselfTheDeveloper(){
+		for (String bad : new String[]{ "The developer hates Cleric.", "This developer is tired of Cleric.", "Local developer insults Cleric again.",
+				"As the developer, I dislike Cleric." }){
+			rejects( "any.0001 | anytime | - | - | 5 | " + bad + " |", "never as" );
+		}
+		LinePack.parse( "any.0001 | anytime | - | - | 5 | I dislike Cleric, and I am the one who wrote this. |", "t" );
+	}
+
+	@Test
 	public void noLineInventsOrQuotesACommunity(){
 		for (String bad : new String[]{ "The community agrees Cleric is bad.", "Players have told me Cleric is great.", "Someone on Reddit said Cleric is fine.",
 				"A streamer won with Cleric.", "The forums are full of Cleric posts.", "Players wrote to me about Cleric." }){
