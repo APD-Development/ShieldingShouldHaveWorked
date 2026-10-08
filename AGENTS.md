@@ -1,0 +1,40 @@
+# AGENTS.md: ADHD Pixel Dungeon (APD), start here
+
+APD is a private fork of Shattered Pixel Dungeon 4.0.x (upstream licence/attribution must stay). It is a solo project: all in-game developer voice is first-person singular (I/me/my). The owner is the sole decision maker. Repo: github.com/charltonchris29/ShieldingShouldHaveWorked (private).
+
+## Branches
+- Work branch: `claude/adhd-pixel-dungeon-setup-iszc3v` (ALL current work is here; it is far ahead of `main`).
+- `main` holds only verified builds (up to apd-build-80) plus `.github/workflows/private-test-apk.yml`. Never merge unfinished code to main to get a test APK.
+
+## Read first (in this order)
+1. `docs/KNOWN-ISSUES-AND-SOURCE-GUIDE.md`: current alpha configuration, known bugs, incomplete features, where things are.
+2. `docs/HANDOFF.md`: owner decisions, release process, history. (Written for Claude; ignore its mentions of an "hourly resume trigger", Claude tools and sandboxes. The decisions in it still hold.)
+3. `docs/APD-FIX-LOG-2026-10-08.md`: each recent fix with its root cause.
+4. `docs/APD-BACKEND.md`, `docs/APD-UIMSD-UNIVERSAL.md`, `docs/APD-VENDETTA.md` (postponed Cleric Grudge), `docs/APD-PHONE-CHECKLIST-B69.md` (+ .pdf), `docs/APD-HERO-MARKERS.md`.
+5. `docs/APD-HANDOFF.md`: long engineering log (telemetry, UIMSD, difficulty, back handling).
+
+## Standing rules from the owner (do not break)
+- Do NOT trigger GitHub Actions, publish a release, push to main, or spend money without the owner's explicit approval for that specific action.
+- No gameplay/balance changes beyond what the owner approved. Cleric balance is NOT to be changed. Cleric is playable (own ruleset `cleric=playable`; all other ruleset ids and run history must stay unchanged).
+- Never weaken or skip tests to get green. Never force-push, never change signing keys, no secrets in the APK.
+- No fabricated statistics, achievements or history anywhere in the game.
+- Cleric Grudge/Lore is POSTPONED to public release and OFF everywhere via `ApdFeatures.GRUDGE_LORE_IN_THIS_RELEASE = false` (core/.../apd/ApdFeatures.java). Keep all its code/lines. Future plan (not designed): 50 Lore entries at release then 50/year for 20 years.
+- Backend: provider-neutral libraries only. No provider, sign-in or hosting chosen; do not commit to one.
+- Test features (Demo Unlock, Cleric playable) are ON only in the private test build (`-PapdTestBuild`); normal builds have them off.
+- The owner tests on a RedMagic 11 Pro and reports bugs by checklist step. Untested changes caused many bugs before: prefer small, test-backed changes and say clearly what is NOT device-verified.
+
+## Build and test
+- Unit tests (no Android SDK needed): `tools/run-core-tests.sh` (about 1-3 minutes; 848 tests at last run, all passing). Single test: `tools/run-core-tests.sh --tests '*ApdIntroTest*'`.
+- The Android module (APK) needs the Android SDK/AGP; build it with `./gradlew :android:assembleDebug -PapdTestBuild -PapdBuild=<n>` on a machine with the SDK, or via the manual GitHub workflow below.
+- Level generation can be tested headlessly: see `core/src/test/.../apd/LevelGenerationHarness.java` and `FirstFloorExitTest`.
+
+## Releasing a test APK (owner approval required each time)
+GitHub > Actions > "Private test APK" > Run workflow, ref = the claude branch. `publish` on = a GitHub PRE-RELEASE (tag `apd-test-N`) with the .apk attached directly; `from_run` = publish an already built run without rebuilding. Latest: https://github.com/charltonchris29/ShieldingShouldHaveWorked/releases/tag/apd-test-3 (built from 46229e1d7). Installs over previous builds (same signing key + app id `.indev`); never ask the owner to uninstall (it erases their data).
+
+## Code map
+- Game: `core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/`; APD additions under `apd/` (recorder, stats, query = UIMSD statistics database, backend, backendbridge, humor, difficulty, demo, replay). UI windows in `windows/`, scenes in `scenes/`.
+- Feature switches: `apd/ApdFeatures.java` (asset `apd/features.txt` exists only in test builds). Tutorial fix: `apd/ApdIntro.java`.
+- Tests: `core/src/test/` and Android device tests in `android/src/androidTest/` (run by the "Android device tests" workflow; also costs Actions minutes).
+
+## Open bugs (short; full list in KNOWN-ISSUES doc)
+UIMSD dialogs close on app switch; UIMSD default scope wording; floor-1 runs generated during the old tutorial keep a hidden door; phone checklist steps 23-41 untested; hero-select pips + win star designed, not built.
