@@ -89,6 +89,14 @@ subsystem, improve its comments there; use spare autonomous time for broader rev
 (run lifecycle, rollback by event index), stats/LogFormat + FactKinds (permanent ids), difficulty/Difficulty + Ruleset identity, replay/FloorReplay (fixed reference context), archive importer (all-or-nothing),
 WndAPDSettings (ScrollPane creation order), UimsdScene/UimsdModel (back stack, tour statics), AndroidLauncher (two Back routes).
 
+## DECISION NEEDED (not blocking other work): Cleric un-ban vs ruleset identity continuity
+Un-banning is approved; the open point is how old history relates to the new rules. Ruleset text today: "base=spd-4.0.0;apd0001=on;cleric=blocked;exotic=N;challenges=M[;difficulty=..;balance=..]", id = "r1-" + 12 hex of SHA-256.
+Options: (A) bump to r2 and drop/rename the cleric token: simple and honest, but EVERY new run (all classes) gets a new id, so "my current rules" no longer includes the whole existing history unless the player picks "All rules (mixed)"
+(non-Cleric gameplay did not actually change). (B) RECOMMENDED: keep ids for all runs whose gameplay rules are unchanged by treating the old "cleric=blocked" text as equivalent to the new rules for every class that was playable
+(normalise old ids on read from the stored rulesetText, bump the row-cache builder version), and give runs that are actually Cleric the new rules id; costs a normalisation step in RowBuilders/Scope + tests, no data rewrite (raw logs untouched).
+(C) leave the old text token in place forever and only flip the game rule (Cleric runs would be recorded under a text that says "blocked": rejected, it makes the identity lie).
+Nothing is implemented; the Cleric block, the black-screen gag and the badge stay until you choose. After the choice the code change is small (HeroSelectScene check, Ruleset text/id, recorder + row-builder normalisation, tests incl. old-log fixtures).
+
 ## Review later (decided: NOT to change now)
 - **Rankings navigation.** Upstream's title screen had a Rankings button (classic top-scores list, `RankingsScene`). APD's title menu (Play, UIMSD, Badges, Journal, Options, Quit,
   APD Settings, News, Changes, About) has none. `RankingsScene` is still reachable only from inside a game (`WndGame`, the end screens `AmuletScene`/`SurfaceScene`). UIMSD already
