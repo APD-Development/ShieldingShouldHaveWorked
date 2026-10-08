@@ -49,6 +49,7 @@ public final class DataPolicy {
 		SCHEMAS.put(AccountRequests.EXPORT_SCHEMA, DataClass.ACCOUNT_PRIVATE);
 		SCHEMAS.put(AccountRequests.DELETE_SCHEMA, DataClass.ACCOUNT_PRIVATE);
 		SCHEMAS.put(EvidenceMessages.REQUEST_SCHEMA, DataClass.ACCOUNT_PRIVATE);
+		SCHEMAS.put(VoteMessages.ROUND_SCHEMA, DataClass.ACCOUNT_PRIVATE);
 		SCHEMAS.put(EvidenceMessages.DATA_SCHEMA, DataClass.ACCOUNT_PRIVATE);   //raw run data: only ever built for a request the player agreed to
 	}
 

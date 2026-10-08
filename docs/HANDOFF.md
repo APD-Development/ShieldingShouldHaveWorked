@@ -54,7 +54,7 @@ The long project handoff is `docs/APD-HANDOFF.md`; the canonical plan is `APD_Ca
 - Backend: provider, sign-in methods, key custody, ranking verification level, retention, moderation.
 - Contact Evan Debenham; delete branches `tmp-red-click` and `tmp-red-click2`.
 - Hero-select completion marker design (look and placement).
-- Possible flake: `CombatTelemetryTest.theTruthBehindAFightIsInternalOnly` failed once locally, passed on rerun. If it recurs, pin the random generator; do not loosen the assertion.
+- RESOLVED: `CombatTelemetryTest.theTruthBehindAFightIsInternalOnly` failed in a full-suite run because the hero's first blow can do 0 damage against a rat's armor (the random stream depends on earlier tests). The assertion now states the real invariant for every blow (HP went down exactly when damage was dealt, and the fight ends with the rat at 0).
 
 ## Queue notes
 - Throws are already recorded as item actions (Item.execute) and travel as a flag on moves; trades are recorded. Do not re-add them.

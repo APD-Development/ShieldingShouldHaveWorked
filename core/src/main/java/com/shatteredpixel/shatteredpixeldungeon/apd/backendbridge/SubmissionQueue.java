@@ -267,6 +267,22 @@ public final class SubmissionQueue {
 		return readAll(f);
 	}
 
+	//like enqueueEnvelope, but an item already waiting under the same id is replaced (a new ballot for the same round)
+	static boolean replaceEnvelope( File historyRoot, Id id, com.shatteredpixel.shatteredpixeldungeon.apd.backend.Envelope e, long nowMillis ){
+		synchronized (LOCK){
+			try {
+				Outbox box = new Outbox();
+				OutboxStore.load(box, fileIn(historyRoot));
+				box.remove(id);
+				box.enqueue(id, e, nowMillis);
+				OutboxStore.save(box, fileIn(historyRoot));
+				return true;
+			} catch (IOException | IllegalArgumentException ex){
+				return false;
+			}
+		}
+	}
+
 	//queues an envelope that is not a run submission (evidence data the player agreed to send); false if it could not be queued or saved
 	static boolean enqueueEnvelope( File historyRoot, Id id, com.shatteredpixel.shatteredpixeldungeon.apd.backend.Envelope e, long nowMillis ){
 		synchronized (LOCK){

@@ -68,6 +68,8 @@ public final class BackendClient {
 		for (com.shatteredpixel.shatteredpixeldungeon.apd.backend.Envelope e : f.items){
 			EvidenceMessages.Asked asked = EvidenceMessages.askedFromEnvelope(e);
 			if (asked != null && EvidenceInbox.add(historyRoot, asked, nowMillis)) added++;
+			com.shatteredpixel.shatteredpixeldungeon.apd.backend.VoteMessages.Offer offer = com.shatteredpixel.shatteredpixeldungeon.apd.backend.VoteMessages.offerFromEnvelope(e);
+			if (offer != null) VoteActions.store(historyRoot, offer);
 		}
 		return added;
 	}

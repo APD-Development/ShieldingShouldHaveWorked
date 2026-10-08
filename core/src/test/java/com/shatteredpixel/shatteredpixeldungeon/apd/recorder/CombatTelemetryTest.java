@@ -96,9 +96,15 @@ public class CombatTelemetryTest {
 		assertTrue(first.targetClass.endsWith("Rat"));
 		assertEquals(8, first.hpBefore);       //the exact enemy HP lives only in the INTERNAL event
 		assertEquals(8, first.hpMax);
-		assertTrue(first.hpAfter < first.hpBefore);
-		//hpLost is the game's own number (what the damage text shows), so a killing blow can exceed the HP that was left
-		assertTrue(first.hpLost >= first.hpBefore - first.hpAfter);
+		//A rat can soak up a weak hit (damage 0 after its armor), so the first blow need not hurt. The exact HP must agree with the game's own
+		//damage number every time: HP went down exactly when damage was dealt.
+		for (CombatEvents.DamageDetail x : d){
+			assertEquals(x.hpLost > 0, x.hpAfter < x.hpBefore);
+			assertTrue(x.hpAfter <= x.hpBefore);
+			//hpLost is the game's own number (what the damage text shows), so a killing blow can exceed the HP that was left
+			assertTrue(x.hpLost >= x.hpBefore - x.hpAfter);
+		}
+		assertTrue("the fight ends with the rat's HP gone", d.get(d.size() - 1).hpAfter <= 0);
 		assertTrue(first.publicEmitted);
 		for (CombatEvents.AttackDetail x : attackDetails(r)){
 			assertTrue(x.defenderClass.endsWith("Rat"));
