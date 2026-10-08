@@ -314,6 +314,26 @@ public class SPDSettings extends GameSettings {
 		return getBoolean( KEY_APD_UIMSD_GUIDE_SEEN, false );
 	}
 
+	public static final String KEY_APD_SENDING = "apd_sending";
+	public static final String KEY_APD_SERVER = "apd_server";
+
+	//Sending queued runs to a server: off unless the player turns it on, and it needs a server address too
+	public static void apdSending( boolean value ){
+		put( KEY_APD_SENDING, value );
+	}
+
+	public static boolean apdSending(){
+		return getBoolean( KEY_APD_SENDING, false );
+	}
+
+	public static void apdServer( String value ){
+		put( KEY_APD_SERVER, value == null ? "" : value );
+	}
+
+	public static String apdServer(){
+		return getString( KEY_APD_SERVER, "", 200 );
+	}
+
 	public static final String KEY_APD_RECORDING = "apd_recording";
 
 	//APD run history recording, on by default

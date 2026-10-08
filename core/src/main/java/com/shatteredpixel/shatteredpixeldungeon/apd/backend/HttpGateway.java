@@ -84,7 +84,9 @@ public final class HttpGateway implements Gateway {
 		if (code >= 200 && code < 300) return new Response(Status.OK, "");
 		if (code == 409) return new Response(Status.OK, "already received");
 		if (code == 408 || code == 425 || code == 429 || code >= 500) return new Response(Status.RETRY_LATER, "server busy (" + code + ")");
-		if (code == 401 || code == 403) return new Response(Status.REJECTED, "not allowed (" + code + ")" + (detail.isEmpty() ? "" : ": " + detail));
+		//not signed in (or the session ended): nothing is wrong with the item, so it stays queued
+		if (code == 401) return new Response(Status.RETRY_LATER, "sign-in needed");
+		if (code == 403) return new Response(Status.REJECTED, "not allowed (" + code + ")" + (detail.isEmpty() ? "" : ": " + detail));
 		return new Response(Status.REJECTED, "refused (" + code + ")" + (detail.isEmpty() ? "" : ": " + detail));
 	}
 

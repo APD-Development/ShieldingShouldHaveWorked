@@ -58,15 +58,20 @@ public final class PrivacySummary {
 	}
 
 	public List<String> lines(){
+		return lines(false);
+	}
+
+	public List<String> lines( boolean sendingOn ){
 		List<String> out = new ArrayList<>();
 		out.add("Your run history (" + runLogs + " run" + (runLogs == 1 ? "" : "s") + ", " + (runLogBytes / 1024) + " KB) stays on this device.");
-		out.add("Nothing is sent anywhere: there is no APD server and no account yet.");
+		out.add(sendingOn ? "Sending is on, but nothing is sent by itself: only what you queued, and only when you press \"Send queued runs now\"."
+				: "Nothing is sent anywhere: sending is off.");
 		if (queued == 0){
 			out.add("No runs are queued for submission.");
 		} else {
-			out.add(queued + " finished run" + (queued == 1 ? " is" : "s are") + " queued on this device as a short summary only (never the full history). Nothing has been sent.");
+			out.add(queued + " finished run" + (queued == 1 ? " is" : "s are") + " queued on this device as a short summary only (never the full history).");
 		}
-		out.add("If submitting ever exists, it will only send what you queue, and you will be able to read and remove each item first.");
+		out.add("You can read and remove each queued item first.");
 		return out;
 	}
 }

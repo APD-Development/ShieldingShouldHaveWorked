@@ -164,13 +164,13 @@ public class EndToEndSubmissionTest {
 		log("run-a");
 		assertEquals(SubmissionQueue.Result.QUEUED, SubmissionQueue.enqueueRun(tmp.getRoot(), "run-a", "4.0.8-apd", 1).result);
 
-		//signed out: the server refuses, the item is dropped with a reason and nothing is ranked
-		Outbox.FlushResult refused = SubmissionQueue.flush(tmp.getRoot(), new HttpGateway(url, null, 3000), 1_000_000_000L);
-		assertEquals(1, refused.rejected);
+		//signed out: the server asks for a sign-in, the run stays queued and nothing is ranked
+		Outbox.FlushResult waiting = SubmissionQueue.flush(tmp.getRoot(), new HttpGateway(url, null, 3000), 1_000_000_000L);
+		assertEquals(1, waiting.kept);
+		assertEquals(1, SubmissionQueue.pending(tmp.getRoot()));
 		assertTrue(stored.isEmpty());
 
-		//signed in: queue again and send
-		assertEquals(SubmissionQueue.Result.QUEUED, SubmissionQueue.enqueueRun(tmp.getRoot(), "run-a", "4.0.8-apd", 2).result);
+		//signed in: send what was waiting (after the back-off)
 		HttpGateway ann = new HttpGateway(url, () -> "tok-ann", 3000);
 		assertEquals(1, SubmissionQueue.flush(tmp.getRoot(), ann, 2_000_000_000L).sent);
 		assertEquals(0, SubmissionQueue.pending(tmp.getRoot()));

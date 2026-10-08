@@ -22,7 +22,12 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.apd.backend.Gateways;
+import com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge.BackendClient;
+import com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge.PrivacySummary;
+import com.watabou.noosa.Game;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.Aggregate;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.ColumnDef;
@@ -172,9 +177,58 @@ public final class WndUimsdOptions {
 		}));
 	}
 
-	private static void privacy( UimsdModel m ){
+	private static void privacy( final UimsdModel m ){
+		final List<Entry> entries = new ArrayList<>();
+		entries.add(Entry.item("What stays on this device", "What APD holds, and what is queued."));
+		entries.add(Entry.item("Sending to a server: " + (SPDSettings.apdSending() ? "on" : "off"), BackendClient.status(SPDSettings.apdSending(), SPDSettings.apdServer())));
+		entries.add(Entry.item("Server address...", "Where queued runs go when you press Send. Must start with https://."));
+		entries.add(Entry.item("Send queued runs now", "Sends only what you queued, only when you press this."));
+		ShatteredPixelDungeon.scene().addToFront(WndUimsdList.menu("Privacy", "", entries, new WndUimsdList.Picker(){
+			@Override
+			public void onPick( int i, boolean checked ){
+				if (i == 0){
+					privacySummary(m);
+				} else if (i == 1){
+					SPDSettings.apdSending(!SPDSettings.apdSending());
+					say("Sending is now " + (SPDSettings.apdSending() ? "on. Nothing is sent until you press \"Send queued runs now\"." : "off. Nothing leaves this device."));
+				} else if (i == 2){
+					serverAddress();
+				} else {
+					BackendClient.sendNow(m.root(), SPDSettings.apdSending(), SPDSettings.apdServer(), new BackendClient.Done(){
+						@Override
+						public void finished( final String message ){
+							Game.runOnRenderThread(new com.watabou.utils.Callback(){
+								@Override
+								public void call(){
+									say(message);
+								}
+							});
+						}
+					});
+				}
+			}
+		}));
+	}
+
+	private static void serverAddress(){
+		ShatteredPixelDungeon.scene().addToFront(new WndTextInput("Server address", "An address starting with https://. Leave empty to clear it.", SPDSettings.apdServer(), 200, false, "Save", "Cancel"){
+			@Override
+			public void onSelect( boolean positive, String text ){
+				if (!positive) return;
+				String t = text == null ? "" : text.trim();
+				if (!t.isEmpty() && Gateways.cleanBaseUrl(t) == null){
+					say("That is not a usable address. It must start with https://.");
+					return;
+				}
+				SPDSettings.apdServer(t);
+				say(t.isEmpty() ? "Address cleared." : "Saved.");
+			}
+		});
+	}
+
+	private static void privacySummary( UimsdModel m ){
 		StringBuilder sb = new StringBuilder();
-		for (String line : com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge.PrivacySummary.of(m.root()).lines()) sb.append(line).append("\n\n");
+		for (String line : PrivacySummary.of(m.root()).lines(SPDSettings.apdSending())) sb.append(line).append("\n\n");
 		ShatteredPixelDungeon.scene().addToFront(new WndMessage(sb.toString().trim()));
 	}
 

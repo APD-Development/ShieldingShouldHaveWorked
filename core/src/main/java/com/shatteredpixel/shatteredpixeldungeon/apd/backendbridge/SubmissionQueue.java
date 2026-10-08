@@ -155,12 +155,18 @@ public final class SubmissionQueue {
 
 	//Sends what is due through 'gateway' and saves what is left. With the offline gateway (the only one that exists) nothing changes. Never throws.
 	public static Outbox.FlushResult flush( File historyRoot, Gateway gateway, long nowMillis ){
+		return flush(historyRoot, gateway, nowMillis, false);
+	}
+
+	//ignoreBackoff: the player pressed "send now", so every queued item is tried regardless of its retry schedule
+	public static Outbox.FlushResult flush( File historyRoot, Gateway gateway, long nowMillis, boolean ignoreBackoff ){
 		Outbox.FlushResult none = new Outbox.FlushResult();
 		if (historyRoot == null) return none;
 		try {
 			Outbox box = new Outbox();
 			OutboxStore.load(box, fileIn(historyRoot));
 			if (box.size() == 0) return none;
+			if (ignoreBackoff) for (Outbox.Item i : box.items()) i.nextAttemptAtMillis = nowMillis;
 			Outbox.FlushResult r = box.flush(gateway, nowMillis);
 			OutboxStore.save(box, fileIn(historyRoot));
 			return r;

@@ -139,6 +139,52 @@ public class SubmissionQueueTest {
 		String all = String.join(" ", s.lines());
 		assertTrue(all.contains("Nothing is sent anywhere"));
 		assertTrue(all.contains("1 finished run is queued"));
+		assertTrue("when sending is on it says it is still manual", String.join(" ", s.lines(true)).contains("only when you press"));
 		assertEquals("a missing folder is simply empty", 0, PrivacySummary.of(null).runLogs);
+	}
+
+	@Test
+	public void sendNowDoesNothingUnlessSendingIsOnWithASecureAddress() throws Exception {
+		log("run-a", true, 3, 0);
+		SubmissionQueue.enqueueRun(tmp.getRoot(), "run-a", "b", 1);
+		final String[] said = new String[1];
+		BackendClient.Done done = new BackendClient.Done(){
+			public void finished( String message ){
+				said[0] = message;
+			}
+		};
+		BackendClient.sendNow(tmp.getRoot(), false, "https://example.org", done);
+		assertTrue(said[0].startsWith("Off"));
+		said[0] = null;
+		BackendClient.sendNow(tmp.getRoot(), true, "", done);
+		assertTrue(said[0].contains("no usable server address"));
+		assertEquals("the queue is untouched", 1, SubmissionQueue.pending(tmp.getRoot()));
+		assertEquals("Nothing was queued.", BackendClient.describe(new com.shatteredpixel.shatteredpixeldungeon.apd.backend.Outbox.FlushResult(), 0));
+		com.shatteredpixel.shatteredpixeldungeon.apd.backend.Outbox.FlushResult r = new com.shatteredpixel.shatteredpixeldungeon.apd.backend.Outbox.FlushResult();
+		r.sent = 2;
+		r.kept = 1;
+		assertEquals("2 sent. 1 still queued, to try again later.", BackendClient.describe(r, 1));
+	}
+
+	@Test
+	public void sendNowIgnoresTheRetryScheduleBecauseThePlayerAsked(){
+		log("run-a", true, 3, 0);
+		SubmissionQueue.enqueueRun(tmp.getRoot(), "run-a", "b", 1);
+		com.shatteredpixel.shatteredpixeldungeon.apd.backend.Gateway retry = new com.shatteredpixel.shatteredpixeldungeon.apd.backend.Gateway(){
+			public Response send( String key, com.shatteredpixel.shatteredpixeldungeon.apd.backend.Envelope e ){
+				return new Response(Status.RETRY_LATER, "sign-in needed");
+			}
+		};
+		assertEquals(1, SubmissionQueue.flush(tmp.getRoot(), retry, 100).kept);
+		final int[] tried = new int[1];
+		com.shatteredpixel.shatteredpixeldungeon.apd.backend.Gateway ok = new com.shatteredpixel.shatteredpixeldungeon.apd.backend.Gateway(){
+			public Response send( String key, com.shatteredpixel.shatteredpixeldungeon.apd.backend.Envelope e ){
+				tried[0]++;
+				return new Response(Status.OK, "");
+			}
+		};
+		assertEquals("not due yet on the normal schedule", 0, SubmissionQueue.flush(tmp.getRoot(), ok, 101).sent);
+		assertEquals("but a manual send tries it now", 1, SubmissionQueue.flush(tmp.getRoot(), ok, 102, true).sent);
+		assertEquals(1, tried[0]);
 	}
 }
