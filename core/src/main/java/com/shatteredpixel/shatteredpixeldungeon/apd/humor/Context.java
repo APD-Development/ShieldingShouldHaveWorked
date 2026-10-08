@@ -64,6 +64,13 @@ public final class Context {
 		return new Context( m );
 	}
 
+	// this context with every fact of `other` added (other wins on a clash)
+	public Context withAll( Context other ){
+		Map<String, String> m = new HashMap<>( facts );
+		m.putAll( other.facts );
+		return new Context( m );
+	}
+
 	public String get( String key ){
 		return facts.get( key );
 	}

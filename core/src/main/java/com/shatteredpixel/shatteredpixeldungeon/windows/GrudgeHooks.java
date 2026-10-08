@@ -36,6 +36,9 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.humor.Ledger;
 import com.shatteredpixel.shatteredpixeldungeon.apd.humor.Moment;
 import com.shatteredpixel.shatteredpixeldungeon.apd.humor.Safety;
 import com.shatteredpixel.shatteredpixeldungeon.apd.humor.Shown;
+import com.shatteredpixel.shatteredpixeldungeon.apd.query.ClericHistory;
+import com.shatteredpixel.shatteredpixeldungeon.apd.query.DatasetStore;
+import com.shatteredpixel.shatteredpixeldungeon.apd.query.Datasets;
 import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.RankingsScene;
@@ -63,6 +66,10 @@ public final class GrudgeHooks {
 	private static Ledger ledger;
 	//its own random source, nothing to do with the game's
 	private static final Random RNG = new Random();
+
+	//what the history really says about Cleric, worked out once per session on a background thread
+	private static volatile Context historyFacts;
+	private static boolean historyRequested;
 
 	private static Scene lastScene;
 	private static long sceneSince;
@@ -147,6 +154,31 @@ public final class GrudgeHooks {
 		}
 	}
 
+	// Starts, once, reading the Cleric counts from the real history. Until it finishes the popup simply waits; if it fails there are no
+	// history facts and the lines that need them stay silent.
+	private static void requestHistory(){
+		if (historyRequested) return;
+		historyRequested = true;
+		final File root = ApdRecorder.historyRoot();
+		Thread t = new Thread( new Runnable(){
+			@Override
+			public void run(){
+				Context c = Context.EMPTY;
+				try {
+					if (root != null){
+						ClericHistory h = ClericHistory.compute( new DatasetStore( root ).load().dataset( Datasets.RUNS ) );
+						c = c.with( "clericRuns", h.runs ).with( "clericWins", h.wins ).with( "clericDeaths", h.deaths );
+					}
+				} catch (Throwable ignored){
+					//no history facts
+				}
+				historyFacts = c;
+			}
+		}, "apd-grudge-history" );
+		t.setDaemon( true );
+		t.start();
+	}
+
 	// Is the hero idle in a quiet place? Reads game state only; it changes none of it, spends no turn and draws no random number.
 	private static boolean quiet(){
 		if (Dungeon.hero == null || Dungeon.level == null || !Dungeon.hero.isAlive()) return false;
@@ -224,6 +256,9 @@ public final class GrudgeHooks {
 			}
 			//a window already open: wait, and ask again once it is gone
 			if (PixelScene.hasWindow( s )) return;
+			requestHistory();
+			if (historyFacts == null) return;
+			ctx = ctx.withAll( historyFacts );
 			decided = true;
 			if (m != Moment.MENU){
 				pendingEnd = null;
