@@ -75,9 +75,8 @@ public class PlayRunDeviceTest {
 		throw new AssertionError("timed out waiting for " + what);
 	}
 
-	private static RunFacts factsOfLog() throws Exception {
+	private static RunFacts factsOfLog( String path ) throws Exception {
 		ApdRecorder.flushForReading();
-		String path = ApdRecorder.status().logPath;
 		assertNotNull("the recorder has a log for the run", path);
 		return RunFactsBuilder.fromLog(RunLogReader.read(new File(path)), "device-run");
 	}
@@ -130,7 +129,9 @@ public class PlayRunDeviceTest {
 			assertTrue("recording is on", st.enabled && !st.sessionDisabled);
 			assertEquals("no recorder errors while playing: " + st.lastError, 0, st.errorCount);
 			assertTrue("events were recorded", st.eventsAccepted > 0);
-			RunFacts live = factsOfLog();
+			//the recorder forgets its log path once the run is sealed, so keep it from here
+			final String logPath = ApdRecorder.status().logPath;
+			RunFacts live = factsOfLog(logPath);
 			assertEquals("WARRIOR", live.textOr(FactKeys.HERO_CLASS, "?"));
 			assertTrue("the difficulty of the run was recorded", live.isKnown(FactKeys.DIFFICULTY));
 			assertFalse("the run is not finished yet", live.isKnown(FactKeys.OUTCOME));
@@ -160,7 +161,7 @@ public class PlayRunDeviceTest {
 			//die: the run must be sealed with its outcome
 			onRender(new Runnable(){ public void run(){ Dungeon.fail(Rat.class); } });
 			Thread.sleep(1500);
-			RunFacts done = factsOfLog();
+			RunFacts done = factsOfLog(logPath);
 			assertEquals("the run ended", LifecycleEvents.OUTCOME_DIED, done.numOr(FactKeys.OUTCOME, -1));
 			assertEquals("sealed", done.textOr(FactKeys.STATUS, "?"));
 			Log.w(TAG, "the run was played, saved, continued and ended; " + ApdRecorder.status().eventsAccepted + " events");
