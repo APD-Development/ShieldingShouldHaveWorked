@@ -57,6 +57,7 @@ The owner's Actions minutes are over 90% used. DO NOT dispatch workflows and DO 
 - Do not manufacture busywork. Stopping condition: every remaining roadmap task is genuinely blocked after reviewing the whole canonical plan.
 
 ## Open questions (owner only)
+- Cleric un-ban (ruleset identity, docs/APD-CLERIC-AUDIT.md) also unlocks the first-Cleric-run warning of the grudge system; Cleric is still blocked at run start today.
 - Cleric un-ban vs ruleset identity.
 - Upstream support/Patreon text.
 - Backend: provider, sign-in methods, key custody, ranking verification level, retention, moderation.
