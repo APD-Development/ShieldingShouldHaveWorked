@@ -1,4 +1,4 @@
-# The Developer's Personal Vendetta Against Cleric (PROPOSAL, awaiting owner approval)
+# The Developer's Personal Vendetta Against Cleric (APPROVED 2026-10-08; built, switched OFF)
 
 Status: roadmap entry plus proposed architecture and sample lines. NOTHING here is built. The full line library and the popup runtime are NOT started until the owner approves this document. Lower priority than backend work and pending tests. Cleric balance and mechanics are untouched by this feature (see docs/APD-CLERIC-AUDIT.md for the separate balance audit).
 
@@ -134,3 +134,17 @@ The earlier wording "extensible to other characters / other developer jokes" is 
 
 ### Tests added to the list
 Id-list immutability against the previous release; new ids are served before old ones for exhausted players; counter totals equal live complaint ids in the installed packs; heard counts distinct ids only and never decreases across updates/restarts; retired ids never push heard above total; counter screen and discovery joke are one-time and gameplay-free; footer numbers equal the pack diff; source-scan that no non-Cleric target exists.
+
+---
+## IMPLEMENTATION STATUS (2026-10-08)
+Built and tested locally, behind `ClericGrudge.ENABLED = false` (core/src/main/java/.../apd/humor/ClericGrudge.java). Nothing is visible in the app until the owner flips it, after reading `docs/APD-VENDETTA-LINES.md` and trying it on the phone.
+
+Done: line-pack format with strict lint (`LinePack`); seen ledger in a sibling folder `apd-humor/` of the history folder, never exported (`Ledger`); unseen-first picker with recent-window avoidance and newest-unseen preference (`Picker`); frequency modes Off / Rare / Rarer, default Rarer, one surprise popup per session at most, 20-minute grace, minimum gap 3 or 10 days (`Frequency`, `ClericGrudge.popup`); contextual inline lines with a separate small chance (`inline`); one-time first-Cleric-run warning and counter discovery joke; counter (`Counter`: "I'VE COMPLAINED ABOUT CLERIC X TIMES." / "YOU'VE HEARD ME COMPLAIN X TIMES."); game side `windows/GrudgeHooks` (title screen and post-run results screen only, never during play), `windows/WndClericGrudge` (counter, popup frequency, contextual jokes, reset with confirmation) reachable from APD Settings ("About / Developer: the grudge", only while enabled); 305 lines in three packs.
+Tests (apd/humor): lint rules, no-repeat/exhaustion/new-lines-first, persistence and damaged-file recovery, eligibility by recorded facts, safe-state table, frequency and session cap, Adult/Clean, one-time lines, counter semantics across updates, game-RNG isolation, package isolation (only java.*), allowed callers only, Cleric-only (no other class named anywhere).
+
+Not yet done (waits on approval of the lines, or needs a design step):
+1. The first-Cleric-run warning has its text and its once-only logic, but is not yet shown from the hero-select Start button (touches the run-start flow; do after the lines are approved).
+2. History facts (clericRuns, clericWins, clericDeaths, clericStreak, guidingLightCasts) and boss/spell/weapon/armor-ability facts are not yet passed in; those lines stay ineligible until a UIMSD-backed fact provider supplies real recorded values.
+3. Composable fragments (opener + insult + closer) are designed but not built; add after the authored lines are approved.
+4. Changelog footer: `python3 -I tools/humor_review.py` prints the real count of complaints added since the committed id list (`core/src/test/resources/apd/cleric_complaint_ids.txt`). Update that list when a release ships; quote only the printed number.
+5. The difficulty-display gag is separate and later.

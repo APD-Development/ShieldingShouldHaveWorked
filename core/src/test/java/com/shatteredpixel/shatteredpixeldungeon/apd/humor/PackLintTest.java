@@ -112,7 +112,7 @@ public class PackLintTest {
 		int parsed = 0;
 		for (String name : HumorTestSupport.SHIPPED.names()) parsed += LinePack.parse( HumorTestSupport.SHIPPED.read( name ), name ).size();
 		assertEquals( "every shipped pack passes its lint", parsed, lines.size() );
-		assertTrue( files >= 2 && lines.size() >= 200 );
+		assertTrue( files >= 3 && lines.size() >= 290 );
 		for (Line l : lines){
 			assertFalse( l.id, LinePack.PROFANITY.matcher( l.clean ).find() );
 			assertTrue( l.id, l.clean.length() <= LinePack.MAX_CLEAN );
