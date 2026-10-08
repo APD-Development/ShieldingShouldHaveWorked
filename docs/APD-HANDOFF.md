@@ -103,6 +103,9 @@ FOR THE OWNER (public-release items): (1) upstream first-person support/Patreon 
 
 ## Rolling queue (autonomous, no decisions needed): Q2 trim wordy comments in apd/backend, backendbridge, SavedViews (low); next candidates only if the plan supports them: flush status in APD Settings (needs a click test), Cleric audit follow-up after un-ban decision. Everything else open needs an owner decision (see DECISION sections).
 
+## Known test flake (not a game bug as far as seen)
+CombatTelemetryTest.theTruthBehindAFightIsInternalOnly (line ~99, `hpAfter < hpBefore` on the FIRST damage event) failed once in a full core run and passed on rerun. Likely cause: the first random hit can be reduced to 0 by the rat's armor, so no HP is lost. If it recurs, pin the random generator in that test (do not loosen the assertion).
+
 ## Review later (decided: NOT to change now)
 - **Rankings navigation.** Upstream's title screen had a Rankings button (classic top-scores list, `RankingsScene`). APD's title menu (Play, UIMSD, Badges, Journal, Options, Quit,
   APD Settings, News, Changes, About) has none. `RankingsScene` is still reachable only from inside a game (`WndGame`, the end screens `AmuletScene`/`SurfaceScene`). UIMSD already
