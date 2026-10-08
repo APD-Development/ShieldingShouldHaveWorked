@@ -73,6 +73,16 @@ logcat tags APDMIG/APDPERF into the job log and uploads logcat artifacts.
 - Backend foundations (plan 4.1 "design for eventual upload", sections 5, 8, 9, 10, 11 are EVENTUALLY): docs/APD-BACKEND.md + `apd/backend` (30 tests). Provider-neutral; decisions deferred to the owner are listed in that doc.
 - PHONE CHECKS for tonight's UIMSD additions (in the next main build): UIMSD table > Options > Saved views (save under a name, open, delete) and Options > Arrange the columns.
 
+## Standing task: codebase-wide "why" comments (user-approved roadmap item, ongoing; behaviour-neutral)
+Applies to the WHOLE APD codebase, old and new. Add comments that explain WHY (architecture decisions, UIMSD universal-observability rules, telemetry/history integrity, run lifecycle,
+difficulty/ruleset identity, FloorReplay/provenance, backend trust boundaries, security, save compatibility/migrations, legacy behaviour that must stay, Android workarounds, unusual behaviour,
+performance/storage choices, places where a "simpler" version would be wrong, temporary code, real TODO/FIXME). NOT narration ("// set difficulty"). Rules: (1) documentation passes must not refactor,
+reformat or change behaviour of stable code; a genuine bug found is reported/fixed only if already safe and approved; (2) if the reason for old code cannot be established from the code, tests, git
+history, handoff docs or the canonical plan, say so ("reason not recorded; believed to be ...") instead of inventing one; (3) keep comments true: update or delete stale ones; (4) when working in a
+subsystem, improve its comments there; use spare autonomous time for broader review. Done so far: backend package, Back/exit-button fix, BackGate, difficulty bar. Next candidates: recorder/RunRecorder
+(run lifecycle, rollback by event index), stats/LogFormat + FactKinds (permanent ids), difficulty/Difficulty + Ruleset identity, replay/FloorReplay (fixed reference context), archive importer (all-or-nothing),
+WndAPDSettings (ScrollPane creation order), UimsdScene/UimsdModel (back stack, tour statics), AndroidLauncher (two Back routes).
+
 ## Review later (decided: NOT to change now)
 - **Rankings navigation.** Upstream's title screen had a Rankings button (classic top-scores list, `RankingsScene`). APD's title menu (Play, UIMSD, Badges, Journal, Options, Quit,
   APD Settings, News, Changes, About) has none. `RankingsScene` is still reachable only from inside a game (`WndGame`, the end screens `AmuletScene`/`SurfaceScene`). UIMSD already
