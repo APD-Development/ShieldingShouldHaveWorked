@@ -84,7 +84,7 @@ Lines 251 to 300 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### abl.0002  (Hatred, ability, only when lastHero=CLERIC & spell!=none & runVerified=1)
 - Clean: You cast {spell} this run. It looked busy and accomplished nothing, which is Cleric's whole brand.
-- Adult: You cast {spell} this run. It looked busy and accomplished fuck-all, which is Cleric's whole brand.
+- Adult: You cast {spell} this run. It looked very busy, like someone carrying a clipboard, and accomplished about as much.
 
 ### abl.0003  (Hatred, ability, only when lastHero=CLERIC & lastOutcome=DIED & armorAbility!=none & runVerified=1)
 - Clean: {armorAbility}: a glorious moment of Cleric looking amazing before dying anyway.
@@ -112,7 +112,7 @@ Lines 251 to 300 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### abl.0011  (Hatred, ability, only when lastHero=CLERIC & runVerified=1)
 - Clean: Guiding Light looks nice. So does a crack in a wall, and it does just as much.
-- Adult: Guiding Light looks nice. So does a crack in a wall, and that does about as fucking much.
+- Adult: Guiding Light looks nice. So does a crack in a wall, and the wall has never once asked me to forgive it.
 
 ### abl.0012  (Hatred, ability, only when lastHero=CLERIC & subclass=PRIEST & runVerified=1)
 - Clean: Priest. Of course you picked Priest. Healing everyone but my opinion of this class.
@@ -136,7 +136,7 @@ Lines 251 to 300 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### eqp.0004  (Hatred, equipment, only when lastHero=CLERIC & runVerified=1)
 - Clean: The Tome: a big magical book that never once told me the right answer.
-- Adult: The Tome: a big magical book that never once gave me the right fucking answer.
+- Adult: The Tome: a big magical book that has never once given me the right answer, and I have asked it directly.
 
 ### eqp.0006  (Hatred, equipment, only when lastHero=CLERIC & weapon!=none & runVerified=1)
 - Clean: {weapon}. On a Cleric. In a dungeon. At this hour.
@@ -164,18 +164,18 @@ Lines 251 to 300 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### hist.0006  (Hatred, history, only when clericWins>=1)
 - Clean: Your records show {clericWins} Cleric wins. You did that. On purpose. I need to lie down.
-- Adult: Your records show {clericWins} Cleric wins. You did that. On purpose. I need to lie down and fucking scream.
+- Adult: Your records show {clericWins} Cleric wins. You did that. On purpose. I need to lie on a cold floor and negotiate with the ceiling.
 
 ### hist.0007  (Hatred, history, only when clericRuns>=1 & clericWins=0)
 - Clean: {clericRuns} Cleric runs, zero wins. Welcome to the club. It has no name, just a lot of tissues.
-- Adult: {clericRuns} Cleric runs, zero wins. Welcome to the club. It has no name, just a lot of tissues and swearing.
+- Adult: {clericRuns} Cleric runs, zero wins. Welcome to the club. It has no name, no meetings, and a standing order for tissues.
 
 ### hist.0008  (Hatred, history, only when clericRuns>=225)
 - Clean: You have started {clericRuns} Cleric runs. I managed 225 before I won. This is a competition now and I resent that.
 - Adult: You have started {clericRuns} Cleric runs. I managed 225 before I won. This is a competition now, and I can feel you trying to take my medal.
 
 ### hist.0009  (Hatred, history, only when clericRuns=0)
-- Clean: Your records show zero Cleric runs. I believe that is the most sensible thing in this entire game.
+- Clean: Your records show zero Cleric runs. Cleric has been alone with its Tome this whole time, and I have never been more at peace.
 - Adult: (same as Clean)
 
 ### hist.0011  (Hatred, history, only when clericDeaths>=1 & clericWins>=1)
@@ -191,7 +191,7 @@ Lines 251 to 300 of 348. Reply with the ids to keep, cut or rewrite.
 - Adult: (same as Clean)
 
 ### hist.0014  (Hatred, history, only when guidingLightCasts>=1000)
-- Clean: You have cast Guiding Light {guidingLightCasts} times. At some point it stopped being a spell and started being a personality.
+- Clean: You have cast Guiding Light {guidingLightCasts} times. At some point it stopped being a spell and started being Cleric's entire personality.
 - Adult: (same as Clean)
 
 ### joke.0001  (Hatred, fourth_wall, any time) [invented-number joke]
