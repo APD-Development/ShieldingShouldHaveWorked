@@ -138,6 +138,32 @@ public final class SubmissionQueue {
 		}
 	}
 
+	public static final class Entry {
+		public final String id, text;
+
+		Entry( String id, String text ){
+			this.id = id;
+			this.text = text;
+		}
+	}
+
+	//everything in the queue, each as the exact text that would be sent (for the report of what APD holds)
+	public static java.util.List<Entry> entries( File historyRoot ){
+		java.util.List<Entry> out = new java.util.ArrayList<>();
+		if (historyRoot == null) return out;
+		synchronized (LOCK){
+			try {
+				Outbox box = new Outbox();
+				OutboxStore.load(box, fileIn(historyRoot));
+				for (Outbox.Item i : box.items()){
+					out.add(new Entry(i.id.value, i.envelope.schema + " " + i.envelope.major + "." + i.envelope.minor + ": " + i.envelope.payload));
+				}
+			} catch (IOException ignored){
+			}
+		}
+		return out;
+	}
+
 	public static boolean isQueued( File historyRoot, String runId ){
 		return find(historyRoot, runId) != null;
 	}

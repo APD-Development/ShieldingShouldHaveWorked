@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.backend.Gateways;
 import com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge.BackendClient;
 import com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge.EvidenceFlow;
 import com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge.EvidenceInbox;
+import com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge.PrivacyReport;
 import com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge.PrivacySummary;
 import com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge.SessionStore;
 import com.watabou.noosa.Game;
@@ -189,6 +190,7 @@ public final class WndUimsdOptions {
 		final SessionStore.Session session = new SessionStore(m.root()).current(System.currentTimeMillis());
 		final int asked = EvidenceInbox.pending(m.root());
 		entries.add(Entry.item("Evidence requests (" + asked + ")", asked == 0 ? "Nothing is waiting for your answer." : "A server asked to see the full log of a run you submitted. Nothing is sent unless you agree."));
+		entries.add(Entry.item("Share what is queued and sent", "A readable copy of everything APD holds for sending: each queued item exactly as it would be sent, what was sent, and any requests. Makes no connection."));
 		entries.add(Entry.item(session == null ? "Account: signed out" : "Account: signed in", session == null ? "There is no sign-in method in this version, so nothing can be sent to an account yet."
 				: "Tap to sign out. Signing out never touches your history or saves."));
 		ShatteredPixelDungeon.scene().addToFront(WndUimsdList.menu("Privacy", "", entries, new WndUimsdList.Picker(){
@@ -204,6 +206,13 @@ public final class WndUimsdOptions {
 				} else if (i == 4){
 					evidenceRequests(m);
 				} else if (i == 5){
+					WndUimsdReport.show(m, "A readable copy of everything APD holds for sending.", new WndUimsdReport.Source(){
+						@Override
+						public com.shatteredpixel.shatteredpixeldungeon.apd.report.Report build(){
+							return PrivacyReport.build(m.root(), SPDSettings.apdSending(), System.currentTimeMillis(), Game.version);
+						}
+					});
+				} else if (i == 6){
 					if (session == null){
 						say("There is no sign-in method in this version, so you cannot sign in yet.");
 					} else {

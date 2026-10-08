@@ -214,4 +214,25 @@ public class SubmissionQueueTest {
 		assertFalse("the run taken back during the send stays out", SubmissionQueue.isQueued(root, "run-c"));
 		assertEquals(1, SubmissionQueue.pending(root));
 	}
+
+	@Test
+	public void theReportOfWhatIsHeldShowsQueuedItemsExactlyAndSentOnes(){
+		log("run-a", true, 3, 0);
+		log("run-b", true, 2, 0);
+		SubmissionQueue.enqueueRun(tmp.getRoot(), "run-a", "b", 1);
+		com.shatteredpixel.shatteredpixeldungeon.apd.backend.Gateway ok = new com.shatteredpixel.shatteredpixeldungeon.apd.backend.Gateway(){
+			public Response send( String key, com.shatteredpixel.shatteredpixeldungeon.apd.backend.Envelope e ){
+				return new Response(Status.OK, "");
+			}
+		};
+		SubmissionQueue.flush(tmp.getRoot(), ok, 1_000_000_000L, true);
+		SubmissionQueue.enqueueRun(tmp.getRoot(), "run-b", "b", 2);
+		com.shatteredpixel.shatteredpixeldungeon.apd.report.Report r = PrivacyReport.build(tmp.getRoot(), false, 5, "test");
+		String text = com.shatteredpixel.shatteredpixeldungeon.apd.report.ReportRenderer.text(r);
+		assertTrue(text.contains("Queued to send"));
+		assertTrue("the queued run is shown as it would be sent", text.contains("ob_run-b") && text.contains("runId=run-b"));
+		assertTrue("the sent run is listed with its digest", text.contains("run-a") && text.contains(SubmittedLedger.get(tmp.getRoot(), "run-a").digestHex));
+		assertFalse("a run that was only sent is not shown as queued", text.contains("ob_run-a"));
+		assertTrue(text.contains("Nothing is sent anywhere"));
+	}
 }
