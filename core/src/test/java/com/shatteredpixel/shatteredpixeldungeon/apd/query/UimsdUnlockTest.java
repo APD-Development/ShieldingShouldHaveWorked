@@ -145,8 +145,12 @@ public class UimsdUnlockTest {
 		assertFalse(real.synthetic);
 		assertEquals("the real catalog holds the player's own runs only", 2, real.dataset(Datasets.RUNS).rows.size());
 		//a demo run cannot be queued for submission, from either folder
-		File someDemoLog = new File(demoRoot, "runs").listFiles()[0];
-		String demoId = someDemoLog.getName().replace(".apdlog", "");
+		//the folder also holds caches, and listing order differs between file systems: take a real log
+		String demoId = null;
+		for (File f : new File(demoRoot, "runs").listFiles()){
+			if (f.getName().endsWith(".apdlog") && (demoId == null || f.getName().compareTo(demoId) < 0)) demoId = f.getName().replace(".apdlog", "");
+		}
+		assertNotNull(demoId);
 		assertEquals(SubmissionQueue.Result.REFUSED, SubmissionQueue.enqueueRun(demoRoot, demoId, "b", 1).result);
 		assertEquals(0, SubmissionQueue.pending(demoRoot));
 		assertEquals(SubmissionQueue.Result.REFUSED, SubmissionQueue.enqueueRun(realRoot, demoId, "b", 1).result);
