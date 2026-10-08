@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
 public final class Id implements Comparable<Id> {
 
 	public enum Kind {
-		PLAYER("pl"), DEVICE("dv"), RUN("run"), SUBMISSION("sub"), CONTENT("ct"), VOTE_ROUND("vr"), REPORT("rp"), GRANT("gr"), ACHIEVEMENT("ac"), AUDIT("au"), OUTBOX("ob");
+		PLAYER("pl"), GROUP("gp"), DEVICE("dv"), RUN("run"), SUBMISSION("sub"), CONTENT("ct"), VOTE_ROUND("vr"), REPORT("rp"), GRANT("gr"), ACHIEVEMENT("ac"), AUDIT("au"), OUTBOX("ob");
 
 		public final String prefix;
 
