@@ -42,6 +42,8 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.query.ClericHistory;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.DatasetStore;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.Datasets;
 import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder;
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.Ruleset;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.RankingsScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene;
@@ -170,11 +172,12 @@ public final class GrudgeHooks {
 		try {
 			//only a run the game itself ended the normal way counts: the recorded result agrees with the call, and a win has a living hero
 			if (Dungeon.hero == null || Statistics.gameWon != won || (won && !Dungeon.hero.isAlive())) return;
-			Context c = Context.EMPTY.with( "runVerified", 1 ).with( "lastOutcome", won ? "WON" : "DIED" ).with( "depth", Dungeon.depth );
+			Context c = Context.EMPTY.with( "runVerified", 1 ).with( "lastOutcome", won ? "WON" : "DIED" ).with( "depth", Dungeon.depth )
+					.with( "lastAscended", won && Statistics.ascended ? 1 : 0 ).with( "lastAmulet", Statistics.amuletObtained ? 1 : 0 );
 			if (Dungeon.hero != null){
 				c = c.with( "lastHero", Dungeon.hero.heroClass.name() ).with( "hero", Dungeon.hero.heroClass.name() )
 						.with( "lastHeroName", Dungeon.hero.heroClass.title() ).with( "heroName", Dungeon.hero.heroClass.title() );
-				if (Dungeon.hero.subClass != null) c = c.with( "subclass", Dungeon.hero.subClass.name() );
+				if (Dungeon.hero.subClass != null && Dungeon.hero.subClass != HeroSubClass.NONE) c = c.with( "subclass", Dungeon.hero.subClass.name() );
 			}
 			if (cause instanceof Char) c = c.with( "killer", ((Char)cause).name() );
 			pendingContext = c;
@@ -207,6 +210,16 @@ public final class GrudgeHooks {
 		}, "apd-grudge-history" );
 		t.setDaemon( true );
 		t.start();
+	}
+
+	// Can Cleric be chosen for a run right now? Read from the ruleset's own statement (the identity text says "cleric=blocked" while it is
+	// blocked), so the un-ban flips this by itself and the two can never disagree.
+	static boolean clericAvailable(){
+		try {
+			return !Ruleset.of( 0, 0, 3 ).text.contains( "cleric=blocked" );
+		} catch (Throwable t){
+			return false;
+		}
 	}
 
 	// Is the hero idle in a quiet place? Reads game state only; it changes none of it, spends no turn and draws no random number.
@@ -247,7 +260,7 @@ public final class GrudgeHooks {
 		Context c = Context.EMPTY;
 		try {
 			c = c.with( "depth", Dungeon.depth ).with( "hero", Dungeon.hero.heroClass.name() ).with( "heroName", Dungeon.hero.heroClass.title() );
-			if (Dungeon.hero.subClass != null) c = c.with( "subclass", Dungeon.hero.subClass.name() );
+			if (Dungeon.hero.subClass != null && Dungeon.hero.subClass != HeroSubClass.NONE) c = c.with( "subclass", Dungeon.hero.subClass.name() );
 			if (m == Moment.BOSS_CLEARED && bossDepth > 0 && bossDepth % 5 == 0 && bossDepth / 5 <= BOSSES.length)
 				c = c.with( "boss", BOSSES[bossDepth / 5 - 1] );
 		} catch (Throwable ignored){
@@ -292,7 +305,7 @@ public final class GrudgeHooks {
 			if (PixelScene.hasWindow( s )) return;
 			requestHistory();
 			if (historyFacts == null) return;
-			ctx = ctx.withAll( historyFacts );
+			ctx = ctx.withAll( historyFacts ).with( "clericAvailable", clericAvailable() ? 1 : 0 );
 			decided = true;
 			if (m == Moment.STARTUP) startupSeen = true;
 			if (m == Moment.RUN_END_DEATH || m == Moment.RUN_END_VICTORY){

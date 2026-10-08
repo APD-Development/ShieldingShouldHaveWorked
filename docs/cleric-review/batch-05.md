@@ -27,7 +27,7 @@ Lines 201 to 250 of 348. Reply with the ids to keep, cut or rewrite.
 - Adult: (same as Clean)
 
 ### fw.0021  (Hatred, fourth_wall, any time)
-- Clean: My commit history is basically a diary and the diary says "Cleric" in every other entry.
+- Clean: My commit history is basically a diary, and in my head every single entry says "Cleric". (That is an exaggeration. Mostly.)
 - Adult: (same as Clean)
 
 ### fw.0023  (Hatred, fourth_wall, any time)
@@ -66,7 +66,7 @@ Lines 201 to 250 of 348. Reply with the ids to keep, cut or rewrite.
 - Clean: You have arrived at the main menu. Take a deep breath. Think of a place with no Cleric. Hold it. There. That is the whole message.
 - Adult: (same as Clean)
 
-### menu.0007  (Hatred, menu, any time)
+### menu.0007  (Hatred, menu, only when clericAvailable=1)
 - Clean: Press any button to begin. Do not press the button that begins a Cleric run. I am looking at you through the screen.
 - Adult: Press any button to begin. Do not press the button that begins a Cleric run. I am looking at you through the screen. I'm not blinking.
 
@@ -103,8 +103,8 @@ Lines 201 to 250 of 348. Reply with the ids to keep, cut or rewrite.
 - Adult: Cleric was killed by {killer}. The Tome was right there. Cleric chose to die with a book unread.
 
 ### clr.death.0004  (Hatred, death, only when lastHero=CLERIC & lastOutcome=DIED & depth>=1 & runVerified=1)
-- Clean: Depth {depth}. Not a record, not a disaster, just Cleric.
-- Adult: Depth {depth}. Not a record, not a disaster, just the usual Cleric shit-show.
+- Clean: Depth {depth}. Not a disaster, just Cleric.
+- Adult: Depth {depth}. Not a disaster, just the usual Cleric shit-show.
 
 ### clr.death.0007  (Hatred, death, only when lastHero=CLERIC & lastOutcome=DIED & killer!=nothing & runVerified=1)
 - Clean: A {killer} did that. A {killer}. To Cleric. I don't know whether to laugh or to buy it a drink.
@@ -131,7 +131,7 @@ Lines 201 to 250 of 348. Reply with the ids to keep, cut or rewrite.
 - Adult: (same as Clean)
 
 ### clr.death.0017  (Hatred, death, only when lastHero=CLERIC & lastOutcome=DIED & clericStreak>=3 & runVerified=1)
-- Clean: That is {clericStreak} Cleric runs in a row, and it ended like this. I salute your stamina and question everything else.
+- Clean: That is {clericStreak} Cleric runs in a row, and it ended like this. I salute your stamina and question everything about Cleric.
 - Adult: (same as Clean)
 
 ### clr.death.0021  (Hatred, death, only when lastHero=CLERIC & lastOutcome=DIED & killer!=nothing & runVerified=1)
@@ -163,7 +163,7 @@ Lines 201 to 250 of 348. Reply with the ids to keep, cut or rewrite.
 - Adult: You won as Cleric. Fine. I will allow one moment of respect. That moment is over. The grudge was waiting in the car with the engine running.
 
 ### clr.win.0002  (Hatred, victory, only when lastHero=CLERIC & lastOutcome=WON & runVerified=1)
-- Clean: You won as Cleric. Congratulations, you beautiful masochist.
+- Clean: You won as Cleric. Congratulations. Cleric is going to be insufferable about this, and so am I.
 - Adult: You won as Cleric. Congratulations. I need to sit on the floor for a bit and re-evaluate my entire life.
 
 ### clr.win.0004  (Hatred, victory, only when lastHero=CLERIC & lastOutcome=WON & runVerified=1)
@@ -182,7 +182,7 @@ Lines 201 to 250 of 348. Reply with the ids to keep, cut or rewrite.
 - Clean: You beat the dungeon as Cleric. I will not be congratulating the Tome. The Tome knows what it did.
 - Adult: You beat the dungeon as Cleric. I will not be congratulating the Tome. The Tome knows what it did, and it is smirking in book.
 
-### clr.win.0012  (Hatred, victory, only when lastHero=CLERIC & lastOutcome=WON & runVerified=1)
+### clr.win.0012  (Hatred, victory, only when lastHero=CLERIC & lastOutcome=WON & lastAscended=1 & runVerified=1)
 - Clean: You ascended with Cleric. I will never forgive you for making it look possible.
 - Adult: You ascended with Cleric. I will never forgive you for making it look possible. I put the work in. I bled for this.
 

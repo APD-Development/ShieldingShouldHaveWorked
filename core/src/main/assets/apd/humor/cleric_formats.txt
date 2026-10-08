@@ -22,7 +22,7 @@ fmt.0019 | anytime | since=4.8 | - | 8 | I take thee, hatred of Cleric, to have 
 fmt.0020 | anytime | since=4.8 | - | 8 | Congratulations! You have been selected to ignore Cleric. Click here to continue ignoring it. |
 fmt.0021 | anytime | since=4.8 | - | 8 | Once upon a time there was a Cleric. The end. I'm not telling you the rest, I'm still too mad. |
 fmt.0022 | anytime | since=4.8 | - | 8 | I have gathered you here today to remember all the good times I had with Cleric. Okay. That took a while. I am done. |
-fmt.0024 | anytime | since=4.8 | - | 8 | Missing: one reason to pick Cleric. If found, please do not return it. |
+fmt.0024 | anytime | since=4.8 | clericAvailable=1 | 8 | Missing: one reason to pick Cleric. If found, please do not return it. |
 fmt.0027 | anytime | since=4.8 | - | 8 | Dear Diary: today I saw a white robe in a photo and had to sit down. Cleric, of course. Love, me. | Dear Diary: today I saw a white robe in a photo and had to sit down on the kitchen floor. Cleric, of course. Love, me.
 fmt.0028 | anytime | since=4.8 | - | 8 | A strongly worded letter to Cleric: no. Sincerely, me. | A strongly worded letter to Cleric: fuck no. Sincerely, me.
 fmt.0029 | anytime | since=4.8 | - | 8 | Cleric's official motto, as translated by me: "I do my best, and my best is a polite suggestion." |

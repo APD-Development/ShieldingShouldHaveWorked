@@ -174,4 +174,47 @@ public class CreativeDirectionTest {
 	private static String norm( String t ){
 		return t.toLowerCase().replaceAll( "[^a-z0-9 ]", "" ).replaceAll( "\\s+", " " ).trim();
 	}
+
+	@Test
+	public void subclassAscensionAndPickingLinesNeedTheirVerifiedFacts(){
+		rejects( "any.0001 | death | - | lastHero=CLERIC & lastOutcome=DIED & runVerified=1 | 5 | A Priest died. Cleric would have. |", "subclass=PRIEST" );
+		rejects( "any.0001 | death | - | subclass=PRIEST | 5 | A Paladin died. Cleric would have. |", "subclass=PALADIN" );
+		LinePack.parse( "any.0001 | death | - | lastHero=CLERIC & lastOutcome=DIED & subclass=PRIEST & runVerified=1 | 5 | A Priest died. Cleric would have. |", "t" );
+		//a win is not an ascension
+		rejects( "any.0001 | victory | - | lastHero=CLERIC & lastOutcome=WON & runVerified=1 | 5 | You ascended with Cleric. |", "lastAscended=1" );
+		LinePack.parse( "any.0001 | victory | - | lastHero=CLERIC & lastOutcome=WON & lastAscended=1 & runVerified=1 | 5 | You ascended with Cleric. |", "t" );
+		//the ability named Ascended Form is not a claim about ascending
+		LinePack.parse( "any.0001 | victory | - | lastHero=CLERIC & lastOutcome=WON & runVerified=1 | 5 | Ascended Form is a Cleric ability. |", "t" );
+		//advice about picking Cleric only while Cleric can be picked
+		rejects( "any.0001 | anytime | - | - | 5 | Please do not pick Cleric. |", "clericAvailable=1" );
+		LinePack.parse( "any.0001 | anytime | - | clericAvailable=1 | 5 | Please do not pick Cleric. |", "t" );
+	}
+
+	@Test
+	public void theShippedLinesBehaveAsTheAuditRequires(){
+		java.util.Map<String, Line> byId = new java.util.HashMap<>();
+		for (Line l : HumorTestSupport.shipped()) byId.put( l.id, l );
+		Ledger led = new Ledger( null );
+		Context run = Context.EMPTY.with( "runVerified", 1 ).with( "lastHero", "CLERIC" ).with( "hero", "CLERIC" ).with( "lastOutcome", "WON" )
+				.with( "depth", 26 ).with( "clericRuns", 3 ).with( "clericWins", 1 ).with( "clericDeaths", 2 );
+		//a win by leaving is not an ascension; a completed ascension is
+		assertFalse( byId.get( "clr.win.0012" ).eligible( Moment.RUN_END_VICTORY, run.with( "lastAscended", 0 ), led, Long.MAX_VALUE, 0 ) );
+		assertTrue( byId.get( "clr.win.0012" ).eligible( Moment.RUN_END_VICTORY, run.with( "lastAscended", 1 ), led, Long.MAX_VALUE, 0 ) );
+		//an unverified result unlocks nothing about a finished run
+		Context unverified = Context.EMPTY.with( "lastHero", "CLERIC" ).with( "lastOutcome", "WON" ).with( "depth", 26 );
+		for (Line l : byId.values()) assertFalse( l.id, l.eligible( Moment.RUN_END_VICTORY, unverified, led, Long.MAX_VALUE, 0 ) && l.category != Category.POSTRUN && l.category != Category.ANYTIME && l.category != Category.APPRECIATION && l.category != Category.FOURTH_WALL );
+		//while Cleric is blocked, the lines that tell players not to pick it stay silent
+		assertFalse( byId.get( "menu.0007" ).eligible( Moment.MENU, Context.EMPTY.with( "clericAvailable", 0 ), led, Long.MAX_VALUE, 0 ) );
+		assertFalse( byId.get( "menu.0007" ).eligible( Moment.MENU, Context.EMPTY, led, Long.MAX_VALUE, 0 ) );
+		assertTrue( byId.get( "menu.0007" ).eligible( Moment.MENU, Context.EMPTY.with( "clericAvailable", 1 ), led, Long.MAX_VALUE, 0 ) );
+		//subclass dialogue needs the matching subclass
+		Context died = run.with( "lastOutcome", "DIED" );
+		assertFalse( byId.get( "clr.death.0014" ).eligible( Moment.RUN_END_DEATH, died, led, Long.MAX_VALUE, 0 ) );
+		assertFalse( byId.get( "clr.death.0014" ).eligible( Moment.RUN_END_DEATH, died.with( "subclass", "PALADIN" ), led, Long.MAX_VALUE, 0 ) );
+		assertTrue( byId.get( "clr.death.0014" ).eligible( Moment.RUN_END_DEATH, died.with( "subclass", "PRIEST" ), led, Long.MAX_VALUE, 0 ) );
+		assertTrue( byId.get( "clr.death.0015" ).eligible( Moment.RUN_END_DEATH, died.with( "subclass", "PALADIN" ), led, Long.MAX_VALUE, 0 ) );
+		assertFalse( byId.get( "clr.death.0015" ).eligible( Moment.RUN_END_DEATH, died.with( "subclass", "PRIEST" ), led, Long.MAX_VALUE, 0 ) );
+		//"not a record" is gone: no line claims a personal best that the game has not verified
+		for (Line l : byId.values()) assertFalse( l.id, l.clean.toLowerCase().contains( "not a record" ) );
+	}
 }

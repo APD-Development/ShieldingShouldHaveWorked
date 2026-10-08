@@ -130,7 +130,7 @@ Lines 301 to 348 of 348. Reply with the ids to keep, cut or rewrite.
 - Clean: I have gathered you here today to remember all the good times I had with Cleric. Okay. That took a while. I am done.
 - Adult: (same as Clean)
 
-### fmt.0024  (Hatred, anytime, any time)
+### fmt.0024  (Hatred, anytime, only when clericAvailable=1)
 - Clean: Missing: one reason to pick Cleric. If found, please do not return it.
 - Adult: (same as Clean)
 

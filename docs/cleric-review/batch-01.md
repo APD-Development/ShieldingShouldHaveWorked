@@ -22,7 +22,7 @@ Lines 1 to 50 of 348. Reply with the ids to keep, cut or rewrite.
 - Clean: I would like to apologize to every other class for sharing a menu with Cleric.
 - Adult: I would like to apologize to every other class for sharing a menu with Cleric. You deserved better. You deserved a bouncer.
 
-### any.0006  (Hatred, anytime, any time)
+### any.0006  (Hatred, anytime, only when clericAvailable=1)
 - Clean: Reminder: drink some water, stretch your back, and do not pick Cleric.
 - Adult: Reminder: drink some water, stretch your back, and keep your hands the hell away from the Cleric button.
 

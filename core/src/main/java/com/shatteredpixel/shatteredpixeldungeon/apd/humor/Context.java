@@ -40,6 +40,9 @@ public final class Context {
 				"heroName",          // the same, as the player reads it (for {placeholders})
 				"lastHeroName",
 				"runVerified",       // 1 only when the game itself confirmed a genuine, permanently ended run (every line about a finished run requires it)
+				"lastAscended",      // 1 only when the run that just ended was a completed ascension (not merely a win by leaving), else 0
+				"lastAmulet",        // 1 when the hero had taken the Amulet in the run that just ended
+				"clericAvailable",   // 1 only while Cleric can actually be chosen for a run (0 while it is blocked)
 				"lastHero",          // the class of the run that just ended
 				"lastOutcome",       // DIED or WON
 				"depth",             // depth the run ended on (or the current depth)

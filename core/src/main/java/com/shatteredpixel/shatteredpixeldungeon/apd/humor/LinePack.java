@@ -76,6 +76,9 @@ public final class LinePack {
 			"\\b(legal name|full name|real name|home address|street address|phone number|email address|my email|social security|date of birth|my birthday)\\b",
 			Pattern.CASE_INSENSITIVE );
 
+	static final Pattern ASCENSION = Pattern.compile( "\\bascen(d|ded|ds|ding|sion)\\b(?! Form)", Pattern.CASE_INSENSITIVE );
+	static final Pattern PICKING = Pattern.compile( "\\b(pick|picking)\\b|begins a Cleric run", Pattern.CASE_INSENSITIVE );
+
 	// every line is about Cleric: it names Cleric or something that only Cleric has
 	static final Pattern ABOUT_CLERIC = Pattern.compile(
 			"cleric|priest|paladin|holy tome|\\btome\\b|guiding light|ascended form|trinity|power of many",
@@ -256,10 +259,27 @@ public final class LinePack {
 		}
 		if ((used.contains( "lastHero" ) || used.contains( "lastOutcome" ) || used.contains( "lastHeroName" )) && !verified)
 			throw new IllegalArgumentException( "a line about a finished run must require runVerified=1" );
+		//subclass dialogue only with the matching, verified subclass
+		for (String t : new String[]{ clean, adult == null ? "" : adult }){
+			if (t.contains( "Priest" ) && !hasTerm( requires, "subclass", "PRIEST" ))
+				throw new IllegalArgumentException( "a line naming Priest must require subclass=PRIEST" );
+			if (t.contains( "Paladin" ) && !hasTerm( requires, "subclass", "PALADIN" ))
+				throw new IllegalArgumentException( "a line naming Paladin must require subclass=PALADIN" );
+			//a win is not automatically an ascension, and picking Cleric is only advice while Cleric can be picked
+			if (hasTerm( requires, "lastOutcome", "WON" ) && ASCENSION.matcher( t ).find() && !hasTerm( requires, "lastAscended", "1" ))
+				throw new IllegalArgumentException( "a victory line that talks about ascending must require lastAscended=1" );
+			if (PICKING.matcher( t ).find() && !hasTerm( requires, "clericAvailable", "1" ))
+				throw new IllegalArgumentException( "a line that tells the player not to pick Cleric must require clericAvailable=1" );
+		}
 		if (used.contains( "boss" ) && cat != Category.BOSS) throw new IllegalArgumentException( "the boss fact belongs to the boss category" );
 		if (joke && !cleanKeys.isEmpty()) throw new IllegalArgumentException( "a joke with invented numbers cannot use recorded {placeholders}" );
 
 		return new Line( id, cat, since, !meta, joke, weight, appreciation ? Pool.APPRECIATION : Pool.HATRED, after, nextSession, delay, setup, requires, clean, adult );
+	}
+
+	private static boolean hasTerm( List<Term> terms, String key, String value ){
+		for (Term t : terms) if (t.key.equals( key ) && t.op.equals( "=" ) && t.value.equalsIgnoreCase( value )) return true;
+		return false;
 	}
 
 	private static Set<String> placeholders( String text ){

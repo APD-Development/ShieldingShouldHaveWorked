@@ -30,11 +30,11 @@ Lines 251 to 300 of 348. Reply with the ids to keep, cut or rewrite.
 - Clean: That was the closest a Cleric can get to the top without the top noticing. Take a moment. Now take another.
 - Adult: That was the closest a Cleric can get to the top without the top giving a shit. Take a moment. Now take another.
 
-### asc.0005  (Hatred, ascension, only when lastHero=CLERIC & lastOutcome=DIED & depth>=25 & runVerified=1)
+### asc.0005  (Hatred, ascension, only when lastHero=CLERIC & lastOutcome=DIED & lastAmulet=1 & runVerified=1)
 - Clean: Failed ascension with Cleric. I have a support group. It meets every time I look at the Tome.
 - Adult: Failed ascension with Cleric. I have a support group. It meets every time I look at the Tome, and it's mostly screaming.
 
-### asc.0006  (Hatred, ascension, only when lastHero=CLERIC & lastOutcome=DIED & depth>=25 & runVerified=1)
+### asc.0006  (Hatred, ascension, only when lastHero=CLERIC & lastOutcome=DIED & lastAmulet=1 & runVerified=1)
 - Clean: To have come so far with Cleric and lost: the dungeon sends its regards, and mine are less polite.
 - Adult: (same as Clean)
 
@@ -50,7 +50,7 @@ Lines 251 to 300 of 348. Reply with the ids to keep, cut or rewrite.
 - Clean: End of run. I just want to say that no matter what happened, I'd still rather be doing that than playing Cleric.
 - Adult: (same as Clean)
 
-### post.0009  (Hatred, postrun, any time)
+### post.0009  (Hatred, postrun, only when clericAvailable=1)
 - Clean: You may now go back to the title screen and not pick Cleric. I believe in you.
 - Adult: (same as Clean)
 
@@ -143,11 +143,11 @@ Lines 251 to 300 of 348. Reply with the ids to keep, cut or rewrite.
 - Adult: (same as Clean)
 
 ### eqp.0008  (Hatred, equipment, only when hero=CLERIC)
-- Clean: If you are going to hold a book in a fight, at least pick one that fights back. The Tome does not.
+- Clean: If you are going to hold a book in a fight, at least bring one that fights back. The Tome does not.
 - Adult: (same as Clean)
 
 ### hist.0001  (Hatred, history, only when clericRuns>=100)
-- Clean: You have started {clericRuns} Cleric runs. I fundamentally do not understand you.
+- Clean: You have started {clericRuns} Cleric runs. I fundamentally do not understand Cleric, but I have to respect the dedication.
 - Adult: (same as Clean)
 
 ### hist.0002  (Hatred, history, only when clericWins>=50)
@@ -183,8 +183,8 @@ Lines 251 to 300 of 348. Reply with the ids to keep, cut or rewrite.
 - Adult: (same as Clean)
 
 ### hist.0012  (Hatred, history, only when clericRuns>=50)
-- Clean: At {clericRuns} Cleric runs, I have to ask: are you okay? Because I am not, and I did this on purpose.
-- Adult: (same as Clean)
+- Clean: At {clericRuns} Cleric runs, I have to ask whether Cleric has been paying you, because it has certainly never paid me.
+- Adult: At {clericRuns} Cleric runs, I have to ask whether Cleric is paying you, because the only thing it has ever paid me is grief.
 
 ### hist.0013  (Hatred, history, only when clericStreak>=5)
 - Clean: {clericStreak} Cleric runs in a row. At this point it's not a character, it's a lifestyle.
