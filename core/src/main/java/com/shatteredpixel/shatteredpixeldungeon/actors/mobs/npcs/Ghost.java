@@ -394,6 +394,12 @@ public class Ghost extends NPC {
 			return spawned && given && !processed && depth == Dungeon.depth;
 		}
 		
+		//APD: the gear the ghost offers shows its real upgrade level (its enchantment or glyph and whether it is cursed stay hidden)
+		public static void revealOfferedLevels() {
+			if (weapon != null) weapon.levelKnown = true;
+			if (armor != null) armor.levelKnown = true;
+		}
+
 		public static void complete() {
 			weapon = null;
 			armor = null;
