@@ -919,6 +919,8 @@ public class UimsdScene extends PixelScene {
 
 	@Override
 	protected void onBackPressed(){
+		com.watabou.utils.DeviceCompat.log("APDUI", "UIMSD Back: tutorial=" + (tutorial != null) + " finished=" + (tutorial != null && tutorial.isFinished())
+				+ " preparing=" + tutorialPreparing + " atHome=" + atHome + " canGoBack=" + (model != null && model.canGoBack()));
 		if (tutorialPreparing) return;
 		//a tour in progress ends first: Back leaves the tour, it does not leave the screen
 		if (tutorial != null && !tutorial.isFinished()){
