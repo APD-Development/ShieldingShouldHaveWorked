@@ -76,8 +76,9 @@ public final class Line {
 		if (after != null){
 			Ledger.Seen first = ledger.get( after );
 			if (first == null) return false;
-			if (nextSession && first.lastAt >= sessionStart) return false;
-			if (delayDays > 0 && now - first.lastAt < delayDays * 86_400_000L) return false;
+			//both rules count from the first time the player was really shown the first part (never from install or eligibility)
+			if (nextSession && first.firstAt >= sessionStart) return false;
+			if (delayDays > 0 && now - first.firstAt < delayDays * 86_400_000L) return false;
 		}
 		for (Term t : requires) if (!t.holds( c )) return false;
 		return render( c, false ) != null;

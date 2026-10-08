@@ -332,4 +332,47 @@ public class GrudgeSettingsTest {
 		assertEquals( h, g.counter().heard );
 		assertEquals( a, g.counter().appreciationHeard );
 	}
+
+	@Test
+	public void aStoryDelayIsCountedFromTheFirstTimeThePlayerWasReallyShownTheFirstPart(){
+		//every shipped delayed follow-up: not before its delay has passed since the first sighting, and not earlier because of install or eligibility
+		int checked = 0;
+		List<Line> lines = HumorTestSupport.shipped();
+		java.util.Map<String, Line> byId = new java.util.HashMap<>();
+		for (Line l : lines) byId.put( l.id, l );
+		for (Line l : lines){
+			if (l.delayDays <= 0) continue;
+			checked++;
+			Ledger led = new Ledger( null );
+			//the first part is shown at T0, and again much later (a repeat): the clock still runs from T0
+			led.markShown( l.after, T0 );
+			led.markShown( l.after, T0 + (l.delayDays - 1) * DAY );
+			assertFalse( l.id + " one day early", l.eligible( Moment.MENU, Context.EMPTY, led, Long.MAX_VALUE, T0 + (l.delayDays - 1) * DAY ) );
+			assertTrue( l.id + " on time, counted from the first sighting", l.eligible( Moment.MENU, Context.EMPTY, led, Long.MAX_VALUE, T0 + l.delayDays * DAY ) );
+			//a first part that was never shown starts no clock at all
+			assertFalse( l.id + " unseen first part", l.eligible( Moment.MENU, Context.EMPTY, new Ledger( null ), Long.MAX_VALUE, T0 + 1000 * DAY ) );
+		}
+		assertTrue( "the 14, 30 and 45 day stories exist", checked >= 3 );
+		java.util.Set<Integer> days = new java.util.TreeSet<>();
+		for (Line l : lines) if (l.delayDays > 0) days.add( l.delayDays );
+		assertTrue( days.toString(), days.contains( 14 ) && days.contains( 30 ) && days.contains( 45 ) );
+	}
+
+	@Test
+	public void theFirstSightingSurvivesARestartAndOlderHistoryFilesStillLoad() throws Exception {
+		File f = new File( tmp.getRoot(), "apd-humor/ledger.txt" );
+		Ledger a = new Ledger( f );
+		a.markShown( "app.0142", T0 );
+		a.markShown( "app.0142", T0 + 20 * DAY );
+		a.save();
+		assertEquals( T0, new Ledger( f ).get( "app.0142" ).firstAt );
+		assertEquals( T0 + 20 * DAY, new Ledger( f ).get( "app.0142" ).lastAt );
+		//a history file written before the first-sighting column existed
+		File old = new File( tmp.getRoot(), "old/ledger.txt" );
+		old.getParentFile().mkdirs();
+		java.nio.file.Files.write( old.toPath(), "#apd-humor-ledger v1\n@seq=3\napp.0142\t2\t3\t5000\n".getBytes( java.nio.charset.StandardCharsets.UTF_8 ) );
+		Ledger migrated = new Ledger( old );
+		assertEquals( 2, migrated.get( "app.0142" ).count );
+		assertEquals( 5000, migrated.get( "app.0142" ).firstAt );
+	}
 }

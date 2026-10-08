@@ -83,8 +83,8 @@ Lines 101 to 150 of 348. Reply with the ids to keep, cut or rewrite.
 - Adult: (same as Clean)
 
 ### app.0022  (Appreciation, appreciation, any time)
-- Clean: Cleric looks great in a white robe. It looks even better in a victory screen, which I've been told exists.
-- Adult: (same as Clean)
+- Clean: Cleric looks great in a white robe. It looks even better on a victory screen. Yes, I have seen one personally, and I am still not over it.
+- Adult: Cleric looks great in a white robe. It looks even better on a victory screen. Yes, I have seen one personally. It took 225 attempts, and I still check now and then that I didn't hallucinate it.
 
 ### app.0023  (Appreciation, appreciation, any time)
 - Clean: Allow me to say something positive about Cleric: its name is easy to type.
@@ -139,7 +139,7 @@ Lines 101 to 150 of 348. Reply with the ids to keep, cut or rewrite.
 - Adult: Cleric: the class that makes you appreciate a plain fucking stick.
 
 ### app.0036  (Appreciation, appreciation, any time)
-- Clean: I am proud to present Cleric, a character with a tome, a dream, and a developer whose patience is almost gone.
+- Clean: I am proud to present Cleric, a character with a tome, a dream, and me, standing here with almost no patience left.
 - Adult: (same as Clean)
 
 ### app.0037  (Appreciation, appreciation, any time)
@@ -200,4 +200,4 @@ Lines 101 to 150 of 348. Reply with the ids to keep, cut or rewrite.
 
 ### app.0051  (Appreciation, appreciation, any time)
 - Clean: I'd say Cleric grows on you, but so does mold, and I have opinions about both.
-- Adult: I'd say Cleric grows on you, but so does mold, and I'd hit both with a shovel.
+- Adult: I'd say Cleric grows on you, but so does mold, and mold has never once made me scream "fuck" at a character-selection screen.

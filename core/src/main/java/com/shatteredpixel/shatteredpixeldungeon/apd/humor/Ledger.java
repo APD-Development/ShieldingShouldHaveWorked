@@ -43,6 +43,8 @@ public final class Ledger {
 		public int count;
 		public long lastSeq;
 		public long lastAt;
+		// when the player was FIRST really shown the line (a story's delay is counted from here)
+		public long firstAt;
 	}
 
 	private final File file;
@@ -73,6 +75,8 @@ public final class Ledger {
 						s.count = Integer.parseInt( p[1] );
 						s.lastSeq = Long.parseLong( p[2] );
 						s.lastAt = Long.parseLong( p[3] );
+						//history files from before this column existed: the first sighting is unknown, so the last one stands in
+						s.firstAt = p.length > 4 ? Long.parseLong( p[4] ) : s.lastAt;
 						if (s.count > 0){
 							seen.put( p[0], s );
 							seq = Math.max( seq, s.lastSeq );
@@ -99,7 +103,7 @@ public final class Ledger {
 				for (Map.Entry<String, String> e : state.entrySet()) w.write( "@" + e.getKey() + "=" + e.getValue() + "\n" );
 				for (Map.Entry<String, Seen> e : seen.entrySet()){
 					Seen s = e.getValue();
-					w.write( e.getKey() + "\t" + s.count + "\t" + s.lastSeq + "\t" + s.lastAt + "\n" );
+					w.write( e.getKey() + "\t" + s.count + "\t" + s.lastSeq + "\t" + s.lastAt + "\t" + s.firstAt + "\n" );
 				}
 			}
 			if (!tmp.renameTo( file )){
@@ -115,6 +119,7 @@ public final class Ledger {
 		Seen s = seen.get( id );
 		if (s == null){
 			s = new Seen();
+			s.firstAt = now;
 			seen.put( id, s );
 		}
 		s.count++;
