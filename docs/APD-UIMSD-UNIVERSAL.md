@@ -99,5 +99,45 @@ Levers, per-enemy state changes and enemy abilities, boss phase changes, NPC int
 accessor), plant and seed interactions, level feelings acted on, auto-explore and travel usage, throws and targeting, shop stock seen, ally summons and their fates, alchemy details,
 fall and trap damage sources beyond damage events, and anything a future character adds.
 
+## UIMSD Demo Unlock (roadmap addition, owner request 2026-10-08; NOT started; lower priority than backend work and pending tests)
+Players normally unlock UIMSD after 10 genuine runs. Alternative: unlock it immediately by generating 10 demonstration runs.
+
+Warning shown first (exact text):
+> ARE YOU SURE ABOUT THIS?
+>
+> UIMSD is an absurdly detailed statistics database. You can unlock it immediately with 10 demo runs, but there's a very good chance you'll have absolutely no idea what you're looking at.
+>
+> I strongly recommend playing 10 actual runs first.
+
+Choices: **I LIKE CONFUSION** (generate demo runs) / **I'LL PLAY 10 RUNS** (decline, return to normal gameplay).
+
+Requirements (owner's list):
+1. Generate 10 varied, internally consistent demo runs that show UIMSD's statistics, filters, tables, grouping and cross-referencing.
+2. Every generated run is marked DEMO throughout the data system.
+3. Demo runs never count toward genuine run totals, achievements, progression, win rates, rankings, leaderboards or community submissions.
+4. After a successful generation of the 10 runs the demo-unlock button is removed for good: it never returns, including after a restart or after the demo data is deleted.
+5. UIMSD stays unlocked permanently after a successful generation, even if every demo run is deleted.
+6. The player can delete all generated demo data at any time, with confirmation.
+7. Deleting demo data never touches genuine histories, statistics or active saves.
+8. Demo data is clearly identifiable and can be excluded from queries and tables.
+9. Generation is offline, efficient and deterministic where practical; no ten full gameplay sessions are simulated.
+10. Automated tests: demo isolation, unlock persistence, deletion safety, filtering, restart behaviour.
+11. The normal 10-run unlock method is preserved.
+
+What the repository already has (verified 2026-10-08, so this is less than a from-scratch build):
+- `apd/demo/DemoData`, `DemoGenerator`, `DemoLog`: an INDEV-only synthetic history generator. Demo data lives in its OWN folder (a sibling of the real `apd` folder) with a marker file `SYNTHETIC-DEMO-DATA.txt`; every demo log is named `demo-...` and says SYNTHETIC-DEMO-DATA in its header, run start and version; the recorder refuses to record into a marked folder, the importer refuses to read or write one, the real dataset store skips any `demo-` log, exports/uploads check `isSyntheticRoot()`/`isSyntheticLogId()`, and `delete()` only removes a folder that has the marker AND the demo folder's name. Reports built from demo data say so (synthetic notice).
+- The generator currently builds a larger sample history (about 68 runs for the UIMSD tour). The requested 10-run set is a smaller, deterministic variant of it.
+
+What is NOT there yet (the work):
+- **The 10-genuine-run unlock gate does not exist in the code today** (UIMSD is always reachable). Requirement 11 ("preserve the normal method") therefore means building that gate first. Working assumption until the owner says otherwise: a genuine run counts when APD recorded it completely and it finished (won, died or abandoned), imported legacy records and demo runs do not count. This is a small product decision recorded here, not made silently.
+- A permanent unlock flag and a separate, permanent "demo unlock used" flag, both in settings, neither derived from the presence of demo files (so deleting demo data cannot re-lock UIMSD or bring the button back).
+- The two-choice confirmation window with the exact text above, shown only while UIMSD is locked and the button has never been used.
+- A 10-run generator mode that is available in release builds (the current one is INDEV-only), deterministic from a fixed seed, varied across hero classes, outcomes, depths and difficulties, and consistent (item, combat and floor facts agree).
+- "Delete all demo data" with confirmation in UIMSD (uses `DemoData.delete()`), plus a toggle/filter to hide demo data in tables.
+- Tests: demo isolation (no demo run in genuine counts, win rates, rankings, submissions, exports, the submission queue and the backend factory), unlock persistence across restart and after deleting demo data, the button never returning, deletion safety (genuine logs and an active save untouched), filtering, and the 10-run gate itself.
+- Phone check: the warning text, both buttons, the unlocked state, and deleting the demo data.
+
+Order of work: after the current backend and device-test items. Do not start it before the owner-approved higher-priority items are done or blocked.
+
 ## Absurd-query easter egg (recorded requirement, not built)
 `Question.complexity()` is the hook: it grows with everything a question asks for. A rare acknowledgement line for an extreme score, Adult/Clean aware, is still to be built.

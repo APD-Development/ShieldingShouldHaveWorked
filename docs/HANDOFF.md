@@ -39,6 +39,9 @@ The long project handoff is `docs/APD-HANDOFF.md`; the canonical plan is `APD_Ca
 - Next: fix whatever the device runs show; then sync client for preferences (needs tombstones in SavedViews first, so it waits on sign-in existing), recording only where it adds real information (plants/seeds need a hidden-information design), Cleric un-ban behind a default-off flag (ruleset id only, owner decision pending), standalone runnable reference server (test scope), the codebase-wide comment pass (low).
 - Needs the owner: real server and address, sign-in provider, key custody, retention, moderation, Cleric ruleset identity, upstream support text, marker design.
 
+## Backlog additions
+- **UIMSD Demo Unlock** (owner request): fully written down in docs/APD-UIMSD-UNIVERSAL.md ("UIMSD Demo Unlock"). Lower priority than backend and pending tests. Note: the 10-genuine-run unlock gate does not exist yet and must be built as part of it; the demo generator exists but is INDEV-only and larger than 10 runs.
+
 ## Decisions already made (do not ask again)
 - Local-first; backend owns shared authoritative state; raw UIMSD history stays local. Provider-neutral interfaces; the provider choice is NOT a blocker. No secret in the APK; gameplay cannot create developer grants. No public deployment, spending, credentials, hidden analytics or private history uploads.
 - Clans are NOT approved: only generic reusable group/role foundations.
