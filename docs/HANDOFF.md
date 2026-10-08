@@ -28,16 +28,19 @@ The owner's Actions minutes are over 90% used. DO NOT dispatch workflows and DO 
 ## In flight
 - Nothing. Device run 87 green (API 26 + 34, incl. PlayRunDeviceTest) at 513b4fc; main = apd-build-73 (76faff8), Build APK green. Recorded in docs/APD-HANDOFF.md. Run 86 was red before the fix (cause not read; superseded by 87).
 
-## Phone-test checklist (owner, from about noon Eastern; the newest main build)
+## Phone-test checklist (owner; newest verified main build = apd-build-80; features below are NOT in it)
+In apd-build-80:
 - Options > Privacy (UIMSD table > Options): the four rows plus "Evidence requests (0)"; sending shows Off; turning it on and pressing Send with no address says there is no usable address; nothing is ever sent by itself.
-- Android Back on the character-selection screen: one Back with a dialog open closes only the dialog; Back with a hero picked leaves toward the title in one or two presses and never closes the app.
-- Back in UIMSD Home / a table / a submenu / Ask / the tour / APD Settings / Rankings (from builds 70-71, not yet checked on a phone).
-- Difficulty picker above Start (1-5), a started run keeps its difficulty.
+- Android Back on the character-selection screen: one Back with a dialog open closes only the dialog; Back with a hero picked leaves toward the title in one or two presses and never closes the app. Back in UIMSD Home / a table / a submenu / Ask / the tour / APD Settings / Rankings.
+- Difficulty picker above Start (1-5); a started run keeps its difficulty.
 - Debug builds only: run sheet > Queue for submission / Show what is queued / Take this run out of the queue.
+Built on the claude branch only, switched OFF, needs a local/authorized build:
+- Demo Unlock (docs/APD-DEMO-UNLOCK-CHECKLIST.md; switch `UimsdUnlock.ENFORCED`).
+- Cleric grudge (docs/APD-VENDETTA.md, review lines in docs/cleric-review/batch-NN.md; switch `ClericGrudge.ENABLED`): open APD Settings > About / Developer: The Grudge; four counters, frequency, five location switches (startup, main menu, during runs, after a run, statistics), Adult checkbox, reset; a surprise popup carries "Turn off these messages" which must stop all of them at once; nothing may ever appear mid-fight, on a boss floor, or over an open window.
 
 ## Next task (exact)
 - Owner (2026-10-09 ~09:15 UTC): resume without waiting; hourly resume trigger trig_018fkLK7mfJFyTjrj9gzS3Za (cron 15 * * * *) is active; do not cancel it.
-- Main = 9447a5e = apd-build-80 (Build APK + device run 110 green). Run 79 (933d472) failed core only on a test-ordering bug, fixed. Builds: 75 = e1ecea2, 76 = f83839e, 77 = 22b91c8, 78 = 3977dd0. Claude branch is ahead: account/vote actions, evidence inbox prune, redirect hardening, Community votes menu (run 102 on 3977dd0 pending).
+- Main = 9447a5e = apd-build-80 (Build APK + device run 110 green). Run 79 (933d472) failed core only on a test-ordering bug, fixed. ACTIONS FROZEN: no workflows, no pushes to main. Claude branch is far ahead (Cleric grudge, Demo Unlock docs); newest = see git log. Builds: 75 = e1ecea2, 76 = f83839e, 77 = 22b91c8, 78 = 3977dd0. Claude branch is ahead: account/vote actions, evidence inbox prune, redirect hardening, Community votes menu (run 102 on 3977dd0 pending).
 - Device run results so far: run 94 showed hero-select Back works (one press to the title); the Privacy test needed a mechanics fix (a text box ignores Back on purpose). Runs on b4fbeaa, d5f523c, f83839e are the verification of the rest; push the newest green sha to main and record the build.
 - Next: fix whatever the device runs show; then sync client for preferences (needs tombstones in SavedViews first, so it waits on sign-in existing), recording only where it adds real information (plants/seeds need a hidden-information design), Cleric un-ban behind a default-off flag (ruleset id only, owner decision pending), standalone runnable reference server (test scope), the codebase-wide comment pass (low).
 - Needs the owner: real server and address, sign-in provider, key custody, retention, moderation, Cleric ruleset identity, upstream support text, marker design.
