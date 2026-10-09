@@ -44,4 +44,9 @@ public class WndDemoUnlock extends WndUimsdChoices {
         hide();
         choice.playRuns();
     }
+    @Override public Runnable restoreOnSceneReset(){
+        final Choice saved = choice;
+        return () -> com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon.scene().addToFront(new WndDemoUnlock(saved));
+    }
+
 }

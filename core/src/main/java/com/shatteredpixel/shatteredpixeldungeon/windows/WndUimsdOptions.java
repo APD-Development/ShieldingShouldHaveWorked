@@ -164,10 +164,8 @@ public final class WndUimsdOptions {
 			say("There is no history folder to keep views in yet.");
 			return;
 		}
-		ShatteredPixelDungeon.scene().addToFront(new WndTextInput("Save this view", "A name for this table (up to " + SavedViews.MAX_NAME + " characters). An existing view with the same name is replaced.",
-				"", SavedViews.MAX_NAME, false, "Save", "Cancel"){
-			@Override
-			public void onSelect( boolean positive, String text ){
+		ShatteredPixelDungeon.scene().addToFront(new WndUimsdTextInput("Save this view", "A name for this table (up to " + SavedViews.MAX_NAME + " characters). An existing view with the same name is replaced.",
+				"", SavedViews.MAX_NAME, false, "Save", "Cancel", (positive, text) -> {
 				if (!positive) return;
 				SavedViews v = views(m);
 				SavedViews.Result r = v.save(text, m.query(), System.currentTimeMillis());
@@ -179,8 +177,7 @@ public final class WndUimsdOptions {
 				}
 				say(r == SavedViews.Result.SAVED ? "Saved." : r == SavedViews.Result.REPLACED ? "Saved, replacing the view with that name."
 						: r == SavedViews.Result.TOO_MANY ? "You have " + SavedViews.MAX_VIEWS + " saved views. Delete one first." : "That is not a usable name.");
-			}
-		});
+			}));
 	}
 
 	private static void openViews( final UimsdModel m ){
@@ -385,9 +382,7 @@ public final class WndUimsdOptions {
 	}
 
 	private static void serverAddress(){
-		ShatteredPixelDungeon.scene().addToFront(new WndTextInput("Server address", "An address starting with https://. Leave empty to clear it.", SPDSettings.apdServer(), 200, false, "Save", "Cancel"){
-			@Override
-			public void onSelect( boolean positive, String text ){
+		ShatteredPixelDungeon.scene().addToFront(new WndUimsdTextInput("Server address", "An address starting with https://. Leave empty to clear it.", SPDSettings.apdServer(), 200, false, "Save", "Cancel", (positive, text) -> {
 				if (!positive) return;
 				String t = text == null ? "" : text.trim();
 				if (!t.isEmpty() && Gateways.cleanBaseUrl(t) == null){
@@ -396,8 +391,7 @@ public final class WndUimsdOptions {
 				}
 				SPDSettings.apdServer(t);
 				say(t.isEmpty() ? "Address cleared." : "Saved.");
-			}
-		});
+			}));
 	}
 
 	private static void privacySummary( UimsdModel m ){

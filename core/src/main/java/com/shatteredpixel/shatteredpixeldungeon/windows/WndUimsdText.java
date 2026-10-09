@@ -32,10 +32,12 @@ import com.watabou.noosa.ui.Component;
 //APD: a title and a scrolling block of text, for the UIMSD explanations (coverage, what the markers mean).
 public class WndUimsdText extends Window {
 
+	private final String savedTitle, savedText;
 	private static final int MARGIN = 2;
 
 	public WndUimsdText( String title, String text ){
 		super();
+		savedTitle = title; savedText = text;
 		int width = WndUimsdList.windowWidth();
 		RenderedTextBlock tt = PixelScene.renderTextBlock(title, 9);
 		tt.hardlight(com.shatteredpixel.shatteredpixeldungeon.ui.UimsdStyle.TITLE);
@@ -53,4 +55,10 @@ public class WndUimsdText extends Window {
 		add(pane);
 		pane.setRect(0, pos, width, h);
 	}
+	@Override
+	public Runnable restoreOnSceneReset(){
+		final String title = savedTitle, text = savedText;
+		return () -> com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon.scene().addToFront(new WndUimsdText(title, text));
+	}
+
 }

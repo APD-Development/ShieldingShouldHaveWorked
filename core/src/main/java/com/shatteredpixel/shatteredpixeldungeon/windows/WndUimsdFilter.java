@@ -253,9 +253,32 @@ public final class WndUimsdFilter {
 	private static void choose( final UimsdModel m, final int index, ColumnDef col, final Op op, String sentence, List<Entry> entries,
 	                            final Chosen chosen, final Runnable typeInstead ){
 		if (op == Op.IN){
-			final List<Integer> picked = new ArrayList<>();
-			for (int i = 0; i < entries.size(); i++) entries.get(i).checked(entries.get(i).current);
+			List<Integer> picked = new ArrayList<>();
 			for (int i = 0; i < entries.size(); i++) if (entries.get(i).current) picked.add(i);
+			chooseMany(m, index, sentence, entries, chosen, picked);
+			return;
+		}
+		final List<Entry> originalEntries = new ArrayList<>(entries);
+		entries = new ArrayList<>(entries);
+		final int typeAt = typeInstead == null ? -1 : entries.size();
+		if (typeInstead != null) entries.add(Entry.item("Something else...", "type a value yourself"));
+		show(WndUimsdList.menu(sentence, "Step 3 of 3: choose a value.", entries, new WndUimsdList.Picker(){
+			@Override
+			public void onPick( int i, boolean checked ){
+				if (i == typeAt){
+					typeInstead.run();
+					return;
+				}
+				List<Integer> one = new ArrayList<>();
+				one.add(i);
+				finish(m, index, chosen.filter(one));
+			}
+		}).restoreWith(() -> choose(m, index, col, op, sentence, originalEntries, chosen, typeInstead)));
+	}
+
+	private static void chooseMany(final UimsdModel m, final int index, String sentence,
+								   List<Entry> entries, final Chosen chosen, final List<Integer> picked){
+		for (int i = 0; i < entries.size(); i++) entries.get(i).checked(picked.contains(i));
 			show(new WndUimsdList(sentence, "Step 3 of 3: tick every value you want, then Done.", true, entries, new WndUimsdList.Picker(){
 				@Override
 				public void onPick( int i, boolean checked ){
@@ -271,23 +294,7 @@ public final class WndUimsdFilter {
 					hide();
 					if (!picked.isEmpty()) finish(m, index, chosen.filter(picked));
 				}
-			});
-			return;
-		}
-		final int typeAt = typeInstead == null ? -1 : entries.size();
-		if (typeInstead != null) entries.add(Entry.item("Something else...", "type a value yourself"));
-		show(WndUimsdList.menu(sentence, "Step 3 of 3: choose a value.", entries, new WndUimsdList.Picker(){
-			@Override
-			public void onPick( int i, boolean checked ){
-				if (i == typeAt){
-					typeInstead.run();
-					return;
-				}
-				List<Integer> one = new ArrayList<>();
-				one.add(i);
-				finish(m, index, chosen.filter(one));
-			}
-		}));
+			}.restoreWith(() -> chooseMany(m, index, sentence, entries, chosen, new ArrayList<>(picked))));
 	}
 
 	private static void typeText( final UimsdModel m, final int index, final ColumnDef col, final Op op, String sentence ){
@@ -313,12 +320,9 @@ public final class WndUimsdFilter {
 	}
 
 	private static void ask( String title, String body, final Answer answer ){
-		show(new WndTextInput(title, body, "", 40, false, "OK", "Cancel"){
-			@Override
-			public void onSelect( boolean positive, String text ){
+		show(new WndUimsdTextInput(title, body, "", 40, false, "OK", "Cancel", (positive, text) -> {
 				if (positive) answer.got(text);
-			}
-		});
+			}));
 	}
 
 	private static void finish( UimsdModel m, int index, Filter f ){

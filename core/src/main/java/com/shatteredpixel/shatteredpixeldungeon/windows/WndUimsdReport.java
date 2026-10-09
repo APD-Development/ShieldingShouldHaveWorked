@@ -73,7 +73,7 @@ public final class WndUimsdReport {
 				if (index == 0) ReportExport.share(base(), r, done);
 				else ReportExport.save(base(), r, formats[index - 1], done);
 			}
-		});
+		}.restoreWith(() -> show(model, what, source)));
 	}
 
 	//---- the reports a screen can offer ----

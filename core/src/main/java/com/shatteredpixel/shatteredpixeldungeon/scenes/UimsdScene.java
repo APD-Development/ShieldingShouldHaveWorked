@@ -417,7 +417,7 @@ public class UimsdScene extends PixelScene {
 							model.showQuery(q);
 							returnTo = backToAnswer;
 							atHome = false;
-							dirty = true;
+							//showQuery notifies the current scene's model listener.
 						}
 					});
 					return;

@@ -7,12 +7,21 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdModel;
+import com.shatteredpixel.shatteredpixeldungeon.apd.query.ColumnDef;
+import com.shatteredpixel.shatteredpixeldungeon.apd.query.Op;
+import com.shatteredpixel.shatteredpixeldungeon.apd.query.Question;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.UimsdScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
+import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
+import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndSettings;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdAsk;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdTextInput;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndTextInput;
+import com.watabou.noosa.TextInput;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdChoices;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdColumns;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdFilter;
@@ -67,6 +76,20 @@ public class UimsdRestoreDeviceTest {
         try {
             Field f = UimsdScene.class.getDeclaredField("model"); f.setAccessible(true);
             return (UimsdModel) f.get(null);
+        } catch (Exception e) { throw new RuntimeException(e); }
+    }
+
+    private static TextInput input(Window window){
+        try {
+            Field f = WndTextInput.class.getDeclaredField("textBox"); f.setAccessible(true);
+            return (TextInput) f.get(window);
+        } catch (Exception e) { throw new RuntimeException(e); }
+    }
+
+    private static void pickFirst(WndUimsdList list){
+        try {
+            java.lang.reflect.Method method = WndUimsdList.class.getDeclaredMethod("picked", int.class);
+            method.setAccessible(true); method.invoke(list, 0);
         } catch (Exception e) { throw new RuntimeException(e); }
     }
 
@@ -130,6 +153,44 @@ public class UimsdRestoreDeviceTest {
                 windows().get(1).onBackPressed();
                 assertEquals("Back returns to the preceding filter step", 1, windows().size());
                 clearWindows();
+                WndUimsdAsk.builder(model().catalog(), model().currentRuleset(), (q, back) -> {}, Question.about("runs"));
+            });
+            rebuildScene();
+            final AtomicReference<String> answer = new AtomicReference<>();
+            onRender(() -> {
+                assertEquals("Ask builder survived", 1, windows().size());
+                clearWindows();
+                WndUimsdTextInput prompt = new WndUimsdTextInput("Filter", "A whole number", "123", 40,
+                        false, "OK", "Cancel", (positive, value) -> { if (positive) answer.set(value); });
+                Game.scene().addToFront(prompt);
+                input(prompt).setText("321");
+            });
+            rebuildScene();
+            onRender(() -> {
+                assertEquals("typed input survived", 1, windows().size());
+                WndUimsdTextInput prompt = (WndUimsdTextInput) windows().get(0);
+                assertEquals("321", input(prompt).getText());
+                prompt.onSelect(true, input(prompt).getText());
+                assertEquals("restored callback works", "321", answer.get());
+                clearWindows();
+                ColumnDef outcome = null;
+                for (ColumnDef column : model().offeredColumns()) if (column.type == ColumnDef.Type.ENUM) { outcome = column; break; }
+                assertNotNull("enum fixture", outcome);
+                WndUimsdFilter.pickValue(model(), -1, null, outcome, Op.IN);
+                pickFirst((WndUimsdList) windows().get(0));
+            });
+            rebuildScene();
+            onRender(() -> {
+                assertEquals("pending multi-select survived", 1, windows().size());
+                try {
+                    Field entries = WndUimsdList.class.getDeclaredField("entries"); entries.setAccessible(true);
+                    List<?> saved = (List<?>) entries.get(windows().get(0));
+                    assertEquals(Boolean.TRUE, ((WndUimsdList.Entry) saved.get(0)).checked);
+                    java.lang.reflect.Method done = windows().get(0).getClass().getDeclaredMethod("onDone");
+                    done.setAccessible(true); done.invoke(windows().get(0));
+                    assertEquals("pending choice applies after restoration", 1, model().query().filters.size());
+                } catch (Exception e) { throw new RuntimeException(e); }
+                clearWindows();
                 int originalWidth = PixelScene.uiCamera.width;
                 try {
                     PixelScene.uiCamera.width = 100;
@@ -144,6 +205,21 @@ public class UimsdRestoreDeviceTest {
                         RenderedTextBlock label = (RenderedTextBlock) item;
                         assertTrue("label left edge", label.left() >= 0);
                         assertTrue("wrapped label right edge", label.right() <= innerWidth);
+                    }
+                    clearWindows();
+                    WndUimsdTextInput prompt = new WndUimsdTextInput("Filter", "A number", "", 40,
+                            false, "OK", "Cancel", (positive, value) -> {});
+                    Game.scene().addToFront(prompt);
+                    innerWidth = width.getInt(prompt);
+                    assertTrue("input leaves side margins", innerWidth <= 72);
+                    Field buttonText = StyledButton.class.getDeclaredField("text"); buttonText.setAccessible(true);
+                    for (Gizmo child : members(prompt)) if (child instanceof RedButton){
+                        RedButton button = (RedButton) child;
+                        RenderedTextBlock label = (RenderedTextBlock) buttonText.get(button);
+                        if (!label.text().isEmpty()) {
+                            assertTrue("input action left edge", label.left() >= button.left());
+                            assertTrue("input action right edge", label.right() <= button.right());
+                        }
                     }
                 } catch (Exception e) { throw new RuntimeException(e); }
                 finally { PixelScene.uiCamera.width = originalWidth; clearWindows(); }

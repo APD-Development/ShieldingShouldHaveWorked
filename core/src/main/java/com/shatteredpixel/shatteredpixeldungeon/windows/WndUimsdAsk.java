@@ -129,7 +129,7 @@ public final class WndUimsdAsk {
 					default: answer(cat, ruleset, host, cur);
 				}
 			}
-		}));
+		}).restoreWith(() -> builder(cat, ruleset, host, q)));
 	}
 
 	private static String joinLabels( DatasetDef def, List<String> ids ){
@@ -153,7 +153,7 @@ public final class WndUimsdAsk {
 			public void onPick( int i, boolean checked ){
 				builder(cat, ruleset, host, q.withDataset(sets.get(i).def.id));
 			}
-		}));
+		}).restoreWith(() -> pickDataset(cat, ruleset, host, q)));
 	}
 
 	private static void pickMeasure( final Catalog cat, final String ruleset, final Host host, final Question q, final DatasetDef def ){
@@ -174,17 +174,22 @@ public final class WndUimsdAsk {
 					builder(cat, ruleset, host, q.withMeasure(m, ""));
 					return;
 				}
-				final List<ColumnDef> cols = Questions.measurable(def, q.showInternal);
-				List<Entry> es = new ArrayList<>();
-				for (ColumnDef c : cols) es.add(Entry.item(c.label, c.description).current(c.id.equals(q.column)));
-				show(WndUimsdList.menu("Which number?", "The number to " + (m == Question.Measure.TOTAL ? "add up" : "look at") + ".", es, new WndUimsdList.Picker(){
-					@Override
-					public void onPick( int j, boolean c ){
-						builder(cat, ruleset, host, q.withMeasure(m, cols.get(j).id));
-					}
-				}));
+				pickNumber(cat, ruleset, host, q, def, m);
 			}
-		}));
+		}).restoreWith(() -> pickMeasure(cat, ruleset, host, q, def)));
+	}
+
+	private static void pickNumber(final Catalog cat, final String ruleset, final Host host,
+	                               final Question q, final DatasetDef def, final Question.Measure m){
+		final List<ColumnDef> cols = Questions.measurable(def, q.showInternal);
+		List<Entry> es = new ArrayList<>();
+		for (ColumnDef c : cols) es.add(Entry.item(c.label, c.description).current(c.id.equals(q.column)));
+		show(WndUimsdList.menu("Which number?", "The number to " + (m == Question.Measure.TOTAL ? "add up" : "look at") + ".", es, new WndUimsdList.Picker(){
+			@Override
+			public void onPick( int j, boolean c ){
+				builder(cat, ruleset, host, q.withMeasure(m, cols.get(j).id));
+			}
+		}).restoreWith(() -> pickNumber(cat, ruleset, host, q, def, m)));
 	}
 
 	private static void pickPer( final Catalog cat, final String ruleset, final Host host, final Question q ){
@@ -200,12 +205,16 @@ public final class WndUimsdAsk {
 			public void onPick( int i, boolean checked ){
 				builder(cat, ruleset, host, q.withPer(i == 0 ? null : units.get(i - 1)));
 			}
-		}));
+		}).restoreWith(() -> pickPer(cat, ruleset, host, q)));
 	}
 
 	private static void pickSplit( final Catalog cat, final String ruleset, final Host host, final Question q, final DatasetDef def ){
+		pickSplitPending(cat, ruleset, host, q, def, new ArrayList<>(q.groupBy));
+	}
+
+	private static void pickSplitPending(final Catalog cat, final String ruleset, final Host host,
+										  final Question q, final DatasetDef def, final List<String> chosen){
 		final List<ColumnDef> cols = Questions.groupable(def, q.showInternal);
-		final List<String> chosen = new ArrayList<>(q.groupBy);
 		List<Entry> entries = new ArrayList<>();
 		String lastGroup = null;
 		for (ColumnDef c : cols){
@@ -233,7 +242,7 @@ public final class WndUimsdAsk {
 				hide();
 				builder(cat, ruleset, host, q.withGroupBy(chosen));
 			}
-		});
+		}.restoreWith(() -> pickSplitPending(cat, ruleset, host, q, def, new ArrayList<>(chosen))));
 	}
 
 	private static void editFilters( final Catalog cat, final String ruleset, final Host host, final Question q ){
@@ -263,7 +272,7 @@ public final class WndUimsdAsk {
 				});
 				WndUimsdFilter.add(scratch);
 			}
-		}));
+		}).restoreWith(() -> editFilters(cat, ruleset, host, q)));
 	}
 
 	// ---- the answer ----
@@ -306,6 +315,6 @@ public final class WndUimsdAsk {
 					builder(cat, ruleset, host, q);
 				}
 			}
-		}));
+		}).restoreWith(() -> answer(cat, ruleset, host, q)));
 	}
 }
