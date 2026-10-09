@@ -1,0 +1,3 @@
+2026-10-09: owner-approved Codex sprint verification and private debug APK.
+Run the complete core suite before building; preserve app ID and signing key.
+Keep the APK as a private artifact. No release, publication, or main merge.
