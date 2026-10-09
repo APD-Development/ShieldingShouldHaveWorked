@@ -177,3 +177,34 @@ Focused leaf-menu follow-up: UimsdChoicesTest 3 pass; local regression subset 52
 C6 run 37938876024: core/APK pass; native method fails at fixture creation:
 java.nio.file.NoSuchFileException: /data/user/0/.../files/apd/dialog-check-...
 Fixture now uses getTargetContext().getCacheDir(); all existing assertions preserved. Fresh C7 result pending; C6 delivery skipped.
+
+First-launch preference regression BEFORE FIX:
+JUnit version 4.13.2-SNAPSHOT
+..E.....................E......
+Time: 0.502
+There were 2 failures:
+1) viewsCanBeSavedBeforeTheFirstRunCreatesHistory(com.shatteredpixel.shatteredpixeldungeon.apd.query.SavedViewsTest)
+java.io.FileNotFoundException: /tmp/junit1364728854695332968/first-launch/history/saved_views.txt.tmp (No such file or directory)
+	at java.base/java.io.FileOutputStream.open0(Native Method)
+	at java.base/java.io.FileOutputStream.open(FileOutputStream.java:289)
+	at java.base/java.io.FileOutputStream.<init>(FileOutputStream.java:230)
+	at java.base/java.io.FileOutputStream.<init>(FileOutputStream.java:179)
+	at com.shatteredpixel.shatteredpixeldungeon.apd.query.SavedViews.store(SavedViews.java:135)
+	at com.shatteredpixel.shatteredpixeldungeon.apd.query.SavedViewsTest.viewsCanBeSavedBeforeTheFirstRunCreatesHistory(SavedViewsTest.java:52)
+2) columnsPersistWhenNoRunHasCreatedTheHistoryFolder(com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdModelTest)
+java.lang.AssertionError: layout must be saved even without recorded runs
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdModelTest.columnsPersistWhenNoRunHasCreatedTheHistoryFolder(UimsdModelTest.java:82)
+
+FAILURES!!!
+Tests run: 29,  Failures: 2
+
+AFTER FIX:
+JUnit version 4.13.2-SNAPSHOT
+.............................
+Time: 25.111
+
+OK (29 tests)
+
+Broad after fix: 530 tests pass in 24.946 seconds. New complete CI/native result pending.

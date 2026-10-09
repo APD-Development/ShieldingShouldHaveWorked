@@ -131,6 +131,10 @@ public final class SavedViews {
 
 	public void store( File file ) throws IOException {
 		if (file.isDirectory()) throw new IOException("not a saved-view file: " + file);
+		File parent = file.getAbsoluteFile().getParentFile();
+		if (!parent.isDirectory() && !parent.mkdirs() && !parent.isDirectory()){
+			throw new IOException("saved-view folder could not be created: " + parent);
+		}
 		File tmp = new File(file.getPath() + ".tmp");
 		try (BufferedWriter w = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tmp), StandardCharsets.UTF_8))){
 			for (View v : views){

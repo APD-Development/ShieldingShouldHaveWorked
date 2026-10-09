@@ -1,8 +1,5 @@
-2026-10-09 focused follow-up: restore Group by, saved-view actions and demo-deletion confirmation.
-Native regression verifies callbacks after reset and that restoration/Back never confirms demo deletion.
-PDF must include the detailed development-report appendix: changes, causes, tests, risks, unresolved issues and relevant commits.
-Run full core tests, debug assembly and existing targeted API 34 tests; publish private APK/PDF only after all pass.
-Keep TEST 5 as verified checkpoint if any new check fails. No security bypass or server/community feature activation.
-C6 core/APK passed; native fixture failed because a first-launch history directory need not exist.
-Create the isolated demo fixture under Android's guaranteed app cache directory instead; keep all restoration/deletion assertions.
-Fresh C7 verification required. No C6 release was published and TEST 5 remains verified until success.
+2026-10-09 final first-launch persistence verification.
+Two new core regressions prove named views/columns fail before any run creates the history parent; create the parent safely without inventing or deleting run records.
+Focused 29 tests and broad local 530 checks pass after the fix. Preserve old-file and invalid-directory guards.
+Include the already verified leaf-restoration/native-fixture fixes and full PDF development-record appendix.
+Run complete core suite, debug assembly and targeted API 34 checks; publish private APK/PDF only after success.

@@ -44,6 +44,16 @@ public class SavedViewsTest {
 		return new Query(dataset, Scope.DEFAULT, new ArrayList<Filter>(), new ArrayList<Sort>(), new ArrayList<String>(), null, false, minSample);
 	}
 
+	@Test public void viewsCanBeSavedBeforeTheFirstRunCreatesHistory() throws Exception {
+		File root = new File(tmp.getRoot(), "first-launch/history");
+		assertFalse(root.exists());
+		SavedViews views = new SavedViews();
+		views.save("Empty history view", q("runs", 0), 1);
+		views.store(SavedViews.fileIn(root));
+		assertTrue(root.isDirectory());
+		assertEquals("runs", SavedViews.load(SavedViews.fileIn(root)).get("Empty history view").query().dataset);
+	}
+
 	@Test
 	public void aSavedViewComesBackAsTheSameQuestion() throws Exception {
 		File f = SavedViews.fileIn(tmp.getRoot());

@@ -67,6 +67,31 @@ public class UimsdModelTest {
 		return m;
 	}
 
+	@Test public void columnsPersistWhenNoRunHasCreatedTheHistoryFolder() throws Exception {
+		java.nio.file.Path parent = java.nio.file.Files.createTempDirectory("apd-first-layout");
+		java.io.File root = parent.resolve("history").toFile();
+		try {
+			assertFalse(root.exists());
+			UimsdModel first = new UimsdModel(R, "");
+			first.load(root); first.awaitLoad(10000); first.showRoot("runs");
+			assertEquals(UimsdModel.State.READY, first.state());
+			List<String> columns = Arrays.asList(
+					com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKeys.SCORE,
+					com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKeys.HERO_CLASS);
+			first.setColumns(columns);
+			assertTrue("layout must be saved even without recorded runs", new java.io.File(root, UimsdModel.COLUMN_LAYOUTS_FILE).isFile());
+			UimsdModel second = new UimsdModel(R, "");
+			second.load(root); second.awaitLoad(10000); second.showRoot("runs");
+			assertEquals(columns, second.query().columns);
+			assertFalse("saving preferences creates no run history", new java.io.File(root, "runs").exists());
+		} finally {
+			java.io.File layout = new java.io.File(root, UimsdModel.COLUMN_LAYOUTS_FILE);
+			if (layout.exists()) assertTrue(layout.delete());
+			if (root.exists()) assertTrue(root.delete());
+			assertTrue(parent.toFile().delete());
+		}
+	}
+
 	@Test
 	public void columnOrderAndSelectionSurviveOpeningAnotherView(){
 		UimsdModel m = model();

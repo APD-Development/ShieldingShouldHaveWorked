@@ -208,6 +208,20 @@ Verification: nine controlled combinations cover accepted, rejected and retry ou
 
 Location: SubmissionQueue and SubmissionQueueTest.
 
+## 15. First-launch views and columns could not be saved
+
+Problem: before the first genuine run created a history folder, saving a named view or a column arrangement failed. The current session could show the changed columns, but reopening lost them.
+
+Cause: SavedViews opened its temporary file without creating the missing parent folder. The expanded Android test exposed that a first-launch history folder really can be absent; two controlled core tests then reproduced the actual preference-storage failure.
+
+Fix: create the missing preferences/history directory before writing, while preserving the existing directory-destination guard and safe file replacement. A parent that cannot become a directory still produces a save error. No run, run log, ranking or statistics record is fabricated or removed.
+
+Possible effects: the history folder can now exist before gameplay because it holds preferences. A failed write can leave the newly created empty folder. Existing saved files are still retained if replacement fails.
+
+Verification: the named-view and real-model column reload tests both fail before the fix; the focused 29-test suites pass afterward. The model test checks that preferences do not create a runs folder. Complete follow-up build results belong on the verification page.
+
+Location: SavedViews, SavedViewsTest and UimsdModelTest.
+
 ## Other verification and remaining limits
 
 Sad Ghost reward visibility and quest-recording tests passed in the complete core suite. Source paths for Sad Ghost, Wandmaker, Blacksmith and Imp were reviewed without gameplay or balance changes. This is not proof of playing all four quests to completion on Android. Blacksmith's explicitly unfinished Fungi path was not enabled.
