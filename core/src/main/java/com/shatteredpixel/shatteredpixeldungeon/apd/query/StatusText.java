@@ -91,8 +91,12 @@ public final class StatusText {
 					+ (s.mixedRuleset == 1 ? "it is" : "they are") + " left out. Tap to include " + (s.mixedRuleset == 1 ? "it" : "them") + ".", NOTE, ACT_MIXED_RULESET));
 		}
 		if (s.unfinished > 0){
+			if (r.query.scope.finishedOnly){
+				out.add(new Line(plural(s.unfinished, one, many) + " left out: this view includes finished runs only.", NOTE, ACT_NONE));
+			} else {
 			out.add(new Line(plural(s.unfinished, one, many) + (s.unfinished == 1 ? " belongs" : " belong") + " to a run that is still going, so "
 					+ (s.unfinished == 1 ? "it is" : "they are") + " left out. Tap to include " + (s.unfinished == 1 ? "it" : "them") + ".", NOTE, ACT_UNFINISHED));
+			}
 		}
 		if (s.duplicates > 0){
 			out.add(new Line(plural(s.duplicates, "imported ranking record is", "imported ranking records are") + " the same run as one APD recorded itself, so "

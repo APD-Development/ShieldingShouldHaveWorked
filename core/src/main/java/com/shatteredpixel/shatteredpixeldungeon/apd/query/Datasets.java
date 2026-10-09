@@ -449,9 +449,9 @@ public final class Datasets {
 				Query.of(ENEMIES).withGroup(enemyTable()).withMinSample(ALL_TYPES).withSorts(Arrays.asList(new Sort("count", true))))
 				.withInstances(Query.of(ENEMIES)));
 		v.add(new ViewDef("bosses", "Bosses", "Only the bosses, with how fights against each went. Tap one for its statistics, then each meeting and the runs.",
-				Query.of(ENEMIES).withFilters(Arrays.asList(Filter.num("enemy.boss", Op.EQ, 1))).withGroup(enemyTable()).withMinSample(ALL_TYPES)
+				Query.of(ENEMIES).withScope(Scope.DEFAULT.withFinishedOnly(true)).withFilters(Arrays.asList(Filter.num("enemy.boss", Op.EQ, 1))).withGroup(enemyTable()).withMinSample(ALL_TYPES)
 						.withSorts(Arrays.asList(new Sort("count", true))))
-				.withInstances(Query.of(ENEMIES).withFilters(Arrays.asList(Filter.num("enemy.boss", Op.EQ, 1)))));
+				.withInstances(Query.of(ENEMIES).withScope(Scope.DEFAULT.withFinishedOnly(true)).withFilters(Arrays.asList(Filter.num("enemy.boss", Op.EQ, 1)))));
 		v.add(new ViewDef("deaths", "Deaths", "Every death.", Query.of(DEATHS)));
 		v.add(new ViewDef("characters", "Characters", "Runs grouped by hero class.",
 				Query.of(RUNS).withGroup(runStats(FactKeys.HERO_CLASS)).withMinSample(DEFAULT_MIN_SAMPLE)

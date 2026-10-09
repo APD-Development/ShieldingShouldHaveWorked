@@ -468,6 +468,7 @@ public final class UimsdModel {
 	}
 
 	public synchronized void setScope( Scope s ){
+		if (query.scope.finishedOnly) s = s.withFinishedOnly(true);
 		apply(query.withScope(s));
 	}
 

@@ -66,7 +66,7 @@ public final class QueryCodec {
 		Scope s = q.scope;
 		b.append("scope\t").append(s.rules.name()).append('\t').append(esc(s.ruleset)).append('\t')
 				.append((s.includeUnknownRuleset ? 1 : 0) | (s.includeMixedRuleset ? 2 : 0) | (s.includeUnfinished ? 4 : 0)
-						| (s.includeDuplicates ? 8 : 0)).append('\n');
+						| (s.includeDuplicates ? 8 : 0) | (s.finishedOnly ? 16 : 0)).append('\n');
 		for (Filter f : q.filters){
 			b.append("filter\t").append(esc(f.column)).append('\t').append(f.op.name()).append('\t');
 			for (int i = 0; i < f.nums.length; i++) b.append(i > 0 ? "," : "").append(f.nums[i]);
@@ -111,7 +111,7 @@ public final class QueryCodec {
 					case "dataset": dataset = unesc(p[1]); break;
 					case "scope": {
 						int bits = Integer.parseInt(p[3]);
-						scope = new Scope(Scope.Rules.valueOf(p[1]), unesc(p[2]), (bits & 1) != 0, (bits & 2) != 0, (bits & 4) != 0, (bits & 8) != 0);
+						scope = new Scope(Scope.Rules.valueOf(p[1]), unesc(p[2]), (bits & 1) != 0, (bits & 2) != 0, (bits & 4) != 0, (bits & 8) != 0, (bits & 16) != 0);
 						break;
 					}
 					case "filter": {

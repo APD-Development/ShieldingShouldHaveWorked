@@ -82,9 +82,13 @@ public final class WndUimsdOptions {
 		entries.add(Entry.item("Rules: " + rules,
 				"Rules = difficulty, challenges and exotic-item setting. Runs played under different rules are only counted together if you choose all rules." + left(r.stats.otherRulesets)));
 		actions.add(new Runnable(){ public void run(){ pickRuleset(m); } });
-		entries.add(Entry.item("Include runs still going", "Only what you could see during play is used for them; their hidden information never is." + left(r.stats.unfinished))
-				.checked(s.includeUnfinished));
-		actions.add(new Runnable(){ public void run(){ m.setScope(s.withUnfinished(!s.includeUnfinished)); show(m); } });
+		if (s.finishedOnly){
+			entries.add(Entry.note("This view includes finished runs only."));
+		} else {
+			entries.add(Entry.item("Include runs still going", "Only what you could see during play is used for them; their hidden information never is." + left(r.stats.unfinished))
+					.checked(s.includeUnfinished));
+			actions.add(new Runnable(){ public void run(){ m.setScope(s.withUnfinished(!s.includeUnfinished)); show(m); } });
+		}
 		entries.add(Entry.item("Include runs with unknown rules", "Older runs that never recorded their rules." + left(r.stats.unknownRuleset)).checked(s.includeUnknownRuleset));
 		actions.add(new Runnable(){ public void run(){ m.setScope(s.withUnknownRuleset(!s.includeUnknownRuleset)); show(m); } });
 		entries.add(Entry.item("Include runs whose rules changed", "Runs where a setting was changed while playing." + left(r.stats.mixedRuleset)).checked(s.includeMixedRuleset));
