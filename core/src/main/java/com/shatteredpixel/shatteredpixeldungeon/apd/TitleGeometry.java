@@ -61,6 +61,7 @@ public final class TitleGeometry {
 
 	//the annotation strip: text, the arrow with its outline and glow, the gap above the button, and room for the bob
 	public static float annotationHeight( float textHeight ){
+		if (textHeight < 0) return 0; //no progression prompt: no arrow or reserved strip
 		return (float)Math.ceil( textHeight + 2 + (2 + ARROW_H + 2*GLOW) + GAP + BOB );
 	}
 

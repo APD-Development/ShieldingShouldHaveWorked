@@ -63,7 +63,9 @@ public class UiEntryPointsTest {
 		String title = scene("TitleScene.java");
 		assertTrue(title.contains("new APDMenuButton( \"UIMSD\", Icons.STATS"));
 		assertTrue("old name must be gone", !title.contains("new APDMenuButton( \"Statistics\""));
-		assertTrue(title.contains("ANNOTATION_TEXT = \"HEY, GO HERE FOR DRUGS\""));
+		assertTrue("no adult fallback outside its progression stage", title.contains("ANNOTATION_TEXT = \"\""));
+		assertTrue(title.contains("UimsdGate.titleAnnotation( ANNOTATION_TEXT )"));
+		assertTrue(title.contains("annotation.visible = !annotationText.isEmpty()"));
 		assertTrue(title.contains("add( annotation )"));
 		assertTrue("must be placed relative to the grid", title.contains("annotation.place("));
 		assertTrue("must fade with the menu", title.contains("annotation.alpha(alpha)"));

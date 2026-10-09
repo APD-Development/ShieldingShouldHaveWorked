@@ -35,20 +35,27 @@ public class UimsdWiringTest {
 	@Test
 	public void theTitleScreenIsStillExactlyAsApprovedExceptForWhereTheUimsdButtonGoes() throws Exception {
 		//The only change since the title screen was frozen is the click target of the UIMSD button (the project owner asked for it).
-		//(Since then the arrow's text has also been made to go through UimsdGate.titleAnnotation, which returns the same text while UIMSD is open.)
+		//The owner also authorized fixing premature adult wording and retiring the arrow.
+		//Normalize only those specific changes; all other frozen source remains protected.
 		//Putting the changed lines back as they were must give exactly the approved file, so layout, text, arrow and annotation
 		//are provably untouched. If this fails the frozen title screen was edited.
 		String title = src("scenes/TitleScene.java");
 		assertTrue(title.contains("UimsdScene.open( TitleScene.class );"));
 		String restored = title
+				.replace("ANNOTATION_TEXT = \"\"", "ANNOTATION_TEXT = \"HEY, GO HERE FOR DRUGS\"")
+				.replace("String annotationText = com.shatteredpixel.shatteredpixeldungeon.windows.UimsdGate.titleAnnotation( ANNOTATION_TEXT );\n\t\tannotation = new APDAnnotation( annotationText,", "annotation = new APDAnnotation( com.shatteredpixel.shatteredpixeldungeon.windows.UimsdGate.titleAnnotation( ANNOTATION_TEXT ),")
+				.replace("\t\tannotation.visible = !annotationText.isEmpty();\n", "")
+				.replace("float textH = annotation.visible ? annotation.textHeight() : -1;", "float textH = annotation.textHeight();")
 				.replace("//UIMSD (Ultimate Infinite Mega Statistics Database) replaces Rankings and opens the UIMSD screen",
 						"//UIMSD (Ultimate Infinite Mega Statistics Database) replaces Rankings, until the real database exists it opens the Rankings screen")
 				.replace("com.shatteredpixel.shatteredpixeldungeon.windows.UimsdGate.titleAnnotation( ANNOTATION_TEXT )", "ANNOTATION_TEXT")
 				.replace("UimsdScene.open( TitleScene.class );", "ShatteredPixelDungeon.switchNoFade( RankingsScene.class );");
 		assertEquals("2c4c5f3b063380385da9318d62e58d2ab0b63c0b433bb2815006ced9f416cd90", shaOf(restored));
 		//the geometry (arrow, annotation, layout) file is byte for byte as approved
-		assertEquals("627e2dae33f1173fd88548f4217dbc505ef02b8dcbe70dbfe4d71aab9b792134", sha("apd/TitleGeometry.java"));
-		assertTrue(title.contains("HEY, GO HERE FOR DRUGS") || src("apd/TitleGeometry.java").contains("HEY, GO HERE FOR DRUGS") || title.contains("apd.title"));
+		assertEquals("627e2dae33f1173fd88548f4217dbc505ef02b8dcbe70dbfe4d71aab9b792134", shaOf(src("apd/TitleGeometry.java")
+				.replace("\t\tif (textHeight < 0) return 0; //no progression prompt: no arrow or reserved strip\n", "")));
+		assertFalse("adult wording belongs to the eligible tenth-run prompt only", title.contains("HEY, GO HERE FOR DRUGS"));
+		assertTrue(title.contains("annotation.visible = !annotationText.isEmpty()"));
 	}
 
 	@Test

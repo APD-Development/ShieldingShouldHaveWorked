@@ -78,7 +78,7 @@ public class TitleScene extends PixelScene {
 	private static final int APD_ROW_H = TitleGeometry.APD_ROW_H;
 
 	//APD: joke annotation pointing at the UIMSD button
-	private static final String ANNOTATION_TEXT = "HEY, GO HERE FOR DRUGS";
+	private static final String ANNOTATION_TEXT = "";
 
 	private Image logo;
 	private Image glow;
@@ -286,9 +286,11 @@ public class TitleScene extends PixelScene {
 		float logoX, logoY;
 		float gridLeft, gridWidth, gridTop;
 
-		annotation = new APDAnnotation( com.shatteredpixel.shatteredpixeldungeon.windows.UimsdGate.titleAnnotation( ANNOTATION_TEXT ), Math.min( 150, landscape() ? w - LOGO_W - 12 : w - 8 ) );
+		String annotationText = com.shatteredpixel.shatteredpixeldungeon.windows.UimsdGate.titleAnnotation( ANNOTATION_TEXT );
+		annotation = new APDAnnotation( annotationText, Math.min( 150, landscape() ? w - LOGO_W - 12 : w - 8 ) );
+		annotation.visible = !annotationText.isEmpty();
 		add( annotation );
-		float textH = annotation.textHeight();
+		float textH = annotation.visible ? annotation.textHeight() : -1;
 
 		if (landscape()){
 			//logo on the left, button grid on the right

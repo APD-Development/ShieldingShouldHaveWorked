@@ -358,15 +358,20 @@ public class SPDSettings extends GameSettings {
 	}
 
 	//The one shared humor preference: false = Clean (the default, and what applies whenever age eligibility is unknown or unavailable), true = Adult.
-	//Nothing ever infers it; only the player's own choice sets it.
+	//A stored choice is not proof of age. Unverified players receive Clean humor.
 	public static final String KEY_APD_ADULT_HUMOR = "apd_adult_humor";
 
 	public static boolean apdAdultHumor(){
-		return getBoolean( KEY_APD_ADULT_HUMOR, false );
+		return com.shatteredpixel.shatteredpixeldungeon.apd.age.AgeEligibility.adultHumor(
+				com.shatteredpixel.shatteredpixeldungeon.apd.age.AgeEligibility.current(),
+				getBoolean( KEY_APD_ADULT_HUMOR, false ));
 	}
 
 	public static void apdAdultHumor( boolean value ){
-		put( KEY_APD_ADULT_HUMOR, value );
+		if (!value || com.shatteredpixel.shatteredpixeldungeon.apd.age.AgeEligibility.permitsAdult(
+				com.shatteredpixel.shatteredpixeldungeon.apd.age.AgeEligibility.current())){
+			put( KEY_APD_ADULT_HUMOR, value );
+		}
 	}
 
 	//The Cleric grudge's preferences (frequency and the five location switches) are kept as small text values under keys of the grudge's own

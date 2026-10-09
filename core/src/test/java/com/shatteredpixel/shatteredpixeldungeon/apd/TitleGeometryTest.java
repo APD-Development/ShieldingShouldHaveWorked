@@ -132,4 +132,11 @@ public class TitleGeometryTest {
 		assertEquals(1, TitleGeometry.HEAD_W - 2*(TitleGeometry.HEAD_ROWS - 1));
 		assertTrue(TitleGeometry.BOB >= 2);
 	}
+
+	@Test
+	public void retiredOrUnavailablePromptsReserveNoArrowSpace(){
+		assertEquals(0, TitleGeometry.annotationHeight(-1), 0);
+		assertEquals(0, TitleGeometry.portrait(0, 0, 180, 320, VERSION_H, -1).annotationH, 0);
+		assertEquals(0, TitleGeometry.landscape(0, 0, 400, 240, VERSION_H, -1).annotationH, 0);
+	}
 }

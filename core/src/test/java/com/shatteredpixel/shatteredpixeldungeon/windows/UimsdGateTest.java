@@ -31,8 +31,8 @@ public class UimsdGateTest {
 	}
 
 	@Test
-	public void theTitleArrowKeepsItsUsualTextWhileTheGateIsOff(){
-		assertEquals("HEY, GO HERE FOR DRUGS", UimsdGate.titleAnnotation("HEY, GO HERE FOR DRUGS"));
+	public void theTitleArrowIsAbsentWhileThePrivateGateIsOff(){
+		assertEquals("", UimsdGate.titleAnnotation(""));
 		assertEquals("the guided tour is open too", true, UimsdGate.tourAvailable());
 	}
 
@@ -82,10 +82,11 @@ public class UimsdGateTest {
 	}
 
 	@Test
-	public void theHumorSettingIsCleanUnlessThePlayerChoseAdult() throws Exception {
-		//nothing asks for or infers an age: the stored value defaults to false (Clean) and only the player's own choice sets it
+	public void theHumorSettingRequiresEligibilityAsWellAsAStoredChoice() throws Exception {
 		String settings = new String(java.nio.file.Files.readAllBytes(new File(System.getProperty("apd.game.src"), "SPDSettings.java").toPath()), "UTF-8");
-		assertTrue(settings.contains("return getBoolean( KEY_APD_ADULT_HUMOR, false );"));
+		assertTrue(settings.contains("AgeEligibility.adultHumor("));
+		assertTrue(settings.contains("AgeEligibility.current()"));
+		assertTrue(settings.contains("getBoolean( KEY_APD_ADULT_HUMOR, false )"));
 	}
 
 }

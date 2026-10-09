@@ -104,10 +104,17 @@ public class APDSettingsPane extends Component {
 		chkRecord.checked( SPDSettings.apdRecording() );
 		add( chkRecord );
 
-		//the one shared humor preference: Clean unless the player chooses Adult here
+		//The preference only applies after verified adult eligibility.
 		chkAdult = new CheckBox( "Adult humor (18+)" ) {
 			@Override
 			protected void onClick() {
+				if (!com.shatteredpixel.shatteredpixeldungeon.apd.age.AgeEligibility.permitsAdult(
+						com.shatteredpixel.shatteredpixeldungeon.apd.age.AgeEligibility.current())){
+					checked(false);
+					ShatteredPixelDungeon.scene().addToFront(new WndMessage(
+							"Adult humor stays off until your age can be verified. Age verification is not available in this test build."));
+					return;
+				}
 				super.onClick();
 				SPDSettings.apdAdultHumor( checked() );
 			}
