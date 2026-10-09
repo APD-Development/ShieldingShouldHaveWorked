@@ -1,3 +1,6 @@
-2026-10-09: owner-approved Codex sprint verification and private debug APK.
-Run the complete core suite before building; preserve app ID and signing key.
-Keep the APK as a private artifact. No release, publication, or main merge.
+2026-10-09 delivery verification requested by owner.
+Include exact-host validation and semantic UI restoration after the first successful build.
+Run the complete core suite, Android assembly and targeted API 34 UI/play/save/continue/end tests.
+Only after these required checks pass, deliver APK and evidence-bearing bug/risk PDF as a private test prerelease.
+Owner explicitly approved all sprint work and requested this APK/PDF delivery; no routine reapproval needed.
+Do not change main, the Claude branch, signing key, normal release restrictions or backend state.

@@ -1,3 +1,5 @@
+> October 9 current status: Codex work is on codex/apd-phone-fixes-2026-10-09. First full CI passes 887 tests and Android assembly; later menu/address fixes have separate verification. Semantic UIMSD restoration is partial; some leaf/input dialogs remain. Adult is blocked because no age provider exists. Recorded abandonment currently counts as ended; item 2's unfinished claim below conflicts with source. Review HANDOFF.md and APD-SPRINT-BUG-LOG-2026-10-09.md before using this older snapshot.
+
 # ADHD Pixel Dungeon (APD) alpha: known issues and source guide
 
 Repository: github.com/charltonchris29/ShieldingShouldHaveWorked (private). Work branch: `claude/adhd-pixel-dungeon-setup-iszc3v`. `main` only holds verified builds plus the one manual workflow file. Upstream: Shattered Pixel Dungeon 4.0.x (licence and attribution preserved).

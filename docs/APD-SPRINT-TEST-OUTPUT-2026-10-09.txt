@@ -1,0 +1,82 @@
+JUnit version 4.13.2-SNAPSHOT
+.............................................................APD-PERF heal volume: 20000 turns, 2222 regeneration heals: no heals 5 KiB, inferred heals 44 KiB (18.1 B per heal), exact heals + detail 75 KiB (32.1 B per heal)
+.................................................................................................................................................................APD-PERF datasets: 40 runs (10000 item rows): first build 176 ms, reload from the row cache 69 ms, cache 1220 KiB
+.APD-PERF query: 50000 rows: scan 35 ms, 3 filters + 2-key sort 24 ms, group by 2 columns 30 ms, one page of the table 1713 us
+...............................................................APD-PERF safety: 24174 queries compared, none differed
+.................................................................APD-PERF facts: rebuild from 60 runs (6004 KiB of logs, 270120 events) took 230 ms; reading the cache took 9 ms; cache file 81 KiB
+.....................................................................................................APDSTORAGE steps: 20000 steps cost 27132 bytes = 1.36 bytes per step
+.APDSTORAGE hero state: 20000 turns cost 7501 bytes = 0.38 bytes per turn
+.APDSTORAGE whole run of facts: 72262 bytes
+..APD-SELFTEST
+SELF-TEST PASSED
+      telemetry 1.10, container format 1
+      vm OpenJDK 64-Bit Server VM 21.0.12.1+1-1-deb13u1-Debian
+      os Linux 6.18.44 amd64
+      cpus 2, free space 4983 MB
+PASS  5000 events accepted
+      caller cost 2313 ns/event, flush+sync 0 ms, close 0 ms
+PASS  log read back exactly (70842 bytes, 14 B/event)
+      read 1 ms
+PASS  lifecycle events round trip
+PASS  item events round trip, seen state keeps what the player knew then
+PASS  combat events round trip (102 bytes per attack with its damage)
+      combat events: 1159 ns/event caller cost
+PASS  generation events round trip (46 bytes per generated item)
+      generation events: 4246 ns/event caller cost
+PASS  legacy-record import and fact derivation round trip (synthetic records, not your rankings)
+      fact derivation: 1415 us to rebuild 40 synthetic test records (made and deleted by the self-test)
+PASS  a log cut at any point reads back as a clean prefix
+PASS  a damaged byte is detected, earlier events are kept
+PASS  a cut log is repaired, the cut bytes are kept, and writing continues
+PASS  4 threads wrote 8000 events in order
+PASS  run index rebuilds from the logs
+
+.................................................................
+Time: 19.798
+
+OK (521 tests)
+
+
+POST ADDRESS/MENU FIXES
+JUnit version 4.13.2-SNAPSHOT
+.............................................................APD-PERF heal volume: 20000 turns, 2222 regeneration heals: no heals 5 KiB, inferred heals 44 KiB (18.1 B per heal), exact heals + detail 75 KiB (32.1 B per heal)
+.................................................................................................................................................................APD-PERF datasets: 40 runs (10000 item rows): first build 289 ms, reload from the row cache 39 ms, cache 1220 KiB
+.APD-PERF query: 50000 rows: scan 27 ms, 3 filters + 2-key sort 97 ms, group by 2 columns 101 ms, one page of the table 3608 us
+...............................................................APD-PERF safety: 24174 queries compared, none differed
+.................................................................APD-PERF facts: rebuild from 60 runs (6004 KiB of logs, 270120 events) took 204 ms; reading the cache took 7 ms; cache file 81 KiB
+.....................................................................................................APDSTORAGE steps: 20000 steps cost 27132 bytes = 1.36 bytes per step
+.APDSTORAGE hero state: 20000 turns cost 7501 bytes = 0.38 bytes per turn
+.APDSTORAGE whole run of facts: 72262 bytes
+..APD-SELFTEST
+SELF-TEST PASSED
+      telemetry 1.10, container format 1
+      vm OpenJDK 64-Bit Server VM 21.0.12.1+1-1-deb13u1-Debian
+      os Linux 6.18.44 amd64
+      cpus 2, free space 4983 MB
+PASS  5000 events accepted
+      caller cost 2296 ns/event, flush+sync 0 ms, close 0 ms
+PASS  log read back exactly (70842 bytes, 14 B/event)
+      read 17 ms
+PASS  lifecycle events round trip
+PASS  item events round trip, seen state keeps what the player knew then
+PASS  combat events round trip (102 bytes per attack with its damage)
+      combat events: 2395 ns/event caller cost
+PASS  generation events round trip (46 bytes per generated item)
+      generation events: 6311 ns/event caller cost
+PASS  legacy-record import and fact derivation round trip (synthetic records, not your rankings)
+      fact derivation: 978 us to rebuild 40 synthetic test records (made and deleted by the self-test)
+PASS  a log cut at any point reads back as a clean prefix
+PASS  a damaged byte is detected, earlier events are kept
+PASS  a cut log is repaired, the cut bytes are kept, and writing continues
+PASS  4 threads wrote 8000 events in order
+PASS  run index rebuilds from the logs
+
+....................................................................
+Time: 20.676
+
+OK (524 tests)
+
+
+FULL CI: run 37928599930, commit ec7cc1c7aea25f61d9b4515c6b1b6bca26bbe4cd
+142 XML suites, 887 tests, 0 failures, 0 errors, 0 skipped. :core:test SUCCESS. :android:assembleDebug -PapdTestBuild -PapdBuild=C1 SUCCESS.
+Job 2026-10-09T12:13:16Z to 12:16:31Z. No physical-phone test. Later code requires new full verification.

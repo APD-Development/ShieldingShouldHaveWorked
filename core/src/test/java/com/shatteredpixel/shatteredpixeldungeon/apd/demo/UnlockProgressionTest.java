@@ -30,6 +30,10 @@ public class UnlockProgressionTest {
 	}
 
 	private void log(File root, String id, boolean ended){
+		log(root, id, ended, LifecycleEvents.OUTCOME_DIED);
+	}
+
+	private void log(File root, String id, boolean ended, int outcome){
 		RunLogWriter writer = RunLogWriter.create(new StatsStore(root).logFile(id), TelemetryVersion.CURRENT, id, "test", 1);
 		LifecycleEvents.RunStart start = new LifecycleEvents.RunStart();
 		start.runId = id;
@@ -38,7 +42,7 @@ public class UnlockProgressionTest {
 		LifecycleEvents.emitRunStart(writer, 1, false, start);
 		if (ended){
 			LifecycleEvents.RunEnd end = new LifecycleEvents.RunEnd();
-			end.outcome = LifecycleEvents.OUTCOME_DIED;
+			end.outcome = outcome;
 			end.cause = "Rat";
 			LifecycleEvents.emitRunEnd(writer, 2, end);
 		}
@@ -128,4 +132,11 @@ public class UnlockProgressionTest {
 		assertEquals(1, UnlockProgression.genuineRuns(root, 100));
 		assertFalse(UnlockProgression.isUnlocked(new Flags(), root, true));
 	}
+	@Test public void recordedAbandonmentCurrentlyCountsAsAnEndedRun(){
+		//Characterization: older docs disagree about "completed". Do not change
+		//players' progression until the intended abandonment policy is settled.
+		log(tmp.getRoot(), "abandoned-real-run", true, LifecycleEvents.OUTCOME_ABANDONED);
+		assertEquals(1, UnlockProgression.genuineRuns(tmp.getRoot(), 10));
+	}
+
 }

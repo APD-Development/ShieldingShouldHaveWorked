@@ -1,3 +1,5 @@
+> October 9 Codex correction: this is a historical checklist. Private builds load demoUnlock through ApdFeatures; normal builds keep it off. Adult humor now requires verified eligibility AND preference; the provider is currently unavailable, so only Clean is active. A retired or absent title prompt hides the arrow instead of restoring the drugs fallback. Current tests and limitations are in APD-SPRINT-REPORT-2026-10-09.md. Recorded abandonment currently counts as ended; older "unfinished" wording is disputed, not silently implemented. Physical-phone acceptance is still required.
+
 # Demo Unlock: final checklist (built and tested; NOT active until the owner approves)
 
 The whole feature is behind `UimsdUnlock.ENFORCED = false`. With it off, UIMSD is open for everyone, no pop-up or arrow text changes, and nothing here is visible. To activate: set it to `true`, build, and test on the phone with the steps below.

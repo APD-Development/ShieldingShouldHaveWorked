@@ -1,6 +1,20 @@
-# Resume handoff (short, kept current after every step)
+# APD current development handoff
 
-The long project handoff is `docs/APD-HANDOFF.md`; the canonical plan is `APD_Canonical_Design_and_Implementation_Plan1.docx`. This file is the quick resume note.
+## Codex — October 9, 2026 (current; read first)
+
+The owner has NOT switched back to Claude. Codex continues on `codex/apd-phone-fixes-2026-10-09`, based on Claude HEAD `714badbd`. November 1, 2026 is the alpha target. Today's delivery targets are the bug-cause/risk PDF by 11:55 a.m. and a private playable APK by noon, New York time.
+
+The owner explicitly approved all sprint development actions and asked to stop routine permission prompts. GitHub's per-app setting is verified **Allow all actions**. Older freeze/ask-every-time notes below are historical and superseded for this authorized private sprint. Main and Claude's branch remain untouched. Preserve source/save data, signing key, release restrictions, postponed Grudge/Lore and disabled community/server features. Do not schedule unsolicited permission notifications.
+
+Pushed work: 12 bug/safety/persistence areas across 14 source/build commits. Latest source `2764791`; preceding `acd1878` fixes exact HTTP loopback validation. First complete build `ec7cc1c` passed **887 core tests, 0 failures/errors/skips**, and built `ADHD-Pixel-Dungeon-CODEX-TEST-1.apk` in [run 37928599930](https://github.com/charltonchris29/ShieldingShouldHaveWorked/actions/runs/37928599930). That APK predates the last two fixes. New delivery verification will include them, a targeted API 34 emulator test and existing save/continue/end tests. Physical RedMagic testing is still required.
+
+Read [the development report](APD-SPRINT-REPORT-2026-10-09.md), [owner-facing fixes/risks](APD-BUG-FIX-REPORT-2026-10-09.md), [bug log](APD-SPRINT-BUG-LOG-2026-10-09.md), and [age status](APD-AGE-VERIFICATION-STATUS.md). Update build SHA, test counts, release/APK/PDF paths and evidence after the new verification run. The PDF generator is tools/apd_bug_report_pdf.py.
+
+Remaining: genuine age-provider integration (current UNAVAILABLE, Adult always safely off), abandoned-run policy disagreement (current recorded abandonment counts), owner's exact archive conflicts, unsupported UIMSD leaf/input/Ask restoration, physical-phone acceptance and complete quest playthroughs. Existing demo shortcut intentionally opens UIMSD before ten runs; the tour still needs ten genuine runs. Do not reset earned flags as a fix.
+
+The local `/workspace/apd` git history is a synthetic text snapshot. **DO NOT PUSH IT**. Remote commits preserve actual ancestry and binary assets through Git-data writes with expected-head leases. Resume from a fresh clone of this branch and inspect all latest commits before editing. No claim is made of eight continuous active hours; long interruptions are recorded honestly in the report.
+
+## Historical Claude notes (older state; current section takes precedence)
 
 ## GITHUB ACTIONS FREEZE (owner, 2026-10-08)
 The owner's Actions minutes are over 90% used. DO NOT dispatch workflows and DO NOT push to `main` (a main push starts Build APK + device tests). Push only to the claude branch (no workflow runs on it). Local tests only (scratch gradle project). Until the owner explicitly authorizes: no device runs, no new apd-build. Latest verified main: 9447a5e = apd-build-80.

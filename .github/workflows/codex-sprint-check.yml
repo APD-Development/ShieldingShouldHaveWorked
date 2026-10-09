@@ -58,3 +58,107 @@ jobs:
             core/build/test-results/test/
           if-no-files-found: warn
           retention-days: 7
+
+  android-smoke-check:
+    needs: verify-and-build
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Enable emulator acceleration
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Set up Android SDK
+        run: |
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36"
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Check UI restoration and play/save/continue/end on API 34
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          arch: x86_64
+          target: default
+          disable-animations: true
+          script: |
+            adb logcat -c
+            adb logcat -v time > codex-logcat.txt &
+            timeout --signal=TERM --kill-after=30 840 ./gradlew :android:connectedDebugAndroidTest -PapdTestBuild -PapdBuild=C${{ github.run_number }} -Pandroid.testInstrumentationRunnerArguments.class=com.shatteredpixel.shatteredpixeldungeon.android.UimsdRestoreDeviceTest,com.shatteredpixel.shatteredpixeldungeon.android.PlayRunDeviceTest
+      - name: Keep Android evidence even if a check fails
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: apd-codex-android-checks
+          path: |
+            android/build/reports/androidTests/
+            android/build/outputs/androidTest-results/
+            codex-logcat.txt
+          if-no-files-found: warn
+          retention-days: 7
+
+  private-delivery:
+    needs: [verify-and-build, android-smoke-check]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: apd-codex-private-test-apk
+          path: delivery
+      - uses: actions/download-artifact@v4
+        with:
+          name: apd-codex-core-tests
+          path: core-reports
+      - uses: actions/download-artifact@v4
+        with:
+          name: apd-codex-android-checks
+          path: android-reports
+      - name: Render the PDF with measured build evidence
+        env:
+          APD_SOURCE_SHA: ${{ github.sha }}
+          APD_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          python3 -m pip install reportlab==4.2.5
+          python3 - <<'PY'
+          import os, pathlib, xml.etree.ElementTree as E
+          def summary(folder):
+              files = list(pathlib.Path(folder).rglob('TEST-*.xml'))
+              if not files: raise SystemExit('Missing test XML: ' + folder)
+              totals = {k: sum(int(E.parse(p).getroot().get(k, 0)) for p in files) for k in ('tests', 'failures', 'errors', 'skipped')}
+              if totals['failures'] or totals['errors']: raise SystemExit('Failed test report: ' + folder)
+              return totals
+          core, device = summary('core-reports'), summary('android-reports')
+          sha = os.environ['APD_SOURCE_SHA']
+          url = os.environ['APD_RUN_URL']
+          apk = next(pathlib.Path('delivery').glob('*.apk'))
+          checksum = pathlib.Path(str(apk) + '.sha256').read_text().split()[0]
+          text = f"Delivery build source: {sha}. Verification run: {url}. APK: {apk.name}. SHA-256: {checksum}.\n\n"
+          text += f"Complete core suite: {core['tests']} tests, {core['failures']} failures, {core['errors']} errors, {core['skipped']} skipped. Android debug assembly succeeded.\n\n"
+          text += f"API 34 emulator: {device['tests']} instrumented checks, {device['failures']} failures, {device['errors']} errors, {device['skipped']} skipped. The targeted checks cover UIMSD menu restoration/narrow text and existing play/save/continue/death/win behavior. This is not a physical RedMagic test or the complete Android instrumentation suite.\n\n"
+          text += 'Install over the existing APD test app; do not uninstall or clear data. This private prerelease is not a stable/public release. All physical-phone checks in this report remain pending.'
+          pathlib.Path('delivery/verification.txt').write_text(text)
+          print(text)
+          PY
+          python3 tools/apd_bug_report_pdf.py docs/APD-BUG-FIX-REPORT-2026-10-09.md delivery/APD-Bug-Fixes-2026-10-09.pdf --verification delivery/verification.txt
+      - name: Attach the APK and PDF to a private test prerelease
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: apd-codex-test-${{ github.run_number }}
+          name: APD PRIVATE CODEX TEST ${{ github.run_number }}
+          target_commitish: ${{ github.sha }}
+          prerelease: true
+          make_latest: false
+          body_path: delivery/verification.txt
+          files: |
+            delivery/*.apk
+            delivery/*.apk.sha256
+            delivery/APD-Bug-Fixes-2026-10-09.pdf
