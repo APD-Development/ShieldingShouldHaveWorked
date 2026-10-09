@@ -152,15 +152,26 @@ public final class CellFormatter {
 					long yoe = y - era * 400;
 					long doy = (153 * (m + (m > 2 ? -3 : 9)) + 2) / 5 + d - 1;
 					long doe = yoe * 365 + yoe / 4 - yoe / 100 + doy;
-					return (era * 146097 + doe - 719468) * 86400000L;
+					long millis = (era * 146097 + doe - 719468) * 86400000L;
+					//The arithmetic normalizes impossible dates (e.g. February 31). A filter
+					//must use the date the player typed, rather than quietly moving into March.
+					return date(millis).equals(t) ? millis : null;
 				}
-				case HUNDREDTHS: return Math.round(Double.parseDouble(t) * 100);
-				case THOUSANDTHS: return Math.round(Double.parseDouble(t) * 1000);
+				case HUNDREDTHS: return parseFixed(t, 100);
+				case THOUSANDTHS: return parseFixed(t, 1000);
 				default: return Long.parseLong(t);
 			}
 		} catch (NumberFormatException e){
 			return null;
 		}
+	}
+
+	private static Long parseFixed(String text, int scale){
+		double scaled = Double.parseDouble(text) * scale;
+		//Math.round turns NaN into zero and saturates infinities/overflow. Neither is a
+		//number the player asked to filter by. Keep the existing finite rounding rules.
+		if (Double.isNaN(scaled) || Double.isInfinite(scaled) || scaled >= 0x1p63 || scaled < -0x1p63) return null;
+		return Math.round(scaled);
 	}
 
 	//the value of an aggregate, and in 'detail' how many values it is made of
