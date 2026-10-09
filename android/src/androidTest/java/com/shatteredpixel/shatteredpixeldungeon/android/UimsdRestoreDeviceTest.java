@@ -10,6 +10,9 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdModel;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.ColumnDef;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.Op;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.Question;
+import com.shatteredpixel.shatteredpixeldungeon.apd.query.Questions;
+import com.shatteredpixel.shatteredpixeldungeon.apd.query.Catalog;
+import com.shatteredpixel.shatteredpixeldungeon.apd.query.DatasetDef;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.SavedViews;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.Query;
 import com.shatteredpixel.shatteredpixeldungeon.apd.demo.DemoData;
@@ -89,10 +92,48 @@ public class UimsdRestoreDeviceTest {
         } catch (Exception e) { throw new RuntimeException(e); }
     }
 
-    private static void pickFirst(WndUimsdList list){
+    private static void pickFirst(WndUimsdList list){ pickEntry(list, 0); }
+
+    private static void pickEntry(WndUimsdList list, int entry){
         try {
             java.lang.reflect.Method method = WndUimsdList.class.getDeclaredMethod("picked", int.class);
-            method.setAccessible(true); method.invoke(list, 0);
+            method.setAccessible(true); method.invoke(list, entry);
+        } catch (Exception e) { throw new RuntimeException(e); }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static List<WndUimsdList.Entry> listEntries(WndUimsdList list){
+        try {
+            Field f = WndUimsdList.class.getDeclaredField("entries"); f.setAccessible(true);
+            return (List<WndUimsdList.Entry>) f.get(list);
+        } catch (Exception e) { throw new RuntimeException(e); }
+    }
+
+    private static void pickItem(WndUimsdList list, int item){
+        List<WndUimsdList.Entry> entries = listEntries(list);
+        for (int i = 0, n = 0; i < entries.size(); i++) {
+            if (entries.get(i).isItem() && n++ == item) { pickEntry(list, i); return; }
+        }
+        throw new AssertionError("Missing picker item " + item);
+    }
+
+    private static void assertSplitChecks(WndUimsdList list){
+        try {
+            Field f = WndUimsdList.class.getDeclaredField("labelTexts"); f.setAccessible(true);
+            List<?> labels = (List<?>) f.get(list);
+            List<WndUimsdList.Entry> entries = listEntries(list);
+            int checked = 0, item = 0;
+            for (int i = 0; i < entries.size(); i++) {
+                WndUimsdList.Entry entry = entries.get(i);
+                if (!entry.isItem()) continue;
+                boolean expected = item == 1 || item == 2;
+                assertEquals("only latest two split fields selected, item " + item, expected, Boolean.TRUE.equals(entry.checked));
+                assertTrue("rendered check matches selected field, item " + item,
+                        ((RenderedTextBlock) labels.get(i)).text().startsWith(expected ? "[x] " : "[ ] "));
+                if (Boolean.TRUE.equals(entry.checked)) checked++;
+                item++;
+            }
+            assertEquals("exactly two split fields selected", 2, checked);
         } catch (Exception e) { throw new RuntimeException(e); }
     }
 
@@ -253,6 +294,30 @@ public class UimsdRestoreDeviceTest {
                     assertEquals("pending choice applies after restoration", 1, model().query().filters.size());
                 } catch (Exception e) { throw new RuntimeException(e); }
                 clearWindows();
+                try {
+                    java.lang.reflect.Method split = WndUimsdAsk.class.getDeclaredMethod("pickSplit",
+                            Catalog.class, String.class, WndUimsdAsk.Host.class, Question.class, DatasetDef.class);
+                    split.setAccessible(true);
+                    Question question = Question.about("runs");
+                    DatasetDef def = model().catalog().dataset("runs").def;
+                    assertTrue("three groupable split fields exist", Questions.groupable(def, false).size() >= 3);
+                    split.invoke(null, model().catalog(), model().currentRuleset(),
+                            (WndUimsdAsk.Host) (q, back) -> {}, question, def);
+                    WndUimsdList picker = (WndUimsdList) windows().get(0);
+                    pickItem(picker, 0); pickItem(picker, 1); pickItem(picker, 2);
+                    assertSplitChecks(picker);
+                    assertTrue("pending choices do not modify original question", question.groupBy.isEmpty());
+                    picker.restoreOnSceneReset().run();
+                    picker.hide();
+                    WndUimsdList restored = (WndUimsdList) windows().get(0);
+                    assertSplitChecks(restored);
+                    java.lang.reflect.Method done = restored.getClass().getDeclaredMethod("onDone");
+                    done.setAccessible(true); done.invoke(restored);
+                    Field last = WndUimsdAsk.class.getDeclaredField("last"); last.setAccessible(true);
+                    List<ColumnDef> cols = Questions.groupable(def, false);
+                    assertEquals(java.util.Arrays.asList(cols.get(1).id, cols.get(2).id), ((Question) last.get(null)).groupBy);
+                    clearWindows();
+                } catch (Exception e) { throw new RuntimeException(e); }
                 int originalWidth = PixelScene.uiCamera.width;
                 try {
                     PixelScene.uiCamera.width = 100;
