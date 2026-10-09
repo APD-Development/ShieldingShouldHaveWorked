@@ -68,6 +68,46 @@ public class UimsdModelTest {
 	}
 
 	@Test
+	public void columnOrderAndSelectionSurviveOpeningAnotherView(){
+		UimsdModel m = model();
+		m.setColumns(Arrays.asList("kind", "name", "score"));
+		m.selectView("parts");
+		m.showRoot("all");
+		assertEquals(Arrays.asList("kind", "name", "score"), m.query().columns);
+		m.moveColumn("score", -2);
+		m.showRoot("parts");
+		m.showRoot("all");
+		assertEquals(Arrays.asList("score", "kind", "name"), m.query().columns);
+	}
+
+	@Test
+	public void columnChoicesSurviveARecreatedModelAndResetIsExplicit() throws Exception {
+		java.io.File root = java.nio.file.Files.createTempDirectory("apd-column-layout").toFile();
+		UimsdModel first = new UimsdModel(R, "");
+		first.load(root);
+		first.awaitLoad(10000);
+		first.showRoot("runs");
+		java.util.List<String> columns = Arrays.asList(
+				com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKeys.SCORE,
+				com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKeys.HERO_CLASS,
+				com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKeys.SEED_TYPE,
+				com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKeys.EXTERNAL_MODS);
+		first.setColumns(columns);
+		assertTrue(new java.io.File(root, UimsdModel.COLUMN_LAYOUTS_FILE).isFile());
+		UimsdModel second = new UimsdModel(R, "");
+		second.load(root);
+		second.awaitLoad(10000);
+		second.showRoot("runs");
+		assertEquals(columns, second.query().columns);
+		second.resetView();
+		UimsdModel third = new UimsdModel(R, "");
+		third.load(root);
+		third.awaitLoad(10000);
+		third.showRoot("runs");
+		assertEquals(third.view().initialQuery().columns, third.query().columns);
+	}
+
+	@Test
 	public void theModelOpensTheFirstViewAndLaysOutAPage(){
 		UimsdModel m = model();
 		assertEquals(UimsdModel.State.READY, m.state());

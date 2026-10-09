@@ -63,6 +63,9 @@ public final class UimsdModel {
 	private final String currentRuleset;
 	private final String currentRulesetLabel;
 	private final List<Place> back = new ArrayList<>();
+	//Column choices are preferences for a view, separate from named saved queries.
+	public static final String COLUMN_LAYOUTS_FILE = "column_layouts.txt";
+	private SavedViews columnLayouts = new SavedViews();
 	private Listener listener;
 	private volatile Thread loader;
 
@@ -87,6 +90,7 @@ public final class UimsdModel {
 	//Builds the catalog from the raw logs on a background thread. Never throws.
 	public void load( final File root ){
 		this.root = root;
+		columnLayouts = SavedViews.load(root == null ? null : new File(root, COLUMN_LAYOUTS_FILE));
 		state = State.LOADING;
 		failure = "";
 		Thread t = new Thread(new Runnable(){
@@ -131,7 +135,7 @@ public final class UimsdModel {
 			return;
 		}
 		viewId = first.id;
-		query = first.initialQuery();
+		query = initialQuery(first);
 		page = 0;
 		back.clear();
 		recompute();
@@ -366,7 +370,7 @@ public final class UimsdModel {
 		if (catalog == null || catalog.view(id) == null) return;
 		back.add(new Place(viewId, query, page));
 		viewId = id;
-		apply(catalog.view(id).initialQuery().withShowInternal(query.showInternal));
+		apply(initialQuery(catalog.view(id)).withShowInternal(query.showInternal));
 	}
 
 	//open a view as a new starting point, with nothing to go Back to (used from Home, so Back from there leads to Home)
@@ -374,7 +378,7 @@ public final class UimsdModel {
 		if (catalog == null || catalog.view(id) == null) return;
 		back.clear();
 		viewId = id;
-		apply(catalog.view(id).initialQuery().withShowInternal(query.showInternal));
+		apply(initialQuery(catalog.view(id)).withShowInternal(query.showInternal));
 	}
 
 	//Opens a question's query as an ordinary table, with the full query tools. The table is the one for the question's dataset; the question's
@@ -389,7 +393,28 @@ public final class UimsdModel {
 	//back to how the open view started
 	public synchronized void resetView(){
 		ViewDef v = view();
-		if (v != null) apply(v.initialQuery().withShowInternal(query.showInternal));
+		if (v != null){
+			apply(v.initialQuery().withShowInternal(query.showInternal));
+			rememberColumns(query.columns);
+		}
+	}
+
+	private Query initialQuery(ViewDef v){
+		Query initial = v.initialQuery();
+		SavedViews.View saved = columnLayouts.get(v.id);
+		Query layout = saved == null ? null : saved.query();
+		return layout == null ? initial : initial.withColumns(layout.columns);
+	}
+
+	private void rememberColumns(List<String> columns){
+		columnLayouts.save(viewId, Query.of(query.dataset).withColumns(columns), System.currentTimeMillis());
+		if (root == null) return;
+		try {
+			columnLayouts.store(new File(root, COLUMN_LAYOUTS_FILE));
+		} catch (java.io.IOException failure){
+			notice = "Column layout changed for this session, but could not be saved.";
+			fire();
+		}
 	}
 
 	public synchronized void addFilter( Filter f ){
@@ -418,6 +443,7 @@ public final class UimsdModel {
 
 	public synchronized void setColumns( List<String> columns ){
 		apply(query.withColumns(columns));
+		rememberColumns(columns);
 	}
 
 	public synchronized void toggleColumn( String id ){
@@ -429,7 +455,7 @@ public final class UimsdModel {
 		} else {
 			cols.add(id);
 		}
-		apply(query.withColumns(cols));
+		setColumns(cols);
 	}
 
 	//moves a shown column left or right; the first column is the one that stays fixed on screen
@@ -438,7 +464,7 @@ public final class UimsdModel {
 		if (ds == null) return;
 		List<String> cols = new ArrayList<>(query.columns.isEmpty() ? ds.def.defaultColumnIds() : query.columns);
 		List<String> moved = ColumnOrder.move(cols, id, delta);
-		if (!moved.equals(cols)) apply(query.withColumns(moved));
+		if (!moved.equals(cols)) setColumns(moved);
 	}
 
 	public synchronized void setScope( Scope s ){

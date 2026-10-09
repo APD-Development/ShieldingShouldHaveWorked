@@ -111,4 +111,21 @@ public class SavedViewsTest {
 		List<SavedViews.View> l = s.list();
 		assertEquals(1, l.size());
 	}
+
+	@Test
+	public void savedCombinedQueryReopensAndDeletionSurvivesReload() throws Exception {
+		Query original = Query.of("runs")
+				.addFilter(Filter.text("run.class", Op.EQ, "WARRIOR"))
+				.withSorts(java.util.Arrays.asList(new Sort("run.score", true)))
+				.withColumns(java.util.Arrays.asList("run.score", "run.class", "run.type", "run.modded"));
+		File file = SavedViews.fileIn(tmp.getRoot());
+		SavedViews views = new SavedViews();
+		assertEquals(SavedViews.Result.SAVED, views.save("Warriors", original, 100));
+		views.store(file);
+		SavedViews reopened = SavedViews.load(file);
+		assertEquals(QueryCodec.encode(original), QueryCodec.encode(reopened.get("Warriors").query()));
+		assertTrue(reopened.delete("Warriors"));
+		reopened.store(file);
+		assertTrue(SavedViews.load(file).list().isEmpty());
+	}
 }
