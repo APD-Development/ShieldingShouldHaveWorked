@@ -40,4 +40,13 @@ public class ApdIntroTest {
 		assertTrue("several saved games (the tester's case: many abandoned runs)", ApdIntro.returningPlayer(false, 2, 0));
 		assertTrue("several recorded runs", ApdIntro.returningPlayer(false, 0, 2));
 	}
+	@Test
+	public void optionalIntroductionCannotSuppressHungerAfterLeavingTheEntrance(){
+		assertFalse(ApdIntro.shouldEndIntro(1, 0, true, false));
+		assertTrue(ApdIntro.shouldEndIntro(1, 0, false, false));
+		assertTrue(ApdIntro.shouldEndIntro(2, 0, true, false));
+		assertTrue(ApdIntro.shouldEndIntro(1, 1, true, false));
+		assertTrue(ApdIntro.shouldEndIntro(1, 0, true, true));
+	}
+
 }

@@ -29,11 +29,9 @@ import com.watabou.utils.FileUtils;
 
 import java.io.File;
 
-// SPD's first-run tutorial ("intro") hides the floor-1 entrance door, greys out Main Menu in the game menu and waits for the player to read the
-// first guidebook page. It is meant for someone who has never played. SPD ends it when the player reads that page, finishes a run, or opens
-// hero select with a finished run on record, but a tester who has used the app and abandoned runs (never finished one, never read the page)
-// stayed in it for good: closed starting rooms, no way back to the title, no difficulty picker. A used install is not a new player, so the
-// tutorial ends for it. A real first-time player (no finished run, at most one save, hardly any recorded history) still gets it unchanged.
+// APD keeps the guidebook and introductory hints, but never blocks controls or the entrance exit.
+// Returning-install detection remains for compatibility. The intro also ends when its guide is read
+// or the player leaves the first entrance room, so the tutorial hunger exemption cannot follow a run.
 public final class ApdIntro {
 
 	private ApdIntro(){}
@@ -57,6 +55,19 @@ public final class ApdIntro {
 		} catch (Throwable t){
 			//an unreadable folder must never stop the app from starting; the tutorial simply stays as it was
 		}
+	}
+
+	public static boolean shouldEndIntro(int depth, int branch, boolean inEntrance, boolean guideRead){
+		return guideRead || depth != 1 || branch != 0 || !inEntrance;
+	}
+
+	public static void finishIfPastEntrance(com.shatteredpixel.shatteredpixeldungeon.levels.Level level, int depth, int branch, int pos){
+		if (level == null || !SPDSettings.intro()) return;
+		com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room room = level instanceof com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel
+				? ((com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel) level).room(pos) : null;
+		if (shouldEndIntro(depth, branch, room != null && room.isEntrance(),
+				com.shatteredpixel.shatteredpixeldungeon.journal.Document.ADVENTURERS_GUIDE.isPageRead(
+						com.shatteredpixel.shatteredpixeldungeon.journal.Document.GUIDE_INTRO))) SPDSettings.intro(false);
 	}
 
 	private static int recordedRuns(){

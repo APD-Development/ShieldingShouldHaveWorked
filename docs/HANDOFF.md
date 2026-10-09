@@ -1,3 +1,5 @@
+Latest C22 safety follow-up: non-blocking intro must not let Hunger's intro exemption follow the player. ApdIntro.finishIfPastEntrance is called on GameScene create/update: leaving the floor1 entrance, later depths/branches or acknowledged guide ends the flag. EntranceRoom preserves read guide acknowledgement. Added actual generated entrance-to-door regression and pure boundary cases; targeted17pass. Previous candidates superseded; final full/native build verification is mandatory before release.
+
 C12 emergency CI: all four exit/all-hero/old-save cases passed; 905 total / 2 golden-baseline failures expected from the authorized visible-door change. No APK delivered. Historical snapshot comparison normalizes only entrance door bytes; actual maps remain tested as traversable. Next run must pass complete core and Android.
 
 # Emergency gameplay work — October 9, 2026

@@ -101,6 +101,26 @@ public class FirstFloorExitTest {
 	}
 
 	@Test
+	public void walkingThroughTheEntranceEndsIntroWithoutResettingGuideAcknowledgement() throws Exception {
+		com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel level = (com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel) floorOne(7919, LevelGenerationHarness.Context.FRESH);
+		com.shatteredpixel.shatteredpixeldungeon.SPDSettings.intro(true);
+		ApdIntro.finishIfPastEntrance(level, 1, 0, level.entrance());
+		assertTrue("hints remain for a fresh starting room", com.shatteredpixel.shatteredpixeldungeon.SPDSettings.intro());
+		for (com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room room : level.rooms()) if (room.isEntrance()){
+			for (int y = room.top; y <= room.bottom; y++) for (int x = room.left; x <= room.right; x++){
+				if (x != room.left && x != room.right && y != room.top && y != room.bottom) continue;
+				int cell = x + y * level.width();
+				if (level.map[cell] == Terrain.DOOR){
+					ApdIntro.finishIfPastEntrance(level, 1, 0, cell);
+					assertFalse("leaving cannot retain the tutorial hunger exemption", com.shatteredpixel.shatteredpixeldungeon.SPDSettings.intro());
+					return;
+				}
+			}
+		}
+		fail("expected visible entrance door");
+	}
+
+	@Test
 	public void anOldHiddenEntranceIsRepairedOnLoadWithoutRevealingOtherSecrets() throws Exception {
 		com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel level =
 				(com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel) floorOne(7919, LevelGenerationHarness.Context.FRESH);

@@ -742,6 +742,7 @@ public class GameScene extends PixelScene {
 			
 		}
 
+		com.shatteredpixel.shatteredpixeldungeon.apd.ApdIntro.finishIfPastEntrance(Dungeon.level, Dungeon.depth, Dungeon.branch, Dungeon.hero.pos);
 		//Tutorial
 		if (SPDSettings.intro()){
 
@@ -880,6 +881,8 @@ public class GameScene extends PixelScene {
 		}
 
 		super.update();
+
+		com.shatteredpixel.shatteredpixeldungeon.apd.ApdIntro.finishIfPastEntrance(Dungeon.level, Dungeon.depth, Dungeon.branch, Dungeon.hero.pos);
 
 		if (notifyDelay > 0) notifyDelay -= Game.elapsed;
 

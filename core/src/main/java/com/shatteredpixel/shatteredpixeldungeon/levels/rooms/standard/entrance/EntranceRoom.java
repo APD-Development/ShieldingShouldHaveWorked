@@ -105,7 +105,7 @@ public class EntranceRoom extends StandardRoom {
 
 		//places the first guidebook page on floor 1
 		if (Dungeon.depth == 1 &&
-				(!Document.ADVENTURERS_GUIDE.isPageRead(Document.GUIDE_INTRO) || SPDSettings.intro() )){
+				!Document.ADVENTURERS_GUIDE.isPageRead(Document.GUIDE_INTRO)){
 			int pos;
 			do {
 				//can't be on bottom row of tiles
