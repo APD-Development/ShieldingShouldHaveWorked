@@ -148,7 +148,7 @@ jobs:
           pathlib.Path('delivery/verification.txt').write_text(text)
           print(text)
           PY
-          python3 tools/apd_bug_report_pdf.py docs/APD-BUG-FIX-REPORT-2026-10-09.md delivery/APD-Bug-Fixes-2026-10-09.pdf --verification delivery/verification.txt
+          python3 tools/apd_bug_report_pdf.py docs/APD-BUG-FIX-REPORT-2026-10-09.md delivery/APD-Bug-Fixes-2026-10-09.pdf --verification delivery/verification.txt --appendix docs/APD-SPRINT-REPORT-2026-10-09.md
       - name: Attach the APK and PDF to a private test prerelease
         uses: softprops/action-gh-release@v2
         with:

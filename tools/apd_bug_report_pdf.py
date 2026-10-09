@@ -10,7 +10,7 @@ from reportlab.lib import colors
 from reportlab.lib.enums import TA_LEFT
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+from reportlab.platypus import SimpleDocTemplate, Paragraph, PageBreak, LongTable, TableStyle
 
 
 def main():
@@ -18,6 +18,7 @@ def main():
     parser.add_argument('source', type=Path)
     parser.add_argument('output', type=Path)
     parser.add_argument('--verification', type=Path)
+    parser.add_argument('--appendix', type=Path)
     args = parser.parse_args()
     args.output.parent.mkdir(parents=True, exist_ok=True)
     styles = getSampleStyleSheet()
@@ -35,13 +36,33 @@ def main():
         story.append(Paragraph('Build verification', styles['Heading2']))
         for paragraph in args.verification.read_text().split('\n\n'):
             story.append(Paragraph(escape(paragraph).replace('\n', '<br/>'), styles['ReportBody']))
-    for block in args.source.read_text().strip().split('\n\n'):
-        if block.startswith('# '):
-            continue
-        if block.startswith('## '):
-            story.append(Paragraph(escape(block[3:]), styles['Heading2']))
-        else:
-            story.append(Paragraph(escape(block).replace('\n', '<br/>'), styles['ReportBody']))
+    def append_markdown(path):
+        for block in path.read_text().strip().split('\n\n'):
+            if block.startswith('# '):
+                continue
+            if block.startswith('## '):
+                story.append(Paragraph(escape(block[3:]), styles['Heading2']))
+            elif block.startswith('|'):
+                rows = []
+                for line in block.splitlines():
+                    cells = [c.strip() for c in line.strip('|').split('|')]
+                    if all(c and set(c) <= set('-: ') for c in cells):
+                        continue
+                    rows.append([Paragraph(escape(c), styles['ReportBody']) for c in cells])
+                table = LongTable(rows, colWidths=[7.2 * inch / len(rows[0])] * len(rows[0]), repeatRows=1)
+                table.setStyle(TableStyle([
+                    ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+                    ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#e8eef5')),
+                    ('LINEBELOW', (0, 0), (-1, -1), 0.3, colors.HexColor('#ccd5df')),
+                ]))
+                story.append(table)
+            else:
+                story.append(Paragraph(escape(block).replace('\n', '<br/>'), styles['ReportBody']))
+    append_markdown(args.source)
+    if args.appendix:
+        story.append(PageBreak())
+        story.append(Paragraph('Development records and commits', styles['Heading1']))
+        append_markdown(args.appendix)
     def footer(canvas, doc):
         canvas.saveState()
         canvas.setFont('Helvetica', 8)

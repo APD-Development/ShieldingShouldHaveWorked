@@ -207,7 +207,7 @@ public final class WndUimsdOptions {
 				if (gone) UimsdScene.reopen();
 				else say("The demo data could not be removed.");
 			}
-		});
+		}.restoreWith(() -> deleteDemoData(realRoot)));
 	}
 
 	private static void privacy( final UimsdModel m ){
@@ -428,7 +428,7 @@ public final class WndUimsdOptions {
 					}
 				}
 			}
-		}));
+		}).restoreWith(() -> viewActions(m, view)));
 	}
 
 	private static void pickRuleset( final UimsdModel m ){
@@ -519,7 +519,7 @@ public final class WndUimsdOptions {
 						}
 						show(m);
 					}
-				}));
+				}).restoreWith(() -> pickGroup(m)));
 	}
 
 	private static void coverage( UimsdModel m ){

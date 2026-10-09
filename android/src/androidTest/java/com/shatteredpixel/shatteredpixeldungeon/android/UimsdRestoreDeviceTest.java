@@ -10,6 +10,9 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdModel;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.ColumnDef;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.Op;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.Question;
+import com.shatteredpixel.shatteredpixeldungeon.apd.query.SavedViews;
+import com.shatteredpixel.shatteredpixeldungeon.apd.query.Query;
+import com.shatteredpixel.shatteredpixeldungeon.apd.demo.DemoData;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.UimsdScene;
@@ -93,6 +96,13 @@ public class UimsdRestoreDeviceTest {
         } catch (Exception e) { throw new RuntimeException(e); }
     }
 
+    private static void options(String method, Class<?>[] types, Object... args){
+        try {
+            java.lang.reflect.Method m = WndUimsdOptions.class.getDeclaredMethod(method, types);
+            m.setAccessible(true); m.invoke(null, args);
+        } catch (Exception e) { throw new RuntimeException(e); }
+    }
+
     private static void awaitScene(Object previous) throws Exception {
         long deadline = System.currentTimeMillis() + 30000;
         while ((Game.scene() == previous || !(Game.scene() instanceof UimsdScene))
@@ -149,6 +159,50 @@ public class UimsdRestoreDeviceTest {
             onRender(() -> {
                 assertEquals("Columns survived exactly once", 1, windows().size());
                 clearWindows();
+                options("pickGroup", new Class<?>[]{UimsdModel.class}, model());
+            });
+            rebuildScene();
+            onRender(() -> {
+                assertEquals("grouping menu survived", 1, windows().size());
+                pickFirst((WndUimsdList) windows().get(0));
+                assertNull("restored grouping callback works", model().query().group);
+                clearWindows();
+                SavedViews views = new SavedViews();
+                views.save("Restoration fixture", model().query(), 1);
+                options("viewActions", new Class<?>[]{UimsdModel.class, SavedViews.View.class},
+                        model(), views.get("Restoration fixture"));
+            });
+            Query savedQuery = model().query();
+            rebuildScene();
+            onRender(() -> {
+                assertEquals("saved-view actions survived", 1, windows().size());
+                assertSame("restoring does not apply a saved view", savedQuery, model().query());
+                pickFirst((WndUimsdList) windows().get(0));
+                assertEquals("restored Open callback works", savedQuery.dataset, model().query().dataset);
+                clearWindows();
+            });
+            //A separate marked demo fixture: no player history or real demo records.
+            java.io.File container = java.nio.file.Files.createTempDirectory(model().root().toPath(), "dialog-check-").toFile();
+            java.io.File fixture = new java.io.File(container, "history");
+            assertTrue(fixture.mkdir());
+            java.io.File demo = DemoData.demoRootFor(fixture);
+            assertTrue(demo.mkdirs());
+            java.io.File marker = new java.io.File(demo, DemoData.MARKER_FILE);
+            assertTrue(marker.createNewFile());
+            try {
+                onRender(() -> options("deleteDemoData", new Class<?>[]{java.io.File.class}, fixture));
+                rebuildScene();
+                onRender(() -> {
+                    assertEquals("demo deletion confirmation survived", 1, windows().size());
+                    assertTrue("restoration never confirms deletion", marker.isFile());
+                    windows().get(0).onBackPressed();
+                    assertTrue("Back never confirms deletion", marker.isFile());
+                });
+            } finally {
+                assertTrue(marker.delete()); assertTrue(demo.delete());
+                assertTrue(fixture.delete()); assertTrue(container.delete());
+            }
+            onRender(() -> {
                 WndUimsdFilter.add(model());
                 WndUimsdFilter.pickOp(model(), -1, null, model().offeredColumns().get(0));
                 assertEquals(2, windows().size());

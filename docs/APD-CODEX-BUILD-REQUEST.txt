@@ -1,8 +1,5 @@
-2026-10-09 delivery verification: same-ID replacement queue fix and corrected Settings lifecycle fixture.
-C3 complete core: 893 pass; Android: 2 gameplay checks pass, 1 UIMSD fixture fails; no release published.
-Closing WndSettings schedules a scene reset; await it before opening Options, keeping every existing assertion.
-Queue replacement reproduction fails before fix; 9 in-memory accepted/rejected/retry combinations now pass.
-Local regression subset: 528 checks pass. No server enabled, no network required, no save format change.
-Run complete core, debug assembly and API 34 checks; publish private APK/PDF only after all pass.
-Native fixture audit: explanatory notes have null action-label slots; skip those slots and assert both actual long actions were checked.
-Cancel superseded same-branch verification to avoid wasting Actions minutes; final APK stays tied to the verified source SHA.
+2026-10-09 focused follow-up: restore Group by, saved-view actions and demo-deletion confirmation.
+Native regression verifies callbacks after reset and that restoration/Back never confirms demo deletion.
+PDF must include the detailed development-report appendix: changes, causes, tests, risks, unresolved issues and relevant commits.
+Run full core tests, debug assembly and existing targeted API 34 tests; publish private APK/PDF only after all pass.
+Keep TEST 5 as verified checkpoint if any new check fails. No security bypass or server/community feature activation.

@@ -2,7 +2,7 @@
 
 ## What this report means
 
-Target: a private, playable test APK by noon today, New York time, and this PDF by 11:55 a.m. New York time. November 1, 2026 is the alpha-readiness target. These are delivery targets, not evidence that every part of the game works.
+Target: a private, playable test APK by noon today, New York time, and this PDF by 11:55 a.m. New York time. November 1, 2026 is the playable alpha test deadline, not a feature-complete public launch; public release is expected several months later. These are delivery targets, not evidence that every part of the game works.
 
 The first Codex APK built successfully at 8:16 a.m. New York time. Its complete core test suite passed: 887 tests, no failures, errors or skipped tests. Later changes also need verification in a newer build. The final PDF's build-verification page identifies its exact source commit and available test evidence.
 
@@ -172,11 +172,11 @@ Problem: switching apps or rebuilding the scene could close parameterized UIMSD 
 
 Cause: the scene only knew each window's class and tried a public no-argument constructor. These dialogs need a model, row or other arguments, so restoration failed and the exception was ignored.
 
-Fix: allow a window to supply a semantic reopening action. Added it for Options, Privacy, saved views, rule selection, sample-size selection, Columns, column order/move, filter steps and pending multi-selects, sorting steps, Ask menus, Notes, Guide/topics, report dialogs, the demo warning and row details. APD text inputs preserve their typed text and callback; their width follows the viewport. The Guide dispatches to the new live scene. Existing no-argument windows retain their previous fallback.
+Fix: allow a window to supply a semantic reopening action. Added it for Options, Privacy, saved views, rule selection, sample-size selection, Columns, column order/move, filter steps and pending multi-selects, sorting steps, Ask menus, Notes, Guide/topics, report dialogs, the demo warning, demo-deletion confirmation, saved-view Open/Delete actions, grouping menus and row details. APD text inputs preserve their typed text and callback; their width follows the viewport. The Guide dispatches to the new live scene. Existing no-argument windows retain their previous fallback.
 
 Possible effects: supported dialogs reopen instead of disappearing. Their scroll position can return to the top. Some less common confirmation/leaf dialogs still need their own reopening actions. Unsaved query filters/sorting are not newly persisted across a complete process restart; named saved views preserve those combinations. Restoring an obsolete row against a changed model is a remaining edge; normal scene recreation retains that model. Android process death is different from an in-process scene rebuild and is not claimed covered.
 
-Verification: production sources compile and 524 local checks pass after this change. A new Android test checks Options and Columns restoration, nested filter Back behavior, Ask, typed text/callbacks, pending multi-select application, the existing Settings fallback, and actual narrow labels/input buttons. Its final result must be checked on the build-verification page. Physical app-switch behavior remains to be tested.
+Verification: production sources compile and 524 local checks pass after this change. A new Android test checks Options and Columns restoration, nested filter Back behavior, Ask, typed text/callbacks, pending multi-select application, the existing Settings fallback, actual narrow labels/input buttons, and additional grouping/saved-view/demo-deletion restoration checks. Its final result must be checked on the build-verification page. Physical app-switch behavior remains to be tested.
 
 Locations: PixelScene, Window, WndUimsdList and the named UIMSD windows; UimsdRestoreDeviceTest.
 

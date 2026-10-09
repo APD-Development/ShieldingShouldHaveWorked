@@ -2,7 +2,7 @@
 
 ## Codex — October 9, 2026 (current; read first)
 
-The owner has NOT switched back to Claude. Codex continues on `codex/apd-phone-fixes-2026-10-09`, based on Claude HEAD `714badbd`. November 1, 2026 is the alpha target. Today's delivery targets are the bug-cause/risk PDF by 11:55 a.m. and a private playable APK by noon, New York time.
+The owner has NOT switched back to Claude. Codex continues on `codex/apd-phone-fixes-2026-10-09`, based on Claude HEAD `714badbd`. November 1, 2026 is the playable ALPHA TEST BUILD deadline, not public release. Public release is expected several months later. Today's delivery targets are the bug-cause/risk PDF by 11:55 a.m. and a private playable APK by noon, New York time.
 
 The owner explicitly approved all sprint development actions and asked to stop routine permission prompts. GitHub's per-app setting is verified **Allow all actions**. Older freeze/ask-every-time notes below are historical and superseded for this authorized private sprint. Main and Claude's branch remain untouched. Preserve source/save data, signing key, release restrictions, postponed Grudge/Lore and disabled community/server features. Do not schedule unsolicited permission notifications.
 
@@ -12,6 +12,10 @@ APK: ADHD-Pixel-Dungeon-CODEX-TEST-5.apk, SHA-256 `771c4a41222e75ba2b5ab77b57e06
 
 Read [the development report](APD-SPRINT-REPORT-2026-10-09.md), [owner-facing fixes/risks](APD-BUG-FIX-REPORT-2026-10-09.md), [bug log](APD-SPRINT-BUG-LOG-2026-10-09.md), and [age status](APD-AGE-VERIFICATION-STATUS.md). Current source/hash/test/release evidence is recorded there. The PDF generator is tools/apd_bug_report_pdf.py.
 
+
+Roadmap correction (owner, October 9): after securing a stable testable alpha, prioritize server-backed systems early: one APD account across Android/Steam; secure authentication/account linking; cloud saves/statistics synchronization; community submissions/voting; monthly submissions → qualification voting → weekly March Madness eliminations; common cross-platform infrastructure. These are near-term development priorities, not distant post-launch ideas. Protect alpha stability; no unrelated major features. This direction does not itself provide server credentials, choose identity providers or authorize exposing an unfinished service.
+
+Owner's current permanent workflow: acknowledge new instructions only with "Aye aye, Captain!", work without narration/routine questions, never bypass security or conceal failures, and deliver only an APK plus a PDF containing all changes/causes/tests/results/regressions/issues/commits. The PDF now includes the full development report appendix. Current follow-up adds semantic restoration to Group by, saved-view Open/Delete and demo-deletion confirmation, with expanded native regression checks; verification pending. TEST 5 remains the last verified APK until the next run passes.
 
 Remaining: genuine age-provider integration (current UNAVAILABLE, Adult always safely off), abandoned-run policy disagreement (current recorded abandonment counts), owner's exact archive conflicts, some unsupported confirmations and process-death restoration of pending dialogs, physical-phone acceptance and complete quest playthroughs. Existing demo shortcut intentionally opens UIMSD before ten runs; the tour still needs ten genuine runs. Do not reset earned flags as a fix.
 

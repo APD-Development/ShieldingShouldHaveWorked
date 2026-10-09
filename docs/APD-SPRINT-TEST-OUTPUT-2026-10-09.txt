@@ -171,3 +171,5 @@ aRunCanBePlayedSavedContinuedAndEndedWithItsHistoryRecorded: PASS 67.528s.
 aWonRunIsRecordedAsWonAndSealed: PASS 66.328s.
 Android assembly and private release delivery: PASS.
 No physical-phone testing or complete instrumentation-suite pass claimed.
+
+Focused leaf-menu follow-up: UimsdChoicesTest 3 pass; local regression subset 528 pass in 19.333s. Native expanded check result pending.
