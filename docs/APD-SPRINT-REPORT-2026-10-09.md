@@ -4,6 +4,10 @@
 
 Codex development is continuing toward the owner's November 1, 2026 alpha target. Today the owner requests a bug-cause/risk PDF by 11:55 a.m. and a playable private APK by noon, New York time. This is an evidence checkpoint, not a claim that eight active hours were delivered or that all remaining bugs are fixed.
 
+Delivered October 9 at **9:25:40 a.m. EDT**, ahead of both requested deadlines: [private CODEX TEST 5 release](https://github.com/charltonchris29/ShieldingShouldHaveWorked/releases/tag/apd-codex-test-5), with a directly attached APK and bug-causes/risks PDF. Source **70d0e1fa9e14f611b085b01f27072ffbfe8ad504**. Complete core: **894 tests across 143 suites, zero failures/errors/skips**. Android debug assembly and **all 3 targeted API 34 checks passed**, zero failures/errors/skips. No physical-phone test is claimed.
+
+APK: ADHD-Pixel-Dungeon-CODEX-TEST-5.apk (38,225,942 bytes). SHA-256: 771c4a41222e75ba2b5ab77b57e06aec589e8eef986111e8b1d389f5a9af69f2. [Download APK](https://github.com/charltonchris29/ShieldingShouldHaveWorked/releases/download/apd-codex-test-5/ADHD-Pixel-Dungeon-CODEX-TEST-5.apk). [Download PDF](https://github.com/charltonchris29/ShieldingShouldHaveWorked/releases/download/apd-codex-test-5/APD-Bug-Fixes-2026-10-09.pdf). The local transfer tool cannot download the approximately 35 MB artifact ZIP because its limit is 32 MiB; no local APK path is claimed. The exact usable APK location is the private release asset. Local regenerated evidence-bearing PDF: /workspace/artifacts/APD-Bug-Fixes-2026-10-09.pdf (7 pages, required text checked; checkpoint first/last pages visually inspected).
+
 The first hosted verification/debug build SUCCEEDED: [run 37928599930](https://github.com/charltonchris29/ShieldingShouldHaveWorked/actions/runs/37928599930), source ec7cc1c7aea25f61d9b4515c6b1b6bca26bbe4cd. Actual XML: **887 tests across 142 suites, zero failures/errors/skips**. Android debug assembly succeeded. Artifact apd-codex-private-test-apk contains ADHD-Pixel-Dungeon-CODEX-TEST-1.apk plus its SHA-256 file. This APK predates acd1878 and 2764791; the new delivery build must include them and be independently verified. No physical-phone test has occurred.
 
 Repository source baseline: Claude HEAD 714badbd313c66c41ec4d9fb50429b353a815840. Branch: codex/apd-phone-fixes-2026-10-09. The owner's installed b73 test APK was not inspected; the repository's PRIVATE TEST 3 pointer 46229e1d7 is not proof of its source. Main and Claude's branch have not been overwritten or merged into.
@@ -29,6 +33,9 @@ The owner explicitly approved all sprint development actions and asked to stop r
 15. a4478f415e357411556445b0d705aaa1d235cc43 — measured-report workflow and API 34 verification/delivery gate.
 16. a938d313c7139bc3a5a16c521b2611876d1bb577 — safe saved-view replacement; directory/failure preservation tests.
 17. 211cfeae70c990307f3227a3758c1e3ac7ec48a2 — restore typed values/pending selections/Ask/report/Guide windows; correct Android test import.
+18. 47bc7a4007437e1f9115c164e46a8bbe70261cd8 — C3 verification request and checkpoint evidence.
+19. cd5aadef2623b7abf848bc0703e806393d115b0e — preserve newer queue replacements; await the Settings-close lifecycle in instrumentation.
+20. 70d0e1fa9e14f611b085b01f27072ffbfe8ad504 — check both action labels, skip non-action slots and cancel superseded branch checks.
 
 Remote commits preserve real ancestry and untouched binary assets. This workspace's local git history is a synthetic text snapshot, not a clone; **DO NOT PUSH LOCAL GIT HISTORY**. Commits were published through the authorized Git-data API using the real base tree, real parent and expected-head lease. A fresh clone of the remote branch is the reproducible source checkout.
 
@@ -42,7 +49,7 @@ Geometry, row/choice wiring and font/height checks pass. Android rendering regre
 
 Null roots cannot inspect a working-directory queue, and IDs use shared validation. Deterministic enqueue deduplicates; tests check add/inspect/remove/repeat operations, unchanged duplicate bytes, unchanged original log/statistics sentinel and absence of a submitted ledger. The separate-process test inspects/removes persisted data in a fresh JVM. These operations do not call the gateway. Full CI also executes the HTTP gateway tests against a local test server; that is test-only transmission, not APD uploading history.
 
-First CI SubmissionQueueTest: 12 tests pass. Android restart/tap checks remain for the phone. Removal never deletes the underlying log in tested cases. No server/community functionality was enabled.
+First CI SubmissionQueueTest: 12 tests pass. A later thirteenth method reproduces the same-ID replacement race and covers nine accepted/rejected/retry combinations; it passes locally after matching the exact queued version. Android restart/tap checks remain for the phone. Removal never deletes the underlying log in tested cases. No server/community functionality was enabled.
 
 ## Package 3 — saved views and statistics
 
@@ -78,9 +85,9 @@ Unresolved product ambiguity: recorded abandonment has a RUN_END, so it currentl
 
 ## Package 7 — regression, quests and build
 
-Source-compilation checkpoint: 1,543 production Java files and 157 core test Java files compiled against actual upstream dependencies. This was JDK 21 with source/target 11, not Android API verification. First CI provides the real Gradle/native/assets/Android SDK build and full suite described above.
+Initial source-compilation checkpoint: 1,543 production Java files and 157 core test Java files compiled against actual upstream dependencies. This was JDK 21 with source/target 11, not Android API verification. First CI provides the real Gradle/native/assets/Android SDK build and full suite described above.
 
-Local normal-JVM subset: 527 pass in 17.225 seconds after the leaf/storage fixes; 521 pass in 19.798 seconds before address/restoration changes; 524 pass in 20.676 seconds afterward. These are subsets, not additional distinct totals on top of CI's 887. Earlier supplemental 53 headless checks used an external no-native loader; QuestRecording was blocked there and is not counted as a standard pass. Full CI subsequently passes actual QuestRecordingTest (1) and GhostTransparencyTest (2) with normal dependencies. Source paths in Sad Ghost/Wandmaker/Blacksmith/Imp were reviewed without gameplay modifications. All four quests have not been manually played on Android.
+Local normal-JVM subset: latest queue checkpoint 528 pass in 84.138 seconds; earlier 527 pass in 17.225 seconds after the leaf/storage fixes; 521 pass in 19.798 seconds before address/restoration changes; 524 pass in 20.676 seconds afterward. These are subsets, not additional distinct totals on top of CI's 887. Earlier supplemental 53 headless checks used an external no-native loader; QuestRecording was blocked there and is not counted as a standard pass. Full CI subsequently passes actual QuestRecordingTest (1) and GhostTransparencyTest (2) with normal dependencies. Source paths in Sad Ghost/Wandmaker/Blacksmith/Imp were reviewed without gameplay modifications. All four quests have not been manually played on Android.
 
 Additional confirmed fixes: impossible dates and NaN/infinity/oversized decimal filters now reject invalid input; address validation rejects remote hosts disguised as loopback. Both had failing-before/passing-after tests. The external test harness's preferences path was also corrected to use its real temporary directory; no production player settings were touched.
 
@@ -132,3 +139,25 @@ A controlled fake-gateway reproduction confirmed the previously suspected same-I
 C3 run 37933866530: complete core XML reports 893 tests, zero failures/errors/skips. Debug APK assembly succeeded. API 34 ran three tests: the existing two play/save/continue/end checks passed, and the UIMSD restoration check failed. Root cause is the test fixture: WndSettings.hide schedules a scene reset; the fixture opened Options immediately, before that reset executed. The fixture now awaits that actual lifecycle event before opening Options. Assertions and production behavior are unchanged. Delivery was skipped because device verification failed. A fresh run is required for the corrected fixture and queue fix.
 
 Native fixture audit before delivery also identified a null action-label slot for explanatory notes; the test now ignores non-actions and explicitly asserts that both long action labels were checked. No boundary assertion was removed. Workflow concurrency now cancels superseded checks on this branch, conserving Actions minutes while keeping the final APK and evidence tied to the same source commit.
+
+## Hosted execution timing evidence (UTC; subtract four hours for New York EDT)
+
+| Run | Core/build job | API 34 job | Result |
+|---|---|---|---|
+| C1 37928599930 | 12:13:16–12:16:31 (3m15s) | Not scheduled | Core/APK pass |
+| C2 37931869191 | 12:43:05–12:46:07 (3m02s) | 12:46:09–12:49:40 (3m31s) | Instrumentation compile blocked by missing import |
+| C3 37933866530 | 13:00:53–13:03:36 (2m43s) | 13:03:38–13:09:57 (6m19s) | Core/APK pass; 2 device passes, 1 fixture failure |
+| C4 37935449028 | 13:14:37–13:16:44 (2m07s) | No device execution | Superseded/cancelled to conserve minutes |
+| C5 37935683756 | 13:16:51–13:19:38 (2m47s) | 13:19:41–13:25:20 (5m39s) | 894 core + 3 API 34 pass; private delivery 13:25:23–13:25:45 (22s) |
+
+These are actual hosted job durations, not measurements of developer idle time, billing charges or active coding time. Work on queue regression and report verification overlapped hosted execution. C2 core-test step took 1m42s and APK step 48s; C3 core-test step took 1m33s and APK step 38s. C4 was cancelled during the core-test step, so it is not a complete-suite pass.
+
+## Final delivery verification and remaining work
+
+Actual C5 XML was downloaded and independently counted: 894 core tests, 143 suites, no failures/errors/skips; SubmissionQueueTest has 13 passing methods. Actual Android XML has three passing methods: UIMSD restoration/narrow labels (4.734s), play/save/continue/end history (67.528s), and win/seal history (66.328s). The UIMSD check covers the Settings fallback, Options/Columns, nested filter Back, Ask, typed text/callback, pending enum selection and actual narrow action/input label bounds. It does not simulate physical touch or Android process death. Both earlier test-fixture issues are resolved in this verification; no assertion was removed. No newly confirmed production regression remains from these changes, but untested device behavior remains a risk.
+
+The delivered APK uses the existing committed apd-debug.jks configuration and existing .indev application ID. Neither file/configuration was changed. The installed owner's APK was not available for certificate comparison, and the actual upgrade of phone saves was not performed; preserve the installation/data if Android rejects an update.
+
+Outstanding items needing input or physical testing: genuine Play age-provider access/integration; whether recorded abandonment should count toward the ten-run rule; the original eight-file archive; remaining less common confirmation/leaf and process-death restoration; RedMagic visual/touch/navigation/restart checks; all four complete NPC quest playthroughs. Adult humor stays safely off until an eligible age source is integrated. No balance, Cleric restrictions, community/backend, monetization or postponed achievement/Grudge work was enabled.
+
+Delivery-accounting cutoff: October 9 **9:27:41 a.m. EDT / 13:27:41 UTC**. Start-to-cutoff elapsed: **12h 54m 15s**. This is the APK/PDF delivery checkpoint, not eight measured active hours or proof of alpha readiness. The four unverified execution gaps total approximately **10h10m09s**; the permission wait and gaps must not be added together as independent downtime because overlap cannot be excluded. Visible recent development windows are roughly 30m45s (10:29:50–11:00:35 UTC) and 1h32m01s (11:55:40–13:27:41 UTC), with user/tool interruptions inside them; these are window durations, not a stopwatch total of active coding. Earlier active work was estimated at 15–30 minutes, not measured. Exact active time, coding/debugging/research category totals, idle time and GitHub/dependency wait totals cannot be recovered. Short explicit verification polling used four 55-second delays (about 3m40s total), with some report work overlapping yielded waits; this is not zero downtime. Hosted build durations above are measured separately and overlap development. Eight uninterrupted active hours were not delivered or claimed.

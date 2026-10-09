@@ -161,3 +161,13 @@ PASS  run index rebuilds from the logs
 Time: 84.138
 
 OK (528 tests)
+
+Final C5 verification (actual downloaded XML):
+Source 70d0e1fa9e14f611b085b01f27072ffbfe8ad504; run 37935683756.
+Core: 894 tests, 143 suites, 0 failures/errors/skips; SubmissionQueueTest 13 pass.
+Android API 34: 3 tests, 0 failures/errors/skips.
+menusSurviveSceneRecreationAndNarrowActionsStayInsideTheirWindow: PASS 4.734s.
+aRunCanBePlayedSavedContinuedAndEndedWithItsHistoryRecorded: PASS 67.528s.
+aWonRunIsRecordedAsWonAndSealed: PASS 66.328s.
+Android assembly and private release delivery: PASS.
+No physical-phone testing or complete instrumentation-suite pass claimed.
