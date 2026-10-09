@@ -225,10 +225,13 @@ public class Imp extends NPC {
 		
 		public static void reset() {
 			spawned = false;
+			oldQuest = false;
+			alternative = false;
 			given = false;
 			completed = false;
 
 			reward = null;
+			rewardOptions.clear();
 			hazardFreebies = 2;
 			mirrorUsed = false;
 			score = 0;
@@ -275,6 +278,8 @@ public class Imp extends NPC {
 		}
 		
 		public static void restoreFromBundle( Bundle bundle ) {
+			// Switching saves must not retain another run's quest or shop eligibility.
+			reset();
 
 			Bundle node = bundle.getBundle( NODE );
 			

@@ -1,3 +1,9 @@
+## Pending verification — Imp quest save isolation (C23)
+
+Confirmed with three failing-before regression tests: restoring a save without a spawned Imp quest could retain another save's completed quest, earned shop access, legacy quest mode and reward options. Imp.Quest.reset now clears legacy mode, alternative and reward options; restore resets before reading the selected save. Existing legacy completion still restores correctly. No save format, scoring, reward generation or player history changes.
+
+After fix: three new persistence tests and two Ghost transparency tests pass locally (5/5). QuestRecordingTest cannot execute locally because libgdx64.so is absent; GitHub full core/Android verification is requested. Physical quest walkthroughs and old-APK upgrades remain unverified. TEST17 is still the latest delivered APK; this change is not in it. Verification-only CI must not replace that release.
+
 # CURRENT VERIFIED HANDOFF — CODEX TEST 17
 
 Application sourcea317b5d5f4482b3100ce053800b54c2b2bab11f4; run37972251204; private releaseapd-codex-test-17 published2:28:25PM EDT October9. APK SHA256c66bcc0c4ad91b873c51a0b482f3dd2d6fc69dddc70faadfb32111a9a70c19b5. Core908/144suites and targeted API34four checks pass, zero failures/errors/skips, actual XML downloaded/validated. Install-over-update, same signing key/app ID; keep TEST10 rollback and all player data. Actual phone/previous-APK upgrade/all-quests/full-floor victory remain unverified.

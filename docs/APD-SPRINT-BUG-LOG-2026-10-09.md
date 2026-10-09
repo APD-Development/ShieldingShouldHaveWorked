@@ -1,3 +1,9 @@
+## Pending verification — Imp quest save isolation (C23)
+
+Confirmed with three failing-before regression tests: restoring a save without a spawned Imp quest could retain another save's completed quest, earned shop access, legacy quest mode and reward options. Imp.Quest.reset now clears legacy mode, alternative and reward options; restore resets before reading the selected save. Existing legacy completion still restores correctly. No save format, scoring, reward generation or player history changes.
+
+After fix: three new persistence tests and two Ghost transparency tests pass locally (5/5). QuestRecordingTest cannot execute locally because libgdx64.so is absent; GitHub full core/Android verification is requested. Physical quest walkthroughs and old-APK upgrades remain unverified. TEST17 is still the latest delivered APK; this change is not in it. Verification-only CI must not replace that release.
+
 ## Current outcome: emergency TEST17
 
 C22 CRITICAL first-start/old-save exit/HUD/search/Main Menu/difficulty blockers: fixed and verified in appsourcea317b5d5 / run37972251204. Six generation/migration/intro-progression cases pass; full908core and four targeted API34 checks pass. Historical S03/returning-only assumptions superseded; first-run gameplay is priority one. C21/C18/C20 also verified in this exact candidate. No confirmed new regression in tested paths. Physical RedMagic, exact owner save/old APK upgrade, all-quests/full-game victory remain unverified. Full failure history follows; do not relabel older pending candidates as successful deliveries.
