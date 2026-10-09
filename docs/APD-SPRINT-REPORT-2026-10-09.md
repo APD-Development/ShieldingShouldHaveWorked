@@ -26,6 +26,9 @@ The owner explicitly approved all sprint development actions and asked to stop r
 12. ec7cc1c7aea25f61d9b4515c6b1b6bca26bbe4cd — owner-approved private verification/debug build workflow.
 13. acd1878a0e700c1077185df054e04d98ac5ec7c3 — exact loopback HTTP host/valid-address checks.
 14. 2764791defd4859c1b1de30cfb5ce53de2daa116 — parameterized UIMSD menu restoration plus Android regression test.
+15. a4478f415e357411556445b0d705aaa1d235cc43 — measured-report workflow and API 34 verification/delivery gate.
+16. a938d313c7139bc3a5a16c521b2611876d1bb577 — safe saved-view replacement; directory/failure preservation tests.
+17. 211cfeae70c990307f3227a3758c1e3ac7ec48a2 — restore typed values/pending selections/Ask/report/Guide windows; correct Android test import.
 
 Remote commits preserve real ancestry and untouched binary assets. This workspace's local git history is a synthetic text snapshot, not a clone; **DO NOT PUSH LOCAL GIT HISTORY**. Commits were published through the authorized Git-data API using the real base tree, real parent and expected-head lease. A fresh clone of the remote branch is the reproducible source checkout.
 
@@ -33,7 +36,7 @@ Remote commits preserve real ancestry and untouched binary assets. This workspac
 
 Cause: WndUimsdRow used fixed-height single-line buttons outside the scroll area. Actions now wrap at font 9, size after wrapping and scroll with details. Minimum action height is 22. WindowGeometry now respects narrow available width. WndUimsdChoices uses the existing scroll/list click handling; explanatory text is inside its pane. UIMSD confirmations, report confirmations and WndDemoUnlock use it. Generic game WndOptions is not globally changed.
 
-Geometry, row/choice wiring and font/height checks pass. Android rendering regression covers a 100-unit viewport. No physical-phone visual or touch acceptance is claimed. Risks: more scrolling, changed action-row styling, generic non-UIMSD WndOptions may still need a separate audit.
+Geometry, row/choice wiring and font/height checks pass. Android rendering regression covers a 100-unit viewport, including responsive APD input button labels. No physical-phone visual or touch acceptance is claimed. Risks: more scrolling, changed action-row styling, generic non-UIMSD WndOptions may still need a separate audit.
 
 ## Package 2 — local queue
 
@@ -43,7 +46,7 @@ First CI SubmissionQueueTest: 12 tests pass. Android restart/tap checks remain f
 
 ## Package 3 — saved views and statistics
 
-Column preferences previously lived only in the current query and disappeared on navigation. column_layouts.txt stores only per-view columns/order; named saved queries remain separate. Explicit reset persists defaults and save failures show a notice.
+Column preferences previously lived only in the current query and disappeared on navigation. column_layouts.txt stores only per-view columns/order; named saved queries remain separate. Explicit reset persists defaults and save failures show a notice. A controlled directory-destination test exposed the destructive delete-first store fallback: SavedViews now rejects directories and preserves the old destination when replacement fails. The pure-library Android compatibility check caught java.nio.file in an initial implementation; that approach was replaced with the supported existing File API, and the check is unchanged.
 
 Tests cover navigation/recreated models, combined filtering/sorting/column arrangement, real Run type/Modded identifiers, ascending/descending sorting, stable equal values, unknowns last, zero matches and saved-view create/open/delete reload. The existing query performance check compares 24,174 deterministic queries without disagreement.
 
@@ -77,19 +80,19 @@ Unresolved product ambiguity: recorded abandonment has a RUN_END, so it currentl
 
 Source-compilation checkpoint: 1,543 production Java files and 157 core test Java files compiled against actual upstream dependencies. This was JDK 21 with source/target 11, not Android API verification. First CI provides the real Gradle/native/assets/Android SDK build and full suite described above.
 
-Local normal-JVM subset: 521 pass in 19.798 seconds before address/restoration changes; 524 pass in 20.676 seconds afterward. These are subsets, not additional distinct totals on top of CI's 887. Earlier supplemental 53 headless checks used an external no-native loader; QuestRecording was blocked there and is not counted as a standard pass. Full CI subsequently passes actual QuestRecordingTest (1) and GhostTransparencyTest (2) with normal dependencies. Source paths in Sad Ghost/Wandmaker/Blacksmith/Imp were reviewed without gameplay modifications. All four quests have not been manually played on Android.
+Local normal-JVM subset: 527 pass in 17.225 seconds after the leaf/storage fixes; 521 pass in 19.798 seconds before address/restoration changes; 524 pass in 20.676 seconds afterward. These are subsets, not additional distinct totals on top of CI's 887. Earlier supplemental 53 headless checks used an external no-native loader; QuestRecording was blocked there and is not counted as a standard pass. Full CI subsequently passes actual QuestRecordingTest (1) and GhostTransparencyTest (2) with normal dependencies. Source paths in Sad Ghost/Wandmaker/Blacksmith/Imp were reviewed without gameplay modifications. All four quests have not been manually played on Android.
 
 Additional confirmed fixes: impossible dates and NaN/infinity/oversized decimal filters now reject invalid input; address validation rejects remote hosts disguised as loopback. Both had failing-before/passing-after tests. The external test harness's preferences path was also corrected to use its real temporary directory; no production player settings were touched.
 
-Menu restoration now supports semantic reopeners instead of failing no-arg construction for parameterized UIMSD windows. Default no-arg windows retain the fallback. Root/menu coverage is substantial but leaf inputs, pending multi-selects and Ask remain incomplete. Restored scroll position may reset. UimsdRestoreDeviceTest exercises Options/Columns, nested filters/Back, Settings fallback and real narrow font layout; new hosted Android results are pending at this checkpoint.
+Menu restoration now supports semantic reopeners instead of failing no-arg construction for parameterized UIMSD windows. Default no-arg windows retain the fallback. Restoration now also covers typed APD inputs (including their text and callback), pending filter and split selections, Ask menus, report dialogs, Guide topics and the demo warning. Some less common confirmations remain unsupported. Restored scroll/text cursor position may reset; Android process-death restoration of pending dialogs and unsaved filter/sort persistence are not claimed. UimsdRestoreDeviceTest exercises Options/Columns, nested filters/Back, Settings fallback and real narrow font layout; The second hosted run, 37931869191, passed complete core tests and APK assembly but the instrumentation sources failed compilation: ApdSettingsClickDeviceTest lacked assertFalse imports after the age fix. No Android test ran and private delivery was correctly skipped. The import is corrected in 211cfeae; a new full verification is required. No assertion was removed.
 
 The workflow only runs on this branch when the workflow/build-request file changes, avoiding paid runs on normal code/doc commits. Main/Claude are not triggers. The delivery verification adds one API 34 emulator check for UIMSD restoration and existing PlayRunDeviceTest save/continue/death/win behavior. The private prerelease will identify source/hash and attach the APK directly. Publication is conditional on its required checks passing.
 
 ## Files changed / review map
 
 All production paths are under core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/:
-- windows/WndUimsdRow.java, WndUimsdList.java, WndUimsdChoices.java, WndDemoUnlock.java, WndUimsdOptions.java, WndUimsdReport.java, WndUimsdColumns.java, WndUimsdFilter.java, WndUimsdSort.java, WndUimsdStatus.java, WndUimsdGuide.java.
-- apd/query/WindowGeometry.java, UimsdModel.java, Scope.java, QueryCodec.java, Datasets.java, StatusText.java, CellFormatter.java.
+- windows/WndUimsdRow.java, WndUimsdList.java, WndUimsdChoices.java, WndDemoUnlock.java, WndUimsdOptions.java, WndUimsdReport.java, WndUimsdColumns.java, WndUimsdFilter.java, WndUimsdSort.java, WndUimsdStatus.java, WndUimsdGuide.java, WndUimsdAsk.java, WndUimsdText.java, WndUimsdTopic.java, WndUimsdTextInput.java and WndTextInput.java (default generic behavior preserved; APD width hooks only).
+- apd/query/WindowGeometry.java, UimsdModel.java, Scope.java, QueryCodec.java, Datasets.java, StatusText.java, CellFormatter.java, SavedViews.java.
 - apd/backendbridge/SubmissionQueue.java; apd/backend/Gateways.java; apd/archive/ArchiveImporter.java.
 - apd/age/AgeEligibility.java; apd/demo/UnlockProgression.java; apd/query/UimsdUnlock.java; apd/ApdFeatures.java; apd/TitleGeometry.java; SPDSettings.java; scenes/TitleScene.java, PixelScene.java, UimsdScene.java; ui/Window.java.
 

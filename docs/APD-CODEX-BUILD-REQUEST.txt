@@ -1,6 +1,6 @@
-2026-10-09 delivery verification requested by owner.
-Include exact-host validation and semantic UI restoration after the first successful build.
-Run the complete core suite, Android assembly and targeted API 34 UI/play/save/continue/end tests.
-Only after these required checks pass, deliver APK and evidence-bearing bug/risk PDF as a private test prerelease.
-Owner explicitly approved all sprint work and requested this APK/PDF delivery; no routine reapproval needed.
-Do not change main, the Claude branch, signing key, normal release restrictions or backend state.
+2026-10-09 final delivery verification after the failed instrumentation compile.
+Includes missing assertFalse import correction, safe SavedViews replacement and expanded UIMSD input/selection/Ask restoration.
+Source fixes committed through 211cfeae. Local regression checkpoint: 527 checks pass.
+Re-run complete core suite, Android assembly and API 34 UI/play/save/continue/end checks.
+Delivery only after all required jobs pass; attach evidence-bearing PDF and APK to the private prerelease.
+Owner explicitly approved all sprint work and requested this APK/PDF; no routine reapproval needed.

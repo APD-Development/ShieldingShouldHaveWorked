@@ -172,13 +172,27 @@ Problem: switching apps or rebuilding the scene could close parameterized UIMSD 
 
 Cause: the scene only knew each window's class and tried a public no-argument constructor. These dialogs need a model, row or other arguments, so restoration failed and the exception was ignored.
 
-Fix: allow a window to supply a semantic reopening action. Added it for Options, Privacy, saved views, rule selection, sample-size selection, Columns, column order/move, the initial filter steps, several sorting steps, Notes, Guide and row details. The Guide dispatches to the new live scene. Existing no-argument windows retain their previous fallback.
+Fix: allow a window to supply a semantic reopening action. Added it for Options, Privacy, saved views, rule selection, sample-size selection, Columns, column order/move, filter steps and pending multi-selects, sorting steps, Ask menus, Notes, Guide/topics, report dialogs, the demo warning and row details. APD text inputs preserve their typed text and callback; their width follows the viewport. The Guide dispatches to the new live scene. Existing no-argument windows retain their previous fallback.
 
-Possible effects: supported dialogs reopen instead of disappearing. Their scroll position can return to the top. Some leaf dialogs, text inputs, pending multi-select choices and the Ask builder still need separate restoration work. Restoring an obsolete row against a changed model is a remaining edge; normal scene recreation retains that model. Android process death is different from an in-process scene rebuild and is not claimed covered.
+Possible effects: supported dialogs reopen instead of disappearing. Their scroll position can return to the top. Some less common confirmation/leaf dialogs still need their own reopening actions. Unsaved query filters/sorting are not newly persisted across a complete process restart; named saved views preserve those combinations. Restoring an obsolete row against a changed model is a remaining edge; normal scene recreation retains that model. Android process death is different from an in-process scene rebuild and is not claimed covered.
 
-Verification: production sources compile and 524 local checks pass after this change. A new Android test checks Options and Columns restoration, nested filter Back behavior, the existing Settings fallback, and actual narrow-label layout. Its final result must be checked on the build-verification page. Physical app-switch behavior remains to be tested.
+Verification: production sources compile and 524 local checks pass after this change. A new Android test checks Options and Columns restoration, nested filter Back behavior, Ask, typed text/callbacks, pending multi-select application, the existing Settings fallback, and actual narrow labels/input buttons. Its final result must be checked on the build-verification page. Physical app-switch behavior remains to be tested.
 
 Locations: PixelScene, Window, WndUimsdList and the named UIMSD windows; UimsdRestoreDeviceTest.
+
+## 13. Failed saved-view replacement could alter the destination
+
+Problem: saving views to an invalid destination could delete an empty directory and replace it with a file. The older fallback also deleted an existing view file before a replacement that could fail.
+
+Cause: when the first rename failed, the store deleted the destination and tried again. A controlled directory fixture reproduced the unwanted deletion/replacement.
+
+Fix: reject a destination directory. Use one sibling-file rename and keep the previous destination if replacement is refused. Remove the destructive delete-first fallback. The statistics library's older-Android API restriction is preserved.
+
+Possible effects: a filesystem that refuses replacement now reports a save failure instead of deleting the old file and trying again. A temporary file may remain after failure. Normal Android/Linux replacements remain supported. This changes view/layout preferences storage, not run logs or player statistics.
+
+Verification: the directory test fails before the fix and passes afterward. A failed temporary write preserves the old saved-view bytes. Existing saved-view create/replace/delete and model layout tests pass. The exact previously suspected second-rename failure was not independently forced; that destructive path is removed.
+
+Location: SavedViews and SavedViewsTest.
 
 ## Other verification and remaining limits
 
