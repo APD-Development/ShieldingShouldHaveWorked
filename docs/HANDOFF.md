@@ -1,3 +1,11 @@
+# Emergency gameplay work — October 9, 2026
+
+Owner orders replacement APK ASAP, with a one-hour window. Starting-room/hidden-controls blockers take priority over all secondary work. October 8 interim Steps 1–22 PDF has been read directly. Earlier tutorial-trap completion claims were insufficient; do not repeat them.
+
+C22 removes blocking intro restrictions while preserving guidebook/hints: visible floor1 entrance, toolbar/status/quickslots, functioning search/wait, enabled Main Menu and hero difficulty/options. Existing floor1 saves get entrance-boundary-only hidden-door repair on restore; unrelated secrets preserved. New generation/bundle regressions and intro-enabled Android UI/search/wait/menu/save/resume/difficulty checks added. 537 local non-native tests passed; full native/core/build verification pending. No physical-phone pass claimed. C21 measured title wrapping included, plus already committed C18/C20. Latest source/commit and measured CI evidence will be recorded after verification.
+
+Master priorities: Nov1 2026 playable private alpha; Jan–Feb2027 target public Android/Steam release. Gameplay and data safety first, authoritative phone backlog next, stable UIMSD; read-only Community three-month overlapping submission/qualification/elimination preview authorized but not implemented. Creator-only Cleric lore/hidden achievement are never votable. Do not enable unfinished online services or sacrifice gameplay for backend. Daily PDF11:55AM/APK11:59AM America/New_York remain targets, not guarantees of unattended execution.
+
 ## C20 — Export must not claim success for an incomplete manifest
 
 Controlled reproduction: a finished temporary log changes after manifest planning but before the second read (output-stream hook, no timing sleeps). Old exporter silently skipped the changed log, finished a ZIP still listing that missing entry, and reported success. Regression16 tests /1failure before. The importer safely rejects such an archive; no history loss was found.

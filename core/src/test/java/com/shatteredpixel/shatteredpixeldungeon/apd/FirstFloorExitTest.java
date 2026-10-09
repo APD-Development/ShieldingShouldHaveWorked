@@ -34,6 +34,7 @@ import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.Map;
 
+// Regression coverage for the previously blocking tutorial entrance.
 // Pins the cause of "the floor-1 start room has no exit": SPD's first-run tutorial hides the entrance door on purpose. A used install must
 // not be in the tutorial (ApdIntro), and a floor generated without it must have a normal, walkable way out.
 public class FirstFloorExitTest {
@@ -80,18 +81,68 @@ public class FirstFloorExitTest {
 	}
 
 	@Test
-	public void theTutorialStartIsClosedAndANormalStartIsOpen() throws Exception {
-		int closed = 0, open = 0;
+	public void freshAndReturningStartsHaveVisibleTraversableExits() throws Exception {
 		for (long seed = 1; seed <= 12; seed++){
-			Level tutorial = floorOne(seed * 7919, LevelGenerationHarness.Context.FRESH);
-			Level normal = floorOne(seed * 7919, LevelGenerationHarness.Context.VETERAN);
-			assertNotNull(tutorial);
-			assertNotNull(normal);
-			if (!exitWalkable(tutorial)) closed++;
-			if (exitWalkable(normal)) open++;
+			for (LevelGenerationHarness.Context context : new LevelGenerationHarness.Context[]{LevelGenerationHarness.Context.FRESH, LevelGenerationHarness.Context.VETERAN}){
+				assertTrue("floor 1 must be traversable even before reading the guide: " + context + " seed " + seed,
+						exitWalkable(floorOne(seed * 7919, context)));
+			}
 		}
-		assertEquals("every tutorial floor 1 hides its way out (the tester's 'no exit' rooms)", 12, closed);
-		assertEquals("every normal floor 1 has a walkable way out", 12, open);
+	}
+
+	@Test
+	public void everyHeroHasAnAccessibleFreshStartingRoom() throws Exception {
+		for (HeroClass hero : HeroClass.values()){
+			seen.clear();
+			LevelGenerationHarness.levelObserver = (depth, level) -> seen.put(depth, level);
+			LevelGenerationHarness.generate(7919, 0, hero, LevelGenerationHarness.Context.FRESH, 1);
+			assertTrue(hero + " must be able to leave the first floor", exitWalkable(seen.get(1)));
+		}
+	}
+
+	@Test
+	public void anOldHiddenEntranceIsRepairedOnLoadWithoutRevealingOtherSecrets() throws Exception {
+		com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel level =
+				(com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel) floorOne(7919, LevelGenerationHarness.Context.FRESH);
+		com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room entrance = null;
+		for (com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room room : level.rooms()) if (room.isEntrance()) entrance = room;
+		assertNotNull(entrance);
+		int changed = 0;
+		for (int y = entrance.top; y <= entrance.bottom; y++) for (int x = entrance.left; x <= entrance.right; x++){
+			if (x != entrance.left && x != entrance.right && y != entrance.top && y != entrance.bottom) continue;
+			int cell = x + y * level.width();
+			if (level.map[cell] == Terrain.DOOR){ level.map[cell] = Terrain.SECRET_DOOR; changed++; }
+		}
+		assertTrue("the fixture seals a real entrance door", changed > 0);
+		int other = -1;
+		for (int y = 1; y < level.height()-1 && other < 0; y++) for (int x = 1; x < level.width()-1; x++){
+			if (x >= entrance.left && x <= entrance.right && y >= entrance.top && y <= entrance.bottom) continue;
+			int cell = x + y * level.width();
+			if (level.map[cell] == Terrain.WALL){ other = cell; break; }
+		}
+		assertTrue(other >= 0);
+		level.map[other] = Terrain.SECRET_DOOR;
+		int[] before = level.map.clone();
+		com.watabou.utils.Bundle bundle = new com.watabou.utils.Bundle();
+		bundle.put("level", level);
+		com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth = 1;
+		com.shatteredpixel.shatteredpixeldungeon.Dungeon.branch = 0;
+		com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel restored =
+				(com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel) bundle.get("level");
+		assertTrue("the existing save is playable without discarding it", exitWalkable(restored));
+		assertEquals("unrelated secret stays secret", Terrain.SECRET_DOOR, restored.map[other]);
+		int repaired = 0;
+		for (int cell = 0; cell < before.length; cell++) if (before[cell] != restored.map[cell]){
+			assertEquals(Terrain.SECRET_DOOR, before[cell]);
+			assertEquals(Terrain.DOOR, restored.map[cell]);
+			assertTrue(restored.passable[cell]);
+			assertFalse(restored.secret[cell]);
+			repaired++;
+		}
+		assertEquals("only forced entrance doors change", changed, repaired);
+		int[] once = restored.map.clone();
+		restored.repairTutorialEntrance();
+		assertArrayEquals("repair is idempotent", once, restored.map);
 	}
 
 	@Test

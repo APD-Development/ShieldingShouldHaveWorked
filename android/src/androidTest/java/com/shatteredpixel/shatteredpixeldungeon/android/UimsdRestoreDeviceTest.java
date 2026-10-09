@@ -36,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdOptions;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Gizmo;
 import com.watabou.noosa.Group;
+import com.watabou.noosa.ui.Component;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -339,6 +340,36 @@ public class UimsdRestoreDeviceTest {
                 } catch (Exception e) { throw new RuntimeException(e); }
                 int originalWidth = PixelScene.uiCamera.width;
                 try {
+                    Class<?> annotationType = Class.forName("com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene$APDAnnotation");
+                    java.lang.reflect.Constructor<?> constructor = annotationType.getDeclaredConstructor(String.class, float.class);
+                    constructor.setAccessible(true);
+                    java.lang.reflect.Method place = annotationType.getDeclaredMethod("place", float.class, float.class, float.class, float.class);
+                    place.setAccessible(true);
+                    Field lines = annotationType.getDeclaredField("lines"); lines.setAccessible(true);
+                    Field arrow = annotationType.getDeclaredField("body"); arrow.setAccessible(true);
+                    Class<?> gate = Class.forName("com.shatteredpixel.shatteredpixeldungeon.windows.UimsdGate");
+                    for (String field : new String[]{"LOCKED_ARROW_TEXT", "TENTH_RUN_ARROW_CLEAN", "TENTH_RUN_ARROW_ADULT"}) {
+                        Field message = gate.getDeclaredField(field); message.setAccessible(true);
+                        String full = (String) message.get(null);
+                        for (int available : new int[]{72, 89, 120, 150}) {
+                            PixelScene.uiCamera.width = available + 8;
+                            Component annotation = (Component) constructor.newInstance(full, (float) available);
+                            try {
+                                place.invoke(annotation, 4f, (float) available, (available + 3) / 2f, 160f);
+                                StringBuilder shown = new StringBuilder();
+                                for (com.watabou.noosa.BitmapText line : (com.watabou.noosa.BitmapText[]) lines.get(annotation)) {
+                                    assertTrue("annotation left boundary", line.x >= 4);
+                                    assertTrue("annotation right boundary", line.x + line.width() <= available + 4);
+                                    if (shown.length() > 0) shown.append(' ');
+                                    shown.append(line.text());
+                                }
+                                assertEquals("entire instruction remains readable", full, shown.toString());
+                                com.watabou.noosa.ColorBlock shaft = ((com.watabou.noosa.ColorBlock[]) arrow.get(annotation))[0];
+                                float centre = shaft.x + shaft.width() / 2;
+                                assertTrue("arrow over right/UIMSD column", centre >= 4 + (available + 3) / 2f && centre <= available + 4);
+                            } finally { annotation.destroy(); }
+                        }
+                    }
                     PixelScene.uiCamera.width = 100;
                     WndUimsdChoices choices = new WndUimsdChoices("Queue", "Nothing is sent.",
                             "Queue for submission (preview, sends nothing)", "Show what is queued for this run");

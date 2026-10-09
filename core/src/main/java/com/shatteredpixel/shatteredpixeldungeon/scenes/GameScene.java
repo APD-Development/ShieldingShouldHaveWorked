@@ -757,9 +757,7 @@ public class GameScene extends PixelScene {
 				GameLog.wipe();
 				GLog.p(Messages.get(GameScene.class, "tutorial_move_desktop"));
 			}
-			toolbar.visible = toolbar.active = false;
-			status.visible = status.active = false;
-			if (inventory != null) inventory.visible = inventory.active = false;
+			//APD: tutorial hints never disable the gameplay controls.
 		}
 
 		if (!SPDSettings.intro() &&
@@ -1316,26 +1314,7 @@ public class GameScene extends PixelScene {
 	public static void endIntro(){
 		if (scene != null){
 			SPDSettings.intro(false);
-			scene.add(new Tweener(scene, 2f){
-				@Override
-				protected void updateValues(float progress) {
-					if (progress <= 0.5f) {
-						scene.status.alpha(2*progress);
-						scene.status.visible = scene.status.active = true;
-						scene.toolbar.visible = scene.toolbar.active = false;
-						if (scene.inventory != null) scene.inventory.visible = scene.inventory.active = false;
-					} else {
-						scene.status.alpha(1f);
-						scene.status.visible = scene.status.active = true;
-						scene.toolbar.alpha((progress - 0.5f)*2);
-						scene.toolbar.visible = scene.toolbar.active = true;
-						if (scene.inventory != null){
-							scene.inventory.visible = scene.inventory.active = true;
-							scene.inventory.alpha((progress - 0.5f)*2);
-						}
-					}
-				}
-			});
+
 			GameLog.wipe();
 			if (SPDSettings.interfaceSize() == 0){
 				GLog.p(Messages.get(GameScene.class, "tutorial_ui_mobile"));
@@ -1345,13 +1324,7 @@ public class GameScene extends PixelScene {
 						KeyBindings.getKeyName(KeyBindings.getFirstKeyForAction(SPDAction.INVENTORY, ControllerHandler.isControllerConnected()))));
 			}
 
-			//clear hidden doors, it's floor 1 so there are only the entrance ones
-			for (int i = 0; i < Dungeon.level.length(); i++){
-				if (Dungeon.level.map[i] == Terrain.SECRET_DOOR){
-					Dungeon.level.discover(i);
-					discoverTile(i, Terrain.SECRET_DOOR);
-				}
-			}
+
 		}
 	}
 	

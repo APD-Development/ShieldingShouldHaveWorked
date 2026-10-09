@@ -257,9 +257,7 @@ public class HeroSelectScene extends PixelScene {
 		updateOptionsColor();
 		btnOptions.visible = false;
 
-		if(!SPDSettings.intro()){
-			add(btnOptions);
-		}
+		add(btnOptions);
 
 		if (!Badges.isUnlocked(Badges.Badge.VICTORY) && !DeviceCompat.isDebug()){
 			Dungeon.challenges = 0;
@@ -481,7 +479,7 @@ public class HeroSelectScene extends PixelScene {
 			align(heroDesc);
 
 			difficultyBar.refresh();
-			difficultyBar.visible = difficultyBar.active = !SPDSettings.intro();
+			difficultyBar.visible = difficultyBar.active = true;
 			while(difficultyTop() < heroDesc.bottom()){
 				heroDesc.maxWidth(heroDesc.maxWidth()+10);
 				heroDesc.setPos(Math.max(insets.left, (leftPortion - heroDesc.width())/2f), heroName.bottom() + 5);
@@ -496,7 +494,7 @@ public class HeroSelectScene extends PixelScene {
 			infoButton.setPos(heroName.right(), heroName.top() + (heroName.height() - infoButton.height())/2f);
 			align(infoButton);
 
-			btnOptions.visible = btnOptions.active = !SPDSettings.intro();
+			btnOptions.visible = btnOptions.active = true;
 
 		} else {
 			title.visible = false;
@@ -509,12 +507,12 @@ public class HeroSelectScene extends PixelScene {
 			PixelScene.align(startBtn);
 			placeDifficultyBar(Camera.main.width/2f, Math.min(130, Camera.main.width - 12));
 			difficultyBar.refresh();
-			difficultyBar.visible = difficultyBar.active = !SPDSettings.intro();
+			difficultyBar.visible = difficultyBar.active = true;
 
 			infoButton.visible = infoButton.active = true;
 			infoButton.setPos(startBtn.right(), startBtn.top());
 
-			btnOptions.visible = btnOptions.active = !SPDSettings.intro();
+			btnOptions.visible = btnOptions.active = true;
 			btnOptions.setPos(startBtn.left()-btnOptions.width(), startBtn.top());
 
 			optionsPane.setPos(heroBtns.get(0).left(), difficultyTop() - optionsPane.height() - 2);

@@ -1,3 +1,22 @@
+
+## Emergency gameplay correction — C22 (replacement for TEST 10)
+
+The October 8 interim phone report explicitly marked inaccessible starting rooms critical. TEST 10 did not fix the first-time-player case. The earlier claim that the tutorial trap was fixed was insufficient: `ApdIntro.endIfNotNew` only cleared intro for some returning installs. The current phone screenshot matches the still-enabled introductory state. This is not acceptable playable-alpha behavior.
+
+Root cause: floor-one painter deliberately hid entrance doors while intro was active; GameScene hid the toolbar and status; Hero.search forced discovery probability to zero; WndGame disabled Main Menu; hero selection hid difficulty. Clearing the flag only for returning players left new players trapped and previously generated map doors unchanged.
+
+Changes: floor-one entrance doors are visible regardless of intro; tutorial hints and guidebook remain available, but status, Search, Wait, inventory/quickslots, hero difficulty/options and Main Menu remain usable. Intro completion no longer temporarily hides the toolbar or reveals every secret door. Normal search probabilities work before guidebook acknowledgement. Floor-two searching tutorial remains, now with functional search controls.
+
+Save compatibility: loading a regular floor-one main-branch level repairs only SECRET_DOOR tiles on the saved entrance-room boundary. It updates normal terrain flags without recording a player discovery, consuming RNG, replacing the save, rebuilding the map or touching history. Other secret doors remain hidden. Repair is idempotent. Existing APK signing/application ID remain unchanged; install over the old build, never clear data.
+
+Tests: new generation assertions require traversable fresh and veteran first floors across 12 seeds, plus all hero classes. A saved-level fixture seals the actual entrance, adds an unrelated secret, round-trips the bundle, asserts only entrance doors change and checks idempotence. Local Java compilation and 537 non-native tests passed (32.056 seconds). Generation/native checks require GitHub CI because the local environment lacks desktop GDX JNI; they are not yet marked passed. Android checks now begin with intro true, assert visible/usable actual toolbar/status and quickslots, exercise actual Search and Wait callbacks, navigate through enabled Main Menu and continue the same saved run, and test actual difficulty touches. CI and physical-phone results remain pending at this commit.
+
+Potential regressions: first-time users now receive hints alongside the full interface. Forced floor-one hidden entrance tiles become ordinary closed doors; other secrets and the floor-two lesson stay intact. Tests must verify old-save flags, traversability, UI layout and navigation. This is not proof every gameplay path or quest is correct.
+
+## C21 — Main-menu instructional text fits the screen
+
+Root cause: the old two-line split searched for HERE; the locked instruction does not contain HERE, so it split after THIS and left the rest as an unbounded line. Measured word wrapping now keeps full wording within grid width, reserves one pixel for the shadow and retains the arrow alignment. Four additional deterministic wrapping tests pass. The existing frozen-title test now normalizes only the explicitly authorized wrapping change and still checks the unchanged remainder. Native font/screen-width assertions are pending CI.
+
 # APD bug fixes and risks — October 9, 2026
 
 ## What this report means

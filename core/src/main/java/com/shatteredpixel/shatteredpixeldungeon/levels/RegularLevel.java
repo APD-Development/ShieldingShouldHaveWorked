@@ -906,6 +906,21 @@ public abstract class RegularLevel extends Level {
 				roomExit = r;
 			}
 		}
+		if (Dungeon.depth == 1 && Dungeon.branch == 0) repairTutorialEntrance();
+	}
+
+	//Old floor-1 saves retain forced tutorial doors even after intro is cleared.
+	//Only entrance-room boundary doors are repaired; all other secrets and history stay untouched.
+	public void repairTutorialEntrance(){
+		if (roomEntrance == null) return;
+		for (int y = roomEntrance.top; y <= roomEntrance.bottom; y++){
+			for (int x = roomEntrance.left; x <= roomEntrance.right; x++){
+				if (x != roomEntrance.left && x != roomEntrance.right && y != roomEntrance.top && y != roomEntrance.bottom) continue;
+				if (x < 0 || x >= width() || y < 0 || y >= height()) continue;
+				int cell = x + y * width();
+				if (map[cell] == Terrain.SECRET_DOOR) Level.set(cell, Terrain.DOOR, this);
+			}
+		}
 	}
 	
 }

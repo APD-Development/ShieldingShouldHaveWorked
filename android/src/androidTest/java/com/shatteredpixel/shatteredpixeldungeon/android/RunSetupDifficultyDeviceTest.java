@@ -101,6 +101,7 @@ public class RunSetupDifficultyDeviceTest {
 	@Test
 	public void difficultyIsChosenOnTheCharacterScreenAndNotInSettings() throws Exception {
 		int before = SPDSettings.apdDifficulty();
+		boolean introBefore = SPDSettings.intro();
 		try (ActivityScenario<AndroidLauncher> scenario = ActivityScenario.launch(AndroidLauncher.class)){
 			long end = System.currentTimeMillis() + 120000;
 			while ((Gdx.app == null || Gdx.files == null || Game.scene() == null) && System.currentTimeMillis() < end) Thread.sleep(250);
@@ -120,7 +121,7 @@ public class RunSetupDifficultyDeviceTest {
 			}
 
 			//the character screen, with a hero picked
-			SPDSettings.intro(false);
+			SPDSettings.intro(true);
 			onRender(new Runnable(){ public void run(){ ShatteredPixelDungeon.switchNoFade(HeroSelectScene.class); } });
 			waitUntil("the character screen", new java.util.concurrent.Callable<Boolean>(){
 				public Boolean call(){ return Game.scene() instanceof HeroSelectScene; } }, 30000);
@@ -165,6 +166,7 @@ public class RunSetupDifficultyDeviceTest {
 			assertEquals("3 is the normal game", "Normal", DifficultyBar.nameOf(3));
 		} finally {
 			SPDSettings.apdDifficulty(before);
+			SPDSettings.intro(introBefore);
 		}
 	}
 }

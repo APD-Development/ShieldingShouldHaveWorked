@@ -1,4 +1,3 @@
-2026-10-09 post-lunch verification only: C18 final-column checkbox consistency and C19 deterministic async archive fixture.
-Local before2/1fail; after22focused and15archivepass; broad532pass. Native last-column rendered check assertion added.
-Run complete core, debug assembly and targeted API34 tests; privately stage APK/evidence without release [verification-only].
-TEST10 remains owner phone-test build until next requested delivery.
+2026-10-09 owner explicitly orders emergency replacement APK within one hour.
+C22 gameplay blockers: fresh and saved floor1 exits, HUD/Search/Wait/quickslots, Main Menu/save/resume, hero difficulty. C21 title wrap. Includes prior C18/C20.
+537 local non-native checks pass; run complete core suite, debug assembly and targeted API34 intro-enabled gameplay/difficulty/UIMSD checks. Publish private APK and accurate PDF only after successful verification. No physical-phone pass claimed. Preserve signing key/app ID, saves, history and other developers work.

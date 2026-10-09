@@ -460,7 +460,7 @@ public class TitleScene extends PixelScene {
 	}
 
 	//Deliberately out of place: hot pink text and a big, bright, outlined arrow with a pulsing glow, bobbing upwards, pointing
-	//down at the UIMSD button. The text breaks into two lines only when one line is wider than the grid. It is not interactive
+	//down at the UIMSD button. The text wraps by measured words within the grid. It is not interactive
 	//and sits in its own strip above the grid.
 	private static class APDAnnotation extends Component {
 
@@ -494,13 +494,12 @@ public class TitleScene extends PixelScene {
 		private float time;
 
 		APDAnnotation( String text, float maxWidth ){
-			String[] parts = { text };
-			BitmapText probe = new BitmapText( text, pixelFont );
-			probe.measure();
-			if (probe.width() > maxWidth){
-				int cut = text.indexOf( ' ', text.indexOf( "HERE" ) );
-				parts = new String[]{ text.substring( 0, cut ), text.substring( cut + 1 ) };
-			}
+			BitmapText probe = new BitmapText(text, pixelFont);
+			String[] parts = TitleGeometry.annotationLines(text, maxWidth - 1, value -> {
+				probe.text(value);
+				probe.measure();
+				return probe.width();
+			});
 			lines = new BitmapText[parts.length];
 			shadows = new BitmapText[parts.length];
 			float lh = 0;
@@ -561,7 +560,7 @@ public class TitleScene extends PixelScene {
 			arrowX = (float)Math.floor( centre - HEAD_W / 2f );
 			//rest position: the tip, its outline and its glow all end GAP px above the button
 			arrowY = gridTop - GAP - GLOW - 1 - ARROW_H;
-			float textRight = gridLeft + gridWidth;
+			float textRight = gridLeft + gridWidth - 1;
 			float top = gridTop - height();
 			for (int i = 0; i < lines.length; i++){
 				float x = Math.max( gridLeft, textRight - lines[i].width() );

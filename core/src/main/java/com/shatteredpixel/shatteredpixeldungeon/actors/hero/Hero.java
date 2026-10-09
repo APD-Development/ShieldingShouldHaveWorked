@@ -2593,10 +2593,7 @@ public class Hero extends Char {
 							chance = 0.2f - (Dungeon.depth / 100f);
 						}
 
-						//don't want to let the player search though hidden doors in tutorial
-						if (SPDSettings.intro()){
-							chance = 0;
-						}
+						//APD: searching remains functional before the introduction is acknowledged.
 						
 						if (Random.Float() < chance) {
 						

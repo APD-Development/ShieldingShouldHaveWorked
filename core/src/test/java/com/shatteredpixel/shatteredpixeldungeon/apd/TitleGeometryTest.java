@@ -139,4 +139,36 @@ public class TitleGeometryTest {
 		assertEquals(0, TitleGeometry.portrait(0, 0, 180, 320, VERSION_H, -1).annotationH, 0);
 		assertEquals(0, TitleGeometry.landscape(0, 0, 400, 240, VERSION_H, -1).annotationH, 0);
 	}
+	@Test public void lockedInstructionWrapsWithinEverySupportedTitleWidth(){
+		String message = "THIS BUTTON IS EFFECTIVELY USELESS TILL 10 RUNS HAVE BEEN COMPLETED.";
+		for (int width : new int[]{72, 89, 120, 150}){
+			String[] lines = TitleGeometry.annotationLines(message, width, text -> text.length() * 4f);
+			assertEquals(message, String.join(" ", lines));
+			for (String line : lines) assertTrue("overflow at width " + width + ": " + line, line.length() * 4 <= width);
+			assertTrue("do not strand THIS on its own", !lines[0].equals("THIS"));
+		}
+	}
+
+	@Test public void tenthRunPromptsWrapByMeasuredWordsInsteadOfHere(){
+		for (String message : new String[]{"HEY, GO HERE FOR DRUGS.", "HEY, GO HERE FOR UNLIMITED DOPAMINE."}){
+			for (int width : new int[]{72, 89, 120, 150}){
+				String[] lines = TitleGeometry.annotationLines(message, width, text -> text.length() * 4f);
+				assertEquals(message, String.join(" ", lines));
+				for (String line : lines) assertTrue(line.length() * 4 <= width);
+			}
+		}
+	}
+
+	@Test public void shortAndEmptyAnnotationsKeepTheirText(){
+		assertEquals("", TitleGeometry.annotationLines("", 72, text -> text.length() * 4f)[0]);
+		assertEquals("SHORT", TitleGeometry.annotationLines("SHORT", 72, text -> text.length() * 4f)[0]);
+	}
+
+	@Test public void overlongTokensCannotOverflowOrCrashWithoutHere(){
+		String message = "ABCDEFGHIJKLMNOPQRST";
+		String[] lines = TitleGeometry.annotationLines(message, 20, text -> text.length() * 4f);
+		assertEquals(message, String.join("", lines));
+		for (String line : lines) assertTrue(line.length() * 4 <= 20);
+	}
+
 }

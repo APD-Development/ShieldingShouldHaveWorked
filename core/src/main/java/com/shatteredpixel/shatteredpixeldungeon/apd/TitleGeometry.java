@@ -45,6 +45,43 @@ public final class TitleGeometry {
 	public static final int GAP = 3;   //between the tip's glow and the button
 	public static final int BOB = 3;   //the arrow only bobs upwards, so it never reaches the button
 
+	public interface TextWidth { float measure(String text); }
+
+	//Measured by the actual title font in-game; tests can provide deterministic metrics.
+	public static String[] annotationLines(String text, float maxWidth, TextWidth width){
+		if (text == null || text.isEmpty()) return new String[]{""};
+		if (width.measure(text) <= maxWidth) return new String[]{text};
+		java.util.List<String> lines = new java.util.ArrayList<>();
+		String line = "";
+		for (String word : text.trim().split("\\s+")){
+			String candidate = line.isEmpty() ? word : line + " " + word;
+			if (!line.isEmpty() && width.measure(candidate) > maxWidth){
+				lines.add(line);
+				line = "";
+			}
+			//Very long single tokens wrap too; normal instructional words stay whole.
+			while (word.length() > 1 && width.measure(word) > maxWidth){
+				int end = 1;
+				while (end < word.length() && width.measure(word.substring(0, end + 1)) <= maxWidth) end++;
+				lines.add(word.substring(0, end));
+				word = word.substring(end);
+			}
+			line = line.isEmpty() ? word : line + " " + word;
+		}
+		lines.add(line);
+		//Avoid stranding the final word when the previous line can lend it a word without overflowing.
+		if (lines.size() > 1 && line.indexOf(' ') < 0){
+			int previous = lines.size() - 2;
+			String before = lines.get(previous);
+			int split = before.lastIndexOf(' ');
+			if (split > 0 && width.measure(before.substring(split + 1) + " " + line) <= maxWidth){
+				lines.set(previous, before.substring(0, split));
+				lines.set(previous + 1, before.substring(split + 1) + " " + line);
+			}
+		}
+		return lines.toArray(new String[0]);
+	}
+
 	//height of each of the three main button rows, given the vertical space available for the whole grid
 	public static float mainHeight( float availableForGrid ){
 		float h = (availableForGrid - APD_ROW_H - BOTTOM_H - 3*MAIN_GAP) / 3f;

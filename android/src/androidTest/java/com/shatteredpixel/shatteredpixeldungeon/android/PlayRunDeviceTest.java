@@ -81,6 +81,38 @@ public class PlayRunDeviceTest {
 		return RunFactsBuilder.fromLog(RunLogReader.read(new File(path)), "device-run");
 	}
 
+	private static Object field(Object target, String name) throws Exception {
+		Class<?> type = target.getClass();
+		while (type != null){
+			try { java.lang.reflect.Field f = type.getDeclaredField(name); f.setAccessible(true); return f.get(target); }
+			catch (NoSuchFieldException ignored){ type = type.getSuperclass(); }
+		}
+		throw new NoSuchFieldException(name);
+	}
+
+	private static void click(Object button, String method) throws Exception {
+		Class<?> type = button.getClass();
+		while (type != null){
+			try { java.lang.reflect.Method m = type.getDeclaredMethod(method); m.setAccessible(true); m.invoke(button); return; }
+			catch (NoSuchMethodException ignored){ type = type.getSuperclass(); }
+		}
+		throw new NoSuchMethodException(method);
+	}
+
+	private static void assertGameplayControls() throws Exception {
+		com.watabou.noosa.ui.Component toolbar = (com.watabou.noosa.ui.Component) field(Game.scene(), "toolbar");
+		assertTrue("toolbar is visible and usable before guidebook acknowledgement", toolbar.visible && toolbar.active);
+		com.watabou.noosa.ui.Component status = (com.watabou.noosa.ui.Component) field(Game.scene(), "status");
+		assertTrue("health/status remain visible", status.visible && status.active);
+		for (String name : new String[]{"btnSearch", "btnWait", "btnInventory"}){
+			com.watabou.noosa.ui.Component button = (com.watabou.noosa.ui.Component) field(toolbar, name);
+			assertTrue(name + " is visible and active", button.visible && button.active);
+		}
+		Object[] slots = (Object[]) field(toolbar, "btnQuick");
+		assertTrue("quick-use slots exist", slots.length > 0);
+		for (Object slot : slots) assertTrue("quick-use slots are visible", ((com.watabou.noosa.ui.Component) slot).visible);
+	}
+
 	@Test
 	public void aRunCanBePlayedSavedContinuedAndEndedWithItsHistoryRecorded() throws Exception {
 		boolean recordingWas = SPDSettings.apdRecording();
@@ -94,7 +126,7 @@ public class PlayRunDeviceTest {
 			while (!(Game.scene() instanceof TitleScene) && System.currentTimeMillis() < titleBy) Thread.sleep(250);
 			Thread.sleep(2500);
 			SPDSettings.apdRecording(true);
-			SPDSettings.intro(false);
+			SPDSettings.intro(true);
 
 			//start: exactly what the character screen's Start button does
 			onRender(new Runnable(){
@@ -114,13 +146,18 @@ public class PlayRunDeviceTest {
 			Log.w(TAG, "run started: depth " + Dungeon.depth + ", class " + Dungeon.hero.heroClass + ", log " + ApdRecorder.status().logPath);
 			assertEquals(1, Dungeon.depth);
 			assertEquals(HeroClass.WARRIOR, Dungeon.hero.heroClass);
+			onRender(() -> { try { assertGameplayControls(); } catch (Exception e){ throw new RuntimeException(e); } });
+			//Use the actual toolbar callbacks; the tutorial must not suppress search or wait.
+			onRender(() -> { try { click(field(field(Game.scene(), "toolbar"), "btnSearch"), "onLongClick"); } catch (Exception e){ throw new RuntimeException(e); } });
+			waitUntil("ready after searching", () -> Dungeon.hero.ready, 30000);
+
 			final String runId = ApdRecorder.currentRunId();
 			assertNotNull("a run id was given to the new run", runId);
 
 			//play: wait for ten turns
 			for (int i = 0; i < 10; i++){
 				waitUntil("the hero to be ready", new Callable<Boolean>(){ public Boolean call(){ return Dungeon.hero.ready; } }, 30000);
-				onRender(new Runnable(){ public void run(){ Dungeon.hero.rest(false); } });
+				onRender(() -> { try { click(field(field(Game.scene(), "toolbar"), "btnWait"), "onClick"); } catch (Exception e){ throw new RuntimeException(e); } });
 				Thread.sleep(120);
 			}
 			waitUntil("the hero to be ready", new Callable<Boolean>(){ public Boolean call(){ return Dungeon.hero.ready; } }, 30000);
@@ -141,14 +178,24 @@ public class PlayRunDeviceTest {
 			onRender(new Runnable(){
 				public void run(){
 					try {
-						Dungeon.saveAll();
-					} catch (java.io.IOException e){
-						throw new RuntimeException(e);
-					}
-					Dungeon.hero = null;
-					InterlevelScene.mode = InterlevelScene.Mode.CONTINUE;
-					Game.switchScene(InterlevelScene.class);
+						com.shatteredpixel.shatteredpixeldungeon.windows.WndGame menu = new com.shatteredpixel.shatteredpixeldungeon.windows.WndGame();
+						GameScene.show(menu);
+						com.shatteredpixel.shatteredpixeldungeon.ui.RedButton main = null;
+						for (Object child : (java.util.List<?>) field(menu, "members")){
+							if (child instanceof com.shatteredpixel.shatteredpixeldungeon.ui.RedButton &&
+									((com.shatteredpixel.shatteredpixeldungeon.ui.RedButton) child).text().equals(com.shatteredpixel.shatteredpixeldungeon.messages.Messages.get(menu, "menu"))) main = (com.shatteredpixel.shatteredpixeldungeon.ui.RedButton) child;
+						}
+						assertNotNull("Main Menu exists", main);
+						assertTrue("Main Menu is enabled during intro", main.active);
+						click(main, "onClick");
+					} catch (Exception e){ throw new RuntimeException(e); }
 				}
+			});
+			waitUntil("Main Menu saves and returns to title", () -> Game.scene() instanceof TitleScene, 30000);
+			onRender(() -> {
+				Dungeon.hero = null;
+				InterlevelScene.mode = InterlevelScene.Mode.CONTINUE;
+				Game.switchScene(InterlevelScene.class);
 			});
 			waitUntil("the game to continue", new Callable<Boolean>(){
 				public Boolean call(){ return Game.scene() instanceof GameScene && Dungeon.hero != null && Dungeon.hero.ready; } }, 150000);
@@ -157,6 +204,7 @@ public class PlayRunDeviceTest {
 			assertEquals(hpBefore, Dungeon.hero.HP);
 			assertEquals(HeroClass.WARRIOR, Dungeon.hero.heroClass);
 			assertEquals("still recording after the continue", 0, ApdRecorder.status().errorCount);
+			onRender(() -> { try { assertGameplayControls(); } catch (Exception e){ throw new RuntimeException(e); } });
 
 			//die: the run must be sealed with its outcome
 			onRender(new Runnable(){ public void run(){ Dungeon.fail(Rat.class); } });
