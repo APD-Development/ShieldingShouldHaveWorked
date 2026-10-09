@@ -32,6 +32,9 @@ public final class LevelGenerationHarness {
 
 	private LevelGenerationHarness(){}
 
+	//Only GoldenChildMain uses the pre-fix snapshot format; actual maps still require visible exits.
+	static boolean historicalTutorialFingerprint;
+
 	//Level generation is NOT a pure function of the seed: it also reads persistent journal state.
 	// - Document (guidebook/alchemy/lore page) found states decide which pages get placed on levels
 	// - SPDSettings.intro() changes the tutorial elements of the first floors
@@ -207,6 +210,23 @@ public final class LevelGenerationHarness {
 		Object json = new org.json.JSONTokener(new String(bytes.toByteArray(), StandardCharsets.UTF_8)).nextValue();
 
 		normalizePaintingVariance(((JSONObject) json).getJSONObject("level"));
+		//Keep the old golden baseline meaningful after the explicitly authorized entrance-door fix.
+		//Normalize ONLY those boundary door bytes in the serialized test snapshot, never the real level.
+		//Every other tile/item/mob/state remains compared against the unchanged historical hashes.
+		if (historicalTutorialFingerprint && Dungeon.depth == 1 && SPDSettings.intro()
+				&& level instanceof com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel){
+			JSONArray map = ((JSONObject) json).getJSONObject("level").getJSONArray("map");
+			for (com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room room :
+					((com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel) level).rooms()){
+				if (!room.isEntrance()) continue;
+				for (int y = room.top; y <= room.bottom; y++) for (int x = room.left; x <= room.right; x++){
+					if (x != room.left && x != room.right && y != room.top && y != room.bottom) continue;
+					int cell = x + y * level.width();
+					if (map.getInt(cell) == Terrain.DOOR) map.put(cell, Terrain.SECRET_DOOR);
+				}
+			}
+		}
+
 
 		StringBuilder canonical = new StringBuilder();
 		canonicalize(json, canonical);

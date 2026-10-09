@@ -27,6 +27,7 @@ public final class GoldenChildMain {
 		boolean flow = mode.equals("flow") || mode.equals("flowrec");
 
 		HeadlessTestSupport.start();
+		LevelGenerationHarness.historicalTutorialFingerprint = true;
 		if (record){
 			com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder.configure(
 					new java.io.File(HeadlessTestSupport.tempDir(), "history"), true);

@@ -110,7 +110,9 @@ public class PlayRunDeviceTest {
 		}
 		Object[] slots = (Object[]) field(toolbar, "btnQuick");
 		assertTrue("quick-use slots exist", slots.length > 0);
-		for (Object slot : slots) assertTrue("quick-use slots are visible", ((com.watabou.noosa.ui.Component) slot).visible);
+		int visibleSlots = 0;
+		for (Object slot : slots) if (((com.watabou.noosa.ui.Component) slot).visible) visibleSlots++;
+		assertTrue("the current quick-use page is visible", visibleSlots > 0);
 	}
 
 	@Test

@@ -1,3 +1,5 @@
+C12 emergency CI: all four exit/all-hero/old-save cases passed; 905 total / 2 golden-baseline failures expected from the authorized visible-door change. No APK delivered. Historical snapshot comparison normalizes only entrance door bytes; actual maps remain tested as traversable. Next run must pass complete core and Android.
+
 # Emergency gameplay work — October 9, 2026
 
 Owner orders replacement APK ASAP, with a one-hour window. Starting-room/hidden-controls blockers take priority over all secondary work. October 8 interim Steps 1–22 PDF has been read directly. Earlier tutorial-trap completion claims were insufficient; do not repeat them.
