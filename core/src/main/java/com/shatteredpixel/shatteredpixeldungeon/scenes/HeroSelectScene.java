@@ -445,7 +445,7 @@ public class HeroSelectScene extends PixelScene {
 		} else if (SPDSettings.challenges() != 0){
 			btnOptions.icon().hardlight(2f, 1.33f, 0.5f);
 		} else {
-			btnOptions.icon().hardlight(Window.TITLE_COLOR);
+			btnOptions.icon().hardlight(0xFF2EC8); // APD title-arrow pink
 		}
 	}
 

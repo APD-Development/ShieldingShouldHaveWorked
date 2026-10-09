@@ -1,10 +1,10 @@
-## Next candidate — quest isolation and visible class-selection options
+## Next candidate — quest isolation and APD-themed class-selection options
 
 Since TEST17: Imp quest state is cleared on reset/load so another save cannot grant completed quest/shop access or leave reward options/legacy flags behind. Ghost reward restoration now clears absent enchantment/glyph fields rather than inheriting another save's rewards. Neither change alters the save schema, reward generation, seeded RNG, statistics or existing saved records. Risks to check: restore both old and new quest saves, retain their own completion/rewards, and finish each quest on a phone.
 
 Evidence: Imp three regression tests failed before the fix and pass after; Ghost missing-enchantment test failed before and passes after, and legitimate enchantment restoration passes. Combined seven local Imp/Ghost checks pass. Existing 537 non-native local regression tests also pass after both fixes (22.779s). QuestRecordingTest cannot execute locally because libgdx64.so is missing; CI will run its native-backed coverage. No new physical-device test claimed.
 
-Owner confirms the fresh-install gear/options report is from TEST10, whose tutorial hid the options button; TEST17 already removes that restriction. Owner also dislikes its gray appearance. The ordinary gear icon is now gold, retaining green custom-seed and orange challenge indicators. HeroSelectScene compiles locally. Added actual Android gear tap coverage: button visible/active, panel opens, options have text and fit within panel. This new native check is pending; do not mark the phone report verified. No starting-equipment information was removed or changed.
+Owner confirms the fresh-install gear/options report is from TEST10, whose tutorial hid the options button; TEST17 already removes that restriction. Owner dislikes gray and rejected the proposed gold; the ordinary gear icon now matches the existing APD title-arrow pink (0xFF2EC8), retaining green custom-seed and orange challenge indicators. HeroSelectScene compiles locally. Added actual Android gear tap coverage: button visible/active, panel opens, options have text and fit within panel. This new native check is pending; do not mark the phone report verified. No starting-equipment information was removed or changed.
 
 Latest delivered APK remains TEST17 until this candidate completes full core, debug assembly and targeted API34 tests. Community preview and physical full-run/quest/upgrade checks remain outstanding. Previous release and all player data retained.
 

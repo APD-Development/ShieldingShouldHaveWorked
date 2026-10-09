@@ -10,3 +10,5 @@ C16 actual5exit/intro/migration pass, 907/2goldenfail on all-challenges floor1. 
 C23 verification-only: reproduce and fix Imp quest state leaking across new runs/save loads. New three tests fail before/pass after; Ghost2pass; local QuestRecording blocked by missing native library. Run full core/debug/targeted Android; do not publish another release from this verification run.
 
 Deliver next private candidate with C23 Imp/C24 Ghost save isolation and owner-requested gold gear. Supersede verification-only C18 after successful core/debug assembly; its native checks do not cover the final Ghost/gold/gear-test source. Run complete core and targeted Android including actual gear-menu tap/population before private APK/PDF publication. Preserve TEST17 rollback, saves, app ID/signing key. Record actual results; physical-phone testing remains pending.
+
+Owner color correction: use existing APD title-arrow pink (0xFF2EC8), not gold. Recompile successful; supersede pending gold candidate and verify final source before delivery.
