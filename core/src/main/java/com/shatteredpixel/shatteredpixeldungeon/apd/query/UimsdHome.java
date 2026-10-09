@@ -112,7 +112,8 @@ public final class UimsdHome {
 		this.scopeNote = (allRules ? (mixedRulesets
 				? "MIXED RULES: all finished runs, played under " + rulesets + " different sets of rules (difficulty, challenges, exotic-item setting). The numbers below are not directly comparable: tap Rules to see only your own, or open the Difficulty table to compare like with like."
 				: "All finished runs, whatever rules they were played under.") : "Finished runs played under your current rules.")
-				+ (!allRules && runsElsewhere > 0 ? " " + runsElsewhere + (runsElsewhere == 1 ? " run was" : " runs were") + " played under other rules (another difficulty, challenges or exotic setting): tap Rules to include them." : "");
+				+ (!allRules && runsElsewhere > 0 ? " " + runsElsewhere + (runsElsewhere == 1 ? " run was" : " runs were") + " played under other rules (another difficulty, challenges or exotic setting): tap Rules to include them." : "")
+				+ " Runs with unknown or changed rules, and repeated imported copies, are left out; table Options can include them.";
 	}
 
 	public boolean isEmpty(){

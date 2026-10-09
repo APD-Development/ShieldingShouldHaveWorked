@@ -87,7 +87,9 @@ public final class StatusText {
 					+ (s.unknownRuleset == 1 ? "it is" : "they are") + " left out. Tap to include " + (s.unknownRuleset == 1 ? "it" : "them") + ".", NOTE, ACT_UNKNOWN_RULESET));
 		}
 		if (s.mixedRuleset > 0){
-			out.add(new Line(plural(s.mixedRuleset, "run", "runs") + " had its rules changed while being played, so "
+			out.add(new Line(plural(s.mixedRuleset, one, many)
+					+ (one.equals("run") ? (s.mixedRuleset == 1 ? " had its" : " had their") + " rules changed while being played"
+					: (s.mixedRuleset == 1 ? " belongs" : " belong") + " to runs whose rules changed while being played") + ", so "
 					+ (s.mixedRuleset == 1 ? "it is" : "they are") + " left out. Tap to include " + (s.mixedRuleset == 1 ? "it" : "them") + ".", NOTE, ACT_MIXED_RULESET));
 		}
 		if (s.unfinished > 0){
