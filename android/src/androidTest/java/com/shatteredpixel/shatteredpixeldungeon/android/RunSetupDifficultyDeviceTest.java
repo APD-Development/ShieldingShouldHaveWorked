@@ -131,7 +131,12 @@ public class RunSetupDifficultyDeviceTest {
 			onRender(new Runnable(){
 				public void run(){
 					try {
+						SPDSettings.intro(true);
 						pick.invoke(Game.scene(), HeroClass.WARRIOR);
+						assertTrue("exercise actual hero-selection layout with intro still true", SPDSettings.intro());
+						DifficultyBar freshBar = find(Game.scene(), DifficultyBar.class);
+						assertNotNull("fresh player difficulty exists", freshBar);
+						assertTrue("fresh player difficulty is visible and usable", freshBar.visible && freshBar.active);
 					} catch (Exception e){
 						throw new RuntimeException(e);
 					}

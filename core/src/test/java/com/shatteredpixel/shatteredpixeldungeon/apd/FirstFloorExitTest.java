@@ -125,6 +125,12 @@ public class FirstFloorExitTest {
 		int[] before = level.map.clone();
 		com.watabou.utils.Bundle bundle = new com.watabou.utils.Bundle();
 		bundle.put("level", level);
+		com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth = 2;
+		com.shatteredpixel.shatteredpixeldungeon.Dungeon.branch = 0;
+		assertArrayEquals("other floors are not migrated", before, ((Level) bundle.get("level")).map);
+		com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth = 1;
+		com.shatteredpixel.shatteredpixeldungeon.Dungeon.branch = 1;
+		assertArrayEquals("side branches are not migrated", before, ((Level) bundle.get("level")).map);
 		com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth = 1;
 		com.shatteredpixel.shatteredpixeldungeon.Dungeon.branch = 0;
 		com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel restored =
