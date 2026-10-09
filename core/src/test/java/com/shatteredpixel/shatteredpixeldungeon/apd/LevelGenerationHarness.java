@@ -86,6 +86,8 @@ public final class LevelGenerationHarness {
 			}
 			SPDSettings.intro(false);
 		} else {
+			//Debug/headless defaults mark guide pages READ; a fresh intro fixture must explicitly be unread.
+			Document.ADVENTURERS_GUIDE.deletePage(Document.GUIDE_INTRO);
 			SPDSettings.intro(true);
 		}
 	}

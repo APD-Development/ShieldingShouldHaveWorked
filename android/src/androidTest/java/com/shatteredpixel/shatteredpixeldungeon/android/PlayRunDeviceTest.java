@@ -119,6 +119,8 @@ public class PlayRunDeviceTest {
 	public void aRunCanBePlayedSavedContinuedAndEndedWithItsHistoryRecorded() throws Exception {
 		boolean recordingWas = SPDSettings.apdRecording();
 		boolean introWas = SPDSettings.intro();
+		boolean introPageFoundWas = com.shatteredpixel.shatteredpixeldungeon.journal.Document.ADVENTURERS_GUIDE.isPageFound(com.shatteredpixel.shatteredpixeldungeon.journal.Document.GUIDE_INTRO);
+		boolean introPageReadWas = com.shatteredpixel.shatteredpixeldungeon.journal.Document.ADVENTURERS_GUIDE.isPageRead(com.shatteredpixel.shatteredpixeldungeon.journal.Document.GUIDE_INTRO);
 		final int slot = 1;
 		try (ActivityScenario<AndroidLauncher> scenario = ActivityScenario.launch(AndroidLauncher.class)){
 			long end = System.currentTimeMillis() + 120000;
@@ -128,6 +130,7 @@ public class PlayRunDeviceTest {
 			while (!(Game.scene() instanceof TitleScene) && System.currentTimeMillis() < titleBy) Thread.sleep(250);
 			Thread.sleep(2500);
 			SPDSettings.apdRecording(true);
+			com.shatteredpixel.shatteredpixeldungeon.journal.Document.ADVENTURERS_GUIDE.deletePage(com.shatteredpixel.shatteredpixeldungeon.journal.Document.GUIDE_INTRO);
 			SPDSettings.intro(true);
 
 			//start: exactly what the character screen's Start button does
@@ -148,7 +151,7 @@ public class PlayRunDeviceTest {
 			Log.w(TAG, "run started: depth " + Dungeon.depth + ", class " + Dungeon.hero.heroClass + ", log " + ApdRecorder.status().logPath);
 			assertEquals(1, Dungeon.depth);
 			assertEquals(HeroClass.WARRIOR, Dungeon.hero.heroClass);
-			onRender(() -> { try { assertGameplayControls(); } catch (Exception e){ throw new RuntimeException(e); } });
+			onRender(() -> { try { assertTrue("exercise controls before acknowledging intro", SPDSettings.intro()); assertGameplayControls(); } catch (Exception e){ throw new RuntimeException(e); } });
 			//Use the actual toolbar callbacks; the tutorial must not suppress search or wait.
 			onRender(() -> { try { click(field(field(Game.scene(), "toolbar"), "btnSearch"), "onLongClick"); } catch (Exception e){ throw new RuntimeException(e); } });
 			waitUntil("ready after searching", () -> Dungeon.hero.ready, 30000);
@@ -223,6 +226,9 @@ public class PlayRunDeviceTest {
 			}
 			SPDSettings.apdRecording(recordingWas);
 			SPDSettings.intro(introWas);
+			com.shatteredpixel.shatteredpixeldungeon.journal.Document.ADVENTURERS_GUIDE.deletePage(com.shatteredpixel.shatteredpixeldungeon.journal.Document.GUIDE_INTRO);
+			if (introPageFoundWas) com.shatteredpixel.shatteredpixeldungeon.journal.Document.ADVENTURERS_GUIDE.findPage(com.shatteredpixel.shatteredpixeldungeon.journal.Document.GUIDE_INTRO);
+			if (introPageReadWas) com.shatteredpixel.shatteredpixeldungeon.journal.Document.ADVENTURERS_GUIDE.readPage(com.shatteredpixel.shatteredpixeldungeon.journal.Document.GUIDE_INTRO);
 		}
 	}
 
