@@ -1,3 +1,4 @@
-2026-10-09 lunch candidate: repair API34-confirmed split checkbox mismatch (C17/S07).
-30 focused local tests pass. Run complete core suite, debug assembly and all targeted API34 checks.
-Never publish failed candidate; keep TEST8. Owner asks PDF11:55 / APK11:59 EDT, not early stopping.
+2026-10-09 post-lunch verification only: C18 final-column checkbox consistency and C19 deterministic async archive fixture.
+Local before2/1fail; after22focused and15archivepass; broad532pass. Native last-column rendered check assertion added.
+Run complete core, debug assembly and targeted API34 tests; privately stage APK/evidence without release [verification-only].
+TEST10 remains owner phone-test build until next requested delivery.

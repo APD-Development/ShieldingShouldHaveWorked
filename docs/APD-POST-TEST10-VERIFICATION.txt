@@ -1,0 +1,6 @@
+C18 before: 2 tests, 1 failure: last visible entry false while actual column retained.
+C18 after: 22 checks pass, 0.625s.
+First broad532: one async archive fixture failure (initial public events not flushed), not diagnosed as a production regression.
+Archive isolated old15pass1.513s; corrected15pass0.549s.
+Corrected broad532pass21.696s.
+Android verification pending; no physical phone result.

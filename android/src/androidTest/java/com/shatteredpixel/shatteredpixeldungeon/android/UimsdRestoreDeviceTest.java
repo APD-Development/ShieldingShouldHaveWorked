@@ -200,6 +200,25 @@ public class UimsdRestoreDeviceTest {
             onRender(() -> {
                 assertEquals("Columns survived exactly once", 1, windows().size());
                 clearWindows();
+                List<String> previousColumns = new ArrayList<>(model().query().columns);
+                try {
+                    String onlyColumn = model().offeredColumns().get(0).id;
+                    model().setColumns(java.util.Collections.singletonList(onlyColumn));
+                    WndUimsdColumns.show(model());
+                    WndUimsdList picker = (WndUimsdList) windows().get(0);
+                    pickItem(picker, 0);
+                    assertEquals(java.util.Collections.singletonList(onlyColumn), model().query().columns);
+                    int index = 0;
+                    while (!listEntries(picker).get(index).isItem()) index++;
+                    assertEquals("last column stays checked after refused removal", Boolean.TRUE, listEntries(picker).get(index).checked);
+                    try {
+                        Field labels = WndUimsdList.class.getDeclaredField("labelTexts"); labels.setAccessible(true);
+                        RenderedTextBlock label = (RenderedTextBlock) ((List<?>) labels.get(picker)).get(index);
+                        assertTrue("rendered last-column check stays on", label.text().startsWith("[x] "));
+                    } catch (Exception e) { throw new RuntimeException(e); }
+                } finally {
+                    clearWindows(); model().setColumns(previousColumns);
+                }
                 options("pickGroup", new Class<?>[]{UimsdModel.class}, model());
             });
             rebuildScene();

@@ -237,12 +237,14 @@ public class ArchiveRoundTripTest {
 		history(a);
 		//a live recording: a writer that keeps appending while the export reads
 		final TestLogs live = new TestLogs(a, "live", V, 9000).start("run-live", 0, "MAGE", RS, 0, 30, false).enter(1);
-		final boolean[] stop = new boolean[1];
+		//The writer is asynchronous: establish the two initial public events before testing concurrent appends.
+		assertTrue("initial live events reached disk", live.w.flush());
+		final java.util.concurrent.atomic.AtomicBoolean stop = new java.util.concurrent.atomic.AtomicBoolean();
 		Thread t = new Thread(new Runnable(){
 			@Override
 			public void run(){
 				int i = 0;
-				while (!stop[0] && i < 20000){
+				while (!stop.get() && i < 20000){
 					live.heroAttacks("rat", "actors.mobs.Rat", i % 2 == 0);
 					live.registered("x" + i, SECRET_CLASS, 1, false, 0);
 					i++;
@@ -254,7 +256,7 @@ public class ArchiveRoundTripTest {
 		try {
 			archive = export(a);
 		} finally {
-			stop[0] = true;
+			stop.set(true);
 			t.join();
 			live.close(false);
 		}

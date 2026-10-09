@@ -55,13 +55,23 @@ public final class WndUimsdColumns {
 			entries.add(WndUimsdList.Entry.item(c.label, d.length() > 90 ? d.substring(0, 88) + ".." : d).checked(shown.contains(c.id)));
 		}
 		ShatteredPixelDungeon.scene().addToFront(WndUimsdList.switches("Columns",
-				"Tick the columns you want in the table, then tap Done. The first column stays in place while the rest scroll sideways.", entries,
+				"Tick the columns you want in the table, then tap Done. At least one column stays selected. The first column stays in place while the rest scroll sideways.", entries,
 				new WndUimsdList.Picker(){
 					@Override
 					public void onPick( int i, boolean checked ){
-						m.toggleColumn(cols.get(i).id);
+						toggleSelection(m, cols, entries, i);
 					}
 				}).restoreWith(() -> show(m)));
+	}
+
+	//The model can refuse removal of the last visible column. Keep the picker consistent with its decision.
+	static void toggleSelection(UimsdModel m, List<ColumnDef> cols, List<WndUimsdList.Entry> entries, int index){
+		m.toggleColumn(cols.get(index).id);
+		List<String> shown = m.query().columns;
+		int item = 0;
+		for (WndUimsdList.Entry entry : entries){
+			if (entry.isItem()) entry.checked(shown.contains(cols.get(item++).id));
+		}
 	}
 
 	//the shown columns in their order; tapping one offers to move it
