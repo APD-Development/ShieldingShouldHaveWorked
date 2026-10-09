@@ -29,9 +29,12 @@ public final class ApdFeatures {
 
 	private static void ensure(){
 		if (loaded) return;
+		//An early settings/scene lookup can happen before Android has installed its file service.
+		//Keep the switches off for that lookup, but retry once the packaged assets can be read.
+		if (Gdx.files == null) return;
 		loaded = true;
 		try {
-			if (Gdx.files != null && Gdx.files.internal( "apd/features.txt" ).exists()){
+			if (Gdx.files.internal( "apd/features.txt" ).exists()){
 				parse( Gdx.files.internal( "apd/features.txt" ).readString( "UTF-8" ) );
 			}
 		} catch (Exception e){

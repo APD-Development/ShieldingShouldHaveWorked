@@ -362,6 +362,8 @@ public class SPDSettings extends GameSettings {
 	public static final String KEY_APD_ADULT_HUMOR = "apd_adult_humor";
 
 	public static boolean apdAdultHumor(){
+		if (!com.shatteredpixel.shatteredpixeldungeon.apd.age.AgeEligibility.permitsAdult(
+				com.shatteredpixel.shatteredpixeldungeon.apd.age.AgeEligibility.current())) return false;
 		return com.shatteredpixel.shatteredpixeldungeon.apd.age.AgeEligibility.adultHumor(
 				com.shatteredpixel.shatteredpixeldungeon.apd.age.AgeEligibility.current(),
 				getBoolean( KEY_APD_ADULT_HUMOR, false ));
