@@ -182,7 +182,9 @@ public class UimsdRestoreDeviceTest {
                 clearWindows();
             });
             //A separate marked demo fixture: no player history or real demo records.
-            java.io.File container = java.nio.file.Files.createTempDirectory(model().root().toPath(), "dialog-check-").toFile();
+            java.io.File cache = androidx.test.platform.app.InstrumentationRegistry.getInstrumentation()
+                    .getTargetContext().getCacheDir();
+            java.io.File container = java.nio.file.Files.createTempDirectory(cache.toPath(), "dialog-check-").toFile();
             java.io.File fixture = new java.io.File(container, "history");
             assertTrue(fixture.mkdir());
             java.io.File demo = DemoData.demoRootFor(fixture);

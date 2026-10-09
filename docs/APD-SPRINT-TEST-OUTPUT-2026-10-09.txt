@@ -173,3 +173,7 @@ Android assembly and private release delivery: PASS.
 No physical-phone testing or complete instrumentation-suite pass claimed.
 
 Focused leaf-menu follow-up: UimsdChoicesTest 3 pass; local regression subset 528 pass in 19.333s. Native expanded check result pending.
+
+C6 run 37938876024: core/APK pass; native method fails at fixture creation:
+java.nio.file.NoSuchFileException: /data/user/0/.../files/apd/dialog-check-...
+Fixture now uses getTargetContext().getCacheDir(); all existing assertions preserved. Fresh C7 result pending; C6 delivery skipped.

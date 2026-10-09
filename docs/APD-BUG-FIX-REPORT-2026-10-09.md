@@ -2,7 +2,7 @@
 
 ## What this report means
 
-Target: a private, playable test APK by noon today, New York time, and this PDF by 11:55 a.m. New York time. November 1, 2026 is the playable alpha test deadline, not a feature-complete public launch; public release is expected several months later. These are delivery targets, not evidence that every part of the game works.
+Target: a private, playable test APK by noon today, New York time, and this PDF by 11:55 a.m. New York time. November 1, 2026 is the playable alpha test deadline, not a feature-complete public launch; public release targets January–February 2027, subject to stability/testing. These are delivery targets, not evidence that every part of the game works.
 
 The first Codex APK built successfully at 8:16 a.m. New York time. Its complete core test suite passed: 887 tests, no failures, errors or skipped tests. Later changes also need verification in a newer build. The final PDF's build-verification page identifies its exact source commit and available test evidence.
 
