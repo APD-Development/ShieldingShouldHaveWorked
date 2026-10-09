@@ -1,3 +1,19 @@
+## Repository transfer recovered
+
+Canonical private repository is now APD-Development/ShieldingShouldHaveWorked. Read access verified, Codex branch09c0f36113a75f51fb228b83ad03b02eff9ba565 matches the previously pushed UIMSD audit; Claude/main unchanged. The last write attempt against the old owner stalled385.6seconds and was user-aborted; local fixes were preserved in snapshot commit e9affc2, never pushed as Git ancestry. Restore the BackendClient damaged-queue refusal and its regression test through a lease-protected Git-data commit on the existing remote ancestry.
+
+Current local source has557passing non-native tests (17.886s) and30targeted UIMSD checks (10.101s). Repository access is restored; GitHub Actions quota restoration is not verified, so do not trigger more cloud jobs or paid usage. New UIMSD fixes remain unbuilt/unverified on Android; latest delivered verified APK is TEST20. Continue independent UIMSD safety investigation, preserving saves, RNG and creator restrictions. Earlier repository-access failures below are historical.
+
+## Cloud quota interruption — local UIMSD work continues
+
+Owner reports GitHub Actions minutes exhausted. TEST21 core/debug and Android jobs report success, but delivery job114016454824 failed before any step, with runner_id0; its logs return404 BlobNotFound. Billing/reset details cannot be verified through this connector. A job-retry tool call stalled524.6seconds and was user-aborted; latest observed run37987339578 remains attempt1/failed. Do not assume retry ran or TEST21 was published. TEST20 remains latest verified delivered release. No paid usage, billing/settings changes or security bypass authorized by this workaround. Do not trigger/rerun Actions or change build-request/PDF-trigger files while this quota interruption remains unresolved.
+
+Continue normal code, local tests and ordinary lease-protected GitHub commits. Codex work-branch ordinary commits do not trigger Actions (workflows inspected). APK assembly/emulator acceptance is unavailable locally because this workspace lacks the Android SDK and desktop libgdx native library. Never claim new UIMSD patches are in TEST20 or have passed unavailable native acceptance.
+
+Final local UIMSD audit acceptance:557checks pass17.886seconds for the latest source, plus final targeted30checks pass10.101seconds. Includes192 combined scope/filter/sort/column saved-view disk-reload configurations,24,024 hidden-information comparisons, corruption preservation, accurate privacy counts, acknowledged-send bookkeeping, mixed-row-count units and excluded-history explanation. BackendClient now refuses a damaged queue before starting a background sender/network work, reports the reason, and skips mailbox fetch if damage is found after a send. The synchronous refusal has its own regression check. No server/community functionality enabled, no history reset or gameplay balance/save-schema/RNG change. Full current-source core/native/build still pending; this is not proof of zero bugs or physical-phone readiness.
+
+GitHub application audit commit09c0f36113a75f51fb228b83ad03b02eff9ba565 plus the subsequent BackendClient/refusal-test checkpoint preserve the work for either developer. Next: restore an authorized build/test environment when available, run the full suite and targeted Android against exact latest source, then deliver a new APK/PDF; keep TEST20 rollback. Meanwhile continue independent UIMSD/gameplay data-safety tasks and record real test limits.
+
 ## Pending UIMSD reliability audit — C26–C29
 
 Owner prioritizes UIMSD and forbids game-breaking crashes/freezes/save loss/gameplay interference. This audit does not promise zero bugs. C26: mixed-rules exclusion counters count table rows, but status text labeled them runs (five items from one run became five runs); use actual table units and singular/plural, without changing history/count policy. Two reproduction tests failed before and pass after.

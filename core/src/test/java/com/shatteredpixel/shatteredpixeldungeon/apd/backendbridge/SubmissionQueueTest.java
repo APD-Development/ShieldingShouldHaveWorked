@@ -212,6 +212,16 @@ public class SubmissionQueueTest {
 	}
 
 	@Test
+	public void manualSendReportsDamagedQueueBeforeStartingNetworkWork() throws Exception {
+		damagedQueue();
+		final String[] result = {null};
+		BackendClient.sendNow(tmp.getRoot(), true, "http://127.0.0.1:1", message -> result[0] = message);
+		assertNotNull("the refusal happens before any background sender is started", result[0]);
+		assertTrue(result[0], result[0].contains("unreadable entries"));
+		assertTrue(result[0], result[0].contains("Nothing was sent"));
+	}
+
+	@Test
 	public void privacyDoesNotCallSettingsOrEvidenceQueueEntriesFinishedRuns() {
 		assertTrue(SubmissionQueue.enqueueEnvelope(tmp.getRoot(),
 				com.shatteredpixel.shatteredpixeldungeon.apd.backend.Id.of(
