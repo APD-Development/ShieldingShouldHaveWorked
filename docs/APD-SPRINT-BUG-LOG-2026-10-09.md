@@ -1,3 +1,7 @@
+## Current outcome: emergency TEST17
+
+C22 CRITICAL first-start/old-save exit/HUD/search/Main Menu/difficulty blockers: fixed and verified in appsourcea317b5d5 / run37972251204. Six generation/migration/intro-progression cases pass; full908core and four targeted API34 checks pass. Historical S03/returning-only assumptions superseded; first-run gameplay is priority one. C21/C18/C20 also verified in this exact candidate. No confirmed new regression in tested paths. Physical RedMagic, exact owner save/old APK upgrade, all-quests/full-game victory remain unverified. Full failure history follows; do not relabel older pending candidates as successful deliveries.
+
 # APD bug log — October 9, 2026
 
 Branch: codex/apd-phone-fixes-2026-10-09. Physical-phone testing is not claimed. Latest C8: 896 core tests and 3 targeted API 34 checks pass, zero failures/errors/skips. The owner-facing causes, fixes and side effects are in APD-BUG-FIX-REPORT-2026-10-09.md.

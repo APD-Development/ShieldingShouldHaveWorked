@@ -1,3 +1,19 @@
+## VERIFIED EMERGENCY DELIVERY — CODEX TEST 17
+
+Application source:a317b5d5f4482b3100ce053800b54c2b2bab11f4. Private release:apd-codex-test-17. Published October9,2026 at2:28:25PM EDT. APK:ADHD-Pixel-Dungeon-CODEX-TEST-17.apk;38,225,942bytes;SHA256c66bcc0c4ad91b873c51a0b482f3dd2d6fc69dddc70faadfb32111a9a70c19b5. Release/body/asset digest verified against GitHub; TEST10 remains preserved as rollback. Install over it, never uninstall or clear data.
+
+Measured evidence:run37972251204 completed successfully. Complete core908tests/144suites/0failures/0errors/0skips; XML suite time sum59.505s. FirstFloorExitTest6cases pass in1.792s, including 12fresh/12veteran seed sets, all hero classes, all challenges, saved-entrance repair, unrelated-secret preservation, other-floor/branch exclusion, idempotence and intro/hunger progression. Both historical golden/RNG recording comparisons pass with their unchanged baselines; only authorized entrance-door bytes are normalized in the test snapshot, actual maps remain required to be traversable.
+
+API34 emulator4checks/0failures/errors/skips;216.603seconds measured XML duration. Actual rendered UIMSD restoration/title-font narrow-screen/checkmark test8.997s; actual intro-enabled toolbar Search/Wait, enabled Main Menu, save/resume/same run/HP/history and controlled death69.737s; controlled win sealing66.804s; actual hero-selection intro-enabled difficulty layout and touches4,1,5,369.757s. Native death/win checks trigger outcomes directly: they do not play through every floor, quest or boss. This is targeted Android emulator coverage, not physical RedMagic verification, not a full Android suite and not a real previous-APK upgrade test. The saved-level migration test models old terrain; the owner's exact save was not supplied.
+
+Final implementation exposes first-floor entrance boundary doors AFTER legacy seeded generation completes, and on saved main-branch floor1 restore; this preserves generation decisions and other secrets. Intro hints/guidebook remain, but essential controls, health/status, difficulty/options and Main Menu are always usable. Searching is functional before acknowledgement. Intro completion no longer hides controls or reveals all doors. Leaving the entrance, later depths/branches or a read guide ends the intro flag; initial entrance tutorial hunger grace remains until that point. Read introduction state is no longer forcibly reset. Full compiler/core/native acceptance passed for this exact source. No confirmed new regression remains from these fixes in tested cases; unknown gameplay paths and physical-device behavior remain unverified.
+
+Additional verified changes in this APK:measured title instruction wrapping (C21), final-column checkbox synchronization (C18) and failed/incomplete changed-record export reporting (C20). No backend/community services, Grudge/Lore, monetization or unrelated achievement was enabled. Signing key/app ID, save format/history and creator Cleric release restriction stay unchanged.
+
+Required owner checks:resume the trapped save, see/cross the door; start a fresh Warrior and Cleric run and use toolbar/inventory/quickslots; select difficulty and check persistence; descend normally, return to title through Main Menu and Continue; confirm HP/items/location/history; read guide and resume; verify instruction/arrow and app-switch UIMSD on the RedMagic. Report seed, hero, difficulty and build17 for any remaining blocker. Do not mark phone checks passed from emulator results.
+
+Historical failures remain below: C12 core905/2goldenfail; C15 core907/3fixture/goldenfail; C16 core907/2all-challenges goldenfail. C13/C14 superseded/canceled. None was released. Final C17 fixes the demonstrated causes and passes all required checks; no failing assertion was skipped or baseline regenerated.
+
 
 ## Emergency gameplay correction — C22 (replacement for TEST 10)
 

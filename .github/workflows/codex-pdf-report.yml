@@ -23,19 +23,19 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh api repos/${{ github.repository }}/releases/tags/apd-codex-test-10 > verified-release.json
+          gh api repos/${{ github.repository }}/releases/tags/apd-codex-test-17 > verified-release.json
       - name: Require unchanged application source and successful build evidence
         env:
           APD_DOCUMENTATION_SHA: ${{ github.sha }}
         run: |
           python3 - <<'PY'
           import json, os, pathlib, subprocess
-          source = '01c95ec4f9ec352d565f93b38acfc069663f1572'
+          source = 'a317b5d5f4482b3100ce053800b54c2b2bab11f4'
           release = json.loads(pathlib.Path('verified-release.json').read_text())
           if not release['prerelease'] or release['draft'] or release['target_commitish'] != source:
               raise SystemExit('Unexpected release/source; do not replace its report')
           body = release['body']
-          if source not in body or '896 tests, 0 failures, 0 errors, 0 skipped' not in body or '3 instrumented checks, 0 failures, 0 errors, 0 skipped' not in body:
+          if source not in body or '908 tests, 0 failures, 0 errors, 0 skipped' not in body or '4 instrumented checks, 0 failures, 0 errors, 0 skipped' not in body:
               raise SystemExit('Missing successful verification evidence')
           changed = subprocess.check_output(['git', 'diff', '--name-only', source, 'HEAD'], text=True).splitlines()
           if any(not (p.startswith('docs/') or p == '.github/workflows/codex-pdf-report.yml') for p in changed):
@@ -51,7 +51,7 @@ jobs:
       - name: Replace only the PDF on the private prerelease
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release upload apd-codex-test-10 delivery/APD-Bug-Fixes-2026-10-09.pdf --clobber --repo ${{ github.repository }}
+        run: gh release upload apd-codex-test-17 delivery/APD-Bug-Fixes-2026-10-09.pdf --clobber --repo ${{ github.repository }}
       - name: Keep a downloadable report and verification record
         uses: actions/upload-artifact@v4
         with:
