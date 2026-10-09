@@ -166,4 +166,33 @@ public class SavedViewsTest {
 		for (ColumnDef column : result.columns) ids.add(column.id);
 		return ids;
 	}
+	@Test public void anInvalidDestinationDirectoryIsNeverDeletedToSaveViews() throws Exception {
+		File target = tmp.newFolder("destination");
+		SavedViews views = new SavedViews();
+		views.save("one", q("runs", 0), 1);
+		try {
+			views.store(target);
+			fail("a directory is not a saved-view file");
+		} catch (java.io.IOException expected) {
+			assertTrue("preserve the existing directory", target.isDirectory());
+		}
+	}
+
+	@Test public void aFailedTemporaryWritePreservesThePreviousViews() throws Exception {
+		File target = SavedViews.fileIn(tmp.getRoot());
+		SavedViews views = new SavedViews();
+		views.save("old", q("runs", 0), 1);
+		views.store(target);
+		byte[] original = Files.readAllBytes(target.toPath());
+		assertTrue(new File(target.getPath() + ".tmp").mkdir());
+		views.save("new", q("items", 0), 2);
+		try {
+			views.store(target);
+			fail("the temporary path is unavailable");
+		} catch (java.io.IOException expected) {
+			assertArrayEquals(original, Files.readAllBytes(target.toPath()));
+			assertEquals(1, SavedViews.load(target).list().size());
+		}
+	}
+
 }

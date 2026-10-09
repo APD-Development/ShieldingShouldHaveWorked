@@ -130,6 +130,7 @@ public final class SavedViews {
 	}
 
 	public void store( File file ) throws IOException {
+		if (file.isDirectory()) throw new IOException("not a saved-view file: " + file);
 		File tmp = new File(file.getPath() + ".tmp");
 		try (BufferedWriter w = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tmp), StandardCharsets.UTF_8))){
 			for (View v : views){
@@ -137,11 +138,9 @@ public final class SavedViews {
 				w.newLine();
 			}
 		}
-		//renaming over the old file replaces it in one step; if this system refuses, replace it the long way
-		if (!tmp.renameTo(file)){
-			if (file.exists() && !file.delete()) throw new IOException("cannot replace " + file);
-			if (!tmp.renameTo(file)) throw new IOException("cannot write " + file);
-		}
+		//The temporary file is a sibling. Keep the previous file if this
+		//filesystem refuses replacement; deleting it first can lose saved views.
+		if (!tmp.renameTo(file)) throw new IOException("cannot replace " + file);
 	}
 
 	//a missing file is no views; never throws for damaged content
