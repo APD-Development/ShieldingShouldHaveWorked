@@ -201,7 +201,7 @@ public final class WndUimsdOptions {
 	}
 
 	private static void deleteDemoData( final java.io.File realRoot ){
-		ShatteredPixelDungeon.scene().addToFront(new WndOptions("Delete all demo data?", "This removes the made-up demo runs. Your own history and your saves are not touched, and UIMSD stays unlocked.", "Delete the demo data", "Keep it"){
+		ShatteredPixelDungeon.scene().addToFront(new WndUimsdChoices("Delete all demo data?", "This removes the made-up demo runs. Your own history and your saves are not touched, and UIMSD stays unlocked.", "Delete the demo data", "Keep it"){
 			@Override
 			protected void onSelect( int index ){
 				if (index != 0) return;
@@ -294,7 +294,7 @@ public final class WndUimsdOptions {
 	}
 
 	private static void answerRequest( final UimsdModel m, final EvidenceInbox.Entry entry ){
-		ShatteredPixelDungeon.scene().addToFront(new WndOptions("Share this run's full log?",
+		ShatteredPixelDungeon.scene().addToFront(new WndUimsdChoices("Share this run's full log?",
 				"A server asked to check the run you submitted (" + entry.asked.runId + "). Agreeing queues its complete recorded log for sending the next time you press Send. Declining sends nothing.",
 				"Agree", "Decline", "Decide later"){
 			@Override
@@ -367,7 +367,7 @@ public final class WndUimsdOptions {
 
 	private static void accountRequest( final UimsdModel m, final com.shatteredpixel.shatteredpixeldungeon.apd.backend.AccountRequests.Kind kind ){
 		final boolean delete = kind == com.shatteredpixel.shatteredpixeldungeon.apd.backend.AccountRequests.Kind.DELETE;
-		ShatteredPixelDungeon.scene().addToFront(new WndOptions(delete ? "Delete your account?" : "Ask for a copy of your account data?",
+		ShatteredPixelDungeon.scene().addToFront(new WndUimsdChoices(delete ? "Delete your account?" : "Ask for a copy of your account data?",
 				delete ? "This queues a request to delete your account and what the server holds about it. It is sent the next time you press Send. Your history and saves on this device stay as they are."
 						: "This queues a request for a copy of what the server holds about your account. It is sent the next time you press Send.",
 				delete ? "Queue the deletion" : "Queue the request", "Cancel"){

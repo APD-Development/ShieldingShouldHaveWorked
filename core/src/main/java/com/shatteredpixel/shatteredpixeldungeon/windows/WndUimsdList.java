@@ -57,6 +57,8 @@ public class WndUimsdList extends Window {
 		public boolean warn;
 		//switches: null for an entry that is not a switch
 		public Boolean checked;
+		private boolean action;
+		private int noteSize;
 
 		private Entry( int kind, String label, String detail ){
 			this.kind = kind;
@@ -72,6 +74,12 @@ public class WndUimsdList extends Window {
 			return new Entry(NOTE, text, "");
 		}
 
+		public static Entry note(String text, int size){
+			Entry entry = note(text);
+			entry.noteSize = size;
+			return entry;
+		}
+
 		public static Entry warning( String text ){
 			Entry e = new Entry(NOTE, text, "");
 			e.warn = true;
@@ -80,6 +88,12 @@ public class WndUimsdList extends Window {
 
 		public static Entry item( String label ){
 			return new Entry(ITEM, label, "");
+		}
+
+		public static Entry action(String label){
+			Entry entry = item(label);
+			entry.action = true;
+			return entry;
 		}
 
 		public static Entry item( String label, String detail ){
@@ -187,10 +201,10 @@ public class WndUimsdList extends Window {
 				label = PixelScene.renderTextBlock(e.label.toUpperCase(), UimsdStyle.SIZE_HELP);
 				heights[i] = label.height() + 6;
 			} else if (e.kind == Entry.NOTE){
-				label = PixelScene.renderTextBlock(e.label, UimsdStyle.SIZE_META);
+				label = PixelScene.renderTextBlock(e.label, e.noteSize > 0 ? e.noteSize : UimsdStyle.SIZE_META);
 				heights[i] = label.height() + 4;
 			} else {
-				label = PixelScene.renderTextBlock(itemText(e), UimsdStyle.SIZE_TEXT);
+				label = PixelScene.renderTextBlock(itemText(e), e.action ? 9 : UimsdStyle.SIZE_TEXT);
 				float h = label.height();
 				if (!e.detail.isEmpty()){
 					detail = PixelScene.renderTextBlock(e.detail, UimsdStyle.SIZE_META);
@@ -203,7 +217,7 @@ public class WndUimsdList extends Window {
 			//a text block lays itself out when its width is set, so the heights are taken again after it
 			if (e != null && e.kind == Entry.ITEM){
 				float h = label.height() + (detail == null ? 0 : 1 + detail.height());
-				heights[i] = WindowGeometry.rowHeight(h);
+				heights[i] = e.action ? WindowGeometry.actionHeight(h) : WindowGeometry.rowHeight(h);
 			} else if (e == null){
 				heights[i] = WindowGeometry.rowHeight(label.height());
 			} else if (e.kind == Entry.HEADING){

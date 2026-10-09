@@ -22,10 +22,11 @@ public class WindowGeometryTest {
 		for (boolean landscape : new boolean[]{false, true}){
 			for (float screen : landscape ? LANDSCAPE_SCREENS : PORTRAIT_SCREENS){
 				int w = WindowGeometry.width(landscape, screen);
-				assertTrue("screen " + screen + " landscape " + landscape, w >= WindowGeometry.MIN_WIDTH);
+				assertTrue("screen " + screen + " landscape " + landscape, w > 0);
 				assertTrue(w <= (landscape ? WindowGeometry.LANDSCAPE_WIDTH : WindowGeometry.PORTRAIT_WIDTH));
+				assertTrue("window " + w + " must leave a margin on a screen " + screen, w + 2 * WindowGeometry.SIDE_MARGIN <= screen);
 				if (screen >= WindowGeometry.MIN_WIDTH + 2 * WindowGeometry.SIDE_MARGIN){
-					assertTrue("window " + w + " must leave a margin on a screen " + screen, w + 2 * WindowGeometry.SIDE_MARGIN <= screen);
+					assertTrue(w >= WindowGeometry.MIN_WIDTH);
 				}
 			}
 		}
@@ -119,7 +120,7 @@ public class WindowGeometryTest {
 	public void wrappedActionsKeepPaddingAndUsableTouchTargets(){
 		for (float textHeight : new float[]{0, 9, 18, 27, 100}){
 			float height = WindowGeometry.actionHeight(textHeight);
-			assertTrue(height >= 18);
+			assertTrue(height >= 22);
 			assertTrue(height >= textHeight + 2 * WindowGeometry.ROW_PAD);
 		}
 	}

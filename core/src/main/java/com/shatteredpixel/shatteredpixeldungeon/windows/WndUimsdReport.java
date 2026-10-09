@@ -52,7 +52,7 @@ public final class WndUimsdReport {
 		String[] options = new String[formats.length + 1];
 		options[0] = "Share as text";
 		for (int i = 0; i < formats.length; i++) options[i + 1] = "Save: " + formats[i].label;
-		ShatteredPixelDungeon.scene().addToFront(new WndOptions("Report", what + "\n\nReports keep the marks (? unknown, >= at least, ~ worked out) and say which data is canonical.", options){
+		ShatteredPixelDungeon.scene().addToFront(new WndUimsdChoices("Report", what + "\n\nReports keep the marks (? unknown, >= at least, ~ worked out) and say which data is canonical.", options){
 			@Override
 			protected void onSelect( int index ){
 				Report r;
