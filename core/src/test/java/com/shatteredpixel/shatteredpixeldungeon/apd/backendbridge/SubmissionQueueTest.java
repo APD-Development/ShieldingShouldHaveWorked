@@ -107,6 +107,53 @@ public class SubmissionQueueTest {
 	}
 
 	@Test
+	public void queueCanBeInspectedAndRemovedByFreshJavaProcesses() throws Exception {
+		log("warrior-restart", true, 3, 0, "WARRIOR");
+		File root = tmp.getRoot();
+		File log = new StatsStore(root).logFile("warrior-restart");
+		byte[] original = java.nio.file.Files.readAllBytes(log.toPath());
+		assertEquals(SubmissionQueue.Result.QUEUED, SubmissionQueue.enqueueRun(root, "warrior-restart", "test", 100).result);
+		probe(root, "inspect", 1);
+		probe(root, "remove", 1);
+		probe(root, "inspect", 0);
+		assertEquals(0, SubmissionQueue.pending(root));
+		assertArrayEquals(original, java.nio.file.Files.readAllBytes(log.toPath()));
+		assertFalse(SubmittedLedger.fileIn(root).exists());
+	}
+
+	private void probe(File root, String operation, int expected) throws Exception {
+		String separator = File.pathSeparator;
+		String classpath = System.getProperty("java.class.path") + separator
+				+ new File(SubmissionQueueTest.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath() + separator
+				+ new File(SubmissionQueue.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath();
+		String javaBinary = new File(System.getProperty("java.home"), "bin/java").getPath();
+		Process process = new ProcessBuilder(javaBinary, "-cp", classpath, QueueRestartProbe.class.getName(),
+				root.getCanonicalPath(), operation, Integer.toString(expected)).redirectErrorStream(true).start();
+		if (!process.waitFor(15, java.util.concurrent.TimeUnit.SECONDS)) {
+			process.destroyForcibly();
+			fail("fresh-process queue check timed out");
+		}
+		String output = new String(process.getInputStream().readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
+		assertEquals(output, 0, process.exitValue());
+	}
+
+	//No Android claim: this checks the actual queue after JVM static state has been discarded.
+	public static final class QueueRestartProbe {
+		public static void main(String[] args) {
+			File root = new File(args[0]);
+			int expected = Integer.parseInt(args[2]);
+			if (SubmissionQueue.pending(root) != expected || SubmissionQueue.entries(root).size() != expected)
+				throw new AssertionError("queue count after restart");
+			String preview = SubmissionQueue.preview(root, "warrior-restart");
+			if (expected == 1 && (preview == null || !preview.contains("runId=warrior-restart") || !preview.contains("WARRIOR")))
+				throw new AssertionError("queue preview after restart");
+			if (expected == 0 && preview != null) throw new AssertionError("removed queue entry returned");
+			if (args[1].equals("remove") && !SubmissionQueue.withdraw(root, "warrior-restart"))
+				throw new AssertionError("queue removal after restart");
+		}
+	}
+
+	@Test
 	public void unfinishedAndIncompleteRunsAreRefusedAndNothingIsWritten(){
 		log("run-live", false, 3, 0);
 		assertEquals(SubmissionQueue.Result.REFUSED, SubmissionQueue.enqueueRun(tmp.getRoot(), "run-live", "b", 1).result);

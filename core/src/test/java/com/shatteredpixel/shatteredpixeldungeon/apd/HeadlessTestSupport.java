@@ -5,8 +5,11 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
+import com.badlogic.gdx.backends.headless.HeadlessPreferences;
+import com.badlogic.gdx.files.FileHandle;
 import com.watabou.noosa.Game;
 import com.watabou.utils.FileUtils;
+import com.watabou.utils.GameSettings;
 
 import java.io.File;
 
@@ -35,6 +38,10 @@ public final class HeadlessTestSupport {
 		config.preferencesDirectory = new File(tempDir, "prefs").getAbsolutePath() + File.separator;
 		HeadlessApplication app = new HeadlessApplication(new ApplicationAdapter(){}, config);
 		Runtime.getRuntime().addShutdownHook(new Thread(app::exit));
+		//HeadlessPreferences(name, directory) treats its directory as External, even when absolute,
+		//which can put the temporary settings under user.home instead. Keep game settings in our
+		//actual throw-away folder, using the same explicit preferences injection as game startup.
+		GameSettings.set(new HeadlessPreferences(new FileHandle(new File(tempDir, "prefs/settings.xml"))));
 
 		//game save files go to the temp folder as well
 		FileUtils.setDefaultFileProperties(Files.FileType.Absolute, new File(tempDir, "save").getAbsolutePath() + File.separator);

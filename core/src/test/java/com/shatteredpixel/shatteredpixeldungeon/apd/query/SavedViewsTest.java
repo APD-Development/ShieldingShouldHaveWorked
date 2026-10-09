@@ -32,6 +32,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import com.shatteredpixel.shatteredpixeldungeon.apd.stats.Fact;
+import com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKeys;
 
 public class SavedViewsTest {
 
@@ -115,17 +117,53 @@ public class SavedViewsTest {
 	@Test
 	public void savedCombinedQueryReopensAndDeletionSurvivesReload() throws Exception {
 		Query original = Query.of("runs")
-				.addFilter(Filter.text("run.class", Op.EQ, "WARRIOR"))
-				.withSorts(java.util.Arrays.asList(new Sort("run.score", true)))
-				.withColumns(java.util.Arrays.asList("run.score", "run.class", "run.type", "run.modded"));
+				.addFilter(Filter.text(FactKeys.HERO_CLASS, Op.EQ, "WARRIOR"))
+				.withSorts(java.util.Arrays.asList(new Sort(FactKeys.SCORE, true)))
+				.withColumns(java.util.Arrays.asList(FactKeys.SCORE, FactKeys.HERO_CLASS, FactKeys.SEED_TYPE, FactKeys.EXTERNAL_MODS));
 		File file = SavedViews.fileIn(tmp.getRoot());
 		SavedViews views = new SavedViews();
 		assertEquals(SavedViews.Result.SAVED, views.save("Warriors", original, 100));
 		views.store(file);
 		SavedViews reopened = SavedViews.load(file);
 		assertEquals(QueryCodec.encode(original), QueryCodec.encode(reopened.get("Warriors").query()));
+		DatasetDef def = Datasets.runs();
+		List<Row> rows = java.util.Arrays.asList(run(def, "a", "WARRIOR", 100L), run(def, "b", "WARRIOR", 100L),
+				run(def, "c", "WARRIOR", 50L), run(def, "mage", "MAGE", 999L), run(def, "unknown", "WARRIOR", null));
+		Dataset data = QuerySupport.dataset(def, rows);
+		Query loaded = reopened.get("Warriors").query();
+		QueryResult descending = QueryEngine.run(data, loaded, "rules");
+		assertTrue(descending.problems.toString(), descending.problems.isEmpty());
+		assertEquals(java.util.Arrays.asList("a", "b", "c", "unknown"), ids(descending));
+		assertEquals(original.columns, columnIds(descending));
+		assertEquals(java.util.Arrays.asList("c", "a", "b", "unknown"), ids(QueryEngine.run(data,
+				loaded.withSorts(java.util.Arrays.asList(new Sort(FactKeys.SCORE, false))), "rules")));
+		QueryResult empty = QueryEngine.run(data, loaded.addFilter(Filter.num(FactKeys.SCORE, Op.GT, 2000)), "rules");
+		assertTrue(empty.rows.isEmpty());
+		assertTrue(empty.problems.isEmpty());
+		assertEquals(original.columns, columnIds(empty));
 		assertTrue(reopened.delete("Warriors"));
 		reopened.store(file);
 		assertTrue(SavedViews.load(file).list().isEmpty());
+	}
+
+	private Row run(DatasetDef def, String id, String heroClass, Long score){
+		Row row = new Row(id, id, id, def.size());
+		row.finished = true;
+		row.ruleset = "rules";
+		row.setText(def.indexOf(FactKeys.HERO_CLASS), heroClass, Fact.PROV_RECORDED);
+		if (score != null) row.setNum(def.indexOf(FactKeys.SCORE), score, Fact.PROV_RECORDED);
+		row.setNum(def.indexOf(FactKeys.SEED_TYPE), 0, Fact.PROV_RECORDED);
+		row.setNum(def.indexOf(FactKeys.EXTERNAL_MODS), 0, Fact.PROV_RECORDED);
+		return row;
+	}
+	private List<String> ids(QueryResult result){
+		List<String> ids = new ArrayList<>();
+		for (Row row : result.rows) ids.add(row.id);
+		return ids;
+	}
+	private List<String> columnIds(QueryResult result){
+		List<String> ids = new ArrayList<>();
+		for (ColumnDef column : result.columns) ids.add(column.id);
+		return ids;
 	}
 }
