@@ -119,6 +119,11 @@ public class Window extends Group implements Signal.Listener<KeyEvent> {
 		KeyEvent.addKeyListener( this );
 	}
 	
+	//A parameterized window can provide a way to reopen after its scene is rebuilt.
+	public Runnable restoreOnSceneReset(){
+		return null;
+	}
+
 	public void resize( int w, int h ) {
 		this.width = w;
 		this.height = h;

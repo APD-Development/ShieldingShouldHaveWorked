@@ -146,7 +146,7 @@ public final class WndUimsdOptions {
 			public void onPick( int i, boolean checked ){
 				actions.get(i).run();
 			}
-		}));
+		}).restoreWith(() -> show(m)));
 	}
 
 	//---- saved views ----
@@ -197,7 +197,7 @@ public final class WndUimsdOptions {
 			public void onPick( int i, boolean checked ){
 				viewActions(m, list.get(i));
 			}
-		}));
+		}).restoreWith(() -> openViews(m)));
 	}
 
 	private static void deleteDemoData( final java.io.File realRoot ){
@@ -274,7 +274,7 @@ public final class WndUimsdOptions {
 					});
 				}
 			}
-		}));
+		}).restoreWith(() -> privacy(m)));
 	}
 
 	private static void evidenceRequests( final UimsdModel m ){
@@ -466,7 +466,7 @@ public final class WndUimsdOptions {
 				else m.setScope(s.withRules(Scope.Rules.SPECIFIC, id));
 				show(m);
 			}
-		}));
+		}).restoreWith(() -> pickRuleset(m)));
 	}
 
 	private static void pickMinSample( final UimsdModel m ){
@@ -483,7 +483,7 @@ public final class WndUimsdOptions {
 				m.setMinSample(sizes[i]);
 				show(m);
 			}
-		}));
+		}).restoreWith(() -> pickMinSample(m)));
 	}
 
 	private static void pickGroup( final UimsdModel m ){

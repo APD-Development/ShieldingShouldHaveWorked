@@ -316,10 +316,12 @@ public class UimsdScene extends PixelScene {
 
 	//---- the starter the Guide uses ----
 
-	private final WndUimsdGuide.Starter starter = new WndUimsdGuide.Starter(){
+	private static final WndUimsdGuide.Starter starter = new WndUimsdGuide.Starter(){
 		@Override
 		public void startTour( int stepIndex ){
-			UimsdScene.this.startTour(stepIndex);
+			if (ShatteredPixelDungeon.scene() instanceof UimsdScene){
+				((UimsdScene) ShatteredPixelDungeon.scene()).startTour(stepIndex);
+			}
 		}
 	};
 

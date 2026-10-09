@@ -109,7 +109,7 @@ public final class WndUimsdFilter {
 					public void onPick( int index, boolean checked ){
 						pickOp(m, -1, null, cols.get(index));
 					}
-				}));
+				}).restoreWith(() -> add(m)));
 	}
 
 	//what to do with a filter that is already there
@@ -130,7 +130,7 @@ public final class WndUimsdFilter {
 					if (c != null) pickOp(m, index, f, c);
 				}
 			}
-		}));
+		}).restoreWith(() -> chip(m, index)));
 	}
 
 	//step 2: how to compare
@@ -148,7 +148,7 @@ public final class WndUimsdFilter {
 				if (!op.takesValue()) finish(m, index, new Filter(col.id, op, null, null));
 				else pickValue(m, index, existing, col, op);
 			}
-		}));
+		}).restoreWith(() -> pickOp(m, index, existing, col)));
 	}
 
 	private static boolean hasNum( Filter f, ColumnDef col, long v ){

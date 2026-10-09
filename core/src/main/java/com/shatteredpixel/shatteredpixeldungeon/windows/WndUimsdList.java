@@ -327,6 +327,18 @@ public class WndUimsdList extends Window {
 	//one returns to the first exactly as it was. When the chain ends in a choice, closeAll() closes every menu of it at once.
 	private static final List<WndUimsdList> CHAIN = new ArrayList<>();
 	private boolean keepOpen;
+	private Runnable restorer;
+
+	public WndUimsdList restoreWith(Runnable restorer){
+		this.restorer = restorer;
+		return this;
+	}
+
+	@Override
+	public Runnable restoreOnSceneReset(){
+		return restorer;
+	}
+
 
 	public WndUimsdList keepOpen(){
 		keepOpen = true;

@@ -91,7 +91,7 @@ public final class WndUimsdSort {
 					editKey(m, sorts, i);
 				}
 			}
-		}));
+		}).restoreWith(() -> show(m)));
 	}
 
 	private static void editKey( final UimsdModel m, final List<Sort> sorts, final int index ){
@@ -106,7 +106,7 @@ public final class WndUimsdSort {
 				else next.remove(index);
 				apply(m, next);
 			}
-		}));
+		}).restoreWith(() -> editKey(m, sorts, index)));
 	}
 
 	private static void pickColumn( final UimsdModel m, final ResultTable table, final List<Sort> sorts ){
@@ -136,6 +136,6 @@ public final class WndUimsdSort {
 					}
 				}));
 			}
-		}));
+		}).restoreWith(() -> pickColumn(m, table, sorts)));
 	}
 }

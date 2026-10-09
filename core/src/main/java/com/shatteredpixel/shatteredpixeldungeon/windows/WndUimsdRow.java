@@ -54,9 +54,13 @@ import java.util.List;
 public class WndUimsdRow extends Window {
 
 	private static final int MARGIN = 2;
+	private final UimsdModel model;
+	private final ResultTable.Line selected;
 
 	public WndUimsdRow( final UimsdModel m, ResultTable.Line line ){
 		super();
+		model = m;
+		selected = line;
 		int width = WndUimsdList.windowWidth();
 		QueryResult r = m.result();
 		DatasetDef def = r.def;
@@ -327,6 +331,13 @@ public class WndUimsdRow extends Window {
 	private static String singular( String plural ){
 		String p = plural.toLowerCase();
 		return p.endsWith("s") ? p.substring(0, p.length() - 1) : p;
+	}
+
+	@Override
+	public Runnable restoreOnSceneReset(){
+		final UimsdModel m = model;
+		final ResultTable.Line line = selected;
+		return () -> show(m, line);
 	}
 
 	public static void show( UimsdModel m, ResultTable.Line line ){

@@ -1,0 +1,153 @@
+package com.shatteredpixel.shatteredpixeldungeon.android;
+
+import static org.junit.Assert.*;
+
+import androidx.test.core.app.ActivityScenario;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdModel;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.UimsdScene;
+import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndSettings;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdChoices;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdColumns;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdFilter;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdOptions;
+import com.watabou.noosa.Game;
+import com.watabou.noosa.Gizmo;
+import com.watabou.noosa.Group;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
+
+@RunWith(AndroidJUnit4.class)
+public class UimsdRestoreDeviceTest {
+    private static void onRender(Runnable task) throws Exception {
+        CountDownLatch done = new CountDownLatch(1);
+        AtomicReference<Throwable> error = new AtomicReference<>();
+        Game.runOnRenderThread(() -> {
+            try { task.run(); } catch (Throwable t) { error.set(t); }
+            finally { done.countDown(); }
+        });
+        assertTrue("render thread timed out", done.await(60, TimeUnit.SECONDS));
+        if (error.get() != null) throw new AssertionError(error.get());
+    }
+
+    @SuppressWarnings("unchecked")
+    private static List<Gizmo> members(Group group) throws Exception {
+        Field f = Group.class.getDeclaredField("members"); f.setAccessible(true);
+        return new ArrayList<>((List<Gizmo>) f.get(group));
+    }
+
+    private static List<Window> windows() {
+        try {
+            List<Window> result = new ArrayList<>();
+            for (Gizmo member : members(Game.scene())) if (member instanceof Window) result.add((Window) member);
+            return result;
+        } catch (Exception e) { throw new RuntimeException(e); }
+    }
+
+    private static void clearWindows() {
+        for (Window window : windows()) window.hide();
+    }
+
+    private static UimsdModel model() {
+        try {
+            Field f = UimsdScene.class.getDeclaredField("model"); f.setAccessible(true);
+            return (UimsdModel) f.get(null);
+        } catch (Exception e) { throw new RuntimeException(e); }
+    }
+
+    private static void awaitScene(Object previous) throws Exception {
+        long deadline = System.currentTimeMillis() + 30000;
+        while ((Game.scene() == previous || !(Game.scene() instanceof UimsdScene))
+                && System.currentTimeMillis() < deadline) Thread.sleep(100);
+        assertTrue("UIMSD scene did not rebuild", Game.scene() instanceof UimsdScene && Game.scene() != previous);
+        //Restoration follows scene creation in the same render-thread call.
+        onRender(() -> {});
+    }
+
+    private static void rebuildScene() throws Exception {
+        Object previous = Game.scene();
+        onRender(ShatteredPixelDungeon::seamlessResetScene);
+        awaitScene(previous);
+    }
+
+    @Test public void menusSurviveSceneRecreationAndNarrowActionsStayInsideTheirWindow() throws Exception {
+        try (ActivityScenario<AndroidLauncher> scenario = ActivityScenario.launch(AndroidLauncher.class)) {
+            long deadline = System.currentTimeMillis() + 120000;
+            while (Game.scene() == null && System.currentTimeMillis() < deadline) Thread.sleep(200);
+            assertNotNull("game did not start", Game.scene());
+            Object previous = Game.scene();
+            //The test enters directly; it does not change production unlock flags.
+            onRender(() -> UimsdScene.openNow(TitleScene.class));
+            awaitScene(previous);
+            onRender(() -> {
+                clearWindows();
+                Game.scene().addToFront(new WndSettings());
+            });
+            rebuildScene();
+            onRender(() -> {
+                assertEquals("existing zero-argument fallback survived", 1, windows().size());
+                assertTrue(windows().get(0) instanceof WndSettings);
+                clearWindows();
+                UimsdModel model = model(); assertNotNull(model);
+                model.selectView("runs");
+                WndUimsdOptions.show(model);
+                assertEquals(1, windows().size());
+                assertNotNull(windows().get(0).restoreOnSceneReset());
+            });
+            rebuildScene();
+            onRender(() -> {
+                assertEquals("Options survived exactly once", 1, windows().size());
+                assertTrue(windows().get(0) instanceof WndUimsdList);
+                clearWindows();
+                WndUimsdColumns.show(model());
+            });
+            rebuildScene();
+            onRender(() -> {
+                assertEquals("Columns survived exactly once", 1, windows().size());
+                clearWindows();
+                WndUimsdFilter.add(model());
+                WndUimsdFilter.pickOp(model(), -1, null, model().offeredColumns().get(0));
+                assertEquals(2, windows().size());
+            });
+            rebuildScene();
+            onRender(() -> {
+                assertEquals("both filter steps survived", 2, windows().size());
+                windows().get(1).onBackPressed();
+                assertEquals("Back returns to the preceding filter step", 1, windows().size());
+                clearWindows();
+                int originalWidth = PixelScene.uiCamera.width;
+                try {
+                    PixelScene.uiCamera.width = 100;
+                    WndUimsdChoices choices = new WndUimsdChoices("Queue", "Nothing is sent.",
+                            "Queue for submission (preview, sends nothing)", "Show what is queued for this run");
+                    Game.scene().addToFront(choices);
+                    Field width = Window.class.getDeclaredField("width"); width.setAccessible(true);
+                    int innerWidth = width.getInt(choices);
+                    assertTrue("window leaves side margins", innerWidth <= 72);
+                    Field labels = WndUimsdList.class.getDeclaredField("labelTexts"); labels.setAccessible(true);
+                    for (Object item : (List<?>) labels.get(choices)) {
+                        RenderedTextBlock label = (RenderedTextBlock) item;
+                        assertTrue("label left edge", label.left() >= 0);
+                        assertTrue("wrapped label right edge", label.right() <= innerWidth);
+                    }
+                } catch (Exception e) { throw new RuntimeException(e); }
+                finally { PixelScene.uiCamera.width = originalWidth; clearWindows(); }
+            });
+        }
+    }
+}

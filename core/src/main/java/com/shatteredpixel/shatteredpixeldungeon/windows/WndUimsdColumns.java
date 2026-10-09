@@ -61,7 +61,7 @@ public final class WndUimsdColumns {
 					public void onPick( int i, boolean checked ){
 						m.toggleColumn(cols.get(i).id);
 					}
-				}));
+				}).restoreWith(() -> show(m)));
 	}
 
 	//the shown columns in their order; tapping one offers to move it
@@ -83,7 +83,7 @@ public final class WndUimsdColumns {
 			public void onPick( int i, boolean checked ){
 				moveOne(m, shown.get(i));
 			}
-		}));
+		}).restoreWith(() -> arrange(m)));
 	}
 
 	private static void moveOne( final UimsdModel m, final String id ){
@@ -97,6 +97,6 @@ public final class WndUimsdColumns {
 				m.moveColumn(id, i == 0 ? -1 : i == 1 ? 1 : -1000);
 				arrange(m);
 			}
-		}));
+		}).restoreWith(() -> moveOne(m, id)));
 	}
 }
