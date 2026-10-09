@@ -147,6 +147,41 @@ public class RunSetupDifficultyDeviceTest {
 			assertNotNull("the difficulty bar is on the character screen", bar);
 			assertTrue("and it is visible", bar.visible);
 
+			// A fresh tutorial flag must not hide or leave the gear menu empty.
+			final AtomicReference<com.watabou.utils.Point> gearCentre = new AtomicReference<>();
+			onRender(new Runnable(){ public void run(){
+				try {
+					SPDSettings.intro(true);
+					pick.invoke(Game.scene(), HeroClass.WARRIOR);
+					Field f = HeroSelectScene.class.getDeclaredField("btnOptions");
+					f.setAccessible(true);
+					com.shatteredpixel.shatteredpixeldungeon.ui.IconButton gear =
+							(com.shatteredpixel.shatteredpixeldungeon.ui.IconButton) f.get(Game.scene());
+					assertTrue("fresh player gear button is visible and active", gear.visible && gear.active);
+					gearCentre.set(gear.camera().cameraToScreen(gear.left()+gear.width()/2f, gear.top()+gear.height()/2f));
+				} catch (Exception e) { throw new RuntimeException(e); }
+			} });
+			tap(gearCentre.get());
+			onRender(new Runnable(){ public void run(){
+				try {
+					Field f = HeroSelectScene.class.getDeclaredField("optionsPane");
+					f.setAccessible(true);
+					com.watabou.noosa.ui.Component pane = (com.watabou.noosa.ui.Component) f.get(Game.scene());
+					assertTrue("gear tap opens the options", pane.visible && pane.active);
+					Field buttons = pane.getClass().getDeclaredField("buttons");
+					buttons.setAccessible(true);
+					List<?> entries = (List<?>) buttons.get(pane);
+					assertTrue("seed, daily and challenges are populated", entries.size() >= 3);
+					for (Object entry : entries) {
+						com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton button =
+								(com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton) entry;
+						assertTrue("menu option has readable text", !button.text().trim().isEmpty());
+						assertTrue("menu option fits inside its panel", button.left() >= pane.left() && button.right() <= pane.right()+1);
+					}
+				} catch (Exception e) { throw new RuntimeException(e); }
+			} });
+			tap(gearCentre.get());
+
 			//touch each level for real; the setting follows, and the label says what it is
 			int[] levels = { 4, 1, 5, 3 };
 			for (final int level : levels){

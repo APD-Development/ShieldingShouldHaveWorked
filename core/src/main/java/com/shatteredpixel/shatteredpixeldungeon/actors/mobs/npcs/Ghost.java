@@ -279,6 +279,8 @@ public class Ghost extends NPC {
 		}
 		
 		public static void restoreFromBundle( Bundle bundle ) {
+			// Missing optional enchantments belong to this save, not the previous run.
+			reset();
 			
 			Bundle node = bundle.getBundle( NODE );
 

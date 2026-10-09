@@ -1,3 +1,9 @@
+## Pending verification — Ghost rewards and reported gear menu (C24)
+
+Confirmed save isolation bug: a spawned Ghost quest saved without enchant/glyph fields retained another loaded run's enchantments. Reproduced by one failing-before test; reset before restore fixes it. Both new Ghost persistence tests pass, including legitimate enchanted-save restoration; combined Imp/Ghost checks 7/7 pass locally. No reward generation, seeded RNG or save schema change.
+
+Owner reports class-selection gear/menu information missing on a fresh install. Screenshot shows an options menu; exact APD build and whether options or starting-equipment information is missing are not yet established. Current code has no fresh-intro guard hiding gear options (removed in TEST17), and WndHeroInfo populates equipment icons/descriptions independently of intro. Added Android coverage tapping the gear button and checking populated readable panel-contained options; not yet run. Do not claim this phone report reproduced or fixed.
+
 ## Pending verification — Imp quest save isolation (C23)
 
 Confirmed with three failing-before regression tests: restoring a save without a spawned Imp quest could retain another save's completed quest, earned shop access, legacy quest mode and reward options. Imp.Quest.reset now clears legacy mode, alternative and reward options; restore resets before reading the selected save. Existing legacy completion still restores correctly. No save format, scoring, reward generation or player history changes.
