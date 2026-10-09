@@ -115,6 +115,25 @@ public class WindowGeometryTest {
 		return new String(Files.readAllBytes(new File(System.getProperty("apd.game.src"), relative).toPath()), "UTF-8");
 	}
 
+	@Test
+	public void wrappedActionsKeepPaddingAndUsableTouchTargets(){
+		for (float textHeight : new float[]{0, 9, 18, 27, 100}){
+			float height = WindowGeometry.actionHeight(textHeight);
+			assertTrue(height >= 18);
+			assertTrue(height >= textHeight + 2 * WindowGeometry.ROW_PAD);
+		}
+	}
+
+	@Test
+	public void runActionsWrapBeforeMeasuringAndScrollWithTheDetails() throws Exception {
+		String text = src("windows/WndUimsdRow.java");
+		assertTrue(text.indexOf("label.maxWidth(") < text.indexOf("WindowGeometry.actionHeight(label.height())"));
+		assertTrue(text.contains("content.add(label)"));
+		assertTrue(text.contains("actionSpans.add("));
+		assertFalse(text.contains("actions.size() * 18"));
+		assertFalse(text.contains("b.setRect(0, pos, width, 16)"));
+	}
+
 	//The bug itself: a window with a scroll pane must be resized BEFORE the pane is given its rectangle.
 	@Test
 	public void everyUimsdWindowWithAScrollPaneIsResizedBeforeThePaneIsPlaced() throws Exception {

@@ -38,7 +38,6 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.query.Row;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdModel;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.WindowGeometry;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
-import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.UimsdStyle;
@@ -198,31 +197,45 @@ public class WndUimsdRow extends Window {
 		add(tt);
 		float pos = tt.bottom() + 2 * MARGIN;
 
-		float buttonsH = actions.size() * 18f;
 		final Component content = new Component();
 		float contentH = sheet(content, width, sheet);
+		//Actions share the scrolling area with the details. Fixed-height buttons below
+		//the pane clipped long labels and could push the window past the screen.
+		final List<float[]> actionSpans = new ArrayList<>();
+		for (Action act : actions){
+			RenderedTextBlock label = PixelScene.renderTextBlock(act.label, 9);
+			label.maxWidth(WindowGeometry.rowTextWidth(width));
+			float height = WindowGeometry.actionHeight(label.height());
+			ColorBlock bg = new ColorBlock(width - 2 * MARGIN, height, UimsdStyle.ROW_ACTION);
+			bg.x = MARGIN;
+			bg.y = contentH;
+			content.add(bg);
+			label.setPos(WindowGeometry.ROW_PAD + 1, contentH + (height - label.height()) / 2f);
+			content.add(label);
+			actionSpans.add(new float[]{contentH, contentH + height});
+			contentH += height + MARGIN;
+		}
 		content.setSize(width, contentH);
-		ScrollPane pane = new ScrollPane(content);
-		float h = WindowGeometry.paneHeight(content.height(), WindowGeometry.maxPane(PixelScene.uiCamera.height, pos, buttonsH + MARGIN));
-		float total = pos + h + MARGIN + actions.size() * 18f;
+		ScrollPane pane = new ScrollPane(content){
+			@Override
+			public void onClick(float x, float y){
+				if (x < MARGIN || x >= width - MARGIN) return;
+				for (int i = 0; i < actionSpans.size(); i++){
+					float[] span = actionSpans.get(i);
+					if (y >= span[0] && y < span[1]){
+						WndUimsdRow.this.hide();
+						actions.get(i).run.run();
+						return;
+					}
+				}
+			}
+		};
+		float h = WindowGeometry.paneHeight(content.height(), WindowGeometry.maxPane(PixelScene.uiCamera.height, pos, MARGIN));
+		float total = pos + h + MARGIN;
 		//size the window first: it moves the window's camera, and the pane works out its screen position when it is placed
 		resize(width, (int) total);
 		add(pane);
 		pane.setRect(0, pos, width, h);
-		pos += h + MARGIN;
-
-		for (final Action act : actions){
-			RedButton b = new RedButton(act.label){
-				@Override
-				protected void onClick(){
-					WndUimsdRow.this.hide();
-					act.run.run();
-				}
-			};
-			b.setRect(0, pos, width, 16);
-			add(b);
-			pos += 18;
-		}
 	}
 
 	//one line of the sheet: a section heading, or a label with its value (coloured by what kind of knowledge it is) and a small note under it

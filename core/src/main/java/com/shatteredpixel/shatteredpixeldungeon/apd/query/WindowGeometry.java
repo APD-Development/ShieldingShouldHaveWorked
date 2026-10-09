@@ -68,6 +68,11 @@ public final class WindowGeometry {
 		return Math.max(MIN_ROW, textHeight + 2 * ROW_PAD);
 	}
 
+	//Action labels retain their font size; the touch target grows after wrapping.
+	public static float actionHeight(float textHeight){
+		return Math.max(18f, textHeight + 2 * ROW_PAD);
+	}
+
 	//the top of each row when the rows are stacked, and the total height at the end
 	public static float[] stack( float[] heights ){
 		float[] tops = new float[heights.length + 1];
