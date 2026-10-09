@@ -149,6 +149,14 @@ jobs:
           print(text)
           PY
           python3 tools/apd_bug_report_pdf.py docs/APD-BUG-FIX-REPORT-2026-10-09.md delivery/APD-Bug-Fixes-2026-10-09.pdf --verification delivery/verification.txt --appendix docs/APD-SPRINT-REPORT-2026-10-09.md
+      - name: Honor today's 11:59 a.m. New York APK upload time
+        run: |
+          python3 - <<'PY'
+          import datetime, time
+          deadline = datetime.datetime(2026, 10, 9, 15, 59, tzinfo=datetime.timezone.utc).timestamp()
+          while time.time() < deadline:
+              time.sleep(min(30, deadline - time.time()))
+          PY
       - name: Attach the APK and PDF to a private test prerelease
         uses: softprops/action-gh-release@v2
         with:

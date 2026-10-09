@@ -235,6 +235,9 @@ public final class WndUimsdAsk {
 				} else {
 					chosen.remove(id);
 				}
+				//The oldest choice is replaced at the two-field limit; its check must disappear too.
+				int item = 0;
+				for (Entry entry : entries) if (entry.isItem()) entry.checked(chosen.contains(cols.get(item++).id));
 			}
 		}){
 			@Override

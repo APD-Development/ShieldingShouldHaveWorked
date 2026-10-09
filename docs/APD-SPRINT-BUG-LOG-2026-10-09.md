@@ -35,3 +35,6 @@ C12 follow-up: three previously unsupported leaf menus (Group by, saved-view act
 | S07 | Ask split picker may show three checks while storing two, WndUimsdAsk.pickSplitPending | Source onPick trims chosen to 2 but does not update the older checked Entry/label | Low/medium UI | Suspected; no controlled rendered-widget reproduction yet, not patched | Select three split fields and compare displayed checks/result |
 
 Latest C8 verifies first-launch storage and all added leaf restorers. C6 fixture failure is corrected and retained as historical evidence. S07 remains an unconfirmed source suspicion; physical-phone acceptance and age/policy/process-death work remain open.
+
+
+C17 (formerly S07), medium UI, confirmed by API 34 run 37946296408: selecting three Ask split fields displays three checks while answers use only the latest two. Fix synchronizes entries and refreshes switch visuals after callbacks. Thirty focused local tests pass; final native verification pending at 11:50 EDT, phone testing required.

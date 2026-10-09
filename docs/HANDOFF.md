@@ -1,6 +1,12 @@
 # APD current development handoff
 
-## Codex — October 9, 2026 (current; read first)
+## Lunch continuation — current status at 11:50 a.m. EDT
+
+Owner wants continued development until lunch, PDF 11:55 / APK 11:59 EDT, and daily same-time delivery. Three daily tasks (prepare 11:20, PDF 11:55, APK 11:59) enabled starting October 10 in America/New_York; no guarantee of uninterrupted execution. User now wants normal concise communication and minimized usage.
+
+Diagnostic source 0c8b22702d2b9af26a5a504b3d0d21706f6666dc / run 37946296408 confirms C17/S07: third Ask split selection leaves oldest rendered checkbox on though only latest two count. Full core/build passed, native one expected failure/two play passes, release skipped. Production fix synchronizes entries and redraws final switch states. Local 30 focused tests pass; final native check is pending, TEST 8 remains last verified APK until it succeeds. Preserve all earlier fixes, history and signing.
+
+## Codex — October 9, 2026 (TEST 8 historical verified baseline)
 
 The owner has NOT switched back to Claude. Codex continues on `codex/apd-phone-fixes-2026-10-09`, based on Claude HEAD `714badbd`. November 1, 2026 is the playable ALPHA TEST BUILD deadline, not public release. Public release targets January–February 2027, subject to stability/testing. Today's delivery targets are the bug-cause/risk PDF by 11:55 a.m. and a private playable APK by noon, New York time.
 

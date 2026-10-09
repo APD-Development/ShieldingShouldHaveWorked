@@ -209,3 +209,14 @@ C6: verify/build 13:43:26–13:45:52 UTC (2m26s); API 34 13:45:55–13:52:16 (6m
 Latest results: 530 local subset checks pass in 24.946s; two new first-launch tests fail before the fix and pass afterward within 29 focused checks. Complete C8 core: 896 / 143 suites, no failures/errors/skips. C8 API 34: all three targeted methods pass, including the extended menu/state/callback/narrow-label and isolated demo non-deletion checks plus play/save/continue/end and win/sealing. Exact native method timings are retained in the test-output record. No assertion was removed to obtain a pass.
 
 Final report accounting cutoff: **October 9 at 10:15:59 a.m. EDT / 14:15:59 UTC**. Start-to-cutoff elapsed: **13h42m33s**. Follow-up tool/edit/test/CI work is recorded through this cutoff, including the 48m18s after the prior 9:27:41 a.m. checkpoint. Category/active/idle stopwatches remain unavailable; verification polling and hosted waits are not falsely counted as uninterrupted coding, and the earlier approximately 10h10m09s of unverified execution gaps are not erased. No claim is made that eight active hours were completed. The report-only publication duration is measured separately by its Actions run; it does not rebuild the APK.
+
+
+## Lunch continuation after TEST 8
+
+Owner corrected early stopping and requested work toward 11:55 PDF / 11:59 APK, then daily delivery at those times. Diagnostic commit 0c8b22702d2b9af26a5a504b3d0d21706f6666dc / run 37946296408: core/build success 14:43:22–14:45:39 UTC; native 14:45:41–14:51:05 UTC, one expected UI regression failure and two play checks passing. Failure: oldest split item expected unchecked, actual checked. This confirms S07 as C17, not a speculative change.
+
+Production changes: WndUimsdAsk synchronizes checkbox entries after enforcing existing two-field selection; WndUimsdList redraws final switches after callbacks. Expanded UimsdRestoreDeviceTest validates model/actual text, restoration and Done. Local 30 focused checks pass in 0.467 seconds. Full candidate verification is pending at this record's cutoff, not claimed passed.
+
+Daily scheduled preparation and two delivery tasks are enabled in America/New_York starting October 10; task execution/build availability can still fail. No paid build, server activation or history deletion authorized by this scheduling.
+
+Timing: resumed at 14:38:50 UTC (10:38:50 EDT), then no recorded continued execution between the last response and 15:48:54 UTC (11:48:54 EDT). This unmeasured interruption is not active development. CI finished 14:51:05 UTC while unattended. Work resumed on status request; deadline risk is reported honestly. No eight-hour active-work claim.

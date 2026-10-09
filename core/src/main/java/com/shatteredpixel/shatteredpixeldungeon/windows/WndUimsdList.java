@@ -393,10 +393,16 @@ public class WndUimsdList extends Window {
 		int item = itemIndexOfEntry.get(entry);
 		if (switches && e.checked != null){
 			e.checked = !e.checked;
-			labelTexts.get(entry).text(itemText(e));
-			labelTexts.get(entry).hardlight(colorFor(e));
-			backs.get(entry).color(backFor(e));
 			if (picker != null) picker.onPick(item, e.checked);
+			//A constrained picker can change other entries (for example, replacing the oldest split field).
+			//Render the final selection, rather than only the row that was tapped.
+			for (int i = 0; i < entries.size(); i++){
+				Entry choice = entries.get(i);
+				if (!choice.isItem() || choice.checked == null) continue;
+				labelTexts.get(i).text(itemText(choice));
+				labelTexts.get(i).hardlight(colorFor(choice));
+				backs.get(i).color(backFor(choice));
+			}
 		} else {
 			if (!keepOpen) hide();
 			if (picker != null) picker.onPick(item, false);

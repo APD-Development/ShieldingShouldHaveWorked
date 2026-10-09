@@ -243,3 +243,20 @@ Install the newer private APK over the existing app; do not uninstall or clear s
 7. Check the documented demo shortcut and locked tour, including after demo deletion/restart. Preserve existing unlocks.
 8. Switch apps with Options, Columns and a filter menu open. Check their restored controls and Back navigation; report unsupported leaf dialogs separately.
 9. Start, save, continue and finish a real run, then check its statistics. Later test each NPC quest on the physical phone.
+
+
+## 16. Ask split checkmarks match the two fields used
+
+Cause: choosing a third field removed the oldest field from the answer's internal list, but its checkbox stayed checked. The list refreshed only the tapped row. API 34 diagnostic run 37946296408 reproduced this exactly: the oldest field incorrectly remained checked; two play/save/end tests passed and delivery was skipped.
+
+Fix: synchronize split entries with the final two selected fields and refresh the list's switch labels/backgrounds after its selection callback. The established latest-two selection rule remains unchanged. No run or statistics data is touched.
+
+Verification at 11:50 a.m. EDT: 30 focused local checks pass. New Android assertions check entries, actual rendered checkmarks, pending-question immutability, semantic restoration and the two fields committed by Done. Final native verification is pending; the build-verification page in this PDF gives actual results if completed. Physical-phone checks remain pending.
+
+Potential effects: all switch pickers redraw their final selection after a tap, including Columns and multi-value filters. Test these pickers on the phone; no change to their selection rules is intended.
+
+## Delivery timing and daily requests
+
+The owner clarified that development should continue toward lunch, with the PDF at 11:55 a.m. and APK at 11:59 a.m. New York time. Daily preparation (11:20), PDF (11:55) and APK (11:59) tasks are enabled starting October 10 in America/New_York. These are scheduled tasks, not proof of continuous background development or a guarantee that a failed build will be released. An unsuccessful candidate must be reported honestly and the previous verified playable build retained.
+
+There was no recorded execution between the previous response and the 11:48:54 a.m. status request. This interval is not claimed as active coding; the diagnostic CI completed at 10:51:05 a.m. and the fix remained local until resumed. This interruption is included rather than hidden.
