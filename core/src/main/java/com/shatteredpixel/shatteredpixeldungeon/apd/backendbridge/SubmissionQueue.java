@@ -69,6 +69,7 @@ public final class SubmissionQueue {
 	}
 
 	public static int pending( File historyRoot ){
+		if (historyRoot == null) return 0;
 		synchronized (LOCK){
 			try {
 				Outbox box = new Outbox();
@@ -117,6 +118,7 @@ public final class SubmissionQueue {
 	}
 
 	private static Id queueId( String runId ){
+		if (!StatsStore.isValidRunId(runId)) return null;
 		try {
 			return Id.of(Id.Kind.OUTBOX, "ob_" + runId);
 		} catch (IllegalArgumentException e){

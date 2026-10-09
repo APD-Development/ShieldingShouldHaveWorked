@@ -40,11 +40,15 @@ public class SubmissionQueueTest {
 	public TemporaryFolder tmp = new TemporaryFolder();
 
 	private void log( String runId, boolean finished, int difficulty, int segment ){
+		log(runId, finished, difficulty, segment, "MAGE");
+	}
+
+	private void log( String runId, boolean finished, int difficulty, int segment, String heroClass ){
 		File f = new StatsStore(tmp.getRoot()).logFile(runId);
 		f.getParentFile().mkdirs();
 		RunLogWriter w = RunLogWriter.create(f, TelemetryVersion.CURRENT, runId, "test", 1);
 		LifecycleEvents.RunStart s = new LifecycleEvents.RunStart();
-		s.runId = runId; s.segment = segment; s.heroClass = "MAGE"; s.rulesetId = "exotic30"; s.exoticChance = 30; s.apdVersionName = "4.0.8-apd";
+		s.runId = runId; s.segment = segment; s.heroClass = heroClass; s.rulesetId = "exotic30"; s.exoticChance = 30; s.apdVersionName = "4.0.8-apd";
 		s.difficulty = difficulty; s.difficultyBalance = 0;
 		LifecycleEvents.emitRunStart(w, 1, false, s);
 		if (finished){
@@ -64,6 +68,42 @@ public class SubmissionQueueTest {
 		assertEquals("queuing it again does not duplicate it", SubmissionQueue.Result.ALREADY_QUEUED, SubmissionQueue.enqueueRun(tmp.getRoot(), "run-a", "4.0.8-apd", 200).result);
 		assertEquals(1, SubmissionQueue.pending(tmp.getRoot()));
 		assertTrue(SubmissionQueue.fileIn(tmp.getRoot()).exists());
+	}
+
+	@Test
+	public void addInspectRemovePersistsAndNeverChangesHistory() throws Exception {
+		log("warrior-run", true, 3, 0, "WARRIOR");
+		File root = tmp.getRoot();
+		File run = new StatsStore(root).logFile("warrior-run");
+		byte[] original = java.nio.file.Files.readAllBytes(run.toPath());
+		File statistics = new File(root, "player-statistics-sentinel");
+		java.nio.file.Files.write(statistics.toPath(), new byte[]{1, 2, 3});
+		assertEquals(SubmissionQueue.Result.QUEUED, SubmissionQueue.enqueueRun(root, "warrior-run", "test", 10).result);
+		byte[] queued = java.nio.file.Files.readAllBytes(SubmissionQueue.fileIn(root).toPath());
+		assertEquals(SubmissionQueue.Result.ALREADY_QUEUED, SubmissionQueue.enqueueRun(root, "warrior-run", "new-build", 20).result);
+		assertArrayEquals(queued, java.nio.file.Files.readAllBytes(SubmissionQueue.fileIn(root).toPath()));
+		//Every query reopens the on-disk outbox: no in-memory queue carries this state.
+		File reopenedRoot = new File(root.getCanonicalPath());
+		assertEquals(1, SubmissionQueue.pending(reopenedRoot));
+		assertEquals(1, SubmissionQueue.entries(reopenedRoot).size());
+		assertTrue(SubmissionQueue.preview(reopenedRoot, "warrior-run").contains("runId=warrior-run"));
+		assertTrue(SubmissionQueue.preview(reopenedRoot, "warrior-run").contains("WARRIOR"));
+		assertTrue(SubmissionQueue.withdraw(reopenedRoot, "warrior-run"));
+		assertFalse(SubmissionQueue.withdraw(reopenedRoot, "warrior-run"));
+		assertEquals(0, SubmissionQueue.pending(new File(root.getCanonicalPath())));
+		assertNull(SubmissionQueue.preview(root, "warrior-run"));
+		assertTrue(SubmissionQueue.entries(root).isEmpty());
+		assertArrayEquals(original, java.nio.file.Files.readAllBytes(run.toPath()));
+		assertArrayEquals(new byte[]{1, 2, 3}, java.nio.file.Files.readAllBytes(statistics.toPath()));
+		assertFalse("local queue operations do not record a transmission", SubmittedLedger.fileIn(root).exists());
+	}
+
+	@Test
+	public void missingRootAndInvalidIdsNeverReferToARelativeQueue(){
+		assertEquals(0, SubmissionQueue.pending(null));
+		assertFalse(SubmissionQueue.isQueued(tmp.getRoot(), null));
+		assertNull(SubmissionQueue.preview(tmp.getRoot(), "../bad"));
+		assertFalse(SubmissionQueue.withdraw(tmp.getRoot(), null));
 	}
 
 	@Test
