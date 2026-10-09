@@ -909,6 +909,13 @@ public abstract class RegularLevel extends Level {
 		if (Dungeon.depth == 1 && Dungeon.branch == 0) repairTutorialEntrance();
 	}
 
+	@Override
+	public void create(){
+		super.create();
+		//Only after seeded painting, mobs and items are complete: avoid changing generation decisions.
+		if (Dungeon.depth == 1 && Dungeon.branch == 0) repairTutorialEntrance();
+	}
+
 	//Old floor-1 saves retain forced tutorial doors even after intro is cleared.
 	//Only entrance-room boundary doors are repaired; all other secrets and history stay untouched.
 	public void repairTutorialEntrance(){

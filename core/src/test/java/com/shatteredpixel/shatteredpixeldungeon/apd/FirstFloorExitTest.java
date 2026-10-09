@@ -101,6 +101,15 @@ public class FirstFloorExitTest {
 	}
 
 	@Test
+	public void challengeRunsAlsoHaveATraversableFirstEntrance() throws Exception {
+		seen.clear();
+		LevelGenerationHarness.levelObserver = (depth, level) -> seen.put(depth, level);
+		LevelGenerationHarness.generate(4242, com.shatteredpixel.shatteredpixeldungeon.Challenges.MAX_VALUE,
+				HeroClass.WARRIOR, LevelGenerationHarness.Context.FRESH, 1);
+		assertTrue("all-challenges floor1 exit must remain traversable", exitWalkable(seen.get(1)));
+	}
+
+	@Test
 	public void walkingThroughTheEntranceEndsIntroWithoutResettingGuideAcknowledgement() throws Exception {
 		com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel level = (com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel) floorOne(7919, LevelGenerationHarness.Context.FRESH);
 		com.shatteredpixel.shatteredpixeldungeon.SPDSettings.intro(true);
