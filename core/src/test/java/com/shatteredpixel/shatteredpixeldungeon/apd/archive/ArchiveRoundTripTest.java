@@ -270,6 +270,29 @@ public class ArchiveRoundTripTest {
 	}
 
 	@Test
+	public void aChangedFinishedLogNeverReportsASuccessfulIncompleteArchive() throws Exception {
+		File root = fresh("changed-export");
+		history(root);
+		final File changed = new File(root, "runs/fin.apdlog");
+		final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+		final boolean[] mutated = {false};
+		java.io.OutputStream out = new java.io.OutputStream(){
+			private void mutate() throws java.io.IOException {
+				if (mutated[0]) return;
+				mutated[0] = true;
+				//The first ZIP write follows manifest planning: simulate a file changing before its second read.
+				try (java.io.FileOutputStream append = new java.io.FileOutputStream(changed, true)) { append.write(0); }
+			}
+			@Override public void write(int value) throws java.io.IOException { mutate(); bytes.write(value); }
+			@Override public void write(byte[] data, int off, int len) throws java.io.IOException { mutate(); bytes.write(data, off, len); }
+		};
+		ArchiveExporter.Report report = ArchiveExporter.export(root, out, "test", 1);
+		assertTrue("controlled mutation ran after manifest planning", mutated[0]);
+		assertFalse("an archive missing a manifest-listed log must not be reported successful", report.ok);
+		assertTrue("failure explains retry", report.problem.contains("changed") && report.problem.contains("export again"));
+	}
+
+	@Test
 	public void aRunWhoseNewestSegmentIsNotFinishedIsRedactedInEverySegment() throws Exception {
 		File a = fresh("a");
 		TestLogs s0 = new TestLogs(a, "p-a", V, 100).start("run-p", 0, "MAGE", RS, 0, 0, false).enter(1);

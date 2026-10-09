@@ -4,3 +4,7 @@ First broad532: one async archive fixture failure (initial public events not flu
 Archive isolated old15pass1.513s; corrected15pass0.549s.
 Corrected broad532pass21.696s.
 Android verification pending; no physical phone result.
+
+C20 before:16tests/1failure, changed finished file falsely reports successful incomplete archive.
+C20 after:16pass0.476s; broad533pass18.605s.
+C18 source65403163 CI run37966964739 pending; C20 later source not in that APK.

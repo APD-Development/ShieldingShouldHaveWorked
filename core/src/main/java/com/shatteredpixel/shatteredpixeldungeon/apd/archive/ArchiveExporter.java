@@ -198,8 +198,8 @@ public final class ArchiveExporter {
 			for (Plan p : included){
 				byte[] bytes = content(p);
 				if (bytes == null || bytes.length != p.entry.size || !ArchiveManifest.sha256Hex(bytes).equals(p.entry.sha256)){
-					report.notes.add(p.entry.path + " changed while it was being exported and was left out (it is not in the archive; export again).");
-					continue;
+					//The manifest already lists this file. Skipping it creates an archive import must reject.
+					throw new IOException(p.entry.path + " changed while exporting. The archive is incomplete; export again.");
 				}
 				put(zip, p.entry.path, bytes);
 				report.bytes += bytes.length;
