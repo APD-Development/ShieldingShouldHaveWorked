@@ -12,3 +12,5 @@ C23 verification-only: reproduce and fix Imp quest state leaking across new runs
 Deliver next private candidate with C23 Imp/C24 Ghost save isolation and owner-requested gold gear. Supersede verification-only C18 after successful core/debug assembly; its native checks do not cover the final Ghost/gold/gear-test source. Run complete core and targeted Android including actual gear-menu tap/population before private APK/PDF publication. Preserve TEST17 rollback, saves, app ID/signing key. Record actual results; physical-phone testing remains pending.
 
 Owner color correction: use existing APD title-arrow pink (0xFF2EC8), not gold. Recompile successful; supersede pending gold candidate and verify final source before delivery.
+
+C25: reproduce and fix legacy Blacksmith optional-field leakage across save loads without reset-time item allocation. Three new regression tests pass; combinedquest10 and existing537 local tests pass. Run full core/debug/targeted API34, publish new private APK/PDF only after successful acceptance; preserve TEST20 rollback, save schema and player history.

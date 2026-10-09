@@ -318,6 +318,10 @@ public class Blacksmith extends NPC {
 				completed = node.getBoolean( COMPLETED );
 
 				favor = node.getInt( FAVOR );
+				// Optional legacy fields must belong to this save, not the previous run.
+				freePickaxe = false;
+				smithEnchant = null;
+				smithGlyph = null;
 				if (node.contains(PICKAXE)) {
 					pickaxe = (Item) node.get(PICKAXE);
 				} else {

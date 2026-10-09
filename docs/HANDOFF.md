@@ -1,3 +1,11 @@
+## Pending next build — C25 Blacksmith save isolation
+
+Continued quest/save-safety review after TEST20. Confirmed two failures before fix: a spawned legacy Blacksmith save missing free_pickaxe retained the previous save's free-pickaxe entitlement; missing reward enchantment/glyph fields retained the previous run's modifiers, including when unenchanted reward lists existed. Restore now defaults only those optional fields before reading this save. Avoid calling Blacksmith.reset during spawned restore because it creates/identifies a pickaxe; no new item allocation, recorder hook, RNG draw, reward generation, balance or schema change is introduced.
+
+Three new persistence checks pass: absent legacy fields clear previous entitlement/modifiers, unenchanted saved rewards stay unenchanted, explicit free-pickaxe and enchanted rewards still restore. Combined ten Imp/Ghost/Blacksmith/ghost-transparency checks pass locally0.058s; existing537 non-native checks pass21.842s. Full CI core/build/native verification is requested, not yet passed for C25. Wandmaker restore already resets missing/unspawned quest saves; no confirmed new Wandmaker regression found in this review, but its full phone quest remains unverified.
+
+Latest delivered APK remains TEST20 until next build passes. Phone testing and real older-APK upgrade remain pending. Continue to preserve creator restrictions, player data and other developers' commits.
+
 ## VERIFIED LATEST DELIVERY — CODEX TEST20
 
 Application source e4ad30fd84362589db3ba1180a785ee35344472e; GitHub run37976561794. Private release apd-codex-test-20 published October9,2026 3:06:20PM EDT (19:06:20UTC). APK ADHD-Pixel-Dungeon-CODEX-TEST-20.apk,38,225,942bytes; SHA256 0a7d05dc4fb1e87bf502849914c94ae13c4ffeaeaacc8ca865d8c3122a5808eb. TEST17 and TEST10 remain available. Install over existing APD; do not uninstall/clear data. Signing identity/application ID/save schema unchanged.
