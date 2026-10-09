@@ -207,11 +207,16 @@ public class UimsdRestoreDeviceTest {
                     int innerWidth = width.getInt(choices);
                     assertTrue("window leaves side margins", innerWidth <= 72);
                     Field labels = WndUimsdList.class.getDeclaredField("labelTexts"); labels.setAccessible(true);
+                    int checkedActions = 0;
                     for (Object item : (List<?>) labels.get(choices)) {
+                        //Notes/headings have no action label in this parallel list.
+                        if (item == null) continue;
                         RenderedTextBlock label = (RenderedTextBlock) item;
                         assertTrue("label left edge", label.left() >= 0);
                         assertTrue("wrapped label right edge", label.right() <= innerWidth);
+                        checkedActions++;
                     }
+                    assertEquals("both long actions were checked", 2, checkedActions);
                     clearWindows();
                     WndUimsdTextInput prompt = new WndUimsdTextInput("Filter", "A number", "", 40,
                             false, "OK", "Cancel", (positive, value) -> {});

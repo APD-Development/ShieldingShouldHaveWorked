@@ -4,3 +4,5 @@ Closing WndSettings schedules a scene reset; await it before opening Options, ke
 Queue replacement reproduction fails before fix; 9 in-memory accepted/rejected/retry combinations now pass.
 Local regression subset: 528 checks pass. No server enabled, no network required, no save format change.
 Run complete core, debug assembly and API 34 checks; publish private APK/PDF only after all pass.
+Native fixture audit: explanatory notes have null action-label slots; skip those slots and assert both actual long actions were checked.
+Cancel superseded same-branch verification to avoid wasting Actions minutes; final APK stays tied to the verified source SHA.
