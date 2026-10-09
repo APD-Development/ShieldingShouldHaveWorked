@@ -171,6 +171,28 @@ public class ArchiveRoundTripTest {
 	}
 
 	@Test
+	public void reimportIntoTheSourceKeepsOriginalUnfinishedSecretsAndExplainsDifferences() throws Exception {
+		File root = fresh("source");
+		history(root);
+		byte[] archive = export(root);
+		Map<String, byte[]> original = files(root);
+		for (int attempt = 0; attempt < 3; attempt++){
+			ArchiveImporter.Report report = importInto(root, archive);
+			assertTrue(report.summary(), report.ok);
+			assertEquals(0, report.imported);
+			assertEquals(5, report.skippedAlreadyHere);
+			assertEquals(1, report.keptDifferentExisting);
+			assertEquals(1, report.redactedDifferentExisting);
+			assertTrue(report.summary().contains("hidden information removed"));
+			Map<String, byte[]> after = files(root);
+			for (String path : original.keySet()){
+				if (path.startsWith("runs/") || path.startsWith("legacy/")) assertArrayEquals(path, original.get(path), after.get(path));
+			}
+			assertTrue(contains(after.get("runs/open.apdlog"), SECRET_SEED));
+		}
+	}
+
+	@Test
 	public void aDifferentLogAlreadyHereIsNeverReplaced() throws Exception {
 		File a = fresh("a");
 		history(a);

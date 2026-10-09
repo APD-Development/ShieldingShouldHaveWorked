@@ -71,6 +71,7 @@ public final class ArchiveImporter {
 		public int rejected;
 		public int newerThanThisBuild;
 		public int redactedImported;
+		public int redactedDifferentExisting;
 		public final List<String> details = new ArrayList<>();
 
 		public String summary(){
@@ -83,6 +84,8 @@ public final class ArchiveImporter {
 			b.append("Imported ").append(imported).append(imported == 1 ? " log" : " logs").append(".");
 			if (skippedAlreadyHere > 0) b.append("\n").append(skippedAlreadyHere).append(" already here (identical), skipped.");
 			if (keptDifferentExisting > 0) b.append("\n").append(keptDifferentExisting).append(" differ from a log already here: yours was kept, nothing was replaced.");
+			if (redactedDifferentExisting > 0) b.append("\n").append(redactedDifferentExisting)
+					.append(" of those archived copies had hidden information removed because their runs were unfinished when exported. Such differences can be expected; the original logs are safe.");
 			if (redactedImported > 0) b.append("\n").append(redactedImported).append(" belong to runs that were not finished when exported (hidden information left out).");
 			if (newerThanThisBuild > 0) b.append("\n").append(newerThanThisBuild).append(" were recorded by a newer telemetry version: kept, but this version may not show all of it.");
 			if (rejected > 0) b.append("\n").append(rejected).append(" were not imported (damaged, not matching the manifest, or not allowed).");
@@ -275,7 +278,7 @@ public final class ArchiveImporter {
 	//put in place is taken out again.
 	private static void commit( File root, List<Staged> staged, Report report ) throws IOException {
 		List<File> placed = new ArrayList<>();
-		int imported = 0, already = 0, kept = 0, redacted = 0, newer = 0;
+		int imported = 0, already = 0, kept = 0, redacted = 0, redactedKept = 0, newer = 0;
 		List<String> notes = new ArrayList<>();
 		try {
 			for (Staged st : staged){
@@ -287,6 +290,7 @@ public final class ArchiveImporter {
 					if (sameContent(target, st.entry.sha256)) already++;
 					else {
 						kept++;
+						if (st.entry.redacted) redactedKept++;
 						notes.add(st.entry.path + ": a different log with this name is already here, yours was kept.");
 					}
 					st.tmp.delete();
@@ -311,6 +315,7 @@ public final class ArchiveImporter {
 		report.skippedAlreadyHere = already;
 		report.keptDifferentExisting = kept;
 		report.redactedImported = redacted;
+		report.redactedDifferentExisting = redactedKept;
 		report.newerThanThisBuild = newer;
 		report.details.addAll(notes);
 	}
