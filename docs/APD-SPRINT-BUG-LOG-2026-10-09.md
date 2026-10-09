@@ -1,6 +1,6 @@
 # APD bug log — October 9, 2026
 
-Branch: codex/apd-phone-fixes-2026-10-09. Physical-phone testing is not claimed. Final C5: 894 core tests and 3 targeted API 34 checks pass, zero failures/errors/skips. The owner-facing causes, fixes and side effects are in APD-BUG-FIX-REPORT-2026-10-09.md.
+Branch: codex/apd-phone-fixes-2026-10-09. Physical-phone testing is not claimed. Latest C8: 896 core tests and 3 targeted API 34 checks pass, zero failures/errors/skips. The owner-facing causes, fixes and side effects are in APD-BUG-FIX-REPORT-2026-10-09.md.
 
 | ID | Description/location | Evidence / cause | Severity | Status | Phone check |
 |---|---|---|---|---|---|
@@ -30,4 +30,8 @@ Final C5 source 70d0e1fa: all 894 core checks and 3 API 34 checks passed; privat
 
 C12 follow-up: three previously unsupported leaf menus (Group by, saved-view actions, demo-deletion confirmation) now have explicit semantic reopeners. Expanded native checks must verify state/callbacks and that restoration/Back never confirms deletion. Follow-up result pending; TEST 5 remains verified.
 
-| C16 | First-launch views/columns fail to persist, SavedViews/UimsdModel | Missing history parent; two controlled before-fix failures (FileNotFoundException and absent column file) | Medium preferences | Parent creation fix; targeted 29 checks pass, full new verification pending | First-launch empty history, save/view/reopen |
+| C16 | First-launch views/columns fail to persist, SavedViews/UimsdModel | Missing history parent; two controlled before-fix failures (FileNotFoundException and absent column file) | Medium preferences | Parent creation fix; targeted 29 checks plus C8 complete 896 checks / 3 API 34 checks pass | First-launch empty history, save/view/reopen |
+
+| S07 | Ask split picker may show three checks while storing two, WndUimsdAsk.pickSplitPending | Source onPick trims chosen to 2 but does not update the older checked Entry/label | Low/medium UI | Suspected; no controlled rendered-widget reproduction yet, not patched | Select three split fields and compare displayed checks/result |
+
+Latest C8 verifies first-launch storage and all added leaf restorers. C6 fixture failure is corrected and retained as historical evidence. S07 remains an unconfirmed source suspicion; physical-phone acceptance and age/policy/process-death work remain open.

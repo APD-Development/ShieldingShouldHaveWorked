@@ -208,3 +208,8 @@ Time: 25.111
 OK (29 tests)
 
 Broad after fix: 530 tests pass in 24.946 seconds. New complete CI/native result pending.
+
+Final C8 actual downloaded XML: 896 core tests, 143 suites; 3 API 34 tests; zero failures/errors/skips.
+menusSurviveSceneRecreationAndNarrowActionsStayInsideTheirWindow: PASS 5.964s
+aRunCanBePlayedSavedContinuedAndEndedWithItsHistoryRecorded: PASS 67.92s
+aWonRunIsRecordedAsWonAndSealed: PASS 66.031s
