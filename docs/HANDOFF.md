@@ -1,3 +1,17 @@
+## Verified final delivery — CODEX TEST 10
+
+Published October 9, 2026 at 12:57:03 p.m. EDT, late against requested 11:55 PDF / 11:59 APK. Application source `01c95ec4f9ec352d565f93b38acfc069663f1572`; run 37961639763. Complete core: 896 tests / 143 suites, zero failures/errors/skips. API34: all three targeted checks pass, including C17 split entries/actual checkmarks, semantic restoration and Done. Debug assembly and private delivery succeed. No physical-device pass claimed.
+
+APK SHA256 `030b7b616ce4b6524842a8fb5cb222634ecf3a53406bc8df5b54db471b299d2c`. [APK](https://github.com/charltonchris29/ShieldingShouldHaveWorked/releases/download/apd-codex-test-10/ADHD-Pixel-Dungeon-CODEX-TEST-10.apk) and [PDF](https://github.com/charltonchris29/ShieldingShouldHaveWorked/releases/download/apd-codex-test-10/APD-Bug-Fixes-2026-10-09.pdf). Install over existing APD; do not uninstall or clear data. TEST9 was a diagnostic failure and was not released. TEST10 contains all TEST8 fixes plus C17.
+
+Measured hosted jobs: core/build 12:47:30–12:50:42 EDT (3m12s), native 12:50:45–12:56:46 (6m01s), delivery 12:56:49–12:57:08 (19s). These are job elapsed times, not billed totals or measured active coding time. Broad local 530 regressions pass in28.744s; focused30 in0.467s. Deadline was missed and unrecorded intervals are not claimed productive. Daily schedules are enabled, not a guarantee of successful continuous development.
+
+Remaining: physical RedMagic testing, genuine age-provider integration, abandonment policy, owner's original archive conflicts, unsupported/process-death confirmations, complete quest walkthroughs and unconfirmed Columns S08. No server/community activation, balance change or history reset. The documentation-only refresh updates this PDF without rebuilding/replacing the verified APK.
+
+## Publication resumed after owner instruction
+
+Owner explicitly requested the APK immediately after the missed lunch deadline. Branch update to repair commit `01c95ec4f9ec352d565f93b38acfc069663f1572` succeeded on retry with renewed authorization and expected-head lease; no force push or security bypass. Final build/native checks are running. The earlier branch-update rejection prevented publication then, but is now resolved. Broad local regression results: 530 tests pass in 28.744 seconds; 30 focused tests pass. New APK remains unverified until CI completes.
+
 # APD current development handoff
 
 ## Lunch continuation — current status at 11:50 a.m. EDT

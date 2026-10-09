@@ -220,3 +220,24 @@ Production changes: WndUimsdAsk synchronizes checkbox entries after enforcing ex
 Daily scheduled preparation and two delivery tasks are enabled in America/New_York starting October 10; task execution/build availability can still fail. No paid build, server activation or history deletion authorized by this scheduling.
 
 Timing: resumed at 14:38:50 UTC (10:38:50 EDT), then no recorded continued execution between the last response and 15:48:54 UTC (11:48:54 EDT). This unmeasured interruption is not active development. CI finished 14:51:05 UTC while unattended. Work resumed on status request; deadline risk is reported honestly. No eight-hour active-work claim.
+
+
+## Publication recovery and additional source suspicion
+
+Repair source 01c95ec4f9ec352d565f93b38acfc069663f1572 includes all TEST8 fixes and the confirmed C17 repair. Broad local 530 tests pass (28.744s). First branch-ref attempt rejected at 12:21 EDT; after renewed owner instruction it succeeded with expected-head lease, force=false. C10 run 37961639763 started 12:47:30 EDT. Deadline miss and unrecorded periods are not hidden; no claim of uninterrupted work.
+
+S08 (unconfirmed, low UI): final-column checkbox may disagree with model's existing never-empty guard. No new production change for this suspicion; phone/rendered reproduction required.
+
+
+## Verified final delivery — CODEX TEST 10
+
+Published October 9, 2026 at 12:57:03 p.m. EDT, late against requested 11:55 PDF / 11:59 APK. Application source `01c95ec4f9ec352d565f93b38acfc069663f1572`; run 37961639763. Complete core: 896 tests / 143 suites, zero failures/errors/skips. API34: all three targeted checks pass, including C17 split entries/actual checkmarks, semantic restoration and Done. Debug assembly and private delivery succeed. No physical-device pass claimed.
+
+APK SHA256 `030b7b616ce4b6524842a8fb5cb222634ecf3a53406bc8df5b54db471b299d2c`. [APK](https://github.com/charltonchris29/ShieldingShouldHaveWorked/releases/download/apd-codex-test-10/ADHD-Pixel-Dungeon-CODEX-TEST-10.apk) and [PDF](https://github.com/charltonchris29/ShieldingShouldHaveWorked/releases/download/apd-codex-test-10/APD-Bug-Fixes-2026-10-09.pdf). Install over existing APD; do not uninstall or clear data. TEST9 was a diagnostic failure and was not released. TEST10 contains all TEST8 fixes plus C17.
+
+Measured hosted jobs: core/build 12:47:30–12:50:42 EDT (3m12s), native 12:50:45–12:56:46 (6m01s), delivery 12:56:49–12:57:08 (19s). These are job elapsed times, not billed totals or measured active coding time. Broad local 530 regressions pass in28.744s; focused30 in0.467s. Deadline was missed and unrecorded intervals are not claimed productive. Daily schedules are enabled, not a guarantee of successful continuous development.
+
+Remaining: physical RedMagic testing, genuine age-provider integration, abandonment policy, owner's original archive conflicts, unsupported/process-death confirmations, complete quest walkthroughs and unconfirmed Columns S08. No server/community activation, balance change or history reset. The documentation-only refresh updates this PDF without rebuilding/replacing the verified APK.
+
+
+Real commit continuation: diagnostic 0c8b22702d2b9af26a5a504b3d0d21706f6666dc; C17 repair 01c95ec4f9ec352d565f93b38acfc069663f1572. Main/Claude ancestry preserved.

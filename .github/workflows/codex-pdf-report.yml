@@ -23,14 +23,14 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh api repos/${{ github.repository }}/releases/tags/apd-codex-test-8 > verified-release.json
+          gh api repos/${{ github.repository }}/releases/tags/apd-codex-test-10 > verified-release.json
       - name: Require unchanged application source and successful build evidence
         env:
           APD_DOCUMENTATION_SHA: ${{ github.sha }}
         run: |
           python3 - <<'PY'
           import json, os, pathlib, subprocess
-          source = 'ce3694b5f3604f16ed5d6e0e06c88604c3223307'
+          source = '01c95ec4f9ec352d565f93b38acfc069663f1572'
           release = json.loads(pathlib.Path('verified-release.json').read_text())
           if not release['prerelease'] or release['draft'] or release['target_commitish'] != source:
               raise SystemExit('Unexpected release/source; do not replace its report')
@@ -51,7 +51,7 @@ jobs:
       - name: Replace only the PDF on the private prerelease
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release upload apd-codex-test-8 delivery/APD-Bug-Fixes-2026-10-09.pdf --clobber --repo ${{ github.repository }}
+        run: gh release upload apd-codex-test-10 delivery/APD-Bug-Fixes-2026-10-09.pdf --clobber --repo ${{ github.repository }}
       - name: Keep a downloadable report and verification record
         uses: actions/upload-artifact@v4
         with:

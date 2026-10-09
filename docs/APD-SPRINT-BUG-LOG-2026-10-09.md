@@ -32,9 +32,15 @@ C12 follow-up: three previously unsupported leaf menus (Group by, saved-view act
 
 | C16 | First-launch views/columns fail to persist, SavedViews/UimsdModel | Missing history parent; two controlled before-fix failures (FileNotFoundException and absent column file) | Medium preferences | Parent creation fix; targeted 29 checks plus C8 complete 896 checks / 3 API 34 checks pass | First-launch empty history, save/view/reopen |
 
-| S07 | Ask split picker may show three checks while storing two, WndUimsdAsk.pickSplitPending | Source onPick trims chosen to 2 but does not update the older checked Entry/label | Low/medium UI | Suspected; no controlled rendered-widget reproduction yet, not patched | Select three split fields and compare displayed checks/result |
+| S07 / C17 | Ask split picker shows three checks while storing two | Oldest field removed from chosen but not its checkbox entry; list repainted only tapped row | Medium UI | Confirmed by failing API34 regression in C9; repaired source in 01c95ec4, final Android verification pending | Select three split fields; oldest unchecks, latest two remain and apply |
 
-Latest C8 verifies first-launch storage and all added leaf restorers. C6 fixture failure is corrected and retained as historical evidence. S07 remains an unconfirmed source suspicion; physical-phone acceptance and age/policy/process-death work remain open.
+Latest C8 verifies first-launch storage and all added leaf restorers. C6 fixture failure is corrected and retained as historical evidence. S07 was subsequently confirmed as C17 by the diagnostic native regression; physical-phone acceptance and age/policy/process-death work remain open.
 
 
 C17 (formerly S07), medium UI, confirmed by API 34 run 37946296408: selecting three Ask split fields displays three checks while answers use only the latest two. Fix synchronizes entries and refreshes switch visuals after callbacks. Thirty focused local tests pass; final native verification pending at 11:50 EDT, phone testing required.
+
+
+S08: Columns picker may show the final column unchecked even though UimsdModel.toggleColumn deliberately preserves at least one column. Source evidence: WndUimsdColumns callback updates the model without reconciling Entry.checked after the model refuses removal. No controlled rendered-widget reproduction; not fixed in lunch candidate. Statistics/history remain protected by model guard. Phone check: leave one column, tap to remove it and compare checkbox/table. Low UI severity, pending reproduction.
+
+
+C17 final: fixed and verified in TEST10 / run37961639763; API34 all3pass. Existing core896pass. Physical check pending. S08 remains source-only suspicion, unchanged.

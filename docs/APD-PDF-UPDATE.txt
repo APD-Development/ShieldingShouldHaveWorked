@@ -1,3 +1,1 @@
-Refresh the PDF for verified private CODEX TEST 8 after successful release publication.
-Use current complete development/roadmap records; application source remains ce3694b5f3604f16ed5d6e0e06c88604c3223307.
-Do not rebuild/replace the APK or alter its tag/source/signing key. Reject any intervening non-documentation source changes.
+Refresh complete TEST10 PDF: verified C17, measured 896core/3nativepass, late12:57delivery and honest interruptions. SourceAPK01c95ec4 unchanged.

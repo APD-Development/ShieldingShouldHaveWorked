@@ -260,3 +260,24 @@ Potential effects: all switch pickers redraw their final selection after a tap, 
 The owner clarified that development should continue toward lunch, with the PDF at 11:55 a.m. and APK at 11:59 a.m. New York time. Daily preparation (11:20), PDF (11:55) and APK (11:59) tasks are enabled starting October 10 in America/New_York. These are scheduled tasks, not proof of continuous background development or a guarantee that a failed build will be released. An unsuccessful candidate must be reported honestly and the previous verified playable build retained.
 
 There was no recorded execution between the previous response and the 11:48:54 a.m. status request. This interval is not claimed as active coding; the diagnostic CI completed at 10:51:05 a.m. and the fix remained local until resumed. This interruption is included rather than hidden.
+
+
+## Extra phone checks for the continued build
+
+Open UIMSD → Ask a question → Runs → Split by. Select three fields: the oldest should visibly uncheck and the latest two stay checked. Tap Done and confirm the question names exactly those two fields. Repeat after leaving/returning to the app; physical-device restoration remains unverified.
+
+A separate source suspicion remains: Columns may appear to let the last shown column uncheck while the table safely retains it. This was not reproduced in a rendered fixture and is not claimed fixed. Test and report it without deleting history.
+
+The 11:55 PDF and 11:59 APK deadlines were missed. The new repair remained local while the diagnostic finished, and the first branch-update attempt was rejected at 12:21 p.m. EDT. The owner renewed publication instructions; the expected-head branch update then succeeded and run 37961639763 began at 12:47:30 p.m. EDT. No force push or security bypass was used. Exact active/idle totals are unavailable; do not interpret elapsed wall time as continuous coding.
+
+
+## Verified final delivery — CODEX TEST 10
+
+Published October 9, 2026 at 12:57:03 p.m. EDT, late against requested 11:55 PDF / 11:59 APK. Application source `01c95ec4f9ec352d565f93b38acfc069663f1572`; run 37961639763. Complete core: 896 tests / 143 suites, zero failures/errors/skips. API34: all three targeted checks pass, including C17 split entries/actual checkmarks, semantic restoration and Done. Debug assembly and private delivery succeed. No physical-device pass claimed.
+
+APK SHA256 `030b7b616ce4b6524842a8fb5cb222634ecf3a53406bc8df5b54db471b299d2c`. [APK](https://github.com/charltonchris29/ShieldingShouldHaveWorked/releases/download/apd-codex-test-10/ADHD-Pixel-Dungeon-CODEX-TEST-10.apk) and [PDF](https://github.com/charltonchris29/ShieldingShouldHaveWorked/releases/download/apd-codex-test-10/APD-Bug-Fixes-2026-10-09.pdf). Install over existing APD; do not uninstall or clear data. TEST9 was a diagnostic failure and was not released. TEST10 contains all TEST8 fixes plus C17.
+
+Measured hosted jobs: core/build 12:47:30–12:50:42 EDT (3m12s), native 12:50:45–12:56:46 (6m01s), delivery 12:56:49–12:57:08 (19s). These are job elapsed times, not billed totals or measured active coding time. Broad local 530 regressions pass in28.744s; focused30 in0.467s. Deadline was missed and unrecorded intervals are not claimed productive. Daily schedules are enabled, not a guarantee of successful continuous development.
+
+Remaining: physical RedMagic testing, genuine age-provider integration, abandonment policy, owner's original archive conflicts, unsupported/process-death confirmations, complete quest walkthroughs and unconfirmed Columns S08. No server/community activation, balance change or history reset. The documentation-only refresh updates this PDF without rebuilding/replacing the verified APK.
+
