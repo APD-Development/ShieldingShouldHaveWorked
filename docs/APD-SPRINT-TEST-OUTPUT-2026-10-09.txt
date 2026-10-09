@@ -122,3 +122,42 @@ OK (527 tests)
 
 
 SECOND CI run 37931869191: complete core tests and APK assembly succeeded; Android instrumentation COMPILE FAILED before running tests (missing assertFalse import). Fixed in 211cfeae; requires new verification. Delivery skipped.
+
+Queue replacement regression checkpoint:
+JUnit version 4.13.2-SNAPSHOT
+.............................................................APD-PERF heal volume: 20000 turns, 2222 regeneration heals: no heals 5 KiB, inferred heals 44 KiB (18.1 B per heal), exact heals + detail 75 KiB (32.1 B per heal)
+..................................................................................................................................................................APD-PERF datasets: 40 runs (10000 item rows): first build 225 ms, reload from the row cache 79 ms, cache 1220 KiB
+.APD-PERF query: 50000 rows: scan 33 ms, 3 filters + 2-key sort 36 ms, group by 2 columns 68 ms, one page of the table 2562 us
+.................................................................APD-PERF safety: 24174 queries compared, none differed
+.................................................................APD-PERF facts: rebuild from 60 runs (6004 KiB of logs, 270120 events) took 179 ms; reading the cache took 4 ms; cache file 81 KiB
+.....................................................................................................APDSTORAGE steps: 20000 steps cost 27132 bytes = 1.36 bytes per step
+.APDSTORAGE hero state: 20000 turns cost 7501 bytes = 0.38 bytes per turn
+.APDSTORAGE whole run of facts: 72262 bytes
+..APD-SELFTEST
+SELF-TEST PASSED
+      telemetry 1.10, container format 1
+      vm OpenJDK 64-Bit Server VM 21.0.12.1+1-1-deb13u1-Debian
+      os Linux 6.18.44 amd64
+      cpus 2, free space 4983 MB
+PASS  5000 events accepted
+      caller cost 7700 ns/event, flush+sync 0 ms, close 0 ms
+PASS  log read back exactly (70842 bytes, 14 B/event)
+      read 1 ms
+PASS  lifecycle events round trip
+PASS  item events round trip, seen state keeps what the player knew then
+PASS  combat events round trip (102 bytes per attack with its damage)
+      combat events: 1426 ns/event caller cost
+PASS  generation events round trip (46 bytes per generated item)
+      generation events: 3783 ns/event caller cost
+PASS  legacy-record import and fact derivation round trip (synthetic records, not your rankings)
+      fact derivation: 1091 us to rebuild 40 synthetic test records (made and deleted by the self-test)
+PASS  a log cut at any point reads back as a clean prefix
+PASS  a damaged byte is detected, earlier events are kept
+PASS  a cut log is repaired, the cut bytes are kept, and writing continues
+PASS  4 threads wrote 8000 events in order
+PASS  run index rebuilds from the logs
+
+.....................................................................
+Time: 84.138
+
+OK (528 tests)

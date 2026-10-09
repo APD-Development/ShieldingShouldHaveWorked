@@ -322,4 +322,42 @@ public class SubmissionQueueTest {
 		assertFalse("a run that was only sent is not shown as queued", text.contains("ob_run-a"));
 		assertTrue(text.contains("Nothing is sent anywhere"));
 	}
+	@Test public void aReplacementQueuedDuringAFlushKeepsItsOwnPayloadAndRetryState() throws Exception {
+		com.shatteredpixel.shatteredpixeldungeon.apd.backend.Envelope[] replacements = {
+				new com.shatteredpixel.shatteredpixeldungeon.apd.backend.Envelope("apd.settings-sync", 1, 0, "new"),
+				new com.shatteredpixel.shatteredpixeldungeon.apd.backend.Envelope("apd.settings-sync", 1, 0, "old"),
+				new com.shatteredpixel.shatteredpixeldungeon.apd.backend.Envelope("apd.settings-sync", 1, 1, "old")};
+		long[] created = {100, 200, 100};
+		for (int variant = 0; variant < replacements.length; variant++) {
+			final com.shatteredpixel.shatteredpixeldungeon.apd.backend.Envelope replacement = replacements[variant];
+			final long replacementTime = created[variant];
+			for (com.shatteredpixel.shatteredpixeldungeon.apd.backend.Gateway.Status status : new com.shatteredpixel.shatteredpixeldungeon.apd.backend.Gateway.Status[]{
+					com.shatteredpixel.shatteredpixeldungeon.apd.backend.Gateway.Status.OK,
+					com.shatteredpixel.shatteredpixeldungeon.apd.backend.Gateway.Status.REJECTED,
+					com.shatteredpixel.shatteredpixeldungeon.apd.backend.Gateway.Status.RETRY_LATER}) {
+				File root = tmp.newFolder(status.name() + variant);
+				com.shatteredpixel.shatteredpixeldungeon.apd.backend.Id id = com.shatteredpixel.shatteredpixeldungeon.apd.backend.Id.of(
+						com.shatteredpixel.shatteredpixeldungeon.apd.backend.Id.Kind.OUTBOX, "ob_changed");
+				assertTrue(SubmissionQueue.enqueueEnvelope(root, id,
+						new com.shatteredpixel.shatteredpixeldungeon.apd.backend.Envelope("apd.settings-sync", 1, 0, "old"), 100));
+				//An in-memory gateway only: no server, connection or network traffic.
+				com.shatteredpixel.shatteredpixeldungeon.apd.backend.Gateway gateway = (key, envelope) -> {
+					assertEquals("old", envelope.payload);
+					assertTrue(SubmissionQueue.replaceEnvelope(root, id, replacement, replacementTime));
+					return new com.shatteredpixel.shatteredpixeldungeon.apd.backend.Gateway.Response(status, "old outcome");
+				};
+				SubmissionQueue.flush(root, gateway, 1000, true);
+				assertEquals(status.name() + variant, 1, SubmissionQueue.pending(root));
+				com.shatteredpixel.shatteredpixeldungeon.apd.backend.Outbox stored = new com.shatteredpixel.shatteredpixeldungeon.apd.backend.Outbox();
+				com.shatteredpixel.shatteredpixeldungeon.apd.backend.OutboxStore.load(stored, SubmissionQueue.fileIn(root));
+				com.shatteredpixel.shatteredpixeldungeon.apd.backend.Outbox.Item item = stored.items().get(0);
+				assertEquals(replacement.payload, item.envelope.payload);
+				assertEquals(replacement.minor, item.envelope.minor);
+				assertEquals("replacement starts with its own retry state", 0, item.attempts);
+				assertEquals(replacementTime, item.nextAttemptAtMillis);
+				assertEquals("", item.lastDetail);
+			}
+		}
+	}
+
 }

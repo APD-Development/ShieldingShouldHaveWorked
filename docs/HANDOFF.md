@@ -10,6 +10,8 @@ Pushed work: 13 game bug/safety/persistence areas plus test isolation across 17 
 
 Read [the development report](APD-SPRINT-REPORT-2026-10-09.md), [owner-facing fixes/risks](APD-BUG-FIX-REPORT-2026-10-09.md), [bug log](APD-SPRINT-BUG-LOG-2026-10-09.md), and [age status](APD-AGE-VERIFICATION-STATUS.md). Update build SHA, test counts, release/APK/PDF paths and evidence after the new verification run. The PDF generator is tools/apd_bug_report_pdf.py.
 
+New checkpoint: C3 has 893 core checks passing and a built APK, but delivery was blocked by one API 34 UIMSD check; its Settings-close fixture race is corrected. Both existing play/save/continue/end checks passed. The newly confirmed same-ID queue replacement race is fixed with a 9-case regression; 528 local checks pass. Next build must include these changes before delivery.
+
 Remaining: genuine age-provider integration (current UNAVAILABLE, Adult always safely off), abandoned-run policy disagreement (current recorded abandonment counts), owner's exact archive conflicts, some unsupported confirmations and process-death restoration of pending dialogs, physical-phone acceptance and complete quest playthroughs. Existing demo shortcut intentionally opens UIMSD before ten runs; the tour still needs ten genuine runs. Do not reset earned flags as a fix.
 
 The local `/workspace/apd` git history is a synthetic text snapshot. **DO NOT PUSH IT**. Remote commits preserve actual ancestry and binary assets through Git-data writes with expected-head leases. Resume from a fresh clone of this branch and inspect all latest commits before editing. No claim is made of eight continuous active hours; long interruptions are recorded honestly in the report.

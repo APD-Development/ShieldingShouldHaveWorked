@@ -233,16 +233,20 @@ public final class SubmissionQueue {
 				//apply the outcome to the queue as it is NOW: runs queued or taken back while the server was being asked are not lost
 				Outbox now = new Outbox();
 				OutboxStore.load(now, fileIn(historyRoot));
-				java.util.Set<String> gone = new java.util.HashSet<>();
-				for (Outbox.Item i : r.sentItems) gone.add(i.id.value);
-				for (Outbox.Item i : r.rejectedItems) gone.add(i.id.value);
+				java.util.List<Outbox.Item> completed = new java.util.ArrayList<>(r.sentItems);
+				completed.addAll(r.rejectedItems);
 				for (Outbox.Item i : new java.util.ArrayList<>(now.items())){
-					if (gone.contains(i.id.value)){
+					boolean finished = false;
+					for (Outbox.Item tried : completed) if (sameQueuedItem(tried, i)){
+						finished = true;
+						break;
+					}
+					if (finished){
 						now.remove(i.id);
 						continue;
 					}
 					for (Outbox.Item tried : box.items()){
-						if (tried.id.equals(i.id)){
+						if (sameQueuedItem(tried, i)){
 							i.attempts = tried.attempts;
 							i.nextAttemptAtMillis = tried.nextAttemptAtMillis;
 							i.lastDetail = tried.lastDetail;
@@ -256,6 +260,15 @@ public final class SubmissionQueue {
 		}
 		for (Outbox.Item sent : r.sentItems) recordSent(historyRoot, sent, nowMillis);
 		return r;
+	}
+
+	//A newer ballot/settings envelope may reuse the id while a send is in flight.
+	//Only merge the result into the exact queued version that was actually tried.
+	private static boolean sameQueuedItem( Outbox.Item a, Outbox.Item b ){
+		return a.id.equals(b.id) && a.createdAtMillis == b.createdAtMillis
+				&& a.envelope.schema.equals(b.envelope.schema)
+				&& a.envelope.major == b.envelope.major && a.envelope.minor == b.envelope.minor
+				&& a.envelope.payload.equals(b.envelope.payload);
 	}
 
 	//remembers what was sent so a later evidence request can be checked against it

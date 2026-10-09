@@ -1,6 +1,6 @@
-2026-10-09 final delivery verification after the failed instrumentation compile.
-Includes missing assertFalse import correction, safe SavedViews replacement and expanded UIMSD input/selection/Ask restoration.
-Source fixes committed through 211cfeae. Local regression checkpoint: 527 checks pass.
-Re-run complete core suite, Android assembly and API 34 UI/play/save/continue/end checks.
-Delivery only after all required jobs pass; attach evidence-bearing PDF and APK to the private prerelease.
-Owner explicitly approved all sprint work and requested this APK/PDF; no routine reapproval needed.
+2026-10-09 delivery verification: same-ID replacement queue fix and corrected Settings lifecycle fixture.
+C3 complete core: 893 pass; Android: 2 gameplay checks pass, 1 UIMSD fixture fails; no release published.
+Closing WndSettings schedules a scene reset; await it before opening Options, keeping every existing assertion.
+Queue replacement reproduction fails before fix; 9 in-memory accepted/rejected/retry combinations now pass.
+Local regression subset: 528 checks pass. No server enabled, no network required, no save format change.
+Run complete core, debug assembly and API 34 checks; publish private APK/PDF only after all pass.

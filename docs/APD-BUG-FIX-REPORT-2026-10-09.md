@@ -194,6 +194,20 @@ Verification: the directory test fails before the fix and passes afterward. A fa
 
 Location: SavedViews and SavedViewsTest.
 
+## 14. An old send result could remove newly queued data
+
+Problem: an older queued item and its newer replacement could share an ID. Completing the old send could delete the new item or apply the old retry delay to it.
+
+Cause: after releasing the queue lock to call the gateway, the merge matched only the ID. It did not check which version had actually been tried. A controlled test replaced the item inside an in-memory gateway and reproduced the loss.
+
+Fix: apply a result only when ID, creation time, schema, version and payload all match the attempted item. A newer replacement keeps its own payload and retry state. No storage format changes or server activation are involved.
+
+Possible effects: a replacement remains queued for its own later attempt even if the previous item was accepted or rejected. This does not cancel a request already in progress. The disabled backend stays disabled; this was a latent data-integrity problem rather than evidence of a phone transmission.
+
+Verification: nine controlled combinations cover accepted, rejected and retry outcomes against changed payloads, requeued identical payloads with newer timestamps, and changed versions. The new test failed before the fix. The local regression subset passes 528 checks. Complete newer-build results belong on the verification page.
+
+Location: SubmissionQueue and SubmissionQueueTest.
+
 ## Other verification and remaining limits
 
 Sad Ghost reward visibility and quest-recording tests passed in the complete core suite. Source paths for Sad Ghost, Wandmaker, Blacksmith and Imp were reviewed without gameplay or balance changes. This is not proof of playing all four quests to completion on Android. Blacksmith's explicitly unfinished Fungi path was not enabled.

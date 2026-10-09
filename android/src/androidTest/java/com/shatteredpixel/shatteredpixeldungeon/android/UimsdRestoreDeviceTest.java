@@ -122,10 +122,16 @@ public class UimsdRestoreDeviceTest {
                 Game.scene().addToFront(new WndSettings());
             });
             rebuildScene();
+            Object settingsScene = Game.scene();
             onRender(() -> {
                 assertEquals("existing zero-argument fallback survived", 1, windows().size());
                 assertTrue(windows().get(0) instanceof WndSettings);
                 clearWindows();
+            });
+            //Closing Settings schedules its own font-reset scene rebuild.
+            //Wait for that real lifecycle event before opening the next menu.
+            awaitScene(settingsScene);
+            onRender(() -> {
                 UimsdModel model = model(); assertNotNull(model);
                 model.selectView("runs");
                 WndUimsdOptions.show(model);
