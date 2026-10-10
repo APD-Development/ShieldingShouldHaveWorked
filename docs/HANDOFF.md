@@ -525,3 +525,9 @@ Run38086795339 (scheduled sourcec449) compiled/passed core but failed before any
 - Added `docs/APD-SIMULATOR-USER-GUIDE.md` and a real private Actions artifact packaging workflow, gated on successful exact-source native/core baseline `455f22b5f14c1ea9886d033b81d0a1270ea5cd20` / `38088088384`.
 - Package includes the precompiled simulator APK pair, checked source/checksums, exact-source runner, baseline traces, and instructions. No emulator or app rebuild is requested by packaging. It is a developer tool for a new empty computer emulator, not a phone app or verified full 100-run cohort. No package has yet passed the pending gate or been delivered.
 - Workflow YAML parsed locally; packaging remains unexecuted until actual baseline succeeds. Existing playable TEST26 APK is unaffected.
+
+
+### Simulator profile-cohort accounting guard — 2026-10-10 21:49 UTC
+- A new artificial evidence fixture reproduced a summary bug: three completed seeds from two different play profiles on the same source were incorrectly accepted as one completed balance cohort. These fixtures are not gameplay runs.
+- `tools/summarize-warrior-experiment.py` now reports separate per-profile outcomes and requires all requested seeds within one source/profile cohort. All attempts, failures, timings and rare-encounter diagnostics remain preserved; per-source aggregates are explicitly labeled diagnostic totals.
+- Two permanent regressions cover mixed-profile rejection and retaining separate outcomes when one profile completes and another has partial evidence. All 11 summary fixtures passed locally in 0.054 s. No application source, APK binaries, healing policy or RNG changed. The pinned 455 baseline/batch remain unchanged; their fixed normal profile cannot produce the mixed-profile fixture.

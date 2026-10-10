@@ -67,6 +67,19 @@ def summarize(root, first_seed, count, allowed_sources):
             if row['completed']:
                 selected.setdefault(row['seed'], row)
         rows = list(selected.values())
+        # One compiled source can eventually support different play strategies.
+        # Preserve all attempts, but never combine those strategies into one cohort.
+        selected_by_profile = {}
+        for attempt in source_records:
+            row = attempt['result']
+            if row['completed']:
+                selected_by_profile.setdefault(row.get('profile','legacy: unrecorded'), {}).setdefault(row['seed'],row)
+        profile_counts = {profile:len(seeds) for profile,seeds in sorted(selected_by_profile.items())}
+        profile_results = [dict(profile=profile, completedDistinctSeeds=len(seeds),
+                                consumedHealingBeforeNormalFlyHealing=sum(r['observedHealingBeforeNormalFlyHealing'] for r in seeds.values()),
+                                normalFlyHealingObserved=sum(r['normalFlyHealingObserved'] for r in seeds.values()),
+                                deathEpisodes=sum(r['stopReason']=='death' for r in seeds.values()))
+                           for profile,seeds in sorted(selected_by_profile.items())]
         all_encounters, completed_encounters = {}, {}
         for attempt in source_records:
             counts = attempt['result'].get('encounterCounts', {})
@@ -79,6 +92,7 @@ def summarize(root, first_seed, count, allowed_sources):
                 completed_encounters[name] = completed_encounters.get(name,0) + value
         groups.append(dict(sourceCommit=source, attempts=len(source_records), completedDistinctSeeds=len(rows),
                            profiles=sorted({a['result'].get('profile','legacy: unrecorded') for a in source_records}),
+                           completedDistinctSeedsByProfile=profile_counts, perProfile=profile_results,
                            consumedHealingBeforeNormalFlyHealing=sum(r['observedHealingBeforeNormalFlyHealing'] for r in rows),
                            normalFlyHealingObserved=sum(r['normalFlyHealingObserved'] for r in rows),
                            deathEpisodes=sum(r['stopReason'] == 'death' for r in rows),
@@ -87,10 +101,11 @@ def summarize(root, first_seed, count, allowed_sources):
     report = dict(requested=count, actualAttempts=len(records), mirroredCopiesIgnored=mirrored,
                   completedDistinctSeeds=len(completed_seeds), unresolvedSeeds=sorted(expected-completed_seeds),
                   allRequestedSeedsCompleted=len(completed_seeds) == count, perSource=groups,
-                  singleSourceComplete=any(g['completedDistinctSeeds'] == count for g in groups),
+                  singleSourceComplete=any(n == count for g in groups for n in g['completedDistinctSeedsByProfile'].values()),
                   summedEpisodeElapsedMillis=sum(a['result']['elapsedMillis'] for a in records),
                   interpretation='Early-game bot episodes, not whole-run wins or causal survival evidence. '
-                                 'Do not pool different adapters for balance analysis. Parallel episode time is not wall time, '
+                                 'Use perProfile cohorts; perSource totals are diagnostics, not pooled balance evidence. '
+                                 'Do not pool different adapters or play profiles for balance analysis. Parallel episode time is not wall time, '
                                  'developer active time, or downtime.')
     return report, records
 

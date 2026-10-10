@@ -54,6 +54,23 @@ class SummaryTest(unittest.TestCase):
         normal=self.row(); normal['profile']='warrior-normal-loot-critical-heal-v1'
         self.write('normal',[normal]); self.write('legacy',[self.row(11,started=2)])
         self.assertEqual(['legacy: unrecorded','warrior-normal-loot-critical-heal-v1'],self.read()['perSource'][0]['profiles'])
+    def test_mixed_play_profiles_cannot_complete_one_balance_cohort(self):
+        rows=[self.row(10),self.row(11),self.row(12)]
+        for row,profile in zip(rows,['normal','normal','reckless']): row['profile']=profile
+        self.write('first',rows)
+        r=self.read()
+        self.assertTrue(r['allRequestedSeedsCompleted'])
+        self.assertFalse(r['singleSourceComplete'])
+        self.assertEqual({'normal':2,'reckless':1},r['perSource'][0]['completedDistinctSeedsByProfile'])
+    def test_complete_profile_keeps_its_own_outcomes_and_other_attempts(self):
+        old=self.row(10); old.update(profile='reckless',observedHealingBeforeNormalFlyHealing=False)
+        normal=[self.row(seed,started=2) for seed in [10,11,12]]
+        for row in normal: row['profile']='normal'
+        self.write('first',[old]+normal)
+        r=self.read(); self.assertEqual(4,r['actualAttempts']); self.assertTrue(r['singleSourceComplete'])
+        profiles={g['profile']:g for g in r['perSource'][0]['perProfile']}
+        self.assertEqual(3,profiles['normal']['consumedHealingBeforeNormalFlyHealing'])
+        self.assertEqual(0,profiles['reckless']['consumedHealingBeforeNormalFlyHealing'])
     def test_rare_encounters_and_failed_attempts_are_retained_without_fabricating_completion(self):
         failed=self.row(10,False); failed['encounterCounts']={'Albino':1,'Wraith':1}
         completed=self.row(11); completed['encounterCounts']={'GnollExile':1}
