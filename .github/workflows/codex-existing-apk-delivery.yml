@@ -1,4 +1,4 @@
-name: Deliver verified existing APD TEST26
+name: Deliver verified existing APD TEST31
 
 # Delivery only: reuse the already tested APK; no Gradle or app rebuild.
 # Accept verified SDK signer labels; retain compatibility refusal diagnostics.
@@ -12,19 +12,19 @@ permissions:
   actions: read
 
 concurrency:
-  group: apd-existing-test26-delivery
+  group: apd-existing-test31-delivery
   cancel-in-progress: false
 
 env:
-  APD_SOURCE_SHA: 1483bac7ecd24cf33b64632ca0d4135bb252ad7d
-  APD_SOURCE_RUN: '38082442832'
-  APD_TEST_NUMBER: '26'
-  APD_CORE_TEST_COUNT: '972'
+  APD_SOURCE_SHA: 25b4a95a802be730f365f82770235edb6bfc68b1
+  APD_SOURCE_RUN: '38092709292'
+  APD_TEST_NUMBER: '31'
+  APD_CORE_TEST_COUNT: '1004'
   APD_ANDROID_TEST_COUNT: '6'
-  APD_ROLLBACK_NUMBER: '25'
-  APD_ROLLBACK_SHA256: 'ed13563962c460666604140546cc6d24305a82aa98fa2698862cbe68f928c7b6'
-  APD_REQUIRED_ANDROID_METHODS: 'adultHumorControlWorksWithoutAnAgeProviderAndReopensWithSavedChoice,communityMenuOpensEveryPreviewAndReturnsWithoutStackingWindows'
-  APD_SOURCE_ARTIFACTS_JSON: '{"apd-codex-android-checks":11681297049,"apd-codex-private-test-apk":11681256295,"apd-codex-core-tests":11681066550}'
+  APD_ROLLBACK_NUMBER: '26'
+  APD_ROLLBACK_SHA256: 'eae67a1c095819906e70e0de3e76c08d3f482bf7aab7ec13b90efd334e5fc0ff'
+  APD_REQUIRED_ANDROID_METHODS: 'menusSurviveSceneRecreationAndNarrowActionsStayInsideTheirWindow,aRunCanBePlayedSavedContinuedAndEndedWithItsHistoryRecorded,aWonRunIsRecordedAsWonAndSealed,difficultyIsChosenOnTheCharacterScreenAndNotInSettings,communityMenuOpensEveryPreviewAndReturnsWithoutStackingWindows,adultHumorControlWorksWithoutAnAgeProviderAndReopensWithSavedChoice'
+  APD_SOURCE_ARTIFACTS_JSON: '{"apd-codex-android-checks":11685141148,"apd-codex-private-test-apk":11685125574,"apd-codex-core-tests":11685160614}'
 
 jobs:
   validate-and-stage:
@@ -53,7 +53,7 @@ jobs:
       - name: Retrieve rollback APK for direct compatibility comparison
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release download apd-codex-test-25 --repo "$GITHUB_REPOSITORY" --pattern ADHD-Pixel-Dungeon-CODEX-TEST-25.apk --dir rollback
+        run: gh release download apd-codex-test-26 --repo "$GITHUB_REPOSITORY" --pattern ADHD-Pixel-Dungeon-CODEX-TEST-26.apk --dir rollback
       - name: Check source, tests, checksum, signing and application ID
         env:
           GH_TOKEN: ${{ github.token }}
@@ -63,10 +63,10 @@ jobs:
       - name: Produce today's report from verified evidence
         run: |
           python3 -m pip install reportlab==4.2.5
-          python3 tools/apd_bug_report_pdf.py docs/APD-TEST26-REPORT-2026-10-10.md delivery/APD-Bug-Fixes-2026-10-10-TEST26.pdf --verification delivery/verification.txt
+          python3 tools/apd_bug_report_pdf.py docs/APD-TEST31-REPORT-2026-10-10.md delivery/APD-Bug-Fixes-2026-10-10-TEST31.pdf --verification delivery/verification.txt
       - uses: actions/upload-artifact@v4
         with:
-          name: verified-test26-delivery
+          name: verified-test31-delivery
           path: delivery/
           retention-days: 7
 
@@ -80,7 +80,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: verified-test26-delivery
+          name: verified-test31-delivery
           path: delivery
       - name: Publish new private prerelease without replacing existing assets
         env:
@@ -93,15 +93,15 @@ jobs:
           repo = os.environ['GITHUB_REPOSITORY']
           assert json.loads(subprocess.check_output(['gh', 'api', 'repos/' + repo]))['private']
           assert datetime.now(ZoneInfo('America/New_York')) >= datetime(2026, 10, 10, 11, 59, tzinfo=ZoneInfo('America/New_York'))
-          tag = 'apd-codex-test-26'
+          tag = 'apd-codex-test-31'
           previous = subprocess.run(['gh', 'release', 'view', tag, '--repo', repo], capture_output=True)
           if previous.returncode == 0:
               raise SystemExit('Existing release preserved; do not overwrite it.')
           subprocess.run(['gh', 'release', 'create', tag, '--repo', repo,
               '--target', os.environ['GITHUB_SHA'], '--prerelease', '--latest=false',
-              '--title', 'APD PRIVATE CODEX TEST 26', '--notes-file', 'delivery/verification.txt',
-              'delivery/ADHD-Pixel-Dungeon-CODEX-TEST-26.apk',
-              'delivery/ADHD-Pixel-Dungeon-CODEX-TEST-26.apk.sha256',
-              'delivery/APD-Bug-Fixes-2026-10-10-TEST26.pdf',
-              'delivery/TEST26-Verification.json'], check=True)
+              '--title', 'APD PRIVATE CODEX TEST 31', '--notes-file', 'delivery/verification.txt',
+              'delivery/ADHD-Pixel-Dungeon-CODEX-TEST-31.apk',
+              'delivery/ADHD-Pixel-Dungeon-CODEX-TEST-31.apk.sha256',
+              'delivery/APD-Bug-Fixes-2026-10-10-TEST31.pdf',
+              'delivery/TEST31-Verification.json'], check=True)
           PY

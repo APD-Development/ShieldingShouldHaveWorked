@@ -1,3 +1,14 @@
+## 2026-10-10 — New confirmed issues, fixed in verified TEST31 source
+
+| ID | Description/location | Evidence/root cause | Severity | Status | Phone check |
+| --- | --- | --- | --- | --- | --- |
+| 20261010-status | UIMSD status/queue dialogs disappear on scene recreation; WndUimsdOptions/Row | WndMessage(String) had no semantic/no-arg restorer; new exact-source native restoration/geometry assertions pass | Medium UI | Fixed; 1004 core/6 API34 verified | Switch apps, return, Back |
+| 20261010-views | Saving/renaming/deleting a partially readable saved-view file discards skipped entries; SavedViews | Red tests reproduce byte loss; invalid Base64 UTF-8 silently replaced characters. Nine damaged edit cases preserve exact bytes after guard/strict decoder | High preference-data integrity | Fixed; future-query preservation tested | Normal view lifecycle; do not corrupt real files |
+| 20261010-preview | Raw IDs/JSON can overflow and underscores/stars disappear; UimsdText/LongWordWrap | Vanilla wraps between words and parses highlighting. New raw mode/measured token breaks pass 7 fixtures and actual narrow-font native assertions | Medium UI/data presentation | Fixed; queue payload storage unchanged | Read/scroll a real queued preview |
+| 20261010-delivery | Missing commit marker can auto-publish a stale report without dedicated signing comparison; sprint workflow | Existing publication branch used old October 9 docs. Verification now cannot publish; separate current-report/signing/source gate required | High delivery reliability | Automatic path disabled; TEST31 signed delivery pending | Install update after successful publication |
+
+Remaining confirmed limitation: skipped saved-view records are protected and readable entries remain accessible, but edits pause until explicit repair; no automatic destructive recovery. Process death and preserving scroll offsets remain outside the scene-recreation fix. No new normal-floor connectivity defect found in 240 cases. Physical-device acceptance remains pending.
+
 ## Repository transfer recovered
 
 Canonical private repository is now APD-Development/ShieldingShouldHaveWorked. Read access verified, Codex branch09c0f36113a75f51fb228b83ad03b02eff9ba565 matches the previously pushed UIMSD audit; Claude/main unchanged. The last write attempt against the old owner stalled385.6seconds and was user-aborted; local fixes were preserved in snapshot commit e9affc2, never pushed as Git ancestry. Restore the BackendClient damaged-queue refusal and its regression test through a lease-protected Git-data commit on the existing remote ancestry.

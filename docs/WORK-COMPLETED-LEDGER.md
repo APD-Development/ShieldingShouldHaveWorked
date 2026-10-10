@@ -1,3 +1,10 @@
+## 2026-10-10 — Verified UIMSD/Community bug cycle (TEST31 publication pending)
+
+- Real source 25b4a95a802be730f365f82770235edb6bfc68b1; run 38092709292: 1004 core + 6 API34 cases, zero failures/errors/skips; debug assembly succeeded, actual XML independently parsed.
+- Fixed and tested: lost status/queue dialogs; saved-view corruption rewrite; raw long-ID/markup preview problems. Community page-specific availability polished; native narrow/recreation navigation checks retained.
+- New geometry regression: 240 regular-floor checks across all six classes and two seeds, including BVS-BND-PVG. New Java syntax checker: three fixtures pass; 13 changed Java sources parse; full compilation remains required.
+- Publication/signing still pending at this commit. Preserve TEST26 until separate verified existing-artifact delivery succeeds; report docs/APD-TEST31-REPORT-2026-10-10.md. Phone/upgrade/full-run acceptance is not claimed.
+
 # Work completed ledger (what is already DONE: do not redo it)
 
 ## 2026-10-10 22:47 UTC — native test literal correction

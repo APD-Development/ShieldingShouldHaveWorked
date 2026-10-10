@@ -1,3 +1,13 @@
+## 2026-10-10 23:03 UTC — TEST31 verified core/native source; separate signing/publication pending
+
+Candidate source 25b4a95a802be730f365f82770235edb6bfc68b1 / workflow 38092709292 completed successfully. Independently downloaded and parsed actual XML: **1004 core tests and 6 API34 tests**, zero failures/errors/skips. The exact-source core suite includes the new 240-case floor geometry audit. Native cases cover UIMSD restoration/raw literals/narrow dialogs; Community every-page touch navigation/narrow 100×120 geometry/scene recreation; difficulty picker; unknown-age Adult switch; controlled play/save/resume and death/victory. This is not a full normal-run playthrough or physical-phone/upgrade acceptance.
+
+Core artifact 11685160614; Android evidence 11685141148; APK artifact 11685125574. Separate delivery workflow reuses that APK, verifies exact source/checksum/signature/application ID against delivered TEST26, renders the current report, and publishes a new private TEST31 prerelease without overwriting prior assets. Signing/publication are **pending at this commit**; TEST26 remains the delivered fallback until the delivery job actually succeeds.
+
+Implemented and regression-tested: status restoration/scrolling; incomplete/corrupt saved-view replacement refusal and strict UTF-8; literal/long-ID queue previews; Community page-specific availability and layout/navigation regressions. Kept new geometry and cheap Java-syntax fixtures. Details and failures: `docs/APD-TEST31-REPORT-2026-10-10.md`.
+
+No player history/save formats, signing keys, app ID, main or Claude work were overwritten. Remaining: RedMagic testing, process-death/scroll-offset restoration and an explicit corrupt-view repair interface; approved gameplay improvements are still pending. No additional gameplay/balance/backend changes in this task.
+
 ## 2026-10-10 22:53 UTC — Cheap native-source syntax preflight retained
 
 Added `tools/JavaSyntaxCheck.java` for JDK-only parsing of changed Java files before an expensive Android build. It deliberately does not resolve Android/GDX types or certify API compatibility. Three permanent Python regression fixtures pass: missing Android types do not block parsing, malformed multi-character literals are rejected, and newer-than-Java-11 syntax is rejected. Both changed UIMSD/Community Android test files parse successfully. Use `java tools/JavaSyntaxCheck.java <changed Java files>`; full compilation/tests remain required. This tool-only commit does not request/cancel another build.
