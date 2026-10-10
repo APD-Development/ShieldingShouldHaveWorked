@@ -103,7 +103,8 @@ jobs:
           retention-days: 7
 
   private-delivery:
-    if: ${{ !contains(github.event.head_commit.message, '[verification-only]') }}
+    #Verification never publishes. Delivery separately validates signing and current reports.
+    if: ${{ false }}
     needs: [verify-and-build, android-smoke-check]
     runs-on: ubuntu-latest
     permissions:

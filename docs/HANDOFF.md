@@ -1,3 +1,14 @@
+## 2026-10-10 — Retained gameplay geometry test and verification/publication separation
+
+Kept the newer shared contract fix 9974bde8a80dca7c81b5cf39cbb110f8e67ae787 instead of overwriting it with a duplicate implementation. Its exact width interface passes the local wrapping and Android-5 source-contract checks. Shared simulator-only work c5b4995da6fa5ef682531f63cd48ac4715f3581c is preserved, not expanded in this bug/Community task.
+
+Retained RegularFloorConnectivityTest: 240 normal-floor geometry checks (all six classes, BVS-BND-PVG and 4242, regular depths through 24) passed locally in 3.267 seconds using canonical divergent generation dependencies. No new generation bug found; geometry is not combat/boss/run-completion or phone evidence.
+
+Found a delivery-workflow risk: a build-request commit lacking a message marker automatically published the old October 9 report and did not run the dedicated signing/rollback verifier. Verification is now unconditionally separate from private publication. This workflow change supersedes/cancels the running TEST29 verification via its existing concurrency rule, so the final combined check includes the retained floor test and cannot auto-publish stale artifacts. Cancellation is intentional delivery protection, not a claimed successful build. Dedicated delivery must reuse the final successful artifacts, compare signing/application ID against TEST26, and render a current report without replacing existing assets.
+
+TEST28 failed the dependency contract before APK assembly; TEST27 passed its earlier, smaller source. Last delivered signing-verified APK remains TEST26 until final verification and separate publication complete.
+
+
 ## 2026-10-10 22:43 UTC — combined verification failure corrected
 
 Exact-source workflow 38092210983 ran 1,003 core tests and found one real contract failure before any APK build: `LongWordWrap` imported `java.util.function.ToDoubleFunction`, which the protected statistics/query library forbids. The wrapper now declares its own tiny functional width interface, preserving the same measured-width behavior and lambdas without the forbidden platform API. The failed run did not build or execute Android tests.
