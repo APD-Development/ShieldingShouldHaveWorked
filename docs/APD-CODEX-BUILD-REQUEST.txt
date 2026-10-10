@@ -1,2 +1,2 @@
-2026-10-10 23:46:36 UTC
-Owner-approved UIMSD reading-position correction. Complete core/debug/API34 verification required; separate signing/private delivery only after actual pass. Preserve TEST31 and existing data.
+2026-10-10 23:58 UTC
+Combined approved UIMSD bug cycle: persist scroll position; stable locale filtering; six remaining status-warning restorers; retained 2,000-type stress fixture. Run complete core/debug/API34 checks. Do not auto-publish. Preserve signed TEST31 until separate evidence/signing/current-report delivery succeeds.

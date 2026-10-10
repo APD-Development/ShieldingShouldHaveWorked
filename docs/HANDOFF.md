@@ -1,3 +1,11 @@
+## 2026-10-10 23:58 UTC — Bug cycle continues: scroll native passed; expanded-content regression retained
+
+Exact-source TEST32 verification [38096206257](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38096206257), source a0ab5303089232afdce61ecec17cf88dca5617a0, completed all core/debug/API34 jobs successfully. It includes the actual new preview/guide reading-position case across two scene resets and larger-viewport clamping. Private auto-publication stayed disabled; this APK has not been signing-compared or delivered. It does not include the later locale or warning-message fixes.
+
+Retained ExpandedContentStatsTest: 50,000 synthetic rows, 2,000 distinct content names, 25 records/type; checks every group's independent count/sum, all 40 pages without lost/duplicate types, 50-row geometry and past-end clamping. Local pass: grouping 106 ms in the first run / 72 ms in the combined run; full targeted 40-case query/saved-view/scope/hidden-safety suite passes in 3.461 seconds. This tests UIMSD statistics processing only, not installed mod performance, phone FPS or gameplay generation. No stress-test failure or new gameplay bug found.
+
+Requesting one combined latest-source core/debug/API34 run containing scroll persistence, locale-independent filtering, six remaining restorable warning paths and the retained 2,000-type regression. No verification stage publishes; signing/source/rollback compatibility and a current report are still required before a private APK delivery. TEST31 remains the delivered rollback. No gameplay/balance/save/schema/signing/app-ID/main/Claude change.
+
 ## 2026-10-10 23:55 UTC — Remaining UIMSD warning/status restoration gaps closed; native pending
 
 Continued audit identified six remaining WndMessage(String) callsites with the same confirmed missing-restorer defect: single/range invalid numeric filters, grouped column selection/arrangement, empty-history Ask, and report completion/failure callbacks. Reused WndUimsdText in literal/raw mode for every callsite, preserving original wording, action behavior and query state. No file/history/resource/network action runs while restoring the already generated message.
