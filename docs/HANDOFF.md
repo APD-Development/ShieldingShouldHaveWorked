@@ -1,3 +1,14 @@
+## TEST24 delivered with Community — 2026-10-10 18:46:52 UTC
+
+Private release apd-codex-test-24 published 2026-10-10T18:42:59Z; recovery run38076840351 SUCCESS. Actual APK SHA256 e13408155a0534726686dd36f45c2ea377bb242dd02708891a234599f8b50785, 38,225,942 bytes, same signing certificate as TEST22, indev application ID unchanged, versionC24, nondowngrade checked. Actual build source f1ad8657250defd4b97cf422fa222d6c6c1f7329; release tag points fb1a728b852d5c722ff9ae16676b727143e0904a (delivery tooling). All application/build root tree entries were compared and are identical to tested source; evidence JSON records both commits. No APK rebuild or permission changes. First release targeting historical source returned403; current delivery-commit target succeeded with same token. Exact internal GitHub reason for initial403 remains unknown.
+
+Actual 947 core tests +6 API34 checks passed. Community main-menu entry, all eight pages, back navigation and text/window containment verified through actual pointer test. Adult/Clean persistence verified through actual pointer test. APK/PDF delivered in chat. Physical phone upgrade/full-run checks pending. Download APK: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-codex-test-24/ADHD-Pixel-Dungeon-CODEX-TEST-24.apk
+PDF: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-codex-test-24/APD-Bug-Fixes-2026-10-10-TEST24.pdf
+Evidence: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-codex-test-24/TEST24-Verification.json
+TEST22 remains rollback; NEVER uninstall/clear player data.
+
+One hourly scheduled GitHub read-write probe completed at7ead4a6; no unattended application coding/builds or overnight continuous execution proven. Latest new loot/movement regressions remain local and outside TEST24; no device refresh-rate changes. Actual100Warrior simulator still unfinished. Next independent approved work continues while active execution exists.
+
 ## Scheduled probe actually completed — 2026-10-10 18:42:04 UTC
 
 Concurrent real commit 7ead4a6e4891b78314e2f05ed69c15f889260a43 (parent7bb7c5) adds docs/APD-UNATTENDED-PROBE-2026-10-10.json only and is preserved. Execution ID apd-probe-20261010183807955-44wwiqfm records start18:38:07.955Z and inspection finish18:39:23.241Z, followed by commit18:39:32Z. One scheduled repository read/write execution is now demonstrated; no application code, tests or build were performed by that probe. It had an empty fresh workspace with git/java but no gradle/adb/checkout. No proof of continuous overnight work or subsequent coding/building. Initial immediate-run404 and earlier no-run observations are historical, superseded only for this bounded probe. Recovery continues from this actual concurrent parent with lease protection.

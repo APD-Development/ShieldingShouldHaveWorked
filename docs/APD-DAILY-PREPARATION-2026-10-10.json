@@ -1,9 +1,9 @@
 {
-  "recorded_at_utc": "2026-10-10 18:42:04 UTC",
+  "recorded_at_utc": "2026-10-10 18:46:52 UTC",
   "source": "f1ad8657250defd4b97cf422fa222d6c6c1f7329",
   "run": 38075683960,
   "build_number": 24,
-  "status": "verified APK staged; publication HTTP403; recovery pending",
+  "status": "verified and privately delivered TEST24",
   "core": {
     "tests": 947,
     "suites": 151,
@@ -30,5 +30,12 @@
   "apk_sha256": "e13408155a0534726686dd36f45c2ea377bb242dd02708891a234599f8b50785",
   "failed_delivery_run": 38076542746,
   "staged_artifact": 11679005726,
-  "unattended_probe_commit": "7ead4a6e4891b78314e2f05ed69c15f889260a43"
+  "unattended_probe_commit": "7ead4a6e4891b78314e2f05ed69c15f889260a43",
+  "delivery_run": 38076840351,
+  "release_tag": "apd-codex-test-24",
+  "release_target": "fb1a728b852d5c722ff9ae16676b727143e0904a",
+  "published_at_utc": "2026-10-10T18:42:59Z",
+  "apk_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-codex-test-24/ADHD-Pixel-Dungeon-CODEX-TEST-24.apk",
+  "pdf_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-codex-test-24/APD-Bug-Fixes-2026-10-10-TEST24.pdf",
+  "publication_app_tree_matches_source": true
 }

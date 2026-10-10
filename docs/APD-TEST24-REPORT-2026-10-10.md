@@ -81,3 +81,16 @@ Two additional source-provenance regressions pass: delivery documentation/toolin
 ## Updated unattended evidence — actual scheduled probe
 
 After the initial 404 and missing-run observation, the hourly scheduled task DID execute. It read real GitHub state and safely added docs/APD-UNATTENDED-PROBE-2026-10-10.json in real commit 7ead4a6e4891b78314e2f05ed69c15f889260a43 at 18:39:32 UTC. Recorded execution began 18:38:07.955 UTC and repository inspection ended 18:39:23.241 UTC (75.286 seconds elapsed inspection, not measured active coding). The fresh workspace was empty with git/java but no checkout/gradle/adb. This confirms ONE scheduled GitHub read/write execution using available tools. It does NOT establish unattended application coding/builds, future successful iterations or 15-hour continuous activity. The earlier statements of no demonstrated run are checkpoint history, superseded by this limited evidence. The concurrent probe commit is preserved and recovery uses it as the real parent. No API key or added spending was introduced.
+
+## Publication confirmed
+
+## TEST24 delivered with Community — 2026-10-10 18:46:52 UTC
+
+Private release apd-codex-test-24 published 2026-10-10T18:42:59Z; recovery run38076840351 SUCCESS. Actual APK SHA256 e13408155a0534726686dd36f45c2ea377bb242dd02708891a234599f8b50785, 38,225,942 bytes, same signing certificate as TEST22, indev application ID unchanged, versionC24, nondowngrade checked. Actual build source f1ad8657250defd4b97cf422fa222d6c6c1f7329; release tag points fb1a728b852d5c722ff9ae16676b727143e0904a (delivery tooling). All application/build root tree entries were compared and are identical to tested source; evidence JSON records both commits. No APK rebuild or permission changes. First release targeting historical source returned403; current delivery-commit target succeeded with same token. Exact internal GitHub reason for initial403 remains unknown.
+
+Actual 947 core tests +6 API34 checks passed. Community main-menu entry, all eight pages, back navigation and text/window containment verified through actual pointer test. Adult/Clean persistence verified through actual pointer test. APK/PDF delivered in chat. Physical phone upgrade/full-run checks pending. Download APK: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-codex-test-24/ADHD-Pixel-Dungeon-CODEX-TEST-24.apk
+PDF: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-codex-test-24/APD-Bug-Fixes-2026-10-10-TEST24.pdf
+Evidence: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-codex-test-24/TEST24-Verification.json
+TEST22 remains rollback; NEVER uninstall/clear player data.
+
+One hourly scheduled GitHub read-write probe completed at7ead4a6; no unattended application coding/builds or overnight continuous execution proven. Latest new loot/movement regressions remain local and outside TEST24; no device refresh-rate changes. Actual100Warrior simulator still unfinished. Next independent approved work continues while active execution exists.
