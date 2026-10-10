@@ -231,7 +231,16 @@ public class WarriorSimulationDeviceTest {
                             .put("finishedEpochMillis", System.currentTimeMillis())
                             .put("elapsedMillis", TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - monotonicStart))
                             .put("trace", new JSONArray(result.trace));
-                    writer.write(row.toString()); writer.write('\n'); writer.flush();
+                    String serialized = row.toString();
+                    writer.write(serialized); writer.write('\n'); writer.flush();
+                    String encoded = android.util.Base64.encodeToString(
+                            serialized.getBytes(StandardCharsets.UTF_8), android.util.Base64.NO_WRAP);
+                    int chunks = (encoded.length() + 1999) / 2000;
+                    for (int chunk = 0; chunk < chunks; chunk++) {
+                        int from = chunk * 2000, to = Math.min(encoded.length(), from + 2000);
+                        android.util.Log.i("APDSIM", "APD_SIM_CHUNK:" + i + ":" + chunk + ":" + chunks + ":"
+                                + encoded.substring(from, to));
+                    }
                     executed++;
                     if (!result.completed) incomplete++;
                     consecutiveAdapterFailures = result.stopReason.equals("game adapter failure") ? consecutiveAdapterFailures + 1 : 0;
