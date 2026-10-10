@@ -1,3 +1,16 @@
+## 2026-10-10T23:41:16Z - headless foundation exact-source verification passed
+
+- Execution `APD-20261010T231111Z-HEADLESS-FOUNDATION` observed end: `2026-10-10T23:41:16Z`. This is an observed wall-clock interval, not continuous active-time accounting; activity outside it is unknown.
+- Final tested source: `a9b55e59152c8603e822dc1e2bcbf6ec4afebeda`; workflow [38095765371](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38095765371); command `tools/run-core-tests.sh`; complete core job succeeded. Trace preflights succeeded: 6 recovery + 6 instrumentation + 11 summary cases.
+- Both new `HeadlessActorLoopProbeTest` cases passed. Actual stdout: `APD_HEADLESS_GENERATION floors=100 mobs=844 elapsedMillis=174`.
+- Actor proof: real entered floor, real `Hero.rest(false)`, real `Actor.process()`, intervening actors, actor time +1 or more, hero selected for next turn, clean bounded thread shutdown. Test-only noosa/input/render boundaries are explicit; no production bypass exists.
+- Core artifact: `11685134071`, `sha256:b70f1bcaf27e6ab110b1b10c89d128a5b98d89ade369d71cbc0e3472f09d2293`.
+- Commit history: `c1cd69f09c60fc3a563c822edf046d7947cec128` initial seam; `2a180833adb189e30920966da837ea81f3e32507` noosa shell; `cb46d670e36fd4df53b19de4672964d6782ff796` render boundary; `a9b55e59152c8603e822dc1e2bcbf6ec4afebeda` explicit initial input boundary and passing source. Each built on the observed real head with an expected-head lease; no force push.
+- Retained failures: workflows 38095194630 (`Game.instance` absent), 38095385820 (`AttackIndicator.instance` absent), 38095569572 (initial rendered input-ready boundary absent). Each blocker was changed before rerun.
+- Android repair evidence remains workflow 38094049032: five native episodes completed, 2,446 actions / 609,546 ms = 4.013 actions/s. No trace issued `SEARCH`; seed `1000048` remains directly unverified.
+- Scope: floor generation is measured; complete headless episodes, policy parity and a 10,000x speedup are not claimed. The automatically started Android adapter job for 38095765371 was still running at this record and is not required for this test/docs-only change.
+- No production application source, saves/statistics, signing identity, application ID, release, public/backend state, `main` or Claude branch changed. No paid service, new runner, key or subscription change was used.
+
 ## 2026-10-10 23:39 UTC - initial input-ready boundary made explicit
 
 - Workflow [38095569572](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38095569572), source `cb46d670e36fd4df53b19de4672964d6782ff796`, ran 1,006 core cases and failed one new assertion before the actor thread started. Native was skipped.

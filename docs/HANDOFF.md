@@ -1,3 +1,13 @@
+## 2026-10-10 23:41 UTC - emulator-free generation and actor-clock seam verified
+
+Exact-source workflow [38095765371](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38095765371) passed `tools/run-core-tests.sh` for source `a9b55e59152c8603e822dc1e2bcbf6ec4afebeda`, including both new headless cases. The retained trace preflights also passed (6 + 6 + 11 cases). Core evidence artifact `11685134071`, digest `sha256:b70f1bcaf27e6ab110b1b10c89d128a5b98d89ade369d71cbc0e3472f09d2293`.
+
+Measured on the hosted two-core runner: 100 real Warrior first floors, 844 generated mobs, 174 ms. The real actor scheduler also accepted one `Hero.rest(false)`, processed intervening actors, advanced at least one actor-time unit and selected the hero for the next turn without a renderer. This verifies a bounded execution seam, not a complete episode, normal-play bot, Android/JVM parity result or 10,000x speedup.
+
+Commit chain for this slice: `c1cd69f09c60fc3a563c822edf046d7947cec128` (initial implementation), `2a180833adb189e30920966da837ea81f3e32507` and `cb46d670e36fd4df53b19de4672964d6782ff796` (retained headless-boundary corrections), then verified source `a9b55e59152c8603e822dc1e2bcbf6ec4afebeda`. Failed workflows 38095194630, 38095385820 and 38095569572 are retained evidence, not passed checks.
+
+The workflow's Android adapter job started automatically after core success even though application source did not change; it is not required evidence for this test/docs-only slice and is not yet claimed. No production source, app build, save/statistics format, signing/application ID, release or branch outside the approved branch changed. Next work is a shared policy/session boundary plus one synchronous action family, followed by paired parity seeds; exact seed `1000048` still needs direct replay.
+
 ## 2026-10-10 23:39 UTC - explicit headless input boundary added; rerun pending
 
 Workflow [38095569572](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38095569572) compiled and ran 1,006 core cases. Generation passed again (100 floors, 844 mobs, 245 ms). The revised actor test failed before starting the scheduler because a newly switched headless level correctly has not received the rendered scene's first input-ready callback.

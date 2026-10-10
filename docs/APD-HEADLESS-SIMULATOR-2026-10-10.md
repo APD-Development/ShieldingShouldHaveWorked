@@ -25,6 +25,10 @@ The actor clock normally asks the noosa `Game` shell whether a scene switch is p
 
 This is deliberately not described as a completed headless Warrior simulator. It does not yet run the normal-play policy, combat actions, item animations, level transitions, recorder result extraction or paired Android/JVM parity seeds.
 
+## Exact-source verification
+
+Workflow [38095765371](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38095765371) passed the complete core suite for source `a9b55e59152c8603e822dc1e2bcbf6ec4afebeda`, including both headless probe cases. On that hosted two-core runner, the generation case created 100 real Warrior first floors containing 844 mobs in 174 milliseconds. This is direct floor-generation timing only, not complete-episode speed or a 10,000x claim.
+
 ## Next exact steps
 
 1. Keep the Android five-seed workflow as the source-pinned behavioral oracle.
