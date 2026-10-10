@@ -1,3 +1,11 @@
+## Proactive simulator coverage and honest evidence aggregation — October 10, 2026
+
+Audit of actual MobSpawner floors1–4 found additional missing coverage before waiting for another batch failure: Slime/CausticSlime, HermitCrab, rare floor4Thief/Bandit, PhantomPiranha and TormentedSpirit. Use exact inherited/source-proven raw bounds; do not roll damage for a prediction. A permanent rotation test checks every standard and rare alternate early-floor class and known extra floor4Thief; actual TormentedSpirit rolls are sampled against stored-level bounds.9targeted navigation/bounds tests pass0.145s locally. Fresh complete core/native checks pending; no player gameplay changed.
+
+New reusable evidence summarizer admits only approved simulator commits with baseline-run manifests, rejects malformed/absent/out-of-range/false-complete evidence, retains failed and repeated attempts, ignores identical mirrored artifacts, and rejects conflicting copies.7permanent accounting tests pass0.007s. Actual original source0a evidence confirms62attempts,43completed,57unresolved,2observed pre-FlyHealing consumptions and2FlyHealing observations among those43;41deaths. These incomplete, selected early episodes cannot settle Warrior balance. Recorded sum4392465ms is parallel episode elapsed time, NOT wall-clock development time or downtime. Never pool different adapters as one balance dataset; report separate source groups and require100same-source completions before claiming a homogeneous100dataset.
+
+Preserve original43completed episodes for engineering coverage; only absent/failed seeds require adapter recovery. A later same-profile100dataset may still be needed for balance investigations. Compile simulator binaries once per corrected adapter, then reuse them across emulator shards; never rebuild per seed. Ordinary test-only changes do not invalidate playableTEST26 production artifact.
+
 ## Simulator recovery correction — 2026-10-10 20:45:46 UTC
 
 Original compiled0a batch and recovery runs38082709672/38082860120 attempted62 distinct requested seeds;43 completed normal early-game episodes and57 seeds remain incomplete or absent. All actual traces retained; neither62attempts nor43episodes is100completed runs, and none proves a potion prevented death. No complete whole-dungeon simulation yet.

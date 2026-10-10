@@ -83,6 +83,7 @@ public class WarriorSimulationDeviceTest {
         private final List<String> commands = new ArrayList<>();
         private Item rejectedPickup;
         private int rejectedHp, rejectedInventory;
+        private boolean attemptedPickup;
         private void command(String kind, int target) {
             commands.add(kind + ":depth=" + Dungeon.depth + ":from=" + Dungeon.hero.pos
                     + ":to=" + target + ":time=" + Actor.now());
@@ -169,6 +170,7 @@ public class WarriorSimulationDeviceTest {
             if (here != null && here.type == Heap.Type.HEAP && (here.peek() != rejectedPickup
                     || Dungeon.hero.HP != rejectedHp || Dungeon.hero.belongings.backpack.items.size() != rejectedInventory)) {
                 command("PICKUP:" + here.peek().getClass().getSimpleName(), pos);
+                attemptedPickup = true;
                 Dungeon.hero.handle(pos); Dungeon.hero.next(); return;
             }
             if (Dungeon.level.getTransition(pos) != null
@@ -208,6 +210,7 @@ public class WarriorSimulationDeviceTest {
                 return heap == null ? null : heap.peek();
             });
             render(() -> {
+                attemptedPickup = false;
                 if (GameScene.showingWindow()) throw new IllegalStateException("unhandled gameplay dialog: " + windowTypes()
                         + ":position=" + Dungeon.hero.pos + ":entrance=" + Dungeon.level.entrance()
                         + ":exit=" + Dungeon.level.exit() + ":terrain=" + Dungeon.level.map[Dungeon.hero.pos]);
@@ -241,7 +244,7 @@ public class WarriorSimulationDeviceTest {
             waitForInput();
             render(() -> {
                 Heap heap = Dungeon.level.heaps.get(Dungeon.hero.pos);
-                if (beforePickup != null && beforeDepth == Dungeon.depth && beforePosition == Dungeon.hero.pos
+                if (attemptedPickup && beforePickup != null && beforeDepth == Dungeon.depth && beforePosition == Dungeon.hero.pos
                         && before == Actor.now() && heap != null && heap.peek() == beforePickup) {
                     rejectedPickup = beforePickup;
                     rejectedHp = Dungeon.hero.HP;

@@ -34,6 +34,7 @@ jobs:
         run: |
           python3 tools/test-warrior-trace-recovery.py
           python3 tools/test-warrior-instrumentation.py
+          python3 tools/test-warrior-experiment-summary.py
       - name: Verify the complete core suite including simulation and normal-drop identification
         run: tools/run-core-tests.sh
       - name: Preserve native dependency for local real-game tests

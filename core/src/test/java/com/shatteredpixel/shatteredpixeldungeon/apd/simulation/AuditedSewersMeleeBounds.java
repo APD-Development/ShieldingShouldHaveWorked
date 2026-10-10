@@ -12,10 +12,12 @@ public final class AuditedSewersMeleeBounds {
                 || type == Snake.class || type == Swarm.class) return 4;
         if (type == Gnoll.class || type == GnollTrickster.class) return 6;
         if (type == GnollExile.class) return 10;
-        if (type == Crab.class || type == GreatCrab.class) return 7;
-        if (type == Piranha.class) return 4 + 2 * depth;
+        if (type == Crab.class || type == GreatCrab.class || type == HermitCrab.class) return 7;
+        if (type == Slime.class || type == CausticSlime.class) return 5;
+        if (type == Thief.class || type == Bandit.class) return 10;
+        if (type == Piranha.class || type == PhantomPiranha.class) return 4 + 2 * depth;
         // Exact Wraith methods use the same stored level: attackSkill=10+level, maxDamage=2+level.
-        if (type == Wraith.class) return mob.attackSkill(null) - 8;
+        if (type == Wraith.class || type == TormentedSpirit.class) return mob.attackSkill(null) - 8;
         // These exact variants use attackSkill(null)=6+storedLevel and maxDamage=2+2*storedLevel.
         // CrystalMimic delegates neutral damage to the normal enemy roll, with the same maximum.
         if (type == Mimic.class || type == GoldenMimic.class || type == CrystalMimic.class)

@@ -5,9 +5,30 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.*;
 import com.watabou.utils.Random;
 import org.junit.Test;
+import java.lang.reflect.Method;
+import java.util.List;
 import static org.junit.Assert.*;
 
 public class AuditedSewersMeleeBoundsTest {
+    @Test public void everyStandardAndRareEarlySewersRotationHasAnAuditedBound() throws Exception {
+        Method rotation = MobSpawner.class.getDeclaredMethod("standardMobRotation", int.class);
+        rotation.setAccessible(true);
+        for (int depth=1; depth<=4; depth++) {
+            @SuppressWarnings("unchecked") List<Class<? extends Mob>> types = (List<Class<? extends Mob>>) rotation.invoke(null,depth);
+            for (Class<? extends Mob> type : types) {
+                assertTrue(AuditedSewersMeleeBounds.maximum(type.getDeclaredConstructor().newInstance(),depth)>0);
+                Class<? extends Mob> rare = MobSpawner.RARE_ALTS.get(type);
+                if (rare != null) assertTrue(AuditedSewersMeleeBounds.maximum(rare.getDeclaredConstructor().newInstance(),depth)>0);
+            }
+        }
+        // addRareMobs can add a Thief on floor4; its alternate is a Bandit.
+        assertEquals(10,AuditedSewersMeleeBounds.maximum(new Thief(),4));
+        assertEquals(10,AuditedSewersMeleeBounds.maximum(new Bandit(),4));
+        assertEquals(Piranha.class,PhantomPiranha.class.getMethod("damageRoll").getDeclaringClass());
+        assertEquals(Crab.class,HermitCrab.class.getMethod("damageRoll").getDeclaringClass());
+        assertEquals(Slime.class,CausticSlime.class.getMethod("damageRoll").getDeclaringClass());
+        assertEquals(Thief.class,Bandit.class.getMethod("damageRoll").getDeclaringClass());
+    }
     @Test public void inheritedRareEnemyRollsUseAuditedParentWithoutGuessingUnknownSubclasses() throws Exception {
         assertEquals(Rat.class, Albino.class.getMethod("damageRoll").getDeclaringClass());
         assertEquals(Rat.class, FetidRat.class.getMethod("damageRoll").getDeclaringClass());
@@ -25,17 +46,19 @@ public class AuditedSewersMeleeBoundsTest {
     }
     @Test public void actualWraithRollBoundsTrackItsStoredLevelRatherThanCurrentFloor() {
         for (int level : new int[]{1, 2, 4, 10, 25}) {
-            Wraith wraith = new Wraith();
+          for (Wraith wraith : new Wraith[]{new Wraith(),new TormentedSpirit()}) {
             wraith.adjustStats(level);
             int maximum = AuditedSewersMeleeBounds.maximum(wraith, 2);
-            assertEquals(level + 2, maximum);
+            int scaled = wraith instanceof TormentedSpirit ? Math.round(1.5f*level) : level;
+            assertEquals(scaled + 2, maximum);
             Random.pushGenerator(8301 + level);
             try {
                 for (int i = 0; i < 1000; i++) {
                     int roll = wraith.damageRoll();
-                    assertTrue(roll >= 1 + level / 2 && roll <= maximum);
+                    assertTrue(roll >= 1 + scaled / 2 && roll <= maximum);
                 }
             } finally { Random.popGenerator(); }
+          }
         }
     }
     @Test public void observingBoundsDoesNotRollDamageOrAdvanceRandomGenerator() {
