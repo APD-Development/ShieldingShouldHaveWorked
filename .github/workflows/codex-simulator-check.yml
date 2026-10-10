@@ -6,6 +6,7 @@ on:
     branches: [codex/apd-phone-fixes-2026-10-09]
     paths:
       - .github/workflows/codex-simulator-check.yml
+      - android/build.gradle
       - android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/WarriorSimulationDeviceTest.java
       - core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/simulation/**
       - tools/run-warrior-simulation.sh
