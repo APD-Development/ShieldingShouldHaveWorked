@@ -19,7 +19,7 @@ None of those five traces issued `SEARCH`. The run therefore verifies the repair
 It checks two separate facts:
 
 1. One hundred distinct Warrior first floors can be initialized with the real `Dungeon.init()` and `Dungeon.newLevel()` path without Android or a renderer. The test prints the actual elapsed milliseconds and total generated enemy count as evidence, but has no brittle performance threshold.
-2. A real entered floor can run the actual `Actor.process()` clock through one complete player wait and all intervening actors using invisible test-only sprites. The hero must return to input-ready state with the same position, positive HP and at least one unit of actor time consumed.
+2. A real entered floor can run the actual `Actor.process()` clock through one complete player wait and all intervening actors using invisible test-only sprites. The scheduler must reach the hero's next turn with the same position, positive HP and at least one unit of actor time consumed. The probe pauses immediately before that hero act because the subsequent `Hero.ready()` method updates render-only UI singletons that do not exist headlessly.
 
 The actor clock normally asks the noosa `Game` shell whether a scene switch is pending. The existing libGDX headless test fixture intentionally creates no noosa game instance, so the probe supplies a minimal test-only shell with scene switching marked complete and restores the previous global instance afterward. It does not create or render a scene.
 

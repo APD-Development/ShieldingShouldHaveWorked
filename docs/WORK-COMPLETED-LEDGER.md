@@ -1,3 +1,11 @@
+## 2026-10-10 23:35 UTC - second actor-probe boundary retained and isolated
+
+- Workflow [38095385820](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38095385820), exact source `2a180833adb189e30920966da837ea81f3e32507`, ran 1,006 core cases and failed one new case; native adapter was skipped.
+- Generation remained green: 100 real first floors, 844 mobs, 182 ms.
+- The noosa-shell correction worked. The scheduler processed through the wait and reached the next `Hero.ready()`, then failed because render-only `AttackIndicator.instance` is null in headless mode.
+- Correction: mark only the hero test sprite moving after the wait, run the real actor clock through intervening actors, and assert when the scheduler selects the hero at time +1 before calling render-only UI. The test uses reflection only to observe the private current actor and does not mutate production source. Thread cleanup releases both waits.
+- Status: implemented, exact-commit rerun pending; no complete-episode or UI claim.
+
 ## 2026-10-10T23:32:06Z - exact headless probe failure retained and corrected
 
 - Workflow [38095194630](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38095194630), exact source `c1cd69f09c60fc3a563c822edf046d7947cec128`, ran 1,006 core cases and failed one new case. Native adapter job was correctly skipped.

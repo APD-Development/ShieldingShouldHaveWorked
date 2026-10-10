@@ -1,3 +1,9 @@
+## 2026-10-10 23:35 UTC - headless scheduler proof isolated from render UI; rerun pending
+
+Exact-source workflow [38095385820](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38095385820) again ran 1,006 core cases. Generation passed at 100 real floors / 844 mobs / 182 ms. The actor scheduler cleared the noosa-shell boundary, processed the wait, and then failed at render-only `AttackIndicator.updateState()` while entering `Hero.ready()`.
+
+The probe now deliberately pauses the scheduler when the hero becomes the current actor for the next turn, after at least one unit of actor time. This is the exact non-rendering boundary needed to prove a wait plus intervening actors; it does not construct fake HUD state or claim a completed headless episode. Cleanup repeatedly releases both scheduler and sprite waits and must stop the daemon thread. Exact-commit rerun is pending.
+
 ## 2026-10-10 23:32 UTC - first headless actor probe failure corrected; rerun pending
 
 Exact-commit workflow [38095194630](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38095194630) compiled and executed 1,006 core cases. The new generation test passed: 100 real Warrior first floors, 844 generated mobs, 187 ms on the two-core hosted runner. This is a floor-generation measurement, not complete-episode throughput.

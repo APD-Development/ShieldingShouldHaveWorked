@@ -94,6 +94,12 @@ public class HeadlessActorLoopProbeTest {
 		}
 	}
 
+	private static Actor currentActor() throws Exception {
+		java.lang.reflect.Field current = Actor.class.getDeclaredField("current");
+		current.setAccessible(true);
+		return (Actor) current.get(null);
+	}
+
 	@Test
 	public void oneHundredRealFirstFloorsNeedNoAndroidRuntime() {
 		HeadlessTestSupport.start();
@@ -121,7 +127,7 @@ public class HeadlessActorLoopProbeTest {
 	}
 
 	@Test
-	public void realActorClockProcessesAWaitWithoutRendering() throws Exception {
+	public void realActorClockReachesTheNextHeroTurnWithoutRendering() throws Exception {
 		HeadlessTestSupport.start();
 		int oldChallenges = SPDSettings.challenges();
 		int oldDifficulty = SPDSettings.apdDifficulty();
@@ -138,21 +144,23 @@ public class HeadlessActorLoopProbeTest {
 			new HeadlessGame(oldSceneClass, oldPlatform);
 			createFirstFloor(1_000_000L, true);
 			attachInvisibleSprites();
+			assertTrue("entered hero must initially accept input", Dungeon.hero.ready);
+			float before = Actor.now();
+			int beforeHp = Dungeon.hero.HP;
+			int beforePosition = Dungeon.hero.pos;
+
+			Dungeon.hero.rest(false);
+			//Pause immediately before the next hero act. This proves the scheduler reached the
+			//next input boundary without invoking Hero.ready's render-only UI callbacks.
+			Dungeon.hero.sprite.isMoving = true;
 			Actor.keepActorThreadAlive = true;
 			actorThread = new Thread(Actor::process, "apd-headless-actor-probe");
 			actorThread.setDaemon(true);
 			actorThread.setUncaughtExceptionHandler((thread, thrown) -> failure.set(thrown));
 			actorThread.start();
 			final Thread runningActorThread = actorThread;
-			await("initial hero input", runningActorThread, failure, () -> Dungeon.hero.ready);
-			float before = Actor.now();
-			int beforeHp = Dungeon.hero.HP;
-			int beforePosition = Dungeon.hero.pos;
-
-			Dungeon.hero.rest(false);
-			synchronized (runningActorThread) { runningActorThread.notifyAll(); }
-			await("post-wait hero input", runningActorThread, failure,
-					() -> Dungeon.hero.ready && Actor.now() >= before + 1f);
+			await("next hero turn", runningActorThread, failure,
+					() -> Actor.now() >= before + 1f && currentActor() == Dungeon.hero);
 
 			assertEquals(beforePosition, Dungeon.hero.pos);
 			assertTrue(Dungeon.hero.HP > 0 && Dungeon.hero.HP <= beforeHp);
@@ -160,9 +168,14 @@ public class HeadlessActorLoopProbeTest {
 		} finally {
 			Actor.keepActorThreadAlive = false;
 			if (actorThread != null) {
-				actorThread.interrupt();
-				synchronized (actorThread) { actorThread.notifyAll(); }
-				actorThread.join(TimeUnit.SECONDS.toMillis(5));
+				for (int i = 0; i < 50 && actorThread.isAlive(); i++) {
+					actorThread.interrupt();
+					synchronized (actorThread) { actorThread.notifyAll(); }
+					if (Dungeon.hero != null && Dungeon.hero.sprite != null) {
+						synchronized (Dungeon.hero.sprite) { Dungeon.hero.sprite.notifyAll(); }
+					}
+					actorThread.join(100);
+				}
 			}
 			Actor.keepActorThreadAlive = true;
 			Game.instance = oldGame;
