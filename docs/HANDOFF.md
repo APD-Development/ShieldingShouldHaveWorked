@@ -1,3 +1,13 @@
+## Exact-source simulator baseline and package verified — October 10, 2026
+
+Exact-source run [38088088384](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38088088384), source `455f22b5f14c1ea9886d033b81d0a1270ea5cd20`, succeeded from 21:33:35–21:57:13 UTC. Its downloaded core artifact `11683615513` contains 161 XML suites / 993 tests with zero failures, errors or skips. Downloaded native artifact `11683248078` (`sha256:89a280eab126547a8dc7a6dc21584e6ecf3db98fc7d1513fd75624f3c901328a`) contains exactly the five requested normal-profile seeds with complete nonempty traces and instrumentation `OK (1 test)` in 942.392 seconds.
+
+Outcomes were deaths on floors 3, 2, 4 and 3 plus one scenario-finished row on floor 3 with 15 HP. Two episodes consumed held Healing before a normal Fly Healing observation; one observed normal Fly Healing. Combat RNG explicitly remained unseeded. These are five engineering episodes, not causal survival evidence, a balance conclusion, a 100-run cohort, whole-dungeon play or physical-phone verification.
+
+Download workflow [38089262932](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38089262932), delivery source `286dcb481f3a31d8bafe72931333f451e52fcdc9`, succeeded from 21:52:11–21:57:41 UTC. Artifact `11683303102` is `sha256:16580e465d17f08c78eaabd99510f30fc950f5bd1721dee016611d58ff0ca050`. Independent download rechecked both APK hashes and ran all 11 packaged evidence-accounting regressions successfully in 0.043 seconds. `PACKAGE-TOOLS.json` pins binary/runner source 455 and report-tool/delivery source 286 separately.
+
+Gated batch [38088289249](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38088289249) accepted that baseline and launched five disposable emulator shards for only the remaining 95 seeds without recompilation. Shards are running; no 100-episode result is claimed yet. No production/gameplay source, saves/statistics, signing identity, application ID, release, `main` or Claude branch changed.
+
 ## Verified simulator runner recovery — October 10, 2026
 
 Runs 38085711482, 38086168969, 38086795339 and 38087065433 all compiled or passed core checks but executed zero episodes: the API 34 image required a 7,372.80 MB userdata allocation while only about 7,275.8 MB remained after compilation. Commit [c44985da](https://github.com/APD-Development/ShieldingShouldHaveWorked/commit/c44985da3c4cd5b9bc90def1f50375efa4082234) proved `disk-size: 4096M` alone was accepted but insufficient.
