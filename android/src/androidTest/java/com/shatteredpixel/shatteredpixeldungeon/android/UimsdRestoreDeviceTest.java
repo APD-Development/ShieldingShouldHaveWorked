@@ -23,6 +23,10 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
+import com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdGuide;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdText;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdTopic;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndSettings;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdAsk;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdTextInput;
@@ -47,6 +51,7 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @RunWith(AndroidJUnit4.class)
 public class UimsdRestoreDeviceTest {
@@ -201,6 +206,79 @@ public class UimsdRestoreDeviceTest {
         Object previous = Game.scene();
         onRender(ShatteredPixelDungeon::seamlessResetScene);
         awaitScene(previous);
+    }
+
+    private static ScrollPane messagePane(Window window) {
+        try {
+            for (Gizmo child : members(window)) if (child instanceof ScrollPane) return (ScrollPane) child;
+            throw new AssertionError("missing message scroll pane");
+        } catch (Exception e) { throw new RuntimeException(e); }
+    }
+
+    @Test public void textAndGuideScrollSurviveRepeatedResetsAndClampAfterResize() throws Exception {
+        try (ActivityScenario<AndroidLauncher> scenario = ActivityScenario.launch(AndroidLauncher.class)) {
+            long deadline = System.currentTimeMillis() + 120000;
+            while (Game.scene() == null && System.currentTimeMillis() < deadline) Thread.sleep(200);
+            assertNotNull("game did not start", Game.scene());
+            Object previous = Game.scene();
+            onRender(() -> UimsdScene.openNow(TitleScene.class));
+            awaitScene(previous);
+            AtomicInteger showActions = new AtomicInteger();
+            AtomicReference<Query> unchangedQuery = new AtomicReference<>();
+            onRender(() -> {
+                clearWindows();
+                unchangedQuery.set(model().query());
+                StringBuilder longText = new StringBuilder();
+                for (int i = 0; i < 100; i++) longText.append("Recorded local detail ").append(i)
+                        .append(": this complete line stays in the report after returning to the game.\n");
+                Game.scene().addToFront(new WndUimsdText("Local preview", longText.toString(), false));
+                try {
+                    java.lang.reflect.Constructor<UimsdGuide.Topic> constructor = UimsdGuide.Topic.class
+                            .getDeclaredConstructor(String.class, String.class, String.class, String.class, String.class);
+                    constructor.setAccessible(true);
+                    UimsdGuide.Topic topic = constructor.newInstance("scroll-fixture", "Testing", "Guide", longText.toString(), "");
+                    Game.scene().addToFront(new WndUimsdTopic(topic, true, showActions::incrementAndGet));
+                } catch (Exception e) { throw new RuntimeException(e); }
+                messagePane(windows().get(0)).scrollTo(0, 37);
+                messagePane(windows().get(1)).scrollTo(0, 61);
+                assertEquals(37f, messagePane(windows().get(0)).content().camera.scroll.y, 0.01f);
+                assertEquals(61f, messagePane(windows().get(1)).content().camera.scroll.y, 0.01f);
+            });
+            for (int reset = 0; reset < 2; reset++) {
+                rebuildScene();
+                onRender(() -> {
+                    assertEquals("both reading windows restore exactly once", 2, windows().size());
+                    assertTrue(windows().get(0) instanceof WndUimsdText);
+                    assertTrue(windows().get(1) instanceof WndUimsdTopic);
+                    assertEquals("preview keeps its reading position", 37f,
+                            messagePane(windows().get(0)).content().camera.scroll.y, 0.01f);
+                    assertEquals("guide keeps its reading position", 61f,
+                            messagePane(windows().get(1)).content().camera.scroll.y, 0.01f);
+                    assertEquals("restoration never runs Show me", 0, showActions.get());
+                    assertSame("restoration never changes a query", unchangedQuery.get(), model().query());
+                });
+            }
+            onRender(() -> {
+                //Snapshot positions before destroying the original panes, as PixelScene does.
+                List<Runnable> restorers = new ArrayList<>();
+                for (Window window : windows()) {
+                    messagePane(window).scrollTo(0, Float.MAX_VALUE);
+                    assertTrue("fixture reaches a nonzero bottom position", messagePane(window).content().camera.scroll.y > 61);
+                    restorers.add(window.restoreOnSceneReset());
+                }
+                clearWindows();
+                int originalHeight = PixelScene.uiCamera.height;
+                try {
+                    //A taller viewport fits the whole fixture: stale offsets must be clamped to zero.
+                    PixelScene.uiCamera.height = 10000;
+                    for (Runnable restorer : restorers) restorer.run();
+                    assertEquals(2, windows().size());
+                    for (Window window : windows()) assertEquals("resize never leaves content off screen", 0f,
+                            messagePane(window).content().camera.scroll.y, 0.01f);
+                    assertEquals(0, showActions.get());
+                } finally { clearWindows(); PixelScene.uiCamera.height = originalHeight; }
+            });
+        }
     }
 
     @Test public void menusSurviveSceneRecreationAndNarrowActionsStayInsideTheirWindow() throws Exception {
@@ -490,3 +568,4 @@ public class UimsdRestoreDeviceTest {
         }
     }
 }
+

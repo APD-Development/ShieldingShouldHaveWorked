@@ -1,3 +1,11 @@
+## 2026-10-10 23:46:36 UTC — UIMSD reading-position bug correction; native verification pending
+
+Resumed the owner's approved bugs/Community/regression loop from actual head a63d2bbbca6e2e34fbd6f426be75c97583737889, preserving the newer headless-simulator foundation. Confirmed source defect: WndUimsdText and WndUimsdTopic restored their contents/callbacks but rebuilt ScrollPane with its default zero offset, returning a reader to the top after scene recreation.
+
+Both windows now snapshot scroll coordinates before the old pane is destroyed and apply them through the existing ScrollPane.scrollTo clamp after creating the replacement layout. No history, queues, saved-view files, query policy, RNG, gameplay or signing/application ID changes. Added actual native regression for both windows across two scene resets, stack order/no duplicates, unchanged query/no automatic Show me action, destruction of old panes, and a larger viewport that must clamp stale positions to zero.
+
+Local evidence: both changed production classes compile with Java11 against existing dependencies; all three changed Java files parse; 17 existing geometry/wrapping cases pass (0.092 seconds). Android/emulator assertions and complete latest-source acceptance remain pending. A fresh verification request is included; do not claim this is in delivered TEST31. TEST31 remains the last signed/private delivered APK.
+
 ## 2026-10-10 23:41 UTC - emulator-free generation and actor-clock seam verified
 
 Exact-source workflow [38095765371](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38095765371) passed `tools/run-core-tests.sh` for source `a9b55e59152c8603e822dc1e2bcbf6ec4afebeda`, including both new headless cases. The retained trace preflights also passed (6 + 6 + 11 cases). Core evidence artifact `11685134071`, digest `sha256:b70f1bcaf27e6ab110b1b10c89d128a5b98d89ade369d71cbc0e3472f09d2293`.

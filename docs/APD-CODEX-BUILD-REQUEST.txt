@@ -1,1 +1,2 @@
-Final combined bug/Community verification: retain the 240-case floor geometry regression, use shared Android-5-safe wrap interface, run complete core and existing API34 gameplay/UI/settings/community checks, build private debug APK. Verification cannot publish; separate delivery requires matching signer/application ID and current report. Correct the native long-ID fixture to Java's single null character before those checks.
+2026-10-10 23:46:36 UTC
+Owner-approved UIMSD reading-position correction. Complete core/debug/API34 verification required; separate signing/private delivery only after actual pass. Preserve TEST31 and existing data.

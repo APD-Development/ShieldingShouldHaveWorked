@@ -34,6 +34,7 @@ public class WndUimsdText extends Window {
 
 	private final String savedTitle, savedText;
 	private final boolean structured;
+	private final ScrollPane pane;
 	private static final int MARGIN = 2;
 
 	public WndUimsdText( String title, String text ){
@@ -55,7 +56,7 @@ public class WndUimsdText extends Window {
 
 		Component content = new Component();
 		content.setSize(width, UimsdText.layout(content, width, text, structured));
-		ScrollPane pane = new ScrollPane(content);
+		pane = new ScrollPane(content);
 		float h = WindowGeometry.paneHeight(content.height(), WindowGeometry.maxPane(PixelScene.uiCamera.height, pos, 0));
 		//size the window first: it moves the window's camera, and the pane works out its screen position when it is placed
 		resize(width, (int) (pos + h));
@@ -66,7 +67,14 @@ public class WndUimsdText extends Window {
 	public Runnable restoreOnSceneReset(){
 		final String title = savedTitle, text = savedText;
 		final boolean styled = structured;
-		return () -> com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon.scene().addToFront(new WndUimsdText(title, text, styled));
+		final float scrollX = pane.content().camera.scroll.x, scrollY = pane.content().camera.scroll.y;
+		return () -> {
+			WndUimsdText restored = new WndUimsdText(title, text, styled);
+			//The new viewport may have changed size; ScrollPane clamps the saved position.
+			restored.pane.scrollTo(scrollX, scrollY);
+			com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon.scene().addToFront(restored);
+		};
 	}
 
 }
+
