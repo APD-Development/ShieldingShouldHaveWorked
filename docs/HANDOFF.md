@@ -1,3 +1,11 @@
+## TEST25 correction — full CI passed, private signing/publication pending
+
+Source 42aa5ff0a332eab3afe12f036c9beeeb1bfb5e71, build run 38077543066 (TEST25), completed 19:02:41 UTC on October 10, 2026. Full 948 core tests and six API34 emulator checks passed with zero failures/errors/skips; debug assembly passed. Only application change from TEST24 is removal of the private creator restrictions/secret disclosure from Community copy. Source/test paths and initial local invocation failure are documented in docs/APD-TEST25-REPORT-2026-10-10.md. No refresh-rate setting change.
+
+Delivery-only workflow will compare APK signing directly with preserved TEST22, validate checksum/application ID/version and actual XML, confirm identical application trees between tested source and the delivery commit, then publish a new private TEST25 prerelease with PDF/evidence. Publication is not yet claimed. Existing releases/Claude/main/player data remain preserved.
+
+Additional unpublished normal-loot identification integration tests plus generation recording safety/provenance passed locally: 21 tests, 1.697s. This work is NOT in TEST25. Real Warrior simulator adapter and other pending gameplay improvements remain incomplete; no simulated balance percentages.
+
 ## October 10 Community disclosure correction — source verified locally, APK pending
 
 The owner's TEST24 phone screenshot confirmed the Community-selected content page exposed internal creator restrictions concerning Cleric lore, the personal vendetta and a hidden achievement. These restrictions were incorrectly translated into public feature copy; being creator-controlled does not authorize announcing them. Removed that sentence completely. Preserve all private creative restrictions and disabled feature switches; no gameplay, save, statistics or feature eligibility change.

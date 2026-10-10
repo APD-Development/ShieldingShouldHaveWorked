@@ -1,4 +1,4 @@
-name: Deliver verified existing APD TEST24
+name: Deliver verified existing APD TEST25
 
 # Delivery only: reuse the already tested APK; no Gradle or app rebuild.
 # Accept verified SDK signer labels; retain compatibility refusal diagnostics.
@@ -12,19 +12,19 @@ permissions:
   actions: read
 
 concurrency:
-  group: apd-existing-test24-delivery
+  group: apd-existing-test25-delivery
   cancel-in-progress: false
 
 env:
-  APD_SOURCE_SHA: f1ad8657250defd4b97cf422fa222d6c6c1f7329
-  APD_SOURCE_RUN: '38075683960'
-  APD_TEST_NUMBER: '24'
-  APD_CORE_TEST_COUNT: '947'
+  APD_SOURCE_SHA: 42aa5ff0a332eab3afe12f036c9beeeb1bfb5e71
+  APD_SOURCE_RUN: '38077543066'
+  APD_TEST_NUMBER: '25'
+  APD_CORE_TEST_COUNT: '948'
   APD_ANDROID_TEST_COUNT: '6'
   APD_ROLLBACK_NUMBER: '22'
   APD_ROLLBACK_SHA256: '3ca4d27dd1f339d49d7f621b0befb108cf982c656270b989dae5e3eaf6f5ee04'
   APD_REQUIRED_ANDROID_METHODS: 'adultHumorControlWorksWithoutAnAgeProviderAndReopensWithSavedChoice,communityMenuOpensEveryPreviewAndReturnsWithoutStackingWindows'
-  APD_SOURCE_ARTIFACTS_JSON: '{"apd-codex-android-checks":11679400654,"apd-codex-private-test-apk":11679035076,"apd-codex-core-tests":11678034922}'
+  APD_SOURCE_ARTIFACTS_JSON: '{"apd-codex-android-checks":11679453711,"apd-codex-private-test-apk":11679048274,"apd-codex-core-tests":11678728661}'
 
 jobs:
   validate-and-stage:
@@ -63,10 +63,10 @@ jobs:
       - name: Produce today's report from verified evidence
         run: |
           python3 -m pip install reportlab==4.2.5
-          python3 tools/apd_bug_report_pdf.py docs/APD-TEST24-REPORT-2026-10-10.md delivery/APD-Bug-Fixes-2026-10-10-TEST24.pdf --verification delivery/verification.txt
+          python3 tools/apd_bug_report_pdf.py docs/APD-TEST25-REPORT-2026-10-10.md delivery/APD-Bug-Fixes-2026-10-10-TEST25.pdf --verification delivery/verification.txt
       - uses: actions/upload-artifact@v4
         with:
-          name: verified-test24-delivery
+          name: verified-test25-delivery
           path: delivery/
           retention-days: 7
 
@@ -80,7 +80,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: verified-test24-delivery
+          name: verified-test25-delivery
           path: delivery
       - name: Publish new private prerelease without replacing existing assets
         env:
@@ -93,15 +93,15 @@ jobs:
           repo = os.environ['GITHUB_REPOSITORY']
           assert json.loads(subprocess.check_output(['gh', 'api', 'repos/' + repo]))['private']
           assert datetime.now(ZoneInfo('America/New_York')) >= datetime(2026, 10, 10, 11, 59, tzinfo=ZoneInfo('America/New_York'))
-          tag = 'apd-codex-test-24'
+          tag = 'apd-codex-test-25'
           previous = subprocess.run(['gh', 'release', 'view', tag, '--repo', repo], capture_output=True)
           if previous.returncode == 0:
               raise SystemExit('Existing release preserved; do not overwrite it.')
           subprocess.run(['gh', 'release', 'create', tag, '--repo', repo,
               '--target', os.environ['GITHUB_SHA'], '--prerelease', '--latest=false',
-              '--title', 'APD PRIVATE CODEX TEST 24', '--notes-file', 'delivery/verification.txt',
-              'delivery/ADHD-Pixel-Dungeon-CODEX-TEST-24.apk',
-              'delivery/ADHD-Pixel-Dungeon-CODEX-TEST-24.apk.sha256',
-              'delivery/APD-Bug-Fixes-2026-10-10-TEST24.pdf',
-              'delivery/TEST24-Verification.json'], check=True)
+              '--title', 'APD PRIVATE CODEX TEST 25', '--notes-file', 'delivery/verification.txt',
+              'delivery/ADHD-Pixel-Dungeon-CODEX-TEST-25.apk',
+              'delivery/ADHD-Pixel-Dungeon-CODEX-TEST-25.apk.sha256',
+              'delivery/APD-Bug-Fixes-2026-10-10-TEST25.pdf',
+              'delivery/TEST25-Verification.json'], check=True)
           PY
