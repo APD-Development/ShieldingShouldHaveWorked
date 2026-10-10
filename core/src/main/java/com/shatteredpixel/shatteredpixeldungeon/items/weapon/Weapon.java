@@ -285,6 +285,33 @@ abstract public class Weapon extends KindOfWeapon {
 		return !isIdentified() && usesLeftToID <= 0;
 	}
 	
+
+	// Hidden upgrades must not leak through a derived percentage.
+	public int displayedStrengthRequirement() {
+		return levelKnown || this instanceof SpiritBow ? STRReq() : STRReq(0);
+	}
+
+	public static float strengthAccuracyModifier(float baseAccuracy, int requirement, int strength) {
+		int deficit = Math.max(0, requirement - strength);
+		return (float) (baseAccuracy / Math.pow(1.5, deficit));
+	}
+
+	protected String accuracyDescription() {
+		if (Dungeon.hero == null) return "";
+		float percent = 100f * strengthAccuracyModifier(ACC, displayedStrengthRequirement(), Dungeon.hero.STR());
+		String text;
+		if (this instanceof MissileWeapon || this instanceof SpiritBow) {
+			float adjacent = 0.5f + 0.25f * Dungeon.hero.pointsInTalent(Talent.POINT_BLANK);
+			text = Messages.get(Weapon.class, "apd_accuracy_ranged", percent * 1.5f, percent * adjacent);
+		} else {
+			text = Messages.get(Weapon.class, "apd_accuracy", percent);
+		}
+		if (!levelKnown && !(this instanceof SpiritBow)) {
+			text += " " + Messages.get(Weapon.class, "apd_accuracy_unknown");
+		}
+		return "\n\n" + text;
+	}
+
 	@Override
 	public float accuracyFactor(Char owner, Char target) {
 		
