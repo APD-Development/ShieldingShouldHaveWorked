@@ -46,7 +46,8 @@ public class WarriorSimulationDeviceTest {
         try {
             if (!done.await(30, TimeUnit.SECONDS)) throw new IllegalStateException("render timeout");
         } catch (InterruptedException e) { Thread.currentThread().interrupt(); throw new IllegalStateException(e); }
-        if (failure.get() != null) throw new IllegalStateException("render action failed", failure.get());
+        if (failure.get() instanceof RuntimeException) throw (RuntimeException) failure.get();
+        if (failure.get() != null) throw new IllegalStateException("render action failed: " + failure.get(), failure.get());
         return result.get();
     }
     private static void until(Callable<Boolean> condition, long seconds) {
@@ -111,9 +112,12 @@ public class WarriorSimulationDeviceTest {
         }
         public RecklessWarriorPolicy.Observation observe() {
             waitForInput();
-            return render(() -> new RecklessWarriorPolicy.Observation(Math.max(0, Dungeon.hero.HP),
-                    Dungeon.hero.HT, bound(adjacent()), healing(), adjacent() != null,
-                    flyHealing || Dungeon.depth >= 5));
+            return render(() -> {
+                boolean finished = flyHealing || Dungeon.depth >= 5 || !Dungeon.hero.isAlive();
+                Mob enemy = finished ? null : adjacent();
+                return new RecklessWarriorPolicy.Observation(Math.max(0, Dungeon.hero.HP),
+                        Dungeon.hero.HT, bound(enemy), healing(), enemy != null, finished);
+            });
         }
         public boolean hasReceivedNormalFlyHealingDrop() { return flyHealing; }
         public String fingerprint() {
@@ -215,9 +219,14 @@ public class WarriorSimulationDeviceTest {
             try (Writer writer = new OutputStreamWriter(new FileOutputStream(output), StandardCharsets.UTF_8)) {
                 for (int i = 0; i < count; i++) {
                     long started = System.currentTimeMillis(), monotonicStart = System.nanoTime();
-                    WarriorHealingExperiment.Result result = WarriorHealingExperiment.run(seed + i, Session::new, limit);
+                    Session[] current = new Session[1];
+                    WarriorHealingExperiment.Result result = WarriorHealingExperiment.run(seed + i,
+                            value -> { current[0] = new Session(value); return current[0]; }, limit);
                     JSONObject row = new JSONObject().put("seed", result.seed).put("completed", result.completed)
                             .put("observedHealingBeforeNormalFlyHealing", result.neededHeldHealingBeforeFlyDrop)
+                            .put("normalFlyHealingObserved", current[0] != null && current[0].flyHealing)
+                            .put("terminalDepth", Dungeon.depth)
+                            .put("terminalHp", Dungeon.hero == null ? JSONObject.NULL : Dungeon.hero.HP)
                             .put("stopReason", result.stopReason).put("startedEpochMillis", started)
                             .put("finishedEpochMillis", System.currentTimeMillis())
                             .put("elapsedMillis", TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - monotonicStart))
