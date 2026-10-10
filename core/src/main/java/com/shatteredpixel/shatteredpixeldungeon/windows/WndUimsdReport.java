@@ -42,7 +42,7 @@ public final class WndUimsdReport {
 		Game.runOnRenderThread(new Callback(){
 			@Override
 			public void call(){
-				ShatteredPixelDungeon.scene().addToFront(new WndMessage(message));
+				ShatteredPixelDungeon.scene().addToFront(new WndUimsdText("UIMSD", message, false));
 			}
 		});
 	}
@@ -217,3 +217,4 @@ public final class WndUimsdReport {
 		return d == null || d.rows.isEmpty() ? "" : d.rows.get(0).runId;
 	}
 }
+

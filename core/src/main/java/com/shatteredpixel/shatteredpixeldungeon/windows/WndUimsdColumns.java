@@ -37,8 +37,8 @@ public final class WndUimsdColumns {
 	public static void show( final UimsdModel m ){
 		if (m.dataset() == null) return;
 		if (m.result() != null && m.result().isGrouped()){
-			ShatteredPixelDungeon.scene().addToFront(new WndMessage("A grouped table shows its group columns and its totals. "
-					+ "Use Options, Group by, to change them, or open another view."));
+			ShatteredPixelDungeon.scene().addToFront(new WndUimsdText("UIMSD", "A grouped table shows its group columns and its totals. "
+					+ "Use Options, Group by, to change them, or open another view.", false));
 			return;
 		}
 		final List<ColumnDef> cols = m.offeredColumns();
@@ -78,7 +78,7 @@ public final class WndUimsdColumns {
 	public static void arrange( final UimsdModel m ){
 		if (m.dataset() == null) return;
 		if (m.result() != null && m.result().isGrouped()){
-			ShatteredPixelDungeon.scene().addToFront(new WndMessage("A grouped table has a fixed layout. Open another view to arrange its columns."));
+			ShatteredPixelDungeon.scene().addToFront(new WndUimsdText("UIMSD", "A grouped table has a fixed layout. Open another view to arrange its columns.", false));
 			return;
 		}
 		final List<String> shown = new ArrayList<>(m.query().columns.isEmpty() ? m.dataset().def.defaultColumnIds() : m.query().columns);
@@ -110,3 +110,4 @@ public final class WndUimsdColumns {
 		}).restoreWith(() -> moveOne(m, id)));
 	}
 }
+

@@ -1,3 +1,7 @@
+## 2026-10-10 — Additional confirmed status-window paths
+
+20261010-status-leaves: six UIMSD validation/grouping/empty-history/report messages still used non-restorable WndMessage(String). Medium UI/navigation severity. All now use the scrolling literal semantic restorer. Java11 production compile and syntax pass; six-callsite native regression is implemented, not yet verified. Phone check: enter invalid whole-number/range filters, open grouped Columns/Arrange, empty Ask and export completion; switch apps and return. No player data touched.
+
 ## 2026-10-10 23:52:22 UTC — Further UIMSD bugs discovered during resumed testing
 
 | ID | Location/description | Evidence/root cause | Severity | Status | Phone check |

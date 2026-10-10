@@ -75,7 +75,7 @@ public final class WndUimsdAsk {
 		if (q == null || cat.dataset(q.dataset) == null){
 			List<Dataset> sets = Questions.askable(cat);
 			if (sets.isEmpty()){
-				ShatteredPixelDungeon.scene().addToFront(new WndMessage("There is nothing recorded to ask about yet. Play a run and ask again."));
+				ShatteredPixelDungeon.scene().addToFront(new WndUimsdText("UIMSD", "There is nothing recorded to ask about yet. Play a run and ask again.", false));
 				return;
 			}
 			q = Question.about(sets.get(0).def.id);
@@ -321,3 +321,4 @@ public final class WndUimsdAsk {
 		}).restoreWith(() -> answer(cat, ruleset, host, q)));
 	}
 }
+

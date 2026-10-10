@@ -215,6 +215,76 @@ public class UimsdRestoreDeviceTest {
         } catch (Exception e) { throw new RuntimeException(e); }
     }
 
+    private static void answerPrompt(String value) {
+        assertEquals(1, windows().size());
+        WndUimsdTextInput prompt = (WndUimsdTextInput) windows().get(0);
+        prompt.hide();
+        prompt.onSelect(true, value);
+    }
+
+    @Test public void validationEmptyHistoryGroupedAndReportMessagesSurviveWithoutRepeatingActions() throws Exception {
+        try (ActivityScenario<AndroidLauncher> scenario = ActivityScenario.launch(AndroidLauncher.class)) {
+            long deadline = System.currentTimeMillis() + 120000;
+            while (Game.scene() == null && System.currentTimeMillis() < deadline) Thread.sleep(200);
+            assertNotNull("game did not start", Game.scene());
+            Object previous = Game.scene();
+            onRender(() -> UimsdScene.openNow(TitleScene.class));
+            awaitScene(previous);
+            AtomicReference<ColumnDef> number = new AtomicReference<>();
+            onRender(() -> {
+                clearWindows();
+                model().selectView("runs");
+                for (ColumnDef column : model().offeredColumns()) {
+                    if (column.type == ColumnDef.Type.NUM && column.format != ColumnDef.Format.DATE_MILLIS) {
+                        number.set(column); break;
+                    }
+                }
+                assertNotNull("whole-number filter fixture exists", number.get());
+            });
+            Runnable[] actions = {
+                () -> { WndUimsdFilter.pickValue(model(), -1, null, number.get(), Op.EQ); answerPrompt("not a number"); },
+                () -> { WndUimsdFilter.pickValue(model(), -1, null, number.get(), Op.BETWEEN);
+                    answerPrompt("1"); answerPrompt("not a number"); },
+                () -> { model().setGroup(new com.shatteredpixel.shatteredpixeldungeon.apd.query.GroupBy(
+                        java.util.Collections.singletonList(com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKeys.HERO_CLASS),
+                        java.util.Collections.emptyList())); WndUimsdColumns.show(model()); },
+                () -> WndUimsdColumns.arrange(model()),
+                () -> WndUimsdAsk.open(new Catalog(), "rules", (q, back) -> { throw new AssertionError("empty-history warning must not open a table"); }),
+                () -> {
+                    try {
+                        java.lang.reflect.Method tell = com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdReport.class
+                                .getDeclaredMethod("tell", String.class);
+                        tell.setAccessible(true); tell.invoke(null, "Local export fixture: nothing was sent.");
+                    } catch (Exception e) { throw new RuntimeException(e); }
+                }
+            };
+            String[] expected = {"not a valid value", "not a valid value", "grouped table shows",
+                    "fixed layout", "nothing recorded", "nothing was sent"};
+            for (int i = 0; i < actions.length; i++) {
+                final int index = i;
+                AtomicReference<Query> query = new AtomicReference<>();
+                AtomicReference<String> text = new AtomicReference<>();
+                onRender(() -> { clearWindows(); actions[index].run(); });
+                //Report callbacks are posted separately to the render thread.
+                onRender(() -> {
+                    assertEquals("one warning/status window", 1, windows().size());
+                    text.set(messageText(windows().get(0)));
+                    assertTrue(text.get(), text.get().contains(expected[index]));
+                    query.set(model().query());
+                });
+                rebuildScene();
+                onRender(() -> {
+                    assertEquals("warning restores exactly once", 1, windows().size());
+                    assertEquals(text.get(), messageText(windows().get(0)));
+                    assertSame("restoring a warning never repeats the query action", query.get(), model().query());
+                    windows().get(0).onBackPressed();
+                    assertTrue("Back closes the restored warning", windows().isEmpty());
+                });
+            }
+            onRender(() -> { model().setGroup(null); clearWindows(); });
+        }
+    }
+
     @Test public void textAndGuideScrollSurviveRepeatedResetsAndClampAfterResize() throws Exception {
         try (ActivityScenario<AndroidLauncher> scenario = ActivityScenario.launch(AndroidLauncher.class)) {
             long deadline = System.currentTimeMillis() + 120000;

@@ -222,7 +222,7 @@ public final class WndUimsdFilter {
 						public void got( String hi ){
 							Long a = CellFormatter.parse(col, lo), b = CellFormatter.parse(col, hi);
 							if (a == null || b == null){
-								ShatteredPixelDungeon.scene().addToFront(new WndMessage("That is not a valid value. " + hint + "."));
+								ShatteredPixelDungeon.scene().addToFront(new WndUimsdText("UIMSD", "That is not a valid value. " + hint + ".", false));
 								return;
 							}
 							finish(m, index, Filter.num(col.id, Op.BETWEEN, a, b));
@@ -236,7 +236,7 @@ public final class WndUimsdFilter {
 				public void got( String s ){
 					Long a = CellFormatter.parse(col, s);
 					if (a == null){
-						ShatteredPixelDungeon.scene().addToFront(new WndMessage("That is not a valid value. " + hint + "."));
+						ShatteredPixelDungeon.scene().addToFront(new WndUimsdText("UIMSD", "That is not a valid value. " + hint + ".", false));
 						return;
 					}
 					finish(m, index, Filter.num(col.id, op, a));
@@ -330,3 +330,4 @@ public final class WndUimsdFilter {
 		if (index < 0) m.addFilter(f); else m.replaceFilter(index, f);
 	}
 }
+

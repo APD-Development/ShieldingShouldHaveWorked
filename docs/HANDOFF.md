@@ -1,3 +1,9 @@
+## 2026-10-10 23:55 UTC — Remaining UIMSD warning/status restoration gaps closed; native pending
+
+Continued audit identified six remaining WndMessage(String) callsites with the same confirmed missing-restorer defect: single/range invalid numeric filters, grouped column selection/arrangement, empty-history Ask, and report completion/failure callbacks. Reused WndUimsdText in literal/raw mode for every callsite, preserving original wording, action behavior and query state. No file/history/resource/network action runs while restoring the already generated message.
+
+Added one permanent API34 case exercising all six actual call paths, real scene resets, exact payloads, one window, unchanged query and Back. Report callbacks stay on the render thread. All five changed sources parse; all four changed production classes compile locally against existing dependencies. New native case and combined exact-source core/debug verification remain pending. The existing scroll-only TEST32 is still running and has not been canceled or claimed passed.
+
 ## 2026-10-10 23:52:22 UTC — Locale-sensitive UIMSD filtering reproduced and corrected
 
 New permanent QueryLocaleRegressionTest reproduced two failures against the current query engine: under Turkish device locale, CONTAINS "ring" omitted recorded "RING OF MIGHT", including after reopening a saved view. Root cause is default-locale lowercasing rather than a stable query comparison. QueryEngine now uses Locale.ROOT for both operands of CONTAINS; no recorded text, filters, sorting, columns, gameplay or history is rewritten.
