@@ -1,3 +1,12 @@
+## 2026-10-10 23:52:22 UTC — Further UIMSD bugs discovered during resumed testing
+
+| ID | Location/description | Evidence/root cause | Severity | Status | Phone check |
+| --- | --- | --- | --- | --- | --- |
+| 20261010-scroll | WndUimsdText/Topic return to top on scene recreation | Restorer recreated pane without scroll snapshot; now applies saved coordinates through existing clamp; actual two-reset/viewport regression added | Medium reading/navigation | Java11 compile/17 geometry-wrap cases pass; TEST32 native pending | Read near bottom, switch apps, return; rotate |
+| 20261010-locale | QueryEngine CONTAINS loses matches after device language changes | Two reproducible red tests under tr-TR; default-locale lowercasing changed ASCII I to dotless i | Medium statistics correctness | Locale.ROOT fix; 39 targeted cases pass; full combined build pending | Same saved text filter before/after device language change |
+
+TEST31 signing/private publication completed successfully in workflow 38093772627; the earlier pending entry is historical. No zero-bug or physical-device acceptance claim.
+
 ## 2026-10-10 — New confirmed issues, fixed in verified TEST31 source
 
 | ID | Description/location | Evidence/root cause | Severity | Status | Phone check |

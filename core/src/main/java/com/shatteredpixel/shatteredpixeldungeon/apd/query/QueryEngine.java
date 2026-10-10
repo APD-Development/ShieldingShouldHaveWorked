@@ -30,6 +30,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -268,7 +269,7 @@ public final class QueryEngine {
 			switch (f.op){
 				case EQ: return v.equalsIgnoreCase(f.texts[0]) ? TRUE : FALSE;
 				case NE: return v.equalsIgnoreCase(f.texts[0]) ? FALSE : TRUE;
-				case CONTAINS: return v.toLowerCase().contains(f.texts[0].toLowerCase()) ? TRUE : FALSE;
+				case CONTAINS: return v.toLowerCase(Locale.ROOT).contains(f.texts[0].toLowerCase(Locale.ROOT)) ? TRUE : FALSE;
 				case IN:
 					for (String t : f.texts) if (v.equalsIgnoreCase(t)) return TRUE;
 					return FALSE;

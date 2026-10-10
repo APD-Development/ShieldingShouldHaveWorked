@@ -1,3 +1,11 @@
+## 2026-10-10 23:52:22 UTC — Locale-sensitive UIMSD filtering reproduced and corrected
+
+New permanent QueryLocaleRegressionTest reproduced two failures against the current query engine: under Turkish device locale, CONTAINS "ring" omitted recorded "RING OF MIGHT", including after reopening a saved view. Root cause is default-locale lowercasing rather than a stable query comparison. QueryEngine now uses Locale.ROOT for both operands of CONTAINS; no recorded text, filters, sorting, columns, gameplay or history is rewritten.
+
+Evidence: two red failures / three new cases before the fix; all three pass after (0.057 seconds), including literal separators/Unicode/case disk persistence. Expanded local query/saved-view/combined-scope/hidden-safety batch passes 39 cases (2.571 seconds), including 24,024 hidden-information comparisons without differences. Those loops are not 24,024 independent test cases. Changed Java11 sources compile/parse. Exact latest-source core/Android acceptance is still pending; this is not included in delivered TEST31 or the separate scroll-only TEST32 candidate.
+
+TEST32 workflow 38096206257 (a0ab5303089232afdce61ecec17cf88dca5617a0) passed core/debug jobs; its new scroll-restoration emulator case is still running. This ordinary code commit intentionally does not cancel that native check or request a redundant build. Run the combined source once the current native result is understood; preserve the previously verified APK until acceptance and signing pass.
+
 ## 2026-10-10T23:48:33.681Z - shared normal-policy wait boundary implemented (verification pending)
 
 - Execution `APD-20261010T234547Z-SHARED-WAIT`; observed start `2026-10-10T23:45:47Z`; implementation record `2026-10-10T23:48:33.681Z`. Time outside this observed interval is unknown.
