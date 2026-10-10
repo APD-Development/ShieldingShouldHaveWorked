@@ -73,7 +73,7 @@ def main():
     SimpleDocTemplate(str(args.output), pagesize=(8.5 * inch, 11 * inch),
                       rightMargin=0.65 * inch, leftMargin=0.65 * inch,
                       topMargin=0.65 * inch, bottomMargin=0.65 * inch,
-                      title='APD bug fixes, causes and risks — October 9, 2026',
+                      title='APD bug fixes, causes and risks',
                       author='APD development').build(story, onFirstPage=footer, onLaterPages=footer)
 
 

@@ -1,3 +1,11 @@
+## TEST22 existing-artifact delivery recovery — October 10
+
+Actual push-run endpoint (not the PR-only commit-run wrapper) finds successful run38071699386 on real source6ffd9668b853bbb94922888e6880611aebe1a2f8. CI ran13:25:48–13:36:52EDT; core/debug and targetedAPI34 jobs succeeded, publication deliberately skipped via[verification-only]. Downloaded evidence archive checksums match GitHub. XML:931core/149suites and4Android checks, zero failures/errors/skips. No physical-phone or actual-player-save upgrade pass claimed.
+
+Recovery reuses existingTEST22 artifact11676568789 and actual XML artifacts11676748354/11677028840, without rebuilding or changing application source. A delivery-only workflow verifies private repository, source/job/artifact identity, APK checksum, signature and package/version compatibility directly againstTEST20 before publishing a new private prerelease, never replacing existing assets. Final release status/checksum/signing evidence will be recorded after success; publication is pending at this commit. See docs/APD-TEST22-REPORT-2026-10-10.md. Noon deadline was missed; no continuous overnight execution claimed.
+
+Unfinished local Community/Crystal/accuracy/animation/healing/hotbar/simulation work is excluded. Preserve local edits; no100 actualWarrior simulations or new feature device acceptance exists. main/Claude unchanged, saves/history untouched. Real Git ancestry only; never push local synthetic history.
+
 ## October 10 lunch candidate staging
 
 Candidate starts from real Codex04294dbc, adding only C30 duplicate persisted queue ID preservation with its three regressions. Existing other developer branches unchanged. Current local broader feature work is intentionally excluded from this bugfix candidate and must be preserved. C30 broad local560tests previously passed; complete source/core/debug/API34 acceptance requested, not yet passed. Verification-only workflow stages private artifacts and skips release delivery. Never publish PDF before11:55am or APK before11:59am America/New_York. Latest verified rollback is TEST20 e4ad30fd,913core/4API34tests. User reports50kActionsminutes; no paid execution authorized. If candidate fails, deliver rollback with honest failure report, never label failed candidate verified.

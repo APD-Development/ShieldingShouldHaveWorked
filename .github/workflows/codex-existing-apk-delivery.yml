@@ -1,0 +1,97 @@
+name: Deliver verified existing APD TEST22
+
+# Delivery only: reuse the already tested APK; no Gradle or app rebuild.
+on:
+  push:
+    branches: [codex/apd-phone-fixes-2026-10-09]
+    paths: [.github/workflows/codex-existing-apk-delivery.yml]
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: apd-existing-test22-delivery
+  cancel-in-progress: false
+
+env:
+  APD_SOURCE_SHA: 6ffd9668b853bbb94922888e6880611aebe1a2f8
+  APD_SOURCE_RUN: '38071699386'
+
+jobs:
+  validate-and-stage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: apd-codex-private-test-apk
+          run-id: ${{ env.APD_SOURCE_RUN }}
+          github-token: ${{ github.token }}
+          path: delivery
+      - uses: actions/download-artifact@v4
+        with:
+          name: apd-codex-core-tests
+          run-id: ${{ env.APD_SOURCE_RUN }}
+          github-token: ${{ github.token }}
+          path: core-reports
+      - uses: actions/download-artifact@v4
+        with:
+          name: apd-codex-android-checks
+          run-id: ${{ env.APD_SOURCE_RUN }}
+          github-token: ${{ github.token }}
+          path: android-reports
+      - name: Retrieve rollback APK for direct compatibility comparison
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release download apd-codex-test-20 --repo "$GITHUB_REPOSITORY" --pattern ADHD-Pixel-Dungeon-CODEX-TEST-20.apk --dir rollback
+      - name: Check source, tests, checksum, signing and application ID
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 tools/apd_existing_build_evidence.py
+      - name: Produce today's report from verified evidence
+        run: |
+          python3 -m pip install reportlab==4.2.5
+          python3 tools/apd_bug_report_pdf.py docs/APD-TEST22-REPORT-2026-10-10.md delivery/APD-Bug-Fixes-2026-10-10-TEST22.pdf --verification delivery/verification.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: verified-test22-delivery
+          path: delivery/
+          retention-days: 7
+
+  private-publication:
+    needs: validate-and-stage
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: verified-test22-delivery
+          path: delivery
+      - name: Publish new private prerelease without replacing existing assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import json, os, subprocess
+          from datetime import datetime
+          from zoneinfo import ZoneInfo
+          repo = os.environ['GITHUB_REPOSITORY']
+          assert json.loads(subprocess.check_output(['gh', 'api', 'repos/' + repo]))['private']
+          assert datetime.now(ZoneInfo('America/New_York')) >= datetime(2026, 10, 10, 11, 59, tzinfo=ZoneInfo('America/New_York'))
+          tag = 'apd-codex-test-22'
+          previous = subprocess.run(['gh', 'release', 'view', tag, '--repo', repo], capture_output=True)
+          if previous.returncode == 0:
+              raise SystemExit('Existing release preserved; do not overwrite it.')
+          subprocess.run(['gh', 'release', 'create', tag, '--repo', repo,
+              '--target', os.environ['APD_SOURCE_SHA'], '--prerelease', '--latest=false',
+              '--title', 'APD PRIVATE CODEX TEST 22', '--notes-file', 'delivery/verification.txt',
+              'delivery/ADHD-Pixel-Dungeon-CODEX-TEST-22.apk',
+              'delivery/ADHD-Pixel-Dungeon-CODEX-TEST-22.apk.sha256',
+              'delivery/APD-Bug-Fixes-2026-10-10-TEST22.pdf',
+              'delivery/TEST22-Verification.json'], check=True)
+          PY

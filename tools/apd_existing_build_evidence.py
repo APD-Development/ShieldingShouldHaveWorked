@@ -1,0 +1,84 @@
+"""Validate existing TEST22 artifacts before private delivery; never rebuild."""
+import hashlib
+import json
+import os
+from pathlib import Path
+import re
+import subprocess
+import xml.etree.ElementTree as ET
+
+
+def github(path):
+    return json.loads(subprocess.check_output(['gh', 'api', path]))
+
+
+def xml_summary(folder):
+    files = list(Path(folder).rglob('TEST-*.xml'))
+    assert files, 'Missing test XML: ' + folder
+    roots = [ET.parse(path).getroot() for path in files]
+    totals = {key: sum(int(root.get(key, 0)) for root in roots)
+              for key in ('tests', 'failures', 'errors', 'skipped')}
+    assert totals['failures'] == totals['errors'] == totals['skipped'] == 0, totals
+    totals['cases'] = [case.attrib for root in roots for case in root.iter('testcase')]
+    return totals
+
+
+def output(command):
+    return subprocess.check_output(command, text=True)
+
+
+def main():
+    repo = os.environ['GITHUB_REPOSITORY']
+    source = os.environ['APD_SOURCE_SHA']
+    run_id = os.environ['APD_SOURCE_RUN']
+    assert github('repos/' + repo)['private'], 'Private repository required'
+    run = github(f'repos/{repo}/actions/runs/{run_id}')
+    assert run['head_sha'] == source and run['run_number'] == 22
+    assert run['status'] == 'completed' and run['conclusion'] == 'success'
+    jobs = github(f'repos/{repo}/actions/runs/{run_id}/jobs')['jobs']
+    for name in ('verify-and-build', 'android-smoke-check'):
+        assert any(job['name'] == name and job['conclusion'] == 'success' for job in jobs), name
+    artifacts = github(f'repos/{repo}/actions/runs/{run_id}/artifacts')['artifacts']
+    expected = {'apd-codex-private-test-apk': 11676568789,
+                'apd-codex-core-tests': 11676748354,
+                'apd-codex-android-checks': 11677028840}
+    for name, artifact_id in expected.items():
+        assert any(a['name'] == name and a['id'] == artifact_id and not a['expired']
+                   and a['workflow_run']['head_sha'] == source for a in artifacts), name
+    core, android = xml_summary('core-reports'), xml_summary('android-reports')
+    assert core['tests'] == 931 and android['tests'] == 4
+    apk = Path('delivery/ADHD-Pixel-Dungeon-CODEX-TEST-22.apk')
+    assert list(Path('delivery').glob('*.apk')) == [apk]
+    digest = hashlib.sha256(apk.read_bytes()).hexdigest()
+    assert digest == Path(str(apk) + '.sha256').read_text().split()[0]
+    old = Path('rollback/ADHD-Pixel-Dungeon-CODEX-TEST-20.apk')
+    assert hashlib.sha256(old.read_bytes()).hexdigest() == '0a7d05dc4fb1e87bf502849914c94ae13c4ffeaeaacc8ca865d8c3122a5808eb'
+    build_tools = Path(os.environ['ANDROID_HOME']) / 'build-tools'
+    signer = sorted(build_tools.glob('*/apksigner'))[-1]
+    aapt = signer.parent / 'aapt'
+    signatures = [output([str(signer), 'verify', '--print-certs', str(path)]) for path in (apk, old)]
+    certs = [re.findall(r'Signer #\d+ certificate SHA-256 digest: (\S+)', s) for s in signatures]
+    assert certs[0] and certs[0] == certs[1], 'APK signing mismatch'
+    packages = [re.search(r"package: name='([^']+)' versionCode='(\d+)' versionName='([^']+)'",
+                         output([str(aapt), 'dump', 'badging', str(path)])) for path in (apk, old)]
+    assert all(packages), 'Missing Android package metadata'
+    current, previous = [p.groups() for p in packages]
+    assert current[0] == previous[0] == 'com.charltonchris29.adhdpixeldungeon.indev'
+    assert int(current[1]) >= int(previous[1]), 'Version downgrade'
+    assert current[2] == '4.0.8-apd-INDEV-bC22-TEST', current
+    evidence = {'source': source, 'run': run_id, 'apk_sha256': digest,
+                'certificate_sha256': certs[0], 'package': current,
+                'core': core, 'android': android,
+                'build_started_utc': run['run_started_at'], 'build_completed_utc': run['updated_at']}
+    Path('delivery/TEST22-Verification.json').write_text(json.dumps(evidence, indent=2))
+    text = f"TEST22 source: {source}. Existing verification/build run: https://github.com/{repo}/actions/runs/{run_id}. No APK rebuild performed during delivery.\n\n"
+    text += f"Actual test XML: {core['tests']} core tests and {android['tests']} API 34 emulator tests; zero failures, errors or skipped tests. Debug assembly succeeded. This is not physical-phone verification or a complete normal-run playthrough.\n\n"
+    text += f"APK: {apk.name}. SHA-256: {digest}. Application ID: {current[0]}. Version: {current[2]}. APK signatures verified; certificate SHA-256 matches TEST20: {', '.join(certs[0])}. Version code permits installing over TEST20. Existing save-data compatibility still requires phone testing.\n\n"
+    text += f"CI started {run['run_started_at']} and completed {run['updated_at']} (UTC). The noon delivery was missed. This publication reuses today's verified artifact and does not include unfinished local features.\n\n"
+    text += "Install over the existing APD app; never uninstall or clear its data. Preserve TEST20 as rollback. Private test prerelease only; no online features enabled."
+    Path('delivery/verification.txt').write_text(text)
+    print(text)
+
+
+if __name__ == '__main__':
+    main()
