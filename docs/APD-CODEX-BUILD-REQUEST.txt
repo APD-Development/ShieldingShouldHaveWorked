@@ -1,16 +1,1 @@
-2026-10-09 owner explicitly orders emergency replacement APK within one hour.
-C22 gameplay blockers: fresh and saved floor1 exits, HUD/Search/Wait/quickslots, Main Menu/save/resume, hero difficulty. C21 title wrap. Includes prior C18/C20.
-537 local non-native checks pass; run complete core suite, debug assembly and targeted API34 intro-enabled gameplay/difficulty/UIMSD checks. Publish private APK and accurate PDF only after successful verification. No physical-phone pass claimed. Preserve signing key/app ID, saves, history and other developers work.
-Reverify C12 golden snapshot correction and proper quickslot paging assertion; publish only after all required checks succeed.
-Final targeted acceptance strengthens fresh-intro difficulty assertion on the render thread and verifies migration never touches floor2 or side branches. Prior pending candidate superseded; same production fix, required regression coverage retained.
-Final production safety: end intro after leaving entrance/later depth/acknowledged guide; preserve read guide state so hunger exemption cannot follow a normal run. Targeted17pass; added actual entrance-boundary progression check. Supersede pending candidate; full core and targeted Android must pass before release.
-C15 907/3fail fixture diagnosis: debug defaults mark guide Intro READ, so FRESH fixture must explicitly mark it unread. Fix FRESH fixture and native intro-enabled setup without weakening acknowledgement/hunger safeguards. Reverify full core and native before publication.
-C16 actual5exit/intro/migration pass, 907/2goldenfail on all-challenges floor1. Move entrance exposure after seeded Level.create completion to preserve painting/spawn RNG decisions; preserve unchanged golden hashes and all exit assertions. Add all-challenges exit test; final full/native/build must pass.
-
-C23 verification-only: reproduce and fix Imp quest state leaking across new runs/save loads. New three tests fail before/pass after; Ghost2pass; local QuestRecording blocked by missing native library. Run full core/debug/targeted Android; do not publish another release from this verification run.
-
-Deliver next private candidate with C23 Imp/C24 Ghost save isolation and owner-requested gold gear. Supersede verification-only C18 after successful core/debug assembly; its native checks do not cover the final Ghost/gold/gear-test source. Run complete core and targeted Android including actual gear-menu tap/population before private APK/PDF publication. Preserve TEST17 rollback, saves, app ID/signing key. Record actual results; physical-phone testing remains pending.
-
-Owner color correction: use existing APD title-arrow pink (0xFF2EC8), not gold. Recompile successful; supersede pending gold candidate and verify final source before delivery.
-
-C25: reproduce and fix legacy Blacksmith optional-field leakage across save loads without reset-time item allocation. Three new regression tests pass; combinedquest10 and existing537 local tests pass. Run full core/debug/targeted API34, publish new private APK/PDF only after successful acceptance; preserve TEST20 rollback, save schema and player history.
+2026-10-10 lunch staging. Full core/debug/API34 verification of confirmed UIMSD safeguards only. [verification-only] No early PDF/APK publication. Unfinished local feature work excluded. Preserve TEST20 rollback.

@@ -222,6 +222,20 @@ public class SubmissionQueueTest {
 	}
 
 	@Test
+	public void repeatedPersistedQueueIdsAreDiagnosedWithoutRewritingTheFile() throws Exception {
+		log("run-a", true, 3, 0);
+		SubmissionQueue.enqueueRun(tmp.getRoot(), "run-a", "test", 1);
+		File file = SubmissionQueue.fileIn(tmp.getRoot());
+		String line = java.nio.file.Files.readString(file.toPath());
+		java.nio.file.Files.writeString(file.toPath(), line, java.nio.file.StandardOpenOption.APPEND);
+		byte[] before = java.nio.file.Files.readAllBytes(file.toPath());
+		assertNotNull(SubmissionQueue.readProblem(tmp.getRoot()));
+		assertEquals(1, SubmissionQueue.pending(tmp.getRoot()));
+		assertFalse(SubmissionQueue.withdraw(tmp.getRoot(), "run-a"));
+		assertArrayEquals(before, java.nio.file.Files.readAllBytes(file.toPath()));
+	}
+
+	@Test
 	public void privacyDoesNotCallSettingsOrEvidenceQueueEntriesFinishedRuns() {
 		assertTrue(SubmissionQueue.enqueueEnvelope(tmp.getRoot(),
 				com.shatteredpixel.shatteredpixeldungeon.apd.backend.Id.of(
