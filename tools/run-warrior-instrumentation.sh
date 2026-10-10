@@ -6,6 +6,16 @@ case "$apd_device_hardware" in
   ranchu|goldfish) ;;
   *) echo 'Refusing simulation outside a disposable Android emulator.' >&2; exit 1 ;;
 esac
+python3 - <<'PY'
+import json, os
+from pathlib import Path
+expected = os.environ.get('APD_SIMULATION_SOURCE')
+manifest = json.loads(Path('simulator-binaries/manifest.json').read_text())
+if not expected or manifest.get('sourceCommit') != expected:
+    raise SystemExit('Simulator source does not match the verified baseline.')
+PY
+apd_manifest_status=$?
+if [ "$apd_manifest_status" -ne 0 ]; then exit "$apd_manifest_status"; fi
 sha256sum --check simulator-binaries/SHA256SUMS
 apd_checksum_status=$?
 if [ "$apd_checksum_status" -ne 0 ]; then exit "$apd_checksum_status"; fi

@@ -121,8 +121,12 @@ public class WarriorSimulationDeviceTest {
         }
         public boolean hasReceivedNormalFlyHealingDrop() { return flyHealing; }
         public String fingerprint() {
-            return render(() -> Dungeon.depth + ":" + Dungeon.hero.pos + ":" + Dungeon.hero.HP
-                    + ":" + Dungeon.hero.lvl + ":" + Actor.now() + ":" + healing());
+            return render(() -> {
+                Heap heap = Dungeon.level.heaps.get(Dungeon.hero.pos);
+                return Dungeon.depth + ":" + Dungeon.hero.pos + ":" + Dungeon.hero.HP
+                        + ":" + Dungeon.hero.lvl + ":" + Actor.now() + ":" + healing()
+                        + ":heap=" + (heap == null ? 0 : heap.size());
+            });
         }
         private void explore() {
             if (depth != Dungeon.depth) { depth = Dungeon.depth; visits = new int[Dungeon.level.length()]; }
@@ -167,7 +171,17 @@ public class WarriorSimulationDeviceTest {
                 }
                 return null;
             });
-            until(() -> !Dungeon.hero.isAlive() || Dungeon.depth != beforeDepth || Actor.now() > before, 30);
+            try {
+                until(() -> render(() -> SimulationReadiness.actionReleased(before, Actor.now(), beforeDepth,
+                        Dungeon.depth, Dungeon.hero.isAlive(), Dungeon.hero.ready, Dungeon.hero.curAction != null)), 30);
+            } catch (RuntimeException failure) {
+                String state = render(() -> "scene=" + Game.scene().getClass().getSimpleName()
+                        + ":ready=" + Dungeon.hero.ready + ":window=" + GameScene.showingWindow()
+                        + ":queued=" + (Dungeon.hero.curAction == null ? "none" : Dungeon.hero.curAction.getClass().getSimpleName()
+                        + "@" + Dungeon.hero.curAction.dst) + ":depth=" + Dungeon.depth
+                        + ":position=" + Dungeon.hero.pos + ":actorTime=" + Actor.now());
+                throw new IllegalStateException("action did not release input: " + state, failure);
+            }
             waitForInput();
             if (Dungeon.LimitedDrops.SWARM_HP.count != swarmDrops) {
                 swarmDrops = Dungeon.LimitedDrops.SWARM_HP.count;

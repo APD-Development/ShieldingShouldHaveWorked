@@ -8,7 +8,7 @@ on:
 
 concurrency:
   group: apd-real-simulator-verification
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -25,7 +25,9 @@ jobs:
           java-version: '21'
       - uses: gradle/actions/setup-gradle@v4
       - name: Verify trace-recovery regression cases
-        run: python3 tools/test-warrior-trace-recovery.py
+        run: |
+          python3 tools/test-warrior-trace-recovery.py
+          python3 tools/test-warrior-instrumentation.py
       - name: Verify the complete core suite including simulation and normal-drop identification
         run: tools/run-core-tests.sh
       - name: Preserve native dependency for local real-game tests
