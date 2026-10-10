@@ -90,14 +90,7 @@ jobs:
           arch: x86_64
           target: google_apis
           disable-animations: true
-          script: |
-            adb logcat -c
-            adb logcat -v time > simulator-logcat.txt &
-            ./gradlew :android:connectedDebugAndroidTest -PapdTestBuild -PapdBuild=SIM -Pandroid.testInstrumentationRunnerArguments.class=com.shatteredpixel.shatteredpixeldungeon.android.WarriorSimulationDeviceTest -Pandroid.testInstrumentationRunnerArguments.apdSimulation=true -Pandroid.testInstrumentationRunnerArguments.simulationCount=1 -Pandroid.testInstrumentationRunnerArguments.simulationSeed=1000000 -Pandroid.testInstrumentationRunnerArguments.simulationActions=1000
-      - name: Preserve actual per-seed traces
-        if: always()
-        run: |
-          adb exec-out run-as com.charltonchris29.adhdpixeldungeon.indev cat files/simulation-results.jsonl > simulation-results.jsonl
+          script: bash tools/run-warrior-simulation.sh
       - uses: actions/upload-artifact@v4
         if: always()
         with:
