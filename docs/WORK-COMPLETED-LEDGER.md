@@ -1,3 +1,15 @@
+## 2026-10-10T23:28:50Z - emulator-free actor-clock foundation implemented (verification pending)
+
+- Execution identifier: `APD-20261010T231111Z-HEADLESS-FOUNDATION`; observed start `2026-10-10T23:11:11Z`, record end `2026-10-10T23:28:50Z`. Activity outside this observed interval is unknown.
+- Re-read the actual approved branch, current handoff/ledger and simulator implementation. Parent/head before this commit: `8b9ff21959867b9916ba087b1382379046333f50`; no force update or synthetic history.
+- Inspected completed exact-source workflow [38094049032](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38094049032), source `ac496e4a118735dfca853de1b9ced82f12f856a6`. Completed actions: fetched jobs/artifacts, downloaded and checksum-verified artifact `11685237933` as `sha256:82a7da2bc5ee9ef9b68ade8488659fc5a0d53e1319afb9bb7e62fc94bedd3d80`, parsed result rows and instrumentation output.
+- Actual result: workflow/core/native succeeded; five of five native episodes completed with nonempty traces, 2,446 actions / 609,546 ms = 4.013 actions/second, death depths 1-3. None used `SEARCH`; seed `1000048` was not in this set, so the former exact stall is not claimed replayed.
+- Implemented a test-only JVM seam using the real `Dungeon`, generation and `Actor.process()` clock: 100 first-floor generations plus one entered-floor wait cycle with invisible test sprites. Added a scope/verification design note.
+- Changed files: `core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/simulation/HeadlessActorLoopProbeTest.java`, `docs/APD-HEADLESS-SIMULATOR-2026-10-10.md`, `docs/HANDOFF.md`, `docs/WORK-COMPLETED-LEDGER.md`.
+- Capability/limitation: a real scratch execution workspace and GitHub read/write connection were available; no repository checkout or JDK compiler was available locally. The new source was inspected but not compiled or run here. Exact-commit GitHub verification is pending and the code must not be described as tested until it passes.
+- No production application source, saves/statistics, signing identity, application ID, release, public upload, backend state, `main` or Claude branch was changed. No paid service, API key, runner or subscription change was used.
+- Unresolved: make normal-play policy shareable between Android and JVM adapters; implement synchronous bounded action families; add source-pinned parity seeds; directly replay seed `1000048`; only then benchmark complete episodes.
+
 ## 2026-10-10 — TEST31 privately delivered and signing verified
 
 Private publication succeeded at **2026-10-10 23:05:40 UTC / 7:05:40 PM America/New_York**; delivery workflow [38093772627](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38093772627) completed successfully. Release/delivery commit **bc9c83427654c06e4eb3f145997cbb65119845f5**; APK source **25b4a95a802be730f365f82770235edb6bfc68b1**, exact verified build run **38092709292**. No rebuild was performed for publication; application/build input trees matched the tested source.
