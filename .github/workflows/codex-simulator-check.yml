@@ -1,6 +1,6 @@
 name: APD simulator regression verification
 
-# Approved test work only; no APK rebuild, publication or application modification.
+# Approved core regression work only; no APK rebuild or publication.
 on:
   push:
     branches: [codex/apd-phone-fixes-2026-10-09]
@@ -20,8 +20,8 @@ jobs:
           distribution: temurin
           java-version: '21'
       - uses: gradle/actions/setup-gradle@v4
-      - name: Verify simulation policy and failure accounting
-        run: tools/run-core-tests.sh --tests '*WarriorHealingExperimentTest*'
+      - name: Verify the complete core suite including simulation and normal-drop identification
+        run: tools/run-core-tests.sh
       - name: Preserve native dependency for local real-game tests
         run: |
           python3 - <<'PY'

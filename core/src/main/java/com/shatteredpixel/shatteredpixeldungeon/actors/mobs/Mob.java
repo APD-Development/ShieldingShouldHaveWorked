@@ -1068,6 +1068,7 @@ public abstract class Mob extends Char {
 			if (Random.Float() < lootChance()) {
 				Item loot = createLoot();
 				if (loot != null) {
+					com.shatteredpixel.shatteredpixeldungeon.apd.GuaranteedLootIdentification.identifyNormalDrop(this, loot);
 					ApdGen.onLootCreated( this, loot );
 					Dungeon.level.drop(loot, pos).sprite.drop();
 				}

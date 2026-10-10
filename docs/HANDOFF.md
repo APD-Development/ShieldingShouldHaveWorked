@@ -1,3 +1,17 @@
+## October 10, 19:07 UTC checkpoint — TEST25 delivered; next approved loot change
+
+TEST25 private prerelease was actually published at 19:05:16 UTC / 3:05:16 p.m. New York. Source 42aa5ff0a332eab3afe12f036c9beeeb1bfb5e71; private delivery tag targets 4bca70acecf07ec8922b1e7f35954502587ebc22 with identical application/build trees. Build run 38077543066: 948 core tests and six API34 checks passed, zero failures/errors/skips; debug assembly succeeded. Delivery run 38078344579 succeeded. APK SHA256 ed13563962c460666604140546cc6d24305a82aa98fa2698862cbe68f928c7b6; signing certificate 067688b3ab6bd5820a67f4c1ba7d5859db578173771cf31d3252b3e4e012246e matches TEST22, same indev application ID, version bC25-TEST. No physical-phone upgrade/save preservation claim. Existing releases preserved.
+
+APK: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-codex-test-25/ADHD-Pixel-Dungeon-CODEX-TEST-25.apk
+PDF: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-codex-test-25/APD-Bug-Fixes-2026-10-10-TEST25.pdf
+Evidence: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-codex-test-25/TEST25-Verification.json
+
+Continued the approved guaranteed enemy-drop identification task while Android/delivery checks ran. This next commit adds GuaranteedLootIdentification, a single normal-loot hook in Mob, and seven permanent regression tests. Normal Swarm/Bat/Necromancer drops identify the actual Healing or Shielding item immediately through the existing potion appearance handler, before placement/pickup. Wealth/Lucky paths do not invoke the hook; other sources/items remain unchanged. No extra loot, changed drop rates, RNG draws or Warrior starting-potion change. Other fixed-identity enemy sources still require the same explicit loot-table audit; this is not a blanket implementation for every enemy.
+
+Actual targeted checks: seven identification tests plus generation provenance/safety, 21 total passed in 1.697 s. Real normal loot placement and the real Lucky bonus path were exercised, including unchanged normal drop limits. Initial headless fixture lacked Game.instance and failed; fixed only the fixture with a no-render Game shell preserving scene/platform state and restoring Game/Camera afterward. Complete remote core verification is now requested through the existing regression workflow; Android verification/packaging of THIS newer loot change remain pending. It is NOT in TEST25. Do not relabel TEST25 as containing it. The published PDF describes the snapshot before this later commit.
+
+The real Warrior simulator adapter/100 runs and other previously pending features remain incomplete. One separately scheduled access/probe run is demonstrated; no unattended coding or continuous overnight execution is proven. Do not promise background work after this active turn; the concrete GitHub verification job can finish independently.
+
 ## TEST25 correction — full CI passed, private signing/publication pending
 
 Source 42aa5ff0a332eab3afe12f036c9beeeb1bfb5e71, build run 38077543066 (TEST25), completed 19:02:41 UTC on October 10, 2026. Full 948 core tests and six API34 emulator checks passed with zero failures/errors/skips; debug assembly passed. Only application change from TEST24 is removal of the private creator restrictions/secret disclosure from Community copy. Source/test paths and initial local invocation failure are documented in docs/APD-TEST25-REPORT-2026-10-10.md. No refresh-rate setting change.

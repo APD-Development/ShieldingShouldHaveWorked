@@ -1,12 +1,11 @@
 {
-  "recorded_at_utc": "2026-10-10 18:46:52 UTC",
-  "source": "f1ad8657250defd4b97cf422fa222d6c6c1f7329",
-  "run": 38075683960,
-  "build_number": 24,
-  "status": "verified and privately delivered TEST24",
+  "recorded_at_utc": "2026-10-10T19:07:00Z",
+  "source": "42aa5ff0a332eab3afe12f036c9beeeb1bfb5e71",
+  "run": 38077543066,
+  "build_number": 25,
+  "status": "verified and privately delivered TEST25",
   "core": {
-    "tests": 947,
-    "suites": 151,
+    "tests": 948,
     "failures": 0,
     "errors": 0,
     "skipped": 0
@@ -18,24 +17,32 @@
     "skipped": 0
   },
   "artifact_ids": {
-    "apd-codex-android-checks": 11679400654,
-    "apd-codex-private-test-apk": 11679035076,
-    "apd-codex-core-tests": 11678034922
+    "apd-codex-android-checks": 11679453711,
+    "apd-codex-private-test-apk": 11679048274,
+    "apd-codex-core-tests": 11678728661
   },
   "rollback": "apd-codex-test-22",
-  "signing_status": "verified matches TEST22",
+  "signing_status": "APK signatures verified; signing certificate matches TEST22",
+  "application_id": "com.charltonchris29.adhdpixeldungeon.indev",
+  "version": "4.0.8-apd-INDEV-bC25-TEST",
+  "apk_sha256": "ed13563962c460666604140546cc6d24305a82aa98fa2698862cbe68f928c7b6",
+  "delivery_run": 38078344579,
+  "release_tag": "apd-codex-test-25",
+  "release_target": "4bca70acecf07ec8922b1e7f35954502587ebc22",
+  "published_at_utc": "2026-10-10T19:05:16Z",
+  "apk_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-codex-test-25/ADHD-Pixel-Dungeon-CODEX-TEST-25.apk",
+  "pdf_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-codex-test-25/APD-Bug-Fixes-2026-10-10-TEST25.pdf",
+  "publication_app_tree_matches_source": true,
   "physical_phone_testing": "not performed",
   "unattended_execution": "one scheduled GitHub read/write probe confirmed; application coding/builds and continuous activity not demonstrated",
-  "active_hours_past_30": "unknown",
-  "apk_sha256": "e13408155a0534726686dd36f45c2ea377bb242dd02708891a234599f8b50785",
-  "failed_delivery_run": 38076542746,
-  "staged_artifact": 11679005726,
   "unattended_probe_commit": "7ead4a6e4891b78314e2f05ed69c15f889260a43",
-  "delivery_run": 38076840351,
-  "release_tag": "apd-codex-test-24",
-  "release_target": "fb1a728b852d5c722ff9ae16676b727143e0904a",
-  "published_at_utc": "2026-10-10T18:42:59Z",
-  "apk_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-codex-test-24/ADHD-Pixel-Dungeon-CODEX-TEST-24.apk",
-  "pdf_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-codex-test-24/APD-Bug-Fixes-2026-10-10-TEST24.pdf",
-  "publication_app_tree_matches_source": true
+  "active_hours_past_30": "unknown",
+  "pending_source_changes": {
+    "description": "normal Swarm/Bat/Necromancer Healing/Shielding drop identification",
+    "targeted_tests": 21,
+    "targeted_result": "passed locally in 1.697 seconds",
+    "full_core_result": "requested, pending",
+    "android_result": "not run",
+    "included_in_TEST25": false
+  }
 }
