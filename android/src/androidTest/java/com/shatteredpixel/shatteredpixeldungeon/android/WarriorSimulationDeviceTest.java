@@ -10,7 +10,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroAction;
-import com.shatteredpixel.shatteredpixeldungeon.levels.LevelTransition;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.*;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
@@ -287,7 +287,11 @@ public class WarriorSimulationDeviceTest {
         assertTrue(count > 0 && count <= 100 && limit > 0 && limit <= 5000);
         long[] seeds = SimulationSeedPlan.parse(arguments.getString("simulationSeeds", ""), seed, count);
         File output = new File(InstrumentationRegistry.getInstrumentation().getTargetContext().getFilesDir(), "simulation-results.jsonl");
-        try (ActivityScenario<AndroidLauncher> activity = ActivityScenario.launch(AndroidLauncher.class)) {
+        // Keep the disposable test activity running through instrumentation completion.
+        // ActivityScenario.close hit libGDX's pause synchronization SIGKILL in run38084780497.
+        // Lifecycle/physical-device pause testing remains separate and is not claimed passed here.
+        ActivityScenario<AndroidLauncher> activity = ActivityScenario.launch(AndroidLauncher.class);
+        {
             until(() -> Game.scene() != null, 120);
             render(() -> {
                 for (int slot = 1; slot <= GamesInProgress.MAX_SLOTS; slot++)

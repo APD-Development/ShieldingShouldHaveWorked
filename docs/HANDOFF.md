@@ -1,3 +1,11 @@
+## Android simulator verification failure corrected — October 10, 2026
+
+Run38085029972 source1b9 passed core tests but Android compilation failed: new LevelTransition import used levels instead of the actual levels.features package. Correction uses the real package. Sourcebb743 included the same error before the earlier result was available; its Android verification is also not passed. These are test-source compilation errors, not shipped TEST26 game code.
+
+Independently, scheduled4ec8 run38084780497 emitted one completed seed1000042 death row,273actions,101943ms, one pre-FlyHealing consumption. Instrumentation then failed: actual logcat20:51:52 shows AndroidGraphics waiting for pause synchronization, killing PID5455 withSIG9 as ActivityScenario.close paused the activity. No optional window was reached on this execution, and it did NOT produce a verified reusable baseline. This death row is not added to the original43source0a completions.
+
+Simulator keeps its disposable activity running until instrumentation finishes, avoiding a teardown pause test during an episode batch. This is a test-driver change, not a production pause fix; the emulator pause failure remains recorded for separate lifecycle investigation and phone testing. Production source/signing/player data untouched. Build APKs before emulator boot to catch compilation failures cheaply; then use source/checksum-guarded direct instrumentation and run-as evidence copying without Gradle teardown. Reusable binary artifact is published only if native assertions and trace validation succeed. All compile/native failures remain retained and visible.
+
 ## Proactive simulator coverage and honest evidence aggregation — October 10, 2026
 
 Audit of actual MobSpawner floors1–4 found additional missing coverage before waiting for another batch failure: Slime/CausticSlime, HermitCrab, rare floor4Thief/Bandit, PhantomPiranha and TormentedSpirit. Use exact inherited/source-proven raw bounds; do not roll damage for a prediction. A permanent rotation test checks every standard and rare alternate early-floor class and known extra floor4Thief; actual TormentedSpirit rolls are sampled against stored-level bounds.9targeted navigation/bounds tests pass0.145s locally. Fresh complete core/native checks pending; no player gameplay changed.

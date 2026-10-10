@@ -94,30 +94,9 @@ jobs:
           yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36"
       - uses: gradle/actions/setup-gradle@v4
-      - name: Verify five previously failed episodes before selective batch recovery
-        uses: reactivecircus/android-emulator-runner@v2
-        env:
-          APD_SIMULATION_SEED: '1000007'
-          APD_SIMULATION_COUNT: '5'
-          APD_SIMULATION_SEEDS: '1000007,1000035,1000042,1000060,1000089'
-        with:
-          api-level: 34
-          arch: x86_64
-          target: google_apis
-          disable-animations: true
-          script: bash tools/run-warrior-simulation.sh
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: apd-real-warrior-simulation
-          path: |
-            simulation-results.jsonl
-            simulation-attempts.jsonl
-            simulator-logcat.txt
-            android/build/outputs/androidTest-results/
-          retention-days: 7
-
-      - name: Retain the verified simulator binaries once for batch reuse
+      - name: Compile simulator APKs before starting the emulator
+        run: ./gradlew :android:assembleDebug :android:assembleDebugAndroidTest -PapdTestBuild -PapdBuild=SIM
+      - name: Stage source-pinned compiled simulator binaries for verification
         run: |
           python3 - <<'PY'
           import hashlib, json, os, shutil
@@ -140,9 +119,35 @@ jobs:
               'sourceCommit': os.environ['GITHUB_SHA'],
               'verificationRunId': os.environ['GITHUB_RUN_ID'],
               'sha256': hashes,
-              'purpose': 'Disposable-emulator simulation only; not a playable APK delivery'
+              'purpose': 'Disposable-emulator simulation candidate; reusable artifact is retained only after successful native verification'
           }, indent=2) + '\n')
           PY
+
+      - name: Verify five previously failed episodes before selective batch recovery
+        uses: reactivecircus/android-emulator-runner@v2
+        env:
+          APD_SIMULATION_SOURCE: ${{ github.sha }}
+          APD_SIMULATION_SEED: '1000007'
+          APD_SIMULATION_COUNT: '5'
+          APD_SIMULATION_SEEDS: '1000007,1000035,1000042,1000060,1000089'
+        with:
+          api-level: 34
+          arch: x86_64
+          target: google_apis
+          disable-animations: true
+          script: bash tools/run-warrior-instrumentation.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: apd-real-warrior-simulation
+          path: |
+            simulation-results.jsonl
+            simulation-attempts.jsonl
+            simulator-logcat.txt
+            simulation-instrumentation.txt
+            simulator-binaries/manifest.json
+            android/build/outputs/androidTest-results/
+          retention-days: 7
 
       - uses: actions/upload-artifact@v4
         with:
