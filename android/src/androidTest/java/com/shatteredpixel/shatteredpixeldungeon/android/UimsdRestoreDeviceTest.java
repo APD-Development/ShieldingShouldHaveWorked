@@ -84,6 +84,15 @@ public class UimsdRestoreDeviceTest {
         } catch (Exception e) { throw new RuntimeException(e); }
     }
 
+    private static boolean renderedLiteral(Group group, String literal) throws Exception {
+        for (Gizmo child : members(group)) {
+            if (child instanceof com.watabou.noosa.RenderedText
+                    && literal.equals(((com.watabou.noosa.RenderedText) child).text())) return true;
+            if (child instanceof Group && renderedLiteral((Group) child, literal)) return true;
+        }
+        return false;
+    }
+
     private static void assertMessageFits(Window window) {
         try {
             Field width = Window.class.getDeclaredField("width"); width.setAccessible(true);
@@ -92,6 +101,10 @@ public class UimsdRestoreDeviceTest {
             assertTrue("message leaves horizontal screen margins", w <= PixelScene.uiCamera.width - 28);
             assertTrue("long preview scrolls within screen height", h <= PixelScene.uiCamera.height);
             assertContainedText(window, w);
+            if (messageText(window).contains("__literal__")) {
+                assertTrue("raw underscores remain visible", renderedLiteral(window, "_"));
+                assertTrue("raw stars remain visible", renderedLiteral(window, "**"));
+            }
         } catch (Exception e) { throw new RuntimeException(e); }
     }
 
@@ -290,6 +303,7 @@ public class UimsdRestoreDeviceTest {
                 assertSame("restoring a status never changes the query", statusQuery.get(), model().query());
                 clearWindows();
                 StringBuilder preview = new StringBuilder("Queued on this device. Nothing was sent: there is no server yet.\n\n");
+                preview.append("run_id: ").append(new String(new char[100]).replace('\\0', 'W')).append("\n__literal__ **literal**\n");
                 for (int i = 0; i < 40; i++) preview.append("Run preview field ").append(i).append(": recorded on this device.\n");
                 statusText.set(preview.toString());
                 int originalWidth = PixelScene.uiCamera.width;

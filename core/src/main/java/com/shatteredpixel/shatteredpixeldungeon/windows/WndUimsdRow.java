@@ -98,14 +98,14 @@ public class WndUimsdRow extends Window {
 						@Override
 						public void run(){
 							String text = SubmissionQueue.preview(m.root(), row.runId);
-							ShatteredPixelDungeon.scene().addToFront(new WndUimsdText("UIMSD", text == null ? "This run is not queued." : text));
+							ShatteredPixelDungeon.scene().addToFront(new WndUimsdText("UIMSD", text == null ? "This run is not queued." : text, false));
 						}
 					}));
 					actions.add(new Action("Take this run out of the queue", new Runnable(){
 						@Override
 						public void run(){
 							boolean gone = SubmissionQueue.withdraw(m.root(), row.runId);
-							ShatteredPixelDungeon.scene().addToFront(new WndUimsdText("UIMSD", gone ? "Removed from the queue." : "It could not be removed."));
+							ShatteredPixelDungeon.scene().addToFront(new WndUimsdText("UIMSD", gone ? "Removed from the queue." : "It could not be removed.", false));
 						}
 					}));
 				}
@@ -120,7 +120,7 @@ public class WndUimsdRow extends Window {
 							case REFUSED: msg = "This run cannot be queued: " + q.detail + "."; break;
 							default: msg = q.detail;
 						}
-						ShatteredPixelDungeon.scene().addToFront(new WndUimsdText("UIMSD", msg));
+						ShatteredPixelDungeon.scene().addToFront(new WndUimsdText("UIMSD", msg, false));
 					}
 				}));
 			}
