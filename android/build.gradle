@@ -5,6 +5,10 @@ android {
     compileSdk appAndroidCompileSDK
     compileOptions.sourceCompatibility = compileOptions.targetCompatibility = appJavaCompatibility
 
+    // Share only the isolated simulation test helpers; none enter the playable APK.
+    sourceSets.androidTest.java.srcDir(new File(project(':core').projectDir,
+            'src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/simulation'))
+
     sourceSets.main.assets.srcDirs = [new File(project(':core').projectDir, "/src/main/assets")]
 
     //APD: a PRIVATE TEST BUILD (-PapdTestBuild) adds one generated asset, apd/features.txt, that turns the owner-approved test features on
