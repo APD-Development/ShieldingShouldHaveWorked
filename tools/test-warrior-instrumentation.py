@@ -38,7 +38,7 @@ class InstrumentationGuardTest(unittest.TestCase):
                            'esac\n')
             adb.chmod(0o755)
             env = dict(os.environ, PATH=str(root) + os.pathsep + os.environ['PATH'],
-                       APD_SIMULATION_SOURCE='verified', APD_SIMULATION_COUNT='1',
+                       APD_SIMULATION_SOURCE='verified', APD_SIMULATION_COUNT='1', APD_SIMULATION_SEED='1000000',
                        FIXTURE_HARDWARE=hardware, FIXTURE_OUTCOME=outcome)
             result = subprocess.run(['bash', str(RUNNER)], cwd=root, env=env, capture_output=True, text=True)
             return result.returncode, (root / 'adb-calls.txt').read_text()

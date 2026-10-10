@@ -10,8 +10,8 @@ permissions:
   actions: read
 
 concurrency:
-  group: apd-warrior-batch
-  cancel-in-progress: true
+  group: apd-warrior-batch-${{ github.run_id }}
+  cancel-in-progress: false
 
 jobs:
   run-seeds:
@@ -20,7 +20,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [0, 1, 2, 3, 4]
+        shard: [1, 2, 3, 4]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -68,9 +68,31 @@ jobs:
             simulator-binaries/manifest.json
           retention-days: 7
 
+  collect-prior-shard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - name: Preserve the already running first shard instead of repeating its episodes
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run watch 38082709672 --repo "$GITHUB_REPOSITORY" --interval 30
+      - uses: actions/download-artifact@v4
+        with:
+          name: apd-warrior-shard-0
+          path: prior-shard
+          github-token: ${{ github.token }}
+          run-id: 38082709672
+      - uses: actions/upload-artifact@v4
+        with:
+          name: apd-warrior-shard-0
+          path: prior-shard/
+          if-no-files-found: error
+          retention-days: 7
+
   summarize:
     if: always()
-    needs: run-seeds
+    needs: [run-seeds, collect-prior-shard]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:

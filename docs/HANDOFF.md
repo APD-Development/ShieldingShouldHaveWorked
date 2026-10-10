@@ -1,3 +1,7 @@
+## Batch fixture environment bug — October 10, 2026
+
+Run38082709672:shard0 began real execution; shards1–4 failed before emulator startup because the fake-adb test inherited each real shard's APD_SIMULATION_SEED while its fixture JSON always used1000000. Controlled reproduction withAPD_SIMULATION_SEED=1000020 failed; explicitly setting the fixture seed fixes it (five tests pass0.866s under the same outer environment). This is a test-harness bug, not gameplay evidence or80 executed runs. Preserve ongoing shard0; request only the four unexecuted20-seed shards. The aggregate waits for/downloads original shard0 evidence and does not count missing/incomplete seeds. No extra game compilation or repeated first shard requested.
+
 ## Verified real simulator baseline;100-episode batch requested — October 10, 2026
 
 Actual baseline source0a827d398330356512e90b8ea347bea6939dd209, run38082044233:966 core checks and one API34 real-game check passed, zero failures/errors/skips. Downloaded/parsed actual JSON: seed1000000, completed true, death on floor2, terminalHP0,144 action entries,51,094ms; no held healing or normal Fly Healing observed. This is one early-game episode, not100 or a victory. Actual reusable APK artifact11681590509 is36,255,574bytes; retained source manifest/checksums from successful native job. Prior79cef seed1000000 failure is preserved separately; seed alone does not deterministically reproduce combat.
