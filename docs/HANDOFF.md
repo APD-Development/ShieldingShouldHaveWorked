@@ -1,3 +1,9 @@
+## Verified real simulator baseline;100-episode batch requested — October 10, 2026
+
+Actual baseline source0a827d398330356512e90b8ea347bea6939dd209, run38082044233:966 core checks and one API34 real-game check passed, zero failures/errors/skips. Downloaded/parsed actual JSON: seed1000000, completed true, death on floor2, terminalHP0,144 action entries,51,094ms; no held healing or normal Fly Healing observed. This is one early-game episode, not100 or a victory. Actual reusable APK artifact11681590509 is36,255,574bytes; retained source manifest/checksums from successful native job. Prior79cef seed1000000 failure is preserved separately; seed alone does not deterministically reproduce combat.
+
+Commit requests five20-seed shards, seeds1000000–1000099, downloading that actual baseline APK/testAPK pair. Direct runner validates source0a and SHA256, refuses non-emulator hardware, and does not rebuild/uninstall between episodes. Unknown/incomplete cases remain failures; missing seeds are reported rather than invented. Tests/fixtures are not played runs. Aggregate output pending; no healing probability or life-saving claim yet. TEST26 weapon candidate1483bac7ecd24cf33b64632ca0d4135bb252ad7d is in a separate full application verification run38082442832, not yet delivered.
+
 ## Compact weapon accuracy display — October 10, 2026
 
 Adds short strength-adjusted base accuracy percentages to melee, throwing and Spirit Bow information. Throwing/Bow shows range/adjacent values, including the player's Point Blank talent. Unknown upgrades use base STRReq(0); Spirit Bow uses the same visible requirement already shown by its info screen. The text explicitly says not hit chance: target evasion, temporary effects and special guaranteed-hit abilities are separate. No combat formulas, timing, RNG, item consumption, save/statistics schema or balance changes. Existing descriptions remain; this is additional compact information, not a five-page explanation.
