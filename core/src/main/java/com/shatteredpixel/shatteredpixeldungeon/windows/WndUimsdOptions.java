@@ -183,13 +183,14 @@ public final class WndUimsdOptions {
 	private static void openViews( final UimsdModel m ){
 		final SavedViews v = views(m);
 		if (v == null || v.list().isEmpty()){
-			say("You have no saved views yet. Use \"Save this table as a view...\" to make one.");
+			say(v != null && v.skippedOnLoad > 0 ? SavedViews.LOAD_WARNING
+					: "You have no saved views yet. Use \"Save this table as a view...\" to make one.");
 			return;
 		}
 		final List<SavedViews.View> list = v.list();
 		final List<Entry> entries = new ArrayList<>();
 		for (SavedViews.View x : list) entries.add(Entry.item(x.name, x.query() == null ? "This build cannot read this view." : "Tap to open, then choose to open or delete it."));
-		ShatteredPixelDungeon.scene().addToFront(WndUimsdList.menu("Saved views", "", entries, new WndUimsdList.Picker(){
+		ShatteredPixelDungeon.scene().addToFront(WndUimsdList.menu("Saved views", v.skippedOnLoad > 0 ? SavedViews.LOAD_WARNING : "", entries, new WndUimsdList.Picker(){
 			@Override
 			public void onPick( int i, boolean checked ){
 				viewActions(m, list.get(i));

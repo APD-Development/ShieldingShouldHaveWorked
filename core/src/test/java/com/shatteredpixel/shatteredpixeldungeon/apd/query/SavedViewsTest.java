@@ -176,6 +176,54 @@ public class SavedViewsTest {
 		for (ColumnDef column : result.columns) ids.add(column.id);
 		return ids;
 	}
+    @Test public void savingRenamingOrDeletingCannotRewriteAnIncompleteLoad() throws Exception {
+        for (String damage : new String[]{"malformed", "duplicate", "invalid-utf8"}) {
+            for (String operation : new String[]{"save", "rename", "delete"}) {
+                File target = new File(tmp.getRoot(), damage + "-" + operation + ".txt");
+                SavedViews initial = new SavedViews();
+                initial.save("Existing", q("runs", 0), 1);
+                initial.store(target);
+                String valid = Files.readString(target.toPath());
+                String damaged = damage.equals("duplicate") ? valid : damage.equals("invalid-utf8")
+                        ? java.util.Base64.getEncoder().encodeToString(new byte[]{(byte) 0xc3, 0x28})
+                            + valid.substring(valid.indexOf('\t'))
+                        : "unreadable saved view\n";
+                Files.writeString(target.toPath(), valid + damaged);
+                byte[] original = Files.readAllBytes(target.toPath());
+                SavedViews loaded = SavedViews.load(target);
+                assertEquals(1, loaded.skippedOnLoad);
+                assertNotNull("valid views remain readable", loaded.get("Existing"));
+                if (operation.equals("save")) loaded.save("New", q("runs", 1), 2);
+                else if (operation.equals("rename")) assertTrue(loaded.rename("Existing", "Renamed"));
+                else assertTrue(loaded.delete("Existing"));
+                try {
+                    loaded.store(target);
+                    fail("An incomplete load must never silently discard " + damage + " during " + operation);
+                } catch (java.io.IOException expected) {
+                    assertTrue(expected.getMessage(), expected.getMessage().contains("preserved"));
+                }
+                assertArrayEquals("all original bytes survive", original, Files.readAllBytes(target.toPath()));
+                assertFalse("refusal does not write a partial replacement", new File(target + ".tmp").exists());
+            }
+        }
+    }
+
+    @Test public void anUnreadableQueryIsPreservedWhileOtherValidViewsCanStillBeSaved() throws Exception {
+        File target = new File(tmp.getRoot(), "future-query.txt");
+        String line = java.util.Base64.getEncoder().encodeToString("Future view".getBytes(StandardCharsets.UTF_8))
+                + "\t1\t" + java.util.Base64.getEncoder().encodeToString("dataset\truns\nscope\tFUTURE_RULES\t\t0\n".getBytes(StandardCharsets.UTF_8)) + "\n";
+        Files.writeString(target.toPath(), line);
+        SavedViews loaded = SavedViews.load(target);
+        assertEquals(0, loaded.skippedOnLoad);
+        assertNull(loaded.get("Future view").query());
+        loaded.save("Supported view", q("runs", 0), 2);
+        loaded.store(target);
+        SavedViews reopened = SavedViews.load(target);
+        assertEquals("dataset\truns\nscope\tFUTURE_RULES\t\t0\n", reopened.get("Future view").encodedQuery);
+        assertNotNull(reopened.get("Supported view").query());
+        assertTrue(Files.readString(target.toPath()).startsWith(line));
+    }
+
 	@Test public void anInvalidDestinationDirectoryIsNeverDeletedToSaveViews() throws Exception {
 		File target = tmp.newFolder("destination");
 		SavedViews views = new SavedViews();

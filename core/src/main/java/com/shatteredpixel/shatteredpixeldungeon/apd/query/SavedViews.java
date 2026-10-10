@@ -41,6 +41,7 @@ public final class SavedViews {
 
 	public static final int MAX_VIEWS = 100, MAX_NAME = 60;
 	public static final String FILE_NAME = "saved_views.txt";
+	public static final String LOAD_WARNING = "Some saved views could not be read. The original file is preserved. Saving, renaming and deleting views are paused to avoid losing those entries.";
 
 	public static final class View {
 		public final String name, encodedQuery;
@@ -130,6 +131,8 @@ public final class SavedViews {
 	}
 
 	public void store( File file ) throws IOException {
+		//A partial read is not a complete replacement: retain every original byte.
+		if (skippedOnLoad > 0) throw new IOException(LOAD_WARNING);
 		if (file.isDirectory()) throw new IOException("not a saved-view file: " + file);
 		File parent = file.getAbsoluteFile().getParentFile();
 		if (!parent.isDirectory() && !parent.mkdirs() && !parent.isDirectory()){
@@ -176,6 +179,10 @@ public final class SavedViews {
 	}
 
 	private static String unb64( String s ){
-		return new String(Base64.getDecoder().decode(s), StandardCharsets.UTF_8);
+		try {
+			return StandardCharsets.UTF_8.newDecoder().decode(java.nio.ByteBuffer.wrap(Base64.getDecoder().decode(s))).toString();
+		} catch (java.nio.charset.CharacterCodingException e){
+			throw new IllegalArgumentException("invalid saved-view UTF-8", e);
+		}
 	}
 }
