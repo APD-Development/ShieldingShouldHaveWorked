@@ -9,6 +9,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroAction;
+import com.shatteredpixel.shatteredpixeldungeon.levels.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.*;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
@@ -20,15 +22,16 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.simulation.*;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.*;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.*;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
-import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.Group;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import java.lang.reflect.Field;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.json.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -62,35 +65,35 @@ public class WarriorSimulationDeviceTest {
         } catch (InterruptedException e) { Thread.currentThread().interrupt(); throw new IllegalStateException(e); }
         catch (Exception e) { throw new IllegalStateException(e); }
     }
-    private static String openWindows() {
-        try {
-            Object scene = Game.scene();
-            if (scene == null) return "none";
-            Field members = null;
-            for (Class<?> type = scene.getClass(); type != null && members == null; type = type.getSuperclass()) {
-                try { members = type.getDeclaredField("members"); }
-                catch (NoSuchFieldException ignored) { }
-            }
-            if (members == null) return "inspection-failed:no-members-field";
-            members.setAccessible(true);
-            Object value = members.get(scene);
-            if (!(value instanceof Iterable<?>)) return "inspection-failed:members-not-iterable";
-            List<String> names = new ArrayList<>();
-            for (Object member : (Iterable<?>) value) {
-                if (member instanceof Window) names.add(member.getClass().getName());
-            }
-            Collections.sort(names);
-            return names.isEmpty() ? "none" : String.join(",", names);
-        } catch (ReflectiveOperationException | SecurityException failure) {
-            return "inspection-failed:" + failure.getClass().getSimpleName();
-        }
-    }
     private static final class Session implements WarriorHealingExperiment.GameSession {
+        private String windowTypes() throws Exception {
+            Field field = Group.class.getDeclaredField("members");
+            field.setAccessible(true);
+            List<?> members = (List<?>) field.get(Game.scene());
+            List<String> names = new ArrayList<>();
+            if (members != null) for (Object member : members)
+                if (member instanceof Window) names.add(member.getClass().getName());
+            return names.toString();
+        }
         private int[] visits;
         private int depth, swarmDrops;
         private boolean flyHealing;
         private final String log;
         private long scannedEvents;
+        private final List<String> commands = new ArrayList<>();
+        private Item rejectedPickup;
+        private int rejectedHp, rejectedInventory;
+        private void command(String kind, int target) {
+            commands.add(kind + ":depth=" + Dungeon.depth + ":from=" + Dungeon.hero.pos
+                    + ":to=" + target + ":time=" + Actor.now());
+        }
+        private void move(int target) {
+            command("MOVE", target);
+            // Contextual taps can open NPC/treasure dialogs. Execute the ordinary movement action instead.
+            Dungeon.hero.curAction = new HeroAction.Move(target);
+            Dungeon.hero.lastAction = null;
+            Dungeon.hero.next();
+        }
         Session(long seed) {
             render(() -> { Game.switchScene(TitleScene.class); return null; });
             until(() -> Game.scene() instanceof TitleScene && !Game.switchingScene(), 60);
@@ -118,7 +121,8 @@ public class WarriorSimulationDeviceTest {
         }
         private Mob adjacent() {
             return Dungeon.level.mobs.stream().filter(m -> m.isAlive() && m.alignment == Char.Alignment.ENEMY
-                    && Dungeon.hero.fieldOfView[m.pos] && Dungeon.level.adjacent(Dungeon.hero.pos, m.pos))
+                    && Dungeon.hero.fieldOfView[m.pos] && !Dungeon.hero.isCharmedBy(m)
+                    && Dungeon.level.adjacent(Dungeon.hero.pos, m.pos))
                     .min(Comparator.comparingInt(m -> m.pos)).orElse(null);
         }
         // Audited normal Sewers melee bounds; never calls damageRoll or consumes RNG to predict damage.
@@ -152,41 +156,71 @@ public class WarriorSimulationDeviceTest {
             if (depth != Dungeon.depth) { depth = Dungeon.depth; visits = new int[Dungeon.level.length()]; }
             int pos = Dungeon.hero.pos;
             visits[pos]++;
+            if (Dungeon.hero.rooted) {
+                command("WAIT_ROOTED", pos); Dungeon.hero.rest(false); return;
+            }
             Hunger hunger = Dungeon.hero.buff(Hunger.class);
             Food food = Dungeon.hero.belongings.getItem(Food.class);
-            if (hunger != null && hunger.isStarving() && food != null) { food.execute(Dungeon.hero, Food.AC_EAT); return; }
+            if (hunger != null && hunger.isStarving() && food != null) {
+                command("EAT:" + food.getClass().getSimpleName(), pos);
+                food.execute(Dungeon.hero, Food.AC_EAT); return;
+            }
             Heap here = Dungeon.level.heaps.get(pos);
-            if (here != null && here.type == Heap.Type.HEAP) { Dungeon.hero.handle(pos); Dungeon.hero.next(); return; }
+            if (here != null && here.type == Heap.Type.HEAP && (here.peek() != rejectedPickup
+                    || Dungeon.hero.HP != rejectedHp || Dungeon.hero.belongings.backpack.items.size() != rejectedInventory)) {
+                command("PICKUP:" + here.peek().getClass().getSimpleName(), pos);
+                Dungeon.hero.handle(pos); Dungeon.hero.next(); return;
+            }
+            if (Dungeon.level.getTransition(pos) != null
+                    && Dungeon.level.getTransition(pos).type == LevelTransition.Type.REGULAR_EXIT
+                    && !Dungeon.level.locked && !Dungeon.level.plants.containsKey(pos)
+                    && Dungeon.hero.visibleEnemies() == 0) {
+                command("DESCEND", pos);
+                Dungeon.hero.curAction = new HeroAction.LvlTransition(pos);
+                Dungeon.hero.next(); return;
+            }
+            boolean[] pass = SimulationNavigation.walkable(Dungeon.level, Dungeon.hero);
             Mob visible = Dungeon.level.mobs.stream().filter(m -> m.isAlive() && m.alignment == Char.Alignment.ENEMY
-                    && Dungeon.hero.fieldOfView[m.pos]).min(Comparator.comparingInt(m -> Dungeon.level.distance(pos, m.pos))).orElse(null);
-            if (visible != null) { Dungeon.hero.handle(visible.pos); Dungeon.hero.next(); return; }
-            boolean[] known = new boolean[visits.length], pass = new boolean[visits.length];
+                    && Dungeon.hero.fieldOfView[m.pos] && !Dungeon.hero.isCharmedBy(m))
+                    .sorted(Comparator.comparingInt(m -> Dungeon.level.distance(pos, m.pos)))
+                    .filter(m -> {
+                        int step = Dungeon.findStep(Dungeon.hero, m.pos, pass, Dungeon.hero.fieldOfView, true);
+                        return step >= 0 && pass[step];
+                    }).findFirst().orElse(null);
+            if (visible != null) {
+                int step = Dungeon.findStep(Dungeon.hero, visible.pos, pass, Dungeon.hero.fieldOfView, true);
+                move(step); return;
+            }
+            boolean[] known = new boolean[visits.length];
             for (int i = 0; i < visits.length; i++) {
                 known[i] = Dungeon.level.visited[i] || Dungeon.level.mapped[i];
-                pass[i] = Dungeon.level.passable[i] && !Dungeon.level.pit[i];
-                if (Dungeon.level.traps.get(i) != null && Dungeon.level.traps.get(i).visible && Dungeon.level.traps.get(i).active)
-                    pass[i] = false;
             }
             int step = KnownMapExplorer.step(Dungeon.level.width(), pos, known, pass, visits, Dungeon.level.entrance());
             if (step < 0) throw new IllegalStateException("no known traversable destination");
-            Dungeon.hero.handle(step);
-            Dungeon.hero.next();
+            move(step);
         }
         public void perform(RecklessWarriorPolicy.Action action) {
             final float before = Actor.now();
             final int beforeDepth = Dungeon.depth;
+            final int beforePosition = Dungeon.hero.pos;
+            final Item beforePickup = render(() -> {
+                Heap heap = Dungeon.level.heaps.get(Dungeon.hero.pos);
+                return heap == null ? null : heap.peek();
+            });
             render(() -> {
-                if (GameScene.showingWindow()) throw new IllegalStateException("unhandled gameplay dialog:"
-                        + openWindows() + ":position=" + Dungeon.hero.pos + ":entrance=" + Dungeon.level.entrance()
+                if (GameScene.showingWindow()) throw new IllegalStateException("unhandled gameplay dialog: " + windowTypes()
+                        + ":position=" + Dungeon.hero.pos + ":entrance=" + Dungeon.level.entrance()
                         + ":exit=" + Dungeon.level.exit() + ":terrain=" + Dungeon.level.map[Dungeon.hero.pos]);
                 switch (action) {
                     case HEAL:
                         PotionOfHealing potion = Dungeon.hero.belongings.getItem(PotionOfHealing.class);
                         if (potion == null) throw new IllegalStateException("healing disappeared");
+                        command("HEAL", Dungeon.hero.pos);
                         potion.execute(Dungeon.hero, Potion.AC_DRINK); break;
                     case ATTACK:
                         Mob enemy = adjacent();
                         if (enemy == null) throw new IllegalStateException("target disappeared");
+                        command("ATTACK:" + enemy.getClass().getSimpleName(), enemy.pos);
                         Dungeon.hero.handle(enemy.pos); Dungeon.hero.next(); break;
                     case EXPLORE: explore(); break;
                     default: throw new IllegalArgumentException("unexpected action");
@@ -198,13 +232,24 @@ public class WarriorSimulationDeviceTest {
                         Dungeon.depth, Dungeon.hero.isAlive(), Dungeon.hero.ready, Dungeon.hero.curAction != null)), 30);
             } catch (RuntimeException failure) {
                 String state = render(() -> "scene=" + Game.scene().getClass().getSimpleName()
-                        + ":ready=" + Dungeon.hero.ready + ":windows=" + openWindows()
+                        + ":ready=" + Dungeon.hero.ready + ":windows=" + windowTypes()
                         + ":queued=" + (Dungeon.hero.curAction == null ? "none" : Dungeon.hero.curAction.getClass().getSimpleName()
                         + "@" + Dungeon.hero.curAction.dst) + ":depth=" + Dungeon.depth
                         + ":position=" + Dungeon.hero.pos + ":actorTime=" + Actor.now());
                 throw new IllegalStateException("action did not release input: " + state, failure);
             }
             waitForInput();
+            render(() -> {
+                Heap heap = Dungeon.level.heaps.get(Dungeon.hero.pos);
+                if (beforePickup != null && beforeDepth == Dungeon.depth && beforePosition == Dungeon.hero.pos
+                        && before == Actor.now() && heap != null && heap.peek() == beforePickup) {
+                    rejectedPickup = beforePickup;
+                    rejectedHp = Dungeon.hero.HP;
+                    rejectedInventory = Dungeon.hero.belongings.backpack.items.size();
+                    commands.add("REJECTED_PICKUP:" + beforePickup.getClass().getSimpleName());
+                }
+                return null;
+            });
             if (Dungeon.LimitedDrops.SWARM_HP.count != swarmDrops) {
                 swarmDrops = Dungeon.LimitedDrops.SWARM_HP.count;
                 scanFlyDrops();
@@ -267,6 +312,7 @@ public class WarriorSimulationDeviceTest {
                             .put("stopReason", result.stopReason).put("startedEpochMillis", started)
                             .put("finishedEpochMillis", System.currentTimeMillis())
                             .put("elapsedMillis", TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - monotonicStart))
+                            .put("commands", new JSONArray(current[0] == null ? Collections.emptyList() : current[0].commands))
                             .put("trace", new JSONArray(result.trace));
                     String serialized = row.toString();
                     writer.write(serialized); writer.write('\n'); writer.flush();

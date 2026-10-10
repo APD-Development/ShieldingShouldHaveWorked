@@ -1,6 +1,7 @@
 """Regression cases for false/missing simulator evidence; these fixtures are not game runs."""
 import base64
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -24,12 +25,12 @@ class TraceRecoveryTest(unittest.TestCase):
         return [f'10-10 19:00:00.000 I/APDSIM: APD_SIM_CHUNK:{episode}:{i}:{len(parts)}:{part}'
                 for i, part in enumerate(parts)]
 
-    def run_parser(self, lines):
+    def run_parser(self, lines, explicit=''):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             (root / 'simulator-logcat.txt').write_text('\n'.join(lines))
             result = subprocess.run([sys.executable, '-c', PARSER, '1', '1000000'], cwd=root,
-                                    capture_output=True, text=True)
+                                    capture_output=True, text=True, env={**os.environ, 'APD_SIMULATION_SEEDS': explicit})
             output = root / 'simulation-results.jsonl'
             return result.returncode, output.read_text() if output.exists() else None
 
@@ -37,6 +38,23 @@ class TraceRecoveryTest(unittest.TestCase):
         status, output = self.run_parser(list(reversed(self.chunks())))
         self.assertEqual(0, status)
         self.assertEqual(self.row(), json.loads(output))
+
+    def test_selective_seed_plan_recovers_only_the_requested_episode(self):
+        row = self.row(); row['seed'] = 1000042
+        status, output = self.run_parser(self.chunks(row), '1000042')
+        self.assertEqual(0, status); self.assertEqual(row, json.loads(output))
+        self.assertNotEqual(0, self.run_parser(self.chunks(row), '1000043')[0])
+
+    def test_incomplete_attempt_is_preserved_without_creating_passed_results(self):
+        row = self.row(); row['completed'] = False; row['stopReason'] = 'game adapter failure'
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / 'simulator-logcat.txt').write_text('\n'.join(self.chunks(row)))
+            result = subprocess.run([sys.executable, '-c', PARSER, '1', '1000000'], cwd=root,
+                                    capture_output=True, env={**os.environ, 'APD_SIMULATION_SEEDS': ''})
+            self.assertNotEqual(0, result.returncode)
+            self.assertFalse((root / 'simulation-results.jsonl').exists())
+            self.assertEqual(row, json.loads((root / 'simulation-attempts.jsonl').read_text()))
 
     def test_unknown_package_error_is_never_json_evidence(self):
         status, output = self.run_parser(['run-as: unknown package: com.charltonchris29.adhdpixeldungeon.indev'])

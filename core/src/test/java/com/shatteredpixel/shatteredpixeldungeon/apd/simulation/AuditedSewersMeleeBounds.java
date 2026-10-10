@@ -11,10 +11,15 @@ public final class AuditedSewersMeleeBounds {
         if (type == Rat.class || type == Albino.class || type == FetidRat.class
                 || type == Snake.class || type == Swarm.class) return 4;
         if (type == Gnoll.class || type == GnollTrickster.class) return 6;
+        if (type == GnollExile.class) return 10;
         if (type == Crab.class || type == GreatCrab.class) return 7;
         if (type == Piranha.class) return 4 + 2 * depth;
         // Exact Wraith methods use the same stored level: attackSkill=10+level, maxDamage=2+level.
         if (type == Wraith.class) return mob.attackSkill(null) - 8;
+        // These exact variants use attackSkill(null)=6+storedLevel and maxDamage=2+2*storedLevel.
+        // CrystalMimic delegates neutral damage to the normal enemy roll, with the same maximum.
+        if (type == Mimic.class || type == GoldenMimic.class || type == CrystalMimic.class)
+            return 2 + 2 * (mob.attackSkill(null) - 6);
         throw new IllegalStateException("unaudited melee bound: " + type.getSimpleName());
     }
 }

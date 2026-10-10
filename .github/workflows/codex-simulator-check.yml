@@ -13,8 +13,8 @@ on:
       - tools/test-warrior-trace-recovery.py
 
 concurrency:
-  group: apd-real-simulator-verification
-  cancel-in-progress: true
+  group: apd-real-simulator-verification-${{ github.sha }}
+  cancel-in-progress: false
 
 permissions:
   contents: read
@@ -93,10 +93,12 @@ jobs:
           yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36"
       - uses: gradle/actions/setup-gradle@v4
-      - name: Verify one real early-game episode before requesting a large batch
+      - name: Verify five previously failed episodes before selective batch recovery
         uses: reactivecircus/android-emulator-runner@v2
         env:
-          APD_SIMULATION_SEED: '1000042'
+          APD_SIMULATION_SEED: '1000007'
+          APD_SIMULATION_COUNT: '5'
+          APD_SIMULATION_SEEDS: '1000007,1000035,1000042,1000060,1000089'
         with:
           api-level: 34
           arch: x86_64
@@ -109,6 +111,7 @@ jobs:
           name: apd-real-warrior-simulation
           path: |
             simulation-results.jsonl
+            simulation-attempts.jsonl
             simulator-logcat.txt
             android/build/outputs/androidTest-results/
           retention-days: 7

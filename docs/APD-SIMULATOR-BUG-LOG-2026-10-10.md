@@ -11,3 +11,13 @@
 | Unclassified gameplay window on seed1000042 | WarriorSimulationDeviceTest.perform | Run38083672601 artifact11681815395 reconstructed one real342-action trace, then stopped on an open window at floor2/HP19/position505/actor time278.0. Current boolean-only guard cannot name it. Add exact window/stairs/terrain diagnostics before deciding whether dismissal is safe; do not count the episode. | High for simulator coverage; diagnostic rerun requested | No; not a confirmed player-game bug |
 
 No zero-bug claim. Runtime stalls, optional dialogs and other unaudited encounters remain investigations until actual traces establish their cause. Keep every failed attempt/source manifest; do not count missing episodes or synthetic fixtures as played runs.
+
+## Consolidated original batch, 2026-10-10 20:45:46 UTC
+
+Five shards retained62 unique actual attempts,43completed and57requiring recovery. These are early episodes, not full wins or causal balance findings.
+
+- Confirmed adapter omissions: GnollExile/Mimic aborted20/22/32/34/66/80/82; new exact-class audit and inherited/actual-roll tests cover them. Unknown subclasses still refuse. Severityhigh for simulation; nativepending.
+- Navigation:7/8/35/89/97 made no state progress; original traces lacked target. Controlled test reproduces choosing an occupied NPC tile with terrain-only mask. New observed-occupancy mask and explicit ordinary movement prevent accidental contextual NPC/chest actions; exact original per-seed causes await native command traces. Severityhigh adapter; not confirmed player-game faults.
+- Optional dialog:60 and b6smoke42 stopped on an open Window. Preserve scheduled4ec8 class/position/terrain diagnostics; do not make unidentified choices. Nativepending.
+- Failed pickup retry: Hero.actPickUp can refuse full inventory/full-health dew without a turn; adapter repeated taps forever. Retry only when item/HP/inventory changes, never discard anything. Player mechanics untouched; nativepending.
+- Failed smoke evidence only existed in logcat because wrapper exited before decoding. New parser preserves validated incomplete attempts separately, still exits failure; permanent negative case passes. No failed episode becomes passed evidence.
