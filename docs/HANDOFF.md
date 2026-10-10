@@ -1,3 +1,9 @@
+## 2026-10-10 22:43 UTC — combined verification failure corrected
+
+Exact-source workflow 38092210983 ran 1,003 core tests and found one real contract failure before any APK build: `LongWordWrap` imported `java.util.function.ToDoubleFunction`, which the protected statistics/query library forbids. The wrapper now declares its own tiny functional width interface, preserving the same measured-width behavior and lambdas without the forbidden platform API. The failed run did not build or execute Android tests.
+
+A fresh combined application workflow and a fresh simulator workflow are required on this correction. Nothing is labeled verified yet.
+
 ## 2026-10-10 22:38 UTC — simulator-only visual fast-forward candidate
 
 The owner identified the current emulator throughput as unusably slow for future large samples. The Android adapter now reapplies a 100× libGDX visual time scale on every simulator render callback, including after scene changes reset it. This changes only animation wall-clock pacing on the explicitly opted-in disposable emulator; actor time, actions, combat RNG, generation, policy and production gameplay are unchanged. Each result row records the scale.

@@ -50,6 +50,7 @@ import static org.junit.Assert.*;
 public class WarriorSimulationDeviceTest {
     // Simulator-only: actor time, RNG and game rules stay unchanged; only visual frames advance faster.
     // This removes real-time sprite waits from bulk evidence collection on a disposable emulator.
+    // The exact scale is emitted in every result row so evidence never hides the execution mode.
     private static final float SIMULATION_VISUAL_TIME_SCALE = 100f;
 
     private static <T> T render(Callable<T> action) {

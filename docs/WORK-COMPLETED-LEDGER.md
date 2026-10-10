@@ -1,5 +1,13 @@
 # Work completed ledger (what is already DONE: do not redo it)
 
+## 2026-10-10 22:43 UTC — raw-wrap contract failure correction
+
+- Inspected failed exact-source run [38092210983](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38092210983): 1,003 core tests ran; only `ContractTests.libraryUsesNoRandomnessNoGameClassesAndNoApisMissingOnAndroid5` failed.
+- Root cause: new `LongWordWrap` imported forbidden `java.util.function.ToDoubleFunction`.
+- Replaced it with a project-local functional width interface; wrapping behavior and callers remain unchanged.
+- The failed run built no APK and ran no Android check. Fresh exact-source verification is pending.
+
+
 ## 2026-10-10 22:38 UTC — simulator visual-wait acceleration candidate
 
 - Re-read branch head `94cf567594eb7f4fddf2bfe81b33d5323b94f600`, `docs/HANDOFF.md`, current workflows, and the active 100-seed jobs.
