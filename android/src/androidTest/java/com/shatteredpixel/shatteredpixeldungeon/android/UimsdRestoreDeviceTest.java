@@ -303,7 +303,7 @@ public class UimsdRestoreDeviceTest {
                 assertSame("restoring a status never changes the query", statusQuery.get(), model().query());
                 clearWindows();
                 StringBuilder preview = new StringBuilder("Queued on this device. Nothing was sent: there is no server yet.\n\n");
-                preview.append("run_id: ").append(new String(new char[100]).replace('\\0', 'W')).append("\n__literal__ **literal**\n");
+                preview.append("run_id: ").append(new String(new char[100]).replace('\0', 'W')).append("\n__literal__ **literal**\n");
                 for (int i = 0; i < 40; i++) preview.append("Run preview field ").append(i).append(": recorded on this device.\n");
                 statusText.set(preview.toString());
                 int originalWidth = PixelScene.uiCamera.width;

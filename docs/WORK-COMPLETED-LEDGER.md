@@ -1,5 +1,13 @@
 # Work completed ledger (what is already DONE: do not redo it)
 
+## 2026-10-10 22:47 UTC — native test literal correction
+
+- Exact-source simulator run [38092405397](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38092405397) passed trace/accounting checks and the complete core suite.
+- Android test compilation then failed before emulator provisioning: `UimsdRestoreDeviceTest` used invalid Java character literal `'\\\\0'`.
+- Corrected it to the single null character `'\\0'`; no production behavior changed.
+- Re-triggered complete application and simulator verification. Native UIMSD and simulator-speed results remain pending.
+
+
 ## 2026-10-10 22:43 UTC — raw-wrap contract failure correction
 
 - Inspected failed exact-source run [38092210983](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38092210983): 1,003 core tests ran; only `ContractTests.libraryUsesNoRandomnessNoGameClassesAndNoApisMissingOnAndroid5` failed.

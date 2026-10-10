@@ -1,3 +1,9 @@
+## 2026-10-10 22:47 UTC — native long-ID fixture compile correction
+
+Simulator workflow 38092405397 passed the full core suite on the library-compatibility correction, then Android test compilation rejected the new UIMSD fixture's `'\\\\0'` character literal as two characters. It is corrected to Java's single null character `'\\0'`. No emulator episode ran in that failed workflow, so the 100× visual-time candidate remains unverified.
+
+Fresh simulator and complete application workflows are requested from the corrected source. Do not report the acceleration, UIMSD native assertion or combined application source as verified until those exact runs finish.
+
 ## 2026-10-10 — Retained gameplay geometry test and verification/publication separation
 
 Kept the newer shared contract fix 9974bde8a80dca7c81b5cf39cbb110f8e67ae787 instead of overwriting it with a duplicate implementation. Its exact width interface passes the local wrapping and Android-5 source-contract checks. Shared simulator-only work c5b4995da6fa5ef682531f63cd48ac4715f3581c is preserved, not expanded in this bug/Community task.
