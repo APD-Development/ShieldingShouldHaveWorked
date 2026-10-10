@@ -27,6 +27,12 @@ def output(command):
     return subprocess.check_output(command, text=True)
 
 
+def certificates(signature):
+    # SDK versions label APK signers differently; exclude source-stamp certificates.
+    matches = re.findall(r'(?m)^(?:Signer #\d+|V[1234] Signer):? certificate SHA-256 digest: ([0-9a-fA-F]{64})\s*$', signature)
+    return sorted({digest.lower() for digest in matches})
+
+
 def main():
     repo = os.environ['GITHUB_REPOSITORY']
     source = os.environ['APD_SOURCE_SHA']
@@ -57,7 +63,7 @@ def main():
     signer = sorted(build_tools.glob('*/apksigner'))[-1]
     aapt = signer.parent / 'aapt'
     signatures = [output([str(signer), 'verify', '--print-certs', str(path)]) for path in (apk, old)]
-    certs = [re.findall(r'Signer #\d+ certificate SHA-256 digest: (\S+)', s) for s in signatures]
+    certs = [certificates(s) for s in signatures]
     print(json.dumps({'apk_sha256': digest, 'candidate_certificates': certs[0],
                       'rollback_certificates': certs[1], 'signature_output': signatures}, indent=2))
     assert certs[0] and certs[0] == certs[1], 'APK signing mismatch'

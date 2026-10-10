@@ -1,7 +1,7 @@
 name: Deliver verified existing APD TEST22
 
 # Delivery only: reuse the already tested APK; no Gradle or app rebuild.
-# Retain signature diagnostics if compatibility validation refuses publication.
+# Accept verified SDK signer labels; retain compatibility refusal diagnostics.
 on:
   push:
     branches: [codex/apd-phone-fixes-2026-10-09]
@@ -50,7 +50,9 @@ jobs:
       - name: Check source, tests, checksum, signing and application ID
         env:
           GH_TOKEN: ${{ github.token }}
-        run: python3 tools/apd_existing_build_evidence.py
+        run: |
+          python3 -m unittest discover -s tools -p test_apd_existing_build_evidence.py
+          python3 tools/apd_existing_build_evidence.py
       - name: Produce today's report from verified evidence
         run: |
           python3 -m pip install reportlab==4.2.5
