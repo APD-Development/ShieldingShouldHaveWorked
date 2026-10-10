@@ -100,3 +100,9 @@ jobs:
             simulator-logcat.txt
             android/build/outputs/androidTest-results/
           retention-days: 7
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: apd-reusable-warrior-simulator
+          path: simulator-binaries/
+          retention-days: 7
