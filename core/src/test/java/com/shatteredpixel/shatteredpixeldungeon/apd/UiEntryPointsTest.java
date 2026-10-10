@@ -53,7 +53,7 @@ public class UiEntryPointsTest {
 		assertTrue(title.contains("new WndAPDSettings()"));
 		assertTrue(title.contains("add( btnAPDSettings )"));
 		assertTrue("must be laid out", title.contains("btnAPDSettings.setRect("));
-		assertTrue("must fade with the rest of the menu", title.contains("btnAPDSettings, btnNews"));
+		assertTrue("must fade with the rest of the menu", title.contains("btnAPDSettings, btnCommunity, btnNews"));
 		String options = windows("WndSettings.java");
 		assertTrue("APD settings must stay out of Options", !options.contains("APDSettingsPane") && !options.contains("\"APD\""));
 	}

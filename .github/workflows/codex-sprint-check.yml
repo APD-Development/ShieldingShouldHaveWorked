@@ -89,7 +89,7 @@ jobs:
           script: |
             adb logcat -c
             adb logcat -v time > codex-logcat.txt &
-            timeout --signal=TERM --kill-after=30 840 ./gradlew :android:connectedDebugAndroidTest -PapdTestBuild -PapdBuild=C${{ github.run_number }} -Pandroid.testInstrumentationRunnerArguments.class=com.shatteredpixel.shatteredpixeldungeon.android.UimsdRestoreDeviceTest,com.shatteredpixel.shatteredpixeldungeon.android.PlayRunDeviceTest,com.shatteredpixel.shatteredpixeldungeon.android.RunSetupDifficultyDeviceTest,com.shatteredpixel.shatteredpixeldungeon.android.ApdSettingsClickDeviceTest#adultHumorControlWorksWithoutAnAgeProviderAndReopensWithSavedChoice
+            timeout --signal=TERM --kill-after=30 840 ./gradlew :android:connectedDebugAndroidTest -PapdTestBuild -PapdBuild=C${{ github.run_number }} -Pandroid.testInstrumentationRunnerArguments.class=com.shatteredpixel.shatteredpixeldungeon.android.UimsdRestoreDeviceTest,com.shatteredpixel.shatteredpixeldungeon.android.PlayRunDeviceTest,com.shatteredpixel.shatteredpixeldungeon.android.RunSetupDifficultyDeviceTest,com.shatteredpixel.shatteredpixeldungeon.android.ApdSettingsClickDeviceTest#adultHumorControlWorksWithoutAnAgeProviderAndReopensWithSavedChoice,com.shatteredpixel.shatteredpixeldungeon.android.ApdSettingsClickDeviceTest#communityMenuOpensEveryPreviewAndReturnsWithoutStackingWindows
       - name: Keep Android evidence even if a check fails
         if: always()
         uses: actions/upload-artifact@v4

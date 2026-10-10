@@ -43,6 +43,11 @@ public class UimsdWiringTest {
 		String title = src("scenes/TitleScene.java");
 		assertTrue(title.contains("UimsdScene.open( TitleScene.class );"));
 		String restored = title
+                .replace("\tprivate APDMenuButton btnCommunity;\n", "")
+                .replace("\n\n\t\tbtnCommunity = new APDMenuButton( \"Community\", Icons.NEWS, false ){\n\t\t\t@Override\n\t\t\tprotected void onClick() {\n\t\t\t\tsuper.onClick();\n\t\t\t\tCommunityScene.open();\n\t\t\t}\n\t\t};\n\t\tadd( btnCommunity );", "")
+                .replace("\n\t\tbtnCommunity.setRect( left + (width + MAIN_GAP)/2f, apdY, (width - MAIN_GAP)/2f, BOTTOM_H );\n\t\talign( btnCommunity );", "")
+                .replace("(width - MAIN_GAP)/2f, BOTTOM_H );", "width, BOTTOM_H );")
+                .replace("btnAPDSettings, btnCommunity, btnNews", "btnAPDSettings, btnNews")
 				.replace("\t\tAPDAnnotation( String text, float maxWidth ){\n\t\t\tBitmapText probe = new BitmapText(text, pixelFont);\n\t\t\tString[] parts = TitleGeometry.annotationLines(text, maxWidth - 1, value -> {\n\t\t\t\tprobe.text(value);\n\t\t\t\tprobe.measure();\n\t\t\t\treturn probe.width();\n\t\t\t});\n", "\t\tAPDAnnotation( String text, float maxWidth ){\n\t\t\tString[] parts = { text };\n\t\t\tBitmapText probe = new BitmapText( text, pixelFont );\n\t\t\tprobe.measure();\n\t\t\tif (probe.width() > maxWidth){\n\t\t\t\tint cut = text.indexOf( ' ', text.indexOf( \"HERE\" ) );\n\t\t\t\tparts = new String[]{ text.substring( 0, cut ), text.substring( cut + 1 ) };\n\t\t\t}\n")
 				.replace("float textRight = gridLeft + gridWidth - 1;", "float textRight = gridLeft + gridWidth;")
 				.replace("The text wraps by measured words within the grid.", "The text breaks into two lines only when one line is wider than the grid.")

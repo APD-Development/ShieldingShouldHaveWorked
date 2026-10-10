@@ -104,9 +104,14 @@ public class ApdSettingsClickDeviceTest {
 	}
 
 	private static Object field( Object o, String name ) throws Exception {
-		Field f = o.getClass().getDeclaredField(name);
-		f.setAccessible(true);
-		return f.get(o);
+		for (Class<?> type = o.getClass(); type != null; type = type.getSuperclass()) {
+			try {
+				Field f = type.getDeclaredField(name);
+				f.setAccessible(true);
+				return f.get(o);
+			} catch (NoSuchFieldException ignored) { }
+		}
+		throw new NoSuchFieldException(name);
 	}
 
 	//scrolls the control into view and returns the screen point of its centre
@@ -186,7 +191,7 @@ public class ApdSettingsClickDeviceTest {
 	@Test
 	public void adultHumorControlWorksWithoutAnAgeProviderAndReopensWithSavedChoice() throws Exception {
 		try (ActivityScenario<AndroidLauncher> scenario = ActivityScenario.launch(AndroidLauncher.class)) {
-			waitUntil("the title scene", () -> Game.scene() instanceof com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene, 120000);
+			openTitleForTest();
 			final boolean previous = SPDSettings.apdAdultHumor();
 			final AtomicReference<WndAPDSettings> window = new AtomicReference<>();
 			try {
@@ -225,6 +230,79 @@ public class ApdSettingsClickDeviceTest {
 					SPDSettings.apdAdultHumor(previous);
 				});
 			}
+		}
+	}
+
+	// The game deliberately remembers its last scene across Activity recreation.
+	// A preceding test can leave HeroSelectScene or GameScene active; launch is not a title reset.
+	private static void openTitleForTest() throws Exception {
+		waitUntil("the game", () -> Gdx.app != null && Gdx.files != null && Game.scene() != null, 120000);
+		onRender(() -> ShatteredPixelDungeon.switchNoFade(com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene.class));
+		waitUntil("the title scene", () -> Game.scene() instanceof com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene, 30000);
+		onRender(() -> {});
+	}
+
+	@SuppressWarnings("unchecked")
+	private static List<com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.Entry> communityEntries(
+			com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList window) throws Exception {
+		return (List<com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.Entry>) field(window, "entries");
+	}
+
+	@SuppressWarnings("unchecked")
+	private static void tapCommunityEntry(com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList window, int index) throws Exception {
+		ScrollPane pane = (ScrollPane) field(window, "pane");
+		float[] span = ((List<float[]>) field(window, "spans")).get(index);
+		assertNotNull("the selected row is actionable", span);
+		onRender(() -> pane.scrollTo(0, Math.max(0, span[0] - 2)));
+		Thread.sleep(300);
+		AtomicReference<Point> point = new AtomicReference<>();
+		onRender(() -> point.set(pane.content().camera().cameraToScreen(pane.width() / 2f, span[0] + span[1] / 2f)));
+		tap(point.get());
+		waitUntil("the Community destination", () -> find(Game.scene(), com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.class) != window, 10000);
+	}
+
+	private static void assertTextFits(Group group, float width) throws Exception {
+		for (Gizmo member : membersOf(group)) {
+			if (member instanceof com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock) {
+				com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock text = (com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock) member;
+				assertTrue("text exceeds its container: " + text.text(), text.left() >= 0 && text.right() <= width + 0.5f);
+			}
+		}
+	}
+
+	@Test
+	public void communityMenuOpensEveryPreviewAndReturnsWithoutStackingWindows() throws Exception {
+		try (ActivityScenario<AndroidLauncher> scenario = ActivityScenario.launch(AndroidLauncher.class)) {
+			openTitleForTest();
+			com.watabou.noosa.ui.Component button = (com.watabou.noosa.ui.Component) field(Game.scene(), "btnCommunity");
+			AtomicReference<Point> point = new AtomicReference<>();
+			onRender(() -> point.set(button.camera().cameraToScreen(button.left() + button.width()/2f, button.top() + button.height()/2f)));
+			tap(point.get());
+			waitUntil("the Community hub", () -> Game.scene() instanceof com.shatteredpixel.shatteredpixeldungeon.scenes.CommunityScene, 30000);
+			for (com.shatteredpixel.shatteredpixeldungeon.apd.community.CommunityPreview.Page page :
+					com.shatteredpixel.shatteredpixeldungeon.apd.community.CommunityPreview.Page.values()) {
+				com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList hub = find(Game.scene(), com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.class);
+				assertNotNull(hub);
+				assertEquals(page.title, communityEntries(hub).get(page.ordinal()).label);
+				tapCommunityEntry(hub, page.ordinal());
+				com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList details = find(Game.scene(), com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.class);
+				List<com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.Entry> entries = communityEntries(details);
+				assertEquals(page.explanation, entries.get(0).label);
+				assertTrue(entries.stream().anyMatch(e -> e.label.equals(page.availability())));
+				assertTrue(entries.stream().noneMatch(e -> e.label.toLowerCase().contains("clan")));
+				onRender(() -> {
+					try {
+						assertEquals("one dialog, no hidden stack", 1, count(Game.scene(), com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.class));
+						ScrollPane pane = (ScrollPane) field(details, "pane");
+						assertTextFits(details, (Integer) field(details, "width"));
+						assertTextFits(pane.content(), pane.width());
+					} catch (Exception e) { throw new RuntimeException(e); }
+				});
+				tapCommunityEntry(details, entries.size() - 1);
+			}
+			com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList hub = find(Game.scene(), com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.class);
+			tapCommunityEntry(hub, communityEntries(hub).size() - 1);
+			waitUntil("return to main menu", () -> Game.scene() instanceof com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene, 30000);
 		}
 	}
 

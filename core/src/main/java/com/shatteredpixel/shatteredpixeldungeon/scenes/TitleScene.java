@@ -95,6 +95,7 @@ public class TitleScene extends PixelScene {
 	private APDMenuButton btnChanges;
 	private APDMenuButton btnAbout;
 	private APDMenuButton btnAPDSettings;
+	private APDMenuButton btnCommunity;
 	private APDAnnotation annotation;
 
 	private BitmapText version;
@@ -243,6 +244,15 @@ public class TitleScene extends PixelScene {
 			}
 		};
 		add( btnAPDSettings );
+
+		btnCommunity = new APDMenuButton( "Community", Icons.NEWS, false ){
+			@Override
+			protected void onClick() {
+				super.onClick();
+				CommunityScene.open();
+			}
+		};
+		add( btnCommunity );
 
 		//APD: News and Changes open the offline APD screens, not the stock internet/upstream ones
 		btnNews = new APDMenuButton( "News", Icons.NEWS, false ){
@@ -400,7 +410,9 @@ public class TitleScene extends PixelScene {
 		annotation.place( left, width, TitleGeometry.colWidth( width ) + MAIN_GAP, top );
 
 		float apdY = top + 3*(mainH + MAIN_GAP);
-		btnAPDSettings.setRect( left, apdY, width, BOTTOM_H );
+		btnAPDSettings.setRect( left, apdY, (width - MAIN_GAP)/2f, BOTTOM_H );
+		btnCommunity.setRect( left + (width + MAIN_GAP)/2f, apdY, (width - MAIN_GAP)/2f, BOTTOM_H );
+		align( btnCommunity );
 		align( btnAPDSettings );
 
 		float bottomY = apdY + APD_ROW_H;
@@ -423,7 +435,7 @@ public class TitleScene extends PixelScene {
 		//glow handles its own alpha
 
 		APDMenuButton[] all = { btnPlay, btnStatistics, btnBadges, btnJournal, btnOptions, btnQuit,
-				btnAPDSettings, btnNews, btnChanges, btnAbout };
+				btnAPDSettings, btnCommunity, btnNews, btnChanges, btnAbout };
 		for (APDMenuButton b : all){
 			//Quit is hidden on iOS, enable() would make it tappable again
 			if (b == btnQuit && DeviceCompat.isiOS()) continue;
