@@ -81,6 +81,8 @@ public class WarriorSimulationDeviceTest {
         private final String log;
         private long scannedEvents;
         private final List<String> commands = new ArrayList<>();
+        private final Set<Mob> observedMobs = Collections.newSetFromMap(new IdentityHashMap<>());
+        private final Map<String, Integer> encounters = new TreeMap<>();
         private Item rejectedPickup;
         private int rejectedHp, rejectedInventory;
         private boolean attemptedPickup;
@@ -138,6 +140,13 @@ public class WarriorSimulationDeviceTest {
         public RecklessWarriorPolicy.Observation observe() {
             waitForInput();
             return render(() -> {
+                for (Mob mob : Dungeon.level.mobs) if (Dungeon.hero.isAlive() && Dungeon.depth < 5
+                        && Dungeon.hero.fieldOfView[mob.pos]
+                        && !(mob instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC)
+                        && observedMobs.add(mob)) {
+                    // Diagnostic evidence only; never changes targeting, rarity, loot or RNG.
+                    encounters.merge(mob.getClass().getSimpleName(), 1, Integer::sum);
+                }
                 boolean finished = flyHealing || Dungeon.depth >= 5 || !Dungeon.hero.isAlive();
                 Mob enemy = finished ? null : adjacent();
                 return new RecklessWarriorPolicy.Observation(Math.max(0, Dungeon.hero.HP),
@@ -312,6 +321,8 @@ public class WarriorSimulationDeviceTest {
                     WarriorHealingExperiment.Result result = WarriorHealingExperiment.run(seeds[i],
                             value -> { current[0] = new Session(value); return current[0]; }, limit);
                     JSONObject row = new JSONObject().put("seed", result.seed).put("completed", result.completed)
+                            .put("gameVersion", Game.version).put("profile", "warrior-reckless-starting-gear-v1")
+                            .put("combatRngSeeded", false)
                             .put("observedHealingBeforeNormalFlyHealing", result.neededHeldHealingBeforeFlyDrop)
                             .put("normalFlyHealingObserved", current[0] != null && current[0].flyHealing)
                             .put("terminalDepth", Dungeon.depth)
@@ -320,6 +331,7 @@ public class WarriorSimulationDeviceTest {
                             .put("finishedEpochMillis", System.currentTimeMillis())
                             .put("elapsedMillis", TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - monotonicStart))
                             .put("commands", new JSONArray(current[0] == null ? Collections.emptyList() : current[0].commands))
+                            .put("encounterCounts", new JSONObject(current[0] == null ? Collections.emptyMap() : current[0].encounters))
                             .put("trace", new JSONArray(result.trace));
                     String serialized = row.toString();
                     writer.write(serialized); writer.write('\n'); writer.flush();

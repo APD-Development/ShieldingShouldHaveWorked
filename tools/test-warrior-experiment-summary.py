@@ -42,12 +42,20 @@ class SummaryTest(unittest.TestCase):
         self.write('first',[self.row(10),self.row(11)],A); self.write('recovery',[self.row(12)],B)
         r=self.read(); self.assertTrue(r['allRequestedSeedsCompleted']); self.assertFalse(r['singleSourceComplete'])
         self.assertEqual([2,1],[g['completedDistinctSeeds'] for g in r['perSource']])
+    def test_rare_encounters_and_failed_attempts_are_retained_without_fabricating_completion(self):
+        failed=self.row(10,False); failed['encounterCounts']={'Albino':1,'Wraith':1}
+        completed=self.row(11); completed['encounterCounts']={'GnollExile':1}
+        self.write('first',[failed,completed]); r=self.read(); group=r['perSource'][0]
+        self.assertEqual({'Albino':1,'Wraith':1,'GnollExile':1},group['encounterCountsAllAttempts'])
+        self.assertEqual({'GnollExile':1},group['encounterCountsCompletedAttempts'])
+        self.assertEqual(0,group['attemptsWithoutEncounterBreakdown'])
+        self.assertEqual(2,r['actualAttempts']); self.assertEqual(1,r['completedDistinctSeeds'])
     def test_unapproved_or_missing_source_manifest_is_rejected(self):
         self.write('first',[self.row()], 'c'*40); self.assertRaises(ValueError,self.read)
         (self.root/'first'/'manifest.json').unlink(); self.assertRaises(ValueError,self.read)
     def test_invalid_completion_trace_timing_and_seed_are_rejected(self):
         cases=[('completed','true'),('trace',[]),('elapsedMillis',-1),('seed',99),('normalFlyHealingObserved',1),
-               ('stopReason','action limit'),('terminalHp',5)]
+               ('stopReason','action limit'),('terminalHp',5),('encounterCounts',{'Albino':-1})]
         for key,value in cases:
             with self.subTest(key=key):
                 r=self.row(); r[key]=value

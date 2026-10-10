@@ -1,3 +1,11 @@
+## Owner correction: rare enemies remain in simulator evidence — October 10, 2026
+
+Do not discard attempts because a rare enemy appeared. Retain all failed attempts and their diagnostics; fixing an adapter fault does not retroactively turn its failed attempt into a completed episode. All audited normal/rare classes remain eligible for ordinary combat and reporting. No generation rarity/drop rate/RNG changed.
+
+New per-episode encounterCounts records each visible non-NPC mob object once, including rare variants and neutral mimics, as diagnostic evidence only. It never affects target selection or identifies items. Do not add unseen enemies revealed only by the death screen: collect only while alive before the scenario stop floor5. Output keeps actual Game.version, explicit starting-gear reckless profile and combatRngSeeded=false. A dungeon seed fixes generation, not reproducible combat.
+
+Summaries show normal and rare counts separately for all attempts and completed attempts. Legacy records without encounter breakdown are explicitly marked missing, never assumed zero.8accounting tests pass0.007s, including retaining Albino/Wraith failures and GnollExile completion and rejecting negative counts. Android compilation/native verification of these new diagnostic fields remains pending. Existing five-episode run38085711482 is still testing earlier sourcebfb without these fields. Controller ordinary-exploration policy remains unchanged while optional chest/fight preference question is pending. A homogeneous100corrected-controller sample must not silently combine oldsource0a and newcontroller results for balance analysis; old43complete episodes remain valuable retained diagnostic evidence.
+
 ## Android simulator verification failure corrected — October 10, 2026
 
 Run38085029972 source1b9 passed core tests but Android compilation failed: new LevelTransition import used levels instead of the actual levels.features package. Correction uses the real package. Sourcebb743 included the same error before the earlier result was available; its Android verification is also not passed. These are test-source compilation errors, not shipped TEST26 game code.

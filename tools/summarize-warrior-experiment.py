@@ -65,10 +65,22 @@ def summarize(root, first_seed, count, allowed_sources):
             if row['completed']:
                 selected.setdefault(row['seed'], row)
         rows = list(selected.values())
+        all_encounters, completed_encounters = {}, {}
+        for attempt in source_records:
+            counts = attempt['result'].get('encounterCounts', {})
+            if not isinstance(counts, dict) or any(not isinstance(k,str) or type(v) is not int or v < 0 for k,v in counts.items()):
+                raise ValueError('Invalid encounter diagnostics')
+            for name, value in counts.items():
+                all_encounters[name] = all_encounters.get(name,0) + value
+        for row in rows:
+            for name, value in row.get('encounterCounts', {}).items():
+                completed_encounters[name] = completed_encounters.get(name,0) + value
         groups.append(dict(sourceCommit=source, attempts=len(source_records), completedDistinctSeeds=len(rows),
                            consumedHealingBeforeNormalFlyHealing=sum(r['observedHealingBeforeNormalFlyHealing'] for r in rows),
                            normalFlyHealingObserved=sum(r['normalFlyHealingObserved'] for r in rows),
-                           deathEpisodes=sum(r['stopReason'] == 'death' for r in rows)))
+                           deathEpisodes=sum(r['stopReason'] == 'death' for r in rows),
+                           attemptsWithoutEncounterBreakdown=sum('encounterCounts' not in a['result'] for a in source_records),
+                           encounterCountsAllAttempts=all_encounters, encounterCountsCompletedAttempts=completed_encounters))
     report = dict(requested=count, actualAttempts=len(records), mirroredCopiesIgnored=mirrored,
                   completedDistinctSeeds=len(completed_seeds), unresolvedSeeds=sorted(expected-completed_seeds),
                   allRequestedSeedsCompleted=len(completed_seeds) == count, perSource=groups,
