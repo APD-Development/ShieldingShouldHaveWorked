@@ -1,3 +1,9 @@
+# Current Codex work — 2026-10-10 22:28 UTC
+
+Owner redirected development to bugs → Community → new bug-finding tests → bugs. Simulator feature expansion is parked; the existing frozen-source 95-seed batch can finish independently.
+
+Implemented the remaining UIMSD status/queue-preview restoration fix described in `docs/APD-UIMSD-STATUS-RESTORE-2026-10-10.md`. Five message call sites now reuse existing wrapped, scrolling, semantic-restorable UIMSD text. Local changed-class compilation and 35 targeted regressions pass. New native restoration/narrow-preview assertions are committed; complete core/Android/build verification is requested and **pending**, not passed or delivered. Last delivered verified phone APK remains TEST26 (source 1483bac7ecd24cf33b64632ca0d4135bb252ad7d). No player data, signing/application ID, main or Claude branch was changed.
+
 ## Exact-source simulator baseline and package verified — October 10, 2026
 
 Exact-source run [38088088384](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38088088384), source `455f22b5f14c1ea9886d033b81d0a1270ea5cd20`, succeeded from 21:33:35–21:57:13 UTC. Its downloaded core artifact `11683615513` contains 161 XML suites / 993 tests with zero failures, errors or skips. Downloaded native artifact `11683248078` (`sha256:89a280eab126547a8dc7a6dc21584e6ecf3db98fc7d1513fd75624f3c901328a`) contains exactly the five requested normal-profile seeds with complete nonempty traces and instrumentation `OK (1 test)` in 942.392 seconds.

@@ -75,6 +75,36 @@ public class UimsdRestoreDeviceTest {
         } catch (Exception e) { throw new RuntimeException(e); }
     }
 
+    private static String messageText(Window window) {
+        assertTrue("UIMSD messages use the scrolling restorable window",
+                window instanceof com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdText);
+        try {
+            Field text = window.getClass().getDeclaredField("savedText"); text.setAccessible(true);
+            return (String) text.get(window);
+        } catch (Exception e) { throw new RuntimeException(e); }
+    }
+
+    private static void assertMessageFits(Window window) {
+        try {
+            Field width = Window.class.getDeclaredField("width"); width.setAccessible(true);
+            Field height = Window.class.getDeclaredField("height"); height.setAccessible(true);
+            int w = width.getInt(window), h = height.getInt(window);
+            assertTrue("message leaves horizontal screen margins", w <= PixelScene.uiCamera.width - 28);
+            assertTrue("long preview scrolls within screen height", h <= PixelScene.uiCamera.height);
+            assertContainedText(window, w);
+        } catch (Exception e) { throw new RuntimeException(e); }
+    }
+
+    private static void assertContainedText(Group group, int width) throws Exception {
+        for (Gizmo child : members(group)) {
+            if (child instanceof RenderedTextBlock) {
+                RenderedTextBlock text = (RenderedTextBlock) child;
+                assertTrue("message text left boundary", text.left() >= 0);
+                assertTrue("message text right boundary", text.right() <= width);
+            } else if (child instanceof Group) assertContainedText((Group) child, width);
+        }
+    }
+
     private static void clearWindows() {
         for (Window window : windows()) window.hide();
     }
@@ -240,6 +270,43 @@ public class UimsdRestoreDeviceTest {
                 assertSame("restoring does not apply a saved view", savedQuery, model().query());
                 pickFirst((WndUimsdList) windows().get(0));
                 assertEquals("restored Open callback works", savedQuery.dataset, model().query().dataset);
+                clearWindows();
+            });
+            //Status/preview windows used to fall through the zero-argument restorer:
+            //WndMessage(String) has no such constructor, so they silently disappeared.
+            final AtomicReference<String> statusText = new AtomicReference<>();
+            final AtomicReference<Query> statusQuery = new AtomicReference<>();
+            onRender(() -> {
+                statusQuery.set(model().query());
+                options("privacySummary", new Class<?>[]{UimsdModel.class}, model());
+                assertEquals(1, windows().size());
+                statusText.set(messageText(windows().get(0)));
+                assertFalse("privacy summary is present", statusText.get().isEmpty());
+            });
+            rebuildScene();
+            onRender(() -> {
+                assertEquals("privacy summary survives exactly once", 1, windows().size());
+                assertEquals(statusText.get(), messageText(windows().get(0)));
+                assertSame("restoring a status never changes the query", statusQuery.get(), model().query());
+                clearWindows();
+                StringBuilder preview = new StringBuilder("Queued on this device. Nothing was sent: there is no server yet.\n\n");
+                for (int i = 0; i < 40; i++) preview.append("Run preview field ").append(i).append(": recorded on this device.\n");
+                statusText.set(preview.toString());
+                int originalWidth = PixelScene.uiCamera.width;
+                try {
+                    PixelScene.uiCamera.width = 100;
+                    options("say", new Class<?>[]{String.class}, statusText.get());
+                    assertMessageFits(windows().get(0));
+                } finally { PixelScene.uiCamera.width = originalWidth; }
+            });
+            //Two resets catch duplicate restoration and loss of the restored payload.
+            rebuildScene();
+            rebuildScene();
+            onRender(() -> {
+                assertEquals("long local preview survives exactly once", 1, windows().size());
+                assertEquals("entire preview retained", statusText.get(), messageText(windows().get(0)));
+                assertSame("preview restore never changes the query", statusQuery.get(), model().query());
+                assertMessageFits(windows().get(0));
                 clearWindows();
             });
             //A separate marked demo fixture: no player history or real demo records.

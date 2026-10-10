@@ -156,7 +156,7 @@ public final class WndUimsdOptions {
 	}
 
 	private static void say( String text ){
-		ShatteredPixelDungeon.scene().addToFront(new WndMessage(text));
+		ShatteredPixelDungeon.scene().addToFront(new WndUimsdText("UIMSD", text));
 	}
 
 	private static void saveView( final UimsdModel m ){
@@ -397,7 +397,7 @@ public final class WndUimsdOptions {
 	private static void privacySummary( UimsdModel m ){
 		StringBuilder sb = new StringBuilder();
 		for (String line : PrivacySummary.of(m.root()).lines(SPDSettings.apdSending())) sb.append(line).append("\n\n");
-		ShatteredPixelDungeon.scene().addToFront(new WndMessage(sb.toString().trim()));
+		ShatteredPixelDungeon.scene().addToFront(new WndUimsdText("UIMSD", sb.toString().trim()));
 	}
 
 	private static void viewActions( final UimsdModel m, final SavedViews.View view ){
