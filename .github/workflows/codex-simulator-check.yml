@@ -43,3 +43,18 @@ jobs:
           name: apd-simulator-tests
           path: core/build/test-results/test/
           retention-days: 7
+      - name: Preserve real image assets for local headless game tests
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import zipfile
+          root = Path('core/src/main/assets')
+          with zipfile.ZipFile('apd-test-image-assets.zip', 'w', zipfile.ZIP_DEFLATED) as archive:
+              for path in sorted(root.rglob('*.png')):
+                  archive.write(path, path.relative_to(root))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: apd-test-image-assets
+          path: apd-test-image-assets.zip
+          retention-days: 7
