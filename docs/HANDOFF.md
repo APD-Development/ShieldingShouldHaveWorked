@@ -1,3 +1,9 @@
+## Seed 1000042 preserved optional-window failure — October 10, 2026, 20:35 UTC
+
+Simulator run38083672601 completed with a valid failure, not an infrastructure timeout. The core job passed; the API34 adapter artifact11681815395 contains one actual reconstructed row for seed1000042 with342 trace entries, floor2, terminalHP19, actor time278.0 and stopReason game adapter failure. The final trace records `unhandled gameplay dialog` at unchanged position505. This is an adapter-coverage failure, not a confirmed gameplay bug or balance result; the episode remains incomplete and is not counted.
+
+This correction records the exact open Window subclass plus hero position, entrance, exit and terrain on the next occurrence. It also makes the simulator workflow trigger when its adapter, policy helpers or evidence scripts change, instead of only when the workflow file is edited. No window is auto-dismissed yet; the next native run must identify it before a bounded handler is allowed. No production gameplay/save/statistics/signing/application-ID source changed.
+
 ## Verified APK reuse despite test-only edits — October 10, 2026
 
 Confirmed delivery-tool bug: source validation compared rootcore/android tree IDs, falsely rejecting unchanged production builds after simulator test-only edits. Red/green fixture reproduced failure. Compare complete recursive source trees, exclude only known coreunit/Androidinstrumentation test paths and docs/tools/workflows, retain every production/asset/build blob and submodule, and refuse truncated trees.11 permanent tests pass0.003s, including protected mainassets namedtest and Gradle wrapper/build files. ActualGitHub source1483 versusb6e0:2197 protected files, zero differences. APK/signature/checksum/version/actualtest evidence requirements remain mandatory; never label extra unexecuted tests passed. This fixes safe artifact reuse without building another unchanged APK.

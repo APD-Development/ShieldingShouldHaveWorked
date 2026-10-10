@@ -4,7 +4,13 @@ name: APD simulator regression verification
 on:
   push:
     branches: [codex/apd-phone-fixes-2026-10-09]
-    paths: [.github/workflows/codex-simulator-check.yml]
+    paths:
+      - .github/workflows/codex-simulator-check.yml
+      - android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/WarriorSimulationDeviceTest.java
+      - core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/simulation/**
+      - tools/run-warrior-simulation.sh
+      - tools/test-warrior-instrumentation.py
+      - tools/test-warrior-trace-recovery.py
 
 concurrency:
   group: apd-real-simulator-verification

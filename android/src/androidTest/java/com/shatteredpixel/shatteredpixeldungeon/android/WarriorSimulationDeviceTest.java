@@ -20,6 +20,7 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.simulation.*;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.*;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.*;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.watabou.noosa.Game;
 import org.junit.Test;
@@ -27,6 +28,7 @@ import org.junit.runner.RunWith;
 import org.json.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -59,6 +61,29 @@ public class WarriorSimulationDeviceTest {
             }
         } catch (InterruptedException e) { Thread.currentThread().interrupt(); throw new IllegalStateException(e); }
         catch (Exception e) { throw new IllegalStateException(e); }
+    }
+    private static String openWindows() {
+        try {
+            Object scene = Game.scene();
+            if (scene == null) return "none";
+            Field members = null;
+            for (Class<?> type = scene.getClass(); type != null && members == null; type = type.getSuperclass()) {
+                try { members = type.getDeclaredField("members"); }
+                catch (NoSuchFieldException ignored) { }
+            }
+            if (members == null) return "inspection-failed:no-members-field";
+            members.setAccessible(true);
+            Object value = members.get(scene);
+            if (!(value instanceof Iterable<?>)) return "inspection-failed:members-not-iterable";
+            List<String> names = new ArrayList<>();
+            for (Object member : (Iterable<?>) value) {
+                if (member instanceof Window) names.add(member.getClass().getName());
+            }
+            Collections.sort(names);
+            return names.isEmpty() ? "none" : String.join(",", names);
+        } catch (ReflectiveOperationException | SecurityException failure) {
+            return "inspection-failed:" + failure.getClass().getSimpleName();
+        }
     }
     private static final class Session implements WarriorHealingExperiment.GameSession {
         private int[] visits;
@@ -151,7 +176,9 @@ public class WarriorSimulationDeviceTest {
             final float before = Actor.now();
             final int beforeDepth = Dungeon.depth;
             render(() -> {
-                if (GameScene.showingWindow()) throw new IllegalStateException("unhandled gameplay dialog");
+                if (GameScene.showingWindow()) throw new IllegalStateException("unhandled gameplay dialog:"
+                        + openWindows() + ":position=" + Dungeon.hero.pos + ":entrance=" + Dungeon.level.entrance()
+                        + ":exit=" + Dungeon.level.exit() + ":terrain=" + Dungeon.level.map[Dungeon.hero.pos]);
                 switch (action) {
                     case HEAL:
                         PotionOfHealing potion = Dungeon.hero.belongings.getItem(PotionOfHealing.class);
@@ -171,7 +198,7 @@ public class WarriorSimulationDeviceTest {
                         Dungeon.depth, Dungeon.hero.isAlive(), Dungeon.hero.ready, Dungeon.hero.curAction != null)), 30);
             } catch (RuntimeException failure) {
                 String state = render(() -> "scene=" + Game.scene().getClass().getSimpleName()
-                        + ":ready=" + Dungeon.hero.ready + ":window=" + GameScene.showingWindow()
+                        + ":ready=" + Dungeon.hero.ready + ":windows=" + openWindows()
                         + ":queued=" + (Dungeon.hero.curAction == null ? "none" : Dungeon.hero.curAction.getClass().getSimpleName()
                         + "@" + Dungeon.hero.curAction.dst) + ":depth=" + Dungeon.depth
                         + ":position=" + Dungeon.hero.pos + ":actorTime=" + Actor.now());
