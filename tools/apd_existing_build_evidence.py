@@ -40,7 +40,9 @@ def certificates(signature):
 
 def application_inputs(tree):
     return {entry['path']: entry['sha'] for entry in tree
-            if entry['path'] not in ('.github', 'docs', 'tools')}
+            if entry.get('type') != 'tree'
+            and entry['path'].split('/', 1)[0] not in ('.github', 'docs', 'tools')
+            and not entry['path'].startswith(('core/src/test/', 'android/src/androidTest/'))}
 
 
 def main():
@@ -59,8 +61,9 @@ def main():
     # application/build inputs; never relabel a different APK as tested source.
     application_trees = []
     for commit in (source, publication_commit):
-        tree = github(f'repos/{repo}/git/trees/{commit}')['tree']
-        application_trees.append(application_inputs(tree))
+        response = github(f'repos/{repo}/git/trees/{commit}?recursive=1')
+        assert not response.get('truncated', False), 'Incomplete application source tree'
+        application_trees.append(application_inputs(response['tree']))
     assert application_trees[0] == application_trees[1], 'Publication commit changes application/build inputs'
     run = github(f'repos/{repo}/actions/runs/{run_id}')
     assert run['head_sha'] == source and run['run_number'] == number

@@ -6,6 +6,26 @@ from apd_existing_build_evidence import application_inputs, certificates, xml_su
 
 
 class PublicationSourceTest(unittest.TestCase):
+    def test_recursive_application_mapping_ignores_only_verified_test_and_documentation_paths(self):
+        before = [{'path':'core','type':'tree','sha':'old-tree'},
+                  {'path':'core/src/main/java/Game.java','type':'blob','sha':'app'},
+                  {'path':'core/src/test/java/Simulation.java','type':'blob','sha':'old-test'},
+                  {'path':'android/src/androidTest/java/DeviceTest.java','type':'blob','sha':'old-device'}]
+        after = [{'path':'core','type':'tree','sha':'new-tree'},
+                 {'path':'core/src/main/java/Game.java','type':'blob','sha':'app'},
+                 {'path':'core/src/test/java/Simulation.java','type':'blob','sha':'new-test'},
+                 {'path':'android/src/androidTest/java/DeviceTest.java','type':'blob','sha':'new-device'},
+                 {'path':'docs/HANDOFF.md','type':'blob','sha':'new-doc'},
+                 {'path':'.github/workflows/verify.yml','type':'blob','sha':'new-workflow'}]
+        self.assertEqual(application_inputs(before), application_inputs(after))
+
+    def test_main_assets_and_build_source_remain_protected_in_recursive_mapping(self):
+        for path in ('core/src/main/java/Game.java','core/src/main/assets/test/data.json',
+                     'android/src/main/AndroidManifest.xml','android/build.gradle','gradle/wrapper/gradle-wrapper.jar'):
+            with self.subTest(path=path):
+                self.assertNotEqual(application_inputs([{'path':path,'type':'blob','sha':'tested'}]),
+                                    application_inputs([{'path':path,'type':'blob','sha':'changed'}]))
+
     def test_delivery_documentation_does_not_relabel_application_source(self):
         before = [{'path': 'core', 'sha': 'app'}, {'path': 'docs', 'sha': 'old'}]
         after = [{'path': 'core', 'sha': 'app'}, {'path': 'docs', 'sha': 'new'},
