@@ -81,7 +81,7 @@ for episode in range(expected_count):
         raise SystemExit(f"simulator row {episode} lacks {missing}")
     if row["seed"] != first_seed + episode:
         raise SystemExit(f"simulator row {episode} has the wrong seed")
-    if row["completed"] is not True or not isinstance(row["trace"], list):
+    if row["completed"] is not True or not isinstance(row["trace"], list) or not row["trace"]:
         raise SystemExit(f"simulator row {episode} is not complete evidence")
     rows.append(row)
 
