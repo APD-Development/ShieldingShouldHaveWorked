@@ -1,3 +1,9 @@
+## 2026-10-10 22:38 UTC — simulator-only visual fast-forward candidate
+
+The owner identified the current emulator throughput as unusably slow for future large samples. The Android adapter now reapplies a 100× libGDX visual time scale on every simulator render callback, including after scene changes reset it. This changes only animation wall-clock pacing on the explicitly opted-in disposable emulator; actor time, actions, combat RNG, generation, policy and production gameplay are unchanged. Each result row records the scale.
+
+This is an implemented but unverified performance candidate. The existing simulator workflow must compile the exact source, pass the full core suite, finish the same five API 34 seed episodes with complete traces, and provide measured elapsed times before any speedup or correctness claim. The already-running 100-seed batch remains valid old-source evidence and is not cancelled or mixed with this candidate.
+
 ## UIMSD raw-preview follow-up — 2026-10-10
 
 Source tracing found that ordinary text wrapping never splits an overlong token. Raw queued JSON/IDs can therefore still overflow despite a max-width setting, and the default text renderer treats underscores/double stars as highlighting markers rather than literal payload characters.

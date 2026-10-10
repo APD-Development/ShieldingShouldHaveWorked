@@ -48,12 +48,20 @@ import static org.junit.Assert.*;
 // Runs only on an explicitly opted-in disposable emulator, never on a player's installation.
 @RunWith(AndroidJUnit4.class)
 public class WarriorSimulationDeviceTest {
+    // Simulator-only: actor time, RNG and game rules stay unchanged; only visual frames advance faster.
+    // This removes real-time sprite waits from bulk evidence collection on a disposable emulator.
+    private static final float SIMULATION_VISUAL_TIME_SCALE = 100f;
+
     private static <T> T render(Callable<T> action) {
         CountDownLatch done = new CountDownLatch(1);
         AtomicReference<T> result = new AtomicReference<>();
         AtomicReference<Throwable> failure = new AtomicReference<>();
         Game.runOnRenderThread(() -> {
-            try { result.set(action.call()); } catch (Throwable t) { failure.set(t); }
+            try {
+                // Scene changes reset timeScale to 1. Reapply on every simulator render callback.
+                Game.timeScale = SIMULATION_VISUAL_TIME_SCALE;
+                result.set(action.call());
+            } catch (Throwable t) { failure.set(t); }
             finally { done.countDown(); }
         });
         try {
@@ -402,6 +410,7 @@ public class WarriorSimulationDeviceTest {
                             .put("gameVersion", Game.version).put("profile", NormalWarriorPreparation.PROFILE)
                             .put("healingPolicy", "held potion only when next adjacent raw melee hit could kill")
                             .put("combatRngSeeded", false)
+                            .put("simulationVisualTimeScale", SIMULATION_VISUAL_TIME_SCALE)
                             .put("observedHealingBeforeNormalFlyHealing", result.neededHeldHealingBeforeFlyDrop)
                             .put("normalFlyHealingObserved", current[0] != null && current[0].flyHealing)
                             .put("terminalDepth", Dungeon.depth)
