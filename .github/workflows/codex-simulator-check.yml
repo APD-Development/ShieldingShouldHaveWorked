@@ -132,6 +132,18 @@ jobs:
           sha256sum --check simulator-binaries/SHA256SUMS
           df -h .
 
+      - name: Free unused hosted-runner SDKs and require enough space for the actual image
+        run: |
+          # API34's base userdata image has a minimum larger than disk-size4096M.
+          # These unused SDKs belong to this disposable GitHub VM, not the repository.
+          sudo rm -rf -- /usr/share/dotnet /usr/local/.ghcup
+          df -h "$HOME"
+          python3 - <<'PY'
+          import os, shutil
+          free=shutil.disk_usage(os.environ['HOME']).free
+          if free < 9*1024**3:
+              raise SystemExit(f'Insufficient emulator disk space after cleanup: {free} bytes; refusing another boot timeout')
+          PY
       - name: Verify five real normal-play episodes before the 100-seed batch
         uses: reactivecircus/android-emulator-runner@v2
         env:
