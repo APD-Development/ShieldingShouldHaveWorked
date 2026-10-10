@@ -1,3 +1,11 @@
+## Simulator runner disk exhaustion corrected — October 10, 2026
+
+Run [38085711482](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38085711482), source `bfb719546bb56ab67cc64d4d379ffb914b771513`, passed the simulator JVM/core job and compiled both simulator APKs, but executed zero emulator episodes. The official emulator log failed before boot with `FATAL | Not enough space to create userdata partition`: 7,275.79 MB was available and 7,372.80 MB was requested. The action then waited for the nonexistent emulator until its 600-second boot timeout. This is runner/AVD provisioning failure, not a game, adapter, balance, or save failure.
+
+Commit [c44985da](https://github.com/APD-Development/ShieldingShouldHaveWorked/commit/c44985da3c4cd5b9bc90def1f50375efa4082234) sets the official `reactivecircus/android-emulator-runner@v2` `disk-size` input to `4096M`. API 34, x86_64, Google APIs, acceleration, emulator options, seed plan, and instrumentation script are unchanged. The committed workflow was read back from GitHub and correction run [38086795339](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38086795339) started at 21:13:35 UTC; complete core and native verification are pending. Concurrent commit [da573548](https://github.com/APD-Development/ShieldingShouldHaveWorked/commit/da573548b6e18c66da2d227a83b524be76c85ac6) correctly parented the fix and retained it while advancing simulator work. Do not treat any pending run as successful or count a provisioning failure as an episode.
+
+No application source, gameplay, saves/statistics, signing identity, application ID, release, or player artifact changed by the disk correction. The workspace had no checkout/Gradle/ADB, so no local application test was claimed. Time outside this execution remains unknown; no continuous-work or downtime claim is made.
+
 ## Owner correction: rare enemies remain in simulator evidence — October 10, 2026
 
 Do not discard attempts because a rare enemy appeared. Retain all failed attempts and their diagnostics; fixing an adapter fault does not retroactively turn its failed attempt into a completed episode. All audited normal/rare classes remain eligible for ordinary combat and reporting. No generation rarity/drop rate/RNG changed.
