@@ -177,8 +177,7 @@ public class WarriorSimulationDeviceTest {
                 if (!read.status.isClean() || read.gapEvents != 0) throw new IllegalStateException("incomplete generation evidence");
                 for (ApdEvent event : read.events) if (event.index >= scannedEvents && event.type == EventTypes.ITEM_GENERATED) {
                     GenerationEvents.ItemGenerated drop = GenerationEvents.decodeItemGenerated(event, read);
-                    if (drop.container == GenerationEvents.C_MOB_LOOT && drop.owner.equals("Swarm")
-                            && drop.trueClass.equals("PotionOfHealing")) flyHealing = true;
+                    if (NormalFlyHealingEvidence.matches(drop)) flyHealing = true;
                 }
                 scannedEvents = read.eventCount;
             } catch (IOException e) { throw new IllegalStateException("cannot inspect run evidence", e); }
@@ -192,6 +191,8 @@ public class WarriorSimulationDeviceTest {
     @Test public void simulateRecklessWarriorEarlyHealing() throws Exception {
         Bundle arguments = InstrumentationRegistry.getArguments();
         assertEquals("requires a disposable, empty emulator", "true", arguments.getString("apdSimulation"));
+        assertTrue("physical-device simulation is refused", android.os.Build.HARDWARE.equals("ranchu")
+                || android.os.Build.HARDWARE.equals("goldfish"));
         int count = Integer.parseInt(arguments.getString("simulationCount", "1"));
         int limit = Integer.parseInt(arguments.getString("simulationActions", "1000"));
         long seed = Long.parseLong(arguments.getString("simulationSeed", "1000000"));
@@ -202,6 +203,11 @@ public class WarriorSimulationDeviceTest {
             render(() -> {
                 for (int slot = 1; slot <= GamesInProgress.MAX_SLOTS; slot++)
                     if (GamesInProgress.gameExists(slot)) throw new IllegalStateException("existing saves: simulator refused");
+                if (com.watabou.utils.FileUtils.fileExists(Rankings.RANKINGS_FILE))
+                    throw new IllegalStateException("existing statistics: simulator refused");
+                File root = ApdRecorder.historyRoot();
+                File[] history = root == null ? null : new File(root, "runs").listFiles();
+                if (history != null && history.length != 0) throw new IllegalStateException("existing history: simulator refused");
                 SPDSettings.apdDifficulty(3); SPDSettings.challenges(0); SPDSettings.apdRecording(true);
                 return null;
             });

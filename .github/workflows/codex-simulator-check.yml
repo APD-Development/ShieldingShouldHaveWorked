@@ -6,6 +6,10 @@ on:
     branches: [codex/apd-phone-fixes-2026-10-09]
     paths: [.github/workflows/codex-simulator-check.yml]
 
+concurrency:
+  group: apd-real-simulator-verification
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
