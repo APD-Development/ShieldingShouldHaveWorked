@@ -1,3 +1,11 @@
+## October 10 Community disclosure correction — source verified locally, APK pending
+
+The owner's TEST24 phone screenshot confirmed the Community-selected content page exposed internal creator restrictions concerning Cleric lore, the personal vendetta and a hidden achievement. These restrictions were incorrectly translated into public feature copy; being creator-controlled does not authorize announcing them. Removed that sentence completely. Preserve all private creative restrictions and disabled feature switches; no gameplay, save, statistics or feature eligibility change.
+
+Changed CommunityPreview.java and CommunityPreviewTest.java. A new permanent test checks every preview page's title, explanation, availability and shared comments for disclosure of these internal topics. Replaced the earlier test assertion that incorrectly required this disclosure. The three targeted Community/title-entry suites pass: 15 tests, 0 failures, 0.073 s. First invocation used two incorrect test package names and failed class lookup; corrected invocation passes. Source compilation succeeded. No refresh-rate configuration changed.
+
+TEST24 already installed still contains the old wording. Requesting a fresh verified candidate; full core/Android/build/signing checks and publication are pending. Do not label it delivered or phone-verified before evidence exists. TEST24 and TEST22 remain preserved.
+
 ## TEST24 delivered with Community — 2026-10-10 18:46:52 UTC
 
 Private release apd-codex-test-24 published 2026-10-10T18:42:59Z; recovery run38076840351 SUCCESS. Actual APK SHA256 e13408155a0534726686dd36f45c2ea377bb242dd02708891a234599f8b50785, 38,225,942 bytes, same signing certificate as TEST22, indev application ID unchanged, versionC24, nondowngrade checked. Actual build source f1ad8657250defd4b97cf422fa222d6c6c1f7329; release tag points fb1a728b852d5c722ff9ae16676b727143e0904a (delivery tooling). All application/build root tree entries were compared and are identical to tested source; evidence JSON records both commits. No APK rebuild or permission changes. First release targeting historical source returned403; current delivery-commit target succeeded with same token. Exact internal GitHub reason for initial403 remains unknown.

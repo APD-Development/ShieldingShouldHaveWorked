@@ -24,13 +24,24 @@ public class CommunityPreviewTest {
             assertFalse(page.title.toLowerCase().contains("clan"));
         }
     }
-    @Test public void undecidedRulesAndCreatorReservationsAreNotPresentedAsFinalized() {
+    @Test public void undecidedRulesAreNotPresentedAsFinalizedAndWinnersAreNotDiscarded() {
         assertTrue(CommunityPreview.Page.TOURNAMENT.explanation.contains("final 16"));
         assertTrue(CommunityPreview.Page.QUALIFICATION.explanation.contains("top 16"));
         assertTrue(CommunityPreview.Page.REVIEWS.explanation.contains("replay scope is undecided"));
         assertTrue(CommunityPreview.Page.REVIEWS.explanation.contains("not AI-generated judgments"));
-        assertTrue(CommunityPreview.Page.WINNERS.explanation.contains("outside community control"));
         assertTrue(CommunityPreview.Page.WINNERS.explanation.contains("not a deadline for discarding a winner"));
+    }
+    @Test public void playerFacingPreviewDoesNotDiscloseInternalCreativeRestrictionsOrSecrets() {
+        StringBuilder text = new StringBuilder(CommunityPreview.COMMENTS)
+                .append(CommunityPreview.COMMENT_PLACEHOLDER);
+        for (CommunityPreview.Page page : CommunityPreview.Page.values()) {
+            text.append(page.title).append(page.explanation).append(page.availability());
+        }
+        String visible = text.toString().toLowerCase(java.util.Locale.ROOT);
+        for (String privateTopic : new String[]{"vendetta", "cleric lore", "creator-reserved",
+                "hidden", "achievement", "remember when you needed help"}) {
+            assertFalse("Internal topic exposed: " + privateTopic, visible.contains(privateTopic));
+        }
     }
     @Test public void commentsAreThreadedAuthorParticipatingAndNeverVotes() {
         assertTrue(CommunityPreview.COMMENTS.contains("own threaded comment section"));

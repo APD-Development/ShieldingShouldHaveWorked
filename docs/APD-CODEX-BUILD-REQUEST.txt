@@ -1,1 +1,1 @@
-2026-10-10 Community alpha preview plus humor correction. Complete core regression suite, debug APK and six actual Android checks required. Keep verification-only artifact private; no release until success and signing compatibility are checked.
+2026-10-10T18:52Z — Community player-facing copy correction: remove internal creative restrictions and hidden achievement disclosure. Run the full core suite, Android assembly and existing six API34 checks on this exact source; verification only before signing-compatible private delivery.
