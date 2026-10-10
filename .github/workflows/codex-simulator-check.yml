@@ -124,6 +124,14 @@ jobs:
           }, indent=2) + '\n')
           PY
 
+      - name: Reclaim disposable Gradle build outputs before emulator boot
+        run: |
+          ./gradlew clean
+          test -s simulator-binaries/android-debug.apk
+          test -s simulator-binaries/android-debug-androidTest.apk
+          sha256sum --check simulator-binaries/SHA256SUMS
+          df -h .
+
       - name: Verify five real normal-play episodes before the 100-seed batch
         uses: reactivecircus/android-emulator-runner@v2
         env:
