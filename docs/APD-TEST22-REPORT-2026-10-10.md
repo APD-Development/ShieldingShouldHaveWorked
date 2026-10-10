@@ -58,6 +58,8 @@ The TEST22 CI run started October 10 at 1:25:48 p.m. EDT and completed at 1:36:5
 
 There is no complete timestamped activity ledger for the prior overnight period. Exact active development time, coding/debugging/research totals and the longest idle interval cannot honestly be reconstructed. Commit gaps do not prove inactivity. No continuous overnight execution is claimed. Current recovery checks the already completed remote run rather than pretending a chat remained active after its response ended.
 
+The first delivery-recovery workflow (38072882786) stopped at signing compatibility validation before publication. Artifact retrieval and test checks succeeded, but the certificate comparison did not pass. Public certificate diagnostics were added to distinguish an actual signing mismatch from a parser issue. No failed validation is bypassed and no incompatible APK is delivered as an update.
+
 ## What to test on the phone next
 
 Install over existing APD and verify existing saves and statistics remain visible. Start a fresh run: check exits, Search/Wait, quickslots, attack controls and Main Menu navigation. Play, save, quit and resume. Open UIMSD, change filters/sorts/columns, leave and reopen, inspect saved views, and add/view/remove a local queued run. Check excluded-row wording and truthful privacy messages. Switch apps while a UIMSD dialog is open. Report the installed C22 version, reproducible steps and screenshots for any failure. Never delete real history merely to test a queue or import warning.

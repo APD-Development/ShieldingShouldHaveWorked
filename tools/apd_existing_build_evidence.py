@@ -58,6 +58,8 @@ def main():
     aapt = signer.parent / 'aapt'
     signatures = [output([str(signer), 'verify', '--print-certs', str(path)]) for path in (apk, old)]
     certs = [re.findall(r'Signer #\d+ certificate SHA-256 digest: (\S+)', s) for s in signatures]
+    print(json.dumps({'apk_sha256': digest, 'candidate_certificates': certs[0],
+                      'rollback_certificates': certs[1], 'signature_output': signatures}, indent=2))
     assert certs[0] and certs[0] == certs[1], 'APK signing mismatch'
     packages = [re.search(r"package: name='([^']+)' versionCode='(\d+)' versionName='([^']+)'",
                          output([str(aapt), 'dump', 'badging', str(path)])) for path in (apk, old)]

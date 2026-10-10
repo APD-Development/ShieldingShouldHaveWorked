@@ -1,6 +1,7 @@
 name: Deliver verified existing APD TEST22
 
 # Delivery only: reuse the already tested APK; no Gradle or app rebuild.
+# Retain signature diagnostics if compatibility validation refuses publication.
 on:
   push:
     branches: [codex/apd-phone-fixes-2026-10-09]
