@@ -1,5 +1,5 @@
 {
-  "recorded_at_utc": "2026-10-10T19:07:00Z",
+  "recorded_at_utc": "2026-10-10T19:12:38Z",
   "source": "42aa5ff0a332eab3afe12f036c9beeeb1bfb5e71",
   "run": 38077543066,
   "build_number": 25,
@@ -41,8 +41,12 @@
     "description": "normal Swarm/Bat/Necromancer Healing/Shielding drop identification",
     "targeted_tests": 21,
     "targeted_result": "passed locally in 1.697 seconds",
-    "full_core_result": "requested, pending",
-    "android_result": "not run",
-    "included_in_TEST25": false
+    "full_core_result": "955 tests passed; zero failures/errors/skips",
+    "android_result": "not run for this newer loot source",
+    "included_in_TEST25": false,
+    "source_commit": "63fe8a693794b3421cebeb9dc62550ba97ba185b",
+    "full_core_run": 38078604940,
+    "full_core_artifact_id": 11678848515,
+    "apk_result": "not packaged; not included in TEST25"
   }
 }
