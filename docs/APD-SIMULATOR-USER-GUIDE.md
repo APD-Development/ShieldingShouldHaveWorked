@@ -14,7 +14,7 @@ The healing trigger is conservative: it does not predict exact damage after armo
 
 Open the private repository's Actions tab and select **APD downloadable Warrior simulator**. Its `apd-warrior-simulator-download` artifact appears only after the exact source's core checks and five real native episodes pass. A queued or failed delivery run is not a verified download. GitHub sign-in and repository access are required; artifacts expire after seven days.
 
-The package includes the two compiled APKs, their checksum/source manifest, the runner, this guide, and actual baseline episode traces. The APKs were tested together; do not mix APKs from different sources. The separate 100-seed batch may still be running when this package becomes available; its outcome is not implied by a five-episode baseline.
+The package includes the two compiled APKs, their checksum/source manifest, the runner, this guide, and actual baseline episode traces. The APKs were tested together; do not mix APKs from different sources. `PACKAGE-TOOLS.json` records separate binary/runner and tested report-tool source commits and checksums. The separate 100-seed batch may still be running when this package becomes available; its outcome is not implied by a five-episode baseline.
 
 ## Run on your computer
 
