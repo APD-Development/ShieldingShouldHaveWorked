@@ -89,6 +89,8 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
       - name: Verify one real early-game episode before requesting a large batch
         uses: reactivecircus/android-emulator-runner@v2
+        env:
+          APD_SIMULATION_SEED: '1000042'
         with:
           api-level: 34
           arch: x86_64

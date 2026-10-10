@@ -29,11 +29,16 @@ adb logcat -c
 adb logcat -v time > simulator-logcat.txt &
 apd_logcat_pid=$!
 trap 'kill "$apd_logcat_pid" 2>/dev/null || true' EXIT
+apd_seed_arguments=()
+if [ -n "${APD_SIMULATION_SEEDS:-}" ]; then
+  apd_seed_arguments=(-e simulationSeeds "$APD_SIMULATION_SEEDS")
+fi
 adb shell am instrument -w -r \
   -e class com.shatteredpixel.shatteredpixeldungeon.android.WarriorSimulationDeviceTest \
   -e apdSimulation true -e simulationCount "${APD_SIMULATION_COUNT:-20}" \
   -e simulationSeed "${APD_SIMULATION_SEED:-1000000}" \
   -e simulationActions "${APD_SIMULATION_ACTIONS:-1000}" \
+  "${apd_seed_arguments[@]}" \
   com.charltonchris29.adhdpixeldungeon.indev.test/androidx.test.runner.AndroidJUnitRunner \
   > simulation-instrumentation.txt 2>&1
 apd_test_status=$?
@@ -49,7 +54,11 @@ if 'OK (1 test)' not in text or 'FAILURES!!!' in text or 'INSTRUMENTATION_FAILED
     raise SystemExit('Instrumentation did not report a passing test; inspect saved output.')
 rows = [json.loads(line) for line in Path('simulation-results.jsonl').read_text().splitlines() if line.strip()]
 count, seed = int(os.environ.get('APD_SIMULATION_COUNT', '20')), int(os.environ.get('APD_SIMULATION_SEED', '1000000'))
-if len(rows) != count or [r['seed'] for r in rows] != list(range(seed, seed + count)):
+explicit = os.environ.get('APD_SIMULATION_SEEDS', '')
+expected_seeds = [int(s.strip()) for s in explicit.split(',')] if explicit else list(range(seed, seed + count))
+if len(expected_seeds) != count or len(set(expected_seeds)) != count:
+    raise SystemExit('Invalid requested seed plan.')
+if len(rows) != count or [r['seed'] for r in rows] != expected_seeds:
     raise SystemExit('Missing, duplicate or unexpected seed results.')
 if not all(r['completed'] is True and r['elapsedMillis'] >= 0 and r['trace'] for r in rows):
     raise SystemExit('Incomplete episode or missing action evidence; no successful batch claimed.')

@@ -11,7 +11,7 @@ RUNNER = Path(__file__).with_name('run-warrior-instrumentation.sh').resolve()
 
 
 class InstrumentationGuardTest(unittest.TestCase):
-    def run_script(self, hardware='ranchu', corrupt=False, source='verified', outcome='OK (1 test)', completed=True):
+    def run_script(self, hardware='ranchu', corrupt=False, source='verified', outcome='OK (1 test)', completed=True, seeds=''):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             binaries = root / 'simulator-binaries'
@@ -38,7 +38,7 @@ class InstrumentationGuardTest(unittest.TestCase):
                            'esac\n')
             adb.chmod(0o755)
             env = dict(os.environ, PATH=str(root) + os.pathsep + os.environ['PATH'],
-                       APD_SIMULATION_SOURCE='verified', APD_SIMULATION_COUNT='1', APD_SIMULATION_SEED='1000000',
+                       APD_SIMULATION_SOURCE='verified', APD_SIMULATION_COUNT='1', APD_SIMULATION_SEED='1000000', APD_SIMULATION_SEEDS=seeds,
                        FIXTURE_HARDWARE=hardware, FIXTURE_OUTCOME=outcome)
             result = subprocess.run(['bash', str(RUNNER)], cwd=root, env=env, capture_output=True, text=True)
             return result.returncode, (root / 'adb-calls.txt').read_text()
@@ -70,6 +70,13 @@ class InstrumentationGuardTest(unittest.TestCase):
             with self.subTest(outcome=outcome, completed=completed):
                 status, calls = self.run_script(outcome=outcome, completed=completed)
                 self.assertNotEqual(0, status)
+
+    def test_explicit_seed_plan_is_forwarded_and_wrong_evidence_is_refused(self):
+        status, calls = self.run_script(seeds='1000000')
+        self.assertEqual(0, status)
+        self.assertIn('-e simulationSeeds 1000000', calls)
+        status, calls = self.run_script(seeds='1000001')
+        self.assertNotEqual(0, status)
 
 
 if __name__ == '__main__':

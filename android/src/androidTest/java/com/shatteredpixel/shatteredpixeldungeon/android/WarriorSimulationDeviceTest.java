@@ -98,12 +98,7 @@ public class WarriorSimulationDeviceTest {
         }
         // Audited normal Sewers melee bounds; never calls damageRoll or consumes RNG to predict damage.
         private int bound(Mob mob) {
-            if (mob == null) return 0;
-            if (mob.getClass() == Rat.class || mob.getClass() == Snake.class || mob.getClass() == Swarm.class) return 4;
-            if (mob.getClass() == Gnoll.class) return 6;
-            if (mob.getClass() == Crab.class) return 7;
-            if (mob.getClass() == Piranha.class) return 4 + 2 * Dungeon.depth;
-            throw new IllegalStateException("unaudited melee bound: " + mob.getClass().getSimpleName());
+            return AuditedSewersMeleeBounds.maximum(mob, Dungeon.depth);
         }
         private int healing() {
             int count = 0;
@@ -215,6 +210,7 @@ public class WarriorSimulationDeviceTest {
         int limit = Integer.parseInt(arguments.getString("simulationActions", "1000"));
         long seed = Long.parseLong(arguments.getString("simulationSeed", "1000000"));
         assertTrue(count > 0 && count <= 100 && limit > 0 && limit <= 5000);
+        long[] seeds = SimulationSeedPlan.parse(arguments.getString("simulationSeeds", ""), seed, count);
         File output = new File(InstrumentationRegistry.getInstrumentation().getTargetContext().getFilesDir(), "simulation-results.jsonl");
         try (ActivityScenario<AndroidLauncher> activity = ActivityScenario.launch(AndroidLauncher.class)) {
             until(() -> Game.scene() != null, 120);
@@ -234,7 +230,7 @@ public class WarriorSimulationDeviceTest {
                 for (int i = 0; i < count; i++) {
                     long started = System.currentTimeMillis(), monotonicStart = System.nanoTime();
                     Session[] current = new Session[1];
-                    WarriorHealingExperiment.Result result = WarriorHealingExperiment.run(seed + i,
+                    WarriorHealingExperiment.Result result = WarriorHealingExperiment.run(seeds[i],
                             value -> { current[0] = new Session(value); return current[0]; }, limit);
                     JSONObject row = new JSONObject().put("seed", result.seed).put("completed", result.completed)
                             .put("observedHealingBeforeNormalFlyHealing", result.neededHeldHealingBeforeFlyDrop)
