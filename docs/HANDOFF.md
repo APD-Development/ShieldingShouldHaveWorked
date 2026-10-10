@@ -1,3 +1,12 @@
+## 2026-10-10 22:53 UTC — Cheap native-source syntax preflight retained
+
+Added `tools/JavaSyntaxCheck.java` for JDK-only parsing of changed Java files before an expensive Android build. It deliberately does not resolve Android/GDX types or certify API compatibility. Three permanent Python regression fixtures pass: missing Android types do not block parsing, malformed multi-character literals are rejected, and newer-than-Java-11 syntax is rejected. Both changed UIMSD/Community Android test files parse successfully. Use `java tools/JavaSyntaxCheck.java <changed Java files>`; full compilation/tests remain required. This tool-only commit does not request/cancel another build.
+
+Preserved shared native-fixture correction 25b4a95a802be730f365f82770235edb6bfc68b1. Current final candidate is TEST31 / workflow 38092709292, source 25b4a95a802be730f365f82770235edb6bfc68b1: core/build jobs succeeded, API34 still pending at this record. TEST28 failed the source contract; TEST29 and TEST30 were superseded; a separate simulator workflow caught the fixture's invalid character literal before any native episode. Those are unsuccessful attempts, not delivered APK evidence.
+
+The actual source-contract correction was reused rather than duplicated. No application source, signing identity or player data changes occur in this preflight-tool commit.
+
+
 ## 2026-10-10 22:47 UTC — native long-ID fixture compile correction
 
 Simulator workflow 38092405397 passed the full core suite on the library-compatibility correction, then Android test compilation rejected the new UIMSD fixture's `'\\\\0'` character literal as two characters. It is corrected to Java's single null character `'\\0'`. No emulator episode ran in that failed workflow, so the 100× visual-time candidate remains unverified.
