@@ -134,6 +134,7 @@ jobs:
           api-level: 34
           arch: x86_64
           target: google_apis
+          disk-size: 4096M
           disable-animations: true
           script: bash tools/run-warrior-instrumentation.sh
       - uses: actions/upload-artifact@v4
