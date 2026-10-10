@@ -1,0 +1,30 @@
+{
+  "recorded_at_utc": "2026-10-10 18:37:39 UTC",
+  "source": "f1ad8657250defd4b97cf422fa222d6c6c1f7329",
+  "run": 38075683960,
+  "build_number": 24,
+  "status": "verified core/emulator and assembly; signing/publication pending",
+  "core": {
+    "tests": 947,
+    "suites": 151,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "android": {
+    "tests": 6,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "artifact_ids": {
+    "apd-codex-android-checks": 11679400654,
+    "apd-codex-private-test-apk": 11679035076,
+    "apd-codex-core-tests": 11678034922
+  },
+  "rollback": "apd-codex-test-22",
+  "signing_status": "pending direct comparison with TEST22",
+  "physical_phone_testing": "not performed",
+  "unattended_execution": "not demonstrated; run_now returned HTTP404",
+  "active_hours_past_30": "unknown"
+}

@@ -1,6 +1,37 @@
 """Regressions for SDK signer output observed during TEST22 delivery."""
 import unittest
-from apd_existing_build_evidence import certificates
+import tempfile
+from pathlib import Path
+from apd_existing_build_evidence import certificates, xml_summary
+
+
+class TestEvidenceTest(unittest.TestCase):
+    def evidence(self, xml):
+        with tempfile.TemporaryDirectory() as folder:
+            Path(folder, 'TEST-example.xml').write_text(xml)
+            return xml_summary(folder)
+
+    def test_completed_test_evidence_has_actual_cases(self):
+        result = self.evidence('<testsuite tests="1"><testcase classname="Android" name="actualTouch"/></testsuite>')
+        self.assertEqual(1, result['tests'])
+        self.assertEqual('actualTouch', result['cases'][0]['name'])
+
+    def test_failures_errors_and_skips_refuse_delivery(self):
+        for attr in ('failures', 'errors', 'skipped'):
+            with self.subTest(attr=attr), self.assertRaises(AssertionError):
+                self.evidence(f'<testsuite tests="1" {attr}="1"><testcase classname="C" name="m"/></testsuite>')
+        with self.assertRaises(AssertionError):
+            self.evidence('<testsuite tests="1"><testcase classname="C" name="m"><failure/></testcase></testsuite>')
+
+    def test_incomplete_and_duplicate_evidence_refuse_delivery(self):
+        for xml in ('<testsuite tests="0"/>', '<testsuite tests="1"/>',
+                    '<testsuite tests="2"><testcase classname="C" name="m"/><testcase classname="C" name="m"/></testsuite>'):
+            with self.subTest(xml=xml), self.assertRaises(AssertionError):
+                self.evidence(xml)
+
+    def test_missing_report_refuses_delivery(self):
+        with tempfile.TemporaryDirectory() as folder, self.assertRaises(AssertionError):
+            xml_summary(folder)
 
 
 class SignerOutputTest(unittest.TestCase):

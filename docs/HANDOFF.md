@@ -1,3 +1,14 @@
+## Community TEST24 verification and private-delivery staging — 2026-10-10 18:37:39 UTC
+
+Owner explicitly requested Community in the next APK ASAP. Application source f1ad8657250defd4b97cf422fa222d6c6c1f7329 / run 38075683960 / TEST24 passed 947 core tests (151 suites, zero failure/error/skip) and six API34 Android checks (zero failure/error/skip). Actual Community pointer test visits all eight pages, verifies content/availability, text containment and one dialog, then returns to main menu. Actual humor pointer test enables/disables and reopens persisted controls. APK assembly succeeded. Downloaded XML confirms these counts; physical-phone tests remain pending.
+
+Delivery-only workflow now reuses TEST24 artifacts and directly compares signature, app ID and non-downgrade version against actual delivered TEST22, verifying checksums, exact source/run/artifact IDs and required Android method names. Seven verifier tests pass locally, including missing/failed/skipped/incomplete/duplicate evidence refusals. Final private publication/signing still pending at this checkpoint; never treat this note as proof of delivery. Main/Claude/player data preserved; no APK rebuild for publication.
+
+Local follow-up only: five new guaranteed Healing/Shielding identification tests pass (0.579s), and five movement timing/settings tests pass (0.044s, real PosTweener at 30–144 Hz). These DO NOT change device refresh rate and are NOT included in TEST24. Other incomplete local features remain preserved. Actual 100-run simulator still unfinished. Prior full humor candidate failed its new test before settings; corrected initialization now passes native verification.
+
+Hourly scheduler still has no observed run/probe; immediate execution failed before invocation with HTTP404. Configuration is NOT demonstrated unattended execution. Complete prior30h active/idle accounting is unknown; no continuous background work claim.
+
+
 ## Execution audit and Community verification checkpoint — 2026-10-10 18:24:47 UTC
 
 Real approved parent c582abcec0c71b1e3a3c28e57a84db612c498459. No main/Claude update, synthetic-history push, player-data reset or signing/application-ID change.
