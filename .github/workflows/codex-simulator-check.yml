@@ -8,7 +8,7 @@ on:
 
 concurrency:
   group: apd-real-simulator-verification
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 permissions:
   contents: read
@@ -24,6 +24,8 @@ jobs:
           distribution: temurin
           java-version: '21'
       - uses: gradle/actions/setup-gradle@v4
+      - name: Verify trace-recovery regression cases
+        run: python3 tools/test-warrior-trace-recovery.py
       - name: Verify the complete core suite including simulation and normal-drop identification
         run: tools/run-core-tests.sh
       - name: Preserve native dependency for local real-game tests
@@ -101,8 +103,36 @@ jobs:
             android/build/outputs/androidTest-results/
           retention-days: 7
 
+      - name: Retain the verified simulator binaries once for batch reuse
+        run: |
+          python3 - <<'PY'
+          import hashlib, json, os, shutil
+          from pathlib import Path
+          root = Path('simulator-binaries')
+          root.mkdir()
+          files = [
+              Path('android/build/outputs/apk/debug/android-debug.apk'),
+              Path('android/build/outputs/apk/androidTest/debug/android-debug-androidTest.apk')
+          ]
+          hashes = {}
+          for source in files:
+              if not source.is_file() or source.stat().st_size == 0:
+                  raise SystemExit(f'Missing built simulator APK: {source}')
+              target = root / source.name
+              shutil.copy2(source, target)
+              hashes[str(target)] = hashlib.sha256(target.read_bytes()).hexdigest()
+          (root / 'SHA256SUMS').write_text(''.join(f'{digest}  {path}\n' for path, digest in hashes.items()))
+          (root / 'manifest.json').write_text(json.dumps({
+              'sourceCommit': os.environ['GITHUB_SHA'],
+              'verificationRunId': os.environ['GITHUB_RUN_ID'],
+              'sha256': hashes,
+              'purpose': 'Disposable-emulator simulation only; not a playable APK delivery'
+          }, indent=2) + '\n')
+          PY
+
       - uses: actions/upload-artifact@v4
         with:
           name: apd-reusable-warrior-simulator
           path: simulator-binaries/
+          if-no-files-found: error
           retention-days: 7
