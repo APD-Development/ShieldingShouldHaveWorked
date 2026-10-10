@@ -50,6 +50,18 @@ public class CommunityPreviewTest {
         assertTrue(CommunityPreview.COMMENTS.contains("never increases the voting score"));
         assertTrue(CommunityPreview.COMMENT_PLACEHOLDER.contains("No submissions or comments are loaded"));
     }
+    @Test public void availabilityExplainsEachPagesOwnFutureActions() {
+        Set<String> availability = new HashSet<>();
+        for (CommunityPreview.Page page : CommunityPreview.Page.values()) {
+            assertTrue("each destination explains its own planned actions", availability.add(page.availability()));
+            assertTrue(page.availability().contains("Future actions: "));
+        }
+        assertTrue(CommunityPreview.Page.SUBMISSIONS.availability().contains("threaded discussions"));
+        assertTrue(CommunityPreview.Page.QUALIFICATION.availability().contains("16 qualify"));
+        assertTrue(CommunityPreview.Page.TOURNAMENT.availability().contains("weekly elimination"));
+        assertTrue(CommunityPreview.Page.REVIEWS.availability().contains("attempt reviewed situations"));
+    }
+
     @Test public void navigationHasNoUnlockQueueOrNetworkDependency() throws Exception {
         String scene = Files.readString(Paths.get(System.getProperty("apd.game.src"), "scenes/CommunityScene.java"));
         assertTrue(scene.contains("CommunityPreview.Page.values()[index]"));

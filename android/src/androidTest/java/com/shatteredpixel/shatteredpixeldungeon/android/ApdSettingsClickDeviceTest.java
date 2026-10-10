@@ -285,6 +285,12 @@ public class ApdSettingsClickDeviceTest {
 				assertNotNull(hub);
 				assertEquals(page.title, communityEntries(hub).get(page.ordinal()).label);
 				tapCommunityEntry(hub, page.ordinal());
+				Object previousPageScene = Game.scene();
+				onRender(ShatteredPixelDungeon::seamlessResetScene);
+				waitUntil("Community page survives scene recreation", () ->
+						Game.scene() instanceof com.shatteredpixel.shatteredpixeldungeon.scenes.CommunityScene
+						&& Game.scene() != previousPageScene, 30000);
+				onRender(() -> {});
 				com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList details = find(Game.scene(), com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.class);
 				List<com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.Entry> entries = communityEntries(details);
 				assertEquals(page.explanation, entries.get(0).label);
@@ -298,7 +304,40 @@ public class ApdSettingsClickDeviceTest {
 						assertTextFits(pane.content(), pane.width());
 					} catch (Exception e) { throw new RuntimeException(e); }
 				});
-				tapCommunityEntry(details, entries.size() - 1);
+				//Render the actual selected page at a narrow/short UI size, then
+				//rebuild at the device's real size before continuing touch navigation.
+				onRender(() -> {
+					int originalWidth = com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene.uiCamera.width;
+					int originalHeight = com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene.uiCamera.height;
+					try {
+						details.hide();
+						com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene.uiCamera.width = 100;
+						com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene.uiCamera.height = 120;
+						java.lang.reflect.Method show = Game.scene().getClass().getDeclaredMethod("showPage");
+						show.setAccessible(true); show.invoke(Game.scene());
+						com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList narrowPage =
+								find(Game.scene(), com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.class);
+						assertEquals("same selected page on narrow screen", page.explanation, communityEntries(narrowPage).get(0).label);
+						assertTrue((Integer) field(narrowPage, "width") <= 72);
+						assertTrue((Integer) field(narrowPage, "height") <= 120);
+						ScrollPane pane = (ScrollPane) field(narrowPage, "pane");
+						assertTextFits(narrowPage, (Integer) field(narrowPage, "width"));
+						assertTextFits(pane.content(), pane.width());
+						narrowPage.hide();
+					} catch (Exception e) { throw new RuntimeException(e); }
+					finally {
+						com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene.uiCamera.width = originalWidth;
+						com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene.uiCamera.height = originalHeight;
+					}
+				});
+				Object narrowScene = Game.scene();
+				onRender(ShatteredPixelDungeon::seamlessResetScene);
+				waitUntil("Community returns to device layout", () -> Game.scene() != narrowScene, 30000);
+				onRender(() -> {});
+				com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList restored =
+						find(Game.scene(), com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.class);
+				assertEquals("no stack after narrow layout", 1, count(Game.scene(), com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.class));
+				tapCommunityEntry(restored, communityEntries(restored).size() - 1);
 			}
 			com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList hub = find(Game.scene(), com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.class);
 			tapCommunityEntry(hub, communityEntries(hub).size() - 1);
