@@ -294,7 +294,14 @@ public class WarriorSimulationDeviceTest {
                 known[i] = Dungeon.level.visited[i] || Dungeon.level.mapped[i];
             }
             int step = KnownMapExplorer.step(Dungeon.level.width(), pos, known, pass, visits, Dungeon.level.entrance());
-            if (step < 0) throw new IllegalStateException("no known traversable destination");
+            if (step < 0) {
+                // If the visible/visited component is exhausted, use the real intentional-search action.
+                // This consumes normal actor time and hunger, and only reveals adjacent searchable terrain.
+                // It avoids treating an ordinary hidden-door search point as an adapter failure.
+                command("SEARCH", pos);
+                Dungeon.hero.search(true);
+                return;
+            }
             move(step);
         }
         public void perform(RecklessWarriorPolicy.Action action) {

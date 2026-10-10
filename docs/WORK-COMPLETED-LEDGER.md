@@ -1,3 +1,12 @@
+## 2026-10-10 23:09 UTC - TEST31 delivery and simulator evidence reconciliation
+
+- Execution record: `APD-20261010T230906Z-simsearch`. Observed branch head before this change: `bc9c83427654c06e4eb3f145997cbb65119845f5`. Read GitHub branch/commit trees, workflow runs/jobs/artifacts, private TEST31 release metadata, the simulator adapter, `Hero.search`, `KnownMapExplorer`, handoff and ledger.
+- Confirmed private TEST31 delivery [38093772627](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38093772627) succeeded. It reused, rather than rebuilt, verified APK artifact `11685125574`. Published APK SHA-256: `22561e0294ddd5322655b11b31562ea3b0893119fa69cd260356ef77037f0ae1`; signer certificate matches TEST26; application ID is unchanged.
+- Reconciled batch [38088289249](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38088289249): 100 attempts, 99 completed distinct seeds, unresolved seed `1000048`, 87 deaths, 15 runs consumed held Healing before normal Fly Healing, and 12 observed normal Fly Healing. The incomplete batch is retained and not labeled a completed 100-run cohort.
+- Root cause for seed `1000048`: the test adapter threw when the hero's known traversable component contained only the current cell. Added a test-only fallback using the real `Dungeon.hero.search(true)` action. It spends normal time/hunger and does not inspect hidden terrain directly.
+- Measured the 100x visual-time candidate using actual artifacts: baseline 2,979 actions in 934,885 ms, candidate 3,008 actions in 617,821 ms. Throughput improved about 1.53x. One candidate seed hit the 1,000-action limit, so the candidate is not reusable evidence yet and does not satisfy the requested large-scale speed target.
+- Production application source, saves/statistics, signing identity, application ID, `main`, Claude work, balance, mechanics, backend state and public distribution are unchanged. Exact-source simulator verification for the search fallback is pending. Time outside this observed execution remains unknown.
+
 ## 2026-10-10 — Verified UIMSD/Community bug cycle (TEST31 publication pending)
 
 - Real source 25b4a95a802be730f365f82770235edb6bfc68b1; run 38092709292: 1004 core + 6 API34 cases, zero failures/errors/skips; debug assembly succeeded, actual XML independently parsed.
