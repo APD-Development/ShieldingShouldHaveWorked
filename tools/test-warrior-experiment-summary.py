@@ -4,6 +4,8 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+import subprocess
+import sys
 
 spec = importlib.util.spec_from_file_location('summary', Path(__file__).with_name('summarize-warrior-experiment.py'))
 summary = importlib.util.module_from_spec(spec); spec.loader.exec_module(summary)
@@ -42,6 +44,16 @@ class SummaryTest(unittest.TestCase):
         self.write('first',[self.row(10),self.row(11)],A); self.write('recovery',[self.row(12)],B)
         r=self.read(); self.assertTrue(r['allRequestedSeedsCompleted']); self.assertFalse(r['singleSourceComplete'])
         self.assertEqual([2,1],[g['completedDistinctSeeds'] for g in r['perSource']])
+        output=self.root/'summary.json'
+        process=subprocess.run([sys.executable,str(Path(__file__).with_name('summarize-warrior-experiment.py')),
+                              str(self.root),'--first-seed','10','--count','3','--allowed-source',A,
+                              '--allowed-source',B,'--output',str(output)],capture_output=True,text=True)
+        self.assertEqual(1,process.returncode)
+        self.assertTrue(output.is_file()); self.assertTrue(output.with_suffix('.attempts.jsonl').is_file())
+    def test_play_profile_is_reported_and_legacy_absence_is_explicit(self):
+        normal=self.row(); normal['profile']='warrior-normal-loot-critical-heal-v1'
+        self.write('normal',[normal]); self.write('legacy',[self.row(11,started=2)])
+        self.assertEqual(['legacy: unrecorded','warrior-normal-loot-critical-heal-v1'],self.read()['perSource'][0]['profiles'])
     def test_rare_encounters_and_failed_attempts_are_retained_without_fabricating_completion(self):
         failed=self.row(10,False); failed['encounterCounts']={'Albino':1,'Wraith':1}
         completed=self.row(11); completed['encounterCounts']={'GnollExile':1}
@@ -55,7 +67,7 @@ class SummaryTest(unittest.TestCase):
         (self.root/'first'/'manifest.json').unlink(); self.assertRaises(ValueError,self.read)
     def test_invalid_completion_trace_timing_and_seed_are_rejected(self):
         cases=[('completed','true'),('trace',[]),('elapsedMillis',-1),('seed',99),('normalFlyHealingObserved',1),
-               ('stopReason','action limit'),('terminalHp',5),('encounterCounts',{'Albino':-1})]
+               ('stopReason','action limit'),('terminalHp',5),('encounterCounts',{'Albino':-1}),('profile',None)]
         for key,value in cases:
             with self.subTest(key=key):
                 r=self.row(); r[key]=value

@@ -30,6 +30,8 @@ def summarize(root, first_seed, count, allowed_sources):
                 raise ValueError('Unexpected seed')
             if type(row.get('completed')) is not bool:
                 raise ValueError('Completion must be a boolean')
+            if 'profile' in row and (not isinstance(row['profile'],str) or not row['profile']):
+                raise ValueError('Invalid recorded play profile')
             if not isinstance(row.get('trace'), list) or not row['trace'] or not all(isinstance(t, str) for t in row['trace']):
                 raise ValueError('Missing actual action trace')
             for key in ('elapsedMillis', 'startedEpochMillis', 'finishedEpochMillis'):
@@ -76,6 +78,7 @@ def summarize(root, first_seed, count, allowed_sources):
             for name, value in row.get('encounterCounts', {}).items():
                 completed_encounters[name] = completed_encounters.get(name,0) + value
         groups.append(dict(sourceCommit=source, attempts=len(source_records), completedDistinctSeeds=len(rows),
+                           profiles=sorted({a['result'].get('profile','legacy: unrecorded') for a in source_records}),
                            consumedHealingBeforeNormalFlyHealing=sum(r['observedHealingBeforeNormalFlyHealing'] for r in rows),
                            normalFlyHealingObserved=sum(r['normalFlyHealingObserved'] for r in rows),
                            deathEpisodes=sum(r['stopReason'] == 'death' for r in rows),
@@ -104,5 +107,5 @@ if __name__ == '__main__':
     Path(args.output).write_text(json.dumps(report, indent=2)+'\n')
     Path(args.output).with_suffix('.attempts.jsonl').write_text(''.join(json.dumps(a)+'\n' for a in records))
     print(json.dumps(report, indent=2))
-    if not report['allRequestedSeedsCompleted']:
+    if not report['allRequestedSeedsCompleted'] or not report['singleSourceComplete']:
         raise SystemExit(1)

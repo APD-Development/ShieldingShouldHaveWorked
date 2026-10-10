@@ -1,3 +1,33 @@
+# Current simulator status — October 10, 2026
+
+## Normal-play profile requested by the owner
+
+Implementation `da573548b6e18c66da2d227a83b524be76c85ac6` adds a defined early-game Warrior profile: normal looting and visible chest opening (including ordinary disguised mimics), known usable equipment, actual seal transfer UI choice, legally allocated talents, usable ranged weapons with clear projectile paths, food when starving, and bounded ordinary rest when safe. Healing remains critical-only, as the owner selected. This models one explicit strategy, not every human player's behavior. Unknown gear/potions are not secretly identified; unidentified experimentation, full quest choices, upgrade-scroll targeting, retreat optimization and complete dungeon wins are not implemented.
+
+Raw adjacent melee maxima are conservative triggers, not exact final incoming damage: armor, misses, multiple attackers, poison, ranged attacks and timing can differ. Consumed healing before a normal Fly Healing drop is an observed action, not proof that it prevented death. No Warrior starting identification or game balance is changed.
+
+Rare encounters are retained in per-attempt class counts and raw failure records. All audited standard/rare early rotations, Wraith variants, Mimic variants, EbonyMimic and actual Statue/ArmoredStatue weapon maxima are covered without consuming gameplay RNG. Unknown mechanics produce an explicit incomplete attempt, never a fabricated completed run. Generation seeds are recorded; combat RNG is not seeded, so generation seed alone is not a deterministic combat replay.
+
+## Verified and pending evidence
+
+- Local profile/framework/bounds: 21 tests passed; trace recovery 6, direct instrumentation safety/provenance 6, aggregation 9 passed. Fixtures are never counted as played episodes.
+- Source da573 full actual CI XML: 993 tests, zero failures/errors/skips (run38086838517/artifact11681983278). Native compilation failed because shared desktop fixtures imported HeadlessTestSupport; no normal episodes ran in that source's job.
+- Source `99a4a39200c98cc457c61c8f2ed8e06d74befb84` excludes root-level desktop helper fixtures from the Android source set while retaining native device tests/helpers. Run38087065433 must complete native verification before its compiled binaries are eligible for the batch; current status is pending, not completed.
+- Actual batch run38087149818, workflow commit dafc48e6575adc35920e94ae1ab8d5d6e324108d, waits for that exact successful source/run. It reuses five verified baseline seeds and requests the other 95 once in five disjoint 19-seed disposable shards. No per-seed/shard compilation. Source/checksums are checked before installation; every actual failure remains recorded. If the baseline fails, the batch stops before playing. This is configured GitHub Actions execution, not unattended autonomous Codex coding.
+- Old reckless source0a827d398330356512e90b8ea347bea6939dd209 has 62 actual attempts/43 completed early episodes (41 deaths, two normal Fly Healing stops; two consumed pre-Fly Healing). Fifty-seven requested seeds remain unresolved in that old source. Preserve it as historical diagnostic evidence; do not merge it into the new normal profile as a single 100-run balance sample.
+- Source bfb719 compiled successfully but its run38085711482 emulator did not boot: 7275.79MB free versus 7372.80MB requested userdata. Scheduled correction c44985da preserved; supported disk-size4096M now selected. Provisioning failures are not game episodes.
+- Earlier run38084780497 recorded a completed episode, then the process was killed during libGDX/ActivityScenario pause synchronization. Keeping the disposable simulator activity running avoids that specific teardown path; actual Android lifecycle/phone behavior is a separate unresolved investigation, not claimed fixed.
+
+## Application delivery
+
+TEST26 is the verified delivered playable application: source1483bac7ecd24cf33b64632ca0d4135bb252ad7d, 972 core tests and six API34 device checks passed, signature/appID/checksum verified, private publication2026-10-10T20:20:14Z. Installation-over compatibility is established by identity/version checks; physical-phone save/upgrade testing is not claimed. Simulator APKs are disposable test infrastructure and must not be substituted for this APK.
+
+Simulator line-count report is deferred until completion, as requested. Actual job/episode timestamps are recorded; summed parallel episode time is not developer active time or idle time. A successful native baseline and completed same-source 100-seed cohort remain required before declaring this simulation finished.
+
+---
+
+## Earlier implementation history (historical statements below)
+
 # Warrior early-healing experiment — development evidence
 
 This simulator is test infrastructure, not a balance recommendation or automatic balancing system. It drives the actual Android GameScene, actor scheduler, combat, movement, item pickup and healing actions. It never generates a replacement probability model or counts generated floors as played runs.
