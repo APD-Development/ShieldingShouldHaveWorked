@@ -1,0 +1,45 @@
+name: APD simulator regression verification
+
+# Approved test work only; no APK rebuild, publication or application modification.
+on:
+  push:
+    branches: [codex/apd-phone-fixes-2026-10-09]
+    paths: [.github/workflows/codex-simulator-check.yml]
+
+permissions:
+  contents: read
+
+jobs:
+  simulator-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Verify simulation policy and failure accounting
+        run: tools/run-core-tests.sh --tests '*WarriorHealingExperimentTest*'
+      - name: Preserve native dependency for local real-game tests
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import shutil
+          candidates = list((Path.home() / '.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-platform/1.14.0').rglob('*natives-desktop.jar'))
+          assert len(candidates) == 1, candidates
+          Path('native-dependency').mkdir()
+          shutil.copy2(candidates[0], 'native-dependency/')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: apd-test-desktop-native
+          path: native-dependency/
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: apd-simulator-tests
+          path: core/build/test-results/test/
+          retention-days: 7
