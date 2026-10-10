@@ -39,21 +39,45 @@ public class UimsdSettingsPersistenceTest {
         GameSettings.set(preferences);
     }
 
-    @Test public void storedAdultChoiceIsPreservedButIneffectiveWithoutVerification() {
-        preferences.putBoolean(SPDSettings.KEY_APD_ADULT_HUMOR, true).flush();
+    @Test public void cleanIsTheDefaultWithoutAnAgeProvider() {
         assertFalse(SPDSettings.apdAdultHumor());
-        reopen();
-        assertTrue(preferences.getBoolean(SPDSettings.KEY_APD_ADULT_HUMOR));
-        assertFalse(SPDSettings.apdAdultHumor());
+        assertFalse(preferences.contains(SPDSettings.KEY_APD_ADULT_HUMOR));
     }
 
-    @Test public void anUnverifiedAdultToggleCannotEnableTheStoredPreference() {
+    @Test public void storedAdultChoiceIsEffectiveWithoutAnAgeProviderAndSurvivesReload() {
+        preferences.putBoolean(SPDSettings.KEY_APD_ADULT_HUMOR, true).flush();
+        assertTrue(SPDSettings.apdAdultHumor());
+        reopen();
+        assertTrue(preferences.getBoolean(SPDSettings.KEY_APD_ADULT_HUMOR));
+        assertTrue(SPDSettings.apdAdultHumor());
+    }
+
+    @Test public void adultAndCleanSelectionsBothPersistWhenVerificationIsUnavailable() {
         SPDSettings.apdAdultHumor(true);
-        assertFalse(SPDSettings.apdAdultHumor());
-        assertFalse(preferences.getBoolean(SPDSettings.KEY_APD_ADULT_HUMOR, false));
+        assertTrue(SPDSettings.apdAdultHumor());
+        reopen();
+        assertTrue(SPDSettings.apdAdultHumor());
         SPDSettings.apdAdultHumor(false);
         reopen();
         assertFalse(preferences.getBoolean(SPDSettings.KEY_APD_ADULT_HUMOR, true));
+        assertFalse(SPDSettings.apdAdultHumor());
+    }
+
+    @Test public void pendingTitleArrowUsesTheActualSavedHumorChoice() {
+        UimsdGate.forceGateOnForTest(true);
+        try {
+            UimsdGate.FLAGS.setUnlocked();
+            UimsdGate.FLAGS.setPromptPending();
+            assertEquals(UimsdGate.TENTH_RUN_ARROW_CLEAN, UimsdGate.titleAnnotation(""));
+            SPDSettings.apdAdultHumor(true);
+            reopen();
+            assertEquals(UimsdGate.TENTH_RUN_ARROW_ADULT, UimsdGate.titleAnnotation(""));
+            SPDSettings.apdAdultHumor(false);
+            reopen();
+            assertEquals(UimsdGate.TENTH_RUN_ARROW_CLEAN, UimsdGate.titleAnnotation(""));
+        } finally {
+            UimsdGate.forceGateOnForTest(false);
+        }
     }
 
     @Test public void genuineUnlockAndPromptRetirementSurviveSettingsReload() {

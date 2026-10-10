@@ -184,6 +184,51 @@ public class ApdSettingsClickDeviceTest {
 	}
 
 	@Test
+	public void adultHumorControlWorksWithoutAnAgeProviderAndReopensWithSavedChoice() throws Exception {
+		try (ActivityScenario<AndroidLauncher> scenario = ActivityScenario.launch(AndroidLauncher.class)) {
+			waitUntil("the title scene", () -> Game.scene() instanceof com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene, 120000);
+			final boolean previous = SPDSettings.apdAdultHumor();
+			final AtomicReference<WndAPDSettings> window = new AtomicReference<>();
+			try {
+				onRender(() -> {
+					SPDSettings.apdAdultHumor(false);
+					window.set(new WndAPDSettings());
+					ShatteredPixelDungeon.scene().add(window.get());
+				});
+				Thread.sleep(800);
+				ScrollPane scroll = find(window.get(), ScrollPane.class);
+				APDSettingsPane pane = find(window.get(), APDSettingsPane.class);
+				tapUntil("enable Adult humor", scroll, (Gizmo) field(pane, "chkAdult"), () -> SPDSettings.apdAdultHumor(), 60000);
+				assertEquals("no unavailable-verification warning", 0, messages());
+				onRender(() -> {
+					window.get().hide();
+					window.set(new WndAPDSettings());
+					ShatteredPixelDungeon.scene().add(window.get());
+				});
+				Thread.sleep(800);
+				scroll = find(window.get(), ScrollPane.class);
+				pane = find(window.get(), APDSettingsPane.class);
+				assertTrue(((com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox) field(pane, "chkAdult")).checked());
+				tapUntil("choose Clean humor", scroll, (Gizmo) field(pane, "chkAdult"), () -> !SPDSettings.apdAdultHumor(), 60000);
+				onRender(() -> {
+					window.get().hide();
+					window.set(new WndAPDSettings());
+					ShatteredPixelDungeon.scene().add(window.get());
+				});
+				Thread.sleep(800);
+				pane = find(window.get(), APDSettingsPane.class);
+				assertFalse(((com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox) field(pane, "chkAdult")).checked());
+				assertFalse(SPDSettings.apdAdultHumor());
+			} finally {
+				onRender(() -> {
+					if (window.get() != null) window.get().hide();
+					SPDSettings.apdAdultHumor(previous);
+				});
+			}
+		}
+	}
+
+	@Test
 	public void everyControlOfApdSettingsAnswersATouch() throws Exception {
 		final AtomicInteger exports = new AtomicInteger(), imports = new AtomicInteger();
 		ApdFiles.Provider before = ApdFiles.provider;
@@ -205,6 +250,7 @@ public class ApdSettingsClickDeviceTest {
 			}
 		};
 		boolean recordingWas = SPDSettings.apdRecording();
+		boolean adultWas = SPDSettings.apdAdultHumor();
 		try (ActivityScenario<AndroidLauncher> scenario = ActivityScenario.launch(AndroidLauncher.class)){
 			long end = System.currentTimeMillis() + 120000;
 			while ((Gdx.app == null || Gdx.files == null || Game.scene() == null) && System.currentTimeMillis() < end) Thread.sleep(250);
@@ -255,11 +301,15 @@ public class ApdSettingsClickDeviceTest {
 			tapUntil("Record run history", scroll, (com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox) field(pane, "chkRecord"), new java.util.concurrent.Callable<Boolean>(){
 				public Boolean call() throws Exception { return SPDSettings.apdRecording() != recBefore; } }, 60000);
 
-			//5b. Without a verified age provider, the control explains the lock and stays Clean.
+			//5b. Without an age provider, real touches can select Adult and switch back to Clean.
 			assertFalse(SPDSettings.apdAdultHumor());
 			tapUntil("Adult humor (18+)", scroll, (com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox) field(pane, "chkAdult"), new java.util.concurrent.Callable<Boolean>(){
-				public Boolean call() throws Exception { return messages() >= 1; } }, 60000);
-			assertFalse("a checkbox is not verified age", SPDSettings.apdAdultHumor());
+				public Boolean call() { return SPDSettings.apdAdultHumor(); } }, 60000);
+			assertTrue(SPDSettings.apdAdultHumor());
+			assertEquals("toggling Adult must not produce an unavailable-verification warning", 0, messages());
+			tapUntil("Clean humor", scroll, (com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox) field(pane, "chkAdult"), new java.util.concurrent.Callable<Boolean>(){
+				public Boolean call() { return !SPDSettings.apdAdultHumor(); } }, 60000);
+			assertFalse(SPDSettings.apdAdultHumor());
 
 			//6. Open UIMSD (preview) last: it leaves the window by switching scenes
 			tapUntil("Open UIMSD (preview)", scroll, (RedButton) field(pane, "btnUimsd"), new java.util.concurrent.Callable<Boolean>(){
@@ -267,6 +317,7 @@ public class ApdSettingsClickDeviceTest {
 			Log.w(TAG, "every APD Settings control answered a touch");
 		} finally {
 			SPDSettings.apdRecording(recordingWas);
+			SPDSettings.apdAdultHumor(adultWas);
 			ApdFiles.provider = before;
 		}
 	}

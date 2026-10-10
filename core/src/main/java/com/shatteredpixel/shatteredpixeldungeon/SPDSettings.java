@@ -357,16 +357,15 @@ public class SPDSettings extends GameSettings {
 		put( KEY_APD_TENTH_SHOWN, value );
 	}
 
-	//The one shared humor preference: false = Clean (the default, and what applies whenever age eligibility is unknown or unavailable), true = Adult.
-	//A stored choice is not proof of age. Unverified players receive Clean humor.
+	//One shared preference. Verified adults default to Adult; others default to Clean.
 	public static final String KEY_APD_ADULT_HUMOR = "apd_adult_humor";
 
 	public static boolean apdAdultHumor(){
-		if (!com.shatteredpixel.shatteredpixeldungeon.apd.age.AgeEligibility.permitsAdult(
-				com.shatteredpixel.shatteredpixeldungeon.apd.age.AgeEligibility.current())) return false;
+		com.shatteredpixel.shatteredpixeldungeon.apd.age.AgeEligibility.State age =
+				com.shatteredpixel.shatteredpixeldungeon.apd.age.AgeEligibility.current();
 		return com.shatteredpixel.shatteredpixeldungeon.apd.age.AgeEligibility.adultHumor(
-				com.shatteredpixel.shatteredpixeldungeon.apd.age.AgeEligibility.current(),
-				getBoolean( KEY_APD_ADULT_HUMOR, false ));
+				age, getBoolean( KEY_APD_ADULT_HUMOR,
+						com.shatteredpixel.shatteredpixeldungeon.apd.age.AgeEligibility.defaultAdultHumor(age) ));
 	}
 
 	public static void apdAdultHumor( boolean value ){

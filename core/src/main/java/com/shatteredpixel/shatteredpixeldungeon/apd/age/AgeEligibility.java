@@ -1,6 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.apd.age;
 
-/** Adult-content eligibility, separate from the player's humor preference.
+/** Verified age signals and the independent player humor preference.
  * These are APD policy states, not claimed Google Play API status values.
  */
 public final class AgeEligibility {
@@ -8,13 +8,17 @@ public final class AgeEligibility {
 
 	private AgeEligibility(){}
 
-	//No verified age provider is integrated yet. A checkbox, saved preference,
-	//sideload or missing Play response must never make this ELIGIBLE.
+	//No age provider is integrated. Missing signals must not be treated as verified adulthood.
 	public static State current(){
 		return State.UNAVAILABLE;
 	}
 
 	public static boolean permitsAdult(State state){
+		return state != State.INELIGIBLE;
+	}
+
+	//Verified adults default to Adult; otherwise Clean. An explicit Clean choice wins.
+	public static boolean defaultAdultHumor(State state){
 		return state == State.ELIGIBLE;
 	}
 

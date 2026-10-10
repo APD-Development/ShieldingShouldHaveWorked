@@ -9,9 +9,26 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.demo.UimsdUnlock;
 import java.io.File;
 
 import org.junit.Test;
+import org.junit.Before;
+import org.junit.After;
+import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
+import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.backends.headless.HeadlessPreferences;
+import com.badlogic.gdx.files.FileHandle;
+import com.watabou.utils.GameSettings;
 
 //The demo-unlock warning is the owner's own wording; it must not drift.
 public class UimsdGateTest {
+	@Rule public TemporaryFolder preferencesDirectory = new TemporaryFolder();
+	private Preferences previous;
+	@Before public void isolatePreferences() throws Exception {
+		java.lang.reflect.Field prefs = GameSettings.class.getDeclaredField("prefs");
+		prefs.setAccessible(true);
+		previous = (Preferences) prefs.get(null);
+		GameSettings.set(new HeadlessPreferences(new FileHandle(new File(preferencesDirectory.getRoot(), "settings.xml"))));
+	}
+	@After public void restorePreferences(){ GameSettings.set(previous); }
 
 	@Test
 	public void theWarningAndBothChoicesAreWordForWord(){
@@ -82,11 +99,11 @@ public class UimsdGateTest {
 	}
 
 	@Test
-	public void theHumorSettingRequiresEligibilityAsWellAsAStoredChoice() throws Exception {
+	public void theHumorSettingUsesTheAgeDefaultAndTheStoredChoice() throws Exception {
 		String settings = new String(java.nio.file.Files.readAllBytes(new File(System.getProperty("apd.game.src"), "SPDSettings.java").toPath()), "UTF-8");
 		assertTrue(settings.contains("AgeEligibility.adultHumor("));
 		assertTrue(settings.contains("AgeEligibility.current()"));
-		assertTrue(settings.contains("getBoolean( KEY_APD_ADULT_HUMOR, false )"));
+		assertTrue(settings.contains("AgeEligibility.defaultAdultHumor(age)"));
 	}
 
 }

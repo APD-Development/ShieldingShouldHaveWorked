@@ -1,1 +1,3 @@
 2026-10-10 lunch staging. Full core/debug/API34 verification of confirmed UIMSD safeguards only. [verification-only] No early PDF/APK publication. Unfinished local feature work excluded. Preserve TEST20 rollback.
+
+2026-10-10: Owner clarified humor policy: verified adult defaults Adult but can select Clean; verified underage stays Clean; unknown/unavailable leaves manual opt-in available. Preserve stored choices and all player history. Run complete core suite, debug assembly and existing API34 gameplay/UI tests plus actual Adult/Clean touch/reopen regression. Verification-only: retain TEST22 as delivered rollback; do not publish until evidence and signing compatibility are checked.
