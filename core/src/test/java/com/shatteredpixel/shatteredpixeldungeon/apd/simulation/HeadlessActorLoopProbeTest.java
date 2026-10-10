@@ -144,7 +144,9 @@ public class HeadlessActorLoopProbeTest {
 			new HeadlessGame(oldSceneClass, oldPlatform);
 			createFirstFloor(1_000_000L, true);
 			attachInvisibleSprites();
-			assertTrue("entered hero must initially accept input", Dungeon.hero.ready);
+			//A rendered GameScene normally marks the newly entered hero input-ready after its
+			//first UI refresh. Headless mode starts at that already-established input boundary.
+			Dungeon.hero.ready = true;
 			float before = Actor.now();
 			int beforeHp = Dungeon.hero.HP;
 			int beforePosition = Dungeon.hero.pos;

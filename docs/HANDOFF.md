@@ -1,3 +1,9 @@
+## 2026-10-10 23:39 UTC - explicit headless input boundary added; rerun pending
+
+Workflow [38095569572](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38095569572) compiled and ran 1,006 core cases. Generation passed again (100 floors, 844 mobs, 245 ms). The revised actor test failed before starting the scheduler because a newly switched headless level correctly has not received the rendered scene's first input-ready callback.
+
+The test now explicitly marks the hero ready at that test-only boundary, then invokes the real `Hero.rest(false)` and real actor scheduler and pauses only when the hero is selected one actor-time unit later. This does not synthesize an action result or render UI. Exact-commit verification remains pending.
+
 ## 2026-10-10 23:35 UTC - headless scheduler proof isolated from render UI; rerun pending
 
 Exact-source workflow [38095385820](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38095385820) again ran 1,006 core cases. Generation passed at 100 real floors / 844 mobs / 182 ms. The actor scheduler cleared the noosa-shell boundary, processed the wait, and then failed at render-only `AttackIndicator.updateState()` while entering `Hero.ready()`.

@@ -1,3 +1,11 @@
+## 2026-10-10 23:39 UTC - initial input-ready boundary made explicit
+
+- Workflow [38095569572](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38095569572), source `cb46d670e36fd4df53b19de4672964d6782ff796`, ran 1,006 core cases and failed one new assertion before the actor thread started. Native was skipped.
+- Generation evidence: 100 real floors, 844 mobs, 245 ms.
+- Cause: `Dungeon.switchLevel` leaves `hero.ready=false` until rendered `GameScene` performs its first input-ready callback. A headless harness has no such scene.
+- Correction: explicitly establish the initial public `hero.ready` input boundary in test code, issue the real `Hero.rest(false)`, run the real scheduler through intervening actors, and stop at the next selected hero turn. No production source or result is fabricated.
+- Status: exact-commit rerun pending.
+
 ## 2026-10-10 23:35 UTC - second actor-probe boundary retained and isolated
 
 - Workflow [38095385820](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38095385820), exact source `2a180833adb189e30920966da837ea81f3e32507`, ran 1,006 core cases and failed one new case; native adapter was skipped.
