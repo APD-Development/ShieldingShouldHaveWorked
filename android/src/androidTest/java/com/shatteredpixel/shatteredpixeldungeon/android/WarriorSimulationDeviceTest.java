@@ -10,13 +10,21 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroAction;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.*;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder;
 import com.shatteredpixel.shatteredpixeldungeon.apd.simulation.*;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.*;
@@ -86,6 +94,28 @@ public class WarriorSimulationDeviceTest {
         private Item rejectedPickup;
         private int rejectedHp, rejectedInventory;
         private boolean attemptedPickup;
+        private int safeRestActions;
+        private void spendTalentPoints() {
+            Talent talent;
+            while ((talent = NormalWarriorPreparation.talent(Dungeon.hero)) != null) {
+                command("TALENT:" + talent.name(), Dungeon.hero.pos);
+                Dungeon.hero.upgradeTalent(talent);
+            }
+        }
+        private void acceptSealTransfer() throws Exception {
+            Field field=Group.class.getDeclaredField("members"); field.setAccessible(true);
+            List<?> members=new ArrayList<>((List<?>)field.get(Game.scene()));
+            for (Object member : members) if (member instanceof WndOptions) {
+                Class<?> owner=member.getClass().getEnclosingClass();
+                if (owner!=Armor.class && owner!=BrokenSeal.class)
+                    throw new IllegalStateException("unexpected equipment choice: "+member.getClass().getName());
+                // Same button callback as the UI: transfer the Warrior seal, keep the new armor's glyph.
+                command("SEAL_CHOICE:0", Dungeon.hero.pos);
+                ((Window)member).hide();
+                java.lang.reflect.Method select=member.getClass().getDeclaredMethod("onSelect",int.class);
+                select.setAccessible(true); select.invoke(member,0);
+            }
+        }
         private void command(String kind, int target) {
             commands.add(kind + ":depth=" + Dungeon.depth + ":from=" + Dungeon.hero.pos
                     + ":to=" + target + ":time=" + Actor.now());
@@ -175,6 +205,24 @@ public class WarriorSimulationDeviceTest {
                 command("EAT:" + food.getClass().getSimpleName(), pos);
                 food.execute(Dungeon.hero, Food.AC_EAT); return;
             }
+            if (Dungeon.hero.visibleEnemies()==0) {
+                PotionOfStrength strength=Dungeon.hero.belongings.getItem(PotionOfStrength.class);
+                if (strength!=null && strength.isKnown()) {
+                    command("DRINK_KNOWN_STRENGTH",pos); strength.execute(Dungeon.hero,Potion.AC_DRINK); return;
+                }
+                MeleeWeapon weapon=NormalWarriorPreparation.weapon(Dungeon.hero);
+                if (weapon!=null) { command("EQUIP:"+weapon.getClass().getSimpleName(),pos); weapon.doEquip(Dungeon.hero); return; }
+                Armor armor=NormalWarriorPreparation.armor(Dungeon.hero);
+                if (armor!=null) {
+                    command("EQUIP:"+armor.getClass().getSimpleName(),pos); armor.doEquip(Dungeon.hero);
+                    try { acceptSealTransfer(); } catch (Exception failure) { throw new IllegalStateException("seal transfer failed",failure); }
+                    return;
+                }
+                // A bounded recovery pause, not free healing or a changed hunger/turn clock.
+                if (hunger!=null && !hunger.isStarving() && Dungeon.hero.HP*2<Dungeon.hero.HT && safeRestActions<30) {
+                    safeRestActions++; command("REST",pos); Dungeon.hero.rest(false); return;
+                }
+            } else safeRestActions=0;
             Heap here = Dungeon.level.heaps.get(pos);
             if (here != null && here.type == Heap.Type.HEAP && (here.peek() != rejectedPickup
                     || Dungeon.hero.HP != rejectedHp || Dungeon.hero.belongings.backpack.items.size() != rejectedInventory)) {
@@ -199,8 +247,37 @@ public class WarriorSimulationDeviceTest {
                         return step >= 0 && pass[step];
                     }).findFirst().orElse(null);
             if (visible != null) {
+                MissileWeapon missile=NormalWarriorPreparation.throwable(Dungeon.hero);
+                // throwPos can roll Shared Enchantment RNG even when the talent is absent.
+                // Use the ordinary projectile geometry only to choose a shot; cast performs the real action.
+                if (missile!=null && Dungeon.level.distance(pos,visible.pos)>1
+                        && new Ballistica(pos,visible.pos,Ballistica.PROJECTILE).collisionPos==visible.pos) {
+                    command("THROW:"+missile.getClass().getSimpleName(),visible.pos); missile.cast(Dungeon.hero,visible.pos); return;
+                }
                 int step = Dungeon.findStep(Dungeon.hero, visible.pos, pass, Dungeon.hero.fieldOfView, true);
                 move(step); return;
+            }
+            // Open ordinary visible containers, including disguised mimics, without inspecting their loot.
+            // Ebony mimics masquerade as doors, not chests, and are encountered through ordinary navigation.
+            for (Mob mob : Dungeon.level.mobs) if (mob instanceof Mimic && !(mob instanceof EbonyMimic)
+                    && mob.alignment==Char.Alignment.NEUTRAL && Dungeon.hero.fieldOfView[mob.pos]) {
+                if (Dungeon.level.adjacent(pos,mob.pos)) {
+                    command("OPEN_VISIBLE_CHEST",mob.pos); Dungeon.hero.handle(mob.pos); Dungeon.hero.next(); return;
+                }
+                int step=Dungeon.findStep(Dungeon.hero,mob.pos,pass,Dungeon.hero.fieldOfView,true);
+                if (step>=0 && pass[step]) { move(step); return; }
+            }
+            for (Heap heap : Dungeon.level.heaps.valueList()) if (heap.seen && !heap.hidden
+                    && heap.type!=Heap.Type.FOR_SALE && heap.type!=Heap.Type.LOCKED_CHEST
+                    && heap.type!=Heap.Type.CRYSTAL_CHEST
+                    && (heap.peek()!=rejectedPickup || Dungeon.hero.HP!=rejectedHp
+                        || Dungeon.hero.belongings.backpack.items.size()!=rejectedInventory)) {
+                if (heap.pos==pos || (Dungeon.level.adjacent(pos,heap.pos) && heap.type!=Heap.Type.HEAP)) {
+                    command("OPEN_OR_PICKUP",heap.pos); attemptedPickup=heap.type==Heap.Type.HEAP;
+                    Dungeon.hero.handle(heap.pos); Dungeon.hero.next(); return;
+                }
+                int step=Dungeon.findStep(Dungeon.hero,heap.pos,pass,Dungeon.hero.fieldOfView,true);
+                if (step>=0 && pass[step]) { move(step); return; }
             }
             boolean[] known = new boolean[visits.length];
             for (int i = 0; i < visits.length; i++) {
@@ -223,6 +300,7 @@ public class WarriorSimulationDeviceTest {
                 if (GameScene.showingWindow()) throw new IllegalStateException("unhandled gameplay dialog: " + windowTypes()
                         + ":position=" + Dungeon.hero.pos + ":entrance=" + Dungeon.level.entrance()
                         + ":exit=" + Dungeon.level.exit() + ":terrain=" + Dungeon.level.map[Dungeon.hero.pos]);
+                spendTalentPoints();
                 switch (action) {
                     case HEAL:
                         PotionOfHealing potion = Dungeon.hero.belongings.getItem(PotionOfHealing.class);
@@ -285,7 +363,7 @@ public class WarriorSimulationDeviceTest {
             until(() -> Game.scene() instanceof TitleScene && !Game.switchingScene(), 60);
         }
     }
-    @Test public void simulateRecklessWarriorEarlyHealing() throws Exception {
+    @Test public void simulateNormalWarriorEarlyHealing() throws Exception {
         Bundle arguments = InstrumentationRegistry.getArguments();
         assertEquals("requires a disposable, empty emulator", "true", arguments.getString("apdSimulation"));
         assertTrue("physical-device simulation is refused", android.os.Build.HARDWARE.equals("ranchu")
@@ -321,7 +399,8 @@ public class WarriorSimulationDeviceTest {
                     WarriorHealingExperiment.Result result = WarriorHealingExperiment.run(seeds[i],
                             value -> { current[0] = new Session(value); return current[0]; }, limit);
                     JSONObject row = new JSONObject().put("seed", result.seed).put("completed", result.completed)
-                            .put("gameVersion", Game.version).put("profile", "warrior-reckless-starting-gear-v1")
+                            .put("gameVersion", Game.version).put("profile", NormalWarriorPreparation.PROFILE)
+                            .put("healingPolicy", "held potion only when next adjacent raw melee hit could kill")
                             .put("combatRngSeeded", false)
                             .put("observedHealingBeforeNormalFlyHealing", result.neededHeldHealingBeforeFlyDrop)
                             .put("normalFlyHealingObserved", current[0] != null && current[0].flyHealing)

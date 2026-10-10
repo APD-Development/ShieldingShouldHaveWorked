@@ -1,6 +1,9 @@
 package com.shatteredpixel.shatteredpixeldungeon.apd.simulation;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.*;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.*;
 
 // Raw melee damage only: not total damage, status effects or proof a heal prevents death.
 public final class AuditedSewersMeleeBounds {
@@ -22,6 +25,29 @@ public final class AuditedSewersMeleeBounds {
         // CrystalMimic delegates neutral damage to the normal enemy roll, with the same maximum.
         if (type == Mimic.class || type == GoldenMimic.class || type == CrystalMimic.class)
             return 2 + 2 * (mob.attackSkill(null) - 6);
+        if (type == EbonyMimic.class) {
+            int maximum=2 + 2 * (mob.attackSkill(null)-6);
+            return mob.alignment==Char.Alignment.NEUTRAL ? maximum*2 : maximum;
+        }
+        if (type==Statue.class || type==ArmoredStatue.class) {
+            Weapon weapon=((Statue)mob).weapon();
+            if (!(weapon instanceof MeleeWeapon)) throw new IllegalStateException("unaudited statue weapon");
+            try {
+                Class<?> roll=weapon.getClass().getMethod("damageRoll",Char.class).getDeclaringClass();
+                if (roll!=MeleeWeapon.class && roll!=Dagger.class && roll!=Dirk.class
+                        && roll!=AssassinsBlade.class && roll!=Flail.class)
+                    throw new IllegalStateException("unaudited statue damage: "+roll.getName());
+                // Dagger family bonuses are Hero-only. Flail's shared spin bonus is read, never rolled/reset.
+                int bonus=0;
+                if (weapon instanceof Flail) {
+                    java.lang.reflect.Field spin=Flail.class.getDeclaredField("spinBoost");
+                    spin.setAccessible(true); bonus=spin.getInt(null);
+                }
+                return weapon.augment.damageFactor(weapon.max())+bonus;
+            } catch (ReflectiveOperationException failure) {
+                throw new IllegalStateException("cannot audit statue weapon",failure);
+            }
+        }
         throw new IllegalStateException("unaudited melee bound: " + type.getSimpleName());
     }
 }

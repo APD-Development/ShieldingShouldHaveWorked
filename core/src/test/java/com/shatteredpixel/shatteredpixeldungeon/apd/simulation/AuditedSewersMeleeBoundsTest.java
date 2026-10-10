@@ -5,11 +5,40 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.*;
 import com.watabou.utils.Random;
 import org.junit.Test;
+import com.shatteredpixel.shatteredpixeldungeon.apd.HeadlessTestSupport;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.*;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
 import static org.junit.Assert.*;
 
 public class AuditedSewersMeleeBoundsTest {
+    @Test public void optionalStatuesUseActualWeaponAndAugmentWithoutRollingDamage() throws Exception {
+        HeadlessTestSupport.start();
+        Field equipped=Statue.class.getDeclaredField("weapon"); equipped.setAccessible(true);
+        for (Statue statue : new Statue[]{new Statue(),new ArmoredStatue()})
+            for (MeleeWeapon weapon : new MeleeWeapon[]{new Sword(),new Dagger(),new Dirk(),new AssassinsBlade(),new Flail()})
+                for (Weapon.Augment augment : Weapon.Augment.values()) {
+                    weapon.level(2); weapon.augment=augment; equipped.set(statue,weapon);
+                    Random.pushGenerator(91212); int expected;
+                    try { expected=Random.Int(); } finally { Random.popGenerator(); }
+                    Random.pushGenerator(91212);
+                    int maximum;
+                    try { maximum=AuditedSewersMeleeBounds.maximum(statue,2); assertEquals(expected,Random.Int()); }
+                    finally { Random.popGenerator(); }
+                    Random.pushGenerator(94102);
+                    try { for (int i=0;i<100;i++) assertTrue(statue.damageRoll()<=maximum); }
+                    finally { Random.popGenerator(); }
+                }
+    }
+    @Test public void ebonyMimicSurpriseDamageIsNotMistakenForNormalDamage() {
+        EbonyMimic mimic=new EbonyMimic(); mimic.setLevel(3);
+        int surprise=AuditedSewersMeleeBounds.maximum(mimic,1);
+        assertEquals(surprise,mimic.damageRoll());
+        mimic.alignment=Char.Alignment.ENEMY;
+        assertEquals(surprise/2,AuditedSewersMeleeBounds.maximum(mimic,1));
+    }
     @Test public void everyStandardAndRareEarlySewersRotationHasAnAuditedBound() throws Exception {
         Method rotation = MobSpawner.class.getDeclaredMethod("standardMobRotation", int.class);
         rotation.setAccessible(true);

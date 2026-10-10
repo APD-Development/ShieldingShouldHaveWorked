@@ -123,7 +123,7 @@ jobs:
           }, indent=2) + '\n')
           PY
 
-      - name: Verify five previously failed episodes before selective batch recovery
+      - name: Verify five real normal-play episodes before the 100-seed batch
         uses: reactivecircus/android-emulator-runner@v2
         env:
           APD_SIMULATION_SOURCE: ${{ github.sha }}
