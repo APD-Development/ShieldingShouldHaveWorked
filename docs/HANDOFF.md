@@ -1,3 +1,16 @@
+## TEST22 delivered — October 10, 2026, 1:46:56 p.m. EDT
+
+Private release: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-codex-test-22
+APK: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-codex-test-22/ADHD-Pixel-Dungeon-CODEX-TEST-22.apk
+PDF: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-codex-test-22/APD-Bug-Fixes-2026-10-10-TEST22.pdf
+Actual application source: 6ffd9668b853bbb94922888e6880611aebe1a2f8. Original build/core/API34 run:38071699386 (13:25:48–13:36:52EDT). Successful delivery-only run:38073091764; no application rebuild. Actual XML931core tests/149suites and4API34 checks:zero failures/errors/skips. Three permanent delivery-parser regressions also pass. Not physical-phone, exact owner-save upgrade or full normal-run verification.
+
+APK SHA256:3ca4d27dd1f339d49d7f621b0befb108cf982c656270b989dae5e3eaf6f5ee04. Verified signatures and identical TEST20 certificate SHA256:067688b3ab6bd5820a67f4c1ba7d5859db578173771cf31d3252b3e4e012246e. AppID com.charltonchris29.adhdpixeldungeon.indev, version4.0.8-apd-INDEV-bC22-TEST, non-downgrade version code verified against actualTEST20 APK. Release API digest matches validated bytes. Install over existing app; never uninstall/clear data. All older assets preserved; TEST20 rollback remains available.
+
+Delivery recovery commits:0e1adfd102b176586bab18c7ad89b3b0d5444395,8821fbb9acb94079567d13e0f39d5b69a426925b,0e2b4309cfbfc1fb1eb904a5c4041f899ec5e636. First two delivery attempts38072882786/38072974821 failed at our certificate parser: actual SDK prints V2 Signer instead of Signer #1. Diagnostic established identical valid certificates; corrected parser preserves rejection of absent/malformed/source-stamp certificates and mismatches, with three tests. No security/signing gate bypass.
+
+Noon deadlines missed; no overnight active-time claim. A PR-only workflow-run wrapper previously hid the successful push run: use actual actions/runs collection with head_sha when auditing push builds. The APK contains only committed Blacksmith/UIMSD fixes beyondTEST20, not unfinished local Community/Crystal/accuracy/animation/hotbar/healing/simulator work. Warrior100 real simulations remain unrun. Preserve local edits and Claude; main unchanged. Next phone testing checklist and remaining risks are in the PDF.
+
 ## TEST22 existing-artifact delivery recovery — October 10
 
 Actual push-run endpoint (not the PR-only commit-run wrapper) finds successful run38071699386 on real source6ffd9668b853bbb94922888e6880611aebe1a2f8. CI ran13:25:48–13:36:52EDT; core/debug and targetedAPI34 jobs succeeded, publication deliberately skipped via[verification-only]. Downloaded evidence archive checksums match GitHub. XML:931core/149suites and4Android checks, zero failures/errors/skips. No physical-phone or actual-player-save upgrade pass claimed.
