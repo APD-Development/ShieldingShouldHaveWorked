@@ -519,3 +519,9 @@ Run38086795339 (scheduled sourcec449) compiled/passed core but failed before any
 - Source `455f22b5f14c1ea9886d033b81d0a1270ea5cd20`, verification run `38088088384` replaces failed preflight source/run 99a4/38087065433. Full core job is green; Android compile/native episodes remain pending.
 - Actual failed runs needed at least 7,372.80 MB to copy API34's base userdata image. `disk-size: 4096M` alone did not solve provisioning. Only unused .NET/Haskell SDKs on disposable hosted runners are removed, with a 9 GiB free-space preflight before boot. Gradle remains installed; compiled binary checksums are retained across the concurrent Gradle clean step.
 - The same preflight now protects each batch VM. The 100-seed experiment still waits for a genuinely successful five-episode baseline and reuses its exact compiled APK pair, playing only the other 95 seeds. No completed normal-profile episodes or completed 100-run cohort have been verified at this point.
+
+
+### Downloadable simulator packaging — 2026-10-10 21:38 UTC
+- Added `docs/APD-SIMULATOR-USER-GUIDE.md` and a real private Actions artifact packaging workflow, gated on successful exact-source native/core baseline `455f22b5f14c1ea9886d033b81d0a1270ea5cd20` / `38088088384`.
+- Package includes the precompiled simulator APK pair, checked source/checksums, exact-source runner, baseline traces, and instructions. No emulator or app rebuild is requested by packaging. It is a developer tool for a new empty computer emulator, not a phone app or verified full 100-run cohort. No package has yet passed the pending gate or been delivered.
+- Workflow YAML parsed locally; packaging remains unexecuted until actual baseline succeeds. Existing playable TEST26 APK is unaffected.
