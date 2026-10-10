@@ -10,6 +10,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.apd.HeadlessTestSupport;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.watabou.noosa.Game;
+import com.watabou.noosa.Scene;
+import com.watabou.utils.PlatformSupport;
 
 import org.junit.Test;
 
@@ -26,6 +29,17 @@ import static org.junit.Assert.fail;
  * generation and one complete actor-clock wait. It is not yet the normal-play Warrior bot.
  */
 public class HeadlessActorLoopProbeTest {
+
+	private static final class HeadlessGame extends Game {
+		HeadlessGame(Class<? extends Scene> sceneClass, PlatformSupport platform) {
+			super(sceneClass, platform);
+			requestedReset = false;
+		}
+
+		static Class<? extends Scene> sceneClass() {
+			return sceneClass;
+		}
+	}
 
 	private static final class InvisibleSprite extends CharSprite {
 		void attach(Char character) {
@@ -115,7 +129,13 @@ public class HeadlessActorLoopProbeTest {
 
 		AtomicReference<Throwable> failure = new AtomicReference<>();
 		Thread actorThread = null;
+		Game oldGame = Game.instance;
+		PlatformSupport oldPlatform = Game.platform;
+		Class<? extends Scene> oldSceneClass = HeadlessGame.sceneClass();
 		try {
+			//Actor.process asks the noosa shell whether a scene switch is pending. The existing
+			//libGDX headless fixture supplies services but intentionally has no noosa Game.
+			new HeadlessGame(oldSceneClass, oldPlatform);
 			createFirstFloor(1_000_000L, true);
 			attachInvisibleSprites();
 			Actor.keepActorThreadAlive = true;
@@ -145,6 +165,8 @@ public class HeadlessActorLoopProbeTest {
 				actorThread.join(TimeUnit.SECONDS.toMillis(5));
 			}
 			Actor.keepActorThreadAlive = true;
+			Game.instance = oldGame;
+			Game.platform = oldPlatform;
 			SPDSettings.challenges(oldChallenges);
 			SPDSettings.apdDifficulty(oldDifficulty);
 			SPDSettings.intro(oldIntro);

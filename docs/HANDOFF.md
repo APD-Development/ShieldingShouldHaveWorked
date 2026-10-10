@@ -1,3 +1,9 @@
+## 2026-10-10 23:32 UTC - first headless actor probe failure corrected; rerun pending
+
+Exact-commit workflow [38095194630](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38095194630) compiled and executed 1,006 core cases. The new generation test passed: 100 real Warrior first floors, 844 generated mobs, 187 ms on the two-core hosted runner. This is a floor-generation measurement, not complete-episode throughput.
+
+The new actor-loop test then failed before initial hero input because `Actor.process()` calls `Game.switchingScene()` and the existing libGDX headless fixture deliberately has no noosa `Game.instance`. The test now installs a minimal test-only noosa shell with scene switching already complete, retains the real actor scheduler, and restores the previous game globals during cleanup. No production code changed. Exact-commit rerun is pending; the actor loop remains unverified until it passes.
+
 ## 2026-10-10 23:28 UTC - emulator-free simulator foundation implemented; exact test verification pending
 
 Execution `APD-20261010T231111Z-HEADLESS-FOUNDATION` inspected branch head `8b9ff21959867b9916ba087b1382379046333f50`, the current handoff/ledger, simulator source and completed workflows. Exact-source Android simulator workflow [38094049032](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38094049032) succeeded against `ac496e4a118735dfca853de1b9ced82f12f856a6`: all five native episodes completed with nonempty traces, totaling 2,446 recorded actions in 609,546 ms (4.013 actions/second), and the full core suite passed. The five episodes died on depths 1-3. None issued `SEARCH`, so this run does not directly replay the previously stalled seed `1000048` or independently prove that exact fallback.

@@ -1,3 +1,11 @@
+## 2026-10-10T23:32:06Z - exact headless probe failure retained and corrected
+
+- Workflow [38095194630](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38095194630), exact source `c1cd69f09c60fc3a563c822edf046d7947cec128`, ran 1,006 core cases and failed one new case. Native adapter job was correctly skipped.
+- Passed evidence: `oneHundredRealFirstFloorsNeedNoAndroidRuntime` generated 100 real Warrior floor-1 levels containing 844 mobs in 187 ms on the hosted two-core runner.
+- Failed evidence: `realActorClockProcessesAWaitWithoutRendering` stopped before input with `Game.switchingScene()` reading null `Game.instance`. This was a headless harness boundary, not a gameplay result.
+- Correction: add a minimal test-only `Game` shell with `requestedReset=false`, use it only around the actor loop, and restore the prior global game/platform state in `finally`. Production source remains unchanged.
+- Verification status: correction implemented, exact-commit rerun pending. Do not call the actor-loop seam tested yet.
+
 ## 2026-10-10T23:28:50Z - emulator-free actor-clock foundation implemented (verification pending)
 
 - Execution identifier: `APD-20261010T231111Z-HEADLESS-FOUNDATION`; observed start `2026-10-10T23:11:11Z`, record end `2026-10-10T23:28:50Z`. Activity outside this observed interval is unknown.

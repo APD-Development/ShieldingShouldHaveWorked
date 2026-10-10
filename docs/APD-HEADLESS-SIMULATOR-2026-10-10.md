@@ -21,6 +21,8 @@ It checks two separate facts:
 1. One hundred distinct Warrior first floors can be initialized with the real `Dungeon.init()` and `Dungeon.newLevel()` path without Android or a renderer. The test prints the actual elapsed milliseconds and total generated enemy count as evidence, but has no brittle performance threshold.
 2. A real entered floor can run the actual `Actor.process()` clock through one complete player wait and all intervening actors using invisible test-only sprites. The hero must return to input-ready state with the same position, positive HP and at least one unit of actor time consumed.
 
+The actor clock normally asks the noosa `Game` shell whether a scene switch is pending. The existing libGDX headless test fixture intentionally creates no noosa game instance, so the probe supplies a minimal test-only shell with scene switching marked complete and restores the previous global instance afterward. It does not create or render a scene.
+
 This is deliberately not described as a completed headless Warrior simulator. It does not yet run the normal-play policy, combat actions, item animations, level transitions, recorder result extraction or paired Android/JVM parity seeds.
 
 ## Next exact steps
