@@ -1,3 +1,12 @@
+## 2026-10-10T23:48:33.681Z - shared normal-policy wait boundary implemented (verification pending)
+
+- Execution `APD-20261010T234547Z-SHARED-WAIT`; observed start `2026-10-10T23:45:47Z`; implementation record `2026-10-10T23:48:33.681Z`. Time outside this observed interval is unknown.
+- Parent observed before the change: `a0ab5303089232afdce61ecec17cf88dca5617a0`. Added test-only `WarriorTurnCommand`, `WarriorTurnDriver`, `NormalWarriorTurnPolicy` and three permanent selector cases.
+- Android rooted and bounded recovery waits retain their previous command labels, action ordering and exact constraints, but now cross the same adapter-neutral command boundary used by the JVM headless driver.
+- The existing headless actor test still runs the real `Hero.rest(false)` and real actor scheduler. This slice establishes only the first synchronous `WAIT` family; movement, combat, items, transitions, result extraction, paired parity and complete-episode throughput remain unresolved.
+- Verification status at commit preparation: source inspection and deterministic replacement guards completed; exact-source GitHub core/Android checks pending. Do not label this slice tested until those jobs pass.
+- Scope: test and documentation code only. No production gameplay source, save/statistics format, signing identity, application ID, release, public/backend state, `main` or Claude branch changed. No paid service, key, runner or subscription change was used.
+
 ## 2026-10-10 23:46:36 UTC — UIMSD reading-position bug correction; native verification pending
 
 Resumed the owner's approved bugs/Community/regression loop from actual head a63d2bbbca6e2e34fbd6f426be75c97583737889, preserving the newer headless-simulator foundation. Confirmed source defect: WndUimsdText and WndUimsdTopic restored their contents/callbacks but rebuilt ScrollPane with its default zero offset, returning a reader to the top after scene recreation.

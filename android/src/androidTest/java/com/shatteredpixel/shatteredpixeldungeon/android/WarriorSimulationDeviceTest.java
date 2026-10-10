@@ -83,7 +83,7 @@ public class WarriorSimulationDeviceTest {
         } catch (InterruptedException e) { Thread.currentThread().interrupt(); throw new IllegalStateException(e); }
         catch (Exception e) { throw new IllegalStateException(e); }
     }
-    private static final class Session implements WarriorHealingExperiment.GameSession {
+    private static final class Session implements WarriorHealingExperiment.GameSession, WarriorTurnDriver {
         private String windowTypes() throws Exception {
             Field field = Group.class.getDeclaredField("members");
             field.setAccessible(true);
@@ -136,6 +136,13 @@ public class WarriorSimulationDeviceTest {
             Dungeon.hero.curAction = new HeroAction.Move(target);
             Dungeon.hero.lastAction = null;
             Dungeon.hero.next();
+        }
+        @Override public void execute(WarriorTurnCommand turn) {
+            if (turn.type() != WarriorTurnCommand.Type.WAIT)
+                throw new IllegalArgumentException("unsupported turn command: " + turn.type());
+            command(turn.reason() == WarriorTurnCommand.Reason.ROOTED ? "WAIT_ROOTED" : "REST",
+                    turn.target());
+            Dungeon.hero.rest(false);
         }
         Session(long seed) {
             render(() -> { Game.switchScene(TitleScene.class); return null; });
@@ -206,8 +213,10 @@ public class WarriorSimulationDeviceTest {
             if (depth != Dungeon.depth) { depth = Dungeon.depth; visits = new int[Dungeon.level.length()]; }
             int pos = Dungeon.hero.pos;
             visits[pos]++;
-            if (Dungeon.hero.rooted) {
-                command("WAIT_ROOTED", pos); Dungeon.hero.rest(false); return;
+            WarriorTurnCommand rootedWait = NormalWarriorTurnPolicy.rootedWait(
+                    Dungeon.hero.rooted, pos);
+            if (rootedWait != null) {
+                execute(rootedWait); return;
             }
             Hunger hunger = Dungeon.hero.buff(Hunger.class);
             Food food = Dungeon.hero.belongings.getItem(Food.class);
@@ -229,8 +238,11 @@ public class WarriorSimulationDeviceTest {
                     return;
                 }
                 // A bounded recovery pause, not free healing or a changed hunger/turn clock.
-                if (hunger!=null && !hunger.isStarving() && Dungeon.hero.HP*2<Dungeon.hero.HT && safeRestActions<30) {
-                    safeRestActions++; command("REST",pos); Dungeon.hero.rest(false); return;
+                WarriorTurnCommand recoveryWait = NormalWarriorTurnPolicy.recoveryWait(pos, false,
+                        hunger != null && !hunger.isStarving(), Dungeon.hero.HP, Dungeon.hero.HT,
+                        safeRestActions);
+                if (recoveryWait != null) {
+                    safeRestActions++; execute(recoveryWait); return;
                 }
             } else safeRestActions=0;
             Heap here = Dungeon.level.heaps.get(pos);

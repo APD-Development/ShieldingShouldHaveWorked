@@ -29,11 +29,17 @@ This is deliberately not described as a completed headless Warrior simulator. It
 
 Workflow [38095765371](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38095765371) passed the complete core suite for source `a9b55e59152c8603e822dc1e2bcbf6ec4afebeda`, including both headless probe cases. On that hosted two-core runner, the generation case created 100 real Warrior first floors containing 844 mobs in 174 milliseconds. This is direct floor-generation timing only, not complete-episode speed or a 10,000x claim.
 
+## Shared policy/adapter boundary (verification pending)
+
+The first synchronous command family is now adapter-neutral. `NormalWarriorTurnPolicy` selects rooted and bounded recovery waits without Android, rendering or RNG. It returns a `WarriorTurnCommand`, and both the Android session and JVM headless driver execute that same `WAIT` command boundary through the real `Hero.rest(false)` action.
+
+This extraction preserves the Android profile's existing ordering and limits: rooted waits still happen first; food, known Strength, and eligible equipment still take priority over recovery; recovery still requires no visible enemies, non-starving hunger, below-half HP and fewer than 30 prior safe rests. It does not yet share movement, combat, item use, transitions, complete episodes or result extraction. Exact-source core and Android compilation/native verification are pending.
+
 ## Next exact steps
 
 1. Keep the Android five-seed workflow as the source-pinned behavioral oracle.
-2. Move the existing normal-play policy behind a shared session interface that both Android and JVM adapters can use without changing decisions.
-3. Add synchronous test-only animation completion for movement, melee, item use and transitions one bounded action family at a time.
+2. Verify the shared passive-wait command boundary on the exact source in both the JVM suite and Android adapter.
+3. Add synchronous test-only completion for movement, then melee, item use and transitions one bounded action family at a time.
 4. Require identical generation fingerprints, action commands and terminal evidence for a small fixed seed set before allowing a JVM batch result into the evidence summarizer.
 5. Benchmark episodes/second only after a complete seed can terminate on both adapters. Do not extrapolate the first-floor or one-wait probe into an episode-speed claim.
 

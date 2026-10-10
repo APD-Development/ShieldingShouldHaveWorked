@@ -1,3 +1,9 @@
+## 2026-10-10 23:45 UTC - shared wait-command boundary implemented; verification pending
+
+Execution `APD-20261010T234547Z-SHARED-WAIT` continued from branch head `a0ab5303089232afdce61ecec17cf88dca5617a0`. Added an adapter-neutral `WarriorTurnCommand`/`WarriorTurnDriver` boundary and pure `NormalWarriorTurnPolicy` selectors for rooted and bounded recovery waits. The Android normal-play adapter and JVM headless actor probe now execute the same `WAIT` command family through the real `Hero.rest(false)` action. Permanent unit cases pin the previous below-half-HP, no-visible-enemy, safe-hunger and 30-rest limits.
+
+This is implemented, not yet exact-source verified. It does not claim movement, combat, item, transition, complete-episode, parity or speed results. No production gameplay source, saves/statistics, signing/application ID, release, backend, `main` or Claude branch changed.
+
 ## 2026-10-10 23:46:36 UTC — UIMSD reading-position bug correction; native verification pending
 
 Resumed the owner's approved bugs/Community/regression loop from actual head a63d2bbbca6e2e34fbd6f426be75c97583737889, preserving the newer headless-simulator foundation. Confirmed source defect: WndUimsdText and WndUimsdTopic restored their contents/callbacks but rebuilt ScrollPane with its default zero offset, returning a reader to the top after scene recreation.

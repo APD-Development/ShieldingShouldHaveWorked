@@ -41,6 +41,14 @@ public class HeadlessActorLoopProbeTest {
 		}
 	}
 
+	private static final class HeadlessTurnDriver implements WarriorTurnDriver {
+		@Override public void execute(WarriorTurnCommand command) {
+			if (command.type() != WarriorTurnCommand.Type.WAIT)
+				throw new IllegalArgumentException("unsupported turn command: " + command.type());
+			Dungeon.hero.rest(false);
+		}
+	}
+
 	private static final class InvisibleSprite extends CharSprite {
 		void attach(Char character) {
 			ch = character;
@@ -151,7 +159,9 @@ public class HeadlessActorLoopProbeTest {
 			int beforeHp = Dungeon.hero.HP;
 			int beforePosition = Dungeon.hero.pos;
 
-			Dungeon.hero.rest(false);
+			WarriorTurnCommand wait = WarriorTurnCommand.waitAt(
+					WarriorTurnCommand.Reason.RECOVERY, beforePosition);
+			new HeadlessTurnDriver().execute(wait);
 			//Pause immediately before the next hero act. This proves the scheduler reached the
 			//next input boundary without invoking Hero.ready's render-only UI callbacks.
 			Dungeon.hero.sprite.isMoving = true;
