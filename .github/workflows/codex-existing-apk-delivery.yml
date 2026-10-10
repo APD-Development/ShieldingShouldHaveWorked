@@ -98,7 +98,7 @@ jobs:
           if previous.returncode == 0:
               raise SystemExit('Existing release preserved; do not overwrite it.')
           subprocess.run(['gh', 'release', 'create', tag, '--repo', repo,
-              '--target', os.environ['APD_SOURCE_SHA'], '--prerelease', '--latest=false',
+              '--target', os.environ['GITHUB_SHA'], '--prerelease', '--latest=false',
               '--title', 'APD PRIVATE CODEX TEST 24', '--notes-file', 'delivery/verification.txt',
               'delivery/ADHD-Pixel-Dungeon-CODEX-TEST-24.apk',
               'delivery/ADHD-Pixel-Dungeon-CODEX-TEST-24.apk.sha256',

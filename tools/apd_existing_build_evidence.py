@@ -38,6 +38,11 @@ def certificates(signature):
     return sorted({digest.lower() for digest in matches})
 
 
+def application_inputs(tree):
+    return {entry['path']: entry['sha'] for entry in tree
+            if entry['path'] not in ('.github', 'docs', 'tools')}
+
+
 def main():
     repo = os.environ['GITHUB_REPOSITORY']
     source = os.environ['APD_SOURCE_SHA']
@@ -49,6 +54,14 @@ def main():
     rollback_sha = os.environ.get('APD_ROLLBACK_SHA256', '0a7d05dc4fb1e87bf502849914c94ae13c4ffeaeaacc8ca865d8c3122a5808eb')
     assert number > 0 and core_count > 0 and android_count > 0
     assert github('repos/' + repo)['private'], 'Private repository required'
+    publication_commit = os.environ.get('GITHUB_SHA', source)
+    # A release may tag this delivery-only commit. Verify that it has identical
+    # application/build inputs; never relabel a different APK as tested source.
+    application_trees = []
+    for commit in (source, publication_commit):
+        tree = github(f'repos/{repo}/git/trees/{commit}')['tree']
+        application_trees.append(application_inputs(tree))
+    assert application_trees[0] == application_trees[1], 'Publication commit changes application/build inputs'
     run = github(f'repos/{repo}/actions/runs/{run_id}')
     assert run['head_sha'] == source and run['run_number'] == number
     assert run['status'] == 'completed' and run['conclusion'] == 'success'
@@ -88,12 +101,14 @@ def main():
     assert current[0] == previous[0] == 'com.charltonchris29.adhdpixeldungeon.indev'
     assert int(current[1]) >= int(previous[1]), 'Version downgrade'
     assert current[2] == f'4.0.8-apd-INDEV-bC{number}-TEST', current
-    evidence = {'source': source, 'run': run_id, 'apk_sha256': digest,
+    evidence = {'source': source, 'publication_commit': publication_commit,
+                'publication_app_tree_matches_source': True, 'run': run_id, 'apk_sha256': digest,
                 'certificate_sha256': certs[0], 'package': current,
                 'core': core, 'android': android,
                 'build_started_utc': run['run_started_at'], 'build_completed_utc': run['updated_at']}
     Path(f'delivery/TEST{number}-Verification.json').write_text(json.dumps(evidence, indent=2))
     text = f"TEST{number} source: {source}. Existing verification/build run: https://github.com/{repo}/actions/runs/{run_id}. No APK rebuild performed during delivery.\n\n"
+    text += f"Release tag points to delivery commit {publication_commit}; all application/build input trees match the tested source exactly. Only delivery tooling, reports or workflows may differ.\n\n"
     text += f"Actual test XML: {core['tests']} core tests and {android['tests']} API 34 emulator tests; zero failures, errors or skipped tests. Debug assembly succeeded. This is not physical-phone verification or a complete normal-run playthrough.\n\n"
     text += f"APK: {apk.name}. SHA-256: {digest}. Application ID: {current[0]}. Version: {current[2]}. APK signatures verified; certificate SHA-256 matches TEST{rollback_number}: {', '.join(certs[0])}. Version code permits installing over TEST{rollback_number}. Existing save-data compatibility still requires phone testing.\n\n"
     text += f"CI started {run['run_started_at']} and completed {run['updated_at']} (UTC). The noon delivery was missed. This publication reuses the exact verified artifact; consult the report for included and unfinished features.\n\n"

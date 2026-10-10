@@ -69,3 +69,15 @@ No hidden achievement, Cleric restriction changes, monetization, paid advantage,
 ## Verified candidate checkpoint — 18:36 UTC
 
 Run 38075683960 completed successfully. Actual Android method evidence includes communityMenuOpensEveryPreviewAndReturnsWithoutStackingWindows (17.431 seconds) and adultHumorControlWorksWithoutAnAgeProviderAndReopensWithSavedChoice (6.787 seconds). Both opened real controls through pointer events. Signing, package/upgrade version and final artifact checksum are checked by the delivery-only workflow before this report is published. Existing TEST22 is retained as rollback.
+
+## Delivery-only upload failure and recovery
+
+Delivery run 38076542746 successfully checked the exact source, 947/6 tests, checksum, signatures, app ID and version compatibility, and generated/staged the APK/PDF. Its release step then returned HTTP403 Resource not accessible by integration while targeting the earlier source commit. No incompatible or failed build is involved. The recovery uses the current delivery commit as the release-tag target and additionally checks that every application/build root entry matches f1ad865 exactly; only docs/tools/workflows may differ. This preserves actual APK source evidence and does not request broader token permissions, change repository permissions or bypass security. Whether this resolves the rejection is determined by the recovery run; a second failure remains a delivery blocker, with the verified artifact preserved.
+
+Verified APK SHA-256: e13408155a0534726686dd36f45c2ea377bb242dd02708891a234599f8b50785. App ID com.charltonchris29.adhdpixeldungeon.indev; version 4.0.8-apd-INDEV-bC24-TEST. Direct certificate comparison with TEST22 succeeded: 067688b3ab6bd5820a67f4c1ba7d5859db578173771cf31d3252b3e4e012246e. This does not prove the owner's actual old saves survived a phone installation.
+
+Two additional source-provenance regressions pass: delivery documentation/tooling may differ while app/build trees remain identical; changes to source, Android/assets or build configuration cannot pass. Total current delivery-tool tests: nine, zero failures (0.004 seconds locally).
+
+## Updated unattended evidence — actual scheduled probe
+
+After the initial 404 and missing-run observation, the hourly scheduled task DID execute. It read real GitHub state and safely added docs/APD-UNATTENDED-PROBE-2026-10-10.json in real commit 7ead4a6e4891b78314e2f05ed69c15f889260a43 at 18:39:32 UTC. Recorded execution began 18:38:07.955 UTC and repository inspection ended 18:39:23.241 UTC (75.286 seconds elapsed inspection, not measured active coding). The fresh workspace was empty with git/java but no checkout/gradle/adb. This confirms ONE scheduled GitHub read/write execution using available tools. It does NOT establish unattended application coding/builds, future successful iterations or 15-hour continuous activity. The earlier statements of no demonstrated run are checkpoint history, superseded by this limited evidence. The concurrent probe commit is preserved and recovery uses it as the real parent. No API key or added spending was introduced.

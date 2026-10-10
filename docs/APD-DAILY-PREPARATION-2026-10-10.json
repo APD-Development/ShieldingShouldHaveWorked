@@ -1,9 +1,9 @@
 {
-  "recorded_at_utc": "2026-10-10 18:37:39 UTC",
+  "recorded_at_utc": "2026-10-10 18:42:04 UTC",
   "source": "f1ad8657250defd4b97cf422fa222d6c6c1f7329",
   "run": 38075683960,
   "build_number": 24,
-  "status": "verified core/emulator and assembly; signing/publication pending",
+  "status": "verified APK staged; publication HTTP403; recovery pending",
   "core": {
     "tests": 947,
     "suites": 151,
@@ -23,8 +23,12 @@
     "apd-codex-core-tests": 11678034922
   },
   "rollback": "apd-codex-test-22",
-  "signing_status": "pending direct comparison with TEST22",
+  "signing_status": "verified matches TEST22",
   "physical_phone_testing": "not performed",
-  "unattended_execution": "not demonstrated; run_now returned HTTP404",
-  "active_hours_past_30": "unknown"
+  "unattended_execution": "one scheduled GitHub read/write probe confirmed; application coding/builds and continuous activity not demonstrated",
+  "active_hours_past_30": "unknown",
+  "apk_sha256": "e13408155a0534726686dd36f45c2ea377bb242dd02708891a234599f8b50785",
+  "failed_delivery_run": 38076542746,
+  "staged_artifact": 11679005726,
+  "unattended_probe_commit": "7ead4a6e4891b78314e2f05ed69c15f889260a43"
 }

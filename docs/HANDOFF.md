@@ -1,3 +1,11 @@
+## Scheduled probe actually completed — 2026-10-10 18:42:04 UTC
+
+Concurrent real commit 7ead4a6e4891b78314e2f05ed69c15f889260a43 (parent7bb7c5) adds docs/APD-UNATTENDED-PROBE-2026-10-10.json only and is preserved. Execution ID apd-probe-20261010183807955-44wwiqfm records start18:38:07.955Z and inspection finish18:39:23.241Z, followed by commit18:39:32Z. One scheduled repository read/write execution is now demonstrated; no application code, tests or build were performed by that probe. It had an empty fresh workspace with git/java but no gradle/adb/checkout. No proof of continuous overnight work or subsequent coding/building. Initial immediate-run404 and earlier no-run observations are historical, superseded only for this bounded probe. Recovery continues from this actual concurrent parent with lease protection.
+
+## TEST24 release recovery — 2026-10-10 18:41:01 UTC
+
+Community APK passed all 947 core +6 native tests and direct signing/app/version/checksum checks in 38076542746. APK SHA256 e13408155a0534726686dd36f45c2ea377bb242dd02708891a234599f8b50785; same certificate as TEST22. Private release step HTTP403 while targeting older application-source SHA; exact permission cause not established. Recovery tags current delivery commit with existing token only and proves application/build input trees exactly match tested f1ad865 source. No permission/security change, overwrite or APK rebuild. Nine delivery-tool regressions pass. Publication still pending; verified artifact11679005726 retained. If recovery fails, preserve artifact and report failure rather than retry unchanged.
+
 ## Community TEST24 verification and private-delivery staging — 2026-10-10 18:37:39 UTC
 
 Owner explicitly requested Community in the next APK ASAP. Application source f1ad8657250defd4b97cf422fa222d6c6c1f7329 / run 38075683960 / TEST24 passed 947 core tests (151 suites, zero failure/error/skip) and six API34 Android checks (zero failure/error/skip). Actual Community pointer test visits all eight pages, verifies content/availability, text containment and one dialog, then returns to main menu. Actual humor pointer test enables/disables and reopens persisted controls. APK assembly succeeded. Downloaded XML confirms these counts; physical-phone tests remain pending.

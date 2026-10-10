@@ -2,7 +2,22 @@
 import unittest
 import tempfile
 from pathlib import Path
-from apd_existing_build_evidence import certificates, xml_summary
+from apd_existing_build_evidence import application_inputs, certificates, xml_summary
+
+
+class PublicationSourceTest(unittest.TestCase):
+    def test_delivery_documentation_does_not_relabel_application_source(self):
+        before = [{'path': 'core', 'sha': 'app'}, {'path': 'docs', 'sha': 'old'}]
+        after = [{'path': 'core', 'sha': 'app'}, {'path': 'docs', 'sha': 'new'},
+                 {'path': '.github', 'sha': 'workflow'}, {'path': 'tools', 'sha': 'delivery'}]
+        self.assertEqual(application_inputs(before), application_inputs(after))
+
+    def test_source_android_assets_or_build_configuration_changes_cannot_pass(self):
+        for path in ('core', 'android', 'SPD-classes', 'services', 'desktop', 'gradle',
+                     'build.gradle', 'settings.gradle', 'gradle.properties'):
+            with self.subTest(path=path):
+                self.assertNotEqual(application_inputs([{'path': path, 'sha': 'tested'}]),
+                                    application_inputs([{'path': path, 'sha': 'changed'}]))
 
 
 class TestEvidenceTest(unittest.TestCase):
