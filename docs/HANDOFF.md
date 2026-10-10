@@ -513,3 +513,9 @@ Nine local aggregation regressions pass, including CLI rejection of completed se
 
 ### Confirmed AVD image minimum exceeds the partition setting
 Run38086795339 (scheduled sourcec449) compiled/passed core but failed before any episodes with the same exact QEMU requirement: 7275.62MB free, 7372.80MB required, despite disk-size4096M. The earlier partition-size change alone did not fix image provisioning. Normal-source99 run38087065433 is subject to that same image allocation; its gated100 batch must not be marked verified. Change approach: remove only unused .NET/Haskell SDK installations on the disposable hosted VM, then preflight at least9GiB free before booting. Do not remove Gradle, Android SDK components needed for APD, repository files, any owner/player data or signing material. Same supported API34 Google-APIs image; no gameplay change. Normal verification must rerun from the corrected workflow source; real native results remain pending.
+
+
+### Normal Warrior execution gate repinned — 2026-10-10 21:38 UTC
+- Source `455f22b5f14c1ea9886d033b81d0a1270ea5cd20`, verification run `38088088384` replaces failed preflight source/run 99a4/38087065433. Full core job is green; Android compile/native episodes remain pending.
+- Actual failed runs needed at least 7,372.80 MB to copy API34's base userdata image. `disk-size: 4096M` alone did not solve provisioning. Only unused .NET/Haskell SDKs on disposable hosted runners are removed, with a 9 GiB free-space preflight before boot. Gradle remains installed; compiled binary checksums are retained across the concurrent Gradle clean step.
+- The same preflight now protects each batch VM. The 100-seed experiment still waits for a genuinely successful five-episode baseline and reuses its exact compiled APK pair, playing only the other 95 seeds. No completed normal-profile episodes or completed 100-run cohort have been verified at this point.
