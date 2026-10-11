@@ -3,7 +3,7 @@ name: APD Auto Development
 
 on:
   schedule:
-    - cron: '0 * * * *'
+    cron: '*/5 * * * *'
   workflow_dispatch:
 
 permissions:
