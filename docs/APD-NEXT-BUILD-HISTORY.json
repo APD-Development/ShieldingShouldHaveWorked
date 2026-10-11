@@ -106,6 +106,15 @@
       ]
     },
     {
+      "category": "Statistics / UIMSD",
+      "sprite": "V061_PAGE",
+      "title": "Table controls",
+      "text": "Advanced tables keep every condition in a scrolling menu and arrange controls in two rows on narrow screens.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/UimsdScene.java"
+      ]
+    },
+    {
       "category": "Developer Commentary",
       "sprite": "V074_SHPX",
       "title": "Developer Commentary",

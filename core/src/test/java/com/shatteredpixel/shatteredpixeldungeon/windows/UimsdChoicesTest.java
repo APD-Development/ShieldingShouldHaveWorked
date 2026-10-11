@@ -29,7 +29,7 @@ public class UimsdChoicesTest {
 		}
 		String list = java.nio.file.Files.readString(root.resolve("windows/WndUimsdList.java"));
 		assertTrue(list.contains("e.action ? WindowGeometry.actionHeight(h)"));
-		assertTrue(list.contains("e.action ? 9 : UimsdStyle.SIZE_TEXT"));
+		assertTrue(list.contains("PixelScene.renderTextBlock(itemText(e), UimsdStyle.SIZE_TEXT)"));
 		assertTrue(list.indexOf("label.maxWidth(textWidth)") < list.indexOf("e.action ? WindowGeometry.actionHeight(h)"));
 		String demo = java.nio.file.Files.readString(root.resolve("windows/WndDemoUnlock.java"));
 		assertTrue(demo.contains("extends WndUimsdChoices"));

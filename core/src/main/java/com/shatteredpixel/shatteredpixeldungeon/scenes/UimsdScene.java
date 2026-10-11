@@ -470,7 +470,7 @@ public class UimsdScene extends PixelScene {
 		ui.add(homeBtn);
 		reg("home", cx0, y, homeW, 16);
 		cx0 += homeW + gap;
-		RedButton viewBtn = new RedButton((view == null ? "Table" : view.title) + "  (change table)", 8){
+		RedButton viewBtn = new RedButton("Tables", 7){
 			@Override
 			protected void onClick(){
 				pickView();
@@ -503,12 +503,7 @@ public class UimsdScene extends PixelScene {
 		reg("guide", cx0, y, helpW, 16);
 		y += 18;
 
-		//what this table is, in a line (so the player never has to guess what they are looking at)
-		if (view != null && !view.description.isEmpty()){
-			RenderedTextBlock d = text(view.description, UimsdStyle.SIZE_META, UimsdStyle.MUTED, contentW);
-			d.setPos(x0, y);
-			y = d.bottom() + 2;
-		}
+		//The complete table description remains in the existing Tables picker.
 
 		//work in progress / why something is unavailable (seed floors)
 		String notice = model.notice();
@@ -546,44 +541,33 @@ public class UimsdScene extends PixelScene {
 		reg("status", x0, y, contentW - 46, Math.max(statusBottom - y, 10));
 		y = Math.max(statusBottom, y + 14) + 3;
 
-		//filter chips
-		float cx = x0;
+		//All conditions remain editable in a scrolling native picker; their count does not consume table height.
 		final List<Filter> filters = model.query().filters;
-		for (int i = 0; i < filters.size(); i++){
-			final int index = i;
-			String label = StatusText.describe(model.dataset().def, filters.get(i));
-			if (label.length() > 34) label = label.substring(0, 32) + "..";
-			float cw = Math.min(contentW, label.length() * 4.2f + 10);
-			if (cx + cw > x0 + contentW){
-				cx = x0;
-				y += 15;
-			}
-			RedButton chip = new RedButton(label, 6){
-				@Override
-				protected void onClick(){
-					WndUimsdFilter.chip(model, index);
+		if (!filters.isEmpty()){
+			RedButton conditions = new RedButton("Conditions (" + filters.size() + ")", 6){
+				@Override protected void onClick(){
+					showConditions();
 				}
 			};
-			chip.setRect(cx, y, cw, 13);
-			ui.add(chip);
-			cx += cw + 2;
+			conditions.setRect(x0,y,contentW,16);ui.add(conditions);y += 18;
 		}
-		y += filters.isEmpty() ? 0 : 15;
 
 		//bottom controls first, so the table gets what is left
 		final ResultTable table = model.table();
 		float bottom = h - insets.bottom - 4;
-		float bar = 17;
+		int controlsPerRow = contentW < 160 ? 2 : 4;
+		float controlH = 18;
+		float bar = controlsPerRow == 2 ? 2 * controlH : controlH;
 		float barTop = bottom - bar;
 		String[] names = { "Filter", "Sort", "Columns", "Options" };
 		String[] ids = { "filter", "sort", "columns", "options" };
-		float bwid = (contentW - 6) / 4f;
+		float bwid = (contentW - 2 * (controlsPerRow-1)) / controlsPerRow;
 		for (int i = 0; i < 4; i++){
 			final int which = i;
 			String shownName = names[i];
 			if (i == 0 && !model.query().filters.isEmpty()) shownName += " (" + model.query().filters.size() + ")";
 			if (i == 1 && !model.query().sorts.isEmpty()) shownName += " (" + model.query().sorts.size() + ")";
-			RedButton b = new RedButton(shownName, 8){
+			RedButton b = new RedButton(shownName, 6){
 				@Override
 				protected void onClick(){
 					switch (which){
@@ -594,9 +578,11 @@ public class UimsdScene extends PixelScene {
 					}
 				}
 			};
-			b.setRect(x0 + i * (bwid + 2), barTop, bwid, bar - 1);
+			float bx = x0 + (i % controlsPerRow) * (bwid + 2);
+			float by = barTop + (i / controlsPerRow) * controlH;
+			b.setRect(bx, by, bwid, controlH - 1);
 			ui.add(b);
-			reg(ids[i], x0 + i * (bwid + 2), barTop, bwid, bar - 1);
+			reg(ids[i], bx, by, bwid, controlH - 1);
 		}
 		float tableBottom = barTop - 2;
 		if (table != null && table.pageCount() > 1){
@@ -662,6 +648,16 @@ public class UimsdScene extends PixelScene {
 
 	private static float TableGeometryHeader(){
 		return com.shatteredpixel.shatteredpixeldungeon.apd.query.TableGeometry.HEADER_HEIGHT;
+	}
+
+	private void showConditions(){
+		List<WndUimsdList.Entry> entries = new ArrayList<>();
+		for (Filter filter : model.query().filters) entries.add(WndUimsdList.Entry.item(StatusText.describe(model.dataset().def, filter)));
+		addToFront(WndUimsdList.menu("Conditions", "Tap a condition to change or remove it. All conditions must match.", entries,
+				(index, checked) -> WndUimsdFilter.chip(model, index)).restoreWith(() -> {
+			com.watabou.noosa.Scene active = com.watabou.noosa.Game.scene();
+			if (active instanceof UimsdScene) ((UimsdScene) active).showConditions();
+		}));
 	}
 
 	private void pickView(){
