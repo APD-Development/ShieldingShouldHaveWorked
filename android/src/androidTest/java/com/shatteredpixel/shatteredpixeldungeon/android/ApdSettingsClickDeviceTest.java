@@ -284,6 +284,7 @@ public class ApdSettingsClickDeviceTest {
 				com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList hub = find(Game.scene(), com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.class);
 				assertNotNull(hub);
 				assertEquals(page.title, communityEntries(hub).get(page.ordinal()).label);
+				assertEquals(page.summary, communityEntries(hub).get(page.ordinal()).detail);
 				tapCommunityEntry(hub, page.ordinal());
 				Object previousPageScene = Game.scene();
 				onRender(ShatteredPixelDungeon::seamlessResetScene);

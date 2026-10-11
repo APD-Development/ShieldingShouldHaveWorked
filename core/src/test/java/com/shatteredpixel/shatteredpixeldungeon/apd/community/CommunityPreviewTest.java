@@ -10,13 +10,16 @@ import static org.junit.Assert.*;
 public class CommunityPreviewTest {
     @Test public void everyDestinationHasUniqueReadableContentAndExplicitOfflineAvailability() {
         Set<String> titles = new HashSet<>();
+        Set<String> summaries = new HashSet<>();
         assertEquals(8, CommunityPreview.Page.values().length);
         for (CommunityPreview.Page page : CommunityPreview.Page.values()) {
             assertTrue(titles.add(page.title));
+            assertTrue("each menu row has a unique summary", summaries.add(page.summary));
+            assertTrue(page.summary.length() > 25);
             assertTrue(page.explanation.length() > 80);
             assertTrue(page.availability().contains("Available now: read this offline preview"));
             assertTrue(page.availability().contains("No submission, vote, review or download is sent here"));
-            String text = (page.explanation + page.availability()).toLowerCase();
+            String text = (page.summary + page.explanation + page.availability()).toLowerCase();
             assertFalse(text.contains("december"));
             assertFalse(text.contains("january"));
             assertFalse(text.contains("25 testers"));
@@ -35,7 +38,7 @@ public class CommunityPreviewTest {
         StringBuilder text = new StringBuilder(CommunityPreview.COMMENTS)
                 .append(CommunityPreview.COMMENT_PLACEHOLDER);
         for (CommunityPreview.Page page : CommunityPreview.Page.values()) {
-            text.append(page.title).append(page.explanation).append(page.availability());
+            text.append(page.title).append(page.summary).append(page.explanation).append(page.availability());
         }
         String visible = text.toString().toLowerCase(java.util.Locale.ROOT);
         for (String privateTopic : new String[]{"vendetta", "cleric lore", "creator-reserved",
@@ -65,6 +68,7 @@ public class CommunityPreviewTest {
     @Test public void navigationHasNoUnlockQueueOrNetworkDependency() throws Exception {
         String scene = Files.readString(Paths.get(System.getProperty("apd.game.src"), "scenes/CommunityScene.java"));
         assertTrue(scene.contains("CommunityPreview.Page.values()[index]"));
+        assertTrue(scene.contains("page.title, page.summary"));
         assertTrue(scene.contains("CommunityScene.this.onBackPressed()"));
         assertTrue(scene.contains("switchNoFade(TitleScene.class)"));
         assertFalse(scene.contains("UimsdUnlock"));

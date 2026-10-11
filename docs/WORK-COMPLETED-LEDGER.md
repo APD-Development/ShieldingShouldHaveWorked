@@ -1,3 +1,11 @@
+## 2026-10-11T00:35:05.753Z - Community menu summaries implemented (verification pending)
+
+- Execution `APD-20261011T003219Z-COMMUNITY-SUMMARIES`; observed implementation record `2026-10-11T00:35:05.753Z`; parent observed before the change `e9b9e1971fed601291d19d336c202c2447395938`. Time outside this bounded execution is unknown.
+- Changed `CommunityPreview.Page` to carry a unique one-line summary for each of the eight existing offline destinations; `CommunityScene` renders that summary in the landing row.
+- Retained JVM assertions require unique summaries longer than 25 characters and include them in the no-internal-date/no-clan/no-creator-secret checks. The existing API34 all-page navigation case now asserts each actual row detail.
+- Verification status: deterministic source replacement guards completed. Exact-source Java/core/native verification is pending. The useful TEST35 workflow remains undisturbed and predates this source.
+- No online service, account, queue, fake community data, gameplay, RNG, save/statistics format, signing identity, application ID, release, `main` or Claude branch changed.
+
 ## 2026-10-11 00:28 UTC / October 10 evening New York — Historical saved-sort compatibility defect reproduced
 
 A further regression reproduced an older Turkish/Azeri saved aggregate sort (mın:score) reopening in insertion order instead of ascending minimum order. Stabilizing newly generated aggregate IDs does not repair previously encoded locale-specific IDs. QueryCodec now resolves only known historical MIN/MEDIAN/COUNT_DISTINCT aliases that exactly correspond to aggregates in this query. Literal group keys and unknown/future sort IDs stay unchanged; the original saved-view file is never rewritten on read. Canonical in-memory sort IDs also allow normal header/selection matching.

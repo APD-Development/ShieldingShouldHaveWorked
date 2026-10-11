@@ -50,7 +50,7 @@ public class CommunityScene extends PixelScene {
             title = "Community";
             message = "Offline alpha preview: explore APD's planned community hub. Online features are not available here yet.";
             for (CommunityPreview.Page page : CommunityPreview.Page.values())
-                entries.add(WndUimsdList.Entry.item(page.title, "Read the plan — future feature"));
+                entries.add(WndUimsdList.Entry.item(page.title, page.summary));
         } else {
             title = selected.title;
             message = "Planned feature — offline preview";

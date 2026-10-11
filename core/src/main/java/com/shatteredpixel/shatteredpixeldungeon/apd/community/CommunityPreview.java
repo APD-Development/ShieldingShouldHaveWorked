@@ -28,17 +28,30 @@ public final class CommunityPreview {
     public static final String COMMENTS = "Every submission will have its own threaded comment section. Players can comment, reply to other comments, suggest improvements and ask the original author questions. The author can reply. Discussions continue during voting. Comments are not votes; comment activity never increases the voting score.";
     public static final String COMMENT_PLACEHOLDER = "Comment threads will appear here under each submission. No submissions or comments are loaded in this offline preview. Posting and replying are planned for a future update.";
     public enum Page {
-        SUBMISSIONS("Community submissions", "Month 1 is for your own ideas and discussion. Players can read submissions, ask authors questions and suggest improvements. Authors can join the conversation. Ambitious ideas are welcome; difficulty or development time alone does not disqualify them."),
-        QUALIFICATION("Qualification voting", "Month 2 lets players vote for the submissions they want. The top 16 advance to Month 3. Discussion continues during voting. Comments are not votes and do not increase a submission's voting score. Android and Steam share one community; tie rules remain undecided."),
-        TOURNAMENT("Tournament brackets", "Month 3 starts with the final 16 and uses weekly head-to-head elimination rounds to select winning ideas. Eventually different categories and submission groups can progress through overlapping cycles."),
-        WINNERS("Community selected content", "Winning ideas enter development. The approximate two-month implementation goal is not a deadline for discarding a winner."),
-        REVIEWS("Run reviews and challenges", "Players will submit dungeon runs for peer review and discuss good or bad decisions. A reviewer calling a decision bad must attempt the same situation themselves. The required replay scope is undecided. Reviews are by players, not AI-generated judgments."),
-        MODS("Mods and competitions", "Downloadable community mods with mobile compatibility are planned. A monthly modded-character competition and community voting can select characters for integration into APD. Download and competition rules are not finalized."),
-        EVENTS("Community events", "Community events are planned for the shared Android and Steam community. Players will eventually be able to participate in community activities. Event formats and participation rules remain undecided."),
-        DEVELOPMENT("Development and testing", "Players will eventually follow development of winning submissions and test content while it is being built. No live progress feed or community testing service is connected in this preview.");
+        SUBMISSIONS("Community submissions", "Month 1: propose ideas and discuss them",
+                "Month 1 is for your own ideas and discussion. Players can read submissions, ask authors questions and suggest improvements. Authors can join the conversation. Ambitious ideas are welcome; difficulty or development time alone does not disqualify them."),
+        QUALIFICATION("Qualification voting", "Month 2: vote to select the top 16",
+                "Month 2 lets players vote for the submissions they want. The top 16 advance to Month 3. Discussion continues during voting. Comments are not votes and do not increase a submission's voting score. Android and Steam share one community; tie rules remain undecided."),
+        TOURNAMENT("Tournament brackets", "Month 3: weekly head-to-head elimination",
+                "Month 3 starts with the final 16 and uses weekly head-to-head elimination rounds to select winning ideas. Eventually different categories and submission groups can progress through overlapping cycles."),
+        WINNERS("Community selected content", "Follow selected ideas into development",
+                "Winning ideas enter development. The approximate two-month implementation goal is not a deadline for discarding a winner."),
+        REVIEWS("Run reviews and challenges", "Peer-review runs and attempt disputed situations",
+                "Players will submit dungeon runs for peer review and discuss good or bad decisions. A reviewer calling a decision bad must attempt the same situation themselves. The required replay scope is undecided. Reviews are by players, not AI-generated judgments."),
+        MODS("Mods and competitions", "Future compatible mods and character competitions",
+                "Downloadable community mods with mobile compatibility are planned. A monthly modded-character competition and community voting can select characters for integration into APD. Download and competition rules are not finalized."),
+        EVENTS("Community events", "Future shared community activities",
+                "Community events are planned for the shared Android and Steam community. Players will eventually be able to participate in community activities. Event formats and participation rules remain undecided."),
+        DEVELOPMENT("Development and testing", "Follow and test winning content in progress",
+                "Players will eventually follow development of winning submissions and test content while it is being built. No live progress feed or community testing service is connected in this preview.");
         public final String title;
+        public final String summary;
         public final String explanation;
-        Page(String title, String explanation) { this.title = title; this.explanation = explanation; }
+        Page(String title, String summary, String explanation) {
+            this.title = title;
+            this.summary = summary;
+            this.explanation = explanation;
+        }
         public String availability() {
             String planned;
             switch (this) {

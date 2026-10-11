@@ -1,3 +1,9 @@
+## 2026-10-11 00:32 UTC / October 10 evening New York — Community landing page made scannable
+
+Continued the approved offline Community phase from real branch head `e9b9e1971fed601291d19d336c202c2447395938`. Replaced the repeated generic subtitle on all eight hub rows with concise page-specific summaries. The known Month 1 submission, Month 2 top-16 qualification and Month 3 weekly-elimination sequence is visible directly in the landing list; the other destinations remain explicitly future-facing. No fake submissions/votes/comments, internal dates, clans, creator-only topics, backend, account or network behavior was added.
+
+CommunityPreviewTest now requires eight unique meaningful summaries and runs the existing player-text safety checks over them. The native all-pages touch test verifies each rendered subtitle before navigation. Source is implemented but not exact-source verified. The already-running TEST35 check was not canceled and does not contain this later Community change or the latest historical-sort compatibility correction.
+
 ## 2026-10-11 00:28 UTC / October 10 evening New York — Historical saved-sort compatibility defect reproduced
 
 A further regression reproduced an older Turkish/Azeri saved aggregate sort (mın:score) reopening in insertion order instead of ascending minimum order. Stabilizing newly generated aggregate IDs does not repair previously encoded locale-specific IDs. QueryCodec now resolves only known historical MIN/MEDIAN/COUNT_DISTINCT aliases that exactly correspond to aggregates in this query. Literal group keys and unknown/future sort IDs stay unchanged; the original saved-view file is never rewritten on read. Canonical in-memory sort IDs also allow normal header/selection matching.
