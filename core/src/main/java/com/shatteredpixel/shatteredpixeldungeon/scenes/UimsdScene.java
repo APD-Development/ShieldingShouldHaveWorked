@@ -261,23 +261,25 @@ public class UimsdScene extends PixelScene {
 
 		//the header is the full name, sized to fit in the room left of the exit button (UIMSD stays the short name elsewhere)
 		float room = contentW - Math.max(0, btnExit.width() - margin) - 2;
-		RenderedTextBlock title = text(FULL_NAME, TitleFit.size(room, FULL_NAME), Window.TITLE_COLOR, room);
+		RenderedTextBlock title = text("UIMSD", 12, Window.TITLE_COLOR, room);
 		title.setPos(x0, y);
 		y = title.bottom() + 1;
+		RenderedTextBlock subtitle = text(FULL_NAME, 6, UimsdStyle.MUTED, room);
+		subtitle.setPos(x0, y);
+		y = subtitle.bottom() + 1;
 
 		//which build this is, so a device test can tell what is installed
 		RenderedTextBlock build = text("build " + com.watabou.noosa.Game.version, 5, 0x999999, contentW);
 		build.setPos(x0, y);
 		y = build.bottom() + 3;
 
-		if (showingSample){
-			RenderedTextBlock sample = text("SAMPLE DATA - made up for the tour, NOT your history", 6, 0xFF6666, contentW);
-			sample.setPos(x0, y);
-			y = sample.bottom() + 2;
-		} else if (showingDemo){
-			RenderedTextBlock demo = text("DEMO DATA - made up for testing, NOT your real history", 6, 0xFF6666, contentW);
-			demo.setPos(x0, y);
-			y = demo.bottom() + 2;
+		if (showingSample || showingDemo){
+			RedButton dataIndicator = new RedButton(showingSample ? "SAMPLE DATA — fictional" : "DEMO DATA — fictional", 6){
+				@Override protected void onClick(){
+					addToFront(new WndUimsdText("Fictional statistics", "These records are made-up test data. They are stored separately from your real run history and never count toward the ten-run unlock.", false));
+				}
+			};
+			dataIndicator.setRect(x0, y, contentW, 18);ui.add(dataIndicator);y += 20;
 		}
 
 		if (tutorialPreparing){
@@ -344,56 +346,32 @@ public class UimsdScene extends PixelScene {
 
 	//draws the Home page; returns the bottom of the room it used (what the tour panel may sit above)
 	private float buildHome( int h, RectF insets ){
-		float rowH = 16;
-		float guideW = 36;
-		float gap = 2;
-		float reportW = 34;
-		float each = (contentW - guideW - reportW - 3 * gap) / 2f;
-		RedButton guide = new RedButton("Guide", 8){
-			@Override
-			protected void onClick(){
-				openGuide();
-			}
-		};
-		guide.setRect(x0, y, guideW, rowH);
-		ui.add(guide);
-		reg("guide", x0, y, guideW, rowH);
-		RedButton rules = new RedButton(homeAllRules ? "Rules: all (mixed)" : "Rules: yours", 7){
-			@Override
-			protected void onClick(){
-				homeAllRules = !homeAllRules;
-				dirty = true;
-			}
-		};
-		RedButton report = new RedButton("Report", 8){
-			@Override
-			protected void onClick(){
-				WndUimsdReport.ofLifetime(model, homeAllRules);
-			}
-		};
-		report.setRect(x0 + guideW + gap, y, reportW, rowH);
-		ui.add(report);
-		reg("report", x0 + guideW + gap, y, reportW, rowH);
-		rules.setRect(x0 + guideW + reportW + 2 * gap, y, each, rowH);
-		ui.add(rules);
-		RedButton tables = new RedButton("All tables", 8){
-			@Override
-			protected void onClick(){
-				atHome = false;
-				dirty = true;
-			}
-		};
-		tables.setRect(x0 + guideW + reportW + 3 * gap + each, y, each, rowH);
-		ui.add(tables);
-		reg("tables", x0 + guideW + reportW + 3 * gap + each, y, each, rowH);
-		y += rowH + 2;
-
 		UimsdHome home = homeData();
 		float bottom = h - insets.bottom - 4;
 		if (home == null) return bottom;
-		RenderedTextBlock note = text(home.scopeNote, 5, 0xDDDDDD, contentW);
-		note.setPos(x0, y);
-		y = note.bottom() + 3;
+		float gap = 2, each = (contentW - 2 * gap)/3f;
+		RedButton guide = new RedButton("Guide", 7){
+			@Override protected void onClick(){ openGuide(); }
+		};
+		guide.setRect(x0, y, each, 18);ui.add(guide);reg("guide", x0, y, each, 18);
+		RedButton report = new RedButton("Report", 7){
+			@Override protected void onClick(){ WndUimsdReport.ofLifetime(model, homeAllRules); }
+		};
+		report.setRect(guide.right()+gap, y, each, 18);ui.add(report);reg("report", report.left(), y, each, 18);
+		RedButton tables = new RedButton("Tables", 7){
+			@Override protected void onClick(){ atHome=false;dirty=true; }
+		};
+		tables.setRect(report.right()+gap, y, each, 18);ui.add(tables);reg("tables", tables.left(), y, each, 18);
+		y += 20;
+		RedButton rules = new RedButton(home.mixedRulesets ? "Rules: Mixed" : homeAllRules ? "Rules: all" : "Rules: current", 6){
+			@Override protected void onClick(){ homeAllRules=!homeAllRules;dirty=true; }
+		};
+		rules.setRect(x0,y,contentW-22,18);ui.add(rules);
+		RedButton scopeInfo = new RedButton("?", 7){
+			@Override protected void onClick(){addToFront(new WndUimsdText("Rules and record coverage", home.scopeNote, false));}
+		};
+		scopeInfo.setRect(rules.right()+2,y,20,18);ui.add(scopeInfo);
+		y += 20;
 
 		if (home.isEmpty()){
 			buildFirstRun(home, bottom);
@@ -404,6 +382,10 @@ public class UimsdScene extends PixelScene {
 		pane.setListener(new UimsdHomePane.Listener(){
 			@Override
 			public void onLink( String viewId ){
+				if (viewId.startsWith("!outcome:")){
+					model.showQuery(com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdHomeNavigation.outcome(viewId, homeAllRules));
+					atHome=false;dirty=true;return;
+				}
 				if (UimsdHome.ASK_LINK.equals(viewId)){
 					WndUimsdAsk.open(model.catalog(), model.currentRuleset(), new WndUimsdAsk.Host(){
 						@Override
@@ -441,33 +423,11 @@ public class UimsdScene extends PixelScene {
 		welcome.setPos(x0, y + 2);
 		y = welcome.bottom() + 2;
 		RenderedTextBlock what = text(elsewhere
-				? "No finished run was played under your current rules yet, but " + home.runsElsewhere + (home.runsElsewhere == 1 ? " was" : " were")
-						+ " played under other rules (a different difficulty, challenges or exotic-item setting). Tap \"Rules: yours\" above to include them."
-				: "UIMSD is the game's statistics system. Every run you play is recorded, and this page turns your history into numbers: "
-						+ "how each class does, what you lean on, what ends your runs, and how difficulty changes your odds.",
+				? "No finished runs under these rules. Tap Rules to include your other " + home.runsElsewhere + " runs."
+				: "No finished runs yet. Statistics appear when a recorded run ends.",
 				UimsdStyle.SIZE_HELP, UimsdStyle.TEXT, contentW);
-		what.setPos(x0, y);
-		y = what.bottom() + 4;
-		if (!elsewhere){
-			RenderedTextBlock fills = text("WHEN YOU HAVE FINISHED A RUN, THIS PAGE FILLS WITH", UimsdStyle.SIZE_HELP, UimsdStyle.HEADING, contentW);
-			fills.setPos(x0, y);
-			y = fills.bottom() + 2;
-			String[] bullets = {
-					"Your runs: wins, deaths, win rate, deepest floor",
-					"Characters and difficulty: how each class and level does",
-					"Gear and enemies: what you use, what you meet, what kills you",
-					"Recent runs and records",
-			};
-			for (String b : bullets){
-				RenderedTextBlock t = text("- " + b, UimsdStyle.SIZE_HELP, UimsdStyle.MUTED, contentW - 4);
-				t.setPos(x0 + 4, y);
-				y = t.bottom() + 1;
-			}
-			y += 4;
-			RenderedTextBlock ongoing = text("A run still going counts when it ends. Recording is automatic (see History recording in APD Settings).", UimsdStyle.SIZE_META, UimsdStyle.FAINT, contentW);
-			ongoing.setPos(x0, y);
-			y = ongoing.bottom() + 6;
-		}
+		what.setPos(x0, y);y = what.bottom() + 4;
+
 		RedButton tour = new RedButton("Take the tour (2 minutes)", 8){
 			@Override
 			protected void onClick(){
@@ -991,5 +951,6 @@ public class UimsdScene extends PixelScene {
 		else ShatteredPixelDungeon.switchScene(backTo);
 	}
 }
+
 
 

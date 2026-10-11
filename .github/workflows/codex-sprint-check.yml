@@ -101,6 +101,19 @@ jobs:
           yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36"
       - uses: gradle/actions/setup-gradle@v4
+      - name: Validate and embed reviewed offline build history
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import json, os, urllib.request
+          ledger=json.load(open('docs/APD-NEXT-BUILD-HISTORY.json'))
+          url='https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']+'/compare/'+ledger['previous_source']+'...'+os.environ['GITHUB_SHA']
+          req=urllib.request.Request(url,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})
+          with urllib.request.urlopen(req) as response: data=json.load(response)
+          with open('apd-history-comparison.json','w') as out: json.dump(data,out)
+          PY
+          python3 tools/apd_build_history.py --comparison apd-history-comparison.json --ledger docs/APD-NEXT-BUILD-HISTORY.json --build ${{ github.run_number }}
       - name: Check UI restoration and play/save/continue/end on API 34
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -111,7 +124,7 @@ jobs:
           script: |
             adb logcat -c
             adb logcat -v time > codex-logcat.txt &
-            timeout --signal=TERM --kill-after=30 840 ./gradlew :android:connectedDebugAndroidTest -PapdTestBuild -PapdBuild=C${{ github.run_number }} -Pandroid.testInstrumentationRunnerArguments.class=com.shatteredpixel.shatteredpixeldungeon.android.UimsdRestoreDeviceTest,com.shatteredpixel.shatteredpixeldungeon.android.PlayRunDeviceTest,com.shatteredpixel.shatteredpixeldungeon.android.RunSetupDifficultyDeviceTest,com.shatteredpixel.shatteredpixeldungeon.android.ApdSettingsClickDeviceTest#adultHumorControlWorksWithoutAnAgeProviderAndReopensWithSavedChoice,com.shatteredpixel.shatteredpixeldungeon.android.ApdSettingsClickDeviceTest#communityMenuOpensEveryPreviewAndReturnsWithoutStackingWindows,com.shatteredpixel.shatteredpixeldungeon.android.AboutDeviceTest
+            timeout --signal=TERM --kill-after=30 840 ./gradlew :android:connectedDebugAndroidTest -PapdTestBuild -PapdBuild=C${{ github.run_number }} -Pandroid.testInstrumentationRunnerArguments.class=com.shatteredpixel.shatteredpixeldungeon.android.UimsdRestoreDeviceTest,com.shatteredpixel.shatteredpixeldungeon.android.PlayRunDeviceTest,com.shatteredpixel.shatteredpixeldungeon.android.RunSetupDifficultyDeviceTest,com.shatteredpixel.shatteredpixeldungeon.android.ApdSettingsClickDeviceTest#adultHumorControlWorksWithoutAnAgeProviderAndReopensWithSavedChoice,com.shatteredpixel.shatteredpixeldungeon.android.ApdSettingsClickDeviceTest#communityMenuOpensEveryPreviewAndReturnsWithoutStackingWindows,com.shatteredpixel.shatteredpixeldungeon.android.AboutDeviceTest,com.shatteredpixel.shatteredpixeldungeon.android.UimsdScreensDeviceTest
       - name: Keep Android evidence even if a check fails
         if: always()
         uses: actions/upload-artifact@v4

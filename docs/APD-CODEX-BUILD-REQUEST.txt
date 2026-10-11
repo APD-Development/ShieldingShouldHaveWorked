@@ -1,1 +1,1 @@
-Verify About redesign and permanent ten-genuine-run clickable annotation. Full core/debug/API34 plus AboutDeviceTest; preserve signing and player data. Publication separate after completed verification.
+Verify compact UIMSD Home first batch, all existing core regressions, About/News/Changes and UIMSD screen device acceptance. Do not publish or label unverified candidate playable.

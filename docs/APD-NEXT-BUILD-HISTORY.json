@@ -81,6 +81,17 @@
       ]
     },
     {
+      "category": "Statistics / UIMSD",
+      "sprite": "V061_PAGE",
+      "title": "Statistics Home",
+      "text": "UIMSD Home uses compact native controls, aligned statistics and optional explanations; tap wins, deaths or abandoned runs to explore matching records.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/UimsdHomePane.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/UimsdScene.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdHomeNavigation.java"
+      ]
+    },
+    {
       "category": "Developer Commentary",
       "sprite": "V074_SHPX",
       "title": "Developer Commentary",
