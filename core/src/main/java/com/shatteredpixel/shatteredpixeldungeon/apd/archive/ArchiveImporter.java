@@ -168,6 +168,14 @@ public final class ArchiveImporter {
 					if (e == null || !seen.add(name)){
 						//something the manifest does not list is never written, and does not spoil the rest
 						report.details.add("not in the manifest or repeated, ignored: " + safe(name));
+						// getNextEntry otherwise drains this payload without our size limit.
+						byte[] ignoredBuffer = new byte[16 * 1024];
+						long ignoredSize = 0;
+						int ignoredRead;
+						while ((ignoredRead = readChunk(zip, ignoredBuffer)) > 0){
+							ignoredSize += ignoredRead;
+							if (ignoredSize > MAX_FILE_BYTES) throw new IOException("an ignored file in the archive is too large");
+						}
 						continue;
 					}
 					Staged st = stage(root, tmpDir, zip, e, staged.size(), report);
