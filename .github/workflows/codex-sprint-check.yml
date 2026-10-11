@@ -32,10 +32,32 @@ jobs:
           yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36"
       - uses: gradle/actions/setup-gradle@v4
+      - name: Validate and embed reviewed offline build history
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import json, os, urllib.request
+          ledger=json.load(open('docs/APD-NEXT-BUILD-HISTORY.json'))
+          url='https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']+'/compare/'+ledger['previous_source']+'...'+os.environ['GITHUB_SHA']
+          req=urllib.request.Request(url,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})
+          with urllib.request.urlopen(req) as response: data=json.load(response)
+          with open('apd-history-comparison.json','w') as out: json.dump(data,out)
+          PY
+          python3 tools/apd_build_history.py --comparison apd-history-comparison.json --ledger docs/APD-NEXT-BUILD-HISTORY.json --build ${{ github.run_number }}
       - name: Run the complete core unit test suite
         run: ./gradlew :core:test
       - name: Build the private debug APK
         run: ./gradlew :android:assembleDebug -PapdTestBuild -PapdBuild=C${{ github.run_number }}
+      - name: Verify the APK contains its exact offline change record
+        run: |
+          python3 - <<'PY'
+          import pathlib,zipfile
+          name='apd/history/codex-test-${{ github.run_number }}.tsv'
+          with zipfile.ZipFile('android/build/outputs/apk/debug/android-debug.apk') as apk:
+              assert apk.read('assets/'+name)==pathlib.Path('core/src/main/assets/'+name).read_bytes()
+              assert apk.read('assets/apd/history/index.tsv')==pathlib.Path('core/src/main/assets/apd/history/index.tsv').read_bytes()
+          PY
       - name: Name and hash the APK
         run: |
           cp android/build/outputs/apk/debug/android-debug.apk ADHD-Pixel-Dungeon-CODEX-TEST-${{ github.run_number }}.apk

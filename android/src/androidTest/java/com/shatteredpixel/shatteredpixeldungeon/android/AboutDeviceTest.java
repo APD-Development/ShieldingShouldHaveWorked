@@ -51,4 +51,26 @@ public class AboutDeviceTest {
    render(()->{try{assertNotNull(find(Game.scene(),"APD News"));assertNotNull(find(Game.scene(),"APD Changes"));}catch(Exception e){throw new RuntimeException(e);}});
   }
  }
+ @Test public void offlineNewsCardsOpenDatedSpritePopups()throws Exception{
+  try(ActivityScenario<AndroidLauncher> scenario=ActivityScenario.launch(AndroidLauncher.class)){
+   render(()->{com.shatteredpixel.shatteredpixeldungeon.scenes.APDTextScene.page=com.shatteredpixel.shatteredpixeldungeon.scenes.APDTextScene.Page.NEWS;ShatteredPixelDungeon.switchScene(com.shatteredpixel.shatteredpixeldungeon.scenes.APDTextScene.class);});
+   long end=System.currentTimeMillis()+15000;
+   while(!(Game.scene() instanceof com.shatteredpixel.shatteredpixeldungeon.scenes.APDTextScene)&&System.currentTimeMillis()<end)Thread.sleep(100);
+   assertTrue(Game.scene() instanceof com.shatteredpixel.shatteredpixeldungeon.scenes.APDTextScene);
+   render(()->{try{
+    int[] cards={0};checkNews(Game.scene(),cards);assertEquals(2,cards[0]);
+   }catch(Exception e){throw new RuntimeException(e);}});
+  }
+ }
+ private void checkNews(Group group,int[] count)throws Exception{
+  for(Gizmo g:children(group)){
+   if(g.getClass().getName().endsWith("$NewsCard")){
+    count[0]++;assertTrue(g.width()>0);assertTrue(g.height()>=32);
+    Method click=g.getClass().getDeclaredMethod("onClick");click.setAccessible(true);click.invoke(g);
+    com.shatteredpixel.shatteredpixeldungeon.windows.WndTitledMessage popup=null;
+    for(Gizmo w:children(Game.scene()))if(w instanceof com.shatteredpixel.shatteredpixeldungeon.windows.WndTitledMessage&&w.alive)popup=(com.shatteredpixel.shatteredpixeldungeon.windows.WndTitledMessage)w;
+    assertNotNull(popup);popup.hide();
+   }else if(g instanceof Group)checkNews((Group)g,count);
+  }
+ }
 }

@@ -1,0 +1,91 @@
+{
+  "previous_label": "Codex TEST50",
+  "previous_source": "14226785732470e5241daaabe92ba4dc7d399df3",
+  "date": "2026-10-11",
+  "changes": [
+    {
+      "category": "Bug Fixes",
+      "sprite": "V061_BUGFIX",
+      "title": "Save protection",
+      "text": "Failed save writes now preserve the existing save, nested recovery works, and failed reads close their files.",
+      "paths": [
+        "SPD-classes/src/main/java/com/watabou/utils/FileUtils.java"
+      ]
+    },
+    {
+      "category": "Statistics / UIMSD",
+      "sprite": "V061_PAGE",
+      "title": "Run comparisons",
+      "text": "Run comparisons now show the correct difference even for extremely large recorded values.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/report/ReportBuilder.java"
+      ]
+    },
+    {
+      "category": "Statistics / UIMSD",
+      "sprite": "PD_EYE",
+      "title": "Boss statistics",
+      "text": "Yog's summoned minions no longer count as bosses; cached tables refresh without changing run history.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/BossClasses.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowBuilders.java"
+      ]
+    },
+    {
+      "category": "Bug Fixes",
+      "sprite": "V061_BUGFIX",
+      "title": "Statistics cache",
+      "text": "Malformed statistics caches are rejected before attempting oversized memory allocations.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowCodec.java"
+      ]
+    },
+    {
+      "category": "Quality of Life",
+      "sprite": "V061_PAGE",
+      "title": "Statistics shortcut",
+      "text": "The statistics arrow remains visible and clickable after ten genuine runs; demo access keeps the earlier guidance.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/UimsdGate.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/TitleScene.java"
+      ]
+    },
+    {
+      "category": "Quality of Life",
+      "sprite": "V061_PAGE",
+      "title": "About APD",
+      "text": "About now has six compact information popups and shows the installed version and build.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/AboutScene.java"
+      ]
+    },
+    {
+      "category": "Quality of Life",
+      "sprite": "V061_PAGE",
+      "title": "News and Changes",
+      "text": "News now uses dated article cards, while Changes uses build navigation and clickable sprite entries.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/APDTextScene.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/history/ApdHistory.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/history/ApdNews.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_PAGE",
+      "title": "Historical records",
+      "text": "Historical builds with missing evidence are explicitly marked incomplete instead of receiving guessed change notes.",
+      "paths": [
+        "core/src/main/assets/apd/history/index.tsv",
+        "core/src/main/assets/apd/news.tsv"
+      ]
+    },
+    {
+      "category": "Developer Commentary",
+      "sprite": "V074_SHPX",
+      "title": "Developer Commentary",
+      "text": "I focused on save protection, trustworthy statistics and clearer information screens. Older build notes remain incomplete wherever the evidence is missing.",
+      "paths": []
+    }
+  ]
+}

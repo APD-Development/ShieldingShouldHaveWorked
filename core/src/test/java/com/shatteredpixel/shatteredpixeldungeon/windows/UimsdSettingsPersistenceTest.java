@@ -67,6 +67,7 @@ public class UimsdSettingsPersistenceTest {
         UimsdGate.forceGateOnForTest(true);
         try {
             UimsdGate.FLAGS.setUnlocked();
+            UimsdGate.FLAGS.setTourUnlocked();
             UimsdGate.FLAGS.setPromptPending();
             assertEquals(UimsdGate.TENTH_RUN_ARROW_CLEAN, UimsdGate.titleAnnotation(""));
             SPDSettings.apdAdultHumor(true);
