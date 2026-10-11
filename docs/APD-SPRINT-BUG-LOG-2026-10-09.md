@@ -1,3 +1,11 @@
+## 2026-10-11 00:23 UTC / October 10 evening New York — UIMSD follow-ups accepted; final known-curse display build requested
+
+TEST34 workflow 38097519064 succeeded for exact source 715219d1fcebe2acc6fb0ee014bbdb68108e925e (00:10:21 through 00:21:46 UTC). Actual downloaded XML proves 1,015 core tests and 9 API34 cases, zero failures/errors/skips; debug assembly passed. This includes the seven warnings, grouped-sort ID fix and both actual tour-choice restorations without started tours/sample generation. It is not physical-phone verification. This candidate was not delivered; the confirmed Wayward display fix was developed while its tests ran and needs its own exact-source verification.
+
+Requesting one final combined core/debug/API34 check including commit 22b4285f0e32d7853d8d293e5d2fea65289cdfa0. Additional cached-class quest/save-isolation regressions passed 9/9 (0.433 s); private-delivery safety fixtures passed 11/11. Report draft rendered to a valid four-page PDF and its extracted text was checked, but it is not a delivered report. Signatures, application ID, checksum and current exact-source tests must pass the separate private-delivery gate. TEST31 remains preserved rollback. No source is rebuilt merely for publication.
+
+The one explicit 30-second wait (approximately 00:22:19-00:22:49 UTC) awaited CI completion and is recorded as tool/build waiting, not coding. Precise whole-session active/idle totals remain unmetered. No continuous overnight/unattended claim is made. No player data, gameplay mechanics, seeded RNG, signing identity, main or Claude branch changed.
+
 ## 2026-10-11 00:17 UTC / October 10 evening New York — Confirmed weapon-accuracy display defect
 
 While the combined UIMSD check ran, a new targeted regression reproduced an active known Wayward curse showing 100.0% base weapon accuracy while the unchanged combat path used 20.0%. Weapon.accuracyDescription now applies the existing 1/5 modifier only when the curse is known and its actual buff is active. Unknown curses are not exposed; other weapons are not penalized, and inspecting the screen does not spend HP/items/time, consume the effect or advance RNG. Melee/ranged descriptions, both distances, Point Blank 0-2, understrength/normal strength and hidden upgrades are covered.
