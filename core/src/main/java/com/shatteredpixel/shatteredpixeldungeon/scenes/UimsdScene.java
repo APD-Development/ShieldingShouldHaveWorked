@@ -49,7 +49,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.UimsdHomePane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.UimsdTable;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdColumns;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdChoices;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdFilter;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdText;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdGuide;
@@ -204,13 +204,7 @@ public class UimsdScene extends PixelScene {
 	public synchronized void update(){
 		if (offerPending){
 			offerPending = false;
-			addToFront(new WndOptions("New to UIMSD?", "Take a short tour of the real screens. You can skip any step, and the Guide button brings it back whenever you want.",
-					"Start the tour", "Later"){
-				@Override
-				protected void onSelect( int index ){
-					if (index == 0) startTour(0);
-				}
-			});
+			offerTour();
 		}
 		UimsdTutorial t = tutorial;
 		if (t != null && !tutorialPreparing){
@@ -828,6 +822,26 @@ public class UimsdScene extends PixelScene {
 	}
 
 	//the tour can use the player's own runs when there are enough of them to show every kind of screen
+	private void offerTour(){
+		addToFront(new WndUimsdChoices("New to UIMSD?", "Take a short tour of the real screens. You can skip any step, and the Guide button brings it back whenever you want.",
+				"Start the tour", "Later"){
+			@Override
+			protected void onSelect( int index ){
+				if (index == 0) ((UimsdScene) ShatteredPixelDungeon.scene()).startTour(0);
+			}
+		}.restoreWith(() -> ((UimsdScene) ShatteredPixelDungeon.scene()).offerTour()));
+	}
+
+	private void chooseTourData(final int stepIndex){
+		addToFront(new WndUimsdChoices("Tour", "Which data should the tour use? Your own runs, or a small made-up sample history (nothing in your history is changed either way).",
+				"My own runs", "Sample data"){
+			@Override
+			protected void onSelect( int index ){
+				((UimsdScene) ShatteredPixelDungeon.scene()).beginTour(stepIndex, index == 0);
+			}
+		}.restoreWith(() -> ((UimsdScene) ShatteredPixelDungeon.scene()).chooseTourData(stepIndex)));
+	}
+
 	private boolean ownDataIsEnough(){
 		if (mainModel == null || mainModel.state() != UimsdModel.State.READY || mainModel.catalog() == null) return false;
 		UimsdHome home = UimsdHome.build(mainModel.catalog(), rulesId, false);
@@ -842,13 +856,7 @@ public class UimsdScene extends PixelScene {
 		if (mainModel == null || ApdRecorder.historyRoot() == null && mainRoot == null) return;
 		if (tutorial != null) endTutorial();
 		if (ownDataIsEnough()){
-			addToFront(new WndOptions("Tour", "Which data should the tour use? Your own runs, or a small made-up sample history (nothing in your history is changed either way).",
-					"My own runs", "Sample data"){
-				@Override
-				protected void onSelect( int index ){
-					beginTour(stepIndex, index == 0);
-				}
-			});
+			chooseTourData(stepIndex);
 		} else {
 			beginTour(stepIndex, false);
 		}

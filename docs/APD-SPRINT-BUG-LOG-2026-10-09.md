@@ -1,3 +1,9 @@
+## 2026-10-11 00:09 UTC / October 10 evening New York — UIMSD tour choices preserve Android recreation
+
+Both scene-level tour choice windows still used anonymous WndOptions without a semantic reset restorer. PixelScene cannot reconstruct those constructors, so Android scene recreation silently discarded the first-tour offer and the own-run/sample-data chooser. They now reuse responsive WndUimsdChoices and pure display factories. Restorers and selection callbacks bind to the current scene; restoration never calls startTour/beginTour, reoffers a dismissed choice, generates sample data or changes the existing ten-run gate.
+
+A permanent native case now exercises each actual choice across two resets, labels, query/root/guide preference preservation, absence of a started/preparing tour or sample root, Later/Back dismissal and a subsequent reset with no reopened choice. Production UimsdScene compiles and both changed Java files parse locally. Native acceptance is pending; no claim of phone verification. The ongoing TEST33 check is allowed to finish before requesting combined verification, avoiding cancellation of useful evidence. Latest privately delivered signing-compatible rollback remains TEST31. Existing saved history and gameplay are untouched.
+
 ## 2026-10-11 UTC — Confirmed grouped-sort locale and scene-warning defects
 
 20261011-aggregate-locale: default-locale Aggregate.id changes stable MIN/COUNT_DISTINCT IDs and hash keys, and breaks saved grouped sorting after device language change. Medium statistics correctness. Two red tests before Locale.ROOT; five locale fixtures / combined 42 checks pass after. Full latest-source acceptance pending; phone check saved grouped minimum/unique counts before and after language change.

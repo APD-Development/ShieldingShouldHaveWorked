@@ -1,3 +1,9 @@
+## 2026-10-11 00:09 UTC / October 10 evening New York — UIMSD tour choices preserve Android recreation
+
+Both scene-level tour choice windows still used anonymous WndOptions without a semantic reset restorer. PixelScene cannot reconstruct those constructors, so Android scene recreation silently discarded the first-tour offer and the own-run/sample-data chooser. They now reuse responsive WndUimsdChoices and pure display factories. Restorers and selection callbacks bind to the current scene; restoration never calls startTour/beginTour, reoffers a dismissed choice, generates sample data or changes the existing ten-run gate.
+
+A permanent native case now exercises each actual choice across two resets, labels, query/root/guide preference preservation, absence of a started/preparing tour or sample root, Later/Back dismissal and a subsequent reset with no reopened choice. Production UimsdScene compiles and both changed Java files parse locally. Native acceptance is pending; no claim of phone verification. The ongoing TEST33 check is allowed to finish before requesting combined verification, avoiding cancellation of useful evidence. Latest privately delivered signing-compatible rollback remains TEST31. Existing saved history and gameplay are untouched.
+
 ## 2026-10-11 00:04 UTC - shared wait-command boundary exact-source verified
 
 Workflow [38096301603](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38096301603) passed against source `ccf347179ce382f3ffdd1df4d81b59dcea549d2c`. Downloaded core artifact `11686013206` matched `sha256:d799cd0819b7ce41294494d350a6283f03859151064ae37c23879f348890a787`; its 165 XML suites contain 1,009 tests, zero failures/errors/skips. New selector cases passed 3/3; real headless generation/actor cases passed 2/2.

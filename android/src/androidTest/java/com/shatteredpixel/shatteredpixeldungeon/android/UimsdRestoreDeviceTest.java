@@ -222,6 +222,68 @@ public class UimsdRestoreDeviceTest {
         prompt.onSelect(true, value);
     }
 
+    private static Object sceneState(String name) {
+        try {
+            Field field = UimsdScene.class.getDeclaredField(name); field.setAccessible(true);
+            return field.get(null);
+        } catch (Exception e) { throw new RuntimeException(e); }
+    }
+
+    @Test public void tourChoicesSurviveWithoutStartingATourOrRepeatingTheOffer() throws Exception {
+        try (ActivityScenario<AndroidLauncher> scenario = ActivityScenario.launch(AndroidLauncher.class)) {
+            long deadline = System.currentTimeMillis() + 120000;
+            while (Game.scene() == null && System.currentTimeMillis() < deadline) Thread.sleep(200);
+            assertNotNull("game did not start", Game.scene());
+            Object previous = Game.scene();
+            onRender(() -> UimsdScene.openNow(TitleScene.class));
+            awaitScene(previous);
+            String[][] expected = {{"Start the tour", "Later"}, {"My own runs", "Sample data"}};
+            for (int choice = 0; choice < expected.length; choice++) {
+                final int index = choice;
+                AtomicReference<Query> query = new AtomicReference<>();
+                AtomicReference<Object> root = new AtomicReference<>();
+                java.util.concurrent.atomic.AtomicBoolean seen = new java.util.concurrent.atomic.AtomicBoolean();
+                onRender(() -> {
+                    clearWindows(); query.set(model().query()); root.set(sceneState("mainRoot"));
+                    seen.set(com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdUimsdGuideSeen());
+                    try {
+                        java.lang.reflect.Method show = index == 0
+                                ? UimsdScene.class.getDeclaredMethod("offerTour")
+                                : UimsdScene.class.getDeclaredMethod("chooseTourData", int.class);
+                        show.setAccessible(true);
+                        if (index == 0) show.invoke(Game.scene()); else show.invoke(Game.scene(), 3);
+                    } catch (Exception e) { throw new RuntimeException(e); }
+                });
+                for (int reset = 0; reset < 2; reset++) {
+                    rebuildScene();
+                    onRender(() -> {
+                        assertEquals("the choice restores exactly once", 1, windows().size());
+                        assertTrue(windows().get(0) instanceof WndUimsdChoices);
+                        List<String> labels = new ArrayList<>();
+                        for (WndUimsdList.Entry entry : listEntries((WndUimsdList) windows().get(0))) {
+                            if (entry.isItem()) labels.add(entry.label);
+                        }
+                        assertEquals(java.util.Arrays.asList(expected[index]), labels);
+                        assertSame(query.get(), model().query());
+                        assertSame(root.get(), sceneState("mainRoot"));
+                        assertNull("restoring choices must not start a tour", sceneState("tutorial"));
+                        assertEquals(false, sceneState("tutorialPreparing"));
+                        assertNull("restoring choices must not generate sample history", sceneState("sampleRoot"));
+                        assertEquals(seen.get(), com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdUimsdGuideSeen());
+                    });
+                }
+                onRender(() -> {
+                    if (index == 0) pickItem((WndUimsdList) windows().get(0), 1);
+                    else windows().get(0).onBackPressed();
+                    assertTrue("Later and Back close without starting the tour", windows().isEmpty());
+                    assertNull(sceneState("tutorial")); assertEquals(false, sceneState("tutorialPreparing"));
+                });
+                rebuildScene();
+                onRender(() -> assertTrue("dismissed choices stay dismissed", windows().isEmpty()));
+            }
+        }
+    }
+
     @Test public void validationEmptyHistoryGroupedAndReportMessagesSurviveWithoutRepeatingActions() throws Exception {
         try (ActivityScenario<AndroidLauncher> scenario = ActivityScenario.launch(AndroidLauncher.class)) {
             long deadline = System.currentTimeMillis() + 120000;
