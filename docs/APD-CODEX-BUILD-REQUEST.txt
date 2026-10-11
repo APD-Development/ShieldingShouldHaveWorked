@@ -1,4 +1,1 @@
-Cleric 1–4 stacked saved quick-cast buttons
-2026-10-11 02:39 UTC
-Parent 4dc8cc16bf7b7649b73a0146965d0adcaa64675e
-Owner chose vertical spell1–4 stack. Run full core regressions, Android debug build, all selected API34 tests including new Cleric casting/layout/save method. Preserve TEST41 rollback; no publication until actual checks/signing pass.
+Verify Cleric source 8331ca6884d395781fe702c2c32a73c82b7dcd14 with corrected Android assertion import. Previous TEST42 application build and core checks passed; Android tests did not compile. Require full core suite, debug APK, and API34 regression checks before delivery.
