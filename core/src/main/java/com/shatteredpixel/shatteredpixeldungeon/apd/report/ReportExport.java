@@ -80,14 +80,12 @@ public final class ReportExport {
 						@Override
 						public void run(){
 							String message;
-							try {
-								out.write(bytes);
-								out.flush();
+							try (OutputStream target = out) {
+								target.write(bytes);
+								target.flush();
 								message = "Saved " + f.label.split(" \\(")[0] + " report to " + displayName + " (" + bytes.length + " bytes).";
 							} catch (IOException e){
 								message = "The report could not be saved: " + e;
-							} finally {
-								try { out.close(); } catch (Throwable ignored){}
 							}
 							done.finished(message);
 						}
