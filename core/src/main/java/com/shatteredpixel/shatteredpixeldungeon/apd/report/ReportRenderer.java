@@ -284,7 +284,6 @@ public final class ReportRenderer {
 		//a cell must never be read by a spreadsheet as a formula
 		if (!s.isEmpty() && "=+-@".indexOf(s.charAt(0)) >= 0 && !looksNumeric(s)){
 			s = "'" + s;
-			quote = s.indexOf(',') >= 0 || s.indexOf('"') >= 0 || s.indexOf('\n') >= 0;
 		}
 		return quote ? "\"" + s.replace("\"", "\"\"") + "\"" : s;
 	}
