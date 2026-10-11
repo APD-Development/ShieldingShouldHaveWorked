@@ -22,10 +22,13 @@ public final class WndCategoryHotbar {
         for (int i=0; i<CategoryHotbar.MODES.length; i++)
             entries.add(WndUimsdList.Entry.item(CategoryHotbar.MODES[i] + (SPDSettings.apdHotbarMode()==i ? " (selected)" : "")));
         entries.add(WndUimsdList.Entry.item("Food in Healing: " + (SPDSettings.apdFoodInHealing() ? "on" : "off")));
+        entries.add(WndUimsdList.Entry.item("Cleric quick-cast buttons: " + SPDSettings.apdClericQuickSlots()));
         show(WndUimsdList.menu("Hotbar layout",
                 "Layouts are saved between runs. Classic SPD keeps its original assignments. Custom can mix categories and specific item types. On narrow screens, the swap button accesses all six positions.",
                 entries, (index, checked) -> {
-                    if (index==CategoryHotbar.MODES.length) {
+                    if (index==CategoryHotbar.MODES.length+1) {
+                        WndClericQuickCasts.settings();
+                    } else if (index==CategoryHotbar.MODES.length) {
                         SPDSettings.apdFoodInHealing(!SPDSettings.apdFoodInHealing()); refresh(); settings();
                     } else {
                         SPDSettings.apdHotbarMode(index); refresh();
@@ -120,4 +123,5 @@ public final class WndCategoryHotbar {
                 }).restoreWith(WndCategoryHotbar::abilities));
     }
 }
+
 

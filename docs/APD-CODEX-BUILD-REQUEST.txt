@@ -1,4 +1,4 @@
-Hotbar favorite display native wrapper correction
-2026-10-11 01:51 UTC
-Parent 1f57136a7cb9e6c55aab48da3d23f44eaa0efc3e
-The toolbar contains QuickslotTool wrappers around QuickSlotButton. Native favorite assertions must dereference the wrapper before inspecting item/name. Re-run full required verification; no application code changed since 1f57136. Preserve TEST39 fallback.
+Cleric 1–4 stacked saved quick-cast buttons
+2026-10-11 02:39 UTC
+Parent 4dc8cc16bf7b7649b73a0146965d0adcaa64675e
+Owner chose vertical spell1–4 stack. Run full core regressions, Android debug build, all selected API34 tests including new Cleric casting/layout/save method. Preserve TEST41 rollback; no publication until actual checks/signing pass.

@@ -230,6 +230,45 @@ public class HolyTome extends Artifact {
 
 	private ClericSpell quickSpell = null;
 
+    public ClericSpell quickSpell() { return quickSpell; }
+
+    public void setQuickSpellExact(ClericSpell spell) {
+        quickSpell = spell;
+        if (passiveBuff != null) {
+            if (spell == null) ActionIndicator.clearAction((ActionIndicator.Action) passiveBuff);
+            else ActionIndicator.setAction((ActionIndicator.Action) passiveBuff);
+        }
+    }
+
+    // Uses vanilla quick-cast costs, effects and targeting. Assignment never calls this.
+    public boolean castSavedSpell(Hero hero, ClericSpell spell) {
+        if (hero == null || spell == null || cursed || !canCast(hero, spell)) return false;
+		if (QuickSlotButton.targetingSlot != -1 &&
+				Dungeon.quickslot.getItem(QuickSlotButton.targetingSlot) == HolyTome.this
+                    && targetingSpell == spell && QuickSlotButton.lastTarget != null) {
+			targetingSpell = spell;
+			int cell = QuickSlotButton.autoAim(QuickSlotButton.lastTarget, HolyTome.this);
+
+			if (cell != -1){
+				GameScene.handleCell(cell);
+			} else {
+				//couldn't auto-aim, just target the position and hope for the best.
+				GameScene.handleCell( QuickSlotButton.lastTarget.pos );
+			}
+		} else {
+			GameScene.cancel(); // Switching spells must not leave the previous target selector active.
+			ApdPlay.onSpellCast( spell, spell.chargeUse(hero) );
+			spell.onCast(HolyTome.this, hero);
+
+			if (spell.targetingFlags() != -1 && Dungeon.quickslot.contains(HolyTome.this)){
+				targetingSpell = spell;
+				QuickSlotButton.useTargeting(Dungeon.quickslot.getSlot(HolyTome.this));
+			}
+		}
+        return true;
+    }
+
+
 	public void setQuickSpell(ClericSpell spell){
 		if (quickSpell == spell){
 			quickSpell = null; //re-assigning the same spell clears the quick spell
@@ -272,6 +311,7 @@ public class HolyTome extends Artifact {
 		@Override
 		public boolean attachTo(Char target) {
 			if (super.attachTo(target)) {
+                if (target instanceof Hero) com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.ClericQuickCasts.restoreFirst((Hero) target, HolyTome.this);
 				if (quickSpell != null) ActionIndicator.setAction(this);
 				return true;
 			} else {
@@ -350,27 +390,9 @@ public class HolyTome extends Artifact {
 				return;
 			}
 
-			if (QuickSlotButton.targetingSlot != -1 &&
-					Dungeon.quickslot.getItem(QuickSlotButton.targetingSlot) == HolyTome.this) {
-				targetingSpell = quickSpell;
-				int cell = QuickSlotButton.autoAim(QuickSlotButton.lastTarget, HolyTome.this);
-
-				if (cell != -1){
-					GameScene.handleCell(cell);
-				} else {
-					//couldn't auto-aim, just target the position and hope for the best.
-					GameScene.handleCell( QuickSlotButton.lastTarget.pos );
-				}
-			} else {
-				ApdPlay.onSpellCast( quickSpell, quickSpell.chargeUse(Dungeon.hero) );
-				quickSpell.onCast(HolyTome.this, Dungeon.hero);
-
-				if (quickSpell.targetingFlags() != -1 && Dungeon.quickslot.contains(HolyTome.this)){
-					targetingSpell = quickSpell;
-					QuickSlotButton.useTargeting(Dungeon.quickslot.getSlot(HolyTome.this));
-				}
-			}
+			castSavedSpell(Dungeon.hero, quickSpell);
 		}
 	}
 
 }
+

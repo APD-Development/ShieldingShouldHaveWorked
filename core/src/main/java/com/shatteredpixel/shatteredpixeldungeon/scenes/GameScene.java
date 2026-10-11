@@ -213,6 +213,8 @@ public class GameScene extends PixelScene {
 	private AttackIndicator attack;
 	private LootIndicator loot;
 	private ActionIndicator action;
+    private com.shatteredpixel.shatteredpixeldungeon.ui.ClericQuickCastTag[] clericSpells;
+    private int tagClericCount;
 	private ResumeIndicator resume;
 
 	{
@@ -515,6 +517,12 @@ public class GameScene extends PixelScene {
 		action = new ActionIndicator();
 		action.camera = uiCamera;
 		add( action );
+        clericSpells = new com.shatteredpixel.shatteredpixeldungeon.ui.ClericQuickCastTag[4];
+        for (int i=0; i<clericSpells.length; i++) {
+            clericSpells[i] = new com.shatteredpixel.shatteredpixeldungeon.ui.ClericQuickCastTag(i);
+            clericSpells[i].camera = uiCamera;
+            add(clericSpells[i]);
+        }
 
 		loot = new LootIndicator();
 		loot.camera = uiCamera;
@@ -922,7 +930,11 @@ public class GameScene extends PixelScene {
 			log.newLine();
 		}
 
-		if (updateTags){
+		if (tagClericCount != com.shatteredpixel.shatteredpixeldungeon.ui.ClericQuickCastTag.count()) {
+            tagClericCount = com.shatteredpixel.shatteredpixeldungeon.ui.ClericQuickCastTag.count();
+            updateTags = true;
+        }
+        if (updateTags){
 			tagAttack = attack.active;
 			tagLoot = loot.visible;
 			tagAction = action.visible;
@@ -1021,6 +1033,37 @@ public class GameScene extends PixelScene {
 		if (tagsOnLeft && SPDSettings.interfaceSize() > 0){
 			pos = scene.status.top();
 		}
+
+
+        int spellCount = com.shatteredpixel.shatteredpixeldungeon.ui.ClericQuickCastTag.count();
+        if (spellCount > 0) {
+            // Keep spell 1 nearest the inventory and higher positions directly above it.
+            // Other tags wrap into an adjacent column on short screens instead of overlapping.
+            float base = pos;
+            for (int i=0; i<scene.clericSpells.length; i++) {
+                scene.clericSpells[i].visible = i < spellCount;
+                if (i < spellCount) {
+                    scene.clericSpells[i].setRect(tagLeft, pos-Tag.SIZE, tagWidth, Tag.SIZE);
+                    scene.clericSpells[i].flip(tagsOnLeft);
+                    pos -= Tag.SIZE;
+                }
+            }
+            float column = tagLeft;
+            Tag[] other = {scene.attack, scene.loot, scene.action, scene.resume};
+            boolean[] show = {scene.tagAttack, scene.tagLoot, scene.tagAction, scene.tagResume};
+            for (int i=0; i<other.length; i++) {
+                if (!show[i]) continue;
+                if (pos-Tag.SIZE < insets.top+Tag.SIZE) {
+                    column += tagsOnLeft ? tagWidth : -tagWidth;
+                    pos = base;
+                }
+                other[i].setRect(column,pos-Tag.SIZE,tagWidth,Tag.SIZE);
+                other[i].flip(tagsOnLeft);
+                pos -= Tag.SIZE;
+            }
+            return;
+        }
+        if (scene.clericSpells != null) for (Tag spell : scene.clericSpells) spell.visible = false;
 
 		if (scene.tagAttack){
 			scene.attack.setRect( tagLeft, pos - Tag.SIZE, tagWidth, Tag.SIZE );

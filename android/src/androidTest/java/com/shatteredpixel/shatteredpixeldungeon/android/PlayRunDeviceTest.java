@@ -361,4 +361,176 @@ public class PlayRunDeviceTest {
 			SPDSettings.intro(introWas);
 		}
 	}
+
+    private static com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList clericMenu() throws Exception {
+        for (Object child : (java.util.List<?>) field(Game.scene(), "members")) {
+            if (child instanceof com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList)
+                return (com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList) child;
+        }
+        throw new AssertionError("Cleric assignment menu did not open");
+    }
+
+    private static void assertClericStack() throws Exception {
+        com.shatteredpixel.shatteredpixeldungeon.ui.ClericQuickCastTag[] tags =
+                (com.shatteredpixel.shatteredpixeldungeon.ui.ClericQuickCastTag[]) field(Game.scene(), "clericSpells");
+        for (com.shatteredpixel.shatteredpixeldungeon.ui.ClericQuickCastTag tag : tags) tag.update();
+        GameScene.layoutTags();
+        int count = SPDSettings.apdClericQuickSlots();
+        com.watabou.noosa.ui.Component toolbar = (com.watabou.noosa.ui.Component) field(Game.scene(), "toolbar");
+        for (int i=0; i<tags.length; i++) {
+            assertEquals("chosen number of spell buttons", i<count, tags[i].visible);
+            if (i>=count) continue;
+            assertTrue("spell touch target", tags[i].width()>=24 && tags[i].height()>=24);
+            assertTrue("spell inside horizontal screen", tags[i].left()>=0 && tags[i].right()<=GameScene.uiCamera.width);
+            assertTrue("spell inside vertical screen", tags[i].top()>=0 && tags[i].bottom()<=GameScene.uiCamera.height);
+            assertTrue("spell never covers hotbar", tags[i].bottom()<=toolbar.top());
+            assertEquals("spells stack vertically", tags[0].left(),tags[i].left(),0.01f);
+            assertEquals("spell 2/3/4 above previous spell", tags[0].top()-24*i,tags[i].top(),0.01f);
+        }
+    }
+
+    @Test
+    public void clericQuickCastsPersistAndKeepNormalCostsAndTargeting() throws Exception {
+        int oldCount=SPDSettings.apdClericQuickSlots(), oldMode=SPDSettings.apdHotbarMode();
+        boolean oldIntro=SPDSettings.intro(), oldFlip=SPDSettings.flipTags();
+        String[] oldSpells=new String[4];
+        for(int i=0;i<4;i++) oldSpells[i]=SPDSettings.apdClericQuickSpell(i);
+        final int slot=4; // Isolated emulator scratch run only.
+        try (ActivityScenario<AndroidLauncher> scenario=ActivityScenario.launch(AndroidLauncher.class)) {
+            waitUntil("title",()->Game.scene() instanceof TitleScene,120000);
+            SPDSettings.intro(false); SPDSettings.flipTags(false); SPDSettings.apdHotbarMode(1);
+            SPDSettings.apdClericQuickSlots(4);
+            onRender(()-> {
+                GamesInProgress.curSlot=slot; GamesInProgress.selectedClass=HeroClass.CLERIC;
+                Dungeon.hero=null; Dungeon.daily=Dungeon.dailyReplay=false; Dungeon.initSeed();
+                ActionIndicator.clearAction(); InterlevelScene.mode=InterlevelScene.Mode.DESCEND;
+                Game.switchScene(InterlevelScene.class);
+            });
+            waitUntil("Cleric first floor",()->Game.scene() instanceof GameScene && Dungeon.hero!=null && Dungeon.hero.ready,150000);
+            assertEquals(HeroClass.CLERIC,Dungeon.hero.heroClass);
+            onRender(()-> { try {
+                com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome tome =
+                        Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome.class);
+                assertNotNull(tome);
+                com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.ClericQuickCasts.assign(0,
+                        com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.GuidingLight.INSTANCE,tome);
+                com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.ClericQuickCasts.assign(1,
+                        com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyWeapon.INSTANCE,tome);
+                com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.ClericQuickCasts.assign(2,
+                        com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyWard.INSTANCE,tome);
+                com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.ClericQuickCasts.assign(3,
+                        com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.Sunray.INSTANCE,tome);
+                float charge=((Number)field(tome,"charge")).floatValue(), time=Dungeon.hero.cooldown();
+                for(int n=1;n<=4;n++) { SPDSettings.apdClericQuickSlots(n); assertClericStack(); }
+                assertEquals("assignment does not spend charge",charge,((Number)field(tome,"charge")).floatValue(),0);
+                assertEquals("assignment does not spend a turn",time,Dungeon.hero.cooldown(),0);
+
+                // Real long-press on the original picker opens a position chooser without casting.
+                com.shatteredpixel.shatteredpixeldungeon.windows.WndClericSpells picker =
+                        new com.shatteredpixel.shatteredpixeldungeon.windows.WndClericSpells(tome,Dungeon.hero,false);
+                GameScene.show(picker);
+                for(Object child:(java.util.List<?>)field(picker,"members")) {
+                    if(child instanceof com.shatteredpixel.shatteredpixeldungeon.windows.WndClericSpells.SpellButton) {
+                        click(child,"onLongClick"); break;
+                    }
+                }
+                com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList menu=clericMenu();
+                assertEquals("four assignment positions",4,((java.util.List<?>)field(menu,"entries")).size());
+                ((com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.Picker)field(menu,"picker")).onPick(0,false);
+                menu.hide();
+                assertEquals("long press does not cast",charge,((Number)field(tome,"charge")).floatValue(),0);
+
+                Object[] tags=(Object[])field(Game.scene(),"clericSpells");
+                click(tags[1],"onLongClick");
+                menu=clericMenu();
+                ((com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.Picker)field(menu,"picker")).onPick(0,false);
+                menu.hide();
+                assertNull("saved spell can be removed",com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.ClericQuickCasts.saved(1,tome));
+                com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.ClericQuickCasts.assign(1,
+                        com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyWeapon.INSTANCE,tome);
+
+                click(tags[3],"onClick");
+                assertEquals("locked saved spell spends no charge",charge,((Number)field(tome,"charge")).floatValue(),0);
+                click(tags[1],"onClick");
+                assertNotNull("actual Holy Weapon effect",Dungeon.hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyWeapon.HolyWepBuff.class));
+                assertEquals("vanilla Holy Weapon charge cost",charge-2,((Number)field(tome,"charge")).floatValue(),0);
+                assertEquals("vanilla Holy Weapon turn cost",time,Dungeon.hero.cooldown(),0);
+                float remaining=((Number)field(tome,"charge")).floatValue();
+                click(tags[0],"onClick");
+                assertEquals("targeting waits for selection",remaining,((Number)field(tome,"charge")).floatValue(),0);
+                assertTrue("targeted spell can be canceled",GameScene.cancel());
+                assertEquals("cancel spends no charge",remaining,((Number)field(tome,"charge")).floatValue(),0);
+
+                tome.directCharge(2);
+                float beforeSwitch=((Number)field(tome,"charge")).floatValue();
+                click(tags[0],"onClick");
+                click(tags[2],"onClick");
+                assertNotNull("switching to Holy Ward applies its normal effect",Dungeon.hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyWard.HolyArmBuff.class));
+                assertEquals("switched spell pays its own normal cost",beforeSwitch-1,((Number)field(tome,"charge")).floatValue(),0);
+                assertFalse("old Guiding Light selector is canceled when switching spells",GameScene.cancel());
+
+                // Force simultaneous tags on portrait/narrow/landscape UI viewports and both sides.
+                com.watabou.noosa.Camera camera=GameScene.uiCamera;
+                int width=camera.width,height=camera.height;
+                com.watabou.noosa.ui.Component toolbar=(com.watabou.noosa.ui.Component)field(Game.scene(),"toolbar");
+                float tx=toolbar.left(),ty=toolbar.top(),tw=toolbar.width(),th=toolbar.height();
+                String[] flags={"tagAttack","tagLoot","tagAction","tagResume"};
+                boolean[] was=new boolean[flags.length];
+                try {
+                    for(int i=0;i<flags.length;i++) {
+                        java.lang.reflect.Field flag=GameScene.class.getDeclaredField(flags[i]); flag.setAccessible(true);
+                        was[i]=flag.getBoolean(Game.scene()); flag.setBoolean(Game.scene(),true);
+                    }
+                    for(int[] size:new int[][]{{160,240},{320,180},{240,320}}) {
+                        camera.resize(size[0],size[1]); toolbar.setRect(0,size[1]-26,size[0],26);
+                        for(boolean flip:new boolean[]{false,true}) {
+                            SPDSettings.flipTags(flip); assertClericStack();
+                            java.util.List<com.watabou.noosa.ui.Component> controls=new java.util.ArrayList<>();
+                            for(Object tag:tags) controls.add((com.watabou.noosa.ui.Component)tag);
+                            for(String name:new String[]{"attack","loot","action","resume"}) controls.add((com.watabou.noosa.ui.Component)field(Game.scene(),name));
+                            for(int i=0;i<controls.size();i++) {
+                                com.watabou.noosa.ui.Component a=controls.get(i);
+                                assertTrue("tag stays on screen",a.left()>=0 && a.right()<=camera.width && a.top()>=0 && a.bottom()<=toolbar.top());
+                                for(int j=i+1;j<controls.size();j++) {
+                                    com.watabou.noosa.ui.Component b=controls.get(j);
+                                    assertTrue("spell/attack/loot/action/resume tags never overlap",a.right()<=b.left()+0.01f || b.right()<=a.left()+0.01f
+                                            || a.bottom()<=b.top()+0.01f || b.bottom()<=a.top()+0.01f);
+                                }
+                            }
+                        }
+                    }
+                } finally {
+                    camera.resize(width,height); toolbar.setRect(tx,ty,tw,th); SPDSettings.flipTags(false);
+                    for(int i=0;i<flags.length;i++) {
+                        java.lang.reflect.Field flag=GameScene.class.getDeclaredField(flags[i]); flag.setAccessible(true);
+                        flag.setBoolean(Game.scene(),was[i]);
+                    }
+                    GameScene.updateTags=true; GameScene.layoutTags();
+                }
+                Dungeon.saveAll(); Game.switchScene(TitleScene.class);
+            } catch(Exception e) { throw new RuntimeException(e); } });
+            waitUntil("saved title",()->Game.scene() instanceof TitleScene,60000);
+            onRender(()-> { Dungeon.hero=null; InterlevelScene.mode=InterlevelScene.Mode.CONTINUE; Game.switchScene(InterlevelScene.class); });
+            waitUntil("saved Cleric resumed",()->Game.scene() instanceof GameScene && Dungeon.hero!=null && Dungeon.hero.ready,150000);
+            onRender(()-> { try {
+                assertEquals(4,SPDSettings.apdClericQuickSlots());
+                assertClericStack();
+                com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome tome =
+                        Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome.class);
+                org.junit.Assert.assertSame(com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyWeapon.INSTANCE,
+                        com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.ClericQuickCasts.saved(1,tome));
+                org.junit.Assert.assertSame(com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.Sunray.INSTANCE,
+                        com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.ClericQuickCasts.saved(3,tome));
+                assertNull("locked preference preserved without granting spell",
+                        com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.ClericQuickCasts.available(Dungeon.hero,tome,3));
+            } catch(Exception e) { throw new RuntimeException(e); } });
+        } finally {
+            GamesInProgress.delete(slot); FileUtils.deleteDir(GamesInProgress.gameFolder(slot));
+            SPDSettings.intro(oldIntro); SPDSettings.flipTags(oldFlip); SPDSettings.apdHotbarMode(oldMode);
+            SPDSettings.apdClericQuickSlots(oldCount);
+            for(int i=0;i<4;i++) SPDSettings.apdClericQuickSpell(i,oldSpells[i]);
+        }
+    }
+
 }
+

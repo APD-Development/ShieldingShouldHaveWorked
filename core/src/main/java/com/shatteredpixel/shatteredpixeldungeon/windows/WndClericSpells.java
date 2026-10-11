@@ -210,7 +210,7 @@ public class WndClericSpells extends Window {
 		@Override
 		protected boolean onLongClick() {
 			hide();
-			tome.setQuickSpell(spell);
+			WndClericQuickCasts.assign(spell);
 			return true;
 		}
 
@@ -247,7 +247,7 @@ public class WndClericSpells extends Window {
 							break;
 						case 2:
 							hide();
-							tome.setQuickSpell(spell);
+							WndClericQuickCasts.assign(spell);
 							break;
 					}
 				}
@@ -266,3 +266,4 @@ public class WndClericSpells extends Window {
 	}
 
 }
+

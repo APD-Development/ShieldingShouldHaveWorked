@@ -415,6 +415,16 @@ public class SPDSettings extends GameSettings {
 
 
     //APD hotbar preferences are separate from the original per-run QuickSlot placements.
+    public static int apdClericQuickSlots() { return getInt("apd_cleric_quick_slots", 1, 1, 4); }
+    public static void apdClericQuickSlots(int value) { put("apd_cleric_quick_slots", Math.max(1, Math.min(4, value))); }
+    public static String apdClericQuickSpell(int slot) {
+        if (slot < 0 || slot >= 4) throw new IllegalArgumentException("Cleric quick slot");
+        return getString("apd_cleric_quick_spell_" + slot, "");
+    }
+    public static void apdClericQuickSpell(int slot, String value) {
+        if (slot < 0 || slot >= 4) throw new IllegalArgumentException("Cleric quick slot");
+        put("apd_cleric_quick_spell_" + slot, value == null ? "" : value);
+    }
     public static int apdHotbarMode() { return getInt("apd_hotbar_mode", 0, 0, 4); }
     public static void apdHotbarMode(int value) { put("apd_hotbar_mode", Math.max(0, Math.min(4, value))); }
     public static int apdHotbarCategory(int slot) { return getInt("apd_hotbar_category_" + slot, slot, 0, 8); }
@@ -656,4 +666,5 @@ public class SPDSettings extends GameSettings {
 		return getInt( KEY_FULLSCREEN_MONITOR, 0 );
 	}
 }
+
 

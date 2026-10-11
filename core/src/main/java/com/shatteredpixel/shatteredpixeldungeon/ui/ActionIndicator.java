@@ -87,12 +87,14 @@ public class ActionIndicator extends Tag {
 		super.update();
 
 		synchronized (ActionIndicator.class) {
-			if (!visible && action != null) {
+			boolean show = action != null && !(action instanceof com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome.TomeRecharge
+                    && ClericQuickCastTag.count() > 0);
+            if (!visible && show) {
 				visible = true;
 				needsRefresh = true;
 				flash();
 			} else {
-				visible = action != null;
+				visible = show;
 			}
 
 			if (needsRefresh) {
