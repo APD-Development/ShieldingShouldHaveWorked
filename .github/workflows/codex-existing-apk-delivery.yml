@@ -75,3 +75,4 @@ jobs:
           retention-days: 7
 
 # Private staging only; retain separate 11:55 PDF / 11:59 APK delivery times.
+# Refresh factual staging evidence; do not assert a release tag or missed deadline before publication.

@@ -111,10 +111,10 @@ def main():
                 'build_started_utc': run['run_started_at'], 'build_completed_utc': run['updated_at']}
     Path(f'delivery/TEST{number}-Verification.json').write_text(json.dumps(evidence, indent=2))
     text = f"TEST{number} source: {source}. Existing verification/build run: https://github.com/{repo}/actions/runs/{run_id}. No APK rebuild performed during delivery.\n\n"
-    text += f"Release tag points to delivery commit {publication_commit}; all application/build input trees match the tested source exactly. Only delivery tooling, reports or workflows may differ.\n\n"
+    text += f"Delivery verification commit {publication_commit}; all application/build input trees match the tested source exactly. Only delivery tooling, reports or workflows may differ.\n\n"
     text += f"Actual test XML: {core['tests']} core tests and {android['tests']} API 34 emulator tests; zero failures, errors or skipped tests. Debug assembly succeeded. This is not physical-phone verification or a complete normal-run playthrough.\n\n"
     text += f"APK: {apk.name}. SHA-256: {digest}. Application ID: {current[0]}. Version: {current[2]}. APK signatures verified; certificate SHA-256 matches TEST{rollback_number}: {', '.join(certs[0])}. Version code permits installing over TEST{rollback_number}. Existing save-data compatibility still requires phone testing.\n\n"
-    text += f"CI started {run['run_started_at']} and completed {run['updated_at']} (UTC). The noon delivery was missed. This publication reuses the exact verified artifact; consult the report for included and unfinished features.\n\n"
+    text += f"CI started {run['run_started_at']} and completed {run['updated_at']} (UTC). This preparation reuses the exact verified artifact; consult the report for included and unfinished features.\n\n"
     text += f"Install over the existing APD app; never uninstall or clear its data. Preserve TEST{rollback_number} as rollback. Private test prerelease only; no online features enabled."
     Path('delivery/verification.txt').write_text(text)
     print(text)
