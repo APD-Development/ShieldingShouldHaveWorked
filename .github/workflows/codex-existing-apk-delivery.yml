@@ -1,4 +1,4 @@
-name: Deliver verified existing APD TEST36
+name: Deliver verified existing APD TEST39
 
 # Delivery only: reuse the already tested APK; no Gradle or app rebuild.
 # Accept verified SDK signer labels; retain compatibility refusal diagnostics.
@@ -12,19 +12,19 @@ permissions:
   actions: read
 
 concurrency:
-  group: apd-existing-test36-delivery
+  group: apd-existing-test39-delivery
   cancel-in-progress: false
 
 env:
-  APD_SOURCE_SHA: 3d3656e2c355fe70c5d50a6034eeb07d9700598d
-  APD_SOURCE_RUN: '38099022839'
-  APD_TEST_NUMBER: '36'
-  APD_CORE_TEST_COUNT: '1019'
-  APD_ANDROID_TEST_COUNT: '9'
-  APD_ROLLBACK_NUMBER: '31'
-  APD_ROLLBACK_SHA256: '22561e0294ddd5322655b11b31562ea3b0893119fa69cd260356ef77037f0ae1'
-  APD_REQUIRED_ANDROID_METHODS: 'menusSurviveSceneRecreationAndNarrowActionsStayInsideTheirWindow,aRunCanBePlayedSavedContinuedAndEndedWithItsHistoryRecorded,aWonRunIsRecordedAsWonAndSealed,difficultyIsChosenOnTheCharacterScreenAndNotInSettings,communityMenuOpensEveryPreviewAndReturnsWithoutStackingWindows,adultHumorControlWorksWithoutAnAgeProviderAndReopensWithSavedChoice,textAndGuideScrollSurviveRepeatedResetsAndClampAfterResize,validationEmptyHistoryGroupedAndReportMessagesSurviveWithoutRepeatingActions,tourChoicesSurviveWithoutStartingATourOrRepeatingTheOffer'
-  APD_SOURCE_ARTIFACTS_JSON: '{"apd-codex-android-checks":11687395355,"apd-codex-private-test-apk":11686608032,"apd-codex-core-tests":11686243303}'
+  APD_SOURCE_SHA: 475c80c22285978bf9eefb682f7a19bd32d994e5
+  APD_SOURCE_RUN: '38101578800'
+  APD_TEST_NUMBER: '39'
+  APD_CORE_TEST_COUNT: '1033'
+  APD_ANDROID_TEST_COUNT: '11'
+  APD_ROLLBACK_NUMBER: '36'
+  APD_ROLLBACK_SHA256: 'cd86c3b2cae76a09fae407b1b666daaa4b87c8f16ed3d651877fbcd8f42f099d'
+  APD_REQUIRED_ANDROID_METHODS: 'menusSurviveSceneRecreationAndNarrowActionsStayInsideTheirWindow,aRunCanBePlayedSavedContinuedAndEndedWithItsHistoryRecorded,aWonRunIsRecordedAsWonAndSealed,difficultyIsChosenOnTheCharacterScreenAndNotInSettings,communityMenuOpensEveryPreviewAndReturnsWithoutStackingWindows,adultHumorControlWorksWithoutAnAgeProviderAndReopensWithSavedChoice,textAndGuideScrollSurviveRepeatedResetsAndClampAfterResize,validationEmptyHistoryGroupedAndReportMessagesSurviveWithoutRepeatingActions,tourChoicesSurviveWithoutStartingATourOrRepeatingTheOffer,heroButtonsStayAboveNavigationBarAndRemainSelectable,navigationOverlapReservesVisibleBarsEvenWithFullscreenRequested'
+  APD_SOURCE_ARTIFACTS_JSON: '{"apd-codex-private-test-apk":11688341205,"apd-codex-core-tests":11687996899,"apd-codex-android-checks":11687419565}'
 
 jobs:
   validate-and-stage:
@@ -53,7 +53,7 @@ jobs:
       - name: Retrieve rollback APK for direct compatibility comparison
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release download apd-codex-test-31 --repo "$GITHUB_REPOSITORY" --pattern ADHD-Pixel-Dungeon-CODEX-TEST-31.apk --dir rollback
+        run: gh release download apd-codex-test-36 --repo "$GITHUB_REPOSITORY" --pattern ADHD-Pixel-Dungeon-CODEX-TEST-36.apk --dir rollback
       - name: Check source, tests, checksum, signing and application ID
         env:
           GH_TOKEN: ${{ github.token }}
@@ -63,10 +63,10 @@ jobs:
       - name: Produce today's report from verified evidence
         run: |
           python3 -m pip install reportlab==4.2.5
-          python3 tools/apd_bug_report_pdf.py docs/APD-TEST36-REPORT-2026-10-10.md delivery/APD-Bug-Fixes-2026-10-10-TEST36.pdf --verification delivery/verification.txt
+          python3 tools/apd_bug_report_pdf.py docs/APD-TEST39-REPORT-2026-10-10.md delivery/APD-Bug-Fixes-2026-10-10-TEST39.pdf --verification delivery/verification.txt
       - uses: actions/upload-artifact@v4
         with:
-          name: verified-test36-delivery
+          name: verified-test39-delivery
           path: delivery/
           retention-days: 7
 
@@ -80,7 +80,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: verified-test36-delivery
+          name: verified-test39-delivery
           path: delivery
       - name: Publish new private prerelease without replacing existing assets
         env:
@@ -93,7 +93,7 @@ jobs:
           repo = os.environ['GITHUB_REPOSITORY']
           assert json.loads(subprocess.check_output(['gh', 'api', 'repos/' + repo]))['private']
           assert datetime.now(ZoneInfo('America/New_York')) >= datetime(2026, 10, 10, 11, 59, tzinfo=ZoneInfo('America/New_York'))
-          tag = 'apd-codex-test-36'
+          tag = 'apd-codex-test-39'
           previous = subprocess.run(['gh', 'release', 'view', tag, '--repo', repo], capture_output=True)
           if previous.returncode == 0:
               raise SystemExit('Existing release preserved; do not overwrite it.')
@@ -102,6 +102,6 @@ jobs:
               '--title', 'APD PRIVATE CODEX TEST 36', '--notes-file', 'delivery/verification.txt',
               'delivery/ADHD-Pixel-Dungeon-CODEX-TEST-36.apk',
               'delivery/ADHD-Pixel-Dungeon-CODEX-TEST-36.apk.sha256',
-              'delivery/APD-Bug-Fixes-2026-10-10-TEST36.pdf',
-              'delivery/TEST36-Verification.json'], check=True)
+              'delivery/APD-Bug-Fixes-2026-10-10-TEST39.pdf',
+              'delivery/TEST39-Verification.json'], check=True)
           PY
