@@ -1,2 +1,2 @@
-2026-10-10 23:58 UTC
-Combined approved UIMSD bug cycle: persist scroll position; stable locale filtering; six remaining status-warning restorers; retained 2,000-type stress fixture. Run complete core/debug/API34 checks. Do not auto-publish. Preserve signed TEST31 until separate evidence/signing/current-report delivery succeeds.
+2026-10-11 00:12 UTC / October 10 evening New York
+Complete combined core/debug/API34 checks for locale-independent grouped-sort IDs, seven warning paths including locked tour, and restored tour choices. Includes previously verified scroll/filter/stress corrections. Preserve existing gameplay/ten-real-run gate/history/signing ID and prior artifacts. Do not auto-publish. Private delivery requires exact-source evidence, direct TEST31 signing/app-ID comparison, checksum and a current PDF.

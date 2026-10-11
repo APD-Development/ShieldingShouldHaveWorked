@@ -1,3 +1,11 @@
+## 2026-10-11 00:12 UTC / October 10 evening New York — Combined UIMSD verification and follow-up request
+
+Exact TEST33 source b816bcf020562b153a149aabc1c52f424f9ded85 passed workflow 38096836924 (23:58:32 to 00:08:20 UTC). Downloaded XML proves 1,013 core tests and 8 API34 tests, zero failures/errors/skips. Six status paths and two-scroll-window restoration now have native acceptance; this source does not include the later grouped-ID/tour-warning/tour-choice changes. APK assembly passed, but TEST33 was not signing-compared or delivered.
+
+Requesting one complete core/debug/API34 run for those later production corrections. Local UimsdScene compilation and Java syntax pass. Additional non-network queue/archive/history/unlock regression set passed 54/54 in 0.975 seconds. An initial broader local invocation reported two loopback HttpServer setup denials plus teardown errors (sandbox sockets unavailable) and one missing apd.game.src test property; these are not presented as game defects or concealed. Corrected property resolves the gate case. Network fixtures remain covered by the complete GitHub core suite; no backend was enabled to work around the sandbox.
+
+No candidate is published from verification. Preserve existing TEST31 until exact-source XML, signature/application ID, checksum and current report pass separate private publication. Later changes remain native-pending; no physical-device testing was performed. This is productive active-turn work, not proof that this chat keeps executing after its turn ends.
+
 ## 2026-10-11 00:09 UTC / October 10 evening New York — UIMSD tour choices preserve Android recreation
 
 Both scene-level tour choice windows still used anonymous WndOptions without a semantic reset restorer. PixelScene cannot reconstruct those constructors, so Android scene recreation silently discarded the first-tour offer and the own-run/sample-data chooser. They now reuse responsive WndUimsdChoices and pure display factories. Restorers and selection callbacks bind to the current scene; restoration never calls startTour/beginTour, reoffers a dismissed choice, generates sample data or changes the existing ten-run gate.
