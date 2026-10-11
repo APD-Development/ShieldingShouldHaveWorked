@@ -209,4 +209,83 @@ public class RunSetupDifficultyDeviceTest {
 			SPDSettings.intro(introBefore);
 		}
 	}
+	@Test
+	public void heroButtonsStayAboveNavigationBarAndRemainSelectable() throws Exception {
+		com.watabou.utils.PlatformSupport before = Game.platform;
+		HeroClass selectedBefore = GamesInProgress.selectedClass;
+		boolean landscapeBefore = SPDSettings.landscape();
+		try (ActivityScenario<AndroidLauncher> scenario = ActivityScenario.launch(AndroidLauncher.class)) {
+			waitUntil("game startup", () -> Gdx.app != null && Game.scene() != null, 120000);
+			Thread.sleep(2000);
+			onRender(() -> {
+				SPDSettings.landscape(false);
+				Game.platform = new AndroidPlatformSupport() {
+					@Override public com.watabou.utils.RectF getSafeInsets(int level) {
+						com.watabou.utils.RectF result = super.getSafeInsets(level);
+						result.bottom = Math.max(result.bottom, Game.height * 0.12f);
+						return result;
+					}
+				};
+				GamesInProgress.selectedClass = null;
+				ShatteredPixelDungeon.switchNoFade(HeroSelectScene.class);
+			});
+			waitUntil("hero screen", () -> Game.scene() instanceof HeroSelectScene, 30000);
+			Thread.sleep(1500);
+			AtomicReference<com.watabou.utils.Point> warrior = new AtomicReference<>();
+			onRender(() -> {
+				try {
+					Field buttons = HeroSelectScene.class.getDeclaredField("heroBtns");
+					buttons.setAccessible(true);
+					List<?> heroes = (List<?>)buttons.get(Game.scene());
+					assertEquals("all six hero choices exist", 6, heroes.size());
+					Field safeInsets = HeroSelectScene.class.getDeclaredField("insets");
+					safeInsets.setAccessible(true);
+					com.watabou.utils.RectF safe = (com.watabou.utils.RectF)safeInsets.get(Game.scene());
+					for (Object raw : heroes) {
+						com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton button =
+								(com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton)raw;
+						assertTrue("hero stays above blocked navigation area",
+								button.bottom() <= com.watabou.noosa.Camera.main.height - safe.bottom + 0.01f);
+						assertTrue("hero fits horizontally", button.left() >= safe.left - 0.01f
+								&& button.right() <= com.watabou.noosa.Camera.main.width - safe.right + 0.01f);
+						assertTrue("hero is visible and tappable", button.visible && button.active);
+					}
+					com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton first =
+							(com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton)heroes.get(0);
+					warrior.set(first.camera().cameraToScreen(first.left()+first.width()/2, first.top()+first.height()/2));
+				} catch (Exception failure) { throw new RuntimeException(failure); }
+			});
+			tap(warrior.get());
+			assertEquals("real pointer selects Warrior above the bar", HeroClass.WARRIOR, GamesInProgress.selectedClass);
+		} finally {
+			Game.platform = before;
+			GamesInProgress.selectedClass = selectedBefore;
+			SPDSettings.landscape(landscapeBefore);
+		}
+	}
+
+	@Test
+	public void navigationOverlapReservesVisibleBarsEvenWithFullscreenRequested() {
+		boolean fullscreenBefore = SPDSettings.fullscreen();
+		try {
+			SPDSettings.fullscreen(true);
+			android.view.WindowInsets visible = new android.view.WindowInsets.Builder()
+					.setInsets(android.view.WindowInsets.Type.navigationBars(), android.graphics.Insets.of(0, 0, 0, 80))
+					.setVisible(android.view.WindowInsets.Type.navigationBars(), true).build();
+			com.watabou.utils.RectF bars = AndroidPlatformSupport.visibleNavigationInsets(visible);
+			assertEquals(80f, bars.bottom, 0f);
+			com.watabou.utils.RectF window = new com.watabou.utils.RectF(0, 0, 1080, 2400);
+			assertEquals(80f, AndroidPlatformSupport.navigationOverlap(bars, window, window).bottom, 0f);
+			assertEquals("already excluded bar is not subtracted twice", 0f,
+					AndroidPlatformSupport.navigationOverlap(bars, window,
+							new com.watabou.utils.RectF(0, 0, 1080, 2320)).bottom, 0f);
+			assertEquals("partial surface overlap reserves only its covered area", 40f,
+					AndroidPlatformSupport.navigationOverlap(bars, window,
+							new com.watabou.utils.RectF(0, 0, 1080, 2360)).bottom, 0f);
+			com.watabou.utils.RectF side = new com.watabou.utils.RectF(0, 0, 70, 0);
+			assertEquals(70f, AndroidPlatformSupport.navigationOverlap(side, window, window).right, 0f);
+			assertEquals(0f, AndroidPlatformSupport.visibleNavigationInsets(null).bottom, 0f);
+		} finally { SPDSettings.fullscreen(fullscreenBefore); }
+	}
+
 }

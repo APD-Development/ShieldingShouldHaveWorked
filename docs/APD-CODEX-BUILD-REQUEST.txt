@@ -1,4 +1,3 @@
-Category hotbar + confirmed tour worker regression verification
-UTC request: 2026-10-11 01:11:05 UTC
-Base: bfa939dd00369edadb1620b61d0192ad257b8ad8
-Run all core tests, debug assembly and existing API34 suite with added hotbar assertions. No publication before successful source/artifact/signing evidence. TEST36 rollback preserved.
+Urgent navigation-bar hero selection fix
+2026-10-11 01:16:48 UTC
+Verify actual visible navigation overlap regardless of requested fullscreen, no double-padding, six complete hero targets above the blocked area, real Warrior pointer selection, existing gameplay/save and hotbar regressions. Build only private debug. API34 verification does not establish physical Android17 compatibility.

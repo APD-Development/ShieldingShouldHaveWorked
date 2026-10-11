@@ -359,10 +359,10 @@ public class HeroSelectScene extends PixelScene {
 				btnWidth += Math.min(curX / (heroBtns.size() / 2f), 15);
 				curX = insets.left + (w - btnWidth * heroBtns.size()) / 2f;
 			}
-			float curY = insets.top + h - HeroBtn.HEIGHT + 3;
+			float curY = insets.top + h - HeroBtn.HEIGHT;
 
 			for (StyledButton button : heroBtns) {
-				button.setRect(curX, curY, btnWidth, HeroBtn.HEIGHT + insets.bottom);
+				button.setRect(curX, curY, btnWidth, HeroBtn.HEIGHT);
 				curX += btnWidth;
 			}
 
@@ -372,13 +372,13 @@ public class HeroSelectScene extends PixelScene {
 				bar.y = h + insets.top;
 				add(bar);
 
-				PointerArea blocker = new PointerArea(0, Camera.main.width - insets.bottom, Camera.main.width, insets.bottom);
+				PointerArea blocker = new PointerArea(0, h + insets.top, Camera.main.width, insets.bottom);
 				add(blocker);
 			}
 
 			title.setPos(insets.left + (w - title.width()) / 2f, insets.top + (h - HeroBtn.HEIGHT - title.height() - 4));
 
-			btnOptions.setRect(heroBtns.get(0).left() + 16, Camera.main.height-HeroBtn.HEIGHT-16, 20, 21);
+			btnOptions.setRect(heroBtns.get(0).left() + 16, insets.top+h-HeroBtn.HEIGHT-16, 20, 21);
 			optionsPane.setPos(heroBtns.get(0).left(), 0);
 		}
 
@@ -503,7 +503,7 @@ public class HeroSelectScene extends PixelScene {
 			startBtn.text(Messages.titleCase(cl.title()));
 			startBtn.setSize(startBtn.reqWidth() + 8, 21);
 
-			startBtn.setPos((Camera.main.width - startBtn.width())/2f, (Camera.main.height - insets.bottom - HeroBtn.HEIGHT + 2 - startBtn.height()));
+			startBtn.setPos((Camera.main.width - startBtn.width())/2f, (heroBtns.get(0).top() - startBtn.height() - 2));
 			PixelScene.align(startBtn);
 			placeDifficultyBar(Camera.main.width/2f, Math.min(130, Camera.main.width - 12));
 			difficultyBar.refresh();
