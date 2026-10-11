@@ -1005,3 +1005,7 @@ BossClasses stripped nested class names at the first dollar, so YogDzewa$Larva/$
 
 ## Verification batch includes notice and boss-cache correction
 Request full current-source core/debug/API34 verification after actual boss-classification/cache-version change. ExistingTEST51run38172194787 remains uncancelled for title-notice and comparison evidence; new verification will queue. No repeatedbuild ofunchangedsource. Nextcandidate includesboth batches; don't publish before source/signing/testvalidation. ExistingTEST50rollback retained.
+
+
+## Derived row cache crash hardening
+Three isolated32MiB JVM tests reproduced OutOfMemoryError from tiny cache files claiming Integer.MAX_VALUE strings/columns/rows. RowCodec caught RuntimeException but not these allocation errors, so optionalcache could preventUIMSDopening. Bound each count by remainingencodedbytes beforeallocating; no arbitraryplayerhistorylimit, format unchanged. Six permanent tests include validempty/current/futureunknownsection compatibility and corruptedcache rebuilding from byte-identicalrawhistory.43 cache/boss/dataset tests passed in32MiB afterfix. Actualsourcechangequeuedforfullverification; TEST51 titlefixstillverifying, TEST52 pendingolderbossbatch may be replaced by newpendingrun viaGitHubsingle-pending concurrency. No failedcandidatecalledverified, existingTEST50retained. No inheritedSPDcodechanged.

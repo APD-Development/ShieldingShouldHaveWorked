@@ -120,6 +120,7 @@ public final class RowCodec {
 			if (!com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKinds.fingerprint().equals(in.readString())) return null;
 			if (in.readUnsigned() != logLength) return null;
 			int n = in.readUnsignedInt();
+			if (n > in.remaining()) return null; // Every string needs at least its length byte.
 			String[] table = new String[n];
 			for (int i = 0; i < n; i++) table[i] = in.readString();
 			LogRows lr = new LogRows();
@@ -142,9 +143,11 @@ public final class RowCodec {
 				String id = in.readString();
 				DatasetDef def = defs.get(id);
 				int cols = in.readUnsignedInt();
+				if (cols > in.remaining()) return null; // Each column has a table-index byte.
 				int[] map = new int[cols];
 				for (int c = 0; c < cols; c++) map[c] = def == null ? -1 : def.indexOf(table[in.readUnsignedInt()]);
 				int rows = in.readUnsignedInt();
+				if (rows > in.remaining()) return null; // Even a zero-column row has metadata bytes.
 				List<Row> list = new ArrayList<>(rows);
 				for (int i = 0; i < rows; i++){
 					String rid = table[in.readUnsignedInt()];
