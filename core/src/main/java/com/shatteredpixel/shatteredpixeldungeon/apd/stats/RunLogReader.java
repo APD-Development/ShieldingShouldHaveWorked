@@ -166,7 +166,7 @@ public final class RunLogReader {
 			ByteSource src = new ByteSource(data, pos + 1, data.length - pos - 1);
 			int type = src.readByte();
 			long len = src.readUnsigned();
-			if (len > LogFormat.MAX_FRAME_PAYLOAD){
+			if (len < 0 || len > LogFormat.MAX_FRAME_PAYLOAD){
 				return FrameResult.failure(ReadStatus.CORRUPT, "frame at " + pos + " claims " + len + " bytes");
 			}
 			int payloadStart = src.position();
@@ -202,6 +202,8 @@ public final class RunLogReader {
 				} else if (id == r.strings.size()){
 					r.strings.add(value);
 				} else if (options.resync){
+					// Every original string definition needs bytes; impossible IDs must not allocate unbounded holes.
+					if (id > r.fileLength) throw new FormatException("string id exceeds the log size");
 					//definitions were lost in a damaged stretch, leave holes
 					while (r.strings.size() < id) r.strings.add(null);
 					r.strings.add(value);

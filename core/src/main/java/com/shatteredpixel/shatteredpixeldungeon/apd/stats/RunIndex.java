@@ -185,6 +185,7 @@ public final class RunIndex {
 		int fmt = src.readByte();
 		if (fmt != FORMAT) throw new FormatException("unknown index format " + fmt);
 		long count = src.readUnsigned();
+		if (count < 0 || count > src.remaining()) throw new FormatException("invalid index entry count");
 		for (long i = 0; i < count; i++){
 			int len = src.readUnsignedInt();
 			RunIndexEntry e = RunIndexEntry.decode(src.readBytes(len));
