@@ -51,7 +51,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdColumns;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdFilter;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdText;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdGuide;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdReport;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList;
@@ -836,7 +836,7 @@ public class UimsdScene extends PixelScene {
 
 	private void startTour( final int stepIndex ){
 		if (!com.shatteredpixel.shatteredpixeldungeon.windows.UimsdGate.tourAvailable()){
-			addToFront(new WndMessage("The guided tour opens after you finish 10 runs of your own. Demo runs do not count toward it."));
+			addToFront(new WndUimsdText("UIMSD", "The guided tour opens after you finish 10 runs of your own. Demo runs do not count toward it.", false));
 			return;
 		}
 		if (mainModel == null || ApdRecorder.historyRoot() == null && mainRoot == null) return;
@@ -973,3 +973,4 @@ public class UimsdScene extends PixelScene {
 		else ShatteredPixelDungeon.switchScene(backTo);
 	}
 }
+

@@ -1,3 +1,9 @@
+## 2026-10-11 UTC — Confirmed grouped-sort locale and scene-warning defects
+
+20261011-aggregate-locale: default-locale Aggregate.id changes stable MIN/COUNT_DISTINCT IDs and hash keys, and breaks saved grouped sorting after device language change. Medium statistics correctness. Two red tests before Locale.ROOT; five locale fixtures / combined 42 checks pass after. Full latest-source acceptance pending; phone check saved grouped minimum/unique counts before and after language change.
+
+20261011-tour-status: locked-tour notice uses the same missing-restorer WndMessage path. Medium UI. Now restorable literal scrolling message; seven-path native status case updated, unverified until fresh native pass. Ten-genuine-run gate unchanged. Phone check tap locked tour, switch apps, return, Back.
+
 ## 2026-10-10 — Additional confirmed status-window paths
 
 20261010-status-leaves: six UIMSD validation/grouping/empty-history/report messages still used non-restorable WndMessage(String). Medium UI/navigation severity. All now use the scrolling literal semantic restorer. Java11 production compile and syntax pass; six-callsite native regression is implemented, not yet verified. Phone check: enter invalid whole-number/range filters, open grouped Columns/Arrange, empty Ask and export completion; switch apps and return. No player data touched.

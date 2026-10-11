@@ -1,3 +1,11 @@
+## 2026-10-11 00:03 UTC / October 10 evening New York — Grouped-sort locale bug and tour warning correction
+
+Follow-up tests exposed another logical locale dependency: Aggregate.id used default-locale lowercase. MIN and COUNT_DISTINCT identifiers changed under Turkish/Azeri settings, breaking stored grouped-sort identifiers and hash-map keys. Two additional permanent red tests reproduce the changed ID and an incorrectly ordered saved grouped-minimum view. Aggregate.id now uses Locale.ROOT; all five locale cases and the expanded combined 42-case query/saved-view/hidden-safety set pass (4.080 seconds). The 50,000-row/2,000-type stress fixture passed again (112 ms grouping). No stored query bytes or recorded data is migrated or rewritten.
+
+The scene-level locked-tour notice was the seventh remaining non-restorable UIMSD message path. It now reuses WndUimsdText, preserving the ten-genuine-run gate and exact notice. Native warning regression now also opens the actual locked-tour notice, restores it and closes it with Back without unlocking/starting a tour.
+
+Changed production classes compile, and all four changed Java files parse. Exact combined native/core/build acceptance remains pending. TEST33's earlier source is still running; this ordinary commit intentionally does not cancel it. The latest delivered signed APK remains TEST31. No gameplay, RNG, save/history, creator restrictions or signing/application ID change.
+
 ## 2026-10-10 23:58 UTC — Bug cycle continues: scroll native passed; expanded-content regression retained
 
 Exact-source TEST32 verification [38096206257](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38096206257), source a0ab5303089232afdce61ecec17cf88dca5617a0, completed all core/debug/API34 jobs successfully. It includes the actual new preview/guide reading-position case across two scene resets and larger-viewport clamping. Private auto-publication stayed disabled; this APK has not been signing-compared or delivered. It does not include the later locale or warning-message fixes.

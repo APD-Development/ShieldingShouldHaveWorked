@@ -256,10 +256,19 @@ public class UimsdRestoreDeviceTest {
                                 .getDeclaredMethod("tell", String.class);
                         tell.setAccessible(true); tell.invoke(null, "Local export fixture: nothing was sent.");
                     } catch (Exception e) { throw new RuntimeException(e); }
+                },
+                () -> {
+                    try {
+                        Class<?> gate = Class.forName("com.shatteredpixel.shatteredpixeldungeon.windows.UimsdGate");
+                        java.lang.reflect.Method unlocked = gate.getDeclaredMethod("tourAvailable"); unlocked.setAccessible(true);
+                        assertEquals("fresh disposable test history has not earned ten runs", false, unlocked.invoke(null));
+                        java.lang.reflect.Method start = UimsdScene.class.getDeclaredMethod("startTour", int.class);
+                        start.setAccessible(true); start.invoke(Game.scene(), 0);
+                    } catch (Exception e) { throw new RuntimeException(e); }
                 }
             };
             String[] expected = {"not a valid value", "not a valid value", "grouped table shows",
-                    "fixed layout", "nothing recorded", "nothing was sent"};
+                    "fixed layout", "nothing recorded", "nothing was sent", "guided tour opens"};
             for (int i = 0; i < actions.length; i++) {
                 final int index = i;
                 AtomicReference<Query> query = new AtomicReference<>();

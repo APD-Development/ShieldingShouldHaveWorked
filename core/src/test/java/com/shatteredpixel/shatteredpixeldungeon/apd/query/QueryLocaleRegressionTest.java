@@ -73,4 +73,47 @@ public class QueryLocaleRegressionTest {
         views.store(file);
         assertEquals(query, SavedViews.load(file).get("Literal values").query());
     }
+
+    @Test public void aggregateIdentityAndHashKeysNeverDependOnTheDeviceLocale() {
+        Locale previous = Locale.getDefault();
+        try {
+            Locale.setDefault(Locale.ENGLISH);
+            java.util.Map<Aggregate, String> lookup = new java.util.HashMap<>();
+            java.util.List<String> ids = new java.util.ArrayList<>();
+            java.util.List<Aggregate> aggregates = new java.util.ArrayList<>();
+            for (Aggregate.Fn function : Aggregate.Fn.values()) {
+                Aggregate aggregate = Aggregate.of(function, "score");
+                aggregates.add(aggregate); ids.add(aggregate.id()); lookup.put(aggregate, aggregate.id());
+            }
+            for (Locale locale : new Locale[]{Locale.forLanguageTag("tr-TR"), Locale.forLanguageTag("az-AZ"), Locale.ROOT}) {
+                Locale.setDefault(locale);
+                for (int i = 0; i < aggregates.size(); i++) {
+                    assertEquals("stable function identifier under " + locale, ids.get(i), aggregates.get(i).id());
+                    assertEquals("existing hash lookup survives language change", ids.get(i), lookup.get(aggregates.get(i)));
+                }
+            }
+        } finally { Locale.setDefault(previous); }
+    }
+
+    @Test public void groupedMinimumSortingSurvivesSavedViewReloadUnderTurkishLocale() throws Exception {
+        Locale previous = Locale.getDefault();
+        try {
+            Locale.setDefault(Locale.ENGLISH);
+            DatasetDef def = def();
+            Dataset data = dataset(def, Arrays.asList(
+                    row(def, "high", "a", 100L, 0L, null, true, "rules"),
+                    row(def, "low", "b", 2L, 1L, null, true, "rules")));
+            Query query = Query.of("things").withGroup(new GroupBy(Arrays.asList("kind"),
+                    Arrays.asList(Aggregate.of(Aggregate.Fn.MIN, "score"))))
+                    .withSorts(Arrays.asList(new Sort("min:score", false)));
+            SavedViews views = new SavedViews(); views.save("Grouped minimum", query, 30);
+            File file = SavedViews.fileIn(tmp.getRoot()); views.store(file);
+            Locale.setDefault(Locale.forLanguageTag("tr-TR"));
+            Query reopened = SavedViews.load(file).get("Grouped minimum").query();
+            QueryResult result = QueryEngine.run(data, reopened, "rules");
+            assertTrue(result.problems.toString(), result.problems.isEmpty());
+            assertEquals("minimum, not original insertion order", 1L, result.groups.get(0).sample.num(KIND));
+            assertEquals(0L, result.groups.get(1).sample.num(KIND));
+        } finally { Locale.setDefault(previous); }
+    }
 }
