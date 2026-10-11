@@ -22,3 +22,6 @@ UIMSD audit remains incomplete. A controlled test reproduced oversized unlisted 
 Arcana source commit timestamp: 2026-10-11 05:48:04 UTC (01:48:04 New York). Source APK artifact recorded 05:52:10 UTC; Android evidence 06:00:45 UTC. These timestamps establish events, not continuous coding time. Reliable total active time, downtime and longest idle interval are unavailable. No persistent unattended Codex execution has been demonstrated. TEST44 remains the last delivered verified APK until this delivery job successfully publishes TEST45. Signing and application-ID checks are performed by delivery validation; failures must prevent publication and preserve fallback assets.
 
 Install as an update to the existing private app. Never uninstall or clear data to resolve a signing conflict. Previous releases remain preserved.
+
+## Publication correction
+First delivery validation passed source, checksum, signing and application-ID checks, but publication failed because its upload filenames still named TEST44. Corrected publication filenames to TEST45; reuse the same tested APK without rebuilding. No release assets were overwritten.
