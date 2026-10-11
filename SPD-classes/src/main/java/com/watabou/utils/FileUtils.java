@@ -81,7 +81,7 @@ public class FileUtils {
 		boolean foundTemp = false;
 		for (FileHandle file : dir.list()){
 			if (file.isDirectory()){
-				foundTemp = cleanTempFiles(dirName + file.name()) || foundTemp;
+				foundTemp = cleanTempFiles(dirName + file.name() + "/") || foundTemp;
 			} else if (file.length() == 0) {
 				file.delete();
 			} else {
@@ -189,9 +189,9 @@ public class FileUtils {
 	}
 	
 	private static Bundle bundleFromStream( InputStream input ) throws IOException{
-		Bundle bundle = Bundle.read( input );
-		input.close();
-		return bundle;
+		try (InputStream owned = input){
+			return Bundle.read( owned );
+		}
 	}
 	
 	// bundle writing
@@ -219,8 +219,12 @@ public class FileUtils {
 	}
 	
 	private static void bundleToStream( OutputStream output, Bundle bundle ) throws IOException{
-		Bundle.write( bundle, output );
-		output.close();
+		try (OutputStream owned = output){
+			if (!Bundle.write( bundle, owned )){
+				throw new IOException("Failed to write bundle");
+			}
+		}
 	}
 
 }
+

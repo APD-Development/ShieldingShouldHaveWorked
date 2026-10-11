@@ -1,1 +1,1 @@
-Verify repaired source 7587e8fb98704541e8e42267fd60b4be13d4d043 after TEST53 compile failure. Preserve existing player data and signing identity. Run full core suite and Android checks.
+Run complete core tests, debug assembly and API34 checks including four FileUtils save safety regressions. Three inherited fixes owner-authorized; preserve saves/signing/appID. No publication until verification.
