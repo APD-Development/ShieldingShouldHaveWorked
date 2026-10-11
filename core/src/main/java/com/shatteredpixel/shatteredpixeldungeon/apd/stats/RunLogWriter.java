@@ -174,6 +174,11 @@ public final class RunLogWriter {
 			}
 
 			byte[] header = LogHeader.encode(version, createdAtMillis, runId, writerBuild);
+			// Claim atomically: another writer/import may have created the log since exists().
+			if (!file.createNewFile()){
+				return disabledWriter(file, runId, version, options, OpenStatus.FAILED_EXISTS,
+						new IOException("log already exists: " + file));
+			}
 			FileOutputStream fos = new FileOutputStream(file);
 			try {
 				fos.write(header);
@@ -426,7 +431,7 @@ public final class RunLogWriter {
 	public boolean close( boolean seal, long timeoutMillis ){
 		try {
 			synchronized (lock){
-				if (closed) return !disabled;
+				if (closed) return !disabled && worker != null && !worker.isAlive();
 				closed = true; //from now on accept() refuses events
 			}
 			CloseRequest req = new CloseRequest();
@@ -458,7 +463,7 @@ public final class RunLogWriter {
 					worker.join(Math.max(1, Math.min(timeoutMillis, 5_000)));
 				}
 			}
-			return queued && !disabled;
+			return queued && req.done.getCount() == 0 && !disabled;
 		} catch (Throwable t){
 			reportFailure("close()", t);
 			return false;
