@@ -13,6 +13,17 @@ from reportlab.lib.units import inch
 from reportlab.platypus import SimpleDocTemplate, Paragraph, PageBreak, LongTable, TableStyle
 
 
+def markdown_blocks(text):
+    # Keep headings separate even when the source omits blank lines around them.
+    lines = []
+    for line in text.strip().splitlines():
+        if line.startswith(("# ", "## ")):
+            lines.extend(("", line, ""))
+        else:
+            lines.append(line)
+    return [block.strip() for block in "\n".join(lines).split("\n\n") if block.strip()]
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('source', type=Path)
@@ -37,7 +48,7 @@ def main():
         for paragraph in args.verification.read_text().split('\n\n'):
             story.append(Paragraph(escape(paragraph).replace('\n', '<br/>'), styles['ReportBody']))
     def append_markdown(path):
-        for block in path.read_text().strip().split('\n\n'):
+        for block in markdown_blocks(path.read_text()):
             if block.startswith('# '):
                 continue
             if block.startswith('## '):
