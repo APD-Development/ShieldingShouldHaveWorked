@@ -398,7 +398,10 @@ public class PlayRunDeviceTest {
         for(int i=0;i<4;i++) oldSpells[i]=SPDSettings.apdClericQuickSpell(i);
         final int slot=4; // Isolated emulator scratch run only.
         try (ActivityScenario<AndroidLauncher> scenario=ActivityScenario.launch(AndroidLauncher.class)) {
-            waitUntil("title",()->Game.scene() instanceof TitleScene,120000);
+            waitUntil("game initialized",()->Gdx.app!=null && Gdx.files!=null && Game.scene()!=null,120000);
+            // ActivityScenario can resume the scene retained by the preceding test.
+            onRender(()->Game.switchScene(TitleScene.class));
+            waitUntil("title",()->Game.scene() instanceof TitleScene,60000);
             SPDSettings.intro(false); SPDSettings.flipTags(false); SPDSettings.apdHotbarMode(1);
             SPDSettings.apdClericQuickSlots(4);
             onRender(()-> {
