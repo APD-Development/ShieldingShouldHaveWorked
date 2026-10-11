@@ -176,4 +176,27 @@ public class BackendOutboxTest {
             assertEquals(Backoff.delayMillis(1),outbox.items().get(0).nextAttemptAtMillis);
         }
     }
+
+    @Test
+    public void malformedReplySurvivesPersistenceAndThenSubmitsOnce() throws Exception {
+        Outbox outbox = new Outbox();
+        outbox.enqueue(box(1),RunSubmissionCodec.toEnvelope(run("r1",10)),0);
+        outbox.enqueue(box(2),RunSubmissionCodec.toEnvelope(run("r2",20)),0);
+        assertEquals(2,outbox.flush((key,envelope)->null,0).kept);
+        java.io.File file=java.io.File.createTempFile("apd-outbox-response-", ".txt");
+        try {
+            OutboxStore.save(outbox,file);
+            Outbox restored=new Outbox();
+            assertEquals(2,OutboxStore.load(restored,file).items);
+            ReferenceServer server=new ReferenceServer(Id.of(Id.Kind.PLAYER,"pl_a"));
+            assertEquals(0,restored.flush(server,0).sent);
+            assertEquals(2,restored.flush(server,Backoff.MAX_MILLIS).sent);
+            assertEquals(0,restored.size());
+            assertEquals(2,server.stored.size());
+            assertEquals(0,restored.flush(server,Backoff.MAX_MILLIS).sent);
+        } finally {
+            java.nio.file.Files.deleteIfExists(file.toPath());
+            java.nio.file.Files.deleteIfExists(new java.io.File(file.getPath()+".tmp").toPath());
+        }
+    }
 }
