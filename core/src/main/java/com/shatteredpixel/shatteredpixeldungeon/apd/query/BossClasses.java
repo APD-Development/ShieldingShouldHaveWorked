@@ -35,8 +35,13 @@ public final class BossClasses {
 		if (className == null) return false;
 		int dot = className.lastIndexOf('.');
 		String simple = dot >= 0 ? className.substring(dot + 1) : className;
-		int dollar = simple.indexOf('$');
-		if (dollar > 0) simple = simple.substring(0, dollar);
+		int dollar = simple.lastIndexOf('
+		for (String n : SIMPLE_NAMES) if (n.equals(simple)) return true;
+		return false;
+	}
+}
+);
+		if (dollar >= 0) simple = simple.substring(dollar + 1);
 		for (String n : SIMPLE_NAMES) if (n.equals(simple)) return true;
 		return false;
 	}
