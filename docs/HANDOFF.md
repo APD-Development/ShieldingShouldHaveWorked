@@ -1,3 +1,9 @@
+## 2026-10-11 00:35 UTC / October 10 evening New York — TEST35 accepted; latest combined verification requested
+
+TEST35 workflow [38098266395](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38098266395) succeeded for exact source `c54d08f38ba765b0c40aab2176263f2e90a2348c` from 00:23:34 through 00:34:43 UTC. Downloaded core artifact `11686352327` matched `sha256:be8ae52e23666febcbbd9da037467d08699eac8c12c0f6ade9536ca5cb4d34d4`: 167 XML suites / 1,017 tests / zero failures, errors or skips. Downloaded Android artifact `11686779020` matched `sha256:b56db41443760bee4c1f26c96ceca3b0335f7ff424028b6520bc01f468491e22`: 9 API34 cases / zero failures, errors or skips. Debug assembly passed; private delivery remained disabled.
+
+That exact source verifies the active known-Wayward accuracy display correction and preceding UIMSD work. It predates the historical Turkish/Azeri saved-sort compatibility correction and the page-specific Community menu summaries. One combined latest-source core/debug/API34 request is now issued through the existing approved workflow; no release or publication is requested. TEST31 remains the signed delivered rollback.
+
 ## 2026-10-11 00:32 UTC / October 10 evening New York — Community landing page made scannable
 
 Continued the approved offline Community phase from real branch head `e9b9e1971fed601291d19d336c202c2447395938`. Replaced the repeated generic subtitle on all eight hub rows with concise page-specific summaries. The known Month 1 submission, Month 2 top-16 qualification and Month 3 weekly-elimination sequence is visible directly in the landing list; the other destinations remain explicitly future-facing. No fake submissions/votes/comments, internal dates, clans, creator-only topics, backend, account or network behavior was added.

@@ -1,3 +1,12 @@
+## 2026-10-11T00:36:43.703Z - TEST35 evidence accepted; latest combined verification requested
+
+- Workflow [38098266395](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38098266395), exact source `c54d08f38ba765b0c40aab2176263f2e90a2348c`, observed 2026-10-11 00:23:34-00:34:43 UTC, completed successfully.
+- Downloaded core artifact `11686352327`, `sha256:be8ae52e23666febcbbd9da037467d08699eac8c12c0f6ade9536ca5cb4d34d4`: 167 XML suites, 1,017 tests, zero failures/errors/skips.
+- Downloaded Android artifact `11686779020`, `sha256:b56db41443760bee4c1f26c96ceca3b0335f7ff424028b6520bc01f468491e22`: 9 API34 cases, zero failures/errors/skips. Debug assembly succeeded; delivery job was skipped as designed.
+- Later current-source changes not covered by TEST35: historical localized aggregate-sort read compatibility and Community page-specific menu summaries/native subtitle assertions.
+- Updated the existing build request to verify the latest combined source once. This uses the existing approved workflow and quota, requests no publication, and does not rebuild the already verified TEST35 source merely for delivery.
+- No player data, gameplay/RNG, save/statistics format, signing identity, application ID, release, `main` or Claude branch changed. Time outside the observed tool/workflow intervals is unknown.
+
 ## 2026-10-11T00:35:05.753Z - Community menu summaries implemented (verification pending)
 
 - Execution `APD-20261011T003219Z-COMMUNITY-SUMMARIES`; observed implementation record `2026-10-11T00:35:05.753Z`; parent observed before the change `e9b9e1971fed601291d19d336c202c2447395938`. Time outside this bounded execution is unknown.
