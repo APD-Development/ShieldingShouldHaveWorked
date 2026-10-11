@@ -1,6 +1,6 @@
 # APD lunch candidate TEST50 development report — October 11, 2026
 ## Source and delivery status
-Today's candidate is TEST50, source14226785732470e5241daaabe92ba4dc7d399df3, run38151255573. At report drafting, full-source verification was running; do not treat it as completed until the appended validator evidence says so. Candidate APK is ADHD-Pixel-Dungeon-CODEX-TEST-50.apk.
+Today's candidate is TEST50, source14226785732470e5241daaabe92ba4dc7d399df3, run38151255573. Full-source run38151255573 succeeded: actual XML records 1,089 core tests and 13 API34 Android tests, zero failures/errors/skips. Signing/checksum validation and artifact staging are separate; final appended validator evidence records their completion. Candidate APK is ADHD-Pixel-Dungeon-CODEX-TEST-50.apk.
 Verified fallback: TEST48 source d86d9713e9a2045d614b1f5645667b0a5d499665, source run38145456328, signing/checksum/source validation run38150379303, private staged artifact11706672718. APK SHA25671752691c020b2af3e698153d0ae1f74aa20485fa1002cdb7704cc241b9207f4. AppIDcom.charltonchris29.adhdpixeldungeon.indev and certificate067688b3ab6bd5820a67f4c1ba7d5859db578173771cf31d3252b3e4e012246e unchanged. TEST45 remains delivered rollback; neither fallback is to be deleted. No early PDF/APK publication.
 
 ## Changes since delivered TEST45
@@ -72,3 +72,7 @@ No complete active-development/idle-time measurement exists. CI timestamps measu
 
 ## PDF preparation correction
 Local PDF extraction exposed a renderer defect: a title directly adjacent to the source-status heading was treated as one block and skipped, dropping the source-status section. The renderer now separates headings before block handling. Four permanent tool regressions pass; regenerated PDF text confirms source status, inherited findings and reproduction evidence are present. This is reporting tooling, not an application-source change or reason to rebuild the APK. No broken preview was delivered.
+
+
+## Final preparation checks — 11:38 AM EDT
+Native XML artifact11706752278 confirms all 13 expected methods passed; core artifact11706293706 confirms 1089 tests passed. APK artifact11706063940 is the exact source142 candidate, not rebuilt for documentation. Additional offline-gateway/features host checks:9 passed; backend foundations/outbox checks:19 passed after correcting the test working directory to core. Two first attempts from workspace/repository root failed only because the source-scanning architecture test requires core; this was not hidden. UIMSD review now53/423 manifest components, incomplete; no new gameplay change from these reviews. No physical-phone validation or full human-played victory is claimed.

@@ -1,4 +1,4 @@
-name: Deliver verified existing APD TEST48
+name: Deliver verified existing APD TEST50
 
 # Delivery only: reuse the already tested APK; no Gradle or app rebuild.
 # Accept verified SDK signer labels; retain compatibility refusal diagnostics.
@@ -12,19 +12,19 @@ permissions:
   actions: read
 
 concurrency:
-  group: apd-existing-test48-delivery
+  group: apd-existing-test50-delivery
   cancel-in-progress: false
 
 env:
-  APD_SOURCE_SHA: d86d9713e9a2045d614b1f5645667b0a5d499665
-  APD_SOURCE_RUN: '38145456328'
-  APD_TEST_NUMBER: '48'
-  APD_CORE_TEST_COUNT: '1083'
+  APD_SOURCE_SHA: 14226785732470e5241daaabe92ba4dc7d399df3
+  APD_SOURCE_RUN: '38151255573'
+  APD_TEST_NUMBER: '50'
+  APD_CORE_TEST_COUNT: '1089'
   APD_ANDROID_TEST_COUNT: '13'
   APD_ROLLBACK_NUMBER: '41'
   APD_ROLLBACK_SHA256: 'd476ca16cd3f17a6a13257812243696dd4ed0acb92f7a94192d528628766d188'
   APD_REQUIRED_ANDROID_METHODS: 'menusSurviveSceneRecreationAndNarrowActionsStayInsideTheirWindow,aRunCanBePlayedSavedContinuedAndEndedWithItsHistoryRecorded,aWonRunIsRecordedAsWonAndSealed,difficultyIsChosenOnTheCharacterScreenAndNotInSettings,communityMenuOpensEveryPreviewAndReturnsWithoutStackingWindows,adultHumorControlWorksWithoutAnAgeProviderAndReopensWithSavedChoice,textAndGuideScrollSurviveRepeatedResetsAndClampAfterResize,validationEmptyHistoryGroupedAndReportMessagesSurviveWithoutRepeatingActions,tourChoicesSurviveWithoutStartingATourOrRepeatingTheOffer,heroButtonsStayAboveNavigationBarAndRemainSelectable,navigationOverlapReservesVisibleBarsEvenWithFullscreenRequested,clericQuickCastsPersistAndKeepNormalCostsAndTargeting,arcanaItemDescriptionsRequireKnownEquippedRingsAndFitWindows'
-  APD_SOURCE_ARTIFACTS_JSON: '{"apd-codex-android-checks":11704457665,"apd-codex-core-tests":11704990662,"apd-codex-private-test-apk":11704885915}'
+  APD_SOURCE_ARTIFACTS_JSON: '{"apd-codex-android-checks":11706752278,"apd-codex-core-tests":11706293706,"apd-codex-private-test-apk":11706063940}'
 
 jobs:
   validate-and-stage:
@@ -67,10 +67,11 @@ jobs:
       - name: Produce today's report from verified evidence
         run: |
           python3 -m pip install reportlab==4.2.5
-          python3 tools/apd_bug_report_pdf.py docs/APD-TEST48-REPORT-2026-10-11.md delivery/APD-Bug-Fixes-2026-10-11-TEST48.pdf --verification delivery/verification.txt
+          python3 -m unittest discover -s tools -p test_apd_bug_report_pdf.py
+          python3 tools/apd_bug_report_pdf.py docs/APD-TEST50-REPORT-2026-10-11.md delivery/APD-Bug-Fixes-2026-10-11-TEST50.pdf --verification delivery/verification.txt
       - uses: actions/upload-artifact@v4
         with:
-          name: verified-test48-delivery
+          name: verified-test50-delivery
           path: delivery/
           retention-days: 7
 
