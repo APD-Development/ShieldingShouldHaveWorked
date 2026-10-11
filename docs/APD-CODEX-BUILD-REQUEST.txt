@@ -1,1 +1,1 @@
-Verify resumed UIMSD report difference overflow fix and four permanent regressions. Full core tests, debug assembly, existing API34 checks required. No publication or changes to previous TEST50 artifacts.
+Verify title notice after demo unlock, exact report differences, and Yog minion boss classification with derived cache invalidation. Full core, debug APK and API34 checks. Preserve in-progress TEST51 and all delivered assets. No paid/public release.

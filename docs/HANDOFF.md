@@ -1001,3 +1001,7 @@ Confirmed source cause for demo-unlocked players: UimsdGate.annotationFor return
 
 ## Further UIMSD audit — nested boss minions and cache compatibility
 BossClasses stripped nested class names at the first dollar, so YogDzewa$Larva/$YogRipper/$YogEye/$YogScorpio were all classified as YogDzewa bosses despite BOSS_MINION, not BOSS. Actual class-name and real synthetic log/dataset tests reproduced falseclassification. Select final nested simple name instead, retain all six trueYogFist bosses. Increment RowBuilders.BUILDER_VERSION8→9 so existing derivedrow caches rebuild; rawlogs untouched. Three permanent tests cover fourminions/sixfists and old-version cache rebuild with byte-identical rawhistory.37 boss/dataset/cache targeted checks passed on host JVM. No upstreammobcode/balance/loot changes. Fix pendingfull-sourceverification; not in runningTEST51(dd6ce8b3), which contains title notice+reportdifference fixes only. ExistingTEST51verify/buildpassed, API34running; do notcancel or pretendnewbossfixalreadyincluded.
+
+
+## Verification batch includes notice and boss-cache correction
+Request full current-source core/debug/API34 verification after actual boss-classification/cache-version change. ExistingTEST51run38172194787 remains uncancelled for title-notice and comparison evidence; new verification will queue. No repeatedbuild ofunchangedsource. Nextcandidate includesboth batches; don't publish before source/signing/testvalidation. ExistingTEST50rollback retained.
