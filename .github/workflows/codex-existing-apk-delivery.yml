@@ -1,4 +1,4 @@
-name: Deliver verified existing APD TEST44
+name: Deliver verified existing APD TEST45
 
 # Delivery only: reuse the already tested APK; no Gradle or app rebuild.
 # Accept verified SDK signer labels; retain compatibility refusal diagnostics.
@@ -12,19 +12,19 @@ permissions:
   actions: read
 
 concurrency:
-  group: apd-existing-test44-delivery
+  group: apd-existing-test45-delivery
   cancel-in-progress: false
 
 env:
-  APD_SOURCE_SHA: 8134f1d29f42c307c6fdb5fd34e908a529b8daff
-  APD_SOURCE_RUN: '38110893103'
-  APD_TEST_NUMBER: '44'
-  APD_CORE_TEST_COUNT: '1049'
-  APD_ANDROID_TEST_COUNT: '12'
+  APD_SOURCE_SHA: d7ce129db0e7bcbff18cc8c0027b86812242adb5
+  APD_SOURCE_RUN: '38116010264'
+  APD_TEST_NUMBER: '45'
+  APD_CORE_TEST_COUNT: '1067'
+  APD_ANDROID_TEST_COUNT: '13'
   APD_ROLLBACK_NUMBER: '41'
   APD_ROLLBACK_SHA256: 'd476ca16cd3f17a6a13257812243696dd4ed0acb92f7a94192d528628766d188'
-  APD_REQUIRED_ANDROID_METHODS: 'menusSurviveSceneRecreationAndNarrowActionsStayInsideTheirWindow,aRunCanBePlayedSavedContinuedAndEndedWithItsHistoryRecorded,aWonRunIsRecordedAsWonAndSealed,difficultyIsChosenOnTheCharacterScreenAndNotInSettings,communityMenuOpensEveryPreviewAndReturnsWithoutStackingWindows,adultHumorControlWorksWithoutAnAgeProviderAndReopensWithSavedChoice,textAndGuideScrollSurviveRepeatedResetsAndClampAfterResize,validationEmptyHistoryGroupedAndReportMessagesSurviveWithoutRepeatingActions,tourChoicesSurviveWithoutStartingATourOrRepeatingTheOffer,heroButtonsStayAboveNavigationBarAndRemainSelectable,navigationOverlapReservesVisibleBarsEvenWithFullscreenRequested,clericQuickCastsPersistAndKeepNormalCostsAndTargeting'
-  APD_SOURCE_ARTIFACTS_JSON: '{"apd-codex-android-checks":11692300560,"apd-codex-core-tests":11691313414,"apd-codex-private-test-apk":11691313410}'
+  APD_REQUIRED_ANDROID_METHODS: 'menusSurviveSceneRecreationAndNarrowActionsStayInsideTheirWindow,aRunCanBePlayedSavedContinuedAndEndedWithItsHistoryRecorded,aWonRunIsRecordedAsWonAndSealed,difficultyIsChosenOnTheCharacterScreenAndNotInSettings,communityMenuOpensEveryPreviewAndReturnsWithoutStackingWindows,adultHumorControlWorksWithoutAnAgeProviderAndReopensWithSavedChoice,textAndGuideScrollSurviveRepeatedResetsAndClampAfterResize,validationEmptyHistoryGroupedAndReportMessagesSurviveWithoutRepeatingActions,tourChoicesSurviveWithoutStartingATourOrRepeatingTheOffer,heroButtonsStayAboveNavigationBarAndRemainSelectable,navigationOverlapReservesVisibleBarsEvenWithFullscreenRequested,clericQuickCastsPersistAndKeepNormalCostsAndTargeting,arcanaItemDescriptionsRequireKnownEquippedRingsAndFitWindows'
+  APD_SOURCE_ARTIFACTS_JSON: '{"apd-codex-android-checks":11693785459,"apd-codex-core-tests":11693263771,"apd-codex-private-test-apk":11693448519}'
 
 jobs:
   validate-and-stage:
@@ -67,10 +67,10 @@ jobs:
       - name: Produce today's report from verified evidence
         run: |
           python3 -m pip install reportlab==4.2.5
-          python3 tools/apd_bug_report_pdf.py docs/APD-TEST44-REPORT-2026-10-11.md delivery/APD-Bug-Fixes-2026-10-11-TEST44.pdf --verification delivery/verification.txt
+          python3 tools/apd_bug_report_pdf.py docs/APD-TEST45-REPORT-2026-10-11.md delivery/APD-Bug-Fixes-2026-10-11-TEST45.pdf --verification delivery/verification.txt
       - uses: actions/upload-artifact@v4
         with:
-          name: verified-test44-delivery
+          name: verified-test45-delivery
           path: delivery/
           retention-days: 7
 
@@ -84,7 +84,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: verified-test44-delivery
+          name: verified-test45-delivery
           path: delivery
       - name: Publish new private prerelease without replacing existing assets
         env:
@@ -97,17 +97,17 @@ jobs:
           repo = os.environ['GITHUB_REPOSITORY']
           assert json.loads(subprocess.check_output(['gh', 'api', 'repos/' + repo]))['private']
           assert datetime.now(ZoneInfo('America/New_York')) >= datetime(2026, 10, 10, 11, 59, tzinfo=ZoneInfo('America/New_York'))
-          tag = 'apd-codex-test-44'
+          tag = 'apd-codex-test-45'
           previous = subprocess.run(['gh', 'release', 'view', tag, '--repo', repo], capture_output=True)
           if previous.returncode == 0:
               raise SystemExit('Existing release preserved; do not overwrite it.')
           subprocess.run(['gh', 'release', 'create', tag, '--repo', repo,
               '--target', os.environ['GITHUB_SHA'], '--prerelease', '--latest=false',
-              '--title', 'APD PRIVATE CODEX TEST 44', '--notes-file', 'delivery/verification.txt',
+              '--title', 'APD PRIVATE CODEX TEST 45', '--notes-file', 'delivery/verification.txt',
               'delivery/ADHD-Pixel-Dungeon-CODEX-TEST-44.apk',
               'delivery/ADHD-Pixel-Dungeon-CODEX-TEST-44.apk.sha256',
-              'delivery/APD-Bug-Fixes-2026-10-11-TEST44.pdf',
-              'delivery/TEST44-Verification.json',
+              'delivery/APD-Bug-Fixes-2026-10-11-TEST45.pdf',
+              'delivery/TEST45-Verification.json',
               'delivery/APD-Source-Line-Counts.csv',
               'delivery/APD-Source-Line-Counts.json',
               'delivery/APD-Source-Line-Counts.md'], check=True)
