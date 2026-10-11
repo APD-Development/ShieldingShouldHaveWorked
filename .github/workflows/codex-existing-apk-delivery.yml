@@ -1,4 +1,4 @@
-name: Deliver verified existing APD TEST41
+name: Deliver verified existing APD TEST44
 
 # Delivery only: reuse the already tested APK; no Gradle or app rebuild.
 # Accept verified SDK signer labels; retain compatibility refusal diagnostics.
@@ -12,19 +12,19 @@ permissions:
   actions: read
 
 concurrency:
-  group: apd-existing-test41-delivery
+  group: apd-existing-test44-delivery
   cancel-in-progress: false
 
 env:
-  APD_SOURCE_SHA: e9f1515a52e219282772a590419e215c9a8139f1
-  APD_SOURCE_RUN: '38103226643'
-  APD_TEST_NUMBER: '41'
-  APD_CORE_TEST_COUNT: '1035'
-  APD_ANDROID_TEST_COUNT: '11'
-  APD_ROLLBACK_NUMBER: '39'
-  APD_ROLLBACK_SHA256: 'fdba6ccb7ec634e86ec64414e6e92a6bfeff3584fd4931cc59066326a5e7e7ee'
-  APD_REQUIRED_ANDROID_METHODS: 'menusSurviveSceneRecreationAndNarrowActionsStayInsideTheirWindow,aRunCanBePlayedSavedContinuedAndEndedWithItsHistoryRecorded,aWonRunIsRecordedAsWonAndSealed,difficultyIsChosenOnTheCharacterScreenAndNotInSettings,communityMenuOpensEveryPreviewAndReturnsWithoutStackingWindows,adultHumorControlWorksWithoutAnAgeProviderAndReopensWithSavedChoice,textAndGuideScrollSurviveRepeatedResetsAndClampAfterResize,validationEmptyHistoryGroupedAndReportMessagesSurviveWithoutRepeatingActions,tourChoicesSurviveWithoutStartingATourOrRepeatingTheOffer,heroButtonsStayAboveNavigationBarAndRemainSelectable,navigationOverlapReservesVisibleBarsEvenWithFullscreenRequested'
-  APD_SOURCE_ARTIFACTS_JSON: '{"apd-codex-android-checks":11688493286,"apd-codex-core-tests":11688383435,"apd-codex-private-test-apk":11688188670}'
+  APD_SOURCE_SHA: 8134f1d29f42c307c6fdb5fd34e908a529b8daff
+  APD_SOURCE_RUN: '38110893103'
+  APD_TEST_NUMBER: '44'
+  APD_CORE_TEST_COUNT: '1049'
+  APD_ANDROID_TEST_COUNT: '12'
+  APD_ROLLBACK_NUMBER: '41'
+  APD_ROLLBACK_SHA256: 'd476ca16cd3f17a6a13257812243696dd4ed0acb92f7a94192d528628766d188'
+  APD_REQUIRED_ANDROID_METHODS: 'menusSurviveSceneRecreationAndNarrowActionsStayInsideTheirWindow,aRunCanBePlayedSavedContinuedAndEndedWithItsHistoryRecorded,aWonRunIsRecordedAsWonAndSealed,difficultyIsChosenOnTheCharacterScreenAndNotInSettings,communityMenuOpensEveryPreviewAndReturnsWithoutStackingWindows,adultHumorControlWorksWithoutAnAgeProviderAndReopensWithSavedChoice,textAndGuideScrollSurviveRepeatedResetsAndClampAfterResize,validationEmptyHistoryGroupedAndReportMessagesSurviveWithoutRepeatingActions,tourChoicesSurviveWithoutStartingATourOrRepeatingTheOffer,heroButtonsStayAboveNavigationBarAndRemainSelectable,navigationOverlapReservesVisibleBarsEvenWithFullscreenRequested,clericQuickCastsPersistAndKeepNormalCostsAndTargeting'
+  APD_SOURCE_ARTIFACTS_JSON: '{"apd-codex-android-checks":11692300560,"apd-codex-core-tests":11691313414,"apd-codex-private-test-apk":11691313410}'
 
 jobs:
   validate-and-stage:
@@ -53,20 +53,24 @@ jobs:
       - name: Retrieve rollback APK for direct compatibility comparison
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release download apd-codex-test-39 --repo "$GITHUB_REPOSITORY" --pattern ADHD-Pixel-Dungeon-CODEX-TEST-39.apk --dir rollback
+        run: gh release download apd-codex-test-41 --repo "$GITHUB_REPOSITORY" --pattern ADHD-Pixel-Dungeon-CODEX-TEST-41.apk --dir rollback
       - name: Check source, tests, checksum, signing and application ID
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           python3 -m unittest discover -s tools -p test_apd_existing_build_evidence.py
           python3 tools/apd_existing_build_evidence.py
+      - name: Count exact verified source for owner chat breakdown
+        run: |
+          git fetch --no-tags --depth=1 origin "$APD_SOURCE_SHA"
+          python3 tools/apd_source_line_counts.py "$APD_SOURCE_SHA" delivery
       - name: Produce today's report from verified evidence
         run: |
           python3 -m pip install reportlab==4.2.5
-          python3 tools/apd_bug_report_pdf.py docs/APD-TEST41-REPORT-2026-10-10.md delivery/APD-Bug-Fixes-2026-10-10-TEST41.pdf --verification delivery/verification.txt
+          python3 tools/apd_bug_report_pdf.py docs/APD-TEST44-REPORT-2026-10-11.md delivery/APD-Bug-Fixes-2026-10-11-TEST44.pdf --verification delivery/verification.txt
       - uses: actions/upload-artifact@v4
         with:
-          name: verified-test41-delivery
+          name: verified-test44-delivery
           path: delivery/
           retention-days: 7
 
@@ -80,7 +84,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: verified-test41-delivery
+          name: verified-test44-delivery
           path: delivery
       - name: Publish new private prerelease without replacing existing assets
         env:
@@ -93,15 +97,18 @@ jobs:
           repo = os.environ['GITHUB_REPOSITORY']
           assert json.loads(subprocess.check_output(['gh', 'api', 'repos/' + repo]))['private']
           assert datetime.now(ZoneInfo('America/New_York')) >= datetime(2026, 10, 10, 11, 59, tzinfo=ZoneInfo('America/New_York'))
-          tag = 'apd-codex-test-41'
+          tag = 'apd-codex-test-44'
           previous = subprocess.run(['gh', 'release', 'view', tag, '--repo', repo], capture_output=True)
           if previous.returncode == 0:
               raise SystemExit('Existing release preserved; do not overwrite it.')
           subprocess.run(['gh', 'release', 'create', tag, '--repo', repo,
               '--target', os.environ['GITHUB_SHA'], '--prerelease', '--latest=false',
-              '--title', 'APD PRIVATE CODEX TEST 41', '--notes-file', 'delivery/verification.txt',
-              'delivery/ADHD-Pixel-Dungeon-CODEX-TEST-41.apk',
-              'delivery/ADHD-Pixel-Dungeon-CODEX-TEST-41.apk.sha256',
-              'delivery/APD-Bug-Fixes-2026-10-10-TEST41.pdf',
-              'delivery/TEST41-Verification.json'], check=True)
+              '--title', 'APD PRIVATE CODEX TEST 44', '--notes-file', 'delivery/verification.txt',
+              'delivery/ADHD-Pixel-Dungeon-CODEX-TEST-44.apk',
+              'delivery/ADHD-Pixel-Dungeon-CODEX-TEST-44.apk.sha256',
+              'delivery/APD-Bug-Fixes-2026-10-11-TEST44.pdf',
+              'delivery/TEST44-Verification.json',
+              'delivery/APD-Source-Line-Counts.csv',
+              'delivery/APD-Source-Line-Counts.json',
+              'delivery/APD-Source-Line-Counts.md'], check=True)
           PY
