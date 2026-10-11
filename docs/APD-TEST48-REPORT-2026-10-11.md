@@ -46,3 +46,5 @@ Internal hotbar capacity extension and other approved backlog work remain separa
 No inherited SPD code was changed during this audit batch.
 GitHub Actions confirms completed builds/tests, not continuous Codex coding. The new hourly main workflow runs core tests, not an autonomous AI developer. No persistent unattended coding mechanism has been demonstrated.
 Available timestamps identify workflow execution, not total active coding or overnight downtime. No defensible15-hour active-work or zero-idle measurement exists; none is claimed. TEST48 artifacts were created10:03–10:12AM Eastern on October11. Final staging timestamps are recorded in Actions. Daily publication is separate from preparation.
+
+Preparation failure: staging run38150027918 correctly refused an incorrect Android evidence artifact ID copied in the workflow template. Corrected to11704457665; APK and source tests unchanged, no rebuild. Signing/publication remain pending until corrected staging passes.
