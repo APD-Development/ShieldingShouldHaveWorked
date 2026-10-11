@@ -15,7 +15,7 @@ permissions:
 
 concurrency:
   group: codex-apd-sprint-verification
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   verify-and-build:
