@@ -172,7 +172,7 @@ public class PlayRunDeviceTest {
             assertTrue(com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.CategoryHotbar.chooseItem(0, food));
             com.shatteredpixel.shatteredpixeldungeon.ui.Toolbar.updateLayout();
             com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton.refresh();
-            Object first = ((Object[]) field(toolbar, "btnQuick"))[0];
+            Object first = field(((Object[]) field(toolbar, "btnQuick"))[0], "slot");
             org.junit.Assert.assertSame("specific favorite displays actual inventory item", food, field(field(first, "slot"), "item"));
             assertFalse("generic Item label does not cover favorite", ((com.watabou.noosa.ui.Component) field(first, "categoryLabel")).visible);
             java.lang.reflect.Method hover = first.getClass().getDeclaredMethod("hoverText");

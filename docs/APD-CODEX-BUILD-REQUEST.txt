@@ -1,4 +1,4 @@
-Hotbar favorite display verification
-2026-10-11 01:49 UTC
-Parent 33708e2cc61298ae1c4cc6fe504e0f92de54648d
-Run full core tests, Android debug build, API34 hotbar/gameplay/save, inset and UI regressions. Preserve TEST39 verified fallback. No publication until actual evidence and compatible signature verified.
+Hotbar favorite display native wrapper correction
+2026-10-11 01:51 UTC
+Parent 1f57136a7cb9e6c55aab48da3d23f44eaa0efc3e
+The toolbar contains QuickslotTool wrappers around QuickSlotButton. Native favorite assertions must dereference the wrapper before inspecting item/name. Re-run full required verification; no application code changed since 1f57136. Preserve TEST39 fallback.
