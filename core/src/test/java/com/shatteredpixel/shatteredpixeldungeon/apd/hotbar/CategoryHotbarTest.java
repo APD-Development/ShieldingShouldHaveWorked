@@ -126,4 +126,24 @@ public class CategoryHotbarTest {
         assertTrue(CategoryHotbar.items(new Hero(), 0).isEmpty());
         assertEquals("future.community.Artifact", CategoryHotbar.itemType(0));
     }
+    @Test public void customItemShowsActualKnownNameAndFollowsInventoryRemoval() {
+        Hero hero = new Hero(); Food food = new Food();
+        hero.belongings.backpack.items.add(food);
+        assertTrue(CategoryHotbar.chooseItem(0, food));
+        assertSame(food, CategoryHotbar.representative(hero, 0));
+        assertEquals(food.name(), CategoryHotbar.label(hero, 0));
+        hero.belongings.backpack.items.remove(food);
+        assertNull(CategoryHotbar.representative(hero, 0));
+        assertEquals("Saved item type (unavailable)", CategoryHotbar.label(hero, 0));
+    }
+    @Test public void savedHealingTypeDoesNotExposeUnidentifiedPotionInNewRun() {
+        Hero hero = new Hero(); Healing known = new Healing(true);
+        assertTrue(CategoryHotbar.chooseItem(0, known));
+        Healing hidden = new Healing(false); hero.belongings.backpack.items.add(hidden);
+        assertNull(CategoryHotbar.representative(hero, 0));
+        assertEquals("Saved item type (unavailable)", CategoryHotbar.label(hero, 0));
+        CategoryHotbar.chooseCategory(1, POTIONS);
+        assertSame(hidden, CategoryHotbar.items(hero, 1).get(0));
+        assertFalse(hidden.isKnown());
+    }
 }

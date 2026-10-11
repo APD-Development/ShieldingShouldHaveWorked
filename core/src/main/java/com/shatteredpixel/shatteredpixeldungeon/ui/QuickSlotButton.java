@@ -145,6 +145,9 @@ public class QuickSlotButton extends Button {
 
 			@Override
 			protected String hoverText() {
+				if (com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.CategoryHotbar.enabled()) {
+                    return com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.CategoryHotbar.label(slotNum);
+                }
 				if (item == null){
 					return Messages.titleCase(Messages.get(WndKeyBindings.class, "quickslot_" + (slotNum+1)));
 				} else {
@@ -219,6 +222,9 @@ public class QuickSlotButton extends Button {
 
 	@Override
 	protected String hoverText() {
+		if (com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.CategoryHotbar.enabled()) {
+            return com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.CategoryHotbar.label(slotNum);
+        }
 		if (slot.item == null){
 			return Messages.titleCase(Messages.get(WndKeyBindings.class, "quickslot_" + (slotNum+1)));
 		} else {
@@ -317,8 +323,10 @@ public class QuickSlotButton extends Button {
 	
 	public void item( Item item ) {
 		boolean categories = com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.CategoryHotbar.enabled();
-        slot.item(categories ? null : item);
-        categoryLabel.visible = categories;
+        Item representative = categories
+                ? com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.CategoryHotbar.representative(Dungeon.hero, slotNum) : item;
+        slot.item(representative);
+        categoryLabel.visible = categories && representative == null;
         categoryLabel.text(categories ? com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.CategoryHotbar.shortLabel(slotNum) : "");
         layout();
 		enableSlot();

@@ -41,7 +41,19 @@ public final class CategoryHotbar {
         slot(index);
         return SPDSettings.apdHotbarMode() == CUSTOM ? SPDSettings.apdHotbarItem(index) : "";
     }
-    public static String label(int index) { return itemType(index).isEmpty() ? category(index).label : "Saved item type"; }
+    public static Item representative(Hero hero, int index) {
+        if (itemType(index).isEmpty()) return null;
+        List<Item> available = items(hero, index);
+        return available.isEmpty() ? null : available.get(0);
+    }
+    public static String label(int index) {
+        return label(com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero, index);
+    }
+    public static String label(Hero hero, int index) {
+        if (itemType(index).isEmpty()) return category(index).label;
+        Item available = representative(hero, index);
+        return available == null ? "Saved item type (unavailable)" : available.name();
+    }
     public static String shortLabel(int index) { return itemType(index).isEmpty() ? category(index).shortLabel : "Item"; }
     public static void chooseCategory(int index, Category category) {
         slot(index); preservePreset(); SPDSettings.apdHotbarCategory(index, category.ordinal());

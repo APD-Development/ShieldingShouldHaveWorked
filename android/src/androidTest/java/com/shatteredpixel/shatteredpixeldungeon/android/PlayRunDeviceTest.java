@@ -118,6 +118,9 @@ public class PlayRunDeviceTest {
 	//Exercise the actual rendered category toolbar without consuming items or changing turns.
 	private static void assertCategoryHotbarControls() throws Exception {
 		int oldMode = SPDSettings.apdHotbarMode();
+        int[] oldCategories = new int[6];
+        String[] oldItems = new String[6];
+        for (int i=0; i<6; i++) { oldCategories[i] = SPDSettings.apdHotbarCategory(i); oldItems[i] = SPDSettings.apdHotbarItem(i); }
 		try {
 			SPDSettings.apdHotbarMode(1);
 			com.shatteredpixel.shatteredpixeldungeon.ui.Toolbar.updateLayout();
@@ -155,8 +158,31 @@ public class PlayRunDeviceTest {
 			assertEquals("opening category spends no health", hp, Dungeon.hero.HP);
 			assertTrue("opening category spends no turn", Dungeon.hero.ready);
 			for (int i=0; i<6; i++) org.junit.Assert.assertSame("classic assignments preserved", classic[i], Dungeon.quickslot.getItem(i));
-			GameScene.cancel();
+			for (Object child : new java.util.ArrayList<>((java.util.List<?>) field(Game.scene(), "members"))) {
+                if (child instanceof com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList) {
+                    ((com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList) child).hide();
+                }
+            }
+            com.shatteredpixel.shatteredpixeldungeon.items.Item food = null;
+            for (com.shatteredpixel.shatteredpixeldungeon.items.Item candidate : Dungeon.hero.belongings) {
+                if (candidate instanceof com.shatteredpixel.shatteredpixeldungeon.items.food.Food) { food = candidate; break; }
+            }
+            assertNotNull("Warrior has food for a specific favorite", food);
+            int quantity = food.quantity();
+            assertTrue(com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.CategoryHotbar.chooseItem(0, food));
+            com.shatteredpixel.shatteredpixeldungeon.ui.Toolbar.updateLayout();
+            com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton.refresh();
+            Object first = ((Object[]) field(toolbar, "btnQuick"))[0];
+            org.junit.Assert.assertSame("specific favorite displays actual inventory item", food, field(field(first, "slot"), "item"));
+            assertFalse("generic Item label does not cover favorite", ((com.watabou.noosa.ui.Component) field(first, "categoryLabel")).visible);
+            java.lang.reflect.Method hover = first.getClass().getDeclaredMethod("hoverText");
+            hover.setAccessible(true);
+            assertEquals("specific favorite tooltip names its item", food.name(), hover.invoke(first));
+            assertEquals("configuring favorite never consumes it", quantity, food.quantity());
+            assertTrue("configuring favorite spends no turn", Dungeon.hero.ready);
+            for (int i=0; i<6; i++) org.junit.Assert.assertSame("custom favorite preserves classic assignments", classic[i], Dungeon.quickslot.getItem(i));
 		} finally {
+            for (int i=0; i<6; i++) { SPDSettings.apdHotbarCategory(i, oldCategories[i]); SPDSettings.apdHotbarItem(i, oldItems[i]); }
 			SPDSettings.apdHotbarMode(oldMode);
 			com.shatteredpixel.shatteredpixeldungeon.ui.Toolbar.updateLayout();
 			com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton.refresh();

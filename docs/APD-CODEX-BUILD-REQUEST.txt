@@ -1,4 +1,4 @@
-Urgent navigation-bar build API correction
-2026-10-11 01:21:43 UTC
-Parent 60c30321e8442cef91d331780d0cc138fea3fe2b
-AndroidGraphics cast fixes actual compiler error. Re-run complete core suite, debug build and API34 hero blocked-inset/pointer + hotbar/gameplay/save tests. Preserve TEST36 fallback; no failed candidate publication.
+Hotbar favorite display verification
+2026-10-11 01:49 UTC
+Parent 33708e2cc61298ae1c4cc6fe504e0f92de54648d
+Run full core tests, Android debug build, API34 hotbar/gameplay/save, inset and UI regressions. Preserve TEST39 verified fallback. No publication until actual evidence and compatible signature verified.
