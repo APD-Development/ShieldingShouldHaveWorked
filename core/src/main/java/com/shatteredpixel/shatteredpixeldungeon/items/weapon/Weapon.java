@@ -298,7 +298,11 @@ abstract public class Weapon extends KindOfWeapon {
 
 	protected String accuracyDescription() {
 		if (Dungeon.hero == null) return "";
-		float percent = 100f * strengthAccuracyModifier(ACC, displayedStrengthRequirement(), Dungeon.hero.STR());
+		float knownAccuracy = ACC;
+		if (cursedKnown && enchantment instanceof Wayward && Dungeon.hero.buff(Wayward.WaywardBuff.class) != null) {
+			knownAccuracy /= 5;
+		}
+		float percent = 100f * strengthAccuracyModifier(knownAccuracy, displayedStrengthRequirement(), Dungeon.hero.STR());
 		String text;
 		if (this instanceof MissileWeapon || this instanceof SpiritBow) {
 			float adjacent = 0.5f + 0.25f * Dungeon.hero.pointsInTalent(Talent.POINT_BLANK);
@@ -692,3 +696,4 @@ abstract public class Weapon extends KindOfWeapon {
 		
 	}
 }
+

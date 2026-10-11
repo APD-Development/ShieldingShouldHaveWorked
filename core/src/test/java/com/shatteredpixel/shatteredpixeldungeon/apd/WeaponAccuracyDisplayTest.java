@@ -5,6 +5,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.HeavyBoome
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Wayward;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SewerLevel;
@@ -95,6 +97,63 @@ public class WeaponAccuracyDisplayTest {
             assertTrue(text.length() < 200);
         } finally { Dungeon.hero = previous; }
     }
+    @Test public void knownActiveWaywardPenaltyMatchesCombatAndClearsWithoutChangingResources() {
+        HeadlessTestSupport.start();
+        Messages.setup(Languages.ENGLISH);
+        Hero previous = Dungeon.hero;
+        try {
+            Dungeon.hero = new Hero();
+            Dungeon.hero.STR = 20;
+            DisplaySword weapon = new DisplaySword();
+            weapon.levelKnown = weapon.cursedKnown = true;
+            weapon.enchantment = new Wayward();
+            assertEquals("\n\n" + Messages.get(Weapon.class, "apd_accuracy", 100f), weapon.description());
+            Buff.affect(Dungeon.hero, Wayward.WaywardBuff.class);
+            float actual = 100f * weapon.accuracyFactor(Dungeon.hero, null);
+            assertEquals(20f, actual, 0.001f);
+            int hp = Dungeon.hero.HP, quantity = weapon.quantity();
+            float time = Dungeon.hero.cooldown();
+            Random.pushGenerator(91723);
+            int expected;
+            try { expected = Random.Int(); } finally { Random.popGenerator(); }
+            Random.pushGenerator(91723);
+            try {
+                assertEquals("\n\n" + Messages.get(Weapon.class, "apd_accuracy", actual), weapon.description());
+                assertEquals("reading the active penalty does not advance gameplay RNG", expected, Random.Int());
+            } finally { Random.popGenerator(); }
+            assertEquals(hp, Dungeon.hero.HP);
+            assertEquals(quantity, weapon.quantity());
+            assertEquals(time, Dungeon.hero.cooldown(), 0f);
+            assertNotNull("reading the description does not consume the curse effect", Dungeon.hero.buff(Wayward.WaywardBuff.class));
+            Buff.detach(Dungeon.hero, Wayward.WaywardBuff.class);
+            assertEquals("\n\n" + Messages.get(Weapon.class, "apd_accuracy", 100f), weapon.description());
+        } finally {
+            if (Dungeon.hero != null) Buff.detach(Dungeon.hero, Wayward.WaywardBuff.class);
+            Dungeon.hero = previous;
+        }
+    }
+
+    @Test public void unknownWaywardDoesNotExposeHiddenCurseThroughTheAccuracyDescription() {
+        HeadlessTestSupport.start();
+        Messages.setup(Languages.ENGLISH);
+        Hero previous = Dungeon.hero;
+        try {
+            Dungeon.hero = new Hero();
+            Dungeon.hero.STR = 20;
+            DisplaySword weapon = new DisplaySword();
+            weapon.levelKnown = true;
+            weapon.cursedKnown = false;
+            String ordinary = weapon.description();
+            weapon.enchantment = new Wayward();
+            Buff.affect(Dungeon.hero, Wayward.WaywardBuff.class);
+            assertEquals("an unknown curse is not revealed by a derived number", ordinary, weapon.description());
+            weapon.enchantment = null;
+            assertEquals("the effect does not penalize a different weapon", ordinary, weapon.description());
+        } finally {
+            if (Dungeon.hero != null) Buff.detach(Dungeon.hero, Wayward.WaywardBuff.class);
+            Dungeon.hero = previous;
+        }
+    }
     @Test public void rangedValuesMatchActualCombatAtBothDistancesAndPointBlankLevels() {
         HeadlessTestSupport.start();
         Messages.setup(Languages.ENGLISH);
@@ -109,16 +168,22 @@ public class WeaponAccuracyDisplayTest {
             DisplayBoomerang weapon = new DisplayBoomerang();
             weapon.levelKnown = true;
             Rat target = new Rat();
-            for (int points = 0; points <= 2; points++) {
-                Dungeon.hero.talents.get(0).put(Talent.POINT_BLANK, points);
-                for (int strength : new int[]{11, 20}) {
-                    Dungeon.hero.STR = strength;
-                    target.pos = 7;
-                    float adjacent = weapon.accuracyFactor(Dungeon.hero, target) * 100;
-                    target.pos = 18;
-                    float ranged = weapon.accuracyFactor(Dungeon.hero, target) * 100;
-                    String expected = Messages.get(Weapon.class, "apd_accuracy_ranged", ranged, adjacent);
-                    assertEquals("\n\n" + expected, weapon.description());
+            for (boolean wayward : new boolean[]{false, true}) {
+                weapon.cursedKnown = true;
+                weapon.enchantment = wayward ? new Wayward() : null;
+                if (wayward) Buff.affect(Dungeon.hero, Wayward.WaywardBuff.class);
+                else Buff.detach(Dungeon.hero, Wayward.WaywardBuff.class);
+                for (int points = 0; points <= 2; points++) {
+                    Dungeon.hero.talents.get(0).put(Talent.POINT_BLANK, points);
+                    for (int strength : new int[]{11, 20}) {
+                        Dungeon.hero.STR = strength;
+                        target.pos = 7;
+                        float adjacent = weapon.accuracyFactor(Dungeon.hero, target) * 100;
+                        target.pos = 18;
+                        float ranged = weapon.accuracyFactor(Dungeon.hero, target) * 100;
+                        String expected = Messages.get(Weapon.class, "apd_accuracy_ranged", ranged, adjacent);
+                        assertEquals("\n\n" + expected, weapon.description());
+                    }
                 }
             }
             weapon.levelKnown = false;
@@ -126,6 +191,10 @@ public class WeaponAccuracyDisplayTest {
             String hidden = weapon.description();
             weapon.level(8);
             assertEquals(hidden, weapon.description());
-        } finally { Dungeon.hero = previousHero; Dungeon.level = previousLevel; }
+        } finally {
+            if (Dungeon.hero != null) Buff.detach(Dungeon.hero, Wayward.WaywardBuff.class);
+            Dungeon.hero = previousHero; Dungeon.level = previousLevel;
+        }
     }
 }
+

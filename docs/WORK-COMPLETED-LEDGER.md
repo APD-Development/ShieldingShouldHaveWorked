@@ -1,3 +1,11 @@
+## 2026-10-11 00:17 UTC / October 10 evening New York — Confirmed weapon-accuracy display defect
+
+While the combined UIMSD check ran, a new targeted regression reproduced an active known Wayward curse showing 100.0% base weapon accuracy while the unchanged combat path used 20.0%. Weapon.accuracyDescription now applies the existing 1/5 modifier only when the curse is known and its actual buff is active. Unknown curses are not exposed; other weapons are not penalized, and inspecting the screen does not spend HP/items/time, consume the effect or advance RNG. Melee/ranged descriptions, both distances, Point Blank 0-2, understrength/normal strength and hidden upgrades are covered.
+
+Two new permanent tests were added and the existing ranged test covers cursed/ordinary paths. Baseline with proper native/resources setup failed 1/8 cases on the wrong displayed percentage. Corrected 8/8 pass; combined accuracy/healing/drop safeguards pass 17/17 (2.418 s). Weapon compiles under Java11; two changed files parse. Two earlier local invocations lacked the native library jar, and one broader check lacked apd.game.src; these setup failures were corrected and are not counted as game bugs/passing assertions.
+
+Production combat, enchantment triggers, targeting, damage, turns, RNG, player history/save formats and item identification mechanics are unchanged. Exact combined core/debug/native acceptance is pending. No APK is claimed delivered with this patch yet. TEST34 is allowed to finish without cancellation; one subsequent exact-source check will include this confirmed display correction before final private delivery. Existing signed TEST31 remains rollback.
+
 ## 2026-10-11 00:12 UTC / October 10 evening New York — Combined UIMSD verification and follow-up request
 
 Exact TEST33 source b816bcf020562b153a149aabc1c52f424f9ded85 passed workflow 38096836924 (23:58:32 to 00:08:20 UTC). Downloaded XML proves 1,013 core tests and 8 API34 tests, zero failures/errors/skips. Six status paths and two-scroll-window restoration now have native acceptance; this source does not include the later grouped-ID/tour-warning/tour-choice changes. APK assembly passed, but TEST33 was not signing-compared or delivered.
