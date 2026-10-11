@@ -18,7 +18,7 @@ public class InventoryPickupTest {
         HeadlessTestSupport.start();
         Hero previous = Dungeon.hero;
         try {
-            Hero hero = new Hero(); hero.HP = 0; Dungeon.hero = hero;
+            Hero hero = new Hero(); com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.initClassTalents(hero); hero.HP = 0; Dungeon.hero = hero;
             check.run(hero);
         } finally { Dungeon.hero = previous; }
     }
@@ -66,4 +66,25 @@ public class InventoryPickupTest {
         assertFalse(new Pasty().collect(h.belongings.backpack));
         lost.detach();assertTrue(axe().collect(h.belongings.backpack));
     }); }
+    @Test public void lostInventoryIsPersistentNotATimedDebuffAndDetachRestoresExistingItems() { withHero(h -> {
+        BattleAxe existing=axe(); h.belongings.backpack.items.add(existing);
+        LostInventory lost=new LostInventory();assertTrue(lost.attachTo(h));
+        assertTrue(h.belongings.lostInventory());assertSame(existing,h.belongings.backpack.items.get(0));
+        assertTrue(lost.act());assertSame(lost,h.buff(LostInventory.class));
+        assertTrue(h.belongings.lostInventory());
+        lost.detach();assertNull(h.buff(LostInventory.class));assertFalse(h.belongings.lostInventory());
+        assertSame(existing,h.belongings.backpack.items.get(0));assertTrue(new Pasty().collect(h.belongings.backpack));
+    }); }
+    @Test public void saveRoundtripKeepsLostInventoryAndItemsThenAllowsRecovery() { withHero(h -> {
+        BattleAxe existing=axe();h.belongings.backpack.items.add(existing);
+        LostInventory lost=new LostInventory();assertTrue(lost.attachTo(h));
+        com.watabou.utils.Bundle bundle=new com.watabou.utils.Bundle();h.storeInBundle(bundle);
+        Hero restored=new Hero();Dungeon.hero=restored;restored.restoreFromBundle(bundle);
+        assertNotNull(restored.buff(LostInventory.class));assertTrue(restored.belongings.lostInventory());
+        assertEquals(1,restored.belongings.backpack.items.size());
+        assertFalse(new Pasty().collect(restored.belongings.backpack));
+        restored.buff(LostInventory.class).detach();assertFalse(restored.belongings.lostInventory());
+        assertTrue(new Pasty().collect(restored.belongings.backpack));lost.detach();
+    }); }
+
 }
