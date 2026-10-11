@@ -300,6 +300,21 @@ public class TitleScene extends PixelScene {
 		annotation = new APDAnnotation( annotationText, Math.min( 150, landscape() ? w - LOGO_W - 12 : w - 8 ) );
 		annotation.visible = !annotationText.isEmpty();
 		add( annotation );
+		add(new com.watabou.noosa.PointerArea(0, 0, 0, 0){
+			@Override public void update(){
+				super.update();
+				float left = Float.MAX_VALUE, top = Float.MAX_VALUE, right = 0, bottom = 0;
+				for (BitmapText line : annotation.lines){
+					left = Math.min(left, line.x); top = Math.min(top, line.y);
+					right = Math.max(right, line.x + line.width()); bottom = Math.max(bottom, line.y + line.height());
+				}
+				x = left; y = top; width = Math.max(0, right-left); height = Math.max(0, bottom-top);
+				active = annotation.visible;
+			}
+			@Override protected void onClick(com.watabou.input.PointerEvent event){
+				com.shatteredpixel.shatteredpixeldungeon.windows.UimsdGate.open(TitleScene.class);
+			}
+		});
 		float textH = annotation.visible ? annotation.textHeight() : -1;
 
 		if (landscape()){

@@ -83,9 +83,10 @@ public final class UimsdGate {
 
 	static String annotationFor( UimsdUnlock.Flags flags, File root, boolean enforced, boolean adultHumor, String usual ){
 		if (!enforced) return usual;
-		if (UimsdUnlock.promptActive(flags)) return adultHumor ? TENTH_RUN_ARROW_ADULT : TENTH_RUN_ARROW_CLEAN;
+		if (flags.tourUnlocked() || UimsdUnlock.genuineRuns(root, UimsdUnlock.TEN_RUNS) >= UimsdUnlock.TEN_RUNS)
+			return adultHumor ? TENTH_RUN_ARROW_ADULT : TENTH_RUN_ARROW_CLEAN;
 		// Demo access opens the database, but does not replace ten genuine runs.
-		return UimsdUnlock.isTourUnlocked(flags, root, true) ? usual : LOCKED_ARROW_TEXT;
+		return LOCKED_ARROW_TEXT;
 	}
 
 	// Called from the end of a finished run, after everything the run needs is done. It only records the tenth-run state, on its own thread:

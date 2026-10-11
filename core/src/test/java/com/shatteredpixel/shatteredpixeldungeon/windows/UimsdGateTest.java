@@ -86,8 +86,8 @@ public class UimsdGateTest {
 		}
 		//opening UIMSD retires it for good
 		assertTrue(UimsdUnlock.retirePrompt(flags));
-		assertEquals("USUAL", UimsdGate.annotationFor(flags, empty, true, false, "USUAL"));
-		assertEquals("USUAL", UimsdGate.annotationFor(flags, empty, true, true, "USUAL"));
+		assertEquals(UimsdGate.TENTH_RUN_ARROW_CLEAN, UimsdGate.annotationFor(flags, empty, true, false, "USUAL"));
+		assertEquals(UimsdGate.TENTH_RUN_ARROW_ADULT, UimsdGate.annotationFor(flags, empty, true, true, "USUAL"));
 
 		//Demo access before the tenth genuine run still shows the instructional notice.
 		Mem demo = new Mem();
@@ -95,6 +95,7 @@ public class UimsdGateTest {
 		demo.setDemoUsed();
 		assertEquals(locked, UimsdGate.annotationFor(demo, empty, true, true, "USUAL"));
 		//the tenth genuine run comes later: the arrow appears for that player too
+		demo.setTourUnlocked();
 		demo.setPromptPending();
 		assertEquals("HEY, GO HERE FOR DRUGS.", UimsdGate.annotationFor(demo, empty, true, true, "USUAL"));
 	}

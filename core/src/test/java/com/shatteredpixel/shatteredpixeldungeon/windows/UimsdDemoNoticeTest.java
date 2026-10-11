@@ -33,7 +33,7 @@ public class UimsdDemoNoticeTest {
     @Test public void genuineProgressionAndNormalBuildKeepTheNoticeRetired() {
         Flags flags = new Flags();
         flags.setTourUnlocked();
-        assertEquals("", UimsdGate.annotationFor(flags, history.getRoot(), true, false, ""));
+        assertEquals(UimsdGate.TENTH_RUN_ARROW_CLEAN, UimsdGate.annotationFor(flags, history.getRoot(), true, false, ""));
         assertEquals("", UimsdGate.annotationFor(new Flags(), history.getRoot(), false, false, ""));
     }
 }

@@ -1,1 +1,1 @@
-Run complete core tests, debug assembly and API34 checks including four FileUtils save safety regressions. Three inherited fixes owner-authorized; preserve saves/signing/appID. No publication until verification.
+Verify About redesign and permanent ten-genuine-run clickable annotation. Full core/debug/API34 plus AboutDeviceTest; preserve signing and player data. Publication separate after completed verification.
