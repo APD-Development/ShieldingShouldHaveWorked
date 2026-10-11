@@ -708,5 +708,59 @@ public class UimsdRestoreDeviceTest {
             });
         }
     }
-}
 
+    @Test public void arcanaItemDescriptionsRequireKnownEquippedRingsAndFitWindows() throws Exception {
+        try (ActivityScenario<AndroidLauncher> scenario = ActivityScenario.launch(AndroidLauncher.class)) {
+            long deadline = System.currentTimeMillis() + 120000;
+            while (Game.scene() == null && System.currentTimeMillis() < deadline) Thread.sleep(200);
+            assertNotNull("game did not start", Game.scene());
+            Object previousScene = Game.scene();
+            onRender(() -> UimsdScene.openNow(TitleScene.class));
+            awaitScene(previousScene);
+            onRender(() -> {
+                com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero previousHero =
+                        com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+                try {
+                    clearWindows();
+                    com.shatteredpixel.shatteredpixeldungeon.journal.Notes.reset();
+                    com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero hero =
+                            new com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero();
+                    com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero = hero;
+                    com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword sword =
+                            new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword();
+                    sword.enchant(new com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blazing());
+                    sword.levelKnown = true;
+                    com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor armor =
+                            new com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor();
+                    armor.inscribe(new com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Flow());
+                    armor.levelKnown = true;
+                    assertFalse(sword.info().contains("Arcana only"));
+                    com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfArcana ring =
+                            new com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfArcana();
+                    ring.anonymize(); ring.levelKnown = true; ring.cursedKnown = true;
+                    hero.belongings.ring = ring;
+                    assertTrue(sword.info().contains("Arcana only"));
+                    assertTrue(armor.info().contains("Arcana only"));
+                    for (com.shatteredpixel.shatteredpixeldungeon.items.Item item :
+                            new com.shatteredpixel.shatteredpixeldungeon.items.Item[]{sword, armor}) {
+                        com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoItem window =
+                                new com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoItem(item);
+                        Game.scene().addToFront(window);
+                        Field width = Window.class.getDeclaredField("width"); width.setAccessible(true);
+                        assertContainedText(window, width.getInt(window));
+                        window.hide();
+                    }
+                    ring.levelKnown = false;
+                    assertFalse(sword.info().contains("Arcana only"));
+                    assertFalse(armor.info().contains("Arcana only"));
+                    ring.levelKnown = true; hero.belongings.ring = null;
+                    assertFalse(sword.info().contains("Arcana only"));
+                } catch (Exception e) { throw new RuntimeException(e); }
+                finally {
+                    clearWindows();
+                    com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero = previousHero;
+                }
+            });
+        }
+    }
+}

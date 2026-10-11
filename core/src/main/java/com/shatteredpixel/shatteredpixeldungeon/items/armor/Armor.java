@@ -617,6 +617,7 @@ public class Armor extends EquipableItem {
 			info += "\n\n" +  Messages.capitalize(Messages.get(Armor.class, "inscribed", glyph.name()));
 			if (glyphHardened) info += " " + Messages.get(Armor.class, "glyph_hardened");
 			info += " " + glyph.desc();
+			info += com.shatteredpixel.shatteredpixeldungeon.apd.ArcanaInfoDisplay.armor(this);
 		} else if (glyphHardened){
 			info += "\n\n" + Messages.get(Armor.class, "hardened_no_glyph");
 		}
