@@ -1,3 +1,11 @@
+## 2026-10-11 00:28 UTC / October 10 evening New York — Historical saved-sort compatibility defect reproduced
+
+A further regression reproduced an older Turkish/Azeri saved aggregate sort (mın:score) reopening in insertion order instead of ascending minimum order. Stabilizing newly generated aggregate IDs does not repair previously encoded locale-specific IDs. QueryCodec now resolves only known historical MIN/MEDIAN/COUNT_DISTINCT aliases that exactly correspond to aggregates in this query. Literal group keys and unknown/future sort IDs stay unchanged; the original saved-view file is never rewritten on read. Canonical in-memory sort IDs also allow normal header/selection matching.
+
+Two permanent cases cover six old-sort combinations (three functions, ascending/descending), unchanged file bytes and preservation of unknown/literal group-key identifiers. The meaningful baseline fails 1/7 on wrong group order; corrected locale/saved-view/query/combined-scope/boss-finished set passes 42/42 (0.217 s). Changed codec compiles and both Java files parse. One attempted test invocation named a nonexistent QueryCodecTest and executed no substantive tests; it was corrected to the existing retained suites and is not counted as passing coverage.
+
+Exact-source build acceptance remains pending. TEST35 verification is allowed to finish and is not canceled; this ordinary checkpoint contains no build request. No APK is claimed to include this correction yet. Signed TEST31 stays rollback. No gameplay, seeded RNG, history/save format, identity, main or Claude branch changes.
+
 ## 2026-10-11 00:23 UTC / October 10 evening New York — UIMSD follow-ups accepted; final known-curse display build requested
 
 TEST34 workflow 38097519064 succeeded for exact source 715219d1fcebe2acc6fb0ee014bbdb68108e925e (00:10:21 through 00:21:46 UTC). Actual downloaded XML proves 1,015 core tests and 9 API34 cases, zero failures/errors/skips; debug assembly passed. This includes the seven warnings, grouped-sort ID fix and both actual tour-choice restorations without started tours/sample generation. It is not physical-phone verification. This candidate was not delivered; the confirmed Wayward display fix was developed while its tests ran and needs its own exact-source verification.

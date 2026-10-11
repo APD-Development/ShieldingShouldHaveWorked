@@ -148,6 +148,24 @@ public final class QueryCodec {
 				throw new IllegalArgumentException("bad query line: " + line);
 			}
 		}
+		//Older Turkish/Azeri builds wrote locale-specific aggregate sort IDs. Resolve
+		//only aliases of this query's actual aggregates; never rewrite saved bytes or keys.
+		if (keys != null) for (int i = 0; i < sorts.size(); i++){
+			Sort sort = sorts.get(i);
+			if (keys.contains(sort.column)) continue;
+			for (Aggregate aggregate : aggs){
+				if (aggregate.fn != Aggregate.Fn.MIN && aggregate.fn != Aggregate.Fn.MEDIAN
+						&& aggregate.fn != Aggregate.Fn.COUNT_DISTINCT) continue;
+				String id = aggregate.id();
+				int separator = id.indexOf(':');
+				String legacy = id.substring(0, separator).replace('i', '\u0131') + id.substring(separator);
+				if (sort.column.equals(legacy)){
+					sorts.set(i, new Sort(id, sort.descending));
+					break;
+				}
+			}
+		}
 		return new Query(dataset, scope, filters, sorts, columns, keys == null ? null : new GroupBy(keys, aggs), show, min);
 	}
 }
+

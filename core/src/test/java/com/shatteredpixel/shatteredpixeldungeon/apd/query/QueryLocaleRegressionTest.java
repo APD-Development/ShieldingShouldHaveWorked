@@ -116,4 +116,44 @@ public class QueryLocaleRegressionTest {
             assertEquals(0L, result.groups.get(1).sample.num(KIND));
         } finally { Locale.setDefault(previous); }
     }
+
+    @Test public void historicalTurkishAggregateSortsReopenWithoutRewritingStoredViews() throws Exception {
+        Locale previous = Locale.getDefault();
+        try {
+            Locale.setDefault(Locale.ENGLISH);
+            DatasetDef def = def();
+            Dataset data = dataset(def, Arrays.asList(
+                    row(def, "high-1", "a", 100L, 0L, null, true, "rules"),
+                    row(def, "high-2", "b", 99L, 0L, null, true, "rules"),
+                    row(def, "low-1", "c", 2L, 1L, null, true, "rules"),
+                    row(def, "low-2", "d", 2L, 1L, null, true, "rules")));
+            Aggregate.Fn[] functions = {Aggregate.Fn.MIN, Aggregate.Fn.MEDIAN, Aggregate.Fn.COUNT_DISTINCT};
+            String[] oldIds = {"m\u0131n:score", "med\u0131an:score", "count_d\u0131st\u0131nct:score"};
+            for (int i = 0; i < functions.length; i++) for (boolean descending : new boolean[]{false, true}) {
+                Aggregate aggregate = Aggregate.of(functions[i], "score");
+                Query legacy = Query.of("things").withGroup(new GroupBy(Arrays.asList("kind"), Arrays.asList(aggregate)))
+                        .withSorts(Arrays.asList(new Sort(oldIds[i], descending)));
+                File file = tmp.newFile(); SavedViews views = new SavedViews();
+                views.save("Existing Turkish view", legacy, 30); views.store(file);
+                byte[] before = java.nio.file.Files.readAllBytes(file.toPath());
+                Query reopened = SavedViews.load(file).get("Existing Turkish view").query();
+                QueryResult result = QueryEngine.run(data, reopened, "rules");
+                assertTrue(result.problems.toString(), result.problems.isEmpty());
+                assertEquals("historical " + oldIds[i] + ", descending " + descending,
+                        descending ? 0L : 1L, result.groups.get(0).sample.num(KIND));
+                assertEquals("only the known historical identifier resolves", aggregate.id(), reopened.sorts.get(0).column);
+                assertArrayEquals("opening a legacy view does not rewrite the file", before,
+                        java.nio.file.Files.readAllBytes(file.toPath()));
+            }
+        } finally { Locale.setDefault(previous); }
+    }
+
+    @Test public void historicalAggregateResolutionLeavesUnknownSortsAndLiteralGroupKeysAlone() {
+        Query query = Query.of("things").withGroup(new GroupBy(Arrays.asList("m\u0131n:score"),
+                Arrays.asList(Aggregate.of(Aggregate.Fn.MIN, "score"))))
+                .withSorts(Arrays.asList(new Sort("m\u0131n:score", true), new Sort("m\u0131n:future-column", false),
+                        new Sort("future:score", false)));
+        assertEquals(query, QueryCodec.decode(QueryCodec.encode(query)));
+    }
 }
+
