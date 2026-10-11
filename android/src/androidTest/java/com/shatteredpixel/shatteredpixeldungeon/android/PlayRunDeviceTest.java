@@ -116,6 +116,34 @@ public class PlayRunDeviceTest {
 		assertTrue("the current quick-use page is visible", visibleSlots > 0);
 	}
 
+	// hero.ready is changed by the actor thread; toolbar.active follows on the next render update.
+	// Wait for actual controls instead of racing that update. Persistent disabled controls still fail.
+	private static void waitForGameplayControls() throws Exception {
+		final AtomicReference<String> state = new AtomicReference<>("not sampled");
+		long deadline = System.currentTimeMillis() + 30000;
+		while (System.currentTimeMillis() < deadline) {
+			final java.util.concurrent.atomic.AtomicBoolean usable = new java.util.concurrent.atomic.AtomicBoolean();
+			onRender(() -> {
+				try {
+					com.watabou.noosa.ui.Component toolbar = (com.watabou.noosa.ui.Component) field(Game.scene(), "toolbar");
+					boolean enabled = Dungeon.hero.ready && Dungeon.hero.isAlive() && toolbar.visible && toolbar.active;
+					StringBuilder detail = new StringBuilder("heroReady=").append(Dungeon.hero.ready)
+							.append(", lastEnabled=").append(field(toolbar, "lastEnabled"));
+					for (String name : new String[]{"btnSearch", "btnWait", "btnInventory"}) {
+						com.watabou.noosa.ui.Component button = (com.watabou.noosa.ui.Component) field(toolbar, name);
+						enabled &= button.visible && button.active;
+						detail.append(", ").append(name).append("=").append(button.visible).append("/").append(button.active);
+					}
+					state.set(detail.toString());
+					usable.set(enabled);
+				} catch (Exception e) { throw new RuntimeException(e); }
+			});
+			if (usable.get()) return;
+			Thread.sleep(150);
+		}
+		throw new AssertionError("gameplay controls did not become usable: " + state.get());
+	}
+
 	//Exercise the actual rendered category toolbar without consuming items or changing turns.
 	private static void assertCategoryHotbarControls() throws Exception {
 		int oldMode = SPDSettings.apdHotbarMode();
@@ -226,6 +254,7 @@ public class PlayRunDeviceTest {
 			Log.w(TAG, "run started: depth " + Dungeon.depth + ", class " + Dungeon.hero.heroClass + ", log " + ApdRecorder.status().logPath);
 			assertEquals(1, Dungeon.depth);
 			assertEquals(HeroClass.WARRIOR, Dungeon.hero.heroClass);
+			waitForGameplayControls();
 			onRender(() -> { try { assertTrue("exercise controls before acknowledging intro", SPDSettings.intro()); assertGameplayControls(); assertCategoryHotbarControls(); } catch (Exception e){ throw new RuntimeException(e); } });
 			//Use the actual toolbar callbacks; the tutorial must not suppress search or wait.
 			onRender(() -> { try { click(field(field(Game.scene(), "toolbar"), "btnSearch"), "onLongClick"); } catch (Exception e){ throw new RuntimeException(e); } });
@@ -284,6 +313,7 @@ public class PlayRunDeviceTest {
 			assertEquals(hpBefore, Dungeon.hero.HP);
 			assertEquals(HeroClass.WARRIOR, Dungeon.hero.heroClass);
 			assertEquals("still recording after the continue", 0, ApdRecorder.status().errorCount);
+			waitForGameplayControls();
 			onRender(() -> { try { assertGameplayControls(); assertCategoryHotbarControls(); } catch (Exception e){ throw new RuntimeException(e); } });
 
 			//die: the run must be sealed with its outcome
