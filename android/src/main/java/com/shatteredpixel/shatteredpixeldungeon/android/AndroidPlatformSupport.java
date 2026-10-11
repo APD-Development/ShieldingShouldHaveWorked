@@ -109,7 +109,7 @@ public class AndroidPlatformSupport extends PlatformSupport {
 				//on older Android versions whose window already excludes the navigation area.
 				RectF navigation = visibleNavigationInsets(rootInsets);
 				View decor = AndroidLauncher.instance.getApplicationWindow().getDecorView();
-				View surface = AndroidLauncher.instance.getGraphics().getView();
+				View surface = ((com.badlogic.gdx.backends.android.AndroidGraphics) AndroidLauncher.instance.getGraphics()).getView();
 				if (decor.getWidth() > 0 && surface.getWidth() > 0) {
 					int[] windowPosition = new int[2], surfacePosition = new int[2];
 					decor.getLocationOnScreen(windowPosition);

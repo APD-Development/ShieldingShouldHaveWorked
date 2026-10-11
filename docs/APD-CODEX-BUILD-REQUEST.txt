@@ -1,3 +1,4 @@
-Urgent navigation-bar hero selection fix
-2026-10-11 01:16:48 UTC
-Verify actual visible navigation overlap regardless of requested fullscreen, no double-padding, six complete hero targets above the blocked area, real Warrior pointer selection, existing gameplay/save and hotbar regressions. Build only private debug. API34 verification does not establish physical Android17 compatibility.
+Urgent navigation-bar build API correction
+2026-10-11 01:21:43 UTC
+Parent 60c30321e8442cef91d331780d0cc138fea3fe2b
+AndroidGraphics cast fixes actual compiler error. Re-run complete core suite, debug build and API34 hero blocked-inset/pointer + hotbar/gameplay/save tests. Preserve TEST36 fallback; no failed candidate publication.
