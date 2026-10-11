@@ -87,4 +87,37 @@ public class InventoryPickupTest {
         assertTrue(new Pasty().collect(restored.belongings.backpack));lost.detach();
     }); }
 
+    @Test public void emptyBackpackAndPouchRejectAllThreeUnderLostInventoryThenRecover() { withHero(h -> {
+        VelvetPouch pouch=new VelvetPouch();pouch.owner=h;h.belongings.backpack.items.add(pouch);
+        BattleAxe weapon=axe();Pasty food=new Pasty();
+        com.shatteredpixel.shatteredpixeldungeon.plants.Sungrass.Seed seed=new com.shatteredpixel.shatteredpixeldungeon.plants.Sungrass.Seed();
+        LostInventory lost=new LostInventory();assertTrue(lost.attachTo(h));
+        assertTrue(h.belongings.backpack.items.size()<h.belongings.backpack.capacity());
+        assertTrue(pouch.items.size()<pouch.capacity());
+        for(Item item:new Item[]{weapon,food,seed})assertFalse(item.collect(h.belongings.backpack));
+        assertTrue(pouch.items.isEmpty());assertEquals(1,h.belongings.backpack.items.size());
+        lost.detach();
+        for(Item item:new Item[]{weapon,food,seed})assertTrue(item.collect(h.belongings.backpack));
+        assertTrue(pouch.items.contains(seed));assertFalse(h.belongings.backpack.items.contains(seed));
+        assertTrue(h.belongings.backpack.items.contains(weapon));assertTrue(h.belongings.backpack.items.contains(food));
+    }); }
+    @Test public void pouchAcceptsSungrassEvenWhenRootBackpackIsFull() { withHero(h -> {
+        fill(h,20);VelvetPouch pouch=new VelvetPouch();pouch.owner=h;h.belongings.backpack.items.add(pouch);
+        com.shatteredpixel.shatteredpixeldungeon.plants.Sungrass.Seed seed=new com.shatteredpixel.shatteredpixeldungeon.plants.Sungrass.Seed();
+        assertTrue(seed.collect(h.belongings.backpack));assertTrue(pouch.items.contains(seed));
+        assertEquals(21,h.belongings.backpack.items.size());
+    }); }
+    @Test public void challengeFlagsDoNotRejectAvailableWeaponFoodOrSeedSlots() { withHero(h -> {
+        int before=Dungeon.challenges;
+        try {
+            for(int flags:new int[]{0,com.shatteredpixel.shatteredpixeldungeon.Challenges.NO_FOOD,com.shatteredpixel.shatteredpixeldungeon.Challenges.NO_HERBALISM,511}){
+                Dungeon.challenges=flags;h.belongings.backpack.items.clear();
+                VelvetPouch pouch=new VelvetPouch();pouch.owner=h;h.belongings.backpack.items.add(pouch);
+                assertTrue(axe().collect(h.belongings.backpack));assertTrue(new Pasty().collect(h.belongings.backpack));
+                assertTrue(new com.shatteredpixel.shatteredpixeldungeon.plants.Sungrass.Seed().collect(h.belongings.backpack));
+                assertEquals(1,pouch.items.size());
+            }
+        } finally {Dungeon.challenges=before;}
+    }); }
+
 }
