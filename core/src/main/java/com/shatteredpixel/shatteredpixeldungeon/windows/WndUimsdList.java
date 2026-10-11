@@ -25,10 +25,14 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.WindowGeometry;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
+import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
+import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.UimsdStyle;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.ColorBlock;
+import com.watabou.noosa.NinePatch;
+import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.watabou.noosa.ui.Component;
 
 import java.util.ArrayList;
@@ -130,7 +134,7 @@ public class WndUimsdList extends Window {
 	private final List<Entry> entries;
 	//per entry: the label text and background (items only), and the span of the row inside the list (items and Done only, else null)
 	private final List<RenderedTextBlock> labelTexts = new ArrayList<>();
-	private final List<ColorBlock> backs = new ArrayList<>();
+	private final List<NinePatch> backs = new ArrayList<>();
 	private final List<float[]> spans = new ArrayList<>();
 	private final List<Integer> itemIndexOfEntry = new ArrayList<>();
 	private ListPane pane;
@@ -172,12 +176,19 @@ public class WndUimsdList extends Window {
 			pos = t.bottom() + MARGIN;
 		}
 		if (message != null && !message.isEmpty()){
-			RenderedTextBlock m = PixelScene.renderTextBlock(message, UimsdStyle.SIZE_HELP);
-			m.hardlight(UimsdStyle.MUTED);
-			m.maxWidth(width - 2 * MARGIN);
-			m.setPos(MARGIN, pos);
-			add(m);
-			pos = m.bottom() + 2 * MARGIN;
+			if (message.length() > 100){
+				final String explanation = message;
+				RedButton help = new RedButton("About this menu", 6){
+					@Override protected void onClick(){
+						ShatteredPixelDungeon.scene().addToFront(new WndUimsdText(title == null ? "UIMSD" : title, explanation, false));
+					}
+				};
+				help.setRect(MARGIN,pos,width-2*MARGIN,16);add(help);pos += 18;
+			} else {
+				RenderedTextBlock m = PixelScene.renderTextBlock(message, UimsdStyle.SIZE_HELP);
+				m.hardlight(UimsdStyle.MUTED);m.maxWidth(width-2*MARGIN);m.setPos(MARGIN,pos);add(m);
+				pos=m.bottom()+2*MARGIN;
+			}
 		} else {
 			pos += MARGIN;
 		}
@@ -204,7 +215,7 @@ public class WndUimsdList extends Window {
 				label = PixelScene.renderTextBlock(e.label, e.noteSize > 0 ? e.noteSize : UimsdStyle.SIZE_META);
 				heights[i] = label.height() + 4;
 			} else {
-				label = PixelScene.renderTextBlock(itemText(e), e.action ? 9 : UimsdStyle.SIZE_TEXT);
+				label = PixelScene.renderTextBlock(itemText(e), UimsdStyle.SIZE_TEXT);
 				float h = label.height();
 				if (!e.detail.isEmpty()){
 					detail = PixelScene.renderTextBlock(e.detail, UimsdStyle.SIZE_META);
@@ -258,8 +269,10 @@ public class WndUimsdList extends Window {
 				itemIndexOfEntry.add(-1);
 				continue;
 			}
-			ColorBlock bg = new ColorBlock(width, heights[i] - 1, e == null ? UimsdStyle.ROW_ACTION : backFor(e));
+			NinePatch bg = Chrome.get(Chrome.Type.GREY_BUTTON_TR);
+			bg.size(width, heights[i] - 1);
 			bg.y = tops[i];
+			if (e != null && (e.current || Boolean.TRUE.equals(e.checked))) bg.hardlight(0xAADD99);
 			content.add(bg);
 			float textH = label.height() + (detail == null ? 0 : 1 + detail.height());
 			float ty = tops[i] + (heights[i] - 1 - textH) / 2f;
@@ -293,10 +306,6 @@ public class WndUimsdList extends Window {
 		if (e.checked != null) t = (e.checked ? "[x] " : "[ ] ") + t;
 		if (e.current && e.checked == null) t += "   (current)";
 		return t;
-	}
-
-	private int backFor( Entry e ){
-		return e.current || Boolean.TRUE.equals(e.checked) ? UimsdStyle.ROW_ON : UimsdStyle.ROW;
 	}
 
 	private int colorFor( Entry e ){
@@ -401,7 +410,7 @@ public class WndUimsdList extends Window {
 				if (!choice.isItem() || choice.checked == null) continue;
 				labelTexts.get(i).text(itemText(choice));
 				labelTexts.get(i).hardlight(colorFor(choice));
-				backs.get(i).color(backFor(choice));
+				backs.get(i).hardlight(choice.current || Boolean.TRUE.equals(choice.checked) ? 0xAADD99 : 0xFFFFFF);
 			}
 		} else {
 			if (!keepOpen) hide();

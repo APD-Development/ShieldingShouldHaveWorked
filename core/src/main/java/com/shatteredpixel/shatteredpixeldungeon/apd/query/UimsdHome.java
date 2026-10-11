@@ -143,6 +143,10 @@ public final class UimsdHome {
 		if (h.runs == 0) return h;
 
 		h.cards.add(overview(runsDs, rq, runs));
+		Card navigation = new Card("navigate", "Explore statistics");
+		String[][] destinations = {{"runs", "Run history"}, {"characters", "Characters"}, {"items", "Equipment and items"}, {"enemies", "Enemies"}, {"bosses", "Bosses"}, {"challenges", "Challenges"}, {"difficulty", "Difficulty"}};
+		for (String[] destination : destinations) if (cat.view(destination[0]) != null) navigation.link(destination[1], destination[0]);
+		if (!navigation.links.isEmpty()) h.cards.add(navigation);
 		//the friendly front door to everything recorded
 		Card ask = new Card("ask", "Ask a question");
 		ask.heading("Count it, add it up, average it, compare it");
@@ -193,8 +197,7 @@ public final class UimsdHome {
 		c.line("Finished runs", String.valueOf(r.rows.size()), "", CellText.EXACT);
 		stat(c, "Won", def, q, Aggregate.count().where(FactKeys.OUTCOME, 1), r.rows);
 		stat(c, "Died", def, q, Aggregate.count().where(FactKeys.OUTCOME, 0), r.rows);
-		AggValue ab = QueryEngine.evaluate(def, q, Aggregate.count().where(FactKeys.OUTCOME, 2), r.rows);
-		if (ab != null && ab.known && ab.value > 0) stat(c, "Abandoned", def, q, Aggregate.count().where(FactKeys.OUTCOME, 2), r.rows);
+		stat(c, "Abandoned", def, q, Aggregate.count().where(FactKeys.OUTCOME, 2), r.rows);
 		stat(c, "Win rate", def, q, Aggregate.rate(FactKeys.OUTCOME, 1), r.rows);
 		stat(c, "Deepest floor", def, q, Aggregate.of(Aggregate.Fn.MAX, FactKeys.DEEPEST), r.rows);
 		stat(c, "Best score", def, q, Aggregate.of(Aggregate.Fn.MAX, FactKeys.SCORE), r.rows);

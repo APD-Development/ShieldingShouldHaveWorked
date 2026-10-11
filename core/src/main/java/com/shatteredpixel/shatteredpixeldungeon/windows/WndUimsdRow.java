@@ -44,6 +44,8 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.UimsdStyle;
 import com.shatteredpixel.shatteredpixeldungeon.ui.UimsdTable;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.ColorBlock;
+import com.watabou.noosa.NinePatch;
+import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.watabou.noosa.ui.Component;
 
 import java.util.ArrayList;
@@ -207,10 +209,11 @@ public class WndUimsdRow extends Window {
 		//the pane clipped long labels and could push the window past the screen.
 		final List<float[]> actionSpans = new ArrayList<>();
 		for (Action act : actions){
-			RenderedTextBlock label = PixelScene.renderTextBlock(act.label, 9);
+			RenderedTextBlock label = PixelScene.renderTextBlock(act.label, 7);
 			label.maxWidth(WindowGeometry.rowTextWidth(width));
 			float height = WindowGeometry.actionHeight(label.height());
-			ColorBlock bg = new ColorBlock(width - 2 * MARGIN, height, UimsdStyle.ROW_ACTION);
+			NinePatch bg = Chrome.get(Chrome.Type.GREY_BUTTON_TR);
+			bg.size(width - 2 * MARGIN, height);
 			bg.x = MARGIN;
 			bg.y = contentH;
 			content.add(bg);

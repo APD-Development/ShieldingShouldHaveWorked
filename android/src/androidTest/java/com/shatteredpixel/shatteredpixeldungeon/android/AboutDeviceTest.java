@@ -43,7 +43,7 @@ public class AboutDeviceTest {
      Method click=button.getClass().getDeclaredMethod("onClick");click.setAccessible(true);click.invoke(button);
      WndUimsdText popup=null;
      for(Gizmo g:children(Game.scene()))if(g instanceof WndUimsdText && g.alive)popup=(WndUimsdText)g;
-     assertNotNull(popup);assertTrue(popup.width()>0);
+     assertNotNull(popup);assertTrue(popup.camera.width>0);
      for(Gizmo g:children(popup))if(g instanceof ScrollPane)((ScrollPane)g).scrollTo(0,1000);
      popup.hide();
     }catch(Exception e){throw new RuntimeException(e);}});
@@ -65,7 +65,7 @@ public class AboutDeviceTest {
  private void checkNews(Group group,int[] count)throws Exception{
   for(Gizmo g:children(group)){
    if(g.getClass().getName().endsWith("$NewsCard")){
-    count[0]++;assertTrue(g.width()>0);assertTrue(g.height()>=32);
+    count[0]++;assertTrue(((com.watabou.noosa.ui.Component)g).width()>0);assertTrue(((com.watabou.noosa.ui.Component)g).height()>=32);
     Method click=g.getClass().getDeclaredMethod("onClick");click.setAccessible(true);click.invoke(g);
     com.shatteredpixel.shatteredpixeldungeon.windows.WndTitledMessage popup=null;
     for(Gizmo w:children(Game.scene()))if(w instanceof com.shatteredpixel.shatteredpixeldungeon.windows.WndTitledMessage&&w.alive)popup=(com.shatteredpixel.shatteredpixeldungeon.windows.WndTitledMessage)w;

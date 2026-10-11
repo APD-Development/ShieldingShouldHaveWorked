@@ -30,6 +30,8 @@ import com.watabou.input.PointerEvent;
 import com.shatteredpixel.shatteredpixeldungeon.ui.UimsdStyle;
 import com.watabou.input.ScrollEvent;
 import com.watabou.noosa.ColorBlock;
+import com.watabou.noosa.NinePatch;
+import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.watabou.noosa.ui.Component;
 
 //APD: the table of a UIMSD screen. It draws whatever ResultTable it is given, for any dataset: it only knows headers, lines and
@@ -268,6 +270,8 @@ public class UimsdTable extends Component {
 			Component target = c == 0 ? corner.content() : header.content();
 			float left = c == 0 ? 0 : geo.lefts[c] - geo.firstWidth();
 			float w = c == 0 ? first : geo.widths[c];
+			NinePatch background = Chrome.get(Chrome.Type.GREY_BUTTON_TR);
+			background.size(w,headerH);background.x=left;target.add(background);
 			int chars = Math.max(3, (int) ((w - TableGeometry.PAD) / TableGeometry.CHAR_WIDTH));
 			String arrow = h.sortDirection == 0 ? "" : (h.sortDirection > 0 ? " ^" : " v") + (h.sortRank > 1 ? h.sortRank : "");
 			String[] lines = TableGeometry.twoLines(h.label + arrow, chars);
@@ -317,7 +321,7 @@ public class UimsdTable extends Component {
 				int chars = Math.max(3, (int) ((w - TableGeometry.PAD) / TableGeometry.CHAR_WIDTH));
 				RenderedTextBlock t = PixelScene.renderTextBlock(TableGeometry.fit(cell.text, chars), 6);
 				t.hardlight(cell.small ? dim(color(cell.state)) : color(cell.state));
-				t.setPos(left + 2, r * rowH + 2);
+				t.setPos(table.headers.get(c).numeric ? left + w - 2 - t.width() : left + 2, r * rowH + 2);
 				(c == 0 ? firstCol.content() : body.content()).add(t);
 			}
 		}

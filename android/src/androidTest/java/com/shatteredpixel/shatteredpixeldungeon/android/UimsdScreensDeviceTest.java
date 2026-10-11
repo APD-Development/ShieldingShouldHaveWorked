@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.android;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -118,6 +119,31 @@ public class UimsdScreensDeviceTest {
 			//3. the dialogs, on the tour's model (the sample history), one level in a table with filters, sorting and columns
 			final UimsdModel m = (UimsdModel) field("model");
 			assertNotNull("the tour has a model", m);
+            onRender(() -> {
+                com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdHome home =
+                    com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdHome.build(m.catalog(), m.currentRuleset(), true);
+                assertFalse("sample Home contains real navigation fixtures", home.isEmpty());
+                for (int width : new int[]{120,160,240}) {
+                    com.shatteredpixel.shatteredpixeldungeon.ui.UimsdHomePane pane = new com.shatteredpixel.shatteredpixeldungeon.ui.UimsdHomePane();
+                    final String[] selected = {null};
+                    pane.setListener(id -> selected[0]=id);
+                    pane.setRect(0,0,width,100);pane.setHome(home);
+                    assertTrue("Home scrolls rather than dropping rows",pane.contentHeight()>100);
+                    for (com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdHome.Card card : home.cards)
+                        for(com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdHome.Link link : card.links){
+                            float[] box=pane.linkBox(link.viewId);assertNotNull(link.viewId,box);
+                            assertTrue(box[0]>=0&&box[0]+box[2]<=width+0.1f);
+                            selected[0]=null;pane.onClick(box[0]+box[2]/2,box[1]+box[3]/2);
+                            assertEquals("all existing Home actions remain reachable",link.viewId,selected[0]);
+                        }
+                    for(String target:new String[]{"!outcome:0","!outcome:1","!outcome:2"}){
+                        float[] box=pane.linkBox(target);
+                        if(box!=null){selected[0]=null;pane.onClick(box[0]+box[2]/2,box[1]+box[3]/2);assertEquals(target,selected[0]);}
+                    }
+                    pane.destroy();
+                }
+            });
+
 			onRender(new Runnable(){
 				public void run(){
 					m.showRoot("weapons");
