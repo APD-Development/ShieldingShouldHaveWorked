@@ -763,4 +763,63 @@ public class UimsdRestoreDeviceTest {
             });
         }
     }
+
+    @Test public void demoUnlockKeepsTenRunNoticeVisibleOnTitle() throws Exception {
+        try (ActivityScenario<AndroidLauncher> scenario = ActivityScenario.launch(AndroidLauncher.class)) {
+            long deadline = System.currentTimeMillis() + 120000;
+            while (Game.scene() == null && System.currentTimeMillis() < deadline) Thread.sleep(200);
+            assertNotNull("game did not start", Game.scene());
+            final boolean[] saved = new boolean[5];
+            final Object[] previous = new Object[1];
+            onRender(() -> {
+                saved[0] = com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdUimsdUnlocked();
+                saved[1] = com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdDemoUnlockUsed();
+                saved[2] = com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdUimsdTourUnlocked();
+                saved[3] = com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdTenthPending();
+                saved[4] = com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdTenthShown();
+            });
+            try {
+                onRender(() -> {
+                    assertTrue("test requires fewer than ten genuine runs; never delete history",
+                        com.shatteredpixel.shatteredpixeldungeon.apd.demo.UimsdUnlock.genuineRuns(
+                            com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder.historyRoot(), 10) < 10);
+                    com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdUimsdUnlocked(true);
+                    com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdDemoUnlockUsed(true);
+                    com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdUimsdTourUnlocked(false);
+                    com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdTenthPending(false);
+                    com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdTenthShown(false);
+                    com.shatteredpixel.shatteredpixeldungeon.windows.UimsdGate.forceGateOnForTest(true);
+                    previous[0] = Game.scene();
+                    ShatteredPixelDungeon.switchNoFade(TitleScene.class);
+                });
+                deadline = System.currentTimeMillis() + 30000;
+                while ((Game.scene() == previous[0] || !(Game.scene() instanceof TitleScene)) && System.currentTimeMillis() < deadline) Thread.sleep(100);
+                onRender(() -> {
+                    assertTrue(Game.scene() instanceof TitleScene && Game.scene() != previous[0]);
+                    try {
+                        Field field = TitleScene.class.getDeclaredField("annotation"); field.setAccessible(true);
+                        Component annotation = (Component) field.get(Game.scene());
+                        assertTrue("instruction is actually visible on the main menu", annotation.visible);
+                        Field lines = annotation.getClass().getDeclaredField("lines"); lines.setAccessible(true);
+                        StringBuilder text = new StringBuilder();
+                        for (com.watabou.noosa.BitmapText line : (com.watabou.noosa.BitmapText[]) lines.get(annotation)) {
+                            if (text.length() > 0) text.append(' ');
+                            text.append(line.text());
+                            assertTrue(line.x >= 0 && line.x + line.width() <= PixelScene.uiCamera.width);
+                        }
+                        assertEquals("THIS BUTTON IS EFFECTIVELY USELESS TILL 10 RUNS HAVE BEEN COMPLETED.", text.toString());
+                    } catch (ReflectiveOperationException e) { throw new RuntimeException(e); }
+                });
+            } finally {
+                onRender(() -> {
+                    com.shatteredpixel.shatteredpixeldungeon.windows.UimsdGate.forceGateOnForTest(false);
+                    com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdUimsdUnlocked(saved[0]);
+                    com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdDemoUnlockUsed(saved[1]);
+                    com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdUimsdTourUnlocked(saved[2]);
+                    com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdTenthPending(saved[3]);
+                    com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdTenthShown(saved[4]);
+                });
+            }
+        }
+    }
 }

@@ -22,6 +22,7 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.query.StatusText;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdHome;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.ViewDef;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -261,8 +262,8 @@ public final class ReportBuilder {
 			String diff = "";
 			if (c.type == ColumnDef.Type.NUM && ca.state == CellText.EXACT && cb.state == CellText.EXACT && a.isKnown(c.index()) && b.isKnown(c.index())
 					&& c.format == ColumnDef.Format.PLAIN){
-				long d = b.num(c.index()) - a.num(c.index());
-				diff = (d > 0 ? "+" : "") + d;
+				BigInteger d = BigInteger.valueOf(b.num(c.index())).subtract(BigInteger.valueOf(a.num(c.index())));
+				diff = (d.signum() > 0 ? "+" : "") + d;
 			}
 			t.rows.add(new Report.Cell[]{ new Report.Cell(c.label, CellText.EXACT), cell(ca), cell(cb), new Report.Cell(diff, CellText.EXACT) });
 		}

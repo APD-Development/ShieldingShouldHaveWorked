@@ -78,6 +78,7 @@ public class UimsdGateTest {
 
 		//the tenth genuine run queued the arrow: Clean and Adult each get their own message, and it stays for every build of the title
 		flags.setUnlocked();
+		flags.setTourUnlocked();
 		flags.setPromptPending();
 		for (int i = 0; i < 3; i++){
 			assertEquals("HEY, GO HERE FOR UNLIMITED DOPAMINE.", UimsdGate.annotationFor(flags, empty, true, false, "USUAL"));
@@ -88,11 +89,11 @@ public class UimsdGateTest {
 		assertEquals("USUAL", UimsdGate.annotationFor(flags, empty, true, false, "USUAL"));
 		assertEquals("USUAL", UimsdGate.annotationFor(flags, empty, true, true, "USUAL"));
 
-		//opened through the demo shortcut and no tenth run yet: no locked message and no humor message
+		//Demo access before the tenth genuine run still shows the instructional notice.
 		Mem demo = new Mem();
 		demo.setUnlocked();
 		demo.setDemoUsed();
-		assertEquals("USUAL", UimsdGate.annotationFor(demo, empty, true, true, "USUAL"));
+		assertEquals(locked, UimsdGate.annotationFor(demo, empty, true, true, "USUAL"));
 		//the tenth genuine run comes later: the arrow appears for that player too
 		demo.setPromptPending();
 		assertEquals("HEY, GO HERE FOR DRUGS.", UimsdGate.annotationFor(demo, empty, true, true, "USUAL"));
