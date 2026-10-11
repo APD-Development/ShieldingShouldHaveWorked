@@ -120,4 +120,31 @@ public class InventoryPickupTest {
         } finally {Dungeon.challenges=before;}
     }); }
 
+    @Test public void serializedSaveKeepsPouchOwnershipAndClearedEffectDoesNotReturn() { withHero(h -> {
+        VelvetPouch pouch=new VelvetPouch();pouch.owner=h;h.belongings.backpack.items.add(pouch);
+        pouch.items.add(new com.shatteredpixel.shatteredpixeldungeon.plants.Sungrass.Seed());
+        h.belongings.backpack.items.add(axe());
+        LostInventory lost=new LostInventory();assertTrue(lost.attachTo(h));
+        try {
+            Hero restored=serializedHero(h);
+            assertTrue(restored.belongings.lostInventory());assertNotNull(restored.buff(LostInventory.class));
+            assertEquals(2,restored.belongings.backpack.items.size());
+            VelvetPouch restoredPouch=restored.belongings.getBags().stream().filter(b->b instanceof VelvetPouch).map(b->(VelvetPouch)b).findFirst().get();
+            assertSame(restored,restoredPouch.owner);assertEquals(1,restoredPouch.items.size());
+            assertFalse(new com.shatteredpixel.shatteredpixeldungeon.plants.Sungrass.Seed().collect(restored.belongings.backpack));
+            restored.buff(LostInventory.class).detach();
+            Hero recovered=serializedHero(restored);
+            assertNull(recovered.buff(LostInventory.class));assertFalse(recovered.belongings.lostInventory());
+            assertTrue(axe().collect(recovered.belongings.backpack));assertTrue(new Pasty().collect(recovered.belongings.backpack));
+            assertTrue(new com.shatteredpixel.shatteredpixeldungeon.plants.Sungrass.Seed().collect(recovered.belongings.backpack));
+        } catch(java.io.IOException e){throw new AssertionError(e);} finally {lost.detach();}
+    }); }
+    private Hero serializedHero(Hero source) throws java.io.IOException {
+        com.watabou.utils.Bundle saved=new com.watabou.utils.Bundle();source.storeInBundle(saved);
+        java.io.ByteArrayOutputStream bytes=new java.io.ByteArrayOutputStream();
+        assertTrue(com.watabou.utils.Bundle.write(saved,bytes));
+        com.watabou.utils.Bundle decoded=com.watabou.utils.Bundle.read(new java.io.ByteArrayInputStream(bytes.toByteArray()));
+        Hero restored=new Hero();Dungeon.hero=restored;restored.restoreFromBundle(decoded);return restored;
+    }
+
 }
