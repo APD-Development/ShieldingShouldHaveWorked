@@ -124,6 +124,11 @@ public class Toolbar extends Component {
 					String[] slotNames = new String[6];
 					Image[] slotIcons = new Image[6];
 					for (int i = 0; i < 6; i++){
+						if (com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.CategoryHotbar.enabled()) {
+                            slotNames[i] = com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.CategoryHotbar.label(i);
+                            slotIcons[i] = new ItemSprite(ItemSpriteSheet.SOMETHING);
+                            continue;
+                        }
 						Item item = Dungeon.quickslot.getItem(i);
 
 						if (item != null && !Dungeon.quickslot.isPlaceholder(i) &&
@@ -150,6 +155,12 @@ public class Toolbar extends Component {
 					Game.scene().addToFront(new RadialMenu(Messages.get(Toolbar.class, "quickslot_prompt"), info, slotNames, slotIcons) {
 						@Override
 						public void onSelect(int idx, boolean alt) {
+                            if (com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.CategoryHotbar.enabled()) {
+                                super.onSelect(idx,alt);
+                                if (alt) com.shatteredpixel.shatteredpixeldungeon.windows.WndCategoryHotbar.configure(idx);
+                                else com.shatteredpixel.shatteredpixeldungeon.windows.WndCategoryHotbar.open(idx);
+                                return;
+                            }
 							Item item = Dungeon.quickslot.getItem(idx);
 
 							if (item == null || Dungeon.quickslot.isPlaceholder(idx)
@@ -494,7 +505,7 @@ public class Toolbar extends Component {
 		if (PixelScene.uiCamera.width > 170) quickslotsToShow ++;
 
 		int startingSlot;
-		if (SPDSettings.quickSwapper() && quickslotsToShow < 6){
+		if ((SPDSettings.quickSwapper() || com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.CategoryHotbar.enabled()) && quickslotsToShow < 6){
 			quickslotsToShow = 3;
 			startingSlot = swappedQuickslots ? 3 : 0;
 			btnSwap.visible = true;
@@ -992,3 +1003,4 @@ public class Toolbar extends Component {
 		}
 	}
 }
+

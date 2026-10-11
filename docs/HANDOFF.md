@@ -831,3 +831,16 @@ Run38086795339 (scheduled sourcec449) compiled/passed core but failed before any
 - Private downloadable simulator artifact11683303102 in run38089262932 is37,495,318bytes; outer zip SHA25616580e465d17f08c78eaabd99510f30fc950f5bd1721dee016611d58ff0ca050. Its checksummed APK pair, exact-source runner, separately provenanced11-fixture summary tool, guide and five actual episode traces were delivered via artifact link. Computer disposable-emulator only; not an install-over phone APK. This completes downloadable packaging, not the full100-run experiment.
 - Batch38088289249 passed its baseline/source gate and all five95-seed remainder shards are running. Preserve failures/rare encounters, reuse five baseline seeds, no per-shard APK rebuild. All100 results remain pending; simulator LOC report remains deferred until completion.
 - Updated docs/APD-SIMULATOR-2026-10-10.md separates current actual evidence from historical failed attempts and delivered TEST26. No application/gameplay or player-data changes in this documentation update.
+
+
+## Category hotbar and tour worker checkpoint — 2026-10-11 01:11:05 UTC
+
+Changes staged against real Codex branch bfa939dd00369edadb1620b61d0192ad257b8ad8, not synthetic local git history. Classic SPD is the default; custom category/item-type preferences survive mode changes and restart. Presets, duplicate categories, empty slots, opt-in food in Healing, unknown-item protections, dynamic inventory and six-position narrow-screen swap reuse are implemented. Configuring one preset slot preserves its other positions. Existing classic assignments are not rewritten. Abilities reuse the normal class/armor/Tome actions; four saved Cleric quick casts are not implemented by this checkpoint.
+
+Post-TEST36 tour loader completion/listener captured a retired scene. Two controlled baseline failures confirmed it; render callbacks now invalidate the current scene at delivery. Three retained lifecycle tests pass. Seven initial hotbar tests and expanded eleven hotbar tests pass; combined latest run 14 tests, 0 failures, 0.265 seconds. All six hotbar production sources compile for Java 11. Initial setup had a wrong GameSettings import and an earlier WndUimsdText argument mismatch; corrected before passing tests. No physical-phone testing or new APK delivery is claimed.
+
+The actual Android play/save/resume regression now also checks rendered category touch targets, camera bounds, separation from search/wait/inventory, six-slot access and preserved classic assignments without consuming a turn. This added native coverage and full exact-source compilation/build remain pending until the requested CI completes. TEST36 remains the last verified privately delivered APK and rollback.
+
+A messaging-app screenshot shows only a cropped hero-selection image. The canonical portrait layout was inspected; actual player-screen clipping is not established. Requested the original screenshot, without assuming the preview proves a game bug. Hero layout unchanged.
+
+Actual timing: checkpoint timestamp above, local command/test records retained. Active/idle totals have not been independently metered. Unattended schedule metadata alone does not prove continuous execution. Do not mark this checkpoint device verified before actual CI evidence.

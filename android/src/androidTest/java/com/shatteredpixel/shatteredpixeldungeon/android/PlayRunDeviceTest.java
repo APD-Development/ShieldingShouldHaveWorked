@@ -115,6 +115,54 @@ public class PlayRunDeviceTest {
 		assertTrue("the current quick-use page is visible", visibleSlots > 0);
 	}
 
+	//Exercise the actual rendered category toolbar without consuming items or changing turns.
+	private static void assertCategoryHotbarControls() throws Exception {
+		int oldMode = SPDSettings.apdHotbarMode();
+		try {
+			SPDSettings.apdHotbarMode(1);
+			com.shatteredpixel.shatteredpixeldungeon.ui.Toolbar.updateLayout();
+			com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton.refresh();
+			assertGameplayControls();
+			com.watabou.noosa.ui.Component toolbar =
+					(com.watabou.noosa.ui.Component) field(Game.scene(), "toolbar");
+			Object[] slots = (Object[]) field(toolbar, "btnQuick");
+			int count = 0;
+			for (Object raw : slots) {
+				com.watabou.noosa.ui.Component button = (com.watabou.noosa.ui.Component) raw;
+				if (!button.visible) continue;
+				count++;
+				assertTrue("hotbar touch target remains usable", button.width() >= 16 && button.height() >= 16);
+				assertTrue("hotbar fits camera horizontally", button.left() >= -1 && button.right() <= button.camera().width+1);
+				for (String name : new String[]{"btnSearch", "btnWait", "btnInventory"}) {
+					com.watabou.noosa.ui.Component control = (com.watabou.noosa.ui.Component) field(toolbar, name);
+					if (control.visible && button.camera() == control.camera()) {
+						assertTrue("category hotbar must not overlap " + name,
+								button.right() <= control.left()+1 || control.right() <= button.left()+1
+								|| button.bottom() <= control.top()+1 || control.bottom() <= button.top()+1);
+					}
+				}
+			}
+			assertTrue("category positions visible", count > 0);
+			if (count < 6) {
+				com.watabou.noosa.ui.Component swap = (com.watabou.noosa.ui.Component) field(toolbar, "btnSwap");
+				assertTrue("narrow screen can reach all six slots", swap.visible && swap.active);
+			}
+			com.shatteredpixel.shatteredpixeldungeon.items.Item[] classic =
+					new com.shatteredpixel.shatteredpixeldungeon.items.Item[6];
+			for (int i=0; i<6; i++) classic[i] = Dungeon.quickslot.getItem(i);
+			int hp = Dungeon.hero.HP;
+			com.shatteredpixel.shatteredpixeldungeon.windows.WndCategoryHotbar.open(0);
+			assertEquals("opening category spends no health", hp, Dungeon.hero.HP);
+			assertTrue("opening category spends no turn", Dungeon.hero.ready);
+			for (int i=0; i<6; i++) org.junit.Assert.assertSame("classic assignments preserved", classic[i], Dungeon.quickslot.getItem(i));
+			GameScene.cancel();
+		} finally {
+			SPDSettings.apdHotbarMode(oldMode);
+			com.shatteredpixel.shatteredpixeldungeon.ui.Toolbar.updateLayout();
+			com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton.refresh();
+		}
+	}
+
 	@Test
 	public void aRunCanBePlayedSavedContinuedAndEndedWithItsHistoryRecorded() throws Exception {
 		boolean recordingWas = SPDSettings.apdRecording();
@@ -151,7 +199,7 @@ public class PlayRunDeviceTest {
 			Log.w(TAG, "run started: depth " + Dungeon.depth + ", class " + Dungeon.hero.heroClass + ", log " + ApdRecorder.status().logPath);
 			assertEquals(1, Dungeon.depth);
 			assertEquals(HeroClass.WARRIOR, Dungeon.hero.heroClass);
-			onRender(() -> { try { assertTrue("exercise controls before acknowledging intro", SPDSettings.intro()); assertGameplayControls(); } catch (Exception e){ throw new RuntimeException(e); } });
+			onRender(() -> { try { assertTrue("exercise controls before acknowledging intro", SPDSettings.intro()); assertGameplayControls(); assertCategoryHotbarControls(); } catch (Exception e){ throw new RuntimeException(e); } });
 			//Use the actual toolbar callbacks; the tutorial must not suppress search or wait.
 			onRender(() -> { try { click(field(field(Game.scene(), "toolbar"), "btnSearch"), "onLongClick"); } catch (Exception e){ throw new RuntimeException(e); } });
 			waitUntil("ready after searching", () -> Dungeon.hero.ready, 30000);
@@ -209,7 +257,7 @@ public class PlayRunDeviceTest {
 			assertEquals(hpBefore, Dungeon.hero.HP);
 			assertEquals(HeroClass.WARRIOR, Dungeon.hero.heroClass);
 			assertEquals("still recording after the continue", 0, ApdRecorder.status().errorCount);
-			onRender(() -> { try { assertGameplayControls(); } catch (Exception e){ throw new RuntimeException(e); } });
+			onRender(() -> { try { assertGameplayControls(); assertCategoryHotbarControls(); } catch (Exception e){ throw new RuntimeException(e); } });
 
 			//die: the run must be sealed with its outcome
 			onRender(new Runnable(){ public void run(){ Dungeon.fail(Rat.class); } });

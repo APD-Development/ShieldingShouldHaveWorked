@@ -42,6 +42,7 @@ import com.watabou.utils.BArray;
 import com.watabou.utils.PathFinder;
 
 public class QuickSlotButton extends Button {
+    private com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock categoryLabel;
 	
 	private static QuickSlotButton[] instance = new QuickSlotButton[QuickSlot.SIZE];
 	private int slotNum;
@@ -86,6 +87,10 @@ public class QuickSlotButton extends Button {
 				if (!Dungeon.hero.isAlive() || !Dungeon.hero.ready){
 					return;
 				}
+				if (com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.CategoryHotbar.enabled()) {
+                    if (!GameScene.cancel()) com.shatteredpixel.shatteredpixeldungeon.windows.WndCategoryHotbar.open(slotNum);
+                    return;
+                }
 				if (targetingSlot == slotNum && lastTarget != null) {
 					int cell = autoAim(lastTarget, select(slotNum));
 
@@ -149,6 +154,8 @@ public class QuickSlotButton extends Button {
 		};
 		slot.showExtraInfo( false );
 		add( slot );
+        categoryLabel = com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene.renderTextBlock(5);
+        add(categoryLabel);
 		
 		crossB = Icons.TARGET.get();
 		crossB.visible = false;
@@ -163,6 +170,10 @@ public class QuickSlotButton extends Button {
 		super.layout();
 		
 		slot.fill( this );
+        if (categoryLabel != null) {
+            categoryLabel.maxWidth((int)width);
+            categoryLabel.setPos(x+(width-categoryLabel.width())/2f, y+(height-categoryLabel.height())/2f);
+        }
 		
 		crossB.x = x + (width - crossB.width) / 2;
 		crossB.y = y + (height - crossB.height) / 2;
@@ -217,6 +228,11 @@ public class QuickSlotButton extends Button {
 	
 	@Override
 	protected void onClick() {
+        if (com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.CategoryHotbar.enabled()) {
+            if (Dungeon.hero != null && Dungeon.hero.ready && !GameScene.cancel())
+                com.shatteredpixel.shatteredpixeldungeon.windows.WndCategoryHotbar.open(slotNum);
+            return;
+        }
 		if (Dungeon.hero.ready && !GameScene.cancel()) {
 			GameScene.selectItem(itemSelector);
 		}
@@ -234,6 +250,10 @@ public class QuickSlotButton extends Button {
 
 	@Override
 	protected boolean onLongClick() {
+        if (com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.CategoryHotbar.enabled()) {
+            com.shatteredpixel.shatteredpixeldungeon.windows.WndCategoryHotbar.configure(slotNum);
+            return true;
+        }
 		onClick();
 		return true;
 	}
@@ -261,6 +281,9 @@ public class QuickSlotButton extends Button {
 	public static int lastVisible = instance.length;
 
 	public static void set(Item item){
+        if (com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.CategoryHotbar.enabled()) {
+            com.shatteredpixel.shatteredpixeldungeon.windows.WndCategoryHotbar.assign(item); return;
+        }
 		for (int i = 0; i < lastVisible; i++) {
 			if (select(i) == null || select(i) == item) {
 				set(i, item);
@@ -271,6 +294,10 @@ public class QuickSlotButton extends Button {
 	}
 
 	public static void set(int slotNum, Item item){
+        if (com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.CategoryHotbar.enabled()) {
+            if (com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.CategoryHotbar.chooseItem(slotNum,item)) { Toolbar.updateLayout(); refresh(); }
+            return;
+        }
 		Dungeon.quickslot.setSlot( slotNum , item );
 		refresh();
 
@@ -289,7 +316,11 @@ public class QuickSlotButton extends Button {
 	}
 	
 	public void item( Item item ) {
-		slot.item( item );
+		boolean categories = com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.CategoryHotbar.enabled();
+        slot.item(categories ? null : item);
+        categoryLabel.visible = categories;
+        categoryLabel.text(categories ? com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.CategoryHotbar.shortLabel(slotNum) : "");
+        layout();
 		enableSlot();
 	}
 
@@ -303,6 +334,9 @@ public class QuickSlotButton extends Button {
 	}
 	
 	private void enableSlot() {
+        if (com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.CategoryHotbar.enabled()) {
+            slot.enable(active && Dungeon.hero != null && Dungeon.hero.isAlive() && Dungeon.hero.ready); return;
+        }
 		slot.enable(Dungeon.quickslot.isNonePlaceholder( slotNum )
 				&& (!Dungeon.hero.belongings.lostInventory() || Dungeon.quickslot.getItem(slotNum).keptThroughLostInventory()));
 	}
@@ -412,3 +446,4 @@ public class QuickSlotButton extends Button {
 		}
 	}
 }
+

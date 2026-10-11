@@ -60,6 +60,7 @@ public class APDSettingsPane extends Component {
 	private CheckBox chkAdult;
 	private RenderedTextBlock status;
 	private RenderedTextBlock storage;
+	private RedButton btnHotbar;
 	private RedButton btnTest;
 	private RedButton btnExportHistory;
 	private RedButton btnImportHistory;
@@ -121,6 +122,11 @@ public class APDSettingsPane extends Component {
 		};
 		chkAdult.checked( SPDSettings.apdAdultHumor() );
 		add( chkAdult );
+
+		btnHotbar = new RedButton("Hotbar layout") {
+            @Override protected void onClick() { WndCategoryHotbar.settings(); }
+        };
+        add(btnHotbar);
 
 		status = PixelScene.renderTextBlock( ApdRecorder.status().summary(), 5 );
 		add( status );
@@ -270,6 +276,8 @@ public class APDSettingsPane extends Component {
 		pos = chkRecord.bottom() + GAP;
 		chkAdult.setRect( x, pos, width, 16 );
 		pos = chkAdult.bottom() + GAP;
+        btnHotbar.setRect(x,pos,width,16);
+        pos = btnHotbar.bottom() + GAP;
 		status.maxWidth( (int)width );
 		status.setPos( x, pos );
 		pos = status.bottom() + GAP;
@@ -381,3 +389,4 @@ public class APDSettingsPane extends Component {
 		t.start();
 	}
 }
+

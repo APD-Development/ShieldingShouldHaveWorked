@@ -413,6 +413,17 @@ public class SPDSettings extends GameSettings {
 		return getString( KEY_APD_SERVER, "", 200 );
 	}
 
+
+    //APD hotbar preferences are separate from the original per-run QuickSlot placements.
+    public static int apdHotbarMode() { return getInt("apd_hotbar_mode", 0, 0, 4); }
+    public static void apdHotbarMode(int value) { put("apd_hotbar_mode", Math.max(0, Math.min(4, value))); }
+    public static int apdHotbarCategory(int slot) { return getInt("apd_hotbar_category_" + slot, slot, 0, 8); }
+    public static void apdHotbarCategory(int slot, int value) { put("apd_hotbar_category_" + slot, Math.max(0, Math.min(8, value))); }
+    public static String apdHotbarItem(int slot) { return getString("apd_hotbar_item_" + slot, ""); }
+    public static void apdHotbarItem(int slot, String value) { put("apd_hotbar_item_" + slot, value == null ? "" : value); }
+    public static boolean apdFoodInHealing() { return getBoolean("apd_food_in_healing", false); }
+    public static void apdFoodInHealing(boolean value) { put("apd_food_in_healing", value); }
+
 	public static final String KEY_APD_RECORDING = "apd_recording";
 
 	//APD run history recording, on by default
@@ -645,3 +656,4 @@ public class SPDSettings extends GameSettings {
 		return getInt( KEY_FULLSCREEN_MONITOR, 0 );
 	}
 }
+

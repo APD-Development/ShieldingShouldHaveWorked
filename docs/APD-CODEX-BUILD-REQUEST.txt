@@ -1,2 +1,4 @@
-2026-10-11 00:35 UTC / October 10 evening New York
-Latest combined core/debug/API34 verification: retain the already accepted UIMSD restoration and known active Wayward display fixes, then include historical Turkish/Azeri saved aggregate-sort compatibility and the eight page-specific offline Community menu summaries with their JVM/native assertions. TEST35 source c54d08f38ba765b0c40aab2176263f2e90a2348c passed 1,017 core and 9 API34 cases before this request. No gameplay/turn/RNG/save/identity changes. Do not auto-publish. Separate private delivery must compare against actual TEST31 signer/application ID/checksum and include a current report with real failures and unfinished work.
+Category hotbar + confirmed tour worker regression verification
+UTC request: 2026-10-11 01:11:05 UTC
+Base: bfa939dd00369edadb1620b61d0192ad257b8ad8
+Run all core tests, debug assembly and existing API34 suite with added hotbar assertions. No publication before successful source/artifact/signing evidence. TEST36 rollback preserved.

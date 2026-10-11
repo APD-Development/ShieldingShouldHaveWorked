@@ -862,6 +862,16 @@ public class UimsdScene extends PixelScene {
 		}
 	}
 
+	//The loading worker can outlive the scene that launched it. Resolve the current scene
+	//on the render thread, both at completion and for later changes to its tour model.
+	private static void invalidateTourScene(){
+		com.watabou.noosa.Game.runOnRenderThread(() -> {
+			if (com.watabou.noosa.Game.instance == null) return;
+			com.watabou.noosa.Scene active = com.watabou.noosa.Game.scene();
+			if (active instanceof UimsdScene) ((UimsdScene) active).dirty = true;
+		});
+	}
+
 	private void beginTour( final int stepIndex, final boolean own ){
 		tutorialPreparing = true;
 		dirty = true;
@@ -889,7 +899,7 @@ public class UimsdScene extends PixelScene {
 					tm.setListener(new UimsdModel.Listener(){
 						@Override
 						public void changed(){
-							dirty = true;
+							invalidateTourScene();
 						}
 					});
 					tutorial = t;
@@ -900,7 +910,7 @@ public class UimsdScene extends PixelScene {
 					deleteSampleLater();
 				} finally {
 					tutorialPreparing = false;
-					dirty = true;
+					invalidateTourScene();
 				}
 			}
 		}, "apd-uimsd-tour");
@@ -981,4 +991,5 @@ public class UimsdScene extends PixelScene {
 		else ShatteredPixelDungeon.switchScene(backTo);
 	}
 }
+
 
