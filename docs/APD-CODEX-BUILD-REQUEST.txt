@@ -1,1 +1,1 @@
-Verify current-source title notice after demo unlock, exact report difference, boss-minion cache revision, and tiny malformed-cache allocation guards. Actual source changed; full core/debug/API34 required. Preserve running TEST51 and delivered artifacts. No public publication.
+Verify repaired source 7587e8fb98704541e8e42267fd60b4be13d4d043 after TEST53 compile failure. Preserve existing player data and signing identity. Run full core suite and Android checks.
