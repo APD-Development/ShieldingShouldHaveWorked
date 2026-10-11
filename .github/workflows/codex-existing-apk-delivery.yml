@@ -1,4 +1,4 @@
-name: Deliver verified existing APD TEST39
+name: Deliver verified existing APD TEST41
 
 # Delivery only: reuse the already tested APK; no Gradle or app rebuild.
 # Accept verified SDK signer labels; retain compatibility refusal diagnostics.
@@ -12,19 +12,19 @@ permissions:
   actions: read
 
 concurrency:
-  group: apd-existing-test39-delivery
+  group: apd-existing-test41-delivery
   cancel-in-progress: false
 
 env:
-  APD_SOURCE_SHA: 475c80c22285978bf9eefb682f7a19bd32d994e5
-  APD_SOURCE_RUN: '38101578800'
-  APD_TEST_NUMBER: '39'
-  APD_CORE_TEST_COUNT: '1033'
+  APD_SOURCE_SHA: e9f1515a52e219282772a590419e215c9a8139f1
+  APD_SOURCE_RUN: '38103226643'
+  APD_TEST_NUMBER: '41'
+  APD_CORE_TEST_COUNT: '1035'
   APD_ANDROID_TEST_COUNT: '11'
-  APD_ROLLBACK_NUMBER: '36'
-  APD_ROLLBACK_SHA256: 'cd86c3b2cae76a09fae407b1b666daaa4b87c8f16ed3d651877fbcd8f42f099d'
+  APD_ROLLBACK_NUMBER: '39'
+  APD_ROLLBACK_SHA256: 'fdba6ccb7ec634e86ec64414e6e92a6bfeff3584fd4931cc59066326a5e7e7ee'
   APD_REQUIRED_ANDROID_METHODS: 'menusSurviveSceneRecreationAndNarrowActionsStayInsideTheirWindow,aRunCanBePlayedSavedContinuedAndEndedWithItsHistoryRecorded,aWonRunIsRecordedAsWonAndSealed,difficultyIsChosenOnTheCharacterScreenAndNotInSettings,communityMenuOpensEveryPreviewAndReturnsWithoutStackingWindows,adultHumorControlWorksWithoutAnAgeProviderAndReopensWithSavedChoice,textAndGuideScrollSurviveRepeatedResetsAndClampAfterResize,validationEmptyHistoryGroupedAndReportMessagesSurviveWithoutRepeatingActions,tourChoicesSurviveWithoutStartingATourOrRepeatingTheOffer,heroButtonsStayAboveNavigationBarAndRemainSelectable,navigationOverlapReservesVisibleBarsEvenWithFullscreenRequested'
-  APD_SOURCE_ARTIFACTS_JSON: '{"apd-codex-private-test-apk":11688341205,"apd-codex-core-tests":11687996899,"apd-codex-android-checks":11687419565}'
+  APD_SOURCE_ARTIFACTS_JSON: '{"apd-codex-android-checks":11688493286,"apd-codex-core-tests":11688383435,"apd-codex-private-test-apk":11688188670}'
 
 jobs:
   validate-and-stage:
@@ -53,7 +53,7 @@ jobs:
       - name: Retrieve rollback APK for direct compatibility comparison
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release download apd-codex-test-36 --repo "$GITHUB_REPOSITORY" --pattern ADHD-Pixel-Dungeon-CODEX-TEST-36.apk --dir rollback
+        run: gh release download apd-codex-test-39 --repo "$GITHUB_REPOSITORY" --pattern ADHD-Pixel-Dungeon-CODEX-TEST-39.apk --dir rollback
       - name: Check source, tests, checksum, signing and application ID
         env:
           GH_TOKEN: ${{ github.token }}
@@ -63,10 +63,10 @@ jobs:
       - name: Produce today's report from verified evidence
         run: |
           python3 -m pip install reportlab==4.2.5
-          python3 tools/apd_bug_report_pdf.py docs/APD-TEST39-REPORT-2026-10-10.md delivery/APD-Bug-Fixes-2026-10-10-TEST39.pdf --verification delivery/verification.txt
+          python3 tools/apd_bug_report_pdf.py docs/APD-TEST41-REPORT-2026-10-10.md delivery/APD-Bug-Fixes-2026-10-10-TEST41.pdf --verification delivery/verification.txt
       - uses: actions/upload-artifact@v4
         with:
-          name: verified-test39-delivery
+          name: verified-test41-delivery
           path: delivery/
           retention-days: 7
 
@@ -80,7 +80,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: verified-test39-delivery
+          name: verified-test41-delivery
           path: delivery
       - name: Publish new private prerelease without replacing existing assets
         env:
@@ -93,15 +93,15 @@ jobs:
           repo = os.environ['GITHUB_REPOSITORY']
           assert json.loads(subprocess.check_output(['gh', 'api', 'repos/' + repo]))['private']
           assert datetime.now(ZoneInfo('America/New_York')) >= datetime(2026, 10, 10, 11, 59, tzinfo=ZoneInfo('America/New_York'))
-          tag = 'apd-codex-test-39'
+          tag = 'apd-codex-test-41'
           previous = subprocess.run(['gh', 'release', 'view', tag, '--repo', repo], capture_output=True)
           if previous.returncode == 0:
               raise SystemExit('Existing release preserved; do not overwrite it.')
           subprocess.run(['gh', 'release', 'create', tag, '--repo', repo,
               '--target', os.environ['GITHUB_SHA'], '--prerelease', '--latest=false',
-              '--title', 'APD PRIVATE CODEX TEST 39', '--notes-file', 'delivery/verification.txt',
-              'delivery/ADHD-Pixel-Dungeon-CODEX-TEST-39.apk',
-              'delivery/ADHD-Pixel-Dungeon-CODEX-TEST-39.apk.sha256',
-              'delivery/APD-Bug-Fixes-2026-10-10-TEST39.pdf',
-              'delivery/TEST39-Verification.json'], check=True)
+              '--title', 'APD PRIVATE CODEX TEST 41', '--notes-file', 'delivery/verification.txt',
+              'delivery/ADHD-Pixel-Dungeon-CODEX-TEST-41.apk',
+              'delivery/ADHD-Pixel-Dungeon-CODEX-TEST-41.apk.sha256',
+              'delivery/APD-Bug-Fixes-2026-10-10-TEST41.pdf',
+              'delivery/TEST41-Verification.json'], check=True)
           PY
