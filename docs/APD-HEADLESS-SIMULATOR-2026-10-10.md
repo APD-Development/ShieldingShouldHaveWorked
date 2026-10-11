@@ -29,11 +29,13 @@ This is deliberately not described as a completed headless Warrior simulator. It
 
 Workflow [38095765371](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38095765371) passed the complete core suite for source `a9b55e59152c8603e822dc1e2bcbf6ec4afebeda`, including both headless probe cases. On that hosted two-core runner, the generation case created 100 real Warrior first floors containing 844 mobs in 174 milliseconds. This is direct floor-generation timing only, not complete-episode speed or a 10,000x claim.
 
-## Shared policy/adapter boundary (verification pending)
+## Shared policy/adapter boundary (verified)
 
 The first synchronous command family is now adapter-neutral. `NormalWarriorTurnPolicy` selects rooted and bounded recovery waits without Android, rendering or RNG. It returns a `WarriorTurnCommand`, and both the Android session and JVM headless driver execute that same `WAIT` command boundary through the real `Hero.rest(false)` action.
 
-This extraction preserves the Android profile's existing ordering and limits: rooted waits still happen first; food, known Strength, and eligible equipment still take priority over recovery; recovery still requires no visible enemies, non-starving hunger, below-half HP and fewer than 30 prior safe rests. It does not yet share movement, combat, item use, transitions, complete episodes or result extraction. Exact-source core and Android compilation/native verification are pending.
+This extraction preserves the Android profile's existing ordering and limits: rooted waits still happen first; food, known Strength, and eligible equipment still take priority over recovery; recovery still requires no visible enemies, non-starving hunger, below-half HP and fewer than 30 prior safe rests. It does not yet share movement, combat, item use, transitions, complete episodes or result extraction.
+
+Exact-source workflow [38096301603](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38096301603) passed for source `ccf347179ce382f3ffdd1df4d81b59dcea549d2c`. The complete core artifact contains 1,009 tests across 165 suites with zero failures, errors or skips. The policy selector passed all three new cases and the two real headless actor cases passed. Android app/test APK compilation succeeded, followed by five complete native episodes in 499.755 seconds. Their 2,881 trace actions included 157 bounded recovery `REST` commands through the shared boundary. The fixed episodes did not encounter a rooted wait, so the rooted selector is core-verified but not exercised by this native sample. Different episode outcomes and unseeded combat RNG make this unsuitable for a causal speed comparison.
 
 ## Next exact steps
 

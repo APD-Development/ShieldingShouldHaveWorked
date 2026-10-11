@@ -1,3 +1,11 @@
+## 2026-10-11 00:04 UTC - shared wait-command boundary exact-source verified
+
+Workflow [38096301603](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38096301603) passed against source `ccf347179ce382f3ffdd1df4d81b59dcea549d2c`. Downloaded core artifact `11686013206` matched `sha256:d799cd0819b7ce41294494d350a6283f03859151064ae37c23879f348890a787`; its 165 XML suites contain 1,009 tests, zero failures/errors/skips. New selector cases passed 3/3; real headless generation/actor cases passed 2/2.
+
+Android app/test APK compilation and the fixed five-episode adapter gate also passed. Downloaded native artifact `11686825922` matched `sha256:a7a08e2298660c17e23a07e0030ccc8e5b32ee162e573a091847e76ce382a2cd`; instrumentation reported `OK (1 test)` in 499.755 seconds. All five rows completed with nonempty commands/traces: 2,881 actions, terminal depths 1-4, four deaths and one scenario completion. The shared recovery wait path executed 157 times. No episode encountered rooted waiting, so rooted selection is unit-verified but not native-sample exercised. This verifies the first shared synchronous `WAIT` family, not movement, combat, items, transitions, complete JVM episodes, parity or a speedup.
+
+No production gameplay source, saves/statistics, signing/application ID, release, backend, `main` or Claude branch changed. Next simulator slice is movement command extraction plus one real headless move with source-pinned parity evidence.
+
 ## 2026-10-11 00:03 UTC / October 10 evening New York — Grouped-sort locale bug and tour warning correction
 
 Follow-up tests exposed another logical locale dependency: Aggregate.id used default-locale lowercase. MIN and COUNT_DISTINCT identifiers changed under Turkish/Azeri settings, breaking stored grouped-sort identifiers and hash-map keys. Two additional permanent red tests reproduce the changed ID and an incorrectly ordered saved grouped-minimum view. Aggregate.id now uses Locale.ROOT; all five locale cases and the expanded combined 42-case query/saved-view/hidden-safety set pass (4.080 seconds). The 50,000-row/2,000-type stress fixture passed again (112 ms grouping). No stored query bytes or recorded data is migrated or rewritten.
