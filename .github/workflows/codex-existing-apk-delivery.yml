@@ -99,9 +99,9 @@ jobs:
               raise SystemExit('Existing release preserved; do not overwrite it.')
           subprocess.run(['gh', 'release', 'create', tag, '--repo', repo,
               '--target', os.environ['GITHUB_SHA'], '--prerelease', '--latest=false',
-              '--title', 'APD PRIVATE CODEX TEST 36', '--notes-file', 'delivery/verification.txt',
-              'delivery/ADHD-Pixel-Dungeon-CODEX-TEST-36.apk',
-              'delivery/ADHD-Pixel-Dungeon-CODEX-TEST-36.apk.sha256',
+              '--title', 'APD PRIVATE CODEX TEST 39', '--notes-file', 'delivery/verification.txt',
+              'delivery/ADHD-Pixel-Dungeon-CODEX-TEST-39.apk',
+              'delivery/ADHD-Pixel-Dungeon-CODEX-TEST-39.apk.sha256',
               'delivery/APD-Bug-Fixes-2026-10-10-TEST39.pdf',
               'delivery/TEST39-Verification.json'], check=True)
           PY
