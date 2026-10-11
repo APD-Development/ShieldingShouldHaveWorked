@@ -159,4 +159,21 @@ public class BackendOutboxTest {
 		Leaderboard.Entry checked = new Leaderboard.Entry(e.player, e.submission, e.run, TrustLevel.SERVER_CHECKED, e.receivedAtMillis);
 		assertEquals(1, Leaderboard.rank(strict, Collections.singletonList(checked)).size());
 	}
+
+    @Test
+    public void malformedGatewayRepliesKeepQueuedItemsAndBackOff(){
+        for (Gateway gateway : Arrays.asList(
+                (Gateway)(key, envelope) -> null,
+                (Gateway)(key, envelope) -> new Gateway.Response(null, "bad transport"))) {
+            Outbox outbox = new Outbox();
+            outbox.enqueue(box(1), RunSubmissionCodec.toEnvelope(run("r1",10)), 0);
+            Outbox.FlushResult result = outbox.flush(gateway,0);
+            assertEquals(0,result.sent);
+            assertEquals(0,result.rejected);
+            assertEquals(1,result.kept);
+            assertEquals(1,outbox.size());
+            assertEquals(1,outbox.items().get(0).attempts);
+            assertEquals(Backoff.delayMillis(1),outbox.items().get(0).nextAttemptAtMillis);
+        }
+    }
 }
