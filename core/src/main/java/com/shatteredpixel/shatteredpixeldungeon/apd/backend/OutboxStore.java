@@ -81,6 +81,11 @@ public final class OutboxStore {
 	}
 
 	private static String unb64( String s ){
-		return new String(Base64.getDecoder().decode(s), StandardCharsets.UTF_8);
+		try {
+			return StandardCharsets.UTF_8.newDecoder().decode(
+					java.nio.ByteBuffer.wrap(Base64.getDecoder().decode(s))).toString();
+		} catch (java.nio.charset.CharacterCodingException e) {
+			throw new IllegalArgumentException("invalid UTF-8 in queue field", e);
+		}
 	}
 }

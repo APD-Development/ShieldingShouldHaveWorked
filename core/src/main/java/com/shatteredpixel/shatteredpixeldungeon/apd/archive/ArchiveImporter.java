@@ -37,6 +37,8 @@ import java.io.OutputStream;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 import java.util.Set;
 import java.util.zip.ZipEntry;
@@ -158,13 +160,18 @@ public final class ArchiveImporter {
 					report.problem = "cannot create a working folder.";
 					return report;
 				}
+				Map<String, ArchiveManifest.Entry> byPath = new HashMap<>();
+				for (ArchiveManifest.Entry listed : manifest.files){
+					// Match find() semantics for repeated manifest paths: first entry wins.
+					if (!byPath.containsKey(listed.path)) byPath.put(listed.path, listed);
+				}
 				Set<String> seen = new HashSet<>();
 				List<Staged> staged = new ArrayList<>();
 				ZipEntry entry;
 				int problems = 0;
 				while ((entry = zip.getNextEntry()) != null){
 					String name = entry.getName();
-					ArchiveManifest.Entry e = manifest.find(name);
+					ArchiveManifest.Entry e = byPath.get(name);
 					if (e == null || !seen.add(name)){
 						//something the manifest does not list is never written, and does not spoil the rest
 						report.details.add("not in the manifest or repeated, ignored: " + safe(name));

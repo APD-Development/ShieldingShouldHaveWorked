@@ -185,7 +185,10 @@ public final class QueryEngine {
 				if (!open(q, r, c)) key.append("H");
 				else if (!r.isKnown(c.index)) key.append("U");
 				else if (r.kind(c.index) == Row.K_NUM) key.append("N").append(r.num(c.index)).append(r.prov(c.index) == Fact.PROV_INCOMPLETE ? "+" : "");
-				else key.append("T").append(r.text(c.index));
+				else {
+					String text = r.text(c.index);
+					key.append("T").append(text.length()).append(":").append(text);
+				}
 				key.append('\u0001');
 			}
 			List<Row> b = buckets.get(key.toString());
