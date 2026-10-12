@@ -40,6 +40,10 @@ public class AboutDeviceTest {
     render(()->{try{
      RedButton button=find(Game.scene(),label);assertNotNull(label,button);
      assertTrue(button.width()>=40);assertTrue(button.height()>=20);
+     float oldWidth=button.width();button.setSize(53,20);
+     Field labelField=StyledButton.class.getDeclaredField("text");labelField.setAccessible(true);RenderedTextBlock labelText=(RenderedTextBlock)labelField.get(button);
+     assertTrue("label stays inside a narrow native button",labelText.width()<=button.width());
+     assertTrue("wrapped label stays inside button height",labelText.height()<=button.height());button.setSize(oldWidth,20);
      Method click=button.getClass().getDeclaredMethod("onClick");click.setAccessible(true);click.invoke(button);
      WndUimsdText popup=null;
      for(Gizmo g:children(Game.scene()))if(g instanceof WndUimsdText && g.alive)popup=(WndUimsdText)g;

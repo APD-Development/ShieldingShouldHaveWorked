@@ -236,13 +236,13 @@ public class UimsdScreensDeviceTest {
 			assertTrue(built[0] > 30);
 			Thread.sleep(500);
 
-			//5. the grouped tables and their sheets
-			for (final String view : new String[]{ "characters", "difficulty", "enemies", "weapons" }){
+			//5. every existing catalog destination and its first recorded row/group sheet
+			for (final com.shatteredpixel.shatteredpixeldungeon.apd.query.ViewDef view : m.catalog().views()){
 				onRender(new Runnable(){
 					public void run(){
-						m.showRoot(view);
+						m.showRoot(view.id);
 						ResultTable table = m.table();
-						assertNotNull(table);
+						assertNotNull(view.id, table);
 						if (!table.lines.isEmpty()) WndUimsdRow.show(m, table.lines.get(0));
 					}
 				});

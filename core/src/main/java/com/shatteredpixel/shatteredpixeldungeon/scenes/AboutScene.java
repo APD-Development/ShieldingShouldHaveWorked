@@ -83,6 +83,7 @@ public class AboutScene extends PixelScene {
 				AboutScene.this.addToFront(new com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdText("Why APD Exists", "APD began with the shielding mechanic: shielding should have fucking worked.\n\nAfter years playing Shattered Pixel Dungeon, I wanted to expand the experience. APD builds on SPD's accomplishments, rather than diminishing them."));
 			}
 		};
+		info0.multiline = true;
 		info0.setRect((w - infoWidth)/2f + 0 * (infoWidth + 2)/2f, infoTop + 0 * 22, (infoWidth - 2)/2f, 20);
 		content.add(info0);
 		RedButton info1 = new RedButton("Features & Vision", 6){
@@ -90,6 +91,7 @@ public class AboutScene extends PixelScene {
 				AboutScene.this.addToFront(new com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdText("Features & Vision", "Available: UIMSD statistics, filtering and comparisons, plus gameplay information and player settings.\n\nPlanned: additional characters, items, mechanics and challenges; deeper statistics and meaningful replayability.\n\nAPD will have strictly no pay-to-win mechanics."));
 			}
 		};
+		info1.multiline = true;
 		info1.setRect((w - infoWidth)/2f + 1 * (infoWidth + 2)/2f, infoTop + 0 * 22, (infoWidth - 2)/2f, 20);
 		content.add(info1);
 		RedButton info2 = new RedButton("Community & Voting", 6){
@@ -97,6 +99,7 @@ public class AboutScene extends PixelScene {
 				AboutScene.this.addToFront(new com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdText("Community & Voting", "Available now: an offline Community preview.\n\nPlanned: player-created submissions and threaded discussions in Month 1; qualification voting selecting the top 16 in Month 2; weekly elimination rounds in Month 3. Comments are not votes.\n\nFuture ambitions include run reviews and peer feedback, community mods and content, and testing winning ideas during development. Some content remains exclusively creator-controlled. Online interaction is not available yet."));
 			}
 		};
+		info2.multiline = true;
 		info2.setRect((w - infoWidth)/2f + 0 * (infoWidth + 2)/2f, infoTop + 1 * 22, (infoWidth - 2)/2f, 20);
 		content.add(info2);
 		RedButton info3 = new RedButton("Developer's Note", 6){
@@ -104,6 +107,7 @@ public class AboutScene extends PixelScene {
 				AboutScene.this.addToFront(new com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdText("Developer's Note", "I've spent years playing Shattered Pixel Dungeon, and APD is my attempt to build the experience I've always wanted.\n\nI'm one person developing a game for people who love Pixel Dungeon as much as I do.\n\nMy goal is for players to never run out of content they actually WANT to play.\n\nAnd if the community says an idea is terrible, I might implement two."));
 			}
 		};
+		info3.multiline = true;
 		info3.setRect((w - infoWidth)/2f + 1 * (infoWidth + 2)/2f, infoTop + 1 * 22, (infoWidth - 2)/2f, 20);
 		content.add(info3);
 		RedButton info4 = new RedButton("Development Roadmap", 6){
@@ -111,6 +115,7 @@ public class AboutScene extends PixelScene {
 				AboutScene.this.addToFront(new com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdText("Development Roadmap", "Priorities: bug fixes, reliability and save protection; statistics and UIMSD improvements; additional gameplay content; Community features; future modding support.\n\nThese are development goals, not promises of availability or release dates."));
 			}
 		};
+		info4.multiline = true;
 		info4.setRect((w - infoWidth)/2f + 0 * (infoWidth + 2)/2f, infoTop + 2 * 22, (infoWidth - 2)/2f, 20);
 		content.add(info4);
 		RedButton info5 = new RedButton("Source & Licenses", 6){
@@ -118,6 +123,7 @@ public class AboutScene extends PixelScene {
 				AboutScene.this.addToFront(new com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdText("Source & Licenses", "APD is an expansion of Shattered Pixel Dungeon by Evan Debenham, itself based on Pixel Dungeon by Watabou.\n\nAPD preserves the GNU General Public License version 3 or later. Source distributions retain copyright and license notices; corresponding source must accompany distribution as required by the GPL.\n\nThe original contributor credits and links remain on this screen. Public upstream source: github.com/00-Evan/shattered-pixel-dungeon and github.com/watabou/pixel-dungeon.\n\nLicense reference: www.gnu.org/licenses/gpl-3.0.html. APD source access is provided with its distribution; no private development links are exposed here."));
 			}
 		};
+		info5.multiline = true;
 		info5.setRect((w - infoWidth)/2f + 1 * (infoWidth + 2)/2f, infoTop + 2 * 22, (infoWidth - 2)/2f, 20);
 		content.add(info5);
 		addLine(infoTop + 70, content);
