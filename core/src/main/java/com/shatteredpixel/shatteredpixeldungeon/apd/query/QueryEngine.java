@@ -469,8 +469,8 @@ public final class QueryEngine {
 		int contributing = 0, flags = baseFlags;
 		double sum = 0, sumOver = 0, min = 0, max = 0;
 		long hits = 0;
-		java.util.Set<String> distinct = new java.util.HashSet<>();
-		List<Double> values = new ArrayList<>();
+		java.util.Set<String> distinct = a.fn == Aggregate.Fn.COUNT_DISTINCT ? new java.util.HashSet<String>() : null;
+		List<Double> values = a.fn == Aggregate.Fn.MEDIAN ? new ArrayList<Double>() : null;
 		for (Row r : rows){
 			if (!open(q, r, c) || !r.isKnown(c.index)) continue;
 			int prov = r.prov(c.index);

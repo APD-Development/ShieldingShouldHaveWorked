@@ -409,6 +409,23 @@ public class DatasetBuildersTest {
 		assertFalse(find(load().dataset(Datasets.RUNS), "g1").duplicate);
 	}
 
+
+ @Test
+ public void aReopenedRunCannotHideAnImportedFinishedRunByProbableMatch() throws Exception {
+  log("ended", V14, 100).start("run-reopened",0,"WARRIOR",RS,0,0,false).enter(1)
+   .end(LifecycleEvents.OUTCOME_DIED,"Rat",5,8,2000).close(true);
+  log("resumed", V14, 200).start("run-reopened",1,"WARRIOR",RS,0,0,false).enter(1).close(false);
+  importFile("legacy-import-1",300,rec("g-reopened","WARRIOR",0,5,8,2000,"2025-01-01"));
+  Dataset runs=load().dataset(Datasets.RUNS);
+  Row reopened=null;
+  for(Row candidate:runs.rows) if("run-reopened".equals(candidate.runId)) reopened=candidate;
+  assertNotNull(reopened);
+  assertFalse(reopened.finished);
+  assertFalse("unfinished run cannot be a probable match for a completed ranking",find(runs,"g-reopened").duplicate);
+  Dataset cached=load().dataset(Datasets.RUNS);
+  assertFalse("cache reload must preserve the imported ranking",find(cached,"g-reopened").duplicate);
+ }
+
 	//---- the row cache ----
 
 	private static String signature( Dataset d ){
