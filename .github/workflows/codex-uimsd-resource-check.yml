@@ -1,0 +1,78 @@
+name: UIMSD resource regression against verified TEST63
+on:
+  push:
+    branches: [codex/apd-phone-fixes-2026-10-09]
+    paths: [.github/workflows/codex-uimsd-resource-check.yml]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  resource-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Enable emulator acceleration
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Set up Android SDK
+        run: |
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36"
+      - uses: gradle/actions/setup-gradle@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: apd-codex-private-test-apk
+          run-id: 38229156395
+          github-token: ${{ github.token }}
+          path: reference
+      - name: Validate unchanged production source and exact reference APK
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,os,pathlib,subprocess
+          from tools.apd_existing_build_evidence import application_inputs
+          repo=os.environ['GITHUB_REPOSITORY']
+          def api(path):return json.loads(subprocess.check_output(['gh','api','repos/'+repo+'/'+path]))
+          run=api('actions/runs/38229156395')
+          assert run['conclusion']=='success' and run['head_sha']=='1f0c843f510957d77702a26c458fd7336d1f56b9'
+          trees=[api('git/trees/'+ref+'?recursive=1') for ref in (run['head_sha'],os.environ['GITHUB_SHA'])]
+          assert all(not t.get('truncated',False) for t in trees)
+          assert application_inputs(trees[0]['tree'])==application_inputs(trees[1]['tree'])
+          apk=next(pathlib.Path('reference').glob('*.apk'))
+          assert hashlib.sha256(apk.read_bytes()).hexdigest()=='ae808ac6be548b9ea50a3fc51c97fcbc9fbb01f6b4ef274b2fff37770e8a8d6b'
+          print('Reusing exact verified TEST63 APK; production inputs unchanged.')
+          PY
+      - name: Build only new instrumentation tests
+        run: ./gradlew :android:assembleDebugAndroidTest -PapdTestBuild -PapdBuild=C63
+      - name: Run resource ownership reproduction on API34
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          arch: x86_64
+          target: default
+          disable-animations: true
+          script: |
+            adb logcat -c
+            adb logcat -v time > resource-logcat.txt &
+            adb install -r reference/ADHD-Pixel-Dungeon-CODEX-TEST-63.apk
+            adb install -r android/build/outputs/apk/androidTest/debug/android-debug-androidTest.apk
+            adb shell am instrument -w -r -e class com.shatteredpixel.shatteredpixeldungeon.android.UimsdResourcesDeviceTest com.charltonchris29.adhdpixeldungeon.indev.test/androidx.test.runner.AndroidJUnitRunner > resource-result.txt
+            cat resource-result.txt
+            python3 -c "import pathlib,re; t=pathlib.Path('resource-result.txt').read_text(); assert 'FAILURES!!!' not in t and re.search(r'OK \\(1 test\\)',t),t"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: uimsd-resource-reproduction
+          path: |
+            resource-result.txt
+            resource-logcat.txt
+          if-no-files-found: warn
+          retention-days: 7
