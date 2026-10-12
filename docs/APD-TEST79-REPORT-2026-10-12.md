@@ -1,4 +1,4 @@
-# APD TEST77 candidate — October12,2026
+# APD TEST79 development report — October12,2026
 
 ## Verified predecessor and included playback
 TEST76 sourcefc3d7e63776e56c5cc6f6b01a97fa0ff2904c1fa/run38278797850 succeeded. Downloaded actual XML1188core+21API34 tests, zero failures/errors/skips. Eight speed regressions passed. Native pointer events selected all0.5x/1x/2x options and reopened settings. Actual dungeon animation completion timestamps for a0.5second tween:0.986185/0.473553/0.230999seconds respectively. No actor turn was consumed by those visual timing probes. This is emulator evidence, not physical-phone testing. All gameplay costs and global/HUD clocks remain unchanged; sound/music and effects using absolute real-time retain their timing. TEST76 has not been signing-checked or privately delivered. TEST73 is the delivered rollback.
@@ -38,3 +38,7 @@ A controlled actual worker/load reproduction held the FactKinds registry while c
 
 ## Timing and execution limitation
 A read-only CLI network permission request was user-aborted after822.1seconds. The command had failed because the sandbox prohibited proxy sockets. No continued coding during that blocked tool call is claimed. ChatGPT-authenticated Codex CLI is installed, but the health probe produced no completed response; unattended development has not been demonstrated. The probe was stopped. No paid API dependency or fake background loop was created. The overnight assignment follows the4PM APK; custom-rule ranges and scoring remain proposals, approved food minimum25%/five region rations is recorded for later work.
+
+
+## Delivery gate
+Source a611c841e64a8bca592831d3200a5a65e1735b61, verification run38299325341. At report preparation full checks were running. Delivery waits for successful complete checks, downloads their actual artifacts, checks1200 unique core cases and21 Android cases, all13 screenshots, exact application tree, signature against TEST67, appID/version and checksum. The attached generated verification evidence establishes completed results; publication is refused on pending/failed validation. No completion or deadline guarantee is inferred from this report alone.
