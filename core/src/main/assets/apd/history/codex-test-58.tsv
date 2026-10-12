@@ -1,0 +1,6 @@
+Quality of Life	ICON_RANKINGS	Statistics shortcut	The statistics arrow remains visible and clickable after ten genuine runs; demo access keeps the earlier guidance.
+Quality of Life	V074_SHPX	About APD	About now has six compact information buttons with separate popups and shows the installed version and build.
+Quality of Life	V061_SPELLBOOK	News and Changes	News now uses dated article cards, while Changes uses build navigation and clickable sprite entries.
+Changes	ICON_CHANGES	Historical records	Historical builds with missing evidence are explicitly marked incomplete instead of receiving guessed change notes.
+Statistics / UIMSD	ICON_STATS	Statistics Home	UIMSD Home uses compact native controls, aligned statistics and optional explanations; tap wins, deaths or abandoned runs to explore matching records.
+Developer Commentary	V074_SHPX	Developer Commentary	I added compact information screens and refreshed statistics Home. Missing historical evidence remains clearly marked.

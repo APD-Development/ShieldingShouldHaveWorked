@@ -1,0 +1,2 @@
+Bug Fixes	V061_BUGFIX	Statistics graphics	Rebuilding statistics Home and table contents now releases their old graphics resources.
+Developer Commentary	V074_SHPX	Developer Commentary	I fixed graphics resources left behind when statistics views were rebuilt.

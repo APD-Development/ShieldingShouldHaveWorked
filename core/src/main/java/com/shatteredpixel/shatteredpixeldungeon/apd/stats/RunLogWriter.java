@@ -95,6 +95,8 @@ public final class RunLogWriter {
 	static final int CLOCK_FRAME_INTERVAL = 128;
 	//queue slots kept free for flush/close requests
 	private static final int CONTROL_RESERVE = 6;
+	//Closing may need a dropped-event gap, a seal and the final close request.
+	private static final int CLOSE_CONTROL_RESERVE = 3;
 
 	private static final class FlushRequest {
 		final CountDownLatch done = new CountDownLatch(1);
@@ -405,7 +407,8 @@ public final class RunLogWriter {
 		long deadline = System.currentTimeMillis() + timeoutMillis;
 		while (true){
 			synchronized (lock){
-				if (queue.remainingCapacity() >= 1){
+				if (closed || disabled) return false;
+				if (queue.remainingCapacity() > CLOSE_CONTROL_RESERVE){
 					queue.add(request);
 					return true;
 				}

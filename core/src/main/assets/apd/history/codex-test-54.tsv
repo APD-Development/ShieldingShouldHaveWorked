@@ -1,0 +1,3 @@
+Statistics / UIMSD	PD_EYE	Boss statistics	Yog's summoned minions no longer count as bosses; cached tables refresh without changing run history.
+Bug Fixes	V061_BUGFIX	Statistics cache	Malformed statistics caches are rejected before attempting oversized memory allocations.
+Developer Commentary	V074_SHPX	Developer Commentary	I corrected boss classification and guarded damaged statistics caches. Recorded runs remain unchanged.

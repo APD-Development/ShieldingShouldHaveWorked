@@ -31,6 +31,14 @@ public final class ApdHistory {
    result.add(new Entry(f));
   }return Collections.unmodifiableList(result);
  }
+ /** Keep every entry, with one native category heading in first-seen order. */
+ public static Map<String,List<Entry>> categories(List<Entry> entries){
+  Map<String,List<Entry>> grouped=new LinkedHashMap<>();
+  for(Entry entry:entries)grouped.computeIfAbsent(entry.category,k->new ArrayList<>()).add(entry);
+  Map<String,List<Entry>> result=new LinkedHashMap<>();
+  for(Map.Entry<String,List<Entry>> group:grouped.entrySet())result.put(group.getKey(),Collections.unmodifiableList(group.getValue()));
+  return Collections.unmodifiableMap(result);
+ }
  public static int clamp(int selected,int size){return Math.max(0,Math.min(selected,Math.max(0,size-1)));}
  public static List<Entry> page(List<Entry> entries,int page){
   int start=Math.min(entries.size(),Math.max(0,page)*PAGE_SIZE);

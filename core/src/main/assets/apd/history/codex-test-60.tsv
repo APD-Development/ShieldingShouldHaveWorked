@@ -1,0 +1,4 @@
+Statistics / UIMSD	V061_INVENTORY	Native statistics menus	Statistics pickers and run actions use Pixel Dungeon buttons, explanations open separately, and numeric table values align.
+Statistics / UIMSD	ICON_STATS	Home navigation	Home keeps direct navigation to existing statistics views and displays zero abandoned-run counts.
+Statistics / UIMSD	ICON_STATS	Table controls	Advanced tables keep every condition in a scrolling menu and arrange controls in two rows on narrow screens.
+Developer Commentary	V074_SHPX	Developer Commentary	I refreshed statistics menus and table controls. Existing queries and recorded statistics remain available.

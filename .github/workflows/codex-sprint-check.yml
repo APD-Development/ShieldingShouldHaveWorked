@@ -12,6 +12,7 @@ on:
 
 permissions:
   contents: read
+  actions: read
 
 concurrency:
   group: codex-apd-sprint-verification
@@ -32,6 +33,27 @@ jobs:
           yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36"
       - uses: gradle/actions/setup-gradle@v4
+      - name: Preserve history from the previous verified APK
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import json, os, pathlib, subprocess, zipfile
+          ledger=json.load(open('docs/APD-NEXT-BUILD-HISTORY.json'))
+          repo=os.environ['GITHUB_REPOSITORY']
+          run_id=str(ledger['previous_run'])
+          previous=json.loads(subprocess.check_output(['gh','api','repos/'+repo+'/actions/runs/'+run_id]))
+          assert previous['conclusion']=='success' and previous['head_sha']==ledger['previous_source']
+          artifacts=json.loads(subprocess.check_output(['gh','api','repos/'+repo+'/actions/runs/'+run_id+'/artifacts']))['artifacts']
+          matching=[a for a in artifacts if a['name']=='apd-codex-private-test-apk' and not a['expired']]
+          assert len(matching)==1
+          with open('previous-apk-artifact.zip','wb') as target:
+              subprocess.run(['gh','api','repos/'+repo+'/actions/artifacts/'+str(matching[0]['id'])+'/zip'],stdout=target,check=True)
+          with zipfile.ZipFile('previous-apk-artifact.zip') as archive:
+              candidates=[name for name in archive.namelist() if name.endswith('.apk')]
+              assert len(candidates)==1
+              pathlib.Path('previous-verified.apk').write_bytes(archive.read(candidates[0]))
+          PY
       - name: Validate and embed reviewed offline build history
         env:
           GH_TOKEN: ${{ github.token }}
@@ -44,7 +66,7 @@ jobs:
           with urllib.request.urlopen(req) as response: data=json.load(response)
           with open('apd-history-comparison.json','w') as out: json.dump(data,out)
           PY
-          python3 tools/apd_build_history.py --comparison apd-history-comparison.json --ledger docs/APD-NEXT-BUILD-HISTORY.json --build ${{ github.run_number }}
+          python3 tools/apd_build_history.py --comparison apd-history-comparison.json --ledger docs/APD-NEXT-BUILD-HISTORY.json --build ${{ github.run_number }} --previous-apk previous-verified.apk
       - name: Run the complete core unit test suite
         run: ./gradlew :core:test
       - name: Build the private debug APK
@@ -101,6 +123,27 @@ jobs:
           yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36"
       - uses: gradle/actions/setup-gradle@v4
+      - name: Preserve history from the previous verified APK
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import json, os, pathlib, subprocess, zipfile
+          ledger=json.load(open('docs/APD-NEXT-BUILD-HISTORY.json'))
+          repo=os.environ['GITHUB_REPOSITORY']
+          run_id=str(ledger['previous_run'])
+          previous=json.loads(subprocess.check_output(['gh','api','repos/'+repo+'/actions/runs/'+run_id]))
+          assert previous['conclusion']=='success' and previous['head_sha']==ledger['previous_source']
+          artifacts=json.loads(subprocess.check_output(['gh','api','repos/'+repo+'/actions/runs/'+run_id+'/artifacts']))['artifacts']
+          matching=[a for a in artifacts if a['name']=='apd-codex-private-test-apk' and not a['expired']]
+          assert len(matching)==1
+          with open('previous-apk-artifact.zip','wb') as target:
+              subprocess.run(['gh','api','repos/'+repo+'/actions/artifacts/'+str(matching[0]['id'])+'/zip'],stdout=target,check=True)
+          with zipfile.ZipFile('previous-apk-artifact.zip') as archive:
+              candidates=[name for name in archive.namelist() if name.endswith('.apk')]
+              assert len(candidates)==1
+              pathlib.Path('previous-verified.apk').write_bytes(archive.read(candidates[0]))
+          PY
       - name: Validate and embed reviewed offline build history
         env:
           GH_TOKEN: ${{ github.token }}
@@ -113,7 +156,7 @@ jobs:
           with urllib.request.urlopen(req) as response: data=json.load(response)
           with open('apd-history-comparison.json','w') as out: json.dump(data,out)
           PY
-          python3 tools/apd_build_history.py --comparison apd-history-comparison.json --ledger docs/APD-NEXT-BUILD-HISTORY.json --build ${{ github.run_number }}
+          python3 tools/apd_build_history.py --comparison apd-history-comparison.json --ledger docs/APD-NEXT-BUILD-HISTORY.json --build ${{ github.run_number }} --previous-apk previous-verified.apk
       - name: Check UI restoration and play/save/continue/end on API 34
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -124,7 +167,7 @@ jobs:
           script: |
             adb logcat -c
             adb logcat -v time > codex-logcat.txt &
-            timeout --signal=TERM --kill-after=30 840 ./gradlew :android:connectedDebugAndroidTest -PapdTestBuild -PapdBuild=C${{ github.run_number }} -Pandroid.testInstrumentationRunnerArguments.class=com.shatteredpixel.shatteredpixeldungeon.android.UimsdRestoreDeviceTest,com.shatteredpixel.shatteredpixeldungeon.android.PlayRunDeviceTest,com.shatteredpixel.shatteredpixeldungeon.android.RunSetupDifficultyDeviceTest,com.shatteredpixel.shatteredpixeldungeon.android.ApdSettingsClickDeviceTest#adultHumorControlWorksWithoutAnAgeProviderAndReopensWithSavedChoice,com.shatteredpixel.shatteredpixeldungeon.android.ApdSettingsClickDeviceTest#communityMenuOpensEveryPreviewAndReturnsWithoutStackingWindows,com.shatteredpixel.shatteredpixeldungeon.android.AboutDeviceTest,com.shatteredpixel.shatteredpixeldungeon.android.UimsdScreensDeviceTest,com.shatteredpixel.shatteredpixeldungeon.android.UimsdResourcesDeviceTest
+            bash tools/run-codex-android-checks.sh '${{ github.run_number }}'
       - name: Keep Android evidence even if a check fails
         if: always()
         uses: actions/upload-artifact@v4
@@ -134,6 +177,7 @@ jobs:
             android/build/reports/androidTests/
             android/build/outputs/androidTest-results/
             codex-logcat.txt
+            codex-visual-evidence/
           if-no-files-found: warn
           retention-days: 7
 

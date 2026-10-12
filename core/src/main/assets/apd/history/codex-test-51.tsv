@@ -1,0 +1,3 @@
+Statistics / UIMSD	ICON_STATS	Run comparisons	Run comparisons now show the correct difference even for extremely large recorded values.
+Quality of Life	V061_INVENTORY	Statistics guidance	Demo access no longer hides the notice that ten genuine runs are needed.
+Developer Commentary	V074_SHPX	Developer Commentary	I improved large-value run comparisons and kept the ten-run guidance visible after demo access.

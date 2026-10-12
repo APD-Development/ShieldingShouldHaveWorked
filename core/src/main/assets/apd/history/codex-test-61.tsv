@@ -1,0 +1,2 @@
+Bug Fixes	ICON_INFO	Information popups	About, News and statistics information popups now open over the screen instead of inside their buttons.
+Developer Commentary	V074_SHPX	Developer Commentary	I fixed information windows that were attached to their buttons instead of the screen.

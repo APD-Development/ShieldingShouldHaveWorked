@@ -1,24 +1,60 @@
 {
-  "previous_label": "Codex TEST63",
-  "previous_source": "1f0c843f510957d77702a26c458fd7336d1f56b9",
+  "previous_label": "Codex TEST 64",
+  "previous_source": "41852947416a06a9067c6e6c651ed3729969347d",
+  "previous_run": 38236342645,
   "date": "2026-10-12",
   "changes": [
     {
       "category": "Bug Fixes",
       "sprite": "V061_BUGFIX",
-      "title": "Statistics graphics",
-      "text": "Rebuilding statistics Home and table contents now releases their old graphics resources.",
+      "title": "Recorder shutdown",
+      "text": "Statistics recording now finishes closing even when simultaneous flush requests overload a stalled writer.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/UimsdContent.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/UimsdHomePane.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/UimsdTable.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/RunLogWriter.java"
+      ]
+    },
+    {
+      "category": "Quality of Life",
+      "sprite": "ICON_CHANGES",
+      "title": "Compact change history",
+      "text": "Changes now groups icons under one heading per category, uses paired SPD columns and gold window styling, and names the exact APK in every change popup.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/APDTextScene.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/history/ApdHistory.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "ICON_CHANGES",
+      "title": "Build attribution",
+      "text": "Verified changes from TEST51 onward now appear under their actual APK builds instead of being combined under TEST63; unavailable history stays clearly marked.",
+      "paths": [
+        "core/src/main/assets/apd/history/codex-test-51.tsv",
+        "core/src/main/assets/apd/history/codex-test-54.tsv",
+        "core/src/main/assets/apd/history/codex-test-55.tsv",
+        "core/src/main/assets/apd/history/codex-test-58.tsv",
+        "core/src/main/assets/apd/history/codex-test-60.tsv",
+        "core/src/main/assets/apd/history/codex-test-61.tsv",
+        "core/src/main/assets/apd/history/codex-test-62.tsv",
+        "core/src/main/assets/apd/history/codex-test-63.tsv",
+        "core/src/main/assets/apd/history/codex-test-64.tsv",
+        "core/src/main/assets/apd/history/index.tsv"
+      ]
+    },
+    {
+      "category": "Quality of Life",
+      "sprite": "ICON_CHANGES",
+      "title": "Build navigation",
+      "text": "Choose builds through compact groups of twelve instead of stepping through every older APK.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/APDTextScene.java"
       ]
     },
     {
       "category": "Developer Commentary",
       "sprite": "V074_SHPX",
       "title": "Developer Commentary",
-      "text": "I fixed graphics resources left behind when statistics views were rebuilt. Your recorded runs and statistics remain unchanged.",
+      "text": "I corrected the layout and build attribution in Changes, and fixed a statistics writer that could fail to finish closing under overload. Older history remains unavailable wherever the evidence has not yet been verified.",
       "paths": []
     }
   ]

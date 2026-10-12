@@ -1,0 +1,2 @@
+Bug Fixes	V011_ANKH	Save protection	Failed save writes now preserve the existing save, nested recovery works, and failed reads close their files.
+Developer Commentary	V074_SHPX	Developer Commentary	I repaired three save-file handling problems. Failed writes now preserve the existing save.
