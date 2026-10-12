@@ -1,4 +1,4 @@
-name: Deliver verified existing APD TEST50
+name: Deliver verified existing APD TEST63
 
 # Delivery only: reuse the already tested APK; no Gradle or app rebuild.
 # Accept verified SDK signer labels; retain compatibility refusal diagnostics.
@@ -12,19 +12,19 @@ permissions:
   actions: read
 
 concurrency:
-  group: apd-existing-test50-delivery
+  group: apd-existing-test63-delivery
   cancel-in-progress: false
 
 env:
-  APD_SOURCE_SHA: 14226785732470e5241daaabe92ba4dc7d399df3
-  APD_SOURCE_RUN: '38151255573'
-  APD_TEST_NUMBER: '50'
-  APD_CORE_TEST_COUNT: '1089'
-  APD_ANDROID_TEST_COUNT: '13'
-  APD_ROLLBACK_NUMBER: '41'
-  APD_ROLLBACK_SHA256: 'd476ca16cd3f17a6a13257812243696dd4ed0acb92f7a94192d528628766d188'
-  APD_REQUIRED_ANDROID_METHODS: 'menusSurviveSceneRecreationAndNarrowActionsStayInsideTheirWindow,aRunCanBePlayedSavedContinuedAndEndedWithItsHistoryRecorded,aWonRunIsRecordedAsWonAndSealed,difficultyIsChosenOnTheCharacterScreenAndNotInSettings,communityMenuOpensEveryPreviewAndReturnsWithoutStackingWindows,adultHumorControlWorksWithoutAnAgeProviderAndReopensWithSavedChoice,textAndGuideScrollSurviveRepeatedResetsAndClampAfterResize,validationEmptyHistoryGroupedAndReportMessagesSurviveWithoutRepeatingActions,tourChoicesSurviveWithoutStartingATourOrRepeatingTheOffer,heroButtonsStayAboveNavigationBarAndRemainSelectable,navigationOverlapReservesVisibleBarsEvenWithFullscreenRequested,clericQuickCastsPersistAndKeepNormalCostsAndTargeting,arcanaItemDescriptionsRequireKnownEquippedRingsAndFitWindows'
-  APD_SOURCE_ARTIFACTS_JSON: '{"apd-codex-android-checks":11706752278,"apd-codex-core-tests":11706293706,"apd-codex-private-test-apk":11706063940}'
+  APD_SOURCE_SHA: 1f0c843f510957d77702a26c458fd7336d1f56b9
+  APD_SOURCE_RUN: '38229156395'
+  APD_TEST_NUMBER: '63'
+  APD_CORE_TEST_COUNT: '1134'
+  APD_ANDROID_TEST_COUNT: '17'
+  APD_ROLLBACK_NUMBER: '50'
+  APD_ROLLBACK_SHA256: 'ffa42ea87bcbbfa4ed7b600682aea49a703e90bce57f498b2bf36bccd2cd7c7f'
+  APD_REQUIRED_ANDROID_METHODS: 'menusSurviveSceneRecreationAndNarrowActionsStayInsideTheirWindow,aRunCanBePlayedSavedContinuedAndEndedWithItsHistoryRecorded,aWonRunIsRecordedAsWonAndSealed,difficultyIsChosenOnTheCharacterScreenAndNotInSettings,communityMenuOpensEveryPreviewAndReturnsWithoutStackingWindows,adultHumorControlWorksWithoutAnAgeProviderAndReopensWithSavedChoice,textAndGuideScrollSurviveRepeatedResetsAndClampAfterResize,validationEmptyHistoryGroupedAndReportMessagesSurviveWithoutRepeatingActions,tourChoicesSurviveWithoutStartingATourOrRepeatingTheOffer,heroButtonsStayAboveNavigationBarAndRemainSelectable,navigationOverlapReservesVisibleBarsEvenWithFullscreenRequested,clericQuickCastsPersistAndKeepNormalCostsAndTargeting,arcanaItemDescriptionsRequireKnownEquippedRingsAndFitWindows,demoUnlockKeepsTenRunNoticeVisibleOnTitle,offlineNewsCardsOpenDatedSpritePopups,everyAboutPopupOpensScrollsAndCloses,everyUimsdScreenAndDialogCanBeBuilt'
+  APD_SOURCE_ARTIFACTS_JSON: '{"apd-codex-private-test-apk":11738196705,"apd-codex-core-tests":11737762272,"apd-codex-android-checks":11737469809}'
 
 jobs:
   validate-and-stage:
@@ -53,7 +53,7 @@ jobs:
       - name: Retrieve rollback APK for direct compatibility comparison
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release download apd-codex-test-41 --repo "$GITHUB_REPOSITORY" --pattern ADHD-Pixel-Dungeon-CODEX-TEST-41.apk --dir rollback
+        run: gh release download apd-codex-test-50 --repo "$GITHUB_REPOSITORY" --pattern ADHD-Pixel-Dungeon-CODEX-TEST-50.apk --dir rollback
       - name: Check source, tests, checksum, signing and application ID
         env:
           GH_TOKEN: ${{ github.token }}
@@ -64,16 +64,65 @@ jobs:
         run: |
           git fetch --no-tags --depth=1 origin "$APD_SOURCE_SHA"
           python3 tools/apd_source_line_counts.py "$APD_SOURCE_SHA" delivery
+          git archive --format=zip --output=delivery/APD-Verified-Source.zip "$APD_SOURCE_SHA" SPD-classes/src/main/java core/src/main/java core/src/test/java android/src/main/java android/src/androidTest/java
+          sha256sum delivery/APD-Verified-Source.zip > delivery/APD-Verified-Source.zip.sha256
       - name: Produce today's report from verified evidence
         run: |
           python3 -m pip install reportlab==4.2.5
           python3 -m unittest discover -s tools -p test_apd_bug_report_pdf.py
-          python3 tools/apd_bug_report_pdf.py docs/APD-TEST50-REPORT-2026-10-11.md delivery/APD-Bug-Fixes-2026-10-11-TEST50.pdf --verification delivery/verification.txt
+          python3 tools/apd_bug_report_pdf.py docs/APD-TEST63-REPORT-2026-10-12.md delivery/APD-Bug-Fixes-2026-10-12-TEST63.pdf --verification delivery/verification.txt
       - uses: actions/upload-artifact@v4
         with:
-          name: verified-test50-delivery
+          name: verified-test63-delivery
           path: delivery/
           retention-days: 7
 
-# Private staging only; retain separate 11:55 PDF / 11:59 APK delivery times.
-# Refresh factual staging evidence; do not assert a release tag or missed deadline before publication.
+# Owner requested this urgent private development deliverable by 9AM EDT October12.
+# Separate daily lunch schedules are unchanged. No app rebuild in this delivery workflow.
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: verified-test63-evidence
+          path: |
+            delivery/*.json
+            delivery/*.txt
+            delivery/*.pdf
+            delivery/*.csv
+            delivery/*.md
+            delivery/*.sha256
+            delivery/APD-Verified-Source.zip
+          retention-days: 7
+
+  private-publication:
+    needs: validate-and-stage
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: verified-test63-delivery
+          path: delivery
+      - name: Publish owner-requested private verified APK and report
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import json, os, subprocess
+          repo = os.environ['GITHUB_REPOSITORY']
+          assert json.loads(subprocess.check_output(['gh','api','repos/'+repo]))['private']
+          tag = 'apd-codex-test-63'
+          existing = subprocess.run(['gh','release','view',tag,'--repo',repo],capture_output=True)
+          if existing.returncode == 0:
+              raise SystemExit('Existing assets preserved: refusing to overwrite release.')
+          subprocess.run(['gh','release','create',tag,'--repo',repo,
+              '--target',os.environ['GITHUB_SHA'],'--prerelease','--latest=false',
+              '--title','APD PRIVATE CODEX TEST 63','--notes-file','delivery/verification.txt',
+              'delivery/ADHD-Pixel-Dungeon-CODEX-TEST-63.apk',
+              'delivery/ADHD-Pixel-Dungeon-CODEX-TEST-63.apk.sha256',
+              'delivery/APD-Bug-Fixes-2026-10-12-TEST63.pdf',
+              'delivery/TEST63-Verification.json',
+              'delivery/APD-Source-Line-Counts.json'],check=True)
+          PY
