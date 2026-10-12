@@ -211,6 +211,7 @@ public class GameScene extends PixelScene {
 	private Toast prompt;
 
 	private AttackIndicator attack;
+    private com.shatteredpixel.shatteredpixeldungeon.ui.StairNavigationTag stairs;
 	private LootIndicator loot;
 	private ActionIndicator action;
     private com.shatteredpixel.shatteredpixeldungeon.ui.ClericQuickCastTag[] clericSpells;
@@ -531,6 +532,7 @@ public class GameScene extends PixelScene {
 		attack = new AttackIndicator();
 		attack.camera = uiCamera;
 		add( attack );
+        stairs=new com.shatteredpixel.shatteredpixeldungeon.ui.StairNavigationTag(); stairs.camera=uiCamera; add(stairs);
 
 		log = new GameLog();
 		log.camera = uiCamera;
@@ -939,23 +941,25 @@ public class GameScene extends PixelScene {
 			tagLoot = loot.visible;
 			tagAction = action.visible;
 			tagResume = resume.visible;
+            tagStairs = stairs.visible;
 
 			layoutTags();
 
 		} else if (tagAttack != attack.active ||
 				tagLoot != loot.visible ||
 				tagAction != action.visible ||
-				tagResume != resume.visible) {
+				tagResume != resume.visible || tagStairs != stairs.visible) {
 
 			boolean tagAppearing = (attack.active && !tagAttack) ||
 									(loot.visible && !tagLoot) ||
 									(action.visible && !tagAction) ||
-									(resume.visible && !tagResume);
+									(resume.visible && !tagResume) || (stairs.visible && !tagStairs);
 
 			tagAttack = attack.active;
 			tagLoot = loot.visible;
 			tagAction = action.visible;
 			tagResume = resume.visible;
+            tagStairs = stairs.visible;
 
 			//if a new tag appears, re-layout tags immediately
 			//otherwise, wait until the hero acts, so as to not suddenly change their position
@@ -989,6 +993,7 @@ public class GameScene extends PixelScene {
 	private boolean tagLoot      = false;
 	private boolean tagAction    = false;
 	private boolean tagResume    = false;
+    private boolean tagStairs = false;
 
 	public static void layoutTags() {
 
@@ -1049,8 +1054,8 @@ public class GameScene extends PixelScene {
                 }
             }
             float column = tagLeft;
-            Tag[] other = {scene.attack, scene.loot, scene.action, scene.resume};
-            boolean[] show = {scene.tagAttack, scene.tagLoot, scene.tagAction, scene.tagResume};
+            Tag[] other = {scene.attack, scene.loot, scene.action, scene.resume, scene.stairs};
+            boolean[] show = {scene.tagAttack, scene.tagLoot, scene.tagAction, scene.tagResume, scene.tagStairs};
             for (int i=0; i<other.length; i++) {
                 if (!show[i]) continue;
                 if (pos-Tag.SIZE < insets.top+Tag.SIZE) {
@@ -1086,7 +1091,13 @@ public class GameScene extends PixelScene {
 		if (scene.tagResume) {
 			scene.resume.setRect( tagLeft, pos - Tag.SIZE, tagWidth, Tag.SIZE );
 			scene.resume.flip(tagsOnLeft);
+            pos=scene.resume.top();
 		}
+        if(scene.tagStairs){
+            float column=tagLeft;
+            if(pos-Tag.SIZE < insets.top+Tag.SIZE){column+=tagsOnLeft ? tagWidth : -tagWidth;pos=scene.toolbar.top();}
+            scene.stairs.setRect(column,pos-Tag.SIZE,tagWidth,Tag.SIZE);scene.stairs.flip(tagsOnLeft);
+        }
 	}
 	
 	@Override
@@ -1960,3 +1971,4 @@ public class GameScene extends PixelScene {
 		}
 	};
 }
+

@@ -1,91 +1,290 @@
 {
-  "previous_label": "Codex TEST 68",
-  "previous_source": "53276e8706f23017b23eb624643d67f60c0f4603",
-  "previous_run": 38259755048,
+  "previous_label": "Codex TEST 70",
+  "previous_source": "445c47fb1fe21b86055260fe3f34468cc22c51e1",
+  "previous_run": 38262103238,
   "date": "2026-10-12",
   "changes": [
     {
       "category": "Quality of Life",
       "sprite": "ICON_PREFS",
-      "title": "Hotbar settings removed",
-      "text": "Removed the withdrawn hotbar layout and food-placement settings; Cleric spell-button settings remain directly accessible.",
+      "title": "Enhanced Tile Visibility",
+      "text": "Added an optional stronger native tile-shading setting while preserving the original terrain art and visual preference.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/APDSettingsPane.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndCategoryHotbar.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/tiles/GridTileMap.java"
+      ]
+    },
+    {
+      "category": "Quality of Life",
+      "sprite": "ICON_STAIRS",
+      "title": "Automatic Stair Navigation",
+      "text": "Added normal walking routes to discovered upstairs and downstairs, stopping at the destination without changing floors.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/navigation/StairNavigation.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "ICON_STAIRS",
+      "title": "Safe stair movement",
+      "text": "Stair navigation stops for enemies, damage, blocked routes and known hazards; ordinary movement remains unchanged.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/Hero.java"
+      ]
+    },
+    {
+      "category": "Quality of Life",
+      "sprite": "ICON_STAIRS",
+      "title": "Compact stair controls",
+      "text": "Added one native staircase control with Up and Down choices alongside the existing dungeon controls.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/StairNavigationTag.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/GameScene.java"
+      ]
+    },
+    {
+      "category": "Quality of Life",
+      "sprite": "ICON_TARGET",
+      "title": "Known stair highlight",
+      "text": "Selecting discovered stairs briefly highlights their exact tile without exposing undiscovered terrain or replacing combat warnings.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/effects/StairHighlight.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "ICON_PREFS",
+      "title": "Saved accessibility choices",
+      "text": "Added persistent Enhanced Tile Visibility and Automatic Stair Navigation choices, both off by default.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/SPDSettings.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/APDSettingsPane.java"
+      ]
+    },
+    {
+      "category": "Testing",
+      "sprite": "ICON_STAIRS",
+      "title": "Android travel and visibility",
+      "text": "Added real-touch stair-menu checks, travel and interruption checks, save/reload checks and original/enhanced screenshots at two zoom levels.",
+      "paths": [
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PlayRunDeviceTest.java"
+      ]
+    },
+    {
+      "category": "Testing",
+      "sprite": "ICON_STAIRS",
+      "title": "Cleric and stair layout",
+      "text": "Extended Android overlap checks to include the stair control alongside all four Cleric spell buttons.",
+      "paths": [
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PlayRunDeviceTest.java"
+      ]
+    },
+    {
+      "category": "Infrastructure",
+      "sprite": "ICON_CHECKED",
+      "title": "Android visual evidence",
+      "text": "Added six required gameplay screenshots to the artifact checks alongside the existing five history comparisons.",
+      "paths": [
+        "tools/run-codex-android-checks.sh"
+      ]
+    },
+    {
+      "category": "Infrastructure",
+      "sprite": "ICON_CHECKED",
+      "title": "Verified private staging",
+      "text": "Staged the tested preceding APK with exact signer, checksum, source and test evidence before preparing the new features.",
+      "paths": [
+        ".github/workflows/codex-existing-apk-delivery.yml",
+        "docs/APD-TEST70-REPORT-2026-10-12.md"
+      ]
+    },
+    {
+      "category": "Development",
+      "sprite": "ICON_INFO",
+      "title": "Current verification record",
+      "text": "Updated the shared handoff, report and full build request for the accessibility and navigation additions.",
+      "paths": [
+        "docs/HANDOFF.md",
+        "docs/APD-TEST71-REPORT-2026-10-12.md",
+        "docs/APD-NEXT-BUILD-HISTORY.json",
+        "docs/APD-CODEX-BUILD-REQUEST.txt"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_PREFS",
-      "title": "Cleric settings preserved",
-      "text": "Android checks now verify the hotbar settings are absent and the four Cleric spell-button choices still respond to taps.",
+      "title": "Original Visuals And Existing Controls Are The Defaults",
+      "text": "Added a check that both new options preserve the original visuals and controls by default.",
       "paths": [
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/ApdSettingsClickDeviceTest.java"
-      ]
-    },
-    {
-      "category": "Development",
-      "sprite": "ICON_INFO",
-      "title": "Development evidence",
-      "text": "Updated the development report and verification request for the removed hotbar settings and historical reconstruction.",
-      "paths": [
-        "docs/APD-TEST69-REPORT-2026-10-12.md"
-      ]
-    },
-    {
-      "category": "Bug Fixes",
-      "sprite": "V061_BUGFIX",
-      "title": "Historical private-test navigation",
-      "text": "Corrected obsolete private-test references that could prevent Change History from opening after reconstruction.",
-      "paths": [
-        "tools/apd_build_history.py"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/visibility/VisibilityPreferencesTest.java"
       ]
     },
     {
       "category": "Testing",
-      "sprite": "ICON_CHECKED",
-      "title": "Missing-record regressions",
-      "text": "Added permanent checks that recovered private-test entries supersede obsolete aliases and missing historical files block preparation.",
+      "sprite": "ICON_PREFS",
+      "title": "Both Options Persist Across Preference Reload",
+      "text": "Added a check that both choices remain saved across preference reloads.",
       "paths": [
-        "tools/test_apd_build_history.py"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/visibility/VisibilityPreferencesTest.java"
       ]
     },
     {
-      "category": "Infrastructure",
-      "sprite": "ICON_CHANGES",
-      "title": "Produced APK attribution",
-      "text": "History preservation can recover an APK produced before a later Android failure without labeling that earlier APK playable or verified.",
+      "category": "Testing",
+      "sprite": "ICON_PREFS",
+      "title": "Turning Enhancement Off Preserves The Original Grid Choice",
+      "text": "Added a check that disabling tile enhancement restores the player's original visual-grid choice.",
       "paths": [
-        ".github/workflows/codex-sprint-check.yml"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/visibility/VisibilityPreferencesTest.java"
       ]
     },
     {
-      "category": "Quality of Life",
-      "sprite": "ICON_CHANGES",
-      "title": "Exact recent build records",
-      "text": "Preserved TEST68's produced APK changes and identified TEST69's stopped preparation without assigning changes to a nonexistent APK.",
+      "category": "Testing",
+      "sprite": "ICON_STAIRS",
+      "title": "Damage Cancels Even When Normal Damage Interruption Was Disabled",
+      "text": "Added a regression check that taking damage cancels stair travel even when ordinary damage interruption was disabled.",
       "paths": [
-        "core/src/main/assets/apd/history/codex-test-68.tsv",
-        "core/src/main/assets/apd/history/codex-test-69.tsv",
-        "core/src/main/assets/apd/history/index.tsv"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/navigation/StairNavigationTest.java"
       ]
     },
     {
-      "category": "Development",
-      "sprite": "ICON_INFO",
-      "title": "Failure and verification records",
-      "text": "Recorded the failed Android history check, blocked preparation, fix and new verification request.",
+      "category": "Testing",
+      "sprite": "ICON_STAIRS",
+      "title": "Restored Hero Does Not Resume Transient Navigation",
+      "text": "Added a save regression check that the hero's position and health survive reload without restarting transient stair travel.",
       "paths": [
-        "docs/APD-TEST70-REPORT-2026-10-12.md",
-        "docs/APD-NEXT-BUILD-HISTORY.json",
-        "docs/APD-CODEX-BUILD-REQUEST.txt"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/navigation/StairNavigationTest.java"
+      ]
+    },
+    {
+      "category": "Testing",
+      "sprite": "ICON_STAIRS",
+      "title": "Walking Pays The Normal Movement Cost Without Changing Floors",
+      "text": "Added a real movement check for normal turn cost and unchanged floor depth.",
+      "paths": [
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/navigation/StairNavigationTest.java"
+      ]
+    },
+    {
+      "category": "Testing",
+      "sprite": "ICON_STAIRS",
+      "title": "Offscreen And Obscured Known Stairs Still Have Exact Destinations",
+      "text": "Added a check that known stairs outside the current field of view remain valid destinations while unknown stairs remain concealed.",
+      "paths": [
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/navigation/StairNavigationTest.java"
+      ]
+    },
+    {
+      "category": "Testing",
+      "sprite": "ICON_STAIRS",
+      "title": "Both Directions Choose Only Their Own Stair",
+      "text": "Added a check that upstairs and downstairs resolve to their corresponding destinations.",
+      "paths": [
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/navigation/StairNavigationTest.java"
+      ]
+    },
+    {
+      "category": "Testing",
+      "sprite": "ICON_STAIRS",
+      "title": "Undiscovered Stair Does Not Expose Its Location",
+      "text": "Added a check that undiscovered stairs cannot expose a destination.",
+      "paths": [
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/navigation/StairNavigationTest.java"
+      ]
+    },
+    {
+      "category": "Testing",
+      "sprite": "ICON_STAIRS",
+      "title": "Mapped Stairs Are Already Known",
+      "text": "Added a check that previously mapped stairs count as discovered.",
+      "paths": [
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/navigation/StairNavigationTest.java"
+      ]
+    },
+    {
+      "category": "Testing",
+      "sprite": "ICON_STAIRS",
+      "title": "Missing Direction Cannot Fall Back To Other Stair",
+      "text": "Added a check that a missing staircase cannot silently select the opposite direction.",
+      "paths": [
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/navigation/StairNavigationTest.java"
+      ]
+    },
+    {
+      "category": "Testing",
+      "sprite": "ICON_STAIRS",
+      "title": "Known Traps And Pits Are Unsafe But Secret Traps Are Not Revealed",
+      "text": "Added a check that known active traps and pits are avoided without revealing secret traps.",
+      "paths": [
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/navigation/StairNavigationTest.java"
+      ]
+    },
+    {
+      "category": "Testing",
+      "sprite": "ICON_STAIRS",
+      "title": "Blocked Avoided And Unknown Tiles Are Unsafe",
+      "text": "Added a check that blocked, unsafe and unexplored tiles cannot enter a stair route.",
+      "paths": [
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/navigation/StairNavigationTest.java"
+      ]
+    },
+    {
+      "category": "Testing",
+      "sprite": "ICON_STAIRS",
+      "title": "Visible Fire Is Unsafe Without Revealing Unseen Gas",
+      "text": "Added a check that visible environmental danger blocks travel without exposing unseen effects.",
+      "paths": [
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/navigation/StairNavigationTest.java"
+      ]
+    },
+    {
+      "category": "Testing",
+      "sprite": "ICON_STAIRS",
+      "title": "Enemy Prevents Navigation Without Using A Turn",
+      "text": "Added a check that a visible enemy prevents stair travel without consuming a turn.",
+      "paths": [
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/navigation/StairNavigationTest.java"
+      ]
+    },
+    {
+      "category": "Testing",
+      "sprite": "ICON_STAIRS",
+      "title": "Normal Move Is Selected Instead Of Floor Transition",
+      "text": "Added a check that selecting stairs creates a normal movement action instead of a floor-transition action.",
+      "paths": [
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/navigation/StairNavigationTest.java"
+      ]
+    },
+    {
+      "category": "Testing",
+      "sprite": "ICON_STAIRS",
+      "title": "Manual Cancellation Cannot Resume A Stale Stair Route",
+      "text": "Added a check that cancelled stair travel cannot be resumed as a stale route.",
+      "paths": [
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/navigation/StairNavigationTest.java"
+      ]
+    },
+    {
+      "category": "Testing",
+      "sprite": "ICON_STAIRS",
+      "title": "Blocked Stair Has No Route",
+      "text": "Added a check that blocked stairs return an unavailable-route message.",
+      "paths": [
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/navigation/StairNavigationTest.java"
+      ]
+    },
+    {
+      "category": "Testing",
+      "sprite": "ICON_STAIRS",
+      "title": "Navigation Does Not Consume Randomness Or Change Terrain",
+      "text": "Added a check that selecting a stair route leaves gameplay randomness and terrain unchanged.",
+      "paths": [
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/navigation/StairNavigationTest.java"
       ]
     },
     {
       "category": "Developer Commentary",
       "sprite": "V074_SHPX",
       "title": "Developer Commentary",
-      "text": "I removed the withdrawn hotbar settings while keeping Cleric controls available. I also corrected old private-test history references caught by the Android checks.",
+      "text": "I added optional tile contrast and a shortcut for walking to known stairs. Both preserve ordinary game turns and saves, with new checks for interruption, layout and visual behavior.",
       "paths": []
     }
   ]

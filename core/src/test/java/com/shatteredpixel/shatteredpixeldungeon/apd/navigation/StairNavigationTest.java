@@ -1,0 +1,49 @@
+package com.shatteredpixel.shatteredpixeldungeon.apd.navigation;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.*;
+import com.shatteredpixel.shatteredpixeldungeon.levels.*;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WornDartTrap;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
+import com.shatteredpixel.shatteredpixeldungeon.apd.HeadlessTestSupport;
+import com.watabou.utils.Random;
+import org.junit.*;
+import java.util.*;
+import static org.junit.Assert.*;
+public class StairNavigationTest {
+ static class Empty extends Level {protected boolean build(){return true;}protected void createMobs(){}protected void createItems(){}}
+ static class Player extends Hero {int enemies;@Override public int visibleEnemies(){return enemies;}}
+ private Level previousLevel, level;private Hero previousHero;private Player hero; private Object previousSelector;
+ @Before public void setup() throws Exception {HeadlessTestSupport.start();java.lang.reflect.Field selector=com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.class.getDeclaredField("cellSelector");selector.setAccessible(true);previousSelector=selector.get(null);
+ java.lang.reflect.Field uf=sun.misc.Unsafe.class.getDeclaredField("theUnsafe");uf.setAccessible(true);sun.misc.Unsafe unsafe=(sun.misc.Unsafe)uf.get(null);selector.set(null,unsafe.allocateInstance(com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector.class));
+ previousLevel=Dungeon.level;previousHero=Dungeon.hero;level=new Empty();level.setSize(5,5);level.transitions=new ArrayList<>();level.mobs=new HashSet<>();level.traps=new com.watabou.utils.SparseArray<>();level.blobs=new HashMap<>();level.heaps=new com.watabou.utils.SparseArray<>();level.plants=new com.watabou.utils.SparseArray<>();Arrays.fill(level.map,Terrain.EMPTY);Arrays.fill(level.visited,true);Arrays.fill(level.passable,true);hero=new Player();hero.heroClass=HeroClass.WARRIOR;Talent.initClassTalents(hero);hero.pos=12;hero.ready=true;hero.fieldOfView=new boolean[25];Dungeon.level=level;Dungeon.hero=hero;}
+ @After public void cleanup() throws Exception {Dungeon.level=previousLevel;Dungeon.hero=previousHero;java.lang.reflect.Field selector=com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.class.getDeclaredField("cellSelector");selector.setAccessible(true);selector.set(null,previousSelector);}
+ private void stairs(){level.transitions.add(new LevelTransition(level,11,LevelTransition.Type.REGULAR_ENTRANCE));level.transitions.add(new LevelTransition(level,13,LevelTransition.Type.REGULAR_EXIT));}
+ static class InvisibleSprite extends com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite {
+  void attach(Hero h){ch=h;h.sprite=this;visible=false;}
+  @Override public void place(int cell){} @Override public void move(int from,int to){} @Override public void idle(){} @Override public void showStatus(int color,String text,Object...args){}
+  @Override public void showStatusWithIcon(int color,String text,int icon,Object...args){}
+  @Override public void showAlert(){} @Override public void hideAlert(){}
+ }
+ @Test public void damageCancelsEvenWhenNormalDamageInterruptionWasDisabled(){stairs();new InvisibleSprite().attach(hero);assertNull(StairNavigation.begin(hero,false));hero.damageInterrupt=false;int hp=hero.HP;hero.damage(1,new com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger());assertTrue(hero.HP<hp);assertNull(hero.curAction);assertNull(hero.lastAction);}
+ @Test public void restoredHeroDoesNotResumeTransientNavigation(){stairs();assertNull(StairNavigation.begin(hero,false));com.watabou.utils.Bundle saved=new com.watabou.utils.Bundle();hero.storeInBundle(saved);Hero restored=new Hero();restored.restoreFromBundle(saved);assertEquals(hero.pos,restored.pos);assertEquals(hero.HP,restored.HP);assertNull(restored.curAction);assertNull(restored.lastAction);}
+ @Test public void walkingPaysTheNormalMovementCostWithoutChangingFloors() throws Exception {
+  stairs();new InvisibleSprite().attach(hero);int depth=Dungeon.depth;float before=hero.cooldown();assertNull(StairNavigation.begin(hero,false));
+  java.lang.reflect.Method move=Hero.class.getDeclaredMethod("actMove",HeroAction.Move.class);move.setAccessible(true);
+  assertTrue((Boolean)move.invoke(hero,hero.curAction));assertEquals(13,hero.pos);assertEquals(before+1f/hero.speed(),hero.cooldown(),0.00001f);
+  assertTrue(hero.curAction instanceof HeroAction.Move);assertEquals(depth,Dungeon.depth);
+ }
+ @Test public void offscreenAndObscuredKnownStairsStillHaveExactDestinations(){stairs();Arrays.fill(hero.fieldOfView,false);assertNull(StairNavigation.begin(hero,false));assertEquals(13,hero.curAction.dst);assertTrue(com.shatteredpixel.shatteredpixeldungeon.effects.StairHighlight.known(13));level.visited[11]=false;assertFalse(com.shatteredpixel.shatteredpixeldungeon.effects.StairHighlight.known(11));}
+ @Test public void bothDirectionsChooseOnlyTheirOwnStair(){stairs();assertEquals(11,StairNavigation.discoveredStair(level,true));assertEquals(13,StairNavigation.discoveredStair(level,false));}
+ @Test public void undiscoveredStairDoesNotExposeItsLocation(){stairs();level.visited[11]=false;assertEquals(-1,StairNavigation.discoveredStair(level,true));assertEquals(13,StairNavigation.discoveredStair(level,false));}
+ @Test public void mappedStairsAreAlreadyKnown(){stairs();level.visited[11]=false;level.mapped[11]=true;assertEquals(11,StairNavigation.discoveredStair(level,true));}
+ @Test public void missingDirectionCannotFallBackToOtherStair(){level.transitions.add(new LevelTransition(level,13,LevelTransition.Type.REGULAR_EXIT));assertEquals(-1,StairNavigation.discoveredStair(level,true));}
+ @Test public void knownTrapsAndPitsAreUnsafeButSecretTrapsAreNotRevealed(){WornDartTrap trap=new WornDartTrap();trap.pos=13;trap.visible=true;level.traps.put(13,trap);assertFalse(StairNavigation.safeStep(level,hero,13));trap.visible=false;assertTrue(StairNavigation.safeStep(level,hero,13));level.pit[13]=true;assertFalse(StairNavigation.safeStep(level,hero,13));}
+ @Test public void blockedAvoidedAndUnknownTilesAreUnsafe(){level.passable[13]=false;assertFalse(StairNavigation.safeStep(level,hero,13));level.passable[13]=true;level.avoid[13]=true;assertFalse(StairNavigation.safeStep(level,hero,13));level.avoid[13]=false;level.visited[13]=false;assertFalse(StairNavigation.safeStep(level,hero,13));}
+ @Test public void visibleFireIsUnsafeWithoutRevealingUnseenGas(){Fire fire=new Fire();fire.cur=new int[25];fire.cur[13]=1;level.blobs.put(Fire.class,fire);assertTrue(StairNavigation.safeStep(level,hero,13));hero.fieldOfView[13]=true;assertFalse(StairNavigation.safeStep(level,hero,13));}
+ @Test public void enemyPreventsNavigationWithoutUsingATurn(){stairs();hero.enemies=1;float before=hero.cooldown();assertNotNull(StairNavigation.begin(hero,false));assertNull(hero.curAction);assertEquals(before,hero.cooldown(),0);}
+ @Test public void normalMoveIsSelectedInsteadOfFloorTransition(){stairs();float before=hero.cooldown();assertNull(StairNavigation.begin(hero,false));assertTrue(hero.curAction instanceof HeroAction.Move);assertFalse(hero.curAction instanceof HeroAction.LvlTransition);assertEquals(13,hero.curAction.dst);assertEquals(before,hero.cooldown(),0);}
+ @Test public void manualCancellationCannotResumeAStaleStairRoute(){stairs();assertNull(StairNavigation.begin(hero,false));hero.interrupt();assertNull(hero.curAction);assertNull(hero.lastAction);}
+ @Test public void blockedStairHasNoRoute(){stairs();level.passable[13]=false;assertNotNull(StairNavigation.begin(hero,false));assertNull(hero.curAction);}
+ @Test public void navigationDoesNotConsumeRandomnessOrChangeTerrain(){stairs();int[] before=level.map.clone();int expected;Random.pushGenerator(3456);try{expected=Random.Int();}finally{Random.popGenerator();}Random.pushGenerator(3456);try{StairNavigation.begin(hero,false);assertEquals(expected,Random.Int());}finally{Random.popGenerator();}assertArrayEquals(before,level.map);}
+}

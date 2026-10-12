@@ -992,6 +992,9 @@ public class Hero extends Char {
 	}
 	
 	public void interrupt() {
+        if (curAction instanceof com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.Walk) {
+            lastAction=null; curAction=null;
+        }
 		if (isAlive() && curAction != null &&
 			((curAction instanceof HeroAction.Move && curAction.dst != pos) ||
 			(curAction instanceof HeroAction.LvlTransition))) {
@@ -1020,7 +1023,22 @@ public class Hero extends Char {
 				Dungeon.level.plants.get(pos) != null);
 	}
 	
+    public void beginStairWalk(com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.Walk walk, com.watabou.utils.PathFinder.Path route) {
+        interrupt(); lastAction=null; path=route; curAction=walk; damageInterrupt=true;
+    }
+
 	private boolean actMove( HeroAction.Move action ) {
+
+        if (action instanceof com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.Walk) {
+            com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.Walk walk =
+                    (com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.Walk) action;
+            boolean blocked = path != null && !path.isEmpty()
+                    && !com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.safeStep(Dungeon.level,this,path.getFirst());
+            if (walk.level != Dungeon.level || pos == action.dst || visibleEnemies() > 0 || rooted || blocked) {
+                if (blocked) com.shatteredpixel.shatteredpixeldungeon.utils.GLog.w("Stair navigation stopped: the route is blocked or unsafe.");
+                interrupt(); lastAction=null; ready(); return false;
+            }
+        }
 
 		if (getCloser( action.dst )) {
 			canSelfTrample = false;
@@ -1649,6 +1667,10 @@ public class Hero extends Char {
 			return;
 		}
 
+        if (dmg > 0 && curAction instanceof com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.Walk) {
+            interrupt(); lastAction=null;
+        }
+
 		//regular damage interrupt, triggers on any damage except specific mild DOT effects
 		// unless the player recently hit 'continue moving', in which case this is ignored
 		if (!(src instanceof Hunger || src instanceof Viscosity.DeferedDamage) && damageInterrupt) {
@@ -1887,6 +1909,13 @@ public class Hero extends Char {
 			step = path.removeFirst();
 
 		}
+
+        if (curAction instanceof com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.Walk
+                && step != -1 && !com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.safeStep(Dungeon.level,this,step)) {
+            path=null;
+            com.shatteredpixel.shatteredpixeldungeon.utils.GLog.w("Stair navigation stopped: the route is blocked or unsafe.");
+            return false;
+        }
 
 		if (step != -1) {
 
@@ -2705,3 +2734,4 @@ public class Hero extends Char {
 		public void onDeath();
 	}
 }
+

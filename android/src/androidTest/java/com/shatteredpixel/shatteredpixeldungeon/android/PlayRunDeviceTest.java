@@ -508,7 +508,7 @@ public class PlayRunDeviceTest {
                 int width=camera.width,height=camera.height;
                 com.watabou.noosa.ui.Component toolbar=(com.watabou.noosa.ui.Component)field(Game.scene(),"toolbar");
                 float tx=toolbar.left(),ty=toolbar.top(),tw=toolbar.width(),th=toolbar.height();
-                String[] flags={"tagAttack","tagLoot","tagAction","tagResume"};
+                String[] flags={"tagAttack","tagLoot","tagAction","tagResume","tagStairs"};
                 boolean[] was=new boolean[flags.length];
                 try {
                     for(int i=0;i<flags.length;i++) {
@@ -521,7 +521,7 @@ public class PlayRunDeviceTest {
                             SPDSettings.flipTags(flip); assertClericStack();
                             java.util.List<com.watabou.noosa.ui.Component> controls=new java.util.ArrayList<>();
                             for(Object tag:tags) controls.add((com.watabou.noosa.ui.Component)tag);
-                            for(String name:new String[]{"attack","loot","action","resume"}) controls.add((com.watabou.noosa.ui.Component)field(Game.scene(),name));
+                            for(String name:new String[]{"attack","loot","action","resume","stairs"}) controls.add((com.watabou.noosa.ui.Component)field(Game.scene(),name));
                             for(int i=0;i<controls.size();i++) {
                                 com.watabou.noosa.ui.Component a=controls.get(i);
                                 assertTrue("tag stays on screen",a.left()>=0 && a.right()<=camera.width && a.top()>=0 && a.bottom()<=toolbar.top());
@@ -566,5 +566,123 @@ public class PlayRunDeviceTest {
         }
     }
 
-}
+    private static void visibilityScreenshot(String name) throws Exception {
+        android.content.Context context=androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().getTargetContext();
+        android.graphics.Bitmap bitmap=androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().getUiAutomation().takeScreenshot();
+        assertNotNull(bitmap);
+        android.content.ContentValues values=new android.content.ContentValues();
+        values.put(android.provider.MediaStore.MediaColumns.DISPLAY_NAME,name);
+        values.put(android.provider.MediaStore.MediaColumns.MIME_TYPE,"image/png");
+        values.put(android.provider.MediaStore.MediaColumns.RELATIVE_PATH,"Pictures/APD-Test-Visuals");
+        android.net.Uri uri=context.getContentResolver().insert(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI,values);
+        assertNotNull(uri);
+        try(java.io.OutputStream out=context.getContentResolver().openOutputStream(uri)){assertNotNull(out);assertTrue(bitmap.compress(android.graphics.Bitmap.CompressFormat.PNG,100,out));}
+        finally{bitmap.recycle();}
+    }
+    private static com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions stairsMenu() throws Exception {
+        for(Object member:(java.util.List<?>)field(Game.scene(),"members"))
+            if(member instanceof com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions)
+                return (com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions)member;
+        return null;
+    }
+    @Test public void tileVisibilityAndStairNavigationKeepNormalTurnsFogAndControls() throws Exception {
+        boolean oldEnhanced=SPDSettings.enhancedTileVisibility(),oldShortcut=SPDSettings.stairNavigationShortcut();
+        boolean oldRecord=SPDSettings.apdRecording(),oldIntro=SPDSettings.intro();int oldGrid=SPDSettings.visualGrid();
+        try(ActivityScenario<AndroidLauncher> scenario=ActivityScenario.launch(AndroidLauncher.class)){
+            waitUntil("game ready",()->Gdx.app!=null && Game.scene()!=null,120000);
+            onRender(()->{
+                SPDSettings.apdRecording(false);SPDSettings.intro(false);SPDSettings.visualGrid(0);
+                SPDSettings.enhancedTileVisibility(false);SPDSettings.stairNavigationShortcut(true);
+                GamesInProgress.curSlot=4;GamesInProgress.selectedClass=HeroClass.WARRIOR;
+                Dungeon.hero=null;Dungeon.daily=Dungeon.dailyReplay=false;Dungeon.initSeed();
+                ActionIndicator.clearAction();InterlevelScene.mode=InterlevelScene.Mode.DESCEND;Game.switchScene(InterlevelScene.class);
+            });
+            waitUntil("first floor ready",()->Game.scene() instanceof GameScene && Dungeon.hero!=null && Dungeon.hero.ready,150000);
+            waitForGameplayControls();Thread.sleep(600);
+            final int[] terrain=Dungeon.level.map.clone();final boolean[] visited=Dungeon.level.visited.clone();
+            final boolean[] fov=Dungeon.hero.fieldOfView.clone();final int depth=Dungeon.depth;
+            for(int zoom:new int[]{2,4}){
+                onRender(()->{com.watabou.noosa.Camera.main.zoom(zoom);SPDSettings.enhancedTileVisibility(false);});Thread.sleep(350);
+                visibilityScreenshot("tiles-original-"+zoom+".png");
+                onRender(()->SPDSettings.enhancedTileVisibility(true));Thread.sleep(350);
+                visibilityScreenshot("tiles-enhanced-"+zoom+".png");
+                assertTrue(SPDSettings.enhancedTileVisibility());assertEquals(0,SPDSettings.visualGrid());
+                org.junit.Assert.assertArrayEquals("terrain unchanged",terrain,Dungeon.level.map);
+                org.junit.Assert.assertArrayEquals("exploration unchanged",visited,Dungeon.level.visited);
+                org.junit.Assert.assertArrayEquals("fog unchanged",fov,Dungeon.hero.fieldOfView);
+            }
+            final java.util.concurrent.atomic.AtomicReference<com.watabou.utils.Point> stairTouch=new java.util.concurrent.atomic.AtomicReference<>();
+            onRender(()->{try{
+                com.watabou.noosa.ui.Component button=(com.watabou.noosa.ui.Component)field(Game.scene(),"stairs");
+                com.watabou.noosa.ui.Component toolbar=(com.watabou.noosa.ui.Component)field(Game.scene(),"toolbar");
+                assertTrue(button.visible);assertTrue(button.bottom()<=toolbar.top()+0.01f);
+                assertTrue(button.left()>=0 && button.right()<=button.camera().width);
+                stairTouch.set(button.camera().cameraToScreen(button.left()+button.width()/2f,button.top()+button.height()/2f));
+            }catch(Exception e){throw new RuntimeException(e);}});
+            com.watabou.utils.Point at=stairTouch.get();
+            com.watabou.input.PointerEvent.addPointerEvent(new com.watabou.input.PointerEvent(at.x,at.y,9,com.watabou.input.PointerEvent.Type.DOWN,com.watabou.input.PointerEvent.LEFT));
+            Thread.sleep(150);
+            com.watabou.input.PointerEvent.addPointerEvent(new com.watabou.input.PointerEvent(at.x,at.y,9,com.watabou.input.PointerEvent.Type.UP,com.watabou.input.PointerEvent.LEFT));
+            waitUntil("stair menu responds to a real touch",()->stairsMenu()!=null,30000);
+            visibilityScreenshot("stairs-shortcut.png");
+            onRender(()->{try{stairsMenu().hide();}catch(Exception e){throw new RuntimeException(e);}});
+            final java.util.concurrent.atomic.AtomicInteger destination=new java.util.concurrent.atomic.AtomicInteger(-1);
+            onRender(()->{
+                for(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob mob:new java.util.ArrayList<>(Dungeon.level.mobs))
+                    com.shatteredpixel.shatteredpixeldungeon.actors.Actor.remove(mob);
+                Dungeon.level.mobs.clear();Dungeon.hero.checkVisibleMobs();
+                for(int offset:com.watabou.utils.PathFinder.NEIGHBOURS8){int cell=Dungeon.hero.pos+offset;
+                    if(cell>=0 && cell<Dungeon.level.length() && Dungeon.hero.fieldOfView[cell] && com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.safeStep(Dungeon.level,Dungeon.hero,cell)){destination.set(cell);break;}}
+                assertTrue("a discovered safe adjacent tile exists",destination.get()>=0);
+                Dungeon.level.transitions.add(0,new com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition(
+                        Dungeon.level,destination.get(),com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition.Type.REGULAR_EXIT));
+                assertNull(com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.begin(Dungeon.hero,false));
+                float turn=Dungeon.hero.cooldown();int origin=Dungeon.hero.pos;
+                Dungeon.level.passable[destination.get()]=false;
+                try{
+                    java.lang.reflect.Method move=com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero.class.getDeclaredMethod("actMove",com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroAction.Move.class);
+                    move.setAccessible(true);assertFalse((Boolean)move.invoke(Dungeon.hero,Dungeon.hero.curAction));
+                }catch(Exception e){throw new RuntimeException(e);}finally{Dungeon.level.passable[destination.get()]=true;}
+                assertNull("newly blocked route stops",Dungeon.hero.curAction);assertEquals(origin,Dungeon.hero.pos);assertEquals(turn,Dungeon.hero.cooldown(),0);
+                assertNull(com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.begin(Dungeon.hero,false));
+                Dungeon.hero.interrupt();assertNull(Dungeon.hero.curAction);assertNull(Dungeon.hero.lastAction);
+                assertNull(com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.begin(Dungeon.hero,false));
+                Dungeon.hero.damageInterrupt=false;Dungeon.hero.damage(1,new com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger());
+                assertNull("damage cancels the route",Dungeon.hero.curAction);
+                assertNull(com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.begin(Dungeon.hero,false));
+                Rat threat=new Rat();threat.pos=destination.get();GameScene.add(threat);Dungeon.hero.checkVisibleMobs();
+                assertNull("new visible enemy cancels the route",Dungeon.hero.curAction);
+                com.shatteredpixel.shatteredpixeldungeon.actors.Actor.remove(threat);Dungeon.level.mobs.remove(threat);
+                if(threat.sprite!=null)threat.sprite.killAndErase();Dungeon.hero.checkVisibleMobs();
+                try{
+                    click(field(Game.scene(),"stairs"),"onClick");
+                    com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions menu=stairsMenu();assertNotNull(menu);
+                    java.lang.reflect.Method choose=menu.getClass().getDeclaredMethod("onSelect",int.class);choose.setAccessible(true);choose.invoke(menu,1);menu.hide();
+                    boolean marked=false;
+                    for(Object effect:(java.util.List<?>)field(field(Game.scene(),"overFogEffects"),"members"))
+                        if(effect instanceof com.shatteredpixel.shatteredpixeldungeon.effects.StairHighlight
+                                && ((com.shatteredpixel.shatteredpixeldungeon.effects.StairHighlight)effect).cell==destination.get())marked=true;
+                    assertTrue("the selected known stair is highlighted exactly",marked);
+                }catch(Exception e){throw new RuntimeException(e);}
+            });
+            visibilityScreenshot("stairs-highlight.png");
+            waitUntil("walk arrives and stops",()->Dungeon.hero.ready && Dungeon.hero.pos==destination.get(),30000);
+            assertNull(Dungeon.hero.curAction);assertEquals("no automatic floor transition",depth,Dungeon.depth);
+            onRender(()->{try{
+                assertNull(com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.begin(Dungeon.hero,true));
+                assertTrue("save during pending navigation",Dungeon.hero.curAction instanceof com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.Walk);
+                Dungeon.saveAll();Game.switchScene(TitleScene.class);
+            }catch(Exception e){throw new RuntimeException(e);}});
+            waitUntil("title after save",()->Game.scene() instanceof TitleScene,30000);
+            onRender(()->{Dungeon.hero=null;InterlevelScene.mode=InterlevelScene.Mode.CONTINUE;Game.switchScene(InterlevelScene.class);});
+            waitUntil("saved navigation position",()->Game.scene() instanceof GameScene && Dungeon.hero!=null && Dungeon.hero.ready,150000);
+            assertEquals(destination.get(),Dungeon.hero.pos);assertEquals(depth,Dungeon.depth);assertNull(Dungeon.hero.curAction);
+            assertTrue(SPDSettings.enhancedTileVisibility());assertTrue(SPDSettings.stairNavigationShortcut());
+            onRender(()->Game.switchScene(TitleScene.class));
+        }finally{
+            SPDSettings.enhancedTileVisibility(oldEnhanced);SPDSettings.stairNavigationShortcut(oldShortcut);
+            SPDSettings.visualGrid(oldGrid);SPDSettings.apdRecording(oldRecord);SPDSettings.intro(oldIntro);
+        }
+    }
 
+}

@@ -58,6 +58,8 @@ public class APDSettingsPane extends Component {
 	private RenderedTextBlock info;
 	private CheckBox chkRecord;
 	private CheckBox chkAdult;
+    private CheckBox chkTileVisibility;
+    private CheckBox chkStairNavigation;
 	private RenderedTextBlock status;
 	private RenderedTextBlock storage;
 	private RedButton btnClericQuickCasts;
@@ -122,6 +124,15 @@ public class APDSettingsPane extends Component {
 		};
 		chkAdult.checked( SPDSettings.apdAdultHumor() );
 		add( chkAdult );
+
+        chkTileVisibility=new CheckBox("Enhanced Tile Visibility"){
+            @Override protected void onClick(){super.onClick();SPDSettings.enhancedTileVisibility(checked());}
+        };
+        chkTileVisibility.checked(SPDSettings.enhancedTileVisibility());add(chkTileVisibility);
+        chkStairNavigation=new CheckBox("Automatic Stair Navigation"){
+            @Override protected void onClick(){super.onClick();SPDSettings.stairNavigationShortcut(checked());}
+        };
+        chkStairNavigation.checked(SPDSettings.stairNavigationShortcut());add(chkStairNavigation);
 
 		btnClericQuickCasts = new RedButton("Cleric quick-cast buttons") {
             @Override protected void onClick() { WndClericQuickCasts.settings(); }
@@ -276,6 +287,8 @@ public class APDSettingsPane extends Component {
 		pos = chkRecord.bottom() + GAP;
 		chkAdult.setRect( x, pos, width, 16 );
 		pos = chkAdult.bottom() + GAP;
+        chkTileVisibility.setRect(x,pos,width,16);pos=chkTileVisibility.bottom()+GAP;
+        chkStairNavigation.setRect(x,pos,width,16);pos=chkStairNavigation.bottom()+GAP;
         btnClericQuickCasts.setRect(x,pos,width,16);
         pos = btnClericQuickCasts.bottom() + GAP;
 		status.maxWidth( (int)width );
@@ -389,4 +402,5 @@ public class APDSettingsPane extends Component {
 		t.start();
 	}
 }
+
 

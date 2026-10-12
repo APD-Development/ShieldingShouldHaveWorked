@@ -38,7 +38,7 @@ public class GridTileMap extends DungeonTilemap {
 
 	@Override
 	public synchronized void updateMap() {
-		gridSetting = SPDSettings.visualGrid();
+		gridSetting = SPDSettings.enhancedTileVisibility() ? 2 : SPDSettings.visualGrid();
 		super.updateMap();
 	}
 
@@ -62,3 +62,4 @@ public class GridTileMap extends DungeonTilemap {
 	}
 
 }
+
