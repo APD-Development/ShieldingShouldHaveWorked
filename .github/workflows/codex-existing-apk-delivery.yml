@@ -1,4 +1,4 @@
-name: Deliver verified existing APD TEST67
+name: Stage verified existing APD TEST70
 
 # Delivery only: reuse the already tested APK; no Gradle or app rebuild.
 # Accept verified SDK signer labels; retain compatibility refusal diagnostics.
@@ -12,19 +12,19 @@ permissions:
   actions: read
 
 concurrency:
-  group: apd-existing-test67-delivery
+  group: apd-existing-test70-delivery
   cancel-in-progress: false
 
 env:
-  APD_SOURCE_SHA: fa76dede19aa1a207531413b9de838b1d40fefa0
-  APD_SOURCE_RUN: '38248003026'
-  APD_TEST_NUMBER: '67'
-  APD_CORE_TEST_COUNT: '1150'
-  APD_ANDROID_TEST_COUNT: '19'
-  APD_ROLLBACK_NUMBER: '50'
-  APD_ROLLBACK_SHA256: 'ffa42ea87bcbbfa4ed7b600682aea49a703e90bce57f498b2bf36bccd2cd7c7f'
-  APD_REQUIRED_ANDROID_METHODS: 'menusSurviveSceneRecreationAndNarrowActionsStayInsideTheirWindow,aRunCanBePlayedSavedContinuedAndEndedWithItsHistoryRecorded,aWonRunIsRecordedAsWonAndSealed,difficultyIsChosenOnTheCharacterScreenAndNotInSettings,communityMenuOpensEveryPreviewAndReturnsWithoutStackingWindows,adultHumorControlWorksWithoutAnAgeProviderAndReopensWithSavedChoice,textAndGuideScrollSurviveRepeatedResetsAndClampAfterResize,validationEmptyHistoryGroupedAndReportMessagesSurviveWithoutRepeatingActions,tourChoicesSurviveWithoutStartingATourOrRepeatingTheOffer,heroButtonsStayAboveNavigationBarAndRemainSelectable,navigationOverlapReservesVisibleBarsEvenWithFullscreenRequested,clericQuickCastsPersistAndKeepNormalCostsAndTargeting,arcanaItemDescriptionsRequireKnownEquippedRingsAndFitWindows,demoUnlockKeepsTenRunNoticeVisibleOnTitle,offlineNewsCardsOpenDatedSpritePopups,everyAboutPopupOpensScrollsAndCloses,everyUimsdScreenAndDialogCanBeBuilt,replacingHomeContentsDisposesPreviouslyDrawnImages,categoriesUseSpdColumnsAndEveryIconOpensItsExactBuildPopup'
-  APD_SOURCE_ARTIFACTS_JSON: '{"apd-codex-android-checks":11747011526,"apd-codex-core-tests":11746199773,"apd-codex-private-test-apk":11746109910}'
+  APD_SOURCE_SHA: 445c47fb1fe21b86055260fe3f34468cc22c51e1
+  APD_SOURCE_RUN: '38262103238'
+  APD_TEST_NUMBER: '70'
+  APD_CORE_TEST_COUNT: '1160'
+  APD_ANDROID_TEST_COUNT: '20'
+  APD_ROLLBACK_NUMBER: '67'
+  APD_ROLLBACK_SHA256: '3b9fc627cafad093e44cd8359f5ef74921bff1ed5b21c988f2f82b2fa6642d15'
+  APD_REQUIRED_ANDROID_METHODS: 'menusSurviveSceneRecreationAndNarrowActionsStayInsideTheirWindow,aRunCanBePlayedSavedContinuedAndEndedWithItsHistoryRecorded,aWonRunIsRecordedAsWonAndSealed,difficultyIsChosenOnTheCharacterScreenAndNotInSettings,communityMenuOpensEveryPreviewAndReturnsWithoutStackingWindows,adultHumorControlWorksWithoutAnAgeProviderAndReopensWithSavedChoice,textAndGuideScrollSurviveRepeatedResetsAndClampAfterResize,validationEmptyHistoryGroupedAndReportMessagesSurviveWithoutRepeatingActions,tourChoicesSurviveWithoutStartingATourOrRepeatingTheOffer,heroButtonsStayAboveNavigationBarAndRemainSelectable,navigationOverlapReservesVisibleBarsEvenWithFullscreenRequested,clericQuickCastsPersistAndKeepNormalCostsAndTargeting,arcanaItemDescriptionsRequireKnownEquippedRingsAndFitWindows,demoUnlockKeepsTenRunNoticeVisibleOnTitle,offlineNewsCardsOpenDatedSpritePopups,everyAboutPopupOpensScrollsAndCloses,everyUimsdScreenAndDialogCanBeBuilt,replacingHomeContentsDisposesPreviouslyDrawnImages,categoriesUseSpdColumnsAndEveryIconOpensItsExactBuildPopup,largeAndNamedHistoricalBuildsKeepAllIconsInScrollableNativeSections'
+  APD_SOURCE_ARTIFACTS_JSON: '{"apd-codex-android-checks":11753995183,"apd-codex-core-tests":11753067433,"apd-codex-private-test-apk":11752882805}'
 
 jobs:
   validate-and-stage:
@@ -53,7 +53,7 @@ jobs:
       - name: Retrieve rollback APK for direct compatibility comparison
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release download apd-codex-test-50 --repo "$GITHUB_REPOSITORY" --pattern ADHD-Pixel-Dungeon-CODEX-TEST-50.apk --dir rollback
+        run: gh release download apd-codex-test-67 --repo "$GITHUB_REPOSITORY" --pattern ADHD-Pixel-Dungeon-CODEX-TEST-67.apk --dir rollback
       - name: Check source, tests, checksum, signing and application ID
         env:
           GH_TOKEN: ${{ github.token }}
@@ -70,19 +70,19 @@ jobs:
         run: |
           python3 -m pip install reportlab==4.2.5
           python3 -m unittest discover -s tools -p test_apd_bug_report_pdf.py
-          python3 tools/apd_bug_report_pdf.py docs/APD-TEST67-REPORT-2026-10-12.md delivery/APD-Bug-Fixes-2026-10-12-TEST67.pdf --verification delivery/verification.txt
+          python3 tools/apd_bug_report_pdf.py docs/APD-TEST70-REPORT-2026-10-12.md delivery/APD-Bug-Fixes-2026-10-12-TEST70.pdf --verification delivery/verification.txt
       - uses: actions/upload-artifact@v4
         with:
-          name: verified-test67-delivery
+          name: verified-test70-delivery
           path: delivery/
           retention-days: 7
 
-# Owner requested this urgent private development deliverable by 9AM EDT October12.
+# Owner requested this urgent private development deliverable by 11AM EDT October12.
 # Separate daily lunch schedules are unchanged. No app rebuild in this delivery workflow.
 
       - uses: actions/upload-artifact@v4
         with:
-          name: verified-test67-evidence
+          name: verified-test70-evidence
           path: |
             delivery/*.json
             delivery/*.txt
@@ -94,6 +94,7 @@ jobs:
           retention-days: 7
 
   private-publication:
+    if: ${{ false }} # Stage this verified fallback while the new approved features are tested.
     needs: validate-and-stage
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -103,7 +104,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: verified-test67-delivery
+          name: verified-test70-delivery
           path: delivery
       - name: Publish owner-requested private verified APK and report
         env:
@@ -123,7 +124,7 @@ jobs:
               '--title',f'APD PRIVATE CODEX TEST {number}','--notes-file','delivery/verification.txt',
               f'delivery/ADHD-Pixel-Dungeon-CODEX-TEST-{number}.apk',
               f'delivery/ADHD-Pixel-Dungeon-CODEX-TEST-{number}.apk.sha256',
-              'delivery/APD-Bug-Fixes-2026-10-12-TEST67.pdf',
-              'delivery/TEST67-Verification.json',
+              'delivery/APD-Bug-Fixes-2026-10-12-TEST70.pdf',
+              'delivery/TEST70-Verification.json',
               'delivery/APD-Source-Line-Counts.json'],check=True)
           PY

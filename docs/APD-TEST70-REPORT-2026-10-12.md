@@ -1,10 +1,11 @@
 # APD TEST70 development and historical change audit — October 12, 2026
 
 ## Candidate and verification
-The current deliverable is TEST70; its actual source, run, test counts and signatures are recorded in the generated verification section.
+The verified fallback candidate is TEST70; its actual source, run, test counts and signatures are recorded in the generated verification section.
 TEST70 includes the source-backed historical reconstruction from TEST68 plus the owner's hotbar-settings correction. Its exact application source and CI times are populated by delivery evidence.
 TEST68 historical-reconstruction source: 53276e8706f23017b23eb624643d67f60c0f4603.
-TEST69 application source: 88e73db126152e3d779603cd989473910de972e9; verification run38261032941.
+Failed TEST69 source:88e73db126152e3d779603cd989473910de972e9, run38261032941.
+TEST70 application source:445c47fb1fe21b86055260fe3f34468cc22c51e1, run38262103238.
 TEST68 verification/build run: 38259755048. The delivery verification section is generated from actual successful CI, XML, APK checksum and signer evidence; a failed candidate must not be published by this workflow.
 TEST67 remains the last delivered fallback until the current candidate passes all gates. No physical-phone testing is claimed.
 
@@ -42,7 +43,7 @@ Local SUM and related RowMerger/DatasetBuilders/FloorsPerUnit checks: 51 passed;
 Local historical coverage: four passed.
 History maintenance Python checks: eleven passed, including a 450-path comparison and deliberate compiled-history corruption rejection.
 Required full core suite, debug assembly, compiled-history equality and API34 instrumentation are recorded from the completed CI evidence in the generated verification section. Expected counts are not substituted for actual XML counts.
-Native screenshots must be reviewed against SPD before private delivery. Compilation alone is insufficient. This report does not claim physical Google Pixel, Pixel Buds or original player-run acceptance testing.
+All five API34 screenshots were inspected: current TEST70, original SPD, Build22, Build37 and TEST67. The native two-column sections, gold border, grouped icons and build navigation were visually confirmed. Compilation alone is insufficient. This report does not claim physical Google Pixel, Pixel Buds or original player-run acceptance testing.
 
 ## Potential regressions and safeguards
 Large historical sections could expose layout, icon or scrolling problems; host no-cap coverage and Android Build22/37/67 checks address these, with screenshots reviewed separately.
@@ -63,7 +64,7 @@ Read-only first census: 45a0811a7d8c45d206784996f1fa3714bd9903a8, run38251610456
 Corrected census: bd6f32316cebdfd07a34eb40659d7631e6b2d53a, run38252104362.
 Historical reconstruction and full verification candidate: 53276e8706f23017b23eb624643d67f60c0f4603, run38259755048.
 Candidate CI began October12 at14:00:33 UTC,10:00:33 EDT. Core/assembly job completed14:03:46 UTC. Final CI and private publication times come from actual delivery evidence; no unsupported overnight work duration is claimed.
-Owner deadline:11:00 a.m. EDT. Install the verified private APK over the existing APD application; do not uninstall or clear data.
+Owner extended deadline:noon EDT. Install the verified private APK over the existing APD application; do not uninstall or clear data.
 
 ## Unsuccessful preparations and corrections
 TEST68 run38259755048 passed all1,160 core tests, compiled the APK and matched every compiled historical TSV. API34 instrumentation ran20 tests:19 passed, one failed because the preservation tool restored the obsolete test-3 identifier, which pointed to a missing asset. The original-SPD comparison screenshot was consequently not captured, and PNG validation also failed. TEST68 was not privately delivered as playable.
@@ -71,4 +72,4 @@ TEST69 run38261032941 stopped before compilation because its gate required TEST6
 Corrected alias handling preserves reconstructed private histories, rejects unresolved missing targets, and has two permanent regression tests. Historical preservation now requires successful source core/assembly evidence for a preceding produced APK; current publication still requires ALL current core, assembly, Android, checksum and signing checks to pass. This preserves exact APK attribution without hiding failed verification.
 
 ## New approved requests still pending
-Enhanced Tile Visibility and automatic discovered-stair navigation are approved additions, not implemented in this candidate. They require visual/gameplay interruption regression checks before delivery. No unfinished shortcut, rendering change or speculative history entry is activated.
+Enhanced Tile Visibility and automatic discovered-stair navigation are approved additions, not implemented in this candidate. They require visual/gameplay interruption regression checks before delivery; local implementation is in progress and excluded from TEST70. No unfinished shortcut, rendering change or speculative history entry is activated.
