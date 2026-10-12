@@ -193,6 +193,7 @@ public class ApdSettingsClickDeviceTest {
 		try (ActivityScenario<AndroidLauncher> scenario = ActivityScenario.launch(AndroidLauncher.class)) {
 			openTitleForTest();
 			final boolean previous = SPDSettings.apdAdultHumor();
+			final int previousSpellButtons = SPDSettings.apdClericQuickSlots();
 			final AtomicReference<WndAPDSettings> window = new AtomicReference<>();
 			try {
 				onRender(() -> {
@@ -224,10 +225,23 @@ public class ApdSettingsClickDeviceTest {
 				pane = find(window.get(), APDSettingsPane.class);
 				assertFalse(((com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox) field(pane, "chkAdult")).checked());
 				assertFalse(SPDSettings.apdAdultHumor());
+                for (Field setting : APDSettingsPane.class.getDeclaredFields())
+                    assertFalse("removed hotbar settings must not return", setting.getName().equals("btnHotbar"));
+                scroll = find(window.get(), ScrollPane.class);
+                final RedButton spells = (RedButton) field(pane, "btnClericQuickCasts");
+                assertNotNull("Cleric controls remain directly accessible", spells);
+                tapUntil("Cleric quick-cast buttons", scroll, spells,
+                        () -> find(Game.scene(), com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.class) != null, 30000);
+                com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList choices =
+                        find(Game.scene(), com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.class);
+                assertEquals("only one through four spell-button choices", 4, communityEntries(choices).size());
+                tapCommunityEntry(choices, 2);
+                assertEquals("Cleric setting still answers real touches", 3, SPDSettings.apdClericQuickSlots());
 			} finally {
 				onRender(() -> {
 					if (window.get() != null) window.get().hide();
 					SPDSettings.apdAdultHumor(previous);
+                    SPDSettings.apdClericQuickSlots(previousSpellButtons);
 				});
 			}
 		}
