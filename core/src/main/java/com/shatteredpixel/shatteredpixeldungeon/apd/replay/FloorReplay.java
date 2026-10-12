@@ -93,18 +93,14 @@ public final class FloorReplay {
 		return running;
 	}
 
-	//Called when a game starts or loads: waits for a replay in progress to finish (it is short), so the two never overlap.
-	public static void awaitIdle(){
-		long end = System.currentTimeMillis() + 60000;
-		while (running && System.currentTimeMillis() < end){
-			try {
-				Thread.sleep(20);
-			} catch (InterruptedException e){
-				Thread.currentThread().interrupt();
-				return;
-			}
-		}
-	}
+
+    // A game must not replace the shared state until replay has restored it.
+    // Monitor acquisition does not clear or bypass an existing interrupt.
+    public static void awaitIdle(){
+        synchronized (LOCK){
+            // replay() holds this monitor through generation and its restoration finally block.
+        }
+    }
 
 	//Verification hook: sees each freshly built level while the replay still holds it (tests fingerprint it). Must only read.
 	public interface Observer {

@@ -157,6 +157,39 @@ public class UimsdScreensDeviceTest {
             }catch(Exception e){throw new RuntimeException(e);}});
             Thread.sleep(500);
             PlayRunDeviceTest.visibilityScreenshot("uimsd-home.png");
+            final AtomicReference<com.watabou.utils.Point> demoPoint=new AtomicReference<>();
+            onRender(()->{try{
+                Field uiField=UimsdScene.class.getDeclaredField("ui");uiField.setAccessible(true);
+                com.watabou.noosa.Group controls=(com.watabou.noosa.Group)uiField.get(Game.scene());
+                Field children=com.watabou.noosa.Group.class.getDeclaredField("members");children.setAccessible(true);
+                com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton demo=null;
+                for(Object child:(java.util.List<?>)children.get(controls)){
+                    if(child instanceof com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton){
+                        com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton b=(com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton)child;
+                        assertFalse("UIMSD navigation reuses native grey chrome",b instanceof com.shatteredpixel.shatteredpixeldungeon.ui.RedButton);
+                        if(b.text().equals("DEMO DATA"))demo=b;
+                    }
+                }
+                assertNotNull("fictional-data indicator cannot disappear",demo);assertTrue(demo.width()<=88 && demo.height()<=16);
+                demoPoint.set(demo.camera().cameraToScreen(demo.left()+demo.width()/2f,demo.top()+demo.height()/2f));
+            }catch(Exception e){throw new RuntimeException(e);}});
+            com.watabou.utils.Point point=demoPoint.get();
+            com.watabou.input.PointerEvent.addPointerEvent(new com.watabou.input.PointerEvent(point.x,point.y,12,com.watabou.input.PointerEvent.Type.DOWN,com.watabou.input.PointerEvent.LEFT));
+            Thread.sleep(150);
+            com.watabou.input.PointerEvent.addPointerEvent(new com.watabou.input.PointerEvent(point.x,point.y,12,com.watabou.input.PointerEvent.Type.UP,com.watabou.input.PointerEvent.LEFT));
+            final AtomicReference<com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdText> demoInfo=new AtomicReference<>();
+            waitUntil("demo indicator opens its information popup",()->{
+                synchronized(Game.scene()){
+                    Field children=com.watabou.noosa.Group.class.getDeclaredField("members");children.setAccessible(true);
+                    for(Object child:(java.util.List<?>)children.get(Game.scene()))
+                        if(child instanceof com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdText)demoInfo.set((com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdText)child);
+                }
+                return demoInfo.get()!=null;
+            },10000);
+            Thread.sleep(300);
+            PlayRunDeviceTest.visibilityScreenshot("uimsd-demo-info.png");
+            onRender(()->demoInfo.get().hide());
+
             onRender(()->{try{
                 String[] keys={"tutorial","atHome","homeAllRules"};
                 Object[] values={savedTutorial,savedAtHome,savedAllRules};

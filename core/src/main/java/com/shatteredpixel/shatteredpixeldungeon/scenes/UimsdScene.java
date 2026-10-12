@@ -41,7 +41,8 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.query.ViewDef;
 import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder;
 import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.Ruleset;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ExitButton;
-import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
+import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
+import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.ui.UimsdStyle;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.TitleBackground;
@@ -274,12 +275,14 @@ public class UimsdScene extends PixelScene {
 		y = build.bottom() + 3;
 
 		if (showingSample || showingDemo){
-			RedButton dataIndicator = new RedButton(showingSample ? "SAMPLE DATA — fictional" : "DEMO DATA — fictional", 6){
+			StyledButton dataIndicator = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "DEMO DATA", 6){
 				@Override protected void onClick(){
 					UimsdScene.this.addToFront(new WndUimsdText("Fictional statistics", "These records are made-up test data. They are stored separately from your real run history and never count toward the ten-run unlock.", false));
 				}
 			};
-			dataIndicator.setRect(x0, y, contentW, 18);ui.add(dataIndicator);y += 20;
+			dataIndicator.icon(com.shatteredpixel.shatteredpixeldungeon.ui.Icons.INFO.get());
+            dataIndicator.textColor(UimsdStyle.WARN);
+            dataIndicator.setRect(x0, y, Math.min(contentW,88), 16);ui.add(dataIndicator);y += 18;
 		}
 
 		if (tutorialPreparing){
@@ -350,24 +353,24 @@ public class UimsdScene extends PixelScene {
 		float bottom = h - insets.bottom - 4;
 		if (home == null) return bottom;
 		float gap = 2, each = (contentW - 2 * gap)/3f;
-		RedButton guide = new RedButton("Guide", 7){
+		StyledButton guide = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "Guide", 7){
 			@Override protected void onClick(){ openGuide(); }
 		};
 		guide.setRect(x0, y, each, 18);ui.add(guide);reg("guide", x0, y, each, 18);
-		RedButton report = new RedButton("Report", 7){
+		StyledButton report = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "Report", 7){
 			@Override protected void onClick(){ WndUimsdReport.ofLifetime(model, homeAllRules); }
 		};
 		report.setRect(guide.right()+gap, y, each, 18);ui.add(report);reg("report", report.left(), y, each, 18);
-		RedButton tables = new RedButton("Tables", 7){
+		StyledButton tables = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "Tables", 7){
 			@Override protected void onClick(){ atHome=false;dirty=true; }
 		};
 		tables.setRect(report.right()+gap, y, each, 18);ui.add(tables);reg("tables", tables.left(), y, each, 18);
 		y += 20;
-		RedButton rules = new RedButton(home.mixedRulesets ? "Rules: Mixed" : homeAllRules ? "Rules: all" : "Rules: current", 6){
+		StyledButton rules = new StyledButton(Chrome.Type.GREY_BUTTON_TR, home.mixedRulesets ? "Rules: Mixed" : homeAllRules ? "Rules: all" : "Rules: current", 6){
 			@Override protected void onClick(){ homeAllRules=!homeAllRules;dirty=true; }
 		};
 		rules.setRect(x0,y,contentW-22,18);ui.add(rules);
-		RedButton scopeInfo = new RedButton("?", 7){
+		StyledButton scopeInfo = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "?", 7){
 			@Override protected void onClick(){UimsdScene.this.addToFront(new WndUimsdText("Rules and record coverage", home.scopeNote, false));}
 		};
 		scopeInfo.setRect(rules.right()+2,y,20,18);ui.add(scopeInfo);
@@ -428,7 +431,7 @@ public class UimsdScene extends PixelScene {
 				UimsdStyle.SIZE_HELP, UimsdStyle.TEXT, contentW);
 		what.setPos(x0, y);y = what.bottom() + 4;
 
-		RedButton tour = new RedButton("Take the tour (2 minutes)", 8){
+		StyledButton tour = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "Take the tour (2 minutes)", 8){
 			@Override
 			protected void onClick(){
 				startTour(0);
@@ -441,7 +444,7 @@ public class UimsdScene extends PixelScene {
 		RenderedTextBlock sampleNote = text("The tour uses a small made-up history, so it works even before you have played. It never touches your own.", UimsdStyle.SIZE_META, UimsdStyle.FAINT, contentW);
 		sampleNote.setPos(x0, y);
 		y = sampleNote.bottom() + 4;
-		RedButton read = new RedButton("Read the Guide", 7){
+		StyledButton read = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "Read the Guide", 7){
 			@Override
 			protected void onClick(){
 				openGuide();
@@ -459,7 +462,7 @@ public class UimsdScene extends PixelScene {
 		float homeW = 30, helpW = 14, backW = model.canGoBack() ? 32 : 0, gap = 2;
 		float viewW = contentW - homeW - helpW - backW - gap * (model.canGoBack() ? 3 : 2);
 		float cx0 = x0;
-		RedButton homeBtn = new RedButton("Home", 7){
+		StyledButton homeBtn = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "Home", 7){
 			@Override
 			protected void onClick(){
 				atHome = true;
@@ -470,7 +473,7 @@ public class UimsdScene extends PixelScene {
 		ui.add(homeBtn);
 		reg("home", cx0, y, homeW, 16);
 		cx0 += homeW + gap;
-		RedButton viewBtn = new RedButton("Tables", 7){
+		StyledButton viewBtn = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "Tables", 7){
 			@Override
 			protected void onClick(){
 				pickView();
@@ -481,7 +484,7 @@ public class UimsdScene extends PixelScene {
 		reg("view", cx0, y, viewW, 16);
 		cx0 += viewW + gap;
 		if (model.canGoBack()){
-			RedButton back = new RedButton("Back", 8){
+			StyledButton back = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "Back", 8){
 				@Override
 				protected void onClick(){
 					model.back();
@@ -492,7 +495,7 @@ public class UimsdScene extends PixelScene {
 			reg("back", cx0, y, backW, 16);
 			cx0 += backW + gap;
 		}
-		RedButton help = new RedButton("?", 8){
+		StyledButton help = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "?", 8){
 			@Override
 			protected void onClick(){
 				openGuide();
@@ -529,7 +532,7 @@ public class UimsdScene extends PixelScene {
 			shown = 2;
 		}
 		int notes = lines.size() - shown;
-		RedButton statusBtn = new RedButton(notes > 0 ? "Notes (" + notes + ")" : "Notes", 6){
+		StyledButton statusBtn = new StyledButton(Chrome.Type.GREY_BUTTON_TR, notes > 0 ? "Notes (" + notes + ")" : "Notes", 6){
 			@Override
 			protected void onClick(){
 				WndUimsdStatus.show(model);
@@ -544,7 +547,7 @@ public class UimsdScene extends PixelScene {
 		//All conditions remain editable in a scrolling native picker; their count does not consume table height.
 		final List<Filter> filters = model.query().filters;
 		if (!filters.isEmpty()){
-			RedButton conditions = new RedButton("Conditions (" + filters.size() + ")", 6){
+			StyledButton conditions = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "Conditions (" + filters.size() + ")", 6){
 				@Override protected void onClick(){
 					showConditions();
 				}
@@ -567,7 +570,7 @@ public class UimsdScene extends PixelScene {
 			String shownName = names[i];
 			if (i == 0 && !model.query().filters.isEmpty()) shownName += " (" + model.query().filters.size() + ")";
 			if (i == 1 && !model.query().sorts.isEmpty()) shownName += " (" + model.query().sorts.size() + ")";
-			RedButton b = new RedButton(shownName, 6){
+			StyledButton b = new StyledButton(Chrome.Type.GREY_BUTTON_TR, shownName, 6){
 				@Override
 				protected void onClick(){
 					switch (which){
@@ -587,7 +590,7 @@ public class UimsdScene extends PixelScene {
 		float tableBottom = barTop - 2;
 		if (table != null && table.pageCount() > 1){
 			float py = barTop - 16;
-			RedButton prev = new RedButton("<", 8){
+			StyledButton prev = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "<", 8){
 				@Override
 				protected void onClick(){
 					model.setPage(model.page() - 1);
@@ -596,7 +599,7 @@ public class UimsdScene extends PixelScene {
 			prev.setRect(x0, py, 20, 14);
 			prev.enable(table.page() > 0);
 			ui.add(prev);
-			RedButton next = new RedButton(">", 8){
+			StyledButton next = new StyledButton(Chrome.Type.GREY_BUTTON_TR, ">", 8){
 				@Override
 				protected void onClick(){
 					model.setPage(model.page() + 1);
@@ -734,7 +737,7 @@ public class UimsdScene extends PixelScene {
 		float by = py + ph - buttonsH - 4;
 		boolean last = t.index() >= t.count() - 1;
 		float bw = (pw - 12) / 3f;
-		RedButton next = new RedButton(step.expect == UimsdTutorial.Expect.NEXT ? (last ? "Finish" : "Next") : "Skip step", 7){
+		StyledButton next = new StyledButton(Chrome.Type.GREY_BUTTON_TR, step.expect == UimsdTutorial.Expect.NEXT ? (last ? "Finish" : "Next") : "Skip step", 7){
 			@Override
 			protected void onClick(){
 				UimsdTutorial tt = tutorial;
@@ -746,7 +749,7 @@ public class UimsdScene extends PixelScene {
 		};
 		next.setRect(x0 + 4, by, bw, buttonsH);
 		ui.add(next);
-		RedButton prev = new RedButton("Previous", 7){
+		StyledButton prev = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "Previous", 7){
 			@Override
 			protected void onClick(){
 				UimsdTutorial tt = tutorial;
@@ -759,7 +762,7 @@ public class UimsdScene extends PixelScene {
 		prev.setRect(x0 + 6 + bw, by, bw, buttonsH);
 		prev.enable(t.index() > 0);
 		ui.add(prev);
-		RedButton exit = new RedButton("Exit tour", 7){
+		StyledButton exit = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "Exit tour", 7){
 			@Override
 			protected void onClick(){
 				endTutorial();

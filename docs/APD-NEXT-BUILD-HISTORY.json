@@ -1,92 +1,63 @@
 {
-  "previous_label": "Codex TEST 76",
-  "previous_source": "fc3d7e63776e56c5cc6f6b01a97fa0ff2904c1fa",
-  "previous_run": 38278797850,
+  "previous_label": "Codex TEST 77",
+  "previous_source": "19960d70d833d9ee1ac6e7ce0a9f4db8d21beaaa",
+  "previous_run": 38281536953,
   "date": "2026-10-12",
   "changes": [
     {
       "category": "Bug Fixes",
       "sprite": "ICON_DATA",
-      "title": "Damaged statistics cache text",
-      "text": "Malformed cached text now triggers rebuilding from the original history instead of displaying replacement characters.",
+      "title": "Replay and game-loading isolation",
+      "text": "An interrupted game-loading wait can no longer proceed while seed replay still owns and restores shared dungeon state.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowCodec.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/replay/FloorReplay.java"
       ]
     },
     {
-      "category": "Bug Fixes",
+      "category": "Testing",
       "sprite": "ICON_DATA",
-      "title": "Removed dataset cache alignment",
-      "text": "Skipping a removed statistics dataset now consumes its column references correctly so later tables remain readable.",
+      "title": "Replay load-barrier regressions",
+      "text": "Added real replay-thread tests for normal and interrupted loading waits, including preserved interruption status.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowCodec.java"
-      ]
-    },
-    {
-      "category": "Performance",
-      "sprite": "ICON_RANKINGS",
-      "title": "Reuse enemy death totals",
-      "text": "The Home screen calculates each enemy's death total once instead of repeatedly scanning its records while sorting.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdHome.java"
-      ]
-    },
-    {
-      "category": "Performance",
-      "sprite": "ICON_DATA",
-      "title": "Unused imported-ID tracking",
-      "text": "Removed an unused set of ranking IDs that duplicated work already performed by the actual duplicate-matching map.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/DatasetStore.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "ICON_DATA",
-      "title": "Unused run-group flag",
-      "text": "Removed an unused run-group field without changing ruleset detection or recorded data.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/DatasetStore.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/replay/ReplayIdleBarrierTest.java"
       ]
     },
     {
       "category": "Quality of Life",
       "sprite": "ICON_RANKINGS",
-      "title": "More compact statistics Home",
-      "text": "Home uses relevant native sprites and tighter rows; question instructions remain available through its information popup.",
+      "title": "Native statistics controls",
+      "text": "UIMSD navigation now uses SPD's existing grey buttons while preserving every existing action.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/UimsdHomePane.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/UimsdScene.java"
+      ]
+    },
+    {
+      "category": "Quality of Life",
+      "sprite": "ICON_INFO",
+      "title": "Compact fictional-data indicator",
+      "text": "Demo and sample statistics use a compact amber DEMO DATA indicator with an information popup instead of a wide red banner.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/UimsdScene.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_INFO",
-      "title": "Cache and Home regressions",
-      "text": "Added malformed-text, raw-history preservation, removed-dataset, enemy-ranking tie and uncertainty-mark regressions.",
-      "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowCacheTextValidationTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/HomeEnemyTotalsTest.java"
-      ]
-    },
-    {
-      "category": "Testing",
-      "sprite": "ICON_RANKINGS",
-      "title": "Actual statistics Home screenshot",
-      "text": "Android checks now capture the rendered sample Home in addition to testing every existing statistics screen and dialog.",
+      "title": "Fictional-data popup verification",
+      "text": "Android checks now tap the compact data indicator and capture its popup alongside the rendered Home screen.",
       "paths": [
         "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdScreensDeviceTest.java",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PlayRunDeviceTest.java",
         "tools/run-codex-android-checks.sh"
       ]
     },
     {
       "category": "Development",
       "sprite": "ICON_INFO",
-      "title": "Verified playback and audit record",
-      "text": "Recorded successful TEST76 playback checks and the next tested statistics-reliability batch.",
+      "title": "Verified reliability evidence",
+      "text": "Recorded TEST77 checks, reproduced replay interruption and the corrected visual acceptance evidence.",
       "paths": [
         "docs/HANDOFF.md",
-        "docs/APD-TEST77-REPORT-2026-10-12.md",
+        "docs/APD-TEST78-REPORT-2026-10-12.md",
         "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/APD-CODEX-BUILD-REQUEST.txt"
       ]
@@ -95,7 +66,7 @@
       "category": "Developer Commentary",
       "sprite": "V074_SHPX",
       "title": "Developer Commentary",
-      "text": "I made the statistics Home more compact and removed repeated work without changing its results. I also fixed two cache-reader problems while preserving the original history.",
+      "text": "I tightened replay isolation so loading waits for borrowed state to be restored. I also replaced the statistics screen's remaining red navigation and large demo banner with native grey controls.",
       "paths": []
     }
   ]
