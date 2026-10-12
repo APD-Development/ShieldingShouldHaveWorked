@@ -344,21 +344,22 @@ public final class UimsdHome {
 		//what ended runs: the enemies with the most hero deaths
 		final Aggregate kills = Aggregate.of(Aggregate.Fn.SUM, "enemy.heroDeaths");
 		List<GroupRow> deadly = new ArrayList<>();
+		final java.util.Map<GroupRow, AggValue> deathTotals = new java.util.IdentityHashMap<>();
 		for (GroupRow g : r.groups){
 			AggValue v = QueryEngine.evaluate(def, q, kills, g.rows);
-			if (v != null && v.known && v.value > 0) deadly.add(g);
+			if (v != null && v.known && v.value > 0) { deadly.add(g); deathTotals.put(g, v); }
 		}
 		Collections.sort(deadly, new Comparator<GroupRow>() {
 			@Override
 			public int compare( GroupRow a, GroupRow b ){
-				return Double.compare(QueryEngine.evaluate(def, q, kills, b.rows).value, QueryEngine.evaluate(def, q, kills, a.rows).value);
+				return Double.compare(deathTotals.get(b).value, deathTotals.get(a).value);
 			}
 		});
 		if (!deadly.isEmpty()){
 			c.heading("Ended your runs");
 			for (int i = 0; i < deadly.size() && i < 3; i++){
 				GroupRow g = deadly.get(i);
-				AggValue v = QueryEngine.evaluate(def, q, kills, g.rows);
+				AggValue v = deathTotals.get(g);
 				CellFormatter.AggText t = CellFormatter.aggregate(def, kills, v);
 				c.line(keyText(r, g), t.text + (v.value == 1 ? " death" : " deaths"), t.detail, t.state);
 			}

@@ -65,8 +65,17 @@ public class UimsdHomePane extends ScrollPane {
  private void link(float x,float y,float w,float h,String id){boxes.add(new float[]{x,y,w,h});boxViews.add(id);}
  private void info(float x,float y,float w,float h,String title,String value){infoBoxes.add(new float[]{x,y,w,h});infoText.add(new String[]{title,value});}
  private Image icon(String id){
-  String name=id.equals("gear")?"V061_INVENTORY":id.equals("enemies")?"PD_RAT":id.equals("characters")?"V035_WARRIOR_CLOTH":"V061_PAGE";
-  return ChangeIcons.valueOf(name).get();
+  switch(id){
+   case "gear":return ChangeIcons.V061_INVENTORY.get();
+   case "enemies":return ChangeIcons.PD_RAT.get();
+   case "characters":return ChangeIcons.V035_WARRIOR_CLOTH.get();
+   case "ask":return Icons.INFO.get();
+   case "navigate":return Icons.JOURNAL.get();
+   case "difficulty":return Icons.CHALLENGE_GREY.get();
+   case "recent":return Icons.CALENDAR.get();
+   case "records":return Icons.BADGES.get();
+   default:return Icons.RANKINGS.get();
+  }
  }
  private void rebuild(){
   content.clear();boxes.clear();boxViews.clear();infoBoxes.clear();infoText.clear();
@@ -76,8 +85,13 @@ public class UimsdHomePane extends ScrollPane {
    RenderedTextBlock title=text(card.title,7,UimsdStyle.TITLE,w-24,22,y+2);
    y+=Math.max(sprite.height(),title.height()+4)+2;
    for(UimsdHome.Line line:card.lines){
+    if(card.id.equals("ask") && line.heading)continue;
     if(line.heading){RenderedTextBlock section=text(line.label,5,UimsdStyle.MUTED,w-4,2,y);y=section.bottom()+2;continue;}
-    if(card.id.equals("ask")){info(0,Math.max(0,y-20),w,18,card.title,line.detail);continue;}
+    if(card.id.equals("ask")){
+     StringBuilder help=new StringBuilder();
+     for(UimsdHome.Line note:card.lines)if(note.heading)help.append(note.label).append("\n\n");
+     help.append(line.detail);info(0,Math.max(0,y-20),w,18,card.title,help.toString());continue;
+    }
     String outcome=card.id.equals("runs")?(line.label.equals("Won")?"1":line.label.equals("Died")?"0":line.label.equals("Abandoned")?"2":null):null;
     float detailW=outcome!=null&&!line.detail.isEmpty()?18:0;
     float labelW=(w-6)*0.45f,valueW=w-6-labelW-2-detailW;
@@ -85,7 +99,7 @@ public class UimsdHomePane extends ScrollPane {
     RenderedTextBlock value=text(line.value,7,UimsdTable.color(line.state),valueW,4+labelW,y);
     //Numeric values align at the right edge; long compound values retain wrapping.
     value.setPos(w-2-detailW-value.width(),y);
-    float rowH=Math.max(18,Math.max(label.height(),value.height())+3);
+    float rowH=Math.max(16,Math.max(label.height(),value.height())+3);
     if(outcome!=null){
      link(0,y,w-detailW,rowH,"!outcome:"+outcome);
      if(detailW>0){text("?",6,UimsdStyle.MUTED,16,w-16,y+3);info(w-18,y,18,rowH,line.label,line.value+"\n\n"+line.detail);}
@@ -96,7 +110,7 @@ public class UimsdHomePane extends ScrollPane {
    for(UimsdHome.Link l:card.links){
     NinePatch button=Chrome.get(Chrome.Type.GREY_BUTTON_TR);
     RenderedTextBlock label=text(l.label,6,UimsdStyle.TEXT,w-10,5,y+4);
-    float rowH=Math.max(20,label.height()+8);button.size(w,rowH);button.x=0;button.y=y;
+    float rowH=Math.max(18,label.height()+8);button.size(w,rowH);button.x=0;button.y=y;
     content.addToBack(button);link(0,y,w,rowH,l.viewId);y+=rowH+2;
    }
    ColorBlock divider=new ColorBlock(w,1,0xFF333333);divider.y=y;content.add(divider);y+=4;

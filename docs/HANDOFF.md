@@ -1163,3 +1163,8 @@ Owner approved0.5x/1x/2x playback only; actor turns/costs/damage/cooldowns uncha
 
 ## TEST75 sprite-gate failure; TEST76 correction
 TEST75 sourceb9847fe3110e6ae200ece9b5efdf2a5b9d8ae44f/run38278018095:1188corecases,1187passed/1failed. All8speedcasespassed; changelog rejected nonexistent Icons.TIME. No APK. ReplacewithSPDChangeIcons.V023_HOURGLASS, retaintestandrecordfailedattempt. TEST76 previousAPKremainsactualTEST74. DownloadedTEST74XML1180core+21API34allpass, source92f4d372abbba2f030774d01b7b939440c75f137/run38276527256. No74signing/privatepublicationclaim;73rollback. Source76fullchecksrequested.
+
+
+## TEST76 actual evidence and TEST77 reliability/presentation batch
+TEST76fc3d7e63776e56c5cc6f6b01a97fa0ff2904c1fa/run38278797850 succeeded. DownloadedXML1188core+21API34,zero failures/errors/skips. Real-touch choices and actual0.5second dungeon animation timings0.986185/0.473553/0.230999sec for0.5x/1x/2x,noactorcost. APK11760691276/core11760193335/Android11760986477. No76signing/privatepublicationclaim;73deliveredrollback.
+TEST77 fixes reproduced RowCodec malformedUTF8 acceptance and unknown-section column misalignment (baseline3of4newcasesred), retainingvalidUnicode/rawhistory/cacheformat. Home reuses enemy totals during sorting; removesunusedranking-IDset/runflag; compactnativeHomeicons/spacing and optionalAskhelp.120targetedtests green3.387s, productionpresentationcompiled. NewAndroidsampleHomescreenshot,12PNGgate, all existingUI/operatorconstruction/regressionchecks retained. Fullcore/debug/API34 requested,notyetcomplete. WholeUIMSDaudit/physicalphone/owneractualsave stillunfinished. Sourcefiles/codecounts/finalverification mustnotbeclaimedbeforefullchecks.

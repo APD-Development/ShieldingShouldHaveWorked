@@ -114,15 +114,16 @@ public final class RowCodec {
 	public static LogRows decode( byte[] data, long logLength, Map<String, DatasetDef> defs ){
 		try {
 			ByteSource in = new ByteSource(data);
+            java.nio.charset.CharsetDecoder textDecoder = java.nio.charset.StandardCharsets.UTF_8.newDecoder();
 			for (byte b : MAGIC) if (in.readByte() != (b & 0xFF)) return null;
 			if (in.readUnsignedInt() != FORMAT) return null;
 			if (in.readUnsignedInt() != RowBuilders.BUILDER_VERSION) return null;
-			if (!com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKinds.fingerprint().equals(in.readString())) return null;
+			if (!com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKinds.fingerprint().equals(readText(in, textDecoder))) return null;
 			if (in.readUnsigned() != logLength) return null;
 			int n = in.readUnsignedInt();
 			if (n > in.remaining()) return null; // Every string needs at least its length byte.
 			String[] table = new String[n];
-			for (int i = 0; i < n; i++) table[i] = in.readString();
+			for (int i = 0; i < n; i++) table[i] = readText(in, textDecoder);
 			LogRows lr = new LogRows();
 			LogMeta m = lr.meta;
 			m.logId = table[in.readUnsignedInt()];
@@ -140,12 +141,15 @@ public final class RowCodec {
 			m.rankingId = table[in.readUnsignedInt()];
 			int sections = in.readUnsignedInt();
 			for (int s = 0; s < sections; s++){
-				String id = in.readString();
+				String id = readText(in, textDecoder);
 				DatasetDef def = defs.get(id);
 				int cols = in.readUnsignedInt();
 				if (cols > in.remaining()) return null; // Each column has a table-index byte.
 				int[] map = new int[cols];
-				for (int c = 0; c < cols; c++) map[c] = def == null ? -1 : def.indexOf(table[in.readUnsignedInt()]);
+				for (int c = 0; c < cols; c++) {
+                    String columnId = table[in.readUnsignedInt()];
+                    map[c] = def == null ? -1 : def.indexOf(columnId);
+                }
 				int rows = in.readUnsignedInt();
 				if (rows > in.remaining()) return null; // Even a zero-column row has metadata bytes.
 				List<Row> list = new ArrayList<>(rows);
@@ -180,8 +184,18 @@ public final class RowCodec {
 				if (def != null) lr.rows.put(id, list);
 			}
 			return lr;
-		} catch (RuntimeException e){
+		} catch (RuntimeException | java.nio.charset.CharacterCodingException e){
 			return null;
 		}
 	}
+    // Cache text must be valid UTF-8: malformed bytes require rebuilding from the raw log.
+    private static String readText(ByteSource in, java.nio.charset.CharsetDecoder decoder)
+            throws java.nio.charset.CharacterCodingException {
+        byte[] bytes = in.readBytes(in.readUnsignedInt());
+        boolean ascii = true;
+        for (byte value : bytes) if (value < 0) { ascii = false; break; }
+        return ascii ? new String(bytes, java.nio.charset.StandardCharsets.UTF_8)
+                : decoder.decode(java.nio.ByteBuffer.wrap(bytes)).toString();
+    }
+
 }

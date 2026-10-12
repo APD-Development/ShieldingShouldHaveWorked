@@ -1,77 +1,102 @@
 {
-  "previous_label": "Codex TEST 74",
-  "previous_source": "92f4d372abbba2f030774d01b7b939440c75f137",
-  "previous_run": 38276527256,
+  "previous_label": "Codex TEST 76",
+  "previous_source": "fc3d7e63776e56c5cc6f6b01a97fa0ff2904c1fa",
+  "previous_run": 38278797850,
   "date": "2026-10-12",
   "changes": [
     {
-      "category": "Quality of Life",
-      "sprite": "V023_HOURGLASS",
-      "title": "Game playback speed",
-      "text": "Choose 0.5x, 1x or 2x dungeon playback in APD Settings without changing gameplay turns or combat costs.",
+      "category": "Bug Fixes",
+      "sprite": "ICON_DATA",
+      "title": "Damaged statistics cache text",
+      "text": "Malformed cached text now triggers rebuilding from the original history instead of displaying replacement characters.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/APDSettingsPane.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/SPDSettings.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowCodec.java"
+      ]
+    },
+    {
+      "category": "Bug Fixes",
+      "sprite": "ICON_DATA",
+      "title": "Removed dataset cache alignment",
+      "text": "Skipping a removed statistics dataset now consumes its column references correctly so later tables remain readable.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowCodec.java"
+      ]
+    },
+    {
+      "category": "Performance",
+      "sprite": "ICON_RANKINGS",
+      "title": "Reuse enemy death totals",
+      "text": "The Home screen calculates each enemy's death total once instead of repeatedly scanning its records while sorting.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdHome.java"
+      ]
+    },
+    {
+      "category": "Performance",
+      "sprite": "ICON_DATA",
+      "title": "Unused imported-ID tracking",
+      "text": "Removed an unused set of ranking IDs that duplicated work already performed by the actual duplicate-matching map.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/DatasetStore.java"
       ]
     },
     {
       "category": "Changes",
-      "sprite": "V023_HOURGLASS",
-      "title": "Dungeon animation timing",
-      "text": "Dungeon visual groups follow the selected speed while menus, HUD long presses and the actor clock keep their normal timing.",
+      "sprite": "ICON_DATA",
+      "title": "Unused run-group flag",
+      "text": "Removed an unused run-group field without changing ruleset detection or recorded data.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/PlaybackGroup.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/GameScene.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/DatasetStore.java"
+      ]
+    },
+    {
+      "category": "Quality of Life",
+      "sprite": "ICON_RANKINGS",
+      "title": "More compact statistics Home",
+      "text": "Home uses relevant native sprites and tighter rows; question instructions remain available through its information popup.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/UimsdHomePane.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_INFO",
-      "title": "Playback regressions",
-      "text": "Added saved-setting, frame-rate, nested-group, clock-restoration and unchanged-turn-clock regressions for all three speeds.",
+      "title": "Cache and Home regressions",
+      "text": "Added malformed-text, raw-history preservation, removed-dataset, enemy-ranking tie and uncertainty-mark regressions.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/PlaybackSpeedTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowCacheTextValidationTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/HomeEnemyTotalsTest.java"
       ]
     },
     {
       "category": "Testing",
-      "sprite": "V023_HOURGLASS",
-      "title": "Android speed controls and animations",
-      "text": "Android checks now select every speed through actual touches and compare real dungeon animation completion times.",
+      "sprite": "ICON_RANKINGS",
+      "title": "Actual statistics Home screenshot",
+      "text": "Android checks now capture the rendered sample Home in addition to testing every existing statistics screen and dialog.",
       "paths": [
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/ApdSettingsClickDeviceTest.java",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PlayRunDeviceTest.java"
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdScreensDeviceTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PlayRunDeviceTest.java",
+        "tools/run-codex-android-checks.sh"
       ]
     },
     {
       "category": "Development",
       "sprite": "ICON_INFO",
-      "title": "Playback verification record",
-      "text": "Recorded the approved playback-only scope, local checks and remaining Android verification.",
+      "title": "Verified playback and audit record",
+      "text": "Recorded successful TEST76 playback checks and the next tested statistics-reliability batch.",
       "paths": [
-        "docs/APD-TEST75-REPORT-2026-10-12.md",
         "docs/HANDOFF.md",
+        "docs/APD-TEST77-REPORT-2026-10-12.md",
         "docs/APD-NEXT-BUILD-HISTORY.json",
-        "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/APD-TEST76-REPORT-2026-10-12.md"
+        "docs/APD-CODEX-BUILD-REQUEST.txt"
       ]
     },
     {
       "category": "Developer Commentary",
       "sprite": "V074_SHPX",
       "title": "Developer Commentary",
-      "text": "I added three playback speeds while keeping turn costs and HUD timing unchanged. I am verifying the actual Android controls and animation timing before delivery.",
+      "text": "I made the statistics Home more compact and removed repeated work without changing its results. I also fixed two cache-reader problems while preserving the original history.",
       "paths": []
-    },
-    {
-      "category": "Changes",
-      "sprite": "V023_HOURGLASS",
-      "title": "Supported hourglass icons",
-      "text": "Playback entries use SPD's existing hourglass sprite, and the failed no-APK TEST75 attempt is recorded accurately.",
-      "paths": [
-        "core/src/main/assets/apd/history/index.tsv",
-        "core/src/main/assets/apd/history/codex-test-75.tsv"
-      ]
     }
   ]
 }

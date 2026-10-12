@@ -196,7 +196,6 @@ public final class DatasetStore {
 		final List<LogRows> logs = new ArrayList<>();
 		boolean finished;
 		String ruleset;
-		boolean mixed;
 
 		RunGroup( String runId ){
 			this.runId = runId;
@@ -367,8 +366,6 @@ public final class DatasetStore {
 	//An imported record is the same run as a recorded one when SPD's record id was noted by the run (exact), or, for older runs,
 	//when exactly one finished run has the same class, outcome, deepest floor, level and score (probable). Ambiguous ones are not linked.
 	private static void markDuplicates( DatasetDef def, List<Row> runRows, List<Row> legacy, Map<String, RunGroup> groups ){
-		Set<String> rankingIds = new HashSet<>();
-		for (RunGroup g : groups.values()) for (LogRows lr : g.logs) if (!lr.meta.rankingId.isEmpty()) rankingIds.add(lr.meta.rankingId);
 		Set<String> linkedRuns = new HashSet<>();
 		int cls = def.indexOf(FactKeys.HERO_CLASS), out = def.indexOf(FactKeys.OUTCOME), deep = def.indexOf(FactKeys.DEEPEST),
 				lvl = def.indexOf(FactKeys.HERO_LEVEL), sc = def.indexOf(FactKeys.SCORE);

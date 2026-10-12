@@ -145,6 +145,25 @@ public class UimsdScreensDeviceTest {
                 }
             });
 
+            // Capture the real sample Home without the optional tour panel covering its statistics.
+            final Object savedTutorial=field("tutorial");
+            final Object savedAtHome=field("atHome"),savedAllRules=field("homeAllRules");
+            onRender(()->{try{
+                for(String key:new String[]{"tutorial","atHome","homeAllRules","cachedHome"}){
+                    Field value=UimsdScene.class.getDeclaredField(key);value.setAccessible(true);
+                    value.set(null,key.equals("atHome")||key.equals("homeAllRules")?Boolean.TRUE:null);
+                }
+                Field dirty=UimsdScene.class.getDeclaredField("dirty");dirty.setAccessible(true);dirty.set(Game.scene(),true);
+            }catch(Exception e){throw new RuntimeException(e);}});
+            Thread.sleep(500);
+            PlayRunDeviceTest.visibilityScreenshot("uimsd-home.png");
+            onRender(()->{try{
+                String[] keys={"tutorial","atHome","homeAllRules"};
+                Object[] values={savedTutorial,savedAtHome,savedAllRules};
+                for(int i=0;i<keys.length;i++){Field value=UimsdScene.class.getDeclaredField(keys[i]);value.setAccessible(true);value.set(null,values[i]);}
+                Field dirty=UimsdScene.class.getDeclaredField("dirty");dirty.setAccessible(true);dirty.set(Game.scene(),true);
+            }catch(Exception e){throw new RuntimeException(e);}});
+
 			onRender(new Runnable(){
 				public void run(){
 					m.showRoot("weapons");

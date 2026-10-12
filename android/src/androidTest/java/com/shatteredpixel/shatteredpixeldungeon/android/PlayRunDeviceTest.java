@@ -566,7 +566,7 @@ public class PlayRunDeviceTest {
         }
     }
 
-    private static void visibilityScreenshot(String name) throws Exception {
+    static void visibilityScreenshot(String name) throws Exception {
         android.content.Context context=androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().getTargetContext();
         android.graphics.Bitmap bitmap=androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().getUiAutomation().takeScreenshot();
         assertNotNull(bitmap);
