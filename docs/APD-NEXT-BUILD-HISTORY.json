@@ -64,6 +64,16 @@
       "title": "Developer Commentary",
       "text": "I corrected the crystal-path room so its two final rewards match the promised choices. Existing generated floors remain untouched.",
       "paths": []
+    },
+    {
+      "category": "Testing",
+      "sprite": "ICON_INFO",
+      "title": "Preserved seeded dungeon checks",
+      "text": "Updated expected crystal-room reward records while retaining all existing deterministic dungeon checks.",
+      "paths": [
+        "core/src/test/resources/apd/golden_levels.txt",
+        "docs/APD-TEST89-REPORT-2026-10-12.md"
+      ]
     }
   ]
 }

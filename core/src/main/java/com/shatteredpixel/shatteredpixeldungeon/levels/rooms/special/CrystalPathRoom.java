@@ -27,8 +27,11 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDivineInspiration;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMetamorphosis;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ExoticCrystals;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
@@ -165,11 +168,15 @@ public class CrystalPathRoom extends SpecialRoom {
 
 		ArrayList<Item> duplicates = new ArrayList<>();
 
-		// Reserve the two standard prizes; random draws cannot duplicate them.
-		Item experience = new PotionOfExperience();
-		Item transmutation = new ScrollOfTransmutation();
-		potions.add(experience);
-		scrolls.add(transmutation);
+		if (Random.Int(2) == 0){
+			addRewardItem(Generator.Category.POTION, potions, duplicates);
+			scrolls.add(Random.Float() < ExoticCrystals.consumableExoticChance()
+					? new ScrollOfMetamorphosis() : new ScrollOfTransmutation());
+		} else {
+			potions.add(Random.Float() < ExoticCrystals.consumableExoticChance()
+					? new PotionOfDivineInspiration() : new PotionOfExperience());
+			addRewardItem(Generator.Category.SCROLL, scrolls, duplicates);
+		}
 		addRewardItem(Generator.Category.POTION, potions, duplicates);
 		addRewardItem(Generator.Category.SCROLL, scrolls, duplicates);
 		addRewardItem(Generator.Category.POTION, potions, duplicates);
@@ -185,10 +192,6 @@ public class CrystalPathRoom extends SpecialRoom {
 				Generator.undoDrop(i);
 			}
 		}
-
-		// Keep designated rewards out of rarity sorting so they stay behind two keys.
-		potions.remove(experience);
-		scrolls.remove(transmutation);
 
 		//rarer potions/scrolls go later in the order
 		Collections.sort(potions, new Comparator<Item>() {
@@ -228,6 +231,12 @@ public class CrystalPathRoom extends SpecialRoom {
 			}
 		});
 
+		// Keep all original generator draws and deck bookkeeping. Only designate the final prizes.
+		moveReservedToEnd(potions, PotionOfExperience.class);
+		moveReservedToEnd(scrolls, ScrollOfTransmutation.class);
+		potions.set(2, new PotionOfExperience());
+		scrolls.set(2, new ScrollOfTransmutation());
+
 		//least valuable items go into rooms 2&3, then rooms 0&1, and finally 4&5
 		int shuffle = Random.Int(2);
 		level.drop(potions.remove(0), level.pointToCell(rooms[shuffle == 1 ? 2 : 3].center()));
@@ -237,8 +246,8 @@ public class CrystalPathRoom extends SpecialRoom {
 		level.drop(scrolls.remove(0), level.pointToCell(rooms[shuffle == 1 ? 1 : 0].center()));
 
 		//player can only see these if they unlock the previous doors, so don't count them for exploration
-		level.drop(experience, shuffle == 1 ? prize1 : prize2).autoExplored = true;
-		level.drop(transmutation, shuffle == 1 ? prize2 : prize1).autoExplored = true;
+		level.drop(potions.remove(0), shuffle == 1 ? prize1 : prize2).autoExplored = true;
+		level.drop(scrolls.remove(0), shuffle == 1 ? prize2 : prize1).autoExplored = true;
 
 		level.addItemToSpawn( new CrystalKey( Dungeon.depth ) );
 		level.addItemToSpawn( new CrystalKey( Dungeon.depth ) );
@@ -246,6 +255,19 @@ public class CrystalPathRoom extends SpecialRoom {
 
 		entrance().set( Door.Type.REGULAR );
 
+	}
+
+	private static void moveReservedToEnd(ArrayList<Item> items, Class<?> reserved) {
+		for (int i = 0; i < items.size()-1; i++) {
+			Item item = items.get(i);
+			Class<?> type = item.getClass();
+			if (item instanceof ExoticPotion) type = ExoticPotion.exoToReg.get(type);
+			else if (item instanceof ExoticScroll) type = ExoticScroll.exoToReg.get(type);
+			if (type == reserved) {
+				Collections.swap(items, i, items.size()-1);
+				return;
+			}
+		}
 	}
 
 	//this prevents duplicates
