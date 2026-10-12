@@ -267,7 +267,9 @@ public final class DerivedStore {
 
 	//null when the cache does not describe the current files, an exception when it is damaged
 	private FactTable readCache( File cache, List<String> prints ) throws IOException {
-		BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(cache), "UTF-8"));
+		BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(cache), java.nio.charset.StandardCharsets.UTF_8.newDecoder()
+				.onMalformedInput(java.nio.charset.CodingErrorAction.REPORT)
+				.onUnmappableCharacter(java.nio.charset.CodingErrorAction.REPORT)));
 		try {
 			String header = in.readLine();
 			if (header == null || !header.equals("APDD\t1\t" + DERIVATION_VERSION)){
@@ -327,3 +329,4 @@ public final class DerivedStore {
 		throw new IllegalArgumentException("bad fact kind");
 	}
 }
+

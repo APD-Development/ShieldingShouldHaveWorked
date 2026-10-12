@@ -1,1 +1,1 @@
-2026-10-12 TEST79: reproduced stale tour-worker cancellation, serialized guarded sample cleanup and two permanent lifecycle regressions. Previous produced TEST78source bd97e08f548c86d32f8869e1ab0e53146e6363bd/run38285524449. Full core/debug/API34 and13PNG required. No automatic publication.
+2026-10-12 TEST80: strict derived-cache UTF8 recovery, two permanent regressions. Previous actual TEST79source a611c841e64a8bca592831d3200a5a65e1735b61/run38299325341. Fullcore/debug/API34 and13PNG required,1202coreexpected. No automatic publication;79remainsdeliveredrollback.

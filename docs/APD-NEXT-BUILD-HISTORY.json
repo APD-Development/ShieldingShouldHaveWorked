@@ -1,44 +1,54 @@
 {
-  "previous_label": "Codex TEST 78",
-  "previous_source": "bd97e08f548c86d32f8869e1ab0e53146e6363bd",
-  "previous_run": 38285524449,
+  "previous_label": "Codex TEST 79",
+  "previous_source": "a611c841e64a8bca592831d3200a5a65e1735b61",
+  "previous_run": 38299325341,
   "date": "2026-10-12",
   "changes": [
     {
       "category": "Bug Fixes",
-      "sprite": "ICON_RANKINGS",
-      "title": "Cancelled statistics tours",
-      "text": "A cancelled statistics tour can no longer replace your own statistics after its background loading finishes.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/UimsdScene.java"
-      ]
-    },
-    {
-      "category": "Changes",
       "sprite": "ICON_DATA",
-      "title": "Sample data lifecycle",
-      "text": "Sample preparation and cleanup now run in sequence, retaining the safeguards that protect genuine run history.",
+      "title": "Damaged derived statistics text",
+      "text": "Malformed text in the derived statistics cache now triggers a rebuild from genuine run logs instead of displaying corrupted values.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/UimsdScene.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/DerivedStore.java"
       ]
     },
     {
       "category": "Testing",
-      "sprite": "ICON_INFO",
-      "title": "Tour cancellation regressions",
-      "text": "Added controlled background-worker tests proving cancelled tours stay cancelled and current tours still open.",
+      "sprite": "ICON_DATA",
+      "title": "Derived cache integrity regressions",
+      "text": "Added tests for malformed cache recovery, unchanged genuine history and valid international text.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/TourWorkerLifecycleTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/DerivedCacheTextTest.java"
       ]
     },
     {
       "category": "Development",
       "sprite": "ICON_INFO",
-      "title": "Verified build evidence",
-      "text": "Recorded the preceding build's successful checks and Android screenshots, alongside remaining testing and execution limitations.",
+      "title": "Verified private delivery",
+      "text": "Recorded TEST79's verified APK delivery and added checks that wait for successful source verification before publishing.",
+      "paths": [
+        ".github/workflows/codex-existing-apk-delivery.yml",
+        "docs/APD-TEST79-REPORT-2026-10-12.md"
+      ]
+    },
+    {
+      "category": "Development",
+      "sprite": "ICON_INFO",
+      "title": "Retired unsuccessful backup delivery",
+      "text": "Removed an unused backup publication workflow after its source comparison correctly refused delivery; no player data or published assets changed.",
+      "paths": [
+        ".github/workflows/codex-test78-delivery.yml"
+      ]
+    },
+    {
+      "category": "Development",
+      "sprite": "ICON_INFO",
+      "title": "Audit and build records",
+      "text": "Recorded the cache reproduction, recovery checks, source evidence and remaining audit limitations.",
       "paths": [
         "docs/HANDOFF.md",
-        "docs/APD-TEST79-REPORT-2026-10-12.md",
+        "docs/APD-TEST80-REPORT-2026-10-12.md",
         "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/APD-CODEX-BUILD-REQUEST.txt"
       ]
@@ -47,7 +57,7 @@
       "category": "Developer Commentary",
       "sprite": "V074_SHPX",
       "title": "Developer Commentary",
-      "text": "I fixed a race that could reopen sample statistics after a tour was cancelled. Genuine history, statistics calculations and the current tour's normal behavior remain unchanged.",
+      "text": "I made the older statistics cache reject malformed text and rebuild it from the original records. Valid international text and genuine run history remain unchanged.",
       "paths": []
     }
   ]
