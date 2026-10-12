@@ -28,6 +28,7 @@ import com.watabou.noosa.ui.Component;
 final class UimsdContent extends Component {
     @Override
     public synchronized void clear() {
+        if (length == 0) return; // Also safe after destroy, matching native Group.clear.
         // Snapshot because destroying a child may detach it from its parent.
         Gizmo[] previous = members.toArray(new Gizmo[0]);
         for (Gizmo child : previous) {

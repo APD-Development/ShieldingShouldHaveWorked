@@ -1120,6 +1120,13 @@ public class Hero extends Char {
 	// so that the hero spends a turn even if the fail to pick up an item
 	public boolean waitOrPickup = false;
 
+	// Explain the active inventory restriction without changing collection or turn rules.
+	String pickupFailureMessage(Item item) {
+		String reason = belongings.lostInventory() && !item.keptThroughLostInventory()
+				? "lost_inventory_pickup" : "you_cant_have";
+		return Messages.capitalize(Messages.get(this, reason, item.name()));
+	}
+
 	private boolean actPickUp( HeroAction.PickUp action ) {
 		int dst = action.dst;
 		if (pos == dst) {
@@ -1181,7 +1188,7 @@ public class Hero extends Char {
 						//Do Nothing
 					} else {
 						GLog.newLine();
-						GLog.n(Messages.capitalize(Messages.get(this, "you_cant_have", item.name())));
+						GLog.n(pickupFailureMessage(item));
 					}
 
 					ready();
