@@ -44,6 +44,8 @@ public final class DerivedStore {
 
 	//bump when facts are derived differently, so every old cache is rebuilt
 	public static final int DERIVATION_VERSION = 4;
+	private static final int CACHE_FORMAT = 2;
+	private static final int CHECKSUM_FOOTER_BYTES = 15;
 
 	public static final String CACHE_DIR = "derived";
 	public static final String CACHE_FILE = "runfacts.apdd";
@@ -239,9 +241,10 @@ public final class DerivedStore {
 		try {
 			File dir = cache.getParentFile();
 			if (!dir.isDirectory() && !dir.mkdirs()) return;
-			Writer w = new OutputStreamWriter(new FileOutputStream(tmp), "UTF-8");
+			java.util.zip.CheckedOutputStream checked = new java.util.zip.CheckedOutputStream(new FileOutputStream(tmp), new java.util.zip.CRC32());
+			Writer w = new OutputStreamWriter(checked, "UTF-8");
 			try {
-				w.write("APDD\t1\t" + DERIVATION_VERSION + "\n");
+				w.write("APDD\t" + CACHE_FORMAT + "\t" + DERIVATION_VERSION + "\n");
 				for (String p : prints) w.write("S\t" + p + "\n");
 				if (t.legacyTotals != null){
 					for (java.util.Map.Entry<String, Fact> e : t.legacyTotals.all().entrySet()) writeFact(w, "T", e.getKey(), e.getValue());
@@ -250,6 +253,8 @@ public final class DerivedStore {
 				for (RunFacts r : t.apdRows) writeRow(w, r);
 				for (RunFacts r : t.legacyRows) writeRow(w, r);
 				w.write("END\n");
+				w.flush();
+				w.write(String.format(java.util.Locale.ROOT, "CRC32\t%08x\n", checked.getChecksum().getValue()));
 			} finally {
 				w.close();
 			}
@@ -267,15 +272,17 @@ public final class DerivedStore {
 
 	//null when the cache does not describe the current files, an exception when it is damaged
 	private FactTable readCache( File cache, List<String> prints ) throws IOException {
-		BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(cache), java.nio.charset.StandardCharsets.UTF_8.newDecoder()
+		FileInputStream file = new FileInputStream(cache);
+		BufferedReader in = new BufferedReader(new InputStreamReader(file, java.nio.charset.StandardCharsets.UTF_8.newDecoder()
 				.onMalformedInput(java.nio.charset.CodingErrorAction.REPORT)
 				.onUnmappableCharacter(java.nio.charset.CodingErrorAction.REPORT)));
 		try {
 			String header = in.readLine();
-			if (header == null || !header.equals("APDD\t1\t" + DERIVATION_VERSION)){
-				if (header != null && header.startsWith("APDD\t1\t")) return null;  //an older derivation: rebuild
+			if (header == null || !header.equals("APDD\t" + CACHE_FORMAT + "\t" + DERIVATION_VERSION)){
+				if (header != null && (header.startsWith("APDD\t1\t") || header.startsWith("APDD\t" + CACHE_FORMAT + "\t"))) return null;  //an older derivation: rebuild
 				throw new IOException("not a fact cache");
 			}
+			verifyChecksum(file);
 			List<String> cached = new ArrayList<>();
 			FactTable t = new FactTable();
 			RunFacts current = null;
@@ -313,6 +320,9 @@ public final class DerivedStore {
 				}
 			}
 			if (!ended) throw new IOException("truncated cache");
+            String footer = in.readLine();
+            if (footer == null || !footer.matches("CRC32\\t[0-9a-f]{8}") || in.readLine() != null)
+                throw new IOException("trailing or missing cache checksum");
 			if (!cached.equals(prints)) return null;
 			t.legacyTotals = totals;
 			return t;
@@ -320,6 +330,35 @@ public final class DerivedStore {
 			in.close();
 		}
 	}
+
+
+    // Validate the same open file that the reader parses. Preserve its underlying position,
+    // including bytes already buffered by the UTF-8 decoder; never reopen a possibly replaced path.
+    private static void verifyChecksum(FileInputStream file) throws IOException {
+        java.nio.channels.FileChannel channel = file.getChannel();
+        long position = channel.position();
+        try {
+            long size = channel.size();
+            if (size < CHECKSUM_FOOTER_BYTES) throw new IOException("short cache checksum");
+            java.nio.ByteBuffer footer = java.nio.ByteBuffer.allocate(CHECKSUM_FOOTER_BYTES);
+            channel.position(size - CHECKSUM_FOOTER_BYTES);
+            while (footer.hasRemaining()) if (channel.read(footer) <= 0) throw new IOException("short cache checksum");
+            String expected = new String(footer.array(), java.nio.charset.StandardCharsets.US_ASCII);
+            if (!expected.matches("CRC32\\t[0-9a-f]{8}\\n")) throw new IOException("invalid cache checksum");
+            java.util.zip.CRC32 checksum = new java.util.zip.CRC32();
+            java.nio.ByteBuffer buffer = java.nio.ByteBuffer.allocate(8192);
+            channel.position(0);
+            long remaining = size - CHECKSUM_FOOTER_BYTES;
+            while (remaining > 0) {
+                buffer.clear();buffer.limit((int)Math.min(buffer.capacity(), remaining));
+                int count = channel.read(buffer);
+                if (count <= 0) throw new IOException("truncated cache checksum");
+                checksum.update(buffer.array(), 0, count);remaining -= count;
+            }
+            if (checksum.getValue() != Long.parseLong(expected.substring(6, 14), 16))
+                throw new IOException("damaged fact cache");
+        } finally { channel.position(position); }
+    }
 
 	private static Fact readFact( String[] p ){
 		int kind = Integer.parseInt(p[2]);

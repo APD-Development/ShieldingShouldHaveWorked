@@ -1,48 +1,48 @@
 {
-  "previous_label": "Codex TEST 85",
-  "previous_source": "610d4061a153bc7e6774ce14e713b51516737646",
-  "previous_run": 38313251401,
+  "previous_label": "Codex TEST 86",
+  "previous_source": "beefe620896ca1f29ecb67e039817f97ba4e1854",
+  "previous_run": 38314568910,
   "date": "2026-10-12",
   "changes": [
     {
-      "category": "Quality of Life",
-      "sprite": "V22_PICKAXE",
-      "title": "See Blacksmith reward upgrades",
-      "text": "Blacksmith reward choices now show each actual upgrade level before selection, without identifying its curse or deferred enchantment.",
+      "category": "Bug Fixes",
+      "sprite": "ICON_DATA",
+      "title": "Detect damaged statistics fact caches",
+      "text": "Changed text, numbers or trailing bytes in a temporary fact cache now trigger recovery from the original run logs.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/npcs/Blacksmith.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndBlacksmith.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/DerivedStore.java"
       ]
     },
     {
       "category": "Changes",
-      "sprite": "V30_SHARED_UPGRADES",
-      "title": "Explicit zero-level rewards",
-      "text": "Blacksmith reward slots use the native upgrade font and colors and show +0 explicitly; other inventory slots keep their existing display.",
+      "sprite": "ICON_RANKINGS",
+      "title": "Safe fact-cache refresh",
+      "text": "Older fact caches rebuild once with an integrity check; original history, saved games and statistics calculations stay unchanged.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/ItemSlot.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/DerivedStore.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_INFO",
-      "title": "Reward identity and native selection checks",
-      "text": "Added tests for hidden properties, unchanged rewards and RNG, save persistence, visible levels and selecting the exact offered item on Android.",
+      "title": "Fact-cache corruption and migration checks",
+      "text": "Added regressions for text and number damage, trailing data, unchanged raw history, old-cache migration and large Unicode caches.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/npcs/BlacksmithRewardVisibilityTest.java",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PlayRunDeviceTest.java",
-        "tools/run-codex-android-checks.sh"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/DerivedCacheChecksumTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/DerivedStoreTest.java"
       ]
     },
     {
       "category": "Development",
       "sprite": "ICON_INFO",
-      "title": "Verified build and private delivery records",
-      "text": "Recorded the preceding build's real Android results and prepared private artifact reuse with signing and checksum checks.",
+      "title": "Verified delivery and audit records",
+      "text": "Recorded TEST86's actual publication and the fact-cache failure, tests, timing and remaining audit limitations.",
       "paths": [
         ".github/workflows/codex-existing-apk-delivery.yml",
-        "docs/APD-TEST85-REPORT-2026-10-12.md",
         "docs/APD-TEST86-REPORT-2026-10-12.md",
+        "docs/APD-TEST86-DELIVERY-2026-10-12.json",
+        "docs/APD-TEST87-REPORT-2026-10-12.md",
+        "docs/APD-UIMSD-AUDIT-EVIDENCE-2026-10-12.json",
         "docs/HANDOFF.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/APD-NEXT-BUILD-HISTORY.json"
@@ -52,7 +52,7 @@
       "category": "Developer Commentary",
       "sprite": "V074_SHPX",
       "title": "Developer Commentary",
-      "text": "I made the Blacksmith's offered upgrade levels visible using the same disclosure as the Sad Ghost. The rewards themselves are unchanged.",
+      "text": "I found that damaged cache data could still look like valid text or numbers. The cache now checks its integrity and rebuilds from original logs when needed.",
       "paths": []
     }
   ]

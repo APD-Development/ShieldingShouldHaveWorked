@@ -136,5 +136,30 @@
     "Not exhaustive system audit",
     "No physical phone or actual TEST50save validation",
     "No uninterrupted Codex execution demonstrated"
-  ]
+  ],
+  "derived_fact_cache_follow_up": {
+    "baseline_source": "beefe620896ca1f29ecb67e039817f97ba4e1854",
+    "file": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/DerivedStore.java",
+    "baseline_blob": "a11e4bf8c21824e1742f6a2671566987db4cc629",
+    "baseline_tests": {
+      "tests": 5,
+      "failures": 4,
+      "seconds": 0.236,
+      "notes": "Three actual cache-corruption regressions plus new migration policy; Unicode large-cache control passes."
+    },
+    "fixed_targeted": {
+      "tests": 66,
+      "failures": 0,
+      "seconds": 2.591,
+      "cache_read_ms": 10,
+      "rebuild_ms": 317,
+      "cache_kib": 81
+    },
+    "raw_history": "Byte-for-byte preservation checked; raw saves/logs and derivation version unchanged.",
+    "limits": [
+      "Full application/Android checks pending",
+      "Same-length raw-source fingerprint blind spot not fixed",
+      "No physical phone/performance or complete UIMSD audit claim"
+    ]
+  }
 }
