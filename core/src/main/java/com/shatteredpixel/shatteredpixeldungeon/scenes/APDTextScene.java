@@ -39,15 +39,22 @@ public class APDTextScene extends PixelScene {
  public static Page page=Page.NEWS;
  public static Class<? extends PixelScene> backTo=AboutScene.class;
  private static int buildSelected,newsPage;
+ private static final int BUILDS_PER_PAGE=6;
  private final List<ChangeInfo> changes=new ArrayList<>();
  private String read(String path){try{return Gdx.files.internal(path).readString("UTF-8");}catch(Exception e){return "";}}
  @Override public void create(){
-  super.create();
+  super.create();changes.clear();
   int w=Camera.main.width,h=Camera.main.height;
   RectF insets=getCommonInsets();
   add(new TitleBackground(w,h));add(new ColorBlock(w,h,0x44000000));
-  RenderedTextBlock title=renderTextBlock(page==Page.NEWS?"APD News":"APD Changes",12);
-  title.hardlight(Window.TITLE_COLOR);title.setPos((w-title.width())/2,insets.top+6);add(title);
+  Component title;
+  if(page==Page.CHANGES){
+   com.shatteredpixel.shatteredpixeldungeon.windows.IconTitle nativeTitle=new com.shatteredpixel.shatteredpixeldungeon.windows.IconTitle(Icons.CHANGES.get(),"APD Changes");
+   nativeTitle.setSize(135,0);nativeTitle.setPos(insets.left+(w-insets.left-insets.right-nativeTitle.reqWidth())/2f,insets.top+(20-nativeTitle.height())/2f);align(nativeTitle);title=nativeTitle;
+  }else{
+   RenderedTextBlock newsTitle=renderTextBlock("APD News",12);newsTitle.hardlight(Window.TITLE_COLOR);newsTitle.setPos((w-newsTitle.width())/2,insets.top+6);title=newsTitle;
+  }
+  add(title);
   final int paneWidth=(int)Math.min(page==Page.CHANGES?135:220,w-insets.left-insets.right-12);
   final float left=insets.left+(w-insets.left-insets.right-paneWidth)/2f;
   ScrollPane pane=new ScrollPane(new Component()){
@@ -65,7 +72,8 @@ public class APDTextScene extends PixelScene {
    List<ApdHistory.Build> builds=ApdHistory.builds(read("apd/history/index.tsv"));
    total=builds.size();buildSelected=ApdHistory.clamp(buildSelected,total);
    if(total>0){
-    ApdHistory.Build build=builds.get(buildSelected);
+    for(int buildIndex=buildSelected;buildIndex<Math.min(total,buildSelected+BUILDS_PER_PAGE);buildIndex++){
+    ApdHistory.Build build=builds.get(buildIndex);
     ChangeInfo heading=new ChangeInfo(build.label,true,build.date);
     heading.hardlight(Window.TITLE_COLOR);changes.add(heading);
     if(!build.status.isEmpty())heading.addButton(new ChangeButton(Icons.INFO.get(),"Build record",build.label+"\n\n"+build.status));
@@ -73,9 +81,10 @@ public class APDTextScene extends PixelScene {
     if(entries.isEmpty())entries=ApdHistory.entries("History status\tV061_PAGE\tHistory unavailable\tVerified changes for this build have not yet been reconstructed.");
     for(Map.Entry<String,List<ApdHistory.Entry>> category:ApdHistory.categories(entries).entrySet()){
      String name=category.getKey().equals("Statistics / UIMSD")?"UIMSD":category.getKey().equals("Developer Commentary")?"Commentary":category.getKey();
-     ChangeInfo info=new ChangeInfo(name,false,null);info.hardlight(Window.TITLE_COLOR);
+     ChangeInfo info=new ChangeInfo(name,false,null);info.hardlight(categoryColor(category.getKey()));
      for(ApdHistory.Entry entry:category.getValue())info.addButton(changeButton(build,entry));
      changes.add(info);
+    }
     }
     // Same paired-category placement as ChangesScene.create (SPD), with the final odd row included.
     float posY=0,nextPosY=0;boolean second=false;boolean columns=paneWidth>=130;
@@ -104,10 +113,10 @@ public class APDTextScene extends PixelScene {
   content.setSize(paneWidth,y+4);
   pane.setRect(left,title.bottom()+6,paneWidth,Math.max(20,h-insets.bottom-28-title.bottom()-6));
   final int count=total;
-  RedButton older=new RedButton("Older",6){@Override protected void onClick(){if(page==Page.CHANGES)buildSelected++;else newsPage++;ShatteredPixelDungeon.seamlessResetScene();}};
-  RedButton newer=new RedButton("Newer",6){@Override protected void onClick(){if(page==Page.CHANGES)buildSelected--;else newsPage--;ShatteredPixelDungeon.seamlessResetScene();}};
+  StyledButton older=new StyledButton(page==Page.CHANGES?Chrome.Type.GREY_BUTTON_TR:Chrome.Type.RED_BUTTON,"Older",6){@Override protected void onClick(){if(page==Page.CHANGES)buildSelected+=BUILDS_PER_PAGE;else newsPage++;ShatteredPixelDungeon.seamlessResetScene();}};
+  StyledButton newer=new StyledButton(page==Page.CHANGES?Chrome.Type.GREY_BUTTON_TR:Chrome.Type.RED_BUTTON,"Newer",6){@Override protected void onClick(){if(page==Page.CHANGES)buildSelected=Math.max(0,buildSelected-BUILDS_PER_PAGE);else newsPage--;ShatteredPixelDungeon.seamlessResetScene();}};
   int selected=page==Page.CHANGES?buildSelected:newsPage;
-  older.enable(selected+1<count);newer.enable(selected>0);
+  older.enable(selected+(page==Page.CHANGES?BUILDS_PER_PAGE:1)<count);newer.enable(selected>0);
   float buttonWidth=page==Page.CHANGES?(paneWidth-4)/3f:(paneWidth-2)/2f;
   newer.setRect(left,h-insets.bottom-22,buttonWidth,20);add(newer);
   float olderLeft=newer.right()+2;
@@ -118,6 +127,15 @@ public class APDTextScene extends PixelScene {
   older.setRect(olderLeft,newer.top(),buttonWidth,20);add(older);
   ExitButton exit=new ExitButton(){@Override protected void onClick(){onBackPressed();}};
   exit.setPos(w-insets.right-exit.width(),insets.top);add(exit);
+ }
+ private int categoryColor(String category){
+  if(category.equals("Changes"))return 0xFFAA44;
+  if(category.equals("Buffs"))return com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite.POSITIVE;
+  if(category.equals("Nerfs"))return com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite.NEGATIVE;
+  if(category.equals("Bug Fixes"))return 0xFFFFFF;
+  if(category.equals("Statistics / UIMSD"))return 0x44DD88;
+  if(category.equals("Developer Commentary"))return 0xCCCCCC;
+  return Window.TITLE_COLOR;
  }
  private void showBuildRanges(List<ApdHistory.Build> builds,int rangePage){
   int rangeCount=(builds.size()+ApdHistory.PAGE_SIZE-1)/ApdHistory.PAGE_SIZE;

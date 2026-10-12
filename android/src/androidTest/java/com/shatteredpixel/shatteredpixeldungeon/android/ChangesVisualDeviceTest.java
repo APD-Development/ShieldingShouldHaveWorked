@@ -46,17 +46,30 @@ public class ChangesVisualDeviceTest {
    render(()->{APDTextScene.page=APDTextScene.Page.CHANGES;ShatteredPixelDungeon.switchScene(APDTextScene.class);});waitScene(APDTextScene.class);
    render(()->{try{
     List<ApdHistory.Build> builds=ApdHistory.builds(Gdx.files.internal("apd/history/index.tsv").readString("UTF-8"));
-    ApdHistory.Build build=builds.get(0);List<ApdHistory.Entry> entries=ApdHistory.entries(Gdx.files.internal("apd/history/"+build.id+".tsv").readString("UTF-8"));
     Field f=APDTextScene.class.getDeclaredField("changes");f.setAccessible(true);List<ChangeInfo> infos=(List<ChangeInfo>)f.get(Game.scene());
-    assertEquals(1+ApdHistory.categories(entries).size(),infos.size());
-    if(infos.get(0).width()>=130&&infos.size()>2){assertEquals(0,infos.get(1).left(),0);assertEquals(infos.get(0).width()/2,infos.get(2).left(),0);assertEquals(infos.get(1).top(),infos.get(2).top(),0);}
-    int count=0;Field messages=ChangeButton.class.getDeclaredField("messages");messages.setAccessible(true);Method click=ChangeButton.class.getDeclaredMethod("onClick");click.setAccessible(true);
-    for(ChangeInfo info:infos)for(Gizmo child:children(info))if(child instanceof ChangeButton){
-     ChangeButton button=(ChangeButton)child;assertTrue(button.left()>=info.left());assertTrue(button.right()<=info.right());
-     assertTrue(((String[])messages.get(button))[0].startsWith(build.label+"\n\n"));assertTrue(info.onClick(button.centerX(),button.centerY()));
-     WndChanges popup=null;for(Gizmo g:children(Game.scene()))if(g instanceof WndChanges&&g.alive)popup=(WndChanges)g;assertNotNull(popup);assertSame(Game.scene(),popup.parent);popup.hide();if(!info.major)count++;
+    Field messages=ChangeButton.class.getDeclaredField("messages");messages.setAccessible(true);
+    int buildIndex=-1,categories=0,icons=0;ApdHistory.Build build=null;List<ApdHistory.Entry> entries=null;
+    Map<String,List<ApdHistory.Entry>> grouped=null;float firstColumnTop=0;boolean firstColumn=true;
+    for(ChangeInfo info:infos){
+     if(info.major){
+      if(build!=null){assertEquals(grouped.size(),categories);assertEquals(entries.size(),icons);}
+      build=builds.get(++buildIndex);entries=ApdHistory.entries(Gdx.files.internal("apd/history/"+build.id+".tsv").readString("UTF-8"));grouped=ApdHistory.categories(entries);categories=icons=0;firstColumn=true;
+     }else{
+      categories++;
+      if(info.width()<=70){
+       if(firstColumn){assertEquals(0,info.left(),0);firstColumnTop=info.top();}
+       else{assertEquals(info.width(),info.left(),0);assertEquals(firstColumnTop,info.top(),0);}
+       firstColumn=!firstColumn;
+      }
+     }
+     for(Gizmo child:children(info))if(child instanceof ChangeButton){
+      ChangeButton button=(ChangeButton)child;assertTrue(button.left()>=info.left());assertTrue(button.right()<=info.right());
+      assertTrue(((String[])messages.get(button))[0].startsWith(build.label+"\n\n"));assertTrue(info.onClick(button.centerX(),button.centerY()));
+      WndChanges popup=null;for(Gizmo g:children(Game.scene()))if(g instanceof WndChanges&&g.alive)popup=(WndChanges)g;assertNotNull(popup);assertSame(Game.scene(),popup.parent);popup.hide();if(!info.major)icons++;
+     }
     }
-    assertEquals(entries.size(),count);
+    assertEquals(grouped.size(),categories);assertEquals(entries.size(),icons);assertEquals(Math.min(6,builds.size()),buildIndex+1);
+
    }catch(Exception e){throw new RuntimeException(e);}});
    screenshot("apd-changes.png");
    render(()->{try{
