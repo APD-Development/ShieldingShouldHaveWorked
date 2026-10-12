@@ -1,4 +1,4 @@
-name: Deliver verified existing APD TEST63
+name: Deliver verified existing APD TEST67
 
 # Delivery only: reuse the already tested APK; no Gradle or app rebuild.
 # Accept verified SDK signer labels; retain compatibility refusal diagnostics.
@@ -12,19 +12,19 @@ permissions:
   actions: read
 
 concurrency:
-  group: apd-existing-test63-delivery
+  group: apd-existing-test67-delivery
   cancel-in-progress: false
 
 env:
-  APD_SOURCE_SHA: 1f0c843f510957d77702a26c458fd7336d1f56b9
-  APD_SOURCE_RUN: '38229156395'
-  APD_TEST_NUMBER: '63'
-  APD_CORE_TEST_COUNT: '1134'
-  APD_ANDROID_TEST_COUNT: '17'
+  APD_SOURCE_SHA: fa76dede19aa1a207531413b9de838b1d40fefa0
+  APD_SOURCE_RUN: '38248003026'
+  APD_TEST_NUMBER: '67'
+  APD_CORE_TEST_COUNT: '1150'
+  APD_ANDROID_TEST_COUNT: '19'
   APD_ROLLBACK_NUMBER: '50'
   APD_ROLLBACK_SHA256: 'ffa42ea87bcbbfa4ed7b600682aea49a703e90bce57f498b2bf36bccd2cd7c7f'
-  APD_REQUIRED_ANDROID_METHODS: 'menusSurviveSceneRecreationAndNarrowActionsStayInsideTheirWindow,aRunCanBePlayedSavedContinuedAndEndedWithItsHistoryRecorded,aWonRunIsRecordedAsWonAndSealed,difficultyIsChosenOnTheCharacterScreenAndNotInSettings,communityMenuOpensEveryPreviewAndReturnsWithoutStackingWindows,adultHumorControlWorksWithoutAnAgeProviderAndReopensWithSavedChoice,textAndGuideScrollSurviveRepeatedResetsAndClampAfterResize,validationEmptyHistoryGroupedAndReportMessagesSurviveWithoutRepeatingActions,tourChoicesSurviveWithoutStartingATourOrRepeatingTheOffer,heroButtonsStayAboveNavigationBarAndRemainSelectable,navigationOverlapReservesVisibleBarsEvenWithFullscreenRequested,clericQuickCastsPersistAndKeepNormalCostsAndTargeting,arcanaItemDescriptionsRequireKnownEquippedRingsAndFitWindows,demoUnlockKeepsTenRunNoticeVisibleOnTitle,offlineNewsCardsOpenDatedSpritePopups,everyAboutPopupOpensScrollsAndCloses,everyUimsdScreenAndDialogCanBeBuilt'
-  APD_SOURCE_ARTIFACTS_JSON: '{"apd-codex-private-test-apk":11738196705,"apd-codex-core-tests":11737762272,"apd-codex-android-checks":11737469809}'
+  APD_REQUIRED_ANDROID_METHODS: 'menusSurviveSceneRecreationAndNarrowActionsStayInsideTheirWindow,aRunCanBePlayedSavedContinuedAndEndedWithItsHistoryRecorded,aWonRunIsRecordedAsWonAndSealed,difficultyIsChosenOnTheCharacterScreenAndNotInSettings,communityMenuOpensEveryPreviewAndReturnsWithoutStackingWindows,adultHumorControlWorksWithoutAnAgeProviderAndReopensWithSavedChoice,textAndGuideScrollSurviveRepeatedResetsAndClampAfterResize,validationEmptyHistoryGroupedAndReportMessagesSurviveWithoutRepeatingActions,tourChoicesSurviveWithoutStartingATourOrRepeatingTheOffer,heroButtonsStayAboveNavigationBarAndRemainSelectable,navigationOverlapReservesVisibleBarsEvenWithFullscreenRequested,clericQuickCastsPersistAndKeepNormalCostsAndTargeting,arcanaItemDescriptionsRequireKnownEquippedRingsAndFitWindows,demoUnlockKeepsTenRunNoticeVisibleOnTitle,offlineNewsCardsOpenDatedSpritePopups,everyAboutPopupOpensScrollsAndCloses,everyUimsdScreenAndDialogCanBeBuilt,replacingHomeContentsDisposesPreviouslyDrawnImages,categoriesUseSpdColumnsAndEveryIconOpensItsExactBuildPopup'
+  APD_SOURCE_ARTIFACTS_JSON: '{"apd-codex-android-checks":11747011526,"apd-codex-core-tests":11746199773,"apd-codex-private-test-apk":11746109910}'
 
 jobs:
   validate-and-stage:
@@ -70,10 +70,10 @@ jobs:
         run: |
           python3 -m pip install reportlab==4.2.5
           python3 -m unittest discover -s tools -p test_apd_bug_report_pdf.py
-          python3 tools/apd_bug_report_pdf.py docs/APD-TEST63-REPORT-2026-10-12.md delivery/APD-Bug-Fixes-2026-10-12-TEST63.pdf --verification delivery/verification.txt
+          python3 tools/apd_bug_report_pdf.py docs/APD-TEST67-REPORT-2026-10-12.md delivery/APD-Bug-Fixes-2026-10-12-TEST67.pdf --verification delivery/verification.txt
       - uses: actions/upload-artifact@v4
         with:
-          name: verified-test63-delivery
+          name: verified-test67-delivery
           path: delivery/
           retention-days: 7
 
@@ -82,7 +82,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: verified-test63-evidence
+          name: verified-test67-evidence
           path: |
             delivery/*.json
             delivery/*.txt
@@ -103,7 +103,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: verified-test63-delivery
+          name: verified-test67-delivery
           path: delivery
       - name: Publish owner-requested private verified APK and report
         env:
@@ -122,7 +122,7 @@ jobs:
               '--title','APD PRIVATE CODEX TEST 63','--notes-file','delivery/verification.txt',
               'delivery/ADHD-Pixel-Dungeon-CODEX-TEST-63.apk',
               'delivery/ADHD-Pixel-Dungeon-CODEX-TEST-63.apk.sha256',
-              'delivery/APD-Bug-Fixes-2026-10-12-TEST63.pdf',
-              'delivery/TEST63-Verification.json',
+              'delivery/APD-Bug-Fixes-2026-10-12-TEST67.pdf',
+              'delivery/TEST67-Verification.json',
               'delivery/APD-Source-Line-Counts.json'],check=True)
           PY
