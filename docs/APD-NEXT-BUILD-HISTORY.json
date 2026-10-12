@@ -1,37 +1,55 @@
 {
-  "previous_label": "Codex TEST 81",
-  "previous_source": "1d369cff8c047e6ba1ec072785a048873e7a2214",
-  "previous_run": 38306448024,
+  "previous_label": "Codex TEST 82",
+  "previous_source": "b43316b5c60d9b605ae07e8e6bfc5d43ac847ad2",
+  "previous_run": 38308000010,
   "date": "2026-10-12",
   "changes": [
     {
       "category": "Bug Fixes",
-      "sprite": "ICON_RANKINGS",
-      "title": "Saved-query Sort menu crash",
-      "text": "Opening Sort no longer crashes when a saved query contains more than eight sort keys.",
+      "sprite": "ICON_DATA",
+      "title": "Detect damaged statistics caches",
+      "text": "A bit flip in a temporary row cache now triggers a rebuild instead of silently changing recorded statistics.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndUimsdSort.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowCodec.java"
+      ]
+    },
+    {
+      "category": "Statistics / UIMSD",
+      "sprite": "ICON_RANKINGS",
+      "title": "Compatible row-cache refresh",
+      "text": "Older row caches rebuild once from original run logs, then remain available for normal fast reloads.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowCodec.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "ICON_DATA",
+      "title": "Checksum without extra buffer copy",
+      "text": "Cache writing computes its integrity check directly from the existing buffer, preserving raw-history formats and avoiding another full-size copy.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/ByteSink.java"
       ]
     },
     {
       "category": "Testing",
-      "sprite": "ICON_DATA",
-      "title": "Large sort-key regression",
-      "text": "Android checks now open the Sort menu with nine distinct public keys and capture it without dropping the query's keys.",
+      "sprite": "ICON_INFO",
+      "title": "Cache corruption and migration coverage",
+      "text": "Added tests for bit flips, valid-text damage, older cache migration and unchanged genuine history; existing allocation checks still exercise malformed payloads.",
       "paths": [
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdScreensDeviceTest.java",
-        "tools/run-codex-android-checks.sh"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowCacheChecksumTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowCacheAllocationBoundsTest.java"
       ]
     },
     {
       "category": "Development",
       "sprite": "ICON_INFO",
-      "title": "Source-reviewed audit evidence",
-      "text": "Recorded exact reviewed source files, cache and filter evidence, and a reproduced saved-query crash.",
+      "title": "Verified audit and build records",
+      "text": "Recorded the preceding Sort fix's Android evidence, cache corruption reproductions and remaining audit limitations.",
       "paths": [
-        "docs/APD-UIMSD-AUDIT-EVIDENCE-2026-10-12.json",
         "docs/HANDOFF.md",
-        "docs/APD-TEST82-REPORT-2026-10-12.md",
+        "docs/APD-TEST83-REPORT-2026-10-12.md",
+        "docs/APD-UIMSD-AUDIT-EVIDENCE-2026-10-12.json",
         "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/APD-CODEX-BUILD-REQUEST.txt"
       ]
@@ -40,7 +58,7 @@
       "category": "Developer Commentary",
       "sprite": "V074_SHPX",
       "title": "Developer Commentary",
-      "text": "I removed an unused array that could crash the Sort menu for a larger saved query. Sorting and saved-query formats remain unchanged.",
+      "text": "I added an integrity check to temporary row caches because valid-looking text could still be damaged. Original run logs stay untouched, and older caches rebuild safely.",
       "paths": []
     }
   ]

@@ -121,6 +121,15 @@
       ],
       "reproduction": "Actual encoded/decoded9-keyquery openingexactoldmenu throwsArrayIndexOutOfBoundsException index8length8",
       "correction": "Removeunusedarray/writes; native9-distinct-keyregressionpendingTEST82"
+    },
+    {
+      "component": "RowCodec",
+      "source": "a611c841e64a8bca592831d3200a5a65e1735b61",
+      "reproduction": "Valid ASCII bit flips accepted and reused; exact baseline4casesfail0.167s (includes newmigrationexpectation)",
+      "correction": "Cache-only format2 CRC32, raw-preserving legacycache rebuild and no-extra-copy ByteSink helper",
+      "targeted": "75passed1.319s",
+      "full_checks": "Pending TEST83",
+      "remaining": "DerivedStore textcache checksum and rawsource same-length identity require further audit"
     }
   ],
   "limitations": [

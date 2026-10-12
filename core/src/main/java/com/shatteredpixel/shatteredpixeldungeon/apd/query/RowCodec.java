@@ -38,7 +38,7 @@ public final class RowCodec {
 	private RowCodec(){}
 
 	private static final byte[] MAGIC = { 'A', 'P', 'D', 'R' };
-	private static final int FORMAT = 1;
+	private static final int FORMAT = 2;
 
 	//the cache is only valid for this exact log (its size) and this exact builder
 	public static byte[] encode( LogRows lr, long logLength, Map<String, DatasetDef> defs ){
@@ -103,6 +103,7 @@ public final class RowCodec {
 				}
 			}
 		}
+		out.writeInt32(out.crc32());
 		return out.toByteArray();
 	}
 
@@ -113,7 +114,13 @@ public final class RowCodec {
 	//null when the bytes are not a cache for this log and this builder
 	public static LogRows decode( byte[] data, long logLength, Map<String, DatasetDef> defs ){
 		try {
-			ByteSource in = new ByteSource(data);
+			if (data.length < 4) return null;
+            int bodyLength = data.length - 4;
+            int expected = new ByteSource(data,bodyLength,4).readInt32();
+            java.util.zip.CRC32 checksum = new java.util.zip.CRC32();
+            checksum.update(data,0,bodyLength);
+            if (expected != (int)checksum.getValue()) return null;
+            ByteSource in = new ByteSource(data,0,bodyLength);
             java.nio.charset.CharsetDecoder textDecoder = java.nio.charset.StandardCharsets.UTF_8.newDecoder();
 			for (byte b : MAGIC) if (in.readByte() != (b & 0xFF)) return null;
 			if (in.readUnsignedInt() != FORMAT) return null;
@@ -183,6 +190,7 @@ public final class RowCodec {
 				}
 				if (def != null) lr.rows.put(id, list);
 			}
+			if (in.hasRemaining()) return null;
 			return lr;
 		} catch (RuntimeException | java.nio.charset.CharacterCodingException e){
 			return null;
