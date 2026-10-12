@@ -1,54 +1,55 @@
 {
-  "previous_label": "Codex TEST 79",
-  "previous_source": "a611c841e64a8bca592831d3200a5a65e1735b61",
-  "previous_run": 38299325341,
+  "previous_label": "Codex TEST 80",
+  "previous_source": "ee750f30687eccb89096ed858a12cc54cec3e299",
+  "previous_run": 38301092448,
   "date": "2026-10-12",
   "changes": [
     {
       "category": "Bug Fixes",
-      "sprite": "ICON_DATA",
-      "title": "Damaged derived statistics text",
-      "text": "Malformed text in the derived statistics cache now triggers a rebuild from genuine run logs instead of displaying corrupted values.",
+      "sprite": "ICON_RANKINGS",
+      "title": "Filter uncommon text values",
+      "text": "Multi-value text filters now offer full-list typing even when common suggestions are available, so uncommon recorded values remain reachable.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/DerivedStore.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndUimsdFilter.java"
+      ]
+    },
+    {
+      "category": "Quality of Life",
+      "sprite": "ICON_DATA",
+      "title": "Long multi-value lists",
+      "text": "The full-list text input no longer truncates multi-value filters at forty characters; ordinary suggestion lists remain compact.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndUimsdFilter.java"
+      ]
+    },
+    {
+      "category": "Quality of Life",
+      "sprite": "ICON_INFO",
+      "title": "Native menu help",
+      "text": "Statistics picker help now uses SPD's grey button styling while retaining its existing explanation popup.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndUimsdList.java"
       ]
     },
     {
       "category": "Testing",
-      "sprite": "ICON_DATA",
-      "title": "Derived cache integrity regressions",
-      "text": "Added tests for malformed cache recovery, unchanged genuine history and valid international text.",
+      "sprite": "ICON_INFO",
+      "title": "Uncommon-value picker regression",
+      "text": "Android checks now open full-list input, verify a value outside sixty suggestions and apply a longer six-value filter.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/DerivedCacheTextTest.java"
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdScreensDeviceTest.java",
+        "tools/run-codex-android-checks.sh"
       ]
     },
     {
       "category": "Development",
       "sprite": "ICON_INFO",
-      "title": "Verified private delivery",
-      "text": "Recorded TEST79's verified APK delivery and added checks that wait for successful source verification before publishing.",
-      "paths": [
-        ".github/workflows/codex-existing-apk-delivery.yml",
-        "docs/APD-TEST79-REPORT-2026-10-12.md"
-      ]
-    },
-    {
-      "category": "Development",
-      "sprite": "ICON_INFO",
-      "title": "Retired unsuccessful backup delivery",
-      "text": "Removed an unused backup publication workflow after its source comparison correctly refused delivery; no player data or published assets changed.",
-      "paths": [
-        ".github/workflows/codex-test78-delivery.yml"
-      ]
-    },
-    {
-      "category": "Development",
-      "sprite": "ICON_INFO",
-      "title": "Audit and build records",
-      "text": "Recorded the cache reproduction, recovery checks, source evidence and remaining audit limitations.",
+      "title": "Verification and execution records",
+      "text": "Recorded the preceding cache build's checks, continued audit evidence and actual scheduler limitations.",
       "paths": [
         "docs/HANDOFF.md",
         "docs/APD-TEST80-REPORT-2026-10-12.md",
+        "docs/APD-TEST81-REPORT-2026-10-12.md",
         "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/APD-CODEX-BUILD-REQUEST.txt"
       ]
@@ -57,7 +58,7 @@
       "category": "Developer Commentary",
       "sprite": "V074_SHPX",
       "title": "Developer Commentary",
-      "text": "I made the older statistics cache reject malformed text and rebuild it from the original records. Valid international text and genuine run history remain unchanged.",
+      "text": "I kept the compact suggestions while restoring a way to enter uncommon values and longer lists. Query calculations and genuine history remain unchanged.",
       "paths": []
     }
   ]

@@ -197,6 +197,52 @@ public class UimsdScreensDeviceTest {
                 Field dirty=UimsdScene.class.getDeclaredField("dirty");dirty.setAccessible(true);dirty.set(Game.scene(),true);
             }catch(Exception e){throw new RuntimeException(e);}});
 
+            // Text-IN must reach values outside the compact sixty-value suggestion list.
+            final AtomicReference<com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdTextInput> fullListInput=new AtomicReference<>();
+            final UimsdModel uncommon=new UimsdModel("filter-fixture","fixture");
+            onRender(()->{try{
+                com.shatteredpixel.shatteredpixeldungeon.apd.query.DatasetDef def=m.catalog().dataset("runs").def;
+                java.util.List<com.shatteredpixel.shatteredpixeldungeon.apd.query.Row> rows=new java.util.ArrayList<>();
+                for(int i=0;i<70;i++){
+                    com.shatteredpixel.shatteredpixeldungeon.apd.query.Row row=new com.shatteredpixel.shatteredpixeldungeon.apd.query.Row("row"+i,"row"+i,"row"+i,def.size());
+                    row.finished=true;row.ruleset="filter-fixture";
+                    row.setText(def.indexOf(com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKeys.HERO_CLASS),String.format(java.util.Locale.ROOT,"TYPE%03d",i),com.shatteredpixel.shatteredpixeldungeon.apd.stats.Fact.PROV_RECORDED);
+                    rows.add(row);
+                }
+                uncommon.setCatalog(new com.shatteredpixel.shatteredpixeldungeon.apd.query.Catalog()
+                    .add(new com.shatteredpixel.shatteredpixeldungeon.apd.query.Dataset(def,rows,null))
+                    .add(new com.shatteredpixel.shatteredpixeldungeon.apd.query.ViewDef("runs","Runs","",com.shatteredpixel.shatteredpixeldungeon.apd.query.Query.of("runs"))));
+                ColumnDef column=def.column(com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKeys.HERO_CLASS);
+                assertEquals(60,uncommon.choicesFor(column,60).size());
+                for(UimsdModel.Choice choice:uncommon.choicesFor(column,60))assertFalse("rare value is outside suggestions",choice.value.equals("TYPE069"));
+                WndUimsdFilter.pickValue(uncommon,-1,null,column,Op.IN);
+                Field children=com.watabou.noosa.Group.class.getDeclaredField("members");children.setAccessible(true);
+                com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList list=null;
+                for(Object child:(java.util.List<?>)children.get(Game.scene()))
+                    if(child instanceof com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList)list=(com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList)child;
+                assertNotNull("multi-value chooser opened",list);
+                Field entries=com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.class.getDeclaredField("entries");entries.setAccessible(true);
+                java.util.List<?> values=(java.util.List<?>)entries.get(list);int typed=-1;
+                for(int i=0;i<values.size();i++)if(((com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.Entry)values.get(i)).label.equals("Enter a full text list..."))typed=i;
+                assertTrue("text-IN must expose a full-list typing action even with suggestions",typed>=0);
+                Method pick=com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.class.getDeclaredMethod("picked",int.class);pick.setAccessible(true);pick.invoke(list,typed);
+                for(Object child:(java.util.List<?>)children.get(Game.scene()))
+                    if(child instanceof com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdTextInput)fullListInput.set((com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdTextInput)child);
+                assertNotNull("typing fallback opens the native input",fullListInput.get());
+                Field limit=com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdTextInput.class.getDeclaredField("limit");limit.setAccessible(true);
+                assertTrue("full lists are not restricted to forty characters",((Integer)limit.get(fullListInput.get()))>40);
+            }catch(Exception e){throw new RuntimeException(e);}});
+            Thread.sleep(300);
+            PlayRunDeviceTest.visibilityScreenshot("uimsd-text-values.png");
+            onRender(()->{
+                fullListInput.get().onSelect(true,"TYPE069,TYPE001,TYPE002,TYPE003,TYPE004,TYPE005");
+                fullListInput.get().hide();
+                assertEquals(6,uncommon.result().rows.size());
+                assertTrue("an uncommon value remains queryable",uncommon.result().rows.stream().anyMatch(row->row.id.equals("row69")));
+                assertEquals(6,uncommon.query().filters.get(0).texts.length);
+                com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.closeAll();
+            });
+
 			onRender(new Runnable(){
 				public void run(){
 					m.showRoot("weapons");

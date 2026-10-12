@@ -25,7 +25,7 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.WindowGeometry;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
-import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
+import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.UimsdStyle;
@@ -178,7 +178,7 @@ public class WndUimsdList extends Window {
 		if (message != null && !message.isEmpty()){
 			if (message.length() > 100){
 				final String explanation = message;
-				RedButton help = new RedButton("About this menu", 6){
+				StyledButton help = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "About this menu", 6){
 					@Override protected void onClick(){
 						ShatteredPixelDungeon.scene().addToFront(new WndUimsdText(title == null ? "UIMSD" : title, explanation, false));
 					}

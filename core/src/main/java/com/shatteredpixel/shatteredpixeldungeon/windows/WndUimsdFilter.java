@@ -203,7 +203,7 @@ public final class WndUimsdFilter {
 					}
 					return Filter.text(col.id, op, choices.get(picked.get(0)).value);
 				}
-			}, op == Op.IN ? null : new Runnable(){
+			}, new Runnable(){
 				@Override
 				public void run(){
 					typeText(m, index, col, op, sentence);
@@ -255,7 +255,7 @@ public final class WndUimsdFilter {
 		if (op == Op.IN){
 			List<Integer> picked = new ArrayList<>();
 			for (int i = 0; i < entries.size(); i++) if (entries.get(i).current) picked.add(i);
-			chooseMany(m, index, sentence, entries, chosen, picked);
+			chooseMany(m, index, sentence, entries, chosen, picked, typeInstead);
 			return;
 		}
 		final List<Entry> originalEntries = new ArrayList<>(entries);
@@ -277,11 +277,15 @@ public final class WndUimsdFilter {
 	}
 
 	private static void chooseMany(final UimsdModel m, final int index, String sentence,
-								   List<Entry> entries, final Chosen chosen, final List<Integer> picked){
+								   List<Entry> entries, final Chosen chosen, final List<Integer> picked, final Runnable typeInstead){
 		for (int i = 0; i < entries.size(); i++) entries.get(i).checked(picked.contains(i));
-			show(new WndUimsdList(sentence, "Step 3 of 3: tick every value you want, then Done.", true, entries, new WndUimsdList.Picker(){
+        final int typeAt = typeInstead == null ? -1 : entries.size();
+        List<Entry> displayed = new ArrayList<>(entries);
+        if (typeInstead != null) displayed.add(Entry.action("Enter a full text list..."));
+			show(new WndUimsdList(sentence, "Step 3 of 3: tick every value you want, then Done.", true, displayed, new WndUimsdList.Picker(){
 				@Override
 				public void onPick( int i, boolean checked ){
+                    if (i == typeAt){ typeInstead.run(); return; }
 					if (checked){
 						if (!picked.contains(i)) picked.add(i);
 					} else {
@@ -294,11 +298,11 @@ public final class WndUimsdFilter {
 					hide();
 					if (!picked.isEmpty()) finish(m, index, chosen.filter(picked));
 				}
-			}.restoreWith(() -> chooseMany(m, index, sentence, entries, chosen, new ArrayList<>(picked))));
+			}.restoreWith(() -> chooseMany(m, index, sentence, entries, chosen, new ArrayList<>(picked), typeInstead)));
 	}
 
 	private static void typeText( final UimsdModel m, final int index, final ColumnDef col, final Op op, String sentence ){
-		ask(sentence, op == Op.IN ? "Values, separated by commas" : op == Op.CONTAINS ? "Some text that appears in it" : "The text to match", new Answer(){
+		ask(sentence, op == Op.IN ? "Enter the full list of values, separated by commas" : op == Op.CONTAINS ? "Some text that appears in it" : "The text to match", op == Op.IN ? Integer.MAX_VALUE : 40, new Answer(){
 			@Override
 			public void got( String s ){
 				if (op == Op.IN){
@@ -320,7 +324,11 @@ public final class WndUimsdFilter {
 	}
 
 	private static void ask( String title, String body, final Answer answer ){
-		show(new WndUimsdTextInput(title, body, "", 40, false, "OK", "Cancel", (positive, text) -> {
+        ask(title, body, 40, answer);
+    }
+
+    private static void ask(String title, String body, int limit, final Answer answer){
+		show(new WndUimsdTextInput(title, body, "", limit, false, "OK", "Cancel", (positive, text) -> {
 				if (positive) answer.got(text);
 			}));
 	}

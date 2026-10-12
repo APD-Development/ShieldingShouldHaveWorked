@@ -1,1 +1,1 @@
-2026-10-12 TEST80: strict derived-cache UTF8 recovery, two permanent regressions. Previous actual TEST79source a611c841e64a8bca592831d3200a5a65e1735b61/run38299325341. Fullcore/debug/API34 and13PNG required,1202coreexpected. No automatic publication;79remainsdeliveredrollback.
+2026-10-12 TEST81: native full-list typing for uncommon text-IN values and long lists, grey pickerhelp, realAndroidUI regression/14PNG. PreviousproducedTEST80ee750f30687eccb89096ed858a12cc54cec3e299/run38301092448. Fullcore/debug/API34required,noautomaticpublication;79deliveredrollback.
