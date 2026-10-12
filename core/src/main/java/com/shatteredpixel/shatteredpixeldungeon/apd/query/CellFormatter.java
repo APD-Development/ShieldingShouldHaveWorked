@@ -86,9 +86,9 @@ public final class CellFormatter {
 
 	private static String fixed( long n, int div, int decimals ){
 		boolean neg = n < 0;
-		long a = Math.abs(n);
-		long whole = a / div;
-		long frac = a % div;
+		// Divide before taking absolute values: Long.MIN_VALUE cannot be negated.
+		long whole = Math.abs(n / div);
+		long frac = Math.abs(n % div);
 		if (decimals == 1) frac = frac / (div / 10);
 		String f = Long.toString(frac);
 		while (f.length() < decimals) f = "0" + f;
@@ -269,3 +269,4 @@ public final class CellFormatter {
 		}
 	}
 }
+
