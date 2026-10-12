@@ -1,1 +1,1 @@
-2026-10-12 TEST74: UIMSD aggregate allocation cleanup and resumed-run import/cache regression. Previous produced TEST73 source2a94b96a35be65ae4792b123dc2144ec1c7ca881/run38271964772. Run complete core/debug/API34 and compiled-history verification; do not publish automatically.
+2026-10-12 TEST75: approved0.5x/1x/2x dungeon playback, persisted settings and normal HUD/turn clock. Previous produced TEST74 source92f4d372abbba2f030774d01b7b939440c75f137/run38276527256. Run allcore/debug/API34 with strengthened real-touch and native animation timing checks; do not auto-publish.

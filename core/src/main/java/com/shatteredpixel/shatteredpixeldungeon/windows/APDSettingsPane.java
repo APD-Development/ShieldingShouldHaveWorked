@@ -63,6 +63,7 @@ public class APDSettingsPane extends Component {
 	private RenderedTextBlock status;
 	private RenderedTextBlock storage;
 	private RedButton btnClericQuickCasts;
+    private RedButton btnPlaybackSpeed;
 	private RedButton btnTest;
 	private RedButton btnExportHistory;
 	private RedButton btnImportHistory;
@@ -134,6 +135,20 @@ public class APDSettingsPane extends Component {
         };
         chkStairNavigation.checked(SPDSettings.stairNavigationShortcut());add(chkStairNavigation);
 
+        final String[] speeds = {"0.5x", "1x", "2x"};
+        btnPlaybackSpeed = new RedButton("Game speed: " + speeds[SPDSettings.playbackSpeed()]) {
+            @Override protected void onClick() {
+                ShatteredPixelDungeon.scene().addToFront(new WndOptions("Game speed",
+                        "Playback only. Turn costs and combat stay unchanged.", speeds) {
+                    @Override protected void onSelect(int index) {
+                        if(index < 0 || index >= speeds.length) return;
+                        SPDSettings.playbackSpeed(index);
+                        btnPlaybackSpeed.text("Game speed: " + speeds[index]);
+                    }
+                });
+            }
+        };
+        add(btnPlaybackSpeed);
 		btnClericQuickCasts = new RedButton("Cleric quick-cast buttons") {
             @Override protected void onClick() { WndClericQuickCasts.settings(); }
         };
@@ -289,6 +304,7 @@ public class APDSettingsPane extends Component {
 		pos = chkAdult.bottom() + GAP;
         chkTileVisibility.setRect(x,pos,width,16);pos=chkTileVisibility.bottom()+GAP;
         chkStairNavigation.setRect(x,pos,width,16);pos=chkStairNavigation.bottom()+GAP;
+        btnPlaybackSpeed.setRect(x,pos,width,16);pos=btnPlaybackSpeed.bottom()+GAP;
         btnClericQuickCasts.setRect(x,pos,width,16);
         pos = btnClericQuickCasts.bottom() + GAP;
 		status.maxWidth( (int)width );

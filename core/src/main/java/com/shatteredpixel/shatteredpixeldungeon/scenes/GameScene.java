@@ -251,7 +251,7 @@ public class GameScene extends PixelScene {
 
 		scene = this;
 
-		terrain = new Group();
+		terrain = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
 		add( terrain );
 
 		water = new SkinnedBlock(
@@ -275,7 +275,7 @@ public class GameScene extends PixelScene {
 		water.autoAdjust = true;
 		terrain.add( water );
 
-		ripples = new Group();
+		ripples = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
 		terrain.add( ripples );
 
 		DungeonTileSheet.setupVariance(Dungeon.level.map.length, Dungeon.seedCurDepth());
@@ -283,7 +283,7 @@ public class GameScene extends PixelScene {
 		tiles = new DungeonTerrainTilemap();
 		terrain.add( tiles );
 
-		customTiles = new Group();
+		customTiles = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
 		terrain.add(customTiles);
 
 		visualGrid = new GridTileMap();
@@ -295,29 +295,29 @@ public class GameScene extends PixelScene {
 		terrainFeatures = new TerrainFeaturesTilemap(Dungeon.level.plants, Dungeon.level.traps);
 		terrain.add(terrainFeatures);
 
-		customTerrain = new Group();
+		customTerrain = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
 		terrain.add(customTerrain);
 
 		levelVisuals = Dungeon.level.addVisuals();
 		add(levelVisuals);
 
-		floorEmitters = new Group();
+		floorEmitters = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
 		add(floorEmitters);
 
-		heaps = new Group();
+		heaps = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
 		add( heaps );
 		
 		for ( Heap heap : Dungeon.level.heaps.valueList() ) {
 			addHeapSprite( heap );
 		}
 
-		emitters = new Group();
-		effects = new Group();
-		healthIndicators = new Group();
-		emoicons = new Group();
-		overFogEffects = new Group();
+		emitters = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
+		effects = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
+		healthIndicators = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
+		emoicons = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
+		overFogEffects = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
 		
-		mobs = new Group();
+		mobs = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
 		add( mobs );
 
 		hero = new HeroSprite();
@@ -335,7 +335,7 @@ public class GameScene extends PixelScene {
 		walls = new DungeonWallsTilemap();
 		add(walls);
 
-		customWalls = new Group();
+		customWalls = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
 		add(customWalls);
 
 		levelWallVisuals = Dungeon.level.addWallVisuals();
@@ -347,7 +347,7 @@ public class GameScene extends PixelScene {
 		add( emitters );
 		add( effects );
 
-		gases = new Group();
+		gases = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
 		add( gases );
 
 		for (Blob blob : Dungeon.level.blobs.values()) {
@@ -359,15 +359,15 @@ public class GameScene extends PixelScene {
 		fog = new FogOfWar( Dungeon.level.width(), Dungeon.level.height() );
 		add( fog );
 
-		spells = new Group();
+		spells = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
 		add( spells );
 
 		add(overFogEffects);
 
-		checkedCells = new Group();
+		checkedCells = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
 		add(checkedCells);
 
-		targetedCells = new Group();
+		targetedCells = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
 		add(targetedCells);
 		for (TargetedCell cell : TargetedCell.cells.valueList()){
 			cell.reset(cell.pos, cell.time);
@@ -387,7 +387,7 @@ public class GameScene extends PixelScene {
 			addCustomWall(visual);
 		}
 		
-		statuses = new Group();
+		statuses = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
 		add( statuses );
 		
 		add( healthIndicators );
@@ -874,6 +874,7 @@ public class GameScene extends PixelScene {
 
 	@Override
 	public synchronized void update() {
+        com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.speed(SPDSettings.playbackSpeed());
 		lastOffset = null;
 
 		if (updateItemDisplays){

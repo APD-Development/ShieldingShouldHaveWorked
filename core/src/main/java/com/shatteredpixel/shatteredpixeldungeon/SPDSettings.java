@@ -670,6 +670,8 @@ public class SPDSettings extends GameSettings {
 	public static int fulLScreenMonitor(){
 		return getInt( KEY_FULLSCREEN_MONITOR, 0 );
 	}
+    public static int playbackSpeed() { int value = getInt("apd_playback_speed", 1); return value >= 0 && value <= 2 ? value : 1; }
+    public static void playbackSpeed(int value) { put("apd_playback_speed", value >= 0 && value <= 2 ? value : 1); }
 }
 
 

@@ -1,55 +1,65 @@
 {
-  "previous_label": "Codex TEST 73",
-  "previous_source": "2a94b96a35be65ae4792b123dc2144ec1c7ca881",
-  "previous_run": 38271964772,
+  "previous_label": "Codex TEST 74",
+  "previous_source": "92f4d372abbba2f030774d01b7b939440c75f137",
+  "previous_run": 38276527256,
   "date": "2026-10-12",
   "changes": [
     {
-      "category": "Performance",
-      "sprite": "ICON_RANKINGS",
-      "title": "Lighter statistics aggregates",
-      "text": "Statistics calculations allocate distinct-value and median containers only when those calculations need them.",
+      "category": "Quality of Life",
+      "sprite": "ICON_TIME",
+      "title": "Game playback speed",
+      "text": "Choose 0.5x, 1x or 2x dungeon playback in APD Settings without changing gameplay turns or combat costs.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/QueryEngine.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/APDSettingsPane.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/SPDSettings.java"
       ]
     },
     {
-      "category": "Testing",
-      "sprite": "ICON_RANKINGS",
-      "title": "Resumed-run import regression",
-      "text": "Added a real-log and cache-reload check that an unfinished resumed run does not hide an imported finished ranking.",
+      "category": "Changes",
+      "sprite": "ICON_TIME",
+      "title": "Dungeon animation timing",
+      "text": "Dungeon visual groups follow the selected speed while menus, HUD long presses and the actor clock keep their normal timing.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/DatasetBuildersTest.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/PlaybackGroup.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/GameScene.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_INFO",
-      "title": "Allocation measurement",
-      "text": "Added a repeatable desktop measurement of statistics aggregate allocations without changing Android gameplay.",
+      "title": "Playback regressions",
+      "text": "Added saved-setting, frame-rate, nested-group, clock-restoration and unchanged-turn-clock regressions for all three speeds.",
       "paths": [
-        "tools/UimsdAggregateAllocationProbe.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/PlaybackSpeedTest.java"
+      ]
+    },
+    {
+      "category": "Testing",
+      "sprite": "ICON_TIME",
+      "title": "Android speed controls and animations",
+      "text": "Android checks now select every speed through actual touches and compare real dungeon animation completion times.",
+      "paths": [
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/ApdSettingsClickDeviceTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PlayRunDeviceTest.java"
       ]
     },
     {
       "category": "Development",
       "sprite": "ICON_INFO",
-      "title": "Verification and delivery evidence",
-      "text": "Recorded TEST73 signing checks, private APK delivery and the ongoing statistics audit.",
+      "title": "Playback verification record",
+      "text": "Recorded the approved playback-only scope, local checks and remaining Android verification.",
       "paths": [
+        "docs/APD-TEST75-REPORT-2026-10-12.md",
         "docs/HANDOFF.md",
-        "docs/APD-TEST73-REPORT-2026-10-12.md",
-        "docs/APD-UIMSD-FOLLOWUP-2026-10-12.md",
         "docs/APD-NEXT-BUILD-HISTORY.json",
-        "docs/APD-CODEX-BUILD-REQUEST.txt",
-        ".github/workflows/codex-existing-apk-delivery.yml"
+        "docs/APD-CODEX-BUILD-REQUEST.txt"
       ]
     },
     {
       "category": "Developer Commentary",
       "sprite": "V074_SHPX",
       "title": "Developer Commentary",
-      "text": "I reduced unnecessary statistics allocations while preserving query results. I also added a saved-history regression for resumed runs.",
+      "text": "I added three playback speeds while keeping turn costs and HUD timing unchanged. I am verifying the actual Android controls and animation timing before delivery.",
       "paths": []
     }
   ]

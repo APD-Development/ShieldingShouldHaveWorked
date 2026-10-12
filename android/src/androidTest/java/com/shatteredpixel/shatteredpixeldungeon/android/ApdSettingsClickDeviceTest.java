@@ -194,6 +194,7 @@ public class ApdSettingsClickDeviceTest {
 			openTitleForTest();
 			final boolean previous = SPDSettings.apdAdultHumor();
 			final int previousSpellButtons = SPDSettings.apdClericQuickSlots();
+            final int previousSpeed = SPDSettings.playbackSpeed();
 			final AtomicReference<WndAPDSettings> window = new AtomicReference<>();
 			try {
 				onRender(() -> {
@@ -237,11 +238,34 @@ public class ApdSettingsClickDeviceTest {
                 assertEquals("only one through four spell-button choices", 4, communityEntries(choices).size());
                 tapCommunityEntry(choices, 2);
                 assertEquals("Cleric setting still answers real touches", 3, SPDSettings.apdClericQuickSlots());
+                final RedButton speedButton = (RedButton)field(pane,"btnPlaybackSpeed");
+                for(int mode=0;mode<3;mode++){
+                    final int selected=mode;
+                    tapUntil("open game-speed choices",scroll,speedButton,
+                        () -> find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions.class)!=null,30000);
+                    com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions chooser=
+                        find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions.class);
+                    java.util.List<RedButton> options=new java.util.ArrayList<>();
+                    for(Gizmo child:membersOf(chooser))if(child instanceof RedButton)options.add((RedButton)child);
+                    assertEquals("exactly three playback choices",3,options.size());
+                    RedButton choice=options.get(mode);
+                    AtomicReference<Point> touch=new AtomicReference<>();
+                    onRender(()->touch.set(choice.camera().cameraToScreen(choice.left()+choice.width()/2f,choice.top()+choice.height()/2f)));
+                    tap(touch.get());
+                    waitUntil("selected speed saved",()->SPDSettings.playbackSpeed()==selected &&
+                        find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions.class)==null,10000);
+                }
+                onRender(()->{window.get().hide();window.set(new WndAPDSettings());ShatteredPixelDungeon.scene().add(window.get());});
+                Thread.sleep(300);
+                pane=find(window.get(),APDSettingsPane.class);
+                assertEquals("Game speed: 2x",((RedButton)field(pane,"btnPlaybackSpeed")).text());
+
 			} finally {
 				onRender(() -> {
 					if (window.get() != null) window.get().hide();
 					SPDSettings.apdAdultHumor(previous);
                     SPDSettings.apdClericQuickSlots(previousSpellButtons);
+                    SPDSettings.playbackSpeed(previousSpeed);
 				});
 			}
 		}

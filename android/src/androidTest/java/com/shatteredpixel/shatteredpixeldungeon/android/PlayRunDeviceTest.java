@@ -588,6 +588,7 @@ public class PlayRunDeviceTest {
     @Test public void tileVisibilityAndStairNavigationKeepNormalTurnsFogAndControls() throws Exception {
         boolean oldEnhanced=SPDSettings.enhancedTileVisibility(),oldShortcut=SPDSettings.stairNavigationShortcut();
         boolean oldRecord=SPDSettings.apdRecording(),oldIntro=SPDSettings.intro();int oldGrid=SPDSettings.visualGrid();
+        int oldSpeed=SPDSettings.playbackSpeed();
         try(ActivityScenario<AndroidLauncher> scenario=ActivityScenario.launch(AndroidLauncher.class)){
             waitUntil("game ready",()->Gdx.app!=null && Game.scene()!=null,120000);
             onRender(()->{
@@ -599,6 +600,29 @@ public class PlayRunDeviceTest {
             });
             waitUntil("first floor ready",()->Game.scene() instanceof GameScene && Dungeon.hero!=null && Dungeon.hero.ready,150000);
             waitForGameplayControls();Thread.sleep(600);
+            final long[] observed=new long[3];
+            for(int mode=0;mode<3;mode++){
+                final int selected=mode;
+                final java.util.concurrent.atomic.AtomicLong started=new java.util.concurrent.atomic.AtomicLong(),finished=new java.util.concurrent.atomic.AtomicLong();
+                final float turnBefore=com.shatteredpixel.shatteredpixeldungeon.actors.Actor.now();
+                onRender(()->{try{
+                    SPDSettings.playbackSpeed(selected);
+                    com.watabou.noosa.Group world=(com.watabou.noosa.Group)field(Game.scene(),"mobs");
+                    assertTrue("dungeon sprites use playback groups",world instanceof com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup);
+                    started.set(System.nanoTime());
+                    world.add(new com.watabou.noosa.tweeners.Tweener(new com.watabou.noosa.Gizmo(),0.5f){
+                        @Override protected void updateValues(float progress){}
+                        @Override protected void onComplete(){finished.set(System.nanoTime());killAndErase();}
+                    });
+                }catch(Exception e){throw new RuntimeException(e);}});
+                waitUntil("native animation completes",()->finished.get()!=0,10000);
+                observed[mode]=finished.get()-started.get();
+                assertEquals("visual playback consumes no turn",turnBefore,com.shatteredpixel.shatteredpixeldungeon.actors.Actor.now(),0f);
+            }
+            assertTrue("half-speed animation is slower than normal",observed[0]>observed[1]);
+            assertTrue("double-speed animation is faster than normal",observed[1]>observed[2]);
+            Log.i(TAG,"Playback animation nanoseconds slow/normal/fast: "+java.util.Arrays.toString(observed));
+            onRender(()->SPDSettings.playbackSpeed(1));
             final int[] terrain=Dungeon.level.map.clone();final boolean[] visited=Dungeon.level.visited.clone();
             final boolean[] fov=Dungeon.hero.fieldOfView.clone();final int depth=Dungeon.depth;
             for(int zoom:new int[]{2,4}){
@@ -683,6 +707,7 @@ public class PlayRunDeviceTest {
         }finally{
             SPDSettings.enhancedTileVisibility(oldEnhanced);SPDSettings.stairNavigationShortcut(oldShortcut);
             SPDSettings.visualGrid(oldGrid);SPDSettings.apdRecording(oldRecord);SPDSettings.intro(oldIntro);
+            SPDSettings.playbackSpeed(oldSpeed);
         }
     }
 
