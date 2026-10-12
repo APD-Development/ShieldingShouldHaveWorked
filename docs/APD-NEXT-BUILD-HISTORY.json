@@ -1,41 +1,23 @@
 {
-  "previous_label": "Codex TEST 77",
-  "previous_source": "19960d70d833d9ee1ac6e7ce0a9f4db8d21beaaa",
-  "previous_run": 38281536953,
+  "previous_label": "Codex TEST 78",
+  "previous_source": "bd97e08f548c86d32f8869e1ab0e53146e6363bd",
+  "previous_run": 38285524449,
   "date": "2026-10-12",
   "changes": [
     {
       "category": "Bug Fixes",
-      "sprite": "ICON_DATA",
-      "title": "Replay and game-loading isolation",
-      "text": "An interrupted game-loading wait can no longer proceed while seed replay still owns and restores shared dungeon state.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/replay/FloorReplay.java"
-      ]
-    },
-    {
-      "category": "Testing",
-      "sprite": "ICON_DATA",
-      "title": "Replay load-barrier regressions",
-      "text": "Added real replay-thread tests for normal and interrupted loading waits, including preserved interruption status.",
-      "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/replay/ReplayIdleBarrierTest.java"
-      ]
-    },
-    {
-      "category": "Quality of Life",
       "sprite": "ICON_RANKINGS",
-      "title": "Native statistics controls",
-      "text": "UIMSD navigation now uses SPD's existing grey buttons while preserving every existing action.",
+      "title": "Cancelled statistics tours",
+      "text": "A cancelled statistics tour can no longer replace your own statistics after its background loading finishes.",
       "paths": [
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/UimsdScene.java"
       ]
     },
     {
-      "category": "Quality of Life",
-      "sprite": "ICON_INFO",
-      "title": "Compact fictional-data indicator",
-      "text": "Demo and sample statistics use a compact amber DEMO DATA indicator with an information popup instead of a wide red banner.",
+      "category": "Changes",
+      "sprite": "ICON_DATA",
+      "title": "Sample data lifecycle",
+      "text": "Sample preparation and cleanup now run in sequence, retaining the safeguards that protect genuine run history.",
       "paths": [
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/UimsdScene.java"
       ]
@@ -43,21 +25,20 @@
     {
       "category": "Testing",
       "sprite": "ICON_INFO",
-      "title": "Fictional-data popup verification",
-      "text": "Android checks now tap the compact data indicator and capture its popup alongside the rendered Home screen.",
+      "title": "Tour cancellation regressions",
+      "text": "Added controlled background-worker tests proving cancelled tours stay cancelled and current tours still open.",
       "paths": [
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdScreensDeviceTest.java",
-        "tools/run-codex-android-checks.sh"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/TourWorkerLifecycleTest.java"
       ]
     },
     {
       "category": "Development",
       "sprite": "ICON_INFO",
-      "title": "Verified reliability evidence",
-      "text": "Recorded TEST77 checks, reproduced replay interruption and the corrected visual acceptance evidence.",
+      "title": "Verified build evidence",
+      "text": "Recorded the preceding build's successful checks and Android screenshots, alongside remaining testing and execution limitations.",
       "paths": [
         "docs/HANDOFF.md",
-        "docs/APD-TEST78-REPORT-2026-10-12.md",
+        "docs/APD-TEST79-REPORT-2026-10-12.md",
         "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/APD-CODEX-BUILD-REQUEST.txt"
       ]
@@ -66,7 +47,7 @@
       "category": "Developer Commentary",
       "sprite": "V074_SHPX",
       "title": "Developer Commentary",
-      "text": "I tightened replay isolation so loading waits for borrowed state to be restored. I also replaced the statistics screen's remaining red navigation and large demo banner with native grey controls.",
+      "text": "I fixed a race that could reopen sample statistics after a tour was cancelled. Genuine history, statistics calculations and the current tour's normal behavior remain unchanged.",
       "paths": []
     }
   ]

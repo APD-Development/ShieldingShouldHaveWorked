@@ -100,6 +100,9 @@ public class UimsdScene extends PixelScene {
 	private static boolean cachedAll;
 	//the interactive tour: runs on a model of its own, on the player's data or on a small sample history kept in a folder of its own
 	private static volatile UimsdTutorial tutorial;
+    private static final Object TOUR_LOCK = new Object();
+    private static final Object SAMPLE_LOCK = new Object();
+    private static long tourGeneration;
 	//what Back does when a table was opened from a question's answer and there is no earlier table to go back to
 	private static Runnable returnTo;
 	private static volatile boolean tutorialPreparing;
@@ -831,92 +834,111 @@ public class UimsdScene extends PixelScene {
 		});
 	}
 
-	private void beginTour( final int stepIndex, final boolean own ){
-		tutorialPreparing = true;
-		dirty = true;
-		Thread worker = new Thread(new Runnable(){
-			@Override
-			public void run(){
-				try {
-					File root;
-					if (own){
-						root = mainRoot;
-					} else {
-						root = DemoData.sampleRootFor(ApdRecorder.historyRoot() != null ? ApdRecorder.historyRoot() : mainRoot);
-						DemoGenerator.generateSample(root, Ruleset.forNewRun(), System.currentTimeMillis());
-						sampleRoot = root;
-					}
-					UimsdModel tm = new UimsdModel(rulesId, rulesLabel);
-					tm.load(root);
-					tm.awaitLoad(30000);
-					if (tm.state() != UimsdModel.State.READY) throw new IllegalStateException("the tour's data could not be read");
-					UimsdTutorial.prepare(tm, stepIndex);
-					UimsdTutorial t = new UimsdTutorial(tm, stepIndex);
-					showingSample = !own;
-					atHome = stepIndex <= UimsdTutorial.indexOf("view");
-					model = tm;
-					tm.setListener(new UimsdModel.Listener(){
-						@Override
-						public void changed(){
-							invalidateTourScene();
-						}
-					});
-					tutorial = t;
-				} catch (Throwable e){
-					tutorial = null;
-					showingSample = false;
-					model = mainModel;
-					deleteSampleLater();
-				} finally {
-					tutorialPreparing = false;
-					invalidateTourScene();
-				}
-			}
-		}, "apd-uimsd-tour");
-		worker.setDaemon(true);
-		worker.start();
-	}
+
+    private static boolean currentTour(long generation){
+        synchronized(TOUR_LOCK){return generation == tourGeneration;}
+    }
+
+    private void beginTour(final int stepIndex, final boolean own){
+        final long generation;
+        synchronized(TOUR_LOCK){
+            generation = ++tourGeneration;
+            tutorialPreparing = true;
+        }
+        dirty = true;
+        final File requestedOwnRoot = mainRoot;
+        File recordedRoot = ApdRecorder.historyRoot();
+        final File requestedSampleBase = recordedRoot != null ? recordedRoot : mainRoot;
+        final String requestedRulesId = rulesId, requestedRulesLabel = rulesLabel;
+        final Ruleset sampleRules = Ruleset.forNewRun();
+        Thread worker = new Thread(() -> {
+            // Preparing/deleting the shared sample folder must not overlap another request.
+            synchronized(SAMPLE_LOCK){
+                if (!currentTour(generation)) return;
+                File root = own ? requestedOwnRoot : DemoData.sampleRootFor(requestedSampleBase);
+                boolean published = false;
+                try {
+                    if (!own) DemoGenerator.generateSample(root, sampleRules, System.currentTimeMillis());
+                    UimsdModel tm = new UimsdModel(requestedRulesId, requestedRulesLabel);
+                    tm.load(root);
+                    tm.awaitLoad(30000);
+                    if (tm.state() != UimsdModel.State.READY)
+                        throw new IllegalStateException("the tour's data could not be read");
+                    UimsdTutorial.prepare(tm, stepIndex);
+                    UimsdTutorial prepared = new UimsdTutorial(tm, stepIndex);
+                    synchronized(TOUR_LOCK){
+                        if (generation != tourGeneration) return;
+                        sampleRoot = own ? null : root;
+                        showingSample = !own;
+                        atHome = stepIndex <= UimsdTutorial.indexOf("view");
+                        model = tm;
+                        tm.setListener(UimsdScene::invalidateTourScene);
+                        tutorial = prepared;
+                        published = true;
+                    }
+                } catch (Throwable error){
+                    synchronized(TOUR_LOCK){
+                        if (generation == tourGeneration){
+                            tutorial = null;
+                            showingSample = false;
+                            model = mainModel;
+                        }
+                    }
+                } finally {
+                    synchronized(TOUR_LOCK){
+                        if (generation == tourGeneration) tutorialPreparing = false;
+                    }
+                    if (!own && !published) deleteSampleLater(root);
+                    if (currentTour(generation)) invalidateTourScene();
+                }
+            }
+        }, "apd-uimsd-tour");
+        worker.setDaemon(true);
+        worker.start();
+    }
 
 	//stops the tour: back to the player's own model, and the sample history (if any) is deleted
-	private static void endTutorial(){
-		tutorial = null;
-		tutorialPreparing = false;
-		showingSample = false;
-		if (mainModel != null && model != mainModel){
-			if (model != null) model.setListener(null);
-			model = mainModel;
-		}
-		deleteSampleLater();
-	}
 
-	private static void deleteSampleLater(){
-		final File r = sampleRoot;
-		sampleRoot = null;
-		if (r == null) return;
-		Thread t = new Thread(new Runnable(){
-			@Override
-			public void run(){
-				DemoData.delete(r);
-			}
-		}, "apd-uimsd-sample-delete");
-		t.setDaemon(true);
-		t.start();
-	}
+    private static void endTutorial(){
+        synchronized(TOUR_LOCK){
+            ++tourGeneration;
+            tutorial = null;
+            tutorialPreparing = false;
+            showingSample = false;
+            if (mainModel != null && model != mainModel){
+                if (model != null) model.setListener(null);
+                model = mainModel;
+            }
+            deleteSampleLater();
+        }
+    }
 
-	//a sample folder left by an app that was closed in the middle of a tour
-	private static void removeLeftoverSample(){
-		File history = ApdRecorder.historyRoot();
-		final File s = history == null ? null : DemoData.sampleRootFor(history);
-		if (s == null || !s.exists()) return;
-		Thread t = new Thread(new Runnable(){
-			@Override
-			public void run(){
-				DemoData.delete(s);
-			}
-		}, "apd-uimsd-sample-delete");
-		t.setDaemon(true);
-		t.start();
-	}
+    private static void deleteSampleLater(){
+        final File root = sampleRoot;
+        sampleRoot = null;
+        deleteSampleLater(root);
+    }
+
+    private static void deleteSampleLater(final File root){
+        if (root == null) return;
+        Thread cleanup = new Thread(() -> {
+            synchronized(SAMPLE_LOCK){
+                synchronized(TOUR_LOCK){
+                    if (root.equals(sampleRoot)) return; // A newer request owns this sample now.
+                }
+                DemoData.delete(root); // Existing marker/name guard protects real history.
+            }
+        }, "apd-uimsd-sample-delete");
+        cleanup.setDaemon(true);
+        cleanup.start();
+    }
+
+    // A sample left by a closed app is removed through the same serialized cleanup path.
+    private static void removeLeftoverSample(){
+        File history = ApdRecorder.historyRoot();
+        File sample = history == null ? null : DemoData.sampleRootFor(history);
+        if (sample != null && sample.exists()) deleteSampleLater(sample);
+    }
 
 	@Override
 	protected void onBackPressed(){
@@ -950,6 +972,7 @@ public class UimsdScene extends PixelScene {
 		else ShatteredPixelDungeon.switchScene(backTo);
 	}
 }
+
 
 
 
