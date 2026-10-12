@@ -1,135 +1,24 @@
 {
-  "previous_label": "Codex TEST50",
-  "previous_source": "14226785732470e5241daaabe92ba4dc7d399df3",
-  "date": "2026-10-11",
+  "previous_label": "Codex TEST63",
+  "previous_source": "1f0c843f510957d77702a26c458fd7336d1f56b9",
+  "date": "2026-10-12",
   "changes": [
     {
       "category": "Bug Fixes",
       "sprite": "V061_BUGFIX",
-      "title": "Save protection",
-      "text": "Failed save writes now preserve the existing save, nested recovery works, and failed reads close their files.",
+      "title": "Statistics graphics",
+      "text": "Rebuilding statistics Home and table contents now releases their old graphics resources.",
       "paths": [
-        "SPD-classes/src/main/java/com/watabou/utils/FileUtils.java"
-      ]
-    },
-    {
-      "category": "Statistics / UIMSD",
-      "sprite": "V061_PAGE",
-      "title": "Run comparisons",
-      "text": "Run comparisons now show the correct difference even for extremely large recorded values.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/report/ReportBuilder.java"
-      ]
-    },
-    {
-      "category": "Statistics / UIMSD",
-      "sprite": "PD_EYE",
-      "title": "Boss statistics",
-      "text": "Yog's summoned minions no longer count as bosses; cached tables refresh without changing run history.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/BossClasses.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowBuilders.java"
-      ]
-    },
-    {
-      "category": "Bug Fixes",
-      "sprite": "V061_BUGFIX",
-      "title": "Statistics cache",
-      "text": "Malformed statistics caches are rejected before attempting oversized memory allocations.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowCodec.java"
-      ]
-    },
-    {
-      "category": "Quality of Life",
-      "sprite": "V061_PAGE",
-      "title": "Statistics shortcut",
-      "text": "The statistics arrow remains visible and clickable after ten genuine runs; demo access keeps the earlier guidance.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/UimsdGate.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/TitleScene.java"
-      ]
-    },
-    {
-      "category": "Quality of Life",
-      "sprite": "V061_PAGE",
-      "title": "About APD",
-      "text": "About now has six compact, wrapping information buttons with separate popups and shows the installed version and build.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/AboutScene.java"
-      ]
-    },
-    {
-      "category": "Quality of Life",
-      "sprite": "V061_PAGE",
-      "title": "News and Changes",
-      "text": "News now uses dated article cards, while Changes uses build navigation and clickable sprite entries.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/APDTextScene.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/history/ApdHistory.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/history/ApdNews.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_PAGE",
-      "title": "Historical records",
-      "text": "Historical builds with missing evidence are explicitly marked incomplete instead of receiving guessed change notes.",
-      "paths": [
-        "core/src/main/assets/apd/history/index.tsv",
-        "core/src/main/assets/apd/news.tsv"
-      ]
-    },
-    {
-      "category": "Statistics / UIMSD",
-      "sprite": "V061_PAGE",
-      "title": "Statistics Home",
-      "text": "UIMSD Home uses compact native controls, aligned statistics and optional explanations; tap wins, deaths or abandoned runs to explore matching records.",
-      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/UimsdContent.java",
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/UimsdHomePane.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/UimsdScene.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdHomeNavigation.java"
-      ]
-    },
-    {
-      "category": "Statistics / UIMSD",
-      "sprite": "V061_PAGE",
-      "title": "Native statistics menus",
-      "text": "Statistics pickers and run actions use Pixel Dungeon buttons, explanations open separately, numeric table values align, and Home keeps direct navigation and zero abandoned-run counts.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdHome.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/UimsdHomePane.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndUimsdList.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndUimsdRow.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/ResultTable.java",
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/UimsdTable.java"
-      ]
-    },
-    {
-      "category": "Statistics / UIMSD",
-      "sprite": "V061_PAGE",
-      "title": "Table controls",
-      "text": "Advanced tables keep every condition in a scrolling menu and arrange controls in two rows on narrow screens.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/UimsdScene.java"
-      ]
-    },
-    {
-      "category": "Bug Fixes",
-      "sprite": "V061_BUGFIX",
-      "title": "Information popups",
-      "text": "About, News and statistics information popups now open over the screen instead of inside their buttons.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/AboutScene.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/APDTextScene.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/UimsdScene.java"
       ]
     },
     {
       "category": "Developer Commentary",
       "sprite": "V074_SHPX",
       "title": "Developer Commentary",
-      "text": "I focused on save protection, trustworthy statistics and clearer information screens. Older build notes remain incomplete wherever the evidence is missing.",
+      "text": "I fixed graphics resources left behind when statistics views were rebuilt. Your recorded runs and statistics remain unchanged.",
       "paths": []
     }
   ]

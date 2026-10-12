@@ -1,8 +1,6 @@
 name: UIMSD resource regression against verified TEST63
 on:
-  push:
-    branches: [codex/apd-phone-fixes-2026-10-09]
-    paths: [.github/workflows/codex-uimsd-resource-check.yml]
+  workflow_dispatch:
 permissions:
   contents: read
   actions: read

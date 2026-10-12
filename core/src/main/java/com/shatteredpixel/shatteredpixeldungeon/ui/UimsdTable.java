@@ -169,7 +169,7 @@ public class UimsdTable extends Component {
 	private class BodyPane extends ScrollPane {
 
 		BodyPane(){
-			super(new Component());
+			super(new UimsdContent());
 		}
 
 		@Override
@@ -182,7 +182,7 @@ public class UimsdTable extends Component {
 	private static class ClickPane extends ScrollPane {
 
 		ClickPane(){
-			super(new Component());
+			super(new UimsdContent());
 		}
 
 		@Override

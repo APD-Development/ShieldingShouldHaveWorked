@@ -38,7 +38,7 @@ public class UimsdHomePane extends ScrollPane {
  private final List<String> boxViews=new ArrayList<>();
  private final List<float[]> infoBoxes=new ArrayList<>();
  private final List<String[]> infoText=new ArrayList<>();
- public UimsdHomePane(){super(new Component());}
+ public UimsdHomePane(){super(new UimsdContent());}
  public void setListener(Listener l){listener=l;}
  public void setHome(UimsdHome h){home=h;builtWidth=-1;layout();}
  @Override protected void layout(){super.layout();if(home!=null&&width>0&&builtWidth!=width){rebuild();builtWidth=width;}}
