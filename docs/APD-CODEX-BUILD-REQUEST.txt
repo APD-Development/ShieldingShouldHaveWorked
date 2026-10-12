@@ -1,1 +1,1 @@
-2026-10-12 TEST83: reproducedvalidASCIIrowcachecorruption; cache-onlyCRCformat2/legacyrebuild, purebufferchecksum,4newpermanentcasesandallocationguardsretained. Previousproduced82b43316b5c60d9b605ae07e8e6bfc5d43ac847ad2/run38308000010. Fullcore/debug/API34/15PNGrequired;1206coreexpected. No automaticpublication;79lastsigneddelivered.
+TEST84: show stair shortcut by default unless explicitly disabled; verify real native unset-preference visibility and touch. Preserve all 15 visual evidence images and existing navigation/overlap checks. 1208 core expected; full required checks.

@@ -131,7 +131,10 @@ public class APDSettingsPane extends Component {
         };
         chkTileVisibility.checked(SPDSettings.enhancedTileVisibility());add(chkTileVisibility);
         chkStairNavigation=new CheckBox("Automatic Stair Navigation"){
-            @Override protected void onClick(){super.onClick();SPDSettings.stairNavigationShortcut(checked());}
+            @Override protected void onClick(){super.onClick();SPDSettings.stairNavigationShortcut(checked());
+                if(checked()) ShatteredPixelDungeon.scene().addToFront(new WndMessage(
+                    "Tap the staircase icon beside the hotbar, above the side controls. Choose Stairs Up or Stairs Down. Only discovered stairs are available; reaching them never changes floors."));
+            }
         };
         chkStairNavigation.checked(SPDSettings.stairNavigationShortcut());add(chkStairNavigation);
 

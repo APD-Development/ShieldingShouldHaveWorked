@@ -593,7 +593,11 @@ public class PlayRunDeviceTest {
             waitUntil("game ready",()->Gdx.app!=null && Game.scene()!=null,120000);
             onRender(()->{
                 SPDSettings.apdRecording(false);SPDSettings.intro(false);SPDSettings.visualGrid(0);
-                SPDSettings.enhancedTileVisibility(false);SPDSettings.stairNavigationShortcut(true);
+                SPDSettings.enhancedTileVisibility(false);
+                // Exercise a fresh preference: do not force-enable the shortcut as TEST79 did.
+                com.badlogic.gdx.Preferences prefs=Gdx.app.getPreferences(com.watabou.utils.GameSettings.DEFAULT_PREFS_FILE);
+                prefs.remove("apd_stair_navigation_shortcut");prefs.flush();
+                assertTrue("stair shortcut is discoverable by default", SPDSettings.stairNavigationShortcut());
                 GamesInProgress.curSlot=4;GamesInProgress.selectedClass=HeroClass.WARRIOR;
                 Dungeon.hero=null;Dungeon.daily=Dungeon.dailyReplay=false;Dungeon.initSeed();
                 ActionIndicator.clearAction();InterlevelScene.mode=InterlevelScene.Mode.DESCEND;Game.switchScene(InterlevelScene.class);

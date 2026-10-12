@@ -104,7 +104,7 @@ public class SPDSettings extends GameSettings {
 
     public static boolean enhancedTileVisibility() { return getBoolean("apd_enhanced_tile_visibility", false); }
     public static void enhancedTileVisibility(boolean value) { put("apd_enhanced_tile_visibility", value); GameScene.updateMap(); }
-    public static boolean stairNavigationShortcut() { return getBoolean("apd_stair_navigation_shortcut", false); }
+    public static boolean stairNavigationShortcut() { return getBoolean("apd_stair_navigation_shortcut", true); }
     public static void stairNavigationShortcut(boolean value) { put("apd_stair_navigation_shortcut", value); GameScene.updateTags=true; }
 
 	public static void cameraFollow( int value ){

@@ -1,64 +1,54 @@
 {
-  "previous_label": "Codex TEST 82",
-  "previous_source": "b43316b5c60d9b605ae07e8e6bfc5d43ac847ad2",
-  "previous_run": 38308000010,
+  "previous_label": "Codex TEST 83",
+  "previous_source": "f056eec38608d916e3e3b4b3b78f62b304a3b9a0",
+  "previous_run": 38309713442,
   "date": "2026-10-12",
   "changes": [
     {
-      "category": "Bug Fixes",
-      "sprite": "ICON_DATA",
-      "title": "Detect damaged statistics caches",
-      "text": "A bit flip in a temporary row cache now triggers a rebuild instead of silently changing recorded statistics.",
+      "category": "Quality of Life",
+      "sprite": "ICON_INFO",
+      "title": "Visible staircase shortcut",
+      "text": "The staircase shortcut now appears beside the hotbar by default; an explicitly disabled preference stays disabled.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowCodec.java"
-      ]
-    },
-    {
-      "category": "Statistics / UIMSD",
-      "sprite": "ICON_RANKINGS",
-      "title": "Compatible row-cache refresh",
-      "text": "Older row caches rebuild once from original run logs, then remain available for normal fast reloads.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowCodec.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/SPDSettings.java"
       ]
     },
     {
       "category": "Changes",
-      "sprite": "ICON_DATA",
-      "title": "Checksum without extra buffer copy",
-      "text": "Cache writing computes its integrity check directly from the existing buffer, preserving raw-history formats and avoiding another full-size copy.",
+      "sprite": "ICON_INFO",
+      "title": "Find stair controls",
+      "text": "Enabling Automatic Stair Navigation explains where to tap for Stairs Up and Stairs Down.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/ByteSink.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/APDSettingsPane.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_INFO",
-      "title": "Cache corruption and migration coverage",
-      "text": "Added tests for bit flips, valid-text damage, older cache migration and unchanged genuine history; existing allocation checks still exercise malformed payloads.",
+      "title": "Default stair-control regression",
+      "text": "Added preference reload checks and a native dungeon test that opens the shortcut without force-enabling it.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowCacheChecksumTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowCacheAllocationBoundsTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/navigation/StairShortcutSettingsTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PlayRunDeviceTest.java"
       ]
     },
     {
       "category": "Development",
       "sprite": "ICON_INFO",
-      "title": "Verified audit and build records",
-      "text": "Recorded the preceding Sort fix's Android evidence, cache corruption reproductions and remaining audit limitations.",
+      "title": "Verified preparation records",
+      "text": "Recorded the missing-control cause, local results and remaining Android verification.",
       "paths": [
         "docs/HANDOFF.md",
-        "docs/APD-TEST83-REPORT-2026-10-12.md",
-        "docs/APD-UIMSD-AUDIT-EVIDENCE-2026-10-12.json",
-        "docs/APD-NEXT-BUILD-HISTORY.json",
-        "docs/APD-CODEX-BUILD-REQUEST.txt"
+        "docs/APD-TEST84-REPORT-2026-10-12.md",
+        "docs/APD-CODEX-BUILD-REQUEST.txt",
+        "docs/APD-NEXT-BUILD-HISTORY.json"
       ]
     },
     {
       "category": "Developer Commentary",
       "sprite": "V074_SHPX",
       "title": "Developer Commentary",
-      "text": "I added an integrity check to temporary row caches because valid-looking text could still be damaged. Original run logs stay untouched, and older caches rebuild safely.",
+      "text": "I made the staircase shortcut visible by default after finding that the previous test enabled it manually. Players who switched it off keep that choice.",
       "paths": []
     }
   ]
