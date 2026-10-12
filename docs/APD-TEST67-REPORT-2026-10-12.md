@@ -34,3 +34,7 @@ Source files changed across this delivered batch: UimsdContent.java, UimsdHomePa
 ## Timing and installation
 CI start/end timestamps come from GitHub and are appended by the validator; CI time is not claimed as actively coding. Owner stopped development; only the requested read-only test audit ran until explicit resume. No continuous unattended coding has been demonstrated.
 Delivery reuses the successful exact-source APK without another application build. Install over the existing APD app; do not uninstall or clear data. Signature/package/version compatibility is checked against the actual preserved TEST50 APK. Automated compatibility is not physical-phone save acceptance. Preserve previous private assets.
+
+
+## Delivery preparation failure
+First deliveryrun38249478293 passed source/tests/checksum/signing/package checks and stagedAPK/PDF, but publication refused because copied release-tag/APK filenames still pointed atTEST63. Existingassetswerepreserved. Publicationidentifiers now derive from APD_TEST_NUMBER; the corrected delivery reuses the same verifiedTEST67APK withoutrebuild. This workflow failure was not an application test failure.

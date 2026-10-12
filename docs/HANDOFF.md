@@ -1110,3 +1110,7 @@ Actual run38244700148 source21be7de2fcec65441fe954babe2dc34142a26ce7 completed20
 
 ## TEST67 checks complete — separate private delivery requested
 Sourcefa76dede19aa1a207531413b9de838b1d40fefa0 run38248003026 fullcore/debug/API34 succeeded. Downloaded XML1150host/198classes+19Android zero failures/errors/skips. Artifacts APK11746109910/core11746199773/Android11747011526. ActualTEST67PNG inspected: new backpack/statistics fix sprites, separate build sections and groupedcolumns. Delivery-only workflow will check realAPK checksum/signature/applicationID/version againstactualTEST50 then privately stage/publish exactsameAPK+currentPDF withoutrebuild. Signing/publication pending untilvalidator succeeds; TEST63lastdelivered. Localauditreviewnotes+17and14existingregressionsgreen, no speculative additionalproduction changes. No wholeaudit/historycomplete/physicalphone claims.
+
+
+## Delivery67 publication correction
+Run38249478293 validate-and-stage succeeded: actualsha3b9fc627cafad093e44cd8359f5ef74921bff1ed5b21c988f2f82b2fa6642d15,certificate067688b3ab6bd5820a67f4c1ba7d5859db578173771cf31d3252b3e4e012246e matches50, appIDunchanged/version920. Publication failed because copiedscript retainedTEST63tag/APKnames; preservationguard refusedoverwrite, no releasechanged. Corrected publication identifiers to derivefrom APD_TEST_NUMBER, retainedrefusal/privatechecks. No apprebuild; samefullverified67source/run/artifacts reused. Failure recordedinPDF andhandoff.
