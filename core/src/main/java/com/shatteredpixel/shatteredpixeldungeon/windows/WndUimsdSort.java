@@ -60,7 +60,6 @@ public final class WndUimsdSort {
 		if (table == null) return;
 		final List<Sort> sorts = new ArrayList<>(m.query().sorts);
 		List<WndUimsdList.Entry> entries = new ArrayList<>();
-		final int[] keyAt = new int[8];
 		int n = 0;
 		if (sorts.isEmpty()){
 			entries.add(WndUimsdList.Entry.note("The table is not sorted: rows come in their natural order."));
@@ -69,7 +68,7 @@ public final class WndUimsdSort {
 			for (int i = 0; i < sorts.size(); i++){
 				entries.add(WndUimsdList.Entry.item((i + 1) + ". " + labelOf(table, sorts.get(i).column) + ", " + way(sorts.get(i).descending),
 						i == 0 ? "tap to reverse or remove it" : "used when the keys above are equal; tap to reverse or remove it"));
-				keyAt[n++] = i;
+				n++;
 			}
 		}
 		entries.add(WndUimsdList.Entry.heading("Change"));

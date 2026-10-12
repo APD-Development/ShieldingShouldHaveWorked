@@ -241,7 +241,20 @@ public class UimsdScreensDeviceTest {
                 assertTrue("an uncommon value remains queryable",uncommon.result().rows.stream().anyMatch(row->row.id.equals("row69")));
                 assertEquals(6,uncommon.query().filters.get(0).texts.length);
                 com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.closeAll();
+                java.util.List<com.shatteredpixel.shatteredpixeldungeon.apd.query.Sort> manySorts=new java.util.ArrayList<>();
+                for(ColumnDef key:uncommon.dataset().def.columns()){
+                    if(key.isInternal())continue;
+                    manySorts.add(new com.shatteredpixel.shatteredpixeldungeon.apd.query.Sort(key.id,false));
+                    if(manySorts.size()==9)break;
+                }
+                assertEquals("fixture has nine distinct public keys",9,manySorts.size());
+                uncommon.setSorts(manySorts);
+                WndUimsdSort.show(uncommon);
+                assertEquals("opening Sort must not truncate imported sort keys",9,uncommon.query().sorts.size());
             });
+            Thread.sleep(300);
+            PlayRunDeviceTest.visibilityScreenshot("uimsd-sort-keys.png");
+            onRender(()->com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.closeAll());
 
 			onRender(new Runnable(){
 				public void run(){

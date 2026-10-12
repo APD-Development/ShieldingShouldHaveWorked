@@ -1,41 +1,23 @@
 {
-  "previous_label": "Codex TEST 80",
-  "previous_source": "ee750f30687eccb89096ed858a12cc54cec3e299",
-  "previous_run": 38301092448,
+  "previous_label": "Codex TEST 81",
+  "previous_source": "1d369cff8c047e6ba1ec072785a048873e7a2214",
+  "previous_run": 38306448024,
   "date": "2026-10-12",
   "changes": [
     {
       "category": "Bug Fixes",
       "sprite": "ICON_RANKINGS",
-      "title": "Filter uncommon text values",
-      "text": "Multi-value text filters now offer full-list typing even when common suggestions are available, so uncommon recorded values remain reachable.",
+      "title": "Saved-query Sort menu crash",
+      "text": "Opening Sort no longer crashes when a saved query contains more than eight sort keys.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndUimsdFilter.java"
-      ]
-    },
-    {
-      "category": "Quality of Life",
-      "sprite": "ICON_DATA",
-      "title": "Long multi-value lists",
-      "text": "The full-list text input no longer truncates multi-value filters at forty characters; ordinary suggestion lists remain compact.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndUimsdFilter.java"
-      ]
-    },
-    {
-      "category": "Quality of Life",
-      "sprite": "ICON_INFO",
-      "title": "Native menu help",
-      "text": "Statistics picker help now uses SPD's grey button styling while retaining its existing explanation popup.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndUimsdList.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndUimsdSort.java"
       ]
     },
     {
       "category": "Testing",
-      "sprite": "ICON_INFO",
-      "title": "Uncommon-value picker regression",
-      "text": "Android checks now open full-list input, verify a value outside sixty suggestions and apply a longer six-value filter.",
+      "sprite": "ICON_DATA",
+      "title": "Large sort-key regression",
+      "text": "Android checks now open the Sort menu with nine distinct public keys and capture it without dropping the query's keys.",
       "paths": [
         "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdScreensDeviceTest.java",
         "tools/run-codex-android-checks.sh"
@@ -44,12 +26,12 @@
     {
       "category": "Development",
       "sprite": "ICON_INFO",
-      "title": "Verification and execution records",
-      "text": "Recorded the preceding cache build's checks, continued audit evidence and actual scheduler limitations.",
+      "title": "Source-reviewed audit evidence",
+      "text": "Recorded exact reviewed source files, cache and filter evidence, and a reproduced saved-query crash.",
       "paths": [
+        "docs/APD-UIMSD-AUDIT-EVIDENCE-2026-10-12.json",
         "docs/HANDOFF.md",
-        "docs/APD-TEST80-REPORT-2026-10-12.md",
-        "docs/APD-TEST81-REPORT-2026-10-12.md",
+        "docs/APD-TEST82-REPORT-2026-10-12.md",
         "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/APD-CODEX-BUILD-REQUEST.txt"
       ]
@@ -58,7 +40,7 @@
       "category": "Developer Commentary",
       "sprite": "V074_SHPX",
       "title": "Developer Commentary",
-      "text": "I kept the compact suggestions while restoring a way to enter uncommon values and longer lists. Query calculations and genuine history remain unchanged.",
+      "text": "I removed an unused array that could crash the Sort menu for a larger saved query. Sorting and saved-query formats remain unchanged.",
       "paths": []
     }
   ]

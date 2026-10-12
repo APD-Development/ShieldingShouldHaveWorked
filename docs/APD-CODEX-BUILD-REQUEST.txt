@@ -1,1 +1,1 @@
-2026-10-12 TEST81: native full-list typing for uncommon text-IN values and long lists, grey pickerhelp, realAndroidUI regression/14PNG. PreviousproducedTEST80ee750f30687eccb89096ed858a12cc54cec3e299/run38301092448. Fullcore/debug/API34required,noautomaticpublication;79deliveredrollback.
+2026-10-12 TEST82: reproduced9-key Sortmenucrash, unusedarrayremoval andpermanentnative9distinctkeys/15PNG. Previousproduced81source1d369cff8c047e6ba1ec072785a048873e7a2214/run38306448024. Fullcore/debug/API34required,noautopublication.79lastsigneddelivered.
