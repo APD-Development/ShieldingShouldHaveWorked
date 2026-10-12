@@ -31,17 +31,14 @@ public class ChangesVisualDeviceTest {
   long end=System.currentTimeMillis()+15000;while(!type.isInstance(Game.scene())&&System.currentTimeMillis()<end)Thread.sleep(100);assertTrue(type.isInstance(Game.scene()));Thread.sleep(500);
  }
  private void screenshot(String name)throws Exception{
+  android.content.Context context=InstrumentationRegistry.getInstrumentation().getTargetContext();
   Bitmap bitmap=InstrumentationRegistry.getInstrumentation().getUiAutomation().takeScreenshot();assertNotNull(bitmap);assertTrue(bitmap.getWidth()>=320&&bitmap.getHeight()>=320);
-  File dir=new File(InstrumentationRegistry.getInstrumentation().getTargetContext().getFilesDir(),"visual-review");assertTrue(dir.isDirectory()||dir.mkdirs());
-  try(OutputStream out=new FileOutputStream(new File(dir,name))){assertTrue(bitmap.compress(Bitmap.CompressFormat.PNG,100,out));}finally{bitmap.recycle();}
-  // Gradle may remove the target package after connected tests. Export while it still exists.
-  String app=InstrumentationRegistry.getInstrumentation().getTargetContext().getPackageName();
-  assertTrue(app.matches("[A-Za-z0-9_.]+"));assertTrue(name.matches("[a-z-]+\\.png"));
-  String command="mkdir -p /sdcard/Download; run-as "+app+" cat files/visual-review/"+name+" > /sdcard/Download/"+name+"; wc -c /sdcard/Download/"+name;
-  try(InputStream in=new android.os.ParcelFileDescriptor.AutoCloseInputStream(InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand(command))){
-   ByteArrayOutputStream data=new ByteArrayOutputStream();byte[] b=new byte[1024];int n;while((n=in.read(b))!=-1)data.write(b,0,n);
-   String result=new String(data.toByteArray(),java.nio.charset.StandardCharsets.UTF_8).trim();assertTrue(result,Integer.parseInt(result.split("\\s+")[0])>1000);
-  }
+  android.content.ContentValues values=new android.content.ContentValues();
+  values.put(android.provider.MediaStore.MediaColumns.DISPLAY_NAME,name);
+  values.put(android.provider.MediaStore.MediaColumns.MIME_TYPE,"image/png");
+  values.put(android.provider.MediaStore.MediaColumns.RELATIVE_PATH,"Pictures/APD-Test-Visuals");
+  android.net.Uri destination=context.getContentResolver().insert(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI,values);assertNotNull(destination);
+  try(OutputStream out=context.getContentResolver().openOutputStream(destination)){assertNotNull(out);assertTrue(bitmap.compress(Bitmap.CompressFormat.PNG,100,out));}finally{bitmap.recycle();}
  }
  @Test public void categoriesUseSpdColumnsAndEveryIconOpensItsExactBuildPopup()throws Exception{
   try(ActivityScenario<AndroidLauncher> scenario=ActivityScenario.launch(AndroidLauncher.class)){

@@ -6,7 +6,7 @@ apd_test_status=0
 timeout --signal=TERM --kill-after=30 840 ./gradlew :android:connectedDebugAndroidTest -PapdTestBuild "-PapdBuild=C${apd_build_number}" "-Pandroid.testInstrumentationRunnerArguments.class=com.shatteredpixel.shatteredpixeldungeon.android.UimsdRestoreDeviceTest,com.shatteredpixel.shatteredpixeldungeon.android.PlayRunDeviceTest,com.shatteredpixel.shatteredpixeldungeon.android.RunSetupDifficultyDeviceTest,com.shatteredpixel.shatteredpixeldungeon.android.ApdSettingsClickDeviceTest#adultHumorControlWorksWithoutAnAgeProviderAndReopensWithSavedChoice,com.shatteredpixel.shatteredpixeldungeon.android.ApdSettingsClickDeviceTest#communityMenuOpensEveryPreviewAndReturnsWithoutStackingWindows,com.shatteredpixel.shatteredpixeldungeon.android.AboutDeviceTest,com.shatteredpixel.shatteredpixeldungeon.android.UimsdScreensDeviceTest,com.shatteredpixel.shatteredpixeldungeon.android.UimsdResourcesDeviceTest,com.shatteredpixel.shatteredpixeldungeon.android.ChangesVisualDeviceTest" || apd_test_status=$?
 mkdir -p codex-visual-evidence
 for apd_visual_name in apd-changes.png spd-changes-reference.png; do
-    if ! adb exec-out cat "/sdcard/Download/${apd_visual_name}" > "codex-visual-evidence/${apd_visual_name}"; then
+    if ! adb exec-out cat "/sdcard/Pictures/APD-Test-Visuals/${apd_visual_name}" > "codex-visual-evidence/${apd_visual_name}"; then
         rm -f "codex-visual-evidence/${apd_visual_name}"
         if [ "$apd_test_status" -eq 0 ]; then apd_test_status=1; fi
     fi

@@ -68,8 +68,8 @@ jobs:
             cat resource-result.txt
             python3 -c "import pathlib,re; t=pathlib.Path('resource-result.txt').read_text(); assert 'FAILURES!!!' not in t and re.search(r'OK \\(1 test\\)',t),t"
             mkdir -p codex-visual-evidence
-            adb exec-out cat /sdcard/Download/apd-changes.png > codex-visual-evidence/apd-changes.png
-            adb exec-out cat /sdcard/Download/spd-changes-reference.png > codex-visual-evidence/spd-changes-reference.png
+            adb exec-out cat /sdcard/Pictures/APD-Test-Visuals/apd-changes.png > codex-visual-evidence/apd-changes.png
+            adb exec-out cat /sdcard/Pictures/APD-Test-Visuals/spd-changes-reference.png > codex-visual-evidence/spd-changes-reference.png
             python3 tools/validate_android_visuals.py codex-visual-evidence
       - uses: actions/upload-artifact@v4
         if: always()
