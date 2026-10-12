@@ -1,0 +1,165 @@
+name: Deliver verified existing APD TEST78
+
+# Delivery only: reuse the already tested APK; no Gradle or app rebuild.
+# Accept verified SDK signer labels; retain compatibility refusal diagnostics.
+on:
+  push:
+    branches: [codex/apd-phone-fixes-2026-10-09]
+    paths: [.github/workflows/codex-test78-delivery.yml]
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: apd-existing-test78-delivery
+  cancel-in-progress: false
+
+env:
+  APD_SOURCE_SHA: bd97e08f548c86d32f8869e1ab0e53146e6363bd
+  APD_SOURCE_RUN: '38285524449'
+  APD_TEST_NUMBER: '78'
+  APD_CORE_TEST_COUNT: '1198'
+  APD_ANDROID_TEST_COUNT: '21'
+  APD_ROLLBACK_NUMBER: '67'
+  APD_ROLLBACK_SHA256: '3b9fc627cafad093e44cd8359f5ef74921bff1ed5b21c988f2f82b2fa6642d15'
+  APD_REQUIRED_ANDROID_METHODS: 'menusSurviveSceneRecreationAndNarrowActionsStayInsideTheirWindow,aRunCanBePlayedSavedContinuedAndEndedWithItsHistoryRecorded,aWonRunIsRecordedAsWonAndSealed,difficultyIsChosenOnTheCharacterScreenAndNotInSettings,communityMenuOpensEveryPreviewAndReturnsWithoutStackingWindows,adultHumorControlWorksWithoutAnAgeProviderAndReopensWithSavedChoice,textAndGuideScrollSurviveRepeatedResetsAndClampAfterResize,validationEmptyHistoryGroupedAndReportMessagesSurviveWithoutRepeatingActions,tourChoicesSurviveWithoutStartingATourOrRepeatingTheOffer,heroButtonsStayAboveNavigationBarAndRemainSelectable,navigationOverlapReservesVisibleBarsEvenWithFullscreenRequested,clericQuickCastsPersistAndKeepNormalCostsAndTargeting,arcanaItemDescriptionsRequireKnownEquippedRingsAndFitWindows,demoUnlockKeepsTenRunNoticeVisibleOnTitle,offlineNewsCardsOpenDatedSpritePopups,everyAboutPopupOpensScrollsAndCloses,everyUimsdScreenAndDialogCanBeBuilt,replacingHomeContentsDisposesPreviouslyDrawnImages,categoriesUseSpdColumnsAndEveryIconOpensItsExactBuildPopup,largeAndNamedHistoricalBuildsKeepAllIconsInScrollableNativeSections,tileVisibilityAndStairNavigationKeepNormalTurnsFogAndControls'
+  APD_SOURCE_ARTIFACTS_JSON: '{"apd-codex-core-tests":11762204408,"apd-codex-private-test-apk":11763535133,"apd-codex-android-checks":11763407362}'
+
+jobs:
+  validate-and-stage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: bd97e08f548c86d32f8869e1ab0e53146e6363bd
+      - uses: actions/download-artifact@v4
+        with:
+          name: apd-codex-private-test-apk
+          run-id: ${{ env.APD_SOURCE_RUN }}
+          github-token: ${{ github.token }}
+          path: delivery
+      - uses: actions/download-artifact@v4
+        with:
+          name: apd-codex-core-tests
+          run-id: ${{ env.APD_SOURCE_RUN }}
+          github-token: ${{ github.token }}
+          path: core-reports
+      - uses: actions/download-artifact@v4
+        with:
+          name: apd-codex-android-checks
+          run-id: ${{ env.APD_SOURCE_RUN }}
+          github-token: ${{ github.token }}
+          path: android-reports
+      - name: Retrieve rollback APK for direct compatibility comparison
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release download apd-codex-test-67 --repo "$GITHUB_REPOSITORY" --pattern ADHD-Pixel-Dungeon-CODEX-TEST-67.apk --dir rollback
+      - name: Check source, tests, checksum, signing and application ID
+        env:
+          GITHUB_SHA: bd97e08f548c86d32f8869e1ab0e53146e6363bd
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 -m unittest discover -s tools -p test_apd_existing_build_evidence.py
+          python3 tools/apd_existing_build_evidence.py
+      - name: Stage the thirteen verified Android screenshots
+        run: |
+          mkdir -p delivery/screenshots
+          cp android-reports/codex-visual-evidence/*.png delivery/screenshots/
+          test "$(find delivery/screenshots -name '*.png' | wc -l)" -eq 13
+          sha256sum delivery/screenshots/*.png > delivery/Android-Screenshot-Checksums.sha256
+      - name: Count exact verified source for owner chat breakdown
+        run: |
+          git fetch --no-tags --depth=1 origin "$APD_SOURCE_SHA"
+          python3 tools/apd_source_line_counts.py "$APD_SOURCE_SHA" delivery
+          git archive --format=zip --output=delivery/APD-Verified-Source.zip "$APD_SOURCE_SHA" SPD-classes/src/main/java core/src/main/java core/src/test/java android/src/main/java android/src/androidTest/java
+          sha256sum delivery/APD-Verified-Source.zip > delivery/APD-Verified-Source.zip.sha256
+      - name: Record exact TEST78 delivery scope
+        run: |
+          cat > docs/APD-TEST78-REPORT-2026-10-12.md <<'REPORT'
+          # TEST78 verified application delivery — October 12, 2026
+          
+          ## Status
+          Reuse exact source bd97e08f548c86d32f8869e1ab0e53146e6363bd/run38285524449. Actual downloaded XML1198 core and21 API34 emulator cases passed, no failures/errors/skips; Android debug assembly succeeded. Thirteen screenshots captured. Home and fictional-data popup visually inspected. Delivery checks signature against actual TEST67, exact appID/version and checksum before publication. No rebuild. Release tag targets actual tested application source78; delivery configuration remains on the approved Codex branch.
+          
+          ## Changes since delivered TEST73
+          TEST74 QueryEngine avoids two unused aggregate allocations; controlled desktop allocation probe saved88bytes/SUMcall, no Android speedup claim. Added a resumed-run/import/cache regression where the existing store already behaved correctly, without speculative gameplay changes.
+          TEST76 adds saved0.5x/1x/2x dungeon animation playback. Actual native pointer choices/reopening and animation timing verified. Turn costs, damage, movement distances, enemy actions and global/HUD clocks unchanged. Sound/music and absolute-time effects retain their timing. TEST75 failed on an invalid changelog sprite before producing an APK;76 corrects it, preserving tests and failed-build attribution.
+          TEST77 fixes malformed UTF8 row-cache acceptance and removed-dataset column-index misalignment. Valid international text and raw history remain unchanged; bad cache rebuilds. Reuses enemy totals during Home sorting, preserves stable ties and unknown/inferred marks; removes unused ranking-ID set/flag. Compact aligned Home values, existing SPD sprites and optional information replace instructions. Every destination/advanced operator remains.
+          TEST78 fixes interrupted replay loading waits returning before shared dungeon state restoration. Existing replay lock now guards loading, retaining interruption status. Native grey statistics controls and compact amber DEMO DATA with readable popup replace red controls/banner. Calculations, genuine records, cache/save formats, existing game mechanics and signing identity unchanged.
+          Each APK retains its own compiled categorized history against the preceding produced APK; no changes are assigned to failed attempts.
+          
+          ## Evidence
+          74source92f4d372abbba2f030774d01b7b939440c75f137/run38276527256:1180core+21Android passed.76sourcefc3d7e63776e56c5cc6f6b01a97fa0ff2904c1fa/run38278797850:1188+21passed; actual0.5second tween wall durations0.986185/0.473553/0.230999sec at0.5/1/2, no actor cost.77source19960d70d833d9ee1ac6e7ce0a9f4db8d21beaaa/run38281536953:1195+21passed.78actual downloaded1198+21passed,13PNGs. New replay barrier baseline2pass/1fail, corrected combined16pass; row-cache4new baseline3fail/correctedallpass, Home3newcases included. Full TEST78 source evidence and signer/checksum are appended during delivery.
+          
+          ## Pending and limits
+          TEST79a611c841e64a8bca592831d3200a5a65e1735b61/run38299325341 adds a reproduced cancelled-tour-worker guard;1200corepassed, Android verification still running at this report's preparation. It is NOT in this TEST78 APK. A separate DerivedStore malformedUTF8 cache correction passed39 targeted local tests but is not committed or in78/79.
+          Whole UIMSD audit and complete visual overhaul remain unfinished. Original TEST50 save unavailable; grey backpack matches Lost Inventory after an unblessedAnkh, no unintended capacity/expiry failure proven; no save modifications or forced unlock. Physical-phone/Android17PixelBuds acceptance remains pending. Existing tile/stair, News/About/build history and preserved gameplay features remain inherited from TEST73. Custom Dungeon Rules not implemented; no scoring/ranges invented. Online Community Hub remains offline preview; no unfinished servers activated.
+          
+          ## Timing and risk
+          TEST73 published12:09:18EDT, late for noon.4PM delivery uses already verified78 while79 finishes, not a claim that the full backlog is done. Actual build/signing/publication timestamps are recorded by delivery evidence. CLI network permission blocked822.1s before user abort; no coding during that interval. No unattended Codex coding demonstrated, no paid service. Two real Actions pipelines perform source verification/delivery, not autonomous overnight development.
+          Potential regressions include device-specific layout/animation timing, cache fallback paths and extended waits while replay genuinely owns state; permanent tests passed but cannot replace phone acceptance. Install over the existing app; never uninstall or clear data. Preserve last delivered TEST73 rollback. No main/Claude force-push, save/stat reset, appID/key change or public release.
+          REPORT
+      - name: Produce today's report from verified evidence
+        run: |
+          python3 -m pip install reportlab==4.2.5
+          python3 -m unittest discover -s tools -p test_apd_bug_report_pdf.py
+          python3 tools/apd_bug_report_pdf.py docs/APD-TEST78-REPORT-2026-10-12.md delivery/APD-Bug-Fixes-2026-10-12-TEST78.pdf --verification delivery/verification.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: verified-test78-delivery
+          path: delivery/
+          retention-days: 7
+
+# Owner requested this urgent private development deliverable by 11AM EDT October12.
+# Separate daily lunch schedules are unchanged. No app rebuild in this delivery workflow.
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: verified-test78-evidence
+          path: |
+            delivery/*.json
+            delivery/*.txt
+            delivery/*.pdf
+            delivery/*.csv
+            delivery/*.md
+            delivery/*.sha256
+            delivery/screenshots/
+            delivery/APD-Verified-Source.zip
+          retention-days: 7
+
+  private-publication:
+    needs: validate-and-stage
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: verified-test78-delivery
+          path: delivery
+      - name: Publish owner-requested private verified APK and report
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import json, os, subprocess
+          repo = os.environ['GITHUB_REPOSITORY']
+          number = int(os.environ['APD_TEST_NUMBER'])
+          assert json.loads(subprocess.check_output(['gh','api','repos/'+repo]))['private']
+          tag = f'apd-codex-test-{number}'
+          existing = subprocess.run(['gh','release','view',tag,'--repo',repo],capture_output=True)
+          if existing.returncode == 0:
+              raise SystemExit('Existing assets preserved: refusing to overwrite release.')
+          subprocess.run(['gh','release','create',tag,'--repo',repo,
+              '--target',os.environ['APD_SOURCE_SHA'],'--prerelease','--latest=false',
+              '--title',f'APD PRIVATE CODEX TEST {number}','--notes-file','delivery/verification.txt',
+              f'delivery/ADHD-Pixel-Dungeon-CODEX-TEST-{number}.apk',
+              f'delivery/ADHD-Pixel-Dungeon-CODEX-TEST-{number}.apk.sha256',
+              'delivery/APD-Bug-Fixes-2026-10-12-TEST78.pdf',
+              'delivery/TEST78-Verification.json',
+              'delivery/APD-Source-Line-Counts.json'],check=True)
+          PY
