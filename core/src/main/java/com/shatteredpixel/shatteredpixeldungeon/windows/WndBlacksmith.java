@@ -478,6 +478,7 @@ public class WndBlacksmith extends Window {
 				Blacksmith.Quest.generateRewards(false);
 			}
 
+            Blacksmith.Quest.revealOfferedLevels();
 			int count = 0;
 			for (Item i : Blacksmith.Quest.smithRewards){
 				count++;
@@ -488,6 +489,7 @@ public class WndBlacksmith extends Window {
 					}
 				};
 				btnReward.item( i );
+                btnReward.slot().showTrueUpgradeLevel();
 				btnReward.setRect( count*(WIDTH - BTN_GAP) / Blacksmith.Quest.smithRewards.size() - BTN_SIZE,
 						message.top() + message.height() + BTN_GAP,
 						BTN_SIZE, BTN_SIZE );

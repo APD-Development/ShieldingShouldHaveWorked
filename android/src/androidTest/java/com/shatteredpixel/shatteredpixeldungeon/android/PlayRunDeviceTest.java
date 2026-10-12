@@ -7,6 +7,14 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import android.util.Log;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
+import com.shatteredpixel.shatteredpixeldungeon.ui.ItemButton;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoItem;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndBlacksmith;
+import java.util.ArrayList;
 
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -722,7 +730,56 @@ public class PlayRunDeviceTest {
                 GameScene.show(chaliceWindow[0]);
             });
             Thread.sleep(350);visibilityScreenshot("chalice-preview.png");
-            onRender(()->{chaliceWindow[0].hide();Dungeon.hero.belongings.artifact=oldArtifact[0];Dungeon.hero.HP=oldHp[0];Game.switchScene(TitleScene.class);});
+            onRender(()->{chaliceWindow[0].hide();Dungeon.hero.belongings.artifact=oldArtifact[0];Dungeon.hero.HP=oldHp[0];});
+            ArrayList<Item> previousOffers=Blacksmith.Quest.smithRewards;
+            Weapon.Enchantment previousEnchant=Blacksmith.Quest.smithEnchant;Armor.Glyph previousGlyph=Blacksmith.Quest.smithGlyph;
+            final WndBlacksmith.WndSmith[] smithWindow=new WndBlacksmith.WndSmith[1];
+            final Item[] chosenReward=new Item[1];
+            final java.util.concurrent.atomic.AtomicReference<com.watabou.utils.Point> rewardTouch=new java.util.concurrent.atomic.AtomicReference<>();
+            try {
+                onRender(()->{try{
+                    ArrayList<Item> offers=new ArrayList<>();
+                    offers.add(new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword());
+                    offers.add(new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BattleAxe());
+                    offers.add(new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSpear());
+                    offers.add(new com.shatteredpixel.shatteredpixeldungeon.items.armor.LeatherArmor());
+                    for(int i=0;i<offers.size();i++){offers.get(i).level(i);offers.get(i).levelKnown=false;offers.get(i).cursedKnown=false;}
+                    Blacksmith.Quest.smithRewards=offers;Blacksmith.Quest.smithEnchant=null;Blacksmith.Quest.smithGlyph=null;
+                    smithWindow[0]=new WndBlacksmith.WndSmith(new Blacksmith(),Dungeon.hero);GameScene.show(smithWindow[0]);
+                    int index=0;
+                    for(Object member:(java.util.List<?>)field(smithWindow[0],"members")) if(member instanceof ItemButton){
+                        ItemButton button=(ItemButton)member;Item reward=offers.get(index);
+                        assertTrue("UI uses the exact reward object",button.item()==reward);
+                        assertTrue(reward.levelKnown);assertFalse(reward.cursedKnown);
+                        assertEquals("native slot shows actual +0 through +3",String.format(java.util.Locale.ROOT,"%+d",index),
+                                ((com.watabou.noosa.BitmapText)field(button.slot(),"level")).text());
+                        if(index==2){chosenReward[0]=reward;rewardTouch.set(button.camera().cameraToScreen(button.left()+button.width()/2f,button.top()+button.height()/2f));}
+                        index++;
+                    }
+                    assertEquals(4,index);
+                }catch(Exception e){throw new RuntimeException(e);}});
+                Thread.sleep(350);visibilityScreenshot("blacksmith-rewards.png");
+                com.watabou.utils.Point rewardAt=rewardTouch.get();
+                com.watabou.input.PointerEvent.addPointerEvent(new com.watabou.input.PointerEvent(rewardAt.x,rewardAt.y,19,com.watabou.input.PointerEvent.Type.DOWN,com.watabou.input.PointerEvent.LEFT));
+                Thread.sleep(150);
+                com.watabou.input.PointerEvent.addPointerEvent(new com.watabou.input.PointerEvent(rewardAt.x,rewardAt.y,19,com.watabou.input.PointerEvent.Type.UP,com.watabou.input.PointerEvent.LEFT));
+                waitUntil("blacksmith reward responds to actual touch",()->{
+                    for(Object member:(java.util.List<?>)field(Game.scene(),"members"))if(member instanceof WndInfoItem)return true;
+                    return false;
+                },30000);
+                Thread.sleep(350);visibilityScreenshot("blacksmith-reward-detail.png");
+                onRender(()->{try{
+                    WndInfoItem info=null;
+                    for(Object member:(java.util.List<?>)field(Game.scene(),"members"))if(member instanceof WndInfoItem)info=(WndInfoItem)member;
+                    assertNotNull(info);
+                    for(Object member:(java.util.List<?>)field(info,"members")) if(member instanceof com.shatteredpixel.shatteredpixeldungeon.ui.RedButton){click(member,"onClick");break;}
+                    assertTrue("selected exact item is received",Dungeon.hero.belongings.contains(chosenReward[0]));
+                    assertEquals(2,chosenReward[0].level());assertNull(Blacksmith.Quest.smithRewards);
+                }catch(Exception e){throw new RuntimeException(e);}});
+            }finally{
+                onRender(()->{if(smithWindow[0]!=null)smithWindow[0].hide();Blacksmith.Quest.smithRewards=previousOffers;Blacksmith.Quest.smithEnchant=previousEnchant;Blacksmith.Quest.smithGlyph=previousGlyph;});
+            }
+            onRender(()->Game.switchScene(TitleScene.class));
         }finally{
             SPDSettings.enhancedTileVisibility(oldEnhanced);SPDSettings.stairNavigationShortcut(oldShortcut);
             SPDSettings.visualGrid(oldGrid);SPDSettings.apdRecording(oldRecord);SPDSettings.intro(oldIntro);

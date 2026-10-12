@@ -1212,3 +1212,7 @@ Chalicepreviewlocal18cases+existingstairs/visibility39pass0.594s, Java compileac
 
 ## TEST85 verified source; private delivery preparation
 610d4061a153bc7e6774ce14e713b51516737646/run38313251401 success; actual1226core+21API34allpass/no f/e/s,16PNG. Viewed Chalice fullrange+fatalwarning anddefaultstairsUp/Downnativecaptures. Compatibility/signing/checksum/privatepublication nowrequestedviaexistingartifactworkflow; no rebuild; not yet delivered. Blacksmith offeredlevel UIlocal10reward/save/Ghostchecks pass0.181s, nativefixture+selectionpending in86.79stilllastsignedrelease until85publicationactuallyconfirmed.
+
+
+## TEST86 Blacksmith level-only reward UI candidate
+BlacksmithWndSmith previouslyneverrevealedlevelKnown beforeofferingrewards; SadGhostdoes.86uses sameflag-only disclosure beforeItemButtons, existingnativeSlotfont/%+d/colors, targetedtrue-level helperincluding+0. Actualrewardobjects/rewardlevel/RNGprobabilities/costs/enchant/glyph/selection unchanged. Fivepermanentcases+existingBlacksmithpersistence/Ghost10allpass0.181s; Java productioncompilepass. Nativefixtureaddsactual+0/+1/+2/+3labels, actualrewardtouch, exact+2itemreceiptandtwoPNGs; full1231core+21API34/18PNGrequestedpending. No86APKsuccessclaimed;85sourceverified1226+21/16PNG/actualreadableChalice+stairs screenshots, private85deliverycommit17e9a5834c985bb03dd47ee398daed2a249ee3fb underway/signingnotyetclaimed. Wholeaudit/physicalphone/actualownerinventorysave/customrulesunfinished, saves/main/Claude/key/appID preserved.

@@ -1,0 +1,17 @@
+# TEST86 Blacksmith reward levels
+Preceding produced/verified APK85:source610d4061a153bc7e6774ce14e713b51516737646/run38313251401, actual1226core+21API34allpass/16PNG. Parentdelivery-only17e9a5834c985bb03dd47ee398daed2a249ee3fb reuses85APK; signing/privatepublication pending at preparation time.
+
+## Cause and implementation
+Sad Ghost explicitly sets only levelKnown onofferedgear beforeItemButtons; BlacksmithWndSmith didnot. NormalItemSlot therefore hidupgradelevels. Blacksmith nowmarksstored offeredlevels known andusesnative%+d/font/color inItemSlot; +0explicitlyvisible. SlotshowTrueUpgradeLevel iscalledonlyonBlacksmithrewardbuttons, leavingotherinventorydisplays unchanged. Actuallevelcomesfromtheexactoffereditem, notregeneration/estimate/buffedlevel. Itemobject/listreferences/values unchanged, curse state and separatelydeferredenchant/glyph remainhidden. Originalgeneration/cost/selection/identify-onreceipt/dropfallback preserved. No itemstats/probabilities/upgrade/saveformatchange.
+
+## Testing
+Fivepermanentcases verifyall0–3levels forweapon/armor/missile, identity/levels/unknowncurse, RNG/favor/count invariance, deferredenchant/glyphpreservation, existingitemserialization andnull/emptyoffers. Combinednew+existingBlacksmithpersistence/Ghost10casespass0.181s;productionJavacompilepassed. Actualnativegamefixture isextendedwithfourlevelsoffers, nativeSlottextassertions+two requiredscreenshots, PointerEventsrewardclick, confirmationcallback andexact+2itemreceipt. Thisisolatedfixture intentionallyusesdifferentlevels toexercisealllabels; realgenerator's commonrewardlevel anddistribution remainunchanged. Full1231core/debug/21API34/18PNGchecks pending. CompilationaloneisnotcalledAndroidvisualverification. Physicalphoneunverified.
+
+## Included prior changes compared with last delivered79
+80derivedUTF8cachevalidation;81fulltext-INinput/nativegreyhelper;82nine-sort-keycrash;83rowcacheCRC/migration;85stairdefaultvisibility/explicitOffpreservation/locationhint andChalicestate-specificdamageHPpreview.79hadstairsbutdefaultOff andtestforcedOn.85actualnativeunforceddefaulttouch+range/fatalwarningphotosinspected.84failedolddefaulttestexpectation,noAPK. LifeLink preview explicitlyunpredictable; no guaranteedsurvival. Olderrowcachesrebuildonce, rawhistoryuntouched. EntireUIMSDaudit/customrules/physicalphone/actualownersaveissuesunfinished.
+
+## Potential regressions and limits
+Level-only flag reveals level-derived strength/damageinformation as the existing SadGhost does, but doesnotmarkcurse/enchantmentidentified beforeselection. Explicit+0text isreward-only; nativefont/layout stillrequiresAndroidreview. CurrentChalicepreview mirrors actualorderedrounding/modifiers, with read-only absorbhelpers; futuredamagechanges needmatchingtests. Signer/appID/checksum mustpassbeforepublication; installoveronly,no uninstallorcleardata.
+
+## Changed files
+Blacksmith.java,W​​ndBlacksmith.java,ItemSlot.java,BlacksmithRewardVisibilityTest.java,PlayRunDeviceTest.java,Androidvisualgateandbuild/handoff/historyrecords. Prior85deliveryworkflow/reportdocs recordedin86history. ExpectedfirstcompiledBlacksmithAPK86; not claimedverified/delivered yet. CI/testexecutiontimestamps willbe addedfromactualresults; no invented overnightwork duration.

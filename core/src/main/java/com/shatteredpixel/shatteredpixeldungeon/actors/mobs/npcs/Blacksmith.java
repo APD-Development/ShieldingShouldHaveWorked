@@ -366,6 +366,13 @@ public class Blacksmith extends NPC {
 			return rooms;
 		}
 
+        /** Same level-only disclosure as the Sad Ghost; never identify the reward here. */
+        public static void revealOfferedLevels() {
+            if (smithRewards != null) for (Item item : smithRewards) {
+                if (item != null) item.levelKnown = true;
+            }
+        }
+
 		public static void generateRewards( boolean useDecks ){
 			smithRewards = new ArrayList<>();
 			smithRewards.add(Generator.randomWeapon(3, useDecks));

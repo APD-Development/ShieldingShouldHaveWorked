@@ -304,6 +304,18 @@ public class ItemSlot extends Button {
 		layout();
 	}
 	
+    /** Explicit reward level, including +0, using the normal slot font and colors. */
+    public void showTrueUpgradeLevel() {
+        if (item == null || !item.levelKnown) return;
+        int actual = item.visiblyUpgraded();
+        level.text(Messages.format(TXT_LEVEL, actual));
+        level.measure();
+        if (actual > 0) level.hardlight(UPGRADED);
+        else if (actual < 0) level.hardlight(DEGRADED);
+        else level.resetColor();
+        layout();
+    }
+
 	public void enable( boolean value ) {
 		
 		active = value;
