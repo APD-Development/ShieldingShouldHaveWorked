@@ -101,12 +101,15 @@
       "category": "Development",
       "sprite": "ICON_INFO",
       "title": "Current verification record",
-      "text": "Updated the shared handoff, report and full build request for the accessibility and navigation additions.",
+      "text": "Updated the shared handoff, reports and full build request, including the blocked TEST71 attempt without an APK.",
       "paths": [
         "docs/HANDOFF.md",
         "docs/APD-TEST71-REPORT-2026-10-12.md",
         "docs/APD-NEXT-BUILD-HISTORY.json",
-        "docs/APD-CODEX-BUILD-REQUEST.txt"
+        "docs/APD-CODEX-BUILD-REQUEST.txt",
+        "docs/APD-TEST72-REPORT-2026-10-12.md",
+        "core/src/main/assets/apd/history/codex-test-71.tsv",
+        "core/src/main/assets/apd/history/index.tsv"
       ]
     },
     {
