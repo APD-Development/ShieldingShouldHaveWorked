@@ -13,7 +13,8 @@ def pages(path,key=None):
  raise RuntimeError('Pagination exceeded safety bound; census incomplete')
 def fetch_binary(endpoint,path):
  with path.open('wb') as out:
-  subprocess.run(['gh','api','--method','GET',endpoint,'-H','Accept: application/octet-stream'],stdout=out,stderr=subprocess.PIPE,check=True)
+  accept = 'application/octet-stream' if '/releases/assets/' in endpoint else 'application/vnd.github+json'
+  subprocess.run(['gh','api','--method','GET',endpoint,'-H','Accept: '+accept],stdout=out,stderr=subprocess.PIPE,check=True)
 def inspect_apk(path,record):
  digest=hashlib.sha256(path.read_bytes()).hexdigest()
  record['apk_sha256']=digest;record['apk_bytes']=path.stat().st_size
@@ -45,7 +46,12 @@ for namespace,name,maximum in [('legacy','Build APK',84),('codex','Codex APD spr
 for release in releases:
  if re.fullmatch('apd-test-[0-9]+',release['tag_name']):
   records.append({'namespace':'private','number':int(release['tag_name'].split('-')[-1]),'tag':release['tag_name'],'release':release,'errors':[]})
+previous_path=Path('previous-history/apk-census.json')
+previous=json.loads(previous_path.read_text()) if previous_path.exists() else []
+previous_by_id={(r['namespace'],r['number']):r for r in previous}
 def audit(record):
+ old=previous_by_id.get((record['namespace'],record['number']))
+ if old and not old['errors']:return old
  try:
   release=record.pop('release')
   if release:
@@ -77,7 +83,8 @@ def audit(record):
     if record.get('artifact_declared_sha256') and record['artifact_declared_sha256']!=record['apk_sha256']:raise ValueError('Artifact checksum mismatch')
   else:record['apk_location']='none'
  except Exception as e:
-  record['errors'].append(type(e).__name__+': '+str(e))
+  detail = e.stderr.decode('utf-8','replace')[:1000] if isinstance(e,subprocess.CalledProcessError) and e.stderr else str(e)
+  record['errors'].append(type(e).__name__+': '+detail)
  return record
 out=Path('history-evidence');out.mkdir(exist_ok=True)
 completed=[]
