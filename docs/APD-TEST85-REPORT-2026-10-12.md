@@ -15,3 +15,10 @@ Unequipped item asks to equip for a current-state preview. Max-level/cursed item
 Native21-case suite extends actual dungeon test: unforced default preference, real stair-tag touch, existing both-direction/interruptions/save-reload/Cleric HUD checks, real Chalice item window and fatal-description assertions plus required16th screenshot. Compilation/render/native screenshot review pending; no signed-compatible TEST85 delivered yet. Physical phone/owner save not tested.
 
 Changed production: SPDSettings/APDSettingsPane (from failed84), ChaliceDamagePreview, ChaliceOfBlood, Earthroot, WandOfLivingEarth, CapeOfThorns. Changed tests: new stair preferences, visibility default expectation, new Chalice tests, PlayRunDeviceTest, Android screenshot gate. Build records/handoff/history include every changed path since83.
+
+
+## Actual TEST85 verification
+Source610d4061a153bc7e6774ce14e713b51516737646/tree8b9235fb5b5c8e34f56ece4d496d78c47bdecd71/run38313251401 success. Actual downloaded XML1226core+21API34pass,zero failure/error/skip,16PNG. Viewed actual chalice-preview andstairs-shortcut: allpreviewlines/fatalwarning readable insidewindow; actualunforceddefaultstairtouchopensUp/Down. This completes emulator compilation/render verification, not physical-phone testing. Signed compatibility/checksum/private publication still pending at this report update.
+
+## Changes since last delivered TEST79
+TEST80 strictUTF8 derived-cache recovery; TEST81 full text-IN filter input beyond60suggestions and40characters plusnativegreyhelper; TEST82 nine-key Sort crash fix; TEST83 CRC32 row-cache corruption detection andlegacycache rebuild; TEST85 defaultstairdiscoverability andcurrent-stateChalicepreview. Existingrawlogs/saves/queryformulas unchanged. Firstcacheload mayrebuildoldtemporarycaches, with no measuredAndroidFPS claim. ExplicitstairOFFpreferencesremainOFF. WholeUIMSDaudit/customrules/physicalphone/owneractualinventorysave remainunfinished. TEST84failedattempt,noAPK. Blacksmith UI changes are being prepared separately and are not in85.
