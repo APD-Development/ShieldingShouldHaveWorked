@@ -1159,3 +1159,7 @@ QueryEngine avoids two unused aggregate containers. Exact-source local90 query/a
 
 ## Game playback candidate TEST75
 Owner approved0.5x/1x/2x playback only; actor turns/costs/damage/cooldowns unchanged. Compact persisted APD Settings choice, default1x, dungeon-only elapsed scaling with nested and exception guards. HUD long presses/global timeScale untouched. Changed production Java compiled;8new permanent hostcases passed0.068s, including actual disk reload and30–165FPS Tweenercompletion. Real-touch speed chooser and actual Android animation timing added to existing instrumentation. Fullcore/debug/API34 requested; not yet verified or delivered. TEST74 source92f4d372abbba2f030774d01b7b939440c75f137/run38276527256 is independently checking UIMSD allocation cleanup. TEST73 remains delivered rollback. EntireUIMSDaudit/redesign/physical-phonechecks unfinished.4PMEDT target accepted without guarantee of entirebacklog.
+
+
+## TEST75 sprite-gate failure; TEST76 correction
+TEST75 sourceb9847fe3110e6ae200ece9b5efdf2a5b9d8ae44f/run38278018095:1188corecases,1187passed/1failed. All8speedcasespassed; changelog rejected nonexistent Icons.TIME. No APK. ReplacewithSPDChangeIcons.V023_HOURGLASS, retaintestandrecordfailedattempt. TEST76 previousAPKremainsactualTEST74. DownloadedTEST74XML1180core+21API34allpass, source92f4d372abbba2f030774d01b7b939440c75f137/run38276527256. No74signing/privatepublicationclaim;73rollback. Source76fullchecksrequested.

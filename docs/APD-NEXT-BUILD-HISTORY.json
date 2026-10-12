@@ -6,7 +6,7 @@
   "changes": [
     {
       "category": "Quality of Life",
-      "sprite": "ICON_TIME",
+      "sprite": "V023_HOURGLASS",
       "title": "Game playback speed",
       "text": "Choose 0.5x, 1x or 2x dungeon playback in APD Settings without changing gameplay turns or combat costs.",
       "paths": [
@@ -16,7 +16,7 @@
     },
     {
       "category": "Changes",
-      "sprite": "ICON_TIME",
+      "sprite": "V023_HOURGLASS",
       "title": "Dungeon animation timing",
       "text": "Dungeon visual groups follow the selected speed while menus, HUD long presses and the actor clock keep their normal timing.",
       "paths": [
@@ -35,7 +35,7 @@
     },
     {
       "category": "Testing",
-      "sprite": "ICON_TIME",
+      "sprite": "V023_HOURGLASS",
       "title": "Android speed controls and animations",
       "text": "Android checks now select every speed through actual touches and compare real dungeon animation completion times.",
       "paths": [
@@ -52,7 +52,8 @@
         "docs/APD-TEST75-REPORT-2026-10-12.md",
         "docs/HANDOFF.md",
         "docs/APD-NEXT-BUILD-HISTORY.json",
-        "docs/APD-CODEX-BUILD-REQUEST.txt"
+        "docs/APD-CODEX-BUILD-REQUEST.txt",
+        "docs/APD-TEST76-REPORT-2026-10-12.md"
       ]
     },
     {
@@ -61,6 +62,16 @@
       "title": "Developer Commentary",
       "text": "I added three playback speeds while keeping turn costs and HUD timing unchanged. I am verifying the actual Android controls and animation timing before delivery.",
       "paths": []
+    },
+    {
+      "category": "Changes",
+      "sprite": "V023_HOURGLASS",
+      "title": "Supported hourglass icons",
+      "text": "Playback entries use SPD's existing hourglass sprite, and the failed no-APK TEST75 attempt is recorded accurately.",
+      "paths": [
+        "core/src/main/assets/apd/history/index.tsv",
+        "core/src/main/assets/apd/history/codex-test-75.tsv"
+      ]
     }
   ]
 }
