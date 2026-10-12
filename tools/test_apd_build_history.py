@@ -64,5 +64,26 @@ class CompleteCoverageTests(unittest.TestCase):
    bad=root/'bad.apk'
    with zipfile.ZipFile(bad,'w') as z:z.writestr('assets/apd/history/index.tsv','reviewed index');z.writestr('assets/apd/history/build-37.tsv','missing most changes')
    with self.assertRaises(ValueError):history.verify_compiled(root,bad)
+class HistoricalAliasTests(unittest.TestCase):
+ def test_old_private_alias_does_not_restore_a_missing_navigation_target(self):
+  import zipfile
+  with tempfile.TemporaryDirectory() as folder:
+   root=pathlib.Path(folder);assets=root/'core/src/main/assets/apd/history';assets.mkdir(parents=True)
+   (assets/'index.tsv').write_text('private-test-3\tPrivate TEST 3\t2026-10-08\tRecovered history\n')
+   (assets/'private-test-3.tsv').write_text('Recovered exact changes.\n')
+   apk=root/'old.apk'
+   with zipfile.ZipFile(apk,'w') as z:
+    z.writestr('assets/apd/history/index.tsv','codex-test-67\tCodex TEST 67\t2026-10-12\tHistory\ntest-3\tPrivate TEST 3\t2026-10-08\tMissing placeholder\n')
+    z.writestr('assets/apd/history/codex-test-67.tsv','Verified build67 notes.\n')
+   history.merge_previous_apk(root,apk,'Codex TEST 67')
+   self.assertNotIn('\ntest-3\t',(assets/'index.tsv').read_text())
+   self.assertIn('private-test-3\t',(assets/'index.tsv').read_text())
+   self.assertTrue((assets/'codex-test-67.tsv').is_file())
+ def test_unresolved_missing_history_fails_before_android(self):
+  import zipfile
+  with tempfile.TemporaryDirectory() as folder:
+   root=pathlib.Path(folder);apk=root/'old.apk'
+   with zipfile.ZipFile(apk,'w') as z:z.writestr('assets/apd/history/index.tsv','codex-test-67\tCodex TEST 67\t2026-10-12\tMissing record\n')
+   with self.assertRaisesRegex(ValueError,'missing record'):history.merge_previous_apk(root,apk,'Codex TEST 67')
 if __name__=='__main__':unittest.main()
 

@@ -29,7 +29,54 @@
       "title": "Development evidence",
       "text": "Updated the development report and verification request for the removed hotbar settings and historical reconstruction.",
       "paths": [
-        "docs/APD-TEST69-REPORT-2026-10-12.md",
+        "docs/APD-TEST69-REPORT-2026-10-12.md"
+      ]
+    },
+    {
+      "category": "Bug Fixes",
+      "sprite": "V061_BUGFIX",
+      "title": "Historical private-test navigation",
+      "text": "Corrected obsolete private-test references that could prevent Change History from opening after reconstruction.",
+      "paths": [
+        "tools/apd_build_history.py"
+      ]
+    },
+    {
+      "category": "Testing",
+      "sprite": "ICON_CHECKED",
+      "title": "Missing-record regressions",
+      "text": "Added permanent checks that recovered private-test entries supersede obsolete aliases and missing historical files block preparation.",
+      "paths": [
+        "tools/test_apd_build_history.py"
+      ]
+    },
+    {
+      "category": "Infrastructure",
+      "sprite": "ICON_CHANGES",
+      "title": "Produced APK attribution",
+      "text": "History preservation can recover an APK produced before a later Android failure without labeling that earlier APK playable or verified.",
+      "paths": [
+        ".github/workflows/codex-sprint-check.yml"
+      ]
+    },
+    {
+      "category": "Quality of Life",
+      "sprite": "ICON_CHANGES",
+      "title": "Exact recent build records",
+      "text": "Preserved TEST68's produced APK changes and identified TEST69's stopped preparation without assigning changes to a nonexistent APK.",
+      "paths": [
+        "core/src/main/assets/apd/history/codex-test-68.tsv",
+        "core/src/main/assets/apd/history/codex-test-69.tsv",
+        "core/src/main/assets/apd/history/index.tsv"
+      ]
+    },
+    {
+      "category": "Development",
+      "sprite": "ICON_INFO",
+      "title": "Failure and verification records",
+      "text": "Recorded the failed Android history check, blocked preparation, fix and new verification request.",
+      "paths": [
+        "docs/APD-TEST70-REPORT-2026-10-12.md",
         "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/APD-CODEX-BUILD-REQUEST.txt"
       ]
@@ -38,7 +85,7 @@
       "category": "Developer Commentary",
       "sprite": "V074_SHPX",
       "title": "Developer Commentary",
-      "text": "I removed the hotbar settings that were no longer requested. Cleric quick-cast controls remain available without opening that menu.",
+      "text": "I removed the withdrawn hotbar settings while keeping Cleric controls available. I also corrected old private-test history references caught by the Android checks.",
       "paths": []
     }
   ]

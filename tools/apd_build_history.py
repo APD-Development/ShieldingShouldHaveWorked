@@ -37,11 +37,16 @@ def merge_previous_apk(root,apk,expected_label):
             if len(fields)!=4 or not re.fullmatch(r"[a-z0-9-]+",fields[0]):
                 raise ValueError("Invalid previous APK history identifier")
             ident=fields[0]
+            canonical={'test-1':'private-test-1','test-2':'private-test-2','test-3':'private-test-3'}.get(ident)
+            if canonical in existing and (assets/(canonical+'.tsv')).is_file():
+                continue # reviewed canonical private history supersedes the old identifier
             if ident not in existing: missing.append(line);existing.add(ident)
             target=assets/(ident+".tsv")
             member="assets/apd/history/"+ident+".tsv"
             if not target.exists() and member in archive.namelist():
                 target.write_bytes(archive.read(member))
+            if not target.is_file():
+                raise ValueError('Previous history points to a missing record: '+ident)
     index.write_text("\n".join(missing+current)+"\n")
 
 def embed(root,ledger,number):
