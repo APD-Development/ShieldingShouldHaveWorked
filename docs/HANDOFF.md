@@ -1068,3 +1068,7 @@ Real branch2b6c39b checked; priorTEST60/a9409fc core+assembly passed but Android
 
 ## TEST61 core evidence and reviewed UI preservation checklist
 Actual artifact11736648459 downloaded and parsed:193suites/1134cases,0failures/errors/skips, InventoryPickup12casespass. APKassemblyartifact11736978246 exists but API34pending, notverified fordelivery. Host41targeted cases additionallypass6.115s incl24,024query comparisons unchanged. docs/UIMSD-VISUAL-CHECKLIST.md separates sourceinspection, preservedfunctionality and pendingAndroid/phoneacceptance; reportdraft identifiesallactualchanges/failures/missinghistory. No completeaudit or guaranteedzero-bugclaim. DraftPDFtwo pages textvalidated locally, notpublished. Main/signing/saveformats/ownerdata unchanged.
+
+
+## TEST61 Android result and narrow fixture correction
+Actualjob114735947947 failed only UimsdScreensDeviceTest: ScrollPane.setRect invoked cameraToScreen onnullcamera in a detached test-onlyHomePane (fixtureline130). About popup/News callback tests passed after55a96e productionfix. Attach narrowfixturetoexistingGame.scene beforelayout exactlyasactualscene does, remove/destroyafterchecks. Keep every width/link/outcome assertion. No additionalproductionchange. TEST61 stillnotverified/delivered. Required rerun requested forcorrectedAndroidfixture; no sourcechangeinvented as dailyfix. Firstjobs-detailendpoint yieldedunsupportedcontent and parsererror; changedto supportedrun/jobs endpoint, no failedCI concealed.

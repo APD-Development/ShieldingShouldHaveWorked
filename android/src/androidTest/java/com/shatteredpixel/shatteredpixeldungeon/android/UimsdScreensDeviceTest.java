@@ -125,6 +125,7 @@ public class UimsdScreensDeviceTest {
                 assertFalse("sample Home contains real navigation fixtures", home.isEmpty());
                 for (int width : new int[]{120,160,240}) {
                     com.shatteredpixel.shatteredpixeldungeon.ui.UimsdHomePane pane = new com.shatteredpixel.shatteredpixeldungeon.ui.UimsdHomePane();
+                    Game.scene().add(pane); // ScrollPane layout requires the real scene camera.
                     final String[] selected = {null};
                     pane.setListener(id -> selected[0]=id);
                     pane.setRect(0,0,width,100);pane.setHome(home);
@@ -140,7 +141,7 @@ public class UimsdScreensDeviceTest {
                         float[] box=pane.linkBox(target);
                         if(box!=null){selected[0]=null;pane.onClick(box[0]+box[2]/2,box[1]+box[3]/2);assertEquals(target,selected[0]);}
                     }
-                    pane.destroy();
+                    Game.scene().remove(pane);pane.destroy();
                 }
             });
 
