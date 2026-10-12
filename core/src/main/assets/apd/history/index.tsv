@@ -9,20 +9,20 @@ codex-test-63	Codex TEST 63	2026-10-12	Complete verified history
 codex-test-62	Codex TEST 62	2026-10-12	Complete verified history
 codex-test-61	Codex TEST 61	2026-10-12	Complete verified history
 codex-test-60	Codex TEST 60	2026-10-11	Complete verified history
-codex-test-59	Codex TEST 59	2026-10-11	No APK produced
+codex-test-59	Codex TEST 59	2026-10-11	No retained APK
 codex-test-58	Codex TEST 58	2026-10-11	Complete verified history
-codex-test-57	Codex TEST 57	2026-10-11	No APK produced
-codex-test-56	Codex TEST 56	2026-10-11	No APK produced
+codex-test-57	Codex TEST 57	2026-10-11	No retained APK
+codex-test-56	Codex TEST 56	2026-10-11	No retained APK
 codex-test-55	Codex TEST 55	2026-10-11	Complete verified history
 codex-test-54	Codex TEST 54	2026-10-11	Complete verified history
-codex-test-53	Codex TEST 53	2026-10-11	No APK produced
-codex-test-52	Codex TEST 52	2026-10-11	No APK produced
+codex-test-53	Codex TEST 53	2026-10-11	No retained APK
+codex-test-52	Codex TEST 52	2026-10-11	No retained APK
 codex-test-51	Codex TEST 51	2026-10-11	Complete verified history
 codex-test-50	Codex TEST 50	2026-10-11	Complete verified history
 codex-test-49	Codex TEST 49	2026-10-11	Complete verified history
 codex-test-48	Codex TEST 48	2026-10-11	Complete verified history
 build-84	Build 84	2026-10-11	Complete verified history
-build-83	Build 83	2026-10-11	No APK produced
+build-83	Build 83	2026-10-11	No retained APK
 codex-test-47	Codex TEST 47	2026-10-11	Complete verified history
 build-82	Build 82	2026-10-11	Complete verified history
 build-81	Build 81	2026-10-11	Complete verified history
@@ -34,7 +34,7 @@ codex-test-42	Codex TEST 42	2026-10-10	Complete verified history
 codex-test-41	Codex TEST 41	2026-10-10	Complete verified history
 codex-test-40	Codex TEST 40	2026-10-10	Complete verified history
 codex-test-39	Codex TEST 39	2026-10-10	Complete verified history
-codex-test-38	Codex TEST 38	2026-10-10	No APK produced
+codex-test-38	Codex TEST 38	2026-10-10	No retained APK
 codex-test-37	Codex TEST 37	2026-10-10	Complete verified history
 codex-test-36	Codex TEST 36	2026-10-10	Complete verified history
 codex-test-35	Codex TEST 35	2026-10-10	Complete verified history
@@ -42,9 +42,9 @@ codex-test-34	Codex TEST 34	2026-10-10	Complete verified history
 codex-test-33	Codex TEST 33	2026-10-10	Complete verified history
 codex-test-32	Codex TEST 32	2026-10-10	Complete verified history
 codex-test-31	Codex TEST 31	2026-10-10	Complete verified history
-codex-test-30	Codex TEST 30	2026-10-10	No APK produced
+codex-test-30	Codex TEST 30	2026-10-10	No retained APK
 codex-test-29	Codex TEST 29	2026-10-10	Complete verified history
-codex-test-28	Codex TEST 28	2026-10-10	No APK produced
+codex-test-28	Codex TEST 28	2026-10-10	No retained APK
 codex-test-27	Codex TEST 27	2026-10-10	Complete verified history
 codex-test-26	Codex TEST 26	2026-10-10	Complete verified history
 codex-test-25	Codex TEST 25	2026-10-10	Complete verified history
@@ -53,14 +53,14 @@ codex-test-23	Codex TEST 23	2026-10-10	Complete verified history
 codex-test-22	Codex TEST 22	2026-10-10	Complete verified history
 codex-test-21	Codex TEST 21	2026-10-09	Complete verified history
 codex-test-20	Codex TEST 20	2026-10-09	Complete verified history
-codex-test-19	Codex TEST 19	2026-10-09	No APK produced
+codex-test-19	Codex TEST 19	2026-10-09	No retained APK
 codex-test-18	Codex TEST 18	2026-10-09	Complete verified history
 codex-test-17	Codex TEST 17	2026-10-09	Complete verified history
-codex-test-16	Codex TEST 16	2026-10-09	No APK produced
-codex-test-15	Codex TEST 15	2026-10-09	No APK produced
-codex-test-14	Codex TEST 14	2026-10-09	No APK produced
-codex-test-13	Codex TEST 13	2026-10-09	No APK produced
-codex-test-12	Codex TEST 12	2026-10-09	No APK produced
+codex-test-16	Codex TEST 16	2026-10-09	No retained APK
+codex-test-15	Codex TEST 15	2026-10-09	No retained APK
+codex-test-14	Codex TEST 14	2026-10-09	No retained APK
+codex-test-13	Codex TEST 13	2026-10-09	No retained APK
+codex-test-12	Codex TEST 12	2026-10-09	No retained APK
 codex-test-11	Codex TEST 11	2026-10-09	Complete verified history
 codex-test-10	Codex TEST 10	2026-10-09	Complete verified history
 codex-test-9	Codex TEST 9	2026-10-09	Complete verified history
@@ -68,7 +68,7 @@ codex-test-8	Codex TEST 8	2026-10-09	Complete verified history
 codex-test-7	Codex TEST 7	2026-10-09	Complete verified history
 codex-test-6	Codex TEST 6	2026-10-09	Complete verified history
 codex-test-5	Codex TEST 5	2026-10-09	Complete verified history
-codex-test-4	Codex TEST 4	2026-10-09	No APK produced
+codex-test-4	Codex TEST 4	2026-10-09	No retained APK
 codex-test-3	Codex TEST 3	2026-10-09	Complete verified history
 codex-test-2	Codex TEST 2	2026-10-09	Complete verified history
 codex-test-1	Codex TEST 1	2026-10-09	Complete verified history
@@ -76,7 +76,7 @@ private-test-3	Private TEST 3	2026-10-08	Complete verified history
 private-test-2	Private TEST 2	2026-10-08	Delivery alias: Private TEST1
 private-test-1	Private TEST 1	2026-10-08	Complete verified history
 build-80	Build 80	2026-10-08	Complete verified history
-build-79	Build 79	2026-10-08	No APK produced
+build-79	Build 79	2026-10-08	No retained APK
 build-78	Build 78	2026-10-08	Complete verified history
 build-77	Build 77	2026-10-08	Complete verified history
 build-76	Build 76	2026-10-08	Complete verified history
@@ -108,7 +108,7 @@ build-51	Build 51	2026-10-07	Complete verified history
 build-50	Build 50	2026-10-07	Complete verified history
 build-49	Build 49	2026-10-07	Complete verified history
 build-48	Build 48	2026-10-07	Complete verified history
-build-47	Build 47	2026-10-07	No APK produced
+build-47	Build 47	2026-10-07	No retained APK
 build-46	Build 46	2026-10-07	Complete verified history
 build-45	Build 45	2026-10-07	Complete verified history
 build-44	Build 44	2026-10-07	Complete verified history
@@ -117,14 +117,14 @@ build-42	Build 42	2026-10-07	Complete verified history
 build-41	Build 41	2026-10-07	Complete verified history
 build-40	Build 40	2026-10-07	Complete verified history
 build-39	Build 39	2026-10-07	Complete verified history
-build-38	Build 38	2026-10-07	No APK produced
+build-38	Build 38	2026-10-07	No retained APK
 build-37	Build 37	2026-10-07	Complete verified history
 build-36	Build 36	2026-10-07	Complete verified history
 build-35	Build 35	2026-10-07	Complete verified history
 build-34	Build 34	2026-10-07	Complete verified history
 build-33	Build 33	2026-10-07	Complete verified history
 build-32	Build 32	2026-10-07	Complete verified history
-build-31	Build 31	2026-10-07	No APK produced
+build-31	Build 31	2026-10-07	No retained APK
 build-30	Build 30	2026-10-07	Complete verified history
 build-29	Build 29	2026-10-07	Complete verified history
 build-28	Build 28	2026-10-07	Complete verified history
@@ -154,4 +154,4 @@ build-5	Build 5	2026-10-06	Complete verified history
 build-4	Build 4	2026-10-06	Complete verified history
 build-3	Build 3	2026-10-05	Complete verified history
 build-2	Build 2	2026-10-05	Complete verified history
-build-1	Build 1	2026-10-05	No APK produced
+build-1	Build 1	2026-10-05	No retained APK

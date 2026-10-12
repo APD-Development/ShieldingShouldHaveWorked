@@ -47,7 +47,13 @@ def merge_previous_apk(root,apk,expected_label):
                 target.write_bytes(archive.read(member))
             if not target.is_file():
                 raise ValueError('Previous history points to a missing record: '+ident)
-    index.write_text("\n".join(missing+current)+"\n")
+    lines=missing+current
+    families=[]
+    for line in current+missing:
+        family=line.split("\t",1)[0].rsplit("-",1)[0]
+        if family not in families:families.append(family)
+    lines.sort(key=lambda line:(families.index(line.split("\t",1)[0].rsplit("-",1)[0]),-int(line.split("\t",1)[0].rsplit("-",1)[1])))
+    index.write_text("\n".join(lines)+"\n")
 
 def embed(root,ledger,number):
     assets=root/"core/src/main/assets/apd/history"

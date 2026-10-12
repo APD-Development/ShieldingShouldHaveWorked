@@ -85,5 +85,19 @@ class HistoricalAliasTests(unittest.TestCase):
    root=pathlib.Path(folder);apk=root/'old.apk'
    with zipfile.ZipFile(apk,'w') as z:z.writestr('assets/apd/history/index.tsv','codex-test-67\tCodex TEST 67\t2026-10-12\tMissing record\n')
    with self.assertRaisesRegex(ValueError,'missing record'):history.merge_previous_apk(root,apk,'Codex TEST 67')
+class ChronologicalHistoryTests(unittest.TestCase):
+ def test_imported_builds_do_not_jump_a_newer_failed_number(self):
+  import zipfile
+  with tempfile.TemporaryDirectory() as folder:
+   root=pathlib.Path(folder);assets=root/'core/src/main/assets/apd/history';assets.mkdir(parents=True)
+   (assets/'index.tsv').write_text('codex-test-71\tCodex TEST 71\t2026-10-12\tNo retained APK\nbuild-1\tBuild 1\t2026-10-04\tHistory\n')
+   (assets/'codex-test-71.tsv').write_text('Failed before assembly\n');(assets/'build-1.tsv').write_text('Historical record\n')
+   apk=root/'previous.apk'
+   with zipfile.ZipFile(apk,'w') as z:
+    z.writestr('assets/apd/history/index.tsv','codex-test-72\tCodex TEST 72\t2026-10-12\tHistory\ncodex-test-70\tCodex TEST 70\t2026-10-12\tHistory\n')
+    z.writestr('assets/apd/history/codex-test-72.tsv','Build72 changes\n');z.writestr('assets/apd/history/codex-test-70.tsv','Build70 changes\n')
+   history.merge_previous_apk(root,apk,'Codex TEST 72')
+   ids=[line.split('\t')[0] for line in (assets/'index.tsv').read_text().splitlines()]
+   self.assertEqual(['codex-test-72','codex-test-71','codex-test-70','build-1'],ids)
 if __name__=='__main__':unittest.main()
 

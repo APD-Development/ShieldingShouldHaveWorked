@@ -665,6 +665,7 @@ public class PlayRunDeviceTest {
                     assertTrue("the selected known stair is highlighted exactly",marked);
                 }catch(Exception e){throw new RuntimeException(e);}
             });
+            Thread.sleep(300); // Capture a completed rendered frame while the short marker is still visible.
             visibilityScreenshot("stairs-highlight.png");
             waitUntil("walk arrives and stops",()->Dungeon.hero.ready && Dungeon.hero.pos==destination.get(),30000);
             assertNull(Dungeon.hero.curAction);assertEquals("no automatic floor transition",depth,Dungeon.depth);
