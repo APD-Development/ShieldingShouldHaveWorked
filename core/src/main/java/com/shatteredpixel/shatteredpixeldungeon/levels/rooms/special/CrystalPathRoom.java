@@ -27,11 +27,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDivineInspiration;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMetamorphosis;
-import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ExoticCrystals;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
@@ -168,15 +165,11 @@ public class CrystalPathRoom extends SpecialRoom {
 
 		ArrayList<Item> duplicates = new ArrayList<>();
 
-		if (Random.Int(2) == 0){
-			addRewardItem(Generator.Category.POTION, potions, duplicates);
-			scrolls.add(Random.Float() < ExoticCrystals.consumableExoticChance()
-					? new ScrollOfMetamorphosis() : new ScrollOfTransmutation());
-		} else {
-			potions.add(Random.Float() < ExoticCrystals.consumableExoticChance()
-					? new PotionOfDivineInspiration() : new PotionOfExperience());
-			addRewardItem(Generator.Category.SCROLL, scrolls, duplicates);
-		}
+		// Reserve the two standard prizes; random draws cannot duplicate them.
+		Item experience = new PotionOfExperience();
+		Item transmutation = new ScrollOfTransmutation();
+		potions.add(experience);
+		scrolls.add(transmutation);
 		addRewardItem(Generator.Category.POTION, potions, duplicates);
 		addRewardItem(Generator.Category.SCROLL, scrolls, duplicates);
 		addRewardItem(Generator.Category.POTION, potions, duplicates);
@@ -192,6 +185,10 @@ public class CrystalPathRoom extends SpecialRoom {
 				Generator.undoDrop(i);
 			}
 		}
+
+		// Keep designated rewards out of rarity sorting so they stay behind two keys.
+		potions.remove(experience);
+		scrolls.remove(transmutation);
 
 		//rarer potions/scrolls go later in the order
 		Collections.sort(potions, new Comparator<Item>() {
@@ -240,8 +237,8 @@ public class CrystalPathRoom extends SpecialRoom {
 		level.drop(scrolls.remove(0), level.pointToCell(rooms[shuffle == 1 ? 1 : 0].center()));
 
 		//player can only see these if they unlock the previous doors, so don't count them for exploration
-		level.drop(potions.remove(0), shuffle == 1 ? prize1 : prize2).autoExplored = true;
-		level.drop(scrolls.remove(0), shuffle == 1 ? prize2 : prize1).autoExplored = true;
+		level.drop(experience, shuffle == 1 ? prize1 : prize2).autoExplored = true;
+		level.drop(transmutation, shuffle == 1 ? prize2 : prize1).autoExplored = true;
 
 		level.addItemToSpawn( new CrystalKey( Dungeon.depth ) );
 		level.addItemToSpawn( new CrystalKey( Dungeon.depth ) );

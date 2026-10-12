@@ -1236,3 +1236,24 @@ Reproduced validASCII/numeric/trailing-bytecachecorruption withbaseline5cases4fa
 
 ## TEST79 armor generation investigation — October 12, 2026
 Owner confirmed TEST79; remaining seed/difficulty/challenges/shop-visit details unknown. Exact TEST79 Generator/RegularLevel/ShopRoom/Armor match current. Compared tier tables/loot sources with SPD baseline; no generation regression found. 10,000 headless sequences through 22 (220,000 floors), 368.753s: zero lacking mail-or-better heap armor, also zero excluding shops. Restricted no-key/no-secret non-shop reachability lacks such armor in184 (1.84%); not a player encounter rate. Difficulty5 1000: zero generated/non-shop misses,27 restricted misses. Same-world APD vs SPD Generator 1000 cohorts match, plus500000 direct armor draws per generator. Shop-stock check passes. Requested100000 full sequences not completed (~61min projected), exact owner run not reproduced, no phone/APK execution or universal zero-probability claim. Report docs/APD-ARMOR-GENERATION-AUDIT-2026-10-12.md and evidence JSON; tools/armor-study retained. Documentation/tools only; no loot changes, app rebuild, save modification or new APK claimed.
+
+
+## TEST88 crystal-path reward correction
+# TEST88: restore the approved crystal-path rewards
+
+## Root cause and room identity
+The earlier screenshot's six compartments and three crystal keys identify CrystalPathRoom, not CrystalChoiceRoom or CrystalVaultRoom. No new screenshot was attached to the latest report, so the precise floor-22 image cannot independently be matched.
+
+Verified TEST79 source a611c841e64a8bca592831d3200a5a65e1735b61 and current real branch e70f49dbeb3f6fba9becbc015c96027f099a5867 have identical CrystalPathRoom source: original SPD behavior, choosing only one forced Experience/Transmutation reward, allowing exotic substitution, and sorting random rewards into the remaining final compartment. A Retribution scroll in that compartment is permitted by that old code. This is missing implementation on the real branch, not evidence of another placement system overwriting the approved reward.
+The stale local checkout contained a proposed both-rewards test, but the actual GitHub branch had no such test. Neither the stale local history nor its uncommitted files were pushed.
+
+## Fix
+Reserve one standard Potion of Experience and one standard Scroll of Transmutation before generating the four other items. Reserve their identities for existing duplicate exclusion. Remove these two reserved objects from rarity sorting and place them directly on the two final pedestals. Both final compartments remain behind two crystal doors; three keys, six total rewards, earlier random potion/scroll rooms, geometry, duplicate undoDrop bookkeeping and exploration flags are retained. Standard designated rewards are not replaced by exotic variants. Global Generator probabilities are untouched; necessary room-local random draws differ from the old selection.
+
+Level.drop does not convert or substitute potion/scroll identities. No global drop or exotic system changes were necessary. Existing already-generated floors are not rewritten, and the owner's save/inventory remains untouched. The correction applies to newly generated rooms; it does not replace a Retribution scroll already stored in a save.
+
+## Tests and build status
+Untouched baseline failed the repaired fixture: required Transmutation count was zero. An initial headless setup lacked Game.instance and was corrected before the meaningful baseline comparison; that fixture exception was not called a game bug.
+Fixed implementation passed one permanent JUnit test with 768 room paints: 64 seeds × six depths (1,6,11,16,22,24) × two exotic settings (0,80). Each checks six total items, exactly one standard Experience and Transmutation, their hidden final-compartment flags, and exactly two crystal-door crossings to each designated prize. The final local run passed in0.853seconds.
+Production Java/test compilation passed. Full expected1237core/21API34/18PNG and debug-APK verification are requested for TEST88; pending at this source commit. No TEST88 signed-compatible APK, publication, Android-room screenshot, physical-phone verification or complete normal playthrough is claimed yet.
+
