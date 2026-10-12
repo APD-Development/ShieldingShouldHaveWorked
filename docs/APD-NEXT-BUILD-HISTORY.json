@@ -1,33 +1,23 @@
 {
-  "previous_label": "Codex TEST 66",
-  "previous_source": "21be7de2fcec65441fe954babe2dc34142a26ce7",
-  "previous_run": 38244700148,
+  "previous_label": "Codex TEST 67",
+  "previous_source": "fa76dede19aa1a207531413b9de838b1d40fefa0",
+  "previous_run": 38248003026,
   "date": "2026-10-12",
   "changes": [
     {
-      "category": "Bug Fixes",
-      "sprite": "ICON_BACKPACK",
-      "title": "Lost backpack pickup guidance",
-      "text": "Blocked pickups now explain when your lost backpack must be recovered.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/Hero.java",
-        "core/src/main/assets/messages/actors/actors.properties"
-      ]
-    },
-    {
-      "category": "Bug Fixes",
+      "category": "Statistics / UIMSD",
       "sprite": "ICON_STATS",
-      "title": "Statistics cleanup",
-      "text": "Fixed a crash if statistics contents were cleared after being destroyed.",
+      "title": "Large segment totals",
+      "text": "Fixed extremely large merged statistics wrapping into incorrect totals.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/UimsdContent.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowMerger.java"
       ]
     },
     {
       "category": "Developer Commentary",
       "sprite": "V074_SHPX",
       "title": "Developer Commentary",
-      "text": "I clarified why a lost backpack blocks pickups and protected statistics cleanup after a screen is destroyed. Inventory capacity and recovery rules are unchanged.",
+      "text": "I protected merged statistics from numeric overflow. Ordinary totals and your recorded history remain unchanged.",
       "paths": []
     }
   ]
