@@ -68,7 +68,7 @@ public class APDTextScene extends PixelScene {
     ChangeInfo heading=new ChangeInfo(build.label,true,build.date+"\n"+build.status);
     heading.hardlight(Window.TITLE_COLOR);heading.setRect(0,y,paneWidth,0);content.add(heading);changes.add(heading);y=heading.bottom();
     List<ApdHistory.Entry> entries=ApdHistory.entries(read("apd/history/"+build.id+".tsv"));
-    if(entries.isEmpty())entries=ApdHistory.entries("History status\tV061_PAGE\tIncomplete history\tVerified changes for this build have not yet been reconstructed.\nDeveloper Commentary\tV074_SHPX\tDeveloper Commentary\tNo verified summary is available for this build yet.");
+    if(entries.isEmpty())entries=ApdHistory.entries("History status\tV061_PAGE\tIncomplete history\tVerified changes for this build have not yet been reconstructed.");
     for(ApdHistory.Entry entry:entries){
      ChangeInfo info=new ChangeInfo(entry.category,false,null);
      info.addButton(changeButton(entry));
@@ -113,7 +113,7 @@ public class APDTextScene extends PixelScene {
    if(date!=null){date.x=x+width-bg.marginRight()-date.width()+1;date.y=y+height-bg.marginBottom()-date.height()+2;align(date);}
   }
   @Override protected void onClick(){
-   addToFront(new com.shatteredpixel.shatteredpixeldungeon.windows.WndTitledMessage(
+   APDTextScene.this.addToFront(new com.shatteredpixel.shatteredpixeldungeon.windows.WndTitledMessage(
     APDTextScene.this.icon(article.sprite),article.title,article.displayDate()+"\n\n"+article.text));
   }
  }
@@ -125,3 +125,4 @@ public class APDTextScene extends PixelScene {
  }
  @Override protected void onBackPressed(){ShatteredPixelDungeon.switchScene(backTo);}
 }
+

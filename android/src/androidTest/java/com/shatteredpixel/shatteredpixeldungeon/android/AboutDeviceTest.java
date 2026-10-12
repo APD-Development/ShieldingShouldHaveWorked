@@ -43,7 +43,7 @@ public class AboutDeviceTest {
      Method click=button.getClass().getDeclaredMethod("onClick");click.setAccessible(true);click.invoke(button);
      WndUimsdText popup=null;
      for(Gizmo g:children(Game.scene()))if(g instanceof WndUimsdText && g.alive)popup=(WndUimsdText)g;
-     assertNotNull(popup);assertTrue(popup.camera.width>0);
+     assertNotNull(popup);assertSame(Game.scene(),popup.parent);assertTrue(popup.camera.width>0);
      for(Gizmo g:children(popup))if(g instanceof ScrollPane)((ScrollPane)g).scrollTo(0,1000);
      popup.hide();
     }catch(Exception e){throw new RuntimeException(e);}});
@@ -69,7 +69,7 @@ public class AboutDeviceTest {
     Method click=g.getClass().getDeclaredMethod("onClick");click.setAccessible(true);click.invoke(g);
     com.shatteredpixel.shatteredpixeldungeon.windows.WndTitledMessage popup=null;
     for(Gizmo w:children(Game.scene()))if(w instanceof com.shatteredpixel.shatteredpixeldungeon.windows.WndTitledMessage&&w.alive)popup=(com.shatteredpixel.shatteredpixeldungeon.windows.WndTitledMessage)w;
-    assertNotNull(popup);popup.hide();
+    assertNotNull(popup);assertSame(Game.scene(),popup.parent);popup.hide();
    }else if(g instanceof Group)checkNews((Group)g,count);
   }
  }

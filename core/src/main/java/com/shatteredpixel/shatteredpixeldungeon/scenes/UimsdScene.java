@@ -276,7 +276,7 @@ public class UimsdScene extends PixelScene {
 		if (showingSample || showingDemo){
 			RedButton dataIndicator = new RedButton(showingSample ? "SAMPLE DATA — fictional" : "DEMO DATA — fictional", 6){
 				@Override protected void onClick(){
-					addToFront(new WndUimsdText("Fictional statistics", "These records are made-up test data. They are stored separately from your real run history and never count toward the ten-run unlock.", false));
+					UimsdScene.this.addToFront(new WndUimsdText("Fictional statistics", "These records are made-up test data. They are stored separately from your real run history and never count toward the ten-run unlock.", false));
 				}
 			};
 			dataIndicator.setRect(x0, y, contentW, 18);ui.add(dataIndicator);y += 20;
@@ -368,7 +368,7 @@ public class UimsdScene extends PixelScene {
 		};
 		rules.setRect(x0,y,contentW-22,18);ui.add(rules);
 		RedButton scopeInfo = new RedButton("?", 7){
-			@Override protected void onClick(){addToFront(new WndUimsdText("Rules and record coverage", home.scopeNote, false));}
+			@Override protected void onClick(){UimsdScene.this.addToFront(new WndUimsdText("Rules and record coverage", home.scopeNote, false));}
 		};
 		scopeInfo.setRect(rules.right()+2,y,20,18);ui.add(scopeInfo);
 		y += 20;
@@ -653,7 +653,7 @@ public class UimsdScene extends PixelScene {
 	private void showConditions(){
 		List<WndUimsdList.Entry> entries = new ArrayList<>();
 		for (Filter filter : model.query().filters) entries.add(WndUimsdList.Entry.item(StatusText.describe(model.dataset().def, filter)));
-		addToFront(WndUimsdList.menu("Conditions", "Tap a condition to change or remove it. All conditions must match.", entries,
+		UimsdScene.this.addToFront(WndUimsdList.menu("Conditions", "Tap a condition to change or remove it. All conditions must match.", entries,
 				(index, checked) -> WndUimsdFilter.chip(model, index)).restoreWith(() -> {
 			com.watabou.noosa.Scene active = com.watabou.noosa.Game.scene();
 			if (active instanceof UimsdScene) ((UimsdScene) active).showConditions();
@@ -779,7 +779,7 @@ public class UimsdScene extends PixelScene {
 
 	//the tour can use the player's own runs when there are enough of them to show every kind of screen
 	private void offerTour(){
-		addToFront(new WndUimsdChoices("New to UIMSD?", "Take a short tour of the real screens. You can skip any step, and the Guide button brings it back whenever you want.",
+		UimsdScene.this.addToFront(new WndUimsdChoices("New to UIMSD?", "Take a short tour of the real screens. You can skip any step, and the Guide button brings it back whenever you want.",
 				"Start the tour", "Later"){
 			@Override
 			protected void onSelect( int index ){
@@ -789,7 +789,7 @@ public class UimsdScene extends PixelScene {
 	}
 
 	private void chooseTourData(final int stepIndex){
-		addToFront(new WndUimsdChoices("Tour", "Which data should the tour use? Your own runs, or a small made-up sample history (nothing in your history is changed either way).",
+		UimsdScene.this.addToFront(new WndUimsdChoices("Tour", "Which data should the tour use? Your own runs, or a small made-up sample history (nothing in your history is changed either way).",
 				"My own runs", "Sample data"){
 			@Override
 			protected void onSelect( int index ){
@@ -806,7 +806,7 @@ public class UimsdScene extends PixelScene {
 
 	private void startTour( final int stepIndex ){
 		if (!com.shatteredpixel.shatteredpixeldungeon.windows.UimsdGate.tourAvailable()){
-			addToFront(new WndUimsdText("UIMSD", "The guided tour opens after you finish 10 runs of your own. Demo runs do not count toward it.", false));
+			UimsdScene.this.addToFront(new WndUimsdText("UIMSD", "The guided tour opens after you finish 10 runs of your own. Demo runs do not count toward it.", false));
 			return;
 		}
 		if (mainModel == null || ApdRecorder.historyRoot() == null && mainRoot == null) return;

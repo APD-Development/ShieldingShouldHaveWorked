@@ -88,8 +88,8 @@ public class UimsdScreensDeviceTest {
 			while ((Gdx.app == null || Gdx.files == null || Game.scene() == null) && System.currentTimeMillis() < end) Thread.sleep(250);
 			assertNotNull("the game did not start", Game.scene());
 
-			//1. UIMSD opened for real, on whatever history this device has (none, on a fresh emulator): the first-run Home
-			onRender(new Runnable(){ public void run(){ UimsdScene.open(TitleScene.class); } });
+			//1. Exercise the screens directly; the ten-run access gate is covered by separate unlock tests. UIMSD opened for real, on whatever history this device has (none, on a fresh emulator): the first-run Home
+			onRender(new Runnable(){ public void run(){ UimsdScene.openNow(TitleScene.class); } });
 			waitUntil("the UIMSD scene", new java.util.concurrent.Callable<Boolean>(){ public Boolean call(){ return Game.scene() instanceof UimsdScene; } }, 30000);
 			Thread.sleep(2500);       //a few frames: the screen builds itself on the render thread
 			Log.w(TAG, "UIMSD scene is up (first-run Home or history Home)");

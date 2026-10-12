@@ -115,6 +115,17 @@
       ]
     },
     {
+      "category": "Bug Fixes",
+      "sprite": "V061_BUGFIX",
+      "title": "Information popups",
+      "text": "About, News and statistics information popups now open over the screen instead of inside their buttons.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/AboutScene.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/APDTextScene.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/UimsdScene.java"
+      ]
+    },
+    {
       "category": "Developer Commentary",
       "sprite": "V074_SHPX",
       "title": "Developer Commentary",
