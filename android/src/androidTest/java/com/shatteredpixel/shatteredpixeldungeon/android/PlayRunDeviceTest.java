@@ -595,7 +595,7 @@ public class PlayRunDeviceTest {
                 SPDSettings.apdRecording(false);SPDSettings.intro(false);SPDSettings.visualGrid(0);
                 SPDSettings.enhancedTileVisibility(false);
                 // Exercise a fresh preference: do not force-enable the shortcut as TEST79 did.
-                com.badlogic.gdx.Preferences prefs=Gdx.app.getPreferences(com.watabou.utils.GameSettings.DEFAULT_PREFS_FILE);
+                com.badlogic.gdx.Preferences prefs=Gdx.app.getPreferences("ShatteredPixelDungeon");
                 prefs.remove("apd_stair_navigation_shortcut");prefs.flush();
                 assertTrue("stair shortcut is discoverable by default", SPDSettings.stairNavigationShortcut());
                 GamesInProgress.curSlot=4;GamesInProgress.selectedClass=HeroClass.WARRIOR;
@@ -707,7 +707,22 @@ public class PlayRunDeviceTest {
             waitUntil("saved navigation position",()->Game.scene() instanceof GameScene && Dungeon.hero!=null && Dungeon.hero.ready,150000);
             assertEquals(destination.get(),Dungeon.hero.pos);assertEquals(depth,Dungeon.depth);assertNull(Dungeon.hero.curAction);
             assertTrue(SPDSettings.enhancedTileVisibility());assertTrue(SPDSettings.stairNavigationShortcut());
-            onRender(()->Game.switchScene(TitleScene.class));
+            final com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoItem[] chaliceWindow=new com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoItem[1];
+            final com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact[] oldArtifact=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact[1];
+            final int[] oldHp=new int[1];
+            onRender(()->{
+                oldArtifact[0]=Dungeon.hero.belongings.artifact;oldHp[0]=Dungeon.hero.HP;
+                com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood chalice=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood();
+                for(int i=0;i<5;i++)chalice.upgrade();
+                Dungeon.hero.belongings.artifact=chalice;Dungeon.hero.HP=Dungeon.hero.HT;
+                String description=chalice.desc();
+                assertTrue(description.contains("Base damage:"));assertTrue(description.contains("HP loss after shields:"));
+                assertTrue(description.contains("WARNING: This prick could kill you!"));
+                chaliceWindow[0]=new com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoItem(chalice);
+                GameScene.show(chaliceWindow[0]);
+            });
+            Thread.sleep(350);visibilityScreenshot("chalice-preview.png");
+            onRender(()->{chaliceWindow[0].hide();Dungeon.hero.belongings.artifact=oldArtifact[0];Dungeon.hero.HP=oldHp[0];Game.switchScene(TitleScene.class);});
         }finally{
             SPDSettings.enhancedTileVisibility(oldEnhanced);SPDSettings.stairNavigationShortcut(oldShortcut);
             SPDSettings.visualGrid(oldGrid);SPDSettings.apdRecording(oldRecord);SPDSettings.intro(oldIntro);

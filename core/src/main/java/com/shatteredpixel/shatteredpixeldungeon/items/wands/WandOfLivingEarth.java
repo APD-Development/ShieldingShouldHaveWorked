@@ -292,6 +292,11 @@ public class WandOfLivingEarth extends DamageWand {
 			return 8 + wandLevel*4;
 		}
 
+		/** Read-only result of absorb; does not spend armor or detach the buff. */
+		public int previewAbsorb(int damage) {
+			return damage - Math.min(armor, damage - damage/2);
+		}
+
 		public int absorb( int damage ) {
 			int block = damage - damage/2;
 			if (armor <= block) {

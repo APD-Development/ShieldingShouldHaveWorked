@@ -90,6 +90,11 @@ public class CapeOfThorns extends Artifact {
 			return true;
 		}
 
+		/** Lowest possible damage for this hit, including activation by this hit. */
+		public int previewMinimumDamage(int damage) {
+			return cooldown != 0 || (int)(charge + damage*(0.5+level()*0.05)) >= chargeCap ? 0 : damage;
+		}
+
 		public int proc(int damage, Char attacker, Char defender){
 			if (cooldown == 0){
 				charge += damage*(0.5+level()*0.05);

@@ -9,3 +9,5 @@ Local Java compilation passed; 18 settings/navigation checks passed in 0.274 sec
 Full core/debug/API34 instrumentation and screenshot review pending. No verified TEST84 APK or physical-phone claim yet. No movement, generation, collision, capacity, save or statistics changes.
 
 Chalice preview request: investigation and local implementation are in progress separately; not included in this stair-only candidate. Confirmed base bounds ceil(3+2.5*level^2), floor(7+3.5*level^2); actual prick applies Earthroot/Rock Armor, DR, incoming modifiers, antimagic and shields. Life Link reactions require explicit prediction limitation. No Chalice change is claimed delivered.
+
+Actual TEST84 run38311207786 failed:1208 core,1207pass/1fail, at VisibilityPreferencesTest's old default-Off expectation. Android/APK build skipped. No TEST84 APK exists. The expectation is updated in85, retaining original tile visuals Off; Android fixture now removes the actual ShatteredPixelDungeon preference key. TEST84 remains a failed attempt, never an APK history attribution.

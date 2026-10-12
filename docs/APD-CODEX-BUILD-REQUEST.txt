@@ -1,1 +1,1 @@
-TEST84: show stair shortcut by default unless explicitly disabled; verify real native unset-preference visibility and touch. Preserve all 15 visual evidence images and existing navigation/overlap checks. 1208 core expected; full required checks.
+TEST85: preserve successful83 APK history, record failed84(noAPK). Stair default discoverability and actual Android preference reset; current-state Chalice damage/HP/fatality preview with unchanged actual mechanics. Expected1226 core+21 API34; require all16 PNG including chalice-preview.png. Full checks before delivery.

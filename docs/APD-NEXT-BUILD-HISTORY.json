@@ -6,7 +6,7 @@
   "changes": [
     {
       "category": "Quality of Life",
-      "sprite": "ICON_INFO",
+      "sprite": "ICON_STAIRS",
       "title": "Visible staircase shortcut",
       "text": "The staircase shortcut now appears beside the hotbar by default; an explicitly disabled preference stays disabled.",
       "paths": [
@@ -15,7 +15,7 @@
     },
     {
       "category": "Changes",
-      "sprite": "ICON_INFO",
+      "sprite": "ICON_STAIRS",
       "title": "Find stair controls",
       "text": "Enabling Automatic Stair Navigation explains where to tap for Stairs Up and Stairs Down.",
       "paths": [
@@ -33,13 +33,47 @@
       ]
     },
     {
+      "category": "Quality of Life",
+      "sprite": "V092_CHALICE",
+      "title": "Chalice damage preview",
+      "text": "Chalice inspection and confirmation show the next prick's base damage, full reduced range, HP loss after shields and current HP.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/ChaliceDamagePreview.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/ChaliceOfBlood.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V092_CHALICE",
+      "title": "Current defenses and fatal warning",
+      "text": "The warning considers temporary defenses, Antimagic, Cape activation and the Warrior's shield; Life Link is explicitly marked unpredictable.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/CapeOfThorns.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfLivingEarth.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Earthroot.java"
+      ]
+    },
+    {
+      "category": "Testing",
+      "sprite": "ICON_INFO",
+      "title": "Damage and native rendering regressions",
+      "text": "Added Chalice range, actual-damage, save and RNG checks, corrected the stair-default expectation and required an Android item-window screenshot.",
+      "paths": [
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/ChaliceDamagePreviewTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/visibility/VisibilityPreferencesTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PlayRunDeviceTest.java",
+        "tools/run-codex-android-checks.sh"
+      ]
+    },
+    {
       "category": "Development",
       "sprite": "ICON_INFO",
-      "title": "Verified preparation records",
-      "text": "Recorded the missing-control cause, local results and remaining Android verification.",
+      "title": "Accurate build preparation records",
+      "text": "Recorded the failed TEST84 attempt, successful preceding verification and the new preview's mechanics and limitations.",
       "paths": [
         "docs/HANDOFF.md",
         "docs/APD-TEST84-REPORT-2026-10-12.md",
+        "docs/APD-TEST85-REPORT-2026-10-12.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/APD-NEXT-BUILD-HISTORY.json"
       ]
@@ -48,7 +82,7 @@
       "category": "Developer Commentary",
       "sprite": "V074_SHPX",
       "title": "Developer Commentary",
-      "text": "I made the staircase shortcut visible by default after finding that the previous test enabled it manually. Players who switched it off keep that choice.",
+      "text": "I made the staircase shortcut easier to discover and added a Chalice preview that uses your current defenses. It warns about the worst outcome rather than suggesting an average hit is safe.",
       "paths": []
     }
   ]

@@ -94,6 +94,11 @@ public class Earthroot extends Plant {
 			return (Dungeon.scalingDepth() + 5)/2;
 		}
 		
+		/** Read-only result of absorb; does not spend armor or detach the buff. */
+		public int previewAbsorb(int damage) {
+			return pos == target.pos ? damage - Math.min(damage, blocking()) : damage;
+		}
+
 		public int absorb( int damage ) {
 			if (pos != target.pos){
 				detach();
