@@ -1,2 +1,6 @@
-Changes	V074_SHPX	Verification build	No gameplay or interface changes from Codex TEST61; this APK updates its build label and change record.
-Developer Commentary	V074_SHPX	Developer Commentary	This APK keeps TEST61's gameplay and interface, with a new build label and change record.
+Testing	ICON_STATS	Statistics Screens Device Test	Updated Android checks and fixtures for statistics screens device. These are development checks, not a gameplay feature.
+Development	ICON_JOURNAL	APD-CODEX-BUILD-REQUEST	Updated apd-codex-build-request accompanying this build.
+Development	ICON_INFO	APD-TEST61-REPORT-2026-10-12	Added apd-test61-report-2026-10-12 accompanying this build.
+Development	ICON_INFO	Development handoff	Updated development handoff accompanying this build.
+Development	ICON_STATS	UIMSD-VISUAL-CHECKLIST	Updated uimsd-visual-checklist accompanying this build.
+Developer Commentary	V074_SHPX	Developer Commentary	Updated Android checks and fixtures for statistics screens device. These are development checks, not a gameplay feature. Updated apd-codex-build-request accompanying this build.

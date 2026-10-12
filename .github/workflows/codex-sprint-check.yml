@@ -59,11 +59,15 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           python3 - <<'PY'
-          import json, os, urllib.request
+          import json, os, urllib.request, subprocess, sys
+          sys.path.insert(0,'tools')
+          from apd_build_history import complete_comparison
           ledger=json.load(open('docs/APD-NEXT-BUILD-HISTORY.json'))
           url='https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']+'/compare/'+ledger['previous_source']+'...'+os.environ['GITHUB_SHA']
           req=urllib.request.Request(url,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})
           with urllib.request.urlopen(req) as response: data=json.load(response)
+          subprocess.run(['git','fetch','--no-tags','--depth=1','origin',ledger['previous_source']],check=True)
+          data=complete_comparison(data,ledger['previous_source'],os.environ['GITHUB_SHA'])
           with open('apd-history-comparison.json','w') as out: json.dump(data,out)
           PY
           python3 tools/apd_build_history.py --comparison apd-history-comparison.json --ledger docs/APD-NEXT-BUILD-HISTORY.json --build ${{ github.run_number }} --previous-apk previous-verified.apk
@@ -71,15 +75,9 @@ jobs:
         run: ./gradlew :core:test
       - name: Build the private debug APK
         run: ./gradlew :android:assembleDebug -PapdTestBuild -PapdBuild=C${{ github.run_number }}
-      - name: Verify the APK contains its exact offline change record
+      - name: Verify every compiled historical record matches reviewed contents
         run: |
-          python3 - <<'PY'
-          import pathlib,zipfile
-          name='apd/history/codex-test-${{ github.run_number }}.tsv'
-          with zipfile.ZipFile('android/build/outputs/apk/debug/android-debug.apk') as apk:
-              assert apk.read('assets/'+name)==pathlib.Path('core/src/main/assets/'+name).read_bytes()
-              assert apk.read('assets/apd/history/index.tsv')==pathlib.Path('core/src/main/assets/apd/history/index.tsv').read_bytes()
-          PY
+          python3 tools/apd_build_history.py --comparison apd-history-comparison.json --ledger docs/APD-NEXT-BUILD-HISTORY.json --build ${{ github.run_number }} --verify-apk android/build/outputs/apk/debug/android-debug.apk
       - name: Name and hash the APK
         run: |
           cp android/build/outputs/apk/debug/android-debug.apk ADHD-Pixel-Dungeon-CODEX-TEST-${{ github.run_number }}.apk

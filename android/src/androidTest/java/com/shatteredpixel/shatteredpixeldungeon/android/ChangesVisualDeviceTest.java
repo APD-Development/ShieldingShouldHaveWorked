@@ -84,4 +84,36 @@ public class ChangesVisualDeviceTest {
    render(()->{APDTextScene.page=APDTextScene.Page.CHANGES;ShatteredPixelDungeon.switchScene(APDTextScene.class);});waitScene(APDTextScene.class);
   }
  }
+ @Test public void largeAndNamedHistoricalBuildsKeepAllIconsInScrollableNativeSections()throws Exception{
+  try(ActivityScenario<AndroidLauncher> scenario=ActivityScenario.launch(AndroidLauncher.class)){
+   for(String wanted:new String[]{"build-22","build-37","codex-test-67"}){
+    render(()->{try{
+     List<ApdHistory.Build> builds=ApdHistory.builds(Gdx.files.internal("apd/history/index.tsv").readString("UTF-8"));
+     int index=-1;for(int i=0;i<builds.size();i++)if(builds.get(i).id.equals(wanted))index=i;assertTrue(index>=0);
+     Field selected=APDTextScene.class.getDeclaredField("buildSelected");selected.setAccessible(true);selected.setInt(null,index);
+     APDTextScene.page=APDTextScene.Page.CHANGES;ShatteredPixelDungeon.switchScene(APDTextScene.class);
+    }catch(Exception e){throw new RuntimeException(e);}});waitScene(APDTextScene.class);
+    render(()->{try{
+     List<ApdHistory.Entry> expected=ApdHistory.entries(Gdx.files.internal("apd/history/"+wanted+".tsv").readString("UTF-8"));
+     if(wanted.equals("build-22"))assertTrue(expected.size()>=250);
+     Field f=APDTextScene.class.getDeclaredField("changes");f.setAccessible(true);List<ChangeInfo> infos=(List<ChangeInfo>)f.get(Game.scene());
+     int seen=0,categories=0;boolean started=false;
+     for(ChangeInfo info:infos){
+      if(info.major){if(started)break;started=true;continue;}
+      categories++;
+      for(Gizmo g:children(info))if(g instanceof ChangeButton){
+       ChangeButton button=(ChangeButton)g;assertTrue(button.left()>=info.left());assertTrue(button.right()<=info.right());assertTrue(button.top()>=info.top());assertTrue(button.bottom()<=info.bottom());seen++;
+      }
+     }
+     assertEquals(expected.size(),seen);assertEquals(ApdHistory.categories(expected).size(),categories);
+     com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane pane=null;
+     for(Gizmo g:children(Game.scene()))if(g instanceof com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane)pane=(com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane)g;
+     assertNotNull(pane);assertTrue(pane.content().height()>0);
+     if(wanted.equals("build-22"))assertTrue(pane.content().height()>pane.height());
+    }catch(Exception e){throw new RuntimeException(e);}});
+    screenshot("apd-"+wanted+".png");
+   }
+   render(()->{try{Field selected=APDTextScene.class.getDeclaredField("buildSelected");selected.setAccessible(true);selected.setInt(null,0);}catch(Exception e){throw new RuntimeException(e);}});
+  }
+ }
 }

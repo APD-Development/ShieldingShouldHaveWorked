@@ -23,5 +23,5 @@ def validate(data):
 
 if __name__=='__main__':
     folder=pathlib.Path(sys.argv[1])
-    for name in ('apd-changes.png','spd-changes-reference.png'):
+    for name in (sys.argv[2:] or ['apd-changes.png','spd-changes-reference.png']):
         print(name,validate((folder/name).read_bytes()))

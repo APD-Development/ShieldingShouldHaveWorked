@@ -36,5 +36,33 @@ class BuildHistoryTests(unittest.TestCase):
    root=pathlib.Path(folder);apk=root/'old.apk'
    with zipfile.ZipFile(apk,'w') as z:z.writestr('assets/apd/history/index.tsv','codex-test-63\tCodex TEST 63\t2026-10-12\tAPK change record\n')
    with self.assertRaises(ValueError):history.merge_previous_apk(root,apk,'Codex TEST 64')
+class CompleteCoverageTests(unittest.TestCase):
+ def row(self,path):return {'category':'Testing','sprite':'ICON_CHECKED','title':'Regression coverage','text':'Added regression coverage.','paths':[path]}
+ def test_tests_tools_documents_and_workflows_cannot_be_omitted(self):
+  for path in ['core/src/test/java/NewTest.java','android/src/androidTest/java/NewTest.java','tools/check.py','docs/notes.md','.github/workflows/check.yml','core/src/main/assets/image.png']:
+   with self.assertRaises(ValueError):history.validate({'status':'ahead','files':[{'filename':path}]},{'changes':[]})
+   self.assertEqual({path},history.validate({'status':'ahead','files':[{'filename':path}]},{'changes':[self.row(path)]}))
+ def test_complete_large_diff_has_no_artificial_entry_limit(self):
+  paths=['docs/file'+str(i) for i in range(450)]
+  delta={'status':'ahead','files_complete':True,'files':[{'filename':p} for p in paths]}
+  row=self.row(paths[0]);row['paths']=paths
+  self.assertEqual(set(paths),history.validate(delta,{'changes':[row]}))
+ def test_duplicate_and_tabbed_descriptions_are_rejected(self):
+  row=self.row('x')
+  with self.assertRaises(ValueError):history.validate({'status':'ahead','files':[{'filename':'x'}]},{'changes':[row,row]})
+  row['text']='not\ta valid popup'
+  with self.assertRaises(ValueError):history.validate({'status':'ahead','files':[{'filename':'x'}]},{'changes':[row]})
+ def test_compiled_history_must_match_every_reviewed_file(self):
+  import zipfile
+  with tempfile.TemporaryDirectory() as folder:
+   root=pathlib.Path(folder);assets=root/'core/src/main/assets/apd/history';assets.mkdir(parents=True)
+   (assets/'index.tsv').write_text('reviewed index');(assets/'build-37.tsv').write_text('all reviewed changes')
+   good=root/'good.apk'
+   with zipfile.ZipFile(good,'w') as z:
+    for p in assets.iterdir():z.writestr('assets/apd/history/'+p.name,p.read_bytes())
+   history.verify_compiled(root,good)
+   bad=root/'bad.apk'
+   with zipfile.ZipFile(bad,'w') as z:z.writestr('assets/apd/history/index.tsv','reviewed index');z.writestr('assets/apd/history/build-37.tsv','missing most changes')
+   with self.assertRaises(ValueError):history.verify_compiled(root,bad)
 if __name__=='__main__':unittest.main()
 
