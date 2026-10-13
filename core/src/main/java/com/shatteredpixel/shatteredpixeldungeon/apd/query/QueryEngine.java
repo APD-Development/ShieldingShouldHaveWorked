@@ -249,7 +249,8 @@ public final class QueryEngine {
 		ColumnDef c = def.column(f.column);
 		if (c == null) return "no such column.";
 		if (c.isInternal() && !q.showInternal) return "it uses hidden information, which is off.";
-		boolean ok = false;
+		boolean ok = c.type == ColumnDef.Type.TEXT ? f.op == Op.GROUP_TEXT
+                : f.op == Op.GROUP_VALUE || f.op == Op.GROUP_BOUND;
 		for (Op o : Op.ops(c.type)) if (o == f.op) ok = true;
 		if (!ok) return "\"" + f.op.word + "\" does not apply to " + c.label + ".";
 		if (f.op.takesValue()){
@@ -270,7 +271,8 @@ public final class QueryEngine {
 		if (c.type == ColumnDef.Type.TEXT){
 			String v = r.text(i);
 			switch (f.op){
-				case EQ: return v.equalsIgnoreCase(f.texts[0]) ? TRUE : FALSE;
+				case GROUP_TEXT: return v.equals(f.texts[0]) ? TRUE : FALSE;
+                case EQ: return v.equalsIgnoreCase(f.texts[0]) ? TRUE : FALSE;
 				case NE: return v.equalsIgnoreCase(f.texts[0]) ? FALSE : TRUE;
 				case CONTAINS: return v.toLowerCase(Locale.ROOT).contains(f.texts[0].toLowerCase(Locale.ROOT)) ? TRUE : FALSE;
 				case IN:
@@ -283,6 +285,10 @@ public final class QueryEngine {
 		boolean lb = c.type == ColumnDef.Type.NUM && r.prov(i) == Fact.PROV_INCOMPLETE;
 		//a lower bound means the real value is somewhere in [v, infinity): only answers that hold for all of it are given
 		switch (f.op){
+            case GROUP_VALUE:
+                return r.prov(i) != Fact.PROV_INCOMPLETE && v == f.nums[0] ? TRUE : FALSE;
+            case GROUP_BOUND:
+                return r.prov(i) == Fact.PROV_INCOMPLETE && v == f.nums[0] ? TRUE : FALSE;
 			case EQ: {
 				long a = f.nums[0];
 				if (!lb) return v == a ? TRUE : FALSE;
@@ -522,3 +528,4 @@ public final class QueryEngine {
 		}
 	}
 }
+

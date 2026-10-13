@@ -1,50 +1,43 @@
 {
-  "previous_label": "Codex TEST 103",
-  "previous_source": "3f30d631ec0fa74ba11bcc25c3411526924604a8",
-  "previous_run": 38354469058,
+  "previous_label": "Codex TEST 104",
+  "previous_source": "946704b57fac583721449fe95b4559d6716c36b2",
+  "previous_run": 38355939388,
   "date": "2026-10-13",
   "changes": [
     {
-      "category": "Statistics / UIMSD",
+      "category": "Bug Fixes",
       "sprite": "ICON_DATA",
-      "title": "Resumed item-history accuracy",
-      "text": "Combining run segments no longer treats uncertain 'never equipped' history as an exact observation.",
+      "title": "Exact grouped-record drilldown",
+      "text": "Opening a statistics group now shows exactly its records, keeping lower bounds and differently capitalized text separate.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowMerger.java"
-      ]
-    },
-    {
-      "category": "Statistics / UIMSD",
-      "sprite": "ICON_DATA",
-      "title": "Accurate per-unit comparisons",
-      "text": "Exact-depth and at-least-depth groups now use their own run, floor and turn denominators.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/PerUnit.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/Op.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/QueryEngine.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdModel.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Comparison integrity regressions",
-      "text": "Added checks for resumed-log uncertainty, preserved raw records, cached history and exact versus lower-bound comparisons.",
+      "title": "Group selection and saved queries",
+      "text": "Added regression coverage for group membership, persisted drilldowns and real touch interaction in native group sheets.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowMergerAnyProvenanceTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/PerUnitProvenanceTest.java",
-        "docs/APD-UIMSD-COMPARISON-VERIFICATION-2026-10-13.md"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/GroupDrilldownKnowledgeTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdScreensDeviceTest.java",
+        "docs/APD-GROUP-DRILLDOWN-VERIFICATION-2026-10-13.md"
       ]
     },
     {
       "category": "Development",
       "sprite": "ICON_INFO",
       "title": "Verified build evidence",
-      "text": "Recorded TEST103's verified delivery and the next build's actual changes and checks.",
+      "text": "Recorded TEST104's actual verified delivery and this build's changes, tests and compatibility limits.",
       "paths": [
-        "docs/APD-TEST103-DELIVERY-2026-10-13.json",
-        "docs/APD-TEST104-REPORT-2026-10-13.md",
+        "docs/APD-TEST104-DELIVERY-2026-10-13.json",
+        "docs/APD-TEST105-REPORT-2026-10-13.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/HANDOFF.md",
         ".github/workflows/codex-existing-apk-delivery.yml",
-        "docs/APD-TEST103-REPORT-2026-10-13.md",
+        "docs/APD-TEST104-REPORT-2026-10-13.md",
         "docs/APD-NEXT-BUILD-HISTORY.json"
       ]
     },
@@ -52,7 +45,7 @@
       "category": "Developer Commentary",
       "sprite": "V074_SHPX",
       "title": "Developer Commentary",
-      "text": "I fixed two comparisons that could misrepresent incomplete run history. The recorded history stays intact, and uncertain values remain distinguishable from exact ones.",
+      "text": "I fixed grouped statistics that could open the wrong records. Ordinary filters still work the same way, while drilldowns retain the exact group you selected.",
       "paths": []
     }
   ]

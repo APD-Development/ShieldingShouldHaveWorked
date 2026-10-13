@@ -563,8 +563,10 @@ public final class UimsdModel {
 				return;
 			}
 			if (!g.sample.isKnown(c.index)) q = q.addFilter(Filter.unknown(c.id));
-			else if (c.type == ColumnDef.Type.TEXT) q = q.addFilter(Filter.text(c.id, Op.EQ, g.sample.text(c.index)));
-			else q = q.addFilter(Filter.num(c.id, Op.EQ, g.sample.num(c.index)));
+			else if (c.type == ColumnDef.Type.TEXT) q = q.addFilter(Filter.text(c.id, Op.GROUP_TEXT, g.sample.text(c.index)));
+			else q = q.addFilter(Filter.num(c.id,
+                    g.sample.prov(c.index) == com.shatteredpixel.shatteredpixeldungeon.apd.stats.Fact.PROV_INCOMPLETE
+                            ? Op.GROUP_BOUND : Op.GROUP_VALUE, g.sample.num(c.index)));
 		}
 		back.add(new Place(viewId, query, page));
 		apply(q);
@@ -657,3 +659,4 @@ public final class UimsdModel {
 		}
 	}
 }
+

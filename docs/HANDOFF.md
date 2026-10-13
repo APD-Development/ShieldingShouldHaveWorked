@@ -1,3 +1,9 @@
+# TEST105 drilldown fix in verification — 2026-10-13 06:34 UTC
+
+Latest deliveredTEST104: source946704b57fac583721449fe95b4559d6716c36b2, verification38355939388, delivery38357194744/e55ed3d564c4baae657c84227a8da2d711c3b197, published06:32:20UTC. Actual1286core+21API34/20PNG/debug, signer/appID/checksum verified. Receipt docs/APD-TEST104-DELIVERY-2026-10-13.json. Install over; never uninstall/clear data. No physical-phone/owner-save evidence.
+
+TEST105 fixes reproduced grouped-record drilldown mismatches.4new+71existing=75targeted passed;11existingSavedViews compatibility tests passed. Ordinary filters and saved/raw/game formats unchanged; additive internal drilldown operators fail closed on older readers and saved views remain preserved. Native group-sheet pointer interaction added to existing test, not yet executed; full1290core/21API34/20PNG/debug/signing/delivery pending. Details docs/APD-TEST105-REPORT-2026-10-13.md. Entire UIMSD audit/backlog still incomplete; fixed-slot metamorphosis duplicate-choice design answer pending. No persistent autonomous Codex worker demonstrated.
+
 # TEST104 verified candidate — 2026-10-13 06:31 UTC
 
 Source946704b57fac583721449fe95b4559d6716c36b2 / run38355939388 succeeded. Actual downloaded1286core+21API34, zero failures/errors/skips;20PNG/debug. Private existing-artifact delivery staged; signing/hash/publication pending. TEST103 remains last delivered fallback. Group-drilldown fix is local75targeted cases passed, not included104; native touch check added but unexecuted until next build. Whole audit incomplete.

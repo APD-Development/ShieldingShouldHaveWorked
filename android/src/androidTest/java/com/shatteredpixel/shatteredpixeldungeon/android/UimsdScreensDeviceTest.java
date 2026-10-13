@@ -194,6 +194,58 @@ public class UimsdScreensDeviceTest {
     }
 
 
+    private static void verifyGroupDrilldownByTouch() throws Exception {
+        for(ColumnDef.Type type:new ColumnDef.Type[]{ColumnDef.Type.NUM,ColumnDef.Type.ENUM,ColumnDef.Type.TEXT}) {
+            AtomicReference<UimsdModel> model=new AtomicReference<>();
+            onRender(()->{
+                com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.closeAll();
+                com.shatteredpixel.shatteredpixeldungeon.apd.query.DatasetDef def=new com.shatteredpixel.shatteredpixeldungeon.apd.query.DatasetDef("drill-fixture","Values","values");
+                def.add(type==ColumnDef.Type.TEXT?ColumnDef.text("key","Key"):type==ColumnDef.Type.ENUM?ColumnDef.enumeration("key","Key"):ColumnDef.num("key","Key"));
+                java.util.List<com.shatteredpixel.shatteredpixeldungeon.apd.query.Row> rows=new java.util.ArrayList<>();
+                for(int i=0;i<2;i++) {
+                    com.shatteredpixel.shatteredpixeldungeon.apd.query.Row row=new com.shatteredpixel.shatteredpixeldungeon.apd.query.Row(i==0?"first":"second",null,"run",def.size());
+                    row.finished=true;row.ruleset="drill-fixture";
+                    int provenance=i==0?com.shatteredpixel.shatteredpixeldungeon.apd.stats.Fact.PROV_RECORDED:com.shatteredpixel.shatteredpixeldungeon.apd.stats.Fact.PROV_INCOMPLETE;
+                    if(type==ColumnDef.Type.TEXT)row.setText(0,i==0?"Sword":"sword",provenance);else row.setNum(0,10,provenance);
+                    rows.add(row);
+                }
+                com.shatteredpixel.shatteredpixeldungeon.apd.query.Query q=com.shatteredpixel.shatteredpixeldungeon.apd.query.Query.of(def.id)
+                    .withGroup(new com.shatteredpixel.shatteredpixeldungeon.apd.query.GroupBy(java.util.Arrays.asList("key"),java.util.Arrays.asList(com.shatteredpixel.shatteredpixeldungeon.apd.query.Aggregate.count())));
+                UimsdModel fixture=new UimsdModel("drill-fixture","");fixture.setCatalog(new com.shatteredpixel.shatteredpixeldungeon.apd.query.Catalog()
+                    .add(new com.shatteredpixel.shatteredpixeldungeon.apd.query.Dataset(def,rows,null))
+                    .add(new com.shatteredpixel.shatteredpixeldungeon.apd.query.ViewDef(def.id,"Values","",q).withInstances(com.shatteredpixel.shatteredpixeldungeon.apd.query.Query.of(def.id))));
+                model.set(fixture);assertEquals(2,fixture.result().groups.size());
+                for(ResultTable.Line line:fixture.table().lines)if(line.group.sample.id.equals("second"))WndUimsdRow.show(fixture,line);
+            });
+            Thread.sleep(300);
+            AtomicReference<com.watabou.utils.Point> point=new AtomicReference<>();
+            onRender(()->{try{
+                Field children=com.watabou.noosa.Group.class.getDeclaredField("members");children.setAccessible(true);
+                com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdRow window=null;
+                for(Object child:(java.util.List<?>)children.get(Game.scene()))if(child instanceof com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdRow&&((com.watabou.noosa.Gizmo)child).alive)window=(com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdRow)child;
+                assertNotNull("native group sheet is visible",window);
+                com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane pane=null;
+                for(Object child:(java.util.List<?>)children.get(window))if(child instanceof com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane)pane=(com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane)child;
+                assertNotNull(pane);
+                com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock action=null;
+                for(Object child:(java.util.List<?>)children.get(pane.content()))if(child instanceof com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock) {
+                    com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock text=(com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock)child;
+                    if(text.text().startsWith("Open the 1 "))action=text;
+                }
+                assertNotNull("Open records action exists",action);
+                assertTrue("action fits the native window",action.width()<=pane.width());
+                float y=action.top()+action.height()/2;pane.scrollTo(0,Math.max(0,y-pane.height()/2));
+                point.set(pane.content().camera().cameraToScreen(pane.width()/2,y));
+            }catch(Exception e){throw new RuntimeException(e);}});
+            com.watabou.utils.Point at=point.get();
+            com.watabou.input.PointerEvent.addPointerEvent(new com.watabou.input.PointerEvent(at.x,at.y,14,com.watabou.input.PointerEvent.Type.DOWN,com.watabou.input.PointerEvent.LEFT));
+            Thread.sleep(150);
+            com.watabou.input.PointerEvent.addPointerEvent(new com.watabou.input.PointerEvent(at.x,at.y,14,com.watabou.input.PointerEvent.Type.UP,com.watabou.input.PointerEvent.LEFT));
+            Thread.sleep(300);
+            onRender(()->{assertFalse("touch opened the group's records",model.get().result().isGrouped());assertEquals(1,model.get().result().rows.size());assertEquals("second",model.get().result().rows.get(0).id);assertTrue(model.get().back());});
+        }
+    }
+
     private static void verifyKnownEmptyFilterChoice() throws Exception {
         AtomicReference<UimsdModel> model=new AtomicReference<>();
         onRender(()->{try{
@@ -254,6 +306,7 @@ public class UimsdScreensDeviceTest {
             verifyComparisonPages();
             verifyQuestionRateRendering();
             verifyKnownEmptyFilterChoice();
+            verifyGroupDrilldownByTouch();
             onRender(() -> {
                 com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdHome home =
                     com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdHome.build(m.catalog(), m.currentRuleset(), true);
