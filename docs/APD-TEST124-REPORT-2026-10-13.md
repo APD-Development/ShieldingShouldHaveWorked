@@ -9,7 +9,7 @@ No offensive damage amount, cooldown, RNG, boss mechanics, stat calculation, loo
 ## Regression evidence
 Four permanent new methods use real actor bundle store/restore: multiple summon generations and player/enemy/boss origins; absent legacy ownership and omitted ordinary fields; creator disappearance/alignment changes and neutral RNG; invalid future origin rejection without input rewriting.
 Eight ownership/previous-attribution checks passed0.222s. After expanding creation sites, seventeen combined ownership/attribution/neutral-generation/gesture checks passed1.894s. All fourteen modified production sources compiled against exact current existing classes.
-Required full1388unique core,24API34,27validPNG anddebug assembly pending. Android evidence must distinguish emulator checks from physical-phone acceptance. No claim of completed damage sliders.
+Actual run38436407054/source7b77d91a98bfb77a56ace2eb827523ff3d58dcde succeeded. Downloaded XML confirms1388unique core and24API34cases,zero failures/errors/skips;27validPNG,debug assembly andcompiledhistory checks passed. Existingtouch screenshot reviewed asreadable. CI1:09:45–1:21:09p.m.NewYork,11m24s;not active-time accounting. APKartifact11832688393 isprivatelystaged;signing/publication/physicalphoneacceptancepending. Android evidence must distinguish emulator checks from physical-phone acceptance. No claim of completed damage sliders.
 
 ## Compatibility and risks
 Player save/history files are not edited, deleted or reset. Optional actor metadata can be ignored by old readers; new readers preserve absent old ownership. No active-run custom settings, scoring coefficients or provisional bounds change.

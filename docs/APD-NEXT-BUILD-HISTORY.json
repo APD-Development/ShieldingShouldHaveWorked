@@ -1,177 +1,113 @@
 {
-  "previous_label": "Codex TEST 123",
-  "previous_source": "19b358d1a8a46f197837401b83fe836cba88988d",
-  "previous_run": 38432306523,
+  "previous_label": "Codex TEST 124",
+  "previous_source": "7b77d91a98bfb77a56ace2eb827523ff3d58dcde",
+  "previous_run": 38436407054,
   "date": "2026-10-13",
   "changes": [
     {
       "category": "Changes",
-      "sprite": "V061_INVENTORY",
-      "title": "Saved creator identity",
-      "text": "Summoned creatures preserve their creator's offensive-damage origin when saving and loading; ordinary legacy creatures retain their existing behavior.",
+      "sprite": "V060_GREATAXE",
+      "title": "Pre-armor attack scaling",
+      "text": "Prepared player, enemy, boss and owned-summon attack scaling before armor; the pending damage controls remain disabled.",
       "paths": [
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/Char.java"
       ]
     },
     {
       "category": "Changes",
-      "sprite": "V061_ETHEREAL_CHAINS",
-      "title": "Inherited attack origin",
-      "text": "Damage attribution follows an explicitly recorded summon creator rather than guessing from friendly alignment.",
+      "sprite": "V063_MAGICMISSILE",
+      "title": "Explicit offensive boundaries",
+      "text": "Prepared caster-based damage scaling with a neutral identity path and unchanged source objects for defenses.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/OffensiveDamageOrigin.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomOffensiveHooks.java"
       ]
     },
     {
       "category": "Changes",
-      "sprite": "V030_MAGE_CLOTH",
-      "title": "Prismatic image identity",
-      "text": "New prismatic images record the hero who created them.",
+      "sprite": "V061_SPELLBOOK",
+      "title": "Wand light bonus",
+      "text": "Prepared hero-attributed Guiding Light bonus damage in wand procs.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/PrismaticGuard.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/Wand.java"
       ]
     },
     {
       "category": "Changes",
-      "sprite": "V074_LIVING_EARTH",
-      "title": "Earth guardian identity",
-      "text": "New earth guardians record their wand user's offensive origin.",
+      "sprite": "V063_MAGICMISSILE",
+      "title": "Magic missile damage",
+      "text": "Prepared caster-attributed Magic Missile damage scaling.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfLivingEarth.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfMagicMissile.java"
       ]
     },
     {
       "category": "Changes",
-      "sprite": "V062_CLOAK",
-      "title": "Shadow clone identity",
-      "text": "New shadow clones retain their hero creator's offensive origin.",
+      "sprite": "V082_FROST",
+      "title": "Frost damage",
+      "text": "Prepared caster-attributed Frost damage while retaining chill and freeze behavior.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/abilities/rogue/ShadowClone.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfFrost.java"
       ]
     },
     {
       "category": "Changes",
-      "sprite": "V063_HUNTRESS_CLOTH",
-      "title": "Spirit hawk identity",
-      "text": "New spirit hawks retain their hero creator's offensive origin.",
+      "sprite": "V030_DISINTEGRATION",
+      "title": "Lightning damage",
+      "text": "Prepared caster-attributed Lightning damage including its existing self-hit reduction.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/abilities/huntress/SpiritHawk.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfLightning.java"
       ]
     },
     {
       "category": "Changes",
-      "sprite": "PD_GHOST",
-      "title": "Ghost identity",
-      "text": "New Dried Rose ghosts retain their summoning hero's offensive origin.",
+      "sprite": "V030_DISINTEGRATION",
+      "title": "Disintegration damage",
+      "text": "Prepared caster-attributed Disintegration damage while retaining pierce bonuses.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/DriedRose.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfDisintegration.java"
       ]
     },
     {
       "category": "Changes",
-      "sprite": "V080_NECROMANCER",
-      "title": "Skeleton identity",
-      "text": "New necromancer skeletons record the necromancer who summoned them.",
+      "sprite": "V070_TRANSFUSION",
+      "title": "Transfusion damage",
+      "text": "Prepared offensive Transfusion scaling while preserving its unscaled health cost.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Necromancer.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfTransfusion.java"
       ]
     },
     {
       "category": "Changes",
-      "sprite": "V071_DWARF_KING",
-      "title": "Dwarf summons identity",
-      "text": "New Dwarf King subjects retain boss attribution through save/load.",
+      "sprite": "V074_WARDING",
+      "title": "Ward damage ownership",
+      "text": "New wards retain their creator identity and use it for their prepared offensive damage path.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/DwarfKing.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V080_YOG",
-      "title": "Yog summons identity",
-      "text": "Yog's new summons and fists retain their boss creator's offensive origin.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/YogDzewa.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "PD_RAT",
-      "title": "Swarm offspring identity",
-      "text": "Split swarms inherit their parent's recorded offensive origin.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Swarm.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "PD_SKELETON",
-      "title": "Ghoul offspring identity",
-      "text": "New ghoul partners inherit their parent's recorded offensive origin.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Ghoul.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V080_SPAWNER",
-      "title": "Spawner offspring identity",
-      "text": "New ripper demons record their spawner's offensive origin.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/DemonSpawner.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V075_ALBINO_RAT",
-      "title": "Rat transformation identity",
-      "text": "Summoned allied rats record their hero creator; transformed rats preserve the original creature's offensive origin.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/abilities/Ratmogrify.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfWarding.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Ownership regressions",
-      "text": "Added save/load, multi-generation summon, legacy-data, invalid-data and neutral-RNG checks for offensive ownership.",
+      "title": "Real attack regressions",
+      "text": "Added engine checks for pre-armor scaling, all six starting classes, boss substitution, source preservation and neutral RNG.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/OffensiveSummonOwnershipTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/OffensiveAttackIntegrationTest.java"
       ]
     },
     {
       "category": "Changes",
-      "sprite": "V061_INVENTORY",
-      "title": "Verified artifact staging",
-      "text": "Staging now checks the exact TEST123 source, test counts, screenshots, package and signing before private delivery.",
+      "sprite": "V061_BUGFIX",
+      "title": "Real wand regressions",
+      "text": "Added real missile/frost cast, immunity, resistance, neutral RNG and unchanged Transfusion health-cost checks.",
       "paths": [
-        ".github/workflows/codex-lunch-stage.yml"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_INVENTORY",
-      "title": "Private delivery tag validation",
-      "text": "Private delivery verifies identical application inputs when tagging a delivery commit, preserving prior assets and the tested APK.",
-      "paths": [
-        ".github/workflows/codex-lunch-publish.yml"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/OffensiveWandIntegrationTest.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_PAGE",
-      "title": "Touch-fix evidence",
-      "text": "Recorded the successful core and Android touchscreen checks and actual TEST123 delivery.",
-      "paths": [
-        "docs/APD-TEST123-REPORT-2026-10-13.md",
-        "docs/HANDOFF.md"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_PAGE",
-      "title": "Ownership verification report",
-      "text": "Recorded the source-ownership foundation, compatibility safeguards, remaining damage paths and build checks.",
+      "title": "Ownership verification evidence",
+      "text": "Recorded the successful preceding core and Android ownership-foundation checks.",
       "paths": [
         "docs/APD-TEST124-REPORT-2026-10-13.md"
       ]
@@ -179,13 +115,23 @@
     {
       "category": "Changes",
       "sprite": "V061_PAGE",
-      "title": "Build verification metadata",
-      "text": "Updated the exact previous-APK attribution and required test counts for this build.",
+      "title": "Partial damage integration report",
+      "text": "Recorded integrated attack/wand paths and the remaining spell, delayed-effect and statistics work.",
       "paths": [
+        "docs/APD-TEST125-REPORT-2026-10-13.md"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_PAGE",
+      "title": "Exact build attribution",
+      "text": "Updated required checks and previous-APK attribution for this integration package.",
+      "paths": [
+        "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/APD-NEXT-BUILD-HISTORY.json"
+        "docs/HANDOFF.md"
       ]
     }
   ],
-  "commentary": "I preserved the original creator identity for summoned allies and enemies through save/load. This prepares reliable damage attribution; the three offensive damage sliders remain pending until every damage path is integrated."
+  "commentary": "I continued the offensive-damage integration with normal attacks and selected wand paths. Damage scaling preserves original defenses and caster identity. These sliders remain pending while the remaining spells and delayed effects are integrated."
 }

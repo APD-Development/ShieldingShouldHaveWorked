@@ -450,7 +450,7 @@ public abstract class Char extends Actor {
 					dmg += 1 + 2*Dungeon.hero.pointsInTalent(Talent.SEARING_LIGHT);
 				}
 				if (this != Dungeon.hero && Dungeon.hero.subClass == HeroSubClass.PRIEST){
-					enemy.damage(5+Dungeon.hero.lvl, GuidingLight.INSTANCE);
+					com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(enemy,5+Dungeon.hero.lvl,GuidingLight.INSTANCE,Dungeon.hero);
 				}
 			}
 
@@ -504,7 +504,9 @@ public abstract class Char extends Actor {
 				dmg *= 0.67f;
 			}
 
-			int effectiveDamage = enemy.defenseProc( this, Math.round(dmg) );
+			// Explicit offense boundary, before target armor and mitigation; neutral is identity.
+            dmg = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.attackDamage(this, dmg);
+            int effectiveDamage = enemy.defenseProc( this, Math.round(dmg) );
 			//do not trigger on-hit logic if defenseProc returned a negative value
 			if (effectiveDamage >= 0) {
 				effectiveDamage = Math.max(effectiveDamage - dr, 0);

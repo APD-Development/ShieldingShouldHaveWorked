@@ -153,6 +153,7 @@ public class WandOfWarding extends Wand {
 
 		} else {
 			Ward ward = new Ward();
+            ward.apdInheritOffensiveOrigin(curUser);
 			ward.pos = target;
 			ward.wandLevel = buffedLvl();
 			GameScene.add(ward, 1f);
@@ -374,7 +375,7 @@ public class WandOfWarding extends Wand {
 			//always hits
 			int dmg = Hero.heroDamageIntRange( 2 + wandLevel, 8 + 4*wandLevel );
 			Char enemy = this.enemy;
-			enemy.damage( dmg, this );
+			com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(enemy,dmg,this,this);
 			if (enemy.isAlive()){
 				Wand.wandProc(enemy, wandLevel, 1);
 			}
