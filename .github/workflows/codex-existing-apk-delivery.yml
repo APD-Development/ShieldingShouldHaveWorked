@@ -1,4 +1,4 @@
-name: Deliver verified existing APD TEST90
+name: Deliver verified existing APD TEST92
 
 # Delivery only: reuse the already tested APK; no Gradle or app rebuild.
 # Accept verified SDK signer labels; retain compatibility refusal diagnostics.
@@ -12,14 +12,14 @@ permissions:
   actions: read
 
 concurrency:
-  group: apd-existing-test90-delivery
+  group: apd-existing-test92-delivery
   cancel-in-progress: false
 
 env:
-  APD_SOURCE_SHA: 21e4f7579715f42897408efe06535762014cc759
-  APD_SOURCE_RUN: '38326602527'
-  APD_TEST_NUMBER: '90'
-  APD_CORE_TEST_COUNT: '1244'
+  APD_SOURCE_SHA: 3e9b2e2a132cda2dc0331d62c590159b4410f388
+  APD_SOURCE_RUN: '38329572457'
+  APD_TEST_NUMBER: '92'
+  APD_CORE_TEST_COUNT: '1247'
   APD_ANDROID_TEST_COUNT: '21'
   APD_ROLLBACK_NUMBER: '67'
   APD_ROLLBACK_SHA256: '3b9fc627cafad093e44cd8359f5ef74921bff1ed5b21c988f2f82b2fa6642d15'
@@ -31,7 +31,7 @@ jobs:
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
-      - name: Wait for exact TEST90 verification and resolve actual artifacts
+      - name: Wait for exact TEST92 verification and resolve actual artifacts
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -103,10 +103,10 @@ jobs:
         run: |
           python3 -m pip install reportlab==4.2.5
           python3 -m unittest discover -s tools -p test_apd_bug_report_pdf.py
-          python3 tools/apd_bug_report_pdf.py docs/APD-TEST90-REPORT-2026-10-12.md delivery/APD-Bug-Fixes-2026-10-12-TEST90.pdf --verification delivery/verification.txt
+          python3 tools/apd_bug_report_pdf.py docs/APD-TEST92-REPORT-2026-10-12.md delivery/APD-Bug-Fixes-2026-10-12-TEST92.pdf --verification delivery/verification.txt
       - uses: actions/upload-artifact@v4
         with:
-          name: verified-test90-delivery
+          name: verified-test92-delivery
           path: delivery/
           retention-days: 7
 
@@ -115,7 +115,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: verified-test90-evidence
+          name: verified-test92-evidence
           path: |
             delivery/*.json
             delivery/*.txt
@@ -137,7 +137,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: verified-test90-delivery
+          name: verified-test92-delivery
           path: delivery
       - name: Publish owner-requested private verified APK and report
         env:
@@ -157,7 +157,7 @@ jobs:
               '--title',f'APD PRIVATE CODEX TEST {number}','--notes-file','delivery/verification.txt',
               f'delivery/ADHD-Pixel-Dungeon-CODEX-TEST-{number}.apk',
               f'delivery/ADHD-Pixel-Dungeon-CODEX-TEST-{number}.apk.sha256',
-              'delivery/APD-Bug-Fixes-2026-10-12-TEST90.pdf',
-              'delivery/TEST90-Verification.json',
+              'delivery/APD-Bug-Fixes-2026-10-12-TEST92.pdf',
+              'delivery/TEST92-Verification.json',
               'delivery/APD-Source-Line-Counts.json'],check=True)
           PY
