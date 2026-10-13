@@ -1,42 +1,50 @@
 {
-  "previous_label": "Codex TEST 102",
-  "previous_source": "342e36936f8984f8954e5f94979735a6bb8af329",
-  "previous_run": 38349995754,
+  "previous_label": "Codex TEST 103",
+  "previous_source": "3f30d631ec0fa74ba11bcc25c3411526924604a8",
+  "previous_run": 38354469058,
   "date": "2026-10-13",
   "changes": [
     {
-      "category": "Bug Fixes",
+      "category": "Statistics / UIMSD",
       "sprite": "ICON_DATA",
-      "title": "Arcana Spirit Form preview",
-      "text": "Known equipped Arcana rings now show Spirit Form's effect when the normal ring bonus is zero, matching actual enchantment and glyph power.",
+      "title": "Resumed item-history accuracy",
+      "text": "Combining run segments no longer treats uncertain 'never equipped' history as an exact observation.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/ArcanaInfoDisplay.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/SpiritForm.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowMerger.java"
+      ]
+    },
+    {
+      "category": "Statistics / UIMSD",
+      "sprite": "ICON_DATA",
+      "title": "Accurate per-unit comparisons",
+      "text": "Exact-depth and at-least-depth groups now use their own run, floor and turn denominators.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/PerUnit.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Arcana fallback regression coverage",
-      "text": "Added checks for Spirit Form, temporary ring boosts, unidentified rings and weapon/armor preview layout without consuming gameplay randomness.",
+      "title": "Comparison integrity regressions",
+      "text": "Added checks for resumed-log uncertainty, preserved raw records, cached history and exact versus lower-bound comparisons.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/SpiritFormArcanaDisplayTest.java",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdRestoreDeviceTest.java",
-        "docs/APD-ARCANA-SPIRIT-VERIFICATION-2026-10-13.md"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowMergerAnyProvenanceTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/PerUnitProvenanceTest.java",
+        "docs/APD-UIMSD-COMPARISON-VERIFICATION-2026-10-13.md"
       ]
     },
     {
       "category": "Development",
       "sprite": "ICON_INFO",
-      "title": "Verified build records",
-      "text": "Recorded TEST102's verified delivery and TEST103's exact changes and checks.",
+      "title": "Verified build evidence",
+      "text": "Recorded TEST103's verified delivery and the next build's actual changes and checks.",
       "paths": [
-        "docs/APD-TEST103-REPORT-2026-10-13.md",
-        "docs/APD-TEST102-DELIVERY-2026-10-13.json",
+        "docs/APD-TEST103-DELIVERY-2026-10-13.json",
+        "docs/APD-TEST104-REPORT-2026-10-13.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/HANDOFF.md",
         ".github/workflows/codex-existing-apk-delivery.yml",
-        "docs/APD-TEST102-REPORT-2026-10-13.md",
+        "docs/APD-TEST103-REPORT-2026-10-13.md",
         "docs/APD-NEXT-BUILD-HISTORY.json"
       ]
     },
@@ -44,7 +52,7 @@
       "category": "Developer Commentary",
       "sprite": "V074_SHPX",
       "title": "Developer Commentary",
-      "text": "I corrected an Arcana preview that missed Spirit Form's existing fallback. The displayed increase now matches the actual effect without changing gameplay.",
+      "text": "I fixed two comparisons that could misrepresent incomplete run history. The recorded history stays intact, and uncertain values remain distinguishable from exact ones.",
       "paths": []
     }
   ]

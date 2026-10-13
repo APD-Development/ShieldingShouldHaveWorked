@@ -113,6 +113,7 @@ public final class RowMerger {
 				case ANY: {
 					boolean anyKnown = false, anyTrue = false;
 					int prov = Fact.PROV_RECORDED;
+					int falseProv = Fact.PROV_RECORDED;
 					int unknownParts = 0;
 					for (Row p : parts){
 						if (!p.isKnown(i)){ unknownParts++; continue; }
@@ -120,10 +121,10 @@ public final class RowMerger {
 						if (p.num(i) != 0){
 							anyTrue = true;
 							prov = worst(prov, p.prov(i));
-						}
+						} else falseProv = worst(falseProv, p.prov(i));
 					}
 					if (anyTrue) out.setNum(i, 1, prov);
-					else if (anyKnown && unknownParts == 0) out.setNum(i, 0, Fact.PROV_RECORDED);
+					else if (anyKnown && unknownParts == 0) out.setNum(i, 0, falseProv);
 					break;
 				}
 				default: {   //SUM, MAX
@@ -177,3 +178,4 @@ public final class RowMerger {
 		else to.setText(col, from.text(col), from.prov(col));
 	}
 }
+

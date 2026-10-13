@@ -1,3 +1,9 @@
+# TEST104 comparison fixes in verification — 2026-10-13 06:17 UTC
+
+Latest deliveredTEST103 source3f30d631ec0fa74ba11bcc25c3411526924604a8, verification38354469058, delivery38355660067/48abe938b4510977aa298a171473b6aa58cc615c, published06:15:50UTC. Exact1282core+21API34/20PNG/debug/signature/appID/checksum passed. Receipt docs/APD-TEST103-DELIVERY-2026-10-13.json. Install over, never uninstall/clear data. Physical-phone/owner-save tests absent.
+
+TEST104: two reproduced UIMSD comparison bugs fixed;4new+74existing=78targeted pass. False ANY merges now preserve uncertainty; exact/lower-bound numeric groups retain separate per-unit denominators. Raw files byte-identical, cache/save formats/gameplay unchanged. Full1286core/21API34/debug/build/signing/delivery pending. docs/APD-TEST104-REPORT-2026-10-13.md contains roots/tests/limits. Complete UIMSD review still incomplete; lower-bound group drilldown under investigation. Historic census21 no-APK attempts must not be called missing released gameplay histories. Metamorphosis duplicate-choice question remains unanswered. No persistent autonomous coding mechanism demonstrated.
+
 # TEST103 verified candidate — 2026-10-13 06:14 UTC
 
 Source3f30d631ec0fa74ba11bcc25c3411526924604a8 / run38354469058 succeeded. Actual downloaded XML1282core+21API34, zero failures/errors/skips;20PNG/debug. Arcana Spirit Form fallback preview verified in native item windows. Existing-artifact private delivery is staged; signer/hash/publication still pending. Latest deliveredTEST102 remains fallback. Two additional UIMSD comparison fixes are local78/78 tested, not in103; no raw/player data modified. Whole-system audit remains incomplete.

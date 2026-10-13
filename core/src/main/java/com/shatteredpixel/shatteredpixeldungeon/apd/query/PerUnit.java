@@ -163,7 +163,9 @@ public final class PerUnit {
 
 	private static String cell( Row r, int idx ){
 		if (r == null || !r.isKnown(idx)) return "U\u0001";
-		return (r.kind(idx) == Row.K_NUM ? "N" + r.num(idx) : "T" + r.text(idx)) + "\u0001";
+		return (r.kind(idx) == Row.K_NUM ? "N" + r.num(idx)
+                + (r.prov(idx) == com.shatteredpixel.shatteredpixeldungeon.apd.stats.Fact.PROV_INCOMPLETE ? "+" : "")
+                : "T" + r.text(idx)) + "\u0001";
 	}
 
 	private static String keyOf( Row sample, List<ColumnDef> cols ){
@@ -173,3 +175,4 @@ public final class PerUnit {
 		return b.toString();
 	}
 }
+
