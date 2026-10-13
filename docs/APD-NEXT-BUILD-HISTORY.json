@@ -1,79 +1,47 @@
 {
-  "previous_label": "Codex TEST 87",
-  "previous_source": "f2dc6a54836171acc3c2f9872fa5617da7bbf496",
-  "previous_run": 38316987461,
+  "previous_label": "Codex TEST 89",
+  "previous_source": "b529832d07a1a2ba30453427edbd346dbf8b4124",
+  "previous_run": 38324730902,
   "date": "2026-10-12",
   "changes": [
     {
       "category": "Bug Fixes",
-      "sprite": "ICON_INFO",
-      "title": "Crystal path rewards",
-      "text": "The two final crystal-path compartments now always contain Experience and Transmutation, one in each.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/rooms/special/CrystalPathRoom.java"
-      ]
-    },
-    {
-      "category": "Testing",
-      "sprite": "ICON_INFO",
-      "title": "Crystal reward generation checks",
-      "text": "Added checks across seeds, depths and exotic settings for both rewards and their two-key routes.",
-      "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/CrystalPathRewardsTest.java"
-      ]
-    },
-    {
-      "category": "Bug Fixes",
       "sprite": "ICON_DATA",
-      "title": "Extreme statistics values",
-      "text": "Fixed malformed decimal displays for the smallest supported signed statistics value.",
+      "title": "Saved empty-text filters",
+      "text": "Saved queries now retain an empty text value instead of losing that filter operand.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/CellFormatter.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/QueryCodec.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_INFO",
-      "title": "Statistics number-formatting checks",
-      "text": "Added boundary-value checks and verified the existing formatter and query behavior.",
+      "title": "Saved-query compatibility checks",
+      "text": "Added checks for empty and escaped values, legacy filters, invalid counts and saved-view file round trips.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/FormatterBoundaryTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/QueryEmptyTextPersistenceTest.java"
       ]
     },
     {
       "category": "Development",
-      "sprite": "ICON_DATA",
-      "title": "Verified investigation records",
-      "text": "Recorded the reward failure and seeded armor-generation findings without changing armor drop rates.",
+      "sprite": "ICON_INFO",
+      "title": "Verified delivery records",
+      "text": "Recorded TEST89's actual APK publication and the next saved-query integrity checks.",
       "paths": [
         ".github/workflows/codex-existing-apk-delivery.yml",
-        "docs/APD-ARMOR-GENERATION-AUDIT-2026-10-12.md",
-        "docs/APD-ARMOR-GENERATION-EVIDENCE-2026-10-12.json",
-        "docs/APD-TEST87-REPORT-2026-10-12.md",
         "docs/HANDOFF.md",
-        "tools/armor-study/ArmorShopTest.java",
-        "tools/armor-study/ArmorStudy.java",
-        "docs/APD-TEST88-REPORT-2026-10-12.md",
-        "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/APD-NEXT-BUILD-HISTORY.json"
+        "docs/APD-TEST89-DELIVERY-2026-10-12.json",
+        "docs/APD-TEST90-REPORT-2026-10-12.md",
+        "docs/APD-NEXT-BUILD-HISTORY.json",
+        "docs/APD-CODEX-BUILD-REQUEST.txt"
       ]
     },
     {
       "category": "Developer Commentary",
       "sprite": "V074_SHPX",
       "title": "Developer Commentary",
-      "text": "I corrected the crystal-path room so its two final rewards match the promised choices. Existing generated floors remain untouched.",
+      "text": "I found an ambiguity when saving a filter with an empty text value. The fix keeps that value distinct while preserving older saved queries.",
       "paths": []
-    },
-    {
-      "category": "Testing",
-      "sprite": "ICON_INFO",
-      "title": "Preserved seeded dungeon checks",
-      "text": "Updated expected crystal-room reward records while retaining all existing deterministic dungeon checks.",
-      "paths": [
-        "core/src/test/resources/apd/golden_levels.txt",
-        "docs/APD-TEST89-REPORT-2026-10-12.md"
-      ]
     }
   ]
 }

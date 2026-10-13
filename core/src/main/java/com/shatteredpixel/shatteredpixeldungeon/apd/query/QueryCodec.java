@@ -72,6 +72,7 @@ public final class QueryCodec {
 			for (int i = 0; i < f.nums.length; i++) b.append(i > 0 ? "," : "").append(f.nums[i]);
 			b.append('\t');
 			for (int i = 0; i < f.texts.length; i++) b.append(i > 0 ? "|" : "").append(esc(f.texts[i]));
+			if (f.texts.length == 1 && f.texts[0].isEmpty()) b.append('\t').append(1);
 			b.append('\n');
 		}
 		for (Sort so : q.sorts) b.append("sort\t").append(esc(so.column)).append('\t').append(so.descending ? 1 : 0).append('\n');
@@ -127,6 +128,12 @@ public final class QueryCodec {
 							texts = new String[t.length];
 							for (int i = 0; i < t.length; i++) texts[i] = unesc(t[i]);
 						}
+						// Older records omit the count. New records distinguish no texts from one empty text.
+						if (p.length >= 6) {
+							int count = Integer.parseInt(p[5]);
+							if (count == 1 && p[4].isEmpty()) texts = new String[]{""};
+							if (count != texts.length) throw new IllegalArgumentException("text count");
+						}
 						filters.add(new Filter(unesc(p[1]), Op.valueOf(p[2]), nums, texts));
 						break;
 					}
@@ -168,4 +175,5 @@ public final class QueryCodec {
 		return new Query(dataset, scope, filters, sorts, columns, keys == null ? null : new GroupBy(keys, aggs), show, min);
 	}
 }
+
 
