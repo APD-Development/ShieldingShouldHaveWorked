@@ -45,6 +45,12 @@ public class ChangesVisualDeviceTest {
    Field selected=APDTextScene.class.getDeclaredField("buildSelected");selected.setAccessible(true);selected.setInt(null,0);
    render(()->{APDTextScene.page=APDTextScene.Page.CHANGES;ShatteredPixelDungeon.switchScene(APDTextScene.class);});waitScene(APDTextScene.class);
    render(()->{try{
+    Method itemIcon=APDTextScene.class.getDeclaredMethod("icon",String.class);itemIcon.setAccessible(true);
+    for(String itemReference:new String[]{"ITEM_CRYSTAL_KEY","ITEM_POTION_AMBER","ITEM_SCROLL_KAUNAN"}){
+     Image item=(Image)itemIcon.invoke(Game.scene(),itemReference);assertTrue(item instanceof com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite);assertTrue(item.width()>0&&item.height()>0);item.destroy();
+    }
+    Image oldIcon=(Image)itemIcon.invoke(Game.scene(),"ICON_INFO");assertNotNull(oldIcon);oldIcon.destroy();
+    for(String unknownReference:new String[]{"ITEM_NOT_A_SPRITE","",null}){Image unknown=(Image)itemIcon.invoke(Game.scene(),unknownReference);assertNotNull(unknown);unknown.destroy();}
     List<ApdHistory.Build> builds=ApdHistory.builds(Gdx.files.internal("apd/history/index.tsv").readString("UTF-8"));
     Field f=APDTextScene.class.getDeclaredField("changes");f.setAccessible(true);List<ChangeInfo> infos=(List<ChangeInfo>)f.get(Game.scene());
     Field messages=ChangeButton.class.getDeclaredField("messages");messages.setAccessible(true);

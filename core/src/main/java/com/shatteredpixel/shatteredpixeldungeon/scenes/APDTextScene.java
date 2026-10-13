@@ -181,11 +181,16 @@ public class APDTextScene extends PixelScene {
   }
  }
  private Image icon(String sprite){
+  if(sprite==null||sprite.isEmpty())return Icons.CHANGES.get();
+  Integer item=com.shatteredpixel.shatteredpixeldungeon.apd.history.ApdSpriteRef.itemImage(sprite);
+  if(item!=null)return new com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite(item);
   try{return sprite.startsWith("ICON_")?Icons.valueOf(sprite.substring(5)).get():ChangeIcons.valueOf(sprite).get();}catch(IllegalArgumentException e){return Icons.CHANGES.get();}
  }
  private ChangeButton changeButton(ApdHistory.Build build,ApdHistory.Entry entry){
   Image sprite;
-  if(!entry.sprite.equals("V061_PAGE"))sprite=icon(entry.sprite);
+  String reference=entry.sprite;
+  if(entry.title.equals("Crystal path rewards")&&reference.equals("ICON_INFO"))reference="ITEM_CRYSTAL_KEY";
+  if(!reference.equals("V061_PAGE"))sprite=icon(reference);
   else {
    String title=entry.title.toLowerCase(Locale.ROOT);
    sprite=title.contains("news")?Icons.NEWS.get():title.contains("about")||title.contains("popup")?Icons.INFO.get():title.contains("histor")?Icons.CHANGES.get():title.contains("shortcut")?Icons.RANKINGS.get():entry.category.equals("Statistics / UIMSD")?Icons.STATS.get():ChangeIcons.V081_MISC.get();
