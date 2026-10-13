@@ -167,8 +167,50 @@ public class UimsdScreensDeviceTest {
                     assertTrue("question text fits its native window",text.width()<=com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.windowWidth());
                 }
                 com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.closeAll();
+                if(!incomplete)for(com.shatteredpixel.shatteredpixeldungeon.apd.query.Question.Measure measure:new com.shatteredpixel.shatteredpixeldungeon.apd.query.Question.Measure[]{com.shatteredpixel.shatteredpixeldungeon.apd.query.Question.Measure.AVERAGE,com.shatteredpixel.shatteredpixeldungeon.apd.query.Question.Measure.TYPICAL}){
+                    com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdAsk.answer(catalog,"rate-fixture",null,question.withMeasure(measure,"heal.amount"));
+                    shown=(java.util.List<?>)entries.get(comparisonWindow());
+                    assertEquals("large mean/median answer retains its represented value","9223372036854776000",((com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.Entry)shown.get(0)).label);
+                    for(Object item:(java.util.List<?>)texts.get(comparisonWindow()))if(item instanceof com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock)
+                        assertTrue(((com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock)item).width()<=com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.windowWidth());
+                    com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.closeAll();
+                }
+            }
+            for(boolean lower:new boolean[]{true,false}){
+                com.shatteredpixel.shatteredpixeldungeon.apd.query.Row value=new com.shatteredpixel.shatteredpixeldungeon.apd.query.Row("bound",null,"fixture",heals.size());value.finished=true;value.ruleset="rate-fixture";
+                value.setNum(heals.indexOf("heal.amount"),12,lower?com.shatteredpixel.shatteredpixeldungeon.apd.stats.Fact.PROV_INCOMPLETE:com.shatteredpixel.shatteredpixeldungeon.apd.stats.Fact.PROV_RECORDED);
+                com.shatteredpixel.shatteredpixeldungeon.apd.query.Row floor=new com.shatteredpixel.shatteredpixeldungeon.apd.query.Row("bound-floor",null,"fixture",floors.size());floor.finished=true;floor.ruleset="rate-fixture";
+                floor.setText(floors.indexOf("floor.run"),"fixture",com.shatteredpixel.shatteredpixeldungeon.apd.stats.Fact.PROV_RECORDED);
+                floor.setNum(floors.indexOf("floor.turns"),lower?17:7,lower?com.shatteredpixel.shatteredpixeldungeon.apd.stats.Fact.PROV_RECORDED:com.shatteredpixel.shatteredpixeldungeon.apd.stats.Fact.PROV_INCOMPLETE);
+                com.shatteredpixel.shatteredpixeldungeon.apd.query.Catalog catalog=new com.shatteredpixel.shatteredpixeldungeon.apd.query.Catalog().add(new com.shatteredpixel.shatteredpixeldungeon.apd.query.Dataset(heals,java.util.Arrays.asList(value),null)).add(new com.shatteredpixel.shatteredpixeldungeon.apd.query.Dataset(floors,java.util.Arrays.asList(floor),null));
+                com.shatteredpixel.shatteredpixeldungeon.apd.query.Question question=com.shatteredpixel.shatteredpixeldungeon.apd.query.Question.about("heals").withScope(com.shatteredpixel.shatteredpixeldungeon.apd.query.Scope.DEFAULT.withRules(com.shatteredpixel.shatteredpixeldungeon.apd.query.Scope.Rules.ALL,"")).withMeasure(com.shatteredpixel.shatteredpixeldungeon.apd.query.Question.Measure.TOTAL,"heal.amount").withPer(com.shatteredpixel.shatteredpixeldungeon.apd.query.PerUnit.Unit.TURN);
+                com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdAsk.answer(catalog,"rate-fixture",null,question);
+                Field entries=com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.class.getDeclaredField("entries");entries.setAccessible(true);
+                java.util.List<?> shown=(java.util.List<?>)entries.get(comparisonWindow());
+                assertEquals("native answers preserve conservative numeric bounds",lower?">=0.70":"1.72 or less",((com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.Entry)shown.get(0)).label);
+                com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.closeAll();
             }
         }catch(Exception e){throw new RuntimeException(e);}});
+    }
+
+
+    private static void verifyKnownEmptyFilterChoice() throws Exception {
+        AtomicReference<UimsdModel> model=new AtomicReference<>();
+        onRender(()->{try{
+            com.shatteredpixel.shatteredpixeldungeon.apd.query.DatasetDef def=new com.shatteredpixel.shatteredpixeldungeon.apd.query.DatasetDef("empty-fixture","Values","").add(ColumnDef.text("value","Value"));
+            java.util.List<com.shatteredpixel.shatteredpixeldungeon.apd.query.Row> rows=new java.util.ArrayList<>();
+            for(String id:new String[]{"empty","other","unknown"}){
+                com.shatteredpixel.shatteredpixeldungeon.apd.query.Row row=new com.shatteredpixel.shatteredpixeldungeon.apd.query.Row(id,null,"run-"+id,def.size());row.finished=true;row.ruleset="empty-fixture";
+                if(!id.equals("unknown"))row.setText(0,id.equals("empty")?"":"Rat",com.shatteredpixel.shatteredpixeldungeon.apd.stats.Fact.PROV_RECORDED);rows.add(row);
+            }
+            UimsdModel fixture=new UimsdModel("empty-fixture","");fixture.setCatalog(new com.shatteredpixel.shatteredpixeldungeon.apd.query.Catalog().add(new com.shatteredpixel.shatteredpixeldungeon.apd.query.Dataset(def,rows,null)).add(new com.shatteredpixel.shatteredpixeldungeon.apd.query.ViewDef(def.id,"Values","",com.shatteredpixel.shatteredpixeldungeon.apd.query.Query.of(def.id))));fixture.showRoot(def.id);model.set(fixture);
+            WndUimsdFilter.pickValue(fixture,-1,null,def.column("value"),Op.EQ);
+            Field entries=com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.class.getDeclaredField("entries");entries.setAccessible(true);
+            java.util.List<?> shown=(java.util.List<?>)entries.get(comparisonWindow());
+            assertEquals("(empty)",((com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.Entry)shown.get(0)).label);
+        }catch(Exception e){throw new RuntimeException(e);}});
+        Thread.sleep(300);tapComparisonEntry(0);
+        onRender(()->{assertEquals("known empty record remains selectable by touch",1,model.get().result().rows.size());assertEquals("empty",model.get().result().rows.get(0).id);});
     }
 
 	@Test
@@ -211,6 +253,7 @@ public class UimsdScreensDeviceTest {
 			assertNotNull("the tour has a model", m);
             verifyComparisonPages();
             verifyQuestionRateRendering();
+            verifyKnownEmptyFilterChoice();
             onRender(() -> {
                 com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdHome home =
                     com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdHome.build(m.catalog(), m.currentRuleset(), true);

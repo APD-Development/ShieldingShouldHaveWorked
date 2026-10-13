@@ -246,6 +246,10 @@ public final class CellFormatter {
 
 	//whole numbers without a decimal, others with one
 	private static String oneDecimal( double v ){
+		// Keep normal rounding while avoiding scaled-long saturation for large finite values.
+		if (Double.isFinite(v) && Math.abs(v) * 10 >= Long.MAX_VALUE)
+			return java.math.BigDecimal.valueOf(v).setScale(1, java.math.RoundingMode.HALF_UP)
+					.stripTrailingZeros().toPlainString();
 		long tenths = Math.round(v * 10);
 		return tenths % 10 == 0 ? Long.toString(tenths / 10) : fixed(tenths, 10, 1);
 	}

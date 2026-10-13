@@ -1336,3 +1336,15 @@ Next expected94confirmedcachebug: validrecorded/importedlogs sharingfilename and
 Actual94source1145e043e9e2ceb0aaf189282ede2f53a9423c8d/run38332301443:1251core+21API34,18PNG,zero failures/errors/skips. Delivery5f8c399284c9fac06ba98034c59e586ad9816343/run38333379574 published01:42:53UTCOct13=9:42:53pmEDTOct12. APK SHA256b3c6dce300206de694003247b57a9baf4d17265dffbbc2e7a20a28be16e67dc1,sameTEST67signer/appID,installover,no physicalphone evidence.
 
 Next expected95: correct Questions incomplete-rate bounds (bothincompleteunknown;negative/zero direction;properlowerflag) andlarge2decimaldisplayMath.round saturation.4casesbaselinefail,4new+47existing51uniquepass0.540s. Exact-rateformula/rawfacts unchanged; existingdoubleprecisionnotrecovered orclaimedexact. Native Android answer/width checksaddedwithinexistingtest,full1255core/21API34/18PNG/debugpending. EntireUIMSDauditnotcomplete; additional aggregate formatter ranges/precision require inspection.100000-seedarmorstudyactuallyactive/log/workspace/armor-study/test79-100000-results.txt,not completed/encounter simulation.
+
+
+## Oct12 TEST95 delivery / TEST96 pending
+# TEST96 UIMSD reliability batch
+
+Previous delivered TEST95: source 3ebdb4082adfbbb0de085cb29618da2666d3368a; checks 38333801539 (1255 core, 21 API34, 18 screenshots); delivery 38335353959; SHA256 2a9b1544ebdb713787a6709a55ace802da50a3e8fc74cf0db21332c81582e8ca. Published 2026-10-13 02:07:56 UTC. Existing application ID and TEST67 signing identity preserved.
+
+Reproduced and fixed: mean/median integer display saturation (26 targeted passes, 0.143s); actual built-in registry/class-initialization deadlock (old source fails after 5.032s, fixed 20 targeted passes in 0.515s); inward rounding of incomplete rate bounds (52 passes, 0.527s); known empty text excluded from filter choices (53 passes, 1.410s). These suites overlap: do not add their totals. Six new unique regression cases. Existing Android screen checks now exercise the native empty-value picker and large/bounded answer text. Save test services are restored between cases; all four save regressions pass (0.073s), with no production save changes.
+
+100,000 actual TEST79 seeded dungeon generations through depth22 completed in 2885.705s: no run lacked generated armor above leather; 1770 lacked higher armor under a restricted geometric non-shop accessibility model. This is not an encounter or survival probability. Owner seed/challenges/shop visits remain unknown. No armor balance change.
+
+At source commit full 1261 core, 21 API34, 18 screenshots and debug compilation are pending. Never treat local passes as Android verification. Possible regressions concern answer presentation, filter choices and concurrent initialization; raw records, schemas, inventory rules, gameplay RNG and scoring are unchanged. Double-based query precision is not recovered. Actual phone/owner save acceptance remains unverified. Full UIMSD audit, historical gaps, healing confirmation and fixed-slot metamorphosis remain unfinished. Latest Claude commit 714badbd313c66c41ec4d9fb50429b353a815840 is an ancestor of the approved branch (ahead259/behind0 at TEST95 delivery).

@@ -1,4 +1,6 @@
 import org.junit.Test;
+import org.junit.Before;
+import org.junit.After;
 import static org.junit.Assert.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Files.FileType;
@@ -12,7 +14,18 @@ import java.util.Arrays;
 
 // Save safety regression coverage uses disposable temporary files only.
 public class FileUtilsSaveSafetyTest {
- @Test public void nestedTemporarySaveIsSkippedByRecursiveCleanup() throws Exception {
+ private com.badlogic.gdx.Files previousFiles;
+ private FileType previousType;
+ private String previousPath;
+ @Before public void rememberFileServices()throws Exception {
+  previousFiles=Gdx.files;
+  java.lang.reflect.Field type=FileUtils.class.getDeclaredField("defaultFileType");type.setAccessible(true);previousType=(FileType)type.get(null);
+  java.lang.reflect.Field path=FileUtils.class.getDeclaredField("defaultPath");path.setAccessible(true);previousPath=(String)path.get(null);
+ }
+ @After public void restoreFileServices(){
+  Gdx.files=previousFiles;FileUtils.setDefaultFileProperties(previousType,previousPath);
+ }
+ @Test public void nestedTemporarySaveIsRecoveredByRecursiveCleanup() throws Exception {
   Path root=Files.createTempDirectory("spd-cleanup-repro");
   Gdx.files=new HeadlessFiles(); FileUtils.setDefaultFileProperties(FileType.Absolute,root+"/");
   try {
@@ -24,7 +37,7 @@ public class FileUtilsSaveSafetyTest {
    assertEquals(123,FileUtils.bundleFromFile("slot/nested/game.dat").getInt("proof"));
   } finally {delete(root);}
  }
- @Test public void failedTempWriteCanReplaceAnExistingValidSaveWithEmptyBytes() throws Exception {
+ @Test public void failedTemporaryWritePreservesTheExistingValidSave() throws Exception {
   Path root=Files.createTempDirectory("spd-write-repro");
   Gdx.files=new HeadlessFiles(); FileUtils.setDefaultFileProperties(FileType.Absolute,root+"/");
   try {
@@ -48,7 +61,7 @@ public class FileUtilsSaveSafetyTest {
    assertEquals(123,FileUtils.bundleFromFile("game.dat").getInt("proof"));
   } finally {delete(root);}
  }
- @Test public void failedBundleReadLeavesItsOwnedInputStreamOpen()throws Exception {
+ @Test public void failedBundleReadClosesItsOwnedInputStream()throws Exception {
   class Tracked extends InputStream {boolean closed;public int read()throws IOException{throw new IOException("controlled read failure");}public void close(){closed=true;}}
   Tracked input=new Tracked();
   java.lang.reflect.Method method=FileUtils.class.getDeclaredMethod("bundleFromStream",InputStream.class);method.setAccessible(true);

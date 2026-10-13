@@ -1,49 +1,94 @@
 {
-  "previous_label": "Codex TEST 94",
-  "previous_source": "1145e043e9e2ceb0aaf189282ede2f53a9423c8d",
-  "previous_run": 38332301443,
+  "previous_label": "Codex TEST 95",
+  "previous_source": "3ebdb4082adfbbb0de085cb29618da2666d3368a",
+  "previous_run": 38333801539,
   "date": "2026-10-12",
   "changes": [
     {
       "category": "Bug Fixes",
       "sprite": "ICON_DATA",
-      "title": "Incomplete question rates",
-      "text": "Custom questions now show an unknown rate when both totals are incomplete, and label individual positive or negative bounds correctly.",
+      "title": "Large statistics",
+      "text": "Large means and medians retain their represented values instead of overflowing display rounding.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/Questions.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/CellFormatter.java",
+        "docs/APD-UIMSD-AVERAGE-DISPLAY-VERIFICATION-2026-10-12.md"
       ]
     },
     {
       "category": "Bug Fixes",
       "sprite": "ICON_DATA",
-      "title": "Large rate display",
-      "text": "Large custom-question rates no longer shrink when their two-decimal display exceeds the integer rounding range.",
+      "title": "Statistics startup",
+      "text": "Concurrent statistics initialization no longer deadlocks while registering built-in facts.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/Questions.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/FactKinds.java",
+        "docs/APD-UIMSD-REGISTRY-VERIFICATION-2026-10-12.md"
+      ]
+    },
+    {
+      "category": "Bug Fixes",
+      "sprite": "ICON_DATA",
+      "title": "Conservative rate bounds",
+      "text": "Incomplete question rates now round outward so their displayed bounds remain conservative.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/Questions.java",
+        "docs/APD-UIMSD-RATE-ROUNDING-VERIFICATION-2026-10-12.md"
+      ]
+    },
+    {
+      "category": "Statistics / UIMSD",
+      "sprite": "ICON_DATA",
+      "title": "Empty recorded values",
+      "text": "Text filters offer known empty values separately from missing recordings.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdModel.java",
+        "docs/APD-UIMSD-EMPTY-FILTER-VERIFICATION-2026-10-12.md"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Rate-bound regression checks",
-      "text": "Added exact, incomplete, negative, zero and large-rate cases, plus native Android answer-window checks.",
+      "title": "Regression coverage",
+      "text": "Added reproduced startup, large-number, rate-rounding and empty-filter cases with native Android answer and picker checks.",
       "paths": [
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/AverageDisplayRangeTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/FactRegistryInitializationTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RateBoundRoundingTest.java",
         "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/QuestionRateBoundsTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/KnownEmptyFilterChoiceTest.java",
         "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdScreensDeviceTest.java"
+      ]
+    },
+    {
+      "category": "Testing",
+      "sprite": "ICON_CHECKED",
+      "title": "Save-test isolation",
+      "text": "Save regressions restore their temporary file services after execution and use names describing their verified behavior.",
+      "paths": [
+        "core/src/test/java/FileUtilsSaveSafetyTest.java"
+      ]
+    },
+    {
+      "category": "Development",
+      "sprite": "ITEM_ARMOR_MAIL",
+      "title": "Armor generation study",
+      "text": "Verified 100,000 TEST79 dungeon seeds without changing loot probabilities; generated armor and player encounters remain distinct.",
+      "paths": [
+        "docs/APD-ARMOR-GENERATION-100000-2026-10-12.md",
+        "docs/evidence/armor-100000/verification.json",
+        "docs/evidence/armor-100000/results.txt",
+        "docs/evidence/armor-100000/ArmorStudy.java"
       ]
     },
     {
       "category": "Development",
       "sprite": "ICON_INFO",
-      "title": "Rate and delivery evidence",
-      "text": "Recorded the preceding verified APK and the reproduced rate-display failures and successful targeted checks.",
+      "title": "Verification records",
+      "text": "Recorded the preceding delivered APK and this batch's evidence and build checks.",
       "paths": [
-        "docs/APD-UIMSD-QUESTION-RATE-VERIFICATION-2026-10-12.md",
-        "docs/APD-TEST94-DELIVERY-2026-10-12.json",
-        ".github/workflows/codex-existing-apk-delivery.yml",
         "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/APD-TEST95-REPORT-2026-10-12.md",
+        "docs/APD-TEST96-REPORT-2026-10-12.md",
+        "docs/APD-TEST95-DELIVERY-2026-10-12.json",
         "docs/HANDOFF.md"
       ]
     },
@@ -51,7 +96,7 @@
       "category": "Developer Commentary",
       "sprite": "V074_SHPX",
       "title": "Developer Commentary",
-      "text": "I corrected misleading rate answers when recordings are incomplete. Large rates also retain their represented value instead of being clipped by display rounding.",
+      "text": "I fixed several misleading statistics displays and an initialization deadlock. Empty recorded values are now selectable without treating missing data as empty.",
       "paths": []
     }
   ]

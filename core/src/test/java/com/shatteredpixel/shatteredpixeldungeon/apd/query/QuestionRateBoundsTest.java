@@ -5,7 +5,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 public class QuestionRateBoundsTest {
  private static final FactKind KIND=FactKinds.register(FactKind.builder("test.ratebounds", "Resource observation").value("amount","Amount").build());
- private Questions.Line answer(long numerator,boolean numeratorLower,long denominator,boolean denominatorLower){
+ Questions.Line answer(long numerator,boolean numeratorLower,long denominator,boolean denominatorLower){
   DatasetDef facts=FactDatasets.def(KIND),floors=EventDatasets.def(EventDatasets.FLOORS);
   Row value=new Row("value",null,"run",facts.size());value.finished=true;value.ruleset="r1-test";
   value.setNum(facts.indexOf("fact.v.amount"),numerator,numeratorLower?Fact.PROV_INCOMPLETE:Fact.PROV_RECORDED);

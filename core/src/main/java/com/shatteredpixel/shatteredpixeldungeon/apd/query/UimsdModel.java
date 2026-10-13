@@ -246,11 +246,10 @@ public final class UimsdModel {
 			boolean legit = r.publicRow || (query.showInternal && r.finished);
 			if (!legit || !QueryEngine.open(query, r, c) || !r.isKnown(c.index())) continue;
 			String raw = r.text(c.index());
-			if (raw.isEmpty()) continue;
 			int[] n = counts.get(raw);
 			if (n == null){
 				counts.put(raw, n = new int[1]);
-				labels.put(raw, CellFormatter.cell(query, r, c).text);
+				labels.put(raw, raw.isEmpty() ? "(empty)" : CellFormatter.cell(query, r, c).text);
 			}
 			n[0]++;
 		}

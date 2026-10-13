@@ -158,18 +158,21 @@ public final class Questions {
 				double n = v.known ? v.value : Double.NaN;
 				double r = per.per(n, i);
 				boolean numeratorLower = v.isLowerBound(), denominatorLower = per.lower[i];
-				boolean ambiguous = numeratorLower && denominatorLower;
+				boolean ambiguous = numeratorLower && denominatorLower && n > 0;
 				boolean lower = false;
 				String text;
 				if (Double.isNaN(r) || ambiguous){
 					text = CellFormatter.UNKNOWN_TEXT;
 					r = Double.NaN;
 				} else if (denominatorLower){
-					lower = n < 0;
-					text = twoDecimals(r) + (n > 0 ? " or less" : n < 0 ? " or more" : "");
+					lower = numeratorLower || n < 0;
+					if (numeratorLower) text = ">=" + boundDecimals(r, true);
+					else if (n < 0) text = boundDecimals(r, true) + " or more";
+					else if (n > 0) text = boundDecimals(r, false) + " or less";
+					else text = twoDecimals(r);
 				} else {
 					lower = numeratorLower;
-					text = (lower ? ">=" : "") + twoDecimals(r);
+					text = lower ? ">=" + boundDecimals(r, true) : twoDecimals(r);
 				}
 				String detail = at.text + " in " + (denominatorLower ? "at least " : "")
 						+ twoDecimals(per.denominators[i]).replaceAll("\\.00$", "") + " " + q.per.plural;
@@ -189,6 +192,12 @@ public final class Questions {
 		String note = "";
 		if (res.stats != null && res.stats.inScope > 0 && res.stats.matching < res.stats.inScope) note = res.stats.matching + " of " + res.stats.inScope + " entries match your conditions.";
 		return new Answer(sentence, lines, note, query);
+	}
+
+	// A displayed bound must remain conservative after rounding to two decimal places.
+	private static String boundDecimals(double value, boolean lower){
+		return java.math.BigDecimal.valueOf(value).setScale(2,
+				lower ? java.math.RoundingMode.FLOOR : java.math.RoundingMode.CEILING).toPlainString();
 	}
 
 	private static String twoDecimals( double v ){
