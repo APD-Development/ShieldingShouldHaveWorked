@@ -1078,9 +1078,10 @@ public abstract class Mob extends Char {
                         : com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.adjust(original,
                             () -> com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.extraLike(original));
                     for (Item generated : ordinary) {
-                        com.shatteredpixel.shatteredpixeldungeon.apd.GuaranteedLootIdentification.identifyNormalDrop(this, generated);
-                        ApdGen.onLootCreated(this, generated);
-                        Dungeon.level.drop(generated, pos).sprite.drop();
+                        loot = generated;
+                        com.shatteredpixel.shatteredpixeldungeon.apd.GuaranteedLootIdentification.identifyNormalDrop(this, loot);
+                        ApdGen.onLootCreated( this, loot );
+                        Dungeon.level.drop(loot, pos).sprite.drop();
                     }
 				}
 			}
