@@ -54,12 +54,18 @@ jobs:
           assert cert in signature and evidence['certificate_sha256']==[cert]
           package=subprocess.check_output([str(signer.parent/'aapt'),'dump','badging',str(apk)],text=True)
           assert "package: name='com.charltonchris29.adhdpixeldungeon.indev' versionCode='920' versionName='4.0.8-apd-INDEV-bC123-TEST'" in package
+          publication=os.environ['GITHUB_SHA']
+          def inputs(commit):
+              tree=api('repos/'+repo+'/git/trees/'+commit+'?recursive=1')
+              assert not tree.get('truncated',False)
+              return {x['path']:x['sha'] for x in tree['tree'] if x['type']!='tree' and x['path'].split('/',1)[0] not in ('.github','docs','tools') and not x['path'].startswith(('core/src/test/','android/src/androidTest/'))}
+          assert inputs(evidence['source'])==inputs(publication), 'Delivery application inputs differ from tested APK'
           tag='apd-codex-test-123'
           existing=subprocess.run(['gh','release','view',tag,'--repo',repo],capture_output=True)
           if existing.returncode==0:
               raise SystemExit('Existing release preserved; refusing asset overwrite')
           notes=Path('delivery/lunch-release-notes.txt')
-          notes.write_text('Verified TEST123: Custom Dungeon Rules vertical/horizontal touchscreen gesture correction, repaired Equipment Availability and stable neutral generation tests; see the attached PDF. Source '+evidence['source']+'. 1384 core tests and 24 API34 emulator tests passed, no failures/errors/skips. APK checksum and signing compatibility verified. Physical-phone verification remains pending. Install over APD; never uninstall or clear data. Three offensive Damage sliders and mandatory UIMSD integration remain incomplete. No custom scoring coefficients or online activation. No APK rebuilt during delivery.')
-          subprocess.run(['gh','release','create',tag,'--repo',repo,'--target',evidence['source'],'--prerelease','--latest=false','--title','APD PRIVATE CODEX TEST123 — slider touch correction','--notes-file',str(notes),str(apk),str(apk)+'.sha256',str(pdf),'delivery/TEST123-Verification.json'],check=True)
+          notes.write_text('Verified TEST123: Custom Dungeon Rules vertical/horizontal touchscreen gesture correction, repaired Equipment Availability and stable neutral generation tests; see the attached PDF. Source '+evidence['source']+'. 1384 core tests and 24 API34 emulator tests passed, no failures/errors/skips. APK checksum and signing compatibility verified. Physical-phone verification remains pending. Install over APD; never uninstall or clear data. Three offensive Damage sliders and mandatory UIMSD integration remain incomplete. No custom scoring coefficients or online activation. No APK rebuilt during delivery. Delivery tag commit '+publication+' has identical application/build inputs to the tested source.')
+          subprocess.run(['gh','release','create',tag,'--repo',repo,'--target',publication,'--prerelease','--latest=false','--title','APD PRIVATE CODEX TEST123 — slider touch correction','--notes-file',str(notes),str(apk),str(apk)+'.sha256',str(pdf),'delivery/TEST123-Verification.json'],check=True)
           print('Private release published; existing assets preserved.')
           PY
