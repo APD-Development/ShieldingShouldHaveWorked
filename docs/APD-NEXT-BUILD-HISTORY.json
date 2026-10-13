@@ -1,26 +1,47 @@
 {
-  "previous_label": "Codex TEST 107",
-  "previous_source": "cdd9715fac40dd1c88cd4a2ad34b23fcb9da4ea4",
-  "previous_run": 38361669114,
+  "previous_label": "Codex TEST 108",
+  "previous_source": "4b8b3488a88d68baccbfcbd7ee4280639193b00e",
+  "previous_run": 38363169333,
   "date": "2026-10-13",
   "changes": [
     {
+      "category": "Statistics / UIMSD",
+      "sprite": "ITEM_BACKPACK",
+      "title": "Item history reliability",
+      "text": "Item-history readers now exclude self-ancestry in cyclic records and retain items mentioned only in later lifecycle events.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/ItemHistory.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "ITEM_SCROLL_GYFU",
+      "title": "Metamorphosis announcement",
+      "text": "Added a short News announcement explaining the already-available five-class talent chooser.",
+      "paths": [
+        "core/src/main/assets/apd/news.tsv"
+      ]
+    },
+    {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Metamorphosis test compilation",
-      "text": "Corrected a missing test assertion import so Android can verify the five-choice metamorphosis interface.",
+      "title": "Item history and News checks",
+      "text": "Added cyclic and sparse item-history regressions and kept News popup coverage aligned with every published article.",
       "paths": [
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PlayRunDeviceTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/ItemLineageCycleTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/AboutDeviceTest.java"
       ]
     },
     {
       "category": "Development",
       "sprite": "ICON_INFO",
-      "title": "Honest verification records",
-      "text": "Recorded TEST107's unsuccessful Android check and retained its actual build history for the verification retry.",
+      "title": "Verification and delivery records",
+      "text": "Recorded verified TEST108 delivery and the next reader-reliability checks without changing player data.",
       "paths": [
+        ".github/workflows/codex-existing-apk-delivery.yml",
         "docs/APD-TEST107-REPORT-2026-10-13.md",
         "docs/APD-TEST108-REPORT-2026-10-13.md",
+        "docs/APD-TEST109-REPORT-2026-10-13.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/HANDOFF.md",
         "docs/APD-NEXT-BUILD-HISTORY.json"
@@ -30,7 +51,7 @@
       "category": "Developer Commentary",
       "sprite": "V074_SHPX",
       "title": "Developer Commentary",
-      "text": "I corrected a test compilation error before verifying the metamorphosis chooser on Android. TEST107's implemented changes retain their own build attribution.",
+      "text": "I strengthened item-history readers for inconsistent records and added a short announcement for the verified metamorphosis chooser. Gameplay, inventory capacity and existing player data are unchanged.",
       "paths": []
     }
   ]

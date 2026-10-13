@@ -160,6 +160,7 @@ public final class ItemHistory {
 		}
 		List<String> out = new ArrayList<>();
 		Set<String> done = new HashSet<>();
+		done.add(uid); // A cycle cannot make the queried item its own ancestor.
 		List<String> queue = new ArrayList<>();
 		queue.add(uid);
 		for (int i = 0; i < queue.size(); i++){
@@ -184,6 +185,18 @@ public final class ItemHistory {
 					case EventTypes.ITEM_REGISTERED: seen.add(ItemEvents.decodeRegistered(e, strings).uid); break;
 					case EventTypes.ITEM_SEEN: seen.add(ItemEvents.decodeSeen(e, strings).uid); break;
 					case EventTypes.ITEM_ACQUIRED: seen.add(ItemEvents.decodeAcquired(e, strings).uid); break;
+					case EventTypes.ITEM_LEFT: seen.add(ItemEvents.decodeLeft(e, strings).uid); break;
+					case EventTypes.ITEM_EQUIPPED:
+					case EventTypes.ITEM_UNEQUIPPED: seen.add(ItemEvents.decodeEquip(e, strings).uid); break;
+					case EventTypes.ITEM_KNOWLEDGE: seen.add(ItemEvents.decodeKnowledge(e, strings).uid); break;
+					case EventTypes.ITEM_TRUTH_CHANGED: seen.add(ItemEvents.decodeTruthChanged(e, strings).uid); break;
+					case EventTypes.ITEM_LINEAGE: {
+						ItemEvents.Lineage lineage = ItemEvents.decodeLineage(e, strings);
+						// Destination precedes the parent references in the recorded payload.
+						seen.add(lineage.to);
+						seen.addAll(lineage.from);
+						break;
+					}
 					default:
 				}
 			} catch (RuntimeException ex){

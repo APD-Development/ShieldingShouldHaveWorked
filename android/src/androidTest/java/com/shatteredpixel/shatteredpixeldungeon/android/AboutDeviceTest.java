@@ -62,7 +62,7 @@ public class AboutDeviceTest {
    while(!(Game.scene() instanceof com.shatteredpixel.shatteredpixeldungeon.scenes.APDTextScene)&&System.currentTimeMillis()<end)Thread.sleep(100);
    assertTrue(Game.scene() instanceof com.shatteredpixel.shatteredpixeldungeon.scenes.APDTextScene);
    render(()->{try{
-    int[] cards={0};checkNews(Game.scene(),cards);assertEquals(2,cards[0]);
+    int[] cards={0};checkNews(Game.scene(),cards);assertEquals(com.shatteredpixel.shatteredpixeldungeon.apd.history.ApdNews.published(com.badlogic.gdx.Gdx.files.internal("apd/news.tsv").readString("UTF-8")).size(),cards[0]);
    }catch(Exception e){throw new RuntimeException(e);}});
   }
  }
