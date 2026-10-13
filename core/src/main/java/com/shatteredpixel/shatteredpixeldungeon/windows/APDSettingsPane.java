@@ -65,6 +65,8 @@ public class APDSettingsPane extends Component {
 	private RedButton btnClericQuickCasts;
     private RedButton btnPlaybackSpeed;
     private RedButton btnHealingConfirmation;
+    private RedButton btnCustomRules;
+    private RedButton btnCurrentCustomRules;
 	private RedButton btnTest;
 	private RedButton btnExportHistory;
 	private RedButton btnImportHistory;
@@ -157,6 +159,20 @@ public class APDSettingsPane extends Component {
             @Override protected void onClick() { WndHealingConfirmation.settings(); }
         };
         add(btnHealingConfirmation);
+        btnCustomRules = new RedButton("Custom Dungeon Rules", 6) {
+            @Override protected void onClick() {
+                ShatteredPixelDungeon.scene().addToFront(new WndCustomDungeonRules());
+            }
+        };
+        add(btnCustomRules);
+        btnCurrentCustomRules = new RedButton("View current run rules", 6) {
+            @Override protected void onClick() {
+                ShatteredPixelDungeon.scene().addToFront(new WndCustomDungeonRules(true));
+            }
+        };
+        btnCurrentCustomRules.visible = Game.scene() instanceof GameScene;
+        btnCurrentCustomRules.active = btnCurrentCustomRules.visible;
+        add(btnCurrentCustomRules);
 		btnClericQuickCasts = new RedButton("Cleric quick-cast buttons") {
             @Override protected void onClick() { WndClericQuickCasts.settings(); }
         };
@@ -314,6 +330,8 @@ public class APDSettingsPane extends Component {
         chkStairNavigation.setRect(x,pos,width,16);pos=chkStairNavigation.bottom()+GAP;
         btnPlaybackSpeed.setRect(x,pos,width,16);pos=btnPlaybackSpeed.bottom()+GAP;
         btnHealingConfirmation.setRect(x,pos,width,16);pos=btnHealingConfirmation.bottom()+GAP;
+        btnCustomRules.setRect(x,pos,width,20);pos=btnCustomRules.bottom()+GAP;
+        if(btnCurrentCustomRules.visible){btnCurrentCustomRules.setRect(x,pos,width,20);pos=btnCurrentCustomRules.bottom()+GAP;}
         btnClericQuickCasts.setRect(x,pos,width,16);
         pos = btnClericQuickCasts.bottom() + GAP;
 		status.maxWidth( (int)width );

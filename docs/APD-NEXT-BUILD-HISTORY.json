@@ -1,99 +1,63 @@
 {
-  "previous_label": "Codex TEST 116",
-  "previous_source": "d6c3f34594317307b949642850c24afe4e38c9d0",
-  "previous_run": 38384131886,
+  "previous_label": "Codex TEST 117",
+  "previous_source": "6cec6e00a96302b67c1dcbbf599320375a72e4cd",
+  "previous_run": 38387716215,
   "date": "2026-10-13",
   "changes": [
     {
-      "category": "Development",
-      "sprite": "PD_RAT",
-      "title": "Custom enemy health",
-      "text": "Ordinary enemy health now follows locked custom settings once, including saved and later-spawned enemies.",
+      "category": "Changes",
+      "sprite": "ICON_INFO",
+      "title": "Custom scoring notice",
+      "text": "The custom-rules window explains that difficulty settings do not yet change earned scores.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Mob.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomMobHooks.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/Level.java"
-      ]
-    },
-    {
-      "category": "Development",
-      "sprite": "V075_ALBINO_RAT",
-      "title": "Custom enemy supply",
-      "text": "Custom spawn frequency changes ordinary initial density and respawn intervals while preserving existing rewards.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/RegularLevel.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/Level.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomResourceHooks.java"
-      ]
-    },
-    {
-      "category": "Bug Fixes",
-      "sprite": "PD_RAT",
-      "title": "Crowded custom floors",
-      "text": "Custom generation stops searching when the requested enemy density exceeds available legal spawn cells.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/RegularLevel.java"
-      ]
-    },
-    {
-      "category": "Development",
-      "sprite": "V060_RATION",
-      "title": "Custom hunger rate",
-      "text": "Hunger depletion and negative hunger costs follow the selected rate without changing food restoration.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Hunger.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomResourceHooks.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomRulesPresentation.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndCustomDungeonRules.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomRulesPresentationTest.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/APDSettingsPane.java"
       ]
     },
     {
       "category": "Development",
       "sprite": "V065_ARMOR_KIT",
-      "title": "Custom defense rolls",
-      "text": "Player and enemy defense settings scale the existing complete defensive roll once without changing shields or immunities.",
+      "title": "Native custom-rule controls",
+      "text": "Added native next-run controls and locked current-run inspection; unfinished gameplay effects are visibly disabled.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/Char.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/abilities/warrior/HeroicLeap.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/abilities/warrior/Shockwave.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Skeleton.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Tengu.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/ChaliceOfBlood.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/bombs/Bomb.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/bombs/ShrapnelBomb.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/traps/FlashingTrap.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/traps/GrippingTrap.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/traps/PoisonDartTrap.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/traps/RockfallTrap.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/traps/WornDartTrap.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomDefenseHooks.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V073_ARCANE_ARMOR",
-      "title": "Chalice preview consistency",
-      "text": "The Chalice damage preview now matches custom defense settings without consuming random numbers.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/ChaliceDamagePreview.java"
-      ]
-    },
-    {
-      "category": "Testing",
-      "sprite": "ICON_CHECKED",
-      "title": "Custom rules regression coverage",
-      "text": "Added health persistence, hunger, combined generation, crowded-floor and defensive-roll regression tests.",
-      "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomMobSurvivalInteractionTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomDefenseSliderTest.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomRulesPresentation.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndCustomDungeonRules.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomRulesPresentationTest.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/APDSettingsPane.java"
       ]
     },
     {
       "category": "Development",
       "sprite": "ICON_INFO",
-      "title": "Verification records",
-      "text": "Recorded TEST116's successful checks and this candidate's tested scope, failures and remaining alpha work.",
+      "title": "Offensive ownership groundwork",
+      "text": "Added a source-preserving damage bridge for future offensive integration; existing damage behavior is unchanged.",
       "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/OffensiveDamageOrigin.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/OffensiveDamage.java"
+      ]
+    },
+    {
+      "category": "Testing",
+      "sprite": "ICON_CHECKED",
+      "title": "Custom-rule display and ownership checks",
+      "text": "Added reversible slider, whole-scroll display, real damage-defense and Android notice interaction checks.",
+      "paths": [
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/OffensiveDamageAttributionTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomRulesPresentationTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java",
+        "tools/run-codex-android-checks.sh"
+      ]
+    },
+    {
+      "category": "Development",
+      "sprite": "ICON_INFO",
+      "title": "Alpha verification records",
+      "text": "Recorded the verified TEST117 checks and the exact remaining custom-rule integration limits.",
+      "paths": [
+        "docs/APD-TEST118-REPORT-2026-10-13.md",
         "docs/APD-TEST117-REPORT-2026-10-13.md",
-        "docs/APD-TEST116-REPORT-2026-10-13.md",
         "docs/HANDOFF.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/APD-NEXT-BUILD-HISTORY.json"
@@ -103,7 +67,7 @@
       "category": "Developer Commentary",
       "sprite": "V074_SHPX",
       "title": "Developer Commentary",
-      "text": "I added enemy health, spawn frequency, hunger and defense effects while preserving neutral behavior. Offensive attribution and the remaining sliders are still in development.",
+      "text": "I added the custom-rules window with a clear notice that scores are unchanged. Seven gameplay effects and full offensive attribution still need integration before the early alpha is ready.",
       "paths": []
     }
   ]
