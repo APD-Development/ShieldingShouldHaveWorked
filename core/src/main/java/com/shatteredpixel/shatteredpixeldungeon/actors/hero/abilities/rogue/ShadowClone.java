@@ -107,6 +107,7 @@ public class ShadowClone extends ArmorAbility {
 				armor.updateQuickslot();
 
 				ally = new ShadowAlly(hero.lvl);
+                ally.apdInheritOffensiveOrigin(hero);
 				ally.pos = Random.element(spawnPoints);
 				GameScene.add(ally);
 

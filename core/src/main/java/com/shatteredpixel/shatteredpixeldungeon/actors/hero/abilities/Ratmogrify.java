@@ -107,6 +107,7 @@ public class Ratmogrify extends ArmorAbility {
 					int index = Random.index( spawnPoints );
 
 					Rat rat = new Rat();
+                    rat.apdInheritOffensiveOrigin(hero);
 					rat.alignment = Char.Alignment.ALLY;
 					rat.state = rat.HUNTING;
 					Buff.affect(rat, AscensionChallenge.AscensionBuffBlocker.class);
@@ -138,6 +139,7 @@ public class Ratmogrify extends ArmorAbility {
 			return;
 		} else {
 			TransmogRat rat = new TransmogRat();
+            rat.apdInheritOffensiveOrigin(ch);
 			rat.setup((Mob)ch);
 			rat.pos = ch.pos;
 

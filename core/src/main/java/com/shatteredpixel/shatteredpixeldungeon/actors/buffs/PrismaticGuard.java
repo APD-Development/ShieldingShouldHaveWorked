@@ -74,6 +74,7 @@ public class PrismaticGuard extends Buff {
 			}
 			if (bestPos != -1) {
 				PrismaticImage pris = new PrismaticImage();
+                pris.apdInheritOffensiveOrigin(hero);
 				pris.duplicate(hero, (int)Math.floor(HP) );
 				if (powerOfManyTurns > 0){
 					Buff.affect(pris, PowerOfMany.PowerBuff.class, powerOfManyTurns);

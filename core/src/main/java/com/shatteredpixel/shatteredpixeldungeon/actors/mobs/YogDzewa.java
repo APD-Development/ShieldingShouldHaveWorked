@@ -298,6 +298,7 @@ public class YogDzewa extends Mob {
 
 				Class<?extends Mob> cls = regularSummons.remove(0);
 				Mob summon = Reflection.newInstance(cls);
+                summon.apdInheritOffensiveOrigin(this);
 				regularSummons.add(cls);
 
 				int spawnPos = -1;
@@ -440,6 +441,7 @@ public class YogDzewa extends Mob {
 	}
 
 	public void addFist(YogFist fist){
+        fist.apdInheritOffensiveOrigin(this);
 		fist.pos = Dungeon.level.exit();
 
 		CellEmitter.get(Dungeon.level.exit()-1).burst(ShadowParticle.UP, 25);

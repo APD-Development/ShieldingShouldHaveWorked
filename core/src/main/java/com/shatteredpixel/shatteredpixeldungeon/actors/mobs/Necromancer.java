@@ -246,6 +246,7 @@ public class Necromancer extends Mob {
 
 		if (mySkeleton == null || !mySkeleton.isActive()) {
 			mySkeleton = new NecroSkeleton();
+            mySkeleton.apdInheritOffensiveOrigin(this);
 			mySkeleton.pos = summoningPos;
 			GameScene.add(mySkeleton);
 			Dungeon.level.occupyCell(mySkeleton);

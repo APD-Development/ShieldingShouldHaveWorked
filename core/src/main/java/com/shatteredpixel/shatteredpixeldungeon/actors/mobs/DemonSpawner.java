@@ -108,6 +108,7 @@ public class DemonSpawner extends Mob {
 
 			if (!candidates.isEmpty()) {
 				RipperDemon spawn = new RipperDemon();
+                spawn.apdInheritOffensiveOrigin(this);
 
 				spawn.pos = Random.element( candidates );
 				spawn.state = spawn.HUNTING;

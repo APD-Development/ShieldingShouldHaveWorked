@@ -119,6 +119,7 @@ public class Ghoul extends Mob {
 			
 			if (!candidates.isEmpty()){
 				Ghoul child = new Ghoul();
+                child.apdInheritOffensiveOrigin(this);
 				child.partnerID = this.id();
 				this.partnerID = child.id();
 				if (state != SLEEPING) {

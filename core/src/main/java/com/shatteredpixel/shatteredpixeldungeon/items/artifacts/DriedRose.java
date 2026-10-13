@@ -169,6 +169,7 @@ public class DriedRose extends Artifact {
 
 				if (spawnPoints.size() > 0) {
 					ghost = new GhostHero( this );
+                ghost.apdInheritOffensiveOrigin(hero);
 					ghostID = ghost.id();
 					ghost.pos = Random.element(spawnPoints);
 

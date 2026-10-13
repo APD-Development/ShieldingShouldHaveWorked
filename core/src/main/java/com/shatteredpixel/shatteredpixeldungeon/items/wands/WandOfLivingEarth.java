@@ -114,6 +114,7 @@ public class WandOfLivingEarth extends DamageWand {
 
 			//create a new guardian
 			guardian = new EarthGuardian();
+                guardian.apdInheritOffensiveOrigin(curUser);
 			guardian.setInfo(curUser, buffedLvl(), buff.armor);
 
 			if (buff.powerOfManyTurns > 0){

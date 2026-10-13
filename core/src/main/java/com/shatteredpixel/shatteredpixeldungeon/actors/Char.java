@@ -189,6 +189,15 @@ public abstract class Char extends Actor {
 		ALLY
 	}
 	public Alignment alignment;
+    private com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin apdCreatorOffensiveOrigin =
+            com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.UNATTRIBUTED;
+    public com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin apdCreatorOffensiveOrigin() {
+        return apdCreatorOffensiveOrigin;
+    }
+    /** Called at summon creation, never inferred merely from allied alignment. */
+    public void apdInheritOffensiveOrigin(Char creator) {
+        apdCreatorOffensiveOrigin=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(creator,null);
+    }
 	
 	public int viewDistance	= 8;
 	
@@ -348,6 +357,7 @@ public abstract class Char extends Actor {
 		bundle.put( TAG_HP, HP );
 		bundle.put( TAG_HT, HT );
 		bundle.put( BUFFS, buffs );
+        apdCreatorOffensiveOrigin.store(bundle,"apd_damage_creator_origin");
 	}
 	
 	@Override
@@ -355,7 +365,8 @@ public abstract class Char extends Actor {
 		
 		super.restoreFromBundle( bundle );
 		
-		pos = bundle.getInt( POS );
+		apdCreatorOffensiveOrigin=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.restore(bundle,"apd_damage_creator_origin");
+        pos = bundle.getInt( POS );
 		previousPos = bundle.getInt( PREV_POS );
 		HP = bundle.getInt( TAG_HP );
 		HT = bundle.getInt( TAG_HT );

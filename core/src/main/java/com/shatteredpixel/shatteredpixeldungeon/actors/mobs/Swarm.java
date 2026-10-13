@@ -126,6 +126,7 @@ public class Swarm extends Mob {
 	
 	private Swarm split() {
 		Swarm clone = new Swarm();
+        clone.apdInheritOffensiveOrigin(this);
 		clone.generation = generation + 1;
 		clone.EXP = 0;
 		if (buff( Burning.class ) != null) {
