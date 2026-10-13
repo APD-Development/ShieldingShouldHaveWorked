@@ -750,6 +750,24 @@ public class UimsdRestoreDeviceTest {
                         assertContainedText(window, width.getInt(window));
                         window.hide();
                     }
+                    hero.heroClass=com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.CLERIC;
+                    hero.armorAbility=new com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.Trinity();
+                    com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.initClassTalents(hero);
+                    com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.initArmorTalents(hero);
+                    hero.talents.get(3).put(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.SPIRIT_FORM,2);
+                    ring.level(2);ring.cursed=true;
+                    com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfArcana spiritRing=new com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfArcana();
+                    spiritRing.level(10);
+                    com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff.affect(hero,
+                        com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.SpiritForm.SpiritFormBuff.class).setEffect(spiritRing);
+                    assertTrue(com.shatteredpixel.shatteredpixeldungeon.apd.ArcanaInfoDisplay.weapon(sword).contains("62.22% increase"));
+                    assertEquals("Arcana preview retains cached spirit item",10,spiritRing.level());
+                    for(com.shatteredpixel.shatteredpixeldungeon.items.Item item:
+                            new com.shatteredpixel.shatteredpixeldungeon.items.Item[]{sword,armor}) {
+                        com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoItem window=new com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoItem(item);
+                        Game.scene().addToFront(window);Field width=Window.class.getDeclaredField("width");width.setAccessible(true);
+                        assertContainedText(window,width.getInt(window));window.hide();
+                    }
                     ring.levelKnown = false;
                     assertFalse(sword.info().contains("Arcana only"));
                     assertFalse(armor.info().contains("Arcana only"));

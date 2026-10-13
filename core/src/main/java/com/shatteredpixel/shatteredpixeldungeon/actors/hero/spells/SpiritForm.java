@@ -147,6 +147,14 @@ public class SpiritForm extends ClericSpell {
 			}
 		}
 
+        /** Current built-in ring bonus without changing the stored Spirit Form item. */
+        public int previewRingBonus(Hero hero, Class<? extends Ring> type) {
+            if (hero == null || type == null || !(effect instanceof Ring) || !type.isInstance(effect)) return 0;
+            int level = hero.pointsInTalent(Talent.SPIRIT_FORM);
+            if (hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedRings.class) != null) level++;
+            return ((Ring) effect).cursed ? Math.min(0, level - 2) : level + 1;
+        }
+
 		public Ring ring(){
 			if (effect instanceof Ring){
 				((Ring) effect).level(ringLevel());

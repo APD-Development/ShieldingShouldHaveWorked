@@ -29,6 +29,13 @@ public final class ArcanaInfoDisplay {
                 bonus += ((RingOfArcana)item).soloBuffedBonus();
             }
         }
+        // Core Ring.getBuffedBonus uses Spirit Form only when the regular bonus is zero.
+        // Its ring() getter updates the cached item level, so preview through the read-only accessor.
+        if (equipped && bonus == 0) {
+            com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.SpiritForm.SpiritFormBuff spirit =
+                    hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.SpiritForm.SpiritFormBuff.class);
+            if (spirit != null) bonus = spirit.previewRingBonus(hero, RingOfArcana.class);
+        }
         return equipped ? (float)Math.pow(1.175f, bonus) : Float.NaN;
     }
 
