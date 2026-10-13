@@ -1,102 +1,48 @@
 {
-  "previous_label": "Codex TEST 127",
-  "previous_source": "f73f0564c69e4a74a44b70128ea6b371596c82fe",
-  "previous_run": 38452201826,
+  "previous_label": "Codex TEST 128",
+  "previous_source": "69204aed4333b7b79db420a582acb2c920b08dac",
+  "previous_run": 38455928308,
   "date": "2026-10-13",
   "changes": [
     {
       "category": "Changes",
-      "sprite": "V060_GREATAXE",
-      "title": "Tomahawk",
-      "text": "Prepared tomahawk bleed attribution without scaling its attack-derived damage again.",
+      "sprite": "V061_PAGE",
+      "title": "Android Top Scores",
+      "text": "Replaced Android's Quit button with Top Scores, opening the original Rankings screen from the same position.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/Tomahawk.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V060_GREATAXE",
-      "title": "Ripper Demon",
-      "text": "Prepared ripper leap attribution for independently generated bleeding.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/RipperDemon.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V060_GREATAXE",
-      "title": "Amplitude Damage Origins",
-      "text": "Prepared saved cause shares for amplitude-based effects, scaling each contribution once.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/AmplitudeDamageOrigins.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V060_GREATAXE",
-      "title": "Albino",
-      "text": "Prepared albino attack attribution for independently generated bleeding.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Albino.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V060_GREATAXE",
-      "title": "Thorns",
-      "text": "Prepared thorns bleed attribution to the defender that produces it.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Thorns.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V060_GREATAXE",
-      "title": "Mnemonic Prayer",
-      "text": "Prepared caster attribution for added bleeding and poison contributions.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/MnemonicPrayer.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V060_GREATAXE",
-      "title": "Bleeding",
-      "text": "Prepared source-aware bleeding ticks while preserving random decay, original death sources and neutral damage.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Bleeding.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V060_GREATAXE",
-      "title": "Elemental Strike",
-      "text": "Prepared hero attribution for independent Vorpal and Sacrificial Elemental Strike bleeding.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/abilities/duelist/ElementalStrike.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/TitleScene.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Attributed Bleeding Integration Test",
-      "text": "Added actual bleeding tick, mixed cause, save/load, legacy, neutral RNG and no-double-scaling regressions.",
+      "title": "Rankings touch and Back checks",
+      "text": "Added Android touch, Back, layout, stored-history protection and memory-only victory/death/abandoned-record presentation checks.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/AttributedBleedingIntegrationTest.java"
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/TopScoresDeviceTest.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "Main menu visual verification",
+      "text": "Required main-menu and Rankings screenshots alongside the new Android navigation test.",
+      "paths": [
+        "tools/run-codex-android-checks.sh"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_PAGE",
-      "title": "Poison verification and bleeding checks",
-      "text": "Recorded successful poison build evidence and the required bleeding integration checks.",
+      "title": "Top Scores verification handoff",
+      "text": "Recorded the preceding APK and required Top Scores checks without claiming pending Android tests passed.",
       "paths": [
-        "docs/APD-TEST128-REPORT-2026-10-13.md",
         "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
+        "docs/APD-TEST129-REPORT-2026-10-13.md",
         "docs/HANDOFF.md"
       ]
     }
   ],
-  "commentary": "I continued the damage integration with bleeding and caster-attributed extensions. Damage converted from an already-scaled attack is left unscaled to avoid applying the factor twice. The damage controls remain pending while the remaining sources are covered."
+  "commentary": "I replaced Android's Quit button with a direct shortcut to the original high-score screen. UIMSD and the remaining menu layout are unchanged; desktop still has Quit."
 }

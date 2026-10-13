@@ -224,11 +224,16 @@ public class TitleScene extends PixelScene {
 		};
 		add( btnOptions );
 
-		btnQuit = new APDMenuButton( "Quit", Icons.EXIT, true ){
+		final boolean androidTopScores = DeviceCompat.isAndroid();
+		btnQuit = new APDMenuButton( androidTopScores ? "Top Scores" : "Quit", androidTopScores ? Icons.RANKINGS : Icons.EXIT, true ){
 			@Override
 			protected void onClick() {
 				super.onClick();
-				Game.instance.finish();
+				if (androidTopScores) {
+					ShatteredPixelDungeon.switchNoFade( RankingsScene.class );
+				} else {
+					Game.instance.finish();
+				}
 			}
 		};
 		//iOS apps don't quit themselves

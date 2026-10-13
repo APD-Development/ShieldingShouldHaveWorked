@@ -1,0 +1,9 @@
+# TEST129 Android Top Scores preparation
+
+Only production change is TitleScene's existing btnQuit: DeviceCompat.isAndroid selects Top Scores label and native Icons.RANKINGS, routes to original RankingsScene via normal scene navigation. Same button instance/grid slot/size; no added button. Desktop keeps Quit/finish; iOS retains prior hidden Quit. UIMSD and lower buttons unchanged. Rankings.java/RankingsScene/WndRanking/score calculations and player files are untouched.
+
+Local changed production compiles. New actual Android SOURCE_TOUCHSCREEN test presses button, asserts slot and UIMSD label, reaches original scene, renders memory-only victory/death/abandoned-style fixtures in existing row components, verifies descending normal-run comparator order, presses OS Back and checks stored rankings bytes are unchanged. Fixtures restore original memory references/counts and never save. Required main-menu and Rankings PNGs added to existing runner. No physical-device or Android-passed claim until actual CI evidence.
+
+Stock seeded/daily ranking policy is preserved; standard runs retain original descending score order. Death/victory entry paths and full score/detail windows are untouched. Original APD abandonment is recorded through UIMSD when slot deletion occurs; this UI task does not manufacture a new abandoned ranking. Existing historical data remains accessible as before.
+
+Required1416core/25API34/29PNG/debug/compiledhistory pending. Previous actualAPK128/source69204aed4333b7b79db420a582acb2c920b08dac/run38455928308 exists as11843056104; core/build/history job passed, Android pending at this preparation. Last fully checked1271408core/24API34/27PNG; delivered signed-compatible123 fallback preserved. Critical damage integration continues, three controls still pending. No scoring/range changes, online activation, public release or app identity/signing changes.
