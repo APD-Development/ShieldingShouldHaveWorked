@@ -39,6 +39,19 @@
       "paths": [
         "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/AttributedCorrosionIntegrationTest.java"
       ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_PAGE",
+      "title": "Corrosion verification records",
+      "text": "Recorded verified burning results, corrosion checks and the remaining alpha release blockers.",
+      "paths": [
+        "docs/APD-CODEX-BUILD-REQUEST.txt",
+        "docs/APD-NEXT-BUILD-HISTORY.json",
+        "docs/APD-TEST132-REPORT-2026-10-13.md",
+        "docs/APD-TEST133-REPORT-2026-10-13.md",
+        "docs/HANDOFF.md"
+      ]
     }
   ],
   "commentary": "I continued source tracking for delayed corrosion damage. Damage controls remain unavailable until the remaining offensive sources and their tests are complete."
