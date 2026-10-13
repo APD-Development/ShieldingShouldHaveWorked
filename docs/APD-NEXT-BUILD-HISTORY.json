@@ -89,7 +89,8 @@
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/APD-TEST96-REPORT-2026-10-12.md",
         "docs/APD-TEST95-DELIVERY-2026-10-12.json",
-        "docs/HANDOFF.md"
+        "docs/HANDOFF.md",
+        ".github/workflows/codex-existing-apk-delivery.yml"
       ]
     },
     {
