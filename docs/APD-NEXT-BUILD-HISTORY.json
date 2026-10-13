@@ -1,60 +1,65 @@
 {
-  "previous_label": "Codex TEST 92",
-  "previous_source": "3e9b2e2a132cda2dc0331d62c590159b4410f388",
-  "previous_run": 38329572457,
+  "previous_label": "Codex TEST 93",
+  "previous_source": "aebb1abf66755c87c175b5663af15586a628e4d5",
+  "previous_run": 38330992144,
   "date": "2026-10-12",
   "changes": [
     {
       "category": "Bug Fixes",
       "sprite": "ICON_DATA",
-      "title": "All comparisons reachable",
-      "text": "Run and group comparisons now include every eligible record through compact pages instead of stopping at the first 40.",
+      "title": "Imported-history cache",
+      "text": "Recorded runs and imported rankings with matching filenames no longer reuse each other's cached records.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/ChoicePage.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndUimsdReport.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/DatasetStore.java"
       ]
     },
     {
       "category": "Statistics / UIMSD",
       "sprite": "ICON_DATA",
-      "title": "Seed-floor memory",
-      "text": "Removed temporary objects from seed-floor row assembly without changing recorded or canonical values.",
+      "title": "Run-detail cleanup",
+      "text": "Removed an unused internal row-label helper while preserving the existing detail labels and actions.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/SeedFloors.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndUimsdRow.java"
+      ]
+    },
+    {
+      "category": "Statistics / UIMSD",
+      "sprite": "ICON_DATA",
+      "title": "Merge cleanup",
+      "text": "Removed an unused counter from statistics merging without changing totals or their accuracy labels.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowMerger.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Comparison-page checks",
-      "text": "Added page-boundary coverage and Android touch checks for later comparisons, previous pages and the final record.",
+      "title": "Cache-source regression",
+      "text": "Added a real archive round-trip check for matching filenames, preserved raw logs and safe cache reloads.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/ChoicePageTest.java",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdScreensDeviceTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowCacheNamespaceTest.java"
       ]
     },
     {
       "category": "Development",
       "sprite": "ICON_INFO",
-      "title": "Audit and delivery evidence",
-      "text": "Recorded verified delivery and the current partial UIMSD audit, including storage checks and measured allocation savings.",
+      "title": "Verified batch evidence",
+      "text": "Recorded the preceding APK's delivery and the reproduced imported-history cache failure and fix.",
       "paths": [
-        "docs/APD-UIMSD-AUDIT-BATCH-2026-10-12.json",
-        "docs/APD-UIMSD-ALLOCATION-VERIFICATION-2026-10-12.md",
-        "docs/APD-TEST92-DELIVERY-2026-10-12.json",
-        "docs/APD-TEST93-REPORT-2026-10-12.md",
-        "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/APD-NEXT-BUILD-HISTORY.json",
-        "docs/HANDOFF.md",
+        "docs/APD-UIMSD-CACHE-NAMESPACE-VERIFICATION-2026-10-12.md",
+        "docs/APD-TEST93-DELIVERY-2026-10-12.json",
         ".github/workflows/codex-existing-apk-delivery.yml",
-        "docs/APD-TEST92-REPORT-2026-10-12.md"
+        "docs/APD-NEXT-BUILD-HISTORY.json",
+        "docs/APD-CODEX-BUILD-REQUEST.txt",
+        "docs/APD-TEST94-REPORT-2026-10-12.md",
+        "docs/HANDOFF.md"
       ]
     },
     {
       "category": "Developer Commentary",
       "sprite": "V074_SHPX",
       "title": "Developer Commentary",
-      "text": "I made older run and group comparisons reachable without loading every choice onto the screen. I also removed unnecessary seed-floor allocations while preserving the statistics.",
+      "text": "I fixed an edge case where a history cache could display a recorded run in place of an imported ranking. The original logs remain untouched, and I removed two unused internal helpers.",
       "paths": []
     }
   ]

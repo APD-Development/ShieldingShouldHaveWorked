@@ -330,12 +330,6 @@ public class WndUimsdRow extends Window {
 		}
 	}
 
-	//"Instances" is "instance", "Encounters" is "encounter", "Rows" is "row"
-	private static String singular( String plural ){
-		String p = plural.toLowerCase();
-		return p.endsWith("s") ? p.substring(0, p.length() - 1) : p;
-	}
-
 	@Override
 	public Runnable restoreOnSceneReset(){
 		final UimsdModel m = model;

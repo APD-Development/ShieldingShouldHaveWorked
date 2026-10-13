@@ -134,7 +134,6 @@ public final class RowMerger {
 					long acc = 0;
 					BigInteger wideSum = null;
 					boolean any = false;
-					int withData = 0;
 					int prov = Fact.PROV_RECORDED;
 					boolean missing = false;
 					for (Row p : parts){
@@ -154,7 +153,6 @@ public final class RowMerger {
 							}
 						} else acc = Math.max(acc, n);
 						any = true;
-						withData++;
 						prov = worst(prov, p.prov(i));
 					}
 					if (any){

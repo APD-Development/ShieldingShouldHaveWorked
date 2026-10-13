@@ -132,7 +132,8 @@ public final class DatasetStore {
 	private LogRows rowsFor( File log, boolean legacy, Map<String, DatasetDef> defs, Catalog cat ){
 		String id = idOf(log);
 		long length = log.length();
-		File cache = new File(rowsDir(), id + ".apdr");
+		// Recorded and ranking-import logs may legitimately share a filename.
+		File cache = new File(rowsDir(), (legacy ? "legacy-" : "runs-") + id + ".apdr");
 		if (cache.isFile()){
 			try {
 				LogRows lr = RowCodec.decode(readAll(cache), length, defs);
