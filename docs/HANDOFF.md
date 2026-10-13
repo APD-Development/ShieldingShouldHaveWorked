@@ -1,3 +1,9 @@
+# Custom slider gameplay focus — October13,2026
+
+Owner directs pauseUIMSD until gameplay sliders done; local telemetry/column work preserved separately, not committed or in113/114. TEST113 source75c7f52a6d881e6cfd7e122946debfc4b7d7e533/run38379793601 succeeded; actual1330core+21API34/22validPNG/debug. No signing compatibility/publication receipt or phone verification. TEST112 remains delivered fallback.
+
+TEST114 adds five gameplay effects: playermaximumHP and player/enemyaccuracy/evasion. Six new hosttests pass0.402s. Required1336core/21API34/22PNG/debug pending. Other13mechanics/nativecontrols remain unfinished; noalpha-ready claim. Originalearnedscore unchanged. FridayOct16 target, stageonly/noautomatictesterdistribution. Reports113/114 provide evidence and limits.
+
 # Custom rules save foundation in verification — October13,2026
 
 TEST113 contains immutable18-setting preference/run-save groundwork, provisional1–60scrolls.14targetedhosttests passed2.146s, including all60counts actualsave/load/sixclasses/difficulties1–5/challengecontexts0/511. Full1330core/21API34/22PNG/debug pending. No publication/physical-phone verification or alpha-ready claim. Gameplay effects, native settings UI, permanentUIMSD, rulesetidentity integration and score display remain unfinished. Scoring reports3/4 recovered; retain original earned scores pending approved calibration. No production formula or GetFucked work. October16alpha target; stagecandidateonly, noautomatictesterdistribution. ExistingTEST112 remains deliveredfallback. Report docs/APD-TEST113-REPORT-2026-10-13.md.

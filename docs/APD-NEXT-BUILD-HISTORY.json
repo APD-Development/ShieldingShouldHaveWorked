@@ -1,62 +1,48 @@
 {
-  "previous_label": "Codex TEST 112",
-  "previous_source": "48318483b54b6bc12156831223b4908de8cfaadb",
-  "previous_run": 38372670211,
+  "previous_label": "Codex TEST 113",
+  "previous_source": "75c7f52a6d881e6cfd7e122946debfc4b7d7e533",
+  "previous_run": 38379793601,
   "date": "2026-10-13",
   "changes": [
     {
       "category": "Development",
       "sprite": "ICON_INFO",
-      "title": "Custom rules configuration",
-      "text": "Added the immutable 18-setting custom-rules foundation with provisional upgrade-scroll counts from 1 to 60; gameplay sliders are not available yet.",
+      "title": "Custom combat effects",
+      "text": "Implemented maximum-health, accuracy and evasion gameplay factors from the locked custom configuration; player controls and the remaining modifiers are still in development.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomDungeonRules.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/UpgradeScrollPlan.java",
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/Dungeon.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/SPDSettings.java"
-      ]
-    },
-    {
-      "category": "Development",
-      "sprite": "ICON_INFO",
-      "title": "Original score protection",
-      "text": "Added scoring records that retain original earned scores and distinguish neutral settings, unknown historical settings and pending calibration; earned-score behavior is unchanged.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomScoreRecord.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/Char.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/Hero.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomCombatHooks.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Custom rules save checks",
-      "text": "Added boundary, immutable-setting, historical-unknown and actual game-save/load tests, including every upgrade-scroll count and all six classes.",
+      "title": "Combat slider regressions",
+      "text": "Added finite-skill, zero-evasion, protected-skill, six-class health and save/load checks for the custom combat factors.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomDungeonRulesTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomScoreRecordTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/UpgradeScrollPlanTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomRulesSaveIntegrationTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomCombatSliderTest.java"
       ]
     },
     {
       "category": "Development",
       "sprite": "ICON_INFO",
-      "title": "Research and verification records",
-      "text": "Recorded the recovered scoring-research constraints, unfinished integration work and build verification requirements.",
+      "title": "Verification records",
+      "text": "Recorded TEST113's successful build/emulator evidence and the remaining custom-slider work.",
       "paths": [
-        ".github/workflows/codex-existing-apk-delivery.yml",
-        "docs/APD-CUSTOM-RULES-ALPHA-CHECKPOINT.md",
-        "docs/APD-SCORING-RESEARCH-RECOVERY-2026-10-13.json",
+        "docs/APD-TEST114-REPORT-2026-10-13.md",
+        "docs/APD-TEST113-REPORT-2026-10-13.md",
         "docs/HANDOFF.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/APD-NEXT-BUILD-HISTORY.json",
-        "docs/APD-TEST113-REPORT-2026-10-13.md"
+        "docs/APD-NEXT-BUILD-HISTORY.json"
       ]
     },
     {
       "category": "Developer Commentary",
       "sprite": "V074_SHPX",
       "title": "Developer Commentary",
-      "text": "I added the custom-rules save foundation without changing earned scores. Gameplay effects, the settings interface and complete UIMSD integration remain in development.",
+      "text": "I added the first five custom gameplay factors and preserved original scoring. The remaining sliders and native controls still need implementation and verification.",
       "paths": []
     }
   ]

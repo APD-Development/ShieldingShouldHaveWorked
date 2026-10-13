@@ -329,6 +329,12 @@ public class Dungeon {
 		Badges.reset();
 		
 		GamesInProgress.selectedClass.initHero( hero );
+        if (com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomCombatHooks.percentage(
+                com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.Slider.PLAYER_HP) != 100) {
+            hero.updateHT(false);
+            hero.HP = hero.HT;
+        }
+
 
 		//APD: start recording this run's history (does nothing unless recording is set up)
 		ApdRecorder.onNewRun();
@@ -1209,4 +1215,3 @@ public class Dungeon {
 	}
 
 }
-

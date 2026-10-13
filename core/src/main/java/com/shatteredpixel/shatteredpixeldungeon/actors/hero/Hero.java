@@ -272,6 +272,8 @@ public class Hero extends Char {
 			HT += buff(ElixirOfMight.HTBoost.class).boost();
 		}
 		
+		HT = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomCombatHooks.playerMaximumHp(HT);
+
 		if (boostHP){
 			HP += Math.max(HT - curHT, 0);
 		}

@@ -662,6 +662,9 @@ public abstract class Char extends Actor {
 			return true;
 		}
 
+		acuStat = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomCombatHooks.accuracy(attacker, acuStat);
+		defStat = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomCombatHooks.evasion(defender, defStat);
+
 		float acuRoll = Random.Float( acuStat );
 		if (attacker.buff(Bless.class) != null) acuRoll *= 1.25f;
 		if (attacker.buff(  Hex.class) != null) acuRoll *= 0.8f;
