@@ -25,12 +25,16 @@ public class WndCustomDungeonRules extends Window {
         int width=WindowGeometry.width(PixelScene.landscape(),PixelScene.uiCamera.width);
         RenderedTextBlock title=PixelScene.renderTextBlock("Custom Dungeon Rules",9);
         title.maxWidth(width);title.hardlight(TITLE_COLOR);title.setPos(0,0);add(title);
-        scoringNotice=PixelScene.renderTextBlock(CustomRulesPresentation.SCORING_NOTICE,6);
-        scoringNotice.maxWidth(width);scoringNotice.setPos(0,title.bottom()+4);add(scoringNotice);
-        float above=scoringNotice.bottom()+4;
+        RenderedTextBlock experimentalHeading=PixelScene.renderTextBlock(CustomRulesPresentation.EXPERIMENTAL_HEADING,6);
+        experimentalHeading.maxWidth(width);experimentalHeading.hardlight(TITLE_COLOR);
+        experimentalHeading.setPos(0,title.bottom()+4);add(experimentalHeading);
+        float above=experimentalHeading.bottom()+4;
         // Create the scroll touch area before controls, matching WndAPDSettings' touch ordering.
         Component content=new Component();scroll=new ScrollPane(content);add(scroll);
-        float y=0;
+        // The full warning leads the same scroll area, so narrow viewports retain room for controls.
+        scoringNotice=PixelScene.renderTextBlock(CustomRulesPresentation.noticeText(),6);
+        scoringNotice.maxWidth(width);scoringNotice.setPos(0,0);content.add(scoringNotice);
+        float y=scoringNotice.bottom()+4;
         if(draft==null) {
             RenderedTextBlock unknown=PixelScene.renderTextBlock("This run's custom settings were not recorded.",6);
             unknown.maxWidth(width);unknown.setPos(0,y);content.add(unknown);y=unknown.bottom()+4;

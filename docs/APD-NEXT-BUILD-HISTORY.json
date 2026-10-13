@@ -1,63 +1,35 @@
 {
-  "previous_label": "Codex TEST 117",
-  "previous_source": "6cec6e00a96302b67c1dcbbf599320375a72e4cd",
-  "previous_run": 38387716215,
+  "previous_label": "Codex TEST 118",
+  "previous_source": "03393816054f4f3ccaa3e5fd85fae754e4f6e6e4",
+  "previous_run": 38390168067,
   "date": "2026-10-13",
   "changes": [
     {
       "category": "Changes",
       "sprite": "ICON_INFO",
-      "title": "Custom scoring notice",
-      "text": "The custom-rules window explains that difficulty settings do not yet change earned scores.",
+      "title": "Experimental custom-rules warning",
+      "text": "Custom rules now explain that slider limits may evolve and earned scores are unchanged, with the warning above the scrolling controls.",
       "paths": [
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomRulesPresentation.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndCustomDungeonRules.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomRulesPresentationTest.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/APDSettingsPane.java"
-      ]
-    },
-    {
-      "category": "Development",
-      "sprite": "V065_ARMOR_KIT",
-      "title": "Native custom-rule controls",
-      "text": "Added native next-run controls and locked current-run inspection; unfinished gameplay effects are visibly disabled.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomRulesPresentation.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndCustomDungeonRules.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomRulesPresentationTest.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/APDSettingsPane.java"
-      ]
-    },
-    {
-      "category": "Development",
-      "sprite": "ICON_INFO",
-      "title": "Offensive ownership groundwork",
-      "text": "Added a source-preserving damage bridge for future offensive integration; existing damage behavior is unchanged.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/OffensiveDamageOrigin.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/OffensiveDamage.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndCustomDungeonRules.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Custom-rule display and ownership checks",
-      "text": "Added reversible slider, whole-scroll display, real damage-defense and Android notice interaction checks.",
+      "title": "Warning layout and data protection",
+      "text": "Updated Android checks for the full warning, scrolling access, draft cancellation and unchanged active rules and scores.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/OffensiveDamageAttributionTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomRulesPresentationTest.java",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java",
-        "tools/run-codex-android-checks.sh"
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java"
       ]
     },
     {
       "category": "Development",
       "sprite": "ICON_INFO",
-      "title": "Alpha verification records",
-      "text": "Recorded the verified TEST117 checks and the exact remaining custom-rule integration limits.",
+      "title": "Experimental warning verification",
+      "text": "Recorded the exact warning scope and pending Android verification without changing slider limits or historical runs.",
       "paths": [
-        "docs/APD-TEST118-REPORT-2026-10-13.md",
-        "docs/APD-TEST117-REPORT-2026-10-13.md",
+        "docs/APD-TEST119-REPORT-2026-10-13.md",
         "docs/HANDOFF.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/APD-NEXT-BUILD-HISTORY.json"
@@ -67,7 +39,7 @@
       "category": "Developer Commentary",
       "sprite": "V074_SHPX",
       "title": "Developer Commentary",
-      "text": "I added the custom-rules window with a clear notice that scores are unchanged. Seven gameplay effects and full offensive attribution still need integration before the early alpha is ready.",
+      "text": "I clarified that custom rules will continue evolving throughout APD's lifetime. The warning stays after scoring is implemented; only its scoring paragraph will change.",
       "paths": []
     }
   ]

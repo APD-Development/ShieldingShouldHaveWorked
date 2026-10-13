@@ -5,7 +5,11 @@ import java.util.Locale;
 /** Display and integer-position mapping only; no scoring or gameplay calculation. */
 public final class CustomRulesPresentation {
     private CustomRulesPresentation() { }
-    public static final String SCORING_NOTICE = "Custom Dungeon Rules scoring is still being developed. Difficulty settings currently do not affect your score. A scoring multiplier will be added in a future update.";
+    public static final String EXPERIMENTAL_HEADING = "EXPERIMENTAL FEATURE";
+    public static final String EXPERIMENTAL_NOTICE = "Custom Dungeon Rules are experimental and will continue to evolve throughout APD's lifetime. Some or all difficulty sliders may have their minimum and maximum values adjusted in future updates as gameplay balance and player feedback are evaluated.";
+    public static final String SCORING_NOTICE = "The scoring system for Custom Dungeon Rules is still being developed. These settings currently do not affect your earned score.";
+    /** The lifetime warning remains even when only the scoring paragraph changes after approval. */
+    public static String noticeText(){return EXPERIMENTAL_NOTICE+"\n\n"+SCORING_NOTICE;}
     public static String label(CustomDungeonRules.Slider slider) {
         switch(slider) {
             case ENEMY_HP: return "Enemy HP";

@@ -66,20 +66,23 @@ public class CustomRulesNoticeDeviceTest {
             assertNotNull(Game.scene());Thread.sleep(1500);
             CustomDungeonRules saved=SPDSettings.apdCustomRules();Bundle run=new Bundle();
             final WndCustomDungeonRules[] windows=new WndCustomDungeonRules[1];final int[] dimensions=new int[2];
+            final int[] originalScore=new int[1];final CustomDungeonRules[] lockedRules=new CustomDungeonRules[1];
             final AtomicReference<Point> touch=new AtomicReference<>();
             try {
                 render(()->{
                     Dungeon.apdStoreCustomRules(run);dimensions[0]=PixelScene.uiCamera.width;dimensions[1]=PixelScene.uiCamera.height;
+                    originalScore[0]=com.shatteredpixel.shatteredpixeldungeon.Statistics.totalScore;lockedRules[0]=Dungeon.customRules();
                     SPDSettings.apdCustomRules(CustomDungeonRules.defaults());
                     windows[0]=new WndCustomDungeonRules();Game.scene().addToFront(windows[0]);
                     try {
                         RenderedTextBlock notice=(RenderedTextBlock)field(windows[0],"scoringNotice");
                         ScrollPane scroll=(ScrollPane)field(windows[0],"scroll");
-                        assertEquals(CustomRulesPresentation.SCORING_NOTICE,notice.text());
-                        assertTrue(notice.visible);assertTrue(notice.bottom()<scroll.top());
+                        assertEquals(CustomRulesPresentation.noticeText(),notice.text());
+                        assertTrue(notice.visible);assertEquals(0,notice.top(),0);
                         List<OptionSlider> sliders=find(windows[0],OptionSlider.class);assertEquals(18,sliders.size());
                         assertTrue(sliders.get(0).active);assertFalse(sliders.get(1).active);
-                        OptionSlider first=sliders.get(0);scroll.scrollTo(0,0);
+                        OptionSlider first=sliders.get(0);assertTrue(notice.bottom()<first.top());
+                        scroll.scrollTo(0,Math.max(0,first.top()-20));
                         touch.set(first.camera().cameraToScreen(first.right()-3,first.bottom()-7));
                     }catch(Exception e){throw new RuntimeException(e);}
                 });
@@ -89,19 +92,22 @@ public class CustomRulesNoticeDeviceTest {
                     assertTrue("Draft changes do not persist without saving",SPDSettings.apdCustomRules().isNeutral());
                     ScrollPane scroll=(ScrollPane)field(windows[0],"scroll");
                     OptionSlider last=find(windows[0],OptionSlider.class).get(17);scroll.scrollTo(0,Math.max(0,last.top()-20));
-                    assertTrue(((RenderedTextBlock)field(windows[0],"scoringNotice")).bottom()<scroll.top());
+                    assertTrue(((RenderedTextBlock)field(windows[0],"scoringNotice")).bottom()<last.top());
+                    scroll.scrollTo(0,0);
                 }catch(Exception e){throw new RuntimeException(e);}});
                 Thread.sleep(750);screenshot("custom-rules-notice.png");
                 render(()->{
                     windows[0].onBackPressed();
                     assertTrue(SPDSettings.apdCustomRules().isNeutral());
+                    assertSame("Editing next-run draft does not replace active rules",lockedRules[0],Dungeon.customRules());
+                    assertEquals(originalScore[0],com.shatteredpixel.shatteredpixeldungeon.Statistics.totalScore);
                     PixelScene.uiCamera.width=102;PixelScene.uiCamera.height=160;
                     windows[0]=new WndCustomDungeonRules(true);Game.scene().addToFront(windows[0]);
                     try {
                         RenderedTextBlock notice=(RenderedTextBlock)field(windows[0],"scoringNotice");
                         ScrollPane scroll=(ScrollPane)field(windows[0],"scroll");
-                        assertEquals(CustomRulesPresentation.SCORING_NOTICE,notice.text());
-                        assertTrue(notice.width()<=74);assertTrue(notice.bottom()<scroll.top());
+                        assertEquals(CustomRulesPresentation.noticeText(),notice.text());
+                        assertTrue(notice.width()<=74);assertEquals(0,notice.top(),0);
                         for(OptionSlider slider:find(windows[0],OptionSlider.class))assertFalse(slider.active);
                     }catch(Exception e){throw new RuntimeException(e);}
                 });
