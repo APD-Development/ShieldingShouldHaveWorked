@@ -136,6 +136,41 @@ public class UimsdScreensDeviceTest {
         tapComparisonEntry(0);assertEquals("the last comparison remains selectable", "Comparison 80",selected.get());
     }
 
+
+    private static void verifyQuestionRateRendering() throws Exception {
+        onRender(()->{try{
+            com.shatteredpixel.shatteredpixeldungeon.apd.query.DatasetDef heals=com.shatteredpixel.shatteredpixeldungeon.apd.query.EventDatasets.def("heals");
+            com.shatteredpixel.shatteredpixeldungeon.apd.query.DatasetDef floors=com.shatteredpixel.shatteredpixeldungeon.apd.query.EventDatasets.def("floors");
+            for(boolean incomplete:new boolean[]{true,false}){
+                com.shatteredpixel.shatteredpixeldungeon.apd.query.Row value=new com.shatteredpixel.shatteredpixeldungeon.apd.query.Row("heal",null,"fixture",heals.size());
+                value.finished=true;value.ruleset="rate-fixture";
+                value.setNum(heals.indexOf("heal.amount"),incomplete?12:Long.MAX_VALUE,incomplete?com.shatteredpixel.shatteredpixeldungeon.apd.stats.Fact.PROV_INCOMPLETE:com.shatteredpixel.shatteredpixeldungeon.apd.stats.Fact.PROV_RECORDED);
+                com.shatteredpixel.shatteredpixeldungeon.apd.query.Row floor=new com.shatteredpixel.shatteredpixeldungeon.apd.query.Row("floor",null,"fixture",floors.size());
+                floor.finished=true;floor.ruleset="rate-fixture";
+                floor.setText(floors.indexOf("floor.run"),"fixture",com.shatteredpixel.shatteredpixeldungeon.apd.stats.Fact.PROV_RECORDED);
+                floor.setNum(floors.indexOf("floor.turns"),incomplete?3:1,incomplete?com.shatteredpixel.shatteredpixeldungeon.apd.stats.Fact.PROV_INCOMPLETE:com.shatteredpixel.shatteredpixeldungeon.apd.stats.Fact.PROV_RECORDED);
+                com.shatteredpixel.shatteredpixeldungeon.apd.query.Catalog catalog=new com.shatteredpixel.shatteredpixeldungeon.apd.query.Catalog()
+                    .add(new com.shatteredpixel.shatteredpixeldungeon.apd.query.Dataset(heals,java.util.Arrays.asList(value),null))
+                    .add(new com.shatteredpixel.shatteredpixeldungeon.apd.query.Dataset(floors,java.util.Arrays.asList(floor),null));
+                com.shatteredpixel.shatteredpixeldungeon.apd.query.Question question=com.shatteredpixel.shatteredpixeldungeon.apd.query.Question.about("heals")
+                    .withScope(com.shatteredpixel.shatteredpixeldungeon.apd.query.Scope.DEFAULT.withRules(com.shatteredpixel.shatteredpixeldungeon.apd.query.Scope.Rules.ALL,""))
+                    .withMeasure(com.shatteredpixel.shatteredpixeldungeon.apd.query.Question.Measure.TOTAL,"heal.amount")
+                    .withPer(com.shatteredpixel.shatteredpixeldungeon.apd.query.PerUnit.Unit.TURN);
+                com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdAsk.answer(catalog,"rate-fixture",null,question);
+                com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList window=comparisonWindow();
+                Field entries=com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.class.getDeclaredField("entries");entries.setAccessible(true);
+                java.util.List<?> shown=(java.util.List<?>)entries.get(window);
+                assertEquals(incomplete?"?":"9223372036854776000.00",((com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.Entry)shown.get(0)).label);
+                Field texts=com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.class.getDeclaredField("labelTexts");texts.setAccessible(true);
+                for(Object item:(java.util.List<?>)texts.get(window))if(item instanceof com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock){
+                    com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock text=(com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock)item;
+                    assertTrue("question text fits its native window",text.width()<=com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.windowWidth());
+                }
+                com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.closeAll();
+            }
+        }catch(Exception e){throw new RuntimeException(e);}});
+    }
+
 	@Test
 	public void everyUimsdScreenAndDialogCanBeBuilt() throws Exception {
 		try (ActivityScenario<AndroidLauncher> scenario = ActivityScenario.launch(AndroidLauncher.class)){
@@ -175,6 +210,7 @@ public class UimsdScreensDeviceTest {
 			final UimsdModel m = (UimsdModel) field("model");
 			assertNotNull("the tour has a model", m);
             verifyComparisonPages();
+            verifyQuestionRateRendering();
             onRender(() -> {
                 com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdHome home =
                     com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdHome.build(m.catalog(), m.currentRuleset(), true);

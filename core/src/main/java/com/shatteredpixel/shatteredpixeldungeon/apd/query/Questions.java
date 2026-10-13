@@ -157,14 +157,23 @@ public final class Questions {
 			} else {
 				double n = v.known ? v.value : Double.NaN;
 				double r = per.per(n, i);
+				boolean numeratorLower = v.isLowerBound(), denominatorLower = per.lower[i];
+				boolean ambiguous = numeratorLower && denominatorLower;
+				boolean lower = false;
 				String text;
-				boolean lower = v.isLowerBound() && false;
-				if (Double.isNaN(r)){
+				if (Double.isNaN(r) || ambiguous){
 					text = CellFormatter.UNKNOWN_TEXT;
+					r = Double.NaN;
+				} else if (denominatorLower){
+					lower = n < 0;
+					text = twoDecimals(r) + (n > 0 ? " or less" : n < 0 ? " or more" : "");
 				} else {
-					text = (v.isLowerBound() ? ">=" : "") + twoDecimals(r) + (per.lower[i] ? " or less" : "");
+					lower = numeratorLower;
+					text = (lower ? ">=" : "") + twoDecimals(r);
 				}
-				String detail = at.text + " in " + twoDecimals(per.denominators[i]).replaceAll("\\.00$", "") + " " + q.per.plural;
+				String detail = at.text + " in " + (denominatorLower ? "at least " : "")
+						+ twoDecimals(per.denominators[i]).replaceAll("\\.00$", "") + " " + q.per.plural;
+				if (ambiguous) detail += ". Both totals are lower bounds; the rate is unknown.";
 				lines.add(new Line(label.toString(), text, Double.isNaN(per.denominators[i]) ? per.note : detail, r, lower));
 			}
 		}
@@ -183,7 +192,10 @@ public final class Questions {
 	}
 
 	private static String twoDecimals( double v ){
-		if (Double.isNaN(v)) return "?";
+		if (!Double.isFinite(v)) return "?";
+		// Preserve ordinary rounding; avoid Math.round saturation for valid large ratios.
+		if (Math.abs(v) * 100 >= Long.MAX_VALUE)
+			return java.math.BigDecimal.valueOf(v).setScale(2, java.math.RoundingMode.HALF_UP).toPlainString();
 		long hundredths = Math.round(v * 100);
 		long whole = hundredths / 100, frac = Math.abs(hundredths % 100);
 		return (hundredths < 0 && whole == 0 ? "-" : "") + whole + "." + (frac < 10 ? "0" : "") + frac;

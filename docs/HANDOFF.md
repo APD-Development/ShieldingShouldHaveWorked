@@ -1329,3 +1329,10 @@ TEST93 actualsourceaebb1abf66755c87c175b5663af15586a628e4d5/run38330992144 fully
 Next expected94confirmedcachebug: validrecorded/importedlogs sharingfilename andlength reusedonecache andlostimportedrankingdisplay. Actualarchive roundtrip reproduces; namespacecachefilesruns-/legacy-,oldambiguouscachesignored/rebuilt,rawfilesbyte-identical.1newpermanentregression;69uniquecasespass1.372s afterfinalchanges. RemovedunusedprivateWndUimsdRowlabelhelper+unusedRowMergercounter,publicbehaviorretained. Full1251core/21API34/18PNG/debugpending. WholeUIMSDauditnotcomplete.
 
 100000-seedarmorstudynowactuallyrunninginsession93257,log/workspace/armor-study/test79-100000-results.txt,freshlycompiled1558TEST79core/engineJavafiles;isolatedheadlesssavefolders,defaultdifficulty3/exotic0/challenges0. Measuresmain-depthheapgenerationthrough22,notplayerencounters or actualsurvival;geometricreachabilityallowsavoidtilesandisnotasafetyguarantee. No final result until100000finish. No unattendedcodingworker demonstrated; actualhostprocess is a finite analysis job.
+
+
+## Oct12 evening: TEST94 delivered; custom-question rates next
+
+Actual94source1145e043e9e2ceb0aaf189282ede2f53a9423c8d/run38332301443:1251core+21API34,18PNG,zero failures/errors/skips. Delivery5f8c399284c9fac06ba98034c59e586ad9816343/run38333379574 published01:42:53UTCOct13=9:42:53pmEDTOct12. APK SHA256b3c6dce300206de694003247b57a9baf4d17265dffbbc2e7a20a28be16e67dc1,sameTEST67signer/appID,installover,no physicalphone evidence.
+
+Next expected95: correct Questions incomplete-rate bounds (bothincompleteunknown;negative/zero direction;properlowerflag) andlarge2decimaldisplayMath.round saturation.4casesbaselinefail,4new+47existing51uniquepass0.540s. Exact-rateformula/rawfacts unchanged; existingdoubleprecisionnotrecovered orclaimedexact. Native Android answer/width checksaddedwithinexistingtest,full1255core/21API34/18PNG/debugpending. EntireUIMSDauditnotcomplete; additional aggregate formatter ranges/precision require inspection.100000-seedarmorstudyactuallyactive/log/workspace/armor-study/test79-100000-results.txt,not completed/encounter simulation.

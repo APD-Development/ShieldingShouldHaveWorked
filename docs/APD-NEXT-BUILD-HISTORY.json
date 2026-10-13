@@ -1,57 +1,49 @@
 {
-  "previous_label": "Codex TEST 93",
-  "previous_source": "aebb1abf66755c87c175b5663af15586a628e4d5",
-  "previous_run": 38330992144,
+  "previous_label": "Codex TEST 94",
+  "previous_source": "1145e043e9e2ceb0aaf189282ede2f53a9423c8d",
+  "previous_run": 38332301443,
   "date": "2026-10-12",
   "changes": [
     {
       "category": "Bug Fixes",
       "sprite": "ICON_DATA",
-      "title": "Imported-history cache",
-      "text": "Recorded runs and imported rankings with matching filenames no longer reuse each other's cached records.",
+      "title": "Incomplete question rates",
+      "text": "Custom questions now show an unknown rate when both totals are incomplete, and label individual positive or negative bounds correctly.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/DatasetStore.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/Questions.java"
       ]
     },
     {
-      "category": "Statistics / UIMSD",
+      "category": "Bug Fixes",
       "sprite": "ICON_DATA",
-      "title": "Run-detail cleanup",
-      "text": "Removed an unused internal row-label helper while preserving the existing detail labels and actions.",
+      "title": "Large rate display",
+      "text": "Large custom-question rates no longer shrink when their two-decimal display exceeds the integer rounding range.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndUimsdRow.java"
-      ]
-    },
-    {
-      "category": "Statistics / UIMSD",
-      "sprite": "ICON_DATA",
-      "title": "Merge cleanup",
-      "text": "Removed an unused counter from statistics merging without changing totals or their accuracy labels.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowMerger.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/Questions.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Cache-source regression",
-      "text": "Added a real archive round-trip check for matching filenames, preserved raw logs and safe cache reloads.",
+      "title": "Rate-bound regression checks",
+      "text": "Added exact, incomplete, negative, zero and large-rate cases, plus native Android answer-window checks.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowCacheNamespaceTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/QuestionRateBoundsTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdScreensDeviceTest.java"
       ]
     },
     {
       "category": "Development",
       "sprite": "ICON_INFO",
-      "title": "Verified batch evidence",
-      "text": "Recorded the preceding APK's delivery and the reproduced imported-history cache failure and fix.",
+      "title": "Rate and delivery evidence",
+      "text": "Recorded the preceding verified APK and the reproduced rate-display failures and successful targeted checks.",
       "paths": [
-        "docs/APD-UIMSD-CACHE-NAMESPACE-VERIFICATION-2026-10-12.md",
-        "docs/APD-TEST93-DELIVERY-2026-10-12.json",
+        "docs/APD-UIMSD-QUESTION-RATE-VERIFICATION-2026-10-12.md",
+        "docs/APD-TEST94-DELIVERY-2026-10-12.json",
         ".github/workflows/codex-existing-apk-delivery.yml",
         "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/APD-TEST94-REPORT-2026-10-12.md",
+        "docs/APD-TEST95-REPORT-2026-10-12.md",
         "docs/HANDOFF.md"
       ]
     },
@@ -59,7 +51,7 @@
       "category": "Developer Commentary",
       "sprite": "V074_SHPX",
       "title": "Developer Commentary",
-      "text": "I fixed an edge case where a history cache could display a recorded run in place of an imported ranking. The original logs remain untouched, and I removed two unused internal helpers.",
+      "text": "I corrected misleading rate answers when recordings are incomplete. Large rates also retain their represented value instead of being clipped by display rounding.",
       "paths": []
     }
   ]
