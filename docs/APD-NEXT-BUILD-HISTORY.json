@@ -1,91 +1,44 @@
 {
-  "previous_label": "Codex TEST 100",
-  "previous_source": "624f6991bae64c3f9437be6a5e6e16535cff374d",
-  "previous_run": 38344486604,
+  "previous_label": "Codex TEST 101",
+  "previous_source": "d129bed4cbab2cf047a6f616dd8574e13a3b385b",
+  "previous_run": 38347036387,
   "date": "2026-10-13",
   "changes": [
     {
       "category": "Quality of Life",
-      "sprite": "ITEM_BACKPACK",
-      "title": "Independent quickslot capacity",
-      "text": "Quickslot storage can expand independently while the mobile interface continues to show six controls.",
+      "sprite": "ICON_INFO",
+      "title": "TEST100 build date",
+      "text": "Corrected TEST100's date to October 13 using its actual APK and successful build record.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/QuickSlot.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/Toolbar.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/QuickSlotButton.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/HeroClass.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndRanking.java"
-      ]
-    },
-    {
-      "category": "Bug Fixes",
-      "sprite": "ITEM_BACKPACK",
-      "title": "Invalid shortcut assignment",
-      "text": "An invalid shortcut position no longer clears an existing valid assignment before failing.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/QuickSlot.java"
-      ]
-    },
-    {
-      "category": "Bug Fixes",
-      "sprite": "ITEM_PASTY",
-      "title": "Inventory restoration safety",
-      "text": "Invalid saved shortcut positions no longer prevent the associated inventory item from loading.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Item.java"
-      ]
-    },
-    {
-      "category": "Bug Fixes",
-      "sprite": "ITEM_BACKPACK",
-      "title": "Placeholder restoration",
-      "text": "Sparse extended placeholders restore through the existing save format, and malformed placement arrays no longer crash loading.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/QuickSlot.java"
-      ]
-    },
-    {
-      "category": "Performance",
-      "sprite": "ICON_DATA",
-      "title": "Rollback history processing",
-      "text": "Overlapping rollback ranges are merged before classifying events, reducing repeated scans while preserving history.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/RunTimeline.java"
-      ]
-    },
-    {
-      "category": "Testing",
-      "sprite": "ICON_CHECKED",
-      "title": "Shortcut and timeline regressions",
-      "text": "Added expanded-slot, save-reference and rollback-equivalence cases, with native six-control and extended save/load checks.",
-      "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/QuickSlotCapacityTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/TimelineIntervalEquivalenceTest.java",
-        "docs/APD-QUICKSLOT-CAPACITY-VERIFICATION-2026-10-12.md",
-        "docs/APD-TIMELINE-PERFORMANCE-VERIFICATION-2026-10-12.md",
-        "docs/evidence/timeline/TimelineAllocationProbe.java",
-        "docs/evidence/quickslots/QuickSlotBugBaseline.java"
+        "core/src/main/assets/apd/history/index.tsv",
+        "core/src/main/assets/apd/history/codex-test-100.tsv",
+        "docs/evidence/test100-history/evidence.json"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ITEM_POTION_HOLDER",
-      "title": "Rendered healing evidence",
-      "text": "Android checks use an actual slider touch and wait for rendered dialog pixels before capturing healing screenshots.",
+      "title": "Reliable native screenshots",
+      "text": "Healing and statistics-input images are saved from the exact frames whose native buttons were verified as painted.",
       "paths": [
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PlayRunDeviceTest.java"
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PlayRunDeviceTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdScreensDeviceTest.java",
+        "docs/APD-NATIVE-CAPTURE-VERIFICATION-2026-10-13.md"
       ]
     },
     {
       "category": "Development",
       "sprite": "ICON_INFO",
-      "title": "Build verification evidence",
-      "text": "Recorded TEST100's successful tests and incomplete screenshot acceptance alongside this batch's reproductions.",
+      "title": "Verified artifact evidence",
+      "text": "Recorded TEST101's delivered APK and extracted TEST100's original history without rebuilding it.",
       "paths": [
-        "docs/APD-TEST100-CHECKS-2026-10-13.json",
+        ".github/workflows/codex-test100-history-evidence.yml",
+        ".github/workflows/codex-existing-apk-delivery.yml",
         "docs/APD-TEST101-REPORT-2026-10-13.md",
+        "docs/APD-TEST101-DELIVERY-2026-10-13.json",
         "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
+        "docs/APD-TEST102-REPORT-2026-10-13.md",
         "docs/HANDOFF.md"
       ]
     },
@@ -93,7 +46,7 @@
       "category": "Developer Commentary",
       "sprite": "V074_SHPX",
       "title": "Developer Commentary",
-      "text": "I separated the six-button mobile layout from quickslot storage and protected item loading from invalid shortcut references. Rollback-heavy statistics also avoid repeated history scans.",
+      "text": "I corrected TEST100's recorded date while retaining every original change. Visual checks now save the exact frame they inspected.",
       "paths": []
     }
   ]

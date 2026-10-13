@@ -228,22 +228,28 @@ public class PlayRunDeviceTest {
 
     // Scene membership precedes the next drawn frame. Require the native button's
     // red fill and light text pixels before calling a screenshot visual evidence.
-    private static void waitForHealingDialogPixels() throws Exception {
-        final int[] bounds=new int[4];
-        onRender(()->{try {
-            com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions window=stairsMenu();assertNotNull(window);
-            boolean found=false;
-            for(Object child:(java.util.List<?>)field(window,"members"))
-                if(child instanceof com.shatteredpixel.shatteredpixeldungeon.ui.RedButton
-                        && ((com.shatteredpixel.shatteredpixeldungeon.ui.RedButton)child).text().equals("USE HEALING ITEM")) {
-                    com.shatteredpixel.shatteredpixeldungeon.ui.RedButton button=(com.shatteredpixel.shatteredpixeldungeon.ui.RedButton)child;
-                    com.watabou.utils.Point start=button.camera().cameraToScreen(button.left()+4,button.top()+4);
-                    com.watabou.utils.Point end=button.camera().cameraToScreen(button.right()-4,button.bottom()-4);
-                    bounds[0]=start.x;bounds[1]=start.y;bounds[2]=end.x;bounds[3]=end.y;found=true;
+    static void captureRenderedButton(Class<? extends com.shatteredpixel.shatteredpixeldungeon.ui.Window> type,
+                                      String label, String filename) throws Exception {
+        final int[] stableFrames={0};
+        waitUntil(label + " button actually rendered",()->{
+            final int[] bounds=new int[4];
+            final java.util.concurrent.atomic.AtomicBoolean found=new java.util.concurrent.atomic.AtomicBoolean();
+            onRender(()->{try {
+                for(Object member:(java.util.List<?>)field(Game.scene(),"members")) {
+                    if(!type.isInstance(member))continue;
+                    com.shatteredpixel.shatteredpixeldungeon.ui.Window window=(com.shatteredpixel.shatteredpixeldungeon.ui.Window)member;
+                    if(!window.visible)continue;
+                    for(Object child:(java.util.List<?>)field(window,"members"))
+                        if(child instanceof com.shatteredpixel.shatteredpixeldungeon.ui.RedButton
+                                && ((com.shatteredpixel.shatteredpixeldungeon.ui.RedButton)child).text().equals(label)) {
+                            com.shatteredpixel.shatteredpixeldungeon.ui.RedButton button=(com.shatteredpixel.shatteredpixeldungeon.ui.RedButton)child;
+                            com.watabou.utils.Point start=button.camera().cameraToScreen(button.left()+4,button.top()+4);
+                            com.watabou.utils.Point end=button.camera().cameraToScreen(button.right()-4,button.bottom()-4);
+                            bounds[0]=start.x;bounds[1]=start.y;bounds[2]=end.x;bounds[3]=end.y;found.set(true);
+                        }
                 }
-            assertTrue("healing dialog has the correct action",found);
-        }catch(Exception e){throw new RuntimeException(e);}});
-        waitUntil("healing dialog actually rendered",()->{
+            }catch(Exception e){throw new RuntimeException(e);}});
+            if(!found.get()){stableFrames[0]=0;return false;}
             android.graphics.Bitmap bitmap=androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().getUiAutomation().takeScreenshot();
             assertNotNull(bitmap);
             try {
@@ -254,7 +260,11 @@ public class PlayRunDeviceTest {
                         if(r>100 && r>2*g && r>2*b)red++;
                         if(r>180 && g>180 && b>180)light++;
                     }
-                return total>0 && red>total/4 && light>20;
+                boolean painted=total>0 && red>total/4 && light>20;
+                if(!painted){stableFrames[0]=0;return false;}
+                if(++stableFrames[0]<2)return false;
+                saveScreenshotBitmap(filename,bitmap);
+                return true;
             }finally{bitmap.recycle();}
         },10000);
     }
@@ -287,7 +297,7 @@ public class PlayRunDeviceTest {
                     if(changed.get())assertEquals("Confirm at 0% HP",((com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock)field(thresholdWindow.get(),"value")).text());
                 }catch(Exception e){throw new RuntimeException(e);}});return changed.get();
             },10000);
-            Thread.sleep(300);visibilityScreenshot("healing-threshold-settings.png");
+            captureRenderedButton(com.shatteredpixel.shatteredpixeldungeon.windows.WndHealingConfirmation.ThresholdWindow.class,"Save","healing-threshold-settings.png");
             onRender(()->{try {
                 boolean saved=false;
                 for(Object child:(java.util.List<?>)field(thresholdWindow.get(),"members"))
@@ -307,8 +317,7 @@ public class PlayRunDeviceTest {
                 potion[0].execute(Dungeon.hero);
             });
             waitUntil("healing confirmation opens",()->stairsMenu()!=null,30000);
-            waitForHealingDialogPixels();
-            visibilityScreenshot("healing-confirmation.png");
+            captureRenderedButton(com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions.class,"USE HEALING ITEM","healing-confirmation.png");
             onRender(()->{try{
                 com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions window=stairsMenu();
                 assertNotNull(window);
@@ -692,17 +701,21 @@ public class PlayRunDeviceTest {
     }
 
     static void visibilityScreenshot(String name) throws Exception {
-        android.content.Context context=androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().getTargetContext();
         android.graphics.Bitmap bitmap=androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().getUiAutomation().takeScreenshot();
         assertNotNull(bitmap);
+        try{saveScreenshotBitmap(name,bitmap);}finally{bitmap.recycle();}
+    }
+    private static void saveScreenshotBitmap(String name,android.graphics.Bitmap bitmap) throws Exception {
+        android.content.Context context=androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().getTargetContext();
         android.content.ContentValues values=new android.content.ContentValues();
         values.put(android.provider.MediaStore.MediaColumns.DISPLAY_NAME,name);
         values.put(android.provider.MediaStore.MediaColumns.MIME_TYPE,"image/png");
         values.put(android.provider.MediaStore.MediaColumns.RELATIVE_PATH,"Pictures/APD-Test-Visuals");
         android.net.Uri uri=context.getContentResolver().insert(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI,values);
         assertNotNull(uri);
-        try(java.io.OutputStream out=context.getContentResolver().openOutputStream(uri)){assertNotNull(out);assertTrue(bitmap.compress(android.graphics.Bitmap.CompressFormat.PNG,100,out));}
-        finally{bitmap.recycle();}
+        try(java.io.OutputStream out=context.getContentResolver().openOutputStream(uri)){
+            assertNotNull(out);assertTrue(bitmap.compress(android.graphics.Bitmap.CompressFormat.PNG,100,out));
+        }
     }
     private static com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions stairsMenu() throws Exception {
         for(Object member:(java.util.List<?>)field(Game.scene(),"members"))

@@ -367,8 +367,7 @@ public class UimsdScreensDeviceTest {
                 Field limit=com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdTextInput.class.getDeclaredField("limit");limit.setAccessible(true);
                 assertTrue("full lists are not restricted to forty characters",((Integer)limit.get(fullListInput.get()))>40);
             }catch(Exception e){throw new RuntimeException(e);}});
-            Thread.sleep(300);
-            PlayRunDeviceTest.visibilityScreenshot("uimsd-text-values.png");
+            PlayRunDeviceTest.captureRenderedButton(com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdTextInput.class,"OK","uimsd-text-values.png");
             onRender(()->{
                 fullListInput.get().onSelect(true,"TYPE069,TYPE001,TYPE002,TYPE003,TYPE004,TYPE005");
                 fullListInput.get().hide();
