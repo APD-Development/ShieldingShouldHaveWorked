@@ -19,3 +19,7 @@ Potential regression is drilldown predicate validation, query persistence or nat
 ## Last delivered build
 
 TEST104 source946704b57fac583721449fe95b4559d6716c36b2, verification38355939388 passed1286core/21API34/20PNG/debug. Delivery38357194744/commit e55ed3d564c4baae657c84227a8da2d711c3b197 published2026-10-13T06:32:20Z. Signer matchesTEST67, appID com.charltonchris29.adhdpixeldungeon.indev; APK SHA25674ff6492ac83acb062d27925d5d3ca44941e293e938d2223c4333269e79a5d28. Install over existing APD; never uninstall or clear player data. TEST105 private publication/signing remain pending.
+
+## Completed verification
+
+Exact sourcec15313c6d128bcd3557ff8df0b49ffe24258c8d5, run38357456703 succeeded: started06:34:21Z, completed06:46:29Z. Downloaded unique XML1290core+21API34, zero failures/errors/skips;20PNG/debug. The new native numeric/enum/text group-sheet pointer helper ran inside the existing every-screen method and passed. Private existing-artifact signing/appID/hash/delivery staged, not yet published. Physical-phone/owner-save evidence absent. Future-legacy-version fix is local31targeted passed and NOT included105.
