@@ -114,7 +114,9 @@ public final class SyncReplica {
 	//the server accepted our edit of this record and gave it this version
 	public synchronized void acknowledge( SyncRecord sent, long serverVersion ){
 		Slot s = slots.get(id(sent.collection, sent.key));
-		if (s == null || !s.dirty || s.record.updatedAtMillis != sent.updatedAtMillis || serverVersion < s.record.serverVersion) return;
+		if (s == null || !s.dirty || s.record.updatedAtMillis != sent.updatedAtMillis || serverVersion < s.record.serverVersion
+                || s.record.deleted != sent.deleted || !s.record.value.equals(sent.value)
+                || !s.record.deviceId.equals(sent.deviceId)) return;
 		s.record = new SyncRecord(s.record.collection, s.record.key, serverVersion, s.record.updatedAtMillis, s.record.deviceId, s.record.deleted, s.record.value);
 		s.dirty = false;
 	}

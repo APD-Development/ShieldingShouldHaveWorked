@@ -1,44 +1,39 @@
 {
-  "previous_label": "Codex TEST 110",
-  "previous_source": "f243122caee015a1dc2d15150908cef850f55507",
-  "previous_run": 38368759449,
+  "previous_label": "Codex TEST 111",
+  "previous_source": "976c1c2899d37d687f9978da02193c0f4543f5bd",
+  "previous_run": 38369863635,
   "date": "2026-10-13",
   "changes": [
     {
-      "category": "Statistics / UIMSD",
-      "sprite": "ICON_DATA",
-      "title": "Quest boss records",
-      "text": "The Bosses table now includes recorded Crystal Spire, Gnoll Geomancer, Fungal Core and Vault Elemental encounters from finished runs.",
+      "category": "Bug Fixes",
+      "sprite": "ICON_CHECKED",
+      "title": "Pending preference edits",
+      "text": "The inactive sync model no longer marks a newer edit or deletion as acknowledged when only an older same-millisecond update was accepted.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/BossClasses.java"
-      ]
-    },
-    {
-      "category": "Statistics / UIMSD",
-      "sprite": "ICON_DATA",
-      "title": "Existing boss statistics",
-      "text": "Rebuilt obsolete derived row caches so previously recorded quest bosses receive the corrected classification without changing original history.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowBuilders.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/backend/SyncReplica.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Quest boss regressions",
-      "text": "Added actual boss-property, recorded encounter, unfinished privacy, RNG preservation and old-cache recovery checks.",
+      "title": "Acknowledgement regressions",
+      "text": "Added same-millisecond edit, deletion, tombstone replacement, device identity and save/reload acknowledgement checks.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/QuestBossClassificationTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/backend/SyncAcknowledgementIdentityTest.java"
       ]
     },
     {
       "category": "Development",
       "sprite": "ICON_INFO",
-      "title": "Audit checkpoint",
-      "text": "Recorded further component reviews and verified regression findings while keeping the comprehensive audit explicitly incomplete.",
+      "title": "Verified delivery and hourly evidence",
+      "text": "Recorded TEST111 delivery and published the owner's hour-by-hour evidence PDF without rebuilding the app or inventing work time.",
       "paths": [
+        ".github/workflows/codex-existing-apk-delivery.yml",
+        ".github/workflows/codex-overnight-hourly-report.yml",
+        "docs/APD-Overnight-Hourly-2026-10-13.md",
+        "docs/APD-Overnight-Evidence-2026-10-13.json",
         "docs/APD-TEST111-REPORT-2026-10-13.md",
-        "docs/APD-UIMSD-REVIEW-CHECKPOINT-2026-10-13.json",
+        "docs/APD-TEST112-REPORT-2026-10-13.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/HANDOFF.md",
         "docs/APD-NEXT-BUILD-HISTORY.json"
@@ -48,7 +43,7 @@
       "category": "Developer Commentary",
       "sprite": "V074_SHPX",
       "title": "Developer Commentary",
-      "text": "I restored missing quest bosses to their statistics category and made existing cached records rebuild correctly. Enemy behavior, gameplay and original player data are unchanged.",
+      "text": "I corrected acknowledgement handling in the future preference-sync model and retained its pending edits across restart. Online functionality remains inactive; current gameplay and raw history are unchanged.",
       "paths": []
     }
   ]
