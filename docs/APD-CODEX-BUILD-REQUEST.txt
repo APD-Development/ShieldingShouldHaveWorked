@@ -1,1 +1,3 @@
 TEST91: native ITEM_ sprites in existing SPD news/change renderer; real crystal-key icon, preserve entries/popups, safe fallbacks.3newhostcases+4grouping7passed. Existing Android icon/popup test strengthened. Full1247core/21API34/18PNG+debug required. Previous verified delivered90 source21e4f7579715f42897408efe06535762014cc759/run38326602527.
+
+Retry after historical sprite-validator integration correction e6569698c29b1b753fb27b076a477e6f5a2570df. Initial run38328914537:1247 executed,1 failed,Android/build/delivery skipped.11 current targeted history/sprite cases pass (0.419s);38 exact-source dataset/merger cases pass (0.339s). No failed APK delivered. TEST90 remains verified fallback.
