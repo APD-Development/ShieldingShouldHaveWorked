@@ -1,3 +1,9 @@
+# TEST107 Android compile failure; TEST108 correction — 2026-10-13 07:30 UTC
+
+TEST107 sourcecdd9715fac40dd1c88cd4a2ad34b23fcb9da4ea4 / run38361669114: actual debug APK produced; downloaded1300core XML cases passed with0failures/errors/skips. Android instrumentation compiler failed at PlayRunDeviceTest.java382 because assertNotEquals static import was missing.0Android tests ran;0valid native screenshots. No107private publication/verification claim. TEST106 remains last verified/delivered.
+
+TEST108 adds only missing test import, retaining all assertions/app logic. Full1300core/21API34/22PNG/debug/signing/private delivery pending. Preceding actualAPK is107 despite native failure, so history comparison uses exact107source/artifact and does not repeat the feature under108. Updated107report documents failure;108report documents corrective approach. Entire audit/backlog unfinished; no continuous coding worker claim.
+
 # TEST107 fixed-position metamorphosis in verification — 2026-10-13 07:15 UTC
 
 Latest deliveredTEST106 source015d0392f5ff607746a6db0a2879fd4bbd4c3c45, checks38359186475, delivery38360862361/a0323b4ae352662df9e22844e507f893afd40b94, published07:09:42UTC. Actual1293core+21API34/20PNG/debug/signing/appID/hash passed. Receipt docs/APD-TEST106-DELIVERY-2026-10-13.json. Install over, never uninstall/clear data; no phone/owner-save verification.
