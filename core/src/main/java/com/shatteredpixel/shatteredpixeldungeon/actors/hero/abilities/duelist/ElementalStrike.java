@@ -503,7 +503,7 @@ public class ElementalStrike extends ArmorAbility {
 		} else if (ench instanceof Vorpal){
 			for (Char ch : affected){
 				if (ch != primaryTarget) {
-					Buff.affect(ch, Bleeding.class).set(powerMulti*10);
+					Buff.affect(ch, Bleeding.class).setAttributed(powerMulti*10,hero);
 				}
 			}
 
@@ -590,7 +590,7 @@ public class ElementalStrike extends ArmorAbility {
 		//*** Sacrificial ***
 		} else if (ench instanceof Sacrificial){
 			for (Char ch : affected){
-				Buff.affect(ch, Bleeding.class).set(12f*powerMulti);
+				Buff.affect(ch, Bleeding.class).setAttributed(12f*powerMulti,hero);
 			}
 
 		//*** Wayward ***

@@ -1,166 +1,102 @@
 {
-  "previous_label": "Codex TEST 125",
-  "previous_source": "8384225f38df7313183cd583e12a6b733df6aed7",
-  "previous_run": 38442590584,
+  "previous_label": "Codex TEST 127",
+  "previous_source": "f73f0564c69e4a74a44b70128ea6b371596c82fe",
+  "previous_run": 38452201826,
   "date": "2026-10-13",
   "changes": [
     {
       "category": "Changes",
-      "sprite": "V091_SPINNER",
-      "title": "Spinner",
-      "text": "Prepared spinner poison attribution while preserving its existing duration.",
+      "sprite": "V060_GREATAXE",
+      "title": "Tomahawk",
+      "text": "Prepared tomahawk bleed attribution without scaling its attack-derived damage again.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Spinner.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/Tomahawk.java"
       ]
     },
     {
       "category": "Changes",
-      "sprite": "V061_SPELLBOOK",
-      "title": "Poison",
-      "text": "Prepared source-aware poison ticks, mixed extensions and matching damage forecasts without changing neutral behavior.",
+      "sprite": "V060_GREATAXE",
+      "title": "Ripper Demon",
+      "text": "Prepared ripper leap attribution for independently generated bleeding.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Poison.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/RipperDemon.java"
       ]
     },
     {
       "category": "Changes",
-      "sprite": "V061_SPELLBOOK",
-      "title": "Offensive Damage Origin",
-      "text": "Prepared cast-time source lookup before later allegiance changes.",
+      "sprite": "V060_GREATAXE",
+      "title": "Amplitude Damage Origins",
+      "text": "Prepared saved cause shares for amplitude-based effects, scaling each contribution once.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/OffensiveDamageOrigin.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/AmplitudeDamageOrigins.java"
       ]
     },
     {
       "category": "Changes",
-      "sprite": "V061_SPELLBOOK",
-      "title": "Bandit",
-      "text": "Prepared bandit poison attribution while preserving its existing duration.",
+      "sprite": "V060_GREATAXE",
+      "title": "Albino",
+      "text": "Prepared albino attack attribution for independently generated bleeding.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Bandit.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Albino.java"
       ]
     },
     {
       "category": "Changes",
-      "sprite": "V061_SPELLBOOK",
-      "title": "Cursed Wand",
-      "text": "Prepared attributable cursed-wand poison and retained its caster across the delayed callback.",
+      "sprite": "V060_GREATAXE",
+      "title": "Thorns",
+      "text": "Prepared thorns bleed attribution to the defender that produces it.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/CursedWand.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Thorns.java"
       ]
     },
     {
       "category": "Changes",
-      "sprite": "V061_SPELLBOOK",
-      "title": "Duration Damage Provenance",
-      "text": "Prepared saved mixed-source duration damage accounting so each contribution receives its own factor once.",
+      "sprite": "V060_GREATAXE",
+      "title": "Mnemonic Prayer",
+      "text": "Prepared caster attribution for added bleeding and poison contributions.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/DurationDamageProvenance.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/MnemonicPrayer.java"
       ]
     },
     {
       "category": "Changes",
-      "sprite": "V061_SPELLBOOK",
-      "title": "Gnoll Trickster",
-      "text": "Prepared trickster poison attribution including its zero-duration tick.",
+      "sprite": "V060_GREATAXE",
+      "title": "Bleeding",
+      "text": "Prepared source-aware bleeding ticks while preserving random decay, original death sources and neutral damage.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/GnollTrickster.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Bleeding.java"
       ]
     },
     {
       "category": "Changes",
-      "sprite": "V061_SPELLBOOK",
-      "title": "Fungal Sentry",
-      "text": "Prepared fungal sentry poison attribution while preserving its six-turn extension.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/FungalSentry.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_SPELLBOOK",
-      "title": "Venomous",
-      "text": "Prepared attacker attribution for venomous poison extensions.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Venomous.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V073_DART",
-      "title": "Poison Dart",
-      "text": "Prepared attacker attribution for poison darts.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/PoisonDart.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_SPELLBOOK",
-      "title": "Swarm",
-      "text": "Split swarms retain the actual causes of inherited poison.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Swarm.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_SPELLBOOK",
+      "sprite": "V060_GREATAXE",
       "title": "Elemental Strike",
-      "text": "Prepared hero attribution for Elemental Strike poison extensions.",
+      "text": "Prepared hero attribution for independent Vorpal and Sacrificial Elemental Strike bleeding.",
       "paths": [
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/abilities/duelist/ElementalStrike.java"
       ]
     },
     {
       "category": "Changes",
-      "sprite": "V061_SPELLBOOK",
-      "title": "Offensive Invocation",
-      "text": "Prepared temporary cast-origin tracking across delayed cursed-wand callbacks.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/OffensiveInvocation.java"
-      ]
-    },
-    {
-      "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Duration Damage Provenance Test",
-      "text": "Added neutral, mixed-source, persistence, malformed-metadata and percentage-boundary regressions.",
+      "title": "Attributed Bleeding Integration Test",
+      "text": "Added actual bleeding tick, mixed cause, save/load, legacy, neutral RNG and no-double-scaling regressions.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/DurationDamageProvenanceTest.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "Attributed Poison Integration Test",
-      "text": "Added real poison tick, reapplication, legacy, save/load and RNG-free forecast regressions.",
-      "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/AttributedPoisonIntegrationTest.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "Offensive Invocation Test",
-      "text": "Added nested, exception-safe and thread-isolated cast-origin regressions.",
-      "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/OffensiveInvocationTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/AttributedBleedingIntegrationTest.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_PAGE",
-      "title": "Build verification and attribution",
-      "text": "Recorded preceding build verification and the required checks for this poison integration package.",
+      "title": "Poison verification and bleeding checks",
+      "text": "Recorded successful poison build evidence and the required bleeding integration checks.",
       "paths": [
-        "docs/APD-TEST125-REPORT-2026-10-13.md",
-        "docs/APD-TEST126-REPORT-2026-10-13.md",
+        "docs/APD-TEST128-REPORT-2026-10-13.md",
         "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/HANDOFF.md"
       ]
     }
   ],
-  "commentary": "I continued the damage integration with source-aware poison, including mixed applications and saved effects. The damage controls remain disabled while other offensive sources are still being integrated."
+  "commentary": "I continued the damage integration with bleeding and caster-attributed extensions. Damage converted from an already-scaled attack is left unscaled to avoid applying the factor twice. The damage controls remain pending while the remaining sources are covered."
 }
