@@ -1,40 +1,63 @@
 {
-  "previous_label": "Codex TEST 105",
-  "previous_source": "c15313c6d128bcd3557ff8df0b49ffe24258c8d5",
-  "previous_run": 38357456703,
+  "previous_label": "Codex TEST 106",
+  "previous_source": "015d0392f5ff607746a6db0a2879fd4bbd4c3c45",
+  "previous_run": 38359186475,
   "date": "2026-10-13",
   "changes": [
     {
-      "category": "Statistics / UIMSD",
-      "sprite": "ICON_DATA",
-      "title": "Unsupported legacy telemetry",
-      "text": "Legacy statistics no longer misinterpret logs from newer recording versions; original files are preserved and affected caches rebuild once.",
+      "category": "Changes",
+      "sprite": "ITEM_SCROLL_GYFU",
+      "title": "Choose the same talent position",
+      "text": "Metamorphosis now offers the matching talent position from all five other classes instead of random alternatives.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/DerivedStore.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/talents/MetamorphosisChoices.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/exotic/ScrollOfMetamorphosis.java"
+      ]
+    },
+    {
+      "category": "Quality of Life",
+      "sprite": "ICON_INFO",
+      "title": "Clear talent-source details",
+      "text": "Talent details show their source class, and already-owned alternatives remain visible with replacement disabled.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndInfoTalent.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/TalentButton.java",
+        "core/src/main/assets/messages/misc/misc.properties"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Future-version regression coverage",
-      "text": "Added checks for unsupported imports, legacy totals and dailies, cache upgrades and preserved original records.",
+      "title": "Metamorphosis regression coverage",
+      "text": "Added class-position, point-transfer, duplicate, alias, save and native-touch checks with chooser screenshots.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/FutureLegacyDerivationTest.java",
-        "docs/APD-LEGACY-VERSION-VERIFICATION-2026-10-13.md"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/talents/MetamorphosisChoicesTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PlayRunDeviceTest.java",
+        "tools/run-codex-android-checks.sh",
+        "docs/APD-METAMORPHOSIS-VERIFICATION-2026-10-13.md"
+      ]
+    },
+    {
+      "category": "Development",
+      "sprite": "ICON_DATA",
+      "title": "UIMSD audit checkpoint",
+      "text": "Recorded reviewed statistics components and the remaining review scope; the whole-system audit is still in progress.",
+      "paths": [
+        "docs/APD-UIMSD-REVIEW-CHECKPOINT-2026-10-13.json"
       ]
     },
     {
       "category": "Development",
       "sprite": "ICON_INFO",
       "title": "Verified build evidence",
-      "text": "Recorded TEST105's actual delivery and this build's compatibility checks and remaining audit scope.",
+      "text": "Recorded TEST106's actual delivery and the next build's changes, checks and compatibility limits.",
       "paths": [
-        "docs/APD-TEST105-DELIVERY-2026-10-13.json",
-        "docs/APD-TEST106-REPORT-2026-10-13.md",
+        "docs/APD-TEST106-DELIVERY-2026-10-13.json",
+        "docs/APD-TEST107-REPORT-2026-10-13.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/HANDOFF.md",
         ".github/workflows/codex-existing-apk-delivery.yml",
-        "docs/APD-TEST105-REPORT-2026-10-13.md",
+        "docs/APD-TEST106-REPORT-2026-10-13.md",
         "docs/APD-NEXT-BUILD-HISTORY.json"
       ]
     },
@@ -42,7 +65,7 @@
       "category": "Developer Commentary",
       "sprite": "V074_SHPX",
       "title": "Developer Commentary",
-      "text": "I aligned legacy statistics with the existing recording-version checks. Unsupported records stay preserved instead of being reported with potentially incorrect meanings.",
+      "text": "I replaced random metamorphosis alternatives with the matching position from every other class. Existing points and duplicate protection stay intact, and each choice names its source class.",
       "paths": []
     }
   ]

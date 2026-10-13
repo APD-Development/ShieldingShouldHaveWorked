@@ -340,6 +340,75 @@ public class PlayRunDeviceTest {
         } finally { SPDSettings.healingConfirmationThreshold(oldThreshold); }
     }
 
+    private static com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent metamorphOriginal,metamorphTarget;
+
+    private static void tapNative(com.watabou.noosa.ui.Component component) throws Exception {
+        AtomicReference<com.watabou.utils.Point> point=new AtomicReference<>();
+        onRender(()->point.set(component.camera().cameraToScreen(component.left()+component.width()/2,component.top()+component.height()/2)));
+        com.watabou.utils.Point at=point.get();
+        com.watabou.input.PointerEvent.addPointerEvent(new com.watabou.input.PointerEvent(at.x,at.y,15,com.watabou.input.PointerEvent.Type.DOWN,com.watabou.input.PointerEvent.LEFT));
+        Thread.sleep(150);
+        com.watabou.input.PointerEvent.addPointerEvent(new com.watabou.input.PointerEvent(at.x,at.y,15,com.watabou.input.PointerEvent.Type.UP,com.watabou.input.PointerEvent.LEFT));
+        Thread.sleep(300);
+    }
+
+    private static com.shatteredpixel.shatteredpixeldungeon.ui.RedButton metamorphConfirmButton() throws Exception {
+        AtomicReference<com.shatteredpixel.shatteredpixeldungeon.ui.RedButton> found=new AtomicReference<>();
+        onRender(()->{try{
+            for(Object child:(java.util.List<?>)field(Game.scene(),"members"))if(child instanceof com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoTalent&&((com.watabou.noosa.Gizmo)child).alive)
+                for(Object button:(java.util.List<?>)field(child,"members"))if(button instanceof com.shatteredpixel.shatteredpixeldungeon.ui.RedButton)found.set((com.shatteredpixel.shatteredpixeldungeon.ui.RedButton)button);
+        }catch(Exception e){throw new RuntimeException(e);}});
+        assertNotNull("native metamorphosis confirmation button is visible",found.get());return found.get();
+    }
+
+    private static void assertMetamorphosisChoices() throws Exception {
+        final com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMetamorphosis[] scroll={null};
+        AtomicReference<com.shatteredpixel.shatteredpixeldungeon.ui.TalentButton> choose=new AtomicReference<>(),replacement=new AtomicReference<>();
+        onRender(()->{try{
+            metamorphOriginal=new java.util.ArrayList<>(Dungeon.hero.talents.get(0).keySet()).get(2);
+            scroll[0]=new com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMetamorphosis();scroll[0].identify();scroll[0].quantity(2);
+            assertTrue(scroll[0].collect(Dungeon.hero.belongings.backpack));scroll[0].execute(Dungeon.hero,com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll.AC_READ);
+            Object window=com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMetamorphosis.WndMetamorphChoose.INSTANCE;
+            assertNotNull(window);Object pane=field(window,"pane");Object first=((java.util.List<?>)field(pane,"panes")).get(0);
+            choose.set((com.shatteredpixel.shatteredpixeldungeon.ui.TalentButton)((java.util.List<?>)field(first,"buttons")).get(2));
+        }catch(Exception e){throw new RuntimeException(e);}});
+        tapNative(choose.get());tapNative(metamorphConfirmButton());
+        onRender(()->{try{
+            com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMetamorphosis.WndMetamorphReplace window=com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMetamorphosis.WndMetamorphReplace.INSTANCE;
+            assertNotNull(window);java.util.Map<?,?> options=(java.util.Map<?,?>)field(window,"replaceOptions");assertEquals(5,options.size());
+            java.util.Set<HeroClass> classes=new java.util.HashSet<>();
+            for(Object value:options.keySet()){
+                com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent talent=(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent)value;
+                assertNotEquals(Dungeon.hero.heroClass,window.choiceClass(talent));assertTrue(classes.add(window.choiceClass(talent)));assertTrue(window.canReplace(talent));
+            }
+            assertEquals("known scroll consumption remains one",1,scroll[0].quantity());
+            int width=((Number)field(window,"width")).intValue();
+            for(Object child:(java.util.List<?>)field(window,"members"))if(child instanceof com.shatteredpixel.shatteredpixeldungeon.ui.TalentsPane.TalentTierPane){
+                java.util.List<?> buttons=(java.util.List<?>)field(child,"buttons");assertEquals(5,buttons.size());
+                for(Object object:buttons){com.shatteredpixel.shatteredpixeldungeon.ui.TalentButton button=(com.shatteredpixel.shatteredpixeldungeon.ui.TalentButton)object;assertTrue(button.left()>=0);assertTrue(button.right()<=width);}
+                replacement.set((com.shatteredpixel.shatteredpixeldungeon.ui.TalentButton)buttons.get(0));
+            }
+            metamorphTarget=(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent)options.keySet().iterator().next();assertNotNull(replacement.get());
+        }catch(Exception e){throw new RuntimeException(e);}});
+        Thread.sleep(300);visibilityScreenshot("metamorph-five-choices.png");
+        tapNative(replacement.get());
+        onRender(()->{try{
+            String expected=com.shatteredpixel.shatteredpixeldungeon.messages.Messages.get(com.shatteredpixel.shatteredpixeldungeon.apd.talents.MetamorphosisChoices.class,"choice_source",
+                com.shatteredpixel.shatteredpixeldungeon.messages.Messages.titleCase(com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMetamorphosis.WndMetamorphReplace.INSTANCE.choiceClass(metamorphTarget).title()));
+            assertFalse("new choice messages are available",expected.contains("NO TEXT FOUND"));
+            boolean shown=false;
+            for(Object window:(java.util.List<?>)field(Game.scene(),"members"))if(window instanceof com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoTalent&&((com.watabou.noosa.Gizmo)window).alive)
+                for(Object child:(java.util.List<?>)field(window,"members"))if(child instanceof com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock)
+                    shown|=((com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock)child).text().contains(expected);
+            assertTrue("native detail identifies the source class",shown);
+        }catch(Exception e){throw new RuntimeException(e);}});
+        captureRenderedButton(com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoTalent.class,
+            com.shatteredpixel.shatteredpixeldungeon.messages.Messages.titleCase(com.shatteredpixel.shatteredpixeldungeon.messages.Messages.get(com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMetamorphosis.class,"metamorphose_talent")),"metamorph-choice-detail.png");
+        tapNative(metamorphConfirmButton());
+        waitUntil("ready after normal metamorphosis turn",()->Dungeon.hero.ready,30000);
+        onRender(()->{assertEquals(metamorphTarget,Dungeon.hero.metamorphedTalents.get(metamorphOriginal));assertTrue(Dungeon.hero.talents.get(0).containsKey(metamorphTarget));assertFalse(Dungeon.hero.talents.get(0).containsKey(metamorphOriginal));});
+    }
+
 	@Test
 	public void aRunCanBePlayedSavedContinuedAndEndedWithItsHistoryRecorded() throws Exception {
         final com.shatteredpixel.shatteredpixeldungeon.QuickSlot previousQuickslots=Dungeon.quickslot;
@@ -380,6 +449,7 @@ public class PlayRunDeviceTest {
 			assertEquals(HeroClass.WARRIOR, Dungeon.hero.heroClass);
 			waitForGameplayControls();
             assertHealingConfirmationControls();
+            assertMetamorphosisChoices();
             onRender(()->{try {
                 Dungeon.quickslot.setSlot(11,new com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty().virtual());
                 assertEquals(12,Dungeon.quickslot.capacity());
@@ -446,6 +516,8 @@ public class PlayRunDeviceTest {
             assertEquals("extended model capacity survives real save/load",12,Dungeon.quickslot.capacity());
             assertTrue(Dungeon.quickslot.getItem(11) instanceof com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty);
             assertEquals("extended placeholder survives",0,Dungeon.quickslot.getItem(11).quantity());
+            assertEquals("metamorphosis survives actual save/load",metamorphTarget,Dungeon.hero.metamorphedTalents.get(metamorphOriginal));
+            assertTrue(Dungeon.hero.talents.get(0).containsKey(metamorphTarget));
 			waitForGameplayControls();
 			onRender(() -> { try { assertGameplayControls(); assertCategoryHotbarControls(); } catch (Exception e){ throw new RuntimeException(e); } });
 

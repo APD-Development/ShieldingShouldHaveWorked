@@ -40,11 +40,11 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.windows.IconTitle;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Random;
+import com.shatteredpixel.shatteredpixeldungeon.apd.talents.MetamorphosisChoices;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.Set;
+
 
 public class ScrollOfMetamorphosis extends ExoticScroll {
 	
@@ -178,6 +178,7 @@ public class ScrollOfMetamorphosis extends ExoticScroll {
 		public Talent replacing;
 		public int tier;
 		LinkedHashMap<Talent, Integer> replaceOptions;
+        LinkedHashMap<Talent, HeroClass> choiceClasses = new LinkedHashMap<>();
 
 		//for window restoring
 		public WndMetamorphReplace(){
@@ -187,6 +188,7 @@ public class ScrollOfMetamorphosis extends ExoticScroll {
 				replacing = INSTANCE.replacing;
 				tier = INSTANCE.tier;
 				replaceOptions = INSTANCE.replaceOptions;
+                choiceClasses = INSTANCE.choiceClasses;
 				INSTANCE = this;
 				setup(replacing, tier, replaceOptions);
 			} else {
@@ -208,33 +210,25 @@ public class ScrollOfMetamorphosis extends ExoticScroll {
 			this.tier = tier;
 
 			LinkedHashMap<Talent, Integer> options = new LinkedHashMap<>();
-			Set<Talent> curTalentsAtTier = Dungeon.hero.talents.get(tier-1).keySet();
-
-			for (HeroClass cls : HeroClass.values()){
-
-				ArrayList<LinkedHashMap<Talent, Integer>> clsTalents = new ArrayList<>();
-				Talent.initClassTalents(cls, clsTalents);
-
-				Set<Talent> clsTalentsAtTier = clsTalents.get(tier-1).keySet();
-				boolean replacingIsInSet = false;
-				for (Talent talent : clsTalentsAtTier.toArray(new Talent[0])){
-					if (talent == replacing){
-						replacingIsInSet = true;
-						break;
-					} else {
-						if (curTalentsAtTier.contains(talent)){
-							clsTalentsAtTier.remove(talent);
-						}
-					}
-				}
-				if (!replacingIsInSet && !clsTalentsAtTier.isEmpty()) {
-					options.put(Random.element(clsTalentsAtTier), Dungeon.hero.pointsInTalent(replacing));
-				}
-			}
+            for (MetamorphosisChoices.Choice choice : MetamorphosisChoices.atPosition(
+                    Dungeon.hero.heroClass, tier, Dungeon.hero.talents.get(tier - 1), replacing)) {
+                options.put(choice.talent, choice.transferredPoints);
+                choiceClasses.put(choice.talent, choice.heroClass);
+            }
 
 			replaceOptions = options;
 			setup(replacing, tier, options);
 		}
+
+        public boolean canReplace(Talent candidate) {
+            return Dungeon.hero != null && tier > 0 && tier <= Dungeon.hero.talents.size()
+                    && replaceOptions != null && replaceOptions.containsKey(candidate)
+                    && !Dungeon.hero.talents.get(tier - 1).containsKey(candidate);
+        }
+
+        public HeroClass choiceClass(Talent candidate) {
+            return choiceClasses.get(candidate);
+        }
 
 		private void setup(Talent replacing, int tier, LinkedHashMap<Talent, Integer> replaceOptions){
 			float top = 0;
@@ -246,7 +240,7 @@ public class ScrollOfMetamorphosis extends ExoticScroll {
 
 			top = title.bottom() + 2;
 
-			RenderedTextBlock text = PixelScene.renderTextBlock(Messages.get(ScrollOfMetamorphosis.class, "replace_desc"), 6);
+			RenderedTextBlock text = PixelScene.renderTextBlock(Messages.get(MetamorphosisChoices.class, "replace_desc"), 6);
 			text.maxWidth(120);
 			text.setPos(0, top);
 			add(text);
@@ -281,3 +275,4 @@ public class ScrollOfMetamorphosis extends ExoticScroll {
 		}
 	}
 }
+

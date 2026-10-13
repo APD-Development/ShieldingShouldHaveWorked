@@ -1,3 +1,9 @@
+# TEST107 fixed-position metamorphosis in verification — 2026-10-13 07:15 UTC
+
+Latest deliveredTEST106 source015d0392f5ff607746a6db0a2879fd4bbd4c3c45, checks38359186475, delivery38360862361/a0323b4ae352662df9e22844e507f893afd40b94, published07:09:42UTC. Actual1293core+21API34/20PNG/debug/signing/appID/hash passed. Receipt docs/APD-TEST106-DELIVERY-2026-10-13.json. Install over, never uninstall/clear data; no phone/owner-save verification.
+
+TEST107 fixed-slot metamorphosis implemented with native five other-class choices. SPD's existing duplicate exclusion remains; unavailable owned talents are visible/disabled, with no substituted position/refund rules. Original consumption/cancellation/points/alias fields retained.7host regression methods passed0.097s; changed production compiled. Native real-pointer chooser/confirmation/save-continue helper and2screenshots added but unexecuted until CI. Required1300core/21API34/22PNG/debug/signing/delivery pending. docs/APD-TEST107-REPORT-2026-10-13.md. Entire UIMSD audit/backlog incomplete; current pinned checklist74of211production components reviewed plus integration hooks pending. No persistent autonomous Codex worker demonstrated.
+
 # TEST106 verified candidate — 2026-10-13 07:10 UTC
 
 Source015d0392f5ff607746a6db0a2879fd4bbd4c3c45 / run38359186475 succeeded. Downloaded1293core+21API34, zero failures/errors/skips;20PNG/debug. Existing-artifact signing/hash/private delivery staged; publication pending. TEST105 remains delivered fallback. Fixed-slot metamorphosis work local7tests passed, NOT in106. Duplicate handling retains SPD's existing exclusion from valid selections: all five classes are shown but already-owned options cannot replace; no substitution to another position or inferred user approval to change gameplay. Consumption/cancellation/point-transfer rules retained. Native interaction/screenshots planned for next build, unverified until execution. Entire audit/backlog incomplete.

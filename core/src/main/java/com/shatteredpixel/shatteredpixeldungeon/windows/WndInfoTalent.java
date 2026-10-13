@@ -58,7 +58,10 @@ public class WndInfoTalent extends Window {
 		boolean metaDesc = (buttonCallback != null && buttonCallback.metamorphDesc()) ||
 				(Dungeon.hero != null && Dungeon.hero.metamorphedTalents.containsValue(talent));
 
-		RenderedTextBlock txtInfo = PixelScene.renderTextBlock(talent.desc(metaDesc), 6);
+		String description = talent.desc(metaDesc);
+        if (buttonCallback != null && !buttonCallback.extraInfo().isEmpty())
+            description = buttonCallback.extraInfo() + "\n\n" + description;
+        RenderedTextBlock txtInfo = PixelScene.renderTextBlock(description, 6);
 		txtInfo.maxWidth(width);
 		txtInfo.setPos(titlebar.left(), titlebar.bottom() + 2*GAP);
 		add( txtInfo );
@@ -81,7 +84,8 @@ public class WndInfoTalent extends Window {
 					buttonCallback.call();
 				}
 			};
-			button.icon(Icons.get(Icons.TALENT));
+			button.enable(buttonCallback.enabled());
+            button.icon(Icons.get(Icons.TALENT));
 			button.setRect(0, txtInfo.bottom() + 2*GAP, width, 18);
 			add(button);
 			resize( width, (int)button.bottom()+1 );
@@ -93,6 +97,10 @@ public class WndInfoTalent extends Window {
 
 		public abstract String prompt();
 
+        public boolean enabled() { return true; }
+
+        public String extraInfo() { return ""; }
+
 		public boolean metamorphDesc(){
 			return false;
 		}
@@ -100,3 +108,4 @@ public class WndInfoTalent extends Window {
 	}
 
 }
+
