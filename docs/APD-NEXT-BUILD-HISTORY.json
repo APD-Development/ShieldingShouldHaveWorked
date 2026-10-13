@@ -6,7 +6,7 @@
   "changes": [
     {
       "category": "Quality of Life",
-      "sprite": "ITEM_POTION_HEALING",
+      "sprite": "ITEM_POTION_HOLDER",
       "title": "Healing confirmation",
       "text": "Identified Healing potions can require confirmation at a saved HP threshold from 0% to 100%; the default remains one-tap use.",
       "paths": [
@@ -17,7 +17,7 @@
     },
     {
       "category": "Interface",
-      "sprite": "ITEM_POTION_HEALING",
+      "sprite": "ITEM_POTION_HOLDER",
       "title": "Healing preference controls",
       "text": "APD Settings offers a native percentage slider with explicit Save and Cancel, plus an Off option.",
       "paths": [
@@ -68,7 +68,8 @@
         "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/APD-TEST98-REPORT-2026-10-12.md",
-        "docs/HANDOFF.md"
+        "docs/HANDOFF.md",
+        "docs/APD-TEST99-REPORT-2026-10-12.md"
       ]
     },
     {
