@@ -17,3 +17,7 @@ Full1286core/21API34/20PNG/debug, signing/applicationID/checksum and private del
 TEST103 delivered2026-10-13T06:15:50Z from3f30d631ec0fa74ba11bcc25c3411526924604a8. Run38354469058 passed1282core/21API34/20PNG/debug, delivery38355660067/48abe938b4510977aa298a171473b6aa58cc615c confirmed exact app input trees, appID com.charltonchris29.adhdpixeldungeon.indev, unchanged TEST67 signer and APKhash83c7bcaed8ac38f7b796084915666e919428ffc0b6fdf35be005d3eeefd65a22. Install over, never uninstall/clear data; owner-save/physical-phone verification absent.
 
 Whole UIMSD review is incomplete. The earlier historical census distinguishes21 no-APK attempts from132 inspected artifacts; no-APK attempts must not be invented as released gameplay histories. Broader simulator and other backlog remain unfinished. Fixed-position metamorphosis's already-owned-option handling awaits the specific design answer; independent fixes continue. No persistent unattended Codex coding worker demonstrated.
+
+## Completed verification
+
+Exact source946704b57fac583721449fe95b4559d6716c36b2, run38355939388 succeeded: started06:18:10Z, completed06:30:29Z. Downloaded XML1286core+21API34, zero failures/errors/skips,20PNG/debug. Signing/applicationID/hash and private delivery are now staged, still pending until actual delivery completion. No physical-phone or owner-save evidence. New group-drilldown work is local and NOT included in104.

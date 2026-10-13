@@ -1,3 +1,7 @@
+# TEST104 verified candidate — 2026-10-13 06:31 UTC
+
+Source946704b57fac583721449fe95b4559d6716c36b2 / run38355939388 succeeded. Actual downloaded1286core+21API34, zero failures/errors/skips;20PNG/debug. Private existing-artifact delivery staged; signing/hash/publication pending. TEST103 remains last delivered fallback. Group-drilldown fix is local75targeted cases passed, not included104; native touch check added but unexecuted until next build. Whole audit incomplete.
+
 # TEST104 comparison fixes in verification — 2026-10-13 06:17 UTC
 
 Latest deliveredTEST103 source3f30d631ec0fa74ba11bcc25c3411526924604a8, verification38354469058, delivery38355660067/48abe938b4510977aa298a171473b6aa58cc615c, published06:15:50UTC. Exact1282core+21API34/20PNG/debug/signature/appID/checksum passed. Receipt docs/APD-TEST103-DELIVERY-2026-10-13.json. Install over, never uninstall/clear data. Physical-phone/owner-save tests absent.
