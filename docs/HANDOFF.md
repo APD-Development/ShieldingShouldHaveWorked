@@ -1602,3 +1602,36 @@ Updated the existing Android notice test for scrolling text above controls, actu
 Previous produced APK118: source03393816054f4f3ccaa3e5fd85fae754e4f6e6e4/run38390168067. Its core/build job passed and private APK artifact11808407560 exists; its Android job was still pending when this report was prepared. It contains the older scoring-only notice, not this replacement. TEST119 requires1354core/22API34/24validPNG/debug and screenshot review. No private release/distribution or physical-phone claim.
 
 The experimental warning does not authorize changing limits or rewriting old runs. Eleven gameplay effects are implemented through117, seven remain unfinished and disabled. The local boss-health prototype is not in this UI package. Offensive attribution groundwork is in118, but full offensive integration remains unfinished. UIMSD remains paused as requested and the eighteen-slider early alpha is not yet complete.
+
+
+## TEST119 warning verified / TEST120 boss health and food candidate
+# TEST120 boss health and regional food candidate
+
+Previous produced and checked119: source217c18729f2dc909277ad8c2ce38a0d371618e37/run38391217821. Downloaded XML1354unique core and22API34, zero failed/error/skipped;24validPNG and debug assembly. The exact lifetime experimental warning was manually inspected in normal and narrow screenshots. Narrow content scrolls; this batch adds a third narrow-scrolled capture to verify access to its lower scoring paragraph. Artifact11808429916 is private/staged, not distributed or signing-published. No physical-phone evidence.
+
+Adds Boss HP as a replacement for Enemy HP on BOSS actors. Initial/summoned health uses the existing once-only optional saved flag. Goo, Tengu, DM300 and fist thresholds already follow maximum health. Yog's fixed300/100phase boundaries and400HP beam interval now follow the selected health factor, preserving original fractions and neutral behavior. Dwarf King's fixed remaining-health and normal/stronger shield-wave thresholds also scale. Original cooldown formulas, phases, attacks and summons remain.
+
+Compatibility failure reproduced with the old actual Dwarf/Yog classes under the proposed custom-health hook:2of3new tests fail. At25%Yog HP, its old final boundary remains100 instead of25. At25%Dwarf HP, old integerHT/12removal already leaves the wrong shield remainder by the fourth objective and would leave3shield after12normal objectives. The correction allocates the exact scaled shield across the original12or18objectives, saves the resolved count and preserves it after actual fresh-object reload. Negative or invulnerable hits do not advance the counter. Invalid stored counters reject without deleting evidence. These are custom-integration defects found before exposing Boss HP, not claimed vanilla-default bugs.
+
+Food Availability changes only baseline main-floor food and the existing large-floor bonus. At25%, one standard ration is queued on the first ordinary floor of each region:five regional guarantees. Other allowed values distribute their base supply across four ordinary floors per region;100%keeps the original generator calls, deck state and RNG. Large-floor bonus supply follows the percentage, while shops, rooms, drops, talents, artifacts and alchemy remain untouched. Famine's existing reduced nutritional effect remains. Food is placed through normal item generation, never inserted into inventory.
+
+Six new methods:240boss-constructor/roundtrip fixtures across20values, sixboss types and normal/stronger challenge; actualYog final boundary; actualDwarf shield progression/save reload at allvalues; regional food allocations; neutral generator/deck/RNG parity;60real first-region-floor fixtures acrosssixclasses and normal/Famine. Combined48unique host methods pass14.153s. Initial food fixture failures were due to not restoring the generator deck for its reference and not counting normal mimic-held loot; the corrected assertions retain the ration requirement. An initial boss fixture incorrectly restored buffs into an existing object; changed to the actual fresh-object load path. No tests disabled or deleted. The combined high-spawn/high-health/fast-hunger/low-upgrade fixture now includes25%food.
+
+Thirteen gameplay effects have source implementations. Five remain incomplete/disabled:Player Damage, Enemy Damage, Boss Damage, Healing Effectiveness and Equipment Availability. Full offensive attribution is still pending; its source-preserving bridge is groundwork, not a completed damage slider. Full required1360core/22API34/25PNG/debug and new screenshot review are pending. UIMSD remains paused until gameplay integration is complete; its permanent acceptance requirements are not claimed complete. Original scoring, provisional bounds, lifetime warning, player data, signing/applicationID are preserved. No automatic distribution.
+
+
+# Delayed/overlapping attack audio — lower-priority unconfirmed upstream report
+
+Owner evidence, corrected scope:
+- Observed in vanilla Shattered Pixel Dungeon on RedMagic11Pro, Android16, built-in speakers; no headphones.
+- Several attack sounds sometimes appear absent, then play together after a delay.
+- Most prominently noticed in Prison and during Tengu. These are observations, NOT boundaries; other regions were not closely observed or are not remembered.
+- Other games have not shown this symptom to the owner. This does not establish a device or game root cause.
+- APD is not confirmed affected; approximately one APD run has been played.
+- Whether gameplay/frame rate stalls simultaneously is unknown.
+
+Status: source/audio investigation and audible reproduction pending; no root cause, inherited-defect proof or fix claimed. Current API34 UI/core checks are not acoustic RedMagic/Android16 reproduction evidence.
+
+Later compare actual upstream/APD sample playback, sound loading, callback/actor/render scheduling and Android lifecycle. Include Prison enemies and Tengu attacks, teleports, traps and bombs without assuming region/Tengu causation. Distinguish late triggers from on-time requests with late audible playback. Correlate frame stalls, GC and contention only with measurements. Preserve combat/damage/timing, intended simultaneous effects and the existing audio system. Do not suppress sounds merely to hide symptoms; stale-event discarding requires evidence. Keep open if unconfirmed.
+
+Priority: below October16early-alpha sliders, save/progression stability, scoring interfaces and mandatory UIMSD configuration recording. No audio changes inTEST120.

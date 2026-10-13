@@ -58,6 +58,7 @@ public class CustomMobSurvivalInteractionTest {
     @Test public void highSpawnsHighEnemyHealthAndFastHungerGenerateForAllClasses() {
         CustomDungeonRules rules=CustomDungeonRules.defaults().with(CustomDungeonRules.Slider.ENEMY_SPAWN,300)
             .with(CustomDungeonRules.Slider.ENEMY_HP,500).with(CustomDungeonRules.Slider.HUNGER,400)
+            .with(CustomDungeonRules.Slider.FOOD,25)
             .with(CustomDungeonRules.Slider.PLAYER_HP,25).with(CustomDungeonRules.Slider.UPGRADE_SCROLLS,1);
         for(HeroClass c:HeroClass.values()) {
             GamesInProgress.selectedClass=c;rules(rules);Dungeon.seed=98342+c.ordinal();

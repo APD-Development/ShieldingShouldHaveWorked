@@ -1,35 +1,73 @@
 {
-  "previous_label": "Codex TEST 118",
-  "previous_source": "03393816054f4f3ccaa3e5fd85fae754e4f6e6e4",
-  "previous_run": 38390168067,
+  "previous_label": "Codex TEST 119",
+  "previous_source": "217c18729f2dc909277ad8c2ce38a0d371618e37",
+  "previous_run": 38391217821,
   "date": "2026-10-13",
   "changes": [
     {
-      "category": "Changes",
-      "sprite": "ICON_INFO",
-      "title": "Experimental custom-rules warning",
-      "text": "Custom rules now explain that slider limits may evolve and earned scores are unchanged, with the warning above the scrolling controls.",
+      "category": "Development",
+      "sprite": "PD_RAT",
+      "title": "Custom boss health",
+      "text": "Boss health now follows its own locked setting instead of ordinary enemy health.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomRulesPresentation.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndCustomDungeonRules.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomMobHooks.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomBossHealthHooks.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomRulesPresentation.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V24_RAT_SKULL",
+      "title": "Boss phase protection",
+      "text": "Custom boss health preserves Yog's phase boundaries and Dwarf King's shield objectives, including fractional remainders across saves.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/DwarfKing.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/YogDzewa.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomBossHealthHooks.java"
+      ]
+    },
+    {
+      "category": "Development",
+      "sprite": "V060_RATION",
+      "title": "Custom food supply",
+      "text": "Food supply follows the selected percentage;25%provides a standard ration in each region and100%retains original generation.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomGenerationHooks.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/Level.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomRulesPresentation.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Warning layout and data protection",
-      "text": "Updated Android checks for the full warning, scrolling access, draft cancellation and unchanged active rules and scores.",
+      "title": "Boss and food regressions",
+      "text": "Added boss-phase/save and regional-food checks, and included minimum food in the combined custom-generation fixture.",
       "paths": [
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomBossHealthSliderTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomFoodGenerationTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomMobSurvivalInteractionTest.java"
+      ]
+    },
+    {
+      "category": "Testing",
+      "sprite": "ICON_INFO",
+      "title": "Narrow warning access",
+      "text": "Added a scrolled narrow-screen capture to check access to the experimental warning's scoring paragraph.",
+      "paths": [
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java",
+        "tools/run-codex-android-checks.sh"
       ]
     },
     {
       "category": "Development",
       "sprite": "ICON_INFO",
-      "title": "Experimental warning verification",
-      "text": "Recorded the exact warning scope and pending Android verification without changing slider limits or historical runs.",
+      "title": "Verification and investigation records",
+      "text": "Recorded verified warning checks, custom boss/food evidence and the unconfirmed upstream audio report.",
       "paths": [
+        "docs/APD-TEST120-REPORT-2026-10-13.md",
         "docs/APD-TEST119-REPORT-2026-10-13.md",
+        "docs/APD-TEST118-REPORT-2026-10-13.md",
+        "docs/APD-AUDIO-INVESTIGATION-2026-10-13.md",
         "docs/HANDOFF.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/APD-NEXT-BUILD-HISTORY.json"
@@ -39,7 +77,7 @@
       "category": "Developer Commentary",
       "sprite": "V074_SHPX",
       "title": "Developer Commentary",
-      "text": "I clarified that custom rules will continue evolving throughout APD's lifetime. The warning stays after scoring is implemented; only its scoring paragraph will change.",
+      "text": "I added boss health and regional food settings while protecting boss progression. Offensive damage attribution, healing, equipment supply and permanent statistics integration still need work.",
       "paths": []
     }
   ]

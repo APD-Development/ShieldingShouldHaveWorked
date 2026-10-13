@@ -226,7 +226,7 @@ public abstract class Level implements Bundlable {
 		//TODO maybe just make this part of RegularLevel?
 		if (!Dungeon.bossLevel() && Dungeon.branch == 0) {
 
-			addItemToSpawn(Generator.random(Generator.Category.FOOD));
+			com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomGenerationHooks.addFloorFood(this, false);
 
 			if (Dungeon.posNeeded()) {
 				Dungeon.LimitedDrops.STRENGTH_POTIONS.count++;
@@ -279,7 +279,7 @@ public abstract class Level implements Bundlable {
 						break;
 					case 4:
 						feeling = Feeling.LARGE;
-						addItemToSpawn(Generator.random(Generator.Category.FOOD));
+						com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomGenerationHooks.addFloorFood(this, true);
 						break;
 					case 5:
 						feeling = Feeling.TRAPS;

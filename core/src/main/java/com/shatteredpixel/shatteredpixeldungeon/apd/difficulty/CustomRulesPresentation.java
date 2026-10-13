@@ -50,8 +50,8 @@ public final class CustomRulesPresentation {
     /** Alpha assembly checkpoint: never offer unfinished effects as working gameplay controls. */
     public static boolean gameplayImplemented(CustomDungeonRules.Slider slider) {
         switch(slider) {
-            case PLAYER_DAMAGE: case ENEMY_DAMAGE: case BOSS_DAMAGE: case BOSS_HP:
-            case FOOD: case HEALING: case EQUIPMENT: return false;
+            case PLAYER_DAMAGE: case ENEMY_DAMAGE: case BOSS_DAMAGE:
+            case HEALING: case EQUIPMENT: return false;
             default: return true;
         }
     }

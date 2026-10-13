@@ -245,7 +245,7 @@ public class YogDzewa extends Mob {
 
 			if (abilityCooldown <= 0){
 
-				int beams = 1 + (HT - HP)/400;
+				int beams = 1 + (HT - HP)/com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomBossHealthHooks.threshold(400);
 				HashSet<Integer> affectedCells = new HashSet<>();
 				for (int i = 0; i < beams; i++){
 
@@ -397,9 +397,9 @@ public class YogDzewa extends Mob {
 		if (phase == 0 || findFist() != null) return;
 
 		if (phase < 4) {
-			HP = Math.max(HP, HT - 300 * phase);
+			HP = Math.max(HP, HT - com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomBossHealthHooks.threshold(300 * phase));
 		} else if (phase == 4) {
-			HP = Math.max(HP, 100);
+			HP = Math.max(HP, com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomBossHealthHooks.threshold(100));
 		}
 		int dmgTaken = preHP - HP;
 
@@ -408,7 +408,7 @@ public class YogDzewa extends Mob {
 			summonCooldown -= dmgTaken / 10f;
 		}
 
-		if (phase < 4 && HP <= HT - 300*phase){
+		if (phase < 4 && HP <= HT - com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomBossHealthHooks.threshold(300*phase)){
 
 			phase++;
 
@@ -691,3 +691,4 @@ public class YogDzewa extends Mob {
 		}
 	}
 }
+

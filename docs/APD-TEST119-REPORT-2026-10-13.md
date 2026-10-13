@@ -14,3 +14,6 @@ Updated the existing Android notice test for scrolling text above controls, actu
 Previous produced APK118: source03393816054f4f3ccaa3e5fd85fae754e4f6e6e4/run38390168067. Its core/build job passed and private APK artifact11808407560 exists; its Android job was still pending when this report was prepared. It contains the older scoring-only notice, not this replacement. TEST119 requires1354core/22API34/24validPNG/debug and screenshot review. No private release/distribution or physical-phone claim.
 
 The experimental warning does not authorize changing limits or rewriting old runs. Eleven gameplay effects are implemented through117, seven remain unfinished and disabled. The local boss-health prototype is not in this UI package. Offensive attribution groundwork is in118, but full offensive integration remains unfinished. UIMSD remains paused as requested and the eighteen-slider early alpha is not yet complete.
+
+
+Verification38391217821passed: actual1354core/22API34 XML, zero failed/error/skipped;24validPNG/debug. Manual normal/narrow warning review completed; narrow-scrolled follow-up capture added in120. No private distribution or physical-phone claim.
