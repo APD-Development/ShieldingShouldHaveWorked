@@ -23,3 +23,11 @@ Full required core suite(expected1370unique),22API34instrumented checks,25PNG an
 ## Timing and risks
 
 This resumed work began after the owner asked to continue on October13morning New York. Local final suite elapsed2.303seconds; previous lore suite2.007seconds. No reliable total active/idle metering exists. CI timing will be recorded from actual run timestamps. Healing rounds down whole HP while retaining fractional remainder; zero recovery removes HP healing benefit but retains other effects. Existing saves without the optional fraction load zero; no historical run settings or scores are rewritten. Unknown active historical rules remain unknown in statistics.
+
+## Completed verification
+
+Actual source010c44c877ef03dca7fe5ac2987cde309471d089; run38410865529 succeeded October13,10:08:54–10:20:32a.m.NewYork(11m38s elapsed CI, not measured developer-active time). Core/build job3m10s; API34job8m19s.
+
+Downloaded XML:1370unique core cases allpassed,0fail/error/skip;22unique Android cases allpassed,0fail/error/skip.25validPNG checked. Manually reviewed custom-rules-notice-narrow-scrolled.png: scoring paragraph is readable, corrected capture works. Debug assembly passed. Artifacts:core11822765485,Android11821513379,APK11822370585(35,978,544-byte ZIP). Artifact ZIP digests are not APK checksums. No signing-compatible publication gate was run here, no delivery/physicalphone claim. Private-delivery job explicitly skipped. App/signing files unchanged.
+
+Equipment work continued independently while CI ran: explicit ordinary-floor/shop/monster boundaries compile locally;five initial tests passed4.114s and neutral comparison matches12floors+12shops including nextRNG against actualTEST121source with a unique bag candidate. Equipment UI remains disabled because special-room/rare-drop coverage and permanent UIMSD actual-generated counts are unfinished. Local source not included inTEST121. Initial neutral comparison fixture placed seeded generator before Dungeon.init(which resets it); corrected placement. Vanilla-style shop bag ties use identity-keyedHashMap, so comparison now uses one eligible bag rather than falsely blaming equipment code for bag ties. No production bag-rule changes made.
