@@ -1,3 +1,7 @@
+# Custom rules save foundation in verification — October13,2026
+
+TEST113 contains immutable18-setting preference/run-save groundwork, provisional1–60scrolls.14targetedhosttests passed2.146s, including all60counts actualsave/load/sixclasses/difficulties1–5/challengecontexts0/511. Full1330core/21API34/22PNG/debug pending. No publication/physical-phone verification or alpha-ready claim. Gameplay effects, native settings UI, permanentUIMSD, rulesetidentity integration and score display remain unfinished. Scoring reports3/4 recovered; retain original earned scores pending approved calibration. No production formula or GetFucked work. October16alpha target; stagecandidateonly, noautomatictesterdistribution. ExistingTEST112 remains deliveredfallback. Report docs/APD-TEST113-REPORT-2026-10-13.md.
+
 # TEST108 verified fixed-slot metamorphosis candidate — 2026-10-13 07:48 UTC
 
 Source4b8b3488a88d68baccbfcbd7ee4280639193b00e / run38363169333 succeeded (07:31:14–07:42:47UTC). Downloaded1300core+21API34, zero failures/errors/skips;22valid PNG/debug. Real-pointer choice/confirmation, source-class detail and actual save/continue passed. Both new images manually reviewed as readable SPD-style native windows. Signing/appID/hash/private delivery staged, publication pending. Physical-phone/owner-save verification absent. TEST107 retains its produced-APK history and native compile failure; no107verified claim. Entire audit/backlog incomplete.

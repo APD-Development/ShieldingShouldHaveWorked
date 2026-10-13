@@ -459,6 +459,19 @@ public class SPDSettings extends GameSettings {
 		put( KEY_APD_EXOTIC_CHANCE, value );
 	}
 
+
+    // Next-run preferences only. The active run owns an immutable snapshot.
+    public static com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules apdCustomRules() {
+        String text = getString("apd_custom_rules_v1", "");
+        if (text.isEmpty()) return com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.defaults();
+        return com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.fromPreferenceText(text);
+    }
+
+    public static void apdCustomRules(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules rules) {
+        if (rules == null) throw new IllegalArgumentException("Missing next-run custom rules");
+        put("apd_custom_rules_v1", rules.preferenceText());
+    }
+
 	public static void apdDifficulty( int value ){
 		put( KEY_APD_DIFFICULTY, com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.Difficulty.normalize( value ) );
 	}
@@ -677,6 +690,7 @@ public class SPDSettings extends GameSettings {
     public static int playbackSpeed() { int value = getInt("apd_playback_speed", 1); return value >= 0 && value <= 2 ? value : 1; }
     public static void playbackSpeed(int value) { put("apd_playback_speed", value >= 0 && value <= 2 ? value : 1); }
 }
+
 
 
 

@@ -215,6 +215,28 @@ public class Dungeon {
 	public static boolean difficultyKnown = true;
 	//and the balance revision of that difficulty the run is played with (0 = no modifiers). Fixed for the run, like the difficulty itself.
 	public static int difficultyBalance = 0;
+    private static com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules customRules;
+
+    // Null means the historical run did not record custom settings.
+    public static com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules customRules() { return customRules; }
+
+    public static void apdStoreCustomRules(Bundle bundle) {
+        if (customRules != null) {
+            Bundle settings = new Bundle();
+            customRules.store(settings);
+            bundle.put("apd_custom_rules", settings);
+        }
+    }
+
+    public static void apdRestoreCustomRules(Bundle bundle) {
+        customRules = null; // Never retain a previous run's settings if this record is missing or invalid.
+        if (bundle.contains("apd_custom_rules")) {
+            customRules = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.restore(
+                bundle.getBundle("apd_custom_rules"));
+            if (customRules == null) throw new IllegalArgumentException("Incomplete saved custom rules");
+        }
+    }
+
 
 	//APD: the exotic potion/scroll chance (0-80) this run was started with. Part of the run's identity (saved with it): changing the setting later never
 	//changes a run that exists. apdExoticKnown is false until a run is started or loaded, and for a run saved before this was stored: such a run plays with
@@ -251,6 +273,7 @@ public class Dungeon {
 
 		initialVersion = version = Game.versionCode;
 		challenges = SPDSettings.challenges();
+		customRules = SPDSettings.apdCustomRules();
 		difficulty = SPDSettings.apdDifficulty();
 		difficultyKnown = true;
 		difficultyBalance = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.Difficulty.balanceRevision(difficulty);
@@ -669,6 +692,7 @@ public class Dungeon {
 			bundle.put( DAILY_REPLAY, dailyReplay );
 			bundle.put( LAST_PLAYED, lastPlayed = Game.realTime);
 			bundle.put( CHALLENGES, challenges );
+			apdStoreCustomRules(bundle);
 			//APD: only a run whose difficulty was recorded writes it (an older run stays "not recorded")
 			if (difficultyKnown){
 				bundle.put( APD_DIFFICULTY, difficulty );
@@ -767,6 +791,7 @@ public class Dungeon {
 	//APD: the run's difficulty from a save. A save with a difficulty but no balance revision was written by the early build whose levels had no
 	//modifiers: revision 0. A save with neither is from before difficulty existed: it plays as 3 and is never labelled with a difficulty.
 	public static void apdRestoreDifficulty( Bundle bundle ){
+		apdRestoreCustomRules(bundle);
 		//the exotic setting is restored the same way: a save without it is not given today's value
 		if (bundle.contains( APD_EXOTIC )){
 			Dungeon.apdExotic = Math.max( 0, Math.min( SPDSettings.APD_EXOTIC_CHANCE_MAX, bundle.getInt( APD_EXOTIC ) ) );
@@ -1184,3 +1209,4 @@ public class Dungeon {
 	}
 
 }
+

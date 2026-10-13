@@ -1,0 +1,7 @@
+# TEST113 custom rules save foundation — verification pending
+
+Source changes add immutable next-run preferences and snapshot them in Dungeon.init. Saves store exact18 values and version in a separate additive Bundle. Loads restore the saved snapshot rather than current preferences; missing historical records stay unknown. Malformed/future records reject rather than borrow settings. Preferences use one flushed value, avoiding a partially written18-key configuration. No settings UI or gameplay modifiers enabled yet. Ruleset/UIMSD/scoring-screen integration remains unfinished; source-only records are not completion of the alpha task.
+
+Local changed production compiled.14 targeted methods passed in2.146s, including actual Dungeon.saveGame/loadGame for every1–60 scroll count with six classes, Difficulty1–5 and challenge masks0/511. This does not exhaust every combination or establish item generation/accessibility. Metadata tests confirm no RNG draws. Existing full core regressions and21API34/22PNG/debug compilation still pending. No physical-phone or owner-save tests, no alpha-ready claim, no publication or tester distribution authorized by this request. TEST112 remains delivered playable fallback.
+
+Recovered Phase3/4 reports prohibit treating incomplete benchmark probabilities as calibrated rewards. Original scoring unchanged. Planned interface must show neutral1.00 and nonneutral calibration-unavailable distinctly. No new formulas/coefficient/scoring multipliers/GetFucked mechanics implemented. October16early alpha target retained.

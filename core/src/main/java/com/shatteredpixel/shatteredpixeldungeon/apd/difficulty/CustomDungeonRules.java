@@ -43,6 +43,19 @@ public final class CustomDungeonRules {
     public CustomDungeonRules with(Slider slider, int value) {
         int[] copy=values(); copy[slider.ordinal()]=value; return new CustomDungeonRules(copy);
     }
+    public String preferenceText() {
+        StringBuilder text=new StringBuilder(Integer.toString(VERSION));
+        for (int value : values) text.append(',').append(value);
+        return text.toString();
+    }
+    public static CustomDungeonRules fromPreferenceText(String text) {
+        String[] parts=text.split(",",-1);
+        if (parts.length!=Slider.values().length+1 || !parts[0].equals(Integer.toString(VERSION)))
+            throw new IllegalArgumentException("Unsupported or incomplete custom preferences");
+        int[] values=new int[Slider.values().length];
+        for (int i=0;i<values.length;i++) values[i]=Integer.parseInt(parts[i+1]);
+        return new CustomDungeonRules(values);
+    }
     public String identityText() {
         StringBuilder out=new StringBuilder("custom-v"+VERSION);
         for (Slider s : Slider.values()) out.append(';').append(s.name()).append('=').append(get(s));
