@@ -82,7 +82,7 @@ public class FungalSentry extends Mob {
 
 	@Override
 	public int attackProc(Char enemy, int damage) {
-		Buff.affect(enemy, Poison.class).extend(6);
+		Buff.affect(enemy,Poison.class).extendAttributed(6,this);
 		return super.attackProc(enemy, damage);
 	}
 

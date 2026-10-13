@@ -121,6 +121,7 @@ import java.util.ArrayList;
 public class CursedWand {
 
 	public static void cursedZap(final Item origin, final Char user, final Ballistica bolt, final Callback afterZap){
+        final com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin apdCastOrigin=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(user,null);
 
 		boolean positiveOnly = user == Dungeon.hero && Random.Float() < WondrousResin.positiveCurseEffectChance();
 		CursedEffect effect = randomValidEffect(origin, user, bolt, positiveOnly);
@@ -128,7 +129,9 @@ public class CursedWand {
 		effect.FX(origin, user, bolt, new Callback() {
 			@Override
 			public void call() {
-				effect.effect(origin, user, bolt, positiveOnly);
+				try(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveInvocation scope=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveInvocation.enter(user,apdCastOrigin)){
+                    effect.effect(origin,user,bolt,positiveOnly);
+                }
 				afterZap.call();
 			}
 		});
@@ -913,8 +916,8 @@ public class CursedWand {
 							break;
 						case 2:
 							Poison poison = Buff.affect(ch, Poison.class);
-							poison.set(3 + Dungeon.scalingDepth() / 2);
-							ch.damage(dmg, poison);
+							poison.setAttributed(3+Dungeon.scalingDepth()/2,user);
+							com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(ch,dmg,poison,user);
 							ch.sprite.emitter().burst(PoisonParticle.SPLASH, 20);
 							break;
 						case 3:

@@ -428,7 +428,7 @@ public class ElementalStrike extends ArmorAbility {
 						p.delay(3f);
 					}
 					//27 total damage at base
-					p.extend(powerMulti*10);
+					p.extendAttributed(powerMulti*10,hero);
 				}
 			}
 

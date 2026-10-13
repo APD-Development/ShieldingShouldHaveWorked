@@ -10,7 +10,11 @@ public enum OffensiveDamageOrigin {
 
     /** A summon explicitly inherits its creator's origin; friendliness alone does not prove ownership. */
     public static OffensiveDamageOrigin capture(Char attacker, OffensiveDamageOrigin creator) {
-        if(creator==null && attacker!=null)creator=attacker.apdCreatorOffensiveOrigin();
+        if(creator==null){
+            OffensiveDamageOrigin captured=OffensiveInvocation.captured(attacker);
+            if(captured!=null)return captured;
+            if(attacker!=null)creator=attacker.apdCreatorOffensiveOrigin();
+        }
         if (creator != null && creator != UNATTRIBUTED) return creator;
         if (attacker instanceof Hero) return PLAYER;
         if (attacker == null || attacker.alignment != Char.Alignment.ENEMY) return UNATTRIBUTED;
