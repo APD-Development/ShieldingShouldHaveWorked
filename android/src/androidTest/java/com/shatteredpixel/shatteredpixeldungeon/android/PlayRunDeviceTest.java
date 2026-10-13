@@ -226,6 +226,39 @@ public class PlayRunDeviceTest {
 		}
 	}
 
+    // Scene membership precedes the next drawn frame. Require the native button's
+    // red fill and light text pixels before calling a screenshot visual evidence.
+    private static void waitForHealingDialogPixels() throws Exception {
+        final int[] bounds=new int[4];
+        onRender(()->{try {
+            com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions window=stairsMenu();assertNotNull(window);
+            boolean found=false;
+            for(Object child:(java.util.List<?>)field(window,"members"))
+                if(child instanceof com.shatteredpixel.shatteredpixeldungeon.ui.RedButton
+                        && ((com.shatteredpixel.shatteredpixeldungeon.ui.RedButton)child).text().equals("USE HEALING ITEM")) {
+                    com.shatteredpixel.shatteredpixeldungeon.ui.RedButton button=(com.shatteredpixel.shatteredpixeldungeon.ui.RedButton)child;
+                    com.watabou.utils.Point start=button.camera().cameraToScreen(button.left()+4,button.top()+4);
+                    com.watabou.utils.Point end=button.camera().cameraToScreen(button.right()-4,button.bottom()-4);
+                    bounds[0]=start.x;bounds[1]=start.y;bounds[2]=end.x;bounds[3]=end.y;found=true;
+                }
+            assertTrue("healing dialog has the correct action",found);
+        }catch(Exception e){throw new RuntimeException(e);}});
+        waitUntil("healing dialog actually rendered",()->{
+            android.graphics.Bitmap bitmap=androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().getUiAutomation().takeScreenshot();
+            assertNotNull(bitmap);
+            try {
+                int red=0,light=0,total=0;
+                for(int y=Math.max(0,bounds[1]);y<Math.min(bitmap.getHeight(),bounds[3]);y++)
+                    for(int x=Math.max(0,bounds[0]);x<Math.min(bitmap.getWidth(),bounds[2]);x++) {
+                        int pixel=bitmap.getPixel(x,y),r=android.graphics.Color.red(pixel),g=android.graphics.Color.green(pixel),b=android.graphics.Color.blue(pixel);total++;
+                        if(r>100 && r>2*g && r>2*b)red++;
+                        if(r>180 && g>180 && b>180)light++;
+                    }
+                return total>0 && red>total/4 && light>20;
+            }finally{bitmap.recycle();}
+        },10000);
+    }
+
     private static void assertHealingConfirmationControls() throws Exception {
         int oldThreshold=SPDSettings.healingConfirmationThreshold();
         final com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing[] potion={null};
@@ -236,9 +269,24 @@ public class PlayRunDeviceTest {
                 thresholdWindow.set(new com.shatteredpixel.shatteredpixeldungeon.windows.WndHealingConfirmation.ThresholdWindow());
                 GameScene.show(thresholdWindow.get());
                 assertEquals("opening settings does not enable confirmation",oldThreshold,SPDSettings.healingConfirmationThreshold());
-                ((com.shatteredpixel.shatteredpixeldungeon.ui.OptionSlider)field(thresholdWindow.get(),"percentage")).setSelectedValue(0);
-                assertEquals("editing without saving retains preference",oldThreshold,SPDSettings.healingConfirmationThreshold());
             }catch(Exception e){throw new RuntimeException(e);}});
+            final java.util.concurrent.atomic.AtomicReference<com.watabou.utils.Point> sliderTouch=new java.util.concurrent.atomic.AtomicReference<>();
+            onRender(()->{try {
+                com.shatteredpixel.shatteredpixeldungeon.ui.OptionSlider slider=(com.shatteredpixel.shatteredpixeldungeon.ui.OptionSlider)field(thresholdWindow.get(),"percentage");
+                sliderTouch.set(slider.camera().cameraToScreen(slider.left()+2,slider.bottom()-7));
+            }catch(Exception e){throw new RuntimeException(e);}});
+            com.watabou.utils.Point sliderAt=sliderTouch.get();
+            com.watabou.input.PointerEvent.addPointerEvent(new com.watabou.input.PointerEvent(sliderAt.x,sliderAt.y,29,com.watabou.input.PointerEvent.Type.DOWN,com.watabou.input.PointerEvent.LEFT));
+            Thread.sleep(150);
+            com.watabou.input.PointerEvent.addPointerEvent(new com.watabou.input.PointerEvent(sliderAt.x,sliderAt.y,29,com.watabou.input.PointerEvent.Type.UP,com.watabou.input.PointerEvent.LEFT));
+            waitUntil("native percentage slider responds to touch",()->{
+                final java.util.concurrent.atomic.AtomicBoolean changed=new java.util.concurrent.atomic.AtomicBoolean();
+                onRender(()->{try {
+                    changed.set(((com.shatteredpixel.shatteredpixeldungeon.ui.OptionSlider)field(thresholdWindow.get(),"percentage")).getSelectedValue()==0);
+                    assertEquals("editing without saving retains preference",oldThreshold,SPDSettings.healingConfirmationThreshold());
+                    if(changed.get())assertEquals("Confirm at 0% HP",((com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock)field(thresholdWindow.get(),"value")).text());
+                }catch(Exception e){throw new RuntimeException(e);}});return changed.get();
+            },10000);
             Thread.sleep(300);visibilityScreenshot("healing-threshold-settings.png");
             onRender(()->{try {
                 boolean saved=false;
@@ -259,6 +307,7 @@ public class PlayRunDeviceTest {
                 potion[0].execute(Dungeon.hero);
             });
             waitUntil("healing confirmation opens",()->stairsMenu()!=null,30000);
+            waitForHealingDialogPixels();
             visibilityScreenshot("healing-confirmation.png");
             onRender(()->{try{
                 com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions window=stairsMenu();
@@ -284,6 +333,7 @@ public class PlayRunDeviceTest {
 
 	@Test
 	public void aRunCanBePlayedSavedContinuedAndEndedWithItsHistoryRecorded() throws Exception {
+        final com.shatteredpixel.shatteredpixeldungeon.QuickSlot previousQuickslots=Dungeon.quickslot;
 		boolean recordingWas = SPDSettings.apdRecording();
 		boolean introWas = SPDSettings.intro();
 		boolean introPageFoundWas = com.shatteredpixel.shatteredpixeldungeon.journal.Document.ADVENTURERS_GUIDE.isPageFound(com.shatteredpixel.shatteredpixeldungeon.journal.Document.GUIDE_INTRO);
@@ -303,6 +353,7 @@ public class PlayRunDeviceTest {
 			//start: exactly what the character screen's Start button does
 			onRender(new Runnable(){
 				public void run(){
+                    Dungeon.quickslot=new com.shatteredpixel.shatteredpixeldungeon.QuickSlot(12);
 					GamesInProgress.curSlot = slot;
 					GamesInProgress.selectedClass = HeroClass.WARRIOR;
 					Dungeon.hero = null;
@@ -320,6 +371,11 @@ public class PlayRunDeviceTest {
 			assertEquals(HeroClass.WARRIOR, Dungeon.hero.heroClass);
 			waitForGameplayControls();
             assertHealingConfirmationControls();
+            onRender(()->{try {
+                Dungeon.quickslot.setSlot(11,new com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty().virtual());
+                assertEquals(12,Dungeon.quickslot.capacity());
+                assertEquals("mobile controls remain six",6,((Object[])field(field(Game.scene(),"toolbar"),"btnQuick")).length);
+            }catch(Exception e){throw new RuntimeException(e);}});
 			onRender(() -> { try { assertTrue("exercise controls before acknowledging intro", SPDSettings.intro()); assertGameplayControls(); assertCategoryHotbarControls(); } catch (Exception e){ throw new RuntimeException(e); } });
 			//Use the actual toolbar callbacks; the tutorial must not suppress search or wait.
 			onRender(() -> { try { click(field(field(Game.scene(), "toolbar"), "btnSearch"), "onLongClick"); } catch (Exception e){ throw new RuntimeException(e); } });
@@ -378,6 +434,9 @@ public class PlayRunDeviceTest {
 			assertEquals(hpBefore, Dungeon.hero.HP);
 			assertEquals(HeroClass.WARRIOR, Dungeon.hero.heroClass);
 			assertEquals("still recording after the continue", 0, ApdRecorder.status().errorCount);
+            assertEquals("extended model capacity survives real save/load",12,Dungeon.quickslot.capacity());
+            assertTrue(Dungeon.quickslot.getItem(11) instanceof com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty);
+            assertEquals("extended placeholder survives",0,Dungeon.quickslot.getItem(11).quantity());
 			waitForGameplayControls();
 			onRender(() -> { try { assertGameplayControls(); assertCategoryHotbarControls(); } catch (Exception e){ throw new RuntimeException(e); } });
 
@@ -394,6 +453,7 @@ public class PlayRunDeviceTest {
 				FileUtils.deleteDir(GamesInProgress.gameFolder(slot));
 			} catch (Throwable ignored){
 			}
+            Dungeon.quickslot=previousQuickslots;
 			SPDSettings.apdRecording(recordingWas);
 			SPDSettings.intro(introWas);
 			com.shatteredpixel.shatteredpixeldungeon.journal.Document.ADVENTURERS_GUIDE.deletePage(com.shatteredpixel.shatteredpixeldungeon.journal.Document.GUIDE_INTRO);

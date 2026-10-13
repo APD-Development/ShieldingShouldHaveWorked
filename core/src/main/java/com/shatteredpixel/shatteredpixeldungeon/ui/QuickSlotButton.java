@@ -44,7 +44,7 @@ import com.watabou.utils.PathFinder;
 public class QuickSlotButton extends Button {
     private com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock categoryLabel;
 	
-	private static QuickSlotButton[] instance = new QuickSlotButton[QuickSlot.SIZE];
+	private static QuickSlotButton[] instance = new QuickSlotButton[QuickSlot.MOBILE_VISIBLE_SLOTS];
 	private int slotNum;
 
 	private ItemSlot slot;
@@ -71,7 +71,7 @@ public class QuickSlotButton extends Button {
 	}
 
 	public static void reset() {
-		instance = new QuickSlotButton[QuickSlot.SIZE];
+		instance = new QuickSlotButton[QuickSlot.MOBILE_VISIBLE_SLOTS];
 
 		lastTarget = null;
 		targetingSlot = -1;

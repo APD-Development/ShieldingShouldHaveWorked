@@ -377,7 +377,7 @@ public class WndRanking extends WndTabbed {
 			pos = 0;
 
 			int slotsActive = 0;
-			for (int i = 0; i < QuickSlot.SIZE; i++){
+			for (int i = 0; i < QuickSlot.MOBILE_VISIBLE_SLOTS; i++){
 				if (Dungeon.quickslot.isNonePlaceholder(i)){
 					slotsActive++;
 				}
@@ -390,7 +390,7 @@ public class WndRanking extends WndTabbed {
 
 			float slotWidth = Math.min(28, ((WIDTH - slotsActive + 1) / (float)slotsActive));
 
-			for (int i = -1; i < QuickSlot.SIZE; i++){
+			for (int i = -1; i < QuickSlot.MOBILE_VISIBLE_SLOTS; i++){
 				Item item = null;
 				if (i == -1){
 					item = trinket;

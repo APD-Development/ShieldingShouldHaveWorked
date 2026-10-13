@@ -647,7 +647,9 @@ public class Item implements Bundlable {
 		//only want to populate slots when restoring belongings
 		if (Belongings.bundleRestoring) {
 			if (bundle.contains(QUICKSLOT)) {
-				Dungeon.quickslot.setSlot(bundle.getInt(QUICKSLOT), this);
+                int slot = bundle.getInt(QUICKSLOT);
+                // A damaged shortcut reference must not prevent the inventory item from loading.
+                if (slot >= 0 && slot < Dungeon.quickslot.capacity()) Dungeon.quickslot.setSlot(slot, this);
 			}
 		}
 

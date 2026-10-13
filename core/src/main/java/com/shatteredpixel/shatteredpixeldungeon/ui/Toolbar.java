@@ -98,7 +98,7 @@ public class Toolbar extends Component {
 
 		add(btnSwap = new SlotSwapTool(128, 0, 21, 23));
 
-		btnQuick = new QuickslotTool[QuickSlot.SIZE];
+		btnQuick = new QuickslotTool[QuickSlot.MOBILE_VISIBLE_SLOTS];
 		for (int i = 0; i < btnQuick.length; i++){
 			add( btnQuick[i] = new QuickslotTool(64, 0, 22, 24, i) );
 		}

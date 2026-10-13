@@ -1,59 +1,89 @@
 {
-  "previous_label": "Codex TEST 99",
-  "previous_source": "91db176d323ae465ab04bb10d693f2696dfd51cd",
-  "previous_run": 38343013108,
-  "date": "2026-10-12",
+  "previous_label": "Codex TEST 100",
+  "previous_source": "624f6991bae64c3f9437be6a5e6e16535cff374d",
+  "previous_run": 38344486604,
+  "date": "2026-10-13",
   "changes": [
     {
-      "category": "Bug Fixes",
-      "sprite": "ICON_DATA",
-      "title": "Damaged statistics text",
-      "text": "Malformed encoded text is reported as damaged instead of being silently replaced with different identities or build information.",
+      "category": "Quality of Life",
+      "sprite": "ITEM_BACKPACK",
+      "title": "Independent quickslot capacity",
+      "text": "Quickslot storage can expand independently while the mobile interface continues to show six controls.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/Utf8.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/ByteSource.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/RunLogReader.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/QuickSlot.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/Toolbar.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/QuickSlotButton.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/HeroClass.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndRanking.java"
       ]
     },
     {
-      "category": "Statistics / UIMSD",
-      "sprite": "ICON_DATA",
-      "title": "Refresh derived statistics",
-      "text": "Existing rebuildable indexes and statistics caches refresh once so old replacement text cannot remain trusted.",
+      "category": "Bug Fixes",
+      "sprite": "ITEM_BACKPACK",
+      "title": "Invalid shortcut assignment",
+      "text": "An invalid shortcut position no longer clears an existing valid assignment before failing.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/DerivedStore.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/RunIndex.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowBuilders.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/QuickSlot.java"
+      ]
+    },
+    {
+      "category": "Bug Fixes",
+      "sprite": "ITEM_PASTY",
+      "title": "Inventory restoration safety",
+      "text": "Invalid saved shortcut positions no longer prevent the associated inventory item from loading.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Item.java"
+      ]
+    },
+    {
+      "category": "Bug Fixes",
+      "sprite": "ITEM_BACKPACK",
+      "title": "Placeholder restoration",
+      "text": "Sparse extended placeholders restore through the existing save format, and malformed placement arrays no longer crash loading.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/QuickSlot.java"
+      ]
+    },
+    {
+      "category": "Performance",
+      "sprite": "ICON_DATA",
+      "title": "Rollback history processing",
+      "text": "Overlapping rollback ranges are merged before classifying events, reducing repeated scans while preserving history.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/RunTimeline.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Raw-text integrity",
-      "text": "Added malformed and valid Unicode checks, including byte-for-byte preservation of a repaired tail backup.",
+      "title": "Shortcut and timeline regressions",
+      "text": "Added expanded-slot, save-reference and rollback-equivalence cases, with native six-control and extended save/load checks.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/RawUtf8IntegrityTest.java",
-        "docs/APD-RAW-UTF8-VERIFICATION-2026-10-12.md",
-        "docs/evidence/raw-utf8/LegacyUtf8CacheProbe.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/QuickSlotCapacityTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/TimelineIntervalEquivalenceTest.java",
+        "docs/APD-QUICKSLOT-CAPACITY-VERIFICATION-2026-10-12.md",
+        "docs/APD-TIMELINE-PERFORMANCE-VERIFICATION-2026-10-12.md",
+        "docs/evidence/timeline/TimelineAllocationProbe.java",
+        "docs/evidence/quickslots/QuickSlotBugBaseline.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ITEM_POTION_HOLDER",
-      "title": "Healing screenshots",
-      "text": "Android verification now archives both the healing confirmation and threshold-setting screenshots.",
+      "title": "Rendered healing evidence",
+      "text": "Android checks use an actual slider touch and wait for rendered dialog pixels before capturing healing screenshots.",
       "paths": [
-        "tools/run-codex-android-checks.sh"
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PlayRunDeviceTest.java"
       ]
     },
     {
       "category": "Development",
       "sprite": "ICON_INFO",
-      "title": "Verification records",
-      "text": "Recorded TEST99's passing tests and its missing archived images, plus this batch's reproduced data-integrity failures.",
+      "title": "Build verification evidence",
+      "text": "Recorded TEST100's successful tests and incomplete screenshot acceptance alongside this batch's reproductions.",
       "paths": [
-        "docs/APD-TEST99-CHECKS-2026-10-12.json",
-        "docs/APD-TEST100-REPORT-2026-10-12.md",
+        "docs/APD-TEST100-CHECKS-2026-10-13.json",
+        "docs/APD-TEST101-REPORT-2026-10-13.md",
         "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/HANDOFF.md"
@@ -63,7 +93,7 @@
       "category": "Developer Commentary",
       "sprite": "V074_SHPX",
       "title": "Developer Commentary",
-      "text": "I tightened damaged-text handling so statistics do not invent identities from corrupted recordings. Existing caches rebuild from the original logs, and the Android checks now retain the new healing screenshots.",
+      "text": "I separated the six-button mobile layout from quickslot storage and protected item loading from invalid shortcut references. Rollback-heavy statistics also avoid repeated history scans.",
       "paths": []
     }
   ]

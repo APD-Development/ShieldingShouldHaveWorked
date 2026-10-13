@@ -143,7 +143,7 @@ public enum HeroClass {
 		}
 
 		if (SPDSettings.quickslotWaterskin()) {
-			for (int s = 0; s < QuickSlot.SIZE; s++) {
+			for (int s = 0; s < QuickSlot.MOBILE_VISIBLE_SLOTS; s++) {
 				if (Dungeon.quickslot.getItem(s) == null) {
 					Dungeon.quickslot.setSlot(s, waterskin);
 					break;
