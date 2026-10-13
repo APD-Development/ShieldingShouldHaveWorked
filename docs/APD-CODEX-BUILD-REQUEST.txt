@@ -1,1 +1,1 @@
-TEST126: source-aware poison integration. Required 1408 unique core tests, 24 API34 instrumentation tests, 27 valid screenshots, debug compilation and compiled history verification. Stage only; damage controls remain disabled pending remaining sources.
+TEST127: retry poison integration after correcting duplicate enemy changelog descriptions. TEST126 failed history validation before core/build/Android; no APK. Previous actual APK remains TEST125. Required1408 core/24API34/27PNG/debug/compiledhistory. Stageonly; damage controls remain pending.

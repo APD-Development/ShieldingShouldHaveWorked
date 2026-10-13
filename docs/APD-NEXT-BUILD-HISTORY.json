@@ -8,7 +8,7 @@
       "category": "Changes",
       "sprite": "V091_SPINNER",
       "title": "Spinner",
-      "text": "Prepared source attribution for this enemy's poison while preserving its duration.",
+      "text": "Prepared spinner poison attribution while preserving its existing duration.",
       "paths": [
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Spinner.java"
       ]
@@ -35,7 +35,7 @@
       "category": "Changes",
       "sprite": "V061_SPELLBOOK",
       "title": "Bandit",
-      "text": "Prepared source attribution for this enemy's poison while preserving its duration.",
+      "text": "Prepared bandit poison attribution while preserving its existing duration.",
       "paths": [
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Bandit.java"
       ]
@@ -62,7 +62,7 @@
       "category": "Changes",
       "sprite": "V061_SPELLBOOK",
       "title": "Gnoll Trickster",
-      "text": "Prepared source attribution for this enemy's poison while preserving its duration.",
+      "text": "Prepared trickster poison attribution including its zero-duration tick.",
       "paths": [
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/GnollTrickster.java"
       ]
@@ -71,7 +71,7 @@
       "category": "Changes",
       "sprite": "V061_SPELLBOOK",
       "title": "Fungal Sentry",
-      "text": "Prepared source attribution for this enemy's poison while preserving its duration.",
+      "text": "Prepared fungal sentry poison attribution while preserving its six-turn extension.",
       "paths": [
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/FungalSentry.java"
       ]
