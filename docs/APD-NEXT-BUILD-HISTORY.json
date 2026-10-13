@@ -1,47 +1,50 @@
 {
-  "previous_label": "Codex TEST 108",
-  "previous_source": "4b8b3488a88d68baccbfcbd7ee4280639193b00e",
-  "previous_run": 38363169333,
+  "previous_label": "Codex TEST 109",
+  "previous_source": "845972359883207d3b2dea41861e25ae3610bab3",
+  "previous_run": 38367192732,
   "date": "2026-10-13",
   "changes": [
     {
       "category": "Statistics / UIMSD",
-      "sprite": "ITEM_BACKPACK",
-      "title": "Item history reliability",
-      "text": "Item-history readers now exclude self-ancestry in cyclic records and retain items mentioned only in later lifecycle events.",
+      "sprite": "ICON_DATA",
+      "title": "Exact run records",
+      "text": "Single-run reports and linked records no longer mix distinct run identifiers that differ only by letter case.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/ItemHistory.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/Op.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/QueryEngine.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdModel.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/report/ReportBuilder.java"
       ]
     },
     {
-      "category": "Changes",
-      "sprite": "ITEM_SCROLL_GYFU",
-      "title": "Metamorphosis announcement",
-      "text": "Added a short News announcement explaining the already-available five-class talent chooser.",
+      "category": "Statistics / UIMSD",
+      "sprite": "ICON_DATA",
+      "title": "CSV report completeness",
+      "text": "CSV reports now disclose when their existing large-table limit leaves entries out, matching the other export formats.",
       "paths": [
-        "core/src/main/assets/apd/news.tsv"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/report/ReportRenderer.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Item history and News checks",
-      "text": "Added cyclic and sparse item-history regressions and kept News popup coverage aligned with every published article.",
+      "title": "Record links and exports",
+      "text": "Added case-sensitive report and navigation regressions, CSV completeness checks and native Android link-touch coverage.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/ItemLineageCycleTest.java",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/AboutDeviceTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/LinkIdentityTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/report/ReportRunIdentityTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdScreensDeviceTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/report/ReportCsvCompletenessTest.java"
       ]
     },
     {
       "category": "Development",
       "sprite": "ICON_INFO",
-      "title": "Verification and delivery records",
-      "text": "Recorded verified TEST108 delivery and the next reader-reliability checks without changing player data.",
+      "title": "Verification records",
+      "text": "Recorded the preceding APK's successful checks and the next audit corrections without changing saved player data.",
       "paths": [
-        ".github/workflows/codex-existing-apk-delivery.yml",
-        "docs/APD-TEST107-REPORT-2026-10-13.md",
-        "docs/APD-TEST108-REPORT-2026-10-13.md",
         "docs/APD-TEST109-REPORT-2026-10-13.md",
+        "docs/APD-TEST110-REPORT-2026-10-13.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/HANDOFF.md",
         "docs/APD-NEXT-BUILD-HISTORY.json"
@@ -51,7 +54,7 @@
       "category": "Developer Commentary",
       "sprite": "V074_SHPX",
       "title": "Developer Commentary",
-      "text": "I strengthened item-history readers for inconsistent records and added a short announcement for the verified metamorphosis chooser. Gameplay, inventory capacity and existing player data are unchanged.",
+      "text": "I corrected run navigation that could mix case-distinct identifiers and made incomplete CSV reports say so. Existing player text searches and recorded data remain intact.",
       "paths": []
     }
   ]

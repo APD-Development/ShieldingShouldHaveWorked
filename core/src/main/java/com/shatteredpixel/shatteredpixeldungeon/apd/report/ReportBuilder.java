@@ -204,7 +204,8 @@ public final class ReportBuilder {
 	private static Query forRun( Catalog cat, String datasetId, String runColumn, String runId, boolean hidden ){
 		Dataset ds = cat.dataset(datasetId);
 		return Query.of(datasetId).withScope(EVERY_RUN).withShowInternal(hidden).withColumns(ds.def.defaultColumnIds())
-				.addFilter(Filter.text(runColumn, Op.EQ, runId));
+				// Identifiers are case-sensitive, unlike player-entered text searches.
+				.addFilter(Filter.text(runColumn, Op.GROUP_TEXT, runId));
 	}
 
 	public static Report run( Catalog cat, Row run, boolean includeHidden, String currentRuleset, long now, String version ){

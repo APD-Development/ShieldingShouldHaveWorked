@@ -249,7 +249,7 @@ public final class QueryEngine {
 		ColumnDef c = def.column(f.column);
 		if (c == null) return "no such column.";
 		if (c.isInternal() && !q.showInternal) return "it uses hidden information, which is off.";
-		boolean ok = c.type == ColumnDef.Type.TEXT ? f.op == Op.GROUP_TEXT
+		boolean ok = c.type == ColumnDef.Type.TEXT ? f.op == Op.GROUP_TEXT || f.op == Op.IDENTIFIER_IN
                 : f.op == Op.GROUP_VALUE || f.op == Op.GROUP_BOUND;
 		for (Op o : Op.ops(c.type)) if (o == f.op) ok = true;
 		if (!ok) return "\"" + f.op.word + "\" does not apply to " + c.label + ".";
@@ -272,6 +272,9 @@ public final class QueryEngine {
 			String v = r.text(i);
 			switch (f.op){
 				case GROUP_TEXT: return v.equals(f.texts[0]) ? TRUE : FALSE;
+                case IDENTIFIER_IN:
+                    for (String t : f.texts) if (v.equals(t)) return TRUE;
+                    return FALSE;
                 case EQ: return v.equalsIgnoreCase(f.texts[0]) ? TRUE : FALSE;
 				case NE: return v.equalsIgnoreCase(f.texts[0]) ? FALSE : TRUE;
 				case CONTAINS: return v.toLowerCase(Locale.ROOT).contains(f.texts[0].toLowerCase(Locale.ROOT)) ? TRUE : FALSE;

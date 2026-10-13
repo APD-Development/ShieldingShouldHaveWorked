@@ -315,6 +315,7 @@ public final class ReportRenderer {
 				for (int i = 0; i < row.length; i++) sb.append(i > 0 ? "," : "").append(csv(row[i].text));
 				sb.append("\r\n");
 			}
+			if (t.omitted > 0) sb.append("# ").append(t.omitted).append(" more entries are not listed.\r\n");
 		}
 		if (!any) sb.append("# ").append(r.title).append(" has no table\r\n");
 		sb.append("# marks: ? unknown, >=N at least N, ~N inferred or canonical, hidden = hidden information. ").append(footer(r)).append("\r\n");

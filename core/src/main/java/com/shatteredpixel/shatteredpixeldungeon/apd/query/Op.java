@@ -39,7 +39,9 @@ public enum Op {
     // They remain outside ops(): ordinary player-selected filters keep their semantics.
     GROUP_VALUE("group value is", "this recorded value, excluding lower bounds"),
     GROUP_BOUND("group lower bound is", "this recorded lower bound"),
-    GROUP_TEXT("group text is", "this exact case-sensitive text");
+    GROUP_TEXT("group text is", "this exact case-sensitive text"),
+    // Navigation follows identities, not case-insensitive player text searches.
+    IDENTIFIER_IN("identifier is one of", "these exact case-sensitive identifiers");
 
 	//how a filter reads in a sentence ("Score is at least 100"), and what it does in a few words (for the picker)
 	public final String word;

@@ -611,7 +611,7 @@ public final class UimsdModel {
 		back.add(new Place(viewId, query, page));
 		viewId = target.id;
 		apply(target.initialQuery().withScope(s).withShowInternal(query.showInternal)
-				.addFilter(Filter.text(link.targetColumn, Op.IN, ids.toArray(new String[0]))));
+				.addFilter(Filter.text(link.targetColumn, Op.IDENTIFIER_IN, ids.toArray(new String[0]))));
 		return ids.size();
 	}
 
@@ -626,7 +626,7 @@ public final class UimsdModel {
 		ColumnDef tc = to.def.column(link.targetColumn);
 		if (tc == null) return;
 		Scope s = widen(query.scope, row);
-		Filter f = tc.type == ColumnDef.Type.TEXT ? Filter.text(tc.id, Op.EQ, row.text(col)) : Filter.num(tc.id, Op.EQ, row.num(col));
+		Filter f = tc.type == ColumnDef.Type.TEXT ? Filter.text(tc.id, Op.GROUP_TEXT, row.text(col)) : Filter.num(tc.id, Op.EQ, row.num(col));
 		back.add(new Place(viewId, query, page));
 		viewId = target.id;
 		apply(target.initialQuery().withScope(s).withShowInternal(query.showInternal).addFilter(f));

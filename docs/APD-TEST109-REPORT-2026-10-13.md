@@ -14,3 +14,6 @@ Required full core suite (expected1304), debug build and21 API34 instrumentation
 
 ## Continuing work
 The comprehensive UIMSD audit is not complete. Unmatched rollback uncertainty is under investigation; no unsafe guessed lower-bound conversion has been implemented. No persistent unattended Codex worker has been demonstrated.
+
+## Completed verification
+Source845972359883207d3b2dea41861e25ae3610bab3; workflow38367192732,08:07:58–08:19:04UTC. Actual downloaded XML:1304unique core and21 API34 instrumentation methods,0failed/error/skipped.22valid PNGs. Successful debug build; native News card popup test includes all3published articles. Verified candidate not privately delivered: TEST110 follows with additional confirmed UIMSD fixes. Last delivered TEST108 remains available. No physical-phone claim.
