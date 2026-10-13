@@ -113,10 +113,10 @@ public class TrapsRoom extends SpecialRoom {
 			if (lastRow == Terrain.CHASM) {
 				Painter.set( level, pos, Terrain.EMPTY );
 			}
-			level.drop( prize( level ), pos ).type = Heap.Type.CHEST;
+			com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.dropGenerated(level, prize(level), pos, Heap.Type.CHEST, false);
 		} else {
 			Painter.set( level, pos, Terrain.PEDESTAL );
-			level.drop( prize( level ), pos ).type = Heap.Type.CHEST;
+			com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.dropGenerated(level, prize(level), pos, Heap.Type.CHEST, false);
 		}
 		
 		level.addItemToSpawn( new PotionOfLevitation() );

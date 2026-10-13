@@ -133,4 +133,41 @@ public class CustomRulesNoticeDeviceTest {
             }
         }
     }
+    @Test public void equipmentControlAcceptsTouchAndSavesOnlyNextRunPreferences() throws Exception {
+        try(ActivityScenario<AndroidLauncher> scenario=ActivityScenario.launch(AndroidLauncher.class)) {
+            long deadline=System.currentTimeMillis()+120000;
+            while((Game.scene()==null || PixelScene.uiCamera==null)&&System.currentTimeMillis()<deadline)Thread.sleep(200);
+            assertNotNull(Game.scene());Thread.sleep(1500);
+            CustomDungeonRules saved=SPDSettings.apdCustomRules();Bundle run=new Bundle();
+            final WndCustomDungeonRules[] window=new WndCustomDungeonRules[1];
+            final CustomDungeonRules[] active=new CustomDungeonRules[1];final int[] score=new int[1];
+            AtomicReference<Point> sliderTouch=new AtomicReference<>(),saveTouch=new AtomicReference<>();
+            try {
+                render(()->{try {
+                    Dungeon.apdStoreCustomRules(run);active[0]=Dungeon.customRules();score[0]=com.shatteredpixel.shatteredpixeldungeon.Statistics.totalScore;
+                    SPDSettings.apdCustomRules(CustomDungeonRules.defaults());window[0]=new WndCustomDungeonRules();Game.scene().addToFront(window[0]);
+                    OptionSlider equipment=find(window[0],OptionSlider.class).get(CustomDungeonRules.Slider.EQUIPMENT.ordinal());
+                    assertTrue(equipment.active);assertTrue(equipment.visible);
+                    ((ScrollPane)field(window[0],"scroll")).scrollTo(0,Math.max(0,equipment.top()-20));
+                    sliderTouch.set(equipment.camera().cameraToScreen(equipment.right()-3,equipment.bottom()-7));
+                    for(RedButton button:find(window[0],RedButton.class))if(button.text().equals("Save for new runs"))
+                        saveTouch.set(button.camera().cameraToScreen(button.left()+button.width()/2,button.top()+button.height()/2));
+                    assertNotNull(saveTouch.get());
+                }catch(Exception e){throw new RuntimeException(e);}});
+                tap(sliderTouch.get());
+                render(()->{try {
+                    assertEquals(7,find(window[0],OptionSlider.class).get(CustomDungeonRules.Slider.EQUIPMENT.ordinal()).getSelectedValue());
+                    assertEquals(100,SPDSettings.apdCustomRules().get(CustomDungeonRules.Slider.EQUIPMENT));
+                    assertSame(active[0],Dungeon.customRules());
+                }catch(Exception e){throw new RuntimeException(e);}});
+                screenshot("custom-rules-equipment.png");tap(saveTouch.get());
+                render(()->{
+                    assertEquals(200,SPDSettings.apdCustomRules().get(CustomDungeonRules.Slider.EQUIPMENT));
+                    assertSame(active[0],Dungeon.customRules());assertEquals(score[0],com.shatteredpixel.shatteredpixeldungeon.Statistics.totalScore);
+                });
+            } finally {
+                render(()->{if(window[0]!=null)window[0].hide();SPDSettings.apdCustomRules(saved);Dungeon.apdRestoreCustomRules(run);});
+            }
+        }
+    }
 }

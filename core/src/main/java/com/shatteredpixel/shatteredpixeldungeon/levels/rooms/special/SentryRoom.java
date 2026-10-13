@@ -156,7 +156,7 @@ public class SentryRoom extends SpecialRoom {
 		level.mobs.add( sentry );
 
 		Painter.set(level, treasurePos, Terrain.PEDESTAL);
-		level.drop( prize( level ), level.pointToCell(treasurePos) ).type = Heap.Type.CHEST;
+		com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.dropGenerated(level, prize(level), level.pointToCell(treasurePos), Heap.Type.CHEST, false);
 
 		level.addItemToSpawn(new PotionOfHaste());
 

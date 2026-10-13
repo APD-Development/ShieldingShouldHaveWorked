@@ -84,11 +84,11 @@ public class PitRoom extends SpecialRoom {
 					break;
 			}
 		} while ( mainLoot == null || Challenges.isItemBlocked(mainLoot));
-		level.drop(mainLoot, remains).setHauntedIfCursed().type = Heap.Type.SKELETON;
+		com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.dropGenerated(level, mainLoot, remains, Heap.Type.SKELETON, true);
 		
 		int n = Random.IntRange( 1, 2 );
 		for (int i=0; i < n; i++) {
-			level.drop( prize( level ), remains ).setHauntedIfCursed();
+			com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.dropGenerated(level, prize(level), remains, null, true);
 		}
 
 		level.drop( new CrystalKey( Dungeon.depth ), remains );

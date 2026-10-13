@@ -392,8 +392,9 @@ public abstract class RegularLevel extends Level {
 		
 		for (int i=0; i < nItems; i++) {
 
-			Item toDrop = Generator.random();
-			if (toDrop == null) continue;
+            final Item generated = Generator.random();
+            for (Item toDrop : com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.adjust(
+                    generated, () -> com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.extraLike(generated))) {
 
 			int cell = randomDropCell();
 			if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
@@ -453,6 +454,8 @@ public abstract class RegularLevel extends Level {
 			}
 			
 		}
+
+        } // ordinary equipment expansion, never the guaranteed item list
 
 		for (Item item : itemsToSpawn) {
 			int cell = randomDropCell();
@@ -692,7 +695,7 @@ public abstract class RegularLevel extends Level {
 					map[cell] = Terrain.GRASS;
 					losBlocking[cell] = false;
 				}
-				drop( Generator.randomUsingDefaults(), cell).hidden = true;
+				for (Heap heap : com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.dropGenerated(this, Generator.randomUsingDefaults(), cell, null, false))heap.hidden=true;
 			}
 		Random.popGenerator();
 
@@ -936,4 +939,3 @@ public abstract class RegularLevel extends Level {
 	}
 	
 }
-

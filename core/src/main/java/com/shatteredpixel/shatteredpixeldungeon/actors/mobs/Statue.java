@@ -158,7 +158,7 @@ public class Statue extends Mob {
 		//silently duplicated in this case, so don't drop original weapon
 		if (buff(Corrupting.CorruptingTracker.class) == null) {
 			weapon.identify(false);
-			Dungeon.level.drop(weapon, pos).sprite.drop();
+			for (com.shatteredpixel.shatteredpixeldungeon.items.Heap heap : com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.dropGenerated(Dungeon.level, weapon, pos, null, false))heap.sprite.drop();
 		}
 		super.die( cause );
 	}

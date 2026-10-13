@@ -117,9 +117,7 @@ public class MassGraveRoom extends SpecialRoom {
 				if (p.y <= top+2) p.x = Random.IntRange(left+4, right-4);
 				pos = level.pointToCell(p);
 			} while (p.y > top+5 || level.heaps.get(pos) != null);
-			Heap h = level.drop(item, pos);
-			h.setHauntedIfCursed();
-			h.type = Heap.Type.SKELETON;
+			com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.dropGenerated(level, item, pos, Heap.Type.SKELETON, true);
 		}
 	}
 

@@ -1,296 +1,272 @@
 {
-  "previous_label": "Codex TEST 120",
-  "previous_source": "d017bd3009b40bd015779e68f43d19f898bc412b",
-  "previous_run": 38396459334,
+  "previous_label": "Codex TEST 121",
+  "previous_source": "010c44c877ef03dca7fe5ac2987cde309471d089",
+  "previous_run": 38410865529,
   "date": "2026-10-13",
   "changes": [
     {
       "category": "Changes",
-      "sprite": "V023_POTION_CRIMSON",
-      "title": "Well healing",
-      "text": "Well HP recovery follows Healing Effectiveness while cleansing and other well effects remain unchanged.",
+      "sprite": "PD_RAT",
+      "title": "Ordinary floor equipment",
+      "text": "Ordinary floor loot and hidden-book loot follow Equipment Availability while scheduled progression items remain unchanged.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/blobs/WaterOfHealth.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V023_POTION_CRIMSON",
-      "title": "Healing effects",
-      "text": "Potion and delayed healing ticks follow the run's Healing Effectiveness.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Healing.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "ICON_INFO",
-      "title": "Restorative sleep",
-      "text": "Sleep recovery follows Healing Effectiveness; zero healing cannot leave restorative sleep permanently locked.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/MagicalSleep.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V092_CHALICE",
-      "title": "Natural regeneration",
-      "text": "Natural HP recovery follows Healing Effectiveness without adding random rolls.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Regeneration.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V060_RATION",
-      "title": "Well-fed recovery",
-      "text": "Well-fed HP recovery follows Healing Effectiveness.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/WellFed.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V023_POTION_CRIMSON",
-      "title": "Healing fractions",
-      "text": "Fractional recovery survives saves without banking overhealing; starting health, maximum-health gains and revival remain unchanged.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/Hero.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V060_RATION",
-      "title": "Meal talents",
-      "text": "Hearty Meal's HP recovery follows Healing Effectiveness.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/Talent.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "ICON_INFO",
-      "title": "Challenge recovery",
-      "text": "Duelist Challenge's HP recovery follows Healing Effectiveness.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/abilities/duelist/Challenge.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "ICON_INFO",
-      "title": "Elemental Strike recovery",
-      "text": "Vampiric Elemental Strike's HP recovery follows Healing Effectiveness.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/abilities/duelist/ElementalStrike.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/RegularLevel.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "PD_RAT",
-      "title": "Soul Siphon recovery",
-      "text": "Soul Siphon's player healing follows Healing Effectiveness.",
+      "title": "Hermit crab equipment",
+      "text": "Hermit crab's generated armor follows Equipment Availability.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/HermitCrab.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "PD_RAT",
+      "title": "Mimic bonus equipment",
+      "text": "Newly generated mimic bonus equipment follows Equipment Availability; carried prizes and stolen items are not filtered again.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Mimic.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "PD_RAT",
+      "title": "Monster equipment drops",
+      "text": "Generated monster equipment, wealth bonuses and lucky drops follow Equipment Availability; existing item instances remain intact.",
       "paths": [
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Mob.java"
       ]
     },
     {
       "category": "Changes",
-      "sprite": "V061_DEW_VIAL",
-      "title": "Dew recovery",
-      "text": "Immediate dew recovery follows Healing Effectiveness before the final HP cap; shielding stays separate.",
+      "sprite": "ICON_INFO",
+      "title": "Armored statue loot",
+      "text": "Armored statue armor drops follow Equipment Availability without changing the armor used in combat.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Dewdrop.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/ArmoredStatue.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "ICON_INFO",
-      "title": "Metabolism recovery",
-      "text": "Metabolism's HP recovery follows Healing Effectiveness without changing its hunger cost.",
+      "title": "Statue loot",
+      "text": "Statue weapon drops follow Equipment Availability without changing the weapon used in combat.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/curses/Metabolism.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V092_CHALICE",
-      "title": "Chalice recovery",
-      "text": "Chalice regeneration follows Healing Effectiveness; prick damage is unchanged.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/ChaliceOfBlood.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V060_RATION",
-      "title": "Frozen carpaccio recovery",
-      "text": "Frozen carpaccio's HP recovery follows Healing Effectiveness.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/food/FrozenCarpaccio.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V060_RATION",
-      "title": "Pasty recovery",
-      "text": "Pasty healing and its displayed recovered HP follow Healing Effectiveness.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/food/Pasty.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V060_RATION",
-      "title": "Phantom meat recovery",
-      "text": "Phantom meat's HP recovery follows Healing Effectiveness.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/food/PhantomMeat.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V060_RATION",
-      "title": "Supply ration recovery",
-      "text": "Supply ration's HP recovery follows Healing Effectiveness.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/food/SupplyRation.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V023_POTION_CRIMSON",
-      "title": "Aquatic recovery",
-      "text": "Aquatic rejuvenation follows Healing Effectiveness while retaining its existing recovery budget and random rolls.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/elixirs/ElixirOfAquaticRejuvenation.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Statue.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "ICON_INFO",
-      "title": "Escape recovery",
-      "text": "Escape crystal HP recovery follows Healing Effectiveness; escape behavior is unchanged.",
+      "title": "Grave equipment",
+      "text": "Random equipment in grassy graves follows Equipment Availability.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/quest/EscapeCrystal.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/rooms/standard/GrassyGraveRoom.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "ICON_INFO",
-      "title": "Torn page recovery",
-      "text": "Torn page HP recovery follows Healing Effectiveness.",
+      "title": "Blacksmith room loot",
+      "text": "Incidental floor equipment in the blacksmith room follows Equipment Availability; quest reward selection is unchanged.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/remains/TornPage.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/rooms/quest/BlacksmithRoom.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "ICON_INFO",
-      "title": "Cursed wand recovery",
-      "text": "Cursed-wand player HP recovery follows Healing Effectiveness; other targets retain original healing.",
+      "title": "Mass-grave equipment",
+      "text": "Incidental mass-grave equipment follows Equipment Availability while corpse dust and quest progression remain unchanged.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/CursedWand.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/rooms/quest/MassGraveRoom.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "ICON_INFO",
-      "title": "Transfusion recovery",
-      "text": "Transfusion player HP recovery follows Healing Effectiveness while ally healing and shielding remain unchanged.",
+      "title": "Maze equipment",
+      "text": "Secret-maze equipment follows Equipment Availability.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfTransfusion.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/rooms/secret/SecretMazeRoom.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "ICON_INFO",
-      "title": "Vampiric recovery",
-      "text": "Vampiric player HP recovery follows Healing Effectiveness before the final HP cap.",
+      "title": "Summoning-room equipment",
+      "text": "Random equipment in secret summoning rooms follows Equipment Availability.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Vampiric.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/rooms/secret/SecretSummoningRoom.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "ICON_INFO",
-      "title": "City recovery",
-      "text": "City full-recovery effects follow Healing Effectiveness.",
+      "title": "Artillery equipment",
+      "text": "Secret-artillery missile equipment follows Equipment Availability; bombs are unchanged.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/CityLevel.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/rooms/secret/SecretArtilleryRoom.java"
       ]
     },
     {
       "category": "Changes",
-      "sprite": "V061_DEW_VIAL",
-      "title": "Sungrass recovery",
-      "text": "Sungrass player HP recovery follows Healing Effectiveness while retaining its healing budget.",
+      "sprite": "ICON_INFO",
+      "title": "Chasm chest equipment",
+      "text": "Random equipment in chasm chests follows Equipment Availability; key placement remains intact.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Sungrass.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/rooms/secret/SecretChestChasmRoom.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "ICON_INFO",
+      "title": "Pit equipment",
+      "text": "Pit-room equipment follows Equipment Availability while haunted remains and keys keep their existing behavior.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/rooms/special/PitRoom.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "ICON_INFO",
+      "title": "Trap-room equipment",
+      "text": "Trap-room equipment follows Equipment Availability without changing traps.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/rooms/special/TrapsRoom.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "ICON_INFO",
+      "title": "Pool equipment",
+      "text": "Pool-room equipment follows Equipment Availability.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/rooms/special/PoolRoom.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "ICON_INFO",
+      "title": "Shop equipment",
+      "text": "Shop equipment stock follows Equipment Availability while consumables, bags and other progression stock remain unchanged.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/rooms/special/ShopRoom.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "ICON_INFO",
+      "title": "Sentry-room equipment",
+      "text": "Sentry-room equipment follows Equipment Availability; sentry timing is unchanged.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/rooms/special/SentryRoom.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "ICON_INFO",
+      "title": "Armory equipment",
+      "text": "Armory equipment follows Equipment Availability while bombs and the catalyst retain their original behavior.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/rooms/special/ArmoryRoom.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "ICON_INFO",
+      "title": "Optional chest equipment",
+      "text": "Optional crystal-choice chest equipment follows Equipment Availability while its exploration treatment and keys remain intact.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/rooms/special/CrystalChoiceRoom.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "ICON_INFO",
+      "title": "Crypt equipment",
+      "text": "Crypt armor follows Equipment Availability while tomb behavior remains intact.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/rooms/special/CryptRoom.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "ICON_INFO",
+      "title": "Crystal-vault equipment",
+      "text": "Crystal-vault equipment follows Equipment Availability, including newly generated crystal-mimic prizes.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/rooms/special/CrystalVaultRoom.java"
       ]
     },
     {
       "category": "Development",
-      "sprite": "V023_POTION_CRIMSON",
-      "title": "Healing Effectiveness",
-      "text": "Enabled the Healing Effectiveness slider with shared player-recovery calculations; other characters and shielding retain their existing behavior.",
+      "sprite": "ICON_INFO",
+      "title": "Equipment Availability",
+      "text": "Enabled Equipment Availability at ordinary generation boundaries; fresh extra items are generated without filtering player inventory or general item drops.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomHealingHooks.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomEquipmentHooks.java",
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomRulesPresentation.java"
+      ]
+    },
+    {
+      "category": "Bug Fixes",
+      "sprite": "ICON_INFO",
+      "title": "Chest batch placement",
+      "text": "Generated batches are added before sealing their chest, preventing extra items from searching forever for an adjacent placement cell.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomEquipmentHooks.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Healing regressions",
-      "text": "Added seven checks for healing boundaries, all six classes, recovery sources, fractional saves, revival and zero-healing sleep safety.",
+      "title": "Equipment boundaries",
+      "text": "Added checks for all eight percentages, neutral RNG, distinct extra items and protected progression items.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomHealingSliderTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomEquipmentBoundaryTest.java"
+      ]
+    },
+    {
+      "category": "Testing",
+      "sprite": "ICON_CHECKED",
+      "title": "Generated equipment regressions",
+      "text": "Added real floor and shop checks for all classes, neutral source snapshots and isolated crystal-chest batch placement.",
+      "paths": [
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomEquipmentGenerationTest.java",
+        "core/src/test/resources/apd/custom_equipment_neutral_test121.sha256"
+      ]
+    },
+    {
+      "category": "Testing",
+      "sprite": "ICON_CHECKED",
+      "title": "Monster and stolen-item checks",
+      "text": "Added actual monster-drop checks proving fresh equipment expands while existing loot and stolen player items remain intact.",
+      "paths": [
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomEquipmentLootTest.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_INFO",
-      "title": "Narrow scoring notice capture",
-      "text": "Corrected the narrow-screen test's scroll target so its screenshot shows the scoring notice rather than the bottom sliders.",
+      "title": "Equipment control on Android",
+      "text": "Added an Android touch-and-save check for Equipment Availability that preserves active-run rules and earned scores.",
       "paths": [
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V30_CLERIC_CLOTH",
-      "title": "Cleric lore curation",
-      "text": "Reduced the stored Cleric collection to 50 distinct entries while keeping the feature disabled for this alpha.",
-      "paths": [
-        "core/src/main/assets/apd/humor/cleric_anytime.txt",
-        "core/src/main/assets/apd/humor/cleric_appreciation.txt",
-        "core/src/main/assets/apd/humor/cleric_comparisons.txt",
-        "core/src/main/assets/apd/humor/cleric_contextual.txt",
-        "core/src/main/assets/apd/humor/cleric_formats.txt"
-      ]
-    },
-    {
-      "category": "Testing",
-      "sprite": "ICON_CHECKED",
-      "title": "Lore regressions",
-      "text": "Added count, uniqueness, trigger and history-preservation checks; updated content expectations for the approved 50-entry collection.",
-      "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/humor/ClericLoreLimitTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/humor/CreativeDirectionTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/humor/PackLintTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/humor/PoolsAndStoriesTest.java",
-        "core/src/test/resources/apd/cleric_complaint_ids.txt"
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java",
+        "tools/run-codex-android-checks.sh"
       ]
     },
     {
       "category": "Development",
       "sprite": "ICON_INFO",
       "title": "Verification records",
-      "text": "Recorded healing verification, the complete lore curation and remaining alpha limitations.",
+      "text": "Recorded verified TEST121 checks, equipment implementation and remaining alpha limitations.",
       "paths": [
+        "docs/APD-TEST122-REPORT-2026-10-13.md",
         "docs/APD-TEST121-REPORT-2026-10-13.md",
-        "docs/APD-CLERIC-LORE-CURATION-2026-10-13.md",
         "docs/HANDOFF.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/APD-NEXT-BUILD-HISTORY.json"
@@ -300,7 +276,7 @@
       "category": "Developer Commentary",
       "sprite": "V074_SHPX",
       "title": "Developer Commentary",
-      "text": "I enabled healing customization while protecting revival and preventing zero-healing sleep from locking a run. Damage attribution, equipment supply and permanent statistics integration remain unfinished; custom settings still do not change earned scores.",
+      "text": "I added equipment availability across ordinary loot sources and caught a chest-placement hang before release. Offensive damage attribution and permanent custom-rules statistics integration still need work; this is not the completed early alpha.",
       "paths": []
     }
   ]

@@ -68,7 +68,7 @@ public class CryptRoom extends SpecialRoom {
 			cy = top + 2;
 		}
 		
-		level.drop( prize( level ), cx + cy * level.width() ).type = Heap.Type.TOMB;
+		com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.dropGenerated(level, prize(level), cx + cy * level.width(), Heap.Type.TOMB, false);
 	}
 	
 	private static Item prize( Level level ) {

@@ -51,7 +51,7 @@ public final class CustomRulesPresentation {
     public static boolean gameplayImplemented(CustomDungeonRules.Slider slider) {
         switch(slider) {
             case PLAYER_DAMAGE: case ENEMY_DAMAGE: case BOSS_DAMAGE:
-            case EQUIPMENT: return false;
+                return false;
             default: return true;
         }
     }

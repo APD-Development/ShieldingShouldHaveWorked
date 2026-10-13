@@ -71,14 +71,17 @@ public class CrystalVaultRoom extends SpecialRoom {
 			i2Pos = c + PathFinder.CIRCLE8[(neighbourIdx+4)%8];
 		} while (level.adjacent(i1Pos, doorPos) || level.adjacent(i2Pos, doorPos));
 
-		level.drop( i1, i1Pos ).type = Heap.Type.CRYSTAL_CHEST;
+		com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.dropGenerated(level, i1, i1Pos, Heap.Type.CRYSTAL_CHEST, false);
 		float altChance = 1/10f * RatSkull.exoticChanceMultiplier();
 		if (altChance > 0.1f) altChance = (altChance+0.1f)/2f; //rat skull is 1/2 as effective here
 		altChance *= MimicTooth.mimicChanceMultiplier(); //mimic tooth has full effectiveness
 		if (Random.Float() < altChance){
-			level.mobs.add(Mimic.spawnAt(i2Pos, CrystalMimic.class, i2));
+			final Item generated=i2;
+            java.util.List<Item> prizes=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.adjust(generated,
+                () -> com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.extraLike(generated));
+            if(!prizes.isEmpty())level.mobs.add(Mimic.spawnAt(i2Pos, CrystalMimic.class, prizes.toArray(new Item[0])));
 		} else {
-			level.drop(i2, i2Pos).type = Heap.Type.CRYSTAL_CHEST;
+			com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.dropGenerated(level, i2, i2Pos, Heap.Type.CRYSTAL_CHEST, false);
 		}
 		Painter.set(level, i1Pos, Terrain.PEDESTAL);
 		Painter.set(level, i2Pos, Terrain.PEDESTAL);

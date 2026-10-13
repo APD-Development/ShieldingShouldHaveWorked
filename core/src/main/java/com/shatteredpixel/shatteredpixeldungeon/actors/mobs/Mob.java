@@ -68,6 +68,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Wound;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
@@ -1072,9 +1073,15 @@ public abstract class Mob extends Char {
 			if (Random.Float() < lootChance()) {
 				Item loot = createLoot();
 				if (loot != null) {
-					com.shatteredpixel.shatteredpixeldungeon.apd.GuaranteedLootIdentification.identifyNormalDrop(this, loot);
-					ApdGen.onLootCreated( this, loot );
-					Dungeon.level.drop(loot, pos).sprite.drop();
+                    final Item original=loot;
+                    java.util.List<Item> ordinary = this.loot instanceof Item ? java.util.Collections.singletonList(original)
+                        : com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.adjust(original,
+                            () -> com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.extraLike(original));
+                    for (Item generated : ordinary) {
+                        com.shatteredpixel.shatteredpixeldungeon.apd.GuaranteedLootIdentification.identifyNormalDrop(this, generated);
+                        ApdGen.onLootCreated(this, generated);
+                        Dungeon.level.drop(generated, pos).sprite.drop();
+                    }
 				}
 			}
 		}
@@ -1086,14 +1093,14 @@ public abstract class Mob extends Char {
 			else if (properties.contains(Property.MINIBOSS)) rolls = 5;
 			ArrayList<Item> bonus = RingOfWealth.tryForBonusDrop(Dungeon.hero, rolls);
 			if (bonus != null && !bonus.isEmpty()) {
-				for (Item b : bonus) Dungeon.level.drop(b, pos).sprite.drop();
+				for (Item b : bonus) for (Heap heap : com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.dropGenerated(Dungeon.level, b, pos, null, false))heap.sprite.drop();
 				RingOfWealth.showFlareForBonusDrop(sprite);
 			}
 		}
 		
 		//lucky enchant logic
 		if (buff(Lucky.LuckProc.class) != null){
-			Dungeon.level.drop(buff(Lucky.LuckProc.class).genLoot(), pos).sprite.drop();
+			for (Heap heap : com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.dropGenerated(Dungeon.level, buff(Lucky.LuckProc.class).genLoot(), pos, null, false))heap.sprite.drop();
 			Lucky.showFlare(sprite);
 		}
 
@@ -1786,6 +1793,3 @@ public abstract class Mob extends Char {
 		heldAllies.clear();
 	}
 }
-
-
-

@@ -79,12 +79,8 @@ public class BlacksmithRoom extends StandardRoom {
 			equipPos += level.width();
 		}
 		for (int i=0; i < 2; i++) {
-			level.drop(
-					Generator.random( Random.oneOf(
-							Generator.Category.ARMOR,
-							Generator.Category.WEAPON,
-							Generator.Category.MISSILE
-					) ), equipPos );
+			com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.dropGenerated(level, Generator.random(Random.oneOf(
+                    Generator.Category.ARMOR, Generator.Category.WEAPON, Generator.Category.MISSILE)), equipPos, null, false);
 			Painter.set(level, equipPos, Terrain.PEDESTAL);
 			equipPos--;
 		}

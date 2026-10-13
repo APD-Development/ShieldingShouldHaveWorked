@@ -350,11 +350,15 @@ public class Mimic extends Mob {
 					break;
 			}
 		} while (reward == null || Challenges.isItemBlocked(reward));
-		items.add(reward);
+		final Item generated=reward;
+        items.addAll(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.adjust(generated,
+            () -> com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.extraLike(generated)));
 
 		if (MimicTooth.stealthyMimics()){
 			//add an extra random item if player has a mimic tooth
-			items.add(Generator.randomUsingDefaults());
+			final Item extra=Generator.randomUsingDefaults();
+            items.addAll(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.adjust(extra,
+                () -> com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.extraLike(extra)));
 		}
 	}
 

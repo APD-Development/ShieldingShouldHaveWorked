@@ -117,7 +117,7 @@ public class SecretMazeRoom extends SecretRoom {
 			prize.upgrade();
 		}
 		
-		level.drop(prize, level.pointToCell(bestDistP)).type = Heap.Type.CHEST;
+		com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.dropGenerated(level, prize, level.pointToCell(bestDistP), Heap.Type.CHEST, false);
 		
 		PathFinder.setMapSize(level.width(), level.height());
 		

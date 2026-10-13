@@ -85,7 +85,7 @@ public class PoolRoom extends SpecialRoom {
 		}
 		
 		int pos = x + y * level.width();
-		level.drop( prize( level ), pos ).type = Heap.Type.CHEST;
+		com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.dropGenerated(level, prize(level), pos, Heap.Type.CHEST, false);
 		Painter.set( level, pos, Terrain.PEDESTAL );
 		
 		level.addItemToSpawn( new PotionOfInvisibility() );
