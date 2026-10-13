@@ -1,103 +1,81 @@
 {
-  "previous_label": "Codex TEST 95",
-  "previous_source": "3ebdb4082adfbbb0de085cb29618da2666d3368a",
-  "previous_run": 38333801539,
+  "previous_label": "Codex TEST 97",
+  "previous_source": "a2dce9fe381b211de6a9a11733e4801219c418b2",
+  "previous_run": 38341230408,
   "date": "2026-10-12",
   "changes": [
     {
-      "category": "Bug Fixes",
-      "sprite": "ICON_DATA",
-      "title": "Large statistics",
-      "text": "Large means and medians retain their represented values instead of overflowing display rounding.",
+      "category": "Quality of Life",
+      "sprite": "ITEM_POTION_HEALING",
+      "title": "Healing confirmation",
+      "text": "Identified Healing potions can require confirmation at a saved HP threshold from 0% to 100%; the default remains one-tap use.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/CellFormatter.java",
-        "docs/APD-UIMSD-AVERAGE-DISPLAY-VERIFICATION-2026-10-12.md"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/SPDSettings.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/PotionOfHealing.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/healing/HealingConfirmation.java"
       ]
     },
     {
-      "category": "Bug Fixes",
-      "sprite": "ICON_DATA",
-      "title": "Statistics startup",
-      "text": "Concurrent statistics initialization no longer deadlocks while registering built-in facts.",
+      "category": "Interface",
+      "sprite": "ITEM_POTION_HEALING",
+      "title": "Healing preference controls",
+      "text": "APD Settings offers a native percentage slider with explicit Save and Cancel, plus an Off option.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/FactKinds.java",
-        "docs/APD-UIMSD-REGISTRY-VERIFICATION-2026-10-12.md"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/APDSettingsPane.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndHealingConfirmation.java"
       ]
     },
     {
-      "category": "Bug Fixes",
+      "category": "Performance",
       "sprite": "ICON_DATA",
-      "title": "Conservative rate bounds",
-      "text": "Incomplete question rates now round outward so their displayed bounds remain conservative.",
+      "title": "Compressed-statistics memory",
+      "text": "Decoding statistics series reuses its step buffer instead of allocating a second array for every column.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/Questions.java",
-        "docs/APD-UIMSD-RATE-ROUNDING-VERIFICATION-2026-10-12.md"
-      ]
-    },
-    {
-      "category": "Statistics / UIMSD",
-      "sprite": "ICON_DATA",
-      "title": "Empty recorded values",
-      "text": "Text filters offer known empty values separately from missing recordings.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdModel.java",
-        "docs/APD-UIMSD-EMPTY-FILTER-VERIFICATION-2026-10-12.md"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/FactEvents.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Regression coverage",
-      "text": "Added reproduced startup, large-number, rate-rounding and empty-filter cases with native Android answer and picker checks.",
+      "title": "Healing regression coverage",
+      "text": "Tested every percentage boundary, unidentified bypass and persistence, with real Android cancellation, consumption and settings controls.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/AverageDisplayRangeTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/FactRegistryInitializationTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RateBoundRoundingTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/QuestionRateBoundsTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/KnownEmptyFilterChoiceTest.java",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdScreensDeviceTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/healing/HealingConfirmationTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PlayRunDeviceTest.java",
+        "docs/APD-HEALING-CONFIRMATION-VERIFICATION-2026-10-12.md"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Save-test isolation",
-      "text": "Save regressions restore their temporary file services after execution and use names describing their verified behavior.",
+      "title": "Statistics series coverage",
+      "text": "Added signed-long extremes and delta-overflow roundtrips and recorded an actual decoder allocation comparison.",
       "paths": [
-        "core/src/test/java/FileUtilsSaveSafetyTest.java"
-      ]
-    },
-    {
-      "category": "Development",
-      "sprite": "ITEM_ARMOR_MAIL",
-      "title": "Armor generation study",
-      "text": "Verified 100,000 TEST79 dungeon seeds without changing loot probabilities; generated armor and player encounters remain distinct.",
-      "paths": [
-        "docs/APD-ARMOR-GENERATION-100000-2026-10-12.md",
-        "docs/evidence/armor-100000/verification.json",
-        "docs/evidence/armor-100000/results.txt",
-        "docs/evidence/armor-100000/ArmorStudy.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/FactEventsTest.java",
+        "docs/APD-SERIES-ALLOCATION-VERIFICATION-2026-10-12.md",
+        "docs/evidence/series-allocation/SeriesAllocationProbe.java"
       ]
     },
     {
       "category": "Development",
       "sprite": "ICON_INFO",
-      "title": "Verification records",
-      "text": "Recorded the preceding delivered APK and this batch's evidence and build checks.",
+      "title": "Build evidence",
+      "text": "Recorded TEST97's successful verification and delivery, this batch's checks and its remaining limitations.",
       "paths": [
+        ".github/workflows/codex-existing-apk-delivery.yml",
+        "docs/APD-TEST97-REPORT-2026-10-12.md",
+        "docs/APD-TEST97-DELIVERY-2026-10-12.json",
         "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/APD-TEST96-REPORT-2026-10-12.md",
-        "docs/APD-TEST95-DELIVERY-2026-10-12.json",
-        "docs/HANDOFF.md",
-        ".github/workflows/codex-existing-apk-delivery.yml"
+        "docs/APD-TEST98-REPORT-2026-10-12.md",
+        "docs/HANDOFF.md"
       ]
     },
     {
       "category": "Developer Commentary",
       "sprite": "V074_SHPX",
       "title": "Developer Commentary",
-      "text": "I fixed several misleading statistics displays and an initialization deadlock. Empty recorded values are now selectable without treating missing data as empty.",
+      "text": "I added optional healing confirmation without changing healing effects or normal drinking costs. I also reduced temporary memory use when reading compressed statistics.",
       "paths": []
     }
   ]

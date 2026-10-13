@@ -226,6 +226,62 @@ public class PlayRunDeviceTest {
 		}
 	}
 
+    private static void assertHealingConfirmationControls() throws Exception {
+        int oldThreshold=SPDSettings.healingConfirmationThreshold();
+        final com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing[] potion={null};
+        final float[] before={0}; final int[] hp={0};
+        try {
+            final java.util.concurrent.atomic.AtomicReference<com.shatteredpixel.shatteredpixeldungeon.windows.WndHealingConfirmation.ThresholdWindow> thresholdWindow=new java.util.concurrent.atomic.AtomicReference<>();
+            onRender(()->{try {
+                thresholdWindow.set(new com.shatteredpixel.shatteredpixeldungeon.windows.WndHealingConfirmation.ThresholdWindow());
+                GameScene.show(thresholdWindow.get());
+                assertEquals("opening settings does not enable confirmation",oldThreshold,SPDSettings.healingConfirmationThreshold());
+                ((com.shatteredpixel.shatteredpixeldungeon.ui.OptionSlider)field(thresholdWindow.get(),"percentage")).setSelectedValue(0);
+                assertEquals("editing without saving retains preference",oldThreshold,SPDSettings.healingConfirmationThreshold());
+            }catch(Exception e){throw new RuntimeException(e);}});
+            Thread.sleep(300);visibilityScreenshot("healing-threshold-settings.png");
+            onRender(()->{try {
+                boolean saved=false;
+                for(Object child:(java.util.List<?>)field(thresholdWindow.get(),"members"))
+                    if(child instanceof com.shatteredpixel.shatteredpixeldungeon.ui.RedButton
+                            && ((com.shatteredpixel.shatteredpixeldungeon.ui.RedButton)child).text().equals("Save")) {
+                        click(child,"onClick");saved=true;break;
+                    }
+                assertTrue("native Save control works",saved);assertEquals(0,SPDSettings.healingConfirmationThreshold());
+            }catch(Exception e){throw new RuntimeException(e);}});
+            onRender(()->{
+                SPDSettings.healingConfirmationThreshold(0);
+                potion[0]=new com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing();
+                potion[0].setKnown();
+                assertTrue(potion[0].collect(Dungeon.hero.belongings.backpack));
+                before[0]=Dungeon.hero.cooldown();hp[0]=Dungeon.hero.HP;
+                // The same default action is invoked by both classic and category quickslots.
+                potion[0].execute(Dungeon.hero);
+            });
+            waitUntil("healing confirmation opens",()->stairsMenu()!=null,30000);
+            visibilityScreenshot("healing-confirmation.png");
+            onRender(()->{try{
+                com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions window=stairsMenu();
+                assertNotNull(window);
+                assertTrue(Dungeon.hero.belongings.backpack.contains(potion[0]));
+                assertEquals(before[0],Dungeon.hero.cooldown(),0f);
+                java.lang.reflect.Method select=window.getClass().getDeclaredMethod("onSelect",int.class);
+                select.setAccessible(true);select.invoke(window,1);window.hide();
+                assertTrue("cancel retains item",Dungeon.hero.belongings.backpack.contains(potion[0]));
+                assertEquals("cancel retains turn",before[0],Dungeon.hero.cooldown(),0f);
+                assertEquals("cancel retains HP",hp[0],Dungeon.hero.HP);
+                potion[0].execute(Dungeon.hero,com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion.AC_DRINK);
+                window=stairsMenu();assertNotNull(window);
+                select=window.getClass().getDeclaredMethod("onSelect",int.class);select.setAccessible(true);
+                float turn=Dungeon.hero.cooldown();select.invoke(window,0);window.hide();
+                assertFalse("confirm consumes the real potion",Dungeon.hero.belongings.backpack.contains(potion[0]));
+                assertEquals("confirm spends normal drinking time",turn+1f,Dungeon.hero.cooldown(),0f);
+                assertNotNull("normal healing effect retained",Dungeon.hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing.class));
+            }catch(Exception e){throw new RuntimeException(e);}});
+            waitUntil("ready after confirmed healing",()->Dungeon.hero.ready,30000);
+        } finally { SPDSettings.healingConfirmationThreshold(oldThreshold); }
+    }
+
 	@Test
 	public void aRunCanBePlayedSavedContinuedAndEndedWithItsHistoryRecorded() throws Exception {
 		boolean recordingWas = SPDSettings.apdRecording();
@@ -263,6 +319,7 @@ public class PlayRunDeviceTest {
 			assertEquals(1, Dungeon.depth);
 			assertEquals(HeroClass.WARRIOR, Dungeon.hero.heroClass);
 			waitForGameplayControls();
+            assertHealingConfirmationControls();
 			onRender(() -> { try { assertTrue("exercise controls before acknowledging intro", SPDSettings.intro()); assertGameplayControls(); assertCategoryHotbarControls(); } catch (Exception e){ throw new RuntimeException(e); } });
 			//Use the actual toolbar callbacks; the tutorial must not suppress search or wait.
 			onRender(() -> { try { click(field(field(Game.scene(), "toolbar"), "btnSearch"), "onLongClick"); } catch (Exception e){ throw new RuntimeException(e); } });

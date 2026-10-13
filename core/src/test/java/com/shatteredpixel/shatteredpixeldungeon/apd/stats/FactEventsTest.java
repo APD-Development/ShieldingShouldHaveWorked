@@ -137,4 +137,21 @@ public class FactEventsTest {
 		w.close(false, 5000);
 		assertFalse(factEvents(RunLogReader.read(new File(tmp.getRoot(), "empty.apdlog"))).size() > 0);
 	}
+    @Test public void seriesPreservesExtremeSignedValuesAndDeltaOverflow() throws Exception {
+        int n=512;long[] clocks=new long[n];long[][] rows=new long[n][4];
+        for(int i=0;i<n;i++) {
+            clocks[i]=i;
+            rows[i]=new long[]{i%2==0?Long.MIN_VALUE:Long.MAX_VALUE,
+                    Long.MAX_VALUE-i, Long.MIN_VALUE+i, i/32};
+        }
+        RunLogWriter w=writer("extremes");
+        assertTrue(FactEvents.emitSeries(w,EventTypes.FACT_SERIES,"test.extremes","","",new String[0],4,clocks,rows,n));
+        w.close(false,5000);
+        ReadResult read=RunLogReader.read(new File(tmp.getRoot(),"extremes.apdlog"));
+        java.util.List<ApdEvent> encoded=factEvents(read);assertEquals(1,encoded.size());
+        java.util.List<FactEvents.Observation> decoded=FactEvents.decode(encoded.get(0),read);
+        assertEquals(n,decoded.size());
+        for(int i=0;i<n;i++) {assertEquals(clocks[i],decoded.get(i).clock);assertArrayEquals(rows[i],decoded.get(i).values);}
+    }
+
 }

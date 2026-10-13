@@ -64,6 +64,7 @@ public class APDSettingsPane extends Component {
 	private RenderedTextBlock storage;
 	private RedButton btnClericQuickCasts;
     private RedButton btnPlaybackSpeed;
+    private RedButton btnHealingConfirmation;
 	private RedButton btnTest;
 	private RedButton btnExportHistory;
 	private RedButton btnImportHistory;
@@ -152,6 +153,10 @@ public class APDSettingsPane extends Component {
             }
         };
         add(btnPlaybackSpeed);
+        btnHealingConfirmation = new RedButton("Healing confirmation") {
+            @Override protected void onClick() { WndHealingConfirmation.settings(); }
+        };
+        add(btnHealingConfirmation);
 		btnClericQuickCasts = new RedButton("Cleric quick-cast buttons") {
             @Override protected void onClick() { WndClericQuickCasts.settings(); }
         };
@@ -308,6 +313,7 @@ public class APDSettingsPane extends Component {
         chkTileVisibility.setRect(x,pos,width,16);pos=chkTileVisibility.bottom()+GAP;
         chkStairNavigation.setRect(x,pos,width,16);pos=chkStairNavigation.bottom()+GAP;
         btnPlaybackSpeed.setRect(x,pos,width,16);pos=btnPlaybackSpeed.bottom()+GAP;
+        btnHealingConfirmation.setRect(x,pos,width,16);pos=btnHealingConfirmation.bottom()+GAP;
         btnClericQuickCasts.setRect(x,pos,width,16);
         pos = btnClericQuickCasts.bottom() + GAP;
 		status.maxWidth( (int)width );

@@ -48,6 +48,25 @@ public class PotionOfHealing extends Potion {
 		bones = true;
 	}
 	
+    @Override
+    public void execute(final Hero hero, final String action) {
+        if (AC_DRINK.equals(action) && com.shatteredpixel.shatteredpixeldungeon.apd.healing.HealingConfirmation.required(
+                isKnown(), com.shatteredpixel.shatteredpixeldungeon.SPDSettings.healingConfirmationThreshold(), hero.HP, hero.HT)) {
+            requestHealingConfirmation(hero, () -> PotionOfHealing.super.execute(hero, action));
+            return;
+        }
+        super.execute(hero, action);
+    }
+
+    protected void requestHealingConfirmation(Hero hero, final Runnable confirmed) {
+        com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.show(
+                new com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions(
+                        new com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite(this), name(),
+                        "Use this healing potion at your current HP?", "USE HEALING ITEM", "CANCEL") {
+                    @Override protected void onSelect(int index) { if (index == 0) confirmed.run(); }
+                });
+    }
+
 	@Override
 	public void apply( Hero hero ) {
 		identify();

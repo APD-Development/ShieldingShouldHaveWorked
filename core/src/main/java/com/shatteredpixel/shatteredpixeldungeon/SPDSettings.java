@@ -301,6 +301,10 @@ public class SPDSettings extends GameSettings {
 
 	//APD
 
+    // -1 preserves normal one-tap drinking; 0..100 are inclusive HP thresholds.
+    public static int healingConfirmationThreshold() { return getInt("apd_healing_confirmation", -1, -1, 100); }
+    public static void healingConfirmationThreshold(int value) { put("apd_healing_confirmation", Math.max(-1, Math.min(100, value))); }
+
 	public static final String KEY_APD_EXOTIC_CHANCE    = "apd_exotic_chance";
 	public static final String KEY_APD_CLERIC_ATTEMPTS  = "apd_cleric_attempts";
 
