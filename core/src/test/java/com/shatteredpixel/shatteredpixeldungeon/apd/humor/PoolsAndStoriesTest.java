@@ -207,8 +207,8 @@ public class PoolsAndStoriesTest {
 	public void theHatredAndAppreciationPoolsHaveTheirOwnShippedCounts(){
 		ClericGrudge g = new ClericGrudge( HumorTestSupport.shipped(), new Ledger( null ), new Random( 1 ), true, T0 );
 		Counter c = g.counter();
-		assertTrue( "about 200 Hatred lines to start with, got " + c.total, c.total >= 165 );
-		assertTrue( "about 100 Appreciation lines to start with, got " + c.appreciationTotal, c.appreciationTotal >= 95 );
+		assertTrue( "curated Hatred count, got " + c.total, c.total == 33 );
+		assertTrue( "curated Appreciation count, got " + c.appreciationTotal, c.appreciationTotal == 16 );
 		for (Line l : HumorTestSupport.shipped()){
 			assertEquals( l.id, l.id.startsWith( "app." ), l.pool == Pool.APPRECIATION );
 		}

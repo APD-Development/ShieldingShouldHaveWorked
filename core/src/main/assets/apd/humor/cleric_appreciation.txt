@@ -1,157 +1,18 @@
 # CLERIC APPRECIATION: not sincere. Sarcastic compliments, backhanded praise, fake apologies and false redemption arcs that turn out to be
-# insults. A separate pool from the Hatred packs (ids start 'app.', flag 'appreciation'). Linked stories use setup / after=<id> / nextsession.
 # id | category | flags | requires | weight | clean wording | adult wording (optional)
-
-# ---- linked stories: the first part, and what comes after it (possibly sessions later)
-# story 1: respect
 app.0101 | appreciation | appreciation,setup,since=4.8 | - | 8 | After careful consideration, I've decided Cleric deserves more respect. | After careful consideration, I've decided Cleric deserves more respect. I held a meeting with myself about it. The minutes are sealed.
 app.0102 | appreciation | appreciation,after=app.0101,nextsession,since=4.8 | - | 8 | Update on the respect for Cleric: it was reviewed, found to be a clerical error, and returned to the store. | Update on the respect for Cleric: it was reviewed, found to be a clerical error, and returned to the store. I got store credit. I spent it on spite.
-# story 2: favorite character
 app.0103 | appreciation | appreciation,setup,since=4.8 | - | 8 | Cleric is my favorite character. | Cleric is my favorite character. I said it out loud, calmly, like a man with nothing to hide.
 app.0104 | appreciation | appreciation,after=app.0103,nextsession,since=4.8 | - | 8 | This statement about Cleric was generated during a temporary lapse in judgment. | This statement about Cleric was generated during a temporary lapse in judgment. The lapse has been located and punched.
-# story 3: the unauthorized positive statement (three parts)
-app.0105 | appreciation | appreciation,setup,since=4.8 | - | 8 | You know, Cleric is genuinely good. | You know, Cleric is genuinely good. I've thought about this a lot, and I'm surprisingly calm.
-app.0106 | appreciation | appreciation,setup,after=app.0105,nextsession,since=4.8 | - | 8 | NOTICE: I have identified an unauthorized positive statement about Cleric. I have notified myself. |
-app.0107 | appreciation | appreciation,after=app.0106,nextsession,since=4.8 | - | 8 | I have responded to my own notice about Cleric. My response is one word, and it begins with "ugh". | I have responded to my own notice about Cleric. My response is one word, four letters, and it is not "ugh".
-# story 4: the apology
 app.0108 | appreciation | appreciation,setup,since=4.8 | - | 8 | I owe Cleric an apology. I have been working on it for weeks. |
 app.0109 | appreciation | appreciation,after=app.0108,nextsession,since=4.8 | - | 8 | The apology to Cleric is finished. It is one sentence long: "I'm sorry you exist." | The apology to Cleric is finished. It is one sentence long: "I'm sorry you exist." I'd like to be clear that I am only sorry about the second half.
-# story 5: the reading attempt (three parts)
-app.0110 | appreciation | appreciation,setup,since=4.8 | - | 8 | Today I decided to give Cleric a fair chance and read every spell in the Tome. Wish me luck. | Today I decided to give Cleric a fair chance and read every spell in the Tome. Wish me luck. I'll need it, and a drink.
-app.0111 | appreciation | appreciation,setup,after=app.0110,nextsession,since=4.8 | - | 8 | Update: I reached the second spell on Cleric's list. My left eye has been twitching since. | Update: I reached the second spell on Cleric's list. My left eye has been twitching since. I have also said a word my mother wouldn't recognize.
-app.0112 | appreciation | appreciation,after=app.0111,nextsession,since=4.8 | - | 8 | Final update: the Tome and I have agreed to never speak of the Cleric experiment again. | Final update: the Tome and I have agreed to never speak of the Cleric experiment again. A handshake sealed it. I washed my hand for ten minutes.
-# story 6: forgiveness
-app.0113 | appreciation | appreciation,setup,since=4.8 | - | 8 | I have something personal to announce: I've decided to forgive Cleric. | I have something personal to announce: I've decided to forgive Cleric. I feel lighter. I feel free. I feel like a better person.
-app.0114 | appreciation | appreciation,after=app.0113,nextsession,since=4.8 | - | 8 | Never mind about forgiving Cleric. | Never mind about forgiving Cleric. Fuck that. What was I thinking.
-# story 7: the statue
 app.0115 | appreciation | appreciation,setup,since=4.8 | - | 8 | I would like to announce a statue in Cleric's honor. | I would like to announce a statue in Cleric's honor. I have already commissioned it. Don't ask what the sculptor was told.
 app.0116 | appreciation | appreciation,after=app.0115,nextsession,since=4.8 | - | 8 | The Cleric statue has been built. It stands in a closet, facing the wall, and I'm very happy about it. | The Cleric statue has been built. It stands in a closet, facing the wall, and every time I walk past it I salute with one finger.
-# story 8: the compliment warning
-app.0117 | appreciation | appreciation,setup,since=4.8 | - | 8 | Heads up: the next message will contain a compliment about Cleric. | Heads up: the next message will contain a compliment about Cleric. I need you to brace yourself. I did.
-app.0118 | appreciation | appreciation,after=app.0117,nextsession,since=4.8 | - | 8 | That compliment about Cleric was a typo. The message was meant to say "complaint". | That compliment about Cleric was a typo. The message was meant to say "complaint". The typo has been fired.
-# story 9: admiration
-app.0119 | appreciation | appreciation,setup,since=4.8 | - | 8 | I have added Cleric to my list of people I admire. | I have added Cleric to my list of people I admire. The list is one name long. I'm in a very dark place.
-app.0120 | appreciation | appreciation,after=app.0119,nextsession,since=4.8 | - | 8 | Cleric is on my admiration list as a warning. The list is called "Do not become". | Cleric is on my admiration list as a warning. The list is called "Do not become", and Cleric is the cover art.
-# story 10: Ascended Form
-app.0121 | appreciation | appreciation,setup,since=4.8 | - | 8 | Cleric's Ascended Form is truly radiant. | Cleric's Ascended Form is truly radiant. I stared at it for ten minutes and my eyes still hurt.
-app.0122 | appreciation | appreciation,after=app.0121,nextsession,since=4.8 | - | 8 | By radiant I mean like a warning light. Please move away from the Cleric. |
-# story 11: Trinity
-app.0123 | appreciation | appreciation,setup,since=4.8 | - | 8 | Trinity is the most elegant thing Cleric does. | Trinity is the most elegant thing Cleric does. Fuck, I said it. Write it down. Frame it.
-app.0124 | appreciation | appreciation,after=app.0123,nextsession,since=4.8 | - | 8 | That is a very low bar for Cleric and I want you to know I checked it twice. | That is a very low bar for Cleric and I want you to know I checked it twice. It was on the floor. I tripped over it.
-# story 12: service
-app.0125 | appreciation | appreciation,setup,since=4.8 | - | 8 | Thank you for your service, Cleric. | Thank you for your service, Cleric. Now get the fuck out of my dungeon.
-app.0126 | appreciation | appreciation,after=app.0125,nextsession,since=4.8 | - | 8 | Your service as Cleric is now complete. Please return the Tome. |
-# story 13: employee of the month
-app.0127 | appreciation | appreciation,setup,since=4.8 | - | 8 | Breaking: Cleric has been named Employee of the Month. | Breaking: Cleric has been named Employee of the Month. I'm the manager, and I signed the certificate myself with a very steady hand.
-app.0128 | appreciation | appreciation,after=app.0127,nextsession,since=4.8 | - | 8 | Correction: Cleric was the only employee. The month was very long. | Correction: Cleric was the only employee. The month was very long. Fucking exhausting, really.
-# story 14: proud
-app.0129 | appreciation | appreciation,setup,since=4.8 | - | 8 | I'm proud of Cleric. | I'm proud of Cleric. I want that on the record, in ink, with a witness.
-app.0130 | appreciation | appreciation,setup,after=app.0129,nextsession,since=4.8 | - | 8 | To clarify: I'm proud of the players who survive Cleric. Big difference. |
-app.0131 | appreciation | appreciation,after=app.0130,nextsession,since=4.8 | - | 8 | Please do not frame the previous Cleric message. It was not a compliment and I'll deny it. | Please do not frame the previous Cleric message. It was not a compliment and I'll deny it under oath.
-# story 15: rival
-app.0132 | appreciation | appreciation,setup,since=4.8 | - | 8 | I used to think Cleric was my greatest rival. | I used to think Cleric was my greatest rival. I used to have a lot of hobbies, too.
-app.0133 | appreciation | appreciation,after=app.0132,nextsession,since=4.8 | - | 8 | A rival requires effort on both sides. Cleric has been mostly just sitting there. |
-# story 16: friendship
-app.0134 | appreciation | appreciation,setup,since=4.8 | - | 8 | I think Cleric and I are finally becoming friends. | I think Cleric and I are finally becoming friends. I bought a card.
-app.0135 | appreciation | appreciation,after=app.0134,nextsession,since=4.8 | - | 8 | Cleric and I are no longer becoming friends. I have chosen to keep it to acquaintances, on different continents. | Cleric and I are no longer becoming friends. I have chosen to keep it to acquaintances, on different continents, with a firewall.
-# story 17: the gift
-app.0136 | appreciation | appreciation,setup,since=4.8 | - | 8 | I got Cleric a gift to show I care. | I got Cleric a gift to show I care. I spent a lot of time on the wrapping.
-app.0137 | appreciation | appreciation,after=app.0136,nextsession,since=4.8 | - | 8 | The gift for Cleric is a very small box labeled "Next time". | The gift for Cleric is a very small box labeled "Next time". The box is empty, because fuck Cleric.
-# story 18: therapy
-app.0138 | appreciation | appreciation,setup,since=4.8 | - | 8 | My therapist says I should try to say three nice things about Cleric. | My therapist says I should try to say three nice things about Cleric. I told her I'd rather say three prayers. To a different god.
-app.0139 | appreciation | appreciation,after=app.0138,nextsession,since=4.8 | - | 8 | Nice things about Cleric: one. It has a robe. Two. It has a book. Three. I ran out of time and patience. | Nice things about Cleric: one. It has a robe. Two. It has a book. Three. I ran out of time and fucks to give.
-# story 19: the 226th attempt
-app.0140 | appreciation | appreciation,setup,since=4.8 | - | 8 | I'm thinking of trying Cleric one more time, just for fun. | I'm thinking of trying Cleric one more time, just for fun. I'm a masochist and a fool, and my friends say so.
-app.0141 | appreciation | appreciation,after=app.0140,nextsession,since=4.8 | - | 8 | Update on trying Cleric one more time: I thought about it for roughly four seconds and regretted it immediately. No run took place. The regret did. | Update on trying Cleric one more time: I thought about it for roughly four seconds and regretted it immediately. No run took place. The regret was enough, and my head now feels like a fucking tome.
-
-# story 20: the plan to be nice (a long-delayed betrayal)
 app.0142 | appreciation | appreciation,setup,since=4.8 | - | 8 | I am going to be nice about Cleric from now on. Starting today. | I am going to be nice about Cleric from now on. Starting today. Watch me. I'm a fucking saint.
 app.0143 | appreciation | appreciation,after=app.0142,delay=14,since=4.8 | - | 8 | Report on my plan to be nice about Cleric: it lasted until lunch on the first day. I have been lying to you for weeks. | Report on my plan to be nice about Cleric: it lasted until lunch on the first day. I have been lying to your face for weeks, and I feel fucking great about it.
-# story 21: the surgery
 app.0144 | appreciation | appreciation,setup,since=4.8 | - | 8 | Cleric is really growing on me. |
 app.0145 | appreciation | appreciation,after=app.0144,delay=45,since=4.8 | - | 8 | A doctor looked at the Cleric thing that was growing on me. It is a rash. It is a rash, and I hate it. | A doctor looked at the Cleric thing that was growing on me. It is a rash. She prescribed cream and told me to stop touching it, which is the best advice I have ever ignored.
-# story 22: the fan letter
 app.0146 | appreciation | appreciation,setup,since=4.8 | - | 8 | I wrote Cleric a fan letter. I'll share it once I'm sure it's finished. |
 app.0147 | appreciation | appreciation,after=app.0146,delay=30,since=4.8 | - | 8 | The Cleric fan letter is finished. It says "Dear Cleric" and nothing else, because I could not think of a second word that was kind. | The Cleric fan letter is finished. It says "Dear Cleric" and nothing else, because I could not think of a second word that wasn't "fuck".
-# story 23: the holiday
 app.0148 | appreciation | appreciation,setup,since=4.8 | - | 8 | I am declaring one day a year as Cleric Appreciation Day. |
 app.0149 | appreciation | appreciation,after=app.0148,nextsession,since=4.8 | - | 8 | Cleric Appreciation Day has been scheduled for February 30th. It is the one day that never comes. | Cleric Appreciation Day has been scheduled for February 30th. It is the one day that never comes, and I picked it on purpose.
-
-# ---- single lines
-app.0001 | appreciation | appreciation,since=4.8 | - | 10 | Cleric is an excellent character for players who feel winning is overrated. | Cleric is an excellent character for players who feel winning is overrated and who like a nice bowl of fucking disappointment.
-app.0002 | appreciation | appreciation,since=4.8 | - | 10 | I genuinely appreciate Cleric. Without it, I wouldn't know what 225 attempts at disappointment feels like. | I genuinely appreciate Cleric. Without it, I wouldn't know what 225 attempts at disappointment feel like, or that my keyboard can survive a lot more abuse than my dignity.
-app.0003 | appreciation | appreciation,since=4.8 | - | 10 | Cleric has some fascinating abilities. Someday one might even be useful. |
-app.0004 | appreciation | appreciation,since=4.8 | - | 10 | I congratulate Cleric on successfully being selectable. |
-app.0005 | appreciation | appreciation,since=4.8 | - | 8 | Cleric is a brave choice. Brave in the way that standing in a thunderstorm holding a metal pole is brave. | Cleric is a brave choice. Brave in the way that standing in a thunderstorm holding a metal pole is brave. Anyone can be brave with a lightning rod. It takes a Cleric to name it Guiding Light.
-app.0006 | appreciation | appreciation,since=4.8 | - | 8 | I would like to compliment Cleric's consistency. It has never once let me down by being good. |
-app.0007 | appreciation | appreciation,since=4.8 | - | 8 | Credit where it is due: Cleric makes every other class feel like a masterpiece. |
-app.0008 | appreciation | appreciation,since=4.8 | - | 8 | Cleric's Tome is an impressive book. I have never seen so many pages try so hard. |
-app.0009 | appreciation | appreciation,since=4.8 | - | 8 | You have to admire Cleric's confidence. It walks into the dungeon like it read the manual. It did not. |
-app.0010 | appreciation | appreciation,since=4.8 | - | 8 | Someone had to design Cleric, and I'm grateful it was somebody else. | Someone had to design Cleric, and I'm so fucking grateful it was somebody else.
-app.0011 | appreciation | appreciation,since=4.8 | - | 8 | Cleric is truly special. Every dungeon has its own special thing, and sometimes that thing is Cleric. |
-app.0012 | appreciation | appreciation,since=4.8 | - | 8 | Thanks to Cleric, I have learned the true meaning of patience, and also of rage. | Thanks to Cleric, I have learned the true meaning of patience, and also of shouting at my phone.
-app.0013 | appreciation | appreciation,since=4.8 | - | 8 | I'd like to formally recognize Cleric's contribution to my stress levels. It has been consistent and sincere. |
-app.0014 | appreciation | appreciation,since=4.8 | - | 8 | Cleric is the only class that makes me feel like I'm learning something. Mostly about myself. Mostly bad. | Cleric is the only class that makes me feel like I'm learning something. Mostly about myself. Mostly that I'm a petty bastard.
-app.0015 | appreciation | appreciation,since=4.8 | - | 8 | A heartfelt thank you to Cleric for being the reason I now own a stress ball. It's in pieces. | A heartfelt thank you to Cleric for being the reason I now own a stress ball. It's in pieces. So is my dignity.
-app.0016 | appreciation | appreciation,since=4.8 | - | 8 | Cleric has the heart of a hero and the survival plan of a candle in a hurricane. | Cleric has the heart of a hero and the survival plan of a candle in a hurricane, and the candle has a better sense of humor about it.
-app.0017 | appreciation | appreciation,since=4.8 | - | 8 | If I could say one nice thing about Cleric, it would be: it stays on the character list. That's it. That's the nice thing. |
-app.0018 | appreciation | appreciation,since=4.8 | - | 8 | Cleric: always there when you need it, and never when you need it to work. |
-app.0019 | appreciation | appreciation,since=4.8 | - | 8 | They say every hero deserves a chance. Cleric has had several, and I've counted all of them. |
-app.0020 | appreciation | appreciation,since=4.8 | - | 8 | Cleric is a great way to find out how much you love every other class. |
-app.0021 | appreciation | appreciation,since=4.8 | - | 8 | I appreciate Cleric's commitment to the bit, even though I don't think Cleric knows it is a bit. |
-app.0022 | appreciation | appreciation,since=4.8 | - | 8 | Cleric looks great in a white robe. It looks even better on a victory screen. Yes, I have seen one personally, and I am still not over it. | Cleric looks great in a white robe. It looks even better on a victory screen. Yes, I have seen one personally. It took 225 attempts, and I still check now and then that I didn't hallucinate it.
-app.0023 | appreciation | appreciation,since=4.8 | - | 8 | Allow me to say something positive about Cleric: its name is easy to type. |
-app.0024 | appreciation | appreciation,since=4.8 | - | 8 | I don't hate Cleric because it's bad. I hate Cleric because it's Cleric. That's actually a compliment, and I'm choosing to be kind today. |
-app.0025 | appreciation | appreciation,since=4.8 | - | 8 | Cleric's Ascended Form is a beautiful sight, especially when I'm far away from it. |
-app.0026 | appreciation | appreciation,since=4.8 | - | 8 | Trinity: three abilities, three chances to be impressed by Cleric. I'm still waiting. |
-app.0027 | appreciation | appreciation,since=4.8 | - | 8 | Guiding Light is a very honest name. It points out where the problem is, and then the problem is Cleric. | Guiding Light is a very honest name. It points out where the problem is, and then the problem is Cleric. Every. Fucking. Time.
-app.0028 | appreciation | appreciation,since=4.8 | - | 8 | Power of Many is the perfect name for a Cleric ability: it takes many tries to see it do anything. |
-app.0029 | appreciation | appreciation,since=4.8 | - | 8 | I'd like to publicly applaud Cleric for something. I'll let you know when I think of it. |
-app.0030 | appreciation | appreciation,since=4.8 | - | 8 | Cleric gives every player the chance to experience hope. I'm deeply grateful for the free practice. |
-app.0031 | appreciation | appreciation,since=4.8 | - | 8 | Congratulations to Cleric on remaining undefeated in the category of "making me say words I can't repeat". | Congratulations to Cleric on remaining undefeated in the category of "making me say fucking everything".
-app.0032 | appreciation | appreciation,since=4.8 | - | 8 | You know what I love about Cleric? Nothing, but I love the feeling of that sentence. | You know what I love about Cleric? Nothing. Fuck, that felt good. I'm going to say it again.
-app.0033 | appreciation | appreciation,since=4.8 | - | 8 | I salute Cleric's resilience. I don't mean the character's. I mean mine, from putting up with it. |
-app.0034 | appreciation | appreciation,since=4.8 | - | 8 | Special thanks to Cleric for teaching me that a spell can be pretty and also not enough. |
-app.0035 | appreciation | appreciation,since=4.8 | - | 8 | Cleric: the class that makes you appreciate a plain stick. | Cleric: the class that teaches you to love a stick. A plain stick. A stick with no opinions and no Tome.
-app.0036 | appreciation | appreciation,since=4.8 | - | 8 | I am proud to present Cleric, a character with a tome, a dream, and me, standing here with almost no patience left. |
-app.0037 | appreciation | appreciation,since=4.8 | - | 8 | Cleric is a gift. A gift I would like to return, with a polite note and no forwarding address. | Cleric is a gift. A gift I would like to return, with a polite note and no forwarding address. The note says fuck off.
-app.0038 | appreciation | appreciation,since=4.8 | - | 8 | I once saw a Cleric smile. It was a picture. It still bothered me. |
-app.0039 | appreciation | appreciation,since=4.8 | - | 8 | Cleric deserves a standing ovation. Preferably from far away, preferably while I'm leaving. |
-app.0040 | appreciation | appreciation,since=4.8 | - | 8 | It is easy to overlook Cleric's best quality, which is that you can overlook Cleric. |
-app.0041 | appreciation | appreciation,since=4.8 | - | 8 | My records show that Cleric is the most devoted class to the idea of trying. |
-app.0042 | appreciation | appreciation,since=4.8 | - | 8 | Someone once told me that Cleric "builds character." I agree. It builds mine, then breaks it. |
-app.0043 | appreciation | appreciation,since=4.8 | - | 8 | A moment of appreciation for Cleric's costume. It really suggests that nobody is in charge of anything. |
-app.0044 | appreciation | appreciation,since=4.8 | - | 8 | Cleric means well. So do traffic cones. | Cleric means well. So do traffic cones. Traffic cones also don't make me want to scream into a pillow.
-app.0045 | appreciation | appreciation,since=4.8 | - | 8 | I appreciate the way Cleric never gives up, mostly because someone's holding it up. |
-app.0046 | appreciation | appreciation,since=4.8 | - | 8 | If I rated characters on how much emotional range they give me, Cleric would win. All of the range is anger. |
-app.0047 | appreciation | appreciation,since=4.8 | - | 8 | A shout-out to the Cleric players out there: you are stronger than I will ever be, and I'm saying that as a person who got through 225 attempts. |
-app.0048 | appreciation | appreciation,since=4.8 | - | 8 | Cleric might not be the best choice, but it is a choice, and sometimes that's what a character list needs. |
-app.0049 | appreciation | appreciation,since=4.8 | - | 8 | You cannot spell "disappointment" without a Cleric. You can, actually. It was a metaphor, and an unkind one. |
-app.0050 | appreciation | appreciation,since=4.8 | - | 8 | Cleric is the reason I know exactly how many keystrokes a groan takes. |
-app.0051 | appreciation | appreciation,since=4.8 | - | 8 | I'd say Cleric grows on you, but so does mold, and I have opinions about both. | I'd say Cleric grows on you, but so does mold, and mold has never once made me scream "fuck" at a character-selection screen.
-app.0052 | appreciation | appreciation,since=4.8 | - | 8 | It's hard to say what I love most about Cleric: its robe, its Tome, or the way I can leave both behind. |
-app.0053 | appreciation | appreciation,since=4.8 | - | 8 | Cleric did not choose to be like this, and I find that comforting in a way that I'm not proud of. |
-app.0054 | appreciation | appreciation,since=4.8 | - | 8 | It turns out the nicest thing about Cleric is the title screen, because it means you are not currently in a Cleric run. |
-app.0055 | appreciation | appreciation,since=4.8 | - | 8 | Cleric is a very warm character: warm like a handshake from someone who just washed their hands in lava. | Cleric is a very warm character: warm like a handshake from someone who just washed their hands in lava, the psychopath.
-app.0056 | appreciation | appreciation,since=4.8 | - | 8 | Applause for Cleric, the first character I think of when asked to name a character I'd like to apologize to. | Applause for Cleric, the first character I think of when asked to name a character I'd like to apologize to. Then I remember and un-apologize.
-app.0057 | appreciation | appreciation,since=4.8 | - | 8 | I wanted to say something kind about Cleric. Then I remembered I make the rules about what is kind. |
-app.0058 | appreciation | appreciation,since=4.8 | - | 8 | Cleric is a perfect fit for any player looking for a challenge, a story, and a reason to call a friend. |
-app.0059 | appreciation | appreciation,since=4.8 | - | 8 | Honestly, props to Cleric for being a character at all. |
-app.0060 | appreciation | appreciation,since=4.8 | - | 8 | A big thank-you to Cleric for existing in a way that I find insulting but cannot prove. | A big thank-you to Cleric for existing in a way that I find insulting but cannot prove, you smug little robe.
-
-# ---- single lines that depend on what really happened
-app.0061 | victory | appreciation,since=4.8 | lastHero=CLERIC & lastOutcome=WON & runVerified=1 | 10 | Congratulations on your Cleric win. Thank you for proving it can be done, so I can never again say it can't. |
-app.0062 | death | appreciation,since=4.8 | lastHero=CLERIC & lastOutcome=DIED & runVerified=1 | 10 | Thank you for playing Cleric. It is an honor to see someone so committed to a decision. |
-app.0063 | death | appreciation,since=4.8 | lastHero=CLERIC & lastOutcome=DIED & depth>=1 & runVerified=1 | 8 | Depth {depth} as Cleric is an accomplishment, and I mean that exactly the way you think I mean it. |
-app.0064 | victory | appreciation,since=4.8 | lastHero=CLERIC & lastOutcome=WON & runVerified=1 | 8 | A Cleric win. I'm happy for you, I'm happy for Cleric, and I'm furious about both of those feelings. | A Cleric win. I'm happy for you, I'm happy for Cleric, and I'm so fucking angry about both of those feelings.
-app.0065 | postrun | appreciation,since=4.8 | lastHero!=CLERIC & runVerified=1 | 8 | You did that run without Cleric, and Cleric would like to thank you for not bringing it along. |
-app.0066 | postrun | appreciation,since=4.8 | lastHero!=CLERIC & lastOutcome=DIED & runVerified=1 | 8 | A tough run. Cleric sends its regards and a pamphlet about how it would have done worse. |
-app.0067 | victory | appreciation,since=4.8 | lastHero!=CLERIC & lastOutcome=WON & runVerified=1 | 8 | Well played. Cleric watched the entire run from the character screen and is deeply moved, mostly by confusion. |
-app.0068 | ability | appreciation,since=4.8 | lastHero=CLERIC & spell!=none & runVerified=1 | 8 | {spell}: a respectable choice for Cleric, in the sense that a choice was made. |
-app.0069 | ability | appreciation,since=4.8 | lastHero=CLERIC & armorAbility!=none & runVerified=1 | 8 | {armorAbility} is a real credit to Cleric's ability to be on screen. |
-app.0070 | history | appreciation,since=4.8 | clericRuns>=1 | 8 | You have {clericRuns} Cleric runs on record. Thank you for your service to my blood pressure. |
-app.0071 | history | appreciation,since=4.8 | clericWins>=1 | 8 | {clericWins} Cleric wins. Truly the player Cleric deserves, and the player I deserve for what I did to Cleric. |
-app.0072 | boss | appreciation,since=4.8 | boss!=none & hero=CLERIC | 8 | Cleric defeated {boss}. I have been told this is a good moment. I'm choosing to believe it. |
-app.0073 | menu | appreciation,since=4.8 | - | 8 | Welcome back. Cleric has been waiting by the character select. It does not know why. Neither do I. |
-app.0074 | menu | appreciation,since=4.8 | - | 8 | The title screen is looking good today, thanks to Cleric. By being absent. |
-app.0075 | equipment | appreciation,since=4.8 | lastHero=CLERIC & weapon!=none & runVerified=1 | 8 | {weapon} on Cleric is a bold fashion statement and a worse decision. |

@@ -257,6 +257,6 @@ public class CreativeDirectionTest {
 			silent++;
 			for (Moment mo : Moment.values()) assertFalse( l.id + " uses facts the game does not supply", l.eligible( mo, everything, new Ledger( null ), Long.MAX_VALUE, Long.MAX_VALUE ) );
 		}
-		assertTrue( "some lines wait for facts that are not supplied yet (spells, weapons, abilities, streaks)", silent > 10 );
+		assertEquals( "all curated entries use facts actually supplied by the game", 0, silent );
 	}
 }

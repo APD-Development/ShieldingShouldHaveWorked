@@ -118,7 +118,7 @@ public class PackLintTest {
 		int parsed = 0;
 		for (String name : HumorTestSupport.SHIPPED.names()) parsed += LinePack.parse( HumorTestSupport.SHIPPED.read( name ), name ).size();
 		assertEquals( "every shipped pack passes its lint", parsed, lines.size() );
-		assertTrue( files >= 5 && lines.size() >= 330 );
+		assertTrue( files == 5 && lines.size() == 50 );
 		for (Line l : lines){
 			assertFalse( l.id, LinePack.PROFANITY.matcher( l.clean ).find() );
 			assertTrue( l.id, l.clean.length() <= LinePack.MAX_CLEAN );
@@ -126,15 +126,15 @@ public class PackLintTest {
 	}
 
 	@Test
-	public void noShippedIdEverDisappears() throws Exception {
-		//the list of ids shipped so far is committed; a later release may add ids but never remove or rename one
+	public void curatedIdsRemainStable() throws Exception {
+		//Owner-approved curation removes retired entries without renaming or reusing retained IDs.
 		Set<String> now = new HashSet<>();
 		for (Line l : HumorTestSupport.shipped()) now.add( l.id );
 		File list = new File( System.getProperty( "apd.humor.ids", "../../test/resources/apd/cleric_complaint_ids.txt" ) );
 		assertTrue( "committed id list " + list.getAbsolutePath(), list.isFile() );
 		for (String id : new String( Files.readAllBytes( list.toPath() ), StandardCharsets.UTF_8 ).split( "\r?\n" )){
 			if (id.trim().isEmpty() || id.startsWith( "#" )) continue;
-			assertTrue( "id " + id + " was shipped before and must still exist", now.contains( id.trim() ) );
+			assertTrue( "id " + id + " is retained in the curated collection and must still exist", now.contains( id.trim() ) );
 		}
 	}
 }

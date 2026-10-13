@@ -1635,3 +1635,8 @@ Status: source/audio investigation and audible reproduction pending; no root cau
 Later compare actual upstream/APD sample playback, sound loading, callback/actor/render scheduling and Android lifecycle. Include Prison enemies and Tengu attacks, teleports, traps and bombs without assuming region/Tengu causation. Distinguish late triggers from on-time requests with late audible playback. Correlate frame stalls, GC and contention only with measurements. Preserve combat/damage/timing, intended simultaneous effects and the existing audio system. Do not suppress sounds merely to hide symptoms; stale-event discarding requires evidence. Keep open if unconfirmed.
 
 Priority: below October16early-alpha sliders, save/progression stability, scoring interfaces and mandatory UIMSD configuration recording. No audio changes inTEST120.
+
+
+## 2026-10-13 Cleric 50-entry curation
+
+Owner-requested cleanup completed against TEST120: 348 -> exactly50 entries (49 counted +1 meta);298 retired, IDs/wording of retained entries unchanged. Eight complete story pairs retained; all50 selected/rendered under legal intended triggers. Existing early-alpha release gate remains off. No gameplay/save/statistics changes. 82 local humor tests passed,0failed,2.007s;3new regressions. Complete retained/removed ID audit: docs/APD-CLERIC-LORE-CURATION-2026-10-13.md. No new APK for this standalone commit; include assets in next appropriate verified build. Alpha sliders remain priority; local healing package and screenshot correction are still uncommitted and not part of this curation commit.
