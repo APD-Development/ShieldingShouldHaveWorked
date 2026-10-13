@@ -176,7 +176,7 @@ public class MnemonicPrayer extends TargetedClericSpell {
 				//this might need a nerf of aggression vs bosses. (perhaps nerf the extension?)
 				if (b instanceof FlavourBuff)       Buff.affect(ch, (Class<?extends FlavourBuff>)b.getClass(), extension);
 				else if (b instanceof Bleeding)     ((Bleeding) b).extendAttributed( extension,caster );
-				else if (b instanceof Burning)      ((Burning) b).extend( extension );
+				else if (b instanceof Burning)      ((Burning) b).extendAttributed( extension,caster );
 				else if (b instanceof Corrosion)    ((Corrosion) b).extend( extension );
 				else if (b instanceof Dread)        ((Dread) b).extend( extension );
 				else if (b instanceof Ooze)         ((Ooze) b).extend( extension );

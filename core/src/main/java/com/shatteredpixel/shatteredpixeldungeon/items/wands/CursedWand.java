@@ -227,10 +227,10 @@ public class CursedWand {
 			Char target = Actor.findChar(bolt.collisionPos);
 			//doesn't affect caster if positive only
 			if (Random.Int(2) == 0) {
-				if (target != null) Buff.affect(target, Burning.class).reignite(target);
+				if (target != null) Buff.affect(target, Burning.class).reigniteAttributed(target,user);
 				if (!positiveOnly) Buff.affect(user, Frost.class, Frost.DURATION);
 			} else {
-				if (!positiveOnly)Buff.affect(user, Burning.class).reignite(user);
+				if (!positiveOnly)Buff.affect(user, Burning.class).reigniteAttributed(user,user);
 				if (target != null) Buff.affect(target, Frost.class, Frost.DURATION);
 			}
 			tryForWandProc(target, origin);
@@ -495,7 +495,7 @@ public class CursedWand {
 				toHeal.sprite.emitter().burst(Speck.factory(Speck.HEALING), 3);
 				toHeal.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString(damage/2), FloatingText.HEALING );
 
-				toDamage.damage(damage, new CursedWand());
+				com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(toDamage,damage,new CursedWand(),user);
 				toDamage.sprite.emitter().start(ShadowParticle.UP, 0.05f, 10);
 
 				if (toDamage == Dungeon.hero){
@@ -581,7 +581,7 @@ public class CursedWand {
 				//does not harm allies if positive only
 				if (ch.alignment != Char.Alignment.ALLY || !positiveOnly){
 					//shocking dart damage and a little stun
-					ch.damage(Random.NormalIntRange(5 + Dungeon.scalingDepth() / 4, 10 + Dungeon.scalingDepth() / 4), new Electricity());
+					com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(ch,Random.NormalIntRange(5 + Dungeon.scalingDepth() / 4, 10 + Dungeon.scalingDepth() / 4),new Electricity(),user);
 					if (ch.isAlive()) {
 						Buff.affect(ch, Paralysis.class, Paralysis.DURATION / 2f);
 					} else if (ch == Dungeon.hero){
@@ -820,9 +820,9 @@ public class CursedWand {
 					if (Actor.findChar(i) != null){
 						Char ch = Actor.findChar(i);
 						Burning burning = Buff.affect(ch, Burning.class);
-						burning.reignite(ch);
+						burning.reigniteAttributed(ch,user);
 						int dmg = Random.NormalIntRange(5 + Dungeon.scalingDepth(), 10 + Dungeon.scalingDepth()*2);
-						ch.damage(dmg, burning);
+						com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(ch,dmg,burning,user);
 					}
 					if (Dungeon.level.flamable[i]){
 						GameScene.add(Blob.seed(i, 4, Fire.class));
@@ -905,12 +905,12 @@ public class CursedWand {
 					switch (Random.Int(5)){
 						case 0: default:
 							Burning burning = Buff.affect(ch, Burning.class);
-							burning.reignite(ch);
-							ch.damage(dmg, burning);
+							burning.reigniteAttributed(ch,user);
+							com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(ch,dmg,burning,user);
 							ch.sprite.emitter().burst(FlameParticle.FACTORY, 20);
 							break;
 						case 1:
-							ch.damage(dmg, new Frost());
+							com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(ch,dmg,new Frost(),user);
 							if (ch.isAlive()) Buff.affect(ch, Frost.class, Frost.DURATION);
 							Splash.at( ch.sprite.center(), 0xFFB2D6FF, 20 );
 							break;
@@ -923,11 +923,11 @@ public class CursedWand {
 						case 3:
 							Ooze ooze = Buff.affect(ch, Ooze.class);
 							ooze.set(Ooze.DURATION);
-							ch.damage(dmg, ooze);
+							com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(ch,dmg,ooze,user);
 							Splash.at( ch.sprite.center(), 0x000000, 20 );
 							break;
 						case 4:
-							ch.damage(dmg, new Electricity());
+							com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(ch,dmg,new Electricity(),user);
 							if (ch.isAlive()) Buff.affect(ch, Paralysis.class, Paralysis.DURATION);
 							ch.sprite.emitter().burst(SparkParticle.FACTORY, 20);
 							break;

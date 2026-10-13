@@ -1,68 +1,130 @@
 {
-  "previous_label": "Codex TEST 128",
-  "previous_source": "69204aed4333b7b79db420a582acb2c920b08dac",
-  "previous_run": 38455928308,
+  "previous_label": "Codex TEST 130",
+  "previous_source": "7424260123fd30faaa8202723232a5683bcbef0e",
+  "previous_run": 38458358052,
   "date": "2026-10-13",
   "changes": [
     {
       "category": "Changes",
-      "sprite": "V061_PAGE",
-      "title": "Android Top Scores",
-      "text": "Replaced Android's Quit button with Top Scores, opening the original Rankings screen from the same position.",
+      "sprite": "V063_BUFFS_BURNING",
+      "title": "Timed damage sources",
+      "text": "Prepared persistent, ordered burning-source durations and mixed tick accounting.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/TitleScene.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/TimedDamageOrigins.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V063_BUFFS_BURNING",
+      "title": "Fireblast damage",
+      "text": "Prepared caster-based direct Fireblast damage and burning without changing its control effects.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfFireblast.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V063_MAGICMISSILE",
+      "title": "Cursed spell damage",
+      "text": "Prepared caster-attributed burning and remaining direct cursed-wand damage while preserving existing effects.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/CursedWand.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V063_BUFFS_BURNING",
+      "title": "Fire imbue attacks",
+      "text": "Prepared attacker attribution for Fire Imbue's burning.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/FireImbue.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_SPELLBOOK",
+      "title": "Prayer extensions",
+      "text": "Prepared caster attribution for new burning duration contributed by Mnemonic Prayer.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/MnemonicPrayer.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V073_DART",
+      "title": "Incendiary darts",
+      "text": "Prepared attacker attribution for incendiary-dart burning.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/IncendiaryDart.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V063_BUFFS_BURNING",
+      "title": "Elemental flames",
+      "text": "Prepared source attribution for fire-elemental burning.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Elemental.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V063_BUFFS_BURNING",
+      "title": "Burn damage and forecasts",
+      "text": "Prepared attributable burning ticks and incoming averages while preserving neutral damage, cached rolls and RNG.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Burning.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V080_YOG",
+      "title": "Yog fist spells",
+      "text": "Prepared boss-attributed fist burning, light beams and dark bolts while retaining their original source types.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/YogFist.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V063_BUFFS_BURNING",
+      "title": "Blazing attacks",
+      "text": "Prepared attacker-based burning and independent Blazing bonus damage.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Blazing.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Rankings touch and Back checks",
-      "text": "Added Android touch, Back, layout, stored-history protection and memory-only victory/death/abandoned-record presentation checks.",
+      "title": "Burning regressions",
+      "text": "Added real ticks, all proposed damage percentages, neutral RNG, mixed causes, save/load and incoming-average checks.",
       "paths": [
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/TopScoresDeviceTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/AttributedBurningIntegrationTest.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Main menu visual verification",
-      "text": "Required main-menu and Rankings screenshots alongside the new Android navigation test.",
+      "title": "Boss spell regressions",
+      "text": "Added real Bright and Dark Fist attack checks for boss substitution, original sources and neutral RNG.",
       "paths": [
-        "tools/run-codex-android-checks.sh"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/OffensiveBossSpellIntegrationTest.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_PAGE",
-      "title": "Top Scores verification handoff",
-      "text": "Recorded the preceding APK and required Top Scores checks without claiming pending Android tests passed.",
+      "title": "Verified menu and damage preparation",
+      "text": "Recorded successful Top Scores verification and the remaining damage-source checks.",
       "paths": [
-        "docs/APD-NEXT-BUILD-HISTORY.json",
-        "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/APD-TEST129-REPORT-2026-10-13.md",
-        "docs/HANDOFF.md",
         "docs/APD-TEST130-REPORT-2026-10-13.md",
-        "docs/APD-TEST129-REPORT-2026-10-13.md"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "Android and desktop compiled routing",
-      "text": "Updated compiled menu tests to verify Android Top Scores and desktop Quit while keeping UIMSD separate.",
-      "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/TitleButtonWiringTest.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "Protected menu geometry",
-      "text": "Updated the frozen-menu guard to allow only the approved Android Top Scores replacement.",
-      "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/UimsdWiringTest.java"
+        "docs/APD-TEST131-REPORT-2026-10-13.md",
+        "docs/HANDOFF.md",
+        "docs/APD-CODEX-BUILD-REQUEST.txt",
+        "docs/APD-NEXT-BUILD-HISTORY.json"
       ]
     }
   ],
-  "commentary": "I replaced Android's Quit button with a direct shortcut to the original high-score screen. UIMSD and the remaining menu layout are unchanged; desktop still has Quit."
+  "commentary": "I continued source-aware offensive damage with burning and selected spell paths. Neutral behavior is preserved. The damage sliders remain pending while persistent hazards and other remaining sources are integrated."
 }

@@ -48,12 +48,15 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin;
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.TimedDamageOrigins;
 
 public class Burning extends Buff implements Hero.Doom, Buff.DOTbuff {
 	
 	private static final float DURATION = 8f;
 	
 	private float left;
+	private TimedDamageOrigins origins;
 	private boolean acted = false; //whether the debuff has done any damage at all yet
 	private int burnIncrement = 0; //for tracking burning of hero items
 	private int nextHit = 0; //we pre-caulcate the incoming hit for a bit more accuracy in totalIncomingDMG()
@@ -75,6 +78,7 @@ public class Burning extends Buff implements Hero.Doom, Buff.DOTbuff {
 		bundle.put( ACTED, acted );
 		bundle.put( BURN, burnIncrement );
 		bundle.put( NEXT_DMG, nextHit );
+		if(origins!=null && left>=0) origins.store(bundle,"apd_burn_origins"); else TimedDamageOrigins.clear(bundle,"apd_burn_origins");
 	}
 	
 	@Override
@@ -84,6 +88,7 @@ public class Burning extends Buff implements Hero.Doom, Buff.DOTbuff {
 		acted = bundle.getBoolean( ACTED );
 		burnIncrement = bundle.getInt( BURN );
 		nextHit = bundle.getInt( NEXT_DMG );
+		origins=TimedDamageOrigins.restore(bundle,"apd_burn_origins",left);
 	}
 
 	@Override
@@ -104,7 +109,7 @@ public class Burning extends Buff implements Hero.Doom, Buff.DOTbuff {
 			if (nextHit == 0){
 				nextHit = Random.NormalIntRange( 1, 3 + Dungeon.scalingDepth()/4 );
 			}
-			int damage = nextHit;
+			int damage = origins==null ? nextHit : origins.scale(nextHit);
 			nextHit = Random.NormalIntRange( 1, 3 + Dungeon.scalingDepth()/4 );
 			Buff.detach( target, Chill.class);
 
@@ -173,6 +178,7 @@ public class Burning extends Buff implements Hero.Doom, Buff.DOTbuff {
 		}
 		
 		spend( TICK );
+		if(origins!=null) origins.consume(TICK);
 		left -= TICK;
 		
 		if (left <= 0 ||
@@ -196,6 +202,11 @@ public class Burning extends Buff implements Hero.Doom, Buff.DOTbuff {
 	}
 	
 	public void reignite( Char ch, float duration ) {
+		reigniteWithOrigin(ch,duration,OffensiveDamageOrigin.UNATTRIBUTED);
+	}
+	public void reigniteAttributed(Char ch,Char attacker){reigniteAttributed(ch,DURATION,attacker);}
+	public void reigniteAttributed(Char ch,float duration,Char attacker){reigniteWithOrigin(ch,duration,OffensiveDamageOrigin.capture(attacker,null));}
+	private void reigniteWithOrigin(Char ch,float duration,OffensiveDamageOrigin origin){
 		if (ch.isImmune(Burning.class)){
 			if (ch.glyphLevel(Brimstone.class) >= 0){
 				//generate avg of 1 shield per turn per 50% boost, to a max of 4x boost
@@ -213,12 +224,18 @@ public class Burning extends Buff implements Hero.Doom, Buff.DOTbuff {
 		}
 		if (left < duration) {
 			left = duration;
+			origins=TimedDamageOrigins.single(duration,origin);
 			ch.needsIncomingDOTUpdate = true;
 		}
 		acted = false;
 	}
 
-	public void extend( float duration ) {
+	public void extend( float duration ) {extendWithOrigin(duration,OffensiveDamageOrigin.UNATTRIBUTED);}
+	public void extendAttributed(float duration,Char attacker){extendWithOrigin(duration,OffensiveDamageOrigin.capture(attacker,null));}
+	private void extendWithOrigin(float duration,OffensiveDamageOrigin origin){
+		if(origins==null) origins=TimedDamageOrigins.single(Math.max(0,left),OffensiveDamageOrigin.UNATTRIBUTED);
+		if(duration>0) origins.extend(duration,origin);
+		else if(duration<0) origins.shorten(-duration);
 		left += duration;
 		if (target != null) target.needsIncomingDOTUpdate = true;
 	}
@@ -264,6 +281,19 @@ public class Burning extends Buff implements Hero.Doom, Buff.DOTbuff {
 			nextHit = Random.NormalIntRange( 1, 3 + Dungeon.scalingDepth()/4 );
 		}
 		float avgDmg = 2 + Dungeon.scalingDepth()/8f;
-		return (int)Math.round(nextHit + Math.ceil(left-1)*avgDmg);
+		if(origins==null || !origins.modifiesDamage()) return (int)Math.round(nextHit + Math.ceil(left-1)*avgDmg);
+		TimedDamageOrigins forecast=origins.copy();
+		double expected=forecast.scale(nextHit);forecast.consume(TICK);
+		int max=3+Dungeon.scalingDepth()/4, outcomes=max;
+		for(int ticks=(int)Math.ceil(left-1);ticks>0;ticks--){
+			for(int raw=1;raw<=max;raw++){
+				double low=(raw-1)/(double)outcomes,high=raw/(double)outcomes;
+				expected+=(triangularCdf(high)-triangularCdf(low))*forecast.scale(raw);
+			}
+			forecast.consume(TICK);
+		}
+		return (int)Math.min(Integer.MAX_VALUE,Math.round(expected));
 	}
+
+	private static double triangularCdf(double x){return x<=0?0:x>=1?1:x<=.5?2*x*x:1-2*(1-x)*(1-x);}
 }

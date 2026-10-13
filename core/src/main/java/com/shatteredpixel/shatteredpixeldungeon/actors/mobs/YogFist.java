@@ -263,7 +263,7 @@ public abstract class YogFist extends Mob {
 				GameScene.updateMap( enemy.pos );
 				CellEmitter.get( enemy.pos ).burst( Speck.factory( Speck.STEAM ), 10 );
 			} else {
-				Buff.affect( enemy, Burning.class ).reignite( enemy );
+				Buff.affect( enemy, Burning.class ).reigniteAttributed( enemy,this );
 			}
 
 			for (int i : PathFinder.NEIGHBOURS9){
@@ -524,7 +524,7 @@ public abstract class YogFist extends Mob {
 			Char enemy = this.enemy;
 			if (hit( this, enemy, true )) {
 
-				enemy.damage( Random.NormalIntRange(10, 20), new LightBeam() );
+				com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(enemy,Random.NormalIntRange(10,20),new LightBeam(),this);
 				Buff.prolong( enemy, Blindness.class, Blindness.DURATION/2f );
 
 				if (!enemy.isAlive() && enemy == Dungeon.hero) {
@@ -590,7 +590,7 @@ public abstract class YogFist extends Mob {
 			Char enemy = this.enemy;
 			if (hit( this, enemy, true )) {
 
-				enemy.damage( Random.NormalIntRange(10, 20), new DarkBolt() );
+				com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(enemy,Random.NormalIntRange(10,20),new DarkBolt(),this);
 
 				Light l = enemy.buff(Light.class);
 				if (l != null){
