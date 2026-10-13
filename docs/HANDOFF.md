@@ -1,3 +1,9 @@
+# TEST106 legacy compatibility guard in verification — 2026-10-13 06:51 UTC
+
+Latest deliveredTEST105 sourcec15313c6d128bcd3557ff8df0b49ffe24258c8d5, verification38357456703, delivery38358838879/cee5af337ab69e265956c4a4c29212ff6b01fcca, published06:49:22UTC.1290core+21API34/20PNG/debug/signing/appID/hash verified, including native group-sheet touches. Receipt docs/APD-TEST105-DELIVERY-2026-10-13.json. Install over, never uninstall/clear data; physical-phone and owner-save verification absent.
+
+TEST106 fixes a reproduced newer-telemetry legacy statistics interpretation bug.3new+28existing=31targeted passed; original3cases fail. Derivation cache5→6 forces one rebuild; raw/game-save formats and original log bytes remain intact. Full1293core/21API34/20PNG/debug/signing/delivery pending. docs/APD-TEST106-REPORT-2026-10-13.md records evidence/risks. Pinned current-source audit scope211components/35013physical lines;68reviewed, remaining components/integration hooks pending. Entire audit/backlog not complete. No persistent autonomous Codex coding mechanism demonstrated.
+
 # TEST105 verified candidate — 2026-10-13 06:48 UTC
 
 Sourcec15313c6d128bcd3557ff8df0b49ffe24258c8d5 / run38357456703 succeeded. Actual downloaded1290core+21API34, no failures/errors/skips;20PNG/debug. Native numeric/enum/text group-sheet real-pointer helper executed successfully. Existing-artifact signing/hash/private delivery staged; publication pending. TEST104 remains delivered fallback. Future-legacy-version guard/cache invalidation local31targeted passed, NOT included105. UIMSD audit current-source checklist verified211production components/35013physical lines including backend interfaces;68currently reviewed, game integration hooks and remaining components pending. Entire audit is NOT complete.

@@ -43,7 +43,7 @@ import java.util.List;
 public final class DerivedStore {
 
 	//bump when facts are derived differently, so every old cache is rebuilt
-	public static final int DERIVATION_VERSION = 5;
+	public static final int DERIVATION_VERSION = 6;
 	private static final int CACHE_FORMAT = 2;
 	private static final int CHECKSUM_FOOTER_BYTES = 15;
 
@@ -174,6 +174,8 @@ public final class DerivedStore {
 			} catch (Throwable t){
 				continue;
 			}
+			// Frames remain preserved, but unsupported telemetry must not become current facts.
+			if (r.header == null || r.newerThanReader()) continue;
 			for (ApdEvent e : r.events){
 				try {
 					if (e.type == EventTypes.LEGACY_RECORD){
