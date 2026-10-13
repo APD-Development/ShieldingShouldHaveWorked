@@ -73,6 +73,8 @@ public final class ChaliceDamagePreview {
             int points=hero.pointsInTalent(Talent.HOLD_FAST);
             drLow+=Math.min(points,cap);drHigh+=Math.min(2*points,cap);
         }
+        drLow=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDefenseHooks.scale(hero,drLow);
+        drHigh=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDefenseHooks.scale(hero,drHigh);
         low=Math.max(1,low-drHigh);high=Math.max(1,high-drLow);
         float early=1f;
         Endure.EndureTracker endure=hero.buff(Endure.EndureTracker.class);
@@ -139,3 +141,4 @@ public final class ChaliceDamagePreview {
         return new ChaliceDamagePreview(level,hero,dmin,dmax,hmin,hmax);
     }
 }
+

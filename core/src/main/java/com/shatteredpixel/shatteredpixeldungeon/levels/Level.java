@@ -327,6 +327,7 @@ public abstract class Level implements Bundlable {
 		createMobs();
 		ApdGen.setStage( ApdGen.STAGE_ITEMS );
 		createItems();
+		for (Mob mob : mobs) com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomMobHooks.applyHealth(mob);
 		ApdGen.setStage( ApdGen.STAGE_NONE );
 
 		Random.popGenerator();
@@ -549,6 +550,7 @@ public abstract class Level implements Bundlable {
 		Mob m = Reflection.newInstance(mobsToSpawn.remove(0));
 		ChampionEnemy.rollForChampion(m);
 		com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.DifficultyHooks.onMobCreated(m);
+		com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomMobHooks.applyHealth(m);
 		return m;
 	}
 
@@ -773,7 +775,7 @@ public abstract class Level implements Bundlable {
 		} else {
 			cooldown = TIME_TO_RESPAWN;
 		}
-		return cooldown / DimensionalSundial.spawnMultiplierAtCurrentTime();
+		return com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomResourceHooks.respawnCooldown(cooldown / DimensionalSundial.spawnMultiplierAtCurrentTime());
 	}
 
 	public boolean spawnMob(int disLimit){
@@ -1690,3 +1692,4 @@ public abstract class Level implements Bundlable {
 		}
 	}
 }
+

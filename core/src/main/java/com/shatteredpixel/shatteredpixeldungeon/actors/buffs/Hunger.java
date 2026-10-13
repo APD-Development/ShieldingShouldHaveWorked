@@ -93,7 +93,7 @@ public class Hunger extends Buff implements Hero.Doom {
 				}
 				hungerDelay /= SaltCube.hungerGainMultiplier();
 
-				float newLevel = level + (1f/hungerDelay);
+				float newLevel = level + com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomResourceHooks.hungerAdvance(1f/hungerDelay);
 				if (newLevel >= STARVING) {
 
 					GLog.n( Messages.get(this, "onstarving") );
@@ -135,6 +135,7 @@ public class Hunger extends Buff implements Hero.Doom {
 	}
 
 	public void affectHunger(float energy, boolean overrideLimits ) {
+		energy = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomResourceHooks.hungerEnergy(energy);
 
 		if (energy < 0 && target.buff(WellFed.class) != null){
 			target.buff(WellFed.class).left += energy;
@@ -219,3 +220,4 @@ public class Hunger extends Buff implements Hero.Doom {
 		GLog.n( Messages.get(this, "ondeath") );
 	}
 }
+

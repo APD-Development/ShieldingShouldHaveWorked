@@ -398,7 +398,7 @@ public abstract class Char extends Actor {
 			//APD: the player sees the strike land before anything it sets off (a mimic revealing itself)
 			ApdCombat.onAttackRolled( this, enemy, true );
 
-			int dr = Math.round(enemy.drRoll() * AscensionChallenge.statModifier(enemy));
+			int dr = Math.round(enemy.apdDrRoll() * AscensionChallenge.statModifier(enemy));
 			
 			if (this instanceof Hero){
 				Hero h = (Hero)this;
@@ -720,6 +720,10 @@ public abstract class Char extends Actor {
 		return Messages.get(this, "def_verb");
 	}
 	
+	public int apdDrRoll() {
+		return com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDefenseHooks.scale(this, drRoll());
+	}
+
 	public int drRoll() {
 		int dr = 0;
 
@@ -1496,3 +1500,4 @@ public abstract class Char extends Actor {
 		return (ch != null && ch.properties().contains(p));
 	}
 }
+

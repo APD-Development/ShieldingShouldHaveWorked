@@ -1,62 +1,109 @@
 {
-  "previous_label": "Codex TEST 113",
-  "previous_source": "75c7f52a6d881e6cfd7e122946debfc4b7d7e533",
-  "previous_run": 38379793601,
+  "previous_label": "Codex TEST 116",
+  "previous_source": "d6c3f34594317307b949642850c24afe4e38c9d0",
+  "previous_run": 38384131886,
   "date": "2026-10-13",
   "changes": [
     {
       "category": "Development",
-      "sprite": "ICON_INFO",
-      "title": "Custom combat effects",
-      "text": "Implemented maximum-health, accuracy and evasion factors from locked custom settings, with startup health separated from healing.",
+      "sprite": "PD_RAT",
+      "title": "Custom enemy health",
+      "text": "Ordinary enemy health now follows locked custom settings once, including saved and later-spawned enemies.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/Dungeon.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/Char.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/Hero.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomCombatHooks.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Mob.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomMobHooks.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/Level.java"
       ]
     },
     {
       "category": "Development",
-      "sprite": "ITEM_SCROLL_GYFU",
-      "title": "Custom upgrade supply",
-      "text": "Implemented whole-scroll dungeon allocations from 1 to 60; 15 keeps original generation, and Forbidden Runes retains its existing reduction.",
+      "sprite": "V075_ALBINO_RAT",
+      "title": "Custom enemy supply",
+      "text": "Custom spawn frequency changes ordinary initial density and respawn intervals while preserving existing rewards.",
       "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/RegularLevel.java",
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/Level.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/UpgradeScrollPlan.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomGenerationHooks.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomResourceHooks.java"
+      ]
+    },
+    {
+      "category": "Bug Fixes",
+      "sprite": "PD_RAT",
+      "title": "Crowded custom floors",
+      "text": "Custom generation stops searching when the requested enemy density exceeds available legal spawn cells.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/RegularLevel.java"
+      ]
+    },
+    {
+      "category": "Development",
+      "sprite": "V060_RATION",
+      "title": "Custom hunger rate",
+      "text": "Hunger depletion and negative hunger costs follow the selected rate without changing food restoration.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Hunger.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomResourceHooks.java"
+      ]
+    },
+    {
+      "category": "Development",
+      "sprite": "V065_ARMOR_KIT",
+      "title": "Custom defense rolls",
+      "text": "Player and enemy defense settings scale the existing complete defensive roll once without changing shields or immunities.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/Char.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/abilities/warrior/HeroicLeap.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/abilities/warrior/Shockwave.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Skeleton.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Tengu.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/ChaliceOfBlood.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/bombs/Bomb.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/bombs/ShrapnelBomb.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/traps/FlashingTrap.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/traps/GrippingTrap.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/traps/PoisonDartTrap.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/traps/RockfallTrap.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/traps/WornDartTrap.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomDefenseHooks.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V073_ARCANE_ARMOR",
+      "title": "Chalice preview consistency",
+      "text": "The Chalice damage preview now matches custom defense settings without consuming random numbers.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/ChaliceDamagePreview.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Custom slider regressions",
-      "text": "Added combat, health save/load and all-count dungeon-generation tests, including Forbidden Runes and neutral random-number checks.",
+      "title": "Custom rules regression coverage",
+      "text": "Added health persistence, hunger, combined generation, crowded-floor and defensive-roll regression tests.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomCombatSliderTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomUpgradeGenerationTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomMobSurvivalInteractionTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomDefenseSliderTest.java"
       ]
     },
     {
       "category": "Development",
       "sprite": "ICON_INFO",
-      "title": "Verification and alpha records",
-      "text": "Documented the failed startup-health and changelog-sprite checks, their corrections and remaining custom-slider work.",
+      "title": "Verification records",
+      "text": "Recorded TEST116's successful checks and this candidate's tested scope, failures and remaining alpha work.",
       "paths": [
-        "docs/APD-TEST114-REPORT-2026-10-13.md",
-        "docs/APD-TEST113-REPORT-2026-10-13.md",
+        "docs/APD-TEST117-REPORT-2026-10-13.md",
+        "docs/APD-TEST116-REPORT-2026-10-13.md",
         "docs/HANDOFF.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/APD-NEXT-BUILD-HISTORY.json",
-        "docs/APD-TEST115-REPORT-2026-10-13.md",
-        "docs/APD-TEST116-REPORT-2026-10-13.md"
+        "docs/APD-NEXT-BUILD-HISTORY.json"
       ]
     },
     {
       "category": "Developer Commentary",
       "sprite": "V074_SHPX",
       "title": "Developer Commentary",
-      "text": "I added the initial custom combat factors and configurable upgrade supply, then corrected verification failures. The remaining sliders and native controls are still in development.",
+      "text": "I added enemy health, spawn frequency, hunger and defense effects while preserving neutral behavior. Offensive attribution and the remaining sliders are still in development.",
       "paths": []
     }
   ]

@@ -206,20 +206,20 @@ public abstract class RegularLevel extends Level {
 	public int mobLimit() {
 		if (Dungeon.depth <= 1){
 			if (!Statistics.amuletObtained) return 0;
-			else                            return 10;
+			else                            return com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomResourceHooks.spawnCount(10);
 		}
 
 		int mobs = 3 + Dungeon.depth % 5 + Random.Int(3);
 		if (feeling == Feeling.LARGE){
 			mobs = (int)Math.ceil(mobs * 1.33f);
 		}
-		return mobs;
+		return com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomResourceHooks.spawnCount(mobs);
 	}
 	
 	@Override
 	protected void createMobs() {
 		//on floor 1, 8 pre-set mobs are created so the player can get level 2.
-		int mobsToSpawn = Dungeon.depth == 1 ? 8 : mobLimit();
+		int mobsToSpawn = Dungeon.depth == 1 ? com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomResourceHooks.spawnCount(8) : mobLimit();
 
 		ArrayList<Room> stdRooms = new ArrayList<>();
 		for (Room room : rooms) {
@@ -251,8 +251,13 @@ public abstract class RegularLevel extends Level {
 
 		PathFinder.buildDistanceMap(entrance(), entranceWalkable, 8);
 
+        boolean customSpawn = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomCombatHooks.percentage(
+                com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.Slider.ENEMY_SPAWN) != 100;
+        int placementAttempts = Math.max(100, stdRooms.size()*100);
 		Mob mob = null;
 		while (mobsToSpawn > 0) {
+            // A denser custom floor must not loop forever when legal spawn space is exhausted.
+            if (customSpawn && --placementAttempts < 0) break;
 			if (mob == null) mob = createMob();
 			Room roomToSpawn;
 			
@@ -931,3 +936,4 @@ public abstract class RegularLevel extends Level {
 	}
 	
 }
+

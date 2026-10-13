@@ -141,8 +141,10 @@ public abstract class Mob extends Char {
 
 	protected static final float TIME_TO_WAKE_UP = 1f;
 
+	public boolean apdCustomHealthApplied;
 	protected boolean firstAdded = true;
 	protected void onAdd(){
+		com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomMobHooks.applyHealth(this);
 		if (firstAdded) {
 			//modify health for ascension challenge if applicable, only on first add
 			float percent = HP / (float) HT;
@@ -188,6 +190,7 @@ public abstract class Mob extends Char {
 		bundle.put( SEEN, enemySeen );
 		bundle.put( TARGET, target );
 		bundle.put( MAX_LVL, maxLvl );
+		if (apdCustomHealthApplied) bundle.put("apd_custom_hp_applied", true);
 
 		if (enemy != null) {
 			bundle.put(ENEMY_ID, enemy.id() );
@@ -240,6 +243,7 @@ public abstract class Mob extends Char {
 		target = bundle.getInt( TARGET );
 
 		maxLvl = bundle.getInt(MAX_LVL);
+		apdCustomHealthApplied = bundle.getBoolean("apd_custom_hp_applied");
 
 		if (bundle.contains(ENEMY_ID)) {
 			enemyID = bundle.getInt(ENEMY_ID);
@@ -1782,4 +1786,5 @@ public abstract class Mob extends Char {
 		heldAllies.clear();
 	}
 }
+
 
