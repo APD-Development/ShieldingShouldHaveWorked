@@ -1,3 +1,7 @@
+# TEST115 failed verification — October13,2026
+
+Sourcea0443763ee8c2abeca072dd36ae0645d54a4c996/run38383245554 failed fullcore suite at ApdHistoricalCoverageTest.allHistoricalPopupsUseNativeSpritesConciseTextAndNoPrivateRepositoryLinks: SCROLL_UPGRADE was not anexisting ChangeIcons enum. NoAPK orAndroidchecks, noverified/deliveredclaim. CorrectedtoexistingITEM_SCROLL_GYFU in116. Noassertionweakened. Gameplayhost41methods andall60upgradegenerationfixtures previouslypassed; fullbuildfailure remains documented.
+
 # TEST115 combat initialization correction and upgrade generation — pending verification
 
 TEST114 sourcea570c45a022b017b16dba3a268ee62b7f66dc245/run38381954625 failed the full core suite: downloaded1336methods,1335passed and1failed,0errors/skips. ExactHealingWiringTest correctly rejected a new Dungeon HP assignment without a healing classification. No114APK was built; Android0/skipped, no delivered114 claim. StartupHP initialization now belongs to Hero's existing setup/maxHP path. No guard assertions/exemptions removed or weakened. Three guard methods locally passed.

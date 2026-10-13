@@ -1,3 +1,7 @@
+# TEST115 invalid sprite corrected; TEST116 verification — October13,2026
+
+115sourcea0443763ee8c2abeca072dd36ae0645d54a4c996/run38383245554 failed ApdHistoricalCoverageTest due to invalidSCROLL_UPGRADE enum. No115APK/Androidrun.116usesexistingITEM_SCROLL_GYFU;3resolvermethods pass, full1339core/21API34/22PNG/debug pending. No testguard assertions weakened. Existing113build/emulatorevidence successful; latestowner-delivered112fallback. Nativecontrols/12remainingmechanics stillunfinished. UIMSDpausedperowner, source-only survival/spawn/enemyHP worklocaluntested. No scoring changes orautomaticdistribution.
+
 # TEST114 failure corrected; TEST115 verification — October13,2026
 
 114sourcea570c45a022b017b16dba3a268ee62b7f66dc245/run38381954625: downloaded1336core,1335pass/1sourceguardfailure,0errors/skips. No114APK/Androidrun/delivery. Root: startupHPassignment locatedinDungeon ratherthanHero'sexistinginitialization.115movesitwithoutweakeningguard.3guardtests pass.

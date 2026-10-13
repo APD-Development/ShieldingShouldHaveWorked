@@ -18,7 +18,7 @@
     },
     {
       "category": "Development",
-      "sprite": "SCROLL_UPGRADE",
+      "sprite": "ITEM_SCROLL_GYFU",
       "title": "Custom upgrade supply",
       "text": "Implemented whole-scroll dungeon allocations from 1 to 60; 15 keeps original generation, and Forbidden Runes retains its existing reduction.",
       "paths": [
@@ -41,21 +41,22 @@
       "category": "Development",
       "sprite": "ICON_INFO",
       "title": "Verification and alpha records",
-      "text": "Documented TEST114's failed source guard and the remaining custom-slider implementation work.",
+      "text": "Documented the failed startup-health and changelog-sprite checks, their corrections and remaining custom-slider work.",
       "paths": [
         "docs/APD-TEST114-REPORT-2026-10-13.md",
         "docs/APD-TEST113-REPORT-2026-10-13.md",
         "docs/HANDOFF.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/APD-NEXT-BUILD-HISTORY.json",
-        "docs/APD-TEST115-REPORT-2026-10-13.md"
+        "docs/APD-TEST115-REPORT-2026-10-13.md",
+        "docs/APD-TEST116-REPORT-2026-10-13.md"
       ]
     },
     {
       "category": "Developer Commentary",
       "sprite": "V074_SHPX",
       "title": "Developer Commentary",
-      "text": "I added the first custom combat factors and configurable upgrade-scroll generation. I preserved original scoring and am continuing the remaining sliders and controls.",
+      "text": "I added the initial custom combat factors and configurable upgrade supply, then corrected verification failures. The remaining sliders and native controls are still in development.",
       "paths": []
     }
   ]
