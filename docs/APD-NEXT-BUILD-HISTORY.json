@@ -21,7 +21,8 @@
       "text": "Added sprite-reference checks and strengthened Android menu checks for item icons and safe fallbacks.",
       "paths": [
         "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/history/ApdSpriteRefTest.java",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/ChangesVisualDeviceTest.java"
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/ChangesVisualDeviceTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/history/ApdHistoricalCoverageTest.java"
       ]
     },
     {

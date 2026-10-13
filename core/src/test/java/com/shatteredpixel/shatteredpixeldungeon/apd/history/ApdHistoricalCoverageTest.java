@@ -58,7 +58,8 @@ public class ApdHistoricalCoverageTest {
    Path file=assets().resolve(build.id+".tsv");if(!Files.isRegularFile(file))continue;
    Set<String> changes=new HashSet<>();
    for(ApdHistory.Entry e:ApdHistory.entries(Files.readString(file))){
-    if(e.sprite.startsWith("ICON_"))Icons.valueOf(e.sprite.substring(5));else ChangeIcons.valueOf(e.sprite);
+    if(e.sprite.startsWith("ITEM_"))assertNotNull("Unknown item sprite in "+build.id+": "+e.sprite,ApdSpriteRef.itemImage(e.sprite));
+    else if(e.sprite.startsWith("ICON_"))Icons.valueOf(e.sprite.substring(5));else ChangeIcons.valueOf(e.sprite);
     assertTrue(build.id+" "+e.title,e.text.split("\\s+").length<=100);assertFalse(e.text.contains("github.com"));assertFalse(e.text.contains("raw.githubusercontent.com"));
     assertTrue("Duplicate entry in "+build.id,changes.add(e.category+"\t"+e.text));
    }
