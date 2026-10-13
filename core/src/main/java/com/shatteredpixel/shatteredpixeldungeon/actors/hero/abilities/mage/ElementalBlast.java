@@ -294,7 +294,7 @@ public class ElementalBlast extends ArmorAbility {
 								//*** Wand of Corrosion ***
 								} else if (finalWandCls == WandOfCorrosion.class){
 									if (mob.isAlive() && mob.alignment != Char.Alignment.ALLY) {
-										Buff.affect( mob, Corrosion.class ).set(4, Math.round(6*effectMulti));
+										Buff.affect( mob, Corrosion.class ).setAttributed(4, Math.round(6*effectMulti), null, hero);
 										charsHit++;
 									}
 
@@ -467,3 +467,4 @@ public class ElementalBlast extends ArmorAbility {
 		return new Talent[]{Talent.BLAST_RADIUS, Talent.ELEMENTAL_POWER, Talent.REACTIVE_BARRIER, Talent.HEROIC_ENERGY};
 	}
 }
+

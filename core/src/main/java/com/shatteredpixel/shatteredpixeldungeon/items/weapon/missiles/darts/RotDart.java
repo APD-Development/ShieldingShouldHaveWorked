@@ -42,9 +42,9 @@ public class RotDart extends TippedDart {
 			//do nothing
 		} else if (defender.properties().contains(Char.Property.BOSS)
 				|| defender.properties().contains(Char.Property.MINIBOSS)){
-			Buff.affect(defender, Corrosion.class).set(5f, Dungeon.scalingDepth()/3);
+			Buff.affect(defender, Corrosion.class).setAttributed(5f, Dungeon.scalingDepth()/3, null, attacker);
 		} else {
-			Buff.affect(defender, Corrosion.class).set(10f, Dungeon.scalingDepth());
+			Buff.affect(defender, Corrosion.class).setAttributed(10f, Dungeon.scalingDepth(), null, attacker);
 		}
 		
 		return super.proc(attacker, defender, damage);
@@ -55,3 +55,4 @@ public class RotDart extends TippedDart {
 		return MAX_DURABILITY/5f; //always 5 uses
 	}
 }
+
