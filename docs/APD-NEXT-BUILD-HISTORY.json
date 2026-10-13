@@ -1,50 +1,44 @@
 {
-  "previous_label": "Codex TEST 109",
-  "previous_source": "845972359883207d3b2dea41861e25ae3610bab3",
-  "previous_run": 38367192732,
+  "previous_label": "Codex TEST 110",
+  "previous_source": "f243122caee015a1dc2d15150908cef850f55507",
+  "previous_run": 38368759449,
   "date": "2026-10-13",
   "changes": [
     {
       "category": "Statistics / UIMSD",
       "sprite": "ICON_DATA",
-      "title": "Exact run records",
-      "text": "Single-run reports and linked records no longer mix distinct run identifiers that differ only by letter case.",
+      "title": "Quest boss records",
+      "text": "The Bosses table now includes recorded Crystal Spire, Gnoll Geomancer, Fungal Core and Vault Elemental encounters from finished runs.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/Op.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/QueryEngine.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdModel.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/report/ReportBuilder.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/BossClasses.java"
       ]
     },
     {
       "category": "Statistics / UIMSD",
       "sprite": "ICON_DATA",
-      "title": "CSV report completeness",
-      "text": "CSV reports now disclose when their existing large-table limit leaves entries out, matching the other export formats.",
+      "title": "Existing boss statistics",
+      "text": "Rebuilt obsolete derived row caches so previously recorded quest bosses receive the corrected classification without changing original history.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/report/ReportRenderer.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowBuilders.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Record links and exports",
-      "text": "Added case-sensitive report and navigation regressions, CSV completeness checks and native Android link-touch coverage.",
+      "title": "Quest boss regressions",
+      "text": "Added actual boss-property, recorded encounter, unfinished privacy, RNG preservation and old-cache recovery checks.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/LinkIdentityTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/report/ReportRunIdentityTest.java",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdScreensDeviceTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/report/ReportCsvCompletenessTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/QuestBossClassificationTest.java"
       ]
     },
     {
       "category": "Development",
       "sprite": "ICON_INFO",
-      "title": "Verification records",
-      "text": "Recorded the preceding APK's successful checks and the next audit corrections without changing saved player data.",
+      "title": "Audit checkpoint",
+      "text": "Recorded further component reviews and verified regression findings while keeping the comprehensive audit explicitly incomplete.",
       "paths": [
-        "docs/APD-TEST109-REPORT-2026-10-13.md",
-        "docs/APD-TEST110-REPORT-2026-10-13.md",
+        "docs/APD-TEST111-REPORT-2026-10-13.md",
+        "docs/APD-UIMSD-REVIEW-CHECKPOINT-2026-10-13.json",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/HANDOFF.md",
         "docs/APD-NEXT-BUILD-HISTORY.json"
@@ -54,7 +48,7 @@
       "category": "Developer Commentary",
       "sprite": "V074_SHPX",
       "title": "Developer Commentary",
-      "text": "I corrected run navigation that could mix case-distinct identifiers and made incomplete CSV reports say so. Existing player text searches and recorded data remain intact.",
+      "text": "I restored missing quest bosses to their statistics category and made existing cached records rebuild correctly. Enemy behavior, gameplay and original player data are unchanged.",
       "paths": []
     }
   ]

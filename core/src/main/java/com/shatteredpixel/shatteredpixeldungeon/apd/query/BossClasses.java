@@ -26,7 +26,8 @@ package com.shatteredpixel.shatteredpixeldungeon.apd.query;
 public final class BossClasses {
 
 	private static final String[] SIMPLE_NAMES = { "Goo", "Tengu", "DM300", "DwarfKing", "YogDzewa", "YogFist",
-			"BurningFist", "SoiledFist", "RottingFist", "RustedFist", "BrightFist", "DarkFist" };
+			"BurningFist", "SoiledFist", "RottingFist", "RustedFist", "BrightFist", "DarkFist",
+			"CrystalSpire", "GnollGeomancer", "FungalCore", "VaultBossElemental" };
 
 	private BossClasses(){}
 

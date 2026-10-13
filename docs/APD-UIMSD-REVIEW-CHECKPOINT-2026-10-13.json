@@ -20,15 +20,15 @@
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/archive/ArchiveImporter.java",
       "sha": "2922357af91a65ec1e340233197b3351e862621e",
-      "reviewed": false,
-      "basis": "pending",
+      "reviewed": true,
+      "basis": "complete source review; confirmed fixes tracked separately where applicable",
       "lines": 426
     },
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/archive/ArchiveManifest.java",
       "sha": "4f34f103beea205fa3c8c921e952bf48cc802296",
       "reviewed": true,
-      "basis": "unchanged previously reviewed Git blob",
+      "basis": "complete source review; confirmed fixes tracked separately where applicable",
       "lines": 213
     },
     {
@@ -49,21 +49,21 @@
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/archive/ProgressGuardInputStream.java",
       "sha": "c111e5fca9eebcd1ae097be8532247cb02c6b125",
       "reviewed": true,
-      "basis": "unchanged previously reviewed Git blob",
+      "basis": "complete source review",
       "lines": 22
     },
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/archive/Size.java",
       "sha": "57e4bdf3b2f7073d6e9e2884f8df43a8417c8da5",
       "reviewed": true,
-      "basis": "unchanged previously reviewed Git blob",
+      "basis": "complete source review",
       "lines": 42
     },
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/archive/StorageMeter.java",
       "sha": "7f9f976b72f230ad497fa021aa4c2b8d4bf4f2fd",
       "reviewed": true,
-      "basis": "unchanged previously reviewed Git blob",
+      "basis": "complete source review",
       "lines": 120
     },
     {
@@ -83,8 +83,8 @@
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/backend/AchievementGrant.java",
       "sha": "191d4e258465db370d6859742d228f9eed13d6b5",
-      "reviewed": false,
-      "basis": "pending",
+      "reviewed": true,
+      "basis": "complete source review; no unfinished network provider activated; confirmed boss omission fixed separately",
       "lines": 52
     },
     {
@@ -97,8 +97,8 @@
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/backend/Backoff.java",
       "sha": "1290ffb682e0eb29bfdd594e800f9694cd2ac699",
-      "reviewed": false,
-      "basis": "pending",
+      "reviewed": true,
+      "basis": "complete source review; no unfinished network provider activated; confirmed boss omission fixed separately",
       "lines": 37
     },
     {
@@ -146,15 +146,15 @@
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/backend/Envelope.java",
       "sha": "629f2835d0d28d4b08a3e671861403755afe94e3",
-      "reviewed": false,
-      "basis": "pending",
+      "reviewed": true,
+      "basis": "complete source review; no unfinished network provider activated; confirmed boss omission fixed separately",
       "lines": 47
     },
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/backend/Evidence.java",
       "sha": "8e75a21532f5a3c2fbac43303114ee90b5657e63",
-      "reviewed": false,
-      "basis": "pending",
+      "reviewed": true,
+      "basis": "complete source review; no unfinished network provider activated; confirmed boss omission fixed separately",
       "lines": 58
     },
     {
@@ -167,8 +167,8 @@
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/backend/Gateway.java",
       "sha": "9b39e5ca1784a61fd9a1707c94c65560132769f6",
-      "reviewed": false,
-      "basis": "pending",
+      "reviewed": true,
+      "basis": "complete source review; no unfinished network provider activated; confirmed boss omission fixed separately",
       "lines": 49
     },
     {
@@ -216,15 +216,15 @@
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/backend/LocalProfile.java",
       "sha": "8ccfdaee60823d5d475fc0c13caadc2bc9315b88",
-      "reviewed": false,
-      "basis": "pending",
+      "reviewed": true,
+      "basis": "complete source review; no unfinished network provider activated; confirmed boss omission fixed separately",
       "lines": 52
     },
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/backend/Mailbox.java",
       "sha": "2a236f65402609dc72e0f522c30b1b99b44c4f3b",
-      "reviewed": false,
-      "basis": "pending",
+      "reviewed": true,
+      "basis": "complete source review; no unfinished network provider activated; confirmed boss omission fixed separately",
       "lines": 43
     },
     {
@@ -265,8 +265,8 @@
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/backend/Report.java",
       "sha": "f7cb20304be4298583f85ae3362319667dc47ee5",
-      "reviewed": false,
-      "basis": "pending",
+      "reviewed": true,
+      "basis": "complete source review; confirmed fixes tracked separately where applicable",
       "lines": 71
     },
     {
@@ -307,8 +307,8 @@
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/backend/SyncRecord.java",
       "sha": "092a2f560de397456057f73576befe5f0a89a726",
-      "reviewed": false,
-      "basis": "pending",
+      "reviewed": true,
+      "basis": "complete source review; no unfinished network provider activated; confirmed boss omission fixed separately",
       "lines": 58
     },
     {
@@ -321,8 +321,8 @@
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/backend/TrustLevel.java",
       "sha": "60fa0392d8e601f5aacaaed3ade2c3a1f4a9da1f",
-      "reviewed": false,
-      "basis": "pending",
+      "reviewed": true,
+      "basis": "complete source review; no unfinished network provider activated; confirmed boss omission fixed separately",
       "lines": 43
     },
     {
@@ -356,8 +356,8 @@
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/backendbridge/AccountActions.java",
       "sha": "84dd7a664635ac1b4a06e689034451aa80bf251c",
-      "reviewed": false,
-      "basis": "pending",
+      "reviewed": true,
+      "basis": "complete source review; no unfinished network provider activated; confirmed boss omission fixed separately",
       "lines": 55
     },
     {
@@ -412,8 +412,8 @@
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/backendbridge/SubmissionQueue.java",
       "sha": "667914c866ad3efc2accaea0f46dde0603f22417",
-      "reviewed": false,
-      "basis": "pending",
+      "reviewed": true,
+      "basis": "complete source review; no unfinished network provider activated; confirmed boss omission fixed separately",
       "lines": 347
     },
     {
@@ -496,8 +496,8 @@
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/BossClasses.java",
       "sha": "c81158adcf29a9c83be403fe5ab7a4c80b79f3a9",
-      "reviewed": false,
-      "basis": "pending",
+      "reviewed": true,
+      "basis": "complete source review; no unfinished network provider activated; confirmed boss omission fixed separately",
       "lines": 43
     },
     {
@@ -517,15 +517,15 @@
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/CellText.java",
       "sha": "922faa2f9d4c6d7f07cea8c1b45ce36a1647cb9b",
-      "reviewed": false,
-      "basis": "pending",
+      "reviewed": true,
+      "basis": "complete source review; no unfinished network provider activated; confirmed boss omission fixed separately",
       "lines": 50
     },
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/ChoicePage.java",
       "sha": "e549f9518e69b36f15850680c1a44c089b8d89b5",
-      "reviewed": false,
-      "basis": "pending",
+      "reviewed": true,
+      "basis": "complete source review; no unfinished network provider activated; confirmed boss omission fixed separately",
       "lines": 16
     },
     {
@@ -629,15 +629,15 @@
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/GuideGeometry.java",
       "sha": "8d73dad775c735700caaa1a31d3828e40b3a602d",
-      "reviewed": false,
-      "basis": "pending",
+      "reviewed": true,
+      "basis": "complete source review; no unfinished network provider activated; confirmed boss omission fixed separately",
       "lines": 52
     },
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/LinkDef.java",
       "sha": "0da9b02d6755474a9d468ed697ecc7845a4e122f",
-      "reviewed": false,
-      "basis": "pending",
+      "reviewed": true,
+      "basis": "complete source review; no unfinished network provider activated; confirmed boss omission fixed separately",
       "lines": 40
     },
     {
@@ -720,8 +720,8 @@
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/ReplayFloor.java",
       "sha": "00f39c9132e258721d622ed0607932da944ee99b",
-      "reviewed": false,
-      "basis": "pending",
+      "reviewed": true,
+      "basis": "complete source review; no unfinished network provider activated; confirmed boss omission fixed separately",
       "lines": 44
     },
     {
@@ -790,8 +790,8 @@
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/StatLine.java",
       "sha": "e9f9f5081eeb8e234eb632e0ed79096cbcb90cc0",
-      "reviewed": false,
-      "basis": "pending",
+      "reviewed": true,
+      "basis": "complete source review; no unfinished network provider activated; confirmed boss omission fixed separately",
       "lines": 52
     },
     {
@@ -881,8 +881,8 @@
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/ApdFacts.java",
       "sha": "f8e1b6848fc1ab24ae7b38ab94a42d1e2a7e16a1",
-      "reviewed": false,
-      "basis": "pending",
+      "reviewed": true,
+      "basis": "complete source review; no unfinished network provider activated; confirmed boss omission fixed separately",
       "lines": 54
     },
     {
@@ -1029,14 +1029,14 @@
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/report/Report.java",
       "sha": "ea9feddaa65e670ece45f5b60c63844652502135",
       "reviewed": true,
-      "basis": "unchanged previously reviewed Git blob",
+      "basis": "complete source review; confirmed fixes tracked separately where applicable",
       "lines": 157
     },
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/report/ReportBuilder.java",
       "sha": "7642436c8759958bf180ea8bf9878575ea95a68a",
-      "reviewed": false,
-      "basis": "pending",
+      "reviewed": true,
+      "basis": "complete source review; confirmed fixes tracked separately where applicable",
       "lines": 328
     },
     {
@@ -1049,8 +1049,8 @@
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/report/ReportRenderer.java",
       "sha": "3f8e1e25cc1839594c9da905f029fcf01a562eed",
-      "reviewed": false,
-      "basis": "pending",
+      "reviewed": true,
+      "basis": "complete source review",
       "lines": 323
     },
     {
@@ -1063,8 +1063,8 @@
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/BuiltinFactKinds.java",
       "sha": "4d6ea04196000647f38579a69d72146bdadb7686",
-      "reviewed": false,
-      "basis": "pending",
+      "reviewed": true,
+      "basis": "complete source review; no unfinished network provider activated; confirmed boss omission fixed separately",
       "lines": 33
     },
     {
@@ -1126,15 +1126,15 @@
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/FactKeys.java",
       "sha": "c68454f8852bb89703afb0ba8dfe4a70da81793e",
-      "reviewed": false,
-      "basis": "pending",
+      "reviewed": true,
+      "basis": "complete source review; confirmed fixes tracked separately where applicable",
       "lines": 119
     },
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/FactKind.java",
       "sha": "ebac140ec50a7aceff73cde1a490ca538b7866dc",
-      "reviewed": false,
-      "basis": "pending",
+      "reviewed": true,
+      "basis": "complete source review; confirmed fixes tracked separately where applicable",
       "lines": 161
     },
     {
@@ -1154,8 +1154,8 @@
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/FormatException.java",
       "sha": "7c39a4726a0acfed750cd73b1a6aa6ae1c8a6f5e",
-      "reviewed": false,
-      "basis": "pending",
+      "reviewed": true,
+      "basis": "complete source review; no unfinished network provider activated; confirmed boss omission fixed separately",
       "lines": 32
     },
     {
@@ -1182,8 +1182,8 @@
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/ItemHistory.java",
       "sha": "ea58e9863050dee9395e3e8b5758f879696f65ca",
-      "reviewed": false,
-      "basis": "pending",
+      "reviewed": true,
+      "basis": "complete source review; confirmed fixes tracked separately where applicable",
       "lines": 195
     },
     {
@@ -1238,8 +1238,8 @@
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/PositionedStringLookup.java",
       "sha": "e219b356c63ff89fd282e6c9c2bf4dec09f2109a",
-      "reviewed": false,
-      "basis": "pending",
+      "reviewed": true,
+      "basis": "complete source review; no unfinished network provider activated; confirmed boss omission fixed separately",
       "lines": 30
     },
     {
@@ -1266,15 +1266,15 @@
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/RunFacts.java",
       "sha": "d3c63f35bc6480f5750598252d13b8ec182180b9",
-      "reviewed": false,
-      "basis": "pending",
+      "reviewed": true,
+      "basis": "complete source review; confirmed fixes tracked separately where applicable",
       "lines": 91
     },
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/RunFactsBuilder.java",
       "sha": "e1ee10e6153828a80a668c0f8fce77a299e4cbf8",
-      "reviewed": false,
-      "basis": "pending",
+      "reviewed": true,
+      "basis": "complete source review; confirmed fixes tracked separately where applicable",
       "lines": 274
     },
     {
@@ -1329,8 +1329,8 @@
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/StringLookup.java",
       "sha": "41de3f3de08e053553baa87e170ee04ac03554d3",
-      "reviewed": false,
-      "basis": "pending",
+      "reviewed": true,
+      "basis": "complete source review; no unfinished network provider activated; confirmed boss omission fixed separately",
       "lines": 30
     },
     {
@@ -1357,8 +1357,8 @@
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/UimsdContent.java",
       "sha": "20bb48b53005b87fd493c97f22aaf2ec80d5603a",
-      "reviewed": false,
-      "basis": "pending",
+      "reviewed": true,
+      "basis": "complete source review; no unfinished network provider activated; confirmed boss omission fixed separately",
       "lines": 39
     },
     {
@@ -1371,8 +1371,8 @@
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/UimsdStyle.java",
       "sha": "61ecfbed8ca64730c040ec3edd82043359ecbfbe",
-      "reviewed": false,
-      "basis": "pending",
+      "reviewed": true,
+      "basis": "complete source review; no unfinished network provider activated; confirmed boss omission fixed separately",
       "lines": 54
     },
     {
@@ -1392,8 +1392,8 @@
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndUimsdChoices.java",
       "sha": "511ae5d652c96a08215064bedc466f5681900a0e",
-      "reviewed": false,
-      "basis": "pending",
+      "reviewed": true,
+      "basis": "complete source review; no unfinished network provider activated; confirmed boss omission fixed separately",
       "lines": 33
     },
     {
