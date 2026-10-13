@@ -81,6 +81,61 @@ public class UimsdScreensDeviceTest {
 		throw new AssertionError("timed out waiting for " + what);
 	}
 
+
+    private static com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList comparisonWindow() throws Exception {
+        Field children=com.watabou.noosa.Group.class.getDeclaredField("members");children.setAccessible(true);
+        com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList result=null;
+        for(Object child:(java.util.List<?>)children.get(Game.scene()))
+            if(child instanceof com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList && ((com.watabou.noosa.Gizmo)child).alive)
+                result=(com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList)child;
+        assertNotNull("comparison picker is visible",result);return result;
+    }
+
+    private static void tapComparisonEntry(int index) throws Exception {
+        AtomicReference<com.watabou.utils.Point> point=new AtomicReference<>();
+        onRender(()->{try{
+            com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList list=comparisonWindow();
+            Field spansField=list.getClass().getDeclaredField("spans");spansField.setAccessible(true);
+            java.util.List<float[]> spans=(java.util.List<float[]>)spansField.get(list);
+            Field paneField=list.getClass().getDeclaredField("pane");paneField.setAccessible(true);
+            com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane pane=(com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane)paneField.get(list);
+            float[] span=spans.get(index);float y=span[0]+span[1]/2;
+            pane.scrollTo(0,Math.max(0,y-pane.height()/2));
+            point.set(pane.content().camera().cameraToScreen(pane.width()/2,y));
+        }catch(Exception e){throw new RuntimeException(e);}});
+        com.watabou.utils.Point at=point.get();
+        com.watabou.input.PointerEvent.addPointerEvent(new com.watabou.input.PointerEvent(at.x,at.y,14,com.watabou.input.PointerEvent.Type.DOWN,com.watabou.input.PointerEvent.LEFT));
+        Thread.sleep(150);
+        com.watabou.input.PointerEvent.addPointerEvent(new com.watabou.input.PointerEvent(at.x,at.y,14,com.watabou.input.PointerEvent.Type.UP,com.watabou.input.PointerEvent.LEFT));
+        Thread.sleep(300);
+    }
+
+    private static void verifyComparisonPages() throws Exception {
+        java.util.List<String> choices=new java.util.ArrayList<>();for(int i=0;i<81;i++)choices.add("Comparison "+i);
+        AtomicReference<String> selected=new AtomicReference<>();
+        onRender(()->{try{
+            Method open=com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdReport.class.getDeclaredMethod("chooseComparison",java.util.List.class,java.util.function.Function.class,java.util.function.Consumer.class,int.class);
+            open.setAccessible(true);open.invoke(null,choices,(java.util.function.Function<String,String>)(v->v),(java.util.function.Consumer<String>)(selected::set),0);
+        }catch(Exception e){throw new RuntimeException(e);}});
+        Thread.sleep(300);
+        tapComparisonEntry(40); // Next: choices 40 through 79, plus previous/next controls.
+        onRender(()->{try{
+            Field entries=com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.class.getDeclaredField("entries");entries.setAccessible(true);
+            java.util.List<?> list=(java.util.List<?>)entries.get(comparisonWindow());
+            assertEquals("only one bounded page is rendered",42,list.size());
+            assertEquals("Comparison 40",((com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.Entry)list.get(0)).label);
+        }catch(Exception e){throw new RuntimeException(e);}});
+        tapComparisonEntry(40); // Previous returns to page one.
+        tapComparisonEntry(40); // Next returns to page two.
+        tapComparisonEntry(41); // Next reaches the final partial page.
+        onRender(()->{try{
+            Field entries=com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.class.getDeclaredField("entries");entries.setAccessible(true);
+            java.util.List<?> list=(java.util.List<?>)entries.get(comparisonWindow());
+            assertEquals(2,list.size());assertEquals("Comparison 80",((com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.Entry)list.get(0)).label);
+        }catch(Exception e){throw new RuntimeException(e);}});
+        tapComparisonEntry(0);assertEquals("the last comparison remains selectable", "Comparison 80",selected.get());
+    }
+
 	@Test
 	public void everyUimsdScreenAndDialogCanBeBuilt() throws Exception {
 		try (ActivityScenario<AndroidLauncher> scenario = ActivityScenario.launch(AndroidLauncher.class)){
@@ -119,6 +174,7 @@ public class UimsdScreensDeviceTest {
 			//3. the dialogs, on the tour's model (the sample history), one level in a table with filters, sorting and columns
 			final UimsdModel m = (UimsdModel) field("model");
 			assertNotNull("the tour has a model", m);
+            verifyComparisonPages();
             onRender(() -> {
                 com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdHome home =
                     com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdHome.build(m.catalog(), m.currentRuleset(), true);

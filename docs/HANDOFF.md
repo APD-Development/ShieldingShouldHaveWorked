@@ -1313,3 +1313,10 @@ Existing Android category/icon/popup test strengthened to resolve crystal/potion
 
 Independent requested source comparison completed in read-only workflow38327221311. First APD setup commit56be46ab950e841857ec2eb7edf7ae64a6cc65b2 directly parents SPD2bb34a4e91d29c8785a9363cad6ddfe5122b1d4f. TEST89 source inventory differences:659source/configfiles,80979added,495deleted,net80484. Includes comments/blanks/tests/tooling; not all gameplay logic or Codex authorship.969all-kind changed files retained in ledger; binary differences have no line counts. Three parser/component tests pass. No app rebuild for this report.
 Entire UIMSD audit/visual acceptance, historical missing evidence, simulator/custom-rule foundations, exact owner saves and phone acceptance remain unfinished. No live services or unapproved scoring/design activated.
+
+
+## Oct12 evening: actual TEST92 delivered; next UIMSD batch
+
+Actual TEST92 source3e9b2e2a132cda2dc0331d62c590159b4410f388/run38329572457 fully passed1247core+21API34,18PNG. Native screenshot inspected: actualkeyicon,goldborder,two-columncategories. Deliveryffa65cfdbd43f13c676bd88401fafb68e2f9c326/run38330596355 privately published01:07:57UTCOct13=9:07:57pmEDTOct12; APK SHA256d05c81105437f113a7e959c473dd5a553b8c2fe8b599b96dcfab34f83a9898a3,sameTEST67signer/appID. Installover,neveruninstall/cleardata. TEST91 initialCI failedhistoricalspritevalidator,noAPK; correctedvalidatorpreservedallassertions,actualworkflowretrywasC92. EarlierTEST91candidate labels are not delivery evidence.
+
+Next expected93: removeSeedFloorsper-rowtemporaryDataset/list allocations; replace40-onlyrun/groupcomparisonpickerwithnative40-per-pagePrevious/Next,allcandidatesreachable.3newboundary/coveragecasespass;113existinglocalstorage/merge/model/query/savedview/formatter/geometry/seedcasespass.10000-rowallocationfixtureidenticaldata,480000fewerallocatedbytes;timingnotfaster,noCPU-speedupclaim.23sourcefilesreviewedinpartialaudit;wholeUIMSDauditnotcomplete. Android touch fixtureaddedwithinexistingtest;localSDKabsent,full1250core/21API34/18PNG/debugpending. No nextAPKclaimuntilchecks/signature/deliveryactual.

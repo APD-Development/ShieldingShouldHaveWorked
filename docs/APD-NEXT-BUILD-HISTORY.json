@@ -1,52 +1,60 @@
 {
-  "previous_label": "Codex TEST 90",
-  "previous_source": "21e4f7579715f42897408efe06535762014cc759",
-  "previous_run": 38326602527,
+  "previous_label": "Codex TEST 92",
+  "previous_source": "3e9b2e2a132cda2dc0331d62c590159b4410f388",
+  "previous_run": 38329572457,
   "date": "2026-10-12",
   "changes": [
     {
-      "category": "Quality of Life",
-      "sprite": "ITEM_CRYSTAL_KEY",
-      "title": "Game-item icons",
-      "text": "News and change entries can show familiar item sprites; the crystal-path fix now uses a crystal key.",
+      "category": "Bug Fixes",
+      "sprite": "ICON_DATA",
+      "title": "All comparisons reachable",
+      "text": "Run and group comparisons now include every eligible record through compact pages instead of stopping at the first 40.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/history/ApdSpriteRef.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/APDTextScene.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/ChoicePage.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndUimsdReport.java"
+      ]
+    },
+    {
+      "category": "Statistics / UIMSD",
+      "sprite": "ICON_DATA",
+      "title": "Seed-floor memory",
+      "text": "Removed temporary objects from seed-floor row assembly without changing recorded or canonical values.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/SeedFloors.java"
       ]
     },
     {
       "category": "Testing",
-      "sprite": "ICON_INFO",
-      "title": "Native sprite checks",
-      "text": "Added sprite-reference checks and strengthened Android menu checks for item icons and safe fallbacks.",
+      "sprite": "ICON_CHECKED",
+      "title": "Comparison-page checks",
+      "text": "Added page-boundary coverage and Android touch checks for later comparisons, previous pages and the final record.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/history/ApdSpriteRefTest.java",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/ChangesVisualDeviceTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/history/ApdHistoricalCoverageTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/ChoicePageTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdScreensDeviceTest.java"
       ]
     },
     {
       "category": "Development",
-      "sprite": "ICON_DATA",
-      "title": "Verified source comparison",
-      "text": "Measured source additions and removals from APD's confirmed starting commit without rebuilding the game.",
+      "sprite": "ICON_INFO",
+      "title": "Audit and delivery evidence",
+      "text": "Recorded verified delivery and the current partial UIMSD audit, including storage checks and measured allocation savings.",
       "paths": [
-        ".github/workflows/codex-existing-apk-delivery.yml",
-        ".github/workflows/codex-source-difference-report.yml",
-        "docs/APD-FORK-BASELINE-EVIDENCE-2026-10-12.json",
-        "tools/apd_fork_diff_counts.py",
-        "tools/test_apd_fork_diff_counts.py",
-        "docs/APD-TEST91-REPORT-2026-10-12.md",
-        "docs/APD-NEXT-BUILD-HISTORY.json",
+        "docs/APD-UIMSD-AUDIT-BATCH-2026-10-12.json",
+        "docs/APD-UIMSD-ALLOCATION-VERIFICATION-2026-10-12.md",
+        "docs/APD-TEST92-DELIVERY-2026-10-12.json",
+        "docs/APD-TEST93-REPORT-2026-10-12.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/HANDOFF.md"
+        "docs/APD-NEXT-BUILD-HISTORY.json",
+        "docs/HANDOFF.md",
+        ".github/workflows/codex-existing-apk-delivery.yml",
+        "docs/APD-TEST92-REPORT-2026-10-12.md"
       ]
     },
     {
       "category": "Developer Commentary",
       "sprite": "V074_SHPX",
       "title": "Developer Commentary",
-      "text": "I added native game-item sprites to the news and change-history system. Existing entries, popup descriptions and build attribution are preserved.",
+      "text": "I made older run and group comparisons reachable without loading every choice onto the screen. I also removed unnecessary seed-floor allocations while preserving the statistics.",
       "paths": []
     }
   ]

@@ -122,20 +122,13 @@ public final class WndUimsdReport {
 			tell("This table has no other group to compare with.");
 			return;
 		}
-		final List<GroupRow> shown = others.size() > 40 ? others.subList(0, 40) : others;
-		List<String> labels = new ArrayList<>();
-		for (GroupRow o : shown) labels.add(ReportBuilder.groupName(q, o) + "  (" + o.n + ")");
-		ShatteredPixelDungeon.scene().addToFront(new WndUimsdList("Compare with", "Choose another group of this table.", labels, null, new WndUimsdList.Picker(){
-			@Override
-			public void onPick( final int i, boolean checked ){
-				show(m, "These two groups side by side.", new Source(){
-					@Override
-					public Report build(){
-						return ReportBuilder.compareGroups(q, g, shown.get(i), m.currentRulesetLabel(), System.currentTimeMillis(), Game.version);
-					}
-				});
-			}
-		}));
+		chooseComparison(others, o -> ReportBuilder.groupName(q, o) + "  (" + o.n + ")", o -> {
+			show(m, "These two groups side by side.", new Source(){
+				@Override public Report build(){
+					return ReportBuilder.compareGroups(q, g, o, m.currentRulesetLabel(), System.currentTimeMillis(), Game.version);
+				}
+			});
+		}, 0);
 	}
 
 	public static void ofRun( final UimsdModel m, final Row run ){
@@ -178,26 +171,39 @@ public final class WndUimsdReport {
 				}
 			});
 		}
-		final List<Row> shown = others.size() > 40 ? others.subList(0, 40) : others;
-		List<String> labels = new ArrayList<>();
-		for (Row r : shown) labels.add(ReportBuilder.describeRun(cat, r, false));
-		if (labels.isEmpty()){
+		if (others.isEmpty()){
 			tell("There is no other finished run to compare with.");
 			return;
 		}
-		ShatteredPixelDungeon.scene().addToFront(new WndUimsdList("Compare with", "Choose a finished run (the 40 most recent are listed).", labels, null,
-				new WndUimsdList.Picker(){
-					@Override
-					public void onPick( final int i, boolean checked ){
-						final boolean hidden = m.query().showInternal;
-						show(m, "This run next to the one you chose.", new Source(){
-							@Override
-							public Report build(){
-								return ReportBuilder.compareRuns(cat, run, shown.get(i), hidden, System.currentTimeMillis(), Game.version);
-							}
-						});
-					}
-				}));
+		chooseComparison(others, r -> ReportBuilder.describeRun(cat, r, false), other -> {
+			final boolean hidden = m.query().showInternal;
+			show(m, "This run next to the one you chose.", new Source(){
+				@Override public Report build(){
+					return ReportBuilder.compareRuns(cat, run, other, hidden, System.currentTimeMillis(), Game.version);
+				}
+			});
+		}, 0);
+	}
+
+	//Render only one small native list at a time, while keeping every comparison candidate reachable.
+	private static <T> void chooseComparison(final List<T> choices,
+			final java.util.function.Function<T, String> label,
+			final java.util.function.Consumer<T> selected, int requestedPage){
+		final com.shatteredpixel.shatteredpixeldungeon.apd.query.ChoicePage page =
+				new com.shatteredpixel.shatteredpixeldungeon.apd.query.ChoicePage(choices.size(), requestedPage);
+		List<String> labels = new ArrayList<>();
+		for (int i = page.start; i < page.end; i++) labels.add(label.apply(choices.get(i)));
+		final int count = labels.size();
+		if (page.hasPrevious()) labels.add("Previous page");
+		if (page.hasNext()) labels.add("Next page");
+		ShatteredPixelDungeon.scene().addToFront(new WndUimsdList("Compare with",
+				"Choose a comparison. Page " + (page.page + 1) + " of " + page.pageCount + ".",
+				labels, null, (index, checked) -> {
+					if (index < count) selected.accept(choices.get(page.start + index));
+					else if (page.hasPrevious() && index == count)
+						chooseComparison(choices, label, selected, page.page - 1);
+					else chooseComparison(choices, label, selected, page.page + 1);
+				}).restoreWith(() -> chooseComparison(choices, label, selected, page.page)));
 	}
 
 	//the table of runs (the only one with run-level reports); kept here so the generic windows never name a shipped dataset

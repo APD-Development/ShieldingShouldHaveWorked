@@ -235,8 +235,8 @@ public final class SeedFloors {
 		return cls + "|" + level + "|" + cursed + "|" + enchant;
 	}
 
-	private static Row row( Dataset ds, String id, Spec spec ){
-		Row r = new Row(id, null, spec.runId, ds.def.size());
+	private static Row row( DatasetDef def, String id, Spec spec ){
+		Row r = new Row(id, null, spec.runId, def.size());
 		r.finished = true;
 		r.ruleset = spec.ruleset;
 		return r;
@@ -267,7 +267,7 @@ public final class SeedFloors {
 		int n = 0;
 		for (Map.Entry<Integer, List<Recorded>> e : byFloor.entrySet()){
 			for (Recorded x : e.getValue()){
-				Row r = row(new Dataset(idef, null, null), "sfr" + (n++), spec);
+				Row r = row(idef, "sfr" + (n++), spec);
 				put(r, idef, "sf.run", spec.runId, Fact.PROV_RECORDED);
 				put(r, idef, "sf.floor", e.getKey(), Fact.PROV_RECORDED);
 				put(r, idef, "sf.basis", BASIS_RECORDED, Fact.PROV_RECORDED);
@@ -327,7 +327,7 @@ public final class SeedFloors {
 					if (o != null) classOnly += Math.min(e.getValue(), o);
 				}
 				int recTotal = rec.size();
-				Row r = row(new Dataset(cdef, null, null), "scr" + (c++), spec);
+				Row r = row(cdef, "scr" + (c++), spec);
 				put(r, cdef, "sc.run", spec.runId, Fact.PROV_RECORDED);
 				put(r, cdef, "sc.floor", f.depth, Fact.PROV_RECORDED);
 				put(r, cdef, "sc.basis", BASIS_COMPARISON, Fact.PROV_RECORDED);
@@ -346,7 +346,7 @@ public final class SeedFloors {
 			b.canonicalFloors++;
 			int basisCode = spec.reached < 0 ? BASIS_REACH_UNKNOWN : f.depth <= spec.reached ? BASIS_UNRECORDED : BASIS_UNREACHED;
 			for (ReplayFloor.Item it : f.items){
-				Row r = row(new Dataset(idef, null, null), "sfc" + (n++), spec);
+				Row r = row(idef, "sfc" + (n++), spec);
 				put(r, idef, "sf.run", spec.runId, Fact.PROV_RECORDED);
 				put(r, idef, "sf.floor", f.depth, basisCode == BASIS_RECORDED ? Fact.PROV_RECORDED : Fact.PROV_INFERRED);
 				put(r, idef, "sf.basis", basisCode, Fact.PROV_RECORDED);
@@ -362,7 +362,7 @@ public final class SeedFloors {
 				irows.add(r);
 			}
 			for (ReplayFloor.Mob mob : f.mobs){
-				Row r = row(new Dataset(mdef, null, null), "smc" + (m++), spec);
+				Row r = row(mdef, "smc" + (m++), spec);
 				put(r, mdef, "sm.run", spec.runId, Fact.PROV_RECORDED);
 				put(r, mdef, "sm.floor", f.depth, Fact.PROV_RECORDED);
 				put(r, mdef, "sm.basis", basisCode, Fact.PROV_RECORDED);
