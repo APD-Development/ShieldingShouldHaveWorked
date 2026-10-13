@@ -1,3 +1,7 @@
+# TEST106 verified candidate — 2026-10-13 07:10 UTC
+
+Source015d0392f5ff607746a6db0a2879fd4bbd4c3c45 / run38359186475 succeeded. Downloaded1293core+21API34, zero failures/errors/skips;20PNG/debug. Existing-artifact signing/hash/private delivery staged; publication pending. TEST105 remains delivered fallback. Fixed-slot metamorphosis work local7tests passed, NOT in106. Duplicate handling retains SPD's existing exclusion from valid selections: all five classes are shown but already-owned options cannot replace; no substitution to another position or inferred user approval to change gameplay. Consumption/cancellation/point-transfer rules retained. Native interaction/screenshots planned for next build, unverified until execution. Entire audit/backlog incomplete.
+
 # TEST106 legacy compatibility guard in verification — 2026-10-13 06:51 UTC
 
 Latest deliveredTEST105 sourcec15313c6d128bcd3557ff8df0b49ffe24258c8d5, verification38357456703, delivery38358838879/cee5af337ab69e265956c4a4c29212ff6b01fcca, published06:49:22UTC.1290core+21API34/20PNG/debug/signing/appID/hash verified, including native group-sheet touches. Receipt docs/APD-TEST105-DELIVERY-2026-10-13.json. Install over, never uninstall/clear data; physical-phone and owner-save verification absent.
