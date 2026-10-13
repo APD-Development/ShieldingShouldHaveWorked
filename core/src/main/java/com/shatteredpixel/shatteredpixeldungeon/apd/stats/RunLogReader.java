@@ -195,7 +195,7 @@ public final class RunLogReader {
 			case LogFormat.FRAME_STRING: {
 				ByteSource p = new ByteSource(f.payload);
 				int id = p.readUnsignedInt();
-				String value = new String(p.readRemaining(), Utf8.CHARSET);
+				String value = Utf8.decode(p.readRemaining());
 				if (id < r.strings.size()){
 					if (r.strings.get(id) != null) throw new FormatException("string " + id + " defined twice");
 					r.strings.set(id, value);

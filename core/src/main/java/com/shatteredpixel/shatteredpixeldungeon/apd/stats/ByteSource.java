@@ -131,6 +131,6 @@ public final class ByteSource {
 
 	public String readString(){
 		int len = readUnsignedInt();
-		return new String(readBytes(len), Utf8.CHARSET);
+		return Utf8.decode(readBytes(len));
 	}
 }

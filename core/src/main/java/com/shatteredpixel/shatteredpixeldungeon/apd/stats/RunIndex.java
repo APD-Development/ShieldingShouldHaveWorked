@@ -41,7 +41,7 @@ import java.util.Map;
 public final class RunIndex {
 
 	static final byte[] MAGIC = { 'A', 'P', 'D', 'I' };
-	static final int FORMAT = 1;
+	static final int FORMAT = 2;
 	public static final String LOG_SUFFIX = ".apdlog";
 
 	private final File indexFile;

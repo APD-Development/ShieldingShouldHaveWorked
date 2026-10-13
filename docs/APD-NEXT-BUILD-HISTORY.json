@@ -1,82 +1,69 @@
 {
-  "previous_label": "Codex TEST 97",
-  "previous_source": "a2dce9fe381b211de6a9a11733e4801219c418b2",
-  "previous_run": 38341230408,
+  "previous_label": "Codex TEST 99",
+  "previous_source": "91db176d323ae465ab04bb10d693f2696dfd51cd",
+  "previous_run": 38343013108,
   "date": "2026-10-12",
   "changes": [
     {
-      "category": "Quality of Life",
-      "sprite": "ITEM_POTION_HOLDER",
-      "title": "Healing confirmation",
-      "text": "Identified Healing potions can require confirmation at a saved HP threshold from 0% to 100%; the default remains one-tap use.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/SPDSettings.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/PotionOfHealing.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/healing/HealingConfirmation.java"
-      ]
-    },
-    {
-      "category": "Interface",
-      "sprite": "ITEM_POTION_HOLDER",
-      "title": "Healing preference controls",
-      "text": "APD Settings offers a native percentage slider with explicit Save and Cancel, plus an Off option.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/APDSettingsPane.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndHealingConfirmation.java"
-      ]
-    },
-    {
-      "category": "Performance",
+      "category": "Bug Fixes",
       "sprite": "ICON_DATA",
-      "title": "Compressed-statistics memory",
-      "text": "Decoding statistics series reuses its step buffer instead of allocating a second array for every column.",
+      "title": "Damaged statistics text",
+      "text": "Malformed encoded text is reported as damaged instead of being silently replaced with different identities or build information.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/FactEvents.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/Utf8.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/ByteSource.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/RunLogReader.java"
+      ]
+    },
+    {
+      "category": "Statistics / UIMSD",
+      "sprite": "ICON_DATA",
+      "title": "Refresh derived statistics",
+      "text": "Existing rebuildable indexes and statistics caches refresh once so old replacement text cannot remain trusted.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/DerivedStore.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/RunIndex.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowBuilders.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Healing regression coverage",
-      "text": "Tested every percentage boundary, unidentified bypass and persistence, with real Android cancellation, consumption and settings controls.",
+      "title": "Raw-text integrity",
+      "text": "Added malformed and valid Unicode checks, including byte-for-byte preservation of a repaired tail backup.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/healing/HealingConfirmationTest.java",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PlayRunDeviceTest.java",
-        "docs/APD-HEALING-CONFIRMATION-VERIFICATION-2026-10-12.md"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/RawUtf8IntegrityTest.java",
+        "docs/APD-RAW-UTF8-VERIFICATION-2026-10-12.md",
+        "docs/evidence/raw-utf8/LegacyUtf8CacheProbe.java"
       ]
     },
     {
       "category": "Testing",
-      "sprite": "ICON_CHECKED",
-      "title": "Statistics series coverage",
-      "text": "Added signed-long extremes and delta-overflow roundtrips and recorded an actual decoder allocation comparison.",
+      "sprite": "ITEM_POTION_HOLDER",
+      "title": "Healing screenshots",
+      "text": "Android verification now archives both the healing confirmation and threshold-setting screenshots.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/FactEventsTest.java",
-        "docs/APD-SERIES-ALLOCATION-VERIFICATION-2026-10-12.md",
-        "docs/evidence/series-allocation/SeriesAllocationProbe.java"
+        "tools/run-codex-android-checks.sh"
       ]
     },
     {
       "category": "Development",
       "sprite": "ICON_INFO",
-      "title": "Build evidence",
-      "text": "Recorded TEST97's successful verification and delivery, this batch's checks and its remaining limitations.",
+      "title": "Verification records",
+      "text": "Recorded TEST99's passing tests and its missing archived images, plus this batch's reproduced data-integrity failures.",
       "paths": [
-        ".github/workflows/codex-existing-apk-delivery.yml",
-        "docs/APD-TEST97-REPORT-2026-10-12.md",
-        "docs/APD-TEST97-DELIVERY-2026-10-12.json",
+        "docs/APD-TEST99-CHECKS-2026-10-12.json",
+        "docs/APD-TEST100-REPORT-2026-10-12.md",
         "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/APD-TEST98-REPORT-2026-10-12.md",
-        "docs/HANDOFF.md",
-        "docs/APD-TEST99-REPORT-2026-10-12.md"
+        "docs/HANDOFF.md"
       ]
     },
     {
       "category": "Developer Commentary",
       "sprite": "V074_SHPX",
       "title": "Developer Commentary",
-      "text": "I added optional healing confirmation without changing healing effects or normal drinking costs. I also reduced temporary memory use when reading compressed statistics.",
+      "text": "I tightened damaged-text handling so statistics do not invent identities from corrupted recordings. Existing caches rebuild from the original logs, and the Android checks now retain the new healing screenshots.",
       "paths": []
     }
   ]
