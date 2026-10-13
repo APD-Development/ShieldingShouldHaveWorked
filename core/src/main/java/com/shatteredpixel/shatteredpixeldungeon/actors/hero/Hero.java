@@ -261,6 +261,15 @@ public class Hero extends Char {
 		visibleEnemies = new ArrayList<>();
 	}
 	
+    // New-run setup only: this is not recovery, level-up healing, or Ankh revival.
+    public void apdInitializeCustomMaximumHp() {
+        if (com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomCombatHooks.percentage(
+                com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.Slider.PLAYER_HP) != 100) {
+            updateHT(false);
+            HP = HT;
+        }
+    }
+
 	public void updateHT( boolean boostHP ){
 		int curHT = HT;
 		

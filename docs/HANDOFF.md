@@ -1,8 +1,8 @@
-# Custom slider gameplay focus — October13,2026
+# TEST114 failure corrected; TEST115 verification — October13,2026
 
-Owner directs pauseUIMSD until gameplay sliders done; local telemetry/column work preserved separately, not committed or in113/114. TEST113 source75c7f52a6d881e6cfd7e122946debfc4b7d7e533/run38379793601 succeeded; actual1330core+21API34/22validPNG/debug. No signing compatibility/publication receipt or phone verification. TEST112 remains delivered fallback.
+114sourcea570c45a022b017b16dba3a268ee62b7f66dc245/run38381954625: downloaded1336core,1335pass/1sourceguardfailure,0errors/skips. No114APK/Androidrun/delivery. Root: startupHPassignment locatedinDungeon ratherthanHero'sexistinginitialization.115movesitwithoutweakeningguard.3guardtests pass.
 
-TEST114 adds five gameplay effects: playermaximumHP and player/enemyaccuracy/evasion. Six new hosttests pass0.402s. Required1336core/21API34/22PNG/debug pending. Other13mechanics/nativecontrols remain unfinished; noalpha-ready claim. Originalearnedscore unchanged. FridayOct16 target, stageonly/noautomatictesterdistribution. Reports113/114 provide evidence and limits.
+115addsactual1–60upgradegeneration (beforeForbidden Runes). All60counts with/withoutthat challenge exactlymatched120realgenerationfixtures/24floors each; nofullplayer-survivalclaim. Neutral15predicate/nextRNGparity passes; originalkeys/lootmechanicsretained.41targetedmethods pass14.348s. Full1339core/21API34/22PNG/debug pending. Other12gameplaymodifiers/nativecontrolsunfinished, UIMSDpausedperowner. Originalscoresunchanged. October16earlyalpha target; noautomaticdistribution. PreviousactualAPK113source75c7f52a6d881e6cfd7e122946debfc4b7d7e533/run38379793601(successful1330+21/22PNG/debug, notowner-delivered). Latestdelivered112fallback.
 
 # Custom rules save foundation in verification — October13,2026
 

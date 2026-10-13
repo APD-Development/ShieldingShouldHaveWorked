@@ -16,6 +16,13 @@ public final class UpgradeScrollPlan {
         if (region < 0 || region >= 5) throw new IllegalArgumentException("Region outside 0..4");
         return count * (region + 1) / 5 - count * region / 5;
     }
+    /** Non-boss floors in the five main regions, with no new RNG or hidden placements. */
+    public int floorCount(int depth) {
+        if (depth<1 || depth>24 || depth%5==0) return 0;
+        int region=(depth-1)/5, index=(depth-1)%5;
+        int regional=regionCount(region);
+        return regional*(index+1)/4-regional*index/4;
+    }
     /** Count after existing Forbidden Runes removal, whose counter spans regions. */
     public int countAfterForbiddenRunes() { return (count + 1) / 2; }
 }

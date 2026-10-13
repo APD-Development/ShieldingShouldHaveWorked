@@ -8,7 +8,7 @@
       "category": "Development",
       "sprite": "ICON_INFO",
       "title": "Custom combat effects",
-      "text": "Implemented maximum-health, accuracy and evasion gameplay factors from the locked custom configuration; player controls and the remaining modifiers are still in development.",
+      "text": "Implemented maximum-health, accuracy and evasion factors from locked custom settings, with startup health separated from healing.",
       "paths": [
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/Dungeon.java",
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/Char.java",
@@ -17,32 +17,45 @@
       ]
     },
     {
+      "category": "Development",
+      "sprite": "SCROLL_UPGRADE",
+      "title": "Custom upgrade supply",
+      "text": "Implemented whole-scroll dungeon allocations from 1 to 60; 15 keeps original generation, and Forbidden Runes retains its existing reduction.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/Level.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/UpgradeScrollPlan.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomGenerationHooks.java"
+      ]
+    },
+    {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Combat slider regressions",
-      "text": "Added finite-skill, zero-evasion, protected-skill, six-class health and save/load checks for the custom combat factors.",
+      "title": "Custom slider regressions",
+      "text": "Added combat, health save/load and all-count dungeon-generation tests, including Forbidden Runes and neutral random-number checks.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomCombatSliderTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomCombatSliderTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomUpgradeGenerationTest.java"
       ]
     },
     {
       "category": "Development",
       "sprite": "ICON_INFO",
-      "title": "Verification records",
-      "text": "Recorded TEST113's successful build/emulator evidence and the remaining custom-slider work.",
+      "title": "Verification and alpha records",
+      "text": "Documented TEST114's failed source guard and the remaining custom-slider implementation work.",
       "paths": [
         "docs/APD-TEST114-REPORT-2026-10-13.md",
         "docs/APD-TEST113-REPORT-2026-10-13.md",
         "docs/HANDOFF.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/APD-NEXT-BUILD-HISTORY.json"
+        "docs/APD-NEXT-BUILD-HISTORY.json",
+        "docs/APD-TEST115-REPORT-2026-10-13.md"
       ]
     },
     {
       "category": "Developer Commentary",
       "sprite": "V074_SHPX",
       "title": "Developer Commentary",
-      "text": "I added the first five custom gameplay factors and preserved original scoring. The remaining sliders and native controls still need implementation and verification.",
+      "text": "I added the first custom combat factors and configurable upgrade-scroll generation. I preserved original scoring and am continuing the remaining sliders and controls.",
       "paths": []
     }
   ]
