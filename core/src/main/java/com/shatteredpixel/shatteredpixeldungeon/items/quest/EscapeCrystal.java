@@ -261,7 +261,7 @@ public class EscapeCrystal extends Item {
 
 		Dungeon.hero.live(); //clears all non-persist buffs, resets hunger/regen
 		int apdHpBefore = Dungeon.hero.HP;
-		Dungeon.hero.HP = Dungeon.hero.HT; //full heal
+		Dungeon.hero.HP = Math.min(Dungeon.hero.HT, com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.fullHealth(Dungeon.hero)); //full heal
 		ApdCombat.onHeal( Dungeon.hero, apdHpBefore, ApdCombat.HEAL_OTHER_FULL_HEAL, -1 );
 
 		//logic for removing Warrior's Seal or Mage's staff
@@ -374,3 +374,4 @@ public class EscapeCrystal extends Item {
 		storedItems = bundle.getBundle(STORED_ITEMS);
 	}
 }
+

@@ -69,7 +69,7 @@ public class FrozenCarpaccio extends Food {
 			case 3:
 				GLog.i( Messages.get(FrozenCarpaccio.class, "better") );
 				int apdHpBefore = hero.HP;
-				hero.HP = Math.min( hero.HP + hero.HT / 4, hero.HT );
+				hero.HP = Math.min( hero.HP + com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.amount(hero, hero.HT / 4), hero.HT );
 				ApdCombat.onHeal( hero, apdHpBefore, ApdCombat.HEAL_FOOD_FROZEN_CARPACCIO, hero.HT / 4 );
 				hero.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString(hero.HT / 4), FloatingText.HEALING );
 				break;
@@ -82,3 +82,4 @@ public class FrozenCarpaccio extends Food {
 		return result;
 	}
 }
+

@@ -236,6 +236,7 @@ public class Hero extends Char {
 	public Belongings belongings;
 	
 	public int STR;
+    public float apdCustomHealingFraction;
 	
 	public float awareness;
 	
@@ -287,6 +288,7 @@ public class Hero extends Char {
 			HP += Math.max(HT - curHT, 0);
 		}
 		HP = Math.min(HP, HT);
+        if (HP == HT) apdCustomHealingFraction = 0;
 	}
 
 	public int STR() {
@@ -321,6 +323,8 @@ public class Hero extends Char {
 	public void storeInBundle( Bundle bundle ) {
 
 		super.storeInBundle( bundle );
+        if (apdCustomHealingFraction > 0) bundle.put("apd_custom_healing_fraction", apdCustomHealingFraction);
+        else bundle.remove("apd_custom_healing_fraction");
 
 		bundle.put( CLASS, heroClass );
 		bundle.put( SUBCLASS, subClass );
@@ -349,6 +353,9 @@ public class Hero extends Char {
 		HTBoost = bundle.getInt(HTBOOST);
 
 		super.restoreFromBundle( bundle );
+        apdCustomHealingFraction = bundle.contains("apd_custom_healing_fraction") ? bundle.getFloat("apd_custom_healing_fraction") : 0;
+        if (Float.isNaN(apdCustomHealingFraction) || apdCustomHealingFraction < 0 || apdCustomHealingFraction >= 1)
+            throw new IllegalArgumentException("Invalid custom healing fraction; preserve the save for recovery");
 
 		heroClass = bundle.getEnum( CLASS, HeroClass.class );
 		subClass = bundle.getEnum( SUBCLASS, HeroSubClass.class );
@@ -2702,6 +2709,7 @@ public class Hero extends Char {
 	
 	public void resurrect() {
 		HP = HT;
+        apdCustomHealingFraction = 0;
 		ApdCombat.onHeroRevived( ApdCombat.REVIVE_RESURRECT );
 		live();
 
@@ -2745,4 +2753,5 @@ public class Hero extends Char {
 		public void onDeath();
 	}
 }
+
 

@@ -86,9 +86,9 @@ public class ElixirOfAquaticRejuvenation extends Elixir {
 					healAmt = (float)Math.floor(healAmt);
 				}
 				int apdHpBefore = target.HP;
-				target.HP += (int)healAmt;
+				target.HP += com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.amount(target, (int)healAmt);
 				left -= (int)healAmt;
-				target.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString((int)healAmt), FloatingText.HEALING );
+				target.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.display(target, apdHpBefore, (int)healAmt)), FloatingText.HEALING );
 
 				if (target.HP >= target.HT) {
 					target.HP = target.HT;
@@ -172,3 +172,4 @@ public class ElixirOfAquaticRejuvenation extends Elixir {
 	}
 	
 }
+

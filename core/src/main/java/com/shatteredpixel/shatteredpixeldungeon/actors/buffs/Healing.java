@@ -50,10 +50,10 @@ public class Healing extends Buff {
 	
 	@Override
 	public boolean act(){
+		int apdHpBefore = target.HP;
 
 		if (target.HP < target.HT) {
-			int apdHpBefore = target.HP;
-			target.HP = Math.min(target.HT, target.HP + healingThisTick());
+			target.HP = Math.min(target.HT, target.HP + com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.amount(target, healingThisTick()));
 
 			if (target.HP == target.HT && target instanceof Hero) {
 				((Hero) target).resting = false;
@@ -61,7 +61,7 @@ public class Healing extends Buff {
 			ApdCombat.onHeal( target, apdHpBefore, ApdCombat.HEAL_POTION_HEALING, -1 );
 		}
 
-		target.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(healingThisTick()), FloatingText.HEALING);
+		target.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.display(target, apdHpBefore, healingThisTick())), FloatingText.HEALING);
 		healingLeft -= healingThisTick();
 		
 		if (healingLeft <= 0){
@@ -155,3 +155,4 @@ public class Healing extends Buff {
 		return Messages.get(this, "desc", healingThisTick(), healingLeft);
 	}
 }
+

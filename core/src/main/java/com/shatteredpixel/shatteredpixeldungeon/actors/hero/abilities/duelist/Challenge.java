@@ -269,7 +269,7 @@ public class Challenge extends ArmorAbility {
 						//heals for 30%/50%/65%/75% of taken damage plus 5/10/15/20 bonus, based on talent points
 						hpToHeal = (int)Math.round(hpToHeal * (1f - Math.pow(0.707f, Dungeon.hero.pointsInTalent(Talent.INVIGORATING_VICTORY))));
 						hpToHeal += 5*Dungeon.hero.pointsInTalent(Talent.INVIGORATING_VICTORY);
-						hpToHeal = Math.min(hpToHeal, Dungeon.hero.HT - Dungeon.hero.HP);
+						hpToHeal = Math.min(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.amount(Dungeon.hero, hpToHeal), Dungeon.hero.HT - Dungeon.hero.HP);
 						if (hpToHeal > 0){
 							int apdHpBefore = Dungeon.hero.HP;
 							Dungeon.hero.HP += hpToHeal;
@@ -351,3 +351,4 @@ public class Challenge extends ArmorAbility {
 
 	}
 }
+

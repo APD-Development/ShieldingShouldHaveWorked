@@ -110,6 +110,7 @@ public class Dewdrop extends Item {
 				healing.setHeal(heal, 0, VialOfBlood.maxHealPerTurn(), true);
 			} else {
 				int apdHpBefore = hero.HP;
+				heal = Math.min(hero.HT - hero.HP, com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.amount(hero, effect));
 				hero.HP += heal;
 				ApdCombat.onHeal( hero, apdHpBefore, ApdCombat.HEAL_PLANT_DEWDROP, heal );
 				if (heal > 0){
@@ -158,3 +159,4 @@ public class Dewdrop extends Item {
 	}
 
 }
+

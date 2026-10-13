@@ -859,7 +859,7 @@ public abstract class Mob extends Char {
 				if (Dungeon.hero.HP < Dungeon.hero.HT) {
 					int heal = (int)Math.ceil(restoration * 0.4f);
 					int apdHpBefore = Dungeon.hero.HP;
-					Dungeon.hero.HP = Math.min(Dungeon.hero.HT, Dungeon.hero.HP + heal);
+					Dungeon.hero.HP = Math.min(Dungeon.hero.HT, Dungeon.hero.HP + com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.amount(Dungeon.hero, heal));
 					ApdCombat.onHeal( Dungeon.hero, apdHpBefore, ApdCombat.HEAL_SKILL_SOUL_SIPHON, heal );
 					Dungeon.hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(heal), FloatingText.HEALING);
 				}
@@ -1786,5 +1786,6 @@ public abstract class Mob extends Char {
 		heldAllies.clear();
 	}
 }
+
 
 

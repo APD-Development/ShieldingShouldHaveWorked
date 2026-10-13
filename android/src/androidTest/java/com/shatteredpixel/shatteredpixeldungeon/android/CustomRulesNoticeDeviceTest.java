@@ -114,8 +114,14 @@ public class CustomRulesNoticeDeviceTest {
                 Thread.sleep(750);screenshot("custom-rules-notice-narrow.png");
                 render(()->{try {
                     ScrollPane scroll=(ScrollPane)field(windows[0],"scroll");
-                    scroll.scrollTo(0,Math.max(0,scroll.content().height()-scroll.height()));
-                    assertEquals(CustomRulesPresentation.noticeText(),((RenderedTextBlock)field(windows[0],"scoringNotice")).text());
+                    RenderedTextBlock notice=(RenderedTextBlock)field(windows[0],"scoringNotice");
+                    RenderedTextBlock scoring=PixelScene.renderTextBlock(CustomRulesPresentation.SCORING_NOTICE,6);
+                    scoring.maxWidth((int)scroll.width());
+                    float scoreTop=notice.bottom()-scoring.height();
+                    scroll.scrollTo(0,Math.max(0,scoreTop-2));
+                    assertTrue("The whole scoring paragraph fits the narrow scroll viewport",notice.bottom()<=scroll.content().camera().scroll.y+scroll.height());
+                    assertEquals(CustomRulesPresentation.noticeText(),notice.text());
+                    scoring.destroy();
                 }catch(Exception e){throw new RuntimeException(e);}});
                 Thread.sleep(750);screenshot("custom-rules-notice-narrow-scrolled.png");
             } finally {

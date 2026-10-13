@@ -39,10 +39,11 @@ public class TornPage extends RemainsItem {
 	protected void doEffect(Hero hero) {
 		int toHeal = Math.round(hero.HT/10f);
 		int apdHpBefore = hero.HP;
-		hero.HP = Math.min(hero.HP + toHeal, hero.HT);
+		hero.HP = Math.min(hero.HP + com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.amount(hero, toHeal), hero.HT);
 		ApdCombat.onHeal( hero, apdHpBefore, ApdCombat.HEAL_GEAR_TORN_PAGE, toHeal );
 		hero.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString(toHeal), FloatingText.HEALING );
 		Sample.INSTANCE.play( Assets.Sounds.READ );
 	}
 
 }
+

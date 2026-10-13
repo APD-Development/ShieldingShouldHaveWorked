@@ -52,9 +52,9 @@ public class WellFed extends Buff {
 			return true;
 		} else if (left % 18 == 0 && target.HP < target.HT){
 			int apdHpBefore = target.HP;
-			target.HP += 1;
+			target.HP += com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.amount(target, 1);
 			ApdCombat.onHeal( target, apdHpBefore, ApdCombat.HEAL_FOOD_WELL_FED, 1 );
-			target.sprite.showStatusWithIcon(CharSprite.POSITIVE, "1", FloatingText.HEALING);
+			target.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.display(target, apdHpBefore, 1)), FloatingText.HEALING);
 
 			if (target.HP == target.HT && target instanceof Hero) {
 				((Hero) target).resting = false;
@@ -116,3 +116,4 @@ public class WellFed extends Buff {
 		left = bundle.getInt(LEFT);
 	}
 }
+

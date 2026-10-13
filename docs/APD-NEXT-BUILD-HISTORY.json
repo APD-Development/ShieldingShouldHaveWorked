@@ -1,73 +1,296 @@
 {
-  "previous_label": "Codex TEST 119",
-  "previous_source": "217c18729f2dc909277ad8c2ce38a0d371618e37",
-  "previous_run": 38391217821,
+  "previous_label": "Codex TEST 120",
+  "previous_source": "d017bd3009b40bd015779e68f43d19f898bc412b",
+  "previous_run": 38396459334,
   "date": "2026-10-13",
   "changes": [
     {
-      "category": "Development",
-      "sprite": "PD_RAT",
-      "title": "Custom boss health",
-      "text": "Boss health now follows its own locked setting instead of ordinary enemy health.",
+      "category": "Changes",
+      "sprite": "V023_POTION_CRIMSON",
+      "title": "Well healing",
+      "text": "Well HP recovery follows Healing Effectiveness while cleansing and other well effects remain unchanged.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomMobHooks.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomBossHealthHooks.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomRulesPresentation.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/blobs/WaterOfHealth.java"
       ]
     },
     {
       "category": "Changes",
-      "sprite": "V24_RAT_SKULL",
-      "title": "Boss phase protection",
-      "text": "Custom boss health preserves Yog's phase boundaries and Dwarf King's shield objectives, including fractional remainders across saves.",
+      "sprite": "V023_POTION_CRIMSON",
+      "title": "Healing effects",
+      "text": "Potion and delayed healing ticks follow the run's Healing Effectiveness.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/DwarfKing.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/YogDzewa.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomBossHealthHooks.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Healing.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "ICON_INFO",
+      "title": "Restorative sleep",
+      "text": "Sleep recovery follows Healing Effectiveness; zero healing cannot leave restorative sleep permanently locked.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/MagicalSleep.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V092_CHALICE",
+      "title": "Natural regeneration",
+      "text": "Natural HP recovery follows Healing Effectiveness without adding random rolls.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Regeneration.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V060_RATION",
+      "title": "Well-fed recovery",
+      "text": "Well-fed HP recovery follows Healing Effectiveness.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/WellFed.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V023_POTION_CRIMSON",
+      "title": "Healing fractions",
+      "text": "Fractional recovery survives saves without banking overhealing; starting health, maximum-health gains and revival remain unchanged.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/Hero.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V060_RATION",
+      "title": "Meal talents",
+      "text": "Hearty Meal's HP recovery follows Healing Effectiveness.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/Talent.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "ICON_INFO",
+      "title": "Challenge recovery",
+      "text": "Duelist Challenge's HP recovery follows Healing Effectiveness.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/abilities/duelist/Challenge.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "ICON_INFO",
+      "title": "Elemental Strike recovery",
+      "text": "Vampiric Elemental Strike's HP recovery follows Healing Effectiveness.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/abilities/duelist/ElementalStrike.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "PD_RAT",
+      "title": "Soul Siphon recovery",
+      "text": "Soul Siphon's player healing follows Healing Effectiveness.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Mob.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_DEW_VIAL",
+      "title": "Dew recovery",
+      "text": "Immediate dew recovery follows Healing Effectiveness before the final HP cap; shielding stays separate.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Dewdrop.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "ICON_INFO",
+      "title": "Metabolism recovery",
+      "text": "Metabolism's HP recovery follows Healing Effectiveness without changing its hunger cost.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/curses/Metabolism.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V092_CHALICE",
+      "title": "Chalice recovery",
+      "text": "Chalice regeneration follows Healing Effectiveness; prick damage is unchanged.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/ChaliceOfBlood.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V060_RATION",
+      "title": "Frozen carpaccio recovery",
+      "text": "Frozen carpaccio's HP recovery follows Healing Effectiveness.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/food/FrozenCarpaccio.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V060_RATION",
+      "title": "Pasty recovery",
+      "text": "Pasty healing and its displayed recovered HP follow Healing Effectiveness.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/food/Pasty.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V060_RATION",
+      "title": "Phantom meat recovery",
+      "text": "Phantom meat's HP recovery follows Healing Effectiveness.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/food/PhantomMeat.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V060_RATION",
+      "title": "Supply ration recovery",
+      "text": "Supply ration's HP recovery follows Healing Effectiveness.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/food/SupplyRation.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V023_POTION_CRIMSON",
+      "title": "Aquatic recovery",
+      "text": "Aquatic rejuvenation follows Healing Effectiveness while retaining its existing recovery budget and random rolls.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/elixirs/ElixirOfAquaticRejuvenation.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "ICON_INFO",
+      "title": "Escape recovery",
+      "text": "Escape crystal HP recovery follows Healing Effectiveness; escape behavior is unchanged.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/quest/EscapeCrystal.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "ICON_INFO",
+      "title": "Torn page recovery",
+      "text": "Torn page HP recovery follows Healing Effectiveness.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/remains/TornPage.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "ICON_INFO",
+      "title": "Cursed wand recovery",
+      "text": "Cursed-wand player HP recovery follows Healing Effectiveness; other targets retain original healing.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/CursedWand.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "ICON_INFO",
+      "title": "Transfusion recovery",
+      "text": "Transfusion player HP recovery follows Healing Effectiveness while ally healing and shielding remain unchanged.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfTransfusion.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "ICON_INFO",
+      "title": "Vampiric recovery",
+      "text": "Vampiric player HP recovery follows Healing Effectiveness before the final HP cap.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Vampiric.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "ICON_INFO",
+      "title": "City recovery",
+      "text": "City full-recovery effects follow Healing Effectiveness.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/CityLevel.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_DEW_VIAL",
+      "title": "Sungrass recovery",
+      "text": "Sungrass player HP recovery follows Healing Effectiveness while retaining its healing budget.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Sungrass.java"
       ]
     },
     {
       "category": "Development",
-      "sprite": "V060_RATION",
-      "title": "Custom food supply",
-      "text": "Food supply follows the selected percentage;25%provides a standard ration in each region and100%retains original generation.",
+      "sprite": "V023_POTION_CRIMSON",
+      "title": "Healing Effectiveness",
+      "text": "Enabled the Healing Effectiveness slider with shared player-recovery calculations; other characters and shielding retain their existing behavior.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomGenerationHooks.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/Level.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomHealingHooks.java",
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomRulesPresentation.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Boss and food regressions",
-      "text": "Added boss-phase/save and regional-food checks, and included minimum food in the combined custom-generation fixture.",
+      "title": "Healing regressions",
+      "text": "Added seven checks for healing boundaries, all six classes, recovery sources, fractional saves, revival and zero-healing sleep safety.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomBossHealthSliderTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomFoodGenerationTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomMobSurvivalInteractionTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomHealingSliderTest.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_INFO",
-      "title": "Narrow warning access",
-      "text": "Added a scrolled narrow-screen capture to check access to the experimental warning's scoring paragraph.",
+      "title": "Narrow scoring notice capture",
+      "text": "Corrected the narrow-screen test's scroll target so its screenshot shows the scoring notice rather than the bottom sliders.",
       "paths": [
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java",
-        "tools/run-codex-android-checks.sh"
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V30_CLERIC_CLOTH",
+      "title": "Cleric lore curation",
+      "text": "Reduced the stored Cleric collection to 50 distinct entries while keeping the feature disabled for this alpha.",
+      "paths": [
+        "core/src/main/assets/apd/humor/cleric_anytime.txt",
+        "core/src/main/assets/apd/humor/cleric_appreciation.txt",
+        "core/src/main/assets/apd/humor/cleric_comparisons.txt",
+        "core/src/main/assets/apd/humor/cleric_contextual.txt",
+        "core/src/main/assets/apd/humor/cleric_formats.txt"
+      ]
+    },
+    {
+      "category": "Testing",
+      "sprite": "ICON_CHECKED",
+      "title": "Lore regressions",
+      "text": "Added count, uniqueness, trigger and history-preservation checks; updated content expectations for the approved 50-entry collection.",
+      "paths": [
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/humor/ClericLoreLimitTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/humor/CreativeDirectionTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/humor/PackLintTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/humor/PoolsAndStoriesTest.java",
+        "core/src/test/resources/apd/cleric_complaint_ids.txt"
       ]
     },
     {
       "category": "Development",
       "sprite": "ICON_INFO",
-      "title": "Verification and investigation records",
-      "text": "Recorded verified warning checks, custom boss/food evidence and the unconfirmed upstream audio report.",
+      "title": "Verification records",
+      "text": "Recorded healing verification, the complete lore curation and remaining alpha limitations.",
       "paths": [
-        "docs/APD-TEST120-REPORT-2026-10-13.md",
-        "docs/APD-TEST119-REPORT-2026-10-13.md",
-        "docs/APD-TEST118-REPORT-2026-10-13.md",
-        "docs/APD-AUDIO-INVESTIGATION-2026-10-13.md",
+        "docs/APD-TEST121-REPORT-2026-10-13.md",
+        "docs/APD-CLERIC-LORE-CURATION-2026-10-13.md",
         "docs/HANDOFF.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/APD-NEXT-BUILD-HISTORY.json"
@@ -77,7 +300,7 @@
       "category": "Developer Commentary",
       "sprite": "V074_SHPX",
       "title": "Developer Commentary",
-      "text": "I added boss health and regional food settings while protecting boss progression. Offensive damage attribution, healing, equipment supply and permanent statistics integration still need work.",
+      "text": "I enabled healing customization while protecting revival and preventing zero-healing sleep from locking a run. Damage attribution, equipment supply and permanent statistics integration remain unfinished; custom settings still do not change earned scores.",
       "paths": []
     }
   ]

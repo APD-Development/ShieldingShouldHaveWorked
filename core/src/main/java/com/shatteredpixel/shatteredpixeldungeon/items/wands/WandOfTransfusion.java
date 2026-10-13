@@ -103,12 +103,12 @@ public class WandOfTransfusion extends DamageWand {
 				}
 				
 				int apdHpBefore = ch.HP;
-				ch.HP += healing;
+				ch.HP += com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.amount(ch, healing);
 				ApdCombat.onHeal( ch, apdHpBefore, ApdCombat.HEAL_WAND_TRANSFUSION, healing );
 				
 				ch.sprite.emitter().burst(Speck.factory(Speck.HEALING), 2 + buffedLvl() / 2);
 				if (healing > 0) {
-					ch.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(healing), FloatingText.HEALING);
+					ch.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.display(ch, apdHpBefore, healing)), FloatingText.HEALING);
 				}
 				if (shielding > 0){
 					ch.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shielding), FloatingText.SHIELDING);
@@ -231,3 +231,4 @@ public class WandOfTransfusion extends DamageWand {
 	}
 
 }
+

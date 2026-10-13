@@ -100,8 +100,8 @@ public class Sungrass extends Plant {
 				if (target.HP < target.HT) {
 
 					int apdHpBefore = target.HP;
-					target.HP += healThisTurn;
-					target.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(healThisTurn), FloatingText.HEALING);
+					target.HP += com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.amount(target, healThisTurn);
+					target.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.display(target, apdHpBefore, healThisTurn)), FloatingText.HEALING);
 
 					if (target.HP >= target.HT) {
 						target.HP = target.HT;
@@ -172,3 +172,4 @@ public class Sungrass extends Plant {
 		}
 	}
 }
+

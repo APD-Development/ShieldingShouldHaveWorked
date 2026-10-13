@@ -64,10 +64,10 @@ public class WaterOfHealth extends WellWater {
 			healing.setHeal(hero.HT, 0, VialOfBlood.maxHealPerTurn(), true);
 		} else {
 			int apdHpBefore = hero.HP;
-			hero.HP = hero.HT;
+			hero.HP = Math.min(hero.HT, com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.fullHealth(hero));
 			ApdCombat.onHeal( hero, apdHpBefore, ApdCombat.HEAL_OTHER_WELL_OF_HEALTH, -1 );
 			hero.sprite.emitter().start(Speck.factory(Speck.HEALING), 0.4f, 4);
-			hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(hero.HT), FloatingText.HEALING);
+			hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.display(hero, apdHpBefore, hero.HT)), FloatingText.HEALING);
 		}
 		
 		CellEmitter.get( hero.pos ).start( ShaftParticle.FACTORY, 0.2f, 3 );
@@ -117,3 +117,4 @@ public class WaterOfHealth extends WellWater {
 		return Messages.get(this, "desc");
 	}
 }
+

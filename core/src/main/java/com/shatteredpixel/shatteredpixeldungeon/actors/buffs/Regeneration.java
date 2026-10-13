@@ -87,7 +87,7 @@ public class Regeneration extends Buff {
 
 				if (partialRegen >= 1) {
 					int apdHpBefore = target.HP;
-					target.HP += (int)partialRegen;
+					target.HP += com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.amount(target, (int)partialRegen);
 					partialRegen -= (int)partialRegen;
 					if (target.HP >= regencap()) {
 						target.HP = regencap();
@@ -135,3 +135,4 @@ public class Regeneration extends Buff {
 		partialRegen = bundle.getFloat(PARTIAL_REGEN);
 	}
 }
+

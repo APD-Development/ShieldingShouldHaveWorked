@@ -41,8 +41,12 @@ public class MagicalSleep extends Buff {
 			target.paralysed++;
 			
 			if (target.alignment == Char.Alignment.ALLY) {
-				if (target.HP == target.HT) {
-					if (target instanceof  Hero) GLog.i(Messages.get(this, "toohealthy"));
+				boolean healingDisabled = target instanceof Hero && com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.disabled();
+				if (target.HP == target.HT || healingDisabled) {
+					if (target instanceof Hero) {
+						if (healingDisabled) GLog.i("These custom rules disable restorative healing.");
+						else GLog.i(Messages.get(this, "toohealthy"));
+					}
 					detach();
 					return true;
 				} else {
@@ -62,13 +66,16 @@ public class MagicalSleep extends Buff {
 
 	@Override
 	public boolean act(){
+		if (target instanceof Hero && com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.disabled()) {
+			detach();spend(STEP);return true;
+		}
 		if (target instanceof Mob && ((Mob) target).state != ((Mob) target).SLEEPING){
 			detach();
 			return true;
 		}
 		if (target.alignment == Char.Alignment.ALLY) {
 			int apdHpBefore = target.HP;
-			target.HP = Math.min(target.HP+1, target.HT);
+			target.HP = Math.min(target.HP+com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.amount(target, 1), target.HT);
 			ApdCombat.onHeal( target, apdHpBefore, ApdCombat.HEAL_OTHER_SLEEP, 1 );
 			if (target instanceof  Hero) ((Hero) target).resting = true;
 			if (target.HP == target.HT) {

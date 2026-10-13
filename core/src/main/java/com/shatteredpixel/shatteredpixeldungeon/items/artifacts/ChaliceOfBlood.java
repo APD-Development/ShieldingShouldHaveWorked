@@ -186,8 +186,8 @@ public class ChaliceOfBlood extends Artifact {
 		}
 		if (heal >= 1f && target.HP < target.HT) {
 			int apdHpBefore = target.HP;
-			target.HP = Math.min(target.HT, target.HP + (int)heal);
-			target.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString((int)heal), FloatingText.HEALING);
+			target.HP = Math.min(target.HT, target.HP + com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.amount(target, (int)heal));
+			target.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.display(target, apdHpBefore, (int)heal)), FloatingText.HEALING);
 
 			if (target.HP == target.HT && target instanceof Hero) {
 				((Hero) target).resting = false;
@@ -225,4 +225,5 @@ public class ChaliceOfBlood extends Artifact {
 	}
 
 }
+
 

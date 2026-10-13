@@ -278,7 +278,7 @@ public class ElementalStrike extends ArmorAbility {
 		} else if (ench instanceof Vampiric){
 			if (targetsHit > 0){
 				int heal = Math.round(2.5f*targetsHit*powerMulti);
-				heal = Math.min( heal, hero.HT - hero.HP );
+				heal = Math.min( com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.amount(hero, heal), hero.HT - hero.HP );
 				if (heal > 0){
 					int apdHpBefore = hero.HP;
 					hero.HP += heal;
@@ -682,3 +682,4 @@ public class ElementalStrike extends ArmorAbility {
 	}
 
 }
+

@@ -1640,3 +1640,8 @@ Priority: below October16early-alpha sliders, save/progression stability, scorin
 ## 2026-10-13 Cleric 50-entry curation
 
 Owner-requested cleanup completed against TEST120: 348 -> exactly50 entries (49 counted +1 meta);298 retired, IDs/wording of retained entries unchanged. Eight complete story pairs retained; all50 selected/rendered under legal intended triggers. Existing early-alpha release gate remains off. No gameplay/save/statistics changes. 82 local humor tests passed,0failed,2.007s;3new regressions. Complete retained/removed ID audit: docs/APD-CLERIC-LORE-CURATION-2026-10-13.md. No new APK for this standalone commit; include assets in next appropriate verified build. Alpha sliders remain priority; local healing package and screenshot correction are still uncommitted and not part of this curation commit.
+
+
+## October13morning — TEST121 healing preparation
+
+Healing implementation integrated after lore curation26bae9b: shared player-recovery factor across25sources,optional saved quarter fractions,no RNG at100%,no overheal banking,zero-healing restorative-sleep safety,revival/max-HP/shield exclusions. Seven new methods;56targetedchecks passed0fail2.303s. Lore82targetedpass3new. Fourteen gameplay effects now implemented;three offensive damage +equipment pending; permanent UIMSD acceptance incomplete. Corrected TEST120 third screenshot target because actual image showed bottom controls, not scoring paragraph. Full1370expectedcore/22API34/25PNG/debug pending; stage only,no automatic tester distribution,no claim of verified APK yet. Report docs/APD-TEST121-REPORT-2026-10-13.md. Previous actual APK120source/run pinned in ledger. Original scoring/bounds/data/signing preserved.
