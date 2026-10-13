@@ -402,7 +402,7 @@ public class CursedWand {
 					Char ch = Actor.findChar(  i );
 					//does not harm hero or allies when positive only
 					if (ch != null && (!positiveOnly || ch.alignment != Char.Alignment.ALLY)){
-						Buff.affect(ch, Ooze.class).set( Ooze.DURATION );
+						Buff.affect(ch, Ooze.class).setAttributed( Ooze.DURATION, user );
 					}
 				}
 			}
@@ -922,7 +922,7 @@ public class CursedWand {
 							break;
 						case 3:
 							Ooze ooze = Buff.affect(ch, Ooze.class);
-							ooze.set(Ooze.DURATION);
+							ooze.setAttributed(Ooze.DURATION,user);
 							com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(ch,dmg,ooze,user);
 							Splash.at( ch.sprite.center(), 0x000000, 20 );
 							break;

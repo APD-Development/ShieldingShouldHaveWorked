@@ -450,7 +450,7 @@ public abstract class YogFist extends Mob {
 			damage = super.attackProc( enemy, damage );
 
 			if (Random.Int( 2 ) == 0) {
-				Buff.affect( enemy, Ooze.class ).set( Ooze.DURATION );
+				Buff.affect( enemy, Ooze.class ).setAttributed( Ooze.DURATION, this );
 				enemy.sprite.burst( 0xFF000000, 5 );
 			}
 

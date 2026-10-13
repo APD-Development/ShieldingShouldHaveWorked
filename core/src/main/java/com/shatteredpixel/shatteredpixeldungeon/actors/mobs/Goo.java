@@ -155,7 +155,7 @@ public class Goo extends Mob {
 	public int attackProc( Char enemy, int damage ) {
 		damage = super.attackProc( enemy, damage );
 		if (Random.Int( 3 ) == 0) {
-			Buff.affect( enemy, Ooze.class ).set( Ooze.DURATION );
+			Buff.affect( enemy, Ooze.class ).setAttributed( Ooze.DURATION, this );
 			enemy.sprite.burst( 0x000000, 5 );
 		}
 

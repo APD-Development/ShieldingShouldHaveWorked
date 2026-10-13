@@ -1,58 +1,102 @@
 {
-  "previous_label": "Codex TEST 131",
-  "previous_source": "023acd981044657287ae5a216ff21784013e8aea",
-  "previous_run": 38461004622,
+  "previous_label": "Codex TEST 133",
+  "previous_source": "980fff4c8fcd34ee379235e055d6557e894d567e",
+  "previous_run": 38472581219,
   "date": "2026-10-13",
   "changes": [
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Corrosion damage ownership",
-      "text": "Prepared source-aware corrosion ticks and forecasts with compatible saves and unchanged neutral behavior.",
+      "title": "Ooze",
+      "text": "Prepared source-aware ooze ticks with compatible saves and unchanged neutral behavior.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Corrosion.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V073_DART",
-      "title": "Rot dart source",
-      "text": "Prepared attacker attribution for the corrosion caused by rot darts.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/RotDart.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V063_MAGICMISSILE",
-      "title": "Elemental corrosion source",
-      "text": "Prepared caster attribution for Elemental Blast's corrosion effect.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/abilities/mage/ElementalBlast.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Ooze.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Corrosion regression coverage",
-      "text": "Added corrosion checks for all damage settings, neutral behavior, overlapping effects and save compatibility.",
+      "title": "Acidic",
+      "text": "Prepared attribution for ooze caused by acidic scorpios.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/AttributedCorrosionIntegrationTest.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Acidic.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "Caustic Slime",
+      "text": "Prepared attribution for caustic-slime ooze.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/CausticSlime.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V080_YOG",
+      "title": "Goo",
+      "text": "Prepared boss attribution for Goo's ooze attacks.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Goo.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "Fetid Rat",
+      "text": "Prepared enemy attribution for fetid-rat ooze.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/FetidRat.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V063_MAGICMISSILE",
+      "title": "Wand Of Corrosion",
+      "text": "Prepared attacker attribution for corrosion-staff ooze.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfCorrosion.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V080_YOG",
+      "title": "Yog Fist",
+      "text": "Prepared boss attribution for the rotting fist's ooze.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/YogFist.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V063_MAGICMISSILE",
+      "title": "Cursed Wand",
+      "text": "Prepared caster attribution for cursed-wand ooze effects.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/CursedWand.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "Attributed Ooze Integration Test",
+      "text": "Added ooze checks across depths, damage settings, water removal and save compatibility.",
+      "paths": [
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/AttributedOozeIntegrationTest.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_PAGE",
-      "title": "Corrosion verification records",
-      "text": "Recorded verified burning results, corrosion checks and the remaining alpha release blockers.",
+      "title": "Delayed damage verification",
+      "text": "Recorded ooze regression results and the remaining alpha release blockers.",
       "paths": [
-        "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/APD-NEXT-BUILD-HISTORY.json",
-        "docs/APD-TEST132-REPORT-2026-10-13.md",
-        "docs/APD-TEST133-REPORT-2026-10-13.md",
+        "docs/APD-CODEX-BUILD-REQUEST.txt",
+        "docs/APD-TEST134-REPORT-2026-10-13.md",
         "docs/HANDOFF.md"
       ]
     }
   ],
-  "commentary": "I continued source tracking for delayed corrosion damage. Damage controls remain unavailable until the remaining offensive sources and their tests are complete."
+  "commentary": "I continued tracking delayed offensive damage through ooze-producing enemies and spells. The three damage controls remain pending while persistent hazards and other sources are completed."
 }
