@@ -139,24 +139,37 @@ public class TitleButtonWiringTest {
 		assertFalse(scene == RankingsScene.class);
 	}
 
-	@Test
-	public void noCompiledTitleCodeReachesTheOldRankingsScreen() throws Exception {
-		//Only the UIMSD handler is run above (the other buttons open windows and need the running game, and starting them here
-		//would break class loading for other tests). The compiled title classes, which are what the APK contains, are checked
-		//for any reference at all to the old Rankings screen.
-		List<Class<?>> handlers = clickHandlers();
-		assertTrue("found the title buttons' click handlers", handlers.size() >= 8);
-		List<Class<?>> all = new ArrayList<>(handlers);
-		all.add(TitleScene.class);
-		for (Class<?> c : all){
-			java.io.InputStream in = c.getResourceAsStream("/" + c.getName().replace('.', '/') + ".class");
-			assertNotNull(c.getName(), in);
-			java.io.ByteArrayOutputStream bytes = new java.io.ByteArrayOutputStream();
-			byte[] buf = new byte[4096];
-			for (int n; (n = in.read(buf)) > 0; ) bytes.write(buf, 0, n);
-			in.close();
-			assertFalse(c.getName() + " refers to the old Rankings screen", new String(bytes.toByteArray(), "ISO-8859-1").contains("RankingsScene"));
+	private static byte[] compiledBytes(Class<?> c)throws Exception{
+		try(java.io.InputStream in=c.getResourceAsStream("/"+c.getName().replace('.','/')+".class")){
+			assertNotNull(c.getName(),in);java.io.ByteArrayOutputStream out=new java.io.ByteArrayOutputStream();byte[] buf=new byte[4096];
+			for(int n;(n=in.read(buf))>0;)out.write(buf,0,n);return out.toByteArray();
 		}
+	}
+	private static Class<?> topScoresHandler()throws Exception{
+		Class<?> found=null;
+		for(Class<?> c:clickHandlers())if(new String(compiledBytes(c),"ISO-8859-1").contains("RankingsScene")){
+			assertTrue("Only the approved Top Scores handler references Rankings",found==null);found=c;
+		}
+		assertNotNull("Top Scores targets original Rankings",found);
+		assertFalse(new String(compiledBytes(TitleScene.class),"ISO-8859-1").contains("RankingsScene"));
+		return found;
+	}
+	private static void clickTopScores(boolean android)throws Exception{
+		Class<?> handler=topScoresHandler();Object button=allocate(handler);
+		Field platform=handler.getDeclaredField("val$androidTopScores");platform.setAccessible(true);platform.setBoolean(button,android);
+		Method click=handler.getDeclaredMethod("onClick");click.setAccessible(true);click.invoke(button);
+	}
+	private static class TrackingGame extends Game{
+		boolean finished;TrackingGame(){super(TitleScene.class,null);}
+		@Override public void finish(){finished=true;}
+	}
+	@Test public void compiledAndroidTopScoresTargetsOriginalRankingsWithoutExiting()throws Exception{
+		TrackingGame game=new TrackingGame();forgetRequest();clickTopScores(true);
+		assertEquals(RankingsScene.class,requestedScene());assertFalse(game.finished);
+	}
+	@Test public void compiledDesktopQuitStillFinishesWithoutOpeningRankings()throws Exception{
+		TrackingGame game=new TrackingGame();forgetRequest();clickTopScores(false);
+		assertEquals(TitleScene.class,requestedScene());assertTrue(game.finished);
 	}
 
 	@Test

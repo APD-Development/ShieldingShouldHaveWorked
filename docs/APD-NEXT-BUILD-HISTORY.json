@@ -40,7 +40,27 @@
         "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/APD-TEST129-REPORT-2026-10-13.md",
-        "docs/HANDOFF.md"
+        "docs/HANDOFF.md",
+        "docs/APD-TEST130-REPORT-2026-10-13.md",
+        "docs/APD-TEST129-REPORT-2026-10-13.md"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "Android and desktop compiled routing",
+      "text": "Updated compiled menu tests to verify Android Top Scores and desktop Quit while keeping UIMSD separate.",
+      "paths": [
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/TitleButtonWiringTest.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "Protected menu geometry",
+      "text": "Updated the frozen-menu guard to allow only the approved Android Top Scores replacement.",
+      "paths": [
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/UimsdWiringTest.java"
       ]
     }
   ],
