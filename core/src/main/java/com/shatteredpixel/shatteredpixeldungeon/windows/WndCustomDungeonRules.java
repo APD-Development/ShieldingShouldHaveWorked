@@ -51,6 +51,7 @@ public class WndCustomDungeonRules extends Window {
                         caption.text(caption(rule));caption.maxWidth((int)width());
                     }
                 };
+                slider.scrollVerticallyWith(scroll);
                 slider.setRect(0,y,width,22);
                 slider.setSelectedValue(CustomRulesPresentation.position(rule,draft.get(rule)));
                 slider.enable(!currentRun && CustomRulesPresentation.gameplayImplemented(rule));

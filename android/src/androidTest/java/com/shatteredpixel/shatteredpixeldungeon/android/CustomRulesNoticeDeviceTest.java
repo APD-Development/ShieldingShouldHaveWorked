@@ -170,4 +170,57 @@ public class CustomRulesNoticeDeviceTest {
             }
         }
     }
+
+    private static void androidSwipe(Point from,Point to,int duration,int steps,boolean cancel)throws Exception {
+        android.app.Instrumentation instrumentation=InstrumentationRegistry.getInstrumentation();
+        long down=android.os.SystemClock.uptimeMillis();
+        android.view.MotionEvent event=android.view.MotionEvent.obtain(down,down,android.view.MotionEvent.ACTION_DOWN,from.x,from.y,0);
+        event.setSource(android.view.InputDevice.SOURCE_TOUCHSCREEN);instrumentation.sendPointerSync(event);event.recycle();
+        for(int i=1;i<=steps;i++){
+            Thread.sleep(Math.max(1,duration/steps));
+            event=android.view.MotionEvent.obtain(down,android.os.SystemClock.uptimeMillis(),android.view.MotionEvent.ACTION_MOVE,
+                    from.x+(to.x-from.x)*i/(float)steps,from.y+(to.y-from.y)*i/(float)steps,0);
+            event.setSource(android.view.InputDevice.SOURCE_TOUCHSCREEN);instrumentation.sendPointerSync(event);event.recycle();
+        }
+        event=android.view.MotionEvent.obtain(down,android.os.SystemClock.uptimeMillis(),cancel?android.view.MotionEvent.ACTION_CANCEL:android.view.MotionEvent.ACTION_UP,to.x,to.y,0);
+        event.setSource(android.view.InputDevice.SOURCE_TOUCHSCREEN);instrumentation.sendPointerSync(event);event.recycle();Thread.sleep(400);
+    }
+    @Test public void touchscreenSliderGesturesLockDirectionAndPreserveDraftAndSavedRules()throws Exception {
+        try(ActivityScenario<AndroidLauncher> scenario=ActivityScenario.launch(AndroidLauncher.class)) {
+            long deadline=System.currentTimeMillis()+120000;
+            while((Game.scene()==null || PixelScene.uiCamera==null)&&System.currentTimeMillis()<deadline)Thread.sleep(200);
+            assertNotNull(Game.scene());Thread.sleep(1500);
+            CustomDungeonRules saved=SPDSettings.apdCustomRules();final WndCustomDungeonRules[] window=new WndCustomDungeonRules[1];
+            final CustomDungeonRules active=Dungeon.customRules();final int score=com.shatteredpixel.shatteredpixeldungeon.Statistics.totalScore;
+            final Point[] points=new Point[2];final float[] beforeScroll=new float[1];final int[] beforeValue=new int[1];
+            // Vertical, vertical diagonal, long, short, rapid; horizontal and horizontal diagonal; tap and cancel.
+            int[][] gestures={{0,-18,180,12},{10,-25,180,12},{2,-70,220,16},{0,-2,25,1},
+                    {1,-18,30,3},{35,0,180,12},{35,-9,180,12},{0,0,30,1},{35,0,180,12}};
+            try {
+                for(int n=0;n<gestures.length;n++){
+                    final int[] gesture=gestures[n];final boolean cancelled=n==gestures.length-1;
+                    render(()->{try {
+                        if(window[0]!=null)window[0].hide();SPDSettings.apdCustomRules(CustomDungeonRules.defaults());
+                        window[0]=new WndCustomDungeonRules();Game.scene().addToFront(window[0]);
+                        OptionSlider slider=find(window[0],OptionSlider.class).get(0);ScrollPane scroll=(ScrollPane)field(window[0],"scroll");
+                        scroll.scrollTo(0,Math.max(0,slider.top()-24));beforeScroll[0]=scroll.content().camera().scroll.y;beforeValue[0]=slider.getSelectedValue();
+                        points[0]=slider.camera().cameraToScreen(slider.left()+slider.width()*0.35f,slider.bottom()-7);
+                        points[1]=slider.camera().cameraToScreen(slider.left()+slider.width()*0.35f+gesture[0],slider.bottom()-7+gesture[1]);
+                    }catch(Exception e){throw new RuntimeException(e);}});
+                    androidSwipe(points[0],points[1],gesture[2],gesture[3],cancelled);
+                    final boolean vertical=n<5;
+                    render(()->{try {
+                        OptionSlider slider=find(window[0],OptionSlider.class).get(0);ScrollPane scroll=(ScrollPane)field(window[0],"scroll");
+                        if(vertical){assertEquals("Vertical touch must not adjust a slider",beforeValue[0],slider.getSelectedValue());
+                            assertTrue("Vertical touch over slider scrolls the pane",scroll.content().camera().scroll.y>beforeScroll[0]);}
+                        else {assertEquals("Horizontal/tap touch must not scroll",beforeScroll[0],scroll.content().camera().scroll.y,0.01f);
+                            if(cancelled)assertEquals(beforeValue[0],slider.getSelectedValue());else assertNotEquals(beforeValue[0],slider.getSelectedValue());}
+                        assertTrue("Draft stays unsaved",SPDSettings.apdCustomRules().isNeutral());assertSame(active,Dungeon.customRules());
+                        assertEquals(score,com.shatteredpixel.shatteredpixeldungeon.Statistics.totalScore);
+                    }catch(Exception e){throw new RuntimeException(e);}});
+                }
+                screenshot("custom-rules-touch-gestures.png");
+            }finally{render(()->{if(window[0]!=null)window[0].hide();SPDSettings.apdCustomRules(saved);});}
+        }
+    }
 }

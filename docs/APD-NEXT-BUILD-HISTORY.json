@@ -278,6 +278,127 @@
       "title": "Developer Commentary",
       "text": "I added equipment availability across ordinary loot sources and caught a chest-placement hang before release. Offensive damage attribution and permanent custom-rules statistics integration still need work; this is not the completed early alpha.",
       "paths": []
+    },
+    {
+      "category": "Bug Fixes",
+      "sprite": "V031_MENU_BUTTON",
+      "title": "Scrolling over sliders",
+      "text": "Vertical swipes over Custom Dungeon Rules sliders scroll the list without changing values; horizontal swipes adjust values and taps still work.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/OptionSlider.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndCustomDungeonRules.java"
+      ]
+    },
+    {
+      "category": "Quality of Life",
+      "sprite": "V031_MENU_BUTTON",
+      "title": "Gesture direction lock",
+      "text": "Custom-rules sliders wait for the dominant direction and retain that direction until the touch ends, including short and diagonal gestures.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/SliderGesture.java"
+      ]
+    },
+    {
+      "category": "Bug Fixes",
+      "sprite": "V061_PAGE",
+      "title": "Stable neutral generation checks",
+      "text": "Neutral equipment checks isolate and restore introductory guide discovery so unrelated tests cannot add a Guidebook to each expected floor.",
+      "paths": [
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomEquipmentGenerationTest.java"
+      ]
+    },
+    {
+      "category": "Bug Fixes",
+      "sprite": "V061_INVENTORY",
+      "title": "Equipment drop callbacks",
+      "text": "Expanded equipment drops retain the original identification and statistics-provenance callbacks.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Mob.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "Gesture regression coverage",
+      "text": "Added direction-lock, tap, short-swipe, diagonal, zoom and rapid-gesture regressions.",
+      "paths": [
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/ui/SliderGestureTest.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V031_MENU_BUTTON",
+      "title": "Android touchscreen checks",
+      "text": "Added actual Android touchscreen-event swipes, taps and cancellation checks while preserving unsaved preferences, locked run settings and score.",
+      "paths": [
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "Original-source comparison",
+      "text": "Development checks compare neutral floor and shop contents and subsequent random values against the exact preceding verified source.",
+      "paths": [
+        ".github/workflows/codex-equipment-neutral-diagnostic.yml"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "Full-suite failure diagnostics",
+      "text": "Development checks capture shared fixture state and original failing records without weakening assertions.",
+      "paths": [
+        ".github/workflows/codex-equipment-suite-diagnostic.yml"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_INVENTORY",
+      "title": "Verified fallback staging",
+      "text": "Lunch preparation reuses verified APKs and checks signing, source, tests and checksums before staging.",
+      "paths": [
+        ".github/workflows/codex-lunch-stage.yml"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_INVENTORY",
+      "title": "Private fallback delivery",
+      "text": "Private lunch delivery preserves prior assets and refuses unchecked or early publication.",
+      "paths": [
+        ".github/workflows/codex-lunch-publish.yml"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_PAGE",
+      "title": "Lunch evidence report",
+      "text": "Recorded the actual verified fallback, failed candidate, remaining work and honest timing in the lunch report.",
+      "paths": [
+        "docs/APD-LUNCH-REPORT-2026-10-13.md",
+        "docs/reports/APD-Bug-Fixes-2026-10-13-TEST121.pdf"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_PAGE",
+      "title": "Remaining-work estimates",
+      "text": "Recorded outstanding alpha tasks and engineering estimates without presenting them as completed work.",
+      "paths": [
+        "docs/reports/APD-Friday-Alpha-Remaining-Work-2026-10-13.json",
+        "docs/reports/APD-Friday-Alpha-Remaining-Work-2026-10-13.pdf"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_PAGE",
+      "title": "Touch-fix verification report",
+      "text": "Recorded slider-touch root cause, test coverage, compatibility and pending Android acceptance.",
+      "paths": [
+        "docs/APD-TEST123-REPORT-2026-10-13.md"
+      ]
     }
-  ]
+  ],
+  "commentary": "I added Equipment Availability and corrected the touch conflict in Custom Dungeon Rules. Vertical gestures now scroll instead of changing sliders. Original earned scores and active-run rules remain unchanged."
 }

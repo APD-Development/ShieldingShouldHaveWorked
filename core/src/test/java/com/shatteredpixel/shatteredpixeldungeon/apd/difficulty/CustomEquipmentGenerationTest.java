@@ -76,9 +76,30 @@ public class CustomEquipmentGenerationTest {
         assertEquals(24,expected.size());assertEquals(expected,actual);
     }
     public static void main(String[] args){for(String record:neutralRecords())System.out.println(record);}
+    private static void guideIntroState(int state) {
+        com.watabou.utils.Bundle root=new com.watabou.utils.Bundle(),docs=new com.watabou.utils.Bundle(),pages=new com.watabou.utils.Bundle();
+        pages.put(com.shatteredpixel.shatteredpixeldungeon.journal.Document.GUIDE_INTRO,state);
+        docs.put(com.shatteredpixel.shatteredpixeldungeon.journal.Document.ADVENTURERS_GUIDE.name(),pages);
+        root.put("documents",docs);com.shatteredpixel.shatteredpixeldungeon.journal.Document.restore(root);
+    }
+    @Test public void neutralSnapshotsIgnoreAndRestorePriorGuidebookDiscovery() {
+        com.shatteredpixel.shatteredpixeldungeon.journal.Document guide=com.shatteredpixel.shatteredpixeldungeon.journal.Document.ADVENTURERS_GUIDE;
+        int original=guide.isPageRead(guide.GUIDE_INTRO)?2:guide.isPageFound(guide.GUIDE_INTRO)?1:0;
+        try {
+            guideIntroState(0);java.util.List<String> missing=neutralRecords();assertFalse(guide.isPageFound(guide.GUIDE_INTRO));
+            guideIntroState(2);java.util.List<String> found=neutralRecords();assertTrue(guide.isPageRead(guide.GUIDE_INTRO));
+            assertEquals(missing,found);
+        }finally{guideIntroState(original);}
+    }
     private static java.util.List<String> neutralRecords(){
         java.util.List<String> records=new ArrayList<>();
-        HeadlessTestSupport.start();SPDSettings.intro(false);SPDSettings.apdRecording(false);SPDSettings.apdDifficulty(3);SPDSettings.challenges(0);
+        HeadlessTestSupport.start();
+        com.shatteredpixel.shatteredpixeldungeon.journal.Document guide=com.shatteredpixel.shatteredpixeldungeon.journal.Document.ADVENTURERS_GUIDE;
+        int priorIntro=guide.isPageRead(guide.GUIDE_INTRO)?2:guide.isPageFound(guide.GUIDE_INTRO)?1:0;
+        // Fixed reference journal: suite order must not add a first-run Guidebook to every snapshot.
+        guideIntroState(2);
+        try {
+        SPDSettings.intro(false);SPDSettings.apdRecording(false);SPDSettings.apdDifficulty(3);SPDSettings.challenges(0);
         SPDSettings.apdCustomRules(CustomDungeonRules.defaults());GamesInProgress.selectedClass=HeroClass.WARRIOR;
         for(int seed=1;seed<=12;seed++){
             Dungeon.customSeedText="";Dungeon.seed=seed;Dungeon.daily=false;Dungeon.dailyReplay=false;Dungeon.init();Random.pushGenerator(1000L+seed);try{Dungeon.depth=1;Dungeon.branch=0;Dungeon.level=Dungeon.newLevel();
@@ -95,5 +116,6 @@ public class CustomEquipmentGenerationTest {
             }finally{Random.popGenerator();}
         }
         return records;
+        }finally{guideIntroState(priorIntro);}
     }
 }
