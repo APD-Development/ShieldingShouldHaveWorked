@@ -390,3 +390,10 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Artifacts: core `11885719618`/`627dafb34f33937bc80f2b7e4344fea5f240d9d93a74ad294dc2e7d84e8432ef`; Android `11886478533`/`db2c213f75e49b5755382e31dce7015c05eeadd210a2bff71a16e38fc69174ec`; APK `11886556253`/`c777f86d8eef71954bf6d9c54f98e0d302b720c2a758b1dac1c67bd52d0676f9`; contained APK `2b7dc53c96f9be31cbe250ed87681d919232dd9f31007972deaa5c91628e5e1a` checksum passed.
 - Private delivery skipped; no owner install/signature comparison/physical-phone claim. TEST123 remains delivered fallback.
 - TEST149 candidate `b66a31ada9c13beba67a3c8cc430668a5b8c9975` requires 1530 core/debug/history/26 API34/34 PNG; pending, with three Damage sliders disabled.
+
+
+### 2026-10-14T11:00:37Z — TEST149 Dragon's Breath verified
+- Source `af3fea7b8870be3e4f2e045e0bc69edfa1b4c0de`, run `38551940075`: 1530 core + 26 API34 passed, 0 failure/error/skip; debug and compiled immediate-previous-APK history passed.
+- Artifacts: core `11886584059`/`517209dd85f751abac72382a50ba6a850cb3c43e2825aa36a93e07e9f71a5e33`; Android `11887522747`/`eb21e6bc5e54c3d7399643646417e1b1bff64b7756d4f0f6e4b868c0448ab82f`; APK `11887411460`/`77b4619f557e5447a116ff99e27ea19b7156795993c561e3c51e38caf6bd12c2`; contained APK `5a786a5c15fa9562f2fc4f6165d11f91cc85eaf9a2b7d4afa7a83ff0639feee7` checksum passed.
+- 34/34 screenshots decoded at 320x640 and contact-sheet review found no obviously corrupt capture. Emulator evidence is not physical-phone evidence; private delivery skipped and TEST123 remains delivered fallback.
+- Dragon's Breath provenance and four retained regressions are implemented and verified. Three Damage sliders remain disabled pending Inferno/Burning transfer/plants/vault/other offense and class/boss/combined acceptance.
