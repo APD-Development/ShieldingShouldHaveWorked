@@ -400,7 +400,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 					for (Char ch : Actor.chars()) {
 						if (ch != enemy && ch.alignment == Char.Alignment.ENEMY
 								&& PathFinder.distance[ch.pos] < Integer.MAX_VALUE) {
-							int aoeHit = Math.round(target.damageRoll() * 0.25f * count);
+							int aoeHit = apdCrushSplashRoll(target, target.damageRoll(), count);
 							aoeHit /= 2;
 							aoeHit -= ch.drRoll();
 							if (ch.buff(Vulnerable.class) != null) aoeHit *= 1.33f;
@@ -543,4 +543,9 @@ public class Combo extends Buff implements ActionIndicator.Action {
 			return Messages.get(Combo.class, "prompt");
 		}
 	};
+	private static int apdCrushSplashRoll(Char attacker, int damageRoll, int comboCount) {
+		return Math.round(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.attackDamage(
+				attacker, damageRoll * 0.25f * comboCount));
+	}
+
 }
