@@ -76,6 +76,14 @@ public class Bomb extends Item {
 
 	public Fuse fuse;
 
+    private com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin apdFuseOrigin=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.UNATTRIBUTED;
+    private static final String APD_FUSE_ORIGIN="apd_bomb_origin";
+    public final void apdExplodeAttributed(int cell,com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin origin){
+        if(origin==null)throw new IllegalArgumentException("Missing explosion origin");
+        com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin previous=apdFuseOrigin;apdFuseOrigin=origin;
+        try{explode(cell);}finally{apdFuseOrigin=previous;}
+    }
+
 	//FIXME using a static variable for this is kinda gross, should be a better way
 	private static boolean lightingFuse = false;
 
@@ -120,6 +128,7 @@ public class Bomb extends Item {
 	@Override
 	protected void onThrow( int cell ) {
 		if (!Dungeon.level.pit[ cell ] && lightingFuse) {
+            apdFuseOrigin=apdThrownOrigin();
 			Actor.addDelayed(fuse = createFuse().ignite(this), 2);
 		}
 		super.onThrow( cell );
@@ -127,6 +136,7 @@ public class Bomb extends Item {
 
 	@Override
 	public boolean doPickUp(Hero hero, int pos) {
+        apdFuseOrigin=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.UNATTRIBUTED;
 		if (fuse != null) {
 			GLog.w( Messages.get(this, "snuff_fuse") );
 			fuse.snuff();
@@ -194,7 +204,8 @@ public class Bomb extends Item {
 				}
 
 				int dmg = Random.NormalIntRange(4 + Dungeon.scalingDepth(), 12 + 3*Dungeon.scalingDepth());
-				dmg -= ch.apdDrRoll();
+				if(apdFuseOrigin.percentage()!=100) dmg = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamage.raw(dmg,this,apdFuseOrigin).scaled().amount;
+                dmg -= ch.apdDrRoll();
 
 				if (dmg > 0) {
 					ch.damage(dmg, this);
@@ -262,11 +273,15 @@ public class Bomb extends Item {
 	public void storeInBundle(Bundle bundle) {
 		super.storeInBundle(bundle);
 		bundle.put( FUSE, fuse );
+        if(apdFuseOrigin!=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.UNATTRIBUTED)bundle.put(APD_FUSE_ORIGIN,apdFuseOrigin.name());
+        else bundle.remove(APD_FUSE_ORIGIN);
 	}
 
 	@Override
 	public void restoreFromBundle(Bundle bundle) {
+        com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin restored=bundle.contains(APD_FUSE_ORIGIN)?com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.valueOf(bundle.getString(APD_FUSE_ORIGIN)):com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.UNATTRIBUTED;
 		super.restoreFromBundle(bundle);
+        apdFuseOrigin=restored;
 		if (bundle.contains( FUSE ))
 			Actor.add( fuse = ((Fuse)bundle.get(FUSE)).ignite(this) );
 	}
@@ -307,6 +322,7 @@ public class Bomb extends Item {
 
 			//can't find our bomb, something must have removed it, do nothing.
 			bomb.fuse = null;
+            bomb.apdFuseOrigin=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.UNATTRIBUTED;
 			snuff();
 			return true;
 		}
@@ -320,6 +336,7 @@ public class Bomb extends Item {
 
 		public boolean freeze(){
 			bomb.fuse = null;
+            bomb.apdFuseOrigin=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.UNATTRIBUTED;
 			snuff();
 			return true;
 		}
@@ -339,6 +356,7 @@ public class Bomb extends Item {
 
 		@Override
 		public boolean doPickUp(Hero hero, int pos) {
+
 			Bomb bomb = new Bomb();
 			bomb.quantity(2);
 			if (bomb.doPickUp(hero, pos)) {
@@ -447,4 +465,5 @@ public class Bomb extends Item {
 		}
 	}
 }
+
 

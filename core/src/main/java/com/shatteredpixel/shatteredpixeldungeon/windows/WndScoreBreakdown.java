@@ -89,7 +89,7 @@ public class WndScoreBreakdown extends Window {
         pos=statSlot(content,"Custom Rules Multiplier",com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomScorePresentation.multiplier(recordedGameData),pos,false);
         String customNotice=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomScorePresentation.notice(recordedGameData);
         if(!customNotice.isEmpty())pos=addInfo(content,customNotice,pos);
-		pos = statSlot(content, Messages.get(this, "total"), num.format(originalScore), pos, false);
+		pos = statSlot(content, "Original score", num.format(originalScore), pos, false);
         Long adjusted=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomScorePresentation.adjustedIdentityScore(recordedGameData,originalScore);
         String unavailable="Pending".equals(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomScorePresentation.multiplier(recordedGameData))?"Pending":"?";
         pos=statSlot(content,"Adjusted score",adjusted==null?unavailable:num.format(adjusted),pos,false);
@@ -138,3 +138,4 @@ public class WndScoreBreakdown extends Window {
 
 
 }
+

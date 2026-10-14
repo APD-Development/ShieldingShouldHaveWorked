@@ -1,113 +1,105 @@
 {
-  "previous_label": "Codex TEST 136",
-  "previous_source": "60f8451d3eed148da97a0fd078534b7773d09910",
-  "previous_run": 38491431089,
+  "previous_label": "Codex TEST 138",
+  "previous_source": "62b96391dabd8bc139642c1ade35439cdd49f874",
+  "previous_run": 38493524276,
   "date": "2026-10-13",
   "changes": [
     {
       "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "Bomb creator persistence",
+      "text": "Keep the creator of a lit bomb through saves without inventing ownership for older bombs.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/bombs/Bomb.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "Explosion and armor order",
+      "text": "Prepare attributed bomb damage once before armor while preserving neutral and environmental damage.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/bombs/Bomb.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "Defused bomb ownership",
+      "text": "Clear stored bomb attribution when its fuse is frozen, lost or recovered.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/bombs/Bomb.java"
+      ]
+    },
+    {
+      "category": "Changes",
       "sprite": "V063_MAGICMISSILE",
-      "title": "Potion effect attribution",
-      "text": "Keep thrown potion effects attributed while treating triggered terrain traps as environmental.",
+      "title": "Blast stone creator",
+      "text": "Carry the thrower into a blast-stone explosion.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/Potion.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/stones/StoneOfBlast.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V063_MAGICMISSILE",
-      "title": "Potion cloud origin",
-      "text": "Retain known potion ownership when creating corrosive clouds.",
+      "title": "Cursed explosion caster",
+      "text": "Use the real caster for cursed-wand explosions, including boss-owned damage.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/blobs/CorrosiveGas.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/CursedWand.java"
       ]
     },
     {
-      "category": "Changes",
-      "sprite": "V063_MAGICMISSILE",
-      "title": "Caustic brew ownership",
-      "text": "Preserve the thrower of caustic-brew effects across saves.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/brews/CausticBrew.java"
-      ]
-    },
-    {
-      "category": "Bug Fixes",
+      "category": "Quality of Life",
       "sprite": "V061_BUGFIX",
-      "title": "Nested effect safety",
-      "text": "Restore effect attribution after nested effects and exceptions without retaining actor references.",
+      "title": "Original score label",
+      "text": "Explicitly label the unmodified earned score before any future custom adjustment.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/OffensiveEffectContext.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndScoreBreakdown.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Caustic effect source",
-      "text": "Allow caustic effects to record a known creator without changing an existing effect on invalid input.",
+      "title": "Bomb regression coverage",
+      "text": "Test actual explosions, saved fuses, armor order, neutral RNG and invalid ownership.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Ooze.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/BombDamageProvenanceTest.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Throw callback ownership",
-      "text": "Capture offensive ownership when a throw begins, without relying on a later current-user value.",
+      "title": "Native scroll evidence",
+      "text": "Require meaningful touchscreen scrolling and separate before-and-after captures.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Item.java"
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomScoreDeviceTest.java",
+        "tools/run-codex-android-checks.sh"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Throw and trap regressions",
-      "text": "Test real caustic effects, persisted ownership, environmental traps and exception cleanup.",
+      "title": "Explosion verification report",
+      "text": "Record verified source boundaries and outstanding damage-slider coverage.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/ThrowDamageProvenanceTest.java"
+        "docs/APD-EXPLOSION-SOURCE-PREPARED-2026-10-13.md"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Throw verification record",
-      "text": "Document throw-boundary checks and remaining damage-source work.",
-      "paths": [
-        "docs/APD-TEST137-REPORT-2026-10-13.md"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "Development checkpoint",
-      "text": "Preserve verified source evidence and the unfinished damage-slider checkpoint.",
+      "title": "Verified development handoff",
+      "text": "Record TEST138 evidence and the next source package without claiming physical testing.",
       "paths": [
         "docs/HANDOFF.md"
       ]
     },
     {
-      "category": "Bug Fixes",
-      "sprite": "V061_BUGFIX",
-      "title": "Score scrolling verification",
-      "text": "Require an overflowing small-window fixture before testing native touchscreen scrolling.",
-      "paths": [
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomScoreDeviceTest.java"
-      ]
-    },
-    {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "TEST136 verification record",
-      "text": "Record the passing core build and failed native score-scrolling check.",
-      "paths": [
-        "docs/APD-TEST136-REPORT-2026-10-13.md"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "Private build checks",
-      "text": "Require full source and Android checks for the next private candidate.",
+      "title": "Required private build checks",
+      "text": "Require the complete core, Android and screenshot checks before verification.",
       "paths": [
         "docs/APD-CODEX-BUILD-REQUEST.txt"
       ]
@@ -115,8 +107,8 @@
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Complete history validation",
-      "text": "Require the build-history ledger itself to be included in the reviewed changes.",
+      "title": "Exact build history",
+      "text": "Review every changed path against the immediately preceding compiled APK.",
       "paths": [
         "docs/APD-NEXT-BUILD-HISTORY.json"
       ]
