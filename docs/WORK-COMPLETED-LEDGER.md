@@ -367,3 +367,12 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Run `38544427903` exact source `7a8f08eb82559e605bb48f279a22d608b1e29a52`: 1510 core executed, 1506 passed, four new methods stopped on null headless `Level.plants`; source-wiring passed. No APK/history/API34 ran.
 - Evidence: core artifact `11884268254`, SHA-256 `eda4ce3cf5eba91c2b77cb88c9228a036e3c4c9e956e8edee3223dba8f4ae699`.
 - Preserved concurrent `5cc7d6da51cf9207ab94bd3c172846cf0c138d7a`, which applies the identical fixture-only initialization and records 24 targeted + 617 broader local passes. Production source/assertions unchanged; TEST146 full verification pending.
+
+
+### 2026-10-14T10:13:52Z — TEST146 fire/chained provenance verified
+- Source `08d10dedbc862dad0d27de35d98f719bec8e7bf2`; run `38546323675`; verify/build and API34 jobs succeeded; private delivery skipped.
+- Downloaded evidence: 1516 core passed (0 failure/error/skip, 289 suites), artifact `11884134739`, ZIP SHA-256 `8e971f61889cd4ae06b9cf547a6c74c4bdc3234ad3902694c56d709c97aa7144`; 26 API34 passed (0 failure/error/skip), Android artifact `11885825108`, ZIP SHA-256 `71668af986cf8213a75763d741a7c5546f31c58a9a7775a6c42d0deecdac4bb1`.
+- Debug APK artifact `11885330025`, ZIP SHA-256 `ee208db2fd4c95c367ad0560e3ba2e6e165aa1f79e0618440e9f133bfc8a71fb`; contained APK SHA-256 `e5b319edbd50ac6c4684cb039e2bb2bd4f25e51f1dafe3a9157c52e0ed5f3ffc` and its checksum verified.
+- Compiled history passed against immediate previous TEST144; 34/34 screenshots decoded at 320x640 and contact-sheet review found no obviously corrupt capture. Emulator evidence is not a physical-phone claim.
+- Implemented/verified: mixed Fire provenance, Liquid Flame/Fireblast player ownership, causal chained-bomb ownership, retained five fire plus six chained-bomb regressions. TEST145's four fixture-only failures remain documented.
+- Not delivered: no private-delivery job, owner install, signer comparison, tester distribution, or public release. TEST123 remains delivered fallback. Three Damage sliders remain disabled pending remaining offensive-source and acceptance audits; no score/save/signing/app-ID changes.
