@@ -84,6 +84,11 @@ public class Bomb extends Item {
         try{explode(cell);}finally{apdFuseOrigin=previous;}
     }
 
+    /** Raw special-bomb damage uses the same immutable fuse/throw creator as the base blast. */
+    protected final int apdScaleExplosionDamage(int amount){
+        return apdFuseOrigin.percentage()==100 ? amount : com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamage.raw(amount,this,apdFuseOrigin).scaled().amount;
+    }
+
 	//FIXME using a static variable for this is kinda gross, should be a better way
 	private static boolean lightingFuse = false;
 
@@ -204,7 +209,7 @@ public class Bomb extends Item {
 				}
 
 				int dmg = Random.NormalIntRange(4 + Dungeon.scalingDepth(), 12 + 3*Dungeon.scalingDepth());
-				if(apdFuseOrigin.percentage()!=100) dmg = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamage.raw(dmg,this,apdFuseOrigin).scaled().amount;
+				dmg = apdScaleExplosionDamage(dmg);
                 dmg -= ch.apdDrRoll();
 
 				if (dmg > 0) {
@@ -465,5 +470,6 @@ public class Bomb extends Item {
 		}
 	}
 }
+
 
 
