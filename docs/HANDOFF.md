@@ -2221,3 +2221,9 @@ Verified source12795cd9cd3049864e1f33c90b9551e9bda67c8e/run38638453521 (21:12:37
 # TEST173 Fireblast staff explosion provenance pending — 2026-10-14 21:36 UTC
 
 Current-source audit found the Mages' Staff Fireblast on-hit explosion still called direct damage although normal Fireblast casts/fields were attributed. The candidate keeps the same hero damage roll/power multiplier and original wand source, but applies the actual attacker factor once before the original direct hit. Three retained tests cover all percentages and player/enemy/boss creators, contradictory settings, one source-preserving hit, neutral amount/next RNG and production wiring. TEST173 requests1593core/debug/immediate-previous TEST172 history/26API34/34PNG. Candidate only; no save/scoring/delivery/phone claim. TEST123 remains owner-delivered.
+
+# TEST173 verified; TEST174 remaining direct wands pending — 2026-10-14 21:51 UTC
+
+TEST173sourcee101e85167ee802cef3a0db31cb8497b83a23328/run38641672668 (21:37:27–21:50:04UTC) passed1593core+26API34/debug/immediate-previousTEST172history/34PNG. APKsha2562f9379b9a38a28996d32bc745af94ba72df6ba0ce63e789bd348dd7d59c95d30. Fireblast staff explosion attribution verified; no delivery/phone claim.
+
+Adjacent audit confirmed seven direct-damage calls in Blast Wave, Living Earth and Prismatic Light. TEST174 routes each through one shared actual-creator boundary while retaining original rolls, targets, source, direct mitigation, turns and RNG. Three retained tests cover all factors/roles, contradictory settings, source/neutral identity and exact wiring. TEST174 requests1596core/debug/immediate-previousTEST173history/26API34/34PNG. Candidate only; TEST123 remains owner-delivered.

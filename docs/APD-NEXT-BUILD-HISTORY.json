@@ -1,35 +1,38 @@
 {
-  "previous_label": "Codex TEST 172",
-  "previous_source": "12795cd9cd3049864e1f33c90b9551e9bda67c8e",
-  "previous_run": 38638453521,
+  "previous_label": "Codex TEST 173",
+  "previous_source": "e101e85167ee802cef3a0db31cb8497b83a23328",
+  "previous_run": 38641672668,
   "date": "2026-10-14",
   "changes": [
     {
       "category": "Bug Fixes",
       "sprite": "V061_BUGFIX",
-      "title": "Fireblast staff explosion ownership",
-      "text": "Apply the actual attacker's damage factor once to the Mages' Staff Fireblast explosion while retaining its original roll and source.",
+      "title": "Direct wand damage ownership",
+      "text": "Apply the actual creator factor once to Blast Wave, Living Earth and Prismatic Light direct damage while retaining their original rolls and sources.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfFireblast.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/DamageWand.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfBlastWave.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfLivingEarth.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfPrismaticLight.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "V061_PAGE",
-      "title": "Fireblast staff provenance coverage",
-      "text": "Cover all permitted factors, player/enemy/boss creators, contradictory settings, source identity and neutral RNG.",
+      "title": "Direct wand provenance coverage",
+      "text": "Cover all factors and creator roles, contradictory settings, source identity, neutral RNG and all seven production boundaries.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/FireblastStaffDamageProvenanceTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/RemainingDirectWandDamageProvenanceTest.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_PAGE",
-      "title": "TEST172 evidence and TEST173 handoff",
-      "text": "Preserve verified Crush evidence and record the distinct pending Fireblast staff checkpoint.",
+      "title": "TEST173 evidence and TEST174 handoff",
+      "text": "Preserve verified Fireblast staff evidence and record the pending remaining-direct-wand checkpoint.",
       "paths": [
-        "docs/APD-TEST172-CRUSH-SPLASH-DAMAGE-2026-10-14.md",
         "docs/APD-TEST173-FIREBLAST-STAFF-DAMAGE-2026-10-14.md",
+        "docs/APD-TEST174-DIRECT-WAND-DAMAGE-2026-10-14.md",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",

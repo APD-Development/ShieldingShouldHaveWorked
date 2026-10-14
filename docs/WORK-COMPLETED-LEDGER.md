@@ -679,3 +679,12 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Routed that final raw staff-explosion roll through the actual attacker exactly once while preserving the original `Hero.heroDamageIntRange` roll, power multiplier, Wand of Fireblast source, targets, direct-damage mitigation and RNG order.
 - Added three retained tests for all permitted factors and player/enemy/boss creators, contradictory settings, one source-preserving hit, neutral amount/next RNG and exact production wiring.
 - TEST173 exact-source verification requests 1,593 core tests, debug assembly, complete history against immediate previous compiled TEST172, 26 API34 emulator tests and 34 screenshots. Candidate remains pending; no save, scoring, delivery or phone claim.
+
+## 2026-10-14T21:51:03Z — TEST173 verified; TEST174 direct-wand candidate
+- TEST173 exact source `e101e85167ee802cef3a0db31cb8497b83a23328`; run `38641672668` ran 2026-10-14T21:37:27Z–21:50:04Z and concluded success.
+- Core artifact `11931431183` / ZIP SHA-256 `7090fcda3c677e0373b08a421634229e727e252110073eb3ab4510aa3eaf402b`: 1,593 tests, 0 failures/errors/skips. APK artifact `11931396427` / ZIP SHA-256 `897d768650d788653c5df751e15c26ec0ddd3b0098ec1b32de249ddfe43c3bfc`: APK SHA-256 `2f9379b9a38a28996d32bc745af94ba72df6ba0ce63e789bd348dd7d59c95d30`; bundled checksum matched.
+- Android artifact `11931062722` / ZIP SHA-256 `f22708aa7c1febcaa022859c56c45e4409619a5554f8e5d3118947d7151d6271`: 26 API34 tests, 0 failures/errors/skips; 34/34 PNGs decoded 320×640 and passed contact-sheet review. Private delivery skipped; no phone claim.
+- Adjacent source audit confirmed seven separate direct-damage calls in Blast Wave, Living Earth and Prismatic Light. Their delayed collisions, guardian attacks and non-damaging staff effects were already distinct and remain unchanged.
+- TEST174 routes those seven rolls through one shared actual-creator boundary while retaining original rolls, proc chances, target filters, wand sources, direct mitigation, visuals, turns and RNG.
+- Added three retained tests for all permitted factors and player/enemy/boss creators, contradictory settings, single source-preserving hits, neutral amount/next RNG and exact production wiring.
+- TEST174 exact-source verification requests 1,596 core tests, debug assembly, complete history against immediate previous compiled TEST173, 26 API34 tests and 34 screenshots. Candidate remains pending; no save/scoring/delivery/phone claim.
