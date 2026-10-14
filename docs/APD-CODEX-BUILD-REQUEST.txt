@@ -52,3 +52,6 @@ TEST165 exact-source request (2026-10-14T18:45:47Z): verify boss-phase damage ac
 
 
 TEST165 failed core (2026-10-14T18:51:04Z): source314b678c1aa7c85d4a84f6d5a02ad1929f43ecab/run38618183149 compiled and ran1581 tests with2 failures. No APK/API34/screenshots. TEST166 exact-source correction: verify 1581core/debug/immediate-previous TEST164 history/26API34/34PNG. New Tengu fields default to boss when no transient context; historical restored metadata-less fields stay unknown/unscaled. Headless fire regression uses persisted origin at the real pre-attach entry point without renderer particles. No delivery or slider enablement.
+
+
+TEST166 verified (2026-10-14T19:06:38Z): sourcee252e92e6533ac0a3fa581048475bf55fdd5e3da/run38618850435 passed1581core/debug/immediate-previous TEST164 history/26API34/34PNG. APK SHA256 984170746be694a64bc462febcf072292321760ffba3f4e596828f3adec1f614. Do not rebuild unchanged source. No delivery/phone claim; three Damage controls remain disabled pending high-HP/defense, save/load and cross-rule acceptance.

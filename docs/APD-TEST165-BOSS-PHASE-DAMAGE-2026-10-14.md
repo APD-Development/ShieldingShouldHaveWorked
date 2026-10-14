@@ -22,3 +22,7 @@
 - Source `314b678c1aa7c85d4a84f6d5a02ad1929f43ecab`, run `38618183149`, compiled and ran all 1,581 core tests; 2 failed.
 - Failure 1 was a headless-only particle-emitter null in the new Tengu fire test. Failure 2 was a real compatibility regression found by the existing Tengu shocker acceptance: new context-free Tengu fields lost their prior boss ownership.
 - No debug APK, API34 suite or screenshots ran and no APK was produced. TEST166 carries the demonstrated correction; this report does not claim TEST165 verified.
+
+
+### TEST165 retained failure evidence
+- Failed core artifact `11920224194` was produced with workflow-reported ZIP SHA-256 `9d2031a309ed6aa6c5e4f69ba5b7afcbfe4252579acd9a81625484c3c6a5661f`.
