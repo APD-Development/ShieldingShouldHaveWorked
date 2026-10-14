@@ -1,34 +1,42 @@
 {
-  "previous_label": "Codex TEST 158",
-  "previous_source": "d3ed403a6d6a86f5704ea6ee9c4cc4ac5c9779ee",
-  "previous_run": 38583123803,
+  "previous_label": "Codex TEST 159",
+  "previous_source": "8b5882b21d1c957846312296e471724c5a7207a0",
+  "previous_run": 38590690277,
   "date": "2026-10-14",
   "changes": [
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Remaining armor ability provenance",
-      "text": "Apply Player Damage once to Heroic Leap, Shockwave and enemy telefrag while preserving manual armor and self-cost boundaries.",
+      "title": "Offensive scroll provenance",
+      "text": "Apply Player Damage once to Retribution and Psionic Blast enemy damage while preserving Psionic Blast self-cost.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/abilities/warrior/HeroicLeap.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/abilities/warrior/Shockwave.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/abilities/mage/WarpBeacon.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/ScrollOfRetribution.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/exotic/ScrollOfPsionicBlast.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Armor ability regression",
-      "text": "Retain all-percentage, neutral, ordering, delayed-capture, self-cost and delegate coverage.",
+      "title": "Offensive scroll regression",
+      "text": "Retain all-percentage, neutral RNG/source, caller and self-cost coverage.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/RemainingArmorAbilityDamageProvenanceTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/OffensiveScrollDamageProvenanceTest.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "TEST159 evidence",
+      "title": "TEST160 evidence",
       "text": "Record bounded implementation and pending verification.",
+      "paths": [
+        "docs/APD-TEST160-OFFENSIVE-SCROLLS-2026-10-14.md"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "Verified TEST159 evidence",
+      "text": "Preserve the reviewed TEST159 verification record in compiled history.",
       "paths": [
         "docs/APD-TEST159-REMAINING-ARMOR-ABILITIES-2026-10-14.md"
       ]
@@ -36,17 +44,8 @@
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Verified TEST158 evidence",
-      "text": "Preserve the reviewed TEST158 verification record in compiled history.",
-      "paths": [
-        "docs/APD-TEST157-PLAYER-ABILITY-DERIVED-DAMAGE-2026-10-14.md"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
       "title": "Handoff",
-      "text": "Record the candidate and remaining acceptance work.",
+      "text": "Record candidate and remaining acceptance work.",
       "paths": [
         "docs/HANDOFF.md"
       ]
@@ -73,7 +72,7 @@
       "category": "Changes",
       "sprite": "V061_BUGFIX",
       "title": "History manifest",
-      "text": "Compare every reviewed path against the immediate previous TEST158 APK.",
+      "text": "Compare every reviewed path against the immediate previous TEST159 APK.",
       "paths": [
         "docs/APD-NEXT-BUILD-HISTORY.json"
       ]

@@ -501,3 +501,12 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - All 34 screenshots decoded at 320×640. Contact-sheet review found expected readable menus, dialogs, history/score states, stairs, tiles and gameplay frames with no corrupt capture. Emulator evidence only.
 - Verified Heroic Leap Body Slam/Impact Wave, both Shockwave damage branches and enemy-only Warp Beacon telefrag. Manual armor remains after scaling, hero telefrag self-cost stays unscaled, and Wild Magic/Spectral Blades/Hawk/Shadow Clone retain their verified delegated or inherited paths.
 - Private delivery was skipped. TEST123 remains the owner-delivered/signature-compared fallback. Three Damage sliders remain disabled pending the deferred harmful-buff boundary, other non-armor offensive sources, and six-class/boss/combination acceptance.
+
+
+
+## 2026-10-14T16:36:20.526Z — TEST160 offensive scroll damage candidate
+- Reconciled latest real head `62b3027ffdfa46dd9fd67c557e7249257d6e180d`; read current handoff/build request/source guide/ledger and all 99 artifact, potion, scroll and spell sources.
+- Implemented Player Damage for Scroll of Retribution and Scroll of Psionic Blast enemy damage only; Psionic Blast hero self-cost stays unscaled.
+- Added four retained methods covering all20 percentages, exact-once/neutral RNG/source identity, complete caller wiring and self-cost exclusion.
+- No local Gradle workspace is available; 1564core/debug/immediate-previous TEST159 history/26API34/34PNG remains pending.
+- Three Damage sliders remain disabled. TEST159 remains latest verified source; TEST123 remains owner-delivered fallback.
