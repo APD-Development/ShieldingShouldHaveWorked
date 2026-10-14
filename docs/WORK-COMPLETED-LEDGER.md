@@ -397,3 +397,13 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Artifacts: core `11886584059`/`517209dd85f751abac72382a50ba6a850cb3c43e2825aa36a93e07e9f71a5e33`; Android `11887522747`/`eb21e6bc5e54c3d7399643646417e1b1bff64b7756d4f0f6e4b868c0448ab82f`; APK `11887411460`/`77b4619f557e5447a116ff99e27ea19b7156795993c561e3c51e38caf6bd12c2`; contained APK `5a786a5c15fa9562f2fc4f6165d11f91cc85eaf9a2b7d4afa7a83ff0639feee7` checksum passed.
 - 34/34 screenshots decoded at 320x640 and contact-sheet review found no obviously corrupt capture. Emulator evidence is not physical-phone evidence; private delivery skipped and TEST123 remains delivered fallback.
 - Dragon's Breath provenance and four retained regressions are implemented and verified. Three Damage sliders remain disabled pending Inferno/Burning transfer/plants/vault/other offense and class/boss/combined acceptance.
+
+
+## 2026-10-14T11:41:22Z — TEST150 Inferno/fire-transfer source candidate
+
+- Reconciled owner documentation commit `116fc601549e83e02742b8541d3767f559ee2d85`; committed application/test/report candidate `57b3b5706f7478f742164d11c5a5ea74de94ed36` with an expected-head lease.
+- Changed `CellDamageOrigins.java`, `TimedDamageOrigins.java`, `Fire.java`, `Inferno.java`, `Burning.java`, `InfernalBrew.java`; added `InfernoDamageProvenanceTest.java` and `APD-TEST150-INFERNO-FIRE-TRANSFER-2026-10-14.md`.
+- Implemented immutable mixed creator retention for Inferno diffusion/save/direct and neighbouring ignition, Infernal Brew thrower capture, and Burning-to-terrain Fire transfer. Existing delayed Censer context now reaches Inferno. Original density/diffusion/turns/source objects/mitigation/RNG remain unchanged; missing historical metadata stays UNATTRIBUTED.
+- Static source inspection and exact replacement guards completed. No real local Gradle repository exists in this execution workspace, so no local Java result is claimed. TEST150 exact-source 1536-core/debug/history/26-API34/34-PNG verification is pending.
+- Three Damage controls remain disabled; Firebloom, vault/environment boundaries, other offensive sources and class/boss/combination acceptance remain. TEST149 stays the verified source and TEST123 stays the last owner-delivered APK.
+

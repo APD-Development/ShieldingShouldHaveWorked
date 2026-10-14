@@ -1,50 +1,70 @@
 {
-  "previous_label": "Codex TEST 148",
-  "previous_source": "b80b9ec4e6dbc8aeedf53dd914f50b18640b35e2",
-  "previous_run": 38549433962,
+  "previous_label": "Codex TEST 149",
+  "previous_source": "af3fea7b8870be3e4f2e045e0bc69edfa1b4c0de",
+  "previous_run": 38551940075,
   "date": "2026-10-14",
   "changes": [
     {
       "category": "Changes",
-      "sprite": "V063_MAGICMISSILE",
-      "title": "Burning",
-      "text": "Accept one explicit immutable origin for delayed Dragon's Breath burning without changing legacy environmental behavior.",
+      "sprite": "V061_BUGFIX",
+      "title": "Cell damage provenance",
+      "text": "Retain and transfer weighted immutable creator mixtures without changing blob density, diffusion or RNG.",
       "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CellDamageOrigins.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "Timed damage provenance",
+      "text": "Expose the normalized ownership mixture for the next damage tick so chained fire keeps its actual cause.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/TimedDamageOrigins.java"
+      ]
+    },
+    {
+      "category": "Bug Fixes",
+      "sprite": "V063_MAGICMISSILE",
+      "title": "Inferno and fire",
+      "text": "Preserve creator mixtures through Inferno contact, diffusion, save/restore, neighbouring Fire and Burning-created terrain Fire.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/blobs/Inferno.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/blobs/Fire.java",
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Burning.java"
       ]
     },
     {
       "category": "Bug Fixes",
       "sprite": "V061_BUGFIX",
-      "title": "PotionOfDragonsBreath",
-      "text": "Reuse the actual activation user for direct Burning and both primary and adjacent fire fields.",
+      "title": "Infernal Brew",
+      "text": "Capture the actual thrower once and reuse that immutable origin for every Inferno cell.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/PotionOfDragonsBreath.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/brews/InfernalBrew.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "DragonBreathProvenanceTest",
-      "text": "Retain full-range role, environmental exclusion, neutral RNG and real caller-wiring regressions.",
+      "title": "Inferno provenance regression",
+      "text": "Retain full-range role, save/legacy, chained-fire, neutral RNG and real caller-wiring coverage.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/DragonBreathProvenanceTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/InfernoDamageProvenanceTest.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Dragon's Breath evidence",
-      "text": "Record scope, preserved behavior, pending checks and remaining offensive-source gaps.",
+      "title": "TEST150 evidence",
+      "text": "Record bounded implementation scope, preserved behavior, pending exact-source checks and unresolved acceptance work.",
       "paths": [
-        "docs/APD-TEST149-DRAGONS-BREATH-2026-10-14.md"
+        "docs/APD-TEST150-INFERNO-FIRE-TRANSFER-2026-10-14.md"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
       "title": "Handoff and ledger",
-      "text": "Record verified TEST148 evidence and the TEST149 candidate checkpoint.",
+      "text": "Record the TEST150 candidate commit and honest verification boundary.",
       "paths": [
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md"
@@ -53,20 +73,13 @@
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Build request",
-      "text": "Require exact-current-source core, debug, Android and history verification without delivery.",
+      "title": "Build request and exact history",
+      "text": "Require exact-current-source core, debug, Android and immediate-previous-APK verification without delivery.",
       "paths": [
-        "docs/APD-CODEX-BUILD-REQUEST.txt"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "Exact build history",
-      "text": "Compare every reviewed TEST149 path against the immediately preceding TEST148 APK.",
-      "paths": [
+        "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/APD-NEXT-BUILD-HISTORY.json"
       ]
     }
   ]
 }
+
