@@ -91,3 +91,6 @@ TEST174 exact-source request (2026-10-14T21:51:03Z): verify seven direct-damage 
 
 
 TEST174 correction after run 38643522614: first exact source failed compileTestJava before tests because the new ProbeWand test fixture omitted Wand.onHit. The correction adds only that no-op fixture method. Run the full 1,596-core/debug/history/API34/34-PNG gate on the corrected exact source; do not count duplicate same-source run 38643546560 as corrected evidence.
+
+
+TEST174 is verified at source 5913850f400dbfe9fd0b547abbae71c20cd9992c by run 38643884380: 1,596 core + 26 API34, debug/history and 34 screenshots passed. APK SHA-256 6cbce087ebdacfbb4a621d1689f72b86b2cad71274efe6f22a8a4c98b78feb29. Do not rebuild unchanged TEST174. Continue a distinct authorized current-source offensive audit/backlog task; TEST123 remains last owner-delivered/signature-compared.

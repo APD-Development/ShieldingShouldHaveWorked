@@ -693,3 +693,10 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Source `6cec278930f087ed6c18b5d04c136a046ff22669`, run `38643522614` (21:52:10Z–21:53:28Z) passed history validation, then failed `:core:compileTestJava`: retained `ProbeWand` lacked Wand's required abstract `onHit` override.
 - Zero tests ran; no APK/API34/screenshots/artifact. A duplicate same-source run was already active and cannot verify this known failing source.
 - Correction adds only a no-op fixture override; production changes and assertions are unchanged. Corrected TEST174 full verification remains pending; TEST173 remains latest verified and TEST123 remains owner-delivered fallback.
+
+## 2026-10-14T22:06:30Z — TEST174 verified remaining direct-wand damage provenance
+- Corrected exact source `5913850f400dbfe9fd0b547abbae71c20cd9992c`, run `38643884380` (21:55:06Z–22:05:52Z), concluded success.
+- Core artifact `11931736651` / ZIP SHA-256 `ab58ce2a031c47f2bb5b3f745a0eedcf7a9399542063b3965191d9e158c1bf27`: 1,596 tests, 0 failures/errors/skips. APK artifact `11931766535` / ZIP SHA-256 `4801b69528ddb80f57603ea4b1dd191bfa9e2f0b80d3acfcbf143316ed16416d`: APK SHA-256 `6cbce087ebdacfbb4a621d1689f72b86b2cad71274efe6f22a8a4c98b78feb29`; checksum/debug/history passed.
+- Android artifact `11931807905` / ZIP SHA-256 `8431b9c85cc88a39957ce5b7aeefb035dbf3f58d29f8370f0792d6b895c45e9f`: 26 API34 tests passed; 34/34 PNGs decoded 320×640 and passed contact-sheet review.
+- Verified seven Blast Wave/Living Earth/Prismatic Light damage calls use the actual creator factor exactly once; neutral amount/source/RNG identity passed. Duplicate old-source run `38643546560` only repeated the fixture compile failure and is not verification.
+- Private delivery skipped; no physical-phone claim. TEST123 remains owner-delivered fallback. Do not rebuild unchanged TEST174; continue a distinct approved audit task.
