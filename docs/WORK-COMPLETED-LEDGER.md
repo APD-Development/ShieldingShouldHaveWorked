@@ -491,3 +491,13 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Preserved fixed manual armor ordering and the Warp Beacon hero self-cost exclusion; classified the remaining armor abilities as already delegated or inherited.
 - Added five retained `RemainingArmorAbilityDamageProvenanceTest` methods. No local Gradle workspace; 1560core/debug/history/26API34/34PNG pending.
 - Three Damage sliders remain disabled. TEST158 remains the latest verified source; TEST123 remains the owner-delivered fallback.
+
+
+## TEST159 full verification outcome — 2026-10-14T15:51:12.335Z
+- Exact source `8b5882b21d1c957846312296e471724c5a7207a0`, run `38590690277` (2026-10-14T15:35:36Z–15:49:14Z) completed successfully.
+- Downloaded XML proves 1560 core and 26 API34 tests passed with 0 failures, errors or skips. Debug assembly and compiled history against the immediate previous TEST158 APK passed.
+- Artifacts: core `11906709551`, ZIP SHA-256 `08c40465144105e00c1f0ebe545b4c09688fc5d34c717dbb3072fd661bb2d8da`; Android `11908206800`, ZIP SHA-256 `56a4ded6e107d2e0153737ed52ce36392125737fafb3ba5e65b1611909f2315c`; APK `11906599749`, ZIP SHA-256 `2476f022c8992f2943d9ccb638f25b660006c1b570ee38b8978b7405c462e227`.
+- Contained `ADHD-Pixel-Dungeon-CODEX-TEST-159.apk` SHA-256 `dc5cb56b015a7d9cf98a5f3d246979e2c1f2b0dd562291c489797057ffd16fc7`; bundled checksum matched.
+- All 34 screenshots decoded at 320×640. Contact-sheet review found expected readable menus, dialogs, history/score states, stairs, tiles and gameplay frames with no corrupt capture. Emulator evidence only.
+- Verified Heroic Leap Body Slam/Impact Wave, both Shockwave damage branches and enemy-only Warp Beacon telefrag. Manual armor remains after scaling, hero telefrag self-cost stays unscaled, and Wild Magic/Spectral Blades/Hawk/Shadow Clone retain their verified delegated or inherited paths.
+- Private delivery was skipped. TEST123 remains the owner-delivered/signature-compared fallback. Three Damage sliders remain disabled pending the deferred harmful-buff boundary, other non-armor offensive sources, and six-class/boss/combination acceptance.

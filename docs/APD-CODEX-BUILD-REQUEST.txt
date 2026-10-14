@@ -10,3 +10,6 @@ TEST158 verified (2026-10-14T15:00:05.913Z): sourced3ed403a6d6a86f5704ea6ee9c4cc
 
 
 TEST159 exact-source request (2026-10-14T15:35:09.392Z): verify remaining armor-ability provenance with 1560 core tests, debug assembly, immediate-previous TEST158 compiled history, 26 API34 checks and 34 valid screenshots. Preserve enemy-only Warp Beacon scaling and unscaled hero self-cost. Do not deliver or enable Damage sliders.
+
+
+TEST159 verified (2026-10-14T15:51:12.335Z): source8b5882b21d1c957846312296e471724c5a7207a0/run38590690277 passed1560core+26API34/debug/immediate-previous TEST158 history/34PNG. APK SHA-256 dc5cb56b015a7d9cf98a5f3d246979e2c1f2b0dd562291c489797057ffd16fc7. No application build pending; do not rebuild unchanged source. Continue non-armor offensive-source and class/boss/combination acceptance; keep harmful-buff pre-attach work isolated. Three Damage controls remain disabled; no delivery/phone claim.
