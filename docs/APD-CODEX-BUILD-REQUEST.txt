@@ -16,3 +16,6 @@ TEST159 verified (2026-10-14T15:51:12.335Z): source8b5882b21d1c957846312296e4717
 
 
 TEST160 exact-source request (2026-10-14T16:36:20.526Z): verify offensive-scroll provenance with 1564 core tests, debug assembly, immediate-previous TEST159 compiled history, 26 API34 checks and 34 valid screenshots. Preserve Psionic Blast hero self-damage unscaled. Do not deliver or enable Damage sliders.
+
+
+TEST160 verified (2026-10-14T16:51:35.140Z): source9a071ff3312a6ae311884429c8dca4d6d0510bb9/run38599525580 passed1564core+26API34/debug/immediate-previous TEST159 history/34PNG. APK SHA-256 0be385ddb52c4a0c1c38b55f5327af01d8e3489816e709d41c566101d4b39282. Later current-head Corruption save-integrity source is not covered and remains pending the next exact-source checkpoint. Do not rebuild TEST160 unchanged; no delivery/phone claim; three Damage controls remain disabled.

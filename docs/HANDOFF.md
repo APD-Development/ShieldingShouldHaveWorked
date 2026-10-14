@@ -2083,3 +2083,14 @@ Source `2af7a808c53f2325c56d88124b8eb71de1e2b526`, run `38573246711` (`13:36:49Z
 
 ## Batched Corruption save-integrity fix — October 14, 2026
 Actual current source writes partialDamage as float but reloads with getInt, losing fractional decay. Four permanent methods: original3fail/1pass; corrected4pass0.044s, including300reloads versus uninterrupted decay, serialized Bundle round-trip and legacy integer/missing fields. Corrected only the reader to getFloat; same key/format and ordinary damage calculation. No player data altered. Source-only batch, not in TEST159 and no APK request triggered. Full current-source/core/Android checks pending next checkpoint. Three Damage controls disabled. Delivery retry38600583387 reuses verified TEST159; release not claimed until actual assets exist.
+
+
+## TEST160 full verification outcome — 2026-10-14T16:51:35.140Z
+- Exact source `9a071ff3312a6ae311884429c8dca4d6d0510bb9`, run `38599525580` (2026-10-14T16:36:32Z–16:49:08Z) completed successfully.
+- Downloaded XML proves 1564 core and 26 API34 tests passed with 0 failures, errors or skips. Debug assembly and compiled history against the immediate previous TEST159 APK passed.
+- Artifacts: core `11912327744`, ZIP SHA-256 `28da9888190c468a488bcdb61674e3de2b80d46e2745b79479d2795430b127c3`; Android `11913009126`, ZIP SHA-256 `66da7ed913422c7bc00c7cbe404340ecf1b3c84f4385c45f29a3dcba0d2db8cd`; APK `11912287722`, ZIP SHA-256 `b81b6b7540ad5d4f205f16b0354cd7ab3e0122c7ff03a0a94ff2747da4bea020`.
+- Contained `ADHD-Pixel-Dungeon-CODEX-TEST-160.apk` SHA-256 `0be385ddb52c4a0c1c38b55f5327af01d8e3489816e709d41c566101d4b39282`; bundled checksum matched.
+- All 34 screenshots decoded at 320×640. Contact-sheet review found expected readable changes/history, rules/score, UIMSD, stairs, tiles and gameplay states with no corrupt capture. Emulator evidence only.
+- Verified Scroll of Retribution and Scroll of Psionic Blast enemy damage use Player Damage exactly once while keeping original formulas/sources and leaving Psionic Blast hero self-damage unscaled.
+- Current branch head advanced afterward with an independent Corruption save-integrity fix, so TEST160 does not verify that later application change. Its next exact-source checkpoint remains pending.
+- Private delivery was skipped. TEST123 remains the owner-delivered/signature-compared fallback. Three Damage sliders remain disabled pending remaining item-derived/harmful-buff boundaries and six-class/boss/combination acceptance.
