@@ -247,7 +247,7 @@ public abstract class YogFist extends Mob {
 			for (int i : PathFinder.NEIGHBOURS9) {
 				int vol = Fire.volumeAt(pos+i, Fire.class);
 				if (vol < 4 && !Dungeon.level.water[pos + i] && !Dungeon.level.solid[pos + i]){
-					GameScene.add( Blob.seed( pos + i, 4 - vol, Fire.class ) );
+					GameScene.add( Fire.seedAttributed( pos + i, 4 - vol, com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(this,null) ) );
 				}
 			}
 
@@ -270,7 +270,7 @@ public abstract class YogFist extends Mob {
 				if (!Dungeon.level.water[enemy.pos+i] && !Dungeon.level.solid[enemy.pos+i]){
 					int vol = Fire.volumeAt(enemy.pos+i, Fire.class);
 					if (vol < 4){
-						GameScene.add( Blob.seed( enemy.pos + i, 4 - vol, Fire.class ) );
+						GameScene.add( Fire.seedAttributed( enemy.pos + i, 4 - vol, com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(this,null) ) );
 					}
 				}
 			}

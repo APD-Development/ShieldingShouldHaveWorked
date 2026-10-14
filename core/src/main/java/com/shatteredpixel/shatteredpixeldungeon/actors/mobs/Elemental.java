@@ -363,9 +363,9 @@ public abstract class Elemental extends Mob {
 					if (!Dungeon.level.solid[targetingPos + i]) {
 						CellEmitter.get(targetingPos + i).burst(ElmoParticle.FACTORY, 5);
 						if (Dungeon.level.water[targetingPos + i]) {
-							GameScene.add(Blob.seed(targetingPos + i, 2, Fire.class));
+							GameScene.add(Fire.seedAttributed(targetingPos + i, 2, com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(this,null)));
 						} else {
-							GameScene.add(Blob.seed(targetingPos + i, 8, Fire.class));
+							GameScene.add(Fire.seedAttributed(targetingPos + i, 8, com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(this,null)));
 						}
 
 						Char target = Actor.findChar(targetingPos + i);
