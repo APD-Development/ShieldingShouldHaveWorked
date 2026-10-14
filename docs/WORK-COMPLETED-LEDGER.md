@@ -407,3 +407,5 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Static source inspection and exact replacement guards completed. No real local Gradle repository exists in this execution workspace, so no local Java result is claimed. TEST150 exact-source 1536-core/debug/history/26-API34/34-PNG verification is pending.
 - Three Damage controls remain disabled; Firebloom, vault/environment boundaries, other offensive sources and class/boss/combination acceptance remain. TEST149 stays the verified source and TEST123 stays the last owner-delivered APK.
 
+- TEST150 run `38558479124` failed before compilation at `2026-10-14T11:43:11Z`: history validation identified the omitted reviewed path `docs/APD-TEST149-DRAGONS-BREATH-2026-10-14.md`. 0 core and 0 API34 tests ran; no APK/screenshots were produced. TEST151 adds only the missing manifest path and requests verification of the unchanged application candidate.
+

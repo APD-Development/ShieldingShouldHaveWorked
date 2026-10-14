@@ -1963,3 +1963,5 @@ Application candidate `57b3b5706f7478f742164d11c5a5ea74de94ed36` builds on the l
 
 No local Java workspace was available; only source inspection and exact replacement guards completed locally. Full1536core/debug/immediate-previous-APK history/26API34/34PNG evidence is pending TEST150. Three Damage controls remain disabled. Previous verified application source remains TEST149 `af3fea7b8870be3e4f2e045e0bc69edfa1b4c0de` / run `38551940075`; TEST123 remains the last owner-delivered/signature-compared APK. No score/range/save-format/signing/app-ID/release or physical-phone claim. Earlier active duration before the first independently captured clock at 11:39:59Z and all time outside this bounded invocation are unknown.
 
+TEST150 run `38558479124` failed its history-input gate at `2026-10-14T11:43:11Z` because the reviewed manifest omitted the verified TEST149 report path. Zero core/API34 tests ran and no APK was built. TEST151 corrects only that manifest coverage and reuses the unchanged application candidate; do not label it verified until the complete evidence passes.
+

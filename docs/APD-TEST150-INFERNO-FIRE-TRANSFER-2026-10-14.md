@@ -26,5 +26,9 @@ The change does not alter field density, diffusion, terrain destruction, duratio
 - Local source inspection and exact replacement guards completed. A real local Java/Gradle repository is not present in this execution workspace, so no local Java test result is claimed.
 - Full core, debug APK, compiled immediate-previous history, API34 emulator, and screenshot evidence remain pending until the exact application source is requested through the approved existing workflow.
 
+### TEST150 gate result
+
+Run `38558479124` reached the compiled-history input gate and failed at `2026-10-14T11:43:11Z`: the manifest omitted the already reviewed `docs/APD-TEST149-DRAGONS-BREATH-2026-10-14.md` evidence path from the TEST149-to-current comparison. No core test, APK build, compiled-history check, API34 test, or screenshot ran. The correction adds that path only; application source remains candidate `57b3b5706f7478f742164d11c5a5ea74de94ed36` and is still unverified.
+
 Three Damage controls remain disabled. Firebloom, vault/environment boundaries, remaining offensive sources, and complete class/boss/combination acceptance are still unresolved.
 

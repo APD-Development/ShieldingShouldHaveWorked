@@ -57,6 +57,7 @@
       "title": "TEST150 evidence",
       "text": "Record bounded implementation scope, preserved behavior, pending exact-source checks and unresolved acceptance work.",
       "paths": [
+        "docs/APD-TEST149-DRAGONS-BREATH-2026-10-14.md",
         "docs/APD-TEST150-INFERNO-FIRE-TRANSFER-2026-10-14.md"
       ]
     },
