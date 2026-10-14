@@ -97,6 +97,15 @@
       "paths": [
         "docs/APD-NEXT-BUILD-HISTORY.json"
       ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "TEST142 fixture correction",
+      "text": "Use the actual nested Tengu ShockerBlob type without changing assertions or production behavior.",
+      "paths": [
+        "docs/APD-TEST142-ELECTRICITY-FIXTURE-2026-10-13.md"
+      ]
     }
   ]
 }
