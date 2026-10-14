@@ -1,122 +1,14 @@
 {
-  "previous_label": "Codex TEST 143",
-  "previous_source": "f9d873f382de2533c52e6f895e403b94fc7e6d5c",
-  "previous_run": 38503023806,
+  "previous_label": "Codex TEST 144",
+  "previous_source": "73657ac4736b99583a7cf605c6ce35c3a19a2e9f",
+  "previous_run": 38544125721,
   "date": "2026-10-14",
   "changes": [
-    {
-      "category": "Bug Fixes",
-      "sprite": "V061_BUGFIX",
-      "title": "Bomb",
-      "text": "Use the same captured creator to scale base and specialized bomb damage once.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/bombs/Bomb.java"
-      ]
-    },
-    {
-      "category": "Bug Fixes",
-      "sprite": "V061_BUGFIX",
-      "title": "ArcaneBomb",
-      "text": "Prepare custom damage scaling for arcane blasts while preserving their armor piercing.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/bombs/ArcaneBomb.java"
-      ]
-    },
-    {
-      "category": "Bug Fixes",
-      "sprite": "V061_BUGFIX",
-      "title": "ShrapnelBomb",
-      "text": "Prepare custom damage scaling for shrapnel before existing armor reduction.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/bombs/ShrapnelBomb.java"
-      ]
-    },
-    {
-      "category": "Bug Fixes",
-      "sprite": "V061_BUGFIX",
-      "title": "HolyBomb",
-      "text": "Apply the captured damage setting to the holy bonus without changing its damage type.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/bombs/HolyBomb.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "SpecialBombDamageProvenanceTest",
-      "text": "Test specialized bomb sources, saved creators, unchanged environmental damage and neutral RNG.",
-      "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/SpecialBombDamageProvenanceTest.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "APD-TEST144-SPECIAL-BOMBS-2026-10-14",
-      "text": "Document specialized bomb reproduction, correction, local tests and pending Android checks.",
-      "paths": [
-        "docs/APD-TEST144-SPECIAL-BOMBS-2026-10-14.md"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "HANDOFF",
-      "text": "Record verified electricity checks and the specialized bomb checkpoint.",
-      "paths": [
-        "docs/HANDOFF.md"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "APD-CODEX-BUILD-REQUEST",
-      "text": "Require current-source tests, debug assembly, Android evidence and compiled history checks.",
-      "paths": [
-        "docs/APD-CODEX-BUILD-REQUEST.txt"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "APD-TEST143-ELECTRICITY-FIXTURE-2026-10-13",
-      "text": "Preserve the actual electricity verification evidence and corrected test fixtures.",
-      "paths": [
-        "docs/APD-TEST143-ELECTRICITY-FIXTURE-2026-10-13.md"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "WORK-COMPLETED-LEDGER",
-      "text": "Record the completed TEST143 verification and its limitations.",
-      "paths": [
-        "docs/WORK-COMPLETED-LEDGER.md"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "APD-Verified-Development-2026-10-14",
-      "text": "Add the requested private development report covering work through TEST140.",
-      "paths": [
-        "docs/reports/APD-Verified-Development-2026-10-14.pdf"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "APD-NEXT-BUILD-HISTORY",
-      "text": "Review this build against the immediately preceding produced APK.",
-      "paths": [
-        "docs/APD-NEXT-BUILD-HISTORY.json"
-      ]
-    },
     {
       "category": "Changes",
       "sprite": "V063_MAGICMISSILE",
       "title": "TimedDamageOrigins",
-      "text": "Represent a merged field as the same mixed ownership sample on every Burning damage tick.",
+      "text": "Represent merged fire ownership as the same mixed cause sample on every Burning tick.",
       "paths": [
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/TimedDamageOrigins.java"
       ]
@@ -125,7 +17,7 @@
       "category": "Changes",
       "sprite": "V063_MAGICMISSILE",
       "title": "CellDamageOrigins",
-      "text": "Carry combined side-neighbour ownership into newly spread fire and snapshot it for timed damage.",
+      "text": "Carry combined side-neighbour ownership into spread fire and snapshot it for timed damage.",
       "paths": [
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CellDamageOrigins.java"
       ]
@@ -143,7 +35,7 @@
       "category": "Bug Fixes",
       "sprite": "V061_BUGFIX",
       "title": "Burning",
-      "text": "Apply merged fire ownership exactly once per original Burning damage event.",
+      "text": "Apply merged fire ownership exactly once per original Burning event.",
       "paths": [
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Burning.java"
       ]
@@ -159,21 +51,61 @@
       ]
     },
     {
-      "category": "Changes",
+      "category": "Bug Fixes",
       "sprite": "V061_BUGFIX",
-      "title": "FireDamageProvenanceTest",
-      "text": "Retain role, range, mixture, spread, save, legacy, clear and caller regressions.",
+      "title": "Chained bombs",
+      "text": "Let unowned heap-triggered bombs inherit the actual causal explosion or fire owner while saved owners remain unchanged.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/FireDamageProvenanceTest.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Heap.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/bombs/Bomb.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "APD-TEST145-FIRE-SOURCE-2026-10-14",
-      "text": "Record the reconciled candidate, exact scope, verification state and remaining fire gaps.",
+      "title": "Damage provenance regressions",
+      "text": "Retain fire role/mix/spread/save/legacy/clear checks and causal multi-bomb chain checks.",
       "paths": [
-        "docs/APD-TEST145-FIRE-SOURCE-2026-10-14.md"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/FireDamageProvenanceTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/ChainedBombDamageProvenanceTest.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "Fire and chained-bomb evidence",
+      "text": "Record reproduction, local checks, TEST145 fixture evidence and remaining gaps.",
+      "paths": [
+        "docs/APD-TEST145-FIRE-SOURCE-2026-10-14.md",
+        "docs/APD-CHAINED-BOMBS-PREPARED-2026-10-14.md"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "Handoff and ledger",
+      "text": "Record exact commits, runs, failures, preserved evidence and next safe step.",
+      "paths": [
+        "docs/HANDOFF.md",
+        "docs/WORK-COMPLETED-LEDGER.md"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "Build request",
+      "text": "Request one exact-current-source TEST146 verification without publication.",
+      "paths": [
+        "docs/APD-CODEX-BUILD-REQUEST.txt"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "Exact build history",
+      "text": "Compare every reviewed path against the immediately preceding produced TEST144 APK.",
+      "paths": [
+        "docs/APD-NEXT-BUILD-HISTORY.json"
       ]
     }
   ]

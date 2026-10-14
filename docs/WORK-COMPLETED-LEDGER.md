@@ -361,3 +361,9 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Implemented mixed Fire cell ownership, spread/decay/clear/save retention, per-tick Burning mixture, and player attribution for Liquid Flame/Fireblast; added five FireDamageProvenanceTest methods.
 - No local execution workspace. Required 1510 core + debug + 26 API34 + 34 PNG + history is pending; three Damage sliders remain disabled and TEST143 remains latest verified.
 - Remaining fire callers/effects are listed in docs/APD-TEST145-FIRE-SOURCE-2026-10-14.md; no completion claim.
+
+
+### 2026-10-14T09:56:41Z — TEST145 CI fixture failure; TEST146 exact-source request
+- Run `38544427903` exact source `7a8f08eb82559e605bb48f279a22d608b1e29a52`: 1510 core executed, 1506 passed, four new methods stopped on null headless `Level.plants`; source-wiring passed. No APK/history/API34 ran.
+- Evidence: core artifact `11884268254`, SHA-256 `eda4ce3cf5eba91c2b77cb88c9228a036e3c4c9e956e8edee3223dba8f4ae699`.
+- Preserved concurrent `5cc7d6da51cf9207ab94bd3c172846cf0c138d7a`, which applies the identical fixture-only initialization and records 24 targeted + 617 broader local passes. Production source/assertions unchanged; TEST146 full verification pending.
