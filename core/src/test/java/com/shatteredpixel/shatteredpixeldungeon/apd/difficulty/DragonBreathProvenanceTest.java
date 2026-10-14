@@ -16,7 +16,7 @@ public class DragonBreathProvenanceTest {
   fixture.fixture.rules(origin==OffensiveDamageOrigin.PLAYER?percentage:275,origin==OffensiveDamageOrigin.ENEMY?percentage:325,origin==OffensiveDamageOrigin.BOSS?percentage:425);
   SpecialBombDamageProvenanceTest.Target target=new SpecialBombDamageProvenanceTest.Target(false);Actor.add(target);
   try{
-   Burning burning=Buff.affect(target,Burning.class);burning.reigniteAttributed(target,origin);
+   Burning burning=Buff.affect(target,Burning.class);burning.reigniteAttributedOrigin(target,origin);
    Bundle state=new Bundle();burning.storeInBundle(state);state.put("next_dmg",4);burning.restoreFromBundle(state);
    burning.act();assertEquals(1,target.hits.size());assertSame(burning,target.sources.get(0));return target.hits.get(0);
   }finally{Actor.remove(target);}
@@ -44,7 +44,7 @@ public class DragonBreathProvenanceTest {
   assertTrue(text.contains("final OffensiveDamageOrigin apdOrigin = OffensiveDamageOrigin.capture(curUser, null);"));
   assertTrue(text.contains("Fire.seedAttributed( cell, 5, apdOrigin )"));
   assertTrue(text.contains("Fire.seedAttributed( cell+i, 5, apdOrigin )"));
-  assertTrue(text.contains("reigniteAttributed( ch, apdOrigin )"));
+  assertTrue(text.contains("reigniteAttributedOrigin( ch, apdOrigin )"));
   assertFalse(text.contains("Blob.seed( cell, 5, Fire.class )"));
   assertFalse(text.contains("Buff.affect( ch, Burning.class ).reignite( ch )"));
  }
