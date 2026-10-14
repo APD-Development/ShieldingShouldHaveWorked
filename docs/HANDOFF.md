@@ -2195,3 +2195,8 @@ Verified sourcea160dddb4f39fe2e3eb62a601e13bea71730f064/run38628060548 (19:57:58
 # TEST170 DerivedStore source-identity correction pending — 2026-10-14 20:38 UTC
 
 Source review confirmed the derived facts cache identified raw run/legacy logs only by filename and byte length. A valid same-name, same-length replacement could therefore leave stale statistics visible until another size change or manual rebuild. The candidate fingerprints each raw log with byte length plus SHA-256, bumps derivation version 7→8 for one automatic cache rebuild, and retains a regression that replaces a valid log with a different valid equal-length log. Raw logs and player saves are not rewritten. Exact-source TEST170 requests 1586core/debug/immediate-previous TEST169 history/26API34/34PNG; all verification is pending. TEST169 remains the latest verified APK and TEST123 remains the last owner-delivered/signature-compared APK. No delivery or phone claim.
+
+
+# TEST170 verified DerivedStore source identity — 2026-10-14 20:53 UTC
+
+Verified source8da173025d4ab64fea123ee03f9afdbd4efc02f1/run38634072761 (20:40:35–20:51:50UTC):1586core+26API34/debug/immediate-previousTEST169history/34PNG all passed. APKsha256e9117959406a5893069e6f90f626386f335daa2f9b7f3c91c3ef3dd3ecb2e43c. A valid same-name/same-length raw-log replacement now forces a DerivedStore rebuild and exposes replacement facts; unchanged raw sources still use cache. Derivation version8 causes one automatic rebuild; raw logs/saves are not rewritten. No delivery/phone claim; TEST123 remains last owner-delivered. Next safe step: do not rebuild unchanged TEST170; continue the documented UIMSD reliability/performance/storage audit, reproducing a distinct issue before source changes.

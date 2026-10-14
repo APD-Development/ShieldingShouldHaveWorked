@@ -70,3 +70,6 @@ TEST169 verified (2026-10-14T20:12:02Z): sourcea160dddb4f39fe2e3eb62a601e13bea71
 
 
 TEST170 exact-source request (2026-10-14T20:38:38Z): verify the DerivedStore raw-source identity correction with 1586 core tests, debug assembly, immediate-previous TEST169 compiled history, 26 API34 checks and 34 valid screenshots. A valid same-name, same-length raw-log replacement must invalidate the derived cache and expose the replacement facts; unchanged logs must still use the cache. No save/raw-log format change, delivery or physical-phone claim.
+
+
+TEST170 verified (2026-10-14T20:53:32Z): source8da173025d4ab64fea123ee03f9afdbd4efc02f1/run38634072761 passed1586core+26API34/debug/immediate-previous TEST169 history/34PNG. APK SHA256 e9117959406a5893069e6f90f626386f335daa2f9b7f3c91c3ef3dd3ecb2e43c. Equal-length valid raw-log replacement now invalidates DerivedStore cache; unchanged logs still cache; version8 causes one rebuild. No application build pending; do not rebuild unchanged source. No delivery/phone claim; TEST123 remains owner-delivered.

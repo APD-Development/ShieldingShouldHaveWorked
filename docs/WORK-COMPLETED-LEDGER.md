@@ -632,3 +632,12 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Bumped derivation version 7→8, causing one automatic derived-cache rebuild. Raw logs, game saves, application ID, signing and scoring are unchanged.
 - Added one retained regression that replaces a valid raw log with a different valid log of exactly the same length and requires `REBUILT_STALE`, the replacement score and subsequent cache reuse.
 - Local execution workspace was absent; no local test or build claim. TEST170 exact-source CI requests 1,586 core tests, debug assembly, immediate-previous TEST169 history, 26 API34 checks and 34 screenshots. Candidate remains pending until actual evidence passes.
+
+
+## 2026-10-14T20:53:32Z — TEST170 verified DerivedStore raw-source identity
+- Exact source `8da173025d4ab64fea123ee03f9afdbd4efc02f1`; run `38634072761` completed successfully from 2026-10-14T20:40:35Z through 2026-10-14T20:51:50Z.
+- Downloaded core artifact `11926858030` / ZIP SHA-256 `d0ea132583f074fe7661cecb11fa0c9c2aa6255d02e15be7b87297d6c660799e`: 1,586 tests, 0 failures/errors/skips. The new equal-length valid-log replacement method passed.
+- Downloaded APK artifact `11926349387` / ZIP SHA-256 `b1168659dedee4441b448591275ead4cd0f3beb83c46bfb0d96d98b158c81ddf`: APK SHA-256 `e9117959406a5893069e6f90f626386f335daa2f9b7f3c91c3ef3dd3ecb2e43c`; bundled checksum matched. Debug assembly and immediate-previous TEST169 compiled-history validation passed.
+- Downloaded Android artifact `11927293898` / ZIP SHA-256 `774f8999ff0efe1d3491036f1a26d2a3fe20cb062a9dd9f60fde45f726da2b6c`: 26 API34 tests, 0 failures/errors/skips; 34/34 PNGs decoded at 320×640 and passed contact-sheet review.
+- Verified stale derived statistics are not reused after a valid same-name/same-length raw-log replacement. Version8 performs one derived-cache rebuild; no raw logs, saves, scores, signing identity or application ID changed.
+- Private delivery skipped; no physical-phone claim. TEST123 remains the last owner-delivered/signature-compared APK. Do not rebuild unchanged TEST170.
