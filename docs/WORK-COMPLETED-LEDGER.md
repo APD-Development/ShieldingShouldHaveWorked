@@ -409,3 +409,14 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 
 - TEST150 run `38558479124` failed before compilation at `2026-10-14T11:43:11Z`: history validation identified the omitted reviewed path `docs/APD-TEST149-DRAGONS-BREATH-2026-10-14.md`. 0 core and 0 API34 tests ran; no APK/screenshots were produced. TEST151 adds only the missing manifest path and requests verification of the unchanged application candidate.
 
+
+
+### 2026-10-14T12:10:50.744Z — TEST151/TEST152 Inferno provenance verified
+- Re-read the actual approved branch head, current build request, handoff, completed ledger and source guide; preserved concurrent commit `299fbfb80c8030fb77b1e0c7c0402df8b76bfa08`.
+- TEST150 run `38558479124` remains a history-gate failure before compilation: 0 core/API34 tests and no APK.
+- TEST151 source `fe6527fe009234cdcf81edd60eebaba1ea5b0b7a`, run `38558697915` (`2026-10-14T11:44:25Z`–`11:55:00Z`), passed 1536 core + 26 API34, debug/history and 34 valid 320×640 captures. Core/APK/Android artifacts: `11891361617`/`11891381527`/`11891777754`; contained APK SHA-256 `19da0e373010fbe2fe94acc4d9992644834ed89e225a5505455198c1cd4d29e1`.
+- TEST152 source `299fbfb80c8030fb77b1e0c7c0402df8b76bfa08`, run `38560042952` (`2026-10-14T11:55:40Z`–`12:06:54Z`), passed 1541 core + 26 API34 with 0 failure/error/skip, debug and immediate-previous TEST151 compiled history.
+- Downloaded artifact ZIPs and used `sha256sum`, `unzip`, XML parsing, ImageMagick `identify` and `montage`. Android artifact `11892225995` ZIP SHA-256 `51fdde2b06edf22980edb2a1c6e8525796c320637db3ddee8baafd50642b1a93`; core `11891208926`/`751a48541c6b61c1f753428ead18988f94c53ac20aeba65066238d2161eaa1f5`; APK `11891463637`/`13712ba1a5570328809c12664eb268472e9996f06dbbde2fcaa6752b8ca24c68`; contained APK SHA-256 `4b8155d59d97859821205452b0136b273fed86ab35f3a52173198280a92f77a1` and checksum passed.
+- Validated 34/34 Android PNGs at 320×640 and visually reviewed the contact sheet: expected readable menus/dialogs/gameplay, no corrupt capture. This is emulator evidence only.
+- Verified implementation includes TEST150 Inferno/fire-transfer provenance plus TEST152 prevalidation, enclosing-context isolation and actual Brew/Censer source safety. Five new permanent safety methods plus six retained Inferno methods are included; tests were not weakened.
+- Private delivery skipped; TEST123 remains the last owner-delivered/signature-compared APK. Three Damage controls remain disabled. Remaining work: plants, vault/boss, spells/abilities/derived offense, delayed state changes and all-class/boss/combination acceptance. No score/save-format/signing/app-ID/release change.

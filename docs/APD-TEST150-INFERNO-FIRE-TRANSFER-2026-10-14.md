@@ -1,6 +1,6 @@
 # TEST150 Inferno and fire-transfer provenance
 
-Status: candidate implementation; exact-source CI pending.
+Status: implementation verified by TEST151; superseded by the verified TEST152 source-safety correction.
 
 ## Scope
 
@@ -32,3 +32,10 @@ Run `38558479124` reached the compiled-history input gate and failed at `2026-10
 
 Three Damage controls remain disabled. Firebloom, vault/environment boundaries, remaining offensive sources, and complete class/boss/combination acceptance are still unresolved.
 
+
+
+### TEST151 exact-source verification outcome
+
+Run `38558697915` verified exact workflow source `fe6527fe009234cdcf81edd60eebaba1ea5b0b7a` (unchanged application candidate `57b3b5706f7478f742164d11c5a5ea74de94ed36`) from `2026-10-14T11:44:25Z` through `2026-10-14T11:55:00Z`. Downloaded XML proves 1536 core and 26 API34 tests passed with 0 failures, errors, or skips. Debug assembly and compiled immediate-previous-APK history against TEST149 passed. All 34 PNG captures decoded at 320×640; contact-sheet review found the expected readable menus, dialogs, and gameplay frames with no corrupt capture.
+
+Artifacts: core `11891361617`, ZIP SHA-256 `20c2017a2b428ce702ad58e878a61e72556aa3b88c2e3e4a7c0897cd0cb7200e`; Android `11891777754`, ZIP SHA-256 `5ebb39515a88eb10d20b6e63b266c8546fba0b7d3b223c6811066d0eef0e8dc5`; APK `11891381527`, ZIP SHA-256 `a2cc1fa7b9d982e7ef34fbe70a274f3ad6b1be42ccf34caa2a08af939b56d9b1`, contained APK SHA-256 `19da0e373010fbe2fe94acc4d9992644834ed89e225a5505455198c1cd4d29e1` with checksum passed. Private delivery was skipped. This is emulator/CI evidence, not physical-phone or owner-save evidence. TEST123 remains the last owner-delivered/signature-compared APK.
