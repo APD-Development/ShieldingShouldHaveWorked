@@ -1,122 +1,41 @@
 {
-  "previous_label": "Codex TEST 152",
-  "previous_source": "299fbfb80c8030fb77b1e0c7c0402df8b76bfa08",
-  "previous_run": 38560042952,
+  "previous_label": "Codex TEST 155",
+  "previous_source": "3a5c2b233075e78ca4f99298f5423e8bd8f45035",
+  "previous_run": 38566036821,
   "date": "2026-10-14",
   "changes": [
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Plant provenance",
-      "text": "Persist an immutable creator snapshot for offensive plants while legacy/natural plants remain unowned.",
+      "title": "Vault boss provenance",
+      "text": "Apply Boss Damage exactly once to the elemental boss's direct and delayed offensive sources while retaining original mechanics.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Plant.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/quest/vault/VaultBossElemental.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Level plant boundary",
-      "text": "Create plants under an explicit offensive origin without changing placement behavior.",
+      "title": "Vault boss regression",
+      "text": "Retain all-percentage, neutral, caller-completeness and environmental-exclusion coverage.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/Level.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/VaultBossDamageProvenanceTest.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Firebloom",
-      "text": "Pass the retained plant origin into Fire.",
+      "title": "TEST156 evidence",
+      "text": "Record the bounded implementation and pending verification boundary.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Firebloom.java"
+        "docs/APD-TEST156-VAULT-BOSS-PROVENANCE-2026-10-14.md"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Sorrowmoss",
-      "text": "Pass the retained plant origin into Poison.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Sorrowmoss.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "Rotberry",
-      "text": "Pass the retained plant origin into Toxic Gas.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Rotberry.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "Poison",
-      "text": "Accept an already captured immutable origin.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Poison.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "Regrowth Bomb",
-      "text": "Preserve the bomb fuse origin in spawned plants.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/bombs/RegrowthBomb.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "Wand of Regrowth",
-      "text": "Capture and consume the actual zap origin for spawned plants.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfRegrowth.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "Cursed Wand",
-      "text": "Attribute Random Plant to its actual caster.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/CursedWand.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "Sandals of Nature",
-      "text": "Attribute invoked plant effects to their actual user.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/SandalsOfNature.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "Overgrowth",
-      "text": "Attribute the triggered plant to the actual initiating attacker.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/curses/Overgrowth.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "Plant provenance regression",
-      "text": "Retain role, range, save, environmental, neutral and caller coverage.",
-      "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/PlantDamageProvenanceTest.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "TEST153 evidence",
-      "text": "Record implementation and honest verification boundary.",
+      "title": "Verified TEST155 evidence",
+      "text": "Preserve the reviewed TEST155 plant verification record in compiled history.",
       "paths": [
         "docs/APD-TEST153-PLANT-PROVENANCE-2026-10-14.md"
       ]
@@ -125,7 +44,7 @@
       "category": "Changes",
       "sprite": "V061_BUGFIX",
       "title": "Handoff",
-      "text": "Record the candidate and unresolved acceptance work.",
+      "text": "Record the candidate and remaining acceptance work.",
       "paths": [
         "docs/HANDOFF.md"
       ]
@@ -152,27 +71,9 @@
       "category": "Changes",
       "sprite": "V061_BUGFIX",
       "title": "History manifest",
-      "text": "Compare every reviewed path against the immediate previous TEST152 APK.",
+      "text": "Compare every reviewed path against the immediate previous TEST155 APK.",
       "paths": [
         "docs/APD-NEXT-BUILD-HISTORY.json"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "Verified TEST151 evidence",
-      "text": "Preserve the reviewed TEST151 Inferno/fire verification record in compiled history.",
-      "paths": [
-        "docs/APD-TEST150-INFERNO-FIRE-TRANSFER-2026-10-14.md"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "Verified TEST152 evidence",
-      "text": "Preserve the reviewed TEST152 source-safety verification record in compiled history.",
-      "paths": [
-        "docs/APD-INFERNO-SOURCE-SAFETY-PREPARED-2026-10-14.md"
       ]
     }
   ]

@@ -2018,3 +2018,9 @@ Exact source `3a5c2b233075e78ca4f99298f5423e8bd8f45035`, run `38566036821` (`202
 Verified: immutable offensive-plant creator retention through save/load and exact-once Fire/Poison/ToxicGas scaling for manual seeds, Wand of Regrowth, cursed Random Plant, Regrowth Bomb, Sandals and Overgrowth; natural/historical-unowned plants remain environmental. TEST153 history failure and TEST154 two fixture-only failures remain documented. No delivery/signature/phone claim; TEST123 remains delivered fallback. Three Damage sliders remain disabled.
 
 Preliminary read-only next-scope inspection found special direct-damage paths in VaultBossElemental and VaultSentry plus environmental VaultFlameTraps/VaultLaser boundaries. Do not change them without reading the complete caller/state/save paths and preserving environmental exclusions. Continue vault/boss, remaining spells/abilities/derived effects, delayed state changes and six-class/boss/combined acceptance.
+
+
+
+## TEST156 Vault boss provenance candidate — 2026-10-14T13:35:40.277Z
+
+Read complete Vault boss and machinery sources. Candidate classifies VaultSentry/VaultFlameTraps/VaultLaser as unowned quest hazards and leaves them unchanged; attributes VaultBossElemental retaliation, Fire/ Burning, delayed FireWall/FrostCone/LightningChase and lightning bolt to the actual boss. Four retained methods cover all20 percentages, concrete boss-vs-enemy replacement, neutral source/RNG identity, every known boss caller and environmental exclusions. No local Gradle workspace; 1551core/debug/immediate-previous TEST155 history/26API34/34PNG pending. Three Damage sliders remain disabled. Incoming harmful-buff derived damage, remaining spells/abilities/derived sources and six-class/boss/combination acceptance remain. No score/save-format/signing/app-ID/release/phone claim.

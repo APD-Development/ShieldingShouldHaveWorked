@@ -445,3 +445,11 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Verified offensive plant origin persistence/callers and exact-once Fire/Poison/ToxicGas boundaries; natural and missing historical metadata remain unowned.
 - Private delivery skipped; no owner install/signature comparison/physical-phone claim. TEST123 remains owner-delivered fallback; three Damage sliders remain disabled.
 - Preliminary read-only vault scan identified special direct-damage callers in VaultBossElemental/VaultSentry and environmental VaultFlameTraps/VaultLaser. No vault source changed in this invocation.
+
+
+
+### 2026-10-14T13:35:40.277Z — TEST156 Vault boss provenance candidate
+- Re-read latest head `3900a1dbfa92927ca204758f06ccf0855723bead`, handoff, build request, source guide and completed ledger; no newer developer advance observed before preparation.
+- Read full VaultBossElemental, VaultSentry, VaultFlameTraps and VaultLaser caller/state/save paths. Kept the three quest machines environmental; wired seven boss-owned attack boundaries without changing rolls, source objects, status duration, geometry, turns, RNG or quest scoring.
+- Added four permanent VaultBossDamageProvenanceTest methods covering20 percentages, boss replacement, neutral source/RNG identity, complete boss caller guards and environmental guards.
+- No local execution workspace; candidate is uncompiled pending1551core/debug/history/26API34/34PNG CI. Three Damage sliders remain disabled; no delivery/release/phone claim.
