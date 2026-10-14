@@ -31,3 +31,6 @@ TEST162 exact-source request (2026-10-14T17:53:07.187Z): verify harmful-buff pre
 
 
 TEST163 history-only correction (2026-10-14T17:56:56.152Z): run38610738155 failed before compilation because the TEST161 verification record was omitted from the comparison manifest. Verify the unchanged TEST162 application source with corrected complete history:1577core/debug/immediate-previous TEST161/26API34/34PNG. No delivery or slider enablement.
+
+
+TEST164 compile-only correction (2026-10-14T18:05:22.000Z): run38611095532 passed history validation but Java rejected two private helper calls through generic T receivers. Verify the same harmful-buff application behavior with explicit Buff receivers:1577core/debug/immediate-previous TEST161 history/26API34/34PNG. No delivery or slider enablement.

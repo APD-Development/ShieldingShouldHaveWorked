@@ -212,14 +212,14 @@ public class Buff extends Actor {
 
 	public static<T extends Buff> T appendAttributed( Char target, Class<T> buffClass, OffensiveDamageOrigin origin ) {
 		T buff = Reflection.newInstance(buffClass);
-		buff.apdPrepareAttach(origin);
+		((Buff)buff).apdPrepareAttach(origin);
 		buff.attachTo(target);
 		return buff;
 	}
 
 	public static<T extends Buff> T appendAttributed( Char target, Class<T> buffClass, TimedDamageOrigins origins ) {
 		T buff = Reflection.newInstance(buffClass);
-		buff.apdPrepareAttach(origins);
+		((Buff)buff).apdPrepareAttach(origins);
 		buff.attachTo(target);
 		return buff;
 	}

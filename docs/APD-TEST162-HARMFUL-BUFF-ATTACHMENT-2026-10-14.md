@@ -16,3 +16,10 @@ No local Gradle repository workspace exists in this execution environment. Requi
 - Demonstrated cause: the comparison from compiled TEST161 source also contains its later verification record `docs/APD-TEST161-ARTIFACT-DERIVED-DAMAGE-2026-10-14.md`; that reviewed path was absent from the TEST162 manifest.
 - Core, debug and API34 checks did not run; no APK or screenshots were produced. Application source was not tested and remains candidate-only.
 - The manifest now includes that exact already-reviewed evidence path. TEST163 requests the same application source with corrected complete history. TEST161 remains latest verified; three Damage controls remain disabled.
+
+
+## TEST163 compile failure — 2026-10-14T18:05:22.000Z
+- Exact source `620562d4ce3e809aa90d2636ffc16ef3b0d0232d`, run `38611095532` (2026-10-14T17:57:44Z–18:04:15Z) passed complete-history validation, then failed `:core:compileJava`.
+- Both errors were in `Buff.appendAttributed`: Java rejected private `apdPrepareAttach` calls through generic receiver type `T extends Buff`.
+- The correction casts the receiver to the declaring `Buff` type before the same two private calls. No behavior, state, RNG, source or save-format logic changed.
+- Tests, debug assembly and API34 did not run; no APK or screenshots were produced. TEST161 remains latest verified; three Damage controls remain disabled.
