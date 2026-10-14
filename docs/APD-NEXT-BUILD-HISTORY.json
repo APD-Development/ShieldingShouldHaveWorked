@@ -1,14 +1,23 @@
 {
-  "previous_label": "Codex TEST 149",
-  "previous_source": "af3fea7b8870be3e4f2e045e0bc69edfa1b4c0de",
-  "previous_run": 38551940075,
+  "previous_label": "Codex TEST 151",
+  "previous_source": "fe6527fe009234cdcf81edd60eebaba1ea5b0b7a",
+  "previous_run": 38558697915,
   "date": "2026-10-14",
   "changes": [
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Cell damage provenance",
-      "text": "Retain and transfer weighted immutable creator mixtures without changing blob density, diffusion or RNG.",
+      "title": "Fire",
+      "text": "Reject invalid fire mixtures before changing the field and retain their explicit source.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/blobs/Fire.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "CellDamageOrigins",
+      "text": "Share the existing source-mixture validation before field creation.",
       "paths": [
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CellDamageOrigins.java"
       ]
@@ -16,28 +25,8 @@
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Timed damage provenance",
-      "text": "Expose the normalized ownership mixture for the next damage tick so chained fire keeps its actual cause.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/TimedDamageOrigins.java"
-      ]
-    },
-    {
-      "category": "Bug Fixes",
-      "sprite": "V063_MAGICMISSILE",
-      "title": "Inferno and fire",
-      "text": "Preserve creator mixtures through Inferno contact, diffusion, save/restore, neighbouring Fire and Burning-created terrain Fire.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/blobs/Inferno.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/blobs/Fire.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Burning.java"
-      ]
-    },
-    {
-      "category": "Bug Fixes",
-      "sprite": "V061_BUGFIX",
-      "title": "Infernal Brew",
-      "text": "Capture the actual thrower once and reuse that immutable origin for every Inferno cell.",
+      "title": "InfernalBrew",
+      "text": "Use the actual throw or explosion trigger for Infernal Brew fire.",
       "paths": [
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/brews/InfernalBrew.java"
       ]
@@ -45,8 +34,8 @@
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Inferno provenance regression",
-      "text": "Retain full-range role, save/legacy, chained-fire, neutral RNG and real caller-wiring coverage.",
+      "title": "InfernoDamageProvenanceTest",
+      "text": "Verify brew and Censer wiring against their actual captured effect context.",
       "paths": [
         "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/InfernoDamageProvenanceTest.java"
       ]
@@ -54,33 +43,47 @@
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "TEST150 evidence",
-      "text": "Record bounded implementation scope, preserved behavior, pending exact-source checks and unresolved acceptance work.",
+      "title": "InfernoSourceSafetyTest",
+      "text": "Test malformed mixtures, stale users, actual brew triggers and saved Censer ownership.",
       "paths": [
-        "docs/APD-TEST149-DRAGONS-BREATH-2026-10-14.md",
-        "docs/APD-TEST150-INFERNO-FIRE-TRANSFER-2026-10-14.md"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/InfernoSourceSafetyTest.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Handoff and ledger",
-      "text": "Record the TEST150 candidate commit and honest verification boundary.",
+      "title": "APD-INFERNO-SOURCE-SAFETY-PREPARED-2026-10-14",
+      "text": "Record independent source-safety reproduction and regression evidence.",
       "paths": [
-        "docs/HANDOFF.md",
-        "docs/WORK-COMPLETED-LEDGER.md"
+        "docs/APD-INFERNO-SOURCE-SAFETY-PREPARED-2026-10-14.md"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Build request and exact history",
-      "text": "Require exact-current-source core, debug, Android and immediate-previous-APK verification without delivery.",
+      "title": "HANDOFF",
+      "text": "Record tested source corrections and the next verification checkpoint.",
       "paths": [
-        "docs/APD-CODEX-BUILD-REQUEST.txt",
+        "docs/HANDOFF.md"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "APD-CODEX-BUILD-REQUEST",
+      "text": "Require full current-source tests, Android checks, debug assembly and compiled history.",
+      "paths": [
+        "docs/APD-CODEX-BUILD-REQUEST.txt"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "APD-NEXT-BUILD-HISTORY",
+      "text": "Review changes against the immediately preceding produced APK.",
+      "paths": [
         "docs/APD-NEXT-BUILD-HISTORY.json"
       ]
     }
   ]
 }
-
