@@ -448,7 +448,7 @@ public class VaultBossElemental extends Mob {
 
 		//damaged by these, but much less so than regular elementals
 		if (harmful){
-			damage( Random.NormalIntRange( 5, 10 ), buff );
+			damage( buff.apdScaleAttachDamage(Random.NormalIntRange( 5, 10 )), buff );
 			return false;
 		}
 
@@ -655,7 +655,7 @@ public class VaultBossElemental extends Mob {
 			Char ch = Actor.findChar(cell+i);
 			if (ch != null && !(ch instanceof VaultBossElemental)){
 				//at this depth fire deals ~32 damage, already loads
-				Buff.affect(ch, Burning.class).reigniteAttributed(ch, this);
+				Burning.affectAttributed(ch, this);
 				if (ch == Dungeon.hero){
 					Statistics.questScores[3] -= 100;
 				}
@@ -768,7 +768,7 @@ public class VaultBossElemental extends Mob {
 						CellEmitter.get(cells[i]+j*direction).burst(FlameParticle.FACTORY, 10);
 						Char ch = Actor.findChar(cells[i]+j*direction);
 						if (ch != null && !(ch instanceof VaultBossElemental)){
-							Buff.affect(ch, Burning.class).reigniteAttributed(ch, 5, target); //~20 effective damage
+							Burning.affectAttributed(ch, 5, target); //~20 effective damage
 							if (ch == Dungeon.hero){
 								Sample.INSTANCE.play(Assets.Sounds.BURNING);
 								Statistics.questScores[3] -= 100;

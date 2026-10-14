@@ -36,7 +36,8 @@ public class FrostImbue extends FlavourBuff {
 	public static final float DURATION	= 50f;
 	
 	public void proc(Char enemy){
-		Buff.affect(enemy, Chill.class, 3f);
+		Buff.affectAttributed(enemy, Chill.class, 3f,
+				com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(target, null));
 		enemy.sprite.emitter().burst( SnowParticle.FACTORY, 3 );
 	}
 	

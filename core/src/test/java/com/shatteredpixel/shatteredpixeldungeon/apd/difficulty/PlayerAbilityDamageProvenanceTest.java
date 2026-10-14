@@ -36,7 +36,7 @@ public class PlayerAbilityDamageProvenanceTest {
  }
  @Test public void elementalBlastAndStrikeDeclareEveryKnownSecondaryBoundary()throws Exception{
   Path root=Paths.get(System.getProperty("apd.game.src"));String blast=Files.readString(root.resolve("actors/hero/abilities/mage/ElementalBlast.java"));String strike=Files.readString(root.resolve("actors/hero/abilities/duelist/ElementalStrike.java"));
-  assertEquals(2,occurrences(blast,"CustomOffensiveHooks.raw(mob, damage, Reflection.newInstance(finalWandCls), hero)"));assertEquals(1,occurrences(blast,"reigniteAttributed( mob, hero )"));assertEquals(1,occurrences(blast,"WandOfBlastWave.throwCharAttributed("));
+  assertEquals(2,occurrences(blast,"CustomOffensiveHooks.raw(mob, damage, Reflection.newInstance(finalWandCls), hero)"));assertEquals(1,occurrences(blast,"Burning.affectAttributed(mob, hero)"));assertEquals(1,occurrences(blast,"WandOfBlastWave.throwCharAttributed("));
   assertEquals(6,occurrences(strike,"CustomOffensiveHooks.raw(ch,"));assertEquals(2,occurrences(strike,"WandOfBlastWave.throwCharAttributed("));assertEquals(1,occurrences(strike,"apdExplodeAttributed("));
   assertFalse(blast.contains("Buff.affect( mob, Burning.class ).reignite( mob );"));assertFalse(strike.contains("new Bomb.ConjuredBomb().explode(exploding.pos)"));assertFalse(strike.contains("ch.damage( ch.HP, Grim.class );"));
  }

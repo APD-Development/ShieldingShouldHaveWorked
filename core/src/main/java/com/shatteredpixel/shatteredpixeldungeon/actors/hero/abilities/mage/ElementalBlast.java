@@ -288,7 +288,7 @@ public class ElementalBlast extends ArmorAbility {
 								//*** Wand of Fireblast ***
 								} else if (finalWandCls == WandOfFireblast.class){
 									if (mob.isAlive() && mob.alignment != Char.Alignment.ALLY) {
-										Buff.affect( mob, Burning.class ).reigniteAttributed( mob, hero );
+										Burning.affectAttributed(mob, hero);
 									}
 
 								//*** Wand of Corrosion ***
@@ -316,7 +316,8 @@ public class ElementalBlast extends ArmorAbility {
 								//*** Wand of Frost ***
 								} else if (finalWandCls == WandOfFrost.class){
 									if (mob.isAlive() && mob.alignment != Char.Alignment.ALLY) {
-										Buff.affect( mob, Frost.class, effectMulti*Frost.DURATION );
+										Buff.affectAttributed(mob, Frost.class, effectMulti*Frost.DURATION,
+												com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(hero, null));
 									}
 
 								//*** Wand of Prismatic Light ***

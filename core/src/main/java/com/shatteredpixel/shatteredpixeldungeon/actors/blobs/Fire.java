@@ -142,7 +142,7 @@ public class Fire extends Blob {
 	public static void burnAttributed( int pos, CellDamageOrigins origins, int originCell ) {
 		Char ch = Actor.findChar( pos );
 		if (ch != null && !ch.isImmune(Fire.class)) {
-			Buff.affect( ch, Burning.class ).reigniteAttributed( ch, origins, originCell );
+			Burning.affectAttributed(ch, origins, originCell);
 		}
 		burnObjects(pos);
 	}

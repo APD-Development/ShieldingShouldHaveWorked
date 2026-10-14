@@ -44,7 +44,7 @@ public class DragonBreathProvenanceTest {
   assertTrue(text.contains("final OffensiveDamageOrigin apdOrigin = OffensiveDamageOrigin.capture(curUser, null);"));
   assertTrue(text.contains("Fire.seedAttributed( cell, 5, apdOrigin )"));
   assertTrue(text.contains("Fire.seedAttributed( cell+i, 5, apdOrigin )"));
-  assertTrue(text.contains("reigniteAttributedOrigin( ch, apdOrigin )"));
+  assertTrue(text.contains("Burning.affectAttributedOrigin(ch, apdOrigin)"));
   assertFalse(text.contains("Blob.seed( cell, 5, Fire.class )"));
   assertFalse(text.contains("Buff.affect( ch, Burning.class ).reignite( ch )"));
  }

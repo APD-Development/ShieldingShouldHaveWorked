@@ -49,7 +49,8 @@ public class PotionOfFrost extends Potion {
 		for (int offset : PathFinder.NEIGHBOURS9){
 			if (!Dungeon.level.solid[cell+offset]) {
 				
-				GameScene.add(Blob.seed(cell + offset, 10, Freezing.class));
+				GameScene.add(Freezing.seedAttributed(cell + offset, 10,
+						com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveEffectContext.current()));
 				
 			}
 		}

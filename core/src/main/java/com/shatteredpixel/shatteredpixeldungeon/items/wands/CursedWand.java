@@ -227,11 +227,11 @@ public class CursedWand {
 			Char target = Actor.findChar(bolt.collisionPos);
 			//doesn't affect caster if positive only
 			if (Random.Int(2) == 0) {
-				if (target != null) Buff.affect(target, Burning.class).reigniteAttributed(target,user);
-				if (!positiveOnly) Buff.affect(user, Frost.class, Frost.DURATION);
+				if (target != null) Burning.affectAttributed(target, user);
+				if (!positiveOnly) Buff.affectAttributed(user, Frost.class, Frost.DURATION, com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(user, null));
 			} else {
-				if (!positiveOnly)Buff.affect(user, Burning.class).reigniteAttributed(user,user);
-				if (target != null) Buff.affect(target, Frost.class, Frost.DURATION);
+				if (!positiveOnly)Burning.affectAttributed(user, user);
+				if (target != null) Buff.affectAttributed(target, Frost.class, Frost.DURATION, com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(user, null));
 			}
 			tryForWandProc(target, origin);
 			return true;
@@ -821,8 +821,7 @@ public class CursedWand {
 					CellEmitter.get(i).burst(FlameParticle.FACTORY, 10);
 					if (Actor.findChar(i) != null){
 						Char ch = Actor.findChar(i);
-						Burning burning = Buff.affect(ch, Burning.class);
-						burning.reigniteAttributed(ch,user);
+						Burning burning = Burning.affectAttributed(ch, user);
 						int dmg = Random.NormalIntRange(5 + Dungeon.scalingDepth(), 10 + Dungeon.scalingDepth()*2);
 						com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(ch,dmg,burning,user);
 					}
@@ -906,14 +905,13 @@ public class CursedWand {
 					int dmg = Random.NormalIntRange(5 + Dungeon.scalingDepth(), 10 + Dungeon.scalingDepth()*2);
 					switch (Random.Int(5)){
 						case 0: default:
-							Burning burning = Buff.affect(ch, Burning.class);
-							burning.reigniteAttributed(ch,user);
+							Burning burning = Burning.affectAttributed(ch, user);
 							com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(ch,dmg,burning,user);
 							ch.sprite.emitter().burst(FlameParticle.FACTORY, 20);
 							break;
 						case 1:
 							com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(ch,dmg,new Frost(),user);
-							if (ch.isAlive()) Buff.affect(ch, Frost.class, Frost.DURATION);
+							if (ch.isAlive()) Buff.affectAttributed(ch, Frost.class, Frost.DURATION, com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(user, null));
 							Splash.at( ch.sprite.center(), 0xFFB2D6FF, 20 );
 							break;
 						case 2:

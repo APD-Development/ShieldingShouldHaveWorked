@@ -138,7 +138,7 @@ public class WandOfFireblast extends DamageWand {
 			wandProc(ch, chargesPerCast());
 			com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(ch,damageRoll(),this,curUser);
 			if (ch.isActive()) {
-				Buff.affect(ch, Burning.class).reigniteAttributed(ch,curUser);
+				Burning.affectAttributed(ch, curUser);
 				switch (chargesPerCast()) {
 					case 1:
 						break; //no effects

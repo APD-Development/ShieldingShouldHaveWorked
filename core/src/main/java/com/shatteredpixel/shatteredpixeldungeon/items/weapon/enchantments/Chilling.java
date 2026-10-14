@@ -54,7 +54,8 @@ public class Chilling extends Weapon.Enchantment {
 			}
 
 			if (durationToAdd > 0) {
-				Buff.affect(defender, Chill.class, durationToAdd);
+				Buff.affectAttributed(defender, Chill.class, durationToAdd,
+						com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(attacker, null));
 			}
 			Splash.at( defender.sprite.center(), 0xFFB2D6FF, 5);
 

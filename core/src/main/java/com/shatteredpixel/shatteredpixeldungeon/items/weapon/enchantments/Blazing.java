@@ -48,7 +48,7 @@ public class Blazing extends Weapon.Enchantment {
 			float powerMulti = Math.max(1f, procChance);
 
 			if (defender.buff(Burning.class) == null){
-				Buff.affect(defender, Burning.class).reigniteAttributed(defender, 8f,attacker);
+				Burning.affectAttributed(defender, 8f, attacker);
 				powerMulti -= 1;
 			}
 

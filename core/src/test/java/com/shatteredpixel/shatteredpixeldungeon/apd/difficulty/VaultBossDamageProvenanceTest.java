@@ -100,8 +100,8 @@ public class VaultBossDamageProvenanceTest {
         assertEquals(4, occurrences(boss, "CustomOffensiveHooks.raw("));
         assertTrue(boss.contains("CustomOffensiveHooks.raw(enemy, Random.IntRange(5, 10), new Shocking(), this);"));
         assertTrue(boss.contains("Fire.seedAttributed(cell+i, 2, OffensiveDamageOrigin.capture(this, null))"));
-        assertTrue(boss.contains("reigniteAttributed(ch, this)"));
-        assertTrue(boss.contains("reigniteAttributed(ch, 5, target)"));
+        assertTrue(boss.contains("Burning.affectAttributed(ch, this)"));
+        assertTrue(boss.contains("Burning.affectAttributed(ch, 5, target)"));
         assertTrue(boss.contains("CustomOffensiveHooks.raw(ch, Random.NormalIntRange(10, 15), new Frost(), target);"));
         assertTrue(boss.contains("CustomOffensiveHooks.raw(ch, Random.NormalIntRange(20, 30), new Electricity(), this);"));
         assertTrue(boss.contains("CustomOffensiveHooks.raw(ch, Random.NormalIntRange(10, 15), new Electricity(), target);"));

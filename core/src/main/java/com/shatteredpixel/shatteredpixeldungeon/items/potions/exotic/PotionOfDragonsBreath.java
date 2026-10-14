@@ -183,7 +183,7 @@ public class PotionOfDragonsBreath extends ExoticPotion {
 											Char ch = Actor.findChar( cell );
 											if (ch != null) {
 												
-												Buff.affect( ch, Burning.class ).reigniteAttributedOrigin( ch, apdOrigin );
+												Burning.affectAttributedOrigin(ch, apdOrigin);
 												Buff.prolong(ch, Cripple.class, 5f);
 											}
 										}

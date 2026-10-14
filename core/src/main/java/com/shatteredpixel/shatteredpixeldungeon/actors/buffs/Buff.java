@@ -24,6 +24,9 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdPlay;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamage;
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin;
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.TimedDamageOrigins;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
@@ -35,6 +38,31 @@ import java.util.HashSet;
 public class Buff extends Actor {
 	
 	public Char target;
+
+	// Transient metadata used only while a newly-created offensive buff is attaching.
+	// It is deliberately not serialized: persistent damage buffs own their saved provenance.
+	private OffensiveDamageOrigin apdAttachOrigin = OffensiveDamageOrigin.UNATTRIBUTED;
+	private TimedDamageOrigins apdAttachOrigins;
+
+	private void apdPrepareAttach(OffensiveDamageOrigin origin) {
+		if (origin == null) throw new IllegalArgumentException("Missing buff attachment origin");
+		apdAttachOrigin = origin;
+		apdAttachOrigins = null;
+	}
+
+	private void apdPrepareAttach(TimedDamageOrigins origins) {
+		if (origins == null) throw new IllegalArgumentException("Missing mixed buff attachment origin");
+		apdAttachOrigin = OffensiveDamageOrigin.UNATTRIBUTED;
+		apdAttachOrigins = origins;
+	}
+
+	/** Scale an immediate attachment reaction without replacing this buff as its source. */
+	public int apdScaleAttachDamage(int amount) {
+		if (apdAttachOrigins != null) return apdAttachOrigins.scale(amount);
+		if (apdAttachOrigin == OffensiveDamageOrigin.UNATTRIBUTED
+				|| apdAttachOrigin.percentage() == 100) return amount;
+		return OffensiveDamage.raw(amount, this, apdAttachOrigin).scaled().amount;
+	}
 
 	//whether this buff was already extended by the mnemonic prayer spell
 	public boolean mnemonicExtended = false;
@@ -73,7 +101,14 @@ public class Buff extends Actor {
 		
 		this.target = target;
 
-		if (target.add( this )){
+		boolean attached;
+		try {
+			attached = target.add(this);
+		} finally {
+			apdAttachOrigin = OffensiveDamageOrigin.UNATTRIBUTED;
+			apdAttachOrigins = null;
+		}
+		if (attached) {
 			if (target.sprite != null) fx( true );
 			ApdPlay.onBuffAttached( this, target );
 			return true;
@@ -175,6 +210,20 @@ public class Buff extends Actor {
 		return buff;
 	}
 
+	public static<T extends Buff> T appendAttributed( Char target, Class<T> buffClass, OffensiveDamageOrigin origin ) {
+		T buff = Reflection.newInstance(buffClass);
+		buff.apdPrepareAttach(origin);
+		buff.attachTo(target);
+		return buff;
+	}
+
+	public static<T extends Buff> T appendAttributed( Char target, Class<T> buffClass, TimedDamageOrigins origins ) {
+		T buff = Reflection.newInstance(buffClass);
+		buff.apdPrepareAttach(origins);
+		buff.attachTo(target);
+		return buff;
+	}
+
 	//same as append, but prevents duplication.
 	public static<T extends Buff> T affect( Char target, Class<T> buffClass ) {
 		T buff = target.buff( buffClass );
@@ -191,10 +240,38 @@ public class Buff extends Actor {
 		return buff;
 	}
 
+	public static<T extends Buff> T affectAttributed( Char target, Class<T> buffClass, OffensiveDamageOrigin origin ) {
+		T buff = target.buff(buffClass);
+		return buff != null ? buff : appendAttributed(target, buffClass, origin);
+	}
+
+	public static<T extends Buff> T affectAttributed( Char target, Class<T> buffClass, TimedDamageOrigins origins ) {
+		T buff = target.buff(buffClass);
+		return buff != null ? buff : appendAttributed(target, buffClass, origins);
+	}
+
+	public static<T extends FlavourBuff> T affectAttributed( Char target, Class<T> buffClass, float duration, OffensiveDamageOrigin origin ) {
+		T buff = affectAttributed(target, buffClass, origin);
+		buff.spend(duration * target.resist(buffClass));
+		return buff;
+	}
+
+	public static<T extends FlavourBuff> T affectAttributed( Char target, Class<T> buffClass, float duration, TimedDamageOrigins origins ) {
+		T buff = affectAttributed(target, buffClass, origins);
+		buff.spend(duration * target.resist(buffClass));
+		return buff;
+	}
+
 	//postpones an already active buff, or creates & attaches a new buff and delays that.
 	public static<T extends FlavourBuff> T prolong( Char target, Class<T> buffClass, float duration ) {
 		T buff = affect( target, buffClass );
 		buff.postpone( duration * target.resist(buffClass) );
+		return buff;
+	}
+
+	public static<T extends FlavourBuff> T prolongAttributed( Char target, Class<T> buffClass, float duration, OffensiveDamageOrigin origin ) {
+		T buff = affectAttributed(target, buffClass, origin);
+		buff.postpone(duration * target.resist(buffClass));
 		return buff;
 	}
 

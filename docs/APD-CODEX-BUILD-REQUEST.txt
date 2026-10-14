@@ -25,3 +25,6 @@ TEST161 exact-source request (2026-10-14T16:52:55.080Z): verify current Corrupti
 
 
 TEST161 verified (2026-10-14T17:13:21.216Z): source9088ca30acde28282454598b1e649a3a70156b56/run38601864296 passed1572core+26API34/debug/immediate-previous TEST160 history/34PNG. APK SHA-256 b01c72f6643af083a7fbf0d0bbb71dc8bde82152ed588d31e1cae527fb604b0b. No application build pending; do not rebuild unchanged source. Corruption fractional reload, Guiding Light and Cape retaliation are verified; Skeleton Key remains non-damaging. Three Damage controls remain disabled; no delivery/phone claim.
+
+
+TEST162 exact-source request (2026-10-14T17:53:07.187Z): verify harmful-buff pre-attach provenance and saved mixed Freezing fields with 1577 core tests, debug assembly, immediate-previous TEST161 compiled history, 26 API34 checks and 34 valid screenshots. Preserve original buff source objects, mitigation, turns and RNG; environmental/legacy freezing remains unscaled. Do not deliver or enable Damage sliders.

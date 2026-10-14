@@ -198,6 +198,45 @@ public class Burning extends Buff implements Hero.Doom, Buff.DOTbuff {
 		super.detach();
 	}
 	
+	public static Burning affectAttributed(Char ch, Char attacker) {
+		return affectAttributed(ch, DURATION, attacker);
+	}
+
+	public static Burning affectAttributed(Char ch, float duration, Char attacker) {
+		return affectAttributedOrigin(ch, duration, OffensiveDamageOrigin.capture(attacker, null));
+	}
+
+	public static Burning affectAttributedOrigin(Char ch, OffensiveDamageOrigin origin) {
+		return affectAttributedOrigin(ch, DURATION, origin);
+	}
+
+	public static Burning affectAttributedOrigin(Char ch, float duration, OffensiveDamageOrigin origin) {
+		return affectPrepared(ch, duration, TimedDamageOrigins.single(duration,
+				origin == null ? OffensiveDamageOrigin.UNATTRIBUTED : origin));
+	}
+
+	public static Burning affectAttributed(Char ch,
+			com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CellDamageOrigins field, int cell) {
+		return affectPrepared(ch, DURATION, field.timedAt(cell, DURATION));
+	}
+
+	private static Burning affectPrepared(Char ch, float duration, TimedDamageOrigins cause) {
+		Burning burning = ch.buff(Burning.class);
+		if (burning == null) {
+			burning = new Burning();
+			burning.reigniteWithOrigins(ch, duration, cause);
+			burning.attachTo(ch);
+		} else {
+			burning.reigniteWithOrigins(ch, duration, cause);
+		}
+		return burning;
+	}
+
+	@Override
+	public int apdScaleAttachDamage(int amount) {
+		return origins == null ? super.apdScaleAttachDamage(amount) : origins.scale(amount);
+	}
+
 	public void reignite( Char ch ) {
 		reignite( ch, DURATION );
 	}

@@ -538,3 +538,12 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - All 34 screenshots decoded at 320×640. Contact-sheet review found expected readable changes/history, rules/score, UIMSD, stairs, tiles and gameplay states with no corrupt capture. Emulator evidence only.
 - Verified the Corruption fractional save/reload correction plus Guiding Light artifact damage and Cape of Thorns outgoing retaliation. Cape incoming deflection remains based on the original roll; Skeleton Key movement remains non-damaging.
 - Private delivery was skipped. TEST123 remains the owner-delivered/signature-compared fallback. Three Damage sliders remain disabled pending harmful-buff-safe attribution and six-class/boss/combination acceptance.
+
+
+## 2026-10-14T17:53:07.187Z — TEST162 harmful-buff attachment candidate
+- Reconciled actual head `7fd4e51d4ce6137d9c1baf84f39ac3dceb604fa4` after verified TEST161; reread build request, source guide, handoff and ledger.
+- Audited all current production Java sources for Burning attribution and Chill/Frost attachment entry points. Confirmed the vault elemental reacts inside `add(Buff)`, before prior caller-side provenance setters ran.
+- Implemented transient pre-attach immutable origin metadata in `Buff`, preconfigured single/mixed Burning causes, and exactly-once vault reaction scaling while preserving the original buff source.
+- Added persistent per-cell Freezing provenance with save/reload and legacy-unknown behavior; attributed Frost potion, frost bomb, Elemental Strike and direct wand/imbue/enchantment/dart callers. Environmental traps/rooms remain unscaled.
+- Added five retained regressions for player, boss, mixed saved field, legacy environment and neutral RNG/source behavior; expected total 1577 core.
+- No real local Gradle workspace is available, so exact-source core/debug/API34/history/visual verification is pending. Three Damage controls remain disabled. TEST161 remains latest verified source; TEST123 remains owner-delivered fallback.

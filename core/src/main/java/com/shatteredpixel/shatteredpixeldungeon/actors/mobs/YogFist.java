@@ -263,7 +263,7 @@ public abstract class YogFist extends Mob {
 				GameScene.updateMap( enemy.pos );
 				CellEmitter.get( enemy.pos ).burst( Speck.factory( Speck.STEAM ), 10 );
 			} else {
-				Buff.affect( enemy, Burning.class ).reigniteAttributed( enemy,this );
+				Burning.affectAttributed(enemy, this);
 			}
 
 			for (int i : PathFinder.NEIGHBOURS9){
