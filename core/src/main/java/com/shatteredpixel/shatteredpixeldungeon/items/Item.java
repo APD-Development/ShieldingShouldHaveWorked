@@ -671,7 +671,17 @@ public class Item implements Bundlable {
 		Sample.INSTANCE.play(Assets.Sounds.MISS, 0.6f, 0.6f, 1.5f);
 	}
 	
+    private com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin apdThrowOrigin=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.UNATTRIBUTED;
+    protected final com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin apdThrownOrigin(){return apdThrowOrigin;}
+    /** Transient callback attribution; never serialize this temporary state or consult stale curUser. */
+    public final void apdThrowAttributed(int cell,com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin captured){
+        if(captured==null)throw new IllegalArgumentException("Missing throw origin");
+        com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin before=apdThrowOrigin;apdThrowOrigin=captured;
+        try{onThrow(cell);}finally{apdThrowOrigin=before;}
+    }
+
 	public void cast( final Hero user, final int dst ) {
+        final com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin captured=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(user,null);
 		
 		final int cell = throwPos( user, dst );
 		user.sprite.zap( cell );
@@ -695,7 +705,7 @@ public class Item implements Bundlable {
 							curUser = user;
 							ApdItems.noteAction( Item.this, ApdItems.ACTION_THROW );
 							Item i = Item.this.detach(user.belongings.backpack);
-							if (i != null) i.onThrow(cell);
+							if (i != null) i.apdThrowAttributed(cell,captured);
 							if (curUser.hasTalent(Talent.IMPROVISED_PROJECTILES)
 									&& !(Item.this instanceof MissileWeapon)
 									&& curUser.buff(Talent.ImprovisedProjectileCooldown.class) == null){
@@ -725,7 +735,7 @@ public class Item implements Bundlable {
 							ApdItems.noteAction( Item.this, ApdItems.ACTION_THROW );
 							Item i = Item.this.detach(user.belongings.backpack);
 							user.spend(delay);
-							if (i != null) i.onThrow(cell);
+							if (i != null) i.apdThrowAttributed(cell,captured);
 							user.next();
 						}
 					});

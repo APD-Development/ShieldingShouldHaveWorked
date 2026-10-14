@@ -1,14 +1,23 @@
 {
-  "previous_label": "Codex TEST 134",
-  "previous_source": "eb5ba00c6705d681c13e609c65f70dfb331695aa",
-  "previous_run": 38473208676,
+  "previous_label": "Codex TEST 136",
+  "previous_source": "60f8451d3eed148da97a0fd078534b7773d09910",
+  "previous_run": 38491431089,
   "date": "2026-10-13",
   "changes": [
     {
       "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "Corrosive cloud ownership",
-      "text": "Prepared persistent corrosion attribution using the existing strongest-cloud source rule.",
+      "sprite": "V063_MAGICMISSILE",
+      "title": "Potion effect attribution",
+      "text": "Keep thrown potion effects attributed while treating triggered terrain traps as environmental.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/Potion.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V063_MAGICMISSILE",
+      "title": "Potion cloud origin",
+      "text": "Retain known potion ownership when creating corrosive clouds.",
       "paths": [
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/blobs/CorrosiveGas.java"
       ]
@@ -16,474 +25,92 @@
     {
       "category": "Changes",
       "sprite": "V063_MAGICMISSILE",
-      "title": "Corrosion wand source",
-      "text": "Prepared caster attribution for corrosion-wand clouds.",
+      "title": "Caustic brew ownership",
+      "text": "Preserve the thrower of caustic-brew effects across saves.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfCorrosion.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "DM-201 gas source",
-      "text": "Prepared attacker attribution for DM-201's corrosive clouds.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/DM201.java"
-      ]
-    },
-    {
-      "category": "Statistics / UIMSD",
-      "sprite": "V061_BUGFIX",
-      "title": "Raw rules and score records",
-      "text": "Keep exact custom settings, scoring authority and available adjusted scores in permanent run events.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/LifecycleEvents.java"
-      ]
-    },
-    {
-      "category": "Statistics / UIMSD",
-      "sprite": "V061_BUGFIX",
-      "title": "Telemetry compatibility",
-      "text": "Version the additive custom-rules records as telemetry 1.11 while retaining older histories.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/TelemetryVersion.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/brews/CausticBrew.java"
       ]
     },
     {
       "category": "Bug Fixes",
       "sprite": "V061_BUGFIX",
-      "title": "Rules in unfinished exports",
-      "text": "Preserve public custom settings and scoring metadata while removing unfinished-run seeds.",
+      "title": "Nested effect safety",
+      "text": "Restore effect attribution after nested effects and exceptions without retaining actor references.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/archive/LogRedactor.java"
-      ]
-    },
-    {
-      "category": "Statistics / UIMSD",
-      "sprite": "V061_BUGFIX",
-      "title": "Statistics cache refresh",
-      "text": "Rebuild derived statistics for the new fields while preserving raw history.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/DerivedStore.java"
-      ]
-    },
-    {
-      "category": "Statistics / UIMSD",
-      "sprite": "V061_BUGFIX",
-      "title": "Custom rules columns",
-      "text": "Add custom settings, generation counts and scoring fields to filters, comparisons and exports.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/Datasets.java"
-      ]
-    },
-    {
-      "category": "Statistics / UIMSD",
-      "sprite": "V061_BUGFIX",
-      "title": "Recorded settings and counts",
-      "text": "Read permanent rule snapshots and count generated equipment and upgrade scrolls without duplicating items.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/RunFactsBuilder.java"
-      ]
-    },
-    {
-      "category": "Statistics / UIMSD",
-      "sprite": "V061_BUGFIX",
-      "title": "Creation-time scoring records",
-      "text": "Record the run's frozen scoring authority and preserve its original earned score.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/RunRecorder.java"
-      ]
-    },
-    {
-      "category": "Statistics / UIMSD",
-      "sprite": "V061_BUGFIX",
-      "title": "Exact custom run fields",
-      "text": "Expose all selected rules, exact scroll availability and recorded scoring metadata in run statistics.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/CustomRuleFacts.java"
-      ]
-    },
-    {
-      "category": "Statistics / UIMSD",
-      "sprite": "V061_BUGFIX",
-      "title": "Permanent scoring status",
-      "text": "Record neutral identity or pending calibration at run creation without awarding new multipliers.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomScoreSnapshot.java"
-      ]
-    },
-    {
-      "category": "Statistics / UIMSD",
-      "sprite": "V061_BUGFIX",
-      "title": "Historical score provenance",
-      "text": "Expose original imported scores without inventing historical custom settings.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/LegacyFacts.java"
-      ]
-    },
-    {
-      "category": "Statistics / UIMSD",
-      "sprite": "V061_BUGFIX",
-      "title": "Locked scoring authority",
-      "text": "Save and restore each run's frozen scoring status without assigning defaults to older saves.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/Dungeon.java"
-      ]
-    },
-    {
-      "category": "Statistics / UIMSD",
-      "sprite": "V061_BUGFIX",
-      "title": "Distinct custom rulesets",
-      "text": "Keep different custom configurations in separate ruleset scopes while retaining neutral and historical identities.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/Ruleset.java"
-      ]
-    },
-    {
-      "category": "Statistics / UIMSD",
-      "sprite": "V061_BUGFIX",
-      "title": "Run row cache compatibility",
-      "text": "Refresh cached run rows and retain original imported score values.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowBuilders.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V063_MAGICMISSILE",
-      "title": "CrystalWisp offensive source",
-      "text": "Prepared caster-based CrystalWisp damage while retaining its original source type and timing.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/CrystalWisp.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V063_MAGICMISSILE",
-      "title": "HolyLance offensive source",
-      "text": "Prepared caster-based HolyLance damage while retaining its original source type and timing.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/HolyLance.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V063_MAGICMISSILE",
-      "title": "Necromancer offensive source",
-      "text": "Prepared caster-based Necromancer damage while retaining its original source type and timing.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Necromancer.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V063_MAGICMISSILE",
-      "title": "Eye offensive source",
-      "text": "Prepared caster-based Eye damage while retaining its original source type and timing.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Eye.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V063_MAGICMISSILE",
-      "title": "Judgement offensive source",
-      "text": "Prepared caster-based Judgement damage while retaining its original source type and timing.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/Judgement.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V063_MAGICMISSILE",
-      "title": "GuidingLight offensive source",
-      "text": "Prepared caster-based GuidingLight damage while retaining its original source type and timing.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/GuidingLight.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V063_MAGICMISSILE",
-      "title": "Sunray offensive source",
-      "text": "Prepared caster-based Sunray damage while retaining its original source type and timing.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/Sunray.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V063_MAGICMISSILE",
-      "title": "SpectralNecromancer offensive source",
-      "text": "Prepared caster-based SpectralNecromancer damage while retaining its original source type and timing.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/SpectralNecromancer.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V063_MAGICMISSILE",
-      "title": "Warlock offensive source",
-      "text": "Prepared caster-based Warlock damage while retaining its original source type and timing.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Warlock.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V063_MAGICMISSILE",
-      "title": "Radiance offensive source",
-      "text": "Prepared caster-based Radiance damage while retaining its original source type and timing.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/Radiance.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V063_MAGICMISSILE",
-      "title": "Shaman offensive source",
-      "text": "Prepared caster-based Shaman damage while retaining its original source type and timing.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Shaman.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V063_MAGICMISSILE",
-      "title": "DM100 offensive source",
-      "text": "Prepared caster-based DM100 damage while retaining its original source type and timing.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/DM100.java"
-      ]
-    },
-    {
-      "category": "Quality of Life",
-      "sprite": "V061_PAGE",
-      "title": "Honest scoring labels",
-      "text": "Show 1.00\u00d7 only for recorded neutral authority and mark pending or unavailable scoring explicitly.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomScorePresentation.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/OffensiveEffectContext.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Android scoring verification",
-      "text": "Add native neutral, pending and historical score checks, touchscreen scrolling and Android Back coverage.",
+      "title": "Caustic effect source",
+      "text": "Allow caustic effects to record a known creator without changing an existing effect on invalid input.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Ooze.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "Throw callback ownership",
+      "text": "Capture offensive ownership when a throw begins, without relying on a later current-user value.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Item.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "Throw and trap regressions",
+      "text": "Test real caustic effects, persisted ownership, environmental traps and exception cleanup.",
+      "paths": [
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/ThrowDamageProvenanceTest.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "Throw verification record",
+      "text": "Document throw-boundary checks and remaining damage-source work.",
+      "paths": [
+        "docs/APD-TEST137-REPORT-2026-10-13.md"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "Development checkpoint",
+      "text": "Preserve verified source evidence and the unfinished damage-slider checkpoint.",
+      "paths": [
+        "docs/HANDOFF.md"
+      ]
+    },
+    {
+      "category": "Bug Fixes",
+      "sprite": "V061_BUGFIX",
+      "title": "Score scrolling verification",
+      "text": "Require an overflowing small-window fixture before testing native touchscreen scrolling.",
       "paths": [
         "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomScoreDeviceTest.java"
       ]
     },
     {
-      "category": "Quality of Life",
-      "sprite": "V061_PAGE",
-      "title": "Custom scoring breakdown",
-      "text": "Show custom multipliers and adjusted-score availability beneath the original challenge multiplier, with native scrolling.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndScoreBreakdown.java"
-      ]
-    },
-    {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Shared Android evidence helpers",
-      "text": "Reuse existing render, lookup and screenshot helpers for the added score checks.",
-      "paths": [
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/TopScoresDeviceTest.java"
-      ]
-    },
-    {
-      "category": "Quality of Life",
-      "sprite": "V061_PAGE",
-      "title": "Ranking score context",
-      "text": "Use the selected ranking's own saved rules and score when opening its breakdown.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndRanking.java"
-      ]
-    },
-    {
-      "category": "Statistics / UIMSD",
-      "sprite": "V061_BUGFIX",
-      "title": "Ranking configuration snapshot",
-      "text": "Keep each new ranking's locked custom configuration without changing its score or ordering.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/Rankings.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "Attributed Corrosive Gas Integration Test",
-      "text": "Added attributed corrosive gas integration test coverage for the updated behavior.",
-      "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/AttributedCorrosiveGasIntegrationTest.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "Offensive Enemy Spell Integration Test",
-      "text": "Added offensive enemy spell integration test coverage for the updated behavior.",
-      "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/OffensiveEnemySpellIntegrationTest.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "Custom Rule Telemetry Test",
-      "text": "Added custom rule telemetry test coverage for the updated behavior.",
-      "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/CustomRuleTelemetryTest.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "Custom Rule Query Integration Test",
-      "text": "Added custom rule query integration test coverage for the updated behavior.",
-      "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/CustomRuleQueryIntegrationTest.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "Custom Rule Identity Test",
-      "text": "Added custom rule identity test coverage for the updated behavior.",
-      "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/CustomRuleIdentityTest.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "Custom Rule Recorder Integration Test",
-      "text": "Added custom rule recorder integration test coverage for the updated behavior.",
-      "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/CustomRuleRecorderIntegrationTest.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "Custom Rule Archive Integration Test",
-      "text": "Added custom rule archive integration test coverage for the updated behavior.",
-      "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/archive/CustomRuleArchiveIntegrationTest.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "Custom Rule Generation Count Test",
-      "text": "Added custom rule generation count test coverage for the updated behavior.",
-      "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/CustomRuleGenerationCountTest.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "Custom Score Presentation Test",
-      "text": "Added custom score presentation test coverage for the updated behavior.",
-      "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomScorePresentationTest.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "Custom Score Ranking Snapshot Test",
-      "text": "Added custom score ranking snapshot test coverage for the updated behavior.",
-      "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/CustomScoreRankingSnapshotTest.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "Custom Score Snapshot Test",
-      "text": "Added custom score snapshot test coverage for the updated behavior.",
-      "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomScoreSnapshotTest.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "Telemetry Version Test",
-      "text": "Added telemetry version test coverage for the updated behavior.",
-      "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/TelemetryVersionTest.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "Required Android score evidence",
-      "text": "Require the new score-popup checks and all four screenshots before accepting Android verification.",
-      "paths": [
-        "tools/run-codex-android-checks.sh"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_PAGE",
-      "title": "Recorded alpha verification",
-      "text": "Record completed ooze verification, new regression results and the remaining alpha blockers.",
-      "paths": [
-        "docs/APD-NEXT-BUILD-HISTORY.json",
-        "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/APD-TEST135-REPORT-2026-10-13.md",
-        "docs/HANDOFF.md"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "QuestBossClassificationTest verification correction",
-      "text": "Decode recorded rules without depending on live gameplay classes.",
-      "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/QuestBossClassificationTest.java"
-      ]
-    },
-    {
-      "category": "Bug Fixes",
-      "sprite": "V061_BUGFIX",
-      "title": "RecordedRuleSettings verification correction",
-      "text": "Document the custom-rules telemetry milestone alongside previous records.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/RecordedRuleSettings.java"
-      ]
-    },
-    {
-      "category": "Bug Fixes",
-      "sprite": "V061_BUGFIX",
-      "title": "apd_records_history verification correction",
-      "text": "Test frozen settings and unsupported metadata without assigning defaults.",
-      "paths": [
-        "core/src/main/assets/apd/apd_records_history.txt"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "RecordedRuleSettingsTest verification correction",
-      "text": "Record the failed TEST135 checks and the safe verification correction.",
-      "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/RecordedRuleSettingsTest.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "APD TEST136 REPORT 2026 10 13 verification correction",
-      "text": "Preserve the exact TEST135 source and failed-build evidence for review.",
+      "title": "TEST136 verification record",
+      "text": "Record the passing core build and failed native score-scrolling check.",
       "paths": [
         "docs/APD-TEST136-REPORT-2026-10-13.md"
       ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "Private build checks",
+      "text": "Require full source and Android checks for the next private candidate.",
+      "paths": [
+        "docs/APD-CODEX-BUILD-REQUEST.txt"
+      ]
     }
-  ],
-  "commentary": "I continued offensive-source tracking and permanent custom-rule recording. Scoring status is locked to each run; earned scores remain unchanged. The three damage controls are still pending while remaining offensive sources are covered."
+  ]
 }

@@ -72,7 +72,7 @@ public class CorrosiveGas extends Blob {
 	}
 
 	public CorrosiveGas setStrength(int str, Class source){
-		return setStrengthWithOrigin(str,source,OffensiveDamageOrigin.UNATTRIBUTED);
+		return setStrengthWithOrigin(str,source,com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveEffectContext.current());
 	}
 
 	public CorrosiveGas setStrengthAttributed(int str,Class source,Char attacker){

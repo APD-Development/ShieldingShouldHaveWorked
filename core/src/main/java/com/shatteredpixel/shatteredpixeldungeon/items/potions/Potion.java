@@ -326,9 +326,10 @@ public class Potion extends Item {
 
 			//aqua brew and storm clouds specifically don't press cells, so they can disarm traps
 			if (!(this instanceof AquaBrew) && !(this instanceof PotionOfStormClouds)){
-				Dungeon.level.pressCell( cell );
+				try(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveEffectContext environment=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveEffectContext.enter(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.UNATTRIBUTED)){Dungeon.level.pressCell(cell);}
 			}
-			shatter( cell );
+            // Pressed traps remain environmental; only this potion's effect inherits the throw.
+            try(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveEffectContext effect=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveEffectContext.enter(apdThrownOrigin())){shatter(cell);}
 
 			if (!anonymous && (mustThrowPots.contains(getClass()) || canThrowPots.contains(getClass()) || this instanceof Brew)) {
 				Catalog.countUse(getClass());
@@ -341,8 +342,8 @@ public class Potion extends Item {
 	}
 	
 	public void apply( Hero hero ) {
-		shatter( hero.pos );
-	}
+        try(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveEffectContext effect=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveEffectContext.enter(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(hero,null))){shatter(hero.pos);}
+    }
 	
 	public void shatter( int cell ) {
 		splash( cell );

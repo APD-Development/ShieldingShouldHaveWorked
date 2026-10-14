@@ -91,7 +91,8 @@ public class Ooze extends Buff implements Buff.DOTbuff {
 		setWithOrigin(left,OffensiveDamageOrigin.capture(attacker,null));
 	}
 
-	private void setWithOrigin(float left,OffensiveDamageOrigin role){
+	public void setWithOrigin(float left,OffensiveDamageOrigin role){
+        if(role==null)throw new IllegalArgumentException("Missing ooze origin");
 		origin=role;
 		this.left = left;
 		acted = false;
