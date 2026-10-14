@@ -133,9 +133,6 @@ jobs:
           retention-days: 7
 
   private-publication:
-    permissions:
-      contents: write
-      actions: read
     needs: validate-and-stage
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -160,8 +157,10 @@ jobs:
           existing = subprocess.run(['gh','release','view',tag,'--repo',repo],capture_output=True)
           if existing.returncode == 0:
               raise SystemExit('Existing assets preserved: refusing to overwrite release.')
+          with open('delivery/verification.txt','a') as notes:
+              notes.write('\n\nRelease tag identifies the delivery workflow commit, not the compiled application source. The APK source remains '+os.environ['APD_SOURCE_SHA']+'. Later branch changes are not included in this APK.\n')
           subprocess.run(['gh','release','create',tag,'--repo',repo,
-              '--target',os.environ['APD_SOURCE_SHA'],'--prerelease','--latest=false',
+              '--target',os.environ['GITHUB_SHA'],'--prerelease','--latest=false',
               '--title',f'APD PRIVATE CODEX TEST {number}','--notes-file','delivery/verification.txt',
               f'delivery/ADHD-Pixel-Dungeon-CODEX-TEST-{number}.apk',
               f'delivery/ADHD-Pixel-Dungeon-CODEX-TEST-{number}.apk.sha256',
