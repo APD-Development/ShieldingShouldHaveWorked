@@ -1,4 +1,4 @@
-name: Deliver verified existing APD TEST112
+name: Deliver verified existing APD TEST159
 
 # Delivery only: reuse the already tested APK; no Gradle or app rebuild.
 # Accept verified SDK signer labels; retain compatibility refusal diagnostics.
@@ -12,15 +12,15 @@ permissions:
   actions: read
 
 concurrency:
-  group: apd-existing-test112-delivery
+  group: apd-existing-test159-delivery
   cancel-in-progress: false
 
 env:
-  APD_SOURCE_SHA: 48318483b54b6bc12156831223b4908de8cfaadb
-  APD_SOURCE_RUN: '38372670211'
-  APD_TEST_NUMBER: '112'
-  APD_CORE_TEST_COUNT: '1316'
-  APD_ANDROID_TEST_COUNT: '21'
+  APD_SOURCE_SHA: 8b5882b21d1c957846312296e471724c5a7207a0
+  APD_SOURCE_RUN: '38590690277'
+  APD_TEST_NUMBER: '159'
+  APD_CORE_TEST_COUNT: '1560'
+  APD_ANDROID_TEST_COUNT: '26'
   APD_ROLLBACK_NUMBER: '67'
   APD_ROLLBACK_SHA256: '3b9fc627cafad093e44cd8359f5ef74921bff1ed5b21c988f2f82b2fa6642d15'
   APD_REQUIRED_ANDROID_METHODS: 'menusSurviveSceneRecreationAndNarrowActionsStayInsideTheirWindow,aRunCanBePlayedSavedContinuedAndEndedWithItsHistoryRecorded,aWonRunIsRecordedAsWonAndSealed,difficultyIsChosenOnTheCharacterScreenAndNotInSettings,communityMenuOpensEveryPreviewAndReturnsWithoutStackingWindows,adultHumorControlWorksWithoutAnAgeProviderAndReopensWithSavedChoice,textAndGuideScrollSurviveRepeatedResetsAndClampAfterResize,validationEmptyHistoryGroupedAndReportMessagesSurviveWithoutRepeatingActions,tourChoicesSurviveWithoutStartingATourOrRepeatingTheOffer,heroButtonsStayAboveNavigationBarAndRemainSelectable,navigationOverlapReservesVisibleBarsEvenWithFullscreenRequested,clericQuickCastsPersistAndKeepNormalCostsAndTargeting,arcanaItemDescriptionsRequireKnownEquippedRingsAndFitWindows,demoUnlockKeepsTenRunNoticeVisibleOnTitle,offlineNewsCardsOpenDatedSpritePopups,everyAboutPopupOpensScrollsAndCloses,everyUimsdScreenAndDialogCanBeBuilt,replacingHomeContentsDisposesPreviouslyDrawnImages,categoriesUseSpdColumnsAndEveryIconOpensItsExactBuildPopup,largeAndNamedHistoricalBuildsKeepAllIconsInScrollableNativeSections,tileVisibilityAndStairNavigationKeepNormalTurnsFogAndControls'
@@ -31,7 +31,12 @@ jobs:
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
-      - name: Wait for exact TEST112 verification and resolve actual artifacts
+        with:
+          ref: 8b5882b21d1c957846312296e471724c5a7207a0
+      - uses: actions/checkout@v4
+        with:
+          path: lunch-preparation
+      - name: Wait for exact TEST159 verification and resolve actual artifacts
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -86,12 +91,12 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           python3 -m unittest discover -s tools -p test_apd_existing_build_evidence.py
-          python3 tools/apd_existing_build_evidence.py
-      - name: Stage the twenty-two verified Android screenshots
+          GITHUB_SHA="$APD_SOURCE_SHA" python3 tools/apd_existing_build_evidence.py
+      - name: Stage the thirty-four verified Android screenshots
         run: |
           mkdir -p delivery/screenshots
           cp android-reports/codex-visual-evidence/*.png delivery/screenshots/
-          test "$(find delivery/screenshots -name '*.png' | wc -l)" -eq 22
+          test "$(find delivery/screenshots -name '*.png' | wc -l)" -eq 34
           sha256sum delivery/screenshots/*.png > delivery/Android-Screenshot-Checksums.sha256
       - name: Count exact verified source for owner chat breakdown
         run: |
@@ -103,10 +108,10 @@ jobs:
         run: |
           python3 -m pip install reportlab==4.2.5
           python3 -m unittest discover -s tools -p test_apd_bug_report_pdf.py
-          python3 tools/apd_bug_report_pdf.py docs/APD-TEST112-REPORT-2026-10-13.md delivery/APD-Bug-Fixes-2026-10-13-TEST112.pdf --verification delivery/verification.txt
+          python3 tools/apd_bug_report_pdf.py lunch-preparation/docs/APD-LUNCH-2026-10-14-TEST159.md delivery/APD-Bug-Fixes-2026-10-14-TEST159.pdf --verification delivery/verification.txt
       - uses: actions/upload-artifact@v4
         with:
-          name: verified-test112-delivery
+          name: verified-test159-delivery
           path: delivery/
           retention-days: 7
 
@@ -115,7 +120,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: verified-test112-evidence
+          name: verified-test159-evidence
           path: |
             delivery/*.json
             delivery/*.txt
@@ -137,7 +142,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: verified-test112-delivery
+          name: verified-test159-delivery
           path: delivery
       - name: Publish owner-requested private verified APK and report
         env:
@@ -153,11 +158,11 @@ jobs:
           if existing.returncode == 0:
               raise SystemExit('Existing assets preserved: refusing to overwrite release.')
           subprocess.run(['gh','release','create',tag,'--repo',repo,
-              '--target',os.environ['GITHUB_SHA'],'--prerelease','--latest=false',
+              '--target',os.environ['APD_SOURCE_SHA'],'--prerelease','--latest=false',
               '--title',f'APD PRIVATE CODEX TEST {number}','--notes-file','delivery/verification.txt',
               f'delivery/ADHD-Pixel-Dungeon-CODEX-TEST-{number}.apk',
               f'delivery/ADHD-Pixel-Dungeon-CODEX-TEST-{number}.apk.sha256',
-              'delivery/APD-Bug-Fixes-2026-10-13-TEST112.pdf',
-              'delivery/TEST112-Verification.json',
+              'delivery/APD-Bug-Fixes-2026-10-14-TEST159.pdf',
+              'delivery/TEST159-Verification.json',
               'delivery/APD-Source-Line-Counts.json'],check=True)
           PY
