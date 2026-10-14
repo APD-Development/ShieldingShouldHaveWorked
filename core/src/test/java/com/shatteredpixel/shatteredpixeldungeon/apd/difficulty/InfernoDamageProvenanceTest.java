@@ -164,7 +164,7 @@ public class InfernoDamageProvenanceTest {
 		Path root = Paths.get(System.getProperty("apd.game.src"));
 		String brew = Files.readString(root.resolve("items/potions/brews/InfernalBrew.java"));
 		String censer = Files.readString(root.resolve("items/trinkets/ChaoticCenser.java"));
-		assertTrue(brew.contains("final OffensiveDamageOrigin apdOrigin = OffensiveDamageOrigin.capture(curUser, null);"));
+		assertTrue(brew.contains("final OffensiveDamageOrigin apdOrigin = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveEffectContext.current();"));
 		assertTrue(brew.contains("Inferno.seedAttributed( cell+i, 120, apdOrigin )"));
 		assertTrue(brew.contains("Inferno.seedAttributed( cell, centerVolume, apdOrigin )"));
 		assertFalse(brew.contains("Blob.seed( cell+i, 120, Inferno.class )"));
@@ -172,3 +172,4 @@ public class InfernoDamageProvenanceTest {
 		assertTrue(censer.contains("GameScene.add(Blob.seed(targetCell, gasQuantity, gasType))"));
 	}
 }
+

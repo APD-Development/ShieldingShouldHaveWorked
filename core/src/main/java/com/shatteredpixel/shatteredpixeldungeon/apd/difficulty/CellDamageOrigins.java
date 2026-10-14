@@ -32,7 +32,7 @@ public final class CellDamageOrigins {
   if(to%width>0)add(sums,to-1,density);if(to%width<width-1)add(sums,to+1,density);if(to>=width)add(sums,to-width,density);if(to+width<density.length)add(sums,to+width,density);
   double total=0;for(double sum:sums)total+=sum;if(total<=0){sums[0]=1;return sums;}for(int r=0;r<4;r++)sums[r]/=total;return sums;
  }
- private static void validateShares(double[] shares){
+ public static void validateShares(double[] shares){
   if(shares==null||shares.length!=4)throw new IllegalArgumentException("Invalid cell provenance shares");double total=0;
   for(double share:shares){if(!Double.isFinite(share)||share<0)throw new IllegalArgumentException("Invalid cell provenance share");total+=share;}
   if(Math.abs(total-1)>1e-9)throw new IllegalArgumentException("Invalid cell provenance total");
@@ -116,3 +116,4 @@ public final class CellDamageOrigins {
   return result;
  }
 }
+

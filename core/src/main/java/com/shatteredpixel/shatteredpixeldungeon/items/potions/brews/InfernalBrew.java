@@ -46,7 +46,7 @@ public class InfernalBrew extends Brew {
 			Sample.INSTANCE.play( Assets.Sounds.GAS );
 		}
 
-		final OffensiveDamageOrigin apdOrigin = OffensiveDamageOrigin.capture(curUser, null);
+		final OffensiveDamageOrigin apdOrigin = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveEffectContext.current();
 		int centerVolume = 120;
 		for (int i : PathFinder.NEIGHBOURS8){
 			if (!Dungeon.level.solid[cell+i]){
@@ -73,4 +73,5 @@ public class InfernalBrew extends Brew {
 		
 	}
 }
+
 

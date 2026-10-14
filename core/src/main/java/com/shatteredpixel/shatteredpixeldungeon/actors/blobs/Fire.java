@@ -47,9 +47,13 @@ public class Fire extends Blob {
 
 	/** Preserve a mixed creator sample while leaving the original field seed untouched. */
 	public static Fire seedAttributedMixture(int cell, int amount, double[] shares) {
-		Fire fire = Blob.seed(cell, amount, Fire.class);
-		if (fire != null) fire.apdOrigins.attributeLatestSeed(fire.cur, cell, amount, shares);
-		return fire;
+        CellDamageOrigins.validateShares(shares);
+        try(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveEffectContext ignored=
+            com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveEffectContext.enter(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.UNATTRIBUTED)){
+            Fire fire = Blob.seed(cell, amount, Fire.class);
+            if (fire != null) fire.apdOrigins.attributeLatestSeed(fire.cur, cell, amount, shares);
+            return fire;
+        }
 	}
 
 	@Override
@@ -175,3 +179,4 @@ public class Fire extends Blob {
 		return Messages.get(this, "desc");
 	}
 }
+
