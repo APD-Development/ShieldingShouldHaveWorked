@@ -6,6 +6,15 @@ public final class TimedDamageOrigins {
  private static final class Part {float duration;final OffensiveDamageOrigin role;Part(float d,OffensiveDamageOrigin r){duration=d;role=r;}}
  private final ArrayList<Part> parts=new ArrayList<>();
  public static TimedDamageOrigins single(float duration,OffensiveDamageOrigin role){TimedDamageOrigins o=new TimedDamageOrigins();o.parts.add(new Part(Math.max(0,duration),role));return o;}
+ /** Repeats one mixed ownership sample for every damage tick without pre-scaling damage. */
+ public static TimedDamageOrigins repeating(float duration,double[] shares){
+  if(shares==null||shares.length!=4||!Float.isFinite(duration)||duration<0)throw new IllegalArgumentException("Invalid mixed timed cause");
+  double sum=0;for(double share:shares){if(!Double.isFinite(share)||share<0)throw new IllegalArgumentException("Invalid mixed timed share");sum+=share;}
+  if(Math.abs(sum-1)>1e-9)throw new IllegalArgumentException("Invalid mixed timed total");
+  TimedDamageOrigins o=new TimedDamageOrigins();float remaining=duration;OffensiveDamageOrigin[] roles=OffensiveDamageOrigin.values();
+  while(remaining>0){float tick=Math.min(1f,remaining);for(int i=0;i<4;i++)if(shares[i]>0)o.parts.add(new Part((float)(tick*shares[i]),roles[i]));remaining-=tick;}
+  return o;
+ }
  public void extend(float duration,OffensiveDamageOrigin role){if(duration<=0)return;if(parts.isEmpty())parts.add(new Part(duration,role));else{Part last=parts.get(parts.size()-1);if(last.role==role)last.duration+=duration;else parts.add(new Part(duration,role));}}
  public void consume(float duration){while(duration>0&&!parts.isEmpty()){Part first=parts.get(0);float use=Math.min(duration,first.duration);first.duration-=use;duration-=use;if(first.duration<=0)parts.remove(0);else break;}}
  public void shorten(float duration){while(duration>0&&!parts.isEmpty()){Part last=parts.get(parts.size()-1);float use=Math.min(duration,last.duration);last.duration-=use;duration-=use;if(last.duration<=0&&parts.size()>1)parts.remove(parts.size()-1);else break;}}

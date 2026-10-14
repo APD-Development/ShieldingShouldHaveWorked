@@ -48,6 +48,21 @@ public final class CellDamageOrigins {
  }
  public void finishDiffusion(){if(!pending)return;if(pendingKnown){double[][] before=mass;mass=scratch;scratch=before;}else clearAll();pending=false;}
  private void add(double[] sums,int cell,int[] density){if(density[cell]>0)for(int r=0;r<4;r++)sums[r]+=mass[r][cell];}
+ /** Assign a newly spread cell the combined ownership proportions of its burning side-neighbours. */
+ public void inheritFromNeighbours(int[] density,int to,int power,int width){
+  if(power<=0||mass==null)return;
+  if(density==null||to<0||to>=density.length||width<=0)throw new IllegalArgumentException("Invalid neighbouring provenance spread");
+  double[] sums=new double[4];if(to%width>0)add(sums,to-1,density);if(to%width<width-1)add(sums,to+1,density);if(to>=width)add(sums,to-width,density);if(to+width<density.length)add(sums,to+width,density);
+  double total=0;for(double sum:sums)total+=sum;clear(to);if(total<=0){mass[0][to]=power;return;}for(int r=0;r<4;r++)mass[r][to]=sums[r]*power/total;
+ }
+ /** Snapshot the current cell mixture as repeated per-tick causes for a timed effect. */
+ public TimedDamageOrigins timedAt(int cell,float duration){
+  if(duration<0||!Float.isFinite(duration))throw new IllegalArgumentException("Invalid timed provenance duration");
+  if(mass==null)return TimedDamageOrigins.single(duration,OffensiveDamageOrigin.UNATTRIBUTED);
+  if(cell<0||cell>=mass[0].length)throw new IllegalArgumentException("Invalid timed provenance cell");
+  double total=0;for(int r=0;r<4;r++)total+=mass[r][cell];if(total<=0)return TimedDamageOrigins.single(duration,OffensiveDamageOrigin.UNATTRIBUTED);
+  double[] shares=new double[4];for(int r=0;r<4;r++)shares[r]=mass[r][cell]/total;return TimedDamageOrigins.repeating(duration,shares);
+ }
  public void inheritMax(int[] density,int from,int to,int power){
   if(power<=0||mass==null)return;
   if(density==null||from<0||to<0||from>=density.length||to>=density.length)throw new IllegalArgumentException("Invalid cell provenance spread");

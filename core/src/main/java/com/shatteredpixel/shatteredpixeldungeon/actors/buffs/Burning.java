@@ -206,7 +206,13 @@ public class Burning extends Buff implements Hero.Doom, Buff.DOTbuff {
 	}
 	public void reigniteAttributed(Char ch,Char attacker){reigniteAttributed(ch,DURATION,attacker);}
 	public void reigniteAttributed(Char ch,float duration,Char attacker){reigniteWithOrigin(ch,duration,OffensiveDamageOrigin.capture(attacker,null));}
+	public void reigniteAttributed(Char ch,com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CellDamageOrigins field,int cell){
+		reigniteWithOrigins(ch,DURATION,field.timedAt(cell,DURATION));
+	}
 	private void reigniteWithOrigin(Char ch,float duration,OffensiveDamageOrigin origin){
+		reigniteWithOrigins(ch,duration,TimedDamageOrigins.single(duration,origin));
+	}
+	private void reigniteWithOrigins(Char ch,float duration,TimedDamageOrigins cause){
 		if (ch.isImmune(Burning.class)){
 			if (ch.glyphLevel(Brimstone.class) >= 0){
 				//generate avg of 1 shield per turn per 50% boost, to a max of 4x boost
@@ -224,7 +230,7 @@ public class Burning extends Buff implements Hero.Doom, Buff.DOTbuff {
 		}
 		if (left < duration) {
 			left = duration;
-			origins=TimedDamageOrigins.single(duration,origin);
+			origins=cause;
 			ch.needsIncomingDOTUpdate = true;
 		}
 		acted = false;

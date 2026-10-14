@@ -35,9 +35,30 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 
 public class Fire extends Blob {
 
+	private com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CellDamageOrigins apdOrigins = new com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CellDamageOrigins();
+	private static final String APD_ORIGINS = "apd_fire_origins";
+
+	public static Fire seedAttributed(int cell, int amount, com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin origin) {
+		try (com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveEffectContext ignored = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveEffectContext.enter(origin)) {
+			return Blob.seed(cell, amount, Fire.class);
+		}
+	}
+
+	@Override
+	public void seed(com.shatteredpixel.shatteredpixeldungeon.levels.Level level, int cell, int amount) {
+		apdOrigins.seed(cur, level.length(), cell, amount, com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveEffectContext.current());
+		super.seed(level, cell, amount);
+	}
+
+	@Override public void clear(int cell) { super.clear(cell); apdOrigins.clear(cell); }
+	@Override public void fullyClear() { super.fullyClear(); apdOrigins.clearAll(); }
+	@Override public void storeInBundle(com.watabou.utils.Bundle bundle) { super.storeInBundle(bundle); if (volume > 0) apdOrigins.store(bundle, APD_ORIGINS, cur); else com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CellDamageOrigins.clearMetadata(bundle, APD_ORIGINS); }
+	@Override public void restoreFromBundle(com.watabou.utils.Bundle bundle) { super.restoreFromBundle(bundle); apdOrigins = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CellDamageOrigins.restore(bundle, APD_ORIGINS, cur); }
+
 	@Override
 	protected void evolve() {
 
+		apdOrigins.synchronize(cur);
 		boolean[] flamable = Dungeon.level.flamable;
 		int cell;
 		int fire;
@@ -53,11 +74,12 @@ public class Fire extends Blob {
 					
 					if (freeze != null && freeze.volume > 0 && freeze.cur[cell] > 0){
 						freeze.clear(cell);
+						apdOrigins.clear(cell);
 						off[cell] = cur[cell] = 0;
 						continue;
 					}
 
-					burn( cell );
+					burnAttributed( cell );
 
 					fire = cur[cell] - 1;
 					if (fire <= 0 && flamable[cell]) {
@@ -77,7 +99,8 @@ public class Fire extends Blob {
 							|| cur[cell-Dungeon.level.width()] > 0
 							|| cur[cell+Dungeon.level.width()] > 0)) {
 						fire = 4;
-						burn( cell );
+						apdOrigins.inheritFromNeighbours(cur, cell, fire, Dungeon.level.width());
+						burnAttributed( cell );
 						area.union(i, j);
 					} else {
 						fire = 0;
@@ -91,17 +114,32 @@ public class Fire extends Blob {
 			}
 		}
 
+		apdOrigins.synchronize(off);
+		apdOrigins.discardIfUnattributed();
+
 		if (observe) {
 			Dungeon.observe();
 		}
 	}
 	
+	private void burnAttributed( int pos ) {
+		Char ch = Actor.findChar( pos );
+		if (ch != null && !ch.isImmune(Fire.class)) {
+			Buff.affect( ch, Burning.class ).reigniteAttributed( ch, apdOrigins, pos );
+		}
+		burnObjects(pos);
+	}
+
 	public static void burn( int pos ) {
 		Char ch = Actor.findChar( pos );
 		if (ch != null && !ch.isImmune(Fire.class)) {
 			Buff.affect( ch, Burning.class ).reignite( ch );
 		}
 		
+		burnObjects(pos);
+	}
+
+	private static void burnObjects( int pos ) {
 		Heap heap = Dungeon.level.heaps.get( pos );
 		if (heap != null) {
 			heap.burn();
