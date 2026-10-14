@@ -7,6 +7,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
 import com.shatteredpixel.shatteredpixeldungeon.apd.HeadlessTestSupport;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.DamageWand;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
@@ -39,6 +40,7 @@ public class RemainingDirectWandDamageProvenanceTest {
         @Override public int min(int level) { return 0; }
         @Override public int max(int level) { return 0; }
         @Override public void onZap(Ballistica attack) {}
+        @Override public void onHit(MagesStaff staff, Char attacker, Char defender, int damage) {}
 
         static void apply(Receiver target, int raw, Object source, Char creator) {
             apdApplyDirectDamage(target, raw, source, creator);

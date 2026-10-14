@@ -88,3 +88,6 @@ TEST173 exact-source request (2026-10-14T21:36:33Z): verify Mages' Staff Firebla
 TEST173 verified (2026-10-14T21:50:04Z): sourcee101e85167ee802cef3a0db31cb8497b83a23328/run38641672668 passed1593core+26API34/debug/immediate-previous TEST172 history/34PNG. APK SHA256 2f9379b9a38a28996d32bc745af94ba72df6ba0ce63e789bd348dd7d59c95d30. Fireblast staff explosion uses its actual attacker once. No delivery/phone claim.
 
 TEST174 exact-source request (2026-10-14T21:51:03Z): verify seven direct-damage calls across Blast Wave, Living Earth and Prismatic Light with1596core tests, debug assembly, immediate-previous TEST173 compiled history, 26API34 checks and34 valid screenshots. Preserve rolls, targets, source, direct mitigation, visuals, turns and RNG; actual creator factor exactly once. No save/scoring/delivery/physical-phone claim.
+
+
+TEST174 correction after run 38643522614: first exact source failed compileTestJava before tests because the new ProbeWand test fixture omitted Wand.onHit. The correction adds only that no-op fixture method. Run the full 1,596-core/debug/history/API34/34-PNG gate on the corrected exact source; do not count duplicate same-source run 38643546560 as corrected evidence.

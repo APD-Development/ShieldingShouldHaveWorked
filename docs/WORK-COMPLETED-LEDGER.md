@@ -688,3 +688,8 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - TEST174 routes those seven rolls through one shared actual-creator boundary while retaining original rolls, proc chances, target filters, wand sources, direct mitigation, visuals, turns and RNG.
 - Added three retained tests for all permitted factors and player/enemy/boss creators, contradictory settings, single source-preserving hits, neutral amount/next RNG and exact production wiring.
 - TEST174 exact-source verification requests 1,596 core tests, debug assembly, complete history against immediate previous compiled TEST173, 26 API34 tests and 34 screenshots. Candidate remains pending; no save/scoring/delivery/phone claim.
+
+## 2026-10-14T21:54:00Z — TEST174 first run failed; test-fixture correction
+- Source `6cec278930f087ed6c18b5d04c136a046ff22669`, run `38643522614` (21:52:10Z–21:53:28Z) passed history validation, then failed `:core:compileTestJava`: retained `ProbeWand` lacked Wand's required abstract `onHit` override.
+- Zero tests ran; no APK/API34/screenshots/artifact. A duplicate same-source run was already active and cannot verify this known failing source.
+- Correction adds only a no-op fixture override; production changes and assertions are unchanged. Corrected TEST174 full verification remains pending; TEST173 remains latest verified and TEST123 remains owner-delivered fallback.

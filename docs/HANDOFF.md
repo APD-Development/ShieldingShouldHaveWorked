@@ -2227,3 +2227,8 @@ Current-source audit found the Mages' Staff Fireblast on-hit explosion still cal
 TEST173sourcee101e85167ee802cef3a0db31cb8497b83a23328/run38641672668 (21:37:27–21:50:04UTC) passed1593core+26API34/debug/immediate-previousTEST172history/34PNG. APKsha2562f9379b9a38a28996d32bc745af94ba72df6ba0ce63e789bd348dd7d59c95d30. Fireblast staff explosion attribution verified; no delivery/phone claim.
 
 Adjacent audit confirmed seven direct-damage calls in Blast Wave, Living Earth and Prismatic Light. TEST174 routes each through one shared actual-creator boundary while retaining original rolls, targets, source, direct mitigation, turns and RNG. Three retained tests cover all factors/roles, contradictory settings, source/neutral identity and exact wiring. TEST174 requests1596core/debug/immediate-previousTEST173history/26API34/34PNG. Candidate only; TEST123 remains owner-delivered.
+
+## 2026-10-14T21:54:00Z — TEST174 first run failed; test-fixture correction
+- Source `6cec278930f087ed6c18b5d04c136a046ff22669`, run `38643522614` (21:52:10Z–21:53:28Z) passed history validation, then failed `:core:compileTestJava`: retained `ProbeWand` lacked Wand's required abstract `onHit` override.
+- Zero tests ran; no APK/API34/screenshots/artifact. A duplicate same-source run was already active and cannot verify this known failing source.
+- Correction adds only a no-op fixture override; production changes and assertions are unchanged. Corrected TEST174 full verification remains pending; TEST173 remains latest verified and TEST123 remains owner-delivered fallback.
