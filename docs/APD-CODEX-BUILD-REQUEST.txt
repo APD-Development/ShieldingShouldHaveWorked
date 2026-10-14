@@ -64,3 +64,6 @@ TEST167 failed core (2026-10-14T19:51:04Z): source57b29f9ec716aabb20237a963fe8d3
 
 
 TEST168 failed core (2026-10-14T19:55:37Z): source3a70f85f706dcf56553af296c1a44f98635a5af7/run38627408866 ran1585 tests with1 failure. History correction passed; serious-damage feedback inside Hero.damage still called the absent headless selector. No APK/API34/screenshots. TEST169 exact-source correction: no-op only FixedHero.interrupt in the core fixture, retaining actual attack/damage/defense/source/healing assertions; verify1585core/debug/immediate-previous TEST166 history/26API34/34PNG. No delivery.
+
+
+TEST169 verified (2026-10-14T20:12:02Z): sourcea160dddb4f39fe2e3eb62a601e13bea71730f064/run38628060548 passed1585core+26API34/debug/immediate-previous TEST166 history/34PNG. APK SHA256 ff0d7f10bcef18c7c247bfaee30e7f913ee7ecc699433103fca7a222c3090559. All18controls are verified for next-run drafts; current-run controls remain locked, scores unchanged and ranges provisional. No application build pending; do not rebuild unchanged source. No delivery/phone claim; TEST123 remains owner-delivered.

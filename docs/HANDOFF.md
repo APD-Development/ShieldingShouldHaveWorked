@@ -2185,3 +2185,8 @@ TEST167source57b29f9ec716aabb20237a963fe8d32e4bbfb930/run38626757231 ran1585core
 # TEST168 core failure; TEST169 correction — 2026-10-14 19:57 UTC
 
 TEST168source3a70f85f706dcf56553af296c1a44f98635a5af7/run38627408866 ran1585core with1failure. Native history sprite correction passed. Real75-damage attack reached Hero.damage serious-damage feedback, whose interrupt requires live GameScene selector absent from core fixtures. TEST169 no-ops only FixedHero.interrupt; actual attack/hooks/defense/source/healing/assertions remain. No168APK/API34/screenshots. TEST166 latest verified; all18controls candidate pending TEST169. No delivery/score/save-format/phone claim.
+
+
+# TEST169 verified; all 18 Custom Dungeon Rules controls available — 2026-10-14 20:12 UTC
+
+Verified sourcea160dddb4f39fe2e3eb62a601e13bea71730f064/run38628060548 (19:57:58–20:10:25UTC):1585core+26API34/debug/immediate-previousTEST166history/34PNG all passed. APKsha256ff0d7f10bcef18c7c247bfaee30e7f913ee7ecc699433103fca7a222c3090559. All18controls now verified available for next-run drafts; current-run controls locked. Cross-rule coverage includes all-six-class highHP/defense/lowupgrade attacks, enemy-vs-boss replacement damage with PlayerDefense/healing, and exact all18-value save/load. Original earned scores/scoring identity unchanged; ranges provisional. TEST167/168 fixture/history failures retained. No delivery/phone claim; TEST123 remains last owner-delivered. Next safe step: do not rebuild unchanged TEST169; resume documented post-slider confirmed-bug/reliability backlog.

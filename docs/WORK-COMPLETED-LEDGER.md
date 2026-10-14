@@ -615,3 +615,12 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - TEST168 source `3a70f85f706dcf56553af296c1a44f98635a5af7`, run `38627408866`, ran 1,585 core tests with 1 failure. The corrected history manifest passed; no APK/API34/screenshots were produced.
 - The real enemy hit completed attack and mitigation but normal serious-damage feedback in `Hero.damage()` invoked the absent headless scene selector. Overrode only `FixedHero.interrupt()` as a no-op; application code and all combat/healing assertions remain unchanged.
 - TEST169 requests the corrected 1,585-test exact source and full acceptance matrix. TEST166 remains latest verified; TEST123 remains owner-delivered fallback.
+
+
+## 2026-10-14T20:12:02Z — TEST169 verified all 18 controls
+- Exact source `a160dddb4f39fe2e3eb62a601e13bea71730f064`, run `38628060548` (2026-10-14T19:57:58Z–20:10:25Z), concluded success.
+- Downloaded core artifact `11925865590` / ZIP SHA-256 `50b6173b27f99c9e7afb21d5d68ae5000e321f0b3e6931a143b6c72050340dca`: 1,585 tests, 0 failures/errors/skips.
+- Downloaded APK artifact `11925995486` / ZIP SHA-256 `5981cc7ec25c2771c4f617a0ead99d489bd9eb03b0577d5e81155030f29ccb7e`: APK SHA-256 `ff0d7f10bcef18c7c247bfaee30e7f913ee7ecc699433103fca7a222c3090559`; bundled checksum matched. Debug/history comparison against TEST166 passed.
+- Downloaded Android artifact `11924908702` / ZIP SHA-256 `f49c3775af89bda528d61f870c864975b77ce704a4803c40a3607613d839c196`: 26 API34 tests, 0 failed/ignored; 34/34 PNGs decoded 320×640 and passed contact-sheet/focused visual review.
+- Verified all 18 controls are available for next-run drafts while current-run controls remain locked. Original scores/scoring identity unchanged; provisional ranges are not finalized.
+- Private delivery skipped; no physical-phone claim. TEST123 remains owner-delivered fallback. Do not rebuild unchanged TEST169.
