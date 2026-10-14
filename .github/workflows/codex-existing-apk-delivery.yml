@@ -133,6 +133,9 @@ jobs:
           retention-days: 7
 
   private-publication:
+    permissions:
+      contents: write
+      actions: read
     needs: validate-and-stage
     runs-on: ubuntu-latest
     timeout-minutes: 10
