@@ -68,6 +68,7 @@
       "text": "Record the bounded source audit, pending exact-source checks and disabled-slider checkpoint.",
       "paths": [
         "docs/APD-TEST162-HARMFUL-BUFF-ATTACHMENT-2026-10-14.md",
+        "docs/APD-TEST161-ARTIFACT-DERIVED-DAMAGE-2026-10-14.md",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",

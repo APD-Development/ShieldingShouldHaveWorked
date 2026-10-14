@@ -2120,3 +2120,10 @@ Actual current source writes partialDamage as float but reloads with getInt, los
 - Added persistent per-cell Freezing provenance with save/reload and legacy-unknown behavior; attributed Frost potion, frost bomb, Elemental Strike and direct wand/imbue/enchantment/dart callers. Environmental traps/rooms remain unscaled.
 - Added five retained regressions for player, boss, mixed saved field, legacy environment and neutral RNG/source behavior; expected total 1577 core.
 - No real local Gradle workspace is available, so exact-source core/debug/API34/history/visual verification is pending. Three Damage controls remain disabled. TEST161 remains latest verified source; TEST123 remains owner-delivered fallback.
+
+
+## TEST162 pre-build failure — 2026-10-14T17:56:56.152Z
+- Exact source `50e61eb7d517d70566d8a06878a8709d1fd32e65`, run `38610738155` (2026-10-14T17:55:12Z–17:56:02Z) failed in history validation before compilation.
+- Demonstrated cause: the comparison from compiled TEST161 source also contains its later verification record `docs/APD-TEST161-ARTIFACT-DERIVED-DAMAGE-2026-10-14.md`; that reviewed path was absent from the TEST162 manifest.
+- Core, debug and API34 checks did not run; no APK or screenshots were produced. Application source was not tested and remains candidate-only.
+- The manifest now includes that exact already-reviewed evidence path. TEST163 requests the same application source with corrected complete history. TEST161 remains latest verified; three Damage controls remain disabled.

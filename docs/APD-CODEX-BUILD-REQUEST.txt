@@ -28,3 +28,6 @@ TEST161 verified (2026-10-14T17:13:21.216Z): source9088ca30acde28282454598b1e649
 
 
 TEST162 exact-source request (2026-10-14T17:53:07.187Z): verify harmful-buff pre-attach provenance and saved mixed Freezing fields with 1577 core tests, debug assembly, immediate-previous TEST161 compiled history, 26 API34 checks and 34 valid screenshots. Preserve original buff source objects, mitigation, turns and RNG; environmental/legacy freezing remains unscaled. Do not deliver or enable Damage sliders.
+
+
+TEST163 history-only correction (2026-10-14T17:56:56.152Z): run38610738155 failed before compilation because the TEST161 verification record was omitted from the comparison manifest. Verify the unchanged TEST162 application source with corrected complete history:1577core/debug/immediate-previous TEST161/26API34/34PNG. No delivery or slider enablement.
