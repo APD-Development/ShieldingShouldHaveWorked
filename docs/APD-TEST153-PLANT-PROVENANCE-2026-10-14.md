@@ -1,6 +1,6 @@
 # TEST153 offensive plant provenance
 
-Status: application candidate; exact-source verification pending.
+Status: verified by TEST155; not owner-delivered or physical-phone tested.
 
 ## Confirmed gap and fix
 
@@ -29,3 +29,12 @@ Run `38565297532` stopped before compilation at `2026-10-14T12:38:44Z`. The mani
 ### TEST154 fixture result; TEST155 correction
 
 Run `38565512376` passed history validation, compiled the complete source and executed all 1547 core tests: 1545 passed and two new fixture methods failed. The natural Rotberry/Firebloom comparison instances retained Java's default `pos=0` while their target and attributed baseline used `CELL=312`; one therefore produced no target hit and the other correctly produced fire at a different cell. TEST155 sets both natural fixtures to the tested cell. Production source and assertions are unchanged. TEST154 produced no APK/API34/screenshots.
+
+
+## TEST155 full verification outcome
+
+Exact source `3a5c2b233075e78ca4f99298f5423e8bd8f45035`, run `38566036821`, ran from `2026-10-14T12:43:45Z` through `2026-10-14T12:56:16Z`. Downloaded XML proves 1547 core and 26 API34 tests passed with 0 failures, errors or skips. Debug assembly and compiled history against the immediate previous TEST152 APK passed. All 34 PNGs decoded at 320×640; contact-sheet review found expected readable menus, dialogs, score states, tile comparisons and gameplay frames with no corrupt capture.
+
+Artifacts: core `11895122209`, ZIP SHA-256 `53f0f31c4ef63042fe755c11cc2e8eb40f039b4b44044d4fd9e7a083faccefb0`; Android `11895742704`, ZIP SHA-256 `185a53912d9e8f35af0edc211a3789f270e0e49ff46f943ef1c9a8e29db1d1d1`; APK `11895551909`, ZIP SHA-256 `f7531c6d4c3c33ce0d8084952d9b0cc0a205bc400b84a679d55de3ed28c11b36`. Contained `ADHD-Pixel-Dungeon-CODEX-TEST-155.apk` SHA-256 `870a1e9a79882eddd37d3b9fa1e47c3f8e22333bafc1cf861340504350d8d063`; checksum passed.
+
+TEST155 verifies the offensive-plant implementation and six retained regressions. Private delivery was skipped. This is CI/emulator evidence, not physical-phone, owner-save or signer-comparison evidence. TEST123 remains the last owner-delivered/signature-compared APK. Three Damage sliders remain disabled pending the remaining vault/boss, spell/ability/derived-source and six-class/boss/combination acceptance audit.

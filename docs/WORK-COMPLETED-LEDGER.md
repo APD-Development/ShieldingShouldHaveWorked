@@ -436,3 +436,12 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 
 - TEST154 run `38565512376`: history passed; 1547 core compiled/executed, 1545 passed and two new fixture methods failed because natural Rotberry/Firebloom remained at cell0 while target/baseline used cell312. Core artifact `11895296228`, ZIP SHA-256 `e3b8acbbc953e31599fb6641a1bf81943e58aca340fbf1649b4f195ee7beaf5f`. No APK/API34/screenshots.
 - TEST155 sets those fixture positions to312 only; production source/assertions unchanged.
+
+
+### 2026-10-14T12:57:45.506Z — TEST155 offensive plant provenance verified
+- TEST155 source `3a5c2b233075e78ca4f99298f5423e8bd8f45035`, run `38566036821` (`2026-10-14T12:43:45Z`–`12:56:16Z`) passed 1547 core + 26 API34 with 0 failure/error/skip; debug assembly and compiled immediate-previous TEST152 history passed.
+- Downloaded artifacts; `sha256sum` verified core ZIP `53f0f31c4ef63042fe755c11cc2e8eb40f039b4b44044d4fd9e7a083faccefb0`, Android ZIP `185a53912d9e8f35af0edc211a3789f270e0e49ff46f943ef1c9a8e29db1d1d1`, APK ZIP `f7531c6d4c3c33ce0d8084952d9b0cc0a205bc400b84a679d55de3ed28c11b36` and contained APK `870a1e9a79882eddd37d3b9fa1e47c3f8e22333bafc1cf861340504350d8d063`.
+- Parsed downloaded XML:1547 core and26 Android, all passing. ImageMagick `identify` validated34/34 PNGs at320×640; `montage` contact-sheet review found expected readable menus/dialogs/gameplay and no corrupt capture.
+- Verified offensive plant origin persistence/callers and exact-once Fire/Poison/ToxicGas boundaries; natural and missing historical metadata remain unowned.
+- Private delivery skipped; no owner install/signature comparison/physical-phone claim. TEST123 remains owner-delivered fallback; three Damage sliders remain disabled.
+- Preliminary read-only vault scan identified special direct-damage callers in VaultBossElemental/VaultSentry and environmental VaultFlameTraps/VaultLaser. No vault source changed in this invocation.

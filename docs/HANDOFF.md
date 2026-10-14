@@ -2009,3 +2009,12 @@ TEST153 source `9b640e08407b93939f560767a6a4d9f8821e9bcd`, run `38565297532`, fa
 ## TEST154 fixture failures; TEST155 correction — 2026-10-14T12:43:31.412Z
 
 TEST154 source `c4d274b8b4ca5bf314529f111f73a5da3d4f585f`, run `38565512376`, passed history and compiled, then ran1547 core:1545 passed; two new natural-plant fixtures used cell0 while the target/baseline used cell312. No APK/API34/screenshots. TEST155 changes only those two fixture positions; production code and assertions are unchanged. Full1547core/debug/history/26API34/34PNG remains required.
+
+
+## TEST155 offensive plant provenance verified — 2026-10-14T12:57:45.506Z
+
+Exact source `3a5c2b233075e78ca4f99298f5423e8bd8f45035`, run `38566036821` (`2026-10-14T12:43:45Z`–`12:56:16Z`) passed1547core+26API34 with0failure/error/skip, debug and compiled immediate-previous TEST152 history. All34 PNGs are valid320×640 and contact-sheet review found readable expected screens with no corrupt capture. Core artifact `11895122209`/`53f0f31c4ef63042fe755c11cc2e8eb40f039b4b44044d4fd9e7a083faccefb0`; Android `11895742704`/`185a53912d9e8f35af0edc211a3789f270e0e49ff46f943ef1c9a8e29db1d1d1`; APK `11895551909`/`f7531c6d4c3c33ce0d8084952d9b0cc0a205bc400b84a679d55de3ed28c11b36`, contained APK `870a1e9a79882eddd37d3b9fa1e47c3f8e22333bafc1cf861340504350d8d063`.
+
+Verified: immutable offensive-plant creator retention through save/load and exact-once Fire/Poison/ToxicGas scaling for manual seeds, Wand of Regrowth, cursed Random Plant, Regrowth Bomb, Sandals and Overgrowth; natural/historical-unowned plants remain environmental. TEST153 history failure and TEST154 two fixture-only failures remain documented. No delivery/signature/phone claim; TEST123 remains delivered fallback. Three Damage sliders remain disabled.
+
+Preliminary read-only next-scope inspection found special direct-damage paths in VaultBossElemental and VaultSentry plus environmental VaultFlameTraps/VaultLaser boundaries. Do not change them without reading the complete caller/state/save paths and preserving environmental exclusions. Continue vault/boss, remaining spells/abilities/derived effects, delayed state changes and six-class/boss/combined acceptance.
