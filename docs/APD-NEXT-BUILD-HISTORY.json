@@ -111,6 +111,15 @@
       "paths": [
         "docs/APD-CODEX-BUILD-REQUEST.txt"
       ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "Complete history validation",
+      "text": "Require the build-history ledger itself to be included in the reviewed changes.",
+      "paths": [
+        "docs/APD-NEXT-BUILD-HISTORY.json"
+      ]
     }
   ]
 }
