@@ -713,3 +713,11 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Android artifact `11932673053` / ZIP SHA-256 `6b7c38505ee99ba17bbc3c3ca5861a051d1d1ce6db1b1d6fe44ac313b2a45d7b`: 26 API34 tests passed; 34/34 PNGs decoded 320×640 and passed contact-sheet/focused review.
 - Verified Holy Weapon and Smite independent bonuses use actual attacker scaling exactly once. Crystal/Shocking derived damage remains singly scaled through the base hit.
 - Private delivery skipped; no physical-phone claim. TEST123 remains owner-delivered fallback. Do not rebuild unchanged TEST177.
+
+
+## 2026-10-14T22:37:24Z — TEST178 tipped-dart bonus candidate
+- Re-read verified TEST177 and audited a distinct offensive item/projectile category rather than rebuilding it unchanged.
+- Confirmed Shocking Dart's electrical burst and Holy Dart's anti-undead/demonic bonus are independent post-hit rolls that bypassed creator scaling.
+- Routed only those two bonuses through the actual attacker once, preserving their original ranges, sources, gates, visuals, mitigation and RNG.
+- Added three retained tests for every permitted factor and creator role, contradictory settings, one source-preserving hit, neutral next-RNG identity and exact production wiring. Expected total: 1,602 core.
+- Exact-source core/debug/immediate-previous TEST177 history/26 API34/34 PNG verification is pending. No delivery or physical-phone claim; TEST123 remains owner-delivered fallback.

@@ -1,35 +1,37 @@
 {
-  "previous_label": "Codex TEST 176",
-  "previous_source": "5913850f400dbfe9fd0b547abbae71c20cd9992c",
-  "previous_run": 38643884380,
+  "previous_label": "Codex TEST 177",
+  "previous_source": "7b190b54c1aaed329e6e185c592ee686c02385ea",
+  "previous_run": 38645784290,
   "date": "2026-10-14",
   "changes": [
     {
       "category": "Bug Fixes",
       "sprite": "V061_BUGFIX",
-      "title": "Weapon spell bonus ownership",
-      "text": "Apply the actual attacker factor once to Holy Weapon and Smite independent bonus damage without double-scaling derived enchantment damage.",
+      "title": "Tipped-dart bonus ownership",
+      "text": "Apply the actual attacker factor once to Shocking Dart electrical burst and Holy Dart anti-undead/demonic bonus damage.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/Weapon.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/TippedDart.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/ShockingDart.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/HolyDart.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "V061_PAGE",
-      "title": "Weapon spell bonus coverage",
-      "text": "Cover every factor and creator role, contradictory settings, source identity, neutral RNG and exact Holy Weapon/Smite production wiring.",
+      "title": "Tipped-dart provenance coverage",
+      "text": "Cover every factor and creator role, contradictory settings, source identity, neutral RNG and exact Shocking/Holy production wiring.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/WeaponSpellBonusDamageProvenanceTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/TippedDartBonusDamageProvenanceTest.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_PAGE",
-      "title": "TEST174 evidence and TEST177 handoff",
-      "text": "Preserve verified direct-wand evidence and record the pending weapon spell-bonus checkpoint.",
+      "title": "TEST177 evidence and TEST178 handoff",
+      "text": "Preserve verified weapon spell-bonus evidence and record the pending tipped-dart checkpoint.",
       "paths": [
-        "docs/APD-TEST174-DIRECT-WAND-DAMAGE-2026-10-14.md",
         "docs/APD-TEST177-WEAPON-SPELL-BONUS-DAMAGE-2026-10-14.md",
+        "docs/APD-TEST178-TIPPED-DART-BONUS-DAMAGE-2026-10-14.md",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",

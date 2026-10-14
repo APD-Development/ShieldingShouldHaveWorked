@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PinCushion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
@@ -56,6 +57,11 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 public abstract class TippedDart extends Dart {
+
+	/** Applies one creator-aware boundary to independent tipped-dart bonus damage. */
+	protected static void apdApplyBonusDamage(Char target, int damage, Object source, Char attacker) {
+		CustomOffensiveHooks.raw(target, damage, source, attacker);
+	}
 	
 	{
 		tier = 2;
