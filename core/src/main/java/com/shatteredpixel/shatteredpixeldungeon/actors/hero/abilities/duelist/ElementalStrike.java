@@ -400,7 +400,7 @@ public class ElementalStrike extends ArmorAbility {
 		//*** no enchantment ***
 		if (ench == null) {
 			for (Char ch : affected){
-				ch.damage(Math.round(powerMulti* Hero.heroDamageIntRange(6, 12)), ElementalStrike.this);
+				com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(ch, Math.round(powerMulti* Hero.heroDamageIntRange(6, 12)), ElementalStrike.this, hero);
 			}
 
 		//*** Kinetic ***
@@ -408,7 +408,7 @@ public class ElementalStrike extends ArmorAbility {
 			if (storedKineticDamage > 0) {
 				for (Char ch : affected) {
 					if (ch != primaryTarget) {
-						ch.damage(Math.round(storedKineticDamage * 0.4f * powerMulti), ench);
+						com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(ch, Math.round(storedKineticDamage * 0.4f * powerMulti), ench, hero);
 					}
 				}
 				storedKineticDamage = 0;
@@ -454,12 +454,13 @@ public class ElementalStrike extends ArmorAbility {
 
 				Ballistica aim = new Ballistica(hero.pos, ch.pos, Ballistica.WONT_STOP);
 				int knockback = Math.round(5*powerMulti);
-				WandOfBlastWave.throwChar(ch,
+				WandOfBlastWave.throwCharAttributed(ch,
 						new Ballistica(ch.pos, aim.collisionPos, Ballistica.MAGIC_BOLT),
 						knockback,
 						true,
 						true,
-						ElementalStrike.this);
+						ElementalStrike.this,
+						com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(hero, null));
 			}
 
 		//*** Eldritch ***
@@ -484,7 +485,7 @@ public class ElementalStrike extends ArmorAbility {
 		} else if (ench instanceof Projecting){
 			for (Char ch : affected){
 				if (ch != primaryTarget) {
-					ch.damage(Math.round(hero.damageRoll() * 0.3f * powerMulti), ench);
+					com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(ch, Math.round(hero.damageRoll() * 0.3f * powerMulti), ench, hero);
 				}
 			}
 
@@ -528,7 +529,7 @@ public class ElementalStrike extends ArmorAbility {
 		} else if (ench instanceof Crystal){
 			for (Char ch : affected){
 				if (ch != primaryTarget) {
-					ch.damage(Math.round(powerMulti* Hero.heroDamageIntRange(10, 20)), ElementalStrike.this);
+					com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(ch, Math.round(powerMulti* Hero.heroDamageIntRange(10, 20)), ElementalStrike.this, hero);
 					((Crystal) ench).repair(null, false, 4f*powerMulti);
 				}
 			}
@@ -540,7 +541,7 @@ public class ElementalStrike extends ArmorAbility {
 					float hpMissing = 1f - (ch.HP / (float)ch.HT);
 					float chance = 0.06f + 0.24f*hpMissing; //6-30%
 					if (Random.Float() < chance*powerMulti){
-						ch.damage( ch.HP, Grim.class );
+						com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(ch, ch.HP, Grim.class, hero);
 						ch.sprite.emitter().burst( ShadowParticle.UP, 5 );
 					}
 				}
@@ -584,7 +585,8 @@ public class ElementalStrike extends ArmorAbility {
 		} else if (ench instanceof Explosive){
 			if (Random.Float() < 0.5f*powerMulti){
 				Char exploding = Random.element(affected);
-				if (exploding != null) new Bomb.ConjuredBomb().explode(exploding.pos);
+				if (exploding != null) new Bomb.ConjuredBomb().apdExplodeAttributed(exploding.pos,
+						com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(hero, null));
 			}
 
 		//*** Sacrificial ***
@@ -605,7 +607,7 @@ public class ElementalStrike extends ArmorAbility {
 		} else if (ench instanceof Polarized){
 			for (Char ch : affected){
 				if (Random.Float() < 0.5f*powerMulti){
-					ch.damage(Hero.heroDamageIntRange(24, 36), ElementalStrike.this);
+					com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(ch, Hero.heroDamageIntRange(24, 36), ElementalStrike.this, hero);
 				}
 			}
 
@@ -643,12 +645,13 @@ public class ElementalStrike extends ArmorAbility {
 
 				Ballistica aim = new Ballistica(hero.pos, ch.pos, Ballistica.WONT_STOP);
 				int knockback = Math.round(2*powerMulti);
-				WandOfBlastWave.throwChar(ch,
+				WandOfBlastWave.throwCharAttributed(ch,
 						new Ballistica(ch.pos, aim.collisionPos, Ballistica.MAGIC_BOLT),
 						knockback,
 						true,
 						true,
-						ElementalStrike.this);
+						ElementalStrike.this,
+						com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(hero, null));
 			}
 		}
 

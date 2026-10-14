@@ -461,3 +461,10 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Downloaded/checked core `11898621235`/`74794fab9c0f0038c72bda6bbbda68a6d9af45fe7c842ea68630a92b73553e24`; Android `11899122092`/`cc34aa6e9e69a0de5ca98920e5510fe9595c830c85d1571f950f7f97792b915a`; APK ZIP `11899205759`/`1caa8befa972770a9169e2eb3cdb95eed15cec37687b37173138e720912cd61d`; contained APK `ee5307c5738313d6b82f46fab53c9e6dda07713d427f0eb6d1d01f389004d817`, checksum passed.
 - 34/34 PNGs decoded at320×640; contact-sheet review found expected readable UI/gameplay and no corrupt capture. Emulator only, no physical-phone claim.
 - Private delivery skipped; TEST123 remains owner-delivered fallback. Three Damage sliders remain disabled; next harmful-buff/derived and remaining ability/spell/class/boss acceptance work.
+
+
+## 2026-10-14T14:39:49.724Z — TEST157 player ability derived-damage candidate
+- Based on latest real head `badbcae625a124a416f02bc9a948ae3f1fa439f1`; changed Elemental Blast, Elemental Strike and Blast Wave delayed collision ownership without altering neutral behavior.
+- Added four retained `PlayerAbilityDamageProvenanceTest` methods. No local Gradle workspace is available; 1555 core/debug/history/26 API34/34 PNG verification is pending.
+- Harmful-buff reaction attribution is explicitly deferred because attach callbacks run before creator metadata is assigned. Three Damage sliders remain disabled.
+- TEST156 remains the latest verified application source; TEST123 remains the last owner-delivered/signature-compared APK.

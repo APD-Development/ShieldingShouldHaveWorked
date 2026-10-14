@@ -94,7 +94,8 @@ public class WandOfBlastWave extends DamageWand {
 						&& ch.pos == bolt.collisionPos + i) {
 					Ballistica trajectory = new Ballistica(ch.pos, ch.pos + i, Ballistica.MAGIC_BOLT);
 					int strength = Math.round(1.5f + buffedLvl() / 2f);
-					throwChar(ch, trajectory, strength, false, true, this);
+					throwCharAttributed(ch, trajectory, strength, false, true, this,
+							com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(curUser, null));
 				}
 
 			}
@@ -111,7 +112,8 @@ public class WandOfBlastWave extends DamageWand {
 					&& bolt.path.size() > bolt.dist+1 && ch.pos == bolt.collisionPos) {
 				Ballistica trajectory = new Ballistica(ch.pos, bolt.path.get(bolt.dist + 1), Ballistica.MAGIC_BOLT);
 				int strength = buffedLvl() + 3;
-				throwChar(ch, trajectory, strength, false, true, this);
+				throwCharAttributed(ch, trajectory, strength, false, true, this,
+							com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(curUser, null));
 			}
 		}
 		
@@ -119,6 +121,14 @@ public class WandOfBlastWave extends DamageWand {
 
 	public static void throwChar(final Char ch, final Ballistica trajectory, int power,
 	                             boolean closeDoors, boolean collideDmg, Object cause){
+		throwCharAttributed(ch, trajectory, power, closeDoors, collideDmg, cause,
+				com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.UNATTRIBUTED);
+	}
+
+	public static void throwCharAttributed(final Char ch, final Ballistica trajectory, int power,
+	                             boolean closeDoors, boolean collideDmg, Object cause,
+	                             final com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin damageOrigin){
+		if (damageOrigin == null) throw new IllegalArgumentException("Missing knockback damage origin");
 		if (ch.properties().contains(Char.Property.BOSS)) {
 			power = (power+1)/2;
 		}
@@ -167,7 +177,8 @@ public class WandOfBlastWave extends DamageWand {
 				int oldPos = ch.pos;
 				ch.pos = newPos;
 				if (finalCollided && ch.isActive()) {
-					ch.damage(Random.NormalIntRange(finalDist, 2*finalDist), new Knockback());
+					com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamage.raw(
+							Random.NormalIntRange(finalDist, 2*finalDist), new Knockback(), damageOrigin).apply(ch);
 					if (ch.isActive()) {
 						Paralysis.prolong(ch, Paralysis.class, 1 + finalDist/2f);
 					} else if (ch == Dungeon.hero){
