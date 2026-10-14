@@ -700,3 +700,9 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Android artifact `11931807905` / ZIP SHA-256 `8431b9c85cc88a39957ce5b7aeefb035dbf3f58d29f8370f0792d6b895c45e9f`: 26 API34 tests passed; 34/34 PNGs decoded 320×640 and passed contact-sheet review.
 - Verified seven Blast Wave/Living Earth/Prismatic Light damage calls use the actual creator factor exactly once; neutral amount/source/RNG identity passed. Duplicate old-source run `38643546560` only repeated the fixture compile failure and is not verification.
 - Private delivery skipped; no physical-phone claim. TEST123 remains owner-delivered fallback. Do not rebuild unchanged TEST174; continue a distinct approved audit task.
+
+## 2026-10-14T22:08:00Z — TEST177 weapon spell-bonus candidate
+- After verified TEST174, audited weapon enchantments and hero abilities. Crystal/Shocking-derived damage already inherits the once-scaled post-mitigation base hit and remains unchanged.
+- Confirmed Holy Weapon's flat bonus and Smite's independent roll bypassed the custom boundary. Routed only those two bonuses through the actual attacker once, retaining original rolls, multiplier, sources and trigger order.
+- Added three retained tests for every factor/creator role, contradictory settings, single source-preserving damage, neutral RNG identity and exact production wiring. Expected total 1,599 core.
+- Exact-source core/debug/immediate-previous TEST176 history/26 API34/34 PNG verification is pending. No delivery or phone claim; TEST123 remains owner-delivered fallback.

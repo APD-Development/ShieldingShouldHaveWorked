@@ -94,3 +94,6 @@ TEST174 correction after run 38643522614: first exact source failed compileTestJ
 
 
 TEST174 is verified at source 5913850f400dbfe9fd0b547abbae71c20cd9992c by run 38643884380: 1,596 core + 26 API34, debug/history and 34 screenshots passed. APK SHA-256 6cbce087ebdacfbb4a621d1689f72b86b2cad71274efe6f22a8a4c98b78feb29. Do not rebuild unchanged TEST174. Continue a distinct authorized current-source offensive audit/backlog task; TEST123 remains last owner-delivered/signature-compared.
+
+
+TEST177 candidate: independently rolled Holy Weapon and Smite bonuses now use the actual attacker damage factor once; already-derived Crystal/Shocking damage is intentionally unchanged to avoid double scaling. Run 1,599 core + debug/history against immediate previous compiled TEST176 + 26 API34 + 34 PNG. Candidate pending; no delivery.

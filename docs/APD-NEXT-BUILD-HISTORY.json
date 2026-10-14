@@ -1,38 +1,35 @@
 {
-  "previous_label": "Codex TEST 173",
-  "previous_source": "e101e85167ee802cef3a0db31cb8497b83a23328",
-  "previous_run": 38641672668,
+  "previous_label": "Codex TEST 176",
+  "previous_source": "5913850f400dbfe9fd0b547abbae71c20cd9992c",
+  "previous_run": 38643884380,
   "date": "2026-10-14",
   "changes": [
     {
       "category": "Bug Fixes",
       "sprite": "V061_BUGFIX",
-      "title": "Direct wand damage ownership",
-      "text": "Apply the actual creator factor once to Blast Wave, Living Earth and Prismatic Light direct damage while retaining their original rolls and sources.",
+      "title": "Weapon spell bonus ownership",
+      "text": "Apply the actual attacker factor once to Holy Weapon and Smite independent bonus damage without double-scaling derived enchantment damage.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/DamageWand.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfBlastWave.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfLivingEarth.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfPrismaticLight.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/Weapon.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "V061_PAGE",
-      "title": "Direct wand provenance coverage",
-      "text": "Cover all factors and creator roles, contradictory settings, source identity, neutral RNG and all seven production boundaries.",
+      "title": "Weapon spell bonus coverage",
+      "text": "Cover every factor and creator role, contradictory settings, source identity, neutral RNG and exact Holy Weapon/Smite production wiring.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/RemainingDirectWandDamageProvenanceTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/WeaponSpellBonusDamageProvenanceTest.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_PAGE",
-      "title": "TEST173 evidence and TEST174 handoff",
-      "text": "Preserve verified Fireblast staff evidence and record the pending remaining-direct-wand checkpoint.",
+      "title": "TEST174 evidence and TEST177 handoff",
+      "text": "Preserve verified direct-wand evidence and record the pending weapon spell-bonus checkpoint.",
       "paths": [
-        "docs/APD-TEST173-FIREBLAST-STAFF-DAMAGE-2026-10-14.md",
         "docs/APD-TEST174-DIRECT-WAND-DAMAGE-2026-10-14.md",
+        "docs/APD-TEST177-WEAPON-SPELL-BONUS-DAMAGE-2026-10-14.md",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",

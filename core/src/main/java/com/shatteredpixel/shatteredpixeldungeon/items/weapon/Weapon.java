@@ -133,6 +133,12 @@ abstract public class Weapon extends KindOfWeapon {
 	public boolean curseInfusionBonus = false;
 	public boolean masteryPotionBonus = false;
 	
+	/** Applies one custom damage boundary to independent spell bonuses triggered by a weapon hit. */
+	protected static void apdApplyHeroSpellBonusDamage(Char defender, int damage, Object source, Char attacker) {
+		com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(
+				defender, damage, source, attacker);
+	}
+
 	@Override
 	public int proc( Char attacker, Char defender, int damage ) {
 
@@ -158,7 +164,9 @@ abstract public class Weapon extends KindOfWeapon {
 				}
 				if (defender.isAlive()) {
 					int dmg = ((Hero) attacker).subClass == HeroSubClass.PALADIN ? 6 : 2;
-					defender.damage(Math.round(dmg * Enchantment.genericProcChanceMultiplier(attacker)), HolyWeapon.INSTANCE);
+					apdApplyHeroSpellBonusDamage(defender,
+							Math.round(dmg * Enchantment.genericProcChanceMultiplier(attacker)),
+							HolyWeapon.INSTANCE, attacker);
 				}
 
 			} else {
@@ -173,7 +181,8 @@ abstract public class Weapon extends KindOfWeapon {
 
 			if (attacker instanceof Hero && isEquipped((Hero) attacker) &&
 					attacker.buff(Smite.SmiteTracker.class) != null && defender.isAlive()){
-				defender.damage(Smite.bonusDmg((Hero) attacker, defender), Smite.INSTANCE);
+				apdApplyHeroSpellBonusDamage(defender,
+						Smite.bonusDmg((Hero) attacker, defender), Smite.INSTANCE, attacker);
 			}
 		}
 
