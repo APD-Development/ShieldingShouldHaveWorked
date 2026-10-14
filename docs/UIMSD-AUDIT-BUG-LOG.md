@@ -12,3 +12,5 @@ Full audit incomplete. These are controlled tests, not claims of observed phone 
 Tests:12 new permanent tests. Combined130 local archive/reader/index/writer tests passed, zero failures. Full accumulated-source CI requested; physical-phone checks pending. None of these fixes is in delivered TEST45.
 
 Unresolved: manifest linear find yields quadratic import lookup; cross-instance derived-index temp-file races; huge-file whole-memory reader cost; archive compression wrapper lifetime. These remain investigation items, not claimed normal-run defects. Existing functionality, save formats, gameplay and player statistics preserved. SPD inherited-code investigation remains read-only.
+
+Update 2026-10-14T20:58:00Z: the earlier manifest linear lookup item had already been resolved by the retained first-match map and TEST48-era coverage. TEST171 now addresses the distinct cross-instance `RunIndex` fixed-temp save race with a controlled retained regression; verification is pending. Huge-file whole-memory reader cost and archive compression-wrapper lifetime remain investigation items, not claimed normal-run defects.

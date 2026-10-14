@@ -44,6 +44,14 @@ public final class RunIndex {
 	static final int FORMAT = 2;
 	public static final String LOG_SUFFIX = ".apdlog";
 
+	//RunIndex objects for the same on-disk index do not share their instance monitor.
+	//Serialize the tiny atomic replacement section so they never open/truncate the same temp file concurrently.
+	private static final Object SAVE_LOCK = new Object();
+
+	interface SaveHook {
+		void afterTempOpened( File temp ) throws InterruptedException;
+	}
+
 	private final File indexFile;
 	private final File runsDir;
 	private final Map<String, RunIndexEntry> entries = new LinkedHashMap<>();
@@ -142,6 +150,11 @@ public final class RunIndex {
 
 	//Writes the index atomically: a complete temp file is written first, then moved over the old one.
 	public synchronized void save() throws IOException {
+		save(null);
+	}
+
+	//Package-private hook makes the cross-instance temp-file ordering regression deterministic.
+	synchronized void save( SaveHook hook ) throws IOException {
 		ByteSink body = new ByteSink();
 		body.writeBytes(MAGIC);
 		body.writeByte(FORMAT);
@@ -154,23 +167,33 @@ public final class RunIndex {
 		}
 		body.writeInt32((int) LogFormat.crc(body.rawBuffer(), 0, body.size()));
 
-		File parent = indexFile.getAbsoluteFile().getParentFile();
-		if (parent != null && !parent.isDirectory() && !parent.mkdirs()){
-			throw new IOException("cannot create " + parent);
-		}
-		File tmp = new File(indexFile.getPath() + ".tmp");
-		FileOutputStream out = new FileOutputStream(tmp);
-		try {
-			out.write(body.rawBuffer(), 0, body.size());
-			out.flush();
-			out.getFD().sync();
-		} finally {
-			out.close();
-		}
-		if (!tmp.renameTo(indexFile)){
-			//some platforms refuse to rename over an existing file
-			if (indexFile.exists() && !indexFile.delete()) throw new IOException("cannot replace " + indexFile);
-			if (!tmp.renameTo(indexFile)) throw new IOException("cannot move " + tmp + " to " + indexFile);
+		synchronized (SAVE_LOCK){
+			File parent = indexFile.getAbsoluteFile().getParentFile();
+			if (parent != null && !parent.isDirectory() && !parent.mkdirs()){
+				throw new IOException("cannot create " + parent);
+			}
+			File tmp = new File(indexFile.getPath() + ".tmp");
+			FileOutputStream out = new FileOutputStream(tmp);
+			try {
+				if (hook != null){
+					try {
+						hook.afterTempOpened(tmp);
+					} catch (InterruptedException interrupted){
+						Thread.currentThread().interrupt();
+						throw new IOException("interrupted while saving the run index", interrupted);
+					}
+				}
+				out.write(body.rawBuffer(), 0, body.size());
+				out.flush();
+				out.getFD().sync();
+			} finally {
+				out.close();
+			}
+			if (!tmp.renameTo(indexFile)){
+				//some platforms refuse to rename over an existing file
+				if (indexFile.exists() && !indexFile.delete()) throw new IOException("cannot replace " + indexFile);
+				if (!tmp.renameTo(indexFile)) throw new IOException("cannot move " + tmp + " to " + indexFile);
+			}
 		}
 	}
 

@@ -641,3 +641,10 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Downloaded Android artifact `11927293898` / ZIP SHA-256 `774f8999ff0efe1d3491036f1a26d2a3fe20cb062a9dd9f60fde45f726da2b6c`: 26 API34 tests, 0 failures/errors/skips; 34/34 PNGs decoded at 320×640 and passed contact-sheet review.
 - Verified stale derived statistics are not reused after a valid same-name/same-length raw-log replacement. Version8 performs one derived-cache rebuild; no raw logs, saves, scores, signing identity or application ID changed.
 - Private delivery skipped; no physical-phone claim. TEST123 remains the last owner-delivered/signature-compared APK. Do not rebuild unchanged TEST170.
+
+
+## 2026-10-14T20:58:00Z — RunIndex cross-instance temp-file race correction prepared
+- Re-read current `RunIndex.save()` and its retained tests at branch head `7b6601811a8f9c1889179f5f6d8e16eaef2c0ba7`. Confirmed the instance monitor does not coordinate separate RunIndex objects even though all target the same fixed `index.apdi.tmp` path.
+- Serialized only the on-disk atomic replacement section across instances; index encoding, CRC, rebuild behavior and file format remain unchanged.
+- Added a deterministic two-instance regression using latches: the first writer holds the temp file open, the second must remain outside the shared replacement section, then both complete and the second complete index loads without rebuild.
+- No local execution workspace was available; no local test/build claim. TEST171 exact-source CI requests 1,587 core tests, debug assembly, immediate-previous TEST170 history, 26 API34 tests and 34 screenshots. Candidate remains pending.

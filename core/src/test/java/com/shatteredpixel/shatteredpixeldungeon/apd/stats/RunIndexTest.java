@@ -13,6 +13,9 @@ import org.junit.rules.TemporaryFolder;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class RunIndexTest {
 
@@ -159,6 +162,78 @@ public class RunIndexTest {
 		assertEquals(4, loaded.size());
 		loaded.save(); //and saving over it works
 		assertFalse(new File(store.root(), "index.apdi.tmp").exists());
+	}
+
+	@Test
+	public void separateInstancesSerializeTheirAtomicSave() throws Exception {
+		File root = tmp.newFolder("concurrent-save");
+		File runs = new File(root, "runs");
+		assertTrue(runs.mkdirs());
+		File indexFile = new File(root, "index.apdi");
+		RunIndex first = new RunIndex(indexFile, runs);
+		RunIndex second = new RunIndex(indexFile, runs);
+		first.upsert(new RunIndexEntry("first", TelemetryVersion.CURRENT, false, "first.apdlog", 1,
+				RunIndexEntry.Status.OPEN, 0, 0, 0, 1));
+		second.upsert(new RunIndexEntry("second", TelemetryVersion.CURRENT, false, "second.apdlog", 2,
+				RunIndexEntry.Status.OPEN, 0, 0, 0, 2));
+
+		CountDownLatch firstOpened = new CountDownLatch(1);
+		CountDownLatch releaseFirst = new CountDownLatch(1);
+		CountDownLatch secondStarted = new CountDownLatch(1);
+		CountDownLatch secondOpened = new CountDownLatch(1);
+		AtomicReference<Throwable> failure = new AtomicReference<>();
+		Thread a = new Thread(new Runnable(){
+			@Override
+			public void run(){
+				try {
+					first.save(new RunIndex.SaveHook(){
+						@Override
+						public void afterTempOpened( File temp ) throws InterruptedException {
+							firstOpened.countDown();
+							releaseFirst.await();
+						}
+					});
+				} catch (Throwable t){
+					failure.compareAndSet(null, t);
+				}
+			}
+		}, "first-index-save");
+		Thread b = new Thread(new Runnable(){
+			@Override
+			public void run(){
+				secondStarted.countDown();
+				try {
+					second.save(new RunIndex.SaveHook(){
+						@Override
+						public void afterTempOpened( File temp ){
+							secondOpened.countDown();
+						}
+					});
+				} catch (Throwable t){
+					failure.compareAndSet(null, t);
+				}
+			}
+		}, "second-index-save");
+
+		a.start();
+		assertTrue(firstOpened.await(5, TimeUnit.SECONDS));
+		b.start();
+		assertTrue(secondStarted.await(5, TimeUnit.SECONDS));
+		try {
+			assertFalse("a second instance must not open the shared temp file", secondOpened.await(200, TimeUnit.MILLISECONDS));
+		} finally {
+			releaseFirst.countDown();
+		}
+		a.join(5000);
+		b.join(5000);
+		assertFalse(a.isAlive());
+		assertFalse(b.isAlive());
+		assertNull(failure.get());
+		assertTrue(secondOpened.await(1, TimeUnit.SECONDS));
+		RunIndex loaded = RunIndex.load(indexFile, runs);
+		assertFalse(loaded.wasRebuilt());
+		assertEquals(1, loaded.size());
+		assertNotNull(loaded.get("second"));
 	}
 
 	@Test

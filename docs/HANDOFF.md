@@ -2200,3 +2200,8 @@ Source review confirmed the derived facts cache identified raw run/legacy logs o
 # TEST170 verified DerivedStore source identity — 2026-10-14 20:53 UTC
 
 Verified source8da173025d4ab64fea123ee03f9afdbd4efc02f1/run38634072761 (20:40:35–20:51:50UTC):1586core+26API34/debug/immediate-previousTEST169history/34PNG all passed. APKsha256e9117959406a5893069e6f90f626386f335daa2f9b7f3c91c3ef3dd3ecb2e43c. A valid same-name/same-length raw-log replacement now forces a DerivedStore rebuild and exposes replacement facts; unchanged raw sources still use cache. Derivation version8 causes one automatic rebuild; raw logs/saves are not rewritten. No delivery/phone claim; TEST123 remains last owner-delivered. Next safe step: do not rebuild unchanged TEST170; continue the documented UIMSD reliability/performance/storage audit, reproducing a distinct issue before source changes.
+
+
+# TEST171 RunIndex cross-instance save correction pending — 2026-10-14 20:58 UTC
+
+Current-source review confirmed `RunIndex.save()` synchronized only each instance while every instance used the same `index.apdi.tmp`; two stores targeting one root could truncate/rename/delete that derived temp/index concurrently. The candidate serializes the small on-disk atomic-replacement section across RunIndex instances and adds a controlled two-thread regression that holds the first temp open, proves the second cannot enter, then requires both saves and the final second index to load without rebuild. Raw run logs, player saves, formats, gameplay and scoring are unchanged. Exact-source TEST171 requests1587core/debug/immediate-previousTEST170history/26API34/34PNG; verification pending. TEST170 remains verified fallback; TEST123 remains owner-delivered.

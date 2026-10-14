@@ -73,3 +73,6 @@ TEST170 exact-source request (2026-10-14T20:38:38Z): verify the DerivedStore raw
 
 
 TEST170 verified (2026-10-14T20:53:32Z): source8da173025d4ab64fea123ee03f9afdbd4efc02f1/run38634072761 passed1586core+26API34/debug/immediate-previous TEST169 history/34PNG. APK SHA256 e9117959406a5893069e6f90f626386f335daa2f9b7f3c91c3ef3dd3ecb2e43c. Equal-length valid raw-log replacement now invalidates DerivedStore cache; unchanged logs still cache; version8 causes one rebuild. No application build pending; do not rebuild unchanged source. No delivery/phone claim; TEST123 remains owner-delivered.
+
+
+TEST171 exact-source request (2026-10-14T20:58:00Z): verify cross-instance RunIndex save serialization with 1587 core tests, debug assembly, immediate-previous TEST170 compiled history, 26 API34 checks and 34 valid screenshots. Two RunIndex objects targeting one index must not concurrently open/truncate the shared temp file; both saves must finish and leave the second complete valid index. No raw-log/save-format/gameplay/scoring change, delivery or phone claim.

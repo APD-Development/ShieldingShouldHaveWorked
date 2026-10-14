@@ -1,35 +1,36 @@
 {
-  "previous_label": "Codex TEST 169",
-  "previous_source": "a160dddb4f39fe2e3eb62a601e13bea71730f064",
-  "previous_run": 38628060548,
+  "previous_label": "Codex TEST 170",
+  "previous_source": "8da173025d4ab64fea123ee03f9afdbd4efc02f1",
+  "previous_run": 38634072761,
   "date": "2026-10-14",
   "changes": [
     {
       "category": "Bug Fixes",
       "sprite": "V061_BUGFIX",
-      "title": "Derived cache source identity",
-      "text": "Invalidate derived statistics when a raw run or legacy log is replaced by different valid content with the same filename and byte length.",
+      "title": "Cross-instance run-index saves",
+      "text": "Serialize atomic replacement across RunIndex objects so they cannot concurrently truncate or move the same derived temp file.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/DerivedStore.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/RunIndex.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "V061_PAGE",
-      "title": "Equal-length replacement regression",
-      "text": "Retain a valid-log replacement case that requires stale-cache rebuild, replacement facts and subsequent cache reuse.",
+      "title": "Controlled concurrent index regression",
+      "text": "Hold one temp stream open, prove a second instance waits, then require both saves and a complete final index without rebuild.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/DerivedStoreTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/RunIndexTest.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_PAGE",
-      "title": "TEST169 evidence and TEST170 handoff",
-      "text": "Preserve verified TEST169 evidence and record the pending DerivedStore source-identity verification checkpoint.",
+      "title": "TEST170 evidence and TEST171 handoff",
+      "text": "Preserve verified TEST170 evidence, refresh the UIMSD audit status and record the pending RunIndex concurrency checkpoint.",
       "paths": [
-        "docs/APD-TEST169-ALL-CUSTOM-RULES-CORRECTION-2026-10-14.md",
         "docs/APD-TEST170-DERIVED-CACHE-SOURCE-IDENTITY-2026-10-14.md",
+        "docs/APD-TEST171-RUNINDEX-CROSS-INSTANCE-SAVE-2026-10-14.md",
+        "docs/UIMSD-AUDIT-BUG-LOG.md",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
