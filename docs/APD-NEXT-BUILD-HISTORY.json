@@ -260,7 +260,7 @@
       "category": "Quality of Life",
       "sprite": "V061_PAGE",
       "title": "Honest scoring labels",
-      "text": "Show 1.00× only for recorded neutral authority and mark pending or unavailable scoring explicitly.",
+      "text": "Show 1.00\u00d7 only for recorded neutral authority and mark pending or unavailable scoring explicitly.",
       "paths": [
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomScorePresentation.java"
       ]
@@ -437,6 +437,51 @@
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/APD-TEST135-REPORT-2026-10-13.md",
         "docs/HANDOFF.md"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "QuestBossClassificationTest verification correction",
+      "text": "Decode recorded rules without depending on live gameplay classes.",
+      "paths": [
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/QuestBossClassificationTest.java"
+      ]
+    },
+    {
+      "category": "Bug Fixes",
+      "sprite": "V061_BUGFIX",
+      "title": "RecordedRuleSettings verification correction",
+      "text": "Document the custom-rules telemetry milestone alongside previous records.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/RecordedRuleSettings.java"
+      ]
+    },
+    {
+      "category": "Bug Fixes",
+      "sprite": "V061_BUGFIX",
+      "title": "apd_records_history verification correction",
+      "text": "Test frozen settings and unsupported metadata without assigning defaults.",
+      "paths": [
+        "core/src/main/assets/apd/apd_records_history.txt"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "RecordedRuleSettingsTest verification correction",
+      "text": "Record the failed TEST135 checks and the safe verification correction.",
+      "paths": [
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/RecordedRuleSettingsTest.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "APD TEST136 REPORT 2026 10 13 verification correction",
+      "text": "Preserve the exact TEST135 source and failed-build evidence for review.",
+      "paths": [
+        "docs/APD-TEST136-REPORT-2026-10-13.md"
       ]
     }
   ],

@@ -26,7 +26,7 @@ public class CustomRuleQueryIntegrationTest {
         List<Row> rows=Arrays.asList(row(1,"minimum"),row(15,"neutral"),row(60,"maximum"),row(0,"historical"));
         Dataset ds=new Dataset(def,rows,Collections.emptyList());
         Query q=Query.of(Datasets.RUNS).withScope(new Scope(Scope.Rules.ALL,"",true,true,true,true));
-        String key=CustomRuleFacts.key(CustomDungeonRules.Slider.UPGRADE_SCROLLS);
+        String key=CustomRuleFacts.key(CustomDungeonRules.Slider.UPGRADE_SCROLLS.name());
         for(int n:new int[]{1,15,60}) {
             QueryResult r=QueryEngine.run(ds,q.addFilter(Filter.num(key,Op.EQ,n)),"rules");
             assertEquals(1,r.rows.size());assertEquals(n,r.rows.get(0).num(def.indexOf(key)),0);
@@ -39,7 +39,7 @@ public class CustomRuleQueryIntegrationTest {
         DatasetDef def=Datasets.runs();
         Row row=row(60,"maximum");
         List<String> cols=new ArrayList<>();
-        for(CustomDungeonRules.Slider s:CustomDungeonRules.Slider.values()) cols.add(CustomRuleFacts.key(s));
+        for(CustomDungeonRules.Slider s:CustomDungeonRules.Slider.values()) cols.add(CustomRuleFacts.key(s.name()));
         cols.add(CustomRuleFacts.SCROLL_PERCENT);cols.add(CustomRuleFacts.SCORE_STATUS);cols.add(CustomRuleFacts.ORIGINAL_SCORE);cols.add(CustomRuleFacts.MULTIPLIER);cols.add(CustomRuleFacts.CALCULATION_VERSION);cols.add(CustomRuleFacts.ADJUSTED_SCORE);cols.add(CustomRuleFacts.MULTIPLIER_EXACT);cols.add(CustomRuleFacts.SCORING_RECORD_VERSION);cols.add(CustomRuleFacts.SCROLL_PERCENT_NUMERATOR);cols.add(CustomRuleFacts.SCROLL_PERCENT_DENOMINATOR);
         Query q=Query.of(Datasets.RUNS).withColumns(cols);
         QueryResult result=QueryEngine.run(new Dataset(def,Collections.singletonList(row),Collections.emptyList()),q,"rules");

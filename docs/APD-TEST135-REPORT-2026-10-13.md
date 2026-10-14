@@ -25,3 +25,6 @@ Previous TEST134 actual downloaded XML:1437core+25API34,zero failures/errors/ski
 ## Friday release blockers
 
 Remaining persistent fire/toxic/electric/other blob ownership, potion/throw/callback attribution, remaining offensive abilities/explosions/enchantments/derived-source boundaries; then activate and verify threeDamagecontrols. Combined class/boss/difficulty/challenge gameplay acceptance and physical-device acceptance remain. Historical pre-extension logs are not assigned missing settings. No scoring award formula is approved; retain the exact experimental notice and original scores. No ranges changed, no GetFucked/lore restrictions or unfinished online feature activation. No paid/public release or automatic tester distribution. November1 alpha and October16limitedalpha remain targets; no complete-alpha or continuous-background-coding claim.
+
+## Full CI result
+Run38489633963 failed:1464 core tests,3 failures. No TEST135 APK was produced and Android checks did not execute. See TEST136 correction report.

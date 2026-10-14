@@ -1759,3 +1759,16 @@ TEST133source980fff4c8fcd34ee379235e055d6557e894d567e/run38472581219 verify-and-
 ## TEST134 verified; TEST135 recording and source continuation
 Actual134sourceeb5ba00c6705d681c13e609c65f70dfb331695aa/run38473208676:downloaded1437core+25API34,zero failures/errors/skips,29validPNG/debug/history. APK11852144276private-stage only; signing/delivery/physicalphone notclaimed.
 TEST135adds32production/twelvecoretest/twoAndroidtestfiles+runner: permanent18-rule/frozen-scoring snapshots in additive1.11 events/saves/rankings; exact scrollratio/actualinternalgenerationcounts; compatible archive redaction/cache revisions; scoring UI from record's own metadata; selected corrosion gas/enemy/Cleric sources.47targeted methods pass2.463s;617broader compatible checks pass32.824s (localsourceguards baseline121; currentrepoCI stillrequired). Requires1464core/26API34/33PNG/debug/history. Nativefourstate score/Back/touchscroll check is prepared,notexecuted. No experimental awards,raw-history/score rewriting,compressionmigration,ranges,lore/online/main/signing changes. ThreeDamagecontrols stilldisabled until remaining blobs/potion/throw/callbacks/abilities/explosions/derived sources covered; combinedboss/class acceptance remainsFridayblocker. Scoring authority is frozen at creation, legacy absence remainsunknown. Continue remainingoffensivesource boundaries afterCI. Source dirs /workspace/custom-gameplay-alpha/{gas-src,rules-recording-src,spell-src,score-ui-src}; package135-code.json contains exactpreparedapplication/tests. Lastverifieddelivered123 retained. No autonomousCodexworker or post-turncoding claim.
+
+## TEST136 prepared correction
+# TEST136 verification correction
+
+TEST135 source 6c31c64dda79bf09f320cd39bfbfe6fffa2c03e5 failed run38489633963:1464 core tests,3 failures; no APK or Android execution. Failures were a runtime-game dependency in statistics/query code, two stale cache-version assertions in one test, and missing telemetry1.11 milestone.
+
+The correction introduces a frozen pure-standard-library version1 rules codec; statistics/query code no longer imports game rules or scoring classes. Existing history, missing metadata behavior, and original earned scores are preserved. Cache tests continue to exercise rejection of builder10 and byte-preserving reconstruction, with current builder12 asserted. The additive1.11 milestone is documented.
+
+15 focused checks passed locally in0.498s, including all affected contracts and recording/query checks. Two permanent codec tests cover frozen keys, all60 scroll counts, unsupported settings/scoring metadata and missing authority. Full current-source core/Android/build checks remain pending. Expected1466 core,26API34,33PNG. Three Damage controls remain disabled; no scoring awards or production compression changes.
+
+Last passing application candidate TEST134 eb5ba00c6705d681c13e609c65f70dfb331695aa:1437 core and25API34 tests passed,29PNG; no physical-phone claim. Last delivered compatible APK remains TEST123.
+
+No background Codex worker is configured. Continue offensive-source work after verification correction.

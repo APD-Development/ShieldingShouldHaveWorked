@@ -8,6 +8,10 @@ APD game version, and every recorded run keeps the telemetry version that record
 tied to a version of the recorded data. Minor versions only add things, a new major version changes what existing
 data means.
 
+custom-rules-scoring-1-11 | telemetry 1.11 | APD 4.0.8-apd | 2026-10-13
+- Records all selected custom settings and frozen scoring status without changing earned scores.
+- Historical settings that were not recorded remain unknown.
+
 uimsd-name | - | APD 4.0.8-apd | 2026-10-06
 - The statistics / records / query system is named UIMSD, the Ultimate Infinite Mega Statistics Database. The title
   screen button that used to say "Statistics" now says "UIMSD". This changes a name only, no recorded data.
@@ -145,3 +149,4 @@ why-apd-keeps-history | - | APD 4.0.8-apd | 2026-10-06
   statistics nobody has thought of yet.
 - Runs that were played before APD recorded history can only ever contain what SPD kept, so they hold less
   information than runs recorded by APD itself. Missing information stays missing, it is never guessed.
+

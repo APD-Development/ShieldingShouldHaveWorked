@@ -26,7 +26,7 @@ public class CustomRuleTelemetryTest {
             CustomDungeonRules rules=CustomDungeonRules.defaults().with(CustomDungeonRules.Slider.UPGRADE_SCROLLS,n);
             RunFacts facts=recorded(rules.preferenceText());
             for (CustomDungeonRules.Slider slider : CustomDungeonRules.Slider.values())
-                assertEquals(rules.get(slider),facts.numOr(CustomRuleFacts.key(slider),-1));
+                assertEquals(rules.get(slider),facts.numOr(CustomRuleFacts.key(slider.name()),-1));
             assertEquals(100L*n,facts.numOr(CustomRuleFacts.SCROLL_PERCENT_NUMERATOR,-1));
             assertEquals(15,facts.numOr(CustomRuleFacts.SCROLL_PERCENT_DENOMINATOR,-1));
             assertEquals(rules.identityText(),facts.textOr(CustomRuleFacts.IDENTITY,""));
@@ -36,7 +36,7 @@ public class CustomRuleTelemetryTest {
     @Test public void missingHistoricalSnapshotIsNeverAssignedDefaults() throws Exception {
         RunFacts facts=recorded("");
         for (CustomDungeonRules.Slider s : CustomDungeonRules.Slider.values())
-            assertFalse(facts.isKnown(CustomRuleFacts.key(s)));
+            assertFalse(facts.isKnown(CustomRuleFacts.key(s.name())));
         assertFalse(facts.isKnown(CustomRuleFacts.IDENTITY));
         assertFalse(facts.isKnown(CustomRuleFacts.SCORE_STATUS));
     }
@@ -47,14 +47,14 @@ public class CustomRuleTelemetryTest {
             assertFalse(facts.isKnown(CustomRuleFacts.VERSION));
             assertFalse(facts.isKnown(CustomRuleFacts.IDENTITY));
             for (CustomDungeonRules.Slider s : CustomDungeonRules.Slider.values())
-                assertFalse(facts.isKnown(CustomRuleFacts.key(s)));
+                assertFalse(facts.isKnown(CustomRuleFacts.key(s.name())));
         }
     }
     @Test public void knownHistoricalSettingsWithoutScoringAuthorityNeverInventAMultiplier() throws Exception {
         File file=tmp.newFile();assertTrue(file.delete());RunLogWriter writer=RunLogWriter.create(file,TelemetryVersion.CURRENT,"older-scoring","test",1);
         LifecycleEvents.RunStart start=new LifecycleEvents.RunStart();start.runId="older-scoring";start.customRules=CustomDungeonRules.defaults().preferenceText();assertTrue(LifecycleEvents.emitRunStart(writer,0,false,start));
         LifecycleEvents.RunEnd end=new LifecycleEvents.RunEnd();end.score=43210;assertTrue(LifecycleEvents.emitRunEnd(writer,1,end));assertTrue(writer.close());RunFacts f=RunFactsBuilder.fromLog(RunLogReader.read(file),"older-scoring");
-        assertEquals("scoring metadata not recorded",f.textOr(CustomRuleFacts.SCORE_STATUS,""));assertFalse(f.isKnown(CustomRuleFacts.MULTIPLIER));assertFalse(f.isKnown(CustomRuleFacts.CALCULATION_VERSION));assertFalse(f.isKnown(CustomRuleFacts.ADJUSTED_SCORE));assertEquals(43210,f.numOr(CustomRuleFacts.ORIGINAL_SCORE,-1));assertEquals(15,f.numOr(CustomRuleFacts.key(CustomDungeonRules.Slider.UPGRADE_SCROLLS),-1));
+        assertEquals("scoring metadata not recorded",f.textOr(CustomRuleFacts.SCORE_STATUS,""));assertFalse(f.isKnown(CustomRuleFacts.MULTIPLIER));assertFalse(f.isKnown(CustomRuleFacts.CALCULATION_VERSION));assertFalse(f.isKnown(CustomRuleFacts.ADJUSTED_SCORE));assertEquals(43210,f.numOr(CustomRuleFacts.ORIGINAL_SCORE,-1));assertEquals(15,f.numOr(CustomRuleFacts.key(CustomDungeonRules.Slider.UPGRADE_SCROLLS.name()),-1));
     }
 
 }

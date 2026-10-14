@@ -84,12 +84,11 @@ public final class Datasets {
 
         d.add(ColumnDef.num(com.shatteredpixel.shatteredpixeldungeon.apd.stats.CustomRuleFacts.VERSION, "Custom rules version").since(1,11).group("Custom Rules"));
         d.add(ColumnDef.text(com.shatteredpixel.shatteredpixeldungeon.apd.stats.CustomRuleFacts.IDENTITY, "Exact custom settings").since(1,11).group("Custom Rules"));
-        for (com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.Slider slider
-                : com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.Slider.values()) {
-            String label=slider.name().toLowerCase(java.util.Locale.ROOT).replace('_',' ');
+        for (String slider : com.shatteredpixel.shatteredpixeldungeon.apd.stats.RecordedRuleSettings.KEYS) {
+            String label=slider.toLowerCase(java.util.Locale.ROOT).replace('_',' ');
             label=Character.toUpperCase(label.charAt(0))+label.substring(1);
             d.add(ColumnDef.num(com.shatteredpixel.shatteredpixeldungeon.apd.stats.CustomRuleFacts.key(slider),
-                label+(slider==com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.Slider.UPGRADE_SCROLLS ? " count" : " %"))
+                label+(slider.equals("UPGRADE_SCROLLS") ? " count" : " %"))
                 .since(1,11).group("Custom Rules").describe("The exact setting locked when this run began. ? means not recorded."));
         }
         d.add(ColumnDef.num(com.shatteredpixel.shatteredpixeldungeon.apd.stats.CustomRuleFacts.SCROLL_PERCENT, "Upgrade scroll availability %")

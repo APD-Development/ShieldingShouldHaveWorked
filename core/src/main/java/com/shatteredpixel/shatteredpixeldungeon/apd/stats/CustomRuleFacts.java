@@ -1,6 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.apd.stats;
 
-import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules;
+
 
 /** Derives user-visible requested rules from the permanent raw snapshot, never current settings. */
 public final class CustomRuleFacts {
@@ -20,26 +20,26 @@ public final class CustomRuleFacts {
     public static final String CALCULATION_VERSION=PREFIX+"calculationVersion";
     public static final String ADJUSTED_SCORE=PREFIX+"adjustedScore";
     private CustomRuleFacts() { }
-    public static String key(CustomDungeonRules.Slider slider) { return PREFIX+slider.name(); }
+    public static String key(String slider) { return PREFIX+slider; }
     public static void record(RunFacts facts, LifecycleEvents.RunStart start) {
         String snapshot=start.customRules;
         if (snapshot==null || snapshot.isEmpty()) return;
-        final CustomDungeonRules rules;
-        try { rules=CustomDungeonRules.fromPreferenceText(snapshot); }
+        final RecordedRuleSettings rules;
+        try { rules=RecordedRuleSettings.parse(snapshot); }
         catch (IllegalArgumentException invalid) {
             facts.text(SCORE_STATUS,"invalid recorded configuration",Fact.PROV_RECORDED);
             return;
         }
-        facts.num(VERSION,CustomDungeonRules.VERSION,Fact.PROV_RECORDED);
+        facts.num(VERSION,RecordedRuleSettings.VERSION,Fact.PROV_RECORDED);
         facts.text(IDENTITY,rules.identityText(),Fact.PROV_RECORDED);
-        for (CustomDungeonRules.Slider slider : CustomDungeonRules.Slider.values())
+        for (String slider : RecordedRuleSettings.KEYS)
             facts.num(key(slider),rules.get(slider),Fact.PROV_RECORDED);
         // Exact rational percentage, rather than rounding a repeating decimal in permanent history.
-        facts.num(SCROLL_PERCENT_NUMERATOR,100L*rules.get(CustomDungeonRules.Slider.UPGRADE_SCROLLS),Fact.PROV_RECORDED);
+        facts.num(SCROLL_PERCENT_NUMERATOR,100L*rules.get("UPGRADE_SCROLLS"),Fact.PROV_RECORDED);
         facts.num(SCROLL_PERCENT_DENOMINATOR,15,Fact.PROV_RECORDED);
-        facts.num(SCROLL_PERCENT,Math.round(10000.0*rules.get(CustomDungeonRules.Slider.UPGRADE_SCROLLS)/15),Fact.PROV_RECORDED);
+        facts.num(SCROLL_PERCENT,Math.round(10000.0*rules.get("UPGRADE_SCROLLS")/15),Fact.PROV_RECORDED);
         try{
-            com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomScoreSnapshot scoring=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomScoreSnapshot.recorded(start.customScoreVersion,start.customScoreStatus,start.customScoreCalculation,start.customScoreMultiplier,rules);
+            RecordedRuleSettings.Scoring scoring=rules.scoring(start.customScoreVersion,start.customScoreStatus,start.customScoreCalculation,start.customScoreMultiplier);
             if(scoring==null){facts.text(SCORE_STATUS,"scoring metadata not recorded",Fact.PROV_RECORDED);return;}
             facts.num(SCORING_RECORD_VERSION,start.customScoreVersion,Fact.PROV_RECORDED);
             facts.text(SCORE_STATUS,scoring.displayStatus(),Fact.PROV_RECORDED);
