@@ -229,7 +229,7 @@ public class ElementalStrike extends ArmorAbility {
 					}
 				}
 
-				perCellEffect(cone, finalEnchantment);
+				perCellEffect(cone, hero, finalEnchantment);
 
 				perCharEffect(cone, hero, enemy, finalEnchantment);
 
@@ -305,7 +305,7 @@ public class ElementalStrike extends ArmorAbility {
 	public static class ElementalStrikeFurrowCounter extends CounterBuff{{revivePersists = true;}};
 
 	//effects that affect the cells of the environment themselves
-	private void perCellEffect(ConeAOE cone, Weapon.Enchantment ench){
+	private void perCellEffect(ConeAOE cone, Hero hero, Weapon.Enchantment ench){
 
 		int targetsHit = 0;
 		for (Char ch : Actor.chars()){
@@ -319,7 +319,7 @@ public class ElementalStrike extends ArmorAbility {
 		//*** Blazing ***
 		if (ench instanceof Blazing){
 			for (int cell : cone.cells) {
-				GameScene.add(Blob.seed(cell, Math.round(8 * powerMulti), Fire.class));
+				GameScene.add(Fire.seedAttributed(cell, Math.round(8 * powerMulti), com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(hero,null)));
 			}
 
 		//*** Chilling ***

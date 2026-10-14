@@ -1,100 +1,86 @@
 {
-  "previous_label": "Codex TEST 144",
-  "previous_source": "73657ac4736b99583a7cf605c6ce35c3a19a2e9f",
-  "previous_run": 38544125721,
+  "previous_label": "Codex TEST 146",
+  "previous_source": "08d10dedbc862dad0d27de35d98f719bec8e7bf2",
+  "previous_run": 38546323675,
   "date": "2026-10-14",
   "changes": [
     {
       "category": "Changes",
-      "sprite": "V063_MAGICMISSILE",
-      "title": "TimedDamageOrigins",
-      "text": "Represent merged fire ownership as the same mixed cause sample on every Burning tick.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/TimedDamageOrigins.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V063_MAGICMISSILE",
-      "title": "CellDamageOrigins",
-      "text": "Carry combined side-neighbour ownership into spread fire and snapshot it for timed damage.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CellDamageOrigins.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V063_MAGICMISSILE",
-      "title": "Fire",
-      "text": "Preserve mixed offensive ownership through fire seeding, decay, spread, clearing and saves.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/blobs/Fire.java"
-      ]
-    },
-    {
-      "category": "Bug Fixes",
       "sprite": "V061_BUGFIX",
-      "title": "Burning",
-      "text": "Apply merged fire ownership exactly once per original Burning event.",
+      "title": "Bomb",
+      "text": "Expose the captured explosion creator to secondary fire fields.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Burning.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V063_MAGICMISSILE",
-      "title": "Player fire fields",
-      "text": "Mark Liquid Flame and Fireblast fields with their actual player creator.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/PotionOfLiquidFlame.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfFireblast.java"
-      ]
-    },
-    {
-      "category": "Bug Fixes",
-      "sprite": "V061_BUGFIX",
-      "title": "Chained bombs",
-      "text": "Let unowned heap-triggered bombs inherit the actual causal explosion or fire owner while saved owners remain unchanged.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Heap.java",
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/bombs/Bomb.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Damage provenance regressions",
-      "text": "Retain fire role/mix/spread/save/legacy/clear checks and causal multi-bomb chain checks.",
+      "title": "Firebomb",
+      "text": "Preserve the bomb creator in flames left by its explosion.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/FireDamageProvenanceTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/ChainedBombDamageProvenanceTest.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/bombs/Firebomb.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V063_MAGICMISSILE",
+      "title": "CursedWand",
+      "text": "Preserve the actual caster in cursed-wand fire fields.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/CursedWand.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V063_MAGICMISSILE",
+      "title": "ElementalBlast",
+      "text": "Mark Elemental Blast fire with its actual hero.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/abilities/mage/ElementalBlast.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V063_MAGICMISSILE",
+      "title": "ElementalStrike",
+      "text": "Carry the activating hero into Elemental Strike's delayed fire effects.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/abilities/duelist/ElementalStrike.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Fire and chained-bomb evidence",
-      "text": "Record reproduction, local checks, TEST145 fixture evidence and remaining gaps.",
+      "title": "FireCallerProvenanceTest",
+      "text": "Test actual Firebomb flames, saved creators, neutral RNG and known fire-caller boundaries.",
       "paths": [
-        "docs/APD-TEST145-FIRE-SOURCE-2026-10-14.md",
-        "docs/APD-CHAINED-BOMBS-PREPARED-2026-10-14.md"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/FireCallerProvenanceTest.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Handoff and ledger",
-      "text": "Record exact commits, runs, failures, preserved evidence and next safe step.",
+      "title": "APD-TEST147-FIRE-CALLERS-2026-10-14",
+      "text": "Record fire-caller verification and remaining coverage.",
       "paths": [
-        "docs/HANDOFF.md",
-        "docs/WORK-COMPLETED-LEDGER.md"
+        "docs/APD-TEST147-FIRE-CALLERS-2026-10-14.md"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Build request",
-      "text": "Request one exact-current-source TEST146 verification without publication.",
+      "title": "HANDOFF",
+      "text": "Record fully passing TEST146 evidence and the next fire checkpoint.",
+      "paths": [
+        "docs/HANDOFF.md"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "APD-CODEX-BUILD-REQUEST",
+      "text": "Require current-source, Android, assembly and compiled history checks.",
       "paths": [
         "docs/APD-CODEX-BUILD-REQUEST.txt"
       ]
@@ -102,10 +88,37 @@
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Exact build history",
-      "text": "Compare every reviewed path against the immediately preceding produced TEST144 APK.",
+      "title": "APD-Implemented-Features-2026-10-14",
+      "text": "Add the requested feature inventory and availability categories.",
+      "paths": [
+        "docs/reports/APD-Implemented-Features-2026-10-14.pdf"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "APD-NEXT-BUILD-HISTORY",
+      "text": "Review all changes against the preceding produced APK.",
       "paths": [
         "docs/APD-NEXT-BUILD-HISTORY.json"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "APD-TEST145-FIRE-SOURCE-2026-10-14",
+      "text": "Preserve the verified mixed-fire and chained-bomb evidence.",
+      "paths": [
+        "docs/APD-TEST145-FIRE-SOURCE-2026-10-14.md"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "WORK-COMPLETED-LEDGER",
+      "text": "Record the verified TEST146 implementation checkpoint.",
+      "paths": [
+        "docs/WORK-COMPLETED-LEDGER.md"
       ]
     }
   ]

@@ -825,7 +825,7 @@ public class CursedWand {
 						com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(ch,dmg,burning,user);
 					}
 					if (Dungeon.level.flamable[i]){
-						GameScene.add(Blob.seed(i, 4, Fire.class));
+						GameScene.add(Fire.seedAttributed(i, 4, com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(user,null)));
 					}
 
 				}
@@ -1042,7 +1042,7 @@ public class CursedWand {
 			if (!positiveOnly) {
 				GLog.w(Messages.get(CursedWand.class, "fire"));
 				do {
-					GameScene.add(Blob.seed(Dungeon.level.randomDestination(null), 10, Fire.class));
+					GameScene.add(Fire.seedAttributed(Dungeon.level.randomDestination(null), 10, com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(user,null)));
 				} while (Random.Int(5) != 0);
 			}
 			return true;

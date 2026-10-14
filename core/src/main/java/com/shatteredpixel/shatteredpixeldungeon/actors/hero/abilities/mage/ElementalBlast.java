@@ -223,7 +223,7 @@ public class ElementalBlast extends ArmorAbility {
 									freeze.clear(cell);
 								}
 								if (Dungeon.level.flamable[cell]){
-									GameScene.add( Blob.seed( cell, 4, Fire.class ) );
+									GameScene.add( Fire.seedAttributed( cell, 4, com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(hero,null) ) );
 								}
 
 							//*** Wand of Frost ***

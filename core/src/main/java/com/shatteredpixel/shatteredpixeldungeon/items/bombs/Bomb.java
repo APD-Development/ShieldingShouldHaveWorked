@@ -92,6 +92,9 @@ public class Bomb extends Item {
         apdExplodeAttributed(cell,origin);
     }
 
+    /** Immutable captured creator for secondary fields produced by this explosion. */
+    protected final com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin apdExplosionOrigin(){return apdFuseOrigin;}
+
     /** Raw special-bomb damage uses the same immutable fuse/throw creator as the base blast. */
     protected final int apdScaleExplosionDamage(int amount){
         return apdFuseOrigin.percentage()==100 ? amount : com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamage.raw(amount,this,apdFuseOrigin).scaled().amount;
