@@ -2217,3 +2217,7 @@ Preserved concurrent application commit c684d5070fc26bca6cc2d34b414ea18ecbefbb49
 # TEST172 verified Crush splash Player Damage boundary — 2026-10-14 21:26 UTC
 
 Verified source12795cd9cd3049864e1f33c90b9551e9bda67c8e/run38638453521 (21:12:37–21:25:00UTC):1590core+26API34/debug/immediate-previous TEST171 history/34PNG all passed. APKsha2565a9739829b398ab9fbc4c1ae83c78e06dbddd23806a854406d58442e5375f153. Warrior Crush splash now applies Player Damage exactly once before original halving/DR/Vulnerable order; all percentages and neutral rounding/next RNG passed. No delivery/phone/save/scoring claim; TEST123 remains owner-delivered. Do not rebuild unchanged TEST172; continue a distinct confirmed offensive-source audit item or documented post-slider backlog.
+
+# TEST173 Fireblast staff explosion provenance pending — 2026-10-14 21:36 UTC
+
+Current-source audit found the Mages' Staff Fireblast on-hit explosion still called direct damage although normal Fireblast casts/fields were attributed. The candidate keeps the same hero damage roll/power multiplier and original wand source, but applies the actual attacker factor once before the original direct hit. Three retained tests cover all percentages and player/enemy/boss creators, contradictory settings, one source-preserving hit, neutral amount/next RNG and production wiring. TEST173 requests1593core/debug/immediate-previous TEST172 history/26API34/34PNG. Candidate only; no save/scoring/delivery/phone claim. TEST123 remains owner-delivered.

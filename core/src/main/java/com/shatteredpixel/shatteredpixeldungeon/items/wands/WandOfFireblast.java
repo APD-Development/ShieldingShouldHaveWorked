@@ -200,7 +200,8 @@ public class WandOfFireblast extends DamageWand {
 						}
 						if (ch.alignment == Char.Alignment.ENEMY) {
 							//damage of a 2-charge zap
-							ch.damage(Math.round(powerMulti*Hero.heroDamageIntRange(2 + 2*buffedLvl(), 8 + 4*buffedLvl())), this);
+							apdApplyStaffExplosion(ch, attacker,
+									Math.round(powerMulti*Hero.heroDamageIntRange(2 + 2*buffedLvl(), 8 + 4*buffedLvl())), this);
 						}
 					}
 				}
@@ -210,6 +211,13 @@ public class WandOfFireblast extends DamageWand {
 
 		}
 	}
+
+
+	private static void apdApplyStaffExplosion(Char target, Char attacker, int rawDamage, Object source) {
+		com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(
+				target, rawDamage, source, attacker);
+	}
+
 
 	@Override
 	public void fx(Ballistica bolt, Callback callback) {

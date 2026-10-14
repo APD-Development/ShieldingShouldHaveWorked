@@ -672,3 +672,10 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Android artifact `11929688691` / ZIP SHA-256 `ff348102d2c2705af15e303d98e498c5d3a12483763df0ed09d9e1415a72ab46`: 26 API34 emulator tests, 0 failures/errors/skips. All 34 PNGs decoded at 320×640; contact-sheet review found expected readable TEST172 history, rules, score, UIMSD, stairs, tiles and gameplay states with no blank, corrupt or visibly clipped capture.
 - Verified Warrior Crush splash selects Player Damage rather than Enemy/Boss Damage and applies it exactly once before the original halving, DR and Vulnerable order. Neutral values retain original rounding and next RNG.
 - Private delivery was skipped; this is CI/emulator evidence only. No player-save, scoring, application identity, signing or physical-phone claim. TEST123 remains the last owner-delivered/signature-compared APK. Do not rebuild unchanged TEST172.
+
+## 2026-10-14T21:36:33Z — TEST173 Fireblast staff explosion candidate
+- Re-read the verified TEST172 tree and audited current direct-damage sites rather than rebuilding it unchanged.
+- Confirmed normal Fireblast wand casts and fire fields were attributed, but the distinct Mages' Staff on-hit explosion still called direct target damage.
+- Routed that final raw staff-explosion roll through the actual attacker exactly once while preserving the original `Hero.heroDamageIntRange` roll, power multiplier, Wand of Fireblast source, targets, direct-damage mitigation and RNG order.
+- Added three retained tests for all permitted factors and player/enemy/boss creators, contradictory settings, one source-preserving hit, neutral amount/next RNG and exact production wiring.
+- TEST173 exact-source verification requests 1,593 core tests, debug assembly, complete history against immediate previous compiled TEST172, 26 API34 emulator tests and 34 screenshots. Candidate remains pending; no save, scoring, delivery or phone claim.

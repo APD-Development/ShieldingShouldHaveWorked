@@ -1,35 +1,35 @@
 {
-  "previous_label": "Codex TEST 171",
-  "previous_source": "169d2bec53968f191286e3db6cb77efe7661ef06",
-  "previous_run": 38636484010,
+  "previous_label": "Codex TEST 172",
+  "previous_source": "12795cd9cd3049864e1f33c90b9551e9bda67c8e",
+  "previous_run": 38638453521,
   "date": "2026-10-14",
   "changes": [
     {
       "category": "Bug Fixes",
       "sprite": "V061_BUGFIX",
-      "title": "Crush splash damage ownership",
-      "text": "Apply Player Damage once to Warrior Crush splash before its original halving, armor and vulnerability order.",
+      "title": "Fireblast staff explosion ownership",
+      "text": "Apply the actual attacker's damage factor once to the Mages' Staff Fireblast explosion while retaining its original roll and source.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Combo.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfFireblast.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "V061_PAGE",
-      "title": "Crush scaling identity coverage",
-      "text": "Cover all permitted Player Damage values, contradictory enemy and boss settings, pre-armor order, neutral rounding and next RNG.",
+      "title": "Fireblast staff provenance coverage",
+      "text": "Cover all permitted factors, player/enemy/boss creators, contradictory settings, source identity and neutral RNG.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/ComboDamageScalingTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/FireblastStaffDamageProvenanceTest.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_PAGE",
-      "title": "TEST171 evidence and TEST172 handoff",
-      "text": "Preserve verified RunIndex concurrency evidence and record the distinct pending Crush splash checkpoint.",
+      "title": "TEST172 evidence and TEST173 handoff",
+      "text": "Preserve verified Crush evidence and record the distinct pending Fireblast staff checkpoint.",
       "paths": [
-        "docs/APD-TEST171-RUNINDEX-CROSS-INSTANCE-SAVE-2026-10-14.md",
         "docs/APD-TEST172-CRUSH-SPLASH-DAMAGE-2026-10-14.md",
+        "docs/APD-TEST173-FIREBLAST-STAFF-DAMAGE-2026-10-14.md",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
