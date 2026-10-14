@@ -1066,7 +1066,7 @@ public class Tengu extends Mob {
 							
 							Char ch = Actor.findChar(cell);
 							if (ch != null && !(ch instanceof Tengu)){
-								ch.damage(2 + Dungeon.scalingDepth(), new Electricity());
+								com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamage.raw(2 + Dungeon.scalingDepth(), new Electricity(), com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.BOSS).apply(ch);
 								
 								if (ch == Dungeon.hero){
 									Statistics.qualifiedForBossChallengeBadge = false;

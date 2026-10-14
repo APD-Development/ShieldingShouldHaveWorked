@@ -332,3 +332,11 @@ Root cause of "no exit / Main Menu greyed / no difficulty picker / guidebook rep
 5. Owner phone checklist steps 23-41 still to be reported; checklist PDF predates the Grudge postponement (markdown is current).
 6. Backend decisions (provider, sign-in, key custody, retention, moderation), contacting upstream author, plain-English UIMSD summary polish, shareable/PDF reports polish: see docs/HANDOFF.md "Open questions (owner only)".
 7. The UIMSD guide/tour and some wording were polished but never fully phone-reviewed.
+
+
+## TEST141 electricity provenance candidate — 2026-10-14T02:41:22.245Z
+TEST140 exact source26809c581a9dc16b7a3f29dfeb8f47a81cf09c02/run38499807644 remains the latest complete verified application source:1491core+26API34,34valid PNG/debug/history,0failure/error/skip. This candidate builds from documentation head2c32ce75cd018df393e8af5f402b733d5b88e62b without rebuilding TEST140.
+
+Electricity now carries optional player/enemy/boss/environment ownership through additive seeds, strongest-power water spread, clearing and save/load. Damage is scaled once while preserving the original Electricity source, paralysis, turns, density, spread and RNG; legacy fields remain unowned and malformed metadata rejects without rewriting the save. Shocking Brew, Elemental Blast and Elemental Strike mark their player-created fields. Tengu ShockerBlob and DM-300 PylonEnergy use Boss Damage rather than Enemy Damage. Ordinary Shocking/Storm traps remain environmental and unscaled.
+
+Eight permanent tests cover all slider percentages, mixed/environmental fields, water spread, save/legacy/malformed metadata, clearing, neutral RNG/topology, the actual Shocking Brew and both boss fields, plus the three player caller boundaries. Local execution is unavailable in this connector-only workspace; compilation and expected1499core/26API34/34PNG/debug/history are pending exact-source CI. Three Damage controls remain disabled. Fire, planted effects, remaining specialized/chained explosions, abilities and derived damage still require audit before enablement. Original scoring, saves/raw history, inventory, balance, signing/application ID, main/Claude, online services and releases are unchanged.

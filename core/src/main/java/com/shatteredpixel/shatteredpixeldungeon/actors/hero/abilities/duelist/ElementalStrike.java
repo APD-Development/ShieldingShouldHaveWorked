@@ -331,7 +331,7 @@ public class ElementalStrike extends ArmorAbility {
 		//*** Shocking ***
 		} else if (ench instanceof Shocking){
 			for (int cell : cone.cells) {
-				GameScene.add(Blob.seed(cell, Math.round(8 * powerMulti), Electricity.class));
+				GameScene.add(Electricity.seedAttributed(cell, Math.round(8 * powerMulti), com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.PLAYER));
 			}
 
 		//*** Blooming ***

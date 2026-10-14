@@ -48,6 +48,15 @@ public final class CellDamageOrigins {
  }
  public void finishDiffusion(){if(!pending)return;if(pendingKnown){double[][] before=mass;mass=scratch;scratch=before;}else clearAll();pending=false;}
  private void add(double[] sums,int cell,int[] density){if(density[cell]>0)for(int r=0;r<4;r++)sums[r]+=mass[r][cell];}
+ public void inheritMax(int[] density,int from,int to,int power){
+  if(power<=0||mass==null)return;
+  if(density==null||from<0||to<0||from>=density.length||to>=density.length)throw new IllegalArgumentException("Invalid cell provenance spread");
+  if(density[to]>=power)return;
+  synchronizeCell(density[from],from);double total=0;for(int r=0;r<4;r++)total+=mass[r][from];clear(to);
+  if(total<=0){mass[0][to]=power;return;}
+  for(int r=0;r<4;r++)mass[r][to]=mass[r][from]*power/total;
+ }
+ public void discardIfUnattributed(){if(mass==null)return;for(int r=1;r<4;r++)for(double value:mass[r])if(value>0)return;clearAll();}
  public static void clearMetadata(Bundle b,String key){b.remove(key+"_version");b.remove(key+"_cells");b.remove(key+"_mass");}
  public void store(Bundle b,String key,int[] density){
   clearMetadata(b,key);if(mass==null||density==null)return;synchronize(density);int count=0;

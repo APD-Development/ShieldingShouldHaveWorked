@@ -1,68 +1,14 @@
 {
-  "previous_label": "Codex TEST 139",
-  "previous_source": "375adeb094460949f71537547037bb062e200f5e",
-  "previous_run": 38495415452,
+  "previous_label": "Codex TEST 140",
+  "previous_source": "26809c581a9dc16b7a3f29dfeb8f47a81cf09c02",
+  "previous_run": 38499807644,
   "date": "2026-10-13",
   "changes": [
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "DM200",
-      "text": "Retain the robot that emitted DM200 toxic gas.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/DM200.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V063_MAGICMISSILE",
-      "title": "ToxicGas",
-      "text": "Prepare toxic-gas source scaling without changing its diffusion or defenses.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/blobs/ToxicGas.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V063_MAGICMISSILE",
-      "title": "CursedWand",
-      "text": "Keep the actual caster of cursed-wand toxic gas.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/CursedWand.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "DM300",
-      "text": "Capture DM300 ownership before scheduling delayed gas.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/DM300.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V063_MAGICMISSILE",
-      "title": "ChaoticCenser",
-      "text": "Preserve Censer ownership through delayed and saved gas effects.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/trinkets/ChaoticCenser.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "RotHeart",
-      "text": "Retain the creature that releases rot-heart gas.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/RotHeart.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
       "title": "CellDamageOrigins",
-      "text": "Preserve overlapping gas contributions through diffusion, clearing and saves.",
+      "text": "Carry the strongest electrical field's exact mixed ownership into connected water.",
       "paths": [
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CellDamageOrigins.java"
       ]
@@ -70,44 +16,47 @@
     {
       "category": "Changes",
       "sprite": "V063_MAGICMISSILE",
-      "title": "Stench",
-      "text": "Use the actual armor wearer as the source of Stench gas.",
+      "title": "Electricity",
+      "text": "Preserve electrical source contributions through water spread, clearing and saves.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/curses/Stench.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/blobs/Electricity.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V063_MAGICMISSILE",
+      "title": "Player electrical fields",
+      "text": "Mark Shocking Brew, Elemental Blast and Elemental Strike electricity as player-created.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/brews/ShockingBrew.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/abilities/mage/ElementalBlast.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/abilities/duelist/ElementalStrike.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "YogFist",
-      "text": "Treat Rotting Fist toxic clouds as boss-attributed attacks.",
+      "title": "Boss electrical fields",
+      "text": "Apply Boss Damage once to Tengu shockers and DM-300 pylon energy.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/YogFist.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Tengu.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/CavesBossLevel.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "ToxicGasProvenanceTest",
-      "text": "Test mixed ownership, neutral RNG, saved gas and damage-callback ordering.",
+      "title": "ElectricityDamageProvenanceTest",
+      "text": "Retain source, spread, save, legacy, neutral and actual-caller regressions.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/ToxicGasProvenanceTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/ElectricityDamageProvenanceTest.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "ToxicGasCallerIntegrationTest",
-      "text": "Exercise actual emitting monsters, bosses, curses and restored Censer effects.",
-      "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/ToxicGasCallerIntegrationTest.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "APD TEST140 TOXIC SOURCE 2026 10 13",
-      "text": "Record toxic-source verification and outstanding coverage.",
+      "title": "TEST140 evidence",
+      "text": "Retain exact TEST140 verification and scheduling checkpoint.",
       "paths": [
         "docs/APD-TEST140-TOXIC-SOURCE-2026-10-13.md"
       ]
@@ -115,17 +64,27 @@
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "HANDOFF",
-      "text": "Preserve the verified TEST139 source and next development checkpoint.",
+      "title": "TEST141 report",
+      "text": "Record the electricity candidate, limits and pending checks.",
       "paths": [
-        "docs/HANDOFF.md"
+        "docs/APD-TEST141-ELECTRICITY-SOURCE-2026-10-13.md"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "APD CODEX BUILD REQUEST",
-      "text": "Require complete current-source, Android and visual checks.",
+      "title": "Handoff and ledger",
+      "text": "Record exact candidate scope and keep unresolved damage work visible.",
+      "paths": [
+        "docs/HANDOFF.md",
+        "docs/WORK-COMPLETED-LEDGER.md"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "Build request",
+      "text": "Request one complete exact-source TEST141 verification without publication.",
       "paths": [
         "docs/APD-CODEX-BUILD-REQUEST.txt"
       ]
@@ -134,7 +93,7 @@
       "category": "Changes",
       "sprite": "V061_BUGFIX",
       "title": "Exact build history",
-      "text": "Review the complete changes against the immediately preceding compiled APK.",
+      "text": "Compare every reviewed path with the immediately preceding TEST140 APK.",
       "paths": [
         "docs/APD-NEXT-BUILD-HISTORY.json"
       ]
