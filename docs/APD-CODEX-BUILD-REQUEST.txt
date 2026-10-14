@@ -46,3 +46,6 @@ TEST164 compile-only correction (2026-10-14T18:05:22.000Z): run38611095532 passe
 
 
 TEST164 verified (2026-10-14T18:23:48Z): source166c8a287b599fcb0f741a446f039fc33f656201/run38612344678 passed1577core/debug/immediate-previous TEST161 history/26API34/34PNG. APK SHA256 5b6f46bebbb54f189142f4e0b1a14dbf7d204bf2a06f5fbae030efac3bee2919. No pending rebuild of unchanged source; no delivery or slider enablement. Next: six-class, Goo/Tengu/DM300/DwarfKing/Yog and rule-combination acceptance plus remaining source audit.
+
+
+TEST165 exact-source request (2026-10-14T18:45:47Z): verify boss-phase damage acceptance with 1581 core tests, debug assembly, immediate-previous TEST164 compiled history, 26 API34 checks and 34 valid screenshots. Cover all six hero classes and Goo/Tengu/DM300/DwarfKing/Yog; preserve Tengu bomb pre-armor order, source/RNG/turns, legacy-unknown fields and unscaled Dwarf King self-damage. No delivery or slider enablement.

@@ -44,6 +44,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Slow;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.WallOfLight;
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
@@ -691,9 +692,9 @@ public class DM300 extends Mob {
 		public void affectChar(Char ch) {
 			if (!(ch instanceof DM300 || ch instanceof Pylon)){
 				if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
-					ch.damage(Random.NormalIntRange(10, 20), this);
+					CustomOffensiveHooks.raw(ch, Random.NormalIntRange(10, 20), this, target);
 				} else {
-					ch.damage(Random.NormalIntRange(6, 12), this);
+					CustomOffensiveHooks.raw(ch, Random.NormalIntRange(6, 12), this, target);
 				}
 				if (ch.isAlive()) {
 					Buff.prolong(ch, Paralysis.class, Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 5 : 3);

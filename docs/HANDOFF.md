@@ -2143,3 +2143,11 @@ Actual current source writes partialDamage as float but reloads with getInt, los
 - Android artifact `11918874056` (ZIP SHA-256 `99b8ade78132ca383f332901acc71c9180174120cc4ab641105f075f48b8492b`) contains 26 API34 emulator tests, 0 failures, 0 errors and 0 skipped. All 34 PNGs decoded as 320×640; the contact-sheet inspection found no blank, corrupt or visibly clipped capture.
 - Verified behavior: harmful Burning/Chill/Frost attachment carries the actual single or mixed creator into immediate reactions and saved Freezing fields; environmental and legacy origin remain unscaled; neutral values preserve source, amount and RNG. No save-format change was introduced.
 - Private delivery remained skipped. This is emulator/CI evidence only, not a physical-phone claim. TEST123 remains the last owner-delivered/signature-compared APK. Three Damage controls remain disabled pending six-class, boss-phase and rule-combination acceptance.
+
+
+## 2026-10-14T18:45:47Z — TEST165 boss-phase damage acceptance candidate
+- Reconciled actual head `7a4ff110e04f0005d5afe06bad9a67486d13c81d`; reread the current handoff, build request, completed ledger and source guide. Did not rebuild TEST164 unchanged.
+- Audited Goo, Tengu, DM-300, Dwarf King and Yog-Dzewa direct damage sites. Confirmed omitted boss boundaries in Tengu bombs/fire, DM-300 falling rocks, Dwarf King summon collisions and Yog death rays; Tengu shocker used a hard-coded boss origin without saved creator provenance.
+- Implemented exactly-once creator scaling with original source/RNG/turn behavior, pre-armor Tengu bomb order, saved mixed Tengu fields and legacy-unknown behavior. Dwarf King self-damage remains unscaled; Goo needed no source change.
+- Added four retained tests covering all six hero classes, five bosses, Tengu delayed-field save/legacy behavior and source-contract/mitigation order. Expected core total 1,581.
+- Exact-source core/debug/immediate-previous TEST164 history/26 API34/34 PNG verification is pending. Three Damage controls remain disabled; no delivery or phone claim.

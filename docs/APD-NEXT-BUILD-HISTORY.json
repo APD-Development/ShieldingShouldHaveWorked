@@ -1,74 +1,38 @@
 {
-  "previous_label": "Codex TEST 161",
-  "previous_source": "9088ca30acde28282454598b1e649a3a70156b56",
-  "previous_run": 38601864296,
+  "previous_label": "Codex TEST 164",
+  "previous_source": "166c8a287b599fcb0f741a446f039fc33f656201",
+  "previous_run": 38612344678,
   "date": "2026-10-14",
   "changes": [
     {
       "category": "Bug Fixes",
       "sprite": "V061_BUGFIX",
-      "title": "Harmful buff attachment ownership",
-      "text": "Carry immutable offensive ownership while Burning, Chill and Frost attach so immediate target reactions use the correct slider exactly once.",
+      "title": "Boss phase damage ownership",
+      "text": "Apply the actual boss creator once to Tengu bombs and delayed fields, DM-300 rocks, Dwarf King summon collisions and Yog death rays while preserving mitigation, sources, turns and RNG.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Buff.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Burning.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/quest/vault/VaultBossElemental.java"
-      ]
-    },
-    {
-      "category": "Bug Fixes",
-      "sprite": "V061_BUGFIX",
-      "title": "Saved freezing-field ownership",
-      "text": "Preserve single or mixed Freezing field creators through decay and save/reload while leaving old and environmental fields unknown.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/blobs/Freezing.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/blobs/Fire.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V063_MAGICMISSILE",
-      "title": "Fire and frost caller provenance",
-      "text": "Prepare offensive fire, chill and frost ownership before attachment across the audited actor, ability, item and weapon callers.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/FireImbue.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/FrostImbue.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/abilities/duelist/ElementalStrike.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/abilities/mage/ElementalBlast.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Elemental.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/YogFist.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/bombs/FrostBomb.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/PotionOfFrost.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/PotionOfDragonsBreath.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/CursedWand.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfFireblast.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfFrost.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Blazing.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Chilling.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/IncendiaryDart.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/ChillingDart.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Tengu.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/DM300.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/DwarfKing.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/YogDzewa.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Harmful buff regressions",
-      "text": "Retain player, boss, mixed-save, legacy-environment and neutral RNG/source attachment checks plus updated caller contracts.",
+      "title": "Class and boss acceptance regressions",
+      "text": "Retain all-six-class and five-boss ownership checks plus Tengu saved-field, legacy-environment, mitigation-order and self-damage guards.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/HarmfulBuffAttachmentProvenanceTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/VaultBossDamageProvenanceTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/DragonBreathProvenanceTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/PlayerAbilityDamageProvenanceTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/BossPhaseDamageProvenanceTest.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_PAGE",
-      "title": "TEST162 evidence and handoff",
-      "text": "Record the bounded source audit, pending exact-source checks and disabled-slider checkpoint.",
+      "title": "TEST165 evidence and handoff",
+      "text": "Record the verified TEST164 baseline, bounded boss audit, pending TEST165 checks and disabled-slider checkpoint.",
       "paths": [
         "docs/APD-TEST162-HARMFUL-BUFF-ATTACHMENT-2026-10-14.md",
-        "docs/APD-TEST161-ARTIFACT-DERIVED-DAMAGE-2026-10-14.md",
+        "docs/APD-TEST165-BOSS-PHASE-DAMAGE-2026-10-14.md",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
