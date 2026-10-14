@@ -1,41 +1,35 @@
 {
-  "previous_label": "Codex TEST 166",
-  "previous_source": "e252e92e6533ac0a3fa581048475bf55fdd5e3da",
-  "previous_run": 38618850435,
+  "previous_label": "Codex TEST 169",
+  "previous_source": "a160dddb4f39fe2e3eb62a601e13bea71730f064",
+  "previous_run": 38628060548,
   "date": "2026-10-14",
   "changes": [
     {
-      "category": "Changes",
-      "sprite": "V064_CHALLENGES",
-      "title": "All 18 Custom Dungeon Rules controls",
-      "text": "Make Player, Enemy and Boss Damage available for next-run drafts after the bounded offensive-source audit; active runs remain locked and scoring remains unchanged.",
+      "category": "Bug Fixes",
+      "sprite": "V061_BUGFIX",
+      "title": "Derived cache source identity",
+      "text": "Invalidate derived statistics when a raw run or legacy log is replaced by different valid content with the same filename and byte length.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomRulesPresentation.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndCustomDungeonRules.java",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/DerivedStore.java"
       ]
     },
     {
       "category": "Testing",
-      "sprite": "V061_BUGFIX",
-      "title": "Extreme rule-combination acceptance",
-      "text": "Retain all-six-class high-HP/defense/low-upgrade combat, enemy-versus-boss damage/healing and exact all-18-value save/load checks.",
+      "sprite": "V061_PAGE",
+      "title": "Equal-length replacement regression",
+      "text": "Retain a valid-log replacement case that requires stale-cache rebuild, replacement facts and subsequent cache reuse.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomRuleCombinationAcceptanceTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomRulesPresentationTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/DerivedStoreTest.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_PAGE",
-      "title": "TEST166 evidence and TEST167 handoff",
-      "text": "Record verified TEST166 artifacts, retained TEST165 failure evidence and the pending all-controls acceptance checkpoint.",
+      "title": "TEST169 evidence and TEST170 handoff",
+      "text": "Preserve verified TEST169 evidence and record the pending DerivedStore source-identity verification checkpoint.",
       "paths": [
-        "docs/APD-TEST165-BOSS-PHASE-DAMAGE-2026-10-14.md",
-        "docs/APD-TEST166-BOSS-PHASE-DAMAGE-CORRECTION-2026-10-14.md",
-        "docs/APD-TEST167-ALL-CUSTOM-RULES-ACCEPTANCE-2026-10-14.md",
-        "docs/APD-TEST168-ALL-CUSTOM-RULES-CORRECTION-2026-10-14.md",
         "docs/APD-TEST169-ALL-CUSTOM-RULES-CORRECTION-2026-10-14.md",
+        "docs/APD-TEST170-DERIVED-CACHE-SOURCE-IDENTITY-2026-10-14.md",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",

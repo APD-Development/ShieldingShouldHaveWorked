@@ -37,13 +37,13 @@ import java.util.List;
 //The derived fact table and its cache file (derived/runfacts.apdd).
 //
 //The raw logs (runs/ and legacy/) are the only source of truth. The cache is a convenience: it is only trusted while the
-//size of every source file is exactly what it was when the cache was written. A missing, stale, damaged or older-version
-//cache is silently rebuilt from the raw files, and a rebuilt table is identical to a cached one. The cache can be deleted
-//at any time.
+//name, byte length and SHA-256 content digest of every source file match what was recorded when the cache was written.
+//A missing, stale, damaged or older-version cache is silently rebuilt from the raw files, and a rebuilt table is identical
+//to a cached one. The cache can be deleted at any time.
 public final class DerivedStore {
 
 	//bump when facts are derived differently, so every old cache is rebuilt
-	public static final int DERIVATION_VERSION = 7;
+	public static final int DERIVATION_VERSION = 8;
 	private static final int CACHE_FORMAT = 2;
 	private static final int CHECKSUM_FOOTER_BYTES = 15;
 
@@ -95,9 +95,40 @@ public final class DerivedStore {
 
 	private List<String> fingerprints(){
 		List<String> out = new ArrayList<>();
-		for (File f : logs(new File(root, "runs"))) out.add("run\t" + f.getName() + "\t" + f.length());
-		for (File f : logs(legacyDir())) out.add("legacy\t" + f.getName() + "\t" + f.length());
+		for (File f : logs(new File(root, "runs"))) out.add(fingerprint("run", f));
+		for (File f : logs(legacyDir())) out.add(fingerprint("legacy", f));
 		return out;
+	}
+
+	private String fingerprint( String source, File file ){
+		long length = 0;
+		try {
+			java.security.MessageDigest digest = java.security.MessageDigest.getInstance("SHA-256");
+			FileInputStream in = new FileInputStream(file);
+			try {
+				byte[] buffer = new byte[32 * 1024];
+				int count;
+				while ((count = in.read(buffer)) != -1){
+					if (count == 0) continue;
+					digest.update(buffer, 0, count);
+					length += count;
+				}
+			} finally {
+				in.close();
+			}
+			StringBuilder hash = new StringBuilder(64);
+			for (byte b : digest.digest()){
+				int value = b & 0xFF;
+				hash.append(Character.forDigit(value >>> 4, 16));
+				hash.append(Character.forDigit(value & 0x0F, 16));
+			}
+			return source + "\t" + file.getName() + "\t" + length + "\t" + hash;
+		} catch (Throwable ignored){
+			//Never trust or reuse a cache while a source cannot be fingerprinted. The changing suffix
+			//also prevents repeated read failures from making an unreadable-source cache look current.
+			return source + "\t" + file.getName() + "\tunreadable\t" + file.length() + "\t"
+					+ file.lastModified() + "\t" + Long.toHexString(System.nanoTime());
+		}
 	}
 
 	//The table, from the cache when it is current, otherwise rebuilt (and the cache rewritten). Never throws.

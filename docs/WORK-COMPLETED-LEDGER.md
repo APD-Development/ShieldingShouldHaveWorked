@@ -624,3 +624,11 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Downloaded Android artifact `11924908702` / ZIP SHA-256 `f49c3775af89bda528d61f870c864975b77ce704a4803c40a3607613d839c196`: 26 API34 tests, 0 failed/ignored; 34/34 PNGs decoded 320×640 and passed contact-sheet/focused visual review.
 - Verified all 18 controls are available for next-run drafts while current-run controls remain locked. Original scores/scoring identity unchanged; provisional ranges are not finalized.
 - Private delivery skipped; no physical-phone claim. TEST123 remains owner-delivered fallback. Do not rebuild unchanged TEST169.
+
+
+## 2026-10-14T20:38:38Z — DerivedStore equal-length source replacement fix prepared
+- Read the current DerivedStore implementation and retained cache tests at branch head `9de2da09e0238dd526b2f298db715b6ceb1456b0`; confirmed cache source fingerprints contained only source kind, filename and byte length.
+- Implemented content identity using byte length plus SHA-256 for each raw run/legacy log. Unreadable sources receive a deliberately non-reusable marker, so repeated read failure cannot make an incomplete derived cache look current.
+- Bumped derivation version 7→8, causing one automatic derived-cache rebuild. Raw logs, game saves, application ID, signing and scoring are unchanged.
+- Added one retained regression that replaces a valid raw log with a different valid log of exactly the same length and requires `REBUILT_STALE`, the replacement score and subsequent cache reuse.
+- Local execution workspace was absent; no local test or build claim. TEST170 exact-source CI requests 1,586 core tests, debug assembly, immediate-previous TEST169 history, 26 API34 checks and 34 screenshots. Candidate remains pending until actual evidence passes.

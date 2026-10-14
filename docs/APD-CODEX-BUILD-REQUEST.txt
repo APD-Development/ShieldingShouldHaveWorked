@@ -67,3 +67,6 @@ TEST168 failed core (2026-10-14T19:55:37Z): source3a70f85f706dcf56553af296c1a44f
 
 
 TEST169 verified (2026-10-14T20:12:02Z): sourcea160dddb4f39fe2e3eb62a601e13bea71730f064/run38628060548 passed1585core+26API34/debug/immediate-previous TEST166 history/34PNG. APK SHA256 ff0d7f10bcef18c7c247bfaee30e7f913ee7ecc699433103fca7a222c3090559. All18controls are verified for next-run drafts; current-run controls remain locked, scores unchanged and ranges provisional. No application build pending; do not rebuild unchanged source. No delivery/phone claim; TEST123 remains owner-delivered.
+
+
+TEST170 exact-source request (2026-10-14T20:38:38Z): verify the DerivedStore raw-source identity correction with 1586 core tests, debug assembly, immediate-previous TEST169 compiled history, 26 API34 checks and 34 valid screenshots. A valid same-name, same-length raw-log replacement must invalidate the derived cache and expose the replacement facts; unchanged logs must still use the cache. No save/raw-log format change, delivery or physical-phone claim.
