@@ -19,3 +19,8 @@ Six permanent methods cover all 20 percentages for all three owned roles across 
 ## Verification boundary
 
 Prepared at `2026-10-14T12:37:39.766Z` from real head `566d99427b6216d60392c424040b56e45620bf10`. This execution workspace has no full Gradle checkout, so no local Java result is claimed. TEST153 must run 1547 core tests, debug assembly, compiled immediate-previous-APK history against TEST152, 26 API34 tests and 34 screenshot checks. Three Damage controls remain disabled pending vault/boss, remaining spell/ability/derived sources and six-class/boss/combined acceptance. TEST152 remains the verified fallback; TEST123 remains the last owner-delivered/signature-compared APK.
+
+
+### TEST153 history-gate outcome
+
+Run `38565297532` stopped before compilation at `2026-10-14T12:38:44Z`. The manifest omitted the already reviewed TEST151/TEST152 evidence paths `docs/APD-TEST150-INFERNO-FIRE-TRANSFER-2026-10-14.md` and `docs/APD-INFERNO-SOURCE-SAFETY-PREPARED-2026-10-14.md` from the TEST152-to-current comparison. Zero core/API34 tests ran and no APK/screenshots were produced. TEST154 corrects only those manifest entries; application source remains the unverified TEST153 candidate.

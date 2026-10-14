@@ -429,3 +429,6 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Added six retained PlantDamageProvenanceTest methods covering all20 percentages/all3 roles, natural exclusion, save/legacy, neutral RNG/field identity and source wiring.
 - No local Gradle checkout exists; no local compilation/test result is claimed. Full TEST153 1547core/debug/history/26API34/34PNG is pending.
 - Three Damage controls remain disabled. No score/save requirement/signing/app-ID/release change.
+
+
+- TEST153 run `38565297532` failed the history-input gate at `2026-10-14T12:38:44Z`: omitted reviewed TEST151/TEST152 evidence documents. 0 core/API34 tests ran; no APK/screenshots. TEST154 adds only those manifest paths and retries unchanged application source.

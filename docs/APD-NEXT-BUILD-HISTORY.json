@@ -156,6 +156,24 @@
       "paths": [
         "docs/APD-NEXT-BUILD-HISTORY.json"
       ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "Verified TEST151 evidence",
+      "text": "Preserve the reviewed TEST151 Inferno/fire verification record in compiled history.",
+      "paths": [
+        "docs/APD-TEST150-INFERNO-FIRE-TRANSFER-2026-10-14.md"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "Verified TEST152 evidence",
+      "text": "Preserve the reviewed TEST152 source-safety verification record in compiled history.",
+      "paths": [
+        "docs/APD-INFERNO-SOURCE-SAFETY-PREPARED-2026-10-14.md"
+      ]
     }
   ]
 }
