@@ -2213,3 +2213,7 @@ Exact source169d2bec53968f191286e3db6cb77efe7661ef06/run38636484010 (20:58:00–
 # TEST172 Crush splash scaling pending exact-source verification — 2026-10-14 21:11 UTC
 
 Preserved concurrent application commit c684d5070fc26bca6cc2d34b414ea18ecbefbb49 on top of verified TEST171. Warrior Crush splash now routes its attributable offensive roll through Player Damage exactly once before the original halving/DR/Vulnerable order; neutral100% retains original rounding and next RNG. Three retained tests cover all permitted percentages, Player-vs-Enemy/Boss selection, pre-armor results and neutral identity. TEST172 requests1590core/debug/immediate-previous TEST171 history/26API34/34PNG. Candidate only until exact-source evidence passes. No save/scoring/delivery/phone change; TEST123 remains owner-delivered.
+
+# TEST172 verified Crush splash Player Damage boundary — 2026-10-14 21:26 UTC
+
+Verified source12795cd9cd3049864e1f33c90b9551e9bda67c8e/run38638453521 (21:12:37–21:25:00UTC):1590core+26API34/debug/immediate-previous TEST171 history/34PNG all passed. APKsha2565a9739829b398ab9fbc4c1ae83c78e06dbddd23806a854406d58442e5375f153. Warrior Crush splash now applies Player Damage exactly once before original halving/DR/Vulnerable order; all percentages and neutral rounding/next RNG passed. No delivery/phone/save/scoring claim; TEST123 remains owner-delivered. Do not rebuild unchanged TEST172; continue a distinct confirmed offensive-source audit item or documented post-slider backlog.

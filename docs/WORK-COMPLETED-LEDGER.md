@@ -664,3 +664,11 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Three retained methods cover all permitted Player Damage percentages, selection of Player rather than Enemy/Boss Damage, pre-armor results, neutral rounding and next-RNG identity.
 - TEST171 evidence was committed independently at `a187509e81d0100128884b487283e190172abaa8`; it verifies source `169d2bec53968f191286e3db6cb77efe7661ef06`, not this newer application source.
 - TEST172 exact-source verification requests 1,590 core tests, debug assembly, complete history against immediate previous compiled TEST171, 26 API34 emulator tests and 34 screenshots. Candidate remains pending; no save, scoring, delivery or phone claim.
+
+## 2026-10-14T21:26:00Z — TEST172 verified Crush splash Player Damage scaling
+- Exact source `12795cd9cd3049864e1f33c90b9551e9bda67c8e`; GitHub Actions run `38638453521` ran from 2026-10-14T21:12:37Z through 2026-10-14T21:25:00Z and concluded success.
+- Core artifact `11928792925` / ZIP SHA-256 `d0a82f9c7f2e3abd30f23fb99385c15c436c9ad20fe98f270c6e48b6e97b8851`: 1,590 tests, 0 failures/errors/skips. All three Crush regressions passed in 0.019 seconds.
+- APK artifact `11929357443` / ZIP SHA-256 `1636835f4aa85a5ea95565fe7ec658688a67bbf9b0483d2bc921df73ef458ac8`: `ADHD-Pixel-Dungeon-CODEX-TEST-172.apk` SHA-256 `5a9739829b398ab9fbc4c1ae83c78e06dbddd23806a854406d58442e5375f153`; bundled checksum matched. Debug assembly and immediate-previous TEST171 compiled-history validation passed.
+- Android artifact `11929688691` / ZIP SHA-256 `ff348102d2c2705af15e303d98e498c5d3a12483763df0ed09d9e1415a72ab46`: 26 API34 emulator tests, 0 failures/errors/skips. All 34 PNGs decoded at 320×640; contact-sheet review found expected readable TEST172 history, rules, score, UIMSD, stairs, tiles and gameplay states with no blank, corrupt or visibly clipped capture.
+- Verified Warrior Crush splash selects Player Damage rather than Enemy/Boss Damage and applies it exactly once before the original halving, DR and Vulnerable order. Neutral values retain original rounding and next RNG.
+- Private delivery was skipped; this is CI/emulator evidence only. No player-save, scoring, application identity, signing or physical-phone claim. TEST123 remains the last owner-delivered/signature-compared APK. Do not rebuild unchanged TEST172.
