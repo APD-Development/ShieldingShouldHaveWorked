@@ -101,13 +101,15 @@ public class HeroicLeap extends ArmorAbility {
 							if (hero.hasTalent(Talent.BODY_SLAM)){
 								int damage = Hero.heroDamageIntRange(hero.pointsInTalent(Talent.BODY_SLAM), 4*hero.pointsInTalent(Talent.BODY_SLAM));
 								damage += Math.round(hero.apdDrRoll()*0.25f*hero.pointsInTalent(Talent.BODY_SLAM));
+								damage = Math.round(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.attackDamage(hero, damage));
 								damage -= mob.apdDrRoll();
 								mob.damage(damage, hero);
 							}
 							if (mob.pos == hero.pos + i && hero.hasTalent(Talent.IMPACT_WAVE)){
 								Ballistica trajectory = new Ballistica(mob.pos, mob.pos + i, Ballistica.MAGIC_BOLT);
 								int strength = 1+hero.pointsInTalent(Talent.IMPACT_WAVE);
-								WandOfBlastWave.throwChar(mob, trajectory, strength, true, true, HeroicLeap.this);
+								WandOfBlastWave.throwCharAttributed(mob, trajectory, strength, true, true, HeroicLeap.this,
+										com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(hero, null));
 								if (Random.Int(4) < hero.pointsInTalent(Talent.IMPACT_WAVE)){
 									Buff.prolong(mob, Vulnerable.class, 5f);
 								}

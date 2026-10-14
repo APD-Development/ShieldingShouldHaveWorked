@@ -7,3 +7,6 @@ TEST158 fixture-only correction (2026-10-14T14:43:42.114Z): TEST157 run385825898
 
 
 TEST158 verified (2026-10-14T15:00:05.913Z): sourced3ed403a6d6a86f5704ea6ee9c4cc4ac5c9779ee/run38583123803 passed1555core+26API34/debug/immediate-previous TEST156 history/34PNG. APK SHA-256 92542d7ca06672e0a72ea51494480ec3ba6f976eb5aa690e6bd1b2c78cf3233b. No application build is pending; do not rebuild unchanged source. Next: deferred harmful-buff-safe design, remaining spells/abilities/derived offense, then six-class/boss/combination acceptance. Three Damage controls remain disabled; no delivery/phone claim.
+
+
+TEST159 exact-source request (2026-10-14T15:35:09.392Z): verify remaining armor-ability provenance with 1560 core tests, debug assembly, immediate-previous TEST158 compiled history, 26 API34 checks and 34 valid screenshots. Preserve enemy-only Warp Beacon scaling and unscaled hero self-cost. Do not deliver or enable Damage sliders.

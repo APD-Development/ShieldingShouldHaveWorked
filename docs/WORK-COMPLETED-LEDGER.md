@@ -484,3 +484,10 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - All 34 screenshots decoded at 320×640. Contact-sheet review found expected readable menus, dialogs, history/score states, tiles and gameplay frames with no corrupt capture. This is emulator evidence, not physical-phone evidence.
 - Verified implementation: Elemental Blast direct damage/Fireblast burning/delayed collision; Elemental Strike six secondary direct sources/two delayed collisions/conjured explosion; Blast Wave immutable collision ownership with legacy callers remaining unowned. Original source objects, mitigation, rolls, RNG, geometry, turns and neutral 100% behavior are retained.
 - Private delivery was skipped. TEST123 remains the last owner-delivered/signature-compared APK. Three Damage controls remain disabled pending the deferred harmful-buff reaction, remaining spell/ability/derived sources, and six-class/boss/combination acceptance.
+
+
+## 2026-10-14T15:35:09.392Z — TEST159 remaining armor-ability candidate
+- Based on latest real head `9268f8daf939ae75439078370c63d90634eaa6c5`; implemented Heroic Leap Body Slam/Impact Wave, both Shockwave paths, and enemy-only Warp Beacon telefrag provenance.
+- Preserved fixed manual armor ordering and the Warp Beacon hero self-cost exclusion; classified the remaining armor abilities as already delegated or inherited.
+- Added five retained `RemainingArmorAbilityDamageProvenanceTest` methods. No local Gradle workspace; 1560core/debug/history/26API34/34PNG pending.
+- Three Damage sliders remain disabled. TEST158 remains the latest verified source; TEST123 remains the owner-delivered fallback.

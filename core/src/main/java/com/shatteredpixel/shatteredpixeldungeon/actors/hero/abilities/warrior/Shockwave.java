@@ -116,6 +116,7 @@ public class Shockwave extends ArmorAbility {
 								int scalingStr = hero.STR()-10;
 								int damage = Hero.heroDamageIntRange(5 + scalingStr, 10 + 2*scalingStr);
 								damage = Math.round(damage * (1f + 0.2f*hero.pointsInTalent(Talent.SHOCK_FORCE)));
+								damage = Math.round(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.attackDamage(hero, damage));
 								damage -= ch.apdDrRoll();
 
 								if (hero.pointsInTalent(Talent.STRIKING_WAVE) == 4){
