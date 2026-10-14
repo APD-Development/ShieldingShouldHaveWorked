@@ -205,6 +205,7 @@ public class Burning extends Buff implements Hero.Doom, Buff.DOTbuff {
 		reigniteWithOrigin(ch,duration,OffensiveDamageOrigin.UNATTRIBUTED);
 	}
 	public void reigniteAttributed(Char ch,Char attacker){reigniteAttributed(ch,DURATION,attacker);}
+	public void reigniteAttributed(Char ch,OffensiveDamageOrigin origin){reigniteWithOrigin(ch,DURATION,origin==null?OffensiveDamageOrigin.UNATTRIBUTED:origin);}
 	public void reigniteAttributed(Char ch,float duration,Char attacker){reigniteWithOrigin(ch,duration,OffensiveDamageOrigin.capture(attacker,null));}
 	public void reigniteAttributed(Char ch,com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CellDamageOrigins field,int cell){
 		reigniteWithOrigins(ch,DURATION,field.timedAt(cell,DURATION));

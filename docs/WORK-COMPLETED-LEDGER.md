@@ -376,3 +376,10 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Compiled history passed against immediate previous TEST144; 34/34 screenshots decoded at 320x640 and contact-sheet review found no obviously corrupt capture. Emulator evidence is not a physical-phone claim.
 - Implemented/verified: mixed Fire provenance, Liquid Flame/Fireblast player ownership, causal chained-bomb ownership, retained five fire plus six chained-bomb regressions. TEST145's four fixture-only failures remain documented.
 - Not delivered: no private-delivery job, owner install, signer comparison, tester distribution, or public release. TEST123 remains delivered fallback. Three Damage sliders remain disabled pending remaining offensive-source and acceptance audits; no score/save/signing/app-ID changes.
+
+
+### 2026-10-14T10:34:33Z — TEST149 Dragon's Breath source-only candidate
+- Read complete current PotionOfDragonsBreath, Burning, Fire, FireImbue, Firebloom and Plant paths on head `b80b9ec4e6dbc8aeedf53dd914f50b18640b35e2`.
+- Implemented one captured activation origin for direct Burning and both Dragon's Breath fire-field branches; added explicit-origin Burning API with null staying environmental.
+- Added four retained methods: all20 percentages/all3 roles, legacy/null exclusion, neutral damage/next-RNG identity, and production caller wiring.
+- No local execution workspace; not compiled/tested/verified. TEST148 `38549433962` remained active and was not replaced. No slider enablement, scoring/save/signing/app-ID/release change.
