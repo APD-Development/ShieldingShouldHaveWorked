@@ -20,6 +20,13 @@ public final class TimedDamageOrigins {
  public void shorten(float duration){while(duration>0&&!parts.isEmpty()){Part last=parts.get(parts.size()-1);float use=Math.min(duration,last.duration);last.duration-=use;duration-=use;if(last.duration<=0&&parts.size()>1)parts.remove(parts.size()-1);else break;}}
  public TimedDamageOrigins copy(){TimedDamageOrigins c=new TimedDamageOrigins();for(Part p:parts)c.parts.add(new Part(p.duration,p.role));return c;}
  public boolean modifiesDamage(){for(Part p:parts)if(p.role.percentage()!=100)return true;return false;}
+ /** Normalized ownership mixture used by the next damage tick. */
+ public double[] currentShares(){
+  double[] shares=new double[4];double used=0;OffensiveDamageOrigin[] roles=OffensiveDamageOrigin.values();
+  for(Part part:parts){double amount=Math.min(1-used,part.duration);if(amount>0){shares[part.role.ordinal()]+=amount;used+=amount;}if(used>=1)break;}
+  if(used<=0){shares[OffensiveDamageOrigin.UNATTRIBUTED.ordinal()]=1;return shares;}
+  for(int i=0;i<roles.length;i++)shares[i]/=used;return shares;
+ }
  public int scale(int raw){
   if(raw<=0||parts.isEmpty())return raw;
   double used=0,weighted=0;boolean neutral=true;

@@ -22,16 +22,42 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.blobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CellDamageOrigins;
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin;
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveEffectContext;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.watabou.utils.Bundle;
 
 public class Inferno extends Blob {
+
+	private CellDamageOrigins apdOrigins = new CellDamageOrigins();
+	private static final String APD_ORIGINS = "apd_inferno_origins";
+
+	public static Inferno seedAttributed(int cell, int amount, OffensiveDamageOrigin origin) {
+		try (OffensiveEffectContext ignored = OffensiveEffectContext.enter(origin)) {
+			return Blob.seed(cell, amount, Inferno.class);
+		}
+	}
+
+	@Override
+	public void seed(com.shatteredpixel.shatteredpixeldungeon.levels.Level level, int cell, int amount) {
+		apdOrigins.seed(cur, level.length(), cell, amount, OffensiveEffectContext.current());
+		super.seed(level, cell, amount);
+	}
+
+	@Override public void clear(int cell) { super.clear(cell); apdOrigins.clear(cell); }
+	@Override public void fullyClear() { super.fullyClear(); apdOrigins.clearAll(); }
+	@Override public void storeInBundle(Bundle bundle) { super.storeInBundle(bundle); if (volume > 0) apdOrigins.store(bundle, APD_ORIGINS, cur); else CellDamageOrigins.clearMetadata(bundle, APD_ORIGINS); }
+	@Override public void restoreFromBundle(Bundle bundle) { super.restoreFromBundle(bundle); apdOrigins = CellDamageOrigins.restore(bundle, APD_ORIGINS, cur); }
 	
 	@Override
 	protected void evolve() {
+		apdOrigins.synchronize(cur);
 		super.evolve();
+		apdOrigins.prepareDiffusion(cur, off, Dungeon.level.solid, Dungeon.level.width());
 		
 		int cell;
 		boolean observe = false;
@@ -55,7 +81,7 @@ public class Inferno extends Blob {
 						continue;
 					}
 					
-					Fire.burn(cell);
+					Fire.burnAttributed(cell, apdOrigins, cell);
 
 					if (Dungeon.level.flamable[cell]){
 						Dungeon.level.destroy( cell );
@@ -71,12 +97,17 @@ public class Inferno extends Blob {
 						|| cur[cell+Dungeon.level.width()] > 0)) {
 
 					if (fire == null || fire.cur == null || fire.cur[cell] == 0) {
-						GameScene.add(Fire.seed(cell, 4, Fire.class));
+						double[] shares = apdOrigins.neighbourShares(cur, cell, Dungeon.level.width());
+						GameScene.add(Fire.seedAttributedMixture(cell, 4, shares));
 					}
 
 				}
 			}
 		}
+
+		apdOrigins.finishDiffusion();
+		apdOrigins.synchronize(off);
+		apdOrigins.discardIfUnattributed();
 		
 		if (observe) {
 			Dungeon.observe();

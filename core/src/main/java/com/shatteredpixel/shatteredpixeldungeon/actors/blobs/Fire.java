@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CellDamageOrigins;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
@@ -35,13 +36,20 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 
 public class Fire extends Blob {
 
-	private com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CellDamageOrigins apdOrigins = new com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CellDamageOrigins();
+	private CellDamageOrigins apdOrigins = new CellDamageOrigins();
 	private static final String APD_ORIGINS = "apd_fire_origins";
 
 	public static Fire seedAttributed(int cell, int amount, com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin origin) {
 		try (com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveEffectContext ignored = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveEffectContext.enter(origin)) {
 			return Blob.seed(cell, amount, Fire.class);
 		}
+	}
+
+	/** Preserve a mixed creator sample while leaving the original field seed untouched. */
+	public static Fire seedAttributedMixture(int cell, int amount, double[] shares) {
+		Fire fire = Blob.seed(cell, amount, Fire.class);
+		if (fire != null) fire.apdOrigins.attributeLatestSeed(fire.cur, cell, amount, shares);
+		return fire;
 	}
 
 	@Override
@@ -52,8 +60,8 @@ public class Fire extends Blob {
 
 	@Override public void clear(int cell) { super.clear(cell); apdOrigins.clear(cell); }
 	@Override public void fullyClear() { super.fullyClear(); apdOrigins.clearAll(); }
-	@Override public void storeInBundle(com.watabou.utils.Bundle bundle) { super.storeInBundle(bundle); if (volume > 0) apdOrigins.store(bundle, APD_ORIGINS, cur); else com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CellDamageOrigins.clearMetadata(bundle, APD_ORIGINS); }
-	@Override public void restoreFromBundle(com.watabou.utils.Bundle bundle) { super.restoreFromBundle(bundle); apdOrigins = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CellDamageOrigins.restore(bundle, APD_ORIGINS, cur); }
+	@Override public void storeInBundle(com.watabou.utils.Bundle bundle) { super.storeInBundle(bundle); if (volume > 0) apdOrigins.store(bundle, APD_ORIGINS, cur); else CellDamageOrigins.clearMetadata(bundle, APD_ORIGINS); }
+	@Override public void restoreFromBundle(com.watabou.utils.Bundle bundle) { super.restoreFromBundle(bundle); apdOrigins = CellDamageOrigins.restore(bundle, APD_ORIGINS, cur); }
 
 	@Override
 	protected void evolve() {
@@ -123,9 +131,14 @@ public class Fire extends Blob {
 	}
 	
 	private void burnAttributed( int pos ) {
+		burnAttributed(pos, apdOrigins, pos);
+	}
+
+	/** Ignite from another field while preserving that field's current cell mixture. */
+	public static void burnAttributed( int pos, CellDamageOrigins origins, int originCell ) {
 		Char ch = Actor.findChar( pos );
 		if (ch != null && !ch.isImmune(Fire.class)) {
-			Buff.affect( ch, Burning.class ).reigniteAttributed( ch, apdOrigins, pos );
+			Buff.affect( ch, Burning.class ).reigniteAttributed( ch, origins, originCell );
 		}
 		burnObjects(pos);
 	}

@@ -174,7 +174,8 @@ public class Burning extends Buff implements Hero.Doom, Buff.DOTbuff {
 		}
 		
 		if (Dungeon.level.flamable[target.pos] && Blob.volumeAt(target.pos, Fire.class) == 0) {
-			GameScene.add( Blob.seed( target.pos, 4, Fire.class ) );
+			if (origins == null) GameScene.add( Blob.seed( target.pos, 4, Fire.class ) );
+			else GameScene.add( Fire.seedAttributedMixture( target.pos, 4, origins.currentShares() ) );
 		}
 		
 		spend( TICK );
@@ -304,3 +305,4 @@ public class Burning extends Buff implements Hero.Doom, Buff.DOTbuff {
 
 	private static double triangularCdf(double x){return x<=0?0:x>=1?1:x<=.5?2*x*x:1-2*(1-x)*(1-x);}
 }
+

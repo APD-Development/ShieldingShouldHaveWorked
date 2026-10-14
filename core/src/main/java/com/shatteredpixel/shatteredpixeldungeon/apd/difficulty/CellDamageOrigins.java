@@ -14,6 +14,29 @@ public final class CellDamageOrigins {
   synchronizeCell(density==null?0:density[cell],cell);
   mass[slot][cell]+=amount;
  }
+ /** Reclassify one just-added environmental seed without changing its density. */
+ public void attributeLatestSeed(int[] density,int cell,int amount,double[] shares){
+  validateShares(shares);if(amount<=0)return;
+  boolean known=false;for(int r=1;r<4;r++)if(shares[r]>0)known=true;
+  if(mass==null){if(!known)return;initialize(density,density.length);}
+  synchronizeCell(density[cell],cell);
+  if(mass[0][cell]+1e-8<amount)throw new IllegalArgumentException("Latest seed is not environmental");
+  mass[0][cell]-=amount;for(int r=0;r<4;r++)mass[r][cell]+=amount*shares[r];
+ }
+ /** Ownership proportions of the side-neighbours, weighted by their live density. */
+ public double[] neighbourShares(int[] density,int to,int width){
+  if(density==null||to<0||to>=density.length||width<=0)throw new IllegalArgumentException("Invalid neighbouring provenance sample");
+  double[] sums=new double[4];
+  if(mass==null){sums[0]=1;return sums;}
+  synchronize(density);
+  if(to%width>0)add(sums,to-1,density);if(to%width<width-1)add(sums,to+1,density);if(to>=width)add(sums,to-width,density);if(to+width<density.length)add(sums,to+width,density);
+  double total=0;for(double sum:sums)total+=sum;if(total<=0){sums[0]=1;return sums;}for(int r=0;r<4;r++)sums[r]/=total;return sums;
+ }
+ private static void validateShares(double[] shares){
+  if(shares==null||shares.length!=4)throw new IllegalArgumentException("Invalid cell provenance shares");double total=0;
+  for(double share:shares){if(!Double.isFinite(share)||share<0)throw new IllegalArgumentException("Invalid cell provenance share");total+=share;}
+  if(Math.abs(total-1)>1e-9)throw new IllegalArgumentException("Invalid cell provenance total");
+ }
  public int scale(int amount,int cell){
   if(amount<=0||mass==null)return amount;double total=0,weighted=0;boolean neutral=true;
   for(int r=0;r<4;r++){double contribution=mass[r][cell];int percentage=ROLES[r].percentage();total+=contribution;weighted+=contribution*percentage;if(contribution>0&&percentage!=100)neutral=false;}
