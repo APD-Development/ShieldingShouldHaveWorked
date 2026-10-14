@@ -648,3 +648,12 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Serialized only the on-disk atomic replacement section across instances; index encoding, CRC, rebuild behavior and file format remain unchanged.
 - Added a deterministic two-instance regression using latches: the first writer holds the temp file open, the second must remain outside the shared replacement section, then both complete and the second complete index loads without rebuild.
 - No local execution workspace was available; no local test/build claim. TEST171 exact-source CI requests 1,587 core tests, debug assembly, immediate-previous TEST170 history, 26 API34 tests and 34 screenshots. Candidate remains pending.
+
+## 2026-10-14T21:10:48Z — TEST171 verified RunIndex cross-instance save serialization
+- Exact source `169d2bec53968f191286e3db6cb77efe7661ef06`; GitHub Actions run `38636484010` ran from 2026-10-14T20:58:00Z through 2026-10-14T21:08:41Z and concluded success.
+- Core artifact `11929355257` / ZIP SHA-256 `985ea8ff5e84b41f56671f82ee4c497f400b8eb5aeb3aab37bf3706c0f60f37`: 1,587 tests, 0 failures/errors/skips. The controlled two-instance save regression passed.
+- APK artifact `11927959848` / ZIP SHA-256 `3e7e5319995a789c71d738816634861f901af72a0d3165e436195ed865d7594f`: `ADHD-Pixel-Dungeon-CODEX-TEST-171.apk` SHA-256 `e5038b2055ca71f7cf0b432d05f1d4e70dddbc8b38325ffd28e1934288c23c22`; bundled checksum matched. Debug assembly and immediate-previous TEST170 compiled-history validation passed.
+- Android artifact `11929576415` / ZIP SHA-256 `6547a27802d04e527b019cc4fef6ff9b7fa4ace66e1ea724d71d06638f4f5eff`: 26 API34 emulator tests, 0 failures/errors/skips. All 34 PNGs decoded at 320×640; contact-sheet review found the expected readable history, rules, score, UIMSD, stairs, tiles and gameplay states with no blank, corrupt or visibly clipped capture.
+- Verified separate RunIndex instances cannot concurrently enter the shared temp-file replacement section; both saves finish and the final second index loads without rebuild. Index format/CRC/order/rebuild behavior, raw logs, player saves, gameplay, scoring, application identity and signing are unchanged.
+- Private delivery was skipped; this is CI/emulator evidence only. TEST123 remains the last owner-delivered/signature-compared APK.
+- Concurrent branch head `c684d5070fc26bca6cc2d34b414ea18ecbefbb49` adds independent Crush splash scaling after the exact TEST171 source. This evidence does not verify that newer application source; it was preserved and requires separate exact-source checks.
