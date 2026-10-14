@@ -97,3 +97,6 @@ TEST174 is verified at source 5913850f400dbfe9fd0b547abbae71c20cd9992c by run 38
 
 
 TEST177 candidate: independently rolled Holy Weapon and Smite bonuses now use the actual attacker damage factor once; already-derived Crystal/Shocking damage is intentionally unchanged to avoid double scaling. Run 1,599 core + debug/history against immediate previous compiled TEST176 + 26 API34 + 34 PNG. Candidate pending; no delivery.
+
+
+TEST177 is verified at source 7b190b54c1aaed329e6e185c592ee686c02385ea by run 38645784290: 1,599 core + 26 API34, debug/history and 34 screenshots passed. APK SHA-256 ea2099d787daeacca90d2b19d7e44263c571ed8517bc3d49229a530054a23e65. Do not rebuild unchanged TEST177; continue a distinct approved backlog task. TEST123 remains last owner-delivered/signature-compared.

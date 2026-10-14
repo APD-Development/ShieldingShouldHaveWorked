@@ -706,3 +706,10 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Confirmed Holy Weapon's flat bonus and Smite's independent roll bypassed the custom boundary. Routed only those two bonuses through the actual attacker once, retaining original rolls, multiplier, sources and trigger order.
 - Added three retained tests for every factor/creator role, contradictory settings, single source-preserving damage, neutral RNG identity and exact production wiring. Expected total 1,599 core.
 - Exact-source core/debug/immediate-previous TEST176 history/26 API34/34 PNG verification is pending. No delivery or phone claim; TEST123 remains owner-delivered fallback.
+
+## 2026-10-14T22:24:00Z — TEST177 verified weapon-triggered spell bonuses
+- Exact source `7b190b54c1aaed329e6e185c592ee686c02385ea`, run `38645784290` (22:10:39Z–22:23:35Z), concluded success.
+- Core artifact `11932816785` / ZIP SHA-256 `63fd2f7af4ad6b689b4e58a0149004d8372b9c516746a73f6217ffba3277086e`: 1,599 tests, 0 failures/errors/skips. APK artifact `11932966600` / ZIP SHA-256 `f7e358e1b52e5f0892fe53f98e0cbb747fce540b32b258a62966cbccf0ecd0a9`: APK SHA-256 `ea2099d787daeacca90d2b19d7e44263c571ed8517bc3d49229a530054a23e65`; checksum/debug/history passed.
+- Android artifact `11932673053` / ZIP SHA-256 `6b7c38505ee99ba17bbc3c3ca5861a051d1d1ce6db1b1d6fe44ac313b2a45d7b`: 26 API34 tests passed; 34/34 PNGs decoded 320×640 and passed contact-sheet/focused review.
+- Verified Holy Weapon and Smite independent bonuses use actual attacker scaling exactly once. Crystal/Shocking derived damage remains singly scaled through the base hit.
+- Private delivery skipped; no physical-phone claim. TEST123 remains owner-delivered fallback. Do not rebuild unchanged TEST177.
