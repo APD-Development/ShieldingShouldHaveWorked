@@ -84,6 +84,14 @@ public class Bomb extends Item {
         try{explode(cell);}finally{apdFuseOrigin=previous;}
     }
 
+    /** A previously owned bomb keeps its creator; an unowned secondary blast inherits its trigger. */
+    public final void apdExplodeTriggered(int cell){
+        com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin origin=apdFuseOrigin;
+        if(origin==com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.UNATTRIBUTED)
+            origin=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveEffectContext.current();
+        apdExplodeAttributed(cell,origin);
+    }
+
     /** Raw special-bomb damage uses the same immutable fuse/throw creator as the base blast. */
     protected final int apdScaleExplosionDamage(int amount){
         return apdFuseOrigin.percentage()==100 ? amount : com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamage.raw(amount,this,apdFuseOrigin).scaled().amount;
@@ -197,7 +205,10 @@ public class Bomb extends Item {
 				//destroys items / triggers bombs caught in the blast.
 				Heap heap = Dungeon.level.heaps.get(i);
 				if (heap != null) {
-					heap.explode();
+                    try(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveEffectContext ignored=
+                        com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveEffectContext.enter(apdFuseOrigin)){
+                        heap.explode();
+                    }
 				}
 			}
 			
