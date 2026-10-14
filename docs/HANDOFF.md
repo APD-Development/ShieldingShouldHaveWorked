@@ -2079,3 +2079,7 @@ Source `2af7a808c53f2325c56d88124b8eb71de1e2b526`, run `38573246711` (`13:36:49Z
 - Added four retained methods covering all20 percentages, exact-once/neutral RNG/source identity, complete caller wiring and self-cost exclusion.
 - No local Gradle workspace is available; 1564core/debug/immediate-previous TEST159 history/26API34/34PNG remains pending.
 - Three Damage sliders remain disabled. TEST159 remains latest verified source; TEST123 remains owner-delivered fallback.
+
+
+## Batched Corruption save-integrity fix — October 14, 2026
+Actual current source writes partialDamage as float but reloads with getInt, losing fractional decay. Four permanent methods: original3fail/1pass; corrected4pass0.044s, including300reloads versus uninterrupted decay, serialized Bundle round-trip and legacy integer/missing fields. Corrected only the reader to getFloat; same key/format and ordinary damage calculation. No player data altered. Source-only batch, not in TEST159 and no APK request triggered. Full current-source/core/Android checks pending next checkpoint. Three Damage controls disabled. Delivery retry38600583387 reuses verified TEST159; release not claimed until actual assets exist.
