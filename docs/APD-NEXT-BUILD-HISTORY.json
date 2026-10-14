@@ -1,59 +1,60 @@
 {
-  "previous_label": "Codex TEST 147",
-  "previous_source": "cf6488e0825065e12376bd4b2686b982a88a3183",
-  "previous_run": 38548687947,
+  "previous_label": "Codex TEST 148",
+  "previous_source": "b80b9ec4e6dbc8aeedf53dd914f50b18640b35e2",
+  "previous_run": 38549433962,
   "date": "2026-10-14",
   "changes": [
     {
       "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "Elemental",
-      "text": "Keep the elemental or its recorded summoner as the source of newborn fire fields.",
+      "sprite": "V063_MAGICMISSILE",
+      "title": "Burning",
+      "text": "Accept one explicit immutable origin for delayed Dragon's Breath burning without changing legacy environmental behavior.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Elemental.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Burning.java"
+      ]
+    },
+    {
+      "category": "Bug Fixes",
+      "sprite": "V061_BUGFIX",
+      "title": "PotionOfDragonsBreath",
+      "text": "Reuse the actual activation user for direct Burning and both primary and adjacent fire fields.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/PotionOfDragonsBreath.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "YogFist",
-      "text": "Treat Burning Fist fire fields as boss-attributed effects.",
+      "title": "DragonBreathProvenanceTest",
+      "text": "Retain full-range role, environmental exclusion, neutral RNG and real caller-wiring regressions.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/YogFist.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/DragonBreathProvenanceTest.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "MonsterFireCallerTest",
-      "text": "Exercise elemental fields, summon creators, unknown-friendly exclusion and restored boss fire.",
+      "title": "Dragon's Breath evidence",
+      "text": "Record scope, preserved behavior, pending checks and remaining offensive-source gaps.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/MonsterFireCallerTest.java"
+        "docs/APD-TEST149-DRAGONS-BREATH-2026-10-14.md"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "APD-TEST148-MONSTER-FIRE-2026-10-14",
-      "text": "Record actual monster-fire checks and remaining acceptance.",
+      "title": "Handoff and ledger",
+      "text": "Record verified TEST148 evidence and the TEST149 candidate checkpoint.",
       "paths": [
-        "docs/APD-TEST148-MONSTER-FIRE-2026-10-14.md"
+        "docs/HANDOFF.md",
+        "docs/WORK-COMPLETED-LEDGER.md"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "HANDOFF",
-      "text": "Preserve the monster-fire continuation checkpoint.",
-      "paths": [
-        "docs/HANDOFF.md"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "APD-CODEX-BUILD-REQUEST",
-      "text": "Require full current-source and Android verification before acceptance.",
+      "title": "Build request",
+      "text": "Require exact-current-source core, debug, Android and history verification without delivery.",
       "paths": [
         "docs/APD-CODEX-BUILD-REQUEST.txt"
       ]
@@ -61,8 +62,8 @@
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "APD-NEXT-BUILD-HISTORY",
-      "text": "Review the changes against the preceding produced APK.",
+      "title": "Exact build history",
+      "text": "Compare every reviewed TEST149 path against the immediately preceding TEST148 APK.",
       "paths": [
         "docs/APD-NEXT-BUILD-HISTORY.json"
       ]

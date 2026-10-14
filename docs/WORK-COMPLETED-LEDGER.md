@@ -383,3 +383,10 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Implemented one captured activation origin for direct Burning and both Dragon's Breath fire-field branches; added explicit-origin Burning API with null staying environmental.
 - Added four retained methods: all20 percentages/all3 roles, legacy/null exclusion, neutral damage/next-RNG identity, and production caller wiring.
 - No local execution workspace; not compiled/tested/verified. TEST148 `38549433962` remained active and was not replaced. No slider enablement, scoring/save/signing/app-ID/release change.
+
+
+### 2026-10-14T10:45:49Z — TEST148 verified; TEST149 requested
+- TEST148 source `b80b9ec4e6dbc8aeedf53dd914f50b18640b35e2`, run `38549433962`: 1526 core + 26 API34 passed with 0 failure/error/skip; debug and compiled history passed; 34 valid 320x640 PNGs visually reviewed.
+- Artifacts: core `11885719618`/`627dafb34f33937bc80f2b7e4344fea5f240d9d93a74ad294dc2e7d84e8432ef`; Android `11886478533`/`db2c213f75e49b5755382e31dce7015c05eeadd210a2bff71a16e38fc69174ec`; APK `11886556253`/`c777f86d8eef71954bf6d9c54f98e0d302b720c2a758b1dac1c67bd52d0676f9`; contained APK `2b7dc53c96f9be31cbe250ed87681d919232dd9f31007972deaa5c91628e5e1a` checksum passed.
+- Private delivery skipped; no owner install/signature comparison/physical-phone claim. TEST123 remains delivered fallback.
+- TEST149 candidate `b66a31ada9c13beba67a3c8cc430668a5b8c9975` requires 1530 core/debug/history/26 API34/34 PNG; pending, with three Damage sliders disabled.
