@@ -609,3 +609,9 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Diagnosed the new headless real-attack fixture entering `Hero.interrupt()` with a null visual selector. Disabled only that fixture's normal damage-interrupt visual behavior; real attack, exactly-once scaling, mitigation, source and healing assertions remain.
 - Diagnosed invalid manifest sprite `V061_CHANGE`; replaced it with existing native `V064_CHALLENGES`. No history guard or gameplay assertion was weakened.
 - TEST168 requests the corrected 1,585-test exact source and full unchanged acceptance matrix. TEST166 remains latest verified; TEST123 remains owner-delivered fallback.
+
+
+## 2026-10-14T19:57:08Z — TEST168 failure diagnosed; TEST169 fixture correction
+- TEST168 source `3a70f85f706dcf56553af296c1a44f98635a5af7`, run `38627408866`, ran 1,585 core tests with 1 failure. The corrected history manifest passed; no APK/API34/screenshots were produced.
+- The real enemy hit completed attack and mitigation but normal serious-damage feedback in `Hero.damage()` invoked the absent headless scene selector. Overrode only `FixedHero.interrupt()` as a no-op; application code and all combat/healing assertions remain unchanged.
+- TEST169 requests the corrected 1,585-test exact source and full acceptance matrix. TEST166 remains latest verified; TEST123 remains owner-delivered fallback.

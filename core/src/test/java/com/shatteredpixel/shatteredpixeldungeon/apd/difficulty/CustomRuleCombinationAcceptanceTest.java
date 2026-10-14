@@ -75,6 +75,7 @@ public class CustomRuleCombinationAcceptanceTest {
             Talent.initClassTalents(this);
             damageInterrupt=false;
         }
+        @Override public void interrupt(){}
         @Override public int defenseSkill(Char attacker){return 0;}
         @Override public int drRoll(){return 5;}
         @Override public void damage(int amount,Object from){incoming=amount;source=from;super.damage(amount,from);}

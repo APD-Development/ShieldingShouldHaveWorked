@@ -2180,3 +2180,8 @@ Actual current source writes partialDamage as float but reloads with getInt, los
 # TEST167 core failure; TEST168 correction — 2026-10-14 19:52 UTC
 
 TEST167source57b29f9ec716aabb20237a963fe8d32e4bbfb930/run38626757231 ran1585core with2failures. New real-attack regression reached headless Hero.interrupt visual path because fixture damageInterrupt remained enabled; application combat behavior was not implicated. History guard also rejected nonexistent V061_CHANGE sprite. TEST168 disables only fixture visual interruption and uses existing V064_CHALLENGES; assertions/coverage unchanged. No167APK/API34/screenshots. TEST166 remains latest verified; all18controls candidate pending TEST168. No delivery/score/save-format/phone claim.
+
+
+# TEST168 core failure; TEST169 correction — 2026-10-14 19:57 UTC
+
+TEST168source3a70f85f706dcf56553af296c1a44f98635a5af7/run38627408866 ran1585core with1failure. Native history sprite correction passed. Real75-damage attack reached Hero.damage serious-damage feedback, whose interrupt requires live GameScene selector absent from core fixtures. TEST169 no-ops only FixedHero.interrupt; actual attack/hooks/defense/source/healing/assertions remain. No168APK/API34/screenshots. TEST166 latest verified; all18controls candidate pending TEST169. No delivery/score/save-format/phone claim.

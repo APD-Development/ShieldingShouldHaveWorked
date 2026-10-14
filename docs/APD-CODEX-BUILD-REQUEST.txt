@@ -61,3 +61,6 @@ TEST167 exact-source request (2026-10-14T19:44:18Z): verify all-18-controls acce
 
 
 TEST167 failed core (2026-10-14T19:51:04Z): source57b29f9ec716aabb20237a963fe8d32e4bbfb930/run38626757231 ran1585 tests with2 failures: headless Hero damage interruption entered a null visual selector, and history manifest used nonexistent V061_CHANGE. No APK/API34/screenshots. TEST168 exact-source correction: disable only the fixture's visual damage interruption, use native V064_CHALLENGES, then verify1585core/debug/immediate-previous TEST166 history/26API34/34PNG. No delivery.
+
+
+TEST168 failed core (2026-10-14T19:55:37Z): source3a70f85f706dcf56553af296c1a44f98635a5af7/run38627408866 ran1585 tests with1 failure. History correction passed; serious-damage feedback inside Hero.damage still called the absent headless selector. No APK/API34/screenshots. TEST169 exact-source correction: no-op only FixedHero.interrupt in the core fixture, retaining actual attack/damage/defense/source/healing assertions; verify1585core/debug/immediate-previous TEST166 history/26API34/34PNG. No delivery.
