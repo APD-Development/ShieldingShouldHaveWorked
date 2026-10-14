@@ -594,3 +594,11 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Android artifact `11922116695` (ZIP SHA-256 `ba39a535b6528081553e1b357b52fe5257ae84a972b0aea041e3e77667ff04d3`) records 26 API34 emulator tests, 0 failed and 0 ignored. All 34 screenshots decoded at 320×640; contact-sheet review found expected readable history/rules/score/UIMSD/stairs/tiles/gameplay states with no blank, corrupt or visibly clipped capture.
 - Verified behavior: all six classes and five main bosses select the intended damage origin; Tengu bomb/fire/shocker, DM-300 rocks, Dwarf King summon collisions and Yog rays use exactly one creator boundary. Newly created Tengu fields preserve boss ownership while metadata-less historical fields remain unknown/unscaled. Dwarf King self-damage remains unchanged.
 - This is CI/emulator evidence only. Private delivery was skipped; TEST123 remains last owner-delivered/signature-compared. Three Damage controls remain disabled pending high-HP/defense, save/load and cross-rule acceptance.
+
+
+## 2026-10-14T19:44:18Z — TEST167 all-18-controls acceptance candidate
+- Reconciled head `4c309fd7e82ad29ada0b89428f3d046e6252a6f0` and did not rebuild verified TEST166 unchanged.
+- Added distinct combination acceptance for all six classes at high enemy HP/defense and low Player Damage/upgrade count; actual enemy-versus-boss replacement damage with high Player Defense and fractional healing; and real all-18-value save/load with damaged high Player HP, difficulty/balance, nine challenges, class and seed.
+- Existing all-class generation acceptance still covers spawn/hunger/food/HP/scroll interactions, so it was retained rather than duplicated.
+- Marked the three Damage controls available for next-run drafts only. Active-run settings remain locked; original scores, experimental warning and pending-scoring notice are unchanged.
+- Expected total: 1,585 core plus debug/immediate-previous TEST166 history/26 API34/34 PNG. Candidate-only until exact-source verification passes; TEST123 remains owner-delivered fallback.

@@ -17,4 +17,9 @@ public class CustomRulesPresentationTest {
         assertEquals("15 (100.00%)",CustomRulesPresentation.valueText(CustomDungeonRules.Slider.UPGRADE_SCROLLS,15));
         assertEquals("60 (400.00%)",CustomRulesPresentation.valueText(CustomDungeonRules.Slider.UPGRADE_SCROLLS,60));
     }
+    @Test public void allEighteenGameplayControlsAreAvailableForNewRuns() {
+        assertEquals(18,CustomDungeonRules.Slider.values().length);
+        for(CustomDungeonRules.Slider slider:CustomDungeonRules.Slider.values())
+            assertTrue(slider.name(),CustomRulesPresentation.gameplayImplemented(slider));
+    }
 }

@@ -39,7 +39,7 @@ public class WndCustomDungeonRules extends Window {
             RenderedTextBlock unknown=PixelScene.renderTextBlock("This run's custom settings were not recorded.",6);
             unknown.maxWidth(width);unknown.setPos(0,y);content.add(unknown);y=unknown.bottom()+4;
         } else {
-            RenderedTextBlock context=PixelScene.renderTextBlock(currentRun ? "Current run — locked" : "Next run only. Pending effects are disabled.",6);
+            RenderedTextBlock context=PixelScene.renderTextBlock(currentRun ? "Current run — locked" : "Next run only.",6);
             context.maxWidth(width);context.setPos(0,y);content.add(context);y=context.bottom()+4;
             for(final CustomDungeonRules.Slider rule:CustomDungeonRules.Slider.values()) {
                 final RenderedTextBlock caption=PixelScene.renderTextBlock(caption(rule),6);

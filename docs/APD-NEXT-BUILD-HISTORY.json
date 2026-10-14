@@ -1,39 +1,39 @@
 {
-  "previous_label": "Codex TEST 164",
-  "previous_source": "166c8a287b599fcb0f741a446f039fc33f656201",
-  "previous_run": 38612344678,
+  "previous_label": "Codex TEST 166",
+  "previous_source": "e252e92e6533ac0a3fa581048475bf55fdd5e3da",
+  "previous_run": 38618850435,
   "date": "2026-10-14",
   "changes": [
     {
-      "category": "Bug Fixes",
-      "sprite": "V061_BUGFIX",
-      "title": "Boss phase damage ownership",
-      "text": "Apply the actual boss creator once to Tengu bombs and delayed fields, DM-300 rocks, Dwarf King summon collisions and Yog death rays while preserving mitigation, sources, turns and RNG.",
+      "category": "Changes",
+      "sprite": "V061_CHANGE",
+      "title": "All 18 Custom Dungeon Rules controls",
+      "text": "Make Player, Enemy and Boss Damage available for next-run drafts after the bounded offensive-source audit; active runs remain locked and scoring remains unchanged.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Tengu.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/DM300.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/DwarfKing.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/YogDzewa.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomRulesPresentation.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndCustomDungeonRules.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java"
       ]
     },
     {
-      "category": "Changes",
+      "category": "Testing",
       "sprite": "V061_BUGFIX",
-      "title": "Class and boss acceptance regressions",
-      "text": "Retain all-six-class and five-boss ownership checks plus Tengu saved-field, historical legacy-environment, mitigation-order and self-damage guards.",
+      "title": "Extreme rule-combination acceptance",
+      "text": "Retain all-six-class high-HP/defense/low-upgrade combat, enemy-versus-boss damage/healing and exact all-18-value save/load checks.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/BossPhaseDamageProvenanceTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomRuleCombinationAcceptanceTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomRulesPresentationTest.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_PAGE",
-      "title": "TEST165/166 evidence and handoff",
-      "text": "Record the verified TEST164 baseline, TEST165 core failures, bounded correction, pending TEST166 checks and disabled-slider checkpoint.",
+      "title": "TEST166 evidence and TEST167 handoff",
+      "text": "Record verified TEST166 artifacts, retained TEST165 failure evidence and the pending all-controls acceptance checkpoint.",
       "paths": [
-        "docs/APD-TEST162-HARMFUL-BUFF-ATTACHMENT-2026-10-14.md",
         "docs/APD-TEST165-BOSS-PHASE-DAMAGE-2026-10-14.md",
         "docs/APD-TEST166-BOSS-PHASE-DAMAGE-CORRECTION-2026-10-14.md",
+        "docs/APD-TEST167-ALL-CUSTOM-RULES-ACCEPTANCE-2026-10-14.md",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",

@@ -80,7 +80,7 @@ public class CustomRulesNoticeDeviceTest {
                         assertEquals(CustomRulesPresentation.noticeText(),notice.text());
                         assertTrue(notice.visible);assertEquals(0,notice.top(),0);
                         List<OptionSlider> sliders=find(windows[0],OptionSlider.class);assertEquals(18,sliders.size());
-                        assertTrue(sliders.get(0).active);assertFalse(sliders.get(1).active);
+                        for(OptionSlider slider:sliders)assertTrue("Every next-run control is implemented",slider.active);
                         OptionSlider first=sliders.get(0);assertTrue(notice.bottom()<first.top());
                         scroll.scrollTo(0,Math.max(0,first.top()-20));
                         touch.set(first.camera().cameraToScreen(first.right()-3,first.bottom()-7));

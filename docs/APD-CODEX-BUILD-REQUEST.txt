@@ -55,3 +55,6 @@ TEST165 failed core (2026-10-14T18:51:04Z): source314b678c1aa7c85d4a84f6d5a02ad1
 
 
 TEST166 verified (2026-10-14T19:06:38Z): sourcee252e92e6533ac0a3fa581048475bf55fdd5e3da/run38618850435 passed1581core/debug/immediate-previous TEST164 history/26API34/34PNG. APK SHA256 984170746be694a64bc462febcf072292321760ffba3f4e596828f3adec1f614. Do not rebuild unchanged source. No delivery/phone claim; three Damage controls remain disabled pending high-HP/defense, save/load and cross-rule acceptance.
+
+
+TEST167 exact-source request (2026-10-14T19:44:18Z): verify all-18-controls acceptance with1585core/debug/immediate-previous TEST166 compiled history/26API34/34PNG. Cover all six classes at high enemy HP/defense with low Player Damage/one scroll, enemy-versus-boss replacement damage with high Player Defense/25% healing, and exact all-18-value save/load. Damage controls are next-run only; preserve active-run locks, scores, warning and pending-scoring notice. No delivery or physical-phone claim.

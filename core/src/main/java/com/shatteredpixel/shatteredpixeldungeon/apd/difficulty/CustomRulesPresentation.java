@@ -47,12 +47,8 @@ public final class CustomRulesPresentation {
         return slider==CustomDungeonRules.Slider.UPGRADE_SCROLLS
             ? String.format(Locale.ROOT,"%d (%.2f%%)",value,value*100.0/15.0) : value+"%";
     }
-    /** Alpha assembly checkpoint: never offer unfinished effects as working gameplay controls. */
+    /** Every listed alpha control has a gameplay implementation; active-run controls remain locked. */
     public static boolean gameplayImplemented(CustomDungeonRules.Slider slider) {
-        switch(slider) {
-            case PLAYER_DAMAGE: case ENEMY_DAMAGE: case BOSS_DAMAGE:
-                return false;
-            default: return true;
-        }
+        return true;
     }
 }
