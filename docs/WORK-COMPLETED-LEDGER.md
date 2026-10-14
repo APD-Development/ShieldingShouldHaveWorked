@@ -344,3 +344,9 @@ Eight permanent tests cover all slider percentages, mixed/environmental fields, 
 
 ## TEST142 nested Tengu fixture correction — 2026-10-14T02:42:15.284Z
 Pre-acceptance source review found the new regression referenced ShockerBlob as Tengu.ShockerBlob, while production declares it as Tengu.ShockerAbility.ShockerBlob. Corrected only that retained test type reference; electricity production behavior and all assertions are unchanged. TEST141 run38502360650 remains unaccepted. Exact-source1499core/26API34/34PNG/debug/history verification is pending; TEST140 remains the last complete verified source and TEST123 the last owner-delivered/signature-compared APK.
+
+
+## TEST142 failure and TEST143 headless fixture correction — 2026-10-14T02:48:51.514Z
+TEST141 run38502360650 failed at test compilation on the incorrect nested Tengu type; no APK/Android ran. TEST142 source4f525136ae83fcb88e20b681cb95bfa18c07ae5f/run38502433855 compiled production/tests and ran1499core:1493passed,6failed, with all1491 previous tests green. Five new Electricity tests hit a fixture-only null Level.heaps; Shocking Brew hit the synthetic5x5 edge. Core artifact11866442824/digest bc613850a0d786f831c9a5014d279afb6e345d4db6597591eed920873ba37a89 retained exact XML. APK/API34 jobs were correctly skipped.
+
+TEST143 initializes the headless heap registry and moves unchanged electrical assertions to a safe central cell in a15x15 map. Production behavior/assertions are unchanged. Exact-source1499core/26API34/34PNG/debug/history remain pending. TEST140 source26809c581a9dc16b7a3f29dfeb8f47a81cf09c02/run38499807644 remains last fully verified; TEST123 remains last owner-delivered/signature-compared. Three Damage controls remain disabled; fire/plants/specialized explosions/abilities/derived audit remains next. No phone/release/scoring/save/inventory/signing/application ID/main/Claude/online-service change.

@@ -106,6 +106,15 @@
       "paths": [
         "docs/APD-TEST142-ELECTRICITY-FIXTURE-2026-10-13.md"
       ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "TEST143 headless electricity fixture",
+      "text": "Initialize the headless level's heap registry and move electrical assertions to a safe central cell after TEST142 exposed fixture-only null and edge assumptions.",
+      "paths": [
+        "docs/APD-TEST143-ELECTRICITY-FIXTURE-2026-10-13.md"
+      ]
     }
   ]
 }

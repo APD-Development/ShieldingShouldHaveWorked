@@ -1,0 +1,7 @@
+# TEST143 headless electricity fixture correction
+
+Recorded 2026-10-14T02:48:51.514Z.
+
+TEST141 run38502360650 stopped at test compilation because the retained test used the wrong nested Tengu type. TEST142 source4f525136ae83fcb88e20b681cb95bfa18c07ae5f/run38502433855 compiled production and tests, then ran1499core tests:1493passed and6failed. All1491 previously passing tests remained green. Five new failures were NullPointerException at Electricity.evolve because the headless Level fixture did not initialize Level.heaps; the sixth was ArrayIndexOutOfBoundsException because Shocking Brew expanded around a cell too close to the edge of a synthetic5x5 map. Core artifact11866442824/digest bc613850a0d786f831c9a5014d279afb6e345d4db6597591eed920873ba37a89 retained the XML. Core failure correctly prevented APK and API34 jobs.
+
+TEST143 changes only the retained fixture: initialize an empty SparseArray heap registry and use the center of a15x15 synthetic map. The eight production assertions, electricity implementation and expected behavior are unchanged. Exact-source1499core/26API34/34PNG/debug/history are pending CI. TEST140 remains the last complete verified source; TEST123 remains the last owner-delivered/signature-compared APK. Three Damage controls remain disabled. No release, physical-phone, scoring, save, inventory, signing/application ID, balance, main, Claude or online-service claim.
