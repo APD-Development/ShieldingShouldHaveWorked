@@ -106,3 +106,6 @@ TEST178 exact-source request (2026-10-14T22:37:24Z): verify Shocking Dart electr
 
 
 TEST178 verified (2026-10-14T22:51:05Z): sourcea6d757fcaecc69fb0bdb38a6dd207c3aea6ccf22/run38649035059 passed1602core+26API34/debug/immediate-previous TEST177 history/34PNG. APK SHA256 082e2ad55ce382fe49b348d152145da1103cdee557a80c1ddb2a582aa5029e74. Shocking/Holy Dart independent bonuses use actual attacker scaling once with neutral source/RNG identity. Do not rebuild unchanged TEST178; continue a distinct approved backlog task. No delivery/phone claim; TEST123 remains owner-delivered.
+
+
+TEST179 exact-source request (2026-10-14T23:39:51Z): verify direct API34 recreation of UIMSD Column order and Move column with the strengthened existing method; require exactly one restored window at each step, working restored Make first callback, original query restoration,1602core/debug/immediate-previousTEST178history/26API34/34PNG. Production query/window/save/scoring code unchanged. No delivery/physical-phone claim.

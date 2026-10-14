@@ -15,8 +15,8 @@ Repository: github.com/charltonchris29/ShieldingShouldHaveWorked (private). Work
 - Switches live in `ApdFeatures`; a test build (`-PapdTestBuild`, see android/build.gradle) writes the asset `apd/features.txt`. Normal builds have no such file, so every test feature is off.
 - Tutorial fix: `ApdIntro` ends SPD's first-run tutorial for a used install (it caused the closed floor-1 start, greyed Main Menu and hidden difficulty picker).
 
-## Known remaining bugs / open items
-1. UIMSD dialogs (e.g. Arrange the columns) close when you switch Android apps and come back; the table stays. Needs per-dialog restore.
+## Known status / remaining bugs / open items
+1. UIMSD parameterized-dialog restoration exists. TEST179 adds direct API34 recreation coverage for the two-step Column order and Move column flow; exact-source verification is pending. Physical-phone lifecycle acceptance remains unclaimed.
 2. UIMSD default scope counts only FINISHED runs under the rules a new run would use; abandoned runs and Cleric runs (own ruleset) only appear under "All (mixed)". By design, but may confuse; wording/empty state could be clearer.
 3. A floor-1 run created while the tutorial was on keeps its hidden entrance door (abandon it and start a new run, or search).
 4. Hero-select markers (pips + win star): design written (docs/APD-HERO-MARKERS.md), NOT built, awaiting approval.

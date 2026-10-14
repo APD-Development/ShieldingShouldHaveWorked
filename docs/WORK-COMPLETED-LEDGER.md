@@ -730,3 +730,10 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Android artifact `11934865932` / ZIP SHA-256 `7a5b2ef852f5c10ba87870a661b4c4dc0076437e8b5512f2b77ee1edb5aed238`: 26 API34 tests passed; 34/34 PNGs decoded at 320×640 and passed contact-sheet/focused history review.
 - Verified Shocking Dart electrical burst and Holy Dart anti-undead/demonic bonus use the actual attacker factor exactly once; neutral amount/source/next-RNG identity passed.
 - Private delivery skipped; no physical-phone claim. TEST123 remains owner-delivered fallback. Do not rebuild unchanged TEST178; continue a distinct approved backlog task.
+
+
+## 2026-10-14T23:39:51Z — TEST179 UIMSD Column order recreation candidate
+- Re-read the documented Arrange-columns lifecycle issue after verified TEST178.
+- Current production windows already provide exact restorers, but API34 coverage only recreated Columns selection and never the distinct Column order or Move column steps.
+- Strengthened the retained device test to recreate both steps exactly once, invoke Make first through the restored callback, verify the selected second column becomes first, then restore the original query.
+- No production query/window, save, history, scoring, identity or signing behavior changed. TEST179 requests 1,602 core/debug/immediate-previous TEST178 history/26 strengthened API34 methods/34 PNG. Candidate remains pending; no delivery or physical-phone claim.

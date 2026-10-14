@@ -460,10 +460,11 @@ public class UimsdRestoreDeviceTest {
                 WndUimsdColumns.show(model());
             });
             rebuildScene();
+            final AtomicReference<List<String>> previousColumns = new AtomicReference<>();
             onRender(() -> {
                 assertEquals("Columns survived exactly once", 1, windows().size());
                 clearWindows();
-                List<String> previousColumns = new ArrayList<>(model().query().columns);
+                previousColumns.set(new ArrayList<>(model().query().columns));
                 try {
                     String onlyColumn = model().offeredColumns().get(0).id;
                     model().setColumns(java.util.Collections.singletonList(onlyColumn));
@@ -480,8 +481,30 @@ public class UimsdRestoreDeviceTest {
                         assertTrue("rendered last-column check stays on", label.text().startsWith("[x] "));
                     } catch (Exception e) { throw new RuntimeException(e); }
                 } finally {
-                    clearWindows(); model().setColumns(previousColumns);
+                    clearWindows(); model().setColumns(previousColumns.get());
                 }
+                assertTrue("column-order fixture has at least two columns", previousColumns.get().size() >= 2);
+                WndUimsdColumns.arrange(model());
+            });
+            rebuildScene();
+            onRender(() -> {
+                assertEquals("Column order survived exactly once", 1, windows().size());
+                assertTrue(windows().get(0) instanceof WndUimsdList);
+                assertNotNull("Column order provides an exact restorer", windows().get(0).restoreOnSceneReset());
+                pickItem((WndUimsdList) windows().get(0), 1);
+                assertEquals("choosing a column opens one move menu", 1, windows().size());
+            });
+            rebuildScene();
+            onRender(() -> {
+                assertEquals("Move column survived exactly once", 1, windows().size());
+                assertTrue(windows().get(0) instanceof WndUimsdList);
+                assertNotNull("Move column provides an exact restorer", windows().get(0).restoreOnSceneReset());
+                pickItem((WndUimsdList) windows().get(0), 2);
+                assertEquals("restored move callback returns to Column order", 1, windows().size());
+                assertEquals("restored Make first moves the chosen column",
+                        previousColumns.get().get(1), model().query().columns.get(0));
+                clearWindows();
+                model().setColumns(previousColumns.get());
                 options("pickGroup", new Class<?>[]{UimsdModel.class}, model());
             });
             rebuildScene();

@@ -1,37 +1,35 @@
 {
-  "previous_label": "Codex TEST 177",
-  "previous_source": "7b190b54c1aaed329e6e185c592ee686c02385ea",
-  "previous_run": 38645784290,
+  "previous_label": "Codex TEST 178",
+  "previous_source": "a6d757fcaecc69fb0bdb38a6dd207c3aea6ccf22",
+  "previous_run": 38649035059,
   "date": "2026-10-14",
   "changes": [
     {
-      "category": "Bug Fixes",
-      "sprite": "V061_BUGFIX",
-      "title": "Tipped-dart bonus ownership",
-      "text": "Apply the actual attacker factor once to Shocking Dart electrical burst and Holy Dart anti-undead/demonic bonus damage.",
+      "category": "Testing",
+      "sprite": "V061_PAGE",
+      "title": "UIMSD column-dialog recreation",
+      "text": "Recreate Column order and Move column independently, require exact single restoration, and exercise Make first through the restored callback.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/TippedDart.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/ShockingDart.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/HolyDart.java"
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdRestoreDeviceTest.java"
       ]
     },
     {
-      "category": "Testing",
-      "sprite": "V061_PAGE",
-      "title": "Tipped-dart provenance coverage",
-      "text": "Cover every factor and creator role, contradictory settings, source identity, neutral RNG and exact Shocking/Holy production wiring.",
+      "category": "Bug Fixes",
+      "sprite": "V061_BUGFIX",
+      "title": "Column restoration status",
+      "text": "Replace the stale open-item wording with the exact guarded workflow and retain physical-phone acceptance as unclaimed.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/TippedDartBonusDamageProvenanceTest.java"
+        "docs/KNOWN-ISSUES-AND-SOURCE-GUIDE.md"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_PAGE",
-      "title": "TEST177 evidence and TEST178 handoff",
-      "text": "Preserve verified weapon spell-bonus evidence and record the pending tipped-dart checkpoint.",
+      "title": "TEST178 evidence and TEST179 handoff",
+      "text": "Preserve verified tipped-dart evidence and record the pending UIMSD recreation checkpoint.",
       "paths": [
-        "docs/APD-TEST177-WEAPON-SPELL-BONUS-DAMAGE-2026-10-14.md",
         "docs/APD-TEST178-TIPPED-DART-BONUS-DAMAGE-2026-10-14.md",
+        "docs/APD-TEST179-UIMSD-COLUMN-RESTORE-2026-10-14.md",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
