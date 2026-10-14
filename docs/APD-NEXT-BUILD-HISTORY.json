@@ -1,36 +1,35 @@
 {
-  "previous_label": "Codex TEST 170",
-  "previous_source": "8da173025d4ab64fea123ee03f9afdbd4efc02f1",
-  "previous_run": 38634072761,
+  "previous_label": "Codex TEST 171",
+  "previous_source": "169d2bec53968f191286e3db6cb77efe7661ef06",
+  "previous_run": 38636484010,
   "date": "2026-10-14",
   "changes": [
     {
       "category": "Bug Fixes",
       "sprite": "V061_BUGFIX",
-      "title": "Cross-instance run-index saves",
-      "text": "Serialize atomic replacement across RunIndex objects so they cannot concurrently truncate or move the same derived temp file.",
+      "title": "Crush splash damage ownership",
+      "text": "Apply Player Damage once to Warrior Crush splash before its original halving, armor and vulnerability order.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/RunIndex.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Combo.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "V061_PAGE",
-      "title": "Controlled concurrent index regression",
-      "text": "Hold one temp stream open, prove a second instance waits, then require both saves and a complete final index without rebuild.",
+      "title": "Crush scaling identity coverage",
+      "text": "Cover all permitted Player Damage values, contradictory enemy and boss settings, pre-armor order, neutral rounding and next RNG.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/RunIndexTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/ComboDamageScalingTest.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_PAGE",
-      "title": "TEST170 evidence and TEST171 handoff",
-      "text": "Preserve verified TEST170 evidence, refresh the UIMSD audit status and record the pending RunIndex concurrency checkpoint.",
+      "title": "TEST171 evidence and TEST172 handoff",
+      "text": "Preserve verified RunIndex concurrency evidence and record the distinct pending Crush splash checkpoint.",
       "paths": [
-        "docs/APD-TEST170-DERIVED-CACHE-SOURCE-IDENTITY-2026-10-14.md",
         "docs/APD-TEST171-RUNINDEX-CROSS-INSTANCE-SAVE-2026-10-14.md",
-        "docs/UIMSD-AUDIT-BUG-LOG.md",
+        "docs/APD-TEST172-CRUSH-SPLASH-DAMAGE-2026-10-14.md",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",

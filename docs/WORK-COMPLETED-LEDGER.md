@@ -657,3 +657,10 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Verified separate RunIndex instances cannot concurrently enter the shared temp-file replacement section; both saves finish and the final second index loads without rebuild. Index format/CRC/order/rebuild behavior, raw logs, player saves, gameplay, scoring, application identity and signing are unchanged.
 - Private delivery was skipped; this is CI/emulator evidence only. TEST123 remains the last owner-delivered/signature-compared APK.
 - Concurrent branch head `c684d5070fc26bca6cc2d34b414ea18ecbefbb49` adds independent Crush splash scaling after the exact TEST171 source. This evidence does not verify that newer application source; it was preserved and requires separate exact-source checks.
+
+## 2026-10-14T21:11:59Z — TEST172 Crush splash candidate reconciled
+- Re-read the approved branch after TEST171 and preserved concurrent commit `c684d5070fc26bca6cc2d34b414ea18ecbefbb49` rather than overwriting it.
+- Warrior Crush splash now applies the actual hero's Player Damage multiplier once to its offensive splash roll before the existing halving, target DR and Vulnerable steps.
+- Three retained methods cover all permitted Player Damage percentages, selection of Player rather than Enemy/Boss Damage, pre-armor results, neutral rounding and next-RNG identity.
+- TEST171 evidence was committed independently at `a187509e81d0100128884b487283e190172abaa8`; it verifies source `169d2bec53968f191286e3db6cb77efe7661ef06`, not this newer application source.
+- TEST172 exact-source verification requests 1,590 core tests, debug assembly, complete history against immediate previous compiled TEST171, 26 API34 emulator tests and 34 screenshots. Candidate remains pending; no save, scoring, delivery or phone claim.
