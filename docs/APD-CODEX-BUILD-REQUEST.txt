@@ -1,3 +1,6 @@
 TEST156 verified: source2af7a808c53f2325c56d88124b8eb71de1e2b526/run38573246711 passed1551core+26API34/debug/history/34PNG; APKsha256 ee5307c5738313d6b82f46fab53c9e6dda07713d427f0eb6d1d01f389004d817. Vault boss attack provenance implemented; VaultSentry/VaultFlameTraps/VaultLaser remain environmental. No application build pending. ThreeDamagecontrols disabled; next harmful-buff/derived, spells/abilities and all-class/boss combination acceptance. No delivery/release/phone claim; TEST123 remains owner-delivered.
 
 TEST157 exact-source request (2026-10-14T14:39:49.724Z): verify the player-ability/derived-damage candidate with 1555 core tests, debug assembly, immediate-previous TEST156 compiled history, 26 API34 checks, and 34 valid screenshots. Do not deliver or enable Damage sliders. If the exact source is unchanged, do not duplicate this build.
+
+
+TEST158 fixture-only correction (2026-10-14T14:43:42.114Z): TEST157 run38582589811 compiled and ran1555core with1554pass/1 source-count failure. Verify unchanged production source with corrected expected count:1555core/debug/immediate-previous TEST156 history/26API34/34PNG. No delivery or slider enablement.

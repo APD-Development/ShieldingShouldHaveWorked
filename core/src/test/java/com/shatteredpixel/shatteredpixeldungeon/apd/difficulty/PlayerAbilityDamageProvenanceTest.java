@@ -42,6 +42,6 @@ public class PlayerAbilityDamageProvenanceTest {
  }
  @Test public void blastWaveCapturesBeforeDelayedCollisionAndKeepsLegacyCallersUnowned()throws Exception{
   Path root=Paths.get(System.getProperty("apd.game.src"));String wave=Files.readString(root.resolve("items/wands/WandOfBlastWave.java"));
-  assertEquals(3,occurrences(wave,"throwCharAttributed("));assertEquals(2,occurrences(wave,"OffensiveDamageOrigin.capture(curUser, null)"));assertEquals(1,occurrences(wave,"OffensiveDamageOrigin.UNATTRIBUTED"));assertEquals(1,occurrences(wave,"OffensiveDamage.raw("));assertTrue(wave.contains("new Knockback(), damageOrigin).apply(ch);"));assertFalse(wave.contains("ch.damage(Random.NormalIntRange(finalDist, 2*finalDist), new Knockback());"));
+  assertEquals(4,occurrences(wave,"throwCharAttributed("));assertEquals(2,occurrences(wave,"OffensiveDamageOrigin.capture(curUser, null)"));assertEquals(1,occurrences(wave,"OffensiveDamageOrigin.UNATTRIBUTED"));assertEquals(1,occurrences(wave,"OffensiveDamage.raw("));assertTrue(wave.contains("new Knockback(), damageOrigin).apply(ch);"));assertFalse(wave.contains("ch.damage(Random.NormalIntRange(finalDist, 2*finalDist), new Knockback());"));
  }
 }

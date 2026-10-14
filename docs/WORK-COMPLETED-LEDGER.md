@@ -468,3 +468,9 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Added four retained `PlayerAbilityDamageProvenanceTest` methods. No local Gradle workspace is available; 1555 core/debug/history/26 API34/34 PNG verification is pending.
 - Harmful-buff reaction attribution is explicitly deferred because attach callbacks run before creator metadata is assigned. Three Damage sliders remain disabled.
 - TEST156 remains the latest verified application source; TEST123 remains the last owner-delivered/signature-compared APK.
+
+
+## TEST157 CI result and TEST158 fixture correction — 2026-10-14T14:43:42.114Z
+- TEST157 source `514ccd2e9090af9881f6cb30b84c156179506e19`, run `38582589811`: history passed; production/tests compiled; 1555 core tests executed, 1554 passed and one new source guard failed because it counted four `throwCharAttributed(` occurrences (two wand call sites, the legacy delegate, and the method declaration) while expecting three.
+- Core artifact `11903652610`, ZIP SHA-256 `569e9c6728d9dfdd424bcd30ca35cbb1a1874773960cc417ca9959e156ba3ef9`. Debug APK/history and API34 jobs were skipped; no APK/screenshots were produced.
+- TEST158 changes only that expected source count from 3 to 4. Production code and behavioral assertions are unchanged. Exact-source 1555-core/debug/history/26-API34/34-PNG verification remains pending; TEST156 remains the verified source.
