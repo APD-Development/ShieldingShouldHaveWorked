@@ -40,7 +40,7 @@ public final class LegacyFacts {
 		for (Map.Entry<String, LegacyEvents.Value> e : rec.fields.entrySet()){
 			LegacyEvents.Value v = e.getValue();
 			if (!v.isKnown()) continue;
-			if (v.kind == LegacyEvents.KIND_NUM) f.num(e.getKey(), v.num, Fact.PROV_LEGACY);
+			if (v.kind == LegacyEvents.KIND_NUM){ f.num(e.getKey(), v.num, Fact.PROV_LEGACY); if(FactKeys.SCORE.equals(e.getKey())) f.num(CustomRuleFacts.ORIGINAL_SCORE,v.num,Fact.PROV_LEGACY); }
 			else f.text(e.getKey(), v.text, Fact.PROV_LEGACY);
 		}
 		return f;

@@ -21,7 +21,7 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicReference;
 @RunWith(AndroidJUnit4.class)
 public class TopScoresDeviceTest {
-    private static void render(Runnable task)throws Exception {
+    static void render(Runnable task)throws Exception {
         CountDownLatch done=new CountDownLatch(1);AtomicReference<Throwable> failure=new AtomicReference<>();
         Game.runOnRenderThread(()->{try{task.run();}catch(Throwable t){failure.set(t);}finally{done.countDown();}});
         assertTrue(done.await(60,TimeUnit.SECONDS));if(failure.get()!=null)throw new AssertionError(failure.get());
@@ -30,7 +30,7 @@ public class TopScoresDeviceTest {
         Field f=Group.class.getDeclaredField("members");f.setAccessible(true);
         return new ArrayList<>((List<Gizmo>)f.get(group));
     }
-    private static <T> List<T> find(Group group,Class<T> type)throws Exception {
+    static <T> List<T> find(Group group,Class<T> type)throws Exception {
         List<T> found=new ArrayList<>();
         for(Gizmo child:members(group)){if(type.isInstance(child))found.add(type.cast(child));if(child instanceof Group)found.addAll(find((Group)child,type));}
         return found;
@@ -44,7 +44,7 @@ public class TopScoresDeviceTest {
         PointerEvent.addPointerEvent(new PointerEvent(point.x,point.y,11,PointerEvent.Type.UP,PointerEvent.LEFT));
         Thread.sleep(500);
     }
-    private static void screenshot(String name)throws Exception {
+    static void screenshot(String name)throws Exception {
         android.content.Context context=InstrumentationRegistry.getInstrumentation().getTargetContext();
         Bitmap bitmap=InstrumentationRegistry.getInstrumentation().getUiAutomation().takeScreenshot();assertNotNull(bitmap);
         android.content.ContentValues values=new android.content.ContentValues();
@@ -96,3 +96,4 @@ public class TopScoresDeviceTest {
   }
  }
 }
+

@@ -43,7 +43,7 @@ import java.util.List;
 public final class DerivedStore {
 
 	//bump when facts are derived differently, so every old cache is rebuilt
-	public static final int DERIVATION_VERSION = 6;
+	public static final int DERIVATION_VERSION = 7;
 	private static final int CACHE_FORMAT = 2;
 	private static final int CHECKSUM_FOOTER_BYTES = 15;
 
@@ -370,4 +370,5 @@ public final class DerivedStore {
 		throw new IllegalArgumentException("bad fact kind");
 	}
 }
+
 

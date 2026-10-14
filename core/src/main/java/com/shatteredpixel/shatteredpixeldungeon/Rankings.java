@@ -274,6 +274,7 @@ public enum Rankings {
 		}
 
 		rec.gameData = new Bundle();
+		Dungeon.apdStoreCustomRules(rec.gameData);
 
 		Belongings belongings = Dungeon.hero.belongings;
 

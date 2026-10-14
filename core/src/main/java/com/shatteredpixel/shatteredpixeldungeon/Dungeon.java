@@ -216,6 +216,8 @@ public class Dungeon {
 	//and the balance revision of that difficulty the run is played with (0 = no modifiers). Fixed for the run, like the difficulty itself.
 	public static int difficultyBalance = 0;
     private static com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules customRules;
+    private static com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomScoreSnapshot customScoreSnapshot;
+    public static com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomScoreSnapshot customScoring(){return customScoreSnapshot;}
 
     // Null means the historical run did not record custom settings.
     public static com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules customRules() { return customRules; }
@@ -225,16 +227,20 @@ public class Dungeon {
             Bundle settings = new Bundle();
             customRules.store(settings);
             bundle.put("apd_custom_rules", settings);
-        }
+        } else bundle.remove("apd_custom_rules");
+        if(customScoreSnapshot!=null)customScoreSnapshot.store(bundle);
+        else com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomScoreSnapshot.clearStored(bundle);
     }
 
     public static void apdRestoreCustomRules(Bundle bundle) {
+        customScoreSnapshot=null;
         customRules = null; // Never retain a previous run's settings if this record is missing or invalid.
         if (bundle.contains("apd_custom_rules")) {
             customRules = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.restore(
                 bundle.getBundle("apd_custom_rules"));
             if (customRules == null) throw new IllegalArgumentException("Incomplete saved custom rules");
         }
+        customScoreSnapshot=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomScoreSnapshot.restore(bundle,customRules);
     }
 
 
@@ -274,6 +280,7 @@ public class Dungeon {
 		initialVersion = version = Game.versionCode;
 		challenges = SPDSettings.challenges();
 		customRules = SPDSettings.apdCustomRules();
+        customScoreSnapshot=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomScoreSnapshot.forNewRun(customRules);
 		difficulty = SPDSettings.apdDifficulty();
 		difficultyKnown = true;
 		difficultyBalance = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.Difficulty.balanceRevision(difficulty);
@@ -1211,3 +1218,4 @@ public class Dungeon {
 	}
 
 }
+

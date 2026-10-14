@@ -69,6 +69,7 @@ final class RunRecorder {
 	private boolean levelOpen;
 	private int curDepth, curBranch;
 	private long curEnterClock;
+	private final com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomScoreSnapshot scoringSnapshot= com.shatteredpixel.shatteredpixeldungeon.Dungeon.customScoring();
 	private String rulesetId = "";
 	private int rulesetChanges;
 
@@ -126,6 +127,8 @@ final class RunRecorder {
 		//a run from before difficulty existed (loaded from an older save) stays "not recorded"
 		s.difficulty = Dungeon.difficultyKnown ? Dungeon.difficulty : 0;
 		s.difficultyBalance = Dungeon.difficultyKnown ? Dungeon.difficultyBalance : 0;
+		s.customRules = Dungeon.customRules() == null ? "" : Dungeon.customRules().preferenceText();
+        if(r.scoringSnapshot!=null)r.scoringSnapshot.recordTo(s);
 		LifecycleEvents.emitRunStart(r.writer, clock, partial, s);
 		r.checkpoint(LifecycleEvents.CP_RUN_START);
 		//item identity: a new run starts with its kit, a run picked up from a save is caught up with what the hero holds
@@ -417,6 +420,8 @@ final class RunRecorder {
 		e.deepest = Statistics.deepestFloor;
 		e.heroLevel = Dungeon.hero == null ? 0 : Dungeon.hero.lvl;
 		e.score = Statistics.totalScore;
+        Long adjusted=scoringSnapshot==null?null:scoringSnapshot.adjustedIdentityScore(e.score);
+        e.customAdjustedKnown=adjusted!=null;if(adjusted!=null)e.customAdjustedScore=adjusted;
 		e.turns = clock;
 		e.rulesetChanges = rulesetChanges;
 		LifecycleEvents.emitRunEnd(writer, clock, e);
@@ -477,3 +482,4 @@ final class RunRecorder {
 		return "unknown";
 	}
 }
+

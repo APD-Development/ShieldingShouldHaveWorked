@@ -55,7 +55,7 @@ public final class RowBuilders {
 
 	private RowBuilders(){}
 
-	public static final int BUILDER_VERSION = 11;
+	public static final int BUILDER_VERSION = 12;
 
 	private static final DatasetDef RUNS = Datasets.runs();
 	private static final DatasetDef ITEMS = Datasets.items();
@@ -748,7 +748,7 @@ public final class RowBuilders {
 					}
 					int i = RUNS.indexOf(key);
 					if (i < 0) continue;
-					if (val.kind == LegacyEvents.KIND_NUM) row.setNum(i, val.num, Fact.PROV_LEGACY);
+					if (val.kind == LegacyEvents.KIND_NUM){row.setNum(i,val.num,Fact.PROV_LEGACY);if(FactKeys.SCORE.equals(key))put(row,com.shatteredpixel.shatteredpixeldungeon.apd.stats.CustomRuleFacts.ORIGINAL_SCORE,val.num,Fact.PROV_LEGACY);}
 					else row.setText(i, val.text, Fact.PROV_LEGACY);
 				}
 				rows.add(row);

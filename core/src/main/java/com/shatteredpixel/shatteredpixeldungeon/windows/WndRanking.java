@@ -219,7 +219,7 @@ public class WndRanking extends WndTabbed {
 					@Override
 					protected void onClick() {
 						super.onClick();
-						ShatteredPixelDungeon.scene().addToFront(new WndScoreBreakdown());
+						ShatteredPixelDungeon.scene().addToFront(new WndScoreBreakdown(record.gameData,record.score));
 					}
 				};
 				scoreInfo.setSize(16, 16);

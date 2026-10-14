@@ -81,6 +81,30 @@ public final class Datasets {
 		d.add(ColumnDef.num(FactKeys.DIFFICULTY_BALANCE, "Balance revision").since(1, 7).group("Rules")
 				.describe("Which version of the difficulty balance the run was played with: 0 = none (difficulty 3, the normal game), 1 and up = a balance version. Runs of different versions are never counted together unless you choose all rules."));
 		d.add(ColumnDef.text(FactKeys.RULESET, "Rules code").group("Rules").describe("A code for the exact rules the run was played under: difficulty, challenges and exotic-item chance. Runs with the same code were played the same way."));
+
+        d.add(ColumnDef.num(com.shatteredpixel.shatteredpixeldungeon.apd.stats.CustomRuleFacts.VERSION, "Custom rules version").since(1,11).group("Custom Rules"));
+        d.add(ColumnDef.text(com.shatteredpixel.shatteredpixeldungeon.apd.stats.CustomRuleFacts.IDENTITY, "Exact custom settings").since(1,11).group("Custom Rules"));
+        for (com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.Slider slider
+                : com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.Slider.values()) {
+            String label=slider.name().toLowerCase(java.util.Locale.ROOT).replace('_',' ');
+            label=Character.toUpperCase(label.charAt(0))+label.substring(1);
+            d.add(ColumnDef.num(com.shatteredpixel.shatteredpixeldungeon.apd.stats.CustomRuleFacts.key(slider),
+                label+(slider==com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.Slider.UPGRADE_SCROLLS ? " count" : " %"))
+                .since(1,11).group("Custom Rules").describe("The exact setting locked when this run began. ? means not recorded."));
+        }
+        d.add(ColumnDef.num(com.shatteredpixel.shatteredpixeldungeon.apd.stats.CustomRuleFacts.SCROLL_PERCENT, "Upgrade scroll availability %")
+            .format(ColumnDef.Format.HUNDREDTHS).since(1,11).group("Custom Rules"));
+        d.add(ColumnDef.text(com.shatteredpixel.shatteredpixeldungeon.apd.stats.CustomRuleFacts.SCORE_STATUS, "Custom scoring status").since(1,11).group("Custom Rules"));
+        d.add(ColumnDef.num(com.shatteredpixel.shatteredpixeldungeon.apd.stats.CustomRuleFacts.GENERATED_UPGRADES,"Upgrade scrolls generated").internal().merge(Merge.SUM).since(1,4).group("Custom Rules"));
+        d.add(ColumnDef.num(com.shatteredpixel.shatteredpixeldungeon.apd.stats.CustomRuleFacts.GENERATED_EQUIPMENT,"Equipment generated").internal().merge(Merge.SUM).since(1,4).group("Custom Rules"));
+        d.add(ColumnDef.num(com.shatteredpixel.shatteredpixeldungeon.apd.stats.CustomRuleFacts.SCROLL_PERCENT_NUMERATOR,"Scroll availability numerator").since(1,11).group("Custom Rules"));
+        d.add(ColumnDef.num(com.shatteredpixel.shatteredpixeldungeon.apd.stats.CustomRuleFacts.SCROLL_PERCENT_DENOMINATOR,"Scroll availability denominator").since(1,11).group("Custom Rules"));
+        d.add(ColumnDef.num(com.shatteredpixel.shatteredpixeldungeon.apd.stats.CustomRuleFacts.SCORING_RECORD_VERSION,"Scoring record version").since(1,11).group("Custom Rules"));
+        d.add(ColumnDef.text(com.shatteredpixel.shatteredpixeldungeon.apd.stats.CustomRuleFacts.MULTIPLIER_EXACT,"Exact custom multiplier").since(1,11).group("Custom Rules"));
+        d.add(ColumnDef.num(com.shatteredpixel.shatteredpixeldungeon.apd.stats.CustomRuleFacts.ORIGINAL_SCORE,"Original earned score").group("Custom Rules"));
+        d.add(ColumnDef.num(com.shatteredpixel.shatteredpixeldungeon.apd.stats.CustomRuleFacts.MULTIPLIER,"Custom Rules Multiplier").format(ColumnDef.Format.HUNDREDTHS).since(1,11).group("Custom Rules"));
+        d.add(ColumnDef.text(com.shatteredpixel.shatteredpixeldungeon.apd.stats.CustomRuleFacts.CALCULATION_VERSION,"Custom score calculation version").since(1,11).group("Custom Rules"));
+        d.add(ColumnDef.num(com.shatteredpixel.shatteredpixeldungeon.apd.stats.CustomRuleFacts.ADJUSTED_SCORE,"Adjusted score").since(1,11).group("Custom Rules"));
 		d.add(yesNo(ColumnDef.enumeration(FactKeys.DAILY, "Daily")).group("Rules"));
 		d.add(ColumnDef.enumeration(FactKeys.SEED_TYPE, "Run type").label(0, "Random").label(1, "Custom").label(2, "Daily").label(3, "Daily replay").group("Rules")
 				.describe("How the run's levels were chosen: at random, a custom seed, or the daily. The seed itself is hidden information."));
@@ -498,3 +522,4 @@ public final class Datasets {
 		return views();
 	}
 }
+

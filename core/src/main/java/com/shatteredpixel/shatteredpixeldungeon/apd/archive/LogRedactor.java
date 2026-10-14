@@ -284,6 +284,10 @@ public final class LogRedactor {
 			o.writeUnsigned(p.unsigned());         //difficulty
 			if (p.hasRemaining()) o.writeUnsigned(p.unsigned());   //difficultyBalance
 		}
+		// Telemetry1.11: user-selected rules are public; retain their string reference.
+		if (p.hasRemaining()) o.writeUnsigned(id(p.string()));
+        if(p.hasRemaining())o.writeUnsigned(p.unsigned());
+        for(int i=0;i<3&&p.hasRemaining();i++)o.writeUnsigned(id(p.string()));
 		if (p.hasRemaining()) throw new IllegalStateException("run start has fields this redactor does not know");
 		return o.toByteArray();
 	}

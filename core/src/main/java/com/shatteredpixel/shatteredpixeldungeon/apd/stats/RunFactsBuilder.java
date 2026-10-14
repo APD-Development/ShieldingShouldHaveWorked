@@ -81,6 +81,8 @@ public final class RunFactsBuilder {
 		long heroAttacks = 0, heroHits = 0, onHero = 0, hitsOnHero = 0, dealt = 0, taken = 0, heroKills = 0, enemyDeaths = 0,
 				xp = 0, levelUps = 0, healed = 0, deaths = 0, revivals = 0, equipEvents = 0, genLevels = 0, genItems = 0, genMobs = 0;
 		Set<String> registered = new HashSet<>(), acquired = new HashSet<>(), equipped = new HashSet<>();
+		long generatedUpgrades=0,generatedEquipment=0;
+		Set<String> countedGenerated=new HashSet<>();
 		LifecycleEvents.Checkpoint lastCheckpoint = null;
 		LifecycleEvents.RunEnd end = null;
 		boolean endDetails = false;
@@ -116,6 +118,7 @@ public final class RunFactsBuilder {
 							f.num(FactKeys.DIFFICULTY, s.difficulty, Fact.PROV_RECORDED);
 							f.num(FactKeys.DIFFICULTY_BALANCE, s.difficultyBalance, Fact.PROV_RECORDED);
 						}
+						CustomRuleFacts.record(f, s);
 						f.num(FactKeys.START_MILLIS, s.realTimeMillis, Fact.PROV_RECORDED);
 						break;
 					}
@@ -196,7 +199,15 @@ public final class RunFactsBuilder {
 						break;
 					case EventTypes.ITEM_GENERATED:
 						genItems++;
-						break;
+                        GenerationEvents.ItemGenerated generated=GenerationEvents.decodeItemGenerated(e,r);
+                        if(generated.uid.isEmpty() || countedGenerated.add(generated.uid)){
+                            long quantity=Math.max(0,generated.quantity);
+                            if(generated.trueClass.endsWith(".ScrollOfUpgrade"))generatedUpgrades+=quantity;
+                            String prefix="com.shatteredpixel.shatteredpixeldungeon.items.";
+                            if(generated.trueClass.startsWith(prefix+"weapon.") || generated.trueClass.startsWith(prefix+"armor.")
+                                || generated.trueClass.startsWith(prefix+"rings.") || generated.trueClass.startsWith(prefix+"artifacts."))generatedEquipment+=quantity;
+                        }
+                        break;
 					case EventTypes.MOB_GENERATED:
 						genMobs++;
 						break;
@@ -222,6 +233,7 @@ public final class RunFactsBuilder {
 				f.num(FactKeys.DEEPEST, end.deepest, Fact.PROV_RECORDED);
 				f.num(FactKeys.HERO_LEVEL, end.heroLevel, Fact.PROV_RECORDED);
 				f.num(FactKeys.SCORE, end.score, Fact.PROV_RECORDED);
+				CustomRuleFacts.preserveScore(f,end);
 				f.num(FactKeys.TURNS, end.turns, Fact.PROV_RECORDED);
 			}
 		}
@@ -268,7 +280,9 @@ public final class RunFactsBuilder {
 			f.num(FactKeys.GEN_LEVELS, genLevels, countProv);
 			f.num(FactKeys.GEN_ITEMS, genItems, countProv);
 			f.num(FactKeys.GEN_MOBS, genMobs, countProv);
+            if(!redacted){f.num(CustomRuleFacts.GENERATED_UPGRADES,generatedUpgrades,countProv);f.num(CustomRuleFacts.GENERATED_EQUIPMENT,generatedEquipment,countProv);}
 		}
 		return f;
 	}
 }
+

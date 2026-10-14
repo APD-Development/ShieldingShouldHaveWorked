@@ -58,12 +58,12 @@ public final class Ruleset {
 		//a run that never recorded its exotic setting (saved by an older version) has no known ruleset: it is not given today's setting
 		if (!Dungeon.apdExoticKnown) return unknown();
 		boolean clericRun = Dungeon.hero != null && Dungeon.hero.heroClass == com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.CLERIC;
-		return of(Dungeon.apdExotic, Dungeon.challenges, Dungeon.difficulty, Dungeon.difficultyBalance, clericRun);
+		return withCustomRules(of(Dungeon.apdExotic, Dungeon.challenges, Dungeon.difficulty, Dungeon.difficultyBalance, clericRun), Dungeon.customRules());
 	}
 
 	//the rules a NEW run would be played under, from the settings
 	public static Ruleset forNewRun(){
-		return of(SPDSettings.apdExoticSetting(), SPDSettings.challenges(), SPDSettings.apdDifficulty());
+		return withCustomRules(of(SPDSettings.apdExoticSetting(), SPDSettings.challenges(), SPDSettings.apdDifficulty()), SPDSettings.apdCustomRules());
 	}
 
 	//stored in place of the exotic chance when it was not recorded (a real chance is 0-80)
@@ -105,6 +105,13 @@ public final class Ruleset {
 		if (level != Difficulty.DEFAULT) text += ";difficulty=" + level + ";balance=" + Math.max(0, balance);
 		return new Ruleset(ID_VERSION + "-" + hash12(text), text, exoticChance);
 	}
+
+    /** Historical/neutral identities remain intact; custom configurations cannot silently share a scope. */
+    public static Ruleset withCustomRules(Ruleset base,com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules rules){
+        if(base.isUnknown() || rules==null || rules.isNeutral())return base;
+        String text=base.text+";"+rules.identityText();
+        return new Ruleset("r2-"+hash12(text),text,base.exoticChance);
+    }
 
 	private static String hash12( String text ){
 		try {
