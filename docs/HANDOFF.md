@@ -2094,3 +2094,10 @@ Actual current source writes partialDamage as float but reloads with getInt, los
 - Verified Scroll of Retribution and Scroll of Psionic Blast enemy damage use Player Damage exactly once while keeping original formulas/sources and leaving Psionic Blast hero self-damage unscaled.
 - Current branch head advanced afterward with an independent Corruption save-integrity fix, so TEST160 does not verify that later application change. Its next exact-source checkpoint remains pending.
 - Private delivery was skipped. TEST123 remains the owner-delivered/signature-compared fallback. Three Damage sliders remain disabled pending remaining item-derived/harmful-buff boundaries and six-class/boss/combination acceptance.
+
+
+## 2026-10-14T16:52:55.080Z — TEST161 artifact-derived damage candidate
+- Reconciled current head `27835d898d1a09a462c0cc49f8cfc3915d945497`, preserving the independent Corruption float-reload fix and its four tests.
+- Implemented Player Damage for Guiding Light artifact procs and Cape of Thorns outgoing retaliation; retained fixed incoming deflection and non-damaging Skeleton Key movement.
+- Added four retained methods covering all20 percentages, neutral RNG/source identity, source/order wiring and movement exclusion. Expected current total:1572core.
+- Exact-source debug/immediate-previous TEST160 history/26API34/34PNG pending. Three Damage controls remain disabled; TEST123 remains owner-delivered fallback.

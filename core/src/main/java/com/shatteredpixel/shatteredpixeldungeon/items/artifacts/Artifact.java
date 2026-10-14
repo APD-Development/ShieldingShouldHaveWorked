@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.GuidingLight;
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindofMisc;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -150,7 +151,7 @@ public class Artifact extends KindofMisc {
 	public static void artifactProc(Char target, int artifLevel, int chargesUsed){
 		if (Dungeon.hero.subClass == HeroSubClass.PRIEST && target.buff(GuidingLight.Illuminated.class) != null) {
 			target.buff(GuidingLight.Illuminated.class).detach();
-			target.damage(5+Dungeon.hero.lvl, GuidingLight.INSTANCE);
+			CustomOffensiveHooks.raw(target, 5+Dungeon.hero.lvl, GuidingLight.INSTANCE, Dungeon.hero);
 		}
 
 		if (target.alignment != Char.Alignment.ALLY

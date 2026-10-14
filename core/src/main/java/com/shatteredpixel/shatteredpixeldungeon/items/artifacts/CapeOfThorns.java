@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.artifacts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -110,7 +111,7 @@ public class CapeOfThorns extends Artifact {
 				damage -= deflected;
 
 				if (attacker != null && Dungeon.level.adjacent(attacker.pos, defender.pos)) {
-					attacker.damage(deflected, this);
+					CustomOffensiveHooks.raw(attacker, deflected, this, defender);
 				}
 
 				exp+= deflected;

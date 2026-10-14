@@ -1,33 +1,70 @@
 {
-  "previous_label": "Codex TEST 159",
-  "previous_source": "8b5882b21d1c957846312296e471724c5a7207a0",
-  "previous_run": 38590690277,
+  "previous_label": "Codex TEST 160",
+  "previous_source": "9a071ff3312a6ae311884429c8dca4d6d0510bb9",
+  "previous_run": 38599525580,
   "date": "2026-10-14",
   "changes": [
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Offensive scroll provenance",
-      "text": "Apply Player Damage once to Retribution and Psionic Blast enemy damage while preserving Psionic Blast self-cost.",
+      "title": "Corruption save integrity",
+      "text": "Preserve fractional decay across save reload with legacy integer and missing-field compatibility.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/ScrollOfRetribution.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/exotic/ScrollOfPsionicBlast.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Corruption.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CorruptionSaveIntegrityTest.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Offensive scroll regression",
-      "text": "Retain all-percentage, neutral RNG/source, caller and self-cost coverage.",
+      "title": "Artifact-derived damage",
+      "text": "Apply Player Damage once to Guiding Light artifact procs and Cape of Thorns retaliation while preserving incoming deflection.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/OffensiveScrollDamageProvenanceTest.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/Artifact.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/CapeOfThorns.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "TEST160 evidence",
+      "title": "Artifact damage regression",
+      "text": "Retain all-percentage, neutral RNG/source, ordering and non-damaging Skeleton Key coverage.",
+      "paths": [
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/ArtifactDerivedDamageProvenanceTest.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "Existing APK delivery workflow",
+      "text": "Preserve the concurrent private existing-artifact delivery correction.",
+      "paths": [
+        ".github/workflows/codex-existing-apk-delivery.yml"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "Lunch handoff",
+      "text": "Preserve the concurrent TEST159 lunch preparation record.",
+      "paths": [
+        "docs/APD-LUNCH-2026-10-14-TEST159.md"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "TEST161 evidence",
       "text": "Record bounded implementation and pending verification.",
+      "paths": [
+        "docs/APD-TEST161-ARTIFACT-DERIVED-DAMAGE-2026-10-14.md"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "Verified TEST160 evidence",
+      "text": "Preserve the reviewed TEST160 verification record.",
       "paths": [
         "docs/APD-TEST160-OFFENSIVE-SCROLLS-2026-10-14.md"
       ]
@@ -35,17 +72,8 @@
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Verified TEST159 evidence",
-      "text": "Preserve the reviewed TEST159 verification record in compiled history.",
-      "paths": [
-        "docs/APD-TEST159-REMAINING-ARMOR-ABILITIES-2026-10-14.md"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
       "title": "Handoff",
-      "text": "Record candidate and remaining acceptance work.",
+      "text": "Record concurrent save correction, verified TEST160 and TEST161 candidate.",
       "paths": [
         "docs/HANDOFF.md"
       ]
@@ -54,7 +82,7 @@
       "category": "Changes",
       "sprite": "V061_BUGFIX",
       "title": "Completed ledger",
-      "text": "Record exact bounded work and pending checks.",
+      "text": "Record exact bounded work and verification evidence.",
       "paths": [
         "docs/WORK-COMPLETED-LEDGER.md"
       ]
@@ -72,7 +100,7 @@
       "category": "Changes",
       "sprite": "V061_BUGFIX",
       "title": "History manifest",
-      "text": "Compare every reviewed path against the immediate previous TEST159 APK.",
+      "text": "Compare every reviewed path against the immediate previous TEST160 APK.",
       "paths": [
         "docs/APD-NEXT-BUILD-HISTORY.json"
       ]

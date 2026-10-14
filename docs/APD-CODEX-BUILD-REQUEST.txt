@@ -19,3 +19,6 @@ TEST160 exact-source request (2026-10-14T16:36:20.526Z): verify offensive-scroll
 
 
 TEST160 verified (2026-10-14T16:51:35.140Z): source9a071ff3312a6ae311884429c8dca4d6d0510bb9/run38599525580 passed1564core+26API34/debug/immediate-previous TEST159 history/34PNG. APK SHA-256 0be385ddb52c4a0c1c38b55f5327af01d8e3489816e709d41c566101d4b39282. Later current-head Corruption save-integrity source is not covered and remains pending the next exact-source checkpoint. Do not rebuild TEST160 unchanged; no delivery/phone claim; three Damage controls remain disabled.
+
+
+TEST161 exact-source request (2026-10-14T16:52:55.080Z): verify current Corruption save-integrity plus artifact-derived damage candidate with 1572 core tests, debug assembly, immediate-previous TEST160 compiled history, 26 API34 checks and 34 valid screenshots. Preserve Cape incoming deflection and non-damaging Skeleton Key movement. Do not deliver or enable Damage sliders.
