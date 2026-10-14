@@ -6,7 +6,7 @@
   "changes": [
     {
       "category": "Changes",
-      "sprite": "V061_CHANGE",
+      "sprite": "V064_CHALLENGES",
       "title": "All 18 Custom Dungeon Rules controls",
       "text": "Make Player, Enemy and Boss Damage available for next-run drafts after the bounded offensive-source audit; active runs remain locked and scoring remains unchanged.",
       "paths": [
@@ -34,6 +34,7 @@
         "docs/APD-TEST165-BOSS-PHASE-DAMAGE-2026-10-14.md",
         "docs/APD-TEST166-BOSS-PHASE-DAMAGE-CORRECTION-2026-10-14.md",
         "docs/APD-TEST167-ALL-CUSTOM-RULES-ACCEPTANCE-2026-10-14.md",
+        "docs/APD-TEST168-ALL-CUSTOM-RULES-CORRECTION-2026-10-14.md",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",

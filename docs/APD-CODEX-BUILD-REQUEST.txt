@@ -58,3 +58,6 @@ TEST166 verified (2026-10-14T19:06:38Z): sourcee252e92e6533ac0a3fa581048475bf55f
 
 
 TEST167 exact-source request (2026-10-14T19:44:18Z): verify all-18-controls acceptance with1585core/debug/immediate-previous TEST166 compiled history/26API34/34PNG. Cover all six classes at high enemy HP/defense with low Player Damage/one scroll, enemy-versus-boss replacement damage with high Player Defense/25% healing, and exact all-18-value save/load. Damage controls are next-run only; preserve active-run locks, scores, warning and pending-scoring notice. No delivery or physical-phone claim.
+
+
+TEST167 failed core (2026-10-14T19:51:04Z): source57b29f9ec716aabb20237a963fe8d32e4bbfb930/run38626757231 ran1585 tests with2 failures: headless Hero damage interruption entered a null visual selector, and history manifest used nonexistent V061_CHANGE. No APK/API34/screenshots. TEST168 exact-source correction: disable only the fixture's visual damage interruption, use native V064_CHALLENGES, then verify1585core/debug/immediate-previous TEST166 history/26API34/34PNG. No delivery.

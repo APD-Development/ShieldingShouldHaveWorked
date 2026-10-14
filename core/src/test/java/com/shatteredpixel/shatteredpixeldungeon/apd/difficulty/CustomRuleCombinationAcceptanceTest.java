@@ -73,6 +73,7 @@ public class CustomRuleCombinationAcceptanceTest {
             sprite=new Quiet();
             sprite.visible=false;
             Talent.initClassTalents(this);
+            damageInterrupt=false;
         }
         @Override public int defenseSkill(Char attacker){return 0;}
         @Override public int drRoll(){return 5;}

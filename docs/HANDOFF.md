@@ -2175,3 +2175,8 @@ Actual current source writes partialDamage as float but reloads with getInt, los
 - Existing all-class generation acceptance still covers spawn/hunger/food/HP/scroll interactions, so it was retained rather than duplicated.
 - Marked the three Damage controls available for next-run drafts only. Active-run settings remain locked; original scores, experimental warning and pending-scoring notice are unchanged.
 - Expected total: 1,585 core plus debug/immediate-previous TEST166 history/26 API34/34 PNG. Candidate-only until exact-source verification passes; TEST123 remains owner-delivered fallback.
+
+
+# TEST167 core failure; TEST168 correction — 2026-10-14 19:52 UTC
+
+TEST167source57b29f9ec716aabb20237a963fe8d32e4bbfb930/run38626757231 ran1585core with2failures. New real-attack regression reached headless Hero.interrupt visual path because fixture damageInterrupt remained enabled; application combat behavior was not implicated. History guard also rejected nonexistent V061_CHANGE sprite. TEST168 disables only fixture visual interruption and uses existing V064_CHALLENGES; assertions/coverage unchanged. No167APK/API34/screenshots. TEST166 remains latest verified; all18controls candidate pending TEST168. No delivery/score/save-format/phone claim.

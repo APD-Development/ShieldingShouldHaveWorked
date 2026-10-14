@@ -602,3 +602,10 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Existing all-class generation acceptance still covers spawn/hunger/food/HP/scroll interactions, so it was retained rather than duplicated.
 - Marked the three Damage controls available for next-run drafts only. Active-run settings remain locked; original scores, experimental warning and pending-scoring notice are unchanged.
 - Expected total: 1,585 core plus debug/immediate-previous TEST166 history/26 API34/34 PNG. Candidate-only until exact-source verification passes; TEST123 remains owner-delivered fallback.
+
+
+## 2026-10-14T19:52:07Z — TEST167 failure diagnosed; TEST168 bounded correction
+- TEST167 source `57b29f9ec716aabb20237a963fe8d32e4bbfb930`, run `38626757231`, completed 1,585 core tests with 2 failures; debug/APK/history compilation follow-up/API34/screenshots were skipped.
+- Diagnosed the new headless real-attack fixture entering `Hero.interrupt()` with a null visual selector. Disabled only that fixture's normal damage-interrupt visual behavior; real attack, exactly-once scaling, mitigation, source and healing assertions remain.
+- Diagnosed invalid manifest sprite `V061_CHANGE`; replaced it with existing native `V064_CHALLENGES`. No history guard or gameplay assertion was weakened.
+- TEST168 requests the corrected 1,585-test exact source and full unchanged acceptance matrix. TEST166 remains latest verified; TEST123 remains owner-delivered fallback.
