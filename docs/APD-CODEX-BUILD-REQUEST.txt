@@ -4,3 +4,6 @@ TEST157 exact-source request (2026-10-14T14:39:49.724Z): verify the player-abili
 
 
 TEST158 fixture-only correction (2026-10-14T14:43:42.114Z): TEST157 run38582589811 compiled and ran1555core with1554pass/1 source-count failure. Verify unchanged production source with corrected expected count:1555core/debug/immediate-previous TEST156 history/26API34/34PNG. No delivery or slider enablement.
+
+
+TEST158 verified (2026-10-14T15:00:05.913Z): sourced3ed403a6d6a86f5704ea6ee9c4cc4ac5c9779ee/run38583123803 passed1555core+26API34/debug/immediate-previous TEST156 history/34PNG. APK SHA-256 92542d7ca06672e0a72ea51494480ec3ba6f976eb5aa690e6bd1b2c78cf3233b. No application build is pending; do not rebuild unchanged source. Next: deferred harmful-buff-safe design, remaining spells/abilities/derived offense, then six-class/boss/combination acceptance. Three Damage controls remain disabled; no delivery/phone claim.
