@@ -109,3 +109,6 @@ TEST178 verified (2026-10-14T22:51:05Z): sourcea6d757fcaecc69fb0bdb38a6dd207c3ae
 
 
 TEST179 exact-source request (2026-10-14T23:39:51Z): verify direct API34 recreation of UIMSD Column order and Move column with the strengthened existing method; require exactly one restored window at each step, working restored Make first callback, original query restoration,1602core/debug/immediate-previousTEST178history/26API34/34PNG. Production query/window/save/scoring code unchanged. No delivery/physical-phone claim.
+
+
+TEST179 failed API34 (2026-10-14T23:52:01Z): sourcef6043c7d16cd52e57276113fb038af046ff4ec48/run38655567956 passed1602core/debug/immediate-previousTEST178history/APK packaging, then completed26API34 with25pass/1 fixture failure: Runs' empty explicit column list means dataset defaults, not zero effective columns. TEST180 fixture-only correction resolves defaults for the recreation steps and restores original explicit/default semantics. Verify1602core/debug/immediate-previous compiledTEST179history/26API34/34PNG. Production query/window/save/scoring unchanged; no delivery/phone claim.

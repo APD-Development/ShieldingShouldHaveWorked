@@ -737,3 +737,12 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Current production windows already provide exact restorers, but API34 coverage only recreated Columns selection and never the distinct Column order or Move column steps.
 - Strengthened the retained device test to recreate both steps exactly once, invoke Make first through the restored callback, verify the selected second column becomes first, then restore the original query.
 - No production query/window, save, history, scoring, identity or signing behavior changed. TEST179 requests 1,602 core/debug/immediate-previous TEST178 history/26 strengthened API34 methods/34 PNG. Candidate remains pending; no delivery or physical-phone claim.
+
+
+## 2026-10-14T23:53:14Z — TEST179 evidence retained; TEST180 fixture correction
+- Exact source `f6043c7d16cd52e57276113fb038af046ff4ec48`, run `38655567956` ran 2026-10-14T23:40:55Z–23:52:01Z.
+- Passed: complete 1,602 core tests, debug APK assembly, immediate-previous TEST178 compiled-history validation and artifact packaging.
+- Failed: API34 completed 26 methods with 25 pass / 1 fail at `column-order fixture has at least two columns`. Runs legitimately stores an empty explicit list for default columns; the new test misread it as no effective columns.
+- Android evidence artifact `11937227267` / ZIP SHA-256 `5e80aad0730b6507fe0cfba1862fae175636d70362eeac2c8f25f5508718a3e8`; core artifact `11937375321`; APK artifact `11936159775`. TEST179 is not verified or delivered.
+- TEST180 changes only the retained device fixture to resolve effective defaults before the two-step recreation test and to restore the original explicit/default semantics afterward. Production behavior is unchanged.
+- TEST180 requests 1,602 core/debug/immediate-previous compiled TEST179 history/26 API34/34 PNG. Pending exact-source verification; no delivery or phone claim.

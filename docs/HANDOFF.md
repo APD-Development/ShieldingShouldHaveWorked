@@ -2276,3 +2276,11 @@ Adjacent audit confirmed seven direct-damage calls in Blast Wave, Living Earth a
 - Current production windows already provide exact restorers, but API34 coverage only recreated Columns selection and never the distinct Column order or Move column steps.
 - Strengthened the retained device test to recreate both steps exactly once, invoke Make first through the restored callback, verify the selected second column becomes first, then restore the original query.
 - No production query/window, save, history, scoring, identity or signing behavior changed. TEST179 requests 1,602 core/debug/immediate-previous TEST178 history/26 strengthened API34 methods/34 PNG. Candidate remains pending; no delivery or physical-phone claim.
+
+
+## 2026-10-14T23:53:14Z — TEST179 fixture failure; TEST180 correction pending
+- TEST179 exact source `f6043c7d16cd52e57276113fb038af046ff4ec48`, run `38655567956` (23:40:55Z–23:52:01Z), passed 1,602 core tests, debug assembly, immediate-previous TEST178 history and APK packaging.
+- API34 completed all 26 methods with 25 pass / 1 fail. The only failure was the new `column-order fixture has at least two columns` assertion. Runs uses an empty explicit column list to mean dataset defaults; the fixture incorrectly treated that valid state as zero effective columns.
+- Android artifact `11937227267` / ZIP SHA-256 `5e80aad0730b6507fe0cfba1862fae175636d70362eeac2c8f25f5508718a3e8` retains the failure. TEST179 is not verified or delivered.
+- TEST180 corrects only the device-test setup: derive an effective multi-column list from dataset defaults, exercise Column order and Move column recreation, then restore the original explicit list including empty/default semantics.
+- Exact-source TEST180 requests 1,602 core/debug/immediate-previous compiled TEST179 history/26 API34/34 PNG. Production query/window/save/scoring code remains unchanged. No delivery or physical-phone claim; TEST123 remains owner-delivered fallback.

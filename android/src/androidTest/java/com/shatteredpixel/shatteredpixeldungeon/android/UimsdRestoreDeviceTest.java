@@ -461,10 +461,13 @@ public class UimsdRestoreDeviceTest {
             });
             rebuildScene();
             final AtomicReference<List<String>> previousColumns = new AtomicReference<>();
+            final AtomicReference<List<String>> arrangedColumns = new AtomicReference<>();
             onRender(() -> {
                 assertEquals("Columns survived exactly once", 1, windows().size());
                 clearWindows();
                 previousColumns.set(new ArrayList<>(model().query().columns));
+                arrangedColumns.set(new ArrayList<>(previousColumns.get().isEmpty()
+                        ? model().dataset().def.defaultColumnIds() : previousColumns.get()));
                 try {
                     String onlyColumn = model().offeredColumns().get(0).id;
                     model().setColumns(java.util.Collections.singletonList(onlyColumn));
@@ -481,9 +484,9 @@ public class UimsdRestoreDeviceTest {
                         assertTrue("rendered last-column check stays on", label.text().startsWith("[x] "));
                     } catch (Exception e) { throw new RuntimeException(e); }
                 } finally {
-                    clearWindows(); model().setColumns(previousColumns.get());
+                    clearWindows(); model().setColumns(arrangedColumns.get());
                 }
-                assertTrue("column-order fixture has at least two columns", previousColumns.get().size() >= 2);
+                assertTrue("column-order fixture has at least two columns", arrangedColumns.get().size() >= 2);
                 WndUimsdColumns.arrange(model());
             });
             rebuildScene();
@@ -502,7 +505,7 @@ public class UimsdRestoreDeviceTest {
                 pickItem((WndUimsdList) windows().get(0), 2);
                 assertEquals("restored move callback returns to Column order", 1, windows().size());
                 assertEquals("restored Make first moves the chosen column",
-                        previousColumns.get().get(1), model().query().columns.get(0));
+                        arrangedColumns.get().get(1), model().query().columns.get(0));
                 clearWindows();
                 model().setColumns(previousColumns.get());
                 options("pickGroup", new Class<?>[]{UimsdModel.class}, model());
