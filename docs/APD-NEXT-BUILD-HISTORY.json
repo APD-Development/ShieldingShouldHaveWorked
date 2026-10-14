@@ -20,7 +20,7 @@
       "category": "Changes",
       "sprite": "V061_BUGFIX",
       "title": "Class and boss acceptance regressions",
-      "text": "Retain all-six-class and five-boss ownership checks plus Tengu saved-field, legacy-environment, mitigation-order and self-damage guards.",
+      "text": "Retain all-six-class and five-boss ownership checks plus Tengu saved-field, historical legacy-environment, mitigation-order and self-damage guards.",
       "paths": [
         "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/BossPhaseDamageProvenanceTest.java"
       ]
@@ -28,11 +28,12 @@
     {
       "category": "Changes",
       "sprite": "V061_PAGE",
-      "title": "TEST165 evidence and handoff",
-      "text": "Record the verified TEST164 baseline, bounded boss audit, pending TEST165 checks and disabled-slider checkpoint.",
+      "title": "TEST165/166 evidence and handoff",
+      "text": "Record the verified TEST164 baseline, TEST165 core failures, bounded correction, pending TEST166 checks and disabled-slider checkpoint.",
       "paths": [
         "docs/APD-TEST162-HARMFUL-BUFF-ATTACHMENT-2026-10-14.md",
         "docs/APD-TEST165-BOSS-PHASE-DAMAGE-2026-10-14.md",
+        "docs/APD-TEST166-BOSS-PHASE-DAMAGE-CORRECTION-2026-10-14.md",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",

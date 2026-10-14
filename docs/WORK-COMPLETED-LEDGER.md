@@ -578,3 +578,10 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Implemented exactly-once creator scaling with original source/RNG/turn behavior, pre-armor Tengu bomb order, saved mixed Tengu fields and legacy-unknown behavior. Dwarf King self-damage remains unscaled; Goo needed no source change.
 - Added four retained tests covering all six hero classes, five bosses, Tengu delayed-field save/legacy behavior and source-contract/mitigation order. Expected core total 1,581.
 - Exact-source core/debug/immediate-previous TEST164 history/26 API34/34 PNG verification is pending. Three Damage controls remain disabled; no delivery or phone claim.
+
+
+## TEST165 core failure / TEST166 correction — 2026-10-14T18:51:04Z
+- Exact source `314b678c1aa7c85d4a84f6d5a02ad1929f43ecab`, run `38618183149` (2026-10-14T18:47:45Z–18:49:47Z) passed complete-history validation and compiled all production/test source, then ran 1,581 core tests with 2 failures.
+- The new headless Tengu fire regression entered the real visual particle path without a renderer and failed at `CellEmitter.get`; it now exercises the same persisted per-cell origin at the pre-attach Burning entry point, avoiding any weakened assertion.
+- Existing acceptance correctly exposed a compatibility regression: a newly created Tengu shocker field seeded without transient context was treated as environmental (16 damage) instead of Tengu-owned (32 at 200% Boss Damage). New Tengu-only fields now default to Boss ownership, while restored historical fields lacking metadata remain explicitly unknown and unscaled.
+- Debug, APK, API34 and screenshots did not run; no artifact was produced. TEST164 remains latest verified. TEST166 requests the corrected 1,581-test exact source; three Damage controls remain disabled.

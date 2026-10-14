@@ -160,12 +160,14 @@ public class BossPhaseDamageProvenanceTest {
         assertTrue(saved.contains("apd_tengu_fire_origins_version"));
         Tengu.FireAbility.FireBlob restored = new Tengu.FireAbility.FireBlob();
         restored.restoreFromBundle(saved);
+        Field originsField = Tengu.FireAbility.FireBlob.class.getDeclaredField("apdOrigins");
+        originsField.setAccessible(true);
+        CellDamageOrigins origins = (CellDamageOrigins) originsField.get(restored);
         ProbeBoss boss = reactionBoss();
         int seed = 34211;
         Random.pushGenerator(seed);
         try {
-            restored.act();
-            restored.act();
+            Burning.affectAttributed(boss, origins, CELL);
         } finally {
             Random.popGenerator();
         }
@@ -194,13 +196,10 @@ public class BossPhaseDamageProvenanceTest {
         assertEquals(1, receiver.calls);
         assertTrue(receiver.source instanceof Electricity);
 
-        Tengu.ShockerAbility.ShockerBlob legacy = new Tengu.ShockerAbility.ShockerBlob();
-        legacy.seed(Dungeon.level, CELL, 1);
-        Bundle legacySave = new Bundle();
-        legacy.storeInBundle(legacySave);
-        assertFalse(legacySave.contains("apd_tengu_shocker_origins_version"));
+        CellDamageOrigins.clearMetadata(saved, "apd_tengu_shocker_origins");
+        assertFalse(saved.contains("apd_tengu_shocker_origins_version"));
         Tengu.ShockerAbility.ShockerBlob legacyRestored = new Tengu.ShockerAbility.ShockerBlob();
-        legacyRestored.restoreFromBundle(legacySave);
+        legacyRestored.restoreFromBundle(saved);
         legacyRestored.act();
         assertEquals(base, receiver.received);
         assertEquals(2, receiver.calls);

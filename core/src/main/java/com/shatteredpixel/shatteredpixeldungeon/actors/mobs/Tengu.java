@@ -854,6 +854,7 @@ public class Tengu extends Mob {
 		public static class FireBlob extends Blob {
 
 			private CellDamageOrigins apdOrigins = new CellDamageOrigins();
+			private boolean apdLegacyUnknown;
 			private static final String APD_ORIGINS = "apd_tengu_fire_origins";
 			
 			{
@@ -863,7 +864,11 @@ public class Tengu extends Mob {
 			
 			@Override
 			public void seed(Level level, int cell, int amount) {
-				apdOrigins.seed(cur, level.length(), cell, amount, OffensiveEffectContext.current());
+				OffensiveDamageOrigin origin = OffensiveEffectContext.current();
+				if (origin == OffensiveDamageOrigin.UNATTRIBUTED && !apdLegacyUnknown) {
+					origin = OffensiveDamageOrigin.BOSS;
+				}
+				apdOrigins.seed(cur, level.length(), cell, amount, origin);
 				super.seed(level, cell, amount);
 			}
 
@@ -875,8 +880,10 @@ public class Tengu extends Mob {
 				else CellDamageOrigins.clearMetadata(bundle, APD_ORIGINS);
 			}
 			@Override public void restoreFromBundle(Bundle bundle) {
+				boolean hasOrigins = bundle.contains(APD_ORIGINS + "_version");
 				super.restoreFromBundle(bundle);
 				apdOrigins = CellDamageOrigins.restore(bundle, APD_ORIGINS, cur);
+				apdLegacyUnknown = volume > 0 && !hasOrigins;
 			}
 
 			@Override
@@ -1077,6 +1084,7 @@ public class Tengu extends Mob {
 		public static class ShockerBlob extends Blob {
 
 			private CellDamageOrigins apdOrigins = new CellDamageOrigins();
+			private boolean apdLegacyUnknown;
 			private static final String APD_ORIGINS = "apd_tengu_shocker_origins";
 			
 			{
@@ -1086,7 +1094,11 @@ public class Tengu extends Mob {
 			
 			@Override
 			public void seed(Level level, int cell, int amount) {
-				apdOrigins.seed(cur, level.length(), cell, amount, OffensiveEffectContext.current());
+				OffensiveDamageOrigin origin = OffensiveEffectContext.current();
+				if (origin == OffensiveDamageOrigin.UNATTRIBUTED && !apdLegacyUnknown) {
+					origin = OffensiveDamageOrigin.BOSS;
+				}
+				apdOrigins.seed(cur, level.length(), cell, amount, origin);
 				super.seed(level, cell, amount);
 			}
 
@@ -1098,8 +1110,10 @@ public class Tengu extends Mob {
 				else CellDamageOrigins.clearMetadata(bundle, APD_ORIGINS);
 			}
 			@Override public void restoreFromBundle(Bundle bundle) {
+				boolean hasOrigins = bundle.contains(APD_ORIGINS + "_version");
 				super.restoreFromBundle(bundle);
 				apdOrigins = CellDamageOrigins.restore(bundle, APD_ORIGINS, cur);
+				apdLegacyUnknown = volume > 0 && !hasOrigins;
 			}
 
 			@Override

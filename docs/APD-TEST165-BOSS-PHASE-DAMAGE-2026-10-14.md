@@ -16,3 +16,9 @@
 - Expected complete core total: 1,581 tests (four new tests). Exact-source core, debug APK, immediate-previous TEST164 compiled history, 26 API34 checks and 34 screenshots are pending GitHub verification.
 - Three Damage controls remain disabled pending successful evidence and the remaining high-HP/defense, save and cross-rule acceptance work.
 - Private candidate only: no delivery, release or physical-phone claim. TEST164 remains the latest verified application source and TEST123 remains the owner-delivered/signature-compared fallback.
+
+
+## TEST165 result — 2026-10-14T18:51:04Z
+- Source `314b678c1aa7c85d4a84f6d5a02ad1929f43ecab`, run `38618183149`, compiled and ran all 1,581 core tests; 2 failed.
+- Failure 1 was a headless-only particle-emitter null in the new Tengu fire test. Failure 2 was a real compatibility regression found by the existing Tengu shocker acceptance: new context-free Tengu fields lost their prior boss ownership.
+- No debug APK, API34 suite or screenshots ran and no APK was produced. TEST166 carries the demonstrated correction; this report does not claim TEST165 verified.
