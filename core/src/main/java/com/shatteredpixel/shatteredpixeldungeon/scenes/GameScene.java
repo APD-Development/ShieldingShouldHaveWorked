@@ -1610,7 +1610,7 @@ public class GameScene extends PixelScene {
 	}
 	
 	public static void bossSlain() {
-		if (Dungeon.hero.isAlive()) {
+		if (scene != null && Dungeon.hero.isAlive()) {
 			Banner bossSlain = new Banner( BannerSprites.get( BannerSprites.Type.BOSS_SLAIN ) );
 			bossSlain.show( 0xFFFFFF, 0.3f, 5f );
 			scene.showBanner( bossSlain );
@@ -1700,6 +1700,7 @@ public class GameScene extends PixelScene {
 	}
 
 	public static boolean cancel() {
+		if (cellSelector == null) return false;
 		cellSelector.resetKeyHold();
 		if (Dungeon.hero != null && (Dungeon.hero.curAction != null || Dungeon.hero.resting)) {
 			
@@ -1715,6 +1716,7 @@ public class GameScene extends PixelScene {
 	}
 	
 	public static void ready() {
+		if (cellSelector == null) return;
 		selectCell( defaultCellListener );
 		QuickSlotButton.cancel();
 		InventoryPane.cancelTargeting();
@@ -1726,11 +1728,11 @@ public class GameScene extends PixelScene {
 	}
 	
 	public static void checkKeyHold(){
-		cellSelector.processKeyHold();
+		if (cellSelector != null) cellSelector.processKeyHold();
 	}
 	
 	public static void resetKeyHold(){
-		cellSelector.resetKeyHold();
+		if (cellSelector != null) cellSelector.resetKeyHold();
 	}
 
 	public static void examineCell( Integer cell ) {

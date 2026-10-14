@@ -35,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.WornKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
+import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -124,7 +125,7 @@ public class Goo extends Mob {
 			}
 			if (HP*2 > HT) {
 				BossHealthBar.bleed(false);
-				((GooSprite)sprite).spray(false);
+				if (sprite instanceof GooSprite) ((GooSprite)sprite).spray(false);
 				HP = Math.min(HP, HT);
 			}
 		} else {
@@ -159,7 +160,7 @@ public class Goo extends Mob {
 			enemy.sprite.burst( 0x000000, 5 );
 		}
 
-		if (pumpedUp > 0) {
+		if (pumpedUp > 0 && sprite instanceof GooSprite) {
 			PixelScene.shake( 3, 0.2f );
 		}
 
@@ -170,7 +171,7 @@ public class Goo extends Mob {
 	public void updateSpriteState() {
 		super.updateSpriteState();
 
-		if (pumpedUp > 0){
+		if (pumpedUp > 0 && sprite instanceof GooSprite){
 			((GooSprite)sprite).pumpUp( pumpedUp );
 		}
 	}
@@ -179,24 +180,24 @@ public class Goo extends Mob {
 	protected boolean doAttack( Char enemy ) {
 		if (pumpedUp == 1) {
 			pumpedUp++;
-			((GooSprite)sprite).pumpUp( pumpedUp );
+			if (sprite instanceof GooSprite) ((GooSprite)sprite).pumpUp( pumpedUp );
 
 			spend( attackDelay() );
 
 			return true;
 		} else if (pumpedUp >= 2 || Random.Int( (HP*2 <= HT) ? 2 : 5 ) > 0) {
 
-			boolean visible = Dungeon.level.heroFOV[pos];
+			boolean visible = Dungeon.level.heroFOV[pos] && sprite instanceof GooSprite;
 
 			if (visible) {
 				if (pumpedUp >= 2) {
-					((GooSprite) sprite).pumpAttack();
+					if (sprite instanceof GooSprite) ((GooSprite) sprite).pumpAttack();
 				} else {
 					sprite.attack(enemy.pos);
 				}
 			} else {
 				if (pumpedUp >= 2){
-					((GooSprite)sprite).triggerEmitters();
+					if (sprite instanceof GooSprite) ((GooSprite)sprite).triggerEmitters();
 				}
 				attack( enemy );
 				Invisibility.dispel(this);
@@ -216,7 +217,7 @@ public class Goo extends Mob {
 				spend( attackDelay() );
 			}
 
-			((GooSprite)sprite).pumpUp( pumpedUp );
+			if (sprite instanceof GooSprite) ((GooSprite)sprite).pumpUp( pumpedUp );
 
 			if (Dungeon.level.heroFOV[pos]) {
 				sprite.showStatus( CharSprite.WARNING, Messages.get(this, "!!!") );
@@ -269,7 +270,7 @@ public class Goo extends Mob {
 		if ((HP*2 <= HT) && !bleeding){
 			BossHealthBar.bleed(true);
 			sprite.showStatus(CharSprite.WARNING, Messages.get(this, "enraged"));
-			((GooSprite)sprite).spray(true);
+			if (sprite instanceof GooSprite) ((GooSprite)sprite).spray(true);
 			yell(Messages.get(this, "gluuurp"));
 		}
 		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
@@ -287,7 +288,8 @@ public class Goo extends Mob {
 		Dungeon.level.unseal();
 		
 		GameScene.bossSlain();
-		Dungeon.level.drop( new WornKey( Dungeon.depth ), pos ).sprite.drop();
+		Heap keyHeap = Dungeon.level.drop( new WornKey( Dungeon.depth ), pos );
+		if (keyHeap.sprite != null) keyHeap.sprite.drop();
 		
 		//60% chance of 2 blobs, 30% chance of 3, 10% chance for 4. Average of 2.5
 		int blobs = Random.chances(new float[]{0, 0, 6, 3, 1});
@@ -296,7 +298,8 @@ public class Goo extends Mob {
 			do {
 				ofs = PathFinder.NEIGHBOURS8[Random.Int(8)];
 			} while (!Dungeon.level.passable[pos + ofs]);
-			Dungeon.level.drop( new GooBlob(), pos + ofs ).sprite.drop( pos );
+			Heap blobHeap = Dungeon.level.drop( new GooBlob(), pos + ofs );
+			if (blobHeap.sprite != null) blobHeap.sprite.drop( pos );
 		}
 		
 		Badges.validateBossSlain();
