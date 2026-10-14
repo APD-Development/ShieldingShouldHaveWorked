@@ -294,7 +294,7 @@ public class CursedWand {
 					GameScene.add( Blob.seed( bolt.collisionPos, 800, ConfusionGas.class ) );
 					return true;
 				case 1:
-					GameScene.add( Blob.seed( bolt.collisionPos, 500, ToxicGas.class ) );
+					GameScene.add( ToxicGas.seedAttributed(bolt.collisionPos,500,com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(user,null)) );
 					return true;
 				case 2:
 					GameScene.add( Blob.seed( bolt.collisionPos, 200, ParalyticGas.class ) );
@@ -1297,5 +1297,6 @@ public class CursedWand {
 	}
 
 }
+
 
 

@@ -442,7 +442,7 @@ public abstract class YogFist extends Mob {
 		@Override
 		protected void zap() {
 			spend( 1f );
-			GameScene.add(Blob.seed(enemy.pos, 100, ToxicGas.class));
+			GameScene.add(ToxicGas.seedAttributed(enemy.pos,100,com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(this,null)));
 		}
 
 		@Override
@@ -643,3 +643,4 @@ public abstract class YogFist extends Mob {
 	}
 
 }
+

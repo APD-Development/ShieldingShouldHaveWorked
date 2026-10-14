@@ -1,96 +1,122 @@
 {
-  "previous_label": "Codex TEST 138",
-  "previous_source": "62b96391dabd8bc139642c1ade35439cdd49f874",
-  "previous_run": 38493524276,
+  "previous_label": "Codex TEST 139",
+  "previous_source": "375adeb094460949f71537547037bb062e200f5e",
+  "previous_run": 38495415452,
   "date": "2026-10-13",
   "changes": [
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Bomb creator persistence",
-      "text": "Keep the creator of a lit bomb through saves without inventing ownership for older bombs.",
+      "title": "DM200",
+      "text": "Retain the robot that emitted DM200 toxic gas.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/bombs/Bomb.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "Explosion and armor order",
-      "text": "Prepare attributed bomb damage once before armor while preserving neutral and environmental damage.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/bombs/Bomb.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "Defused bomb ownership",
-      "text": "Clear stored bomb attribution when its fuse is frozen, lost or recovered.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/bombs/Bomb.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/DM200.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V063_MAGICMISSILE",
-      "title": "Blast stone creator",
-      "text": "Carry the thrower into a blast-stone explosion.",
+      "title": "ToxicGas",
+      "text": "Prepare toxic-gas source scaling without changing its diffusion or defenses.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/stones/StoneOfBlast.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/blobs/ToxicGas.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V063_MAGICMISSILE",
-      "title": "Cursed explosion caster",
-      "text": "Use the real caster for cursed-wand explosions, including boss-owned damage.",
+      "title": "CursedWand",
+      "text": "Keep the actual caster of cursed-wand toxic gas.",
       "paths": [
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/CursedWand.java"
       ]
     },
     {
-      "category": "Quality of Life",
+      "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Original score label",
-      "text": "Explicitly label the unmodified earned score before any future custom adjustment.",
+      "title": "DM300",
+      "text": "Capture DM300 ownership before scheduling delayed gas.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndScoreBreakdown.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/DM300.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V063_MAGICMISSILE",
+      "title": "ChaoticCenser",
+      "text": "Preserve Censer ownership through delayed and saved gas effects.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/trinkets/ChaoticCenser.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Bomb regression coverage",
-      "text": "Test actual explosions, saved fuses, armor order, neutral RNG and invalid ownership.",
+      "title": "RotHeart",
+      "text": "Retain the creature that releases rot-heart gas.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/BombDamageProvenanceTest.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/RotHeart.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Native scroll evidence",
-      "text": "Require meaningful touchscreen scrolling and separate before-and-after captures.",
+      "title": "CellDamageOrigins",
+      "text": "Preserve overlapping gas contributions through diffusion, clearing and saves.",
       "paths": [
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomScoreDeviceTest.java",
-        "tools/run-codex-android-checks.sh"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CellDamageOrigins.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V063_MAGICMISSILE",
+      "title": "Stench",
+      "text": "Use the actual armor wearer as the source of Stench gas.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/curses/Stench.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Explosion verification report",
-      "text": "Record verified source boundaries and outstanding damage-slider coverage.",
+      "title": "YogFist",
+      "text": "Treat Rotting Fist toxic clouds as boss-attributed attacks.",
       "paths": [
-        "docs/APD-EXPLOSION-SOURCE-PREPARED-2026-10-13.md"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/YogFist.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Verified development handoff",
-      "text": "Record TEST138 evidence and the next source package without claiming physical testing.",
+      "title": "ToxicGasProvenanceTest",
+      "text": "Test mixed ownership, neutral RNG, saved gas and damage-callback ordering.",
+      "paths": [
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/ToxicGasProvenanceTest.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "ToxicGasCallerIntegrationTest",
+      "text": "Exercise actual emitting monsters, bosses, curses and restored Censer effects.",
+      "paths": [
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/ToxicGasCallerIntegrationTest.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "APD TEST140 TOXIC SOURCE 2026 10 13",
+      "text": "Record toxic-source verification and outstanding coverage.",
+      "paths": [
+        "docs/APD-TEST140-TOXIC-SOURCE-2026-10-13.md"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "HANDOFF",
+      "text": "Preserve the verified TEST139 source and next development checkpoint.",
       "paths": [
         "docs/HANDOFF.md"
       ]
@@ -98,8 +124,8 @@
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Required private build checks",
-      "text": "Require the complete core, Android and screenshot checks before verification.",
+      "title": "APD CODEX BUILD REQUEST",
+      "text": "Require complete current-source, Android and visual checks.",
       "paths": [
         "docs/APD-CODEX-BUILD-REQUEST.txt"
       ]
@@ -108,7 +134,7 @@
       "category": "Changes",
       "sprite": "V061_BUGFIX",
       "title": "Exact build history",
-      "text": "Review every changed path against the immediately preceding compiled APK.",
+      "text": "Review the complete changes against the immediately preceding compiled APK.",
       "paths": [
         "docs/APD-NEXT-BUILD-HISTORY.json"
       ]

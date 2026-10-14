@@ -371,6 +371,7 @@ public class DM300 extends Mob {
 	}
 
 	public void ventGas( Char target ){
+        final com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin apdGasOrigin=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(this,null);
 		Dungeon.hero.interrupt();
 
 		Ballistica trajectory = new Ballistica(pos, target.pos, Ballistica.STOP_TARGET);
@@ -383,15 +384,15 @@ public class DM300 extends Mob {
 			@Override
 			protected boolean act() {
 				int gasVented = 0;
-				GameScene.add(Blob.seed(trajectory.collisionPos, 100*gasMulti, ToxicGas.class));
+				GameScene.add(ToxicGas.seedAttributed(trajectory.collisionPos,100*gasMulti,apdGasOrigin));
 				for (int i : trajectory.subPath(0, trajectory.dist)){
-					GameScene.add(Blob.seed(i, 20*gasMulti, ToxicGas.class));
+					GameScene.add(ToxicGas.seedAttributed(i,20*gasMulti,apdGasOrigin));
 					gasVented += 20*gasMulti;
 				}
 				if (gasVented < 250*gasMulti){
 					int toVentAround = (int)Math.ceil(((250*gasMulti) - gasVented)/8f);
 					for (int i : PathFinder.NEIGHBOURS8){
-						GameScene.add(Blob.seed(pos+i, toVentAround, ToxicGas.class));
+						GameScene.add(ToxicGas.seedAttributed(pos+i,toVentAround,apdGasOrigin));
 					}
 				}
 				Actor.remove(this);
@@ -705,3 +706,4 @@ public class DM300 extends Mob {
 
 	}
 }
+

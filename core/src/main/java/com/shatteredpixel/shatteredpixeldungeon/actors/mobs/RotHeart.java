@@ -78,7 +78,7 @@ public class RotHeart extends Mob {
 			}
 		}
 
-		GameScene.add(Blob.seed(pos, 5 + 3*openNearby, ToxicGas.class));
+		GameScene.add(ToxicGas.seedAttributed(pos,5+3*openNearby,com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(this,null)));
 
 		return super.defenseProc(enemy, damage);
 	}
@@ -138,3 +138,4 @@ public class RotHeart extends Mob {
 	}
 
 }
+
