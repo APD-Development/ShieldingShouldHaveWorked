@@ -453,3 +453,11 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Read full VaultBossElemental, VaultSentry, VaultFlameTraps and VaultLaser caller/state/save paths. Kept the three quest machines environmental; wired seven boss-owned attack boundaries without changing rolls, source objects, status duration, geometry, turns, RNG or quest scoring.
 - Added four permanent VaultBossDamageProvenanceTest methods covering20 percentages, boss replacement, neutral source/RNG identity, complete boss caller guards and environmental guards.
 - No local execution workspace; candidate is uncompiled pending1551core/debug/history/26API34/34PNG CI. Three Damage sliders remain disabled; no delivery/release/phone claim.
+
+
+
+### 2026-10-14T13:50:03Z — TEST156 Vault boss provenance verified
+- Exact source `2af7a808c53f2325c56d88124b8eb71de1e2b526`, run `38573246711` (`13:36:49Z`–`13:49:13Z`) passed1551 core +26 API34, debug and compiled immediate-previous TEST155 history, 0 failure/error/skip.
+- Downloaded/checked core `11898621235`/`74794fab9c0f0038c72bda6bbbda68a6d9af45fe7c842ea68630a92b73553e24`; Android `11899122092`/`cc34aa6e9e69a0de5ca98920e5510fe9595c830c85d1571f950f7f97792b915a`; APK ZIP `11899205759`/`1caa8befa972770a9169e2eb3cdb95eed15cec37687b37173138e720912cd61d`; contained APK `ee5307c5738313d6b82f46fab53c9e6dda07713d427f0eb6d1d01f389004d817`, checksum passed.
+- 34/34 PNGs decoded at320×640; contact-sheet review found expected readable UI/gameplay and no corrupt capture. Emulator only, no physical-phone claim.
+- Private delivery skipped; TEST123 remains owner-delivered fallback. Three Damage sliders remain disabled; next harmful-buff/derived and remaining ability/spell/class/boss acceptance work.
