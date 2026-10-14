@@ -43,7 +43,9 @@ public class Overgrowth extends Armor.Glyph {
 		float procChance = 1/20f * procChanceMultiplier(defender);
 		if ( Random.Float() < procChance ) {
 
-			Plant p = ((Plant.Seed) Generator.randomUsingDefaults(Generator.Category.SEED)).couch(defender.pos, null);
+			Plant p = ((Plant.Seed) Generator.randomUsingDefaults(Generator.Category.SEED)).couchAttributed(
+					defender.pos, null,
+					com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(attacker, null));
 			
 			//momentarily revoke warden benefits, otherwise this curse would be incredibly powerful
 			if (defender instanceof Hero && ((Hero) defender).subClass == HeroSubClass.WARDEN){

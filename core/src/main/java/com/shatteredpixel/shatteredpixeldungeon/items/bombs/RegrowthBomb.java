@@ -92,7 +92,8 @@ public class RegrowthBomb extends Bomb {
 		for (int i = 0; i < plants; i++) {
 			Integer plantPos = Random.element(plantCandidates);
 			if (plantPos != null) {
-				Dungeon.level.plant((Plant.Seed) Generator.randomUsingDefaults(Generator.Category.SEED), plantPos);
+				Dungeon.level.plantAttributed((Plant.Seed) Generator.randomUsingDefaults(Generator.Category.SEED),
+						plantPos, apdExplosionOrigin());
 				plantCandidates.remove(plantPos);
 			}
 		}
@@ -111,7 +112,7 @@ public class RegrowthBomb extends Bomb {
 					plant = new Starflower.Seed();
 					break;
 			}
-			Dungeon.level.plant( plant, plantPos);
+			Dungeon.level.plantAttributed(plant, plantPos, apdExplosionOrigin());
 		}
 	}
 	

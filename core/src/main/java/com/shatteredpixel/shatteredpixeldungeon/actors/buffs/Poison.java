@@ -71,6 +71,11 @@ public class Poison extends Buff implements Hero.Doom, Buff.DOTbuff {
         setWithOrigin(duration,com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(creator,null));
         if(target!=null)target.needsIncomingDOTUpdate=true;
     }
+    public void setAttributedOrigin(float duration,com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin origin){
+        if(origin==null)throw new IllegalArgumentException("Missing poison origin");
+        setWithOrigin(duration,origin);
+        if(target!=null)target.needsIncomingDOTUpdate=true;
+    }
     private void setWithOrigin(float duration,com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin origin){
         float prior=left;left=Math.max(duration,left);
         if(duration>prior || damageProvenance==null && prior<=0){

@@ -1,68 +1,131 @@
 {
-  "previous_label": "Codex TEST 151",
-  "previous_source": "fe6527fe009234cdcf81edd60eebaba1ea5b0b7a",
-  "previous_run": 38558697915,
+  "previous_label": "Codex TEST 152",
+  "previous_source": "299fbfb80c8030fb77b1e0c7c0402df8b76bfa08",
+  "previous_run": 38560042952,
   "date": "2026-10-14",
   "changes": [
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Fire",
-      "text": "Reject invalid fire mixtures before changing the field and retain their explicit source.",
+      "title": "Plant provenance",
+      "text": "Persist an immutable creator snapshot for offensive plants while legacy/natural plants remain unowned.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/blobs/Fire.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Plant.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "CellDamageOrigins",
-      "text": "Share the existing source-mixture validation before field creation.",
+      "title": "Level plant boundary",
+      "text": "Create plants under an explicit offensive origin without changing placement behavior.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CellDamageOrigins.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/Level.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "InfernalBrew",
-      "text": "Use the actual throw or explosion trigger for Infernal Brew fire.",
+      "title": "Firebloom",
+      "text": "Pass the retained plant origin into Fire.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/brews/InfernalBrew.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Firebloom.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "InfernoDamageProvenanceTest",
-      "text": "Verify brew and Censer wiring against their actual captured effect context.",
+      "title": "Sorrowmoss",
+      "text": "Pass the retained plant origin into Poison.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/InfernoDamageProvenanceTest.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Sorrowmoss.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "InfernoSourceSafetyTest",
-      "text": "Test malformed mixtures, stale users, actual brew triggers and saved Censer ownership.",
+      "title": "Rotberry",
+      "text": "Pass the retained plant origin into Toxic Gas.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/InfernoSourceSafetyTest.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Rotberry.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "APD-INFERNO-SOURCE-SAFETY-PREPARED-2026-10-14",
-      "text": "Record independent source-safety reproduction and regression evidence.",
+      "title": "Poison",
+      "text": "Accept an already captured immutable origin.",
       "paths": [
-        "docs/APD-INFERNO-SOURCE-SAFETY-PREPARED-2026-10-14.md"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Poison.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "HANDOFF",
-      "text": "Record tested source corrections and the next verification checkpoint.",
+      "title": "Regrowth Bomb",
+      "text": "Preserve the bomb fuse origin in spawned plants.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/bombs/RegrowthBomb.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "Wand of Regrowth",
+      "text": "Capture and consume the actual zap origin for spawned plants.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfRegrowth.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "Cursed Wand",
+      "text": "Attribute Random Plant to its actual caster.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/CursedWand.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "Sandals of Nature",
+      "text": "Attribute invoked plant effects to their actual user.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/SandalsOfNature.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "Overgrowth",
+      "text": "Attribute the triggered plant to the actual initiating attacker.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/curses/Overgrowth.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "Plant provenance regression",
+      "text": "Retain role, range, save, environmental, neutral and caller coverage.",
+      "paths": [
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/PlantDamageProvenanceTest.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "TEST153 evidence",
+      "text": "Record implementation and honest verification boundary.",
+      "paths": [
+        "docs/APD-TEST153-PLANT-PROVENANCE-2026-10-14.md"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "Handoff",
+      "text": "Record the candidate and unresolved acceptance work.",
       "paths": [
         "docs/HANDOFF.md"
       ]
@@ -70,8 +133,17 @@
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "APD-CODEX-BUILD-REQUEST",
-      "text": "Require full current-source tests, Android checks, debug assembly and compiled history.",
+      "title": "Completed ledger",
+      "text": "Record exact bounded work and pending checks.",
+      "paths": [
+        "docs/WORK-COMPLETED-LEDGER.md"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "Build request",
+      "text": "Require exact-source core, Android, debug and history verification.",
       "paths": [
         "docs/APD-CODEX-BUILD-REQUEST.txt"
       ]
@@ -79,8 +151,8 @@
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "APD-NEXT-BUILD-HISTORY",
-      "text": "Review changes against the immediately preceding produced APK.",
+      "title": "History manifest",
+      "text": "Compare every reviewed path against the immediate previous TEST152 APK.",
       "paths": [
         "docs/APD-NEXT-BUILD-HISTORY.json"
       ]

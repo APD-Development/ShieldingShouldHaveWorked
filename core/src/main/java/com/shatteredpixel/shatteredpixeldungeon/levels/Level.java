@@ -1094,6 +1094,15 @@ public abstract class Level implements Bundlable {
 		
 		return plant;
 	}
+
+	public Plant plantAttributed(Plant.Seed seed, int pos,
+			com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin origin) {
+		if (origin == null) throw new IllegalArgumentException("Missing plant origin");
+		try (com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveEffectContext ignored =
+				com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveEffectContext.enter(origin)) {
+			return plant(seed, pos);
+		}
+	}
 	
 	public void uproot( int pos ) {
 		plants.remove(pos);

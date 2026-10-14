@@ -420,3 +420,12 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Validated 34/34 Android PNGs at 320×640 and visually reviewed the contact sheet: expected readable menus/dialogs/gameplay, no corrupt capture. This is emulator evidence only.
 - Verified implementation includes TEST150 Inferno/fire-transfer provenance plus TEST152 prevalidation, enclosing-context isolation and actual Brew/Censer source safety. Five new permanent safety methods plus six retained Inferno methods are included; tests were not weakened.
 - Private delivery skipped; TEST123 remains the last owner-delivered/signature-compared APK. Three Damage controls remain disabled. Remaining work: plants, vault/boss, spells/abilities/derived offense, delayed state changes and all-class/boss/combination acceptance. No score/save-format/signing/app-ID/release change.
+
+
+### 2026-10-14T12:37:39.766Z — TEST153 offensive plant provenance candidate
+- Reconciled latest real head `566d99427b6216d60392c424040b56e45620bf10`; read current handoff, build request, source guide, completed ledger, complete Plant/all standard plant classes and all known creation callers.
+- Reproduced by source inspection: plants had no creator field, so player-created Firebloom/Sorrowmoss/Rotberry entered verified Fire/Poison/Toxic Gas as UNATTRIBUTED.
+- Implemented additive immutable origin storage with missing-key legacy fallback to UNATTRIBUTED. Manual seed planting, Wand of Regrowth, cursed Random Plant, Regrowth Bomb, Sandals of Nature and Overgrowth capture actual initiating origins. Natural plants remain unowned.
+- Added six retained PlantDamageProvenanceTest methods covering all20 percentages/all3 roles, natural exclusion, save/legacy, neutral RNG/field identity and source wiring.
+- No local Gradle checkout exists; no local compilation/test result is claimed. Full TEST153 1547core/debug/history/26API34/34PNG is pending.
+- Three Damage controls remain disabled. No score/save requirement/signing/app-ID/release change.

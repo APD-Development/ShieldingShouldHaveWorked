@@ -55,7 +55,20 @@ public abstract class Plant implements Bundlable {
 	public int image;
 	public int pos;
 
+	private com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin apdOrigin =
+			com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.UNATTRIBUTED;
+	private static final String APD_ORIGIN = "apd_plant_origin";
+
 	protected Class<? extends Plant.Seed> seedClass;
+
+	public final com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin apdOrigin() {
+		return apdOrigin;
+	}
+
+	private void apdOrigin(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin origin) {
+		if (origin == null) throw new IllegalArgumentException("Missing plant origin");
+		apdOrigin = origin;
+	}
 
 	public void trigger(){
 
@@ -111,11 +124,13 @@ public abstract class Plant implements Bundlable {
 	@Override
 	public void restoreFromBundle( Bundle bundle ) {
 		pos = bundle.getInt( POS );
+		apdOrigin = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.restore(bundle, APD_ORIGIN);
 	}
 
 	@Override
 	public void storeInBundle( Bundle bundle ) {
 		bundle.put( POS, pos );
+		apdOrigin.store(bundle, APD_ORIGIN);
 	}
 
 	public String name(){
@@ -159,7 +174,7 @@ public abstract class Plant implements Bundlable {
 				super.onThrow( cell );
 			} else {
 				Catalog.countUse(getClass());
-				Dungeon.level.plant( this, cell );
+				Dungeon.level.plantAttributed( this, cell, apdThrownOrigin() );
 				if (Dungeon.hero.subClass == HeroSubClass.WARDEN) {
 					for (int i : PathFinder.NEIGHBOURS8) {
 						int c = Dungeon.level.map[cell + i];
@@ -182,7 +197,11 @@ public abstract class Plant implements Bundlable {
 			if (action.equals( AC_PLANT )) {
 
 				hero.busy();
-				((Seed)detach( hero.belongings.backpack )).onThrow( hero.pos );
+				Seed planted = (Seed)detach( hero.belongings.backpack );
+				if (planted != null) {
+					planted.apdThrowAttributed(hero.pos,
+							com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(hero, null));
+				}
 				hero.spend( TIME_TO_PLANT );
 
 				hero.sprite.operate( hero.pos );
@@ -196,7 +215,17 @@ public abstract class Plant implements Bundlable {
 			}
 			Plant plant = Reflection.newInstance(plantClass);
 			plant.pos = pos;
+			plant.apdOrigin(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveEffectContext.current());
 			return plant;
+		}
+
+		public Plant couchAttributed(int pos, Level level,
+				com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin origin) {
+			if (origin == null) throw new IllegalArgumentException("Missing plant origin");
+			try (com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveEffectContext ignored =
+					com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveEffectContext.enter(origin)) {
+				return couch(pos, level);
+			}
 		}
 		
 		@Override

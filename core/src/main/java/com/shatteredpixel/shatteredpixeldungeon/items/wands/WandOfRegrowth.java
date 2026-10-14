@@ -72,13 +72,17 @@ public class WandOfRegrowth extends Wand {
 
 	ConeAOE cone;
 	int target;
+	private com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin apdPlantOrigin =
+			com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.UNATTRIBUTED;
 
 	@Override
 	public boolean tryToZap(Hero owner, int target) {
 		if (super.tryToZap(owner, target)){
 			this.target = target;
+			apdPlantOrigin = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(owner, null);
 			return true;
 		} else {
+			apdPlantOrigin = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.UNATTRIBUTED;
 			return false;
 		}
 	}
@@ -86,6 +90,8 @@ public class WandOfRegrowth extends Wand {
 	@Override
 	public void onZap(Ballistica bolt) {
 
+		com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin plantOrigin = apdPlantOrigin;
+		apdPlantOrigin = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.UNATTRIBUTED;
 		ArrayList<Integer> cells = new ArrayList<>(cone.cells);
 
 		float furrowedChance = 0;
@@ -164,13 +170,15 @@ public class WandOfRegrowth extends Wand {
 		if (!cells.isEmpty() && Random.Float() > furrowedChance &&
 				(Random.Int(6) < chrgUsed)){ // 16%/33%/50% chance to spawn a seed pod or dewcatcher
 			int cell = cells.remove(0);
-			Dungeon.level.plant( Random.Int(2) == 0 ? new Seedpod.Seed() : new Dewcatcher.Seed(), cell);
+			Dungeon.level.plantAttributed(
+					Random.Int(2) == 0 ? new Seedpod.Seed() : new Dewcatcher.Seed(), cell, plantOrigin);
 		}
 
 		if (!cells.isEmpty() && Random.Float() > furrowedChance &&
 				(Random.Int(3) < chrgUsed)){ // 33%/66%/100% chance to spawn a plant
 			int cell = cells.remove(0);
-			Dungeon.level.plant((Plant.Seed) Generator.randomUsingDefaults(Generator.Category.SEED), cell);
+			Dungeon.level.plantAttributed(
+					(Plant.Seed) Generator.randomUsingDefaults(Generator.Category.SEED), cell, plantOrigin);
 		}
 
 		for (int cell : cells){

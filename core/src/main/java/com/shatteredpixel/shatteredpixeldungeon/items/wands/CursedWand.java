@@ -459,7 +459,9 @@ public class CursedWand {
 		public boolean effect(Item origin, Char user, Ballistica bolt, boolean positiveOnly) {
 			if (valid(origin, user, bolt, positiveOnly)) {
 				tryForWandProc(Actor.findChar(bolt.collisionPos), origin);
-				Dungeon.level.plant((Plant.Seed) Generator.randomUsingDefaults(Generator.Category.SEED), bolt.collisionPos);
+				Dungeon.level.plantAttributed(
+						(Plant.Seed) Generator.randomUsingDefaults(Generator.Category.SEED), bolt.collisionPos,
+						com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(user, null));
 				return true;
 			} else {
 				return false;
