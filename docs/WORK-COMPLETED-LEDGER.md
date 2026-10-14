@@ -432,3 +432,7 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 
 
 - TEST153 run `38565297532` failed the history-input gate at `2026-10-14T12:38:44Z`: omitted reviewed TEST151/TEST152 evidence documents. 0 core/API34 tests ran; no APK/screenshots. TEST154 adds only those manifest paths and retries unchanged application source.
+
+
+- TEST154 run `38565512376`: history passed; 1547 core compiled/executed, 1545 passed and two new fixture methods failed because natural Rotberry/Firebloom remained at cell0 while target/baseline used cell312. Core artifact `11895296228`, ZIP SHA-256 `e3b8acbbc953e31599fb6641a1bf81943e58aca340fbf1649b4f195ee7beaf5f`. No APK/API34/screenshots.
+- TEST155 sets those fixture positions to312 only; production source/assertions unchanged.

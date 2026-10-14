@@ -24,3 +24,8 @@ Prepared at `2026-10-14T12:37:39.766Z` from real head `566d99427b6216d60392c4240
 ### TEST153 history-gate outcome
 
 Run `38565297532` stopped before compilation at `2026-10-14T12:38:44Z`. The manifest omitted the already reviewed TEST151/TEST152 evidence paths `docs/APD-TEST150-INFERNO-FIRE-TRANSFER-2026-10-14.md` and `docs/APD-INFERNO-SOURCE-SAFETY-PREPARED-2026-10-14.md` from the TEST152-to-current comparison. Zero core/API34 tests ran and no APK/screenshots were produced. TEST154 corrects only those manifest entries; application source remains the unverified TEST153 candidate.
+
+
+### TEST154 fixture result; TEST155 correction
+
+Run `38565512376` passed history validation, compiled the complete source and executed all 1547 core tests: 1545 passed and two new fixture methods failed. The natural Rotberry/Firebloom comparison instances retained Java's default `pos=0` while their target and attributed baseline used `CELL=312`; one therefore produced no target hit and the other correctly produced fire at a different cell. TEST155 sets both natural fixtures to the tested cell. Production source and assertions are unchanged. TEST154 produced no APK/API34/screenshots.

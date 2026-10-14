@@ -2004,3 +2004,8 @@ No local Gradle checkout is available, so this candidate is uncompiled until TES
 ## TEST153 history gate; TEST154 unchanged retry — 2026-10-14T12:39:26.175Z
 
 TEST153 source `9b640e08407b93939f560767a6a4d9f8821e9bcd`, run `38565297532`, failed before compilation because the history manifest omitted the already reviewed TEST151/TEST152 evidence documents. 0 tests ran; no APK/screenshots. TEST154 adds only those two paths and retries the unchanged offensive-plant application candidate. Do not call it verified until full1547core/debug/history/26API34/34PNG evidence passes. TEST152 remains verified; TEST123 remains owner-delivered.
+
+
+## TEST154 fixture failures; TEST155 correction — 2026-10-14T12:43:31.412Z
+
+TEST154 source `c4d274b8b4ca5bf314529f111f73a5da3d4f585f`, run `38565512376`, passed history and compiled, then ran1547 core:1545 passed; two new natural-plant fixtures used cell0 while the target/baseline used cell312. No APK/API34/screenshots. TEST155 changes only those two fixture positions; production code and assertions are unchanged. Full1547core/debug/history/26API34/34PNG remains required.
