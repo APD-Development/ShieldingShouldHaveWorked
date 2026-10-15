@@ -45,7 +45,7 @@ public class GetFuckedRouteTest {
         doAnswer(i -> { ch.onOperateComplete(); return null; }).when(sprite).operate(anyInt());
         doAnswer(i -> { ch.onMotionComplete(); return null; }).when(sprite).move(anyInt(), anyInt());
     }
-    private void heapSprite(Heap h) { if (h.sprite == null) h.sprite = mock(ItemSprite.class); }
+    private void heapSprite(Heap h) { if (h.sprite == null) h.sprite = mock(ItemSprite.class, RETURNS_SELF); }
     private <T> MockedStatic<T> visual(Class<T> type) {
         MockedStatic<T> m = mockStatic(type); visuals.add(m); return m;
     }
