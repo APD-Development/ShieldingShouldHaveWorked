@@ -1,23 +1,23 @@
 {
-  "previous_label": "Codex TEST 187",
-  "previous_source": "44cf2b195229f8909021ed9998f65aba52acb7ce",
-  "previous_run": 38667136514,
+  "previous_label": "Codex TEST 188",
+  "previous_source": "e251bb7a760db8274babdeb3e5356425853670d1",
+  "previous_run": 38668463084,
   "date": "2026-10-15",
   "changes": [
     {
       "category": "Testing",
       "sprite": "V061_PAGE",
-      "title": "Execute UIMSD Back regression",
-      "text": "Include the retained Android Back device class in the explicit API34 command so preparing-tour cancellation and the existing one-step Back sequence actually execute.",
+      "title": "Isolate UIMSD Back fixture",
+      "text": "Enter the already-authorized UIMSD scene directly in the Android Back regression so the private build's intentional demo-unlock gate does not divert a scene-navigation test before its tour assertions.",
       "paths": [
-        "tools/run-codex-android-checks.sh"
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/AndroidBackDeviceTest.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_PAGE",
-      "title": "TEST187 evidence and TEST188 handoff",
-      "text": "Record that TEST187 compiled the correction and passed its configured 26 methods but omitted the changed Android Back class, then request the unchanged application/test source with that class included.",
+      "title": "TEST188 failure and TEST189 handoff",
+      "text": "Record 1,603 passing core tests, 26 of 27 passing API34 methods, the exact pre-tour fixture failure, retained 35-image evidence, and the required corrected verification request.",
       "paths": [
         "docs/APD-TEST186-UIMSD-TOUR-CANCEL-2026-10-15.md",
         "docs/HANDOFF.md",

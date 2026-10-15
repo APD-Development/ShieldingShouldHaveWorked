@@ -133,8 +133,9 @@ public class AndroidBackDeviceTest {
 			assertTrue("the title screen is still there", Game.scene() instanceof TitleScene);
 			Log.w(TAG, "Back closed two dialogs one at a time");
 
-			//2. UIMSD from the title; a tour on its sample history; Back ends the tour first, the next Back returns to the title
-			onRender(new Runnable(){ public void run(){ UimsdScene.open(TitleScene.class); } });
+			//2. Enter UIMSD directly from the title because this test covers scene navigation, not the private-build demo unlock gate;
+			//a tour on its sample history; Back ends the tour first, the next Back returns to the title
+			onRender(new Runnable(){ public void run(){ UimsdScene.openNow(TitleScene.class); } });
 			waitUntil("the UIMSD scene", new java.util.concurrent.Callable<Boolean>(){ public Boolean call(){ return Game.scene() instanceof UimsdScene; } }, 30000);
 			Thread.sleep(2500);
 			final Method begin = UimsdScene.class.getDeclaredMethod("beginTour", int.class, boolean.class);
