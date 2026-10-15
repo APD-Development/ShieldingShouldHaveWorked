@@ -25,15 +25,16 @@
     {
       "category": "Changes",
       "sprite": "V061_PAGE",
-      "title": "TEST185 evidence and TEST186 handoff",
-      "text": "Preserve the verified 1,603-core/26-API34/35-image checkpoint and record the pending preparing-tour cancellation correction.",
+      "title": "TEST186 failure and TEST187 handoff",
+      "text": "Retain TEST186's pre-compilation history-manifest failure and request the unchanged tour-cancellation source with the complete TEST185 evidence path set.",
       "paths": [
         "docs/APD-TEST186-UIMSD-TOUR-CANCEL-2026-10-15.md",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/APD-NEXT-BUILD-HISTORY.json",
-        "docs/KNOWN-ISSUES-AND-SOURCE-GUIDE.md"
+        "docs/KNOWN-ISSUES-AND-SOURCE-GUIDE.md",
+        "docs/APD-TEST183-UIMSD-EMPTY-HOME-NATIVE-2026-10-15.md"
       ]
     }
   ]

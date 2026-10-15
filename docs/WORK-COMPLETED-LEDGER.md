@@ -819,3 +819,10 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Strengthened `AndroidBackDeviceTest` to start a real sample preparation, cancel it in the preparing state, require immediate main-model/Home restoration and require the worker generation to be invalidated before the existing normal-tour Back flow.
 - TEST186 exact-source verification requests 1,603 core tests, debug assembly, immediate-previous compiled TEST185 history, all 26 API34 methods and 35 screenshots. Candidate is pending until hosted evidence passes.
 - No gameplay, scoring, raw history, save, permanent statistics, identity or signing behavior changed. No delivery or physical-phone claim; TEST185 remains the verified fallback and TEST123 the owner-delivered fallback.
+
+
+## 2026-10-15T01:42:48.021Z — TEST186 history-guard failure; TEST187 correction pending
+- TEST186 source `c1e09d72b48cdd8e534f93818cb763ade84407c9`, run [38666897410](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38666897410) (01:40:13Z–01:41:01Z), stopped before compilation because the reviewed-history manifest omitted `docs/APD-TEST183-UIMSD-EMPTY-HOME-NATIVE-2026-10-15.md` from the intervening TEST185 evidence commit.
+- No core tests, APK, Android tests or screenshots were produced; TEST186 is not verified. The exact failure is retained in `docs/APD-TEST186-UIMSD-TOUR-CANCEL-2026-10-15.md`.
+- TEST187 adds only the omitted existing evidence path. UIMSD application and Android regression source remain unchanged; verify 1,603 core/debug/immediate-previous compiled TEST185 history/26 API34/35 PNG.
+- No gameplay/save/statistics/scoring/identity/signing/delivery/physical-phone change. TEST185 remains the verified fallback and TEST123 the owner-delivered fallback.

@@ -142,3 +142,6 @@ TEST185 verified (2026-10-15T01:29:34.915Z): reconciled source40d31d81de4c2fcc1a
 
 
 TEST186 exact-source request (2026-10-15T01:40:02.195Z): cancel UIMSD tour preparation on Back and invalidate its worker generation so it cannot publish later. Verify unchanged1603core/debug/immediate-previous compiledTEST185history/26API34/35PNG, including immediate main-model/Home restoration before the existing completed-tour Back flow. Preserve serialized sample cleanup and real-history guards. No gameplay/save/statistics/scoring/identity/signing/delivery/physical-phone change.
+
+
+TEST187 history-only correction (2026-10-15T01:42:48.021Z): TEST186 sourcec1e09d72b48cdd8e534f93818cb763ade84407c9/run38666897410 stopped before compilation because the comparison manifest omitted docs/APD-TEST183-UIMSD-EMPTY-HOME-NATIVE-2026-10-15.md from the TEST185 evidence commit. Add that existing path and verify unchanged UIMSD application/test source:1603core/debug/immediate-previous compiledTEST185history/26API34/35PNG. No APK/tests existed for TEST186; no delivery/physical-phone claim.

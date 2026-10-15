@@ -15,3 +15,9 @@ At verified TEST185 evidence head `6f368e1e27cf99ca631c8aa343429c2bba6c86ca`, `U
 TEST186 requests the unchanged 1,603 core tests, debug assembly, immediate-previous compiled TEST185 history comparison, all 26 API34 methods with the strengthened Back regression, and the existing 35 screenshots.
 
 This candidate is implemented but not verified until exact-source hosted evidence passes. No gameplay, scoring, raw history, player save, permanent statistics, application ID or signing identity changed. No delivery or physical-phone result is claimed; TEST123 remains the last owner-delivered/signature-compared APK.
+
+
+## TEST186 hosted result and TEST187 correction
+TEST186 source `c1e09d72b48cdd8e534f93818cb763ade84407c9`, run [38666897410](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38666897410) (2026-10-15T01:40:13Z–01:41:01Z), stopped in the reviewed-history guard before compilation. The exact reported omission was `docs/APD-TEST183-UIMSD-EMPTY-HOME-NATIVE-2026-10-15.md`, changed by the TEST185 evidence commit after compiled source `40d31d81de4c2fcc1ae154e9ec0d1c8f6a28d984`. No core, debug, APK or API34 tests ran; TEST186 is not verified and produced no APK.
+
+TEST187 adds that existing evidence path to the complete comparison manifest. UIMSD production and Android regression source are unchanged. The corrected request remains 1,603 core/debug/immediate-previous compiled TEST185 history/26 API34/35 PNG, with no delivery or physical-phone claim.
