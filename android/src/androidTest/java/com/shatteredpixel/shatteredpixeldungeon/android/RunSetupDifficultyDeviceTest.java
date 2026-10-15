@@ -305,6 +305,9 @@ public class RunSetupDifficultyDeviceTest {
             try {
                 onRender(() -> {
                     try {
+                        Method chooseCleric = HeroSelectScene.class.getDeclaredMethod("setSelectedHero", HeroClass.class);
+                        chooseCleric.setAccessible(true);
+                        chooseCleric.invoke(Game.scene(), HeroClass.CLERIC);
                         assertTrue("the packaged private asset must enable lore", com.shatteredpixel.shatteredpixeldungeon.apd.ApdFeatures.grudge());
                         assertTrue("Cleric remains playable", com.shatteredpixel.shatteredpixeldungeon.apd.ApdFeatures.clericPlayable());
                         oldEngine.set(engine.get(null));
