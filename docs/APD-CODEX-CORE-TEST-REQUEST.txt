@@ -1,10 +1,8 @@
-APD CORE-ONLY TEST REQUEST — TEST203
-requested_utc=2026-10-15T09:46:19Z
+APD CORE-ONLY TEST REQUEST — retained Shocking derived-damage acceptance
 branch=codex/apd-phone-fixes-2026-10-09
-parent=d2219bc2e8c8a822879d147f402793fd5a29a4a9
-application_source=186f5892429ef564ec4a9d59c9885a62fb6f1c1f
-scope=retained level-feeling journal coverage and display-wiring regression
-expected_core_tests=1617
-apk_build=forbidden_for_this_request
-reason=production application source is unchanged; reuse verified TEST202/Codex TEST 198 APK evidence
-assertions=all seven non-neutral feelings emit one public journal.landmark fact at their floor; duplicate notes emit nothing; every GameScene display branch maps to its matching landmark
+regression_source=333ea7cc64a93bde9cc952d0c24dbfd8a21b6595
+scope=real Shocking proc after existing attackDamage at all20Player settings; original source and one splash, no double scaling
+local_result=one retained method passed0.57s against actual fetched Shocking/helper/fixture; full current-source checks pending
+expected_core_tests=1620
+apk_build=forbidden_for_this_test_only_request
+application_note=TEST204 movement candidate is independent; do not infer its verification from previous APKs. Reuse only the exact successful artifact after its required checks. No gameplay source changed by this retained regression.
