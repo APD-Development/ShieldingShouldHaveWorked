@@ -34,6 +34,14 @@ public final class CatalogueKeeper {
 
 	public enum Result { ACCEPTED, SAME_OR_OLDER, MALFORMED, BAD_SIGNATURE, UNKNOWN_KEY, KEY_NOT_ALLOWED, KEY_NOT_VALID, EXPIRED }
 
+	//Separate keepers for the same on-disk catalogue do not share their instance monitor.
+	//Serialize the compare-and-replace section so a stale instance cannot overwrite a newer revocation catalogue.
+	private static final Object STORE_LOCK = new Object();
+
+	interface OfferHook {
+		void insideStoreLock( File temp ) throws InterruptedException;
+	}
+
 	private final File file;
 	private final TrustRoot trust;
 	private ContentCatalogue held;
@@ -45,17 +53,20 @@ public final class CatalogueKeeper {
 
 	//re-checks the cached file against the CURRENT trust root: a key revoked since it was saved drops the cache
 	public synchronized ContentCatalogue load( long nowMillis ){
-		held = null;
+		held = readPersisted(nowMillis);
+		return held;
+	}
+
+	private ContentCatalogue readPersisted( long nowMillis ){
 		try {
 			if (!file.exists()) return null;
 			ContentCatalogue c = ContentCatalogue.parse(new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8));
 			//expiry is judged when the list is used, not when it is read: an expired cache still guards revocations, so only signature checks apply
 			ContentCatalogue.Verdict v = c.verify(trust, nowMillis);
-			if (v == ContentCatalogue.Verdict.OK || v == ContentCatalogue.Verdict.EXPIRED) held = c;
-		} catch (IOException | RuntimeException e){
-			held = null;
+			if (v == ContentCatalogue.Verdict.OK || v == ContentCatalogue.Verdict.EXPIRED) return c;
+		} catch (IOException | RuntimeException ignored){
 		}
-		return held;
+		return null;
 	}
 
 	public synchronized ContentCatalogue held(){
@@ -68,6 +79,11 @@ public final class CatalogueKeeper {
 	}
 
 	public synchronized Result offer( String downloadedText, long nowMillis ){
+		return offer(downloadedText, nowMillis, null);
+	}
+
+	//Package-private hook makes the cross-instance replacement regression deterministic.
+	synchronized Result offer( String downloadedText, long nowMillis, OfferHook hook ){
 		ContentCatalogue c;
 		try {
 			c = ContentCatalogue.parse(downloadedText);
@@ -82,17 +98,29 @@ public final class CatalogueKeeper {
 			case EXPIRED: return Result.EXPIRED;
 			default: break;
 		}
-		if (held != null && c.sequence <= held.sequence) return Result.SAME_OR_OLDER;
-		try {
-			File tmp = new File(file.getPath() + ".tmp");
-			Files.write(tmp.toPath(), c.toText().getBytes(StandardCharsets.UTF_8));
-			Files.move(tmp.toPath(), file.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
-		} catch (IOException e){
-			//could not save: keep what we had rather than hold something the disk does not have
-			return Result.MALFORMED;
+		synchronized (STORE_LOCK){
+			ContentCatalogue persisted = readPersisted(nowMillis);
+			if (persisted != null && (held == null || persisted.sequence > held.sequence)) held = persisted;
+			if (held != null && c.sequence <= held.sequence) return Result.SAME_OR_OLDER;
+			try {
+				File tmp = new File(file.getPath() + ".tmp");
+				if (hook != null){
+					try {
+						hook.insideStoreLock(tmp);
+					} catch (InterruptedException interrupted){
+						Thread.currentThread().interrupt();
+						throw new IOException("interrupted while saving the catalogue", interrupted);
+					}
+				}
+				Files.write(tmp.toPath(), c.toText().getBytes(StandardCharsets.UTF_8));
+				Files.move(tmp.toPath(), file.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
+			} catch (IOException e){
+				//could not save: keep what we had rather than hold something the disk does not have
+				return Result.MALFORMED;
+			}
+			held = c;
+			return Result.ACCEPTED;
 		}
-		held = c;
-		return Result.ACCEPTED;
 	}
 
 	//the content the player could be offered right now (nothing if there is no fresh, verified catalogue)

@@ -249,3 +249,6 @@ CORRECTED DAMAGED-HISTORY FULL RETRY: verify1646core/debug/completeimmediate-pre
 
 
 COMBAT DETAIL ASSOCIATION BATCH: verify1650core/debug/completeimmediate-previousproducednativeTEST213(source5de956053e26b7c19860d52bddc75996037cbe01/run38773153990),28API34/38PNG. Fournewretainedcasesfailoriginal/passcorrected;639broaderlocalpass21.394s. Enemy/eventlookupmustnotborrowlaterdetailsacrosspubliccombat/GAP;ordinaryadjacentdetailcontrolsremaincorrect. Rowbuilder13to14cacheonly,DerivedStore9unchanged;old10cache/rawbyteassertionsretained.213independent1646core+28API34/38PNGverified,nopayloadhash/signature/publication/phoneclaim. Preservepublished206andallreviewedhistorypaths. Noautomaticpublication,rawdata/save/score/gameplay/RNG/sliderchanges. Full213componentauditincomplete. Onefullgateforthemeaningfulsourcebatch;noextrabuildsfordocumentation-onlycorrections.
+
+
+TEST215 exact-source request (2026-10-15T17:42:00Z): verify cross-instance CatalogueKeeper monotonic sequence/revocation storage and shared temporary-file serialization with 1,652 core tests, debug assembly, complete immediate-previous TEST214 history, 28 API34 methods and 38 valid screenshots. Provider-neutral local storage only; no online activation, raw-history/save/scoring/custom-rule/gameplay/RNG/signing/application-ID/delivery/physical-phone change.

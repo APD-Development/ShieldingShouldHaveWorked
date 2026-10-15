@@ -34,6 +34,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class ContentCatalogueTest {
 
@@ -181,4 +184,87 @@ public class ContentCatalogueTest {
 		Files.write(f.toPath(), "damaged".getBytes(StandardCharsets.UTF_8));
 		assertNull(new CatalogueKeeper(f, a.trustFor(TrustRoot.Purpose.CONTENT_APPROVAL, T0, T1)).load(NOW));
 	}
+
+	@Test
+	public void aStaleKeeperCannotReplayAnOlderCatalogueOverANewerOne() throws Exception {
+		TestAuthority a = new TestAuthority("cat-1");
+		TrustRoot trust = a.trustFor(TrustRoot.Purpose.CONTENT_APPROVAL, T0, T1);
+		File f = new File(tmp.getRoot(), "shared-catalogue.txt");
+		CatalogueKeeper stale = new CatalogueKeeper(f, trust);
+		CatalogueKeeper current = new CatalogueKeeper(f, trust);
+		ContentCatalogue older = catalogue(a, 1, T1, Collections.<ContentCatalogue.Entry>emptyList());
+		ContentCatalogue newer = catalogue(a, 2, T1, Collections.<ContentCatalogue.Entry>emptyList());
+
+		assertEquals(CatalogueKeeper.Result.ACCEPTED, current.offer(newer.toText(), NOW));
+		assertEquals(CatalogueKeeper.Result.SAME_OR_OLDER, stale.offer(older.toText(), NOW));
+		assertEquals(2, new CatalogueKeeper(f, trust).load(NOW).sequence);
+	}
+
+	@Test
+	public void separateKeepersSerializeTheirCompareAndReplace() throws Exception {
+		TestAuthority a = new TestAuthority("cat-1");
+		TrustRoot trust = a.trustFor(TrustRoot.Purpose.CONTENT_APPROVAL, T0, T1);
+		File f = new File(tmp.getRoot(), "concurrent-catalogue.txt");
+		CatalogueKeeper first = new CatalogueKeeper(f, trust);
+		CatalogueKeeper second = new CatalogueKeeper(f, trust);
+		String one = catalogue(a, 1, T1, Collections.<ContentCatalogue.Entry>emptyList()).toText();
+		String two = catalogue(a, 2, T1, Collections.<ContentCatalogue.Entry>emptyList()).toText();
+
+		CountDownLatch firstInside = new CountDownLatch(1);
+		CountDownLatch releaseFirst = new CountDownLatch(1);
+		CountDownLatch secondStarted = new CountDownLatch(1);
+		CountDownLatch secondInside = new CountDownLatch(1);
+		AtomicReference<CatalogueKeeper.Result> firstResult = new AtomicReference<>();
+		AtomicReference<CatalogueKeeper.Result> secondResult = new AtomicReference<>();
+		AtomicReference<Throwable> failure = new AtomicReference<>();
+		Thread firstThread = new Thread(new Runnable(){
+			@Override public void run(){
+				try {
+					firstResult.set(first.offer(one, NOW, new CatalogueKeeper.OfferHook(){
+						@Override public void insideStoreLock( File temp ) throws InterruptedException {
+							firstInside.countDown();
+							releaseFirst.await();
+						}
+					}));
+				} catch (Throwable t){
+					failure.compareAndSet(null, t);
+				}
+			}
+		}, "first-catalogue-offer");
+		Thread secondThread = new Thread(new Runnable(){
+			@Override public void run(){
+				secondStarted.countDown();
+				try {
+					secondResult.set(second.offer(two, NOW, new CatalogueKeeper.OfferHook(){
+						@Override public void insideStoreLock( File temp ){
+							secondInside.countDown();
+						}
+					}));
+				} catch (Throwable t){
+					failure.compareAndSet(null, t);
+				}
+			}
+		}, "second-catalogue-offer");
+
+		firstThread.start();
+		assertTrue(firstInside.await(5, TimeUnit.SECONDS));
+		secondThread.start();
+		assertTrue(secondStarted.await(5, TimeUnit.SECONDS));
+		try {
+			assertFalse("a second keeper must not enter the shared replacement section", secondInside.await(200, TimeUnit.MILLISECONDS));
+		} finally {
+			releaseFirst.countDown();
+		}
+		firstThread.join(5000);
+		secondThread.join(5000);
+		assertFalse(firstThread.isAlive());
+		assertFalse(secondThread.isAlive());
+		assertNull(failure.get());
+		assertEquals(CatalogueKeeper.Result.ACCEPTED, firstResult.get());
+		assertEquals(CatalogueKeeper.Result.ACCEPTED, secondResult.get());
+		assertTrue(secondInside.await(1, TimeUnit.SECONDS));
+		assertEquals(2, new CatalogueKeeper(f, trust).load(NOW).sequence);
+		assertFalse(new File(f.getPath() + ".tmp").exists());
+	}
+
 }

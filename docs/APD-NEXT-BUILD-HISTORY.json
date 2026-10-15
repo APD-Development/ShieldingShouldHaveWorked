@@ -1,43 +1,43 @@
 {
-  "previous_label": "Codex TEST 213",
-  "previous_source": "5de956053e26b7c19860d52bddc75996037cbe01",
-  "previous_run": 38773153990,
+  "previous_label": "Codex TEST 214",
+  "previous_source": "68b59177f3fe153c10583c227376348ed15287e4",
+  "previous_run": 38775582704,
   "date": "2026-10-15",
   "changes": [
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Keep missing combat details with the correct event",
-      "text": "Stop detail lookup at later combat events or recording gaps so missing identities remain unknown instead of becoming another enemy or boss.",
+      "title": "Keep catalogue revocations monotonic across instances",
+      "text": "Serialize catalogue compare-and-replace and re-check the verified on-disk sequence so a stale keeper cannot replay an older signed catalogue.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowBuilders.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/EventDatasets.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/backend/CatalogueKeeper.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Check missing attack damage and kill details",
-      "text": "Retain complete controls, missing-event cases and cache rebuilding without changing raw history.",
+      "title": "Check stale replay and shared replacement",
+      "text": "Retain deterministic regressions for stale-instance replay, cross-instance serialization, final sequence and temp-file cleanup.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/CombatDetailPairingTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/QuestBossClassificationTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/DamagedFactsProvenanceTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/backend/ContentCatalogueTest.java"
       ]
     },
     {
       "category": "Development",
       "sprite": "V061_PAGE",
-      "title": "Record completed provenance checks and continued audit",
-      "text": "Preserve actual source verification and new component reviews while distinguishing pending checks from completed work.",
+      "title": "Record TEST214 staging and continued reliability audit",
+      "text": "Preserve the verified alpha staging evidence and the exact next gate without publishing or activating online services.",
       "paths": [
-        "docs/APD-COMBAT-DETAIL-PAIRING-2026-10-15.md",
-        "docs/APD-UIMSD-AUDIT-RECONCILIATION-2026-10-15.md",
-        "docs/HANDOFF.md",
+        ".github/workflows/codex-alpha-stage-2026-10-15.yml",
+        "docs/APD-ALPHA-CANDIDATE-2026-10-15.md",
+        "docs/APD-CATALOGUE-KEEPER-CROSS-INSTANCE-2026-10-15.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/APD-NEXT-BUILD-HISTORY.json"
+        "docs/APD-COMBAT-DETAIL-PAIRING-2026-10-15.md",
+        "docs/APD-NEXT-BUILD-HISTORY.json",
+        "docs/HANDOFF.md",
+        "docs/WORK-COMPLETED-LEDGER.md"
       ]
     }
   ],
-  "commentary": "I corrected how incomplete combat records are associated so statistics do not borrow another enemy's identity. Raw history remains intact, and the full UIMSD audit is still underway."
+  "commentary": "I kept signed catalogue revocations monotonic across local keeper instances. No network service was activated, and gameplay and player histories remain unchanged."
 }

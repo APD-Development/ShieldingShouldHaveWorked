@@ -1104,3 +1104,9 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 ## Authoritative commit-time correction
 - Replaced three preparation-time labels with GitHub commit timestamps: `f08f5908` 2026-10-15T16:38:34Z, `6f511a22` 2026-10-15T16:42:29Z, and `fcc100ba` 2026-10-15T16:43:57Z.
 - No application source changed. Only a full gate pinned to this final descendant can satisfy the requirement that the corrected handoff and ledger be embedded in reviewed native history.
+
+
+## 2026-10-15T17:42:00Z — TEST215 catalogue keeper correction pending
+- Reproduced that a stale keeper instance can persist an older correctly signed catalogue after a newer instance has already stored a higher sequence, which can undo revocations. Separate instances also target one temporary filename without a shared replacement lock.
+- Candidate serializes the compare-and-replace section, re-verifies persisted state inside it, and rejects stale/equal sequences. Two retained regressions cover the original replay and deterministic concurrent replacement.
+- Full 1,652-core/debug/TEST214-history/28-API34/38-PNG gate is pending. No online service was enabled and no player history, save, score, slider, gameplay, RNG, signing or application ID changed.
