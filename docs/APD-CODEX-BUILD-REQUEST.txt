@@ -124,3 +124,6 @@ TEST182 history-only correction (2026-10-15T00:15:34Z): TEST181 sourceba146f3c0e
 
 
 TEST182 verified (2026-10-15T00:29:24Z): sourceeed8bb85dfb32cffded60a08614cf3223362fb50/run38659050102 passed1603core+26API34/debug/immediate-previousTEST180history/34PNG. APK SHA256 ed13da85121f7cd13feeb751050912beba9e09f47f4b6c6867670cfc7f90e7df. Home/Options distinguish finished runs under other rules from runs still going; abandoned remains finished. Do not rebuild unchanged TEST182. No delivery/phone claim; TEST123 remains owner-delivered.
+
+
+TEST183 exact-source request (2026-10-15T00:42:18.901Z): verify native empty-History Home integration without changing production logic. Require1603core/debug/immediate-previousTEST182history/26API34/35PNG. The existing device method must wait for the empty Home model, assert rendered finished-run wording plus the separate Tables > Options route, reject obsolete Rules/run-status conflation, and retain uimsd-empty-home.png. No raw-history/save/statistics/scoring/gameplay/delivery/physical-phone claim.

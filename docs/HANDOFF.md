@@ -2313,3 +2313,9 @@ Adjacent audit confirmed seven direct-damage calls in Blast Wave, Living Earth a
 - Android artifact `11937863231` / ZIP SHA-256 `aabb3a0ac3246d7573dfbc9d1eef90893653ddd5c6c67c9820ed3244fc2a58ce`: 26 API34 tests passed. All 34 screenshots decoded at 320×640; contact-sheet and focused UIMSD Home/APD Changes review found no blank, corrupt or visibly clipped image.
 - Verified behavior: Home and Options distinguish finished runs under other rules from runs still going; an abandoned run remains a finished result. No raw-history/save/statistics/scoring/gameplay/identity/signing behavior changed.
 - Private delivery skipped; emulator evidence is not a physical-phone claim. TEST123 remains last owner-delivered/signature-compared. Do not rebuild unchanged TEST182.
+
+## 2026-10-15T00:42:18.901Z — TEST183 native empty-Home regression candidate
+- Re-read verified TEST182 and found its API34 suite opened the real first-run Home but did not wait for the empty model, assert the rendered rule/status wording or retain a screenshot before switching to demo data.
+- Strengthened the existing native method to require an empty fresh-emulator Home, inspect the actual rendered text for “No finished runs yet” and the dedicated Tables > Options route, reject the obsolete Rules/run-status conflation, and retain `uimsd-empty-home.png`.
+- Production gameplay, UIMSD query/model, raw history, saves, statistics, scoring, application identity and signing are unchanged.
+- TEST183 requests 1,603 core tests, debug assembly, immediate-previous TEST182 history, 26 API34 methods and 35 valid screenshots. Candidate only until hosted evidence passes; no delivery or physical-phone claim. TEST123 remains owner-delivered fallback.

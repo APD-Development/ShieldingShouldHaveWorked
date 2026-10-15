@@ -7,9 +7,11 @@
     {
       "category": "Changes",
       "sprite": "V061_PAGE",
-      "title": "TEST182 verified evidence",
-      "text": "Record the passing 1,603-core, 26-method API34, debug/history and 34-screenshot checkpoint for UIMSD rule/status scope wording.",
+      "title": "Native empty Home regression",
+      "text": "Require the real API34 first-run Home to render the separate finished-run and runs-still-going guidance, then retain its screenshot before demo data is loaded.",
       "paths": [
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdScreensDeviceTest.java",
+        "docs/APD-TEST183-UIMSD-EMPTY-HOME-NATIVE-2026-10-15.md",
         "docs/APD-TEST181-UIMSD-SCOPE-WORDING-2026-10-15.md",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",

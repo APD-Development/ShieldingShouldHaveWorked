@@ -341,7 +341,26 @@ public class UimsdScreensDeviceTest {
 			onRender(new Runnable(){ public void run(){ UimsdScene.openNow(TitleScene.class); } });
 			waitUntil("the UIMSD scene", new java.util.concurrent.Callable<Boolean>(){ public Boolean call(){ return Game.scene() instanceof UimsdScene; } }, 30000);
 			Thread.sleep(2500);       //a few frames: the screen builds itself on the render thread
-			Log.w(TAG, "UIMSD scene is up (first-run Home or history Home)");
+			waitUntil("the first-run Home model", () -> field("cachedHome") != null, 30000);
+			onRender(() -> { try {
+				com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdHome firstHome =
+					(com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdHome) field("cachedHome");
+				assertTrue("fresh-emulator Home has no finished runs", firstHome.isEmpty());
+				Field uiField=UimsdScene.class.getDeclaredField("ui");uiField.setAccessible(true);
+				com.watabou.noosa.Group controls=(com.watabou.noosa.Group)uiField.get(Game.scene());
+				Field children=com.watabou.noosa.Group.class.getDeclaredField("members");children.setAccessible(true);
+				StringBuilder shown=new StringBuilder();
+				for(Object child:(java.util.List<?>)children.get(controls))
+					if(child instanceof com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock)
+						shown.append(((com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock)child).text()).append('\n');
+				assertTrue("native empty Home names finished-run state",shown.toString().contains("No finished runs yet"));
+				assertTrue("native empty Home points unfinished runs to their own control",
+					shown.toString().contains("Tables > Options > Include runs still going"));
+				assertFalse("native empty Home never conflates Rules with run status",
+					shown.toString().contains("Tap Rules to include"));
+			} catch(Exception e){throw new RuntimeException(e);}});
+			PlayRunDeviceTest.visibilityScreenshot("uimsd-empty-home.png");
+			Log.w(TAG, "UIMSD scene is up with verified empty first-run Home");
 
 			//2. the tour on its sample history: Home with cards, then the tables at the steps that need them
 			final Method begin = UimsdScene.class.getDeclaredMethod("beginTour", int.class, boolean.class);
