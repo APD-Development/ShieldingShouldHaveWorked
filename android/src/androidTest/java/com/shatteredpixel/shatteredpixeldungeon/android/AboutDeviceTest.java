@@ -77,4 +77,45 @@ public class AboutDeviceTest {
    }else if(g instanceof Group)checkNews((Group)g,count);
   }
  }
+
+ private String renderedText(Group group)throws Exception{
+  StringBuilder text=new StringBuilder();
+  for(Gizmo g:children(group)){
+   if(g instanceof RenderedTextBlock)text.append(((RenderedTextBlock)g).text()).append('\n');
+   if(g instanceof Group)text.append(renderedText((Group)g));
+  }
+  return text.toString();
+ }
+ @Test public void aboutFoundingStatementAndPopupFollowAdultHumorOnEveryOpening()throws Exception{
+  boolean saved=com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdAdultHumor();
+  try(ActivityScenario<AndroidLauncher> scenario=ActivityScenario.launch(AndroidLauncher.class)){
+   try {
+    for(boolean adult:new boolean[]{false,true,false}){
+     render(()->{
+      com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdAdultHumor(adult);
+      ShatteredPixelDungeon.switchScene(AboutScene.class);
+     });
+     long end=System.currentTimeMillis()+15000;
+     while(!(Game.scene() instanceof AboutScene)&&System.currentTimeMillis()<end)Thread.sleep(100);
+     assertTrue(Game.scene() instanceof AboutScene);
+     render(()->{try{
+      String main=renderedText(Game.scene());
+      assertTrue(main.contains(adult?"shielding should have fucking worked.":"shielding should have worked."));
+      assertEquals(adult,main.toLowerCase(java.util.Locale.ROOT).contains("fucking"));
+      RedButton button=find(Game.scene(),"Why APD Exists");assertNotNull(button);
+      Method click=button.getClass().getDeclaredMethod("onClick");click.setAccessible(true);click.invoke(button);
+      WndUimsdText popup=null;
+      for(Gizmo g:children(Game.scene()))if(g instanceof WndUimsdText && g.alive)popup=(WndUimsdText)g;
+      assertNotNull(popup);
+      String detail=renderedText(popup);
+      assertTrue(detail.contains(adult?"shielding should have fucking worked.":"shielding should have worked."));
+      assertEquals(adult,detail.toLowerCase(java.util.Locale.ROOT).contains("fucking"));popup.hide();
+     }catch(Exception e){throw new RuntimeException(e);}});
+     render(()->ShatteredPixelDungeon.switchScene(TitleScene.class));
+     end=System.currentTimeMillis()+15000;
+     while(!(Game.scene() instanceof TitleScene)&&System.currentTimeMillis()<end)Thread.sleep(100);
+    }
+   } finally {render(()->com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdAdultHumor(saved));}
+  }
+ }
 }
