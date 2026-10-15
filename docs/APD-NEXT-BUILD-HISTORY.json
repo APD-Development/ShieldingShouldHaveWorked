@@ -1,47 +1,43 @@
 {
-  "previous_label": "Codex TEST 208",
-  "previous_source": "13e4c03baad7e4471a172aedf7aff4222ca7e749",
-  "previous_run": 38763307954,
+  "previous_label": "Codex TEST 213",
+  "previous_source": "5de956053e26b7c19860d52bddc75996037cbe01",
+  "previous_run": 38773153990,
   "date": "2026-10-15",
   "changes": [
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Keep damaged-history counts honest",
-      "text": "Mark counts reconstructed from truncated, corrupt or seal-mismatched logs as lower bounds while preserving exact clean and validly sealed histories.",
+      "title": "Keep missing combat details with the correct event",
+      "text": "Stop detail lookup at later combat events or recording gaps so missing identities remain unknown instead of becoming another enemy or boss.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/RunFactsBuilder.java",
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowBuilders.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/DerivedStore.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/EventDatasets.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Retain damaged-history provenance cases",
-      "text": "Cover clean and damaged histories, actual resynchronization recovery, cache-version invalidation and rejection of older boss-classification caches.",
+      "title": "Check missing attack damage and kill details",
+      "text": "Retain complete controls, missing-event cases and cache rebuilding without changing raw history.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/DamagedFactsProvenanceTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/QuestBossClassificationTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/CombatDetailPairingTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/QuestBossClassificationTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/DamagedFactsProvenanceTest.java"
       ]
     },
     {
       "category": "Development",
       "sprite": "V061_PAGE",
-      "title": "Record exact acceptance boundaries",
-      "text": "Preserve the TEST208 checkpoint, owner-delivered TEST206 status, pending artifact review, and the next complete gate without claiming results in advance.",
+      "title": "Record completed provenance checks and continued audit",
+      "text": "Preserve actual source verification and new component reviews while distinguishing pending checks from completed work.",
       "paths": [
-        "docs/APD-DAMAGED-HISTORY-PROVENANCE-2026-10-15.md",
-        "docs/APD-MIXED-SCALE-RATIO-DISPLAY-2026-10-15.md",
+        "docs/APD-COMBAT-DETAIL-PAIRING-2026-10-15.md",
+        "docs/APD-UIMSD-AUDIT-RECONCILIATION-2026-10-15.md",
         "docs/HANDOFF.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/WORK-COMPLETED-LEDGER.md",
-        "docs/APD-NEXT-BUILD-HISTORY.json",
-        ".github/workflows/codex-lunch-apk-2026-10-15.yml",
-        ".github/workflows/codex-lunch-pdf-2026-10-15.yml",
-        "docs/APD-LUNCH-REPORT-PUBLICATION-2026-10-15.md"
+        "docs/APD-NEXT-BUILD-HISTORY.json"
       ]
     }
   ],
-  "commentary": "Damaged histories now keep their surviving statistics without presenting lower bounds as exact totals. Clean open and validly sealed logs keep their prior behavior, raw records are untouched, and every reviewed path since TEST208 remains in the native history."
+  "commentary": "I corrected how incomplete combat records are associated so statistics do not borrow another enemy's identity. Raw history remains intact, and the full UIMSD audit is still underway."
 }
