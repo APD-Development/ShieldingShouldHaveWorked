@@ -1,4 +1,5 @@
 package com.shatteredpixel.shatteredpixeldungeon.apd.humor;
+import com.shatteredpixel.shatteredpixeldungeon.apd.text.AuthoredLanguage;
 
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.apd.HeadlessTestSupport;
@@ -70,7 +71,7 @@ public class AuthoredLanguageTest {
   try(java.util.stream.Stream<Path> sources=Files.walk(root)){
    for(Path p:(Iterable<Path>)sources.filter(x->x.toString().endsWith(".java"))::iterator){
     String relative=root.relativize(p).toString().replace('\\','/');
-    if(relative.equals("apd/humor/AuthoredLanguage.java")||relative.equals("apd/humor/LinePack.java"))continue;
+    if(relative.equals("apd/text/AuthoredLanguage.java")||relative.equals("apd/humor/LinePack.java"))continue;
     Matcher literals=strings.matcher(Files.readString(p));
     while(literals.find())if(AuthoredLanguage.containsEnglishProfanity(literals.group())){
      assertEquals("New developer prose needs a reviewed clean branch: "+relative,"scenes/AboutScene.java",relative);reviewed++;
