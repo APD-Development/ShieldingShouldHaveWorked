@@ -110,4 +110,21 @@ public class DamagedFactsProvenanceTest {
 		assertEquals(13, RowBuilders.BUILDER_VERSION);
 		assertEquals(9, DerivedStore.DERIVATION_VERSION);
 	}
+
+	@Test
+	public void resynchronizedLaterItemsKeepTheMissingEventWarning() throws Exception {
+		byte[] full = itemLog(false);
+		ReadResult clean = RunLogReader.parse(full);
+		ApdEvent acquired = clean.events.get(clean.events.size() - 1);
+		byte[] later = LogFormat.eventFrame(acquired.type, acquired.flags, 1, acquired.payload);
+		byte[] damaged = Arrays.copyOf(full, full.length + later.length);
+		System.arraycopy(later, 0, damaged, full.length, later.length);
+		damaged[full.length - 1] ^= 0x7f;
+		ReadResult recovered = RunLogReader.parse(damaged, new ReadOptions().resync(true));
+		assertEquals(ReadStatus.CORRUPT, recovered.status);
+		assertEquals(1, recovered.resyncs);
+		assertTrue(recovered.skippedBytes > 0);
+		assertEquals(clean.events.size(), recovered.events.size());
+		assertCountProvenance(recovered, Fact.PROV_INCOMPLETE);
+	}
 }
