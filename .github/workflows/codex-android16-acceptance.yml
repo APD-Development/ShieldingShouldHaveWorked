@@ -52,9 +52,9 @@ jobs:
           PY
       - name: Add only the Android 16 acceptance instrumentation fixtures
         run: |
-          git fetch --no-tags --depth=1 origin 2f369274fe43792de15fc05a7ca6c835e32fba9b
-          git show 2f369274fe43792de15fc05a7ca6c835e32fba9b:android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java > android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java
-          git show 2f369274fe43792de15fc05a7ca6c835e32fba9b:android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PlayRunDeviceTest.java > android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PlayRunDeviceTest.java
+          git fetch --no-tags --depth=1 origin 1226030b5a6ed130024e339920b3bcd94c811363
+          git show 1226030b5a6ed130024e339920b3bcd94c811363:android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java > android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java
+          git show 1226030b5a6ed130024e339920b3bcd94c811363:android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PlayRunDeviceTest.java > android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PlayRunDeviceTest.java
       - name: Set up Android SDK
         run: |
           yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
