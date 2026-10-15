@@ -611,12 +611,12 @@ public class PlayRunDeviceTest {
     private static void assertClericStack() throws Exception {
         com.shatteredpixel.shatteredpixeldungeon.ui.ClericQuickCastTag[] tags =
                 (com.shatteredpixel.shatteredpixeldungeon.ui.ClericQuickCastTag[]) field(Game.scene(), "clericSpells");
-        for (com.shatteredpixel.shatteredpixeldungeon.ui.ClericQuickCastTag tag : tags) tag.update();
         GameScene.layoutTags();
         int count = SPDSettings.apdClericQuickSlots();
         com.watabou.noosa.ui.Component toolbar = (com.watabou.noosa.ui.Component) field(Game.scene(), "toolbar");
         for (int i=0; i<tags.length; i++) {
             assertEquals("chosen number of spell buttons", i<count, tags[i].visible);
+            assertEquals("hidden spell buttons must reactivate when shown", i<count, tags[i].active);
             if (i>=count) continue;
             assertTrue("spell touch target", tags[i].width()>=24 && tags[i].height()>=24);
             assertTrue("spell inside horizontal screen", tags[i].left()>=0 && tags[i].right()<=GameScene.uiCamera.width);
@@ -649,6 +649,43 @@ public class PlayRunDeviceTest {
             });
             waitUntil("Cleric first floor",()->Game.scene() instanceof GameScene && Dungeon.hero!=null && Dungeon.hero.ready,150000);
             assertEquals(HeroClass.CLERIC,Dungeon.hero.heroClass);
+            // Reproduce the real setting transition: hidden tags deactivate at one slot.
+            onRender(() -> { SPDSettings.apdClericQuickSlots(1); GameScene.updateTags=true; });
+            Thread.sleep(700);
+            onRender(() -> {
+                try {
+                    Object[] tags=(Object[])field(Game.scene(),"clericSpells");
+                    for(int i=1;i<4;i++) assertFalse("hidden slot is inactive before enabling", ((com.watabou.noosa.ui.Component)tags[i]).active);
+                    com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome tome=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome.class);
+                    for(int i=1;i<4;i++) com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.ClericQuickCasts.assign(i,null,tome);
+                    SPDSettings.apdClericQuickSlots(4); GameScene.updateTags=true;
+                } catch(Exception e) { throw new RuntimeException(e); }
+            });
+            Thread.sleep(700);
+            for(int emptySlot=1;emptySlot<4;emptySlot++) {
+                final int chosenSlot=emptySlot;
+                AtomicReference<com.shatteredpixel.shatteredpixeldungeon.ui.ClericQuickCastTag> tag=new AtomicReference<>();
+                onRender(() -> { try {
+                    Object[] tags=(Object[])field(Game.scene(),"clericSpells");
+                    tag.set((com.shatteredpixel.shatteredpixeldungeon.ui.ClericQuickCastTag)tags[chosenSlot]);
+                    assertTrue("newly visible slot must accept touch",tag.get().visible && tag.get().active);
+                } catch(Exception e) { throw new RuntimeException(e); } });
+                tapNative(tag.get());
+                onRender(() -> { try {
+                    com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList menu=clericMenu();
+                    assertNotNull("real tap opens empty spell position "+(chosenSlot+1),menu);
+                    assertNull(com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.ClericQuickCasts.saved(chosenSlot,Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome.class)));
+                } catch(Exception e) { throw new RuntimeException(e); } });
+                if(emptySlot==1) visibilityScreenshot("cleric-empty-slot-picker.png");
+                // Existing list selection is exercised without casting or changing other slots.
+                onRender(() -> { try {
+                    com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList menu=clericMenu();
+                    ((com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.Picker)field(menu,"picker")).onPick(1,false);
+                    menu.hide();
+                    assertNotNull("selected spell is stored in the tapped position",com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.ClericQuickCasts.saved(chosenSlot,Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome.class)));
+                } catch(Exception e) { throw new RuntimeException(e); } });
+            }
+            visibilityScreenshot("cleric-four-slot-touch.png");
             onRender(()-> { try {
                 com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome tome =
                         Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome.class);
@@ -991,3 +1028,4 @@ public class PlayRunDeviceTest {
     }
 
 }
+
