@@ -31,6 +31,8 @@ Review found that the plain-text table renderer omitted the first column's label
 
 ## Verification boundary
 
-The native acceptance run predates the plain-text renderer correction and deliberately reused TEST217. Therefore it cannot verify the later application source. Candidate TEST218 requests a fresh full gate: 1,656 core tests, debug assembly, complete immediate-previous TEST217 history, 29 API34 methods and 38 valid screenshots.
+The separate reuse run remains useful direct native evidence, and TEST218 subsequently verified the complete corrected source. Exact source `2210d59e1924fdf5ff56ecfb41c25ee0b2c707d0` / [run 38804215957](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38804215957) passed 1,656 core tests in 327 suites, debug assembly, complete immediate-previous TEST217 history, 29 API34 methods and 38 valid 320×640 screenshots. The full contact sheet was reviewed readable.
 
-All slider ranges remain provisional. No rule value, gameplay behavior, score, save, history, turn, RNG, signing identity or application ID changed.
+Artifacts: core `12005990913` / SHA-256 `510449c48e56a8adbedf45d9d24c7a9b0a2df947e4216024accdf18d3615b509`; APK/history `12006690105` / `ac73a551ffebcc2d4abaecfa35f18fed0e63d9b16841f61f161ef786af2f28be`; Android `12006182839` / `978a840e8949558462e2ed1713fe5a2bbb07b3666433adeea258d93adc2ef48e`. APK payload SHA-256 is `184f35fc0371d07d860365f903825d37a0d759d0192e36bb2627cf8d98d04898`.
+
+All slider ranges remain provisional. No rule value, gameplay behavior, score, save, history, turn, RNG, signing identity or application ID changed. Delivery was skipped and no physical-phone result is claimed. Later healing-conversion and authored-language source is outside TEST218 evidence.
