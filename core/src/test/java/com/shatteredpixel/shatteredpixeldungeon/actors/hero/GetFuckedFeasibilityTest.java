@@ -255,13 +255,21 @@ public class GetFuckedFeasibilityTest {
         AscensionChallenge curse = Buff.affect(hero, AscensionChallenge.class);
         set(curse, AscensionChallenge.class, "stacks", 8f);
         Barrier b = barrier(2);
-        curse.act();
-        assertEquals(1, b.shielding());
-        assertEquals(1, hero.HP);
-        AscensionChallenge.processEnemyKill(new Rat());
-        for (int i = 0; i < 10; i++) curse.act();
-        assertEquals(1, b.shielding());
-        assertEquals(1, hero.HP);
+        //Isolate the curse from generated mobs' alert animations, which need a rendered scene.
+        java.util.HashSet<com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob> mobs =
+                new java.util.HashSet<>(Dungeon.level.mobs);
+        Dungeon.level.mobs.clear();
+        try {
+            curse.act();
+            assertEquals(1, b.shielding());
+            assertEquals(1, hero.HP);
+            AscensionChallenge.processEnemyKill(new Rat());
+            for (int i = 0; i < 10; i++) curse.act();
+            assertEquals(1, b.shielding());
+            assertEquals(1, hero.HP);
+        } finally {
+            Dungeon.level.mobs.addAll(mobs);
+        }
         System.out.println("FEASIBILITY Ascension damage shielded at 8 stacks; eligible kill to 7 stops periodic damage");
     }
 
