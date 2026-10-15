@@ -1,0 +1,106 @@
+package com.shatteredpixel.shatteredpixeldungeon.apd;
+
+import com.shatteredpixel.shatteredpixeldungeon.*;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.items.*;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.*;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.*;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ExoticCrystals;
+import com.watabou.utils.Random;
+import org.junit.*;
+import java.util.*;
+import static org.junit.Assert.*;
+
+public class ExoticHealingConversionTest {
+    private Hero hero;
+    private boolean known;
+    private int exotic, preference;
+    @Before public void setup() {
+        HeadlessTestSupport.start(); Badges.loadGlobal(); hero = Dungeon.hero; known = Dungeon.apdExoticKnown;
+        exotic = Dungeon.apdExotic; preference = SPDSettings.apdExoticSetting();
+        Random.pushGenerator(41);
+        try { Potion.initColors(); Scroll.initLabels(); } finally { Random.popGenerator(); }
+        Dungeon.apdExoticKnown = true;
+    }
+    @After public void restore() {
+        Dungeon.hero = hero; Dungeon.apdExoticKnown = known; Dungeon.apdExotic = exotic;
+        SPDSettings.apdExoticChance(preference);
+    }
+    private void trinket(int level) {
+        Dungeon.hero = new Hero();
+        if (level >= 0) {
+            ExoticCrystals crystals = new ExoticCrystals(); crystals.level(level);
+            assertTrue(crystals.collect());
+        }
+    }
+    private static class Sample { Class<?> type; long next; }
+    private Sample generate(Class<?> type, boolean defaults, int percent, long seed) {
+        Generator.Category category = Potion.class.isAssignableFrom(type) ? Generator.Category.POTION : Generator.Category.SCROLL;
+        Class<?>[] classes = category.classes;
+        float[] probs = category.probs, original = category.defaultProbs, second = category.defaultProbs2, total = category.defaultProbsTotal;
+        Long deckSeed = category.seed; int dropped = category.dropped;
+        Dungeon.apdExotic = percent;
+        Random.pushGenerator(seed);
+        try {
+            category.classes = new Class<?>[]{type}; category.probs = new float[]{1};
+            category.defaultProbs = new float[]{1}; category.defaultProbs2 = null; category.defaultProbsTotal = null;
+            category.seed = null; category.dropped = 0;
+            Item item = defaults ? Generator.randomUsingDefaults(category) : Generator.random(category);
+            Sample sample = new Sample(); sample.type = item.getClass(); sample.next = Random.Long(); return sample;
+        } finally {
+            category.classes = classes; category.probs = probs; category.defaultProbs = original;
+            category.defaultProbs2 = second; category.defaultProbsTotal = total; category.seed = deckSeed; category.dropped = dropped;
+            Random.popGenerator();
+        }
+    }
+    @Test public void sliderCannotAlterOtherPotionOrScrollConversionsOrTheirRng() {
+        List<Class<?>> ordinary = new ArrayList<>();
+        ordinary.addAll(ExoticPotion.regToExo.keySet()); ordinary.remove(PotionOfHealing.class);
+        ordinary.addAll(ExoticScroll.regToExo.keySet());
+        for (int level = -1; level <= 3; level++) {
+            trinket(level);
+            for (Class<?> type : ordinary) for (boolean defaults : new boolean[]{false,true}) for (int seed=0;seed<32;seed++) {
+                Sample vanilla = generate(type, defaults, 0, seed), overridden = generate(type, defaults, 80, seed);
+                assertEquals(type.getSimpleName()+" trinket "+level, vanilla.type, overridden.type);
+                assertEquals("Unrelated conversions preserve next RNG", vanilla.next, overridden.next);
+            }
+        }
+    }
+    @Test public void healingConvertsAtTheSelectedFloorInBothGeneratorPathsWithoutExtraRng() {
+        for (int level=-1;level<=3;level++) {
+            trinket(level);
+            for (int percent : new int[]{0,20,40,60,80}) for(boolean defaults : new boolean[]{false,true}) for(int seed=0;seed<64;seed++) {
+                float chance = Math.max(ExoticCrystals.consumableExoticChance(level), percent/100f);
+                boolean shield; long next;
+                Random.pushGenerator(seed);
+                try { Random.chances(new float[]{1}); shield=Random.Float()<chance; next=Random.Long(); }
+                finally { Random.popGenerator(); }
+                Sample actual = generate(PotionOfHealing.class, defaults, percent, seed);
+                assertEquals(shield ? PotionOfShielding.class : PotionOfHealing.class, actual.type);
+                assertEquals("Conversion retains vanilla RNG draw count", next, actual.next);
+            }
+        }
+    }
+    @Test public void healingOverrideUsesFrozenRunSettingAndTrinketKeepsVanillaStats() {
+        for(int level=-1;level<=3;level++) {
+            trinket(level); Dungeon.apdExotic=80; SPDSettings.apdExoticChance(0);
+            assertEquals(ExoticCrystals.consumableExoticChance(level), ExoticCrystals.consumableExoticChance(), 0);
+            assertEquals(.8f, ExoticCrystals.consumableExoticChance(PotionOfHealing.class), .000001f);
+            assertEquals(ExoticCrystals.consumableExoticChance(level), ExoticCrystals.consumableExoticChance(PotionOfFrost.class), 0);
+        }
+    }
+    @Test public void correctedConversionSeparatesOnlyNonzeroLiveRulesFromHistoricalIdentities() {
+        for(int percent : new int[]{0,20,40,60,80}) {
+            com.shatteredpixel.shatteredpixeldungeon.apd.recorder.Ruleset legacy = com.shatteredpixel.shatteredpixeldungeon.apd.recorder.Ruleset.of(percent,0);
+            com.shatteredpixel.shatteredpixeldungeon.apd.recorder.Ruleset corrected = com.shatteredpixel.shatteredpixeldungeon.apd.recorder.Ruleset.withHealingOnlyConversion(legacy);
+            assertEquals(percent,corrected.exoticChance);
+            if(percent==0) assertSame(legacy,corrected);
+            else { assertNotEquals(legacy.id,corrected.id); assertTrue(corrected.text.endsWith(";exotic-scope=healing-v1")); }
+            assertEquals(legacy.id,com.shatteredpixel.shatteredpixeldungeon.apd.recorder.Ruleset.of(percent,0).id);
+        }
+        com.shatteredpixel.shatteredpixeldungeon.apd.recorder.Ruleset unknown = com.shatteredpixel.shatteredpixeldungeon.apd.recorder.Ruleset.unknown();
+        assertSame(unknown,com.shatteredpixel.shatteredpixeldungeon.apd.recorder.Ruleset.withHealingOnlyConversion(unknown));
+    }
+}
