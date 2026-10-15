@@ -781,3 +781,10 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Strengthened the existing native method to require an empty fresh-emulator Home, inspect the actual rendered text for “No finished runs yet” and the dedicated Tables > Options route, reject the obsolete Rules/run-status conflation, and retain `uimsd-empty-home.png`.
 - Production gameplay, UIMSD query/model, raw history, saves, statistics, scoring, application identity and signing are unchanged.
 - TEST183 requests 1,603 core tests, debug assembly, immediate-previous TEST182 history, 26 API34 methods and 35 valid screenshots. Candidate only until hosted evidence passes; no delivery or physical-phone claim. TEST123 remains owner-delivered fallback.
+
+
+## 2026-10-15T00:54:48.241Z — TEST183 API34 fixture failure; TEST184 correction pending
+- TEST183 source `68bea4b4d57aef872cab684e13f134b91f2d258c`, run `38661559728` (00:42:30Z–00:53:13Z), passed 1,603 core tests, debug assembly and immediate-previous TEST182 history. APK SHA-256 `05140836f2274dd4d560476369282a746eeb3518e4c39347f7cccf979f8965e8`.
+- API34 completed 26 methods with 25 pass / 1 fail: the strengthened method assumed the shared emulator still had no finished history, but earlier device methods intentionally created finished-run fixtures. The empty-Home assertion failed before its screenshot; TEST183 is not verified or delivered.
+- TEST184 changes only the device fixture: render a controlled in-memory empty Home through the real scene, assert/capture it, then restore the original cache without deleting or rewriting history.
+- Exact-source TEST184 requests 1,603 core/debug/immediate-previous compiled TEST183 history/26 API34/35 PNG. Production gameplay/UIMSD model/save/statistics/scoring/identity/signing remain unchanged; no delivery or physical-phone claim.

@@ -127,3 +127,6 @@ TEST182 verified (2026-10-15T00:29:24Z): sourceeed8bb85dfb32cffded60a08614cf3223
 
 
 TEST183 exact-source request (2026-10-15T00:42:18.901Z): verify native empty-History Home integration without changing production logic. Require1603core/debug/immediate-previousTEST182history/26API34/35PNG. The existing device method must wait for the empty Home model, assert rendered finished-run wording plus the separate Tables > Options route, reject obsolete Rules/run-status conflation, and retain uimsd-empty-home.png. No raw-history/save/statistics/scoring/gameplay/delivery/physical-phone claim.
+
+
+TEST184 fixture-only correction (2026-10-15T00:54:48.241Z): TEST183 source68bea4b4d57aef872cab684e13f134b91f2d258c/run38661559728 passed1603core/debug/immediate-previousTEST182history but API34 finished25pass/1fail because earlier device methods had already created finished-run fixtures. Render a controlled in-memory empty Home through the real scene, restore original history/cache afterward, and verify1603core/debug/immediate-previous compiledTEST183history/26API34/35PNG. No production/save/statistics/scoring/gameplay/delivery/physical-phone change.

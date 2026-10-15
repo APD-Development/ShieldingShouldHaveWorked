@@ -341,11 +341,27 @@ public class UimsdScreensDeviceTest {
 			onRender(new Runnable(){ public void run(){ UimsdScene.openNow(TitleScene.class); } });
 			waitUntil("the UIMSD scene", new java.util.concurrent.Callable<Boolean>(){ public Boolean call(){ return Game.scene() instanceof UimsdScene; } }, 30000);
 			Thread.sleep(2500);       //a few frames: the screen builds itself on the render thread
-			waitUntil("the first-run Home model", () -> field("cachedHome") != null, 30000);
+			waitUntil("the UIMSD Home model", () -> field("cachedHome") != null, 30000);
+			//Other device methods deliberately create finished-run fixtures before this method. Render a controlled
+			//empty Home through the real scene without deleting or rewriting that retained history.
+			final Object savedFirstRunHome=field("cachedHome"),savedFirstRunCatalog=field("cachedCatalog");
+			final Object savedFirstRunAtHome=field("atHome"),savedFirstRunAllRules=field("homeAllRules"),savedFirstRunCachedAll=field("cachedAll");
 			onRender(() -> { try {
-				com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdHome firstHome =
-					(com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdHome) field("cachedHome");
-				assertTrue("fresh-emulator Home has no finished runs", firstHome.isEmpty());
+				UimsdModel live=(UimsdModel)field("model");
+				com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdHome empty =
+					com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdHome.build(
+						new com.shatteredpixel.shatteredpixeldungeon.apd.query.Catalog(),live.currentRuleset(),false);
+				String[] keys={"atHome","homeAllRules","cachedHome","cachedCatalog","cachedAll"};
+				Object[] values={Boolean.TRUE,Boolean.FALSE,empty,live.catalog(),Boolean.FALSE};
+				for(int i=0;i<keys.length;i++){Field value=UimsdScene.class.getDeclaredField(keys[i]);value.setAccessible(true);value.set(null,values[i]);}
+				Field dirty=UimsdScene.class.getDeclaredField("dirty");dirty.setAccessible(true);dirty.set(Game.scene(),true);
+			} catch(Exception e){throw new RuntimeException(e);}});
+			waitUntil("the controlled empty Home", () -> {
+				Object home=field("cachedHome");
+				return home!=null&&((com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdHome)home).isEmpty();
+			},30000);
+			Thread.sleep(500);
+			onRender(() -> { try {
 				Field uiField=UimsdScene.class.getDeclaredField("ui");uiField.setAccessible(true);
 				com.watabou.noosa.Group controls=(com.watabou.noosa.Group)uiField.get(Game.scene());
 				Field children=com.watabou.noosa.Group.class.getDeclaredField("members");children.setAccessible(true);
@@ -360,7 +376,14 @@ public class UimsdScreensDeviceTest {
 					shown.toString().contains("Tap Rules to include"));
 			} catch(Exception e){throw new RuntimeException(e);}});
 			PlayRunDeviceTest.visibilityScreenshot("uimsd-empty-home.png");
-			Log.w(TAG, "UIMSD scene is up with verified empty first-run Home");
+			onRender(()->{try{
+				String[] keys={"atHome","homeAllRules","cachedHome","cachedCatalog","cachedAll"};
+				Object[] values={savedFirstRunAtHome,savedFirstRunAllRules,savedFirstRunHome,savedFirstRunCatalog,savedFirstRunCachedAll};
+				for(int i=0;i<keys.length;i++){Field value=UimsdScene.class.getDeclaredField(keys[i]);value.setAccessible(true);value.set(null,values[i]);}
+				Field dirty=UimsdScene.class.getDeclaredField("dirty");dirty.setAccessible(true);dirty.set(Game.scene(),true);
+			}catch(Exception e){throw new RuntimeException(e);}});
+			Thread.sleep(300);
+			Log.w(TAG, "UIMSD scene rendered and restored the controlled empty Home");
 
 			//2. the tour on its sample history: Home with cards, then the tables at the steps that need them
 			final Method begin = UimsdScene.class.getDeclaredMethod("beginTour", int.class, boolean.class);

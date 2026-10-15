@@ -1,18 +1,17 @@
 {
-  "previous_label": "Codex TEST 182",
-  "previous_source": "eed8bb85dfb32cffded60a08614cf3223362fb50",
-  "previous_run": 38659050102,
+  "previous_label": "Codex TEST 183",
+  "previous_source": "68bea4b4d57aef872cab684e13f134b91f2d258c",
+  "previous_run": 38661559728,
   "date": "2026-10-15",
   "changes": [
     {
       "category": "Changes",
       "sprite": "V061_PAGE",
-      "title": "Native empty Home regression",
-      "text": "Require the real API34 first-run Home to render the separate finished-run and runs-still-going guidance, then retain its screenshot before demo data is loaded.",
+      "title": "Reliable native empty Home regression",
+      "text": "Render the empty-history Home with a controlled in-memory model so prior API34 fixtures cannot invalidate its wording and screenshot check; restore the original history cache afterward.",
       "paths": [
         "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdScreensDeviceTest.java",
         "docs/APD-TEST183-UIMSD-EMPTY-HOME-NATIVE-2026-10-15.md",
-        "docs/APD-TEST181-UIMSD-SCOPE-WORDING-2026-10-15.md",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
