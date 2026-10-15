@@ -128,6 +128,19 @@ public class GetFuckedRouteTest {
     private int charge(HolyTome t) throws Exception {
         Field f = Artifact.class.getDeclaredField("charge"); f.setAccessible(true); return f.getInt(t);
     }
+    private void snapshot(String label) throws Exception {
+        Bundle b=new Bundle();
+        b.put("hero",Dungeon.hero); b.put("level",Dungeon.level);
+        Bundle gen=new Bundle(); Generator.storeInBundle(gen); b.put("generator",gen);
+        Bundle stats=new Bundle(); Statistics.storeInBundle(stats); b.put("statistics",stats);
+        java.io.ByteArrayOutputStream out=new java.io.ByteArrayOutputStream();
+        Bundle.write(b,out,false);
+        System.out.println("SNAPSHOT266 "+label+" "+Base64.getEncoder().encodeToString(out.toByteArray()));
+        Field generators=Random.class.getDeclaredField("generators"); generators.setAccessible(true);
+        out=new java.io.ByteArrayOutputStream();
+        new java.io.ObjectOutputStream(out).writeObject(generators.get(null));
+        System.out.println("RNG266 "+label+" "+Base64.getEncoder().encodeToString(out.toByteArray()));
+    }
     private JSONObject state(String command) {
         Hero h=Dungeon.hero;
         JSONObject j=new JSONObject();
@@ -171,8 +184,9 @@ public class GetFuckedRouteTest {
         JSONArray traps=new JSONArray();for(com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap trap:l.traps.valueList())
             traps.put(new JSONObject().put("class",trap.getClass().getSimpleName()).put("pos",trap.pos).put("visible",trap.visible));
         layout.put("traps",traps);
-        System.out.println("LAYOUT266 "+layout); log("START");
+        System.out.println("LAYOUT266 "+layout); log("START"); snapshot("START");
         waitOne(); waitOne();
+        snapshot("AFTER_TWO_WAITS");
         assertEquals(1,Dungeon.hero.HP);
     }
 }
