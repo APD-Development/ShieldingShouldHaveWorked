@@ -24,4 +24,5 @@ journal.key|P|-|depth,quantity|action
 explore.discover|P|-|cell|
 explore.well|P|-||
 journal.page|P|-||action,page
+npc.interact|P|-|depth|
 npc.quest|P|-|depth|step

@@ -170,3 +170,6 @@ TEST192 exact-source request (2026-10-15T04:38:01Z): stream ordinary RunLogReade
 
 
 TEST192 verified (2026-10-15T04:57:30Z): source222189f971dc55597f561eb87aadcd4e34b47a2e/run38682901119 passed1608core in311XML+27API34/debug/immediate-previous compiledTEST191 history/35valid320x640PNG,0failure/error/skip. Both RunLogStreamingReadTest methods passed. APK SHA256 129626b1bd0a65453c207c9fa5d06075a048b2e4d63e30ee034d0e1b15ca846f. Full contact sheet reviewed clean. No application build pending; do not rebuild unchanged TEST192. No delivery/physical-phone claim; TEST123 remains owner-delivered/signature-compared.
+
+
+TEST196 exact-source request (2026-10-15T06:35:47Z): verify additive public telemetry1.12 npc.interact at the central accepted hero/NPC interaction path, with displayed name and current floor only; rejected interactions emit nothing and npc.quest remains separate. Require1610core/debug/immediate-previous compiledTEST192 history/27API34/35PNG. Lever candidate was reproduced as absent from current source; no fictional mechanic added. No gameplay/save/permanent-statistics/scoring/custom-rule/identity/signing/delivery/physical-phone change.

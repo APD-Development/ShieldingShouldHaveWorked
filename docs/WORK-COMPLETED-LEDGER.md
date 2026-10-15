@@ -913,3 +913,11 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Corrected the stale source-guide instruction that advised abandoning/searching. Physical owner-save acceptance remains unverified; never delete or abandon a save for this repair.
 - No application source changed and no APK was rebuilt. TEST192 remains latest compiled application evidence; TEST123 remains owner-delivered/signature-compared.
 - Next: items 4–7 in the old ordered list are owner approval/phone/decision blocked. Continue the first approved unblocked canonical recording candidate (levers) after current-source reproduction.
+
+
+## 2026-10-15T06:35:47Z — TEST196 NPC interaction telemetry candidate
+
+- Verified the queued lever candidate does not correspond to a mechanic in current source; did not invent an event or gameplay path.
+- Added additive public telemetry 1.12 fact `npc.interact` after the central hero interaction accepts an NPC interaction. It records only the displayed NPC name and floor; quest-state telemetry is unchanged.
+- Added a retained central-path regression covering accepted exactly-once recording and rejected-interaction omission.
+- Full 1,610-core/debug/immediate-previous TEST192 history/27 API34/35 PNG gate pending. No delivery or physical-phone claim.

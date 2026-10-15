@@ -96,6 +96,11 @@ public final class GameFacts {
 			.value("depth", "Floor", "The floor the landmark is on.", FactKind.PLAIN)
 			.tag("action", "Change", "added or removed").since(1, 9).build());
 
+	//the hero successfully invoked an interaction with an NPC; only its player-visible name and current floor are recorded
+	public static final FactKind NPC_INTERACT = FactKinds.register(FactKind.builder("npc.interact", "NPC interaction").plural("NPC interactions").area("Exploration")
+			.description("Every time the hero interacted with a visible non-player character.").subject("Character")
+			.value("depth", "Floor", "The floor the interaction happened on.", FactKind.PLAIN).since(1, 12).build());
+
 	//an NPC quest moved on a step: given, ready (what was asked for was found or beaten) or done (the reward stage was reached)
 	public static final FactKind QUEST = FactKinds.register(FactKind.builder("npc.quest", "Quest step").plural("Quest steps").area("Exploration")
 			.description("Each step of the Sad ghost, Wandmaker, Blacksmith and Imp quests as it happened.").subject("Quest giver")

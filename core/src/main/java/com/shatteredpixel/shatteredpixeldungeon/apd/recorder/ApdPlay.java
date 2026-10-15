@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 
@@ -131,6 +132,13 @@ public final class ApdPlay {
 		PlayTracker p = t();
 		if (p == null || restoring > 0) return;
 		try { p.onWellUsed(well); } catch (Throwable ignored){}
+	}
+
+	//Hero.actInteract: a visible NPC accepted the hero's interaction; quest progress is recorded separately
+	public static void onNpcInteraction( NPC npc ){
+		PlayTracker p = t();
+		if (p == null || restoring > 0) return;
+		try { p.onNpcInteraction(npc); } catch (Throwable ignored){}
 	}
 
 	//an NPC quest moved on: "given", "ready" (the thing asked for was found or beaten) or "done" (the reward stage was reached)

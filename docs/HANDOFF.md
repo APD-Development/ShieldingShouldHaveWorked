@@ -2448,3 +2448,11 @@ Exact test/docs source `f7049868cd7648b29c7606b1ade3c9c8e8de0fdd`, core-only run
 TEST193 and TEST194 fixture-only failures remain recorded. Production application source did not change: exact TEST192 source `222189f971dc55597f561eb87aadcd4e34b47a2e`, run `38682901119`, and APK SHA-256 `129626b1bd0a65453c207c9fa5d06075a048b2e4d63e30ee034d0e1b15ca846f` remain the latest verified compiled application evidence. No APK was rebuilt or distributed; TEST123 remains the last owner-delivered/signature-compared APK. Physical legacy-save acceptance remains unverified; never abandon/delete a save as a workaround.
 
 The ordered legacy-door item is closed. Hero markers still require explicit approval; remaining phone checklist/tour review and backend/contact decisions require the owner. Next autonomous work: re-read latest head, then take the first approved unblocked canonical recording candidate (levers) only after reproducing a concrete omission; do not revisit scoring, Cleric, lore, online activation or distribution.
+
+
+## 2026-10-15T06:35:47Z — TEST196 canonical NPC interaction recording candidate
+- Reproduced the queued lever item as non-applicable to this source: no lever class, terrain, message key or interaction path exists, so no fictional event was added.
+- Confirmed the next omission: accepted hero/NPC interactions were not recorded unless a quest state advanced. Added public telemetry 1.12 fact `npc.interact` at the central hero interaction path, containing only the name shown to the player and current floor; `npc.quest` remains separate.
+- Added a retained real-central-path regression requiring one accepted interaction event and no event for a rejected interaction.
+- TEST196 requests 1,610 core/debug/immediate-previous compiled TEST192 history/27 API34/35 PNG. Candidate pending; TEST192 remains verified fallback and TEST123 owner-delivered.
+- No gameplay result, turn, RNG, save, permanent-statistics, scoring, custom-rule, identity, signing, delivery or physical-phone change.

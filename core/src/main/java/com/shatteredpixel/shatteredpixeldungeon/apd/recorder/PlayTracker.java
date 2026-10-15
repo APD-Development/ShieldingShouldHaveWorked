@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.GameFacts;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
@@ -134,6 +135,17 @@ final class PlayTracker {
 
 	void onLandmark( String landmark, int depth, boolean added ){
 		facts.record(GameFacts.LANDMARK, GameSnapshot.turn(), landmark, "", new long[]{ depth }, new String[]{ added ? "added" : "removed" });
+	}
+
+	void onNpcInteraction( NPC npc ){
+		if (npc == null) return;
+		String shown;
+		try {
+			shown = npc.name();
+		} catch (Throwable t){
+			shown = "";
+		}
+		facts.record(GameFacts.NPC_INTERACT, GameSnapshot.turn(), shown, "", new long[]{ Dungeon.depth }, null);
 	}
 
 	void onQuest( String npc, String step ){

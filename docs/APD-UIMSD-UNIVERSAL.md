@@ -93,9 +93,11 @@ level summaries). U4 the question builder and topic pages. Each step ends with c
 - Batch E (telemetry 1.9): `journal.landmark` (shops, alchemy, wells, floor feelings noted or dropped in the journal) and `journal.key` (keys picked up or used). Hook: 4 calls in `Notes` (`ApdPlay.onLandmark/onKey`); only what the journal already shows the player.
 - Batch F (telemetry 1.9): `explore.discover` (secret doors/traps revealed, by searching or magic; hook in `Level.discover`) and `explore.well` (a well was used; hook in `WellWater.affect`). Revealed at the moment the player sees them, so nothing hidden is exposed early.
 - Batch G (telemetry 1.9): `journal.page` (a journal page found, or read for the first time; hook in `Document.findPage/readPage`).
+- Batch H (telemetry 1.12): `npc.interact` (each accepted hero interaction with an NPC, using only the name shown to the player and current floor; hook in the central `Hero.actInteract`). Quest progress remains the separate `npc.quest` event.
+- The queued lever candidate was checked against the current source before Batch H. This game version has no lever class, terrain, message key or interaction path, so no fictional lever event was added.
 
 ## Not yet recorded (observable; candidates for the next batches, each needs its own hook and a hidden-information review)
-Levers, per-enemy state changes and enemy abilities, boss phase changes, NPC interactions beyond quest steps (quest steps given/ready/done are recorded since telemetry 1.10), artifact charge (no public
+Per-enemy state changes and enemy abilities, boss phase changes, artifact charge (no public
 accessor), plant and seed interactions, level feelings acted on, auto-explore and travel usage, throws and targeting, shop stock seen, ally summons and their fates, alchemy details,
 fall and trap damage sources beyond damage events, and anything a future character adds.
 
