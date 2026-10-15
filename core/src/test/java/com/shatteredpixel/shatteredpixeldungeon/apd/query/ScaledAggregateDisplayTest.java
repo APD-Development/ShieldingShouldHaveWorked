@@ -53,6 +53,19 @@ public class ScaledAggregateDisplayTest {
   Catalog c=history();Questions.Line count=Questions.answer(c,Question.about(FactDatasets.idOf(KIND)).withScope(new Scope(Scope.Rules.ALL,"",true,true,true,true)),RS).lines.get(0);
   assertEquals("2",count.value);assertEquals(2,count.number,0);
  }
+ @Test public void mixedScaleRatiosUseDisplayedUnitsWithoutChangingRawMath(){
+  DatasetDef d=new DatasetDef("ratios","Ratios","");
+  d.add(ColumnDef.num("hundredths","Hundredths").format(ColumnDef.Format.HUNDREDTHS));
+  d.add(ColumnDef.num("thousandths","Thousandths").format(ColumnDef.Format.THOUSANDTHS));
+  AggValue hundredthsOverThousandths=new AggValue(true,0.25,250,1,1,0,1000);
+  CellFormatter.AggText first=CellFormatter.aggregate(d,Aggregate.ratio("hundredths","thousandths"),hundredthsOverThousandths);
+  assertEquals("250% (2.50/1.0)",first.text);assertEquals("250%",first.compact);assertEquals(0.25,hundredthsOverThousandths.value,0);
+  AggValue thousandthsOverHundredths=new AggValue(true,4.0,1000,1,1,0,250);
+  CellFormatter.AggText second=CellFormatter.aggregate(d,Aggregate.ratio("thousandths","hundredths"),thousandthsOverHundredths);
+  assertEquals("40% (1.0/2.50)",second.text);assertEquals("40%",second.compact);assertEquals(4.0,thousandthsOverHundredths.value,0);
+  AggValue sameScale=new AggValue(true,0.5,250,1,1,0,500);
+  assertEquals("50% (2.50/5.00)",CellFormatter.aggregate(d,Aggregate.ratio("hundredths","hundredths"),sameScale).text);
+ }
  @Test public void roundedLowerBoundsMustNotOverstateScaledOrOrdinaryMeans(){
   DatasetDef d=new DatasetDef("bounds","Bounds","");
   d.add(ColumnDef.num("raw","Raw"));

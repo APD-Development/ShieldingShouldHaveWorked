@@ -1,14 +1,14 @@
 {
-  "previous_label": "Codex TEST 205",
-  "previous_source": "4ddd6e415247bccb60e30d8af8f4b92335219802",
-  "previous_run": 38751801184,
+  "previous_label": "Codex TEST 206",
+  "previous_source": "f33591d364598f75b07d62394f5a47bf6ba6432e",
+  "previous_run": 38754451109,
   "date": "2026-10-15",
   "changes": [
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Keep rounded statistical lower bounds conservative",
-      "text": "Display a known minimum of 2.46 as >=2.4 instead of incorrectly claiming >=2.5.",
+      "title": "Show mixed-scale ratios in player units",
+      "text": "Convert fixed-point numerator and denominator scales only when formatting a ratio, preserving raw calculations and ordering.",
       "paths": [
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/CellFormatter.java"
       ]
@@ -16,25 +16,37 @@
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Check rounded positive and negative statistical bounds",
-      "text": "Verify scaled and ordinary mean/median lower bounds, including negative values, while preserving exact-result rounding.",
+      "title": "Check mixed and matching ratio scales",
+      "text": "Retain both scale directions, a same-scale control, compact text and unchanged raw aggregate values.",
       "paths": [
         "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/ScaledAggregateDisplayTest.java"
       ]
     },
     {
+      "category": "Infrastructure",
+      "sprite": "V061_PAGE",
+      "title": "Preserve verified TEST206 staging evidence",
+      "text": "Keep the private no-publication staging workflow and lunch preparation that reuse the exact verified TEST206 artifact.",
+      "paths": [
+        ".github/workflows/codex-lunch-stage-2026-10-15.yml",
+        "docs/APD-LUNCH-PREPARATION-2026-10-15.md"
+      ]
+    },
+    {
       "category": "Development",
       "sprite": "V061_PAGE",
-      "title": "Record rounding evidence and registry research",
-      "text": "Retain the follow-up regression and local schema-lookup measurements without claiming phone performance gains.",
+      "title": "Record TEST206 and ratio-review evidence",
+      "text": "Retain verification, completed-work, build-request and bounded research records without claiming phone acceptance.",
       "paths": [
         "docs/APD-AGGREGATE-BOUND-ROUNDING-2026-10-15.md",
-        "docs/APD-REGISTRY-FINGERPRINT-RESEARCH-2026-10-15.md",
+        "docs/APD-CODEX-BUILD-REQUEST.txt",
+        "docs/APD-MIXED-SCALE-RATIO-DISPLAY-2026-10-15.md",
         "docs/APD-NEXT-BUILD-HISTORY.json",
+        "docs/APD-REGISTRY-FINGERPRINT-RESEARCH-2026-10-15.md",
         "docs/HANDOFF.md",
-        "docs/APD-CODEX-BUILD-REQUEST.txt"
+        "docs/WORK-COMPLETED-LEDGER.md"
       ]
     }
   ],
-  "commentary": "I corrected rounding for statistics marked as lower bounds so the display does not overstate what is known. Recorded values and normal rounding for exact results are preserved."
+  "commentary": "I corrected mixed-scale ratio display units while preserving the raw query calculation. The verified TEST206 staging and all prior history remain intact."
 }

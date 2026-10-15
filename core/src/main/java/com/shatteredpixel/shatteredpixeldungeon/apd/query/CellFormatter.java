@@ -226,9 +226,14 @@ public final class CellFormatter {
 				body = Long.toString((long) v.value);
 				break;
 			case RATE:
-			case RATIO:
-				body = Math.round(v.value * 100) + "% (" + v.hits + "/" + (a.fn == Aggregate.Fn.RATE ? v.contributing : v.outOf) + ")";
+				body = Math.round(v.value * 100) + "% (" + v.hits + "/" + v.contributing + ")";
 				break;
+			case RATIO: {
+				double displayed = displayRatio(def, a, v.value);
+				ColumnDef over = def.column(a.over);
+				body = Math.round(displayed * 100) + "% (" + ratioPart(c, v.hits) + "/" + ratioPart(over, v.outOf) + ")";
+				break;
+			}
 			case AVG:
 			case MEDIAN:
 				body = oneDecimal(displayNumber(c, v.value), v.isLowerBound());
@@ -240,7 +245,8 @@ public final class CellFormatter {
 		boolean small = a.fn != Aggregate.Fn.COUNT && v.contributing < SMALL_SAMPLE;
 		if (small) detail += "; small sample";
 		String compactBody = body;
-		if (a.fn == Aggregate.Fn.RATE || a.fn == Aggregate.Fn.RATIO) compactBody = Math.round(v.value * 100) + "%";
+		if (a.fn == Aggregate.Fn.RATE) compactBody = Math.round(v.value * 100) + "%";
+		if (a.fn == Aggregate.Fn.RATIO) compactBody = Math.round(displayRatio(def, a, v.value) * 100) + "%";
 		return new AggText(prefix + body, prefix + compactBody, detail, state, small);
 	}
 
@@ -250,6 +256,24 @@ public final class CellFormatter {
 		if (column.format == ColumnDef.Format.HUNDREDTHS) return value / 100d;
 		if (column.format == ColumnDef.Format.THOUSANDTHS) return value / 1000d;
 		return value;
+	}
+
+	//RATIO divides raw stored values. Convert only its presentation when the two columns use different fixed-point scales.
+	private static double displayRatio( DatasetDef def, Aggregate a, double raw ){
+		ColumnDef numerator = def.column(a.column), denominator = def.column(a.over);
+		return raw * storedScale(denominator) / storedScale(numerator);
+	}
+
+	private static double storedScale( ColumnDef column ){
+		if (column != null && column.type == ColumnDef.Type.NUM){
+			if (column.format == ColumnDef.Format.HUNDREDTHS) return 100d;
+			if (column.format == ColumnDef.Format.THOUSANDTHS) return 1000d;
+		}
+		return 1d;
+	}
+
+	private static String ratioPart( ColumnDef column, long raw ){
+		return column != null && column.type == ColumnDef.Type.NUM ? value(column, raw) : Long.toString(raw);
 	}
 
 	//whole numbers without a decimal, others with one

@@ -1068,3 +1068,10 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - All 38 screenshots decode as 320×640 PNGs; the complete contact sheet was manually reviewed clean. This is API34 emulator evidence, not physical-phone or owner-save evidence.
 - Verified behavior: exact mean/median values retain nearest rounding; lower-bound mean/median values floor at the existing precision so a known minimum 2.46 cannot display as >=2.5. Fixed-point mean/median/custom-question totals and rate numerators display in player units. Raw statistics, histories, caches, saves, scores, slider limits, gameplay and RNG are unchanged.
 - Private delivery was skipped. TEST206 is a source-verified candidate only; owner-delivered TEST204 remains the playable fallback. No rebuild or publication is required for these documentation-only records.
+
+
+## 2026-10-15 — mixed-scale RATIO presentation candidate
+- Reproduced raw 250 hundredths / raw 1000 thousandths displaying as 25% (250/1000) although the player-facing values are 2.50 / 1.0 = 250%.
+- Added a presentation-only CellFormatter correction and one retained regression covering both scale directions, same-scale behavior, compact text and unchanged raw AggValue.
+- QueryEngine mathematics, aggregate ordering, rows, raw history, caches, saves, scores, sliders, turns, RNG and gameplay remain unchanged.
+- Full 1,637-core/debug/immediate-previous TEST206-history/28-API34/38-PNG verification is pending. No release or physical-phone claim; delivered TEST204 remains fallback.

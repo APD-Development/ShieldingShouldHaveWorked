@@ -222,3 +222,6 @@ CONSERVATIVE AGGREGATE BOUNDS FOLLOW-UP: verify1636core/debug/complete immediate
 
 
 CONSERVATIVE AGGREGATE BOUNDS FOLLOW-UP — COMPLETED: exact source f33591d364598f75b07d62394f5a47bf6ba6432e / run38754451109 passed1636core in324suites, debug assembly, complete immediate-previous producedTEST205 history, and28API34 in12suites; zero fail/error/skip. All38PNG are valid320x640 and the independently downloaded full sheet was reviewed clean. InternalTEST206 APKsha566e29174c17c19f9a19f7429410d872a097c09c2aa4a1e4835548617a6c809c. Private delivery skipped; deliveredTEST204 remains fallback. No physical-phone/owner-save claim. Next request must use newer real source and the immediate previous compiled APK; do not rebuild unchangedTEST206.
+
+
+MIXED-SCALE RATIO PRESENTATION: verify1637core/debug/complete immediate-previous produced nativeTEST206(sourcef33591d364598f75b07d62394f5a47bf6ba6432e/run38754451109),28API34/38PNG. Retained regression covers hundredths/thousandths both directions, same-scale control, long/compact display and unchanged raw aggregate. Presentation units only; QueryEngine math/order, history/cache/saveformats, scores, sliders, gameplay/RNG unchanged. Preserve verifiedTEST206 staging paths/history. Actual deliveredTEST204 remains fallback; no automatic publication or phone claim.
