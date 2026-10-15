@@ -223,4 +223,82 @@ public class CustomRulesNoticeDeviceTest {
             }finally{render(()->{if(window[0]!=null)window[0].hide();SPDSettings.apdCustomRules(saved);});}
         }
     }
+
+    @Test public void allEighteenControlsAcceptNativeTouchSaveAndReopenWithoutChangingActiveRun() throws Exception {
+        try (ActivityScenario<AndroidLauncher> scenario = ActivityScenario.launch(AndroidLauncher.class)) {
+            long deadline = System.currentTimeMillis() + 120000;
+            while ((Game.scene() == null || PixelScene.uiCamera == null) && System.currentTimeMillis() < deadline) Thread.sleep(200);
+            assertNotNull(Game.scene());
+            Thread.sleep(1500);
+            final CustomDungeonRules saved = SPDSettings.apdCustomRules();
+            final Bundle run = new Bundle();
+            final WndCustomDungeonRules[] window = new WndCustomDungeonRules[1];
+            final CustomDungeonRules[] active = new CustomDungeonRules[1];
+            final int[] score = new int[1];
+            final Point[] touch = new Point[1];
+            try {
+                render(() -> {
+                    Dungeon.apdStoreCustomRules(run);
+                    active[0] = Dungeon.customRules();
+                    score[0] = com.shatteredpixel.shatteredpixeldungeon.Statistics.totalScore;
+                    SPDSettings.apdCustomRules(CustomDungeonRules.defaults());
+                });
+                for (int phase = 0; phase < 2; phase++) {
+                    final boolean maximum = phase == 0;
+                    final CustomDungeonRules persisted = SPDSettings.apdCustomRules();
+                    render(() -> {
+                        window[0] = new WndCustomDungeonRules();
+                        Game.scene().addToFront(window[0]);
+                    });
+                    for (final CustomDungeonRules.Slider rule : CustomDungeonRules.Slider.values()) {
+                        render(() -> { try {
+                            List<OptionSlider> sliders = find(window[0], OptionSlider.class);
+                            assertEquals(18, sliders.size());
+                            OptionSlider slider = sliders.get(rule.ordinal());
+                            assertTrue(rule.name(), slider.active && slider.visible);
+                            ScrollPane scroll = (ScrollPane) field(window[0], "scroll");
+                            scroll.scrollTo(0, Math.max(0, slider.top() - 24));
+                            touch[0] = slider.camera().cameraToScreen(maximum ? slider.right() - 3 : slider.left() + 2, slider.bottom() - 7);
+                        } catch (Exception e) { throw new RuntimeException(e); } });
+                        androidSwipe(touch[0], touch[0], 30, 1, false);
+                        render(() -> { try {
+                            int value = maximum ? rule.max : rule.min;
+                            OptionSlider slider = find(window[0], OptionSlider.class).get(rule.ordinal());
+                            assertEquals(rule.name(), CustomRulesPresentation.position(rule, value), slider.getSelectedValue());
+                            assertEquals(rule.name(), value, ((CustomDungeonRules) field(window[0], "draft")).get(rule));
+                            assertArrayEquals("Native touch changes only the draft", persisted.values(), SPDSettings.apdCustomRules().values());
+                            assertSame("Active run remains locked", active[0], Dungeon.customRules());
+                            assertEquals(score[0], com.shatteredpixel.shatteredpixeldungeon.Statistics.totalScore);
+                        } catch (Exception e) { throw new RuntimeException(e); } });
+                    }
+                    render(() -> { try {
+                        touch[0] = null;
+                        for (RedButton button : find(window[0], RedButton.class)) {
+                            if (button.text().equals("Save for new runs")) touch[0] = button.camera().cameraToScreen(button.left() + button.width()/2, button.top() + button.height()/2);
+                        }
+                        assertNotNull(touch[0]);
+                    } catch (Exception e) { throw new RuntimeException(e); } });
+                    androidSwipe(touch[0], touch[0], 30, 1, false);
+                    render(() -> { try {
+                        for (CustomDungeonRules.Slider rule : CustomDungeonRules.Slider.values()) assertEquals(rule.name(), maximum ? rule.max : rule.min, SPDSettings.apdCustomRules().get(rule));
+                        assertSame(active[0], Dungeon.customRules());
+                        assertEquals(score[0], com.shatteredpixel.shatteredpixeldungeon.Statistics.totalScore);
+                        window[0] = new WndCustomDungeonRules();
+                        Game.scene().addToFront(window[0]);
+                        for (CustomDungeonRules.Slider rule : CustomDungeonRules.Slider.values()) {
+                            int value = maximum ? rule.max : rule.min;
+                            assertEquals(rule.name(), CustomRulesPresentation.position(rule, value), find(window[0], OptionSlider.class).get(rule.ordinal()).getSelectedValue());
+                        }
+                        window[0].onBackPressed();
+                    } catch (Exception e) { throw new RuntimeException(e); } });
+                }
+            } finally {
+                render(() -> {
+                    if (window[0] != null) window[0].hide();
+                    SPDSettings.apdCustomRules(saved);
+                    Dungeon.apdRestoreCustomRules(run);
+                });
+            }
+        }
+    }
 }
