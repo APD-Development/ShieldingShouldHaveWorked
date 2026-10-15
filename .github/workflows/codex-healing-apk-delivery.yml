@@ -1,4 +1,4 @@
-name: Privately stage October 16 alpha candidate TEST219
+name: Deliver verified Healing and clean-language owner APK TEST220
 
 # Delivery only: reuse the already tested APK; no Gradle or app rebuild.
 # Accept verified SDK signer labels; retain compatibility refusal diagnostics.
@@ -12,15 +12,15 @@ permissions:
   actions: read
 
 concurrency:
-  group: apd-existing-test219-delivery
+  group: apd-existing-test220-delivery
   cancel-in-progress: false
 
 env:
-  APD_SOURCE_SHA: d1d1b7de7bbf73f9bfd5b38602ce8eaf5756394b
-  APD_SOURCE_RUN: '38804827414'
-  APD_TEST_NUMBER: '219'
-  APD_CORE_TEST_COUNT: '1660'
-  APD_ANDROID_TEST_COUNT: '30'
+  APD_SOURCE_SHA: 48d5524d3b217537b3eb4306b5c796ea86297569
+  APD_SOURCE_RUN: '38806822837'
+  APD_TEST_NUMBER: '220'
+  APD_CORE_TEST_COUNT: '1668'
+  APD_ANDROID_TEST_COUNT: '31'
   APD_ROLLBACK_NUMBER: '206'
   APD_ROLLBACK_SHA256: '566e29174c17c19f9a19f7429410d872a097c09c2aa4a1e4835548617a6c809c'
   APD_REQUIRED_ANDROID_METHODS: 'menusSurviveSceneRecreationAndNarrowActionsStayInsideTheirWindow,aRunCanBePlayedSavedContinuedAndEndedWithItsHistoryRecorded,aWonRunIsRecordedAsWonAndSealed,difficultyIsChosenOnTheCharacterScreenAndNotInSettings,communityMenuOpensEveryPreviewAndReturnsWithoutStackingWindows,adultHumorControlWorksWithoutAnAgeProviderAndReopensWithSavedChoice,textAndGuideScrollSurviveRepeatedResetsAndClampAfterResize,validationEmptyHistoryGroupedAndReportMessagesSurviveWithoutRepeatingActions,tourChoicesSurviveWithoutStartingATourOrRepeatingTheOffer,heroButtonsStayAboveNavigationBarAndRemainSelectable,navigationOverlapReservesVisibleBarsEvenWithFullscreenRequested,clericQuickCastsPersistAndKeepNormalCostsAndTargeting,arcanaItemDescriptionsRequireKnownEquippedRingsAndFitWindows,demoUnlockKeepsTenRunNoticeVisibleOnTitle,offlineNewsCardsOpenDatedSpritePopups,everyAboutPopupOpensScrollsAndCloses,everyUimsdScreenAndDialogCanBeBuilt,replacingHomeContentsDisposesPreviouslyDrawnImages,categoriesUseSpdColumnsAndEveryIconOpensItsExactBuildPopup,largeAndNamedHistoricalBuildsKeepAllIconsInScrollableNativeSections,tileVisibilityAndStairNavigationKeepNormalTurnsFogAndControls,clericLoreFirstRunPopupIsVisibleAndBackContinuesExactlyOnce'
@@ -32,11 +32,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: d1d1b7de7bbf73f9bfd5b38602ce8eaf5756394b
+          ref: 48d5524d3b217537b3eb4306b5c796ea86297569
       - uses: actions/checkout@v4
         with:
           path: lunch-preparation
-      - name: Wait for exact TEST219 verification and resolve actual artifacts
+      - name: Wait for exact TEST220 verification and resolve actual artifacts
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -120,10 +120,10 @@ jobs:
         run: |
           python3 -m pip install reportlab==4.2.5
           python3 -m unittest discover -s tools -p test_apd_bug_report_pdf.py
-          python3 tools/apd_bug_report_pdf.py lunch-preparation/docs/APD-HEALING-CONVERSION-2026-10-15.md delivery/APD-Bug-Fixes-2026-10-15-TEST219.pdf --verification delivery/verification.txt
+          python3 tools/apd_bug_report_pdf.py lunch-preparation/docs/APD-CLEAN-LANGUAGE-2026-10-15.md delivery/APD-Bug-Fixes-2026-10-15-TEST220.pdf --verification delivery/verification.txt --appendix lunch-preparation/docs/APD-HEALING-CONVERSION-2026-10-15.md
       - uses: actions/upload-artifact@v4
         with:
-          name: verified-test219-delivery
+          name: verified-test220-delivery
           path: delivery/
           retention-days: 7
 
@@ -132,7 +132,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: verified-test219-evidence
+          name: verified-test220-evidence
           path: |
             delivery/*.json
             delivery/*.txt
@@ -151,14 +151,14 @@ jobs:
           python3 - <<'PY'
           import os,json,subprocess
           from pathlib import Path
-          repo=os.environ['GITHUB_REPOSITORY'];tag='apd-codex-test-219'
+          repo=os.environ['GITHUB_REPOSITORY'];tag='apd-codex-test-220'
           assert json.loads(subprocess.check_output(['gh','api','repos/'+repo]))['private']
-          v=json.loads(Path('delivery/TEST219-Verification.json').read_text())
-          assert v['source']==os.environ['APD_SOURCE_SHA'] and v['core']['tests']==1660 and v['android']['tests']==30
+          v=json.loads(Path('delivery/TEST220-Verification.json').read_text())
+          assert v['source']==os.environ['APD_SOURCE_SHA'] and v['core']['tests']==1668 and v['android']['tests']==31
           assert v['certificate_sha256']==['067688b3ab6bd5820a67f4c1ba7d5859db578173771cf31d3252b3e4e012246e']
           notes=Path('delivery/verification.txt').read_text()
-          notes+='\n\nHealing-to-Shielding slider correction: override applies only to generated Potions of Healing; other potion/scroll conversions preserve vanilla Exotic Crystals behavior. Includes TEST218 all-control and full-field export acceptance. This owner test APK predates the separately requested game-wide Adult Humor audit and About correction; those are NOT claimed included. No automatic distribution to alpha testers.\n'
+          notes+='\n\nHealing-to-Shielding slider correction: override applies only to generated Potions of Healing; other potion/scroll conversions preserve vanilla Exotic Crystals behavior. Includes TEST218 all-control and full-field export acceptance. Includes the Adult Humor OFF correction for About and authored message templates, clean news/history presentation and preservation of adult originals and player text. No automatic distribution to alpha testers.\n'
           Path('delivery/release-notes.txt').write_text(notes)
           assert subprocess.run(['gh','release','view',tag,'--repo',repo],capture_output=True).returncode!=0, 'Preserve existing release'
-          subprocess.run(['gh','release','create',tag,'--repo',repo,'--target',os.environ['APD_SOURCE_SHA'],'--prerelease','--latest=false','--title','APD PRIVATE CODEX TEST219 — Healing slider correction','--notes-file','delivery/release-notes.txt','delivery/ADHD-Pixel-Dungeon-CODEX-TEST-219.apk','delivery/ADHD-Pixel-Dungeon-CODEX-TEST-219.apk.sha256','delivery/TEST219-Verification.json','delivery/APD-Bug-Fixes-2026-10-15-TEST219.pdf'],check=True)
+          subprocess.run(['gh','release','create',tag,'--repo',repo,'--target',os.environ['APD_SOURCE_SHA'],'--prerelease','--latest=false','--title','APD PRIVATE CODEX TEST220 — Healing slider and clean language','--notes-file','delivery/release-notes.txt','delivery/ADHD-Pixel-Dungeon-CODEX-TEST-220.apk','delivery/ADHD-Pixel-Dungeon-CODEX-TEST-220.apk.sha256','delivery/TEST220-Verification.json','delivery/APD-Bug-Fixes-2026-10-15-TEST220.pdf'],check=True)
           PY
