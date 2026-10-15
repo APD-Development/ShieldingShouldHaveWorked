@@ -762,3 +762,8 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Added a pure Home empty-state message that names finished runs under other rules separately from runs still going, and routed the native Home through it. Options now explicitly says Rules does not change finished status; the Home scope note names runs still going among exclusions.
 - Added one retained regression method covering an empty history, a finished abandoned run under different rules, singular wording, the unfinished-run route, and all-rules inclusion. Expected total: 1,603 core tests.
 - Exact-source core/debug/immediate-previous TEST180 history/26 API34/34 PNG verification is pending. This is wording/query-scope UI only: no raw history, save, statistics, scoring, gameplay, application ID or signing behavior changed. No delivery or physical-phone claim; TEST123 remains owner-delivered fallback.
+
+## 2026-10-15T00:15:34Z — TEST181 history guard failure; TEST182 correction pending
+- TEST181 source `ba146f3c0ec2e145fa57295af2c398248f497d2a`, run `38658816290`, stopped before compilation at the reviewed-history guard. It reported one omitted path: `docs/APD-TEST179-UIMSD-COLUMN-RESTORE-2026-10-14.md`, added by the intervening TEST180 evidence commit.
+- No core, debug or Android tests ran; TEST181 is not verified and produced no APK. The UIMSD application/test source is unchanged for TEST182.
+- TEST182 adds the omitted existing documentation path to the complete comparison manifest and requests the full 1,603-core/debug/immediate-previous TEST180 history/26 API34/34 PNG gate. No delivery or physical-phone claim.

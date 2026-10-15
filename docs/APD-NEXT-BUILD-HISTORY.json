@@ -7,8 +7,8 @@
     {
       "category": "Changes",
       "sprite": "V061_PAGE",
-      "title": "UIMSD scope wording",
-      "text": "Clarify that Rules selects finished runs by rule set, while runs still going use the separate Tables > Options switch; preserve abandoned as a finished result.",
+      "title": "TEST182 UIMSD scope wording",
+      "text": "Clarify that Rules selects finished runs by rule set, while runs still going use the separate Tables > Options switch; preserve abandoned as a finished result. TEST182 corrects only the complete comparison manifest after TEST181 stopped before compilation.",
       "paths": [
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdHome.java",
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/UimsdScene.java",
@@ -19,7 +19,8 @@
         "docs/WORK-COMPLETED-LEDGER.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/APD-NEXT-BUILD-HISTORY.json",
-        "docs/KNOWN-ISSUES-AND-SOURCE-GUIDE.md"
+        "docs/KNOWN-ISSUES-AND-SOURCE-GUIDE.md",
+        "docs/APD-TEST179-UIMSD-COLUMN-RESTORE-2026-10-14.md"
       ]
     }
   ]

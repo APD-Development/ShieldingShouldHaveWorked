@@ -118,3 +118,6 @@ TEST180 verified (2026-10-15T00:06:25Z): sourceacf8592e2db3c30684e09a05bd22c097c
 
 
 TEST181 exact-source request (2026-10-15T00:12:37Z): verify the UIMSD scope-wording correction with1603core tests, debug assembly, immediate-previous TEST180 compiled history, 26API34 checks and34 valid screenshots. Home/Options must distinguish finished runs under other rules from runs still going; abandoned remains a finished result. No raw-history/save/statistics/scoring/gameplay/delivery/physical-phone claim.
+
+
+TEST182 history-only correction (2026-10-15T00:15:34Z): TEST181 sourceba146f3c0ec2e145fa57295af2c398248f497d2a/run38658816290 stopped before compilation because the comparison manifest omitted the intervening TEST180 evidence path docs/APD-TEST179-UIMSD-COLUMN-RESTORE-2026-10-14.md. Verify unchanged UIMSD application/test source with the complete manifest:1603core/debug/immediate-previousTEST180history/26API34/34PNG. No delivery/phone claim.
