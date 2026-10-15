@@ -114,6 +114,14 @@ public final class GameFacts {
 			.description("Every player-owned allied creature created by the hero or another visible ally.").subject("Ally").actor()
 			.value("depth", "Floor", "The floor the ally appeared on.", FactKind.PLAIN).since(1, 13).build());
 
+	//a visible boss crossed one of its explicit combat phases; phase numbering is local to that boss
+	public static final FactKind BOSS_PHASE = FactKinds.register(FactKind.builder("boss.phase", "Boss phase").plural("Boss phases").area("Enemies")
+			.description("Every visible boss phase transition after combat began.").subject("Boss")
+			.value("phase", "Phase", "The boss-specific phase number after the transition.", FactKind.PLAIN)
+			.value("depth", "Floor", "The floor where the transition happened.", FactKind.PLAIN)
+			.tag("state", "State", "The visible kind of phase, such as enraged, arena, supercharged, shielded, fist or final.")
+			.since(1, 16).build());
+
 	//an NPC quest moved on a step: given, ready (what was asked for was found or beaten) or done (the reward stage was reached)
 	public static final FactKind QUEST = FactKinds.register(FactKind.builder("npc.quest", "Quest step").plural("Quest steps").area("Exploration")
 			.description("Each step of the Sad ghost, Wandmaker, Blacksmith and Imp quests as it happened.").subject("Quest giver")

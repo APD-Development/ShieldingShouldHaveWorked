@@ -90,6 +90,13 @@ public final class ApdPlay {
 		try { p.onMoveCommand(destination, mode); } catch (Throwable ignored){}
 	}
 
+	//a visible boss crossed one of its explicit gameplay phase boundaries
+	public static void onBossPhase( String boss, int phase, String state ){
+		PlayTracker p = t();
+		if (p == null || restoring > 0) return;
+		try { p.onBossPhase(boss, phase, state); } catch (Throwable ignored){}
+	}
+
 	public static void onHeroRested( boolean full ){
 		PlayTracker p = t();
 		if (p == null) return;

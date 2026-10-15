@@ -27,5 +27,6 @@ explore.well|P|-||
 journal.page|P|-||action,page
 npc.interact|P|-|depth|
 ally.summon|P|-|depth|
+boss.phase|P|-|phase,depth|state
 npc.quest|P|-|depth|step
 alchemy.craft|P|-|depth,quantity,energy,carriedEnergy,toolkitEnergy|ingredients

@@ -2582,3 +2582,10 @@ Retained real-Shocking regression333ea7c passed against fetched current producti
 - The retained real-`Shocking` method covers all 20 settings for each actual creator role (player, enemy and boss; 60 cases). The already-scaled primary attack remains unchanged, one nearby splash retains `Shocking` as its source, and derived damage uses the matching player/enemy/boss slider exactly once.
 - Core artifact `11968778024`, 754,862 bytes, GitHub digest `412fb0f9ad04b7f11b7d7a74c1f839e6fd2580ac8b5a0424ed75e373a0bec953`; independent XML recount confirmed the totals above.
 - This was test-only: no production source or APK changed. Do not rebuild unchanged TEST204; retain exact corrected TEST204/Codex TEST 200 as the latest verified compiled candidate. Codex TEST198 remains the separately delivered APK; no physical-phone claim.
+
+## 2026-10-15T12:36:31Z — TEST205 visible boss-phase telemetry candidate
+- Reproduced the next canonical omission: Goo, Tengu, DM-300, Dwarf King and Yog expose explicit visible phase boundaries, but no public/queryable fact recorded those transitions.
+- Telemetry 1.16 adds `boss.phase` with only the displayed boss name, boss-specific phase number, current floor and visible state label. Hooks run after the real transition assignment; restore-time reconstruction and implicit initial encounter state emit nothing.
+- Goo records enraged; Tengu arena; DM-300 each supercharged and returned normal/final state; Dwarf King shielded and final; Yog fist phases and final. No AI target, cooldown, hidden summon choice, HP threshold, RNG result or undiscovered state is recorded.
+- Added two retained recorder/privacy regressions plus exact source-wiring counts for all five bosses, the permanent fact manifest, telemetry-version contract and immutable records history.
+- TEST205 requests 1,622 core tests, debug assembly, complete immediate-previous compiled TEST204/Codex TEST 200 history, 27 API34 methods and 35 valid 320×640 PNGs. Candidate pending; TEST204 remains the verified compiled fallback and Codex TEST198 the separately delivered APK. No physical-phone claim.

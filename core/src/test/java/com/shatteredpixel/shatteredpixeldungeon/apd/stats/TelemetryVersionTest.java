@@ -11,9 +11,9 @@ import org.junit.Test;
 public class TelemetryVersionTest {
 
 	@Test
-	public void currentVersionIsTelemetry1Point15(){
-		assertEquals(new TelemetryVersion(1, 15), TelemetryVersion.CURRENT);
-		assertEquals("1.15", TelemetryVersion.CURRENT.toString());
+	public void currentVersionIsTelemetry1Point16(){
+		assertEquals(new TelemetryVersion(1, 16), TelemetryVersion.CURRENT);
+		assertEquals("1.16", TelemetryVersion.CURRENT.toString());
 	}
 
 	@Test

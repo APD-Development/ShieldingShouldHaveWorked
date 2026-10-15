@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdPlay;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
@@ -533,6 +534,7 @@ public class DM300 extends Mob {
 		((DM300Sprite)sprite).updateChargeState(true);
 		((DM300Sprite)sprite).charge();
 		chargeAnnounced = false;
+		ApdPlay.onBossPhase(name(), pylonsActivated * 2, "supercharged");
 
 	}
 
@@ -543,6 +545,8 @@ public class DM300 extends Mob {
 	public void loseSupercharge(){
 		supercharged = false;
 		((DM300Sprite)sprite).updateChargeState(false);
+		ApdPlay.onBossPhase(name(), pylonsActivated * 2 + 1,
+				pylonsActivated < totalPylonsToActivate() ? "normal" : "final");
 
 		//adjust turns since last ability to prevent DM immediately using an ability when charge ends
 		turnsSinceLastAbility = Math.min(turnsSinceLastAbility, MIN_COOLDOWN-3);

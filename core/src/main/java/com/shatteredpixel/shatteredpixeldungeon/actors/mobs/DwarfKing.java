@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdPlay;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
@@ -516,6 +517,7 @@ public class DwarfKing extends Mob {
 				ScrollOfTeleportation.appear(this, CityBossLevel.throne);
 				properties.add(Property.IMMOVABLE);
 				phase = 2;
+				ApdPlay.onBossPhase(name(), phase, "shielded");
 				summonsMade = 0;
 				apdShieldObjectivesResolved = 0;
 				sprite.idle();
@@ -537,6 +539,7 @@ public class DwarfKing extends Mob {
 		} else if (phase == 2 && shielding() == 0) {
 			properties.remove(Property.IMMOVABLE);
 			phase = 3;
+			ApdPlay.onBossPhase(name(), phase, "final");
 			summonsMade = 1; //monk/warlock on 3rd summon
 			sprite.centerEmitter().start( Speck.factory( Speck.SCREAM ), 0.4f, 2 );
 			Sample.INSTANCE.play( Assets.Sounds.CHALLENGE );

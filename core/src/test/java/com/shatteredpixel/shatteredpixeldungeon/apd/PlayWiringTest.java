@@ -35,6 +35,11 @@ public class PlayWiringTest {
 		HOOKS.put("levels/Level.java", 1);             //secret revealed
 		HOOKS.put("actors/blobs/WellWater.java", 1);   //well used
 		HOOKS.put("journal/Document.java", 2);         //page found, page read
+		HOOKS.put("actors/mobs/Goo.java", 1);             //enraged phase
+		HOOKS.put("actors/mobs/Tengu.java", 1);           //arena phase
+		HOOKS.put("actors/mobs/DM300.java", 2);           //supercharged and normal/final
+		HOOKS.put("actors/mobs/DwarfKing.java", 2);       //shielded and final
+		HOOKS.put("actors/mobs/YogDzewa.java", 2);        //fist phases and final
 		HOOKS.put("actors/mobs/npcs/Ghost.java", 3);      //quest given, ready, done
 		HOOKS.put("actors/mobs/npcs/Wandmaker.java", 2);  //quest given, done
 		HOOKS.put("actors/mobs/npcs/Blacksmith.java", 2); //quest given, done

@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdPlay;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
@@ -366,6 +367,7 @@ public class YogDzewa extends Mob {
 			summonCooldown = -15; //summon a burst of minions!
 			phase = 5;
 			BossHealthBar.bleed(true);
+			ApdPlay.onBossPhase(name(), phase, "final");
 			Game.runOnRenderThread(new Callback() {
 				@Override
 				public void call() {
@@ -413,6 +415,7 @@ public class YogDzewa extends Mob {
 		if (phase < 4 && HP <= HT - com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomBossHealthHooks.threshold(300*phase)){
 
 			phase++;
+			ApdPlay.onBossPhase(name(), phase, "fist");
 
 			updateVisibility(Dungeon.level);
 			GLog.n(Messages.get(this, "darkness"));

@@ -99,6 +99,12 @@ final class PlayTracker {
 				new long[]{ destination, Dungeon.level.width() }, new String[]{ mode == null ? "" : mode });
 	}
 
+	void onBossPhase( String boss, int phase, String state ){
+		if (boss == null || boss.isEmpty() || phase < 2) return;
+		facts.record(GameFacts.BOSS_PHASE, GameSnapshot.turn(), boss, "",
+				new long[]{ phase, Dungeon.depth }, new String[]{ state == null ? "" : state });
+	}
+
 	void onHeroRested( boolean full ){
 		facts.record(GameFacts.REST, GameSnapshot.turn(), "", "", new long[]{ full ? 1 : 0 }, null);
 	}

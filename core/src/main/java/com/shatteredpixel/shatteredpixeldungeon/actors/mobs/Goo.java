@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdPlay;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -271,6 +272,7 @@ public class Goo extends Mob {
 			sprite.showStatus(CharSprite.WARNING, Messages.get(this, "enraged"));
 			((GooSprite)sprite).spray(true);
 			yell(Messages.get(this, "gluuurp"));
+			ApdPlay.onBossPhase(name(), 2, "enraged");
 		}
 		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
 		if (lock != null && !isImmune(src.getClass()) && !isInvulnerable(src.getClass())){

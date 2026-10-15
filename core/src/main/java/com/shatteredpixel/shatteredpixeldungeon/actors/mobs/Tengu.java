@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdPlay;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
@@ -186,6 +187,7 @@ public class Tengu extends Mob {
 			yell(Messages.get(this, "interesting"));
 			((PrisonBossLevel)Dungeon.level).progress();
 			BossHealthBar.bleed(true);
+			ApdPlay.onBossPhase(name(), 2, "arena");
 
 		//if tengu has lost a certain amount of hp, jump
 		} else if (newBracket != curbracket) {

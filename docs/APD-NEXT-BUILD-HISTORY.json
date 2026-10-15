@@ -1,31 +1,34 @@
 {
-  "previous_label": "Codex TEST 198",
-  "previous_source": "186f5892429ef564ec4a9d59c9885a62fb6f1c1f",
-  "previous_run": 38712411656,
+  "previous_label": "Codex TEST 200",
+  "previous_source": "9549d3638de133cb09864e1c325f15b325c550b2",
+  "previous_run": 38722796011,
   "date": "2026-10-15",
   "changes": [
     {
-      "category": "Changes",
+      "category": "Development",
       "sprite": "V061_PAGE",
-      "title": "Retain TEST202 and TEST203 evidence",
-      "text": "Include every verified evidence and coverage path committed after the immediate previous compiled TEST202 APK.",
+      "title": "Retain verified alpha and derived-damage evidence",
+      "text": "Preserve the actual TEST198 delivery records and the expanded real-Shocking exact-once regression committed after the immediate previous compiled TEST204 APK.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/JournalRecordingTest.java",
-        "docs/APD-CODEX-BUILD-REQUEST.txt",
+        ".github/workflows/codex-existing-apk-delivery.yml",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/DerivedShockScalingTest.java",
         "docs/APD-CODEX-CORE-TEST-REQUEST.txt",
-        "docs/APD-TEST201-ALCHEMY-DETAILS-2026-10-15.md",
-        "docs/APD-TEST203-LEVEL-FEELING-COVERAGE-2026-10-15.md"
+        "docs/APD-PRIVATE-ALPHA-DELIVERY-2026-10-15.md",
+        "docs/HANDOFF.md",
+        "docs/WORK-COMPLETED-LEDGER.md"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_PAGE",
-      "title": "Movement command history",
-      "text": "Record each manual step, point-to-point travel or safe stair-navigation command once without changing movement, routes or the existing per-cell step series.",
+      "title": "Visible boss phase history",
+      "text": "Record the explicit visible phase transitions of all five main bosses without exposing AI state, thresholds, targets, cooldowns or restore-time reconstruction.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/Hero.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/HeroAction.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/navigation/StairNavigation.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/DM300.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/DwarfKing.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Goo.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Tengu.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/YogDzewa.java",
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/ApdPlay.java",
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/PlayTracker.java",
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/GameFacts.java",
@@ -36,12 +39,11 @@
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Movement modes and exact-once boundary",
-      "text": "Retain step/travel/stairs classification, one-command-per-action, public payload, wiring, permanent schema and telemetry-version checks.",
+      "title": "Boss phase payload and wiring guards",
+      "text": "Retain public payload, invalid/restore suppression, all five boss hook counts, permanent schema and telemetry-version checks.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/HeroActionMoveTelemetryTest.java",
         "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/PlayWiringTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/MovementCommandRecordingTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/BossPhaseRecordingTest.java",
         "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/TelemetryVersionTest.java",
         "core/src/test/resources/apd/fact_kind_manifest.txt"
       ]
@@ -49,16 +51,15 @@
     {
       "category": "Development",
       "sprite": "V061_PAGE",
-      "title": "TEST204 evidence request",
-      "text": "Document the reproduced old-field ambiguity, absent general auto-explore mechanic, additive telemetry boundary and complete verification request.",
+      "title": "TEST205 evidence request",
+      "text": "Document the reproduced omission, public boundary, exact previous compiled APK and complete verification request.",
       "paths": [
-        "docs/APD-UIMSD-UNIVERSAL.md",
-        "docs/APD-TEST204-MOVEMENT-COMMANDS-2026-10-15.md",
+        "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/APD-NEXT-BUILD-HISTORY.json",
-        "docs/HANDOFF.md",
-        "docs/WORK-COMPLETED-LEDGER.md"
+        "docs/APD-TEST205-BOSS-PHASES-2026-10-15.md",
+        "docs/APD-UIMSD-UNIVERSAL.md"
       ]
     }
   ],
-  "commentary": "The existing move.step values stay immutable. TEST204 adds a separate public command fact and explicitly records that current source has no general auto-explore mechanic."
+  "commentary": "Boss phase numbering is local to each boss and initial combat state is implicit. Existing boss behavior, custom-rule scaling, saves, RNG and scoring are unchanged."
 }

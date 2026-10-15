@@ -8,6 +8,10 @@ APD game version, and every recorded run keeps the telemetry version that record
 tied to a version of the recorded data. Minor versions only add things, a new major version changes what existing
 data means.
 
+telemetry-1.16-boss-phases | telemetry 1.16 | APD 4.0.8-apd | 2026-10-15
+- Records the visible phase transitions of Goo, Tengu, DM-300, Dwarf King and Yog, with the displayed boss name, boss-specific phase number, floor and visible phase state.
+- Restore-time reconstruction records nothing. Runs recorded before 1.16 show boss phases as unknown, never zero.
+
 telemetry-1.15-movement-commands | telemetry 1.15 | APD 4.0.8-apd | 2026-10-15
 - Records each manual step, point-to-point travel or safe stair-navigation command once, with its public destination and floor width.
 - Existing move.step history is unchanged: its travelling field distinguishes physical walking from instantaneous relocation, not manual from automated movement.
