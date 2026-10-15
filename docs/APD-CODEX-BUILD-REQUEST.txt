@@ -176,3 +176,6 @@ TEST196 exact-source request (2026-10-15T06:35:47Z): verify additive public tele
 
 
 TEST197 correction request (2026-10-15T06:40:00Z): TEST196 source37da2dcd7ef3512402c2d8622be73e075d2278ba/run38693568938 executed1610core with1607pass/3integration-contract failures and noAPK. Declare Hero's sixth ApdPlay hook, add the permanent telemetry1.12 history milestone, and have the real central interaction path call the same private call-plus-record helper the headless regression exercises without UI. Re-run1610core/debug/immediate-previous compiledTEST192 history/27API34/35PNG. Do not relabel TEST196 as passed.
+
+
+TEST199 exact-source request (2026-10-15T08:36:50Z): record player-owned ally creation once at the existing explicit creator-ownership boundary. Public telemetry1.13 uses only displayed ally/creator names and floor; enemy, boss, unattributed, repeated ownership and off-screen-creator cases emit no public summon fact. Verify1613core/debug/immediate-previous compiledTEST197/CodexTEST194 history/27API34/35PNG. Preserve gameplay, RNG, actor save metadata, damage attribution, scoring, custom rules, identity and signing. No delivery or physical-phone claim.

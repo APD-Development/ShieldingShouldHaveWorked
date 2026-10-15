@@ -141,6 +141,13 @@ public final class ApdPlay {
 		try { p.onNpcInteraction(npc); } catch (Throwable ignored){}
 	}
 
+	//a creature explicitly inherited player ownership from the visible character that created it
+	public static void onAllySummoned( Char summoned, Char creator ){
+		PlayTracker p = t();
+		if (p == null || restoring > 0) return;
+		try { p.onAllySummoned(summoned, creator); } catch (Throwable ignored){}
+	}
+
 	//an NPC quest moved on: "given", "ready" (the thing asked for was found or beaten) or "done" (the reward stage was reached)
 	public static void onQuest( String npc, String step ){
 		PlayTracker p = t();

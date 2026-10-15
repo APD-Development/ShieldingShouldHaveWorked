@@ -2487,3 +2487,11 @@ The ordered legacy-door item is closed. Hero markers still require explicit appr
 - Artifact `11955827287`, 745,760 bytes, GitHub SHA-256 `2a0d77bf965610aefb181a6d12355697f39b8a86a449e6cbcc6e7818f5e3d2a1`.
 - Requested count was 1,611 (prior verified 1,610 plus one test). Independent XML recount remains unavailable because the artifact host proxy returned repeated HTTP 502; this limitation is retained rather than converting the requested count into a parsed claim.
 - No APK job ran. Application source remains verified TEST197 `364fd4724b79308fb6a13478a211bcd7599b2f7b`; TEST123 remains owner-delivered. Next approved candidate: ally summons, only after current-source reproduction and creator/visibility review.
+
+
+## 2026-10-15T08:36:50Z — TEST199 ally-summon recording candidate
+- Reproduced a concrete omission after TEST198: explicit offensive creator ownership already survived summon creation and save/load, but run history emitted no summon fact.
+- Telemetry 1.13 adds public `ally.summon` at that existing creation boundary. It records only the displayed summoned name, displayed actual creator name and current floor.
+- A summon is recorded only when ownership first becomes PLAYER and its actual creator is the hero or another creature currently visible to the hero. Repeated inheritance, enemy, boss, unattributed, off-screen-creator and restore-time paths emit no public summon event.
+- Added two retained regressions for exact-once direct/chained player summons, actual creator identity, exclusions and restoration suppression. TEST199 requests 1,613 core tests, debug assembly, complete history from immediate-previous compiled TEST197/Codex TEST 194, 27 API34 methods and 35 PNGs.
+- No damage amount, turn, RNG, actor save metadata, scoring, custom-rule, application ID or signing behavior changed. Candidate pending; no delivery or physical-phone claim. TEST197 remains the verified compiled fallback and TEST123 the owner-delivered fallback.

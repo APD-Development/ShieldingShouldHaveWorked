@@ -25,4 +25,5 @@ explore.discover|P|-|cell|
 explore.well|P|-||
 journal.page|P|-||action,page
 npc.interact|P|-|depth|
+ally.summon|P|-|depth|
 npc.quest|P|-|depth|step

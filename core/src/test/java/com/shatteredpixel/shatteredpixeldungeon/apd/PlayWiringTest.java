@@ -19,7 +19,7 @@ public class PlayWiringTest {
 		HOOKS.put("actors/hero/Hero.java", 6);          //turn, move, rest, talent, search, NPC interaction
 		HOOKS.put("items/Item.java", 1);                //item action
 		HOOKS.put("actors/buffs/Buff.java", 2);         //attached, detached
-		HOOKS.put("actors/Char.java", 2);               //restore begin / end
+		HOOKS.put("actors/Char.java", 3);               //restore begin / end, summon ownership
 		HOOKS.put("items/TengusMask.java", 1);          //subclass
 		HOOKS.put("items/KingsCrown.java", 1);          //armor ability chosen
 		HOOKS.put("items/armor/curses/Overgrowth.java", 2);

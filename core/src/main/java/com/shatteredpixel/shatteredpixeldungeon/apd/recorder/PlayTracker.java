@@ -148,6 +148,14 @@ final class PlayTracker {
 		facts.record(GameFacts.NPC_INTERACT, GameSnapshot.turn(), shown, "", new long[]{ Dungeon.depth }, null);
 	}
 
+	void onAllySummoned( Char summoned, Char creator ){
+		if (summoned == null || creator == null
+				|| summoned.apdCreatorOffensiveOrigin() != com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.PLAYER
+				|| !CombatTracker.visible(creator)) return;
+		facts.record(GameFacts.ALLY_SUMMON, GameSnapshot.turn(), CombatTracker.nameOf(summoned),
+				CombatTracker.nameOf(creator), new long[]{ Dungeon.depth }, null);
+	}
+
 	void onQuest( String npc, String step ){
 		facts.record(GameFacts.QUEST, GameSnapshot.turn(), npc, "", new long[]{ Dungeon.depth }, new String[]{ step });
 	}

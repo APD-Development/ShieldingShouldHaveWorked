@@ -7,14 +7,54 @@
     {
       "category": "Changes",
       "sprite": "V061_PAGE",
-      "title": "Record TEST197 NPC-interaction evidence",
-      "text": "Retain passing core, debug, immediate-previous APK-history, API34 and reviewed visual evidence for additive public NPC-interaction telemetry.",
+      "title": "Retain NPC and shop evidence",
+      "text": "Retain verified NPC-interaction evidence and the shop-stock hidden-information regression completed after the immediate previous compiled APK.",
       "paths": [
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/ItemLifecycleTest.java",
+        "docs/APD-CODEX-CORE-TEST-REQUEST.txt",
         "docs/APD-TEST197-NPC-INTERACTIONS-2026-10-15.md",
+        "docs/APD-TEST198-SHOP-STOCK-VISIBILITY-2026-10-15.md"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V063_HUNTRESS_CLOTH",
+      "title": "Ally summon history",
+      "text": "Record player-owned allied summons once from their explicit creator while exposing only displayed names and the current floor.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/Char.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/ApdPlay.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/PlayTracker.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/GameFacts.java"
+      ]
+    },
+    {
+      "category": "Testing",
+      "sprite": "ICON_CHECKED",
+      "title": "Summon visibility boundaries",
+      "text": "Add retained checks for exact-once player summons, actual visible creators, enemy and boss exclusion, off-screen secrecy and restoration suppression.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/TelemetryVersion.java",
+        "core/src/main/assets/apd/apd_records_history.txt",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/PlayWiringTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/AllySummonRecordingTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/TelemetryVersionTest.java",
+        "core/src/test/resources/apd/fact_kind_manifest.txt"
+      ]
+    },
+    {
+      "category": "Development",
+      "sprite": "V061_PAGE",
+      "title": "TEST199 verification record",
+      "text": "Record the reproduced omission, privacy boundary, exact previous compiled APK and required full hosted checks.",
+      "paths": [
+        "docs/APD-TEST199-ALLY-SUMMONS-2026-10-15.md",
+        "docs/APD-CODEX-BUILD-REQUEST.txt",
+        "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/HANDOFF.md",
-        "docs/WORK-COMPLETED-LEDGER.md",
-        "docs/APD-NEXT-BUILD-HISTORY.json"
+        "docs/WORK-COMPLETED-LEDGER.md"
       ]
     }
-  ]
+  ],
+  "commentary": "I added player-owned ally summon history at the existing creator-ownership boundary. It records only displayed names and the floor, and does not expose enemy, boss, unattributed or off-screen creation."
 }

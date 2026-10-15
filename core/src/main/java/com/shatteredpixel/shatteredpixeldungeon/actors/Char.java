@@ -196,7 +196,12 @@ public abstract class Char extends Actor {
     }
     /** Called at summon creation, never inferred merely from allied alignment. */
     public void apdInheritOffensiveOrigin(Char creator) {
+        com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin previous = apdCreatorOffensiveOrigin;
         apdCreatorOffensiveOrigin=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(creator,null);
+        if (previous != com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.PLAYER
+                && apdCreatorOffensiveOrigin == com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.PLAYER) {
+            com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdPlay.onAllySummoned(this, creator);
+        }
     }
 	
 	public int viewDistance	= 8;

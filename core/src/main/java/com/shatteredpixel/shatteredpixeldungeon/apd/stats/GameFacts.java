@@ -101,6 +101,11 @@ public final class GameFacts {
 			.description("Every time the hero interacted with a visible non-player character.").subject("Character")
 			.value("depth", "Floor", "The floor the interaction happened on.", FactKind.PLAIN).since(1, 12).build());
 
+	//a player-owned allied creature was created by a character the player could see; names are only what the player saw
+	public static final FactKind ALLY_SUMMON = FactKinds.register(FactKind.builder("ally.summon", "Ally summoned").plural("Allies summoned").area("Abilities")
+			.description("Every player-owned allied creature created by the hero or another visible ally.").subject("Ally").actor()
+			.value("depth", "Floor", "The floor the ally appeared on.", FactKind.PLAIN).since(1, 13).build());
+
 	//an NPC quest moved on a step: given, ready (what was asked for was found or beaten) or done (the reward stage was reached)
 	public static final FactKind QUEST = FactKinds.register(FactKind.builder("npc.quest", "Quest step").plural("Quest steps").area("Exploration")
 			.description("Each step of the Sad ghost, Wandmaker, Blacksmith and Imp quests as it happened.").subject("Quest giver")
