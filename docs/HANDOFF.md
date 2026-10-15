@@ -2364,3 +2364,10 @@ Adjacent audit confirmed seven direct-damage calls in Blast Wave, Living Earth a
 - No core tests, APK, Android tests or screenshots were produced; TEST186 is not verified. The exact failure is retained in `docs/APD-TEST186-UIMSD-TOUR-CANCEL-2026-10-15.md`.
 - TEST187 adds only the omitted existing evidence path. UIMSD application and Android regression source remain unchanged; verify 1,603 core/debug/immediate-previous compiled TEST185 history/26 API34/35 PNG.
 - No gameplay/save/statistics/scoring/identity/signing/delivery/physical-phone change. TEST185 remains the verified fallback and TEST123 the owner-delivered fallback.
+
+
+## 2026-10-15T01:57:45.673Z — TEST187 passed configured gate but omitted changed Back class; TEST188 pending
+- TEST187 source `44cf2b195229f8909021ed9998f65aba52acb7ce`, run [38667136514](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38667136514) (01:42:55Z–01:55:00Z), passed 1,603 core tests, debug assembly, immediate-previous compiled TEST185 history, 26 configured API34 methods and 35 validated 320x640 screenshots. APK SHA-256 `e75bb0598f051ea818964010447168a18779190149713cf6e40db16cf05f80ed`.
+- Downloaded XML audit showed `AndroidBackDeviceTest` was not in the runner's explicit class list. The new regression compiled but did not execute; do not call TEST187 verification of the Back fix.
+- TEST188 adds the retained class to the API34 command, increasing the required count to 27 while keeping application/test source unchanged. Compare against the immediate previous compiled TEST187 APK and retain the existing 35 screenshots.
+- No delivery or physical-phone claim. TEST185 remains the last fully verified fallback; TEST123 remains the owner-delivered/signature-compared fallback.

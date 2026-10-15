@@ -1,40 +1,30 @@
 {
-  "previous_label": "Codex TEST 185",
-  "previous_source": "40d31d81de4c2fcc1ae154e9ec0d1c8f6a28d984",
-  "previous_run": 38664406486,
+  "previous_label": "Codex TEST 187",
+  "previous_source": "44cf2b195229f8909021ed9998f65aba52acb7ce",
+  "previous_run": 38667136514,
   "date": "2026-10-15",
   "changes": [
     {
-      "category": "Bug Fixes",
-      "sprite": "V061_BUGFIX",
-      "title": "Cancel a preparing UIMSD tour",
-      "text": "Make Back cancel sample-tour generation immediately and invalidate its worker so a stale tour cannot appear after cancellation.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/UimsdScene.java"
-      ]
-    },
-    {
       "category": "Testing",
       "sprite": "V061_PAGE",
-      "title": "Preparing-tour Back regression",
-      "text": "Retain API34 coverage for immediate Home/main-model restoration, worker invalidation, and the existing completed-tour Back sequence.",
+      "title": "Execute UIMSD Back regression",
+      "text": "Include the retained Android Back device class in the explicit API34 command so preparing-tour cancellation and the existing one-step Back sequence actually execute.",
       "paths": [
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/AndroidBackDeviceTest.java"
+        "tools/run-codex-android-checks.sh"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_PAGE",
-      "title": "TEST186 failure and TEST187 handoff",
-      "text": "Retain TEST186's pre-compilation history-manifest failure and request the unchanged tour-cancellation source with the complete TEST185 evidence path set.",
+      "title": "TEST187 evidence and TEST188 handoff",
+      "text": "Record that TEST187 compiled the correction and passed its configured 26 methods but omitted the changed Android Back class, then request the unchanged application/test source with that class included.",
       "paths": [
         "docs/APD-TEST186-UIMSD-TOUR-CANCEL-2026-10-15.md",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/APD-NEXT-BUILD-HISTORY.json",
-        "docs/KNOWN-ISSUES-AND-SOURCE-GUIDE.md",
-        "docs/APD-TEST183-UIMSD-EMPTY-HOME-NATIVE-2026-10-15.md"
+        "docs/KNOWN-ISSUES-AND-SOURCE-GUIDE.md"
       ]
     }
   ]

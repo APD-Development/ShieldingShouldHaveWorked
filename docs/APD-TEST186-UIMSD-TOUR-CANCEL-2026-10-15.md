@@ -21,3 +21,11 @@ This candidate is implemented but not verified until exact-source hosted evidenc
 TEST186 source `c1e09d72b48cdd8e534f93818cb763ade84407c9`, run [38666897410](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38666897410) (2026-10-15T01:40:13Z–01:41:01Z), stopped in the reviewed-history guard before compilation. The exact reported omission was `docs/APD-TEST183-UIMSD-EMPTY-HOME-NATIVE-2026-10-15.md`, changed by the TEST185 evidence commit after compiled source `40d31d81de4c2fcc1ae154e9ec0d1c8f6a28d984`. No core, debug, APK or API34 tests ran; TEST186 is not verified and produced no APK.
 
 TEST187 adds that existing evidence path to the complete comparison manifest. UIMSD production and Android regression source are unchanged. The corrected request remains 1,603 core/debug/immediate-previous compiled TEST185 history/26 API34/35 PNG, with no delivery or physical-phone claim.
+
+
+## TEST187 hosted result and TEST188 runner correction
+TEST187 source `44cf2b195229f8909021ed9998f65aba52acb7ce`, run [38667136514](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38667136514) (2026-10-15T01:42:55Z–01:55:00Z), passed 1,603 core tests, debug assembly, immediate-previous compiled TEST185 history, the configured 26 API34 methods, and 35 validated 320x640 screenshots. APK artifact `11942296471` has SHA-256 `e75bb0598f051ea818964010447168a18779190149713cf6e40db16cf05f80ed`; core artifact `11942106695`; Android artifact `11942507561`.
+
+Artifact audit found the explicit API34 class list did not contain `AndroidBackDeviceTest`. The changed regression compiled but did not execute, so TEST187 is not accepted as verification of preparing-tour cancellation despite its successful configured suite and clean 35-image review.
+
+TEST188 adds that existing class to `tools/run-codex-android-checks.sh`. Application and Android test source are unchanged. Require 1,603 core/debug/immediate-previous compiled TEST187 history, all 27 API34 methods including `backWalksBackwardsOneStepPerPress`, and 35 screenshots. No delivery or physical-phone claim.

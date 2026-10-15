@@ -145,3 +145,6 @@ TEST186 exact-source request (2026-10-15T01:40:02.195Z): cancel UIMSD tour prepa
 
 
 TEST187 history-only correction (2026-10-15T01:42:48.021Z): TEST186 sourcec1e09d72b48cdd8e534f93818cb763ade84407c9/run38666897410 stopped before compilation because the comparison manifest omitted docs/APD-TEST183-UIMSD-EMPTY-HOME-NATIVE-2026-10-15.md from the TEST185 evidence commit. Add that existing path and verify unchanged UIMSD application/test source:1603core/debug/immediate-previous compiledTEST185history/26API34/35PNG. No APK/tests existed for TEST186; no delivery/physical-phone claim.
+
+
+TEST188 API34-list correction (2026-10-15T01:57:45.673Z): TEST187 source44cf2b195229f8909021ed9998f65aba52acb7ce/run38667136514 passed1603core/debug/immediate-previous compiledTEST185history/configured26API34/35PNG, but artifact XML proved the explicit runner list omitted AndroidBackDeviceTest, so the changed regression compiled but did not execute. Add that class and verify unchanged application/test source against immediate-previous compiledTEST187:1603core/debug/27API34/35PNG. No delivery/physical-phone claim.
