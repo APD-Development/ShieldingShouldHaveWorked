@@ -33,9 +33,13 @@ import static org.junit.Assert.*;
 public class GetFuckedFeasibilityTest {
     private static class TestHero extends Hero {
         int deaths;
+        boolean reviveAfterDeath;
         @Override public void interrupt() { curAction = null; resting = false; }
         //Only replace final game-over presentation. Health and defenses use production code.
-        @Override public void die(Object source) { deaths++; }
+        @Override public void die(Object source) {
+            deaths++;
+            if (reviveAfterDeath) restoreHealthForRevival(true);
+        }
     }
     private static class SilentSprite extends CharSprite {
         @Override public void showStatusWithIcon(int color, String text, int icon, Object... args) {}
@@ -324,6 +328,23 @@ public class GetFuckedFeasibilityTest {
         assertEquals(85, image.HP);
         assertEquals(1, hero.HT);
         System.out.println("FEASIBILITY Level-30 prismatic image retains 85 HP while hero remains 1 HP");
+    }
+
+    @Test public void blessedRevivalRetainsTheLongOneHpStarvationDamageInterval() throws Exception {
+        //Stub only the death callback; the existing tests cover revival HP itself.
+        //No claim that an unlimited number of Ankhs exists or that this is an item-flow test.
+        hero.reviveAfterDeath = true;
+        Hunger h = hunger(Hunger.STARVING - 1);
+        h.act();
+        assertEquals(1, hero.deaths);
+        assertEquals(1, hero.HP);
+        assertTrue(h.isStarving());
+        int ticks = 0;
+        while (hero.deaths == 1 && ticks < 1100) { h.act(); ticks++; }
+        assertEquals(2, hero.deaths);
+        assertTrue(ticks >= 1000 && ticks <= 1002);
+        System.out.println("FEASIBILITY Post-blessed-revival starvation interval at 1 HT: "+ticks
+                +" hunger ticks before next lethal damage event; finite Ankh consumption still required");
     }
 
     @Test public void measureStaticTravelLowerBoundsAndPlacedFoodWithoutPlaying() throws Exception {
