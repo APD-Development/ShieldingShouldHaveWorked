@@ -1,0 +1,9 @@
+APD CORE-ONLY TEST REQUEST — TEST193
+requested_utc=2026-10-15T05:40:56Z
+branch=codex/apd-phone-fixes-2026-10-09
+parent=c1dda24271fc134a91e7b41dfd35e65f56b2d0e5
+application_source=222189f971dc55597f561eb87aadcd4e34b47a2e
+scope=retained legacy tutorial floor-1 entrance-door repair regression
+expected_core_tests=1609
+apk_build=forbidden_for_this_request
+reason=production application source is unchanged; reuse verified TEST192 APK evidence

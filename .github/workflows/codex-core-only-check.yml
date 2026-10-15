@@ -1,0 +1,44 @@
+name: Codex APD core-only verification
+
+# Test-only changes use this gate so an unchanged application is not rebuilt.
+on:
+  push:
+    branches: [codex/apd-phone-fixes-2026-10-09]
+    paths:
+      - .github/workflows/codex-core-only-check.yml
+      - docs/APD-CODEX-CORE-TEST-REQUEST.txt
+
+permissions:
+  contents: read
+
+concurrency:
+  group: codex-apd-core-only-verification
+  cancel-in-progress: false
+
+jobs:
+  core-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Set up Android SDK
+        run: |
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36"
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Run complete core unit test suite
+        run: ./gradlew :core:test
+      - name: Keep the unit-test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: apd-codex-core-only-tests
+          path: |
+            core/build/reports/tests/test/
+            core/build/test-results/test/
+          if-no-files-found: warn
+          retention-days: 7
