@@ -171,7 +171,7 @@ public final class ReportRenderer {
 					sb.append("  ");
 					for (int i = 0; i < row.length; i++){
 						if (i > 0) sb.append(" | ");
-						if (i < t.headers.size() && row.length > 1 && i > 0) sb.append(t.headers.get(i)).append(' ');
+						if (i < t.headers.size() && !t.headers.get(i).isEmpty()) sb.append(t.headers.get(i)).append(' ');
 						sb.append(row[i].text);
 					}
 					sb.append("\n");
