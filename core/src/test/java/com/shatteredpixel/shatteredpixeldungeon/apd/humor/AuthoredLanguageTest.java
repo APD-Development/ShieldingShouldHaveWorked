@@ -85,7 +85,7 @@ public class AuthoredLanguageTest {
  @Test public void actualLocalizedLookupsUseReviewedAlternativesAndPreserveAdultOriginals(){
   HeadlessTestSupport.start();Languages previous=Messages.lang();boolean adult=SPDSettings.apdAdultHumor();
   try {
-   for(Languages language:new Languages[]{Languages.ENGLISH,Languages.GERMAN,Languages.SWEDISH,Languages.SPANISH,Languages.PORTUGUESE,Languages.RUSSIAN,Languages.KOREAN,Languages.CZECH,Languages.CHI_SMPL}){
+   for(Languages language:Languages.values()){
     Messages.setup(language);SPDSettings.apdAdultHumor(true);
     for(String key:new String[]{"journal.document.prison_warden.no_support.body","journal.document.halls_king.amulet.body","actors.mobs.npcs.imp.old_golems_1"}){
      String original=Messages.get(key);SPDSettings.apdAdultHumor(false);
