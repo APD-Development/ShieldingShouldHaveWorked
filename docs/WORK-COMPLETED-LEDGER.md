@@ -945,3 +945,11 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Added a retained real-item regression for an unidentified +4 cursed ring. Public history must contain only its displayed unidentified state; true class/level/curse remain INTERNAL.
 - Request 1,611 complete core tests through the core-only gate. No APK rebuild because production application source is unchanged from verified TEST197.
 - No gameplay, RNG, save, telemetry format, scoring, custom-rule, application-ID, signing, delivery or physical-phone change.
+
+
+## 2026-10-15T07:41:19Z — TEST198 shop-stock visibility boundary gate passed
+- Source `bed2aa8513e1ab7ac5b307f8a04d9f0fda9a2d33` / run `38700157769` completed the core-only job successfully; Gradle reported `BUILD SUCCESSFUL`.
+- The retained regression requires visible shop stock to be tagged `SEEN_SHOP` exactly once without leaking unidentified ring class, level or curse into PUBLIC history.
+- Core artifact `11955827287`, size 745,760 bytes, GitHub digest `2a0d77bf965610aefb181a6d12355697f39b8a86a449e6cbcc6e7818f5e3d2a1`.
+- Requested suite count 1,611 derives from verified TEST197's 1,610 plus one new method; independent XML recount is pending because artifact host downloads returned repeated HTTP 502.
+- No application source or APK changed. TEST197 remains compiled verification; TEST123 remains owner-delivered/signature-compared.

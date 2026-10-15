@@ -2479,3 +2479,11 @@ The ordered legacy-door item is closed. Hero markers still require explicit appr
 - The concrete omission was retained coverage for shop classification plus unidentified-item secrecy. Added one regression requiring exactly one public shop-seen event with only displayed state, while true class, +4 level and curse remain in INTERNAL registration.
 - Production application source remains verified TEST197 `364fd4724b79308fb6a13478a211bcd7599b2f7b`. Request complete 1,611-core verification only; APK rebuild is forbidden.
 - No gameplay/save/statistics format/scoring/custom-rule/identity/signing/delivery/physical-phone change. TEST123 remains owner-delivered. Pending hosted evidence.
+
+
+## 2026-10-15T07:41:19Z — TEST198 shop-stock visibility boundary gate passed
+- Exact test/docs source `bed2aa8513e1ab7ac5b307f8a04d9f0fda9a2d33`; core-only run [38700157769](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38700157769) completed successfully (07:38:53Z–07:41:19Z). `:core:test` reported `BUILD SUCCESSFUL`.
+- Retained shop regression binds `FOR_SALE` visibility to exactly one public `SEEN_SHOP` event containing only displayed unidentified state; true class, +4 level and curse remain INTERNAL.
+- Artifact `11955827287`, 745,760 bytes, GitHub SHA-256 `2a0d77bf965610aefb181a6d12355697f39b8a86a449e6cbcc6e7818f5e3d2a1`.
+- Requested count was 1,611 (prior verified 1,610 plus one test). Independent XML recount remains unavailable because the artifact host proxy returned repeated HTTP 502; this limitation is retained rather than converting the requested count into a parsed claim.
+- No APK job ran. Application source remains verified TEST197 `364fd4724b79308fb6a13478a211bcd7599b2f7b`; TEST123 remains owner-delivered. Next approved candidate: ally summons, only after current-source reproduction and creator/visibility review.
