@@ -34,13 +34,14 @@ public class AuthoredLanguageTest {
      String value=props.getProperty(key);values++;
      assertFalse(p+":"+key,AuthoredLanguage.containsEnglishProfanity(AuthoredLanguage.english(value,false)));
      assertSame(value,AuthoredLanguage.english(value,true));
+     if(AuthoredLanguage.containsEnglishProfanity(value))assertNotEquals("English fallback needs an exact clean alternative in every language: "+p+":"+key,value,AuthoredLanguage.select(value,false));
     }
    }
   }
   assertEquals(9,files);assertTrue(values>5000);
  }
  @Test public void localizedAlternativesDoNotDamageInnocentWordsOrOtherLanguages(){
-  for(String innocent:new String[]{"Hell","slut","dictionary","classic","Scunthorpe","Prick","Fan of Blades"})assertEquals(innocent,AuthoredLanguage.select(innocent,false));
+  for(String innocent:new String[]{"Hell","slut","kesialan","Verdammte Charaktere","dictionary","classic","Scunthorpe","Prick","Fan of Blades"})assertEquals(innocent,AuthoredLanguage.select(innocent,false));
   for(String text:AuthoredLanguage.alternatives().values())assertFalse(AuthoredLanguage.containsEnglishProfanity(text));
   assertEquals("SERIOUSLY",AuthoredLanguage.english("FUCK",false));
   assertEquals("FUCK",AuthoredLanguage.english("FUCK",true));
@@ -54,6 +55,7 @@ public class AuthoredLanguageTest {
    assertFalse(Messages.get("journal.document.prison_warden.no_support.body").contains("damned"));
    String playerText="My fucking seed and raw technical shit";
    assertEquals(playerText,Messages.format("%s",playerText));
+   assertEquals(playerText+" of anti-entropy",Messages.get("items.armor.curses.antientropy.name",(Object)playerText));
    SPDSettings.apdAdultHumor(true);
    assertEquals("FUCK CLERIC, THAT'S WHY",Messages.get("badges$badge.apd_fuck_cleric.title"));
    SPDSettings.apdAdultHumor(false);
@@ -110,5 +112,47 @@ public class AuthoredLanguageTest {
    com.watabou.utils.GameSettings.set(new com.badlogic.gdx.backends.headless.HeadlessPreferences(new com.badlogic.gdx.files.FileHandle(file)));
    assertTrue(SPDSettings.apdAdultHumor());
   }finally {com.watabou.utils.GameSettings.set(original);}
+ }
+ @Test public void localizedResourceEditsRequireCleanAlternativesInsteadOfSilentLeaks()throws Exception{
+  Map<String,Pattern> vocabulary=new HashMap<>();
+  vocabulary.put("be",Pattern.compile("да чорта",Pattern.CASE_INSENSITIVE));
+  vocabulary.put("cs",Pattern.compile("sakra|zatraceně",Pattern.CASE_INSENSITIVE));
+  vocabulary.put("de",Pattern.compile("verdammt nochmal|verdammt noch eins|zum Henker|Teufel, und warum|schei[ßs]\\w*",Pattern.CASE_INSENSITIVE));
+  vocabulary.put("el",Pattern.compile("διάολο|την κατάρα μου",Pattern.CASE_INSENSITIVE));
+  vocabulary.put("eo",Pattern.compile("diable|diablen|damnan|Damne",Pattern.CASE_INSENSITIVE));
+  vocabulary.put("es",Pattern.compile("malditos sean|maldito apoyo|En qué demonios|Demonios, por qué|mierda|joder|coño",Pattern.CASE_INSENSITIVE));
+  vocabulary.put("fr",Pattern.compile("fichus|maudits soient-ils|Bon sang|merde|putain",Pattern.CASE_INSENSITIVE));
+  vocabulary.put("hu",Pattern.compile("fenébe|a fenét|átkozott támogatásra|A pokolba is",Pattern.CASE_INSENSITIVE));
+  vocabulary.put("in",Pattern.compile("\\bsialan\\b|Neraka, mengapa",Pattern.CASE_INSENSITIVE));
+  vocabulary.put("it",Pattern.compile("erranti, dannati|dannati rinforzi|diamine|cazzo|minchia",Pattern.CASE_INSENSITIVE));
+  vocabulary.put("ko",Pattern.compile("망할 지원|젠장|씨발",Pattern.CASE_INSENSITIVE));
+  vocabulary.put("nl",Pattern.compile("vervloek ze|in godsnaam|verdomde|Verdorie",Pattern.CASE_INSENSITIVE));
+  vocabulary.put("pl",Pattern.compile("cholerne|cholery|cholernego|Cholera|kurwa|a niech ich",Pattern.CASE_INSENSITIVE));
+  vocabulary.put("pt",Pattern.compile("malditos sejam|maldito apoio|O que infernos|porra",Pattern.CASE_INSENSITIVE));
+  vocabulary.put("ru",Pattern.compile("к черту|долбанная|бес их побери",Pattern.CASE_INSENSITIVE));
+  vocabulary.put("sv",Pattern.compile("helvete|jävla|\\bfan\\b|förbaskade",Pattern.CASE_INSENSITIVE));
+  vocabulary.put("tr",Pattern.compile("lanet olsun onlara|kahrolası|Kahretsin",Pattern.CASE_INSENSITIVE));
+  vocabulary.put("uk",Pattern.compile("щоб їх!|в біса|до біса|клята підтримка",Pattern.CASE_INSENSITIVE));
+  vocabulary.put("vi",Pattern.compile("chết tiệt|cái quái gì",Pattern.CASE_INSENSITIVE));
+  vocabulary.put("zh",Pattern.compile("真是该死|他娘的",Pattern.CASE_INSENSITIVE));
+  vocabulary.put("zh-hant",Pattern.compile("該死",Pattern.CASE_INSENSITIVE));
+  vocabulary.put("ja",Pattern.compile("クソ|畜生",Pattern.CASE_INSENSITIVE));
+  int guarded=0;List<String> issues=new ArrayList<>();
+  try(java.util.stream.Stream<Path> paths=Files.walk(Paths.get("messages"))){
+   for(Path p:(Iterable<Path>)paths.filter(x->x.toString().endsWith(".properties"))::iterator){
+    String file=p.getFileName().toString();int underscore=file.indexOf('_');if(underscore<0)continue;
+    String language=file.substring(underscore+1,file.length()-11);Pattern words=vocabulary.get(language);if(words==null)continue;
+    Properties props=new Properties();try(Reader reader=Files.newBufferedReader(p,StandardCharsets.UTF_8)){props.load(reader);}
+    for(String key:props.stringPropertyNames()){
+     String adult=props.getProperty(key);if(!words.matcher(adult).find())continue;guarded++;
+     String clean=AuthoredLanguage.select(adult,false);
+     if(adult.equals(clean))issues.add(p+":"+key+" :: "+adult);
+     else if(words.matcher(clean).find())issues.add(p+":"+key+" :: residual "+clean);
+     assertSame(adult,AuthoredLanguage.select(adult,true));
+    }
+   }
+  }
+  assertTrue("The translated alternatives must actually be exercised",guarded>=50);
+  assertTrue(String.join("\n",issues),issues.isEmpty());
  }
 }
