@@ -262,7 +262,7 @@ public class GetFuckedRouteTest {
         JSONArray inventory=new JSONArray();
         for(Item item:h.belongings) inventory.put(item.getClass().getSimpleName()+":"+item.quantity()+":+"+item.level());
         j.put("inventory",inventory);
-        try {j.put("tomeCharge",charge(h.belongings.getItem(HolyTome.class)));}catch(Exception e){throw new RuntimeException(e);}
+        try {j.put("tomeCharge",charge(h.belongings.getItem(HolyTome.class)));Field partial=Artifact.class.getDeclaredField("partialCharge");partial.setAccessible(true);j.put("partialCharge",partial.getFloat(h.belongings.getItem(HolyTome.class)));}catch(Exception e){throw new RuntimeException(e);}
         JSONArray mobs=new JSONArray();
         for(Mob m:Dungeon.level.mobs) mobs.put(new JSONObject().put("class",m.getClass().getSimpleName()).put("id",m.id())
                 .put("pos",m.pos).put("HP",m.HP).put("state",m.state.getClass().getSimpleName()).put("visible",Dungeon.level.heroFOV[m.pos])
@@ -281,7 +281,7 @@ public class GetFuckedRouteTest {
     }
     private void log(String s) { System.out.println("ROUTE "+state(s)); }
     private void waitOne() { Dungeon.hero.rest(false); ready(); log("WAIT"); }
-    private void click(int cell) { assertTrue(Dungeon.hero.handle(cell)); Dungeon.hero.next(); Dungeon.hero.busy(); ready(); log("CLICK "+cell); }
+    private void click(int cell) { assertFalse("Script would attack passive exile at "+cell, Actor.findChar(cell) instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollExile); assertTrue(Dungeon.hero.handle(cell)); Dungeon.hero.next(); Dungeon.hero.busy(); ready(); log("CLICK "+cell); }
     private void cast(ClericSpell spell, Integer target) {
         Hero h=Dungeon.hero; HolyTome t=h.belongings.getItem(HolyTome.class);
         assertTrue(t.canCast(h,spell));
@@ -574,6 +574,63 @@ public class GetFuckedRouteTest {
         for(int cell:new int[]{1369,1411,1453,1495})click(cell);
         craftShieldingAtActualPot();
         log("ALCHEMY_COMPLETE");
+        click(1409);click(1366);
+        if(Boolean.getBoolean("route.preemptiveShield")){
+            Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfShielding.class).execute(Dungeon.hero,"DRINK");ready();log("DRINK OWNED SHIELDING BEFORE EXIT");
+        }
+        click(1323);click(1280);
+        log("ALCHEMY_ROOM_EXIT_APPROACH");
+        for(int n=0;n<10;n++)waitOne();
+        click(1237);log("OPEN ALCHEMY EXIT AFTER PAID WAIT");
+        click(1194);click(1151);log("LEAVE ALCHEMY CORRIDOR");
+        for(int cell:new int[]{1108,1064,1020,1019,976,933,890,847,846,803,760,759,716,673,672,671,670,627,626,625})click(cell);
+        Mob corridorSnake=(Mob)Actor.findChar(623);assertNotNull("Uninvestigated corridor snake position",corridorSnake);
+        cast(GuidingLight.INSTANCE,corridorSnake.pos);
+        if(corridorSnake.isAlive())click(corridorSnake.pos);
+        assertFalse(corridorSnake.isAlive());
+        assertEquals(3,Dungeon.hero.lvl);assertEquals(1,Dungeon.hero.talentPointsAvailable(1));
+        Dungeon.hero.upgradeTalent(Talent.SHIELD_OF_LIGHT);log("EARN SECOND SHIELD_OF_LIGHT POINT");
+        for(int cell:new int[]{624,623,622,621,620,619,618,617,616,615,614,613,612,611,654})click(cell);
+        log("CRAB_ROOM_OUTSIDE_CLOSED_DOOR");
+        Mob pursuingSwarm=(Mob)Actor.findChar(613);assertNotNull("Uninvestigated pursuing swarm position",pursuingSwarm);
+        cast(ShieldOfLight.INSTANCE,pursuingSwarm.pos);
+        Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfShielding.class).execute(Dungeon.hero,"DRINK");ready();log("DRINK OWNED SHIELDING FOR PURSUING SWARM");
+        click(pursuingSwarm.pos);log("SWARM_FIRST_REAL_MELEE");
+        if(pursuingSwarm.isAlive())click(pursuingSwarm.pos);
+        if(pursuingSwarm.isAlive())click(pursuingSwarm.pos);
+        log("SWARM_PARENT_THREE_EXCHANGES");
+        if(pursuingSwarm.isAlive())click(pursuingSwarm.pos);
+        assertFalse("Swarm parent survived four attacks",pursuingSwarm.isAlive());
+        Mob smallSwarm=(Mob)Actor.findChar(611);assertNotNull(smallSwarm);
+        click(smallSwarm.pos);if(smallSwarm.isAlive())click(smallSwarm.pos);
+        assertFalse("Small swarm child survived",smallSwarm.isAlive());
+        log("SWARM_PARENT_AND_SMALL_CHILD_KILLED");
+        Mob largeSwarm=(Mob)Actor.findChar(655);assertNotNull(largeSwarm);
+        click(largeSwarm.pos);if(largeSwarm.isAlive())click(largeSwarm.pos);
+        log("LARGE_SWARM_CHILD_TWO_EXCHANGES");
+        if(largeSwarm.isAlive())click(largeSwarm.pos);assertFalse(largeSwarm.isAlive());
+        Mob finalSwarm=(Mob)Actor.findChar(655);assertNotNull(finalSwarm);
+        click(finalSwarm.pos);if(finalSwarm.isAlive())click(finalSwarm.pos);
+        assertFalse(finalSwarm.isAlive());log("PURSUING_SWARM_AND_ALL_CHILDREN_DEFEATED");
+        for(int n=0;n<28;n++)waitOne();
+        click(653);log("CRAB_ACTUALLY_REVEALED");
+        waitOne();log("CRAB_LURE_WAIT_FROM_DOOR");
+        Mob exitCrab=(Mob)Actor.findChar(564);assertNotNull(exitCrab);
+        cast(ShieldOfLight.INSTANCE,exitCrab.pos);
+        waitOne();log("CRAB_LURED_AROUND_OBSTACLE");
+        throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear.class,exitCrab.pos);
+        if(exitCrab.isAlive())throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear.class,exitCrab.pos);
+        log("CRAB_TWO_RANGED_ATTACKS");
+        if(exitCrab.isAlive())click(exitCrab.pos);
+        if(exitCrab.isAlive())click(exitCrab.pos);
+        assertFalse(exitCrab.isAlive());log("EXIT_CRAB_DEFEATED");
+        for(int cell:new int[]{652,651,650,649})click(cell);
+        log("BLINK_EXIT_LINE");
+        throwItem(com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfBlink.class,520);
+        assertEquals(520,Dungeon.hero.pos);log("BLINK_ONTO_REAL_EXIT");
+        click(520);assertEquals(4,Dungeon.depth);log("FLOOR_FOUR_ENTERED");
+        System.out.println("FLOOR_LAYOUT "+new JSONObject().put("depth",Dungeon.depth).put("width",Dungeon.level.width()).put("height",Dungeon.level.height()).put("terrain",new JSONArray(Dungeon.level.map)).put("entrance",Dungeon.level.entrance()).put("exit",Dungeon.level.exit()));
+        if(System.getProperty("route.checkpoint4Out")!=null)writeCheckpoint(System.getProperty("route.checkpoint4Out"));
 
         assertEquals(1,Dungeon.hero.HP);
     }

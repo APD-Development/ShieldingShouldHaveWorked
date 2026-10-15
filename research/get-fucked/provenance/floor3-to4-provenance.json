@@ -1,0 +1,23 @@
+{
+  "input_checkpoint": "get_fucked_seed266_floor3",
+  "output_checkpoint": "get_fucked_seed266_floor4",
+  "source_sha256": "682c4ba5254fd52d04a399c2757c3734a682d1d005a58ed34e8c9dc140041ad1",
+  "log_sha256": "4ee32858a075780b4d6be0e466ef3a553008872341b5d6f11c9e385d3321f19c",
+  "output_files": {
+    "depth1.dat": "a86fd4bbfa78aa087b59a24315d5566dd729e58a8ca325758bc56f73f18984c5",
+    "manifest.json": "90ea5a01496d0f5da98b474fcfea4d9b74bc3ff4dd50b45c2031e6931a1c921d",
+    "depth4.dat": "fd5b2239652c6d91fb2ba60b3f7dc71fc9763ac761ce149001a244423c88e0e7",
+    "depth3.dat": "5d0f76fabd4bbf73e1c6d9a54b65b2734996bf124446dfb6c9f3469f7c9308c1",
+    "depth2.dat": "e19ef39201c28828fc78c76b4c1a00309220649838a0d08a29046eff48e6767f",
+    "rng.bin": "3dc51b8c478a1e4b2fb8dc458ae07f40128e5cd551d5e5c74f1096acea80e819",
+    "game.dat": "9d62629cf9d08c405c0c6496dd2ecff552c29a1cc0ce7df923f1c7c1a45824c4"
+  },
+  "vm": [
+    "OpenJDK 17",
+    "-XX:+UnlockExperimentalVMOptions",
+    "-XX:hashCode=2"
+  ],
+  "repeat": "362 command-state observations identical in two executions; native save differences only corresponding generated missile-set identifiers",
+  "hunger_ledger": "961 timed turns + 8 extra search hunger - 600 from two rations = 369",
+  "uncollected": "Floor 3 ration at 604 and two spears at 652 remain on floor 3; no healing/shielding potion or blink stone remains in inventory"
+}

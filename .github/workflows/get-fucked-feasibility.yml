@@ -32,7 +32,17 @@ jobs:
           path: core/build/get-fucked-runtime/
           retention-days: 7
       - name: Run scenario and existing challenge tests
-        run: ./gradlew :core:test --tests '*GetFuckedFeasibilityTest' --tests '*GetFuckedTest' --tests '*ShieldHungerTest' --tests '*GetFuckedRouteTest' --tests '*GetFuckedMapTest'
+        run: ./gradlew :core:test --tests '*GetFuckedFeasibilityTest' --tests '*GetFuckedTest' --tests '*ShieldHungerTest' --tests '*GetFuckedMapTest' --tests '*GetFuckedBarrierDecayTest'
+      - name: Preserve baseline test reports before the route task
+        uses: actions/upload-artifact@v4
+        with:
+          name: get-fucked-baseline-results
+          path: core/build/test-results/test/
+      - name: Replay the earned floor-three state through floor-four entry
+        run: >-
+          ./gradlew :core:test --tests '*GetFuckedRouteTest'
+          -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor3"
+          -Droute.stableHash=true -Droute.noSnapshots=true -Droute.stopAfterFloor4=true
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4

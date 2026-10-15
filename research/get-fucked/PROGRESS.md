@@ -41,6 +41,19 @@ The source at checkpoint capture is preserved separately because later experimen
 
 ## Still to investigate
 
-The current character remains in floor 3's alchemy room. A spawned 50-HP swarm is wandering near its exit. Escaping or defeating it, dealing with the fast crab near the exit, obtaining further earned talent points, floor 4, Goo, the remaining bosses, Horn acquisition/upgrades, and the entire ascent have not been validated in this continuous chain. The new shielding potion is only ten barrier at 1 maximum HP and decays normally; it cannot be credited to several later encounters.
+The continuation now reaches floor 4. It earns level 3 from an actual spawned snake and spends the new point on Shield of Light. The crafted shielding potion is consumed against the pursuing swarm, including every split child. The barrier drops from ten to three through that encounter, then to one during a paid 28-turn recharge. The crab near the exit is lured around projectile-blocking decorations, shot twice (the second shot misses), then killed in melee. Waiting in the doorway rather than stepping into the room avoids waking the original swarm during this fight. The owned blink stone is then consumed to reach the stairs. The original swarm remains alive and is saved on floor 3.
+
+Two executions produce identical 362 command-state observations from the earned floor-3 checkpoint through floor-4 entry. Native saves differ only in corresponding generated missile-set identifiers, not the observed actions or resources. The exact first output save is preserved as `get_fucked_seed266_floor4`.
+
+At floor-4 entry: 1/1 HP, zero shield, level 3 / 8 XP, 12 strength, +2 quarterstaff equipped, +0 cloth equipped, +0 mail carried, +2 Tome with zero whole charge and 0.295187175 partial charge, one pasty, waterskin, velvet pouch and the original cudgel. Neither missiles, healing/shielding potions nor blink stone remains in the inventory. The ration at floor 3 cell 604 and spears at cells 585 and 652 remain uncollected. Hunger is 369, exactly 961 elapsed turns + 8 extra search hunger - 600 from two consumed rations.
+
+Floor 4, Goo, the remaining bosses, actual Horn acquisition/upgrades, alternative class routes and the entire ascent remain to be validated. This remains a partial legal route, not proof of victory.
 
 The old isolated tests and audit are retained. Their supplied combat fixtures are not treated as earned states in this route. The exported engine came from CI commit `0d09a9ae11a46088ad99f77b4a30eb88e37ae7ac`. A local combined regression attempt exited without a JUnit completion count, so it is not recorded as 41 newly passing tests.
+
+
+## Additional measured decay results
+
+Three new isolated production-Barrier tests pass: ten barrier lasts 61 ticks without damage; 75 barrier lasts 135 ticks; adding 25 every 43 ticks stays positive in the tested no-damage recurrence and settles at a six-to-31 cycle. These supplied increments are mathematical decay fixtures, not owned spell charges, and are never inserted into the played route. Combined with the existing 17 Get Fucked rule tests and two ShieldHunger tests, the local completed run reports `OK (22 tests)`.
+
+The dungeon seed is 266. The initial runtime RNG is separately controlled at seed 266 for the command experiment and is captured in native continuations; a dungeon seed alone does not ordinarily fix every combat result. The sequence does not reseed between encounters.
