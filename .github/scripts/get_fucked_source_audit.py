@@ -7,6 +7,7 @@ files = sorted(root.rglob('*.java'))
 patterns = {
     'HP_WRITE': re.compile(r'\bHP\s*(?:[+*/-]?=(?!=)|\+\+|--)'),
     'DEATH_CALL': re.compile(r'\b(?:die|reallyDie)\s*\('),
+    'DESTROY_CALL': re.compile(r'\b(?:hero|target|ch|enemy|defender|attacker|Dungeon\.hero)\.destroy\s*\('),
 }
 print('SOURCE_AUDIT_JAVA_FILES', len(files))
 for path in files:

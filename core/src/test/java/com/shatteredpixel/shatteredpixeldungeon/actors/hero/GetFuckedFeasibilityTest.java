@@ -250,6 +250,33 @@ public class GetFuckedFeasibilityTest {
         assertEquals(1, hero.deaths);
     }
 
+    @Test public void oneTravelTickAndTwoAttackIntervalsBreakTheFresh15ShieldTenguBound() {
+        Barrier b = barrier(15);
+        b.act(); //One tick before the first hit, e.g. approaching after the shield was cast.
+        hero.damage(5, new Object()); //Worst residual 12 - mail minimum 6 - ward 1.
+        b.act();
+        hero.damage(5, new Object());
+        b.act();
+        hero.damage(5, new Object());
+        assertEquals(0, hero.HP);
+        assertEquals(1, hero.deaths);
+        System.out.println("COUNTEREXAMPLE 15 fresh shield fits three residual hits of 5 only without enough elapsed decay;"
+                +" one prior tick plus two one-tick hit intervals makes the third hit lethal");
+    }
+
+    @Test public void fullyShieldedOneHpHeroHasZeroMissingHealthForGrimExecution() throws Exception {
+        Rat attacker = new Rat();
+        com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim.GrimTracker grim =
+                Buff.affect(attacker, com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim.GrimTracker.class);
+        set(grim, grim.getClass(), "maxChance", 1f);
+        barrier(1000);
+        for (int i = 0; i < 1000; i++) hero.damage(1, attacker);
+        assertEquals(1, hero.HP);
+        assertEquals(0, hero.deaths);
+        assertEquals(0, hero.shielding());
+        System.out.println("BYPASS Grim tracker at maxChance 1: 1000 fully shielded hits do not execute a 1/1 HP hero");
+    }
+
     @Test public void eatingBeforeTheThresholdSurvivesButShieldDoesNotSaveTheThreshold() throws Exception {
         Hunger h = hunger(Hunger.STARVING - 1);
         h.satisfy(300);
@@ -413,11 +440,13 @@ public class GetFuckedFeasibilityTest {
     }
 
     @Test public void measureJointPlacedEquipmentAvailabilityWithoutPlaying() throws Exception {
-        int mail = 0, weapon = 0, horn = 0, joint = 0;
-        for (long seed = 1; seed <= 100; seed++) {
+        int mail = 0, weapon = 0, horn = 0, joint = 0, ghostMail = 0, jointWithGhost = 0;
+        for (long seed = 1; seed <= 500; seed++) {
             final int[] state = new int[4];
             final StringBuilder matches = new StringBuilder();
             LevelGenerationHarness.levelObserver = (depth, level) -> {
+                if (depth <= 4 && com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost.Quest.armor instanceof MailArmor)
+                    state[3] = 1;
                 for (Heap heap : level.heaps.valueList()) for (Item item : heap.items) {
                     String name = item.getClass().getSimpleName();
                     boolean wanted = (depth <= 4 && name.equals("MailArmor"))
@@ -437,14 +466,22 @@ public class GetFuckedFeasibilityTest {
                         LevelGenerationHarness.Context.REFERENCE, 26);
             } finally { LevelGenerationHarness.levelObserver = null; }
             mail += state[0]; weapon += state[1]; horn += state[2];
+            ghostMail += state[3];
+            if ((state[0] == 1 || state[3] == 1) && state[1] == 1 && state[2] == 1) {
+                jointWithGhost++;
+                System.out.println("JOINT_WITH_GHOST_OPPORTUNITY seed="+seed+" ghost_mail="+state[3]+" "+matches
+                        +"; reward not earned, no proof of access or survival");
+            }
             if (state[0]+state[1]+state[2] == 3) {
                 joint++;
                 System.out.println("JOINT_CANDIDATE seed="+seed+" "+matches
                         +"; placement only, shops/locks/curses/access/survival unresolved");
             }
         }
-        System.out.println("JOINT_PLACEMENT n=100 mail_by4="+mail+" greatsword_by14="+weapon
-                +" horn_anywhere="+horn+" joint="+joint+"; excludes quest rewards and later action-dependent drops");
+        System.out.println("JOINT_PLACEMENT n=500 mail_by4="+mail+" greatsword_by14="+weapon
+                +" horn_anywhere="+horn+" joint="+joint+" ghost_mail_opportunities="+ghostMail
+                +" joint_including_ghost_opportunity="+jointWithGhost
+                +"; excludes later action-dependent drops; rewards and placed items are not earned resources");
     }
 
     @Test public void measureStaticTravelLowerBoundsAndPlacedFoodWithoutPlaying() throws Exception {
