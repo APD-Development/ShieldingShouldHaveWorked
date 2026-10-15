@@ -39,9 +39,16 @@ public final class RowCodec {
 
 	private static final byte[] MAGIC = { 'A', 'P', 'D', 'R' };
 	private static final int FORMAT = 2;
+	private static final int SOURCE_FORMAT = 3;
 
 	//the cache is only valid for this exact log (its size) and this exact builder
 	public static byte[] encode( LogRows lr, long logLength, Map<String, DatasetDef> defs ){
+		return encode(lr, logLength, defs, null);
+	}
+
+	/** Source-bound caches include the SHA-256 of their raw log. Raw histories are unchanged. */
+	public static byte[] encode( LogRows lr, long logLength, Map<String, DatasetDef> defs, byte[] sourceFingerprint ){
+		if (sourceFingerprint != null && sourceFingerprint.length != 32) throw new IllegalArgumentException("Invalid source fingerprint");
 		Map<String, Integer> table = new LinkedHashMap<>();
 		LogMeta m = lr.meta;
 		intern(table, m.logId);
@@ -64,11 +71,12 @@ public final class RowCodec {
 		}
 		ByteSink out = new ByteSink(4096);
 		out.writeBytes(MAGIC);
-		out.writeUnsigned(FORMAT);
+		out.writeUnsigned(sourceFingerprint == null ? FORMAT : SOURCE_FORMAT);
 		out.writeUnsigned(RowBuilders.BUILDER_VERSION);
 		//the rows of fact datasets depend on the registry: a different registry is a different cache
 		out.writeString(com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKinds.fingerprint());
 		out.writeUnsigned(logLength);
+		if (sourceFingerprint != null) out.writeBytes(sourceFingerprint);
 		out.writeUnsigned(table.size());
 		for (String s : table.keySet()) out.writeString(s);
 		out.writeUnsigned(table.get(m.logId)).writeUnsigned(table.get(m.runId)).writeUnsigned(table.get(m.telemetry))
@@ -113,6 +121,12 @@ public final class RowCodec {
 
 	//null when the bytes are not a cache for this log and this builder
 	public static LogRows decode( byte[] data, long logLength, Map<String, DatasetDef> defs ){
+		return decode(data, logLength, defs, null);
+	}
+
+	/** An old unbound cache cannot satisfy a source-bound read. */
+	public static LogRows decode( byte[] data, long logLength, Map<String, DatasetDef> defs, byte[] sourceFingerprint ){
+		if (sourceFingerprint != null && sourceFingerprint.length != 32) return null;
 		try {
 			if (data.length < 4) return null;
             int bodyLength = data.length - 4;
@@ -123,10 +137,16 @@ public final class RowCodec {
             ByteSource in = new ByteSource(data,0,bodyLength);
             java.nio.charset.CharsetDecoder textDecoder = java.nio.charset.StandardCharsets.UTF_8.newDecoder();
 			for (byte b : MAGIC) if (in.readByte() != (b & 0xFF)) return null;
-			if (in.readUnsignedInt() != FORMAT) return null;
+			int format = in.readUnsignedInt();
+			if (format != FORMAT && format != SOURCE_FORMAT) return null;
+			if (sourceFingerprint != null && format != SOURCE_FORMAT) return null;
 			if (in.readUnsignedInt() != RowBuilders.BUILDER_VERSION) return null;
 			if (!com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKinds.fingerprint().equals(readText(in, textDecoder))) return null;
 			if (in.readUnsigned() != logLength) return null;
+			if (format == SOURCE_FORMAT){
+				byte[] actualFingerprint = in.readBytes(32);
+				if (sourceFingerprint != null && !java.util.Arrays.equals(sourceFingerprint, actualFingerprint)) return null;
+			}
 			int n = in.readUnsignedInt();
 			if (n > in.remaining()) return null; // Every string needs at least its length byte.
 			String[] table = new String[n];
@@ -207,3 +227,4 @@ public final class RowCodec {
     }
 
 }
+
