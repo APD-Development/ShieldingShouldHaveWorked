@@ -2543,3 +2543,11 @@ The ordered legacy-door item is closed. Hero markers still require explicit appr
 - Added two retained core regressions: one exercises all seven feeling landmarks and proves exact-once/depth/action payloads; the other guards the seven display→landmark mappings in `GameScene`. Neutral `NONE` still emits nothing and no hidden generation state is exposed.
 - Production application source, telemetry 1.14, APK history and compiled artifact are unchanged. TEST203 requests a 1,617-test core-only gate; APK rebuild is forbidden and verified TEST202/Codex TEST 198 evidence must be reused.
 - Candidate pending. TEST123 remains the last owner-delivered/signature-compared APK. After this gate, continue the next distinct canonical omission (auto-explore versus travel is next) only after reproducing it.
+
+
+## 2026-10-15T09:53:26Z — TEST203 level-feeling coverage verified
+- Source/test commit `b72e122fbb2e7de02bc03ea42b607197f6105f8a`, core-only run [38715813806](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38715813806) (09:49:46Z–09:52:16Z), passed 1,617 core tests in 315 XML suites with zero failures, errors or skips.
+- Both new `JournalRecordingTest` regressions passed: all seven exact public floor-feeling landmark payloads with duplicate suppression, and the complete `GameScene` display→landmark wiring map.
+- Artifact `11962917529`, 750,461 bytes, SHA-256 `054cf9b8b999940a9e9628725a5d3a91f983206dc62606a406a7344b32954265`.
+- No APK was built, as required. Production application source remains `186f5892429ef564ec4a9d59c9885a62fb6f1c1f`; reuse verified TEST202/Codex TEST 198 APK/API34/visual evidence. TEST123 remains owner-delivered/signature-compared.
+- Level feelings are removed from the missing-telemetry backlog. Next safe step is to reproduce the distinct auto-explore-versus-travel omission before adding any event.

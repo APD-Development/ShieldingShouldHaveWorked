@@ -37,3 +37,15 @@ Adding a separate level-feeling fact would duplicate the same observation withou
 TEST203 requests the complete core-only suite: 1,617 tests expected. APK creation is forbidden because production application source is unchanged. Verified TEST202/Codex TEST 198 APK and API34/visual evidence remain the compiled baseline.
 
 No scoring, saves, RNG, gameplay, custom-rule, application ID, signing, distribution or physical-phone behavior changed.
+
+
+## Verification result
+
+Core-only run [38715813806](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38715813806) completed successfully:
+
+- 1,617 tests in 315 XML suites
+- 0 failures, 0 errors, 0 skipped
+- artifact `11962917529`, 750,461 bytes
+- artifact SHA-256 `054cf9b8b999940a9e9628725a5d3a91f983206dc62606a406a7344b32954265`
+
+No APK was built. Production application source and verified TEST202/Codex TEST 198 APK/API34/visual evidence remain unchanged.
