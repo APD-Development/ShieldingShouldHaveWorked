@@ -902,3 +902,14 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - TEST194 source `0fa7763a36e4ebc4994629910cab6d285d3d0af5`, run `38688555523`: 1,609 executed, 1,608 passed, 1 fixture failure. The synthetic entrance was one cell from the map border, violating the interior margin used by generated levels; `updateOpenSpace` failed before repair assertions.
 - Artifact `11951230755`, ZIP SHA-256 `4228cd0eabadd0eb9391b83c9b3458e00a844dd9db3372f559c919f04e0f93e6`. No APK.
 - TEST195 changes only test geometry to the normal interior margin. Full 1,609-core verification pending; production application source remains TEST192.
+
+
+## 2026-10-15T05:54:02Z — TEST195 verified; stale legacy-door backlog item closed
+
+- Exact source `f7049868cd7648b29c7606b1ade3c9c8e8de0fdd`, core-only run `38688955099` (05:50:19–05:53:03 UTC): 1,609 tests / 312 XML suites / 0 failures / 0 errors / 0 skips.
+- The retained method verifies the existing saved-floor-1 repair exposes only an entrance-boundary hidden door, rebuilds passable/secret flags, and leaves an unrelated secret door and ordinary entrance wall unchanged.
+- Artifact `11951151594`, downloaded ZIP SHA-256 `20a37fe25701527b8be522b3168f3beae4622c4ce27b413dcd24adc47ccef35d`.
+- TEST193 run `38688177613` and TEST194 run `38688555523` remain recorded as fixture-only failures; neither implicated production and neither built an APK.
+- Corrected the stale source-guide instruction that advised abandoning/searching. Physical owner-save acceptance remains unverified; never delete or abandon a save for this repair.
+- No application source changed and no APK was rebuilt. TEST192 remains latest compiled application evidence; TEST123 remains owner-delivered/signature-compared.
+- Next: items 4–7 in the old ordered list are owner approval/phone/decision blocked. Continue the first approved unblocked canonical recording candidate (levers) after current-source reproduction.
