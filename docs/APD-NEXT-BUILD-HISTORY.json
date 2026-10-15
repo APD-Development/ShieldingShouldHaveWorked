@@ -1,60 +1,53 @@
 {
-  "previous_label": "Codex TEST 201",
-  "previous_source": "a5071e47270ef3953a85eecc50f285d617f96fb3",
-  "previous_run": 38736265505,
+  "previous_label": "Codex TEST 202",
+  "previous_source": "cef68f0f80b1dd0c3e1660e53e1c0a0dad2e9e7e",
+  "previous_run": 38742449533,
   "date": "2026-10-15",
   "changes": [
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Correct stale statistics after history replacement",
-      "text": "Check raw-log contents before reusing cached rows, even when the file name, size and timestamp are unchanged.",
+      "title": "Restore Cleric lore in private tests",
+      "text": "Enable the existing 50-entry lore system and first-Cleric-run message in private builds.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/DatasetStore.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "Recover older row caches safely",
-      "text": "Bind derived caches to their source and rebuild older caches without changing raw history or saves.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowCodec.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "Reuse source-check workspace",
-      "text": "Reuse one small hashing buffer across a statistics load instead of allocating one for every log.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/DatasetStore.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/ApdFeatures.java",
+        "android/build.gradle"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Verify source replacement and cache compatibility",
-      "text": "Test changed equal-sized logs, unchanged caches, older cache rebuilding and incorrect source fingerprints.",
+      "title": "Protect first-run lore and collection history",
+      "text": "Verify private activation, all 50 entries, opt-out and first-message persistence.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowCacheSourceIdentityTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/ApdFeaturesTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/humor/ClericLoreActivationTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/humor/ClericLoreLimitTest.java"
+      ]
+    },
+    {
+      "category": "Testing",
+      "sprite": "ICON_CHECKED",
+      "title": "Check Cleric popup on Android",
+      "text": "Verify the actual popup appears, Back continues once, and the collected message does not repeat.",
+      "paths": [
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/RunSetupDifficultyDeviceTest.java",
+        "tools/run-codex-android-checks.sh"
       ]
     },
     {
       "category": "Development",
       "sprite": "V061_PAGE",
-      "title": "Retain complete verification records",
-      "text": "Record the preceding verified build and the cache correction's reproduction, tests, compatibility and remaining limits.",
+      "title": "Retain collection guide and corrected owner decision",
+      "text": "Document every lore collection condition and remove the superseded instruction to disable private lore.",
       "paths": [
-        "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/APD-ROW-CACHE-SOURCE-IDENTITY-2026-10-15.md",
-        "docs/APD-TEST205-BOSS-PHASES-2026-10-15.md",
+        "AGENTS.md",
         "docs/HANDOFF.md",
-        "docs/UIMSD-AUDIT-BUG-LOG.md",
-        "docs/WORK-COMPLETED-LEDGER.md",
-        "docs/APD-NEXT-BUILD-HISTORY.json"
+        "docs/APD-CLERIC-LORE-COLLECTION-2026-10-15.md",
+        "docs/APD-NEXT-BUILD-HISTORY.json",
+        "docs/APD-CODEX-BUILD-REQUEST.txt"
       ]
     }
   ],
-  "commentary": "I fixed stale cached rows after an equal-sized history replacement. Raw player history is preserved; old optional caches rebuild automatically."
+  "commentary": "I restored the existing Cleric lore in private tests after correcting the feature gates. The 50 entries, collection history and gameplay remain unchanged."
 }
