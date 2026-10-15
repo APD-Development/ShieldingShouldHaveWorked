@@ -540,10 +540,10 @@ public class GetFuckedFeasibilityTest {
     }
 
     @Test public void inventoryOneJointCandidateWithoutGrantingItsLootToTheHero() throws Exception {
-        final int[] total = new int[6];
+        final int[] total = new int[7];
         LevelGenerationHarness.levelObserver = (depth, level) -> {
             if (depth > 24) return;
-            final int[] region = new int[6];
+            final int[] region = new int[7];
             for (Heap heap : level.heaps.valueList()) for (Item item : heap.items) {
                 String name = item.getClass().getSimpleName();
                 boolean shop = heap.type.toString().equals("FOR_SALE");
@@ -556,6 +556,7 @@ public class GetFuckedFeasibilityTest {
                 if (name.equals("PotionOfStrength")) region[3] += item.quantity();
                 if (name.equals("ScrollOfRemoveCurse")) region[4] += item.quantity();
                 if (name.equals("PotionOfPurity")) region[5] += item.quantity();
+                if (name.equals("PotionOfExperience")) region[6] += item.quantity();
                 if (name.equals("MailArmor") || name.equals("Greatsword") || name.equals("HornOfPlenty")) {
                     String glyph = item instanceof com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor
                             ? String.valueOf(((com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor)item).glyph) : "n/a";
@@ -563,16 +564,16 @@ public class GetFuckedFeasibilityTest {
                             +" level="+item.level()+" cursed="+item.cursed+" glyph="+glyph);
                 }
             }
-            for (int i=0;i<6;i++) total[i]+=region[i];
+            for (int i=0;i<7;i++) total[i]+=region[i];
             System.out.println("SEED266_RESOURCES depth="+depth+" food_energy="+region[0]+" food_shop_subset="+region[1]
-                    +" SoU="+region[2]+" strength="+region[3]+" remove_curse="+region[4]+" purity="+region[5]);
+                    +" SoU="+region[2]+" strength="+region[3]+" remove_curse="+region[4]+" purity="+region[5]+" experience="+region[6]);
         };
         try {
             LevelGenerationHarness.generate(266L, Challenges.GET_FUCKED, HeroClass.CLERIC,
                     LevelGenerationHarness.Context.REFERENCE, 26);
         } finally { LevelGenerationHarness.levelObserver = null; }
         System.out.println("SEED266_TOTAL food_energy="+total[0]+" food_shop_subset="+total[1]
-                +" SoU="+total[2]+" strength="+total[3]+" remove_curse="+total[4]+" purity="+total[5]
+                +" SoU="+total[2]+" strength="+total[3]+" remove_curse="+total[4]+" purity="+total[5]+" experience="+total[6]
                 +"; generated placement, no item collected or expended, no route or access claim");
     }
 }
