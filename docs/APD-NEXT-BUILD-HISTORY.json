@@ -1,52 +1,60 @@
 {
-  "previous_label": "Codex TEST 217",
-  "previous_source": "d2c28cb076d9918632d313e5a4f9655d36c9433b",
-  "previous_run": 38795254303,
+  "previous_label": "Codex TEST 218",
+  "previous_source": "2210d59e1924fdf5ff56ecfb41c25ee0b2c707d0",
+  "previous_run": 38804215957,
   "date": "2026-10-15",
   "changes": [
     {
-      "category": "Testing",
-      "sprite": "ICON_CHECKED",
-      "title": "Touch every Custom Rules boundary",
-      "text": "Use native API34 touchscreen input to set all 18 controls to both limits, save, reopen and prove active-run rules and earned score stay locked.",
-      "paths": [
-        ".github/workflows/codex-alpha-controls-acceptance.yml",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java"
-      ]
-    },
-    {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Keep first-column labels in plain-text exports",
-      "text": "Prefix every non-empty table header, including the first column, so all recorded Custom Rules fields remain identifiable outside rich table formats.",
+      "title": "Healing-only potion conversion setting",
+      "text": "The APD conversion slider now affects only generated Healing potions becoming Shielding; other potions and scrolls retain the original Exotic Crystals behavior.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/report/ReportRenderer.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Generator.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/trinkets/ExoticCrystals.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/APDSettingsPane.java"
+      ]
+    },
+    {
+      "category": "Statistics / UIMSD",
+      "sprite": "ICON_CHECKED",
+      "title": "Identify corrected conversion rules",
+      "text": "Keep corrected nonzero Healing-only settings distinct from older global-conversion rules without changing stored histories or neutral rules.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/Ruleset.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Accept all recorded rule fields end to end",
-      "text": "Exercise every numeric operator, combined filters, details, comparison and all export formats while preserving historical unknowns and original scores.",
+      "title": "Verify conversion scope and saved settings",
+      "text": "Check both loot-generation paths, all trinket levels, unaffected potion and scroll types, exact RNG behavior and save/load identity.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/CustomRuleFullFieldAcceptanceTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/ExoticHealingConversionTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/DifficultyTest.java"
+      ]
+    },
+    {
+      "category": "Testing",
+      "sprite": "ICON_CHECKED",
+      "title": "Check Healing setting on Android",
+      "text": "Open the real settings window, verify the Healing-only explanation and layout, retain a screenshot and preserve the selected value.",
+      "paths": [
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java",
+        "tools/run-codex-android-checks.sh"
       ]
     },
     {
       "category": "Development",
       "sprite": "V061_PAGE",
-      "title": "Record TEST217 and all-control evidence",
-      "text": "Preserve verified TEST217 evidence, the separate native acceptance result and the exact TEST218 gate against the immediate previous compiled APK.",
+      "title": "Record correction and exact build evidence",
+      "text": "Document the reproduced conversion bug and request full verification against the immediately preceding APK.",
       "paths": [
-        "docs/APD-UIMSD-SEED-REPLAY-2026-10-15.md",
-        "docs/APD-ALPHA-CONTROLS-ACCEPTANCE-2026-10-15.md",
-        "docs/APD-UIMSD-AUDIT-RECONCILIATION-2026-10-15.md",
-        "docs/APD-CODEX-BUILD-REQUEST.txt",
+        "docs/APD-HEALING-CONVERSION-2026-10-15.md",
         "docs/APD-NEXT-BUILD-HISTORY.json",
-        "docs/HANDOFF.md",
-        "docs/WORK-COMPLETED-LEDGER.md"
+        "docs/APD-CODEX-BUILD-REQUEST.txt"
       ]
     }
   ],
-  "commentary": "I verified every Custom Dungeon Rules control through native touch and added end-to-end recorded-field acceptance. Plain-text exports now keep every column label. Gameplay, histories, saves, earned scores and all 18 values are unchanged."
+  "commentary": "I corrected the conversion slider to affect only Healing potions becoming Shielding and clarified its wording. The trinket's other conversions keep normal SPD behavior; saved values, scoring and historical records remain intact."
 }
