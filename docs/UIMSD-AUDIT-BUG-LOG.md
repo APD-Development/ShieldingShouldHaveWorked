@@ -30,3 +30,6 @@ Update 2026-10-15T04:38:01Z: the remaining huge-file whole-memory reader item is
 
 
 Update 2026-10-15T04:57:30Z: TEST192 source `222189f971dc55597f561eb87aadcd4e34b47a2e` / run `38682901119` passed 1,608 core and 27 API34 tests with zero failures/errors/skips, debug/history, and 35 reviewed screenshots. The huge-file whole-memory ordinary-reader investigation item is resolved; explicit resync intentionally retains random-access buffering.
+
+
+October15 row-source identity correction: a distinct current DatasetStore cache accepted stale rows after an equal-name/length/timestamp valid raw-log replacement(score31instead47). Raw SHA-bound disposable row format3 and four permanent regressions are integrated;13focused and617broader local tests passed, full current-source1626core/Android/debug gate pending. Raw histories/saves untouched; old caches rebuild. Fixed optional-cache temp paths across distinct DatasetStore/DerivedStore objects remain a separate investigation candidate. See APD-ROW-CACHE-SOURCE-IDENTITY-2026-10-15.md; do not call the entire audit complete.
