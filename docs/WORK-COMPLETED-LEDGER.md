@@ -1082,3 +1082,10 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Artifacts: core `11986616803` / 767,862 bytes / GitHub digest `99465f5c3a257239586e58e13545d0f732645209bab642d492bb73aeda94bcb3`; APK `11986731648` / 36,059,570 bytes / `9951c5d863d26788675334b57ee6c6c1b2ea9ec7fa795b6f04efe1aeb2ed2c26`; Android `11988085278` / 3,225,355 bytes / `2628f834219cef1fe9bd891025edb62d52d8fa540bde7645f03d220a79af4024`.
 - A local compiler harness passed three corrected mixed/same-scale cases and unchanged raw values; the exact previous TEST206 formatter reproduced the failure: expected `250% (2.50/1.0)`, got `25% (250/1000)`.
 - Repeated artifact-byte downloads failed with HTTP 502. Therefore the expected 1,637 core count was not independently recounted from XML, the APK payload SHA-256 was not extracted, and the full screenshot sheet was not manually reviewed in this execution. Do not upgrade this to fully artifact-reviewed or published status. TEST204 remains owner-delivered fallback; TEST208 is separate newer source. No physical-phone claim.
+
+
+## 2026-10-15T16:31:23Z — damaged-history provenance candidate
+- Corrected run-fact and item/enemy/event-row count provenance so surviving prefixes from TRUNCATED, CORRUPT and SEAL_MISMATCH logs are lower bounds, not exact counts.
+- Preserved exact provenance for clean UNSEALED logs and valid SEALED logs with unrelated trailing bytes.
+- Advanced disposable derived-cache identities only: RowBuilders 12→13 and DerivedStore 8→9. No raw history, save, score, rules, slider, gameplay or RNG change.
+- Added six retained methods covering both builder families and both cache-version contracts. The full TEST209 gate is pending; required result is 1,645 core/debug/complete TEST208 history/28 API34/38 valid PNGs. No result, publication or phone claim is made in advance.

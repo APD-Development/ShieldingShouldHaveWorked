@@ -67,7 +67,7 @@ public final class RunFactsBuilder {
 		}
 		if (partial) f.num(FactKeys.PARTIAL, 1, Fact.PROV_RECORDED);
 		//counts are lower bounds when events were dropped or the log starts mid-run
-		int countProv = (r.gapEvents > 0 || partial) ? Fact.PROV_INCOMPLETE : Fact.PROV_RECORDED;
+		int countProv = (r.gapEvents > 0 || partial || !r.status.isClean()) ? Fact.PROV_INCOMPLETE : Fact.PROV_RECORDED;
 
 		boolean wantItems = v.compareTo(V_ITEMS) >= 0, wantCombat = v.compareTo(V_COMBAT) >= 0,
 				wantGen = v.compareTo(V_GENERATION) >= 0, wantLink = v.compareTo(V_LINK) >= 0,

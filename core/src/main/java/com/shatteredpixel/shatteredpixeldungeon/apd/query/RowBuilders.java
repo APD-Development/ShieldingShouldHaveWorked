@@ -55,7 +55,7 @@ public final class RowBuilders {
 
 	private RowBuilders(){}
 
-	public static final int BUILDER_VERSION = 12;
+	public static final int BUILDER_VERSION = 13;
 
 	private static final DatasetDef RUNS = Datasets.runs();
 	private static final DatasetDef ITEMS = Datasets.items();
@@ -117,7 +117,7 @@ public final class RowBuilders {
 			}
 		}
 		meta.ruleset = rulesetChanges > 0 ? Row.RULESET_MIXED : startRuleset;
-		boolean gaps = r.gapEvents > 0 || facts.isKnown(FactKeys.PARTIAL);
+		boolean gaps = r.gapEvents > 0 || facts.isKnown(FactKeys.PARTIAL) || !r.status.isClean();
 		int countProv = gaps ? Fact.PROV_INCOMPLETE : Fact.PROV_RECORDED;
 
 		out.of(Datasets.RUNS).add(runRow(facts, meta, v));
