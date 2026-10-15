@@ -16,7 +16,7 @@ Repository: github.com/charltonchris29/ShieldingShouldHaveWorked (private). Work
 - Tutorial fix: `ApdIntro` ends SPD's first-run tutorial for a used install (it caused the closed floor-1 start, greyed Main Menu and hidden difficulty picker).
 
 ## Known status / remaining bugs / open items
-1. UIMSD parameterized-dialog restoration has retained API34 coverage: verified TEST180 recreates the two-step Column order and Move column flow exactly once and exercises the restored Make first callback while preserving explicit/default query semantics. Physical-phone lifecycle acceptance remains unclaimed.
+1. UIMSD parameterized-dialog restoration has retained API34 coverage: verified TEST180 recreates Column order and Move column exactly once. TEST186 corrects the reproduced Back no-op during tour preparation and adds retained API34 cancellation/worker-invalidation coverage; exact-source verification is pending. Physical-phone lifecycle acceptance remains unclaimed.
 2. UIMSD default Home scope counts finished runs under the rules a new run would use. Abandoned runs are finished records; Cleric and other different-rule runs require Rules: all, while runs still going use the separate Tables > Options switch. TEST185 run 38664406486 verified the controlled native empty-History rendering and retained/reviewed all 35 screenshots after TEST183's fixture-order failure and TEST184's omitted evidence-list entry. Physical-phone wording acceptance remains unclaimed.
 3. A floor-1 run created while the tutorial was on keeps its hidden entrance door (abandon it and start a new run, or search).
 4. Hero-select markers (pips + win star): design written (docs/APD-HERO-MARKERS.md), NOT built, awaiting approval.

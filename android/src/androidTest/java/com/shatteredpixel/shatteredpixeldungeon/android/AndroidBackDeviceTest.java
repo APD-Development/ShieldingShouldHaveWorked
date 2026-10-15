@@ -139,6 +139,32 @@ public class AndroidBackDeviceTest {
 			Thread.sleep(2500);
 			final Method begin = UimsdScene.class.getDeclaredMethod("beginTour", int.class, boolean.class);
 			begin.setAccessible(true);
+			final Method backDuringPreparation = UimsdScene.class.getDeclaredMethod("onBackPressed");
+			backDuringPreparation.setAccessible(true);
+
+			//Back must cancel the loading phase itself. The generation increment is the
+			//permanent guard that prevents the still-running worker from publishing later.
+			onRender(new Runnable(){
+				public void run(){
+					try {
+						begin.invoke(Game.scene(), 0, false);
+						assertTrue("tour entered its preparation phase", (Boolean) uimsd("tutorialPreparing"));
+						long startedGeneration = (Long) uimsd("tourGeneration");
+						backDuringPreparation.invoke(Game.scene());
+						assertTrue("Back ends tour preparation immediately", !((Boolean) uimsd("tutorialPreparing")));
+						assertNull("cancelled preparation has no tutorial", uimsd("tutorial"));
+						assertEquals("cancelled preparation restores the player's model", uimsd("mainModel"), uimsd("model"));
+						assertTrue("cancelled preparation returns to Home", (Boolean) uimsd("atHome"));
+						assertTrue("Back invalidates the preparing worker", (Long) uimsd("tourGeneration") > startedGeneration);
+					} catch (Exception e){
+						throw new RuntimeException(e);
+					}
+				}
+			});
+			Thread.sleep(500);
+			assertNull("invalidated worker never publishes after Back", uimsd("tutorial"));
+			assertTrue("UIMSD stays open after cancelling preparation", Game.scene() instanceof UimsdScene);
+			Log.w(TAG, "Back cancelled UIMSD tour preparation and invalidated its worker");
 			onRender(new Runnable(){
 				public void run(){
 					try {

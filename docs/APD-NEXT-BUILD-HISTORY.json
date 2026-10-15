@@ -5,12 +5,30 @@
   "date": "2026-10-15",
   "changes": [
     {
+      "category": "Bug Fixes",
+      "sprite": "V061_BUGFIX",
+      "title": "Cancel a preparing UIMSD tour",
+      "text": "Make Back cancel sample-tour generation immediately and invalidate its worker so a stale tour cannot appear after cancellation.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/UimsdScene.java"
+      ]
+    },
+    {
       "category": "Testing",
       "sprite": "V061_PAGE",
-      "title": "TEST185 verified evidence",
-      "text": "Record the verified native empty-History Home regression, retained 35-image evidence set, and the corrected TEST183/TEST184/TEST185 checkpoint sequence without changing application behavior.",
+      "title": "Preparing-tour Back regression",
+      "text": "Retain API34 coverage for immediate Home/main-model restoration, worker invalidation, and the existing completed-tour Back sequence.",
       "paths": [
-        "docs/APD-TEST183-UIMSD-EMPTY-HOME-NATIVE-2026-10-15.md",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/AndroidBackDeviceTest.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_PAGE",
+      "title": "TEST185 evidence and TEST186 handoff",
+      "text": "Preserve the verified 1,603-core/26-API34/35-image checkpoint and record the pending preparing-tour cancellation correction.",
+      "paths": [
+        "docs/APD-TEST186-UIMSD-TOUR-CANCEL-2026-10-15.md",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",

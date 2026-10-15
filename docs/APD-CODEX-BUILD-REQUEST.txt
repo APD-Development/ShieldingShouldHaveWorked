@@ -139,3 +139,6 @@ TEST186 exact-source request (2026-10-15T01:12:37.816Z): TEST185 commit80506e4de
 
 
 TEST185 verified (2026-10-15T01:29:34.915Z): reconciled source40d31d81de4c2fcc1ae154e9ec0d1c8f6a28d984/run38664406486 passed1603core+26API34/debug/immediate-previous compiledTEST184history/35PNG. APK SHA256 cc3c211a67d179f703e0d468ef54efdb5d62b1eec99f44cb54ececed2a519c1e. The first TEST185 request produced no run; the reissued request compiled under the actual TEST185 label, so there is no separate TEST186 APK. Empty-History Home and full35-image contact sheet reviewed clean. No application-source/save/statistics/scoring/gameplay/identity/signing change, no delivery or physical-phone claim. No application build is pending; do not rebuild unchanged TEST185. Continue a distinct approved post-slider UIMSD reliability/backlog task.
+
+
+TEST186 exact-source request (2026-10-15T01:40:02.195Z): cancel UIMSD tour preparation on Back and invalidate its worker generation so it cannot publish later. Verify unchanged1603core/debug/immediate-previous compiledTEST185history/26API34/35PNG, including immediate main-model/Home restoration before the existing completed-tour Back flow. Preserve serialized sample cleanup and real-history guards. No gameplay/save/statistics/scoring/identity/signing/delivery/physical-phone change.

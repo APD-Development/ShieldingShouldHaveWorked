@@ -811,3 +811,11 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - The Android artifact contains all 35 expected 320x640 PNGs. The complete contact sheet was reviewed; the native empty-History Home is readable and correctly separates finished runs from the Tables > Options route for runs still going, and APD Changes shows the immediate TEST184/TEST185 sequence without clipping or corruption.
 - TEST183's shared-emulator fixture failure and TEST184's omitted screenshot-pull entry remain recorded as failed/incomplete checkpoints. TEST185 is the latest fully verified source checkpoint. No application production code, gameplay, raw history, save, permanent statistics, scoring, application ID or signing identity changed in this evidence batch.
 - This is hosted build/emulator evidence, not physical-phone or owner-save verification. No APK was distributed or published; TEST123 remains the last owner-delivered/signature-compared APK. Do not rebuild unchanged TEST185. Continue the next distinct approved post-slider UIMSD reliability/backlog task.
+
+
+## 2026-10-15T01:40:02.195Z — TEST186 UIMSD preparing-tour Back correction pending
+- Re-read verified TEST185 and reproduced a navigation no-op in source: `onBackPressed()` returned while `tutorialPreparing`, so Android Back and the visible exit control could not cancel sample generation/loading.
+- Changed that branch to end the preparing tour, return to Home, and advance `tourGeneration`; the stale worker therefore cannot publish after cancellation. Existing serialized sample cleanup and real-history guards remain intact.
+- Strengthened `AndroidBackDeviceTest` to start a real sample preparation, cancel it in the preparing state, require immediate main-model/Home restoration and require the worker generation to be invalidated before the existing normal-tour Back flow.
+- TEST186 exact-source verification requests 1,603 core tests, debug assembly, immediate-previous compiled TEST185 history, all 26 API34 methods and 35 screenshots. Candidate is pending until hosted evidence passes.
+- No gameplay, scoring, raw history, save, permanent statistics, identity or signing behavior changed. No delivery or physical-phone claim; TEST185 remains the verified fallback and TEST123 the owner-delivered fallback.
