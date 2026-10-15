@@ -101,3 +101,47 @@ class ChronologicalHistoryTests(unittest.TestCase):
    self.assertEqual(['codex-test-72','codex-test-71','codex-test-70','build-1'],ids)
 if __name__=='__main__':unittest.main()
 
+
+
+class PlayerReleaseNotesTests(unittest.TestCase):
+ def fixture(self,root,label='APD Alpha Preview',date='',category='Bug Fixes',text='A specific player-facing fix.'):
+  assets=root/'core/src/main/assets/apd/releases';assets.mkdir(parents=True)
+  (assets/'index.tsv').write_text('apd-alpha-preview\t'+label+'\t'+date+'\tIn development; not a public release.\n')
+  (assets/'apd-alpha-preview.tsv').write_text(category+'\tICON_INFO\tA specific fix\t'+text+'\n')
+  return assets
+ def test_preview_keeps_honest_status_and_does_not_rewrite_internal_records(self):
+  with tempfile.TemporaryDirectory() as folder:
+   root=pathlib.Path(folder);self.fixture(root)
+   old=root/'core/src/main/assets/apd/history';old.mkdir(parents=True);record=old/'codex-test-222.tsv';record.write_text('Original complete internal record.\n')
+   history.validate_player_notes(root)
+   self.assertEqual('Original complete internal record.\n',record.read_text())
+ def test_tool_branded_release_is_rejected(self):
+  with tempfile.TemporaryDirectory() as folder:
+   root=pathlib.Path(folder);self.fixture(root,label='APD Codex TEST 222')
+   with self.assertRaises(ValueError):history.validate_player_notes(root)
+ def test_internal_categories_are_rejected(self):
+  for category in ('Testing','Development','Changes'):
+   with tempfile.TemporaryDirectory() as folder:
+    root=pathlib.Path(folder);self.fixture(root,category=category)
+    with self.assertRaises(ValueError):history.validate_player_notes(root)
+ def test_future_date_does_not_turn_preview_into_fake_release(self):
+  with tempfile.TemporaryDirectory() as folder:
+   root=pathlib.Path(folder);self.fixture(root,date='2026-10-16')
+   with self.assertRaises(ValueError):history.validate_player_notes(root)
+ def test_compiled_player_notes_must_match_reviewed_notes(self):
+  import zipfile
+  with tempfile.TemporaryDirectory() as folder:
+   root=pathlib.Path(folder);assets=self.fixture(root);(root/'core/src/main/assets/apd/history').mkdir()
+   good=root/'good.apk'
+   with zipfile.ZipFile(good,'w') as z:
+    for p in assets.iterdir():z.writestr('assets/apd/releases/'+p.name,p.read_bytes())
+   history.verify_compiled(root,good)
+   bad=root/'bad.apk'
+   with zipfile.ZipFile(bad,'w') as z:
+    z.writestr('assets/apd/releases/index.tsv',(assets/'index.tsv').read_bytes())
+    z.writestr('assets/apd/releases/apd-alpha-preview.tsv','Bug Fixes\tICON_INFO\tMissing changes\tWrong content.\n')
+   with self.assertRaises(ValueError):history.verify_compiled(root,bad)
+ def test_missing_production_catalogue_is_rejected(self):
+  with tempfile.TemporaryDirectory() as folder:
+   root=pathlib.Path(folder);scene=root/'core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/APDTextScene.java';scene.parent.mkdir(parents=True);scene.write_text('class APDTextScene {}')
+   with self.assertRaises(ValueError):history.validate_player_notes(root)

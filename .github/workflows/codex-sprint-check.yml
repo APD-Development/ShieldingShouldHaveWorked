@@ -75,6 +75,8 @@ jobs:
           with open('apd-history-comparison.json','w') as out: json.dump(data,out)
           PY
           python3 tools/apd_build_history.py --comparison apd-history-comparison.json --ledger docs/APD-NEXT-BUILD-HISTORY.json --build ${{ github.run_number }} --previous-apk previous-verified.apk
+      - name: Verify history and player release-note tooling
+        run: python3 -m unittest discover -s tools -p test_apd_build_history.py -v
       - name: Run the complete core unit test suite
         run: ./gradlew :core:test
       - name: Build the private debug APK

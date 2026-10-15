@@ -55,7 +55,42 @@ def merge_previous_apk(root,apk,expected_label):
     lines.sort(key=lambda line:(families.index(line.split("\t",1)[0].rsplit("-",1)[0]),-int(line.split("\t",1)[0].rsplit("-",1)[1])))
     index.write_text("\n".join(lines)+"\n")
 
+def validate_player_notes(root):
+    """Keep curated player releases separate from the unabridged technical ledger."""
+    import datetime
+    assets=root/'core/src/main/assets/apd/releases'
+    index=assets/'index.tsv'
+    if not index.exists():
+        scene=root/'core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/APDTextScene.java'
+        if scene.exists(): raise ValueError('Missing player release notes catalogue')
+        return # Minimal internal-history unit-test fixtures do not contain a game.
+    internal=re.compile(r'\bcodex\b|\bTEST\s*\d+\b',re.I)
+    categories={'New Content','Gameplay','Quality of Life','Bug Fixes','Statistics / UIMSD','Buffs','Nerfs','Developer Commentary'}
+    ids=set()
+    for line in index.read_text().splitlines():
+        if not line.strip() or line.startswith('#'):continue
+        fields=line.split('\t')
+        if len(fields)!=4:raise ValueError('Invalid player release record')
+        ident,label,date,status=fields
+        if not re.fullmatch(r'[a-z0-9-]+',ident) or ident in ids or not label.startswith('APD ') or internal.search(label+' '+status):
+            raise ValueError('Player release records require unique IDs and APD branding')
+        ids.add(ident)
+        if date:datetime.date.fromisoformat(date)
+        if ident.endswith('-preview') and date:raise ValueError('An unreleased preview cannot have a publication date')
+        descriptions=set()
+        for row in (assets/(ident+'.tsv')).read_text().splitlines():
+            if not row.strip() or row.startswith('#'):continue
+            cells=row.split('\t')
+            if len(cells)!=4:raise ValueError('Invalid player change')
+            category,sprite,title,text=cells
+            if category not in categories or not title or not sprite or sprite=='V061_PAGE' or not text or len(text.split())>100 or internal.search(title+' '+text) or text in descriptions:
+                raise ValueError('Player notes must be concise, categorized and free of internal build labels')
+            descriptions.add(text)
+        if not descriptions:raise ValueError('Empty player release notes')
+    if not ids:raise ValueError('Empty player release catalogue')
+
 def embed(root,ledger,number):
+    validate_player_notes(root)
     assets=root/"core/src/main/assets/apd/history"
     assets.mkdir(parents=True,exist_ok=True)
     ident="codex-test-"+str(number)
@@ -65,12 +100,17 @@ def embed(root,ledger,number):
     lines=[l for l in index.read_text().splitlines() if not l.startswith(ident+"\t")]
     index.write_text(ident+"\tCodex TEST "+str(number)+"\t"+ledger["date"]+"\tAPK change record"+"\n"+"\n".join(lines)+"\n")
 def verify_compiled(root,apk):
+    validate_player_notes(root)
     assets=root/"core/src/main/assets/apd/history"
     with zipfile.ZipFile(apk) as archive:
         for path in assets.glob("*.tsv"):
             member="assets/apd/history/"+path.name
             if archive.read(member)!=path.read_bytes():
                 raise ValueError("Compiled history differs from reviewed source: "+path.name)
+        releases=root/"core/src/main/assets/apd/releases"
+        for path in releases.glob("*.tsv"):
+            if archive.read("assets/apd/releases/"+path.name)!=path.read_bytes():
+                raise ValueError("Compiled player release notes differ from reviewed source: "+path.name)
 
 def complete_comparison(delta,previous,current):
     """Obtain every changed path from pinned Git trees, with no rename ambiguity."""
@@ -93,4 +133,5 @@ if __name__=="__main__":
     if a.verify_apk:
         verify_compiled(pathlib.Path(a.root),pathlib.Path(a.verify_apk))
     print("Complete reviewed build changes embedded; descriptions are curated, not inferred from commit titles.")
+
 

@@ -1,67 +1,89 @@
 {
-  "previous_label": "Codex TEST 222",
-  "previous_source": "182155b7e2906357fa3006ae3af70a7e472bb0bb",
-  "previous_run": 38809007695,
   "date": "2026-10-15",
+  "previous_source": "cf7a46191d7758f73d4901e6781eb44664f4a8d4",
+  "previous_run": 38810321509,
+  "previous_label": "Codex TEST 223",
   "changes": [
     {
       "category": "Quality of Life",
-      "sprite": "ICON_INFO",
-      "title": "Clean localized Imp conversations",
-      "text": "Adult Humor off now uses clean alternatives in the remaining translated Imp quest conversations and reminders.",
+      "sprite": "ICON_CHANGES",
+      "title": "APD release notes",
+      "text": "Show concise APD-branded preview notes by default, with native categorized icons and individual popups.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/text/AuthoredLanguage.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/history/ApdReleaseNotes.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/APDTextScene.java",
+        "core/src/main/assets/apd/releases/index.tsv",
+        "core/src/main/assets/apd/releases/apd-alpha-preview.tsv"
       ]
     },
     {
       "category": "Quality of Life",
       "sprite": "ICON_INFO",
-      "title": "Clean translated journal entries",
-      "text": "The Warden and King journal entries use reviewed clean translations while preserving every original adult version.",
+      "title": "Retain complete technical history",
+      "text": "Keep every APK build record available through Versions without placing internal development sessions in the default release view.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/text/AuthoredLanguage.java"
-      ]
-    },
-    {
-      "category": "Quality of Life",
-      "sprite": "ICON_INFO",
-      "title": "Clean Blacksmith reminder",
-      "text": "Remove profanity from the Traditional Chinese Blacksmith reminder when Adult Humor is off without changing the quest.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/text/AuthoredLanguage.java"
-      ]
-    },
-    {
-      "category": "Quality of Life",
-      "sprite": "ICON_INFO",
-      "title": "Clean Gnoll Exile description",
-      "text": "The Hungarian Gnoll Exile description keeps its original meaning with a clean alternative when Adult Humor is off.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/text/AuthoredLanguage.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/APDTextScene.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/history/ApdReleaseNotes.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Guard future translated wording",
-      "text": "Scan localized resources for reviewed profanity, require exact clean English fallbacks and preserve innocent words, formatting and player text.",
+      "title": "Release notes regression coverage",
+      "text": "Check player branding, preview dates, duplicates, categories, native icons, popup content, archive retention and compiled release-note integrity.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/humor/AuthoredLanguageTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/history/ApdReleaseNotesTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/ChangesVisualDeviceTest.java",
+        "tools/test_apd_build_history.py",
+        "tools/run-codex-android-checks.sh"
       ]
     },
     {
       "category": "Development",
-      "sprite": "V061_PAGE",
-      "title": "Record translation and owner-delivery evidence",
-      "text": "Retain the localized audit, failed-gate corrections and independently verified owner APK delivery conditions.",
+      "sprite": "ICON_CHANGES",
+      "title": "Validate future player release notes",
+      "text": "Validate curated player notes during builds and compare their compiled contents with reviewed source without generating speculative announcements.",
       "paths": [
-        ".github/workflows/codex-healing-apk-delivery.yml",
-        "docs/APD-CLEAN-LANGUAGE-2026-10-15.md",
-        "docs/APD-CLEAN-LANGUAGE-LOCALIZATION-2026-10-15.md",
-        "docs/APD-NEXT-BUILD-HISTORY.json",
-        "docs/APD-CODEX-BUILD-REQUEST.txt"
+        "tools/apd_build_history.py",
+        ".github/workflows/codex-sprint-check.yml"
+      ]
+    },
+    {
+      "category": "Testing",
+      "sprite": "ICON_CHECKED",
+      "title": "Android 16 acceptance fixtures",
+      "text": "Retain the separate reused-APK Android 16 runner and input-fixture work without treating unsuccessful runs as passed gameplay checks.",
+      "paths": [
+        ".github/workflows/codex-adult-restart-acceptance.yml",
+        ".github/workflows/codex-android16-acceptance.yml",
+        ".github/workflows/codex-publish-verified-test222.yml",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/AdultHumorRestartDeviceTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PlayRunDeviceTest.java"
+      ]
+    },
+    {
+      "category": "Development",
+      "sprite": "ICON_INFO",
+      "title": "Record exact verification boundaries",
+      "text": "Retain owner delivery, localized wording and release-note preparation evidence while distinguishing pending Android and physical-phone checks.",
+      "paths": [
+        "docs/APD-PLAYER-RELEASE-NOTES-2026-10-15.md",
+        "docs/HANDOFF.md",
+        "docs/WORK-COMPLETED-LEDGER.md",
+        "docs/APD-CODEX-BUILD-REQUEST.txt",
+        "docs/APD-NEXT-BUILD-HISTORY.json"
+      ]
+    },
+    {
+      "category": "Developer Commentary",
+      "sprite": "ICON_INFO",
+      "title": "Developer Commentary",
+      "text": "I separated concise APD release notes from the complete technical APK archive. No historical build records or gameplay features were removed.",
+      "paths": [
+        "core/src/main/assets/apd/releases/apd-alpha-preview.tsv"
       ]
     }
   ],
-  "commentary": "I expanded the clean-language alternatives after checking translated dialogue and journal entries. Adult originals, player-entered text, quests, scores and saved data remain intact."
+  "commentary": "I separated APD release notes from technical build records while keeping the complete archive."
 }

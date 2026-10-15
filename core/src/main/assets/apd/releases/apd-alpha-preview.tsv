@@ -1,0 +1,14 @@
+New Content	ICON_CHALLENGE_COLOR	Custom Dungeon Rules	Customize combat, survival, enemy spawning and loot with 18 experimental controls; your selected rules stay fixed for each run.
+New Content	ITEM_SCROLL_KAUNAN	Choose your upgrades	Choose 1–60 dungeon Scrolls of Upgrade; the normal setting remains 15.
+Statistics / UIMSD	ICON_STATS	Your dungeon history	Explore recorded runs, combat events and individual item histories in UIMSD.
+Statistics / UIMSD	ICON_RANKINGS	Filters and comparisons	Filter records, ask custom questions and compare runs without replacing your original history.
+Statistics / UIMSD	ICON_INFO	Rules recorded with runs	Inspect the Custom Dungeon Rules recorded for each run in details, comparisons and exports; unknown historical settings remain unknown.
+Statistics / UIMSD	ICON_CHANGES	Reliable statistics views	Older background results no longer replace a newer statistics view or seed replay.
+Statistics / UIMSD	ICON_STATS	Clearer numbers	Statistics display fixed-point values and mixed-scale percentages in player units, and preserve lower-bound warnings for incomplete records.
+Quality of Life	ITEM_ARMOR_LEATHER	Blacksmith rewards	See the upgrade level of each offered Blacksmith reward before choosing.
+Quality of Life	ITEM_ARTIFACT_CHALICE1	Chalice damage preview	Inspect the next Chalice prick's damage and possible HP loss before deciding whether to proceed.
+Quality of Life	ICON_PREFS	Healing conversion setting	The Healing-to-Shielding setting affects only generated Potions of Healing; other potion and scroll conversions keep their normal behavior.
+Quality of Life	ICON_INFO	Adult Humor preference	The About screen and reviewed authored dialogue use clean alternatives when Adult Humor is off.
+Quality of Life	ICON_CHALLENGE_COLOR	Scoring notice	Custom Dungeon Rules are experimental and currently leave your earned score unchanged.
+Bug Fixes	ICON_ENTER	Saved entrance repair	Older affected first-floor saves can recover their entrance doorway without revealing unrelated secret doors.
+Developer Commentary	ICON_INFO	Developer Commentary	I'm bringing APD's statistics and difficulty customization together for the early-alpha preview. Custom scoring is still in development, and the current settings preserve original earned scores.

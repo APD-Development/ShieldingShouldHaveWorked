@@ -6,6 +6,7 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import com.badlogic.gdx.Gdx;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.apd.history.ApdHistory;
+import com.shatteredpixel.shatteredpixeldungeon.apd.history.ApdReleaseNotes;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.*;
 import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.*;
 import com.watabou.noosa.*;
@@ -42,6 +43,7 @@ public class ChangesVisualDeviceTest {
  }
  @Test public void categoriesUseSpdColumnsAndEveryIconOpensItsExactBuildPopup()throws Exception{
   try(ActivityScenario<AndroidLauncher> scenario=ActivityScenario.launch(AndroidLauncher.class)){
+   Field technical=APDTextScene.class.getDeclaredField("technicalHistory");technical.setAccessible(true);technical.setBoolean(null,true);
    Field selected=APDTextScene.class.getDeclaredField("buildSelected");selected.setAccessible(true);selected.setInt(null,0);
    render(()->{APDTextScene.page=APDTextScene.Page.CHANGES;ShatteredPixelDungeon.switchScene(APDTextScene.class);});waitScene(APDTextScene.class);
    render(()->{try{
@@ -70,14 +72,14 @@ public class ChangesVisualDeviceTest {
      }
      for(Gizmo child:children(info))if(child instanceof ChangeButton){
       ChangeButton button=(ChangeButton)child;assertTrue(button.left()>=info.left());assertTrue(button.right()<=info.right());
-      assertTrue(((String[])messages.get(button))[0].startsWith(build.label+"\n\n"));assertTrue(info.onClick(button.centerX(),button.centerY()));
+      assertTrue(((String[])messages.get(button))[0].startsWith((info.major?build.label:ApdReleaseNotes.technicalLabel(build))+"\n\n"));assertTrue(info.onClick(button.centerX(),button.centerY()));
       WndChanges popup=null;for(Gizmo g:children(Game.scene()))if(g instanceof WndChanges&&g.alive)popup=(WndChanges)g;assertNotNull(popup);assertSame(Game.scene(),popup.parent);popup.hide();if(!info.major)icons++;
      }
     }
     assertEquals(grouped.size(),categories);assertEquals(entries.size(),icons);assertEquals(Math.min(6,builds.size()),buildIndex+1);
 
    }catch(Exception e){throw new RuntimeException(e);}});
-   screenshot("apd-changes.png");
+   screenshot("apd-technical-changes.png");
    render(()->{try{
     List<ApdHistory.Build> builds=ApdHistory.builds(Gdx.files.internal("apd/history/index.tsv").readString("UTF-8"));
     Method ranges=APDTextScene.class.getDeclaredMethod("showBuildRanges",List.class,int.class);ranges.setAccessible(true);ranges.invoke(Game.scene(),builds,0);
@@ -92,6 +94,7 @@ public class ChangesVisualDeviceTest {
  }
  @Test public void largeAndNamedHistoricalBuildsKeepAllIconsInScrollableNativeSections()throws Exception{
   try(ActivityScenario<AndroidLauncher> scenario=ActivityScenario.launch(AndroidLauncher.class)){
+   Field technical=APDTextScene.class.getDeclaredField("technicalHistory");technical.setAccessible(true);technical.setBoolean(null,true);
    for(String wanted:new String[]{"build-22","build-37","codex-test-67"}){
     render(()->{try{
      List<ApdHistory.Build> builds=ApdHistory.builds(Gdx.files.internal("apd/history/index.tsv").readString("UTF-8"));
@@ -122,4 +125,43 @@ public class ChangesVisualDeviceTest {
    render(()->{try{Field selected=APDTextScene.class.getDeclaredField("buildSelected");selected.setAccessible(true);selected.setInt(null,0);}catch(Exception e){throw new RuntimeException(e);}});
   }
  }
+ @Test public void playerReleaseNotesAreCompactBrandedAndEveryChangeOpens()throws Exception{
+  Field technical=APDTextScene.class.getDeclaredField("technicalHistory");technical.setAccessible(true);
+  Field selected=APDTextScene.class.getDeclaredField("buildSelected");selected.setAccessible(true);
+  try(ActivityScenario<AndroidLauncher> scenario=ActivityScenario.launch(AndroidLauncher.class)){
+   technical.setBoolean(null,false);selected.setInt(null,0);
+   render(()->{APDTextScene.page=APDTextScene.Page.CHANGES;ShatteredPixelDungeon.switchScene(APDTextScene.class);});waitScene(APDTextScene.class);
+   render(()->{try{
+    List<ApdHistory.Build> releases=ApdReleaseNotes.releases(Gdx.files.internal("apd/releases/index.tsv").readString("UTF-8"));
+    assertEquals("APD Alpha Preview",releases.get(0).label);
+    List<ApdHistory.Entry> expected=ApdReleaseNotes.entries(Gdx.files.internal("apd/releases/"+releases.get(0).id+".tsv").readString("UTF-8"));
+    Field changes=APDTextScene.class.getDeclaredField("changes");changes.setAccessible(true);
+    List<ChangeInfo> infos=(List<ChangeInfo>)changes.get(Game.scene());
+    Field messages=ChangeButton.class.getDeclaredField("messages");messages.setAccessible(true);
+    int headings=0,icons=0;Set<String> descriptions=new HashSet<>();
+    for(ChangeInfo info:infos){
+     if(info.major){headings++;continue;}
+     assertTrue(info.width()<=70);
+     for(Gizmo child:children(info))if(child instanceof ChangeButton){
+      ChangeButton button=(ChangeButton)child;icons++;
+      String message=((String[])messages.get(button))[0];
+      assertTrue(message.startsWith("APD Alpha Preview\n\n"));
+      assertFalse(message.contains("Codex"));assertFalse(message.matches("(?s).*TEST\\s*\\d+.*"));
+      assertTrue(descriptions.add(message));assertTrue(button.left()>=info.left());assertTrue(button.right()<=info.right());
+      assertTrue(info.onClick(button.centerX(),button.centerY()));
+      WndChanges popup=null;for(Gizmo g:children(Game.scene()))if(g instanceof WndChanges&&g.alive)popup=(WndChanges)g;
+      assertNotNull(popup);assertSame(Game.scene(),popup.parent);popup.hide();
+     }
+    }
+    assertEquals(1,headings);assertEquals(expected.size(),icons);
+    assertEquals(ApdHistory.categories(expected).size()+headings,infos.size());
+    Method options=APDTextScene.class.getDeclaredMethod("showHistoryOptions");options.setAccessible(true);options.invoke(Game.scene());
+    com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList menu=null;
+    for(Gizmo g:children(Game.scene()))if(g instanceof com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList&&g.alive)menu=(com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList)g;
+    assertNotNull(menu);menu.hide();
+   }catch(Exception e){throw new RuntimeException(e);}});
+   screenshot("apd-changes.png");
+  }finally{technical.setBoolean(null,false);selected.setInt(null,0);}
+ }
+
 }
