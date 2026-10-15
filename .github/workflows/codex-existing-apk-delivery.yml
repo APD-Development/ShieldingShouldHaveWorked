@@ -108,7 +108,7 @@ jobs:
         run: |
           python3 -m pip install reportlab==4.2.5
           python3 -m unittest discover -s tools -p test_apd_bug_report_pdf.py
-          python3 tools/apd_bug_report_pdf.py lunch-preparation/docs/APD-LUNCH-2026-10-15-TEST198.md delivery/APD-Bug-Fixes-2026-10-15-TEST198.pdf --verification delivery/verification.txt
+          python3 tools/apd_bug_report_pdf.py lunch-preparation/docs/APD-PRIVATE-ALPHA-DELIVERY-2026-10-15.md delivery/APD-Bug-Fixes-2026-10-15-TEST198.pdf --verification delivery/verification.txt
       - uses: actions/upload-artifact@v4
         with:
           name: verified-test198-delivery
