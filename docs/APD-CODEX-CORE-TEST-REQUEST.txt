@@ -1,10 +1,10 @@
-APD CORE-ONLY TEST REQUEST — TEST195
-requested_utc=2026-10-15T05:49:32Z
+APD CORE-ONLY TEST REQUEST — TEST198
+requested_utc=2026-10-15T07:35:03Z
 branch=codex/apd-phone-fixes-2026-10-09
-parent=0fa7763a36e4ebc4994629910cab6d285d3d0af5
-application_source=222189f971dc55597f561eb87aadcd4e34b47a2e
-scope=corrected retained legacy tutorial floor-1 entrance-door repair regression
-expected_core_tests=1609
+parent=c03905674d306d3d95f8c90d04a3a5e522d5349d
+application_source=364fd4724b79308fb6a13478a211bcd7599b2f7b
+scope=retained shop-stock visibility and hidden-information boundary regression
+expected_core_tests=1611
 apk_build=forbidden_for_this_request
-reason=production application source is unchanged; reuse verified TEST192 APK evidence
-correction=place the synthetic entrance at a production-realistic interior map margin
+reason=production application source is unchanged; reuse verified TEST197/Codex TEST 194 APK evidence
+assertions=visible FOR_SALE stock emits exactly one SEEN_SHOP public event with displayed unidentified state only; true class, level and curse remain INTERNAL

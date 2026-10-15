@@ -2472,3 +2472,10 @@ The ordered legacy-door item is closed. Hero markers still require explicit appr
 - The source milestone is TEST197; the sprint workflow's independent run counter named the APK Codex TEST 194. Preserve both exact labels. TEST196 remains failed; no TEST196 APK existed.
 - Telemetry 1.12 now records accepted NPC interactions exactly once using only player-visible name and floor. Rejected interactions emit nothing; quest steps remain separate. The lever candidate was correctly omitted because current source has no lever mechanic.
 - No physical-phone/delivery claim; TEST123 remains owner-delivered. Do not rebuild unchanged source. Next autonomous recording candidate: shop stock seen, after reproducing a concrete omission and hidden-information review.
+
+
+## 2026-10-15T07:35:03Z — TEST198 shop-stock visibility boundary pending
+- Reproduced the queued candidate in current source: visible `FOR_SALE` heaps already emit canonical `ITEM_SEEN` with `SEEN_SHOP` through `ItemTracker.scanFloor`; unseen, hidden-outline, out-of-FOV and closed-container contents remain excluded.
+- The concrete omission was retained coverage for shop classification plus unidentified-item secrecy. Added one regression requiring exactly one public shop-seen event with only displayed state, while true class, +4 level and curse remain in INTERNAL registration.
+- Production application source remains verified TEST197 `364fd4724b79308fb6a13478a211bcd7599b2f7b`. Request complete 1,611-core verification only; APK rebuild is forbidden.
+- No gameplay/save/statistics format/scoring/custom-rule/identity/signing/delivery/physical-phone change. TEST123 remains owner-delivered. Pending hosted evidence.

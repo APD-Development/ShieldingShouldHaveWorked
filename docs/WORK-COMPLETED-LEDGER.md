@@ -938,3 +938,10 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Artifact IDs/ZIP hashes: core `11953586184` / `3f2fdb0c…8cb24`; APK `11953825841` / `312b0e82…53377`; Android `11954147276` / `8f18ea2b…ce1df`.
 - The workflow named the compiled APK Codex TEST 194; source/evidence remains TEST197. TEST196's three contract failures remain recorded and were not relabelled.
 - Additive public telemetry 1.12 NPC interaction recording is verified. No gameplay/save/permanent-statistics/scoring/custom-rule/identity/signing change; no physical phone or distribution. TEST123 remains owner-delivered.
+
+
+## 2026-10-15T07:35:03Z — TEST198 shop-stock visibility boundary candidate
+- Confirmed existing canonical recording: a currently visible, seen, non-hidden `FOR_SALE` heap is tagged `SEEN_SHOP`; generation alone is not called “seen.”
+- Added a retained real-item regression for an unidentified +4 cursed ring. Public history must contain only its displayed unidentified state; true class/level/curse remain INTERNAL.
+- Request 1,611 complete core tests through the core-only gate. No APK rebuild because production application source is unchanged from verified TEST197.
+- No gameplay, RNG, save, telemetry format, scoring, custom-rule, application-ID, signing, delivery or physical-phone change.
