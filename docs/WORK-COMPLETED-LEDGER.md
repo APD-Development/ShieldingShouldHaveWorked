@@ -1075,3 +1075,10 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Added a presentation-only CellFormatter correction and one retained regression covering both scale directions, same-scale behavior, compact text and unchanged raw AggValue.
 - QueryEngine mathematics, aggregate ordering, rows, raw history, caches, saves, scores, sliders, turns, RNG and gameplay remain unchanged.
 - Full 1,637-core/debug/immediate-previous TEST206-history/28-API34/38-PNG verification is pending. No release or physical-phone claim; delivered TEST204 remains fallback.
+
+
+## TEST207 CI gate completed — 2026-10-15T15:53:04Z — mixed-scale RATIO correction CI-green, artifact review pending
+- Exact source `f0b0cf7708a8d6af63cdb69392b22ab9e3962717` / workflow [38762160592](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38762160592) completed successfully. Complete core, debug assembly, and immediate-previous compiled TEST206 history steps passed. API34 actually finished 28/28 methods with no reported failure or skip; all 38 logged PNGs are 320×640.
+- Artifacts: core `11986616803` / 767,862 bytes / GitHub digest `99465f5c3a257239586e58e13545d0f732645209bab642d492bb73aeda94bcb3`; APK `11986731648` / 36,059,570 bytes / `9951c5d863d26788675334b57ee6c6c1b2ea9ec7fa795b6f04efe1aeb2ed2c26`; Android `11988085278` / 3,225,355 bytes / `2628f834219cef1fe9bd891025edb62d52d8fa540bde7645f03d220a79af4024`.
+- A local compiler harness passed three corrected mixed/same-scale cases and unchanged raw values; the exact previous TEST206 formatter reproduced the failure: expected `250% (2.50/1.0)`, got `25% (250/1000)`.
+- Repeated artifact-byte downloads failed with HTTP 502. Therefore the expected 1,637 core count was not independently recounted from XML, the APK payload SHA-256 was not extracted, and the full screenshot sheet was not manually reviewed in this execution. Do not upgrade this to fully artifact-reviewed or published status. TEST204 remains owner-delivered fallback; TEST208 is separate newer source. No physical-phone claim.
