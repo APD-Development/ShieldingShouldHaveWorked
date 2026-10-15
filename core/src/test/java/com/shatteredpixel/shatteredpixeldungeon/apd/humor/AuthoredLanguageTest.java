@@ -82,4 +82,32 @@ public class AuthoredLanguageTest {
   assertTrue(about.contains("Founded on the principle that shielding should have worked."));
   assertTrue(about.contains("APD began with the shielding mechanic: shielding should have worked."));
  }
+ @Test public void actualLocalizedLookupsUseReviewedAlternativesAndPreserveAdultOriginals(){
+  HeadlessTestSupport.start();Languages previous=Messages.lang();boolean adult=SPDSettings.apdAdultHumor();
+  try {
+   for(Languages language:new Languages[]{Languages.ENGLISH,Languages.GERMAN,Languages.SWEDISH,Languages.SPANISH,Languages.PORTUGUESE,Languages.RUSSIAN,Languages.KOREAN,Languages.CZECH,Languages.CHI_SMPL}){
+    Messages.setup(language);SPDSettings.apdAdultHumor(true);
+    for(String key:new String[]{"journal.document.prison_warden.no_support.body","journal.document.halls_king.amulet.body","actors.mobs.npcs.imp.old_golems_1"}){
+     String original=Messages.get(key);SPDSettings.apdAdultHumor(false);
+     String expected=language==Languages.ENGLISH?AuthoredLanguage.english(original,false):AuthoredLanguage.select(original,false);
+     assertEquals(language+":"+key,expected,Messages.get(key));
+     SPDSettings.apdAdultHumor(true);assertEquals(original,Messages.get(key));
+    }
+   }
+  }finally {SPDSettings.apdAdultHumor(adult);Messages.setup(previous);}
+ }
+ @Test public void preferenceSurvivesActualDiskReloadWithoutChangingPlayerContent()throws Exception{
+  HeadlessTestSupport.start();java.lang.reflect.Field field=com.watabou.utils.GameSettings.class.getDeclaredField("prefs");field.setAccessible(true);
+  com.badlogic.gdx.Preferences original=(com.badlogic.gdx.Preferences)field.get(null);
+  java.io.File file=java.io.File.createTempFile("apd-humor-preference", ".xml",HeadlessTestSupport.tempDir());file.delete();
+  try {
+   com.watabou.utils.GameSettings.set(new com.badlogic.gdx.backends.headless.HeadlessPreferences(new com.badlogic.gdx.files.FileHandle(file)));
+   SPDSettings.apdAdultHumor(false);
+   com.watabou.utils.GameSettings.set(new com.badlogic.gdx.backends.headless.HeadlessPreferences(new com.badlogic.gdx.files.FileHandle(file)));
+   assertFalse(SPDSettings.apdAdultHumor());
+   SPDSettings.apdAdultHumor(true);
+   com.watabou.utils.GameSettings.set(new com.badlogic.gdx.backends.headless.HeadlessPreferences(new com.badlogic.gdx.files.FileHandle(file)));
+   assertTrue(SPDSettings.apdAdultHumor());
+  }finally {com.watabou.utils.GameSettings.set(original);}
+ }
 }
