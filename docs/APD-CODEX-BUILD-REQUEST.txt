@@ -133,3 +133,6 @@ TEST184 fixture-only correction (2026-10-15T00:54:48.241Z): TEST183 source68bea4
 
 
 TEST185 evidence-list correction (2026-10-15T01:08:28.843Z): TEST184 sourcee883710fa759a41a1ffa7754f42c021f0f8121ec/run38662728056 passed1603core/debug/immediate-previous compiledTEST183history/26API34; the empty-Home assertion passed and wrote uimsd-empty-home.png, but the explicit evidence script retained only the prior34 files. Add that filename to pull+PNG validation and verify1603core/debug/immediate-previous compiledTEST184history/26API34/35PNG. No production/save/statistics/scoring/gameplay/delivery/physical-phone change.
+
+
+TEST186 exact-source request (2026-10-15T01:12:37.816Z): TEST185 commit80506e4deb7be7a7ed1fcbbd4ee37fac17972329 changed the build-request path but received no Actions run/check suite. Verify the retained empty-Home screenshot collection correction against immediate-previous compiledTEST184:1603core/debug/TEST184history/26API34/35PNG. No production/save/statistics/scoring/gameplay/delivery/physical-phone change.
