@@ -1,65 +1,60 @@
 {
-  "previous_label": "Codex TEST 200",
-  "previous_source": "9549d3638de133cb09864e1c325f15b325c550b2",
-  "previous_run": 38722796011,
+  "previous_label": "Codex TEST 201",
+  "previous_source": "a5071e47270ef3953a85eecc50f285d617f96fb3",
+  "previous_run": 38736265505,
   "date": "2026-10-15",
   "changes": [
     {
-      "category": "Development",
-      "sprite": "V061_PAGE",
-      "title": "Retain verified alpha and derived-damage evidence",
-      "text": "Preserve the actual TEST198 delivery records and the expanded real-Shocking exact-once regression committed after the immediate previous compiled TEST204 APK.",
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "Correct stale statistics after history replacement",
+      "text": "Check raw-log contents before reusing cached rows, even when the file name, size and timestamp are unchanged.",
       "paths": [
-        ".github/workflows/codex-existing-apk-delivery.yml",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/DerivedShockScalingTest.java",
-        "docs/APD-CODEX-CORE-TEST-REQUEST.txt",
-        "docs/APD-PRIVATE-ALPHA-DELIVERY-2026-10-15.md",
-        "docs/HANDOFF.md",
-        "docs/WORK-COMPLETED-LEDGER.md"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/DatasetStore.java"
       ]
     },
     {
       "category": "Changes",
-      "sprite": "V061_PAGE",
-      "title": "Visible boss phase history",
-      "text": "Record the explicit visible phase transitions of all five main bosses without exposing AI state, thresholds, targets, cooldowns or restore-time reconstruction.",
+      "sprite": "V061_BUGFIX",
+      "title": "Recover older row caches safely",
+      "text": "Bind derived caches to their source and rebuild older caches without changing raw history or saves.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/DM300.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/DwarfKing.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Goo.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Tengu.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/YogDzewa.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/ApdPlay.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/PlayTracker.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/GameFacts.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/TelemetryVersion.java",
-        "core/src/main/assets/apd/apd_records_history.txt"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowCodec.java"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_BUGFIX",
+      "title": "Reuse source-check workspace",
+      "text": "Reuse one small hashing buffer across a statistics load instead of allocating one for every log.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/DatasetStore.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Boss phase payload and wiring guards",
-      "text": "Retain public payload, invalid/restore suppression, all five boss hook counts, permanent schema and telemetry-version checks.",
+      "title": "Verify source replacement and cache compatibility",
+      "text": "Test changed equal-sized logs, unchanged caches, older cache rebuilding and incorrect source fingerprints.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/PlayWiringTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/BossPhaseRecordingTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/TelemetryVersionTest.java",
-        "core/src/test/resources/apd/fact_kind_manifest.txt"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowCacheSourceIdentityTest.java"
       ]
     },
     {
       "category": "Development",
       "sprite": "V061_PAGE",
-      "title": "TEST205 evidence request",
-      "text": "Document the reproduced omission, public boundary, exact previous compiled APK and complete verification request.",
+      "title": "Retain complete verification records",
+      "text": "Record the preceding verified build and the cache correction's reproduction, tests, compatibility and remaining limits.",
       "paths": [
         "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/APD-NEXT-BUILD-HISTORY.json",
+        "docs/APD-ROW-CACHE-SOURCE-IDENTITY-2026-10-15.md",
         "docs/APD-TEST205-BOSS-PHASES-2026-10-15.md",
-        "docs/APD-UIMSD-UNIVERSAL.md"
+        "docs/HANDOFF.md",
+        "docs/UIMSD-AUDIT-BUG-LOG.md",
+        "docs/WORK-COMPLETED-LEDGER.md",
+        "docs/APD-NEXT-BUILD-HISTORY.json"
       ]
     }
   ],
-  "commentary": "Boss phase numbering is local to each boss and initial combat state is implicit. Existing boss behavior, custom-rule scaling, saves, RNG and scoring are unchanged."
+  "commentary": "I fixed stale cached rows after an equal-sized history replacement. Raw player history is preserved; old optional caches rebuild automatically."
 }
