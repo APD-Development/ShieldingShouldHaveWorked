@@ -31,3 +31,11 @@ TEST185 adds only `uimsd-empty-home.png` to both the pull and validator lists. F
 
 ## TEST185 trigger result and TEST186 request
 Commit `80506e4deb7be7a7ed1fcbbd4ee37fac17972329` added the missing screenshot to the existing pull/validator lists and changed the explicit build-request path, but GitHub created no workflow run or check suite for that push during this invocation. No TEST185 build or tests occurred. TEST186 records the missing trigger and requests verification of the same uncompiled evidence-script correction against immediate-previous compiled TEST184. This is one reconciled request, not a claim that TEST185 ran.
+
+
+## TEST185 verified result
+The initial TEST185 request source `80506e4deb7be7a7ed1fcbbd4ee37fac17972329` produced no Actions run. The reconciled request source `40d31d81de4c2fcc1ae154e9ec0d1c8f6a28d984` compiled under the workflow's actual TEST185 label in run [38664406486](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38664406486) from 01:12:48Z through 01:25:32Z. It passed 1,603 core tests, debug assembly, immediate-previous compiled TEST184 history and all 26 API34 methods with zero failures/errors/skips.
+
+The downloaded Android artifact `11941165163` retained all 35 expected 320x640 PNGs. The full contact sheet and focused `uimsd-empty-home.png` were reviewed: the native empty Home is readable, shows “No finished runs yet”, and sends runs still going to Tables > Options without obsolete Rules/run-status conflation. APK artifact `11940212006` has SHA-256 `cc3c211a67d179f703e0d468ef54efdb5d62b1eec99f44cb54ececed2a519c1e`; core artifact is `11940232030`.
+
+TEST185 is verified hosted build/emulator evidence. No production source, raw history, save, permanent statistics, gameplay, scoring, application ID or signing behavior changed. No APK was delivered, and no physical-phone or owner-save result is claimed; TEST123 remains the last owner-delivered/signature-compared APK.

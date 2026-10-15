@@ -1,16 +1,15 @@
 {
-  "previous_label": "Codex TEST 184",
-  "previous_source": "e883710fa759a41a1ffa7754f42c021f0f8121ec",
-  "previous_run": 38662728056,
+  "previous_label": "Codex TEST 185",
+  "previous_source": "40d31d81de4c2fcc1ae154e9ec0d1c8f6a28d984",
+  "previous_run": 38664406486,
   "date": "2026-10-15",
   "changes": [
     {
-      "category": "Changes",
+      "category": "Testing",
       "sprite": "V061_PAGE",
-      "title": "Retain empty Home screenshot",
-      "text": "Collect and validate the native empty-history Home screenshot that the passing API34 test already writes, so the reviewed evidence set includes all 35 expected images.",
+      "title": "TEST185 verified evidence",
+      "text": "Record the verified native empty-History Home regression, retained 35-image evidence set, and the corrected TEST183/TEST184/TEST185 checkpoint sequence without changing application behavior.",
       "paths": [
-        "tools/run-codex-android-checks.sh",
         "docs/APD-TEST183-UIMSD-EMPTY-HOME-NATIVE-2026-10-15.md",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",

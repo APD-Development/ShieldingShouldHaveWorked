@@ -802,3 +802,12 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - No TEST185 build, core tests, emulator tests, screenshots or APK exist; do not infer completion from the branch commit.
 - TEST186 re-records the exact request while keeping immediate-previous compiled TEST184 as the comparison base: 1,603 core/debug/TEST184 history/26 API34/35 PNG.
 - Production source remains unchanged. No delivery or physical-phone claim; TEST182 remains the last fully verified fallback and TEST123 the last owner-delivered APK.
+
+
+## 2026-10-15T01:29:34.915Z — TEST185 verified after reconciled request
+- The initial TEST185 request commit `80506e4deb7be7a7ed1fcbbd4ee37fac17972329` produced no Actions run or check suite. Reconciled request source `40d31d81de4c2fcc1ae154e9ec0d1c8f6a28d984` then compiled under the workflow's actual `Codex TEST 185` label; there is no separate TEST186 APK.
+- Hosted run [38664406486](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38664406486) ran from 2026-10-15T01:12:48Z through 2026-10-15T01:25:32Z and passed 1,603 core tests, debug assembly, immediate-previous compiled TEST184 history, and all 26 API34 methods with zero failures/errors/skips.
+- Downloaded artifacts: core `11940232030`, APK `11940212006`, Android evidence `11941165163`. APK SHA-256 is `cc3c211a67d179f703e0d468ef54efdb5d62b1eec99f44cb54ececed2a519c1e`.
+- The Android artifact contains all 35 expected 320x640 PNGs. The complete contact sheet was reviewed; the native empty-History Home is readable and correctly separates finished runs from the Tables > Options route for runs still going, and APD Changes shows the immediate TEST184/TEST185 sequence without clipping or corruption.
+- TEST183's shared-emulator fixture failure and TEST184's omitted screenshot-pull entry remain recorded as failed/incomplete checkpoints. TEST185 is the latest fully verified source checkpoint. No application production code, gameplay, raw history, save, permanent statistics, scoring, application ID or signing identity changed in this evidence batch.
+- This is hosted build/emulator evidence, not physical-phone or owner-save verification. No APK was distributed or published; TEST123 remains the last owner-delivered/signature-compared APK. Do not rebuild unchanged TEST185. Continue the next distinct approved post-slider UIMSD reliability/backlog task.
