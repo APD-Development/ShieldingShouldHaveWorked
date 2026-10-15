@@ -755,3 +755,10 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - 34 PNGs decoded at 320×640 and passed contact-sheet/focused history review.
 - Column order and Move column now have retained exact-once recreation coverage and the restored Make first callback is exercised. Production behavior was unchanged.
 - Delivery was skipped; emulator evidence is not a physical-phone claim. TEST123 remains owner-delivered fallback. Do not rebuild unchanged TEST180.
+
+
+## 2026-10-15T00:12:37Z — TEST181 UIMSD scope-wording candidate
+- Re-read the verified TEST180 head and reproduced the documented empty-Home ambiguity in production source: the Rules control changes rule sets, while unfinished runs are a separate Tables > Options switch.
+- Added a pure Home empty-state message that names finished runs under other rules separately from runs still going, and routed the native Home through it. Options now explicitly says Rules does not change finished status; the Home scope note names runs still going among exclusions.
+- Added one retained regression method covering an empty history, a finished abandoned run under different rules, singular wording, the unfinished-run route, and all-rules inclusion. Expected total: 1,603 core tests.
+- Exact-source core/debug/immediate-previous TEST180 history/26 API34/34 PNG verification is pending. This is wording/query-scope UI only: no raw history, save, statistics, scoring, gameplay, application ID or signing behavior changed. No delivery or physical-phone claim; TEST123 remains owner-delivered fallback.

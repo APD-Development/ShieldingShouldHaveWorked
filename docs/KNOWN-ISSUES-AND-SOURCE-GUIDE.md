@@ -17,7 +17,7 @@ Repository: github.com/charltonchris29/ShieldingShouldHaveWorked (private). Work
 
 ## Known status / remaining bugs / open items
 1. UIMSD parameterized-dialog restoration has retained API34 coverage: verified TEST180 recreates the two-step Column order and Move column flow exactly once and exercises the restored Make first callback while preserving explicit/default query semantics. Physical-phone lifecycle acceptance remains unclaimed.
-2. UIMSD default scope counts only FINISHED runs under the rules a new run would use; abandoned runs and Cleric runs (own ruleset) only appear under "All (mixed)". By design, but may confuse; wording/empty state could be clearer.
+2. UIMSD default Home scope counts finished runs under the rules a new run would use. Abandoned runs are finished records; Cleric and other different-rule runs require Rules: all, while runs still going use the separate Tables > Options switch. TEST181 clarifies that distinction in the Home empty state, scope note and Options; exact-source verification is pending.
 3. A floor-1 run created while the tutorial was on keeps its hidden entrance door (abandon it and start a new run, or search).
 4. Hero-select markers (pips + win star): design written (docs/APD-HERO-MARKERS.md), NOT built, awaiting approval.
 5. Phone-test steps 23-41 of docs/APD-PHONE-CHECKLIST-B69.md were not finished/reported; unknown bugs may remain. Nothing in this build has been tested on a device by the developer assistant.

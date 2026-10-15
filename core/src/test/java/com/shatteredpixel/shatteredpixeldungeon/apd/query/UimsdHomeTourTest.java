@@ -149,6 +149,26 @@ public class UimsdHomeTourTest {
 	}
 
 	@Test
+	public void emptyHomeSeparatesRulesFromRunStatus() throws Exception {
+		Catalog empty = new DatasetStore(new File(tmp.getRoot(), "nothing-else")).load();
+		UimsdHome none = UimsdHome.build(empty, RULES.id, false);
+		assertTrue(none.emptyMessage().contains("No finished runs yet"));
+		assertTrue(none.emptyMessage().contains("Tables > Options > Include runs still going"));
+
+		File root = tmp.newFolder("other-rules");
+		Ruleset other = Ruleset.of(40, 0);
+		new SyntheticLog(root, "other", com.shatteredpixel.shatteredpixeldungeon.apd.stats.TelemetryVersion.CURRENT, 100L)
+				.start("run-other", 0, "WARRIOR", other.id, 0, 30, false).enter(1)
+				.end(com.shatteredpixel.shatteredpixeldungeon.apd.stats.LifecycleEvents.OUTCOME_ABANDONED, "", 1, 1, 1).close(true);
+		UimsdHome current = UimsdHome.build(new DatasetStore(root).load(), RULES.id, false);
+		assertTrue(current.isEmpty());
+		assertEquals(1, current.runsElsewhere);
+		assertTrue(current.emptyMessage(), current.emptyMessage().contains("1 finished run played under other rules"));
+		assertTrue(current.emptyMessage(), current.emptyMessage().contains("Runs still going are available"));
+		assertFalse("all-rules Home contains the finished run", UimsdHome.build(new DatasetStore(root).load(), RULES.id, true).isEmpty());
+	}
+
+	@Test
 	public void guideTopicsPointAtRealTourSteps() {
 		assertTrue(UimsdGuide.topics().size() >= 10);
 		Set<String> ids = new HashSet<>();

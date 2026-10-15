@@ -80,7 +80,7 @@ public final class WndUimsdOptions {
 		entries.add(Entry.heading("Which runs count"));
 		String rules = s.rules == Scope.Rules.ALL ? "All rules (mixed)" : s.rules == Scope.Rules.SPECIFIC ? "One set of rules" : "Your current rules";
 		entries.add(Entry.item("Rules: " + rules,
-				"Rules = difficulty, challenges and exotic-item setting. Runs played under different rules are only counted together if you choose all rules." + left(r.stats.otherRulesets)));
+				"Rules = difficulty, challenges and exotic-item setting. This changes which rules count, not whether a run is finished. Use Include runs still going below for unfinished runs. Runs played under different rules are only counted together if you choose all rules." + left(r.stats.otherRulesets)));
 		actions.add(new Runnable(){ public void run(){ pickRuleset(m); } });
 		if (s.finishedOnly){
 			entries.add(Entry.note("This view includes finished runs only."));

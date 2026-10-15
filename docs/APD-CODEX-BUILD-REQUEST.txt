@@ -115,3 +115,6 @@ TEST179 failed API34 (2026-10-14T23:52:01Z): sourcef6043c7d16cd52e57276113fb038a
 
 
 TEST180 verified (2026-10-15T00:06:25Z): sourceacf8592e2db3c30684e09a05bd22c097c0d5f077/run38656873159 passed1602core+26API34/debug/immediate-previous compiledTEST179history/34PNG. APK SHA256 279f6691874d32a892fc2743afe5946b3bdf371f315372b7541ffec646ab8332. Column order/Move column exact-once recreation and restored Make first callback passed with original explicit/default query restoration. Production code unchanged. No pending rebuild of unchanged TEST180; no delivery/phone claim; TEST123 remains owner-delivered.
+
+
+TEST181 exact-source request (2026-10-15T00:12:37Z): verify the UIMSD scope-wording correction with1603core tests, debug assembly, immediate-previous TEST180 compiled history, 26API34 checks and34 valid screenshots. Home/Options must distinguish finished runs under other rules from runs still going; abandoned remains a finished result. No raw-history/save/statistics/scoring/gameplay/delivery/physical-phone claim.

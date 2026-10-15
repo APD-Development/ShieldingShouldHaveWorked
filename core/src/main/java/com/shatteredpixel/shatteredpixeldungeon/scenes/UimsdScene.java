@@ -424,14 +424,10 @@ public class UimsdScene extends PixelScene {
 
 	//What the Home page shows before there is anything to count: what UIMSD is, what will appear here, and the tour as the main thing to do.
 	private void buildFirstRun( UimsdHome home, float bottom ){
-		boolean elsewhere = home.runsElsewhere > 0 && !homeAllRules;
 		RenderedTextBlock welcome = text("Welcome to UIMSD", UimsdStyle.SIZE_TITLE, UimsdStyle.TITLE, contentW);
 		welcome.setPos(x0, y + 2);
 		y = welcome.bottom() + 2;
-		RenderedTextBlock what = text(elsewhere
-				? "No finished runs under these rules. Tap Rules to include your other " + home.runsElsewhere + " runs."
-				: "No finished runs yet. Statistics appear when a recorded run ends.",
-				UimsdStyle.SIZE_HELP, UimsdStyle.TEXT, contentW);
+		RenderedTextBlock what = text(home.emptyMessage(), UimsdStyle.SIZE_HELP, UimsdStyle.TEXT, contentW);
 		what.setPos(x0, y);y = what.bottom() + 4;
 
 		StyledButton tour = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "Take the tour (2 minutes)", 8){

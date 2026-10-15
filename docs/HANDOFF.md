@@ -2293,3 +2293,10 @@ Adjacent audit confirmed seven direct-damage calls in Blast Wave, Living Earth a
 - 34/34 screenshots decoded at 320×640; contact-sheet/focused APD Changes review found the expected TEST180→TEST179→TEST178 sequence and no blank, corrupt or visibly clipped image.
 - Verified retained coverage: Column order and its parameterized Move column child each restore exactly once across scene recreation, and Make first executes through the restored callback while original explicit/default query semantics are restored afterward.
 - Production query/window, save, player-history, scoring, identity and signing code were unchanged. Private delivery skipped; no physical-phone claim. TEST123 remains last owner-delivered/signature-compared. Do not rebuild unchanged TEST180; continue a distinct documented post-slider backlog item.
+
+
+## 2026-10-15T00:12:37Z — TEST181 UIMSD scope-wording candidate
+- Re-read the verified TEST180 head and reproduced the documented empty-Home ambiguity in production source: the Rules control changes rule sets, while unfinished runs are a separate Tables > Options switch.
+- Added a pure Home empty-state message that names finished runs under other rules separately from runs still going, and routed the native Home through it. Options now explicitly says Rules does not change finished status; the Home scope note names runs still going among exclusions.
+- Added one retained regression method covering an empty history, a finished abandoned run under different rules, singular wording, the unfinished-run route, and all-rules inclusion. Expected total: 1,603 core tests.
+- Exact-source core/debug/immediate-previous TEST180 history/26 API34/34 PNG verification is pending. This is wording/query-scope UI only: no raw history, save, statistics, scoring, gameplay, application ID or signing behavior changed. No delivery or physical-phone claim; TEST123 remains owner-delivered fallback.

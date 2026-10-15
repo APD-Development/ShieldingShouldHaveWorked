@@ -113,11 +113,22 @@ public final class UimsdHome {
 				? "MIXED RULES: all finished runs, played under " + rulesets + " different sets of rules (difficulty, challenges, exotic-item setting). The numbers below are not directly comparable: tap Rules to see only your own, or open the Difficulty table to compare like with like."
 				: "All finished runs, whatever rules they were played under.") : "Finished runs played under your current rules.")
 				+ (!allRules && runsElsewhere > 0 ? " " + runsElsewhere + (runsElsewhere == 1 ? " run was" : " runs were") + " played under other rules (another difficulty, challenges or exotic setting): tap Rules to include them." : "")
-				+ " Runs with unknown or changed rules, and repeated imported copies, are left out; table Options can include them.";
+				+ " Runs still going, runs with unknown or changed rules, and repeated imported copies are left out; table Options can include them.";
 	}
 
 	public boolean isEmpty(){
 		return runs == 0;
+	}
+
+	//The empty Home must keep rule selection separate from run status: Rules never means "include unfinished".
+	public String emptyMessage(){
+		if (!isEmpty()) return "";
+		if (!allRules && runsElsewhere > 0){
+			return "No finished runs under your current rules. Tap Rules to include " + runsElsewhere
+					+ (runsElsewhere == 1 ? " finished run" : " finished runs")
+					+ " played under other rules. Runs still going are available in Tables > Options > Include runs still going.";
+		}
+		return "No finished runs yet. Runs still going are available in Tables > Options > Include runs still going. Home statistics appear when a recorded run ends.";
 	}
 
 	public Card card( String id ){
