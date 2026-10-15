@@ -19,9 +19,10 @@
       "category": "Testing",
       "sprite": "ICON_CHECKED",
       "title": "Retain damaged-history provenance cases",
-      "text": "Cover clean open history, three damaged statuses, valid sealed history with trailing bytes, and disposable cache-version invalidation.",
+      "text": "Cover clean and damaged histories, actual resynchronization recovery, cache-version invalidation and rejection of older boss-classification caches.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/DamagedFactsProvenanceTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/DamagedFactsProvenanceTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/QuestBossClassificationTest.java"
       ]
     },
     {
