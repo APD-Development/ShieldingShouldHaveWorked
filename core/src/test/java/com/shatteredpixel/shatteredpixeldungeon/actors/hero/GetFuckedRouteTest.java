@@ -29,6 +29,7 @@ import static org.mockito.ArgumentMatchers.*;
 
 /** Fixed commands in the production Actor.process scheduler. No action policy or combat model. */
 public class GetFuckedRouteTest {
+    @Rule public org.junit.rules.Timeout deadline = org.junit.rules.Timeout.seconds(45);
     private final List<MockedStatic<?>> visuals = new ArrayList<>();
     private CellSelector.Listener selection;
     private AtomicBoolean watch;
@@ -50,6 +51,7 @@ public class GetFuckedRouteTest {
         MockedStatic<T> m = mockStatic(type); visuals.add(m); return m;
     }
     @Before public void init() throws Exception {
+        System.out.println("RUNNER_STAGE initialize");
         HeadlessTestSupport.start();
         MockedStatic<GameScene> scene = mockStatic(GameScene.class, invocation -> {
             Object[] args = invocation.getArguments();
@@ -83,6 +85,7 @@ public class GetFuckedRouteTest {
             return null;
         });
         visuals.add(missiles);
+        System.out.println("RUNNER_STAGE visuals bound");
         Method context = LevelGenerationHarness.class.getDeclaredMethod("applyContext", LevelGenerationHarness.Context.class);
         context.setAccessible(true); context.invoke(null, LevelGenerationHarness.Context.REFERENCE);
         SPDSettings.challenges(Challenges.GET_FUCKED);
@@ -91,12 +94,15 @@ public class GetFuckedRouteTest {
         GamesInProgress.selectedClass = HeroClass.CLERIC;
         GamesInProgress.randomizedClass = false; GamesInProgress.curSlot = 1;
         Dungeon.init();
+        System.out.println("RUNNER_STAGE actual Cleric created");
         Random.pushGenerator(266L); //init resets the RNG stack; seed once after it, never during the route.
         Dungeon.depth = 1; Dungeon.branch = 0; Dungeon.level = Dungeon.newLevel();
+        System.out.println("RUNNER_STAGE actual level generated");
         bind(Dungeon.hero);
         for (Mob m : Dungeon.level.mobs) bind(m);
         for (Heap h : Dungeon.level.heaps.valueList()) heapSprite(h);
         Dungeon.switchLevel(Dungeon.level, -1);
+        System.out.println("RUNNER_STAGE actual level entered");
         oldKeepAlive = Actor.keepActorThreadAlive;
         Actor.keepActorThreadAlive = false;
         //Actor.process has a public stop flag, but waits once when an animation/input pauses it.
@@ -169,6 +175,7 @@ public class GetFuckedRouteTest {
         ready(); log("CAST "+spell.getClass().getSimpleName()+" "+target);
     }
     @Test public void seed266InitialCommands() throws Exception {
+        System.out.println("RUNNER_STAGE scheduler start");
         ready();
         assertEquals(1,Dungeon.hero.lvl); assertEquals(1,Dungeon.hero.HP); assertEquals(1,Dungeon.hero.HT);
         for(Map<Talent,Integer> tier:Dungeon.hero.talents) for(int value:tier.values()) assertEquals(0,value);
