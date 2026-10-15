@@ -53,7 +53,11 @@
         ".github/workflows/codex-healing-apk-delivery.yml",
         "docs/APD-CLEAN-LANGUAGE-2026-10-15.md",
         "docs/APD-NEXT-BUILD-HISTORY.json",
-        "docs/APD-CODEX-BUILD-REQUEST.txt"
+        "docs/APD-CODEX-BUILD-REQUEST.txt",
+        "docs/APD-ALPHA-CONTROLS-ACCEPTANCE-2026-10-15.md",
+        "docs/APD-UIMSD-AUDIT-RECONCILIATION-2026-10-15.md",
+        "docs/HANDOFF.md",
+        "docs/WORK-COMPLETED-LEDGER.md"
       ]
     }
   ],
