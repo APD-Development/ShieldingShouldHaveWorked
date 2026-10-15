@@ -233,10 +233,12 @@ public class CustomRulesNoticeDeviceTest {
         long down=android.os.SystemClock.uptimeMillis();
         android.view.MotionEvent event=android.view.MotionEvent.obtain(down,down,android.view.MotionEvent.ACTION_DOWN,point.x,point.y,0);
         event.setSource(android.view.InputDevice.SOURCE_TOUCHSCREEN);
+        event.setDisplayId(android.view.Display.DEFAULT_DISPLAY);
         assertTrue("Android accepted native touch down",automation.injectInputEvent(event,true));event.recycle();
         Thread.sleep(150);
         event=android.view.MotionEvent.obtain(down,android.os.SystemClock.uptimeMillis(),android.view.MotionEvent.ACTION_UP,point.x,point.y,0);
         event.setSource(android.view.InputDevice.SOURCE_TOUCHSCREEN);
+        event.setDisplayId(android.view.Display.DEFAULT_DISPLAY);
         assertTrue("Android accepted native touch up",automation.injectInputEvent(event,true));event.recycle();
         Thread.sleep(400);
     }

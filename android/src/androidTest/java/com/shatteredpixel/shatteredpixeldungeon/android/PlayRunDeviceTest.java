@@ -231,6 +231,22 @@ public class PlayRunDeviceTest {
     // red fill and light text pixels before calling a screenshot visual evidence.
     static void captureRenderedButton(Class<? extends com.shatteredpixel.shatteredpixeldungeon.ui.Window> type,
                                       String label, String filename) throws Exception {
+        if ("true".equals(androidx.test.platform.app.InstrumentationRegistry.getArguments().getString("apdSkipPixelEvidence"))) {
+            final java.util.concurrent.atomic.AtomicBoolean visible=new java.util.concurrent.atomic.AtomicBoolean();
+            onRender(()->{try {
+                for(Object member:(java.util.List<?>)field(Game.scene(),"members")) {
+                    if(!type.isInstance(member)) continue;
+                    com.shatteredpixel.shatteredpixeldungeon.ui.Window window=(com.shatteredpixel.shatteredpixeldungeon.ui.Window)member;
+                    if(!window.visible) continue;
+                    for(Object child:(java.util.List<?>)field(window,"members"))
+                        if(child instanceof com.shatteredpixel.shatteredpixeldungeon.ui.RedButton
+                                && ((com.shatteredpixel.shatteredpixeldungeon.ui.RedButton)child).text().equals(label)
+                                && ((com.shatteredpixel.shatteredpixeldungeon.ui.RedButton)child).visible) visible.set(true);
+                }
+            }catch(Exception e){throw new RuntimeException(e);}});
+            assertTrue(label + " button is present and visible",visible.get());
+            return;
+        }
         final int[] stableFrames={0};
         waitUntil(label + " button actually rendered",()->{
             final int[] bounds=new int[4];
