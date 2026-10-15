@@ -73,14 +73,18 @@ public class AboutScene extends PixelScene {
 				"Created by Chris (charltonchris29)\n" +
 				"Version " + com.watabou.noosa.Game.version + " (build " + com.watabou.noosa.Game.versionCode + ")\n" +
 				"A community-driven expansion of Shattered Pixel Dungeon, focused on deeper statistics, greater replayability, gameplay transparency, and player choice.\n" +
-				"Founded on the principle that shielding should have fucking worked.", null, null);
+				(com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdAdultHumor()
+                    ? "Founded on the principle that shielding should have fucking worked."
+                    : "Founded on the principle that shielding should have worked."), null, null);
 		apd.setRect((w - colWidth)/2f, insets.top + 6, colWidth, 0);
 		content.add(apd);
 		float infoTop = apd.bottom() + 4;
 		final float infoWidth = Math.min(w - 12, 220);
 		RedButton info0 = new RedButton("Why APD Exists", 6){
 			@Override protected void onClick(){
-				AboutScene.this.addToFront(new com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdText("Why APD Exists", "APD began with the shielding mechanic: shielding should have fucking worked.\n\nAfter years playing Shattered Pixel Dungeon, I wanted to expand the experience. APD builds on SPD's accomplishments, rather than diminishing them."));
+				AboutScene.this.addToFront(new com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdText("Why APD Exists", (com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdAdultHumor()
+                        ? "APD began with the shielding mechanic: shielding should have fucking worked."
+                        : "APD began with the shielding mechanic: shielding should have worked.") + "\n\nAfter years playing Shattered Pixel Dungeon, I wanted to expand the experience. APD builds on SPD's accomplishments, rather than diminishing them."));
 			}
 		};
 		info0.multiline = true;
