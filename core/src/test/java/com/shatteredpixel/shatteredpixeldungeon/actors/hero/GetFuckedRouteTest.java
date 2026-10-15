@@ -195,6 +195,14 @@ public class GetFuckedRouteTest {
         System.out.println("LAYOUT266 "+layout); log("START"); snapshot("START");
         waitOne(); waitOne();
         snapshot("AFTER_TWO_WAITS");
+        //Literal exploratory prefix. No path planner, policy, free item collection or resource injection.
+        for(int cell:new int[]{905,906,907,908,909,910,911,912,951,952,953,954,955,956,957,958,
+                959,960,999,1038,1077,1078,1079,1080,1119}) click(cell);
+        snapshot("KEY_ROOM_PREFIX");
+        for(int cell:new int[]{1080,1079,1078,1077,1038,999,960,959,958,957,956,955,954,953,
+                952,951,912,911,910,909,908,868,830,831,832,833,834,834,795,796,797,758,719}) click(cell);
+        assertNotNull("Mail must actually have been picked up",Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor.class));
+        snapshot("MAIL_ACQUIRED");
         assertEquals(1,Dungeon.hero.HP);
     }
 }
