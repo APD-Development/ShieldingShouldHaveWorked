@@ -22,6 +22,8 @@ jobs:
           yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36"
       - uses: gradle/actions/setup-gradle@v4
+      - name: Inventory health writes and death calls across actual production source
+        run: python3 .github/scripts/get_fucked_source_audit.py
       - name: Run scenario and existing challenge tests
         run: ./gradlew :core:test --tests '*GetFuckedFeasibilityTest' --tests '*GetFuckedTest' --tests '*ShieldHungerTest'
       - name: Upload test results
@@ -30,3 +32,14 @@ jobs:
         with:
           name: get-fucked-feasibility-results
           path: core/build/test-results/test/
+      - name: Print bounded scenario observations
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import pathlib, xml.etree.ElementTree as ET
+          for p in pathlib.Path('core/build/test-results/test').glob('TEST-*.xml'):
+              r=ET.parse(p).getroot()
+              print(p.name, r.attrib)
+              for e in r.findall('system-out'):
+                  print(e.text or '')
+          PY

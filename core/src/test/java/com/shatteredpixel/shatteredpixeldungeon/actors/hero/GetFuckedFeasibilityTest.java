@@ -374,6 +374,79 @@ public class GetFuckedFeasibilityTest {
                 +" whole +10 Horn charges (1710 satiety at ordinary settings), if promptly consumed to prevent capping");
     }
 
+    @Test public void continuousBarrierAndTomeTimelineDoesNotMaintain75Shield() throws Exception {
+        hero.lvl = 30;
+        hero.subClass = HeroSubClass.PALADIN;
+        Talent.initSubclassTalents(hero);
+        hero.talents.get(2).put(Talent.LAY_ON_HANDS, 3);
+        HolyTome t = tome(10);
+        t.directCharge(100); //One explicitly granted conditional starting state, no later refills.
+        Barrier b = barrier(75);
+        Hunger h = hunger(0);
+        Method effect = LayOnHands.class.getDeclaredMethod("affectChar", Hero.class,
+                com.shatteredpixel.shatteredpixeldungeon.actors.Char.class);
+        effect.setAccessible(true);
+        hero.sprite = new SilentSprite();
+        int minimum = 75;
+        for (int tick = 1; tick <= 600; tick++) {
+            b.act();
+            hero.buff(HolyTome.TomeRecharge.class).act();
+            //One real ration's satiety, consumed before the lethal threshold. No food beyond this.
+            if (tick == 400) h.satisfy(300);
+            h.act();
+            if (tick % 40 == 0) {
+                assertTrue(t.canCast(hero, LayOnHands.INSTANCE));
+                effect.invoke(LayOnHands.INSTANCE, hero, hero);
+                LayOnHands.INSTANCE.onSpellCast(t, hero);
+                hero.damage(20, new Object());
+                minimum = Math.min(minimum, hero.shielding());
+                assertEquals("tick="+tick, 1, hero.HP);
+            }
+        }
+        assertTrue(minimum < 10);
+        assertEquals(300, h.hunger());
+        System.out.println("CONTINUOUS conditional level30/+10 Tome: 600 ticks, 15 paid Lay on Hands casts,"
+                +" 15 post-defense hits of 20, initial 75 barrier, one ration, minimum shield="+minimum
+                +" final shield="+hero.shielding()+" tome="+charge(t)+" hunger="+h.hunger()
+                +"; fixed hazard schedule only, no dungeon or availability proof");
+        hero.sprite = null;
+    }
+
+    @Test public void measureJointPlacedEquipmentAvailabilityWithoutPlaying() throws Exception {
+        int mail = 0, weapon = 0, horn = 0, joint = 0;
+        for (long seed = 1; seed <= 100; seed++) {
+            final int[] state = new int[4];
+            final StringBuilder matches = new StringBuilder();
+            LevelGenerationHarness.levelObserver = (depth, level) -> {
+                for (Heap heap : level.heaps.valueList()) for (Item item : heap.items) {
+                    String name = item.getClass().getSimpleName();
+                    boolean wanted = (depth <= 4 && name.equals("MailArmor"))
+                            || (depth <= 14 && name.equals("Greatsword"))
+                            || name.equals("HornOfPlenty");
+                    if (wanted) {
+                        if (name.equals("MailArmor")) state[0] = 1;
+                        if (name.equals("Greatsword")) state[1] = 1;
+                        if (name.equals("HornOfPlenty")) state[2] = 1;
+                        matches.append(name).append('@').append(depth).append(':').append(heap.type)
+                                .append(":cursed=").append(item.cursed).append(';');
+                    }
+                }
+            };
+            try {
+                LevelGenerationHarness.generate(seed, Challenges.GET_FUCKED, HeroClass.CLERIC,
+                        LevelGenerationHarness.Context.REFERENCE, 26);
+            } finally { LevelGenerationHarness.levelObserver = null; }
+            mail += state[0]; weapon += state[1]; horn += state[2];
+            if (state[0]+state[1]+state[2] == 3) {
+                joint++;
+                System.out.println("JOINT_CANDIDATE seed="+seed+" "+matches
+                        +"; placement only, shops/locks/curses/access/survival unresolved");
+            }
+        }
+        System.out.println("JOINT_PLACEMENT n=100 mail_by4="+mail+" greatsword_by14="+weapon
+                +" horn_anywhere="+horn+" joint="+joint+"; excludes quest rewards and later action-dependent drops");
+    }
+
     @Test public void measureStaticTravelLowerBoundsAndPlacedFoodWithoutPlaying() throws Exception {
         //Topology measurements only. No actor acts, hero decisions, item use, or run outcome.
         for (long seed : new long[]{1L, 12345L, 54321L, 8675309L, 31415926L, 27182818L}) {
