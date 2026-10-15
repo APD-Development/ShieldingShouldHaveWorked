@@ -228,18 +228,23 @@ public class CustomRulesNoticeDeviceTest {
         }
     }
 
-    private static void androidShellTap(Point point) throws Exception {
-        android.app.UiAutomation automation=InstrumentationRegistry.getInstrumentation().getUiAutomation();
-        long down=android.os.SystemClock.uptimeMillis();
-        android.view.MotionEvent event=android.view.MotionEvent.obtain(down,down,android.view.MotionEvent.ACTION_DOWN,point.x,point.y,0);
-        event.setSource(android.view.InputDevice.SOURCE_TOUCHSCREEN);
-        event.setDisplayId(android.view.Display.DEFAULT_DISPLAY);
-        assertTrue("Android accepted native touch down",automation.injectInputEvent(event,true));event.recycle();
+    private static void androidActivityTap(ActivityScenario<AndroidLauncher> scenario,Point point) throws Exception {
+        final java.util.concurrent.atomic.AtomicBoolean accepted=new java.util.concurrent.atomic.AtomicBoolean();
+        final long down=android.os.SystemClock.uptimeMillis();
+        scenario.onActivity(activity->{
+            android.view.MotionEvent event=android.view.MotionEvent.obtain(down,down,android.view.MotionEvent.ACTION_DOWN,point.x,point.y,0);
+            event.setSource(android.view.InputDevice.SOURCE_TOUCHSCREEN);
+            accepted.set(activity.dispatchTouchEvent(event));event.recycle();
+        });
+        assertTrue("Android activity accepted native touch down",accepted.get());
         Thread.sleep(150);
-        event=android.view.MotionEvent.obtain(down,android.os.SystemClock.uptimeMillis(),android.view.MotionEvent.ACTION_UP,point.x,point.y,0);
-        event.setSource(android.view.InputDevice.SOURCE_TOUCHSCREEN);
-        event.setDisplayId(android.view.Display.DEFAULT_DISPLAY);
-        assertTrue("Android accepted native touch up",automation.injectInputEvent(event,true));event.recycle();
+        accepted.set(false);
+        scenario.onActivity(activity->{
+            android.view.MotionEvent event=android.view.MotionEvent.obtain(down,android.os.SystemClock.uptimeMillis(),android.view.MotionEvent.ACTION_UP,point.x,point.y,0);
+            event.setSource(android.view.InputDevice.SOURCE_TOUCHSCREEN);
+            accepted.set(activity.dispatchTouchEvent(event));event.recycle();
+        });
+        assertTrue("Android activity accepted native touch up",accepted.get());
         Thread.sleep(400);
     }
 
@@ -279,7 +284,7 @@ public class CustomRulesNoticeDeviceTest {
                             scroll.scrollTo(0, Math.max(0, slider.top() - 24));
                             touch[0] = slider.camera().cameraToScreen(maximum ? slider.right() - 3 : slider.left() + 2, slider.bottom() - 7);
                         } catch (Exception e) { throw new RuntimeException(e); } });
-                        androidShellTap(touch[0]);
+                        androidActivityTap(scenario,touch[0]);
                         render(() -> { try {
                             int value = maximum ? rule.max : rule.min;
                             OptionSlider slider = find(window[0], OptionSlider.class).get(rule.ordinal());
@@ -297,7 +302,7 @@ public class CustomRulesNoticeDeviceTest {
                         }
                         assertNotNull(touch[0]);
                     } catch (Exception e) { throw new RuntimeException(e); } });
-                    androidShellTap(touch[0]);
+                    androidActivityTap(scenario,touch[0]);
                     render(() -> { try {
                         for (CustomDungeonRules.Slider rule : CustomDungeonRules.Slider.values()) assertEquals(rule.name(), maximum ? rule.max : rule.min, SPDSettings.apdCustomRules().get(rule));
                         assertSame(active[0], Dungeon.customRules());
