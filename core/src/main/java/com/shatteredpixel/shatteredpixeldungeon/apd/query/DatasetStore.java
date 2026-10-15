@@ -46,7 +46,7 @@ import java.util.Set;
 //Builds the Catalog from the raw logs: runs/*.apdlog (recorded runs) and legacy/*.apdlog (imported ranking records).
 //
 //The raw logs are the only source of truth. Each log's rows are cached under derived/rows/<log>.apdr, valid only while that log has
-//exactly the size it had (logs are append-only) and the builder is the same version, so a new run or a run that went on costs
+//the same byte length and SHA-256 content it had and the builder is the same version, so a new run or a run that went on costs
 //one log to read, not the whole history. A missing, stale, damaged or older cache is rebuilt silently from the log, and deleting
 //the whole folder loses nothing. Rows are assembled and merged here every time (cheap), never cached merged.
 public final class DatasetStore {
@@ -100,18 +100,19 @@ public final class DatasetStore {
 		long t0 = System.nanoTime();
 		Catalog cat = new Catalog();
 		Map<String, DatasetDef> defs = defs();
+		byte[] fingerprintBuffer = new byte[32 * 1024];
 		List<LogRows> recorded = new ArrayList<>();
 		List<LogRows> imported = new ArrayList<>();
 		boolean demoFolder = new File(root, DEMO_MARKER_FILE).isFile();
 		cat.synthetic = demoFolder;
 		for (File f : logs(new File(root, "runs"))){
 			if (idOf(f).startsWith(DEMO_LOG_PREFIX) != demoFolder) continue;
-			LogRows lr = rowsFor(f, false, defs, cat);
+			LogRows lr = rowsFor(f, false, defs, cat, fingerprintBuffer);
 			if (lr != null) recorded.add(lr);
 		}
 		for (File f : logs(new File(root, "legacy"))){
 			if (idOf(f).startsWith(DEMO_LOG_PREFIX) != demoFolder) continue;
-			LogRows lr = rowsFor(f, true, defs, cat);
+			LogRows lr = rowsFor(f, true, defs, cat, fingerprintBuffer);
 			if (lr != null) imported.add(lr);
 		}
 		assemble(cat, defs, recorded, imported);
@@ -129,14 +130,16 @@ public final class DatasetStore {
 		return cat;
 	}
 
-	private LogRows rowsFor( File log, boolean legacy, Map<String, DatasetDef> defs, Catalog cat ){
+	private LogRows rowsFor( File log, boolean legacy, Map<String, DatasetDef> defs, Catalog cat, byte[] fingerprintBuffer ){
 		String id = idOf(log);
 		long length = log.length();
+		byte[] sourceFingerprint = null;
+		try { sourceFingerprint = fingerprint(log, fingerprintBuffer); } catch (IOException ignored) { }
 		// Recorded and ranking-import logs may legitimately share a filename.
 		File cache = new File(rowsDir(), (legacy ? "legacy-" : "runs-") + id + ".apdr");
-		if (cache.isFile()){
+		if (sourceFingerprint != null && cache.isFile()){
 			try {
-				LogRows lr = RowCodec.decode(readAll(cache), length, defs);
+				LogRows lr = RowCodec.decode(readAll(cache), length, defs, sourceFingerprint);
 				if (lr != null){
 					cat.logsCached++;
 					return lr;
@@ -149,11 +152,29 @@ public final class DatasetStore {
 			ReadResult r = RunLogReader.read(log);
 			LogRows lr = legacy ? RowBuilders.fromLegacyLog(r, id) : RowBuilders.fromLog(r, id);
 			cat.logsRebuilt++;
-			writeCache(cache, RowCodec.encode(lr, length, defs));
+			// Do not bind rows to a different snapshot if the raw log changed while being read.
+			try {
+				if (sourceFingerprint != null && length == log.length()
+						&& Arrays.equals(sourceFingerprint, fingerprint(log, fingerprintBuffer)))
+					writeCache(cache, RowCodec.encode(lr, length, defs, sourceFingerprint));
+			} catch (IOException ignored) { /* The cache is optional; retain the actual parsed rows. */ }
 			return lr;
 		} catch (Throwable t){
 			return null;
 		}
+	}
+
+	private static byte[] fingerprint(File file, byte[] buffer) throws IOException {
+		java.security.MessageDigest digest;
+		try { digest = java.security.MessageDigest.getInstance("SHA-256"); }
+		catch (java.security.NoSuchAlgorithmException unavailable) { throw new IOException(unavailable); }
+		try (FileInputStream in = new FileInputStream(file)) {
+			int count;
+			while ((count = in.read(buffer)) != -1) {
+				if (count != 0) digest.update(buffer, 0, count);
+			}
+		}
+		return digest.digest();
 	}
 
 	private static byte[] readAll( File f ) throws IOException {
@@ -410,3 +431,4 @@ public final class DatasetStore {
 		return text ? a.text(col).equals(b.text(col)) : a.num(col) == b.num(col);
 	}
 }
+
