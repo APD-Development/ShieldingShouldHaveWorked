@@ -1,32 +1,23 @@
 {
-  "previous_label": "Codex TEST 204",
-  "previous_source": "245b21b7064a03b916e68f1992f94ca017f22fc0",
-  "previous_run": 38747671347,
+  "previous_label": "Codex TEST 205",
+  "previous_source": "4ddd6e415247bccb60e30d8af8f4b92335219802",
+  "previous_run": 38751801184,
   "date": "2026-10-15",
   "changes": [
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Show scaled averages and medians in the right units",
-      "text": "Display fixed-point statistics such as2.5 as2.5 instead of250 or2500.",
+      "title": "Keep rounded statistical lower bounds conservative",
+      "text": "Display a known minimum of 2.46 as >=2.4 instead of incorrectly claiming >=2.5.",
       "paths": [
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/CellFormatter.java"
       ]
     },
     {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "Keep custom-question totals and rates in player units",
-      "text": "Use the column's displayed units for answer numbers and per-run rates while preserving raw records and query calculations.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/Questions.java"
-      ]
-    },
-    {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Verify scaled statistics from recorded events",
-      "text": "Test both scales through saved synthetic logs, averages, medians, totals, rates and unknown/provenance states.",
+      "title": "Check rounded positive and negative statistical bounds",
+      "text": "Verify scaled and ordinary mean/median lower bounds, including negative values, while preserving exact-result rounding.",
       "paths": [
         "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/ScaledAggregateDisplayTest.java"
       ]
@@ -34,19 +25,16 @@
     {
       "category": "Development",
       "sprite": "V061_PAGE",
-      "title": "Retain private Cleric delivery and audit evidence",
-      "text": "Record verified TEST204 delivery, reviewed components and the separate statistics presentation correction.",
+      "title": "Record rounding evidence and registry research",
+      "text": "Retain the follow-up regression and local schema-lookup measurements without claiming phone performance gains.",
       "paths": [
-        ".github/workflows/codex-existing-apk-delivery.yml",
-        "docs/APD-CLERIC-CORRECTIONS-DELIVERY-2026-10-15.md",
-        "docs/APD-CODEX-BUILD-REQUEST.txt",
+        "docs/APD-AGGREGATE-BOUND-ROUNDING-2026-10-15.md",
+        "docs/APD-REGISTRY-FINGERPRINT-RESEARCH-2026-10-15.md",
         "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/HANDOFF.md",
-        "docs/APD-SCALED-STATISTICS-DISPLAY-2026-10-15.md",
-        "docs/APD-UIMSD-QUERY-REVIEW-CONTINUATION-2026-10-15.md",
-        "docs/APD-UIMSD-QUERY-REVIEW-CONTINUATION-2026-10-15.json"
+        "docs/APD-CODEX-BUILD-REQUEST.txt"
       ]
     }
   ],
-  "commentary": "I corrected statistics that displayed fixed-point storage units instead of their intended values. Recorded history and calculations remain intact, and the previously delivered Cleric fixes are preserved."
+  "commentary": "I corrected rounding for statistics marked as lower bounds so the display does not overstate what is known. Recorded values and normal rounding for exact results are preserved."
 }
