@@ -270,10 +270,11 @@ public final class DerivedStore {
 
 	private void writeCache( FactTable t, List<String> prints ){
 		File cache = cacheFile();
-		File tmp = new File(cache.getPath() + ".tmp");
+		File tmp = null;
 		try {
 			File dir = cache.getParentFile();
-			if (!dir.isDirectory() && !dir.mkdirs()) return;
+			if (!dir.isDirectory() && !dir.mkdirs() && !dir.isDirectory()) return;
+			tmp = File.createTempFile(cache.getName() + ".", ".tmp", dir);
 			java.util.zip.CheckedOutputStream checked = new java.util.zip.CheckedOutputStream(new FileOutputStream(tmp), new java.util.zip.CRC32());
 			Writer w = new OutputStreamWriter(checked, "UTF-8");
 			try {
@@ -294,7 +295,9 @@ public final class DerivedStore {
 			if (cache.exists() && !cache.delete()) return;
 			tmp.renameTo(cache);
 		} catch (Throwable ignored){
-			tmp.delete();  //the cache is optional
+			// The cache is optional; no writer may remove another writer's temporary file.
+		} finally {
+			if (tmp != null) try { tmp.delete(); } catch (SecurityException ignored) { }
 		}
 	}
 
@@ -401,5 +404,6 @@ public final class DerivedStore {
 		throw new IllegalArgumentException("bad fact kind");
 	}
 }
+
 
 
