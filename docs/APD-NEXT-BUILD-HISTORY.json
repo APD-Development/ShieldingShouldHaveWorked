@@ -1,60 +1,61 @@
 {
-  "previous_label": "Codex TEST 218",
-  "previous_source": "2210d59e1924fdf5ff56ecfb41c25ee0b2c707d0",
-  "previous_run": 38804215957,
+  "previous_label": "Codex TEST 219",
+  "previous_source": "d1d1b7de7bbf73f9bfd5b38602ce8eaf5756394b",
+  "previous_run": 38804827414,
   "date": "2026-10-15",
   "changes": [
     {
-      "category": "Changes",
-      "sprite": "V061_BUGFIX",
-      "title": "Healing-only potion conversion setting",
-      "text": "The APD conversion slider now affects only generated Healing potions becoming Shielding; other potions and scrolls retain the original Exotic Crystals behavior.",
+      "category": "Quality of Life",
+      "sprite": "ICON_INFO",
+      "title": "Clean About text when Adult Humor is off",
+      "text": "The founding statement and Why APD Exists popup now follow Adult Humor while retaining their original adult wording.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Generator.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/trinkets/ExoticCrystals.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/APDSettingsPane.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/AboutScene.java"
       ]
     },
     {
-      "category": "Statistics / UIMSD",
-      "sprite": "ICON_CHECKED",
-      "title": "Identify corrected conversion rules",
-      "text": "Keep corrected nonzero Healing-only settings distinct from older global-conversion rules without changing stored histories or neutral rules.",
+      "category": "Quality of Life",
+      "sprite": "ICON_INFO",
+      "title": "Apply clean authored-language alternatives",
+      "text": "Adult Humor off uses clean badge, dialogue, journal, news and history wording; original adult text remains available without changing player-entered text.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/Ruleset.java"
-      ]
-    },
-    {
-      "category": "Testing",
-      "sprite": "ICON_CHECKED",
-      "title": "Verify conversion scope and saved settings",
-      "text": "Check both loot-generation paths, all trinket levels, unaffected potion and scroll types, exact RNG behavior and save/load identity.",
-      "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/ExoticHealingConversionTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/DifficultyTest.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/humor/AuthoredLanguage.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/messages/Messages.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/APDTextScene.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Check Healing setting on Android",
-      "text": "Open the real settings window, verify the Healing-only explanation and layout, retain a screenshot and preserve the selected value.",
+      "title": "Verify language variants and persistence",
+      "text": "Check every English resource, all 23 language lookups, all 50 lore entries, actual preference reload and preservation of adult originals and player text.",
       "paths": [
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java",
-        "tools/run-codex-android-checks.sh"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/humor/AuthoredLanguageTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/AboutDeviceTest.java"
+      ]
+    },
+    {
+      "category": "Testing",
+      "sprite": "ICON_CHECKED",
+      "title": "Read inherited slider fields in Android checks",
+      "text": "Inspect inherited native slider fields so the Healing-only setting acceptance checks reach their assertions correctly.",
+      "paths": [
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java"
       ]
     },
     {
       "category": "Development",
       "sprite": "V061_PAGE",
-      "title": "Record correction and exact build evidence",
-      "text": "Document the reproduced conversion bug and request full verification against the immediately preceding APK.",
+      "title": "Retain authored-text and private-delivery evidence",
+      "text": "Collect exact authored resources without gameplay changes, document verified alternatives and retain private APK verification before publication.",
       "paths": [
-        "docs/APD-HEALING-CONVERSION-2026-10-15.md",
+        ".github/workflows/codex-authored-text-audit.yml",
+        ".github/workflows/codex-healing-apk-delivery.yml",
+        "docs/APD-CLEAN-LANGUAGE-2026-10-15.md",
         "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/APD-CODEX-BUILD-REQUEST.txt"
       ]
     }
   ],
-  "commentary": "I corrected the conversion slider to affect only Healing potions becoming Shielding and clarified its wording. The trinket's other conversions keep normal SPD behavior; saved values, scoring and historical records remain intact."
+  "commentary": "I made Adult Humor off use clean authored text, including the About statement, without removing the original adult wording. Player-entered text, content unlocks, scores and saves are preserved."
 }
