@@ -47,9 +47,15 @@ public class ExoticCrystals extends Trinket {
 	}
 
 	public static float consumableExoticChance(){
-		//APD: the player setting acts as a floor, crystals can still raise the chance above it
-		return Math.max(consumableExoticChance(trinketLevel(ExoticCrystals.class)),
-				SPDSettings.apdExoticChance() / 100f);
+		return consumableExoticChance(trinketLevel(ExoticCrystals.class));
+	}
+
+	//APD's next-run override applies only to Healing -> Shielding, not other consumables.
+	//The saved run/replay setting is resolved by SPDSettings; this method consumes no RNG.
+	public static float consumableExoticChance( Class<?> regularType ){
+		float vanilla = consumableExoticChance();
+		return regularType == com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing.class
+				? Math.max(vanilla, SPDSettings.apdExoticChance() / 100f) : vanilla;
 	}
 
 	public static float consumableExoticChance( int level ){
