@@ -1110,3 +1110,9 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Reproduced that a stale keeper instance can persist an older correctly signed catalogue after a newer instance has already stored a higher sequence, which can undo revocations. Separate instances also target one temporary filename without a shared replacement lock.
 - Candidate serializes the compare-and-replace section, re-verifies persisted state inside it, and rejects stale/equal sequences. Two retained regressions cover the original replay and deterministic concurrent replacement.
 - Full 1,652-core/debug/TEST214-history/28-API34/38-PNG gate is pending. No online service was enabled and no player history, save, score, slider, gameplay, RNG, signing or application ID changed.
+
+
+## 2026-10-15T17:53:26Z — TEST215 catalogue keeper correction verified
+- Source `0507127f47426405a72ca83d0eccf04e1ce04752` / run [38779254822](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38779254822) passed 1,652 core tests in 326 suites, debug assembly and complete TEST214 history; 28 API34 methods and 38 valid 320x640 PNGs also passed with zero failures/errors/skips.
+- Both retained cross-instance catalogue regressions passed. APK payload SHA-256 `0d0dced41e6b541f07b65bb6feb71fa17775d22327890c94cbff6deb77730bed`; no publication, signing comparison or physical-phone claim.
+- This closes the reproduced stale-replay/shared-temp defect without online activation or changes to gameplay, player history, saves, scoring, custom rules or RNG. TEST214 remains the signing-compatible staged alpha candidate; TEST206 remains published owner fallback.

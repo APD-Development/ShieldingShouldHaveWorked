@@ -2729,3 +2729,10 @@ Friday October 16 at 4 p.m. EDT remains the alpha target. A signing-compatible c
 - Serialize compare-and-replace across instances and re-read/verify the on-disk catalogue inside that section before the sequence decision. Existing signature, purpose, validity, expiry, atomic-replace and offline revocation behavior remain.
 - Added two deterministic `ContentCatalogueTest` regressions for stale replay and concurrent replacement. TEST215 requests 1,652 core/debug/complete immediate-previous TEST214 history/28 API34/38 PNG.
 - This does not activate networking, accounts or downloadable content. Raw history, saves, scores, all 18 custom rules, gameplay, RNG, signing and application ID are unchanged. Candidate pending; do not publish automatically or claim physical-phone evidence. TEST214 remains staged and TEST206 published fallback.
+
+
+## 2026-10-15T17:53:26Z — TEST215 verified catalogue keeper correction
+- Exact source `0507127f47426405a72ca83d0eccf04e1ce04752` / run `38779254822` passed 1,652 core tests, debug assembly, complete TEST214 history, 28 API34 methods and 38 valid 320x640 screenshots; full contact sheet reviewed readable.
+- Core artifact `11994614480` / SHA-256 `0a73f868cd553535316f97ea06fc4ae4e5e3d24ba34a22601a68c678b13f01cf`; Android `11995607233` / `57df629add2e16175db27e8ec0f2b7f24ff35d8f1f1a30b7f1b24a2ae70bf848`.
+- APK payload SHA-256 `0d0dced41e6b541f07b65bb6feb71fa17775d22327890c94cbff6deb77730bed`. Delivery stayed disabled; no signing/phone claim. TEST214 remains signing-compatible staged, TEST206 published fallback.
+- Separate catalogue keepers can no longer replay an older signed sequence or race the shared temporary replacement. No online service was activated; raw history, saves, scores, all 18 rules, gameplay and RNG are unchanged.
