@@ -19,6 +19,70 @@ import java.util.Set;
 public class FactKindsTest {
 
 	@Test
+	public void fingerprintRemainsCompatibleWithExistingCacheIdentities(){
+		assertEquals(uncachedFingerprint(), FactKinds.fingerprint());
+		FactKind kind = FactKind.builder("test.memo.compatibility", "Compatibility")
+				.internal().value("amount", "Amount", "", FactKind.THOUSANDTHS).tag("where", "Where").build();
+		FactKinds.register(kind);
+		String fingerprint = FactKinds.fingerprint();
+		assertEquals(uncachedFingerprint(), fingerprint);
+		assertSame("unchanged declarations reuse their computed identity", fingerprint, FactKinds.fingerprint());
+		FactKinds.register(kind);
+		assertSame(fingerprint, FactKinds.fingerprint());
+		try {
+			FactKinds.register(FactKind.builder(kind.key, "Replacement").build());
+			fail("duplicate key accepted");
+		} catch (IllegalStateException expected) {
+			assertSame(fingerprint, FactKinds.fingerprint());
+		}
+	}
+
+	@Test(timeout = 10000)
+	public void completedRegistrationCannotLeaveConcurrentReadersWithAStaleIdentity() throws Exception {
+		java.util.concurrent.ExecutorService workers = java.util.concurrent.Executors.newFixedThreadPool(2);
+		java.util.concurrent.CyclicBarrier phase = new java.util.concurrent.CyclicBarrier(2);
+		try {
+			java.util.concurrent.Future<?> reader = workers.submit(() -> {
+				try {
+					for (int i = 0; i < 20; i++) {
+						FactKinds.fingerprint();
+						phase.await(2, java.util.concurrent.TimeUnit.SECONDS);
+						phase.await(2, java.util.concurrent.TimeUnit.SECONDS);
+						assertEquals(uncachedFingerprint(), FactKinds.fingerprint());
+						phase.await(2, java.util.concurrent.TimeUnit.SECONDS);
+					}
+				} catch (Exception e) { throw new RuntimeException(e); }
+			});
+			for (int i = 0; i < 20; i++) {
+				phase.await(2, java.util.concurrent.TimeUnit.SECONDS);
+				FactKinds.register(FactKind.builder("test.memo.concurrent.n" + i, "Observation").value("n", "N").build());
+				phase.await(2, java.util.concurrent.TimeUnit.SECONDS);
+				phase.await(2, java.util.concurrent.TimeUnit.SECONDS);
+			}
+			reader.get(2, java.util.concurrent.TimeUnit.SECONDS);
+		} finally {
+			workers.shutdownNow();
+			assertTrue(workers.awaitTermination(2, java.util.concurrent.TimeUnit.SECONDS));
+		}
+	}
+
+	private static String uncachedFingerprint(){
+		long hash = 1125899906842597L;
+		for (FactKind kind : FactKinds.all()) {
+			hash = mixIdentity(hash, kind.key);
+			hash = mixIdentity(hash, kind.isInternal() ? "I" : "P");
+			for (FactKind.Field field : kind.values()) hash = mixIdentity(hash, "v" + field.key + field.scale);
+			for (FactKind.Field field : kind.tags()) hash = mixIdentity(hash, "t" + field.key);
+		}
+		return Long.toHexString(hash);
+	}
+
+	private static long mixIdentity(long hash, String value){
+		for (int i = 0; i < value.length(); i++) hash = 31 * hash + value.charAt(i);
+		return hash * 31 + 7;
+	}
+
+	@Test
 	public void aKindCanBeRegisteredAndFound(){
 		FactKind k = FactKind.builder("test.kindsA.step", "Step").area("Movement").subject("Terrain").value("x", "X").value("y", "Y").tag("note", "Note").series().build();
 		assertSame(k, FactKinds.register(k));
