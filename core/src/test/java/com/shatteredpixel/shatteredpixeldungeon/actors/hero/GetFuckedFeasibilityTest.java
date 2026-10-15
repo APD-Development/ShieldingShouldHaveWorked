@@ -329,7 +329,7 @@ public class GetFuckedFeasibilityTest {
     @Test public void measureStaticTravelLowerBoundsAndPlacedFoodWithoutPlaying() throws Exception {
         //Topology measurements only. No actor acts, hero decisions, item use, or run outcome.
         for (long seed : new long[]{1L, 12345L, 54321L, 8675309L, 31415926L, 27182818L}) {
-            final int[] totals = new int[5]; //floors, reachable stair pairs, steps, food count, satiety
+            final int[] totals = new int[7]; //floors, reachable, steps, food count, satiety, doors-reachable, doors-steps
             final int[] regionSteps = new int[5];
             LevelGenerationHarness.levelObserver = (depth, level) -> {
                 if (depth > 24 || depth % 5 == 0) return;
@@ -342,6 +342,23 @@ public class GetFuckedFeasibilityTest {
                     totals[2] += distance;
                     regionSteps[(depth-1)/5] += distance;
                 }
+                boolean[] opened = level.passable.clone();
+                for (int cell = 0; cell < opened.length; cell++) {
+                    int terrain = level.map[cell];
+                    if (terrain == com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.SECRET_DOOR
+                            || terrain == com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.LOCKED_DOOR
+                            || terrain == com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.CRYSTAL_DOOR
+                            || terrain == com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.LOCKED_EXIT) opened[cell] = true;
+                }
+                PathFinder.buildDistanceMap(level.entrance(), opened);
+                int openedDistance = PathFinder.distance[level.exit()];
+                if (openedDistance < Integer.MAX_VALUE) {
+                    totals[5]++;
+                    totals[6] += openedDistance;
+                }
+                if (distance == Integer.MAX_VALUE) System.out.println("TOPOLOGY_BLOCK seed="+seed
+                        +" depth="+depth+" entrance_terrain="+level.map[level.entrance()]
+                        +" exit_terrain="+level.map[level.exit()]+" doors_open_distance="+openedDistance);
                 for (Heap heap : level.heaps.valueList()) for (Item item : heap.items) {
                     if (item instanceof Food) {
                         totals[3] += item.quantity();
@@ -359,6 +376,7 @@ public class GetFuckedFeasibilityTest {
             System.out.println("TOPOLOGY seed="+seed+" reachable="+totals[1]+"/20 stair_steps="+totals[2]
                     +" region_steps="+java.util.Arrays.toString(regionSteps)+" placed_food="+totals[3]
                     +" placed_food_satiety="+totals[4]
+                    +" doors_open_reachable="+totals[5]+"/20 doors_open_steps="+totals[6]
                     +"; ignores hazards, mobs, exploration, item access, branches and boss traversal");
         }
     }
