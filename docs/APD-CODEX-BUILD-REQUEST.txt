@@ -237,3 +237,6 @@ DAMAGED-HISTORY COUNT PROVENANCE: verify1645core/debug/complete immediate-previo
 
 
 DAMAGED-HISTORY PRE-GATE CORRECTION: use exact existing history path docs/APD-MIXED-SCALE-RATIO-DISPLAY-2026-10-15.md. Do not credit a run pinned to f08f5908c53e40c058a767eb4e526731cdce252b as the complete-history result. Corrected head must independently pass the same1645core/debug/immediate-previousTEST208/28API34/38PNG gate; no application-source change from its parent and no publication/phone claim.
+
+
+EXACT TEST208 PREDECESSOR TREE: native history must also retain .github/workflows/codex-lunch-apk-2026-10-15.yml, .github/workflows/codex-lunch-pdf-2026-10-15.yml and docs/APD-LUNCH-REPORT-PUBLICATION-2026-10-15.md. Earlier pinned candidate heads are not acceptable as complete-history evidence. Fresh full gate required; application source and expected1645core remain unchanged.

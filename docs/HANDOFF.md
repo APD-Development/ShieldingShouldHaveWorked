@@ -2693,3 +2693,7 @@ Integrated the previously reproduced UIMSD reliability correction on top of live
 
 ## Pre-gate history-path correction — 2026-10-15T16:44:00Z
 Review of the candidate TEST209 history manifest found a shortened nonexistent mixed-scale report path. The exact repository path is `docs/APD-MIXED-SCALE-RATIO-DISPLAY-2026-10-15.md`; the manifest is corrected before accepting a complete-history result. If a workflow pinned to `f08f5908c53e40c058a767eb4e526731cdce252b` started, do not credit it as the required complete-history gate. The corrected head retains the same six regressions and expected 1,645 core tests; no application behavior or cache version changed in this documentation-only follow-up.
+
+
+## Exact predecessor-tree history reconciliation — 2026-10-15T16:47:00Z
+A direct `13e4c03b…6f511a22` comparison found three intervening reviewed paths not yet named in the candidate history: `.github/workflows/codex-lunch-apk-2026-10-15.yml`, `.github/workflows/codex-lunch-pdf-2026-10-15.yml`, and `docs/APD-LUNCH-REPORT-PUBLICATION-2026-10-15.md`. They are now retained alongside every application/test/report/build-request/handoff/ledger/history path in the TEST208→next-candidate record. Do not accept any earlier pinned candidate as the complete-history gate. This follow-up changes no application source.

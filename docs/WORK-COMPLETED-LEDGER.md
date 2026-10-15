@@ -1094,3 +1094,8 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 ## 2026-10-15T16:44:00Z — pre-gate history manifest correction
 - Replaced the shortened nonexistent mixed-scale report path with the exact repository path `docs/APD-MIXED-SCALE-RATIO-DISPLAY-2026-10-15.md`.
 - A workflow pinned to `f08f5908c53e40c058a767eb4e526731cdce252b`, if created, is not acceptable as the complete-history gate. The corrected head requires a fresh full result; no application source changed.
+
+
+## 2026-10-15T16:47:00Z — exact predecessor-tree history reconciled
+- Direct comparison from compiled TEST208 source found and added both lunch workflow files and the lunch publication report to the next native history.
+- The history manifest now names all 13 changed paths between TEST208 and this candidate. Earlier pinned candidate runs are not acceptable as complete-history evidence; no application source changed.

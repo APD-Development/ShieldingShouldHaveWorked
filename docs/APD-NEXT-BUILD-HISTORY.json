@@ -35,9 +35,12 @@
         "docs/HANDOFF.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/WORK-COMPLETED-LEDGER.md",
-        "docs/APD-NEXT-BUILD-HISTORY.json"
+        "docs/APD-NEXT-BUILD-HISTORY.json",
+        ".github/workflows/codex-lunch-apk-2026-10-15.yml",
+        ".github/workflows/codex-lunch-pdf-2026-10-15.yml",
+        "docs/APD-LUNCH-REPORT-PUBLICATION-2026-10-15.md"
       ]
     }
   ],
-  "commentary": "Damaged histories now keep their surviving statistics without presenting lower bounds as exact totals. Clean open and validly sealed logs keep their prior behavior, and raw records are untouched."
+  "commentary": "Damaged histories now keep their surviving statistics without presenting lower bounds as exact totals. Clean open and validly sealed logs keep their prior behavior, raw records are untouched, and every reviewed path since TEST208 remains in the native history."
 }
