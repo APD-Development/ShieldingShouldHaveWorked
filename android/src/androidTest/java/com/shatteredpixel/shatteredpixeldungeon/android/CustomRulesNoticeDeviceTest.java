@@ -301,4 +301,33 @@ public class CustomRulesNoticeDeviceTest {
             }
         }
     }
+
+    @Test public void healingConversionSettingExplainsItsExactScopeWithoutChangingSavedValue() throws Exception {
+        try(ActivityScenario<AndroidLauncher> scenario=ActivityScenario.launch(AndroidLauncher.class)) {
+            long deadline=System.currentTimeMillis()+120000;
+            while((Game.scene()==null || PixelScene.uiCamera==null)&&System.currentTimeMillis()<deadline)Thread.sleep(200);
+            assertNotNull(Game.scene());Thread.sleep(1500);
+            final com.shatteredpixel.shatteredpixeldungeon.windows.WndAPDSettings[] window=new com.shatteredpixel.shatteredpixeldungeon.windows.WndAPDSettings[1];
+            final int[] saved=new int[1];
+            try {
+                render(()->{try {
+                    saved[0]=SPDSettings.apdExoticSetting();
+                    window[0]=new com.shatteredpixel.shatteredpixeldungeon.windows.WndAPDSettings();
+                    Game.scene().addToFront(window[0]);
+                    com.shatteredpixel.shatteredpixeldungeon.windows.APDSettingsPane pane=find(window[0],com.shatteredpixel.shatteredpixeldungeon.windows.APDSettingsPane.class).get(0);
+                    RenderedTextBlock info=(RenderedTextBlock)field(pane,"info");
+                    OptionSlider slider=(OptionSlider)field(pane,"optExotic");
+                    RenderedTextBlock title=(RenderedTextBlock)field(slider,"title");
+                    assertEquals("Healing to Shielding chance (new runs)",title.text());
+                    assertTrue(info.text().contains("generated Potion of Healing"));
+                    assertTrue(info.text().contains("Other potions and scrolls keep normal SPD behavior"));
+                    assertTrue(info.width()<=pane.width());
+                    assertTrue(info.top()>slider.bottom());
+                    assertEquals(saved[0]/10,slider.getSelectedValue());
+                }catch(Exception e){throw new RuntimeException(e);}});
+                Thread.sleep(750);screenshot("healing-conversion-setting.png");
+                render(()->{window[0].onBackPressed();assertEquals(saved[0],SPDSettings.apdExoticSetting());});
+            } finally {render(()->{if(window[0]!=null)window[0].hide();});}
+        }
+    }
 }
