@@ -50,10 +50,11 @@ jobs:
           pathlib.Path('existing-test222.apk').write_bytes(apk)
           pathlib.Path('acceptance-source.json').write_text(json.dumps({'application_source':source,'application_run':int(run_id),'application_sha256':digest,'test_source':os.environ['GITHUB_SHA'],'application_reused':True,'published':False,'physical_device':False},indent=2))
           PY
-      - name: Add only the Android 16 native-touch instrumentation fixture
+      - name: Add only the Android 16 acceptance instrumentation fixtures
         run: |
-          git fetch --no-tags --depth=1 origin 22a127f61d0510a1aecd03a440b95d84da4c26b1
-          git show 22a127f61d0510a1aecd03a440b95d84da4c26b1:android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java > android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java
+          git fetch --no-tags --depth=1 origin f491891c96e9aaa15831596b2a52ce7faca191f0
+          git show f491891c96e9aaa15831596b2a52ce7faca191f0:android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java > android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java
+          git show f491891c96e9aaa15831596b2a52ce7faca191f0:android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PlayRunDeviceTest.java > android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PlayRunDeviceTest.java
       - name: Set up Android SDK
         run: |
           yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
