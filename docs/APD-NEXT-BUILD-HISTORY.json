@@ -1,16 +1,16 @@
 {
-  "previous_label": "Codex TEST 183",
-  "previous_source": "68bea4b4d57aef872cab684e13f134b91f2d258c",
-  "previous_run": 38661559728,
+  "previous_label": "Codex TEST 184",
+  "previous_source": "e883710fa759a41a1ffa7754f42c021f0f8121ec",
+  "previous_run": 38662728056,
   "date": "2026-10-15",
   "changes": [
     {
       "category": "Changes",
       "sprite": "V061_PAGE",
-      "title": "Reliable native empty Home regression",
-      "text": "Render the empty-history Home with a controlled in-memory model so prior API34 fixtures cannot invalidate its wording and screenshot check; restore the original history cache afterward.",
+      "title": "Retain empty Home screenshot",
+      "text": "Collect and validate the native empty-history Home screenshot that the passing API34 test already writes, so the reviewed evidence set includes all 35 expected images.",
       "paths": [
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdScreensDeviceTest.java",
+        "tools/run-codex-android-checks.sh",
         "docs/APD-TEST183-UIMSD-EMPTY-HOME-NATIVE-2026-10-15.md",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",

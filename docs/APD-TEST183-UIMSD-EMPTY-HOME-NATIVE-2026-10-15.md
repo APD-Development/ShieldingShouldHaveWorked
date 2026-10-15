@@ -21,3 +21,9 @@ Only the retained Android device test and build/evidence documentation changed. 
 Source `68bea4b4d57aef872cab684e13f134b91f2d258c`, run `38661559728` (00:42:30Z–00:53:13Z) passed 1,603 core tests, debug assembly and immediate-previous TEST182 history, but API34 finished 25/26 methods with one failure in the new assertion: earlier device methods had already created finished-run fixtures, so this method's emulator was not an empty-history state. The assertion failed before `uimsd-empty-home.png` could be captured. TEST183 is not verified or delivered.
 
 TEST184 corrects only the retained fixture. It injects an in-memory empty Home into the real scene/cache, renders and inspects it, then restores the original model/cache without deleting or rewriting device history. Production source and the wording assertions are unchanged. Full 1,603-core/debug/immediate-previous compiled TEST183 history/26 API34/35 PNG verification is pending.
+
+
+## TEST184 hosted result and TEST185 evidence correction
+TEST184 source `e883710fa759a41a1ffa7754f42c021f0f8121ec`, run `38662728056` (00:55:01Z–01:06:10Z), passed 1,603 core tests, debug assembly, immediate-previous compiled TEST183 history and all 26 API34 methods. The corrected controlled empty-Home assertion passed and logcat confirms `uimsd-empty-home.png` was written on-device. Evidence audit found `tools/run-codex-android-checks.sh` still had an explicit 34-name pull/validation list, so the new file was neither retained nor visually reviewable. TEST184 therefore does not satisfy its 35-PNG request and is not the completed checkpoint.
+
+TEST185 adds only `uimsd-empty-home.png` to both the pull and validator lists. Full 1,603-core/debug/immediate-previous compiled TEST184 history/26 API34/35 PNG verification is pending. No production code, gameplay, save, statistics, scoring, application identity or signing behavior changed.

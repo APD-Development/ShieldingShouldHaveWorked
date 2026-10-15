@@ -788,3 +788,10 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - API34 completed 26 methods with 25 pass / 1 fail: the strengthened method assumed the shared emulator still had no finished history, but earlier device methods intentionally created finished-run fixtures. The empty-Home assertion failed before its screenshot; TEST183 is not verified or delivered.
 - TEST184 changes only the device fixture: render a controlled in-memory empty Home through the real scene, assert/capture it, then restore the original cache without deleting or rewriting history.
 - Exact-source TEST184 requests 1,603 core/debug/immediate-previous compiled TEST183 history/26 API34/35 PNG. Production gameplay/UIMSD model/save/statistics/scoring/identity/signing remain unchanged; no delivery or physical-phone claim.
+
+
+## 2026-10-15T01:08:28.843Z — TEST184 native checks passed; TEST185 visual-retention correction
+- TEST184 source `e883710fa759a41a1ffa7754f42c021f0f8121ec`, run `38662728056` (00:55:01Z–01:06:10Z), passed 1,603 core tests, debug assembly, immediate-previous compiled TEST183 history and all 26 API34 methods. APK SHA-256 `a6b121104b14d64dfa2576d10efa3772383dd500d55e4ddf880c9cd0ba950203`.
+- The controlled empty-Home assertion passed and logcat records creation of `uimsd-empty-home.png`, but the evidence script's explicit list retained only the prior 34 images. The requested new screenshot could not be reviewed, so TEST184 is not the completed 35-PNG checkpoint.
+- TEST185 adds that one filename to the runner's pull and PNG validator lists. Exact-source verification requests 1,603 core/debug/immediate-previous compiled TEST184 history/26 API34/35 PNG.
+- Production gameplay/UIMSD model/save/statistics/scoring/identity/signing remain unchanged. No delivery or physical-phone claim; TEST182 remains the last fully verified fallback and TEST123 the last owner-delivered APK.

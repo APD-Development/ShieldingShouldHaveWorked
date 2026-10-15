@@ -130,3 +130,6 @@ TEST183 exact-source request (2026-10-15T00:42:18.901Z): verify native empty-His
 
 
 TEST184 fixture-only correction (2026-10-15T00:54:48.241Z): TEST183 source68bea4b4d57aef872cab684e13f134b91f2d258c/run38661559728 passed1603core/debug/immediate-previousTEST182history but API34 finished25pass/1fail because earlier device methods had already created finished-run fixtures. Render a controlled in-memory empty Home through the real scene, restore original history/cache afterward, and verify1603core/debug/immediate-previous compiledTEST183history/26API34/35PNG. No production/save/statistics/scoring/gameplay/delivery/physical-phone change.
+
+
+TEST185 evidence-list correction (2026-10-15T01:08:28.843Z): TEST184 sourcee883710fa759a41a1ffa7754f42c021f0f8121ec/run38662728056 passed1603core/debug/immediate-previous compiledTEST183history/26API34; the empty-Home assertion passed and wrote uimsd-empty-home.png, but the explicit evidence script retained only the prior34 files. Add that filename to pull+PNG validation and verify1603core/debug/immediate-previous compiledTEST184history/26API34/35PNG. No production/save/statistics/scoring/gameplay/delivery/physical-phone change.
