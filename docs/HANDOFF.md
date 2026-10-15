@@ -2736,3 +2736,8 @@ Friday October 16 at 4 p.m. EDT remains the alpha target. A signing-compatible c
 - Core artifact `11994614480` / SHA-256 `0a73f868cd553535316f97ea06fc4ae4e5e3d24ba34a22601a68c678b13f01cf`; Android `11995607233` / `57df629add2e16175db27e8ec0f2b7f24ff35d8f1f1a30b7f1b24a2ae70bf848`.
 - APK payload SHA-256 `0d0dced41e6b541f07b65bb6feb71fa17775d22327890c94cbff6deb77730bed`. Delivery stayed disabled; no signing/phone claim. TEST214 remains signing-compatible staged, TEST206 published fallback.
 - Separate catalogue keepers can no longer replay an older signed sequence or race the shared temporary replacement. No online service was activated; raw history, saves, scores, all 18 rules, gameplay and RNG are unchanged.
+
+## TEST216 stale UIMSD load candidate — 2026-10-15T18:40:09Z
+- Confirmed a deterministic stale-completion failure in `UimsdModel`: an older background load could replace a newer explicitly installed catalogue after the newer model was already READY.
+- Candidate adds a monotonic load generation and one retained monitor-controlled regression; expected full count is 1,653 core tests.
+- Full TEST216 core/debug/immediate-previous TEST215 history/28 API34/38-PNG evidence is pending. No APK was published, signed, delivered or installed; no physical-phone claim. TEST214 remains the signing-compatible staged phone candidate and TEST206 the published owner fallback.

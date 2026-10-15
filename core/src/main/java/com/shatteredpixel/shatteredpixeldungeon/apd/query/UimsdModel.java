@@ -68,6 +68,8 @@ public final class UimsdModel {
 	private SavedViews columnLayouts = new SavedViews();
 	private Listener listener;
 	private volatile Thread loader;
+	//Each new load (or an explicitly installed catalogue) retires older background completions.
+	private long loadGeneration;
 
 	private volatile File root;
 
@@ -88,22 +90,27 @@ public final class UimsdModel {
 	//---- loading ----
 
 	//Builds the catalog from the raw logs on a background thread. Never throws.
-	public void load( final File root ){
+	public synchronized void load( final File root ){
 		this.root = root;
 		columnLayouts = SavedViews.load(root == null ? null : new File(root, COLUMN_LAYOUTS_FILE));
 		state = State.LOADING;
 		failure = "";
+		final long generation = ++loadGeneration;
 		Thread t = new Thread(new Runnable(){
 			@Override
 			public void run(){
 				try {
 					Catalog c = new DatasetStore(root).load();
 					synchronized (UimsdModel.this){
+						if (generation != loadGeneration) return;
 						setCatalogLocked(c);
 					}
 				} catch (Throwable e){
-					failure = String.valueOf(e);
-					state = State.FAILED;
+					synchronized (UimsdModel.this){
+						if (generation != loadGeneration) return;
+						failure = String.valueOf(e);
+						state = State.FAILED;
+					}
 				}
 				fire();
 			}
@@ -122,6 +129,7 @@ public final class UimsdModel {
 	}
 
 	public synchronized void setCatalog( Catalog c ){
+		++loadGeneration;
 		setCatalogLocked(c);
 		fire();
 	}

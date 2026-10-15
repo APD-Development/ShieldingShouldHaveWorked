@@ -1116,3 +1116,8 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Source `0507127f47426405a72ca83d0eccf04e1ce04752` / run [38779254822](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38779254822) passed 1,652 core tests in 326 suites, debug assembly and complete TEST214 history; 28 API34 methods and 38 valid 320x640 PNGs also passed with zero failures/errors/skips.
 - Both retained cross-instance catalogue regressions passed. APK payload SHA-256 `0d0dced41e6b541f07b65bb6feb71fa17775d22327890c94cbff6deb77730bed`; no publication, signing comparison or physical-phone claim.
 - This closes the reproduced stale-replay/shared-temp defect without online activation or changes to gameplay, player history, saves, scoring, custom rules or RNG. TEST214 remains the signing-compatible staged alpha candidate; TEST206 remains published owner fallback.
+
+## 2026-10-15T18:40:09Z — TEST216 candidate: stale UIMSD load handoff
+- Reproduced by deterministic monitor ordering that an older `UimsdModel.load` worker could overwrite a newer explicit catalogue and its READY view state.
+- Added a generation guard that retires stale success/failure completions and a retained regression in `UimsdModelTest`.
+- Candidate full gate requested: 1,653 core tests, debug APK, complete immediate-previous TEST215 history, 28 API34 methods and 38 valid screenshots. Pending until actual workflow evidence passes; no publication/delivery/phone claim.

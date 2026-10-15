@@ -92,6 +92,26 @@ public class UimsdModelTest {
 		}
 	}
 
+
+	@Test
+	public void anOlderBackgroundLoadCannotOverwriteANewerExplicitCatalog() throws Exception {
+		java.io.File root = java.nio.file.Files.createTempDirectory("apd-stale-load").toFile();
+		UimsdModel m = new UimsdModel(R, "");
+		Catalog newer = catalog();
+		//Holding the monitor makes the old loader complete its disk work but wait before installation.
+		//The newer explicit catalogue is therefore installed first, deterministically reproducing the stale overwrite.
+		synchronized (m){
+			m.load(root);
+			m.setCatalog(newer);
+			assertTrue(newer == m.catalog());
+			assertEquals("all", m.viewId());
+		}
+		m.awaitLoad(10000);
+		assertTrue("the stale loader must not replace the newer catalogue", newer == m.catalog());
+		assertEquals(UimsdModel.State.READY, m.state());
+		assertEquals("all", m.viewId());
+	}
+
 	@Test
 	public void columnOrderAndSelectionSurviveOpeningAnotherView(){
 		UimsdModel m = model();

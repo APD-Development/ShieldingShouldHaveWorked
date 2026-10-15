@@ -1,43 +1,42 @@
 {
-  "previous_label": "Codex TEST 214",
-  "previous_source": "68b59177f3fe153c10583c227376348ed15287e4",
-  "previous_run": 38775582704,
+  "previous_label": "Codex TEST 215",
+  "previous_source": "0507127f47426405a72ca83d0eccf04e1ce04752",
+  "previous_run": 38779254822,
   "date": "2026-10-15",
   "changes": [
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Keep catalogue revocations monotonic across instances",
-      "text": "Serialize catalogue compare-and-replace and re-check the verified on-disk sequence so a stale keeper cannot replay an older signed catalogue.",
+      "title": "Reject stale UIMSD load completions",
+      "text": "Give each background catalogue load a generation so an older success or failure cannot replace newer READY state.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/backend/CatalogueKeeper.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdModel.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Check stale replay and shared replacement",
-      "text": "Retain deterministic regressions for stale-instance replay, cross-instance serialization, final sequence and temp-file cleanup.",
+      "title": "Force the stale handoff order",
+      "text": "Retain a monitor-controlled regression that installs newer state before releasing the older loader, without timing assumptions.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/backend/ContentCatalogueTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdModelTest.java"
       ]
     },
     {
       "category": "Development",
       "sprite": "V061_PAGE",
-      "title": "Record TEST214 staging and continued reliability audit",
-      "text": "Preserve the verified alpha staging evidence and the exact next gate without publishing or activating online services.",
+      "title": "Record TEST215 evidence and the exact TEST216 gate",
+      "text": "Preserve verified TEST215 evidence and request one full gate for the bounded UIMSD lifecycle correction.",
       "paths": [
-        ".github/workflows/codex-alpha-stage-2026-10-15.yml",
-        "docs/APD-ALPHA-CANDIDATE-2026-10-15.md",
         "docs/APD-CATALOGUE-KEEPER-CROSS-INSTANCE-2026-10-15.md",
+        "docs/APD-UIMSD-STALE-LOAD-2026-10-15.md",
+        "docs/APD-UIMSD-AUDIT-RECONCILIATION-2026-10-15.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/APD-COMBAT-DETAIL-PAIRING-2026-10-15.md",
         "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md"
       ]
     }
   ],
-  "commentary": "I kept signed catalogue revocations monotonic across local keeper instances. No network service was activated, and gameplay and player histories remain unchanged."
+  "commentary": "I prevented an older UIMSD background load from replacing newer catalogue state. Player histories, saves, scores, gameplay and all 18 Custom Dungeon Rules remain unchanged."
 }
