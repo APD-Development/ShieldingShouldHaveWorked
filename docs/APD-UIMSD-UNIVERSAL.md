@@ -98,7 +98,7 @@ level summaries). U4 the question builder and topic pages. Each step ends with c
 
 ## Not yet recorded (observable; candidates for the next batches, each needs its own hook and a hidden-information review)
 Per-enemy state changes and enemy abilities, boss phase changes, artifact charge (no public
-accessor), plant and seed interactions, level feelings acted on, auto-explore and travel usage, throws and targeting, shop stock seen, ally summons and their fates, alchemy details,
+accessor), plant and seed interactions, level feelings acted on, auto-explore and travel usage, throws and targeting, shop stock seen, ally fates,
 fall and trap damage sources beyond damage events, and anything a future character adds.
 
 ## UIMSD Demo Unlock (roadmap addition, owner request 2026-10-08; NOT started; lower priority than backend work and pending tests)

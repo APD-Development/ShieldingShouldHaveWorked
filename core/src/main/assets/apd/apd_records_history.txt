@@ -1,3 +1,8 @@
+telemetry-1.14-alchemy-crafts | telemetry 1.14 | APD 4.0.8-apd | 2026-10-15
+- Records each successful alchemy recipe using only the displayed ingredient and result names, their quantities, the floor and the exact total/carried/toolkit energy split.
+- True unidentified item classes remain confined to existing INTERNAL item history. Failed brews and restore-time reconstruction emit no public craft fact.
+- Runs recorded before 1.14 show alchemy crafts as unknown, never zero.
+
 APD records history, format 2
 One block per milestone, newest first. Not shown in the game yet: the UIMSD (Ultimate Infinite Mega Statistics Database) screen will display this
 later. Each block is a header line with four fields separated by vertical bars (milestone id, telemetry version or a dash,

@@ -182,3 +182,6 @@ TEST199 exact-source request (2026-10-15T08:36:50Z): record player-owned ally cr
 
 
 TEST200 test-fixture correction (2026-10-15T08:48:52Z): TEST199 source5a937f93e2858bbc85990db2d96642c2ef4764f1/run38707847596 executed1613core with1612pass/1failure and noAPK. TelemetryVersionTest parsed literal1.12 but mistakenly expected1.13; the production1.13 self-test and new ally-summon regressions passed. Correct only that expected value and rerun1613core/debug/immediate-previous compiledTEST197/CodexTEST194history/27API34/35PNG. Preserve all production behavior and assertions; no delivery/physical-phone claim.
+
+
+TEST201 exact-source request (2026-10-15T09:14:47Z): add public telemetry1.14 alchemy.craft only after a successful brew, using displayed pre-brew ingredient/result names, exact quantities, floor and total/main-pool/toolkit energy split. True unidentified classes remain INTERNAL; failed and restore-time paths emit nothing. Verify1615core/debug/immediate-previous compiledTEST200/CodexTEST196 history/27API34/35PNG. Preserve recipes, inventory, energy, RNG, saves, scoring, custom rules, identity and signing. No delivery/physical-phone claim.

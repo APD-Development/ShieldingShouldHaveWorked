@@ -36,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
 //Turns what the hero does and what happens around them into generic fact observations (see FactKinds, GameFacts): steps, rests,
 //searches, item actions, status effects, talents, spells, abilities, gold, trades, traps, and the time actually spent playing.
@@ -180,6 +181,29 @@ final class PlayTracker {
 		long charges = -1;
 		if (item instanceof Wand) charges = ((Wand) item).curCharges;
 		facts.record(GameFacts.ITEM_USE_TRUTH, clock, name(item.getClass()), "", new long[]{ item.level(), charges }, new String[]{ action == null ? "" : action });
+	}
+
+	void onAlchemyCrafted( List<Item> ingredients, Item result, int totalEnergy, int carriedEnergy, int toolkitEnergy ){
+		if (result == null) return;
+		StringBuilder shownIngredients = new StringBuilder();
+		if (ingredients != null){
+			for (Item ingredient : ingredients){
+				if (ingredient == null) continue;
+				if (shownIngredients.length() > 0) shownIngredients.append(" + ");
+				shownIngredients.append(ingredient.quantity()).append("x ").append(shownName(ingredient));
+			}
+		}
+		facts.record(GameFacts.ALCHEMY_CRAFT, GameSnapshot.turn(), shownName(result), "",
+				new long[]{ Dungeon.depth, result.quantity(), totalEnergy, carriedEnergy, toolkitEnergy },
+				new String[]{ shownIngredients.toString() });
+	}
+
+	private static String shownName( Item item ){
+		try {
+			return item == null ? "" : item.name();
+		} catch (Throwable t){
+			return "";
+		}
 	}
 
 	// ---- status effects ----

@@ -1,43 +1,42 @@
 {
-  "previous_label": "Codex TEST 194",
-  "previous_source": "364fd4724b79308fb6a13478a211bcd7599b2f7b",
-  "previous_run": 38694008236,
+  "previous_label": "Codex TEST 196",
+  "previous_source": "094f6fc168c2c46057648542d68da4537739ec9f",
+  "previous_run": 38708477712,
   "date": "2026-10-15",
   "changes": [
     {
       "category": "Changes",
       "sprite": "V061_PAGE",
-      "title": "Retain NPC and shop evidence",
-      "text": "Retain verified NPC-interaction evidence and the shop-stock hidden-information regression completed after the immediate previous compiled APK.",
+      "title": "Retain TEST200 verification evidence",
+      "text": "Include the TEST200 ally-summon verification report and the handoff/ledger evidence committed after the immediate previous compiled APK.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/ItemLifecycleTest.java",
-        "docs/APD-CODEX-CORE-TEST-REQUEST.txt",
-        "docs/APD-TEST197-NPC-INTERACTIONS-2026-10-15.md",
-        "docs/APD-TEST198-SHOP-STOCK-VISIBILITY-2026-10-15.md"
+        "docs/APD-TEST199-ALLY-SUMMONS-2026-10-15.md",
+        "docs/HANDOFF.md",
+        "docs/WORK-COMPLETED-LEDGER.md"
       ]
     },
     {
       "category": "Changes",
-      "sprite": "V063_HUNTRESS_CLOTH",
-      "title": "Ally summon history",
-      "text": "Record player-owned allied summons once from their explicit creator while exposing only displayed names and the current floor.",
+      "sprite": "V061_PAGE",
+      "title": "Visible alchemy craft history",
+      "text": "Record successful alchemy crafts with only displayed ingredient/result names, quantities, floor and the exact energy split.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/Char.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/AlchemyScene.java",
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/ApdPlay.java",
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/PlayTracker.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/GameFacts.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/GameFacts.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/TelemetryVersion.java",
+        "core/src/main/assets/apd/apd_records_history.txt"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Summon visibility boundaries",
-      "text": "Add retained checks for exact-once player summons, actual visible creators, enemy and boss exclusion, off-screen secrecy and restoration suppression.",
+      "title": "Alchemy privacy and omission boundaries",
+      "text": "Retain successful payload, unidentified-class secrecy, failed-brew, restore-time, wiring, manifest and telemetry-version checks.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/TelemetryVersion.java",
-        "core/src/main/assets/apd/apd_records_history.txt",
         "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/PlayWiringTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/AllySummonRecordingTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/AlchemyRecordingTest.java",
         "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/TelemetryVersionTest.java",
         "core/src/test/resources/apd/fact_kind_manifest.txt"
       ]
@@ -45,10 +44,11 @@
     {
       "category": "Development",
       "sprite": "V061_PAGE",
-      "title": "TEST200 fixture correction",
-      "text": "Retain TEST199's exact 1,612/1,613 core failure and correct only the telemetry parse fixture's mistaken expected value before rerunning the complete gate.",
+      "title": "TEST201 verification request",
+      "text": "Document the reproduced omission, exact pending gate and the next canonical-recording state without claiming unrun evidence.",
       "paths": [
-        "docs/APD-TEST199-ALLY-SUMMONS-2026-10-15.md",
+        "docs/APD-UIMSD-UNIVERSAL.md",
+        "docs/APD-TEST201-ALCHEMY-DETAILS-2026-10-15.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/HANDOFF.md",
@@ -56,5 +56,5 @@
       ]
     }
   ],
-  "commentary": "TEST199 exposed one test-fixture typo after 1,612 core passes. TEST200 corrects only that expectation and retains the complete ally-summon implementation and privacy boundary."
+  "commentary": "TEST201 adds a separate PUBLIC craft observation while preserving the existing INTERNAL ingredient-to-product lineage and all gameplay behavior."
 }

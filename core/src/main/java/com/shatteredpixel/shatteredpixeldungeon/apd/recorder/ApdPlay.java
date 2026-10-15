@@ -29,6 +29,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 
+import java.util.List;
+
 //The game's one-line entry points for recording what the hero does and what happens around them (movement, items, status effects, talents,
 //spells, gold, shops, traps). Each returns at once (one volatile read) unless a run is being recorded, never throws, and never changes the
 //game or consumes its random numbers. To record a new kind of thing, declare a FactKind (GameFacts) and call ApdFacts.record where it
@@ -146,6 +148,13 @@ public final class ApdPlay {
 		PlayTracker p = t();
 		if (p == null || restoring > 0) return;
 		try { p.onAllySummoned(summoned, creator); } catch (Throwable ignored){}
+	}
+
+	//AlchemyScene.combine: a recipe completed; the ingredient list is the player-visible pre-brew snapshot
+	public static void onAlchemyCrafted( List<Item> ingredients, Item result, int totalEnergy, int carriedEnergy, int toolkitEnergy ){
+		PlayTracker p = t();
+		if (p == null || restoring > 0) return;
+		try { p.onAlchemyCrafted(ingredients, result, totalEnergy, carriedEnergy, toolkitEnergy); } catch (Throwable ignored){}
 	}
 
 	//an NPC quest moved on: "given", "ready" (the thing asked for was found or beaten) or "done" (the reward stage was reached)

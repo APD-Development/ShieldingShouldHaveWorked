@@ -127,6 +127,17 @@ public final class GameFacts {
 			.value("quantity", "How many in the stack", "", FactKind.PLAIN)
 			.tag("action", "Action").build());
 
+	//a completed alchemy recipe using only the names visible to the player at the time
+	public static final FactKind ALCHEMY_CRAFT = FactKinds.register(FactKind.builder("alchemy.craft", "Alchemy craft").plural("Alchemy crafts").area("Items")
+			.description("Every successful alchemy recipe, with the ingredients and result as the player saw them.").subject("Result")
+			.value("depth", "Floor", "The floor where the recipe was completed.", FactKind.PLAIN)
+			.value("quantity", "Result quantity", "How many items the recipe produced.", FactKind.PLAIN)
+			.value("energy", "Energy used", "Total energy spent on the recipe.", FactKind.PLAIN)
+			.value("carriedEnergy", "Carried energy used", "Energy spent from the run's main energy pool.", FactKind.PLAIN)
+			.value("toolkitEnergy", "Toolkit energy used", "Energy supplied by the Alchemist's Toolkit.", FactKind.PLAIN)
+			.tag("ingredients", "Ingredients", "Displayed ingredient names and quantities.")
+			.since(1, 14).build());
+
 	//the same action with the hidden truth: the true class, and the numbers the player may not know yet
 	public static final FactKind ITEM_USE_TRUTH = FactKinds.register(FactKind.builder("item.useTruth", "Item action (true item)").plural("Item actions (true item)")
 			.area("Items").description("The same item actions with what the item really was.").subject("True item").internal()

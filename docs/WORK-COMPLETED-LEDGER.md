@@ -975,3 +975,11 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Both retained ally-summon tests and all telemetry-version tests passed. The internal Codex TEST 196 APK SHA-256 is `5fe49a5e2167dd688c35fcbc04b31e18951873fa42caae2ea645f42039e4c646`.
 - Artifacts: core `11959253024` / `1c5e5084b05df08fbdef8bff4fee72d85926b90b3d5c4e5a1998761293fe7b17`; APK `11959178061` / `e93ab8c59a32331207cacce595e0535cea31972a9dc7fd817567f61dcd14f09c`; Android `11959678617` / `dfdc05d475811335ec68b606d5ae1d0e5eeaa54be3e98bdc88aef93530d49ca6`.
 - All 35 screenshots are valid 320×640 PNGs; full contact sheet reviewed clean. Private delivery skipped; no physical-phone claim. TEST123 remains owner-delivered/signature-compared. Do not rebuild unchanged TEST200.
+
+
+## 2026-10-15T09:14:47Z — TEST201 visible alchemy details candidate
+- Reproduced a concrete gap: the successful-brew path retained INTERNAL ingredient→product lineage but had no PUBLIC/queryable craft fact.
+- Added additive telemetry 1.14 `alchemy.craft` at the successful result boundary. Public data is limited to displayed ingredient/result names, their quantities, floor, total energy, main-pool energy and toolkit energy.
+- Failed brews and restore-time reconstruction emit nothing; true unidentified classes remain INTERNAL. Existing lineage, recipes, inventory mutation, energy consumption, RNG and save behavior are unchanged.
+- Added two core regressions and updated the wiring guard, permanent fact manifest, telemetry version test and immutable records history. Full 1,615-core/debug/immediate-previous compiled TEST200/Codex TEST 196 history/27-API34/35-PNG gate pending.
+- No scoring, custom-rule, application-ID, signing, distribution or physical-phone claim. TEST200 remains the verified compiled fallback; TEST123 remains owner-delivered/signature-compared.

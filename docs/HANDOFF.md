@@ -2511,3 +2511,11 @@ The ordered legacy-door item is closed. Hero markers still require explicit appr
 - Artifacts: core `11959253024` / ZIP `1c5e5084…fe7b17`; APK `11959178061` / ZIP `e93ab8c5…4f09c`; Android `11959678617` / ZIP `dfdc05d4…d49ca6`.
 - All 35 PNGs are valid 320×640 and the full contact sheet reviewed clean. Private delivery was skipped; no physical-phone claim. TEST123 remains owner-delivered/signature-compared.
 - No application build is pending; do not rebuild unchanged TEST200. Re-read the latest head, then continue the next distinct approved canonical recording item in documented order (alchemy-use details before level feelings) only after reproducing a concrete omission and reviewing hidden-information boundaries.
+
+
+## 2026-10-15T09:14:47Z — TEST201 visible alchemy details candidate
+- Reproduced the next canonical-recording omission: successful alchemy already retained INTERNAL ingredient→product lineage, but emitted no PUBLIC craft observation.
+- Telemetry 1.14 adds `alchemy.craft` only after `Recipe.brew` returns a result. It uses the existing pre-brew duplicates and records displayed input/output names, quantities, floor, and exact total/main-pool/toolkit energy split.
+- True unidentified classes remain INTERNAL; failed brews and restore-time reconstruction emit nothing. The existing lineage hook remains unchanged.
+- Added two retained regressions plus wiring, manifest, version and permanent-history contracts. TEST201 requests 1,615 core tests, debug assembly, complete immediate-previous compiled TEST200/Codex TEST 196 history, 27 API34 methods and 35 PNGs.
+- Candidate pending. No recipe, inventory, energy, RNG, gameplay, save, score, custom-rule, application-ID, signing, delivery or physical-phone change. TEST200 remains the verified compiled fallback; TEST123 remains owner-delivered/signature-compared.
