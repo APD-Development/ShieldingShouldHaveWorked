@@ -7,15 +7,19 @@
     {
       "category": "Changes",
       "sprite": "V061_PAGE",
-      "title": "Record TEST190 storage-race evidence",
-      "text": "Retain the successful hosted build, history and API34 evidence for the cross-instance saved-view store correction, while preserving the still-pending private artifact-content review.",
+      "title": "Release archive ZIP resources deterministically",
+      "text": "Close importer/exporter compression wrappers without taking ownership of Android document-provider streams.",
       "paths": [
         "docs/APD-TEST190-SAVED-VIEWS-CONCURRENT-STORE-2026-10-15.md",
         "docs/UIMSD-AUDIT-BUG-LOG.md",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/APD-NEXT-BUILD-HISTORY.json"
+        "docs/APD-NEXT-BUILD-HISTORY.json",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/archive/ArchiveExporter.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/archive/ArchiveImporter.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/archive/ArchiveStreamOwnershipTest.java",
+        "docs/APD-TEST191-ARCHIVE-WRAPPER-LIFETIME-2026-10-15.md"
       ]
     }
   ]

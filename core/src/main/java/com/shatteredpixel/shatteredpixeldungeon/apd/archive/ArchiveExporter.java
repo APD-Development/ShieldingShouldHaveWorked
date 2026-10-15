@@ -34,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.stats.TelemetryVersion;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -192,28 +193,44 @@ public final class ArchiveExporter {
 			if (report.skippedDamagedTails > 0) manifest.notes.add(report.skippedDamagedTails + " saved damaged tails were not exported.");
 
 			//second pass: write
-			ZipOutputStream zip = new ZipOutputStream(out);
-			byte[] text = manifest.encode().getBytes(ArchiveManifest.utf8());
-			put(zip, ArchiveManifest.ENTRY_NAME, text);
-			for (Plan p : included){
-				byte[] bytes = content(p);
-				if (bytes == null || bytes.length != p.entry.size || !ArchiveManifest.sha256Hex(bytes).equals(p.entry.sha256)){
-					//The manifest already lists this file. Skipping it creates an archive import must reject.
-					throw new IOException(p.entry.path + " changed while exporting. The archive is incomplete; export again.");
+			ZipOutputStream zip = new ZipOutputStream(new NonClosingOutputStream(out));
+			try {
+				byte[] text = manifest.encode().getBytes(ArchiveManifest.utf8());
+				put(zip, ArchiveManifest.ENTRY_NAME, text);
+				for (Plan p : included){
+					byte[] bytes = content(p);
+					if (bytes == null || bytes.length != p.entry.size || !ArchiveManifest.sha256Hex(bytes).equals(p.entry.sha256)){
+						//The manifest already lists this file. Skipping it creates an archive import must reject.
+						throw new IOException(p.entry.path + " changed while exporting. The archive is incomplete; export again.");
+					}
+					put(zip, p.entry.path, bytes);
+					report.bytes += bytes.length;
+					if (p.entry.kind.equals(ArchiveManifest.KIND_IMPORTED)) report.importedFiles++;
+					else report.runLogs++;
 				}
-				put(zip, p.entry.path, bytes);
-				report.bytes += bytes.length;
-				if (p.entry.kind.equals(ArchiveManifest.KIND_IMPORTED)) report.importedFiles++;
-				else report.runLogs++;
+				zip.finish();
+				zip.flush();
+				report.ok = true;
+				return report;
+			} finally {
+				//Release the ZIP compressor promptly, but the caller still owns the destination stream.
+				try { zip.close(); } catch (IOException ignored){}
 			}
-			zip.finish();
-			zip.flush();
-			report.ok = true;
-			return report;
 		} catch (Throwable t){
 			report.ok = false;
 			report.problem = String.valueOf(t);
 			return report;
+		}
+	}
+
+	private static final class NonClosingOutputStream extends FilterOutputStream {
+		NonClosingOutputStream( OutputStream out ){
+			super(out);
+		}
+
+		@Override
+		public void close() throws IOException {
+			flush();
 		}
 	}
 

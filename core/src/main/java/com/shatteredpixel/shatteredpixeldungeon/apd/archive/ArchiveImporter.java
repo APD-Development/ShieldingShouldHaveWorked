@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.stats.StatsStore;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FilterInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -100,7 +101,7 @@ public final class ArchiveImporter {
 	private static final Object LOCK = new Object();
 
 	public static Report importArchive( File root, InputStream in ){
-		return importZip(root, new ZipInputStream(new ProgressGuardInputStream(in)));
+		return importZip(root, new ZipInputStream(new ProgressGuardInputStream(new NonClosingInputStream(in))));
 	}
 
 	//the same, from an already opened zip stream (tests give it streams that misbehave the way old Android's does)
@@ -210,7 +211,19 @@ public final class ArchiveImporter {
 				return report;
 			} finally {
 				if (tmpDir != null) deleteTree(tmpDir);
+				//Release the ZIP inflater on every success, refusal and failure path.
+				try { zip.close(); } catch (IOException ignored){}
 			}
+		}
+	}
+
+	private static final class NonClosingInputStream extends FilterInputStream {
+		NonClosingInputStream( InputStream in ){
+			super(in);
+		}
+
+		@Override
+		public void close(){
 		}
 	}
 

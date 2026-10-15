@@ -862,3 +862,9 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Source `97c4848581e2f7fcd979d3965e257bdae59c5a93` / run `38672320647` passed complete core/debug/immediate-previous TEST189 history and 27/27 API34; runner listed 35/35 PNGs at 320×640.
 - Artifact IDs/digests: core `11944263722`/`7b8a3adf…6504d`; APK `11944698529`/`09e02464…5f93`; Android `11945087238`/`5152ec87…7431`.
 - Private payload extraction/contact-sheet review was unavailable, so TEST190 is not yet called the fully reviewed checkpoint. Reuse artifacts; no unchanged rebuild. TEST189 remains fully reviewed and TEST123 owner-delivered.
+
+
+## 2026-10-15T03:41:39Z — TEST191 archive wrapper lifetime candidate
+- Confirmed exporter/importer left owned ZIP wrappers unclosed, deferring inflater/deflater cleanup to garbage collection although callers separately closed document-provider streams.
+- Added non-closing adapters, closed ZIP wrappers on every path, and retained two regressions. Caller streams remain open; archive format and additive history semantics are unchanged.
+- Verification pending: 1,606 core/debug/immediate-previous compiled TEST190 history/27 API34/35 PNG. No delivery or physical-phone claim.

@@ -2389,3 +2389,10 @@ TEST189 verified (2026-10-15T02:29:53.163Z): sourceea1062079c6a43aadaf80dbf0197f
 - Artifact ZIP digests: core `7b8a3adfb3fffed6ff5a592830f2c839d19db22339347fdd3356f78d3526504d`, APK `09e0246462b86d4d50793e09e126791d16c0f1aa08a1cef9f3f751de4d3a5f93`, Android `5152ec875abf965a3e64176daeb2fd6fe48bd11ee08531747490de2925e67431`.
 - Private ZIP payload access was unavailable in this runtime, so XML-total parsing, contained-APK SHA read and contact-sheet content review remain pending. Do not rebuild unchanged TEST190; reuse artifacts `11944263722`, `11944698529`, `11945087238` for that audit. TEST189 remains the fully reviewed hosted/emulator checkpoint.
 - Production correction is confined to cross-instance SavedViews atomic replacement. No raw history/save/scoring/gameplay/identity/signing/delivery/physical-phone change; TEST123 remains owner-delivered fallback.
+
+
+## 2026-10-15T03:41:39Z — TEST191 archive compression-wrapper lifetime candidate
+- Current source created `ZipOutputStream` and `ZipInputStream` wrappers but did not close them; callers later closed only document-provider streams, leaving compressor/inflater cleanup nondeterministic.
+- Export/import now close owned ZIP wrappers on every path through non-closing adapters. Supplied streams remain caller-owned.
+- Two retained regressions cover caller-stream ownership and direct importer ZIP closure. TEST191 requests 1,606 core/debug/immediate-previous compiled TEST190 history/27 API34/35 PNG; pending.
+- Archive format, raw history, saves, statistics, scoring, gameplay, identity and signing are unchanged. No delivery/phone claim; TEST189 remains fully reviewed and TEST123 owner-delivered.
