@@ -1,25 +1,21 @@
 {
-  "previous_label": "Codex TEST 190",
-  "previous_source": "97c4848581e2f7fcd979d3965e257bdae59c5a93",
-  "previous_run": 38672320647,
+  "previous_label": "Codex TEST 191",
+  "previous_source": "7e6cae8900c97eaa920bbe8baebb657ec5e539be",
+  "previous_run": 38677900668,
   "date": "2026-10-15",
   "changes": [
     {
       "category": "Changes",
       "sprite": "V061_PAGE",
-      "title": "Release archive ZIP resources deterministically",
-      "text": "Close importer/exporter compression wrappers without taking ownership of Android document-provider streams.",
+      "title": "Record TEST191 archive resource evidence",
+      "text": "Retain passing core, debug, APK-history, API34 and reviewed visual evidence for deterministic archive wrapper cleanup.",
       "paths": [
-        "docs/APD-TEST190-SAVED-VIEWS-CONCURRENT-STORE-2026-10-15.md",
+        "docs/APD-TEST191-ARCHIVE-WRAPPER-LIFETIME-2026-10-15.md",
         "docs/UIMSD-AUDIT-BUG-LOG.md",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/APD-NEXT-BUILD-HISTORY.json",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/archive/ArchiveExporter.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/archive/ArchiveImporter.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/archive/ArchiveStreamOwnershipTest.java",
-        "docs/APD-TEST191-ARCHIVE-WRAPPER-LIFETIME-2026-10-15.md"
+        "docs/APD-NEXT-BUILD-HISTORY.json"
       ]
     }
   ]

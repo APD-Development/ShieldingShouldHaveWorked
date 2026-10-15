@@ -2396,3 +2396,12 @@ TEST189 verified (2026-10-15T02:29:53.163Z): sourceea1062079c6a43aadaf80dbf0197f
 - Export/import now close owned ZIP wrappers on every path through non-closing adapters. Supplied streams remain caller-owned.
 - Two retained regressions cover caller-stream ownership and direct importer ZIP closure. TEST191 requests 1,606 core/debug/immediate-previous compiled TEST190 history/27 API34/35 PNG; pending.
 - Archive format, raw history, saves, statistics, scoring, gameplay, identity and signing are unchanged. No delivery/phone claim; TEST189 remains fully reviewed and TEST123 owner-delivered.
+
+
+## 2026-10-15T04:00:07Z — TEST191 verified archive wrapper lifetime correction
+- Source `7e6cae8900c97eaa920bbe8baebb657ec5e539be`, run [38677900668](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38677900668), ran 03:45:18Z–03:56:59Z and completed successfully.
+- Downloaded core evidence contains 310 XML suites / 1,606 tests; API34 XML contains 27 tests. Both have zero failures, errors and skips. `ArchiveStreamOwnershipTest` ran both retained methods.
+- Debug assembly and immediate-previous compiled TEST190 history passed. APK SHA-256 is `b88b4ddc71f12abaac8d216d3c553968577b254b9f55f3ecff2522ef0046329b`.
+- All 35 screenshots are present at 320×640; the full contact sheet was visually reviewed clean.
+- Artifacts: core `11946906120` / ZIP `48b92ba33cb0ec901db327f1f9de6099e4ff4e411c9d3b164cdfcd31ef3e66d9`; APK `11946966071` / ZIP `89c853dd6650c38cc75ebbef3eee3a7a32f58091a10f534de2232b9c967d5099`; Android `11947432170` / ZIP `e53779a6a8502d817d0fdb253bbcd303baa9dab8a6bd8ae8bdc0bdaa6a19c830`.
+- Hosted/emulator verification is complete; no physical phone or delivery. TEST123 remains owner-delivered. Do not rebuild unchanged TEST191.

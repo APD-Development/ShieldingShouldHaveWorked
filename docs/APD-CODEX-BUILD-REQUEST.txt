@@ -161,3 +161,6 @@ TEST190 hosted status (2026-10-15T02:58:31.520Z): source97c4848581e2f7fcd979d396
 
 
 TEST191 exact-source request (2026-10-15T03:41:39Z): close importer/exporter ZIP wrappers on every completion/refusal/failure path while non-closing adapters preserve caller ownership of Android document-provider streams. Run two retained ownership/lifetime regressions and verify 1,606 core tests, debug assembly, immediate-previous compiled TEST190 history, 27 API34 methods and 35 valid 320x640 PNGs. Candidate pending; no delivery/phone claim; archive bytes/manifest, raw history, saves, scoring, gameplay, identity and signing unchanged.
+
+
+TEST191 verified (2026-10-15T04:00:07Z): source7e6cae8900c97eaa920bbe8baebb657ec5e539be/run38677900668 passed1606core in310XML+27API34/debug/immediate-previous compiledTEST190 history/35valid320x640PNG,0failure/error/skip. Both retained ArchiveStreamOwnershipTest methods passed. APK SHA256 b88b4ddc71f12abaac8d216d3c553968577b254b9f55f3ecff2522ef0046329b. Full contact sheet reviewed clean. No application build pending; do not rebuild unchanged TEST191. No delivery/physical-phone claim; TEST123 remains owner-delivered/signature-compared.

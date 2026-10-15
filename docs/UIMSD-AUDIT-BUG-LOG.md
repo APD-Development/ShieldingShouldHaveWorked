@@ -21,3 +21,6 @@ Update 2026-10-15T02:58:31.520Z: TEST190 source `97c4848581e2f7fcd979d3965e257bd
 
 
 Update 2026-10-15T03:41:39Z: the remaining archive compression-wrapper lifetime item is confirmed in current source: both public operations created ZIP wrappers that were never closed, leaving their inflater/deflater cleanup to garbage collection. TEST191 closes owned ZIP wrappers on every path through non-closing adapters so caller-supplied document-provider streams remain caller-owned. Two retained tests cover exporter/importer ownership and direct ZIP-wrapper closure. Exact-source full verification is pending; no observed phone failure or history-format change is claimed.
+
+
+Update 2026-10-15T04:00:07Z: TEST191 source `7e6cae8900c97eaa920bbe8baebb657ec5e539be` / run `38677900668` passed 1,606 core and 27 API34 tests with zero failures/errors/skips, debug/history, and 35 reviewed screenshots. The archive compression-wrapper lifetime investigation item is resolved. Huge-file whole-memory reader cost remains an investigation item, not a claimed normal-run defect.

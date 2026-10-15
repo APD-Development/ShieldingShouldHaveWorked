@@ -868,3 +868,9 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Confirmed exporter/importer left owned ZIP wrappers unclosed, deferring inflater/deflater cleanup to garbage collection although callers separately closed document-provider streams.
 - Added non-closing adapters, closed ZIP wrappers on every path, and retained two regressions. Caller streams remain open; archive format and additive history semantics are unchanged.
 - Verification pending: 1,606 core/debug/immediate-previous compiled TEST190 history/27 API34/35 PNG. No delivery or physical-phone claim.
+
+
+## 2026-10-15T04:00:07Z — TEST191 archive wrapper correction verified
+- Source `7e6cae8900c97eaa920bbe8baebb657ec5e539be` / run `38677900668` passed 1,606 core tests (310 XML) and 27 API34 tests, zero failures/errors/skips, plus debug assembly and immediate-previous compiled TEST190 history.
+- Both retained stream-ownership tests passed. All 35 expected screenshots are 320×640 and the full contact sheet reviewed clean. APK SHA-256: `b88b4ddc71f12abaac8d216d3c553968577b254b9f55f3ecff2522ef0046329b`.
+- The correction deterministically releases ZIP wrappers while preserving caller-owned picker streams. No archive format, history, save, score, gameplay, identity or signing change. No delivery/physical-phone claim; TEST123 remains owner-delivered.
