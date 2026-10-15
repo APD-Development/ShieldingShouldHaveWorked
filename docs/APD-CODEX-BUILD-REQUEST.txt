@@ -207,3 +207,6 @@ SOURCE-BOUND ROW CACHE BATCH — October15,2026: verify1626core,debug,compiled c
 
 
 CLERIC LORE OWNER CORRECTION: verify1629core/debug/complete immediate-previous nativeTEST202history,28API34 methods and36 validPNG including actual cleric-first-run.png. Restore private testBuild+grudge flags only; preserve all50IDs/ledger/opt-out/rarity/gameplay/saves/signing/appID. Owner guide7pages ready. No automatic private distribution or physical-phone claim. Root cause release gate+missing generated private flag; new Android test uses actual hook/window with isolated ledger and Back callback. Full gate required before resolved claim.
+
+
+SOURCE-BOUND ROW CACHE VERIFIED (2026-10-15T13:42:07Z): exact workflow headcef68f0f80b1dd0c3e1660e53e1c0a0dad2e9e7e/run38742449533 passed1626core in320XML+27API34 in12XML/debug/complete immediate-previous compiledTEST205/CodexTEST201history/35valid320x640PNG. Internal CodexTEST202 APK SHA256 cab516793cedf03ca90b04e6de778def9cb8fd1525d8e86bf98859cf47b7b519. Do not rebuild unchanged row-cache source. Private delivery skipped; no physical-phone claim. Newer Cleric-lore branch commits are outside this evidence and remain untested by this run.

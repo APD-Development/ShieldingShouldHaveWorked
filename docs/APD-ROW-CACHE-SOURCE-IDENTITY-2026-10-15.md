@@ -24,3 +24,13 @@ TEST198 remains actual owner-delivered, signing/application-ID/checksum-compared
 ## Latest predecessor and integration
 While the branch write awaited completion, verified TEST205 landed. The expected-head update was rejected and no history was overwritten. The backward-compatible RowCodec API was integrated first (0a60c741), then DatasetStore (b80658be), then the four permanent tests (e44c887f) using current file blob guards.
 Immediate prior actual APK is now Codex TEST201: sourcea5071e47270ef3953a85eecc50f285d617f96fb3/run38736265505. The handoff records1622core+27API34/debug/history/35PNG passed and APKsha42075e16015fe677f1baf20bf946d60dddf2018143007950cdbf90ed63b4f692. Preserve that newer boss-phase telemetry and use it for the next build comparison, rather than repeating its changes under this cache fix. Expected next core count1626. The separately published owner fallback remains Codex TEST198.
+
+
+## Full-gate outcome
+
+Exact workflow head `cef68f0f80b1dd0c3e1660e53e1c0a0dad2e9e7e` passed [run 38742449533](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38742449533) from 2026-10-15T13:24:39Z through 13:38:06Z.
+
+- Core artifact `11975569462`: 1,626 tests in 320 XML suites, zero failures/errors/skips; GitHub digest `sha256:debd3057f8d03abd61683314f517d5d7e77cdbf648e24fe20e1041f0695bc1d3`.
+- APK artifact `11976650506`: debug assembly and complete immediate-previous compiled TEST205/Codex TEST 201 history passed; GitHub digest `sha256:37675d2513f8e1cc88aa4f95fb06c2b519130cc79e5b26aee431860c370898ba`. The contained Codex TEST 202 APK SHA-256 is `cab516793cedf03ca90b04e6de778def9cb8fd1525d8e86bf98859cf47b7b519`.
+- Android artifact `11978246008`: 27 API34 methods in 12 XML suites, zero failures/errors/skips; 35 PNGs all decode as 320×640 and the complete contact sheet was manually reviewed clean; GitHub digest `sha256:e29b5ad73656ca31b0c0a2050193df4dfc269fff692a0d3a47d9d715fba4141a`.
+- Private delivery remained skipped. No physical-phone claim. Later Cleric-lore branch commits are not included in this evidence.
