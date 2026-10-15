@@ -374,7 +374,7 @@ public final class EventDatasets {
 		for (int k = i + 1; k < events.size() && k <= i + 4; k++){
 			if (events.get(k).type == type) return events.get(k);
 			int t = events.get(k).type;
-			if (t == EventTypes.ATTACK || t == EventTypes.DAMAGE || t == EventTypes.KILL || t == EventTypes.HEAL) break;
+			if (t == EventTypes.GAP || t == EventTypes.ATTACK || t == EventTypes.DAMAGE || t == EventTypes.KILL || t == EventTypes.HEAL) break;
 		}
 		return null;
 	}
