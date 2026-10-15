@@ -2456,3 +2456,10 @@ The ordered legacy-door item is closed. Hero markers still require explicit appr
 - Added a retained real-central-path regression requiring one accepted interaction event and no event for a rejected interaction.
 - TEST196 requests 1,610 core/debug/immediate-previous compiled TEST192 history/27 API34/35 PNG. Candidate pending; TEST192 remains verified fallback and TEST123 owner-delivered.
 - No gameplay result, turn, RNG, save, permanent-statistics, scoring, custom-rule, identity, signing, delivery or physical-phone change.
+
+
+## 2026-10-15T06:40:00Z — TEST196 integration-contract failures; TEST197 correction pending
+- TEST196 source `37da2dcd7ef3512402c2d8622be73e075d2278ba` / run [38693568938](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38693568938) executed 1,610 core tests: 1,607 passed, 3 failed before APK compilation.
+- Failures were the expected new Hero hook count, missing required telemetry 1.12 records-history milestone, and a headless regression entering pre-existing `Hero.ready()` UI code before the interaction.
+- TEST197 declares both permanent contracts and has the real central path call a private call-plus-record helper that the regression can invoke without UI. Production interaction result, turn and recorder behavior are unchanged.
+- Core artifact `11952904481`, ZIP SHA-256 `7a11eab5b211a9190a02fc28920f2bd1de1ca718d94cab7f65944539aa270f34`. No TEST196 APK. Verify 1,610 core/debug/immediate-previous compiled TEST192 history/27 API34/35 PNG.

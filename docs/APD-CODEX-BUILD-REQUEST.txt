@@ -173,3 +173,6 @@ TEST192 verified (2026-10-15T04:57:30Z): source222189f971dc55597f561eb87aadcd4e3
 
 
 TEST196 exact-source request (2026-10-15T06:35:47Z): verify additive public telemetry1.12 npc.interact at the central accepted hero/NPC interaction path, with displayed name and current floor only; rejected interactions emit nothing and npc.quest remains separate. Require1610core/debug/immediate-previous compiledTEST192 history/27API34/35PNG. Lever candidate was reproduced as absent from current source; no fictional mechanic added. No gameplay/save/permanent-statistics/scoring/custom-rule/identity/signing/delivery/physical-phone change.
+
+
+TEST197 correction request (2026-10-15T06:40:00Z): TEST196 source37da2dcd7ef3512402c2d8622be73e075d2278ba/run38693568938 executed1610core with1607pass/3integration-contract failures and noAPK. Declare Hero's sixth ApdPlay hook, add the permanent telemetry1.12 history milestone, and have the real central interaction path call the same private call-plus-record helper the headless regression exercises without UI. Re-run1610core/debug/immediate-previous compiledTEST192 history/27API34/35PNG. Do not relabel TEST196 as passed.

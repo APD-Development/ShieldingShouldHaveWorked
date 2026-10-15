@@ -921,3 +921,11 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Added additive public telemetry 1.12 fact `npc.interact` after the central hero interaction accepts an NPC interaction. It records only the displayed NPC name and floor; quest-state telemetry is unchanged.
 - Added a retained central-path regression covering accepted exactly-once recording and rejected-interaction omission.
 - Full 1,610-core/debug/immediate-previous TEST192 history/27 API34/35 PNG gate pending. No delivery or physical-phone claim.
+
+
+## 2026-10-15T06:40:00Z — TEST196 failed three new integration contracts; TEST197 pending
+
+- Source `37da2dcd7ef3512402c2d8622be73e075d2278ba`, run `38693568938`: 1,610 core executed, 1,607 passed, three failures; no APK.
+- Retained failures: Hero's sixth recorder hook was not added to `PlayWiringTest`; telemetry 1.12 lacked its permanent records-history milestone; the new test entered `Hero.ready()` and hit the absent headless `AttackIndicator` before interaction.
+- TEST197 updates the two contracts and isolates the exact call-plus-record unit behind the real central path for headless execution. Assertions and recorder guards are not weakened.
+- Failed core artifact `11952904481`, ZIP SHA-256 `7a11eab5b211a9190a02fc28920f2bd1de1ca718d94cab7f65944539aa270f34`. Full gate pending.

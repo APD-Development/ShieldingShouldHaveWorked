@@ -8,6 +8,10 @@ APD game version, and every recorded run keeps the telemetry version that record
 tied to a version of the recorded data. Minor versions only add things, a new major version changes what existing
 data means.
 
+telemetry-1.12-npc-interactions | telemetry 1.12 | APD 4.0.8-apd | 2026-10-15
+- Records each accepted hero interaction with an NPC using only the name already shown to the player and the current floor.
+- Quest state changes remain separate; runs recorded before 1.12 show NPC interactions as unknown, never zero.
+
 custom-rules-scoring-1-11 | telemetry 1.11 | APD 4.0.8-apd | 2026-10-13
 - Records all selected custom settings and frozen scoring status without changing earned scores.
 - Historical settings that were not recorded remain unknown.

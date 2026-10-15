@@ -1075,6 +1075,14 @@ public class Hero extends Char {
 		}
 	}
 	
+	private boolean interactAndRecord( Char ch ){
+		boolean interacted = ch.interact(this);
+		if (interacted && ch instanceof NPC){
+			ApdPlay.onNpcInteraction((NPC) ch);
+		}
+		return interacted;
+	}
+
 	private boolean actInteract( HeroAction.Interact action ) {
 		
 		Char ch = action.ch;
@@ -1083,11 +1091,7 @@ public class Hero extends Char {
 			
 			ready();
 			sprite.turnTo( pos, ch.pos );
-			boolean interacted = ch.interact(this);
-			if (interacted && ch instanceof NPC){
-				ApdPlay.onNpcInteraction((NPC) ch);
-			}
-			return interacted;
+			return interactAndRecord(ch);
 			
 		} else {
 			

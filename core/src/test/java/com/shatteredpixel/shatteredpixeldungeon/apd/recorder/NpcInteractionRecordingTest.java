@@ -8,7 +8,6 @@ import static org.junit.Assert.assertTrue;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroAction;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.ApdEvent;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactEvents;
@@ -47,11 +46,9 @@ public class NpcInteractionRecordingTest {
 	}
 
 	private static boolean interact( Hero hero, NPC npc ) throws Exception {
-		npc.pos = hero.pos + 1;
-		new QuietSprite(npc);
-		Method method = Hero.class.getDeclaredMethod("actInteract", HeroAction.Interact.class);
+		Method method = Hero.class.getDeclaredMethod("interactAndRecord", Char.class);
 		method.setAccessible(true);
-		return (Boolean) method.invoke(hero, new HeroAction.Interact(npc));
+		return (Boolean) method.invoke(hero, npc);
 	}
 
 	@Test
