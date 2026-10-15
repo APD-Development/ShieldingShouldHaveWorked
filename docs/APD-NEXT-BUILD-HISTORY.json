@@ -44,8 +44,8 @@
     {
       "category": "Development",
       "sprite": "V061_PAGE",
-      "title": "TEST201 verification request",
-      "text": "Document the reproduced omission, exact pending gate and the next canonical-recording state without claiming unrun evidence.",
+      "title": "TEST202 history-placement correction",
+      "text": "Retain TEST201's exact 1,614/1,615 contract failure and move only the telemetry 1.14 milestone below the immutable records-history preamble before rerunning the complete gate.",
       "paths": [
         "docs/APD-UIMSD-UNIVERSAL.md",
         "docs/APD-TEST201-ALCHEMY-DETAILS-2026-10-15.md",
@@ -56,5 +56,5 @@
       ]
     }
   ],
-  "commentary": "TEST201 adds a separate PUBLIC craft observation while preserving the existing INTERNAL ingredient-to-product lineage and all gameplay behavior."
+  "commentary": "TEST201 exposed one records-history placement error after 1,614 core passes. TEST202 changes only that placement and retains the complete alchemy implementation and privacy boundary."
 }

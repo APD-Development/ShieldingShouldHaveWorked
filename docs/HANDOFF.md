@@ -2519,3 +2519,10 @@ The ordered legacy-door item is closed. Hero markers still require explicit appr
 - True unidentified classes remain INTERNAL; failed brews and restore-time reconstruction emit nothing. The existing lineage hook remains unchanged.
 - Added two retained regressions plus wiring, manifest, version and permanent-history contracts. TEST201 requests 1,615 core tests, debug assembly, complete immediate-previous compiled TEST200/Codex TEST 196 history, 27 API34 methods and 35 PNGs.
 - Candidate pending. No recipe, inventory, energy, RNG, gameplay, save, score, custom-rule, application-ID, signing, delivery or physical-phone change. TEST200 remains the verified compiled fallback; TEST123 remains owner-delivered/signature-compared.
+
+
+## 2026-10-15T09:21:06Z — TEST201 records-history contract failure; TEST202 correction pending
+- TEST201 source `776910414b7574b42cffa0d61e9bb7d4f1e83ca7` / run [38711834653](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38711834653) executed all 1,615 core tests: 1,614 passed and one failed.
+- `ContractTests.recordsHistoryDescribesTheCurrentTelemetryVersion` correctly rejected the telemetry 1.14 milestone because it preceded the immutable `APD records history, format 2` preamble. Production compilation and the two new alchemy regressions passed.
+- History preservation/validation passed. APK and API34 were skipped; no TEST201 APK exists. Failed core artifact `11960867915`, 752,666 bytes, SHA-256 `e040a5f4330624fd74a0739cf914eb553d34957dcda5d8464acb39f9e6f8befe`.
+- TEST202 moves only the new milestone beneath the preamble. Production source, telemetry payload and assertions are unchanged. Full 1,615-core/debug/TEST200-history/27-API34/35-PNG gate pending. TEST200 remains verified compiled; TEST123 remains owner-delivered.

@@ -983,3 +983,10 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Failed brews and restore-time reconstruction emit nothing; true unidentified classes remain INTERNAL. Existing lineage, recipes, inventory mutation, energy consumption, RNG and save behavior are unchanged.
 - Added two core regressions and updated the wiring guard, permanent fact manifest, telemetry version test and immutable records history. Full 1,615-core/debug/immediate-previous compiled TEST200/Codex TEST 196 history/27-API34/35-PNG gate pending.
 - No scoring, custom-rule, application-ID, signing, distribution or physical-phone claim. TEST200 remains the verified compiled fallback; TEST123 remains owner-delivered/signature-compared.
+
+
+## 2026-10-15T09:21:06Z — TEST201 failed records-history contract; TEST202 pending
+- Source `776910414b7574b42cffa0d61e9bb7d4f1e83ca7`, run `38711834653`: 1,615 core executed, 1,614 passed, one contract failure; no APK and no API34 run.
+- Failure: the telemetry 1.14 milestone was inserted before the required `APD records history, format 2` first line. The alchemy production code and both new behavioral/privacy regressions compiled and passed.
+- History preservation/validation passed. Failed artifact `11960867915`, 752,666 bytes, SHA-256 `e040a5f4330624fd74a0739cf914eb553d34957dcda5d8464acb39f9e6f8befe`.
+- TEST202 moves only the milestone below the immutable preamble and requests the unchanged full 1,615-core/debug/TEST200-history/27-API34/35-PNG gate.

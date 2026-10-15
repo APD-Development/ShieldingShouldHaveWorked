@@ -185,3 +185,6 @@ TEST200 test-fixture correction (2026-10-15T08:48:52Z): TEST199 source5a937f93e2
 
 
 TEST201 exact-source request (2026-10-15T09:14:47Z): add public telemetry1.14 alchemy.craft only after a successful brew, using displayed pre-brew ingredient/result names, exact quantities, floor and total/main-pool/toolkit energy split. True unidentified classes remain INTERNAL; failed and restore-time paths emit nothing. Verify1615core/debug/immediate-previous compiledTEST200/CodexTEST196 history/27API34/35PNG. Preserve recipes, inventory, energy, RNG, saves, scoring, custom rules, identity and signing. No delivery/physical-phone claim.
+
+
+TEST202 records-history placement correction (2026-10-15T09:21:06Z): TEST201 source776910414b7574b42cffa0d61e9bb7d4f1e83ca7/run38711834653 executed1615core with1614pass/1 contract failure and noAPK. The telemetry1.14 milestone was inserted before the required format2 preamble. Move only that block below the immutable preamble and rerun unchanged production/test source:1615core/debug/immediate-previous compiledTEST200/CodexTEST196 history/27API34/35PNG. Preserve assertions and all application behavior; no delivery/physical-phone claim.
