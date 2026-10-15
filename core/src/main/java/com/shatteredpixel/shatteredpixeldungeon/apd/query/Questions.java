@@ -153,9 +153,9 @@ public final class Questions {
 			AggValue v = g.aggregates.get(0);
 			CellFormatter.AggText at = CellFormatter.aggregate(def, agg, v);
 			if (per == null){
-				lines.add(new Line(label.toString(), at.text, at.detail, v.known ? v.value : Double.NaN, v.isLowerBound()));
+				lines.add(new Line(label.toString(), at.text, at.detail, v.known ? CellFormatter.displayNumber(def.column(agg.column), v.value) : Double.NaN, v.isLowerBound()));
 			} else {
-				double n = v.known ? v.value : Double.NaN;
+				double n = v.known ? CellFormatter.displayNumber(def.column(agg.column), v.value) : Double.NaN;
 				double r = per.per(n, i);
 				boolean numeratorLower = v.isLowerBound(), denominatorLower = per.lower[i];
 				boolean ambiguous = numeratorLower && denominatorLower && n > 0;
