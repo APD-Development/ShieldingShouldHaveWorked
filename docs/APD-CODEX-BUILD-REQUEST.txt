@@ -210,3 +210,6 @@ CLERIC LORE OWNER CORRECTION: verify1629core/debug/complete immediate-previous n
 
 
 SOURCE-BOUND ROW CACHE VERIFIED (2026-10-15T13:42:07Z): exact workflow headcef68f0f80b1dd0c3e1660e53e1c0a0dad2e9e7e/run38742449533 passed1626core in320XML+27API34 in12XML/debug/complete immediate-previous compiledTEST205/CodexTEST201history/35valid320x640PNG. Internal CodexTEST202 APK SHA256 cab516793cedf03ca90b04e6de778def9cb8fd1525d8e86bf98859cf47b7b519. Do not rebuild unchanged row-cache source. Private delivery skipped; no physical-phone claim. Newer Cleric-lore branch commits are outside this evidence and remain untested by this run.
+
+
+OWNER-REQUESTED CLERIC TOUCH FIX AND DELIVERY: verify1631core/debug/complete immediately preceding nativeTEST203(sourcea9b9d0b231fda11962598ccd2f6f46027dd8d02e/run38745042577),28API34 and38PNG. Actual1to4slot transition must revive hidden inactive tags; real pointer taps on blank2/3/4 must open picker and store selection. Retain verified lore popup/Back/persistence and all existing game tests. Include separate confirmed optional-cache writer race correction with2newtests; no raw history/save/gameplay changes. Owner requests private APK upload only after touch fix verified, then continue approved backlog. No physical-phone claim. No unrelated balance/scoring/range/identity/signing changes.
