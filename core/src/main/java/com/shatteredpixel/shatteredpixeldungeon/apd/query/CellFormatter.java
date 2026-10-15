@@ -231,7 +231,7 @@ public final class CellFormatter {
 				break;
 			case AVG:
 			case MEDIAN:
-				body = oneDecimal(v.value);
+				body = oneDecimal(displayNumber(c, v.value));
 				break;
 			default:
 				body = c != null && c.type == ColumnDef.Type.NUM ? value(c, Math.round(v.value)) : Long.toString(Math.round(v.value));
@@ -242,6 +242,14 @@ public final class CellFormatter {
 		String compactBody = body;
 		if (a.fn == Aggregate.Fn.RATE || a.fn == Aggregate.Fn.RATIO) compactBody = Math.round(v.value * 100) + "%";
 		return new AggText(prefix + body, prefix + compactBody, detail, state, small);
+	}
+
+	// Convert stored fixed-point values only at presentation boundaries; query math stays raw.
+	static double displayNumber(ColumnDef column, double value){
+		if (column == null || column.type != ColumnDef.Type.NUM) return value;
+		if (column.format == ColumnDef.Format.HUNDREDTHS) return value / 100d;
+		if (column.format == ColumnDef.Format.THOUSANDTHS) return value / 1000d;
+		return value;
 	}
 
 	//whole numbers without a decimal, others with one
