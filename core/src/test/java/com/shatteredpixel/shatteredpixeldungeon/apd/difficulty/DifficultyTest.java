@@ -339,7 +339,8 @@ public class DifficultyTest {
 			assertTrue(Dungeon.apdExoticKnown);
 			assertEquals(30, Dungeon.apdExotic);
 			String id = Ruleset.current().id;
-			assertEquals(Ruleset.of(30, Dungeon.challenges, Dungeon.difficulty, Dungeon.difficultyBalance).id, id);
+			assertEquals(Ruleset.withHealingOnlyConversion(Ruleset.of(30, Dungeon.challenges, Dungeon.difficulty, Dungeon.difficultyBalance)).id, id);
+            assertNotEquals("Historical global-conversion identity remains distinct", Ruleset.of(30, Dungeon.challenges, Dungeon.difficulty, Dungeon.difficultyBalance).id, id);
 
 			SPDSettings.apdExoticChance(80);     //the player moves the slider in the middle of the run
 			assertEquals("gameplay keeps the run's own value", 30, SPDSettings.apdExoticChance());
