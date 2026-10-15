@@ -57,3 +57,19 @@ The old isolated tests and audit are retained. Their supplied combat fixtures ar
 Three new isolated production-Barrier tests pass: ten barrier lasts 61 ticks without damage; 75 barrier lasts 135 ticks; adding 25 every 43 ticks stays positive in the tested no-damage recurrence and settles at a six-to-31 cycle. These supplied increments are mathematical decay fixtures, not owned spell charges, and are never inserted into the played route. Combined with the existing 17 Get Fucked rule tests and two ShieldHunger tests, the local completed run reports `OK (22 tests)`.
 
 The dungeon seed is 266. The initial runtime RNG is separately controlled at seed 266 for the command experiment and is captured in native continuations; a dungeon seed alone does not ordinarily fix every combat result. The sequence does not reseed between encounters.
+
+## Floor-4 continuation
+
+The original 200-turn entrance recharge fails: a spawned slime reaches the unprotected hero and kills it. A bounded 120-turn wait after eating the earned pasty allows an active route. The meal clamps hunger 369 to zero, wasting 81 of its 450 food value; the three eating turns then accrue hunger normally.
+
+The replay from the actual floor-4 save defeats crab 81 using Shield of Light, Guiding Light and one quarterstaff attack. The remaining charge pays Shield of Light against spawned slime 87; four melee actions, including a miss, kill it. After twenty paid waiting turns, the northern gnoll is killed in a single actual melee hit. The original swarm follows the hero into the exit room.
+
+The successful variant obtains the liquid-flame potion at 474, casts Shield of Light, moves to 473, and throws the potion at 436. The offset explosion burns the swarm but excludes the hero. It opens the chest at 472, casts Holy Ward with the newly recharged charge, acquires the three shuriken, attacks the parent once, uses APD's first shuriken throw at zero time to kill the parent, and kills the split child in melee. Level 4 and its first Searing Light point are earned. No monsters or resources are supplied. A replay after recovering the workspace reproduced the result at total time 1158, hunger 197, 1/1 HP, no barrier, Tome zero whole charge and 0.091669507 partial charge.
+
+The shuriken reveals the Sacrificial curse. Its production proc has a 0.1 outer chance and, at 1/1 HP, a 0.125 inner chance of applying at least one bleeding. That is a potential lethal 1.25% proc per applicable hit before modifiers, not an unavoidable death. The observed successful throw does not apply bleeding.
+
+This success has a resource conflict: the floor's food, upgrade scroll and toxic-gas potion are behind barricade 746. The liquid flame used in the swarm fight was the natural means of opening that barricade. Those supplies are NOT credited to the successful continuation. Nearby traps are AlarmTrap 519 and ChillingTrap 996, not a substitute fire source. Preserving the flame while fighting the unburned swarm failed in tested action orders. A replacement route remains under investigation.
+
+The preserved native north-room save and compressed replay log are in provenance. Early floor-4 failed trials before a workspace reset were not committed; their findings above are based on recorded outputs. The successful north-room section was replayed after restoration and saved again. Neither boss victory nor ascension has been established.
+
+CI run 38815420848 on commit 633ffac4 completed successfully, covering the baseline test invocation and the pinned native floor-3-to-floor-4 replay.

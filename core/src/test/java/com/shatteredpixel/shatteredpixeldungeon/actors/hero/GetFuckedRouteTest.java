@@ -352,7 +352,7 @@ public class GetFuckedRouteTest {
     @Test public void seed266InitialCommands() throws Exception {
         System.out.println("RUNNER_STAGE scheduler start");
         ready();
-        if(System.getProperty("route.resume")!=null){verifyCheckpoint(System.getProperty("route.resume"));thirdFloorSection();return;}
+        if(System.getProperty("route.resume")!=null){verifyCheckpoint(System.getProperty("route.resume"));if(Dungeon.depth==3)thirdFloorSection();else if(Dungeon.depth==4)fourthFloorSection();else fail("Unwritten section");return;}
         assertEquals(1,Dungeon.hero.lvl); assertEquals(1,Dungeon.hero.HP); assertEquals(1,Dungeon.hero.HT);
         for(Map<Talent,Integer> tier:Dungeon.hero.talents) for(int value:tier.values()) assertEquals(0,value);
         JSONObject layout=new JSONObject(); Level l=Dungeon.level;
@@ -634,4 +634,48 @@ public class GetFuckedRouteTest {
 
         assertEquals(1,Dungeon.hero.HP);
     }
+    private void fourthFloorSection() throws Exception {
+        assertEquals(4,Dungeon.depth);assertEquals(1007,Dungeon.hero.pos);
+        System.out.println("FLOOR_LAYOUT "+new JSONObject().put("depth",4).put("width",Dungeon.level.width()).put("height",Dungeon.level.height()).put("terrain",new JSONArray(Dungeon.level.map)).put("entrance",Dungeon.level.entrance()).put("exit",Dungeon.level.exit()));
+        for(com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap t:Dungeon.level.traps.valueList())System.out.println("FLOOR_FOUR_TRAP "+t.pos+" "+t.getClass().getSimpleName());
+        Item pasty=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty.class);assertNotNull(pasty);
+        pasty.execute(Dungeon.hero,"EAT");ready();log("EAT EARNED PASTY ON FLOOR FOUR");
+        for(int n=0;n<120;n++)waitOne();
+        log("FLOOR_FOUR_BOUNDED_RECHARGE");
+        for(int c:new int[]{968,929,890,889,888})click(c);
+        Mob entranceCrab=Dungeon.level.mobs.stream().filter(m->m.id()==81).findFirst().get();
+        cast(ShieldOfLight.INSTANCE,entranceCrab.pos);cast(GuidingLight.INSTANCE,entranceCrab.pos);
+        for(int n=0;n<3 && entranceCrab.isAlive();n++)click(entranceCrab.pos);
+        assertFalse(entranceCrab.isAlive());log("FLOOR_FOUR_CRAB_DEFEATED");
+        for(int c:new int[]{887,848,809})click(c);
+        Mob approachSlime=Dungeon.level.mobs.stream().filter(m->m.id()==87).findFirst().get();
+        cast(ShieldOfLight.INSTANCE,approachSlime.pos);
+        for(int n=0;n<4 && approachSlime.isAlive();n++)click(approachSlime.pos);
+        assertFalse(approachSlime.isAlive());log("FLOOR_FOUR_SPAWNED_SLIME_DEFEATED");
+        for(int n=0;n<20;n++)waitOne();
+        for(int c:new int[]{808,807,806,806,767})click(c);
+        assertFalse(Dungeon.level.mobs.stream().anyMatch(m->m.id()==82));log("FLOOR_FOUR_GNOLL_DEFEATED");
+        for(int c:new int[]{767,728,689,650,611,610,609,608,607,606,605,604,603})click(c);
+        for(int c:new int[]{563,524,485,484,483,482,481,480,479,478,477,476,475,474,474})click(c);
+        Mob northSwarm=Dungeon.level.mobs.stream().filter(m->m.id()==80).findFirst().get();
+        boolean retainFlame=Boolean.getBoolean("route.retainFlame");
+        if(retainFlame)cast(HolyWard.INSTANCE,null);else cast(ShieldOfLight.INSTANCE,northSwarm.pos);
+        click(473);
+        if(retainFlame)waitOne();else throwItem(com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame.class,436);
+        click(472);click(472);
+        if(retainFlame)cast(GuidingLight.INSTANCE,northSwarm.pos);else cast(HolyWard.INSTANCE,null);
+        click(472);
+        assertNotNull(Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class));
+        click(northSwarm.pos);
+        Mob child=Dungeon.level.mobs.stream().filter(m->m instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Swarm && m!=northSwarm).findFirst().get();
+        throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class,northSwarm.pos);
+        click(child.pos);
+        log("FLOOR_FOUR_SWARM_EXCHANGES");
+        assertFalse(Dungeon.level.mobs.stream().anyMatch(m->m instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Swarm));
+        assertEquals(4,Dungeon.hero.lvl);assertEquals(1,Dungeon.hero.talentPointsAvailable(1));
+        Dungeon.hero.upgradeTalent(Talent.SEARING_LIGHT);log("EARN FIRST SEARING_LIGHT POINT");
+        if(System.getProperty("route.checkpointNorthOut")!=null)writeCheckpoint(System.getProperty("route.checkpointNorthOut"));
+    }
+
 }
+
