@@ -1,8 +1,8 @@
-APD CORE-ONLY TEST REQUEST — retained Shocking derived-damage acceptance
+APD CORE-ONLY TEST REQUEST — expanded retained Shocking derived-damage acceptance
 branch=codex/apd-phone-fixes-2026-10-09
-regression_source=333ea7cc64a93bde9cc952d0c24dbfd8a21b6595
-scope=real Shocking proc after existing attackDamage at all20Player settings; original source and one splash, no double scaling
-local_result=one retained method passed0.57s against actual fetched Shocking/helper/fixture; full current-source checks pending
+regression_source=b742acc043e5f69ebac958339d94deb3c345b188
+scope=real Shocking proc after existing attackDamage at all20 settings for player, enemy and boss actual creators (60 cases); original source and one splash, no double scaling
+local_result=one retained method passed0.222s against actual current production and fixture
 expected_core_tests=1620
 apk_build=forbidden_for_this_test_only_request
-application_note=TEST204 movement candidate is independent; do not infer its verification from previous APKs. Reuse only the exact successful artifact after its required checks. No gameplay source changed by this retained regression.
+application_note=TEST204 exact corrected source9549d3638de133cb09864e1c325f15b325c550b2/run38722796011 is verified with1619core+27API34/debug/history/35PNG. Reuse its exact CodexTEST200 artifacts; this retained regression changes no gameplay source and must not rebuild or distribute an APK.
