@@ -134,8 +134,8 @@ public class Messages {
 		if (value != null){
             // Select authored wording BEFORE formatting: player-entered arguments remain untouched.
             value = lang == Languages.ENGLISH
-                    ? com.shatteredpixel.shatteredpixeldungeon.apd.humor.AuthoredLanguage.english(value, SPDSettings.apdAdultHumor())
-                    : com.shatteredpixel.shatteredpixeldungeon.apd.humor.AuthoredLanguage.select(value, SPDSettings.apdAdultHumor());
+                    ? com.shatteredpixel.shatteredpixeldungeon.apd.text.AuthoredLanguage.english(value, SPDSettings.apdAdultHumor())
+                    : com.shatteredpixel.shatteredpixeldungeon.apd.text.AuthoredLanguage.select(value, SPDSettings.apdAdultHumor());
 			if (args.length > 0) return format(value, args);
 			else return value;
 		} else {
