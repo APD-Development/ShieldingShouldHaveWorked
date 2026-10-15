@@ -1047,7 +1047,8 @@ public class GameScene extends PixelScene {
             // Other tags wrap into an adjacent column on short screens instead of overlapping.
             float base = pos;
             for (int i=0; i<scene.clericSpells.length; i++) {
-                scene.clericSpells[i].visible = i < spellCount;
+                // Hidden tags stop updating; restore input as well as drawing when the count grows.
+                scene.clericSpells[i].visible = scene.clericSpells[i].active = i < spellCount;
                 if (i < spellCount) {
                     scene.clericSpells[i].setRect(tagLeft, pos-Tag.SIZE, tagWidth, Tag.SIZE);
                     scene.clericSpells[i].flip(tagsOnLeft);
