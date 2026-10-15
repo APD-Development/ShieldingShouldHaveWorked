@@ -2,12 +2,14 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Rankings;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invulnerability;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShieldBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TimeStasis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WellFed;
@@ -16,6 +18,7 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.LevelGenerationHarness;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.watabou.utils.Bundle;
 import org.junit.After;
 import org.junit.Before;
@@ -58,6 +61,7 @@ public class GetFuckedTest {
 	private int savedChallenges;
 	private boolean savedIntro;
 	private Hero savedHero;
+	private Level savedLevel;
 	private int savedSetting;
 
 	@BeforeClass public static void headless() throws Exception {
@@ -71,6 +75,7 @@ public class GetFuckedTest {
 		savedIntro = SPDSettings.intro();
 		savedSetting = SPDSettings.challenges();
 		savedHero = Dungeon.hero;
+		savedLevel = Dungeon.level;
 		Actor.clear();
 		Dungeon.challenges = Challenges.GET_FUCKED;
 		SPDSettings.intro(false);
@@ -86,6 +91,7 @@ public class GetFuckedTest {
 		Actor.clear();
 		Dungeon.challenges = savedChallenges;
 		Dungeon.hero = savedHero;
+		Dungeon.level = savedLevel;
 		SPDSettings.challenges(savedSetting);
 		SPDSettings.intro(savedIntro);
 	}
@@ -152,6 +158,39 @@ public class GetFuckedTest {
 		}
 	}
 
+	@Test public void ordinaryResurrectionRetainsItsExistingHungerReset() throws Exception {
+		hunger(Hunger.STARVING, 0);
+		hero.HP = 0;
+		hero.resurrect();
+		assertEquals(1, hero.HT);
+		assertEquals(1, hero.HP);
+		assertEquals(0, hero.buff(Hunger.class).hunger());
+	}
+
+	@Test public void viewingAnOrdinaryRankingAfterGetFuckedDoesNotClampItsHero() throws Exception {
+		LevelGenerationHarness.generate(54321L, 0, HeroClass.WARRIOR,
+				LevelGenerationHarness.Context.REFERENCE, 1);
+		Rankings.Record record = new Rankings.Record();
+		Rankings.INSTANCE.saveGameData(record);
+		Dungeon.challenges = Challenges.GET_FUCKED;
+		Rankings.INSTANCE.loadGameData(record);
+		assertEquals(0, Dungeon.challenges);
+		assertEquals(20, Dungeon.hero.HT);
+		assertEquals(20, Dungeon.hero.HP);
+	}
+
+	@Test public void regenerationCannotTemporarilyOverhealADeathlessHero() throws Exception {
+		Berserk b = activeBerserk();
+		hero.HP = 0;
+		Regeneration regen = new Regeneration();
+		regen.attachTo(hero);
+		field(regen, Regeneration.class, "partialRegen", 2.5f);
+		regen.act();
+		assertEquals(1, hero.HP);
+		assertEquals(1, hero.HT);
+		assertSame(b, hero.buff(Berserk.class));
+	}
+
 	@Test public void starvationBypassesShieldsInvulnerabilityAndStasis() {
 		TestShield shield = new TestShield(100);
 		shield.attachTo(hero);
@@ -167,7 +206,7 @@ public class GetFuckedTest {
 		assertEquals("a dead hero cannot die a second time", 1, hero.deaths);
 	}
 
-	@Test public void starvationOverridesAnActiveDeathlessFury() throws Exception {
+	private Berserk activeBerserk() throws Exception {
 		Berserk b = new Berserk();
 		Field state = Berserk.class.getDeclaredField("state");
 		state.setAccessible(true);
@@ -176,6 +215,11 @@ public class GetFuckedTest {
 		state.set(b, active);
 		b.setShield(20);
 		b.attachTo(hero);
+		return b;
+	}
+
+	@Test public void starvationOverridesAnActiveDeathlessFury() throws Exception {
+		activeBerserk();
 		hero.HP = 0;
 		assertTrue("ordinary deathless combat survival is retained", hero.isAlive());
 		hero.damage(1, new Hunger());
