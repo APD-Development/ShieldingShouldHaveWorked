@@ -2405,3 +2405,10 @@ TEST189 verified (2026-10-15T02:29:53.163Z): sourceea1062079c6a43aadaf80dbf0197f
 - All 35 screenshots are present at 320×640; the full contact sheet was visually reviewed clean.
 - Artifacts: core `11946906120` / ZIP `48b92ba33cb0ec901db327f1f9de6099e4ff4e411c9d3b164cdfcd31ef3e66d9`; APK `11946966071` / ZIP `89c853dd6650c38cc75ebbef3eee3a7a32f58091a10f534de2232b9c967d5099`; Android `11947432170` / ZIP `e53779a6a8502d817d0fdb253bbcd303baa9dab8a6bd8ae8bdc0bdaa6a19c830`.
 - Hosted/emulator verification is complete; no physical phone or delivery. TEST123 remains owner-delivered. Do not rebuild unchanged TEST191.
+
+
+## 2026-10-15T04:38:01Z — TEST192 streaming run-log reader candidate
+- Confirmed normal file reads buffered the entire log before parsing; a controlled 1 GiB sparse bad tail made allocation follow irrelevant damaged bytes after the first invalid marker.
+- Ordinary reads now stream one checksum-validated, 16 MiB-capped frame at a time. Explicit resync retains the existing byte-array path so recovery semantics are unchanged.
+- Added parser-parity and sparse-tail regressions. Verification pending: 1,608 core/debug/immediate-previous compiled TEST191 history/27 API34/35 PNG.
+- No observed phone crash is claimed. Formats, raw history, saves, statistics, scoring, gameplay, identity and signing are unchanged. No delivery/phone claim; TEST191 remains fully reviewed and TEST123 owner-delivered.

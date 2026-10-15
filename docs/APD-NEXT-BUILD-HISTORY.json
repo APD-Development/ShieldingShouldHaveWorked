@@ -7,10 +7,26 @@
     {
       "category": "Changes",
       "sprite": "V061_PAGE",
-      "title": "Record TEST191 archive resource evidence",
-      "text": "Retain passing core, debug, APK-history, API34 and reviewed visual evidence for deterministic archive wrapper cleanup.",
+      "title": "Retain TEST191 verification evidence",
+      "text": "Carry forward reviewed TEST191 core, debug, APK-history, API34 and visual evidence.",
       "paths": [
         "docs/APD-TEST191-ARCHIVE-WRAPPER-LIFETIME-2026-10-15.md",
+        "docs/UIMSD-AUDIT-BUG-LOG.md",
+        "docs/HANDOFF.md",
+        "docs/WORK-COMPLETED-LEDGER.md",
+        "docs/APD-CODEX-BUILD-REQUEST.txt",
+        "docs/APD-NEXT-BUILD-HISTORY.json"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "V061_PAGE",
+      "title": "Bound ordinary run-log file reads",
+      "text": "Stream normal file reads one validated frame at a time; retain random-access buffering only for explicit recovery scans.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/RunLogReader.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/RunLogStreamingReadTest.java",
+        "docs/APD-TEST192-RUN-LOG-STREAMING-2026-10-15.md",
         "docs/UIMSD-AUDIT-BUG-LOG.md",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",

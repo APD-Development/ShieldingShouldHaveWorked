@@ -27,12 +27,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.zip.CRC32;
 
 //Reads a run log. Reading never throws on bad data: damage is reported through ReadResult.status, and everything
 //before the damage is returned.
 //
-//The whole file is read into memory (a long run is around a megabyte). A streaming reader can be added later
-//without changing the format.
+//Ordinary file reads stream one bounded frame at a time. Explicit resynchronization retains the byte-array
+//parser because recovery must scan ahead for the next checksum-valid frame.
 public final class RunLogReader {
 
 	private RunLogReader(){}
@@ -43,7 +44,96 @@ public final class RunLogReader {
 
 	//IOException only for problems opening/reading the file itself
 	public static ReadResult read( File file, ReadOptions options ) throws IOException {
-		return parse(readFully(file), options);
+		//Resynchronization requires random access while scanning for the next valid marker.
+		if (options.resync) return parse(readFully(file), options);
+		return readStreaming(file, options);
+	}
+
+	private static ReadResult readStreaming( File file, ReadOptions options ) throws IOException {
+		ReadResult r = new ReadResult();
+		r.fileLength = file.length();
+		InputStream in = new FileInputStream(file);
+		try {
+			byte[] headerBytes = readHeader(in);
+			int fmt = LogHeader.peekContainerFormat(headerBytes);
+			if (fmt > LogFormat.CONTAINER_FORMAT){
+				r.status = ReadStatus.UNSUPPORTED_CONTAINER;
+				r.problem = "container format " + fmt + " is newer than " + LogFormat.CONTAINER_FORMAT;
+				return r;
+			}
+			try {
+				r.header = LogHeader.parse(headerBytes);
+			} catch (FormatException e){
+				r.status = ReadStatus.BAD_HEADER;
+				r.problem = e.getMessage();
+				return r;
+			}
+
+			long pos = r.header.length;
+			r.validBytes = pos;
+			ReadStatus firstFailure = null;
+			boolean ended = false;
+
+			while (!ended){
+				FrameResult f = readFrame(in, pos);
+				if (f == null) break;
+				if (f.ok){
+					try {
+						applyFrame(r, f, options);
+					} catch (FormatException e){
+						f = FrameResult.failure(ReadStatus.CORRUPT,
+								"frame at " + pos + ": " + e.getMessage());
+					}
+				}
+				if (f.ok){
+					pos = f.streamEnd;
+					r.validBytes = pos;
+					if (f.type == LogFormat.FRAME_SEAL) ended = true;
+				} else {
+					firstFailure = f.failure;
+					r.problem = f.message;
+					break;
+				}
+			}
+
+			if (r.sealed){
+				if (r.sealEventCount != r.eventCount){
+					r.status = ReadStatus.SEAL_MISMATCH;
+					if (r.problem == null) r.problem = "seal says " + r.sealEventCount
+							+ " events, found " + r.eventCount;
+				} else if (firstFailure != null){
+					r.status = firstFailure;
+				} else {
+					r.status = ReadStatus.SEALED;
+				}
+			} else if (firstFailure != null){
+				r.status = firstFailure;
+			} else {
+				r.status = ReadStatus.UNSEALED;
+			}
+			return r;
+		} finally {
+			in.close();
+		}
+	}
+
+	private static byte[] readHeader( InputStream in ) throws IOException {
+		ByteArrayOutputStream out = new ByteArrayOutputStream(LogFormat.MAX_HEADER_BODY + 11);
+		for (int i = 0; i < LogFormat.MAGIC.length + 3; i++){
+			int b = in.read();
+			if (b < 0) return out.toByteArray();
+			out.write(b);
+		}
+		byte[] prefix = out.toByteArray();
+		int bodyLength = ((prefix[LogFormat.MAGIC.length + 1] & 0xFF) << 8)
+				| (prefix[LogFormat.MAGIC.length + 2] & 0xFF);
+		if (bodyLength > LogFormat.MAX_HEADER_BODY) return prefix;
+		for (int i = 0; i < bodyLength + 4; i++){
+			int b = in.read();
+			if (b < 0) break;
+			out.write(b);
+		}
+		return out.toByteArray();
 	}
 
 	static byte[] readFully( File file ) throws IOException {
@@ -148,6 +238,7 @@ public final class RunLogReader {
 		int type;
 		int end;
 		byte[] payload;
+		long streamEnd;
 
 		static FrameResult failure( ReadStatus s, String message ){
 			FrameResult f = new FrameResult();
@@ -155,6 +246,88 @@ public final class RunLogReader {
 			f.message = message;
 			return f;
 		}
+	}
+
+	//Streaming counterpart used by ordinary file reads. Returns null only for clean EOF between frames.
+	private static FrameResult readFrame( InputStream in, long pos ) throws IOException {
+		int marker = in.read();
+		if (marker < 0) return null;
+		if (marker != LogFormat.SYNC){
+			return FrameResult.failure(ReadStatus.CORRUPT, "no frame marker at " + pos);
+		}
+		int type = in.read();
+		if (type < 0){
+			return FrameResult.failure(ReadStatus.TRUNCATED, "file ends inside the frame header at " + pos);
+		}
+
+		CRC32 crc = new CRC32();
+		crc.update(type);
+		ByteArrayOutputStream encodedLength = new ByteArrayOutputStream(10);
+		boolean completeLength = false;
+		for (int i = 0; i < 10; i++){
+			int b = in.read();
+			if (b < 0){
+				return FrameResult.failure(ReadStatus.TRUNCATED,
+						"file ends inside the frame header at " + pos);
+			}
+			encodedLength.write(b);
+			crc.update(b);
+			if ((b & 0x80) == 0){
+				completeLength = true;
+				break;
+			}
+		}
+		if (!completeLength){
+			return FrameResult.failure(ReadStatus.TRUNCATED, "file ends inside the frame header at " + pos);
+		}
+
+		long len;
+		try {
+			len = new ByteSource(encodedLength.toByteArray()).readUnsigned();
+		} catch (FormatException e){
+			return FrameResult.failure(ReadStatus.TRUNCATED, "file ends inside the frame header at " + pos);
+		}
+		if (len < 0 || len > LogFormat.MAX_FRAME_PAYLOAD){
+			return FrameResult.failure(ReadStatus.CORRUPT, "frame at " + pos + " claims " + len + " bytes");
+		}
+
+		byte[] payload = new byte[(int) len];
+		if (!readExact(in, payload)){
+			return FrameResult.failure(ReadStatus.TRUNCATED, "file ends inside the frame at " + pos);
+		}
+		crc.update(payload, 0, payload.length);
+		byte[] checksum = new byte[4];
+		if (!readExact(in, checksum)){
+			return FrameResult.failure(ReadStatus.TRUNCATED, "file ends inside the frame at " + pos);
+		}
+		long stored = ((checksum[0] & 0xFFL) << 24) | ((checksum[1] & 0xFFL) << 16)
+				| ((checksum[2] & 0xFFL) << 8) | (checksum[3] & 0xFFL);
+		if (crc.getValue() != stored){
+			return FrameResult.failure(ReadStatus.CORRUPT, "checksum mismatch in the frame at " + pos);
+		}
+
+		FrameResult f = new FrameResult();
+		f.ok = true;
+		f.type = type;
+		f.payload = payload;
+		f.streamEnd = pos + 1 + 1 + encodedLength.size() + payload.length + 4;
+		return f;
+	}
+
+	private static boolean readExact( InputStream in, byte[] data ) throws IOException {
+		int pos = 0;
+		while (pos < data.length){
+			int n = in.read(data, pos, data.length - pos);
+			if (n < 0) return false;
+			if (n == 0){
+				int b = in.read();
+				if (b < 0) return false;
+				data[pos++] = (byte) b;
+			} else {
+				pos += n;
+			}
+		}
+		return true;
 	}
 
 	//Checks the frame at 'pos' (sync, length, checksum). Does not interpret the payload.

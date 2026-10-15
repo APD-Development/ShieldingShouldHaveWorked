@@ -874,3 +874,10 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Source `7e6cae8900c97eaa920bbe8baebb657ec5e539be` / run `38677900668` passed 1,606 core tests (310 XML) and 27 API34 tests, zero failures/errors/skips, plus debug assembly and immediate-previous compiled TEST190 history.
 - Both retained stream-ownership tests passed. All 35 expected screenshots are 320×640 and the full contact sheet reviewed clean. APK SHA-256: `b88b4ddc71f12abaac8d216d3c553968577b254b9f55f3ecff2522ef0046329b`.
 - The correction deterministically releases ZIP wrappers while preserving caller-owned picker streams. No archive format, history, save, score, gameplay, identity or signing change. No delivery/physical-phone claim; TEST123 remains owner-delivered.
+
+
+## 2026-10-15T04:38:01Z — TEST192 streaming run-log reader candidate
+- Confirmed ordinary `RunLogReader.read(File)` duplicated the complete file in memory before parsing. A controlled sparse-tail fixture isolates the resource exposure without claiming an observed player failure.
+- Normal file reads now parse the bounded header and one checksum-validated frame at a time; explicit resynchronization continues using the existing random-access byte-array parser.
+- Added two retained tests for valid-log parser parity and a 1 GiB sparse corrupt tail that must stop after the first bad byte while preserving file-length/damaged-byte accounting.
+- Full 1,608-core/debug/immediate-previous TEST191 history/27 API34/35 PNG verification is pending. No format, history, save, score, gameplay, identity, signing, delivery or physical-phone change.
