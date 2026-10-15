@@ -204,3 +204,6 @@ TEST205 verified (2026-10-15T12:53:55Z): sourcea5071e47270ef3953a85eecc50f285d61
 
 
 SOURCE-BOUND ROW CACHE BATCH — October15,2026: verify1626core,debug,compiled complete history against immediate-previous nativeCodexTEST201(sourcea5071e47270ef3953a85eecc50f285d617f96fb3/run38736265505),27API34 and35validPNG. Four permanent cache identity tests: original score replacement repro failed;13focused/617broader local pass (baseline121 guards). Preserve newer boss telemetry and all18controls. Disposable source-bound row caches only: raw history/saves/score/ranges/signing/appID unchanged. This is one meaningful source batch, not a rebuild of unchanged application. Do not publish automatically; actual delivered TEST198 remains fallback. FullUIMSDaudit incomplete.
+
+
+CLERIC LORE OWNER CORRECTION: verify1629core/debug/complete immediate-previous nativeTEST202history,28API34 methods and36 validPNG including actual cleric-first-run.png. Restore private testBuild+grudge flags only; preserve all50IDs/ledger/opt-out/rarity/gameplay/saves/signing/appID. Owner guide7pages ready. No automatic private distribution or physical-phone claim. Root cause release gate+missing generated private flag; new Android test uses actual hook/window with isolated ledger and Back callback. Full gate required before resolved claim.
