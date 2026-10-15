@@ -415,8 +415,8 @@ public class PlayRunDeviceTest {
         final com.shatteredpixel.shatteredpixeldungeon.QuickSlot previousQuickslots=Dungeon.quickslot;
 		boolean recordingWas = SPDSettings.apdRecording();
 		boolean introWas = SPDSettings.intro();
-		boolean introPageFoundWas = com.shatteredpixel.shatteredpixeldungeon.journal.Document.ADVENTURERS_GUIDE.isPageFound(com.shatteredpixel.shatteredpixeldungeon.journal.Document.GUIDE_INTRO);
-		boolean introPageReadWas = com.shatteredpixel.shatteredpixeldungeon.journal.Document.ADVENTURERS_GUIDE.isPageRead(com.shatteredpixel.shatteredpixeldungeon.journal.Document.GUIDE_INTRO);
+		boolean introPageFoundWas = false;
+		boolean introPageReadWas = false;
 		final int slot = 1;
 		try (ActivityScenario<AndroidLauncher> scenario = ActivityScenario.launch(AndroidLauncher.class)){
 			long end = System.currentTimeMillis() + 120000;
@@ -425,6 +425,8 @@ public class PlayRunDeviceTest {
 			long titleBy = System.currentTimeMillis() + 60000;
 			while (!(Game.scene() instanceof TitleScene) && System.currentTimeMillis() < titleBy) Thread.sleep(250);
 			Thread.sleep(2500);
+			introPageFoundWas = com.shatteredpixel.shatteredpixeldungeon.journal.Document.ADVENTURERS_GUIDE.isPageFound(com.shatteredpixel.shatteredpixeldungeon.journal.Document.GUIDE_INTRO);
+			introPageReadWas = com.shatteredpixel.shatteredpixeldungeon.journal.Document.ADVENTURERS_GUIDE.isPageRead(com.shatteredpixel.shatteredpixeldungeon.journal.Document.GUIDE_INTRO);
 			SPDSettings.apdRecording(true);
 			com.shatteredpixel.shatteredpixeldungeon.journal.Document.ADVENTURERS_GUIDE.deletePage(com.shatteredpixel.shatteredpixeldungeon.journal.Document.GUIDE_INTRO);
 			SPDSettings.intro(true);

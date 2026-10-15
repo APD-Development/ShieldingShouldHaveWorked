@@ -229,12 +229,15 @@ public class CustomRulesNoticeDeviceTest {
     }
 
     private static void androidShellTap(Point point) throws Exception {
-        String command=String.format(Locale.US,"input tap %d %d",point.x,point.y);
-        try(android.os.ParcelFileDescriptor descriptor=InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand(command);
-            java.io.FileInputStream output=new java.io.FileInputStream(descriptor.getFileDescriptor())) {
-            byte[] buffer=new byte[64];
-            while(output.read(buffer)!=-1) { }
-        }
+        android.app.UiAutomation automation=InstrumentationRegistry.getInstrumentation().getUiAutomation();
+        long down=android.os.SystemClock.uptimeMillis();
+        android.view.MotionEvent event=android.view.MotionEvent.obtain(down,down,android.view.MotionEvent.ACTION_DOWN,point.x,point.y,0);
+        event.setSource(android.view.InputDevice.SOURCE_TOUCHSCREEN);
+        assertTrue("Android accepted native touch down",automation.injectInputEvent(event,true));event.recycle();
+        Thread.sleep(150);
+        event=android.view.MotionEvent.obtain(down,android.os.SystemClock.uptimeMillis(),android.view.MotionEvent.ACTION_UP,point.x,point.y,0);
+        event.setSource(android.view.InputDevice.SOURCE_TOUCHSCREEN);
+        assertTrue("Android accepted native touch up",automation.injectInputEvent(event,true));event.recycle();
         Thread.sleep(400);
     }
 
