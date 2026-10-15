@@ -38,6 +38,19 @@ public class ApdFeaturesTest {
 		assertFalse(ApdFeatures.grudge());
 	}
 
+    @Test
+    public void privateBuildExplicitlyEnablesLoreWithoutEnablingNormalRelease() {
+        ApdFeatures.parse("testBuild\ngrudge\nclericPlayable\n");
+        assertFalse(ApdFeatures.GRUDGE_LORE_IN_THIS_RELEASE);
+        assertTrue(ApdFeatures.grudge());
+        assertTrue(ClericGrudge.enabled());
+        assertTrue(ApdFeatures.clericPlayable());
+        ApdFeatures.parse("testBuild\nclericPlayable\n");
+        assertFalse(ApdFeatures.grudge());
+        ApdFeatures.parse("grudge\n");
+        assertFalse(ApdFeatures.grudge());
+    }
+
 	@Test
 	public void clericRunsHaveTheirOwnRulesetAndEveryoneElseKeepsTheirs(){
 		Ruleset normal = Ruleset.of(30, 0, 3, 0, false);
@@ -50,3 +63,4 @@ public class ApdFeaturesTest {
 		assertEquals(cleric.id, Ruleset.of(30, 0, 3, 0, true).id);
 	}
 }
+
