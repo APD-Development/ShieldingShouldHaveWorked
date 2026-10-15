@@ -234,3 +234,6 @@ TEST207 CI gate completed — 2026-10-15T15:53:04Z: exact sourcef0b0cf7708a8d6af
 
 
 DAMAGED-HISTORY COUNT PROVENANCE: verify1645core/debug/complete immediate-previous produced nativeTEST208(source13e4c03baad7e4471a172aedf7aff4222ca7e749/run38763307954),28API34/38PNG. Six retained methods cover cleanUNSEALED,TRUNCATED,CORRUPT,SEAL_MISMATCH,validSEALED+trailingbytes and cache-version contracts. Surviving damaged-log counts must be lower bounds in both RunFactsBuilder and RowBuilders; cleanUNSEALED and validSEALED remain exact. Bump disposable RowBuilders12to13/DerivedStore8to9 only. Rawhistory/cacheformat/saves/scores/rules/sliders/gameplay/RNG unchanged. TEST208 workflow was green but independentartifact recount/APKSHA/montage remain unavailable; do not borrow or invent them. Latest owner-delivered APK isTEST206. No automaticpublication/phoneclaim.
+
+
+DAMAGED-HISTORY PRE-GATE CORRECTION: use exact existing history path docs/APD-MIXED-SCALE-RATIO-DISPLAY-2026-10-15.md. Do not credit a run pinned to f08f5908c53e40c058a767eb4e526731cdce252b as the complete-history result. Corrected head must independently pass the same1645core/debug/immediate-previousTEST208/28API34/38PNG gate; no application-source change from its parent and no publication/phone claim.

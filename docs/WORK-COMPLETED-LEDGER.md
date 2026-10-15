@@ -1089,3 +1089,8 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Preserved exact provenance for clean UNSEALED logs and valid SEALED logs with unrelated trailing bytes.
 - Advanced disposable derived-cache identities only: RowBuilders 12→13 and DerivedStore 8→9. No raw history, save, score, rules, slider, gameplay or RNG change.
 - Added six retained methods covering both builder families and both cache-version contracts. The full TEST209 gate is pending; required result is 1,645 core/debug/complete TEST208 history/28 API34/38 valid PNGs. No result, publication or phone claim is made in advance.
+
+
+## 2026-10-15T16:44:00Z — pre-gate history manifest correction
+- Replaced the shortened nonexistent mixed-scale report path with the exact repository path `docs/APD-MIXED-SCALE-RATIO-DISPLAY-2026-10-15.md`.
+- A workflow pinned to `f08f5908c53e40c058a767eb4e526731cdce252b`, if created, is not acceptable as the complete-history gate. The corrected head requires a fresh full result; no application source changed.

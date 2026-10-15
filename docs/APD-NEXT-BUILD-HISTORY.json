@@ -31,7 +31,7 @@
       "text": "Preserve the TEST208 checkpoint, owner-delivered TEST206 status, pending artifact review, and the next complete gate without claiming results in advance.",
       "paths": [
         "docs/APD-DAMAGED-HISTORY-PROVENANCE-2026-10-15.md",
-        "docs/APD-MIXED-SCALE-RATIO-2026-10-15.md",
+        "docs/APD-MIXED-SCALE-RATIO-DISPLAY-2026-10-15.md",
         "docs/HANDOFF.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/WORK-COMPLETED-LEDGER.md",
