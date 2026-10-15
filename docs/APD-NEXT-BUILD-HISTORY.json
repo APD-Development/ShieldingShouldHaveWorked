@@ -1,81 +1,52 @@
 {
-  "previous_label": "Codex TEST 203",
-  "previous_source": "a9b9d0b231fda11962598ccd2f6f46027dd8d02e",
-  "previous_run": 38745042577,
+  "previous_label": "Codex TEST 204",
+  "previous_source": "245b21b7064a03b916e68f1992f94ca017f22fc0",
+  "previous_run": 38747671347,
   "date": "2026-10-15",
   "changes": [
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Make newly enabled Cleric spell buttons tappable",
-      "text": "Restore touch input when increasing the number of spell buttons so empty positions open their picker.",
+      "title": "Show scaled averages and medians in the right units",
+      "text": "Display fixed-point statistics such as2.5 as2.5 instead of250 or2500.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/GameScene.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/CellFormatter.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Keep simultaneous statistics cache writes separate",
-      "text": "Give each row and fact cache writer its own temporary file so overlapping writes cannot discard another completed cache.",
+      "title": "Keep custom-question totals and rates in player units",
+      "text": "Use the column's displayed units for answer numbers and per-run rates while preserving raw records and query calculations.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/DatasetStore.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/DerivedStore.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/Questions.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Test touches after expanding Cleric spell slots",
-      "text": "Use real pointer taps on empty positions 2–4 after increasing from one button, and capture the picker and stack.",
+      "title": "Verify scaled statistics from recorded events",
+      "text": "Test both scales through saved synthetic logs, averages, medians, totals, rates and unknown/provenance states.",
       "paths": [
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PlayRunDeviceTest.java",
-        "tools/run-codex-android-checks.sh"
-      ]
-    },
-    {
-      "category": "Testing",
-      "sprite": "ICON_CHECKED",
-      "title": "Show Cleric selected in the lore check",
-      "text": "Select Cleric before capturing its verified first-run message.",
-      "paths": [
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/RunSetupDifficultyDeviceTest.java"
-      ]
-    },
-    {
-      "category": "Testing",
-      "sprite": "ICON_CHECKED",
-      "title": "Reproduce overlapping cache writers",
-      "text": "Force two row-cache writers and two fact-cache writers to overlap and verify a complete cache and temporary-file cleanup.",
-      "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowCacheConcurrentWriterTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/DerivedCacheConcurrentWriterTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/ScaledAggregateDisplayTest.java"
       ]
     },
     {
       "category": "Development",
       "sprite": "V061_PAGE",
-      "title": "Deliver the owner's complete lore collection PDF",
-      "text": "Provide a verified private PDF download covering all 50 existing entries and their collection conditions.",
+      "title": "Retain private Cleric delivery and audit evidence",
+      "text": "Record verified TEST204 delivery, reviewed components and the separate statistics presentation correction.",
       "paths": [
-        ".github/workflows/codex-cleric-guide-delivery.yml",
-        "docs/APD-Cleric-Lore-All-50-Collection-Guide.pdf"
-      ]
-    },
-    {
-      "category": "Development",
-      "sprite": "V061_PAGE",
-      "title": "Retain verified checkpoints and reliability evidence",
-      "text": "Record exact build results, the touch correction and the separately reproduced cache race without claiming physical-phone verification.",
-      "paths": [
-        "docs/HANDOFF.md",
-        "docs/APD-CACHE-WRITER-RACE-2026-10-15.md",
+        ".github/workflows/codex-existing-apk-delivery.yml",
+        "docs/APD-CLERIC-CORRECTIONS-DELIVERY-2026-10-15.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/APD-NEXT-BUILD-HISTORY.json",
-        "docs/APD-ROW-CACHE-SOURCE-IDENTITY-2026-10-15.md",
-        "docs/WORK-COMPLETED-LEDGER.md"
+        "docs/HANDOFF.md",
+        "docs/APD-SCALED-STATISTICS-DISPLAY-2026-10-15.md",
+        "docs/APD-UIMSD-QUERY-REVIEW-CONTINUATION-2026-10-15.md",
+        "docs/APD-UIMSD-QUERY-REVIEW-CONTINUATION-2026-10-15.json"
       ]
     }
   ],
-  "commentary": "I fixed the newly enabled Cleric spell buttons so they accept taps instead of only appearing on screen. I also protected optional statistics caches against overlapping writes; player history and spell mechanics are preserved."
+  "commentary": "I corrected statistics that displayed fixed-point storage units instead of their intended values. Recorded history and calculations remain intact, and the previously delivered Cleric fixes are preserved."
 }
