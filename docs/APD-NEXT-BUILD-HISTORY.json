@@ -45,8 +45,8 @@
     {
       "category": "Development",
       "sprite": "V061_PAGE",
-      "title": "TEST199 verification record",
-      "text": "Record the reproduced omission, privacy boundary, exact previous compiled APK and required full hosted checks.",
+      "title": "TEST200 fixture correction",
+      "text": "Retain TEST199's exact 1,612/1,613 core failure and correct only the telemetry parse fixture's mistaken expected value before rerunning the complete gate.",
       "paths": [
         "docs/APD-TEST199-ALLY-SUMMONS-2026-10-15.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
@@ -56,5 +56,5 @@
       ]
     }
   ],
-  "commentary": "I added player-owned ally summon history at the existing creator-ownership boundary. It records only displayed names and the floor, and does not expose enemy, boss, unattributed or off-screen creation."
+  "commentary": "TEST199 exposed one test-fixture typo after 1,612 core passes. TEST200 corrects only that expectation and retains the complete ally-summon implementation and privacy boundary."
 }

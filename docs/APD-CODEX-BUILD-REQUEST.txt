@@ -179,3 +179,6 @@ TEST197 correction request (2026-10-15T06:40:00Z): TEST196 source37da2dcd7ef3512
 
 
 TEST199 exact-source request (2026-10-15T08:36:50Z): record player-owned ally creation once at the existing explicit creator-ownership boundary. Public telemetry1.13 uses only displayed ally/creator names and floor; enemy, boss, unattributed, repeated ownership and off-screen-creator cases emit no public summon fact. Verify1613core/debug/immediate-previous compiledTEST197/CodexTEST194 history/27API34/35PNG. Preserve gameplay, RNG, actor save metadata, damage attribution, scoring, custom rules, identity and signing. No delivery or physical-phone claim.
+
+
+TEST200 test-fixture correction (2026-10-15T08:48:52Z): TEST199 source5a937f93e2858bbc85990db2d96642c2ef4764f1/run38707847596 executed1613core with1612pass/1failure and noAPK. TelemetryVersionTest parsed literal1.12 but mistakenly expected1.13; the production1.13 self-test and new ally-summon regressions passed. Correct only that expected value and rerun1613core/debug/immediate-previous compiledTEST197/CodexTEST194history/27API34/35PNG. Preserve all production behavior and assertions; no delivery/physical-phone claim.

@@ -961,3 +961,10 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - A summon is recorded only when ownership first becomes PLAYER and its actual creator is the hero or another creature currently visible to the hero. Repeated inheritance, enemy, boss, unattributed, off-screen-creator and restore-time paths emit no public summon event.
 - Added two retained regressions for exact-once direct/chained player summons, actual creator identity, exclusions and restoration suppression. TEST199 requests 1,613 core tests, debug assembly, complete history from immediate-previous compiled TEST197/Codex TEST 194, 27 API34 methods and 35 PNGs.
 - No damage amount, turn, RNG, actor save metadata, scoring, custom-rule, application ID or signing behavior changed. Candidate pending; no delivery or physical-phone claim. TEST197 remains the verified compiled fallback and TEST123 the owner-delivered fallback.
+
+
+## 2026-10-15T08:48:52Z — TEST199 fixture assertion failure retained; TEST200 pending
+- Source `5a937f93e2858bbc85990db2d96642c2ef4764f1`, run `38707847596`: 1,613 core executed, 1,612 passed, one fixture failure; no APK and no API34 run.
+- Failure: `TelemetryVersionTest.parsesAndPrints` supplied `1.12` while accidentally expecting `1.13`. Production telemetry 1.13 self-test and ally-summon regressions passed.
+- History preservation/validation passed. Failed artifact `11958859521`, 752,523 bytes, GitHub SHA-256 `8dcf551329e74d6758ae50ee6cb0f302f7892bdfb15c003e9389f55c169dc8f4`.
+- TEST200 changes only the erroneous expected value and requests the unchanged full 1,613-core/debug/TEST197-history/27-API34/35-PNG gate.

@@ -14,3 +14,9 @@ The hook reads existing state only, consumes no RNG and is wrapped by the record
 Required hosted gate: 1,613 complete core tests, debug assembly, complete reviewed history since immediate-previous compiled TEST197/Codex TEST 194, 27 API34 emulator methods and 35 valid screenshots. Candidate is pending until those checks pass.
 
 No gameplay, damage amount, source, turn, RNG, save field, permanent score, custom-rule, application ID or signing behavior changed. No APK distribution or physical-phone claim. TEST197 remains the verified compiled fallback; TEST123 remains the last owner-delivered/signature-compared APK.
+
+
+## Hosted failure and TEST200 correction — 2026-10-15T08:48:52Z
+TEST199 source `5a937f93e2858bbc85990db2d96642c2ef4764f1`, run [38707847596](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38707847596), executed all 1,613 core tests: 1,612 passed and one failed. The failure was confined to `TelemetryVersionTest.parsesAndPrints`: the fixture parsed literal `1.12` but accidentally expected `1.13`. The new ally-summon regressions and telemetry 1.13 self-test passed. No APK was built; Android/API34 did not run.
+
+TEST200 changes only that mistaken expected value, retaining the production implementation and every assertion. Re-run the complete 1,613-core/debug/immediate-previous compiled TEST197/Codex TEST 194 history/27 API34/35 PNG gate. Failed core artifact `11958859521`, 752,523 bytes, GitHub SHA-256 `8dcf551329e74d6758ae50ee6cb0f302f7892bdfb15c003e9389f55c169dc8f4`.

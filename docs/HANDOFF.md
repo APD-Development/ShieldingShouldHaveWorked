@@ -2495,3 +2495,10 @@ The ordered legacy-door item is closed. Hero markers still require explicit appr
 - A summon is recorded only when ownership first becomes PLAYER and its actual creator is the hero or another creature currently visible to the hero. Repeated inheritance, enemy, boss, unattributed, off-screen-creator and restore-time paths emit no public summon event.
 - Added two retained regressions for exact-once direct/chained player summons, actual creator identity, exclusions and restoration suppression. TEST199 requests 1,613 core tests, debug assembly, complete history from immediate-previous compiled TEST197/Codex TEST 194, 27 API34 methods and 35 PNGs.
 - No damage amount, turn, RNG, actor save metadata, scoring, custom-rule, application ID or signing behavior changed. Candidate pending; no delivery or physical-phone claim. TEST197 remains the verified compiled fallback and TEST123 the owner-delivered fallback.
+
+
+## 2026-10-15T08:48:52Z — TEST199 fixture assertion failure; TEST200 correction pending
+- TEST199 source `5a937f93e2858bbc85990db2d96642c2ef4764f1` / run [38707847596](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38707847596) executed 1,613 core tests: 1,612 passed and one failed.
+- `TelemetryVersionTest.parsesAndPrints` parsed the literal `1.12` but mistakenly expected `1.13`. The production telemetry 1.13 self-test and both new ally-summon regressions passed.
+- History preservation/validation passed. Debug APK and API34 were skipped; no TEST199 APK exists. Failed core artifact `11958859521`, 752,523 bytes, digest `8dcf551329e74d6758ae50ee6cb0f302f7892bdfb15c003e9389f55c169dc8f4`.
+- TEST200 corrects only the fixture expectation to `1.12`; production implementation and assertions are retained. Full 1,613-core/debug/TEST197-history/27-API34/35-PNG gate pending. TEST197 remains verified compiled fallback; TEST123 remains owner-delivered.

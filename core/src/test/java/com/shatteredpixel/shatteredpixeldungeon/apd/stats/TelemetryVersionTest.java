@@ -20,7 +20,7 @@ public class TelemetryVersionTest {
 	public void parsesAndPrints(){
 		assertEquals(new TelemetryVersion(1, 3), TelemetryVersion.parse("1.3"));
 		assertEquals(new TelemetryVersion(2, 0), TelemetryVersion.parse("telemetry 2.0"));
-		assertEquals(new TelemetryVersion(1, 13), TelemetryVersion.parse(" 1.12 "));
+		assertEquals(new TelemetryVersion(1, 12), TelemetryVersion.parse(" 1.12 "));
 		assertEquals("1.13", TelemetryVersion.parse("1.13").toString());
 	}
 
