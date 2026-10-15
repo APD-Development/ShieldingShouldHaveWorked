@@ -41,7 +41,7 @@ public class APDTextScene extends PixelScene {
  private static int buildSelected,newsPage;
  private static final int BUILDS_PER_PAGE=6;
  private final List<ChangeInfo> changes=new ArrayList<>();
- private static String authored(String text){return com.shatteredpixel.shatteredpixeldungeon.apd.humor.AuthoredLanguage.english(text,SPDSettings.apdAdultHumor());}
+ private static String authored(String text){return com.shatteredpixel.shatteredpixeldungeon.apd.text.AuthoredLanguage.english(text,SPDSettings.apdAdultHumor());}
  private String read(String path){try{return Gdx.files.internal(path).readString("UTF-8");}catch(Exception e){return "";}}
  @Override public void create(){
   super.create();changes.clear();
