@@ -763,11 +763,11 @@ public class Generator {
 				}
 
 				if (ExoticPotion.regToExo.containsKey(itemCls)){
-					if (Random.Float() < ExoticCrystals.consumableExoticChance()){
+					if (Random.Float() < ExoticCrystals.consumableExoticChance(itemCls)){
 						itemCls = ExoticPotion.regToExo.get(itemCls);
 					}
 				} else if (ExoticScroll.regToExo.containsKey(itemCls)){
-					if (Random.Float() < ExoticCrystals.consumableExoticChance()){
+					if (Random.Float() < ExoticCrystals.consumableExoticChance(itemCls)){
 						itemCls = ExoticScroll.regToExo.get(itemCls);
 					}
 				}
@@ -802,11 +802,11 @@ public class Generator {
 			Class<?> itemCls = cat.classes[Random.chances(cat.defaultProbs)];
 
 			if (ExoticPotion.regToExo.containsKey(itemCls)){
-				if (Random.Float() < ExoticCrystals.consumableExoticChance()){
+				if (Random.Float() < ExoticCrystals.consumableExoticChance(itemCls)){
 					itemCls = ExoticPotion.regToExo.get(itemCls);
 				}
 			} else if (ExoticScroll.regToExo.containsKey(itemCls)){
-				if (Random.Float() < ExoticCrystals.consumableExoticChance()){
+				if (Random.Float() < ExoticCrystals.consumableExoticChance(itemCls)){
 					itemCls = ExoticScroll.regToExo.get(itemCls);
 				}
 			}
