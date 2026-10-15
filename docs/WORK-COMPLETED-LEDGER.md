@@ -895,3 +895,10 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Added a retained boundary regression and a core-only CI gate so unchanged application source is not rebuilt.
 - TEST193 source `34eb3d9e25177d4bff8a754c2387cabe8ef84a10`, run `38688177613`: 1,609 executed, 1,608 passed, 1 fixture failure. The synthetic level omitted `traps`, and `Level.set` threw before the repair assertion. Artifact `11950004576`, ZIP SHA-256 `184531a6e5c7f03a2f55e650cb3728df29a134dfbb3a482bc08ba98d9466fe85`. No APK.
 - TEST194 initializes the fixture's normal trap/blob collections; production application source and assertions are unchanged. Complete 1,609-core verification pending.
+
+
+## 2026-10-15T05:49:32Z — TEST194 fixture geometry failure retained; TEST195 pending
+
+- TEST194 source `0fa7763a36e4ebc4994629910cab6d285d3d0af5`, run `38688555523`: 1,609 executed, 1,608 passed, 1 fixture failure. The synthetic entrance was one cell from the map border, violating the interior margin used by generated levels; `updateOpenSpace` failed before repair assertions.
+- Artifact `11951230755`, ZIP SHA-256 `4228cd0eabadd0eb9391b83c9b3458e00a844dd9db3372f559c919f04e0f93e6`. No APK.
+- TEST195 changes only test geometry to the normal interior margin. Full 1,609-core verification pending; production application source remains TEST192.

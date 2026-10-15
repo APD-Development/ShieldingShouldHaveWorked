@@ -1,10 +1,10 @@
-APD CORE-ONLY TEST REQUEST — TEST194
-requested_utc=2026-10-15T05:44:52Z
+APD CORE-ONLY TEST REQUEST — TEST195
+requested_utc=2026-10-15T05:49:32Z
 branch=codex/apd-phone-fixes-2026-10-09
-parent=34eb3d9e25177d4bff8a754c2387cabe8ef84a10
+parent=0fa7763a36e4ebc4994629910cab6d285d3d0af5
 application_source=222189f971dc55597f561eb87aadcd4e34b47a2e
 scope=corrected retained legacy tutorial floor-1 entrance-door repair regression
 expected_core_tests=1609
 apk_build=forbidden_for_this_request
 reason=production application source is unchanged; reuse verified TEST192 APK evidence
-correction=initialize the synthetic level trap/blob collections used by Level.set
+correction=place the synthetic entrance at a production-realistic interior map margin

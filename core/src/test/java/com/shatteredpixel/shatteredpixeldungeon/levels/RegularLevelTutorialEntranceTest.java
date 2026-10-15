@@ -40,9 +40,9 @@ public class RegularLevelTutorialEntranceTest {
 	@Test
 	public void legacyTutorialRepairOnlyExposesEntranceBoundaryDoors(){
 		TestLevel level = new TestLevel();
-		int entranceDoor = level.cell(3, 1);
-		int unrelatedSecretDoor = level.cell(6, 3);
-		int entranceWall = level.cell(1, 3);
+		int entranceDoor = level.cell(4, 2);
+		int unrelatedSecretDoor = level.cell(7, 4);
+		int entranceWall = level.cell(2, 4);
 
 		Level.set(entranceDoor, Terrain.SECRET_DOOR, level);
 		Level.set(unrelatedSecretDoor, Terrain.SECRET_DOOR, level);
@@ -59,11 +59,11 @@ public class RegularLevelTutorialEntranceTest {
 	private static final class TestLevel extends RegularLevel {
 
 		private TestLevel(){
-			setSize(8, 8);
+			setSize(10, 10);
 			traps = new SparseArray<Trap>();
 			blobs = new HashMap<Class<? extends Blob>, Blob>();
 			roomEntrance = new EntranceRoom();
-			roomEntrance.set(1, 1, 5, 5);
+			roomEntrance.set(2, 2, 6, 6);
 		}
 
 		private int cell(int x, int y){
