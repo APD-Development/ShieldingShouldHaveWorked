@@ -1126,3 +1126,8 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Exact source `ae923b21414a03364bbb4f8701f15f54f1b9f62b` / run [38788151697](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38788151697) passed 1,653 core tests in 326 suites, debug/history against immediate previous TEST215, 28 API34 methods and 38 valid 320×640 PNGs; zero failures/errors/skips.
 - Artifacts: core `11998935748` / `80dc81246f4a71379bacd15ae21effe558672a3746e2471719d61f639ebd3b12`; APK `11999155639` / `550c89d3d64a4d1b3d4a6b55af61fd44f2023d5e0eca9c294638f10a5e369cef`; Android `11998882355` / `be3bb92e47995792ffcc9dfcf3808fc7889ef96cacc05d48a0fd99691489f4c1`.
 - APK payload `4a50572c1b94232fb44b71f9e97680db43ac4d5ee1fdc03e324e52c98e54194c`. Delivery skipped; no signature/owner-phone claim. The generation guard is verified without raw-history, cache-format, save, score, custom-rule, gameplay, turn or RNG changes.
+
+## 2026-10-15T19:32:37Z — TEST217 candidate: stale seed-replay handoff
+- Reproduced with deterministic latches that an old `startSeedFloors` worker could replace newer catalogue/view state and send stale notifications.
+- Added an in-memory replay generation, invalidation on newer catalogue/load/provider ownership, an awaitable worker handoff and one retained regression.
+- Requested one full gate: 1,654 core tests, debug APK, complete immediate-previous TEST216 history, 28 API34 methods and 38 valid screenshots. Pending; no publication/delivery/phone claim.

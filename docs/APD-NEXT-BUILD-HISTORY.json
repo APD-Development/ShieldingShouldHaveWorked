@@ -1,14 +1,14 @@
 {
-  "previous_label": "Codex TEST 215",
-  "previous_source": "0507127f47426405a72ca83d0eccf04e1ce04752",
-  "previous_run": 38779254822,
+  "previous_label": "Codex TEST 216",
+  "previous_source": "ae923b21414a03364bbb4f8701f15f54f1b9f62b",
+  "previous_run": 38788151697,
   "date": "2026-10-15",
   "changes": [
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Reject stale UIMSD load completions",
-      "text": "Give each background catalogue load a generation so an older success or failure cannot replace newer READY state.",
+      "title": "Retire stale seed replay workers",
+      "text": "Use an in-memory generation so an older replay cannot replace newer READY catalogue, navigation or notice state.",
       "paths": [
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdModel.java"
       ]
@@ -16,8 +16,8 @@
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Force the stale handoff order",
-      "text": "Retain a monitor-controlled regression that installs newer state before releasing the older loader, without timing assumptions.",
+      "title": "Force the stale replay handoff",
+      "text": "Block the old provider, install a newer catalogue, then release and join the worker to verify it installs and notifies nothing.",
       "paths": [
         "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdModelTest.java"
       ]
@@ -25,11 +25,11 @@
     {
       "category": "Development",
       "sprite": "V061_PAGE",
-      "title": "Record TEST215 evidence and the exact TEST216 gate",
-      "text": "Preserve verified TEST215 evidence and request one full gate for the bounded UIMSD lifecycle correction.",
+      "title": "Record TEST216 evidence and exact TEST217 gate",
+      "text": "Preserve verified TEST216 evidence and request one full gate for the bounded seed-replay lifecycle correction.",
       "paths": [
-        "docs/APD-CATALOGUE-KEEPER-CROSS-INSTANCE-2026-10-15.md",
         "docs/APD-UIMSD-STALE-LOAD-2026-10-15.md",
+        "docs/APD-UIMSD-SEED-REPLAY-2026-10-15.md",
         "docs/APD-UIMSD-AUDIT-RECONCILIATION-2026-10-15.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/APD-NEXT-BUILD-HISTORY.json",
@@ -38,5 +38,5 @@
       ]
     }
   ],
-  "commentary": "I prevented an older UIMSD background load from replacing newer catalogue state. Player histories, saves, scores, gameplay and all 18 Custom Dungeon Rules remain unchanged."
+  "commentary": "I prevented an older seed replay from replacing newer UIMSD state. Replay results, player histories, saves, scores, gameplay and all 18 Custom Dungeon Rules remain unchanged."
 }

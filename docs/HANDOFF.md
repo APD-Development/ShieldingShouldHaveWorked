@@ -2746,3 +2746,8 @@ Friday October 16 at 4 p.m. EDT remains the alpha target. A signing-compatible c
 - Source `ae923b21414a03364bbb4f8701f15f54f1b9f62b` / run [38788151697](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38788151697) passed 1,653 core tests in 326 suites, debug assembly and complete immediate-previous TEST215 history; 28 API34 methods and 38 valid 320×640 PNGs passed with zero failures/errors/skips.
 - Core artifact `11998935748` / `80dc81246f4a71379bacd15ae21effe558672a3746e2471719d61f639ebd3b12`; APK artifact `11999155639` / `550c89d3d64a4d1b3d4a6b55af61fd44f2023d5e0eca9c294638f10a5e369cef`; Android artifact `11998882355` / `be3bb92e47995792ffcc9dfcf3808fc7889ef96cacc05d48a0fd99691489f4c1`.
 - APK payload SHA-256 `4a50572c1b94232fb44b71f9e97680db43ac4d5ee1fdc03e324e52c98e54194c`. No publication, signing comparison, owner-device install or physical-phone claim. TEST214 remains signing-compatible staged; TEST206 remains published fallback.
+
+## TEST217 stale seed-replay candidate — 2026-10-15T19:32:37Z
+- Confirmed a deterministic async handoff failure: a blocked seed replay from an older catalogue could finish after newer READY state, open its stale seed view and notify listeners.
+- Candidate retires replay workers when a newer replay/catalogue/provider takes ownership and adds one blocking-provider regression; expected count 1,654 core tests.
+- Full TEST217 core/debug/immediate-previous TEST216 history/28 API34/38-PNG evidence is pending. No publication, delivery, signing comparison or physical-phone claim; preserve TEST214 staged and TEST206 published fallbacks.

@@ -91,6 +91,7 @@ public final class UimsdModel {
 
 	//Builds the catalog from the raw logs on a background thread. Never throws.
 	public synchronized void load( final File root ){
+		retireSeedFloorsLocked();
 		this.root = root;
 		columnLayouts = SavedViews.load(root == null ? null : new File(root, COLUMN_LAYOUTS_FILE));
 		state = State.LOADING;
@@ -103,6 +104,7 @@ public final class UimsdModel {
 					Catalog c = new DatasetStore(root).load();
 					synchronized (UimsdModel.this){
 						if (generation != loadGeneration) return;
+						retireSeedFloorsLocked();
 						setCatalogLocked(c);
 					}
 				} catch (Throwable e){
@@ -129,6 +131,7 @@ public final class UimsdModel {
 	}
 
 	public synchronized void setCatalog( Catalog c ){
+		retireSeedFloorsLocked();
 		++loadGeneration;
 		setCatalogLocked(c);
 		fire();
@@ -319,10 +322,27 @@ public final class UimsdModel {
 	}
 
 	private SeedFloors.Provider seedFloors;
+	private long seedFloorsGeneration;
+	private volatile Thread seedFloorsLoader;
+
+	private void retireSeedFloorsLocked(){
+		++seedFloorsGeneration;
+		if (notice.startsWith("Replaying the seed")) notice = "";
+	}
 
 	//the game-aware layer that can replay a run's seed (null: the feature is off, as in plain library tests)
 	public synchronized void setSeedFloorsProvider( SeedFloors.Provider p ){
+		retireSeedFloorsLocked();
 		seedFloors = p;
+	}
+
+	//Used by retained tests and orderly callers that must wait for an in-flight replay handoff.
+	void awaitSeedFloors( long millis ){
+		Thread t = seedFloorsLoader;
+		try {
+			if (t != null) t.join(millis);
+		} catch (InterruptedException ignored){
+		}
 	}
 
 	//true for a row that seed floors can be asked for (a finished run)
@@ -336,12 +356,14 @@ public final class UimsdModel {
 	public void startSeedFloors( final Row run ){
 		final Catalog cat;
 		final SeedFloors.Provider provider;
+		final long generation;
 		synchronized (this){
 			if (!canSeedFloors(run)) return;
 			//the seed views are replaced by each run's: places that point at an earlier run's would show this run's data
 			for (int i = back.size() - 1; i >= 0; i--) if (SeedFloors.isSeedView(back.get(i).viewId)) back.remove(i);
 			cat = catalog;
 			provider = seedFloors;
+			generation = ++seedFloorsGeneration;
 			notice = "Replaying the seed (this takes a few seconds)...";
 		}
 		fire();
@@ -352,6 +374,7 @@ public final class UimsdModel {
 				try {
 					SeedFloors.Built b = provider.build(cat, run);
 					synchronized (UimsdModel.this){
+						if (generation != seedFloorsGeneration) return;
 						SeedFloors.install(cat, b);
 						if (!SeedFloors.isSeedView(viewId)) hiddenBeforeSeed = query.showInternal;
 						back.add(new Place(viewId, query, page));
@@ -364,12 +387,14 @@ public final class UimsdModel {
 					result = "Seed floors failed: " + e;
 				}
 				synchronized (UimsdModel.this){
+					if (generation != seedFloorsGeneration) return;
 					notice = result;
 				}
 				fire();
 			}
 		}, "uimsd-seed-floors");
 		t.setDaemon(true);
+		seedFloorsLoader = t;
 		t.start();
 	}
 

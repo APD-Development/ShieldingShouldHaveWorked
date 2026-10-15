@@ -112,6 +112,45 @@ public class UimsdModelTest {
 		assertEquals("all", m.viewId());
 	}
 
+
+	@Test
+	public void aReplayFromAnOlderCatalogCannotReplaceNewerReadyState() throws Exception {
+		UimsdModel m = model();
+		Row run = m.result().rows.get(0);
+		java.util.concurrent.CountDownLatch building = new java.util.concurrent.CountDownLatch(1);
+		java.util.concurrent.CountDownLatch release = new java.util.concurrent.CountDownLatch(1);
+		m.setSeedFloorsProvider(new SeedFloors.Provider(){
+			@Override public boolean applies( Catalog cat, Dataset ds, Row row ){ return true; }
+			@Override public SeedFloors.Built build( Catalog cat, Row row ){
+				building.countDown();
+				try {
+					if (!release.await(5, java.util.concurrent.TimeUnit.SECONDS)) throw new AssertionError("release timeout");
+				} catch (InterruptedException e){
+					throw new AssertionError(e);
+				}
+				SeedFloors.Spec spec = new SeedFloors.Spec();
+				spec.runId = "stale-run";
+				spec.ruleset = R;
+				return SeedFloors.assemble(spec, new ArrayList<SeedFloors.Recorded>(), new ArrayList<ReplayFloor>());
+			}
+		});
+		java.util.concurrent.atomic.AtomicInteger changes = new java.util.concurrent.atomic.AtomicInteger();
+		m.setListener(new UimsdModel.Listener(){
+			@Override public void changed(){ changes.incrementAndGet(); }
+		});
+		m.startSeedFloors(run);
+		assertTrue(building.await(5, java.util.concurrent.TimeUnit.SECONDS));
+		Catalog newer = catalog();
+		m.setCatalog(newer);
+		release.countDown();
+		m.awaitSeedFloors(5000);
+		assertTrue("the stale replay must not replace the newer catalogue", newer == m.catalog());
+		assertEquals(UimsdModel.State.READY, m.state());
+		assertEquals("all", m.viewId());
+		assertEquals("", m.notice());
+		assertEquals("no stale replay notification", 2, changes.get());
+	}
+
 	@Test
 	public void columnOrderAndSelectionSurviveOpeningAnotherView(){
 		UimsdModel m = model();
