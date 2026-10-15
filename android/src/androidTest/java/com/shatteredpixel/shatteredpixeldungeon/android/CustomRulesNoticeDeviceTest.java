@@ -40,7 +40,11 @@ public class CustomRulesNoticeDeviceTest {
         return found;
     }
     private static Object field(Object object,String name)throws Exception {
-        Field f=object.getClass().getDeclaredField(name);f.setAccessible(true);return f.get(object);
+        for(Class<?> type=object.getClass();type!=null;type=type.getSuperclass()) {
+            try {Field f=type.getDeclaredField(name);f.setAccessible(true);return f.get(object);}
+            catch(NoSuchFieldException inherited) { }
+        }
+        throw new NoSuchFieldException(name);
     }
     private static void tap(Point point)throws Exception {
         PointerEvent.addPointerEvent(new PointerEvent(point.x,point.y,11,PointerEvent.Type.DOWN,PointerEvent.LEFT));
