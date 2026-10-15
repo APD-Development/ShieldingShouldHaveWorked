@@ -1,66 +1,67 @@
 {
-  "previous_label": "Codex TEST 219",
-  "previous_source": "d1d1b7de7bbf73f9bfd5b38602ce8eaf5756394b",
-  "previous_run": 38804827414,
+  "previous_label": "Codex TEST 222",
+  "previous_source": "182155b7e2906357fa3006ae3af70a7e472bb0bb",
+  "previous_run": 38809007695,
   "date": "2026-10-15",
   "changes": [
     {
       "category": "Quality of Life",
       "sprite": "ICON_INFO",
-      "title": "Clean About text when Adult Humor is off",
-      "text": "The founding statement and Why APD Exists popup now follow Adult Humor while retaining their original adult wording.",
+      "title": "Clean localized Imp conversations",
+      "text": "Adult Humor off now uses clean alternatives in the remaining translated Imp quest conversations and reminders.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/AboutScene.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/text/AuthoredLanguage.java"
       ]
     },
     {
       "category": "Quality of Life",
       "sprite": "ICON_INFO",
-      "title": "Apply clean authored-language alternatives",
-      "text": "Adult Humor off uses clean badge, dialogue, journal, news and history wording; original adult text remains available without changing player-entered text. Shared text policy stays separate from the isolated Cleric humor subsystem.",
+      "title": "Clean translated journal entries",
+      "text": "The Warden and King journal entries use reviewed clean translations while preserving every original adult version.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/humor/AuthoredLanguage.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/messages/Messages.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/APDTextScene.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/text/AuthoredLanguage.java"
+      ]
+    },
+    {
+      "category": "Quality of Life",
+      "sprite": "ICON_INFO",
+      "title": "Clean Blacksmith reminder",
+      "text": "Remove profanity from the Traditional Chinese Blacksmith reminder when Adult Humor is off without changing the quest.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/text/AuthoredLanguage.java"
+      ]
+    },
+    {
+      "category": "Quality of Life",
+      "sprite": "ICON_INFO",
+      "title": "Clean Gnoll Exile description",
+      "text": "The Hungarian Gnoll Exile description keeps its original meaning with a clean alternative when Adult Humor is off.",
+      "paths": [
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/text/AuthoredLanguage.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Verify language variants and persistence",
-      "text": "Check every English resource, all 23 language lookups, all 50 lore entries, actual preference reload and preservation of adult originals and player text.",
+      "title": "Guard future translated wording",
+      "text": "Scan localized resources for reviewed profanity, require exact clean English fallbacks and preserve innocent words, formatting and player text.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/humor/AuthoredLanguageTest.java",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/AboutDeviceTest.java"
-      ]
-    },
-    {
-      "category": "Testing",
-      "sprite": "ICON_CHECKED",
-      "title": "Read inherited slider fields in Android checks",
-      "text": "Inspect inherited native slider fields so the Healing-only setting acceptance checks reach their assertions correctly.",
-      "paths": [
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/humor/AuthoredLanguageTest.java"
       ]
     },
     {
       "category": "Development",
       "sprite": "V061_PAGE",
-      "title": "Retain authored-text and private-delivery evidence",
-      "text": "Collect exact authored resources without gameplay changes, document verified alternatives and retain private APK verification before publication.",
+      "title": "Record translation and owner-delivery evidence",
+      "text": "Retain the localized audit, failed-gate corrections and independently verified owner APK delivery conditions.",
       "paths": [
-        ".github/workflows/codex-authored-text-audit.yml",
         ".github/workflows/codex-healing-apk-delivery.yml",
         "docs/APD-CLEAN-LANGUAGE-2026-10-15.md",
+        "docs/APD-CLEAN-LANGUAGE-LOCALIZATION-2026-10-15.md",
         "docs/APD-NEXT-BUILD-HISTORY.json",
-        "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/APD-ALPHA-CONTROLS-ACCEPTANCE-2026-10-15.md",
-        "docs/APD-UIMSD-AUDIT-RECONCILIATION-2026-10-15.md",
-        "docs/HANDOFF.md",
-        "docs/WORK-COMPLETED-LEDGER.md"
+        "docs/APD-CODEX-BUILD-REQUEST.txt"
       ]
     }
   ],
-  "commentary": "I made Adult Humor off use clean authored text, including the About statement, without removing the original adult wording. Player-entered text, content unlocks, scores and saves are preserved."
+  "commentary": "I expanded the clean-language alternatives after checking translated dialogue and journal entries. Adult originals, player-entered text, quests, scores and saved data remain intact."
 }
