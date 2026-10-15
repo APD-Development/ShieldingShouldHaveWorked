@@ -840,3 +840,13 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - The Android artifact `11942149631` retained one XML with 27 cases and all 35 validated 320x640 screenshots. APK artifact `11942373362` was built, but the failed API34 job means TEST188 is not accepted and is not delivered.
 - TEST189 changes only the device fixture to call `openNow` after establishing TitleScene, isolating the scene-navigation contract without disabling or bypassing the production gate. Re-run 1,603 core/debug/immediate-previous compiled TEST188 history/27 API34/35 PNG.
 - Production UIMSD, gameplay, saves, raw/permanent statistics, scoring, application ID, signing and player data are unchanged. No physical-phone or delivery claim; TEST185 remains the fully verified fallback and TEST123 the owner-delivered fallback.
+
+## 2026-10-15T02:29:53.163Z — TEST189 verified Back cancellation during UIMSD tour preparation
+- Source `ea1062079c6a43aadaf80dbf0197f3fcff4769cc`, run [38669986563](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38669986563), ran 02:15:04Z–02:28:04Z and completed successfully.
+- Downloaded evidence: 309 core XML reports with 1,603 tests, and one API34 XML with 27 tests; both have zero failures, errors and skips. Debug assembly and the immediate-previous compiled TEST188 history comparison passed.
+- The API34 XML explicitly includes `AndroidBackDeviceTest.backWalksBackwardsOneStepPerPress` at 28.019 seconds. Its log records cancellation during `tutorialPreparing`, worker-generation invalidation, the retained completed-tour flow, and final return to Title.
+- All 35 expected screenshots are present at 320x640 and the full contact sheet was visually reviewed clean. APD Changes retains TEST189, TEST188, TEST187 and TEST185 in order.
+- Artifacts: core `11944026123` / ZIP `187283af105130e4a9d5f5a6fca77cd5fe4afdebb4ff8f17e47f01a2c8223cf9`; APK `11944046061` / ZIP `9e6891dc870fae042fe5b4b93af40e2515f35c7654617994a87a0362a97d8bd0`; Android `11943957689` / ZIP `16c9ab986a64416a4d0d0e7c522a9ce84a5c7fa097373b38863d606146139692`.
+- APK checksum file passed; APK SHA-256 is `f4f45c841f359530a81818364ae0d79d4989078477103555e26c5d747e05b4c6`.
+- TEST186's precompile history omission, TEST187's omitted Back class and TEST188's pre-tour fixture failure remain recorded and are not relabeled as passes. TEST189 is the verified hosted/emulator checkpoint.
+- No APK was delivered and no physical phone was used. TEST123 remains the last owner-delivered/signature-compared APK. No application build is pending; do not rebuild unchanged TEST189.

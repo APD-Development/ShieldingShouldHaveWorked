@@ -1,23 +1,14 @@
 {
-  "previous_label": "Codex TEST 188",
-  "previous_source": "e251bb7a760db8274babdeb3e5356425853670d1",
-  "previous_run": 38668463084,
+  "previous_label": "Codex TEST 189",
+  "previous_source": "ea1062079c6a43aadaf80dbf0197f3fcff4769cc",
+  "previous_run": 38669986563,
   "date": "2026-10-15",
   "changes": [
     {
-      "category": "Testing",
-      "sprite": "V061_PAGE",
-      "title": "Isolate UIMSD Back fixture",
-      "text": "Enter the already-authorized UIMSD scene directly in the Android Back regression so the private build's intentional demo-unlock gate does not divert a scene-navigation test before its tour assertions.",
-      "paths": [
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/AndroidBackDeviceTest.java"
-      ]
-    },
-    {
       "category": "Changes",
       "sprite": "V061_PAGE",
-      "title": "TEST188 failure and TEST189 handoff",
-      "text": "Record 1,603 passing core tests, 26 of 27 passing API34 methods, the exact pre-tour fixture failure, retained 35-image evidence, and the required corrected verification request.",
+      "title": "Verify UIMSD preparing-tour Back",
+      "text": "Record exact-source hosted evidence that Back cancels sample-tour preparation, invalidates the worker, restores Home, and preserves the existing completed-tour navigation sequence.",
       "paths": [
         "docs/APD-TEST186-UIMSD-TOUR-CANCEL-2026-10-15.md",
         "docs/HANDOFF.md",
