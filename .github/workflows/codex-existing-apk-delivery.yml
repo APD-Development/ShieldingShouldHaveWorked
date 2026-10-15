@@ -1,4 +1,4 @@
-name: Deliver verified existing APD TEST159
+name: Deliver verified existing APD TEST198
 
 # Delivery only: reuse the already tested APK; no Gradle or app rebuild.
 # Accept verified SDK signer labels; retain compatibility refusal diagnostics.
@@ -12,17 +12,17 @@ permissions:
   actions: read
 
 concurrency:
-  group: apd-existing-test159-delivery
+  group: apd-existing-test198-delivery
   cancel-in-progress: false
 
 env:
-  APD_SOURCE_SHA: 8b5882b21d1c957846312296e471724c5a7207a0
-  APD_SOURCE_RUN: '38590690277'
-  APD_TEST_NUMBER: '159'
-  APD_CORE_TEST_COUNT: '1560'
-  APD_ANDROID_TEST_COUNT: '26'
-  APD_ROLLBACK_NUMBER: '67'
-  APD_ROLLBACK_SHA256: '3b9fc627cafad093e44cd8359f5ef74921bff1ed5b21c988f2f82b2fa6642d15'
+  APD_SOURCE_SHA: 186f5892429ef564ec4a9d59c9885a62fb6f1c1f
+  APD_SOURCE_RUN: '38712411656'
+  APD_TEST_NUMBER: '198'
+  APD_CORE_TEST_COUNT: '1615'
+  APD_ANDROID_TEST_COUNT: '27'
+  APD_ROLLBACK_NUMBER: '159'
+  APD_ROLLBACK_SHA256: 'dc5cb56b015a7d9cf98a5f3d246979e2c1f2b0dd562291c489797057ffd16fc7'
   APD_REQUIRED_ANDROID_METHODS: 'menusSurviveSceneRecreationAndNarrowActionsStayInsideTheirWindow,aRunCanBePlayedSavedContinuedAndEndedWithItsHistoryRecorded,aWonRunIsRecordedAsWonAndSealed,difficultyIsChosenOnTheCharacterScreenAndNotInSettings,communityMenuOpensEveryPreviewAndReturnsWithoutStackingWindows,adultHumorControlWorksWithoutAnAgeProviderAndReopensWithSavedChoice,textAndGuideScrollSurviveRepeatedResetsAndClampAfterResize,validationEmptyHistoryGroupedAndReportMessagesSurviveWithoutRepeatingActions,tourChoicesSurviveWithoutStartingATourOrRepeatingTheOffer,heroButtonsStayAboveNavigationBarAndRemainSelectable,navigationOverlapReservesVisibleBarsEvenWithFullscreenRequested,clericQuickCastsPersistAndKeepNormalCostsAndTargeting,arcanaItemDescriptionsRequireKnownEquippedRingsAndFitWindows,demoUnlockKeepsTenRunNoticeVisibleOnTitle,offlineNewsCardsOpenDatedSpritePopups,everyAboutPopupOpensScrollsAndCloses,everyUimsdScreenAndDialogCanBeBuilt,replacingHomeContentsDisposesPreviouslyDrawnImages,categoriesUseSpdColumnsAndEveryIconOpensItsExactBuildPopup,largeAndNamedHistoricalBuildsKeepAllIconsInScrollableNativeSections,tileVisibilityAndStairNavigationKeepNormalTurnsFogAndControls'
 
 jobs:
@@ -32,11 +32,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: 8b5882b21d1c957846312296e471724c5a7207a0
+          ref: 186f5892429ef564ec4a9d59c9885a62fb6f1c1f
       - uses: actions/checkout@v4
         with:
           path: lunch-preparation
-      - name: Wait for exact TEST159 verification and resolve actual artifacts
+      - name: Wait for exact TEST198 verification and resolve actual artifacts
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -85,18 +85,18 @@ jobs:
       - name: Retrieve rollback APK for direct compatibility comparison
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release download apd-codex-test-67 --repo "$GITHUB_REPOSITORY" --pattern ADHD-Pixel-Dungeon-CODEX-TEST-67.apk --dir rollback
+        run: gh release download apd-codex-test-159 --repo "$GITHUB_REPOSITORY" --pattern ADHD-Pixel-Dungeon-CODEX-TEST-159.apk --dir rollback
       - name: Check source, tests, checksum, signing and application ID
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           python3 -m unittest discover -s tools -p test_apd_existing_build_evidence.py
           GITHUB_SHA="$APD_SOURCE_SHA" python3 tools/apd_existing_build_evidence.py
-      - name: Stage the thirty-four verified Android screenshots
+      - name: Stage the thirty-five verified Android screenshots
         run: |
           mkdir -p delivery/screenshots
           cp android-reports/codex-visual-evidence/*.png delivery/screenshots/
-          test "$(find delivery/screenshots -name '*.png' | wc -l)" -eq 34
+          test "$(find delivery/screenshots -name '*.png' | wc -l)" -eq 35
           sha256sum delivery/screenshots/*.png > delivery/Android-Screenshot-Checksums.sha256
       - name: Count exact verified source for owner chat breakdown
         run: |
@@ -108,10 +108,10 @@ jobs:
         run: |
           python3 -m pip install reportlab==4.2.5
           python3 -m unittest discover -s tools -p test_apd_bug_report_pdf.py
-          python3 tools/apd_bug_report_pdf.py lunch-preparation/docs/APD-LUNCH-2026-10-14-TEST159.md delivery/APD-Bug-Fixes-2026-10-14-TEST159.pdf --verification delivery/verification.txt
+          python3 tools/apd_bug_report_pdf.py lunch-preparation/docs/APD-LUNCH-2026-10-15-TEST198.md delivery/APD-Bug-Fixes-2026-10-15-TEST198.pdf --verification delivery/verification.txt
       - uses: actions/upload-artifact@v4
         with:
-          name: verified-test159-delivery
+          name: verified-test198-delivery
           path: delivery/
           retention-days: 7
 
@@ -120,7 +120,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: verified-test159-evidence
+          name: verified-test198-evidence
           path: |
             delivery/*.json
             delivery/*.txt
@@ -142,7 +142,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: verified-test159-delivery
+          name: verified-test198-delivery
           path: delivery
       - name: Publish owner-requested private verified APK and report
         env:
@@ -164,7 +164,7 @@ jobs:
               '--title',f'APD PRIVATE CODEX TEST {number}','--notes-file','delivery/verification.txt',
               f'delivery/ADHD-Pixel-Dungeon-CODEX-TEST-{number}.apk',
               f'delivery/ADHD-Pixel-Dungeon-CODEX-TEST-{number}.apk.sha256',
-              'delivery/APD-Bug-Fixes-2026-10-14-TEST159.pdf',
-              'delivery/TEST159-Verification.json',
+              'delivery/APD-Bug-Fixes-2026-10-15-TEST198.pdf',
+              'delivery/TEST198-Verification.json',
               'delivery/APD-Source-Line-Counts.json'],check=True)
           PY
