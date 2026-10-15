@@ -15,4 +15,8 @@ The retained regression uses a blocking `SeedFloors.Provider`: it starts the old
 
 ## Verification state
 
-Candidate TEST217 requests the full 1,654-core/debug/history/API34/visual gate against immediate previous compiled TEST216. Until actual evidence passes, TEST216 remains the latest verified source; TEST214 remains staged and TEST206 published.
+TEST217 is verified at source `d2c28cb076d9918632d313e5a4f9655d36c9433b` by [run 38795254303](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38795254303), completed 2026-10-15T19:48:25Z. The run passed 1,654 core tests in 326 suites, debug assembly, and complete immediate-previous TEST216 history. Its API 34 artifact passed 28 methods with zero failures/errors/skips and contains 38 valid 320×640 PNGs; the complete contact sheet was reviewed readable.
+
+Artifacts: core `12000959379` / SHA-256 `9f1c30afee684d7cbf0192ee40e75845e086f8c5ccf621a119831f42033d459f`; APK/history `12001119270` / `0322280cdbe6e0f9e995c8940eee308353f149b889df1433d86b264b4d40fc56`; Android `12002566209` / `c15d8a4b3f4c0639b534fc2cb5ddaaac6be0a7de65f21202fbaa796d03e1663b`. APK payload SHA-256 is `4db6d38ad6ff0a6a5e375c43fadfa990b52172b2b14aac4bb2dafce9d9e6a6e9`.
+
+Private delivery was skipped. No release, signing comparison, owner-device install or physical-phone result is claimed. TEST214 remains the signing-compatible staged candidate and TEST206 the published fallback.

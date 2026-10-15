@@ -1131,3 +1131,9 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Reproduced with deterministic latches that an old `startSeedFloors` worker could replace newer catalogue/view state and send stale notifications.
 - Added an in-memory replay generation, invalidation on newer catalogue/load/provider ownership, an awaitable worker handoff and one retained regression.
 - Requested one full gate: 1,654 core tests, debug APK, complete immediate-previous TEST216 history, 28 API34 methods and 38 valid screenshots. Pending; no publication/delivery/phone claim.
+
+## 2026-10-15T19:48:25Z — TEST217 verified — 2026-10-15T19:48:25Z
+- Exact source `d2c28cb076d9918632d313e5a4f9655d36c9433b` / run [38795254303](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38795254303) passed 1,654 core tests in 326 suites, debug assembly and complete immediate-previous TEST216 history; 28 API34 methods and 38 valid 320×640 PNGs passed with zero failures/errors/skips, and the complete contact sheet was reviewed readable.
+- Core artifact `12000959379` / `9f1c30afee684d7cbf0192ee40e75845e086f8c5ccf621a119831f42033d459f`; APK/history `12001119270` / `0322280cdbe6e0f9e995c8940eee308353f149b889df1433d86b264b4d40fc56`; Android `12002566209` / `c15d8a4b3f4c0639b534fc2cb5ddaaac6be0a7de65f21202fbaa796d03e1663b`.
+- APK payload SHA-256 `4db6d38ad6ff0a6a5e375c43fadfa990b52172b2b14aac4bb2dafce9d9e6a6e9`. Private delivery skipped; no publication, signing comparison, owner-device install or physical-phone claim. TEST214 remains signing-compatible staged and TEST206 published fallback.
+- Older seed-replay workers can no longer replace newer READY catalogue/view state or emit stale failure/success notifications. Replay algorithms, histories, saves, scores, all 18 rules, gameplay, turns and RNG remain unchanged.

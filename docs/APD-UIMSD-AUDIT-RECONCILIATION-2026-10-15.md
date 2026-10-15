@@ -23,3 +23,5 @@ TEST216 verification closed the UimsdModel stale-load finding at source `ae923b2
 
 ## Seed replay stale-handoff review — 2026-10-15T19:32:37Z
 Full current `UimsdModel.startSeedFloors` and `SeedFloors.Provider` handoff paths were reviewed. A distinct lifecycle race was established: an older replay could install into captured catalogue state after a newer catalogue was READY. The bounded candidate adds replay generations and a deterministic blocking-provider regression; replay algorithms and stored data are unchanged. Full TEST217 evidence is pending and the 213-component audit remains incomplete.
+
+TEST217 verification closed this bounded seed-replay finding at source `d2c28cb076d9918632d313e5a4f9655d36c9433b`: [run 38795254303](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38795254303) passed 1,654 core tests in 326 suites, debug assembly, complete immediate-previous TEST216 history, 28 API34 methods and 38 reviewed 320×640 PNGs with zero failures/errors/skips. This does not complete the 213-component audit or add phone/signing evidence, networking, or a production storage migration.
