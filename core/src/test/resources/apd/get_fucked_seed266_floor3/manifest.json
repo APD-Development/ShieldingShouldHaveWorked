@@ -1,0 +1,45 @@
+{
+  "seed": 266,
+  "format": "APD native save plus captured RNG, earned by commands from level one",
+  "state": {
+    "mobs": [
+      "41:Crab:564:15:0.0",
+      "42:Rat:1195:8:0.0",
+      "43:GnollExile:143:24:0.0",
+      "44:Gnoll:412:12:0.0",
+      "45:Swarm:437:50:0.0",
+      "46:Snake:975:4:0.0",
+      "47:Gnoll:455:12:0.0"
+    ],
+    "shield": 0,
+    "tomeCharge": 1,
+    "strength": 11,
+    "level": 2,
+    "challenges": 512,
+    "totalTime": 632,
+    "HP": 1,
+    "HT": 1,
+    "inventory": [
+      "ClothArmor:1:+0",
+      "Cudgel:1:+0",
+      "FishingSpear:1:+2",
+      "Food:1:+0",
+      "HolyTome:1:+1",
+      "MailArmor:1:+0",
+      "Pasty:1:+0",
+      "PotionOfHealing:1:+0",
+      "VelvetPouch:1:+0",
+      "Waterskin:1:+0"
+    ],
+    "hunger": 332,
+    "gold": 0,
+    "depth": 3,
+    "armor": "ClothArmor:+0",
+    "partialCharge": 0.36704304814338684,
+    "pos": 641,
+    "time": 0,
+    "exp": 4,
+    "talents": "[{SATIATED_SPELLS=0, HOLY_INTUITION=0, SEARING_LIGHT=0, SHIELD_OF_LIGHT=1}, {ENLIGHTENING_MEAL=0, RECALL_INSCRIPTION=0, SUNRAY=0, DIVINE_SENSE=0, BLESS=0}, {CLEANSE=0, LIGHT_READING=0}, {}]",
+    "energy": 0
+  }
+}

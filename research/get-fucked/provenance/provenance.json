@@ -1,0 +1,37 @@
+{
+  "checkpoint_files": {
+    "depth1.dat": "a86fd4bbfa78aa087b59a24315d5566dd729e58a8ca325758bc56f73f18984c5",
+    "manifest.json": "a2efc4161cdda176f23bae7719ff66b19395a76bbbefa826ca491fd70c855c59",
+    "depth3.dat": "e92c128a15ebc367dd9bf32887fa27ab16f6ff4349ea402ef6c29712e762ffbe",
+    "depth2.dat": "e19ef39201c28828fc78c76b4c1a00309220649838a0d08a29046eff48e6767f",
+    "rng.bin": "2b087921c40833f34f80d78f47ac2e4dc3410fa17fce392bcad50463ee03d376",
+    "game.dat": "bd64de0d3c476ee33a6bf07ab58f398eaa77ba590462a39f2fc289bc5eb2d256"
+  },
+  "prefix_log": "e6b6ebb82150a1e64c38bdd92302ed7521b47d38e8566374e38f98d1f9bb2067",
+  "prefix_source": "b5167d4b1a9978e3f1c25d47e17b59572b3ded3e77611db04e47bffb729316fb",
+  "engine_jars": {
+    "gdx-platform-1.14.0-natives-desktop.jar": "a8a8c9cccf5e9dd518256b3cdf5e6b689a5d696a14e0460af5b0cbc51db5f2f1",
+    "gdx-backend-headless-1.14.0.jar": "48607eb4f58ee90bfbd64ed1ee954415d4a3a4181eced18127c86fcc472d45e0",
+    "json-20170516.jar": "813f37e4820f1854e8a4eb4f80df94bf1b1f2ec6c3b72692f23ab9a556256af6",
+    "hamcrest-core-1.3.jar": "66fdef91e9739348df7a096aa384a5685f4e875584cce89386a7a47251c4d8e9",
+    "gdx-freetype-1.14.0.jar": "3ebfe753299e11834bc88cf3c4c0c2cc8b9c2435ac03e560b0a8764256582bb4",
+    "byte-buddy-1.15.4.jar": "4a683d83ff219f20d44f35ca302d821e0c6842e3fa8f9f1ee913eb16f49cec6c",
+    "gdx-controllers-core-2.2.4.jar": "04da67627b1a3646ef8f214c91d296742a7c05597dbc2167aaab09cbdcc77470",
+    "byte-buddy-agent-1.15.4.jar": "1d76defd159a564b9cb7a968d0dea27367b8b70ebde75a968e7ef1921bc75ee4",
+    "mockito-core-5.14.2.jar": "2296141c1e1f2e1ae35c08d36a9ab4563ecd66e03533fe82630a764e7aa49182",
+    "services-4.0.8-apd.jar": "308d9917725f603c752acc5700e4c88001e647ce6b99cf2a0c9699b787913161",
+    "gdx-jnigen-loader-2.5.2.jar": "df81f23cfd6785c52d35e108eeaa3930f559d4d2770a6102e75ca7bfa6f9f27a",
+    "gdx-1.14.0.jar": "a305895e915fc5f59483de5d399a24a0ca62fe115015ffe8210c36e3d64f8126",
+    "junit-4.13.2.jar": "8e495b634469d64fb8acfa3495a065cbacc8a0fff55ce1e31007be4c16dc57d3",
+    "objenesis-3.3.jar": "02dfd0b0439a5591e35b708ed2f5474eb0948f53abf74637e959b8e4ef69bfeb",
+    "SPD-classes-4.0.8-apd.jar": "c5968e1ca942cb5a4efe6fe8a765b8c39e41b04c370f78d05d5f61095696a7a5"
+  },
+  "subsequent_replay_vm": [
+    "OpenJDK 17",
+    "-XX:+UnlockExperimentalVMOptions",
+    "-XX:hashCode=2"
+  ],
+  "warning": "Pinned JVM identity hashes affect unspecified HashSet actor tie order. No production engine code, HP, resources or RNG draws are replaced by combat fixtures.",
+  "engine_export_commit": "0d09a9ae11a46088ad99f77b4a30eb88e37ae7ac",
+  "production_main_verified": "8228fbcb030b3b0a2a787b6e3ea1cb8593e3e13d"
+}

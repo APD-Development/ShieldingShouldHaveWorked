@@ -20,6 +20,13 @@ dependencies {
 }
 
 test {
+    //Research-only replay options; absent properties leave ordinary tests unchanged.
+    System.properties.each { key, value ->
+        if (key.toString().startsWith('route.')) systemProperty key.toString(), value.toString()
+    }
+    if (System.getProperty('route.stableHash') == 'true') {
+        jvmArgs '-XX:+UnlockExperimentalVMOptions', '-XX:hashCode=2'
+    }
     //game code loads message bundles through Gdx.files.internal, so tests run from the assets folder
     workingDir = file('src/main/assets')
     //run with -Papd.golden.update=true to rewrite the golden file instead of comparing against it
