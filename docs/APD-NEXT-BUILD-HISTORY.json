@@ -1,77 +1,48 @@
 {
   "date": "2026-10-15",
-  "previous_source": "cf7a46191d7758f73d4901e6781eb44664f4a8d4",
-  "previous_run": 38810321509,
-  "previous_label": "Codex TEST 223",
+  "previous_source": "3e886234e69ab128a861cfbc17bca549ba3a3456",
+  "previous_run": 38823705331,
+  "previous_label": "Codex TEST 224",
   "changes": [
     {
-      "category": "Quality of Life",
-      "sprite": "ICON_CHANGES",
-      "title": "APD release notes",
-      "text": "Show concise APD-branded preview notes by default, with native categorized icons and individual popups.",
+      "category": "Testing",
+      "sprite": "ICON_CHECKED",
+      "title": "Native release history navigation",
+      "text": "Exercise release and technical history selection, version ranges, actual Android touch and system Back against the existing verified APK.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/history/ApdReleaseNotes.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/APDTextScene.java",
-        "core/src/main/assets/apd/releases/index.tsv",
-        "core/src/main/assets/apd/releases/apd-alpha-preview.tsv"
-      ]
-    },
-    {
-      "category": "Quality of Life",
-      "sprite": "ICON_INFO",
-      "title": "Retain complete technical history",
-      "text": "Keep every APK build record available through Versions without placing internal development sessions in the default release view.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/APDTextScene.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/history/ApdReleaseNotes.java"
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/ReleaseNotesNavigationDeviceTest.java",
+        ".github/workflows/codex-release-navigation-acceptance.yml"
       ]
     },
     {
       "category": "Testing",
-      "sprite": "ICON_CHECKED",
-      "title": "Release notes regression coverage",
-      "text": "Check player branding, preview dates, duplicates, categories, native icons, popup content, archive retention and compiled release-note integrity.",
+      "sprite": "ICON_INFO",
+      "title": "Unobstructed cold-restart captures",
+      "text": "Remove only the emulator's fullscreen tutorial overlay so the unchanged About preference checks also produce readable screenshots.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/history/ApdReleaseNotesTest.java",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/ChangesVisualDeviceTest.java",
-        "tools/test_apd_build_history.py",
-        "tools/run-codex-android-checks.sh"
+        ".github/workflows/codex-adult-restart-acceptance.yml"
       ]
     },
     {
       "category": "Development",
       "sprite": "ICON_CHANGES",
-      "title": "Validate future player release notes",
-      "text": "Validate curated player notes during builds and compare their compiled contents with reviewed source without generating speculative announcements.",
+      "title": "Private alpha staging",
+      "text": "Reuse the exact verified APK for signature, checksum, source, screenshot and PDF preparation without rebuilding or distributing to testers.",
       "paths": [
-        "tools/apd_build_history.py",
-        ".github/workflows/codex-sprint-check.yml"
-      ]
-    },
-    {
-      "category": "Testing",
-      "sprite": "ICON_CHECKED",
-      "title": "Android 16 acceptance fixtures",
-      "text": "Retain the separate reused-APK Android 16 runner and input-fixture work without treating unsuccessful runs as passed gameplay checks.",
-      "paths": [
-        ".github/workflows/codex-adult-restart-acceptance.yml",
-        ".github/workflows/codex-android16-acceptance.yml",
-        ".github/workflows/codex-publish-verified-test222.yml",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/AdultHumorRestartDeviceTest.java",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PlayRunDeviceTest.java"
+        ".github/workflows/codex-alpha-preview-stage.yml",
+        "docs/APD-EARLY-ALPHA-ACCEPTANCE-2026-10-16.md"
       ]
     },
     {
       "category": "Development",
       "sprite": "ICON_INFO",
-      "title": "Record exact verification boundaries",
-      "text": "Retain owner delivery, localized wording and release-note preparation evidence while distinguishing pending Android and physical-phone checks.",
+      "title": "Verification and acceptance records",
+      "text": "Record independent source and visual evidence, distinguish emulator and phone checks, and preserve failed documentation-only preparation without inventing an APK.",
       "paths": [
-        "docs/APD-PLAYER-RELEASE-NOTES-2026-10-15.md",
+        "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",
-        "docs/APD-CODEX-BUILD-REQUEST.txt",
+        "docs/KNOWN-ISSUES-AND-SOURCE-GUIDE.md",
         "docs/APD-NEXT-BUILD-HISTORY.json"
       ]
     },
@@ -79,11 +50,10 @@
       "category": "Developer Commentary",
       "sprite": "ICON_INFO",
       "title": "Developer Commentary",
-      "text": "I separated concise APD release notes from the complete technical APK archive. No historical build records or gameplay features were removed.",
+      "text": "I kept the verified alpha APK while completing release-history navigation and evidence checks. These preparation changes do not alter gameplay, saved runs or earned scores.",
       "paths": [
-        "core/src/main/assets/apd/releases/apd-alpha-preview.tsv"
+        "docs/APD-NEXT-BUILD-HISTORY.json"
       ]
     }
-  ],
-  "commentary": "I separated APD release notes from technical build records while keeping the complete archive."
+  ]
 }
