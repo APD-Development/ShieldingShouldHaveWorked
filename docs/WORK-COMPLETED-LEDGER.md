@@ -850,3 +850,9 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - APK checksum file passed; APK SHA-256 is `f4f45c841f359530a81818364ae0d79d4989078477103555e26c5d747e05b4c6`.
 - TEST186's precompile history omission, TEST187's omitted Back class and TEST188's pre-tour fixture failure remain recorded and are not relabeled as passes. TEST189 is the verified hosted/emulator checkpoint.
 - No APK was delivered and no physical phone was used. TEST123 remains the last owner-delivered/signature-compared APK. No application build is pending; do not rebuild unchanged TEST189.
+
+
+## 2026-10-15T02:40:14.718Z — TEST190 SavedViews cross-instance store candidate
+- Confirmed the fixed `saved_views.txt.tmp` path was shared across independent store objects without a shared lock.
+- Added a narrow shared atomic-write lock plus one deterministic retained concurrency regression. Verification pending: 1,604 core/debug/TEST189 history/27 API34/35 PNG.
+- No raw-history, save-format, gameplay, score, signing, application-ID, delivery or physical-phone change.

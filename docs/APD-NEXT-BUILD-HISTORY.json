@@ -7,9 +7,13 @@
     {
       "category": "Changes",
       "sprite": "V061_PAGE",
-      "title": "Verify UIMSD preparing-tour Back",
-      "text": "Record exact-source hosted evidence that Back cancels sample-tour preparation, invalidates the worker, restores Home, and preserves the existing completed-tour navigation sequence.",
+      "title": "Protect concurrent saved-view writes",
+      "text": "Serialize the shared saved-view temporary-file replacement across independent UIMSD store instances and retain a deterministic two-writer regression.",
       "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/SavedViews.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/SavedViewsTest.java",
+        "docs/APD-TEST190-SAVED-VIEWS-CONCURRENT-STORE-2026-10-15.md",
+        "docs/UIMSD-AUDIT-BUG-LOG.md",
         "docs/APD-TEST186-UIMSD-TOUR-CANCEL-2026-10-15.md",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",

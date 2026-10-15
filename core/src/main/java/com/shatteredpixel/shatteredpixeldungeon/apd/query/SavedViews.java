@@ -65,6 +65,14 @@ public final class SavedViews {
 
 	public enum Result { SAVED, REPLACED, TOO_MANY, BAD_NAME }
 
+	//Separate SavedViews objects target the same on-disk file. Serialize the tiny
+	//atomic-replacement section so they cannot truncate or rename one shared temp file concurrently.
+	private static final Object STORE_LOCK = new Object();
+
+	interface StoreHook {
+		void afterTempOpened( File temp ) throws InterruptedException;
+	}
+
 	private final List<View> views = new ArrayList<>();
 	public int skippedOnLoad;
 
@@ -131,23 +139,38 @@ public final class SavedViews {
 	}
 
 	public void store( File file ) throws IOException {
+		store(file, null);
+	}
+
+	//Package-private hook makes the cross-instance temp-file ordering regression deterministic.
+	void store( File file, StoreHook hook ) throws IOException {
 		//A partial read is not a complete replacement: retain every original byte.
 		if (skippedOnLoad > 0) throw new IOException(LOAD_WARNING);
-		if (file.isDirectory()) throw new IOException("not a saved-view file: " + file);
-		File parent = file.getAbsoluteFile().getParentFile();
-		if (!parent.isDirectory() && !parent.mkdirs() && !parent.isDirectory()){
-			throw new IOException("saved-view folder could not be created: " + parent);
-		}
-		File tmp = new File(file.getPath() + ".tmp");
-		try (BufferedWriter w = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tmp), StandardCharsets.UTF_8))){
-			for (View v : views){
-				w.write(b64(v.name) + "\t" + v.createdAtMillis + "\t" + b64(v.encodedQuery));
-				w.newLine();
+		synchronized (STORE_LOCK){
+			if (file.isDirectory()) throw new IOException("not a saved-view file: " + file);
+			File parent = file.getAbsoluteFile().getParentFile();
+			if (!parent.isDirectory() && !parent.mkdirs() && !parent.isDirectory()){
+				throw new IOException("saved-view folder could not be created: " + parent);
 			}
+			File tmp = new File(file.getPath() + ".tmp");
+			try (BufferedWriter w = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tmp), StandardCharsets.UTF_8))){
+				if (hook != null){
+					try {
+						hook.afterTempOpened(tmp);
+					} catch (InterruptedException interrupted){
+						Thread.currentThread().interrupt();
+						throw new IOException("interrupted while saving views", interrupted);
+					}
+				}
+				for (View v : views){
+					w.write(b64(v.name) + "\t" + v.createdAtMillis + "\t" + b64(v.encodedQuery));
+					w.newLine();
+				}
+			}
+			//The temporary file is a sibling. Keep the previous file if this
+			//filesystem refuses replacement; deleting it first can lose saved views.
+			if (!tmp.renameTo(file)) throw new IOException("cannot replace " + file);
 		}
-		//The temporary file is a sibling. Keep the previous file if this
-		//filesystem refuses replacement; deleting it first can lose saved views.
-		if (!tmp.renameTo(file)) throw new IOException("cannot replace " + file);
 	}
 
 	//a missing file is no views; never throws for damaged content

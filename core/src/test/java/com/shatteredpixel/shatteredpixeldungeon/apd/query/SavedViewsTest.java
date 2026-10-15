@@ -32,6 +32,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.Fact;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKeys;
 
@@ -251,6 +254,69 @@ public class SavedViewsTest {
 			assertArrayEquals(original, Files.readAllBytes(target.toPath()));
 			assertEquals(1, SavedViews.load(target).list().size());
 		}
+	}
+
+	@Test public void separateInstancesSerializeTheirAtomicStore() throws Exception {
+		File target = new File(tmp.getRoot(), "concurrent-saved-views.txt");
+		SavedViews first = new SavedViews();
+		SavedViews second = new SavedViews();
+		first.save("first", q("runs", 0), 1);
+		second.save("second", q("items", 0), 2);
+
+		CountDownLatch firstOpened = new CountDownLatch(1);
+		CountDownLatch releaseFirst = new CountDownLatch(1);
+		CountDownLatch secondStarted = new CountDownLatch(1);
+		CountDownLatch secondOpened = new CountDownLatch(1);
+		AtomicReference<Throwable> failure = new AtomicReference<>();
+		Thread a = new Thread(new Runnable(){
+			@Override public void run(){
+				try {
+					first.store(target, new SavedViews.StoreHook(){
+						@Override public void afterTempOpened( File temp ) throws InterruptedException {
+							firstOpened.countDown();
+							releaseFirst.await();
+						}
+					});
+				} catch (Throwable t){
+					failure.compareAndSet(null, t);
+				}
+			}
+		}, "first-saved-view-store");
+		Thread b = new Thread(new Runnable(){
+			@Override public void run(){
+				secondStarted.countDown();
+				try {
+					second.store(target, new SavedViews.StoreHook(){
+						@Override public void afterTempOpened( File temp ){
+							secondOpened.countDown();
+						}
+					});
+				} catch (Throwable t){
+					failure.compareAndSet(null, t);
+				}
+			}
+		}, "second-saved-view-store");
+
+		a.start();
+		assertTrue(firstOpened.await(5, TimeUnit.SECONDS));
+		b.start();
+		assertTrue(secondStarted.await(5, TimeUnit.SECONDS));
+		try {
+			assertFalse("a second instance must not open the shared temp file", secondOpened.await(200, TimeUnit.MILLISECONDS));
+		} finally {
+			releaseFirst.countDown();
+		}
+		a.join(5000);
+		b.join(5000);
+		assertFalse(a.isAlive());
+		assertFalse(b.isAlive());
+		assertNull(failure.get());
+		assertTrue(secondOpened.await(1, TimeUnit.SECONDS));
+		SavedViews loaded = SavedViews.load(target);
+		assertEquals(0, loaded.skippedOnLoad);
+		assertEquals(1, loaded.list().size());
+		assertNotNull(loaded.get("second"));
+		assertFalse(new File(target.getPath() + ".tmp").exists());
 	}
 
 }
