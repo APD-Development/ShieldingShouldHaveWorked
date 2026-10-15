@@ -18,3 +18,5 @@ Continued RowBuilders/EventDatasets review reproduced cross-event detail associa
 
 ## UimsdModel stale-load review — 2026-10-15T18:40:09Z
 Full current `UimsdModel.java` and its retained tests were reviewed. A real supported lifecycle race was established: an earlier background load could unconditionally install after a newer explicit catalogue. The bounded candidate uses an in-memory generation to reject stale success and failure handoffs and adds a deterministic monitor-controlled regression. This does not make the 213-component audit complete and does not alter histories, cache formats, saves, scoring or gameplay. Full TEST216 evidence is pending.
+
+TEST216 verification closed the UimsdModel stale-load finding at source `ae923b21414a03364bbb4f8701f15f54f1b9f62b`: 1,653 core tests, complete TEST215 history/debug, 28 API34 methods and 38 reviewed PNGs passed in run 38788151697. This marks that bounded finding verified, not the 213-component audit complete. No physical-phone evidence or production storage migration was added.
