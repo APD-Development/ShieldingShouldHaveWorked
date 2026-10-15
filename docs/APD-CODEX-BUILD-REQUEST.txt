@@ -201,3 +201,6 @@ TEST205 exact-source request (2026-10-15T12:36:31Z): add public telemetry1.16 bo
 
 
 TEST205 verified (2026-10-15T12:53:55Z): sourcea5071e47270ef3953a85eecc50f285d617f96fb3/run38736265505 passed1622core in319XML+27API34 in12XML/debug/complete immediate-previous compiledTEST204/CodexTEST200history/35valid320x640PNG. Internal CodexTEST201 APK SHA256 42075e16015fe677f1baf20bf946d60dddf2018143007950cdbf90ed63b4f692. Do not rebuild unchanged TEST205. Private delivery skipped; no physical-phone claim. CodexTEST198 remains separately delivered and TEST123 owner-delivered/signature-compared.
+
+
+SOURCE-BOUND ROW CACHE BATCH — October15,2026: verify1626core,debug,compiled complete history against immediate-previous nativeCodexTEST201(sourcea5071e47270ef3953a85eecc50f285d617f96fb3/run38736265505),27API34 and35validPNG. Four permanent cache identity tests: original score replacement repro failed;13focused/617broader local pass (baseline121 guards). Preserve newer boss telemetry and all18controls. Disposable source-bound row caches only: raw history/saves/score/ranges/signing/appID unchanged. This is one meaningful source batch, not a rebuild of unchanged application. Do not publish automatically; actual delivered TEST198 remains fallback. FullUIMSDaudit incomplete.
