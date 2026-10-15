@@ -353,7 +353,7 @@ public class GetFuckedRouteTest {
     @Test public void seed266InitialCommands() throws Exception {
         System.out.println("RUNNER_STAGE scheduler start");
         ready();
-        if(System.getProperty("route.resume")!=null){verifyCheckpoint(System.getProperty("route.resume"));if(Dungeon.depth==3)thirdFloorSection();else if(Dungeon.depth==4)fourthFloorSection();else if(Dungeon.depth==5)fifthFloorSection();else fail("Unwritten section");return;}
+        if(System.getProperty("route.resume")!=null){verifyCheckpoint(System.getProperty("route.resume"));if(Dungeon.depth==3)thirdFloorSection();else if(Dungeon.depth==4){if(Dungeon.hero.pos==826)returnedFourthFloorSection();else if(Dungeon.hero.pos==437)purityCheckpointSection();else fourthFloorSection();}else if(Dungeon.depth==5)fifthFloorSection();else fail("Unwritten section");return;}
         assertEquals(1,Dungeon.hero.lvl); assertEquals(1,Dungeon.hero.HP); assertEquals(1,Dungeon.hero.HT);
         for(Map<Talent,Integer> tier:Dungeon.hero.talents) for(int value:tier.values()) assertEquals(0,value);
         JSONObject layout=new JSONObject(); Level l=Dungeon.level;
@@ -711,6 +711,33 @@ public class GetFuckedRouteTest {
     private void fifthFloorSection() throws Exception {
         assertEquals(5,Dungeon.depth);assertEquals(708,Dungeon.hero.pos);
         for(int n=0;n<Integer.getInteger("route.gooPrep",100);n++)waitOne();
+        if(Boolean.getBoolean("route.returnToFour")){
+            click(708);assertEquals(4,Dungeon.depth);log("RETURN FLOOR FOUR AFTER PAID BOSS_FLOOR_RECHARGE");
+            Mob returnSlime=Dungeon.level.mobs.stream().filter(m->m.id()==92).findFirst().get();
+            cast(HolyWard.INSTANCE,null);cast(GuidingLight.INSTANCE,returnSlime.pos);
+            waitOne();cast(ShieldOfLight.INSTANCE,returnSlime.pos);waitOne();
+            for(int n=0;n<3 && returnSlime.isAlive();n++)click(returnSlime.pos);
+            assertFalse(returnSlime.isAlive());log("RETURNING CLERIC DEFEATS SECOND SLIME WITH EARNED CHARGES");
+            click(514);
+            Mob ghost=Dungeon.level.mobs.stream().filter(m->m instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost).findFirst().get();
+            assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,ghost.pos));click(ghost.pos);
+            assertTrue(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost.Quest.active());log("ACCEPT REAL GHOST QUEST");
+            for(int c:new int[]{515,555,594,633,672,710,709})click(c);
+            throwItem(com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame.class,707);
+            for(int n=0;n<7;n++)waitOne();
+            assertFalse(Dungeon.level.map[746]==Terrain.BARRICADE);
+            assertEquals(0,com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob.volumeAt(746,com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire.class));
+            for(int c:new int[]{708,707,746,785,784,784,823,822,821,821})click(c);
+            assertNotNull(Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.food.Food.class));
+            assertNotNull(Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade.class));
+            log("FLOOR FOUR BARRICADE FOOD AND UPGRADE ACTUALLY ACQUIRED");
+            Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.food.Food.class).execute(Dungeon.hero,"EAT");ready();log("EAT LEGALLY ACQUIRED BARRICADE RATION");
+            for(int c:new int[]{860,899,900,901,902,902,903,864,825,826,826})click(c);
+            assertNotNull(Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfToxicGas.class));
+            log("BARRICADE ROOM GAS POTION AND GOLD ACQUIRED");
+            if(System.getProperty("route.checkpointReturnOut")!=null)writeCheckpoint(System.getProperty("route.checkpointReturnOut"));
+            return;
+        }
         for(int c:new int[]{673,672,637})click(c);
         Dungeon.hero.search(true);ready();log("SEARCH FLOOR FIVE SECRET ENTRANCE");
         assertEquals(Terrain.DOOR,Dungeon.level.map[603]);
@@ -721,6 +748,32 @@ public class GetFuckedRouteTest {
         throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class,goo.pos);
         for(int c:new int[]{431,465,499,500,501,535,569,603,637})click(c);
         log("GOO_FIRST_OUTER_RETREAT");
+    }
+
+    private void returnedFourthFloorSection() throws Exception {
+        assertEquals(4,Dungeon.depth);assertEquals(826,Dungeon.hero.pos);
+        Mob pursuingCrab=Dungeon.level.mobs.stream().filter(m->m.id()==99).findFirst().get();
+        cast(ShieldOfLight.INSTANCE,pursuingCrab.pos);
+        for(int n=0;n<3 && pursuingCrab.isAlive();n++)click(pursuingCrab.pos);
+        assertFalse(pursuingCrab.isAlive());log("RETURN ROUTE PURSUING CRAB DEFEATED");
+        for(int c:new int[]{825,824,823,784,785,746,707,708,709,710,672,633,594,555,516,477,438,437,437,437})click(c);
+        assertNotNull(Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity.class));
+        log("RETURN ROUTE PURITY POTION ACQUIRED");
+        if(System.getProperty("route.checkpointPurityOut")!=null)writeCheckpoint(System.getProperty("route.checkpointPurityOut"));
+        if(Boolean.getBoolean("route.stopAtPurity"))return;
+        Mob questCrab=Dungeon.level.mobs.stream().filter(m->m instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GreatCrab).findFirst().get();
+        cast(ShieldOfLight.INSTANCE,questCrab.pos);
+        Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity.class).execute(Dungeon.hero,"DRINK");ready();log("DRINK OWNED PURITY BEFORE QUEST GAS");
+        throwItem(com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfToxicGas.class,questCrab.pos);
+        for(int c:new int[]{436,435,434,472,512,552})click(c);
+        log("GREAT CRAB FIRST GAS KITE");
+        for(int c:new int[]{553,554,555,556,517,478})click(c);
+        log("GREAT CRAB GAS ESCAPE");
+    }
+
+    private void purityCheckpointSection() throws Exception {
+        assertEquals(437,Dungeon.hero.pos);assertEquals(4,Dungeon.depth);
+        log("EARNED PURITY CHECKPOINT READY FOR NEXT EXPERIMENT");
     }
 
 }

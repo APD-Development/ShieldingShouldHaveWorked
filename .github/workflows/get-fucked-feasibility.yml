@@ -58,6 +58,26 @@ jobs:
         with:
           name: get-fucked-floor4-route-results
           path: core/build/test-results/test/
+      - name: Return from earned floor five and acquire barricade supplies
+        run: >-
+          ./gradlew :core:test --tests '*GetFuckedRouteTest'
+          -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor5"
+          -Droute.stableHash=true -Droute.noSnapshots=true -Droute.gooPrep=130 -Droute.returnToFour=true
+      - name: Preserve acquired barricade supplies replay
+        uses: actions/upload-artifact@v4
+        with:
+          name: get-fucked-barricade-route-results
+          path: core/build/test-results/test/
+      - name: Defeat pursuing crab and acquire purity from retained resources
+        run: >-
+          ./gradlew :core:test --tests '*GetFuckedRouteTest'
+          -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor4_return"
+          -Droute.stableHash=true -Droute.noSnapshots=true -Droute.stopAtPurity=true
+      - name: Preserve purity acquisition replay
+        uses: actions/upload-artifact@v4
+        with:
+          name: get-fucked-purity-route-results
+          path: core/build/test-results/test/
       - name: Replay earned Goo approach and first ranged retreat
         run: >-
           ./gradlew :core:test --tests '*GetFuckedRouteTest'
