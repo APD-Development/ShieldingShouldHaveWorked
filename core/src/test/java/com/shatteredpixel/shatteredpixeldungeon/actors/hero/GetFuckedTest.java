@@ -35,6 +35,11 @@ public class GetFuckedTest {
 		Object cause;
 		boolean revive;
 		boolean resetHunger;
+		@Override public void interrupt() {
+			//The headless fixture has no CellSelector or keyboard state.
+			curAction = null;
+			resting = false;
+		}
 		@Override public void die(Object source) {
 			deaths++;
 			cause = source;
@@ -72,6 +77,8 @@ public class GetFuckedTest {
 		Dungeon.level.locked = false;
 		hero = new TestHero();
 		hero.heroClass = HeroClass.WARRIOR;
+		Talent.initClassTalents(hero);
+		hero.pos = Dungeon.level.entrance();
 		Dungeon.hero = hero;
 	}
 
