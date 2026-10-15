@@ -243,3 +243,6 @@ EXACT TEST208 PREDECESSOR TREE: native history must also retain .github/workflow
 
 
 FINAL TIMESTAMP/HISTORY HEAD: prior candidate prose now carries authoritative GitHub commit times f08f5908=2026-10-15T16:38:34Z,6f511a22=2026-10-15T16:42:29Z,fcc100ba=2026-10-15T16:43:57Z. Accept only a full gate pinned to this final descendant so the corrected handoff/ledger are embedded. Same1645core/application source and TEST208 predecessor; no publication/phone claim.
+
+
+CORRECTED DAMAGED-HISTORY FULL RETRY: verify1646core/debug/completeimmediate-previousproducedTEST208(source13e4c03baad7e4471a172aedf7aff4222ca7e749/run38763307954),28API34/38PNG. TEST211actual1645corehad1644pass/1oldfixturefailure,noAPK;twoQuestBossClassificationTestexpected12valuesnow13whileallold10cache/rawevidenceassertionsretained. Seventhprovenancemethodactuallyrecoverslaterframeaftercorruption;10focusedlocalpass0.297s. Productioncorrectionandversionsunchanged.208independentXML/PNGnowverified1639+28/38,not208signatureorphone. Preservepublished206fallbackandcurrenthistorypaths. Onefullretryforcorrectedtests;noextrabuildsfordocumentation-onlytimestampchangesorunchangedsource. Noautomaticpublication.
