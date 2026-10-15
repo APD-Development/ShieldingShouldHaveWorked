@@ -13,7 +13,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu;
 import com.shatteredpixel.shatteredpixeldungeon.apd.HeadlessTestSupport;
 import com.shatteredpixel.shatteredpixeldungeon.apd.LevelGenerationHarness;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.ChainArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
@@ -196,11 +196,14 @@ public class GetFuckedFeasibilityTest {
     }
 
     @Test public void threeWorstCaseOrdinaryTenguHitsFit15BarrierWithChainAndWard() {
-        ChainArmor armor = new ChainArmor();
+        hero.lvl = 10;
+        hero.STR = 14;
+        MailArmor armor = new MailArmor();
         armor.level(6);
         hero.belongings.armor = armor;
         assertEquals(6, armor.DRMin());
         assertEquals(24, armor.DRMax());
+        assertTrue(hero.STR() >= armor.STRReq());
         Buff.affect(hero, HolyWard.HolyArmBuff.class);
         Barrier b = barrier(15);
         Tengu enemy = new Tengu();
@@ -216,12 +219,15 @@ public class GetFuckedFeasibilityTest {
     }
 
     @Test public void faithMakesTheSameWorstCaseTenguSequenceFatalOnSecondHit() {
+        hero.lvl = 10;
+        hero.STR = 14;
         Dungeon.challenges |= Challenges.NO_ARMOR;
-        ChainArmor armor = new ChainArmor();
+        MailArmor armor = new MailArmor();
         armor.level(6);
         hero.belongings.armor = armor;
         assertEquals(0, armor.DRMin());
         assertEquals(10, armor.DRMax());
+        assertTrue(hero.STR() >= armor.STRReq());
         Buff.affect(hero, HolyWard.HolyArmBuff.class);
         barrier(15);
         Tengu enemy = new Tengu();
