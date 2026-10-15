@@ -990,3 +990,11 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Failure: the telemetry 1.14 milestone was inserted before the required `APD records history, format 2` first line. The alchemy production code and both new behavioral/privacy regressions compiled and passed.
 - History preservation/validation passed. Failed artifact `11960867915`, 752,666 bytes, SHA-256 `e040a5f4330624fd74a0739cf914eb553d34957dcda5d8464acb39f9e6f8befe`.
 - TEST202 moves only the milestone below the immutable preamble and requests the unchanged full 1,615-core/debug/TEST200-history/27-API34/35-PNG gate.
+
+
+## 2026-10-15T09:36:13Z — TEST202 visible alchemy telemetry verified
+- Source `186f5892429ef564ec4a9d59c9885a62fb6f1c1f` / run `38712411656` passed 1,615 core tests in 315 XML suites and 27 API34 methods with zero failures/errors/skips; debug assembly and complete immediate-previous compiled TEST200/Codex TEST 196 history passed.
+- Both alchemy recorder regressions and all wiring/manifest/version/history contracts passed. Internal Codex TEST 198 APK SHA-256 is `6dd8a5e16e13670e6dfb6abd12783dd7225ef8ed936b12b57f1192b51618936d`.
+- Artifacts: core `11960394313` / `639308a8a783b67fc69319092ce802272be2d1ba8a0b8e207cd07796f6e5d1f0`; APK `11960578879` / `f1498ed29f368055d4910a63ba67d6dff77321bdbb6de67387384083ff1d3170`; Android `11962595029` / `ebe2d31192960ccc23d2f2363da1932a0d5255070cf8173556314a2d2e782b5b`.
+- All 35 screenshots are valid 320×640 PNGs; full contact sheet reviewed clean. Private delivery skipped; no physical-phone claim. TEST123 remains owner-delivered/signature-compared.
+- Telemetry 1.14 alchemy craft details are verified. Do not rebuild unchanged TEST202.

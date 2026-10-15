@@ -2526,3 +2526,13 @@ The ordered legacy-door item is closed. Hero markers still require explicit appr
 - `ContractTests.recordsHistoryDescribesTheCurrentTelemetryVersion` correctly rejected the telemetry 1.14 milestone because it preceded the immutable `APD records history, format 2` preamble. Production compilation and the two new alchemy regressions passed.
 - History preservation/validation passed. APK and API34 were skipped; no TEST201 APK exists. Failed core artifact `11960867915`, 752,666 bytes, SHA-256 `e040a5f4330624fd74a0739cf914eb553d34957dcda5d8464acb39f9e6f8befe`.
 - TEST202 moves only the new milestone beneath the preamble. Production source, telemetry payload and assertions are unchanged. Full 1,615-core/debug/TEST200-history/27-API34/35-PNG gate pending. TEST200 remains verified compiled; TEST123 remains owner-delivered.
+
+
+## 2026-10-15T09:36:13Z — TEST202 visible alchemy telemetry verified
+- Corrected source `186f5892429ef564ec4a9d59c9885a62fb6f1c1f`, run [38712411656](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38712411656) (09:22:07Z–09:36:13Z), passed 1,615 core tests in 315 XML suites, debug assembly, complete immediate-previous compiled TEST200/Codex TEST 196 history, 27 API34 methods and 35 screenshots; zero failures/errors/skips.
+- Both `AlchemyRecordingTest` methods, the wiring guard, fact manifest, telemetry-version test and immutable records-history contract passed.
+- Internal Codex TEST 198 APK SHA-256 `6dd8a5e16e13670e6dfb6abd12783dd7225ef8ed936b12b57f1192b51618936d`.
+- Artifacts: core `11960394313` / ZIP `639308a8…e5d1f0`; APK `11960578879` / ZIP `f1498ed2…1d3170`; Android `11962595029` / ZIP `ebe2d311…782b5b`.
+- All 35 PNGs are valid 320×640 and the full contact sheet reviewed clean. Private delivery skipped; no physical-phone claim. TEST123 remains owner-delivered/signature-compared.
+- Telemetry 1.14 now records successful alchemy crafts using only displayed inputs/output, exact quantities, floor and energy split; hidden true classes remain INTERNAL, and failed/restore paths emit nothing.
+- No application build is pending; do not rebuild unchanged TEST202. Re-read the latest head before the next distinct approved canonical recording item (level feelings is next in documented order).
