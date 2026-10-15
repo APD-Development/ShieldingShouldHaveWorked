@@ -40,6 +40,8 @@ public class GetFuckedRouteTest {
     private boolean oldKeepAlive;
     private boolean pendingTransition;
     private boolean pendingAlchemy;
+    private com.watabou.noosa.Scene currentTestScene;
+    private GameScene gameplaySceneStub;
     private com.shatteredpixel.shatteredpixeldungeon.ui.TargetHealthIndicator oldTargetIndicator;
 
     private void bind(Char ch) {
@@ -99,8 +101,10 @@ public class GetFuckedRouteTest {
             for(int n=0;n<fields.length;n++){Field f=buttonClass.getDeclaredField(fields[n]);f.setAccessible(true);f.set(upgradeButton,values[n]);}
         });
         MockedStatic<Game> game=visual(Game.class);
-        game.when(() -> Game.switchScene(InterlevelScene.class)).thenAnswer(i -> { pendingTransition=true; return null; });
-        game.when(() -> Game.switchScene(AlchemyScene.class)).thenAnswer(i -> {pendingAlchemy=true;return null;});
+        gameplaySceneStub=mock(GameScene.class,RETURNS_DEEP_STUBS);
+        game.when(Game::scene).thenAnswer(i->currentTestScene);
+        game.when(() -> Game.switchScene(InterlevelScene.class)).thenAnswer(i -> { pendingTransition=true; currentTestScene=mock(InterlevelScene.class,RETURNS_DEEP_STUBS); return null; });
+        game.when(() -> Game.switchScene(AlchemyScene.class)).thenAnswer(i -> {pendingAlchemy=true;currentTestScene=mock(AlchemyScene.class,RETURNS_DEEP_STUBS);return null;});
         oldTargetIndicator=com.shatteredpixel.shatteredpixeldungeon.ui.TargetHealthIndicator.instance;
         com.shatteredpixel.shatteredpixeldungeon.ui.TargetHealthIndicator.instance=mock(com.shatteredpixel.shatteredpixeldungeon.ui.TargetHealthIndicator.class,CALLS_REAL_METHODS);
         MockedStatic<com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator> attackIndicator=visual(com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator.class);
@@ -139,6 +143,7 @@ public class GetFuckedRouteTest {
         }else{
             restoreCheckpoint(resume);
         }
+        currentTestScene=gameplaySceneStub;
         System.out.println("RUNNER_STAGE actual level entered");
         oldKeepAlive = Actor.keepActorThreadAlive;
         Actor.keepActorThreadAlive = false;
@@ -170,13 +175,13 @@ public class GetFuckedRouteTest {
                     InterlevelScene scene=mock(InterlevelScene.class,CALLS_REAL_METHODS);
                     Method transition=InterlevelScene.class.getDeclaredMethod(InterlevelScene.mode==InterlevelScene.Mode.DESCEND ? "descend" : "ascend");
                     transition.setAccessible(true);transition.invoke(scene);
+                    currentTestScene=gameplaySceneStub;
                     bind(Dungeon.hero);for(Mob m:Dungeon.level.mobs)bind(m);
                     for(Heap h:Dungeon.level.heaps.valueList())heapSprite(h);
                 }catch(Exception e){throw new RuntimeException(e);}
             }
             if (!Dungeon.hero.isAlive()) throw new AssertionError("Terminal hero state: "+state("DEATH"));
-            if (Dungeon.hero.ready && !Actor.processing()) return;
-            if (Dungeon.hero.ready && Actor.processing()) return;
+            if (Dungeon.hero.ready && Dungeon.hero.cooldown()<=0.0001f && Dungeon.hero.paralysed==0) return;
             if(Boolean.getBoolean("route.audit") && Dungeon.depth==2 && Actor.now()>=63){
                 try{
                     Field f=Actor.class.getDeclaredField("all");f.setAccessible(true);
@@ -212,11 +217,14 @@ public class GetFuckedRouteTest {
         //Normal native save of the earned run, including all previously visited floors. Never construct a replacement hero.
         Dungeon.saveAll();
         java.nio.file.Path output=java.nio.file.Paths.get(dir);java.nio.file.Files.createDirectories(output);
-        java.nio.file.Files.copy(FileUtils.getFileHandle(GamesInProgress.gameFile(1)).file().toPath(),output.resolve("game.dat"),java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-        for(int d=1;d<=Dungeon.depth;d++)java.nio.file.Files.copy(FileUtils.getFileHandle(GamesInProgress.depthFile(1,d,0)).file().toPath(),output.resolve("depth"+d+".dat"),java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+        java.nio.file.Path nativeDir=FileUtils.getFileHandle(GamesInProgress.gameFile(1)).file().toPath().getParent();
+        JSONArray savedFiles=new JSONArray();
+        try(java.nio.file.DirectoryStream<java.nio.file.Path> files=java.nio.file.Files.newDirectoryStream(nativeDir,"*.dat")){
+            for(java.nio.file.Path file:files){java.nio.file.Files.copy(file,output.resolve(file.getFileName()),java.nio.file.StandardCopyOption.REPLACE_EXISTING);savedFiles.put(file.getFileName().toString());}
+        }
         Field f=Random.class.getDeclaredField("generators");f.setAccessible(true);
         try(java.io.ObjectOutputStream out=new java.io.ObjectOutputStream(java.nio.file.Files.newOutputStream(output.resolve("rng.bin")))){out.writeObject(f.get(null));}
-        JSONObject manifest=new JSONObject().put("state",continuity()).put("seed",266).put("format","APD native save plus captured RNG, earned by commands from level one");
+        JSONObject manifest=new JSONObject().put("state",continuity()).put("seed",266).put("format","APD native save plus captured RNG, earned by commands from level one").put("files",savedFiles);
         java.nio.file.Files.write(output.resolve("manifest.json"),manifest.toString(2).getBytes(java.nio.charset.StandardCharsets.UTF_8));
         log("NATIVE_CHECKPOINT_WRITTEN");
     }
@@ -225,9 +233,13 @@ public class GetFuckedRouteTest {
         JSONObject manifest=new JSONObject(new String(java.nio.file.Files.readAllBytes(input.resolve("manifest.json")),java.nio.charset.StandardCharsets.UTF_8));
         int depth=manifest.getJSONObject("state").getInt("depth");
         java.nio.file.Files.createDirectories(FileUtils.getFileHandle(GamesInProgress.gameFile(1)).file().toPath().getParent());
-        java.nio.file.Files.copy(input.resolve("game.dat"),FileUtils.getFileHandle(GamesInProgress.gameFile(1)).file().toPath(),java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-        for(int d=1;d<=depth;d++)java.nio.file.Files.copy(input.resolve("depth"+d+".dat"),FileUtils.getFileHandle(GamesInProgress.depthFile(1,d,0)).file().toPath(),java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-        Badges.loadGlobal();Dungeon.loadGame(1);Dungeon.level=Dungeon.loadLevel(1);
+        java.nio.file.Path nativeDir=FileUtils.getFileHandle(GamesInProgress.gameFile(1)).file().toPath().getParent();
+        try(java.nio.file.DirectoryStream<java.nio.file.Path> files=java.nio.file.Files.newDirectoryStream(input,"*.dat")){
+            for(java.nio.file.Path file:files)java.nio.file.Files.copy(file,nativeDir.resolve(file.getFileName()),java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+        }
+        Badges.loadGlobal();Dungeon.loadGame(1);
+        for(int d=1;d<=Statistics.deepestFloor;d++)assertTrue("Missing previously visited floor "+d,java.nio.file.Files.exists(FileUtils.getFileHandle(GamesInProgress.depthFile(1,d,0)).file().toPath()));
+        Dungeon.level=Dungeon.loadLevel(1);
         bind(Dungeon.hero);for(Mob m:Dungeon.level.mobs)bind(m);
         for(Heap h:Dungeon.level.heaps.valueList())heapSprite(h);
         Dungeon.switchLevel(Dungeon.level,Dungeon.hero.pos);
@@ -342,7 +354,7 @@ public class GetFuckedRouteTest {
             log("CRAFT SHIELDING USING OWNED HEALING AND EARNED ENERGY");
         }finally{
             for(int a=0;a<arrays.length;a++){Field f=AlchemyScene.class.getDeclaredField(arrays[a]);f.setAccessible(true);Object[] array=(Object[])f.get(null);System.arraycopy(old[a],0,array,0,array.length);}
-            pendingAlchemy=false;
+            pendingAlchemy=false;currentTestScene=gameplaySceneStub;
         }
     }
     private void throwLitBomb(int target) {
@@ -353,7 +365,7 @@ public class GetFuckedRouteTest {
     @Test public void seed266InitialCommands() throws Exception {
         System.out.println("RUNNER_STAGE scheduler start");
         ready();
-        if(System.getProperty("route.resume")!=null){verifyCheckpoint(System.getProperty("route.resume"));if(Dungeon.depth==3)thirdFloorSection();else if(Dungeon.depth==4){if(Dungeon.hero.pos==826)returnedFourthFloorSection();else if(Dungeon.hero.pos==437)purityCheckpointSection();else fourthFloorSection();}else if(Dungeon.depth==5)fifthFloorSection();else fail("Unwritten section");return;}
+        if(System.getProperty("route.resume")!=null){verifyCheckpoint(System.getProperty("route.resume"));if(Dungeon.depth==3)thirdFloorSection();else if(Dungeon.depth==4){if(Dungeon.hero.pos==826)returnedFourthFloorSection();else if(Dungeon.hero.pos==437)purityCheckpointSection();else if(Dungeon.hero.pos==1035)foodCheckpointSection();else fourthFloorSection();}else if(Dungeon.depth==5)fifthFloorSection();else fail("Unwritten section");return;}
         assertEquals(1,Dungeon.hero.lvl); assertEquals(1,Dungeon.hero.HP); assertEquals(1,Dungeon.hero.HT);
         for(Map<Talent,Integer> tier:Dungeon.hero.talents) for(int value:tier.values()) assertEquals(0,value);
         JSONObject layout=new JSONObject(); Level l=Dungeon.level;
@@ -473,7 +485,7 @@ public class GetFuckedRouteTest {
         Mob roomRat=(Mob)Actor.findChar(848);assertNotNull(roomRat);
         for(int cell:new int[]{1317,1316,1315,1273,1231,1189,1147,1105,1104,1062,1020})click(cell);
         if(Boolean.getBoolean("route.encumberedMail")){
-            Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor.class).execute(Dungeon.hero,"EQUIP");ready();log("EQUIP MAIL FOR GNOLL");
+            Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor.class).execute(Dungeon.hero,"EQUIP");Dungeon.hero.busy();ready();log("EQUIP MAIL FOR GNOLL");
         }
         click(978);
         log("GNOLL_APPROACH");
@@ -551,7 +563,7 @@ public class GetFuckedRouteTest {
         for(int cell:new int[]{927,970,1012,1012})click(cell);
         com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Quarterstaff staff=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Quarterstaff.class);
         assertNotNull("Quarterstaff must actually be collected",staff);assertEquals(2,staff.level());assertTrue(staff.STRReq()<=Dungeon.hero.STR());
-        staff.execute(Dungeon.hero,"EQUIP");ready();log("EQUIP EARNED QUARTERSTAFF");
+        staff.execute(Dungeon.hero,"EQUIP");Dungeon.hero.busy();ready();log("EQUIP EARNED QUARTERSTAFF");
         for(int cell:new int[]{970,927,884,841})click(cell);
         assertEquals(841,Dungeon.hero.pos);assertFalse("Must return to solid ground",Dungeon.level.pit[Dungeon.hero.pos]);
         log("VAULT_STAFF_ACQUIRED_AND_ESCAPED");
@@ -774,6 +786,105 @@ public class GetFuckedRouteTest {
     private void purityCheckpointSection() throws Exception {
         assertEquals(437,Dungeon.hero.pos);assertEquals(4,Dungeon.depth);
         log("EARNED PURITY CHECKPOINT READY FOR NEXT EXPERIMENT");
+        for(int c:new int[]{436,435,434,472,512,552,553,554,555,594,633,672,673,674,675,676})click(c);
+        log("GREAT CRAB LURED THROUGH CENTRAL ROOM WITHOUT SPENDING GAS");
+        Mob questCrab=Dungeon.level.mobs.stream().filter(m->m.id()==107).findFirst().get();
+        throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class,questCrab.pos);
+        if(questCrab.isAlive())cast(GuidingLight.INSTANCE,questCrab.pos);
+        log("GREAT CRAB FREE THROW BEFORE LIGHT");
+        Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity.class).execute(Dungeon.hero,"DRINK");ready();log("DRINK PURITY AFTER OPENING QUEST BURST");
+        throwItem(com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfToxicGas.class,676);
+        for(int c:new int[]{716,756,795,834,873,912})click(c);
+        Dungeon.hero.search(true);ready();log("SEARCH ACTUAL SECRET DOOR 913");assertEquals(Terrain.DOOR,Dungeon.level.map[913]);
+        for(int c:new int[]{913,953,993,1032,1072,1073,1074,1035})click(c);
+        log("QUEST GAS FOLLOWED TOWARD CHILLING TRAP");
+        Mob followingGnoll=Dungeon.level.mobs.stream().filter(m->m.id()==84).findFirst().get();
+        cast(ShieldOfLight.INSTANCE,followingGnoll.pos);
+        throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class,questCrab.pos);
+        assertFalse(questCrab.isAlive());log("GREAT CRAB FINISHED AT CORRIDOR CORNER");
+        for(int n=0;n<2 && followingGnoll.isAlive();n++)click(followingGnoll.pos);
+        assertFalse(followingGnoll.isAlive());log("QUEST ESCAPE FOLLOWING GNOLL DEFEATED");
+        if(!Boolean.getBoolean("route.killSlimeBeforeTrap")){click(996);assertEquals(996,Dungeon.hero.pos);}
+        Mob followingSlime=Dungeon.level.mobs.stream().filter(m->m.id()==83).findFirst().get();
+        if(!Boolean.getBoolean("route.skipSlimeShield"))cast(ShieldOfLight.INSTANCE,followingSlime.pos);
+        throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class,followingSlime.pos);
+        for(int n=0;n<4 && followingSlime.isAlive();n++)click(followingSlime.pos);
+        assertFalse(followingSlime.isAlive());log("QUEST ESCAPE SLIME DEFEATED AT COLD TRAP");
+        if(Boolean.getBoolean("route.killSlimeBeforeTrap"))assertNotNull(Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing.class));else assertNull(Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing.class));
+        if(System.getProperty("route.checkpointQuestOut")!=null)writeCheckpoint(System.getProperty("route.checkpointQuestOut"));
+        log("QUEST READY ACTUAL SURVIVOR");
+        if(Boolean.getBoolean("route.stopAfterQuest"))return;
+        if(Boolean.getBoolean("route.killSlimeBeforeTrap")){
+            for(int c:new int[]{1073,1073,1072,1072,1072})click(c);
+            click(1073);
+            Mob lateCrab=Dungeon.level.mobs.stream().filter(m->m.id()==119).findFirst().get();
+            cast(ShieldOfLight.INSTANCE,lateCrab.pos);
+            for(int n=0;n<3 && lateCrab.isAlive();n++)click(lateCrab.pos);
+            assertFalse(lateCrab.isAlive());log("LATE SPAWNED CRAB DEFEATED WITH SAVED CHARGE");
+            assertEquals(5,Dungeon.hero.lvl);assertEquals(1,Dungeon.hero.talentPointsAvailable(1));
+            Dungeon.hero.upgradeTalent(Talent.SATIATED_SPELLS);log("EARN SATIATED SPELLS AT LEVEL FIVE");
+            for(int c:new int[]{1074,1035})click(c);
+            Item meat=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.food.MysteryMeat.class);assertNotNull(meat);
+            int meatQuantity=meat.quantity();
+            meat.execute(Dungeon.hero,"DROP");ready();log("DROP OWNED RAW MEAT BEFORE TRIGGERING COLD");
+            throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Cudgel.class,996);
+            click(1074);log("LEAVE COLD WITH HEALING POTION RETAINED");
+            for(int n=0;n<11;n++)waitOne();
+            assertEquals(0,com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob.volumeAt(1035,com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Freezing.class));
+            click(1035);click(1035);
+            Item frozen=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.food.FrozenCarpaccio.class);assertNotNull(frozen);assertEquals(meatQuantity,frozen.quantity());
+            assertNotNull(Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing.class));
+            log("OWNED RAW MEAT SAFELY FROZEN AND RECOVERED");
+            if(System.getProperty("route.checkpointFoodOut")!=null)writeCheckpoint(System.getProperty("route.checkpointFoodOut"));
+        }
+    }
+
+    private void foodCheckpointSection() throws Exception {
+        assertEquals(4,Dungeon.depth);assertEquals(1035,Dungeon.hero.pos);
+        Item food=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.food.FrozenCarpaccio.class);assertNotNull(food);assertEquals(2,food.quantity());
+        food.execute(Dungeon.hero,"EAT");ready();log("EAT ONE ACTUALLY FROZEN QUEST MEAT");
+        cast(HolyWard.INSTANCE,null);assertEquals(3,Dungeon.hero.shielding());log("MEAL EARNED THREE SHIELD FROM SATIATED SPELLS");
+        for(int c:new int[]{1036,1036,996,996,1035,1074,1073,1072,1032,993,953,913,912,873,834,795,756,717,676})click(c);
+        log("RETURN TO GHOST AFTER COOKING AND MEAL");
+        for(int c:new int[]{676,675,674,673,633,594,555,516,477})click(c);
+        log("READY GHOST NORTH APPROACH WITH FOLLOWING SWARM");
+        Mob swarm=Dungeon.level.mobs.stream().filter(m->m.id()==109).findFirst().get();cast(ShieldOfLight.INSTANCE,swarm.pos);
+        click(478);log("GHOST FINAL PROTECTED APPROACH");click(479);
+        com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor reward=claimActualGhostArmor();assertEquals(1,reward.level());
+        reward.execute(Dungeon.hero,"EQUIP");Dungeon.hero.busy();ready();log("EQUIP EARNED LEATHER ARMOR");
+        upgradeOwnedGear(reward);assertEquals(2,reward.level());log("EARNED LEATHER ARMOR UPGRADED TO TWO");
+        for(int c:new int[]{478,477,476,475,513,513})click(c);
+        assertEquals(5,Dungeon.depth);assertEquals(708,Dungeon.hero.pos);log("GOO FLOOR RETURN WITH EARNED UPGRADED ARMOR");
+        if(System.getProperty("route.checkpointArmored5Out")!=null)writeCheckpoint(System.getProperty("route.checkpointArmored5Out"));
+    }
+    private void upgradeOwnedGear(Item spear) throws Exception {
+        Item scroll=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade.class);
+        assertNotNull(scroll);assertNotNull(spear);
+        int oldLevel=spear.level();
+        itemSelection=null;upgradeButton=null;
+        scroll.execute(Dungeon.hero,"READ");assertNotNull(itemSelection);
+        assertTrue(itemSelection.itemSelectable(spear));itemSelection.onSelect(spear);
+        assertNotNull(upgradeButton);
+        Method confirm=upgradeButton.getClass().getDeclaredMethod("onClick");confirm.setAccessible(true);confirm.invoke(upgradeButton);
+        ready();log("READ OWNED UPGRADE ON OWNED GEAR");
+        assertEquals(oldLevel+1,spear.level());assertNull(Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade.class));
+    }
+
+    private com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor claimActualGhostArmor() throws Exception {
+        com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost ghost=(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost)Dungeon.level.mobs.stream().filter(m->m instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost).findFirst().get();
+        assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,ghost.pos));
+        assertTrue(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost.Quest.processed());
+        com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor offered=com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost.Quest.armor;
+        assertNotNull(offered);click(ghost.pos); //actual adjacent NPC interaction, with its normal quest gate
+        //Rendering-only window substitute. The original reward handler performs the actual pickup, glyph assignment, NPC removal and quest completion.
+        com.shatteredpixel.shatteredpixeldungeon.windows.WndSadGhost window=mock(com.shatteredpixel.shatteredpixeldungeon.windows.WndSadGhost.class);
+        Field ghostField=window.getClass().getDeclaredField("ghost");ghostField.setAccessible(true);ghostField.set(window,ghost);
+        com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost.Quest.revealOfferedLevels();
+        Method choose=com.shatteredpixel.shatteredpixeldungeon.windows.WndSadGhost.class.getDeclaredMethod("selectReward",Item.class);choose.setAccessible(true);choose.invoke(window,offered);
+        ready();log("CLAIM ACTUAL GHOST ARMOR THROUGH ORIGINAL REWARD HANDLER");
+        assertTrue(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost.Quest.completed());
+        assertSame(offered,Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.armor.LeatherArmor.class));
+        return offered;
     }
 
 }

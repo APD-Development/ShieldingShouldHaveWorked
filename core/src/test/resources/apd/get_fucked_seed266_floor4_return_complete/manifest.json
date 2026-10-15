@@ -1,0 +1,56 @@
+{
+  "seed": 266,
+  "format": "APD native save plus captured RNG, earned by commands from level one",
+  "files": [
+    "depth1.dat",
+    "depth5.dat",
+    "depth4.dat",
+    "depth3.dat",
+    "depth2.dat",
+    "game.dat"
+  ],
+  "state": {
+    "mobs": [
+      "107:GreatCrab:609:25:0.0",
+      "109:Swarm:1036:50:0.0",
+      "77:Ghost:677:1:1.0",
+      "78:Slime:244:20:0.0",
+      "79:Crab:880:15:0.0",
+      "83:Slime:1190:20:0.0",
+      "84:Gnoll:1189:12:0.0",
+      "99:Crab:825:15:0.5"
+    ],
+    "shield": 0,
+    "tomeCharge": 3,
+    "strength": 12,
+    "level": 4,
+    "challenges": 512,
+    "totalTime": 1413,
+    "HP": 1,
+    "HT": 1,
+    "inventory": [
+      "ClothArmor:1:+0",
+      "Cudgel:1:+0",
+      "HolyTome:1:+2",
+      "MailArmor:1:+0",
+      "PotionOfHealing:1:+0",
+      "PotionOfToxicGas:1:+0",
+      "Quarterstaff:1:+2",
+      "ScrollOfRage:1:+0",
+      "ScrollOfUpgrade:1:+0",
+      "Shuriken:3:+1",
+      "VelvetPouch:1:+0",
+      "Waterskin:1:+0"
+    ],
+    "hunger": 152,
+    "gold": 92,
+    "depth": 4,
+    "armor": "ClothArmor:+0",
+    "partialCharge": 0.09247013926506042,
+    "pos": 826,
+    "time": 0,
+    "exp": 5,
+    "talents": "[{SATIATED_SPELLS=0, HOLY_INTUITION=0, SEARING_LIGHT=1, SHIELD_OF_LIGHT=2}, {ENLIGHTENING_MEAL=0, RECALL_INSCRIPTION=0, SUNRAY=0, DIVINE_SENSE=0, BLESS=0}, {CLEANSE=0, LIGHT_READING=0}, {}]",
+    "energy": 1
+  }
+}

@@ -62,7 +62,7 @@ jobs:
         run: >-
           ./gradlew :core:test --tests '*GetFuckedRouteTest'
           -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor5"
-          -Droute.stableHash=true -Droute.noSnapshots=true -Droute.gooPrep=130 -Droute.returnToFour=true
+          -Droute.stableHash=true -Droute.noSnapshots=true -Droute.gooPrep=200 -Droute.returnToFour=true
       - name: Preserve acquired barricade supplies replay
         uses: actions/upload-artifact@v4
         with:
@@ -71,12 +71,33 @@ jobs:
       - name: Defeat pursuing crab and acquire purity from retained resources
         run: >-
           ./gradlew :core:test --tests '*GetFuckedRouteTest'
-          -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor4_return"
+          -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor4_return_complete"
           -Droute.stableHash=true -Droute.noSnapshots=true -Droute.stopAtPurity=true
       - name: Preserve purity acquisition replay
         uses: actions/upload-artifact@v4
         with:
           name: get-fucked-purity-route-results
+          path: core/build/test-results/test/
+      - name: Replay actual Ghost quest and safe food recovery
+        run: >-
+          ./gradlew :core:test --tests '*GetFuckedRouteTest'
+          -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor4_purity_complete"
+          -Droute.stableHash=true -Droute.noSnapshots=true
+          -Droute.killSlimeBeforeTrap=true -Droute.skipSlimeShield=true
+      - name: Preserve Ghost quest replay
+        uses: actions/upload-artifact@v4
+        with:
+          name: get-fucked-ghost-route-results
+          path: core/build/test-results/test/
+      - name: Replay meal reward armor upgrade and existing Goo floor return
+        run: >-
+          ./gradlew :core:test --tests '*GetFuckedRouteTest'
+          -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor4_food_complete"
+          -Droute.stableHash=true -Droute.noSnapshots=true
+      - name: Preserve earned armor replay
+        uses: actions/upload-artifact@v4
+        with:
+          name: get-fucked-armor-route-results
           path: core/build/test-results/test/
       - name: Replay earned Goo approach and first ranged retreat
         run: >-
@@ -100,3 +121,11 @@ jobs:
               for e in r.findall('system-out'):
                   print(e.text or '')
           PY
+
+      - name: Preserve research provenance for mechanical review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: get-fucked-research-provenance
+          path: research/get-fucked/
+          retention-days: 90
