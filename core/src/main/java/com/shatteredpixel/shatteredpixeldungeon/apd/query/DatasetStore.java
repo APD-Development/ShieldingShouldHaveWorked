@@ -194,10 +194,11 @@ public final class DatasetStore {
 	}
 
 	private void writeCache( File cache, byte[] data ){
-		File tmp = new File(cache.getPath() + ".tmp");
+		File tmp = null;
 		try {
 			File dir = cache.getParentFile();
-			if (!dir.isDirectory() && !dir.mkdirs()) return;
+			if (!dir.isDirectory() && !dir.mkdirs() && !dir.isDirectory()) return;
+			tmp = File.createTempFile(cache.getName() + ".", ".tmp", dir);
 			FileOutputStream out = new FileOutputStream(tmp);
 			try {
 				out.write(data);
@@ -207,7 +208,9 @@ public final class DatasetStore {
 			if (cache.exists() && !cache.delete()) return;
 			tmp.renameTo(cache);
 		} catch (Throwable ignored){
-			tmp.delete();   //the cache is optional
+			// The cache is optional; no writer may remove another writer's temporary file.
+		} finally {
+			if (tmp != null) try { tmp.delete(); } catch (SecurityException ignored) { }
 		}
 	}
 
