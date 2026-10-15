@@ -44,12 +44,14 @@ public class ClericLoreLimitTest {
         }
     }
 
-    @Test public void retiredHistoryIsNotDeletedAndReleaseGateStaysOff() {
+    @Test public void retiredHistoryIsNotDeletedAndNormalReleaseStaysOff() {
         Ledger ledger = new Ledger(null);
         ledger.markShown("app.0001", 1L); // Retired by curation; history must survive.
         ClericGrudge grudge = new ClericGrudge(HumorTestSupport.shipped(), ledger, new Random(7), true, 100L);
         assertEquals(49, grudge.counter().total + grudge.counter().appreciationTotal);
         assertNotNull(ledger.get("app.0001"));
+        com.shatteredpixel.shatteredpixeldungeon.apd.ApdFeatures.resetForTest();
         assertFalse(ClericGrudge.enabled());
     }
 }
+
