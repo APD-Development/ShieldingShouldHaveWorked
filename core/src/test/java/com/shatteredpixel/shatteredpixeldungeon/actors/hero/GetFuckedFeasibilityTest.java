@@ -18,6 +18,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
@@ -92,7 +93,7 @@ public class GetFuckedFeasibilityTest {
         f.setAccessible(true);
         f.set(target, value);
     }
-    private static int charge(HolyTome tome) throws Exception {
+    private static int charge(Artifact tome) throws Exception {
         Field f = Artifact.class.getDeclaredField("charge");
         f.setAccessible(true);
         return f.getInt(tome);
@@ -345,6 +346,32 @@ public class GetFuckedFeasibilityTest {
         assertTrue(ticks >= 1000 && ticks <= 1002);
         System.out.println("FEASIBILITY Post-blessed-revival starvation interval at 1 HT: "+ticks
                 +" hunger ticks before next lethal damage event; finite Ankh consumption still required");
+    }
+
+    @Test public void ascentKillXpCanChargeAHornAlongsideTheTomeAtLevel30() throws Exception {
+        hero.lvl = 30;
+        HolyTome tome = tome(0);
+        HornOfPlenty horn = new HornOfPlenty();
+        horn.level(10);
+        hero.belongings.misc = horn;
+        horn.activate(hero);
+        assertTrue(tome.isEquipped(hero));
+        assertTrue(horn.isEquipped(hero));
+        AscensionChallenge curse = Buff.affect(hero, AscensionChallenge.class);
+        int generatedCharges = 0;
+        for (int i = 0; i < 40; i++) {
+            set(curse, AscensionChallenge.class, "stacks", 1f);
+            AscensionChallenge.processEnemyKill(new Rat());
+            generatedCharges += charge(horn);
+            //Measure uncapped production; eating itself is not simulated in this hook test.
+            set(horn, Artifact.class, "charge", 0);
+        }
+        assertEquals(19, generatedCharges);
+        assertEquals(30, hero.lvl);
+        assertEquals(1, hero.HT);
+        assertEquals(1, hero.HP);
+        System.out.println("FEASIBILITY Forty full curse reductions at level 30 generate "+generatedCharges
+                +" whole +10 Horn charges (1710 satiety at ordinary settings), if promptly consumed to prevent capping");
     }
 
     @Test public void measureStaticTravelLowerBoundsAndPlacedFoodWithoutPlaying() throws Exception {
