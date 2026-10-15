@@ -41,6 +41,7 @@ public class APDTextScene extends PixelScene {
  private static int buildSelected,newsPage;
  private static final int BUILDS_PER_PAGE=6;
  private final List<ChangeInfo> changes=new ArrayList<>();
+ private static String authored(String text){return com.shatteredpixel.shatteredpixeldungeon.apd.humor.AuthoredLanguage.english(text,SPDSettings.apdAdultHumor());}
  private String read(String path){try{return Gdx.files.internal(path).readString("UTF-8");}catch(Exception e){return "";}}
  @Override public void create(){
   super.create();changes.clear();
@@ -74,14 +75,14 @@ public class APDTextScene extends PixelScene {
    if(total>0){
     for(int buildIndex=buildSelected;buildIndex<Math.min(total,buildSelected+BUILDS_PER_PAGE);buildIndex++){
     ApdHistory.Build build=builds.get(buildIndex);
-    ChangeInfo heading=new ChangeInfo(build.label,true,build.date);
+    ChangeInfo heading=new ChangeInfo(authored(build.label),true,build.date);
     heading.hardlight(Window.TITLE_COLOR);changes.add(heading);
-    if(!build.status.isEmpty())heading.addButton(new ChangeButton(Icons.INFO.get(),"Build record",build.label+"\n\n"+build.status));
+    if(!build.status.isEmpty())heading.addButton(new ChangeButton(Icons.INFO.get(),"Build record",authored(build.label)+"\n\n"+authored(build.status)));
     List<ApdHistory.Entry> entries=ApdHistory.entries(read("apd/history/"+build.id+".tsv"));
     if(entries.isEmpty())entries=ApdHistory.entries("History status\tV061_PAGE\tHistory unavailable\tVerified changes for this build have not yet been reconstructed.");
     for(Map.Entry<String,List<ApdHistory.Entry>> category:ApdHistory.categories(entries).entrySet()){
      String name=category.getKey().equals("Statistics / UIMSD")?"UIMSD":category.getKey().equals("Developer Commentary")?"Commentary":category.getKey();
-     ChangeInfo info=new ChangeInfo(name,false,null);info.hardlight(categoryColor(category.getKey()));
+     ChangeInfo info=new ChangeInfo(authored(name),false,null);info.hardlight(categoryColor(category.getKey()));
      for(ApdHistory.Entry entry:category.getValue())info.addButton(changeButton(build,entry));
      changes.add(info);
     }
@@ -163,7 +164,7 @@ public class APDTextScene extends PixelScene {
   private final ApdNews.Article article;
   private BitmapText date;
   NewsCard(ApdNews.Article article){
-   super(Chrome.Type.GREY_BUTTON_TR,article.title,6);this.article=article;
+   super(Chrome.Type.GREY_BUTTON_TR,authored(article.title),6);this.article=article;
    multiline=true;icon(APDTextScene.this.icon(article.sprite));
    date=new BitmapText(article.displayDate(),pixelFont);date.scale.set(PixelScene.align(0.5f));
    date.hardlight(0x888888);date.measure();add(date);
@@ -177,7 +178,7 @@ public class APDTextScene extends PixelScene {
   }
   @Override protected void onClick(){
    APDTextScene.this.addToFront(new com.shatteredpixel.shatteredpixeldungeon.windows.WndTitledMessage(
-    APDTextScene.this.icon(article.sprite),article.title,article.displayDate()+"\n\n"+article.text));
+    APDTextScene.this.icon(article.sprite),authored(article.title),article.displayDate()+"\n\n"+authored(article.text)));
   }
  }
  private Image icon(String sprite){
@@ -195,7 +196,7 @@ public class APDTextScene extends PixelScene {
    String title=entry.title.toLowerCase(Locale.ROOT);
    sprite=title.contains("news")?Icons.NEWS.get():title.contains("about")||title.contains("popup")?Icons.INFO.get():title.contains("histor")?Icons.CHANGES.get():title.contains("shortcut")?Icons.RANKINGS.get():entry.category.equals("Statistics / UIMSD")?Icons.STATS.get():ChangeIcons.V081_MISC.get();
   }
-  return new ChangeButton(sprite,entry.title,build.label+"\n\n"+entry.text);
+  return new ChangeButton(sprite,authored(entry.title),authored(build.label)+"\n\n"+authored(entry.text));
  }
  @Override protected void onBackPressed(){ShatteredPixelDungeon.switchScene(backTo);}
 }
