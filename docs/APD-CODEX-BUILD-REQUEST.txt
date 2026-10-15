@@ -216,3 +216,6 @@ OWNER-REQUESTED CLERIC TOUCH FIX AND DELIVERY: verify1631core/debug/complete imm
 
 
 POST-DELIVERY SCALED STATISTICS PRESENTATION: verify1635core/debug/complete immediately preceding produced and delivered nativeTEST204(source245b21b7064a03b916e68f1992f94ca017f22fc0/run38747671347),28API34/38PNG. Four new retained regressions reproduce100x/1000x display mistakes in fixed-point means/medians/custom-question totals/rates.39focused+622broaderlocalpass; broadsourceguardsbaseline121. Presentation units only: raw math, history/cache/saveformats, scores, gameplay/RNG untouched. Actual delivered204 remains playable fallback; no automatic nextrelease and no physical-phone claim. Continue approved audit, not a claim of completion.
+
+
+CONSERVATIVE AGGREGATE BOUNDS FOLLOW-UP: verify1636core/debug/complete immediate-previous produced nativeTEST205(source4ddd6e415247bccb60e30d8af8f4b92335219802/run38751801184),28API34/38PNG. Added fifth retained regression catches2.46=>incorrect>=2.5,includingnegative/scaled/ordinaryAVG/MEDIAN. Corrected40focused+623broaderlocalpass; guardsbaseline121. Raw math/history/cache/saveformats/scores/turns/RNG unchanged. No production registry optimization in this batch: memoization research is localonly. ActualdeliveredTEST204 remains fallback; no automaticnextpublication orphoneclaim.
