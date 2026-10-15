@@ -85,7 +85,7 @@ public class APDSettingsPane extends Component {
 		title.hardlight( Window.TITLE_COLOR );
 		add( title );
 
-		optExotic = new OptionSlider( "Exotic potion/scroll chance (new runs)",
+		optExotic = new OptionSlider( "Healing to Shielding chance (new runs)",
 				"0%", SPDSettings.APD_EXOTIC_CHANCE_MAX + "%",
 				0, SPDSettings.APD_EXOTIC_CHANCE_MAX / STEP ) {
 			@Override
@@ -97,7 +97,7 @@ public class APDSettingsPane extends Component {
 		add( optExotic );
 
 		info = PixelScene.renderTextBlock(
-				"Minimum chance that a generated potion or scroll is exotic. 0% is the normal game.", 5 );
+				"Minimum chance that a generated Potion of Healing becomes Shielding. Other potions and scrolls keep normal SPD behavior. 0% keeps normal behavior.", 5 );
 		add( info );
 
 		chkRecord = new CheckBox( "Record run history" ) {
