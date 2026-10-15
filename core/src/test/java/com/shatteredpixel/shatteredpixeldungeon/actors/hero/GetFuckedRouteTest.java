@@ -83,7 +83,6 @@ public class GetFuckedRouteTest {
             return null;
         });
         visuals.add(missiles);
-        Random.pushGenerator(266L); //One continuous mechanics stream, never reset within the route.
         Method context = LevelGenerationHarness.class.getDeclaredMethod("applyContext", LevelGenerationHarness.Context.class);
         context.setAccessible(true); context.invoke(null, LevelGenerationHarness.Context.REFERENCE);
         SPDSettings.challenges(Challenges.GET_FUCKED);
@@ -92,6 +91,7 @@ public class GetFuckedRouteTest {
         GamesInProgress.selectedClass = HeroClass.CLERIC;
         GamesInProgress.randomizedClass = false; GamesInProgress.curSlot = 1;
         Dungeon.init();
+        Random.pushGenerator(266L); //init resets the RNG stack; seed once after it, never during the route.
         Dungeon.depth = 1; Dungeon.branch = 0; Dungeon.level = Dungeon.newLevel();
         bind(Dungeon.hero);
         for (Mob m : Dungeon.level.mobs) bind(m);
