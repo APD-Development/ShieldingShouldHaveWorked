@@ -929,3 +929,12 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Retained failures: Hero's sixth recorder hook was not added to `PlayWiringTest`; telemetry 1.12 lacked its permanent records-history milestone; the new test entered `Hero.ready()` and hit the absent headless `AttackIndicator` before interaction.
 - TEST197 updates the two contracts and isolates the exact call-plus-record unit behind the real central path for headless execution. Assertions and recorder guards are not weakened.
 - Failed core artifact `11952904481`, ZIP SHA-256 `7a11eab5b211a9190a02fc28920f2bd1de1ca718d94cab7f65944539aa270f34`. Full gate pending.
+
+
+## 2026-10-15T06:55:59Z — TEST197 canonical NPC interaction telemetry verified
+
+- Source `364fd4724b79308fb6a13478a211bcd7599b2f7b` / run `38694008236` passed 1,610 core tests (313 XML), debug assembly, complete immediate-previous TEST192 APK history, 27 API34 methods and 35 screenshots, with zero failure/error/skip.
+- All screenshots are 320×640; full contact sheet reviewed clean. Inner APK SHA-256 `8fc77119f6f16193a4fb42ca539b53bbb8d75e26c23c1112a6708b51a2615beb`.
+- Artifact IDs/ZIP hashes: core `11953586184` / `3f2fdb0c…8cb24`; APK `11953825841` / `312b0e82…53377`; Android `11954147276` / `8f18ea2b…ce1df`.
+- The workflow named the compiled APK Codex TEST 194; source/evidence remains TEST197. TEST196's three contract failures remain recorded and were not relabelled.
+- Additive public telemetry 1.12 NPC interaction recording is verified. No gameplay/save/permanent-statistics/scoring/custom-rule/identity/signing change; no physical phone or distribution. TEST123 remains owner-delivered.

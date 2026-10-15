@@ -2463,3 +2463,12 @@ The ordered legacy-door item is closed. Hero markers still require explicit appr
 - Failures were the expected new Hero hook count, missing required telemetry 1.12 records-history milestone, and a headless regression entering pre-existing `Hero.ready()` UI code before the interaction.
 - TEST197 declares both permanent contracts and has the real central path call a private call-plus-record helper that the regression can invoke without UI. Production interaction result, turn and recorder behavior are unchanged.
 - Core artifact `11952904481`, ZIP SHA-256 `7a11eab5b211a9190a02fc28920f2bd1de1ca718d94cab7f65944539aa270f34`. No TEST196 APK. Verify 1,610 core/debug/immediate-previous compiled TEST192 history/27 API34/35 PNG.
+
+
+## 2026-10-15T06:55:59Z — TEST197 NPC interaction telemetry verified
+- Source `364fd4724b79308fb6a13478a211bcd7599b2f7b`, run [38694008236](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38694008236) (06:42:17Z–06:54:46Z), passed 1,610 core tests in 313 XML suites, debug assembly, immediate-previous compiled TEST192 history, all 27 API34 methods and 35 validated 320×640 screenshots; zero failures/errors/skips.
+- Full 35-image contact sheet reviewed clean. APK SHA-256 `8fc77119f6f16193a4fb42ca539b53bbb8d75e26c23c1112a6708b51a2615beb`.
+- Artifacts: core `11953586184` / ZIP `3f2fdb0c4bde49d7a9162ab83e797d9273e191229a81da64708906d1ae48cb24`; APK `11953825841` / ZIP `312b0e8240fe14cb55a989fa0cf045f53f789a4aafa6c3edcc8d4145f1653377`; Android `11954147276` / ZIP `8f18ea2bfb5b13600bbb3a6212ebbdba6c64847bee005d89a896473f968ce1df`.
+- The source milestone is TEST197; the sprint workflow's independent run counter named the APK Codex TEST 194. Preserve both exact labels. TEST196 remains failed; no TEST196 APK existed.
+- Telemetry 1.12 now records accepted NPC interactions exactly once using only player-visible name and floor. Rejected interactions emit nothing; quest steps remain separate. The lever candidate was correctly omitted because current source has no lever mechanic.
+- No physical-phone/delivery claim; TEST123 remains owner-delivered. Do not rebuild unchanged source. Next autonomous recording candidate: shop stock seen, after reproducing a concrete omission and hidden-information review.
