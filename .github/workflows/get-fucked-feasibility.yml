@@ -24,6 +24,13 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
       - name: Inventory health writes and death calls across actual production source
         run: python3 .github/scripts/get_fucked_source_audit.py
+      - name: Export the existing engine test runtime for local fixed-command experiments
+        run: ./gradlew :core:exportGetFuckedTestRuntime
+      - uses: actions/upload-artifact@v4
+        with:
+          name: get-fucked-existing-engine-runtime
+          path: core/build/get-fucked-runtime/
+          retention-days: 7
       - name: Run scenario and existing challenge tests
         run: ./gradlew :core:test --tests '*GetFuckedFeasibilityTest' --tests '*GetFuckedTest' --tests '*ShieldHungerTest' --tests '*GetFuckedRouteTest' --tests '*GetFuckedMapTest'
       - name: Upload test results

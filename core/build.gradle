@@ -10,7 +10,6 @@ dependencies {
 
 dependencies {
     testImplementation 'junit:junit:4.13.2'
-    //Test-only UI replacement for fixed command replay.
     testImplementation 'org.mockito:mockito-core:5.14.2'
 
     //APD: headless libGDX so tests can run real level generation, see docs/APD-STATS-PHASE0.md
@@ -39,5 +38,13 @@ test {
         events 'failed'
         exceptionFormat 'full'
         showStandardStreams = true
+    }
+}
+
+tasks.register('exportGetFuckedTestRuntime') {
+    dependsOn testClasses
+    doLast {
+        copy { from sourceSets.test.runtimeClasspath; into layout.buildDirectory.dir('get-fucked-runtime') }
+        copy { from 'src/main/assets'; into layout.buildDirectory.dir('get-fucked-runtime/assets') }
     }
 }
