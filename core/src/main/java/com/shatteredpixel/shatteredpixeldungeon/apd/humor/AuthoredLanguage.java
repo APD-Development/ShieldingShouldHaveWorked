@@ -39,7 +39,7 @@ public final class AuthoredLanguage {
         CLEAN=Collections.unmodifiableMap(alternatives);
     }
     // Whole words only: do not alter equipment names such as the Chalice prick action or dictionary.
-    private static final Pattern ENGLISH = Pattern.compile("\\b(?:fuck\\w*|shit\\w*|bitch\\w*|bastard\\w*|asshole\\w*|dick(?:s|heads?)?|piss\\w*|cunt\\w*|goddamn\\w*|wank\\w*|twat\\w*|motherfuck\\w*|arse(?:s|holes?)?|slut(?:s)?|whore(?:s)?|damn(?:ed|ing)?|hell|crap)\\b",Pattern.CASE_INSENSITIVE);
+    private static final Pattern ENGLISH = Pattern.compile("\\b(?:fuck\\w*|shit\\w*|bitch\\w*|bastard\\w*|asshole\\w*|dick(?:s|heads?)?|piss\\w*|cunt\\w*|goddamn\\w*|wank\\w*|twat\\w*|motherfuck\\w*|arse(?:s|holes?)?|slut(?:s)?|whore(?:s)?|damn(?:ed|ing)?|dammit|hell|crap|ass(?:es)?|jackass(?:es)?|cock(?:s|suckers?)?|bollocks|bugger(?:s|ed|ing)?|douche(?:bags?)?|faggot(?:s)?|retard(?:s|ed)?)\\b",Pattern.CASE_INSENSITIVE);
     private AuthoredLanguage() {}
     public static String select(String authoredTemplate, boolean adult) {
         if(adult || authoredTemplate==null)return authoredTemplate;
