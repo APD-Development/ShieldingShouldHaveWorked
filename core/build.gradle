@@ -42,7 +42,7 @@ test {
 }
 
 tasks.register('exportGetFuckedTestRuntime') {
-    dependsOn testClasses
+    dependsOn testClasses, configurations.testRuntimeClasspath
     doLast {
         copy { from sourceSets.test.runtimeClasspath; into layout.buildDirectory.dir('get-fucked-runtime') }
         copy { from 'src/main/assets'; into layout.buildDirectory.dir('get-fucked-runtime/assets') }
