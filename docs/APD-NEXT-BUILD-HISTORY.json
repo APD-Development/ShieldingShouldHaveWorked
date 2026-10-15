@@ -1,52 +1,40 @@
 {
-  "previous_label": "Codex TEST 206",
-  "previous_source": "f33591d364598f75b07d62394f5a47bf6ba6432e",
-  "previous_run": 38754451109,
+  "previous_label": "Codex TEST 207",
+  "previous_source": "f0b0cf7708a8d6af63cdb69392b22ab9e3962717",
+  "previous_run": 38762160592,
   "date": "2026-10-15",
   "changes": [
     {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Show mixed-scale ratios in player units",
-      "text": "Convert fixed-point numerator and denominator scales only when formatting a ratio, preserving raw calculations and ordering.",
+      "title": "Reuse unchanged statistics registry identities",
+      "text": "Avoid recalculating the same statistics schema fingerprint for every observation while preserving existing cache identities and late registration.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/CellFormatter.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/FactKinds.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Check mixed and matching ratio scales",
-      "text": "Retain both scale directions, a same-scale control, compact text and unchanged raw aggregate values.",
+      "title": "Check registry compatibility during concurrent registration",
+      "text": "Verify unchanged cache identities, duplicate handling and coordinated readers after newly registered statistics.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/ScaledAggregateDisplayTest.java"
-      ]
-    },
-    {
-      "category": "Infrastructure",
-      "sprite": "V061_PAGE",
-      "title": "Preserve verified TEST206 staging evidence",
-      "text": "Keep the private no-publication staging workflow and lunch preparation that reuse the exact verified TEST206 artifact.",
-      "paths": [
-        ".github/workflows/codex-lunch-stage-2026-10-15.yml",
-        "docs/APD-LUNCH-PREPARATION-2026-10-15.md"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/FactKindsTest.java"
       ]
     },
     {
       "category": "Development",
       "sprite": "V061_PAGE",
-      "title": "Record TEST206 and ratio-review evidence",
-      "text": "Retain verification, completed-work, build-request and bounded research records without claiming phone acceptance.",
+      "title": "Record measured optimization and exact audit checkpoints",
+      "text": "Retain local benchmark evidence, current-source verification status and an honest per-file audit reconciliation.",
       "paths": [
-        "docs/APD-AGGREGATE-BOUND-ROUNDING-2026-10-15.md",
-        "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/APD-MIXED-SCALE-RATIO-DISPLAY-2026-10-15.md",
-        "docs/APD-NEXT-BUILD-HISTORY.json",
-        "docs/APD-REGISTRY-FINGERPRINT-RESEARCH-2026-10-15.md",
+        "docs/APD-REGISTRY-MEMOIZATION-2026-10-15.md",
+        "docs/APD-UIMSD-AUDIT-RECONCILIATION-2026-10-15.md",
         "docs/HANDOFF.md",
-        "docs/WORK-COMPLETED-LEDGER.md"
+        "docs/APD-CODEX-BUILD-REQUEST.txt",
+        "docs/APD-NEXT-BUILD-HISTORY.json"
       ]
     }
   ],
-  "commentary": "I corrected mixed-scale ratio display units while preserving the raw query calculation. The verified TEST206 staging and all prior history remain intact."
+  "commentary": "I reduced repeated work when opening recorded statistics without changing the data or its cache identity. Existing history is preserved, and the complete UIMSD audit remains underway."
 }
