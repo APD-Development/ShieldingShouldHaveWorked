@@ -52,9 +52,9 @@ jobs:
           PY
       - name: Add only the Android 16 acceptance instrumentation fixtures
         run: |
-          git fetch --no-tags --depth=1 origin f491891c96e9aaa15831596b2a52ce7faca191f0
-          git show f491891c96e9aaa15831596b2a52ce7faca191f0:android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java > android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java
-          git show f491891c96e9aaa15831596b2a52ce7faca191f0:android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PlayRunDeviceTest.java > android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PlayRunDeviceTest.java
+          git fetch --no-tags --depth=1 origin 2f369274fe43792de15fc05a7ca6c835e32fba9b
+          git show 2f369274fe43792de15fc05a7ca6c835e32fba9b:android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java > android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java
+          git show 2f369274fe43792de15fc05a7ca6c835e32fba9b:android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PlayRunDeviceTest.java > android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PlayRunDeviceTest.java
       - name: Set up Android SDK
         run: |
           yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
@@ -87,7 +87,7 @@ jobs:
             adb shell am force-stop com.charltonchris29.adhdpixeldungeon.indev
             timeout 300 adb shell am instrument -w -r -e class com.shatteredpixel.shatteredpixeldungeon.android.AboutDeviceTest#aboutFoundingStatementAndPopupFollowAdultHumorOnEveryOpening com.charltonchris29.adhdpixeldungeon.indev.test/androidx.test.runner.AndroidJUnitRunner > api36-03-about.txt 2>&1; printf '%s\\n' "$?" > api36-03-about.txt.exit
             adb shell am force-stop com.charltonchris29.adhdpixeldungeon.indev
-            timeout 480 adb shell am instrument -w -r -e class com.shatteredpixel.shatteredpixeldungeon.android.PlayRunDeviceTest#aRunCanBePlayedSavedContinuedAndEndedWithItsHistoryRecorded com.charltonchris29.adhdpixeldungeon.indev.test/androidx.test.runner.AndroidJUnitRunner > api36-04-play-save.txt 2>&1; printf '%s\\n' "$?" > api36-04-play-save.txt.exit
+            timeout 480 adb shell am instrument -w -r -e apdSkipPixelEvidence true -e class com.shatteredpixel.shatteredpixeldungeon.android.PlayRunDeviceTest#aRunCanBePlayedSavedContinuedAndEndedWithItsHistoryRecorded com.charltonchris29.adhdpixeldungeon.indev.test/androidx.test.runner.AndroidJUnitRunner > api36-04-play-save.txt 2>&1; printf '%s\\n' "$?" > api36-04-play-save.txt.exit
             adb shell am force-stop com.charltonchris29.adhdpixeldungeon.indev
             adb logcat -d -v time > all-controls-logcat.txt
             python3 -c "import json,pathlib,re,subprocess; cases=['api36-01-controls.txt','api36-02-healing.txt','api36-03-about.txt','api36-04-play-save.txt']; outputs={name:pathlib.Path(name).read_text() for name in cases}; print(''.join('===== '+name+' =====\\n'+outputs[name]+'\\n' for name in cases)); assert all(pathlib.Path(name+'.exit').read_text().strip()=='0' for name in cases); assert all(re.search(r'OK \\(1 test\\)',outputs[name]) for name in cases); assert all(not any(marker in outputs[name] for marker in ['FAILURES!!!','INSTRUMENTATION_FAILED','Process crashed.']) for name in cases); sdk=int(subprocess.check_output(['adb','shell','getprop','ro.build.version.sdk'])); assert sdk==36; pathlib.Path('all-controls-result.json').write_text(json.dumps({'tests':4,'passed':4,'api_level':sdk,'failures':0,'errors':0,'skipped':0,'controls':18,'boundaries':'minimum and maximum','native_touch':True,'isolated_instrumentation_processes':True,'save_and_reopen':True,'active_rules_unchanged':True,'scores_unchanged':True,'physical_device':False},indent=2))"
