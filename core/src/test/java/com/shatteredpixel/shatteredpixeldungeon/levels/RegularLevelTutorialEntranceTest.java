@@ -21,10 +21,15 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.entrance.EntranceRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
+import com.watabou.utils.SparseArray;
 
 import org.junit.Test;
+
+import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -55,6 +60,8 @@ public class RegularLevelTutorialEntranceTest {
 
 		private TestLevel(){
 			setSize(8, 8);
+			traps = new SparseArray<Trap>();
+			blobs = new HashMap<Class<? extends Blob>, Blob>();
 			roomEntrance = new EntranceRoom();
 			roomEntrance.set(1, 1, 5, 5);
 		}

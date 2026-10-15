@@ -887,3 +887,11 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Source `222189f971dc55597f561eb87aadcd4e34b47a2e` / run `38682901119` passed 1,608 core tests (311 XML) and 27 API34 tests, zero failures/errors/skips, plus debug assembly and immediate-previous compiled TEST191 history.
 - Both retained streaming-reader regressions passed. All 35 expected screenshots are 320×640 and the full contact sheet reviewed clean. APK SHA-256: `129626b1bd0a65453c207c9fa5d06075a048b2e4d63e30ee034d0e1b15ca846f`.
 - Ordinary file reads now avoid a whole-file raw-byte copy while retaining bounded frame validation and existing explicit-resync behavior. No format, history, save, score, gameplay, identity or signing change. No delivery/physical-phone claim; TEST123 remains owner-delivered.
+
+
+## 2026-10-15T05:44:52Z — TEST193 fixture failure retained; TEST194 pending
+
+- Re-read the old tutorial floor-1 hidden-door backlog entry and current source. The production repair already exists in `RegularLevel.restoreFromBundle()` and is limited to saved entrance-room boundary secret doors; the entry was stale, not a current source omission.
+- Added a retained boundary regression and a core-only CI gate so unchanged application source is not rebuilt.
+- TEST193 source `34eb3d9e25177d4bff8a754c2387cabe8ef84a10`, run `38688177613`: 1,609 executed, 1,608 passed, 1 fixture failure. The synthetic level omitted `traps`, and `Level.set` threw before the repair assertion. Artifact `11950004576`, ZIP SHA-256 `184531a6e5c7f03a2f55e650cb3728df29a134dfbb3a482bc08ba98d9466fe85`. No APK.
+- TEST194 initializes the fixture's normal trap/blob collections; production application source and assertions are unchanged. Complete 1,609-core verification pending.

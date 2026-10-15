@@ -20,3 +20,8 @@ Expected result: 1,609 core tests, zero failures/errors/skips.
 ## Scope
 
 Production application source, APK inputs, saves, raw history, permanent statistics, gameplay, scoring, application ID and signing identity are unchanged. TEST192 remains the latest verified application source/APK evidence and TEST123 remains the last owner-delivered/signature-compared APK. No distribution or physical-phone claim.
+
+
+## Actual TEST193 result — failed fixture
+
+Run [38688177613](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38688177613) executed all 1,609 core tests at exact source `34eb3d9e25177d4bff8a754c2387cabe8ef84a10`; 1,608 passed and the new method failed before its repair assertion. The synthetic `TestLevel` had not initialized `traps`, so the fixture's first `Level.set` threw at `level.traps.remove(cell)`. This is a test-fixture failure, not a production failure. No APK was built. Core report artifact `11950004576`, ZIP SHA-256 `184531a6e5c7f03a2f55e650cb3728df29a134dfbb3a482bc08ba98d9466fe85`.

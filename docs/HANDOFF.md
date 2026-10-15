@@ -2427,3 +2427,10 @@ TEST189 verified (2026-10-15T02:29:53.163Z): sourceea1062079c6a43aadaf80dbf0197f
 - No application build is pending; do not rebuild unchanged source `222189f971dc55597f561eb87aadcd4e34b47a2e`.
 - Remaining limitations are unchanged: no physical-phone/owner-save verification and no tester delivery; TEST123 remains owner-delivered/signature-compared.
 - The controlled UIMSD audit items tracked in `docs/UIMSD-AUDIT-BUG-LOG.md` are now resolved, but the broader approved post-slider backlog is not complete. Re-read the latest head and continue the next distinct documented item without revisiting scoring, Cleric, lore, online activation or distribution.
+
+
+## TEST193 fixture failure; TEST194 correction pending — 2026-10-15 05:44 UTC
+
+Current-source review established that the old tutorial floor-1 hidden-door backlog entry was stale: the narrow saved entrance-boundary repair has been present since the October 9 tutorial correction, but lacked a retained current-branch regression. TEST193 source `34eb3d9e25177d4bff8a754c2387cabe8ef84a10`, core-only run [38688177613](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38688177613), executed 1,609 tests; 1,608 passed and the new test failed before its assertion because the synthetic level omitted the normal trap collection required by `Level.set`. No APK was built.
+
+TEST194 initializes only the fixture's trap/blob collections and reruns the same complete 1,609-test core gate. Production application source remains exact verified TEST192 source `222189f971dc55597f561eb87aadcd4e34b47a2e`; reuse its verified APK evidence. TEST123 remains owner-delivered. Pending TEST194 evidence; do not mark the backlog item closed yet.
