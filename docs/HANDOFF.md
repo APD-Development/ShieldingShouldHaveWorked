@@ -1,3 +1,10 @@
+## 2026-10-15T10:40:47Z — TEST204 movement-command telemetry candidate
+- Reproduced the movement omission at the real action boundary: the shipped `move.step.travelling` field is true for every ordinary physical step and therefore cannot distinguish an adjacent manual step from point-to-point travel. Its historical values remain unchanged; its description is corrected.
+- Additive telemetry 1.15 introduces public `move.command`, emitted once when a `HeroAction.Move` begins and tagged `step`, `travel` or `stairs`, with destination cell and floor width. The transient action-local guard prevents one multi-step route from producing duplicate commands.
+- Exact-source review found no general auto-explore mechanic in this game version, so no fictional mode or hook was added. Movement, path selection, interruptions, saves, RNG, turns, scoring and permanent statistics are unchanged.
+- Added two retained core regressions plus wiring, manifest, telemetry-version and immutable-history updates. TEST204 requests 1,619 core tests, debug assembly, complete immediate-previous compiled TEST202/Codex TEST 198 history, 27 API34 methods and 35 PNGs.
+- Candidate pending. TEST202 remains the verified compiled fallback; TEST123 remains owner-delivered/signature-compared. No delivery or physical-phone claim.
+
 # TEST115 invalid sprite corrected; TEST116 verification — October13,2026
 
 115sourcea0443763ee8c2abeca072dd36ae0645d54a4c996/run38383245554 failed ApdHistoricalCoverageTest due to invalidSCROLL_UPGRADE enum. No115APK/Androidrun.116usesexistingITEM_SCROLL_GYFU;3resolvermethods pass, full1339core/21API34/22PNG/debug pending. No testguard assertions weakened. Existing113build/emulatorevidence successful; latestowner-delivered112fallback. Nativecontrols/12remainingmechanics stillunfinished. UIMSDpausedperowner, source-only survival/spawn/enemyHP worklocaluntested. No scoring changes orautomaticdistribution.

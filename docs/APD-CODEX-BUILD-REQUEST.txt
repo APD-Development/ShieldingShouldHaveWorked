@@ -191,3 +191,6 @@ TEST202 records-history placement correction (2026-10-15T09:21:06Z): TEST201 sou
 
 
 TEST202 verified (2026-10-15T09:36:13Z): source186f5892429ef564ec4a9d59c9885a62fb6f1c1f/run38712411656 passed1615core in315XML+27API34/debug/immediate-previous compiledTEST200/CodexTEST196 history/35valid320x640PNG,0failure/error/skip. Both alchemy regressions and telemetry/history contracts passed. Internal CodexTEST198 APK SHA256 6dd8a5e16e13670e6dfb6abd12783dd7225ef8ed936b12b57f1192b51618936d. Full contact sheet reviewed clean. No application build pending; do not rebuild unchanged source. No delivery/physical-phone claim; TEST123 remains owner-delivered/signature-compared.
+
+
+TEST204 exact-source request (2026-10-15T10:40:47Z): add public telemetry1.15 move.command once per HeroAction.Move, tagged step, travel or stairs with destination and floor width. Preserve the existing move.step schema/values while correcting its description to physical walking versus instantaneous relocation. Current source has no general auto-explore mechanic; do not invent one. Verify1619core/debug/complete immediate-previous compiledTEST202/CodexTEST198 history/27API34/35PNG. Preserve movement, paths, interruptions, turns, RNG, saves, scores, custom rules, identity and signing. No delivery or physical-phone claim.

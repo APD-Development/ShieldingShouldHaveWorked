@@ -96,10 +96,11 @@ level summaries). U4 the question builder and topic pages. Each step ends with c
 - Batch H (telemetry 1.12): `npc.interact` (each accepted hero interaction with an NPC, using only the name shown to the player and current floor; hook in the central `Hero.actInteract`). Quest progress remains the separate `npc.quest` event.
 - The queued lever candidate was checked against the current source before Batch H. This game version has no lever class, terrain, message key or interaction path, so no fictional lever event was added.
 - Coverage review (TEST203, no telemetry bump): all seven non-neutral level feelings are already shown in `GameScene` and immediately passed to their matching `Notes.Landmark.*_FLOOR`. The existing `journal.landmark` fact records that public, floor-specific observation exactly once; `NONE` emits nothing and revisiting an already-noted feeling cannot duplicate the fact. A retained behavioral test plus source-wiring guard now protects this boundary.
+- Batch I (telemetry 1.15): `move.command` records each manual step, point-to-point travel or safe stair-navigation command once with its public destination, floor width and mode. The older per-cell `move.step.travelling` field is preserved and clarified: it marks physical walking versus instantaneous relocation. Exact-source review found no general auto-explore mechanic in this game version, so none was invented.
 
 ## Not yet recorded (observable; candidates for the next batches, each needs its own hook and a hidden-information review)
 Per-enemy state changes and enemy abilities, boss phase changes, artifact charge (no public
-accessor), plant and seed interactions, auto-explore and travel usage, throws and targeting, shop stock seen, ally fates,
+accessor), plant and seed interactions, throws and targeting, shop stock seen, ally fates,
 fall and trap damage sources beyond damage events, and anything a future character adds.
 
 ## UIMSD Demo Unlock (roadmap addition, owner request 2026-10-08; NOT started; lower priority than backend work and pending tests)

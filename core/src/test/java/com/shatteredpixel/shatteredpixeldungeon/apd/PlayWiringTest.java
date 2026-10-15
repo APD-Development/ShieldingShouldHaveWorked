@@ -16,7 +16,7 @@ public class PlayWiringTest {
 	//file -> number of ApdPlay.<method> calls it must contain (the restore pair counts as two)
 	private static final Map<String, Integer> HOOKS = new TreeMap<>();
 	static {
-		HOOKS.put("actors/hero/Hero.java", 6);          //turn, move, rest, talent, search, NPC interaction
+		HOOKS.put("actors/hero/Hero.java", 7);          //turn, move, rest, talent, search, NPC interaction
 		HOOKS.put("items/Item.java", 1);                //item action
 		HOOKS.put("scenes/AlchemyScene.java", 1);       //successful alchemy craft
 		HOOKS.put("actors/buffs/Buff.java", 2);         //attached, detached

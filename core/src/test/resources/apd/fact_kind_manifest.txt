@@ -1,5 +1,6 @@
 # One line per shipped fact kind: key|P(ublic)/I(nternal)|S(eries)/-|value field keys|tag field keys. Keys are never removed or renamed; fields are only added at the END.
 move.step|P|S|cell,width,travelling|
+move.command|P|-|destination,width|mode
 explore.rest|P|S|full|
 explore.search|P|-|intentional,found|
 trap.trigger|P|-|hero|

@@ -83,6 +83,13 @@ public final class ApdPlay {
 		try { p.onHeroMoved(hero, to, travelling); } catch (Throwable ignored){}
 	}
 
+	//Hero.actMove: one observation when a manual step, point-to-point travel or stair walk command begins
+	public static void onMoveCommand( int destination, String mode ){
+		PlayTracker p = t();
+		if (p == null || restoring > 0) return;
+		try { p.onMoveCommand(destination, mode); } catch (Throwable ignored){}
+	}
+
 	public static void onHeroRested( boolean full ){
 		PlayTracker p = t();
 		if (p == null) return;

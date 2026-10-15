@@ -41,8 +41,16 @@ public final class GameFacts {
 			.description("Every step the hero took.")
 			.value("cell", "Cell", "The cell the hero stepped onto (row times floor width plus column).", FactKind.PLAIN)
 			.value("width", "Floor width", "How many cells wide the floor is, to turn a cell into a row and column.", FactKind.PLAIN)
-			.value("travelling", "Travelling", "1 when walking by travel or auto-explore, 0 for a single step.", FactKind.PLAIN)
+			.value("travelling", "Walking", "1 for ordinary physical walking, 0 for an instantaneous relocation that also changed the hero's cell.", FactKind.PLAIN)
 			.series().build());
+
+	//one observation per deliberate movement command; separate from the per-cell move.step series
+	public static final FactKind MOVE_COMMAND = FactKinds.register(FactKind.builder("move.command", "Movement command").area("Movement")
+			.description("Every manual step, point-to-point travel or stair navigation command the hero began.")
+			.value("destination", "Destination", "The command's destination cell (row times floor width plus column).", FactKind.PLAIN)
+			.value("width", "Floor width", "How many cells wide the floor is, to turn the destination into a row and column.", FactKind.PLAIN)
+			.tag("mode", "Mode", "step, travel or stairs")
+			.since(1, 15).build());
 
 	//the hero's condition at the start of each turn the hero takes (hunger is the game's hunger counter, higher is hungrier)
 	public static final FactKind HERO_STATE = FactKinds.register(FactKind.builder("hero.state", "Hero state").plural("Hero states").area("Character")

@@ -94,6 +94,11 @@ final class PlayTracker {
 		facts.record(GameFacts.MOVE_STEP, GameSnapshot.turn(), "", "", new long[]{ to, Dungeon.level.width(), travelling ? 1 : 0 }, null);
 	}
 
+	void onMoveCommand( int destination, String mode ){
+		facts.record(GameFacts.MOVE_COMMAND, GameSnapshot.turn(), "", "",
+				new long[]{ destination, Dungeon.level.width() }, new String[]{ mode == null ? "" : mode });
+	}
+
 	void onHeroRested( boolean full ){
 		facts.record(GameFacts.REST, GameSnapshot.turn(), "", "", new long[]{ full ? 1 : 0 }, null);
 	}

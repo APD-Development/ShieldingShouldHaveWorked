@@ -8,6 +8,11 @@ APD game version, and every recorded run keeps the telemetry version that record
 tied to a version of the recorded data. Minor versions only add things, a new major version changes what existing
 data means.
 
+telemetry-1.15-movement-commands | telemetry 1.15 | APD 4.0.8-apd | 2026-10-15
+- Records each manual step, point-to-point travel or safe stair-navigation command once, with its public destination and floor width.
+- Existing move.step history is unchanged: its travelling field distinguishes physical walking from instantaneous relocation, not manual from automated movement.
+- This source contains no general auto-explore mechanic. Runs recorded before 1.15 show movement-command mode as unknown, never zero.
+
 telemetry-1.14-alchemy-crafts | telemetry 1.14 | APD 4.0.8-apd | 2026-10-15
 - Records each successful alchemy recipe using only the displayed ingredient and result names, their quantities, the floor and the exact total/carried/toolkit energy split.
 - True unidentified item classes remain confined to existing INTERNAL item history. Failed brews and restore-time reconstruction emit no public craft fact.

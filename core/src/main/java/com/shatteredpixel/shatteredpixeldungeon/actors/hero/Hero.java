@@ -1048,6 +1048,10 @@ public class Hero extends Char {
 
 	private boolean actMove( HeroAction.Move action ) {
 
+		if (action.apdStartRecording()) {
+			ApdPlay.onMoveCommand(action.dst, action.apdModeTag());
+		}
+
         if (action instanceof com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.Walk) {
             com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.Walk walk =
                     (com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.Walk) action;
@@ -2073,7 +2077,8 @@ public class Hero extends Char {
 			
 		}  else {
 			
-			curAction = new HeroAction.Move( cell );
+			curAction = new HeroAction.Move(cell, Dungeon.level.adjacent(pos, cell)
+					? HeroAction.Move.Mode.STEP : HeroAction.Move.Mode.TRAVEL);
 			lastAction = null;
 			
 		}

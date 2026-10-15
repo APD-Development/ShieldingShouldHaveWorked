@@ -15,7 +15,7 @@ public final class StairNavigation {
     private StairNavigation() {}
     public static final class Walk extends HeroAction.Move {
         public final Level level;
-        public Walk(int destination, Level level) { super(destination); this.level=level; }
+        public Walk(int destination, Level level) { super(destination, HeroAction.Move.Mode.STAIRS); this.level=level; }
     }
     public static int discoveredStair(Level level, boolean up) {
         if (level==null || level.transitions==null) return -1;

@@ -1,3 +1,10 @@
+## 2026-10-15T10:40:47Z — TEST204 movement-command telemetry candidate
+- Reproduced the movement omission at the real action boundary: the shipped `move.step.travelling` field is true for every ordinary physical step and therefore cannot distinguish an adjacent manual step from point-to-point travel. Its historical values remain unchanged; its description is corrected.
+- Additive telemetry 1.15 introduces public `move.command`, emitted once when a `HeroAction.Move` begins and tagged `step`, `travel` or `stairs`, with destination cell and floor width. The transient action-local guard prevents one multi-step route from producing duplicate commands.
+- Exact-source review found no general auto-explore mechanic in this game version, so no fictional mode or hook was added. Movement, path selection, interruptions, saves, RNG, turns, scoring and permanent statistics are unchanged.
+- Added two retained core regressions plus wiring, manifest, telemetry-version and immutable-history updates. TEST204 requests 1,619 core tests, debug assembly, complete immediate-previous compiled TEST202/Codex TEST 198 history, 27 API34 methods and 35 PNGs.
+- Candidate pending. TEST202 remains the verified compiled fallback; TEST123 remains owner-delivered/signature-compared. No delivery or physical-phone claim.
+
 ## 2026-10-11 00:52 UTC — Delivery evidence reconciled without overwriting concurrent work
 
 Preserved independent documentation commit 0f2583fd6ec22f3fb6bd2d3f20cf1d88cad0e908, which already records successful TEST36 delivery. Root's overlapping update lost its expected-head lease; unpushed commit be4cde4a73cb1bb405cab5d6276021689f04f895 was not forced. Added machine-readable docs/APD-TEST36-DELIVERY-2026-10-10.json on the real fresh parent. The resumed cycle was approximately 68 minutes to actual publication; active/idle categories remain unmetered, explicit recorded waits total 60 seconds. Source CI took 11m9s and publication workflow 49s while other work proceeded; do not count those intervals as developer-active time.

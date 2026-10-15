@@ -28,8 +28,33 @@ public class HeroAction {
 	public int dst;
 	
 	public static class Move extends HeroAction {
+		public enum Mode {
+			STEP("step"), TRAVEL("travel"), STAIRS("stairs");
+
+			private final String tag;
+			Mode( String tag ) { this.tag = tag; }
+		}
+
+		private final Mode apdMode;
+		private boolean apdRecorded;
+
 		public Move( int dst ) {
+			this(dst, Mode.STEP);
+		}
+
+		public Move( int dst, Mode apdMode ) {
 			this.dst = dst;
+			this.apdMode = apdMode == null ? Mode.STEP : apdMode;
+		}
+
+		public String apdModeTag() {
+			return apdMode.tag;
+		}
+
+		public boolean apdStartRecording() {
+			if (apdRecorded) return false;
+			apdRecorded = true;
+			return true;
 		}
 	}
 	
