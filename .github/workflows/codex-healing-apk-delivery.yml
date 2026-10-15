@@ -1,4 +1,4 @@
-name: Deliver verified Healing and clean-language owner APK TEST221
+name: Deliver verified Healing and clean-language owner APK TEST222
 
 # Delivery only: reuse the already tested APK; no Gradle or app rebuild.
 # Accept verified SDK signer labels; retain compatibility refusal diagnostics.
@@ -12,13 +12,13 @@ permissions:
   actions: read
 
 concurrency:
-  group: apd-existing-test221-delivery
+  group: apd-existing-test222-delivery
   cancel-in-progress: false
 
 env:
-  APD_SOURCE_SHA: 0ccfe58b55cdef4c8f7ecc6d9fe5b4c3714f6028
-  APD_SOURCE_RUN: '38808053467'
-  APD_TEST_NUMBER: '221'
+  APD_SOURCE_SHA: 182155b7e2906357fa3006ae3af70a7e472bb0bb
+  APD_SOURCE_RUN: '38809007695'
+  APD_TEST_NUMBER: '222'
   APD_CORE_TEST_COUNT: '1668'
   APD_ANDROID_TEST_COUNT: '31'
   APD_ROLLBACK_NUMBER: '206'
@@ -32,11 +32,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: 0ccfe58b55cdef4c8f7ecc6d9fe5b4c3714f6028
+          ref: 182155b7e2906357fa3006ae3af70a7e472bb0bb
       - uses: actions/checkout@v4
         with:
           path: lunch-preparation
-      - name: Wait for exact TEST221 verification and resolve actual artifacts
+      - name: Wait for exact TEST222 verification and resolve actual artifacts
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -120,10 +120,10 @@ jobs:
         run: |
           python3 -m pip install reportlab==4.2.5
           python3 -m unittest discover -s tools -p test_apd_bug_report_pdf.py
-          python3 tools/apd_bug_report_pdf.py lunch-preparation/docs/APD-CLEAN-LANGUAGE-2026-10-15.md delivery/APD-Bug-Fixes-2026-10-15-TEST221.pdf --verification delivery/verification.txt --appendix lunch-preparation/docs/APD-HEALING-CONVERSION-2026-10-15.md
+          python3 tools/apd_bug_report_pdf.py lunch-preparation/docs/APD-CLEAN-LANGUAGE-2026-10-15.md delivery/APD-Bug-Fixes-2026-10-15-TEST222.pdf --verification delivery/verification.txt --appendix lunch-preparation/docs/APD-HEALING-CONVERSION-2026-10-15.md
       - uses: actions/upload-artifact@v4
         with:
-          name: verified-test221-delivery
+          name: verified-test222-delivery
           path: delivery/
           retention-days: 7
 
@@ -132,7 +132,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: verified-test221-evidence
+          name: verified-test222-evidence
           path: |
             delivery/*.json
             delivery/*.txt
@@ -151,14 +151,14 @@ jobs:
           python3 - <<'PY'
           import os,json,subprocess
           from pathlib import Path
-          repo=os.environ['GITHUB_REPOSITORY'];tag='apd-codex-test-221'
+          repo=os.environ['GITHUB_REPOSITORY'];tag='apd-codex-test-222'
           assert json.loads(subprocess.check_output(['gh','api','repos/'+repo]))['private']
-          v=json.loads(Path('delivery/TEST221-Verification.json').read_text())
+          v=json.loads(Path('delivery/TEST222-Verification.json').read_text())
           assert v['source']==os.environ['APD_SOURCE_SHA'] and v['core']['tests']==1668 and v['android']['tests']==31
           assert v['certificate_sha256']==['067688b3ab6bd5820a67f4c1ba7d5859db578173771cf31d3252b3e4e012246e']
           notes=Path('delivery/verification.txt').read_text()
           notes+='\n\nHealing-to-Shielding slider correction: override applies only to generated Potions of Healing; other potion/scroll conversions preserve vanilla Exotic Crystals behavior. Includes TEST218 all-control and full-field export acceptance. Includes clean About and English authored messages plus the first 25 reviewed alternatives. Expanded translated-language review found further variants after this source; full game-wide localization audit remains open and those later changes are NOT included. This is an owner test APK, not the tester-distribution candidate. No automatic distribution to alpha testers.\n'
           Path('delivery/release-notes.txt').write_text(notes)
           assert subprocess.run(['gh','release','view',tag,'--repo',repo],capture_output=True).returncode!=0, 'Preserve existing release'
-          subprocess.run(['gh','release','create',tag,'--repo',repo,'--target',os.environ['APD_SOURCE_SHA'],'--prerelease','--latest=false','--title','APD PRIVATE CODEX TEST221 — Healing slider and clean language','--notes-file','delivery/release-notes.txt','delivery/ADHD-Pixel-Dungeon-CODEX-TEST-221.apk','delivery/ADHD-Pixel-Dungeon-CODEX-TEST-221.apk.sha256','delivery/TEST221-Verification.json','delivery/APD-Bug-Fixes-2026-10-15-TEST221.pdf'],check=True)
+          subprocess.run(['gh','release','create',tag,'--repo',repo,'--target',os.environ['APD_SOURCE_SHA'],'--prerelease','--latest=false','--title','APD PRIVATE CODEX TEST222 — Healing slider and clean language','--notes-file','delivery/release-notes.txt','delivery/ADHD-Pixel-Dungeon-CODEX-TEST-222.apk','delivery/ADHD-Pixel-Dungeon-CODEX-TEST-222.apk.sha256','delivery/TEST222-Verification.json','delivery/APD-Bug-Fixes-2026-10-15-TEST222.pdf'],check=True)
           PY
