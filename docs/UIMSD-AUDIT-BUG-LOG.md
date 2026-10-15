@@ -27,3 +27,6 @@ Update 2026-10-15T04:00:07Z: TEST191 source `7e6cae8900c97eaa920bbe8baebb657ec5e
 
 
 Update 2026-10-15T04:38:01Z: the remaining huge-file whole-memory reader item is confirmed as a controlled API/resource issue. TEST192 streams ordinary file reads through the format-bounded header and one frame at a time, while explicit resynchronization retains the prior random-access parser. Parser-parity and 1 GiB sparse corrupt-tail regressions are added. Exact-source full verification is pending; no observed phone crash or normal-log-size claim is made.
+
+
+Update 2026-10-15T04:57:30Z: TEST192 source `222189f971dc55597f561eb87aadcd4e34b47a2e` / run `38682901119` passed 1,608 core and 27 API34 tests with zero failures/errors/skips, debug/history, and 35 reviewed screenshots. The huge-file whole-memory ordinary-reader investigation item is resolved; explicit resync intentionally retains random-access buffering.

@@ -167,3 +167,6 @@ TEST191 verified (2026-10-15T04:00:07Z): source7e6cae8900c97eaa920bbe8baebb657ec
 
 
 TEST192 exact-source request (2026-10-15T04:38:01Z): stream ordinary RunLogReader file reads one bounded frame at a time while retaining the existing byte-array path for explicit resynchronization. Verify parser parity and a controlled 1GiB sparse corrupt-tail case with 1,608 core tests, debug assembly, immediate-previous compiled TEST191 history, 27 API34 methods and 35 valid 320x640 PNGs. Candidate pending; no delivery/phone claim; log format/events, raw history, saves, scoring, gameplay, identity and signing unchanged.
+
+
+TEST192 verified (2026-10-15T04:57:30Z): source222189f971dc55597f561eb87aadcd4e34b47a2e/run38682901119 passed1608core in311XML+27API34/debug/immediate-previous compiledTEST191 history/35valid320x640PNG,0failure/error/skip. Both RunLogStreamingReadTest methods passed. APK SHA256 129626b1bd0a65453c207c9fa5d06075a048b2e4d63e30ee034d0e1b15ca846f. Full contact sheet reviewed clean. No application build pending; do not rebuild unchanged TEST192. No delivery/physical-phone claim; TEST123 remains owner-delivered/signature-compared.

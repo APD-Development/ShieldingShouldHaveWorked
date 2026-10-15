@@ -881,3 +881,9 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Normal file reads now parse the bounded header and one checksum-validated frame at a time; explicit resynchronization continues using the existing random-access byte-array parser.
 - Added two retained tests for valid-log parser parity and a 1 GiB sparse corrupt tail that must stop after the first bad byte while preserving file-length/damaged-byte accounting.
 - Full 1,608-core/debug/immediate-previous TEST191 history/27 API34/35 PNG verification is pending. No format, history, save, score, gameplay, identity, signing, delivery or physical-phone change.
+
+
+## 2026-10-15T04:57:30Z — TEST192 streaming run-log reader verified
+- Source `222189f971dc55597f561eb87aadcd4e34b47a2e` / run `38682901119` passed 1,608 core tests (311 XML) and 27 API34 tests, zero failures/errors/skips, plus debug assembly and immediate-previous compiled TEST191 history.
+- Both retained streaming-reader regressions passed. All 35 expected screenshots are 320×640 and the full contact sheet reviewed clean. APK SHA-256: `129626b1bd0a65453c207c9fa5d06075a048b2e4d63e30ee034d0e1b15ca846f`.
+- Ordinary file reads now avoid a whole-file raw-byte copy while retaining bounded frame validation and existing explicit-resync behavior. No format, history, save, score, gameplay, identity or signing change. No delivery/physical-phone claim; TEST123 remains owner-delivered.
