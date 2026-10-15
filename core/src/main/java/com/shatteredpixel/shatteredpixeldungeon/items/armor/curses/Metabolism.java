@@ -22,6 +22,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.armor.curses;
 
 import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdCombat;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
@@ -54,9 +56,12 @@ public class Metabolism extends Glyph {
 				if (!hunger.isStarving()) {
 					
 					hunger.affectHunger( healing * -10 );
+					//Hunger may have killed (or revived) the hero before this heal completes.
+					if (Dungeon.isChallenged(Challenges.GET_FUCKED) && !defender.isAlive()) return damage;
 					
 					int apdHpBefore = defender.HP;
-					defender.HP += healing;
+					defender.HP += Dungeon.isChallenged(Challenges.GET_FUCKED)
+							? Math.min(healing, defender.HT - defender.HP) : healing;
 					ApdCombat.onHeal( defender, apdHpBefore, ApdCombat.HEAL_GEAR_METABOLISM, healing );
 					defender.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString( healing ), FloatingText.HEALING);
 				}
@@ -77,3 +82,4 @@ public class Metabolism extends Glyph {
 		return true;
 	}
 }
+

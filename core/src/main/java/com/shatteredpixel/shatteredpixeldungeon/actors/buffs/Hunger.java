@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
 import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdCombat;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -75,13 +76,16 @@ public class Hunger extends Buff implements Hero.Doom {
 		if (target.isAlive() && target instanceof Hero) {
 
 			Hero hero = (Hero)target;
+			boolean lethalStarvation = Dungeon.isChallenged(Challenges.GET_FUCKED);
+			int starvationDamage = 0;
 
 			if (isStarving()) {
 
 				partialDamage += target.HT/1000f;
 
 				if (partialDamage > 1){
-					target.damage( (int)partialDamage, this);
+					if (lethalStarvation) starvationDamage = (int)partialDamage;
+					else target.damage( (int)partialDamage, this);
 					partialDamage -= (int)partialDamage;
 				}
 				
@@ -97,7 +101,8 @@ public class Hunger extends Buff implements Hero.Doom {
 				if (newLevel >= STARVING) {
 
 					GLog.n( Messages.get(this, "onstarving") );
-					hero.damage( 1, this );
+					if (lethalStarvation) starvationDamage = 1;
+					else hero.damage( 1, this );
 
 					hero.interrupt();
 					newLevel = STARVING;
@@ -115,6 +120,8 @@ public class Hunger extends Buff implements Hero.Doom {
 
 			}
 			
+			//Commit hunger state first, so death/resurrection cannot be overwritten by this tick.
+			if (starvationDamage > 0) hero.damage(starvationDamage, this);
 			spend( TICK );
 
 		} else {
@@ -143,6 +150,8 @@ public class Hunger extends Buff implements Hero.Doom {
 		}
 
 		float oldLevel = level;
+		boolean lethalStarvation = target instanceof Hero && Dungeon.isChallenged(Challenges.GET_FUCKED);
+		int starvationDamage = 0;
 
 		level -= energy;
 		if (level < 0 && !overrideLimits) {
@@ -152,7 +161,8 @@ public class Hunger extends Buff implements Hero.Doom {
 			level = STARVING;
 			partialDamage += excess * (target.HT/1000f);
 			if (partialDamage > 1f){
-				target.damage( (int)partialDamage, this );
+				if (lethalStarvation) starvationDamage = (int)partialDamage;
+				else target.damage( (int)partialDamage, this );
 				partialDamage -= (int)partialDamage;
 			}
 		}
@@ -161,11 +171,14 @@ public class Hunger extends Buff implements Hero.Doom {
 			GLog.w( Messages.get(this, "onhungry") );
 		} else if (oldLevel < STARVING && level >= STARVING){
 			GLog.n( Messages.get(this, "onstarving") );
-			target.damage( 1, this );
+			if (lethalStarvation) starvationDamage = Math.max(1, starvationDamage);
+			else target.damage( 1, this );
 		}
 
 		ApdCombat.onHungerChanged( energy, (int)Math.ceil(oldLevel), hunger() );
 		BuffIndicator.refreshHero();
+		//One hunger change may reach both damage sites. It must cause only one death.
+		if (starvationDamage > 0) target.damage(starvationDamage, this);
 	}
 
 	public boolean isStarving() {
@@ -219,3 +232,4 @@ public class Hunger extends Buff implements Hero.Doom {
 		GLog.n( Messages.get(this, "ondeath") );
 	}
 }
+

@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
 import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdCombat;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.SpiritForm;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
@@ -87,7 +88,8 @@ public class Regeneration extends Buff {
 
 				if (partialRegen >= 1) {
 					int apdHpBefore = target.HP;
-					target.HP += (int)partialRegen;
+					target.HP += Dungeon.isChallenged(Challenges.GET_FUCKED) && target instanceof Hero
+							? Math.min((int)partialRegen, regencap() - target.HP) : (int)partialRegen;
 					partialRegen -= (int)partialRegen;
 					if (target.HP >= regencap()) {
 						target.HP = regencap();
@@ -135,3 +137,4 @@ public class Regeneration extends Buff {
 		partialRegen = bundle.getFloat(PARTIAL_REGEN);
 	}
 }
+

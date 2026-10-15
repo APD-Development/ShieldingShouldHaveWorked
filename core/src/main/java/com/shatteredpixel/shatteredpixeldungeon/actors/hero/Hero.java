@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdItems;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
@@ -253,7 +254,7 @@ public class Hero extends Char {
 	public Hero() {
 		super();
 
-		HP = HT = 20;
+		HP = HT = Dungeon.isChallenged(Challenges.GET_FUCKED) ? 1 : 20;
 		STR = STARTING_STR;
 		
 		belongings = new Belongings( this );
@@ -262,6 +263,12 @@ public class Hero extends Char {
 	}
 	
 	public void updateHT( boolean boostHP ){
+		if (Dungeon.isChallenged(Challenges.GET_FUCKED)) {
+			HT = 1;
+			HP = Math.min(HP, HT);
+			return;
+		}
+
 		int curHT = HT;
 		
 		HT = 20 + 5*(lvl-1) + HTBoost;
@@ -1637,6 +1644,21 @@ public class Hero extends Char {
 
 	@Override
 	public void damage( int dmg, Object src ) {
+		//Starvation is a death event in Get Fucked, independent of combat defenses.
+		//Keep the ordinary death/ankh path and the original Hunger cause.
+		if (dmg > 0 && src instanceof Hunger && Dungeon.isChallenged(Challenges.GET_FUCKED)) {
+			if (!isAlive()) return;
+			int hpBefore = HP;
+			int shieldBefore = shielding();
+			HP = 0;
+			//Deathless Fury must not leave a starving hero alive at zero HP.
+			Buff.detach(this, Berserk.class);
+			berserk = null;
+			ApdCombat.onDamage(this, src, dmg, hpBefore, shieldBefore, 0, hpBefore);
+			die(src);
+			return;
+		}
+
 		if (buff(TimekeepersHourglass.timeStasis.class) != null
 				|| buff(TimeStasis.class) != null) {
 			return;
@@ -2200,7 +2222,7 @@ public class Hero extends Char {
 			interrupt();
 
 			if (ankh.isBlessed()) {
-				this.HP = HT / 4;
+				restoreHealthForRevival(true);
 				ApdCombat.onHeroRevived( ApdCombat.REVIVE_BLESSED_ANKH );
 
 				PotionOfHealing.cure(this);
@@ -2656,8 +2678,18 @@ public class Hero extends Char {
 		return smthFound;
 	}
 	
+	//Shared by both ankh paths; a blessed ankh must not round 1/4 HP down to zero.
+	protected void restoreHealthForRevival(boolean blessed) {
+		if (Dungeon.isChallenged(Challenges.GET_FUCKED)) {
+			HT = 1;
+			HP = 1;
+		} else {
+			HP = blessed ? HT / 4 : HT;
+		}
+	}
+
 	public void resurrect() {
-		HP = HT;
+		restoreHealthForRevival(false);
 		ApdCombat.onHeroRevived( ApdCombat.REVIVE_RESURRECT );
 		live();
 
@@ -2701,3 +2733,4 @@ public class Hero extends Char {
 		public void onDeath();
 	}
 }
+
