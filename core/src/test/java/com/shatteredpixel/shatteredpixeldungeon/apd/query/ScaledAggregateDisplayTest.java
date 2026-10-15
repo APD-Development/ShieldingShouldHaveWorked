@@ -53,4 +53,15 @@ public class ScaledAggregateDisplayTest {
   Catalog c=history();Questions.Line count=Questions.answer(c,Question.about(FactDatasets.idOf(KIND)).withScope(new Scope(Scope.Rules.ALL,"",true,true,true,true)),RS).lines.get(0);
   assertEquals("2",count.value);assertEquals(2,count.number,0);
  }
+ @Test public void roundedLowerBoundsMustNotOverstateScaledOrOrdinaryMeans(){
+  DatasetDef d=new DatasetDef("bounds","Bounds","");
+  d.add(ColumnDef.num("raw","Raw"));
+  d.add(ColumnDef.num("scaled","Scaled").format(ColumnDef.Format.HUNDREDTHS));
+  for(Aggregate.Fn fn:new Aggregate.Fn[]{Aggregate.Fn.AVG,Aggregate.Fn.MEDIAN}){
+   assertEquals(">=2.4",CellFormatter.aggregate(d,Aggregate.of(fn,"scaled"),new AggValue(true,246,0,1,1,AggValue.LOWER)).text);
+   assertEquals(">=-2.5",CellFormatter.aggregate(d,Aggregate.of(fn,"scaled"),new AggValue(true,-246,0,1,1,AggValue.LOWER)).text);
+   assertEquals(">=2.4",CellFormatter.aggregate(d,Aggregate.of(fn,"raw"),new AggValue(true,2.46,0,1,1,AggValue.LOWER)).text);
+   assertEquals("2.5",CellFormatter.aggregate(d,Aggregate.of(fn,"raw"),new AggValue(true,2.46,0,1,1,0)).text);
+  }
+ }
 }
