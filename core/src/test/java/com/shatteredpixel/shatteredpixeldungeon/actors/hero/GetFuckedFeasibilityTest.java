@@ -11,14 +11,19 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyWard;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.ShieldOfLight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.PrismaticImage;
 import com.shatteredpixel.shatteredpixeldungeon.apd.HeadlessTestSupport;
 import com.shatteredpixel.shatteredpixeldungeon.apd.LevelGenerationHarness;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.watabou.utils.Random;
+import com.watabou.utils.PathFinder;
 import org.junit.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -37,6 +42,7 @@ public class GetFuckedFeasibilityTest {
     }
     private TestHero hero;
     private Hero savedHero;
+    private com.shatteredpixel.shatteredpixeldungeon.levels.Level savedLevel;
     private int savedChallenges, savedDepth, savedAscent;
     private boolean savedIntro, savedLocked;
 
@@ -47,6 +53,7 @@ public class GetFuckedFeasibilityTest {
     }
     @Before public void setup() {
         savedHero = Dungeon.hero;
+        savedLevel = Dungeon.level;
         savedChallenges = Dungeon.challenges;
         savedDepth = Dungeon.depth;
         savedAscent = Statistics.highestAscent;
@@ -69,6 +76,7 @@ public class GetFuckedFeasibilityTest {
         Random.popGenerator();
         Actor.clear();
         Dungeon.hero = savedHero;
+        Dungeon.level = savedLevel;
         Dungeon.challenges = savedChallenges;
         Dungeon.depth = savedDepth;
         Statistics.highestAscent = savedAscent;
@@ -284,6 +292,74 @@ public class GetFuckedFeasibilityTest {
             assertEquals(0, h.hunger());
             assertEquals(1, hero.HP);
             assertEquals(1, hero.HT);
+        }
+    }
+
+    @Test public void gooOozeStillCostsOneShieldEvenWhenStandingInWater() {
+        Dungeon.depth = 5;
+        boolean oldWater = Dungeon.level.water[hero.pos];
+        Dungeon.level.water[hero.pos] = true;
+        try {
+            Barrier b = barrier(2);
+            Ooze ooze = Buff.affect(hero, Ooze.class);
+            ooze.set(Ooze.DURATION);
+            ooze.act();
+            assertEquals(1, b.shielding());
+            assertEquals(1, hero.HP);
+            assertNull(hero.buff(Ooze.class));
+        } finally {
+            Dungeon.level.water[hero.pos] = oldWater;
+        }
+        System.out.println("FEASIBILITY Goo ooze: first tick costs 1 shield even in water, then detaches");
+    }
+
+    @Test public void prismaticAllyRetainsLevelBasedHpDespiteHeroCap() {
+        hero.lvl = 30;
+        hero.updateHT(true);
+        assertEquals(1, hero.HT);
+        int hp = PrismaticGuard.maxHP(hero);
+        PrismaticImage image = new PrismaticImage();
+        image.duplicate(hero, hp);
+        assertEquals(85, image.HT);
+        assertEquals(85, image.HP);
+        assertEquals(1, hero.HT);
+        System.out.println("FEASIBILITY Level-30 prismatic image retains 85 HP while hero remains 1 HP");
+    }
+
+    @Test public void measureStaticTravelLowerBoundsAndPlacedFoodWithoutPlaying() throws Exception {
+        //Topology measurements only. No actor acts, hero decisions, item use, or run outcome.
+        for (long seed : new long[]{1L, 12345L, 54321L, 8675309L, 31415926L, 27182818L}) {
+            final int[] totals = new int[5]; //floors, reachable stair pairs, steps, food count, satiety
+            final int[] regionSteps = new int[5];
+            LevelGenerationHarness.levelObserver = (depth, level) -> {
+                if (depth > 24 || depth % 5 == 0) return;
+                totals[0]++;
+                PathFinder.setMapSize(level.width(), level.height());
+                PathFinder.buildDistanceMap(level.entrance(), level.passable);
+                int distance = PathFinder.distance[level.exit()];
+                if (distance < Integer.MAX_VALUE) {
+                    totals[1]++;
+                    totals[2] += distance;
+                    regionSteps[(depth-1)/5] += distance;
+                }
+                for (Heap heap : level.heaps.valueList()) for (Item item : heap.items) {
+                    if (item instanceof Food) {
+                        totals[3] += item.quantity();
+                        totals[4] += Math.round(((Food)item).energy * item.quantity());
+                    }
+                }
+            };
+            try {
+                LevelGenerationHarness.generate(seed, Challenges.GET_FUCKED, HeroClass.CLERIC,
+                        LevelGenerationHarness.Context.REFERENCE, 26);
+            } finally {
+                LevelGenerationHarness.levelObserver = null;
+            }
+            assertEquals(20, totals[0]);
+            System.out.println("TOPOLOGY seed="+seed+" reachable="+totals[1]+"/20 stair_steps="+totals[2]
+                    +" region_steps="+java.util.Arrays.toString(regionSteps)+" placed_food="+totals[3]
+                    +" placed_food_satiety="+totals[4]
+                    +"; ignores hazards, mobs, exploration, item access, branches and boss traversal");
         }
     }
 }
