@@ -1,35 +1,45 @@
 {
-  "previous_label": "Codex TEST 216",
-  "previous_source": "ae923b21414a03364bbb4f8701f15f54f1b9f62b",
-  "previous_run": 38788151697,
+  "previous_label": "Codex TEST 217",
+  "previous_source": "d2c28cb076d9918632d313e5a4f9655d36c9433b",
+  "previous_run": 38795254303,
   "date": "2026-10-15",
   "changes": [
     {
+      "category": "Testing",
+      "sprite": "ICON_CHECKED",
+      "title": "Touch every Custom Rules boundary",
+      "text": "Use native API34 touchscreen input to set all 18 controls to both limits, save, reopen and prove active-run rules and earned score stay locked.",
+      "paths": [
+        ".github/workflows/codex-alpha-controls-acceptance.yml",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java"
+      ]
+    },
+    {
       "category": "Changes",
       "sprite": "V061_BUGFIX",
-      "title": "Retire stale seed replay workers",
-      "text": "Use an in-memory generation so an older replay cannot replace newer READY catalogue, navigation or notice state.",
+      "title": "Keep first-column labels in plain-text exports",
+      "text": "Prefix every non-empty table header, including the first column, so all recorded Custom Rules fields remain identifiable outside rich table formats.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdModel.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/report/ReportRenderer.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Force the stale replay handoff",
-      "text": "Block the old provider, install a newer catalogue, then release and join the worker to verify it installs and notifies nothing.",
+      "title": "Accept all recorded rule fields end to end",
+      "text": "Exercise every numeric operator, combined filters, details, comparison and all export formats while preserving historical unknowns and original scores.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdModelTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/CustomRuleFullFieldAcceptanceTest.java"
       ]
     },
     {
       "category": "Development",
       "sprite": "V061_PAGE",
-      "title": "Record TEST216 evidence and exact TEST217 gate",
-      "text": "Preserve verified TEST216 evidence and request one full gate for the bounded seed-replay lifecycle correction.",
+      "title": "Record TEST217 and all-control evidence",
+      "text": "Preserve verified TEST217 evidence, the separate native acceptance result and the exact TEST218 gate against the immediate previous compiled APK.",
       "paths": [
-        "docs/APD-UIMSD-STALE-LOAD-2026-10-15.md",
         "docs/APD-UIMSD-SEED-REPLAY-2026-10-15.md",
+        "docs/APD-ALPHA-CONTROLS-ACCEPTANCE-2026-10-15.md",
         "docs/APD-UIMSD-AUDIT-RECONCILIATION-2026-10-15.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/APD-NEXT-BUILD-HISTORY.json",
@@ -38,5 +48,5 @@
       ]
     }
   ],
-  "commentary": "I prevented an older seed replay from replacing newer UIMSD state. Replay results, player histories, saves, scores, gameplay and all 18 Custom Dungeon Rules remain unchanged."
+  "commentary": "I verified every Custom Dungeon Rules control through native touch and added end-to-end recorded-field acceptance. Plain-text exports now keep every column label. Gameplay, histories, saves, earned scores and all 18 values are unchanged."
 }
