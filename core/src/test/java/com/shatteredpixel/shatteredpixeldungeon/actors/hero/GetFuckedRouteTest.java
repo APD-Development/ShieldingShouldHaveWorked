@@ -71,6 +71,7 @@ public class GetFuckedRouteTest {
         });
         visuals.add(scene);
         visual(Game.class); //Render-thread scheduling, scene changes and draw access only.
+        visual(com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator.class);
         visual(Enchanting.class);
         visual(SpellSprite.class);
         MockedStatic<CellEmitter> cells = visual(CellEmitter.class);
