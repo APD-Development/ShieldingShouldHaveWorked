@@ -1,10 +1,10 @@
-APD CORE-ONLY TEST REQUEST — TEST198
-requested_utc=2026-10-15T07:35:03Z
+APD CORE-ONLY TEST REQUEST — TEST203
+requested_utc=2026-10-15T09:46:19Z
 branch=codex/apd-phone-fixes-2026-10-09
-parent=c03905674d306d3d95f8c90d04a3a5e522d5349d
-application_source=364fd4724b79308fb6a13478a211bcd7599b2f7b
-scope=retained shop-stock visibility and hidden-information boundary regression
-expected_core_tests=1611
+parent=d2219bc2e8c8a822879d147f402793fd5a29a4a9
+application_source=186f5892429ef564ec4a9d59c9885a62fb6f1c1f
+scope=retained level-feeling journal coverage and display-wiring regression
+expected_core_tests=1617
 apk_build=forbidden_for_this_request
-reason=production application source is unchanged; reuse verified TEST197/Codex TEST 194 APK evidence
-assertions=visible FOR_SALE stock emits exactly one SEEN_SHOP public event with displayed unidentified state only; true class, level and curse remain INTERNAL
+reason=production application source is unchanged; reuse verified TEST202/Codex TEST 198 APK evidence
+assertions=all seven non-neutral feelings emit one public journal.landmark fact at their floor; duplicate notes emit nothing; every GameScene display branch maps to its matching landmark

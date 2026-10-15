@@ -2536,3 +2536,10 @@ The ordered legacy-door item is closed. Hero markers still require explicit appr
 - All 35 PNGs are valid 320×640 and the full contact sheet reviewed clean. Private delivery skipped; no physical-phone claim. TEST123 remains owner-delivered/signature-compared.
 - Telemetry 1.14 now records successful alchemy crafts using only displayed inputs/output, exact quantities, floor and energy split; hidden true classes remain INTERNAL, and failed/restore paths emit nothing.
 - No application build is pending; do not rebuild unchanged TEST202. Re-read the latest head before the next distinct approved canonical recording item (level feelings is next in documented order).
+
+
+## 2026-10-15T09:46:19Z — TEST203 level-feeling coverage gate pending
+- Reproduced the documented level-feeling candidate against the exact TEST202 evidence head. There is no missing production event: `GameScene` displays each of CHASM/WATER/GRASS/DARK/LARGE/TRAPS/SECRETS and immediately adds the matching floor-feeling journal landmark; `Notes.add` already emits the public, floor-specific `journal.landmark` fact only on the first insertion.
+- Added two retained core regressions: one exercises all seven feeling landmarks and proves exact-once/depth/action payloads; the other guards the seven display→landmark mappings in `GameScene`. Neutral `NONE` still emits nothing and no hidden generation state is exposed.
+- Production application source, telemetry 1.14, APK history and compiled artifact are unchanged. TEST203 requests a 1,617-test core-only gate; APK rebuild is forbidden and verified TEST202/Codex TEST 198 evidence must be reused.
+- Candidate pending. TEST123 remains the last owner-delivered/signature-compared APK. After this gate, continue the next distinct canonical omission (auto-explore versus travel is next) only after reproducing it.
