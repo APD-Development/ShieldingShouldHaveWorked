@@ -67,9 +67,9 @@ jobs:
         with:
           api-level: 36
           arch: x86_64
-          target: google_apis
-          # API 36's default 8 GB userdata image exceeds the hosted runner's
-          # remaining disk after the verified APK and instrumentation build.
+          # The lean API 36 image keeps the AVD within the hosted runner's
+          # measured free space; API level and acceptance assertions are unchanged.
+          target: default
           disk-size: 4G
           disable-animations: true
           script: |
