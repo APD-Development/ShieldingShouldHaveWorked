@@ -856,3 +856,9 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Confirmed the fixed `saved_views.txt.tmp` path was shared across independent store objects without a shared lock.
 - Added a narrow shared atomic-write lock plus one deterministic retained concurrency regression. Verification pending: 1,604 core/debug/TEST189 history/27 API34/35 PNG.
 - No raw-history, save-format, gameplay, score, signing, application-ID, delivery or physical-phone change.
+
+
+## 2026-10-15T02:58:31.520Z — TEST190 hosted execution retained
+- Source `97c4848581e2f7fcd979d3965e257bdae59c5a93` / run `38672320647` passed complete core/debug/immediate-previous TEST189 history and 27/27 API34; runner listed 35/35 PNGs at 320×640.
+- Artifact IDs/digests: core `11944263722`/`7b8a3adf…6504d`; APK `11944698529`/`09e02464…5f93`; Android `11945087238`/`5152ec87…7431`.
+- Private payload extraction/contact-sheet review was unavailable, so TEST190 is not yet called the fully reviewed checkpoint. Reuse artifacts; no unchanged rebuild. TEST189 remains fully reviewed and TEST123 owner-delivered.

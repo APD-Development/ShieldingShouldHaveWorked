@@ -155,3 +155,6 @@ TEST189 verified (2026-10-15T02:29:53.163Z): sourceea1062079c6a43aadaf80dbf0197f
 
 
 TEST190 exact-source request (2026-10-15T02:40:14.718Z): serialize the fixed SavedViews temp-file replacement across independent instances and run the retained deterministic two-writer regression. Verify 1,604 core tests, debug assembly, immediate-previous compiled TEST189 history, 27 API34 methods and 35 valid 320x640 PNGs. Candidate pending; no delivery/phone claim; saved-view format, raw history, saves, scoring, gameplay, identity and signing unchanged.
+
+
+TEST190 hosted status (2026-10-15T02:58:31.520Z): source97c4848581e2f7fcd979d3965e257bdae59c5a93/run38672320647 passed complete core/debug/immediate-previous compiledTEST189 history and27/27API34; runner validated35PNG at320x640. Artifact IDs core11944263722/APK11944698529/Android11945087238 with ZIP digests7b8a3adf…6504d/09e02464…5f93/5152ec87…7431. Private ZIP payload could not be opened in this runtime, so parsed XML total, contained APK SHA and contact-sheet content review remain pending. Do not rebuild unchanged TEST190; reuse artifacts for remaining audit. TEST189 remains fully reviewed, TEST123 owner-delivered. No delivery/phone claim.

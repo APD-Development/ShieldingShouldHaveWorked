@@ -17,3 +17,19 @@ The partial-load refusal remains outside mutation and unchanged. Saved-view form
 ## Requested verification
 
 TEST190 must run the complete 1,604-core suite, debug assembly, immediate-previous compiled TEST189 history comparison, all 27 API34 methods and all 35 expected 320×640 screenshots. This candidate is not accepted, delivered or physical-phone verified until exact-source evidence passes. TEST189 remains the verified hosted/emulator fallback and TEST123 remains the last owner-delivered/signature-compared APK.
+
+
+## Hosted result — native and build gates passed; binary content review pending
+
+Run: [38672320647](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38672320647)
+Source: `97c4848581e2f7fcd979d3965e257bdae59c5a93`
+Run window: 2026-10-15T02:41:30Z–02:55:08Z
+
+- The complete core job passed, including the new retained cross-instance store regression, debug APK assembly, and immediate-previous compiled TEST189 history validation.
+- API34 finished all 27 configured methods with 0 skipped and 0 failed; the Android job concluded success.
+- The runner validated and listed all 35 expected PNGs at 320×640.
+- Artifacts: core `11944263722` / ZIP SHA-256 `7b8a3adfb3fffed6ff5a592830f2c839d19db22339347fdd3356f78d3526504d`; APK `11944698529` / ZIP SHA-256 `09e0246462b86d4d50793e09e126791d16c0f1aa08a1cef9f3f751de4d3a5f93`; Android `11945087238` / ZIP SHA-256 `5152ec875abf965a3e64176daeb2fd6fe48bd11ee08531747490de2925e67431`.
+
+The connector exposed the artifact references and complete job logs, but this runtime could not open the private ZIP payload for an independent XML total, contained-APK checksum read, or contact-sheet content review. Therefore the exact expected 1,604 count is not relabeled as a parsed XML count, and TEST190 is not yet promoted above TEST189 as the fully reviewed checkpoint. Reuse these exact artifacts for that remaining audit; do not rebuild unchanged source.
+
+No APK was delivered and no physical phone was used. TEST123 remains the owner-delivered/signature-compared fallback.

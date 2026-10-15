@@ -1,25 +1,21 @@
 {
-  "previous_label": "Codex TEST 189",
-  "previous_source": "ea1062079c6a43aadaf80dbf0197f3fcff4769cc",
-  "previous_run": 38669986563,
+  "previous_label": "Codex TEST 190",
+  "previous_source": "97c4848581e2f7fcd979d3965e257bdae59c5a93",
+  "previous_run": 38672320647,
   "date": "2026-10-15",
   "changes": [
     {
       "category": "Changes",
       "sprite": "V061_PAGE",
-      "title": "Protect concurrent saved-view writes",
-      "text": "Serialize the shared saved-view temporary-file replacement across independent UIMSD store instances and retain a deterministic two-writer regression.",
+      "title": "Record TEST190 storage-race evidence",
+      "text": "Retain the successful hosted build, history and API34 evidence for the cross-instance saved-view store correction, while preserving the still-pending private artifact-content review.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/SavedViews.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/SavedViewsTest.java",
         "docs/APD-TEST190-SAVED-VIEWS-CONCURRENT-STORE-2026-10-15.md",
         "docs/UIMSD-AUDIT-BUG-LOG.md",
-        "docs/APD-TEST186-UIMSD-TOUR-CANCEL-2026-10-15.md",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/APD-NEXT-BUILD-HISTORY.json",
-        "docs/KNOWN-ISSUES-AND-SOURCE-GUIDE.md"
+        "docs/APD-NEXT-BUILD-HISTORY.json"
       ]
     }
   ]
