@@ -19,7 +19,7 @@ APD is a private fork of Shattered Pixel Dungeon 4.0.x (upstream licence/attribu
 - No gameplay/balance changes beyond what the owner approved. Cleric balance is NOT to be changed. Cleric is playable (own ruleset `cleric=playable`; all other ruleset ids and run history must stay unchanged).
 - Never weaken or skip tests to get green. Never force-push, never change signing keys, no secrets in the APK.
 - No fabricated statistics, achievements or history anywhere in the game.
-- Cleric Grudge/Lore is POSTPONED to public release and OFF everywhere via `ApdFeatures.GRUDGE_LORE_IN_THIS_RELEASE = false` (core/.../apd/ApdFeatures.java). Keep all its code/lines. Future plan (not designed): 50 Lore entries at release then 50/year for 20 years.
+- Owner correction, October 15, 2026: Cleric lore must be enabled in private test builds, with exactly 50 existing entries. Private feature assets explicitly name `grudge`; normal release remains gated by `GRUDGE_LORE_IN_THIS_RELEASE`. Preserve collection history, opt-out, all entries and Cleric gameplay. Do not disable lore based on the superseded postponement note.
 - Backend: provider-neutral libraries only. No provider, sign-in or hosting chosen; do not commit to one.
 - Test features (Demo Unlock, Cleric playable) are ON only in the private test build (`-PapdTestBuild`); normal builds have them off.
 - The owner tests on a RedMagic 11 Pro and reports bugs by checklist step. Untested changes caused many bugs before: prefer small, test-backed changes and say clearly what is NOT device-verified.
@@ -39,3 +39,4 @@ GitHub > Actions > "Private test APK" > Run workflow, ref = the claude branch. `
 
 ## Open bugs (short; full list in KNOWN-ISSUES doc)
 UIMSD dialogs close on app switch; UIMSD default scope wording; floor-1 runs generated during the old tutorial keep a hidden door; phone checklist steps 23-41 untested; hero-select pips + win star designed, not built.
+
