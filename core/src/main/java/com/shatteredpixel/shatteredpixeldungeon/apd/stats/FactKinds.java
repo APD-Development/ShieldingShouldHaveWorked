@@ -38,6 +38,8 @@ public final class FactKinds {
 	private FactKinds(){}
 
 	private static final Map<String, FactKind> KINDS = new LinkedHashMap<>();
+	// Guarded by the same monitor as registration; declarations are immutable.
+	private static String cachedFingerprint;
 
 	//Registers a kind. Registering the same key twice is a mistake (IllegalStateException), so two mechanics can never share a key by accident.
 	public static synchronized FactKind register( FactKind k ){
@@ -47,6 +49,7 @@ public final class FactKinds {
 			throw new IllegalStateException("fact kind registered twice: " + k.key);
 		}
 		KINDS.put(k.key, k);
+		cachedFingerprint = null;
 		return k;
 	}
 
@@ -76,6 +79,7 @@ public final class FactKinds {
 	public static String fingerprint(){
 		loadBuiltins();
 		synchronized (FactKinds.class){
+			if (cachedFingerprint != null) return cachedFingerprint;
 			long h = 1125899906842597L;
 			for (FactKind k : KINDS.values()){
 				h = mix(h, k.key);
@@ -83,7 +87,7 @@ public final class FactKinds {
 				for (FactKind.Field f : k.values()) h = mix(h, "v" + f.key + f.scale);
 				for (FactKind.Field f : k.tags()) h = mix(h, "t" + f.key);
 			}
-			return Long.toHexString(h);
+			return cachedFingerprint = Long.toHexString(h);
 		}
 	}
 
