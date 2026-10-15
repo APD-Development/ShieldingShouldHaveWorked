@@ -231,7 +231,7 @@ public final class CellFormatter {
 				break;
 			case AVG:
 			case MEDIAN:
-				body = oneDecimal(displayNumber(c, v.value));
+				body = oneDecimal(displayNumber(c, v.value), v.isLowerBound());
 				break;
 			default:
 				body = c != null && c.type == ColumnDef.Type.NUM ? value(c, Math.round(v.value)) : Long.toString(Math.round(v.value));
@@ -253,7 +253,10 @@ public final class CellFormatter {
 	}
 
 	//whole numbers without a decimal, others with one
-	private static String oneDecimal( double v ){
+	private static String oneDecimal( double v, boolean lower ){
+		// A rounded lower bound must never claim more than the known minimum.
+		if (lower && Double.isFinite(v)) return java.math.BigDecimal.valueOf(v)
+				.setScale(1, java.math.RoundingMode.FLOOR).stripTrailingZeros().toPlainString();
 		// Keep normal rounding while avoiding scaled-long saturation for large finite values.
 		if (Double.isFinite(v) && Math.abs(v) * 10 >= Long.MAX_VALUE)
 			return java.math.BigDecimal.valueOf(v).setScale(1, java.math.RoundingMode.HALF_UP)
@@ -281,4 +284,5 @@ public final class CellFormatter {
 		}
 	}
 }
+
 
