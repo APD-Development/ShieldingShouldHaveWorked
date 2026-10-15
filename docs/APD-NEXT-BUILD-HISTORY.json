@@ -1,23 +1,14 @@
 {
-  "previous_label": "Codex TEST 179",
-  "previous_source": "f6043c7d16cd52e57276113fb038af046ff4ec48",
-  "previous_run": 38655567956,
-  "date": "2026-10-14",
+  "previous_label": "Codex TEST 180",
+  "previous_source": "acf8592e2db3c30684e09a05bd22c097c0d5f077",
+  "previous_run": 38656873159,
+  "date": "2026-10-15",
   "changes": [
-    {
-      "category": "Testing",
-      "sprite": "V061_PAGE",
-      "title": "UIMSD default-column recreation fixture",
-      "text": "Resolve an empty explicit Runs column list through dataset defaults for Column order and Move column recreation, then restore the original explicit/default semantics.",
-      "paths": [
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdRestoreDeviceTest.java"
-      ]
-    },
     {
       "category": "Changes",
       "sprite": "V061_PAGE",
-      "title": "TEST179 failure and TEST180 handoff",
-      "text": "Retain the exact 25/26 API34 fixture failure and request corrected exact-source verification against the immediate previous compiled TEST179 APK.",
+      "title": "TEST180 verified evidence",
+      "text": "Record the passing 1,602-core, 26-method API34, debug/history and 34-screenshot checkpoint for UIMSD Column order and Move column recreation.",
       "paths": [
         "docs/APD-TEST179-UIMSD-COLUMN-RESTORE-2026-10-14.md",
         "docs/HANDOFF.md",

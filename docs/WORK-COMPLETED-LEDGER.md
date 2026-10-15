@@ -746,3 +746,12 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Android evidence artifact `11937227267` / ZIP SHA-256 `5e80aad0730b6507fe0cfba1862fae175636d70362eeac2c8f25f5508718a3e8`; core artifact `11937375321`; APK artifact `11936159775`. TEST179 is not verified or delivered.
 - TEST180 changes only the retained device fixture to resolve effective defaults before the two-step recreation test and to restore the original explicit/default semantics afterward. Production behavior is unchanged.
 - TEST180 requests 1,602 core/debug/immediate-previous compiled TEST179 history/26 API34/34 PNG. Pending exact-source verification; no delivery or phone claim.
+
+
+## 2026-10-15T00:08:33Z — TEST180 verified UIMSD parameterized-dialog recreation coverage
+- Exact source `acf8592e2db3c30684e09a05bd22c097c0d5f077`; run `38656873159` ran 2026-10-14T23:54:11Z–2026-10-15T00:06:25Z and concluded success.
+- Core artifact `11937556865` / ZIP SHA-256 `3e33f34ed08a3905d67d97652a25fa627dff485aa08134686af4afad8fa1fa2b`: 1,602 tests, 0 failures/errors. APK artifact `11937113364` / ZIP SHA-256 `2445194a97a19a118ff453f214a849dd24488fcddd529e5e0d0743a05383dde7`: APK SHA-256 `279f6691874d32a892fc2743afe5946b3bdf371f315372b7541ffec646ab8332`; checksum/debug/immediate-previous compiled TEST179 history passed.
+- Android artifact `11937448955` / ZIP SHA-256 `a9638818a3f7afacbeaa05596fc1fb3b8875e3c06d1320220e2da1f64dff46b9`: 26 API34 methods, 0 failures/errors/skips; the strengthened Column order/Move column method passed in 8.33 seconds.
+- 34 PNGs decoded at 320×640 and passed contact-sheet/focused history review.
+- Column order and Move column now have retained exact-once recreation coverage and the restored Make first callback is exercised. Production behavior was unchanged.
+- Delivery was skipped; emulator evidence is not a physical-phone claim. TEST123 remains owner-delivered fallback. Do not rebuild unchanged TEST180.

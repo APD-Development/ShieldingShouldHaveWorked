@@ -112,3 +112,6 @@ TEST179 exact-source request (2026-10-14T23:39:51Z): verify direct API34 recreat
 
 
 TEST179 failed API34 (2026-10-14T23:52:01Z): sourcef6043c7d16cd52e57276113fb038af046ff4ec48/run38655567956 passed1602core/debug/immediate-previousTEST178history/APK packaging, then completed26API34 with25pass/1 fixture failure: Runs' empty explicit column list means dataset defaults, not zero effective columns. TEST180 fixture-only correction resolves defaults for the recreation steps and restores original explicit/default semantics. Verify1602core/debug/immediate-previous compiledTEST179history/26API34/34PNG. Production query/window/save/scoring unchanged; no delivery/phone claim.
+
+
+TEST180 verified (2026-10-15T00:06:25Z): sourceacf8592e2db3c30684e09a05bd22c097c0d5f077/run38656873159 passed1602core+26API34/debug/immediate-previous compiledTEST179history/34PNG. APK SHA256 279f6691874d32a892fc2743afe5946b3bdf371f315372b7541ffec646ab8332. Column order/Move column exact-once recreation and restored Make first callback passed with original explicit/default query restoration. Production code unchanged. No pending rebuild of unchanged TEST180; no delivery/phone claim; TEST123 remains owner-delivered.

@@ -2284,3 +2284,12 @@ Adjacent audit confirmed seven direct-damage calls in Blast Wave, Living Earth a
 - Android artifact `11937227267` / ZIP SHA-256 `5e80aad0730b6507fe0cfba1862fae175636d70362eeac2c8f25f5508718a3e8` retains the failure. TEST179 is not verified or delivered.
 - TEST180 corrects only the device-test setup: derive an effective multi-column list from dataset defaults, exercise Column order and Move column recreation, then restore the original explicit list including empty/default semantics.
 - Exact-source TEST180 requests 1,602 core/debug/immediate-previous compiled TEST179 history/26 API34/34 PNG. Production query/window/save/scoring code remains unchanged. No delivery or physical-phone claim; TEST123 remains owner-delivered fallback.
+
+
+## 2026-10-15T00:08:33Z — TEST180 verified UIMSD column-dialog recreation regression
+- Exact source `acf8592e2db3c30684e09a05bd22c097c0d5f077`, run `38656873159` (2026-10-14T23:54:11Z–2026-10-15T00:06:25Z), concluded success.
+- Core artifact `11937556865` / ZIP SHA-256 `3e33f34ed08a3905d67d97652a25fa627dff485aa08134686af4afad8fa1fa2b`: 1,602 tests, 0 failures/errors. APK artifact `11937113364` / ZIP SHA-256 `2445194a97a19a118ff453f214a849dd24488fcddd529e5e0d0743a05383dde7`: APK SHA-256 `279f6691874d32a892fc2743afe5946b3bdf371f315372b7541ffec646ab8332`; checksum/debug/immediate-previous compiled TEST179 history passed.
+- Android artifact `11937448955` / ZIP SHA-256 `a9638818a3f7afacbeaa05596fc1fb3b8875e3c06d1320220e2da1f64dff46b9`: 26 API34 methods passed; the strengthened two-step recreation method passed in 8.33 seconds.
+- 34/34 screenshots decoded at 320×640; contact-sheet/focused APD Changes review found the expected TEST180→TEST179→TEST178 sequence and no blank, corrupt or visibly clipped image.
+- Verified retained coverage: Column order and its parameterized Move column child each restore exactly once across scene recreation, and Make first executes through the restored callback while original explicit/default query semantics are restored afterward.
+- Production query/window, save, player-history, scoring, identity and signing code were unchanged. Private delivery skipped; no physical-phone claim. TEST123 remains last owner-delivered/signature-compared. Do not rebuild unchanged TEST180; continue a distinct documented post-slider backlog item.

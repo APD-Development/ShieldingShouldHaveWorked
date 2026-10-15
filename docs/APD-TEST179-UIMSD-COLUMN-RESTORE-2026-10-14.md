@@ -30,3 +30,14 @@ The production Runs query validly represents its default columns with an empty e
 Resolve the effective test layout from dataset defaults when the original query's explicit column list is empty. Exercise the two recreation steps against that effective multi-column list, then restore the original explicit list (including empty/default semantics). Production code remains unchanged.
 
 TEST180 requests 1,602 core tests, debug assembly, compiled history against the immediate previous compiled TEST179 APK, all 26 API34 methods, and 34 screenshots. Candidate remains pending until exact-source evidence passes. TEST123 remains the last owner-delivered/signature-compared APK.
+
+
+## TEST180 verified
+Exact source `acf8592e2db3c30684e09a05bd22c097c0d5f077`, run `38656873159` (2026-10-14T23:54:11Z–2026-10-15T00:06:25Z), concluded success.
+
+- Core artifact `11937556865`, ZIP SHA-256 `3e33f34ed08a3905d67d97652a25fa627dff485aa08134686af4afad8fa1fa2b`: 1,602 tests, 0 failures and 0 errors.
+- APK artifact `11937113364`, ZIP SHA-256 `2445194a97a19a118ff453f214a849dd24488fcddd529e5e0d0743a05383dde7`: `ADHD-Pixel-Dungeon-CODEX-TEST-180.apk`, SHA-256 `279f6691874d32a892fc2743afe5946b3bdf371f315372b7541ffec646ab8332`; bundled checksum matched. Debug assembly and immediate-previous compiled TEST179 history passed.
+- Android artifact `11937448955`, ZIP SHA-256 `a9638818a3f7afacbeaa05596fc1fb3b8875e3c06d1320220e2da1f64dff46b9`: 26 API34 methods, 0 failures/errors/skips. The strengthened Column order/Move column method passed in 8.33 seconds.
+- All 34 PNGs decoded at 320×640. Contact-sheet and focused APD Changes review found the expected TEST180/TEST179/TEST178 sequence and no blank, corrupt or visibly clipped capture.
+
+This verifies the retained API34 regression and the fixture correction; production query/window code was not changed. Private delivery was skipped. This is CI/emulator evidence, not a physical-phone claim. TEST123 remains the last owner-delivered/signature-compared APK.
