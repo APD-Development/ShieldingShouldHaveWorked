@@ -54,6 +54,15 @@
       "paths": [
         "docs/APD-NEXT-BUILD-HISTORY.json"
       ]
+    },
+    {
+      "category": "Development",
+      "sprite": "ICON_CHANGES",
+      "title": "Private owner preview delivery",
+      "text": "Deliver the existing verified APD preview privately with neutral download names, source receipts, signing checks and native navigation evidence.",
+      "paths": [
+        ".github/workflows/codex-publish-alpha-preview.yml"
+      ]
     }
   ]
 }
