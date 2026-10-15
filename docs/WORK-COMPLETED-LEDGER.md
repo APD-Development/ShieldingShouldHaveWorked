@@ -1084,18 +1084,23 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Repeated artifact-byte downloads failed with HTTP 502. Therefore the expected 1,637 core count was not independently recounted from XML, the APK payload SHA-256 was not extracted, and the full screenshot sheet was not manually reviewed in this execution. Do not upgrade this to fully artifact-reviewed or published status. TEST204 remains owner-delivered fallback; TEST208 is separate newer source. No physical-phone claim.
 
 
-## 2026-10-15T16:31:23Z — damaged-history provenance candidate
+## 2026-10-15T16:38:34Z — damaged-history provenance candidate
 - Corrected run-fact and item/enemy/event-row count provenance so surviving prefixes from TRUNCATED, CORRUPT and SEAL_MISMATCH logs are lower bounds, not exact counts.
 - Preserved exact provenance for clean UNSEALED logs and valid SEALED logs with unrelated trailing bytes.
 - Advanced disposable derived-cache identities only: RowBuilders 12→13 and DerivedStore 8→9. No raw history, save, score, rules, slider, gameplay or RNG change.
 - Added six retained methods covering both builder families and both cache-version contracts. The full TEST209 gate is pending; required result is 1,645 core/debug/complete TEST208 history/28 API34/38 valid PNGs. No result, publication or phone claim is made in advance.
 
 
-## 2026-10-15T16:44:00Z — pre-gate history manifest correction
+## 2026-10-15T16:42:29Z — pre-gate history manifest correction
 - Replaced the shortened nonexistent mixed-scale report path with the exact repository path `docs/APD-MIXED-SCALE-RATIO-DISPLAY-2026-10-15.md`.
 - A workflow pinned to `f08f5908c53e40c058a767eb4e526731cdce252b`, if created, is not acceptable as the complete-history gate. The corrected head requires a fresh full result; no application source changed.
 
 
-## 2026-10-15T16:47:00Z — exact predecessor-tree history reconciled
+## 2026-10-15T16:43:57Z — exact predecessor-tree history reconciled
 - Direct comparison from compiled TEST208 source found and added both lunch workflow files and the lunch publication report to the next native history.
 - The history manifest now names all 13 changed paths between TEST208 and this candidate. Earlier pinned candidate runs are not acceptable as complete-history evidence; no application source changed.
+
+
+## Authoritative commit-time correction
+- Replaced three preparation-time labels with GitHub commit timestamps: `f08f5908` 2026-10-15T16:38:34Z, `6f511a22` 2026-10-15T16:42:29Z, and `fcc100ba` 2026-10-15T16:43:57Z.
+- No application source changed. Only a full gate pinned to this final descendant can satisfy the requirement that the corrected handoff and ledger be embedded in reviewed native history.

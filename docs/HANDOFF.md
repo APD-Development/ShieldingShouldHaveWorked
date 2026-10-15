@@ -2687,13 +2687,17 @@ PublishedPDFsamec62b494b43deb328ca21619d3d1c13a03d2e5581835975820b685b1528b13b93
 Localdamagedfactsfollowup afterPDF:631broader checks pass22.522s after recompilingunchangedDerivedStoreTest against proposedderivation9;initial630pass/1fixturefailureexpectedREBUILT_BAD_CACHEvsREBUILT_STALEwascausedbyolderinlinedversion8. Sixnewtests pass0.142s;noassertionweakened. Localfixstilluncommitted/unreleased;fullcurrent-source/cachecompatibilityverificationneededbeforeintegration. Noentire-auditcompletionclaim.
 
 
-## Damaged-history count provenance candidate — 2026-10-15T16:31:23Z
+## Damaged-history count provenance candidate — 2026-10-15T16:38:34Z
 Integrated the previously reproduced UIMSD reliability correction on top of live head `eccdc5b7423b6a36b4a270ac789e01260eb906fb`. `RunFactsBuilder` and `RowBuilders` now mark surviving counts incomplete for non-clean reader statuses (TRUNCATED, CORRUPT, SEAL_MISMATCH) while preserving exact clean UNSEALED counts and exact SEALED counts with unrelated trailing bytes. Disposable cache identities advance to RowBuilders 13 and DerivedStore 9; raw histories, saves, score data, rules, sliders, gameplay and RNG are unchanged. Six retained methods cover both builder families and cache versions. Candidate TEST209 must pass 1,645 core tests, debug assembly, complete immediate-previous TEST208 history, 28 API34 methods and 38 valid 320×640 PNGs before this is called verified. TEST208 run 38763307954 was workflow-green, but independent artifact bytes were unavailable in this executor; do not invent an XML recount, APK payload SHA or montage review. Latest owner-delivered APK remains TEST206; no physical-phone or release claim.
 
 
-## Pre-gate history-path correction — 2026-10-15T16:44:00Z
+## Pre-gate history-path correction — 2026-10-15T16:42:29Z
 Review of the candidate TEST209 history manifest found a shortened nonexistent mixed-scale report path. The exact repository path is `docs/APD-MIXED-SCALE-RATIO-DISPLAY-2026-10-15.md`; the manifest is corrected before accepting a complete-history result. If a workflow pinned to `f08f5908c53e40c058a767eb4e526731cdce252b` started, do not credit it as the required complete-history gate. The corrected head retains the same six regressions and expected 1,645 core tests; no application behavior or cache version changed in this documentation-only follow-up.
 
 
-## Exact predecessor-tree history reconciliation — 2026-10-15T16:47:00Z
+## Exact predecessor-tree history reconciliation — 2026-10-15T16:43:57Z
 A direct `13e4c03b…6f511a22` comparison found three intervening reviewed paths not yet named in the candidate history: `.github/workflows/codex-lunch-apk-2026-10-15.yml`, `.github/workflows/codex-lunch-pdf-2026-10-15.yml`, and `docs/APD-LUNCH-REPORT-PUBLICATION-2026-10-15.md`. They are now retained alongside every application/test/report/build-request/handoff/ledger/history path in the TEST208→next-candidate record. Do not accept any earlier pinned candidate as the complete-history gate. This follow-up changes no application source.
+
+
+## Authoritative commit-time correction
+The three entries above now use GitHub's actual commit timestamps: source/test integration `f08f5908` at 2026-10-15T16:38:34Z, first history-path correction `6f511a22` at 2026-10-15T16:42:29Z, and exact predecessor-tree reconciliation `fcc100ba` at 2026-10-15T16:43:57Z. Superseded preparation-time labels were not test evidence. This documentation-only correction does not change application source; because the changed handoff/ledger must be embedded in reviewed native history, only a gate pinned to this final descendant may be accepted.

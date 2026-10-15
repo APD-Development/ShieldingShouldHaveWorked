@@ -240,3 +240,6 @@ DAMAGED-HISTORY PRE-GATE CORRECTION: use exact existing history path docs/APD-MI
 
 
 EXACT TEST208 PREDECESSOR TREE: native history must also retain .github/workflows/codex-lunch-apk-2026-10-15.yml, .github/workflows/codex-lunch-pdf-2026-10-15.yml and docs/APD-LUNCH-REPORT-PUBLICATION-2026-10-15.md. Earlier pinned candidate heads are not acceptable as complete-history evidence. Fresh full gate required; application source and expected1645core remain unchanged.
+
+
+FINAL TIMESTAMP/HISTORY HEAD: prior candidate prose now carries authoritative GitHub commit times f08f5908=2026-10-15T16:38:34Z,6f511a22=2026-10-15T16:42:29Z,fcc100ba=2026-10-15T16:43:57Z. Accept only a full gate pinned to this final descendant so the corrected handoff/ledger are embedded. Same1645core/application source and TEST208 predecessor; no publication/phone claim.
