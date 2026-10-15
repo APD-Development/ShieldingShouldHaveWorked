@@ -73,3 +73,17 @@ This success has a resource conflict: the floor's food, upgrade scroll and toxic
 The preserved native north-room save and compressed replay log are in provenance. Early floor-4 failed trials before a workspace reset were not committed; their findings above are based on recorded outputs. The successful north-room section was replayed after restoration and saved again. Neither boss victory nor ascension has been established.
 
 CI run 38815420848 on commit 633ffac4 completed successfully, covering the baseline test invocation and the pinned native floor-3-to-floor-4 replay.
+
+## Earned floor-5 entry and initial Goo experiment
+
+A changed spell order kills the unburned floor-4 swarm while preserving liquid flame: Holy Ward at hunger 190, Guiding Light after opening the chest, an actual melee hit, a zero-time shuriken throw that misses, movement to reach the split child, then two attacks on each remaining swarm (including a miss). The hero reaches level 4 at hunger 202, with the flame potion still owned. The parent drops one healing potion in this execution. This variant does not inherit the burned variant's damage or loot.
+
+The extra slime still makes the food-room approach fail in tested sequences. A longer floor-3 exit wait also fails: spawned crab 74 reaches the waiting hero and causes actual death. A 90-turn initial floor-3 wait instead changes where the existing spawned gnoll 53 intercepts the route. These are failed preparation strategies, not universal impossibility.
+
+The next successful continuation collects the healing potion and missed shuriken at 473, steps to the actual exit 513, and descends normally before the second slime can attack. The original floor-4 food, scroll, barricade and Ghost quest remain unacquired. Actual floor-5 entry is total time 1167, hunger 206, level 4 / 1 XP, 12 strength, 1/1 HP, no barrier, Tome +2 with zero whole charge and 0.316669553 partial charge, quarterstaff +2, cloth +0, mail carried, three +1 shuriken, one liquid-flame potion, one healing potion, Rage scroll, waterskin, pouch and cudgel. Gold is zero and energy one. The complete native save including all five floors is retained under core test resources.
+
+From that earned floor-5 state, 100 actual waiting turns and a paid search of secret door 603 reach Goo's doorway at 430 with three whole Tome charges. Goo notices the hero and locks the floor. Hunger remains 323 during the subsequent actual attack and movement sequence. Guiding Light and the first zero-time shuriken reduce Goo to 82 HP; the retreat lets it heal on water, reaching 85 HP at the observed endpoint. No boss victory is claimed.
+
+The rendering adapter now supplies GooSprite for Goo and completes pumpAttack through the same onAttackComplete callback used by the real animation. Omitting that callback would suppress charged attacks and invalidate a later boss test.
+
+Source checks: Hunger.act returns while the floor is locked, preserving the original challenge's lethal-starvation rule rather than weakening it. LockedFloor starts with 50 turns of passive regeneration; Goo damage replenishes it and Goo's water healing reduces it, so a locked floor does not provide indefinite passive recharge. Ooze can deal its first one damage even on water, since its first act has not yet set acted=true. Merely standing in water is not proof of immunity to Goo's on-hit debuff. Missiles that stick in a living enemy are unavailable for reuse until actually retrieved; their nominal durability does not supply additional inventory ammunition.

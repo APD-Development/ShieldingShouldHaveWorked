@@ -45,8 +45,9 @@ public class GetFuckedRouteTest {
     private void bind(Char ch) {
         if (ch.sprite != null) return;
         CharSprite sprite = ch == Dungeon.hero ? mock(HeroSprite.class, RETURNS_DEEP_STUBS)
-                : mock(CharSprite.class, RETURNS_DEEP_STUBS);
+                : ch instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo ? mock(com.shatteredpixel.shatteredpixeldungeon.sprites.GooSprite.class,RETURNS_DEEP_STUBS) : mock(CharSprite.class, RETURNS_DEEP_STUBS);
         ch.sprite = sprite;
+        if(ch instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo)doAnswer(i->{ch.onAttackComplete();return null;}).when((com.shatteredpixel.shatteredpixeldungeon.sprites.GooSprite)sprite).pumpAttack();
         if(ch==Dungeon.hero)doAnswer(i -> {ch.onOperateComplete();return null;}).when((HeroSprite)sprite).read();
         Group parent=mock(Group.class,i -> {
             if(i.getMethod().getName().equals("recycle") && i.getArguments().length==1 && i.getArgument(0) instanceof Class)
@@ -352,7 +353,7 @@ public class GetFuckedRouteTest {
     @Test public void seed266InitialCommands() throws Exception {
         System.out.println("RUNNER_STAGE scheduler start");
         ready();
-        if(System.getProperty("route.resume")!=null){verifyCheckpoint(System.getProperty("route.resume"));if(Dungeon.depth==3)thirdFloorSection();else if(Dungeon.depth==4)fourthFloorSection();else fail("Unwritten section");return;}
+        if(System.getProperty("route.resume")!=null){verifyCheckpoint(System.getProperty("route.resume"));if(Dungeon.depth==3)thirdFloorSection();else if(Dungeon.depth==4)fourthFloorSection();else if(Dungeon.depth==5)fifthFloorSection();else fail("Unwritten section");return;}
         assertEquals(1,Dungeon.hero.lvl); assertEquals(1,Dungeon.hero.HP); assertEquals(1,Dungeon.hero.HT);
         for(Map<Talent,Integer> tier:Dungeon.hero.talents) for(int value:tier.values()) assertEquals(0,value);
         JSONObject layout=new JSONObject(); Level l=Dungeon.level;
@@ -508,7 +509,7 @@ public class GetFuckedRouteTest {
         Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.food.Food.class).execute(Dungeon.hero,"EAT");ready();log("EAT SECOND RATION");
         Mob firstBridgeGnoll=(Mob)Actor.findChar(455);assertNotNull(firstBridgeGnoll);
         Mob secondBridgeGnoll=(Mob)Actor.findChar(412);assertNotNull(secondBridgeGnoll);
-        for(int n=0;n<60;n++)waitOne();
+        for(int n=0;n<Integer.getInteger("route.initial3Recharge",60);n++)waitOne();
         for(int cell:new int[]{684,683,682,681,680,679,678,677,676,675,675})click(cell);
         assertNotNull("Scroll must actually be picked up",Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade.class));
         upgradeOwnedSpear();
@@ -612,7 +613,7 @@ public class GetFuckedRouteTest {
         Mob finalSwarm=(Mob)Actor.findChar(655);assertNotNull(finalSwarm);
         click(finalSwarm.pos);if(finalSwarm.isAlive())click(finalSwarm.pos);
         assertFalse(finalSwarm.isAlive());log("PURSUING_SWARM_AND_ALL_CHILDREN_DEFEATED");
-        for(int n=0;n<28;n++)waitOne();
+        for(int n=0;n<Integer.getInteger("route.exitRecharge",28);n++)waitOne();
         click(653);log("CRAB_ACTUALLY_REVEALED");
         waitOne();log("CRAB_LURE_WAIT_FROM_DOOR");
         Mob exitCrab=(Mob)Actor.findChar(564);assertNotNull(exitCrab);
@@ -644,22 +645,31 @@ public class GetFuckedRouteTest {
         log("FLOOR_FOUR_BOUNDED_RECHARGE");
         for(int c:new int[]{968,929,890,889,888})click(c);
         Mob entranceCrab=Dungeon.level.mobs.stream().filter(m->m.id()==81).findFirst().get();
-        cast(ShieldOfLight.INSTANCE,entranceCrab.pos);cast(GuidingLight.INSTANCE,entranceCrab.pos);
+        cast(ShieldOfLight.INSTANCE,entranceCrab.pos);if(!Boolean.getBoolean("route.crabNoLight"))cast(GuidingLight.INSTANCE,entranceCrab.pos);
         for(int n=0;n<3 && entranceCrab.isAlive();n++)click(entranceCrab.pos);
         assertFalse(entranceCrab.isAlive());log("FLOOR_FOUR_CRAB_DEFEATED");
         for(int c:new int[]{887,848,809})click(c);
         Mob approachSlime=Dungeon.level.mobs.stream().filter(m->m.id()==87).findFirst().get();
         cast(ShieldOfLight.INSTANCE,approachSlime.pos);
         for(int n=0;n<4 && approachSlime.isAlive();n++)click(approachSlime.pos);
+        if(approachSlime.isAlive() && Boolean.getBoolean("route.crabNoLight")){
+            cast(HolyWard.INSTANCE,null);
+            for(int n=0;n<2 && approachSlime.isAlive();n++)click(approachSlime.pos);
+        }
         assertFalse(approachSlime.isAlive());log("FLOOR_FOUR_SPAWNED_SLIME_DEFEATED");
-        for(int n=0;n<20;n++)waitOne();
-        for(int c:new int[]{808,807,806,806,767})click(c);
+        for(int n=0;n<Integer.getInteger("route.mid4Recharge",20);n++)waitOne();
+        for(int c:new int[]{808,807,806})click(c);
+        Mob northGnoll=Dungeon.level.mobs.stream().filter(m->m.id()==82).findFirst().get();
+        if(!Dungeon.level.adjacent(Dungeon.hero.pos,northGnoll.pos))click(806);
+        click(northGnoll.pos);
         assertFalse(Dungeon.level.mobs.stream().anyMatch(m->m.id()==82));log("FLOOR_FOUR_GNOLL_DEFEATED");
         for(int c:new int[]{767,728,689,650,611,610,609,608,607,606,605,604,603})click(c);
-        for(int c:new int[]{563,524,485,484,483,482,481,480,479,478,477,476,475,474,474})click(c);
+        if(Boolean.getBoolean("route.earlyWard"))cast(HolyWard.INSTANCE,null);
+        for(int c:(Boolean.getBoolean("route.diagonalCorner")?new int[]{563,524,484}:new int[]{563,524,485,484}))click(c);
+        for(int c:new int[]{483,482,481,480,479,478,477,476,475,474,474})click(c);
         Mob northSwarm=Dungeon.level.mobs.stream().filter(m->m.id()==80).findFirst().get();
         boolean retainFlame=Boolean.getBoolean("route.retainFlame");
-        if(retainFlame)cast(HolyWard.INSTANCE,null);else cast(ShieldOfLight.INSTANCE,northSwarm.pos);
+        if(retainFlame){if(Dungeon.hero.buff(HolyWard.HolyArmBuff.class)==null)cast(HolyWard.INSTANCE,null);}else cast(ShieldOfLight.INSTANCE,northSwarm.pos);
         click(473);
         if(retainFlame)waitOne();else throwItem(com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame.class,436);
         click(472);click(472);
@@ -671,10 +681,46 @@ public class GetFuckedRouteTest {
         throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class,northSwarm.pos);
         click(child.pos);
         log("FLOOR_FOUR_SWARM_EXCHANGES");
+        if(retainFlame){
+            for(int n=0;n<2 && northSwarm.isAlive();n++)click(northSwarm.pos);
+            for(int n=0;n<2 && child.isAlive();n++)click(child.pos);
+            log("FLOOR_FOUR_RETAIN_FLAME_EXTRA_EXCHANGES");
+        }
         assertFalse(Dungeon.level.mobs.stream().anyMatch(m->m instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Swarm));
         assertEquals(4,Dungeon.hero.lvl);assertEquals(1,Dungeon.hero.talentPointsAvailable(1));
         Dungeon.hero.upgradeTalent(Talent.SEARING_LIGHT);log("EARN FIRST SEARING_LIGHT POINT");
         if(System.getProperty("route.checkpointNorthOut")!=null)writeCheckpoint(System.getProperty("route.checkpointNorthOut"));
+        if(retainFlame && Boolean.getBoolean("route.toGoo")){
+            for(int c:new int[]{473,473,473,513,513})click(c);
+            assertEquals(5,Dungeon.depth);log("FLOOR_FIVE_EARNED_ENTRY");
+            System.out.println("FLOOR_LAYOUT "+new JSONObject().put("depth",5).put("width",Dungeon.level.width()).put("height",Dungeon.level.height()).put("terrain",new JSONArray(Dungeon.level.map)).put("entrance",Dungeon.level.entrance()).put("exit",Dungeon.level.exit()));
+            if(System.getProperty("route.checkpoint5Out")!=null)writeCheckpoint(System.getProperty("route.checkpoint5Out"));
+            return;
+        }
+        if(retainFlame){
+            for(int c:new int[]{473,473,473,514,554,555,594,633,672})click(c);
+            
+            log("FLOOR_FOUR_BARRICADE_APPROACH_WITH_FLAME");
+            Mob secondSlime=Dungeon.level.mobs.stream().filter(m->m.id()==92).findFirst().get();
+            if(charge(Dungeon.hero.belongings.getItem(HolyTome.class))>=1)cast(ShieldOfLight.INSTANCE,secondSlime.pos);
+            for(int n=0;n<4 && secondSlime.isAlive();n++)click(secondSlime.pos);
+            assertFalse(secondSlime.isAlive());log("FLOOR_FOUR_SECOND_SPAWNED_SLIME_DEFEATED");
+        }
+    }
+
+    private void fifthFloorSection() throws Exception {
+        assertEquals(5,Dungeon.depth);assertEquals(708,Dungeon.hero.pos);
+        for(int n=0;n<Integer.getInteger("route.gooPrep",100);n++)waitOne();
+        for(int c:new int[]{673,672,637})click(c);
+        Dungeon.hero.search(true);ready();log("SEARCH FLOOR FIVE SECRET ENTRANCE");
+        assertEquals(Terrain.DOOR,Dungeon.level.map[603]);
+        for(int c:new int[]{603,569,535,501,500,499,465,431,430})click(c);
+        log("GOO_EARNED_APPROACH");
+        Mob goo=Dungeon.level.mobs.stream().filter(m->m instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo).findFirst().get();
+        cast(GuidingLight.INSTANCE,goo.pos);
+        throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class,goo.pos);
+        for(int c:new int[]{431,465,499,500,501,535,569,603,637})click(c);
+        log("GOO_FIRST_OUTER_RETREAT");
     }
 
 }
