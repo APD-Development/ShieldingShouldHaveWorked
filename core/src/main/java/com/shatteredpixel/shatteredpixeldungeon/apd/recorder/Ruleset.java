@@ -58,12 +58,12 @@ public final class Ruleset {
 		//a run that never recorded its exotic setting (saved by an older version) has no known ruleset: it is not given today's setting
 		if (!Dungeon.apdExoticKnown) return unknown();
 		boolean clericRun = Dungeon.hero != null && Dungeon.hero.heroClass == com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.CLERIC;
-		return withCustomRules(of(Dungeon.apdExotic, Dungeon.challenges, Dungeon.difficulty, Dungeon.difficultyBalance, clericRun), Dungeon.customRules());
+		return withHealingOnlyConversion(withCustomRules(of(Dungeon.apdExotic, Dungeon.challenges, Dungeon.difficulty, Dungeon.difficultyBalance, clericRun), Dungeon.customRules()));
 	}
 
 	//the rules a NEW run would be played under, from the settings
 	public static Ruleset forNewRun(){
-		return withCustomRules(of(SPDSettings.apdExoticSetting(), SPDSettings.challenges(), SPDSettings.apdDifficulty()), SPDSettings.apdCustomRules());
+		return withHealingOnlyConversion(withCustomRules(of(SPDSettings.apdExoticSetting(), SPDSettings.challenges(), SPDSettings.apdDifficulty()), SPDSettings.apdCustomRules()));
 	}
 
 	//stored in place of the exotic chance when it was not recorded (a real chance is 0-80)
@@ -111,6 +111,13 @@ public final class Ruleset {
         if(base.isUnknown() || rules==null || rules.isNeutral())return base;
         String text=base.text+";"+rules.identityText();
         return new Ruleset("r2-"+hash12(text),text,base.exoticChance);
+    }
+
+    /** Distinguish the corrected healing-only override without rewriting stored historical identities. */
+    public static Ruleset withHealingOnlyConversion(Ruleset base){
+        if(base.isUnknown() || base.exoticChance == 0)return base;
+        String text=base.text+";exotic-scope=healing-v1";
+        return new Ruleset("r3-"+hash12(text),text,base.exoticChance);
     }
 
 	private static String hash12( String text ){
