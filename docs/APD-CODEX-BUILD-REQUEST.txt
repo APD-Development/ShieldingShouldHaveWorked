@@ -121,3 +121,6 @@ TEST181 exact-source request (2026-10-15T00:12:37Z): verify the UIMSD scope-word
 
 
 TEST182 history-only correction (2026-10-15T00:15:34Z): TEST181 sourceba146f3c0ec2e145fa57295af2c398248f497d2a/run38658816290 stopped before compilation because the comparison manifest omitted the intervening TEST180 evidence path docs/APD-TEST179-UIMSD-COLUMN-RESTORE-2026-10-14.md. Verify unchanged UIMSD application/test source with the complete manifest:1603core/debug/immediate-previousTEST180history/26API34/34PNG. No delivery/phone claim.
+
+
+TEST182 verified (2026-10-15T00:29:24Z): sourceeed8bb85dfb32cffded60a08614cf3223362fb50/run38659050102 passed1603core+26API34/debug/immediate-previousTEST180history/34PNG. APK SHA256 ed13da85121f7cd13feeb751050912beba9e09f47f4b6c6867670cfc7f90e7df. Home/Options distinguish finished runs under other rules from runs still going; abandoned remains finished. Do not rebuild unchanged TEST182. No delivery/phone claim; TEST123 remains owner-delivered.

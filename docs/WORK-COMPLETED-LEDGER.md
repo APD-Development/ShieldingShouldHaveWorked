@@ -767,3 +767,11 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - TEST181 source `ba146f3c0ec2e145fa57295af2c398248f497d2a`, run `38658816290`, stopped before compilation at the reviewed-history guard. It reported one omitted path: `docs/APD-TEST179-UIMSD-COLUMN-RESTORE-2026-10-14.md`, added by the intervening TEST180 evidence commit.
 - No core, debug or Android tests ran; TEST181 is not verified and produced no APK. The UIMSD application/test source is unchanged for TEST182.
 - TEST182 adds the omitted existing documentation path to the complete comparison manifest and requests the full 1,603-core/debug/immediate-previous TEST180 history/26 API34/34 PNG gate. No delivery or physical-phone claim.
+
+## 2026-10-15T00:30:48Z — TEST182 verified UIMSD rule/status scope wording
+- Exact source `eed8bb85dfb32cffded60a08614cf3223362fb50`, run `38659050102` (2026-10-15T00:16:09Z–00:29:24Z), concluded success.
+- Core artifact `11938107765` / ZIP SHA-256 `df2c8d34889cb9f387b97cfabeaebc962445613d191e73a1edffa3cb9c44567f`: 1,603 tests, 0 failures/errors/skips. The new `emptyHomeSeparatesRulesFromRunStatus` method passed in 0.139 seconds.
+- APK artifact `11938012933` / ZIP SHA-256 `7bb738e8efa77e6b462e720fee3c0a41d6d91fc7b6b482cb7236e6f1cbdec6d1`: APK SHA-256 `ed13da85121f7cd13feeb751050912beba9e09f47f4b6c6867670cfc7f90e7df`; debug and immediate-previous TEST180 history passed. The compiled Changes ledger contains TEST182, then TEST180 and TEST179; TEST181 correctly has no compiled record because it stopped before compilation.
+- Android artifact `11937863231` / ZIP SHA-256 `aabb3a0ac3246d7573dfbc9d1eef90893653ddd5c6c67c9820ed3244fc2a58ce`: 26 API34 tests passed. All 34 screenshots decoded at 320×640; contact-sheet and focused UIMSD Home/APD Changes review found no blank, corrupt or visibly clipped image.
+- Verified behavior: Home and Options distinguish finished runs under other rules from runs still going; an abandoned run remains a finished result. No raw-history/save/statistics/scoring/gameplay/identity/signing behavior changed.
+- Private delivery skipped; emulator evidence is not a physical-phone claim. TEST123 remains last owner-delivered/signature-compared. Do not rebuild unchanged TEST182.
