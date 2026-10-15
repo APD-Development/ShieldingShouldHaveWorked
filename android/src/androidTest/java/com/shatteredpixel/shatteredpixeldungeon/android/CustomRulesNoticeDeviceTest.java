@@ -228,6 +228,16 @@ public class CustomRulesNoticeDeviceTest {
         }
     }
 
+    private static void androidShellTap(Point point) throws Exception {
+        String command=String.format(Locale.US,"input tap %d %d",point.x,point.y);
+        try(android.os.ParcelFileDescriptor descriptor=InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand(command);
+            java.io.FileInputStream output=new java.io.FileInputStream(descriptor.getFileDescriptor())) {
+            byte[] buffer=new byte[64];
+            while(output.read(buffer)!=-1) { }
+        }
+        Thread.sleep(400);
+    }
+
     @Test public void allEighteenControlsAcceptNativeTouchSaveAndReopenWithoutChangingActiveRun() throws Exception {
         try (ActivityScenario<AndroidLauncher> scenario = ActivityScenario.launch(AndroidLauncher.class)) {
             long deadline = System.currentTimeMillis() + 120000;
@@ -264,7 +274,7 @@ public class CustomRulesNoticeDeviceTest {
                             scroll.scrollTo(0, Math.max(0, slider.top() - 24));
                             touch[0] = slider.camera().cameraToScreen(maximum ? slider.right() - 3 : slider.left() + 2, slider.bottom() - 7);
                         } catch (Exception e) { throw new RuntimeException(e); } });
-                        androidSwipe(touch[0], touch[0], 30, 1, false);
+                        androidShellTap(touch[0]);
                         render(() -> { try {
                             int value = maximum ? rule.max : rule.min;
                             OptionSlider slider = find(window[0], OptionSlider.class).get(rule.ordinal());
@@ -282,7 +292,7 @@ public class CustomRulesNoticeDeviceTest {
                         }
                         assertNotNull(touch[0]);
                     } catch (Exception e) { throw new RuntimeException(e); } });
-                    androidSwipe(touch[0], touch[0], 30, 1, false);
+                    androidShellTap(touch[0]);
                     render(() -> { try {
                         for (CustomDungeonRules.Slider rule : CustomDungeonRules.Slider.values()) assertEquals(rule.name(), maximum ? rule.max : rule.min, SPDSettings.apdCustomRules().get(rule));
                         assertSame(active[0], Dungeon.customRules());
