@@ -288,4 +288,66 @@ public class RunSetupDifficultyDeviceTest {
 		} finally { SPDSettings.fullscreen(fullscreenBefore); }
 	}
 
+
+    @Test
+    public void clericLoreFirstRunPopupIsVisibleAndBackContinuesExactlyOnce() throws Exception {
+        try (ActivityScenario<AndroidLauncher> scenario = ActivityScenario.launch(AndroidLauncher.class)) {
+            waitUntil("game startup", () -> Gdx.files != null && Game.scene() != null, 120000);
+            onRender(() -> ShatteredPixelDungeon.switchNoFade(HeroSelectScene.class));
+            waitUntil("hero selection", () -> Game.scene() instanceof HeroSelectScene, 30000);
+            Thread.sleep(2000);
+            java.util.concurrent.atomic.AtomicInteger continued = new java.util.concurrent.atomic.AtomicInteger();
+            AtomicReference<Object> oldEngine = new AtomicReference<>();
+            AtomicReference<com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions> popup = new AtomicReference<>();
+            Field engine = com.shatteredpixel.shatteredpixeldungeon.windows.GrudgeHooks.class.getDeclaredField("instance");
+            engine.setAccessible(true);
+            String beforeFrequency = SPDSettings.apdGrudgePref("apd_grudge_popups");
+            try {
+                onRender(() -> {
+                    try {
+                        assertTrue("the packaged private asset must enable lore", com.shatteredpixel.shatteredpixeldungeon.apd.ApdFeatures.grudge());
+                        assertTrue("Cleric remains playable", com.shatteredpixel.shatteredpixeldungeon.apd.ApdFeatures.clericPlayable());
+                        oldEngine.set(engine.get(null));
+                        java.util.List<com.shatteredpixel.shatteredpixeldungeon.apd.humor.Line> lines = com.shatteredpixel.shatteredpixeldungeon.apd.humor.ClericGrudge.loadPacks(new com.shatteredpixel.shatteredpixeldungeon.apd.humor.ClericGrudge.PackSource() {
+                            public java.util.List<String> names() {
+                                return java.util.Arrays.asList(Gdx.files.internal("apd/humor/packs.txt").readString("UTF-8").trim().split("\\r?\\n"));
+                            }
+                            public String read(String name) { return Gdx.files.internal("apd/humor/" + name).readString("UTF-8"); }
+                        });
+                        assertEquals(50, lines.size());
+                        // Isolate the test ledger; never reset or overwrite the player's collection.
+                        engine.set(null, new com.shatteredpixel.shatteredpixeldungeon.apd.humor.ClericGrudge(lines,
+                            new com.shatteredpixel.shatteredpixeldungeon.apd.humor.Ledger(null), new java.util.Random(7), true));
+                        SPDSettings.apdGrudgePref("apd_grudge_popups", "RARER");
+                        assertTrue(com.shatteredpixel.shatteredpixeldungeon.windows.GrudgeHooks.firstClericRun(continued::incrementAndGet));
+                        popup.set(find(Game.scene(), com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions.class));
+                        assertNotNull("the actual first-run window is on screen", popup.get());
+                        assertTrue(popup.get().visible && popup.get().active);
+                        assertEquals(0, continued.get());
+                    } catch (Exception e) { throw new RuntimeException(e); }
+                });
+                Thread.sleep(600);
+                android.graphics.Bitmap shot = androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().getUiAutomation().takeScreenshot();
+                assertNotNull(shot);
+                java.io.File dir = new java.io.File(android.os.Environment.getExternalStoragePublicDirectory(android.os.Environment.DIRECTORY_PICTURES), "APD-Test-Visuals");
+                assertTrue(dir.isDirectory() || dir.mkdirs());
+                try (java.io.FileOutputStream out = new java.io.FileOutputStream(new java.io.File(dir, "cleric-first-run.png"))) {
+                    assertTrue(shot.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, out));
+                } finally { shot.recycle(); }
+                onRender(() -> {
+                    popup.get().onBackPressed();
+                    assertEquals("Back must continue once", 1, continued.get());
+                    assertFalse("the same install must not repeat its collected entry", com.shatteredpixel.shatteredpixeldungeon.windows.GrudgeHooks.firstClericRun(continued::incrementAndGet));
+                    assertEquals(1, continued.get());
+                });
+            } finally {
+                onRender(() -> {
+                    try { engine.set(null, oldEngine.get()); }
+                    catch (Exception e) { throw new RuntimeException(e); }
+                    SPDSettings.apdGrudgePref("apd_grudge_popups", beforeFrequency);
+                });
+            }
+        }
+    }
 }
+
