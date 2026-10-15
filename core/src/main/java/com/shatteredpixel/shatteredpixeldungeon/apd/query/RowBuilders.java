@@ -55,7 +55,7 @@ public final class RowBuilders {
 
 	private RowBuilders(){}
 
-	public static final int BUILDER_VERSION = 13;
+	public static final int BUILDER_VERSION = 14;
 
 	private static final DatasetDef RUNS = Datasets.runs();
 	private static final DatasetDef ITEMS = Datasets.items();
@@ -480,6 +480,9 @@ public final class RowBuilders {
 	private static ApdEvent detailAfter( List<ApdEvent> events, int i, int type ){
 		for (int k = i + 1; k < events.size() && k <= i + 3; k++){
 			if (events.get(k).type == type) return events.get(k);
+			int next = events.get(k).type;
+			if (next == EventTypes.GAP || next == EventTypes.ATTACK || next == EventTypes.DAMAGE
+					|| next == EventTypes.KILL || next == EventTypes.HEAL) break;
 		}
 		return null;
 	}
