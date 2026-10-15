@@ -50,6 +50,10 @@ jobs:
           pathlib.Path('existing-test222.apk').write_bytes(apk)
           pathlib.Path('acceptance-source.json').write_text(json.dumps({'application_source':source,'application_run':int(run_id),'application_sha256':digest,'test_source':os.environ['GITHUB_SHA'],'application_reused':True,'published':False,'physical_device':False},indent=2))
           PY
+      - name: Add only the Android 16 native-touch instrumentation fixture
+        run: |
+          git fetch --no-tags --depth=1 origin 22a127f61d0510a1aecd03a440b95d84da4c26b1
+          git show 22a127f61d0510a1aecd03a440b95d84da4c26b1:android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java > android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java
       - name: Set up Android SDK
         run: |
           yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
@@ -76,9 +80,36 @@ jobs:
             adb install -r existing-test222.apk
             adb install -r android/build/outputs/apk/androidTest/debug/android-debug-androidTest.apk
             adb logcat -c
-            timeout 720 adb shell am instrument -w -r -e class com.shatteredpixel.shatteredpixeldungeon.android.CustomRulesNoticeDeviceTest#allEighteenControlsAcceptNativeTouchSaveAndReopenWithoutChangingActiveRun,com.shatteredpixel.shatteredpixeldungeon.android.CustomRulesNoticeDeviceTest#healingConversionSettingExplainsItsExactScopeWithoutChangingSavedValue,com.shatteredpixel.shatteredpixeldungeon.android.AboutDeviceTest#aboutFoundingStatementAndPopupFollowAdultHumorOnEveryOpening,com.shatteredpixel.shatteredpixeldungeon.android.PlayRunDeviceTest#aRunCanBePlayedSavedContinuedAndEndedWithItsHistoryRecorded com.charltonchris29.adhdpixeldungeon.indev.test/androidx.test.runner.AndroidJUnitRunner > all-controls-instrumentation.txt 2>&1
+            run_case() {
+              method="$1"
+              output="$2"
+              limit="$3"
+              set +e
+              timeout "$limit" adb shell am instrument -w -r -e class "$method" com.charltonchris29.adhdpixeldungeon.indev.test/androidx.test.runner.AndroidJUnitRunner > "$output" 2>&1
+              status=$?
+              set -e
+              echo "$status" > "$output.exit"
+              adb shell am force-stop com.charltonchris29.adhdpixeldungeon.indev || true
+            }
+            run_case com.shatteredpixel.shatteredpixeldungeon.android.CustomRulesNoticeDeviceTest#allEighteenControlsAcceptNativeTouchSaveAndReopenWithoutChangingActiveRun api36-01-controls.txt 480
+            run_case com.shatteredpixel.shatteredpixeldungeon.android.CustomRulesNoticeDeviceTest#healingConversionSettingExplainsItsExactScopeWithoutChangingSavedValue api36-02-healing.txt 300
+            run_case com.shatteredpixel.shatteredpixeldungeon.android.AboutDeviceTest#aboutFoundingStatementAndPopupFollowAdultHumorOnEveryOpening api36-03-about.txt 300
+            run_case com.shatteredpixel.shatteredpixeldungeon.android.PlayRunDeviceTest#aRunCanBePlayedSavedContinuedAndEndedWithItsHistoryRecorded api36-04-play-save.txt 480
             adb logcat -d -v time > all-controls-logcat.txt
-            python3 -c "import json,pathlib,re; s=pathlib.Path('all-controls-instrumentation.txt').read_text(); print(s); assert re.search(r'OK \(4 tests\)',s), 'Missing successful four-method instrumentation result'; assert not any(x in s for x in ['FAILURES!!!','INSTRUMENTATION_FAILED','Process crashed.']); pathlib.Path('all-controls-result.json').write_text(json.dumps({'tests':4,'passed':4,'api_level':36,'failures':0,'errors':0,'skipped':0,'controls':18,'boundaries':'minimum and maximum','native_touch':True,'save_and_reopen':True,'active_rules_unchanged':True,'scores_unchanged':True,'physical_device':False},indent=2))"
+            python3 - <<'PY'
+            import json,pathlib,re,subprocess
+            cases=['api36-01-controls.txt','api36-02-healing.txt','api36-03-about.txt','api36-04-play-save.txt']
+            for name in cases:
+                output=pathlib.Path(name).read_text()
+                print('===== '+name+' =====')
+                print(output)
+                assert pathlib.Path(name+'.exit').read_text().strip()=='0', name+' command failed'
+                assert re.search(r'OK \\(1 test\\)',output), name+' did not pass exactly one method'
+                assert not any(marker in output for marker in ['FAILURES!!!','INSTRUMENTATION_FAILED','Process crashed.'])
+            sdk=int(subprocess.check_output(['adb','shell','getprop','ro.build.version.sdk']))
+            assert sdk==36
+            pathlib.Path('all-controls-result.json').write_text(json.dumps({'tests':4,'passed':4,'api_level':sdk,'failures':0,'errors':0,'skipped':0,'controls':18,'boundaries':'minimum and maximum','native_touch':True,'isolated_instrumentation_processes':True,'save_and_reopen':True,'active_rules_unchanged':True,'scores_unchanged':True,'physical_device':False},indent=2))
+            PY
       - name: Preserve acceptance evidence even if a check fails
         if: always()
         uses: actions/upload-artifact@v4
@@ -87,7 +118,8 @@ jobs:
           path: |
             acceptance-source.json
             all-controls-result.json
-            all-controls-instrumentation.txt
+            api36-*.txt
+            api36-*.exit
             all-controls-logcat.txt
             android/build/reports/
           if-no-files-found: warn
