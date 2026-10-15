@@ -968,3 +968,10 @@ Exact source f9d873f382de2533c52e6f895e403b94fc7e6d5c/tree4d7868272a4fc8172266ed
 - Failure: `TelemetryVersionTest.parsesAndPrints` supplied `1.12` while accidentally expecting `1.13`. Production telemetry 1.13 self-test and ally-summon regressions passed.
 - History preservation/validation passed. Failed artifact `11958859521`, 752,523 bytes, GitHub SHA-256 `8dcf551329e74d6758ae50ee6cb0f302f7892bdfb15c003e9389f55c169dc8f4`.
 - TEST200 changes only the erroneous expected value and requests the unchanged full 1,613-core/debug/TEST197-history/27-API34/35-PNG gate.
+
+
+## 2026-10-15T09:05:04Z — TEST200 ally-summon telemetry verified
+- Source `094f6fc168c2c46057648542d68da4537739ec9f`, run `38708477712` (08:49:54Z–09:03:04Z): 1,613 core / 314 XML suites and 27 API34 methods, zero failures/errors/skips; debug assembly and immediate-previous compiled TEST197/Codex TEST 194 history passed.
+- Both retained ally-summon tests and all telemetry-version tests passed. The internal Codex TEST 196 APK SHA-256 is `5fe49a5e2167dd688c35fcbc04b31e18951873fa42caae2ea645f42039e4c646`.
+- Artifacts: core `11959253024` / `1c5e5084b05df08fbdef8bff4fee72d85926b90b3d5c4e5a1998761293fe7b17`; APK `11959178061` / `e93ab8c59a32331207cacce595e0535cea31972a9dc7fd817567f61dcd14f09c`; Android `11959678617` / `dfdc05d475811335ec68b606d5ae1d0e5eeaa54be3e98bdc88aef93530d49ca6`.
+- All 35 screenshots are valid 320×640 PNGs; full contact sheet reviewed clean. Private delivery skipped; no physical-phone claim. TEST123 remains owner-delivered/signature-compared. Do not rebuild unchanged TEST200.

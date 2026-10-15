@@ -2502,3 +2502,12 @@ The ordered legacy-door item is closed. Hero markers still require explicit appr
 - `TelemetryVersionTest.parsesAndPrints` parsed the literal `1.12` but mistakenly expected `1.13`. The production telemetry 1.13 self-test and both new ally-summon regressions passed.
 - History preservation/validation passed. Debug APK and API34 were skipped; no TEST199 APK exists. Failed core artifact `11958859521`, 752,523 bytes, digest `8dcf551329e74d6758ae50ee6cb0f302f7892bdfb15c003e9389f55c169dc8f4`.
 - TEST200 corrects only the fixture expectation to `1.12`; production implementation and assertions are retained. Full 1,613-core/debug/TEST197-history/27-API34/35-PNG gate pending. TEST197 remains verified compiled fallback; TEST123 remains owner-delivered.
+
+
+## 2026-10-15T09:05:04Z — TEST200 ally-summon telemetry verified
+- Corrected source `094f6fc168c2c46057648542d68da4537739ec9f`, run [38708477712](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38708477712) (08:49:54Z–09:03:04Z), passed 1,613 core tests in 314 XML suites, debug assembly, complete immediate-previous compiled TEST197/Codex TEST 194 history, 27 API34 methods and 35 screenshots; zero failures/errors/skips.
+- Both `AllySummonRecordingTest` methods and all four `TelemetryVersionTest` methods passed. Telemetry 1.13 public `ally.summon` is accepted at the explicit creator-ownership boundary with exact-once and visibility/privacy exclusions retained.
+- Internal Codex TEST 196 APK SHA-256 `5fe49a5e2167dd688c35fcbc04b31e18951873fa42caae2ea645f42039e4c646`.
+- Artifacts: core `11959253024` / ZIP `1c5e5084…fe7b17`; APK `11959178061` / ZIP `e93ab8c5…4f09c`; Android `11959678617` / ZIP `dfdc05d4…d49ca6`.
+- All 35 PNGs are valid 320×640 and the full contact sheet reviewed clean. Private delivery was skipped; no physical-phone claim. TEST123 remains owner-delivered/signature-compared.
+- No application build is pending; do not rebuild unchanged TEST200. Re-read the latest head, then continue the next distinct approved canonical recording item in documented order (alchemy-use details before level feelings) only after reproducing a concrete omission and reviewing hidden-information boundaries.
