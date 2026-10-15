@@ -1,3 +1,8 @@
+## 2026-10-15T10:47:30Z — TEST204 pre-gate movement boundary correction
+- Review before CI found that an entry hook could count a same-cell self-trample or an immediately blocked route as a movement command.
+- Moved recording to the first successful `getCloser` step. Failed/same-cell actions emit nothing; a multi-step route still emits exactly once through its transient action-local guard.
+- Expected count and complete TEST204 gate are unchanged. Candidate pending; no build, delivery or physical-phone claim.
+
 ## 2026-10-15T10:40:47Z — TEST204 movement-command telemetry candidate
 - Reproduced the movement omission at the real action boundary: the shipped `move.step.travelling` field is true for every ordinary physical step and therefore cannot distinguish an adjacent manual step from point-to-point travel. Its historical values remain unchanged; its description is corrected.
 - Additive telemetry 1.15 introduces public `move.command`, emitted once when a `HeroAction.Move` begins and tagged `step`, `travel` or `stairs`, with destination cell and floor width. The transient action-local guard prevents one multi-step route from producing duplicate commands.

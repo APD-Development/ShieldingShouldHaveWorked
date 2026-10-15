@@ -1048,10 +1048,6 @@ public class Hero extends Char {
 
 	private boolean actMove( HeroAction.Move action ) {
 
-		if (action.apdStartRecording()) {
-			ApdPlay.onMoveCommand(action.dst, action.apdModeTag());
-		}
-
         if (action instanceof com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.Walk) {
             com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.Walk walk =
                     (com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.Walk) action;
@@ -1064,6 +1060,9 @@ public class Hero extends Char {
         }
 
 		if (getCloser( action.dst )) {
+			if (action.apdStartRecording()) {
+				ApdPlay.onMoveCommand(action.dst, action.apdModeTag());
+			}
 			canSelfTrample = false;
 			return true;
 

@@ -194,3 +194,5 @@ TEST202 verified (2026-10-15T09:36:13Z): source186f5892429ef564ec4a9d59c9885a62f
 
 
 TEST204 exact-source request (2026-10-15T10:40:47Z): add public telemetry1.15 move.command once per HeroAction.Move, tagged step, travel or stairs with destination and floor width. Preserve the existing move.step schema/values while correcting its description to physical walking versus instantaneous relocation. Current source has no general auto-explore mechanic; do not invent one. Verify1619core/debug/complete immediate-previous compiledTEST202/CodexTEST198 history/27API34/35PNG. Preserve movement, paths, interruptions, turns, RNG, saves, scores, custom rules, identity and signing. No delivery or physical-phone claim.
+
+TEST204 pre-gate correction (2026-10-15T10:47:30Z): record only after the first successful getCloser step; failed, blocked and same-cell self-trample actions emit nothing, while a multi-step action emits once. Expected1619core and all other TEST204 requirements are unchanged.
