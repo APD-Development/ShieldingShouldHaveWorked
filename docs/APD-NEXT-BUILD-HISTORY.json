@@ -17,11 +17,12 @@
       "category": "Quality of Life",
       "sprite": "ICON_INFO",
       "title": "Apply clean authored-language alternatives",
-      "text": "Adult Humor off uses clean badge, dialogue, journal, news and history wording; original adult text remains available without changing player-entered text.",
+      "text": "Adult Humor off uses clean badge, dialogue, journal, news and history wording; original adult text remains available without changing player-entered text. Shared text policy stays separate from the isolated Cleric humor subsystem.",
       "paths": [
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/humor/AuthoredLanguage.java",
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/messages/Messages.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/APDTextScene.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/APDTextScene.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/text/AuthoredLanguage.java"
       ]
     },
     {
