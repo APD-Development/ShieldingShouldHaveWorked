@@ -20,7 +20,7 @@ android {
         def apdFeaturesDir = project.layout.buildDirectory.dir('apdTestAssets').get().asFile
         def apdFeaturesFile = new File(apdFeaturesDir, 'apd/features.txt')
         apdFeaturesFile.parentFile.mkdirs()
-        apdFeaturesFile.text = "testBuild\ndemoUnlock\nclericPlayable\n"
+        apdFeaturesFile.text = "testBuild\ngrudge\ndemoUnlock\nclericPlayable\n"
         sourceSets.main.assets.srcDir(apdFeaturesDir)
     }
 
