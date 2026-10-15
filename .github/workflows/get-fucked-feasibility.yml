@@ -25,7 +25,7 @@ jobs:
       - name: Inventory health writes and death calls across actual production source
         run: python3 .github/scripts/get_fucked_source_audit.py
       - name: Run scenario and existing challenge tests
-        run: ./gradlew :core:test --tests '*GetFuckedFeasibilityTest' --tests '*GetFuckedTest' --tests '*ShieldHungerTest'
+        run: ./gradlew :core:test --tests '*GetFuckedFeasibilityTest' --tests '*GetFuckedTest' --tests '*ShieldHungerTest' --tests '*GetFuckedRouteTest'
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4

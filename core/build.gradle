@@ -39,3 +39,6 @@ test {
         showStandardStreams = true
     }
 }
+
+//Test-only UI replacement for fixed legal command replay; no runtime dependency.
+dependencies { testImplementation 'org.mockito:mockito-core:5.14.2' }
