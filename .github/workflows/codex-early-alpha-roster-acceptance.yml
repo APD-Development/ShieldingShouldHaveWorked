@@ -89,7 +89,6 @@ jobs:
           target: default
           disable-animations: true
           script: |
-            set -o pipefail
             adb install -r verified-test241.apk
             adb install -r android/build/outputs/apk/androidTest/debug/android-debug-androidTest.apk
             adb logcat -c
