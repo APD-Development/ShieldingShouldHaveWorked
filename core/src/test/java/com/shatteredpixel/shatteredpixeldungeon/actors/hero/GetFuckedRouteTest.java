@@ -1085,6 +1085,14 @@ public class GetFuckedRouteTest {
         Method select=hourglassWindow.getClass().getDeclaredMethod("onSelect",int.class);select.setAccessible(true);select.invoke(hourglassWindow,1);
         assertNotNull(Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class));log("ACTUAL HOURGLASS ORIGINAL FREEZE CHOICE");
     }
+    private void activateOwnedHourglassStasis() throws Exception {
+        TimekeepersHourglass hourglass=Dungeon.hero.belongings.getItem(TimekeepersHourglass.class);assertNotNull(hourglass);assertTrue(hourglass.isEquipped(Dungeon.hero));
+        hourglassWindow=null;hourglass.execute(Dungeon.hero,"ACTIVATE");assertNotNull(hourglassWindow);
+        Method select=hourglassWindow.getClass().getDeclaredMethod("onSelect",int.class);select.setAccessible(true);select.invoke(hourglassWindow,0);
+        assertNotNull("Original stasis must attach",Dungeon.hero.buff(TimekeepersHourglass.timeStasis.class));
+        Dungeon.hero.busy();ready();assertNull("Stasis must actually complete",Dungeon.hero.buff(TimekeepersHourglass.timeStasis.class));assertEquals(0,Dungeon.hero.paralysed);
+        log("ACTUAL PAID STASIS COMPLETE BEFORE LEAVING GUARD ROOM");
+    }
     private void eighthFloorHourglassGuard() throws Exception {
         assertEquals(214,Dungeon.hero.pos);
         for(int cell:new int[]{246,279,280,281,314})click(cell);
@@ -1102,11 +1110,15 @@ public class GetFuckedRouteTest {
             }
             fail("Undefended Hourglass attack route unexpectedly survived; inspect negative control");
         }else{
-            for(int cell:new int[]{347,379,411,442,474,507,540})click(cell);
-            if(!Boolean.getBoolean("route.freezeAllTen")){
+            for(int cell:new int[]{347,379,411,442,474,507})click(cell);
+            boolean early= Integer.getInteger("route.guardFreezeMoves",7)==6;
+            if(early){Dungeon.hero.belongings.getItem(TimekeepersHourglass.class).execute(Dungeon.hero,"ACTIVATE");assertNull(Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class));log("END FREEZE AT DISTANCE FIVE AFTER SIX REAL MOVES");}
+            click(540);
+            if(!early && !Boolean.getBoolean("route.freezeAllTen")){
                 Dungeon.hero.belongings.getItem(TimekeepersHourglass.class).execute(Dungeon.hero,"ACTIVATE");
                 assertNull("Original deactivation must end freeze",Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class));log("END ACTUAL FREEZE AFTER SEVEN MOVES OUTSIDE CHAIN RANGE");
             }
+            if(Boolean.getBoolean("route.breakGuardPursuitWithStasis"))activateOwnedHourglassStasis();
             for(int cell:new int[]{572,604,636})click(cell);
             assertEquals(636,Dungeon.hero.pos);assertTrue("Guard is bypassed, not secretly killed",guard.isAlive());
             log("NORTHERN GUARD BYPASSED USING ACTUAL FROZEN MOVEMENT");
@@ -1121,6 +1133,20 @@ public class GetFuckedRouteTest {
     }
     private void eighthFloorHourglassSkeleton() throws Exception {
         assertEquals(953,Dungeon.hero.pos);
+        if(Boolean.getBoolean("route.hourglassRangedSkeleton")){
+            click(984);cast(HolyWard.INSTANCE,null);
+            Mob skeleton=Dungeon.level.mobs.stream().filter(m->m.id()==244).findFirst().get();
+            cast(ShieldOfLight.INSTANCE,skeleton.pos);
+            for(int n=0;n<3;n++)cast(GuidingLight.INSTANCE,skeleton.pos);
+            assertTrue("Three 2..8 lights cannot alone kill a full 25-HP skeleton",skeleton.isAlive());
+            assertNull("Owned missile must have earned its free cast cooldown",Dungeon.hero.buff(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.ShurikenInstantTracker.class));
+            throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class,skeleton.pos);
+            assertFalse("Prepared skeleton must actually die",skeleton.isAlive());
+            assertEquals("One skeleton cannot unlock Bless from 26 XP",6,Dungeon.hero.lvl);assertEquals(31,Dungeon.hero.exp);
+            log("RECHARGED BRANCH REAL SKELETON CLEAR NO BLESS GRANTED");
+            if(System.getProperty("route.hourglassSkeletonOut")!=null)writeCheckpoint(System.getProperty("route.hourglassSkeletonOut"));
+            return;
+        }
         Item rage=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRage.class);assertNotNull(rage);
         if(Boolean.getBoolean("route.hourglassRageAtDoor")){
             click(984);log("CENTRAL ROOM BEFORE RETAINED RAGE AT ACTUAL DOOR");
@@ -1142,8 +1168,74 @@ public class GetFuckedRouteTest {
         click(1015);click(1044);assertEquals("Engine movement is interrupted at the actual cell, not the clicked target",1077,Dungeon.hero.pos);log("CENTRAL DUEL AFTER TWO INPUTS AND THREE ELAPSED TURNS");
         if(System.getProperty("route.hourglassDuelOut")!=null)writeCheckpoint(System.getProperty("route.hourglassDuelOut"));
     }
+    private void eighthFloorHourglassDM() throws Exception {
+        assertEquals(984,Dungeon.hero.pos);assertEquals(31,Dungeon.hero.exp);assertEquals(6,Dungeon.hero.lvl);
+        Mob dm=Dungeon.level.mobs.stream().filter(m->m.id()==245).findFirst().get();assertEquals(1138,dm.pos);
+        activateOwnedHourglassFreeze();
+        for(int cell:new int[]{1015,1046,1077,1108})click(cell);
+        assertEquals(1108,Dungeon.hero.pos);assertEquals("DM must remain at actual frozen cell",1138,dm.pos);
+        assertNull("Exactly four moves consume the two owned Hourglass charges",Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class));
+        click(1139);assertEquals(1139,Dungeon.hero.pos);assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,dm.pos));log("ACTUAL ADJACENT DM APPROACH AFTER FOUR FROZEN MOVES");
+        for(int n=0;n<4 && dm.isAlive();n++){
+            assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,dm.pos));click(dm.pos);
+            if(n==0 && Boolean.getBoolean("route.hourglassRageAfterFirstHit")){
+                Item rage=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRage.class);assertNotNull(rage);
+                rage.execute(Dungeon.hero,"READ");ready();log("RETAINED RAGE AFTER FIRST DM HIT WITH GUARD AND NECROMANCER VISIBLE");
+                if(System.getProperty("route.hourglassDMRageOut")!=null)writeCheckpoint(System.getProperty("route.hourglassDMRageOut"));
+                return;
+            }
+        }
+        assertFalse("Real adjacent DM encounter must be completed",dm.isAlive());assertEquals(7,Dungeon.hero.lvl);assertEquals(1,Dungeon.hero.talentPointsAvailable(2));
+        Dungeon.hero.upgradeTalent(Talent.BLESS);log("RECHARGED HOURGLASS BRANCH EARNS BLESS AFTER BOTH REAL ENCOUNTERS");
+        if(System.getProperty("route.hourglassDMOut")!=null)writeCheckpoint(System.getProperty("route.hourglassDMOut"));
+    }
+    private void eighthFloorHourglassFinishDM() throws Exception {
+        assertEquals(1139,Dungeon.hero.pos);
+        Mob dm=Dungeon.level.mobs.stream().filter(m->m.id()==245).findFirst().get();
+        for(int n=0;n<4 && dm.isAlive();n++)click(dm.pos);
+        assertFalse("DM must really be dead, including any paid Rage interaction",dm.isAlive());
+        assertEquals(7,Dungeon.hero.lvl);assertEquals(1,Dungeon.hero.talentPointsAvailable(2));Dungeon.hero.upgradeTalent(Talent.BLESS);
+        log("CONTINUOUS PIT RECHARGE SKELETON DM AND RAGE ROUTE ACTUALLY EARNS BLESS");
+        if(System.getProperty("route.hourglassBlessEarnedOut")!=null)writeCheckpoint(System.getProperty("route.hourglassBlessEarnedOut"));
+    }
+    private void eighthFloorHourglassBlessEscape() throws Exception {
+        assertEquals(1077,Dungeon.hero.pos);assertEquals(1,Dungeon.hero.pointsInTalent(Talent.BLESS));
+        for(int cell:new int[]{1076,1043,1042,1073,1072,1071,1102,1133,1164}){click(cell);assertEquals("Actual escape movement must reach the requested adjacent cell",cell,Dungeon.hero.pos);}
+        log("ACTUAL POST DUEL ESCAPE WITH ALL REMAINING ENEMIES");
+        if(System.getProperty("route.hourglassEscapeOut")!=null)writeCheckpoint(System.getProperty("route.hourglassEscapeOut"));
+    }
+    private void eighthFloorHourglassFirstBless() throws Exception {
+        assertEquals(1164,Dungeon.hero.pos);assertEquals(1,Dungeon.hero.pointsInTalent(Talent.BLESS));
+        assertEquals("No whole charge may be granted at this checkpoint",0,charge(Dungeon.hero.belongings.getItem(HolyTome.class)));
+        click(1131);assertEquals(1131,Dungeon.hero.pos);
+        assertTrue("The move must actually earn the first whole charge",charge(Dungeon.hero.belongings.getItem(HolyTome.class))>=1);
+        cast(BlessSpell.INSTANCE,Dungeon.hero.pos);log("FIRST REAL BLESS CAST AFTER PAID RECHARGE AND CHASING ENEMIES");
+        if(System.getProperty("route.hourglassFirstBlessOut")!=null)writeCheckpoint(System.getProperty("route.hourglassFirstBlessOut"));
+    }
+    private void eighthFloorHourglassThiefApproach() throws Exception {
+        assertEquals(1131,Dungeon.hero.pos);
+        click(1098);assertEquals(1098,Dungeon.hero.pos);
+        Mob thief=Dungeon.level.mobs.stream().filter(m->m.id()==242).findFirst().get();assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,thief.pos));
+        click(thief.pos);log("ACTUAL THIEF EXCHANGE WHILE NECRO SKELETON CONTINUES CHASING");
+        if(System.getProperty("route.hourglassThiefOut")!=null)writeCheckpoint(System.getProperty("route.hourglassThiefOut"));
+    }
+    private void eighthFloorHourglassWestFight() throws Exception {
+        assertEquals(1098,Dungeon.hero.pos);
+        Mob thief=Dungeon.level.mobs.stream().filter(m->m.id()==242).findFirst().orElse(null);
+        for(int n=0;n<2 && thief!=null && thief.isAlive() && Dungeon.level.adjacent(Dungeon.hero.pos,thief.pos);n++)click(thief.pos);
+        log("ACTUAL TWO THIEF FOLLOW UP ATTEMPTS NO STOLEN ITEMS RESTORED");
+        Mob skeleton=Dungeon.level.mobs.stream().filter(m->m.id()==281).findFirst().get();
+        for(int n=0;n<5 && skeleton.isAlive();n++){assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,skeleton.pos));click(skeleton.pos);}
+        assertFalse("Real chasing necro skeleton must be dead",skeleton.isAlive());log("ACTUAL NECRO SKELETON CLEAR WITH ITS REAL EXPLOSION");
+        if(System.getProperty("route.hourglassWestClearOut")!=null)writeCheckpoint(System.getProperty("route.hourglassWestClearOut"));
+    }
     private void eighthFloorSection() throws Exception {
-        if(Dungeon.hero.pos==984){eighthFloorHourglassDuel();return;}
+        if(Dungeon.hero.pos==1098){eighthFloorHourglassWestFight();return;}
+        if(Dungeon.hero.pos==1131){eighthFloorHourglassThiefApproach();return;}
+        if(Dungeon.hero.pos==1164){eighthFloorHourglassFirstBless();return;}
+        if(Dungeon.hero.pos==1077){eighthFloorHourglassBlessEscape();return;}
+        if(Dungeon.hero.pos==1139){eighthFloorHourglassFinishDM();return;}
+        if(Dungeon.hero.pos==984){if(Boolean.getBoolean("route.hourglassMeleeDM"))eighthFloorHourglassDM();else eighthFloorHourglassDuel();return;}
         if(Dungeon.hero.pos==953){eighthFloorHourglassSkeleton();return;}
         if(Dungeon.hero.pos==636){eighthFloorHourglassCentral();return;}
         if(Dungeon.hero.pos==214){eighthFloorHourglassGuard();return;}
@@ -1270,6 +1362,8 @@ public class GetFuckedRouteTest {
         log("HOURGLASS AND PIT CRYSTAL KEY ACTUALLY ACQUIRED");
         TimekeepersHourglass hourglass=Dungeon.hero.belongings.getItem(TimekeepersHourglass.class);
         hourglass.execute(Dungeon.hero,"EQUIP");Dungeon.hero.busy();ready();assertTrue(hourglass.isEquipped(Dungeon.hero));log("ACTUAL HOURGLASS EQUIPPED IN FREE MISC SLOT");
+        for(int n=0;n<Integer.getInteger("route.pitRecharge",0);n++)waitOne();
+        if(Integer.getInteger("route.pitRecharge",0)>0)log("PAID NATIVE PIT ROOM RECHARGE BEFORE CRYSTAL EXIT");
         for(int cell:new int[]{178,179,180,212,213,213,214})click(cell);
         assertEquals("Must actually escape the pit room through the owned crystal key",214,Dungeon.hero.pos);
         assertEquals(0,com.shatteredpixel.shatteredpixeldungeon.journal.Notes.keyCount(new com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey(8)));

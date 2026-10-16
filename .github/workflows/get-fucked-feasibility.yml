@@ -246,6 +246,84 @@ jobs:
         with:
           name: get-fucked-hourglass-route-results
           path: ${{ runner.temp }}/get-fucked-hourglass/
+      - name: Verify paid recharge continuation recharged-pit
+        run: |
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' \
+            -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor7_intercept" \
+            -Droute.stableHash=true -Droute.noSnapshots=true -Droute.hourglassAccess=true -Droute.pitRecharge=150 \
+            -Droute.expectedEnd="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_hourglass_exit_recharged"
+          mkdir -p "$RUNNER_TEMP/get-fucked-recharged/recharged-pit"
+          cp core/build/test-results/test/TEST-*.xml "$RUNNER_TEMP/get-fucked-recharged/recharged-pit/"
+      - name: Verify paid recharge continuation six-bypass
+        run: |
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' \
+            -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_hourglass_exit_recharged" \
+            -Droute.stableHash=true -Droute.noSnapshots=true -Droute.guardFreezeMoves=6 \
+            -Droute.expectedEnd="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_hourglass_northpool_six"
+          mkdir -p "$RUNNER_TEMP/get-fucked-recharged/six-bypass"
+          cp core/build/test-results/test/TEST-*.xml "$RUNNER_TEMP/get-fucked-recharged/six-bypass/"
+      - name: Verify paid recharge continuation six-central
+        run: |
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' \
+            -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_hourglass_northpool_six" \
+            -Droute.stableHash=true -Droute.noSnapshots=true  \
+            -Droute.expectedEnd="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_hourglass_central_six"
+          mkdir -p "$RUNNER_TEMP/get-fucked-recharged/six-central"
+          cp core/build/test-results/test/TEST-*.xml "$RUNNER_TEMP/get-fucked-recharged/six-central/"
+      - name: Verify paid recharge continuation six-skeleton
+        run: |
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' \
+            -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_hourglass_central_six" \
+            -Droute.stableHash=true -Droute.noSnapshots=true -Droute.hourglassRangedSkeleton=true \
+            -Droute.expectedEnd="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_hourglass_skeleton_six"
+          mkdir -p "$RUNNER_TEMP/get-fucked-recharged/six-skeleton"
+          cp core/build/test-results/test/TEST-*.xml "$RUNNER_TEMP/get-fucked-recharged/six-skeleton/"
+      - name: Verify paid recharge continuation dm-rage
+        run: |
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' \
+            -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_hourglass_skeleton_six" \
+            -Droute.stableHash=true -Droute.noSnapshots=true -Droute.hourglassMeleeDM=true -Droute.hourglassRageAfterFirstHit=true \
+            -Droute.expectedEnd="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_hourglass_dm_rage"
+          mkdir -p "$RUNNER_TEMP/get-fucked-recharged/dm-rage"
+          cp core/build/test-results/test/TEST-*.xml "$RUNNER_TEMP/get-fucked-recharged/dm-rage/"
+      - name: Verify paid recharge continuation dm-finish
+        run: |
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' \
+            -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_hourglass_dm_rage" \
+            -Droute.stableHash=true -Droute.noSnapshots=true  \
+            -Droute.expectedEnd="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_hourglass_bless_earned"
+          mkdir -p "$RUNNER_TEMP/get-fucked-recharged/dm-finish"
+          cp core/build/test-results/test/TEST-*.xml "$RUNNER_TEMP/get-fucked-recharged/dm-finish/"
+      - name: Verify paid recharge continuation escape
+        run: |
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' \
+            -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_hourglass_bless_earned" \
+            -Droute.stableHash=true -Droute.noSnapshots=true  \
+            -Droute.expectedEnd="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_hourglass_escape"
+          mkdir -p "$RUNNER_TEMP/get-fucked-recharged/escape"
+          cp core/build/test-results/test/TEST-*.xml "$RUNNER_TEMP/get-fucked-recharged/escape/"
+      - name: Verify paid recharge continuation first-bless
+        run: |
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' \
+            -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_hourglass_escape" \
+            -Droute.stableHash=true -Droute.noSnapshots=true  \
+            -Droute.expectedEnd="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_hourglass_first_bless"
+          mkdir -p "$RUNNER_TEMP/get-fucked-recharged/first-bless"
+          cp core/build/test-results/test/TEST-*.xml "$RUNNER_TEMP/get-fucked-recharged/first-bless/"
+      - name: Verify paid recharge continuation thief
+        run: |
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' \
+            -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_hourglass_first_bless" \
+            -Droute.stableHash=true -Droute.noSnapshots=true  \
+            -Droute.expectedEnd="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_hourglass_thief_exchange"
+          mkdir -p "$RUNNER_TEMP/get-fucked-recharged/thief"
+          cp core/build/test-results/test/TEST-*.xml "$RUNNER_TEMP/get-fucked-recharged/thief/"
+      - name: Preserve paid recharge branch results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: get-fucked-recharged-route-results
+          path: ${{ runner.temp }}/get-fucked-recharged/
       - name: Replay earned Goo approach and first ranged retreat
         run: >-
           ./gradlew :core:test --tests '*GetFuckedRouteTest'
