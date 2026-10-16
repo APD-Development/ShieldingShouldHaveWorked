@@ -70,6 +70,8 @@ public class GetFuckedRouteTest {
             doAnswer(i->{((com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Shaman)ch).onZapComplete();return null;}).when(sprite).zap(anyInt());
         if(ch instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Spinner)
             doAnswer(i->{((com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Spinner)ch).shootWeb();return null;}).when(sprite).zap(anyInt());
+        if(ch instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM200)
+            doAnswer(i->{((com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM200)ch).onZapComplete();return null;}).when(sprite).zap(anyInt());
         if(ch==Dungeon.hero)doAnswer(i -> {ch.onOperateComplete();return null;}).when((HeroSprite)sprite).read();
         Group parent=mock(Group.class,i -> {
             if(i.getMethod().getName().equals("recycle") && i.getArguments().length==1 && i.getArgument(0) instanceof Class)
@@ -3618,6 +3620,7 @@ public class GetFuckedRouteTest {
                 else if(action.equals("F"))activateOwnedHourglassFreeze();
                 else if(action.equals("s")){assertNotNull(target);assertTrue(ClericSpell.getSpellList(Dungeon.hero,3).contains(Smite.INSTANCE));cast(Smite.INSTANCE,target.pos);}
                 else if(action.equals("b"))cast(LayOnHands.INSTANCE,Dungeon.hero.pos);
+                else if(action.equals("r")){assertNotNull(target);cast(Sunray.INSTANCE,target.pos);}
                 else if(action.equals("I")){assertTrue(ClericSpell.getSpellList(Dungeon.hero,1).contains(HolyWeapon.INSTANCE));cast(HolyWeapon.INSTANCE,null);}
                 else if(action.equals("N"))activateOwnedHourglassStasis();
                 else if(action.startsWith("M"))chooseOwnedSubclassThroughOriginalConfirmation(HeroSubClass.valueOf(action.substring(1)));
