@@ -32,6 +32,7 @@ with outpath.open('w') as out:
 # Rewrite once from the complete captured stream before verification/provenance archival.
 # Live log readers cannot make a partially synchronized file the canonical record.
 outpath.write_text(''.join(captured_lines))
+comparison_text=''
 verification_missing=(result.returncode==0 and any(v.startswith('-Droute.expectedEnd=') for v in sys.argv[2:]) and 'CONNECTED_ENDPOINT_STATE_AND_' not in outpath.read_text()) or (result.returncode==0 and '-Droute.expectedNativeState=true' in sys.argv[2:] and 'CONNECTED_FULL_NATIVE_JSON_AND_RNG_VERIFIED' not in outpath.read_text())
 if result.returncode==0 and '-Droute.manualTail=true' in sys.argv[2:] and 'MANUAL_BOUNDARY' not in outpath.read_text():verification_missing=True
 if result.returncode==0 and '-Droute.expectedNativeFiles=true' in sys.argv[2:] and 'CONNECTED_ALL_NATIVE_FILES_AND_ACTIVE_RNG_VERIFIED' not in outpath.read_text():verification_missing=True
@@ -41,9 +42,14 @@ if verification_missing:
 if result.returncode==0 and '-Droute.expectedMissileIdEquivalence=true' in sys.argv[2:]:
  props={v[2:].split('=',1)[0]:v.split('=',1)[1] for v in sys.argv[2:] if v.startswith('-D') and '=' in v}
  comparison=subprocess.run(['python',str(Path('research/native_equivalence.py').resolve()),props['route.expectedEnd'],props['route.earlySwarmOut']],capture_output=True,text=True)
- with outpath.open('a') as out:out.write(comparison.stdout+comparison.stderr)
+ comparison_text=comparison.stdout+comparison.stderr
+ with outpath.open('a') as out:out.write(comparison_text)
  result.returncode=comparison.returncode
-archive=Path('research/trials');archive.mkdir(exist_ok=True);trial=str(time.time_ns());shutil.copyfile(outpath,archive/(trial+'.log'));(archive/(trial+'.java')).write_bytes(route_source);(archive/(trial+'.args.json')).write_text(json.dumps({'output':str(outpath),'java_args':sys.argv[2:],'exit_code':result.returncode},indent=2));print('return',result.returncode)
+final_output=''.join(captured_lines)+comparison_text
+outpath.with_name(outpath.stem+'-complete.log').write_text(final_output)
+commands=[line[len('MANUAL_COMMAND '):].rstrip() for line in captured_lines if line.startswith('MANUAL_COMMAND ')]
+if commands:outpath.with_name(outpath.stem+'-complete.journal').write_text('\n'.join(commands)+'\n')
+archive=Path('research/trials');archive.mkdir(exist_ok=True);trial=str(time.time_ns());(archive/(trial+'.log')).write_text(final_output);(archive/(trial+'.java')).write_bytes(route_source);(archive/(trial+'.args.json')).write_text(json.dumps({'output':str(outpath),'java_args':sys.argv[2:],'exit_code':result.returncode},indent=2));print('return',result.returncode)
 lines=outpath.read_text().splitlines()
 for x in [x for x in lines if x.startswith('ROUTE ')][-3:]:
  j=json.loads(x[6:]);print({k:j.get(k) for k in ['command','pos','HP','shield','time','totalTime','tomeCharge','partialCharge','level','exp','hunger']},[(m['class'],m['id'],m['pos'],m['HP']) for m in j['mobs'] if m['visible']])

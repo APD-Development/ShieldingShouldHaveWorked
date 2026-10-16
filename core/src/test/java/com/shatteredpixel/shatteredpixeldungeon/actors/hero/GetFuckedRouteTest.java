@@ -61,7 +61,7 @@ public class GetFuckedRouteTest {
         if (ch.sprite != null) return;
         CharSprite sprite = ch == Dungeon.hero ? mock(HeroSprite.class, RETURNS_DEEP_STUBS)
                 : ch instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo ? mock(com.shatteredpixel.shatteredpixeldungeon.sprites.GooSprite.class,RETURNS_DEEP_STUBS)
-                : ch instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Necromancer ? mock(com.shatteredpixel.shatteredpixeldungeon.sprites.NecromancerSprite.class,RETURNS_DEEP_STUBS) : mock(CharSprite.class, RETURNS_DEEP_STUBS);
+                : ch instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Necromancer ? mock(com.shatteredpixel.shatteredpixeldungeon.sprites.NecromancerSprite.class,RETURNS_DEEP_STUBS) : mock(com.shatteredpixel.shatteredpixeldungeon.sprites.MobSprite.class, RETURNS_DEEP_STUBS);
         ch.sprite = sprite;
         if(ch instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo)doAnswer(i->{ch.onAttackComplete();return null;}).when((com.shatteredpixel.shatteredpixeldungeon.sprites.GooSprite)sprite).pumpAttack();
         if(ch instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Necromancer)
@@ -3609,6 +3609,15 @@ public class GetFuckedRouteTest {
                 else if(action.equals("P")){Dungeon.hero.search(true);ready();log("MANUAL ACTUAL PAID SEARCH");}
                 else if(action.startsWith("Y")){int at=action.indexOf('@'),arrow=action.indexOf('>');assertTrue(at>1 && arrow>at);int pot=Integer.parseInt(action.substring(1,at));Class<? extends Item> inputType=Class.forName("com.shatteredpixel.shatteredpixeldungeon.items."+action.substring(at+1,arrow)).asSubclass(Item.class);Class<? extends Item> outputType=Class.forName("com.shatteredpixel.shatteredpixeldungeon.items."+action.substring(arrow+1)).asSubclass(Item.class);craftExoticPotionAtActualPot(pot,inputType,outputType);}
                 else if(action.startsWith("Z")){Talent talent=Talent.valueOf(action.substring(1));int tier=-1;for(int k=0;k<Dungeon.hero.talents.size();k++)if(Dungeon.hero.talents.get(k).containsKey(talent))tier=k;assertTrue(tier>=0);assertTrue(Dungeon.hero.talentPointsAvailable(tier+1)>0);assertTrue(Dungeon.hero.pointsInTalent(talent)<talent.maxPoints());Dungeon.hero.upgradeTalent(talent);log("MANUAL EARNED TALENT "+talent.name());}
+                else if(action.startsWith("w")){
+                    int at=action.lastIndexOf("@");assertTrue(at>1);
+                    Class<? extends Item> type=Class.forName("com.shatteredpixel.shatteredpixeldungeon.items."+action.substring(1,at)).asSubclass(Item.class);
+                    Item wand=Dungeon.hero.belongings.getItem(type);assertNotNull("Only an actually acquired wand can be zapped",wand);
+                    assertTrue(wand instanceof com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand);
+                    assertTrue(wand.actions(Dungeon.hero).contains("ZAP"));int cell=Integer.parseInt(action.substring(at+1));
+                    // Original wand targeting may legally select an unseen tile; let its own zapper validate.
+                    selection=null;wand.execute(Dungeon.hero,"ZAP");assertNotNull(selection);selection.onSelect(cell);ready();log("MANUAL OWNED WAND ZAP "+type.getSimpleName()+" "+cell);
+                }
                 else if(action.startsWith("X")){int at=action.lastIndexOf('@');assertTrue(at>1);Class<? extends Item> type=Class.forName("com.shatteredpixel.shatteredpixeldungeon.items."+action.substring(1,at)).asSubclass(Item.class);throwItem(type,Integer.parseInt(action.substring(at+1)));}
                 else if(action.startsWith("H") && action.length()>1){int count=Integer.parseInt(action.substring(1));assertTrue(count>=0 && count<=500);for(int k=0;k<count;k++)waitOne();}
                 else if(action.startsWith("a")){assertNotNull(target);int count=Integer.parseInt(action.substring(1));assertTrue(count>0 && count<=30);for(int k=0;k<count && target.isAlive();k++)freshFixedActions(target,"A");}
