@@ -94,19 +94,21 @@ jobs:
             adb logcat -c
             timeout 900 adb shell am instrument -w -r -e class com.shatteredpixel.shatteredpixeldungeon.android.EarlyAlphaRosterDeviceTest#allSixClassesStartSaveAndContinueWithLockedExtremeRules com.charltonchris29.adhdpixeldungeon.indev.test/androidx.test.runner.AndroidJUnitRunner | tee early-alpha-roster-instrumentation.txt
             adb logcat -d -v time > early-alpha-roster-logcat.txt
-            python3 - <<'PY'
-            import json,pathlib,re
-            result=pathlib.Path('early-alpha-roster-instrumentation.txt').read_text()
-            assert re.search(r'OK \(1 test\)',result),result
-            assert not any(marker in result for marker in
-                           ('FAILURES!!!','INSTRUMENTATION_FAILED','Process crashed.'))
-            pathlib.Path('early-alpha-roster-result.json').write_text(json.dumps({
-              'instrumented_methods':1,'classes':6,'start_save_continue':True,
-              'locked_custom_rule_values':18,'difficulty':5,'challenges':9,
-              'api_level':34,'application_reused':'TEST241',
-              'physical_device':False,'failures':0,'errors':0,'skipped':0
-            },indent=2))
-            PY
+      - name: Validate the six-class instrumentation result
+        run: |
+          python3 - <<'PY'
+          import json,pathlib,re
+          result=pathlib.Path('early-alpha-roster-instrumentation.txt').read_text()
+          assert re.search(r'OK \\(1 test\\)',result),result
+          assert not any(marker in result for marker in
+                         ('FAILURES!!!','INSTRUMENTATION_FAILED','Process crashed.'))
+          pathlib.Path('early-alpha-roster-result.json').write_text(json.dumps({
+            'instrumented_methods':1,'classes':6,'start_save_continue':True,
+            'locked_custom_rule_values':18,'difficulty':5,'challenges':9,
+            'api_level':34,'application_reused':'TEST241',
+            'physical_device':False,'failures':0,'errors':0,'skipped':0
+          },indent=2))
+          PY
       - name: Preserve exact acceptance evidence
         if: always()
         uses: actions/upload-artifact@v4

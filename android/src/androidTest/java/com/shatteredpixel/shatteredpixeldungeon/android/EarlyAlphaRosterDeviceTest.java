@@ -136,16 +136,15 @@ public class EarlyAlphaRosterDeviceTest {
 
     @Test
     public void allSixClassesStartSaveAndContinueWithLockedExtremeRules() throws Exception {
-        CustomDungeonRules previousRules = SPDSettings.apdCustomRules();
-        int previousDifficulty = SPDSettings.apdDifficulty();
-        int previousChallenges = SPDSettings.challenges();
-        boolean previousIntro = SPDSettings.intro();
-        boolean previousRecording = SPDSettings.apdRecording();
-        int previousSlot = GamesInProgress.curSlot;
-        HeroClass previousSelected = GamesInProgress.selectedClass;
-
         try (ActivityScenario<AndroidLauncher> ignored = ActivityScenario.launch(AndroidLauncher.class)) {
             waitUntil("Android game startup", () -> Gdx.app != null && Game.scene() != null, 120000);
+            CustomDungeonRules previousRules = SPDSettings.apdCustomRules();
+            int previousDifficulty = SPDSettings.apdDifficulty();
+            int previousChallenges = SPDSettings.challenges();
+            boolean previousIntro = SPDSettings.intro();
+            boolean previousRecording = SPDSettings.apdRecording();
+            int previousSlot = GamesInProgress.curSlot;
+            HeroClass previousSelected = GamesInProgress.selectedClass;
             try {
                 CustomDungeonRules expected = acceptanceRules();
             int completed = 0;
@@ -215,24 +214,18 @@ public class EarlyAlphaRosterDeviceTest {
             }
                 assertEquals("all shipped classes completed Android start/save/continue", 6, completed);
             } finally {
-                if (Gdx.app != null) {
-                    onRender(() -> {
-                        if (!(Game.scene() instanceof TitleScene)) Game.switchScene(TitleScene.class);
-                        deleteDisposableSlot();
-                    });
-                }
+                onRender(() -> {
+                    if (!(Game.scene() instanceof TitleScene)) Game.switchScene(TitleScene.class);
+                    deleteDisposableSlot();
+                    SPDSettings.apdCustomRules(previousRules);
+                    SPDSettings.apdDifficulty(previousDifficulty);
+                    SPDSettings.challenges(previousChallenges);
+                    SPDSettings.intro(previousIntro);
+                    SPDSettings.apdRecording(previousRecording);
+                    GamesInProgress.curSlot = previousSlot;
+                    GamesInProgress.selectedClass = previousSelected;
+                });
             }
-        } finally {
-            // Restore preferences after the ActivityScenario has closed. These setters
-            // do not require a live render thread, avoiding teardown races.
-            deleteDisposableSlot();
-            SPDSettings.apdCustomRules(previousRules);
-            SPDSettings.apdDifficulty(previousDifficulty);
-            SPDSettings.challenges(previousChallenges);
-            SPDSettings.intro(previousIntro);
-            SPDSettings.apdRecording(previousRecording);
-            GamesInProgress.curSlot = previousSlot;
-            GamesInProgress.selectedClass = previousSelected;
         }
     }
 }
