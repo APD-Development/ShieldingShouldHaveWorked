@@ -1,11 +1,19 @@
 #!/usr/bin/env bash
 set -euo pipefail
-adb shell wm size "$1"
 adb shell wm density "$2"
+adb shell wm size "$1"
 apd_mode="${3:-title}"
 mkdir -p title-evidence
 adb shell wm size > title-evidence/display.txt
 adb shell wm density >> title-evidence/display.txt
+if [ "${APD_ENFORCE_DISPLAY:-false}" = true ]; then
+  python3 - "$1" <<'PY'
+import pathlib,re,sys
+text=pathlib.Path("title-evidence/display.txt").read_text()
+sizes=re.findall(r"(?:Physical|Override) size: (\d+x\d+)",text)
+assert sizes and sizes[-1]==sys.argv[1],("Requested/effective display differ",sys.argv[1],text)
+PY
+fi
 cp acceptance-source.json title-evidence/
 adb logcat -c
 adb logcat -v time > title-logcat.txt &
