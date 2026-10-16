@@ -154,6 +154,23 @@ jobs:
           subprocess.run(['./gradlew',':core:test','--tests','*GetFuckedRouteTest']+['-D'+k+'='+v for k,v in props.items()],check=True)
           subprocess.run(['python3','research/get-fucked/native_equivalence.py',props['route.expectedEnd'],props['route.earlySwarmOut']],check=True)
           PYCODE
+      - name: Replay earned spear recovery and two prison shielding potions with continuous state
+        run: |
+          mkdir -p "$RUNNER_TEMP/get-fucked-resource-recovery"
+          tar -xJf research/get-fucked/resource-recovery-provenance.tar.xz -C "$RUNNER_TEMP/get-fucked-resource-recovery"
+          python3 - <<'PYCODE'
+          import json, os, subprocess
+          root=os.environ['RUNNER_TEMP']+'/get-fucked-resource-recovery'
+          for name,end,origin in [('fresh-five-backtrack-rest-gnoll','earned-fresh-five-backtrack-rest-gnoll',True),('live-west-two-shields','earned-live-west-two-shields',False)]:
+              args=json.load(open(root+'/'+name+'-args.json'))
+              props={a[2:].split('=',1)[0]:a.split('=',1)[1] for a in args if a.startswith('-D') and '=' in a}
+              props.pop('route.liveNineOut',None)
+              props.update({'route.stableHash':'true','route.noSnapshots':'true','route.expectedEnd':root+'/native/'+end})
+              if origin: props.update({'route.expectedActiveRngOnly':'true','route.earlySwarmOut':root+'/actual-fresh-spears'})
+              else: props.update({'route.resume':os.environ['GITHUB_WORKSPACE']+'/core/src/test/resources/apd/get_fucked_seed266_floor7_intercept','route.expectedNativeState':'true'})
+              subprocess.run(['./gradlew',':core:test','--tests','*GetFuckedRouteTest']+['-D'+k+'='+v for k,v in props.items()],check=True)
+              if origin: subprocess.run(['python3','research/get-fucked/native_equivalence.py',props['route.expectedEnd'],props['route.earlySwarmOut']],check=True)
+          PYCODE
       - name: Run scenario and existing challenge tests
         run: ./gradlew :core:test --tests '*GetFuckedFeasibilityTest' --tests '*GetFuckedTest' --tests '*ShieldHungerTest' --tests '*GetFuckedMapTest' --tests '*GetFuckedBarrierDecayTest'
       - name: Preserve baseline test reports before the route task
