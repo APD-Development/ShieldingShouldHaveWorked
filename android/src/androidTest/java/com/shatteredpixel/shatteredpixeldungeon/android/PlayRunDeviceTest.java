@@ -228,12 +228,29 @@ public class PlayRunDeviceTest {
             }catch(Exception e){throw new RuntimeException(e);}});
             Thread.sleep(400);TopScoresDeviceTest.screenshot("hotbar-controls.png");
             if(point[0]!=null) {
+                final Object[] pager={null};
+                onRender(()->{try {
+                    com.watabou.noosa.ui.Component current=(com.watabou.noosa.ui.Component)field(field(Game.scene(),"toolbar"),"btnSwap");
+                    assertTrue("Rendered pager is active",current.active&&current.visible&&Dungeon.hero.ready);pager[0]=current;
+                    point[0]=current.camera().cameraToScreen(current.centerX(),current.centerY());
+                }catch(Exception e){throw new RuntimeException(e);}});
                 long down=android.os.SystemClock.uptimeMillis();
-                for(int action:new int[]{android.view.MotionEvent.ACTION_DOWN,android.view.MotionEvent.ACTION_UP}) {
-                    android.view.MotionEvent event=android.view.MotionEvent.obtain(down,android.os.SystemClock.uptimeMillis(),action,point[0].x,point[0].y,0);
-                    event.setSource(android.view.InputDevice.SOURCE_TOUCHSCREEN);
-                    androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().sendPointerSync(event);event.recycle();Thread.sleep(150);
+                android.view.MotionEvent event=android.view.MotionEvent.obtain(down,down,android.view.MotionEvent.ACTION_DOWN,point[0].x,point[0].y,0);
+                event.setSource(android.view.InputDevice.SOURCE_TOUCHSCREEN);
+                androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().sendPointerSync(event);event.recycle();
+                final boolean[] received={false};long by=System.currentTimeMillis()+3000;
+                while(!received[0]&&System.currentTimeMillis()<by){
+                    onRender(()->{try{received[0]=field(pager[0],"pressedButton")==pager[0]&&(Boolean)field(pager[0],"clickReady");}catch(Exception e){throw new RuntimeException(e);}});
+                    if(!received[0])Thread.sleep(20);
                 }
+                assertTrue("Native DOWN reaches the actual pager at "+point[0],received[0]);
+                long up=android.os.SystemClock.uptimeMillis();
+                event=android.view.MotionEvent.obtain(down,up,android.view.MotionEvent.ACTION_UP,point[0].x,point[0].y,0);
+                event.setSource(android.view.InputDevice.SOURCE_TOUCHSCREEN);
+                androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().sendPointerSync(event);event.recycle();
+                final boolean[] switched={false};by=System.currentTimeMillis()+3000;
+                while(!switched[0]&&System.currentTimeMillis()<by){onRender(()->switched[0]=com.shatteredpixel.shatteredpixeldungeon.ui.Toolbar.swappedQuickslots!=oldPage);if(!switched[0])Thread.sleep(20);}
+                Log.i(TAG,"Native pager tap acknowledged; down/up elapsed ms="+(up-down));
                 onRender(()->assertEquals("Native pager touch switches page",!oldPage,com.shatteredpixel.shatteredpixeldungeon.ui.Toolbar.swappedQuickslots));
             }
         } finally {
