@@ -1,5 +1,18 @@
 # Provisional custom scoring and live previews — October 16, 2026
 
+## Current verified result — TEST249
+
+Exact source37a8f6d16cd497e13ed581e887ed9d4858fe97aa, run38914965700:1729 unique core methods and34 API34 instrumented methods passed, zero failures/errors/skips;44 valid320x640 captures reviewed, including full-resolution live drag, summary, neutral/non-neutral and narrow score windows. Original SPD score routine is byte-identical. All357 supplied decimal values are preserved. The exact owner-uploaded historical run retained its score and unknown settings; SHA-256 remains008cd75a5a2d4f20b6c59a573c1e7a9349e6a1678c046da03016f9b3beb8484f.
+
+APK SHA-256:dcda79a5c6c83b1ac88e5294b3b134c8e1483109929b3a8da5365e7eadc8536e;38,608,287bytes; applicationIDcom.charltonchris29.adhdpixeldungeon.indev, code920, version4.0.8-apd-INDEV-bC249-TEST. Actual signing certificate matches published TEST231. CI timing was2026-10-16T14:20:29Z–14:35:28Z (14m59s); this is measured CI time, not a claim about untracked implementation hours.
+
+Successful private stage38914965883 reused this APK without rebuilding. GitHub owner draft415070992 contains the same hash-verified APK and source/verification assets. It is draft-only, published_at=null, not a public/private published release and not tester distribution. The first draft workflow uploaded valid assets but its tag-based readback returned404; corrected idempotent readback38918857771 succeeded without replacing assets. The PDF remains separately staged for11:55 EDT; the APK draft retains the owner's noon EDT publication hold. Physical-phone install-over and a complete real playthrough are still unverified.
+
+## Earlier implementation checkpoints
+
+The following preserves earlier failed attempts and superseded pending states as dated/source checkpoints, not the current verification state.
+
+
 Requested by the owner with the supplied complete 357-position v2.6R lookup. This introduces active provisional scoring for newly created runs; it is not a calibrated competitive formula.
 
 ## Changes

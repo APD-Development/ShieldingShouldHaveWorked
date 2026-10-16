@@ -170,3 +170,5 @@ jobs:
 
 
 
+
+# Documentation-only lunch refresh: use the pinned verified TEST249 APK; do not rebuild application source.
