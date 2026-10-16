@@ -568,6 +568,13 @@ public class Toolbar extends Component {
 			}
 		}
 
+        // At the minimum portrait width, three slots plus the paging control do not
+        // fit beside the original action buttons. Put only the pager above the slots;
+        // never center an overflowing row into Inventory or shrink its touch targets.
+        float rowWidth = btnWait.width() + btnSearch.width() + btnInventory.width();
+        for (int i = startingSlot; i <= endingSlot; i++) rowWidth += btnQuick[i].width();
+        boolean raisedSwap = btnSwap.visible && rowWidth + btnSwap.width() - 2 > width;
+
 		float shift = 0;
 		Toolbar.Mode mode;
 		try {
@@ -592,8 +599,12 @@ public class Toolbar extends Component {
 				}
 
 				if (btnSwap.visible){
-					btnSwap.setPos(btnQuick[endingSlot].left() - (btnSwap.width()-2), y+3);
-					shift = btnSearch.right() - btnSwap.left();
+                    if (raisedSwap) {
+                        btnSwap.setPos((btnQuick[endingSlot].left() + btnQuick[startingSlot].right() - btnSwap.width()) / 2, y - btnSwap.height());
+                    } else {
+						btnSwap.setPos(btnQuick[endingSlot].left() - (btnSwap.width()-2), y+3);
+						shift = btnSearch.right() - btnSwap.left();
+                    }
 				}
 
 				break;
@@ -604,7 +615,7 @@ public class Toolbar extends Component {
 				for(Button slot : btnQuick){
 					if (slot.visible) toolbarWidth += slot.width();
 				}
-				if (btnSwap.visible) toolbarWidth += btnSwap.width()-2;
+				if (btnSwap.visible && !raisedSwap) toolbarWidth += btnSwap.width()-2;
 				right = (width + toolbarWidth)/2;
 
 			case GROUP:
@@ -619,8 +630,12 @@ public class Toolbar extends Component {
 				}
 
 				if (btnSwap.visible){
-					btnSwap.setPos(btnQuick[endingSlot].left() - (btnSwap.width()-2), y+3);
-					shift = -btnSwap.left();
+                    if (raisedSwap) {
+                        btnSwap.setPos((btnQuick[endingSlot].left() + btnQuick[startingSlot].right() - btnSwap.width()) / 2, y - btnSwap.height());
+                    } else {
+						btnSwap.setPos(btnQuick[endingSlot].left() - (btnSwap.width()-2), y+3);
+						shift = -btnSwap.left();
+                    }
 				}
 				
 				break;
@@ -649,7 +664,7 @@ public class Toolbar extends Component {
 			}
 
 			if (btnSwap.visible){
-				btnSwap.setPos( right - btnSwap.right(), y+3);
+				btnSwap.setPos( right - btnSwap.right(), btnSwap.top());
 			}
 
 		}

@@ -153,6 +153,85 @@ public class PlayRunDeviceTest {
 		throw new AssertionError("gameplay controls did not become usable: " + state.get());
 	}
 
+    // Real native controls at minimum portrait width and each original toolbar layout.
+    private static void assertHotbarViewportMatrix() throws Exception {
+        com.watabou.noosa.ui.Component toolbar = (com.watabou.noosa.ui.Component) field(Game.scene(), "toolbar");
+        com.watabou.noosa.Camera camera = toolbar.camera();
+        int oldWidth = camera.width, oldHeight = camera.height;
+        float oldX = toolbar.left(), oldY = toolbar.top(), oldW = toolbar.width(), oldH = toolbar.height();
+        String oldMode = SPDSettings.toolbarMode();
+        boolean oldFlip = SPDSettings.flipToolbar();
+        boolean oldSwap = com.shatteredpixel.shatteredpixeldungeon.ui.Toolbar.swappedQuickslots;
+        try {
+            for (int width : new int[]{135, 139, 140, 160, 180, 320}) {
+                camera.resize(width, 240);
+                for (String mode : new String[]{"SPLIT", "GROUP", "CENTER"}) {
+                    SPDSettings.toolbarMode(mode);
+                    for (boolean flip : new boolean[]{false, true}) {
+                        SPDSettings.flipToolbar(flip);
+                        for (boolean swapped : new boolean[]{false, true}) {
+                            com.shatteredpixel.shatteredpixeldungeon.ui.Toolbar.swappedQuickslots = swapped;
+                            toolbar.setRect(0, 214, width, 26);
+                            com.shatteredpixel.shatteredpixeldungeon.ui.Toolbar.updateLayout();
+                            java.util.List<com.watabou.noosa.ui.Component> controls = new java.util.ArrayList<>();
+                            for (String name : new String[]{"btnSearch", "btnWait", "btnInventory", "btnSwap"}) {
+                                com.watabou.noosa.ui.Component c=(com.watabou.noosa.ui.Component)field(toolbar,name);
+                                if (c.visible) controls.add(c);
+                            }
+                            for (Object raw : (Object[])field(toolbar,"btnQuick")) {
+                                com.watabou.noosa.ui.Component c=(com.watabou.noosa.ui.Component)raw;
+                                if(c.visible) controls.add(c);
+                            }
+                            com.watabou.noosa.ui.Component pager=(com.watabou.noosa.ui.Component)field(toolbar,"btnSwap");
+                            for (int i=0;i<controls.size();i++) {
+                                com.watabou.noosa.ui.Component a=controls.get(i);
+                                String state="width="+width+" mode="+mode+" flipped="+flip+" page="+swapped;
+                                assertTrue("usable target "+state,a.width()>=16 && a.height()>=16);
+                                assertTrue("in viewport "+state,a.left()>=-0.01f && a.right()<=width+0.01f && a.top()>=0 && a.bottom()<=240);
+                                for(int j=i+1;j<controls.size();j++) {
+                                    com.watabou.noosa.ui.Component b=controls.get(j);
+                                    // SPD intentionally overlaps the pager frame by two border pixels.
+                                    float border=(a==pager || b==pager)?2f:0.01f;
+                                    assertTrue("distinct touch targets "+state,a.right()<=b.left()+border || b.right()<=a.left()+border || a.bottom()<=b.top()+border || b.bottom()<=a.top()+border);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } finally {
+            camera.resize(oldWidth,oldHeight);SPDSettings.toolbarMode(oldMode);SPDSettings.flipToolbar(oldFlip);
+            com.shatteredpixel.shatteredpixeldungeon.ui.Toolbar.swappedQuickslots=oldSwap;
+            toolbar.setRect(oldX,oldY,oldW,oldH);com.shatteredpixel.shatteredpixeldungeon.ui.Toolbar.updateLayout();
+        }
+    }
+
+    private static void captureAndTapCategoryPager() throws Exception {
+        int oldMode=SPDSettings.apdHotbarMode();
+        boolean oldPage=com.shatteredpixel.shatteredpixeldungeon.ui.Toolbar.swappedQuickslots;
+        final com.watabou.utils.Point[] point=new com.watabou.utils.Point[1];
+        try {
+            onRender(()->{try {
+                SPDSettings.apdHotbarMode(1);com.shatteredpixel.shatteredpixeldungeon.ui.Toolbar.updateLayout();
+                com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton.refresh();
+                com.watabou.noosa.ui.Component pager=(com.watabou.noosa.ui.Component)field(field(Game.scene(),"toolbar"),"btnSwap");
+                if(pager.visible)point[0]=pager.camera().cameraToScreen(pager.centerX(),pager.centerY());
+            }catch(Exception e){throw new RuntimeException(e);}});
+            Thread.sleep(400);TopScoresDeviceTest.screenshot("hotbar-controls.png");
+            if(point[0]!=null) {
+                long down=android.os.SystemClock.uptimeMillis();
+                for(int action:new int[]{android.view.MotionEvent.ACTION_DOWN,android.view.MotionEvent.ACTION_UP}) {
+                    android.view.MotionEvent event=android.view.MotionEvent.obtain(down,android.os.SystemClock.uptimeMillis(),action,point[0].x,point[0].y,0);
+                    event.setSource(android.view.InputDevice.SOURCE_TOUCHSCREEN);
+                    androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().sendPointerSync(event);event.recycle();Thread.sleep(150);
+                }
+                onRender(()->assertEquals("Native pager touch switches page",!oldPage,com.shatteredpixel.shatteredpixeldungeon.ui.Toolbar.swappedQuickslots));
+            }
+        } finally {
+            onRender(()->{SPDSettings.apdHotbarMode(oldMode);com.shatteredpixel.shatteredpixeldungeon.ui.Toolbar.swappedQuickslots=oldPage;com.shatteredpixel.shatteredpixeldungeon.ui.Toolbar.updateLayout();com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton.refresh();});
+        }
+    }
+
 	//Exercise the actual rendered category toolbar without consuming items or changing turns.
 	private static void assertCategoryHotbarControls() throws Exception {
 		int oldMode = SPDSettings.apdHotbarMode();
@@ -164,6 +243,7 @@ public class PlayRunDeviceTest {
 			com.shatteredpixel.shatteredpixeldungeon.ui.Toolbar.updateLayout();
 			com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton.refresh();
 			assertGameplayControls();
+            assertHotbarViewportMatrix();
 			com.watabou.noosa.ui.Component toolbar =
 					(com.watabou.noosa.ui.Component) field(Game.scene(), "toolbar");
 			Object[] slots = (Object[]) field(toolbar, "btnQuick");
@@ -475,6 +555,7 @@ public class PlayRunDeviceTest {
                 assertEquals("mobile controls remain six",6,((Object[])field(field(Game.scene(),"toolbar"),"btnQuick")).length);
             }catch(Exception e){throw new RuntimeException(e);}});
 			onRender(() -> { try { assertTrue("exercise controls before acknowledging intro", SPDSettings.intro()); assertGameplayControls(); assertCategoryHotbarControls(); } catch (Exception e){ throw new RuntimeException(e); } });
+            captureAndTapCategoryPager();
 			//Use the actual toolbar callbacks; the tutorial must not suppress search or wait.
 			onRender(() -> { try { click(field(field(Game.scene(), "toolbar"), "btnSearch"), "onLongClick"); } catch (Exception e){ throw new RuntimeException(e); } });
 			waitUntil("ready after searching", () -> Dungeon.hero.ready, 30000);

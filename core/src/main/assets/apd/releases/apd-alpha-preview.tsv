@@ -21,3 +21,4 @@ Quality of Life	ICON_CHALLENGE_COLOR	Live score previews	Every difficulty slider
 Statistics / UIMSD	ICON_STATS	Unreadable score records	Invalid adjusted scores remain unknown without preventing access to the original run history.
 Quality of Life	ICON_INFO	My scoring plans	Read an optional explanation of future scoring ideas, separate from the unchanged provisional slider multipliers.
 Bug Fixes	ICON_RANKINGS	Daily earned scores	Daily history shows the recorded earned Custom Rules score, preserves original scores and keeps large values readable.
+Bug Fixes	ICON_PREFS	Narrow toolbar	Quickslot paging stays accessible without covering Inventory on narrow screens.

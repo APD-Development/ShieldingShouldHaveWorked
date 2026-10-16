@@ -1,45 +1,48 @@
 {
   "date": "2026-10-16",
-  "previous_source": "435d945d421a2a2a7dc8bb6b3df12d5e6fce9b31",
-  "previous_run": 38934289756,
-  "previous_label": "Codex TEST 251",
+  "previous_source": "fa39ad824347a67624a93efbb4a3fb358c7477fe",
+  "previous_run": 38935813981,
+  "previous_label": "Codex TEST 252",
   "changes": [
     {
       "category": "Bug Fixes",
-      "sprite": "ICON_RANKINGS",
-      "title": "Accurate daily scores",
-      "text": "The daily calendar shows the run's earned Custom Rules score and retains large values without covering the date.",
+      "sprite": "ICON_PREFS",
+      "title": "Narrow toolbar controls",
+      "text": "The quickslot page switch sits above the slots when the normal row would overlap Inventory on narrow screens.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/Rankings.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndDailies.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/Toolbar.java",
         "core/src/main/assets/apd/releases/apd-alpha-preview.tsv"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Daily score and save checks",
-      "text": "Regression checks cover real daily scoring, large-score persistence, older records, optional metadata and Android calendar layout.",
+      "title": "Native controls and boss progression",
+      "text": "Checks exercise narrow toolbar layouts and native paging, six-class save continuity, and Tengu and DM-300 phase and save behavior.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/DailyEarnedScoreHistoryTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PlayRunDeviceTest.java",
         "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomScoreDeviceTest.java",
-        "tools/run-codex-android-checks.sh",
-        ".github/workflows/codex-alpha-preview-stage.yml"
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/EarlyAlphaRosterDeviceTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/BossProgressionAcceptanceTest.java",
+        "tools/run-codex-android-checks.sh"
       ]
     },
     {
       "category": "Infrastructure",
       "sprite": "ICON_INFO",
-      "title": "Record the acceptance finding",
-      "text": "Keep the reproduced score mismatch, corrected results and remaining physical-device limits with the build's verification record.",
+      "title": "Acceptance evidence and recovery",
+      "text": "Keep exact-source acceptance records, unsuccessful Android checks and compatible fallback evidence with the build.",
       "paths": [
-        "docs/APD-DAILY-SCORE-FIX-2026-10-16.md",
+        ".github/workflows/codex-final-alpha-acceptance.yml",
+        ".github/workflows/codex-early-alpha-roster-acceptance.yml",
         "docs/APD-ALPHA-PREPARATION.json",
         "docs/APD-NEXT-BUILD-HISTORY.json",
+        "docs/APD-FINAL-ALPHA-ACCEPTANCE-2026-10-16.md",
+        "docs/APD-TEST252-VERIFICATION-2026-10-16.json",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/HANDOFF.md"
       ]
     }
   ],
-  "commentary": "Acceptance found a daily run whose calendar showed133 even though its recorded earned score was266. I corrected the calendar's score source and added compatible long-score storage while retaining original historical integer scores. Multipliers and scoring formulas are unchanged."
+  "commentary": "I corrected a narrow-screen toolbar overlap found during additional Android acceptance. The current scoring multipliers, combat rules and saved-run data are unchanged."
 }
