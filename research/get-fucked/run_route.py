@@ -17,6 +17,11 @@ if result.returncode==0 and '-Droute.expectedNativeFiles=true' in sys.argv[2:] a
 if verification_missing:
  print('FAIL: requested endpoint/native comparison did not execute')
  result.returncode=1
+if result.returncode==0 and '-Droute.expectedMissileIdEquivalence=true' in sys.argv[2:]:
+ props={v[2:].split('=',1)[0]:v.split('=',1)[1] for v in sys.argv[2:] if v.startswith('-D') and '=' in v}
+ comparison=subprocess.run(['python',str(Path('research/native_equivalence.py').resolve()),props['route.expectedEnd'],props['route.earlySwarmOut']],capture_output=True,text=True)
+ with outpath.open('a') as out:out.write(comparison.stdout+comparison.stderr)
+ result.returncode=comparison.returncode
 archive=Path('research/trials');archive.mkdir(exist_ok=True);trial=str(time.time_ns());shutil.copyfile(outpath,archive/(trial+'.log'));(archive/(trial+'.java')).write_bytes(route_source);(archive/(trial+'.args.json')).write_text(json.dumps({'output':str(outpath),'java_args':sys.argv[2:],'exit_code':result.returncode},indent=2));print('return',result.returncode)
 lines=outpath.read_text().splitlines()
 for x in [x for x in lines if x.startswith('ROUTE ')][-3:]:

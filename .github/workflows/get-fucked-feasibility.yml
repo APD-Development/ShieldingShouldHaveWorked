@@ -119,9 +119,27 @@ jobs:
               props=json.load(open(root+'/'+name+'-replay.json'))
               if not origin: props['route.resume']=os.environ['GITHUB_WORKSPACE']+'/core/src/test/resources/apd/get_fucked_seed266_floor7_intercept'
               props.update({'route.stableHash':'true','route.noSnapshots':'true','route.expectedEnd':root+'/native/'+end})
-              if origin: props['route.expectedActiveRngOnly']='true'
+              if origin:
+                  props['route.expectedActiveRngOnly']='true'
+                  props['route.earlySwarmOut']=root+'/actual-fresh-five'
               else: props['route.expectedNativeState']='true'
               subprocess.run(['./gradlew',':core:test','--tests','*GetFuckedRouteTest']+['-D'+k+'='+v for k,v in props.items()],check=True)
+              if origin:
+                  subprocess.run(['python3','research/get-fucked/native_equivalence.py','--self-test'],check=True)
+                  subprocess.run(['python3','research/get-fucked/native_equivalence.py',props['route.expectedEnd'],props['route.earlySwarmOut']],check=True)
+          PYCODE
+      - name: Replay continuous lean prison through entire first Tengu phase
+        run: |
+          mkdir -p "$RUNNER_TEMP/get-fucked-lean-phase"
+          tar -xJf research/get-fucked/lean-tengu-phase-provenance.tar.xz -C "$RUNNER_TEMP/get-fucked-lean-phase"
+          python3 - <<'PYCODE'
+          import json, os, subprocess
+          root=os.environ['RUNNER_TEMP']+'/get-fucked-lean-phase'
+          args=json.load(open(root+'/live-lean-tengu-first-phase-args.json'))
+          props={a[2:].split('=',1)[0]:a.split('=',1)[1] for a in args if a.startswith('-D') and '=' in a}
+          props.pop('route.liveNineOut',None)
+          props.update({'route.resume':os.environ['GITHUB_WORKSPACE']+'/core/src/test/resources/apd/get_fucked_seed266_floor7_intercept','route.stableHash':'true','route.noSnapshots':'true','route.expectedEnd':root+'/native/earned-live-lean-tengu-first-phase','route.expectedNativeState':'true'})
+          subprocess.run(['./gradlew',':core:test','--tests','*GetFuckedRouteTest']+['-D'+k+'='+v for k,v in props.items()],check=True)
           PYCODE
       - name: Run scenario and existing challenge tests
         run: ./gradlew :core:test --tests '*GetFuckedFeasibilityTest' --tests '*GetFuckedTest' --tests '*ShieldHungerTest' --tests '*GetFuckedMapTest' --tests '*GetFuckedBarrierDecayTest'
