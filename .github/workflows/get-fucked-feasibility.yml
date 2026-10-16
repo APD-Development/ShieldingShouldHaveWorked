@@ -67,6 +67,29 @@ jobs:
         with:
           name: get-fucked-origin-four-results
           path: ${{ runner.temp }}/get-fucked-origin-results/
+      - name: Replay stronger live frontiers with complete native comparisons
+        run: |
+          mkdir -p "$RUNNER_TEMP/get-fucked-live-frontiers"
+          tar -xJf research/get-fucked/live-frontiers-provenance.tar.xz -C "$RUNNER_TEMP/get-fucked-live-frontiers"
+          python3 - <<'PYCODE'
+          import json, os, subprocess, pathlib, shutil
+          root=os.environ['RUNNER_TEMP']+'/get-fucked-live-frontiers'
+          for name,index,end,origin in [('south-dm','live-nine-south-replay.json','earned-live-floor9-south-dm',False),('origin-flame','origin-four-flame-replay.json','earned-origin-four-flame',True)]:
+              props=json.load(open(root+'/'+index))
+              if not origin: props['route.resume']=os.environ['GITHUB_WORKSPACE']+'/core/src/test/resources/apd/get_fucked_seed266_floor7_intercept'
+              props.update({'route.stableHash':'true','route.noSnapshots':'true','route.expectedEnd':root+'/native/'+end,'route.expectedNativeState':'true'})
+              if origin: props['route.expectedActiveRngOnly']='true'
+              subprocess.run(['./gradlew',':core:test','--tests','*GetFuckedRouteTest']+['-D'+k+'='+v for k,v in props.items()],check=True)
+              out=pathlib.Path(os.environ['RUNNER_TEMP'])/'get-fucked-frontier-results'/name
+              out.mkdir(parents=True,exist_ok=True)
+              for p in pathlib.Path('core/build/test-results/test').glob('TEST-*.xml'):shutil.copy2(p,out/p.name)
+          PYCODE
+      - name: Preserve stronger frontier comparisons
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: get-fucked-live-frontier-results
+          path: ${{ runner.temp }}/get-fucked-frontier-results/
       - name: Run scenario and existing challenge tests
         run: ./gradlew :core:test --tests '*GetFuckedFeasibilityTest' --tests '*GetFuckedTest' --tests '*ShieldHungerTest' --tests '*GetFuckedMapTest' --tests '*GetFuckedBarrierDecayTest'
       - name: Preserve baseline test reports before the route task

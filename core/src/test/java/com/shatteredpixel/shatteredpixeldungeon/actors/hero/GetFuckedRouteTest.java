@@ -819,8 +819,14 @@ public class GetFuckedRouteTest {
                             for(int n=0;n<2 && last.isAlive();n++)click(last.pos);assertFalse(last.isAlive());
                             assertFalse(Dungeon.level.mobs.stream().anyMatch(m->m instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Swarm && m.state==m.HUNTING));
                             for(int next:new int[]{759,716,673,672,671,670,627,626,625,624,623,622,621,620,619,618,660,616,615,614,613,612,611,654}){click(next);assertEquals(next,Dungeon.hero.pos);}
-                            Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty.class).execute(Dungeon.hero,"EAT");ready();log("ACTUAL OWNED PASTY BEFORE EXIT RECHARGE");
+                            if(!Boolean.getBoolean("route.originLatePasty")){
+                                Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty.class).execute(Dungeon.hero,"EAT");ready();log("ACTUAL OWNED PASTY BEFORE EXIT RECHARGE");
+                            }
                             for(int n=0;n<Integer.getInteger("route.originExitWait",40);n++)waitOne();
+                            if(Boolean.getBoolean("route.originLatePasty")){
+                                log("ACTUAL PAID PREMEAL RECHARGE HUNGER STILL BELOW STARVATION");
+                                Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty.class).execute(Dungeon.hero,"EAT");ready();log("ACTUAL OWNED PASTY AFTER EXIT RECHARGE");
+                            }
                             log("ACTUAL LEVEL ONE ORIGIN AT CLOSED CRAB DOOR");
                             if(Boolean.getBoolean("route.originCrabProbe")){
                                 click(653);log("ACTUAL ORIGIN CRAB DOOR OPEN");
@@ -846,6 +852,7 @@ public class GetFuckedRouteTest {
                                     if(blinkTarget==518)for(int next:(Boolean.getBoolean("route.originShieldPursuer")?new int[]{519,520}:new int[]{476,520})){click(next);assertEquals(next,Dungeon.hero.pos);}
                                     if(blinkTarget==475)for(int next:new int[]{433,477,520}){click(next);assertEquals(next,Dungeon.hero.pos);}
                                     click(520);assertEquals(4,Dungeon.depth);log("ACTUAL LEVEL ONE ORIGIN REACHES FLOOR FOUR");
+                                    if(Boolean.getBoolean("route.originContinueFour"))originFourthFloorSection();
                                 }
                                 if(Boolean.getBoolean("route.originCrabEscape")){
                                     for(int next:new int[]{652,651,650,649}){click(next);assertEquals(next,Dungeon.hero.pos);}
@@ -914,6 +921,97 @@ public class GetFuckedRouteTest {
         if(System.getProperty("route.checkpoint4Out")!=null)writeCheckpoint(System.getProperty("route.checkpoint4Out"));
 
         assertEquals(1,Dungeon.hero.HP);
+    }
+    private void originFourthFloorSection() throws Exception {
+        assertEquals(4,Dungeon.depth);assertEquals(1007,Dungeon.hero.pos);
+        for(int n=0;n<Integer.getInteger("route.originFourWait",120);n++){
+            waitOne();
+            if(n==151 && Boolean.getBoolean("route.originFourInterceptSlime")){
+                Mob slime=Dungeon.level.mobs.stream().filter(m->m.id()==89).findFirst().get();assertEquals(928,slime.pos);
+                cast(HolyWard.INSTANCE,null);cast(ShieldOfLight.INSTANCE,slime.pos);cast(GuidingLight.INSTANCE,slime.pos);
+                for(int hit=0;hit<4 && slime.isAlive();hit++){assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,slime.pos));click(slime.pos);}
+                assertFalse(slime.isAlive());log("LIVE ORIGIN FOUR RECHARGE SLIME ACTUALLY DEFEATED");
+            }
+        }
+        log("LIVE ORIGIN FOUR PAID RECHARGE NO PASTY RESET");
+        for(int c:new int[]{968,929,890,889,888}){click(c);assertEquals(c,Dungeon.hero.pos);}
+        log("LIVE ORIGIN FOUR ACTUAL FIRST CRAB APPROACH");
+        if(Boolean.getBoolean("route.originFourCrab")){
+            Mob crab=Dungeon.level.mobs.stream().filter(m->m.id()==84).findFirst().get();
+            if(!Boolean.getBoolean("route.originFourLateWard") && Dungeon.hero.buff(HolyWard.HolyArmBuff.class)==null)cast(HolyWard.INSTANCE,null);
+            cast(ShieldOfLight.INSTANCE,crab.pos);if(!Boolean.getBoolean("route.originFourCrabMelee"))cast(GuidingLight.INSTANCE,crab.pos);
+            for(int n=0;n<3 && crab.isAlive();n++){assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,crab.pos));click(crab.pos);}
+            assertFalse(crab.isAlive());log("LIVE ORIGIN FOUR CRAB DEFEATED");
+            for(int cell:new int[]{887,848,809}){click(cell);assertEquals(cell,Dungeon.hero.pos);}
+            log("LIVE ORIGIN FOUR ACTUAL SLIME APPROACH");
+            if(Boolean.getBoolean("route.originFourGnoll")){
+                for(int cell:new int[]{808,846,806}){click(cell);assertEquals(cell,Dungeon.hero.pos);}
+                Mob gnoll=Dungeon.level.mobs.stream().filter(m->m.id()==85).findFirst().get();
+                cast(ShieldOfLight.INSTANCE,gnoll.pos);throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear.class,gnoll.pos);
+                for(int n=0;n<3 && gnoll.isAlive();n++){assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,gnoll.pos));click(gnoll.pos);}
+                assertFalse(gnoll.isAlive());log("LIVE ORIGIN FOUR NORTH GNOLL DEFEATED");
+                if(Boolean.getBoolean("route.originFourNorthItems")){
+                    click(806);assertNotNull(Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRage.class));
+                    click(767);assertEquals(767,Dungeon.hero.pos);click(767);log("LIVE ORIGIN FOUR MISSILE RECOVERY ATTEMPT NO ASSUMED DURABILITY");
+                    for(int cell:new int[]{728,689,650,611,610,609,608,607,606,605,604,603,563,524,484,483,482,481,480,479,478,477,476,475,474}){
+                        click(cell);assertEquals(cell,Dungeon.hero.pos);
+                        if(cell==610 && Boolean.getBoolean("route.originFourCorridorSlime")){
+                            Mob slime=Dungeon.level.mobs.stream().filter(m->m.id()==89).findFirst().get();assertEquals(609,slime.pos);
+                            cast(HolyWard.INSTANCE,null);cast(ShieldOfLight.INSTANCE,slime.pos);
+                            for(int n=0;n<5 && slime.isAlive();n++){assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,slime.pos));click(slime.pos);}
+                            assertFalse(slime.isAlive());log("LIVE ORIGIN FOUR CORRIDOR SLIME DEFEATED");
+                        }
+                    }
+                    click(474);assertNotNull(Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame.class));
+                    log("LIVE ORIGIN FOUR REAL FLAME PICKUP BEFORE SWARM");
+                    if(Boolean.getBoolean("route.originFourBossRecharge")){
+                        Mob swarm=Dungeon.level.mobs.stream().filter(m->m.id()==83).findFirst().get();cast(ShieldOfLight.INSTANCE,swarm.pos);
+                        click(514);assertEquals(514,Dungeon.hero.pos);click(513);if(Dungeon.depth==4){assertEquals(513,Dungeon.hero.pos);click(513);}assertEquals(5,Dungeon.depth);assertEquals(708,Dungeon.hero.pos);
+                        log("LIVE ORIGIN TEMPORARY GOO ENTRANCE SHELTER BEFORE SWARM DAMAGE");
+                        for(int n=0;n<Integer.getInteger("route.originFiveRecharge",200);n++)waitOne();
+                        cast(HolyWard.INSTANCE,null);if(!Boolean.getBoolean("route.originSkipHolyWeapon"))cast(HolyWeapon.INSTANCE,null);
+                        click(708);assertEquals(4,Dungeon.depth);
+                        swarm=Dungeon.level.mobs.stream().filter(m->m.id()==83).findFirst().get();
+                        log("LIVE ORIGIN RETURNS WITH PAID MANA AND OWNED WEAPON BUFF");
+                        if(Boolean.getBoolean("route.originFourAfterRefill")){
+                            cast(ShieldOfLight.INSTANCE,swarm.pos);cast(GuidingLight.INSTANCE,swarm.pos);
+                            for(int n=0;n<3 && swarm.isAlive();n++){assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,swarm.pos));click(swarm.pos);}
+                            assertFalse(swarm.isAlive());assertEquals(4,Dungeon.hero.lvl);Dungeon.hero.upgradeTalent(Talent.SEARING_LIGHT);
+                            log("LIVE ORIGIN REFILLED SWARM PARENT CLEARED LEVEL FOUR EARNED");
+                        }
+                        return;
+                    }
+                    if(Boolean.getBoolean("route.originFourSwarm")){
+                        Mob swarm=Dungeon.level.mobs.stream().filter(m->m.id()==83).findFirst().get();
+                        cast(ShieldOfLight.INSTANCE,swarm.pos);
+                        click(473);assertEquals(473,Dungeon.hero.pos);click(472);click(472);click(472);
+                        assertNotNull(Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class));log("LIVE ORIGIN FOUR CURSED SHURIKEN ACTUALLY ACQUIRED");
+                        if(Boolean.getBoolean("route.originFourMeleeFirst")){
+                            click(swarm.pos);
+                            java.util.List<Mob> children=new java.util.ArrayList<>();for(Mob m:Dungeon.level.mobs)if(m instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Swarm && m!=swarm)children.add(m);assertEquals(1,children.size());
+                            Mob child=children.get(0);throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class,swarm.pos);
+                            assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,child.pos));click(child.pos);
+                            log("LIVE ORIGIN FOUR MELEE FIRST SWARM EXCHANGES");
+                            if(Boolean.getBoolean("route.originFourClearSwarm")){
+                                for(int n=0;n<2 && swarm.isAlive();n++)click(swarm.pos);assertFalse(swarm.isAlive());
+                                assertEquals(4,Dungeon.hero.lvl);assertEquals(1,Dungeon.hero.talentPointsAvailable(1));Dungeon.hero.upgradeTalent(Talent.SEARING_LIGHT);
+                                for(int id:new int[]{96,98,102}){
+                                    Mob target=Dungeon.level.mobs.stream().filter(m->m.id()==id).findFirst().get();
+                                    for(int n=0;n<2 && target.isAlive();n++){assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,target.pos));click(target.pos);}
+                                    assertFalse(target.isAlive());
+                                }
+                                assertFalse(Dungeon.level.mobs.stream().anyMatch(m->m instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Swarm));
+                                log("LIVE ORIGIN FOUR ENTIRE SWARM CLEARED EARNED LEVEL FOUR");
+                            }
+                            return;
+                        }
+                        throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class,swarm.pos);
+                        for(int n=0;n<4 && swarm.isAlive();n++){assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,swarm.pos));click(swarm.pos);}
+                        assertFalse(swarm.isAlive());assertEquals(4,Dungeon.hero.lvl);Dungeon.hero.upgradeTalent(Talent.SEARING_LIGHT);log("LIVE ORIGIN FOUR SWARM PARENT DEFEATED LEVEL FOUR EARNED");
+                    }
+                }
+            }
+        }
     }
     private void fourthFloorSection() throws Exception {
         assertEquals(4,Dungeon.depth);assertEquals(1007,Dungeon.hero.pos);
@@ -1520,6 +1618,65 @@ public class GetFuckedRouteTest {
             Dungeon.hero.search(true);ready();log("LIVE ACTUAL SEARCH OF TRANSIT 856");
             for(int cell:new int[]{856,857,858,905}){click(cell);assertEquals(cell,Dungeon.hero.pos);}
             log("LIVE FLOOR NINE ACTUAL GARDEN APPROACH");
+            if(Boolean.getBoolean("route.liveGardenClear")){
+                activateOwnedHourglassFreeze();
+                for(int cell:new int[]{950,995}){click(cell);assertEquals(cell,Dungeon.hero.pos);}
+                Dungeon.hero.belongings.getItem(TimekeepersHourglass.class).execute(Dungeon.hero,"ACTIVATE");assertNull(Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class));
+                Mob skeleton=Dungeon.level.mobs.stream().filter(m->m.id()==261).findFirst().get();
+                cast(ShieldOfLight.INSTANCE,skeleton.pos);cast(GuidingLight.INSTANCE,skeleton.pos);
+                throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class,skeleton.pos);
+                for(int n=0;n<2 && skeleton.isAlive();n++){assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,skeleton.pos));click(skeleton.pos);}
+                assertFalse(skeleton.isAlive());assertEquals(6,Dungeon.hero.lvl);assertEquals(31,Dungeon.hero.exp);
+                log("LIVE GARDEN SKELETON DEFEATED WITHOUT CREDITING UNEARNED BLESS");
+                if(Boolean.getBoolean("route.liveGardenFood")){
+                    click(1040);assertEquals(1040,Dungeon.hero.pos);click(1040);
+                    Item food=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.food.Food.class);assertNotNull(food);
+                    food.execute(Dungeon.hero,"EAT");ready();log("LIVE ACTUAL FLOOR NINE RATION ACQUIRED AND EATEN");
+                    if(Boolean.getBoolean("route.liveReturnRecharge")){
+                        click(994);assertEquals(994,Dungeon.hero.pos);click(994);assertNotNull(Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class));
+                        for(int cell:new int[]{948,903,856,855,854,853,852,897,942}){click(cell);assertEquals(cell,Dungeon.hero.pos);}
+                        if(Boolean.getBoolean("route.liveInterceptSkeleton")){
+                            Mob second=Dungeon.level.mobs.stream().filter(m->m.id()==265).findFirst().get();assertEquals(1129,second.pos);
+                            cast(ShieldOfLight.INSTANCE,second.pos);cast(GuidingLight.INSTANCE,second.pos);cast(GuidingLight.INSTANCE,second.pos);
+                            throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class,second.pos);
+                            for(int n=0;n<2 && second.isAlive();n++){assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,second.pos));click(second.pos);}
+                            assertFalse(second.isAlive());assertEquals(7,Dungeon.hero.lvl);assertEquals(1,Dungeon.hero.exp);assertEquals(1,Dungeon.hero.talentPointsAvailable(2));
+                            Dungeon.hero.upgradeTalent(Talent.BLESS);log("LIVE SECOND REAL SKELETON EARNS BLESS TALENT");
+                            for(int n=0;n<Integer.getInteger("route.liveEarnBlessWait",25);n++)waitOne();
+                            cast(BlessSpell.INSTANCE,Dungeon.hero.pos);log("LIVE ACTUAL FIRST BLESS AFTER EARNED RECHARGE");
+                            if(Boolean.getBoolean("route.liveSouthDM")){
+                                click(989);assertEquals(989,Dungeon.hero.pos);click(989);assertNotNull(Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class));
+                                activateOwnedHourglassFreeze();
+                                for(int cell:new int[]{1036,1083,1128,1174}){click(cell);assertEquals(cell,Dungeon.hero.pos);}
+                                Dungeon.hero.belongings.getItem(TimekeepersHourglass.class).execute(Dungeon.hero,"ACTIVATE");assertNull(Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class));
+                                Mob dm=Dungeon.level.mobs.stream().filter(m->m.id()==266).findFirst().get();assertEquals(1221,dm.pos);assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,dm.pos));
+                                cast(ShieldOfLight.INSTANCE,dm.pos);
+                                for(int n=0;n<5 && dm.isAlive();n++){assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,dm.pos));click(dm.pos);}
+                                assertFalse(dm.isAlive());log("LIVE SOUTH DM DEFEATED WITH OWNED BARRIER AND PAID FREEZE");
+                                if(Boolean.getBoolean("route.liveNineExit")){
+                                    for(int cell:new int[]{1129,1084,1039,994,949,904,905,952,999}){click(cell);assertEquals(cell,Dungeon.hero.pos);}
+                                    if(Boolean.getBoolean("route.liveEastRefreshBless"))cast(BlessSpell.INSTANCE,Dungeon.hero.pos);
+                                    Dungeon.hero.search(true);ready();log("LIVE SEARCH OF ACTUAL SECRET WATER EXIT 1046");
+                                    click(1046);assertEquals(1046,Dungeon.hero.pos);log("LIVE SECRET WATER ROOM ENTRY");
+                                    if(Boolean.getBoolean("route.liveNineEastDM")){
+                                        click(1001);assertEquals(1001,Dungeon.hero.pos);log("LIVE EAST WATER FIRST NORMAL APPROACH BEFORE FREEZE");
+                                        activateOwnedHourglassFreeze();
+                                        for(int cell:new int[]{1048,1095}){click(cell);assertEquals(cell,Dungeon.hero.pos);}
+                                        click(1141);assertEquals(1141,Dungeon.hero.pos);
+                                        Mob east=Dungeon.level.mobs.stream().filter(m->m.id()==267).findFirst().get();assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,east.pos));
+                                        if(!Boolean.getBoolean("route.liveEastRefreshBless"))cast(ShieldOfLight.INSTANCE,east.pos);
+                                        for(int n=0;n<5 && east.isAlive();n++){assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,east.pos));click(east.pos);}
+                                        assertFalse(east.isAlive());log("LIVE EAST DM DEFEATED AFTER TWO FROZEN STEPS AND NORMAL ADJACENT STEP");
+                                    }
+                                }
+                            }
+                            return;
+                        }
+                        for(int n=0;n<Integer.getInteger("route.liveSecondWait",140);n++)waitOne();
+                        log("LIVE RATION FINANCES SECOND ACTUAL SAFE CORNER RECHARGE");
+                    }
+                }
+            }
         }
     }
     private void ninthFloorSection() throws Exception {
