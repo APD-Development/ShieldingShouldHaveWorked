@@ -7,7 +7,7 @@ permissions:
   contents: write
   actions: read
 concurrency:
-  group: apd-publish-alpha-preview224
+  group: apd-publish-alpha-preview226
   cancel-in-progress: false
 jobs:
   publish-existing-private-candidate:
@@ -27,66 +27,55 @@ jobs:
           import json,os,subprocess
           repo=os.environ['GITHUB_REPOSITORY']
           assert json.loads(subprocess.check_output(['gh','api','repos/'+repo]))['private']
-          for run_id,source in [('38823705331','3e886234e69ab128a861cfbc17bca549ba3a3456'),('38825223981','5b8403d8564f75e4a99c5b830a48827dc4faa754'),('38826006010','067b05d8f235ced40ce6d868a4268bf5910eb087')]:
+          for run_id,source in [('38827685570','a6e2f5e9aafb370ced629db01be300f6fab3f31e'),('38827870744','724181c874c83d285037dc68174cb9335e987336')]:
               run=json.loads(subprocess.check_output(['gh','api',f'repos/{repo}/actions/runs/{run_id}']))
               assert run['status']=='completed' and run['conclusion']=='success' and run['head_sha']==source
           PY
       - uses: actions/download-artifact@v4
         with:
-          name: staged-alpha-preview224
-          run-id: '38825223981'
+          name: staged-alpha-preview226
+          run-id: '38827870744'
           github-token: ${{ github.token }}
           path: delivery
-      - uses: actions/download-artifact@v4
-        with:
-          name: apd-release-navigation-test224
-          run-id: '38826006010'
-          github-token: ${{ github.token }}
-          path: navigation
       - name: Recheck compatibility, source and payload before private publication
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release download apd-codex-test-222 --repo "$GITHUB_REPOSITORY" --pattern ADHD-Pixel-Dungeon-CODEX-TEST-222.apk --dir rollback
+          gh release download apd-alpha-preview-224 --repo "$GITHUB_REPOSITORY" --pattern ADHD-Pixel-Dungeon-Alpha-Preview-224.apk --dir rollback
           python3 - <<'PY'
           import hashlib,json,os,pathlib,re,subprocess,sys,zipfile
           sys.path.insert(0,'tools')
           from apd_existing_build_evidence import application_inputs,certificates
           repo=os.environ['GITHUB_REPOSITORY'];root=pathlib.Path('delivery')
-          evidence=json.loads((root/'TEST224-Verification.json').read_text())
-          source='3e886234e69ab128a861cfbc17bca549ba3a3456';expected='8d88ef02cb82af29cb2bb0aefc1a847726d7e95310768be59263ee78c8cb2579'
+          evidence=json.loads((root/'TEST226-Verification.json').read_text())
+          source='a6e2f5e9aafb370ced629db01be300f6fab3f31e';expected='9a93691ca9417b4f3dd63c3724ba4702d5df10cca747f3db03dd67841fee3bd6'
           assert evidence['source']==source and evidence['apk_sha256']==expected
-          for name,count in [('core',1676),('android',32)]:
+          for name,count in [('core',1683),('android',33)]:
               data=evidence[name];assert data['tests']==len(data['cases'])==len({(c['classname'],c['name']) for c in data['cases']})==count
               assert data['failures']==data['errors']==data['skipped']==0
-          nav=json.loads(pathlib.Path('navigation/navigation-result.json').read_text())
-          nav_source=json.loads(pathlib.Path('navigation/navigation-source.json').read_text())
-          assert nav['tests']==nav['passed']==1 and nav['failures']==nav['errors']==nav['skipped']==0
-          assert nav['system_back'] and nav['native_android_motion_events'] and nav_source['application_source']==source and nav_source['application_sha256']==expected
+          assert any(c['name']=='nativeTouchSwitchesHistoryModesAndSystemBackReturnsToAboutWithoutLosingRecords' for c in evidence['android']['cases'])
           trees=[]
           for sha in (source,os.environ['GITHUB_SHA']):
               tree=json.loads(subprocess.check_output(['gh','api',f'repos/{repo}/git/trees/{sha}?recursive=1']))
               assert not tree.get('truncated',False);trees.append(application_inputs(tree['tree']))
           assert trees[0]==trees[1], 'Publication wrapper changed application inputs'
-          apk=root/'ADHD-Pixel-Dungeon-CODEX-TEST-224.apk';old=pathlib.Path('rollback/ADHD-Pixel-Dungeon-CODEX-TEST-222.apk')
+          apk=root/'ADHD-Pixel-Dungeon-CODEX-TEST-226.apk';old=pathlib.Path('rollback/ADHD-Pixel-Dungeon-Alpha-Preview-224.apk')
           assert hashlib.sha256(apk.read_bytes()).hexdigest()==expected
-          assert hashlib.sha256(old.read_bytes()).hexdigest()=='c4fe922f32c7b07f94666ae01591a04384fa5c801afcb4f869aca9a5c0e6aea5'
+          assert hashlib.sha256(old.read_bytes()).hexdigest()=='8d88ef02cb82af29cb2bb0aefc1a847726d7e95310768be59263ee78c8cb2579'
           tools=pathlib.Path(os.environ['ANDROID_HOME'])/'build-tools';signer=sorted(tools.glob('*/apksigner'))[-1];aapt=signer.parent/'aapt'
           cert=[certificates(subprocess.check_output([str(signer),'verify','--print-certs',str(path)],text=True)) for path in (apk,old)]
           assert cert[0]==cert[1]==['067688b3ab6bd5820a67f4c1ba7d5859db578173771cf31d3252b3e4e012246e']
           package=[re.search(r"package: name='([^']+)' versionCode='(\d+)' versionName='([^']+)'",subprocess.check_output([str(aapt),'dump','badging',str(path)],text=True)).groups() for path in (apk,old)]
           assert package[0][0]==package[1][0]=='com.charltonchris29.adhdpixeldungeon.indev' and int(package[0][1])>=int(package[1][1])
-          assert package[0][2]=='4.0.8-apd-INDEV-bC224-TEST'
-          pdf=root/'APD-Alpha-Preview-224.pdf';assert hashlib.sha256(pdf.read_bytes()).hexdigest()=='a581e856de00ab0ad3e53825d2b261dec4d9facea4ec78c00c166519393b536e'
-          download=root/'ADHD-Pixel-Dungeon-Alpha-Preview-224.apk';apk.rename(download)
+          assert package[0][2]=='4.0.8-apd-INDEV-bC226-TEST'
+          pdf=root/'APD-Alpha-Preview-226.pdf';assert hashlib.sha256(pdf.read_bytes()).hexdigest()=='4ee08d9cfc1b36dd40f9144e74ce51df399a9db1c7ba808595ba7e450eddb127'
+          download=root/'ADHD-Pixel-Dungeon-Alpha-Preview-226.apk';apk.rename(download)
           pathlib.Path(str(download)+'.sha256').write_text(expected+'  '+download.name+'\n')
-          receipt={'application_source':source,'application_verification_run':38823705331,'staging_run':38825223981,'navigation_run':38826006010,'navigation_test_source':nav_source['test_source'],'publication_commit':os.environ['GITHUB_SHA'],'publication_application_tree_matches_source':True,'download_name':download.name,'original_internal_name':apk.name,'apk_sha256':expected,'certificate_sha256':cert[0],'package':package[0],'core_methods':1676,'main_api34_methods':32,'additional_unique_api34_navigation_methods':1,'physical_device_tested':False,'tester_distribution_approved':False,'application_rebuilt':False}
+          receipt={'application_source':source,'application_verification_run':38827685570,'staging_run':38827870744,'publication_commit':os.environ['GITHUB_SHA'],'publication_application_tree_matches_source':True,'download_name':download.name,'original_internal_name':apk.name,'apk_sha256':expected,'certificate_sha256':cert[0],'package':package[0],'core_methods':1683,'main_api34_methods':33,'physical_device_tested':False,'tester_distribution_approved':False,'application_rebuilt':False}
           (root/'APD-Preview-Delivery.json').write_text(json.dumps(receipt,indent=2))
-          with zipfile.ZipFile(root/'APD-Navigation-Evidence.zip','w',zipfile.ZIP_DEFLATED) as archive:
-              for path in pathlib.Path('navigation').iterdir():archive.write(path,path.name)
           notes='Private owner preview for early-alpha preparation; not a public release or automatic distribution to testers.\n\n'
-          notes+='APD Changes now opens compact APD-branded preview notes with native categorized icons and short popups. Full technical build records remain under Versions. Original scoring stays unchanged.\n\n'
-          notes+='Verification: 1,676 core methods and 32 API34 methods passed; all40 screenshots were independently reviewed. One additional native touch/Back/version-picker method passed against this same APK. Signing certificate matches TEST222. This is emulator evidence, not physical-phone acceptance.\n\n'
+          notes+='Quickly resumed runs now export with the correct privacy state, and exports from damaged histories retain incomplete-data warnings. Original history files are unchanged. APD-branded compact notes and technical build records remain available. Original scoring stays unchanged.\n\n'
+          notes+='Verification: 1,683 core methods and 33 API34 methods passed; all42 screenshots were independently reviewed, including native touch/Back/version-picker checks. Signing certificate matches TEST224. This is emulator evidence, not physical-phone acceptance.\n\n'
           notes+='Compiled application source: '+source+'. The tag identifies the real publication wrapper; its application inputs match the tested source. No APK rebuild.\n\n'
           notes+='Install over existing APD. Never uninstall or clear data. SHA-256: '+expected+'.\n'
           (root/'owner-release-notes.txt').write_text(notes)
@@ -97,15 +86,15 @@ jobs:
         run: |
           python3 - <<'PY'
           import hashlib,json,os,pathlib,subprocess
-          repo=os.environ['GITHUB_REPOSITORY'];tag='apd-alpha-preview-224';root=pathlib.Path('delivery')
+          repo=os.environ['GITHUB_REPOSITORY'];tag='apd-alpha-preview-226';root=pathlib.Path('delivery')
           assert json.loads(subprocess.check_output(['gh','api','repos/'+repo]))['private']
           assert subprocess.run(['gh','release','view',tag,'--repo',repo],capture_output=True).returncode!=0,'Preserve existing release and assets'
-          names=['ADHD-Pixel-Dungeon-Alpha-Preview-224.apk','ADHD-Pixel-Dungeon-Alpha-Preview-224.apk.sha256','APD-Alpha-Preview-224.pdf','TEST224-Verification.json','APD-Preview-Delivery.json','APD-Navigation-Evidence.zip','APD-Verified-Source.zip','APD-Verified-Source.zip.sha256']
+          names=['ADHD-Pixel-Dungeon-Alpha-Preview-226.apk','ADHD-Pixel-Dungeon-Alpha-Preview-226.apk.sha256','APD-Alpha-Preview-226.pdf','TEST226-Verification.json','APD-Preview-Delivery.json','APD-Verified-Source.zip','APD-Verified-Source.zip.sha256']
           subprocess.run(['gh','release','create',tag,'--repo',repo,'--target',os.environ['GITHUB_SHA'],'--prerelease','--latest=false','--title','APD Alpha Preview — private owner test','--notes-file',str(root/'owner-release-notes.txt')]+[str(root/name) for name in names],check=True)
           release=json.loads(subprocess.check_output(['gh','api',f'repos/{repo}/releases/tags/{tag}']))
           assert release['prerelease'] and not release['draft']
           actual=[a for a in release['assets'] if a['name']==names[0]];assert len(actual)==1
-          expected='8d88ef02cb82af29cb2bb0aefc1a847726d7e95310768be59263ee78c8cb2579'
+          expected='9a93691ca9417b4f3dd63c3724ba4702d5df10cca747f3db03dd67841fee3bd6'
           assert actual[0]['digest']=='sha256:'+expected and actual[0]['size']==(root/names[0]).stat().st_size
           pathlib.Path('publication-result.json').write_text(json.dumps({'release_url':release['html_url'],'published_at':release['published_at'],'apk_url':actual[0]['browser_download_url'],'apk_sha256':expected,'private_repository':True,'public_release':False,'tester_distribution':False,'application_rebuilt':False},indent=2))
           print(pathlib.Path('publication-result.json').read_text())
@@ -114,7 +103,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: apd-alpha-preview224-publication
+          name: apd-alpha-preview226-publication
           path: |
             publication-result.json
             delivery/APD-Preview-Delivery.json

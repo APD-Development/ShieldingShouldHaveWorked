@@ -42,3 +42,7 @@ Record the exact APK/version, device/Android version, class, seed, floor, diffic
 ## Release decision
 
 Do not distribute to the approximately10 testers automatically. The owner approves distribution after reviewing the actual staged APK/report and remaining physical-device limitations. Do not claim the broader UIMSD audit, unconfirmed sentry/audio investigation, competitive scoring calibration or future online systems are complete.
+
+
+## TEST226 verified staging update
+Exactsourcea6e2f5e9aafb370ced629db01be300f6fab3f31e/run38827685570 passed1683core+33API34,0fail/error/skip,debug and fullhistory checks. All42valid screenshots were independently reviewed; newdefault/reopenedpreview and originalSPDreference were viewed full resolution. Stage38827870744 directly verified signing/applicationID/version/checksum compatibility against actuallypublished224. CandidateAPK SHA2569a93691ca9417b4f3dd63c3724ba4702d5df10cca747f3db03dd67841fee3bd6; PDF SHA4ee08d9cfc1b36dd40f9144e74ce51df399a9db1c7ba808595ba7e450eddb127. These completed results supersede the earlier pending statuses. Ownerpublication remains pending until a real release is confirmed. All physical-device checks and distribution approval above remain open.

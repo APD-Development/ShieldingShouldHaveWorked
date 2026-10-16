@@ -1,123 +1,34 @@
 {
   "date": "2026-10-15",
-  "previous_source": "3e886234e69ab128a861cfbc17bca549ba3a3456",
-  "previous_run": 38823705331,
-  "previous_label": "Codex TEST 224",
+  "previous_source": "a6e2f5e9aafb370ced629db01be300f6fab3f31e",
+  "previous_run": 38827685570,
+  "previous_label": "Codex TEST 226",
   "changes": [
-    {
-      "category": "Testing",
-      "sprite": "ICON_CHECKED",
-      "title": "Native release history navigation",
-      "text": "Exercise release and technical history selection, version ranges, actual Android touch and system Back against the existing verified APK.",
-      "paths": [
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/ReleaseNotesNavigationDeviceTest.java",
-        ".github/workflows/codex-release-navigation-acceptance.yml"
-      ]
-    },
-    {
-      "category": "Testing",
-      "sprite": "ICON_INFO",
-      "title": "Unobstructed cold-restart captures",
-      "text": "Remove only the emulator's fullscreen tutorial overlay so the unchanged About preference checks also produce readable screenshots.",
-      "paths": [
-        ".github/workflows/codex-adult-restart-acceptance.yml"
-      ]
-    },
     {
       "category": "Development",
       "sprite": "ICON_CHANGES",
-      "title": "Private alpha staging",
-      "text": "Reuse the exact verified APK for signature, checksum, source, screenshot and PDF preparation without rebuilding or distributing to testers.",
+      "title": "Verified owner preview preparation",
+      "text": "Reuse the verified archive-fix APK for source, signing, checksum, screenshot and PDF checks without rebuilding or distributing to testers.",
       "paths": [
         ".github/workflows/codex-alpha-preview-stage.yml",
+        ".github/workflows/codex-publish-alpha-preview.yml",
         "docs/APD-EARLY-ALPHA-ACCEPTANCE-2026-10-16.md"
       ]
     },
     {
       "category": "Development",
       "sprite": "ICON_INFO",
-      "title": "Verification and acceptance records",
-      "text": "Record independent source and visual evidence, distinguish emulator and phone checks, and preserve failed documentation-only preparation without inventing an APK.",
+      "title": "Preserve verification and delivery evidence",
+      "text": "Record exact test results, artifacts, compatibility checks and honest remaining phone and audit limitations.",
       "paths": [
-        "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",
         "docs/KNOWN-ISSUES-AND-SOURCE-GUIDE.md",
-        "docs/APD-NEXT-BUILD-HISTORY.json"
-      ]
-    },
-    {
-      "category": "Developer Commentary",
-      "sprite": "ICON_INFO",
-      "title": "Developer Commentary",
-      "text": "I kept the verified alpha APK while completing release-history navigation and evidence checks. These preparation changes do not alter gameplay, saved runs or earned scores.",
-      "paths": [
-        "docs/APD-NEXT-BUILD-HISTORY.json"
-      ]
-    },
-    {
-      "category": "Development",
-      "sprite": "ICON_CHANGES",
-      "title": "Private owner preview delivery",
-      "text": "Deliver the existing verified APD preview privately with neutral download names, source receipts, signing checks and native navigation evidence.",
-      "paths": [
-        ".github/workflows/codex-publish-alpha-preview.yml"
-      ]
-    },
-    {
-      "category": "Statistics / UIMSD",
-      "sprite": "ICON_COPY",
-      "title": "Shared run segment ordering",
-      "text": "Choose the latest save segment consistently so quickly resumed unfinished runs stay private and completed histories export losslessly.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/archive/ArchiveExporter.java",
-        "core/src/main/assets/apd/releases/apd-alpha-preview.tsv"
-      ]
-    },
-    {
-      "category": "Statistics / UIMSD",
-      "sprite": "ICON_WARNING",
-      "title": "Incomplete export provenance",
-      "text": "Keep incomplete-data warnings in redacted exports when source history is damaged or a public event is unreadable.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/archive/LogRedactor.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/EventTypes.java",
-        "core/src/main/assets/apd/releases/apd-alpha-preview.tsv"
-      ]
-    },
-    {
-      "category": "Testing",
-      "sprite": "ICON_CHECKED",
-      "title": "Permanent export integrity regressions",
-      "text": "Retain exact-original failure controls, corrected archive integration checks, privacy protections and unchanged source-history assertions.",
-      "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/archive/ArchiveSegmentOrderingTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/archive/RedactedDamageProvenanceTest.java",
-        ".github/workflows/codex-archive-export-acceptance.yml"
-      ]
-    },
-    {
-      "category": "Testing",
-      "sprite": "ICON_CHECKED",
-      "title": "Keep native history navigation in full gates",
-      "text": "Exercise version selection and Android Back on every subsequent full Android gate, using the actual build index and retaining both navigation screenshots.",
-      "paths": [
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/ReleaseNotesNavigationDeviceTest.java",
-        "tools/run-codex-android-checks.sh"
-      ]
-    },
-    {
-      "category": "Development",
-      "sprite": "ICON_INFO",
-      "title": "Record recovered export reliability work",
-      "text": "Preserve original-source reproduction evidence and distinguish pending verification, published owner builds and untested physical-device acceptance.",
-      "paths": [
+        "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/APD-ARCHIVE-RELIABILITY-2026-10-15.md",
-        "docs/HANDOFF.md",
-        "docs/WORK-COMPLETED-LEDGER.md",
-        "docs/APD-NEXT-BUILD-HISTORY.json"
+        "docs/APD-TEST226-VERIFICATION-2026-10-15.json"
       ]
     }
   ],
-  "commentary": "I corrected export handling for quickly resumed and incomplete histories while preserving original files. The release notes and native navigation checks retain the same APD presentation."
+  "commentary": "I preserved the verified preview and its source evidence while preparing private owner delivery. These preparation records do not change gameplay or existing player history."
 }
