@@ -1,8 +1,8 @@
 {
   "date": "2026-10-16",
-  "previous_source": "556647a1e10600d77a0e2e9e8d578e799e9fe94a",
-  "previous_run": 38912500386,
-  "previous_label": "Codex TEST 246",
+  "previous_source": "835bf2ba6d25898e2612900d90258b7b1dcf9a6d",
+  "previous_run": 38913947244,
+  "previous_label": "Codex TEST 247",
   "changes": [
     {
       "category": "Bug Fixes",
@@ -43,9 +43,11 @@
         "docs/APD-ALPHA-PREPARATION.json",
         "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/HANDOFF.md"
+        "docs/HANDOFF.md",
+        ".github/workflows/codex-retire-superseded-scoring.yml",
+        "docs/WORK-COMPLETED-LEDGER.md"
       ]
     }
   ],
-  "commentary": "This corrects malformed-score handling and Android test geometry after the previous candidate's instrumentation package failed to compile. The full357-position provisional multiplier table and ordinary product are unchanged."
+  "commentary": "This preserves TEST247 as the actual immediate previous produced APK, hardens malformed-score reconstruction, corrects Android layout-test geometry and retains the independent six-class acceptance evidence. The full 357-position provisional multiplier table and ordinary product are unchanged."
 }
