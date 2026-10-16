@@ -1,4 +1,4 @@
-name: Verify live captions and acknowledged native pager on unchanged TEST254
+name: Verify TEST254 native controls without crashing emulator Google services
 on:
   push:
     branches: [codex/apd-phone-fixes-2026-10-09]
@@ -7,7 +7,7 @@ permissions:
   contents: read
   actions: read
 concurrency:
-  group: apd-api36-final-native-proof254
+  group: apd-api36-isolated-native-proof254
   cancel-in-progress: false
 jobs:
   reuse-and-check:
@@ -78,6 +78,8 @@ jobs:
         run: |
           ./gradlew :android:assembleDebugAndroidTest -PapdTestBuild -PapdBuild=C254
           test ! -f android/build/outputs/apk/debug/android-debug.apk
+          ./gradlew --stop
+          free -h
       - name: Enable emulator acceleration
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
@@ -118,6 +120,9 @@ jobs:
           disable-animations: true
           script: |
             test "$(adb shell getprop ro.kernel.qemu | tr -d '\r')" = "1"
+            adb shell pm disable-user --user 0 com.google.android.gms
+            adb shell am force-stop com.google.android.gms
+            adb shell pm list packages -d | grep -F com.google.android.gms
             adb install -r verified-test254.apk
             adb install -r android/build/outputs/apk/androidTest/debug/android-debug-androidTest.apk
             if [ "$APD_ACCEPTANCE_API" = "36" ]; then adb shell wm size 540x960; adb shell wm density 240; else adb shell wm size 320x640; adb shell wm density 160; fi
@@ -141,7 +146,7 @@ jobs:
           for name in names:
               p=pathlib.Path('acceptance-screenshots')/name;data=p.read_bytes();assert data[:8]==b'\x89PNG\r\n\x1a\n';width,height=struct.unpack('>II',data[16:24]);assert width>0 and height>0;images[name]=[width,height]
           assert len(images)==3
-          pathlib.Path('device-acceptance-result.json').write_text(json.dumps({'api_level':api,'instrumented_methods':count,'failures':0,'errors':0,'skipped':0,'application_reused':'TEST254','application_rebuilt':False,'physical_device':False,'images':images,'six_classes_save_continue':api==34,'complete_primary_api34_retest':False,'android16_targeted_checks':api==36,'does_not_establish_complete_human_playthroughs':True},indent=2))
+          pathlib.Path('device-acceptance-result.json').write_text(json.dumps({'api_level':api,'instrumented_methods':count,'failures':0,'errors':0,'skipped':0,'application_reused':'TEST254','application_rebuilt':False,'physical_device':False,'images':images,'six_classes_save_continue':api==34,'complete_primary_api34_retest':False,'android16_targeted_checks':api==36,'emulator_google_play_services_disabled_after_observed_anrs':True,'test_assertions_unchanged':True,'does_not_establish_complete_human_playthroughs':True},indent=2))
           PY
       - name: Retain successful and unsuccessful acceptance evidence
         if: always()
