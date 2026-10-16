@@ -1,4 +1,4 @@
-name: Complete native suite acceptance on unchanged TEST254
+name: Verify presented live preview and native controls on unchanged TEST254
 on:
   push:
     branches: [codex/apd-phone-fixes-2026-10-09]
@@ -7,7 +7,7 @@ permissions:
   contents: read
   actions: read
 concurrency:
-  group: apd-api36-gesture-acceptance254
+  group: apd-api36-presented-preview254
   cancel-in-progress: false
 jobs:
   reuse-and-check:

@@ -460,6 +460,18 @@ public class CustomRulesNoticeDeviceTest {
                 final boolean[] liveSeen={false};long liveBy=System.currentTimeMillis()+3000;
                 while(!liveSeen[0]&&System.currentTimeMillis()<liveBy){render(()->{try{liveSeen[0]=((CustomDungeonRules)field(window[0],"draft")).get(CustomDungeonRules.Slider.ENEMY_HP)!=100;}catch(Exception e){throw new RuntimeException(e);}});if(!liveSeen[0])Thread.sleep(40);}
                 render(()->{try{CustomDungeonRules draft=(CustomDungeonRules)field(window[0],"draft");assertNotEquals("Multiplier must update before finger release",100,draft.get(CustomDungeonRules.Slider.ENEMY_HP));assertTrue(SPDSettings.apdCustomRules().isNeutral());assertEquals(run.getInt("apd_custom_score_version"),Dungeon.customScoring()==null?0:Dungeon.customScoring().recordVersion);}catch(Exception e){throw new RuntimeException(e);}});
+                render(()->{try {
+                    CustomDungeonRules draft=(CustomDungeonRules)field(window[0],"draft");
+                    String individual=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomRuleMultipliers.format(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomRuleMultipliers.individual(CustomDungeonRules.Slider.ENEMY_HP,draft.get(CustomDungeonRules.Slider.ENEMY_HP)));
+                    boolean caption=false;
+                    for(RenderedTextBlock text:find(window[0],RenderedTextBlock.class))if(text.text().startsWith(CustomRulesPresentation.label(CustomDungeonRules.Slider.ENEMY_HP)+": ")&&text.text().contains(individual))caption=true;
+                    assertTrue("Visible individual caption updates before finger release",caption);
+                    assertTrue("Combined caption updates before finger release",((RenderedTextBlock)field(window[0],"combined")).text().endsWith(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomRuleMultipliers.format(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomRuleMultipliers.combined(draft))));
+                    assertTrue("Finger remains held during visual verification",(Boolean)field(field(find(window[0],OptionSlider.class).get(0),"pointerArea"),"pressed"));
+                }catch(Exception e){throw new RuntimeException(e);}});
+                // The render-thread assertion can run after the previous frame was
+                // drawn. Keep DOWN held while the new captions are presented.
+                Thread.sleep(250);
                 screenshot("custom-rules-live-drag.png");
                 event=android.view.MotionEvent.obtain(down,android.os.SystemClock.uptimeMillis(),android.view.MotionEvent.ACTION_UP,touch[1].x,touch[1].y,0);event.setSource(android.view.InputDevice.SOURCE_TOUCHSCREEN);in.sendPointerSync(event);event.recycle();Thread.sleep(250);
                 render(()->{try{((ScrollPane)field(window[0],"scroll")).scrollTo(0,0);}catch(Exception e){throw new RuntimeException(e);}});Thread.sleep(250);screenshot("custom-rules-live-summary.png");
