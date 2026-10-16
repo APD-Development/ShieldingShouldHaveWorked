@@ -1,21 +1,19 @@
-# UIMSD Markdown cell escaping audit — October 16, 2026
+# UIMSD Markdown cell escaping — October 16, 2026
 
-## Supported defect
+## Verified root cause
+The current table-cell encoder escapes pipes but leaves existing backslashes unchanged. An independent Pandoc GFM render of actual ReportRenderer output confirmed that an input heading `Kind\\|Name` displays as `Kind|Name`; `one\\|two` loses its backslash and `folder\\\\file\\*x` loses literal backslash characters. This is exported display text only; report objects and raw player history are unchanged.
 
-core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/report/ReportRenderer.java line75 currently escapes a pipe before escaping or preserving existing backslashes:
+Correction to the earlier audit premise: the tested GFM parser did NOT produce an extra table column. Its table pass consumes a pipe escape before inline Markdown processing. The confirmed defect is literal-character loss, not a verified structural column split. Do not repeat the earlier column claim as evidence.
 
-    return s.replace("|", "\\|").replace("\n", " ");
+## Small correction
+Double existing backslashes before adding pipe escapes. Preserve the existing newline-to-space behavior. No parser, export format, scoring value, ruleset, save, cache or raw history format changes. Ordinary text and other export formats retain their existing output.
 
-For an existing value containing backslash-plus-pipe (a\|b), the renderer emits two backslashes followed by a pipe. Markdown consumes the slash pair as a literal backslash, leaving the pipe available as a table delimiter. The exported display can therefore gain an unintended column. This is a rendering defect; raw history, query data, caches and scores are not changed.
+## Actual regression evidence
+Two permanent JUnit methods render real Report tables, checking literal backslashes in headers and values, pipes, line breaks, empty/null cells and preservation of source values and text/HTML/CSV output. On uncorrected ReportRenderer:2 methods,1 pass/1 failure/0 errors. After correction:16 focused report/export methods pass, including previous CSV, stream-completion, run-identity and repeated-label comparison regressions. These are local host tests, not Android phone evidence.
 
-## Bounded correction
+A real Java-generated Markdown document was parsed with installed Pandoc's GFM reader, then its HTML table cells were inspected. Before:expected literal values did not match; after:all six header/data values matched, with original table shape preserved. No fabricated parser or production dependency was added. The local artifact is /workspace/scoring-preview/report-markdown-parser-evidence.json. Earlier local multi-suite invocations encountered a missing previous test class and then an obsolete local ReportBuilder; syncing the already-committed TEST255 class resolved that setup mismatch. Those failed local invocations are not called successful checks or new production defects.
 
-Escape existing backslashes first, then pipes, then preserve the established newline-to-space behavior:
+## Required verification and risks
+Complete core/debug/history and native Android verification are requested against the next exact source. Expected1754 core methods,37 Android methods and55 captured screens. Until those actual results and visual review pass, this candidate is unverified; delivered TEST258 remains the playable fallback. Any failed checks must remain recorded.
 
-    return s.replace("\\", "\\\\").replace("|", "\\|").replace("\n", " ");
-
-Add a permanent regression that renders a table cell containing a\|b and proves the output remains one Markdown cell after parsing or structural inspection. Retain cases for ordinary pipes, existing backslashes, multiple lines, empty or unknown values and CSV behavior. Do not migrate stored data or rewrite historical exports.
-
-## Status and next safe step
-
-The source defect and bounded fix are identified, but no production commit or passing regression is claimed in this record. A previous prepared change used an obsolete parent and was not pushed after the branch advanced; it must not be treated as tested. Implement source plus regression on the latest real parent, run focused report/export tests and the appropriate broader core gate, then request a new APK only if application source actually changes. This work is not inside TEST258.
+Potential regression: Markdown readers may differ in escape handling; verified behavior is Pandoc GFM, with permanent exact encoding assertions. CSV, HTML and plain-text paths are unchanged. No physical phone, document-provider export or real-player external Markdown app has been tested in this session. No redundant application APK is requested for documentation-only evidence.

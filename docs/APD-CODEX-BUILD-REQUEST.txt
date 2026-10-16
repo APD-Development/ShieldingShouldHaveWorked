@@ -400,3 +400,6 @@ Tester-feedback candidate: include responsive title footer, default-on independe
 
 
 TEST257 result: authoritative complete suite1752 methods,1751passes and1expected frozen-source snapshot mismatch in UimsdWiringTest. Debug assembly, APK and Android were skipped; five display jobs refused the missing producer. No257APK exists. Owner-authorized responsive TitleScene/TitleGeometry snapshots are updated explicitly, retaining the exact-source guard and compiled click/navigation plus geometry/native checks.34 focused methods now pass. Rerun full1752/37Android/55PNG andfive sameAPK displays; previousactualAPK remains255. Production application changes are unchanged from7e4c5cf3c295fbb63f10bca54e834f67ce9ce188; pending until actual results pass.
+
+
+Actual application change: verify literal Markdown backslash preservation,2 new permanent regressions,1754core/debug/complete immediate-previous TEST258 sourcef2b19b2534ad9e701823012e1c84b31bebd9c225/run38968356419/37API34/55PNG. Source includes unchanged confirmed Waterskin/trap and responsive menu fixes. Do not publish or label verified before evidence. TEST258 is retained published fallback. Preserve saves, raw histories, scores,357 lookup values, app ID and signing identity.

@@ -1,3 +1,7 @@
+## Markdown export correction — pending full verification
+
+Reproduced literal backslash loss with actual ReportRenderer output and independent Pandoc GFM. Earlier column-split wording is corrected: tested GFM preserves table shape but loses literal characters. Small table-escaping fix plus2 permanent methods;16 focused host methods pass. Expected full1754core/debug/immediate-previous TEST258 history/37API34/55PNG; pending until actual results. Preserve delivered258 as fallback, raw history/settings/scores and all357 multipliers unchanged. Details: docs/APD-UIMSD-MARKDOWN-ESCAPE-AUDIT-2026-10-16.md. This is an actual application change, so one new test APK is warranted; do not rebuild for later receipt notes.
+
 ## Supported UIMSD Markdown export defect — 2026-10-16T21:58:10Z
 
 Separate from the GenerationEvents/GameFacts review below, ReportRenderer.escapeMarkdownCell currently escapes pipes before existing backslashes. A supported value containing backslash-plus-pipe (a\|b) can render with an unintended Markdown table delimiter after the slash pair is consumed. Raw history, queries, caches and scores are unaffected. The bounded display-only correction is to double existing backslashes before escaping pipes, retain newline-to-space behavior, and add a permanent one-cell structural regression. This correction is not in TEST258 and has not yet landed or passed tests. Audit: docs/APD-UIMSD-MARKDOWN-ESCAPE-AUDIT-2026-10-16.md.

@@ -1,75 +1,92 @@
 {
   "date": "2026-10-16",
-  "previous_source": "a11b32f8067765e6229830c929d07d262de34800",
-  "previous_run": 38964629976,
-  "previous_label": "Codex TEST 255",
+  "previous_source": "f2b19b2534ad9e701823012e1c84b31bebd9c225",
+  "previous_run": 38968356419,
+  "previous_label": "Codex TEST 258",
   "changes": [
     {
-      "category": "Quality of Life",
-      "sprite": "ITEM_WATERSKIN",
-      "title": "Confirm Waterskin use",
-      "text": "An optional, default-on confirmation protects stored dew from accidental drinking; cancel spends no dew or turn.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Waterskin.java"
-      ]
-    },
-    {
-      "category": "Quality of Life",
-      "sprite": "ICON_WARNING",
-      "title": "Warn before known traps",
-      "text": "An optional, default-on warning stops deliberate walking before a visible armed trap; confirming continues the normal step once.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/Hero.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndSettings.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/SPDSettings.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/qol/ConfirmationDecision.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/qol/TrapStepPermit.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndActionConfirmation.java"
-      ]
-    },
-    {
       "category": "Bug Fixes",
-      "sprite": "ICON_CHANGES",
-      "title": "Responsive main menu",
-      "text": "Hide UI stays separate from Changes on short or resized displays; controls get space before decorative artwork.",
+      "sprite": "ICON_STATS",
+      "title": "Literal text in report exports",
+      "text": "Markdown tables preserve backslashes in headings and values, including text next to pipes or formatting characters.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/TitleGeometry.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/TitleScene.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/report/ReportRenderer.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Movement and Android touch checks",
-      "text": "Check cancellation, single-use confirmation, pathfinding, preference persistence and main-menu touch interaction across five display configurations.",
+      "title": "Report export regressions",
+      "text": "Check literal backslashes, pipes, line breaks and empty cells while preserving original report values and other export formats.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/TitleGeometryTest.java",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/TitleMenuLayoutDeviceTest.java",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PlayRunDeviceTest.java",
-        "tools/run-codex-android-checks.sh",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/qol/ActionConfirmationTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/UimsdWiringTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/report/ReportMarkdownEscapeTest.java"
+      ]
+    },
+    {
+      "category": "Testing",
+      "sprite": "ICON_CHECKED",
+      "title": "Reliable native touch assertions",
+      "text": "Native menu tests wait for actual preference changes after touch input, retaining the same assertions and exact application APK.",
+      "paths": [
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/TitleMenuLayoutDeviceTest.java"
       ]
     },
     {
       "category": "Infrastructure",
       "sprite": "ICON_INFO",
-      "title": "Exact build and display evidence",
-      "text": "Reuse one application APK for display checks and retain its immediate predecessor, exact source, failures and compatible fallback.",
+      "title": "Complete native evidence",
+      "text": "Retain all screenshots and derive test reports from actual Android execution records; exact display checks reject mismatched screen sizes.",
       "paths": [
-        ".github/workflows/codex-menu-layout-matrix.yml",
-        "tools/run-title-display-check.sh",
-        "docs/APD-TITLE-FOOTER-FIX-2026-10-16.md",
-        "docs/APD-NEXT-BUILD-HISTORY.json",
+        "tools/record-native-confirmation-results.py",
+        "tools/run-codex-android-checks.sh",
+        "tools/run-title-display-check.sh"
+      ]
+    },
+    {
+      "category": "Infrastructure",
+      "sprite": "ICON_INFO",
+      "title": "Exact tall-display verification",
+      "text": "Verify a real 1080×2408 emulator display after dismissing Android's first-use full-screen notice.",
+      "paths": [
+        ".github/workflows/codex-m53-exact258.yml"
+      ]
+    },
+    {
+      "category": "Infrastructure",
+      "sprite": "ICON_INFO",
+      "title": "Verified private delivery",
+      "text": "Verify source, signing, test identities and download checksums before privately publishing existing APK and report assets.",
+      "paths": [
+        ".github/workflows/codex-owner-menu-confirmations.yml"
+      ]
+    },
+    {
+      "category": "Infrastructure",
+      "sprite": "ICON_INFO",
+      "title": "Same-APK Android reruns",
+      "text": "Reuse one signed application APK for complete native regression and representative display checks.",
+      "paths": [
+        ".github/workflows/codex-retest-owner258.yml"
+      ]
+    },
+    {
+      "category": "Infrastructure",
+      "sprite": "ICON_INFO",
+      "title": "Build evidence and audit continuity",
+      "text": "Preserve the previous APK's exact source, failures, delivery receipt and unfinished audit checkpoints; record this build's reviewed changes separately.",
+      "paths": [
         "docs/APD-ALPHA-PREPARATION.json",
-        "docs/APD-CODEX-BUILD-REQUEST.txt",
+        "docs/APD-TEST258-OWNER-DELIVERY-2026-10-16.json",
+        "docs/APD-TITLE-FOOTER-FIX-2026-10-16.md",
+        "docs/APD-UIMSD-MARKDOWN-ESCAPE-AUDIT-2026-10-16.md",
+        "docs/APD-UIMSD-REVIEW-CONTINUATION-2026-10-16.json",
         "docs/HANDOFF.md",
-        "core/src/main/assets/apd/releases/apd-alpha-preview.tsv",
-        "docs/APD-TEST255-GROUP-COMPARISON-2026-10-16.md",
-        "docs/APD-TEST255-VERIFICATION-2026-10-16.json",
-        "docs/WORK-COMPLETED-LEDGER.md"
+        "docs/WORK-COMPLETED-LEDGER.md",
+        "docs/APD-NEXT-BUILD-HISTORY.json",
+        "docs/APD-CODEX-BUILD-REQUEST.txt",
+        "core/src/main/assets/apd/releases/apd-alpha-preview.tsv"
       ]
     }
   ],
-  "commentary": "These safeguards came from early alpha feedback. I kept normal dew, trap and movement mechanics intact and made menu layout depend on available space instead of a phone model."
+  "commentary": "I corrected a small export issue without changing the recorded values. The earlier test and delivery corrections are recorded separately from gameplay changes."
 }
