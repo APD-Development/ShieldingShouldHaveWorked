@@ -301,7 +301,7 @@ jobs:
           assert len(matches)==1
           release=matches[0]
           assert release['prerelease'] and not release['draft'] and release['published_at'] is not None
-          assert release['target_commitish']=='832c1a5679a8cd216e8c57638f1bc0fe2442fdfe'
+          assert release['target_commitish']=='51bdf6b18b1abb3c861ee80186f67def72e17df5', 'Release tag must point to its exact publication wrapper; artifact application source remains checked separately'
           for name in names:
               found=[a for a in release['assets'] if a['name']==name];assert len(found)==1
               assert found[0]['size']>0 and found[0]['digest'].startswith('sha256:')
@@ -343,5 +343,6 @@ jobs:
             delivery/owner-release-notes.txt
           if-no-files-found: warn
           retention-days: 7
+
 
 
