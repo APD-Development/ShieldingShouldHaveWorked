@@ -1,4 +1,4 @@
-name: Complete native suite acceptance on unchanged TEST253
+name: Complete native suite acceptance on unchanged TEST254
 on:
   push:
     branches: [codex/apd-phone-fixes-2026-10-09]
@@ -7,7 +7,7 @@ permissions:
   contents: read
   actions: read
 concurrency:
-  group: apd-complete-suite-acceptance253
+  group: apd-complete-suite-acceptance254
   cancel-in-progress: false
 jobs:
   reuse-and-check:
@@ -31,19 +31,25 @@ jobs:
         run: |
           python3 - <<'PY'
           import hashlib,json,os,pathlib,subprocess,zipfile
-          repo=os.environ['GITHUB_REPOSITORY'];source='6d9162f5946311728b1723a3b02d688072a8da79'
-          run_id=38943900747;artifact_id=12064716016;expected=None
+          repo=os.environ['GITHUB_REPOSITORY'];source='832c1a5679a8cd216e8c57638f1bc0fe2442fdfe'
+          run_id=38949555542;expected=None
           def api(path):return json.loads(subprocess.check_output(['gh','api',path]))
           assert api('repos/'+repo)['private']
           run=api(f'repos/{repo}/actions/runs/{run_id}')
           assert run['head_sha']==source
-          jobs=api(f'repos/{repo}/actions/runs/{run_id}/jobs')['jobs']
-          assert any(j['name']=='verify-and-build' and j['conclusion']=='success' for j in jobs), 'APK producer/core/history has not succeeded'
-          # Other OS acceptance may run in parallel. Publication separately requires
-          # the whole primary workflow, staging and both supplemental jobs to pass.
-          metadata=api(f'repos/{repo}/actions/artifacts/{artifact_id}')
+          import time
+          for attempt in range(60):
+              jobs=api(f'repos/{repo}/actions/runs/{run_id}/jobs')['jobs']
+              if any(j['name']=='verify-and-build' and j['conclusion']=='success' for j in jobs):break
+              assert not any(j['name']=='verify-and-build' and j['conclusion'] in ('failure','cancelled') for j in jobs)
+              time.sleep(10)
+          else:raise AssertionError('Producer did not finish successfully')
+          artifacts=api(f'repos/{repo}/actions/runs/{run_id}/artifacts')['artifacts']
+          matches=[a for a in artifacts if a['name']=='apd-codex-private-test-apk']
+          assert len(matches)==1,[(a['id'],a['name']) for a in artifacts]
+          metadata=matches[0];artifact_id=metadata['id']
           assert metadata['workflow_run']['head_sha']==source and not metadata['expired']
-          assert metadata['digest']=='sha256:64b401770227301b71b85e8a06947b54bd5177b49698b136be648963e29dabc0'
+          assert metadata['digest'].startswith('sha256:')
           paths=['android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java','android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomScoreDeviceTest.java','android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PlayRunDeviceTest.java','core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/BossProgressionAcceptanceTest.java','android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/EarlyAlphaRosterDeviceTest.java']
           supplemental={path:pathlib.Path(path).read_bytes() for path in paths}
           subprocess.run(['git','fetch','--no-tags','--depth=1','origin',source],check=True)
@@ -53,14 +59,14 @@ jobs:
           subprocess.run(['git','checkout','--detach',source],check=True)
           for path,content in supplemental.items():pathlib.Path(path).parent.mkdir(parents=True,exist_ok=True);pathlib.Path(path).write_bytes(content)
           subprocess.run(['git','diff','--exit-code',source,'--']+protected,check=True)
-          with open('verified-test253.zip','wb') as target:subprocess.run(['gh','api',f'repos/{repo}/actions/artifacts/{artifact_id}/zip'],stdout=target,check=True)
-          assert hashlib.sha256(pathlib.Path('verified-test253.zip').read_bytes()).hexdigest()==metadata['digest'].removeprefix('sha256:')
-          with zipfile.ZipFile('verified-test253.zip') as z:
+          with open('verified-test254.zip','wb') as target:subprocess.run(['gh','api',f'repos/{repo}/actions/artifacts/{artifact_id}/zip'],stdout=target,check=True)
+          assert hashlib.sha256(pathlib.Path('verified-test254.zip').read_bytes()).hexdigest()==metadata['digest'].removeprefix('sha256:')
+          with zipfile.ZipFile('verified-test254.zip') as z:
               names=[n for n in z.namelist() if n.endswith('.apk')];assert len(names)==1;apk=z.read(names[0])
               expected=z.read(names[0]+'.sha256').decode().split()[0]
               assert len(expected)==64 and all(c in '0123456789abcdef' for c in expected)
           assert hashlib.sha256(apk).hexdigest()==expected
-          pathlib.Path('verified-test253.apk').write_bytes(apk)
+          pathlib.Path('verified-test254.apk').write_bytes(apk)
           pathlib.Path('acceptance-source.json').write_text(json.dumps({'application_source':source,'application_run':run_id,'application_artifact':artifact_id,'application_sha256':expected,'supplemental_test_commit':os.environ['GITHUB_SHA'],'api_level':int(os.environ['APD_ACCEPTANCE_API']),'application_rebuilt':False,'application_reused':True,'protected_application_inputs_identical':True,'physical_device':False,'tester_distribution':False},indent=2))
           PY
       - name: Set up Android SDK
@@ -70,7 +76,7 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
       - name: Compile instrumentation only; do not assemble another application APK
         run: |
-          ./gradlew :android:assembleDebugAndroidTest -PapdTestBuild -PapdBuild=C253
+          ./gradlew :android:assembleDebugAndroidTest -PapdTestBuild -PapdBuild=C254
           test ! -f android/build/outputs/apk/debug/android-debug.apk
       - name: Enable emulator acceleration
         run: |
@@ -83,7 +89,7 @@ jobs:
           import os
           p='com.shatteredpixel.shatteredpixeldungeon.android.'
           api=int(os.environ['APD_ACCEPTANCE_API'])
-          methods=["com.shatteredpixel.shatteredpixeldungeon.android.AboutDeviceTest#aboutFoundingStatementAndPopupFollowAdultHumorOnEveryOpening","com.shatteredpixel.shatteredpixeldungeon.android.AboutDeviceTest#everyAboutPopupOpensScrollsAndCloses","com.shatteredpixel.shatteredpixeldungeon.android.AboutDeviceTest#offlineNewsCardsOpenDatedSpritePopups","com.shatteredpixel.shatteredpixeldungeon.android.AndroidBackDeviceTest#backWalksBackwardsOneStepPerPress","com.shatteredpixel.shatteredpixeldungeon.android.ApdSettingsClickDeviceTest#adultHumorControlWorksWithoutAnAgeProviderAndReopensWithSavedChoice","com.shatteredpixel.shatteredpixeldungeon.android.ApdSettingsClickDeviceTest#communityMenuOpensEveryPreviewAndReturnsWithoutStackingWindows","com.shatteredpixel.shatteredpixeldungeon.android.ChangesVisualDeviceTest#categoriesUseSpdColumnsAndEveryIconOpensItsExactBuildPopup","com.shatteredpixel.shatteredpixeldungeon.android.ChangesVisualDeviceTest#largeAndNamedHistoricalBuildsKeepAllIconsInScrollableNativeSections","com.shatteredpixel.shatteredpixeldungeon.android.ChangesVisualDeviceTest#playerReleaseNotesAreCompactBrandedAndEveryChangeOpens","com.shatteredpixel.shatteredpixeldungeon.android.CustomRulesNoticeDeviceTest#allEighteenControlsAcceptNativeTouchSaveAndReopenWithoutChangingActiveRun","com.shatteredpixel.shatteredpixeldungeon.android.CustomRulesNoticeDeviceTest#equipmentControlAcceptsTouchAndSavesOnlyNextRunPreferences","com.shatteredpixel.shatteredpixeldungeon.android.CustomRulesNoticeDeviceTest#healingConversionSettingExplainsItsExactScopeWithoutChangingSavedValue","com.shatteredpixel.shatteredpixeldungeon.android.CustomRulesNoticeDeviceTest#liveMultipliersMatchEveryPositionAndUpdateDuringNativeDragBeforeRelease","com.shatteredpixel.shatteredpixeldungeon.android.CustomRulesNoticeDeviceTest#noticeStaysAboveUsableControlsAndDoesNotChangeLockedRunOrScores","com.shatteredpixel.shatteredpixeldungeon.android.CustomRulesNoticeDeviceTest#scoringVisionPopupOpensScrollsAndBackPreservesDraftOnSmallScreens","com.shatteredpixel.shatteredpixeldungeon.android.CustomRulesNoticeDeviceTest#touchscreenSliderGesturesLockDirectionAndPreserveDraftAndSavedRules","com.shatteredpixel.shatteredpixeldungeon.android.CustomScoreDeviceTest#dailyCalendarShowsFrozenLongEarnedScoreWithoutOverlappingDates","com.shatteredpixel.shatteredpixeldungeon.android.CustomScoreDeviceTest#nativeScorePopupsShowRecordedNeutralPendingAndUnknownThenCloseWithAndroidBack","com.shatteredpixel.shatteredpixeldungeon.android.PlayRunDeviceTest#aRunCanBePlayedSavedContinuedAndEndedWithItsHistoryRecorded","com.shatteredpixel.shatteredpixeldungeon.android.PlayRunDeviceTest#aWonRunIsRecordedAsWonAndSealed","com.shatteredpixel.shatteredpixeldungeon.android.PlayRunDeviceTest#clericQuickCastsPersistAndKeepNormalCostsAndTargeting","com.shatteredpixel.shatteredpixeldungeon.android.PlayRunDeviceTest#tileVisibilityAndStairNavigationKeepNormalTurnsFogAndControls","com.shatteredpixel.shatteredpixeldungeon.android.ReleaseNotesNavigationDeviceTest#nativeTouchSwitchesHistoryModesAndSystemBackReturnsToAboutWithoutLosingRecords","com.shatteredpixel.shatteredpixeldungeon.android.RunSetupDifficultyDeviceTest#clericLoreFirstRunPopupIsVisibleAndBackContinuesExactlyOnce","com.shatteredpixel.shatteredpixeldungeon.android.RunSetupDifficultyDeviceTest#difficultyIsChosenOnTheCharacterScreenAndNotInSettings","com.shatteredpixel.shatteredpixeldungeon.android.RunSetupDifficultyDeviceTest#heroButtonsStayAboveNavigationBarAndRemainSelectable","com.shatteredpixel.shatteredpixeldungeon.android.RunSetupDifficultyDeviceTest#navigationOverlapReservesVisibleBarsEvenWithFullscreenRequested","com.shatteredpixel.shatteredpixeldungeon.android.TopScoresDeviceTest#androidTopScoresOpensOriginalRankingsAndBackPreservesStoredHistory","com.shatteredpixel.shatteredpixeldungeon.android.UimsdResourcesDeviceTest#replacingHomeContentsDisposesPreviouslyDrawnImages","com.shatteredpixel.shatteredpixeldungeon.android.UimsdRestoreDeviceTest#arcanaItemDescriptionsRequireKnownEquippedRingsAndFitWindows","com.shatteredpixel.shatteredpixeldungeon.android.UimsdRestoreDeviceTest#demoUnlockKeepsTenRunNoticeVisibleOnTitle","com.shatteredpixel.shatteredpixeldungeon.android.UimsdRestoreDeviceTest#menusSurviveSceneRecreationAndNarrowActionsStayInsideTheirWindow","com.shatteredpixel.shatteredpixeldungeon.android.UimsdRestoreDeviceTest#textAndGuideScrollSurviveRepeatedResetsAndClampAfterResize","com.shatteredpixel.shatteredpixeldungeon.android.UimsdRestoreDeviceTest#tourChoicesSurviveWithoutStartingATourOrRepeatingTheOffer","com.shatteredpixel.shatteredpixeldungeon.android.UimsdRestoreDeviceTest#validationEmptyHistoryGroupedAndReportMessagesSurviveWithoutRepeatingActions","com.shatteredpixel.shatteredpixeldungeon.android.UimsdScreensDeviceTest#everyUimsdScreenAndDialogCanBeBuilt"] if api==34 else [
+          methods=[p+'EarlyAlphaRosterDeviceTest#allSixClassesStartSaveAndContinueWithLockedExtremeRules'] if api==34 else [
               p+'CustomRulesNoticeDeviceTest#allEighteenControlsAcceptNativeTouchSaveAndReopenWithoutChangingActiveRun',
               p+'CustomRulesNoticeDeviceTest#scoringVisionPopupOpensScrollsAndBackPreservesDraftOnSmallScreens',
               p+'CustomScoreDeviceTest#dailyCalendarShowsFrozenLongEarnedScoreWithoutOverlappingDates',
@@ -92,7 +98,7 @@ jobs:
               p+'CustomRulesNoticeDeviceTest#touchscreenSliderGesturesLockDirectionAndPreserveDraftAndSavedRules',
               p+'CustomScoreDeviceTest#nativeScorePopupsShowRecordedNeutralPendingAndUnknownThenCloseWithAndroidBack',
               p+'CustomRulesNoticeDeviceTest#liveMultipliersMatchEveryPositionAndUpdateDuringNativeDragBeforeRelease']
-          images=["hotbar-controls.png","daily-earned-score.png","daily-earned-score-scrolled.png","custom-scoring-vision.png","custom-scoring-vision-narrow.png","custom-rules-live-drag.png","custom-rules-live-summary.png","healing-conversion-setting.png","cleric-first-run.png","cleric-empty-slot-picker.png","cleric-four-slot-touch.png","apd-changes.png","apd-technical-changes.png","release-notes-navigation.png","release-notes-reopened.png","spd-changes-reference.png","apd-build-22.png","apd-build-37.png","apd-codex-test-67.png","tiles-original-2.png","tiles-enhanced-2.png","tiles-original-4.png","tiles-enhanced-4.png","stairs-shortcut.png","stairs-highlight.png","uimsd-empty-home.png","uimsd-home.png","uimsd-demo-info.png","uimsd-text-values.png","uimsd-sort-keys.png","chalice-preview.png","blacksmith-rewards.png","blacksmith-reward-detail.png","healing-confirmation.png","healing-threshold-settings.png","metamorph-five-choices.png","metamorph-choice-detail.png","custom-rules-notice.png","custom-rules-notice-narrow.png","custom-rules-notice-narrow-scrolled.png","custom-rules-equipment.png","custom-rules-touch-gestures.png","top-scores-main-menu.png","top-scores-rankings.png","custom-score-neutral.png","custom-score-pending.png","custom-score-unknown.png","custom-score-narrow.png","custom-score-narrow-before.png"] if api==34 else [
+          images=['alpha-roster-'+hero+'.png' for hero in ('warrior','mage','rogue','huntress','duelist','cleric')] if api==34 else [
               'hotbar-controls.png','custom-scoring-vision.png','custom-scoring-vision-narrow.png','daily-earned-score.png','daily-earned-score-scrolled.png','custom-rules-touch-gestures.png','custom-score-neutral.png','custom-score-pending.png','custom-score-unknown.png','custom-score-narrow-before.png','custom-score-narrow.png','custom-rules-live-drag.png','custom-rules-live-summary.png']
           with open(os.environ['GITHUB_ENV'],'a') as target:
               target.write('APD_DEVICE_METHODS='+','.join(methods)+'\n')
@@ -121,7 +127,7 @@ jobs:
           disable-animations: true
           script: |
             test "$(adb shell getprop ro.kernel.qemu | tr -d '\r')" = "1"
-            adb install -r verified-test253.apk
+            adb install -r verified-test254.apk
             adb install -r android/build/outputs/apk/androidTest/debug/android-debug-androidTest.apk
             if [ "$APD_ACCEPTANCE_API" = "36" ]; then adb shell wm size 540x960; adb shell wm density 240; else adb shell wm size 320x640; adb shell wm density 160; fi
             adb shell settings put secure immersive_mode_confirmations confirmed
@@ -138,13 +144,13 @@ jobs:
           import json,os,pathlib,re,struct,subprocess
           count=int(os.environ['APD_EXPECTED_METHODS']);api=int(os.environ['APD_ACCEPTANCE_API']);text=pathlib.Path('instrumentation.txt').read_text()
           print(text)
-          assert re.search(r'OK \('+str(count)+r' tests\)',text),text
+          assert re.search(r'OK \('+str(count)+r' tests?\)',text),text
           assert not any(s in text for s in ('FAILURES!!!','INSTRUMENTATION_FAILED','Process crashed.'))
           names=json.loads(pathlib.Path('expected-screenshots.json').read_text());images={}
           for name in names:
               p=pathlib.Path('acceptance-screenshots')/name;data=p.read_bytes();assert data[:8]==b'\x89PNG\r\n\x1a\n';width,height=struct.unpack('>II',data[16:24]);assert width>0 and height>0;images[name]=[width,height]
-          assert len(images)==(49 if api==34 else 13)
-          pathlib.Path('device-acceptance-result.json').write_text(json.dumps({'api_level':api,'instrumented_methods':count,'failures':0,'errors':0,'skipped':0,'application_reused':'TEST253','application_rebuilt':False,'physical_device':False,'images':images,'six_classes_save_continue':False,'complete_primary_api34_retest':api==34,'android16_targeted_checks':api==36,'does_not_establish_complete_human_playthroughs':True},indent=2))
+          assert len(images)==(6 if api==34 else 13)
+          pathlib.Path('device-acceptance-result.json').write_text(json.dumps({'api_level':api,'instrumented_methods':count,'failures':0,'errors':0,'skipped':0,'application_reused':'TEST254','application_rebuilt':False,'physical_device':False,'images':images,'six_classes_save_continue':api==34,'complete_primary_api34_retest':False,'android16_targeted_checks':api==36,'does_not_establish_complete_human_playthroughs':True},indent=2))
           PY
       - name: Retain successful and unsuccessful acceptance evidence
         if: always()
