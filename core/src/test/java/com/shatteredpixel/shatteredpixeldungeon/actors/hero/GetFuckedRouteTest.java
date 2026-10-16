@@ -39,6 +39,9 @@ public class GetFuckedRouteTest {
     private com.shatteredpixel.shatteredpixeldungeon.windows.WndTradeItem tradeWindow;
     private Heap tradeHeap;
     private boolean executeTradeUi;
+    private Camera oldMainCamera;
+    private int chainAnimationsCompleted;
+    private int pushAnimationsCompleted;
     private AtomicBoolean watch;
     private Thread watchdog;
     private boolean oldKeepAlive;
@@ -58,6 +61,16 @@ public class GetFuckedRouteTest {
         Group parent=mock(Group.class,i -> {
             if(i.getMethod().getName().equals("recycle") && i.getArguments().length==1 && i.getArgument(0) instanceof Class)
                 return mock((Class<?>)i.getArgument(0),RETURNS_DEEP_STUBS);
+            if(i.getMethod().getName().equals("add") && i.getArguments().length==1
+                    && (i.getArgument(0) instanceof com.shatteredpixel.shatteredpixeldungeon.effects.Chains
+                    || i.getArgument(0) instanceof com.shatteredpixel.shatteredpixeldungeon.effects.Pushing.Effect)){
+                com.watabou.noosa.Gizmo effect=i.getArgument(0);float before=Game.elapsed;
+                try{Game.elapsed=100f;effect.update();}finally{Game.elapsed=before;}
+                if(effect instanceof com.shatteredpixel.shatteredpixeldungeon.effects.Chains)chainAnimationsCompleted++;
+                else pushAnimationsCompleted++;
+                System.out.println("ANIMATION_CALLBACK_COMPLETED "+effect.getClass().getName());
+                return effect;
+            }
             return Answers.RETURNS_DEEP_STUBS.answer(i);
         }); sprite.parent=parent;
         MissileSprite missile=mock(MissileSprite.class);
@@ -82,6 +95,7 @@ public class GetFuckedRouteTest {
     @Before public void init() throws Exception {
         System.out.println("RUNNER_STAGE initialize");
         HeadlessTestSupport.start();
+        oldMainCamera=Camera.main;Camera.main=mock(Camera.class);
         MockedStatic<GameScene> scene = mockStatic(GameScene.class, invocation -> {
             Object[] args = invocation.getArguments();
             if(invocation.getMethod().getName().equals("selectItem")){
@@ -174,6 +188,7 @@ public class GetFuckedRouteTest {
     @After public void close() throws Exception {
         if (watch != null) { watch.set(false); watchdog.interrupt(); watchdog.join(1000); }
         Actor.keepActorThreadAlive = oldKeepAlive;
+        Camera.main=oldMainCamera;
         com.shatteredpixel.shatteredpixeldungeon.ui.TargetHealthIndicator.instance=oldTargetIndicator;
         Actor.clear(); Random.popGenerator();
         if(upgradeWindows!=null)upgradeWindows.close();
@@ -249,6 +264,10 @@ public class GetFuckedRouteTest {
         int depth=manifest.getJSONObject("state").getInt("depth");
         java.nio.file.Files.createDirectories(FileUtils.getFileHandle(GamesInProgress.gameFile(1)).file().toPath().getParent());
         java.nio.file.Path nativeDir=FileUtils.getFileHandle(GamesInProgress.gameFile(1)).file().toPath().getParent();
+        //The checkpoint is the complete retained run. Discard only stale files from other test runs.
+        try(java.nio.file.DirectoryStream<java.nio.file.Path> oldFiles=java.nio.file.Files.newDirectoryStream(nativeDir,"*.dat")){
+            for(java.nio.file.Path oldFile:oldFiles)java.nio.file.Files.delete(oldFile);
+        }
         try(java.nio.file.DirectoryStream<java.nio.file.Path> files=java.nio.file.Files.newDirectoryStream(input,"*.dat")){
             for(java.nio.file.Path file:files)java.nio.file.Files.copy(file,nativeDir.resolve(file.getFileName()),java.nio.file.StandardCopyOption.REPLACE_EXISTING);
         }
@@ -310,6 +329,13 @@ public class GetFuckedRouteTest {
     private void log(String s) {
         assertEquals("Maximum HP must stay exactly one",1,Dungeon.hero.HT);assertTrue("Current HP exceeds one",Dungeon.hero.HP<=1);
         System.out.println("ROUTE "+state(s));
+        JSONArray buffs=new JSONArray();
+        for(Buff b:Dungeon.hero.buffs()){
+            JSONObject entry=new JSONObject().put("type",b.getClass().getSimpleName()).put("remaining",b.cooldown());
+            if(b instanceof ShieldOfLight.ShieldOfLightTracker)entry.put("target",((ShieldOfLight.ShieldOfLightTracker)b).object);
+            buffs.put(entry);
+        }
+        System.out.println("BUFF_DETAIL "+s+" "+buffs);
         if(Dungeon.depth==5){
             for(Mob m:Dungeon.level.mobs)if(m instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo){
                 try{Field pumped=m.getClass().getDeclaredField("pumpedUp");pumped.setAccessible(true);System.out.println("GOO_DETAIL "+s+" HP="+m.HP+" pumped="+pumped.getInt(m)+" water="+Dungeon.level.water[m.pos]+" heroWater="+Dungeon.level.water[Dungeon.hero.pos]+" locked="+Dungeon.level.locked+" heroShield="+Dungeon.hero.shielding());}catch(Exception e){throw new RuntimeException(e);}
@@ -388,7 +414,7 @@ public class GetFuckedRouteTest {
     @Test public void seed266InitialCommands() throws Exception {
         System.out.println("RUNNER_STAGE scheduler start");
         ready();
-        if(System.getProperty("route.resume")!=null){verifyCheckpoint(System.getProperty("route.resume"));if(Dungeon.depth==3)thirdFloorSection();else if(Dungeon.depth==4){if(Dungeon.hero.pos==826)returnedFourthFloorSection();else if(Dungeon.hero.pos==437)purityCheckpointSection();else if(Dungeon.hero.pos==1035)foodCheckpointSection();else fourthFloorSection();}else if(Dungeon.depth==5){if(Boolean.getBoolean("route.postGoo"))postGooSection();else if(Boolean.getBoolean("route.armoredGoo"))armoredGooSection();else fifthFloorSection();}else if(Dungeon.depth==6)sixthFloorSection();else fail("Unwritten section");return;}
+        if(System.getProperty("route.resume")!=null){verifyCheckpoint(System.getProperty("route.resume"));if(Dungeon.depth==3)thirdFloorSection();else if(Dungeon.depth==4){if(Dungeon.hero.pos==826)returnedFourthFloorSection();else if(Dungeon.hero.pos==437)purityCheckpointSection();else if(Dungeon.hero.pos==1035)foodCheckpointSection();else fourthFloorSection();}else if(Dungeon.depth==5){if(Boolean.getBoolean("route.postGoo"))postGooSection();else if(Boolean.getBoolean("route.armoredGoo"))armoredGooSection();else fifthFloorSection();}else if(Dungeon.depth==6)sixthFloorSection();else if(Dungeon.depth==7)seventhFloorSection();else fail("Unwritten section");return;}
         assertEquals(1,Dungeon.hero.lvl); assertEquals(1,Dungeon.hero.HP); assertEquals(1,Dungeon.hero.HT);
         for(Map<Talent,Integer> tier:Dungeon.hero.talents) for(int value:tier.values()) assertEquals(0,value);
         JSONObject layout=new JSONObject(); Level l=Dungeon.level;
@@ -922,7 +948,110 @@ public class GetFuckedRouteTest {
         Dungeon.hero.busy();buy.invoke(tradeWindow,heap);ready();log("BUY ACTUAL SHOP HEAP "+cell+" PRICE "+price);
     }
 
+    private void seventhFloorAfterIntercept() throws Exception {
+        for(int c:new int[]{506,473,440,407,408,409,410,411,412,413,414,447,448,449,450,482,515,548,581,614,647,680,713,746,779,812})click(c);
+        log("FLOOR SEVEN SOUTHBOUND APPROACH WITH RETAINED RAGE");
+        for(int c:new int[]{845,878})click(c);
+        log("FLOOR SEVEN EXIT GROUP BEFORE RAGE");
+        if(Boolean.getBoolean("route.guardPullAudit")){
+            try{click(911);}catch(AssertionError expected){
+                if(Dungeon.hero.isAlive())throw expected;
+                assertTrue(chainAnimationsCompleted>0);assertTrue(pushAnimationsCompleted>0);
+                assertNotEquals(911,Dungeon.hero.pos);assertEquals(1,Dungeon.hero.HT);
+                System.out.println("NEGATIVE_CONTROL_REAL_CHAIN_PULL_AND_DEATH pos="+Dungeon.hero.pos+" HP="+Dungeon.hero.HP);
+                return;
+            }
+            fail("Unprotected chain route unexpectedly survived; inspect before updating this negative control");
+        }
+        Mob trailingSkeleton=Dungeon.level.mobs.stream().filter(m->m.id()==230).findFirst().get();
+        cast(ShieldOfLight.INSTANCE,trailingSkeleton.pos);
+        Item rage=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRage.class);assertNotNull(rage);
+        rage.execute(Dungeon.hero,"READ");ready();log("READ RETAINED RAGE BEFORE GUARD CHAIN");
+        for(int c:new int[]{911,944,977,977})click(c);
+        assertEquals(8,Dungeon.depth);log("EARNED FLOOR EIGHT ENTRY");
+        System.out.println("FLOOR_LAYOUT "+new JSONObject().put("depth",Dungeon.depth).put("width",Dungeon.level.width()).put("height",Dungeon.level.height()).put("terrain",new JSONArray(Dungeon.level.map)).put("entrance",Dungeon.level.entrance()).put("exit",Dungeon.level.exit()));
+        if(System.getProperty("route.checkpoint8Out")!=null)writeCheckpoint(System.getProperty("route.checkpoint8Out"));
+    }
+
+    private void seventhFloorFood() throws Exception {
+        for(int n=0;n<40;n++)waitOne();
+        Item food=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.food.Food.class);assertNotNull(food);
+        food.execute(Dungeon.hero,"EAT");ready();log("EAT ACQUIRED FLOOR SEVEN RATION AFTER PAID FORTY TURNS");
+        for(int n=0;n<(Boolean.getBoolean("route.interceptThief")?31:65);n++)waitOne();
+        log("FLOOR SEVEN SECOND FOOD FUNDED RECHARGE INTERRUPTED BY THIEF");
+        Mob thief=Dungeon.level.mobs.stream().filter(m->m.id()==222).findFirst().get();
+        if(Boolean.getBoolean("route.interceptThief")){
+            cast(GuidingLight.INSTANCE,thief.pos);
+            throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class,thief.pos);
+            log("INTERCEPT THIRD THIEF APPROACH BEFORE RAGE THEFT");
+            cast(GuidingLight.INSTANCE,thief.pos);
+            log("INTERCEPT THIRD THIEF SECOND LIGHT");
+            waitOne();waitOne();click(thief.pos);assertFalse(thief.isAlive());
+            for(int c:new int[]{538,538,538})click(c);
+            log("INTERCEPT THIEF DEFEATED RAGE RETAINED AND MISSILE RECOVERED");
+            assertNotNull(Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRage.class));
+            assertNotNull(Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class));
+            if(System.getProperty("route.checkpoint7InterceptOut")!=null)writeCheckpoint(System.getProperty("route.checkpoint7InterceptOut"));
+            return;
+        }
+        cast(ShieldOfLight.INSTANCE,thief.pos);
+        cast(GuidingLight.INSTANCE,thief.pos);
+        click(thief.pos);log("FLOOR SEVEN RESPAWNED THIEF EXCHANGE");
+        if(System.getProperty("route.checkpoint7FoodRestOut")!=null)writeCheckpoint(System.getProperty("route.checkpoint7FoodRestOut"));
+    }
+
+    private void seventhFloorAfterRest() throws Exception {
+        for(int c:new int[]{819,786,753,720,687,686,685,652,619,586,553,520,487,455,422,421,420,419})click(c);
+        Dungeon.hero.search(true);ready();log("SEARCH FLOOR SEVEN EASTERN ARENA SECRET DOOR");
+        for(int c:new int[]{418,417,416,415,414})click(c);
+        cast(HolyWard.INSTANCE,null);
+        Mob skeleton=Dungeon.level.mobs.stream().filter(m->m.id()==202).findFirst().get();
+        cast(GuidingLight.INSTANCE,skeleton.pos);
+        throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class,skeleton.pos);
+        throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class,skeleton.pos);
+        log("FLOOR SEVEN CENTRAL APPROACH");
+        cast(GuidingLight.INSTANCE,skeleton.pos);
+        cast(GuidingLight.INSTANCE,skeleton.pos);assertFalse(skeleton.isAlive());
+        log("FLOOR SEVEN FIRST SKELETON DEFEATED");
+        for(int c:new int[]{447,448,448,414})click(c);
+        assertEquals(1,Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class).quantity());
+        Mob northSkeleton=Dungeon.level.mobs.stream().filter(m->m.id()==201).findFirst().get();
+        cast(ShieldOfLight.INSTANCE,northSkeleton.pos);
+        waitOne();waitOne();
+        cast(GuidingLight.INSTANCE,northSkeleton.pos);
+        click(northSkeleton.pos);
+        log("FLOOR SEVEN NORTH SKELETON EXCHANGE");
+        click(northSkeleton.pos);assertFalse(northSkeleton.isAlive());
+        log("FLOOR SEVEN SECOND SKELETON DEFEATED");
+        for(int c:new int[]{413,412,411,410,409,408,407,440})click(c);
+        log("FLOOR SEVEN FOOD GUARD APPROACH");
+        Mob foodSkeleton=Dungeon.level.mobs.stream().filter(m->m.id()==199).findFirst().get();
+        click(foodSkeleton.pos);log("FLOOR SEVEN FOOD GUARD MELEE");
+        click(foodSkeleton.pos);click(foodSkeleton.pos);
+        log("FLOOR SEVEN FOOD GUARD CONTINUED MELEE");
+        assertFalse(foodSkeleton.isAlive());
+        for(int c:new int[]{407,440,473,506,506})click(c);
+        Item acquiredFood=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.food.Food.class);assertNotNull(acquiredFood);
+        log("FLOOR SEVEN FOOD ACTUALLY ACQUIRED");
+        if(System.getProperty("route.checkpoint7FoodOut")!=null)writeCheckpoint(System.getProperty("route.checkpoint7FoodOut"));
+    }
+
+    private void seventhFloorSection() throws Exception {
+        if(Dungeon.hero.pos==538){seventhFloorAfterIntercept();return;}
+        if(Dungeon.hero.pos==506){seventhFloorFood();return;}
+        assertEquals(818,Dungeon.hero.pos);
+        if(Boolean.getBoolean("route.sevenContinue")){seventhFloorAfterRest();return;}
+        Item food=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.food.Food.class);assertNotNull(food);
+        assertEquals(com.shatteredpixel.shatteredpixeldungeon.items.food.Food.class,food.getClass());
+        food.execute(Dungeon.hero,"EAT");ready();log("EAT RECOVERED FULL RATION AT FLOOR SEVEN ENTRANCE");
+        for(int n=0;n<Integer.getInteger("route.sevenWait",200);n++)waitOne();
+        log("FLOOR SEVEN PAID ENTRANCE RECHARGE");
+        if(System.getProperty("route.checkpoint7RestOut")!=null)writeCheckpoint(System.getProperty("route.checkpoint7RestOut"));
+    }
+
     private void sixthFloorSection() throws Exception {
+        if(Dungeon.hero.pos==334){sixthFloorNorth();return;}
+        if(Dungeon.hero.pos==850){sixthFloorAfterUpgrade();return;}
         if(Dungeon.hero.pos==904){sixthFloorAfterStrength();return;}
         if(Dungeon.hero.pos==620){sixthFloorAfterFood();return;}
         for(int c:new int[]{644,613,582,583,584,585,586,587,588,589})click(c);
@@ -930,6 +1059,73 @@ public class GetFuckedRouteTest {
         Item ration=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation.class);assertNotNull(ration);
         ration.execute(Dungeon.hero,"EAT");ready();log("EAT PURCHASED FLOOR SIX RATION");
         if(System.getProperty("route.checkpoint6FoodOut")!=null)writeCheckpoint(System.getProperty("route.checkpoint6FoodOut"));
+    }
+
+    private void sixthFloorNorth() throws Exception {
+        Mob skeleton=Dungeon.level.mobs.stream().filter(m->m.id()==164).findFirst().get();
+        click(333);log("FLOOR SIX NORTHWEST SIGHTLINE");
+        cast(GuidingLight.INSTANCE,skeleton.pos);
+        throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class,skeleton.pos);
+        throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class,skeleton.pos);
+        log("FLOOR SIX SPAWNED SKELETON EXCHANGE");
+        assertFalse(skeleton.isAlive());
+        for(int c:new int[]{365,366,367,367,366,334,333,301,269,237,205,173})click(c);
+        log("FLOOR SIX UPPER ROOM APPROACH");
+        cast(HolyWard.INSTANCE,null);
+        for(int c:new int[]{141,109,77,78,79})click(c);
+        Mob thief=Dungeon.level.mobs.stream().filter(m->m.id()==151).findFirst().get();
+        cast(GuidingLight.INSTANCE,thief.pos);
+        throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class,thief.pos);
+        log("FLOOR SIX THIEF OPENING");
+        throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class,thief.pos);
+        assertFalse(thief.isAlive());assertEquals(6,Dungeon.hero.lvl);
+        Dungeon.hero.upgradeTalent(Talent.SEARING_LIGHT);log("EARN LEVEL SIX AND SECOND SEARING LIGHT POINT");
+        for(int c:new int[]{80,81,82,82,82,82,114,114})click(c);
+        assertNotNull(Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.food.Food.class));
+        assertEquals(2,Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing.class).quantity());
+        log("RECOVER STOLEN FOOD MISSILES AND UPPER HEALING POTION");
+        for(int c:new int[]{81,81,81})click(c);
+        log("FLOOR SIX RESPAWNED SWARM FIRST EXCHANGE");
+        for(int c:new int[]{82,81,81})click(c);
+        log("FLOOR SIX RESPAWNED SWARM SECOND EXCHANGE");
+        for(int c:new int[]{82,81,80,80})click(c);
+        log("FLOOR SIX RESPAWNED SWARM CLEANUP");
+        click(111);log("FLOOR SIX LAST SWARM CHILD");
+        assertFalse(Dungeon.level.mobs.stream().anyMatch(m->m instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Swarm));
+        for(int c:new int[]{81,82,83,84,85,117,149,181,213,245,244,243,242,274,275,276,277,278,279,280,281,313})click(c);
+        log("FLOOR SIX FINAL EXIT APPROACH");
+        Mob exitSkeleton=Dungeon.level.mobs.stream().filter(m->m.id()==186).findFirst().get();
+        cast(ShieldOfLight.INSTANCE,exitSkeleton.pos);
+        click(312);click(312);assertEquals(7,Dungeon.depth);log("EARNED FLOOR SEVEN ENTRY");
+        System.out.println("FLOOR_LAYOUT "+new JSONObject().put("depth",Dungeon.depth).put("width",Dungeon.level.width()).put("height",Dungeon.level.height()).put("terrain",new JSONArray(Dungeon.level.map)).put("entrance",Dungeon.level.entrance()).put("exit",Dungeon.level.exit()));
+        if(System.getProperty("route.checkpoint7Out")!=null)writeCheckpoint(System.getProperty("route.checkpoint7Out"));
+    }
+
+    private void sixthFloorAfterUpgrade() throws Exception {
+        for(int c:new int[]{818,819,820,788,756,724,692,660,628,596,564,565,566,567,568,569})click(c);
+        Dungeon.hero.search(true);ready();log("SEARCH FLOOR SIX EASTERN SECRET DOOR");
+        for(int c:new int[]{537,505,473,474,475})click(c);
+        Dungeon.hero.search(true);ready();log("SEARCH FLOOR SIX NORTHERN SECRET DOOR");
+        for(int c:new int[]{443,411,379,347,315,314,313})click(c);
+        assertEquals(313,Dungeon.hero.pos);
+        log("FLOOR SIX NORTHERN EXIT ROOM APPROACH");
+        cast(HolyWard.INSTANCE,null);
+        for(int c:new int[]{345,344,343,342,341})click(c);
+        log("FLOOR SIX SWARM MELEE APPROACH");
+        for(int c:new int[]{372,371,371})click(c);
+        log("FLOOR SIX SWARM FIRST MELEE EXCHANGE");
+        for(int c:new int[]{371,371,371})click(c);
+        log("FLOOR SIX SWARM SECOND MELEE EXCHANGE");
+        for(int c:new int[]{339,339})click(c);
+        log("FLOOR SIX SWARM CHILD EXCHANGE");
+        for(int c:new int[]{339,340,340})click(c);
+        log("FLOOR SIX SWARM CLEANUP");
+        assertFalse(Dungeon.level.mobs.stream().anyMatch(m->m.id()==150||m.id()==173||m.id()==177));
+        for(int c:new int[]{371,370,369,368,367,366,334,334})click(c);
+        Item food=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.food.Food.class);assertNotNull(food);
+        assertTrue(food instanceof com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation);
+        food.execute(Dungeon.hero,"EAT");ready();log("EAT CARRIED SMALL RATION AFTER ACQUIRING NORTHERN FOOD");
+        if(System.getProperty("route.checkpoint6NorthOut")!=null)writeCheckpoint(System.getProperty("route.checkpoint6NorthOut"));
     }
 
     private void sixthFloorAfterStrength() throws Exception {

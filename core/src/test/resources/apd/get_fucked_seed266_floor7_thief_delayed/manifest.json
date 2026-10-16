@@ -1,0 +1,52 @@
+{
+  "seed": 266,
+  "format": "APD native save plus captured RNG, earned by commands from level one",
+  "files": [
+    "depth1.dat",
+    "depth5.dat",
+    "depth6.dat",
+    "depth4.dat",
+    "depth3.dat",
+    "depth2.dat",
+    "depth7.dat",
+    "game.dat"
+  ],
+  "state": {
+    "mobs": [
+      "200:DM100:732:20:0.0",
+      "203:Guard:1043:40:0.0",
+      "204:Thief:1010:20:0.0",
+      "205:Skeleton:905:25:0.0",
+      "228:Skeleton:942:25:0.0"
+    ],
+    "shield": 3,
+    "tomeCharge": 1,
+    "strength": 13,
+    "level": 6,
+    "challenges": 512,
+    "totalTime": 2508,
+    "HP": 1,
+    "HT": 1,
+    "inventory": [
+      "GooBlob:1:+0",
+      "HolyTome:1:+3",
+      "LeatherArmor:1:+3",
+      "MailArmor:1:+0",
+      "PotionOfHealing:2:+0",
+      "Quarterstaff:1:+2",
+      "Shuriken:1:+1",
+      "VelvetPouch:1:+0",
+      "Waterskin:1:+0"
+    ],
+    "hunger": 71,
+    "gold": 33,
+    "depth": 7,
+    "armor": "LeatherArmor:+3",
+    "partialCharge": 0.2346171736717224,
+    "pos": 506,
+    "time": 0,
+    "exp": 26,
+    "talents": "[{SATIATED_SPELLS=1, HOLY_INTUITION=0, SEARING_LIGHT=2, SHIELD_OF_LIGHT=2}, {ENLIGHTENING_MEAL=0, RECALL_INSCRIPTION=0, SUNRAY=0, DIVINE_SENSE=0, BLESS=0}, {CLEANSE=0, LIGHT_READING=0}, {}]",
+    "energy": 1
+  }
+}

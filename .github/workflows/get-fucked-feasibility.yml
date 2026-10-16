@@ -130,6 +130,41 @@ jobs:
           ./gradlew :core:test --tests '*GetFuckedRouteTest'
           -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor6_strength"
           -Droute.stableHash=true -Droute.noSnapshots=true
+      - name: Continue through floor-six swarm food and retained enemies
+        run: >-
+          ./gradlew :core:test --tests '*GetFuckedRouteTest'
+          -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor6_upgraded"
+          -Droute.stableHash=true -Droute.noSnapshots=true 
+      - name: Continue floor six through actual floor-seven entry
+        run: >-
+          ./gradlew :core:test --tests '*GetFuckedRouteTest'
+          -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor6_northfood"
+          -Droute.stableHash=true -Droute.noSnapshots=true 
+      - name: Pay for floor-seven entrance recharge with the recovered ration
+        run: >-
+          ./gradlew :core:test --tests '*GetFuckedRouteTest'
+          -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor7"
+          -Droute.stableHash=true -Droute.noSnapshots=true 
+      - name: Defeat actual floor-seven skeletons and acquire the next ration
+        run: >-
+          ./gradlew :core:test --tests '*GetFuckedRouteTest'
+          -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor7_rested"
+          -Droute.stableHash=true -Droute.noSnapshots=true -Droute.sevenContinue=true
+      - name: Intercept returning thief before Rage is lost
+        run: >-
+          ./gradlew :core:test --tests '*GetFuckedRouteTest'
+          -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor7_food"
+          -Droute.stableHash=true -Droute.noSnapshots=true -Droute.interceptThief=true
+      - name: Check the real guard chain pull and lethal negative control
+        run: >-
+          ./gradlew :core:test --tests '*GetFuckedRouteTest'
+          -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor7_intercept"
+          -Droute.stableHash=true -Droute.noSnapshots=true -Droute.guardPullAudit=true
+      - name: Use retained Rage to escape through actual floor-eight entry
+        run: >-
+          ./gradlew :core:test --tests '*GetFuckedRouteTest'
+          -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor7_intercept"
+          -Droute.stableHash=true -Droute.noSnapshots=true 
       - name: Replay earned Goo approach and first ranged retreat
         run: >-
           ./gradlew :core:test --tests '*GetFuckedRouteTest'
