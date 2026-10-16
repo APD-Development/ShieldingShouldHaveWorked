@@ -528,3 +528,27 @@ The secret well911 on6 is WaterOfAwareness, not WaterOfHealth; it is NOT an avai
 
 CI run38910985978 for commit050f619 completed SUCCESS, including the extended fresh Goo/prison cycle and every earlier committed scenario. All earlier research and failed branches remain preserved. The old legacy floor-six replay section was checked byte-for-byte against the preserved original and remains unchanged. New research remains on codex/get-fucked-feasibility-tests; no scoring or production gameplay changes.
 
+
+
+## Uninterrupted floor-seven entry established; first dark-floor engagement tested
+
+The fresh route continues from the verified floor6 meal WITHOUT restoring any resource. A two-charge departure camp is NOT free: skeleton216 appears269 after52 paid waits, at total3087, hunger178, barrier0, Tome1+0.445138. The assertion stops alive. The revised script stops at ONE naturally earned charge, casts Bless using that charge, and leaves before this interception. The earlier Ward is retained with its real remaining time; no new Ward is cast in this one-charge departure variant.
+
+The actual stair interaction descends directly from adjacent343 when clicking exit312. An initial script incorrectly asserts hero must first stand312; it fails after the engine has ALREADY LEGITIMATELY ENTERED7/818 with HP1. This was corrected in the input-script assertion, without adding a move or teleport.
+
+Verified entry: total3081, depth7/818, level7/XP0, HP/HT1, barrier6, Ward12, Tome0+0.298714787, artifact4/cap7/experience24, hunger172, Mail1/Quarterstaff2, STR13, gold107, energy2, three GooBlobs, one +3 spear, no food. INDEPENDENT UNINTERRUPTED fresh repetition PASSES endpoint/ACTIVE RNG and ALL EIGHT native files under unchanged missile-set-ID equivalence. See fresh-seven-early-entry-independent.log. This is a complete internally consistent legal EARLY SECTION, not Amulet/ascent proof.
+
+The actual generated7 is33x44/DARK, entrance818, exit977. It is not the old conditional root7 map: never reuse that branch's positions/items/resources. Actual starting mobs are skeletons236539/238375/239580/242905, DM237732, guard2401043, thief2411010. Food506, upgrade1079, IronKey978, CrystalKey1038, Frost1076, Recharging1344, Teleport1312, Identify1345, chest975/Identify, and crystal-choice chest1316/EtherealChains are on this generated floor. Existence is not acquisition: ONLY the entry/current earned inventory is credited. BurningTrap842 and ToxicTrap1044 are active. Chains and other items remain unacquired. The guard's proximity to toxic1044 and the lower keys/scroll is a real access question, not free loot; chain/trap interactions remain to test. Old map-only Horn19/Greatsword11 claims are not a guarantee for this continuous generated run.
+
+At the actual entrance,147 paid waits earn FOUR whole Tome charges. Hero remains alive; hunger172->319. All seven initial enemies remain sleeping and outside FOV, while ALL inherited barrier and Ward expire. No safe reserve is fabricated: the preparation endpoint is HP1/body0/Tome4+0.009241, not the original6 barrier or retained Ward.
+
+Paid Ward and Bless then normal18 navigation/search actions reach416. Closed/secret418 is revealed through the ordinary search; 652 is a real door. First contact: total3248/hunger343, body4, Ward30, Tome2+0.509241, skeleton23954725HP. Guide plus the OWNED spear leave it4HP at481, not dead. A real Shield, approach wait and first staff attempt leave it4HP, counter blocked, body3. The SECOND staff attack kills it at448; total3253/hunger348, XP5, body3, Tome0+0.639470. The spear is embedded until this real death and still needs recovery. No food or other floor7 loot has been credited.
+
+A separate FIVE-charge preparation is actually paid for (more hunger, not a grant). This variant kills that first skeleton by its first shielded melee; endpoint total3294/hunger389, XP5, body3, Tome1+0.598328. Skeleton238 is already visible37925HP. The additional waiting changes the actual subsequent encounter timeline; do not merge the four-charge world's enemy positions/RNG into it. Next food access remains untested.
+
+Source/run-identity checks: native game files really store seed266, challenges512 only, APD difficulty3 and balance0. Difficulty.java explicitly defines Standard3's current balance revision as0 and its modifiers as neutral; this is not an artificial legacy easy setting. REFERENCE journal context means guides found, lore unfound, intro off; it does not grant combat resources or change difficulty. No scoring/18-slider work was performed.
+
+Barrier.act is fractional (rate=min(1,shield/20), one lost shield once accumulation reaches1), with accumulation saved in native state. Bless and SatiatedSpells use max-style setShield, not additive body reserves. Ward uses additive Buff.affect duration; these actual mechanics and source checks guide the next timing experiments. No production system or comparator was changed. A test-only appended helper initially had an extra brace and failed compilation BEFORE GAMEPLAY; corrected, and the subsequent actual camp/encounter trials are retained.
+
+CI38913813643 at cf9a0ca completed SUCCESS for the full fresh Mail/Bless/food witness and every prior committed scenario. Research continues on the isolated branch. Original challenge completion and ascension remain UNRESOLVED.
+
