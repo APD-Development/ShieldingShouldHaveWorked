@@ -104,6 +104,7 @@ jobs:
               target.write('APD_EXPECTED_METHODS='+str(len(methods))+'\n')
           import json,pathlib
           pathlib.Path('expected-screenshots.json').write_text(json.dumps(images))
+          pathlib.Path('run-isolated-acceptance.py').write_text("import os,pathlib,subprocess\noutputs=[]\nfor method in os.environ['APD_DEVICE_METHODS'].split(','):\n    subprocess.run(['adb','shell','am','force-stop','com.charltonchris29.adhdpixeldungeon.indev'],check=True)\n    result=subprocess.run(['timeout','300','adb','shell','am','instrument','-w','-r','-e','class',method,'com.charltonchris29.adhdpixeldungeon.indev.test/androidx.test.runner.AndroidJUnitRunner'],text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)\n    outputs.append('METHOD '+method+'\\n'+result.stdout)\n    pathlib.Path('instrumentation.txt').write_text('\\n'.join(outputs))\n")
           PY
       - name: Free unused runner toolchains for the Android 16 userdata partition
         run: |
@@ -130,15 +131,7 @@ jobs:
             if [ "$APD_ACCEPTANCE_API" = "36" ]; then adb shell wm size 540x960; adb shell wm density 240; else adb shell wm size 320x640; adb shell wm density 160; fi
             adb shell settings put secure immersive_mode_confirmations confirmed
             adb logcat -c
-            python3 - <<'PY'
-            import os,pathlib,subprocess
-            outputs=[]
-            for method in os.environ['APD_DEVICE_METHODS'].split(','):
-                subprocess.run(['adb','shell','am','force-stop','com.charltonchris29.adhdpixeldungeon.indev'],check=True)
-                result=subprocess.run(['timeout','300','adb','shell','am','instrument','-w','-r','-e','class',method,'com.charltonchris29.adhdpixeldungeon.indev.test/androidx.test.runner.AndroidJUnitRunner'],text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
-                outputs.append('METHOD '+method+'\n'+result.stdout)
-                pathlib.Path('instrumentation.txt').write_text('\n'.join(outputs))
-            PY
+            python3 run-isolated-acceptance.py
             adb logcat -d -v time > acceptance-logcat.txt
             mkdir -p acceptance-screenshots
             python3 -c "import json,pathlib,subprocess; [subprocess.run(['adb','pull','/sdcard/Pictures/APD-Test-Visuals/'+name,'acceptance-screenshots/'+name],check=True) for name in json.loads(pathlib.Path('expected-screenshots.json').read_text())]"
