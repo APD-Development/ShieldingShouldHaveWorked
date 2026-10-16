@@ -39,6 +39,11 @@ public class GetFuckedRouteTest {
     private com.shatteredpixel.shatteredpixeldungeon.windows.WndTradeItem tradeWindow;
     private Heap tradeHeap;
     private boolean executeTradeUi;
+    private boolean executeChasmUi;
+    private MockedConstruction<?> chasmWindows;
+    private Object chasmWindow;
+    private MockedConstruction<?> hourglassWindows;
+    private Object hourglassWindow;
     private Camera oldMainCamera;
     private int chainAnimationsCompleted;
     private int pushAnimationsCompleted;
@@ -128,8 +133,12 @@ public class GetFuckedRouteTest {
         tradeWindows=mockConstruction(com.shatteredpixel.shatteredpixeldungeon.windows.WndTradeItem.class,(window,contextArgs)->{
             if(contextArgs.arguments().size()==1 && contextArgs.arguments().get(0) instanceof Heap){tradeWindow=window;tradeHeap=(Heap)contextArgs.arguments().get(0);}
         });
+        Class jumpWindowClass=Class.forName("com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm$1$1");
+        chasmWindows=mockConstruction(jumpWindowClass,withSettings().defaultAnswer(CALLS_REAL_METHODS),(window,contextArgs)->{chasmWindow=window;Field outer=window.getClass().getDeclaredField("this$0");outer.setAccessible(true);outer.set(window,contextArgs.arguments().get(0));});
+        Class freezeWindowClass=Class.forName("com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass$1");
+        hourglassWindows=mockConstruction(freezeWindowClass,withSettings().defaultAnswer(CALLS_REAL_METHODS),(window,contextArgs)->{hourglassWindow=window;Field outer=window.getClass().getDeclaredField("this$0");outer.setAccessible(true);outer.set(window,contextArgs.arguments().get(0));});
         MockedStatic<Game> game=visual(Game.class);
-        game.when(()->Game.runOnRenderThread(any(Callback.class))).thenAnswer(i->{if(executeTradeUi)((Callback)i.getArgument(0)).call();return null;});
+        game.when(()->Game.runOnRenderThread(any(Callback.class))).thenAnswer(i->{if(executeTradeUi || executeChasmUi)((Callback)i.getArgument(0)).call();return null;});
         gameplaySceneStub=mock(GameScene.class,RETURNS_DEEP_STUBS);
         game.when(Game::scene).thenAnswer(i->currentTestScene);
         game.when(() -> Game.switchScene(InterlevelScene.class)).thenAnswer(i -> { pendingTransition=true; currentTestScene=mock(InterlevelScene.class,RETURNS_DEEP_STUBS); return null; });
@@ -201,6 +210,8 @@ public class GetFuckedRouteTest {
         Actor.clear(); Random.popGenerator();
         if(upgradeWindows!=null)upgradeWindows.close();
         if(tradeWindows!=null)tradeWindows.close();
+        if(chasmWindows!=null)chasmWindows.close();
+        if(hourglassWindows!=null)hourglassWindows.close();
         Collections.reverse(visuals); for (MockedStatic<?> m : visuals) m.close();
     }
     private void ready() {
@@ -210,12 +221,13 @@ public class GetFuckedRouteTest {
                 try {
                     Actor.fixTime();
                     InterlevelScene scene=mock(InterlevelScene.class,CALLS_REAL_METHODS);
-                    Method transition=InterlevelScene.class.getDeclaredMethod(InterlevelScene.mode==InterlevelScene.Mode.DESCEND ? "descend" : "ascend");
+                    Method transition=InterlevelScene.class.getDeclaredMethod(InterlevelScene.mode==InterlevelScene.Mode.DESCEND ? "descend" : InterlevelScene.mode==InterlevelScene.Mode.FALL ? "fall" : "ascend");
                     transition.setAccessible(true);transition.invoke(scene);
                     currentTestScene=gameplaySceneStub;
                     bindBlobVisuals();
                     bind(Dungeon.hero);for(Mob m:Dungeon.level.mobs)bind(m);
                     for(Heap h:Dungeon.level.heaps.valueList())heapSprite(h);
+                    if(InterlevelScene.mode==InterlevelScene.Mode.FALL)Dungeon.hero.busy();
                 }catch(Exception e){throw new RuntimeException(e);}
             }
             if (!Dungeon.hero.isAlive()) throw new AssertionError("Terminal hero state: "+state("DEATH"));
@@ -249,6 +261,12 @@ public class GetFuckedRouteTest {
         Collections.sort(mobs);j.put("mobs",new JSONArray(mobs));
         Field f=Artifact.class.getDeclaredField("partialCharge");f.setAccessible(true);j.put("partialCharge",f.getFloat(Dungeon.hero.belongings.getItem(HolyTome.class)));
         j.put("talents",Dungeon.hero.talents.toString());j.put("gold",Dungeon.gold).put("energy",Dungeon.energy).put("challenges",Dungeon.challenges);
+        TimekeepersHourglass hourglass=Dungeon.hero.belongings.getItem(TimekeepersHourglass.class);
+        if(hourglass!=null){
+            Field whole=Artifact.class.getDeclaredField("charge");whole.setAccessible(true);
+            j.put("hourglassCharge",whole.getInt(hourglass)).put("hourglassPartial",f.getFloat(hourglass));
+            j.put("hourglassEquipped",hourglass.isEquipped(Dungeon.hero)).put("hourglassCursed",hourglass.cursed);
+        }
         return j;
     }
     private void writeCheckpoint(String dir) throws Exception {
@@ -369,6 +387,12 @@ public class GetFuckedRouteTest {
             buffs.put(entry);
         }
         System.out.println("BUFF_DETAIL "+s+" "+buffs);
+        TimekeepersHourglass hourglass=Dungeon.hero.belongings.getItem(TimekeepersHourglass.class);
+        if(hourglass!=null){
+            try{Field whole=Artifact.class.getDeclaredField("charge"),part=Artifact.class.getDeclaredField("partialCharge");whole.setAccessible(true);part.setAccessible(true);
+                System.out.println("HOURGLASS_DETAIL "+s+" charge="+whole.getInt(hourglass)+" partial="+part.getFloat(hourglass)+" equipped="+hourglass.isEquipped(Dungeon.hero)+" frozen="+(Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class)!=null));
+            }catch(Exception e){throw new RuntimeException(e);}
+        }
         if(Dungeon.depth==5){
             for(Mob m:Dungeon.level.mobs)if(m instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo){
                 try{Field pumped=m.getClass().getDeclaredField("pumpedUp");pumped.setAccessible(true);System.out.println("GOO_DETAIL "+s+" HP="+m.HP+" pumped="+pumped.getInt(m)+" water="+Dungeon.level.water[m.pos]+" heroWater="+Dungeon.level.water[Dungeon.hero.pos]+" locked="+Dungeon.level.locked+" heroShield="+Dungeon.hero.shielding());}catch(Exception e){throw new RuntimeException(e);}
@@ -1055,7 +1079,74 @@ public class GetFuckedRouteTest {
         if(System.getProperty("route.checkpoint8BlessOut")!=null)writeCheckpoint(System.getProperty("route.checkpoint8BlessOut"));
     }
 
+    private void activateOwnedHourglassFreeze() throws Exception {
+        TimekeepersHourglass hourglass=Dungeon.hero.belongings.getItem(TimekeepersHourglass.class);assertNotNull(hourglass);assertTrue(hourglass.isEquipped(Dungeon.hero));
+        hourglassWindow=null;hourglass.execute(Dungeon.hero,"ACTIVATE");assertNotNull("Original Hourglass choice window must open",hourglassWindow);
+        Method select=hourglassWindow.getClass().getDeclaredMethod("onSelect",int.class);select.setAccessible(true);select.invoke(hourglassWindow,1);
+        assertNotNull(Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class));log("ACTUAL HOURGLASS ORIGINAL FREEZE CHOICE");
+    }
+    private void eighthFloorHourglassGuard() throws Exception {
+        assertEquals(214,Dungeon.hero.pos);
+        for(int cell:new int[]{246,279,280,281,314})click(cell);
+        log("PIT EXIT NORTHERN GUARD APPROACH");
+        Mob guard=Dungeon.level.mobs.stream().filter(m->m instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Guard && Dungeon.level.heroFOV[m.pos]).findFirst().get();
+        activateOwnedHourglassFreeze();
+        if(Boolean.getBoolean("route.hourglassAttack")){
+            click(guard.pos);
+            assertNull("First attack must dispel actual time freeze",Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class));
+            try{click(guard.pos);}catch(AssertionError expected){
+                if(Dungeon.hero.isAlive())throw expected;
+                assertTrue("Guard must still be alive in failed combat strategy",guard.isAlive());assertEquals(1,Dungeon.hero.HT);
+                System.out.println("NEGATIVE_CONTROL_ATTACK_DISPELS_FREEZE_AND_GUARD_KILLS HP="+Dungeon.hero.HP+" guardHP="+guard.HP);
+                return;
+            }
+            fail("Undefended Hourglass attack route unexpectedly survived; inspect negative control");
+        }else{
+            for(int cell:new int[]{347,379,411,442,474,507,540})click(cell);
+            if(!Boolean.getBoolean("route.freezeAllTen")){
+                Dungeon.hero.belongings.getItem(TimekeepersHourglass.class).execute(Dungeon.hero,"ACTIVATE");
+                assertNull("Original deactivation must end freeze",Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class));log("END ACTUAL FREEZE AFTER SEVEN MOVES OUTSIDE CHAIN RANGE");
+            }
+            for(int cell:new int[]{572,604,636})click(cell);
+            assertEquals(636,Dungeon.hero.pos);assertTrue("Guard is bypassed, not secretly killed",guard.isAlive());
+            log("NORTHERN GUARD BYPASSED USING ACTUAL FROZEN MOVEMENT");
+        }
+        if(System.getProperty("route.hourglassGuardOut")!=null)writeCheckpoint(System.getProperty("route.hourglassGuardOut"));
+    }
+    private void eighthFloorHourglassCentral() throws Exception {
+        assertEquals(636,Dungeon.hero.pos);
+        for(int cell:new int[]{668,700,732,763,762,793,825,857,889,921,953})click(cell);
+        assertEquals(953,Dungeon.hero.pos);log("HOURGLASS BRANCH CENTRAL DOOR APPROACH WITH CONTINUOUS RESOURCES");
+        if(System.getProperty("route.hourglassCentralOut")!=null)writeCheckpoint(System.getProperty("route.hourglassCentralOut"));
+    }
+    private void eighthFloorHourglassSkeleton() throws Exception {
+        assertEquals(953,Dungeon.hero.pos);
+        Item rage=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRage.class);assertNotNull(rage);
+        if(Boolean.getBoolean("route.hourglassRageAtDoor")){
+            click(984);log("CENTRAL ROOM BEFORE RETAINED RAGE AT ACTUAL DOOR");
+            rage.execute(Dungeon.hero,"READ");ready();log("ACTUAL CENTRAL ROOM RAGE WITH VISIBLE SKELETON AND DM");
+            if(System.getProperty("route.hourglassDoorOut")!=null)writeCheckpoint(System.getProperty("route.hourglassDoorOut"));
+            return;
+        }
+        rage.execute(Dungeon.hero,"READ");ready();log("READ PRESERVED RAGE TO INTERRUPT PURSUING NORTHERN GUARD");
+        click(984);click(984);log("CENTRAL ROOM ACTUAL DOOR ENTRY");
+        Mob skeleton=Dungeon.level.mobs.stream().filter(m->m.id()==244).findFirst().get();
+        cast(ShieldOfLight.INSTANCE,skeleton.pos);cast(GuidingLight.INSTANCE,skeleton.pos);
+        throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class,skeleton.pos);
+        for(int n=0;n<3 && skeleton.isAlive();n++)click(skeleton.pos);
+        assertFalse(skeleton.isAlive());log("HOURGLASS BRANCH CENTRAL SKELETON DEFEATED WITH ACTUAL XP ONLY");
+        if(System.getProperty("route.hourglassBlessOut")!=null)writeCheckpoint(System.getProperty("route.hourglassBlessOut"));
+    }
+    private void eighthFloorHourglassDuel() throws Exception {
+        assertEquals(984,Dungeon.hero.pos);
+        click(1015);click(1044);assertEquals("Engine movement is interrupted at the actual cell, not the clicked target",1077,Dungeon.hero.pos);log("CENTRAL DUEL AFTER TWO INPUTS AND THREE ELAPSED TURNS");
+        if(System.getProperty("route.hourglassDuelOut")!=null)writeCheckpoint(System.getProperty("route.hourglassDuelOut"));
+    }
     private void eighthFloorSection() throws Exception {
+        if(Dungeon.hero.pos==984){eighthFloorHourglassDuel();return;}
+        if(Dungeon.hero.pos==953){eighthFloorHourglassSkeleton();return;}
+        if(Dungeon.hero.pos==636){eighthFloorHourglassCentral();return;}
+        if(Dungeon.hero.pos==214){eighthFloorHourglassGuard();return;}
         if(Dungeon.hero.pos==809){eighthFloorAfterBless();return;}
         assertEquals(997,Dungeon.hero.pos);
         if(Boolean.getBoolean("route.eightContinue")){eighthFloorAfterRest();return;}
@@ -1152,7 +1243,45 @@ public class GetFuckedRouteTest {
         if(System.getProperty("route.checkpoint7FoodOut")!=null)writeCheckpoint(System.getProperty("route.checkpoint7FoodOut"));
     }
 
+    private void jumpIntoKnownChasm(int cell) throws Exception {
+        assertTrue("Jump destination must actually be a pit",Dungeon.level.pit[cell]);
+        assertTrue("Must stand adjacent before asking to jump",Dungeon.level.adjacent(Dungeon.hero.pos,cell));
+        executeChasmUi=true;chasmWindow=null;
+        try{click(cell);}finally{executeChasmUi=false;}
+        assertNotNull("Original chasm confirmation UI must open",chasmWindow);
+        //A real-time UI wait, not game time or a gameplay-state change. Invoke the original yes-button callback.
+        Field elapsed=chasmWindow.getClass().getDeclaredField("elapsed");elapsed.setAccessible(true);elapsed.setFloat(chasmWindow,0.3f);
+        Method select=chasmWindow.getClass().getDeclaredMethod("onSelect",int.class);select.setAccessible(true);select.invoke(chasmWindow,0);
+        Dungeon.hero.busy();ready();log("ORIGINAL CONFIRMED CHASM TRANSITION COMPLETE");
+    }
+    private void hourglassAccessSection() throws Exception {
+        assertEquals(7,Dungeon.depth);assertEquals(538,Dungeon.hero.pos);
+        for(int cell:new int[]{504,472,440,408,376,377,378,379,380,348,314,280,279,278,277,276})click(cell);
+        assertEquals(276,Dungeon.hero.pos);log("WEAK FLOOR ROOM REACHED FROM RETAINED THIEF CHECKPOINT");
+        int preFallShield=Dungeon.hero.shielding();
+        jumpIntoKnownChasm(275);assertEquals("Fall must not consume shielding",preFallShield,Dungeon.hero.shielding());assertEquals(8,Dungeon.depth);assertEquals(1,Dungeon.hero.HP);assertEquals(1,Dungeon.hero.HT);
+        assertNull("Actual Falling actor must finish before claiming survival",Dungeon.hero.buff(com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm.Falling.class));
+        waitOne();
+        assertNull("Zero bleeding must detach before claiming survival",Dungeon.hero.buff(Bleeding.class));
+        log("ACTUAL PIT ROOM LANDING BEFORE ITEM ACCESS");
+        for(int cell:new int[]{207,176,177,177,177,177,177})click(cell);
+        assertNotNull("Hourglass must be acquired from actual remains",Dungeon.hero.belongings.getItem(TimekeepersHourglass.class));
+        assertEquals("Actual gold from this heap",164,Dungeon.gold);
+        log("HOURGLASS AND PIT CRYSTAL KEY ACTUALLY ACQUIRED");
+        TimekeepersHourglass hourglass=Dungeon.hero.belongings.getItem(TimekeepersHourglass.class);
+        hourglass.execute(Dungeon.hero,"EQUIP");Dungeon.hero.busy();ready();assertTrue(hourglass.isEquipped(Dungeon.hero));log("ACTUAL HOURGLASS EQUIPPED IN FREE MISC SLOT");
+        for(int cell:new int[]{178,179,180,212,213,213,214})click(cell);
+        assertEquals("Must actually escape the pit room through the owned crystal key",214,Dungeon.hero.pos);
+        assertEquals(0,com.shatteredpixel.shatteredpixeldungeon.journal.Notes.keyCount(new com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey(8)));
+        Field hourglassCharge=Artifact.class.getDeclaredField("charge");hourglassCharge.setAccessible(true);
+        Field hourglassPartial=Artifact.class.getDeclaredField("partialCharge");hourglassPartial.setAccessible(true);
+        assertEquals("No Hourglass charge granted or spent",5,hourglassCharge.getInt(hourglass));
+        System.out.println("HOURGLASS_DETAIL charge="+hourglassCharge.getInt(hourglass)+" partial="+hourglassPartial.getFloat(hourglass)+" cursed="+hourglass.cursed+" equipped="+hourglass.isEquipped(Dungeon.hero));
+        log("ACTUAL PIT ROOM EXIT UNLOCKED AND ESCAPED WITH HOURGLASS");
+        if(System.getProperty("route.hourglassOut")!=null)writeCheckpoint(System.getProperty("route.hourglassOut"));
+    }
     private void seventhFloorSection() throws Exception {
+        if(Boolean.getBoolean("route.hourglassAccess")){hourglassAccessSection();return;}
         if(Dungeon.hero.pos==538){seventhFloorAfterIntercept();return;}
         if(Dungeon.hero.pos==506){seventhFloorFood();return;}
         assertEquals(818,Dungeon.hero.pos);
