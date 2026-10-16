@@ -3202,7 +3202,7 @@ public class GetFuckedRouteTest {
         for(int c:new int[]{842,842}){click(c);assertEquals(c,Dungeon.hero.pos);}assertNotNull(Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear.class));
         Item food=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation.class);assertNotNull(food);food.execute(Dungeon.hero,"EAT");ready();log("FRESH SECOND OWNED SHOP RATION EATEN BEFORE NEXT ENCOUNTER");
         for(int n=0;n<150 && charge(Dungeon.hero.belongings.getItem(HolyTome.class))<3;n++){if(Dungeon.level.mobs.stream().anyMatch(m->m.alignment==Char.Alignment.ENEMY && Dungeon.level.heroFOV[m.pos]))break;waitOne();}
-        log("FRESH NEXT REAL PAID REST BOUNDARY");if(Boolean.getBoolean("route.freshPrisonSwarm"))freshPrisonSwarmSection();
+        log("FRESH NEXT REAL PAID REST BOUNDARY");if(Boolean.getBoolean("route.freshDirectUpgrade"))freshDirectUpgradeSection();if(Boolean.getBoolean("route.freshPrisonSwarm"))freshPrisonSwarmSection();
     }
 
     private void freshPrisonSwarmSection() throws Exception {
@@ -3218,5 +3218,48 @@ public class GetFuckedRouteTest {
         if(Boolean.getBoolean("route.freshSecondSkeletonMelee")){
             waitOne();waitOne();assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,target.pos));click(target.pos);log("FRESH SECOND INITIAL SKELETON FIRST MELEE");if(Boolean.getBoolean("route.freshSecondSkeletonFinish")){click(target.pos);assertFalse(target.isAlive());assertEquals(7,Dungeon.hero.lvl);log("FRESH LEVEL SEVEN ACTUALLY EARNED");}
         }
+    }
+
+    private void freshDirectUpgradeSection() throws Exception {
+        assertEquals(6,Dungeon.depth);assertEquals(842,Dungeon.hero.pos);Mob target=Dungeon.level.mobs.stream().filter(m->m instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Skeleton && m.pos==818).findFirst().get();
+        cast(HolyWard.INSTANCE,null);assertEquals(3,Dungeon.hero.shielding());for(int c:new int[]{810,779,780,812,813,814}){click(c);assertEquals(c,Dungeon.hero.pos);}throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Cudgel.class,817);
+        assertTrue(Dungeon.level.heroFOV[target.pos]);cast(ShieldOfLight.INSTANCE,target.pos);cast(GuidingLight.INSTANCE,target.pos);throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear.class,target.pos);log("FRESH UNINTERRUPTED REAL UPGRADE GUARD OPENING");
+        if(Boolean.getBoolean("route.freshDirectUpgradeMelee")){
+            waitOne();for(int n=0;n<2 && target.isAlive();n++){assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,target.pos));click(target.pos);}assertFalse(target.isAlive());log("FRESH UNINTERRUPTED REAL UPGRADE GUARD DEFEATED");if(Boolean.getBoolean("route.freshDirectMail"))freshDirectMailSection();
+        }
+    }
+
+    private void freshDirectMailSection() throws Exception {
+        assertEquals(6,Dungeon.depth);assertEquals(814,Dungeon.hero.pos);for(int c:new int[]{815,815,816,817,817,818,850,850}){click(c);assertEquals(c,Dungeon.hero.pos);}
+        assertNotNull(Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear.class));assertNotNull(Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade.class));
+        com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor mail=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor.class);assertNotNull(mail);assertEquals(0,mail.level());assertEquals(14,mail.STRReq());upgradeOwnedGear(mail);assertEquals(1,mail.level());assertEquals(13,mail.STRReq());assertEquals(1,mail.DRMin());assertEquals(9,mail.DRMax());assertEquals(13,Dungeon.hero.STR());log("FRESH ACTUAL GUARDED SCROLL UPGRADES CARRIED MAIL TO USABLE STRENGTH");
+        mail.execute(Dungeon.hero,"EQUIP");Dungeon.hero.busy();ready();assertSame(mail,Dungeon.hero.belongings.armor());log("FRESH MAIL ONE ACTUALLY EQUIPPED AT EARNED THIRTEEN STRENGTH");
+        for(int n=0;n<140 && charge(Dungeon.hero.belongings.getItem(HolyTome.class))<3;n++){if(Dungeon.level.mobs.stream().anyMatch(m->m.alignment==Char.Alignment.ENEMY && Dungeon.level.heroFOV[m.pos]))break;assertTrue(Dungeon.hero.buff(Hunger.class).hunger()<430);waitOne();}
+        log("FRESH MAIL ROOM ACTUAL PAID RECHARGE FRONTIER");if(Boolean.getBoolean("route.freshMailNorth"))freshMailNorthSection();
+    }
+
+    private void freshMailNorthSection() throws Exception {
+        assertEquals(6,Dungeon.depth);assertEquals(850,Dungeon.hero.pos);cast(HolyWard.INSTANCE,null);
+        for(int c:new int[]{819,788,757,725,693,662,631,599,568}){assertNull("Actual northward path occupied at "+c,Actor.findChar(c));click(c);assertEquals(c,Dungeon.hero.pos);}
+        if(Dungeon.level.map[537]==Terrain.SECRET_DOOR){Dungeon.hero.search(true);ready();}assertTrue(Dungeon.level.map[537]==Terrain.DOOR || Dungeon.level.map[537]==Terrain.OPEN_DOOR);log("FRESH MAIL NORTH ACTUAL REVEALED DOOR");
+        for(int c:new int[]{537,505,474}){assertNull("Actual northward path occupied at "+c,Actor.findChar(c));click(c);assertEquals(c,Dungeon.hero.pos);}
+        assertTrue(Dungeon.level.map[443]!=Terrain.SECRET_DOOR);
+        for(int c:new int[]{443,411,379,347,314,313}){assertNull("Actual northward path occupied at "+c,Actor.findChar(c));click(c);assertEquals(c,Dungeon.hero.pos);}
+        log("FRESH MAIL NORTH ACTUAL FOOD AND EXIT ROOM FRONTIER");if(Boolean.getBoolean("route.freshMailFoodFight"))freshMailFoodFightSection();
+    }
+
+    private void freshMailFoodFightSection() throws Exception {
+        assertEquals(6,Dungeon.depth);assertEquals(313,Dungeon.hero.pos);assertEquals(6,Dungeon.hero.lvl);assertEquals(32,Dungeon.hero.exp);assertEquals(0,Dungeon.hero.pointsInTalent(Talent.BLESS));
+        Mob target=Dungeon.level.mobs.stream().filter(m->m.id()==196).findFirst().get();assertTrue(target instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Swarm);assertEquals(50,target.HP);
+        for(int c:new int[]{345,344}){assertNull(Actor.findChar(c));click(c);assertEquals(c,Dungeon.hero.pos);}assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,target.pos));cast(ShieldOfLight.INSTANCE,target.pos);
+        for(int n=0;n<4 && target.isAlive();n++){assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,target.pos));click(target.pos);}assertFalse(target.isAlive());assertEquals(7,Dungeon.hero.lvl);assertEquals(1,Dungeon.hero.talentPointsAvailable(2));Dungeon.hero.upgradeTalent(Talent.BLESS);log("FRESH ACTUAL PARENT SWARM KILL EARNS FIRST BLESS POINT");
+        cast(BlessSpell.INSTANCE,Dungeon.hero.pos);assertTrue(Dungeon.hero.shielding()>0);log("FRESH ACTUAL FIRST EARNED BLESS CAST WITH CONTINUOUS RESOURCES");if(System.getProperty("route.freshFoodClearActions")!=null)freshFixedActions(target,System.getProperty("route.freshFoodClearActions"));if(Boolean.getBoolean("route.freshMailFoodPickup"))freshMailFoodPickupSection();
+    }
+
+    private void freshMailFoodPickupSection() throws Exception {
+        assertEquals(6,Dungeon.depth);assertEquals(344,Dungeon.hero.pos);Char child=Actor.findChar(375);assertTrue(child instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Swarm);assertEquals(2,child.HP);click(375);assertFalse(child.isAlive());log("FRESH ALL FOOD GUARD SWARM CHILDREN ACTUALLY DEFEATED");
+        for(int c:new int[]{343,342,341,340,339,370,369,368,367,334}){assertNull(Actor.findChar(c));assertNull(Dungeon.level.traps.get(c));click(c);assertEquals(c,Dungeon.hero.pos);}click(334);
+        Item food=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.food.Food.class);assertNotNull(food);assertTrue(Dungeon.hero.buff(Hunger.class).hunger()<450);log("FRESH NORTHERN FOOD ACTUALLY ACQUIRED BEFORE STARVATION");food.execute(Dungeon.hero,"EAT");ready();log("FRESH NORTHERN FOOD ACTUALLY EATEN WITH ORIGINAL STARVATION RULE");
+        cast(HolyWard.INSTANCE,null);log("FRESH POST FOOD EARNED WARD AND REAL SHIELD RESOURCE FRONTIER");
     }
 }
