@@ -302,6 +302,23 @@ public class UimsdModelTest {
 	}
 
 	@Test
+	public void disablingHiddenInformationRemovesEveryHiddenAggregateDependency(){
+		UimsdModel m = model();
+		m.setShowInternal(true);
+		Aggregate safe = Aggregate.of(Aggregate.Fn.AVG, "score");
+		Aggregate ratio = Aggregate.ratio("score", "secret");
+		Aggregate conditioned = Aggregate.of(Aggregate.Fn.SUM, "score").where("secret", 2);
+		Aggregate distinct = Aggregate.of(Aggregate.Fn.AVG, "score").perDistinct("secret");
+		m.setGroup(new GroupBy(Arrays.asList("kind"), Arrays.asList(safe, ratio, conditioned, distinct)));
+		assertEquals(4, m.query().group.aggregates.size());
+		assertTrue(m.result().problems.isEmpty());
+
+		m.setShowInternal(false);
+		assertEquals(Arrays.asList(safe), m.query().group.aggregates);
+		assertTrue("the cleaned query must not silently omit rejected aggregates", m.result().problems.isEmpty());
+	}
+
+	@Test
 	public void switchingViewsKeepsOnlyTheHiddenInformationChoice(){
 		UimsdModel m = model();
 		m.setShowInternal(true);

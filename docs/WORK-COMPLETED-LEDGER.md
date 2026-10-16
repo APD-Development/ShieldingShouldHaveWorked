@@ -1384,3 +1384,10 @@ Audited recorder resume bookkeeping after the TEST231 delivery. One malformed ca
 - APK: 38,588,580 bytes; SHA-256 `e0d657026c7889806b669e9032ed0b6b7992b081756baefb48820d36ef1c9025`; `.indev` app ID and v2 certificate `067688b3ab6bd5820a67f4c1ba7d5859db578173771cf31d3252b3e4e012246e` match TEST237.
 - Independent artifact recount, app-crash scan and complete 42-image contact-sheet review passed. Raw history, saves, scores, gameplay, all 18 rules, turns, RNG, 50 lore entries/private grudge/opt-out, signing and application ID remain preserved.
 - No publication, tester distribution, physical-phone result or owner install-over/save acceptance occurred. TEST231 remains the latest privately delivered fallback. Continue the broad UIMSD reliability audit; do not rebuild unchanged TEST238 solely for evidence documentation.
+
+
+## 2026-10-16T09:36:49Z — hidden aggregate cleanup candidate
+- Continued the UIMSD reliability audit after TEST238 and confirmed that disabling hidden information left grouped aggregates dependent on hidden denominator, condition or distinct-by columns. Query execution then omitted those aggregates and reported problems even though the UI had supposedly cleaned the query.
+- The bounded correction removes an aggregate when any resolved aggregate reference is internal. Public aggregates and unknown forward-compatible references retain their prior behavior; history, saved views, cache formats and scoring are unchanged.
+- One retained `UimsdModelTest` method covers all three missed dependency positions plus a public aggregate that must remain. Exact TEST238 source must fail it; corrected source requires 1,706 core methods.
+- Full TEST239 gate remains required: debug assembly, complete immediate-previous produced TEST238 history (source `d39de932c69c23bcb013a8ee86df930718ad39c8`, run `38874923900`), 33 API34 methods and 42 valid screenshots. Candidate pending; no APK verification, publication, tester distribution, physical-phone result or owner install claim is made. TEST231 remains delivered fallback and TEST238 the newest verified CI candidate.

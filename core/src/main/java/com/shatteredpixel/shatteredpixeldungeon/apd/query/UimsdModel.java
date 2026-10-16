@@ -552,8 +552,14 @@ public final class UimsdModel {
 					}
 					List<Aggregate> aggs = new ArrayList<>();
 					for (Aggregate a : g.aggregates){
-						ColumnDef c = a.column.isEmpty() ? null : ds.def.column(a.column);
-						if (c == null || !c.isInternal()) aggs.add(a);
+						ColumnDef value = a.column.isEmpty() ? null : ds.def.column(a.column);
+						ColumnDef over = a.over.isEmpty() ? null : ds.def.column(a.over);
+						ColumnDef where = a.whereColumn.isEmpty() ? null : ds.def.column(a.whereColumn);
+						ColumnDef distinct = a.distinctBy.isEmpty() ? null : ds.def.column(a.distinctBy);
+						if ((value == null || !value.isInternal()) && (over == null || !over.isInternal())
+								&& (where == null || !where.isInternal()) && (distinct == null || !distinct.isInternal())){
+							aggs.add(a);
+						}
 					}
 					g = keys.isEmpty() && aggs.isEmpty() ? null : new GroupBy(keys, aggs);
 				}
