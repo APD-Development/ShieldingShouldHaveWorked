@@ -13,4 +13,5 @@ Quality of Life	ICON_CHALLENGE_COLOR	Scoring notice	Custom Dungeon Rules are exp
 Bug Fixes	ICON_ENTER	Saved entrance repair	Older affected first-floor saves can recover their entrance doorway without revealing unrelated secret doors.
 Statistics / UIMSD	ICON_COPY	Consistent shared histories	Quickly resumed runs now use the correct finished or unfinished state when deciding what their shared history can reveal.
 Statistics / UIMSD	ICON_WARNING	Incomplete export warnings	Exports of damaged or unreadable history retain an incomplete-data warning instead of presenting surviving statistics as complete.
+Statistics / UIMSD	ICON_WARNING	Incomplete table totals	Item and enemy tables retain incomplete-data warnings when a recorded event cannot be read.
 Developer Commentary	ICON_INFO	Developer Commentary	I'm bringing APD's statistics and difficulty customization together for the early-alpha preview. Custom scoring is still in development, and the current settings preserve original earned scores.

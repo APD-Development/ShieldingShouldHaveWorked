@@ -1,46 +1,54 @@
 {
   "date": "2026-10-15",
-  "previous_source": "9e553d9378dbfeca4c588910162872278ac20e2d",
-  "previous_run": 38831758939,
-  "previous_label": "Codex TEST 227",
+  "previous_source": "dba5e7478418c0657b1fff7f1c117f2eb6b1c3c4",
+  "previous_run": 38834508461,
+  "previous_label": "Codex TEST 228",
   "changes": [
     {
-      "category": "Development",
-      "sprite": "ICON_INFO",
-      "title": "Preserve TEST227 verification and remaining acceptance limits",
-      "text": "Record independently recounted core, APK, Android and visual evidence without rebuilding, publishing or claiming physical-phone acceptance.",
-      "paths": [
-        "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/APD-NEXT-BUILD-HISTORY.json",
-        "docs/APD-TEST227-CLERIC-LEDGER-PRESERVATION-2026-10-15.md",
-        "docs/HANDOFF.md",
-        "docs/WORK-COMPLETED-LEDGER.md"
-      ]
-    },
-    {
       "category": "Statistics / UIMSD",
-      "sprite": "ICON_CHANGES",
-      "title": "Recover unusable saved column layouts",
-      "text": "Keep valid saved columns in order, reject retired or currently hidden columns, and reopen with the view defaults instead of a blank table when none remain.",
+      "sprite": "ICON_WARNING",
+      "title": "Incomplete table totals",
+      "text": "Item and enemy counts retain incomplete-data warnings when a framed event cannot be decoded; recorded values and raw history remain unchanged.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdModel.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdModelTest.java",
-        "docs/APD-TEST228-SAVED-COLUMN-LAYOUT-2026-10-15.md"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowBuilders.java",
+        "core/src/main/assets/apd/releases/apd-alpha-preview.tsv"
+      ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "ICON_CHANGES",
+      "title": "Rebuild outdated derived rows",
+      "text": "Reject version14 derived row caches so corrected data-quality warnings appear without changing original history.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowBuilders.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/DamagedFactsProvenanceTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/QuestBossClassificationTest.java"
+      ]
+    },
+    {
+      "category": "Testing",
+      "sprite": "ICON_CHECKED",
+      "title": "Unreadable-event and cache regressions",
+      "text": "Retain original-source failure controls, four permanent payload/cache cases and the complete combined core suite.",
+      "paths": [
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/MalformedPayloadProvenanceTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/DamagedFactsProvenanceTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/QuestBossClassificationTest.java",
+        ".github/workflows/codex-query-provenance-acceptance.yml"
       ]
     },
     {
       "category": "Development",
       "sprite": "ICON_INFO",
-      "title": "Record TEST228 candidate evidence",
-      "text": "Retain exact reproduction, local regression counts, full-gate requirements and the boundary between emulator, delivery and physical-device evidence.",
+      "title": "Record exact regression scope and remaining checks",
+      "text": "Preserve concurrent collection and saved-layout corrections, local failures and corrected evidence, and pending Android/build/physical-device limitations.",
       "paths": [
-        "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",
-        "docs/APD-TEST228-SAVED-COLUMN-LAYOUT-2026-10-15.md"
+        "docs/APD-NEXT-BUILD-HISTORY.json",
+        "docs/APD-QUERY-PAYLOAD-PROVENANCE-2026-10-15.md"
       ]
     }
   ],
-  "commentary": "Saved UIMSD column choices now survive visibility and schema changes without opening a blank table. No run data, gameplay, scores or Custom Dungeon Rules are changed."
+  "commentary": "I kept the original history while making incomplete table counts explicit. Outdated derived rows can be rebuilt without deleting player data."
 }
