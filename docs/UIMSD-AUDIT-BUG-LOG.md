@@ -33,3 +33,6 @@ Update 2026-10-15T04:57:30Z: TEST192 source `222189f971dc55597f561eb87aadcd4e34b
 
 
 October15 row-source identity correction: a distinct current DatasetStore cache accepted stale rows after an equal-name/length/timestamp valid raw-log replacement(score31instead47). Raw SHA-bound disposable row format3 and four permanent regressions are integrated;13focused and617broader local tests passed, full current-source1626core/Android/debug gate pending. Raw histories/saves untouched; old caches rebuild. Fixed optional-cache temp paths across distinct DatasetStore/DerivedStore objects remain a separate investigation candidate. See APD-ROW-CACHE-SOURCE-IDENTITY-2026-10-15.md; do not call the entire audit complete.
+
+
+Update 2026-10-16T12:35:52.018Z: current QueryEngine numeric IN filtering is confirmed to bypass lower-bound uncertainty: a minimum value can be reported as an exact match and higher possible candidates as exact non-matches. TEST242 changes only this branch and adds a retained minimum/higher/all-below regression. Exact-source before/after plus the full1717core/debug/history/33API34/42PNG gate are pending. No raw history, save, cache-format, score or gameplay change is involved.

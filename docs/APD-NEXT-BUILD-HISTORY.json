@@ -5,32 +5,21 @@
   "previous_label": "Codex TEST 241",
   "changes": [
     {
-      "category": "Infrastructure",
-      "sprite": "ICON_CHECKED",
-      "title": "Reuse verified APKs through a preparation profile",
-      "text": "Prepare exact-source APKs and reports with validated artifact selection and fallback compatibility checks, without a redundant application build.",
+      "category": "Bug Fixes",
+      "sprite": "ICON_WARNING",
+      "title": "Keep lower-bound IN filters uncertain",
+      "text": "A numeric lower bound is never treated as an exact member or exact non-member when a listed candidate could still be its true value.",
       "paths": [
-        ".github/workflows/codex-alpha-preview-stage.yml",
-        "docs/APD-ALPHA-PREPARATION.json",
-        "docs/APD-MORNING-PREPARATION-2026-10-16.md",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/QueryEngine.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/QueryEngineTest.java",
+        ".github/workflows/codex-lower-bound-in-acceptance.yml",
+        "docs/UIMSD-AUDIT-BUG-LOG.md",
+        "docs/APD-CODEX-BUILD-REQUEST.txt",
+        "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/HANDOFF.md",
-        "tools/test_apd_staging_profile.py"
-      ]
-    },
-    {
-      "category": "Development",
-      "sprite": "ICON_INFO",
-      "title": "Record verified sentry and run-history evidence",
-      "text": "Preserve TEST241's actual test, Android, image, signature and artifact results plus read-only real-run investigation limits; no further gameplay change.",
-      "paths": [
-        "docs/APD-TEST241-VERIFICATION-2026-10-16.json",
-        "docs/APD-REAL-RUN-ARMOR-EVIDENCE-2026-10-16.json",
-        "docs/APD-VAULT-CIRCLE-TIMING-2026-10-16.md",
-        "docs/HANDOFF.md",
-        "docs/WORK-COMPLETED-LEDGER.md",
-        "docs/APD-NEXT-BUILD-HISTORY.json"
+        "docs/WORK-COMPLETED-LEDGER.md"
       ]
     }
   ],
-  "commentary": "TEST241 is the preceding actually produced APK. These later changes concern preparation tooling and verified evidence; do not repeat TEST241's gameplay fix or rebuild unchanged source solely to record this checkpoint."
+  "commentary": "TEST241 is the immediate previous produced APK. TEST242 is a source candidate until its exact before/after and complete core/debug/API34/visual/history gate passes. No publication or physical-phone claim."
 }
