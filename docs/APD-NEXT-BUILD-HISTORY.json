@@ -28,7 +28,19 @@
         "docs/APD-ARCHIVE-RELIABILITY-2026-10-15.md",
         "docs/APD-TEST226-VERIFICATION-2026-10-15.json"
       ]
+    },
+    {
+      "category": "Bug Fixes",
+      "sprite": "ICON_WARNING",
+      "title": "Preserve the private Cleric collection ledger after damaged storage",
+      "text": "Read intact rows from a damaged local ledger for continuity, but make automatic persistence fail closed so unknown original bytes and filesystem directories are never deleted. An explicit player reset remains the only recovery action allowed to replace damaged ledger contents.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/humor/Ledger.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/humor/LedgerTest.java",
+        "docs/APD-CODEX-BUILD-REQUEST.txt",
+        "docs/APD-TEST227-CLERIC-LEDGER-PRESERVATION-2026-10-15.md"
+      ]
     }
   ],
-  "commentary": "I preserved the verified preview and its source evidence while preparing private owner delivery. These preparation records do not change gameplay or existing player history."
+  "commentary": "I preserved every previously reviewed TEST226 delivery path and added a fail-closed correction for the private Cleric collection ledger. The fix does not alter saves, run history, gameplay, scores, RNG, rules, lore content or player opt-out settings."
 }

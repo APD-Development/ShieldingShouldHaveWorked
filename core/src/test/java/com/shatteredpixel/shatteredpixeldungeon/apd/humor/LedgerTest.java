@@ -22,8 +22,10 @@
 package com.shatteredpixel.shatteredpixeldungeon.apd.humor;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -110,5 +112,34 @@ public class LedgerTest {
 		l.clear();
 		assertEquals( 0, new Ledger( f ).seq() );
 		assertNull( new Ledger( f ).get( "a.1" ) );
+	}
+
+	@Test
+	public void automaticSaveDoesNotRewriteAFileWithDamagedRows() throws Exception {
+		File f = new File( tmp.getRoot(), "l.txt" );
+		byte[] original = ("#apd-humor-ledger v1\n@seq=2\ngood.1\t1\t2\t99\t99\n"
+				+ "damaged\trow\n").getBytes( StandardCharsets.UTF_8 );
+		Files.write( f.toPath(), original );
+
+		Ledger loaded = new Ledger( f );
+		loaded.markShown( "new.1", 100 );
+		loaded.save();
+
+		assertArrayEquals( "an automatic save must preserve every original byte after a partial load",
+				original, Files.readAllBytes( f.toPath() ) );
+		assertNull( "the refused write must not pretend it persisted the new entry", new Ledger( f ).get( "new.1" ) );
+
+		loaded.clear();
+		assertEquals( "an explicit player reset may replace a damaged ledger", 0, new Ledger( f ).seq() );
+	}
+
+	@Test
+	public void saveNeverReplacesAnExistingDirectoryAtTheLedgerPath() throws Exception {
+		File f = tmp.newFolder( "ledger.txt" );
+		Ledger ledger = new Ledger( f );
+		ledger.markShown( "a.1", 1 );
+		ledger.save();
+
+		assertTrue( "the configured directory must remain a directory", f.isDirectory() );
 	}
 }
