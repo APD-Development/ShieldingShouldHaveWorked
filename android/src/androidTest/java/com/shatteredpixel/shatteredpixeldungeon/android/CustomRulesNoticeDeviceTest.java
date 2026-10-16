@@ -442,7 +442,7 @@ public class CustomRulesNoticeDeviceTest {
                         }
                     }
                     window[0].hide();SPDSettings.apdCustomRules(CustomDungeonRules.defaults());window[0]=new WndCustomDungeonRules();Game.scene().addToFront(window[0]);
-                    OptionSlider first=find(window[0],OptionSlider.class).get(0);ScrollPane scroll=(ScrollPane)field(window[0],"scroll");scroll.scrollTo(0,first.top()-4);
+                    OptionSlider first=find(window[0],OptionSlider.class).get(0);ScrollPane scroll=(ScrollPane)field(window[0],"scroll");scroll.scrollTo(0,Math.max(0,first.top()-28));
                     touch[0]=first.camera().cameraToScreen(first.left()+first.width()*0.16f,first.bottom()-7);
                     touch[1]=first.camera().cameraToScreen(first.left()+first.width()*0.65f,first.bottom()-7);
                 }catch(Exception e){throw new RuntimeException(e);}});
@@ -464,7 +464,10 @@ public class CustomRulesNoticeDeviceTest {
                     CustomDungeonRules draft=(CustomDungeonRules)field(window[0],"draft");
                     String individual=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomRuleMultipliers.format(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomRuleMultipliers.individual(CustomDungeonRules.Slider.ENEMY_HP,draft.get(CustomDungeonRules.Slider.ENEMY_HP)));
                     boolean caption=false;
-                    for(RenderedTextBlock text:find(window[0],RenderedTextBlock.class))if(text.text().startsWith(CustomRulesPresentation.label(CustomDungeonRules.Slider.ENEMY_HP)+": ")&&text.text().contains(individual))caption=true;
+                    for(RenderedTextBlock text:find(window[0],RenderedTextBlock.class))if(text.text().startsWith(CustomRulesPresentation.label(CustomDungeonRules.Slider.ENEMY_HP)+": ")&&text.text().contains(individual)) {
+                        ScrollPane pane=(ScrollPane)field(window[0],"scroll");float offset=pane.content().camera().scroll.y;
+                        assertTrue("Individual caption is inside the actual scroll viewport",text.top()>=offset&&text.bottom()<=offset+pane.height());caption=true;
+                    }
                     assertTrue("Visible individual caption updates before finger release",caption);
                     assertTrue("Combined caption updates before finger release",((RenderedTextBlock)field(window[0],"combined")).text().endsWith(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomRuleMultipliers.format(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomRuleMultipliers.combined(draft))));
                     assertTrue("Finger remains held during visual verification",(Boolean)field(field(find(window[0],OptionSlider.class).get(0),"pointerArea"),"pressed"));

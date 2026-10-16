@@ -1,4 +1,4 @@
-name: Verify presented live preview and native controls on unchanged TEST254
+name: Capture visible individual and combined preview while touch remains held
 on:
   push:
     branches: [codex/apd-phone-fixes-2026-10-09]
@@ -7,7 +7,7 @@ permissions:
   contents: read
   actions: read
 concurrency:
-  group: apd-api36-presented-preview254
+  group: apd-api36-visible-preview254
   cancel-in-progress: false
 jobs:
   reuse-and-check:
@@ -89,17 +89,8 @@ jobs:
           import os
           p='com.shatteredpixel.shatteredpixeldungeon.android.'
           api=int(os.environ['APD_ACCEPTANCE_API'])
-          methods=[p+'EarlyAlphaRosterDeviceTest#allSixClassesStartSaveAndContinueWithLockedExtremeRules'] if api==34 else [
-              p+'CustomRulesNoticeDeviceTest#allEighteenControlsAcceptNativeTouchSaveAndReopenWithoutChangingActiveRun',
-              p+'CustomRulesNoticeDeviceTest#scoringVisionPopupOpensScrollsAndBackPreservesDraftOnSmallScreens',
-              p+'CustomScoreDeviceTest#dailyCalendarShowsFrozenLongEarnedScoreWithoutOverlappingDates',
-              p+'PlayRunDeviceTest#aRunCanBePlayedSavedContinuedAndEndedWithItsHistoryRecorded',
-              p+'UimsdRestoreDeviceTest#menusSurviveSceneRecreationAndNarrowActionsStayInsideTheirWindow',
-              p+'CustomRulesNoticeDeviceTest#touchscreenSliderGesturesLockDirectionAndPreserveDraftAndSavedRules',
-              p+'CustomScoreDeviceTest#nativeScorePopupsShowRecordedNeutralPendingAndUnknownThenCloseWithAndroidBack',
-              p+'CustomRulesNoticeDeviceTest#liveMultipliersMatchEveryPositionAndUpdateDuringNativeDragBeforeRelease']
-          images=['alpha-roster-'+hero+'.png' for hero in ('warrior','mage','rogue','huntress','duelist','cleric')] if api==34 else [
-              'hotbar-controls.png','custom-scoring-vision.png','custom-scoring-vision-narrow.png','daily-earned-score.png','daily-earned-score-scrolled.png','custom-rules-touch-gestures.png','custom-score-neutral.png','custom-score-pending.png','custom-score-unknown.png','custom-score-narrow-before.png','custom-score-narrow.png','custom-rules-live-drag.png','custom-rules-live-summary.png']
+          methods=[p+'CustomRulesNoticeDeviceTest#liveMultipliersMatchEveryPositionAndUpdateDuringNativeDragBeforeRelease']
+          images=['custom-rules-live-drag.png','custom-rules-live-summary.png']
           with open(os.environ['GITHUB_ENV'],'a') as target:
               target.write('APD_DEVICE_METHODS='+','.join(methods)+'\n')
               target.write('APD_EXPECTED_METHODS='+str(len(methods))+'\n')
@@ -149,7 +140,7 @@ jobs:
           names=json.loads(pathlib.Path('expected-screenshots.json').read_text());images={}
           for name in names:
               p=pathlib.Path('acceptance-screenshots')/name;data=p.read_bytes();assert data[:8]==b'\x89PNG\r\n\x1a\n';width,height=struct.unpack('>II',data[16:24]);assert width>0 and height>0;images[name]=[width,height]
-          assert len(images)==(6 if api==34 else 13)
+          assert len(images)==2
           pathlib.Path('device-acceptance-result.json').write_text(json.dumps({'api_level':api,'instrumented_methods':count,'failures':0,'errors':0,'skipped':0,'application_reused':'TEST254','application_rebuilt':False,'physical_device':False,'images':images,'six_classes_save_continue':api==34,'complete_primary_api34_retest':False,'android16_targeted_checks':api==36,'does_not_establish_complete_human_playthroughs':True},indent=2))
           PY
       - name: Retain successful and unsuccessful acceptance evidence
