@@ -88,10 +88,16 @@ jobs:
           import hashlib,json,os,pathlib,subprocess
           repo=os.environ['GITHUB_REPOSITORY'];tag='apd-alpha-preview-249';root=pathlib.Path('delivery')
           assert json.loads(subprocess.check_output(['gh','api','repos/'+repo]))['private']
-          assert subprocess.run(['gh','release','view',tag,'--repo',repo],capture_output=True).returncode!=0,'Preserve existing release and assets'
           names=['ADHD-Pixel-Dungeon-Alpha-Preview-249.apk','ADHD-Pixel-Dungeon-Alpha-Preview-249.apk.sha256','TEST249-Verification.json','APD-Preview-Delivery.json','APD-Verified-Source.zip','APD-Verified-Source.zip.sha256']
-          subprocess.run(['gh','release','create',tag,'--draft','--repo',repo,'--target',os.environ['GITHUB_SHA'],'--prerelease','--latest=false','--title','APD Alpha Preview 249 — live scoring multipliers','--notes-file',str(root/'owner-release-notes.txt')]+[str(root/name) for name in names],check=True)
-          release=json.loads(subprocess.check_output(['gh','api',f'repos/{repo}/releases/tags/{tag}']))
+          releases=json.loads(subprocess.check_output(['gh','api',f'repos/{repo}/releases?per_page=100']))
+          matches=[release for release in releases if release['tag_name']==tag]
+          assert len(matches)<=1,'Preserve unique release and assets'
+          if not matches:
+              subprocess.run(['gh','release','create',tag,'--draft','--repo',repo,'--target',os.environ['GITHUB_SHA'],'--prerelease','--latest=false','--title','APD Alpha Preview 249 — live scoring multipliers','--notes-file',str(root/'owner-release-notes.txt')]+[str(root/name) for name in names],check=True)
+              releases=json.loads(subprocess.check_output(['gh','api',f'repos/{repo}/releases?per_page=100']))
+              matches=[release for release in releases if release['tag_name']==tag]
+          assert len(matches)==1
+          release=matches[0]
           assert release['prerelease'] and release['draft'] and release['published_at'] is None
           actual=[a for a in release['assets'] if a['name']==names[0]];assert len(actual)==1
           expected='dcda79a5c6c83b1ac88e5294b3b134c8e1483109929b3a8da5365e7eadc8536e'
