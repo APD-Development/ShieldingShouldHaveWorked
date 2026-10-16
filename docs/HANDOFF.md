@@ -1,3 +1,11 @@
+## TEST255 candidate — repeated-label UIMSD group comparison correction — 2026-10-16T20:45:26Z
+
+Controlled run [38964285358](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38964285358) reproduced a supported report defect: two different statistics both labeled `Average` should show group B values20 and200, but the first borrowed the later value200. JUnit recorded1failure/0errors; artifact12073194262 preserves the baseline. The diagnostic wrapper also failed its overly literal JUnit-message check, so its workflow conclusion remains failure rather than being relabeled.
+
+The bounded candidate pairs same-schema detail lines by definition order instead of treating display labels as unique identifiers. One permanent core regression and a player-facing history line are retained. Raw history, queries, caches, saves, all18 sliders, v2.6R's357 values/formula, original scores, gameplay, RNG and turns are unchanged.
+
+Request TEST255 full1737-core/debug/complete TEST254 history/API34 visual gate against exact previous application source832c1a5679a8cd216e8c57638f1bc0fe2442fdfe/run38949555542. Candidate pending until actual evidence passes; published TEST254 and TEST250 remain fallbacks. No physical-phone, owner-save or automatic tester-distribution claim. Details: `docs/APD-TEST255-GROUP-COMPARISON-2026-10-16.md`.
+
 ## Verified owner delivery — TEST254 — 2026-10-16 19:49:53 UTC
 
 Owner links were sent in chat between 19:48:42 and 19:49:11 UTC (3:48–3:49 p.m. EDT), before the 4 p.m. deadline. This is not a claim that all approved backlog work is finished.

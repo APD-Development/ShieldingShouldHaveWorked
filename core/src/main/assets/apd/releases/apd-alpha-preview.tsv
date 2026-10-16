@@ -23,3 +23,4 @@ Quality of Life	ICON_INFO	My scoring plans	Read an optional explanation of futur
 Bug Fixes	ICON_RANKINGS	Daily earned scores	Daily history shows the recorded earned Custom Rules score, preserves original scores and keeps large values readable.
 Bug Fixes	ICON_PREFS	Narrow toolbar	Quickslot paging stays accessible without covering Inventory on narrow screens.
 Bug Fixes	ICON_INFO	Clear dungeon messages	Messages remain readable above the page switch on narrow screens.
+Statistics / UIMSD	ICON_STATS	Accurate group comparisons	Repeated statistic labels keep their own values when two groups are compared.

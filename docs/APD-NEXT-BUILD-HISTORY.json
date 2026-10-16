@@ -1,45 +1,58 @@
 {
   "date": "2026-10-16",
-  "previous_source": "6d9162f5946311728b1723a3b02d688072a8da79",
-  "previous_run": 38943900747,
-  "previous_label": "Codex TEST 253",
+  "previous_source": "832c1a5679a8cd216e8c57638f1bc0fe2442fdfe",
+  "previous_run": 38949555542,
+  "previous_label": "Codex TEST 254",
   "changes": [
     {
       "category": "Bug Fixes",
-      "sprite": "ICON_INFO",
-      "title": "Readable narrow-screen messages",
-      "text": "Dungeon messages stay above the quickslot page switch on narrow screens.",
+      "sprite": "ICON_STATS",
+      "title": "Accurate group comparisons",
+      "text": "Repeated statistic labels keep their own values instead of borrowing the last matching label from the other group.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/Toolbar.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/GameScene.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/report/ReportBuilder.java",
         "core/src/main/assets/apd/releases/apd-alpha-preview.tsv"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Message and native-input checks",
-      "text": "Native layout checks include rendered messages; setup closes its own modal and waits for actual touch delivery before checking live previews.",
+      "title": "Retain the repeated-label regression",
+      "text": "A controlled one-method baseline and the full gate require two same-label statistics to remain paired by definition order.",
       "paths": [
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PlayRunDeviceTest.java",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/report/GroupComparisonRepeatedLabelTest.java",
+        ".github/workflows/codex-group-comparison-repro.yml",
+        ".github/workflows/codex-final-alpha-acceptance.yml",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PlayRunDeviceTest.java"
       ]
     },
     {
       "category": "Infrastructure",
       "sprite": "ICON_INFO",
-      "title": "Keep verification failures traceable",
-      "text": "Keep exact APK provenance, unsuccessful native checks, corrected test results and compatible fallback evidence in the preparation records.",
+      "title": "Preserve TEST254 delivery and candidate evidence",
+      "text": "Keep exact published-source receipts, unsuccessful supplemental attempts and the TEST254 rollback while the new source is verified.",
       "paths": [
-        ".github/workflows/codex-final-alpha-acceptance.yml",
-        ".github/workflows/codex-stage-corrected253.yml",
+        ".github/workflows/codex-alpha-final-owner254.yml",
+        ".github/workflows/codex-owner-afternoon-status.yml",
         "docs/APD-ALPHA-PREPARATION.json",
-        "docs/APD-NEXT-BUILD-HISTORY.json",
-        "docs/APD-NARROW-HUD-REGRESSION-2026-10-16.md",
+        "docs/APD-FINAL-ALPHA-ACCEPTANCE-2026-10-16.md",
+        "docs/APD-OWNER-AFTERNOON-DELIVERY-2026-10-16.json"
+      ]
+    },
+    {
+      "category": "Developer Commentary",
+      "sprite": "ICON_INFO",
+      "title": "Record the bounded UIMSD correction",
+      "text": "Document the reproduced mismatch, exact baseline evidence, pending full verification and unchanged gameplay/scoring limits.",
+      "paths": [
+        "docs/APD-TEST255-GROUP-COMPARISON-2026-10-16.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/HANDOFF.md"
+        "docs/APD-NEXT-BUILD-HISTORY.json",
+        "docs/HANDOFF.md",
+        "docs/WORK-COMPLETED-LEDGER.md"
       ]
     }
   ],
-  "commentary": "Visual review caught the narrow page switch covering messages after the earlier control-overlap fix. I reserved message space above it and added checks for the rendered text; scoring and gameplay remain unchanged."
+  "commentary": "A group comparison treated display labels as unique identifiers. The retained regression proves that two distinct Average rows could both show group B's later value; pairing the same-schema lines by definition order fixes only report presentation."
 }
