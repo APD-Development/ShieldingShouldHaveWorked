@@ -42,7 +42,20 @@
   "source_zip_sha256": "ce9211f89f0805c0b22d0b2e116228873482f357f129b10948dceaf65eea41a3",
   "build_started_utc": "2026-10-16T00:07:42Z",
   "build_completed_utc": "2026-10-16T00:23:04Z",
-  "publication": "pending",
+  "publication": {
+    "status": "published",
+    "run": 38829450668,
+    "commit": "b71ee501f810ab2a9fce40b75d9e418a3d546d7c",
+    "published_at": "2026-10-16T00:26:30Z",
+    "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-226",
+    "apk_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-alpha-preview-226/ADHD-Pixel-Dungeon-Alpha-Preview-226.apk",
+    "pdf_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-alpha-preview-226/APD-Alpha-Preview-226.pdf",
+    "apk_size": 38583318,
+    "actual_github_asset_digest": "sha256:9a93691ca9417b4f3dd63c3724ba4702d5df10cca747f3db03dd67841fee3bd6",
+    "public_release": false,
+    "tester_distribution": false,
+    "application_rebuilt": false
+  },
   "physical_device_tested": false,
   "tester_distribution_approved": false,
   "broad_uimsd_audit_complete": false
