@@ -146,7 +146,8 @@ public class EarlyAlphaRosterDeviceTest {
 
         try (ActivityScenario<AndroidLauncher> ignored = ActivityScenario.launch(AndroidLauncher.class)) {
             waitUntil("Android game startup", () -> Gdx.app != null && Game.scene() != null, 120000);
-            CustomDungeonRules expected = acceptanceRules();
+            try {
+                CustomDungeonRules expected = acceptanceRules();
             int completed = 0;
 
             for (HeroClass heroClass : HeroClass.values()) {
@@ -212,21 +213,26 @@ public class EarlyAlphaRosterDeviceTest {
                 onRender(EarlyAlphaRosterDeviceTest::deleteDisposableSlot);
                 completed++;
             }
-            assertEquals("all shipped classes completed Android start/save/continue", 6, completed);
-        } finally {
-            if (Gdx.app != null) {
-                onRender(() -> {
-                    if (!(Game.scene() instanceof TitleScene)) Game.switchScene(TitleScene.class);
-                    deleteDisposableSlot();
-                    SPDSettings.apdCustomRules(previousRules);
-                    SPDSettings.apdDifficulty(previousDifficulty);
-                    SPDSettings.challenges(previousChallenges);
-                    SPDSettings.intro(previousIntro);
-                    SPDSettings.apdRecording(previousRecording);
-                    GamesInProgress.curSlot = previousSlot;
-                    GamesInProgress.selectedClass = previousSelected;
-                });
+                assertEquals("all shipped classes completed Android start/save/continue", 6, completed);
+            } finally {
+                if (Gdx.app != null) {
+                    onRender(() -> {
+                        if (!(Game.scene() instanceof TitleScene)) Game.switchScene(TitleScene.class);
+                        deleteDisposableSlot();
+                    });
+                }
             }
+        } finally {
+            // Restore preferences after the ActivityScenario has closed. These setters
+            // do not require a live render thread, avoiding teardown races.
+            deleteDisposableSlot();
+            SPDSettings.apdCustomRules(previousRules);
+            SPDSettings.apdDifficulty(previousDifficulty);
+            SPDSettings.challenges(previousChallenges);
+            SPDSettings.intro(previousIntro);
+            SPDSettings.apdRecording(previousRecording);
+            GamesInProgress.curSlot = previousSlot;
+            GamesInProgress.selectedClass = previousSelected;
         }
     }
 }
