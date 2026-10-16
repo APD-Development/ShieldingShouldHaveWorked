@@ -3563,6 +3563,7 @@ public class GetFuckedRouteTest {
                 else if(action.equals("F"))activateOwnedHourglassFreeze();
                 else if(action.equals("N"))activateOwnedHourglassStasis();
                 else if(action.equals("P")){Dungeon.hero.search(true);ready();log("MANUAL ACTUAL PAID SEARCH");}
+                else if(action.startsWith("Y")){int at=action.indexOf('@'),arrow=action.indexOf('>');assertTrue(at>1 && arrow>at);int pot=Integer.parseInt(action.substring(1,at));Class<? extends Item> inputType=Class.forName("com.shatteredpixel.shatteredpixeldungeon.items."+action.substring(at+1,arrow)).asSubclass(Item.class);Class<? extends Item> outputType=Class.forName("com.shatteredpixel.shatteredpixeldungeon.items."+action.substring(arrow+1)).asSubclass(Item.class);craftExoticPotionAtActualPot(pot,inputType,outputType);}
                 else if(action.startsWith("Z")){Talent talent=Talent.valueOf(action.substring(1));int tier=-1;for(int k=0;k<Dungeon.hero.talents.size();k++)if(Dungeon.hero.talents.get(k).containsKey(talent))tier=k;assertTrue(tier>=0);assertTrue(Dungeon.hero.talentPointsAvailable(tier+1)>0);assertTrue(Dungeon.hero.pointsInTalent(talent)<talent.maxPoints());Dungeon.hero.upgradeTalent(talent);log("MANUAL EARNED TALENT "+talent.name());}
                 else if(action.startsWith("X")){int at=action.lastIndexOf('@');assertTrue(at>1);Class<? extends Item> type=Class.forName("com.shatteredpixel.shatteredpixeldungeon.items."+action.substring(1,at)).asSubclass(Item.class);throwItem(type,Integer.parseInt(action.substring(at+1)));}
                 else if(action.startsWith("H") && action.length()>1){int count=Integer.parseInt(action.substring(1));assertTrue(count>=0 && count<=500);for(int k=0;k<count;k++)waitOne();}
@@ -3570,9 +3571,9 @@ public class GetFuckedRouteTest {
                 else if(action.startsWith("G"))click(Integer.parseInt(action.substring(1)));
                 else if(action.startsWith("J"))jumpIntoKnownChasm(Integer.parseInt(action.substring(1)));
                 else if(action.equals("V"))System.out.println("FLOOR_LAYOUT "+new JSONObject().put("depth",Dungeon.depth).put("width",Dungeon.level.width()).put("height",Dungeon.level.height()).put("terrain",new JSONArray(Dungeon.level.map)).put("entrance",Dungeon.level.entrance()).put("exit",Dungeon.level.exit()));
-                else if(action.startsWith("D") || action.startsWith("E") || action.startsWith("Q") || action.startsWith("U")){
+                else if(action.startsWith("D") || action.startsWith("E") || action.startsWith("Q") || action.startsWith("U") || action.startsWith("R")){
                     Class<? extends Item> itemType=Class.forName("com.shatteredpixel.shatteredpixeldungeon.items."+action.substring(1)).asSubclass(Item.class);Item item=Dungeon.hero.belongings.getItem(itemType);assertNotNull("Manual action requires an actually owned item",item);
-                    if(action.startsWith("U"))upgradeOwnedGear(item);else{String itemAction=action.startsWith("D")?"DRINK":action.startsWith("E")?"EAT":"EQUIP";assertTrue(item.actions(Dungeon.hero).contains(itemAction));item.execute(Dungeon.hero,itemAction);if(itemAction.equals("EQUIP"))Dungeon.hero.busy();ready();log("MANUAL OWNED "+itemAction+" "+itemType.getSimpleName());}
+                    if(action.startsWith("U"))upgradeOwnedGear(item);else{String itemAction=action.startsWith("D")?"DRINK":action.startsWith("E")?"EAT":action.startsWith("R")?"READ":"EQUIP";assertTrue(item.actions(Dungeon.hero).contains(itemAction));item.execute(Dungeon.hero,itemAction);if(itemAction.equals("EQUIP"))Dungeon.hero.busy();ready();log("MANUAL OWNED "+itemAction+" "+itemType.getSimpleName());}
                 }else {if(action.equals("S") || action.equals("L") || action.equals("T") || action.equals("A"))assertNotNull(target);freshFixedActions(target,action);}
                 assertEquals(1,Dungeon.hero.HT);assertEquals(1,Dungeon.hero.HP);
             }
