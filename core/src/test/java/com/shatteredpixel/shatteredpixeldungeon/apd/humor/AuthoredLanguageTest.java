@@ -38,7 +38,8 @@ public class AuthoredLanguageTest {
     }
    }
   }
-  assertEquals(9,files);assertTrue(values>5000);
+  // Removing 12 inherited English promotion keys leaves 4,998 reviewed values; all are checked above.
+  assertEquals(9,files);assertEquals("Reviewed English message inventory",4998,values);
  }
  @Test public void localizedAlternativesDoNotDamageInnocentWordsOrOtherLanguages(){
   for(String innocent:new String[]{"Hell","slut","kesialan","Verdammte Charaktere","dictionary","classic","Scunthorpe","Prick","Fan of Blades"})assertEquals(innocent,AuthoredLanguage.select(innocent,false));

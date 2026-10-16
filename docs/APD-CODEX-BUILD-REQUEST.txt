@@ -406,3 +406,6 @@ Actual application change: verify literal Markdown backslash preservation,2 new 
 
 
 Urgent tester feedback — actual next application build: remove inherited boss-key/victory donation promotions and unused localized appeals while preserving all credits, licenses, normal key bookkeeping/turn costs, saves and player data. Verify1756core/debug/complete immediate-previous produced TEST259 history(source8d9381e5116678f51fb2f2d70b23a681102a85bd/run38973264847),37Android methods and57requiredscreens, including actual key pickup with both legacy preferences and victory Close.31 focused local methods pass. Preserve published TEST258 until actual candidate verification succeeds. No public release or automatic tester distribution.
+
+
+Test-only retry after TEST260 failed before APK: preserve unchanged promotion removal and all gameplay, use Gradle's declared source root and exact4998 remaining English messages with every existing safety assertion retained. Verify1756core/debug/actual preceding TEST259 history/37API34/57PNG; no260APK exists. Source fixture regressions pass in assets cwd. Keep258 as published owner fallback until full verification, screenshots and signing pass.

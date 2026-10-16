@@ -47,6 +47,8 @@ public class InheritedPromotionTest {
 
     @Test public void runtimePromotionLinksAndLocalizedAppealsAreAbsentButCreditsRemain() throws Exception {
         Path base=Paths.get("src/main");if(!Files.isDirectory(base))base=Paths.get("core/src/main");
+        String gameSource=System.getProperty("apd.game.src");
+        if(gameSource!=null)base=Paths.get(gameSource).toAbsolutePath().getParent().getParent().getParent().getParent();
         assertTrue("real production source root",Files.isDirectory(base));
         Path project=base.toAbsolutePath().getParent().getParent().getParent();
         try(java.util.stream.Stream<Path> files=Files.walk(project)) {

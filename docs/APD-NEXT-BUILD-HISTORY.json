@@ -90,11 +90,12 @@
       "category": "Testing",
       "sprite": "ICON_CHECKED",
       "title": "Boss reward and victory checks",
-      "text": "Check normal key quantity and turn cost with either old preference; verify the pickup and victory windows on Android.",
+      "text": "Check normal key quantity and turn cost, retained credits, every retained message's language safety, and Android pickup/victory screens.",
       "paths": [
         "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/InheritedPromotionTest.java",
         "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PlayRunDeviceTest.java",
-        "tools/run-codex-android-checks.sh"
+        "tools/run-codex-android-checks.sh",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/humor/AuthoredLanguageTest.java"
       ]
     },
     {
