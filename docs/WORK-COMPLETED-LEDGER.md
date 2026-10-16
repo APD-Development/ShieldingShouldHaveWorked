@@ -1444,3 +1444,6 @@ TEST242 attempt1 evidence: run38901726106 stopped before tests because the candi
 - Dedicated38901726173: the copied method failed once on unchanged TEST241 as expected, then the corrected complete suite ran1717 methods with1 failure in the same method. This showed the test premise, not production behavior, was wrong: numeric IN is not an allowed NUM operator, so the engine leaves an invalid filter unapplied.
 - Reverted QueryEngine, QueryEngineTest and the dedicated workflow. Attempt1 full38901726106 stopped before tests on incomplete history paths; stage38901726126 stopped at its changed-tree guard. Attempt2 runs38902077854/38902077124 were already started and are not candidate evidence regardless of outcome. No eligible APK/publication/phone claim.
 - TEST241 remains the verified application source. This rejection preserves honest failure evidence and avoids changing behavior for an unreachable query.
+
+
+Rejected TEST242 terminal evidence (2026-10-16T12:45:33.417Z):38902077854 passed strict history/tool validation then failed core; APK/debug/history-compile/Android/delivery skipped.38902077124 failed its application-tree guard; staging/report uploads skipped. No APK produced or staged. Current app source equals TEST241.

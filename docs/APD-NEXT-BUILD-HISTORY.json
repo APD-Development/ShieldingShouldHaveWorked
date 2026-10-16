@@ -33,5 +33,5 @@
       ]
     }
   ],
-  "commentary": "Application and test source are identical to verified TEST241. The TEST242 audit candidate was rejected because numeric IN is not a valid NUM operator; do not rebuild unchanged source. Failed candidate runs are retained as evidence, and no APK from them is eligible."
+  "commentary": "Application and test source are identical to verified TEST241. The TEST242 audit candidate was rejected because numeric IN is not a valid NUM operator. Attempts38901726106/38901726126 failed before tests/staging; dedicated38901726173 reproduced the synthetic baseline failure but retained1 failure in1717 corrected methods; attempt2 full38902077854 passed strict history/tooling then failed core, and stage38902077124 failed its changed-tree guard. No APK was produced or staged; do not rebuild unchanged source."
 }
