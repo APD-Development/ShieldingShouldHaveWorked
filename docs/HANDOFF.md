@@ -2943,3 +2943,8 @@ Audited recorder resume bookkeeping after the TEST231 delivery. One malformed ca
 - TEST233 is a fully CI-verified candidate only: no publication, tester distribution, physical-phone result or owner-device install-over/save acceptance occurred. TEST231 remains the latest privately delivered fallback.
 - The next meaningful build manifest must include this evidence entry and `docs/APD-TEST233-VERIFICATION-2026-10-15.json`; do not rebuild unchanged TEST233 merely to record documentation. Broad UIMSD audit, audio and unconfirmed armor/sentry investigations remain open.
 
+## 2026-10-16T04:42:39.352Z — malformed run-end privacy candidate
+- Audited the post-TEST233 history boundary and reproduced two failures: a checksum-valid but empty typed `RUN_END` marked a run finished in UIMSD and allowed an unredacted current-run export.
+- The bounded correction requires a readable `LifecycleEvents.decodeRunEnd` before finished-run visibility or raw hidden-data export is authorized. The malformed event remains untouched in raw history.
+- Added two retained regressions and exact TEST233 before/after workflow. Exact TEST233 must fail both; corrected source requires 1,697 core methods, then debug assembly, complete immediate-previous produced TEST233 history, 33 API34 methods and 42 valid screenshots.
+- Candidate pending. No APK verification, publication, tester distribution, physical-phone result or owner install-over/save acceptance is claimed. TEST231 remains the privately delivered fallback and TEST233 remains the newest fully verified CI candidate until the new gates pass.

@@ -299,7 +299,14 @@ public final class ArchiveExporter {
 							} catch (RuntimeException ignored){
 							}
 						}
-						if (e.type == EventTypes.RUN_END) l.ended = true;
+						if (e.type == EventTypes.RUN_END){
+							try {
+								LifecycleEvents.decodeRunEnd(e, r);
+								l.ended = true;
+							} catch (RuntimeException ignored){
+								//A malformed typed end does not authorize exporting hidden run data.
+							}
+						}
 					}
 				}
 			} catch (Throwable t){

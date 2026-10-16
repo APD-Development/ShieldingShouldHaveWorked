@@ -1,17 +1,18 @@
 {
-  "date": "2026-10-15",
-  "previous_source": "96772420c7ccdcbc294e8eae33d68b27d71abfaa",
-  "previous_run": 38841967217,
-  "previous_label": "Codex TEST 232",
+  "date": "2026-10-16",
+  "previous_source": "c6bed1f12f017d3f2fa92adf2c29d793f5e004ab",
+  "previous_run": 38847041245,
+  "previous_label": "Codex TEST 233",
   "changes": [
     {
       "category": "Development",
       "sprite": "ICON_CHECKED",
-      "title": "Record verified TEST232 evidence",
-      "text": "Retain the exact TEST232 core, Android, visual, APK and targeted-reproduction evidence without rebuilding or publishing unchanged application source.",
+      "title": "Record verified TEST233 evidence",
+      "text": "Retain the exact TEST233 targeted, core, Android, visual and APK evidence without rebuilding or publishing unchanged application source.",
       "paths": [
-        "docs/APD-RECORDER-LIFECYCLE-RESILIENCE-2026-10-15.md",
-        "docs/APD-TEST232-VERIFICATION-2026-10-15.json",
+        "docs/APD-ACTIVE-TIME-IDLE-GAP-2026-10-15.md",
+        "docs/APD-CODEX-BUILD-REQUEST.txt",
+        "docs/APD-TEST233-VERIFICATION-2026-10-15.json",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md"
       ]
@@ -19,19 +20,20 @@
     {
       "category": "Statistics",
       "sprite": "ICON_WARNING",
-      "title": "Exclude long idle gaps from active-play time",
-      "text": "Active-time telemetry no longer credits 30 seconds after an app-background or long-pause gap; normal short gaps and all gameplay remain unchanged.",
+      "title": "Reject malformed run-end completion",
+      "text": "A checksum-valid but unreadable run-end payload no longer marks a run finished or authorizes an unredacted current-run history export.",
       "paths": [
-        ".github/workflows/codex-active-time-acceptance.yml",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/PlayTracker.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/PlayTrackerTest.java",
-        "docs/APD-ACTIVE-TIME-IDLE-GAP-2026-10-15.md",
+        ".github/workflows/codex-malformed-run-end-acceptance.yml",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/archive/ArchiveExporter.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowBuilders.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/MalformedRunEndPrivacyTest.java",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
+        "docs/APD-MALFORMED-RUN-END-PRIVACY-2026-10-16.md",
         "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md"
       ]
     }
   ],
-  "commentary": "TEST232 is the immediate previous produced APK and TEST231 remains the latest privately delivered fallback. The active-time correction requires exact before/after core evidence and one complete TEST233 application gate; no automatic delivery."
+  "commentary": "TEST233 is the immediate previous produced APK and TEST231 remains the latest privately delivered fallback. The malformed run-end correction requires exact before/after core evidence and one complete TEST234 application gate; no automatic delivery."
 }

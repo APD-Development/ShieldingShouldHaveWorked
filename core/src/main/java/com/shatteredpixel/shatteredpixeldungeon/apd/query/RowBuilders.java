@@ -110,8 +110,14 @@ public final class RowBuilders {
 			//the moment a run "was last seen" comes only from events the player could see: a hidden event must not move a public number
 			if (EventTypes.visibility(e.type) == EventTypes.Visibility.PUBLIC) lastClock = Math.max(lastClock, e.clock);
 			if (e.type == EventTypes.RUN_END){
-				meta.hasRunEnd = true;
-				endClock = e.clock;
+				try {
+					LifecycleEvents.decodeRunEnd(e, r);
+					meta.hasRunEnd = true;
+					endClock = e.clock;
+				} catch (RuntimeException ignored){
+					//A frame can be checksum-valid while its typed payload is damaged.
+					//Do not expose hidden run details or label the run finished without a readable end.
+				}
 			} else if (e.type == EventTypes.RULESET_CHANGE){
 				rulesetChanges++;
 			}
