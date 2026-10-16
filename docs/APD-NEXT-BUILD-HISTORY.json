@@ -1,51 +1,36 @@
 {
   "date": "2026-10-16",
-  "previous_source": "7f18ca8bcbabc07f159b6e3acfc9689c1ae6f28b",
-  "previous_run": 38889483083,
-  "previous_label": "Codex TEST 240",
+  "previous_source": "b5d562ca37fff9ac628af3f4ade731e9fa7d83f1",
+  "previous_run": 38894980574,
+  "previous_label": "Codex TEST 241",
   "changes": [
     {
+      "category": "Infrastructure",
+      "sprite": "ICON_CHECKED",
+      "title": "Reuse verified APKs through a preparation profile",
+      "text": "Prepare exact-source APKs and reports with validated artifact selection and fallback compatibility checks, without a redundant application build.",
+      "paths": [
+        ".github/workflows/codex-alpha-preview-stage.yml",
+        "docs/APD-ALPHA-PREPARATION.json",
+        "docs/APD-MORNING-PREPARATION-2026-10-16.md",
+        "docs/HANDOFF.md",
+        "tools/test_apd_staging_profile.py"
+      ]
+    },
+    {
       "category": "Development",
-      "sprite": "ICON_CHECKED",
-      "title": "Record verified TEST240 evidence",
-      "text": "Preserve the preceding verified application evidence without rebuilding unchanged code.",
+      "sprite": "ICON_INFO",
+      "title": "Record verified sentry and run-history evidence",
+      "text": "Preserve TEST241's actual test, Android, image, signature and artifact results plus read-only real-run investigation limits; no further gameplay change.",
       "paths": [
-        "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/APD-DISTINCT-KEY-UNCERTAINTY-2026-10-16.md",
-        "docs/APD-TEST240-VERIFICATION-2026-10-16.json",
-        "docs/HANDOFF.md",
-        "docs/WORK-COMPLETED-LEDGER.md"
-      ]
-    },
-    {
-      "category": "Testing",
-      "sprite": "ICON_CHECKED",
-      "title": "Check rotating pylon timing",
-      "text": "Retain actual scheduler, normal and stronger attack-pattern, playback-speed and restored-direction regressions; no timing defect or gameplay change is claimed.",
-      "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/PylonTimingRegressionTest.java",
-        ".github/workflows/codex-pylon-timing-acceptance.yml",
-        "docs/APD-PYLON-TIMING-INVESTIGATION-2026-10-16.md",
-        "docs/HANDOFF.md",
-        "docs/APD-NEXT-BUILD-HISTORY.json"
-      ]
-    },
-    {
-      "category": "Bug Fixes",
-      "sprite": "ICON_WARNING",
-      "title": "Restore the circular vault sentry interval",
-      "text": "Circular Imp-vault sentries advance every two turns as in upstream SPD; affected saved-floor sentries retain their scan phase, geometry and upcoming countdown.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/rooms/quest/vault/VaultCircleRoom.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/VaultCircleTimingTest.java",
-        ".github/workflows/codex-vault-circle-timing-acceptance.yml",
-        "core/src/main/assets/apd/releases/apd-alpha-preview.tsv",
+        "docs/APD-TEST241-VERIFICATION-2026-10-16.json",
+        "docs/APD-REAL-RUN-ARMOR-EVIDENCE-2026-10-16.json",
         "docs/APD-VAULT-CIRCLE-TIMING-2026-10-16.md",
-        "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/APD-NEXT-BUILD-HISTORY.json",
-        "docs/HANDOFF.md"
+        "docs/HANDOFF.md",
+        "docs/WORK-COMPLETED-LEDGER.md",
+        "docs/APD-NEXT-BUILD-HISTORY.json"
       ]
     }
   ],
-  "commentary": "TEST240 remains the immediate previous produced APK. The circular vault sentry interval correction preserves existing room patterns, with bounded save-load repair. Exact original/corrected and full application gates remain required; no physical-phone or publication claim."
+  "commentary": "TEST241 is the preceding actually produced APK. These later changes concern preparation tooling and verified evidence; do not repeat TEST241's gameplay fix or rebuild unchanged source solely to record this checkpoint."
 }

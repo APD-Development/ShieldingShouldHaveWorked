@@ -27,3 +27,9 @@ Dedicated exact-source before/after core acceptance and the complete application
 The earlier core-only pylon run38893931161/source37a193e6c13a4e8ed289819192a7501b60c7a32d independently passed1711unique methods,zero failure/error/skip. Its results do not verify this subsequent production correction.
 
 Physical-phone reproduction and original-owner-save acceptance remain unverified. No public release, paid service, scoring, slider-limit change, new Cleric restriction, raw-data deletion or automatic tester distribution is included.
+
+
+## Completed source and staging evidence
+Exact source b5d562ca37fff9ac628af3f4ade731e9fa7d83f1 passed full run38894980574:1716unique core methods, debug assembly, complete TEST240 predecessor history,33API34methods and42valid reviewed screenshots,zero failures/errors/skips. Exact-original acceptance38894980632 independently reproduced the four expected failures and one healthy control, then passed1716. Separate128-seed map/pattern/nextRNG parity digest6078e48df512d854ff5cc8d5778686e6547ad2c4315cc665667c0097311214da is unchanged; only interval1→2 differs.
+
+Source-bound stage38895319271 reused the existingAPK, verified actual signing/applicationID/version/checksum directly against published231, and produced a validated7-pagePDF. APKsha99ca269dbebcd19266dbf4e27aca798252ed3d3b021f97b730915cbbea52b7f4. Fullartifact12043559007; evidence12043828065. See docs/APD-TEST241-VERIFICATION-2026-10-16.json. Staging is not publication; separate11:55PDF/noonAPK delivery remains pending. No physical-phone or original-owner-run avoidance-strategy verification is claimed.
