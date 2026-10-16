@@ -1,0 +1,154 @@
+name: Final early-alpha acceptance on verified TEST252
+on:
+  push:
+    branches: [codex/apd-phone-fixes-2026-10-09]
+    paths: [.github/workflows/codex-final-alpha-acceptance.yml]
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: apd-final-alpha-acceptance252
+  cancel-in-progress: false
+jobs:
+  reuse-and-check:
+    strategy:
+      fail-fast: false
+      matrix:
+        api: [34, 36]
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      APD_ACCEPTANCE_API: ${{ matrix.api }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Reuse the exact verified application and retain only supplemental tests
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,os,pathlib,subprocess,zipfile
+          repo=os.environ['GITHUB_REPOSITORY'];source='fa39ad824347a67624a93efbb4a3fb358c7477fe'
+          run_id=38935813981;artifact_id=12060682805;expected='333086ba911b7614f8562df21a8b50e1d8f18cb362b647bfa7032273d64a7f51'
+          def api(path):return json.loads(subprocess.check_output(['gh','api',path]))
+          assert api('repos/'+repo)['private']
+          for number in (run_id,38935814001):
+              run=api(f'repos/{repo}/actions/runs/{number}')
+              assert run['status']=='completed' and run['conclusion']=='success' and run['head_sha']==source
+          metadata=api(f'repos/{repo}/actions/artifacts/{artifact_id}')
+          assert metadata['workflow_run']['head_sha']==source and not metadata['expired']
+          paths=['core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/BossProgressionAcceptanceTest.java','android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/EarlyAlphaRosterDeviceTest.java']
+          supplemental={path:pathlib.Path(path).read_bytes() for path in paths}
+          subprocess.run(['git','fetch','--no-tags','--depth=1','origin',source],check=True)
+          protected=['core/src/main','SPD-classes/src/main','services/src/main','android/src/main','android/build.gradle','core/build.gradle','SPD-classes/build.gradle','services/build.gradle','build.gradle','settings.gradle','gradle.properties','gradle']
+          differences=subprocess.check_output(['git','diff','--name-only',source,'HEAD','--']+protected,text=True)
+          assert not differences.strip(),'Test-only wrapper changed application inputs'
+          subprocess.run(['git','checkout','--detach',source],check=True)
+          for path,content in supplemental.items():pathlib.Path(path).parent.mkdir(parents=True,exist_ok=True);pathlib.Path(path).write_bytes(content)
+          subprocess.run(['git','diff','--exit-code',source,'--']+protected,check=True)
+          with open('verified-test252.zip','wb') as target:subprocess.run(['gh','api',f'repos/{repo}/actions/artifacts/{artifact_id}/zip'],stdout=target,check=True)
+          assert hashlib.sha256(pathlib.Path('verified-test252.zip').read_bytes()).hexdigest()==metadata['digest'].removeprefix('sha256:')
+          with zipfile.ZipFile('verified-test252.zip') as z:
+              names=[n for n in z.namelist() if n.endswith('.apk')];assert len(names)==1;apk=z.read(names[0])
+          assert hashlib.sha256(apk).hexdigest()==expected
+          pathlib.Path('verified-test252.apk').write_bytes(apk)
+          pathlib.Path('acceptance-source.json').write_text(json.dumps({'application_source':source,'application_run':run_id,'application_artifact':artifact_id,'application_sha256':expected,'supplemental_test_commit':os.environ['GITHUB_SHA'],'api_level':int(os.environ['APD_ACCEPTANCE_API']),'application_rebuilt':False,'application_reused':True,'protected_application_inputs_identical':True,'physical_device':False,'tester_distribution':False},indent=2))
+          PY
+      - name: Set up Android SDK
+        run: |
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36"
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Check the broader boss, class, interaction and daily-save fixtures
+        if: matrix.api == 34
+        run: |
+          ./gradlew :core:test --tests '*BossProgressionAcceptanceTest' --tests '*CustomRuleCombinationAcceptanceTest' --tests '*BossPhaseDamageProvenanceTest' --tests '*CustomBossHealthSliderTest' --tests '*DailyEarnedScoreHistoryTest'
+          python3 - <<'PY'
+          import pathlib,xml.etree.ElementTree as E,json
+          cases=[]
+          for path in pathlib.Path('core/build/test-results/test').glob('TEST-*.xml'):cases.extend(E.parse(path).getroot().iter('testcase'))
+          assert len(cases)==len({(c.get('classname'),c.get('name')) for c in cases})==17
+          assert not any(c.find('failure') is not None or c.find('error') is not None or c.find('skipped') is not None for c in cases)
+          pathlib.Path('headless-acceptance-result.json').write_text(json.dumps({'methods':17,'failures':0,'errors':0,'skipped':0,'new_supplemental_methods':2,'methods_repeated_from_full_core':15,'tengu_matrix_cases':1200,'dm300_matrix_cases':1200,'visual_callbacks_isolated':True,'human_boss_playthroughs':False},indent=2))
+          PY
+      - name: Compile instrumentation only; do not assemble another application APK
+        run: |
+          ./gradlew :android:assembleDebugAndroidTest -PapdTestBuild -PapdBuild=C252
+          test ! -f android/build/outputs/apk/debug/android-debug.apk
+      - name: Enable emulator acceleration
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Set explicit test scope for each Android version
+        run: |
+          python3 - <<'PY'
+          import os
+          p='com.shatteredpixel.shatteredpixeldungeon.android.'
+          api=int(os.environ['APD_ACCEPTANCE_API'])
+          methods=[p+'EarlyAlphaRosterDeviceTest#allSixClassesStartSaveAndContinueWithLockedExtremeRules'] if api==34 else [
+              p+'CustomRulesNoticeDeviceTest#allEighteenControlsAcceptNativeTouchSaveAndReopenWithoutChangingActiveRun',
+              p+'CustomRulesNoticeDeviceTest#scoringVisionPopupOpensScrollsAndBackPreservesDraftOnSmallScreens',
+              p+'CustomScoreDeviceTest#dailyCalendarShowsFrozenLongEarnedScoreWithoutOverlappingDates',
+              p+'PlayRunDeviceTest#aRunCanBePlayedSavedContinuedAndEndedWithItsHistoryRecorded',
+              p+'CustomRulesNoticeDeviceTest#touchscreenSliderGesturesLockDirectionAndPreserveDraftAndSavedRules',
+              p+'CustomScoreDeviceTest#nativeScorePopupsShowRecordedNeutralPendingAndUnknownThenCloseWithAndroidBack',
+              p+'CustomRulesNoticeDeviceTest#liveMultipliersMatchEveryPositionAndUpdateDuringNativeDragBeforeRelease']
+          images=['alpha-roster-'+name+'.png' for name in ['warrior','mage','rogue','huntress','duelist','cleric']] if api==34 else [
+              'custom-scoring-vision.png','custom-scoring-vision-narrow.png','daily-earned-score.png','daily-earned-score-scrolled.png','custom-rules-touch-gestures.png','custom-score-neutral.png','custom-score-pending.png','custom-score-unknown.png','custom-score-narrow-before.png','custom-score-narrow.png','custom-rules-live-drag.png','custom-rules-live-summary.png']
+          with open(os.environ['GITHUB_ENV'],'a') as target:
+              target.write('APD_DEVICE_METHODS='+','.join(methods)+'\n')
+              target.write('APD_EXPECTED_METHODS='+str(len(methods))+'\n')
+          import json,pathlib
+          pathlib.Path('expected-screenshots.json').write_text(json.dumps(images))
+          PY
+      - name: Exercise the reused APK on Android
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ matrix.api }}
+          arch: x86_64
+          target: ${{ matrix.api == 36 && 'google_apis' || 'default' }}
+          disable-animations: true
+          script: |
+            test "$(adb shell getprop ro.kernel.qemu | tr -d '\r')" = "1"
+            adb install -r verified-test252.apk
+            adb install -r android/build/outputs/apk/androidTest/debug/android-debug-androidTest.apk
+            if [ "$APD_ACCEPTANCE_API" = "36" ]; then adb shell wm size 540x960; adb shell wm density 240; else adb shell wm size 320x640; adb shell wm density 160; fi
+            adb shell settings put secure immersive_mode_confirmations confirmed
+            adb logcat -c
+            timeout 1200 adb shell am instrument -w -r -e class "$APD_DEVICE_METHODS" com.charltonchris29.adhdpixeldungeon.indev.test/androidx.test.runner.AndroidJUnitRunner > instrumentation.txt 2>&1
+            adb logcat -d -v time > acceptance-logcat.txt
+            mkdir -p acceptance-screenshots
+            python3 -c "import json,pathlib,subprocess; [subprocess.run(['adb','pull','/sdcard/Pictures/APD-Test-Visuals/'+name,'acceptance-screenshots/'+name],check=True) for name in json.loads(pathlib.Path('expected-screenshots.json').read_text())]"
+      - name: Validate actual instrumentation and screenshot evidence
+        run: |
+          python3 - <<'PY'
+          import json,os,pathlib,re,struct,subprocess
+          count=int(os.environ['APD_EXPECTED_METHODS']);api=int(os.environ['APD_ACCEPTANCE_API']);text=pathlib.Path('instrumentation.txt').read_text()
+          print(text)
+          assert re.search(r'OK \('+str(count)+r' tests?\)',text),text
+          assert not any(s in text for s in ('FAILURES!!!','INSTRUMENTATION_FAILED','Process crashed.'))
+          names=json.loads(pathlib.Path('expected-screenshots.json').read_text());images={}
+          for name in names:
+              p=pathlib.Path('acceptance-screenshots')/name;data=p.read_bytes();assert data[:8]==b'\x89PNG\r\n\x1a\n';width,height=struct.unpack('>II',data[16:24]);assert width>0 and height>0;images[name]=[width,height]
+          assert len(images)==(6 if api==34 else 12)
+          pathlib.Path('device-acceptance-result.json').write_text(json.dumps({'api_level':api,'instrumented_methods':count,'failures':0,'errors':0,'skipped':0,'application_reused':'TEST252','application_rebuilt':False,'physical_device':False,'images':images,'six_classes_save_continue':api==34,'android16_targeted_checks':api==36,'does_not_establish_complete_human_playthroughs':True},indent=2))
+          PY
+      - name: Retain successful and unsuccessful acceptance evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: apd-final-alpha-api${{ matrix.api }}
+          path: |
+            acceptance-source.json
+            headless-acceptance-result.json
+            device-acceptance-result.json
+            instrumentation.txt
+            acceptance-logcat.txt
+            acceptance-screenshots/
+            core/build/test-results/test/
+          if-no-files-found: warn
+          retention-days: 7

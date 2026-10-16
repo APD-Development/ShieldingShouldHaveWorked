@@ -219,8 +219,10 @@ public class EarlyAlphaRosterDeviceTest {
                     assertEquals(CustomRuleMultipliers.VERSION, Dungeon.customScoring().calculationVersion);
                     assertEquals(expectedMultiplier, Dungeon.customScoring().multiplierExact);
                     assertEquals(savedHealth[0], Dungeon.hero.HP);
-                    Game.switchScene(TitleScene.class);
                 });
+                Thread.sleep(400);
+                TopScoresDeviceTest.screenshot("alpha-roster-"+heroClass.name().toLowerCase(java.util.Locale.ROOT)+".png");
+                onRender(() -> Game.switchScene(TitleScene.class));
                 waitUntil(heroClass + " cleanup title", () -> Game.scene() instanceof TitleScene, 30000);
                 onRender(EarlyAlphaRosterDeviceTest::deleteDisposableSlot);
                 completed++;
