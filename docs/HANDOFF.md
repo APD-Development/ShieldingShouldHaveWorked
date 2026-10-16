@@ -1,3 +1,28 @@
+## Verified owner delivery — TEST254 — 2026-10-16 19:49:53 UTC
+
+Owner links were sent in chat between 19:48:42 and 19:49:11 UTC (3:48–3:49 p.m. EDT), before the 4 p.m. deadline. This is not a claim that all approved backlog work is finished.
+
+- APK: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-alpha-preview-254/ADHD-Pixel-Dungeon-Alpha-Preview-254.apk
+- Current report: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-alpha-preview-254/APD-Alpha-Preview-254.pdf
+- Exact application source: `832c1a5679a8cd216e8c57638f1bc0fe2442fdfe`; SHA-256 `131d205b17a2c118abd794cf49631c21b52166cb3b4586fb2545cbbab3e53a72`. App ID, certificate and version compatibility were rechecked against retained TEST250. Install over APD; never uninstall or clear data.
+- Published 19:47:02Z. Actual published APK download rehashed 19:48:38.800460Z; published PDF/receipt/status downloaded and checked too. Receipt workflow 38957537766 succeeded. Tag targets publication wrapper 51bdf6b18b1abb3c861ee80186f67def72e17df5; the APK independently retains source 832c1a. No application rebuild during publication.
+- Primary source build 38949555542: 1,736 unique core tests and 36 Android14 methods, no failures/errors/skips; 49 images reviewed. Six-class save/continue adds one method; Android16 selected eight methods plus final two native methods passed. Across accepted runs: 37 distinct Android methods, 47 executions, 71 reviewed images. Repeats and the 2,400 boss parameter cases are not counted as new methods. Ten existing Python delivery-profile tests passed separately.
+- Final native run 38956379747 passed both methods and all three required images. Reviewed held-finger preview shows Enemy HP350%=1.7062× and Combined1.7062× before release. Actual pager/play/save/continue/end passed; HUD message baseline clears raised pager.
+
+### Changes since delivered TEST250
+TEST251: optional native scoring-vision popup, separate from slider controls. TEST252: daily calendar uses frozen earned long scores rather than displaying original scores (reproduced133 vs266), preserving historical original integer data; unknown old earned scores are not fabricated. TEST253: narrow 135-logical-pixel quickslot pager moved above overflowing row; rejected after manual review found message overlap. TEST254: reserve message placement above raised pager and refresh on toolbar layout changes. Seven production files changed; all357 provisional lookup values, ordinary multiplication, original SPD/challenge calculations, slider gameplay and RNG remain unchanged.
+
+### Failures and limits retained
+Android16 attempts passed7/8,8/8,7/8,0/1,1/2,1/2, then2/2; together with primary36 and roster1, 68 executions=63passes+5failures. The System UI ANR and wrong-window input rejection are photographed/logged; Google Play services ANRs do not prove the exact pager root cause. The resource-isolated emulator disables only its failing Google Play services and stops the unused Gradle daemon; it does not hide System UI or alter APD. The preview test's destroyed-window NPE was fixed by requiring a new settled Title before attaching that fixture. Canceled superseded run38956301873 never reached application tests. Original failures are preserved in the PDF and supplemental archive; none is relabeled passed.
+
+Initial report publication38956652301 failed with HTTP403 on release creation targeting a historical commit. Using the authorized workflow's current commit for its report tag succeeded38957117731; actual APK provenance remains explicit. TEST254 publication38957334439 uploaded all nine assets, then its stale target guard failed because it expected application source instead of wrapper. Corrected receipt38957537766 verified the exact existing tag, actual signed APK, PDF and evidence without replacing any assets. No permission was requested or bypassed.
+
+No physical phone was attached. Owner-save install-over, full human boss/class strategies, broader UIMSD audit/storage research, actual armor-playthrough reproduction, inherited audio investigation and unverified historical build gaps remain open. This package does not establish that every approved task is complete. TEST250 and231 fallback assets remain intact; earlier pending afternoon PDF remains an honest timestamped snapshot, superseded by the current TEST254 report.
+
+Four existing APD automations were resumed with their schedules preserved; hourly instructions now preserve active357-value v2.6R scoring and actual current receipts. The API confirms enabled but returns null next_run_time; no future execution or exact-time delivery is claimed from that metadata. Scoring-review and unrelated automations were left untouched.
+
+Machine-readable owner receipt: `docs/APD-OWNER-AFTERNOON-DELIVERY-2026-10-16.json`. Next developer: read this record and latest real branch before work. Reuse TEST254 when no application source changes exist; next compiled APK history compares actual TEST254 source832c1a/run38949555542, including reviewed post-build test/tool changes. Preserve frozen run scores/settings and player raw history.
+
 ## 2026-10-15T10:47:30Z — TEST204 pre-gate movement boundary correction
 - Review before CI found that an entry hook could count a same-cell self-trample or an immediately blocked route as a movement command.
 - Moved recording to the first successful `getCloser` step. Failed/same-cell actions emit nothing; a multi-step route still emits exactly once through its transient action-local guard.
