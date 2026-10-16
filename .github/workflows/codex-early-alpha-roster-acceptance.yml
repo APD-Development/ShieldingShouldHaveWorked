@@ -47,9 +47,14 @@ jobs:
                      'gradle']
           differences=subprocess.check_output(['git','diff','--name-only',source,'HEAD','--']+protected,text=True)
           pathlib.Path('acceptance-protected-differences.txt').write_text(differences)
-          # Compile the fallback test package against exact TEST241 even when the
-          # live branch contains a newer application candidate.
-          subprocess.run(['git','checkout',source,'--']+protected,check=True)
+          # Detach the disposable checkout at exact TEST241 so files added by a
+          # newer application candidate cannot leak into compilation. Restore
+          # only this acceptance test; androidTest is outside protected inputs.
+          test_path='android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/EarlyAlphaRosterDeviceTest.java'
+          test_source=pathlib.Path(test_path).read_bytes()
+          subprocess.run(['git','checkout','--detach',source],check=True)
+          pathlib.Path(test_path).parent.mkdir(parents=True,exist_ok=True)
+          pathlib.Path(test_path).write_bytes(test_source)
           subprocess.run(['git','diff','--exit-code',source,'--']+protected,check=True)
           with open('verified-test241.zip','wb') as output:
               subprocess.run(['gh','api','repos/'+repo+'/actions/artifacts/'+artifact_id+'/zip'],
