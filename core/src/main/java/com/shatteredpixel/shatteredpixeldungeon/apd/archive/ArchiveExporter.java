@@ -105,6 +105,7 @@ public final class ArchiveExporter {
 		boolean imported;
 		String runId = "";
 		long created;
+		int segment;
 		boolean ended;
 		boolean sealed;
 		long events;
@@ -134,7 +135,8 @@ public final class ArchiveExporter {
 			for (LogInfo l : logs){
 				if (l.imported || !l.readable) continue;
 				LogInfo n = newest.get(l.runId);
-				if (n == null || l.created > n.created) newest.put(l.runId, l);
+				// Match DatasetStore: the run-start segment breaks same-millisecond ties.
+				if (n == null || l.created > n.created || (l.created == n.created && l.segment > n.segment)) newest.put(l.runId, l);
 			}
 			List<Plan> plans = new ArrayList<>();
 			for (LogInfo l : logs){
@@ -290,7 +292,9 @@ public final class ArchiveExporter {
 						if (e.type == EventTypes.RUN_START && !started){
 							started = true;
 							try {
-								String started0 = LifecycleEvents.decodeRunStart(e, r).runId;
+								LifecycleEvents.RunStart runStart = LifecycleEvents.decodeRunStart(e, r);
+								String started0 = runStart.runId;
+								l.segment = runStart.segment;
 								if (started0 != null && started0.length() > 0) l.runId = started0;
 							} catch (RuntimeException ignored){
 							}

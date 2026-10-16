@@ -49,6 +49,8 @@ public final class EventTypes {
 	public static final int GAP_RECOVERED_TAIL = 2;  //amount = bytes of damaged tail cut off when the log was reopened
 	public static final int GAP_WRITER_FAILED = 3;   //amount = events lost after the writer failed
 	public static final int GAP_RECORDING_BEHIND_SAVE = 4; //the game save is further on than the log, amount = game turns missing
+	//A redacted export omitted suspect/unreadable source content. Amount is 0: the lost event count is unknown.
+	public static final int GAP_REDACTED_INCOMPLETE = 5;
 
 	//---- run lifecycle events (telemetry 1.1), payloads are defined and tested in LifecycleEvents ----
 	public static final int RUN_START = 256;

@@ -63,6 +63,61 @@
       "paths": [
         ".github/workflows/codex-publish-alpha-preview.yml"
       ]
+    },
+    {
+      "category": "Statistics / UIMSD",
+      "sprite": "ICON_COPY",
+      "title": "Shared run segment ordering",
+      "text": "Choose the latest save segment consistently so quickly resumed unfinished runs stay private and completed histories export losslessly.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/archive/ArchiveExporter.java",
+        "core/src/main/assets/apd/releases/apd-alpha-preview.tsv"
+      ]
+    },
+    {
+      "category": "Statistics / UIMSD",
+      "sprite": "ICON_WARNING",
+      "title": "Incomplete export provenance",
+      "text": "Keep incomplete-data warnings in redacted exports when source history is damaged or a public event is unreadable.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/archive/LogRedactor.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/EventTypes.java",
+        "core/src/main/assets/apd/releases/apd-alpha-preview.tsv"
+      ]
+    },
+    {
+      "category": "Testing",
+      "sprite": "ICON_CHECKED",
+      "title": "Permanent export integrity regressions",
+      "text": "Retain exact-original failure controls, corrected archive integration checks, privacy protections and unchanged source-history assertions.",
+      "paths": [
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/archive/ArchiveSegmentOrderingTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/archive/RedactedDamageProvenanceTest.java",
+        ".github/workflows/codex-archive-export-acceptance.yml"
+      ]
+    },
+    {
+      "category": "Testing",
+      "sprite": "ICON_CHECKED",
+      "title": "Keep native history navigation in full gates",
+      "text": "Exercise version selection and Android Back on every subsequent full Android gate, using the actual build index and retaining both navigation screenshots.",
+      "paths": [
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/ReleaseNotesNavigationDeviceTest.java",
+        "tools/run-codex-android-checks.sh"
+      ]
+    },
+    {
+      "category": "Development",
+      "sprite": "ICON_INFO",
+      "title": "Record recovered export reliability work",
+      "text": "Preserve original-source reproduction evidence and distinguish pending verification, published owner builds and untested physical-device acceptance.",
+      "paths": [
+        "docs/APD-ARCHIVE-RELIABILITY-2026-10-15.md",
+        "docs/HANDOFF.md",
+        "docs/WORK-COMPLETED-LEDGER.md",
+        "docs/APD-NEXT-BUILD-HISTORY.json"
+      ]
     }
-  ]
+  ],
+  "commentary": "I corrected export handling for quickly resumed and incomplete histories while preserving original files. The release notes and native navigation checks retain the same APD presentation."
 }

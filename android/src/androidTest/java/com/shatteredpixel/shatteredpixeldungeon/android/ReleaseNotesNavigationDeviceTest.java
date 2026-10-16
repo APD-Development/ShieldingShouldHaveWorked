@@ -9,6 +9,9 @@ import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.badlogic.gdx.Gdx;
+import com.shatteredpixel.shatteredpixeldungeon.apd.history.ApdHistory;
+import com.shatteredpixel.shatteredpixeldungeon.apd.history.ApdReleaseNotes;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.AboutScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.APDTextScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -85,6 +88,8 @@ public class ReleaseNotesNavigationDeviceTest {
         try(ActivityScenario<AndroidLauncher> scenario=ActivityScenario.launch(AndroidLauncher.class)) {
             long ready=System.currentTimeMillis()+90000;while((Game.scene()==null||PixelScene.uiCamera==null)&&System.currentTimeMillis()<ready)Thread.sleep(100);
             assertNotNull(Game.scene());Thread.sleep(1500);
+            final ApdHistory.Build latest=ApdHistory.builds(Gdx.files.internal("apd/history/index.tsv").readString("UTF-8")).get(0);
+            final String technicalLabel=ApdReleaseNotes.technicalLabel(latest);
             render(()->{try {
                 Field technical=APDTextScene.class.getDeclaredField("technicalHistory");technical.setAccessible(true);technical.setBoolean(null,false);
                 Field selected=APDTextScene.class.getDeclaredField("buildSelected");selected.setAccessible(true);selected.setInt(null,0);
@@ -93,7 +98,7 @@ public class ReleaseNotesNavigationDeviceTest {
             tap(scenario,"APD Changes");scene(APDTextScene.class);mode(false);
             tap(scenario,"Versions");screenshot("release-notes-navigation.png");
             tap(scenario,"Build records (technical)");scene(APDTextScene.class);mode(true);
-            render(()->{try {assertNotNull(labelled(Game.scene(),"APD Test 224"));assertNull(labelled(Game.scene(),"Codex TEST 224"));}catch(Exception e){throw new RuntimeException(e);}});
+            render(()->{try {assertNotNull(labelled(Game.scene(),technicalLabel));if(!latest.label.equals(technicalLabel))assertNull(labelled(Game.scene(),latest.label));}catch(Exception e){throw new RuntimeException(e);}});
             tap(scenario,"Versions");tap(scenario,"Release notes");scene(APDTextScene.class);mode(false);
             tap(scenario,"Versions");tap(scenario,"Choose version");
             tap(scenario,"APD Alpha Preview - APD Alpha Preview");tap(scenario,"APD Alpha Preview");scene(APDTextScene.class);mode(false);noWindows();
@@ -101,7 +106,7 @@ public class ReleaseNotesNavigationDeviceTest {
             tap(scenario,"Versions");tap(scenario,"Build records (technical)");scene(APDTextScene.class);mode(true);
             back();scene(AboutScene.class);noWindows();mode(false);
             tap(scenario,"APD Changes");scene(APDTextScene.class);mode(false);
-            render(()->{try {assertNotNull(labelled(Game.scene(),"APD Alpha Preview"));assertNull(labelled(Game.scene(),"APD Test 224"));}catch(Exception e){throw new RuntimeException(e);}});
+            render(()->{try {assertNotNull(labelled(Game.scene(),"APD Alpha Preview"));assertNull(labelled(Game.scene(),technicalLabel));}catch(Exception e){throw new RuntimeException(e);}});
             screenshot("release-notes-reopened.png");back();scene(AboutScene.class);
         }
     }

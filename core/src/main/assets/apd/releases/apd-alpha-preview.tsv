@@ -11,4 +11,6 @@ Quality of Life	ICON_PREFS	Healing conversion setting	The Healing-to-Shielding s
 Quality of Life	ICON_INFO	Adult Humor preference	The About screen and reviewed authored dialogue use clean alternatives when Adult Humor is off.
 Quality of Life	ICON_CHALLENGE_COLOR	Scoring notice	Custom Dungeon Rules are experimental and currently leave your earned score unchanged.
 Bug Fixes	ICON_ENTER	Saved entrance repair	Older affected first-floor saves can recover their entrance doorway without revealing unrelated secret doors.
+Statistics / UIMSD	ICON_COPY	Consistent shared histories	Quickly resumed runs now use the correct finished or unfinished state when deciding what their shared history can reveal.
+Statistics / UIMSD	ICON_WARNING	Incomplete export warnings	Exports of damaged or unreadable history retain an incomplete-data warning instead of presenting surviving statistics as complete.
 Developer Commentary	ICON_INFO	Developer Commentary	I'm bringing APD's statistics and difficulty customization together for the early-alpha preview. Custom scoring is still in development, and the current settings preserve original earned scores.
