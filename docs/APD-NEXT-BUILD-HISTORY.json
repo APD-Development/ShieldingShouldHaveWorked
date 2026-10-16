@@ -48,7 +48,21 @@
         "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/APD-QUERY-PAYLOAD-PROVENANCE-2026-10-15.md"
       ]
+    },
+    {
+      "category": "Development",
+      "sprite": "ICON_CHECKED",
+      "title": "Verify TEST228 and preserve later core evidence",
+      "text": "Record exact core, APK, Android, screenshot and identity evidence for TEST228 while keeping the newer typed-payload source and its core-only acceptance explicitly separate.",
+      "paths": [
+        "docs/APD-CODEX-BUILD-REQUEST.txt",
+        "docs/APD-NEXT-BUILD-HISTORY.json",
+        "docs/APD-TEST228-SAVED-COLUMN-LAYOUT-2026-10-15.md",
+        "docs/APD-QUERY-PAYLOAD-PROVENANCE-2026-10-15.md",
+        "docs/HANDOFF.md",
+        "docs/WORK-COMPLETED-LEDGER.md"
+      ]
     }
   ],
-  "commentary": "I kept the original history while making incomplete table counts explicit. Outdated derived rows can be rebuilt without deleting player data."
+  "commentary": "TEST228 is verified for saved-column compatibility. Newer typed-payload provenance changes passed exact reproduction and the complete core suite, but still require their own APK, Android and visual gate."
 }

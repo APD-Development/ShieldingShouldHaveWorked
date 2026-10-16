@@ -26,3 +26,11 @@ The next verification is core-only: reproduce the original failures on exact226 
 
 ## Remaining limits
 Physical-phone/owner-save acceptance and the entire UIMSD audit remain incomplete. This fixes provenance reporting, not every possible malformed-event semantic error or individual lost-event attribution. It introduces no gameplay, Custom Rules, scoring, lore-content, storage-compression or online-service change.
+
+
+## Exact core acceptance — 2026-10-16T01:40:03Z
+[Run 38835333283](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38835333283) completed successfully for exact source `f0b0691362f9ef9f4e753cbc12318a857a570238`.
+
+Downloaded artifact `12019320632` has ZIP SHA-256 `968eb92312eea1cfa8a1317288bfae45f0c887d02f634b18219ca6ea5f79713e`. Its original-source result records exact TEST226 source `a6e2f5e9aafb370ced629db01be300f6fab3f31e`, three methods, the two intended failures and one clean control, with original production unchanged. Independent corrected XML recount is 1,691 tests across 333 suites, 0 failures/errors/skips.
+
+This validates reproduction and the complete current core suite only. It assembled no APK, ran no Android tests, published nothing and supplies no signature, application-ID, screenshot or phone evidence. The next required application gate is 1,691 core/debug/complete immediate-previous TEST228 history/33 API34/42 PNG on the exact current descendant.
