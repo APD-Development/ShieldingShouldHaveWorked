@@ -1,17 +1,18 @@
 {
   "date": "2026-10-16",
-  "previous_source": "7f957d75614c48bbb7f98999bfecacfcc2aaede1",
-  "previous_run": 38852153894,
-  "previous_label": "Codex TEST 234",
+  "previous_source": "b4a589a4d712de29f7bc651a4cbbac002ceafd68",
+  "previous_run": 38857030793,
+  "previous_label": "Codex TEST 235",
   "changes": [
     {
       "category": "Development",
       "sprite": "ICON_CHECKED",
-      "title": "Record verified TEST234 evidence",
-      "text": "Retain the exact TEST234 targeted, core, Android, visual, APK, application-ID and signature evidence without rebuilding or publishing unchanged source.",
+      "title": "Record verified TEST235 evidence",
+      "text": "Retain the exact TEST235 targeted, core, Android, visual, APK, application-ID and signature evidence, including the rejected first Android capture and accepted rerun, without publishing unchanged source.",
       "paths": [
         "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/APD-TEST234-VERIFICATION-2026-10-16.json",
+        "docs/APD-MALFORMED-RUN-START-FACTS-2026-10-16.md",
+        "docs/APD-TEST235-VERIFICATION-2026-10-16.json",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md"
       ]
@@ -19,19 +20,20 @@
     {
       "category": "Statistics",
       "sprite": "ICON_WARNING",
-      "title": "Recover readable run-start facts",
-      "text": "A malformed typed first run-start no longer hides a later readable run identity, class, seed, difficulty or exact Custom Dungeon Rules snapshot from permanent UIMSD-derived facts.",
+      "title": "Recover archive run-start identity",
+      "text": "Archive export and import now use the first readable typed run start after malformed starts, preserving correct logical run identity and rejecting a header-only mismatch.",
       "paths": [
-        ".github/workflows/codex-malformed-run-start-facts-acceptance.yml",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/RunFactsBuilder.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/FactsDerivationTest.java",
+        ".github/workflows/codex-archive-run-start-recovery-acceptance.yml",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/archive/ArchiveExporter.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/archive/ArchiveImporter.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/archive/ArchiveRoundTripTest.java",
+        "docs/APD-ARCHIVE-RUN-START-RECOVERY-2026-10-16.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/APD-MALFORMED-RUN-START-FACTS-2026-10-16.md",
         "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md"
       ]
     }
   ],
-  "commentary": "TEST234 is the immediate previous produced APK and TEST231 remains the latest privately delivered fallback. The malformed run-start correction requires exact before/after core evidence and one complete TEST235 application gate; no automatic delivery."
+  "commentary": "TEST235 is the immediate previous produced APK and TEST231 remains the latest privately delivered fallback. The archive run-start correction requires exact before/after core evidence and one complete TEST236 application gate; no automatic delivery."
 }

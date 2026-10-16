@@ -2977,3 +2977,10 @@ Audited recorder resume bookkeeping after the TEST231 delivery. One malformed ca
 - Scope remains only malformed typed start recovery in derived facts. Raw histories, saves, original scores, gameplay, all 18 rules, turns, RNG, all 50 lore entries/private grudge/opt-out, signing configuration and application-ID configuration were not changed.
 - TEST235 is a CI-verified candidate only. No publication, tester distribution, physical-phone result or owner-device install-over/save acceptance occurred. TEST231 remains the latest privately delivered fallback. Broad UIMSD audit, audio and unconfirmed armor/sentry investigations remain open.
 - The next meaningful build manifest must include this evidence entry and `docs/APD-TEST235-VERIFICATION-2026-10-16.json`; do not rebuild unchanged TEST235 solely to record documentation.
+
+
+## 2026-10-16T06:43:14Z — archive run-start identity recovery candidate
+- Audited archive transfer after TEST235 and reproduced three failures: an unreadable first typed `RUN_START` hid a later readable logical run ID from export, caused a correctly labelled import to be rejected, and allowed a header-only manifest label that contradicted the later readable start.
+- The bounded correction makes exporter/importer claim the first start only after typed decoding succeeds. Raw log bytes remain untouched; the first readable start still resists later relabelling.
+- Three retained `ArchiveRoundTripTest` methods and an exact-TEST235 before/after workflow require all three old failures and 1,701 corrected core methods.
+- Full TEST236 gate remains required: debug assembly, complete immediate-previous produced TEST235 history (source `b4a589a4d712de29f7bc651a4cbbac002ceafd68`, run `38857030793`), 33 API34 methods and 42 valid screenshots. Candidate pending; no APK verification, publication, tester distribution, physical-phone result or owner install claim is made. TEST231 remains the delivered fallback and TEST235 the newest verified CI candidate.

@@ -285,9 +285,10 @@ public final class ArchiveImporter {
 			if (ev.type == com.shatteredpixel.shatteredpixeldungeon.apd.stats.EventTypes.RUN_START){
 				try {
 					startedRun = com.shatteredpixel.shatteredpixeldungeon.apd.stats.LifecycleEvents.decodeRunStart(ev, r).runId;
+					break;
 				} catch (RuntimeException ignored){
+					//Keep looking: archive identity follows the first readable typed start.
 				}
-				break;
 			}
 		}
 		boolean runMatches = !e.kind.equals(ArchiveManifest.KIND_RUN)

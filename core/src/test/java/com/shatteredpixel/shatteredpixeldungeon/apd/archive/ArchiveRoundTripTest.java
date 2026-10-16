@@ -378,4 +378,52 @@ public class ArchiveRoundTripTest {
 		assertEquals(5, r.runLogs);
 		assertEquals(1, r.importedFiles);
 	}
+
+
+	private File malformedThenReadableStart( File root, String logId, String runId ) throws Exception {
+		TestLogs log = new TestLogs(root, logId, V, 1000);
+		log.w.event(EventTypes.RUN_START).clock(log.clock++).emit();
+		log.start(runId, 0, "CLERIC", RS, 0, 0, false).enter(1);
+		log.end(LifecycleEvents.OUTCOME_DIED, "Rat", 1, 1, 1).close(true);
+		return log.file;
+	}
+
+	@Test
+	public void malformedFirstStartDoesNotHideReadableRunFromExportManifest() throws Exception {
+		File root = fresh("export-malformed-start");
+		File log = malformedThenReadableStart(root, "physical-log", "logical-run");
+		byte[] original = java.nio.file.Files.readAllBytes(log.toPath());
+		Map<String, byte[]> parts = entries(export(root));
+		ArchiveManifest manifest = ArchiveManifest.parse(parts.get(ArchiveManifest.ENTRY_NAME));
+		assertEquals("logical-run", manifest.find("runs/physical-log.apdlog").runId);
+		assertArrayEquals("a finished log still exports byte for byte", original, parts.get("runs/physical-log.apdlog"));
+	}
+
+	@Test
+	public void importUsesFirstReadableStartAfterMalformedStart() throws Exception {
+		File source = fresh("import-readable-source");
+		byte[] log = java.nio.file.Files.readAllBytes(
+				malformedThenReadableStart(source, "physical-log", "logical-run").toPath());
+		Map<String, byte[]> files = new java.util.LinkedHashMap<>();
+		files.put("runs/physical-log.apdlog", log);
+		ArchiveImporter.Report report = importInto(fresh("import-readable-target"),
+				archiveOf(files, java.util.Collections.singletonMap("runs/physical-log.apdlog", "logical-run")));
+		assertTrue(report.summary(), report.ok);
+		assertEquals(1, report.imported);
+	}
+
+	@Test
+	public void importRejectsManifestThatIgnoresLaterReadableStart() throws Exception {
+		File source = fresh("import-mismatch-source");
+		byte[] log = java.nio.file.Files.readAllBytes(
+				malformedThenReadableStart(source, "physical-log", "logical-run").toPath());
+		Map<String, byte[]> files = new java.util.LinkedHashMap<>();
+		files.put("runs/physical-log.apdlog", log);
+		File target = fresh("import-mismatch-target");
+		ArchiveImporter.Report report = importInto(target,
+				archiveOf(files, java.util.Collections.singletonMap("runs/physical-log.apdlog", "physical-log")));
+		assertFalse(report.summary(), report.ok);
+		assertEquals(1, report.rejected);
+		assertFalse(new File(target, "runs/physical-log.apdlog").exists());
+	}
 }
