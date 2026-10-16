@@ -19,7 +19,7 @@ jobs:
           import json,os,pathlib,subprocess,time
           repo=os.environ['GITHUB_REPOSITORY']
           def api(path):
-              return json.loads(subprocess.check_output(['gh','api',f'repos/{repo}/'+path]))
+              return json.loads(subprocess.check_output(['gh','api',f'repos/{repo}'+('/'+path if path else '')]))
           assert api('')['private']
           def cancel(run_id,source):
               run=api(f'actions/runs/{run_id}')
