@@ -1,46 +1,22 @@
 {
   "date": "2026-10-15",
-  "previous_source": "a6e2f5e9aafb370ced629db01be300f6fab3f31e",
-  "previous_run": 38827685570,
-  "previous_label": "Codex TEST 226",
+  "previous_source": "9e553d9378dbfeca4c588910162872278ac20e2d",
+  "previous_run": 38831758939,
+  "previous_label": "Codex TEST 227",
   "changes": [
     {
       "category": "Development",
-      "sprite": "ICON_CHANGES",
-      "title": "Verified owner preview preparation",
-      "text": "Reuse the verified archive-fix APK for source, signing, checksum, screenshot and PDF checks without rebuilding or distributing to testers.",
-      "paths": [
-        ".github/workflows/codex-alpha-preview-stage.yml",
-        ".github/workflows/codex-publish-alpha-preview.yml",
-        "docs/APD-EARLY-ALPHA-ACCEPTANCE-2026-10-16.md"
-      ]
-    },
-    {
-      "category": "Development",
       "sprite": "ICON_INFO",
-      "title": "Preserve verification and delivery evidence",
-      "text": "Record exact test results, artifacts, compatibility checks and honest remaining phone and audit limitations.",
+      "title": "Preserve TEST227 verification and remaining acceptance limits",
+      "text": "Record independently recounted core, APK, Android and visual evidence without rebuilding, publishing or claiming physical-phone acceptance.",
       "paths": [
-        "docs/HANDOFF.md",
-        "docs/WORK-COMPLETED-LEDGER.md",
-        "docs/KNOWN-ISSUES-AND-SOURCE-GUIDE.md",
-        "docs/APD-NEXT-BUILD-HISTORY.json",
-        "docs/APD-ARCHIVE-RELIABILITY-2026-10-15.md",
-        "docs/APD-TEST226-VERIFICATION-2026-10-15.json"
-      ]
-    },
-    {
-      "category": "Bug Fixes",
-      "sprite": "ICON_WARNING",
-      "title": "Preserve the private Cleric collection ledger after damaged storage",
-      "text": "Read intact rows from a damaged local ledger for continuity, but make automatic persistence fail closed so unknown original bytes and filesystem directories are never deleted. An explicit player reset remains the only recovery action allowed to replace damaged ledger contents.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/humor/Ledger.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/humor/LedgerTest.java",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/APD-TEST227-CLERIC-LEDGER-PRESERVATION-2026-10-15.md"
+        "docs/APD-NEXT-BUILD-HISTORY.json",
+        "docs/APD-TEST227-CLERIC-LEDGER-PRESERVATION-2026-10-15.md",
+        "docs/HANDOFF.md",
+        "docs/WORK-COMPLETED-LEDGER.md"
       ]
     }
   ],
-  "commentary": "I preserved every previously reviewed TEST226 delivery path and added a fail-closed correction for the private Cleric collection ledger. The fix does not alter saves, run history, gameplay, scores, RNG, rules, lore content or player opt-out settings."
+  "commentary": "TEST227 is a verified CI candidate for the fail-closed private Cleric collection ledger correction. TEST226 remains the latest privately delivered APK; physical-device and broader acceptance work remains open."
 }
