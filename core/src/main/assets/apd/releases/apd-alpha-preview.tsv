@@ -19,3 +19,4 @@ Developer Commentary	ICON_INFO	Developer Commentary	I'm bringing APD's statistic
 Gameplay	ICON_CHALLENGE_COLOR	Provisional custom scoring	New runs use the selected Custom Rules multipliers, with original scores preserved separately.
 Quality of Life	ICON_CHALLENGE_COLOR	Live score previews	Every difficulty slider shows its multiplier, and the combined multiplier updates while you drag.
 Statistics / UIMSD	ICON_STATS	Unreadable score records	Invalid adjusted scores remain unknown without preventing access to the original run history.
+Quality of Life	ICON_INFO	My scoring plans	Read an optional explanation of future scoring ideas, separate from the unchanged provisional slider multipliers.

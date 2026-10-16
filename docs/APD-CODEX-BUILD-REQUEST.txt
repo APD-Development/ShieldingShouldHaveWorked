@@ -381,3 +381,6 @@ TEST247 SUPERSEDED WITH ACTUAL PRODUCED PREDECESSOR (2026-10-16T14:18:24Z): exac
 
 
 Next uniquely numbered test: informational class-specific-scoring notice only. Compare against actual TEST249 source37a8f6d16cd497e13ed581e887ed9d4858fe97aa/run38914965700. Require1729core/debug/history/34API34/44valid screenshots and inspect warning/slider layout. Eight existing lookup/scoring regressions pass locally; all357 values unchanged. Preserve verified249 lunch artifacts and published231 fallback; failed/pending new candidate must not delay11:55PDF/noonAPK. No early publication or class-specific scoring implementation.
+
+
+Owner resumed work toward4pmEDT: next uniquely numbered APK contains optional native scoring-vision popup only, no multiplier/gameplay changes. Compare actual preceding TEST250 sourceadb1bcdd420ff5639f4a65d2d9b456b0cfe08474/run38924547882; require1729core/debug/history/35API34/46validPNG including normal/narrow popup and AndroidBack/draft preservation. Eight multiplier regressions pass locally;357values unchanged. Preserve published250 fallback and player data. No automatic tester distribution.

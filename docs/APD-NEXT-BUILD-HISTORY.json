@@ -1,50 +1,48 @@
 {
   "date": "2026-10-16",
-  "previous_source": "37a8f6d16cd497e13ed581e887ed9d4858fe97aa",
-  "previous_run": 38914965700,
-  "previous_label": "Codex TEST 249",
+  "previous_source": "adb1bcdd420ff5639f4a65d2d9b456b0cfe08474",
+  "previous_run": 38924547882,
+  "previous_label": "Codex TEST 250",
   "changes": [
     {
-      "category": "Changes",
-      "sprite": "ICON_CHALLENGE_COLOR",
-      "title": "Future class scoring notice",
-      "text": "Custom Rules explains that all six classes share today's provisional multipliers and that class, subclass and crown-class scoring is only being explored.",
+      "category": "Quality of Life",
+      "sprite": "ICON_INFO",
+      "title": "Experimental scoring explained",
+      "text": "An optional scoring popup explains my plans for interacting rules and character progression without changing today's provisional multipliers.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomRulesPresentation.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomRulesPresentation.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndCustomDungeonRules.java",
+        "core/src/main/assets/apd/releases/apd-alpha-preview.tsv"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Verify six-class saved scoring",
-      "text": "Independent Android checks confirm all six classes keep their locked rules and provisional scoring when saving and continuing.",
+      "title": "Scoring information on small screens",
+      "text": "Android checks open and scroll the scoring explanation, then return with Back while preserving the selected rules and score.",
       "paths": [
-        ".github/workflows/codex-early-alpha-roster-acceptance.yml",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/EarlyAlphaRosterDeviceTest.java",
-        "docs/APD-EARLY-ALPHA-ROSTER-ACCEPTANCE-2026-10-16.md"
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java",
+        "tools/run-codex-android-checks.sh",
+        ".github/workflows/codex-alpha-preview-stage.yml"
       ]
     },
     {
       "category": "Infrastructure",
       "sprite": "ICON_INFO",
-      "title": "Prepare verified private downloads",
-      "text": "Private delivery preparation reuses verified APKs, records exact test evidence and preserves an install-compatible fallback.",
+      "title": "Verified lunch delivery records",
+      "text": "Private APK and report delivery records preserve exact source, checksums, signing checks and actual publication times.",
       "paths": [
-        ".github/workflows/codex-alpha-preview-stage.yml",
-        ".github/workflows/codex-stage-owner-scoring249.yml",
+        ".github/workflows/codex-lunch-apk-2026-10-16.yml",
+        ".github/workflows/codex-lunch-pdf-2026-10-16.yml",
         "docs/APD-ALPHA-PREPARATION.json",
-        "docs/APD-EARLY-ALPHA-ACCEPTANCE-2026-10-16.md",
-        "docs/APD-LUNCH-DELIVERY-2026-10-16.json",
-        "docs/APD-LUNCH-PREPARATION-2026-10-16.md",
-        "docs/APD-PROVISIONAL-SCORING-IMPLEMENTATION-2026-10-16.md",
-        "docs/APD-TEST249-VERIFICATION-2026-10-16.json",
+        "docs/APD-LUNCH-APK-DELIVERY-2026-10-16.json",
+        "docs/APD-TEST250-VERIFICATION-2026-10-16.json",
         "docs/HANDOFF.md",
-        "docs/WORK-COMPLETED-LEDGER.md",
         "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/APD-CLASS-SCORING-NOTICE-2026-10-16.md"
+        "docs/APD-SCORING-VISION-2026-10-16.md"
       ]
     }
   ],
-  "commentary": "I added a short explanation of possible future class-specific scoring. All six classes still use the same existing provisional lookup values; no class-specific calculation, multiplier or gameplay rule changed."
+  "commentary": "I moved the longer scoring explanation into an optional native popup so it stays separate from the controls. The current357 provisional values and scoring calculation are unchanged; future interaction-aware and character-specific scoring are ideas, not promised features."
 }

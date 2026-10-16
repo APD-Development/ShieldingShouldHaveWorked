@@ -38,6 +38,13 @@ public class WndCustomDungeonRules extends Window {
         scoringNotice=PixelScene.renderTextBlock(CustomRulesPresentation.noticeText(),6);
         scoringNotice.maxWidth(width);scoringNotice.setPos(0,0);content.add(scoringNotice);
         float y=scoringNotice.bottom()+4;
+        RedButton scoringInfo=new RedButton(CustomRulesPresentation.SCORING_INFO_BUTTON,6) {
+            @Override protected void onClick() {
+                com.watabou.noosa.Game.scene().addToFront(new WndUimsdText(
+                        CustomRulesPresentation.SCORING_INFO_TITLE,CustomRulesPresentation.SCORING_VISION));
+            }
+        };
+        scoringInfo.setRect(0,y,width,18);content.add(scoringInfo);y=scoringInfo.bottom()+4;
         if(draft==null) {
             RenderedTextBlock unknown=PixelScene.renderTextBlock("This run's custom settings were not recorded.",6);
             unknown.maxWidth(width);unknown.setPos(0,y);content.add(unknown);y=unknown.bottom()+4;

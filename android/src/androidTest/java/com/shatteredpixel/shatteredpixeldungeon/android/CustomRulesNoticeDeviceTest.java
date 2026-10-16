@@ -63,6 +63,50 @@ public class CustomRulesNoticeDeviceTest {
         try(java.io.OutputStream out=context.getContentResolver().openOutputStream(uri)) {assertNotNull(out);assertTrue(bitmap.compress(Bitmap.CompressFormat.PNG,100,out));}
         finally{bitmap.recycle();}
     }
+    @Test public void scoringVisionPopupOpensScrollsAndBackPreservesDraftOnSmallScreens()throws Exception {
+        try(ActivityScenario<AndroidLauncher> scenario=ActivityScenario.launch(AndroidLauncher.class)) {
+            long deadline=System.currentTimeMillis()+120000;
+            while((Game.scene()==null||PixelScene.uiCamera==null)&&System.currentTimeMillis()<deadline)Thread.sleep(200);
+            assertNotNull(Game.scene());Thread.sleep(1500);
+            CustomDungeonRules saved=SPDSettings.apdCustomRules();final int[] dimensions=new int[2];
+            final WndCustomDungeonRules[] window=new WndCustomDungeonRules[1];
+            final com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdText[] popup=new com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdText[1];
+            final AtomicReference<Point> touch=new AtomicReference<>();
+            final Object[] draft=new Object[1];final int[] score=new int[1];
+            render(()->{dimensions[0]=PixelScene.uiCamera.width;dimensions[1]=PixelScene.uiCamera.height;score[0]=com.shatteredpixel.shatteredpixeldungeon.Statistics.totalScore;SPDSettings.apdCustomRules(CustomDungeonRules.defaults());});
+            try {
+                for(int variant=0;variant<2;variant++) {
+                    final boolean narrow=variant==1;
+                    render(()->{try {
+                        if(narrow){PixelScene.uiCamera.width=102;PixelScene.uiCamera.height=160;}
+                        window[0]=new WndCustomDungeonRules();Game.scene().addToFront(window[0]);
+                        draft[0]=field(window[0],"draft");
+                        RedButton button=null;for(RedButton candidate:find(window[0],RedButton.class))if(candidate.text().equals(CustomRulesPresentation.SCORING_INFO_BUTTON))button=candidate;
+                        assertNotNull(button);
+                        ScrollPane scroll=(ScrollPane)field(window[0],"scroll");scroll.scrollTo(0,Math.max(0,button.top()-4));
+                        touch.set(button.camera().cameraToScreen(button.left()+button.width()/2,button.top()+button.height()/2));
+                    }catch(Exception e){throw new RuntimeException(e);}});
+                    tap(touch.get());
+                    render(()->{try {
+                        List<com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdText> popups=find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdText.class);
+                        assertEquals(1,popups.size());popup[0]=popups.get(0);
+                        assertEquals(CustomRulesPresentation.SCORING_VISION,field(popup[0],"savedText"));
+                        assertEquals(CustomRulesPresentation.SCORING_INFO_TITLE,field(popup[0],"savedTitle"));
+                        assertSame(draft[0],field(window[0],"draft"));assertEquals(18,find(window[0],OptionSlider.class).size());
+                        if(narrow){ScrollPane pane=(ScrollPane)field(popup[0],"pane");pane.scrollTo(0,Float.MAX_VALUE);assertTrue(pane.content().camera.scroll.y>0);assertTrue(pane.content().height()<=pane.content().camera.scroll.y+pane.height()+1);}
+                    }catch(Exception e){throw new RuntimeException(e);}});
+                    Thread.sleep(500);screenshot(narrow?"custom-scoring-vision-narrow.png":"custom-scoring-vision.png");
+                    InstrumentationRegistry.getInstrumentation().sendKeyDownUpSync(android.view.KeyEvent.KEYCODE_BACK);Thread.sleep(600);
+                    render(()->{try {
+                        assertTrue(find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdText.class).isEmpty());popup[0]=null;
+                        assertTrue(window[0].exists);assertSame(draft[0],field(window[0],"draft"));
+                        assertTrue(SPDSettings.apdCustomRules().isNeutral());assertEquals(score[0],com.shatteredpixel.shatteredpixeldungeon.Statistics.totalScore);
+                        window[0].hide();window[0]=null;
+                    }catch(Exception e){throw new RuntimeException(e);}});
+                }
+            } finally {render(()->{if(popup[0]!=null)popup[0].hide();if(window[0]!=null)window[0].hide();PixelScene.uiCamera.width=dimensions[0];PixelScene.uiCamera.height=dimensions[1];SPDSettings.apdCustomRules(saved);});}
+        }
+    }
     @Test public void noticeStaysAboveUsableControlsAndDoesNotChangeLockedRunOrScores()throws Exception {
         try(ActivityScenario<AndroidLauncher> scenario=ActivityScenario.launch(AndroidLauncher.class)) {
             long deadline=System.currentTimeMillis()+120000;
