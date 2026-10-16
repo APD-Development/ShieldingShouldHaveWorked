@@ -1376,3 +1376,11 @@ Audited recorder resume bookkeeping after the TEST231 delivery. One malformed ca
 - The bounded correction claims typed run identity only after the existing valid-run-ID check succeeds. It leaves raw log bytes, event order, finished-state handling and valid archives unchanged.
 - Two retained `ArchiveRoundTripTest` methods and an exact-TEST237 before/after workflow require both old failures and 1,705 corrected core methods.
 - Full TEST238 gate remains required: debug assembly, complete immediate-previous produced TEST237 history (source `8f9b6bf9e7a8f56b6b46c3b713f3c49f47a3f17f`, run `38868120835`), 33 API34 methods and 42 valid screenshots. Candidate pending; no APK verification, publication, tester distribution, physical-phone result or owner install claim is made. TEST231 remains the delivered fallback and TEST237 the newest verified CI candidate.
+
+
+## 2026-10-16T08:51:20Z — TEST238 verified archive empty run-identity recovery
+- Exact source `d39de932c69c23bcb013a8ee86df930718ad39c8` passed full run [38874923900](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38874923900): 1,705 core methods in 335 suites, debug assembly, complete immediate-previous produced TEST237 history, 33 API34 emulator methods and 42 valid 320×640 screenshots, with zero failures/errors/skips.
+- Dedicated run [38874924003](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38874924003) reproduced exactly the two intended empty-run-ID failures on exact TEST237 source `8f9b6bf9e7a8f56b6b46c3b713f3c49f47a3f17f`, then passed the corrected 1,705-method suite.
+- APK: 38,588,580 bytes; SHA-256 `e0d657026c7889806b669e9032ed0b6b7992b081756baefb48820d36ef1c9025`; `.indev` app ID and v2 certificate `067688b3ab6bd5820a67f4c1ba7d5859db578173771cf31d3252b3e4e012246e` match TEST237.
+- Independent artifact recount, app-crash scan and complete 42-image contact-sheet review passed. Raw history, saves, scores, gameplay, all 18 rules, turns, RNG, 50 lore entries/private grudge/opt-out, signing and application ID remain preserved.
+- No publication, tester distribution, physical-phone result or owner install-over/save acceptance occurred. TEST231 remains the latest privately delivered fallback. Continue the broad UIMSD reliability audit; do not rebuild unchanged TEST238 solely for evidence documentation.
