@@ -3101,3 +3101,10 @@ At 2026-10-16T12:43:28.551Z, dedicated run38901726173 proved the copied test fai
 
 
 Rejected TEST242 attempt2 terminal evidence (2026-10-16T12:45:33.417Z): run38902077854 passed the corrected path-complete history comparison and history tooling, then failed core on the invalid synthetic numeric-IN method; all APK/Android/delivery work was skipped. Stage38902077124 failed at the changed-application-tree guard and skipped staging/report uploads. No APK exists from either attempt. Current application source remains byte-identical to TEST241.
+
+
+## 2026-10-16T13:36:47Z — early-alpha six-class Android acceptance candidate
+- Added an instrumentation-only gate that reuses the exact verified TEST241 APK and exercises start/save/continue for Warrior, Mage, Rogue, Huntress, Duelist and Cleric on API 34.
+- Every disposable run uses the same non-neutral 18-rule snapshot, difficulty 5 and all nine challenges; usable controls and exact locked identity are required before and after reload. Neutral next-run preferences are deliberately applied before continue to detect accidental overwrite.
+- The workflow also reruns existing combination, five-main-boss phase/provenance and boss-health headless acceptance. No application source changed and no new application APK is requested or eligible from this gate.
+- Remote result pending. TEST241 remains the verified application source; TEST231 remains the latest privately published fallback. Physical-phone/full-playthrough/audio/armor-report acceptance remain open.

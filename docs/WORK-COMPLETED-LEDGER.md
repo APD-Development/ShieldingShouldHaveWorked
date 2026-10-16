@@ -1447,3 +1447,9 @@ TEST242 attempt1 evidence: run38901726106 stopped before tests because the candi
 
 
 Rejected TEST242 terminal evidence (2026-10-16T12:45:33.417Z):38902077854 passed strict history/tool validation then failed core; APK/debug/history-compile/Android/delivery skipped.38902077124 failed its application-tree guard; staging/report uploads skipped. No APK produced or staged. Current app source equals TEST241.
+
+
+## 2026-10-16T13:36:47Z — Early-alpha roster acceptance gate prepared
+- Added `EarlyAlphaRosterDeviceTest` and a fail-closed workflow pinned to TEST241 source/run/artifact/checksum.
+- Authorized scope is test-only: six classes start/save/continue with 18 locked values, difficulty 5, nine challenges and usable controls; relevant boss/rule headless suites rerun.
+- No application-source change, APK rebuild candidate, publication, tester distribution or physical-device claim. Remote execution pending.

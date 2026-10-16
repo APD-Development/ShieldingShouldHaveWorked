@@ -31,7 +31,18 @@
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md"
       ]
+    },
+    {
+      "category": "Testing",
+      "sprite": "ICON_INFO",
+      "title": "Add early-alpha six-class Android acceptance",
+      "text": "Reuse verified TEST241 and require every shipped class to start, expose usable controls, save and continue with its exact locked 18-rule identity on API 34; no new application APK.",
+      "paths": [
+        ".github/workflows/codex-early-alpha-roster-acceptance.yml",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/EarlyAlphaRosterDeviceTest.java",
+        "docs/APD-EARLY-ALPHA-ROSTER-ACCEPTANCE-2026-10-16.md"
+      ]
     }
   ],
-  "commentary": "Application and test source are identical to verified TEST241. The TEST242 audit candidate was rejected because numeric IN is not a valid NUM operator. Attempts38901726106/38901726126 failed before tests/staging; dedicated38901726173 reproduced the synthetic baseline failure but retained1 failure in1717 corrected methods; attempt2 full38902077854 passed strict history/tooling then failed core, and stage38902077124 failed its changed-tree guard. No APK was produced or staged; do not rebuild unchanged source."
+  "commentary": "Application and test source are identical to verified TEST241. The TEST242 audit candidate was rejected because numeric IN is not a valid NUM operator. Attempts38901726106/38901726126 failed before tests/staging; dedicated38901726173 reproduced the synthetic baseline failure but retained1 failure in1717 corrected methods; attempt2 full38902077854 passed strict history/tooling then failed core, and stage38902077124 failed its changed-tree guard. No APK was produced or staged; do not rebuild unchanged source. A separate instrumentation-only early-alpha roster gate now reuses TEST241 for all-six-class start/save/continue acceptance; it does not rebuild or change the application."
 }
