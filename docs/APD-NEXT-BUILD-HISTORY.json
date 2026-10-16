@@ -1,48 +1,45 @@
 {
   "date": "2026-10-16",
-  "previous_source": "fa39ad824347a67624a93efbb4a3fb358c7477fe",
-  "previous_run": 38935813981,
-  "previous_label": "Codex TEST 252",
+  "previous_source": "6d9162f5946311728b1723a3b02d688072a8da79",
+  "previous_run": 38943900747,
+  "previous_label": "Codex TEST 253",
   "changes": [
     {
       "category": "Bug Fixes",
-      "sprite": "ICON_PREFS",
-      "title": "Narrow toolbar controls",
-      "text": "The quickslot page switch sits above the slots when the normal row would overlap Inventory on narrow screens.",
+      "sprite": "ICON_INFO",
+      "title": "Readable narrow-screen messages",
+      "text": "Dungeon messages stay above the quickslot page switch on narrow screens.",
       "paths": [
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/Toolbar.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/GameScene.java",
         "core/src/main/assets/apd/releases/apd-alpha-preview.tsv"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Native controls and boss progression",
-      "text": "Checks exercise narrow toolbar layouts and native paging, six-class save continuity, and Tengu and DM-300 phase and save behavior.",
+      "title": "Message and native-input checks",
+      "text": "Native layout checks include rendered messages; setup closes its own modal and waits for actual touch delivery before checking live previews.",
       "paths": [
         "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PlayRunDeviceTest.java",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomScoreDeviceTest.java",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/EarlyAlphaRosterDeviceTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/BossProgressionAcceptanceTest.java",
-        "tools/run-codex-android-checks.sh"
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java"
       ]
     },
     {
       "category": "Infrastructure",
       "sprite": "ICON_INFO",
-      "title": "Acceptance evidence and recovery",
-      "text": "Keep exact-source acceptance records, unsuccessful Android checks and compatible fallback evidence with the build.",
+      "title": "Keep verification failures traceable",
+      "text": "Keep exact APK provenance, unsuccessful native checks, corrected test results and compatible fallback evidence in the preparation records.",
       "paths": [
         ".github/workflows/codex-final-alpha-acceptance.yml",
-        ".github/workflows/codex-early-alpha-roster-acceptance.yml",
+        ".github/workflows/codex-stage-corrected253.yml",
         "docs/APD-ALPHA-PREPARATION.json",
         "docs/APD-NEXT-BUILD-HISTORY.json",
-        "docs/APD-FINAL-ALPHA-ACCEPTANCE-2026-10-16.md",
-        "docs/APD-TEST252-VERIFICATION-2026-10-16.json",
+        "docs/APD-NARROW-HUD-REGRESSION-2026-10-16.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/HANDOFF.md"
       ]
     }
   ],
-  "commentary": "I corrected a narrow-screen toolbar overlap found during additional Android acceptance. The current scoring multipliers, combat rules and saved-run data are unchanged."
+  "commentary": "Visual review caught the narrow page switch covering messages after the earlier control-overlap fix. I reserved message space above it and added checks for the rendered text; scoring and gameplay remain unchanged."
 }

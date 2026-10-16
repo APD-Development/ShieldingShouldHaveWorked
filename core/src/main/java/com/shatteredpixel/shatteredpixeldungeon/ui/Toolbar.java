@@ -671,8 +671,16 @@ public class Toolbar extends Component {
 
 	}
 
+    /** Message baseline above every visible toolbar control, including a raised pager. */
+    public float messageTop() {
+        return btnSwap.visible ? Math.min(top(), btnSwap.top()) : top();
+    }
+
 	public static void updateLayout(){
-		if (instance != null) instance.layout();
+        if (instance != null) {
+            instance.layout();
+            if (Game.scene() instanceof GameScene) GameScene.layoutTags();
+        }
 	}
 	
 	@Override

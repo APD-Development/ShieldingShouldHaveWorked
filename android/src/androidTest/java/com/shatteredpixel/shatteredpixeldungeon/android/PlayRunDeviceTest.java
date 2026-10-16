@@ -183,6 +183,13 @@ public class PlayRunDeviceTest {
                                 if(c.visible) controls.add(c);
                             }
                             com.watabou.noosa.ui.Component pager=(com.watabou.noosa.ui.Component)field(toolbar,"btnSwap");
+                            if(pager.visible && pager.top()<toolbar.top()) {
+                                com.watabou.noosa.ui.Component log=(com.watabou.noosa.ui.Component)field(Game.scene(),"log");
+                                assertTrue("Narrow pager must not cover message baseline",log.top()<=pager.top()-2+0.01f);
+                                for(Object entry:(java.util.List<?>)field(log,"members"))
+                                    if(entry instanceof com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock)
+                                        assertTrue("Narrow pager must not cover rendered messages",((com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock)entry).bottom()<=pager.top()-2+0.01f);
+                            }
                             for (int i=0;i<controls.size();i++) {
                                 com.watabou.noosa.ui.Component a=controls.get(i);
                                 String state="width="+width+" mode="+mode+" flipped="+flip+" page="+swapped;

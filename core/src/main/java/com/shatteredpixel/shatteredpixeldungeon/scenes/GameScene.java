@@ -1000,7 +1000,7 @@ public class GameScene extends PixelScene {
 
 		updateTags = false;
 
-		if (scene == null) return;
+		if (scene == null || scene.toolbar == null) return;
 
 		//move the camera center up a bit if we're on full UI and it is taking up lots of space
 		if (scene.inventory != null && scene.inventory.visible
@@ -1020,7 +1020,7 @@ public class GameScene extends PixelScene {
 		float tagWidth = Tag.SIZE + (tagsOnLeft ? insets.left : insets.right);
 		float tagLeft = tagsOnLeft ? 0 : uiCamera.width - tagWidth;
 
-		float y = SPDSettings.interfaceSize() == 0 ? scene.toolbar.top()-2 : scene.status.top()-2;
+		float y = SPDSettings.interfaceSize() == 0 ? scene.toolbar.messageTop()-2 : scene.status.top()-2;
 		if (SPDSettings.interfaceSize() == 0){
 			if (tagsOnLeft) {
 				scene.log.setRect(tagWidth, y, uiCamera.width - tagWidth - insets.right, 0);
