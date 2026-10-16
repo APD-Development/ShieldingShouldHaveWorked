@@ -55,7 +55,7 @@ public final class RowBuilders {
 
 	private RowBuilders(){}
 
-	public static final int BUILDER_VERSION = 15;
+	public static final int BUILDER_VERSION = 16;
 
 	private static final DatasetDef RUNS = Datasets.runs();
 	private static final DatasetDef ITEMS = Datasets.items();
@@ -506,7 +506,12 @@ public final class RowBuilders {
 					case EventTypes.ATTACK: {
 						CombatEvents.Attack a = CombatEvents.decodeAttack(e, r);
 						ApdEvent de = detailAfter(events, i, EventTypes.ATTACK_DETAIL);
-						CombatEvents.AttackDetail d = de == null ? null : CombatEvents.decodeAttackDetail(de, r);
+						CombatEvents.AttackDetail d = null;
+						try {
+							if (de != null) d = CombatEvents.decodeAttackDetail(de, r);
+						} catch (RuntimeException badDetail){
+							//The public attack is still readable; only its hidden identity detail was lost.
+						}
 						if (a.attacker.kind == CombatEvents.KIND_HERO && a.defender.kind == CombatEvents.KIND_ENEMY){
 							EnemyAcc x = enemy(enemies, a.defender.name, d == null ? "" : d.defenderClass, e.index);
 							x.attacksByHero++;
@@ -523,7 +528,12 @@ public final class RowBuilders {
 					case EventTypes.DAMAGE: {
 						CombatEvents.Damage dm = CombatEvents.decodeDamage(e, r);
 						ApdEvent de = detailAfter(events, i, EventTypes.DAMAGE_DETAIL);
-						CombatEvents.DamageDetail d = de == null ? null : CombatEvents.decodeDamageDetail(de, r);
+						CombatEvents.DamageDetail d = null;
+						try {
+							if (de != null) d = CombatEvents.decodeDamageDetail(de, r);
+						} catch (RuntimeException badDetail){
+							//Keep the readable public damage even when its hidden detail is malformed.
+						}
 						if (dm.target.kind == CombatEvents.KIND_HERO && dm.source.kind == CombatEvents.SRC_CHAR
 								&& dm.source.fighterKind == CombatEvents.KIND_ENEMY){
 							enemy(enemies, dm.source.label, d == null ? "" : d.srcClass, e.index).damageToHero += dm.shown;
@@ -536,7 +546,12 @@ public final class RowBuilders {
 					case EventTypes.KILL: {
 						CombatEvents.Kill k = CombatEvents.decodeKill(e, r);
 						ApdEvent de = detailAfter(events, i, EventTypes.KILL_DETAIL);
-						CombatEvents.KillDetail d = de == null ? null : CombatEvents.decodeKillDetail(de, r);
+						CombatEvents.KillDetail d = null;
+						try {
+							if (de != null) d = CombatEvents.decodeKillDetail(de, r);
+						} catch (RuntimeException badDetail){
+							//Keep the readable public kill even when its hidden detail is malformed.
+						}
 						if (k.victim.kind == CombatEvents.KIND_ENEMY){
 							EnemyAcc x = enemy(enemies, k.victim.name, d == null ? "" : d.victimClass, e.index);
 							x.deaths++;

@@ -62,7 +62,26 @@
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md"
       ]
+    },
+    {
+      "category": "Reliability",
+      "sprite": "ICON_WARNING",
+      "title": "Keep public combat when hidden details are malformed",
+      "text": "Readable attacks, damage and kills remain in enemy statistics even if their optional hidden identity detail is unreadable; identity stays unknown and disposable rows rebuild from unchanged history.",
+      "paths": [
+        ".github/workflows/codex-combat-detail-acceptance.yml",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowBuilders.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/CombatDetailPairingTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/QuestBossClassificationTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/DamagedFactsProvenanceTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/MalformedPayloadProvenanceTest.java",
+        "docs/APD-COMBAT-DETAIL-RESILIENCE-2026-10-15.md",
+        "docs/APD-CODEX-BUILD-REQUEST.txt",
+        "docs/APD-NEXT-BUILD-HISTORY.json",
+        "docs/HANDOFF.md",
+        "docs/WORK-COMPLETED-LEDGER.md"
+      ]
     }
   ],
-  "commentary": "TEST228 is verified for saved-column compatibility. Newer typed-payload provenance changes passed exact reproduction and the complete core suite, but still require their own APK, Android and visual gate."
+  "commentary": "TEST228 remains verified. The newer typed-payload and malformed-detail reliability changes now require exact before/after core evidence and one complete TEST229 application gate."
 }

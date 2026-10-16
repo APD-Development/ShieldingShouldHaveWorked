@@ -76,7 +76,7 @@ public class MalformedPayloadProvenanceTest {
         assertEquals(1, store.load().logsRebuilt);
         File cache = new File(store.rowsDir(), "runs-cache-history.apdr");
         byte[] bytes = Files.readAllBytes(cache.toPath());
-        assertEquals(15, bytes[5]); bytes[5] = 14;
+        assertEquals(16, bytes[5]); bytes[5] = 15;
         java.util.zip.CRC32 crc = new java.util.zip.CRC32(); crc.update(bytes, 0, bytes.length - 4);
         java.nio.ByteBuffer.wrap(bytes, bytes.length - 4, 4).order(java.nio.ByteOrder.LITTLE_ENDIAN).putInt((int) crc.getValue());
         Files.write(cache.toPath(), bytes);

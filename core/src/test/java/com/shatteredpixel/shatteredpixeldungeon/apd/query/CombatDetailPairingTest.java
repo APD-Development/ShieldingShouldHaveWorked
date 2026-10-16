@@ -77,4 +77,24 @@ public class CombatDetailPairingTest {
   DatasetDef enemies=RowBuilders.def(Datasets.ENEMIES);
   assertFalse(rows.of(Datasets.ENEMIES).get(0).isKnown(enemies.indexOf("enemy.class")));
  }
+
+ @Test public void malformedHiddenDetailsCannotEraseReadablePublicCombat() throws Exception {
+  for(int type:new int[]{EventTypes.ATTACK,EventTypes.DAMAGE,EventTypes.KILL}) {
+   String id="malformed-detail-"+sequence++;File file=new File(tmp.getRoot(),id+".apdlog");
+   RunLogWriter writer=RunLogWriter.create(file,new TelemetryVersion(1,6),id,"test",1);
+   LifecycleEvents.RunStart start=new LifecycleEvents.RunStart();start.runId=id;start.heroClass="WARRIOR";
+   assertTrue(LifecycleEvents.emitRunStart(writer,0,false,start));publicEvent(writer,type,"Rat");
+   int detailType=type==EventTypes.ATTACK?EventTypes.ATTACK_DETAIL:type==EventTypes.DAMAGE?EventTypes.DAMAGE_DETAIL:EventTypes.KILL_DETAIL;
+   assertTrue(writer.append(detailType,0,1,new byte[0]));
+   LifecycleEvents.RunEnd end=new LifecycleEvents.RunEnd();assertTrue(LifecycleEvents.emitRunEnd(writer,2,end));assertTrue(writer.close());
+   byte[] original=java.nio.file.Files.readAllBytes(file.toPath());
+   LogRows rows=RowBuilders.fromLog(RunLogReader.read(file),id);DatasetDef def=RowBuilders.def(Datasets.ENEMIES);
+   assertEquals(1,rows.of(Datasets.ENEMIES).size());Row rat=rows.of(Datasets.ENEMIES).get(0);
+   assertEquals("Rat",rat.text(def.indexOf("enemy.name")));assertFalse(rat.isKnown(def.indexOf("enemy.class")));
+   if(type==EventTypes.ATTACK)assertEquals(1,rat.num(def.indexOf("enemy.attacksByHero")));
+   else if(type==EventTypes.DAMAGE)assertEquals(3,rat.num(def.indexOf("enemy.damageFromHero")));
+   else {assertEquals(1,rat.num(def.indexOf("enemy.kills")));assertEquals(1,rat.num(def.indexOf("enemy.deaths")));}
+   assertArrayEquals(original,java.nio.file.Files.readAllBytes(file.toPath()));
+  }
+ }
 }
