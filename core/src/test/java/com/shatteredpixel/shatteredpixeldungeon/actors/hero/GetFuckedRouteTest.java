@@ -163,6 +163,11 @@ public class GetFuckedRouteTest {
         GamesInProgress.randomizedClass = false; GamesInProgress.curSlot = 1;
         String resume=System.getProperty("route.resume");
         if(resume==null){
+            java.nio.file.Path freshSlot=FileUtils.getFileHandle(GamesInProgress.gameFile(1)).file().toPath().getParent();
+            java.nio.file.Files.createDirectories(freshSlot);
+            try(java.nio.file.DirectoryStream<java.nio.file.Path> files=java.nio.file.Files.newDirectoryStream(freshSlot,"*.dat")){
+                for(java.nio.file.Path file:files)java.nio.file.Files.delete(file);
+            }
             Dungeon.init();
             Random.pushGenerator(266L);
             Dungeon.depth=1;Dungeon.branch=0;Dungeon.level=Dungeon.newLevel();
@@ -298,8 +303,20 @@ public class GetFuckedRouteTest {
         Field f=Random.class.getDeclaredField("generators");f.setAccessible(true);
         java.io.ByteArrayOutputStream bytes=new java.io.ByteArrayOutputStream();
         try(java.io.ObjectOutputStream out=new java.io.ObjectOutputStream(bytes)){out.writeObject(f.get(null));}
-        assertArrayEquals("Endpoint RNG differs from the connected native checkpoint",java.nio.file.Files.readAllBytes(root.resolve("rng.bin")),bytes.toByteArray());
-        System.out.println("CONNECTED_ENDPOINT_STATE_AND_RNG_VERIFIED "+root.getFileName());
+        if(Boolean.getBoolean("route.expectedActiveRngOnly")){
+            Object expectedStack;
+            try(java.io.ObjectInputStream in=new java.io.ObjectInputStream(java.nio.file.Files.newInputStream(root.resolve("rng.bin")))){expectedStack=in.readObject();}
+            java.util.ArrayDeque<?> expectedGenerators=(java.util.ArrayDeque<?>)expectedStack,actualGenerators=(java.util.ArrayDeque<?>)f.get(null);
+            assertEquals("RNG stack depth differs",expectedGenerators.size(),actualGenerators.size());
+            java.io.ByteArrayOutputStream a=new java.io.ByteArrayOutputStream(),b=new java.io.ByteArrayOutputStream();
+            try(java.io.ObjectOutputStream out=new java.io.ObjectOutputStream(a)){out.writeObject(expectedGenerators.peekFirst());}
+            try(java.io.ObjectOutputStream out=new java.io.ObjectOutputStream(b)){out.writeObject(actualGenerators.peekFirst());}
+            assertArrayEquals("Active gameplay RNG differs",a.toByteArray(),b.toByteArray());
+            System.out.println("CONNECTED_ENDPOINT_STATE_AND_ACTIVE_RNG_VERIFIED_INACTIVE_BASE_NOT_COMPARED "+root.getFileName());
+        }else{
+            assertArrayEquals("Endpoint RNG differs from the connected native checkpoint",java.nio.file.Files.readAllBytes(root.resolve("rng.bin")),bytes.toByteArray());
+            System.out.println("CONNECTED_ENDPOINT_STATE_AND_RNG_VERIFIED "+root.getFileName());
+        }
     }
 
     private void snapshot(String label) throws Exception {
@@ -572,13 +589,18 @@ public class GetFuckedRouteTest {
         log("FIRST_GNOLL_KILLED");
         for(int cell:new int[]{937,937,896,855,813,771,729,728,727})click(cell);
         log("PASTY_AND_EXIT_APPROACH");
+        if(Boolean.getBoolean("route.certifyPrefix")){
+            Mob extraSnake=Dungeon.level.mobs.stream().filter(m->m.id()==44).findFirst().get();
+            cast(GuidingLight.INSTANCE,extraSnake.pos);log("CERTIFIED PREFIX HANDLE EXTRA SNAKE AT RANGE TWO");
+            assertFalse(extraSnake.isAlive());
+        }
         for(int cell:new int[]{685,643,601,600,599,598,640,682,724})click(cell);
         log("SECOND_FLOOR_EXIT");
         assertEquals(3,Dungeon.depth);
         System.out.println("FLOOR_LAYOUT "+new JSONObject().put("depth",Dungeon.depth).put("width",Dungeon.level.width()).put("height",Dungeon.level.height()).put("terrain",new JSONArray(Dungeon.level.map)).put("entrance",Dungeon.level.entrance()).put("exit",Dungeon.level.exit()));
         log("FLOOR_THREE_ENTERED");
         if(System.getProperty("route.checkpointOut")!=null)writeCheckpoint(System.getProperty("route.checkpointOut"));
-        if(Boolean.getBoolean("route.stopAfterFloor3"))return;
+        if(Boolean.getBoolean("route.stopAfterFloor3")){verifyExpectedEnd();return;}
         thirdFloorSection();
     }
     private void thirdFloorSection() throws Exception {

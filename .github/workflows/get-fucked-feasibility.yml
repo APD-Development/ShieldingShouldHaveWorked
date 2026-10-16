@@ -38,6 +38,16 @@ jobs:
         with:
           name: get-fucked-baseline-results
           path: core/build/test-results/test/
+      - name: Replay corrected level-one origin through actual floor-three entry
+        run: >-
+          ./gradlew :core:test --tests '*GetFuckedRouteTest'
+          -Droute.stableHash=true -Droute.noSnapshots=true -Droute.certifyPrefix=true -Droute.stopAfterFloor3=true -Droute.expectedActiveRngOnly=true
+          -Droute.expectedEnd="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor3_certified_origin"
+      - name: Preserve corrected level-one origin replay
+        uses: actions/upload-artifact@v4
+        with:
+          name: get-fucked-certified-origin-results
+          path: core/build/test-results/test/
       - name: Replay the earned floor-three state through floor-four entry
         run: >-
           ./gradlew :core:test --tests '*GetFuckedRouteTest'

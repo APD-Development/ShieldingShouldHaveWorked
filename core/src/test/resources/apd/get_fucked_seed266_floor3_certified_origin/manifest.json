@@ -1,0 +1,51 @@
+{
+  "seed": 266,
+  "format": "APD native save plus captured RNG, earned by commands from level one",
+  "files": [
+    "depth1.dat",
+    "depth3.dat",
+    "depth2.dat",
+    "game.dat"
+  ],
+  "state": {
+    "mobs": [
+      "45:Snake:975:4:0.0",
+      "46:Rat:1195:8:0.0",
+      "47:Gnoll:412:12:0.0",
+      "48:Gnoll:455:12:0.0",
+      "49:GnollExile:143:24:0.0",
+      "50:Crab:564:15:0.0",
+      "51:Swarm:437:50:0.0"
+    ],
+    "shield": 0,
+    "tomeCharge": 0,
+    "strength": 11,
+    "level": 2,
+    "challenges": 512,
+    "totalTime": 655,
+    "HP": 1,
+    "HT": 1,
+    "inventory": [
+      "ClothArmor:1:+0",
+      "Cudgel:1:+0",
+      "FishingSpear:2:+2",
+      "Food:1:+0",
+      "HolyTome:1:+1",
+      "MailArmor:1:+0",
+      "Pasty:1:+0",
+      "PotionOfHealing:1:+0",
+      "VelvetPouch:1:+0",
+      "Waterskin:1:+0"
+    ],
+    "hunger": 355,
+    "gold": 0,
+    "depth": 3,
+    "armor": "ClothArmor:+0",
+    "partialCharge": 0.4454132914543152,
+    "pos": 641,
+    "time": 0,
+    "exp": 6,
+    "talents": "[{SATIATED_SPELLS=0, HOLY_INTUITION=0, SEARING_LIGHT=0, SHIELD_OF_LIGHT=1}, {ENLIGHTENING_MEAL=0, RECALL_INSCRIPTION=0, SUNRAY=0, DIVINE_SENSE=0, BLESS=0}, {CLEANSE=0, LIGHT_READING=0}, {}]",
+    "energy": 0
+  }
+}
