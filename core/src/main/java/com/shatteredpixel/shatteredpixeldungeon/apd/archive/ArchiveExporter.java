@@ -292,10 +292,12 @@ public final class ArchiveExporter {
 						if (e.type == EventTypes.RUN_START && !started){
 							try {
 								LifecycleEvents.RunStart runStart = LifecycleEvents.decodeRunStart(e, r);
-								started = true;
 								String started0 = runStart.runId;
-								l.segment = runStart.segment;
-								if (started0 != null && started0.length() > 0) l.runId = started0;
+								if (StatsStore.isValidRunId(started0)){
+									started = true;
+									l.segment = runStart.segment;
+									l.runId = started0;
+								}
 							} catch (RuntimeException ignored){
 								//Keep looking: an unreadable typed start must not hide the first readable one.
 							}

@@ -289,8 +289,11 @@ public final class ArchiveImporter {
 		for (com.shatteredpixel.shatteredpixeldungeon.apd.stats.ApdEvent ev : r.events){
 			if (ev.type == com.shatteredpixel.shatteredpixeldungeon.apd.stats.EventTypes.RUN_START){
 				try {
-					startedRun = com.shatteredpixel.shatteredpixeldungeon.apd.stats.LifecycleEvents.decodeRunStart(ev, r).runId;
-					break;
+					String candidate = com.shatteredpixel.shatteredpixeldungeon.apd.stats.LifecycleEvents.decodeRunStart(ev, r).runId;
+					if (StatsStore.isValidRunId(candidate)){
+						startedRun = candidate;
+						break;
+					}
 				} catch (RuntimeException ignored){
 					//Keep looking: archive identity follows the first readable typed start.
 				}

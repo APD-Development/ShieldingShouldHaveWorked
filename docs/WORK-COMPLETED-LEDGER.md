@@ -1369,3 +1369,10 @@ Audited recorder resume bookkeeping after the TEST231 delivery. One malformed ca
 - Scope remains only archive folder-kind integrity. Raw histories, saves, original scores, gameplay, all 18 rules, turns, RNG, all 50 lore entries/private grudge/opt-out, signing configuration and application-ID configuration were not changed.
 - TEST237 is a fully CI-verified candidate only. No publication, tester distribution, physical-phone result or owner-device install-over/save acceptance occurred. TEST231 remains the latest privately delivered fallback.
 - The next meaningful build manifest must include this evidence entry and `docs/APD-TEST237-VERIFICATION-2026-10-16.json`; do not rebuild unchanged TEST237 solely to record documentation.
+
+
+## 2026-10-16T08:35:41Z — archive empty run-identity recovery candidate
+- Continued the UIMSD/archive audit after TEST237 and reproduced an identity gap: a decoded but empty first `RUN_START` hid a later valid logical run ID during export and import.
+- The bounded correction claims typed run identity only after the existing valid-run-ID check succeeds. It leaves raw log bytes, event order, finished-state handling and valid archives unchanged.
+- Two retained `ArchiveRoundTripTest` methods and an exact-TEST237 before/after workflow require both old failures and 1,705 corrected core methods.
+- Full TEST238 gate remains required: debug assembly, complete immediate-previous produced TEST237 history (source `8f9b6bf9e7a8f56b6b46c3b713f3c49f47a3f17f`, run `38868120835`), 33 API34 methods and 42 valid screenshots. Candidate pending; no APK verification, publication, tester distribution, physical-phone result or owner install claim is made. TEST231 remains the delivered fallback and TEST237 the newest verified CI candidate.

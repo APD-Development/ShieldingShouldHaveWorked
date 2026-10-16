@@ -426,4 +426,45 @@ public class ArchiveRoundTripTest {
 		assertEquals(1, report.rejected);
 		assertFalse(new File(target, "runs/physical-log.apdlog").exists());
 	}
+
+	private File emptyThenReadableStart( File root, String logId, String runId ) throws Exception {
+		TestLogs log = new TestLogs(root, logId, V, 1000);
+		log.start("", 0, "CLERIC", RS, 0, 0, false);
+		log.start(runId, 1, "CLERIC", RS, 0, 0, true).enter(1);
+		log.end(LifecycleEvents.OUTCOME_DIED, "Rat", 1, 1, 1).close(true);
+		return log.file;
+	}
+
+	@Test
+	public void emptyFirstStartDoesNotHideValidRunFromExportManifest() throws Exception {
+		File root = fresh("export-empty-start");
+		File log = emptyThenReadableStart(root, "physical-log", "logical-run");
+		byte[] original = java.nio.file.Files.readAllBytes(log.toPath());
+		Map<String, byte[]> parts = entries(export(root));
+		ArchiveManifest manifest = ArchiveManifest.parse(parts.get(ArchiveManifest.ENTRY_NAME));
+		assertEquals("logical-run", manifest.find("runs/physical-log.apdlog").runId);
+		assertArrayEquals("a finished log still exports byte for byte", original, parts.get("runs/physical-log.apdlog"));
+	}
+
+	@Test
+	public void importUsesFirstValidIdentityAfterEmptyStart() throws Exception {
+		File source = fresh("import-empty-source");
+		byte[] log = java.nio.file.Files.readAllBytes(
+				emptyThenReadableStart(source, "physical-log", "logical-run").toPath());
+		Map<String, byte[]> files = new java.util.LinkedHashMap<>();
+		files.put("runs/physical-log.apdlog", log);
+
+		ArchiveImporter.Report correct = importInto(fresh("import-empty-correct"),
+				archiveOf(files, java.util.Collections.singletonMap("runs/physical-log.apdlog", "logical-run")));
+		assertTrue(correct.summary(), correct.ok);
+		assertEquals(1, correct.imported);
+
+		File wrongTarget = fresh("import-empty-wrong");
+		ArchiveImporter.Report wrong = importInto(wrongTarget,
+				archiveOf(files, java.util.Collections.singletonMap("runs/physical-log.apdlog", "physical-log")));
+		assertFalse(wrong.summary(), wrong.ok);
+		assertEquals(1, wrong.rejected);
+		assertFalse(new File(wrongTarget, "runs/physical-log.apdlog").exists());
+	}
+
 }

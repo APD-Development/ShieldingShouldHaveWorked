@@ -1,18 +1,18 @@
 {
   "date": "2026-10-16",
-  "previous_source": "1ea12db8d365ca135aa7af799a1ea7405dc0241f",
-  "previous_run": 38863040610,
-  "previous_label": "Codex TEST 236",
+  "previous_source": "8f9b6bf9e7a8f56b6b46c3b713f3c49f47a3f17f",
+  "previous_run": 38868120835,
+  "previous_label": "Codex TEST 237",
   "changes": [
     {
       "category": "Development",
       "sprite": "ICON_CHECKED",
-      "title": "Record verified TEST236 evidence",
-      "text": "Retain the exact TEST236 targeted, core, Android, visual, APK, application-ID and signature evidence without rebuilding or publishing unchanged source.",
+      "title": "Record verified TEST237 evidence",
+      "text": "Retain the exact TEST237 targeted, core, Android, visual, APK, application-ID and signature evidence without rebuilding or publishing unchanged source.",
       "paths": [
-        "docs/APD-ARCHIVE-RUN-START-RECOVERY-2026-10-16.md",
+        "docs/APD-ARCHIVE-KIND-VALIDATION-2026-10-16.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/APD-TEST236-VERIFICATION-2026-10-16.json",
+        "docs/APD-TEST237-VERIFICATION-2026-10-16.json",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md"
       ]
@@ -20,13 +20,14 @@
     {
       "category": "Statistics",
       "sprite": "ICON_WARNING",
-      "title": "Reject mismatched archive kinds",
-      "text": "History import now rejects runs/ or legacy/ entries whose declared kind contradicts their folder, closing a run-ID validation bypass before any payload is staged.",
+      "title": "Recover valid archive run identity",
+      "text": "Archive export and import now skip empty or invalid typed run IDs and use the first later valid logical identity, preventing header-only mislabelling.",
       "paths": [
-        ".github/workflows/codex-archive-kind-validation-acceptance.yml",
+        ".github/workflows/codex-archive-empty-run-id-acceptance.yml",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/archive/ArchiveExporter.java",
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/archive/ArchiveImporter.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/archive/ArchiveHostileTest.java",
-        "docs/APD-ARCHIVE-KIND-VALIDATION-2026-10-16.md",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/archive/ArchiveRoundTripTest.java",
+        "docs/APD-ARCHIVE-EMPTY-RUN-ID-RECOVERY-2026-10-16.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/HANDOFF.md",
@@ -34,5 +35,5 @@
       ]
     }
   ],
-  "commentary": "TEST236 is the immediate previous produced APK and TEST231 remains the latest privately delivered fallback. The archive folder-kind correction requires exact before/after core evidence and one complete TEST237 application gate; no automatic delivery."
+  "commentary": "TEST237 is the immediate previous produced APK and TEST231 remains the latest privately delivered fallback. Empty run-identity recovery requires exact before/after core evidence and one complete TEST238 application gate; no automatic delivery."
 }
