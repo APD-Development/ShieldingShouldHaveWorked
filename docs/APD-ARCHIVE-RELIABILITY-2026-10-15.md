@@ -20,3 +20,7 @@ Two concise Statistics/UIMSD preview icons describe these fixes only in a future
 
 ## Remaining limitations
 The entire UIMSD audit is incomplete. This does not claim to solve all direct-query behavior for structurally valid but unreadable typed payloads; those require a separate verified investigation. No full audit count is advanced from these recovered per-blob checks. No production storage compression/format redesign, online activation, score multiplier, unrelated mechanic or Cleric change is made.
+
+
+## Archive export corrections independently verified; full application gate requested
+Run38827208663 at source59e99c04d582a8565195532914bec8633e3bd92b reproduced exactly six expected failures and one clean control in unchanged TEST224 application source3e886234e69ab128a861cfbc17bca549ba3a3456. Corrected source passed79 unique targeted methods,0failures/errors/skips. Independently downloaded artifact12015517394 ZIP SHA2560db5dfd7e9c1570828b61220f1bca26f74a782fa7fd184869997c13833d00c1f and recounted original/corrected XML. Original production files were not edited by the reproduction. This supersedes old local overlay evidence; targeted79 is a subset of the full suite, not an added79. No new APK yet. Request full1683core/debug/immediateprevious actually produced224history/33API34/42PNG; all20 comparison paths covered. Published224 remains fallback. Physical-phone acceptance and full UIMSD audit remain incomplete.
