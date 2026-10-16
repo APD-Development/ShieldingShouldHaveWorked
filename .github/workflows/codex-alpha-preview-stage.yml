@@ -173,4 +173,4 @@ jobs:
 
 # Documentation-only lunch refresh: use the pinned verified TEST249 APK; do not rebuild application source.
 
-# Lunch policy receipt: factual PDF plus preserved published TEST231 fallback; no new APK build.
+# Final lunch report refresh: preparation-session timing; preserve existing verified APK and fallback.

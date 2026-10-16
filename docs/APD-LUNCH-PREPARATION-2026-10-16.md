@@ -1,13 +1,13 @@
 # Daily lunch preparation — October 16, 2026
 
 ## Current status
-Prepared at 11:25 a.m. America/New_York. Preparation is not delivery. PDF delivery is scheduled for 11:55 a.m.; APK delivery is noon. No early publication is authorized. Scheduled instructions do not guarantee platform execution.
+Prepared during the 11:20 a.m. America/New_York lunch-preparation session. Preparation is not delivery. PDF delivery is scheduled for 11:55 a.m.; APK delivery is noon. No early publication is authorized. Scheduled instructions do not guarantee platform execution.
 
 TEST249 is the current CI-verified candidate, not a published release. Application source: 37a8f6d16cd497e13ed581e887ed9d4858fe97aa. Full verification run38914965700 passed 1,729 unique core methods and34 API34 emulator methods, zero failures/errors/skips, debug assembly and compiled-history checks. All44 screenshots were reviewed. The separate six-class save/continue acceptance run38918464322 passed one additional instrumented method; it is separate from the34-method suite and is not added to that suite's total.
 
 The APK is already staged in private draft release415070992, tag apd-alpha-preview-249; draft=true and published_at=null were rechecked at11:19 a.m. No application source changed or APK was rebuilt during this lunch preparation. No new fixes are claimed from preparation itself.
 
-## Guaranteed fallback selection, not guaranteed execution
+## Preserved published fallback
 The existing published private TEST231 release and all its assets remain intact. If TEST249 publication fails or its evidence becomes unavailable, deliver this already-published install-compatible fallback, clearly labeled unchanged.
 
 APK fallback: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-alpha-preview-231/ADHD-Pixel-Dungeon-Alpha-Preview-231.apk
