@@ -111,7 +111,7 @@ jobs:
           python3 - <<'PY'
           import json,pathlib,re
           result=pathlib.Path('early-alpha-roster-instrumentation.txt').read_text()
-          assert re.search(r'OK \\(1 test\\)',result),result
+          assert re.search(r'OK \(1 test\)',result),result
           assert not any(marker in result for marker in
                          ('FAILURES!!!','INSTRUMENTATION_FAILED','Process crashed.'))
           pathlib.Path('early-alpha-roster-result.json').write_text(json.dumps({
