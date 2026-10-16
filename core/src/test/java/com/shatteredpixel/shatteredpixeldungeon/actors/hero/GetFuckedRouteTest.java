@@ -3570,7 +3570,15 @@ public class GetFuckedRouteTest {
                 else if(action.startsWith("a")){assertNotNull(target);int count=Integer.parseInt(action.substring(1));assertTrue(count>0 && count<=30);for(int k=0;k<count && target.isAlive();k++)freshFixedActions(target,"A");}
                 else if(action.startsWith("G"))click(Integer.parseInt(action.substring(1)));
                 else if(action.startsWith("J"))jumpIntoKnownChasm(Integer.parseInt(action.substring(1)));
-                else if(action.equals("V"))System.out.println("FLOOR_LAYOUT "+new JSONObject().put("depth",Dungeon.depth).put("width",Dungeon.level.width()).put("height",Dungeon.level.height()).put("terrain",new JSONArray(Dungeon.level.map)).put("entrance",Dungeon.level.entrance()).put("exit",Dungeon.level.exit()));
+                else if(action.equals("V")){
+                    System.out.println("FLOOR_LAYOUT "+new JSONObject().put("depth",Dungeon.depth).put("width",Dungeon.level.width()).put("height",Dungeon.level.height()).put("terrain",new JSONArray(Dungeon.level.map)).put("entrance",Dungeon.level.entrance()).put("exit",Dungeon.level.exit()));
+                    JSONObject detail=new JSONObject().put("locked",Dungeon.level.locked).put("totalTime",Statistics.duration+Actor.now()).put("energy",Dungeon.energy);
+                    com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor locked=Dungeon.hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor.class);
+                    if(locked!=null){Field left=locked.getClass().getDeclaredField("left");left.setAccessible(true);detail.put("regenClock",left.getFloat(locked)).put("regenOn",locked.regenOn());}
+                    if(Dungeon.level instanceof com.shatteredpixel.shatteredpixeldungeon.levels.PrisonBossLevel)detail.put("bossState",((com.shatteredpixel.shatteredpixeldungeon.levels.PrisonBossLevel)Dungeon.level).state());
+                    JSONArray traps=new JSONArray();for(com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap trap:Dungeon.level.traps.valueList())traps.put(new JSONObject().put("pos",trap.pos).put("type",trap.getClass().getSimpleName()).put("active",trap.active).put("visible",trap.visible));detail.put("traps",traps);
+                    System.out.println("MANUAL_DIAGNOSTIC "+detail);
+                }
                 else if(action.startsWith("D") || action.startsWith("E") || action.startsWith("Q") || action.startsWith("U") || action.startsWith("R")){
                     Class<? extends Item> itemType=Class.forName("com.shatteredpixel.shatteredpixeldungeon.items."+action.substring(1)).asSubclass(Item.class);Item item=Dungeon.hero.belongings.getItem(itemType);assertNotNull("Manual action requires an actually owned item",item);
                     if(action.startsWith("U"))upgradeOwnedGear(item);else{String itemAction=action.startsWith("D")?"DRINK":action.startsWith("E")?"EAT":action.startsWith("R")?"READ":"EQUIP";assertTrue(item.actions(Dungeon.hero).contains(itemAction));item.execute(Dungeon.hero,itemAction);if(itemAction.equals("EQUIP"))Dungeon.hero.busy();ready();log("MANUAL OWNED "+itemAction+" "+itemType.getSimpleName());}

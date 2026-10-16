@@ -27,7 +27,7 @@ with outpath.open('w') as out:
     summary={k:state.get(k) for k in ['depth','pos','HP','HT','shield','totalTime','tomeCharge','partialCharge','hunger','level','exp','inventory']}
     summary['visible_mobs']=[m for m in state['mobs'] if m['visible']]
     print('MANUAL_STATE '+json.dumps(summary),flush=True)
-  elif interactive_mirror and mirror_started and (line.startswith('MANUAL_READY') or line.startswith('HOURGLASS_DETAIL MANUAL_BOUNDARY')):print(line.rstrip(),flush=True)
+  elif interactive_mirror and mirror_started and (line.startswith('MANUAL_READY') or line.startswith('MANUAL_DIAGNOSTIC ') or line.startswith('HOURGLASS_DETAIL MANUAL_BOUNDARY')):print(line.rstrip(),flush=True)
  result.wait()
 # Rewrite once from the complete captured stream before verification/provenance archival.
 # Live log readers cannot make a partially synchronized file the canonical record.
