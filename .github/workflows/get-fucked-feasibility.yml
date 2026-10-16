@@ -90,6 +90,20 @@ jobs:
         with:
           name: get-fucked-live-frontier-results
           path: ${{ runner.temp }}/get-fucked-frontier-results/
+      - name: Replay continued fresh quest access and actual west necromancer
+        run: |
+          mkdir -p "$RUNNER_TEMP/get-fucked-continued"
+          tar -xJf research/get-fucked/continued-native-provenance.tar.xz -C "$RUNNER_TEMP/get-fucked-continued"
+          python3 - <<'PYCODE'
+          import json, os, subprocess
+          root=os.environ['RUNNER_TEMP']+'/get-fucked-continued'
+          for name,end,origin in [('fresh-origin-accept-ghost','earned-origin-accept-ghost',True),('live-west-necro-finish','earned-live-west-necro-finish',False)]:
+              props=json.load(open(root+'/'+name+'-replay.json'))
+              if not origin: props['route.resume']=os.environ['GITHUB_WORKSPACE']+'/core/src/test/resources/apd/get_fucked_seed266_floor7_intercept'
+              props.update({'route.stableHash':'true','route.noSnapshots':'true','route.expectedEnd':root+'/native/'+end,'route.expectedNativeState':'true'})
+              if origin: props['route.expectedActiveRngOnly']='true'
+              subprocess.run(['./gradlew',':core:test','--tests','*GetFuckedRouteTest']+['-D'+k+'='+v for k,v in props.items()],check=True)
+          PYCODE
       - name: Run scenario and existing challenge tests
         run: ./gradlew :core:test --tests '*GetFuckedFeasibilityTest' --tests '*GetFuckedTest' --tests '*ShieldHungerTest' --tests '*GetFuckedMapTest' --tests '*GetFuckedBarrierDecayTest'
       - name: Preserve baseline test reports before the route task
