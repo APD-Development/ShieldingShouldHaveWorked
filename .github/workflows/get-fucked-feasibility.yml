@@ -165,6 +165,24 @@ jobs:
           ./gradlew :core:test --tests '*GetFuckedRouteTest'
           -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor7_intercept"
           -Droute.stableHash=true -Droute.noSnapshots=true 
+      - name: Pay actual floor-eight preparation cost
+        run: >-
+          ./gradlew :core:test --tests '*GetFuckedRouteTest'
+          -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor8"
+          -Droute.stableHash=true -Droute.noSnapshots=true -Droute.eightWait=150
+          -Droute.expectedEnd="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor8_rested150"
+      - name: Earn level seven Bless and acquire the fourth strength potion
+        run: >-
+          ./gradlew :core:test --tests '*GetFuckedRouteTest'
+          -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor8_rested150"
+          -Droute.stableHash=true -Droute.noSnapshots=true -Droute.eightContinue=true
+          -Droute.expectedEnd="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor8_bless"
+      - name: Defeat guard and both DMs and acquire actual food with continuous resources
+        run: >-
+          ./gradlew :core:test --tests '*GetFuckedRouteTest'
+          -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor8_bless"
+          -Droute.stableHash=true -Droute.noSnapshots=true
+          -Droute.expectedEnd="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor8_pasty"
       - name: Replay earned Goo approach and first ranged retreat
         run: >-
           ./gradlew :core:test --tests '*GetFuckedRouteTest'

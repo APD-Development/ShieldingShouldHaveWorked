@@ -54,9 +54,12 @@ public class GetFuckedRouteTest {
     private void bind(Char ch) {
         if (ch.sprite != null) return;
         CharSprite sprite = ch == Dungeon.hero ? mock(HeroSprite.class, RETURNS_DEEP_STUBS)
-                : ch instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo ? mock(com.shatteredpixel.shatteredpixeldungeon.sprites.GooSprite.class,RETURNS_DEEP_STUBS) : mock(CharSprite.class, RETURNS_DEEP_STUBS);
+                : ch instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo ? mock(com.shatteredpixel.shatteredpixeldungeon.sprites.GooSprite.class,RETURNS_DEEP_STUBS)
+                : ch instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Necromancer ? mock(com.shatteredpixel.shatteredpixeldungeon.sprites.NecromancerSprite.class,RETURNS_DEEP_STUBS) : mock(CharSprite.class, RETURNS_DEEP_STUBS);
         ch.sprite = sprite;
         if(ch instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo)doAnswer(i->{ch.onAttackComplete();return null;}).when((com.shatteredpixel.shatteredpixeldungeon.sprites.GooSprite)sprite).pumpAttack();
+        if(ch instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Necromancer)
+            doAnswer(i->{com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Necromancer necro=(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Necromancer)ch;if(!necro.summoning)necro.onZapComplete();return null;}).when(sprite).zap(anyInt());
         if(ch==Dungeon.hero)doAnswer(i -> {ch.onOperateComplete();return null;}).when((HeroSprite)sprite).read();
         Group parent=mock(Group.class,i -> {
             if(i.getMethod().getName().equals("recycle") && i.getArguments().length==1 && i.getArgument(0) instanceof Class)
@@ -286,6 +289,19 @@ public class GetFuckedRouteTest {
         assertTrue("Native restore changed retained resources: expected="+expected+" actual="+actual,expected.similar(new JSONObject(actual.toString())));
         log("NATIVE_CONTINUITY_VERIFIED");
     }
+    private void verifyExpectedEnd() throws Exception {
+        String path=System.getProperty("route.expectedEnd");if(path==null)return;
+        java.nio.file.Path root=java.nio.file.Paths.get(path);
+        JSONObject expected=new JSONObject(new String(java.nio.file.Files.readAllBytes(root.resolve("manifest.json")),java.nio.charset.StandardCharsets.UTF_8)).getJSONObject("state");
+        JSONObject actual=continuity();actual.put("time",0);
+        assertTrue("Endpoint resources differ from the connected native checkpoint: expected="+expected+" actual="+actual,expected.similar(new JSONObject(actual.toString())));
+        Field f=Random.class.getDeclaredField("generators");f.setAccessible(true);
+        java.io.ByteArrayOutputStream bytes=new java.io.ByteArrayOutputStream();
+        try(java.io.ObjectOutputStream out=new java.io.ObjectOutputStream(bytes)){out.writeObject(f.get(null));}
+        assertArrayEquals("Endpoint RNG differs from the connected native checkpoint",java.nio.file.Files.readAllBytes(root.resolve("rng.bin")),bytes.toByteArray());
+        System.out.println("CONNECTED_ENDPOINT_STATE_AND_RNG_VERIFIED "+root.getFileName());
+    }
+
     private void snapshot(String label) throws Exception {
         if(Boolean.getBoolean("route.noSnapshots")) return;
         Bundle b=new Bundle();
@@ -414,7 +430,7 @@ public class GetFuckedRouteTest {
     @Test public void seed266InitialCommands() throws Exception {
         System.out.println("RUNNER_STAGE scheduler start");
         ready();
-        if(System.getProperty("route.resume")!=null){verifyCheckpoint(System.getProperty("route.resume"));if(Dungeon.depth==3)thirdFloorSection();else if(Dungeon.depth==4){if(Dungeon.hero.pos==826)returnedFourthFloorSection();else if(Dungeon.hero.pos==437)purityCheckpointSection();else if(Dungeon.hero.pos==1035)foodCheckpointSection();else fourthFloorSection();}else if(Dungeon.depth==5){if(Boolean.getBoolean("route.postGoo"))postGooSection();else if(Boolean.getBoolean("route.armoredGoo"))armoredGooSection();else fifthFloorSection();}else if(Dungeon.depth==6)sixthFloorSection();else if(Dungeon.depth==7)seventhFloorSection();else fail("Unwritten section");return;}
+        if(System.getProperty("route.resume")!=null){verifyCheckpoint(System.getProperty("route.resume"));if(Dungeon.depth==3)thirdFloorSection();else if(Dungeon.depth==4){if(Dungeon.hero.pos==826)returnedFourthFloorSection();else if(Dungeon.hero.pos==437)purityCheckpointSection();else if(Dungeon.hero.pos==1035)foodCheckpointSection();else fourthFloorSection();}else if(Dungeon.depth==5){if(Boolean.getBoolean("route.postGoo"))postGooSection();else if(Boolean.getBoolean("route.armoredGoo"))armoredGooSection();else fifthFloorSection();}else if(Dungeon.depth==6)sixthFloorSection();else if(Dungeon.depth==7)seventhFloorSection();else if(Dungeon.depth==8)eighthFloorSection();else fail("Unwritten section");verifyExpectedEnd();return;}
         assertEquals(1,Dungeon.hero.lvl); assertEquals(1,Dungeon.hero.HP); assertEquals(1,Dungeon.hero.HT);
         for(Map<Talent,Integer> tier:Dungeon.hero.talents) for(int value:tier.values()) assertEquals(0,value);
         JSONObject layout=new JSONObject(); Level l=Dungeon.level;
@@ -946,6 +962,84 @@ public class GetFuckedRouteTest {
         assertSame(heap,tradeHeap);assertNotNull(tradeWindow);
         Method buy=com.shatteredpixel.shatteredpixeldungeon.windows.WndTradeItem.class.getDeclaredMethod("buy",Heap.class);buy.setAccessible(true);
         Dungeon.hero.busy();buy.invoke(tradeWindow,heap);ready();log("BUY ACTUAL SHOP HEAP "+cell+" PRICE "+price);
+    }
+
+    private void eighthFloorAfterBless() throws Exception {
+        for(int n=0;n<Integer.getInteger("route.guardPrepWait",0);n++)waitOne();
+        for(int c:new int[]{808,776,744,712,680,648,647,646})click(c);
+        cast(BlessSpell.INSTANCE,Dungeon.hero.pos);assertEquals(10,Dungeon.hero.shielding());
+        click(614);log("FLOOR EIGHT GUARDED NORTHWEST DOOR WITH EARNED BLESS");
+        Mob guard=Dungeon.level.mobs.stream().filter(m->m.id()==250).findFirst().get();
+        throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class,guard.pos);
+        click(581);click(580);log("FLOOR EIGHT GUARD WITH DM LINE OF SIGHT BROKEN");
+        click(guard.pos);click(guard.pos);click(guard.pos);
+        log("FLOOR EIGHT GUARD MELEE WITHOUT A RESET");
+        click(guard.pos);click(581);
+        log("FLOOR EIGHT CLOSE DM TO MELEE AFTER GUARD STRIKE");
+        click(guard.pos);log("FLOOR EIGHT GUARD FINISHER WITH DM ADJACENT");
+        assertFalse(guard.isAlive());
+        Mob dm=Dungeon.level.mobs.stream().filter(m->m.id()==265).findFirst().get();
+        click(dm.pos);click(dm.pos);
+        log("FLOOR EIGHT DM MELEE EXCHANGE");
+        click(dm.pos);assertFalse(dm.isAlive());log("FLOOR EIGHT GUARD AND DM DEFEATED WITH RETAINED BLESS");
+        for(int c:new int[]{549,549,549,517,518,519,520,521,522,490,458,426})click(c);
+        assertEquals(426,Dungeon.hero.pos);
+        Dungeon.hero.search(true);ready();log("REVEAL FLOOR EIGHT FOOD ROOM SECRET DOOR");
+        assertEquals(Terrain.DOOR,Dungeon.level.map[427]);
+        cast(BlessSpell.INSTANCE,Dungeon.hero.pos);
+        click(427);assertEquals(427,Dungeon.hero.pos);log("FLOOR EIGHT FOOD ROOM DOOR AFTER SECOND EARNED BLESS");
+        Mob foodDM=Dungeon.level.mobs.stream().filter(m->m.id()==251).findFirst().get();
+        click(foodDM.pos);click(foodDM.pos);log("FLOOR EIGHT FOOD GUARD DM MELEE");
+        assertFalse(foodDM.isAlive());
+        click(396);assertEquals(396,Dungeon.hero.pos);
+        assertNull(Dungeon.hero.buff(Vertigo.class));assertTrue(Dungeon.level.traps.get(428).active);
+        for(int c:new int[]{364,365,365,366,366})click(c);
+        assertNotNull(Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty.class));
+        assertNotNull(Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLevitation.class));
+        log("FLOOR EIGHT PASTY AND LEVITATION ACTUALLY ACQUIRED WITHOUT TRIGGERING CONFUSION TRAP");
+        if(System.getProperty("route.checkpoint8PastyOut")!=null)writeCheckpoint(System.getProperty("route.checkpoint8PastyOut"));
+    }
+
+    private void eighthFloorAfterRest() throws Exception {
+        for(int c:new int[]{998,1031,1063})click(c);
+        assertEquals(1063,Dungeon.hero.pos);
+        for(int c:new int[]{1095,1127,1126,1125,1124,1123,1122,1090,1058,1026,994,962,930,898,899,900,901,902})click(c);
+        assertEquals(902,Dungeon.hero.pos);
+        log("FLOOR EIGHT WESTERN ROUTE PAST NECROMANCER RANGE");
+        for(int c:new int[]{870,838})click(c);
+        assertEquals(838,Dungeon.hero.pos);
+        Mob skeleton=Dungeon.level.mobs.stream().filter(m->m.id()==254).findFirst().get();
+        cast(GuidingLight.INSTANCE,skeleton.pos);
+        throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class,skeleton.pos);
+        log("FLOOR EIGHT SPAWNED SKELETON RANGED OPENING");
+        waitOne();waitOne();waitOne();
+        cast(ShieldOfLight.INSTANCE,skeleton.pos);
+        click(skeleton.pos);click(skeleton.pos);
+        log("FLOOR EIGHT SPAWNED SKELETON SHIELDED MELEE");
+        assertFalse(skeleton.isAlive());
+        for(int c:new int[]{774,742,710,678,646})click(c);
+        for(int n=0;n<9;n++)waitOne();
+        click(647);click(648);
+        Mob thief=Dungeon.level.mobs.stream().filter(m->m.id()==246).findFirst().get();
+        cast(GuidingLight.INSTANCE,thief.pos);
+        throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class,thief.pos);
+        log("FLOOR EIGHT THIEF AFTER EARNED SKELETON KILL");
+        cast(GuidingLight.INSTANCE,thief.pos);assertFalse(thief.isAlive());
+        assertEquals(7,Dungeon.hero.lvl);assertEquals(1,Dungeon.hero.talentPointsAvailable(2));
+        Dungeon.hero.upgradeTalent(Talent.BLESS);log("EARN LEVEL SEVEN AND FIRST BLESS POINT");
+        for(int c:new int[]{680,712,712,712,744,776,808,809,809})click(c);
+        Item strength=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength.class);assertNotNull(strength);
+        strength.execute(Dungeon.hero,"DRINK");ready();assertEquals(14,Dungeon.hero.STR);log("DRINK FOURTH EARNED STRENGTH POTION");
+        if(System.getProperty("route.checkpoint8BlessOut")!=null)writeCheckpoint(System.getProperty("route.checkpoint8BlessOut"));
+    }
+
+    private void eighthFloorSection() throws Exception {
+        if(Dungeon.hero.pos==809){eighthFloorAfterBless();return;}
+        assertEquals(997,Dungeon.hero.pos);
+        if(Boolean.getBoolean("route.eightContinue")){eighthFloorAfterRest();return;}
+        for(int n=0;n<Integer.getInteger("route.eightWait",225);n++)waitOne();
+        log("FLOOR EIGHT PAID ENTRANCE RECHARGE");
+        if(System.getProperty("route.checkpoint8RestOut")!=null)writeCheckpoint(System.getProperty("route.checkpoint8RestOut"));
     }
 
     private void seventhFloorAfterIntercept() throws Exception {
