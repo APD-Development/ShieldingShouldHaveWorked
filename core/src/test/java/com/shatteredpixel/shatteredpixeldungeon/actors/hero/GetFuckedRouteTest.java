@@ -44,6 +44,7 @@ public class GetFuckedRouteTest {
     private Object chasmWindow;
     private MockedConstruction<?> hourglassWindows;
     private Object hourglassWindow;
+    private MockedConstruction<com.shatteredpixel.shatteredpixeldungeon.windows.WndChooseSubclass> subclassWindows;
     private Camera oldMainCamera;
     private int chainAnimationsCompleted;
     private int pushAnimationsCompleted;
@@ -147,6 +148,7 @@ public class GetFuckedRouteTest {
         chasmWindows=mockConstruction(jumpWindowClass,withSettings().defaultAnswer(CALLS_REAL_METHODS),(window,contextArgs)->{chasmWindow=window;Field outer=window.getClass().getDeclaredField("this$0");outer.setAccessible(true);outer.set(window,contextArgs.arguments().get(0));});
         Class freezeWindowClass=Class.forName("com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass$1");
         hourglassWindows=mockConstruction(freezeWindowClass,withSettings().defaultAnswer(CALLS_REAL_METHODS),(window,contextArgs)->{hourglassWindow=window;Field outer=window.getClass().getDeclaredField("this$0");outer.setAccessible(true);outer.set(window,contextArgs.arguments().get(0));});
+        if(Boolean.getBoolean("route.manualSubclassUi"))subclassWindows=mockConstruction(com.shatteredpixel.shatteredpixeldungeon.windows.WndChooseSubclass.class);
         MockedStatic<Game> game=visual(Game.class);
         game.when(()->Game.runOnRenderThread(any(Callback.class))).thenAnswer(i->{if(executeTradeUi || executeChasmUi)((Callback)i.getArgument(0)).call();return null;});
         gameplaySceneStub=mock(GameScene.class,RETURNS_DEEP_STUBS);
@@ -225,6 +227,7 @@ public class GetFuckedRouteTest {
         if(tradeWindows!=null)tradeWindows.close();
         if(chasmWindows!=null)chasmWindows.close();
         if(hourglassWindows!=null)hourglassWindows.close();
+        if(subclassWindows!=null)subclassWindows.close();
         Collections.reverse(visuals); for (MockedStatic<?> m : visuals) m.close();
     }
     private void ready() {
@@ -323,6 +326,7 @@ public class GetFuckedRouteTest {
     private void verifyCheckpoint(String dir) throws Exception {
         JSONObject manifest=new JSONObject(new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(dir,"manifest.json")),java.nio.charset.StandardCharsets.UTF_8));
         JSONObject expected=manifest.getJSONObject("state"),actual=continuity();
+        if(expected.has("subClass")){assertEquals("Recorded subclass differs",expected.getString("subClass"),Dungeon.hero.subClass.name());expected.remove("subClass");}
         assertTrue("Native restore changed retained resources: expected="+expected+" actual="+actual,expected.similar(new JSONObject(actual.toString())));
         log("NATIVE_CONTINUITY_VERIFIED");
     }
@@ -330,6 +334,7 @@ public class GetFuckedRouteTest {
         String path=System.getProperty("route.expectedEnd");if(path==null)return;
         java.nio.file.Path root=java.nio.file.Paths.get(path);
         JSONObject expected=new JSONObject(new String(java.nio.file.Files.readAllBytes(root.resolve("manifest.json")),java.nio.charset.StandardCharsets.UTF_8)).getJSONObject("state");
+        if(expected.has("subClass")){assertEquals("Recorded subclass differs",expected.getString("subClass"),Dungeon.hero.subClass.name());expected.remove("subClass");}
         JSONObject actual=continuity();actual.put("time",0);
         assertTrue("Endpoint resources differ from the connected native checkpoint: expected="+expected+" actual="+actual,expected.similar(new JSONObject(actual.toString())));
         Field f=Random.class.getDeclaredField("generators");f.setAccessible(true);
@@ -438,6 +443,7 @@ public class GetFuckedRouteTest {
         }
         assertEquals("Maximum HP must stay exactly one",1,Dungeon.hero.HT);assertTrue("Current HP exceeds one",Dungeon.hero.HP<=1);
         System.out.println("ROUTE "+state(s));
+        if(Dungeon.depth>=10)System.out.println("CLASS_DETAIL "+s+" subclass="+Dungeon.hero.subClass.name()+" gold="+Dungeon.gold+" energy="+Dungeon.energy);
         JSONArray buffs=new JSONArray();
         for(Buff b:Dungeon.hero.buffs()){
             JSONObject entry=new JSONObject().put("type",b.getClass().getSimpleName()).put("remaining",b.cooldown());
@@ -3556,6 +3562,29 @@ public class GetFuckedRouteTest {
         }
     }
 
+    private void chooseOwnedSubclassThroughOriginalConfirmation(HeroSubClass way) throws Exception {
+        assertNotNull(subclassWindows);
+        assertEquals(HeroSubClass.NONE,Dungeon.hero.subClass);
+        assertTrue(Arrays.asList(Dungeon.hero.heroClass.subClasses()).contains(way));
+        com.shatteredpixel.shatteredpixeldungeon.items.TengusMask mask=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.TengusMask.class);
+        assertNotNull("The original mask must have been physically collected",mask);
+        assertTrue(mask.actions(Dungeon.hero).contains("WEAR"));
+        mask.execute(Dungeon.hero,"WEAR"); // original sets curUser and opens the visual-only window
+        com.shatteredpixel.shatteredpixeldungeon.windows.WndChooseSubclass window=subclassWindows.constructed().get(subclassWindows.constructed().size()-1);
+        window.parent=mock(com.watabou.noosa.Group.class); // original confirmation requires the window still be open
+        Class<?> buttonType=Class.forName("com.shatteredpixel.shatteredpixeldungeon.windows.WndChooseSubclass$2");
+        Object button=mock(buttonType);
+        String[] names={"val$subCls","val$tome","this$0"};Object[] values={way,mask,window};
+        for(int n=0;n<names.length;n++){Field f=buttonType.getDeclaredField(names[n]);f.setAccessible(true);f.set(button,values[n]);}
+        Class<?> confirmType=Class.forName("com.shatteredpixel.shatteredpixeldungeon.windows.WndChooseSubclass$2$1");
+        Object confirm=mock(confirmType,invocation->{if(invocation.getMethod().getName().equals("onSelect"))return invocation.callRealMethod();return org.mockito.Answers.RETURNS_DEFAULTS.answer(invocation);});Field outer=confirmType.getDeclaredField("this$1");outer.setAccessible(true);outer.set(confirm,button);
+        java.lang.reflect.Method select=confirmType.getDeclaredMethod("onSelect",int.class);select.setAccessible(true);
+        // Call only the original selection body; hide() and other rendering remain visual no-ops.
+        select.invoke(confirm,0);
+        assertEquals(way,Dungeon.hero.subClass);
+        ready();log("MANUAL OWNED MASK ORIGINAL CONFIRMATION "+way.name());
+    }
+
     //Manual commands and fixed replay only: no route search, action selection or game-state grants.
     private void manualTailSection() throws Exception {
         java.util.Iterator<String> recorded=System.getProperty("route.manualReplay")==null ? java.util.Collections.<String>emptyList().iterator() : java.nio.file.Files.readAllLines(java.nio.file.Path.of(System.getProperty("route.manualReplay"))).iterator();
@@ -3572,6 +3601,8 @@ public class GetFuckedRouteTest {
                 if(action.equals("B"))cast(BlessSpell.INSTANCE,Dungeon.hero.pos);
                 else if(action.equals("F"))activateOwnedHourglassFreeze();
                 else if(action.equals("N"))activateOwnedHourglassStasis();
+                else if(action.startsWith("M"))chooseOwnedSubclassThroughOriginalConfirmation(HeroSubClass.valueOf(action.substring(1)));
+                else if(action.startsWith("O"))buyActualShopHeap(Integer.parseInt(action.substring(1)));
                 else if(action.equals("P")){Dungeon.hero.search(true);ready();log("MANUAL ACTUAL PAID SEARCH");}
                 else if(action.startsWith("Y")){int at=action.indexOf('@'),arrow=action.indexOf('>');assertTrue(at>1 && arrow>at);int pot=Integer.parseInt(action.substring(1,at));Class<? extends Item> inputType=Class.forName("com.shatteredpixel.shatteredpixeldungeon.items."+action.substring(at+1,arrow)).asSubclass(Item.class);Class<? extends Item> outputType=Class.forName("com.shatteredpixel.shatteredpixeldungeon.items."+action.substring(arrow+1)).asSubclass(Item.class);craftExoticPotionAtActualPot(pot,inputType,outputType);}
                 else if(action.startsWith("Z")){Talent talent=Talent.valueOf(action.substring(1));int tier=-1;for(int k=0;k<Dungeon.hero.talents.size();k++)if(Dungeon.hero.talents.get(k).containsKey(talent))tier=k;assertTrue(tier>=0);assertTrue(Dungeon.hero.talentPointsAvailable(tier+1)>0);assertTrue(Dungeon.hero.pointsInTalent(talent)<talent.maxPoints());Dungeon.hero.upgradeTalent(talent);log("MANUAL EARNED TALENT "+talent.name());}
