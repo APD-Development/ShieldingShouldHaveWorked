@@ -79,8 +79,30 @@ public class Waterskin extends Item {
 		return actions;
 	}
 
-	@Override
-	public void execute( final Hero hero, String action ) {
+    private transient com.shatteredpixel.shatteredpixeldungeon.windows.WndActionConfirmation drinkPrompt;
+
+    @Override
+    public void execute(final Hero hero,String action){
+        if(AC_DRINK.equals(action) && volume>0 && com.shatteredpixel.shatteredpixeldungeon.SPDSettings.confirmWaterskin()){
+            if(drinkPrompt!=null && drinkPrompt.parent!=null)return;
+            final com.shatteredpixel.shatteredpixeldungeon.levels.Level level=com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
+            final int position=hero.pos;
+            com.shatteredpixel.shatteredpixeldungeon.apd.qol.ConfirmationDecision decision=new com.shatteredpixel.shatteredpixeldungeon.apd.qol.ConfirmationDecision(()->{
+                drinkPrompt=null;
+                if(com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero==hero && com.shatteredpixel.shatteredpixeldungeon.Dungeon.level==level
+                        && hero.pos==position && hero.isAlive() && hero.ready && hero.belongings.backpack.contains(this))executeConfirmed(hero,action);
+            },()->drinkPrompt=null);
+            requestDrinkConfirmation(decision);
+            return;
+        }
+        executeConfirmed(hero,action);
+    }
+    protected void requestDrinkConfirmation(com.shatteredpixel.shatteredpixeldungeon.apd.qol.ConfirmationDecision decision){
+        drinkPrompt=new com.shatteredpixel.shatteredpixeldungeon.windows.WndActionConfirmation("Use Waterskin?",
+                "Drink stored dew from your Waterskin to heal? Dew used here cannot be saved for blessing an Ankh.",decision);
+        com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.show(drinkPrompt);
+    }
+    protected void executeConfirmed(final Hero hero,String action){
 
 		super.execute( hero, action );
 

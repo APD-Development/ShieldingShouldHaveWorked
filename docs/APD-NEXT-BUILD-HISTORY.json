@@ -1,58 +1,74 @@
 {
   "date": "2026-10-16",
-  "previous_source": "832c1a5679a8cd216e8c57638f1bc0fe2442fdfe",
-  "previous_run": 38949555542,
-  "previous_label": "Codex TEST 254",
+  "previous_source": "a11b32f8067765e6229830c929d07d262de34800",
+  "previous_run": 38964629976,
+  "previous_label": "Codex TEST 255",
   "changes": [
     {
-      "category": "Bug Fixes",
-      "sprite": "ICON_STATS",
-      "title": "Accurate group comparisons",
-      "text": "Repeated statistic labels keep their own values instead of borrowing the last matching label from the other group.",
+      "category": "Quality of Life",
+      "sprite": "ITEM_WATERSKIN",
+      "title": "Confirm Waterskin use",
+      "text": "An optional, default-on confirmation protects stored dew from accidental drinking; cancel spends no dew or turn.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/report/ReportBuilder.java",
-        "core/src/main/assets/apd/releases/apd-alpha-preview.tsv"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Waterskin.java"
+      ]
+    },
+    {
+      "category": "Quality of Life",
+      "sprite": "ICON_WARNING",
+      "title": "Warn before known traps",
+      "text": "An optional, default-on warning stops deliberate walking before a visible armed trap; confirming continues the normal step once.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/Hero.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndSettings.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/SPDSettings.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/qol/ConfirmationDecision.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/qol/TrapStepPermit.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndActionConfirmation.java"
+      ]
+    },
+    {
+      "category": "Bug Fixes",
+      "sprite": "ICON_CHANGES",
+      "title": "Responsive main menu",
+      "text": "Hide UI stays separate from Changes on short or resized displays; controls get space before decorative artwork.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/TitleGeometry.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/TitleScene.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Retain the repeated-label regression",
-      "text": "A controlled one-method baseline and the full gate require two same-label statistics to remain paired by definition order.",
+      "title": "Movement and Android touch checks",
+      "text": "Check cancellation, single-use confirmation, pathfinding, preference persistence and main-menu touch interaction across five display configurations.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/report/GroupComparisonRepeatedLabelTest.java",
-        ".github/workflows/codex-group-comparison-repro.yml",
-        ".github/workflows/codex-final-alpha-acceptance.yml",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PlayRunDeviceTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/TitleGeometryTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/TitleMenuLayoutDeviceTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PlayRunDeviceTest.java",
+        "tools/run-codex-android-checks.sh",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/qol/ActionConfirmationTest.java"
       ]
     },
     {
       "category": "Infrastructure",
       "sprite": "ICON_INFO",
-      "title": "Preserve TEST254 delivery and candidate evidence",
-      "text": "Keep exact published-source receipts, unsuccessful supplemental attempts and the TEST254 rollback while the new source is verified.",
+      "title": "Exact build and display evidence",
+      "text": "Reuse one application APK for display checks and retain its immediate predecessor, exact source, failures and compatible fallback.",
       "paths": [
-        ".github/workflows/codex-alpha-final-owner254.yml",
-        ".github/workflows/codex-owner-afternoon-status.yml",
-        "docs/APD-ALPHA-PREPARATION.json",
-        "docs/APD-FINAL-ALPHA-ACCEPTANCE-2026-10-16.md",
-        "docs/APD-OWNER-AFTERNOON-DELIVERY-2026-10-16.json"
-      ]
-    },
-    {
-      "category": "Developer Commentary",
-      "sprite": "ICON_INFO",
-      "title": "Record the bounded UIMSD correction",
-      "text": "Document the reproduced mismatch, exact baseline evidence, pending full verification and unchanged gameplay/scoring limits.",
-      "paths": [
-        "docs/APD-TEST255-GROUP-COMPARISON-2026-10-16.md",
-        "docs/APD-CODEX-BUILD-REQUEST.txt",
+        ".github/workflows/codex-menu-layout-matrix.yml",
+        "tools/run-title-display-check.sh",
+        "docs/APD-TITLE-FOOTER-FIX-2026-10-16.md",
         "docs/APD-NEXT-BUILD-HISTORY.json",
+        "docs/APD-ALPHA-PREPARATION.json",
+        "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/HANDOFF.md",
+        "core/src/main/assets/apd/releases/apd-alpha-preview.tsv",
+        "docs/APD-TEST255-GROUP-COMPARISON-2026-10-16.md",
+        "docs/APD-TEST255-VERIFICATION-2026-10-16.json",
         "docs/WORK-COMPLETED-LEDGER.md"
       ]
     }
   ],
-  "commentary": "A group comparison treated display labels as unique identifiers. The retained regression proves that two distinct Average rows could both show group B's later value; pairing the same-schema lines by definition order fixes only report presentation."
+  "commentary": "These safeguards came from early alpha feedback. I kept normal dew, trap and movement mechanics intact and made menu layout depend on available space instead of a phone model."
 }

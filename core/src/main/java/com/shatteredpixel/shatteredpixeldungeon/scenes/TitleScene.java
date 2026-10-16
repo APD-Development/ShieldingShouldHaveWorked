@@ -100,6 +100,7 @@ public class TitleScene extends PixelScene {
 
 	private BitmapText version;
 	private IconButton btnFade;
+	private TitleGeometry.Layout titleLayout;
 	private ExitButton btnExit;
 
 	@Override
@@ -302,7 +303,7 @@ public class TitleScene extends PixelScene {
 		float gridLeft, gridWidth, gridTop;
 
 		String annotationText = com.shatteredpixel.shatteredpixeldungeon.windows.UimsdGate.titleAnnotation( ANNOTATION_TEXT );
-		annotation = new APDAnnotation( annotationText, Math.min( 150, landscape() ? w - LOGO_W - 12 : w - 8 ) );
+		annotation = new APDAnnotation( annotationText, Math.min( 150, landscape() ? Math.min(LOGO_W, w - Math.min(150, w-8) - 12) : w - 8 ) );
 		annotation.visible = !annotationText.isEmpty();
 		add( annotation );
 		add(new com.watabou.noosa.PointerArea(0, 0, 0, 0){
@@ -325,9 +326,8 @@ public class TitleScene extends PixelScene {
 		if (landscape()){
 			//logo on the left, button grid on the right
 			TitleGeometry.Layout l = TitleGeometry.landscape( insets.left, insets.top, w, h, version.height(), textH );
-			float totalW = LOGO_W + 8 + l.gridWidth;
-			float left = insets.left + (w - totalW) / 2f;
-			logoX = left;
+			titleLayout = l;
+			logoX = l.logoX;
 			logoY = l.logoY;
 			gridLeft = l.gridLeft;
 			gridWidth = l.gridWidth;
@@ -337,27 +337,31 @@ public class TitleScene extends PixelScene {
 			TitleGeometry.Layout l = TitleGeometry.portrait( insets.left, insets.top, w, h, version.height(), textH );
 			gridWidth = l.gridWidth;
 			gridLeft = l.gridLeft;
-			logoX = insets.left + (w - LOGO_W) / 2f;
+			titleLayout = l;
+			logoX = l.logoX;
 			logoY = l.logoY;
 			gridTop = l.gridTop;
 			layoutGrid( gridLeft, gridTop, gridWidth, l.mainH );
 		}
 
+		float artScale = titleLayout.logoScale;
+		logo.scale.set(artScale); glow.scale.set(artScale);
+		leftFlame.scale.set(artScale); rightFlame.scale.set(artScale);
 		logo.x = logoX;
 		logo.y = logoY;
 		align( logo );
 		glow.x = logo.x;
 		glow.y = logo.y;
 
-		leftFlame.x = logo.x + LEFT_FLAME_X - FLAME_BASE_X;
-		leftFlame.y = logo.y + FLAME_Y - FLAME_BASE_Y;
-		rightFlame.x = logo.x + RIGHT_FLAME_X - FLAME_BASE_X;
-		rightFlame.y = logo.y + FLAME_Y - FLAME_BASE_Y;
+		leftFlame.x = logo.x + (LEFT_FLAME_X - FLAME_BASE_X)*artScale;
+		leftFlame.y = logo.y + (FLAME_Y - FLAME_BASE_Y)*artScale;
+		rightFlame.x = logo.x + (RIGHT_FLAME_X - FLAME_BASE_X)*artScale;
+		rightFlame.y = logo.y + (FLAME_Y - FLAME_BASE_Y)*artScale;
 		align( leftFlame );
 		align( rightFlame );
 
-		version.x = logo.x + (LOGO_W - version.width()) / 2f;
-		version.y = logo.y + LOGO_H - 1;
+		version.x = logo.x + (LOGO_W*artScale - version.width()) / 2f;
+		version.y = titleLayout.versionY;
 		align( version );
 
 		btnFade = new IconButton(Icons.CHEVRON.get()){
@@ -377,7 +381,7 @@ public class TitleScene extends PixelScene {
 		};
 		btnFade.icon().originToCenter();
 		btnFade.icon().angle = 180f;
-		btnFade.setRect(insets.left + (w-16)/2f, Camera.main.height - 16 - insets.bottom, 16, 16);
+		btnFade.setRect(titleLayout.fadeX, titleLayout.fadeY, TitleGeometry.FADE_SIZE, TitleGeometry.FADE_SIZE);
 		add(btnFade);
 
 		PointerArea fadeResetter = new PointerArea(0, 0, Camera.main.width, Camera.main.height){
@@ -427,7 +431,9 @@ public class TitleScene extends PixelScene {
 		}
 
 		//the arrow points down at the UIMSD button (top row, right column), the text sits above it in the space reserved over the grid
-		annotation.place( left, width, TitleGeometry.colWidth( width ) + MAIN_GAP, top );
+		if (titleLayout.annotationBesideGrid) annotation.placeTextOnly(titleLayout.annotationLeft, titleLayout.annotationTop);
+		else if (titleLayout.annotationCompact) annotation.placeTextOnly(left, top-titleLayout.annotationH);
+		else annotation.place( left, width, TitleGeometry.colWidth( width ) + MAIN_GAP, top );
 
 		float apdY = top + 3*(mainH + MAIN_GAP);
 		btnAPDSettings.setRect( left, apdY, (width - MAIN_GAP)/2f, BOTTOM_H );
@@ -604,6 +610,18 @@ public class TitleScene extends PixelScene {
 			}
 			positionArrow( 0 );
 		}
+
+        // In a short landscape window the same clickable guidance moves beside the grid.
+        void placeTextOnly(float left,float top){
+            for(int i=0;i<lines.length;i++){
+                lines[i].x=left;lines[i].y=top+i*lines[i].height();
+                shadows[i].x=left+1;shadows[i].y=lines[i].y+1;
+            }
+            for(ColorBlock b:glow)b.visible=false;
+            for(ColorBlock b:outline)b.visible=false;
+            for(ColorBlock b:body)b.visible=false;
+            highlightTop.visible=highlightShaft.visible=false;
+        }
 
 		private void positionArrow( float lift ){
 			float y = arrowY - lift;

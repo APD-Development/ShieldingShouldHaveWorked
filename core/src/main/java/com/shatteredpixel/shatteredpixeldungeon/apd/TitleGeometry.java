@@ -31,6 +31,7 @@ public final class TitleGeometry {
 	public static final int LOGO_W = 139;
 	public static final int LOGO_H = 100;
 	public static final int MAIN_GAP = 3;
+	public static final int FADE_SIZE = 16, FOOTER_GAP = 4, FOOTER_H = FADE_SIZE + FOOTER_GAP;
 	public static final int BOTTOM_H = 20;
 	//the full-width APD Settings row sits between the 2x3 grid and the News/Changes/About row
 	public static final int APD_ROW_H = BOTTOM_H + MAIN_GAP;
@@ -113,42 +114,51 @@ public final class TitleGeometry {
 
 	//the vertical layout result for one orientation (x positions of the logo are not needed here)
 	public static final class Layout {
-		public float logoY, gridLeft, gridWidth, gridTop, mainH, annotationH;
+		public float logoX, logoY, logoScale = 1, gridLeft, gridWidth, gridTop, mainH, annotationH;
+		public float fadeX, fadeY, annotationLeft, annotationTop;
+		public boolean annotationBesideGrid, annotationCompact;
 		//where the version text sits: just under the logo
 		public float versionY;
 	}
 
 	//w/h: usable screen size, left/top: its insets. versionH: height of the version text. textH: annotation text height.
-	public static Layout landscape( float left0, float top0, float w, float h, float versionH, float textH ){
-		Layout r = new Layout();
-		float versionGap = versionH + 2;
-		r.gridWidth = Math.min(150, w - LOGO_W - 12);
-		float totalW = LOGO_W + 8 + r.gridWidth;
-		float left = left0 + (w - totalW) / 2f;
-		r.annotationH = annotationHeight( textH );
-		r.mainH = mainHeightWith( h - 8, r.annotationH );
-		float gridH = gridHeight( r.annotationH, r.mainH );
-		r.logoY = top0 + (h - (LOGO_H + versionGap)) / 2f;
-		r.gridLeft = left + LOGO_W + 8;
-		r.gridTop = top0 + (h - gridH) / 2f + r.annotationH;
-		r.versionY = r.logoY + LOGO_H - 1;
-		return r;
-	}
-
-	public static Layout portrait( float left0, float top0, float w, float h, float versionH, float textH ){
-		Layout r = new Layout();
-		float versionGap = versionH + 2;
-		r.gridWidth = Math.min(w - 8, 150);
-		r.gridLeft = left0 + (w - r.gridWidth) / 2f;
-		float topPad = 6;
-		float availForGrid = h - topPad - LOGO_H - versionGap - 6 - 4;
-		r.annotationH = annotationHeight( textH );
-		r.mainH = mainHeightWith( availForGrid, r.annotationH );
-		float gridH = gridHeight( r.annotationH, r.mainH );
-		float contentH = LOGO_H + versionGap + 4 + gridH;
-		r.logoY = top0 + Math.max(topPad, (h - contentH) * 0.35f);
-		r.gridTop = r.logoY + LOGO_H + versionGap + 4 + r.annotationH;
-		r.versionY = r.logoY + LOGO_H - 1;
-		return r;
-	}
+    public static Layout landscape(float left0,float top0,float w,float h,float versionH,float textH){
+        Layout r=new Layout(); float usable=h-FOOTER_H, versionGap=versionH+2;
+        r.gridWidth=Math.min(150,w-8);
+        float logoColumn=Math.min(LOGO_W,Math.max(0,w-r.gridWidth-12));
+        float left=left0+(w-logoColumn-8-r.gridWidth)/2f;
+        r.annotationH=annotationHeight(textH);
+        r.annotationBesideGrid=gridHeight(r.annotationH,24)>usable-8;
+        if(r.annotationBesideGrid)r.annotationH=0;
+        r.mainH=mainHeightWith(usable-8,r.annotationH);
+        float gridH=gridHeight(r.annotationH,r.mainH);
+        float noteH=r.annotationBesideGrid && textH>=0 ? textH+4:0;
+        r.logoScale=Math.min(1,Math.min(logoColumn/LOGO_W,Math.max(0,usable-versionGap-noteH-8)/LOGO_H));
+        r.logoX=left+(logoColumn-LOGO_W*r.logoScale)/2;
+        r.logoY=top0+Math.max(0,(usable-LOGO_H*r.logoScale-versionGap-noteH)/2);
+        r.gridLeft=left+logoColumn+8;
+        r.gridTop=top0+(usable-gridH)/2+r.annotationH;
+        r.versionY=r.logoY+LOGO_H*r.logoScale-1;
+        r.annotationLeft=left; r.annotationTop=r.versionY+versionH+3;
+        footer(r,left0,top0,w,h); return r;
+    }
+    public static Layout portrait(float left0,float top0,float w,float h,float versionH,float textH){
+        Layout r=new Layout(); float usable=h-FOOTER_H, versionGap=versionH+2, topPad=6;
+        r.gridWidth=Math.min(w-8,150); r.gridLeft=left0+(w-r.gridWidth)/2;
+        r.annotationH=annotationHeight(textH);
+        r.annotationCompact=gridHeight(r.annotationH,24)+versionGap+4+topPad>usable;
+        if(r.annotationCompact)r.annotationH=textH<0?0:(float)Math.ceil(textH+2);
+        r.mainH=mainHeightWith(usable-topPad-LOGO_H-versionGap-10,r.annotationH);
+        float gridH=gridHeight(r.annotationH,r.mainH);
+        r.logoScale=Math.min(1,Math.min((w-8)/LOGO_W,Math.max(0,usable-topPad-versionGap-4-gridH)/LOGO_H));
+        float content=LOGO_H*r.logoScale+versionGap+4+gridH;
+        r.logoY=top0+Math.max(topPad,(usable-content)*0.35f);
+        r.logoX=left0+(w-LOGO_W*r.logoScale)/2;
+        r.gridTop=r.logoY+LOGO_H*r.logoScale+versionGap+4+r.annotationH;
+        r.versionY=r.logoY+LOGO_H*r.logoScale-1;
+        footer(r,left0,top0,w,h); return r;
+    }
+    private static void footer(Layout r,float left,float top,float w,float h){
+        r.fadeX=left+(w-FADE_SIZE)/2; r.fadeY=top+h-FADE_SIZE;
+    }
 }

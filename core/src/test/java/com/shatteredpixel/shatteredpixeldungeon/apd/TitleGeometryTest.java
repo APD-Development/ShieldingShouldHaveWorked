@@ -50,6 +50,10 @@ public class TitleGeometryTest {
 
 	private static void checkAnnotation( Layout l, boolean portrait, float w, float h, String where ){
 		Rect[] buttons = buttons( l );
+        if(l.annotationBesideGrid || l.annotationCompact){
+            assertTrue("Guidance fits above footer",l.annotationBesideGrid ? l.annotationTop+TEXT_H<=l.fadeY-TitleGeometry.FOOTER_GAP : l.gridTop-l.annotationH>=l.versionY+VERSION_H);
+            return;
+        }
 		Rect arrow = arrowExtent( l, true );
 		Rect arrowRest = arrowExtent( l, false );
 		for (int i = 0; i < buttons.length; i++){
@@ -170,5 +174,35 @@ public class TitleGeometryTest {
 		assertEquals(message, String.join("", lines));
 		for (String line : lines) assertTrue(line.length() * 4 <= 20);
 	}
+
+    @Test public void everyMenuButtonReservesTheHideUiFooterAtMinimumAndVirtualSizes(){
+        for(boolean landscape:new boolean[]{false,true})
+        for(int w:new int[]{135,160,180,240,300,360,540,720})
+        for(int h:new int[]{160,225,240,260,300,360,480,800})
+        for(int text:new int[]{-1,8,16,32,48}){
+            if(landscape ? w<240 : h<225)continue;
+            Layout l=landscape ? TitleGeometry.landscape(3,7,w,h,VERSION_H,text)
+                    : TitleGeometry.portrait(3,7,w,h,VERSION_H,text);
+            Rect fade=new Rect(l.fadeX,l.fadeY,16,16);
+            Rect[] all=buttons(l);
+            for(int i=0;i<all.length;i++){
+                Rect b=all[i];String context=w+"x"+h+" landscape="+landscape+" text="+text+" control="+i;
+                assertTrue("Footer overlap "+context,!b.hits(fade));
+                assertTrue("Footer clearance "+context,b.b<=l.fadeY-TitleGeometry.FOOTER_GAP+0.001);
+                assertTrue("Offscreen "+context,b.l>=3 && b.r<=3+w && b.t>=7 && b.b<=7+h);
+                for(int j=i+1;j<all.length;j++)assertTrue("Menu controls overlap "+context,!b.hits(all[j]));
+            }
+            assertTrue(l.logoScale>=0 && l.logoScale<=1);
+            assertTrue(l.logoY>=7);
+            assertTrue(l.versionY+VERSION_H<=l.fadeY-TitleGeometry.FOOTER_GAP);
+        }
+    }
+    @Test public void reportedShortPortraitUsedToPlaceChangesUnderTheFooter(){
+        Layout l=TitleGeometry.portrait(0,0,180,280,VERSION_H,16);
+        Rect changes=buttons(l)[8];
+        assertTrue(changes.b<=l.fadeY-TitleGeometry.FOOTER_GAP);
+        assertTrue(l.mainH>=24);
+        assertTrue(l.logoScale<1);
+    }
 
 }

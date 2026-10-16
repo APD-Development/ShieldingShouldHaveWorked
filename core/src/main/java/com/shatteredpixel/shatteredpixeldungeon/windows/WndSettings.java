@@ -368,6 +368,7 @@ public class WndSettings extends WndTabbed {
 		ColorBlock sep2;
 		CheckBox chkFont;
 		CheckBox chkVibrate;
+        CheckBox chkConfirmWaterskin,chkConfirmTraps;
 
 		@Override
 		protected void createChildren() {
@@ -601,6 +602,14 @@ public class WndSettings extends WndTabbed {
 				chkVibrate.checked(SPDSettings.vibration());
 			}
 			add(chkVibrate);
+            chkConfirmWaterskin=new CheckBox("Confirm Waterskin"){
+                @Override protected void onClick(){super.onClick();SPDSettings.confirmWaterskin(checked());}
+            };
+            chkConfirmWaterskin.checked(SPDSettings.confirmWaterskin());add(chkConfirmWaterskin);
+            chkConfirmTraps=new CheckBox("Warn about traps"){
+                @Override protected void onClick(){super.onClick();SPDSettings.confirmKnownTraps(checked());}
+            };
+            chkConfirmTraps.checked(SPDSettings.confirmKnownTraps());add(chkConfirmTraps);
 		}
 
 		@Override
@@ -648,6 +657,9 @@ public class WndSettings extends WndTabbed {
 				chkVibrate.setRect(0, chkFont.bottom() + GAP, width, BTN_HEIGHT);
 				height = chkVibrate.bottom();
 			}
+            chkConfirmWaterskin.setRect(0,height+GAP,width,BTN_HEIGHT);
+            chkConfirmTraps.setRect(0,chkConfirmWaterskin.bottom()+GAP,width,BTN_HEIGHT);
+            height=chkConfirmTraps.bottom();
 		}
 
 	}

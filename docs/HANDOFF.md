@@ -1,3 +1,15 @@
+## Pending early-alpha tester feedback package — October16,2026
+
+Responsive menu footer plus independent default-on Waterskin and known-trap confirmations are implemented in source, not yet verified or published.29 focused core methods pass; the complete gate will require1752core/37Android/55PNG and five representative display checks with the same APK. Preserve actual compiled TEST255sourcea11b32f8067765e6229830c929d07d262de34800/run38964629976 and its UIMSD label fix; do not overwrite it. Previous255 producer passed1737 methods, Android still pending. TEST254 remains verified published fallback. Both confirmations live in Options/Interface; no hidden-trap revelation, forced-move warning, double execution, raw history or scoring change. See docs/APD-TITLE-FOOTER-FIX-2026-10-16.md. Pending checkpoint does not authorize a verified-build claim.
+
+## TEST255 candidate — repeated-label UIMSD group comparison correction — 2026-10-16T20:45:26Z
+
+Controlled run [38964285358](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38964285358) reproduced a supported report defect: two different statistics both labeled `Average` should show group B values20 and200, but the first borrowed the later value200. JUnit recorded1failure/0errors; artifact12073194262 preserves the baseline. The diagnostic wrapper also failed its overly literal JUnit-message check, so its workflow conclusion remains failure rather than being relabeled.
+
+The bounded candidate pairs same-schema detail lines by definition order instead of treating display labels as unique identifiers. One permanent core regression and a player-facing history line are retained. Raw history, queries, caches, saves, all18 sliders, v2.6R's357 values/formula, original scores, gameplay, RNG and turns are unchanged.
+
+Request TEST255 full1737-core/debug/complete TEST254 history/API34 visual gate against exact previous application source832c1a5679a8cd216e8c57638f1bc0fe2442fdfe/run38949555542. Candidate pending until actual evidence passes; published TEST254 and TEST250 remain fallbacks. No physical-phone, owner-save or automatic tester-distribution claim. Details: `docs/APD-TEST255-GROUP-COMPARISON-2026-10-16.md`.
+
 ## TEST255 verified private workflow artifact — repeated-label UIMSD group comparison correction — 2026-10-16T21:07:59Z
 
 The supported repeated-label comparison defect is corrected at source `a11b32f8067765e6229830c929d07d262de34800`. Controlled baseline [38964285358](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/38964285358) retained the actual mismatch (expected20, received200;1failure/0errors; artifact12073194262, ZIP SHA-256 `137c7a8b59b13049b65e0bee815c57069668bb0bb1f69dcb67d95479d7ea9669`). The diagnostic wrapper also failed its literal-message check; that workflow remains honestly failed.

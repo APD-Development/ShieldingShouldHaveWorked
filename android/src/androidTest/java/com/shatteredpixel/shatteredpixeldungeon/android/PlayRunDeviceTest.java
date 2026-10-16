@@ -535,6 +535,73 @@ public class PlayRunDeviceTest {
         onRender(()->{assertEquals(metamorphTarget,Dungeon.hero.metamorphedTalents.get(metamorphOriginal));assertTrue(Dungeon.hero.talents.get(0).containsKey(metamorphTarget));assertFalse(Dungeon.hero.talents.get(0).containsKey(metamorphOriginal));});
     }
 
+	    private static void tapQolOption(String label)throws Exception {
+        final com.watabou.utils.Point[] point=new com.watabou.utils.Point[1];
+        onRender(()->{try{
+            java.util.List<com.shatteredpixel.shatteredpixeldungeon.windows.WndActionConfirmation> dialogs=TopScoresDeviceTest.find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.windows.WndActionConfirmation.class);
+            assertEquals(1,dialogs.size());
+            for(com.shatteredpixel.shatteredpixeldungeon.ui.RedButton b:TopScoresDeviceTest.find(dialogs.get(0),com.shatteredpixel.shatteredpixeldungeon.ui.RedButton.class))
+                if(label.equals(b.text()))point[0]=b.camera().cameraToScreen(b.left()+b.width()/2,b.top()+b.height()/2);
+            assertNotNull(point[0]);
+        }catch(Exception e){throw new RuntimeException(e);}});
+        long down=android.os.SystemClock.uptimeMillis();
+        for(int type:new int[]{android.view.MotionEvent.ACTION_DOWN,android.view.MotionEvent.ACTION_UP}){
+            android.view.MotionEvent event=android.view.MotionEvent.obtain(down,android.os.SystemClock.uptimeMillis(),type,point[0].x,point[0].y,0);
+            event.setSource(android.view.InputDevice.SOURCE_TOUCHSCREEN);
+            try{assertTrue(androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().getUiAutomation().injectInputEvent(event,true));}finally{event.recycle();}
+            if(type==android.view.MotionEvent.ACTION_DOWN)Thread.sleep(80);
+        }
+        Thread.sleep(400);
+    }
+    private static void assertTesterActionConfirmations()throws Exception {
+        boolean waterWas=SPDSettings.confirmWaterskin(),trapWas=SPDSettings.confirmKnownTraps();
+        final com.shatteredpixel.shatteredpixeldungeon.items.Waterskin[] skin=new com.shatteredpixel.shatteredpixeldungeon.items.Waterskin[1];
+        final int[] original=new int[3];final float[] time=new float[1];
+        final com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap[] oldTrap=new com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap[1];
+        final int[] cell={-1},terrain={0};
+        try{
+            onRender(()->{try{
+                SPDSettings.confirmWaterskin(true);SPDSettings.confirmKnownTraps(true);
+                skin[0]=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.Waterskin.class);assertNotNull(skin[0]);
+                original[0]=Dungeon.hero.HP;original[1]=(Integer)field(skin[0],"volume");original[2]=Dungeon.hero.pos;
+                skin[0].fill();Dungeon.hero.HP=10;time[0]=Dungeon.hero.cooldown();skin[0].execute(Dungeon.hero,"DRINK");
+            }catch(Exception e){throw new RuntimeException(e);}});
+            Thread.sleep(400);TopScoresDeviceTest.screenshot("waterskin-confirm.png");tapQolOption("Cancel");
+            onRender(()->{try{assertEquals(20,field(skin[0],"volume"));assertEquals(10,Dungeon.hero.HP);assertEquals(time[0],Dungeon.hero.cooldown(),0);skin[0].execute(Dungeon.hero,"DRINK");}catch(Exception e){throw new RuntimeException(e);}});
+            tapQolOption("Confirm");waitUntil("Waterskin action completed",()->Dungeon.hero.ready,30000);
+            onRender(()->{try{
+                assertTrue((Integer)field(skin[0],"volume")<20);assertTrue(Dungeon.hero.HP>10);
+                SPDSettings.confirmWaterskin(false);skin[0].fill();Dungeon.hero.HP=10;skin[0].execute(Dungeon.hero,"DRINK");
+                assertTrue(TopScoresDeviceTest.find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.windows.WndActionConfirmation.class).isEmpty());
+            }catch(Exception e){throw new RuntimeException(e);}});
+            waitUntil("Immediate Waterskin action completed",()->Dungeon.hero.ready,30000);
+            onRender(()->{try{
+                Dungeon.hero.HP=Dungeon.hero.HT;
+                for(int offset:com.watabou.utils.PathFinder.NEIGHBOURS8){int c=Dungeon.hero.pos+offset;
+                    if(c>=0 && c<Dungeon.level.length() && Dungeon.level.passable[c] && Dungeon.level.heroFOV[c] && !Dungeon.level.pit[c]
+                            && com.shatteredpixel.shatteredpixeldungeon.actors.Actor.findChar(c)==null && Dungeon.level.heaps.get(c)==null && Dungeon.level.transitions.stream().noneMatch(t->t.inside(c))){cell[0]=c;break;}}
+                assertTrue("Adjacent visible test floor exists",cell[0]>=0);
+                terrain[0]=Dungeon.level.map[cell[0]];oldTrap[0]=Dungeon.level.traps.get(cell[0]);
+                com.shatteredpixel.shatteredpixeldungeon.levels.traps.WornDartTrap trap=new com.shatteredpixel.shatteredpixeldungeon.levels.traps.WornDartTrap();trap.visible=true;
+                Dungeon.level.setTrap(trap,cell[0]);com.shatteredpixel.shatteredpixeldungeon.levels.Level.set(cell[0],com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.TRAP);
+                Dungeon.hero.handle(cell[0]);Dungeon.hero.next();
+            }catch(Exception e){throw new RuntimeException(e);}});
+            waitUntil("Known-trap warning",()->!TopScoresDeviceTest.find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.windows.WndActionConfirmation.class).isEmpty(),30000);
+            TopScoresDeviceTest.screenshot("known-trap-confirm.png");tapQolOption("Cancel");
+            onRender(()->{assertEquals(original[2],Dungeon.hero.pos);assertTrue(Dungeon.level.traps.get(cell[0]).active);Dungeon.hero.handle(cell[0]);Dungeon.hero.next();});
+            waitUntil("Repeated intentional trap request",()->!TopScoresDeviceTest.find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.windows.WndActionConfirmation.class).isEmpty(),30000);
+            tapQolOption("Confirm");waitUntil("Confirmed trap step completed",()->Dungeon.hero.ready && Dungeon.hero.pos==cell[0],30000);
+            onRender(()->{assertFalse("Trap activates through normal movement",Dungeon.level.traps.get(cell[0]).active);});
+        }finally{
+            onRender(()->{try{
+                SPDSettings.confirmWaterskin(waterWas);SPDSettings.confirmKnownTraps(trapWas);
+                if(cell[0]>=0){Dungeon.level.traps.remove(cell[0]);if(oldTrap[0]!=null)Dungeon.level.traps.put(cell[0],oldTrap[0]);com.shatteredpixel.shatteredpixeldungeon.levels.Level.set(cell[0],terrain[0]);}
+                if(skin[0]!=null){java.lang.reflect.Field f=com.shatteredpixel.shatteredpixeldungeon.items.Waterskin.class.getDeclaredField("volume");f.setAccessible(true);f.setInt(skin[0],original[1]);}
+                Dungeon.hero.HP=original[0];
+            }catch(Exception e){throw new RuntimeException(e);}});
+        }
+    }
+
 	@Test
 	public void aRunCanBePlayedSavedContinuedAndEndedWithItsHistoryRecorded() throws Exception {
         final com.shatteredpixel.shatteredpixeldungeon.QuickSlot previousQuickslots=Dungeon.quickslot;
@@ -578,6 +645,7 @@ public class PlayRunDeviceTest {
 			waitForGameplayControls();
             assertHealingConfirmationControls();
             assertMetamorphosisChoices();
+            assertTesterActionConfirmations();
             onRender(()->{try {
                 Dungeon.quickslot.setSlot(11,new com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty().virtual());
                 assertEquals(12,Dungeon.quickslot.capacity());

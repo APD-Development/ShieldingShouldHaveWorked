@@ -1011,6 +1011,8 @@ public class Hero extends Char {
 	}
 	
 	public void interrupt() {
+        apdTrapGeneration++;
+        if(apdTrapPermit!=null)apdTrapPermit.clear();
         if (curAction instanceof com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.Walk) {
             lastAction=null; curAction=null;
         }
@@ -1874,6 +1876,32 @@ public class Hero extends Char {
 	}
 	
 	private boolean walkingToVisibleTrapInFog = false;
+    private transient com.shatteredpixel.shatteredpixeldungeon.apd.qol.TrapStepPermit apdTrapPermit=new com.shatteredpixel.shatteredpixeldungeon.apd.qol.TrapStepPermit();
+    private transient long apdTrapGeneration;
+    protected void requestKnownTrapConfirmation(com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap trap,
+            com.shatteredpixel.shatteredpixeldungeon.apd.qol.ConfirmationDecision decision){
+        Game.runOnRenderThread(()->{
+            if(Dungeon.hero==this && Game.scene() instanceof GameScene && !decision.decided())
+                GameScene.show(new com.shatteredpixel.shatteredpixeldungeon.windows.WndActionConfirmation("Step onto a known trap?",
+                        "You are about to step onto an armed "+trap.name()+". Proceed?",decision));
+        });
+    }
+    private boolean confirmTrapStep(final int step){
+        final com.shatteredpixel.shatteredpixeldungeon.levels.Level level=Dungeon.level;
+        final com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap trap=level.traps.get(step);
+        if(apdTrapPermit.consume(level,trap,curAction,pos,step))return true;
+        if(curAction==null || !com.shatteredpixel.shatteredpixeldungeon.apd.qol.TrapStepPermit.needsWarning(SPDSettings.confirmKnownTraps(),level,this,step))return true;
+        final HeroAction action=curAction;final int from=pos;
+        interrupt();lastAction=null;path=null;
+        final long generation=apdTrapGeneration;
+        requestKnownTrapConfirmation(trap,new com.shatteredpixel.shatteredpixeldungeon.apd.qol.ConfirmationDecision(()->{
+            if(Dungeon.hero!=this || Dungeon.level!=level || pos!=from || !isAlive() || !ready || curAction!=null || apdTrapGeneration!=generation)return;
+            if(level.traps.get(step)!=trap)return;
+            apdTrapPermit.allow(level,trap,action,from,step);
+            curAction=action;ready=false;next();
+        },null));
+        return false;
+    }
 	
 	private boolean getCloser( final int target ) {
 
@@ -1948,6 +1976,7 @@ public class Hero extends Char {
         }
 
 		if (step != -1) {
+            if(!confirmTrapStep(step))return false;
 
 			float delay = 1;
 
@@ -2766,5 +2795,3 @@ public class Hero extends Char {
 		public void onDeath();
 	}
 }
-
-

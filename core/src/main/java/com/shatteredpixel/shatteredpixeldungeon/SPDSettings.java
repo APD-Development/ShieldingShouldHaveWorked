@@ -689,8 +689,8 @@ public class SPDSettings extends GameSettings {
 	}
     public static int playbackSpeed() { int value = getInt("apd_playback_speed", 1); return value >= 0 && value <= 2 ? value : 1; }
     public static void playbackSpeed(int value) { put("apd_playback_speed", value >= 0 && value <= 2 ? value : 1); }
+    public static boolean confirmWaterskin(){return getBoolean("apd_confirm_waterskin",true);}
+    public static void confirmWaterskin(boolean enabled){put("apd_confirm_waterskin",enabled);}
+    public static boolean confirmKnownTraps(){return getBoolean("apd_confirm_known_traps",true);}
+    public static void confirmKnownTraps(boolean enabled){put("apd_confirm_known_traps",enabled);}
 }
-
-
-
-
