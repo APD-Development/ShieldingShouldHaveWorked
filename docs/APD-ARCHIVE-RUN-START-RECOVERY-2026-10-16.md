@@ -10,3 +10,6 @@ Archive export and import stopped considering typed `RUN_START` records after th
 Three methods cover export identity, acceptance of an archive labelled with the first readable logical run, and rejection of a manifest that substitutes the physical header ID. Exact TEST235 application source must fail all three methods. Corrected source must pass all 1,701 core methods while preserving lossless finished-log export.
 
 Expected candidate gate: three intended TEST235 failures, then 1,701 corrected core methods, debug assembly, complete immediate-previous TEST235 APK history, 33 API34 emulator methods and 42 valid screenshots. No publication, tester distribution, physical-phone result or owner install-over/save claim is authorized by this record.
+
+## Verified result
+Exact TEST235 reproduced all three intended archive identity failures. Corrected TEST236 passed 1,701 core methods in 335 suites, debug assembly, complete TEST235 history, and 33 API34 methods. All 42 320×640 screenshots passed manual contact-sheet review, including full-resolution UIMSD text-value, home and Custom Dungeon Rules views. APK SHA-256 is `8e92c62427a853f47d0dfb34739c792d716908ba9f3a56751f7d868e42f60c81`; application ID and v2 signing certificate match TEST235. No publication or physical-phone claim.
