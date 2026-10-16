@@ -421,7 +421,7 @@ public class CustomRulesNoticeDeviceTest {
                             assertTrue(rule+"="+value,caption);
                             RenderedTextBlock combined=(RenderedTextBlock)field(window[0],"combined");
                             assertTrue(combined.text().endsWith(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomRuleMultipliers.format(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomRuleMultipliers.combined(draft))));
-                            assertTrue(combined.right()<=com.shatteredpixel.shatteredpixeldungeon.apd.query.WindowGeometry.width(PixelScene.landscape(),PixelScene.uiCamera.width)+0.01f);
+                            assertTrue(combined.right()<=((Integer)field(window[0],"width"))+0.01f);
                         }
                     }
                     window[0].hide();SPDSettings.apdCustomRules(CustomDungeonRules.defaults());window[0]=new WndCustomDungeonRules();Game.scene().addToFront(window[0]);
@@ -429,9 +429,19 @@ public class CustomRulesNoticeDeviceTest {
                     touch[0]=first.camera().cameraToScreen(first.left()+first.width()*0.16f,first.bottom()-7);
                     touch[1]=first.camera().cameraToScreen(first.left()+first.width()*0.65f,first.bottom()-7);
                 }catch(Exception e){throw new RuntimeException(e);}});
-                Thread.sleep(500);android.app.Instrumentation in=InstrumentationRegistry.getInstrumentation();long down=android.os.SystemClock.uptimeMillis();
-                android.view.MotionEvent event=android.view.MotionEvent.obtain(down,down,android.view.MotionEvent.ACTION_DOWN,touch[0].x,touch[0].y,0);event.setSource(android.view.InputDevice.SOURCE_TOUCHSCREEN);in.sendPointerSync(event);event.recycle();Thread.sleep(150);
-                event=android.view.MotionEvent.obtain(down,android.os.SystemClock.uptimeMillis(),android.view.MotionEvent.ACTION_MOVE,touch[1].x,touch[1].y,0);event.setSource(android.view.InputDevice.SOURCE_TOUCHSCREEN);in.sendPointerSync(event);event.recycle();Thread.sleep(400);
+                Thread.sleep(500);
+                // Sample the realized scrolling camera, then wait for the real DOWN
+                // to reach this control before sending MOVE on a busy emulator.
+                render(()->{try{OptionSlider first=find(window[0],OptionSlider.class).get(0);touch[0]=first.camera().cameraToScreen(first.left()+first.width()*0.16f,first.bottom()-7);touch[1]=first.camera().cameraToScreen(first.left()+first.width()*0.65f,first.bottom()-7);}catch(Exception e){throw new RuntimeException(e);}});
+                screenshot("custom-rules-live-before.png");
+                android.app.Instrumentation in=InstrumentationRegistry.getInstrumentation();long down=android.os.SystemClock.uptimeMillis();
+                android.view.MotionEvent event=android.view.MotionEvent.obtain(down,down,android.view.MotionEvent.ACTION_DOWN,touch[0].x,touch[0].y,0);event.setSource(android.view.InputDevice.SOURCE_TOUCHSCREEN);in.sendPointerSync(event);event.recycle();
+                final boolean[] downSeen={false};long downBy=System.currentTimeMillis()+3000;
+                while(!downSeen[0]&&System.currentTimeMillis()<downBy){render(()->{try{Object area=field(find(window[0],OptionSlider.class).get(0),"pointerArea");downSeen[0]=(Boolean)field(area,"pressed");}catch(Exception e){throw new RuntimeException(e);}});if(!downSeen[0])Thread.sleep(40);}
+                assertTrue("Native DOWN did not reach the slider at "+touch[0],downSeen[0]);
+                event=android.view.MotionEvent.obtain(down,android.os.SystemClock.uptimeMillis(),android.view.MotionEvent.ACTION_MOVE,touch[1].x,touch[1].y,0);event.setSource(android.view.InputDevice.SOURCE_TOUCHSCREEN);in.sendPointerSync(event);event.recycle();
+                final boolean[] liveSeen={false};long liveBy=System.currentTimeMillis()+3000;
+                while(!liveSeen[0]&&System.currentTimeMillis()<liveBy){render(()->{try{liveSeen[0]=((CustomDungeonRules)field(window[0],"draft")).get(CustomDungeonRules.Slider.ENEMY_HP)!=100;}catch(Exception e){throw new RuntimeException(e);}});if(!liveSeen[0])Thread.sleep(40);}
                 render(()->{try{CustomDungeonRules draft=(CustomDungeonRules)field(window[0],"draft");assertNotEquals("Multiplier must update before finger release",100,draft.get(CustomDungeonRules.Slider.ENEMY_HP));assertTrue(SPDSettings.apdCustomRules().isNeutral());assertEquals(run.getInt("apd_custom_score_version"),Dungeon.customScoring()==null?0:Dungeon.customScoring().recordVersion);}catch(Exception e){throw new RuntimeException(e);}});
                 screenshot("custom-rules-live-drag.png");
                 event=android.view.MotionEvent.obtain(down,android.os.SystemClock.uptimeMillis(),android.view.MotionEvent.ACTION_UP,touch[1].x,touch[1].y,0);event.setSource(android.view.InputDevice.SOURCE_TOUCHSCREEN);in.sendPointerSync(event);event.recycle();Thread.sleep(250);

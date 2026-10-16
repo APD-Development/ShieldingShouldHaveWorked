@@ -1,4 +1,4 @@
-name: Complete corrected native acceptance on existing TEST253
+name: Complete native suite acceptance on unchanged TEST253
 on:
   push:
     branches: [codex/apd-phone-fixes-2026-10-09]
@@ -7,7 +7,7 @@ permissions:
   contents: read
   actions: read
 concurrency:
-  group: apd-corrected-native-acceptance253
+  group: apd-complete-suite-acceptance253
   cancel-in-progress: false
 jobs:
   reuse-and-check:
@@ -44,7 +44,7 @@ jobs:
           metadata=api(f'repos/{repo}/actions/artifacts/{artifact_id}')
           assert metadata['workflow_run']['head_sha']==source and not metadata['expired']
           assert metadata['digest']=='sha256:64b401770227301b71b85e8a06947b54bd5177b49698b136be648963e29dabc0'
-          paths=['android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomScoreDeviceTest.java','android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PlayRunDeviceTest.java','core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/BossProgressionAcceptanceTest.java','android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/EarlyAlphaRosterDeviceTest.java']
+          paths=['android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java','android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomScoreDeviceTest.java','android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PlayRunDeviceTest.java','core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/BossProgressionAcceptanceTest.java','android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/EarlyAlphaRosterDeviceTest.java']
           supplemental={path:pathlib.Path(path).read_bytes() for path in paths}
           subprocess.run(['git','fetch','--no-tags','--depth=1','origin',source],check=True)
           protected=['core/src/main','SPD-classes/src/main','services/src/main','android/src/main','android/build.gradle','core/build.gradle','SPD-classes/build.gradle','services/build.gradle','build.gradle','settings.gradle','gradle.properties','gradle']
@@ -99,7 +99,7 @@ jobs:
               target.write('APD_EXPECTED_METHODS='+str(len(methods))+'\n')
           import json,pathlib
           pathlib.Path('expected-screenshots.json').write_text(json.dumps(images))
-          pathlib.Path('run-isolated-acceptance.py').write_text("import os,pathlib,subprocess,time,xml.etree.ElementTree as E\noutputs=[];cases=[];failures=0\nfor method in os.environ['APD_DEVICE_METHODS'].split(','):\n    subprocess.run(['adb','shell','am','force-stop','com.charltonchris29.adhdpixeldungeon.indev'],check=True)\n    start=time.monotonic()\n    result=subprocess.run(['timeout','300','adb','shell','am','instrument','-w','-r','-e','class',method,'com.charltonchris29.adhdpixeldungeon.indev.test/androidx.test.runner.AndroidJUnitRunner'],text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)\n    outputs.append('METHOD '+method+'\\n'+result.stdout)\n    pathlib.Path('instrumentation.txt').write_text('\\n'.join(outputs))\n    classname,name=method.split('#')\n    case=E.Element('testcase',{'classname':classname,'name':name,'time':str(time.monotonic()-start)})\n    if result.returncode or 'OK (1 test)' not in result.stdout or 'FAILURES!!!' in result.stdout or 'Process crashed.' in result.stdout:\n        failures+=1;E.SubElement(case,'failure',{'message':'Native instrumentation did not pass'}).text=result.stdout\n    cases.append(case)\n    root=E.Element('testsuite',{'name':'ExactExistingAPKNativeAcceptance','tests':str(len(cases)),'failures':str(failures),'errors':'0','skipped':'0'})\n    root.extend(cases);folder=pathlib.Path('native-test-results');folder.mkdir(exist_ok=True)\n    E.ElementTree(root).write(folder/('TEST-api'+os.environ['APD_ACCEPTANCE_API']+'.xml'),encoding='utf-8',xml_declaration=True)\n")
+          pathlib.Path('run-complete-acceptance.py').write_text("import os,pathlib,subprocess,time,xml.etree.ElementTree as E,re\nmethods=os.environ['APD_DEVICE_METHODS'].split(',')\nstart=time.monotonic()\nresult=subprocess.run(['timeout','1500','adb','shell','am','instrument','-w','-r','-e','class',','.join(methods),'com.charltonchris29.adhdpixeldungeon.indev.test/androidx.test.runner.AndroidJUnitRunner'],text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)\ntext=result.stdout;pathlib.Path('instrumentation.txt').write_text(text)\nstatus={};finished={}\nfor line in text.splitlines():\n    if line.startswith('INSTRUMENTATION_STATUS: '):\n        item=line[len('INSTRUMENTATION_STATUS: '):]\n        if '=' in item:\n            key,value=item.split('=',1);status[key]=value\n    elif line.startswith('INSTRUMENTATION_STATUS_CODE: '):\n        code=int(line.split(':',1)[1])\n        if code in (0,-1,-2,-3,-4) and 'class' in status and 'test' in status:\n            key=status['class']+'#'+status['test']\n            finished.setdefault(key,[]).append(code)\n        status={}\nroot=E.Element('testsuite',{'name':'ExactExistingAPKCompleteNativeSuite','tests':str(len(methods)),'failures':'0','errors':'0','skipped':'0','time':str(time.monotonic()-start)})\nfailures=errors=skipped=0\nfor method in methods:\n    classname,name=method.split('#');case=E.SubElement(root,'testcase',{'classname':classname,'name':name})\n    codes=finished.get(method,[])\n    if codes==[0]:continue\n    if len(codes)==1 and codes[0] in (-3,-4):\n        skipped+=1;E.SubElement(case,'skipped').text=text\n    elif codes:\n        failures+=1;E.SubElement(case,'failure',{'message':'Native case did not pass exactly once'}).text=text\n    else:\n        errors+=1;E.SubElement(case,'error',{'message':'No completed native case'}).text=text\nif result.returncode or set(finished)-set(methods):\n    errors+=1;E.SubElement(root[0],'error',{'message':'Runner or unexpected-case failure'}).text=text\nroot.set('failures',str(failures));root.set('errors',str(errors));root.set('skipped',str(skipped))\nfolder=pathlib.Path('native-test-results');folder.mkdir(exist_ok=True)\nE.ElementTree(root).write(folder/('TEST-api'+os.environ['APD_ACCEPTANCE_API']+'.xml'),encoding='utf-8',xml_declaration=True)\n")
           PY
       - name: Free unused runner toolchains for the Android 16 userdata partition
         run: |
@@ -126,17 +126,19 @@ jobs:
             if [ "$APD_ACCEPTANCE_API" = "36" ]; then adb shell wm size 540x960; adb shell wm density 240; else adb shell wm size 320x640; adb shell wm density 160; fi
             adb shell settings put secure immersive_mode_confirmations confirmed
             adb logcat -c
-            python3 run-isolated-acceptance.py
+            python3 run-complete-acceptance.py
             adb logcat -d -v time > acceptance-logcat.txt
             mkdir -p acceptance-screenshots
-            python3 -c "import json,pathlib,subprocess; [subprocess.run(['adb','pull','/sdcard/Pictures/APD-Test-Visuals/'+name,'acceptance-screenshots/'+name],check=True) for name in json.loads(pathlib.Path('expected-screenshots.json').read_text())]"
+            python3 -c "import json,pathlib,subprocess; [subprocess.run(['adb','pull','/sdcard/Pictures/APD-Test-Visuals/'+name,'acceptance-screenshots/'+name],check=False) for name in json.loads(pathlib.Path('expected-screenshots.json').read_text())]"
+            mkdir -p diagnostics
+            adb pull /sdcard/Pictures/APD-Test-Visuals/custom-rules-live-before.png diagnostics/ || true
       - name: Validate actual instrumentation and screenshot evidence
         run: |
           python3 - <<'PY'
           import json,os,pathlib,re,struct,subprocess
           count=int(os.environ['APD_EXPECTED_METHODS']);api=int(os.environ['APD_ACCEPTANCE_API']);text=pathlib.Path('instrumentation.txt').read_text()
           print(text)
-          assert len(re.findall(r'OK \(1 test\)',text))==count,text
+          assert re.search(r'OK \('+str(count)+r' tests\)',text),text
           assert not any(s in text for s in ('FAILURES!!!','INSTRUMENTATION_FAILED','Process crashed.'))
           names=json.loads(pathlib.Path('expected-screenshots.json').read_text());images={}
           for name in names:
@@ -157,6 +159,7 @@ jobs:
             acceptance-logcat.txt
             acceptance-screenshots/
             native-test-results/
+            diagnostics/
             core/build/test-results/test/
           if-no-files-found: warn
           retention-days: 7
