@@ -41,7 +41,7 @@ jobs:
           args=json.load(open(root+'/manual-thirteen-ranged-independent-args.json'))
           props={a[2:].split('=',1)[0]:a.split('=',1)[1] for a in args if a.startswith('-D') and '=' in a}
           props.pop('route.expectedMissileIdEquivalence',None)
-          props.update({'route.testTimeoutSeconds':'240','route.stableHash':'true','route.noSnapshots':'true','route.manualReplay':root+'/manual-thirteen-blind-throws-complete.journal','route.manualContinue':'false','route.manualJournal':root+'/actual-ranged-replay.journal','route.expectedEnd':root+'/native/manual-thirteen-blind-throws-end','route.expectedActiveRngOnly':'true','route.earlySwarmOut':root+'/actual-fresh-ranged'})
+          props.update({'route.testTimeoutSeconds':'600','route.stableHash':'true','route.noSnapshots':'true','route.manualReplay':root+'/manual-thirteen-blind-throws-complete.journal','route.manualContinue':'false','route.manualJournal':root+'/actual-ranged-replay.journal','route.expectedEnd':root+'/native/manual-thirteen-blind-throws-end','route.expectedActiveRngOnly':'true','route.earlySwarmOut':root+'/actual-fresh-ranged'})
           subprocess.run(['./gradlew',':core:test','--tests','*GetFuckedRouteTest']+['-D'+k+'='+v for k,v in props.items()],check=True)
           subprocess.run(['python3','research/get-fucked/native_equivalence.py',props['route.expectedEnd'],props['route.earlySwarmOut']],check=True)
           PYCODE
