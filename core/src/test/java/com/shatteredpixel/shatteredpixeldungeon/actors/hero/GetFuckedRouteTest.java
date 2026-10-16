@@ -207,6 +207,9 @@ public class GetFuckedRouteTest {
         Actor.keepActorThreadAlive = oldKeepAlive;
         Camera.main=oldMainCamera;
         com.shatteredpixel.shatteredpixeldungeon.ui.TargetHealthIndicator.instance=oldTargetIndicator;
+        if(Dungeon.hero!=null && !Dungeon.hero.isAlive()){
+            try{System.out.println("ROUTE "+state("TERMINAL_DEATH_BEFORE_RENDERER_CLEANUP"));}catch(Throwable deathLogError){System.out.println("TERMINAL_DEATH_STATE_LOG_ERROR "+deathLogError);}
+        }
         Actor.clear(); Random.popGenerator();
         if(upgradeWindows!=null)upgradeWindows.close();
         if(tradeWindows!=null)tradeWindows.close();
@@ -224,6 +227,7 @@ public class GetFuckedRouteTest {
                     Method transition=InterlevelScene.class.getDeclaredMethod(InterlevelScene.mode==InterlevelScene.Mode.DESCEND ? "descend" : InterlevelScene.mode==InterlevelScene.Mode.FALL ? "fall" : "ascend");
                     transition.setAccessible(true);transition.invoke(scene);
                     currentTestScene=gameplaySceneStub;
+                    com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton.reset(); //same UI reset performed when the previous scene's quickslot buttons are destroyed
                     bindBlobVisuals();
                     bind(Dungeon.hero);for(Mob m:Dungeon.level.mobs)bind(m);
                     for(Heap h:Dungeon.level.heaps.valueList())heapSprite(h);
@@ -336,6 +340,12 @@ public class GetFuckedRouteTest {
             System.out.println("CONNECTED_ENDPOINT_STATE_AND_RNG_VERIFIED "+root.getFileName());
         }
         if(Boolean.getBoolean("route.expectedNativeState"))verifyFullNativeEnd(root);
+        if(Boolean.getBoolean("route.expectedNativeFiles")){
+            assertTrue("Fresh file-only comparison must explicitly compare the active gameplay RNG",Boolean.getBoolean("route.expectedActiveRngOnly"));
+            int count=compareAllNativeFiles(root);
+            System.out.println("CONNECTED_ALL_NATIVE_FILES_AND_ACTIVE_RNG_VERIFIED_INACTIVE_BASE_NOT_COMPARED files="+count+" "+root.getFileName());
+        }
+
     }
     private JSONObject readNativeJson(java.nio.file.Path path) throws Exception {
         java.io.ByteArrayOutputStream bytes=new java.io.ByteArrayOutputStream();
@@ -346,17 +356,24 @@ public class GetFuckedRouteTest {
     }
     private void verifyFullNativeEnd(java.nio.file.Path expectedRoot) throws Exception {
         assertFalse("Full native-state verification requires the entire retained RNG stack",Boolean.getBoolean("route.expectedActiveRngOnly"));
+        int fileCount=compareAllNativeFiles(expectedRoot);
+        Field f=Random.class.getDeclaredField("generators");f.setAccessible(true);java.io.ByteArrayOutputStream rng=new java.io.ByteArrayOutputStream();
+        try(java.io.ObjectOutputStream out=new java.io.ObjectOutputStream(rng)){out.writeObject(f.get(null));}
+        assertArrayEquals("Normal save must retain the expected complete RNG",java.nio.file.Files.readAllBytes(expectedRoot.resolve("rng.bin")),rng.toByteArray());
+        System.out.println("CONNECTED_FULL_NATIVE_JSON_AND_RNG_VERIFIED files="+fileCount+" "+expectedRoot.getFileName());
+    }
+
+    private int compareAllNativeFiles(java.nio.file.Path expectedRoot) throws Exception {
         Dungeon.saveAll(); //Normal native serialization, never restore expected data into the character.
         java.nio.file.Path actualRoot=FileUtils.getFileHandle(GamesInProgress.gameFile(1)).file().toPath().getParent();
+        String actualOut=System.getProperty("route.actualNativeOut");
+        if(actualOut!=null){java.nio.file.Path copy=java.nio.file.Paths.get(actualOut);java.nio.file.Files.createDirectories(copy);try(java.nio.file.DirectoryStream<java.nio.file.Path> files=java.nio.file.Files.newDirectoryStream(actualRoot,"*.dat")){for(java.nio.file.Path file:files)java.nio.file.Files.copy(file,copy.resolve(file.getFileName()),java.nio.file.StandardCopyOption.REPLACE_EXISTING);}}
         Set<String> expectedFiles=new TreeSet<>(),actualFiles=new TreeSet<>();
         try(java.nio.file.DirectoryStream<java.nio.file.Path> files=java.nio.file.Files.newDirectoryStream(expectedRoot,"*.dat")){for(java.nio.file.Path file:files)expectedFiles.add(file.getFileName().toString());}
         try(java.nio.file.DirectoryStream<java.nio.file.Path> files=java.nio.file.Files.newDirectoryStream(actualRoot,"*.dat")){for(java.nio.file.Path file:files)actualFiles.add(file.getFileName().toString());}
         assertEquals("All visited native files must match",expectedFiles,actualFiles);
         for(String name:expectedFiles)assertTrue("Full native JSON differs: "+name,readNativeJson(expectedRoot.resolve(name)).similar(readNativeJson(actualRoot.resolve(name))));
-        Field f=Random.class.getDeclaredField("generators");f.setAccessible(true);java.io.ByteArrayOutputStream rng=new java.io.ByteArrayOutputStream();
-        try(java.io.ObjectOutputStream out=new java.io.ObjectOutputStream(rng)){out.writeObject(f.get(null));}
-        assertArrayEquals("Normal save must retain the expected complete RNG",java.nio.file.Files.readAllBytes(expectedRoot.resolve("rng.bin")),rng.toByteArray());
-        System.out.println("CONNECTED_FULL_NATIVE_JSON_AND_RNG_VERIFIED files="+expectedFiles.size()+" "+expectedRoot.getFileName());
+        return expectedFiles.size();
     }
 
     private void snapshot(String label) throws Exception {
@@ -667,6 +684,7 @@ public class GetFuckedRouteTest {
         if(System.getProperty("route.checkpointOut")!=null)writeCheckpoint(System.getProperty("route.checkpointOut"));
         if(Boolean.getBoolean("route.stopAfterFloor3")){verifyExpectedEnd();return;}
         thirdFloorSection();
+        verifyExpectedEnd();
     }
     private void liveNineFromSeven() throws Exception {
         assertEquals(7,Dungeon.depth);assertEquals(538,Dungeon.hero.pos);
@@ -764,6 +782,7 @@ public class GetFuckedRouteTest {
         assertTrue("Earned golden key required",com.shatteredpixel.shatteredpixeldungeon.journal.Notes.keyCount(new com.shatteredpixel.shatteredpixeldungeon.items.keys.GoldenKey(3))>=1);
         Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLevitation.class).execute(Dungeon.hero,"DRINK");ready();log("DRINK OWNED LEVITATION");
         for(int cell:new int[]{927,970,1012,1012})click(cell);
+        if(Boolean.getBoolean("route.clothBridgeFocus"))click(1012);
         com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Quarterstaff staff=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Quarterstaff.class);
         assertNotNull("Quarterstaff must actually be collected",staff);assertEquals(2,staff.level());assertTrue(staff.STRReq()<=Dungeon.hero.STR());
         staff.execute(Dungeon.hero,"EQUIP");Dungeon.hero.busy();ready();log("EQUIP EARNED QUARTERSTAFF");
@@ -1050,6 +1069,127 @@ public class GetFuckedRouteTest {
                                                         if(Boolean.getBoolean("route.originQuestEast")){
                                                             for(int cell:new int[]{594,594,633,672,673,673,674,675,676}){click(cell);assertEquals(cell,Dungeon.hero.pos);}
                                                             log("LIVE ORIGIN EAST QUEST APPROACH ACTUAL LOOT");
+                                                            if(Boolean.getBoolean("route.originQuestRageEscape")){
+                                                                Item rage=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRage.class);assertNotNull(rage);rage.execute(Dungeon.hero,"READ");ready();
+                                                                for(int cell:new int[]{716,756,795,834,873,912}){click(cell);assertEquals(cell,Dungeon.hero.pos);}
+                                                                log("LIVE ORIGIN QUEST EAST ESCAPE AFTER ACTUAL RAGE");
+                                                                if(Boolean.getBoolean("route.originQuestSouth")){
+                                                                    Dungeon.hero.search(true);ready();assertEquals(Terrain.DOOR,Dungeon.level.map[913]);
+                                                                    for(int cell:new int[]{913,953,993}){click(cell);assertEquals(cell,Dungeon.hero.pos);}
+                                                                    if(Boolean.getBoolean("route.originQuestGnoll")){
+                                                                        Mob southernGnoll=Dungeon.level.mobs.stream().filter(m->m.id()==87).findFirst().get();assertTrue(Dungeon.level.heroFOV[southernGnoll.pos]);
+                                                                        if(!Boolean.getBoolean("route.originGnollSpear"))cast(ShieldOfLight.INSTANCE,southernGnoll.pos);
+                                                                        throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class,southernGnoll.pos);
+                                                                        if(Boolean.getBoolean("route.originGnollSpear") && southernGnoll.isAlive())throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear.class,southernGnoll.pos);
+                                                                        for(int n=0;n<3 && southernGnoll.isAlive();n++){assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,southernGnoll.pos));click(southernGnoll.pos);}
+                                                                        assertFalse(southernGnoll.isAlive());log("LIVE ORIGIN SOUTH GNOLL INTERCEPTED BEFORE COLD CORNER");
+                                                                        if(Boolean.getBoolean("route.originRecoverGnollLoot")){
+                                                                            Mob chasingChild=Dungeon.level.mobs.stream().filter(m->m.id()==120).findFirst().get();cast(ShieldOfLight.INSTANCE,chasingChild.pos);
+                                                                            Mob chasingParent=Dungeon.level.mobs.stream().filter(m->m.id()==110).findFirst().get();
+                                                                            for(int n=0;n<2 && chasingParent.isAlive();n++){assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,chasingParent.pos));click(chasingParent.pos);}assertFalse(chasingParent.isAlive());
+                                                                            for(int n=0;n<3 && chasingChild.isAlive();n++){assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,chasingChild.pos));click(chasingChild.pos);}assertFalse(chasingChild.isAlive());
+                                                                            for(int n=0;n<5;n++)click(953);
+                                                                            assertNotNull(Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear.class));log("LIVE ORIGIN GNOLL LOOT AND CHASING SWARMS ACTUALLY CLEARED");
+                                                                        }
+
+                                                                    }
+                                                                    if(Boolean.getBoolean("route.originRecoverGnollLoot"))click(993);
+                                                                    for(int cell:new int[]{1032,1072,1073,1074,1035}){click(cell);assertEquals(cell,Dungeon.hero.pos);if(cell==1032 && Boolean.getBoolean("route.originGnollSpear"))click(1032);}
+                                                                    log("LIVE ORIGIN SOUTH QUEST ENEMIES ACTUAL APPROACH");
+                                                                    if(Boolean.getBoolean("route.originColdLoop")){
+                                                                        Item rawLoop=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.food.MysteryMeat.class);assertNotNull(rawLoop);rawLoop.execute(Dungeon.hero,"DROP");ready();
+                                                                        Item purityLoop=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity.class);assertNotNull(purityLoop);purityLoop.execute(Dungeon.hero,"DRINK");ready();
+                                                                        for(int cell:new int[]{996,958,918,917}){click(cell);assertEquals(cell,Dungeon.hero.pos);}
+                                                                        log("LIVE ORIGIN REAL PURITY COLD LOOP AND OWNED MEAT");
+                                                                        if(Boolean.getBoolean("route.originColdPursuers")){
+                                                                            Mob coldCrab=Dungeon.level.mobs.stream().filter(m->m.id()==82).findFirst().get();Mob coldSlime=Dungeon.level.mobs.stream().filter(m->m.id()==94).findFirst().get();
+                                                                            if(Boolean.getBoolean("route.originColdShieldFirst"))cast(ShieldOfLight.INSTANCE,coldSlime.pos);
+                                                                            throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class,coldCrab.pos);
+                                                                            if(coldCrab.isAlive() && !Boolean.getBoolean("route.originColdNoSpear"))throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear.class,coldCrab.pos);
+                                                                            for(int n=0;n<2 && coldCrab.isAlive();n++){assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,coldCrab.pos));click(coldCrab.pos);}assertFalse(coldCrab.isAlive());
+                                                                            if(!Boolean.getBoolean("route.originColdShieldFirst"))cast(ShieldOfLight.INSTANCE,coldSlime.pos);
+                                                                            for(int n=0;n<5 && coldSlime.isAlive();n++){assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,coldSlime.pos));click(coldSlime.pos);}assertFalse(coldSlime.isAlive());
+                                                                            log("LIVE ORIGIN BOTH REAL COLD CORRIDOR PURSUERS DEFEATED");
+                                                                            if(Boolean.getBoolean("route.originColdFoodPickup")){
+                                                                                for(int cell:new int[]{957,957,957,957}){click(cell);assertEquals(cell,Dungeon.hero.pos);}
+                                                                                Item coldFood=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.food.FrozenCarpaccio.class);assertNotNull(coldFood);coldFood.execute(Dungeon.hero,"EAT");ready();
+                                                                                if(Boolean.getBoolean("route.originColdNorthExit")){
+                                                                                    for(int cell:new int[]{918,917,916}){click(cell);assertEquals(cell,Dungeon.hero.pos);}
+                                                                                    log("LIVE ORIGIN FED NORTH EXIT SECOND MEAT LEFT ON ACTUAL GROUND");
+                                                                                    if(Boolean.getBoolean("route.originColdRing")){
+                                                                                        int[] ring={917,957,996,1035,1073,1072,1032,993,954,916};
+                                                                                        for(int n=0;n<Integer.getInteger("route.originColdRingSteps",25);n++){
+                                                                                            int cell=ring[n%ring.length];click(cell);
+                                                                                            if(n==6 && Boolean.getBoolean("route.originRingSlime")){
+                                                                                                Mob ringSlime=Dungeon.level.mobs.stream().filter(m->m.id()==81).findFirst().get();assertTrue(Dungeon.level.heroFOV[ringSlime.pos]);
+                                                                                                throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class,ringSlime.pos);
+                                                                                                if(ringSlime.isAlive())throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear.class,ringSlime.pos);
+                                                                                                for(int hit=0;hit<3 && ringSlime.isAlive();hit++){assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,ringSlime.pos));click(ringSlime.pos);}assertFalse(ringSlime.isAlive());
+                                                                                                click(cell);
+                                                                                            }
+                                                                                            assertEquals(cell,Dungeon.hero.pos);
+                                                                                        }
+                                                                                        log("LIVE ORIGIN COLD ROOM FIXED LEGAL KITE RESOURCE BOUNDARY");
+                                                                                        if(Boolean.getBoolean("route.originRingCrab")){
+                                                                                            Mob ringCrab=Dungeon.level.mobs.stream().filter(m->m.id()==132).findFirst().get();cast(ShieldOfLight.INSTANCE,ringCrab.pos);assertEquals(3,Dungeon.hero.shielding());
+                                                                                            throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class,ringCrab.pos);
+                                                                                            if(ringCrab.isAlive())throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class,ringCrab.pos);
+                                                                                            for(int hit=0;hit<3 && ringCrab.isAlive();hit++){assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,ringCrab.pos));click(ringCrab.pos);}assertFalse(ringCrab.isAlive());
+                                                                                            assertEquals(5,Dungeon.hero.lvl);assertEquals(1,Dungeon.hero.talentPointsAvailable(1));Dungeon.hero.upgradeTalent(Talent.SEARING_LIGHT);
+                                                                                            log("LIVE ORIGIN LEVEL FIVE ACTUALLY EARNED AFTER RING CRAB");
+                                                                                            if(Boolean.getBoolean("route.originLevelFiveLoop")){
+                                                                                                Item lastColdMeal=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.food.FrozenCarpaccio.class);assertNotNull(lastColdMeal);lastColdMeal.execute(Dungeon.hero,"EAT");ready();
+                                                                                                int[] secondRing={1072,1032,993,954,916,917,957,996,1035,1073};
+                                                                                                for(int n=0;n<34;n++){int cell=secondRing[n%secondRing.length];click(cell);assertEquals(cell,Dungeon.hero.pos);}
+                                                                                                Mob lastSlime=Dungeon.level.mobs.stream().filter(m->m.id()==86).findFirst().get();assertTrue(Dungeon.level.heroFOV[lastSlime.pos]);cast(ShieldOfLight.INSTANCE,lastSlime.pos);assertEquals(3,Dungeon.hero.shielding());
+                                                                                                for(int hit=0;hit<5 && lastSlime.isAlive();hit++){assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,lastSlime.pos));click(lastSlime.pos);}assertFalse(lastSlime.isAlive());
+                                                                                                log("LIVE ORIGIN LEVEL FIVE FED LOOP AND FINAL SLIME ACTUALLY CLEARED");
+                                                                                            }
+
+                                                                                        }
+
+                                                                                    }
+                                                                                    return;
+                                                                                }
+                                                                                for(int cell:new int[]{996,1035,1035}){click(cell);assertEquals(cell,Dungeon.hero.pos);}
+                                                                                assertNotNull(Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.food.FrozenCarpaccio.class));log("LIVE ORIGIN COLD FOOD ACTUALLY EATEN AND SECOND MEAT OWNED");
+                                                                                if(Boolean.getBoolean("route.originColdFoodWait")){
+                                                                                    for(int n=0;n<120;n++){
+                                                                                        waitOne();
+                                                                                        if(Dungeon.level.mobs.stream().anyMatch(m->m.alignment==Char.Alignment.ENEMY && Dungeon.level.heroFOV[m.pos])){log("FED COLD CORNER FIRST ACTUAL VISIBLE ENEMY");break;}
+                                                                                    }
+                                                                                    log("LIVE ORIGIN FED COLD CORNER ACTUAL RESOURCE BOUNDARY");
+                                                                                }
+
+                                                                            }
+
+                                                                        }
+
+                                                                    }
+
+                                                                    if(Boolean.getBoolean("route.originSouthSwarm") && !Boolean.getBoolean("route.originRecoverGnollLoot")){
+                                                                        Mob smallSwarm=Dungeon.level.mobs.stream().filter(m->m.id()==120).findFirst().get();
+                                                                        if(smallSwarm.isAlive())throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear.class,smallSwarm.pos);
+                                                                        for(int n=0;n<3 && smallSwarm.isAlive();n++){assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,smallSwarm.pos));click(smallSwarm.pos);}
+                                                                        assertFalse(smallSwarm.isAlive());log("LIVE ORIGIN SOUTH SMALL SWARM ACTUALLY CLEARED");
+                                                                        if(Boolean.getBoolean("route.originColdMeal")){
+                                                                            Item raw=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.food.MysteryMeat.class);assertNotNull(raw);raw.execute(Dungeon.hero,"DROP");ready();
+                                                                            throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Cudgel.class,996);
+                                                                            for(int cell:new int[]{1074,1073,1073,1074}){click(cell);assertEquals(cell,Dungeon.hero.pos);}
+                                                                            assertNotNull(Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear.class));
+                                                                            for(int n=0;n<11;n++){
+                                                                                waitOne();
+                                                                                if(Dungeon.level.mobs.stream().anyMatch(m->m.alignment==Char.Alignment.ENEMY && Dungeon.level.heroFOV[m.pos])){log("COLD FOOD WAIT FIRST ACTUAL VISIBLE ENEMY");break;}
+                                                                            }
+                                                                            log("LIVE ORIGIN OWNED MEAT COLD PROCESSING ACTUAL BOUNDARY");
+                                                                        }
+
+                                                                    }
+
+                                                                }
+
+                                                            }
+
                                                         }
 
                                                     }
@@ -1775,7 +1915,7 @@ public class GetFuckedRouteTest {
                                                         }
                                                         log("LIVE WESTERN REST ACTUAL RESOURCE BOUNDARY");
                                                         if(Boolean.getBoolean("route.liveWestMealRest")){
-                                                            Item ration=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.food.Food.class);assertNotNull(ration);ration.execute(Dungeon.hero,"EAT");ready();
+                                                            Item ration=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.food.Food.class);assertNotNull(ration);if(Boolean.getBoolean("route.liveWestDeferMeal")){for(int n=0;n<3;n++)waitOne();}else{ration.execute(Dungeon.hero,"EAT");ready();}
                                                             for(int n=0;n<Integer.getInteger("route.liveWestSecondRest",170);n++){
                                                                 waitOne();
                                                                 if(Dungeon.level.mobs.stream().anyMatch(m->m.alignment==Char.Alignment.ENEMY && Dungeon.level.heroFOV[m.pos])){log("SECOND WESTERN REST STOPS AT FIRST VISIBLE ENEMY");break;}
@@ -1797,8 +1937,146 @@ public class GetFuckedRouteTest {
                                                                         click(744);assertEquals(744,Dungeon.hero.pos);log("LIVE WEST EXIT DOOR AFTER REAL NECROMANCER KILL");
                                                                         if(Boolean.getBoolean("route.liveWestThiefFight")){
                                                                             Mob thief=Dungeon.level.mobs.stream().filter(m->m.id()==292).findFirst().get();
+                                                                            if(Boolean.getBoolean("route.liveWestDeferMeal") && !Dungeon.level.adjacent(Dungeon.hero.pos,thief.pos))click(743);
                                                                             for(int n=0;n<4 && thief.isAlive();n++){assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,thief.pos));click(thief.pos);}
                                                                             assertFalse(thief.isAlive());log("LIVE WEST THIEF FIGHT ACTUAL EXIT RESOURCES");
+                                                                            if(Boolean.getBoolean("route.liveWestRage")){
+                                                                                Item rage=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRage.class);assertNotNull(rage);rage.execute(Dungeon.hero,"READ");ready();
+                                                                                log("LIVE WEST TWO GUARDS AFTER ACTUAL OWNED RAGE");
+                                                                                if(Boolean.getBoolean("route.liveWestRageHits")){
+                                                                                    Mob guard=Dungeon.level.mobs.stream().filter(m->m.id()==276).findFirst().get();
+                                                                                    for(int n=0;n<(Boolean.getBoolean("route.liveWestLeanGuard")?10:3) && guard.isAlive();n++){assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,guard.pos));click(guard.pos);}
+                                                                                    log("LIVE WEST FIRST GUARD THREE PAID RAGE EXCHANGES");
+                                                                                    if(Boolean.getBoolean("route.liveWestSleepRetreat")){
+                                                                                        Item lullaby=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfLullaby.class);assertNotNull(lullaby);lullaby.execute(Dungeon.hero,"READ");ready();
+                                                                                        for(int cell:new int[]{744,745,746,747,748,749}){click(cell);assertEquals(cell,Dungeon.hero.pos);}
+                                                                                        for(int n=0;n<4;n++)waitOne();
+                                                                                        log("LIVE WEST ACTUAL LULLABY NORMAL RETREAT AND FOUR NORMAL TICKS");
+                                                                                        if(Boolean.getBoolean("route.liveWestSleepCamp")){
+                                                                                            for(int n=0;n<Integer.getInteger("route.liveWestSleepCampLimit",140);n++){
+                                                                                                waitOne();
+                                                                                                if(Dungeon.level.mobs.stream().anyMatch(m->m.alignment==Char.Alignment.ENEMY && Dungeon.level.heroFOV[m.pos] && m.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSleep.class)==null)){log("SLEEP CAMP STOPS AT FIRST AWAKE VISIBLE ENEMY");break;}
+                                                                                            }
+                                                                                            if(!Boolean.getBoolean("route.liveWestLeanGuard") || Boolean.getBoolean("route.liveWestLeanIntercept"))cast(BlessSpell.INSTANCE,Dungeon.hero.pos);log("LIVE WEST SLEEP CAMP ACTUAL PAID RECHARGE");
+                                                                                            if(Boolean.getBoolean("route.liveWestSleepReturn")){
+                                                                                                if(Boolean.getBoolean("route.liveWestLeanIntercept")){click(748);assertEquals(746,Dungeon.hero.pos);}else{for(int cell:new int[]{748,747,746,745,744,743,742}){click(cell);assertEquals(cell,Dungeon.hero.pos);}}
+                                                                                                log("LIVE WEST RETURN TO ACTUAL SLEEPING GUARD WITH EARNED RESERVE");
+                                                                                                if(Boolean.getBoolean("route.liveWestLastGuard")){
+                                                                                                    Mob lastGuard=Dungeon.level.mobs.stream().filter(m->m.id()==304).findFirst().get();
+                                                                                                    if(Boolean.getBoolean("route.liveWestLeanGuard")){if(!Boolean.getBoolean("route.liveWestLeanIntercept")){cast(BlessSpell.INSTANCE,Dungeon.hero.pos);cast(ShieldOfLight.INSTANCE,lastGuard.pos);}}else{
+                                                                                                        cast(HolyWard.INSTANCE,null);if(!Boolean.getBoolean("route.liveWestNoHoly"))cast(HolyWeapon.INSTANCE,null);cast(ShieldOfLight.INSTANCE,lastGuard.pos);cast(GuidingLight.INSTANCE,lastGuard.pos);
+                                                                                                    }
+                                                                                                    throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class,lastGuard.pos);
+                                                                                                    for(int n=0;n<(Boolean.getBoolean("route.liveWestLeanGuard")?12:5) && lastGuard.isAlive();n++){assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,lastGuard.pos));click(lastGuard.pos);}
+                                                                                                    assertFalse(lastGuard.isAlive());log("LIVE WEST FINAL BLOCKING GUARD ACTUALLY DEFEATED");
+                                                                                                    if(Boolean.getBoolean("route.liveWestDeferMeal")){
+                                                                                                        Item lateRation=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.food.Food.class);assertNotNull(lateRation);lateRation.execute(Dungeon.hero,"EAT");ready();log("LIVE OWNED RATION ACTUALLY EATEN AFTER FINAL GUARD");
+                                                                                                    }
+
+                                                                                                    if(Boolean.getBoolean("route.liveWestCorridor")){
+                                                                                                        assertEquals(8,Dungeon.hero.lvl);assertEquals(1,Dungeon.hero.talentPointsAvailable(2));Dungeon.hero.upgradeTalent(Talent.BLESS);
+                                                                                                        if(Boolean.getBoolean("route.liveWestLeanIntercept"))for(int cell:new int[]{745,745,744,743,742}){click(cell);assertEquals(cell,Dungeon.hero.pos);}
+                                                                                                        for(int cell:new int[]{741,741,786,832,878,923,970,1017,1064,1111}){
+                                                                                                            click(cell);if(Dungeon.hero.pos!=cell)click(cell);assertEquals(cell,Dungeon.hero.pos);
+                                                                                                            if(cell==970 && Boolean.getBoolean("route.liveWestLeanDMBreach"))cast(BlessSpell.INSTANCE,Dungeon.hero.pos);
+                                                                                                            if(cell==970 && Boolean.getBoolean("route.liveWestClearPursuerChain")){
+                                                                                                                cast(BlessSpell.INSTANCE,Dungeon.hero.pos);
+                                                                                                                click(923);assertEquals(923,Dungeon.hero.pos);click(878);assertEquals(878,Dungeon.hero.pos);click(832);assertEquals(878,Dungeon.hero.pos);
+                                                                                                                log("LIVE WEST PURSUER ORIGINAL CHAIN LURED OUTSIDE DM ROOM");
+                                                                                                                click(923);assertEquals(923,Dungeon.hero.pos);click(970);assertEquals(970,Dungeon.hero.pos);
+                                                                                                            }
+                                                                                                            if(cell==1064 && Boolean.getBoolean("route.liveWestLeanDMBreach")){
+                                                                                                                activateOwnedHourglassFreeze();
+                                                                                                                for(int waypoint:new int[]{1111,1112,1113,1160,1206}){click(waypoint);assertEquals(waypoint,Dungeon.hero.pos);}
+                                                                                                                Mob breachDM=Dungeon.level.mobs.stream().filter(m->m.id()==260).findFirst().get();
+                                                                                                                if(!Dungeon.level.adjacent(Dungeon.hero.pos,breachDM.pos)){click(1252);assertEquals(1252,Dungeon.hero.pos);}
+                                                                                                                if(Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class)!=null)Dungeon.hero.belongings.getItem(TimekeepersHourglass.class).execute(Dungeon.hero,"ACTIVATE");
+                                                                                                                assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,breachDM.pos));throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class,breachDM.pos);
+                                                                                                                for(int hit=0;hit<5 && breachDM.isAlive();hit++){assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,breachDM.pos));click(breachDM.pos);}assertFalse(breachDM.isAlive());
+                                                                                                                log("LIVE LEAN WEST DM FORCED INTO MELEE AND ACTUALLY DEFEATED");
+                                                                                                                if(Boolean.getBoolean("route.liveWestLeanStairApproach")){
+                                                                                                                    for(int waypoint:new int[]{1252,1252,1299,1300,1301,1302,1303,1350,1396,1443,1398,1399,1446}){click(waypoint);if(Dungeon.hero.pos!=waypoint)click(waypoint);assertEquals(waypoint,Dungeon.hero.pos);}
+                                                                                                                    log("LIVE LEAN SOUTH ROOM ACTUAL STAIR ENEMIES");
+                                                                                                                }
+                                                                                                                return;
+                                                                                                            }
+                                                                                                        }
+                                                                                                        log("LIVE WEST CORRIDOR ACTUAL STAIR APPROACH AFTER EARNED BLESS TWO");
+                                                                                                        if(Boolean.getBoolean("route.liveWestSouthPassage")){
+                                                                                                            cast(BlessSpell.INSTANCE,Dungeon.hero.pos);assertEquals(15,Dungeon.hero.shielding());
+                                                                                                            for(int cell:new int[]{1112,1113,1160,1206,1252,1299,1300,1301,1302,1303}){click(cell);assertEquals(cell,Dungeon.hero.pos);}
+                                                                                                            log("LIVE WEST SOUTH PASSAGE ACTUAL NEXT ENEMIES");
+                                                                                                            if(Boolean.getBoolean("route.liveWestStairs")){
+                                                                                                                for(int cell:new int[]{1350,1396,1443,1398,1399,1446,1493,1448,1449}){click(cell);if(Dungeon.hero.pos!=cell)click(cell);assertEquals(cell,Dungeon.hero.pos);}
+                                                                                                                click(1449);assertEquals(10,Dungeon.depth);log("LIVE SEVEN THROUGH FLOOR NINE ACTUAL TENGU FLOOR ARRIVAL");
+                                                                                                                if(Boolean.getBoolean("route.liveTenguKey")){
+                                                                                                                    for(int n=0;n<Integer.getInteger("route.liveTenguPrep",80);n++)waitOne();
+                                                                                                                    for(int cell:new int[]{169,201,234,266,298,330,362,393,360,328,328}){click(cell);if(Dungeon.hero.pos!=cell)click(cell);assertEquals(cell,Dungeon.hero.pos);}
+                                                                                                                    log("LIVE TENGU ACTUAL IRON KEY ACQUIRED AFTER PAID PREPARATION");
+                                                                                                                    if(Boolean.getBoolean("route.liveTenguStart")){
+                                                                                                                        for(int cell:new int[]{360,393,426,458,490,522,554,585,618,650,682,714}){click(cell);if(Dungeon.hero.pos!=cell)click(cell);assertEquals(cell,Dungeon.hero.pos);}
+                                                                                                                        for(int n=0;n<3 && Dungeon.hero.pos!=746;n++)click(746);assertEquals(746,Dungeon.hero.pos);
+                                                                                                                        cast(HolyWard.INSTANCE,null);cast(BlessSpell.INSTANCE,Dungeon.hero.pos);assertEquals(15,Dungeon.hero.shielding());
+                                                                                                                        click(778);assertEquals(778,Dungeon.hero.pos);assertTrue(Dungeon.level.locked);
+                                                                                                                        Mob bossTengu=Dungeon.level.mobs.stream().filter(m->m instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu).findFirst().get();
+                                                                                                                        cast(ShieldOfLight.INSTANCE,bossTengu.pos);
+                                                                                                                        throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class,bossTengu.pos);
+                                                                                                                        System.out.println("FLOOR_LAYOUT "+new JSONObject().put("depth",Dungeon.depth).put("width",Dungeon.level.width()).put("height",Dungeon.level.height()).put("terrain",new JSONArray(Dungeon.level.map)).put("entrance",Dungeon.level.entrance()).put("exit",Dungeon.level.exit()));
+                                                                                                                        log("LIVE TENGU ACTUAL FIRST SHURIKEN FIRST JUMP AND FULL RESOURCES");
+                                                                                                                        if(Boolean.getBoolean("route.liveTenguFirstMelee")){
+                                                                                                                            activateOwnedHourglassFreeze();
+                                                                                                                            for(int cell:new int[]{810,843,874,905}){assertNull(Dungeon.level.traps.get(cell));click(cell);assertEquals(cell,Dungeon.hero.pos);}
+                                                                                                                            if(Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class)!=null)Dungeon.hero.belongings.getItem(TimekeepersHourglass.class).execute(Dungeon.hero,"ACTIVATE");
+                                                                                                                            assertNull(Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class));
+                                                                                                                            for(int n=0;n<4 && bossTengu.pos==872;n++){assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,bossTengu.pos));click(bossTengu.pos);}
+                                                                                                                            System.out.println("FLOOR_LAYOUT "+new JSONObject().put("depth",Dungeon.depth).put("width",Dungeon.level.width()).put("height",Dungeon.level.height()).put("terrain",new JSONArray(Dungeon.level.map)).put("entrance",Dungeon.level.entrance()).put("exit",Dungeon.level.exit()));
+                                                                                                                            log("LIVE TENGU FIRST REAL MELEE EXCHANGES AFTER FOUR SAFE FROZEN MOVES");
+                                                                                                                            if(Boolean.getBoolean("route.liveTenguSecondMelee")){
+                                                                                                                                assertEquals(780,bossTengu.pos);activateOwnedHourglassFreeze();
+                                                                                                                                for(int cell:new int[]{873,841,810,779}){assertNull(Dungeon.level.traps.get(cell));click(cell);assertEquals(cell,Dungeon.hero.pos);}
+                                                                                                                                if(Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class)!=null)Dungeon.hero.belongings.getItem(TimekeepersHourglass.class).execute(Dungeon.hero,"ACTIVATE");
+                                                                                                                                for(int n=0;n<5 && bossTengu.pos==780;n++){assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,bossTengu.pos));click(bossTengu.pos);}
+                                                                                                                                log("LIVE TENGU SECOND REAL MELEE EXCHANGES AND ACTUAL NEXT JUMP");
+                                                                                                                                if(Boolean.getBoolean("route.liveTenguThirdMelee")){
+                                                                                                                                    assertEquals(968,bossTengu.pos);activateOwnedHourglassFreeze();
+                                                                                                                                    for(int cell:new int[]{811,842}){assertNull(Dungeon.level.traps.get(cell));click(cell);assertEquals(cell,Dungeon.hero.pos);}
+                                                                                                                                    if(Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class)!=null)Dungeon.hero.belongings.getItem(TimekeepersHourglass.class).execute(Dungeon.hero,"ACTIVATE");
+                                                                                                                                    for(int cell:new int[]{873,906,937}){assertNull(Dungeon.level.traps.get(cell));click(cell);assertEquals(cell,Dungeon.hero.pos);}
+                                                                                                                                    for(int n=0;n<5 && bossTengu.pos==968;n++){assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,bossTengu.pos));click(bossTengu.pos);}
+                                                                                                                                    log("LIVE TENGU THIRD MELEE AFTER LAST TWO FROZEN STEPS AND THREE NORMAL STEPS");
+                                                                                                                                    if(Boolean.getBoolean("route.liveTenguThirdExtra")){
+                                                                                                                                        for(int n=0;n<6 && bossTengu.pos==968 && ((com.shatteredpixel.shatteredpixeldungeon.levels.PrisonBossLevel)Dungeon.level).state()==com.shatteredpixel.shatteredpixeldungeon.levels.PrisonBossLevel.State.FIGHT_START;n++)click(bossTengu.pos);
+                                                                                                                                        log("LIVE TENGU THIRD BRACKET ADDITIONAL REAL ATTACKS");
+                                                                                                                                    }
+
+                                                                                                                                }
+
+                                                                                                                            }
+
+                                                                                                                        }
+
+                                                                                                                    }
+
+                                                                                                                }
+
+                                                                                                            }
+
+                                                                                                        }
+
+                                                                                                    }
+
+                                                                                                }
+
+                                                                                            }
+
+                                                                                        }
+
+                                                                                    }
+
+                                                                                }
+
+                                                                            }
+
                                                                         }
 
                                                                     }

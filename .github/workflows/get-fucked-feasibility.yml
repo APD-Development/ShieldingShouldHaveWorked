@@ -56,7 +56,7 @@ jobs:
           import json, os, subprocess
           root=os.environ['RUNNER_TEMP']+'/get-fucked-origin-four'
           props=json.load(open(root+'/origin-four-replay.json'))
-          props.update({'route.stableHash':'true','route.noSnapshots':'true','route.expectedEnd':root+'/native/earned-origin-floor4','route.expectedNativeState':'true','route.expectedActiveRngOnly':'true'})
+          props.update({'route.stableHash':'true','route.noSnapshots':'true','route.expectedEnd':root+'/native/earned-origin-floor4','route.expectedActiveRngOnly':'true'})
           subprocess.run(['./gradlew',':core:test','--tests','*GetFuckedRouteTest']+['-D'+k+'='+v for k,v in props.items()],check=True)
           PYCODE
           mkdir -p "$RUNNER_TEMP/get-fucked-origin-results"
@@ -67,7 +67,7 @@ jobs:
         with:
           name: get-fucked-origin-four-results
           path: ${{ runner.temp }}/get-fucked-origin-results/
-      - name: Replay stronger live frontiers with complete native comparisons
+      - name: Replay resumed native comparisons and fresh resource comparisons
         run: |
           mkdir -p "$RUNNER_TEMP/get-fucked-live-frontiers"
           tar -xJf research/get-fucked/live-frontiers-provenance.tar.xz -C "$RUNNER_TEMP/get-fucked-live-frontiers"
@@ -78,7 +78,9 @@ jobs:
               props=json.load(open(root+'/'+index))
               if not origin: props['route.resume']=os.environ['GITHUB_WORKSPACE']+'/core/src/test/resources/apd/get_fucked_seed266_floor7_intercept'
               props.update({'route.stableHash':'true','route.noSnapshots':'true','route.expectedEnd':root+'/native/'+end,'route.expectedNativeState':'true'})
-              if origin: props['route.expectedActiveRngOnly']='true'
+              if origin:
+                  props['route.expectedActiveRngOnly']='true'
+                  props.pop('route.expectedNativeState',None)
               subprocess.run(['./gradlew',':core:test','--tests','*GetFuckedRouteTest']+['-D'+k+'='+v for k,v in props.items()],check=True)
               out=pathlib.Path(os.environ['RUNNER_TEMP'])/'get-fucked-frontier-results'/name
               out.mkdir(parents=True,exist_ok=True)
@@ -101,7 +103,24 @@ jobs:
               props=json.load(open(root+'/'+name+'-replay.json'))
               if not origin: props['route.resume']=os.environ['GITHUB_WORKSPACE']+'/core/src/test/resources/apd/get_fucked_seed266_floor7_intercept'
               props.update({'route.stableHash':'true','route.noSnapshots':'true','route.expectedEnd':root+'/native/'+end,'route.expectedNativeState':'true'})
+              if origin:
+                  props['route.expectedActiveRngOnly']='true'
+                  props.pop('route.expectedNativeState',None)
+              subprocess.run(['./gradlew',':core:test','--tests','*GetFuckedRouteTest']+['-D'+k+'='+v for k,v in props.items()],check=True)
+          PYCODE
+      - name: Replay level-five origin and first Tengu exchanges with explicit comparison scope
+        run: |
+          mkdir -p "$RUNNER_TEMP/get-fucked-five-tengu"
+          tar -xJf research/get-fucked/level-five-and-tengu-provenance.tar.xz -C "$RUNNER_TEMP/get-fucked-five-tengu"
+          python3 - <<'PYCODE'
+          import json, os, subprocess
+          root=os.environ['RUNNER_TEMP']+'/get-fucked-five-tengu'
+          for name,end,origin in [('fresh-origin-ring-level-five','earned-fresh-origin-ring-level-five',True),('live-ten-first-melee','earned-live-ten-first-melee',False)]:
+              props=json.load(open(root+'/'+name+'-replay.json'))
+              if not origin: props['route.resume']=os.environ['GITHUB_WORKSPACE']+'/core/src/test/resources/apd/get_fucked_seed266_floor7_intercept'
+              props.update({'route.stableHash':'true','route.noSnapshots':'true','route.expectedEnd':root+'/native/'+end})
               if origin: props['route.expectedActiveRngOnly']='true'
+              else: props['route.expectedNativeState']='true'
               subprocess.run(['./gradlew',':core:test','--tests','*GetFuckedRouteTest']+['-D'+k+'='+v for k,v in props.items()],check=True)
           PYCODE
       - name: Run scenario and existing challenge tests
