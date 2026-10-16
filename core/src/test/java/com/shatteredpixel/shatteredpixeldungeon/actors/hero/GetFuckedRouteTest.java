@@ -429,6 +429,8 @@ public class GetFuckedRouteTest {
         for(Mob m:Dungeon.level.mobs) mobs.put(new JSONObject().put("class",m.getClass().getSimpleName()).put("id",m.id())
                 .put("pos",m.pos).put("HP",m.HP).put("state",m.state.getClass().getSimpleName()).put("visible",Dungeon.level.heroFOV[m.pos])
                 .put("magicCollision",new com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica(h.pos,m.pos,com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica.MAGIC_BOLT).collisionPos)
+                .put("enemyMagicCollision",new com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica(m.pos,h.pos,com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica.MAGIC_BOLT).collisionPos)
+                .put("enemyProjectileCollision",new com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica(m.pos,h.pos,com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica.PROJECTILE).collisionPos)
                 .put("projectileCollision",new com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica(h.pos,m.pos,com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica.PROJECTILE).collisionPos));
         j.put("mobs",mobs);
         j.put("ironKeys",com.shatteredpixel.shatteredpixeldungeon.journal.Notes.keyCount(new com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey(Dungeon.depth)));
@@ -3620,6 +3622,8 @@ public class GetFuckedRouteTest {
             for(String action:line.substring(divider+1).split(",")){
                 if(action.equals("B"))cast(BlessSpell.INSTANCE,Dungeon.hero.pos);
                 else if(action.equals("F"))activateOwnedHourglassFreeze();
+                else if(action.equals("o")){String base=System.getProperty("route.earlySwarmOut");assertNotNull(base);writeCheckpoint(base+"-manual-"+Math.round(Statistics.duration+Actor.now()));log("MANUAL ORDINARY NATIVE SAVE WITHOUT RESTORE");}
+                else if(action.equals("f")){TimekeepersHourglass hourglass=Dungeon.hero.belongings.getItem(TimekeepersHourglass.class);assertNotNull(hourglass);assertNotNull(Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class));hourglass.execute(Dungeon.hero,"ACTIVATE");ready();assertNull(Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class));log("MANUAL ORIGINAL HOURGLASS CANCEL FREEZE");}
                 else if(action.equals("s")){assertNotNull(target);assertTrue(ClericSpell.getSpellList(Dungeon.hero,3).contains(Smite.INSTANCE));cast(Smite.INSTANCE,target.pos);}
                 else if(action.equals("b"))cast(LayOnHands.INSTANCE,Dungeon.hero.pos);
                 else if(action.equals("r")){assertNotNull(target);cast(Sunray.INSTANCE,target.pos);}
