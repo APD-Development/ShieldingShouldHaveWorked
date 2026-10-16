@@ -335,7 +335,9 @@ public class GetFuckedRouteTest {
         java.nio.file.Path root=java.nio.file.Paths.get(path);
         JSONObject expected=new JSONObject(new String(java.nio.file.Files.readAllBytes(root.resolve("manifest.json")),java.nio.charset.StandardCharsets.UTF_8)).getJSONObject("state");
         if(expected.has("subClass")){assertEquals("Recorded subclass differs",expected.getString("subClass"),Dungeon.hero.subClass.name());expected.remove("subClass");}
-        JSONObject actual=continuity();actual.put("time",0);
+        JSONObject actual=continuity();
+        // Native Actor.fixTime removes whole ticks and retains the fractional tick (e.g. haste movement).
+        actual.put("time",actual.getDouble("time")-Math.floor(actual.getDouble("time")));
         assertTrue("Endpoint resources differ from the connected native checkpoint: expected="+expected+" actual="+actual,expected.similar(new JSONObject(actual.toString())));
         Field f=Random.class.getDeclaredField("generators");f.setAccessible(true);
         java.io.ByteArrayOutputStream bytes=new java.io.ByteArrayOutputStream();
@@ -3600,6 +3602,7 @@ public class GetFuckedRouteTest {
             for(String action:line.substring(divider+1).split(",")){
                 if(action.equals("B"))cast(BlessSpell.INSTANCE,Dungeon.hero.pos);
                 else if(action.equals("F"))activateOwnedHourglassFreeze();
+                else if(action.equals("I")){assertTrue(ClericSpell.getSpellList(Dungeon.hero,1).contains(HolyWeapon.INSTANCE));cast(HolyWeapon.INSTANCE,null);}
                 else if(action.equals("N"))activateOwnedHourglassStasis();
                 else if(action.startsWith("M"))chooseOwnedSubclassThroughOriginalConfirmation(HeroSubClass.valueOf(action.substring(1)));
                 else if(action.startsWith("O"))buyActualShopHeap(Integer.parseInt(action.substring(1)));
