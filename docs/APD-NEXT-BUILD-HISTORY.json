@@ -1,129 +1,51 @@
 {
   "date": "2026-10-16",
-  "previous_source": "b5d562ca37fff9ac628af3f4ade731e9fa7d83f1",
-  "previous_run": 38894980574,
-  "previous_label": "Codex TEST 241",
+  "previous_source": "556647a1e10600d77a0e2e9e8d578e799e9fe94a",
+  "previous_run": 38912500386,
+  "previous_label": "Codex TEST 246",
   "changes": [
     {
-      "category": "Infrastructure",
-      "sprite": "ICON_CHECKED",
-      "title": "Retain verified TEST241 preparation evidence",
-      "text": "Carry forward the reviewed exact-source staging profile, morning report, TEST241 verification receipt, real-run read-only evidence and sentry timing record.",
+      "category": "Bug Fixes",
+      "sprite": "ICON_STATS",
+      "title": "Preserve malformed score histories",
+      "text": "Invalid or overflowing adjusted scores remain unknown without preventing access to the original recorded run.",
       "paths": [
-        ".github/workflows/codex-alpha-preview-stage.yml",
-        "docs/APD-ALPHA-PREPARATION.json",
-        "docs/APD-MORNING-PREPARATION-2026-10-16.md",
-        "docs/APD-REAL-RUN-ARMOR-EVIDENCE-2026-10-16.json",
-        "docs/APD-TEST241-VERIFICATION-2026-10-16.json",
-        "docs/APD-VAULT-CIRCLE-TIMING-2026-10-16.md",
-        "tools/test_apd_staging_profile.py"
-      ]
-    },
-    {
-      "category": "Testing",
-      "sprite": "ICON_INFO",
-      "title": "Record a rejected UIMSD audit candidate",
-      "text": "Retain the actual failed-run evidence and the finding that numeric IN is not a valid query path; application source remains TEST241.",
-      "paths": [
-        "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/UIMSD-AUDIT-BUG-LOG.md",
-        "docs/APD-NEXT-BUILD-HISTORY.json",
-        "docs/HANDOFF.md",
-        "docs/WORK-COMPLETED-LEDGER.md"
-      ]
-    },
-    {
-      "category": "Testing",
-      "sprite": "ICON_INFO",
-      "title": "Add early-alpha six-class Android acceptance",
-      "text": "Reuse verified TEST241 and require every shipped class to start, expose usable controls, save and continue with its exact locked 18-rule identity on API 34; no new application APK.",
-      "paths": [
-        ".github/workflows/codex-early-alpha-roster-acceptance.yml",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/EarlyAlphaRosterDeviceTest.java",
-        "docs/APD-EARLY-ALPHA-ROSTER-ACCEPTANCE-2026-10-16.md"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/CustomRuleFacts.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/CustomRuleTelemetryTest.java"
       ]
     },
     {
       "category": "Changes",
       "sprite": "ICON_CHALLENGE_COLOR",
-      "title": "Live provisional score multipliers",
-      "text": "Each Custom Rules slider now previews its scoring multiplier, with a live combined product used by newly created runs.",
+      "title": "Explain active provisional score previews",
+      "text": "Player notes explain live score previews, provisional rewards for new runs and original-score preservation.",
       "paths": [
-        "core/src/main/assets/apd/apd_records_history.txt",
-        "core/src/main/assets/apd/releases/apd-alpha-preview.tsv",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/Rankings.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndScoreBreakdown.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndRanking.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndCustomDungeonRules.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/OptionSlider.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowBuilders.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomScorePresentation.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomRuleMultipliers.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomRulesPresentation.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomScoreSnapshot.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/RecordedRuleSettings.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/DerivedStore.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/RunFactsBuilder.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/ProvisionalScoreLookup.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/CustomRuleFacts.java"
+        "core/src/main/assets/apd/releases/apd-alpha-preview.tsv"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Scoring and touchscreen regression coverage",
-      "text": "Verify all 357 supplied multipliers, frozen run scores, historical preservation, live dragging and narrow-screen displays.",
+      "title": "Compile the live scoring layout checks",
+      "text": "Use the existing window geometry helper when checking multiplier text boundaries on Android.",
       "paths": [
-        "tools/run-codex-android-checks.sh",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomScoreDeviceTest.java",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/CustomRuleFullFieldAcceptanceTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/CustomRuleQueryIntegrationTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomScoreSnapshotTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomScoringCopyTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomRuleMultipliersTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomScorePresentationTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/CustomScoreAwardIntegrationTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/CustomScoreRankingSnapshotTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/CustomRuleRecorderIntegrationTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/CustomRuleTelemetryTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/DamagedFactsProvenanceTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/archive/CustomRuleArchiveIntegrationTest.java",
-        "core/src/test/resources/apd/v26r-authoritative.txt"
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java"
       ]
     },
     {
       "category": "Infrastructure",
       "sprite": "ICON_INFO",
-      "title": "Verified owner-test preparation",
-      "text": "Prepare this exact source and its required evidence for the next private owner-test APK.",
+      "title": "Retain alpha acceptance and exact-source preparation",
+      "text": "Keep the independent six-class acceptance workflow and record the corrected candidate's tests and failed-attempt evidence.",
       "paths": [
+        ".github/workflows/codex-early-alpha-roster-acceptance.yml",
+        "docs/APD-PROVISIONAL-SCORING-IMPLEMENTATION-2026-10-16.md",
         "docs/APD-ALPHA-PREPARATION.json",
         "docs/APD-NEXT-BUILD-HISTORY.json",
-        "docs/APD-PROVISIONAL-SCORING-IMPLEMENTATION-2026-10-16.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
-        ".github/workflows/codex-alpha-preview-stage.yml"
-      ]
-    },
-    {
-      "category": "Testing",
-      "sprite": "ICON_CHECKED",
-      "title": "Refresh disposable-cache version checks",
-      "text": "Require the current cache version and prove older rows rebuild without changing raw history.",
-      "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/QuestBossClassificationTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/MalformedPayloadProvenanceTest.java"
-      ]
-    },
-    {
-      "category": "Quality of Life",
-      "sprite": "ICON_CHALLENGE_COLOR",
-      "title": "Explain previews on older runs",
-      "text": "Runs created before provisional scoring identify their displayed multipliers as new-run previews and retain their original scores.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndCustomDungeonRules.java"
+        "docs/HANDOFF.md"
       ]
     }
   ],
-  "commentary": "New runs use the supplied provisional scoring table, and the slider window previews every selected multiplier. Existing runs and historical scores keep their original scoring authority; no gameplay slider values or challenge multipliers changed."
+  "commentary": "This corrects malformed-score handling and Android test geometry after the previous candidate's instrumentation package failed to compile. The full357-position provisional multiplier table and ordinary product are unchanged."
 }

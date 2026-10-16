@@ -31,3 +31,11 @@ Required Android evidence: 34 instrumented methods and 44 valid screenshots, inc
 The numerical rewards are explicitly experimental and not competitively calibrated. Existing runs keep their original scoring authority and do not acquire these rewards retrospectively. Original integer SPD scores and legacy ranking serialization remain intact; adjusted scores use a separate long-valued result. Future lookup changes must introduce a new calculation version and preserve old authorities. Physical-device verification remains pending.
 
 Last verified available APK before this candidate: TEST241 from b5d562ca37fff9ac628af3f4ade731e9fa7d83f1, full run 38894980574; 1716 core, 33 API34 methods, 42 screenshots. Rejected TEST242/243 attempts produced no APK. Preserve TEST241 and the published TEST231 fallback if this candidate fails.
+
+## Follow-up verification and hardening
+
+TEST246 (source556647a1e10600d77a0e2e9e8d578e799e9fe94a, run38912500386) produced an APK and passed1728 unique core methods, zero failures/errors/skips. Android instrumentation did not compile because the new visual test called Window.width(), which is not a Window API. No Android methods ran; do not call TEST246 verified or eligible for delivery. The independent current branch correction uses WindowGeometry.width, preserving the existing geometry helper.
+
+Additional read-only probing reproduced two faults in newly added score validation: a negative original score threw IllegalArgumentException, and Long.MAX_VALUE with a >1 multiplier threw ArithmeticException. Corrected validation preserves the raw original record and leaves invalid/overflowing adjusted values unknown. Both probes now retain the record without throwing;13 focused lookup/telemetry methods pass, including a permanent regression using real encoded RUN_START/RUN_END logs and unchanged raw bytes.
+
+The next candidate compares directly with the actually produced TEST246 APK, preserving246's exact technical history even though its Android verification failed. It must pass1729 unique core methods,34 instrumented methods and44 screenshot checks. Verification remains pending at this source checkpoint. TEST241 stays the last verified application; TEST231 stays the published fallback until new evidence and publication are confirmed.

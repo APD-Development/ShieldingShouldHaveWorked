@@ -57,4 +57,14 @@ public class CustomRuleTelemetryTest {
         assertEquals("scoring metadata not recorded",f.textOr(CustomRuleFacts.SCORE_STATUS,""));assertFalse(f.isKnown(CustomRuleFacts.MULTIPLIER));assertFalse(f.isKnown(CustomRuleFacts.CALCULATION_VERSION));assertFalse(f.isKnown(CustomRuleFacts.ADJUSTED_SCORE));assertEquals(43210,f.numOr(CustomRuleFacts.ORIGINAL_SCORE,-1));assertEquals(15,f.numOr(CustomRuleFacts.key(CustomDungeonRules.Slider.UPGRADE_SCROLLS.name()),-1));
     }
 
+    @Test public void invalidRecordedScoresCannotBreakHistoryReconstructionOrRewriteRawEvidence()throws Exception{
+        for(long original:new long[]{-1,Long.MAX_VALUE}){
+            File file=tmp.newFile();assertTrue(file.delete());RunLogWriter writer=RunLogWriter.create(file,TelemetryVersion.CURRENT,"invalid-score","test",1);
+            CustomDungeonRules rules=CustomDungeonRules.defaults().with(CustomDungeonRules.Slider.ENEMY_HP,500);
+            LifecycleEvents.RunStart start=new LifecycleEvents.RunStart();start.runId="invalid-score";start.customRules=rules.preferenceText();com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomScoreSnapshot.forNewRun(rules).recordTo(start);assertTrue(LifecycleEvents.emitRunStart(writer,0,false,start));
+            LifecycleEvents.RunEnd end=new LifecycleEvents.RunEnd();end.score=original;end.customAdjustedKnown=true;end.customAdjustedScore=original;assertTrue(LifecycleEvents.emitRunEnd(writer,1,end));assertTrue(writer.close());
+            byte[] raw=java.nio.file.Files.readAllBytes(file.toPath());RunFacts facts=RunFactsBuilder.fromLog(RunLogReader.read(file),"invalid-score");assertEquals(original,facts.numOr(CustomRuleFacts.ORIGINAL_SCORE,0));assertFalse(facts.isKnown(CustomRuleFacts.ADJUSTED_SCORE));assertArrayEquals(raw,java.nio.file.Files.readAllBytes(file.toPath()));
+        }
+    }
+
 }

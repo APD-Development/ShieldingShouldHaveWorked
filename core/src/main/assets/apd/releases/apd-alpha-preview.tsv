@@ -16,3 +16,6 @@ Statistics / UIMSD	ICON_WARNING	Incomplete export warnings	Exports of damaged or
 Statistics / UIMSD	ICON_WARNING	Incomplete table totals	Item and enemy tables retain incomplete-data warnings when a recorded event cannot be read.
 Bug Fixes	ICON_WARNING	Rotating vault sentry	The circular Imp-vault sentry uses the normal two-turn scan interval; existing affected floors retain their saved position and scan phase.
 Developer Commentary	ICON_INFO	Developer Commentary	I'm bringing APD's statistics and difficulty customization together for the early-alpha preview. New runs use provisional experimental scoring multipliers, with original scores preserved separately.
+Gameplay	ICON_CHALLENGE_COLOR	Provisional custom scoring	New runs use the selected Custom Rules multipliers, with original scores preserved separately.
+Quality of Life	ICON_CHALLENGE_COLOR	Live score previews	Every difficulty slider shows its multiplier, and the combined multiplier updates while you drag.
+Statistics / UIMSD	ICON_STATS	Unreadable score records	Invalid adjusted scores remain unknown without preventing access to the original run history.

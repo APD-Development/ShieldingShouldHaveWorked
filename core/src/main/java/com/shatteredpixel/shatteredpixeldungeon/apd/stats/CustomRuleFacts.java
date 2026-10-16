@@ -50,9 +50,13 @@ public final class CustomRuleFacts {
     public static void preserveScore(RunFacts facts,LifecycleEvents.RunEnd end){
         facts.num(ORIGINAL_SCORE,end.score,Fact.PROV_RECORDED);
         String multiplier=facts.textOr(MULTIPLIER_EXACT,"");
-        if(end.customAdjustedKnown&&!multiplier.isEmpty()){
-            long expected=ProvisionalScoreLookup.adjusted(end.score,new java.math.BigDecimal(multiplier));
-            if(end.customAdjustedScore==expected)facts.num(ADJUSTED_SCORE,end.customAdjustedScore,Fact.PROV_RECORDED);
+        if(end.customAdjustedKnown&&!multiplier.isEmpty()&&end.score>=0){
+            try{
+                long expected=ProvisionalScoreLookup.adjusted(end.score,new java.math.BigDecimal(multiplier));
+                if(end.customAdjustedScore==expected)facts.num(ADJUSTED_SCORE,end.customAdjustedScore,Fact.PROV_RECORDED);
+            }catch(IllegalArgumentException|ArithmeticException invalidRecordedScore){
+                // Preserve the raw original; malformed or overflowing adjusted values remain unknown.
+            }
         }
     }
 }
