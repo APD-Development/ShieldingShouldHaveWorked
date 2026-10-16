@@ -459,4 +459,38 @@ public class ArchiveHostileTest {
 		//the importer is free for a good archive afterwards
 		assertTrue(ArchiveImporter.importArchive(tmp.newFolder("device-after-source-stall"), new ByteArrayInputStream(archive)).ok);
 	}
+
+
+	private byte[] archiveWithKind( String path, String kind, String manifestRunId, byte[] log ) throws Exception {
+		ArchiveManifest manifest = new ArchiveManifest();
+		ArchiveManifest.Entry entry = new ArchiveManifest.Entry();
+		entry.path = path;
+		entry.kind = kind;
+		entry.runId = manifestRunId;
+		entry.size = log.length;
+		entry.sha256 = ArchiveManifest.sha256Hex(log);
+		manifest.files.add(entry);
+		return zip(names(ArchiveManifest.ENTRY_NAME, path),
+				Arrays.asList(manifest.encode().getBytes(ArchiveManifest.utf8()), log));
+	}
+
+	@Test
+	public void aRunPathCannotMasqueradeAsLegacyToBypassRunIdentity() throws Exception {
+		byte[] log = good("a", "run-actually-a");
+		ArchiveImporter.Report report = run(archiveWithKind("runs/a.apdlog", ArchiveManifest.KIND_IMPORTED,
+				"run-says-something-else", log));
+		assertFalse(report.summary(), report.ok);
+		assertEquals(0, report.imported);
+		assertNothingWritten();
+	}
+
+	@Test
+	public void aLegacyPathCannotMasqueradeAsARun() throws Exception {
+		byte[] log = good("a", "run-a");
+		ArchiveImporter.Report report = run(archiveWithKind("legacy/a.apdlog", ArchiveManifest.KIND_RUN,
+				"run-a", log));
+		assertFalse(report.summary(), report.ok);
+		assertEquals(0, report.imported);
+		assertNothingWritten();
+	}
 }

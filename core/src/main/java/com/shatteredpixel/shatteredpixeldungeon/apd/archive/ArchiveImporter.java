@@ -141,6 +141,11 @@ public final class ArchiveImporter {
 						report.problem = "the archive lists a file it is not allowed to write: " + e.path;
 						return report;
 					}
+					String expectedKind = e.path.startsWith("runs/") ? ArchiveManifest.KIND_RUN : ArchiveManifest.KIND_IMPORTED;
+					if (!expectedKind.equals(e.kind)){
+						report.problem = "the archive gives a history file the wrong kind: " + e.path;
+						return report;
+					}
 					if (e.size > MAX_FILE_BYTES){
 						report.problem = "the archive lists a file that is too large: " + e.path;
 						return report;

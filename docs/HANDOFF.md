@@ -2995,3 +2995,10 @@ Audited recorder resume bookkeeping after the TEST231 delivery. One malformed ca
 - Scope remains only archive identity recovery after malformed typed starts. Raw histories, saves, original scores, gameplay, all 18 rules, turns, RNG, all 50 lore entries/private grudge/opt-out, signing configuration and application-ID configuration were not changed.
 - TEST236 is a fully CI-verified candidate only. No publication, tester distribution, physical-phone result or owner-device install-over/save acceptance occurred. TEST231 remains the latest privately delivered fallback.
 - The next meaningful build manifest must include this evidence entry and `docs/APD-TEST236-VERIFICATION-2026-10-16.json`; do not rebuild unchanged TEST236 solely to record documentation.
+
+
+## 2026-10-16T07:32:21Z — archive folder-kind integrity candidate
+- Broad archive/UIMSD audit found that `runs/` entries could declare kind `legacy` and bypass logical run-ID validation; `legacy/` entries declaring kind `run` were also accepted.
+- The bounded correction validates the folder/kind pair before any payload is staged. A mismatch rejects the whole archive without writing history. Valid archives, repeated-path compatibility and raw logs remain unchanged.
+- Two retained hostile-archive methods and an exact-TEST236 before/after workflow require both old bypasses and 1,703 corrected core methods.
+- Full TEST237 gate remains required: debug assembly, complete immediate-previous produced TEST236 history (source `1ea12db8d365ca135aa7af799a1ea7405dc0241f`, run `38863040610`), 33 API34 methods and 42 valid screenshots. Candidate pending; no APK verification, publication, tester distribution, physical-phone result or owner install claim is made. TEST231 remains the delivered fallback and TEST236 the newest verified CI candidate.
