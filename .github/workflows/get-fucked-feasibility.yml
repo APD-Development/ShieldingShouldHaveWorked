@@ -48,6 +48,25 @@ jobs:
         with:
           name: get-fucked-live-continuity-results
           path: ${{ runner.temp }}/get-fucked-live-results/
+      - name: Replay actual fresh level-one origin through floor four
+        run: |
+          mkdir -p "$RUNNER_TEMP/get-fucked-origin-four"
+          tar -xJf research/get-fucked/origin-four-provenance.tar.xz -C "$RUNNER_TEMP/get-fucked-origin-four"
+          python3 - <<'PYCODE'
+          import json, os, subprocess
+          root=os.environ['RUNNER_TEMP']+'/get-fucked-origin-four'
+          props=json.load(open(root+'/origin-four-replay.json'))
+          props.update({'route.stableHash':'true','route.noSnapshots':'true','route.expectedEnd':root+'/native/earned-origin-floor4','route.expectedNativeState':'true','route.expectedActiveRngOnly':'true'})
+          subprocess.run(['./gradlew',':core:test','--tests','*GetFuckedRouteTest']+['-D'+k+'='+v for k,v in props.items()],check=True)
+          PYCODE
+          mkdir -p "$RUNNER_TEMP/get-fucked-origin-results"
+          cp core/build/test-results/test/TEST-*.xml "$RUNNER_TEMP/get-fucked-origin-results/"
+      - name: Preserve actual level-one origin result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: get-fucked-origin-four-results
+          path: ${{ runner.temp }}/get-fucked-origin-results/
       - name: Run scenario and existing challenge tests
         run: ./gradlew :core:test --tests '*GetFuckedFeasibilityTest' --tests '*GetFuckedTest' --tests '*ShieldHungerTest' --tests '*GetFuckedMapTest' --tests '*GetFuckedBarrierDecayTest'
       - name: Preserve baseline test reports before the route task
