@@ -36,3 +36,6 @@ October15 row-source identity correction: a distinct current DatasetStore cache 
 
 
 Update 2026-10-16T12:35:52.018Z: current QueryEngine numeric IN filtering is confirmed to bypass lower-bound uncertainty: a minimum value can be reported as an exact match and higher possible candidates as exact non-matches. TEST242 changes only this branch and adds a retained minimum/higher/all-below regression. Exact-source before/after plus the full1717core/debug/history/33API34/42PNG gate are pending. No raw history, save, cache-format, score or gameplay change is involved.
+
+
+Correction 2026-10-16T12:43:28.551Z: the proposed TEST242 numeric-IN lower-bound issue is not a production defect. Op.IN is intentionally absent from Op.ops(NUM), so QueryEngine rejects the synthetic numeric filter before eval; IN is valid only for text/enum, while lower-bound semantics apply to numeric values. Dedicated38901726173 reproduced the synthetic failure on TEST241 and then still failed1 of1717 corrected methods, exposing the invalid premise. The application/test/workflow candidate is reverted; TEST241 remains current and no rebuild is warranted.

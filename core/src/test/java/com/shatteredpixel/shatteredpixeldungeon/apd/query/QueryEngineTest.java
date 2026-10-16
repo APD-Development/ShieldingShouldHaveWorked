@@ -150,30 +150,6 @@ public class QueryEngineTest {
 		assertEquals(1, run(ds, b.addFilter(Filter.num("score", Op.LT, 20))).stats.filters.get(0).uncertain);
 	}
 
-
-	@Test
-	public void lowerBoundInFilterOnlyRejectsImpossibleCandidates(){
-		Row lower = row(def, "1", "lower", null, null, null, true, R);
-		lower.setNum(SCORE, 12, Fact.PROV_INCOMPLETE);
-		Dataset ds = dataset(def, Arrays.asList(lower));
-		Query base = Query.of("things");
-
-		QueryResult atMinimum = run(ds, base.addFilter(Filter.num("score", Op.IN, 12)));
-		assertTrue(atMinimum.rows.isEmpty());
-		assertEquals(1, atMinimum.stats.filters.get(0).uncertain);
-		assertEquals(0, atMinimum.stats.filters.get(0).notMatched);
-
-		QueryResult aboveMinimum = run(ds, base.addFilter(Filter.num("score", Op.IN, 20, 25)));
-		assertTrue(aboveMinimum.rows.isEmpty());
-		assertEquals(1, aboveMinimum.stats.filters.get(0).uncertain);
-		assertEquals(0, aboveMinimum.stats.filters.get(0).notMatched);
-
-		QueryResult impossible = run(ds, base.addFilter(Filter.num("score", Op.IN, 7, 11)));
-		assertTrue(impossible.rows.isEmpty());
-		assertEquals(0, impossible.stats.filters.get(0).uncertain);
-		assertEquals(1, impossible.stats.filters.get(0).notMatched);
-	}
-
 	@Test
 	public void scopeKeepsRulesetsUnfinishedRunsAndDuplicatesApartAndCountsWhatItLeavesOut(){
 		List<Row> rows = new ArrayList<>();

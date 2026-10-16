@@ -3094,3 +3094,7 @@ At 2026-10-16T12:35:52.018Z, current-source audit confirmed that numeric IN filt
 
 
 TEST242 attempt1 full run38901726106 failed before tests at the strict immediate-previous history comparison: seven reviewed TEST241 preparation/evidence paths were missing from APD-NEXT-BUILD-HISTORY.json. Automatic stage run38901726126 also failed closed at its application-tree equality guard, as expected for new source. Neither run produced or staged an APK. The follow-up ledger enumerates every compared path; guards remain unchanged.
+
+
+## TEST242 candidate rejected — invalid audit premise
+At 2026-10-16T12:43:28.551Z, dedicated run38901726173 proved the copied test failed on unchanged TEST241 but also failed on the proposed correction: numeric IN is not in Op.ops(NUM), so the query engine correctly rejects that filter and leaves rows unchanged. IN applies to enum/text columns, while lower-bound provenance applies to numeric columns; the suspected production path is unreachable. Revert the application/test/workflow candidate. Preserve run38901726106 (history-ledger pre-test failure),38901726126 (stage source-tree fail-closed), and38901726173 (1 expected original failure followed by1717 methods/1 failure) as actual evidence. Runs38902077854/38902077124 began before rejection and cannot verify or stage a current candidate. No APK from these runs is eligible. TEST241 remains last verified application source; no rebuild of unchanged source.

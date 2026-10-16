@@ -328,13 +328,7 @@ public final class QueryEngine {
 				return v > hi ? FALSE : UNCERTAIN;
 			}
 			case IN:
-				if (!lb){
-					for (long n : f.nums) if (v == n) return TRUE;
-					return FALSE;
-				}
-				// The actual value can be any value from v upward. An IN candidate in that
-				// range is possible, never an exact match; candidates below v are impossible.
-				for (long n : f.nums) if (n >= v) return UNCERTAIN;
+				for (long n : f.nums) if (v == n) return TRUE;
 				return FALSE;
 			default:
 				return FALSE;

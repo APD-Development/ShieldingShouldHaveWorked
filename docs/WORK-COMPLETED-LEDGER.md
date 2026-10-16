@@ -1438,3 +1438,9 @@ Privatepublication stillPENDING; keep published231fallback, physicalphone/owner-
 
 
 TEST242 attempt1 evidence: run38901726106 stopped before tests because the candidate ledger omitted seven reviewed TEST241 preparation/evidence paths since the immediate previous APK source. Run38901726126 stopped at the pinned-source staging guard because application inputs changed. Both failures are legitimate fail-closed checks; no APK/staging/publication occurred. Follow-up records all compared paths without weakening guards.
+
+
+## TEST242 audit candidate rejected — 2026-10-16T12:43:28.551Z
+- Dedicated38901726173: the copied method failed once on unchanged TEST241 as expected, then the corrected complete suite ran1717 methods with1 failure in the same method. This showed the test premise, not production behavior, was wrong: numeric IN is not an allowed NUM operator, so the engine leaves an invalid filter unapplied.
+- Reverted QueryEngine, QueryEngineTest and the dedicated workflow. Attempt1 full38901726106 stopped before tests on incomplete history paths; stage38901726126 stopped at its changed-tree guard. Attempt2 runs38902077854/38902077124 were already started and are not candidate evidence regardless of outcome. No eligible APK/publication/phone claim.
+- TEST241 remains the verified application source. This rejection preserves honest failure evidence and avoids changing behavior for an unreachable query.

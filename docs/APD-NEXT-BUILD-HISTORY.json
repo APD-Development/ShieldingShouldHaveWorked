@@ -20,21 +20,18 @@
       ]
     },
     {
-      "category": "Bug Fixes",
-      "sprite": "ICON_WARNING",
-      "title": "Keep lower-bound IN filters uncertain",
-      "text": "A numeric lower bound is never treated as an exact member or exact non-member when a listed candidate could still be its true value.",
+      "category": "Testing",
+      "sprite": "ICON_INFO",
+      "title": "Record a rejected UIMSD audit candidate",
+      "text": "Retain the actual failed-run evidence and the finding that numeric IN is not a valid query path; application source remains TEST241.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/QueryEngine.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/QueryEngineTest.java",
-        ".github/workflows/codex-lower-bound-in-acceptance.yml",
-        "docs/UIMSD-AUDIT-BUG-LOG.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
+        "docs/UIMSD-AUDIT-BUG-LOG.md",
         "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md"
       ]
     }
   ],
-  "commentary": "TEST241 is the immediate previous produced APK. TEST242 attempt1 full run38901726106 failed before tests on an incomplete reviewed-path ledger, and automatic stage38901726126 failed closed because application inputs changed; neither produced or staged an APK. This ledger is path-complete and retains both guards. TEST242 remains a candidate pending exact before/after and full gates."
+  "commentary": "Application and test source are identical to verified TEST241. The TEST242 audit candidate was rejected because numeric IN is not a valid NUM operator; do not rebuild unchanged source. Failed candidate runs are retained as evidence, and no APK from them is eligible."
 }
