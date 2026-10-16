@@ -1315,3 +1315,10 @@ Audited recorder resume bookkeeping after the TEST231 delivery. One malformed ca
 - Scope remains only malformed typed run-end handling: a run becomes finished, or eligible for unredacted export, only after its typed end payload decodes. The malformed frame and every existing raw history byte remain untouched. Saves, scores, gameplay, all 18 rules, turns, RNG, lore/opt-out, signing configuration and application-ID configuration were not changed.
 - TEST234 is a fully CI-verified candidate only: no publication, tester distribution, physical-phone result or owner-device install-over/save acceptance occurred. TEST231 remains the latest privately delivered fallback.
 - The next meaningful build manifest must include this evidence entry and `docs/APD-TEST234-VERIFICATION-2026-10-16.json`; do not rebuild unchanged TEST234 merely to record documentation. Broad UIMSD audit, audio and unconfirmed armor/sentry investigations remain open.
+
+
+## 2026-10-16T05:39:30Z — malformed run-start fact recovery candidate
+- Broad UIMSD derivation audit found that an unreadable first typed `RUN_START` set the first-start guard before decode, hiding a later readable start and its recorded run ID, class, seed, difficulty and exact 18-rule snapshot from permanent derived facts.
+- The bounded correction sets the guard only after successful decode. An already readable first start still cannot be relabelled by later segments; malformed raw history is untouched and count provenance remains incomplete.
+- Added retained method `malformedFirstStartDoesNotHideLaterReadableStart` and a dedicated exact-TEST234 reproduction workflow. Expected results are exactly one failure on TEST234, then 1,698 corrected core methods.
+- Full TEST235 gate remains required: debug assembly, complete immediate-previous produced TEST234 history (source `7f957d75614c48bbb7f98999bfecacfcc2aaede1`, run `38852153894`), 33 API34 methods and 42 valid screenshots. Candidate is pending; no APK, publication, tester distribution, physical-phone result or owner install claim is made. TEST231 remains the delivered fallback and TEST234 the newest verified CI candidate.

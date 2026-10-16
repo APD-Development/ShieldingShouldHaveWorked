@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.apd.stats;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -31,6 +32,22 @@ public class FactsDerivationTest {
 			LifecycleEvents.RunStart s = new LifecycleEvents.RunStart();
 			s.runId = runId; s.heroClass = "WARRIOR"; s.seed = 77; s.challenges = 2; s.exoticChance = 30; s.apdVersionName = "4.0.8-apd";
 			LifecycleEvents.emitRunStart(w, clock++, partial, s);
+			events++;
+			return this;
+		}
+
+		Log malformedStart(){
+			w.event(EventTypes.RUN_START).clock(clock++).emit();
+			events++;
+			return this;
+		}
+
+		Log recordedStart( String runId ){
+			LifecycleEvents.RunStart s = new LifecycleEvents.RunStart();
+			s.runId = runId; s.heroClass = "CLERIC"; s.seed = 991; s.challenges = 5;
+			s.apdVersionName = "4.0.8-apd"; s.difficulty = 4; s.difficultyBalance = 1;
+			s.customRules = CustomDungeonRules.defaults().preferenceText();
+			LifecycleEvents.emitRunStart(w, clock++, false, s);
 			events++;
 			return this;
 		}
@@ -228,6 +245,20 @@ public class FactsDerivationTest {
 		assertFalse(f.isKnown(FactKeys.DEEPEST));
 		assertFalse(f.isKnown(FactKeys.TURNS));
 	}
+
+
+	@Test
+	public void malformedFirstStartDoesNotHideLaterReadableStart() throws Exception {
+		RunFacts f = new Log("malformed-start", TelemetryVersion.CURRENT)
+				.malformedStart().recordedStart("run-readable").end(LifecycleEvents.OUTCOME_ABANDONED).facts(true);
+		assertEquals("run-readable", f.textOr(FactKeys.RUN_ID, ""));
+		assertEquals("CLERIC", f.textOr(FactKeys.HERO_CLASS, ""));
+		assertEquals(991, f.numOr(FactKeys.SEED, -1));
+		assertEquals(4, f.numOr(FactKeys.DIFFICULTY, -1));
+		assertEquals(15, f.numOr(CustomRuleFacts.key("UPGRADE_SCROLLS"), -1));
+		assertEquals(Fact.PROV_INCOMPLETE, f.get(FactKeys.HERO_ATTACKS).prov);
+	}
+
 
 	@Test
 	public void anUnreadableLogGivesARowThatSaysSo() throws Exception {

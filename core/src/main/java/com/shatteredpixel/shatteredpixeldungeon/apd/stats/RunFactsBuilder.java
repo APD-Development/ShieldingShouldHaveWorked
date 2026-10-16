@@ -92,9 +92,10 @@ public final class RunFactsBuilder {
 			try {
 				switch (e.type){
 					case EventTypes.RUN_START: {
-						if (started) break;  //later segments of the same log (none today) never relabel the first
-						started = true;
+						if (started) break;  //later readable segments of the same log never relabel the first
 						LifecycleEvents.RunStart s = LifecycleEvents.decodeRunStart(e, r);
+						// A malformed typed start contributes no setup facts, but must not hide a later readable start.
+						started = true;
 						f.text(FactKeys.RUN_ID, s.runId, Fact.PROV_RECORDED);
 						f.num(FactKeys.SEGMENT, s.segment, Fact.PROV_RECORDED);
 						f.text(FactKeys.APD_VERSION, s.apdVersionName, Fact.PROV_RECORDED);

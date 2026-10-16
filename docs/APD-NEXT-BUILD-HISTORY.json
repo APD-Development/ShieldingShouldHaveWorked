@@ -1,18 +1,17 @@
 {
   "date": "2026-10-16",
-  "previous_source": "c6bed1f12f017d3f2fa92adf2c29d793f5e004ab",
-  "previous_run": 38847041245,
-  "previous_label": "Codex TEST 233",
+  "previous_source": "7f957d75614c48bbb7f98999bfecacfcc2aaede1",
+  "previous_run": 38852153894,
+  "previous_label": "Codex TEST 234",
   "changes": [
     {
       "category": "Development",
       "sprite": "ICON_CHECKED",
-      "title": "Record verified TEST233 evidence",
-      "text": "Retain the exact TEST233 targeted, core, Android, visual and APK evidence without rebuilding or publishing unchanged application source.",
+      "title": "Record verified TEST234 evidence",
+      "text": "Retain the exact TEST234 targeted, core, Android, visual, APK, application-ID and signature evidence without rebuilding or publishing unchanged source.",
       "paths": [
-        "docs/APD-ACTIVE-TIME-IDLE-GAP-2026-10-15.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/APD-TEST233-VERIFICATION-2026-10-15.json",
+        "docs/APD-TEST234-VERIFICATION-2026-10-16.json",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md"
       ]
@@ -20,20 +19,19 @@
     {
       "category": "Statistics",
       "sprite": "ICON_WARNING",
-      "title": "Reject malformed run-end completion",
-      "text": "A checksum-valid but unreadable run-end payload no longer marks a run finished or authorizes an unredacted current-run history export.",
+      "title": "Recover readable run-start facts",
+      "text": "A malformed typed first run-start no longer hides a later readable run identity, class, seed, difficulty or exact Custom Dungeon Rules snapshot from permanent UIMSD-derived facts.",
       "paths": [
-        ".github/workflows/codex-malformed-run-end-acceptance.yml",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/archive/ArchiveExporter.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowBuilders.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/MalformedRunEndPrivacyTest.java",
+        ".github/workflows/codex-malformed-run-start-facts-acceptance.yml",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/RunFactsBuilder.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/FactsDerivationTest.java",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/APD-MALFORMED-RUN-END-PRIVACY-2026-10-16.md",
+        "docs/APD-MALFORMED-RUN-START-FACTS-2026-10-16.md",
         "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md"
       ]
     }
   ],
-  "commentary": "TEST233 is the immediate previous produced APK and TEST231 remains the latest privately delivered fallback. The malformed run-end correction requires exact before/after core evidence and one complete TEST234 application gate; no automatic delivery."
+  "commentary": "TEST234 is the immediate previous produced APK and TEST231 remains the latest privately delivered fallback. The malformed run-start correction requires exact before/after core evidence and one complete TEST235 application gate; no automatic delivery."
 }
