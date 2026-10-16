@@ -37,14 +37,14 @@ jobs:
           assert {j['name'] for j in jobs if j['conclusion']=='failure'}=={'android-smoke-check'}
           deadline=time.monotonic()+1800
           while True:
-              retest=api(f'repos/{repo}/actions/runs/38946476567')
-              assert retest['head_sha']=='2c53af80a5be76c23d2705050939fbeee5feb147'
+              retest=api(f'repos/{repo}/actions/runs/38948655465')
+              assert retest['head_sha']=='8ec678a7d13d12797b0e5ed64062dbe7a31c5901'
               if retest['status']=='completed':
                   assert retest['conclusion']=='success','Corrected native acceptance failed; retain fallback'
                   break
               if time.monotonic()>deadline:raise SystemExit('Corrected native acceptance still pending; no verified claim')
               time.sleep(20)
-          rjobs=api(f'repos/{repo}/actions/runs/38946476567/jobs')['jobs']
+          rjobs=api(f'repos/{repo}/actions/runs/38948655465/jobs')['jobs']
           for name in ('reuse-and-check (34)','reuse-and-check (36)'):
               assert any(j['name']==name and j['conclusion']=='success' for j in rjobs)
           roster_jobs=api(f'repos/{repo}/actions/runs/38944665726/jobs')['jobs']
@@ -58,7 +58,7 @@ jobs:
           for aid,(name,digest) in expected.items():
               art=api(f'repos/{repo}/actions/artifacts/{aid}')
               assert art['name']==name and not art['expired'] and art['workflow_run']['head_sha']==source and art['digest']=='sha256:'+digest
-          pathlib.Path('stage-provenance.json').write_text(json.dumps({'application_source':source,'original_build_run':38943900747,'original_build_job':next(j for j in jobs if j['name']=='verify-and-build'),'original_run_conclusion':original['conclusion'],'android_retest_run':38946476567,'android_retest_source':retest['head_sha'],'android_retest_conclusion':retest['conclusion'],'roster_run':38944665726,'stage_commit':os.environ['GITHUB_SHA'],'protected_application_inputs_identical':True,'application_rebuilt':False,'physical_phone':False},indent=2))
+          pathlib.Path('stage-provenance.json').write_text(json.dumps({'application_source':source,'original_build_run':38943900747,'original_build_job':next(j for j in jobs if j['name']=='verify-and-build'),'original_run_conclusion':original['conclusion'],'android_retest_run':38948655465,'android_retest_source':retest['head_sha'],'android_retest_conclusion':retest['conclusion'],'roster_run':38944665726,'stage_commit':os.environ['GITHUB_SHA'],'protected_application_inputs_identical':True,'application_rebuilt':False,'physical_phone':False},indent=2))
           PY
       - uses: actions/download-artifact@v4
         with:
@@ -81,13 +81,13 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: apd-final-alpha-api34
-          run-id: '38946476567'
+          run-id: '38948655465'
           github-token: ${{ github.token }}
           path: corrected-android
       - uses: actions/download-artifact@v4
         with:
           name: apd-final-alpha-api36
-          run-id: '38946476567'
+          run-id: '38948655465'
           github-token: ${{ github.token }}
           path: android36
       - uses: actions/download-artifact@v4
@@ -151,13 +151,13 @@ jobs:
                   target=root/'test-evidence'/label;target.mkdir(parents=True,exist_ok=True);shutil.copyfile(pathlib.Path(folder,name),target/name)
           modal=pathlib.Path('original-rejected-android/codex-visual-evidence/hotbar-controls.png')
           assert modal.is_file();shutil.copyfile(modal,root/'test-evidence/rejected-original-api34/setup-modal.png')
-          text=f"TEST253 application source {source}; APK SHA-256 {sha}. No application APK rebuild during retest or staging.\n\nOriginal run38943900747 successfully completed the producer/core/debug/history job with1736unique core methods. Its initial Android run was rejected:35passed/1failed because the setup left its empty-hotbar modal over the HUD. Corrected instrumentation source2c53af80a5be76c23d2705050939fbeee5feb147/run38946476567 retested ALL36original methods successfully on the SAME APK, plus8Android16 methods; zero failures/errors/skips. Original and corrected case identities match exactly.\n\nThe same APK passed the six-class save/continue method in38944665726. There are37unique Android methods across45successful executions in the accepted evidence, not45unique tests.68PNG captures have valid dimensions/checksums; manual visual review remains pending at this staging checkpoint. No physical-phone claim.\n\nSigning/applicationID/versioncode match published TEST250. All357values/formula/gameplay remain unchanged except the bounded toolbar placement correction. Install over; never uninstall or clear data. Published250and231assets remain preserved."
+          text=f"TEST253 application source {source}; APK SHA-256 {sha}. No application APK rebuild during retest or staging.\n\nOriginal run38943900747 successfully completed the producer/core/debug/history job with1736unique core methods. Its initial Android run was rejected:35passed/1failed because the setup left its empty-hotbar modal over the HUD. Corrected instrumentation source8ec678a7d13d12797b0e5ed64062dbe7a31c5901/run38948655465 retested ALL36original methods successfully on the SAME APK, plus8Android16 methods; zero failures/errors/skips. Original and corrected case identities match exactly.\n\nThe same APK passed the six-class save/continue method in38944665726. There are37unique Android methods across45successful executions in the accepted evidence, not45unique tests.68PNG captures have valid dimensions/checksums; manual visual review remains pending at this staging checkpoint. No physical-phone claim.\n\nSigning/applicationID/versioncode match published TEST250. All357values/formula/gameplay remain unchanged except the bounded toolbar placement correction. Install over; never uninstall or clear data. Published250and231assets remain preserved."
           (root/'verification.txt').write_text(text)
           body="""# Current acceptance checkpoint
           ## Implemented changes
           The optional scoring-vision popup explains future interaction-aware and class/progression ideas without changing today's357provisional values. The daily calendar shows and preserves already-earned scores using additive compatible long metadata. Narrow toolbars move only the existing pager above the slots when a140-pixel row cannot fit135pixels.
           ## Actual verification and failures
-          The original253core/debug/history producer passed. Its initial native run failed because the test left a Hotbar/No available items modal open. Only test-owned modal cleanup changed afterward. The application source and signed APK did not change. The complete corrected native run now passes all36original cases and8Android16cases; all6classes also passed save/continue on this APK. Earlier emulator disk and diagnostic-script failures remain documented in HANDOFF.
+          The original253core/debug/history producer passed. Its initial native run failed because the test left a Hotbar/No available items modal open. Only test setup, execution and native-input synchronization changed afterward. The application source and signed APK did not change. The complete corrected native run now passes all36original cases and8Android16cases; all6classes also passed save/continue on this APK. Earlier emulator disk, diagnostic-script and cold-process fixture failures remain documented in HANDOFF.
           ## Remaining boundaries
           The generated captures still require agent review before publication. Physical-phone install-over, the owner's actual save, physical touch and full human boss playthroughs remain unverified. No automatic tester distribution or public release. The original rejected run is never described as successful.
           """
