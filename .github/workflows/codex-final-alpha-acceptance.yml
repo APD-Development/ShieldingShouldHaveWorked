@@ -1,4 +1,4 @@
-name: Verify TEST254 native controls without crashing emulator Google services
+name: Verify settled preview and native pager on unchanged TEST254
 on:
   push:
     branches: [codex/apd-phone-fixes-2026-10-09]
@@ -7,7 +7,7 @@ permissions:
   contents: read
   actions: read
 concurrency:
-  group: apd-api36-isolated-native-proof254
+  group: apd-api36-settled-native-proof254
   cancel-in-progress: false
 jobs:
   reuse-and-check:
