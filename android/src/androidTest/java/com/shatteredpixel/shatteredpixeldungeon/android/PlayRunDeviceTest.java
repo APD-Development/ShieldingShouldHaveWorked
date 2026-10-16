@@ -177,7 +177,7 @@ public class PlayRunDeviceTest {
 				for (String name : new String[]{"btnSearch", "btnWait", "btnInventory"}) {
 					com.watabou.noosa.ui.Component control = (com.watabou.noosa.ui.Component) field(toolbar, name);
 					if (control.visible && button.camera() == control.camera()) {
-						assertTrue("category hotbar must not overlap " + name,
+						assertTrue("category hotbar must not overlap " + name + " slot="+button.left()+","+button.top()+","+button.width()+","+button.height()+" control="+control.left()+","+control.top()+","+control.width()+","+control.height()+" toolbar="+toolbar.left()+","+toolbar.width()+" camera="+button.camera().width+" mode="+SPDSettings.toolbarMode(),
 								button.right() <= control.left()+1 || control.right() <= button.left()+1
 								|| button.bottom() <= control.top()+1 || control.bottom() <= button.top()+1);
 					}

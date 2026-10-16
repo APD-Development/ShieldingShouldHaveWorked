@@ -40,7 +40,7 @@ jobs:
               assert run['status']=='completed' and run['conclusion']=='success' and run['head_sha']==source
           metadata=api(f'repos/{repo}/actions/artifacts/{artifact_id}')
           assert metadata['workflow_run']['head_sha']==source and not metadata['expired']
-          paths=['core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/BossProgressionAcceptanceTest.java','android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/EarlyAlphaRosterDeviceTest.java']
+          paths=['android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomScoreDeviceTest.java','android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PlayRunDeviceTest.java','core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/BossProgressionAcceptanceTest.java','android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/EarlyAlphaRosterDeviceTest.java']
           supplemental={path:pathlib.Path(path).read_bytes() for path in paths}
           subprocess.run(['git','fetch','--no-tags','--depth=1','origin',source],check=True)
           protected=['core/src/main','SPD-classes/src/main','services/src/main','android/src/main','android/build.gradle','core/build.gradle','SPD-classes/build.gradle','services/build.gradle','build.gradle','settings.gradle','gradle.properties','gradle']
@@ -130,7 +130,15 @@ jobs:
             if [ "$APD_ACCEPTANCE_API" = "36" ]; then adb shell wm size 540x960; adb shell wm density 240; else adb shell wm size 320x640; adb shell wm density 160; fi
             adb shell settings put secure immersive_mode_confirmations confirmed
             adb logcat -c
-            timeout 1200 adb shell am instrument -w -r -e class "$APD_DEVICE_METHODS" com.charltonchris29.adhdpixeldungeon.indev.test/androidx.test.runner.AndroidJUnitRunner > instrumentation.txt 2>&1
+            python3 - <<'PY'
+            import os,pathlib,subprocess
+            outputs=[]
+            for method in os.environ['APD_DEVICE_METHODS'].split(','):
+                subprocess.run(['adb','shell','am','force-stop','com.charltonchris29.adhdpixeldungeon.indev'],check=True)
+                result=subprocess.run(['timeout','300','adb','shell','am','instrument','-w','-r','-e','class',method,'com.charltonchris29.adhdpixeldungeon.indev.test/androidx.test.runner.AndroidJUnitRunner'],text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+                outputs.append('METHOD '+method+'\n'+result.stdout)
+                pathlib.Path('instrumentation.txt').write_text('\n'.join(outputs))
+            PY
             adb logcat -d -v time > acceptance-logcat.txt
             mkdir -p acceptance-screenshots
             python3 -c "import json,pathlib,subprocess; [subprocess.run(['adb','pull','/sdcard/Pictures/APD-Test-Visuals/'+name,'acceptance-screenshots/'+name],check=True) for name in json.loads(pathlib.Path('expected-screenshots.json').read_text())]"
@@ -140,7 +148,7 @@ jobs:
           import json,os,pathlib,re,struct,subprocess
           count=int(os.environ['APD_EXPECTED_METHODS']);api=int(os.environ['APD_ACCEPTANCE_API']);text=pathlib.Path('instrumentation.txt').read_text()
           print(text)
-          assert re.search(r'OK \('+str(count)+r' tests?\)',text),text
+          assert len(re.findall(r'OK \(1 test\)',text))==count,text
           assert not any(s in text for s in ('FAILURES!!!','INSTRUMENTATION_FAILED','Process crashed.'))
           names=json.loads(pathlib.Path('expected-screenshots.json').read_text());images={}
           for name in names:

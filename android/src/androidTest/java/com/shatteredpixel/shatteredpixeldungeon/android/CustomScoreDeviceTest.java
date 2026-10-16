@@ -24,6 +24,7 @@ public class CustomScoreDeviceTest{
  @Test public void dailyCalendarShowsFrozenLongEarnedScoreWithoutOverlappingDates()throws Exception {
   try(ActivityScenario<AndroidLauncher> scenario=ActivityScenario.launch(AndroidLauncher.class)){
    long end=System.currentTimeMillis()+120000;while((Game.scene()==null||PixelScene.uiCamera==null)&&System.currentTimeMillis()<end)Thread.sleep(200);assertNotNull(Game.scene());
+   TopScoresDeviceTest.render(()->ShatteredPixelDungeon.switchNoFade(TitleScene.class));end=System.currentTimeMillis()+30000;while(!(Game.scene() instanceof TitleScene)&&System.currentTimeMillis()<end)Thread.sleep(100);assertTrue(Game.scene() instanceof TitleScene);Thread.sleep(600);
    final Rankings.Record[] previous=new Rankings.Record[1];final LinkedHashMap<Long,Integer> originals=new LinkedHashMap<>();
    final com.shatteredpixel.shatteredpixeldungeon.windows.WndDailies[] window=new com.shatteredpixel.shatteredpixeldungeon.windows.WndDailies[1];
    final long day=1792108800000L;final long[] earned=new long[1];final String[] expected=new String[1];
