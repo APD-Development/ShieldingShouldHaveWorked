@@ -31,6 +31,23 @@ jobs:
           name: get-fucked-existing-engine-runtime
           path: core/build/get-fucked-runtime/
           retention-days: 7
+      - name: Replay uninterrupted live floor-seven-to-nine segment
+        run: |
+          mkdir -p "$RUNNER_TEMP/get-fucked-floor-nine"
+          tar -xJf research/get-fucked/floor-nine-live-provenance.tar.xz -C "$RUNNER_TEMP/get-fucked-floor-nine"
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' \
+            -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor7_intercept" \
+            -Droute.stableHash=true -Droute.noSnapshots=true -Droute.liveNineFromSeven=true \
+            -Droute.expectedEnd="$RUNNER_TEMP/get-fucked-floor-nine/native/earned-live-floor9-corner" \
+            -Droute.expectedNativeState=true
+          mkdir -p "$RUNNER_TEMP/get-fucked-live-results"
+          cp core/build/test-results/test/TEST-*.xml "$RUNNER_TEMP/get-fucked-live-results/"
+      - name: Preserve live continuity result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: get-fucked-live-continuity-results
+          path: ${{ runner.temp }}/get-fucked-live-results/
       - name: Run scenario and existing challenge tests
         run: ./gradlew :core:test --tests '*GetFuckedFeasibilityTest' --tests '*GetFuckedTest' --tests '*ShieldHungerTest' --tests '*GetFuckedMapTest' --tests '*GetFuckedBarrierDecayTest'
       - name: Preserve baseline test reports before the route task

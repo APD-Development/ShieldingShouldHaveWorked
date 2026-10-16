@@ -335,6 +335,28 @@ public class GetFuckedRouteTest {
             assertArrayEquals("Endpoint RNG differs from the connected native checkpoint",java.nio.file.Files.readAllBytes(root.resolve("rng.bin")),bytes.toByteArray());
             System.out.println("CONNECTED_ENDPOINT_STATE_AND_RNG_VERIFIED "+root.getFileName());
         }
+        if(Boolean.getBoolean("route.expectedNativeState"))verifyFullNativeEnd(root);
+    }
+    private JSONObject readNativeJson(java.nio.file.Path path) throws Exception {
+        java.io.ByteArrayOutputStream bytes=new java.io.ByteArrayOutputStream();
+        try(java.util.zip.GZIPInputStream in=new java.util.zip.GZIPInputStream(java.nio.file.Files.newInputStream(path))){
+            byte[] buffer=new byte[8192];int count;while((count=in.read(buffer))!=-1)bytes.write(buffer,0,count);
+        }
+        return new JSONObject(new String(bytes.toByteArray(),java.nio.charset.StandardCharsets.UTF_8));
+    }
+    private void verifyFullNativeEnd(java.nio.file.Path expectedRoot) throws Exception {
+        assertFalse("Full native-state verification requires the entire retained RNG stack",Boolean.getBoolean("route.expectedActiveRngOnly"));
+        Dungeon.saveAll(); //Normal native serialization, never restore expected data into the character.
+        java.nio.file.Path actualRoot=FileUtils.getFileHandle(GamesInProgress.gameFile(1)).file().toPath().getParent();
+        Set<String> expectedFiles=new TreeSet<>(),actualFiles=new TreeSet<>();
+        try(java.nio.file.DirectoryStream<java.nio.file.Path> files=java.nio.file.Files.newDirectoryStream(expectedRoot,"*.dat")){for(java.nio.file.Path file:files)expectedFiles.add(file.getFileName().toString());}
+        try(java.nio.file.DirectoryStream<java.nio.file.Path> files=java.nio.file.Files.newDirectoryStream(actualRoot,"*.dat")){for(java.nio.file.Path file:files)actualFiles.add(file.getFileName().toString());}
+        assertEquals("All visited native files must match",expectedFiles,actualFiles);
+        for(String name:expectedFiles)assertTrue("Full native JSON differs: "+name,readNativeJson(expectedRoot.resolve(name)).similar(readNativeJson(actualRoot.resolve(name))));
+        Field f=Random.class.getDeclaredField("generators");f.setAccessible(true);java.io.ByteArrayOutputStream rng=new java.io.ByteArrayOutputStream();
+        try(java.io.ObjectOutputStream out=new java.io.ObjectOutputStream(rng)){out.writeObject(f.get(null));}
+        assertArrayEquals("Normal save must retain the expected complete RNG",java.nio.file.Files.readAllBytes(expectedRoot.resolve("rng.bin")),rng.toByteArray());
+        System.out.println("CONNECTED_FULL_NATIVE_JSON_AND_RNG_VERIFIED files="+expectedFiles.size()+" "+expectedRoot.getFileName());
     }
 
     private void snapshot(String label) throws Exception {
@@ -471,7 +493,10 @@ public class GetFuckedRouteTest {
     @Test public void seed266InitialCommands() throws Exception {
         System.out.println("RUNNER_STAGE scheduler start");
         ready();
-        if(System.getProperty("route.resume")!=null){verifyCheckpoint(System.getProperty("route.resume"));if(Dungeon.depth==3)thirdFloorSection();else if(Dungeon.depth==4){if(Dungeon.hero.pos==826)returnedFourthFloorSection();else if(Dungeon.hero.pos==437)purityCheckpointSection();else if(Dungeon.hero.pos==1035)foodCheckpointSection();else fourthFloorSection();}else if(Dungeon.depth==5){if(Boolean.getBoolean("route.postGoo"))postGooSection();else if(Boolean.getBoolean("route.armoredGoo"))armoredGooSection();else fifthFloorSection();}else if(Dungeon.depth==6)sixthFloorSection();else if(Dungeon.depth==7)seventhFloorSection();else if(Dungeon.depth==8)eighthFloorSection();else fail("Unwritten section");verifyExpectedEnd();return;}
+        if(Boolean.getBoolean("route.liveNineFromSeven")){
+            assertNotNull(System.getProperty("route.resume"));verifyCheckpoint(System.getProperty("route.resume"));liveNineFromSeven();verifyExpectedEnd();return;
+        }
+        if(System.getProperty("route.resume")!=null){verifyCheckpoint(System.getProperty("route.resume"));if(Dungeon.depth==3)thirdFloorSection();else if(Dungeon.depth==4){if(Dungeon.hero.pos==826)returnedFourthFloorSection();else if(Dungeon.hero.pos==437)purityCheckpointSection();else if(Dungeon.hero.pos==1035)foodCheckpointSection();else fourthFloorSection();}else if(Dungeon.depth==5){if(Boolean.getBoolean("route.postGoo"))postGooSection();else if(Boolean.getBoolean("route.armoredGoo"))armoredGooSection();else fifthFloorSection();}else if(Dungeon.depth==6)sixthFloorSection();else if(Dungeon.depth==7)seventhFloorSection();else if(Dungeon.depth==8)eighthFloorSection();else if(Dungeon.depth==9)ninthFloorSection();else fail("Unwritten section");verifyExpectedEnd();return;}
         assertEquals(1,Dungeon.hero.lvl); assertEquals(1,Dungeon.hero.HP); assertEquals(1,Dungeon.hero.HT);
         for(Map<Talent,Integer> tier:Dungeon.hero.talents) for(int value:tier.values()) assertEquals(0,value);
         JSONObject layout=new JSONObject(); Level l=Dungeon.level;
@@ -626,6 +651,36 @@ public class GetFuckedRouteTest {
         if(System.getProperty("route.checkpointOut")!=null)writeCheckpoint(System.getProperty("route.checkpointOut"));
         if(Boolean.getBoolean("route.stopAfterFloor3")){verifyExpectedEnd();return;}
         thirdFloorSection();
+    }
+    private void liveNineFromSeven() throws Exception {
+        assertEquals(7,Dungeon.depth);assertEquals(538,Dungeon.hero.pos);
+        System.setProperty("route.stopBeforeCure","true");System.clearProperty("route.nineContinue");
+        hourglassAccessSection();log("LIVE JOIN 01 PIT ACCESS");
+        eighthFloorHourglassGuard();log("LIVE JOIN 02 GUARD BYPASS");
+        eighthFloorHourglassCentral();log("LIVE JOIN 03 CENTRAL POOL");
+        eighthFloorFallToNine();log("LIVE JOIN 04 NINE LANDING");
+        if(Boolean.getBoolean("route.liveStopAtLanding")){
+            if(System.getProperty("route.liveNineOut")!=null)writeCheckpoint(System.getProperty("route.liveNineOut"));return;
+        }
+        if(Dungeon.hero.pos==944){
+            ninthFloorLiveLanding();
+            if(System.getProperty("route.liveNineOut")!=null)writeCheckpoint(System.getProperty("route.liveNineOut"));
+            return;
+        }
+        ninthFloorSection();log("LIVE JOIN 05 LANDING DM");
+        ninthFloorSection();log("LIVE JOIN 06 PAID RECHARGE");
+        System.setProperty("route.nineContinue","true");ninthFloorSection();log("LIVE JOIN 07 GARDEN APPROACH");
+        ninthFloorSection();log("LIVE JOIN 08 GARDEN SKELETON");
+        ninthFloorSection();log("LIVE JOIN 09 ACTUAL RATION");
+        ninthFloorSection();log("LIVE JOIN 10 ACTUAL MEAL");
+        System.setProperty("route.nineGuardAttacks","6");ninthFloorSection();log("LIVE JOIN 11 GUARD ATTACKS");
+        System.setProperty("route.nineKiteRage","true");ninthFloorSection();log("LIVE JOIN 12 KITE RAGE");
+        System.setProperty("route.stopKiteAfterFour","true");ninthFloorSection();log("LIVE JOIN 13 FOUR SAFE MOVES");
+        ninthFloorSection();log("LIVE JOIN 14 SAFE CORNER BLESS");
+        ninthFloorSection();log("LIVE JOIN 15 DOORWAY");
+        ninthFloorSection();log("LIVE JOIN 16 SECRET TRANSIT");
+        ninthFloorSection();log("LIVE JOIN 17 FREE MISSILE");
+        if(System.getProperty("route.liveNineOut")!=null)writeCheckpoint(System.getProperty("route.liveNineOut"));
     }
     private void thirdFloorSection() throws Exception {
         assertEquals(3,Dungeon.depth);
@@ -1222,21 +1277,199 @@ public class GetFuckedRouteTest {
     private void eighthFloorHourglassWestFight() throws Exception {
         assertEquals(1098,Dungeon.hero.pos);
         Mob thief=Dungeon.level.mobs.stream().filter(m->m.id()==242).findFirst().orElse(null);
-        for(int n=0;n<2 && thief!=null && thief.isAlive() && Dungeon.level.adjacent(Dungeon.hero.pos,thief.pos);n++)click(thief.pos);
-        log("ACTUAL TWO THIEF FOLLOW UP ATTEMPTS NO STOLEN ITEMS RESTORED");
+        for(int n=0;n<Integer.getInteger("route.westThiefAttempts",2) && thief!=null && thief.isAlive() && Dungeon.level.adjacent(Dungeon.hero.pos,thief.pos);n++)click(thief.pos);
+        log("ACTUAL THIEF FOLLOW UP ATTEMPTS NO STOLEN ITEMS RESTORED");
+        if(Boolean.getBoolean("route.westFocusFront")){
+            Mob front=Dungeon.level.mobs.stream().filter(m->m.id()==279).findFirst().get();
+            Mob rear=Dungeon.level.mobs.stream().filter(m->m.id()==281).findFirst().get();
+            for(int n=0;n<4 && !Dungeon.level.adjacent(Dungeon.hero.pos,front.pos);n++){
+                assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,rear.pos));click(rear.pos);
+            }
+            assertTrue("Northern corridor blocker must actually arrive",Dungeon.level.adjacent(Dungeon.hero.pos,front.pos));
+            for(int n=0;n<8 && front.isAlive();n++){assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,front.pos));click(front.pos);}
+            assertFalse("Ordinary northern skeleton must really die",front.isAlive());log("ACTUAL NORTHERN SKELETON CLEAR HEALED MINION NOT REMOVED");
+            if(System.getProperty("route.hourglassFrontClearOut")!=null)writeCheckpoint(System.getProperty("route.hourglassFrontClearOut"));
+            return;
+        }
         Mob skeleton=Dungeon.level.mobs.stream().filter(m->m.id()==281).findFirst().get();
         for(int n=0;n<5 && skeleton.isAlive();n++){assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,skeleton.pos));click(skeleton.pos);}
         assertFalse("Real chasing necro skeleton must be dead",skeleton.isAlive());log("ACTUAL NECRO SKELETON CLEAR WITH ITS REAL EXPLOSION");
         if(System.getProperty("route.hourglassWestClearOut")!=null)writeCheckpoint(System.getProperty("route.hourglassWestClearOut"));
     }
+    private void eighthFloorHourglassCasterFocus() throws Exception {
+        assertEquals(1098,Dungeon.hero.pos);
+        for(int cell:new int[]{1130,1163}){click(cell);assertEquals(cell,Dungeon.hero.pos);}
+        Mob necro=Dungeon.level.mobs.stream().filter(m->m.id()==235).findFirst().get();assertEquals(1164,necro.pos);
+        for(int n=0;n<6 && necro.isAlive();n++){assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,necro.pos));click(necro.pos);}
+        assertFalse("Original necromancer must actually die",necro.isAlive());
+        assertFalse("Its minion must die through original owner-death code",Dungeon.level.mobs.stream().anyMatch(m->m.id()==281 && m.isAlive()));
+        log("ACTUAL NECROMANCER AND OWNED MINION DEFEATED WITHOUT RESET");
+        if(System.getProperty("route.hourglassCasterClearOut")!=null)writeCheckpoint(System.getProperty("route.hourglassCasterClearOut"));
+    }
+    private void ninthFloorGardenFight() throws Exception {
+        assertEquals(905,Dungeon.hero.pos);
+        activateOwnedHourglassFreeze();
+        for(int cell:new int[]{950,995}){click(cell);assertEquals(cell,Dungeon.hero.pos);}
+        Dungeon.hero.belongings.getItem(TimekeepersHourglass.class).execute(Dungeon.hero,"ACTIVATE");assertNull(Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class));
+        log("TWO FROZEN GARDEN APPROACH MOVES RETAIN THE FINAL HOURGLASS CHARGE");
+        Mob skeleton=Dungeon.level.mobs.stream().filter(m->m.id()==267).findFirst().get();
+        cast(ShieldOfLight.INSTANCE,skeleton.pos);cast(GuidingLight.INSTANCE,skeleton.pos);
+        throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class,skeleton.pos);
+        for(int n=0;n<2 && skeleton.isAlive();n++){assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,skeleton.pos));click(skeleton.pos);}
+        assertFalse("Actual garden skeleton must be cleared",skeleton.isAlive());
+        assertEquals(7,Dungeon.hero.lvl);assertEquals(2,Dungeon.hero.exp);assertEquals(1,Dungeon.hero.talentPointsAvailable(2));Dungeon.hero.upgradeTalent(Talent.BLESS);
+        cast(BlessSpell.INSTANCE,Dungeon.hero.pos);log("FLOOR NINE REAL SKELETON CLEAR EARNED BLESS AND ACTUAL BARRIER");
+        if(System.getProperty("route.floorNineBlessOut")!=null)writeCheckpoint(System.getProperty("route.floorNineBlessOut"));
+    }
+    private void ninthFloorActualFood() throws Exception {
+        assertEquals(995,Dungeon.hero.pos);assertEquals(1,Dungeon.hero.pointsInTalent(Talent.BLESS));
+        activateOwnedHourglassFreeze();click(1040);assertEquals(1040,Dungeon.hero.pos);click(1040);
+        assertNotNull("Actual shuriken must be recovered first from the heap",Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class));
+        assertNull("Two owned frozen turns must be fully spent",Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class));
+        click(1040);assertNotNull("Ration must actually enter owned inventory",Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.food.Food.class));
+        assertEquals(1040,Dungeon.hero.pos);log("ACTUAL FLOOR NINE RATION ACQUIRED WITH RETAINED GUARD AND REAL RESOURCES");
+        if(System.getProperty("route.floorNineFoodOut")!=null)writeCheckpoint(System.getProperty("route.floorNineFoodOut"));
+    }
+    private void ninthFloorEatAcquiredRation() throws Exception {
+        assertEquals(1040,Dungeon.hero.pos);
+        Item food=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.food.Food.class);assertNotNull(food);
+        food.execute(Dungeon.hero,"EAT");ready();assertEquals(1,Dungeon.hero.HP);assertEquals(1,Dungeon.hero.HT);
+        assertEquals(3f,Dungeon.hero.buff(Hunger.class).hunger(),0.001f);
+        log("ACTUAL ACQUIRED FLOOR NINE RATION EATEN UNDER CONTINUOUS PURSUIT");
+        if(System.getProperty("route.floorNineMealOut")!=null)writeCheckpoint(System.getProperty("route.floorNineMealOut"));
+    }
+    private void ninthFloorPulledGuardFight() throws Exception {
+        assertEquals(903,Dungeon.hero.pos);Mob guard=Dungeon.level.mobs.stream().filter(m->m.id()==286).findFirst().get();
+        if(Boolean.getBoolean("route.nineKiteRage")){
+            for(int cell:new int[]{948,993,1039,1084}){click(cell);assertEquals(cell,Dungeon.hero.pos);}
+            log("REAL GUARD KITE THROUGH FOUR SAFE MOVEMENTS TO SOUTH DOOR");
+            Item rage=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRage.class);assertNotNull(rage);rage.execute(Dungeon.hero,"READ");ready();log("RETAINED RAGE AT REAL THREE ENEMY DOOR ENCOUNTER");
+            click(1083);assertEquals(1083,Dungeon.hero.pos);log("STEP OUT OF THE DOOR TO ALLOW ORIGINAL ENEMY INTERACTIONS");
+            if(System.getProperty("route.floorNineKiteOut")!=null)writeCheckpoint(System.getProperty("route.floorNineKiteOut"));return;
+        }
+        for(int n=0;n<Integer.getInteger("route.nineGuardAttacks",6) && guard.isAlive();n++){assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,guard.pos));click(guard.pos);}
+        log("ACTUAL FLOOR NINE POST MEAL GUARD FIGHT WITH PAID ATTACKS");
+        if(System.getProperty("route.floorNineGuardFightOut")!=null)writeCheckpoint(System.getProperty("route.floorNineGuardFightOut"));
+    }
+    private void ninthFloorKiteRecharge() throws Exception {
+        assertEquals(1083,Dungeon.hero.pos);
+        for(int cell:new int[]{1082,1036,989,942}){click(cell);assertEquals(cell,Dungeon.hero.pos);}
+        if(Boolean.getBoolean("route.stopKiteAfterFour")){
+            Mob dm=Dungeon.level.mobs.stream().filter(m->m.id()==272).findFirst().get();boolean[] fov=new boolean[Dungeon.level.length()];Dungeon.level.updateFieldOfView(dm,fov);
+            for(int cell:new int[]{897,941,942,943,987,988,989}){
+                com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica ray=new com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica(dm.pos,cell,com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica.MAGIC_BOLT);
+                System.out.println("READ_ONLY_DM_GEOMETRY cell="+cell+" terrain="+Dungeon.level.map[cell]+" seenByDM="+fov[cell]+" collision="+ray.collisionPos+" DMpos="+dm.pos);
+            }
+            log("ACTUAL FOUR KITE MOVES BEFORE FATAL FIFTH CELL");
+            if(System.getProperty("route.floorNineFourKiteOut")!=null)writeCheckpoint(System.getProperty("route.floorNineFourKiteOut"));return;
+        }
+        click(Integer.getInteger("route.kiteFifthCell",943));
+        assertTrue("Walking must actually earn the whole charge",charge(Dungeon.hero.belongings.getItem(HolyTome.class))>=1);
+        cast(BlessSpell.INSTANCE,Dungeon.hero.pos);log("ACTUAL KITE AND ENEMY DUEL RECHARGE EARNS SECOND BLESS");
+        if(System.getProperty("route.floorNineSecondBlessOut")!=null)writeCheckpoint(System.getProperty("route.floorNineSecondBlessOut"));
+    }
+    private void ninthFloorSafeCornerBless() throws Exception {
+        assertEquals(942,Dungeon.hero.pos);click(941);assertEquals(941,Dungeon.hero.pos);
+        assertTrue("The safe step must earn the charge without restoring it",charge(Dungeon.hero.belongings.getItem(HolyTome.class))>=1);
+        cast(BlessSpell.INSTANCE,Dungeon.hero.pos);log("SAFE CORNER 941 EARNS REAL BLESS WHILE DM RAY REMAINS BLOCKED");
+        if(System.getProperty("route.floorNineSafeBlessOut")!=null)writeCheckpoint(System.getProperty("route.floorNineSafeBlessOut"));
+    }
+    private void ninthFloorDoorwayApproach() throws Exception {
+        assertEquals(941,Dungeon.hero.pos);
+        click(942);assertEquals(942,Dungeon.hero.pos);click(897);assertEquals(897,Dungeon.hero.pos);
+        Mob dm=Dungeon.level.mobs.stream().filter(m->m.id()==272).findFirst().get();
+        com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica ray=new com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica(Dungeon.hero.pos,dm.pos,com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica.PROJECTILE);
+        System.out.println("READ_ONLY_DOORWAY_SHOT target="+dm.pos+" targetHP="+dm.HP+" collision="+ray.collisionPos+" heroSeesDM="+Dungeon.level.heroFOV[dm.pos]);
+        log("ACTUAL DOORWAY APPROACH AFTER SAFE CORNER BLESS");
+        if(System.getProperty("route.floorNineDoorwayOut")!=null)writeCheckpoint(System.getProperty("route.floorNineDoorwayOut"));
+    }
+    private void ninthFloorSecretTransit() throws Exception {
+        assertEquals(897,Dungeon.hero.pos);
+        for(int cell:new int[]{852,853,854,855}){click(cell);assertEquals(cell,Dungeon.hero.pos);}
+        Dungeon.hero.search(true);ready();log("ACTUAL SEARCH OF SECRET TRANSIT DOOR 856");
+        for(int cell:new int[]{856,811}){click(cell);assertEquals(cell,Dungeon.hero.pos);}
+        log("ACTUAL SECRET TRANSIT WITH PURSUING GUARD SKELETON AND DM");
+        if(System.getProperty("route.floorNineTransitOut")!=null)writeCheckpoint(System.getProperty("route.floorNineTransitOut"));
+    }
+    private void ninthFloorLowHpDmShot() throws Exception {
+        assertEquals(811,Dungeon.hero.pos);
+        Mob dm=Dungeon.level.mobs.stream().filter(m->m.id()==272).findFirst().get();assertEquals(5,dm.HP);
+        assertNull("The original twenty-turn free missile cooldown must have elapsed",Dungeon.hero.buff(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.ShurikenInstantTracker.class));
+        assertEquals("Projectile line must really reach this DM",dm.pos,(int)new com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica(Dungeon.hero.pos,dm.pos,com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica.PROJECTILE).collisionPos);
+        throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class,dm.pos);log("ACTUAL FREE MISSILE ATTEMPT ON FIVE HP DM NO HIT GUARANTEE");
+        if(System.getProperty("route.floorNineShotOut")!=null)writeCheckpoint(System.getProperty("route.floorNineShotOut"));
+    }
+    private void ninthFloorLiveLanding() throws Exception {
+        assertEquals(9,Dungeon.depth);assertEquals(944,Dungeon.hero.pos);
+        activateOwnedHourglassFreeze();
+        Item healing=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing.class);
+        assertNotNull(healing);healing.execute(Dungeon.hero,"DRINK");ready();assertNull(Dungeon.hero.buff(Cripple.class));
+        log("LIVE LANDING FROZEN HEALING CURE");
+        click(943);assertEquals(943,Dungeon.hero.pos);
+        assertNull(Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class));
+        click(942);assertEquals(942,Dungeon.hero.pos);
+        for(int n=0;n<Integer.getInteger("route.liveLandingWait",2);n++)waitOne();
+        log("LIVE LANDING SHADOW CORNER PAID RECHARGE");
+    }
+    private void ninthFloorSection() throws Exception {
+        assertEquals(9,Dungeon.depth);
+        if(Dungeon.hero.pos==944){ninthFloorLiveLanding();if(System.getProperty("route.liveNineOut")!=null)writeCheckpoint(System.getProperty("route.liveNineOut"));return;}
+        if(Dungeon.hero.pos==811){ninthFloorLowHpDmShot();return;}
+        if(Dungeon.hero.pos==897){ninthFloorSecretTransit();return;}
+        if(Dungeon.hero.pos==941){ninthFloorDoorwayApproach();return;}
+        if(Dungeon.hero.pos==942){ninthFloorSafeCornerBless();return;}
+        if(Dungeon.hero.pos==1083){ninthFloorKiteRecharge();return;}
+        if(Dungeon.hero.pos==903){ninthFloorPulledGuardFight();return;}
+        if(Dungeon.hero.pos==1040){ninthFloorEatAcquiredRation();return;}
+        if(Dungeon.hero.pos==995){ninthFloorActualFood();return;}
+        if(Dungeon.hero.pos==905){ninthFloorGardenFight();return;}
+        if(Dungeon.hero.pos==1141 && Boolean.getBoolean("route.nineContinue")){
+            for(int cell:new int[]{1095,1048,1001}){click(cell);assertEquals(cell,Dungeon.hero.pos);}
+            Dungeon.hero.search(true);ready();log("REAL SEARCH OF FLOOR NINE SECRET EXIT 1046");
+            cast(HolyWard.INSTANCE,null);
+            for(int cell:new int[]{1046,999,952,905}){click(cell);assertEquals(cell,Dungeon.hero.pos);}
+            log("ACTUAL FLOOR NINE GARDEN APPROACH BEFORE FOOD GUARD");
+            if(System.getProperty("route.floorNineGardenOut")!=null)writeCheckpoint(System.getProperty("route.floorNineGardenOut"));return;
+        }
+        if(Dungeon.hero.pos==1141){
+            for(int n=0;n<Integer.getInteger("route.nineRecharge",130);n++)waitOne();
+            log("ACTUAL FLOOR NINE PAID RECHARGE AFTER ISOLATED DM");
+            if(System.getProperty("route.floorNineRestOut")!=null)writeCheckpoint(System.getProperty("route.floorNineRestOut"));return;
+        }
+        assertEquals(1095,Dungeon.hero.pos);
+        Mob dm=Dungeon.level.mobs.stream().filter(m->m.id()==273).findFirst().get();assertEquals(1188,dm.pos);
+        activateOwnedHourglassFreeze();click(1141);assertEquals(1141,Dungeon.hero.pos);
+        assertNull("One slowed movement must spend both frozen turns",Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class));
+        assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,dm.pos));
+        Item healing=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing.class);assertNotNull(healing);healing.execute(Dungeon.hero,"DRINK");ready();assertNull(Dungeon.hero.buff(Cripple.class));log("REAL FLOOR NINE CURE AFTER FROZEN ADJACENT APPROACH");
+        for(int n=0;n<4 && dm.isAlive();n++){assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,dm.pos));click(dm.pos);}
+        assertFalse("Actual floor-nine landing DM must die",dm.isAlive());assertEquals(6,Dungeon.hero.lvl);assertEquals(32,Dungeon.hero.exp);
+        log("ACTUAL FLOOR NINE ISOLATED DM DEFEATED WITH CONTINUOUS RESOURCES");
+        if(System.getProperty("route.floorNineDMOut")!=null)writeCheckpoint(System.getProperty("route.floorNineDMOut"));
+    }
+    private void eighthFloorFallToNine() throws Exception {
+        assertEquals(953,Dungeon.hero.pos);cast(HolyWard.INSTANCE,null);
+        jumpIntoKnownChasm(922);assertEquals(9,Dungeon.depth);
+        assertNull(Dungeon.hero.buff(com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm.Falling.class));
+        waitOne();assertNull(Dungeon.hero.buff(Bleeding.class));assertEquals(1,Dungeon.hero.HP);assertEquals(1,Dungeon.hero.HT);
+        log("ACTUAL FLOOR NINE FALL LANDING BEFORE CURE");
+        if(Boolean.getBoolean("route.stopBeforeCure")){
+            System.out.println("FLOOR_LAYOUT "+new JSONObject().put("depth",9).put("width",Dungeon.level.width()).put("height",Dungeon.level.height()).put("terrain",new JSONArray(Dungeon.level.map)).put("entrance",Dungeon.level.entrance()).put("exit",Dungeon.level.exit()));
+            if(System.getProperty("route.floorNineFallOut")!=null)writeCheckpoint(System.getProperty("route.floorNineFallOut"));return;
+        }
+        Item healing=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing.class);assertNotNull(healing);
+        healing.execute(Dungeon.hero,"DRINK");ready();assertNull(Dungeon.hero.buff(Cripple.class));log("CURE FALL CRIPPLE WITH OWNED HEALING POTION HP REMAINS ONE");
+        System.out.println("FLOOR_LAYOUT "+new JSONObject().put("depth",9).put("width",Dungeon.level.width()).put("height",Dungeon.level.height()).put("terrain",new JSONArray(Dungeon.level.map)).put("entrance",Dungeon.level.entrance()).put("exit",Dungeon.level.exit()));
+        if(System.getProperty("route.floorNineFallOut")!=null)writeCheckpoint(System.getProperty("route.floorNineFallOut"));
+    }
     private void eighthFloorSection() throws Exception {
-        if(Dungeon.hero.pos==1098){eighthFloorHourglassWestFight();return;}
+        if(Dungeon.hero.pos==1098){if(Boolean.getBoolean("route.hourglassCasterFocus"))eighthFloorHourglassCasterFocus();else eighthFloorHourglassWestFight();return;}
         if(Dungeon.hero.pos==1131){eighthFloorHourglassThiefApproach();return;}
         if(Dungeon.hero.pos==1164){eighthFloorHourglassFirstBless();return;}
         if(Dungeon.hero.pos==1077){eighthFloorHourglassBlessEscape();return;}
         if(Dungeon.hero.pos==1139){eighthFloorHourglassFinishDM();return;}
         if(Dungeon.hero.pos==984){if(Boolean.getBoolean("route.hourglassMeleeDM"))eighthFloorHourglassDM();else eighthFloorHourglassDuel();return;}
-        if(Dungeon.hero.pos==953){eighthFloorHourglassSkeleton();return;}
+        if(Dungeon.hero.pos==953){if(Boolean.getBoolean("route.fallToNine"))eighthFloorFallToNine();else eighthFloorHourglassSkeleton();return;}
         if(Dungeon.hero.pos==636){eighthFloorHourglassCentral();return;}
         if(Dungeon.hero.pos==214){eighthFloorHourglassGuard();return;}
         if(Dungeon.hero.pos==809){eighthFloorAfterBless();return;}
