@@ -29,7 +29,7 @@ import static org.mockito.ArgumentMatchers.*;
 
 /** Fixed commands in the production Actor.process scheduler. No action policy or combat model. */
 public class GetFuckedRouteTest {
-    @Rule public org.junit.rules.Timeout deadline = org.junit.rules.Timeout.seconds(45);
+    @Rule public org.junit.rules.Timeout deadline = org.junit.rules.Timeout.seconds(Integer.getInteger("route.testTimeoutSeconds",45));
     private final List<MockedStatic<?>> visuals = new ArrayList<>();
     private CellSelector.Listener selection;
     private com.shatteredpixel.shatteredpixeldungeon.windows.WndBag.ItemSelector itemSelection;
@@ -545,6 +545,35 @@ public class GetFuckedRouteTest {
             for(int n=0;n<8 && Dungeon.hero.shielding()==0;n++)waitOne();assertTrue(Dungeon.hero.shielding()>0);log("ACTUAL LEVEL ONE WARRIOR SEAL INTERCEPTS REAL RAT HIT");
             for(int hit=0;hit<8 && firstRat.isAlive();hit++)click(firstRat.pos);assertFalse(firstRat.isAlive());log("ACTUAL LEVEL ONE WARRIOR FIRST RAT DEFEATED WITHOUT GRANTED TALENTS OR GEAR");
             if(System.getProperty("route.alternativeOut")!=null)writeCheckpoint(System.getProperty("route.alternativeOut"));verifyExpectedEnd();return;
+        }
+        if(Boolean.getBoolean("route.freshSecondPrisonSkeletonNative")){
+            assertNotNull(System.getProperty("route.resume"));verifyCheckpoint(System.getProperty("route.resume"));freshSecondPrisonSkeleton();
+            if(System.getProperty("route.earlySwarmOut")!=null)writeCheckpoint(System.getProperty("route.earlySwarmOut"));verifyExpectedEnd();return;
+        }
+        if(Boolean.getBoolean("route.freshPrisonSwarmNative")){
+            assertNotNull(System.getProperty("route.resume"));verifyCheckpoint(System.getProperty("route.resume"));freshPrisonSwarmSection();
+            if(System.getProperty("route.earlySwarmOut")!=null)writeCheckpoint(System.getProperty("route.earlySwarmOut"));verifyExpectedEnd();return;
+        }
+        if(Boolean.getBoolean("route.freshPrisonNextRechargeNative")){
+            assertNotNull(System.getProperty("route.resume"));verifyCheckpoint(System.getProperty("route.resume"));freshPrisonNextRecharge();
+            if(System.getProperty("route.earlySwarmOut")!=null)writeCheckpoint(System.getProperty("route.earlySwarmOut"));verifyExpectedEnd();return;
+        }
+        if(Boolean.getBoolean("route.freshFixedTargetNative")){
+            assertNotNull(System.getProperty("route.resume"));verifyCheckpoint(System.getProperty("route.resume"));
+            Mob target=Dungeon.level.mobs.stream().filter(m->m.id()==Integer.getInteger("route.freshTargetId")).findFirst().get();freshGooActions(target);log("FRESH FIXED TARGET ACTUAL ACTION FRONTIER");
+            if(System.getProperty("route.earlySwarmOut")!=null)writeCheckpoint(System.getProperty("route.earlySwarmOut"));verifyExpectedEnd();return;
+        }
+        if(Boolean.getBoolean("route.freshPrisonSixAfterFirstNative")){
+            assertNotNull(System.getProperty("route.resume"));verifyCheckpoint(System.getProperty("route.resume"));freshPrisonSixAfterFirst();
+            if(System.getProperty("route.earlySwarmOut")!=null)writeCheckpoint(System.getProperty("route.earlySwarmOut"));verifyExpectedEnd();return;
+        }
+        if(Boolean.getBoolean("route.freshPrisonSixNative")){
+            assertNotNull(System.getProperty("route.resume"));verifyCheckpoint(System.getProperty("route.resume"));freshPrisonSixSection();
+            if(System.getProperty("route.earlySwarmOut")!=null)writeCheckpoint(System.getProperty("route.earlySwarmOut"));verifyExpectedEnd();return;
+        }
+        if(Boolean.getBoolean("route.freshAfterGooNative")){
+            assertNotNull(System.getProperty("route.resume"));verifyCheckpoint(System.getProperty("route.resume"));freshAfterGooSection();
+            if(System.getProperty("route.earlySwarmOut")!=null)writeCheckpoint(System.getProperty("route.earlySwarmOut"));verifyExpectedEnd();return;
         }
         if(Boolean.getBoolean("route.freshGooNative")){
             assertNotNull(System.getProperty("route.resume"));verifyCheckpoint(System.getProperty("route.resume"));assertEquals(5,Dungeon.depth);
@@ -3104,18 +3133,90 @@ public class GetFuckedRouteTest {
         freshGooActions(goo);
         log("FRESH CONTINUOUS GOO FIXED ACTION FRONTIER");
         if(Boolean.getBoolean("route.freshGooAssertVictory"))assertFalse(goo.isAlive());
+        if(Boolean.getBoolean("route.freshAfterGoo"))freshAfterGooSection();
     }
-    private void freshGooActions(Mob goo) throws Exception {
-        for(String a:System.getProperty("route.freshGooActions","").split(",")){
+    private void freshGooActions(Mob goo) throws Exception { freshFixedActions(goo,System.getProperty("route.freshGooActions","")); }
+    private void freshFixedActions(Mob goo,String commands) throws Exception {
+        for(String a:commands.split(",")){
             if(a.isEmpty())continue;
             if(a.equals("S"))cast(ShieldOfLight.INSTANCE,goo.pos);
             else if(a.equals("L"))cast(GuidingLight.INSTANCE,goo.pos);
             else if(a.equals("W"))cast(HolyWard.INSTANCE,null);
             else if(a.equals("H"))waitOne();
+            else if(a.equals("T"))throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear.class,goo.pos);
             else if(a.equals("A")){assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,goo.pos));click(goo.pos);}
+            else if(a.startsWith("K")){int c=Integer.parseInt(a.substring(1));Char enemy=Actor.findChar(c);assertTrue(enemy instanceof Mob);assertEquals(Char.Alignment.ENEMY,enemy.alignment);assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,c));click(c);}
             else if(a.startsWith("C")){int c=Integer.parseInt(a.substring(1));assertNull(Dungeon.level.traps.get(c));click(c);assertEquals(c,Dungeon.hero.pos);}
             else fail("Unknown fixed Goo command "+a);
             assertEquals(1,Dungeon.hero.HP);
+        }
+    }
+
+    private void freshAfterGooSection() throws Exception {
+        assertEquals(5,Dungeon.depth);assertFalse(Dungeon.level.locked);assertFalse(Dungeon.level.mobs.stream().anyMatch(m->m instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo));assertEquals(707,Dungeon.hero.pos);
+        for(int c:new int[]{706,706,673,673,672,672,672}){click(c);assertEquals(c,Dungeon.hero.pos);}log("FRESH GOO ACTUAL BLOB KEY AND SPEAR RECOVERY");
+        assertNotNull(Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear.class));
+        for(int n=0;n<300 && charge(Dungeon.hero.belongings.getItem(HolyTome.class))<6;n++){assertTrue(Dungeon.hero.buff(Hunger.class).hunger()<440);waitOne();}assertEquals(6,charge(Dungeon.hero.belongings.getItem(HolyTome.class)));log("FRESH POST GOO SIX CHARGES PAID IN HUNGER");
+        for(int c:new int[]{637,603,569,535,501,500,499,465,431,430,429,428,427,426,425,424,423,422,421,420,386,352,351,350,349,383,384,418,417,416,415,381,381})click(c);
+        assertEquals(6,Dungeon.depth);log("FRESH UNJOINED PRISON ENTRY");System.out.println("FLOOR_LAYOUT "+new JSONObject().put("depth",Dungeon.depth).put("width",Dungeon.level.width()).put("height",Dungeon.level.height()).put("terrain",new JSONArray(Dungeon.level.map)).put("entrance",Dungeon.level.entrance()).put("exit",Dungeon.level.exit()));
+        if(Boolean.getBoolean("route.freshAfterGooShopFood")){
+            for(int c:new int[]{644,613,582,583,584,585,586,587,588,589})click(c);
+            buyActualShopHeap(620);Item ration=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation.class);assertNotNull(ration);ration.execute(Dungeon.hero,"EAT");ready();log("FRESH EAT ACTUALLY PURCHASED PRISON RATION");if(Boolean.getBoolean("route.freshPrisonSix"))freshPrisonSixSection();
+        }
+    }
+
+    private void freshPrisonSixSection() throws Exception {
+        assertEquals(6,Dungeon.depth);assertEquals(620,Dungeon.hero.pos);
+        Mob firstSkeleton=Dungeon.level.mobs.stream().filter(m->m instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Skeleton && m.pos==902).findFirst().get();
+        for(int c:new int[]{587,555,523,491})click(c);buyActualShopHeap(459);
+        assertNotNull(Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation.class));
+        for(int c:new int[]{491,523,555,587,586,585,584,615,646,678,710,711,712,713,745,777,778})click(c);
+        Dungeon.hero.search(true);ready();log("FRESH PRISON REVEAL REAL OOZE TRAP");click(777);throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Cudgel.class,779);
+        for(int c:new int[]{778,779,779,780})click(c);cast(HolyWard.INSTANCE,null);for(int c:new int[]{779,810,842})click(c);
+        assertTrue(Dungeon.level.heroFOV[firstSkeleton.pos]);log("FRESH FIRST PRISON SKELETON ACTUAL APPROACH");
+        cast(GuidingLight.INSTANCE,firstSkeleton.pos);throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear.class,firstSkeleton.pos);log("FRESH FIRST PRISON SKELETON GUIDE AND ONE OWNED SPEAR");
+        if(Boolean.getBoolean("route.freshPrisonSixFinishSkeleton")){
+            assertTrue(firstSkeleton.isAlive());cast(GuidingLight.INSTANCE,firstSkeleton.pos);assertTrue(firstSkeleton.isAlive());cast(GuidingLight.INSTANCE,firstSkeleton.pos);assertFalse(firstSkeleton.isAlive());log("FRESH FIRST PRISON SKELETON DEFEATED BY GUIDE; ACTUAL EXPLOSION PROCESSED");if(Boolean.getBoolean("route.freshPrisonSixAfterFirst"))freshPrisonSixAfterFirst();
+        }
+    }
+
+    private void freshPrisonSixAfterFirst() throws Exception {
+        assertEquals(6,Dungeon.depth);assertEquals(842,Dungeon.hero.pos);
+        for(int c:new int[]{841,840,840}){click(c);assertEquals(c,Dungeon.hero.pos);}
+        Item strength=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength.class);assertNotNull(strength);strength.execute(Dungeon.hero,"DRINK");ready();assertEquals(13,Dungeon.hero.STR());log("FRESH THIRD STRENGTH POTION ACTUALLY ACQUIRED AND DRUNK");
+        for(int c:new int[]{841,873,873}){click(c);assertEquals(c,Dungeon.hero.pos);}assertNotNull(Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear.class));log("FRESH SPEAR RECOVERED FROM FIRST SKELETON");
+        for(int n=0;n<250 && charge(Dungeon.hero.belongings.getItem(HolyTome.class))<6;n++){
+            if(Dungeon.level.mobs.stream().anyMatch(m->m.alignment==Char.Alignment.ENEMY && Dungeon.level.heroFOV[m.pos]))break;
+            assertTrue(Dungeon.hero.buff(Hunger.class).hunger()<440);
+            if(Dungeon.hero.buff(Hunger.class).hunger()>=390){Item food=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation.class);assertNotNull(food);food.execute(Dungeon.hero,"EAT");ready();log("FRESH OWNED SECOND SHOP RATION EATEN DURING PAID RECHARGE");}else waitOne();
+        }
+        log("FRESH FIRST SKELETON ROOM ACTUAL PAID RECHARGE FRONTIER");
+        if(Boolean.getBoolean("route.freshPrisonRespawn")){
+            Mob target=Dungeon.level.mobs.stream().filter(m->m.id()==207).findFirst().get();assertTrue(target instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Skeleton);assertTrue(Dungeon.level.heroFOV[target.pos]);freshFixedActions(target,"S,W,L,T,A");assertFalse(target.isAlive());log("FRESH REAL RECHARGE INTERRUPTER SKELETON DEFEATED WITHOUT REFILL");if(Boolean.getBoolean("route.freshPrisonNextRecharge"))freshPrisonNextRecharge();
+        }
+
+    }
+
+    private void freshPrisonNextRecharge() throws Exception {
+        assertEquals(6,Dungeon.depth);assertEquals(873,Dungeon.hero.pos);
+        for(int c:new int[]{842,842}){click(c);assertEquals(c,Dungeon.hero.pos);}assertNotNull(Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear.class));
+        Item food=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation.class);assertNotNull(food);food.execute(Dungeon.hero,"EAT");ready();log("FRESH SECOND OWNED SHOP RATION EATEN BEFORE NEXT ENCOUNTER");
+        for(int n=0;n<150 && charge(Dungeon.hero.belongings.getItem(HolyTome.class))<3;n++){if(Dungeon.level.mobs.stream().anyMatch(m->m.alignment==Char.Alignment.ENEMY && Dungeon.level.heroFOV[m.pos]))break;waitOne();}
+        log("FRESH NEXT REAL PAID REST BOUNDARY");if(Boolean.getBoolean("route.freshPrisonSwarm"))freshPrisonSwarmSection();
+    }
+
+    private void freshPrisonSwarmSection() throws Exception {
+        assertEquals(6,Dungeon.depth);assertEquals(842,Dungeon.hero.pos);Mob target=Dungeon.level.mobs.stream().filter(m->m instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Swarm && m.pos==781).findFirst().get();cast(HolyWard.INSTANCE,null);assertEquals(3,Dungeon.hero.shielding());click(810);assertEquals(810,Dungeon.hero.pos);log("FRESH PRISON NEXT DOOR WITH OWNED MEAL SPELL BARRIER");
+        assertTrue(target instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Swarm);click(779);assertEquals(779,Dungeon.hero.pos);assertTrue(Dungeon.level.heroFOV[target.pos]);cast(ShieldOfLight.INSTANCE,target.pos);log("FRESH REAL RESPAWN SWARM INTERCEPTION");
+        freshFixedActions(target,System.getProperty("route.freshPrisonSwarmActions",""));log("FRESH REAL RESPAWN SWARM FIXED ACTION FRONTIER");if(Boolean.getBoolean("route.freshSecondPrisonSkeleton"))freshSecondPrisonSkeleton();
+    }
+
+    private void freshSecondPrisonSkeleton() throws Exception {
+        assertEquals(6,Dungeon.depth);assertEquals(812,Dungeon.hero.pos);Mob target=Dungeon.level.mobs.stream().filter(m->m instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Skeleton && m.pos==818).findFirst().get();
+        freshFixedActions(target,"K781,C813,C814");throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Cudgel.class,817);log("FRESH SECOND INITIAL SKELETON REAL DOOR OPENING");
+        assertTrue(Dungeon.level.heroFOV[target.pos]);cast(ShieldOfLight.INSTANCE,target.pos);throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear.class,target.pos);log("FRESH SECOND INITIAL SKELETON REAL SPEAR");
+        if(Boolean.getBoolean("route.freshSecondSkeletonMelee")){
+            waitOne();waitOne();assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,target.pos));click(target.pos);log("FRESH SECOND INITIAL SKELETON FIRST MELEE");if(Boolean.getBoolean("route.freshSecondSkeletonFinish")){click(target.pos);assertFalse(target.isAlive());assertEquals(7,Dungeon.hero.lvl);log("FRESH LEVEL SEVEN ACTUALLY EARNED");}
         }
     }
 }
