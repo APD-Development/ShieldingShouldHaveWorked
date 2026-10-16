@@ -1,39 +1,35 @@
 {
   "date": "2026-10-16",
-  "previous_source": "6182b042b1d93b64341f41a516a49ef3d12c93ee",
-  "previous_run": 38881765134,
-  "previous_label": "Codex TEST 239",
+  "previous_source": "7f18ca8bcbabc07f159b6e3acfc9689c1ae6f28b",
+  "previous_run": 38889483083,
+  "previous_label": "Codex TEST 240",
   "changes": [
     {
       "category": "Development",
       "sprite": "ICON_CHECKED",
-      "title": "Record verified TEST239 evidence",
-      "text": "Retain the exact TEST239 targeted, core, Android, visual, APK, application-ID and signature evidence without rebuilding or publishing unchanged source.",
+      "title": "Record verified TEST240 evidence",
+      "text": "Preserve the preceding verified application evidence without rebuilding unchanged code.",
       "paths": [
         "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/APD-HIDDEN-AGGREGATE-CLEANUP-2026-10-16.md",
-        "docs/APD-TEST239-VERIFICATION-2026-10-16.json",
+        "docs/APD-DISTINCT-KEY-UNCERTAINTY-2026-10-16.md",
+        "docs/APD-TEST240-VERIFICATION-2026-10-16.json",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md"
       ]
     },
     {
-      "category": "Statistics",
-      "sprite": "ICON_WARNING",
-      "title": "Disclose inexact distinct identities",
-      "text": "Per-distinct aggregates keep rows with hidden, unknown or lower-bound keys, preserve their prior numeric result, and now disclose that the distinct identity is uncertain.",
+      "category": "Testing",
+      "sprite": "ICON_CHECKED",
+      "title": "Check rotating pylon timing",
+      "text": "Retain actual scheduler, normal and stronger attack-pattern, playback-speed and restored-direction regressions; no timing defect or gameplay change is claimed.",
       "paths": [
-        ".github/workflows/codex-distinct-key-uncertainty-acceptance.yml",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/QueryEngine.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/AggValue.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/AggregateExtensionsTest.java",
-        "docs/APD-DISTINCT-KEY-UNCERTAINTY-2026-10-16.md",
-        "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/APD-NEXT-BUILD-HISTORY.json",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/PylonTimingRegressionTest.java",
+        ".github/workflows/codex-pylon-timing-acceptance.yml",
+        "docs/APD-PYLON-TIMING-INVESTIGATION-2026-10-16.md",
         "docs/HANDOFF.md",
-        "docs/WORK-COMPLETED-LEDGER.md"
+        "docs/APD-NEXT-BUILD-HISTORY.json"
       ]
     }
   ],
-  "commentary": "TEST239 is the immediate previous produced APK and TEST231 remains the latest privately delivered fallback. Distinct-key uncertainty requires exact before/after core evidence and one complete TEST240 application gate; no automatic delivery."
+  "commentary": "Four diagnostic regressions introduce no production changes. TEST240 remains the preceding actually produced APK; this core-only verification creates no APK."
 }
