@@ -3460,8 +3460,49 @@ public class GetFuckedRouteTest {
         for(int n=0;n<(Boolean.getBoolean("route.freshEightThiefRushFood") ? 0 : 10) && charge(Dungeon.hero.belongings.getItem(HolyTome.class))<1;n++){if(Dungeon.level.mobs.stream().anyMatch(m->m.alignment==Char.Alignment.ENEMY && Dungeon.level.heroFOV[m.pos]))break;waitOne();}log("FRESH EIGHT FOOD SECRET DOOR ACTUAL PAID LAST CHARGE");if(!Boolean.getBoolean("route.freshEightThiefRushFood"))cast(BlessSpell.INSTANCE,Dungeon.hero.pos);click(427);assertEquals(427,Dungeon.hero.pos);assertTrue(Dungeon.level.heroFOV[target.pos]);assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,target.pos));log("FRESH EIGHT ACTUAL ADJACENT FOOD DM CONTACT");
         if(Boolean.getBoolean("route.freshEightDmFoodFinish")){
             for(int n=0;n<6 && target.isAlive();n++){assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,target.pos));click(target.pos);assertEquals(1,Dungeon.hero.HP);}assertFalse(target.isAlive());log("FRESH EIGHT ACTUAL FOOD DM DEFEATED WITHOUT A SPEAR");
-            for(int c:new int[]{396,365,365}){if(c!=Dungeon.hero.pos)assertNull(Actor.findChar(c));assertNull(Dungeon.level.traps.get(c));click(c);assertEquals(c,Dungeon.hero.pos);}Item food=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty.class);assertNotNull(food);assertTrue(Dungeon.hero.buff(Hunger.class).hunger()<450);food.execute(Dungeon.hero,"EAT");ready();log("FRESH EIGHT GUARDED PASTY ACTUALLY ACQUIRED AND EATEN ON CONTINUOUS LEVEL ONE RUN");
+            for(int c:new int[]{396,365,365}){if(c!=Dungeon.hero.pos)assertNull(Actor.findChar(c));assertNull(Dungeon.level.traps.get(c));click(c);assertEquals(c,Dungeon.hero.pos);}Item food=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty.class);assertNotNull(food);assertTrue(Dungeon.hero.buff(Hunger.class).hunger()<450);food.execute(Dungeon.hero,"EAT");ready();log("FRESH EIGHT GUARDED PASTY ACTUALLY ACQUIRED AND EATEN ON CONTINUOUS LEVEL ONE RUN");if(Boolean.getBoolean("route.freshEightAfterPasty"))freshEightAfterPastySection();
         }
+    }
+
+    private void freshEightAfterPastySection() throws Exception {
+        assertEquals(8,Dungeon.depth);assertEquals(365,Dungeon.hero.pos);assertEquals(38,Dungeon.hero.exp);
+        for(int c:new int[]{366,366}){click(c);assertEquals(c,Dungeon.hero.pos);}assertNotNull(Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLevitation.class));log("FRESH EIGHT ACTUAL OWNED LEVITATION AFTER PASTY");
+        for(int n=0;n<160 && charge(Dungeon.hero.belongings.getItem(HolyTome.class))<4;n++){
+            if(Dungeon.level.mobs.stream().anyMatch(m->m.alignment==Char.Alignment.ENEMY && Dungeon.level.heroFOV[m.pos]))break;assertTrue(Dungeon.hero.buff(Hunger.class).hunger()<430);waitOne();
+        }
+        log("FRESH EIGHT POST PASTY ACTUAL PAID RESERVE OR ENEMY BOUNDARY");if(Boolean.getBoolean("route.freshEightPastySkeleton"))freshEightPastySkeletonSection();
+    }
+
+    private void freshEightPastySkeletonSection() throws Exception {
+        assertEquals(8,Dungeon.depth);assertEquals(366,Dungeon.hero.pos);Mob target=Dungeon.level.mobs.stream().filter(m->m.id()==281).findFirst().get();assertTrue(target instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Skeleton);assertTrue(Dungeon.level.heroFOV[target.pos]);assertEquals(25,target.HP);cast(BlessSpell.INSTANCE,Dungeon.hero.pos);log("FRESH EIGHT POST PASTY SKELETON REAL BLESS ONLY RESERVE");
+        for(int n=0;n<3 && !Dungeon.level.adjacent(Dungeon.hero.pos,target.pos);n++)waitOne();
+        for(int n=0;n<6 && target.isAlive();n++){assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,target.pos));click(target.pos);assertEquals(1,Dungeon.hero.HP);}assertFalse(target.isAlive());assertEquals(8,Dungeon.hero.lvl);assertEquals(1,Dungeon.hero.talentPointsAvailable(2));Dungeon.hero.upgradeTalent(Talent.BLESS);assertEquals(2,Dungeon.hero.pointsInTalent(Talent.BLESS));log("FRESH EIGHT SKELETON ACTUAL DEATH AND EARNED LEVEL EIGHT BLESS TWO");if(Boolean.getBoolean("route.freshEightStrengthPrep"))freshEightStrengthPrepSection();
+    }
+
+    private void freshEightStrengthPrepSection() throws Exception {
+        assertEquals(8,Dungeon.depth);assertEquals(366,Dungeon.hero.pos);assertEquals(8,Dungeon.hero.lvl);assertEquals(2,Dungeon.hero.pointsInTalent(Talent.BLESS));
+        for(int n=0;n<165 && charge(Dungeon.hero.belongings.getItem(HolyTome.class))<4;n++){
+            if(Dungeon.level.mobs.stream().anyMatch(m->m.alignment==Char.Alignment.ENEMY && Dungeon.level.heroFOV[m.pos]))break;assertTrue(Dungeon.hero.buff(Hunger.class).hunger()<430);waitOne();
+        }
+        log("FRESH EIGHT LEVEL EIGHT ACTUAL STRENGTH PREPARATION BOUNDARY");if(Boolean.getBoolean("route.freshEightPrepDm"))freshEightPrepDmSection();
+    }
+
+    private void freshEightPrepDmSection() throws Exception {
+        assertEquals(8,Dungeon.depth);assertEquals(366,Dungeon.hero.pos);Mob target=Dungeon.level.mobs.stream().filter(m->m.id()==293).findFirst().get();assertTrue(target instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100);assertTrue(Dungeon.level.heroFOV[target.pos]);cast(BlessSpell.INSTANCE,Dungeon.hero.pos);log("FRESH EIGHT ACTUAL FIRST EARNED BLESS TWO AGAINST RECHARGE DM");
+        for(int c:new int[]{397,396}){assertNull(Actor.findChar(c));assertNull(Dungeon.level.traps.get(c));click(c);assertEquals(c,Dungeon.hero.pos);assertEquals(1,Dungeon.hero.HP);}log("FRESH EIGHT ACTUAL RECHARGE DM APPROACH");
+        for(int n=0;n<6 && target.isAlive();n++){assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,target.pos));click(target.pos);assertEquals(1,Dungeon.hero.HP);}assertFalse(target.isAlive());log("FRESH EIGHT RECHARGE DM ACTUALLY DEFEATED WITH EARNED BLESS TWO");if(Boolean.getBoolean("route.freshEightStrengthWalk"))freshEightStrengthWalkSection();
+    }
+
+    private void freshEightStrengthWalkSection() throws Exception {
+        assertEquals(8,Dungeon.depth);assertEquals(396,Dungeon.hero.pos);assertNull(Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength.class));
+        for(int c:new int[]{427,458,489,520,551,582,614,646,647,680,712,744,776,809}){
+            if(Dungeon.level.mobs.stream().anyMatch(m->m.alignment==Char.Alignment.ENEMY && Dungeon.level.heroFOV[m.pos]))break;assertNull("Actual earned strength path occupied at "+c,Actor.findChar(c));assertNull(Dungeon.level.traps.get(c));click(c);assertEquals(c,Dungeon.hero.pos);assertEquals(1,Dungeon.hero.HP);
+        }
+        log("FRESH EIGHT ACTUAL STRENGTH ROOM APPROACH OR ENEMY BOUNDARY");
+        if(Boolean.getBoolean("route.freshEightFinishStrength")){
+            assertEquals(680,Dungeon.hero.pos);for(int c:new int[]{712,744,776,809}){assertNull(Actor.findChar(c));assertNull(Dungeon.level.traps.get(c));click(c);assertEquals(c,Dungeon.hero.pos);assertEquals(1,Dungeon.hero.HP);}log("FRESH EIGHT ACTUAL STRENGTH ROOM WITH DISTANT SKELETON STILL ALIVE");
+        }
+        if(Dungeon.hero.pos==809){click(809);Item potion=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength.class);assertNotNull(potion);potion.execute(Dungeon.hero,"DRINK");ready();assertEquals(14,Dungeon.hero.STR());assertEquals(1,Dungeon.hero.HP);log("FRESH EIGHT FOURTH STRENGTH ACTUALLY ACQUIRED AND DRUNK");}
     }
 
 }
