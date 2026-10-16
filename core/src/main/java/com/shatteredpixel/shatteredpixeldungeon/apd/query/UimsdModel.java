@@ -146,7 +146,7 @@ public final class UimsdModel {
 			return;
 		}
 		viewId = first.id;
-		query = initialQuery(first);
+		query = initialQuery(first, false);
 		page = 0;
 		back.clear();
 		recompute();
@@ -402,7 +402,7 @@ public final class UimsdModel {
 		if (catalog == null || catalog.view(id) == null) return;
 		back.add(new Place(viewId, query, page));
 		viewId = id;
-		apply(initialQuery(catalog.view(id)).withShowInternal(query.showInternal));
+		apply(initialQuery(catalog.view(id), query.showInternal));
 	}
 
 	//open a view as a new starting point, with nothing to go Back to (used from Home, so Back from there leads to Home)
@@ -410,7 +410,7 @@ public final class UimsdModel {
 		if (catalog == null || catalog.view(id) == null) return;
 		back.clear();
 		viewId = id;
-		apply(initialQuery(catalog.view(id)).withShowInternal(query.showInternal));
+		apply(initialQuery(catalog.view(id), query.showInternal));
 	}
 
 	//Opens a question's query as an ordinary table, with the full query tools. The table is the one for the question's dataset; the question's
@@ -431,11 +431,20 @@ public final class UimsdModel {
 		}
 	}
 
-	private Query initialQuery(ViewDef v){
-		Query initial = v.initialQuery();
+	private Query initialQuery(ViewDef v, boolean showInternal){
+		Query initial = v.initialQuery().withShowInternal(showInternal);
 		SavedViews.View saved = columnLayouts.get(v.id);
 		Query layout = saved == null ? null : saved.query();
-		return layout == null ? initial : initial.withColumns(layout.columns);
+		Dataset ds = catalog == null ? null : catalog.dataset(initial.dataset);
+		if (layout == null || ds == null) return initial;
+		List<String> usable = new ArrayList<>();
+		for (String id : layout.columns){
+			ColumnDef c = ds.def.column(id);
+			if (c != null && (!c.isInternal() || showInternal) && !usable.contains(id)) usable.add(id);
+		}
+		//A layout can outlive columns removed by a newer build, or contain only hidden columns from a session
+		//where hidden information was enabled. Never let that turn an otherwise healthy view into a blank table.
+		return usable.isEmpty() ? initial : initial.withColumns(usable);
 	}
 
 	private void rememberColumns(List<String> columns){

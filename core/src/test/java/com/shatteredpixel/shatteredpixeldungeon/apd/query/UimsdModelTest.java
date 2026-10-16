@@ -165,6 +165,32 @@ public class UimsdModelTest {
 	}
 
 	@Test
+	public void hiddenOnlySavedColumnsCannotReopenAsABlankTable(){
+		UimsdModel m = model();
+		m.setShowInternal(true);
+		m.setColumns(Arrays.asList("secret"));
+		assertEquals(1, m.table().headers.size());
+
+		m.setShowInternal(false);
+		m.showRoot("parts");
+		m.showRoot("all");
+
+		assertEquals("public defaults replace a hidden-only layout", 4, m.table().headers.size());
+		assertFalse(m.query().showInternal);
+	}
+
+	@Test
+	public void retiredSavedColumnsCannotReopenAsABlankTable(){
+		UimsdModel m = model();
+		//A column that existed in an older build can remain in the local layout file.
+		m.setColumns(Arrays.asList("removed-in-newer-build"));
+		m.showRoot("parts");
+		m.showRoot("all");
+
+		assertEquals("current defaults replace a wholly stale layout", 4, m.table().headers.size());
+	}
+
+	@Test
 	public void columnChoicesSurviveARecreatedModelAndResetIsExplicit() throws Exception {
 		java.io.File root = java.nio.file.Files.createTempDirectory("apd-column-layout").toFile();
 		UimsdModel first = new UimsdModel(R, "");

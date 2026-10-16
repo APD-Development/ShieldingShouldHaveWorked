@@ -16,7 +16,31 @@
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md"
       ]
+    },
+    {
+      "category": "Statistics / UIMSD",
+      "sprite": "ICON_CHANGES",
+      "title": "Recover unusable saved column layouts",
+      "text": "Keep valid saved columns in order, reject retired or currently hidden columns, and reopen with the view defaults instead of a blank table when none remain.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdModel.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdModelTest.java",
+        "docs/APD-TEST228-SAVED-COLUMN-LAYOUT-2026-10-15.md"
+      ]
+    },
+    {
+      "category": "Development",
+      "sprite": "ICON_INFO",
+      "title": "Record TEST228 candidate evidence",
+      "text": "Retain exact reproduction, local regression counts, full-gate requirements and the boundary between emulator, delivery and physical-device evidence.",
+      "paths": [
+        "docs/APD-CODEX-BUILD-REQUEST.txt",
+        "docs/APD-NEXT-BUILD-HISTORY.json",
+        "docs/HANDOFF.md",
+        "docs/WORK-COMPLETED-LEDGER.md",
+        "docs/APD-TEST228-SAVED-COLUMN-LAYOUT-2026-10-15.md"
+      ]
     }
   ],
-  "commentary": "TEST227 is a verified CI candidate for the fail-closed private Cleric collection ledger correction. TEST226 remains the latest privately delivered APK; physical-device and broader acceptance work remains open."
+  "commentary": "Saved UIMSD column choices now survive visibility and schema changes without opening a blank table. No run data, gameplay, scores or Custom Dungeon Rules are changed."
 }
