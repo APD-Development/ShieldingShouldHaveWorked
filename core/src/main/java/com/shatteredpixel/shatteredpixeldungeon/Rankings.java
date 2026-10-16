@@ -79,6 +79,28 @@ public enum Rankings {
 	public Record latestDaily;
 	public Record latestDailyReplay = null; //not stored, only meant to be temp
 	public LinkedHashMap<Long, Integer> dailyScoreHistory = new LinkedHashMap<>();
+    // Keep original integer history readable by older versions; earned scores use optional long metadata.
+    private final LinkedHashMap<Long, Long> dailyEarnedScoreHistory = new LinkedHashMap<>();
+
+    private static long dailyDate(long seed) {
+        return seed > DungeonSeed.TOTAL_SEEDS ? seed - DungeonSeed.TOTAL_SEEDS : seed;
+    }
+
+    private void recordDailyScore(long seed, Record record) {
+        long date = dailyDate(seed);
+        dailyScoreHistory.put(date, record.score);
+        dailyEarnedScoreHistory.put(date, record.earnedScore());
+    }
+
+    public long dailyEarnedScore(long date) {
+        // The latest frozen record can recover a score written by TEST249/250 without repricing history.
+        if (latestDaily != null && latestDaily.gameData != null && latestDaily.gameData.contains(SEED)
+                && dailyDate(latestDaily.gameData.getLong(SEED)) == date) return latestDaily.earnedScore();
+        Long earned = dailyEarnedScoreHistory.get(date);
+        if (earned != null) return earned;
+        Integer original = dailyScoreHistory.get(date);
+        return original == null ? 0 : original.longValue();
+    }
 
 	public void submit( boolean win, Object cause ) {
 
@@ -136,11 +158,7 @@ public enum Rankings {
 			}
 
 			latestDaily = rec;
-			if (Dungeon.seed <= DungeonSeed.TOTAL_SEEDS) {
-				dailyScoreHistory.put(Dungeon.seed, rec.score);
-			} else {
-				dailyScoreHistory.put(Dungeon.seed - DungeonSeed.TOTAL_SEEDS, rec.score);
-			}
+			recordDailyScore(Dungeon.seed, rec);
 			save();
 			return;
 		}
@@ -400,6 +418,8 @@ public enum Rankings {
 	public static final String LATEST_DAILY	        = "latest_daily";
 	public static final String DAILY_HISTORY_DATES  = "daily_history_dates";
 	public static final String DAILY_HISTORY_SCORES = "daily_history_scores";
+    private static final String DAILY_EARNED_DATES = "apd_daily_earned_dates_v1";
+    private static final String DAILY_EARNED_SCORES = "apd_daily_earned_scores_v1";
 
 	public void save() {
 		Bundle bundle = new Bundle();
@@ -420,6 +440,15 @@ public enum Rankings {
 		}
 		bundle.put(DAILY_HISTORY_DATES, dates);
 		bundle.put(DAILY_HISTORY_SCORES, scores);
+        ArrayList<Long> earnedKeys = new ArrayList<>();
+        for (Long date : dailyScoreHistory.keySet()) if (dailyEarnedScoreHistory.containsKey(date)) earnedKeys.add(date);
+        long[] earnedDates = new long[earnedKeys.size()], earnedScores = new long[earnedKeys.size()];
+        for (int n = 0; n < earnedKeys.size(); n++) {
+            earnedDates[n] = earnedKeys.get(n);
+            earnedScores[n] = dailyEarnedScoreHistory.get(earnedKeys.get(n));
+        }
+        bundle.put(DAILY_EARNED_DATES, earnedDates);
+        bundle.put(DAILY_EARNED_SCORES, earnedScores);
 
 		try {
 			FileUtils.bundleToFile( RANKINGS_FILE, bundle);
@@ -436,6 +465,7 @@ public enum Rankings {
 		}
 		
 		records = new ArrayList<>();
+        dailyEarnedScoreHistory.clear();
 		
 		try {
 			Bundle bundle = FileUtils.bundleFromFile( RANKINGS_FILE );
@@ -471,6 +501,16 @@ public enum Rankings {
 					if (date > latestDate) latestDate = date;
 					i++;
 				}
+                long[] earnedDates = bundle.contains(DAILY_EARNED_DATES) ? bundle.getLongArray(DAILY_EARNED_DATES) : new long[0];
+                long[] earnedScores = bundle.contains(DAILY_EARNED_SCORES) ? bundle.getLongArray(DAILY_EARNED_SCORES) : new long[0];
+                if (earnedDates != null && earnedScores != null && earnedDates.length == earnedScores.length) for (int n = 0; n < earnedDates.length; n++) {
+                    if (dailyScoreHistory.containsKey(earnedDates[n]) && earnedScores[n] >= 0)
+                        dailyEarnedScoreHistory.put(earnedDates[n], earnedScores[n]);
+                }
+                if (latestDaily != null && latestDaily.gameData != null && latestDaily.gameData.contains(SEED)) {
+                    long date = dailyDate(latestDaily.gameData.getLong(SEED));
+                    if (dailyScoreHistory.containsKey(date)) dailyEarnedScoreHistory.putIfAbsent(date, latestDaily.earnedScore());
+                }
 				if (latestDate > SPDSettings.lastDaily()){
 					SPDSettings.lastDaily(latestDate);
 				}

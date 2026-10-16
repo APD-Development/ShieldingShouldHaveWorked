@@ -1,12 +1,13 @@
 {
-  "core_tests": 1729,
-  "android_tests": 35,
-  "screenshots": 46,
+  "core_tests": 1734,
+  "android_tests": 36,
+  "screenshots": 48,
   "rollback_number": 250,
   "rollback_tag": "apd-alpha-preview-250",
   "rollback_asset": "ADHD-Pixel-Dungeon-Alpha-Preview-250.apk",
   "rollback_sha256": "06531de071cbe89a5b0c3260f5c5fb6e6368fbfdf388f8f18bb0fcd983532535",
   "reports": [
+    "docs/APD-DAILY-SCORE-FIX-2026-10-16.md",
     "docs/APD-SCORING-VISION-2026-10-16.md",
     "docs/APD-CLASS-SCORING-NOTICE-2026-10-16.md",
     "docs/APD-PROVISIONAL-SCORING-IMPLEMENTATION-2026-10-16.md",

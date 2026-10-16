@@ -384,3 +384,6 @@ Next uniquely numbered test: informational class-specific-scoring notice only. C
 
 
 Owner resumed work toward4pmEDT: next uniquely numbered APK contains optional native scoring-vision popup only, no multiplier/gameplay changes. Compare actual preceding TEST250 sourceadb1bcdd420ff5639f4a65d2d9b456b0cfe08474/run38924547882; require1729core/debug/history/35API34/46validPNG including normal/narrow popup and AndroidBack/draft preservation. Eight multiplier regressions pass locally;357values unchanged. Preserve published250 fallback and player data. No automatic tester distribution.
+
+
+Acceptance bug correction: real daily submission original133/earned266 displayed calendar133. Keep original integer history; add optional earned-long metadata/frozen-record recovery and non-overlapping calendar layout. Five new core regressions;16targeted pass after correcting initial missing-array null handling. Require1734core/debug/history against actually produced251source435d945d421a2a2a7dc8bb6b3df12d5e6fce9b31/run38934289756,36API34 and48validPNG. All357values/formula/gameplay unchanged. Retain published250fallback; no phone or automatic tester-distribution claim.

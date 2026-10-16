@@ -1,27 +1,28 @@
 {
   "date": "2026-10-16",
-  "previous_source": "adb1bcdd420ff5639f4a65d2d9b456b0cfe08474",
-  "previous_run": 38924547882,
-  "previous_label": "Codex TEST 250",
+  "previous_source": "435d945d421a2a2a7dc8bb6b3df12d5e6fce9b31",
+  "previous_run": 38934289756,
+  "previous_label": "Codex TEST 251",
   "changes": [
     {
-      "category": "Quality of Life",
-      "sprite": "ICON_INFO",
-      "title": "Experimental scoring explained",
-      "text": "An optional scoring popup explains my plans for interacting rules and character progression without changing today's provisional multipliers.",
+      "category": "Bug Fixes",
+      "sprite": "ICON_RANKINGS",
+      "title": "Accurate daily scores",
+      "text": "The daily calendar shows the run's earned Custom Rules score and retains large values without covering the date.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomRulesPresentation.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndCustomDungeonRules.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/Rankings.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndDailies.java",
         "core/src/main/assets/apd/releases/apd-alpha-preview.tsv"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Scoring information on small screens",
-      "text": "Android checks open and scroll the scoring explanation, then return with Back while preserving the selected rules and score.",
+      "title": "Daily score and save checks",
+      "text": "Regression checks cover real daily scoring, large-score persistence, older records, optional metadata and Android calendar layout.",
       "paths": [
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/DailyEarnedScoreHistoryTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomScoreDeviceTest.java",
         "tools/run-codex-android-checks.sh",
         ".github/workflows/codex-alpha-preview-stage.yml"
       ]
@@ -29,20 +30,16 @@
     {
       "category": "Infrastructure",
       "sprite": "ICON_INFO",
-      "title": "Verified lunch delivery records",
-      "text": "Private APK and report delivery records preserve exact source, checksums, signing checks and actual publication times.",
+      "title": "Record the acceptance finding",
+      "text": "Keep the reproduced score mismatch, corrected results and remaining physical-device limits with the build's verification record.",
       "paths": [
-        ".github/workflows/codex-lunch-apk-2026-10-16.yml",
-        ".github/workflows/codex-lunch-pdf-2026-10-16.yml",
+        "docs/APD-DAILY-SCORE-FIX-2026-10-16.md",
         "docs/APD-ALPHA-PREPARATION.json",
-        "docs/APD-LUNCH-APK-DELIVERY-2026-10-16.json",
-        "docs/APD-TEST250-VERIFICATION-2026-10-16.json",
-        "docs/HANDOFF.md",
         "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/APD-SCORING-VISION-2026-10-16.md"
+        "docs/HANDOFF.md"
       ]
     }
   ],
-  "commentary": "I moved the longer scoring explanation into an optional native popup so it stays separate from the controls. The current357 provisional values and scoring calculation are unchanged; future interaction-aware and character-specific scoring are ideas, not promised features."
+  "commentary": "Acceptance found a daily run whose calendar showed133 even though its recorded earned score was266. I corrected the calendar's score source and added compatible long-score storage while retaining original historical integer scores. Multipliers and scoring formulas are unchanged."
 }

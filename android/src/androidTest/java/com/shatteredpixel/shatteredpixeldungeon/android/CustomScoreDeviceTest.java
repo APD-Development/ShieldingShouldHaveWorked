@@ -21,6 +21,39 @@ import org.junit.runner.RunWith;
 import java.util.*;
 @RunWith(AndroidJUnit4.class)
 public class CustomScoreDeviceTest{
+ @Test public void dailyCalendarShowsFrozenLongEarnedScoreWithoutOverlappingDates()throws Exception {
+  try(ActivityScenario<AndroidLauncher> scenario=ActivityScenario.launch(AndroidLauncher.class)){
+   long end=System.currentTimeMillis()+120000;while((Game.scene()==null||PixelScene.uiCamera==null)&&System.currentTimeMillis()<end)Thread.sleep(200);assertNotNull(Game.scene());
+   final Rankings.Record[] previous=new Rankings.Record[1];final LinkedHashMap<Long,Integer> originals=new LinkedHashMap<>();
+   final com.shatteredpixel.shatteredpixeldungeon.windows.WndDailies[] window=new com.shatteredpixel.shatteredpixeldungeon.windows.WndDailies[1];
+   final long day=1792108800000L;final long[] earned=new long[1];final String[] expected=new String[1];
+   try{
+    TopScoresDeviceTest.render(()->{
+     previous[0]=Rankings.INSTANCE.latestDaily;originals.putAll(Rankings.INSTANCE.dailyScoreHistory);Rankings.INSTANCE.dailyScoreHistory.clear();
+     for(int i=14;i>=0;i--)Rankings.INSTANCE.dailyScoreHistory.put(day-i*86400000L,77);
+     CustomDungeonRules rules=CustomDungeonRules.defaults();
+     for(CustomDungeonRules.Slider s:CustomDungeonRules.Slider.values())rules=rules.with(s,com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomRuleMultipliers.individual(s,s.min).compareTo(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomRuleMultipliers.individual(s,s.max))>0?s.min:s.max);
+     Rankings.Record r=new Rankings.Record();r.score=Integer.MAX_VALUE;r.gameData=new Bundle();r.gameData.put(Rankings.SEED,day);
+     Bundle settings=new Bundle();rules.store(settings);r.gameData.put("apd_custom_rules",settings);
+     com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomScoreSnapshot.forNewRun(rules).store(r.gameData);
+     Rankings.INSTANCE.latestDaily=r;Rankings.INSTANCE.dailyScoreHistory.put(day,r.score);earned[0]=r.earnedScore();assertTrue(earned[0]>Integer.MAX_VALUE);
+     expected[0]=java.text.NumberFormat.getInstance(com.shatteredpixel.shatteredpixeldungeon.messages.Messages.locale()).format(earned[0]);
+     window[0]=new com.shatteredpixel.shatteredpixeldungeon.windows.WndDailies();Game.scene().addToFront(window[0]);
+    });Thread.sleep(600);
+    TopScoresDeviceTest.render(()->{try{
+     List<RenderedTextBlock> blocks=TopScoresDeviceTest.find(window[0],RenderedTextBlock.class);RenderedTextBlock value=null,date=null;
+     java.text.DateFormat format=new java.text.SimpleDateFormat("yyyy-MM-dd",Locale.ROOT);format.setTimeZone(TimeZone.getTimeZone("UTC"));String label=format.format(new Date(day));
+     for(RenderedTextBlock block:blocks){if(expected[0].equals(block.text()))value=block;if(label.equals(block.text()))date=block;assertTrue(block.text(),block.left()>=-0.01f);assertTrue(block.text(),block.right()<=115.01f);}
+     assertNotNull(value);assertNotNull(date);assertTrue("Wide earned score must not overlap date/info",value.top()>=date.bottom()||value.left()>=date.right()+20);
+     assertEquals(earned[0],Rankings.INSTANCE.dailyEarnedScore(day));assertEquals(Integer.valueOf(Integer.MAX_VALUE),Rankings.INSTANCE.dailyScoreHistory.get(day));
+    }catch(Exception e){throw new RuntimeException(e);}});
+    TopScoresDeviceTest.screenshot("daily-earned-score.png");
+    TopScoresDeviceTest.render(()->{try{ScrollPane pane=TopScoresDeviceTest.find(window[0],ScrollPane.class).get(0);pane.scrollTo(0,Float.MAX_VALUE);assertTrue(pane.content().camera.scroll.y>0);}catch(Exception e){throw new RuntimeException(e);}});Thread.sleep(400);
+    TopScoresDeviceTest.screenshot("daily-earned-score-scrolled.png");InstrumentationRegistry.getInstrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_BACK);Thread.sleep(500);
+    TopScoresDeviceTest.render(()->assertNull(window[0].parent));
+   }finally{TopScoresDeviceTest.render(()->{if(window[0]!=null)window[0].hide();Rankings.INSTANCE.latestDaily=previous[0];Rankings.INSTANCE.dailyScoreHistory.clear();Rankings.INSTANCE.dailyScoreHistory.putAll(originals);});}
+  }
+ }
  private static void swipe(Point from,Point to)throws Exception{
   android.app.Instrumentation in=InstrumentationRegistry.getInstrumentation();long down=SystemClock.uptimeMillis();
   for(int step=0;step<=6;step++){int action=step==0?MotionEvent.ACTION_DOWN:step==6?MotionEvent.ACTION_UP:MotionEvent.ACTION_MOVE;float part=step/6f;MotionEvent event=MotionEvent.obtain(down,SystemClock.uptimeMillis(),action,from.x+(to.x-from.x)*part,from.y+(to.y-from.y)*part,0);event.setSource(InputDevice.SOURCE_TOUCHSCREEN);in.sendPointerSync(event);event.recycle();Thread.sleep(70);}Thread.sleep(500);
