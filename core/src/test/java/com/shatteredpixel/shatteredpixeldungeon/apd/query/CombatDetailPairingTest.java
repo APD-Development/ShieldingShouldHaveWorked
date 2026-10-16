@@ -94,7 +94,26 @@ public class CombatDetailPairingTest {
    if(type==EventTypes.ATTACK)assertEquals(1,rat.num(def.indexOf("enemy.attacksByHero")));
    else if(type==EventTypes.DAMAGE)assertEquals(3,rat.num(def.indexOf("enemy.damageFromHero")));
    else {assertEquals(1,rat.num(def.indexOf("enemy.kills")));assertEquals(1,rat.num(def.indexOf("enemy.deaths")));}
+   String dataset=type==EventTypes.ATTACK?EventDatasets.ATTACKS:type==EventTypes.DAMAGE?EventDatasets.DAMAGE:EventDatasets.KILLS;
+   DatasetDef eventDef=EventDatasets.def(dataset);assertEquals(1,rows.of(dataset).size());Row event=rows.of(dataset).get(0);
+   if(type==EventTypes.ATTACK)assertFalse(event.isKnown(eventDef.indexOf("attack.defenderClass")));
+   else if(type==EventTypes.DAMAGE)assertEquals(3,event.num(eventDef.indexOf("damage.amount")));
+   else assertFalse(event.isKnown(eventDef.indexOf("kill.victimClass")));
    assertArrayEquals(original,java.nio.file.Files.readAllBytes(file.toPath()));
   }
+ }
+
+ @Test public void malformedHiddenHealDetailCannotEraseReadablePublicHeal() throws Exception {
+  String id="malformed-heal-"+sequence++;File file=new File(tmp.getRoot(),id+".apdlog");
+  RunLogWriter writer=RunLogWriter.create(file,new TelemetryVersion(1,6),id,"test",1);
+  LifecycleEvents.RunStart start=new LifecycleEvents.RunStart();start.runId=id;start.heroClass="WARRIOR";
+  assertTrue(LifecycleEvents.emitRunStart(writer,0,false,start));
+  CombatEvents.Heal heal=new CombatEvents.Heal();heal.amount=4;heal.hpAfter=14;heal.hpMax=20;
+  assertTrue(CombatEvents.emitHeal(writer,1,heal,true));assertTrue(writer.append(EventTypes.HEAL_DETAIL,0,1,new byte[0]));
+  assertTrue(LifecycleEvents.emitRunEnd(writer,2,new LifecycleEvents.RunEnd()));assertTrue(writer.close());
+  byte[] original=java.nio.file.Files.readAllBytes(file.toPath());LogRows rows=RowBuilders.fromLog(RunLogReader.read(file),id);
+  DatasetDef def=EventDatasets.def(EventDatasets.HEALS);assertEquals(1,rows.of(EventDatasets.HEALS).size());
+  Row row=rows.of(EventDatasets.HEALS).get(0);assertEquals(4,row.num(def.indexOf("heal.amount")));
+  assertFalse(row.isKnown(def.indexOf("heal.source")));assertArrayEquals(original,java.nio.file.Files.readAllBytes(file.toPath()));
  }
 }

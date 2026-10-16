@@ -66,11 +66,12 @@
     {
       "category": "Reliability",
       "sprite": "ICON_WARNING",
-      "title": "Keep public combat when hidden details are malformed",
-      "text": "Readable attacks, damage and kills remain in enemy statistics even if their optional hidden identity detail is unreadable; identity stays unknown and disposable rows rebuild from unchanged history.",
+      "title": "Keep public combat and heals when hidden details are malformed",
+      "text": "Readable attacks, damage, kills and heals remain in enemy and per-event statistics even if optional hidden identity/source detail is unreadable; hidden metadata stays unknown and disposable rows rebuild from unchanged history.",
       "paths": [
         ".github/workflows/codex-combat-detail-acceptance.yml",
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowBuilders.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/EventDatasets.java",
         "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/CombatDetailPairingTest.java",
         "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/QuestBossClassificationTest.java",
         "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/DamagedFactsProvenanceTest.java",
