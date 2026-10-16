@@ -1,3 +1,10 @@
+## 2026-10-16T23:48:13Z — TEST263 fully accepted and staged without rebuild
+- Primary source `e3b5cef026f8a9d6827d0eebb5528069c646b00d` / run `38980948671`: 1,761 core, 38 API-34, 57 reviewed required PNGs, debug and immediate-previous TEST262 history all passed.
+- APK: 38,591,540 bytes, SHA-256 `3e71c975ddc7f85f22e1f42454aa9e1a420164f8c9ed6c7e226f11e40a08c20d`; package/versionCode/certificate remain install-line compatible with TEST262.
+- Test-only wrapper `5c9365c866c0c55aef75eb26608f10ead948b4cc` corrected stale 37-method staging metadata. Run `38982859447` succeeded and emitted staged artifact `12082335643` plus evidence `12081234943`; no application rebuild.
+- Supplemental display `38980948747` attempt2 passed the two originally failed square/short-landscape jobs. Original failures remain retained; all five profiles have accepted same-APK evidence. Retry artifacts `12081653912` and `12081483056` were decoded and reviewed.
+- Verified/staged is not published. TEST262 remains latest published owner APK. No phone/owner-save/public/automatic-distribution claim.
+
 ## 2026-10-16T23:42:01Z — TEST263 Grudge touch primary gate verified; retained supplemental failures
 - Source `e3b5cef026f8a9d6827d0eebb5528069c646b00d` / run `38980948671`: 1,761 core and 38 API-34 methods passed with zero failure/error/skip; debug/history succeeded. All 57 required 320×640 images decoded and were contact-sheet reviewed.
 - APK `ADHD-Pixel-Dungeon-CODEX-TEST-263.apk`: 38,591,540 bytes, SHA-256 `3e71c975ddc7f85f22e1f42454aa9e1a420164f8c9ed6c7e226f11e40a08c20d`; artifact `12081246935` digest `sha256:b58e6d0baa990111b509f6038c7721a31a3a6c98242c5ff9b3c10c3b79111dcb`. Android artifact `12081835229` digest `sha256:9a0f158907ca8f64ef43a3dfd8921397eb5f394b58d2cb8c28eaab179290f78f`; core artifact `12080698247` digest `sha256:d9702b578e25bacf88923846c1c2616c60bc3a1bd208b09c3e9f3b30ffc9c768`.
