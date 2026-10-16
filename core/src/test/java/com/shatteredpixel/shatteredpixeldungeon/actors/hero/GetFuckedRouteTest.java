@@ -35,6 +35,10 @@ public class GetFuckedRouteTest {
     private com.shatteredpixel.shatteredpixeldungeon.windows.WndBag.ItemSelector itemSelection;
     private MockedConstruction<com.shatteredpixel.shatteredpixeldungeon.windows.WndUpgrade> upgradeWindows;
     private Object upgradeButton;
+    private MockedConstruction<com.shatteredpixel.shatteredpixeldungeon.windows.WndTradeItem> tradeWindows;
+    private com.shatteredpixel.shatteredpixeldungeon.windows.WndTradeItem tradeWindow;
+    private Heap tradeHeap;
+    private boolean executeTradeUi;
     private AtomicBoolean watch;
     private Thread watchdog;
     private boolean oldKeepAlive;
@@ -68,6 +72,10 @@ public class GetFuckedRouteTest {
     private void heapSprite(Heap h) {
         if(h.sprite==null){h.sprite=mock(ItemSprite.class,RETURNS_DEEP_STUBS);when(h.sprite.view(any(Heap.class))).thenReturn(h.sprite);}
     }
+    private void bindBlobVisuals(){
+        for(Blob b:Dungeon.level.blobs.values())if(b instanceof com.shatteredpixel.shatteredpixeldungeon.actors.blobs.SacrificialFire)
+            b.use(mock(com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter.class));
+    }
     private <T> MockedStatic<T> visual(Class<T> type) {
         MockedStatic<T> m = mockStatic(type); visuals.add(m); return m;
     }
@@ -100,7 +108,11 @@ public class GetFuckedRouteTest {
             Object[] values={window,contextArgs.arguments().get(0),contextArgs.arguments().get(1),contextArgs.arguments().get(2)};
             for(int n=0;n<fields.length;n++){Field f=buttonClass.getDeclaredField(fields[n]);f.setAccessible(true);f.set(upgradeButton,values[n]);}
         });
+        tradeWindows=mockConstruction(com.shatteredpixel.shatteredpixeldungeon.windows.WndTradeItem.class,(window,contextArgs)->{
+            if(contextArgs.arguments().size()==1 && contextArgs.arguments().get(0) instanceof Heap){tradeWindow=window;tradeHeap=(Heap)contextArgs.arguments().get(0);}
+        });
         MockedStatic<Game> game=visual(Game.class);
+        game.when(()->Game.runOnRenderThread(any(Callback.class))).thenAnswer(i->{if(executeTradeUi)((Callback)i.getArgument(0)).call();return null;});
         gameplaySceneStub=mock(GameScene.class,RETURNS_DEEP_STUBS);
         game.when(Game::scene).thenAnswer(i->currentTestScene);
         game.when(() -> Game.switchScene(InterlevelScene.class)).thenAnswer(i -> { pendingTransition=true; currentTestScene=mock(InterlevelScene.class,RETURNS_DEEP_STUBS); return null; });
@@ -144,6 +156,7 @@ public class GetFuckedRouteTest {
             restoreCheckpoint(resume);
         }
         currentTestScene=gameplaySceneStub;
+        bindBlobVisuals();
         System.out.println("RUNNER_STAGE actual level entered");
         oldKeepAlive = Actor.keepActorThreadAlive;
         Actor.keepActorThreadAlive = false;
@@ -164,6 +177,7 @@ public class GetFuckedRouteTest {
         com.shatteredpixel.shatteredpixeldungeon.ui.TargetHealthIndicator.instance=oldTargetIndicator;
         Actor.clear(); Random.popGenerator();
         if(upgradeWindows!=null)upgradeWindows.close();
+        if(tradeWindows!=null)tradeWindows.close();
         Collections.reverse(visuals); for (MockedStatic<?> m : visuals) m.close();
     }
     private void ready() {
@@ -176,6 +190,7 @@ public class GetFuckedRouteTest {
                     Method transition=InterlevelScene.class.getDeclaredMethod(InterlevelScene.mode==InterlevelScene.Mode.DESCEND ? "descend" : "ascend");
                     transition.setAccessible(true);transition.invoke(scene);
                     currentTestScene=gameplaySceneStub;
+                    bindBlobVisuals();
                     bind(Dungeon.hero);for(Mob m:Dungeon.level.mobs)bind(m);
                     for(Heap h:Dungeon.level.heaps.valueList())heapSprite(h);
                 }catch(Exception e){throw new RuntimeException(e);}
@@ -292,7 +307,15 @@ public class GetFuckedRouteTest {
         j.put("heaps",heaps);
         return j;
     }
-    private void log(String s) { System.out.println("ROUTE "+state(s)); }
+    private void log(String s) {
+        assertEquals("Maximum HP must stay exactly one",1,Dungeon.hero.HT);assertTrue("Current HP exceeds one",Dungeon.hero.HP<=1);
+        System.out.println("ROUTE "+state(s));
+        if(Dungeon.depth==5){
+            for(Mob m:Dungeon.level.mobs)if(m instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo){
+                try{Field pumped=m.getClass().getDeclaredField("pumpedUp");pumped.setAccessible(true);System.out.println("GOO_DETAIL "+s+" HP="+m.HP+" pumped="+pumped.getInt(m)+" water="+Dungeon.level.water[m.pos]+" heroWater="+Dungeon.level.water[Dungeon.hero.pos]+" locked="+Dungeon.level.locked+" heroShield="+Dungeon.hero.shielding());}catch(Exception e){throw new RuntimeException(e);}
+            }
+        }
+    }
     private void waitOne() { Dungeon.hero.rest(false); ready(); log("WAIT"); }
     private void click(int cell) { assertFalse("Script would attack passive exile at "+cell, Actor.findChar(cell) instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollExile); assertTrue(Dungeon.hero.handle(cell)); Dungeon.hero.next(); Dungeon.hero.busy(); ready(); log("CLICK "+cell); }
     private void cast(ClericSpell spell, Integer target) {
@@ -365,7 +388,7 @@ public class GetFuckedRouteTest {
     @Test public void seed266InitialCommands() throws Exception {
         System.out.println("RUNNER_STAGE scheduler start");
         ready();
-        if(System.getProperty("route.resume")!=null){verifyCheckpoint(System.getProperty("route.resume"));if(Dungeon.depth==3)thirdFloorSection();else if(Dungeon.depth==4){if(Dungeon.hero.pos==826)returnedFourthFloorSection();else if(Dungeon.hero.pos==437)purityCheckpointSection();else if(Dungeon.hero.pos==1035)foodCheckpointSection();else fourthFloorSection();}else if(Dungeon.depth==5)fifthFloorSection();else fail("Unwritten section");return;}
+        if(System.getProperty("route.resume")!=null){verifyCheckpoint(System.getProperty("route.resume"));if(Dungeon.depth==3)thirdFloorSection();else if(Dungeon.depth==4){if(Dungeon.hero.pos==826)returnedFourthFloorSection();else if(Dungeon.hero.pos==437)purityCheckpointSection();else if(Dungeon.hero.pos==1035)foodCheckpointSection();else fourthFloorSection();}else if(Dungeon.depth==5){if(Boolean.getBoolean("route.postGoo"))postGooSection();else if(Boolean.getBoolean("route.armoredGoo"))armoredGooSection();else fifthFloorSection();}else if(Dungeon.depth==6)sixthFloorSection();else fail("Unwritten section");return;}
         assertEquals(1,Dungeon.hero.lvl); assertEquals(1,Dungeon.hero.HP); assertEquals(1,Dungeon.hero.HT);
         for(Map<Talent,Integer> tier:Dungeon.hero.talents) for(int value:tier.values()) assertEquals(0,value);
         JSONObject layout=new JSONObject(); Level l=Dungeon.level;
@@ -885,6 +908,119 @@ public class GetFuckedRouteTest {
         assertTrue(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost.Quest.completed());
         assertSame(offered,Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.armor.LeatherArmor.class));
         return offered;
+    }
+
+    private void buyActualShopHeap(int cell) throws Exception {
+        Heap heap=Dungeon.level.heaps.get(cell);assertNotNull(heap);assertEquals(Heap.Type.FOR_SALE,heap.type);
+        int price=com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper.sellPrice(heap.peek());
+        assertTrue("Cannot afford shop price "+price,Dungeon.gold>=price);
+        tradeWindow=null;tradeHeap=null;executeTradeUi=true;
+        try{click(cell);click(cell);}finally{executeTradeUi=false;}
+        assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,cell) || Dungeon.hero.pos==cell);
+        assertSame(heap,tradeHeap);assertNotNull(tradeWindow);
+        Method buy=com.shatteredpixel.shatteredpixeldungeon.windows.WndTradeItem.class.getDeclaredMethod("buy",Heap.class);buy.setAccessible(true);
+        Dungeon.hero.busy();buy.invoke(tradeWindow,heap);ready();log("BUY ACTUAL SHOP HEAP "+cell+" PRICE "+price);
+    }
+
+    private void sixthFloorSection() throws Exception {
+        if(Dungeon.hero.pos==904){sixthFloorAfterStrength();return;}
+        if(Dungeon.hero.pos==620){sixthFloorAfterFood();return;}
+        for(int c:new int[]{644,613,582,583,584,585,586,587,588,589})click(c);
+        buyActualShopHeap(620);
+        Item ration=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation.class);assertNotNull(ration);
+        ration.execute(Dungeon.hero,"EAT");ready();log("EAT PURCHASED FLOOR SIX RATION");
+        if(System.getProperty("route.checkpoint6FoodOut")!=null)writeCheckpoint(System.getProperty("route.checkpoint6FoodOut"));
+    }
+
+    private void sixthFloorAfterStrength() throws Exception {
+        for(int c:new int[]{873,842,810,779,780,812,813,814})click(c);
+        throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Cudgel.class,817);
+        log("OPEN SKELETON CORRIDOR DOOR FROM RANGE THREE");
+        Mob skeleton=Dungeon.level.mobs.stream().filter(m->m.id()==149).findFirst().get();
+        cast(GuidingLight.INSTANCE,skeleton.pos);
+        throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class,skeleton.pos);
+        throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class,skeleton.pos);
+        log("SECOND SKELETON RANGED EXCHANGE");
+        cast(GuidingLight.INSTANCE,skeleton.pos);assertFalse(skeleton.isAlive());
+        for(int c:new int[]{815,816,816,817,817,818,850,850})click(c);
+        assertNotNull(Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade.class));
+        upgradeOwnedGear(Dungeon.hero.belongings.armor());
+        assertEquals(3,Dungeon.hero.belongings.armor().level());
+        if(System.getProperty("route.checkpoint6UpgradeOut")!=null)writeCheckpoint(System.getProperty("route.checkpoint6UpgradeOut"));
+    }
+
+    private void sixthFloorAfterFood() throws Exception {
+        for(int c:new int[]{587,555,523,491})click(c);
+        buyActualShopHeap(459);
+        assertNotNull(Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation.class));
+        for(int c:new int[]{491,523,555,587,586,585,584,615,646,678,710,711,712,713,745,777,778})click(c);
+        Dungeon.hero.search(true);ready();log("REVEAL FLOOR SIX CORRIDOR OOZE TRAP");
+        click(777);
+        throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Cudgel.class,779);
+        for(int c:new int[]{778,779,779,780})click(c);
+        log("FLOOR SIX SOUTHERN APPROACH WITH SECOND PAID RATION");
+        cast(HolyWard.INSTANCE,null);
+        for(int c:new int[]{779,810,842})click(c);
+        log("FLOOR SIX STRENGTH ROOM APPROACH");
+        Mob skeleton=Dungeon.level.mobs.stream().filter(m->m.id()==148).findFirst().get();
+        cast(GuidingLight.INSTANCE,skeleton.pos);
+        throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class,skeleton.pos);
+        throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class,skeleton.pos);
+        log("FLOOR SIX FIRST SKELETON RANGED EXCHANGE");
+        throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class,skeleton.pos);
+        assertFalse("Skeleton must die before adjacent explosion",skeleton.isAlive());
+        log("FLOOR SIX FIRST SKELETON DEFEATED");
+        for(int c:new int[]{841,840,840})click(c);
+        Item strength=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength.class);assertNotNull(strength);
+        strength.execute(Dungeon.hero,"DRINK");ready();log("DRINK THIRD EARNED STRENGTH POTION");assertEquals(13,Dungeon.hero.STR);
+        for(int c:new int[]{871,903,903,904,904})click(c);
+        if(System.getProperty("route.checkpoint6SkeletonOut")!=null)writeCheckpoint(System.getProperty("route.checkpoint6SkeletonOut"));
+    }
+
+    private void postGooSection() throws Exception {
+        assertEquals(5,Dungeon.depth);assertFalse(Dungeon.level.locked);
+        for(int c:new int[]{743,743,743,709,709,674,673,672,637,637})click(c);
+        assertEquals(3,Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class).quantity());
+        for(int n=0;n<Integer.getInteger("route.postGooWait",100);n++)waitOne();
+        for(int c:new int[]{603,569,535,501,500,499,465,431,430,429,428,427,426,425,424,423,422,421,420,386,352,351,350,349,383,384,418,417,416,415,381,381})click(c);
+        assertEquals(6,Dungeon.depth);
+        log("POST GOO PROGRESSION");
+        System.out.println("FLOOR_LAYOUT "+new JSONObject().put("depth",Dungeon.depth).put("width",Dungeon.level.width()).put("height",Dungeon.level.height()).put("terrain",new JSONArray(Dungeon.level.map)).put("entrance",Dungeon.level.entrance()).put("exit",Dungeon.level.exit()));
+        if(System.getProperty("route.checkpoint6Out")!=null)writeCheckpoint(System.getProperty("route.checkpoint6Out"));
+    }
+
+    private void armoredGooSection() throws Exception {
+        assertEquals(5,Dungeon.depth);assertEquals(708,Dungeon.hero.pos);assertEquals(2,Dungeon.hero.belongings.armor().level());
+        for(int n=0;n<200;n++)waitOne();
+        Item food=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.food.FrozenCarpaccio.class);assertNotNull(food);
+        food.execute(Dungeon.hero,"EAT");ready();log("EAT REMAINING EARNED FROZEN MEAT BEFORE GOO");
+        for(int c:new int[]{673,672,637})click(c);
+        Dungeon.hero.search(true);ready();log("SEARCH GOO APPROACH SECRET DOOR");assertEquals(Terrain.DOOR,Dungeon.level.map[603]);
+        for(int c:new int[]{603,569,535,501,500,499,465,431,430})click(c);
+        Mob goo=Dungeon.level.mobs.stream().filter(m->m instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo).findFirst().get();
+        assertEquals(100,goo.HP);log("GOO ARMORED LEGITIMATE FIRST ENCOUNTER");
+        cast(HolyWard.INSTANCE,null);assertEquals(3,Dungeon.hero.shielding());
+        if(Boolean.getBoolean("route.gooHolyWeapon"))cast(com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyWeapon.INSTANCE,null);
+        cast(GuidingLight.INSTANCE,goo.pos);
+        throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class,goo.pos);
+        log("GOO ARMORED OPENING BURST");
+        // Manually authored continuation; never chooses actions from game state.
+        String verifiedActions="C431,C465,C499,C500,C501,C535,A,C569,C603,C637,A,C672,T,T,L,A,C707,C742,W,A,C777,C778,W,A,A,A,A,A";
+        for(String action:System.getProperty("route.gooActions", Boolean.getBoolean("route.assertGooDefeated")?verifiedActions:"").split(",")){
+            if(action.isEmpty())continue;
+            if(action.equals("W"))waitOne();
+            else if(action.equals("S"))cast(ShieldOfLight.INSTANCE,goo.pos);
+            else if(action.equals("L"))cast(GuidingLight.INSTANCE,goo.pos);
+            else if(action.equals("T"))throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.class,goo.pos);
+            else if(action.equals("A"))click(goo.pos);
+            else if(action.startsWith("C"))click(Integer.parseInt(action.substring(1)));
+            else fail("Unknown manually authored action "+action);
+        }
+        if(Boolean.getBoolean("route.assertGooDefeated")){
+            assertFalse(goo.isAlive());assertFalse(Dungeon.level.locked);assertEquals(1,Dungeon.hero.HP);
+            log("GOO DEFEATED WITH CONTINUOUS EARNED RESOURCES");
+            if(System.getProperty("route.checkpointGooOut")!=null)writeCheckpoint(System.getProperty("route.checkpointGooOut"));
+        }
     }
 
 }

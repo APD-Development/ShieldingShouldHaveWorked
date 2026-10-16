@@ -99,6 +99,37 @@ jobs:
         with:
           name: get-fucked-armor-route-results
           path: core/build/test-results/test/
+      - name: Defeat Goo with the earned armor and continuous resources
+        run: >-
+          ./gradlew :core:test --tests '*GetFuckedRouteTest'
+          -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor5_armored_complete"
+          -Droute.stableHash=true -Droute.noSnapshots=true
+          -Droute.armoredGoo=true -Droute.gooHolyWeapon=true -Droute.assertGooDefeated=true
+      - name: Preserve earned Goo victory replay
+        uses: actions/upload-artifact@v4
+        with:
+          name: get-fucked-goo-victory-results
+          path: core/build/test-results/test/
+      - name: Replay post-Goo recovery recharge and native prison entry
+        run: >-
+          ./gradlew :core:test --tests '*GetFuckedRouteTest'
+          -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_goo_defeated"
+          -Droute.stableHash=true -Droute.noSnapshots=true -Droute.postGoo=true
+      - name: Replay prison shop purchase and meal
+        run: >-
+          ./gradlew :core:test --tests '*GetFuckedRouteTest'
+          -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor6"
+          -Droute.stableHash=true -Droute.noSnapshots=true
+      - name: Replay trap disarm strength room and first skeleton
+        run: >-
+          ./gradlew :core:test --tests '*GetFuckedRouteTest'
+          -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor6_food"
+          -Droute.stableHash=true -Droute.noSnapshots=true
+      - name: Replay second skeleton and earned armor upgrade
+        run: >-
+          ./gradlew :core:test --tests '*GetFuckedRouteTest'
+          -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor6_strength"
+          -Droute.stableHash=true -Droute.noSnapshots=true
       - name: Replay earned Goo approach and first ranged retreat
         run: >-
           ./gradlew :core:test --tests '*GetFuckedRouteTest'
