@@ -98,6 +98,14 @@ public abstract class OptionSlider extends Component {
 		sliderNode.alpha( value ? 1.0f : 0.3f );
 	}
 
+    private boolean liveChanges;
+    /** Opt in only for draft controls; existing sliders retain release-only notifications. */
+    public void liveChanges(boolean enabled){liveChanges=enabled;}
+    private void notifyDragValue(){
+        int next=Math.max(minVal,Math.min(minVal+Math.round((sliderNode.x-x)/tickDist),maxVal));
+        if(next!=selectedVal){selectedVal=next;onChange();}
+    }
+
 	@Override
 	protected void createChildren() {
 		super.createChildren();
@@ -115,6 +123,7 @@ public abstract class OptionSlider extends Component {
 
 		pointerArea = new PointerArea(0, 0, 0, 0){
 			boolean pressed = false;
+            int pressedValue;
             SliderGesture gesture;
             float lastY;
             private void position(PointerEvent event) {
@@ -130,7 +139,7 @@ public abstract class OptionSlider extends Component {
 			@Override
 			protected void onPointerDown( PointerEvent event ) {
 				if(event!=curEvent || pressed)return;
-                pressed = true;
+                pressed = true;pressedValue=selectedVal;
                 if(verticalPane!=null){
                     gesture=new SliderGesture(event.current.x,event.current.y,camera().zoom);
                     lastY=event.current.y;sliderNode.brightness(1.5f);return;
@@ -145,7 +154,7 @@ public abstract class OptionSlider extends Component {
 				if (pressed && event==curEvent) {
                     if(verticalPane!=null){
                         if(event.type==PointerEvent.Type.CANCEL){
-                            setSelectedValue(selectedVal);sliderNode.resetColor();pressed=false;return;
+                            if(liveChanges&&selectedVal!=pressedValue){setSelectedValue(pressedValue);onChange();}else setSelectedValue(selectedVal);sliderNode.resetColor();pressed=false;return;
                         }
                         SliderGesture.Direction direction=gesture.finish(event.current.x,event.current.y);
                         if(direction==SliderGesture.Direction.VERTICAL){
@@ -171,7 +180,7 @@ public abstract class OptionSlider extends Component {
                     if(verticalPane!=null){
                         SliderGesture.Direction direction=gesture.move(event.current.x,event.current.y);
                         if(direction==SliderGesture.Direction.VERTICAL)vertical(event);
-                        else if(direction==SliderGesture.Direction.HORIZONTAL)position(event);
+                        else if(direction==SliderGesture.Direction.HORIZONTAL){position(event);if(liveChanges)notifyDragValue();}
                         return;
                     }
                     PointF p = camera().screenToCamera((int) event.current.x, (int) event.current.y);

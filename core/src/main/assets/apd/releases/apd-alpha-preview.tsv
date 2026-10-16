@@ -9,10 +9,10 @@ Quality of Life	ITEM_ARMOR_LEATHER	Blacksmith rewards	See the upgrade level of e
 Quality of Life	ITEM_ARTIFACT_CHALICE1	Chalice damage preview	Inspect the next Chalice prick's damage and possible HP loss before deciding whether to proceed.
 Quality of Life	ICON_PREFS	Healing conversion setting	The Healing-to-Shielding setting affects only generated Potions of Healing; other potion and scroll conversions keep their normal behavior.
 Quality of Life	ICON_INFO	Adult Humor preference	The About screen and reviewed authored dialogue use clean alternatives when Adult Humor is off.
-Quality of Life	ICON_CHALLENGE_COLOR	Scoring notice	Custom Dungeon Rules are experimental and currently leave your earned score unchanged.
+Quality of Life	ICON_CHALLENGE_COLOR	Scoring notice	Custom Dungeon Rules use provisional experimental scoring multipliers for new runs; original scores remain available.
 Bug Fixes	ICON_ENTER	Saved entrance repair	Older affected first-floor saves can recover their entrance doorway without revealing unrelated secret doors.
 Statistics / UIMSD	ICON_COPY	Consistent shared histories	Quickly resumed runs now use the correct finished or unfinished state when deciding what their shared history can reveal.
 Statistics / UIMSD	ICON_WARNING	Incomplete export warnings	Exports of damaged or unreadable history retain an incomplete-data warning instead of presenting surviving statistics as complete.
 Statistics / UIMSD	ICON_WARNING	Incomplete table totals	Item and enemy tables retain incomplete-data warnings when a recorded event cannot be read.
 Bug Fixes	ICON_WARNING	Rotating vault sentry	The circular Imp-vault sentry uses the normal two-turn scan interval; existing affected floors retain their saved position and scan phase.
-Developer Commentary	ICON_INFO	Developer Commentary	I'm bringing APD's statistics and difficulty customization together for the early-alpha preview. Custom scoring is still in development, and the current settings preserve original earned scores.
+Developer Commentary	ICON_INFO	Developer Commentary	I'm bringing APD's statistics and difficulty customization together for the early-alpha preview. New runs use provisional experimental scoring multipliers, with original scores preserved separately.

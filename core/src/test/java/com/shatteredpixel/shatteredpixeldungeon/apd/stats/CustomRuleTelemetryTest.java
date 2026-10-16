@@ -30,7 +30,7 @@ public class CustomRuleTelemetryTest {
             assertEquals(100L*n,facts.numOr(CustomRuleFacts.SCROLL_PERCENT_NUMERATOR,-1));
             assertEquals(15,facts.numOr(CustomRuleFacts.SCROLL_PERCENT_DENOMINATOR,-1));
             assertEquals(rules.identityText(),facts.textOr(CustomRuleFacts.IDENTITY,""));
-            assertEquals(n==15 ? "neutral identity" : "pending calibration",facts.textOr(CustomRuleFacts.SCORE_STATUS,""));
+            assertEquals("experimental provisional",facts.textOr(CustomRuleFacts.SCORE_STATUS,""));
         }
     }
     @Test public void missingHistoricalSnapshotIsNeverAssignedDefaults() throws Exception {

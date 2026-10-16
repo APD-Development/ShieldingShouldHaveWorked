@@ -235,6 +235,7 @@ public final class RunFactsBuilder {
 				f.num(FactKeys.HERO_LEVEL, end.heroLevel, Fact.PROV_RECORDED);
 				f.num(FactKeys.SCORE, end.score, Fact.PROV_RECORDED);
 				CustomRuleFacts.preserveScore(f,end);
+                if(f.isKnown(CustomRuleFacts.ADJUSTED_SCORE))f.num(FactKeys.SCORE,f.numOr(CustomRuleFacts.ADJUSTED_SCORE,end.score),Fact.PROV_RECORDED);
 				f.num(FactKeys.TURNS, end.turns, Fact.PROV_RECORDED);
 			}
 		}

@@ -42,7 +42,69 @@
         "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/EarlyAlphaRosterDeviceTest.java",
         "docs/APD-EARLY-ALPHA-ROSTER-ACCEPTANCE-2026-10-16.md"
       ]
+    },
+    {
+      "category": "Changes",
+      "sprite": "ICON_CHALLENGE_COLOR",
+      "title": "Live provisional score multipliers",
+      "text": "Each Custom Rules slider now previews its scoring multiplier, with a live combined product used by newly created runs.",
+      "paths": [
+        "core/src/main/assets/apd/apd_records_history.txt",
+        "core/src/main/assets/apd/releases/apd-alpha-preview.tsv",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/Rankings.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndScoreBreakdown.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndRanking.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndCustomDungeonRules.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/OptionSlider.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowBuilders.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomScorePresentation.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomRuleMultipliers.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomRulesPresentation.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomScoreSnapshot.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/RecordedRuleSettings.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/DerivedStore.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/RunFactsBuilder.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/ProvisionalScoreLookup.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/CustomRuleFacts.java"
+      ]
+    },
+    {
+      "category": "Testing",
+      "sprite": "ICON_CHECKED",
+      "title": "Scoring and touchscreen regression coverage",
+      "text": "Verify all 357 supplied multipliers, frozen run scores, historical preservation, live dragging and narrow-screen displays.",
+      "paths": [
+        "tools/run-codex-android-checks.sh",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomScoreDeviceTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/CustomRuleFullFieldAcceptanceTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/CustomRuleQueryIntegrationTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomScoreSnapshotTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomScoringCopyTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomRuleMultipliersTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomScorePresentationTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/CustomScoreAwardIntegrationTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/CustomScoreRankingSnapshotTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/CustomRuleRecorderIntegrationTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/CustomRuleTelemetryTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/DamagedFactsProvenanceTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/archive/CustomRuleArchiveIntegrationTest.java",
+        "core/src/test/resources/apd/v26r-authoritative.txt"
+      ]
+    },
+    {
+      "category": "Infrastructure",
+      "sprite": "ICON_INFO",
+      "title": "Verified owner-test preparation",
+      "text": "Prepare this exact source and its required evidence for the next private owner-test APK.",
+      "paths": [
+        "docs/APD-ALPHA-PREPARATION.json",
+        "docs/APD-NEXT-BUILD-HISTORY.json",
+        "docs/APD-PROVISIONAL-SCORING-IMPLEMENTATION-2026-10-16.md",
+        "docs/APD-CODEX-BUILD-REQUEST.txt",
+        ".github/workflows/codex-alpha-preview-stage.yml"
+      ]
     }
   ],
-  "commentary": "Application and test source are identical to verified TEST241. The TEST242 audit candidate was rejected because numeric IN is not a valid NUM operator. Attempts38901726106/38901726126 failed before tests/staging; dedicated38901726173 reproduced the synthetic baseline failure but retained1 failure in1717 corrected methods; attempt2 full38902077854 passed strict history/tooling then failed core, and stage38902077124 failed its changed-tree guard. No APK was produced or staged; do not rebuild unchanged source. A separate instrumentation-only early-alpha roster gate now reuses TEST241 for all-six-class start/save/continue acceptance; it does not rebuild or change the application."
+  "commentary": "New runs use the supplied provisional scoring table, and the slider window previews every selected multiplier. Existing runs and historical scores keep their original scoring authority; no gameplay slider values or challenge multipliers changed."
 }

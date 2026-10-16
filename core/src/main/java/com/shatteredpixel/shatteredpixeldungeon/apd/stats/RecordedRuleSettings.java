@@ -13,13 +13,18 @@ public final class RecordedRuleSettings{
  public boolean isNeutral(){for(int i=0;i<values.length;i++)if(values[i]!=(i==17?15:100))return false;return true;}
  public String identityText(){StringBuilder s=new StringBuilder("custom-v1");for(int i=0;i<values.length;i++)s.append(';').append(KEYS.get(i)).append('=').append(values[i]);return s.toString();}
  public static final class Scoring{
-  public final boolean neutral;public final String calculationVersion,multiplierExact;
-  private Scoring(boolean n,String c,String m){neutral=n;calculationVersion=c;multiplierExact=m;}
-  public String displayStatus(){return neutral?"neutral identity":"pending calibration";}
+  public final boolean neutral;public final String status;public final String calculationVersion,multiplierExact;
+  private Scoring(boolean n,String c,String m){this(n,c,m,n?"neutral identity":"legacy unadjusted");}
+  private Scoring(boolean n,String c,String m,String status){this.status=status;neutral=n;calculationVersion=c;multiplierExact=m;}
+  public String displayStatus(){return status;}
  }
  public Scoring scoring(int version,String status,String calculation,String multiplier){
   if(status==null||calculation==null||multiplier==null)throw new IllegalArgumentException("Missing recorded scoring metadata");
   if(version==0&&status.isEmpty()&&calculation.isEmpty()&&multiplier.isEmpty())return null;
+  if(version==2){
+   if(!status.equals("EXPERIMENTAL")||!calculation.equals(ProvisionalScoreLookup.VERSION)||!multiplier.equals(ProvisionalScoreLookup.combined(values).toPlainString()))throw new IllegalArgumentException("Invalid provisional scoring metadata");
+   return new Scoring(isNeutral(),calculation,multiplier,"experimental provisional");
+  }
   if(version!=1)throw new IllegalArgumentException("Unsupported recorded scoring schema");
   if(status.equals("NEUTRAL_IDENTITY")&&isNeutral()&&calculation.equals("neutral-identity-v1")&&multiplier.equals("1.00"))return new Scoring(true,calculation,multiplier);
   if(status.equals("PENDING_CALIBRATION")&&!isNeutral()&&calculation.equals("pending-calibration-v1")&&multiplier.isEmpty())return new Scoring(false,calculation,multiplier);

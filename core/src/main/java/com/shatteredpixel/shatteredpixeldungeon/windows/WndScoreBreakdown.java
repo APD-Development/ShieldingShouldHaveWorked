@@ -91,7 +91,7 @@ public class WndScoreBreakdown extends Window {
         if(!customNotice.isEmpty())pos=addInfo(content,customNotice,pos);
 		pos = statSlot(content, "Original score", num.format(originalScore), pos, false);
         Long adjusted=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomScorePresentation.adjustedIdentityScore(recordedGameData,originalScore);
-        String unavailable="Pending".equals(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomScorePresentation.multiplier(recordedGameData))?"Pending":"?";
+        String unavailable="Not applied".equals(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomScorePresentation.multiplier(recordedGameData))?"Not applied":"?";
         pos=statSlot(content,"Adjusted score",adjusted==null?unavailable:num.format(adjusted),pos,false);
 
 		if (Dungeon.initialVersion <= ShatteredPixelDungeon.v1_2_3){
@@ -117,7 +117,8 @@ public class WndScoreBreakdown extends Window {
 		float labelHeight=txt.height();
 		txt = PixelScene.renderTextBlock( value, 7 );
 		if (highlight) txt.hardlight(Window.TITLE_COLOR);
-		txt.setPos(WIDTH * 0.7f, pos);
+		if(txt.width()>WIDTH*0.3f){pos+=labelHeight+1;labelHeight=0;txt.setPos(0,pos);}
+        else txt.setPos(WIDTH-txt.width(), pos);
 		PixelScene.align(txt);
 		parent.add( txt );
 

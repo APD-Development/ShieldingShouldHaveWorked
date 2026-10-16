@@ -8,6 +8,10 @@ APD game version, and every recorded run keeps the telemetry version that record
 tied to a version of the recorded data. Minor versions only add things, a new major version changes what existing
 data means.
 
+custom-rules-provisional-v26r | - | APD 4.0.8-apd | 2026-10-16
+- New runs record the exact provisional v2.6R scoring multiplier and its version, alongside original and adjusted scores.
+- Existing runs retain their previously recorded scoring authority and earned scores.
+
 telemetry-1.16-boss-phases | telemetry 1.16 | APD 4.0.8-apd | 2026-10-15
 - Records the visible phase transitions of Goo, Tengu, DM-300, Dwarf King and Yog, with the displayed boss name, boss-specific phase number, floor and visible phase state.
 - Restore-time reconstruction records nothing. Runs recorded before 1.16 show boss phases as unknown, never zero.
@@ -172,4 +176,5 @@ why-apd-keeps-history | - | APD 4.0.8-apd | 2026-10-06
   statistics nobody has thought of yet.
 - Runs that were played before APD recorded history can only ever contain what SPD kept, so they hold less
   information than runs recorded by APD itself. Missing information stays missing, it is never guessed.
+
 

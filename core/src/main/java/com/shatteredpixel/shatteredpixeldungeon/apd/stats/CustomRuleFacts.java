@@ -44,11 +44,15 @@ public final class CustomRuleFacts {
             facts.num(SCORING_RECORD_VERSION,start.customScoreVersion,Fact.PROV_RECORDED);
             facts.text(SCORE_STATUS,scoring.displayStatus(),Fact.PROV_RECORDED);
             facts.text(CALCULATION_VERSION,scoring.calculationVersion,Fact.PROV_RECORDED);
-            if(!scoring.multiplierExact.isEmpty()){facts.text(MULTIPLIER_EXACT,scoring.multiplierExact,Fact.PROV_RECORDED);facts.num(MULTIPLIER,100,Fact.PROV_RECORDED);}
+            if(!scoring.multiplierExact.isEmpty()){facts.text(MULTIPLIER_EXACT,scoring.multiplierExact,Fact.PROV_RECORDED);facts.num(MULTIPLIER,new java.math.BigDecimal(scoring.multiplierExact).multiply(java.math.BigDecimal.valueOf(100)).setScale(0,java.math.RoundingMode.HALF_UP).longValueExact(),Fact.PROV_RECORDED);}
         }catch(IllegalArgumentException invalid){facts.text(SCORE_STATUS,"invalid recorded scoring metadata",Fact.PROV_RECORDED);}
     }
     public static void preserveScore(RunFacts facts,LifecycleEvents.RunEnd end){
         facts.num(ORIGINAL_SCORE,end.score,Fact.PROV_RECORDED);
-        if(end.customAdjustedKnown && "neutral identity".equals(facts.textOr(SCORE_STATUS,"")) && end.customAdjustedScore==end.score)facts.num(ADJUSTED_SCORE,end.customAdjustedScore,Fact.PROV_RECORDED);
+        String multiplier=facts.textOr(MULTIPLIER_EXACT,"");
+        if(end.customAdjustedKnown&&!multiplier.isEmpty()){
+            long expected=ProvisionalScoreLookup.adjusted(end.score,new java.math.BigDecimal(multiplier));
+            if(end.customAdjustedScore==expected)facts.num(ADJUSTED_SCORE,end.customAdjustedScore,Fact.PROV_RECORDED);
+        }
     }
 }

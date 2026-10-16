@@ -275,6 +275,10 @@ public enum Rankings {
 
 		rec.gameData = new Bundle();
 		Dungeon.apdStoreCustomRules(rec.gameData);
+        if(Dungeon.customScoring()!=null){
+            Long earned=Dungeon.customScoring().adjustedIdentityScore(rec.score);
+            if(earned!=null){rec.gameData.put("apd_custom_original_score",(long)rec.score);rec.gameData.put("apd_custom_adjusted_score",earned.longValue());}
+        }
 
 		Belongings belongings = Dungeon.hero.belongings;
 
@@ -374,7 +378,7 @@ public enum Rankings {
 		if (Dungeon.initialVersion <= ShatteredPixelDungeon.v1_2_3){
 			Statistics.gameWon = rec.win;
 		}
-		rec.score = calculateScore();
+		calculateScore(); // Refresh component display without overwriting the historical earned record.
 
 		if (rec.gameData.contains(SEED)){
 			Dungeon.seed = rec.gameData.getLong(SEED);
@@ -515,6 +519,8 @@ public enum Rankings {
 		public String date;
 		public String version;
 
+		public long earnedScore(){return com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomScorePresentation.earnedScore(gameData,score);}
+
 		public String desc(){
 			if (win){
 				if (ascending){
@@ -602,7 +608,7 @@ public enum Rankings {
 				return -1;
 			}
 
-			int result = (int)Math.signum( rhs.score - lhs.score );
+			int result = Long.compare(rhs.earnedScore(),lhs.earnedScore());
 			if (result == 0) {
 				return (int)Math.signum( rhs.gameID.hashCode() - lhs.gameID.hashCode());
 			} else {

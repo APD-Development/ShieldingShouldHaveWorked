@@ -18,6 +18,7 @@ public class WndCustomDungeonRules extends Window {
     private CustomDungeonRules draft;
     private final RenderedTextBlock scoringNotice;
     private final ScrollPane scroll;
+    private final RenderedTextBlock combined;
     public WndCustomDungeonRules() {this(false);}
     public WndCustomDungeonRules(final boolean currentRun) {
         super();
@@ -28,7 +29,9 @@ public class WndCustomDungeonRules extends Window {
         RenderedTextBlock experimentalHeading=PixelScene.renderTextBlock(CustomRulesPresentation.EXPERIMENTAL_HEADING,6);
         experimentalHeading.maxWidth(width);experimentalHeading.hardlight(TITLE_COLOR);
         experimentalHeading.setPos(0,title.bottom()+4);add(experimentalHeading);
-        float above=experimentalHeading.bottom()+4;
+        combined=PixelScene.renderTextBlock("",6);combined.maxWidth(width);combined.hardlight(TITLE_COLOR);
+        combined.setPos(0,experimentalHeading.bottom()+3);add(combined);updateCombined();
+        float above=combined.bottom()+4;
         // Create the scroll touch area before controls, matching WndAPDSettings' touch ordering.
         Component content=new Component();scroll=new ScrollPane(content);add(scroll);
         // The full warning leads the same scroll area, so narrow viewports retain room for controls.
@@ -43,15 +46,15 @@ public class WndCustomDungeonRules extends Window {
             context.maxWidth(width);context.setPos(0,y);content.add(context);y=context.bottom()+4;
             for(final CustomDungeonRules.Slider rule:CustomDungeonRules.Slider.values()) {
                 final RenderedTextBlock caption=PixelScene.renderTextBlock(caption(rule),6);
-                caption.maxWidth(width);caption.setPos(0,y);content.add(caption);y=caption.bottom()+1;
+                caption.maxWidth(width);caption.setPos(0,y);content.add(caption);y+=22;
                 OptionSlider slider=new OptionSlider("",CustomRulesPresentation.valueText(rule,rule.min),
                         CustomRulesPresentation.valueText(rule,rule.max),0,CustomRulesPresentation.positions(rule)) {
                     @Override protected void onChange() {
                         draft=draft.with(rule,CustomRulesPresentation.value(rule,getSelectedValue()));
-                        caption.text(caption(rule));caption.maxWidth((int)width());
+                        caption.text(caption(rule));caption.maxWidth((int)width());updateCombined();
                     }
                 };
-                slider.scrollVerticallyWith(scroll);
+                slider.scrollVerticallyWith(scroll);slider.liveChanges(true);
                 slider.setRect(0,y,width,22);
                 slider.setSelectedValue(CustomRulesPresentation.position(rule,draft.get(rule)));
                 slider.enable(!currentRun && CustomRulesPresentation.gameplayImplemented(rule));
@@ -69,8 +72,11 @@ public class WndCustomDungeonRules extends Window {
         };
         finish.setRect(0,above+paneHeight+4,width,22);add(finish);
     }
+    private void updateCombined(){
+        combined.text("Combined Custom Rules Multiplier\n"+(draft==null?"Not recorded":com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomRuleMultipliers.format(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomRuleMultipliers.combined(draft))));
+    }
     private String caption(CustomDungeonRules.Slider rule) {
         return CustomRulesPresentation.label(rule)+": "+CustomRulesPresentation.valueText(rule,draft.get(rule))
-            +(CustomRulesPresentation.gameplayImplemented(rule)?"":" (pending)");
+            +" · "+CustomRulesPresentation.multiplierText(rule,draft.get(rule));
     }
 }

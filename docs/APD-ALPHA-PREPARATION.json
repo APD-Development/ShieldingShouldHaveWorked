@@ -1,14 +1,12 @@
 {
-  "source_sha": "b5d562ca37fff9ac628af3f4ade731e9fa7d83f1",
-  "core_tests": 1716,
-  "android_tests": 33,
-  "screenshots": 42,
+  "core_tests": 1728,
+  "android_tests": 34,
+  "screenshots": 44,
   "rollback_number": 231,
   "rollback_tag": "apd-alpha-preview-231",
   "rollback_asset": "ADHD-Pixel-Dungeon-Alpha-Preview-231.apk",
   "rollback_sha256": "20f1d87ab58afd21cd37ae4027e6ebb79c01fcf802d0869801e6ffa03943bff9",
   "reports": [
-    "docs/APD-MORNING-PREPARATION-2026-10-16.md",
-    "docs/APD-VAULT-CIRCLE-TIMING-2026-10-16.md"
+    "docs/APD-PROVISIONAL-SCORING-IMPLEMENTATION-2026-10-16.md"
   ]
 }

@@ -199,7 +199,7 @@ public class WndRanking extends WndTabbed {
 			NumberFormat num = NumberFormat.getInstance(Messages.locale());
 
 			if (Dungeon.hero == null){
-				pos = statSlot( this, Messages.get(this, "score"), num.format( record.score ), pos );
+				pos = statSlot( this, Messages.get(this, "score"), num.format( record.earnedScore() ), pos );
 				pos += GAP;
 
 				Image errorIcon = Icons.WARNING.get();
@@ -213,7 +213,7 @@ public class WndRanking extends WndTabbed {
 
 			} else {
 
-				pos = statSlot(this, Messages.get(this, "score"), num.format(Statistics.totalScore), pos);
+				pos = statSlot(this, Messages.get(this, "score"), num.format(record.earnedScore()), pos);
 
 				IconButton scoreInfo = new IconButton(Icons.get(Icons.INFO)) {
 					@Override

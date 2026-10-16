@@ -364,3 +364,7 @@ TEST242 REJECTED ATTEMPT2 TERMINAL (2026-10-16T12:45:33.417Z): full run389020778
 
 2026-10-16T13:36:47Z TEST-ONLY EARLY-ALPHA ROSTER GATE
 Application source remains exact verified TEST241 (b5d562ca37fff9ac628af3f4ade731e9fa7d83f1). Run only the pinned six-class Android instrumentation gate and relevant headless acceptance against its existing APK. Do not rebuild or renumber the unchanged application, do not publish, and do not treat emulator evidence as physical-phone acceptance.
+
+
+2026-10-16 Owner-requested scoring and live-preview APK candidate
+Owner-requested v2.6R scoring/live draft multiplier interface. All 357 supplied values preserved; ordinary product once. Verify 1728 core tests, 34 Android methods, 44 screenshots before calling this uniquely numbered candidate verified. No public distribution.

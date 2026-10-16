@@ -7,7 +7,7 @@ public final class CustomRulesPresentation {
     private CustomRulesPresentation() { }
     public static final String EXPERIMENTAL_HEADING = "EXPERIMENTAL FEATURE";
     public static final String EXPERIMENTAL_NOTICE = "Custom Dungeon Rules are experimental and will continue to evolve throughout APD's lifetime. Some or all difficulty sliders may have their minimum and maximum values adjusted in future updates as gameplay balance and player feedback are evaluated.";
-    public static final String SCORING_NOTICE = "The scoring system for Custom Dungeon Rules is still being developed. These settings currently do not affect your earned score.";
+    public static final String SCORING_NOTICE = "Custom Dungeon Rules currently use provisional scoring multipliers. These values are experimental and will change as balancing and gameplay research continue.";
     /** The lifetime warning remains even when only the scoring paragraph changes after approval. */
     public static String noticeText(){return EXPERIMENTAL_NOTICE+"\n\n"+SCORING_NOTICE;}
     public static String label(CustomDungeonRules.Slider slider) {
@@ -42,6 +42,7 @@ public final class CustomRulesPresentation {
         if(!slider.valid(value))throw new IllegalArgumentException("Invalid slider value");
         return (value-slider.min)/slider.step();
     }
+    public static String multiplierText(CustomDungeonRules.Slider slider,int value){return CustomRuleMultipliers.format(CustomRuleMultipliers.individual(slider,value));}
     public static String valueText(CustomDungeonRules.Slider slider,int value) {
         if(!slider.valid(value))throw new IllegalArgumentException("Invalid slider value");
         return slider==CustomDungeonRules.Slider.UPGRADE_SCROLLS

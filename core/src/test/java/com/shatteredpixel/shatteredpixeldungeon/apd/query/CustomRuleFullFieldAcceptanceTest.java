@@ -111,7 +111,7 @@ public class CustomRuleFullFieldAcceptanceTest {
         }
         for (Row row : data.rows) {
             assertEquals(523818, row.num(def.indexOf(FactKeys.SCORE)));
-            assertFalse("Unapproved custom rewards remain unavailable", row.isKnown(def.indexOf(CustomRuleFacts.MULTIPLIER)));
+            assertTrue("Exact provisional multiplier is recorded", row.isKnown(def.indexOf(CustomRuleFacts.MULTIPLIER)));
             assertFalse(row.isKnown(def.indexOf(CustomRuleFacts.ADJUSTED_SCORE)));
         }
     }

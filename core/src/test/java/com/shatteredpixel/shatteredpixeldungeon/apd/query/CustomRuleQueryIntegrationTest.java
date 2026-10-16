@@ -46,8 +46,8 @@ public class CustomRuleQueryIntegrationTest {
         Report report=ReportBuilder.view(result,"Custom rules","",0,"test");
         String csv=ReportRenderer.csv(report);
         assertTrue(csv,csv.contains("Upgrade scrolls count"));
-        assertTrue(csv,csv.contains("400"));assertTrue(csv,csv.contains("pending calibration"));
+        assertTrue(csv,csv.contains("400"));assertTrue(csv,csv.contains("experimental provisional"));
         for(String col:cols)assertTrue(def.indexOf(col)>=0);
-        assertEquals(523818,row.num(def.indexOf(FactKeys.SCORE)),0);assertEquals(523818,row.num(def.indexOf(CustomRuleFacts.ORIGINAL_SCORE)),0);assertFalse(row.isKnown(def.indexOf(CustomRuleFacts.MULTIPLIER)));
+        assertEquals(523818,row.num(def.indexOf(FactKeys.SCORE)),0);assertEquals(523818,row.num(def.indexOf(CustomRuleFacts.ORIGINAL_SCORE)),0);assertTrue(row.isKnown(def.indexOf(CustomRuleFacts.MULTIPLIER)));
     }
 }

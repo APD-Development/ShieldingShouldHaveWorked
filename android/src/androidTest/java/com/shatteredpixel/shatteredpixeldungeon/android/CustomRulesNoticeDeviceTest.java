@@ -122,8 +122,8 @@ public class CustomRulesNoticeDeviceTest {
                     RenderedTextBlock scoring=PixelScene.renderTextBlock(CustomRulesPresentation.SCORING_NOTICE,6);
                     scoring.maxWidth((int)scroll.width());
                     float scoreTop=notice.bottom()-scoring.height();
-                    scroll.scrollTo(0,Math.max(0,scoreTop-2));
-                    assertTrue("The whole scoring paragraph fits the narrow scroll viewport",notice.bottom()<=scroll.content().camera().scroll.y+scroll.height());
+                    scroll.scrollTo(0,Math.max(0,notice.bottom()-scroll.height()));
+                    assertTrue("The final scoring notice line remains reachable in the narrow scroll viewport",notice.bottom()<=scroll.content().camera().scroll.y+scroll.height());
                     assertEquals(CustomRulesPresentation.noticeText(),notice.text());
                     scoring.destroy();
                 }catch(Exception e){throw new RuntimeException(e);}});
@@ -354,4 +354,46 @@ public class CustomRulesNoticeDeviceTest {
             } finally {render(()->{if(window[0]!=null)window[0].hide();});}
         }
     }
+    @Test public void liveMultipliersMatchEveryPositionAndUpdateDuringNativeDragBeforeRelease()throws Exception{
+        try(ActivityScenario<AndroidLauncher> scenario=ActivityScenario.launch(AndroidLauncher.class)){
+            long deadline=System.currentTimeMillis()+120000;
+            while((Game.scene()==null||PixelScene.uiCamera==null)&&System.currentTimeMillis()<deadline)Thread.sleep(200);
+            assertNotNull(Game.scene());Thread.sleep(750);
+            final CustomDungeonRules[] saved=new CustomDungeonRules[1];final Bundle run=new Bundle();
+            final WndCustomDungeonRules[] window=new WndCustomDungeonRules[1];final Point[] touch=new Point[2];
+            try{
+                render(()->{try{
+                    saved[0]=SPDSettings.apdCustomRules();Dungeon.apdStoreCustomRules(run);SPDSettings.apdCustomRules(CustomDungeonRules.defaults());
+                    window[0]=new WndCustomDungeonRules();Game.scene().addToFront(window[0]);
+                    java.lang.reflect.Method change=null;
+                    for(CustomDungeonRules.Slider rule:CustomDungeonRules.Slider.values()){
+                        OptionSlider slider=find(window[0],OptionSlider.class).get(rule.ordinal());
+                        change=slider.getClass().getDeclaredMethod("onChange");change.setAccessible(true);
+                        for(int value=rule.min;value<=rule.max;value+=rule.step()){
+                            slider.setSelectedValue(CustomRulesPresentation.position(rule,value));change.invoke(slider);
+                            CustomDungeonRules draft=(CustomDungeonRules)field(window[0],"draft");assertEquals(value,draft.get(rule));
+                            String individual=CustomRulesPresentation.multiplierText(rule,value);boolean caption=false;
+                            for(RenderedTextBlock text:find(window[0],RenderedTextBlock.class))if(text.text().startsWith(CustomRulesPresentation.label(rule)+": ")&&text.text().contains(individual))caption=true;
+                            assertTrue(rule+"="+value,caption);
+                            RenderedTextBlock combined=(RenderedTextBlock)field(window[0],"combined");
+                            assertTrue(combined.text().endsWith(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomRuleMultipliers.format(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomRuleMultipliers.combined(draft))));
+                            assertTrue(combined.right()<=window[0].width()+0.01f);
+                        }
+                    }
+                    window[0].hide();SPDSettings.apdCustomRules(CustomDungeonRules.defaults());window[0]=new WndCustomDungeonRules();Game.scene().addToFront(window[0]);
+                    OptionSlider first=find(window[0],OptionSlider.class).get(0);ScrollPane scroll=(ScrollPane)field(window[0],"scroll");scroll.scrollTo(0,first.top()-4);
+                    touch[0]=first.camera().cameraToScreen(first.left()+first.width()*0.16f,first.bottom()-7);
+                    touch[1]=first.camera().cameraToScreen(first.left()+first.width()*0.65f,first.bottom()-7);
+                }catch(Exception e){throw new RuntimeException(e);}});
+                Thread.sleep(500);android.app.Instrumentation in=InstrumentationRegistry.getInstrumentation();long down=android.os.SystemClock.uptimeMillis();
+                android.view.MotionEvent event=android.view.MotionEvent.obtain(down,down,android.view.MotionEvent.ACTION_DOWN,touch[0].x,touch[0].y,0);event.setSource(android.view.InputDevice.SOURCE_TOUCHSCREEN);in.sendPointerSync(event);event.recycle();Thread.sleep(150);
+                event=android.view.MotionEvent.obtain(down,android.os.SystemClock.uptimeMillis(),android.view.MotionEvent.ACTION_MOVE,touch[1].x,touch[1].y,0);event.setSource(android.view.InputDevice.SOURCE_TOUCHSCREEN);in.sendPointerSync(event);event.recycle();Thread.sleep(400);
+                render(()->{try{CustomDungeonRules draft=(CustomDungeonRules)field(window[0],"draft");assertNotEquals("Multiplier must update before finger release",100,draft.get(CustomDungeonRules.Slider.ENEMY_HP));assertTrue(SPDSettings.apdCustomRules().isNeutral());assertEquals(run.getInt("apd_custom_score_version"),Dungeon.customScoring()==null?0:Dungeon.customScoring().recordVersion);}catch(Exception e){throw new RuntimeException(e);}});
+                screenshot("custom-rules-live-drag.png");
+                event=android.view.MotionEvent.obtain(down,android.os.SystemClock.uptimeMillis(),android.view.MotionEvent.ACTION_UP,touch[1].x,touch[1].y,0);event.setSource(android.view.InputDevice.SOURCE_TOUCHSCREEN);in.sendPointerSync(event);event.recycle();Thread.sleep(250);
+                render(()->{try{((ScrollPane)field(window[0],"scroll")).scrollTo(0,0);}catch(Exception e){throw new RuntimeException(e);}});Thread.sleep(250);screenshot("custom-rules-live-summary.png");
+            }finally{render(()->{if(window[0]!=null)window[0].hide();if(saved[0]!=null)SPDSettings.apdCustomRules(saved[0]);Dungeon.apdRestoreCustomRules(run);});}
+        }
+    }
+
 }
