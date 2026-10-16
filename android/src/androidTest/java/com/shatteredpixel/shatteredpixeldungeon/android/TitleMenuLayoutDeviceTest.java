@@ -101,8 +101,8 @@ public class TitleMenuLayoutDeviceTest {
                     assertNotNull(toggles[0]);assertNotNull(toggles[1]);
                 }catch(Exception e){throw new RuntimeException(e);}});
                 TopScoresDeviceTest.screenshot("options-confirmations.png");
-                nativeTap(toggles[0]);assertFalse(com.shatteredpixel.shatteredpixeldungeon.SPDSettings.confirmWaterskin());assertTrue(com.shatteredpixel.shatteredpixeldungeon.SPDSettings.confirmKnownTraps());
-                nativeTap(toggles[1]);assertFalse(com.shatteredpixel.shatteredpixeldungeon.SPDSettings.confirmKnownTraps());
+                nativeTap(toggles[0]);waitFor(()->!com.shatteredpixel.shatteredpixeldungeon.SPDSettings.confirmWaterskin());assertFalse(com.shatteredpixel.shatteredpixeldungeon.SPDSettings.confirmWaterskin());assertTrue(com.shatteredpixel.shatteredpixeldungeon.SPDSettings.confirmKnownTraps());
+                nativeTap(toggles[1]);waitFor(()->!com.shatteredpixel.shatteredpixeldungeon.SPDSettings.confirmKnownTraps());assertFalse(com.shatteredpixel.shatteredpixeldungeon.SPDSettings.confirmKnownTraps());
                 InstrumentationRegistry.getInstrumentation().getUiAutomation().performGlobalAction(android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_BACK);
                 Thread.sleep(1200);waitFor(()->Game.scene() instanceof TitleScene);
                 nativeTap(centre("btnOptions"));Thread.sleep(500);

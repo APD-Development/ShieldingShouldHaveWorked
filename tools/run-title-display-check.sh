@@ -2,17 +2,34 @@
 set -euo pipefail
 adb shell wm size "$1"
 adb shell wm density "$2"
+apd_mode="${3:-title}"
 mkdir -p title-evidence
 adb shell wm size > title-evidence/display.txt
 adb shell wm density >> title-evidence/display.txt
+cp acceptance-source.json title-evidence/
 adb logcat -c
 adb logcat -v time > title-logcat.txt &
+if [ "$apd_mode" = full ]; then
+  apd_classes='com.shatteredpixel.shatteredpixeldungeon.android.UimsdRestoreDeviceTest,com.shatteredpixel.shatteredpixeldungeon.android.AndroidBackDeviceTest,com.shatteredpixel.shatteredpixeldungeon.android.PlayRunDeviceTest,com.shatteredpixel.shatteredpixeldungeon.android.RunSetupDifficultyDeviceTest,com.shatteredpixel.shatteredpixeldungeon.android.ApdSettingsClickDeviceTest#adultHumorControlWorksWithoutAnAgeProviderAndReopensWithSavedChoice,com.shatteredpixel.shatteredpixeldungeon.android.ApdSettingsClickDeviceTest#communityMenuOpensEveryPreviewAndReturnsWithoutStackingWindows,com.shatteredpixel.shatteredpixeldungeon.android.AboutDeviceTest,com.shatteredpixel.shatteredpixeldungeon.android.UimsdScreensDeviceTest,com.shatteredpixel.shatteredpixeldungeon.android.UimsdResourcesDeviceTest,com.shatteredpixel.shatteredpixeldungeon.android.ChangesVisualDeviceTest,com.shatteredpixel.shatteredpixeldungeon.android.ReleaseNotesNavigationDeviceTest,com.shatteredpixel.shatteredpixeldungeon.android.CustomRulesNoticeDeviceTest,com.shatteredpixel.shatteredpixeldungeon.android.TopScoresDeviceTest,com.shatteredpixel.shatteredpixeldungeon.android.CustomScoreDeviceTest,com.shatteredpixel.shatteredpixeldungeon.android.TitleMenuLayoutDeviceTest'
+  apd_images='options-confirmations.png waterskin-confirm.png known-trap-confirm.png main-title-layout.png main-title-hidden.png main-title-restored.png hotbar-controls.png daily-earned-score.png daily-earned-score-scrolled.png custom-scoring-vision.png custom-scoring-vision-narrow.png custom-rules-live-drag.png custom-rules-live-summary.png healing-conversion-setting.png cleric-first-run.png cleric-empty-slot-picker.png cleric-four-slot-touch.png apd-changes.png apd-technical-changes.png release-notes-navigation.png release-notes-reopened.png spd-changes-reference.png apd-build-22.png apd-build-37.png apd-codex-test-67.png tiles-original-2.png tiles-enhanced-2.png tiles-original-4.png tiles-enhanced-4.png stairs-shortcut.png stairs-highlight.png uimsd-empty-home.png uimsd-home.png uimsd-demo-info.png uimsd-text-values.png uimsd-sort-keys.png chalice-preview.png blacksmith-rewards.png blacksmith-reward-detail.png healing-confirmation.png healing-threshold-settings.png metamorph-five-choices.png metamorph-choice-detail.png custom-rules-notice.png custom-rules-notice-narrow.png custom-rules-notice-narrow-scrolled.png custom-rules-equipment.png custom-rules-touch-gestures.png top-scores-main-menu.png top-scores-rankings.png custom-score-neutral.png custom-score-pending.png custom-score-unknown.png custom-score-narrow.png custom-score-narrow-before.png'
+  apd_methods=37
+else
+  apd_classes=com.shatteredpixel.shatteredpixeldungeon.android.TitleMenuLayoutDeviceTest
+  apd_images='main-title-layout.png main-title-hidden.png main-title-restored.png options-confirmations.png'
+  apd_methods=1
+fi
+export APD_EXPECTED_METHODS="$apd_methods" APD_EXPECTED_IMAGES="$apd_images"
+apd_collect() {
+  for apd_image in $apd_images; do
+    adb exec-out cat "/sdcard/Pictures/APD-Test-Visuals/$apd_image" > "title-evidence/$apd_image" 2>/dev/null || rm -f "title-evidence/$apd_image"
+  done
+  adb exec-out screencap -p > title-evidence/final-screen.png || true
+}
+trap apd_collect EXIT
 adb install -r application/*.apk
 adb install -r android/build/outputs/apk/androidTest/debug/*-androidTest.apk
-adb shell am instrument -w -r -e class com.shatteredpixel.shatteredpixeldungeon.android.TitleMenuLayoutDeviceTest com.charltonchris29.adhdpixeldungeon.indev.test/androidx.test.runner.AndroidJUnitRunner > title-instrumentation.txt 2>&1
+adb shell am instrument -w -r -e class "$apd_classes" com.charltonchris29.adhdpixeldungeon.indev.test/androidx.test.runner.AndroidJUnitRunner > title-instrumentation.txt 2>&1
 cat title-instrumentation.txt
-if ! grep -q 'OK (1 test)' title-instrumentation.txt; then exit 1; fi
-for name in main-title-layout.png main-title-hidden.png main-title-restored.png options-confirmations.png; do
-  adb exec-out cat "/sdcard/Pictures/APD-Test-Visuals/$name" > "title-evidence/$name"
-done
-python3 tools/validate_android_visuals.py title-evidence main-title-layout.png main-title-hidden.png main-title-restored.png options-confirmations.png
+apd_collect
+python3 tools/validate_android_visuals.py title-evidence $apd_images
+python3 tools/record-native-confirmation-results.py
