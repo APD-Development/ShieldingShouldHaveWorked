@@ -31,6 +31,19 @@ jobs:
           name: get-fucked-existing-engine-runtime
           path: core/build/get-fucked-runtime/
           retention-days: 7
+      - name: Replay uninterrupted level-one Cleric through complete Goo victory
+        run: |
+          mkdir -p "$RUNNER_TEMP/get-fucked-fresh-goo"
+          tar -xJf research/get-fucked/uninterrupted-goo-provenance.tar.xz -C "$RUNNER_TEMP/get-fucked-fresh-goo"
+          python3 - <<'PYCODE'
+          import json, os, subprocess
+          root=os.environ['RUNNER_TEMP']+'/get-fucked-fresh-goo'
+          args=json.load(open(root+'/fresh-goo-uninterrupted-victory-args.json'))
+          props={a[2:].split('=',1)[0]:a.split('=',1)[1] for a in args if a.startswith('-D') and '=' in a}
+          props.update({'route.stableHash':'true','route.noSnapshots':'true','route.expectedEnd':root+'/native/fresh-goo-uninterrupted-victory','route.expectedActiveRngOnly':'true','route.earlySwarmOut':root+'/actual-fresh-goo'})
+          subprocess.run(['./gradlew',':core:test','--tests','*GetFuckedRouteTest']+['-D'+k+'='+v for k,v in props.items()],check=True)
+          subprocess.run(['python3','research/get-fucked/native_equivalence.py',props['route.expectedEnd'],props['route.earlySwarmOut']],check=True)
+          PYCODE
       - name: Replay uninterrupted live floor-seven-to-nine segment
         run: |
           mkdir -p "$RUNNER_TEMP/get-fucked-floor-nine"
@@ -548,3 +561,4 @@ jobs:
           name: get-fucked-research-provenance
           path: research/get-fucked/
           retention-days: 90
+

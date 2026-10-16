@@ -546,6 +546,11 @@ public class GetFuckedRouteTest {
             for(int hit=0;hit<8 && firstRat.isAlive();hit++)click(firstRat.pos);assertFalse(firstRat.isAlive());log("ACTUAL LEVEL ONE WARRIOR FIRST RAT DEFEATED WITHOUT GRANTED TALENTS OR GEAR");
             if(System.getProperty("route.alternativeOut")!=null)writeCheckpoint(System.getProperty("route.alternativeOut"));verifyExpectedEnd();return;
         }
+        if(Boolean.getBoolean("route.freshGooNative")){
+            assertNotNull(System.getProperty("route.resume"));verifyCheckpoint(System.getProperty("route.resume"));assertEquals(5,Dungeon.depth);
+            Mob goo=Dungeon.level.mobs.stream().filter(m->m instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo).findFirst().get();freshGooActions(goo);log("EARNED NATIVE GOO CONTINUATION");
+            if(System.getProperty("route.earlySwarmOut")!=null)writeCheckpoint(System.getProperty("route.earlySwarmOut"));verifyExpectedEnd();return;
+        }
         if(System.getProperty("route.resume")!=null){verifyCheckpoint(System.getProperty("route.resume"));if(Dungeon.depth==3)thirdFloorSection();else if(Dungeon.depth==4){if(Dungeon.hero.pos==826)returnedFourthFloorSection();else if(Dungeon.hero.pos==437)purityCheckpointSection();else if(Dungeon.hero.pos==1035)foodCheckpointSection();else fourthFloorSection();}else if(Dungeon.depth==5){if(Boolean.getBoolean("route.postGoo"))postGooSection();else if(Boolean.getBoolean("route.armoredGoo"))armoredGooSection();else fifthFloorSection();}else if(Dungeon.depth==6)sixthFloorSection();else if(Dungeon.depth==7)seventhFloorSection();else if(Dungeon.depth==8)eighthFloorSection();else if(Dungeon.depth==9)ninthFloorSection();else fail("Unwritten section");verifyExpectedEnd();return;}
         assertEquals(1,Dungeon.hero.lvl); assertEquals(1,Dungeon.hero.HP); assertEquals(1,Dungeon.hero.HT);
         for(Map<Talent,Integer> tier:Dungeon.hero.talents) for(int value:tier.values()) assertEquals(0,value);
@@ -1281,7 +1286,7 @@ public class GetFuckedRouteTest {
                                                                                                                                                                                                         if(Boolean.getBoolean("route.originFourCleansingNorthCross")){
                                                                                                                                                                                                             Mob northGreatCrab=Dungeon.level.mobs.stream().filter(m->m.id()==109).findFirst().get();assertTrue(Dungeon.level.heroFOV[northGreatCrab.pos]);if(!Boolean.getBoolean("route.originFourCleansingSkipNorthShield"))cast(ShieldOfLight.INSTANCE,northGreatCrab.pos);for(int northCrossCell:new int[]{848,808,769,730,691,651,611}){assertNull(Dungeon.level.traps.get(northCrossCell));click(northCrossCell);if(Dungeon.hero.pos!=northCrossCell)click(northCrossCell);assertEquals(northCrossCell,Dungeon.hero.pos);}log("LIVE ORIGIN CLEANSING ACTUAL GREAT CRAB NORTHWARD PASSAGE RESOURCE FRONTIER");
                                                                                                                                                                                                             if(Boolean.getBoolean("route.originFourCleansingCorridorSwarm")){
-                                                                                                                                                                                                                for(int corridorSwarmCell:new int[]{610,609}){click(corridorSwarmCell);if(Dungeon.hero.pos!=corridorSwarmCell)click(corridorSwarmCell);assertEquals(corridorSwarmCell,Dungeon.hero.pos);}Mob corridorSwarm=Dungeon.level.mobs.stream().filter(m->m.id()==118).findFirst().get();assertTrue(Dungeon.level.heroFOV[corridorSwarm.pos]);cast(GuidingLight.INSTANCE,corridorSwarm.pos);if(corridorSwarm.isAlive()){assertEquals(corridorSwarm.pos,new com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica(Dungeon.hero.pos,corridorSwarm.pos,com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica.PROJECTILE).collisionPos.intValue());throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear.class,corridorSwarm.pos);}log("LIVE ORIGIN CLEANSING ACTUAL CORRIDOR SWARM LIGHT AND SPEAR EXCHANGES");
+                                                                                                                                                                                                                for(int corridorSwarmCell:new int[]{610,609}){click(corridorSwarmCell);if(Dungeon.hero.pos!=corridorSwarmCell)click(corridorSwarmCell);assertEquals(corridorSwarmCell,Dungeon.hero.pos);}Mob corridorSwarm=Dungeon.level.mobs.stream().filter(m->m.id()==118).findFirst().get();assertTrue(Dungeon.level.heroFOV[corridorSwarm.pos]);cast(GuidingLight.INSTANCE,corridorSwarm.pos);if(corridorSwarm.isAlive()){assertEquals(corridorSwarm.pos,new com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica(Dungeon.hero.pos,corridorSwarm.pos,com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica.PROJECTILE).collisionPos.intValue());throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear.class,corridorSwarm.pos);}log("LIVE ORIGIN CLEANSING ACTUAL CORRIDOR SWARM LIGHT AND SPEAR EXCHANGES");if(Boolean.getBoolean("route.freshGooContinue"))freshGooContinuousSection();
                                                                                                                                                                                                             }
                                                                                                                                                                                                         }
                                                                                                                                                                                                     }
@@ -3077,5 +3082,40 @@ public class GetFuckedRouteTest {
         }
     }
 
-}
 
+    private void freshGooContinuousSection() throws Exception {
+        assertEquals(4,Dungeon.depth);assertEquals(609,Dungeon.hero.pos);
+        for(int c:new int[]{608,607,606,606,605,604,603,563,523,483,482,481,480,479,478,438,437,475,513}){click(c);if(Dungeon.hero.pos!=c && Dungeon.depth==4)click(c);}
+        if(Dungeon.depth==4)click(513);assertEquals(5,Dungeon.depth);assertEquals(708,Dungeon.hero.pos);
+        boolean drank=false;
+        for(int n=0;n<300 && charge(Dungeon.hero.belongings.getItem(HolyTome.class))<6;n++){
+            assertFalse(Dungeon.level.mobs.stream().anyMatch(m->Dungeon.level.heroFOV[m.pos] && m.alignment==Char.Alignment.ENEMY));
+            if(!drank && Dungeon.hero.buff(Hunger.class).hunger()>=400){
+                Item cleansing=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing.class);assertNotNull(cleansing);cleansing.execute(Dungeon.hero,"DRINK");ready();log("DRINK ACTUALLY ACQUIRED CLEANSING BEFORE STARVATION");drank=true;
+            }else waitOne();
+        }
+        assertTrue(drank);assertEquals(6,charge(Dungeon.hero.belongings.getItem(HolyTome.class)));log("FRESH CONTINUOUS GOO PREPARATION");
+        for(int c:new int[]{673,672,637})click(c);
+        Dungeon.hero.search(true);ready();assertEquals(Terrain.DOOR,Dungeon.level.map[603]);
+        for(int c:new int[]{603,569,535,501,500,499,465,431,430})click(c);
+        Mob goo=Dungeon.level.mobs.stream().filter(m->m instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo).findFirst().get();
+        cast(HolyWard.INSTANCE,null);cast(GuidingLight.INSTANCE,goo.pos);throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear.class,goo.pos);
+        for(int c:new int[]{431,465,499,500,501})click(c);
+        freshGooActions(goo);
+        log("FRESH CONTINUOUS GOO FIXED ACTION FRONTIER");
+        if(Boolean.getBoolean("route.freshGooAssertVictory"))assertFalse(goo.isAlive());
+    }
+    private void freshGooActions(Mob goo) throws Exception {
+        for(String a:System.getProperty("route.freshGooActions","").split(",")){
+            if(a.isEmpty())continue;
+            if(a.equals("S"))cast(ShieldOfLight.INSTANCE,goo.pos);
+            else if(a.equals("L"))cast(GuidingLight.INSTANCE,goo.pos);
+            else if(a.equals("W"))cast(HolyWard.INSTANCE,null);
+            else if(a.equals("H"))waitOne();
+            else if(a.equals("A")){assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,goo.pos));click(goo.pos);}
+            else if(a.startsWith("C")){int c=Integer.parseInt(a.substring(1));assertNull(Dungeon.level.traps.get(c));click(c);assertEquals(c,Dungeon.hero.pos);}
+            else fail("Unknown fixed Goo command "+a);
+            assertEquals(1,Dungeon.hero.HP);
+        }
+    }
+}
