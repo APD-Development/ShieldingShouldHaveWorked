@@ -31,3 +31,4 @@ Bug Fixes	ICON_STATS	Literal report text	Markdown table exports preserve backsla
 Quality of Life	ICON_INFO	Uninterrupted boss rewards	Boss-key pickup and victory no longer display inherited donation promotions; original contributor credits remain in About.
 
 Bug Fixes	ICON_CHECKED	Already available characters	Already-playable characters no longer announce their old unlock requirements; character availability and earned progression are preserved.
+Bug Fixes	ICON_PREFS	Interactive Grudge settings	The Grudge frequency, location switches and history confirmation now receive touches instead of being intercepted by their scroll pane.

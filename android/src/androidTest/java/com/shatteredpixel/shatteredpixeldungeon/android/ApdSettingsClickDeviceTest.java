@@ -477,4 +477,81 @@ public class ApdSettingsClickDeviceTest {
 			ApdFiles.provider = before;
 		}
 	}
+
+	// Regression for the owner's first alpha screenshot: the Grudge page draws normally
+	// but its scroll controller was registered after the button hit areas and ate every tap.
+	@Test
+	public void grudgeControlsRespondToActualTouches() throws Exception {
+		try (ActivityScenario<AndroidLauncher> scenario = ActivityScenario.launch(AndroidLauncher.class)) {
+			openTitleForTest();
+			assertTrue("Grudge page is enabled in this private test build",
+					com.shatteredpixel.shatteredpixeldungeon.windows.GrudgeHooks.available());
+			final com.shatteredpixel.shatteredpixeldungeon.apd.humor.Frequency oldFrequency =
+					com.shatteredpixel.shatteredpixeldungeon.windows.GrudgeHooks.frequency();
+			final com.shatteredpixel.shatteredpixeldungeon.apd.humor.Location place =
+					com.shatteredpixel.shatteredpixeldungeon.apd.humor.Location.STARTUP;
+			final boolean oldPlace =
+					com.shatteredpixel.shatteredpixeldungeon.windows.GrudgeHooks.prefs().enabled(place);
+			final AtomicReference<WndAPDSettings> settings = new AtomicReference<>();
+			try {
+				onRender(() -> {
+					settings.set(new WndAPDSettings());
+					ShatteredPixelDungeon.scene().add(settings.get());
+				});
+				Thread.sleep(400);
+				ScrollPane settingsScroll = find(settings.get(), ScrollPane.class);
+				APDSettingsPane settingsPane = find(settings.get(), APDSettingsPane.class);
+				RedButton opener = (RedButton) field(settingsPane, "btnGrudge");
+				assertNotNull("Grudge option appears inside APD Settings", opener);
+				tapUntil("open Grudge from APD Settings", settingsScroll, opener,
+						() -> find(Game.scene(), com.shatteredpixel.shatteredpixeldungeon.windows.WndClericGrudge.class) != null, 30000);
+
+				com.shatteredpixel.shatteredpixeldungeon.windows.WndClericGrudge page =
+						find(Game.scene(), com.shatteredpixel.shatteredpixeldungeon.windows.WndClericGrudge.class);
+				assertNotNull(page);
+				ScrollPane scroll = find(page, ScrollPane.class);
+				assertNotNull(scroll);
+				RedButton frequency = (RedButton) field(page, "btnFrequency");
+				assertNotNull(frequency);
+				tapUntil("change Grudge frequency", scroll, frequency,
+						() -> com.shatteredpixel.shatteredpixeldungeon.windows.GrudgeHooks.frequency() == oldFrequency.next(), 30000);
+
+				com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox startup =
+						find(scroll.content(), com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox.class);
+				assertNotNull("location switches exist in the Grudge scroll content", startup);
+				assertEquals(oldPlace, startup.checked());
+				tapUntil("toggle Grudge startup messages", scroll, startup,
+						() -> com.shatteredpixel.shatteredpixeldungeon.windows.GrudgeHooks.prefs().enabled(place) != oldPlace, 30000);
+				assertEquals(!oldPlace, startup.checked());
+
+				RedButton reset = null;
+				for (Gizmo g : membersOf(scroll.content())) {
+					if (g instanceof RedButton && "Forget what I've heard".equals(((RedButton)g).text())) {
+						reset = (RedButton)g;
+						break;
+					}
+				}
+				assertNotNull("history confirmation control is present", reset);
+				tapUntil("open history confirmation without clearing it", scroll, reset,
+						() -> find(Game.scene(), com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions.class) != null, 30000);
+				assertNotNull("confirmation must appear without erasing history",
+						find(Game.scene(), com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions.class));
+			} finally {
+				onRender(() -> {
+					try {
+						com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions confirm =
+								find(Game.scene(), com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions.class);
+						if (confirm != null) confirm.hide(); //never confirm destructive history reset
+						com.shatteredpixel.shatteredpixeldungeon.windows.WndClericGrudge page =
+								find(Game.scene(), com.shatteredpixel.shatteredpixeldungeon.windows.WndClericGrudge.class);
+						if (page != null) page.hide();
+					} catch (Exception e) { throw new RuntimeException(e); }
+					if (settings.get() != null) settings.get().hide();
+					com.shatteredpixel.shatteredpixeldungeon.windows.GrudgeHooks.setFrequency(oldFrequency);
+					com.shatteredpixel.shatteredpixeldungeon.windows.GrudgeHooks.prefs().setEnabled(place, oldPlace);
+				});
+			}
+		}
+	}
+
 }

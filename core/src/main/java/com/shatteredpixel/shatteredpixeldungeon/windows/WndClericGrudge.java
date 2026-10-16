@@ -88,6 +88,9 @@ public class WndClericGrudge extends Window {
 		float top = title.bottom() + 2 * MARGIN;
 
 		Component content = new Component();
+		// Create the scrolling touch area BEFORE any controls, so its broad hit target
+		// cannot swallow button and checkbox taps. Same ordering as WndAPDSettings.
+		ScrollPane pane = new ScrollPane( content );
 		float pos = 0;
 		int w = WIDTH - 2 * MARGIN;
 
@@ -171,7 +174,6 @@ public class WndClericGrudge extends Window {
 		pos = reset.bottom();
 
 		content.setSize( w, pos );
-		ScrollPane pane = new ScrollPane( content );
 		float h = WindowGeometry.paneHeight( content.height(), WindowGeometry.maxPane( PixelScene.uiCamera.height, top, 0 ) );
 		//size the window first: it moves the window's camera, and the pane works out its screen position when it is placed
 		resize( WIDTH, (int)(top + h + MARGIN) );
