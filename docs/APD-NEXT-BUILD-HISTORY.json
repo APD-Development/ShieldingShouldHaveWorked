@@ -1,137 +1,58 @@
 {
   "date": "2026-10-16",
-  "previous_source": "8d9381e5116678f51fb2f2d70b23a681102a85bd",
-  "previous_run": 38973264847,
-  "previous_label": "Codex TEST 259",
+  "previous_source": "7368f13940690e599ca05c47a1cf29cca6beed09",
+  "previous_run": 38975391839,
+  "previous_label": "Codex TEST 261",
   "changes": [
     {
-      "category": "Quality of Life",
-      "sprite": "ICON_INFO",
-      "title": "Uninterrupted boss-key pickup",
-      "text": "Goo's Worn Key uses normal key pickup without opening an inherited donation prompt.",
+      "category": "Bug Fixes",
+      "sprite": "ICON_CHECKED",
+      "title": "Already playable characters",
+      "text": "Already-available classes no longer announce their original unlock conditions; earned badges and character availability are retained.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/keys/WornKey.java"
-      ]
-    },
-    {
-      "category": "Quality of Life",
-      "sprite": "ICON_CHALLENGE_COLOR",
-      "title": "Victory without promotions",
-      "text": "The victory message keeps its normal information and Close button without a donation appeal.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndVictoryCongrats.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "ICON_INFO",
-      "title": "Legacy links retain credits",
-      "text": "Old support-screen routes lead to ordinary credits instead of donation pages; upstream attribution and licenses remain.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndSupportPrompt.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/SupporterScene.java"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "ICON_INFO",
-      "title": "Localized promotion cleanup",
-      "text": "Remove unused inherited support appeals from all23 scene and window language bundles.",
-      "paths": [
-        "core/src/main/assets/messages/scenes/scenes.properties",
-        "core/src/main/assets/messages/scenes/scenes_be.properties",
-        "core/src/main/assets/messages/scenes/scenes_cs.properties",
-        "core/src/main/assets/messages/scenes/scenes_de.properties",
-        "core/src/main/assets/messages/scenes/scenes_el.properties",
-        "core/src/main/assets/messages/scenes/scenes_eo.properties",
-        "core/src/main/assets/messages/scenes/scenes_es.properties",
-        "core/src/main/assets/messages/scenes/scenes_fr.properties",
-        "core/src/main/assets/messages/scenes/scenes_hu.properties",
-        "core/src/main/assets/messages/scenes/scenes_in.properties",
-        "core/src/main/assets/messages/scenes/scenes_it.properties",
-        "core/src/main/assets/messages/scenes/scenes_ja.properties",
-        "core/src/main/assets/messages/scenes/scenes_ko.properties",
-        "core/src/main/assets/messages/scenes/scenes_nl.properties",
-        "core/src/main/assets/messages/scenes/scenes_pl.properties",
-        "core/src/main/assets/messages/scenes/scenes_pt.properties",
-        "core/src/main/assets/messages/scenes/scenes_ru.properties",
-        "core/src/main/assets/messages/scenes/scenes_sv.properties",
-        "core/src/main/assets/messages/scenes/scenes_tr.properties",
-        "core/src/main/assets/messages/scenes/scenes_uk.properties",
-        "core/src/main/assets/messages/scenes/scenes_vi.properties",
-        "core/src/main/assets/messages/scenes/scenes_zh-hant.properties",
-        "core/src/main/assets/messages/scenes/scenes_zh.properties",
-        "core/src/main/assets/messages/windows/windows.properties",
-        "core/src/main/assets/messages/windows/windows_be.properties",
-        "core/src/main/assets/messages/windows/windows_cs.properties",
-        "core/src/main/assets/messages/windows/windows_de.properties",
-        "core/src/main/assets/messages/windows/windows_el.properties",
-        "core/src/main/assets/messages/windows/windows_eo.properties",
-        "core/src/main/assets/messages/windows/windows_es.properties",
-        "core/src/main/assets/messages/windows/windows_fr.properties",
-        "core/src/main/assets/messages/windows/windows_hu.properties",
-        "core/src/main/assets/messages/windows/windows_in.properties",
-        "core/src/main/assets/messages/windows/windows_it.properties",
-        "core/src/main/assets/messages/windows/windows_ja.properties",
-        "core/src/main/assets/messages/windows/windows_ko.properties",
-        "core/src/main/assets/messages/windows/windows_nl.properties",
-        "core/src/main/assets/messages/windows/windows_pl.properties",
-        "core/src/main/assets/messages/windows/windows_pt.properties",
-        "core/src/main/assets/messages/windows/windows_ru.properties",
-        "core/src/main/assets/messages/windows/windows_sv.properties",
-        "core/src/main/assets/messages/windows/windows_tr.properties",
-        "core/src/main/assets/messages/windows/windows_uk.properties",
-        "core/src/main/assets/messages/windows/windows_vi.properties",
-        "core/src/main/assets/messages/windows/windows_zh-hant.properties",
-        "core/src/main/assets/messages/windows/windows_zh.properties"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/Badges.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Boss reward and victory checks",
-      "text": "Check normal key quantity and turn cost, retained credits, every retained message's language safety, and Android pickup/victory screens.",
+      "title": "All class unlock policies",
+      "text": "Check all six classes, five unlock conditions, identified and unidentified equipment, restored badges, seeded runs and genuine original-policy announcements.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/InheritedPromotionTest.java",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PlayRunDeviceTest.java",
-        "tools/run-codex-android-checks.sh",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/humor/AuthoredLanguageTest.java"
-      ]
-    },
-    {
-      "category": "Testing",
-      "sprite": "ICON_INFO",
-      "title": "Controlled Android audio diagnosis",
-      "text": "A separate fake-endpoint diagnostic checks the inherited sound worker's queue without changing or claiming to fix audible playback.",
-      "paths": [
-        ".github/workflows/codex-audio-queue-diagnostic.yml",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/AudioSchedulingDiagnosticDeviceTest.java",
-        "docs/APD-AUDIO-INVESTIGATION-2026-10-13.md"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/ClassUnlockNotificationTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PlayRunDeviceTest.java"
       ]
     },
     {
       "category": "Infrastructure",
-      "sprite": "ICON_CHANGES",
-      "title": "Exact build and tester evidence",
-      "text": "Retain exact preceding APK history, tester report, release notes and honest pending verification status.",
+      "sprite": "ICON_INFO",
+      "title": "Verified owner delivery evidence",
+      "text": "Retain source and signing checks, complete same-APK Android evidence, clean small-display retry and failed-attempt records without rebuilding the application.",
       "paths": [
-        "docs/APD-PROMOTION-REMOVAL-2026-10-16.md",
-        "docs/HANDOFF.md",
+        ".github/workflows/codex-owner-promotion-delivery.yml",
+        ".github/workflows/codex-retest-owner261.yml",
+        ".github/workflows/codex-retest-small261.yml",
+        "docs/WORK-COMPLETED-LEDGER.md",
+        "tools/publish_owner_promotion261.py",
+        "tools/run-title-display-check.sh"
+      ]
+    },
+    {
+      "category": "Infrastructure",
+      "sprite": "ICON_INFO",
+      "title": "Exact next build record",
+      "text": "Compare against the actual preceding APK and retain delivered promotion-fix receipts, concise player notes and honest pending candidate checks.",
+      "paths": [
+        "core/src/main/assets/apd/releases/apd-alpha-preview.tsv",
+        "docs/APD-CLASS-UNLOCK-NOTIFICATIONS-2026-10-16.md",
+        "docs/APD-TEST261-OWNER-DELIVERY-2026-10-16.json",
         "docs/APD-ALPHA-PREPARATION.json",
-        "docs/APD-NEXT-BUILD-HISTORY.json",
+        "docs/HANDOFF.md",
+        "docs/APD-PROMOTION-REMOVAL-2026-10-16.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "core/src/main/assets/apd/releases/apd-alpha-preview.tsv"
-      ]
-    },
-    {
-      "category": "Infrastructure",
-      "sprite": "ICON_INFO",
-      "title": "Complete display-check provenance",
-      "text": "Display verification now records and checks the actual application receipt, asserts effective display size and dismisses Android's first-use full-screen notice.",
-      "paths": [
-        ".github/workflows/codex-menu-layout-matrix.yml"
+        "docs/APD-NEXT-BUILD-HISTORY.json"
       ]
     }
   ],
-  "commentary": "I removed inherited donation promotions after alpha feedback while keeping normal rewards and the original contributor credits intact."
+  "commentary": "I removed confusing character-unlock announcements while preserving all six classes and the original progression system."
 }

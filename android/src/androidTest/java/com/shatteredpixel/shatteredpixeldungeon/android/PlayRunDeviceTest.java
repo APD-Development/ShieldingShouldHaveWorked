@@ -109,6 +109,56 @@ public class PlayRunDeviceTest {
 		throw new NoSuchMethodException(method);
 	}
 
+    private static void assertAvailableClassesHaveNoUnlockAnnouncement() throws Exception {
+        onRender(()->{try {
+            java.lang.reflect.Field global=com.shatteredpixel.shatteredpixeldungeon.Badges.class.getDeclaredField("global");global.setAccessible(true);
+            java.lang.reflect.Field dirty=com.shatteredpixel.shatteredpixeldungeon.Badges.class.getDeclaredField("saveNeeded");dirty.setAccessible(true);
+            Object previous=global.get(null),previousDirty=dirty.get(null);
+            int upgrades=com.shatteredpixel.shatteredpixeldungeon.Statistics.upgradesUsed;
+            int sneaks=com.shatteredpixel.shatteredpixeldungeon.Statistics.sneakAttacks;
+            int thrown=com.shatteredpixel.shatteredpixeldungeon.Statistics.thrownAttacks;
+            int strength=Dungeon.hero.STR;
+            com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon previousWeapon=Dungeon.hero.belongings.weapon;
+            String seed=Dungeon.customSeedText;
+            com.watabou.utils.Signal<String> oldLog=com.shatteredpixel.shatteredpixeldungeon.utils.GLog.update;
+            java.util.List<String> messages=new java.util.ArrayList<>();
+            try {
+                global.set(null,new java.util.HashSet<com.shatteredpixel.shatteredpixeldungeon.Badges.Badge>());
+                Dungeon.customSeedText="";
+                com.shatteredpixel.shatteredpixeldungeon.utils.GLog.update=new com.watabou.utils.Signal<>();
+                com.shatteredpixel.shatteredpixeldungeon.utils.GLog.update.add(s->{messages.add(s);return false;});
+                assertEquals(6,HeroClass.values().length);
+                for(HeroClass cls:HeroClass.values())assertTrue("already playable: "+cls,cls.isUnlocked());
+                for(boolean identified:new boolean[]{false,true}) {
+                    com.shatteredpixel.shatteredpixeldungeon.Statistics.upgradesUsed=1;
+                    com.shatteredpixel.shatteredpixeldungeon.Statistics.sneakAttacks=10;
+                    com.shatteredpixel.shatteredpixeldungeon.Statistics.thrownAttacks=10;
+                    com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shortsword weapon=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shortsword();
+                    weapon.level(2);weapon.levelKnown=identified;weapon.cursedKnown=identified;
+                    Dungeon.hero.STR=20;Dungeon.hero.belongings.weapon=weapon;
+                    com.shatteredpixel.shatteredpixeldungeon.Badges.validateMageUnlock();
+                    com.shatteredpixel.shatteredpixeldungeon.Badges.validateRogueUnlock();
+                    com.shatteredpixel.shatteredpixeldungeon.Badges.validateHuntressUnlock();
+                    com.shatteredpixel.shatteredpixeldungeon.Badges.validateDuelistUnlock();
+                    com.shatteredpixel.shatteredpixeldungeon.Badges.validateClericUnlock();
+                    assertTrue("no redundant native unlock announcements",messages.isEmpty());
+                    assertEquals("all five original conditions still record progression",5,com.shatteredpixel.shatteredpixeldungeon.Badges.allUnlocked().size());
+                    com.watabou.utils.Bundle stored=new com.watabou.utils.Bundle();
+                    com.shatteredpixel.shatteredpixeldungeon.Badges.store(stored,new java.util.HashSet<>(com.shatteredpixel.shatteredpixeldungeon.Badges.allUnlocked()));
+                    global.set(null,com.shatteredpixel.shatteredpixeldungeon.Badges.restore(stored));
+                }
+                for(HeroClass cls:HeroClass.values())assertTrue(cls.isUnlocked());
+            } finally {
+                global.set(null,previous);dirty.set(null,previousDirty);
+                com.shatteredpixel.shatteredpixeldungeon.Statistics.upgradesUsed=upgrades;
+                com.shatteredpixel.shatteredpixeldungeon.Statistics.sneakAttacks=sneaks;
+                com.shatteredpixel.shatteredpixeldungeon.Statistics.thrownAttacks=thrown;
+                Dungeon.hero.STR=strength;Dungeon.hero.belongings.weapon=previousWeapon;Dungeon.customSeedText=seed;
+                com.shatteredpixel.shatteredpixeldungeon.utils.GLog.update=oldLog;
+            }
+        }catch(Exception e){throw new RuntimeException(e);}});
+    }
+
     private static void assertBossRewardsHaveNoPromotion() throws Exception {
         boolean previous=SPDSettings.supportNagged();
         try {
@@ -677,6 +727,7 @@ public class PlayRunDeviceTest {
             assertHealingConfirmationControls();
             assertMetamorphosisChoices();
             assertTesterActionConfirmations();
+            assertAvailableClassesHaveNoUnlockAnnouncement();
             assertBossRewardsHaveNoPromotion();
             onRender(()->{try {
                 Dungeon.quickslot.setSlot(11,new com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty().virtual());
