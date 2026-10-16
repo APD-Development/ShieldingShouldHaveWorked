@@ -1,82 +1,32 @@
 {
   "date": "2026-10-15",
-  "previous_source": "dba5e7478418c0657b1fff7f1c117f2eb6b1c3c4",
-  "previous_run": 38834508461,
-  "previous_label": "Codex TEST 228",
+  "previous_source": "5134ef6438f9562a37b3f8db727d5d004fa93527",
+  "previous_run": 38837749762,
+  "previous_label": "Codex TEST 231",
   "changes": [
     {
-      "category": "Statistics / UIMSD",
-      "sprite": "ICON_WARNING",
-      "title": "Incomplete table totals",
-      "text": "Item and enemy counts retain incomplete-data warnings when a framed event cannot be decoded; recorded values and raw history remain unchanged.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowBuilders.java",
-        "core/src/main/assets/apd/releases/apd-alpha-preview.tsv"
-      ]
-    },
-    {
-      "category": "Changes",
-      "sprite": "ICON_CHANGES",
-      "title": "Rebuild outdated derived rows",
-      "text": "Reject version14 derived row caches so corrected data-quality warnings appear without changing original history.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowBuilders.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/DamagedFactsProvenanceTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/QuestBossClassificationTest.java"
-      ]
-    },
-    {
-      "category": "Testing",
-      "sprite": "ICON_CHECKED",
-      "title": "Unreadable-event and cache regressions",
-      "text": "Retain original-source failure controls, four permanent payload/cache cases and the complete combined core suite.",
-      "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/MalformedPayloadProvenanceTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/DamagedFactsProvenanceTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/QuestBossClassificationTest.java",
-        ".github/workflows/codex-query-provenance-acceptance.yml"
-      ]
-    },
-    {
-      "category": "Development",
-      "sprite": "ICON_INFO",
-      "title": "Record exact regression scope and remaining checks",
-      "text": "Preserve concurrent collection and saved-layout corrections, local failures and corrected evidence, and pending Android/build/physical-device limitations.",
-      "paths": [
-        "docs/HANDOFF.md",
-        "docs/WORK-COMPLETED-LEDGER.md",
-        "docs/APD-NEXT-BUILD-HISTORY.json",
-        "docs/APD-QUERY-PAYLOAD-PROVENANCE-2026-10-15.md"
-      ]
-    },
-    {
       "category": "Development",
       "sprite": "ICON_CHECKED",
-      "title": "Verify TEST228 and preserve later core evidence",
-      "text": "Record exact core, APK, Android, screenshot and identity evidence for TEST228 while keeping the newer typed-payload source and its core-only acceptance explicitly separate.",
+      "title": "Stage and privately deliver verified TEST231",
+      "text": "Reuse the exact verified TEST231 APK, check source application inputs, checksum, signing, package and install-over version, and publish only the private owner preview without rebuilding or distributing to testers.",
       "paths": [
-        "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/APD-NEXT-BUILD-HISTORY.json",
-        "docs/APD-TEST228-SAVED-COLUMN-LAYOUT-2026-10-15.md",
-        "docs/APD-QUERY-PAYLOAD-PROVENANCE-2026-10-15.md",
-        "docs/HANDOFF.md",
-        "docs/WORK-COMPLETED-LEDGER.md"
+        ".github/workflows/codex-alpha-preview-stage.yml",
+        ".github/workflows/codex-publish-alpha-preview.yml",
+        "docs/APD-TEST231-COMBINED-RELIABILITY-2026-10-15.md",
+        "docs/APD-TEST231-VERIFICATION-2026-10-15.json",
+        "docs/HANDOFF.md"
       ]
     },
     {
       "category": "Reliability",
       "sprite": "ICON_WARNING",
-      "title": "Keep public combat and heals when hidden details are malformed",
-      "text": "Readable attacks, damage, kills and heals remain in enemy and per-event statistics even if optional hidden identity/source detail is unreadable; hidden metadata stays unknown and disposable rows rebuild from unchanged history.",
+      "title": "Continue lifecycle recovery after one damaged payload",
+      "text": "Resume and segment recovery isolate malformed lifecycle payloads so later readable ruleset and segment state remains available; original history and gameplay stay unchanged.",
       "paths": [
-        ".github/workflows/codex-combat-detail-acceptance.yml",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowBuilders.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/EventDatasets.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/CombatDetailPairingTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/QuestBossClassificationTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/DamagedFactsProvenanceTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/MalformedPayloadProvenanceTest.java",
-        "docs/APD-COMBAT-DETAIL-RESILIENCE-2026-10-15.md",
+        ".github/workflows/codex-recorder-lifecycle-acceptance.yml",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/RunRecorder.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/RunRecorderMalformedLifecycleTest.java",
+        "docs/APD-RECORDER-LIFECYCLE-RESILIENCE-2026-10-15.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/HANDOFF.md",
@@ -84,5 +34,5 @@
       ]
     }
   ],
-  "commentary": "TEST228 remains verified. The newer typed-payload and malformed-detail reliability changes now require exact before/after core evidence and one complete TEST229 application gate."
+  "commentary": "TEST231 is the immediate previous produced and privately delivered APK. The lifecycle recovery correction requires exact before/after core evidence and one complete TEST232 application gate; no automatic delivery."
 }

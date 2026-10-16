@@ -152,10 +152,14 @@ final class RunRecorder {
 			ReadResult r = RunLogReader.read(prev);
 			for (ApdEvent e : r.events){
 				if (e.type == EventTypes.RUN_START){
-					LifecycleEvents.RunStart rs = LifecycleEvents.decodeRunStart(e, r);
-					if (rs.runId != null && !rs.runId.isEmpty()) logical = rs.runId;
-					seg = Math.max(seg, rs.segment);
-					break;
+					try {
+						LifecycleEvents.RunStart rs = LifecycleEvents.decodeRunStart(e, r);
+						if (rs.runId != null && !rs.runId.isEmpty()) logical = rs.runId;
+						seg = Math.max(seg, rs.segment);
+						break;
+					} catch (RuntimeException ignored){
+						//A damaged segment header does not make a later readable one disappear.
+					}
 				}
 			}
 		} catch (Throwable ignored){
@@ -294,9 +298,9 @@ final class RunRecorder {
 
 	//logical run id, segment and ruleset bookkeeping as they were at the end of the canonical timeline
 	private void restoreTrackedState( ReadResult log, RunTimeline timeline ){
-		try {
-			for (ApdEvent e : log.events){
-				if (timeline.isAbandoned(e)) continue;
+		for (ApdEvent e : log.events){
+			if (timeline.isAbandoned(e)) continue;
+			try {
 				if (e.type == EventTypes.RUN_START){
 					LifecycleEvents.RunStart rs = LifecycleEvents.decodeRunStart(e, log);
 					if (!rs.runId.isEmpty()) runId = rs.runId;
@@ -306,8 +310,9 @@ final class RunRecorder {
 					rulesetId = LifecycleEvents.decodeRulesetChange(e, log).newId;
 					rulesetChanges++;
 				}
+			} catch (RuntimeException ignored){
+				//One unreadable lifecycle payload must not hide later readable state.
 			}
-		} catch (Throwable ignored){
 		}
 	}
 
