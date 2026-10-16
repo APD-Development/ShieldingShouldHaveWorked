@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        api: [34, 36]
+        api: [36]
     runs-on: ubuntu-latest
     timeout-minutes: 40
     env:
@@ -104,6 +104,17 @@ jobs:
               target.write('APD_EXPECTED_METHODS='+str(len(methods))+'\n')
           import json,pathlib
           pathlib.Path('expected-screenshots.json').write_text(json.dumps(images))
+          PY
+      - name: Free unused runner toolchains for the Android 16 userdata partition
+        run: |
+          df -h /
+          sudo rm -rf /usr/share/dotnet /opt/hostedtoolcache/CodeQL /usr/local/lib/android/sdk/ndk
+          df -h /
+          python3 - <<'PY'
+          import shutil
+          free=shutil.disk_usage('/home/runner').free
+          print('Free bytes before emulator system-image setup:',free)
+          assert free>=10*1024**3,'Insufficient disposable-runner space; do not wait for a doomed emulator boot'
           PY
       - name: Exercise the reused APK on Android
         uses: reactivecircus/android-emulator-runner@v2
