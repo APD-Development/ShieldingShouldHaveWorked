@@ -69,7 +69,7 @@ jobs:
           target: default
           profile: pixel_7
           disable-animations: true
-          script: bash tools/run-title-display-check.sh '${{ matrix.size }}' '${{ matrix.density }}' '${{ matrix.mode }}'
+          script: adb shell settings put secure immersive_mode_confirmations confirmed && bash tools/run-title-display-check.sh '${{ matrix.size }}' '${{ matrix.density }}' '${{ matrix.mode }}'
       - uses: actions/upload-artifact@v4
         if: always()
         with:
