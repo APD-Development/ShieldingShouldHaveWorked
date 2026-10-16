@@ -45,7 +45,12 @@ jobs:
                      'android/build.gradle','core/build.gradle','SPD-classes/build.gradle',
                      'services/build.gradle','build.gradle','settings.gradle','gradle.properties',
                      'gradle','android/debug.keystore']
-          subprocess.run(['git','diff','--exit-code',source,'HEAD','--']+protected,check=True)
+          differences=subprocess.check_output(['git','diff','--name-only',source,'HEAD','--']+protected,text=True)
+          pathlib.Path('acceptance-protected-differences.txt').write_text(differences)
+          # Compile the fallback test package against exact TEST241 even when the
+          # live branch contains a newer application candidate.
+          subprocess.run(['git','checkout',source,'--']+protected,check=True)
+          subprocess.run(['git','diff','--exit-code',source,'--']+protected,check=True)
           with open('verified-test241.zip','wb') as output:
               subprocess.run(['gh','api','repos/'+repo+'/actions/artifacts/'+artifact_id+'/zip'],
                              stdout=output,check=True)
@@ -60,7 +65,9 @@ jobs:
               'application_source':source,'application_run':int(run_id),
               'application_artifact':int(artifact_id),'application_sha256':digest,
               'test_source':os.environ['GITHUB_SHA'],'application_reused':True,
-              'application_rebuilt':False,'physical_device':False,'published':False
+              'application_rebuilt':False,'instrumentation_compile_tree':source,
+              'live_protected_differences_recorded':bool(differences.strip()),
+              'physical_device':False,'published':False
           },indent=2))
           PY
       - name: Set up Android SDK
@@ -116,6 +123,7 @@ jobs:
           name: apd-early-alpha-six-class-acceptance
           path: |
             acceptance-source.json
+            acceptance-protected-differences.txt
             early-alpha-roster-result.json
             early-alpha-roster-instrumentation.txt
             early-alpha-roster-logcat.txt
