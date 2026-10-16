@@ -3283,7 +3283,7 @@ public class GetFuckedRouteTest {
     }
 
     private void freshSevenFoodApproachSection() throws Exception {
-        assertEquals(7,Dungeon.depth);assertEquals(818,Dungeon.hero.pos);assertEquals(Integer.getInteger("route.freshSevenCampTarget",4).intValue(),charge(Dungeon.hero.belongings.getItem(HolyTome.class)));cast(HolyWard.INSTANCE,null);cast(BlessSpell.INSTANCE,Dungeon.hero.pos);
+        assertEquals(7,Dungeon.depth);assertEquals(818,Dungeon.hero.pos);assertEquals(Integer.getInteger("route.freshSevenCampTarget",4).intValue(),charge(Dungeon.hero.belongings.getItem(HolyTome.class)));cast(HolyWard.INSTANCE,null);if(!Boolean.getBoolean("route.freshSevenLateBless"))cast(BlessSpell.INSTANCE,Dungeon.hero.pos);
         for(int c:new int[]{785,753,720,686,652,619,586,553,520,487,455,421,420,419}){assertNull("Actual dark-food path occupied at "+c,Actor.findChar(c));assertNull(Dungeon.level.traps.get(c));click(c);assertEquals(c,Dungeon.hero.pos);}log("FRESH DARK SEVEN REAL SECRET FOOD CORRIDOR APPROACH");
         if(Dungeon.level.map[418]==Terrain.SECRET_DOOR){Dungeon.hero.search(true);ready();}assertTrue(Dungeon.level.map[418]==Terrain.DOOR || Dungeon.level.map[418]==Terrain.OPEN_DOOR);
         for(int c:new int[]{418,417,416}){assertNull("Actual dark-food corridor occupied at "+c,Actor.findChar(c));assertNull(Dungeon.level.traps.get(c));click(c);assertEquals(c,Dungeon.hero.pos);}log("FRESH DARK SEVEN ACTUAL FIRST FOOD CORRIDOR CONTACT");if(Boolean.getBoolean("route.freshSevenFirstSkeleton"))freshSevenFirstSkeletonSection();
@@ -3291,6 +3291,51 @@ public class GetFuckedRouteTest {
 
     private void freshSevenFirstSkeletonSection() throws Exception {
         assertEquals(7,Dungeon.depth);assertEquals(416,Dungeon.hero.pos);Mob target=Dungeon.level.mobs.stream().filter(m->m.id()==239).findFirst().get();assertTrue(target instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Skeleton);assertEquals(25,target.HP);assertTrue(Dungeon.level.heroFOV[target.pos]);
-        cast(GuidingLight.INSTANCE,target.pos);assertEquals(target.pos,new com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica(Dungeon.hero.pos,target.pos,com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica.PROJECTILE).collisionPos.intValue());throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear.class,target.pos);log("FRESH DARK SEVEN FIRST SKELETON OWNED GUIDE AND SPEAR RESULT");if(Boolean.getBoolean("route.freshSevenFirstFinish")){assertTrue(target.isAlive());cast(ShieldOfLight.INSTANCE,target.pos);waitOne();assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,target.pos));click(target.pos);log("FRESH DARK SEVEN FIRST SKELETON SHIELDED MELEE RESULT");if(Boolean.getBoolean("route.freshSevenFirstSecondMelee")){if(target.isAlive())click(target.pos);assertFalse(target.isAlive());log("FRESH DARK SEVEN FIRST SKELETON ACTUALLY DEFEATED");}}
+        if(Boolean.getBoolean("route.freshSevenLateBless")){cast(BlessSpell.INSTANCE,Dungeon.hero.pos);cast(ShieldOfLight.INSTANCE,target.pos);}
+        cast(GuidingLight.INSTANCE,target.pos);assertEquals(target.pos,new com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica(Dungeon.hero.pos,target.pos,com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica.PROJECTILE).collisionPos.intValue());throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear.class,target.pos);log("FRESH DARK SEVEN FIRST SKELETON OWNED GUIDE AND SPEAR RESULT");if(Boolean.getBoolean("route.freshSevenFirstFinish")){assertTrue(target.isAlive());if(!Boolean.getBoolean("route.freshSevenLateBless")){cast(ShieldOfLight.INSTANCE,target.pos);waitOne();}assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,target.pos));click(target.pos);log("FRESH DARK SEVEN FIRST SKELETON SHIELDED MELEE RESULT");if(Boolean.getBoolean("route.freshSevenFirstSecondMelee")){if(target.isAlive())click(target.pos);assertFalse(target.isAlive());log("FRESH DARK SEVEN FIRST SKELETON ACTUALLY DEFEATED");if(Boolean.getBoolean("route.freshSevenSecondSkeleton"))freshSevenSecondSkeletonSection();}}
     }
+
+    private void freshSevenSecondSkeletonSection() throws Exception {
+        assertEquals(7,Dungeon.depth);assertEquals(416,Dungeon.hero.pos);Mob target=Dungeon.level.mobs.stream().filter(m->m.id()==238).findFirst().get();assertTrue(target instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Skeleton);assertEquals(25,target.HP);
+        for(int c:new int[]{449,449}){click(c);assertEquals(c,Dungeon.hero.pos);}assertNotNull(Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear.class));log("FRESH DARK SEVEN SPEAR ACTUALLY RECOVERED WITH APPROACHING SECOND SKELETON");
+        assertTrue(Dungeon.level.heroFOV[target.pos]);cast(ShieldOfLight.INSTANCE,target.pos);throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear.class,target.pos);for(int n=0;n<2 && !Dungeon.level.adjacent(Dungeon.hero.pos,target.pos);n++)waitOne();log("FRESH DARK SEVEN SECOND SKELETON REAL SHIELDED SPEAR RESULT");
+        for(int n=0;n<3 && target.isAlive();n++){assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,target.pos));click(target.pos);}assertFalse(target.isAlive());log("FRESH DARK SEVEN SECOND SKELETON ACTUALLY DEFEATED");if(Boolean.getBoolean("route.freshSevenFoodGuard"))freshSevenFoodGuardSection();
+    }
+
+    private void freshSevenFoodGuardSection() throws Exception {
+        assertEquals(7,Dungeon.depth);assertEquals(449,Dungeon.hero.pos);Mob target=Dungeon.level.mobs.stream().filter(m->m.id()==236).findFirst().get();assertTrue(target instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Skeleton);assertEquals(25,target.HP);
+        for(int n=0;n<30 && charge(Dungeon.hero.belongings.getItem(HolyTome.class))<1;n++){if(Dungeon.level.mobs.stream().anyMatch(m->m.alignment==Char.Alignment.ENEMY && Dungeon.level.heroFOV[m.pos]))break;waitOne();}log("FRESH DARK SEVEN REAL THIRD GUARD PREPARATION BOUNDARY");assertTrue(charge(Dungeon.hero.belongings.getItem(HolyTome.class))>=1);
+        for(int c:new int[]{415,415,414,413,412,411,410,409,408,440}){if(c!=Dungeon.hero.pos)assertNull("Actual third-guard path occupied at "+c,Actor.findChar(c));click(c);assertEquals(c,Dungeon.hero.pos);}assertNotNull(Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear.class));assertTrue(Dungeon.level.heroFOV[target.pos]);cast(BlessSpell.INSTANCE,Dungeon.hero.pos);throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear.class,target.pos);for(int n=0;n<2 && !Dungeon.level.adjacent(Dungeon.hero.pos,target.pos);n++)waitOne();log("FRESH DARK SEVEN THIRD FOOD GUARD REAL BLESS AND SPEAR");
+        if(Boolean.getBoolean("route.freshSevenFoodGuardMelee")){
+            for(int n=0;n<3 && target.isAlive();n++){assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,target.pos));click(target.pos);}assertFalse(target.isAlive());log("FRESH DARK SEVEN THIRD FOOD GUARD ACTUALLY DEFEATED");
+            if(Boolean.getBoolean("route.freshSevenFoodPickup")){
+                for(int c:new int[]{473,506}){assertNull("Actual food pickup path occupied at "+c,Actor.findChar(c));assertNull(Dungeon.level.traps.get(c));click(c);assertEquals(c,Dungeon.hero.pos);}click(506);Item food=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.food.Food.class);assertNotNull(food);assertTrue(Dungeon.hero.buff(Hunger.class).hunger()<450);food.execute(Dungeon.hero,"EAT");ready();log("FRESH DARK SEVEN GUARDED FOOD ACTUALLY ACQUIRED AND EATEN BEFORE STARVATION");if(Boolean.getBoolean("route.freshSevenPostFoodCamp"))freshSevenPostFoodCampSection();
+            }
+        }
+    }
+
+    private void freshSevenPostFoodCampSection() throws Exception {
+        assertEquals(7,Dungeon.depth);assertEquals(506,Dungeon.hero.pos);
+        for(int n=0;n<130 && charge(Dungeon.hero.belongings.getItem(HolyTome.class))<3;n++){
+            if(Dungeon.level.mobs.stream().anyMatch(m->m.alignment==Char.Alignment.ENEMY && Dungeon.level.heroFOV[m.pos]))break;
+            assertTrue(Dungeon.hero.buff(Hunger.class).hunger()<440);waitOne();
+        }
+        log("FRESH DARK SEVEN POST MEAL ACTUAL RECHARGE OR NEW ENEMY BOUNDARY");
+        if(Boolean.getBoolean("route.freshSevenThief")){
+            Mob target=Dungeon.level.mobs.stream().filter(m->m.id()==254).findFirst().get();assertTrue(target instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Thief);assertTrue(Dungeon.level.heroFOV[target.pos]);cast(BlessSpell.INSTANCE,Dungeon.hero.pos);throwItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear.class,target.pos);log("FRESH DARK SEVEN POST MEAL THIEF OWNED BLESS AND SPEAR");
+            if(Boolean.getBoolean("route.freshSevenThiefMelee")){
+                for(int n=0;n<3 && !Dungeon.level.adjacent(Dungeon.hero.pos,target.pos);n++)waitOne();
+                for(int n=0;n<4 && target.isAlive();n++){assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,target.pos));click(target.pos);}assertFalse(target.isAlive());log("FRESH DARK SEVEN POST MEAL THIEF ACTUALLY DEFEATED");if(Boolean.getBoolean("route.freshSevenScrollApproach"))freshSevenScrollApproachSection();
+            }
+        }
+    }
+    private void freshSevenScrollApproachSection() throws Exception {
+        assertEquals(7,Dungeon.depth);assertEquals(506,Dungeon.hero.pos);
+        for(int c:new int[]{538,538,506,473,440,408,409,410,411,412,413,414,415,416,417,418,419,420,421,455,487,520,553,586,619,652,686,720,753,786,819,820,854,888,921,954,986,985,984,983}){
+            if(Dungeon.level.mobs.stream().anyMatch(m->m.alignment==Char.Alignment.ENEMY && Dungeon.level.heroFOV[m.pos]))break;
+            if(c!=Dungeon.hero.pos)assertNull("Actual scroll approach occupied at "+c,Actor.findChar(c));assertNull(Dungeon.level.traps.get(c));click(c);assertEquals(c,Dungeon.hero.pos);assertEquals(1,Dungeon.hero.HP);
+        }
+        assertNotNull(Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear.class));log("FRESH DARK SEVEN REAL SCROLL APPROACH OR ENEMY INTERRUPTION");
+    }
+
 }

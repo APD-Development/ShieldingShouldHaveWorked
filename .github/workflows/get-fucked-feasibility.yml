@@ -31,16 +31,16 @@ jobs:
           name: get-fucked-existing-engine-runtime
           path: core/build/get-fucked-runtime/
           retention-days: 7
-      - name: Replay uninterrupted fresh Cleric through complete earned floor seven entry
+      - name: Replay uninterrupted fresh Cleric through Goo and three floor seven skeletons to owned meal
         run: |
           mkdir -p "$RUNNER_TEMP/get-fucked-fresh-goo"
-          tar -xJf research/get-fucked/seven-entry-provenance.tar.xz -C "$RUNNER_TEMP/get-fucked-fresh-goo"
+          tar -xJf research/get-fucked/seven-food-provenance.tar.xz -C "$RUNNER_TEMP/get-fucked-fresh-goo"
           python3 - <<'PYCODE'
           import json, os, subprocess
           root=os.environ['RUNNER_TEMP']+'/get-fucked-fresh-goo'
-          args=json.load(open(root+'/fresh-seven-early-entry-args.json'))
+          args=json.load(open(root+'/fresh-seven-food-uninterrupted-args.json'))
           props={a[2:].split('=',1)[0]:a.split('=',1)[1] for a in args if a.startswith('-D') and '=' in a}
-          props.update({'route.testTimeoutSeconds':'180','route.stableHash':'true','route.noSnapshots':'true','route.expectedEnd':root+'/native/fresh-seven-early-entry','route.expectedActiveRngOnly':'true','route.earlySwarmOut':root+'/actual-fresh-goo'})
+          props.update({'route.testTimeoutSeconds':'180','route.stableHash':'true','route.noSnapshots':'true','route.expectedEnd':root+'/native/fresh-seven-food-uninterrupted','route.expectedActiveRngOnly':'true','route.earlySwarmOut':root+'/actual-fresh-goo'})
           subprocess.run(['./gradlew',':core:test','--tests','*GetFuckedRouteTest']+['-D'+k+'='+v for k,v in props.items()],check=True)
           subprocess.run(['python3','research/get-fucked/native_equivalence.py',props['route.expectedEnd'],props['route.earlySwarmOut']],check=True)
           PYCODE
