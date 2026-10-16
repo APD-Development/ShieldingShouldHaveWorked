@@ -28,7 +28,7 @@ public final class AggValue {
 	public static final int LOWER = 1;     //some contributing value is only a lower bound: the real result is at least this
 	public static final int INFERRED = 2;  //some contributing value was inferred, not recorded exactly
 	public static final int LEGACY = 4;    //some contributing value comes from the rankings file
-	public static final int UNSURE = 8;    //some rows could not be judged against the aggregate's condition (unknown or lower bound), so they are left out
+	public static final int UNSURE = 8;    //some rows could not be judged exactly by the condition or distinct key
 
 	public final boolean known;
 	public final double value;

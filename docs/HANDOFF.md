@@ -3046,3 +3046,11 @@ Audited recorder resume bookkeeping after the TEST231 delivery. One malformed ca
 - Scope remains only cleanup of hidden aggregate dependencies when hidden information is disabled. Raw histories, saved views, derived caches, saves, original scores, gameplay, all 18 rules, turns, RNG, all 50 Cleric lore entries/private grudge/opt-out, signing configuration and application-ID configuration were not changed.
 - TEST239 is a fully CI-verified candidate only. No publication, tester distribution, physical-phone result or owner-device install-over/save acceptance occurred. TEST231 remains the latest privately delivered fallback.
 - Do not rebuild unchanged TEST239 solely to record evidence. Continue the broad UIMSD reliability audit; audio and unconfirmed armor/sentry acceptance remain open.
+
+
+## 2026-10-16T10:44:50Z — distinct-key uncertainty candidate
+- Continued the UIMSD aggregate audit after TEST239 and confirmed that per-distinct aggregates kept missing or lower-bound keys as separate row identities but displayed the result as exact.
+- The bounded correction preserves those rows and the existing numeric result while marking the aggregate uncertain whenever a distinct key is hidden, unknown or lower-bound. The detail view now uses the existing “some entries could not be judged” disclosure; exact known keys are unchanged.
+- Two retained `AggregateExtensionsTest` methods require the unchanged TEST239 source to fail both cases and the corrected source to pass all 1,707 core methods. No test or guard was weakened.
+- Full TEST240 gate remains required: debug assembly, complete immediate-previous produced TEST239 history (source `6182b042b1d93b64341f41a516a49ef3d12c93ee`, run `38881765134`), 33 API34 emulator methods and 42 valid screenshots.
+- Scope is derived query display/provenance only. Raw histories, saved views, caches, saves, original scores, gameplay, all 18 rules, turns, RNG, all 50 Cleric lore entries/private grudge/opt-out, signing and application ID remain unchanged. Candidate pending; no APK verification, publication, tester distribution, physical-phone result or owner install claim is made. TEST231 remains the delivered fallback and TEST239 the newest verified CI candidate.

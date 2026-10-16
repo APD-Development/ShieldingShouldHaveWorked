@@ -155,7 +155,22 @@ public class AggregateExtensionsTest {
 	@Test
 	public void rowsWithNoValueToShareAreNotMergedByTheDistinctRule(){
 		Dataset ds = dataset(def, Arrays.asList(r("a", null, 1L, 0L, null), r("b", null, 2L, 0L, null), r("c", "x", 3L, 0L, null), r("d", "x", 4L, 0L, null)));
-		assertEquals(3, (int) only(run(ds, Aggregate.count().perDistinct("name")), 0).value);
+		Aggregate aggregate = Aggregate.count().perDistinct("name");
+		AggValue value = only(run(ds, aggregate), 0);
+		assertEquals(3, (int) value.value);
+		assertTrue("unknown distinct keys must not make the result look exact", value.isUnsure());
+		assertTrue(CellFormatter.aggregate(def, aggregate, value).detail.contains("could not be judged"));
+	}
+
+	@Test
+	public void lowerBoundDistinctKeysAreNotTreatedAsExactIdentities(){
+		Row lower = r("a", "lower", 1L, 1L, null);
+		lower.setNum(KIND, 1, Fact.PROV_INCOMPLETE);
+		Dataset ds = dataset(def, Arrays.asList(lower, r("b", "exact", 2L, 1L, null)));
+		Aggregate aggregate = Aggregate.count().perDistinct("kind");
+		AggValue value = only(run(ds, aggregate), 0);
+		assertEquals("the inexact key still stands for its own row", 2, (int) value.value);
+		assertTrue("a lower-bound identity cannot produce an exact distinct result", value.isUnsure());
 	}
 
 	@Test

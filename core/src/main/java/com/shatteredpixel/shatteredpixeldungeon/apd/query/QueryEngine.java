@@ -458,8 +458,12 @@ public final class QueryEngine {
 			int loose = 0;
 			for (Row r : sel){
 				String key;
-				if (open(q, r, dc) && r.isKnown(dc.index)) key = "K" + r.asText(dc.index);
-				else key = "R" + (loose++);   //no value to share: it stands for itself
+				if (open(q, r, dc) && r.isKnown(dc.index) && r.prov(dc.index) != Fact.PROV_INCOMPLETE){
+					key = "K" + r.asText(dc.index);
+				} else {
+					key = "R" + (loose++);   //no exact value to share: it stands for itself
+					unsure[0]++;
+				}
 				if (!first.containsKey(key)) first.put(key, r);
 			}
 			sel = new ArrayList<>(first.values());
