@@ -42,7 +42,10 @@ public class WndCustomDungeonRules extends Window {
             RenderedTextBlock unknown=PixelScene.renderTextBlock("This run's custom settings were not recorded.",6);
             unknown.maxWidth(width);unknown.setPos(0,y);content.add(unknown);y=unknown.bottom()+4;
         } else {
-            RenderedTextBlock context=PixelScene.renderTextBlock(currentRun ? "Current run — locked" : "Next run only.",6);
+            String mode=currentRun ? "Current run — locked" : "Next run only.";
+            if(currentRun&&(Dungeon.customScoring()==null||Dungeon.customScoring().recordVersion<2))
+                mode+=" Original score kept; multipliers preview new runs.";
+            RenderedTextBlock context=PixelScene.renderTextBlock(mode,6);
             context.maxWidth(width);context.setPos(0,y);content.add(context);y=context.bottom()+4;
             for(final CustomDungeonRules.Slider rule:CustomDungeonRules.Slider.values()) {
                 final RenderedTextBlock caption=PixelScene.renderTextBlock(caption(rule),6);

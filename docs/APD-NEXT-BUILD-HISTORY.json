@@ -104,6 +104,25 @@
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         ".github/workflows/codex-alpha-preview-stage.yml"
       ]
+    },
+    {
+      "category": "Testing",
+      "sprite": "ICON_CHECKED",
+      "title": "Refresh disposable-cache version checks",
+      "text": "Require the current cache version and prove older rows rebuild without changing raw history.",
+      "paths": [
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/QuestBossClassificationTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/MalformedPayloadProvenanceTest.java"
+      ]
+    },
+    {
+      "category": "Quality of Life",
+      "sprite": "ICON_CHALLENGE_COLOR",
+      "title": "Explain previews on older runs",
+      "text": "Runs created before provisional scoring identify their displayed multipliers as new-run previews and retain their original scores.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndCustomDungeonRules.java"
+      ]
     }
   ],
   "commentary": "New runs use the supplied provisional scoring table, and the slider window previews every selected multiplier. Existing runs and historical scores keep their original scoring authority; no gameplay slider values or challenge multipliers changed."
