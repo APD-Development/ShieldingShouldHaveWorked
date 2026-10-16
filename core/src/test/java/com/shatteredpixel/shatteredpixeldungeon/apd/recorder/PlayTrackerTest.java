@@ -97,4 +97,21 @@ public class PlayTrackerTest {
 		assertTrue("about the time that passed, was " + got.get(1).values[0], got.get(1).values[0] >= 100 && got.get(1).values[0] < 5000);
 		assertFalse(got.get(1).values[0] < got.get(0).values[0]);
 	}
+
+	@Test
+	public void aLongIdleGapAddsNoActivePlayTime() throws Exception {
+		List<FactEvents.Observation> got = run(new Body(){
+			public void run( FactTracker facts ) throws Exception {
+				PlayTracker t = new PlayTracker(facts);
+				java.lang.reflect.Field last = PlayTracker.class.getDeclaredField("lastNano");
+				last.setAccessible(true);
+				last.setLong(t, System.nanoTime() - 31_000_000_000L);
+				t.onHeroTurn();
+				t.recordTime();
+			}
+		});
+		assertEquals(1, got.size());
+		assertEquals(GameFacts.TIME_ACTIVE.key, got.get(0).key);
+		assertEquals(0, got.get(0).values[0]);
+	}
 }

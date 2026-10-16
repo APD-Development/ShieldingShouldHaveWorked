@@ -75,7 +75,7 @@ final class PlayTracker {
 		long now = System.nanoTime();
 		long gap = now - lastNano;
 		lastNano = now;
-		if (gap > 0) activeNanos += Math.min(gap, MAX_GAP_NANOS);
+		if (gap > 0 && gap <= MAX_GAP_NANOS) activeNanos += gap;
 		pollGold("other");
 		Hero h = Dungeon.hero;
 		if (h != null){

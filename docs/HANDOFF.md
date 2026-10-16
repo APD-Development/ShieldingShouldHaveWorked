@@ -2925,3 +2925,10 @@ Audited recorder resume bookkeeping after the TEST231 delivery. One malformed ca
 - TEST232 is a fully CI-verified candidate only: no private publication, tester distribution, physical-phone result or owner-device install-over/save acceptance occurred. TEST231 remains the latest privately delivered fallback. Broad UIMSD audit, audio, and unconfirmed armor/sentry investigations remain open.
 - The next meaningful build manifest must include this evidence entry and `docs/APD-TEST232-VERIFICATION-2026-10-15.json`; do not rebuild unchanged TEST232 merely to record documentation.
 
+## 2026-10-16T03:38:42Z — active-play idle-gap correction candidate
+- Audited `PlayTracker` against its stated active-time contract and found that every app-background or long-pause gap over 30 seconds was credited as exactly 30 seconds of active play because the accumulator used `min(gap, 30 seconds)`.
+- Added retained method `aLongIdleGapAddsNoActivePlayTime`: it moves the monotonic baseline 31 seconds back, records the next hero turn and requires the active total to remain zero. Exact verified TEST232 source `96772420c7ccdcbc294e8eae33d68b27d71abfaa` must fail with 30,000 milliseconds.
+- The bounded correction counts positive gaps through 30 seconds normally and excludes longer gaps. It does not change game time, turns, saves, existing raw history, scores, gameplay, RNG, any of the 18 rules, lore, signing or application-ID configuration.
+- Dedicated before/after evidence and the full TEST233 gate are pending: expected corrected count is 1,695 core methods, then debug assembly, complete immediate-previous produced TEST232 history, 33 API34 emulator methods and 42 valid screenshots.
+- No APK verification, publication, tester distribution or physical-phone result is claimed by this candidate entry. TEST231 remains the latest privately delivered fallback and verified TEST232 remains the last playable CI candidate until the new gate actually passes.
+

@@ -1,32 +1,31 @@
 {
   "date": "2026-10-15",
-  "previous_source": "5134ef6438f9562a37b3f8db727d5d004fa93527",
-  "previous_run": 38837749762,
-  "previous_label": "Codex TEST 231",
+  "previous_source": "96772420c7ccdcbc294e8eae33d68b27d71abfaa",
+  "previous_run": 38841967217,
+  "previous_label": "Codex TEST 232",
   "changes": [
     {
       "category": "Development",
       "sprite": "ICON_CHECKED",
-      "title": "Stage and privately deliver verified TEST231",
-      "text": "Reuse the exact verified TEST231 APK, check source application inputs, checksum, signing, package and install-over version, and publish only the private owner preview without rebuilding or distributing to testers.",
+      "title": "Record verified TEST232 evidence",
+      "text": "Retain the exact TEST232 core, Android, visual, APK and targeted-reproduction evidence without rebuilding or publishing unchanged application source.",
       "paths": [
-        ".github/workflows/codex-alpha-preview-stage.yml",
-        ".github/workflows/codex-publish-alpha-preview.yml",
-        "docs/APD-TEST231-COMBINED-RELIABILITY-2026-10-15.md",
-        "docs/APD-TEST231-VERIFICATION-2026-10-15.json",
-        "docs/HANDOFF.md"
+        "docs/APD-RECORDER-LIFECYCLE-RESILIENCE-2026-10-15.md",
+        "docs/APD-TEST232-VERIFICATION-2026-10-15.json",
+        "docs/HANDOFF.md",
+        "docs/WORK-COMPLETED-LEDGER.md"
       ]
     },
     {
-      "category": "Reliability",
+      "category": "Statistics",
       "sprite": "ICON_WARNING",
-      "title": "Continue lifecycle recovery after one damaged payload",
-      "text": "Resume and segment recovery isolate malformed lifecycle payloads so later readable ruleset and segment state remains available; original history and gameplay stay unchanged.",
+      "title": "Exclude long idle gaps from active-play time",
+      "text": "Active-time telemetry no longer credits 30 seconds after an app-background or long-pause gap; normal short gaps and all gameplay remain unchanged.",
       "paths": [
-        ".github/workflows/codex-recorder-lifecycle-acceptance.yml",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/RunRecorder.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/RunRecorderMalformedLifecycleTest.java",
-        "docs/APD-RECORDER-LIFECYCLE-RESILIENCE-2026-10-15.md",
+        ".github/workflows/codex-active-time-acceptance.yml",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/PlayTracker.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/PlayTrackerTest.java",
+        "docs/APD-ACTIVE-TIME-IDLE-GAP-2026-10-15.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/HANDOFF.md",
@@ -34,5 +33,5 @@
       ]
     }
   ],
-  "commentary": "TEST231 is the immediate previous produced and privately delivered APK. The lifecycle recovery correction requires exact before/after core evidence and one complete TEST232 application gate; no automatic delivery."
+  "commentary": "TEST232 is the immediate previous produced APK and TEST231 remains the latest privately delivered fallback. The active-time correction requires exact before/after core evidence and one complete TEST233 application gate; no automatic delivery."
 }
