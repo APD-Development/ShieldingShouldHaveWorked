@@ -92,6 +92,7 @@ public class GetFuckedRouteTest {
         when(parent.recycle(MissileSprite.class)).thenReturn(missile);
         doAnswer(i -> {((Callback)i.getArgument(3)).call();return null;}).when(missile).reset(any(Visual.class),any(Visual.class),any(Item.class),any(Callback.class));
         doAnswer(i -> {((Callback)i.getArgument(3)).call();return null;}).when(missile).reset(any(Visual.class),anyInt(),any(Item.class),any(Callback.class));
+        doAnswer(i -> {((Callback)i.getArgument(3)).call();System.out.println("ANIMATION_CALLBACK_COMPLETED MissileSprite.int-int time="+(Statistics.duration+Actor.now()));return null;}).when(missile).reset(anyInt(),anyInt(),any(Item.class),any(Callback.class));
         when(sprite.center()).thenReturn(new PointF());
         doAnswer(i -> { ch.onAttackComplete(); return null; }).when(sprite).attack(anyInt());
         doAnswer(i -> { ((Callback)i.getArgument(1)).call(); return null; }).when(sprite).attack(anyInt(),any(Callback.class));
@@ -479,7 +480,8 @@ public class GetFuckedRouteTest {
     private void cast(ClericSpell spell, Integer target) {
         Hero h=Dungeon.hero; HolyTome t=h.belongings.getItem(HolyTome.class);
         assertTrue(t.canCast(h,spell));
-        if(target!=null) assertTrue("Target must be in actual FOV",Dungeon.level.heroFOV[target]);
+        // Original CellSelector permits unseen cells; individual spell handlers enforce their own rules (e.g. Smite FOV).
+        if(target!=null)assertTrue(target>=0 && target<Dungeon.level.length());
         selection=null; spell.onCast(t,h);
         if(target!=null){assertNotNull(selection);selection.onSelect(target);}
         ready(); log("CAST "+spell.getClass().getSimpleName()+" "+target);
@@ -3637,6 +3639,16 @@ public class GetFuckedRouteTest {
                     // Original wand targeting may legally select an unseen tile; let its own zapper validate.
                     selection=null;wand.execute(Dungeon.hero,"ZAP");assertNotNull(selection);selection.onSelect(cell);ready();log("MANUAL OWNED WAND ZAP "+type.getSimpleName()+" "+cell);
                 }
+                else if(action.startsWith("x")){
+                    int at=action.lastIndexOf('@');assertTrue(at>1);Class<? extends Item> type=Class.forName("com.shatteredpixel.shatteredpixeldungeon.items."+action.substring(1,at)).asSubclass(Item.class);Item item=Dungeon.hero.belongings.getItem(type);assertNotNull("Only actually owned items may be thrown",item);assertTrue(item.actions(Dungeon.hero).contains("THROW"));int cell=Integer.parseInt(action.substring(at+1));assertTrue(cell>=0 && cell<Dungeon.level.length());selection=null;item.execute(Dungeon.hero,"THROW");assertNotNull(selection);selection.onSelect(cell);ready();log("MANUAL ORIGINAL ITEM THROW "+type.getSimpleName()+" "+cell);
+                }
+                else if(action.startsWith("i")){
+                    int at=action.indexOf('@');assertTrue(at>1);
+                    Class<? extends Item> scrollType=Class.forName("com.shatteredpixel.shatteredpixeldungeon.items."+action.substring(1,at)).asSubclass(Item.class);
+                    Class<? extends Item> itemType=Class.forName("com.shatteredpixel.shatteredpixeldungeon.items."+action.substring(at+1)).asSubclass(Item.class);
+                    Item scroll=Dungeon.hero.belongings.getItem(scrollType),item=Dungeon.hero.belongings.getItem(itemType);assertNotNull(scroll);assertNotNull(item);assertTrue(scroll.actions(Dungeon.hero).contains("READ"));
+                    itemSelection=null;scroll.execute(Dungeon.hero,"READ");assertNotNull(itemSelection);assertTrue(itemSelection.itemSelectable(item));itemSelection.onSelect(item);ready();log("MANUAL OWNED INVENTORY SCROLL "+scrollType.getSimpleName()+" ON "+itemType.getSimpleName());
+                }
                 else if(action.startsWith("X")){int at=action.lastIndexOf('@');assertTrue(at>1);Class<? extends Item> type=Class.forName("com.shatteredpixel.shatteredpixeldungeon.items."+action.substring(1,at)).asSubclass(Item.class);throwItem(type,Integer.parseInt(action.substring(at+1)));}
                 else if(action.startsWith("H") && action.length()>1){int count=Integer.parseInt(action.substring(1));assertTrue(count>=0 && count<=500);for(int k=0;k<count;k++)waitOne();}
                 else if(action.startsWith("a")){assertNotNull(target);int count=Integer.parseInt(action.substring(1));assertTrue(count>0 && count<=30);for(int k=0;k<count && target.isAlive();k++)freshFixedActions(target,"A");}
@@ -3648,8 +3660,9 @@ public class GetFuckedRouteTest {
                     com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor locked=Dungeon.hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor.class);
                     if(locked!=null){Field left=locked.getClass().getDeclaredField("left");left.setAccessible(true);detail.put("regenClock",left.getFloat(locked)).put("regenOn",locked.regenOn());}
                     if(Dungeon.level instanceof com.shatteredpixel.shatteredpixeldungeon.levels.PrisonBossLevel)detail.put("bossState",((com.shatteredpixel.shatteredpixeldungeon.levels.PrisonBossLevel)Dungeon.level).state());
-                    JSONArray traps=new JSONArray();for(com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap trap:Dungeon.level.traps.valueList())traps.put(new JSONObject().put("pos",trap.pos).put("type",trap.getClass().getSimpleName()).put("active",trap.active).put("visible",trap.visible));detail.put("traps",traps);
+                    JSONArray traps=new JSONArray();for(com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap trap:Dungeon.level.traps.valueList())traps.put(new JSONObject().put("pos",trap.pos).put("type",trap.getClass().getSimpleName()).put("active",trap.active).put("visible",trap.visible));detail.put("traps",traps);JSONArray plantDetails=new JSONArray();for(com.shatteredpixel.shatteredpixeldungeon.plants.Plant plant:Dungeon.level.plants.valueList())plantDetails.put(new JSONObject().put("pos",plant.pos).put("type",plant.getClass().getSimpleName()));detail.put("plants",plantDetails);
                     JSONArray blobs=new JSONArray();for(Blob blob:Dungeon.level.blobs.values()){JSONArray cells=new JSONArray();if(blob.cur!=null)for(int c=0;c<blob.cur.length;c++)if(blob.cur[c]>0)cells.put(new JSONArray().put(c).put(blob.cur[c]));if(cells.length()>0)blobs.put(new JSONObject().put("type",blob.getClass().getSimpleName()).put("cells",cells).put("cooldown",blob.cooldown()));}detail.put("blobs",blobs);detail.put("mobs",state("DIAGNOSTIC_READ_ONLY").getJSONArray("mobs"));
+                    JSONArray control=new JSONArray();for(Mob mob:Dungeon.level.mobs){JSONArray effects=new JSONArray();for(Buff buff:mob.buffs())effects.put(new JSONObject().put("type",buff.getClass().getSimpleName()).put("remaining",buff.cooldown()));if(effects.length()>0)control.put(new JSONObject().put("id",mob.apdPeekId()).put("paralysed",mob.paralysed).put("buffs",effects));}detail.put("mobBuffs",control);
                     System.out.println("MANUAL_DIAGNOSTIC "+detail);
                 }
                 else if(action.startsWith("D") || action.startsWith("E") || action.startsWith("Q") || action.startsWith("U") || action.startsWith("R")){
