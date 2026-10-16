@@ -95,7 +95,7 @@ jobs:
           names=['APD-Afternoon-Status-2026-10-16.pdf','APD-Afternoon-Status-2026-10-16.pdf.sha256','APD-Afternoon-Status-2026-10-16.json']
           releases=json.loads(subprocess.check_output(['gh','api',f'repos/{repo}/releases?per_page=100']))
           assert not any(r['tag_name']==tag for r in releases),'Preserve an existing report; do not overwrite it'
-          subprocess.run(['gh','release','create',tag,'--repo',repo,'--target','832c1a5679a8cd216e8c57638f1bc0fe2442fdfe','--prerelease','--latest=false','--title','APD owner status — October16 afternoon; unchanged fallback','--notes','Current factual status. Candidate254 acceptance is unfinished at this report snapshot; it is not delivered as verified. Existing TEST250 remains the unchanged playable fallback. No automatic tester distribution.']+['delivery/'+n for n in names],check=True)
+          subprocess.run(['gh','release','create',tag,'--repo',repo,'--target',os.environ['GITHUB_SHA'],'--prerelease','--latest=false','--title','APD owner status — October16 afternoon; unchanged fallback','--notes','Current factual status. Candidate254 acceptance is unfinished at this report snapshot; it is not delivered as verified. Existing TEST250 remains the unchanged playable fallback. No automatic tester distribution.']+['delivery/'+n for n in names],check=True)
           release=json.loads(subprocess.check_output(['gh','api',f'repos/{repo}/releases/tags/{tag}']))
           assert release['prerelease'] and not release['draft']
           for name in names:
