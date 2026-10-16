@@ -8,7 +8,7 @@ permissions:
   actions: read
 concurrency:
   group: apd-api36-settled-native-proof254
-  cancel-in-progress: false
+  cancel-in-progress: true
 jobs:
   reuse-and-check:
     strategy:
@@ -167,3 +167,5 @@ jobs:
           retention-days: 7
 
 
+
+# Fresh Title readiness is applied to the preview test in this commit.

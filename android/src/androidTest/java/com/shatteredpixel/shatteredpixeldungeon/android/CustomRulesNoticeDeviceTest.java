@@ -420,6 +420,12 @@ public class CustomRulesNoticeDeviceTest {
             long deadline=System.currentTimeMillis()+120000;
             while((Game.scene()==null||PixelScene.uiCamera==null)&&System.currentTimeMillis()<deadline)Thread.sleep(200);
             assertNotNull(Game.scene());Thread.sleep(750);
+            final Object[] previousScene={null};
+            render(()->{previousScene[0]=Game.scene();Game.switchScene(com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene.class);});
+            long titleBy=System.currentTimeMillis()+60000;
+            while((Game.scene()==previousScene[0]||!(Game.scene() instanceof com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene))&&System.currentTimeMillis()<titleBy)Thread.sleep(100);
+            assertTrue("Fresh Title scene finished startup",Game.scene()!=previousScene[0]&&Game.scene() instanceof com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene);
+            Thread.sleep(1000);
             final CustomDungeonRules[] saved=new CustomDungeonRules[1];final Bundle run=new Bundle();
             final WndCustomDungeonRules[] window=new WndCustomDungeonRules[1];final Point[] touch=new Point[2];
             try{
