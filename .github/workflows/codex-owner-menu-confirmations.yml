@@ -89,7 +89,13 @@ jobs:
               assert "name='com.charltonchris29.adhdpixeldungeon.indev' versionCode='920'" in package
           package=subprocess.check_output([str(signer.parent/'aapt'),'dump','badging',str(apk)],text=True);assert "versionName='4.0.8-apd-INDEV-bC258-TEST'" in package
           core=xml_summary('core-evidence');assert core['tests']==len(core['cases'])==1752 and core['failures']==core['errors']==core['skipped']==0
-          old_native=xml_summary('previous-native-evidence')
+          # Preserve unsuccessful original XML without feeding it to the pass-only validator.
+          import xml.etree.ElementTree as ET
+          original_roots=[ET.parse(p).getroot()for p in pathlib.Path('previous-native-evidence').rglob('TEST-*.xml')]
+          assert original_roots,'Original failed native evidence missing'
+          old_native={k:sum(int(r.get(k,0))for r in original_roots)for k in ['tests','failures','errors','skipped']}
+          old_native['cases']=[c.attrib for r in original_roots for c in r.iter('testcase')]
+          assert old_native['tests']==len(old_native['cases'])==37 and old_native['failures']==1 and old_native['errors']==old_native['skipped']==0
           full=pathlib.Path('displays/apd-title-display-full-regression/title-evidence')
           android=xml_summary(str(full));assert android['tests']==len(android['cases'])==37 and android['failures']==android['errors']==android['skipped']==0
           ids=lambda d:{(c['classname'],c['name'])for c in d['cases']}
