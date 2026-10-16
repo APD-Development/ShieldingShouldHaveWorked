@@ -16,14 +16,14 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  APD_SOURCE_SHA: 3e886234e69ab128a861cfbc17bca549ba3a3456
-  APD_SOURCE_RUN: '38823705331'
-  APD_TEST_NUMBER: '224'
-  APD_CORE_TEST_COUNT: '1676'
-  APD_ANDROID_TEST_COUNT: '32'
-  APD_ROLLBACK_NUMBER: '222'
-  APD_ROLLBACK_SHA256: 'c4fe922f32c7b07f94666ae01591a04384fa5c801afcb4f869aca9a5c0e6aea5'
-  APD_REQUIRED_ANDROID_METHODS: 'menusSurviveSceneRecreationAndNarrowActionsStayInsideTheirWindow,validationEmptyHistoryGroupedAndReportMessagesSurviveWithoutRepeatingActions,arcanaItemDescriptionsRequireKnownEquippedRingsAndFitWindows,textAndGuideScrollSurviveRepeatedResetsAndClampAfterResize,tourChoicesSurviveWithoutStartingATourOrRepeatingTheOffer,demoUnlockKeepsTenRunNoticeVisibleOnTitle,backWalksBackwardsOneStepPerPress,aRunCanBePlayedSavedContinuedAndEndedWithItsHistoryRecorded,tileVisibilityAndStairNavigationKeepNormalTurnsFogAndControls,aWonRunIsRecordedAsWonAndSealed,clericQuickCastsPersistAndKeepNormalCostsAndTargeting,difficultyIsChosenOnTheCharacterScreenAndNotInSettings,heroButtonsStayAboveNavigationBarAndRemainSelectable,clericLoreFirstRunPopupIsVisibleAndBackContinuesExactlyOnce,navigationOverlapReservesVisibleBarsEvenWithFullscreenRequested,communityMenuOpensEveryPreviewAndReturnsWithoutStackingWindows,adultHumorControlWorksWithoutAnAgeProviderAndReopensWithSavedChoice,offlineNewsCardsOpenDatedSpritePopups,everyAboutPopupOpensScrollsAndCloses,aboutFoundingStatementAndPopupFollowAdultHumorOnEveryOpening,everyUimsdScreenAndDialogCanBeBuilt,replacingHomeContentsDisposesPreviouslyDrawnImages,categoriesUseSpdColumnsAndEveryIconOpensItsExactBuildPopup,largeAndNamedHistoricalBuildsKeepAllIconsInScrollableNativeSections,noticeStaysAboveUsableControlsAndDoesNotChangeLockedRunOrScores,equipmentControlAcceptsTouchAndSavesOnlyNextRunPreferences,touchscreenSliderGesturesLockDirectionAndPreserveDraftAndSavedRules,allEighteenControlsAcceptNativeTouchSaveAndReopenWithoutChangingActiveRun,healingConversionSettingExplainsItsExactScopeWithoutChangingSavedValue,androidTopScoresOpensOriginalRankingsAndBackPreservesStoredHistory,nativeScorePopupsShowRecordedNeutralPendingAndUnknownThenCloseWithAndroidBack,playerReleaseNotesAreCompactBrandedAndEveryChangeOpens'
+  APD_SOURCE_SHA: a6e2f5e9aafb370ced629db01be300f6fab3f31e
+  APD_SOURCE_RUN: '38827685570'
+  APD_TEST_NUMBER: '226'
+  APD_CORE_TEST_COUNT: '1683'
+  APD_ANDROID_TEST_COUNT: '33'
+  APD_ROLLBACK_NUMBER: '224'
+  APD_ROLLBACK_SHA256: '8d88ef02cb82af29cb2bb0aefc1a847726d7e95310768be59263ee78c8cb2579'
+  APD_REQUIRED_ANDROID_METHODS: 'menusSurviveSceneRecreationAndNarrowActionsStayInsideTheirWindow,validationEmptyHistoryGroupedAndReportMessagesSurviveWithoutRepeatingActions,arcanaItemDescriptionsRequireKnownEquippedRingsAndFitWindows,textAndGuideScrollSurviveRepeatedResetsAndClampAfterResize,tourChoicesSurviveWithoutStartingATourOrRepeatingTheOffer,demoUnlockKeepsTenRunNoticeVisibleOnTitle,backWalksBackwardsOneStepPerPress,aRunCanBePlayedSavedContinuedAndEndedWithItsHistoryRecorded,tileVisibilityAndStairNavigationKeepNormalTurnsFogAndControls,aWonRunIsRecordedAsWonAndSealed,clericQuickCastsPersistAndKeepNormalCostsAndTargeting,difficultyIsChosenOnTheCharacterScreenAndNotInSettings,heroButtonsStayAboveNavigationBarAndRemainSelectable,clericLoreFirstRunPopupIsVisibleAndBackContinuesExactlyOnce,navigationOverlapReservesVisibleBarsEvenWithFullscreenRequested,communityMenuOpensEveryPreviewAndReturnsWithoutStackingWindows,adultHumorControlWorksWithoutAnAgeProviderAndReopensWithSavedChoice,offlineNewsCardsOpenDatedSpritePopups,everyAboutPopupOpensScrollsAndCloses,aboutFoundingStatementAndPopupFollowAdultHumorOnEveryOpening,everyUimsdScreenAndDialogCanBeBuilt,replacingHomeContentsDisposesPreviouslyDrawnImages,categoriesUseSpdColumnsAndEveryIconOpensItsExactBuildPopup,largeAndNamedHistoricalBuildsKeepAllIconsInScrollableNativeSections,noticeStaysAboveUsableControlsAndDoesNotChangeLockedRunOrScores,equipmentControlAcceptsTouchAndSavesOnlyNextRunPreferences,touchscreenSliderGesturesLockDirectionAndPreserveDraftAndSavedRules,allEighteenControlsAcceptNativeTouchSaveAndReopenWithoutChangingActiveRun,healingConversionSettingExplainsItsExactScopeWithoutChangingSavedValue,androidTopScoresOpensOriginalRankingsAndBackPreservesStoredHistory,nativeScorePopupsShowRecordedNeutralPendingAndUnknownThenCloseWithAndroidBack,playerReleaseNotesAreCompactBrandedAndEveryChangeOpens,nativeTouchSwitchesHistoryModesAndSystemBackReturnsToAboutWithoutLosingRecords'
 
 jobs:
   validate-and-stage:
@@ -32,11 +32,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: 3e886234e69ab128a861cfbc17bca549ba3a3456
+          ref: a6e2f5e9aafb370ced629db01be300f6fab3f31e
       - uses: actions/checkout@v4
         with:
           path: lunch-preparation
-      - name: Wait for exact TEST224 verification and resolve actual artifacts
+      - name: Wait for exact TEST226 verification and resolve actual artifacts
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -85,7 +85,9 @@ jobs:
       - name: Retrieve rollback APK for direct compatibility comparison
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release download apd-codex-test-222 --repo "$GITHUB_REPOSITORY" --pattern ADHD-Pixel-Dungeon-CODEX-TEST-222.apk --dir rollback
+        run: |
+          gh release download apd-alpha-preview-224 --repo "$GITHUB_REPOSITORY" --pattern ADHD-Pixel-Dungeon-Alpha-Preview-224.apk --dir rollback
+          mv rollback/ADHD-Pixel-Dungeon-Alpha-Preview-224.apk rollback/ADHD-Pixel-Dungeon-CODEX-TEST-224.apk
       - name: Check source, tests, checksum, signing and application ID
         env:
           GH_TOKEN: ${{ github.token }}
@@ -104,11 +106,11 @@ jobs:
           assert {'testBuild','grudge','clericPlayable'}.issubset(flags)
           print('Actual delivered APK explicitly enables private Cleric lore and Cleric play.')
           PY
-      - name: Stage the forty verified Android screenshots
+      - name: Stage all forty-two verified Android screenshots
         run: |
           mkdir -p delivery/screenshots
           cp android-reports/codex-visual-evidence/*.png delivery/screenshots/
-          test "$(find delivery/screenshots -name '*.png' | wc -l)" -eq 40
+          test "$(find delivery/screenshots -name '*.png' | wc -l)" -eq 42
           sha256sum delivery/screenshots/*.png > delivery/Android-Screenshot-Checksums.sha256
       - name: Archive verified source and reference file inventory
         run: |
@@ -120,11 +122,11 @@ jobs:
         run: |
           python3 -m pip install reportlab==4.2.5
           python3 -m unittest discover -s tools -p test_apd_bug_report_pdf.py
-          cat lunch-preparation/docs/APD-CLEAN-LANGUAGE-LOCALIZATION-2026-10-15.md lunch-preparation/docs/APD-EARLY-ALPHA-ACCEPTANCE-2026-10-16.md > delivery/acceptance-appendices.md
-          python3 tools/apd_bug_report_pdf.py lunch-preparation/docs/APD-PLAYER-RELEASE-NOTES-2026-10-15.md delivery/APD-Alpha-Preview-224.pdf --verification delivery/verification.txt --appendix delivery/acceptance-appendices.md
+          cat lunch-preparation/docs/APD-PLAYER-RELEASE-NOTES-2026-10-15.md lunch-preparation/docs/APD-EARLY-ALPHA-ACCEPTANCE-2026-10-16.md > delivery/acceptance-appendices.md
+          python3 tools/apd_bug_report_pdf.py lunch-preparation/docs/APD-ARCHIVE-RELIABILITY-2026-10-15.md delivery/APD-Alpha-Preview-226.pdf --verification delivery/verification.txt --appendix delivery/acceptance-appendices.md
       - uses: actions/upload-artifact@v4
         with:
-          name: staged-alpha-preview224
+          name: staged-alpha-preview226
           path: delivery/
           retention-days: 7
 
@@ -133,7 +135,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: staged-alpha-preview224-evidence
+          name: staged-alpha-preview226-evidence
           path: |
             delivery/*.json
             delivery/*.txt
