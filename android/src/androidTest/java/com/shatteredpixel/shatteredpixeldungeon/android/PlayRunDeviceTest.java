@@ -212,6 +212,8 @@ public class PlayRunDeviceTest {
         final com.watabou.utils.Point[] point=new com.watabou.utils.Point[1];
         try {
             onRender(()->{try {
+                for(Object child:(java.util.List<?>)field(Game.scene(), "members"))
+                    assertFalse("Pager test requires its setup modal to be closed", child instanceof com.shatteredpixel.shatteredpixeldungeon.ui.Window && ((com.shatteredpixel.shatteredpixeldungeon.ui.Window)child).visible);
                 SPDSettings.apdHotbarMode(1);com.shatteredpixel.shatteredpixeldungeon.ui.Toolbar.updateLayout();
                 com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton.refresh();
                 com.watabou.noosa.ui.Component pager=(com.watabou.noosa.ui.Component)field(field(Game.scene(),"toolbar"),"btnSwap");
@@ -272,13 +274,16 @@ public class PlayRunDeviceTest {
 					new com.shatteredpixel.shatteredpixeldungeon.items.Item[6];
 			for (int i=0; i<6; i++) classic[i] = Dungeon.quickslot.getItem(i);
 			int hp = Dungeon.hero.HP;
+            // This assertion opens either the normal list or the empty-category message.
+            // Close exactly the window(s) it creates before testing HUD touch input.
+            java.util.Set<Object> windowsBefore = new java.util.HashSet<>((java.util.List<?>)field(Game.scene(), "members"));
 			com.shatteredpixel.shatteredpixeldungeon.windows.WndCategoryHotbar.open(0);
 			assertEquals("opening category spends no health", hp, Dungeon.hero.HP);
 			assertTrue("opening category spends no turn", Dungeon.hero.ready);
 			for (int i=0; i<6; i++) org.junit.Assert.assertSame("classic assignments preserved", classic[i], Dungeon.quickslot.getItem(i));
 			for (Object child : new java.util.ArrayList<>((java.util.List<?>) field(Game.scene(), "members"))) {
-                if (child instanceof com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList) {
-                    ((com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList) child).hide();
+                if (child instanceof com.shatteredpixel.shatteredpixeldungeon.ui.Window && !windowsBefore.contains(child)) {
+                    ((com.shatteredpixel.shatteredpixeldungeon.ui.Window) child).hide();
                 }
             }
             com.shatteredpixel.shatteredpixeldungeon.items.Item food = null;
