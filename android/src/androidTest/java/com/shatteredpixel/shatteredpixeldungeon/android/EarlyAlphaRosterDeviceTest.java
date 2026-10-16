@@ -182,7 +182,7 @@ public class EarlyAlphaRosterDeviceTest {
                     assertTrue("scaled hero has positive health", Dungeon.hero.HT > 0 && Dungeon.hero.HP > 0);
                     Dungeon.hero.HP = Math.max(1, Dungeon.hero.HT - 7);
                     savedHealth[0] = Dungeon.hero.HP;
-                    Dungeon.saveAll();
+                    try { Dungeon.saveAll(); } catch (java.io.IOException failure) { throw new RuntimeException(failure); }
                     Game.switchScene(TitleScene.class);
                 });
                 waitUntil(heroClass + " saved title", () -> Game.scene() instanceof TitleScene, 30000);
