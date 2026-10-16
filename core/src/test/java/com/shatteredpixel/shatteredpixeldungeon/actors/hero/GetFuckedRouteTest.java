@@ -3502,7 +3502,82 @@ public class GetFuckedRouteTest {
         if(Boolean.getBoolean("route.freshEightFinishStrength")){
             assertEquals(680,Dungeon.hero.pos);for(int c:new int[]{712,744,776,809}){assertNull(Actor.findChar(c));assertNull(Dungeon.level.traps.get(c));click(c);assertEquals(c,Dungeon.hero.pos);assertEquals(1,Dungeon.hero.HP);}log("FRESH EIGHT ACTUAL STRENGTH ROOM WITH DISTANT SKELETON STILL ALIVE");
         }
-        if(Dungeon.hero.pos==809){click(809);Item potion=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength.class);assertNotNull(potion);potion.execute(Dungeon.hero,"DRINK");ready();assertEquals(14,Dungeon.hero.STR());assertEquals(1,Dungeon.hero.HP);log("FRESH EIGHT FOURTH STRENGTH ACTUALLY ACQUIRED AND DRUNK");}
+        if(Dungeon.hero.pos==809){click(809);Item potion=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength.class);assertNotNull(potion);potion.execute(Dungeon.hero,"DRINK");ready();assertEquals(14,Dungeon.hero.STR());assertEquals(1,Dungeon.hero.HP);log("FRESH EIGHT FOURTH STRENGTH ACTUALLY ACQUIRED AND DRUNK");if(Boolean.getBoolean("route.freshEightStrengthReserve"))freshEightStrengthReserveSection();}
+    }
+
+    private void freshEightStrengthReserveSection() throws Exception {
+        assertEquals(8,Dungeon.depth);assertEquals(809,Dungeon.hero.pos);assertEquals(14,Dungeon.hero.STR());
+        for(int n=0;n<150 && charge(Dungeon.hero.belongings.getItem(HolyTome.class))<4;n++){
+            if(Dungeon.level.mobs.stream().anyMatch(m->m.alignment==Char.Alignment.ENEMY && Dungeon.level.heroFOV[m.pos]))break;assertTrue(Dungeon.hero.buff(Hunger.class).hunger()<430);waitOne();
+        }
+        log("FRESH EIGHT ACTUAL STRENGTH ROOM RESERVE OR ENEMY BOUNDARY");if(Boolean.getBoolean("route.freshEightStrengthIntercept"))freshEightStrengthInterceptSection();
+    }
+
+    private void freshEightStrengthInterceptSection() throws Exception {
+        assertEquals(8,Dungeon.depth);assertEquals(809,Dungeon.hero.pos);Mob target=Dungeon.level.mobs.stream().filter(m->m.id()==290).findFirst().get();assertTrue(target instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Skeleton);if(!Boolean.getBoolean("route.freshEightSkipStrengthWard"))cast(HolyWard.INSTANCE,null);cast(BlessSpell.INSTANCE,Dungeon.hero.pos);
+        for(int c:new int[]{776,744}){assertNull(Actor.findChar(c));click(c);assertEquals(c,Dungeon.hero.pos);assertEquals(1,Dungeon.hero.HP);}log("FRESH EIGHT ACTUAL STRENGTH ROOM SKELETON INTERCEPTION");
+        if(Boolean.getBoolean("route.freshEightStrengthInterceptMelee")){
+            for(int n=0;n<6 && target.isAlive();n++){assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,target.pos));click(target.pos);assertEquals(1,Dungeon.hero.HP);}assertFalse(target.isAlive());log("FRESH EIGHT STRENGTH EXIT SKELETON ACTUALLY DEFEATED");if(Boolean.getBoolean("route.freshEightReturnStair"))freshEightReturnStairSection();
+        }
+    }
+
+    private void freshEightReturnStairSection() throws Exception {
+        assertEquals(8,Dungeon.depth);assertEquals(744,Dungeon.hero.pos);
+        for(int c:new int[]{712,680,647,678,710,742,774,806,838,870,901,932,963,994,1026,1058,1091,1124,1125,1126,1095,1062,1029}){
+            if(Dungeon.level.mobs.stream().anyMatch(m->m.alignment==Char.Alignment.ENEMY && m.id()!=295 && Dungeon.level.heroFOV[m.pos]))break;assertNull("Actual stair return path occupied at "+c,Actor.findChar(c));assertNull(Dungeon.level.traps.get(c));if(c==1124 && Boolean.getBoolean("route.freshEightBlindBless")){cast(BlessSpell.INSTANCE,Dungeon.hero.pos);log("FRESH EIGHT ACTUAL BLESS TWO BEFORE BLIND LIGHTNING CORNER");}click(c);assertEquals(c,Dungeon.hero.pos);assertEquals(1,Dungeon.hero.HP);if(c==1124 && Boolean.getBoolean("route.freshEightStopBlind"))break;
+        }
+        log("FRESH EIGHT ACTUAL RETURN TOWARD STAIR OR NEW ENEMY BOUNDARY");
+        if(Dungeon.hero.pos==1124 && Boolean.getBoolean("route.freshEightBlindLure"))freshEightBlindLureSection();
+        if(Dungeon.hero.pos==1029){
+            for(int n=0;n<120 && charge(Dungeon.hero.belongings.getItem(HolyTome.class))<3;n++){
+                if(Dungeon.level.mobs.stream().anyMatch(m->m.alignment==Char.Alignment.ENEMY && Dungeon.level.heroFOV[m.pos]))break;assertTrue(Dungeon.hero.buff(Hunger.class).hunger()<430);waitOne();
+            }
+            log("FRESH EIGHT ACTUAL PAID STAIR RETURN PREPARATION BOUNDARY");if(Boolean.getBoolean("route.manualTail"))manualTailSection();
+        }
+    }
+
+    private void freshEightBlindLureSection() throws Exception {
+        assertEquals(8,Dungeon.depth);assertEquals(1124,Dungeon.hero.pos);Mob target=Dungeon.level.mobs.stream().filter(m->m.id()==296).findFirst().get();assertTrue(target instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100);for(String action:System.getProperty("route.freshEightBlindLureActions","C1091,H,C1124").split(",")){freshFixedActions(target,action);if(Boolean.getBoolean("route.freshEightGeometry")){com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica ray=new com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica(target.pos,Dungeon.hero.pos,com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica.MAGIC_BOLT);System.out.println("DM_COVER_GEOMETRY "+new JSONObject().put("action",action).put("source",target.pos).put("hero",Dungeon.hero.pos).put("collision",ray.collisionPos).put("path",new JSONArray(ray.path)));}}log("FRESH EIGHT ACTUAL BLIND CORNER DM COVER LURE");
+        if(Boolean.getBoolean("route.freshEightBlindLureMelee")){
+            if(Boolean.getBoolean("route.freshEightPostLureBless")){cast(BlessSpell.INSTANCE,Dungeon.hero.pos);log("FRESH EIGHT ACTUAL SAVED WARD CHARGE SPENT ON POST LURE BLESS");}
+            for(int n=0;n<6 && target.isAlive();n++){assertTrue(Dungeon.level.adjacent(Dungeon.hero.pos,target.pos));click(target.pos);assertEquals(1,Dungeon.hero.HP);}assertFalse(target.isAlive());log("FRESH EIGHT BLIND CORNER DM ACTUALLY DEFEATED");
+            if(Dungeon.hero.pos==1091){click(1124);assertEquals(1124,Dungeon.hero.pos);}
+            for(int c:new int[]{1125,1126,1095,1062,1029}){assertNull(Actor.findChar(c));click(c);assertEquals(c,Dungeon.hero.pos);assertEquals(1,Dungeon.hero.HP);}log("FRESH EIGHT BLIND CORNER CLEARED AND ACTUAL RETURN BELOW STAIR");
+        }
+    }
+
+    //Manual commands and fixed replay only: no route search, action selection or game-state grants.
+    private void manualTailSection() throws Exception {
+        java.util.Iterator<String> recorded=System.getProperty("route.manualReplay")==null ? java.util.Collections.<String>emptyList().iterator() : java.nio.file.Files.readAllLines(java.nio.file.Path.of(System.getProperty("route.manualReplay"))).iterator();
+        boolean interactive=System.getProperty("route.manualReplay")==null || Boolean.getBoolean("route.manualContinue");
+        java.io.BufferedReader input=new java.io.BufferedReader(new java.io.InputStreamReader(System.in));
+        for(int n=0;n<10000;n++){
+            String line;
+            if(recorded.hasNext())line=recorded.next();else if(interactive){System.out.println("MANUAL_READY");System.out.flush();line=input.readLine();}else break;
+            if(line==null || line.trim().equals("END"))break;line=line.trim();if(line.isEmpty() || line.startsWith("#"))continue;
+            if(System.getProperty("route.manualJournal")!=null)java.nio.file.Files.writeString(java.nio.file.Path.of(System.getProperty("route.manualJournal")),line+"\n",java.nio.charset.StandardCharsets.UTF_8,java.nio.file.StandardOpenOption.CREATE,java.nio.file.StandardOpenOption.APPEND);
+            System.out.println("MANUAL_COMMAND "+line);int divider=line.indexOf('|');assertTrue("Manual line is explicit target-id|commands",divider>0);int targetId=Integer.parseInt(line.substring(0,divider));Mob target=null;
+            if(targetId>=0){Actor actor=Actor.findById(targetId);assertTrue(actor instanceof Mob);target=(Mob)actor;assertEquals(Char.Alignment.ENEMY,target.alignment);}
+            for(String action:line.substring(divider+1).split(",")){
+                if(action.equals("B"))cast(BlessSpell.INSTANCE,Dungeon.hero.pos);
+                else if(action.equals("F"))activateOwnedHourglassFreeze();
+                else if(action.equals("N"))activateOwnedHourglassStasis();
+                else if(action.equals("P")){Dungeon.hero.search(true);ready();log("MANUAL ACTUAL PAID SEARCH");}
+                else if(action.startsWith("Z")){Talent talent=Talent.valueOf(action.substring(1));int tier=-1;for(int k=0;k<Dungeon.hero.talents.size();k++)if(Dungeon.hero.talents.get(k).containsKey(talent))tier=k;assertTrue(tier>=0);assertTrue(Dungeon.hero.talentPointsAvailable(tier+1)>0);assertTrue(Dungeon.hero.pointsInTalent(talent)<talent.maxPoints());Dungeon.hero.upgradeTalent(talent);log("MANUAL EARNED TALENT "+talent.name());}
+                else if(action.startsWith("X")){int at=action.lastIndexOf('@');assertTrue(at>1);Class<? extends Item> type=Class.forName("com.shatteredpixel.shatteredpixeldungeon.items."+action.substring(1,at)).asSubclass(Item.class);throwItem(type,Integer.parseInt(action.substring(at+1)));}
+                else if(action.startsWith("H") && action.length()>1){int count=Integer.parseInt(action.substring(1));assertTrue(count>=0 && count<=500);for(int k=0;k<count;k++)waitOne();}
+                else if(action.startsWith("a")){assertNotNull(target);int count=Integer.parseInt(action.substring(1));assertTrue(count>0 && count<=30);for(int k=0;k<count && target.isAlive();k++)freshFixedActions(target,"A");}
+                else if(action.startsWith("G"))click(Integer.parseInt(action.substring(1)));
+                else if(action.startsWith("J"))jumpIntoKnownChasm(Integer.parseInt(action.substring(1)));
+                else if(action.equals("V"))System.out.println("FLOOR_LAYOUT "+new JSONObject().put("depth",Dungeon.depth).put("width",Dungeon.level.width()).put("height",Dungeon.level.height()).put("terrain",new JSONArray(Dungeon.level.map)).put("entrance",Dungeon.level.entrance()).put("exit",Dungeon.level.exit()));
+                else if(action.startsWith("D") || action.startsWith("E") || action.startsWith("Q") || action.startsWith("U")){
+                    Class<? extends Item> itemType=Class.forName("com.shatteredpixel.shatteredpixeldungeon.items."+action.substring(1)).asSubclass(Item.class);Item item=Dungeon.hero.belongings.getItem(itemType);assertNotNull("Manual action requires an actually owned item",item);
+                    if(action.startsWith("U"))upgradeOwnedGear(item);else{String itemAction=action.startsWith("D")?"DRINK":action.startsWith("E")?"EAT":"EQUIP";assertTrue(item.actions(Dungeon.hero).contains(itemAction));item.execute(Dungeon.hero,itemAction);if(itemAction.equals("EQUIP"))Dungeon.hero.busy();ready();log("MANUAL OWNED "+itemAction+" "+itemType.getSimpleName());}
+                }else {if(action.equals("S") || action.equals("L") || action.equals("T") || action.equals("A"))assertNotNull(target);freshFixedActions(target,action);}
+                assertEquals(1,Dungeon.hero.HT);assertEquals(1,Dungeon.hero.HP);
+            }
+            log("MANUAL_BOUNDARY");
+        }
     }
 
 }

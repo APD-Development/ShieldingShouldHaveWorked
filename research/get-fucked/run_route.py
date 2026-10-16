@@ -8,11 +8,15 @@ compile_source=Path(compile_snapshot.name)/"GetFuckedRouteTest.java"
 compile_source.write_bytes(route_source)
 r=Path('research/runtime').resolve()
 cp=':'.join([str(r)]+[str(p) for p in r.glob('*.jar')])
-subprocess.run(['java','com.sun.tools.javac.Main','-cp',cp,'-d',str(r),str(compile_source)],check=True)
+compiled_classes=Path(compile_snapshot.name)/'classes'
+compiled_classes.mkdir()
+subprocess.run(['java','com.sun.tools.javac.Main','-cp',cp,'-d',str(compiled_classes),str(compile_source)],check=True)
+cp=str(compiled_classes)+':'+cp
 outpath=Path(sys.argv[1])
 with outpath.open('w') as out:
  result=subprocess.run(['java']+sys.argv[2:]+['-Droute.noSnapshots=true','-javaagent:'+str(r/'byte-buddy-agent-1.15.4.jar'),'-cp',cp,'org.junit.runner.JUnitCore','com.shatteredpixel.shatteredpixeldungeon.actors.hero.GetFuckedRouteTest'],cwd=r/'assets',stdout=out,stderr=subprocess.STDOUT)
 verification_missing=(result.returncode==0 and any(v.startswith('-Droute.expectedEnd=') for v in sys.argv[2:]) and 'CONNECTED_ENDPOINT_STATE_AND_' not in outpath.read_text()) or (result.returncode==0 and '-Droute.expectedNativeState=true' in sys.argv[2:] and 'CONNECTED_FULL_NATIVE_JSON_AND_RNG_VERIFIED' not in outpath.read_text())
+if result.returncode==0 and '-Droute.manualTail=true' in sys.argv[2:] and 'MANUAL_BOUNDARY' not in outpath.read_text():verification_missing=True
 if result.returncode==0 and '-Droute.expectedNativeFiles=true' in sys.argv[2:] and 'CONNECTED_ALL_NATIVE_FILES_AND_ACTIVE_RNG_VERIFIED' not in outpath.read_text():verification_missing=True
 if verification_missing:
  print('FAIL: requested endpoint/native comparison did not execute')
