@@ -10,7 +10,7 @@ permissions:
 jobs:
   scenarios:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -31,6 +31,20 @@ jobs:
           name: get-fucked-existing-engine-runtime
           path: core/build/get-fucked-runtime/
           retention-days: 7
+      - name: Replay fresh level-one Cleric through earned Mail three and secret-library consumables
+        run: |
+          mkdir -p "$RUNNER_TEMP/get-fucked-library"
+          tar -xJf research/get-fucked/floor-twelve-library-provenance.tar.xz -C "$RUNNER_TEMP/get-fucked-library"
+          python3 - <<'PYCODE'
+          import json, os, subprocess
+          root=os.environ['RUNNER_TEMP']+'/get-fucked-library'
+          args=json.load(open(root+'/manual-twelve-east-independent-args.json'))
+          props={a[2:].split('=',1)[0]:a.split('=',1)[1] for a in args if a.startswith('-D') and '=' in a}
+          props.pop('route.expectedMissileIdEquivalence',None)
+          props.update({'route.testTimeoutSeconds':'240','route.stableHash':'true','route.noSnapshots':'true','route.manualReplay':root+'/manual-twelve-east-complete.journal','route.manualContinue':'false','route.manualJournal':root+'/actual-library-replay.journal','route.expectedEnd':root+'/native/manual-twelve-east-end','route.expectedActiveRngOnly':'true','route.earlySwarmOut':root+'/actual-fresh-library'})
+          subprocess.run(['./gradlew',':core:test','--tests','*GetFuckedRouteTest']+['-D'+k+'='+v for k,v in props.items()],check=True)
+          subprocess.run(['python3','research/get-fucked/native_equivalence.py',props['route.expectedEnd'],props['route.earlySwarmOut']],check=True)
+          PYCODE
       - name: Replay uninterrupted level-one Cleric through actual wands and the original chasm kill
         run: |
           mkdir -p "$RUNNER_TEMP/get-fucked-fresh-goo"

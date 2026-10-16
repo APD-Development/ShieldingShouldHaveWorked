@@ -66,6 +66,10 @@ public class GetFuckedRouteTest {
         if(ch instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo)doAnswer(i->{ch.onAttackComplete();return null;}).when((com.shatteredpixel.shatteredpixeldungeon.sprites.GooSprite)sprite).pumpAttack();
         if(ch instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Necromancer)
             doAnswer(i->{com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Necromancer necro=(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Necromancer)ch;if(!necro.summoning)necro.onZapComplete();return null;}).when(sprite).zap(anyInt());
+        if(ch instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Shaman)
+            doAnswer(i->{((com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Shaman)ch).onZapComplete();return null;}).when(sprite).zap(anyInt());
+        if(ch instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Spinner)
+            doAnswer(i->{((com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Spinner)ch).shootWeb();return null;}).when(sprite).zap(anyInt());
         if(ch==Dungeon.hero)doAnswer(i -> {ch.onOperateComplete();return null;}).when((HeroSprite)sprite).read();
         Group parent=mock(Group.class,i -> {
             if(i.getMethod().getName().equals("recycle") && i.getArguments().length==1 && i.getArgument(0) instanceof Class)
@@ -88,6 +92,7 @@ public class GetFuckedRouteTest {
         doAnswer(i -> {((Callback)i.getArgument(3)).call();return null;}).when(missile).reset(any(Visual.class),anyInt(),any(Item.class),any(Callback.class));
         when(sprite.center()).thenReturn(new PointF());
         doAnswer(i -> { ch.onAttackComplete(); return null; }).when(sprite).attack(anyInt());
+        doAnswer(i -> { ((Callback)i.getArgument(1)).call(); return null; }).when(sprite).attack(anyInt(),any(Callback.class));
         doAnswer(i -> { ch.onOperateComplete(); return null; }).when(sprite).operate(anyInt());
         doAnswer(i -> { ch.onMotionComplete(); return null; }).when(sprite).move(anyInt(), anyInt());
     }
@@ -231,7 +236,7 @@ public class GetFuckedRouteTest {
         Collections.reverse(visuals); for (MockedStatic<?> m : visuals) m.close();
     }
     private void ready() {
-        for (int steps=0; steps<10000; steps++) {
+        for (int steps=0; steps<Integer.getInteger("route.inputBoundaryLimit",10000); steps++) {
             if(pendingTransition){
                 pendingTransition=false;
                 try {
@@ -445,6 +450,7 @@ public class GetFuckedRouteTest {
         }
         assertEquals("Maximum HP must stay exactly one",1,Dungeon.hero.HT);assertTrue("Current HP exceeds one",Dungeon.hero.HP<=1);
         System.out.println("ROUTE "+state(s));
+        for(Item owned:Dungeon.hero.belongings)if(owned instanceof com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand){com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand wand=(com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand)owned;System.out.println("WAND_DETAIL "+s+" type="+wand.getClass().getSimpleName()+" charge="+wand.curCharges+" partial="+wand.partialCharge);}
         if(Dungeon.depth>=10)System.out.println("CLASS_DETAIL "+s+" subclass="+Dungeon.hero.subClass.name()+" gold="+Dungeon.gold+" energy="+Dungeon.energy);
         JSONArray buffs=new JSONArray();
         for(Buff b:Dungeon.hero.buffs()){
@@ -545,6 +551,14 @@ public class GetFuckedRouteTest {
     @Test public void seed266InitialCommands() throws Exception {
         System.out.println("RUNNER_STAGE scheduler start");
         ready();
+        if(Boolean.getBoolean("route.earnedManual")){
+            assertNotNull("Continuation requires the actual earned native save",System.getProperty("route.resume"));
+            verifyCheckpoint(System.getProperty("route.resume"));
+            assertEquals(Challenges.GET_FUCKED,Dungeon.challenges);
+            manualTailSection();
+            assertNotNull(System.getProperty("route.earlySwarmOut"));writeCheckpoint(System.getProperty("route.earlySwarmOut"));
+            verifyExpectedEnd();return;
+        }
         if(Boolean.getBoolean("route.liveSevenUpgradeProbe")){
             assertNotNull(System.getProperty("route.resume"));verifyCheckpoint(System.getProperty("route.resume"));assertEquals(7,Dungeon.depth);assertEquals(538,Dungeon.hero.pos);
             for(int n=0;n<180;n++){if(Dungeon.level.mobs.stream().anyMatch(m->Dungeon.level.heroFOV[m.pos]))break;waitOne();}
@@ -3602,6 +3616,8 @@ public class GetFuckedRouteTest {
             for(String action:line.substring(divider+1).split(",")){
                 if(action.equals("B"))cast(BlessSpell.INSTANCE,Dungeon.hero.pos);
                 else if(action.equals("F"))activateOwnedHourglassFreeze();
+                else if(action.equals("s")){assertNotNull(target);assertTrue(ClericSpell.getSpellList(Dungeon.hero,3).contains(Smite.INSTANCE));cast(Smite.INSTANCE,target.pos);}
+                else if(action.equals("b"))cast(LayOnHands.INSTANCE,Dungeon.hero.pos);
                 else if(action.equals("I")){assertTrue(ClericSpell.getSpellList(Dungeon.hero,1).contains(HolyWeapon.INSTANCE));cast(HolyWeapon.INSTANCE,null);}
                 else if(action.equals("N"))activateOwnedHourglassStasis();
                 else if(action.startsWith("M"))chooseOwnedSubclassThroughOriginalConfirmation(HeroSubClass.valueOf(action.substring(1)));
@@ -3630,7 +3646,7 @@ public class GetFuckedRouteTest {
                     if(locked!=null){Field left=locked.getClass().getDeclaredField("left");left.setAccessible(true);detail.put("regenClock",left.getFloat(locked)).put("regenOn",locked.regenOn());}
                     if(Dungeon.level instanceof com.shatteredpixel.shatteredpixeldungeon.levels.PrisonBossLevel)detail.put("bossState",((com.shatteredpixel.shatteredpixeldungeon.levels.PrisonBossLevel)Dungeon.level).state());
                     JSONArray traps=new JSONArray();for(com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap trap:Dungeon.level.traps.valueList())traps.put(new JSONObject().put("pos",trap.pos).put("type",trap.getClass().getSimpleName()).put("active",trap.active).put("visible",trap.visible));detail.put("traps",traps);
-                    JSONArray blobs=new JSONArray();for(Blob blob:Dungeon.level.blobs.values()){JSONArray cells=new JSONArray();if(blob.cur!=null)for(int c=0;c<blob.cur.length;c++)if(blob.cur[c]>0)cells.put(new JSONArray().put(c).put(blob.cur[c]));if(cells.length()>0)blobs.put(new JSONObject().put("type",blob.getClass().getSimpleName()).put("cells",cells).put("cooldown",blob.cooldown()));}detail.put("blobs",blobs);
+                    JSONArray blobs=new JSONArray();for(Blob blob:Dungeon.level.blobs.values()){JSONArray cells=new JSONArray();if(blob.cur!=null)for(int c=0;c<blob.cur.length;c++)if(blob.cur[c]>0)cells.put(new JSONArray().put(c).put(blob.cur[c]));if(cells.length()>0)blobs.put(new JSONObject().put("type",blob.getClass().getSimpleName()).put("cells",cells).put("cooldown",blob.cooldown()));}detail.put("blobs",blobs);detail.put("mobs",state("DIAGNOSTIC_READ_ONLY").getJSONArray("mobs"));
                     System.out.println("MANUAL_DIAGNOSTIC "+detail);
                 }
                 else if(action.startsWith("D") || action.startsWith("E") || action.startsWith("Q") || action.startsWith("U") || action.startsWith("R")){
