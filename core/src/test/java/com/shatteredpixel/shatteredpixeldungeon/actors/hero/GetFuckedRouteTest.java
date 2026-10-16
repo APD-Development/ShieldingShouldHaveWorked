@@ -123,6 +123,16 @@ public class GetFuckedRouteTest {
             return Answers.RETURNS_DEFAULTS.answer(invocation);
         });
         visuals.add(scene);
+        if(Boolean.getBoolean("route.traceCombat")){
+            MockedStatic<com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdCombat> combatTrace=mockStatic(com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdCombat.class,invocation->{
+                String method=invocation.getMethod().getName();Object[] args=invocation.getArguments();
+                if(Dungeon.depth>=10 && (method.equals("onAttackDetail") || method.equals("onAttackRolled") || method.equals("onMagicRoll") || method.equals("onDamage") || method.equals("onHeroDying"))){
+                    JSONArray values=new JSONArray();for(Object arg:args){if(arg instanceof Char){Char ch=(Char)arg;values.put(new JSONObject().put("type",ch.getClass().getSimpleName()).put("id",ch.id()).put("pos",ch.pos));}else if(arg==null || arg instanceof Number || arg instanceof Boolean)values.put(arg);else values.put(arg instanceof Class?((Class)arg).getName():arg.getClass().getName());}
+                    System.out.println("COMBAT_TRACE "+new JSONObject().put("event",method).put("depth",Dungeon.depth).put("totalTime",Statistics.duration+Actor.now()).put("values",values));
+                }
+                return invocation.callRealMethod();
+            });visuals.add(combatTrace);
+        }
         upgradeWindows=mockConstruction(com.shatteredpixel.shatteredpixeldungeon.windows.WndUpgrade.class,(window,contextArgs)->{
             Class<?> buttonClass=Class.forName("com.shatteredpixel.shatteredpixeldungeon.windows.WndUpgrade$1");
             upgradeButton=mock(buttonClass,CALLS_REAL_METHODS);
@@ -421,7 +431,7 @@ public class GetFuckedRouteTest {
             JSONArray hazards=new JSONArray();
             for(Buff b:m.buffs()){
                 JSONObject v=new JSONObject().put("type",b.getClass().getSimpleName());
-                for(String name:new String[]{"bombPos","timer","shockerPos","shockingOrdinals","direction","curPos"})try{Field f=b.getClass().getDeclaredField(name);f.setAccessible(true);v.put(name,f.get(b));}catch(NoSuchFieldException ignored){}catch(Exception e){throw new RuntimeException(e);}
+                for(String name:new String[]{"bombPos","timer","shockerPos","shockingOrdinals","direction","curPos","curCells"})try{Field f=b.getClass().getDeclaredField(name);f.setAccessible(true);v.put(name,f.get(b));}catch(NoSuchFieldException ignored){}catch(Exception e){throw new RuntimeException(e);}
                 hazards.put(v);
             }
             System.out.println("TENGU_HAZARDS "+s+" "+hazards);
@@ -3577,6 +3587,7 @@ public class GetFuckedRouteTest {
                     if(locked!=null){Field left=locked.getClass().getDeclaredField("left");left.setAccessible(true);detail.put("regenClock",left.getFloat(locked)).put("regenOn",locked.regenOn());}
                     if(Dungeon.level instanceof com.shatteredpixel.shatteredpixeldungeon.levels.PrisonBossLevel)detail.put("bossState",((com.shatteredpixel.shatteredpixeldungeon.levels.PrisonBossLevel)Dungeon.level).state());
                     JSONArray traps=new JSONArray();for(com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap trap:Dungeon.level.traps.valueList())traps.put(new JSONObject().put("pos",trap.pos).put("type",trap.getClass().getSimpleName()).put("active",trap.active).put("visible",trap.visible));detail.put("traps",traps);
+                    JSONArray blobs=new JSONArray();for(Blob blob:Dungeon.level.blobs.values()){JSONArray cells=new JSONArray();if(blob.cur!=null)for(int c=0;c<blob.cur.length;c++)if(blob.cur[c]>0)cells.put(new JSONArray().put(c).put(blob.cur[c]));if(cells.length()>0)blobs.put(new JSONObject().put("type",blob.getClass().getSimpleName()).put("cells",cells).put("cooldown",blob.cooldown()));}detail.put("blobs",blobs);
                     System.out.println("MANUAL_DIAGNOSTIC "+detail);
                 }
                 else if(action.startsWith("D") || action.startsWith("E") || action.startsWith("Q") || action.startsWith("U") || action.startsWith("R")){
