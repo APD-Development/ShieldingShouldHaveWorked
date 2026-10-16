@@ -29,7 +29,23 @@
         "docs/HANDOFF.md",
         "docs/APD-NEXT-BUILD-HISTORY.json"
       ]
+    },
+    {
+      "category": "Bug Fixes",
+      "sprite": "ICON_WARNING",
+      "title": "Restore the circular vault sentry interval",
+      "text": "Circular Imp-vault sentries advance every two turns as in upstream SPD; affected saved-floor sentries retain their scan phase, geometry and upcoming countdown.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/rooms/quest/vault/VaultCircleRoom.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/VaultCircleTimingTest.java",
+        ".github/workflows/codex-vault-circle-timing-acceptance.yml",
+        "core/src/main/assets/apd/releases/apd-alpha-preview.tsv",
+        "docs/APD-VAULT-CIRCLE-TIMING-2026-10-16.md",
+        "docs/APD-CODEX-BUILD-REQUEST.txt",
+        "docs/APD-NEXT-BUILD-HISTORY.json",
+        "docs/HANDOFF.md"
+      ]
     }
   ],
-  "commentary": "Four diagnostic regressions introduce no production changes. TEST240 remains the preceding actually produced APK; this core-only verification creates no APK."
+  "commentary": "TEST240 remains the immediate previous produced APK. The circular vault sentry interval correction preserves existing room patterns, with bounded save-load repair. Exact original/corrected and full application gates remain required; no physical-phone or publication claim."
 }

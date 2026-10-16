@@ -14,4 +14,5 @@ Bug Fixes	ICON_ENTER	Saved entrance repair	Older affected first-floor saves can 
 Statistics / UIMSD	ICON_COPY	Consistent shared histories	Quickly resumed runs now use the correct finished or unfinished state when deciding what their shared history can reveal.
 Statistics / UIMSD	ICON_WARNING	Incomplete export warnings	Exports of damaged or unreadable history retain an incomplete-data warning instead of presenting surviving statistics as complete.
 Statistics / UIMSD	ICON_WARNING	Incomplete table totals	Item and enemy tables retain incomplete-data warnings when a recorded event cannot be read.
+Bug Fixes	ICON_WARNING	Rotating vault sentry	The circular Imp-vault sentry uses the normal two-turn scan interval; existing affected floors retain their saved position and scan phase.
 Developer Commentary	ICON_INFO	Developer Commentary	I'm bringing APD's statistics and difficulty customization together for the early-alpha preview. Custom scoring is still in development, and the current settings preserve original earned scores.
