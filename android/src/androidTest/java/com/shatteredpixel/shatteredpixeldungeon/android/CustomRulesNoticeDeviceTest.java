@@ -377,7 +377,7 @@ public class CustomRulesNoticeDeviceTest {
                             assertTrue(rule+"="+value,caption);
                             RenderedTextBlock combined=(RenderedTextBlock)field(window[0],"combined");
                             assertTrue(combined.text().endsWith(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomRuleMultipliers.format(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomRuleMultipliers.combined(draft))));
-                            assertTrue(combined.right()<=window[0].width()+0.01f);
+                            assertTrue(combined.right()<=com.shatteredpixel.shatteredpixeldungeon.apd.query.WindowGeometry.width(PixelScene.landscape(),PixelScene.uiCamera.width)+0.01f);
                         }
                     }
                     window[0].hide();SPDSettings.apdCustomRules(CustomDungeonRules.defaults());window[0]=new WndCustomDungeonRules();Game.scene().addToFront(window[0]);
