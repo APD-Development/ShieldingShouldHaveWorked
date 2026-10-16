@@ -14,6 +14,8 @@ import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules;
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomRuleMultipliers;
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomScoreSnapshot;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene;
@@ -147,6 +149,7 @@ public class EarlyAlphaRosterDeviceTest {
             HeroClass previousSelected = GamesInProgress.selectedClass;
             try {
                 CustomDungeonRules expected = acceptanceRules();
+                String expectedMultiplier = CustomRuleMultipliers.combined(expected).toPlainString();
             int completed = 0;
 
             for (HeroClass heroClass : HeroClass.values()) {
@@ -178,6 +181,11 @@ public class EarlyAlphaRosterDeviceTest {
                     assertArrayEquals(expected.values(), Dungeon.customRules().values());
                     assertEquals(5, Dungeon.difficulty);
                     assertEquals(511, Dungeon.challenges);
+                    assertNotNull(Dungeon.customScoring());
+                    assertEquals(CustomScoreSnapshot.VERSION, Dungeon.customScoring().recordVersion);
+                    assertEquals(CustomScoreSnapshot.Status.EXPERIMENTAL, Dungeon.customScoring().status);
+                    assertEquals(CustomRuleMultipliers.VERSION, Dungeon.customScoring().calculationVersion);
+                    assertEquals(expectedMultiplier, Dungeon.customScoring().multiplierExact);
                     assertTrue("scaled hero has positive health", Dungeon.hero.HT > 0 && Dungeon.hero.HP > 0);
                     Dungeon.hero.HP = Math.max(1, Dungeon.hero.HT - 7);
                     savedHealth[0] = Dungeon.hero.HP;
@@ -205,6 +213,11 @@ public class EarlyAlphaRosterDeviceTest {
                     assertArrayEquals(expected.values(), Dungeon.customRules().values());
                     assertEquals(5, Dungeon.difficulty);
                     assertEquals(511, Dungeon.challenges);
+                    assertNotNull(Dungeon.customScoring());
+                    assertEquals(CustomScoreSnapshot.VERSION, Dungeon.customScoring().recordVersion);
+                    assertEquals(CustomScoreSnapshot.Status.EXPERIMENTAL, Dungeon.customScoring().status);
+                    assertEquals(CustomRuleMultipliers.VERSION, Dungeon.customScoring().calculationVersion);
+                    assertEquals(expectedMultiplier, Dungeon.customScoring().multiplierExact);
                     assertEquals(savedHealth[0], Dungeon.hero.HP);
                     Game.switchScene(TitleScene.class);
                 });

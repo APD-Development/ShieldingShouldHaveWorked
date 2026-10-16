@@ -26,17 +26,17 @@ jobs:
         with:
           distribution: temurin
           java-version: '21'
-      - name: Reuse the exact verified TEST241 application
+      - name: Reuse the exact verified TEST249 application
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           python3 - <<'PY'
           import hashlib,json,os,pathlib,subprocess,zipfile
           repo=os.environ['GITHUB_REPOSITORY']
-          source='b5d562ca37fff9ac628af3f4ade731e9fa7d83f1'
-          run_id='38894980574'
-          artifact_id='12043946029'
-          expected='99ca269dbebcd19266dbf4e27aca798252ed3d3b021f97b730915cbbea52b7f4'
+          source='37a8f6d16cd497e13ed581e887ed9d4858fe97aa'
+          run_id='38914965700'
+          artifact_id='12051339058'
+          expected='dcda79a5c6c83b1ac88e5294b3b134c8e1483109929b3a8da5365e7eadc8536e'
           assert json.loads(subprocess.check_output(['gh','api','repos/'+repo]))['private']
           run=json.loads(subprocess.check_output(['gh','api','repos/'+repo+'/actions/runs/'+run_id]))
           assert run['status']=='completed' and run['conclusion']=='success' and run['head_sha']==source
@@ -47,7 +47,7 @@ jobs:
                      'gradle']
           differences=subprocess.check_output(['git','diff','--name-only',source,'HEAD','--']+protected,text=True)
           pathlib.Path('acceptance-protected-differences.txt').write_text(differences)
-          # Detach the disposable checkout at exact TEST241 so files added by a
+          # Detach the disposable checkout at exact TEST249 so files added by a
           # newer application candidate cannot leak into compilation. Restore
           # only this acceptance test; androidTest is outside protected inputs.
           test_path='android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/EarlyAlphaRosterDeviceTest.java'
@@ -56,16 +56,16 @@ jobs:
           pathlib.Path(test_path).parent.mkdir(parents=True,exist_ok=True)
           pathlib.Path(test_path).write_bytes(test_source)
           subprocess.run(['git','diff','--exit-code',source,'--']+protected,check=True)
-          with open('verified-test241.zip','wb') as output:
+          with open('verified-test249.zip','wb') as output:
               subprocess.run(['gh','api','repos/'+repo+'/actions/artifacts/'+artifact_id+'/zip'],
                              stdout=output,check=True)
-          with zipfile.ZipFile('verified-test241.zip') as archive:
+          with zipfile.ZipFile('verified-test249.zip') as archive:
               names=[name for name in archive.namelist() if name.endswith('.apk')]
               assert len(names)==1
               apk=archive.read(names[0])
           digest=hashlib.sha256(apk).hexdigest()
           assert digest==expected,(digest,expected)
-          pathlib.Path('verified-test241.apk').write_bytes(apk)
+          pathlib.Path('verified-test249.apk').write_bytes(apk)
           pathlib.Path('acceptance-source.json').write_text(json.dumps({
               'application_source':source,'application_run':int(run_id),
               'application_artifact':int(artifact_id),'application_sha256':digest,
@@ -87,7 +87,7 @@ jobs:
             --tests '*BossPhaseDamageProvenanceTest' \
             --tests '*CustomBossHealthSliderTest'
       - name: Compile the new instrumentation package
-        run: ./gradlew :android:assembleDebugAndroidTest -PapdTestBuild -PapdBuild=C241
+        run: ./gradlew :android:assembleDebugAndroidTest -PapdTestBuild -PapdBuild=C249
       - name: Enable emulator acceleration
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
@@ -101,7 +101,7 @@ jobs:
           target: default
           disable-animations: true
           script: |
-            adb install -r verified-test241.apk
+            adb install -r verified-test249.apk
             adb install -r android/build/outputs/apk/androidTest/debug/android-debug-androidTest.apk
             adb logcat -c
             timeout 900 adb shell am instrument -w -r -e class com.shatteredpixel.shatteredpixeldungeon.android.EarlyAlphaRosterDeviceTest#allSixClassesStartSaveAndContinueWithLockedExtremeRules com.charltonchris29.adhdpixeldungeon.indev.test/androidx.test.runner.AndroidJUnitRunner | tee early-alpha-roster-instrumentation.txt
@@ -117,7 +117,7 @@ jobs:
           pathlib.Path('early-alpha-roster-result.json').write_text(json.dumps({
             'instrumented_methods':1,'classes':6,'start_save_continue':True,
             'locked_custom_rule_values':18,'difficulty':5,'challenges':9,
-            'api_level':34,'application_reused':'TEST241',
+            'api_level':34,'application_reused':'TEST249',
             'physical_device':False,'failures':0,'errors':0,'skipped':0
           },indent=2))
           PY
