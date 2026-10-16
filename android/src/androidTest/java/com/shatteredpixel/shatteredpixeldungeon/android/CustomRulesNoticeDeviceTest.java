@@ -219,11 +219,17 @@ public class CustomRulesNoticeDeviceTest {
         }
     }
 
-    private static void androidSwipe(Point from,Point to,int duration,int steps,boolean cancel)throws Exception {
+    private static void androidSwipe(Point from,Point to,int duration,int steps,boolean cancel,OptionSlider slider,int gestureIndex)throws Exception {
         android.app.Instrumentation instrumentation=InstrumentationRegistry.getInstrumentation();
         long down=android.os.SystemClock.uptimeMillis();
         android.view.MotionEvent event=android.view.MotionEvent.obtain(down,down,android.view.MotionEvent.ACTION_DOWN,from.x,from.y,0);
         event.setSource(android.view.InputDevice.SOURCE_TOUCHSCREEN);instrumentation.sendPointerSync(event);event.recycle();
+        final boolean[] acknowledged={false};long by=System.currentTimeMillis()+3000;
+        while(!acknowledged[0]&&System.currentTimeMillis()<by){
+            render(()->{try{acknowledged[0]=(Boolean)field(field(slider,"pointerArea"),"pressed");}catch(Exception e){throw new RuntimeException(e);}});
+            if(!acknowledged[0])Thread.sleep(40);
+        }
+        assertTrue("Native DOWN did not reach gesture "+gestureIndex+" at "+from,acknowledged[0]);
         for(int i=1;i<=steps;i++){
             Thread.sleep(Math.max(1,duration/steps));
             event=android.view.MotionEvent.obtain(down,android.os.SystemClock.uptimeMillis(),android.view.MotionEvent.ACTION_MOVE,
@@ -240,7 +246,7 @@ public class CustomRulesNoticeDeviceTest {
             assertNotNull(Game.scene());Thread.sleep(1500);
             CustomDungeonRules saved=SPDSettings.apdCustomRules();final WndCustomDungeonRules[] window=new WndCustomDungeonRules[1];
             final CustomDungeonRules active=Dungeon.customRules();final int score=com.shatteredpixel.shatteredpixeldungeon.Statistics.totalScore;
-            final Point[] points=new Point[2];final float[] beforeScroll=new float[1];final int[] beforeValue=new int[1];
+            final Point[] points=new Point[2];final OptionSlider[] gestureSlider=new OptionSlider[1];final float[] beforeScroll=new float[1];final int[] beforeValue=new int[1];
             // Vertical, vertical diagonal, long, short, rapid; horizontal and horizontal diagonal; tap and cancel.
             int[][] gestures={{0,-18,180,12},{10,-25,180,12},{2,-70,220,16},{0,-2,25,1},
                     {1,-18,30,3},{35,0,180,12},{35,-9,180,12},{0,0,30,1},{35,0,180,12}};
@@ -255,12 +261,23 @@ public class CustomRulesNoticeDeviceTest {
                         points[0]=slider.camera().cameraToScreen(slider.left()+slider.width()*0.35f,slider.bottom()-7);
                         points[1]=slider.camera().cameraToScreen(slider.left()+slider.width()*0.35f+gesture[0],slider.bottom()-7+gesture[1]);
                     }catch(Exception e){throw new RuntimeException(e);}});
-                    androidSwipe(points[0],points[1],gesture[2],gesture[3],cancelled);
+                    // A newly attached scroll camera is realized on the next frame.
+                    // Sample that camera and require the actual DOWN before moving.
+                    Thread.sleep(300);
+                    render(()->{try {
+                        OptionSlider slider=find(window[0],OptionSlider.class).get(0);gestureSlider[0]=slider;
+                        ScrollPane scroll=(ScrollPane)field(window[0],"scroll");
+                        beforeScroll[0]=scroll.content().camera().scroll.y;beforeValue[0]=slider.getSelectedValue();
+                        points[0]=slider.camera().cameraToScreen(slider.left()+slider.width()*0.35f,slider.bottom()-7);
+                        points[1]=slider.camera().cameraToScreen(slider.left()+slider.width()*0.35f+gesture[0],slider.bottom()-7+gesture[1]);
+                    }catch(Exception e){throw new RuntimeException(e);}});
+                    final int gestureIndex=n;
+                    androidSwipe(points[0],points[1],gesture[2],gesture[3],cancelled,gestureSlider[0],gestureIndex);
                     final boolean vertical=n<5;
                     render(()->{try {
                         OptionSlider slider=find(window[0],OptionSlider.class).get(0);ScrollPane scroll=(ScrollPane)field(window[0],"scroll");
                         if(vertical){assertEquals("Vertical touch must not adjust a slider",beforeValue[0],slider.getSelectedValue());
-                            assertTrue("Vertical touch over slider scrolls the pane",scroll.content().camera().scroll.y>beforeScroll[0]);}
+                            assertTrue("Vertical gesture "+gestureIndex+" must scroll: before="+beforeScroll[0]+" after="+scroll.content().camera().scroll.y+" from="+points[0]+" to="+points[1],scroll.content().camera().scroll.y>beforeScroll[0]);}
                         else {assertEquals("Horizontal/tap touch must not scroll",beforeScroll[0],scroll.content().camera().scroll.y,0.01f);
                             if(cancelled)assertEquals(beforeValue[0],slider.getSelectedValue());else assertNotEquals(beforeValue[0],slider.getSelectedValue());}
                         assertTrue("Draft stays unsaved",SPDSettings.apdCustomRules().isNeutral());assertSame(active,Dungeon.customRules());

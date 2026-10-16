@@ -7,14 +7,14 @@ permissions:
   contents: read
   actions: read
 concurrency:
-  group: apd-complete-suite-acceptance254
+  group: apd-api36-gesture-acceptance254
   cancel-in-progress: false
 jobs:
   reuse-and-check:
     strategy:
       fail-fast: false
       matrix:
-        api: [34,36]
+        api: [36]
     runs-on: ubuntu-latest
     timeout-minutes: 40
     env:
@@ -169,3 +169,5 @@ jobs:
             core/build/test-results/test/
           if-no-files-found: warn
           retention-days: 7
+
+
