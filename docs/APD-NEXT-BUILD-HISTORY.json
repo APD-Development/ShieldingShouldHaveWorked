@@ -5,6 +5,21 @@
   "previous_label": "Codex TEST 241",
   "changes": [
     {
+      "category": "Infrastructure",
+      "sprite": "ICON_CHECKED",
+      "title": "Retain verified TEST241 preparation evidence",
+      "text": "Carry forward the reviewed exact-source staging profile, morning report, TEST241 verification receipt, real-run read-only evidence and sentry timing record.",
+      "paths": [
+        ".github/workflows/codex-alpha-preview-stage.yml",
+        "docs/APD-ALPHA-PREPARATION.json",
+        "docs/APD-MORNING-PREPARATION-2026-10-16.md",
+        "docs/APD-REAL-RUN-ARMOR-EVIDENCE-2026-10-16.json",
+        "docs/APD-TEST241-VERIFICATION-2026-10-16.json",
+        "docs/APD-VAULT-CIRCLE-TIMING-2026-10-16.md",
+        "tools/test_apd_staging_profile.py"
+      ]
+    },
+    {
       "category": "Bug Fixes",
       "sprite": "ICON_WARNING",
       "title": "Keep lower-bound IN filters uncertain",
@@ -21,5 +36,5 @@
       ]
     }
   ],
-  "commentary": "TEST241 is the immediate previous produced APK. TEST242 is a source candidate until its exact before/after and complete core/debug/API34/visual/history gate passes. No publication or physical-phone claim."
+  "commentary": "TEST241 is the immediate previous produced APK. TEST242 attempt1 full run38901726106 failed before tests on an incomplete reviewed-path ledger, and automatic stage38901726126 failed closed because application inputs changed; neither produced or staged an APK. This ledger is path-complete and retains both guards. TEST242 remains a candidate pending exact before/after and full gates."
 }

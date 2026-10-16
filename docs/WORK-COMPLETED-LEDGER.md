@@ -1435,3 +1435,6 @@ Privatepublication stillPENDING; keep published231fallback, physicalphone/owner-
 - Confirmed controlled UIMSD query defect: numeric IN returned an exact match for a lower-bound minimum and exact non-matches for higher candidates that the true value could equal.
 - Corrected only QueryEngine's numeric IN branch: any candidate >= the bound is uncertain; all candidates below the bound are impossible. Added lowerBoundInFilterOnlyRejectsImpossibleCandidates covering minimum, higher and impossible sets.
 - Pending evidence: exact TEST241 before-case and full1717core/debug/history/33API34/42PNG. No application artifact, publication, tester distribution or physical-phone result is claimed yet; TEST241 remains the verified candidate and TEST231 the delivered fallback.
+
+
+TEST242 attempt1 evidence: run38901726106 stopped before tests because the candidate ledger omitted seven reviewed TEST241 preparation/evidence paths since the immediate previous APK source. Run38901726126 stopped at the pinned-source staging guard because application inputs changed. Both failures are legitimate fail-closed checks; no APK/staging/publication occurred. Follow-up records all compared paths without weakening guards.
