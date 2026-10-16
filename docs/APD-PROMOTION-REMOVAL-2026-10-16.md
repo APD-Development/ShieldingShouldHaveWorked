@@ -19,3 +19,6 @@ The existing full Android gameplay method now picks up WornKey with both prefere
 
 ## Timing and limits
 This urgent tester report was handled while TEST259's prior Markdown fix was already built and undergoing Android verification. The next unique application build must compare against actual TEST259 source8d9381e5116678f51fb2f2d70b23a681102a85bd/run38973264847, not relabel the Markdown fix as new. Android evidence is emulator-only; the tester's phone and existing owner save are not attached. No public release or automatic tester distribution.
+
+## Verification tooling correction
+The prior TEST259 display matrix stopped before application tests because its producer wrapper did not create acceptance-source.json required by the shared runner. It is retained as a failed check, not an application defect or passing display test. This wrapper now verifies ZIP/APK hashes, writes the receipt, checks effective sizes on a tall emulator profile and pre-confirms Android's first-use full-screen notice. No gameplay or rendering logic is changed. This correction is recorded in the next build's technical history.

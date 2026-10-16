@@ -126,6 +126,7 @@ public class PlayRunDeviceTest {
             }
             TopScoresDeviceTest.screenshot("boss-key-no-promotion.png");
             onRender(()->GameScene.show(new com.shatteredpixel.shatteredpixeldungeon.windows.WndVictoryCongrats()));
+            Thread.sleep(500);
             TopScoresDeviceTest.screenshot("victory-no-promotion.png");
             onRender(()->{try{
                 com.shatteredpixel.shatteredpixeldungeon.windows.WndVictoryCongrats window=TopScoresDeviceTest.find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.windows.WndVictoryCongrats.class).get(0);

@@ -121,6 +121,15 @@
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "core/src/main/assets/apd/releases/apd-alpha-preview.tsv"
       ]
+    },
+    {
+      "category": "Infrastructure",
+      "sprite": "ICON_INFO",
+      "title": "Complete display-check provenance",
+      "text": "Display verification now records and checks the actual application receipt, asserts effective display size and dismisses Android's first-use full-screen notice.",
+      "paths": [
+        ".github/workflows/codex-menu-layout-matrix.yml"
+      ]
     }
   ],
   "commentary": "I removed inherited donation promotions after alpha feedback while keeping normal rewards and the original contributor credits intact."

@@ -403,3 +403,6 @@ TEST257 result: authoritative complete suite1752 methods,1751passes and1expected
 
 
 Actual application change: verify literal Markdown backslash preservation,2 new permanent regressions,1754core/debug/complete immediate-previous TEST258 sourcef2b19b2534ad9e701823012e1c84b31bebd9c225/run38968356419/37API34/55PNG. Source includes unchanged confirmed Waterskin/trap and responsive menu fixes. Do not publish or label verified before evidence. TEST258 is retained published fallback. Preserve saves, raw histories, scores,357 lookup values, app ID and signing identity.
+
+
+Urgent tester feedback — actual next application build: remove inherited boss-key/victory donation promotions and unused localized appeals while preserving all credits, licenses, normal key bookkeeping/turn costs, saves and player data. Verify1756core/debug/complete immediate-previous produced TEST259 history(source8d9381e5116678f51fb2f2d70b23a681102a85bd/run38973264847),37Android methods and57requiredscreens, including actual key pickup with both legacy preferences and victory Close.31 focused local methods pass. Preserve published TEST258 until actual candidate verification succeeds. No public release or automatic tester distribution.

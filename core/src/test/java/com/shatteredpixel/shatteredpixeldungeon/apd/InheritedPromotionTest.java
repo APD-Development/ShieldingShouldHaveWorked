@@ -6,7 +6,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.WornKey;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.watabou.utils.Bundle;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import java.nio.file.*;
@@ -21,6 +20,8 @@ public class InheritedPromotionTest {
     @Test public void bossKeyKeepsNormalPickupWithEitherLegacyPreference() throws Exception {
         HeadlessTestSupport.start();
         Hero previous=Dungeon.hero;
+        java.util.Set<Class> discovered=
+                new java.util.HashSet<>(com.shatteredpixel.shatteredpixeldungeon.Statistics.itemTypesDiscovered);
         boolean nagged=SPDSettings.supportNagged();
         java.lang.reflect.Field records=Notes.class.getDeclaredField("records");records.setAccessible(true);
         Object notes=records.get(null);Notes.reset();
@@ -37,14 +38,19 @@ public class InheritedPromotionTest {
                 assertEquals(1,hero.actions);
                 assertEquals("pickup does not rewrite old preferences",legacy,SPDSettings.supportNagged());
             }
-        } finally {records.set(null,notes);field.set(null,scene);Dungeon.hero=previous;SPDSettings.supportNagged(nagged);}
+        } finally {
+            records.set(null,notes);field.set(null,scene);Dungeon.hero=previous;SPDSettings.supportNagged(nagged);
+            com.shatteredpixel.shatteredpixeldungeon.Statistics.itemTypesDiscovered.clear();
+            com.shatteredpixel.shatteredpixeldungeon.Statistics.itemTypesDiscovered.addAll(discovered);
+        }
     }
 
     @Test public void runtimePromotionLinksAndLocalizedAppealsAreAbsentButCreditsRemain() throws Exception {
         Path base=Paths.get("src/main");if(!Files.isDirectory(base))base=Paths.get("core/src/main");
         assertTrue("real production source root",Files.isDirectory(base));
-        try(java.util.stream.Stream<Path> files=Files.walk(base)) {
-            for(Path p:(Iterable<Path>)files.filter(x->x.toString().endsWith(".java")||x.toString().endsWith(".properties"))::iterator) {
+        Path project=base.toAbsolutePath().getParent().getParent().getParent();
+        try(java.util.stream.Stream<Path> files=Files.walk(project)) {
+            for(Path p:(Iterable<Path>)files.filter(x->x.toString().replace('\\','/').contains("/src/main/") && (x.toString().endsWith(".java")||x.toString().endsWith(".properties")))::iterator) {
                 String s=Files.readString(p,StandardCharsets.UTF_8).toLowerCase(Locale.ROOT);
                 assertFalse(p.toString(),s.contains("patreon.com")||s.contains("paypal.me")||s.contains("buymeacoffee.com")||s.contains("ko-fi.com"));
                 if(p.toString().endsWith(".properties"))assertFalse(p.toString(),s.contains("scenes.supporterscene.")||s.contains("scenes.titlescene.patreon_")||s.contains("windows.wndvictorycongrats.support_prompt="));

@@ -28,7 +28,7 @@ jobs:
         env: {GH_TOKEN: "${{ github.token }}"}
         run: |
           python3 - <<'PY'
-          import json,os,subprocess,time,pathlib,zipfile
+          import json,os,subprocess,time,pathlib,zipfile,hashlib
           repo=os.environ['GITHUB_REPOSITORY'];sha=os.environ['GITHUB_SHA']
           api=lambda p:json.loads(subprocess.check_output(['gh','api',p]))
           end=time.monotonic()+1000
@@ -44,7 +44,11 @@ jobs:
                       artifacts=api(f'repos/{repo}/actions/runs/{run["id"]}/artifacts')['artifacts']
                       item=next(a for a in artifacts if a['name']=='apd-codex-private-test-apk' and not a['expired'])
                       with open('application.zip','wb') as out:subprocess.run(['gh','api',f'repos/{repo}/actions/artifacts/{item["id"]}/zip'],stdout=out,check=True)
+                      assert hashlib.sha256(pathlib.Path('application.zip').read_bytes()).hexdigest()==item['digest'].removeprefix('sha256:')
                       with zipfile.ZipFile('application.zip')as z:z.extractall('application')
+                      apk=next(pathlib.Path('application').glob('*.apk'));digest=hashlib.sha256(apk.read_bytes()).hexdigest()
+                      assert next(pathlib.Path('application').glob('*.apk.sha256')).read_text().split()[0]==digest
+                      pathlib.Path('acceptance-source.json').write_text(json.dumps({'application_source':sha,'application_run':run['id'],'application_sha256':digest,'protected_application_inputs_identical':True,'application_rebuilt':False,'test_source':sha},indent=2))
                       with open(os.environ['GITHUB_ENV'],'a')as out:out.write('APD_BUILD='+str(run['run_number'])+'\n')
                       break
               assert time.monotonic()<end,'No exact successful application artifact'
@@ -56,19 +60,22 @@ jobs:
           ./gradlew :android:assembleDebugAndroidTest -PapdTestBuild "-PapdBuild=C$APD_BUILD"
           test ! -f android/build/outputs/apk/debug/android-debug.apk
           ./gradlew --stop
+          python3 -m pip install pillow
       - name: Enable emulator acceleration
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
       - name: Exercise actual touchscreen and capture this display
+        env: {APD_ENFORCE_DISPLAY: 'true'}
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 34
           arch: x86_64
           target: default
+          profile: pixel_7
           disable-animations: true
-          script: bash tools/run-title-display-check.sh '${{ matrix.size }}' '${{ matrix.density }}'
+          script: adb shell settings put secure immersive_mode_confirmations confirmed && bash tools/run-title-display-check.sh '${{ matrix.size }}' '${{ matrix.density }}'
       - uses: actions/upload-artifact@v4
         if: always()
         with:
