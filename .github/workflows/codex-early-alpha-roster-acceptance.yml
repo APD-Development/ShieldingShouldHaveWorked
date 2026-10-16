@@ -92,10 +92,7 @@ jobs:
             adb install -r verified-test241.apk
             adb install -r android/build/outputs/apk/androidTest/debug/android-debug-androidTest.apk
             adb logcat -c
-            timeout 900 adb shell am instrument -w -r \
-              -e class com.shatteredpixel.shatteredpixeldungeon.android.EarlyAlphaRosterDeviceTest#allSixClassesStartSaveAndContinueWithLockedExtremeRules \
-              com.charltonchris29.adhdpixeldungeon.indev.test/androidx.test.runner.AndroidJUnitRunner \
-              | tee early-alpha-roster-instrumentation.txt
+            timeout 900 adb shell am instrument -w -r -e class com.shatteredpixel.shatteredpixeldungeon.android.EarlyAlphaRosterDeviceTest#allSixClassesStartSaveAndContinueWithLockedExtremeRules com.charltonchris29.adhdpixeldungeon.indev.test/androidx.test.runner.AndroidJUnitRunner | tee early-alpha-roster-instrumentation.txt
             adb logcat -d -v time > early-alpha-roster-logcat.txt
             python3 - <<'PY'
             import json,pathlib,re
