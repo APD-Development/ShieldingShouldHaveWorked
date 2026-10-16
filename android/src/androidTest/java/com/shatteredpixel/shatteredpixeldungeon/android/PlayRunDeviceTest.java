@@ -122,7 +122,9 @@ public class PlayRunDeviceTest {
                     assertEquals(before+1,com.shatteredpixel.shatteredpixeldungeon.journal.Notes.keyCount(key));
                 });
                 waitUntil("normal key pickup completes",()->Dungeon.hero.ready,30000);Thread.sleep(500);
-                onRender(()->assertTrue("no promotional pickup window",TopScoresDeviceTest.find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.windows.WndSupportPrompt.class).isEmpty()));
+                onRender(()->{try {
+                    assertTrue("no promotional pickup window",TopScoresDeviceTest.find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.windows.WndSupportPrompt.class).isEmpty());
+                }catch(Exception e){throw new RuntimeException(e);}});
             }
             TopScoresDeviceTest.screenshot("boss-key-no-promotion.png");
             onRender(()->GameScene.show(new com.shatteredpixel.shatteredpixeldungeon.windows.WndVictoryCongrats()));
