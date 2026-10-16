@@ -44,7 +44,7 @@ jobs:
           protected=['core/src/main','SPD-classes/src/main','services/src/main','android/src/main',
                      'android/build.gradle','core/build.gradle','SPD-classes/build.gradle',
                      'services/build.gradle','build.gradle','settings.gradle','gradle.properties',
-                     'gradle','android/debug.keystore']
+                     'gradle']
           differences=subprocess.check_output(['git','diff','--name-only',source,'HEAD','--']+protected,text=True)
           pathlib.Path('acceptance-protected-differences.txt').write_text(differences)
           # Compile the fallback test package against exact TEST241 even when the
