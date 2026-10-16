@@ -1,8 +1,12 @@
 # APD early-alpha acceptance — October 16, 2026
 
-Private tester preparation, not authorization to distribute automatically. The target remains Friday at 4 p.m. New York time. No competitive Custom Rules scoring formula is enabled.
+Private tester preparation, not authorization to distribute automatically. The target remains Friday at 4 p.m. New York time. TEST249 enables provisional experimental Custom Rules scoring for new runs; no competitively calibrated formula is claimed.
 
-## Evidence boundary
+## Current evidence boundary
+
+TEST249 source37a8f6d16cd497e13ed581e887ed9d4858fe97aa passed1729 core/34 API34 methods and44 screenshot checks. Separate six-class locked-rule/scoring save acceptance passed in run38918464322. The published fallback is TEST231, not the earlier checkpoints below. Physical-device checks remain open.
+
+## Historical evidence checkpoints
 
 Published owner fallback: TEST224 application source `3e886234e69ab128a861cfbc17bca549ba3a3456`, verification run `38823705331`. Independently checked 1,676 unique core methods in330 suites and32 API34 methods, zero failures/errors/skips. Debug assembly, compiled history, all40 screenshot reviews, signing/application-ID compatibility and SHA-256 checks passed. One distinct supplemental native-navigation method passed against the same APK in run38826006010; do not add32+33. Private owner release: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-224 . No automatic tester distribution.
 
@@ -26,7 +30,7 @@ All emulator evidence remains separate from actual RedMagic/Pixel hardware and t
 4. Exercise Warrior, Mage, Rogue, Huntress, Duelist and Cleric attacks/abilities. Check direct, spell, summoned, explosive and persistent damage sources without double scaling. Boss Damage replaces Enemy Damage; unowned traps, starvation and Chalice self-damage retain their own rules.
 5. Play all five boss encounters with customized HP/damage. Mandatory phases, invulnerability, summons/pylons and progression must still work. Existing automated boundary/phase tests are not a substitute for five complete human-played boss fights.
 6. Save/restart/continue an ongoing customized run, including active damage effects and a damaged hero. Check its original seed, class, difficulty, challenges and selected rules afterward.
-7. In UIMSD, inspect the exact recorded configuration and actual item generation counts. Try filters, comparisons and exports. Historical unknown settings must stay unknown; original earned scores remain unchanged and custom scoring remains pending.
+7. In UIMSD, inspect the exact recorded configuration and actual item generation counts. Try filters, comparisons and exports. Historical unknown settings must stay unknown; historical earned scores remain unchanged. New version2 runs must show their frozen provisional multiplier and adjusted score; legacy runs retain their recorded scoring authority.
 8. Enable Automatic Stair Navigation, find its compact control, and navigate only to already discovered stairs. Normal turns/risk apply; visible enemies, damage, detected hazards, blockage and manual cancellation interrupt travel. Reaching stairs must not automatically change floors. Hidden traps retain normal exploration risk.
 9. Compare Enhanced Tile Visibility on/off at different zoom levels. It must not expose unexplored terrain or obscure creatures, targeting and fog of war.
 10. Check Cleric slots2–4 by tapping an empty slot, assigning a spell, casting, cancelling and reopening. Confirm optional first-Cleric lore works without changing Cleric balance or exposing future private content.
