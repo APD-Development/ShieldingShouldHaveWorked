@@ -31,16 +31,16 @@ jobs:
           name: get-fucked-existing-engine-runtime
           path: core/build/get-fucked-runtime/
           retention-days: 7
-      - name: Replay uninterrupted level-one Cleric with passive combat trace through actual entire first Tengu phase
+      - name: Replay uninterrupted level-one Cleric through both actual Tengu phases
         run: |
           mkdir -p "$RUNNER_TEMP/get-fucked-fresh-goo"
-          tar -xJf research/get-fucked/tengu-damage-provenance.tar.xz -C "$RUNNER_TEMP/get-fucked-fresh-goo"
+          tar -xJf research/get-fucked/tengu-victory-provenance.tar.xz -C "$RUNNER_TEMP/get-fucked-fresh-goo"
           python3 - <<'PYCODE'
           import json, os, subprocess
           root=os.environ['RUNNER_TEMP']+'/get-fucked-fresh-goo'
-          args=json.load(open(root+'/manual-tengu-trace-control-args.json'))
+          args=json.load(open(root+'/manual-tengu-win-independent-args.json'))
           props={a[2:].split('=',1)[0]:a.split('=',1)[1] for a in args if a.startswith('-D') and '=' in a}
-          props.update({'route.testTimeoutSeconds':'180','route.stableHash':'true','route.noSnapshots':'true','route.manualReplay':root+'/manual-tengu-start.journal','route.manualContinue':'false','route.manualJournal':root+'/actual-manual-replay.journal','route.expectedEnd':root+'/native/manual-tengu-trace-control','route.expectedActiveRngOnly':'true','route.earlySwarmOut':root+'/actual-fresh-goo'})
+          props.update({'route.testTimeoutSeconds':'180','route.stableHash':'true','route.noSnapshots':'true','route.manualReplay':root+'/manual-tengu-wide.journal','route.manualContinue':'false','route.manualJournal':root+'/actual-manual-replay.journal','route.expectedEnd':root+'/native/manual-tengu-wide-end','route.expectedActiveRngOnly':'true','route.earlySwarmOut':root+'/actual-fresh-goo'})
           subprocess.run(['./gradlew',':core:test','--tests','*GetFuckedRouteTest']+['-D'+k+'='+v for k,v in props.items()],check=True)
           subprocess.run(['python3','research/get-fucked/native_equivalence.py',props['route.expectedEnd'],props['route.earlySwarmOut']],check=True)
           PYCODE
