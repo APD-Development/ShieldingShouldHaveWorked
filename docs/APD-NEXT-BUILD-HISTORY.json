@@ -1,53 +1,50 @@
 {
   "date": "2026-10-16",
-  "previous_source": "835bf2ba6d25898e2612900d90258b7b1dcf9a6d",
-  "previous_run": 38913947244,
-  "previous_label": "Codex TEST 247",
+  "previous_source": "37a8f6d16cd497e13ed581e887ed9d4858fe97aa",
+  "previous_run": 38914965700,
+  "previous_label": "Codex TEST 249",
   "changes": [
-    {
-      "category": "Bug Fixes",
-      "sprite": "ICON_STATS",
-      "title": "Preserve malformed score histories",
-      "text": "Invalid or overflowing adjusted scores remain unknown without preventing access to the original recorded run.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/CustomRuleFacts.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/CustomRuleTelemetryTest.java"
-      ]
-    },
     {
       "category": "Changes",
       "sprite": "ICON_CHALLENGE_COLOR",
-      "title": "Explain active provisional score previews",
-      "text": "Player notes explain live score previews, provisional rewards for new runs and original-score preservation.",
+      "title": "Future class scoring notice",
+      "text": "Custom Rules explains that all six classes share today's provisional multipliers and that class, subclass and crown-class scoring is only being explored.",
       "paths": [
-        "core/src/main/assets/apd/releases/apd-alpha-preview.tsv"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomRulesPresentation.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Compile the live scoring layout checks",
-      "text": "Use the existing window geometry helper when checking multiplier text boundaries on Android.",
+      "title": "Verify six-class saved scoring",
+      "text": "Independent Android checks confirm all six classes keep their locked rules and provisional scoring when saving and continuing.",
       "paths": [
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java"
+        ".github/workflows/codex-early-alpha-roster-acceptance.yml",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/EarlyAlphaRosterDeviceTest.java",
+        "docs/APD-EARLY-ALPHA-ROSTER-ACCEPTANCE-2026-10-16.md"
       ]
     },
     {
       "category": "Infrastructure",
       "sprite": "ICON_INFO",
-      "title": "Retain alpha acceptance and exact-source preparation",
-      "text": "Keep the independent six-class acceptance workflow and record the corrected candidate's tests and failed-attempt evidence.",
+      "title": "Prepare verified private downloads",
+      "text": "Private delivery preparation reuses verified APKs, records exact test evidence and preserves an install-compatible fallback.",
       "paths": [
-        ".github/workflows/codex-early-alpha-roster-acceptance.yml",
-        "docs/APD-PROVISIONAL-SCORING-IMPLEMENTATION-2026-10-16.md",
+        ".github/workflows/codex-alpha-preview-stage.yml",
+        ".github/workflows/codex-stage-owner-scoring249.yml",
         "docs/APD-ALPHA-PREPARATION.json",
+        "docs/APD-EARLY-ALPHA-ACCEPTANCE-2026-10-16.md",
+        "docs/APD-LUNCH-DELIVERY-2026-10-16.json",
+        "docs/APD-LUNCH-PREPARATION-2026-10-16.md",
+        "docs/APD-PROVISIONAL-SCORING-IMPLEMENTATION-2026-10-16.md",
+        "docs/APD-TEST249-VERIFICATION-2026-10-16.json",
+        "docs/HANDOFF.md",
+        "docs/WORK-COMPLETED-LEDGER.md",
         "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/HANDOFF.md",
-        ".github/workflows/codex-retire-superseded-scoring.yml",
-        "docs/WORK-COMPLETED-LEDGER.md"
+        "docs/APD-CLASS-SCORING-NOTICE-2026-10-16.md"
       ]
     }
   ],
-  "commentary": "This preserves TEST247 as the actual immediate previous produced APK, hardens malformed-score reconstruction, corrects Android layout-test geometry and retains the independent six-class acceptance evidence. The full 357-position provisional multiplier table and ordinary product are unchanged."
+  "commentary": "I added a short explanation of possible future class-specific scoring. All six classes still use the same existing provisional lookup values; no class-specific calculation, multiplier or gameplay rule changed."
 }

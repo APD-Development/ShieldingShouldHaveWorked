@@ -7,10 +7,9 @@
   "rollback_asset": "ADHD-Pixel-Dungeon-Alpha-Preview-231.apk",
   "rollback_sha256": "20f1d87ab58afd21cd37ae4027e6ebb79c01fcf802d0869801e6ffa03943bff9",
   "reports": [
-    "docs/APD-LUNCH-PREPARATION-2026-10-16.md",
+    "docs/APD-CLASS-SCORING-NOTICE-2026-10-16.md",
     "docs/APD-PROVISIONAL-SCORING-IMPLEMENTATION-2026-10-16.md",
     "docs/APD-MORNING-PREPARATION-2026-10-16.md",
     "docs/APD-VAULT-CIRCLE-TIMING-2026-10-16.md"
-  ],
-  "source_sha": "37a8f6d16cd497e13ed581e887ed9d4858fe97aa"
+  ]
 }

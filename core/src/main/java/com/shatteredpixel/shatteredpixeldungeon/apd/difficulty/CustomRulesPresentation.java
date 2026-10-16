@@ -7,7 +7,7 @@ public final class CustomRulesPresentation {
     private CustomRulesPresentation() { }
     public static final String EXPERIMENTAL_HEADING = "EXPERIMENTAL FEATURE";
     public static final String EXPERIMENTAL_NOTICE = "Custom Dungeon Rules are experimental and will continue to evolve throughout APD's lifetime. Some or all difficulty sliders may have their minimum and maximum values adjusted in future updates as gameplay balance and player feedback are evaluated.";
-    public static final String SCORING_NOTICE = "Custom Dungeon Rules currently use provisional scoring multipliers. These values are experimental and will change as balancing and gameplay research continue.";
+    public static final String SCORING_NOTICE = "All six classes currently use the same provisional scoring multipliers, which will change as balancing continues. I'm exploring class-specific multipliers, possibly for subclasses and crown classes too, since the same dungeon rules can challenge different builds very differently. Nothing about class-specific scoring has been finalized.";
     /** The lifetime warning remains even when only the scoring paragraph changes after approval. */
     public static String noticeText(){return EXPERIMENTAL_NOTICE+"\n\n"+SCORING_NOTICE;}
     public static String label(CustomDungeonRules.Slider slider) {
