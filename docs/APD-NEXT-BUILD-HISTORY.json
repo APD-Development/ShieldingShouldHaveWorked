@@ -47,7 +47,8 @@
         "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/TitleMenuLayoutDeviceTest.java",
         "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PlayRunDeviceTest.java",
         "tools/run-codex-android-checks.sh",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/qol/ActionConfirmationTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/qol/ActionConfirmationTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/UimsdWiringTest.java"
       ]
     },
     {

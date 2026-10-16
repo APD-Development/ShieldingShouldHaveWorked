@@ -33,13 +33,15 @@ public class UimsdWiringTest {
 	}
 
 	@Test
-	public void theTitleScreenIsStillExactlyAsApprovedExceptForWhereTheUimsdButtonGoes() throws Exception {
+	public void theTitleScreenMatchesApprovedResponsiveLayoutAndKeepsItsUimsdTarget() throws Exception {
 		//The only change since the title screen was frozen is the click target of the UIMSD button (the project owner asked for it).
 		//The owner also authorized fixing premature adult wording and retiring the arrow.
 		//The owner also authorized measured wrapping for the overflowing instruction.
-		//Normalize only those specific changes; all other frozen source remains protected.
+		//October16: the owner additionally authorized the responsive footer/compact-art correction.
+		//These exact source snapshots now freeze that approved layout as well; real geometry, click
+		//and Android touch regressions separately verify its behavior. Other frozen source stays protected.
 		//Putting the changed lines back as they were must give exactly the approved file, so layout, text, arrow and annotation
-		//are provably untouched. If this fails the frozen title screen was edited.
+		//remain locked to the approved revision. A new intentional layout requires explicit review.
 		String title = src("scenes/TitleScene.java");
 		assertTrue(title.contains("UimsdScene.open( TitleScene.class );"));
 		String restored = title.replace("\t\tfinal boolean androidTopScores = DeviceCompat.isAndroid();\n\t\tbtnQuit = new APDMenuButton( androidTopScores ? \"Top Scores\" : \"Quit\", androidTopScores ? Icons.RANKINGS : Icons.EXIT, true ){", "\t\tbtnQuit = new APDMenuButton( \"Quit\", Icons.EXIT, true ){")
@@ -61,9 +63,9 @@ public class UimsdWiringTest {
 						"//UIMSD (Ultimate Infinite Mega Statistics Database) replaces Rankings, until the real database exists it opens the Rankings screen")
 				.replace("com.shatteredpixel.shatteredpixeldungeon.windows.UimsdGate.titleAnnotation( ANNOTATION_TEXT )", "ANNOTATION_TEXT")
 				.replace("UimsdScene.open( TitleScene.class );", "ShatteredPixelDungeon.switchNoFade( RankingsScene.class );");
-		assertEquals("2c4c5f3b063380385da9318d62e58d2ab0b63c0b433bb2815006ced9f416cd90", shaOf(restored));
+		assertEquals("0051ccab7317b9aead08e57541ceb619cf26158df6a6485b8210a68dcd7e2f0a", shaOf(restored));
 		//the geometry (arrow, annotation, layout) file is byte for byte as approved
-		assertEquals("627e2dae33f1173fd88548f4217dbc505ef02b8dcbe70dbfe4d71aab9b792134", shaOf(src("apd/TitleGeometry.java").replaceAll("(?s)\\tpublic interface TextWidth.*?(?=\\t//height of each)", "")
+		assertEquals("6a71f191a2fc104bff81e9994f7a1102db217f7d6ce48e4738c4adbaacaa4329", shaOf(src("apd/TitleGeometry.java").replaceAll("(?s)\\tpublic interface TextWidth.*?(?=\\t//height of each)", "")
 				.replace("\t\tif (textHeight < 0) return 0; //no progression prompt: no arrow or reserved strip\n", "")));
 		assertFalse("adult wording belongs to the eligible tenth-run prompt only", title.contains("HEY, GO HERE FOR DRUGS"));
 		assertTrue(title.contains("annotation.visible = !annotationText.isEmpty()"));
@@ -133,4 +135,3 @@ public class UimsdWiringTest {
 		assertTrue(rankings.contains("switchNoFade(TitleScene.class)"));
 	}
 }
-

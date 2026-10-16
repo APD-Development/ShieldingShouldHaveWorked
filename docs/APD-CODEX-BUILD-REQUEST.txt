@@ -397,3 +397,6 @@ TEST255 verified (2026-10-16T21:07:59Z): sourcea11b32f8067765e6229830c929d07d262
 
 
 Tester-feedback candidate: include responsive title footer, default-on independent Waterskin/known-trap confirmations in Options, single-use consent and no hidden/forced-move warning.29 focused methods pass; require1752core/debug/immediate actual TEST255 sourcea11b32f8067765e6229830c929d07d262de34800/run38964629976 history,37API34/55PNG, five sameAPK display configurations and manual review. Preserve TEST255 UIMSD changes and evidence;254 publishedfallback. No scoring/loot/saveformat/rawhistory change. Candidate pending until actual results pass.
+
+
+TEST257 result: authoritative complete suite1752 methods,1751passes and1expected frozen-source snapshot mismatch in UimsdWiringTest. Debug assembly, APK and Android were skipped; five display jobs refused the missing producer. No257APK exists. Owner-authorized responsive TitleScene/TitleGeometry snapshots are updated explicitly, retaining the exact-source guard and compiled click/navigation plus geometry/native checks.34 focused methods now pass. Rerun full1752/37Android/55PNG andfive sameAPK displays; previousactualAPK remains255. Production application changes are unchanged from7e4c5cf3c295fbb63f10bca54e834f67ce9ce188; pending until actual results pass.

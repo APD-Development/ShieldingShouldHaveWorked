@@ -1,3 +1,8 @@
+## Responsive title/confirmation gate correction
+
+
+TEST257 result: authoritative complete suite1752 methods,1751passes and1expected frozen-source snapshot mismatch in UimsdWiringTest. Debug assembly, APK and Android were skipped; five display jobs refused the missing producer. No257APK exists. Owner-authorized responsive TitleScene/TitleGeometry snapshots are updated explicitly, retaining the exact-source guard and compiled click/navigation plus geometry/native checks.34 focused methods now pass. Rerun full1752/37Android/55PNG andfive sameAPK displays; previousactualAPK remains255. Production application changes are unchanged from7e4c5cf3c295fbb63f10bca54e834f67ce9ce188; pending until actual results pass.
+
 ## Pending early-alpha tester feedback package — October16,2026
 
 Responsive menu footer plus independent default-on Waterskin and known-trap confirmations are implemented in source, not yet verified or published.29 focused core methods pass; the complete gate will require1752core/37Android/55PNG and five representative display checks with the same APK. Preserve actual compiled TEST255sourcea11b32f8067765e6229830c929d07d262de34800/run38964629976 and its UIMSD label fix; do not overwrite it. Previous255 producer passed1737 methods, Android still pending. TEST254 remains verified published fallback. Both confirmations live in Options/Interface; no hidden-trap revelation, forced-move warning, double execution, raw history or scoring change. See docs/APD-TITLE-FOOTER-FIX-2026-10-16.md. Pending checkpoint does not authorize a verified-build claim.
