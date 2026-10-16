@@ -28,3 +28,4 @@ Bug Fixes	ICON_CHANGES	Responsive main menu	Hide UI and the menu buttons stay se
 Quality of Life	ITEM_WATERSKIN	Confirm Waterskin use	A default-on confirmation protects stored dew from accidental drinking; change it independently in Options.
 Quality of Life	ICON_WARNING	Known-trap warnings	A default-on confirmation stops intentional walking before a visible armed trap; Cancel spends no turn.
 Bug Fixes	ICON_STATS	Literal report text	Markdown table exports preserve backslashes in column headings and recorded values.
+Quality of Life	ICON_INFO	Uninterrupted boss rewards	Boss-key pickup and victory no longer display inherited donation promotions; original contributor credits remain in About.

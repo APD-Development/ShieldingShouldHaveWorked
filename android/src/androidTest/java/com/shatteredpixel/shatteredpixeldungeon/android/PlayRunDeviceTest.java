@@ -109,7 +109,35 @@ public class PlayRunDeviceTest {
 		throw new NoSuchMethodException(method);
 	}
 
-	private static void assertGameplayControls() throws Exception {
+    private static void assertBossRewardsHaveNoPromotion() throws Exception {
+        boolean previous=SPDSettings.supportNagged();
+        try {
+            for(boolean legacy:new boolean[]{false,true}) {
+                waitForGameplayControls();
+                onRender(()->{
+                    SPDSettings.supportNagged(legacy);
+                    com.shatteredpixel.shatteredpixeldungeon.items.keys.WornKey key=new com.shatteredpixel.shatteredpixeldungeon.items.keys.WornKey(5);
+                    int before=com.shatteredpixel.shatteredpixeldungeon.journal.Notes.keyCount(key);
+                    assertTrue(key.doPickUp(Dungeon.hero,Dungeon.hero.pos));
+                    assertEquals(before+1,com.shatteredpixel.shatteredpixeldungeon.journal.Notes.keyCount(key));
+                });
+                waitUntil("normal key pickup completes",()->Dungeon.hero.ready,30000);Thread.sleep(500);
+                onRender(()->assertTrue("no promotional pickup window",TopScoresDeviceTest.find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.windows.WndSupportPrompt.class).isEmpty()));
+            }
+            TopScoresDeviceTest.screenshot("boss-key-no-promotion.png");
+            onRender(()->GameScene.show(new com.shatteredpixel.shatteredpixeldungeon.windows.WndVictoryCongrats()));
+            TopScoresDeviceTest.screenshot("victory-no-promotion.png");
+            onRender(()->{try{
+                com.shatteredpixel.shatteredpixeldungeon.windows.WndVictoryCongrats window=TopScoresDeviceTest.find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.windows.WndVictoryCongrats.class).get(0);
+                java.util.List<com.shatteredpixel.shatteredpixeldungeon.ui.RedButton> buttons=TopScoresDeviceTest.find(window,com.shatteredpixel.shatteredpixeldungeon.ui.RedButton.class);
+                assertEquals("victory only needs its existing close action",1,buttons.size());
+                click(buttons.get(0),"onClick");
+            }catch(Exception e){throw new RuntimeException(e);}});
+            waitForGameplayControls();
+        } finally {SPDSettings.supportNagged(previous);}
+    }
+
+    private static void assertGameplayControls() throws Exception {
 		com.watabou.noosa.ui.Component toolbar = (com.watabou.noosa.ui.Component) field(Game.scene(), "toolbar");
 		assertTrue("toolbar is visible and usable before guidebook acknowledgement", toolbar.visible && toolbar.active);
 		com.watabou.noosa.ui.Component status = (com.watabou.noosa.ui.Component) field(Game.scene(), "status");
@@ -646,6 +674,7 @@ public class PlayRunDeviceTest {
             assertHealingConfirmationControls();
             assertMetamorphosisChoices();
             assertTesterActionConfirmations();
+            assertBossRewardsHaveNoPromotion();
             onRender(()->{try {
                 Dungeon.quickslot.setSlot(11,new com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty().virtual());
                 assertEquals(12,Dungeon.quickslot.capacity());

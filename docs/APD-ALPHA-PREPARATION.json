@@ -1,13 +1,13 @@
 {
-  "core_tests": 1754,
+  "core_tests": 1756,
   "android_tests": 37,
-  "screenshots": 55,
+  "screenshots": 57,
   "rollback_number": 254,
   "rollback_tag": "apd-alpha-preview-254",
   "rollback_asset": "ADHD-Pixel-Dungeon-Alpha-Preview-254.apk",
   "rollback_sha256": "131d205b17a2c118abd794cf49631c21b52166cb3b4586fb2545cbbab3e53a72",
   "reports": [
-    "docs/APD-UIMSD-MARKDOWN-ESCAPE-AUDIT-2026-10-16.md"
+    "docs/APD-PROMOTION-REMOVAL-2026-10-16.md"
   ],
   "verified_owner_release": {
     "build": 258,

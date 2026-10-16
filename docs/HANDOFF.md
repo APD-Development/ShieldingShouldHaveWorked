@@ -1,3 +1,7 @@
+## Urgent tester promotion removal — source correction, verification pending
+
+Confirmed Goo WornKey pickup opened inherited WndSupportPrompt when supportNagged=false; victory had another SupporterScene route. Normal Key pickup is retained, victory support controls removed, legacy route/window retain only credits,276 obsolete promotional keys removed across46 verified language resources. About/copyright/GPL/music/art attribution unchanged.2 new core methods pass locally; expanded existing Android gameplay method requires boss-key and victory captures. Expected1756core/37API34/57PNG/debug/history against the actual preceding TEST259 source8d9381e5116678f51fb2f2d70b23a681102a85bd/run38973264847. Source correction is NOT yet a verified or delivered APK. TEST258 remains owner-delivered fallback. See docs/APD-PROMOTION-REMOVAL-2026-10-16.md.
+
 ## Markdown export correction — pending full verification
 
 Reproduced literal backslash loss with actual ReportRenderer output and independent Pandoc GFM. Earlier column-split wording is corrected: tested GFM preserves table shape but loses literal characters. Small table-escaping fix plus2 permanent methods;16 focused host methods pass. Expected full1754core/debug/immediate-previous TEST258 history/37API34/55PNG; pending until actual results. Preserve delivered258 as fallback, raw history/settings/scores and all357 multipliers unchanged. Details: docs/APD-UIMSD-MARKDOWN-ESCAPE-AUDIT-2026-10-16.md. This is an actual application change, so one new test APK is warranted; do not rebuild for later receipt notes.
