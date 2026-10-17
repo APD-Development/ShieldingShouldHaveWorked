@@ -259,21 +259,38 @@ public class ApdSettingsClickDeviceTest {
                 tapCommunityEntry(choices, 2);
                 assertEquals("Cleric setting still answers real touches", 3, SPDSettings.apdClericQuickSlots());
                 final RedButton speedButton = (RedButton)field(pane,"btnPlaybackSpeed");
-                for(int mode=0;mode<3;mode++){
-                    final int selected=mode;
-                    tapUntil("open game-speed choices",scroll,speedButton,
-                        () -> find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions.class)!=null,30000);
-                    com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions chooser=
-                        find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions.class);
-                    java.util.List<RedButton> options=new java.util.ArrayList<>();
-                    for(Gizmo child:membersOf(chooser))if(child instanceof RedButton)options.add((RedButton)child);
-                    assertEquals("exactly three playback choices",3,options.size());
-                    RedButton choice=options.get(mode);
-                    AtomicReference<Point> touch=new AtomicReference<>();
-                    onRender(()->touch.set(choice.camera().cameraToScreen(choice.left()+choice.width()/2f,choice.top()+choice.height()/2f)));
-                    tap(touch.get());
-                    waitUntil("selected speed saved",()->SPDSettings.playbackSpeed()==selected &&
-                        find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions.class)==null,10000);
+                if (com.shatteredpixel.shatteredpixeldungeon.apd.ApdFeatures.testBuild()) {
+                    // Private builds have 10 choices and a scrollable window. Real touches
+                    // must reach the first, intermediate and extreme values, then return to 2x.
+                    for(int mode:new int[]{0,1,2,3,9,2}){
+                        final int selected=mode;
+                        tapUntil("open private speed list",scroll,speedButton,
+                                () -> find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.class)!=null,30000);
+                        com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList choices =
+                                find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.class);
+                        assertEquals("only private builds can show ten speeds",10,communityEntries(choices).size());
+                        assertEquals("1000x",communityEntries(choices).get(9).label);
+                        tapCommunityEntry(choices,mode);
+                        waitUntil("private speed persists",()->SPDSettings.playbackSpeed()==selected,10000);
+                    }
+                } else {
+                    // Production builds keep their original three-button popup.
+                    for(int mode=0;mode<3;mode++){
+                        final int selected=mode;
+                        tapUntil("open game-speed choices",scroll,speedButton,
+                                () -> find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions.class)!=null,30000);
+                        com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions chooser=
+                                find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions.class);
+                        java.util.List<RedButton> options=new java.util.ArrayList<>();
+                        for(Gizmo child:membersOf(chooser))if(child instanceof RedButton)options.add((RedButton)child);
+                        assertEquals("exactly three playback choices",3,options.size());
+                        RedButton choice=options.get(mode);
+                        AtomicReference<Point> touch=new AtomicReference<>();
+                        onRender(()->touch.set(choice.camera().cameraToScreen(choice.left()+choice.width()/2f,choice.top()+choice.height()/2f)));
+                        tap(touch.get());
+                        waitUntil("selected speed saved",()->SPDSettings.playbackSpeed()==selected &&
+                                find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions.class)==null,10000);
+                    }
                 }
                 onRender(()->{window.get().hide();window.set(new WndAPDSettings());ShatteredPixelDungeon.scene().add(window.get());});
                 Thread.sleep(300);

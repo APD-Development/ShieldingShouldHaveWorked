@@ -1,8 +1,8 @@
-APD CORE-ONLY TEST REQUEST - button and link originating scroll gestures
+APD CORE-ONLY TEST REQUEST - Developer-only extreme visual playback speeds
 branch=codex/apd-phone-fixes-2026-10-09
-scope=complete :core:test suite including ScrollClickSuppressionTest; never build APK in core-only gate
-expected_core_tests=1776
-acceptance=swipe marked by ScrollPane releases controls without clicking, ordinary taps continue to work; enable only About, APD Settings, Cleric Grudge
-android_coverage=existing Adult humor native method now swipes from checkbox before checking normal tap; full 38-method gate remains pending
-status=UNVERIFIED SOURCE CANDIDATE, no Android evidence, APK, publication or physical-phone claim
+source=private speed modes 0.5,1,2,4,8,16,32,64,100,1000 gated on ApdFeatures.testBuild()
+scope=run complete :core:test including PlaybackSpeedTest private/production gating and actor-clock isolation
+expected_core_tests=1779
+acceptance=public only original 3 speeds; developer only 10 speeds; stale developer values ignored on production; no turn/gameplay/HUD clock modification; existing 38 API34 method list unchanged
+apk_build=NOT REQUESTED by core-only source/test acceptance
 executable_apk_build_request=UNCHANGED

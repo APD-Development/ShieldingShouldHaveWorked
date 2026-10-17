@@ -20,12 +20,64 @@ public class PlaybackSpeedTest {
   Field f=GameSettings.class.getDeclaredField("prefs"); f.setAccessible(true);
   previous=(Preferences)f.get(null);file=new File(folder.getRoot(),"settings.xml");
   GameSettings.set(new HeadlessPreferences(new FileHandle(file)));
-  oldElapsed=Game.elapsed; PlaybackGroup.speed(1);
+  oldElapsed=Game.elapsed; ApdFeatures.resetForTest(); PlaybackGroup.speed(1);
  }
- @After public void restore(){GameSettings.set(previous);Game.elapsed=oldElapsed;PlaybackGroup.speed(1);}
+ @After public void restore(){ApdFeatures.resetForTest();GameSettings.set(previous);Game.elapsed=oldElapsed;PlaybackGroup.speed(1);}
  @Test public void choicesSurviveActualPreferenceFileReload(){
   assertEquals(1,SPDSettings.playbackSpeed());
   for(int mode=0;mode<=2;mode++){SPDSettings.playbackSpeed(mode);GameSettings.set(new HeadlessPreferences(new FileHandle(file)));assertEquals(mode,SPDSettings.playbackSpeed());}
+ }
+ @Test public void extraSpeedsArePrivateAndNeverLeakIntoNormalBuilds() {
+  assertEquals(3,PlaybackGroup.choiceCount());
+  assertEquals("2x",PlaybackGroup.label(2));
+  assertFalse(PlaybackGroup.allowed(3));
+  SPDSettings.playbackSpeed(9);
+  assertEquals(1,SPDSettings.playbackSpeed());
+  GameSettings.put("apd_playback_speed",9);
+  assertEquals("Developer-only preference cannot activate in normal build",1,SPDSettings.playbackSpeed());
+  PlaybackGroup.speed(9);
+  Game.elapsed=0.016f; PlaybackGroup group=new PlaybackGroup(); float[] observed={0};
+  group.add(observe(observed));group.update();
+  assertEquals(0.016f,observed[0],0.00001f);
+ }
+ @Test public void developerSpeedsPersistAndScaleVisualsFromFourToOneThousand(){
+  ApdFeatures.parse("testBuild\n");
+  String[] labels={"0.5x","1x","2x","4x","8x","16x","32x","64x","100x","1000x"};
+  float[] factors={.5f,1f,2f,4f,8f,16f,32f,64f,100f,1000f};
+  assertEquals(labels.length,PlaybackGroup.choiceCount());
+  for(int i=0;i<labels.length;i++){
+   assertTrue(PlaybackGroup.allowed(i));assertEquals(labels[i],PlaybackGroup.label(i));
+   SPDSettings.playbackSpeed(i);
+   GameSettings.set(new HeadlessPreferences(new FileHandle(file)));
+   assertEquals(i,SPDSettings.playbackSpeed());
+   PlaybackGroup.speed(SPDSettings.playbackSpeed());
+   Game.elapsed=.016f; float[] observed={0};
+   PlaybackGroup g=new PlaybackGroup();g.add(observe(observed));g.update();
+   assertEquals(.016f*factors[i],observed[0],.0001f);
+   assertEquals(.016f,Game.elapsed,0f);
+  }
+  assertFalse(PlaybackGroup.allowed(labels.length));
+  // Simulate opening the same preferences in a production build.
+  ApdFeatures.parse("");
+  assertEquals(3,PlaybackGroup.choiceCount());
+  assertEquals(1,SPDSettings.playbackSpeed());
+  PlaybackGroup.speed(9);
+  Game.elapsed=.016f;float[] observed={0};PlaybackGroup g=new PlaybackGroup();g.add(observe(observed));g.update();
+  assertEquals(.016f,observed[0],0.00001f);
+ }
+ @Test public void extremeModesNeverChangeActorClockGlobalTimescaleOrHud(){
+  ApdFeatures.parse("testBuild\n");
+  float clock=Actor.now(),timeScale=Game.timeScale,timeTotal=Game.timeTotal;
+  for(int mode:new int[]{3,4,5,6,7,8,9}){
+   PlaybackGroup.speed(mode);Game.elapsed=.02f;
+   Group parent=new Group();PlaybackGroup visuals=new PlaybackGroup();float[] visual={0},hud={0};
+   visuals.add(observe(visual));parent.add(visuals);parent.add(observe(hud));parent.update();
+   assertTrue("Even 1000x should advance visuals",visual[0]>.02f);
+   assertEquals(.02f,hud[0],0f);
+   assertEquals(.02f,Game.elapsed,0f);
+   assertEquals(clock,Actor.now(),0f);assertEquals(timeScale,Game.timeScale,0f);
+   assertEquals(timeTotal,Game.timeTotal,0f);
+  }
  }
  @Test public void invalidChoicesUseNormalSpeed(){
   for(int mode:new int[]{-1,3,Integer.MIN_VALUE,Integer.MAX_VALUE}){GameSettings.put("apd_playback_speed",mode);assertEquals(1,SPDSettings.playbackSpeed());SPDSettings.playbackSpeed(mode);assertEquals(1,SPDSettings.playbackSpeed());}

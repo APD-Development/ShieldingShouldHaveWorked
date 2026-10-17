@@ -141,17 +141,35 @@ public class APDSettingsPane extends Component {
         };
         chkStairNavigation.checked(SPDSettings.stairNavigationShortcut());add(chkStairNavigation);
 
-        final String[] speeds = {"0.5x", "1x", "2x"};
-        btnPlaybackSpeed = new RedButton("Game speed: " + speeds[SPDSettings.playbackSpeed()]) {
+        btnPlaybackSpeed = new RedButton("Game speed: "
+                + com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.label(SPDSettings.playbackSpeed())) {
             @Override protected void onClick() {
-                ShatteredPixelDungeon.scene().addToFront(new WndOptions("Game speed",
-                        "Playback only. Turn costs and combat stay unchanged.", speeds) {
-                    @Override protected void onSelect(int index) {
-                        if(index < 0 || index >= speeds.length) return;
-                        SPDSettings.playbackSpeed(index);
-                        btnPlaybackSpeed.text("Game speed: " + speeds[index]);
+                if (com.shatteredpixel.shatteredpixeldungeon.apd.ApdFeatures.testBuild()) {
+                    final java.util.List<WndUimsdList.Entry> choices = new java.util.ArrayList<>();
+                    for (int i = 0; i < com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.choiceCount(); i++) {
+                        choices.add(WndUimsdList.Entry.item(
+                                com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.label(i))
+                                .current(i == SPDSettings.playbackSpeed()));
                     }
-                });
+                    ShatteredPixelDungeon.scene().addToFront(WndUimsdList.menu("Game speed",
+                            "PRIVATE TEST BUILD: extreme visual playback only. Combat turns remain unchanged.",
+                            choices, (index, checked) -> {
+                                if (!com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.allowed(index)) return;
+                                SPDSettings.playbackSpeed(index);
+                                btnPlaybackSpeed.text("Game speed: "
+                                        + com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.label(SPDSettings.playbackSpeed()));
+                            }));
+                } else {
+                    ShatteredPixelDungeon.scene().addToFront(new WndOptions("Game speed",
+                            "Playback only. Turn costs and combat stay unchanged.", "0.5x", "1x", "2x") {
+                        @Override protected void onSelect(int index) {
+                            if (!com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.allowed(index)) return;
+                            SPDSettings.playbackSpeed(index);
+                            btnPlaybackSpeed.text("Game speed: "
+                                    + com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.label(SPDSettings.playbackSpeed()));
+                        }
+                    });
+                }
             }
         };
         add(btnPlaybackSpeed);
