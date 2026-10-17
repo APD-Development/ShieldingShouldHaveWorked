@@ -11,3 +11,5 @@ Requested 2026-10-17: when the player chooses **Stairs Up** or **Stairs Down** f
 Status: source implementation committed for core-only verification. Android/emulator and physical phone are not verified yet. No public release or invite/promotion.
 
 The original two-argument Walk(int,Level) API is preserved as a walk-only overload after first core verification caught its use in existing HeroActionMoveTelemetryTest. TEST273 history is pinned to successful TEST272 run 39066730441. Core rerun 39068161212 pending. No APK compiled for this feature yet.
+
+Core-only run 39068486460 attempt 2 passed all 1786 tests, including existing and new stair tests. Attempt 1 had a separate SeedFloorsTest async notice timing race after all stair tests passed; do not misclassify the attempt 1 suite as success. Full new private TEST273 build requested and pending. Native touchscreen test covers persistence and field owner map. No APK distributed yet.
