@@ -66,7 +66,7 @@ public class PlaybackSpeedTest {
   assertEquals(.016f,observed[0],0.00001f);
  }
  @Test public void extremeVisualPlaybackPreservesNormalHeroIdleTiming(){
-  ApdFeatures.parse("testBuild\\n");
+  ApdFeatures.parse("testBuild\n");
   for(int mode=0;mode<PlaybackGroup.choiceCount();mode++){
    PlaybackGroup.speed(mode);
    float[] seen={0f,0f};
