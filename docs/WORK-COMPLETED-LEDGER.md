@@ -1,3 +1,11 @@
+## 2026-10-17T23:10:32.827Z — TEST275 RowCodec fail-closed correction accepted by the complete private gate
+- Application source `dcdec4a936a0b159f6dcf1a60da6a8c5e663d6a1`, request commit `909286ed86788d462f853fd47b9632cefac96691`, full run [39076194628](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/39076194628): 1,793 core, debug, complete TEST273 history and 38 API34 all passed.
+- Exact APK: 38,612,990 bytes, SHA-256 `bab6b2a34e8e42021516986482ded6782a8dbe79820844d3bc1ef7c496e6bf29`; private artifact `12116964675`. Core artifact `12117122515`; Android evidence artifact `12117283141`.
+- All 57 required 320x640 PNGs decoded and were manually reviewed; no blank/corrupt image or visible clipping regression.
+- Supplemental [39076194659](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/39076194659) retained exact evidence: small and square passed; short-landscape, compact and M53 failed the same one-method native-title startup assertion (2/5). This unrelated supplemental result does not weaken or replace the required gate.
+- Stage `39076194626` failed before main acceptance; no stage/publication/distribution occurred. TEST262 remains latest owner publication; TEST273 private pair remains fallback. No phone or owner-save install-over claim.
+- Verification receipt: `docs/APD-TEST275-ROW-CACHE-VERIFICATION-2026-10-17.json`. Executable build request intentionally unchanged.
+
 ## 2026-10-17T22:41:38Z — TEST274 failed closed on exact previous-APK label; TEST275 history-only retry
 - Run `39076067947` retrieved TEST273, then stopped before compilation because the manifest label `Codex TEST 273 Developer` did not equal the embedded record `Codex TEST 273`.
 - Core, debug APK, compiled-history output and API34 were skipped. No TEST274 APK exists and no verification claim is carried forward.

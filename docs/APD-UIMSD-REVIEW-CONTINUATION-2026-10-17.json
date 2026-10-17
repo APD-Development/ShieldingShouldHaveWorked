@@ -1,9 +1,9 @@
 {
-  "source": "c761afc25902954060daf5fffbd87e728b8b1887",
-  "recorded_at": "2026-10-17T08:14:00Z",
+  "source": "909286ed86788d462f853fd47b9632cefac96691",
+  "recorded_at": "2026-10-17T23:10:32.827Z",
   "complete": false,
   "prior_checkpoint_preserved": "docs/APD-UIMSD-REVIEW-CHECKPOINT-2026-10-13.json",
-  "count_note": "Current-blob reconciliation found 96 exact machine-recorded entries before this continuation. Datasets.java, AggValue.java, UimsdSelfTest.java, UimsdHome.java, QueryCodec.java, Question.java, Questions.java and RowBuilders.java add eight reviewed current production blobs, for 104 exact reviewed paths; prose-only completed reviews remain separate until reconciled.",
+  "count_note": "Current-blob reconciliation found 96 exact machine-recorded entries before this continuation. Datasets.java, AggValue.java, UimsdSelfTest.java, UimsdHome.java, QueryCodec.java, Question.java, Questions.java, RowBuilders.java and RowCodec.java add nine reviewed current production blobs, for 105 exact reviewed paths; prose-only completed reviews remain separate until reconciled.",
   "entries": [
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/Datasets.java",
@@ -138,6 +138,20 @@
         "methods": 31,
         "new_method": "legacyDatesRejectImpossibleCalendarDaysButKeepRealLeapDays"
       }
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowCodec.java",
+      "sha": "3fa0329c24544db53bc8f496d8a55f63c1494a93",
+      "lines": 238,
+      "reviewed": true,
+      "basis": "Complete current-source review reproduced a fail-open boundary in CRC-valid derived row caches: reserved log flags, ruleset tags, merge-key markers, row flags and cell kinds could be accepted as ordinary defaults, including silently converting unknown kind 3 into missing data. Strict metadata validation now rejects those derived caches so DatasetStore rebuilds only from unchanged source logs.",
+      "retained_test": {
+        "path": "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowCacheMetadataValidationTest.java",
+        "sha": "38afe2d456091387c8c6a1038cf114aa9ce456bf",
+        "source_commit": "dcdec4a936a0b159f6dcf1a60da6a8c5e663d6a1",
+        "methods": 7,
+        "coverage": "one exact valid fixture and six reserved-value fail-closed fixtures"
+      }
     }
   ],
   "supporting_reads": [
@@ -177,21 +191,21 @@
     "methods": 2
   },
   "full_core_evidence": {
-    "request_commit": "c761afc25902954060daf5fffbd87e728b8b1887",
-    "run_id": 39014635516,
-    "artifact_id": 12094058905,
-    "artifact_bytes": 828041,
-    "artifact_digest": "sha256:e61492c44e1f7f4f2f710a0a5dddcb5a20c0b70081b137cae17c51d4b09af627",
-    "suites": 350,
-    "tests": 1774,
+    "request_commit": "909286ed86788d462f853fd47b9632cefac96691",
+    "run_id": 39076194628,
+    "artifact_id": 12117122515,
+    "artifact_bytes": 835909,
+    "artifact_digest": "sha256:396febda22fd7c25f61584ee1faccde9be3c6b285c152ecd6ef00c41cbd43026",
+    "suites": null,
+    "tests": 1793,
     "failures": 0,
     "errors": 0,
     "skipped": 0
   },
-  "confirmed_new_production_defects": 3,
+  "confirmed_new_production_defects": 4,
   "application_changes": true,
   "new_apk_needed": false,
-  "latest_verified_private_candidate": 267,
+  "latest_verified_private_candidate": 275,
   "latest_published_owner_build": 262,
   "latest_test_only_evidence": {
     "source_commit": "c2014077526dfa87b6062ab1762548d74d632290",
@@ -201,41 +215,39 @@
     "application_source_changed": false
   },
   "latest_application_evidence": {
-    "application_source": "d76178a015b68344adfbeab2edfd701201c752a7",
-    "request_commit": "c761afc25902954060daf5fffbd87e728b8b1887",
-    "run_id": 39014635516,
-    "target": "Reject impossible Gregorian legacy dates while preserving valid leap days",
-    "core_tests": 1774,
+    "application_source": "dcdec4a936a0b159f6dcf1a60da6a8c5e663d6a1",
+    "request_commit": "909286ed86788d462f853fd47b9632cefac96691",
+    "run_id": 39076194628,
+    "target": "Reject reserved metadata in CRC-valid derived UIMSD row caches and rebuild from unchanged source logs",
+    "core_tests": 1793,
     "android_tests": 38,
     "required_images_reviewed": 57,
-    "apk_sha256": "f5fc7189d981709cf46e740d1966814c64b5ed29a7e32bca921739ce4e04009f",
+    "apk_sha256": "bab6b2a34e8e42021516986482ded6782a8dbe79820844d3bc1ef7c496e6bf29",
+    "apk_bytes": 38612990,
+    "history_previous_application_source": "df0c9be3b3d52bb9b82e6453491bbfdac7d90e69",
+    "history_previous_run": 39068952497,
+    "supplemental_display": {
+      "run_id": 39076194659,
+      "updated_at": "2026-10-17T23:08:38Z",
+      "passed_profiles": [
+        "small-virtual",
+        "square-virtual"
+      ],
+      "failed_profiles": [
+        "short-landscape",
+        "compact-virtual",
+        "m53-representative"
+      ],
+      "failure": "Native title condition did not become true",
+      "accepted_required_gate": false
+    },
     "staging": {
-      "run": 39016526869,
-      "conclusion": "success",
-      "wrapper_source": "87ce1ac4b10f27a2ca07db0529debd1139e38d0c",
-      "started_at": "2026-10-17T08:13:02Z",
-      "completed_at": "2026-10-17T08:13:43Z",
-      "application_rebuilt": false,
-      "staged_preview": {
-        "artifact_id": 12094921683,
-        "bytes": 44588415,
-        "digest": "sha256:58a3e9e7e14ec1493038787b68a3674edf3db2b28aa28d5fbfb8367a95c399a6"
-      },
-      "staged_evidence": {
-        "artifact_id": 12095106256,
-        "bytes": 8485020,
-        "digest": "sha256:df3021f1e8cd3fae7268e15ed5ac90b8421b0c20056b37784d4f69c29560048b"
-      },
-      "apk_sha256": "f5fc7189d981709cf46e740d1966814c64b5ed29a7e32bca921739ce4e04009f",
-      "application_id": "com.charltonchris29.adhdpixeldungeon.indev",
-      "version_name": "4.0.8-apd-INDEV-bC267-TEST",
-      "signing_certificate_sha256": "067688b3ab6bd5820a67f4c1ba7d5859db578173771cf31d3252b3e4e012246e",
-      "signing_matches_latest_published_owner_build": true,
-      "install_over_version_compatible": true,
-      "cleric_lore_feature_marker_verified": true,
-      "required_screenshots_verified": 57,
-      "physical_phone_tested": false,
-      "owner_save_install_over_tested": false
-    }
+      "run_id": 39076194626,
+      "conclusion": "failure",
+      "staged": false
+    },
+    "published": false,
+    "physical_phone_tested": false,
+    "owner_save_install_over_tested": false
   }
 }
