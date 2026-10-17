@@ -33,6 +33,15 @@ public final class PlaybackGroup extends Group {
         speed = FACTORS[allowed(selection) ? selection : NORMAL];
     }
 
+    /**
+     * Keep the hero's two-frame standing animation readable when experimental
+     * visual playback is extremely fast. This runs only inside a PlaybackGroup;
+     * movement/attacks/effects still receive the full selected speed.
+     */
+    public static float heroIdleElapsed() {
+        return updating > 0 && speed > 2f ? Game.elapsed / speed : Game.elapsed;
+    }
+
     @Override public synchronized void update() {
         float original = Game.elapsed;
         if (updating++ == 0) Game.elapsed = original * speed;

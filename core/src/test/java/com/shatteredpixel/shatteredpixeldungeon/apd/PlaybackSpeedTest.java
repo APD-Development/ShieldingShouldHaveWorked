@@ -65,6 +65,27 @@ public class PlaybackSpeedTest {
   Game.elapsed=.016f;float[] observed={0};PlaybackGroup g=new PlaybackGroup();g.add(observe(observed));g.update();
   assertEquals(.016f,observed[0],0.00001f);
  }
+ @Test public void extremeVisualPlaybackPreservesNormalHeroIdleTiming(){
+  ApdFeatures.parse("testBuild\\n");
+  for(int mode=0;mode<PlaybackGroup.choiceCount();mode++){
+   PlaybackGroup.speed(mode);
+   float[] seen={0f,0f};
+   Game.elapsed=.016f;
+   assertEquals("Outside a PlaybackGroup the idle animation is unscaled",.016f,PlaybackGroup.heroIdleElapsed(),0f);
+   PlaybackGroup visuals=new PlaybackGroup();
+   visuals.add(new Gizmo(){@Override public void update(){
+    seen[0]=Game.elapsed;
+    seen[1]=PlaybackGroup.heroIdleElapsed();
+   }});
+   visuals.update();
+   float factor=new float[]{.5f,1f,2f,4f,8f,16f,32f,64f,100f,1000f}[mode];
+   assertEquals(.016f*factor,seen[0],.0001f);
+   assertEquals("Preserve 0.5x/1x/2x idle; cap developer-only extremes at 1x",
+     .016f*(factor<=2f?factor:1f),seen[1],.0001f);
+   assertEquals(.016f,Game.elapsed,0f);
+  }
+ }
+
  @Test public void extremeModesNeverChangeActorClockGlobalTimescaleOrHud(){
   ApdFeatures.parse("testBuild\n");
   float clock=Actor.now(),timeScale=Game.timeScale,timeTotal=Game.timeTotal;

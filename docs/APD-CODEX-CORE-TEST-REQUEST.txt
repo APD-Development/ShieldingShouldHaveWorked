@@ -1,8 +1,7 @@
-APD CORE-ONLY TEST REQUEST - Developer-only extreme visual playback speeds
-branch=codex/apd-phone-fixes-2026-10-09
-source=private speed modes 0.5,1,2,4,8,16,32,64,100,1000 gated on ApdFeatures.testBuild()
-scope=run complete :core:test including PlaybackSpeedTest private/production gating and actor-clock isolation
-expected_core_tests=1779
-acceptance=public only original 3 speeds; developer only 10 speeds; stale developer values ignored on production; no turn/gameplay/HUD clock modification; existing 38 API34 method list unchanged
-apk_build=NOT REQUESTED by core-only source/test acceptance
-executable_apk_build_request=UNCHANGED
+APD CORE-ONLY TEST REQUEST - TEST272 hero idle shake at 1000x
+date=2026-10-17
+previous_full_source=8d5493cb846695d623e247d1a9646038c5d6ed12
+change=Cap ONLY hero's two-frame idle animation at real time in dev visual speeds above 2x; leave movement/attacks/effects at chosen multiplier
+scope=run complete :core:test including PlaybackSpeedTest, preserve development-only speed gating and actor/input clock isolation
+expected_core_count=1780
+result=do not stage or publish an APK on core-only success; full Android build is a separate verification request
