@@ -125,7 +125,7 @@ public final class WndUimsdAsk {
 					case WHERE: editFilters(cat, ruleset, host, cur); break;
 					case RUNS: builder(cat, ruleset, host, cur.withScope(cur.scope.rules == Scope.Rules.ALL ? Scope.DEFAULT
 							: new Scope(Scope.Rules.ALL, "", true, true, true, true))); break;
-					case HIDDEN: builder(cat, ruleset, host, cur.withShowInternal(!cur.showInternal)); break;
+					case HIDDEN: builder(cat, ruleset, host, Questions.withInternalVisibility(cur, def, !cur.showInternal)); break;
 					default: answer(cat, ruleset, host, cur);
 				}
 			}
