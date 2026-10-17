@@ -359,6 +359,15 @@ public class DatasetBuildersTest {
 	}
 
 	@Test
+	public void legacyDatesRejectImpossibleCalendarDaysButKeepRealLeapDays(){
+		assertEquals(Long.MIN_VALUE, RowBuilders.parseDate("2025-02-29"));
+		assertEquals(Long.MIN_VALUE, RowBuilders.parseDate("2024-04-31"));
+		assertEquals(Long.MIN_VALUE, RowBuilders.parseDate("1900-02-29"));
+		assertTrue(RowBuilders.parseDate("2024-02-29") != Long.MIN_VALUE);
+		assertTrue(RowBuilders.parseDate("2000-02-29") != Long.MIN_VALUE);
+	}
+
+	@Test
 	public void importedRecordsKeepUnknownFieldsUnknownAndHaveAnUnknownRuleset() throws Exception {
 		importFile("legacy-import-1", 100, rec("g1", "MAGE", 0, 4, 7, 900, "2025-03-04"), rec("g2", "MAGE", 1, 26, 24, 5000, null));
 		Dataset runs = load().dataset(Datasets.RUNS);
