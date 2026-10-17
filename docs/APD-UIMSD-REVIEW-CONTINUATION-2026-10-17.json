@@ -1,6 +1,6 @@
 {
   "source": "e678d38c4c34bc755ed0cd501f7f44c88bc3c465",
-  "recorded_at": "2026-10-17T07:08:00Z",
+  "recorded_at": "2026-10-17T07:12:00Z",
   "complete": false,
   "prior_checkpoint_preserved": "docs/APD-UIMSD-REVIEW-CHECKPOINT-2026-10-13.json",
   "count_note": "Current-blob reconciliation found 96 exact machine-recorded entries before this continuation. Datasets.java, AggValue.java, UimsdSelfTest.java, UimsdHome.java, QueryCodec.java, Question.java and Questions.java add seven reviewed current production blobs, for 103 exact reviewed paths; prose-only completed reviews remain separate until reconciled.",
@@ -195,6 +195,15 @@
     "android_tests": 38,
     "required_images_reviewed": 57,
     "apk_sha256": "7ba0bf6d2d93fb2e4c7b27cf6caf718e3c74e960abfa0274d434c9869089674c",
-    "staging": "pending"
+    "staging": {
+      "run": 39012540034,
+      "conclusion": "success",
+      "wrapper_source": "d5e3a87c0cb7ef128818973bac7fe890fc92c7de",
+      "application_rebuilt": false,
+      "staged_preview_artifact": 12093094377,
+      "staged_evidence_artifact": 12093755910,
+      "signing_matches_test262": true,
+      "install_over_version_compatible": true
+    }
   }
 }

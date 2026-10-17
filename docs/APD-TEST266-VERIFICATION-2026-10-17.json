@@ -1,6 +1,6 @@
 {
   "build": 266,
-  "status": "verified_private_candidate_staging_pending",
+  "status": "verified_and_staged_private_candidate",
   "application_source": "09ba71aab8fd2cb426679add9c9d0ed2e4d72fb7",
   "workflow_source": "e678d38c4c34bc755ed0cd501f7f44c88bc3c465",
   "run": 39011090870,
@@ -111,5 +111,34 @@
   "owner_save_install_over_tested": false,
   "automatic_tester_distribution": false,
   "publication": false,
-  "all_backlog_complete": false
+  "all_backlog_complete": false,
+  "staging": {
+    "run": 39012540034,
+    "conclusion": "success",
+    "wrapper_source": "d5e3a87c0cb7ef128818973bac7fe890fc92c7de",
+    "started_at": "2026-10-17T07:08:51Z",
+    "completed_at": "2026-10-17T07:09:39Z",
+    "application_rebuilt": false,
+    "staged_preview": {
+      "artifact_id": 12093094377,
+      "bytes": 44528550,
+      "digest": "sha256:629a784f55e062513fca5cf9b2d4f82d36e738f87942ee686661c754f905827a"
+    },
+    "staged_evidence": {
+      "artifact_id": 12093755910,
+      "bytes": 8426017,
+      "digest": "sha256:1e3bfd3d660b0b36e0c040faa7d79311417a2f51a6121877cd55e695b3042336"
+    },
+    "apk_bytes": 38592446,
+    "apk_sha256": "7ba0bf6d2d93fb2e4c7b27cf6caf718e3c74e960abfa0274d434c9869089674c",
+    "application_id": "com.charltonchris29.adhdpixeldungeon.indev",
+    "version_name": "4.0.8-apd-INDEV-bC266-TEST",
+    "signing_certificate_sha256": "067688b3ab6bd5820a67f4c1ba7d5859db578173771cf31d3252b3e4e012246e",
+    "signing_matches_latest_published_owner_build": true,
+    "install_over_version_compatible": true,
+    "cleric_lore_feature_marker_verified": true,
+    "required_screenshots_verified": 57,
+    "physical_phone_tested": false,
+    "owner_save_install_over_tested": false
+  }
 }

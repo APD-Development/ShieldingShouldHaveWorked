@@ -1,3 +1,10 @@
+## 2026-10-17T07:12:00Z — TEST266 independently staged without rebuild
+- Stage run `39012540034` at wrapper `d5e3a87c0cb7ef128818973bac7fe890fc92c7de` succeeded and reused exact TEST266 APK SHA-256 `7ba0bf6d2d93fb2e4c7b27cf6caf718e3c74e960abfa0274d434c9869089674c`; no application rebuild.
+- Staged preview artifact `12093094377`: 44,528,550 bytes, digest `sha256:629a784f55e062513fca5cf9b2d4f82d36e738f87942ee686661c754f905827a`. Evidence artifact `12093755910`: 8,426,017 bytes, digest `sha256:1e3bfd3d660b0b36e0c040faa7d79311417a2f51a6121877cd55e695b3042336`.
+- Signer/app ID/version compatibility matched TEST262: certificate `067688b3ab6bd5820a67f4c1ba7d5859db578173771cf31d3252b3e4e012246e`, app ID `com.charltonchris29.adhdpixeldungeon.indev`, version `4.0.8-apd-INDEV-bC266-TEST`; version code permits install-over.
+- Cleric-lore marker and 57 required screenshots verified. CI/emulator evidence only; no physical-phone, owner-save, publication or distribution claim.
+- TEST266 verified/staged. TEST264 and published TEST262 remain fallbacks. Build request unchanged.
+
 ## 2026-10-17T07:08:00Z — TEST266 UIMSD hidden-question consistency verified
 - Fixed the confirmed Hidden-details transition mismatch in application commit `09ba71aab8fd2cb426679add9c9d0ed2e4d72fb7`: disabling hidden details removes only internal measure/split/condition selections and the answer path displays and executes one sanitized question.
 - Full source `e678d38c4c34bc755ed0cd501f7f44c88bc3c465` / run `39011090870` passed 1,773 core methods in 350 suites, 38 API-34 methods in 14 suites, debug assembly and complete immediate-previous TEST264 history; zero failures/errors/skips. Both new `QuestionsTest` methods passed.

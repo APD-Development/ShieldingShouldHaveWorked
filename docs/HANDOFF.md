@@ -1,3 +1,10 @@
+## TEST266 independently staged without rebuild — 2026-10-17T07:12:00Z
+Independent stage run `39012540034` at wrapper source `d5e3a87c0cb7ef128818973bac7fe890fc92c7de` succeeded from 2026-10-17T07:08:51Z through 07:09:39Z. It reused exact TEST266 APK SHA-256 `7ba0bf6d2d93fb2e4c7b27cf6caf718e3c74e960abfa0274d434c9869089674c`; no application rebuild occurred. Staged preview artifact `12093094377` is 44,528,550 bytes with digest `sha256:629a784f55e062513fca5cf9b2d4f82d36e738f87942ee686661c754f905827a`; evidence artifact `12093755910` is 8,426,017 bytes with digest `sha256:1e3bfd3d660b0b36e0c040faa7d79311417a2f51a6121877cd55e695b3042336`.
+
+Signatures verified. Application ID `com.charltonchris29.adhdpixeldungeon.indev`, version `4.0.8-apd-INDEV-bC266-TEST`, and certificate SHA-256 `067688b3ab6bd5820a67f4c1ba7d5859db578173771cf31d3252b3e4e012246e` match the TEST262 install line; the version code permits install-over. The owner Cleric-lore feature marker and exactly 57 required screenshots were verified. This is CI compatibility evidence, not a physical-phone or owner-save install-over result.
+
+TEST266 is now verified and staged, not published or distributed. TEST264 and published TEST262 remain preserved fallbacks. The executable build request was not changed. Continue the next genuinely unreviewed current UIMSD component; do not rebuild unchanged TEST266.
+
 ## TEST266 UIMSD hidden-question consistency accepted; staging profile corrected — 2026-10-17T07:08:00Z
 Current `Question.java` and `Questions.java` review with `WndUimsdAsk` confirmed a bounded live mismatch: after selecting internal question parts, turning Hidden details off left those parts in the displayed sentence although QueryEngine rejected them. Application commit `09ba71aab8fd2cb426679add9c9d0ed2e4d72fb7` centralizes the transition in `Questions.withInternalVisibility`, removes only internal measure/group/filter selections, preserves public and valid per-unit choices, and defensively uses the same sanitized question for display, execution and detail. Two retained `QuestionsTest` regressions cover the transition and answer integrity.
 
