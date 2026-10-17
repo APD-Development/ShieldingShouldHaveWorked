@@ -1,9 +1,9 @@
-APD CORE-ONLY TEST REQUEST — UIMSD Home finished-run scope contract
+APD CORE-ONLY TEST REQUEST — UIMSD complete query serialization contract
 branch=codex/apd-phone-fixes-2026-10-09
-source=914586aa83175b54528b2bbf59a2db71a4663bd7
-scope=run the complete :core:test suite, including UimsdHomePresentationTest
-expected_core_tests=1770
-acceptance=Home counts only finished canonical runs; current-rules mode reports other finished rules separately; all-rules mode includes both finished runs; the unfinished run and its class remain absent from Home text
+source=c2014077526dfa87b6062ab1762548d74d632290
+scope=run the complete :core:test suite, including QueryEngineTest
+expected_core_tests=1771
+acceptance=QueryCodec round-trips tabs, newlines, pipes and backslashes in every query field; preserves single-empty versus zero text values; preserves aggregate labels, extreme targets and optional fields; repeated encoding is stable
 production_application_source=unchanged
 apk_build=none
 executable_apk_build_request=unchanged
