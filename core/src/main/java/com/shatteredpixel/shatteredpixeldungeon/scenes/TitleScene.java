@@ -366,6 +366,18 @@ public class TitleScene extends PixelScene {
 
 		btnFade = new IconButton(Icons.CHEVRON.get()){
 			@Override
+			protected void layout() {
+				super.layout();
+				// Expand only the hit area into the reserved footer space. Keep the
+				// 16px icon, existing Hide UI effect and all menu geometry intact.
+				if (hotArea != null) {
+					hotArea.x = x - TitleGeometry.FADE_TOUCH_SIDE_PADDING;
+					hotArea.y = y - TitleGeometry.FADE_TOUCH_TOP_PADDING;
+					hotArea.width = width + 2 * TitleGeometry.FADE_TOUCH_SIDE_PADDING;
+					hotArea.height = height + TitleGeometry.FADE_TOUCH_TOP_PADDING;
+				}
+			}
+			@Override
 			protected void onClick() {
 				enable(false);
 				parent.add(new Tweener(parent, 0.5f) {
@@ -403,6 +415,8 @@ public class TitleScene extends PixelScene {
 			}
 		};
 		add(fadeResetter);
+		// The full-screen restore listener must not swallow a footer-button press.
+		btnFade.givePointerPriority();
 
 		if (DeviceCompat.isDesktop()) {
 			btnExit = new ExitButton();

@@ -32,6 +32,9 @@ public final class TitleGeometry {
 	public static final int LOGO_H = 100;
 	public static final int MAIN_GAP = 3;
 	public static final int FADE_SIZE = 16, FOOTER_GAP = 4, FOOTER_H = FADE_SIZE + FOOTER_GAP;
+	// Make the small footer icon easier to touch without moving the artwork.
+	public static final int FADE_TOUCH_SIDE_PADDING = 8;
+	public static final int FADE_TOUCH_TOP_PADDING = FOOTER_GAP;
 	public static final int BOTTOM_H = 20;
 	//the full-width APD Settings row sits between the 2x3 grid and the News/Changes/About row
 	public static final int APD_ROW_H = BOTTOM_H + MAIN_GAP;

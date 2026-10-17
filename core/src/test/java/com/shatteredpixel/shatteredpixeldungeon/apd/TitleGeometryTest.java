@@ -197,6 +197,24 @@ public class TitleGeometryTest {
             assertTrue(l.versionY+VERSION_H<=l.fadeY-TitleGeometry.FOOTER_GAP);
         }
     }
+    @Test public void hideUiTouchTargetUsesOnlyReservedFooterSpace(){
+        for(boolean landscape : new boolean[]{false,true})
+        for(int w : new int[]{180,240,320,400,720})
+        for(int h : new int[]{240,320,480,640,800}){
+            if(landscape && w<240)continue;
+            Layout layout=landscape ? TitleGeometry.landscape(0,0,w,h,VERSION_H,TEXT_H)
+                    : TitleGeometry.portrait(0,0,w,h,VERSION_H,TEXT_H);
+            Rect target=new Rect(layout.fadeX-TitleGeometry.FADE_TOUCH_SIDE_PADDING,
+                    layout.fadeY-TitleGeometry.FADE_TOUCH_TOP_PADDING,
+                    TitleGeometry.FADE_SIZE+2*TitleGeometry.FADE_TOUCH_SIDE_PADDING,
+                    TitleGeometry.FADE_SIZE+TitleGeometry.FADE_TOUCH_TOP_PADDING);
+            assertEquals("tap width",32,target.r-target.l,0.001);
+            assertEquals("tap height",20,target.b-target.t,0.001);
+            assertTrue("tap stays on display",target.l>=0 && target.t>=0 && target.r<=w && target.b<=h);
+            for(Rect button:buttons(layout))
+                assertTrue("footer tap does not overlap menu buttons",!target.hits(button));
+        }
+    }
     @Test public void reportedShortPortraitUsedToPlaceChangesUnderTheFooter(){
         Layout l=TitleGeometry.portrait(0,0,180,280,VERSION_H,16);
         Rect changes=buttons(l)[8];

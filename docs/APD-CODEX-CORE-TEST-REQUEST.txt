@@ -1,9 +1,8 @@
-APD CORE-ONLY TEST REQUEST — verify UIMSD legacy calendar validation
+APD CORE-ONLY TEST REQUEST - Samsung Galaxy S22+ title Hide UI footer target
 branch=codex/apd-phone-fixes-2026-10-09
-source=d76178a015b68344adfbeab2edfd701201c752a7
-scope=run the complete :core:test suite, including DatasetBuildersTest
-expected_core_tests=1774
-acceptance=impossible Gregorian calendar dates such as 2025-02-29, 2024-04-31 and 1900-02-29 remain unknown; valid leap days 2024-02-29 and 2000-02-29 remain accepted; all prior core methods pass
-production_application_source=changed
-apk_build=pending full candidate gate after core proof
-executable_apk_build_request=unchanged
+source_candidate=TitleGeometry + TitleScene enlarged non-overlapping hit area; native outside-icon touch regression
+scope=run complete :core:test suite including TitleGeometryTest.hideUiTouchTargetUsesOnlyReservedFooterSpace
+expected_core_tests=1775
+acceptance=footer target 32x20 virtual pixels, does not overlap other menu buttons, original chevron art and Hide UI/reset behavior unchanged
+status=PENDING VERIFICATION; source candidate is not a verified or published build
+apk_build=NOT REQUESTED; executable docs/APD-CODEX-BUILD-REQUEST.txt unchanged

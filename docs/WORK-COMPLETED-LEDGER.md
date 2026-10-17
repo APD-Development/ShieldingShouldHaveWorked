@@ -1,3 +1,6 @@
+## Samsung S22+ Hide UI title-footer touch candidate — 2026-10-17T16:17:41Z
+Ozzie reported TEST254 footer chevron non-response. The chevron intentionally hides the UI, and the owner showed it working on a different phone. Current branch adds a larger 32×20 virtual-pixel tap target to the original 16×16 visual icon, keeps hit area clear of other buttons and retains Hide UI/reset semantics. New core geometry regression and expanded native pointer regression are **pending** their required CI evidence. Source is a candidate only, not verified, built or delivered. Original short-landscape native failure remains unresolved until measured. Published TEST262 and staged TEST267 are unchanged; no change to executable APK build request. Evidence plan: `docs/APD-S22PLUS-TITLE-HIDE-TOUCH-2026-10-17.md`.
+
 ## TEST267 exact same-APK private staging — 2026-10-17T08:14:00Z
 - Run `39016526869` at wrapper `87ce1ac4b10f27a2ca07db0529debd1139e38d0c` succeeded without rebuilding application source.
 - Reused raw APK SHA-256 `f5fc7189d981709cf46e740d1966814c64b5ed29a7e32bca921739ce4e04009f`.

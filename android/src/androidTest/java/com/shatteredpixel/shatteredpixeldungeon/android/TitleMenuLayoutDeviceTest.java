@@ -86,6 +86,24 @@ public class TitleMenuLayoutDeviceTest {
             nativeTap(reset[0]);Thread.sleep(900);
             TopScoresDeviceTest.render(()->{try{assertTrue(((Component)field(Game.scene(),"btnChanges")).active);}catch(Exception e){throw new RuntimeException(e);}});
             TopScoresDeviceTest.screenshot("main-title-restored.png");
+            // A physical finger can land beside the tiny icon. This native press must still
+            // hide the menu and allow the existing restore behavior to run afterward.
+            Point[] outerEdge=new Point[1];
+            TopScoresDeviceTest.render(()->{try{
+                Component icon=(Component)field(Game.scene(),"btnFade");
+                com.watabou.noosa.PointerArea target=(com.watabou.noosa.PointerArea)field(icon,"hotArea");
+                assertTrue("Footer hit area reaches outside the visible icon",target.left()+4<icon.left());
+                assertTrue("Footer hit area extends upward",target.top()<icon.top());
+                outerEdge[0]=target.camera().cameraToScreen(target.left()+2,target.top()+target.height()/2);
+            }catch(Exception e){throw new RuntimeException(e);}});
+            nativeTap(outerEdge[0]);Thread.sleep(900);
+            TopScoresDeviceTest.render(()->{try{
+                assertFalse("Outside-icon touch must hide UI",((Component)field(Game.scene(),"btnChanges")).active);
+            }catch(Exception e){throw new RuntimeException(e);}});
+            nativeTap(reset[0]);Thread.sleep(900);
+            TopScoresDeviceTest.render(()->{try{
+                assertTrue("UI must restore after expanded touch",((Component)field(Game.scene(),"btnChanges")).active);
+            }catch(Exception e){throw new RuntimeException(e);}});
             final boolean waterWas=com.shatteredpixel.shatteredpixeldungeon.SPDSettings.confirmWaterskin();
             final boolean trapWas=com.shatteredpixel.shatteredpixeldungeon.SPDSettings.confirmKnownTraps();
             try{
