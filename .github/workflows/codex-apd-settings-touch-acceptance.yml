@@ -87,10 +87,7 @@ jobs:
             adb install -r test263.apk
             adb install -r android/build/outputs/apk/androidTest/debug/android-debug-androidTest.apk
             adb logcat -c
-            timeout 420 adb shell am instrument -w -r \
-              -e class 'com.shatteredpixel.shatteredpixeldungeon.android.ApdSettingsClickDeviceTest#remainingApdSettingsControlsRespondToActualTouches,com.shatteredpixel.shatteredpixeldungeon.android.ApdSettingsClickDeviceTest#everyDeclaredSettingControlHasAnExplicitAcceptanceOwner' \
-              com.charltonchris29.adhdpixeldungeon.indev.test/androidx.test.runner.AndroidJUnitRunner \
-              > settings-touch-instrumentation.txt 2>&1
+            timeout 420 adb shell am instrument -w -r -e class 'com.shatteredpixel.shatteredpixeldungeon.android.ApdSettingsClickDeviceTest#remainingApdSettingsControlsRespondToActualTouches,com.shatteredpixel.shatteredpixeldungeon.android.ApdSettingsClickDeviceTest#everyDeclaredSettingControlHasAnExplicitAcceptanceOwner' com.charltonchris29.adhdpixeldungeon.indev.test/androidx.test.runner.AndroidJUnitRunner > settings-touch-instrumentation.txt 2>&1
             adb logcat -d -v time > settings-touch-logcat.txt
             python3 - <<'PY'
             import json,pathlib,re
