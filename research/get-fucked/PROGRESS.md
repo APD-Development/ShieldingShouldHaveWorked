@@ -1138,3 +1138,32 @@ Spinner damage10..20, attack22, meleePoison50%independentofdamage,7..8duration. 
 
 ## Active experiment
 Later-freeze fresh origin replays identical successfulStarfloweracquisition through5896, then moves582/535 BEFORE activatingHG. Aim is spendthe4frozenmovementactionsclosertothreats andevaluateBlastcrowdcontrolbeforeWebtrapsescape. Actor positions, fooddeadline andweaponsmustbeobserved; cannotassumeitworks. No fullDM300/Amulet/ascension proof.
+
+
+# Actual early-fruit continuation: ration acquired and consumed
+
+Original Get Fucked rules. No native restores, production edits, scoring or autonomous player. Overall UNRESOLVED: no full DM300, Amulet or ascension proof.
+
+## New consecutive evidence
+The later-freeze branch started at real level1, acquired early13fruit and actual14Starflowerseed as already archived, and reached5972alive. JUnitOK1049.452sec records a healthy endpoint, not victory. At5898Hero535, the same2HGcharges froze489/443/397/351 instead of beginning629. Blast353didNOTstunSpider399: immediate-wall knockback hasdist0 and returns beforecollisiondamage. Spiderhit2andwebbed305; Heroenteredweb,Root5. Blast352pushedSpiderbackandRedShamanto496(stun1). Root494rootedSpider446andgrewcover, Root496addedanothercurtain (water496cannotgroworroot), H1andSunrayRed449blinded4. Walk259/213/214/215escapedwithoutfurtherdamage. Pursuerswanderedsouth. No reset of charges, health, equipment, hunger, items or enemies.
+
+After bridgecamp25, B and417approach, newDM200546blockedBat560. Root560rootedDM512butBatwasimmune: Roots.attachTo rejectsFlying. DMventedGas. Blast465knockedHero417overchasm369to321withoutfall (onlyfinalcelloccupied), Bat513collisionstun. ShieldLightBatandtwoactualBoomshots5/12plusDMgas3/3/3killedBat, earning7XP. FullBoomreturned321wasphysicallyretrieved. Hunger400at5955;10realwaitsearned1HG; nofoodgrant.
+
+ActualfreezeF/G463/G462 accidentallyopenedTomb463, spawnedWraith572/573 and consumedmoreactions thanstraightmovement. DMhit6into6barrier, leaving0; heroarrivedonFood462buthadnotpickeditup. G462actuallycollectedFood at5972,h417,MP0+.863835,HP/HT1,body0,lvl11XP32,gold778,energy1. Rawfruit/Starflower/Sorrow/Earthrootseedsretained,Healing1,3GooBlobs,2Boompieces. This demonstrates acquisition oftheration butnotyetconsumption underoldadapter.
+
+## Test-only selection bug and correction
+Namedmanual Efood.Food usedBelongings.getItem(Food.class), which polymorphically selectedearlierrawBlandfruit. ItsEATwarnsandreturns. Thereforethat commanddidNOTeat,spendtime,feedhero orchargeTome, andwasNOTcredited. PatchedONLYmanualtestadaptertochooseexactruntimeclassforthenamedfood andassertthatEATconsumedit. ThisrepresentsoriginalinventoryUIselectingactualration; nogameplaychange. PatchedsourceSHA29027ad0e357e4ec56fca77ea7af23fbfdb28292f2bfa319877b3ef8f91e9174. OldusedsourceSHA4449360e98ef158c23ea16338b7406af18d3c174f9870aa79ac3f1bed36d5fb5 retainedseparately.
+
+FreshpatchedreplaymatchedALL15nativeJSONfiles(globalmissile-IDbijectiononly)andACTIVEgameplayRNGagainstoldhealthy5972endpoint. Efood.FoodTHENconsumedactualownedration,advanced1turn,hunger417->118,Tome0+.8638->1+.8909. DMattackmissed. B15nextturnbothDM/Wraithmissed. Moves509(DMhit5,Wraith0)/556(DMmiss)/603legallyescapedfoodcorner. AnotherB15bothmissed,651andintentionalSearch2revealedDoor698;DMmissedtwice,Wraith0then6. Alltheseactualrollsarepartofthefixedsequence,NOTguaranteeddefense. HPremained1through5983,barrier7,h132,Tome0+.16864,Root0+.99692,Blast1+.05402,HG0+.24059,lvl11XP32.
+
+## Precise failed extension
+AtHero745,Blast698killedWraith573anddamagedDM. ItALSOknockedHeroontoDoor792, collision1andbriefparalysis. BlueShaman529931wokeanddealtEarthenBolt13throughphysicalarmor/ShieldLight; remainingbarrier5wasinsufficient. Actualdeath5984. This disproves thatdoorwaysequence,NOT universalpossibility. Currentnewfreshbranchreplayslegalprefixthrough5983toinspectadjacentchasm744andactualfall/returnalternative; notyetcredited.
+
+## Reproducibility caveat
+ALL15+ACTIVE RNG also matched5819 betweenearly-fruit andlater-freeze. Attempted5896comparisonfailed: oldearly-fruit checkpointwasoverwrittenbyzero-timefreeze/moves andrecordsHero443; later-freeze5896recordsHero629beforechangedtiming. Thosearedifferentstates andwereNOTnormalizedorclaimedmatching. Use5819validcomparisoninstead. Nativefilesdonotrestoreauthoritativeruns.
+
+## Important source corrections
+SatiatedSpells1grants3shieldonnextspell,not5; setShieldusesmaximum anddoesnotreduceBless15. RootsdoesnotpreventcastingandcannotattachtoflyingBat. Wraithsfrom14Tombhit8..16, notassumedharmless;EXP0. DM200ventCooldown30, onlyactualtickscount;gascanharmBatandawardHeroXP. Door/knockbackendpointsmustbecheckedinactualdiagnostic,includingHeroaffectedentry; donotassumedoorsstopbeforetheircell.
+
+## Validation scope
+CIfor058a39002372815completedSUCCESS(fulllegacypluscontinuous6633/6929/7092checks). Newfoodadapterhasfreshoriginexecutionthroughactualmeal, preservedstatecomparison, andconsumptionassertion; exact-foodrunthenfailsatexpectednewdoorwaydeath. No empiricalclaimaboutwholevictory.

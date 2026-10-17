@@ -3787,8 +3787,12 @@ public class GetFuckedRouteTest {
                     System.out.println("MANUAL_DIAGNOSTIC "+detail);
                 }
                 else if(action.startsWith("D") || action.startsWith("E") || action.startsWith("Q") || action.startsWith("U") || action.startsWith("R")){
-                    Class<? extends Item> itemType=Class.forName("com.shatteredpixel.shatteredpixeldungeon.items."+action.substring(1)).asSubclass(Item.class);Item item=Dungeon.hero.belongings.getItem(itemType);assertNotNull("Manual action requires an actually owned item",item);
-                    if(action.startsWith("U"))upgradeOwnedGear(item);else{String itemAction=action.startsWith("D")?"DRINK":action.startsWith("E")?"EAT":action.startsWith("R")?"READ":"EQUIP";assertTrue(item.actions(Dungeon.hero).contains(itemAction));item.execute(Dungeon.hero,itemAction);if(itemAction.equals("EQUIP"))Dungeon.hero.busy();ready();log("MANUAL OWNED "+itemAction+" "+itemType.getSimpleName());}
+                    Class<? extends Item> itemType=Class.forName("com.shatteredpixel.shatteredpixeldungeon.items."+action.substring(1)).asSubclass(Item.class);Item item=Dungeon.hero.belongings.getItem(itemType);
+                    // A named food command represents selecting that exact inventory item.
+                    // getItem(Food.class) also matches raw Blandfruit, whose EAT is a no-op.
+                    if(action.startsWith("E")){item=null;for(Item candidate:Dungeon.hero.belongings)if(candidate.getClass()==itemType){item=candidate;break;}}
+                    assertNotNull("Manual action requires an actually owned item",item);
+                    if(action.startsWith("U"))upgradeOwnedGear(item);else{String itemAction=action.startsWith("D")?"DRINK":action.startsWith("E")?"EAT":action.startsWith("R")?"READ":"EQUIP";assertTrue(item.actions(Dungeon.hero).contains(itemAction));int quantityBefore=item.quantity();if(itemAction.equals("EAT"))System.out.println("MANUAL_SELECTED_EXACT_FOOD "+item.getClass().getName());item.execute(Dungeon.hero,itemAction);if(itemAction.equals("EQUIP"))Dungeon.hero.busy();ready();if(itemAction.equals("EAT")){boolean stillOwned=false;for(Item candidate:Dungeon.hero.belongings)if(candidate==item)stillOwned=true;assertTrue("An EAT command must consume the explicitly selected owned food",!stillOwned || item.quantity()<quantityBefore);}log("MANUAL OWNED "+itemAction+" "+itemType.getSimpleName());}
                 }else {if(action.equals("S") || action.equals("L") || action.equals("T") || action.equals("A"))assertNotNull(target);freshFixedActions(target,action);}
                 assertEquals(1,Dungeon.hero.HT);assertEquals(1,Dungeon.hero.HP);
             }
