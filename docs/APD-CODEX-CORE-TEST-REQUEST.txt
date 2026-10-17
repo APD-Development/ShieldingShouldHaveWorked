@@ -5,3 +5,4 @@ change=Cap ONLY hero's two-frame idle animation at real time in dev visual speed
 scope=run complete :core:test including PlaybackSpeedTest, preserve development-only speed gating and actor/input clock isolation
 expected_core_count=1780
 result=do not stage or publish an APK on core-only success; full Android build is a separate verification request
+corrected_test_fixture=single escaped newline for testBuild parser at 097688d9e3319186146e45973f8c71a3be32fce2; verify real developer-only modes in latest source
