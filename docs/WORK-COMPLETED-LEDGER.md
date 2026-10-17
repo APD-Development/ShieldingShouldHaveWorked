@@ -1,3 +1,8 @@
+## 2026-10-17T23:39:48.943Z — DatasetStore equal-time segment comparator overflow reproduction requested
+- Complete current `DatasetStore.java` review found a bounded ordering hazard: equal-created-time segments are compared with subtraction, which overflows for extreme integer segment values and can select an older ended segment as newest.
+- Added one public-load regression using `Integer.MIN_VALUE` ended and `Integer.MAX_VALUE` open segments for the same run and timestamp. The correct result is one unfinished logical run with both level entries.
+- This commit is reproduction-only. Production code, raw histories, saves, scores, gameplay, APK and executable build request remain unchanged. Core-only CI must retain the focused failure before correction. TEST275 remains the latest fully gated private candidate; TEST262 remains the latest owner publication.
+
 ## 2026-10-17T23:37:43.900Z — UIMSD randomized row-cache stress core verification PASS
 - Commit `dcbcbfc905f041ed353db08efd1f3809f6d3709e` added two retained seeded tests: 10,000 cached rows plus 64 varied small corpora and a separate 2,048-row schema-projection case. These verify exact per-cell value/provenance and row metadata, stable re-encoding, source identity, deleted/reordered columns and checksum rejection. This is **not** 10,000 completed gameplay runs.
 - Core-only [run 39079506565](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/39079506565) finished successfully. Actual JUnit XML: **1,795 tests in 353 suites; 0 failures, 0 errors, 0 skipped**, with both `RowCacheRandomizedIntegrityTest` methods passing. Artifact `12118042510` SHA-256 `96246438921345753c60782971ca22f2f54870b0fff5cb7d60371aac8208729b`.

@@ -1,6 +1,6 @@
-APD CORE-ONLY TEST REQUEST - UIMSD randomized row-cache integrity 2026-10-17T23:33:31.753Z
-goal=Execute a deterministic 10000-row plus 64 varied-cache roundtrip with all value/provenance/source identity checks and a 2048-row schema projection/reordering regression.
-candidate=exact push commit containing core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowCacheRandomizedIntegrityTest.java
-tests=run full ./gradlew :core:test, including RowCacheRandomizedIntegrityTest; retain failures without weakening assertions
-scope=test-only UIMSD derived cache; no production code, historical raw logs, saves, gameplay, scoring, APK or release change
+APD CORE-ONLY TEST REQUEST - DatasetStore segment comparator overflow reproduction 2026-10-17T23:39:48.943Z
+goal=Reproduce same-created-time extreme segment ordering: Integer.MIN_VALUE ended segment followed by Integer.MAX_VALUE open segment must leave the logical run unfinished without comparator subtraction overflow.
+candidate=exact push commit containing DatasetBuildersTest.equalTimestampExtremeSegmentNumbersUseNumericOrderWithoutOverflow
+tests=run full ./gradlew :core:test; retain the expected focused failure and all prior results without weakening assertions
+scope=test-only UIMSD DatasetStore ordering reproduction; no production code, raw history, saves, gameplay, scoring, APK or release change
 delivery=core verification only; do not trigger an APK build, publish, stage, distribute or edit docs/APD-CODEX-BUILD-REQUEST.txt
