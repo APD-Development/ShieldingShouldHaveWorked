@@ -1,9 +1,9 @@
-APD CORE-ONLY TEST REQUEST — reproduce invalid UIMSD legacy calendar dates
+APD CORE-ONLY TEST REQUEST — verify UIMSD legacy calendar validation
 branch=codex/apd-phone-fixes-2026-10-09
-source=c48ed80c538695356dbda05b8faab51aca6d456c
+source=d76178a015b68344adfbeab2edfd701201c752a7
 scope=run the complete :core:test suite, including DatasetBuildersTest
 expected_core_tests=1774
-acceptance=impossible Gregorian calendar dates such as 2025-02-29, 2024-04-31 and 1900-02-29 remain unknown; valid leap days 2024-02-29 and 2000-02-29 remain accepted
-production_application_source=unchanged
-apk_build=none
+acceptance=impossible Gregorian calendar dates such as 2025-02-29, 2024-04-31 and 1900-02-29 remain unknown; valid leap days 2024-02-29 and 2000-02-29 remain accepted; all prior core methods pass
+production_application_source=changed
+apk_build=pending full candidate gate after core proof
 executable_apk_build_request=unchanged
