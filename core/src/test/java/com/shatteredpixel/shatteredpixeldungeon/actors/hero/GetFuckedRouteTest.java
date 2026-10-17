@@ -61,7 +61,10 @@ public class GetFuckedRouteTest {
         if (ch.sprite != null) return;
         CharSprite sprite = ch == Dungeon.hero ? mock(HeroSprite.class, RETURNS_DEEP_STUBS)
                 : ch instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo ? mock(com.shatteredpixel.shatteredpixeldungeon.sprites.GooSprite.class,RETURNS_DEEP_STUBS)
-                : ch instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Necromancer ? mock(com.shatteredpixel.shatteredpixeldungeon.sprites.NecromancerSprite.class,RETURNS_DEEP_STUBS) : mock(com.shatteredpixel.shatteredpixeldungeon.sprites.MobSprite.class, RETURNS_DEEP_STUBS);
+                : ch instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Necromancer ? mock(com.shatteredpixel.shatteredpixeldungeon.sprites.NecromancerSprite.class,RETURNS_DEEP_STUBS)
+                : ch instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM300 ? mock(com.shatteredpixel.shatteredpixeldungeon.sprites.DM300Sprite.class,RETURNS_DEEP_STUBS)
+                : ch instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Pylon ? mock(com.shatteredpixel.shatteredpixeldungeon.sprites.PylonSprite.class,RETURNS_DEEP_STUBS)
+                : mock(com.shatteredpixel.shatteredpixeldungeon.sprites.MobSprite.class, RETURNS_DEEP_STUBS);
         ch.sprite = sprite;
         if(ch instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo)doAnswer(i->{ch.onAttackComplete();return null;}).when((com.shatteredpixel.shatteredpixeldungeon.sprites.GooSprite)sprite).pumpAttack();
         if(ch instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Necromancer)
@@ -72,6 +75,12 @@ public class GetFuckedRouteTest {
             doAnswer(i->{((com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Spinner)ch).shootWeb();return null;}).when(sprite).zap(anyInt());
         if(ch instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM200)
             doAnswer(i->{((com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM200)ch).onZapComplete();return null;}).when(sprite).zap(anyInt());
+        // Complete only the original presentation callbacks. Gas, rock placement,
+        // damage, scheduler costs and pylon activation stay in production methods.
+        if(ch instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM300){
+            doAnswer(i->{((com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM300)ch).onZapComplete();return null;}).when(sprite).zap(anyInt());
+            doAnswer(i->{((com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM300)ch).onSlamComplete();return null;}).when((com.shatteredpixel.shatteredpixeldungeon.sprites.DM300Sprite)sprite).slam(anyInt());
+        }
         if(ch==Dungeon.hero)doAnswer(i -> {ch.onOperateComplete();return null;}).when((HeroSprite)sprite).read();
         Group parent=mock(Group.class,i -> {
             if(i.getMethod().getName().equals("recycle") && i.getArguments().length==1 && i.getArgument(0) instanceof Class)
@@ -119,6 +128,11 @@ public class GetFuckedRouteTest {
                 itemSelection=(com.shatteredpixel.shatteredpixeldungeon.windows.WndBag.ItemSelector)args[0];
             }else if (invocation.getMethod().getName().equals("selectCell")) {
                 selection = (CellSelector.Listener) args[0];
+            } else if (invocation.getMethod().getName().equals("discard") && args.length==1 && args[0] instanceof Heap){
+                // Level.drop has already scheduled this item for the lower floor.
+                // Bind only the discarded-loot animation that GameScene normally adds.
+                Heap discarded=(Heap)args[0];
+                if(discarded.sprite==null)discarded.sprite=mock(com.shatteredpixel.shatteredpixeldungeon.sprites.DiscardedItemSprite.class,RETURNS_DEEP_STUBS);
             } else if (invocation.getMethod().getName().equals("add") && args.length > 0) {
                 if (args[0] instanceof Mob) {
                     Mob mob = (Mob)args[0];
@@ -3673,6 +3687,12 @@ public class GetFuckedRouteTest {
                     Item potion=Dungeon.hero.belongings.getItem(potionType),item=Dungeon.hero.belongings.getItem(itemType);assertNotNull(potion);assertNotNull(item);assertTrue(potion instanceof com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion);assertTrue(potion.actions(Dungeon.hero).contains("DRINK"));
                     itemSelection=null;potion.execute(Dungeon.hero,"DRINK");assertNotNull(itemSelection);assertTrue(itemSelection.itemSelectable(item));itemSelection.onSelect(item);ready();log("MANUAL OWNED INVENTORY POTION "+potionType.getSimpleName()+" ON "+itemType.getSimpleName());
                 }
+                else if(action.startsWith("j")){
+                    Class<? extends Item> armorType=Class.forName("com.shatteredpixel.shatteredpixeldungeon.items."+action.substring(1)).asSubclass(Item.class);
+                    Item stylus=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.Stylus.class),armor=Dungeon.hero.belongings.getItem(armorType);
+                    assertNotNull("An inscription consumes a legitimately owned stylus",stylus);assertNotNull(armor);assertTrue(stylus.actions(Dungeon.hero).contains("INSCRIBE"));
+                    itemSelection=null;stylus.execute(Dungeon.hero,"INSCRIBE");assertNotNull(itemSelection);assertTrue(itemSelection.itemSelectable(armor));itemSelection.onSelect(armor);ready();log("MANUAL OWNED ORIGINAL STYLUS ON "+armorType.getSimpleName());
+                }
                 else if(action.startsWith("i")){
                     int at=action.indexOf('@');assertTrue(at>1);
                     Class<? extends Item> scrollType=Class.forName("com.shatteredpixel.shatteredpixeldungeon.items."+action.substring(1,at)).asSubclass(Item.class);
@@ -3695,6 +3715,17 @@ public class GetFuckedRouteTest {
                     JSONArray traps=new JSONArray();for(com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap trap:Dungeon.level.traps.valueList())traps.put(new JSONObject().put("pos",trap.pos).put("type",trap.getClass().getSimpleName()).put("active",trap.active).put("visible",trap.visible));detail.put("traps",traps);JSONArray plantDetails=new JSONArray();for(com.shatteredpixel.shatteredpixeldungeon.plants.Plant plant:Dungeon.level.plants.valueList())plantDetails.put(new JSONObject().put("pos",plant.pos).put("type",plant.getClass().getSimpleName()));detail.put("plants",plantDetails);
                     JSONArray blobs=new JSONArray();for(Blob blob:Dungeon.level.blobs.values()){JSONArray cells=new JSONArray();if(blob.cur!=null)for(int c=0;c<blob.cur.length;c++)if(blob.cur[c]>0)cells.put(new JSONArray().put(c).put(blob.cur[c]));if(cells.length()>0)blobs.put(new JSONObject().put("type",blob.getClass().getSimpleName()).put("cells",cells).put("cooldown",blob.cooldown()));}detail.put("blobs",blobs);detail.put("mobs",state("DIAGNOSTIC_READ_ONLY").getJSONArray("mobs"));
                     JSONArray control=new JSONArray();for(Mob mob:Dungeon.level.mobs){JSONArray effects=new JSONArray();for(Buff buff:mob.buffs())effects.put(new JSONObject().put("type",buff.getClass().getSimpleName()).put("remaining",buff.cooldown()));if(effects.length()>0)control.put(new JSONObject().put("id",mob.apdPeekId()).put("paralysed",mob.paralysed).put("buffs",effects));}detail.put("mobBuffs",control);
+                    JSONArray bossDetails=new JSONArray();
+                    for(Mob mob:Dungeon.level.mobs){
+                        if(mob instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM300){
+                            com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM300 dm=(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM300)mob;
+                            JSONObject boss=new JSONObject().put("id",mob.apdPeekId()).put("supercharged",dm.supercharged).put("pylonsActivated",dm.pylonsActivated);
+                            for(String name:new String[]{"turnsSinceLastAbility","abilityCooldown","lastAbility"}){Field field=dm.getClass().getDeclaredField(name);field.setAccessible(true);boss.put(name,field.getInt(dm));}bossDetails.put(boss);
+                        }else if(mob instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Pylon){
+                            Field field=mob.getClass().getDeclaredField("targetNeighbor");field.setAccessible(true);bossDetails.put(new JSONObject().put("id",mob.apdPeekId()).put("nextShockNeighbor",field.getInt(mob)).put("alignment",mob.alignment.name()));
+                        }
+                    }
+                    detail.put("bossReadOnly",bossDetails);
                     JSONArray heroEffects=new JSONArray();for(Buff buff:Dungeon.hero.buffs())heroEffects.put(new JSONObject().put("type",buff.getClass().getSimpleName()).put("remaining",buff.cooldown()));detail.put("heroBuffs",heroEffects);
                     System.out.println("MANUAL_DIAGNOSTIC "+detail);
                 }

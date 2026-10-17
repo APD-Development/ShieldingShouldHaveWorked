@@ -31,6 +31,20 @@ jobs:
           name: get-fucked-existing-engine-runtime
           path: core/build/get-fucked-runtime/
           retention-days: 7
+      - name: Replay continuous frost chest, magical fire clearance and actual food acquisition
+        run: |
+          mkdir -p "$RUNNER_TEMP/get-fucked-frost-food"
+          tar -xJf research/get-fucked/frost-food-provenance.tar.xz -C "$RUNNER_TEMP/get-fucked-frost-food"
+          python3 - <<'PYCODE'
+          import json, os, subprocess
+          root=os.environ['RUNNER_TEMP']+'/get-fucked-frost-food'
+          args=json.load(open(root+'/manual-thirteen-fed-progression-args.json'))
+          props={a[2:].split('=',1)[0]:a.split('=',1)[1] for a in args if a.startswith('-D') and '=' in a}
+          props.pop('route.expectedMissileIdEquivalence',None)
+          props.update({'route.testTimeoutSeconds':'600','route.stableHash':'true','route.noSnapshots':'true','route.manualReplay':root+'/manual-thirteen-frost-retrieval-continued-complete.journal','route.manualContinue':'false','route.manualJournal':root+'/actual-frost-food-replay.journal','route.expectedEnd':root+'/native/manual-thirteen-frost-retrieval-end-manual-6190','route.expectedActiveRngOnly':'true','route.earlySwarmOut':root+'/actual-fresh-frost-food'})
+          subprocess.run(['./gradlew',':core:test','--tests','*GetFuckedRouteTest']+['-D'+k+'='+v for k,v in props.items()],check=True)
+          subprocess.run(['python3','research/get-fucked/native_equivalence.py',props['route.expectedEnd'],props['route.earlySwarmOut']],check=True)
+          PYCODE
       - name: Replay continuous cold escape, cave travel shortcut and legitimately mastered sword
         run: |
           mkdir -p "$RUNNER_TEMP/get-fucked-shortcut"
