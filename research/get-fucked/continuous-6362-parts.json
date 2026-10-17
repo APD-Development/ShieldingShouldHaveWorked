@@ -1,0 +1,17 @@
+{
+  "archive": "continuous-6362-provenance.tar.xz",
+  "size": 976876,
+  "sha256": "d5c08b599b4281b6fde4569b2d791557eb048adc999776a8ba1ea4012942bd0a",
+  "parts": [
+    {
+      "name": "continuous-6362-provenance.tar.xz.part-01",
+      "size": 524288,
+      "sha256": "fa5ad066ee159991b5a3fb599eafe5d48f84620b59209a272e370d31bbdcf30c"
+    },
+    {
+      "name": "continuous-6362-provenance.tar.xz.part-02",
+      "size": 452588,
+      "sha256": "aa6a2de5d4ac20c194047ca2d69fb3d830f7234c8e597ee58ca38a9797de536d"
+    }
+  ]
+}

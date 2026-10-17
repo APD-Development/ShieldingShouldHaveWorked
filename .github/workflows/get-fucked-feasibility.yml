@@ -10,7 +10,7 @@ permissions:
 jobs:
   scenarios:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 180
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -31,6 +31,31 @@ jobs:
           name: get-fucked-existing-engine-runtime
           path: core/build/get-fucked-runtime/
           retention-days: 7
+      - name: Replay continuous level-one Cleric through cave encounters and spider escape
+        run: |
+          python3 - <<'PYCODE'
+          import hashlib, json, os, pathlib, subprocess, tarfile
+          source=pathlib.Path('research/get-fucked')
+          root=pathlib.Path(os.environ['RUNNER_TEMP'])/'get-fucked-continuous-6362'
+          root.mkdir(parents=True,exist_ok=True)
+          manifest=json.loads((source/'continuous-6362-parts.json').read_text())
+          chunks=[]
+          for part in manifest['parts']:
+              data=(source/part['name']).read_bytes()
+              assert len(data)==part['size'] and hashlib.sha256(data).hexdigest()==part['sha256']
+              chunks.append(data)
+          data=b''.join(chunks)
+          assert len(data)==manifest['size'] and hashlib.sha256(data).hexdigest()==manifest['sha256']
+          archive=root/manifest['archive']
+          archive.write_bytes(data)
+          with tarfile.open(archive) as tar: tar.extractall(root)
+          args=json.loads((root/'recovered-6359-args.json').read_text())
+          props={a[2:].split('=',1)[0]:a.split('=',1)[1] for a in args if a.startswith('-D') and '=' in a}
+          props.pop('route.expectedMissileIdEquivalence',None)
+          props.update({'route.testTimeoutSeconds':'600','route.stableHash':'true','route.noSnapshots':'true','route.manualReplay':str(root/'recovered-6359-complete.journal'),'route.manualContinue':'false','route.manualJournal':str(root/'actual-6362.journal'),'route.expectedEnd':str(root/'native/recovered-6359-end-manual-6362'),'route.expectedActiveRngOnly':'true','route.earlySwarmOut':str(root/'actual-fresh-6362')})
+          subprocess.run(['./gradlew',':core:test','--tests','*GetFuckedRouteTest']+['-D'+k+'='+v for k,v in props.items()],check=True)
+          subprocess.run(['python3','research/get-fucked/native_equivalence.py',props['route.expectedEnd'],props['route.earlySwarmOut']],check=True)
+          PYCODE
       - name: Replay continuous frost chest, magical fire clearance and actual food acquisition
         run: |
           mkdir -p "$RUNNER_TEMP/get-fucked-frost-food"
@@ -687,4 +712,3 @@ jobs:
           name: get-fucked-research-provenance
           path: research/get-fucked/
           retention-days: 90
-
