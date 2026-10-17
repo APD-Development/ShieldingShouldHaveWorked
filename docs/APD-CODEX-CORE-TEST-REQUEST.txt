@@ -1,6 +1,6 @@
-APD CORE-ONLY TEST REQUEST - Row-cache reserved metadata validation 2026-10-17
-candidate=workflow checkout commit based on 9e883faf5dd1f22fd4af36fd5e1095d7eb88017f
-goal=Reject CRC-valid row caches that use reserved log flags, ruleset tags, merge-key markers, row flags or cell kinds so DatasetStore rebuilds derived rows from the unchanged raw history instead of silently accepting unknown metadata
-tests=full :core:test suite plus RowCacheMetadataValidationTest (one exact valid fixture and six fail-closed reserved-value regressions)
-scope=core UIMSD reliability only; raw histories, source fingerprints, saves, scoring, gameplay, build request and published APKs unchanged
-delivery=core verification only; do not publish, stage, distribute or start an APK build
+APD CORE-ONLY TEST REQUEST - UIMSD randomized row-cache integrity 2026-10-17T23:33:31.753Z
+goal=Execute a deterministic 10000-row plus 64 varied-cache roundtrip with all value/provenance/source identity checks and a 2048-row schema projection/reordering regression.
+candidate=exact push commit containing core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowCacheRandomizedIntegrityTest.java
+tests=run full ./gradlew :core:test, including RowCacheRandomizedIntegrityTest; retain failures without weakening assertions
+scope=test-only UIMSD derived cache; no production code, historical raw logs, saves, gameplay, scoring, APK or release change
+delivery=core verification only; do not trigger an APK build, publish, stage, distribute or edit docs/APD-CODEX-BUILD-REQUEST.txt
