@@ -1,0 +1,11 @@
+{
+  "records": 511,
+  "native_files": 16,
+  "native_json": "PASS: all fields, global missile-set-ID bijection only, 9 groups / 8 renamed",
+  "active_gameplay_rng": "PASS, stackDepth=2",
+  "inactive_fallback_rng": "not compared",
+  "first": "spinner-retreat-end-manual-7308",
+  "independent": "pylon-recovery-end-manual-7308",
+  "state_restores": false,
+  "independent_prefix_status": "paused live after fresh level-one replay; no completed JUnit claim"
+}

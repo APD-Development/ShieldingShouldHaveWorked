@@ -1,0 +1,67 @@
+{
+  "archive": "continuous-7308-provenance.tar.xz",
+  "size": 1305160,
+  "sha256": "80ccbebaf8c4ca3a431a1c76157cd07d02bdf77a4891641cca245cc56ae2b8c4",
+  "parts": [
+    {
+      "path": "research/get-fucked/continuous-7308-provenance.tar.xz.part-01",
+      "size": 131072,
+      "sha256": "74a9b04e3175c620335e47e150b760583d681d1295387d00258a36572035829d",
+      "git_blob_sha": "bbc908c49fa11335361d52532ce91eb44f9e5312"
+    },
+    {
+      "path": "research/get-fucked/continuous-7308-provenance.tar.xz.part-02",
+      "size": 131072,
+      "sha256": "6d05ff9f8ffda7d74dc42c6cebaf74a7b5e37af14975a375719b9b8322c21b80",
+      "git_blob_sha": "c565cb8f18e48c51f2d34f1e4c22df6726c42611"
+    },
+    {
+      "path": "research/get-fucked/continuous-7308-provenance.tar.xz.part-03",
+      "size": 131072,
+      "sha256": "e9689f28429905f0a6bb0b25fcedd08eef882cdfeedd2fe0ec35efc02b10c278",
+      "git_blob_sha": "d275fbb0a057b2cf8ee19ed4ec9eca663d855fe0"
+    },
+    {
+      "path": "research/get-fucked/continuous-7308-provenance.tar.xz.part-04",
+      "size": 131072,
+      "sha256": "8cb775b6c707a7bb629b9fb59afc2ab396fb85952beecc7ec005fd71ff11115a",
+      "git_blob_sha": "6e084366000f535f238b09669b7acc36e7e9551e"
+    },
+    {
+      "path": "research/get-fucked/continuous-7308-provenance.tar.xz.part-05",
+      "size": 131072,
+      "sha256": "f46ab6c9491360c3d172ebc91e47a41ae73f66eea1a5b593ec36e0e98e961905",
+      "git_blob_sha": "951d35d2ff49efb9466872411f26f8fa3ffec2ac"
+    },
+    {
+      "path": "research/get-fucked/continuous-7308-provenance.tar.xz.part-06",
+      "size": 131072,
+      "sha256": "8a2b7aaf790337d51b50c0a30b1e32af5a0092f709ef91f2d0e16058768866dd",
+      "git_blob_sha": "8b9f7f36f9188a5e51921c803ab11e460f7497e2"
+    },
+    {
+      "path": "research/get-fucked/continuous-7308-provenance.tar.xz.part-07",
+      "size": 131072,
+      "sha256": "1f2e841619373d40125246f552a3ec9c4fd2a97128c18f8a37dd0c59561f02a9",
+      "git_blob_sha": "7904138de2dcb7aa0707432f90506b0e942da221"
+    },
+    {
+      "path": "research/get-fucked/continuous-7308-provenance.tar.xz.part-08",
+      "size": 131072,
+      "sha256": "ea24466502123e7341f32b3396410b82ec5b38d0978f48ab90257802b5dccc64",
+      "git_blob_sha": "79905d90dbe272273fc41b4e8e9401ec4f1d3526"
+    },
+    {
+      "path": "research/get-fucked/continuous-7308-provenance.tar.xz.part-09",
+      "size": 131072,
+      "sha256": "75acf876f8356acf8142f16f15742fc46fea19c443438b60e43b401b36d6d4a0",
+      "git_blob_sha": "edc662dff0b7e1d8a9524c2be44dab564fddcfee"
+    },
+    {
+      "path": "research/get-fucked/continuous-7308-provenance.tar.xz.part-10",
+      "size": 125512,
+      "sha256": "b94f5937880049986eac15deb4463aca848f6663f2d3c7121b0a90d41aa2c518",
+      "git_blob_sha": "59d9e99077d3096c1330a8f2c3dde7f43fec734c"
+    }
+  ]
+}
