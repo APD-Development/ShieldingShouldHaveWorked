@@ -1,3 +1,12 @@
+## 2026-10-17T01:18:00Z — TEST263 APD Settings native-touch coverage completed
+- Added real API-34 pointer coverage for the five APD Settings controls omitted by the misleading older “every control” test: Healing to Shielding, Enhanced Tile Visibility, Automatic Stair Navigation, Healing confirmation and Custom Dungeon Rules.
+- Added a 19-field reflection ownership manifest binding every interactive `APDSettingsPane` field to a named native acceptance test; future unowned controls fail acceptance.
+- Final test source `d1d3e359fcec05f064714c30784cc6d189192902` reused exact TEST263 application source/run/APK `e3b5cef026f8a9d6827d0eebb5528069c646b00d` / `38980948671` / `3e71c975ddc7f85f22e1f42454aa9e1a420164f8c9ed6c7e226f11e40a08c20d`; no application rebuild or build-request edit.
+- Run `38988388102` native evidence: 2/2 passed, 0 failure/error/skip, `OK (2 tests)`, 8.582 seconds. Artifact `12085125334`, digest `sha256:49a6decb59c41e9169b094e0154903cfffaef76c871e0adc809d0dc823055d34`.
+- Retained wrapper outcome: overall run cancelled at its 25-minute ceiling because qemu did not exit after successful tests; not labeled a green workflow and not an APD failure.
+- Retained earlier harness failures `38987653291` and `38988017361` with artifacts `12082884529` and `12084300699`; neither is relabeled successful.
+- Emulator only. No phone/install-over/publication/distribution claim. TEST263 remains staged; TEST262 remains published.
+
 ## 2026-10-16T23:48:13Z — TEST263 fully accepted and staged without rebuild
 - Primary source `e3b5cef026f8a9d6827d0eebb5528069c646b00d` / run `38980948671`: 1,761 core, 38 API-34, 57 reviewed required PNGs, debug and immediate-previous TEST262 history all passed.
 - APK: 38,591,540 bytes, SHA-256 `3e71c975ddc7f85f22e1f42454aa9e1a420164f8c9ed6c7e226f11e40a08c20d`; package/versionCode/certificate remain install-line compatible with TEST262.
