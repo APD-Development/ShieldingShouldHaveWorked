@@ -18,6 +18,8 @@ public final class StairNavigation {
         public final Level level;
         public final boolean up;
         public final boolean enterOnArrival;
+        // Preserve the original pure-walk constructor for telemetry and existing callers.
+        public Walk(int destination, Level level) { this(destination,level,false,false); }
         public Walk(int destination, Level level, boolean up, boolean enterOnArrival) {
             super(destination, HeroAction.Move.Mode.STAIRS);
             this.level = level;
