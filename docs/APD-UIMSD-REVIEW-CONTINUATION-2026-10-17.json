@@ -8,7 +8,7 @@
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/Datasets.java",
       "sha": "2dfad3e175044300e5cfcf9cea1326a5161a1274",
-      "lines": 525,
+      "lines": 524,
       "reviewed": true,
       "basis": "Complete current-source read of the four core schemas, statistics sheets and 13 shipped views plus catalog, navigation and row-window consumers. No production defect confirmed. A missing cross-schema referential-integrity invariant is now a retained test."
     }
