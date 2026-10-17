@@ -32,4 +32,23 @@ public class UimsdHomePresentationTest {
    if(outcome==2)assertTrue(result.rows.isEmpty());
   }
  }
+ @Test public void homeScopeExcludesUnfinishedRunsAndCountsOtherFinishedRulesExactly() throws Exception {
+  File root=tmp.newFolder("scope"); Ruleset current=Ruleset.of(30,0), other=Ruleset.of(40,0);
+  new SyntheticLog(root,"current-finished",com.shatteredpixel.shatteredpixeldungeon.apd.stats.TelemetryVersion.CURRENT,100L)
+    .start("run-current",0,"WARRIOR",current.id,0,30,false).enter(1).end(0,"Rat",1,1,10).close(true);
+  new SyntheticLog(root,"current-open",com.shatteredpixel.shatteredpixeldungeon.apd.stats.TelemetryVersion.CURRENT,200L)
+    .start("run-open",0,"MAGE",current.id,0,30,false).enter(1).close(true);
+  new SyntheticLog(root,"other-finished",com.shatteredpixel.shatteredpixeldungeon.apd.stats.TelemetryVersion.CURRENT,300L)
+    .start("run-other",0,"ROGUE",other.id,0,40,false).enter(1).end(2,"",1,1,20).close(true);
+  Catalog catalog=new DatasetStore(root).load();
+  UimsdHome mine=UimsdHome.build(catalog,current.id,false);
+  assertEquals(1,mine.runs);assertEquals(1,mine.runsElsewhere);
+  UimsdHome all=UimsdHome.build(catalog,current.id,true);
+  assertEquals(2,all.runs);assertEquals(0,all.runsElsewhere);
+  UimsdHome.Line finished=null;
+  for(UimsdHome.Line line:all.card("runs").lines)if(line.label.equals("Finished runs"))finished=line;
+  assertNotNull(finished);assertEquals("2",finished.value);assertEquals(CellText.EXACT,finished.state);
+  assertFalse("unfinished class must not appear anywhere on Home",all.text().contains("MAGE"));
+ }
+
 }
