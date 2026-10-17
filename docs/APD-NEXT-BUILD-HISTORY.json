@@ -6,7 +6,7 @@
   "changes": [
     {
       "category": "Quality of Life",
-      "sprite": "ICON_STAIRS",
+      "sprite": "ICON_CHECKED",
       "title": "Take discovered stairs with one shortcut",
       "text": "Choose Stairs Up or Stairs Down to walk there and automatically use the stairs when the optional Auto-enter Stairs on Arrival setting is enabled. The hero still pays normal walking turns and stops for enemies, danger, damage and interruptions.",
       "paths": [
