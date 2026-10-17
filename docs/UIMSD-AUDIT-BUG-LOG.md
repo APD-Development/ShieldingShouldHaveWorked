@@ -48,3 +48,11 @@ Current-source review confirmed that `QueryEngine` set `AggValue.LEGACY` wheneve
 
 Three retained `AggValueContractTest` methods cover imported-only and combined provenance, RATE/RATIO hit/out-of/contributing/total metadata, and zero-denominator unknown results. Full TEST264 run `39000124500` passed 1,768 core and 38 API-34 methods with zero failures/errors/skips; 57 required and 25 supplemental display captures were decoded and reviewed. Independent stage `39001343302` reused the exact APK and verified signer/app ID/version compatibility. No physical-phone failure, save mutation, scoring change, publication or tester distribution is claimed.
 
+
+
+## 2026-10-17T07:08:00Z — Hidden-details transition left stale internal question parts
+Current-source review confirmed that `WndUimsdAsk` only changed its visibility boolean when Hidden details was disabled. Previously selected internal measure, split or condition values remained in the `Question` and its visible sentence, while QueryEngine correctly rejected them. The result could describe a question different from the query actually executed.
+
+Application commit `09ba71aab8fd2cb426679add9c9d0ed2e4d72fb7` adds one visibility transition in `Questions`, removes only internal selections, resets an internal measure to Count, preserves public selections and valid per-unit choices, and sanitizes before both sentence formatting and query construction. Two retained `QuestionsTest` methods cover direct transition behavior and stale-question answer integrity.
+
+Full TEST266 source `e678d38c4c34bc755ed0cd501f7f44c88bc3c465` / run `39011090870` passed 1,773 core and 38 API-34 methods with zero failures/errors/skips, debug/history, and 57 reviewed required PNGs. TEST265 `39010922142` remains a failed-closed history-ledger precursor with no APK. TEST266 staging is pending; no physical-phone, owner-save, publication or distribution claim. Raw histories, saves, caches, scoring, gameplay, turns and RNG are unchanged.

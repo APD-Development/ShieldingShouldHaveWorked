@@ -1,3 +1,11 @@
+## 2026-10-17T07:08:00Z — TEST266 UIMSD hidden-question consistency verified
+- Fixed the confirmed Hidden-details transition mismatch in application commit `09ba71aab8fd2cb426679add9c9d0ed2e4d72fb7`: disabling hidden details removes only internal measure/split/condition selections and the answer path displays and executes one sanitized question.
+- Full source `e678d38c4c34bc755ed0cd501f7f44c88bc3c465` / run `39011090870` passed 1,773 core methods in 350 suites, 38 API-34 methods in 14 suites, debug assembly and complete immediate-previous TEST264 history; zero failures/errors/skips. Both new `QuestionsTest` methods passed.
+- All 57 required 320×640 captures decoded and were reviewed. APK: 38,592,446 bytes, SHA-256 `7ba0bf6d2d93fb2e4c7b27cf6caf718e3c74e960abfa0274d434c9869089674c`.
+- Retained TEST265 run `39010922142` as a pre-compile history failure with no APK. Retained supplemental display `39011090883` as 4 passed/1 failed (M53 title-condition timeout).
+- Stage `39011090988` refused the stale TEST264 profile on both attempts and produced no artifact/publication. Corrected the preparation profile to exact TEST266 evidence without editing the executable build request or rebuilding.
+- TEST266 verified, staging pending. TEST264 remains staged fallback; TEST262 remains latest published. No phone/install-over/publication/distribution claim. Review ledger: 103 exact current production paths; broader audit remains incomplete.
+
 ## 2026-10-17T02:41:24Z — UIMSD dataset schema contract verified
 - Completed a current-blob read of `Datasets.java` (`2dfad3e175044300e5cfcf9cea1326a5161a1274`) and exact catalog/navigation callers; no production defect confirmed.
 - Added test-only `DatasetSchemaContractTest` at source `49c58cf175e6742f5499d9e1b243847eac4aad27`: two regressions cover dataset/view/link referential integrity and all 18 frozen custom-setting columns.
