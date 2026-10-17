@@ -478,6 +478,133 @@ public class ApdSettingsClickDeviceTest {
 		}
 	}
 
+
+	// This is the remainder of the APD Settings touch surface. The older method named
+	// "every control" predates these controls and did not cover them; this explicit method
+	// prevents another visible-but-dead setting from reaching an owner build.
+	@Test
+	public void remainingApdSettingsControlsRespondToActualTouches() throws Exception {
+		try (ActivityScenario<AndroidLauncher> scenario = ActivityScenario.launch(AndroidLauncher.class)) {
+			openTitleForTest();
+			final int oldExotic = SPDSettings.apdExoticSetting();
+			final boolean oldTiles = SPDSettings.enhancedTileVisibility();
+			final boolean oldStairs = SPDSettings.stairNavigationShortcut();
+			final AtomicReference<WndAPDSettings> window = new AtomicReference<>();
+			try {
+				onRender(() -> {
+					SPDSettings.apdExoticChance(0);
+					SPDSettings.enhancedTileVisibility(false);
+					SPDSettings.stairNavigationShortcut(false);
+					window.set(new WndAPDSettings());
+					ShatteredPixelDungeon.scene().add(window.get());
+				});
+				Thread.sleep(500);
+				final ScrollPane scroll = find(window.get(), ScrollPane.class);
+				final APDSettingsPane pane = find(window.get(), APDSettingsPane.class);
+				assertNotNull(scroll);
+				assertNotNull(pane);
+
+				final com.shatteredpixel.shatteredpixeldungeon.ui.OptionSlider exotic =
+						(com.shatteredpixel.shatteredpixeldungeon.ui.OptionSlider) field(pane, "optExotic");
+				final AtomicReference<Point> sliderPoint = new AtomicReference<>();
+				onRender(() -> {
+					scroll.scrollTo(0, Math.max(0, exotic.top() - 20));
+					sliderPoint.set(exotic.camera().cameraToScreen(exotic.right() - 3, exotic.bottom() - 7));
+				});
+				Thread.sleep(300);
+				tap(sliderPoint.get());
+				waitUntil("Healing to Shielding slider", () -> SPDSettings.apdExoticSetting() > 0, 10000);
+
+				tapUntil("Enhanced Tile Visibility", scroll, (Gizmo) field(pane, "chkTileVisibility"),
+						SPDSettings::enhancedTileVisibility, 30000);
+				tapUntil("Automatic Stair Navigation", scroll, (Gizmo) field(pane, "chkStairNavigation"),
+						SPDSettings::stairNavigationShortcut, 30000);
+				dismissMessages();
+
+				tapUntil("Healing confirmation", scroll, (Gizmo) field(pane, "btnHealingConfirmation"),
+						() -> find(Game.scene(), com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions.class) != null, 30000);
+				onRender(() -> {
+					try {
+						com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions options =
+								find(Game.scene(), com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions.class);
+						assertNotNull(options);
+						options.hide();
+					} catch (Exception e) { throw new RuntimeException(e); }
+				});
+
+				tapUntil("Custom Dungeon Rules", scroll, (Gizmo) field(pane, "btnCustomRules"),
+						() -> find(Game.scene(), com.shatteredpixel.shatteredpixeldungeon.windows.WndCustomDungeonRules.class) != null, 30000);
+				onRender(() -> {
+					try {
+						com.shatteredpixel.shatteredpixeldungeon.windows.WndCustomDungeonRules rules =
+								find(Game.scene(), com.shatteredpixel.shatteredpixeldungeon.windows.WndCustomDungeonRules.class);
+						assertNotNull(rules);
+						assertEquals(18, count(rules, com.shatteredpixel.shatteredpixeldungeon.ui.OptionSlider.class));
+						rules.hide();
+					} catch (Exception e) { throw new RuntimeException(e); }
+				});
+			} finally {
+				onRender(() -> {
+					try {
+						com.shatteredpixel.shatteredpixeldungeon.windows.WndCustomDungeonRules rules =
+								find(Game.scene(), com.shatteredpixel.shatteredpixeldungeon.windows.WndCustomDungeonRules.class);
+						if (rules != null) rules.hide();
+						com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions options =
+								find(Game.scene(), com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions.class);
+						if (options != null) options.hide();
+					} catch (Exception e) { throw new RuntimeException(e); }
+					if (window.get() != null) window.get().hide();
+					SPDSettings.apdExoticChance(oldExotic);
+					SPDSettings.enhancedTileVisibility(oldTiles);
+					SPDSettings.stairNavigationShortcut(oldStairs);
+				});
+			}
+		}
+	}
+
+	// Every interactive field must have a named native acceptance owner. Adding a
+	// control without updating this map fails on API 34 instead of silently reducing coverage.
+	@Test
+	public void everyDeclaredSettingControlHasAnExplicitAcceptanceOwner() throws Exception {
+		final java.util.Map<String, Object[]> owners = new java.util.LinkedHashMap<>();
+		owners.put("optExotic", new Object[]{ ApdSettingsClickDeviceTest.class, "remainingApdSettingsControlsRespondToActualTouches" });
+		owners.put("chkRecord", new Object[]{ ApdSettingsClickDeviceTest.class, "everyControlOfApdSettingsAnswersATouch" });
+		owners.put("chkAdult", new Object[]{ ApdSettingsClickDeviceTest.class, "adultHumorControlWorksWithoutAnAgeProviderAndReopensWithSavedChoice" });
+		owners.put("chkTileVisibility", new Object[]{ ApdSettingsClickDeviceTest.class, "remainingApdSettingsControlsRespondToActualTouches" });
+		owners.put("chkStairNavigation", new Object[]{ ApdSettingsClickDeviceTest.class, "remainingApdSettingsControlsRespondToActualTouches" });
+		owners.put("btnPlaybackSpeed", new Object[]{ ApdSettingsClickDeviceTest.class, "adultHumorControlWorksWithoutAnAgeProviderAndReopensWithSavedChoice" });
+		owners.put("btnHealingConfirmation", new Object[]{ ApdSettingsClickDeviceTest.class, "remainingApdSettingsControlsRespondToActualTouches" });
+		owners.put("btnCustomRules", new Object[]{ ApdSettingsClickDeviceTest.class, "remainingApdSettingsControlsRespondToActualTouches" });
+		owners.put("btnCurrentCustomRules", new Object[]{ CustomRulesNoticeDeviceTest.class, "noticeStaysAboveUsableControlsAndDoesNotChangeLockedRunOrScores" });
+		owners.put("btnClericQuickCasts", new Object[]{ ApdSettingsClickDeviceTest.class, "adultHumorControlWorksWithoutAnAgeProviderAndReopensWithSavedChoice" });
+		owners.put("btnTest", new Object[]{ ApdSettingsClickDeviceTest.class, "everyControlOfApdSettingsAnswersATouch" });
+		owners.put("btnExportHistory", new Object[]{ ApdSettingsClickDeviceTest.class, "everyControlOfApdSettingsAnswersATouch" });
+		owners.put("btnImportHistory", new Object[]{ ApdSettingsClickDeviceTest.class, "everyControlOfApdSettingsAnswersATouch" });
+		owners.put("btnImport", new Object[]{ ApdSettingsClickDeviceTest.class, "everyControlOfApdSettingsAnswersATouch" });
+		owners.put("btnUimsd", new Object[]{ ApdSettingsClickDeviceTest.class, "everyControlOfApdSettingsAnswersATouch" });
+		owners.put("btnGrudge", new Object[]{ ApdSettingsClickDeviceTest.class, "grudgeControlsRespondToActualTouches" });
+		owners.put("btnDemoGenerate", new Object[]{ DemoUnlockDeviceTest.class, "theDemoUnlockMakesTenDemoRunsOpensUimsdForGoodAndItsButtonIsUsedUp" });
+		owners.put("btnDemoRemove", new Object[]{ DemoUnlockDeviceTest.class, "theDemoUnlockMakesTenDemoRunsOpensUimsdForGoodAndItsButtonIsUsedUp" });
+		owners.put("btnDemoView", new Object[]{ DemoUnlockDeviceTest.class, "theDemoUnlockMakesTenDemoRunsOpensUimsdForGoodAndItsButtonIsUsedUp" });
+
+		final java.util.Set<String> declared = new java.util.TreeSet<>();
+		for (Field f : APDSettingsPane.class.getDeclaredFields()) {
+			Class<?> type = f.getType();
+			if (com.shatteredpixel.shatteredpixeldungeon.ui.OptionSlider.class.isAssignableFrom(type)
+					|| com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox.class.isAssignableFrom(type)
+					|| RedButton.class.isAssignableFrom(type)) declared.add(f.getName());
+		}
+		assertEquals("Every APD Settings control needs an explicit acceptance owner",
+				new java.util.TreeSet<>(owners.keySet()), declared);
+		for (java.util.Map.Entry<String, Object[]> entry : owners.entrySet()) {
+			Class<?> owner = (Class<?>) entry.getValue()[0];
+			String methodName = (String) entry.getValue()[1];
+			java.lang.reflect.Method method = owner.getDeclaredMethod(methodName);
+			assertNotNull(entry.getKey() + " owner must remain an executable native test",
+					method.getAnnotation(Test.class));
+		}
+	}
+
 	// Regression for the owner's first alpha screenshot: the Grudge page draws normally
 	// but its scroll controller was registered after the button hit areas and ate every tap.
 	@Test
