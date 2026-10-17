@@ -1,3 +1,12 @@
+## TEST267 UIMSD legacy-date validation — 2026-10-17T08:12:00Z
+- Reviewed current `RowBuilders.java` completely and found one production defect: impossible Gregorian legacy dates were leniently normalized into false start timestamps.
+- Reproduction: test source `c48ed80c538695356dbda05b8faab51aca6d456c`; run `39014149854` executed 1,774 methods and failed exactly the new regression. Artifact `12093313933`, 832,953 bytes, digest `sha256:ad6ac3f02ff85ecdb0b630004f1ba6b44433c85e264dd60f4e844e2e1c6881c9`.
+- Fix: application commit `d76178a015b68344adfbeab2edfd701201c752a7`; corrected core run `39014400159` passed 1,774 methods. Artifact `12094346515`, 830,170 bytes, digest `sha256:d3f775a284752db59b2118cabbd23cbe7686e24bc41d67f268fd3ac17a2d5dcc`.
+- Full gate: source `c761afc25902954060daf5fffbd87e728b8b1887`, run `39014635516`; 1,774 core / 38 API34 / debug / complete TEST266 history / 57 decoded and manually reviewed PNGs all passed.
+- Exact APK SHA-256 `f5fc7189d981709cf46e740d1966814c64b5ed29a7e32bca921739ce4e04009f`. Private staging requested without rebuilding; no publication or distribution.
+- Supplemental display run `39014635513`: 4/5 profiles accepted across three retained attempts; short-landscape Hide UI remained failed at line 83. Required visual gate remained green.
+- Preserved raw history, saves, all 18 rules, active 357-value v2.6R scoring, original scores, signing/application identity, gameplay, turns, RNG and completed Cleric work.
+
 ## 2026-10-17T07:12:00Z — TEST266 independently staged without rebuild
 - Stage run `39012540034` at wrapper `d5e3a87c0cb7ef128818973bac7fe890fc92c7de` succeeded and reused exact TEST266 APK SHA-256 `7ba0bf6d2d93fb2e4c7b27cf6caf718e3c74e960abfa0274d434c9869089674c`; no application rebuild.
 - Staged preview artifact `12093094377`: 44,528,550 bytes, digest `sha256:629a784f55e062513fca5cf9b2d4f82d36e738f87942ee686661c754f905827a`. Evidence artifact `12093755910`: 8,426,017 bytes, digest `sha256:1e3bfd3d660b0b36e0c040faa7d79311417a2f51a6121877cd55e695b3042336`.

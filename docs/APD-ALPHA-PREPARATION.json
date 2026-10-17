@@ -1,5 +1,5 @@
 {
-  "core_tests": 1773,
+  "core_tests": 1774,
   "android_tests": 38,
   "screenshots": 57,
   "rollback_number": 262,
@@ -7,7 +7,7 @@
   "rollback_asset": "ADHD-Pixel-Dungeon-Alpha-Preview-262.apk",
   "rollback_sha256": "5ad5beb717673a51a10a646c28b887ed54a4f78f8d25ee351834a39a29ecf8d2",
   "reports": [
-    "docs/APD-TEST266-UIMSD-HIDDEN-QUESTION-2026-10-17.md"
+    "docs/APD-TEST267-UIMSD-LEGACY-DATES-2026-10-17.md"
   ],
   "verified_owner_release": {
     "build": 262,
@@ -138,5 +138,5 @@
     "fallback_preserved": "apd-alpha-preview-258"
   },
   "published_asset_reuse_note": "TEST262 is downloadable and verified. Reuse the published APK/PDF when no application change exists; do not rebuild or wait on the original failed52-image staging job. Corrected recovery evidence is in the published verification JSON and receipt.",
-  "source_sha": "e678d38c4c34bc755ed0cd501f7f44c88bc3c465"
+  "source_sha": "c761afc25902954060daf5fffbd87e728b8b1887"
 }

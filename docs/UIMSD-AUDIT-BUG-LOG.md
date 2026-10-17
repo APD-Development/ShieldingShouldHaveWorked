@@ -1,3 +1,12 @@
+## 2026-10-17 — impossible legacy calendar dates normalized into run starts — fixed and fully gated
+**Surface:** UIMSD legacy import / `RowBuilders.parseDate`.
+
+**Confirmed failure:** `2025-02-29`, `2024-04-31` and `1900-02-29` were accepted by lenient Calendar normalization and could create false `run.startMillis` values. Reproduction run `39014149854` failed exactly the retained method `legacyDatesRejectImpossibleCalendarDaysButKeepRealLeapDays`.
+
+**Correction:** `d76178a015b68344adfbeab2edfd701201c752a7` validates month/day bounds with Gregorian leap-year rules before constructing the timestamp. Real leap days 2024-02-29 and 2000-02-29 remain valid. Raw history is not rewritten.
+
+**Evidence:** corrected core-only run `39014400159` passed 1,774 methods; full TEST267 run `39014635516` passed 1,774 core methods, 38 API34 methods, debug/history checks and 57 reviewed PNGs. Supplemental run `39014635513` retains a separate short-landscape Hide UI failure; it does not alter the green required gate.
+
 # UIMSD audit — confirmed controlled regressions
 
 Full audit incomplete. These are controlled tests, not claims of observed phone failures.
