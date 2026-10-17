@@ -1,9 +1,10 @@
-APD CORE-ONLY TEST REQUEST — imported aggregate provenance contract
+APD CORE-ONLY TEST REQUEST — UIMSD finished/open internal-identity privacy contract
 branch=codex/apd-phone-fixes-2026-10-09
-source=4d4048f80ab150aca3bc1ce690de48b5532922a0
-scope=run the complete :core:test suite, including AggValueContractTest
-acceptance=imported-only aggregates expose legacy provenance; combined lower-bound, inferred and imported aggregate flags preserve warning precedence and an explicit imported-data note; RATE and RATIO retain exact hit, denominator, contributing and total metadata; a zero-denominator ratio remains unknown without phantom contributions
-production_application_source=changed (AggValue and CellFormatter only)
+source=5a69400536f44ea04efe35edfb5398aefc0e4917
+scope=run the complete :core:test suite, including UimsdSelfTestTest
+expected_core_tests=1769
+acceptance=the UIMSD device self-test still passes and cleans up its isolated history; a retained two-run contract independently proves that an internal item identity is readable for a finished run while the same internal identity remains hidden for an unfinished run even when internal details are requested
+production_application_source=unchanged
 apk_build=none
 executable_apk_build_request=unchanged
 publication=none
