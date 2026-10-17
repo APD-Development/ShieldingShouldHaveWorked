@@ -1,8 +1,8 @@
-APD CORE-ONLY TEST REQUEST — UIMSD optional-cache cross-instance contention
+APD CORE-ONLY TEST REQUEST — UIMSD dataset schema contracts
 branch=codex/apd-phone-fixes-2026-10-09
-test_source=759d8ef3cc55e2504fc902d71f6242876f3dc0f9
-scope=run the complete :core:test suite, including CacheConcurrencyTest
-acceptance=multiple independent DerivedStore and DatasetStore instances repeatedly contend on one raw-history root; every returned table/catalog remains correct; the final derived and per-log caches are readable and reused
+test_source=49c58cf175e6742f5499d9e1b243847eac4aad27
+scope=run the complete :core:test suite, including DatasetSchemaContractTest
+acceptance=all core, event and fact dataset ids are unique; every shipped view and navigation link resolves to its current dataset and columns; aggregate-first instance queries remain on their source dataset; the permanent run schema contains every one of the 18 frozen custom settings as numeric data
 production_application_source=unchanged
 apk_build=none
 executable_apk_build_request=unchanged
