@@ -31,6 +31,20 @@ jobs:
           name: get-fucked-existing-engine-runtime
           path: core/build/get-fucked-runtime/
           retention-days: 7
+      - name: Replay continuous level-one Cleric through actual Shaman bypass and magical-fire approach
+        run: |
+          mkdir -p "$RUNNER_TEMP/get-fucked-fire-front"
+          tar -xJf research/get-fucked/fire-frontier-provenance.tar.xz -C "$RUNNER_TEMP/get-fucked-fire-front"
+          python3 - <<'PYCODE'
+          import json, os, subprocess
+          root=os.environ['RUNNER_TEMP']+'/get-fucked-fire-front'
+          args=json.load(open(root+'/manual-thirteen-fire-front-independent-args.json'))
+          props={a[2:].split('=',1)[0]:a.split('=',1)[1] for a in args if a.startswith('-D') and '=' in a}
+          props.pop('route.expectedMissileIdEquivalence',None)
+          props.update({'route.testTimeoutSeconds':'600','route.stableHash':'true','route.noSnapshots':'true','route.manualReplay':root+'/manual-thirteen-pasty-return-complete.journal','route.manualContinue':'false','route.manualJournal':root+'/actual-fire-front-replay.journal','route.expectedEnd':root+'/native/manual-thirteen-pasty-return-end-manual-6297','route.expectedActiveRngOnly':'true','route.earlySwarmOut':root+'/actual-fresh-fire-front'})
+          subprocess.run(['./gradlew',':core:test','--tests','*GetFuckedRouteTest']+['-D'+k+'='+v for k,v in props.items()],check=True)
+          subprocess.run(['python3','research/get-fucked/native_equivalence.py',props['route.expectedEnd'],props['route.earlySwarmOut']],check=True)
+          PYCODE
       - name: Replay fresh level-one Cleric through actual laboratory acquisition and Mastery crafting
         run: |
           mkdir -p "$RUNNER_TEMP/get-fucked-laboratory"

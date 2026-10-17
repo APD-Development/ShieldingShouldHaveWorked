@@ -3607,6 +3607,26 @@ public class GetFuckedRouteTest {
         ready();log("MANUAL OWNED MASK ORIGINAL CONFIRMATION "+way.name());
     }
 
+    // Read only: expose the engine's selected projectile and follow-through rays, never choose or execute a shot.
+    private void diagnoseSelectedBlast(int selected) throws Exception {
+        assertTrue(selected>=0 && selected<Dungeon.level.length());
+        com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica bolt=new com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica(Dungeon.hero.pos,selected,com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica.PROJECTILE);
+        JSONObject detail=new JSONObject().put("selected",selected).put("heroPos",Dungeon.hero.pos).put("collision",bolt.collisionPos).put("collisionDistance",bolt.dist).put("projectilePath",new JSONArray(bolt.path));
+        JSONArray affected=new JSONArray();
+        for(int offset:PathFinder.NEIGHBOURS9){
+            Char ch=Actor.findChar(bolt.collisionPos+offset);if(ch==null)continue;
+            JSONObject one=new JSONObject().put("id",ch.apdPeekId()).put("type",ch.getClass().getSimpleName()).put("pos",ch.pos).put("rooted",ch.rooted).put("flying",ch.flying);
+            int next=offset==0 ? (bolt.path.size()>bolt.dist+1 ? bolt.path.get(bolt.dist+1) : -1) : ch.pos+offset;
+            if(next>=0){
+                com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica ray=new com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica(ch.pos,next,com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica.MAGIC_BOLT);
+                one.put("followThroughPath",new JSONArray(ray.path)).put("rayDistance",ray.dist).put("rayCollision",ray.collisionPos);
+                JSONArray flags=new JSONArray();for(int k=0;k<Math.min(7,ray.path.size());k++){int at=ray.path.get(k);Char occupant=Actor.findChar(at);flags.put(new JSONObject().put("cell",at).put("terrain",Dungeon.level.map[at]).put("solid",Dungeon.level.solid[at]).put("passable",Dungeon.level.passable[at]).put("avoid",Dungeon.level.avoid[at]).put("pit",Dungeon.level.pit[at]).put("occupant",occupant==null?-1:occupant.apdPeekId()));}one.put("firstCells",flags);
+            }
+            affected.put(one);
+        }
+        detail.put("affected",affected);System.out.println("BLAST_GEOMETRY_READ_ONLY "+detail);
+    }
+
     //Manual commands and fixed replay only: no route search, action selection or game-state grants.
     private void manualTailSection() throws Exception {
         java.util.Iterator<String> recorded=System.getProperty("route.manualReplay")==null ? java.util.Collections.<String>emptyList().iterator() : java.nio.file.Files.readAllLines(java.nio.file.Path.of(System.getProperty("route.manualReplay"))).iterator();
@@ -3665,6 +3685,7 @@ public class GetFuckedRouteTest {
                 else if(action.startsWith("a")){assertNotNull(target);int count=Integer.parseInt(action.substring(1));assertTrue(count>0 && count<=30);for(int k=0;k<count && target.isAlive();k++)freshFixedActions(target,"A");}
                 else if(action.startsWith("G"))click(Integer.parseInt(action.substring(1)));
                 else if(action.startsWith("J"))jumpIntoKnownChasm(Integer.parseInt(action.substring(1)));
+                else if(action.startsWith("v"))diagnoseSelectedBlast(Integer.parseInt(action.substring(1)));
                 else if(action.equals("V")){
                     System.out.println("FLOOR_LAYOUT "+new JSONObject().put("depth",Dungeon.depth).put("width",Dungeon.level.width()).put("height",Dungeon.level.height()).put("terrain",new JSONArray(Dungeon.level.map)).put("entrance",Dungeon.level.entrance()).put("exit",Dungeon.level.exit()));
                     JSONObject detail=new JSONObject().put("locked",Dungeon.level.locked).put("totalTime",Statistics.duration+Actor.now()).put("energy",Dungeon.energy);
@@ -3674,6 +3695,7 @@ public class GetFuckedRouteTest {
                     JSONArray traps=new JSONArray();for(com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap trap:Dungeon.level.traps.valueList())traps.put(new JSONObject().put("pos",trap.pos).put("type",trap.getClass().getSimpleName()).put("active",trap.active).put("visible",trap.visible));detail.put("traps",traps);JSONArray plantDetails=new JSONArray();for(com.shatteredpixel.shatteredpixeldungeon.plants.Plant plant:Dungeon.level.plants.valueList())plantDetails.put(new JSONObject().put("pos",plant.pos).put("type",plant.getClass().getSimpleName()));detail.put("plants",plantDetails);
                     JSONArray blobs=new JSONArray();for(Blob blob:Dungeon.level.blobs.values()){JSONArray cells=new JSONArray();if(blob.cur!=null)for(int c=0;c<blob.cur.length;c++)if(blob.cur[c]>0)cells.put(new JSONArray().put(c).put(blob.cur[c]));if(cells.length()>0)blobs.put(new JSONObject().put("type",blob.getClass().getSimpleName()).put("cells",cells).put("cooldown",blob.cooldown()));}detail.put("blobs",blobs);detail.put("mobs",state("DIAGNOSTIC_READ_ONLY").getJSONArray("mobs"));
                     JSONArray control=new JSONArray();for(Mob mob:Dungeon.level.mobs){JSONArray effects=new JSONArray();for(Buff buff:mob.buffs())effects.put(new JSONObject().put("type",buff.getClass().getSimpleName()).put("remaining",buff.cooldown()));if(effects.length()>0)control.put(new JSONObject().put("id",mob.apdPeekId()).put("paralysed",mob.paralysed).put("buffs",effects));}detail.put("mobBuffs",control);
+                    JSONArray heroEffects=new JSONArray();for(Buff buff:Dungeon.hero.buffs())heroEffects.put(new JSONObject().put("type",buff.getClass().getSimpleName()).put("remaining",buff.cooldown()));detail.put("heroBuffs",heroEffects);
                     System.out.println("MANUAL_DIAGNOSTIC "+detail);
                 }
                 else if(action.startsWith("D") || action.startsWith("E") || action.startsWith("Q") || action.startsWith("U") || action.startsWith("R")){
