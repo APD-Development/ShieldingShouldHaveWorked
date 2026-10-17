@@ -1,39 +1,45 @@
 {
   "date": "2026-10-17",
-  "previous_source": "029cd7377530cc436a5426ebc1fb0d2e18434003",
-  "previous_run": 39066730441,
-  "previous_label": "Codex TEST 272",
+  "previous_source": "df0c9be3b3d52bb9b82e6453491bbfdac7d90e69",
+  "previous_run": 39068952497,
+  "previous_label": "Codex TEST 273 Developer",
   "changes": [
     {
-      "category": "Quality of Life",
+      "category": "Reliability",
       "sprite": "ICON_CHECKED",
-      "title": "Take discovered stairs with one shortcut",
-      "text": "Choose Stairs Up or Stairs Down to walk there and automatically use the stairs when the optional Auto-enter Stairs on Arrival setting is enabled. The hero still pays normal walking turns and stops for enemies, danger, damage and interruptions.",
+      "title": "Rebuild row caches with reserved metadata",
+      "text": "A CRC-valid derived row cache using a reserved flag or tag now fails closed and is rebuilt from the unchanged raw history instead of silently interpreting unknown metadata as ordinary defaults. Valid caches continue to decode exactly.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/SPDSettings.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/navigation/StairNavigation.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/Hero.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/StairNavigationTag.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/APDSettingsPane.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowCodec.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Keep stair entry optional and preserve existing movement behavior",
-      "text": "The new setting starts off and saves independently from the staircase shortcut. Tests cover entering or staying on stairs, blocked routes, interrupted travel, the previous movement API and touchscreen controls. Ordinary tile taps and other movement do not automatically change floors.",
+      "title": "Retain strict row-cache metadata coverage",
+      "text": "Seven focused tests preserve one valid cache fixture and reject reserved log flags, log ruleset tags, merge-key markers, row flags, row ruleset tags and cell kinds. The complete core suite passed before requesting the full Android gate.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/navigation/StairShortcutSettingsTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/navigation/StairNavigationTest.java",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/ApdSettingsClickDeviceTest.java",
-        "docs/APD-ONE-TAP-STAIR-TRANSITION-2026-10-17.md",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowCacheMetadataValidationTest.java",
         "docs/APD-CODEX-CORE-TEST-REQUEST.txt",
         "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md"
       ]
+    },
+    {
+      "category": "Build Evidence",
+      "sprite": "ICON_CHECKED",
+      "title": "Preserve the TEST273 Developer and Player pair evidence",
+      "text": "The intervening private Player build and labeled-pair packaging remain evidence-only and did not alter the application behavior being compared. Both APK labels and their receipts are retained.",
+      "paths": [
+        ".github/workflows/codex-player-preview-273.yml",
+        ".github/workflows/codex-test273-labeled-pair.yml",
+        "docs/APD-PLAYER-PREVIEW-273-REQUEST.txt",
+        "docs/APD-TEST273-DEVELOPER-PLAYER-PAIR-2026-10-17.json",
+        "docs/APD-TEST273-PAIR-PACKAGING-REQUEST.txt"
+      ]
     }
   ],
-  "commentary": "Owner requested an extra APD Settings option for pressing the existing Stairs Up/Down shortcut to complete the floor transition on reaching discovered safe stairs. Preserve previously verified TEST272 playback fix and compile history. First core run 39067969772 failed at inherited 2-argument Walk constructor in telemetry fixture; source overload restored without altering the request. Corrected full core-only run 39068161212 is pending. New full TEST273 APK may be built only on passed corrected source gate, with 38 native checks, history, debug and 57 screenshots; no stage/publish/public claim."
+  "commentary": "Core-only run 39075719820 passed all 1793 methods with zero failures, errors or skips. Full TEST274 must compare the immediate previous actually compiled TEST273 Developer APK from source df0c9be3b3d52bb9b82e6453491bbfdac7d90e69/run39068952497 and include all 38 API34 methods and 57 required screenshots. No automatic stage, publication, distribution or phone claim."
 }

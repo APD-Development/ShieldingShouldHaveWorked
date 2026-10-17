@@ -1,3 +1,10 @@
+## TEST274 row-cache reserved metadata candidate: core verified, full gate requested — 2026-10-17T22:38:33Z
+Current application candidate `dcdec4a936a0b159f6dcf1a60da6a8c5e663d6a1` closes a UIMSD row-cache fail-open gap: a CRC-valid cache using reserved metadata could be accepted as ordinary defaults, including converting an unknown future/corrupt cell kind into missing data. `RowCodec` now rejects reserved log flags, ruleset tags, non-boolean merge markers, row flags and cell kinds; `DatasetStore` will rebuild only the derived cache from its unchanged source log.
+
+[Core-only run 39075719820](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/39075719820) passed all 1,793 methods with 0 failures, 0 errors and 0 skipped. The seven-method `RowCacheMetadataValidationTest` includes one exact valid fixture and six fail-closed fixtures. Report artifact `12117191158` is 835,463 bytes with uploaded ZIP SHA-256 `d88a3b6352254f43cc479d2057b441ff74dd8bd4fb1d1c684338b3402c302ea7`.
+
+This is not yet an APK verification. A necessary full TEST274 gate is requested against immediate previous compiled TEST273 application source `df0c9be3b3d52bb9b82e6453491bbfdac7d90e69` / run `39068952497`: fresh 1,793 core, debug, complete history, 38 API34 and 57 reviewed PNGs. No staging, publication, distribution, owner-save install-over or physical-phone claim. TEST273 remains the private labeled pair; TEST262 remains the latest actually published owner APK.
+
 ## TEST273 private Developer/Player pair complete without rebuild — 2026-10-17T21:44:24Z
 The owner's request for both clearly labeled APK choices is complete as a private artifact. [Pair packaging run 39072183908](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/39072183908) succeeded at packaging commit `32a8e86382ee45187ba56d365e6764cd1fd7778a` without compiling or changing application code. Artifact `12116105059`, `apd-test273-developer-and-player`, is 72,219,347 bytes with ZIP digest `sha256:1b12d9020699695e785fab87bdb3820c35cb57682c33ef73117e4b889ded2751` and expires 2026-10-24T21:44:19Z.
 

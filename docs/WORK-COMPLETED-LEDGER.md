@@ -1,3 +1,10 @@
+## 2026-10-17T22:38:33Z — TEST274 UIMSD row-cache fail-closed candidate passed core and entered full gate
+- Candidate application commit `dcdec4a936a0b159f6dcf1a60da6a8c5e663d6a1` rejects six reserved metadata classes in CRC-valid derived row caches; raw histories, save format, gameplay and scoring are unchanged.
+- [Core-only run 39075719820](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/39075719820) passed 1,793 methods, 0 failures, 0 errors, 0 skipped. Focused `RowCacheMetadataValidationTest`: 7/7 passed.
+- Report artifact `12117191158`: 835,463 bytes; ZIP SHA-256 `d88a3b6352254f43cc479d2057b441ff74dd8bd4fb1d1c684338b3402c302ea7`.
+- Full TEST274 verification is required because production `RowCodec` changed. Immediate previous compiled APK evidence is TEST273 source `df0c9be3b3d52bb9b82e6453491bbfdac7d90e69` / run `39068952497`.
+- Candidate is pending the fresh core/debug/history/API34/visual gate; no new APK, staging, publication, distribution, owner-save install-over or physical-phone claim yet.
+
 ## 2026-10-17T21:44:24Z — TEST273 labeled Developer/Player private pair completed without rebuild
 - Packaging commit `32a8e86382ee45187ba56d365e6764cd1fd7778a`; run `39072183908` succeeded. It downloaded and rechecked existing artifacts only; no application compilation or build-request edit.
 - Private bundle artifact `12116105059`: 72,219,347 bytes, ZIP digest `sha256:1b12d9020699695e785fab87bdb3820c35cb57682c33ef73117e4b889ded2751`, expiry `2026-10-24T21:44:19Z`.
