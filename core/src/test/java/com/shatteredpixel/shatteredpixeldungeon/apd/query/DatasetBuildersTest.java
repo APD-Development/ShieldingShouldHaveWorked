@@ -125,13 +125,13 @@ public class DatasetBuildersTest {
 	}
 
 	@Test
-	public void equalTimestampExtremeSegmentNumbersUseNumericOrderWithoutOverflow(){
-		log("min", V14, 100).start("run-extreme", Integer.MIN_VALUE, "ROGUE", RS, 0, 0, false).enter(1)
+	public void equalTimestampBoundarySegmentNumbersUseNumericOrder(){
+		log("zero", V14, 100).start("run-extreme", 0, "ROGUE", RS, 0, 0, false).enter(1)
 				.end(LifecycleEvents.OUTCOME_DIED, "Rat", 1, 1, 1).close(true);
 		log("max", V14, 100).start("run-extreme", Integer.MAX_VALUE, "ROGUE", RS, 0, 0, false).enter(2).close(false);
 		Dataset runs = load().dataset(Datasets.RUNS);
 		assertEquals("both segments are one run", 1, runs.rows.size());
-		assertFalse("the numerically higher same-time segment is newest and still open", runs.rows.get(0).finished);
+		assertFalse("the highest valid same-time segment is newest and still open", runs.rows.get(0).finished);
 		assertEquals(2, num(runs, runs.rows.get(0), FactKeys.LEVELS_ENTERED));
 	}
 

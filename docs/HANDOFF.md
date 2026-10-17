@@ -1,3 +1,9 @@
+## 2026-10-17T23:43:47.459Z — DatasetStore segment-boundary fixture corrected after retained invalid-input failure
+- Core-only [run 39079891341](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/39079891341) executed 1,796 tests and failed exactly the new method at its first merge assertion: expected one run, got two. Artifact `12117434829`, 841,078 bytes, ZIP SHA-256 `adf6f534d5414a8620eccc5c983f0b18669a2daf3c1ad9261cc4a1b5d2c7911d`.
+- Root cause is the test fixture, not confirmed comparator overflow: `Integer.MIN_VALUE` is outside the legitimate nonnegative segment range, so each malformed log is represented separately as unreadable before segment sorting.
+- Corrected the retained boundary test to use valid segment values `0` and `Integer.MAX_VALUE` at the same timestamp. It still requires one merged run, both level entries and the numerically higher open segment to determine unfinished state. Production code remains unchanged; exact full-core evidence is pending.
+- Raw histories, saves, scores, gameplay, APK, TEST275 and the executable build request remain unchanged.
+
 ## 2026-10-17T23:39:48.943Z — DatasetStore equal-time segment comparator overflow reproduction requested
 - Complete current `DatasetStore.java` review found a bounded ordering hazard: equal-created-time segments are compared with subtraction, which overflows for extreme integer segment values and can select an older ended segment as newest.
 - Added one public-load regression using `Integer.MIN_VALUE` ended and `Integer.MAX_VALUE` open segments for the same run and timestamp. The correct result is one unfinished logical run with both level entries.

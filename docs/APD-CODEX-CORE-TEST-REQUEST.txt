@@ -1,6 +1,6 @@
-APD CORE-ONLY TEST REQUEST - DatasetStore segment comparator overflow reproduction 2026-10-17T23:39:48.943Z
-goal=Reproduce same-created-time extreme segment ordering: Integer.MIN_VALUE ended segment followed by Integer.MAX_VALUE open segment must leave the logical run unfinished without comparator subtraction overflow.
-candidate=exact push commit containing DatasetBuildersTest.equalTimestampExtremeSegmentNumbersUseNumericOrderWithoutOverflow
-tests=run full ./gradlew :core:test; retain the expected focused failure and all prior results without weakening assertions
-scope=test-only UIMSD DatasetStore ordering reproduction; no production code, raw history, saves, gameplay, scoring, APK or release change
+APD CORE-ONLY TEST REQUEST - DatasetStore valid segment boundary ordering 2026-10-17T23:43:47.459Z
+goal=Verify equal-created-time segments at the valid nonnegative boundaries 0 and Integer.MAX_VALUE merge into one logical run, preserve both level entries and use the higher segment as newest/open.
+candidate=exact corrected test-only push after retained failed run 39079891341 proved Integer.MIN_VALUE is an invalid log fixture that becomes unreadable before DatasetStore ordering
+tests=run full ./gradlew :core:test, including DatasetBuildersTest.equalTimestampBoundarySegmentNumbersUseNumericOrder; do not weaken prior assertions
+scope=test-only UIMSD DatasetStore boundary coverage; no production code, raw history, saves, gameplay, scoring, APK or release change
 delivery=core verification only; do not trigger an APK build, publish, stage, distribute or edit docs/APD-CODEX-BUILD-REQUEST.txt
