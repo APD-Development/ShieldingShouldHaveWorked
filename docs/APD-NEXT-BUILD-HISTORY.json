@@ -1,23 +1,34 @@
 {
   "date": "2026-10-17",
-  "previous_source": "acec6e41cb1a9519aef4fb43b44091720254495c",
-  "previous_run": 39062224139,
-  "previous_label": "Codex TEST 270",
+  "previous_source": "8d5493cb846695d623e247d1a9646038c5d6ed12",
+  "previous_run": 39062957072,
+  "previous_label": "Codex TEST 271",
   "changes": [
+    {
+      "category": "Bug Fixes",
+      "sprite": "ICON_CHECKED",
+      "title": "Stabilize the hero's idle animation at extreme playback speeds",
+      "text": "At experimental developer speeds above 2x, keep the hero's idle frames at a readable rhythm instead of rapidly flickering. Movement, attacks and other visual effects retain the chosen playback speed. Combat turns and input timing stay unchanged.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/PlaybackGroup.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/sprites/HeroSprite.java"
+      ]
+    },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Correct private speed-picker device test and retain failed evidence",
-      "text": "Fix a duplicate local variable in Android touch acceptance for the private ten-speed picker; game and developer-only playback implementation remain identical to the previously compiled APK. Retain the initial failed Android instrumentation compiler evidence, full core pass, and strict previous APK history.",
+      "title": "Verify developer speed isolation and preserve private build history",
+      "text": "Exercise all ten private speed choices and assert that hero idle animation remains stable while actor and input clocks keep their original timing. Record the owner-reported visual issue and carry forward the preceding complete build history.",
       "paths": [
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/ApdSettingsClickDeviceTest.java",
-        "docs/APD-CODEX-BUILD-REQUEST.txt",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/PlaybackSpeedTest.java",
+        "docs/APD-CODEX-CORE-TEST-REQUEST.txt",
+        "docs/APD-TEST272-1000X-IDLE-SHAKE.md",
         "docs/APD-NEXT-BUILD-HISTORY.json",
-        "docs/APD-PRIVATE-PLAYBACK-SPEEDS-2026-10-17.md",
+        "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md"
       ]
     }
   ],
-  "commentary": "TEST270 producer job compiled an APK and passed 1779 core methods, history and debug compilation, but required Android instrumentation failed to compile due a duplicate local name in the new test. TEST271 corrects the test only and requests full Android acceptance and all 57 screenshots; no publication or distribution."
+  "commentary": "Previous full TEST271 compiled and verified 1779 core, API34 smoke checks and the display matrix. Owner then observed violent idle head flickering at experimental 1000x. This source candidate clamps only hero idle frames to normal delta at private speeds above 2x and adds a regression asserting all ten speeds. Core-only and full APK verification must pass separately. Never infer visual acceptance on a physical phone or publish/distribute an APK automatically."
 }
