@@ -92,9 +92,9 @@ public class TitleMenuLayoutDeviceTest {
             TopScoresDeviceTest.render(()->{try{
                 Component icon=(Component)field(Game.scene(),"btnFade");
                 com.watabou.noosa.PointerArea target=(com.watabou.noosa.PointerArea)field(icon,"hotArea");
-                assertTrue("Footer hit area reaches outside the visible icon",target.left()+4<icon.left());
-                assertTrue("Footer hit area extends upward",target.top()<icon.top());
-                outerEdge[0]=target.camera().cameraToScreen(target.left()+2,target.top()+target.height()/2);
+                assertTrue("Footer hit area reaches outside the visible icon",target.x+4<icon.left());
+                assertTrue("Footer hit area extends upward",target.y<icon.top());
+                outerEdge[0]=target.camera().cameraToScreen(target.x+2,target.y+target.height/2);
             }catch(Exception e){throw new RuntimeException(e);}});
             nativeTap(outerEdge[0]);Thread.sleep(900);
             TopScoresDeviceTest.render(()->{try{
