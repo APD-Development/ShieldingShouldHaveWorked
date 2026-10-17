@@ -1,3 +1,8 @@
+## TEST275 history-only retry after TEST274 stopped before compilation — 2026-10-17T22:41:38Z
+[TEST274 run 39076067947](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/39076067947) correctly refused the history merge before compilation: the request called the previous APK record `Codex TEST 273 Developer`, but the compiled TEST273 APK contains the exact record `Codex TEST 273`. The previous APK was retrieved successfully; core, debug APK, history output and API34 were skipped. No TEST274 APK exists. The companion display run `39076068037` and staging run `39076068080` also failed because there was no exact producer; neither generated acceptance or delivery evidence.
+
+TEST275 changes only that ledger label and reruns unchanged application source `dcdec4a936a0b159f6dcf1a60da6a8c5e663d6a1`. The prior core-only evidence remains 1,793/1,793 passing at run `39075719820`. Candidate remains pending the complete full gate; TEST273 stays the private labeled pair and TEST262 stays the latest published owner APK.
+
 ## TEST274 row-cache reserved metadata candidate: core verified, full gate requested — 2026-10-17T22:38:33Z
 Current application candidate `dcdec4a936a0b159f6dcf1a60da6a8c5e663d6a1` closes a UIMSD row-cache fail-open gap: a CRC-valid cache using reserved metadata could be accepted as ordinary defaults, including converting an unknown future/corrupt cell kind into missing data. `RowCodec` now rejects reserved log flags, ruleset tags, non-boolean merge markers, row flags and cell kinds; `DatasetStore` will rebuild only the derived cache from its unchanged source log.
 

@@ -1,3 +1,9 @@
+## 2026-10-17T22:41:38Z — TEST274 failed closed on exact previous-APK label; TEST275 history-only retry
+- Run `39076067947` retrieved TEST273, then stopped before compilation because the manifest label `Codex TEST 273 Developer` did not equal the embedded record `Codex TEST 273`.
+- Core, debug APK, compiled-history output and API34 were skipped. No TEST274 APK exists and no verification claim is carried forward.
+- Companion display run `39076068037` and stage run `39076068080` failed for lack of an exact producer; no screenshots, staged candidate or delivery were accepted.
+- TEST275 corrects only `previous_label`; application source remains `dcdec4a936a0b159f6dcf1a60da6a8c5e663d6a1`. Full 1,793-core/debug/history/38-API34/57-PNG gate must rerun.
+
 ## 2026-10-17T22:38:33Z — TEST274 UIMSD row-cache fail-closed candidate passed core and entered full gate
 - Candidate application commit `dcdec4a936a0b159f6dcf1a60da6a8c5e663d6a1` rejects six reserved metadata classes in CRC-valid derived row caches; raw histories, save format, gameplay and scoring are unchanged.
 - [Core-only run 39075719820](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/39075719820) passed 1,793 methods, 0 failures, 0 errors, 0 skipped. Focused `RowCacheMetadataValidationTest`: 7/7 passed.

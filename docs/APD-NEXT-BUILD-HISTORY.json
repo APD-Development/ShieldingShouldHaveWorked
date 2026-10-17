@@ -2,7 +2,7 @@
   "date": "2026-10-17",
   "previous_source": "df0c9be3b3d52bb9b82e6453491bbfdac7d90e69",
   "previous_run": 39068952497,
-  "previous_label": "Codex TEST 273 Developer",
+  "previous_label": "Codex TEST 273",
   "changes": [
     {
       "category": "Reliability",
@@ -41,5 +41,5 @@
       ]
     }
   ],
-  "commentary": "Core-only run 39075719820 passed all 1793 methods with zero failures, errors or skips. Full TEST274 must compare the immediate previous actually compiled TEST273 Developer APK from source df0c9be3b3d52bb9b82e6453491bbfdac7d90e69/run39068952497 and include all 38 API34 methods and 57 required screenshots. No automatic stage, publication, distribution or phone claim."
+  "commentary": "TEST274 run 39076067947 stopped before compilation because the prior embedded record is exactly Codex TEST 273, not Codex TEST 273 Developer; no TEST274 APK exists. TEST275 corrects only previous_label. Core-only run 39075719820 passed all 1793 methods with zero failures, errors or skips. Full TEST275 must compare the immediate previous actually compiled TEST273 Developer APK from source df0c9be3b3d52bb9b82e6453491bbfdac7d90e69/run39068952497 and include all 38 API34 methods and 57 required screenshots. No automatic stage, publication, distribution or phone claim."
 }
