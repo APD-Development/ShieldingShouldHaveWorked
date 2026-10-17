@@ -797,6 +797,14 @@ public final class RowBuilders {
 			if (s == null || s.length() != 10 || s.charAt(4) != '-' || s.charAt(7) != '-') return Long.MIN_VALUE;
 			long y = Long.parseLong(s.substring(0, 4)), m = Long.parseLong(s.substring(5, 7)), d = Long.parseLong(s.substring(8, 10));
 			if (m < 1 || m > 12 || d < 1 || d > 31) return Long.MIN_VALUE;
+			boolean leap = y % 4 == 0 && (y % 100 != 0 || y % 400 == 0);
+			int maxDay;
+			switch ((int) m){
+				case 2: maxDay = leap ? 29 : 28; break;
+				case 4: case 6: case 9: case 11: maxDay = 30; break;
+				default: maxDay = 31;
+			}
+			if (d > maxDay) return Long.MIN_VALUE;
 			y -= m <= 2 ? 1 : 0;
 			long era = (y >= 0 ? y : y - 399) / 400;
 			long yoe = y - era * 400;
