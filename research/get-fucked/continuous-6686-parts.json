@@ -1,0 +1,62 @@
+{
+  "archive": "continuous-6686-provenance.tar.xz",
+  "size": 1114128,
+  "sha256": "f370900f51089749f24fe222a853ed00ec6588beda392d5b748a59db5019143f",
+  "parts": [
+    {
+      "name": "continuous-6686-provenance.tar.xz.part-01",
+      "size": 131072,
+      "sha256": "c83b7aca8e5997b7213134a2f7b540cbaa4f26513fdfff737648e61c1a3f8c26",
+      "git_blob_sha": "50eceba0e5c9d32668071e498ba99b7bf9e90bac"
+    },
+    {
+      "name": "continuous-6686-provenance.tar.xz.part-02",
+      "size": 131072,
+      "sha256": "9239e1a30ef2b34d279096920237ff20f897e761e539edc6b3e725913ad6ce25",
+      "git_blob_sha": "8bee53e79d90b48c8ba8033ea2b6772c51e99278"
+    },
+    {
+      "name": "continuous-6686-provenance.tar.xz.part-03",
+      "size": 131072,
+      "sha256": "d89d405d5ebff3b106eac273ac1c3c121fe724084ac1e535b18f7f2ca57562e9",
+      "git_blob_sha": "74ecbc85f1d22dd7523ba63ce07a3f3e444d6db9"
+    },
+    {
+      "name": "continuous-6686-provenance.tar.xz.part-04",
+      "size": 131072,
+      "sha256": "186cbf790a975ee3609919fa3aa28dfdf8be29804de458522b0ea3c044b8d742",
+      "git_blob_sha": "72c9903525b590b2943945fd1ee3ee95ede88621"
+    },
+    {
+      "name": "continuous-6686-provenance.tar.xz.part-05",
+      "size": 131072,
+      "sha256": "92d1ea7acc255ca06742688d2d337191d28e379dc867c443df79b560ef185182",
+      "git_blob_sha": "fb31bb201ecf74c9689bee591f7275627912ac85"
+    },
+    {
+      "name": "continuous-6686-provenance.tar.xz.part-06",
+      "size": 131072,
+      "sha256": "607a0836ff88f446d7cf20197709a641dce4025e7a07e6e1483607e53f4fc77d",
+      "git_blob_sha": "f5042e4401735f01a263e0ee2c277069a91d2bba"
+    },
+    {
+      "name": "continuous-6686-provenance.tar.xz.part-07",
+      "size": 131072,
+      "sha256": "9e0d771e67372283f9e8ef3530915692855d49e6ac2c68e0fea291ae87d12137",
+      "git_blob_sha": "0648d2e64e0a2cae3912de82a6603ba3fae72fdc"
+    },
+    {
+      "name": "continuous-6686-provenance.tar.xz.part-08",
+      "size": 131072,
+      "sha256": "04628f04d1c371b4634a87f9e9c8906bc75acfee4c2a1981df441bcc20e3c4ea",
+      "git_blob_sha": "7168e9a34fd3e7eeb7f53fa3980d94473cfa7d4e"
+    },
+    {
+      "name": "continuous-6686-provenance.tar.xz.part-09",
+      "size": 65552,
+      "sha256": "84d1c6dfb351e56740ba67b779e3689c5ff94298312604ab91dd68a39a89364d",
+      "git_blob_sha": "ceeb34c2da17c0982d8375ddd2d3e5bf0b65c981"
+    }
+  ],
+  "research_only": true
+}
