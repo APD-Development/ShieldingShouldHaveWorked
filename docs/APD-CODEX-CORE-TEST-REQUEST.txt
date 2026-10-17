@@ -4,3 +4,5 @@ goal=When existing stairs shortcut chooses Stairs Up or Stairs Down, walk to kno
 tests=full :core:test suite plus StairNavigationTest and StairShortcutSettingsTest, including off by default, settings persistence, both stair types, one-activation after reaching, already standing, enemies, damage, traps and cancellation
 security=never transition on ordinary tile tapping or global movement; never reveal unknown stairs; preserve existing break conditions
 scope=core test only; do not publish/stage/ship or alter scoring or public/other branch
+
+correction=2026-10-17: original 39067969772 core check failed to compile preexisting HeroActionMoveTelemetryTest using legacy Walk(int,Level), now restored as pure-walk overload; complete source=b751923c847dea668b432c68c7bacc2ec65257d6; rerun whole suite and retain failed evidence
