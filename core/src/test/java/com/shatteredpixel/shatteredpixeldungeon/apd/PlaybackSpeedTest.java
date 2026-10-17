@@ -67,6 +67,7 @@ public class PlaybackSpeedTest {
  }
  @Test public void extremeVisualPlaybackPreservesNormalHeroIdleTiming(){
   ApdFeatures.parse("testBuild\n");
+  assertEquals("Private build must expose every extreme speed",10,PlaybackGroup.choiceCount());
   for(int mode=0;mode<PlaybackGroup.choiceCount();mode++){
    PlaybackGroup.speed(mode);
    float[] seen={0f,0f};

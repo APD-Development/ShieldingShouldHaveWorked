@@ -6,3 +6,4 @@ scope=run complete :core:test including PlaybackSpeedTest, preserve development-
 expected_core_count=1780
 result=do not stage or publish an APK on core-only success; full Android build is a separate verification request
 corrected_test_fixture=single escaped newline for testBuild parser at 097688d9e3319186146e45973f8c71a3be32fce2; verify real developer-only modes in latest source
+assertion_update=guard that all ten private speed modes are enabled, preventing a test fixture that silently covers only 3 public speeds
