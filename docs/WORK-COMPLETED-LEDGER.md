@@ -4,6 +4,7 @@
 - Core-only run `38991720872` / head `49d21a1bf83cb33a4ab4cd7bb1573eae874ea9c7` passed 1,763 tests in 348 suites, zero failures/errors/skips. New methods: 2/2 passed in 0.093s.
 - Artifact `12085507234`, 826,001 bytes, digest `sha256:3213dcc47b5cfea050807bc3e4b4cebd5ec16ad7fe67a542494011099e391d3d`.
 - Production application and APK build request unchanged; no APK build/publication/phone claim. TEST263 staged and TEST262 published statuses are unchanged.
+- Next safe step: reconcile later UIMSD per-file review records by current blob SHA, then inspect the first remaining changed component plus its integration callers without repeating completed cache/archive/reader/settings work.
 
 ## 2026-10-17T01:18:00Z — TEST263 APD Settings native-touch coverage completed
 - Added real API-34 pointer coverage for the five APD Settings controls omitted by the misleading older “every control” test: Healing to Shielding, Enhanced Tile Visibility, Automatic Stair Navigation, Healing confirmation and Custom Dungeon Rules.

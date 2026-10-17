@@ -33,3 +33,7 @@ That is 96 contested full-store operations. The existing deterministic `RowCache
 This is test-only acceptance. It does not change cache formats, raw logs, saves, permanent statistics, active v2.6R scoring, gameplay, RNG, signing identity, application ID or any of the 18 Custom Dungeon Rules. The executable APK build request was not edited. No APK was built, staged, published or distributed, and no emulator result is presented as physical-phone evidence.
 
 TEST263 remains the verified and staged candidate. TEST262 remains the latest actually published owner APK.
+
+## Remaining work and next safe step
+
+The broader UIMSD audit is still incomplete. Later per-file review records have not yet been reconciled into one current-blob inventory, and game integration callers remain a separate coverage surface. The next safe bounded package is to merge those later review records by exact current blob SHA, select the first genuinely unreviewed changed component, and review it together with its integration callers. Completed cache, archive, reader and APD Settings acceptance must not be restarted.
