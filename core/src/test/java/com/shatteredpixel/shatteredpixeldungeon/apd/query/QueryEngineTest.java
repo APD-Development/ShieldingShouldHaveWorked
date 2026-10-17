@@ -380,4 +380,30 @@ public class QueryEngineTest {
         assertEquals(Long.MIN_VALUE,ds.rows.get(0).num(SCORE));
         assertEquals(Long.MAX_VALUE,ds.rows.get(1).num(SCORE));
     }
+	@Test
+	public void queryCodecPreservesAllEscapedFieldsAndEmptyTextCardinality(){
+		String odd = "tab\tnewline\npipe|slash\\tail";
+		Aggregate detailed = new Aggregate(Aggregate.Fn.RATE, odd, Long.MIN_VALUE, "", odd, Long.MAX_VALUE, odd, odd);
+		Query q = new Query(odd, Scope.DEFAULT.withRules(Scope.Rules.SPECIFIC, odd),
+				Arrays.asList(Filter.text(odd, Op.IN, "", odd), Filter.text("single", Op.EQ, ""), Filter.known("none")),
+				Arrays.asList(new Sort(odd, true)), Arrays.asList(odd),
+				new GroupBy(Arrays.asList(odd), Arrays.asList(detailed, Aggregate.ratio(odd, "den" + odd))),
+				true, Integer.MAX_VALUE);
+
+		Query back = QueryCodec.decode(QueryCodec.encode(q));
+
+		assertEquals(q, back);
+		assertEquals(2, back.filters.get(0).texts.length);
+		assertEquals("", back.filters.get(0).texts[0]);
+		assertEquals(odd, back.filters.get(0).texts[1]);
+		assertEquals(1, back.filters.get(1).texts.length);
+		assertEquals("", back.filters.get(1).texts[0]);
+		assertEquals(0, back.filters.get(2).texts.length);
+		assertEquals(odd, back.group.aggregates.get(0).label);
+		assertEquals(Long.MIN_VALUE, back.group.aggregates.get(0).target);
+		assertEquals(Long.MAX_VALUE, back.group.aggregates.get(0).whereValue);
+		assertEquals("den" + odd, back.group.aggregates.get(1).over);
+		assertEquals(QueryCodec.encode(q), QueryCodec.encode(back));
+	}
+
 }
