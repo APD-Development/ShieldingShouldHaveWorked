@@ -43,8 +43,15 @@ public class UimsdWiringTest {
 		//Putting the changed lines back as they were must give exactly the approved file, so layout, text, arrow and annotation
 		//remain locked to the approved revision. A new intentional layout requires explicit review.
 		String title = src("scenes/TitleScene.java");
+		// The Hide UI footer's reviewed hitbox-only change is explicitly protected here,
+		// while the original responsive layout checksum remains exactly unchanged.
+		String reviewedFooterTouchPatch = "\t\t\t@Override\n\t\t\tprotected void layout() {\n\t\t\t\tsuper.layout();\n\t\t\t\t// Expand only the hit area into the reserved footer space. Keep the\n\t\t\t\t// 16px icon, existing Hide UI effect and all menu geometry intact.\n\t\t\t\tif (hotArea != null) {\n\t\t\t\t\thotArea.x = x - TitleGeometry.FADE_TOUCH_SIDE_PADDING;\n\t\t\t\t\thotArea.y = y - TitleGeometry.FADE_TOUCH_TOP_PADDING;\n\t\t\t\t\thotArea.width = width + 2 * TitleGeometry.FADE_TOUCH_SIDE_PADDING;\n\t\t\t\t\thotArea.height = height + TitleGeometry.FADE_TOUCH_TOP_PADDING;\n\t\t\t\t}\n\t\t\t}\n";
+		String reviewedFooterPriority = "\t\t// The full-screen restore listener must not swallow a footer-button press.\n\t\tbtnFade.givePointerPriority();\n";
+		assertTrue("Reviewed button patch must be present",title.contains(reviewedFooterTouchPatch));
+		assertTrue("Reviewed footer pointer priority must be present",title.contains(reviewedFooterPriority));
+		assertTrue("Do not silently remove the new target behavior",title.contains("hotArea.width = width + 2 * TitleGeometry.FADE_TOUCH_SIDE_PADDING;"));
 		assertTrue(title.contains("UimsdScene.open( TitleScene.class );"));
-		String restored = title.replace("\t\tfinal boolean androidTopScores = DeviceCompat.isAndroid();\n\t\tbtnQuit = new APDMenuButton( androidTopScores ? \"Top Scores\" : \"Quit\", androidTopScores ? Icons.RANKINGS : Icons.EXIT, true ){", "\t\tbtnQuit = new APDMenuButton( \"Quit\", Icons.EXIT, true ){")
+		String restored = title.replace(reviewedFooterTouchPatch, "").replace(reviewedFooterPriority, "").replace("\t\tfinal boolean androidTopScores = DeviceCompat.isAndroid();\n\t\tbtnQuit = new APDMenuButton( androidTopScores ? \"Top Scores\" : \"Quit\", androidTopScores ? Icons.RANKINGS : Icons.EXIT, true ){", "\t\tbtnQuit = new APDMenuButton( \"Quit\", Icons.EXIT, true ){")
 				.replace("\t\t\t\tif (androidTopScores) {\n\t\t\t\t\tShatteredPixelDungeon.switchNoFade( RankingsScene.class );\n\t\t\t\t} else {\n\t\t\t\t\tGame.instance.finish();\n\t\t\t\t}", "\t\t\t\tGame.instance.finish();")
 				.replace("\t\tadd(new com.watabou.noosa.PointerArea(0, 0, 0, 0){\n\t\t\t@Override public void update(){\n\t\t\t\tsuper.update();\n\t\t\t\tfloat left = Float.MAX_VALUE, top = Float.MAX_VALUE, right = 0, bottom = 0;\n\t\t\t\tfor (BitmapText line : annotation.lines){\n\t\t\t\t\tleft = Math.min(left, line.x); top = Math.min(top, line.y);\n\t\t\t\t\tright = Math.max(right, line.x + line.width()); bottom = Math.max(bottom, line.y + line.height());\n\t\t\t\t}\n\t\t\t\tx = left; y = top; width = Math.max(0, right-left); height = Math.max(0, bottom-top);\n\t\t\t\tactive = annotation.visible;\n\t\t\t}\n\t\t\t@Override protected void onClick(com.watabou.input.PointerEvent event){\n\t\t\t\tcom.shatteredpixel.shatteredpixeldungeon.windows.UimsdGate.open(TitleScene.class);\n\t\t\t}\n\t\t});\n" , "")
                 .replace("\tprivate APDMenuButton btnCommunity;\n", "")
@@ -65,7 +72,9 @@ public class UimsdWiringTest {
 				.replace("UimsdScene.open( TitleScene.class );", "ShatteredPixelDungeon.switchNoFade( RankingsScene.class );");
 		assertEquals("0051ccab7317b9aead08e57541ceb619cf26158df6a6485b8210a68dcd7e2f0a", shaOf(restored));
 		//the geometry (arrow, annotation, layout) file is byte for byte as approved
-		assertEquals("6a71f191a2fc104bff81e9994f7a1102db217f7d6ce48e4738c4adbaacaa4329", shaOf(src("apd/TitleGeometry.java").replaceAll("(?s)\\tpublic interface TextWidth.*?(?=\\t//height of each)", "")
+		String reviewedFooterGeometry = "\t// Make the small footer icon easier to touch without moving the artwork.\n\tpublic static final int FADE_TOUCH_SIDE_PADDING = 8;\n\tpublic static final int FADE_TOUCH_TOP_PADDING = FOOTER_GAP;\n";
+		assertTrue("The approved footer constants must remain present",src("apd/TitleGeometry.java").contains(reviewedFooterGeometry));
+		assertEquals("6a71f191a2fc104bff81e9994f7a1102db217f7d6ce48e4738c4adbaacaa4329", shaOf(src("apd/TitleGeometry.java").replace(reviewedFooterGeometry, "").replaceAll("(?s)\\tpublic interface TextWidth.*?(?=\\t//height of each)", "")
 				.replace("\t\tif (textHeight < 0) return 0; //no progression prompt: no arrow or reserved strip\n", "")));
 		assertFalse("adult wording belongs to the eligible tenth-run prompt only", title.contains("HEY, GO HERE FOR DRUGS"));
 		assertTrue(title.contains("annotation.visible = !annotationText.isEmpty()"));

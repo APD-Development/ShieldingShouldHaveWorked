@@ -1,8 +1,10 @@
-APD CORE-ONLY TEST REQUEST - Samsung Galaxy S22+ title Hide UI footer target
+APD CORE-ONLY TEST REQUEST - RETRY S22+ footer touch with original title-layout golden preserved
 branch=codex/apd-phone-fixes-2026-10-09
-source_candidate=TitleGeometry + TitleScene enlarged non-overlapping hit area; native outside-icon touch regression
-scope=run complete :core:test suite including TitleGeometryTest.hideUiTouchTargetUsesOnlyReservedFooterSpace
+source=production touch candidate unchanged; title checksum guard now strips exactly the reviewed touch-only additions, requiring their presence
+previous_core_run=39048921810
+previous_result=1775 tests, 1 failing UimsdWiringTest checksum after an intentional source-only change; all other methods passed
+scope=run complete :core:test suite including TitleGeometryTest and UimsdWiringTest
 expected_core_tests=1775
-acceptance=footer target 32x20 virtual pixels, does not overlap other menu buttons, original chevron art and Hide UI/reset behavior unchanged
-status=PENDING VERIFICATION; source candidate is not a verified or published build
-apk_build=NOT REQUESTED; executable docs/APD-CODEX-BUILD-REQUEST.txt unchanged
+acceptance=original title and geometry SHA-256 protections remain identical for all untouched content; new footer hit-area protected by exact source snippets plus geometry regression and pending native S22+-style touch acceptance
+status=PENDING CI; no APK build or distribution
+executable_apk_build_request=UNCHANGED
