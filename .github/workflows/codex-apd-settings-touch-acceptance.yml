@@ -89,22 +89,7 @@ jobs:
             adb logcat -c
             timeout 420 adb shell am instrument -w -r -e class 'com.shatteredpixel.shatteredpixeldungeon.android.ApdSettingsClickDeviceTest#remainingApdSettingsControlsRespondToActualTouches,com.shatteredpixel.shatteredpixeldungeon.android.ApdSettingsClickDeviceTest#everyDeclaredSettingControlHasAnExplicitAcceptanceOwner' com.charltonchris29.adhdpixeldungeon.indev.test/androidx.test.runner.AndroidJUnitRunner > settings-touch-instrumentation.txt 2>&1
             adb logcat -d -v time > settings-touch-logcat.txt
-            python3 - <<'PY'
-            import json,pathlib,re
-            text=pathlib.Path('settings-touch-instrumentation.txt').read_text()
-            print(text)
-            assert re.search(r'OK \(2 tests\)',text), 'Missing successful two-method result'
-            assert not any(x in text for x in ['FAILURES!!!','INSTRUMENTATION_FAILED','Process crashed.'])
-            pathlib.Path('settings-touch-result.json').write_text(json.dumps({
-                'tests':2,'passed':2,'failures':0,'errors':0,'skipped':0,
-                'native_touch':True,
-                'controls_touched':['Healing to Shielding chance','Enhanced Tile Visibility',
-                                    'Automatic Stair Navigation','Healing confirmation',
-                                    'Custom Dungeon Rules'],
-                'declared_control_ownership_manifest':True,
-                'application_reused':True,'physical_device':False
-            },indent=2))
-            PY
+            python3 -c "import json,pathlib,re; text=pathlib.Path('settings-touch-instrumentation.txt').read_text(); print(text); assert re.search(r'OK \\(2 tests\\)',text), 'Missing successful two-method result'; assert not any(x in text for x in ['FAILURES!!!','INSTRUMENTATION_FAILED','Process crashed.']); pathlib.Path('settings-touch-result.json').write_text(json.dumps({'tests':2,'passed':2,'failures':0,'errors':0,'skipped':0,'native_touch':True,'controls_touched':['Healing to Shielding chance','Enhanced Tile Visibility','Automatic Stair Navigation','Healing confirmation','Custom Dungeon Rules'],'declared_control_ownership_manifest':True,'application_reused':True,'physical_device':False},indent=2))"
       - name: Preserve test-only acceptance evidence
         if: always()
         uses: actions/upload-artifact@v4
