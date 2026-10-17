@@ -159,10 +159,12 @@ public final class RowCodec {
 			m.createdAtMillis = in.readUnsigned();
 			m.segment = in.readUnsignedInt();
 			int flags = in.readByte();
+			if ((flags & ~7) != 0) return null;
 			m.hasRunEnd = (flags & 1) != 0;
 			m.imported = (flags & 2) != 0;
 			m.unreadable = (flags & 4) != 0;
 			int rk = in.readByte();
+			if (rk > 2) return null;
 			String rs = table[in.readUnsignedInt()];
 			m.ruleset = rk == 0 ? null : rk == 1 ? Row.RULESET_MIXED : rs;
 			m.rankingId = table[in.readUnsignedInt()];
@@ -182,21 +184,26 @@ public final class RowCodec {
 				List<Row> list = new ArrayList<>(rows);
 				for (int i = 0; i < rows; i++){
 					String rid = table[in.readUnsignedInt()];
-					String mergeKey = in.readByte() == 1 ? table[in.readUnsignedInt()] : null;
+					int hasMergeKey = in.readByte();
+					if (hasMergeKey > 1) return null;
+					String mergeKey = hasMergeKey == 1 ? table[in.readUnsignedInt()] : null;
 					String runId = table[in.readUnsignedInt()];
 					Row r = new Row(rid, mergeKey, runId, def == null ? 0 : def.size());
 					int f = in.readByte();
+					if ((f & ~15) != 0) return null;
 					r.finished = (f & 1) != 0;
 					r.publicRow = (f & 2) != 0;
 					r.imported = (f & 4) != 0;
 					r.duplicate = (f & 8) != 0;
 					int rrk = in.readByte();
+					if (rrk > 2) return null;
 					String rrs = table[in.readUnsignedInt()];
 					r.ruleset = rrk == 0 ? null : rrk == 1 ? Row.RULESET_MIXED : rrs;
 					r.telemetry = table[in.readUnsignedInt()];
 					for (int c = 0; c < cols; c++){
 						int meta = in.readByte();
 						int k = meta & 3, prov = (meta >> 2) & 63;
+						if (k > Row.K_TEXT) return null;
 						int col = map[c];
 						if (k == Row.K_NUM){
 							long v = in.readSigned();

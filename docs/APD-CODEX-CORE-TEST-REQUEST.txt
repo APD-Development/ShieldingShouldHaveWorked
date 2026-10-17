@@ -1,10 +1,6 @@
-APD CORE-ONLY TEST REQUEST - Optional one-tap stair transition 2026-10-17
-source=dca447339a4574819987130fcaef8c9a1f10a26d
-goal=When existing stairs shortcut chooses Stairs Up or Stairs Down, walk to known safe stairs using ordinary movement cost and, only if auto-enter setting is enabled, use normal floor transition without a second tap
-tests=full :core:test suite plus StairNavigationTest and StairShortcutSettingsTest, including off by default, settings persistence, both stair types, one-activation after reaching, already standing, enemies, damage, traps and cancellation
-security=never transition on ordinary tile tapping or global movement; never reveal unknown stairs; preserve existing break conditions
-scope=core test only; do not publish/stage/ship or alter scoring or public/other branch
-
-correction=2026-10-17: original 39067969772 core check failed to compile preexisting HeroActionMoveTelemetryTest using legacy Walk(int,Level), now restored as pure-walk overload; complete source=b751923c847dea668b432c68c7bacc2ec65257d6; rerun whole suite and retain failed evidence
-
-fixture_correction=Core run 39068161212 compiled then ran 1786 methods, 2 headless tests failed only because they invoked Hero.ready() with no AttackIndicator singleton. Negative cases now assert StairNavigation.canEnterOnArrival() guards directly without calling HUD. Positive actual normal-step-plus-transition test retained. Rerun full core suite for source 7de058624009ac705a447d4425b2f29b87a235d0.
+APD CORE-ONLY TEST REQUEST - Row-cache reserved metadata validation 2026-10-17
+candidate=workflow checkout commit based on 9e883faf5dd1f22fd4af36fd5e1095d7eb88017f
+goal=Reject CRC-valid row caches that use reserved log flags, ruleset tags, merge-key markers, row flags or cell kinds so DatasetStore rebuilds derived rows from the unchanged raw history instead of silently accepting unknown metadata
+tests=full :core:test suite plus RowCacheMetadataValidationTest (one exact valid fixture and six fail-closed reserved-value regressions)
+scope=core UIMSD reliability only; raw histories, source fingerprints, saves, scoring, gameplay, build request and published APKs unchanged
+delivery=core verification only; do not publish, stage, distribute or start an APK build
