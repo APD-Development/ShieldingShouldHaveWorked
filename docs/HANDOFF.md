@@ -1,3 +1,10 @@
+## UIMSD complete query serialization contract accepted — 2026-10-17T05:36:53Z
+Complete current-source review of `QueryCodec.java` with Query/Filter/Aggregate/SavedViews consumers found no production defect. Test-only source `c2014077526dfa87b6062ab1762548d74d632290` adds the missing full serialization boundary: tabs, newlines, pipes and backslashes round-trip in query fields; one empty text value stays distinct from no text values; aggregate labels, extreme targets and optional fields survive; and encode/decode/encode is byte-stable.
+
+Core-only run `39006675168` at request head `27de932775034c51ba7ea5c33063056204142d77` passed 1,771 tests in 350 suites with zero failures, errors or skips. `QueryEngineTest` passed all 21 methods; the new serialization method took 0.0 seconds. Artifact `12091417221`, 828,440 bytes, digest/independent ZIP SHA `sha256:4c94568a467fcfe8198024a5372ab6a0eb4e0269d7ffaa6067f23f3a412e6bc3`. No production application source, APK request, APK, raw history, saves, scoring, gameplay, signing or app ID changed. TEST264 remains verified/staged; TEST262 remains the latest published owner APK. No phone/publication/distribution claim.
+
+Exact machine reconciliation now records 101 reviewed current production paths; the broader UIMSD audit remains incomplete. Continue the first genuinely unreviewed changed component and its integration callers. See `docs/APD-UIMSD-QUERY-CODEC-ACCEPTANCE-2026-10-17.md`.
+
 ## UIMSD Home finished-run scope contract accepted — 2026-10-17T04:46:02Z
 Complete current-source review of `UimsdHome.java` and its Catalog/DatasetStore/QueryEngine presentation paths found no production defect. Test-only source `914586aa83175b54528b2bbf59a2db71a4663bd7` adds the missing independent Home scope contract: a finished current-rules run is counted, a finished other-rules run is reported separately in current-rules mode and included in all-rules mode, while an unfinished current-rules run and its class stay absent from all Home text.
 

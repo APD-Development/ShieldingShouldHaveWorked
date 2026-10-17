@@ -1,9 +1,9 @@
 {
-  "source": "01a32c305da5f97747c5d73c32762e80dd27f8c6",
-  "recorded_at": "2026-10-17T04:46:02Z",
+  "source": "27de932775034c51ba7ea5c33063056204142d77",
+  "recorded_at": "2026-10-17T05:36:53Z",
   "complete": false,
   "prior_checkpoint_preserved": "docs/APD-UIMSD-REVIEW-CHECKPOINT-2026-10-13.json",
-  "count_note": "Current-blob reconciliation found 96 exact machine-recorded entries before this continuation. Datasets.java, AggValue.java, UimsdSelfTest.java and UimsdHome.java add four reviewed current production blobs, for 100 exact reviewed paths; prose-only completed reviews remain separate until reconciled.",
+  "count_note": "Current-blob reconciliation found 96 exact machine-recorded entries before this continuation. Datasets.java, AggValue.java, UimsdSelfTest.java, UimsdHome.java and QueryCodec.java add five reviewed current production blobs, for 101 exact reviewed paths; prose-only completed reviews remain separate until reconciled.",
   "entries": [
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/Datasets.java",
@@ -62,6 +62,38 @@
         "methods": 2,
         "new_method": "homeScopeExcludesUnfinishedRunsAndCountsOtherFinishedRulesExactly"
       }
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/QueryCodec.java",
+      "sha": "3a643d13367ca9ef51cc109667fc7bf7b52ee368",
+      "lines": 179,
+      "reviewed": true,
+      "basis": "Complete current-source review of line encoding/decoding, compatibility behavior and Query, Filter, Aggregate and SavedViews consumers found no production defect. A retained full-field regression closes missing coverage for escaped delimiters, empty-text cardinality, aggregate metadata/extreme values and stable repeated encoding.",
+      "supporting_reads": [
+        {
+          "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/Query.java",
+          "sha": "b97d4745b4fcc80e989110e3cf560ca16e3bcf1a"
+        },
+        {
+          "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/Filter.java",
+          "sha": "c045e56a87dd5eafc154a277631da3200792dcab"
+        },
+        {
+          "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/Aggregate.java",
+          "sha": "1a18f2ef823d6a0eaa351e682476c0fae4c31bff"
+        },
+        {
+          "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/SavedViews.java",
+          "sha": "5230c85986de9a5a1387289d1a4e02de445a313b"
+        }
+      ],
+      "retained_test": {
+        "path": "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/QueryEngineTest.java",
+        "sha": "409ada58d67f4b6902060a918e3b28428efa764f",
+        "source_commit": "c2014077526dfa87b6062ab1762548d74d632290",
+        "methods": 21,
+        "new_method": "queryCodecPreservesAllEscapedFieldsAndEmptyTextCardinality"
+      }
     }
   ],
   "supporting_reads": [
@@ -101,13 +133,13 @@
     "methods": 2
   },
   "full_core_evidence": {
-    "request_commit": "01a32c305da5f97747c5d73c32762e80dd27f8c6",
-    "run_id": 39003588552,
-    "artifact_id": 12089109846,
-    "artifact_bytes": 826513,
-    "artifact_digest": "sha256:98c9e31f6bc7a3ea9810bfc952026548983877dfac6266c26310c53e7cea710b",
+    "request_commit": "27de932775034c51ba7ea5c33063056204142d77",
+    "run_id": 39006675168,
+    "artifact_id": 12091417221,
+    "artifact_bytes": 828440,
+    "artifact_digest": "sha256:4c94568a467fcfe8198024a5372ab6a0eb4e0269d7ffaa6067f23f3a412e6bc3",
     "suites": 350,
-    "tests": 1770,
+    "tests": 1771,
     "failures": 0,
     "errors": 0,
     "skipped": 0
@@ -118,10 +150,10 @@
   "latest_verified_private_candidate": 264,
   "latest_published_owner_build": 262,
   "latest_test_only_evidence": {
-    "source_commit": "914586aa83175b54528b2bbf59a2db71a4663bd7",
-    "request_commit": "01a32c305da5f97747c5d73c32762e80dd27f8c6",
-    "run_id": 39003588552,
-    "target": "UimsdHome finished-run and rules-scope contract",
+    "source_commit": "c2014077526dfa87b6062ab1762548d74d632290",
+    "request_commit": "27de932775034c51ba7ea5c33063056204142d77",
+    "run_id": 39006675168,
+    "target": "QueryCodec complete field and empty-text serialization contract",
     "application_source_changed": false
   }
 }

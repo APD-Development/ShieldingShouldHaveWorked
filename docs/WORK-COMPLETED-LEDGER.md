@@ -1558,3 +1558,10 @@ Separate inherited-audio diagnostic evidence reconciled: optional fake-endpoint 
 - Core-only run `39003588552` / request `01a32c305da5f97747c5d73c32762e80dd27f8c6` passed 1,770 tests in 350 suites, 0 failures/errors/skips. New method passed in 0.008 seconds.
 - Artifact `12089109846`, 826,513 bytes, digest/ZIP SHA `sha256:98c9e31f6bc7a3ea9810bfc952026548983877dfac6266c26310c53e7cea710b`.
 - No application source, executable APK request, APK, history/save/scoring/gameplay/signing/app-ID/publication state changed. TEST264 remains staged; TEST262 remains published. UIMSD exact review is 100 paths and remains incomplete.
+
+## 2026-10-17T05:36:53Z — UIMSD query serialization contract verified
+- Reviewed current `QueryCodec.java` (`3a643d13367ca9ef51cc109667fc7bf7b52ee368`) with Query/Filter/Aggregate/SavedViews consumers; no production defect confirmed.
+- Test-only source `c2014077526dfa87b6062ab1762548d74d632290` adds `queryCodecPreservesAllEscapedFieldsAndEmptyTextCardinality`, covering every encoded delimiter, empty-text cardinality, aggregate metadata/extreme values and stable repeated encoding.
+- Core-only run `39006675168` / request `27de932775034c51ba7ea5c33063056204142d77` passed 1,771 tests in 350 suites, 0 failures/errors/skips. `QueryEngineTest` passed 21/21 methods.
+- Artifact `12091417221`, 828,440 bytes, digest/ZIP SHA `sha256:4c94568a467fcfe8198024a5372ab6a0eb4e0269d7ffaa6067f23f3a412e6bc3`.
+- No application source, executable APK request, APK, history/save/scoring/gameplay/signing/app-ID/publication state changed. TEST264 remains staged; TEST262 remains published. UIMSD exact review is 101 paths and remains incomplete.
