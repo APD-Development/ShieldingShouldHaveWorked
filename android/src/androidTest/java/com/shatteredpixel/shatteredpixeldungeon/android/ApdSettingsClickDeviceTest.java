@@ -526,12 +526,14 @@ public class ApdSettingsClickDeviceTest {
 			final int oldExotic = SPDSettings.apdExoticSetting();
 			final boolean oldTiles = SPDSettings.enhancedTileVisibility();
 			final boolean oldStairs = SPDSettings.stairNavigationShortcut();
+            final boolean oldAutoEnter = SPDSettings.autoEnterStairs();
 			final AtomicReference<WndAPDSettings> window = new AtomicReference<>();
 			try {
 				onRender(() -> {
 					SPDSettings.apdExoticChance(0);
 					SPDSettings.enhancedTileVisibility(false);
 					SPDSettings.stairNavigationShortcut(false);
+                    SPDSettings.autoEnterStairs(false);
 					window.set(new WndAPDSettings());
 					ShatteredPixelDungeon.scene().add(window.get());
 				});
@@ -557,6 +559,8 @@ public class ApdSettingsClickDeviceTest {
 				tapUntil("Automatic Stair Navigation", scroll, (Gizmo) field(pane, "chkStairNavigation"),
 						SPDSettings::stairNavigationShortcut, 30000);
 				dismissMessages();
+                tapUntil("Auto-enter Stairs on Arrival", scroll, (Gizmo) field(pane, "chkAutoEnterStairs"),
+                        SPDSettings::autoEnterStairs, 30000);
 
 				tapUntil("Healing confirmation", scroll, (Gizmo) field(pane, "btnHealingConfirmation"),
 						() -> find(Game.scene(), com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions.class) != null, 30000);
@@ -595,6 +599,7 @@ public class ApdSettingsClickDeviceTest {
 					SPDSettings.apdExoticChance(oldExotic);
 					SPDSettings.enhancedTileVisibility(oldTiles);
 					SPDSettings.stairNavigationShortcut(oldStairs);
+                    SPDSettings.autoEnterStairs(oldAutoEnter);
 				});
 			}
 		}
@@ -610,6 +615,7 @@ public class ApdSettingsClickDeviceTest {
 		owners.put("chkAdult", new Object[]{ ApdSettingsClickDeviceTest.class, "adultHumorControlWorksWithoutAnAgeProviderAndReopensWithSavedChoice" });
 		owners.put("chkTileVisibility", new Object[]{ ApdSettingsClickDeviceTest.class, "remainingApdSettingsControlsRespondToActualTouches" });
 		owners.put("chkStairNavigation", new Object[]{ ApdSettingsClickDeviceTest.class, "remainingApdSettingsControlsRespondToActualTouches" });
+        owners.put("chkAutoEnterStairs", new Object[]{ ApdSettingsClickDeviceTest.class, "remainingApdSettingsControlsRespondToActualTouches" });
 		owners.put("btnPlaybackSpeed", new Object[]{ ApdSettingsClickDeviceTest.class, "adultHumorControlWorksWithoutAnAgeProviderAndReopensWithSavedChoice" });
 		owners.put("btnHealingConfirmation", new Object[]{ ApdSettingsClickDeviceTest.class, "remainingApdSettingsControlsRespondToActualTouches" });
 		owners.put("btnCustomRules", new Object[]{ ApdSettingsClickDeviceTest.class, "remainingApdSettingsControlsRespondToActualTouches" });
