@@ -1,3 +1,10 @@
+## UIMSD dataset-schema contract accepted — 2026-10-17T02:41:24Z
+Complete current-blob review of `Datasets.java` and its catalog/navigation callers found no production defect. Test-only source `49c58cf175e6742f5499d9e1b243847eac4aad27` adds two retained structural regressions: all core/event/fact dataset ids, shipped views and navigation columns must resolve, aggregate-first instance queries must stay on their source dataset, and the run schema must keep all 18 frozen custom settings as numeric columns.
+
+Core-only run `38995668774` at request head `5eb573d98fb154b13e6f7d35a4cd95aac740882d` passed 1,765 tests in 349 suites with zero failures, errors or skips; the two new methods passed in 0.002 seconds. Artifact `12086749353`, 827,712 bytes, digest `sha256:df6772b7fa738cb5c7bada7f799ce360ac2aee661ab179bc392387c701049ea8`. No production application source, APK build request, raw history, save, scoring, gameplay, APK or publication changed. TEST263 remains verified/staged; TEST262 remains the latest actually published owner APK. No physical-phone claim.
+
+This closes only the current `Datasets.java` boundary, not the full UIMSD audit. Continue exact-blob reconciliation of prose-only completed reviews, then the first genuinely unreviewed changed component and its integration callers; do not restart completed cache/archive/reader/settings work. See `docs/APD-UIMSD-DATASET-SCHEMA-ACCEPTANCE-2026-10-17.md` and `docs/APD-UIMSD-REVIEW-CONTINUATION-2026-10-17.json`.
+
 ## UIMSD optional-cache cross-instance acceptance — 2026-10-17T01:41:04Z
 Current `DerivedStore` and `DatasetStore` already use unique per-writer temporary files. Test-only source `759d8ef3cc55e2504fc902d71f6242876f3dc0f9` adds end-to-end contention coverage: four independent instances perform 12 operations each against one raw-history root in each cache layer (96 contested operations total), every returned table/catalog remains correct, and a fresh reader must reuse the surviving cache. The pre-existing deterministic `RowCacheConcurrentWriterTest` remains the low-level replacement-race guard.
 

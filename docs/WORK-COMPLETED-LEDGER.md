@@ -1,3 +1,9 @@
+## 2026-10-17T02:41:24Z — UIMSD dataset schema contract verified
+- Completed a current-blob read of `Datasets.java` (`2dfad3e175044300e5cfcf9cea1326a5161a1274`) and exact catalog/navigation callers; no production defect confirmed.
+- Added test-only `DatasetSchemaContractTest` at source `49c58cf175e6742f5499d9e1b243847eac4aad27`: two regressions cover dataset/view/link referential integrity and all 18 frozen custom-setting columns.
+- Core-only run `38995668774` / request `5eb573d98fb154b13e6f7d35a4cd95aac740882d` passed 1,765 methods in 349 suites, 0 failures/errors/skips. Artifact `12086749353`, 827,712 bytes, digest `sha256:df6772b7fa738cb5c7bada7f799ce360ac2aee661ab179bc392387c701049ea8`.
+- No production/app/APK/build-request/publication change. TEST263 stays staged; TEST262 stays latest published. Continue the next unreconciled current UIMSD component; full audit remains open.
+
 ## 2026-10-17T01:41:04Z — UIMSD optional-cache contention candidate closed
 - Added test-only `CacheConcurrencyTest` at `759d8ef3cc55e2504fc902d71f6242876f3dc0f9`: 96 contested full-store operations across `DerivedStore` and `DatasetStore`, validating every result and final cache reuse.
 - Retained the older deterministic low-level `RowCacheConcurrentWriterTest`; the new coverage exercises real raw-log parsing and complete independent store instances.

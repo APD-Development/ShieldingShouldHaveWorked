@@ -1,0 +1,67 @@
+{
+  "source": "5eb573d98fb154b13e6f7d35a4cd95aac740882d",
+  "recorded_at": "2026-10-17T02:41:24Z",
+  "complete": false,
+  "prior_checkpoint_preserved": "docs/APD-UIMSD-REVIEW-CHECKPOINT-2026-10-13.json",
+  "count_note": "Current-blob reconciliation found 96 exact machine-recorded entries before this work. This continuation adds one reviewed current production blob; prose-only completed reviews remain separate until reconciled.",
+  "entries": [
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/Datasets.java",
+      "sha": "2dfad3e175044300e5cfcf9cea1326a5161a1274",
+      "lines": 525,
+      "reviewed": true,
+      "basis": "Complete current-source read of the four core schemas, statistics sheets and 13 shipped views plus catalog, navigation and row-window consumers. No production defect confirmed. A missing cross-schema referential-integrity invariant is now a retained test."
+    }
+  ],
+  "supporting_reads": [
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/DatasetDef.java",
+      "sha": "a12fc0574602f4e9e0efa6f87401cd8a6c37f8f9"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/ViewDef.java",
+      "sha": "17acb966caaebf7c2acac6b6571e845ead048f81"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/LinkDef.java",
+      "sha": "0da9b02d6755474a9d468ed697ecc7845a4e122f"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/DatasetStore.java",
+      "sha": "b96b39de60d1e72fb93245d2f71a0b616e851fa7"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/Catalog.java",
+      "sha": "126535930994090260cc86d784085f48e0342129"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdModel.java",
+      "sha": "2ab5db93adc6a56ff6fd7e97a7de56c6f697ae7c"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndUimsdRow.java",
+      "sha": "12fe6ab88d1845eaedb310fbf90949acec7b57f3"
+    }
+  ],
+  "retained_test": {
+    "path": "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/DatasetSchemaContractTest.java",
+    "sha": "7d195b673f7400a930b9049913d5fb9adf2f092a",
+    "source_commit": "49c58cf175e6742f5499d9e1b243847eac4aad27",
+    "methods": 2
+  },
+  "full_core_evidence": {
+    "request_commit": "5eb573d98fb154b13e6f7d35a4cd95aac740882d",
+    "run_id": 38995668774,
+    "artifact_id": 12086749353,
+    "artifact_bytes": 827712,
+    "artifact_digest": "sha256:df6772b7fa738cb5c7bada7f799ce360ac2aee661ab179bc392387c701049ea8",
+    "suites": 349,
+    "tests": 1765,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "confirmed_new_production_defects": 0,
+  "application_changes": false,
+  "new_apk_needed": false
+}
