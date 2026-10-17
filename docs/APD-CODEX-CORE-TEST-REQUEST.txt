@@ -6,3 +6,5 @@ security=never transition on ordinary tile tapping or global movement; never rev
 scope=core test only; do not publish/stage/ship or alter scoring or public/other branch
 
 correction=2026-10-17: original 39067969772 core check failed to compile preexisting HeroActionMoveTelemetryTest using legacy Walk(int,Level), now restored as pure-walk overload; complete source=b751923c847dea668b432c68c7bacc2ec65257d6; rerun whole suite and retain failed evidence
+
+fixture_correction=Core run 39068161212 compiled then ran 1786 methods, 2 headless tests failed only because they invoked Hero.ready() with no AttackIndicator singleton. Negative cases now assert StairNavigation.canEnterOnArrival() guards directly without calling HUD. Positive actual normal-step-plus-transition test retained. Rerun full core suite for source 7de058624009ac705a447d4425b2f29b87a235d0.
