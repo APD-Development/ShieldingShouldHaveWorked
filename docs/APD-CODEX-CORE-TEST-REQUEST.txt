@@ -1,9 +1,6 @@
-APD CORE-ONLY TEST REQUEST - TEST272 hero idle shake at 1000x
-date=2026-10-17
-previous_full_source=8d5493cb846695d623e247d1a9646038c5d6ed12
-change=Cap ONLY hero's two-frame idle animation at real time in dev visual speeds above 2x; leave movement/attacks/effects at chosen multiplier
-scope=run complete :core:test including PlaybackSpeedTest, preserve development-only speed gating and actor/input clock isolation
-expected_core_count=1780
-result=do not stage or publish an APK on core-only success; full Android build is a separate verification request
-corrected_test_fixture=single escaped newline for testBuild parser at 097688d9e3319186146e45973f8c71a3be32fce2; verify real developer-only modes in latest source
-assertion_update=guard that all ten private speed modes are enabled, preventing a test fixture that silently covers only 3 public speeds
+APD CORE-ONLY TEST REQUEST - Optional one-tap stair transition 2026-10-17
+source=dca447339a4574819987130fcaef8c9a1f10a26d
+goal=When existing stairs shortcut chooses Stairs Up or Stairs Down, walk to known safe stairs using ordinary movement cost and, only if auto-enter setting is enabled, use normal floor transition without a second tap
+tests=full :core:test suite plus StairNavigationTest and StairShortcutSettingsTest, including off by default, settings persistence, both stair types, one-activation after reaching, already standing, enemies, damage, traps and cancellation
+security=never transition on ordinary tile tapping or global movement; never reveal unknown stairs; preserve existing break conditions
+scope=core test only; do not publish/stage/ship or alter scoring or public/other branch
