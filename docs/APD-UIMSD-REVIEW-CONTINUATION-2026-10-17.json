@@ -1,9 +1,9 @@
 {
-  "source": "9a712453443573f2027150cb204cb6be304da57c",
-  "recorded_at": "2026-10-17T04:10:11Z",
+  "source": "d9238c2cb1e8a9345deee4c3b39b2963318066d5",
+  "recorded_at": "2026-10-17T04:18:24Z",
   "complete": false,
   "prior_checkpoint_preserved": "docs/APD-UIMSD-REVIEW-CHECKPOINT-2026-10-13.json",
-  "count_note": "Current-blob reconciliation found 96 exact machine-recorded entries before this continuation. Datasets.java and AggValue.java add two reviewed current production blobs, for 98 exact reviewed paths; prose-only completed reviews remain separate until reconciled.",
+  "count_note": "Current-blob reconciliation found 96 exact machine-recorded entries before this continuation. Datasets.java, AggValue.java and UimsdSelfTest.java add three reviewed current production blobs, for 99 exact reviewed paths; prose-only completed reviews remain separate until reconciled.",
   "entries": [
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/Datasets.java",
@@ -33,6 +33,20 @@
         "sha": "8d1a9658993ccea6e85adee588f92c3513d142ad",
         "source_commit": "4d4048f80ab150aca3bc1ce690de48b5532922a0",
         "methods": 3
+      }
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdSelfTest.java",
+      "sha": "9c78ae1586d2659a4f57d3e13156389ffa5478b8",
+      "lines": 113,
+      "reviewed": true,
+      "basis": "Complete current-source review of the isolated device self-test and its DatasetStore, QueryEngine, CellFormatter and RunLogWriter interactions found no production defect. A retained independent two-run regression closes the prior one-sided assertion gap by proving finished internal item identity is visible while the same unfinished-run field remains hidden.",
+      "retained_test": {
+        "path": "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdSelfTestTest.java",
+        "sha": "083eb4402001fc617abae49eec7a175e01f989f5",
+        "source_commit": "5a69400536f44ea04efe35edfb5398aefc0e4917",
+        "methods": 3,
+        "new_method": "finishedInternalIdentityIsVisibleWhileOpenIdentityStaysHidden"
       }
     }
   ],
@@ -73,13 +87,13 @@
     "methods": 2
   },
   "full_core_evidence": {
-    "request_commit": "9a712453443573f2027150cb204cb6be304da57c",
-    "run_id": 39000124500,
-    "artifact_id": 12089275432,
-    "artifact_bytes": 828898,
-    "artifact_digest": "sha256:99d61d3b569cf20154501fad80dde799e56df02613e222f9a140b442d76ffc38",
+    "request_commit": "d9238c2cb1e8a9345deee4c3b39b2963318066d5",
+    "run_id": 39001854306,
+    "artifact_id": 12089406326,
+    "artifact_bytes": 829331,
+    "artifact_digest": "sha256:8beb240b624e6b48e1578edab42fccbcf3cf28aac855960d5cf1b167dbb3d1d8",
     "suites": 350,
-    "tests": 1768,
+    "tests": 1769,
     "failures": 0,
     "errors": 0,
     "skipped": 0
@@ -88,5 +102,12 @@
   "application_changes": true,
   "new_apk_needed": false,
   "latest_verified_private_candidate": 264,
-  "latest_published_owner_build": 262
+  "latest_published_owner_build": 262,
+  "latest_test_only_evidence": {
+    "source_commit": "5a69400536f44ea04efe35edfb5398aefc0e4917",
+    "request_commit": "d9238c2cb1e8a9345deee4c3b39b2963318066d5",
+    "run_id": 39001854306,
+    "target": "UimsdSelfTest finished/open internal-identity privacy contract",
+    "application_source_changed": false
+  }
 }

@@ -1546,3 +1546,9 @@ Separate inherited-audio diagnostic evidence reconciled: optional fake-endpoint 
 - Independent stage `39001343302` / wrapper `8b1878235df7b538da5c9c970bbc6350dae1e641` reused the exact APK. Preview artifact `12089525962` digest `sha256:035c6802b21f696caa01adebf16233b5bd50f8d7656217046cbec942149c0337`; evidence `12089540854` digest `sha256:7890babf3307da28a2eae17a124e33ead61a1c74654fd8c02adf8051c8dd922a`. Signer/app ID/version/install-over line match TEST262. Automatic stale-profile stage `39000124638` remains failed with no artifact.
 - TEST264 is staged, not published or distributed; TEST262 remains the latest published owner APK. No phone/save install-over claim. UIMSD exact-review reconciliation is 98 paths and remains incomplete.
 
+## 2026-10-17T04:18:24Z — UIMSD self-test privacy contract verified
+- Reviewed current `UimsdSelfTest.java` plus DatasetStore/QueryEngine/CellFormatter/RunLogWriter interactions; no production defect confirmed.
+- Test-only source `5a69400536f44ea04efe35edfb5398aefc0e4917` adds an independent finished-versus-open internal-identity regression. Run `39001854306` / request `d9238c2cb1e8a9345deee4c3b39b2963318066d5` passed 1,769 tests in 350 suites with zero failures/errors/skips; the new method passed in 0.005 seconds.
+- Artifact `12089406326`, 829,331 bytes, digest/ZIP SHA `sha256:8beb240b624e6b48e1578edab42fccbcf3cf28aac855960d5cf1b167dbb3d1d8`.
+- No application source, executable APK request, APK, history/save/scoring/gameplay/signing/app-ID/publication state changed. TEST264 remains staged; TEST262 remains published. UIMSD exact review is 99 paths and remains incomplete.
+
