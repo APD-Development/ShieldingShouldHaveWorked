@@ -1,37 +1,41 @@
 {
   "date": "2026-10-17",
-  "previous_source": "e678d38c4c34bc755ed0cd501f7f44c88bc3c465",
-  "previous_run": 39011090870,
-  "previous_label": "Codex TEST 266",
+  "previous_source": "c761afc25902954060daf5fffbd87e728b8b1887",
+  "previous_run": 39014635516,
+  "previous_label": "Codex TEST 267",
   "changes": [
     {
       "category": "Bug Fixes",
       "sprite": "ICON_PREFS",
-      "title": "Reject impossible imported dates",
-      "text": "Keep malformed legacy calendar dates unknown instead of normalizing them into false later dates; valid Gregorian leap days remain accepted.",
+      "title": "Make title Hide UI easier to tap",
+      "text": "Expand the small bottom chevron's touch target into its reserved footer and prioritize its input handler. Keep the original Hide UI and restore behavior, icon, layout and game state unchanged.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowBuilders.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/DatasetBuildersTest.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/TitleGeometry.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/TitleScene.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Preserve TEST266 and date evidence",
-      "text": "Retain the complete TEST266 verification and staging records, the exact one-failure legacy-date reproduction, the corrected full core pass and the current review handoff.",
+      "title": "Preserve footer touch and previous-build evidence",
+      "text": "Retain a non-overlap geometry regression, native outside-icon press and restore coverage, exact original title-layout goldens, and all intervening published verification, history and handoff records.",
       "paths": [
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/TitleMenuLayoutDeviceTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/TitleGeometryTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/UimsdWiringTest.java",
         "docs/APD-ALPHA-PREPARATION.json",
-        "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/APD-CODEX-CORE-TEST-REQUEST.txt",
-        "docs/APD-TEST266-UIMSD-HIDDEN-QUESTION-2026-10-17.md",
-        "docs/APD-TEST266-VERIFICATION-2026-10-17.json",
+        "docs/APD-S22PLUS-TITLE-HIDE-TOUCH-2026-10-17.md",
+        "docs/APD-TEST267-UIMSD-LEGACY-DATES-2026-10-17.md",
+        "docs/APD-TEST267-VERIFICATION-2026-10-17.json",
         "docs/APD-UIMSD-REVIEW-CONTINUATION-2026-10-17.json",
         "docs/HANDOFF.md",
         "docs/UIMSD-AUDIT-BUG-LOG.md",
         "docs/WORK-COMPLETED-LEDGER.md",
-        "docs/APD-NEXT-BUILD-HISTORY.json"
+        "docs/APD-NEXT-BUILD-HISTORY.json",
+        "docs/APD-CODEX-BUILD-REQUEST.txt"
       ]
     }
   ],
-  "commentary": "TEST267 is pending its complete gate; verified staged TEST266 and published TEST262 remain fallbacks. No automatic publication, tester distribution or physical-phone claim."
+  "commentary": "Core-only run 39048921810 first failed one strict-layout golden; corrected complete core run 39049282660 passed. This application candidate awaits full source/debug/API34/visual/history acceptance. No publication, tester distribution or physical-phone claim."
 }
