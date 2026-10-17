@@ -1,0 +1,22 @@
+{
+  "archive": "continuous-starflower-provenance.tar.xz",
+  "size": 1450504,
+  "sha256": "f18ed1a6884a3bcd5060d67013268d4ee1c1d739893a108a2d5e738cd482afa4",
+  "parts": [
+    {
+      "name": "continuous-starflower-provenance.tar.xz.part-01",
+      "size": 524288,
+      "sha256": "b8a12d043060f003da1a5fa6c916e32796116b7e9220f6a7f2be5c9ed26c152c"
+    },
+    {
+      "name": "continuous-starflower-provenance.tar.xz.part-02",
+      "size": 524288,
+      "sha256": "3fb1e9470e81f7116a8996d5f3649ddbec3f1ba39efdd02996351ca314aa7865"
+    },
+    {
+      "name": "continuous-starflower-provenance.tar.xz.part-03",
+      "size": 401928,
+      "sha256": "40d668b450d7cdb5c214f6a8fc6e2be15c3dc632a6e1182942a89a236d421e82"
+    }
+  ]
+}

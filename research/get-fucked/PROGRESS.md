@@ -1116,3 +1116,25 @@ The fresh run completed alive at7166, HP/HT1, barrier17, hunger405, level13XP0. 
 A separate fresh level1 replay reproduced all16 native JSON fields (global missile-ID mapping only) and ACTIVE RNG at7094. Immediate exit retained shielding; at7102 all passable adjacent tiles were targeted by rocks while the selected safe tile was solid. The owned Blast wand aimed1199 pushed the hero from1166 to1100 without collision damage, evading rocks; G1133 then let the boss cross wire1066. A missed melee attack cost9 barrier, and a thrown Boomerang missed. Retreating to1230 elicited gas. Moves1229/1228/1227 were safe, but my subsequent wait was not: ToxicGas dealt4 at7113 and7114, exhausting barrier7 and killing HP1 at7114. That exact action sequence fails. A continued-moving branch is being replayed from the actual level1 origin; no native save restore is used.
 
 Evidence archive: continuous-7166-parts.json. No full DM300, Amulet or ascension has been demonstrated. Research remains unresolved.
+
+
+# Continuous seed266 early fruit and real Starflower acquisition
+
+Original rules only, real level1 Cleric prefix, original generator/AI/actions and item ownership. No native restores. No Amulet or ascension proof.
+
+## Validated consecutive section
+At5554, hero13/1131 HP/HT1, level11XP9. Actual three moves1095/1059/1059 harvestedBlandfruit5557. Returned1095/1131 andateownedPasty; learnedfirstSunraypoint (NOT second). Walked1126withoutwastingWardbeforecamp, actual80tickcamp, castWard/Bless, approachedhidden620door. Usedactual3HGcharges for search+movementfreeze; this may be an avoidable resource cost but was not undone.
+PurpleShaman507 was defeated at5670 bytwoSunrays6+7 and actualStaffattacks3,16, misses,17, earning8XP; no wand or missile charges spent. At5676 physically picked the existing Sorrowmoss seed heap729. At5685 actualownedRemoveCurse scroll removedBoomerang curse and actualGold475collected.
+Entered14 at5692 and camped90ticks in two45tickchunks. ActualBrute5311147 was hit byBoom11, rooted from1244, Light6, twoBoom12+10, Blast2, then retreat while returningBoomstruckitsRage shield. Brute died by5801, XP25. ThreeBooms physically retrieved from1244/1196, and naturally generatedStarflower seed1196 andEarthroot seed1148 picked by5819. OriginalPotion.SeedToPotion explicitly mapsStarflower toPotionOfExperience; Blandfruit.CookFruit costs2energy and appliesmappedPotion onEAT. No fruit cooking or experience gain fromit yet demonstrated.
+At5819 HP/HT1, hunger264, level11XP25, rawfruit1, Sorrowseed1, Starflowerseed1, Earthrootseed1, Mail3, Staff2, Greatsword0unmastered, Tome1+.78798, HG1+.1008, Blast1+.5556, Root1+.6444,3Booms(1full100, 2stackworn19.996), Healing1,3GooBlobs, energy1,gold502. All subsequent resource changes continuous.
+
+## Exact failed branches
+Early-fruit: H68at959, northernapproachB/W, HGfreeze629->443fourmoves. Paid397/351elicitedWeb305andSpinner399, Red400. Blast399legallypushedHero351->255withoutcollision, Spider495, Red402collisionstun. Returning303 and Root449concealedSpider. Moves351/352exposednewRed401shootingangle,11damage. B15absorbed9. Root401blockedcurrentline butdidnotprotect306. G306took8into6barrier andkilledHeroat5905. This is NOT universalimpossibility; it identifies a mistaken cover assumption.
+Web-escape: independentfreshreplaythrough5905 matchesALL15 native JSONfiles up toglobalmissile-IDbijection andACTIVE gameplayRNG(stack2, inactivebaseignored). OwnedGooBlobthrow305 HARDpressedandclearedWeb (nativeblobabsent5906). Move305tookzeroHPdamage. SunrayRed401dealt7/blinded4; adjacentSpinnerhit13blockedbyDR16butPoisonstillapplied3, leavingbarrier2at5908. Thus poison canproc evenwhenphysicaldamageiszero. DrinkingownedHealing curedPoison first, but adjacentSpinner immediatelyattackedagain(18raw/10DR/final5), killingHero5908. DoNOTassumeFleeingprotectsheroaftercuringpoison. Nofood/starvationdeathinthisbranch.
+Moving-exit earlierDMbranch endedalive7140HP1/body4,Tome0+.475,HG1,Root1,Blast1,boss200onepylondown. Invalidcomma-END was parsedEatND andfailedharnessbeforetimeadvance; notgameplaydeath. ENDmustbewholeline. Preserveerrorlog; donotcallJUnitpass.
+
+## Source corrections
+Spinner damage10..20, attack22, meleePoison50%independentofdamage,7..8duration. WebdoesnotdealrangedHPdamage; hardpressclearsit andoccupyingitroots. RedShaman RootsdoesNOTpreventmagic. Grass cover mustbecheckedforactualfiringangleaftereachmove. TransfusionselfdamageMath.round(HT*.05)=0atHT1,butselfzapdisallowed. QuestrewardTransfusion3 OR Corrosion1 existsinseed266,questnotcompletedandneitherowned; no effectcredited.
+
+## Active experiment
+Later-freeze fresh origin replays identical successfulStarfloweracquisition through5896, then moves582/535 BEFORE activatingHG. Aim is spendthe4frozenmovementactionsclosertothreats andevaluateBlastcrowdcontrolbeforeWebtrapsescape. Actor positions, fooddeadline andweaponsmustbeobserved; cannotassumeitworks. No fullDM300/Amulet/ascension proof.
