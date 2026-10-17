@@ -1,46 +1,45 @@
 {
   "date": "2026-10-17",
-  "previous_source": "e3b5cef026f8a9d6827d0eebb5528069c646b00d",
-  "previous_run": 38980948671,
-  "previous_label": "Codex TEST 263",
+  "previous_source": "9a712453443573f2027150cb204cb6be304da57c",
+  "previous_run": 39000124500,
+  "previous_label": "Codex TEST 264",
   "changes": [
     {
       "category": "Bug Fixes",
       "sprite": "ICON_PREFS",
-      "title": "Show imported aggregate provenance",
-      "text": "Mark grouped statistics that include imported ranking data, preserve stronger lower-bound and inferred warnings, and retain exact rate and ratio count metadata.",
+      "title": "Keep hidden questions consistent",
+      "text": "When Hidden details is turned off, remove internal measures, split fields and conditions before redrawing or answering so the displayed question and executed query remain identical.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/AggValue.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/CellFormatter.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/AggValueContractTest.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/Questions.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndUimsdAsk.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/QuestionsTest.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Retain post-TEST263 acceptance",
-      "text": "Preserve staged TEST263 receipts, complete APD Settings touch acceptance, cache-concurrency and dataset-schema contracts, and their exact core-only evidence.",
+      "title": "Retain post-TEST264 acceptance",
+      "text": "Preserve verified and staged TEST264 receipts plus the accepted UIMSD self-test, Home scope, query-formatting and query-serialization checkpoints with their exact core-only evidence.",
       "paths": [
         ".github/workflows/codex-alpha-preview-stage.yml",
-        ".github/workflows/codex-apd-settings-touch-acceptance.yml",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/ApdSettingsClickDeviceTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/CacheConcurrencyTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/DatasetSchemaContractTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/QueryEngineTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdHomePresentationTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdSelfTestTest.java",
         "docs/APD-ALPHA-PREPARATION.json",
+        "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/APD-CODEX-CORE-TEST-REQUEST.txt",
-        "docs/APD-GRUDGE-TOUCH-2026-10-16.md",
-        "docs/APD-SETTINGS-TOUCH-ACCEPTANCE-2026-10-17.md",
-        "docs/APD-TEST263-VERIFICATION-2026-10-16.json",
-        "docs/APD-UIMSD-CACHE-CONTENTION-ACCEPTANCE-2026-10-17.md",
-        "docs/APD-UIMSD-DATASET-SCHEMA-ACCEPTANCE-2026-10-17.md",
+        "docs/APD-TEST264-AGGREGATE-PROVENANCE-2026-10-17.md",
+        "docs/APD-TEST264-VERIFICATION-2026-10-17.json",
+        "docs/APD-UIMSD-HOME-SCOPE-ACCEPTANCE-2026-10-17.md",
+        "docs/APD-UIMSD-QUERY-CODEC-ACCEPTANCE-2026-10-17.md",
         "docs/APD-UIMSD-REVIEW-CONTINUATION-2026-10-17.json",
+        "docs/APD-UIMSD-SELFTEST-PRIVACY-ACCEPTANCE-2026-10-17.md",
         "docs/HANDOFF.md",
         "docs/UIMSD-AUDIT-BUG-LOG.md",
         "docs/WORK-COMPLETED-LEDGER.md",
-        "docs/APD-NEXT-BUILD-HISTORY.json",
-        "docs/APD-CODEX-BUILD-REQUEST.txt"
+        "docs/APD-NEXT-BUILD-HISTORY.json"
       ]
     }
   ],
-  "commentary": "TEST264 is an application and full-gate candidate only until complete actual evidence; staged TEST263 and published TEST262 remain fallbacks."
+  "commentary": "TEST265 is pending its complete gate; verified staged TEST264 and published TEST262 remain fallbacks. No automatic publication, tester distribution or physical-phone claim."
 }
