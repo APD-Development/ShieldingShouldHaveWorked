@@ -1,9 +1,9 @@
 {
-  "source": "d9238c2cb1e8a9345deee4c3b39b2963318066d5",
-  "recorded_at": "2026-10-17T04:18:24Z",
+  "source": "01a32c305da5f97747c5d73c32762e80dd27f8c6",
+  "recorded_at": "2026-10-17T04:46:02Z",
   "complete": false,
   "prior_checkpoint_preserved": "docs/APD-UIMSD-REVIEW-CHECKPOINT-2026-10-13.json",
-  "count_note": "Current-blob reconciliation found 96 exact machine-recorded entries before this continuation. Datasets.java, AggValue.java and UimsdSelfTest.java add three reviewed current production blobs, for 99 exact reviewed paths; prose-only completed reviews remain separate until reconciled.",
+  "count_note": "Current-blob reconciliation found 96 exact machine-recorded entries before this continuation. Datasets.java, AggValue.java, UimsdSelfTest.java and UimsdHome.java add four reviewed current production blobs, for 100 exact reviewed paths; prose-only completed reviews remain separate until reconciled.",
   "entries": [
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/Datasets.java",
@@ -48,6 +48,20 @@
         "methods": 3,
         "new_method": "finishedInternalIdentityIsVisibleWhileOpenIdentityStaysHidden"
       }
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdHome.java",
+      "sha": "71fd5b3b626ccc7cf388445c34ad7d57677a86b7",
+      "lines": 446,
+      "reviewed": true,
+      "basis": "Complete current-source review of Home card construction, rules scope, finished-run filtering, records, recent runs, characters, gear, enemies and difficulty presentation found no production defect. A retained independent three-run regression closes the missing finished-run scope assertion.",
+      "retained_test": {
+        "path": "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdHomePresentationTest.java",
+        "sha": "ca6e89be4a598bfff816df8fbd85074b6a45a5f0",
+        "source_commit": "914586aa83175b54528b2bbf59a2db71a4663bd7",
+        "methods": 2,
+        "new_method": "homeScopeExcludesUnfinishedRunsAndCountsOtherFinishedRulesExactly"
+      }
     }
   ],
   "supporting_reads": [
@@ -87,13 +101,13 @@
     "methods": 2
   },
   "full_core_evidence": {
-    "request_commit": "d9238c2cb1e8a9345deee4c3b39b2963318066d5",
-    "run_id": 39001854306,
-    "artifact_id": 12089406326,
-    "artifact_bytes": 829331,
-    "artifact_digest": "sha256:8beb240b624e6b48e1578edab42fccbcf3cf28aac855960d5cf1b167dbb3d1d8",
+    "request_commit": "01a32c305da5f97747c5d73c32762e80dd27f8c6",
+    "run_id": 39003588552,
+    "artifact_id": 12089109846,
+    "artifact_bytes": 826513,
+    "artifact_digest": "sha256:98c9e31f6bc7a3ea9810bfc952026548983877dfac6266c26310c53e7cea710b",
     "suites": 350,
-    "tests": 1769,
+    "tests": 1770,
     "failures": 0,
     "errors": 0,
     "skipped": 0
@@ -104,10 +118,10 @@
   "latest_verified_private_candidate": 264,
   "latest_published_owner_build": 262,
   "latest_test_only_evidence": {
-    "source_commit": "5a69400536f44ea04efe35edfb5398aefc0e4917",
-    "request_commit": "d9238c2cb1e8a9345deee4c3b39b2963318066d5",
-    "run_id": 39001854306,
-    "target": "UimsdSelfTest finished/open internal-identity privacy contract",
+    "source_commit": "914586aa83175b54528b2bbf59a2db71a4663bd7",
+    "request_commit": "01a32c305da5f97747c5d73c32762e80dd27f8c6",
+    "run_id": 39003588552,
+    "target": "UimsdHome finished-run and rules-scope contract",
     "application_source_changed": false
   }
 }

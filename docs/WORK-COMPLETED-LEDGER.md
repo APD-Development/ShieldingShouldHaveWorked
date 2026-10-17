@@ -1552,3 +1552,9 @@ Separate inherited-audio diagnostic evidence reconciled: optional fake-endpoint 
 - Artifact `12089406326`, 829,331 bytes, digest/ZIP SHA `sha256:8beb240b624e6b48e1578edab42fccbcf3cf28aac855960d5cf1b167dbb3d1d8`.
 - No application source, executable APK request, APK, history/save/scoring/gameplay/signing/app-ID/publication state changed. TEST264 remains staged; TEST262 remains published. UIMSD exact review is 99 paths and remains incomplete.
 
+## 2026-10-17T04:46:02Z — UIMSD Home finished-run scope contract verified
+- Reviewed current `UimsdHome.java` (`71fd5b3b626ccc7cf388445c34ad7d57677a86b7`) and its Catalog/DatasetStore/QueryEngine presentation paths; no production defect confirmed.
+- Test-only source `914586aa83175b54528b2bbf59a2db71a4663bd7` adds `homeScopeExcludesUnfinishedRunsAndCountsOtherFinishedRulesExactly`: current/all-rules counts, other-rules disclosure, exact visible finished total and unfinished-class exclusion.
+- Core-only run `39003588552` / request `01a32c305da5f97747c5d73c32762e80dd27f8c6` passed 1,770 tests in 350 suites, 0 failures/errors/skips. New method passed in 0.008 seconds.
+- Artifact `12089109846`, 826,513 bytes, digest/ZIP SHA `sha256:98c9e31f6bc7a3ea9810bfc952026548983877dfac6266c26310c53e7cea710b`.
+- No application source, executable APK request, APK, history/save/scoring/gameplay/signing/app-ID/publication state changed. TEST264 remains staged; TEST262 remains published. UIMSD exact review is 100 paths and remains incomplete.

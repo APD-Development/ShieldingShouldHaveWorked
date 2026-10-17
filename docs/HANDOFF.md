@@ -1,3 +1,10 @@
+## UIMSD Home finished-run scope contract accepted — 2026-10-17T04:46:02Z
+Complete current-source review of `UimsdHome.java` and its Catalog/DatasetStore/QueryEngine presentation paths found no production defect. Test-only source `914586aa83175b54528b2bbf59a2db71a4663bd7` adds the missing independent Home scope contract: a finished current-rules run is counted, a finished other-rules run is reported separately in current-rules mode and included in all-rules mode, while an unfinished current-rules run and its class stay absent from all Home text.
+
+Core-only run `39003588552` at request head `01a32c305da5f97747c5d73c32762e80dd27f8c6` passed 1,770 tests in 350 suites with zero failures, errors or skips. `UimsdHomePresentationTest` passed both methods; the new scope method took 0.008 seconds. Artifact `12089109846`, 826,513 bytes, digest/independent ZIP SHA `sha256:98c9e31f6bc7a3ea9810bfc952026548983877dfac6266c26310c53e7cea710b`. No production application source, APK request, APK, raw history, saves, scoring, gameplay, signing or app ID changed. TEST264 remains verified/staged; TEST262 remains the latest published owner APK. No phone/publication/distribution claim.
+
+Exact machine reconciliation now records 100 reviewed current production paths; the broader UIMSD audit remains incomplete. Continue the first genuinely unreviewed changed component and its integration callers. See `docs/APD-UIMSD-HOME-SCOPE-ACCEPTANCE-2026-10-17.md`.
+
 ## UIMSD self-test privacy contract accepted — 2026-10-17T04:18:24Z
 Complete current-source review of `UimsdSelfTest.java` and its DatasetStore/QueryEngine/CellFormatter/RunLogWriter interactions found no production defect. Test-only commit `5a69400536f44ea04efe35edfb5398aefc0e4917` adds the missing independent two-run contract: an internal item identity is exact for a finished run and hidden for an unfinished run even with internal details requested. This closes the prior one-sided retained assertion gap without changing the device self-test's isolated data, cleanup or failure behavior.
 
