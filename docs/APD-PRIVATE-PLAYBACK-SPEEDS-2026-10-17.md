@@ -1,3 +1,6 @@
+## TEST271 corrected private speed Android test requested — 2026-10-17
+Previous [TEST270 full verification run 39062224139](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/39062224139) failed honestly: `verify-and-build` produced a compiled private APK after passing complete 1779 core and previous TEST269 history, but `android-smoke-check` failed at `ApdSettingsClickDeviceTest.java:269` with duplicate local `choices`; the supplemental display matrix also failed instrument-test compilation. The APK was **not** accepted, staged or distributed. Corrected only the native fixture's inner local name to `speedChoices`. Application gameplay and extreme visual speed code stay byte-identical to compiled TEST270. Intentional complete corrected TEST271 gate requested using immediately previous compiled TEST270 source/run, 1779 core, 38 native API34, 57 PNGs, debug and strict history. All original failed jobs/evidence are retained; status **PENDING**. Prior staged TEST268/public owner TEST262 remain fallbacks. See `docs/APD-PRIVATE-PLAYBACK-SPEEDS-2026-10-17.md`.
+
 # Developer-build-only extreme visual playback speeds
 Date: 2026-10-17
 Candidate: pending core-only CI and full candidate acceptance

@@ -266,11 +266,11 @@ public class ApdSettingsClickDeviceTest {
                         final int selected=mode;
                         tapUntil("open private speed list",scroll,speedButton,
                                 () -> find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.class)!=null,30000);
-                        com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList choices =
+                        com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList speedChoices =
                                 find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.class);
-                        assertEquals("only private builds can show ten speeds",10,communityEntries(choices).size());
-                        assertEquals("1000x",communityEntries(choices).get(9).label);
-                        tapCommunityEntry(choices,mode);
+                        assertEquals("only private builds can show ten speeds",10,communityEntries(speedChoices).size());
+                        assertEquals("1000x",communityEntries(speedChoices).get(9).label);
+                        tapCommunityEntry(speedChoices,mode);
                         waitUntil("private speed persists",()->SPDSettings.playbackSpeed()==selected,10000);
                     }
                 } else {

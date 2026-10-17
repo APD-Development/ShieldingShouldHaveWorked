@@ -1,30 +1,17 @@
 {
   "date": "2026-10-17",
-  "previous_source": "7917a88234be99bbb18bf74618678bf8f851cf86",
-  "previous_run": 39053518382,
-  "previous_label": "Codex TEST 269",
+  "previous_source": "acec6e41cb1a9519aef4fb43b44091720254495c",
+  "previous_run": 39062224139,
+  "previous_label": "Codex TEST 270",
   "changes": [
-    {
-      "category": "Quality of Life",
-      "sprite": "ICON_PREFS",
-      "title": "Add private experimental visual speeds",
-      "text": "Add test-build-only 4x, 8x, 16x, 32x, 64x, 100x and 1000x visual playback with a scrollable picker. Preserve the normal 0.5x, 1x and 2x options in public builds, ignore private-only saved values outside test builds, and keep actor turns, HUD timing, RNG and global clock unchanged.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/SPDSettings.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/PlaybackGroup.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/APDSettingsPane.java"
-      ]
-    },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Verify extreme-speed isolation and existing history",
-      "text": "Retain all full core public/private speed, persistence and clock regressions, extended existing Android real-touch speed-picker acceptance, core-only proof, and reviewed source and history records since the previous compiled APK.",
+      "title": "Correct private speed-picker device test and retain failed evidence",
+      "text": "Fix a duplicate local variable in Android touch acceptance for the private ten-speed picker; game and developer-only playback implementation remain identical to the previously compiled APK. Retain the initial failed Android instrumentation compiler evidence, full core pass, and strict previous APK history.",
       "paths": [
         "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/ApdSettingsClickDeviceTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/PlaybackSpeedTest.java",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/APD-CODEX-CORE-TEST-REQUEST.txt",
         "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/APD-PRIVATE-PLAYBACK-SPEEDS-2026-10-17.md",
         "docs/HANDOFF.md",
@@ -32,5 +19,5 @@
       ]
     }
   ],
-  "commentary": "Complete core-only run 39061905957 succeeded after 3 new PlaybackSpeedTest methods. Require full candidate: 1779 core, 38 API-34, debug APK, complete compiled TEST269 history and 57 reviewed screenshots. No release or tester distribution without separate approval."
+  "commentary": "TEST270 producer job compiled an APK and passed 1779 core methods, history and debug compilation, but required Android instrumentation failed to compile due a duplicate local name in the new test. TEST271 corrects the test only and requests full Android acceptance and all 57 screenshots; no publication or distribution."
 }
