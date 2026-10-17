@@ -1539,3 +1539,10 @@ Private publication38980234369/sourcef8650a356fda9201ca66b780cbd7d4272cd56f02 co
 
 Separate inherited-audio diagnostic evidence reconciled: optional fake-endpoint Android method passed on unchanged259, proving only deliberately blocked worker queue behavior; no audible reproduction or production audio correction. Keep reported RedMagic/Prison/Tengu issue open and not region-exclusive. See audio investigation document.
 
+## 2026-10-17T04:10:11Z — TEST264 aggregate provenance verified and privately staged
+- Confirmed and corrected a bounded UIMSD display-provenance defect: imported-ranking aggregate flags were computed but ignored by `CellFormatter`. Legacy-only aggregates now use the existing legacy state; mixed provenance retains lower-bound/inferred priority and explicitly notes imported ranking data. Numeric aggregation, raw history and query math are unchanged.
+- Application `4d4048f80ab150aca3bc1ce690de48b5532922a0`; full source `9a712453443573f2027150cb204cb6be304da57c`; run `39000124500`: 1,768 core/350 suites and 38 API-34/14 suites, zero failures/errors/skips, debug and strict TEST263 history passed. Reviewed 57 required 320×640 captures plus 25 captures across five supplemental display profiles.
+- APK artifact `12087924665`; file 38,591,975 bytes; raw SHA-256 `e6b65a4a7d48f7a8e9b9d181fff7745f6211b7659012ff29e9c0c0980dc496bb`.
+- Independent stage `39001343302` / wrapper `8b1878235df7b538da5c9c970bbc6350dae1e641` reused the exact APK. Preview artifact `12089525962` digest `sha256:035c6802b21f696caa01adebf16233b5bd50f8d7656217046cbec942149c0337`; evidence `12089540854` digest `sha256:7890babf3307da28a2eae17a124e33ead61a1c74654fd8c02adf8051c8dd922a`. Signer/app ID/version/install-over line match TEST262. Automatic stale-profile stage `39000124638` remains failed with no artifact.
+- TEST264 is staged, not published or distributed; TEST262 remains the latest published owner APK. No phone/save install-over claim. UIMSD exact-review reconciliation is 98 paths and remains incomplete.
+

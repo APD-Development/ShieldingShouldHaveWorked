@@ -1,9 +1,9 @@
 {
-  "source": "5eb573d98fb154b13e6f7d35a4cd95aac740882d",
-  "recorded_at": "2026-10-17T02:41:24Z",
+  "source": "9a712453443573f2027150cb204cb6be304da57c",
+  "recorded_at": "2026-10-17T04:10:11Z",
   "complete": false,
   "prior_checkpoint_preserved": "docs/APD-UIMSD-REVIEW-CHECKPOINT-2026-10-13.json",
-  "count_note": "Current-blob reconciliation found 96 exact machine-recorded entries before this work. This continuation adds one reviewed current production blob; prose-only completed reviews remain separate until reconciled.",
+  "count_note": "Current-blob reconciliation found 96 exact machine-recorded entries before this continuation. Datasets.java and AggValue.java add two reviewed current production blobs, for 98 exact reviewed paths; prose-only completed reviews remain separate until reconciled.",
   "entries": [
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/Datasets.java",
@@ -11,6 +11,29 @@
       "lines": 524,
       "reviewed": true,
       "basis": "Complete current-source read of the four core schemas, statistics sheets and 13 shipped views plus catalog, navigation and row-window consumers. No production defect confirmed. A missing cross-schema referential-integrity invariant is now a retained test."
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/AggValue.java",
+      "sha": "634b956a2ec3d20f8c21c21afe146c42acb53dfa",
+      "lines": 74,
+      "reviewed": true,
+      "basis": "Complete current-source review with QueryEngine and CellFormatter consumers confirmed a display-provenance defect: aggregate legacy/imported flags were computed but ignored by formatting. The bounded correction preserves numeric aggregation and warning precedence while exposing imported-ranking provenance.",
+      "supporting_reads": [
+        {
+          "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/QueryEngine.java",
+          "sha": "9c072008cf5364f8be285feb66ff1aee710c3881"
+        },
+        {
+          "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/CellFormatter.java",
+          "sha": "a9d19d87168490baae2e9df28c75d5afbfe1d6b5"
+        }
+      ],
+      "retained_test": {
+        "path": "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/AggValueContractTest.java",
+        "sha": "8d1a9658993ccea6e85adee588f92c3513d142ad",
+        "source_commit": "4d4048f80ab150aca3bc1ce690de48b5532922a0",
+        "methods": 3
+      }
     }
   ],
   "supporting_reads": [
@@ -50,18 +73,20 @@
     "methods": 2
   },
   "full_core_evidence": {
-    "request_commit": "5eb573d98fb154b13e6f7d35a4cd95aac740882d",
-    "run_id": 38995668774,
-    "artifact_id": 12086749353,
-    "artifact_bytes": 827712,
-    "artifact_digest": "sha256:df6772b7fa738cb5c7bada7f799ce360ac2aee661ab179bc392387c701049ea8",
-    "suites": 349,
-    "tests": 1765,
+    "request_commit": "9a712453443573f2027150cb204cb6be304da57c",
+    "run_id": 39000124500,
+    "artifact_id": 12089275432,
+    "artifact_bytes": 828898,
+    "artifact_digest": "sha256:99d61d3b569cf20154501fad80dde799e56df02613e222f9a140b442d76ffc38",
+    "suites": 350,
+    "tests": 1768,
     "failures": 0,
     "errors": 0,
     "skipped": 0
   },
-  "confirmed_new_production_defects": 0,
-  "application_changes": false,
-  "new_apk_needed": false
+  "confirmed_new_production_defects": 1,
+  "application_changes": true,
+  "new_apk_needed": false,
+  "latest_verified_private_candidate": 264,
+  "latest_published_owner_build": 262
 }
