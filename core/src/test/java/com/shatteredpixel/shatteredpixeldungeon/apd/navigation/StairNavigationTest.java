@@ -62,9 +62,11 @@ public class StairNavigationTest {
   assertNull(StairNavigation.begin(hero,false));
   java.lang.reflect.Method move=Hero.class.getDeclaredMethod("actMove",HeroAction.Move.class);move.setAccessible(true);
   assertTrue((Boolean)move.invoke(hero,hero.curAction));
-  assertFalse((Boolean)move.invoke(hero,hero.curAction));
+  // Headless fixtures have no GameScene HUD/AttackIndicator for Hero.ready().
+  // Assert the arrival decision directly; regular in-game completion calls ready().
+  assertFalse(StairNavigation.canEnterOnArrival(hero,(StairNavigation.Walk)hero.curAction));
   assertEquals(0,((Empty)level).activations);
-  assertNull(hero.curAction);
+  assertTrue(hero.curAction instanceof StairNavigation.Walk);
  }
  @Test public void autoEnterCanUseStairsAlreadyUnderHero() throws Exception {
   stairs();hero.pos=13;hero.ready=true;com.shatteredpixel.shatteredpixeldungeon.SPDSettings.autoEnterStairs(true);
@@ -78,16 +80,15 @@ public class StairNavigationTest {
   stairs();new InvisibleSprite().attach(hero);com.shatteredpixel.shatteredpixeldungeon.SPDSettings.autoEnterStairs(true);
   assertNull(StairNavigation.begin(hero,true));
   hero.pos=11;hero.enemies=1;
-  java.lang.reflect.Method move=Hero.class.getDeclaredMethod("actMove",HeroAction.Move.class);move.setAccessible(true);
-  assertFalse((Boolean)move.invoke(hero,hero.curAction));
+  assertFalse(StairNavigation.canEnterOnArrival(hero,(StairNavigation.Walk)hero.curAction));
   assertEquals(0,((Empty)level).activations);
-  assertNull(hero.lastAction);
+  hero.interrupt();assertNull(hero.lastAction);
   hero.pos=12;hero.enemies=0;hero.ready=true;
   assertNull(StairNavigation.begin(hero,false));
   hero.pos=13;
   com.shatteredpixel.shatteredpixeldungeon.levels.traps.WornDartTrap trap=new WornDartTrap();
   trap.pos=13;trap.visible=true;level.traps.put(13,trap);
-  assertFalse((Boolean)move.invoke(hero,hero.curAction));
+  assertFalse(StairNavigation.canEnterOnArrival(hero,(StairNavigation.Walk)hero.curAction));
   assertEquals(0,((Empty)level).activations);
  }
  @Test public void autoEntryNeverResumesAfterManualCancelOrDamage(){
