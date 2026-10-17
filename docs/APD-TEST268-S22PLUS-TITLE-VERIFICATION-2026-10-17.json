@@ -1,6 +1,6 @@
 {
   "build": 268,
-  "status": "full_ci_and_same_apk_display_verified_pending_independent_private_staging",
+  "status": "verified_and_independently_staged_private_candidate",
   "time_utc": "2026-10-17T16:44:00Z",
   "source_head": "abbd936515873384a6d299f037ec925cc5185f51",
   "production_candidate": "df80dd5792ed2e31795f6a7b273efc67024def32",
@@ -79,6 +79,31 @@
   "owner_save_install_over_test": false,
   "tester_distribution": false,
   "public_release": false,
-  "private_staging": "pending",
+  "private_staging": {
+    "run": 39050915606,
+    "conclusion": "success",
+    "completed_at": "2026-10-17T16:47:58Z",
+    "source_commit": "abbd936515873384a6d299f037ec925cc5185f51",
+    "staging_wrapper_commit": "b92e0fcca6afa3de69817248c2f673160ebcbf45",
+    "staged_preview": {
+      "id": 12107901330,
+      "bytes": 44498167,
+      "zip_sha256": "f89a4f4fbeee3f0edcadd837bfd9576c6f53c97d8d1a9cd5dfa88de3f4ef78a3"
+    },
+    "staged_evidence": {
+      "id": 12107936058,
+      "bytes": 8394072,
+      "zip_sha256": "0e5e26f3fa3444450c2998d4971961ac728ce82073f8f6f01f7397a1ee207ec5"
+    },
+    "raw_apk_rebuilt": false,
+    "original_apk_sha256": "589c6a0b5c2d411698efca6ac353050fbf6506e28b9e94e9ec48e8cd6ea2b1f0",
+    "signing_certificate_sha256": "067688b3ab6bd5820a67f4c1ba7d5859db578173771cf31d3252b3e4e012246e",
+    "app_id": "com.charltonchris29.adhdpixeldungeon.indev",
+    "version_name": "4.0.8-apd-INDEV-bC268-TEST",
+    "install_over_version_code_compatible_with_published_test262": true,
+    "physical_install_over_tested": false,
+    "private_distribution": false,
+    "public_release": false
+  },
   "signed_identity_previously_confirmed": false
 }
