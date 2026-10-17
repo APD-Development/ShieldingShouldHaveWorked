@@ -1,9 +1,9 @@
-APD CORE-ONLY TEST REQUEST — UIMSD dataset schema contracts
+APD CORE-ONLY TEST REQUEST — imported aggregate provenance contract
 branch=codex/apd-phone-fixes-2026-10-09
-test_source=49c58cf175e6742f5499d9e1b243847eac4aad27
-scope=run the complete :core:test suite, including DatasetSchemaContractTest
-acceptance=all core, event and fact dataset ids are unique; every shipped view and navigation link resolves to its current dataset and columns; aggregate-first instance queries remain on their source dataset; the permanent run schema contains every one of the 18 frozen custom settings as numeric data
-production_application_source=unchanged
+source=4d4048f80ab150aca3bc1ce690de48b5532922a0
+scope=run the complete :core:test suite, including AggValueContractTest
+acceptance=imported-only aggregates expose legacy provenance; combined lower-bound, inferred and imported aggregate flags preserve warning precedence and an explicit imported-data note; RATE and RATIO retain exact hit, denominator, contributing and total metadata; a zero-denominator ratio remains unknown without phantom contributions
+production_application_source=changed (AggValue and CellFormatter only)
 apk_build=none
 executable_apk_build_request=unchanged
 publication=none
