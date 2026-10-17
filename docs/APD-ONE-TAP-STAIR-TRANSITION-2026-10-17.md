@@ -9,3 +9,5 @@ Requested 2026-10-17: when the player chooses **Stairs Up** or **Stairs Down** f
 - Regression tests cover preference persistence/default, existing shortcut, single activation after regular paid movement, already-on-stair activation, safe stops and manual/damage cancellations. No gameplay balancing/scoring/RNG or save format changes.
 
 Status: source implementation committed for core-only verification. Android/emulator and physical phone are not verified yet. No public release or invite/promotion.
+
+The original two-argument Walk(int,Level) API is preserved as a walk-only overload after first core verification caught its use in existing HeroActionMoveTelemetryTest. TEST273 history is pinned to successful TEST272 run 39066730441. Core rerun 39068161212 pending. No APK compiled for this feature yet.

@@ -1,28 +1,33 @@
 {
   "date": "2026-10-17",
-  "previous_source": "8d5493cb846695d623e247d1a9646038c5d6ed12",
-  "previous_run": 39062957072,
-  "previous_label": "Codex TEST 271",
+  "previous_source": "029cd7377530cc436a5426ebc1fb0d2e18434003",
+  "previous_run": 39066730441,
+  "previous_label": "Codex TEST 272",
   "changes": [
     {
-      "category": "Bug Fixes",
-      "sprite": "ICON_CHECKED",
-      "title": "Stabilize the hero's idle animation at extreme playback speeds",
-      "text": "At experimental developer speeds above 2x, keep the hero's idle frames at a readable rhythm instead of rapidly flickering. Movement, attacks and other visual effects retain the chosen playback speed. Combat turns and input timing stay unchanged.",
+      "category": "Quality of Life",
+      "sprite": "ICON_STAIRS",
+      "title": "Take discovered stairs with one shortcut",
+      "text": "Choose Stairs Up or Stairs Down to walk there and automatically use the stairs when the optional Auto-enter Stairs on Arrival setting is enabled. The hero still pays normal walking turns and stops for enemies, danger, damage and interruptions.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/PlaybackGroup.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/sprites/HeroSprite.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/SPDSettings.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/navigation/StairNavigation.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/Hero.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/StairNavigationTag.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/APDSettingsPane.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Verify developer speed isolation and preserve private build history",
-      "text": "Exercise all ten private speed choices and assert that hero idle animation remains stable while actor and input clocks keep their original timing. Record the owner-reported visual issue and carry forward the preceding complete build history.",
+      "title": "Keep stair entry optional and preserve existing movement behavior",
+      "text": "The new setting starts off and saves independently from the staircase shortcut. Tests cover entering or staying on stairs, blocked routes, interrupted travel, the previous movement API and touchscreen controls. Ordinary tile taps and other movement do not automatically change floors.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/PlaybackSpeedTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/navigation/StairShortcutSettingsTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/navigation/StairNavigationTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/ApdSettingsClickDeviceTest.java",
+        "docs/APD-ONE-TAP-STAIR-TRANSITION-2026-10-17.md",
         "docs/APD-CODEX-CORE-TEST-REQUEST.txt",
-        "docs/APD-TEST272-1000X-IDLE-SHAKE.md",
         "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/HANDOFF.md",
@@ -30,5 +35,5 @@
       ]
     }
   ],
-  "commentary": "Previous full TEST271 compiled and verified 1779 core, API34 smoke checks and the display matrix. Owner then observed violent idle head flickering at experimental 1000x. This source candidate clamps only hero idle frames to normal delta at private speeds above 2x and adds a regression asserting all ten speeds. Core-only and full APK verification must pass separately. Never infer visual acceptance on a physical phone or publish/distribute an APK automatically."
+  "commentary": "Owner requested an extra APD Settings option for pressing the existing Stairs Up/Down shortcut to complete the floor transition on reaching discovered safe stairs. Preserve previously verified TEST272 playback fix and compile history. First core run 39067969772 failed at inherited 2-argument Walk constructor in telemetry fixture; source overload restored without altering the request. Corrected full core-only run 39068161212 is pending. New full TEST273 APK may be built only on passed corrected source gate, with 38 native checks, history, debug and 57 screenshots; no stage/publish/public claim."
 }
