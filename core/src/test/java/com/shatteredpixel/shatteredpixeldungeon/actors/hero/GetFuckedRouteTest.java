@@ -3598,6 +3598,50 @@ public class GetFuckedRouteTest {
         }
     }
 
+    private void cookOwnedFruitAtActualPot(int actualPot, Class<? extends com.shatteredpixel.shatteredpixeldungeon.plants.Plant.Seed> seedType) throws Exception {
+        assertTrue("Must enter alchemy using the actual station action",pendingAlchemy);
+        assertTrue(Dungeon.level.distance(Dungeon.hero.pos,actualPot)<=1);
+        assertEquals(Terrain.ALCHEMY,Dungeon.level.map[actualPot]);
+        com.shatteredpixel.shatteredpixeldungeon.items.food.Blandfruit fruit=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.food.Blandfruit.class);
+        Item seed=Dungeon.hero.belongings.getItem(seedType);
+        assertNotNull("Raw fruit must have been physically collected",fruit);
+        assertNull("This command only cooks an existing raw fruit",fruit.potionAttrib);
+        assertEquals(1,fruit.quantity());assertNotNull("Seed must have been physically collected",seed);
+        int seedCountBefore=seed.quantity();
+        AlchemyScene scene=mock(AlchemyScene.class,CALLS_REAL_METHODS);
+        String[] ui={"energyIcon","energyLeft","energyAdd","repeat","cancel","smokeEmitter","bubbleEmitter","sparkEmitter"};
+        for(String name:ui){Field f=AlchemyScene.class.getDeclaredField(name);f.setAccessible(true);f.set(scene,mock(f.getType(),RETURNS_DEEP_STUBS));}
+        String[] arrays={"inputs","combines","outputs"};Object[][] old=new Object[3][];
+        for(int a=0;a<arrays.length;a++){
+            Field f=AlchemyScene.class.getDeclaredField(arrays[a]);f.setAccessible(true);Object[] array=(Object[])f.get(null);old[a]=array.clone();
+            for(int n=0;n<array.length;n++){
+                Class<?> type=array.getClass().getComponentType();array[n]=mock(type,a==0?CALLS_REAL_METHODS:RETURNS_DEFAULTS);
+                if(a==0){Field slot=type.getDeclaredField("slot");slot.setAccessible(true);slot.set(array[n],mock(com.shatteredpixel.shatteredpixeldungeon.ui.ItemSlot.class));}
+            }
+        }
+        try{
+            ArrayList<Item> selected=new ArrayList<>();
+            for(Item ingredient:new Item[]{fruit,seed}){Item one=ingredient.duplicate();one.quantity(1);selected.add(one);}
+            scene.populate(selected,Dungeon.hero.belongings); //original inventory selection/detachment
+            Method filter=AlchemyScene.class.getDeclaredMethod("filterInput",Class.class);filter.setAccessible(true);
+            ArrayList<Item> inputs=(ArrayList<Item>)filter.invoke(scene,Item.class);
+            ArrayList<Recipe> recipes=Recipe.findRecipes(inputs);int selectedRecipe=-1;
+            for(int n=0;n<recipes.size();n++)if(recipes.get(n) instanceof com.shatteredpixel.shatteredpixeldungeon.items.food.Blandfruit.CookFruit)selectedRecipe=n;
+            assertTrue("Original CookFruit recipe must accept the owned ingredients",selectedRecipe>=0);
+            int energyBefore=Dungeon.energy,cost=recipes.get(selectedRecipe).cost(inputs);assertEquals(2,cost);assertTrue(energyBefore>=cost);
+            Method combine=AlchemyScene.class.getDeclaredMethod("combine",int.class);combine.setAccessible(true);combine.invoke(scene,selectedRecipe);
+            assertEquals(energyBefore-cost,Dungeon.energy);
+            Item remainingSeed=Dungeon.hero.belongings.getItem(seedType);assertEquals(seedCountBefore-1,remainingSeed==null?0:remainingSeed.quantity());
+            com.shatteredpixel.shatteredpixeldungeon.items.food.Blandfruit cooked=Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.food.Blandfruit.class);
+            assertNotNull(cooked);assertEquals(1,cooked.quantity());assertNotNull(cooked.potionAttrib);
+            assertEquals(com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion.SeedToPotion.types.get(seedType),cooked.potionAttrib.getClass());
+            log("ORIGINAL COOKFRUIT USING PHYSICALLY OWNED FRUIT AND SEED AT ACTUAL STATION");
+        }finally{
+            for(int a=0;a<arrays.length;a++){Field f=AlchemyScene.class.getDeclaredField(arrays[a]);f.setAccessible(true);Object[] array=(Object[])f.get(null);System.arraycopy(old[a],0,array,0,array.length);}
+            pendingAlchemy=false;currentTestScene=gameplaySceneStub;
+        }
+    }
+
     private void chooseOwnedSubclassThroughOriginalConfirmation(HeroSubClass way) throws Exception {
         assertNotNull(subclassWindows);
         assertEquals(HeroSubClass.NONE,Dungeon.hero.subClass);
@@ -3638,7 +3682,19 @@ public class GetFuckedRouteTest {
             }
             affected.put(one);
         }
-        detail.put("affected",affected);System.out.println("BLAST_GEOMETRY_READ_ONLY "+detail);
+        detail.put("affected",affected);
+        // Counterfactual geometry only: no actors move, no FOV is changed, and no RNG is consumed.
+        // Actors remain at their actual positions: the current hero can intercept a hypothetical ray.
+        // Only the terrain-only ray can rule out a terrain path; neither ray proves future notice/attack.
+        JSONArray incoming=new JSONArray();
+        for(Mob mob:Dungeon.level.mobs){
+            com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica magic=new com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica(mob.pos,selected,com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica.MAGIC_BOLT);
+            com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica projectile=new com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica(mob.pos,selected,com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica.PROJECTILE);
+            com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica terrainOnly=new com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica(mob.pos,selected,com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica.STOP_SOLID | com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica.STOP_TARGET);
+            incoming.put(new JSONObject().put("id",mob.apdPeekId()).put("type",mob.getClass().getSimpleName()).put("source",mob.pos).put("target",selected).put("adjacent",Dungeon.level.adjacent(mob.pos,selected)).put("magicCollision",magic.collisionPos).put("projectileCollision",projectile.collisionPos).put("terrainOnlyCollision",terrainOnly.collisionPos).put("magicPath",new JSONArray(magic.path)).put("terrainOnlyPath",new JSONArray(terrainOnly.path)));
+        }
+        detail.put("incomingToSelectedReadOnly",incoming);
+        System.out.println("BLAST_GEOMETRY_READ_ONLY "+detail);
     }
 
     //Manual commands and fixed replay only: no route search, action selection or game-state grants.
@@ -3667,6 +3723,7 @@ public class GetFuckedRouteTest {
                 else if(action.startsWith("O"))buyActualShopHeap(Integer.parseInt(action.substring(1)));
                 else if(action.equals("P")){Dungeon.hero.search(true);ready();log("MANUAL ACTUAL PAID SEARCH");}
                 else if(action.startsWith("Y")){int at=action.indexOf('@'),arrow=action.indexOf('>');assertTrue(at>1 && arrow>at);int pot=Integer.parseInt(action.substring(1,at));Class<? extends Item> inputType=Class.forName("com.shatteredpixel.shatteredpixeldungeon.items."+action.substring(at+1,arrow)).asSubclass(Item.class);Class<? extends Item> outputType=Class.forName("com.shatteredpixel.shatteredpixeldungeon.items."+action.substring(arrow+1)).asSubclass(Item.class);craftExoticPotionAtActualPot(pot,inputType,outputType);}
+                else if(action.startsWith("y")){int at=action.indexOf('@');assertTrue(at>1);int pot=Integer.parseInt(action.substring(1,at));Class<? extends com.shatteredpixel.shatteredpixeldungeon.plants.Plant.Seed> seedType=Class.forName("com.shatteredpixel.shatteredpixeldungeon."+action.substring(at+1)).asSubclass(com.shatteredpixel.shatteredpixeldungeon.plants.Plant.Seed.class);cookOwnedFruitAtActualPot(pot,seedType);}
                 else if(action.startsWith("Z")){Talent talent=Talent.valueOf(action.substring(1));int tier=-1;for(int k=0;k<Dungeon.hero.talents.size();k++)if(Dungeon.hero.talents.get(k).containsKey(talent))tier=k;assertTrue(tier>=0);assertTrue(Dungeon.hero.talentPointsAvailable(tier+1)>0);assertTrue(Dungeon.hero.pointsInTalent(talent)<talent.maxPoints());Dungeon.hero.upgradeTalent(talent);log("MANUAL EARNED TALENT "+talent.name());}
                 else if(action.startsWith("w")){
                     int at=action.lastIndexOf("@");assertTrue(at>1);
@@ -3740,3 +3797,4 @@ public class GetFuckedRouteTest {
     }
 
 }
+

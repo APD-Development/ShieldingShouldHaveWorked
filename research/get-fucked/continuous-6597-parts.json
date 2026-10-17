@@ -1,0 +1,27 @@
+{
+  "archive": "continuous-6597-provenance.tar.xz",
+  "size": 1573816,
+  "sha256": "af168967938b7fd510131d03062f8c05f0b444f38c17582bef79327d2ad1fa20",
+  "parts": [
+    {
+      "name": "continuous-6597-provenance.tar.xz.part-01",
+      "size": 524288,
+      "sha256": "b17dd609022460ed314d46803ff6443566fd42283c231ab78e3cd855444d8677"
+    },
+    {
+      "name": "continuous-6597-provenance.tar.xz.part-02",
+      "size": 524288,
+      "sha256": "c5316998f6b87585324ef0394cd7a1766cd1b86cda504b9145c7a16e27b86336"
+    },
+    {
+      "name": "continuous-6597-provenance.tar.xz.part-03",
+      "size": 524288,
+      "sha256": "6bc24650464e1e278053c8165e00fca2d1cca0221322f33363c80c6ef7bfeca4"
+    },
+    {
+      "name": "continuous-6597-provenance.tar.xz.part-04",
+      "size": 952,
+      "sha256": "36271d9071122eba237be3ccc17d696ff8f7928000a6fca3ce07a3555fd91def"
+    }
+  ]
+}
