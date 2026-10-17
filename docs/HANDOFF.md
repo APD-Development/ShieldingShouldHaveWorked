@@ -1,3 +1,10 @@
+## TEST267 independently staged without rebuild — 2026-10-17T08:14:00Z
+Independent staging run `39016526869` at wrapper source `87ce1ac4b10f27a2ca07db0529debd1139e38d0c` succeeded from 2026-10-17T08:13:02Z through 08:13:43Z. It reused exact TEST267 APK SHA-256 `f5fc7189d981709cf46e740d1966814c64b5ed29a7e32bca921739ce4e04009f`; no application rebuild occurred. Staged preview artifact `12094921683` is 44,588,415 bytes with digest `sha256:58a3e9e7e14ec1493038787b68a3674edf3db2b28aa28d5fbfb8367a95c399a6`; evidence artifact `12095106256` is 8,485,020 bytes with digest `sha256:df3021f1e8cd3fae7268e15ed5ac90b8421b0c20056b37784d4f69c29560048b`.
+
+Signatures verified. Application ID `com.charltonchris29.adhdpixeldungeon.indev`, version `4.0.8-apd-INDEV-bC267-TEST`, and certificate SHA-256 `067688b3ab6bd5820a67f4c1ba7d5859db578173771cf31d3252b3e4e012246e` match the TEST262 install line; the version code permits install-over. The private Cleric-lore feature marker and exactly 57 required screenshots were verified. This is CI compatibility evidence, not a physical-phone or owner-save install-over result.
+
+TEST267 is now verified and staged, not published or distributed. TEST266 remains a preserved staged fallback and TEST262 remains the latest actually published owner APK. The executable build request was not changed for this receipt. Continue the next genuinely unreviewed current UIMSD component; separately retain the short-landscape supplemental Hide UI failure.
+
 ## TEST267 legacy-date correction verified; exact private staging requested — 2026-10-17T08:12:00Z
 Complete current-source review of `RowBuilders.java` confirmed a bounded import defect: Java Calendar's lenient normalization accepted impossible legacy dates such as 2025-02-29 and 2024-04-31 and assigned a false `run.startMillis`. Retained regression `legacyDatesRejectImpossibleCalendarDaysButKeepRealLeapDays` first failed alone in core run `39014149854`; application commit `d76178a015b68344adfbeab2edfd701201c752a7` now rejects impossible Gregorian days while preserving real leap days, without rewriting raw history.
 

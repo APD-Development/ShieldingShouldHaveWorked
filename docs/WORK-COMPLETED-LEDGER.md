@@ -1,3 +1,11 @@
+## TEST267 exact same-APK private staging — 2026-10-17T08:14:00Z
+- Run `39016526869` at wrapper `87ce1ac4b10f27a2ca07db0529debd1139e38d0c` succeeded without rebuilding application source.
+- Reused raw APK SHA-256 `f5fc7189d981709cf46e740d1966814c64b5ed29a7e32bca921739ce4e04009f`.
+- Staged preview `12094921683`: 44,588,415 bytes, digest `sha256:58a3e9e7e14ec1493038787b68a3674edf3db2b28aa28d5fbfb8367a95c399a6`.
+- Staged evidence `12095106256`: 8,485,020 bytes, digest `sha256:df3021f1e8cd3fae7268e15ed5ac90b8421b0c20056b37784d4f69c29560048b`.
+- Verified signing certificate, application ID, TEST267 version, install-over version compatibility, Cleric-lore feature marker and all 57 required screenshots against the TEST262 line.
+- No publication, tester distribution, phone test, owner-save install-over, APK rebuild or build-request edit.
+
 ## TEST267 UIMSD legacy-date validation — 2026-10-17T08:12:00Z
 - Reviewed current `RowBuilders.java` completely and found one production defect: impossible Gregorian legacy dates were leniently normalized into false start timestamps.
 - Reproduction: test source `c48ed80c538695356dbda05b8faab51aca6d456c`; run `39014149854` executed 1,774 methods and failed exactly the new regression. Artifact `12093313933`, 832,953 bytes, digest `sha256:ad6ac3f02ff85ecdb0b630004f1ba6b44433c85e264dd60f4e844e2e1c6881c9`.

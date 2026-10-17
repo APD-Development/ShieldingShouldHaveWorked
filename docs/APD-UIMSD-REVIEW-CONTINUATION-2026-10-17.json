@@ -1,6 +1,6 @@
 {
   "source": "c761afc25902954060daf5fffbd87e728b8b1887",
-  "recorded_at": "2026-10-17T08:12:00Z",
+  "recorded_at": "2026-10-17T08:14:00Z",
   "complete": false,
   "prior_checkpoint_preserved": "docs/APD-UIMSD-REVIEW-CHECKPOINT-2026-10-13.json",
   "count_note": "Current-blob reconciliation found 96 exact machine-recorded entries before this continuation. Datasets.java, AggValue.java, UimsdSelfTest.java, UimsdHome.java, QueryCodec.java, Question.java, Questions.java and RowBuilders.java add eight reviewed current production blobs, for 104 exact reviewed paths; prose-only completed reviews remain separate until reconciled.",
@@ -210,8 +210,32 @@
     "required_images_reviewed": 57,
     "apk_sha256": "f5fc7189d981709cf46e740d1966814c64b5ed29a7e32bca921739ce4e04009f",
     "staging": {
-      "status": "requested",
-      "application_rebuilt": false
+      "run": 39016526869,
+      "conclusion": "success",
+      "wrapper_source": "87ce1ac4b10f27a2ca07db0529debd1139e38d0c",
+      "started_at": "2026-10-17T08:13:02Z",
+      "completed_at": "2026-10-17T08:13:43Z",
+      "application_rebuilt": false,
+      "staged_preview": {
+        "artifact_id": 12094921683,
+        "bytes": 44588415,
+        "digest": "sha256:58a3e9e7e14ec1493038787b68a3674edf3db2b28aa28d5fbfb8367a95c399a6"
+      },
+      "staged_evidence": {
+        "artifact_id": 12095106256,
+        "bytes": 8485020,
+        "digest": "sha256:df3021f1e8cd3fae7268e15ed5ac90b8421b0c20056b37784d4f69c29560048b"
+      },
+      "apk_sha256": "f5fc7189d981709cf46e740d1966814c64b5ed29a7e32bca921739ce4e04009f",
+      "application_id": "com.charltonchris29.adhdpixeldungeon.indev",
+      "version_name": "4.0.8-apd-INDEV-bC267-TEST",
+      "signing_certificate_sha256": "067688b3ab6bd5820a67f4c1ba7d5859db578173771cf31d3252b3e4e012246e",
+      "signing_matches_latest_published_owner_build": true,
+      "install_over_version_compatible": true,
+      "cleric_lore_feature_marker_verified": true,
+      "required_screenshots_verified": 57,
+      "physical_phone_tested": false,
+      "owner_save_install_over_tested": false
     }
   }
 }
