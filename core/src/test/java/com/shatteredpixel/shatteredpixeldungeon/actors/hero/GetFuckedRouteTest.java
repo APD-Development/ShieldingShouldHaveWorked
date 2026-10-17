@@ -3646,6 +3646,13 @@ public class GetFuckedRouteTest {
                 else if(action.startsWith("x")){
                     int at=action.lastIndexOf('@');assertTrue(at>1);Class<? extends Item> type=Class.forName("com.shatteredpixel.shatteredpixeldungeon.items."+action.substring(1,at)).asSubclass(Item.class);Item item=Dungeon.hero.belongings.getItem(type);assertNotNull("Only actually owned items may be thrown",item);assertTrue(item.actions(Dungeon.hero).contains("THROW"));int cell=Integer.parseInt(action.substring(at+1));assertTrue(cell>=0 && cell<Dungeon.level.length());selection=null;item.execute(Dungeon.hero,"THROW");assertNotNull(selection);selection.onSelect(cell);ready();log("MANUAL ORIGINAL ITEM THROW "+type.getSimpleName()+" "+cell);
                 }
+                else if(action.startsWith("p")){
+                    int at=action.indexOf('@');assertTrue(at>1);
+                    Class<? extends Item> potionType=Class.forName("com.shatteredpixel.shatteredpixeldungeon.items."+action.substring(1,at)).asSubclass(Item.class);
+                    Class<? extends Item> itemType=Class.forName("com.shatteredpixel.shatteredpixeldungeon.items."+action.substring(at+1)).asSubclass(Item.class);
+                    Item potion=Dungeon.hero.belongings.getItem(potionType),item=Dungeon.hero.belongings.getItem(itemType);assertNotNull(potion);assertNotNull(item);assertTrue(potion instanceof com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion);assertTrue(potion.actions(Dungeon.hero).contains("DRINK"));
+                    itemSelection=null;potion.execute(Dungeon.hero,"DRINK");assertNotNull(itemSelection);assertTrue(itemSelection.itemSelectable(item));itemSelection.onSelect(item);ready();log("MANUAL OWNED INVENTORY POTION "+potionType.getSimpleName()+" ON "+itemType.getSimpleName());
+                }
                 else if(action.startsWith("i")){
                     int at=action.indexOf('@');assertTrue(at>1);
                     Class<? extends Item> scrollType=Class.forName("com.shatteredpixel.shatteredpixeldungeon.items."+action.substring(1,at)).asSubclass(Item.class);
