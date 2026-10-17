@@ -179,6 +179,7 @@ public class WndClericGrudge extends Window {
 		resize( WIDTH, (int)(top + h + MARGIN) );
 		add( pane );
 		pane.setRect( MARGIN, top, w, h );
+		pane.allowDragFromButtons();
 	}
 
 	private static String frequencyLabel(){

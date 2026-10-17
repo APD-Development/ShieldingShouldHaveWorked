@@ -1,10 +1,8 @@
-APD CORE-ONLY TEST REQUEST - RETRY S22+ footer touch with original title-layout golden preserved
+APD CORE-ONLY TEST REQUEST - button and link originating scroll gestures
 branch=codex/apd-phone-fixes-2026-10-09
-source=production touch candidate unchanged; title checksum guard now strips exactly the reviewed touch-only additions, requiring their presence
-previous_core_run=39048921810
-previous_result=1775 tests, 1 failing UimsdWiringTest checksum after an intentional source-only change; all other methods passed
-scope=run complete :core:test suite including TitleGeometryTest and UimsdWiringTest
-expected_core_tests=1775
-acceptance=original title and geometry SHA-256 protections remain identical for all untouched content; new footer hit-area protected by exact source snippets plus geometry regression and pending native S22+-style touch acceptance
-status=PENDING CI; no APK build or distribution
+scope=complete :core:test suite including ScrollClickSuppressionTest; never build APK in core-only gate
+expected_core_tests=1776
+acceptance=swipe marked by ScrollPane releases controls without clicking, ordinary taps continue to work; enable only About, APD Settings, Cleric Grudge
+android_coverage=existing Adult humor native method now swipes from checkbox before checking normal tap; full 38-method gate remains pending
+status=UNVERIFIED SOURCE CANDIDATE, no Android evidence, APK, publication or physical-phone claim
 executable_apk_build_request=UNCHANGED

@@ -54,5 +54,6 @@ public class WndAPDSettings extends Window {
 		resize( WIDTH, (int)height );
 		add( scroll );
 		scroll.setRect( 0, 0, WIDTH, height );
+		scroll.allowDragFromButtons();
 	}
 }

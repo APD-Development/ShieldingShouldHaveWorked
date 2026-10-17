@@ -205,6 +205,26 @@ public class ApdSettingsClickDeviceTest {
 				Thread.sleep(800);
 				ScrollPane scroll = find(window.get(), ScrollPane.class);
 				APDSettingsPane pane = find(window.get(), APDSettingsPane.class);
+                // Finger starts on a real checkbox. Its swipe must move the page
+                // without activating the checkbox; a deliberate tap still activates it.
+                final ScrollPane gesturePane = scroll;
+                final Gizmo gestureButton = (Gizmo) field(pane, "chkAdult");
+                Point start = centreOnScreen(gesturePane, gestureButton);
+                float[] beforeSwipe = new float[1], afterSwipe = new float[1];
+                onRender(() -> beforeSwipe[0] = gesturePane.content().camera.scroll.y);
+                final int gestureId = 37;
+                PointerEvent.addPointerEvent(new PointerEvent(start.x, start.y, gestureId, PointerEvent.Type.DOWN, PointerEvent.LEFT));
+                Thread.sleep(90);
+                for (int step = 1; step <= 7; step++) {
+                    PointerEvent.addPointerEvent(new PointerEvent(start.x, start.y - step * 16, gestureId, PointerEvent.Type.DOWN, PointerEvent.LEFT));
+                    Thread.sleep(80);
+                }
+                PointerEvent.addPointerEvent(new PointerEvent(start.x, start.y - 112, gestureId, PointerEvent.Type.UP, PointerEvent.LEFT));
+                Thread.sleep(450);
+                onRender(() -> afterSwipe[0] = gesturePane.content().camera.scroll.y);
+                assertTrue("Swipe starting on a checkbox must scroll down the content",
+                        afterSwipe[0] > beforeSwipe[0] + 3);
+                assertFalse("Swipe must not toggle the checkbox", SPDSettings.apdAdultHumor());
 				tapUntil("enable Adult humor", scroll, (Gizmo) field(pane, "chkAdult"), () -> SPDSettings.apdAdultHumor(), 60000);
 				assertEquals("no unavailable-verification warning", 0, messages());
 				onRender(() -> {

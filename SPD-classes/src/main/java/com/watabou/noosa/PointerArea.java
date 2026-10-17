@@ -79,7 +79,7 @@ public class PointerArea extends Visual implements Signal.Listener<PointerEvent>
 				
 				if (curEvent == event) {
 					curEvent = null;
-					onClick( event );
+					if (!event.scrolled) onClick( event );
 				}
 
 			//similar to up, but no click

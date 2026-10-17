@@ -53,6 +53,8 @@ public class PointerEvent {
 	public Type type;
 	public int button;
 	public boolean handled; //for hover events, to ensure hover always ends even with overlapping elements
+	//Set only by scrollable pages that share a gesture with child controls. A swipe is not a click.
+	public boolean scrolled;
 
 	public PointerEvent( int x, int y, int id, Type type){
 		this(x, y, id, type, NONE);

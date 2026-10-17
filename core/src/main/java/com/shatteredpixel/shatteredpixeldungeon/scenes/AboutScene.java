@@ -356,6 +356,7 @@ public class AboutScene extends PixelScene {
 		add(btnApdChanges);
 
 		list.setRect( 0, 0, w, h - apdBarHeight );
+		list.allowDragFromButtons();
 		list.scrollTo(0, 0);
 
 		ExitButton btnExit = new ExitButton();
