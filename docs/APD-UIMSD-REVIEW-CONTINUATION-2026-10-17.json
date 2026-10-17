@@ -1,9 +1,9 @@
 {
-  "source": "909286ed86788d462f853fd47b9632cefac96691",
-  "recorded_at": "2026-10-17T23:10:32.827Z",
+  "source": "15e323e81de2ae0913269c8906d867916885ddc9",
+  "recorded_at": "2026-10-17T23:48:13.280Z",
   "complete": false,
   "prior_checkpoint_preserved": "docs/APD-UIMSD-REVIEW-CHECKPOINT-2026-10-13.json",
-  "count_note": "Current-blob reconciliation found 96 exact machine-recorded entries before this continuation. Datasets.java, AggValue.java, UimsdSelfTest.java, UimsdHome.java, QueryCodec.java, Question.java, Questions.java, RowBuilders.java and RowCodec.java add nine reviewed current production blobs, for 105 exact reviewed paths; prose-only completed reviews remain separate until reconciled.",
+  "count_note": "Current-blob reconciliation found 96 exact machine-recorded entries before this continuation. Datasets.java, AggValue.java, UimsdSelfTest.java, UimsdHome.java, QueryCodec.java, Question.java, Questions.java, RowBuilders.java, RowCodec.java and DatasetStore.java add ten reviewed current production blobs, for 106 exact reviewed paths; prose-only completed reviews remain separate until reconciled.",
   "entries": [
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/Datasets.java",
@@ -152,6 +152,20 @@
         "methods": 7,
         "coverage": "one exact valid fixture and six reserved-value fail-closed fixtures"
       }
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/DatasetStore.java",
+      "sha": "b96b39de60d1e72fb93245d2f71a0b616e851fa7",
+      "lines": 438,
+      "reviewed": true,
+      "basis": "Complete current-source review of raw-log discovery, source-bound cache reuse/rebuild, optional cache writes, recorded/imported assembly, run completion and ruleset resolution, inherited run facts and legacy duplicate matching found no production defect. An initial negative-segment fixture was invalid and retained as a failed attempt; the corrected valid 0/Integer.MAX_VALUE same-time boundary passes through the public DatasetStore load path.",
+      "retained_test": {
+        "path": "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/DatasetBuildersTest.java",
+        "sha": "8797b95016984385712f36e1d23c9ebd1c3f7d37",
+        "source_commit": "15e323e81de2ae0913269c8906d867916885ddc9",
+        "methods": 32,
+        "new_method": "equalTimestampBoundarySegmentNumbersUseNumericOrder"
+      }
     }
   ],
   "supporting_reads": [
@@ -208,11 +222,26 @@
   "latest_verified_private_candidate": 275,
   "latest_published_owner_build": 262,
   "latest_test_only_evidence": {
-    "source_commit": "c2014077526dfa87b6062ab1762548d74d632290",
-    "request_commit": "27de932775034c51ba7ea5c33063056204142d77",
-    "run_id": 39006675168,
-    "target": "QueryCodec complete field and empty-text serialization contract",
-    "application_source_changed": false
+    "source_commit": "15e323e81de2ae0913269c8906d867916885ddc9",
+    "request_commit": "15e323e81de2ae0913269c8906d867916885ddc9",
+    "run_id": 39080136757,
+    "target": "DatasetStore valid same-time segment boundary ordering after retained invalid negative-segment fixture",
+    "core_tests": 1796,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "artifact_id": 12118647092,
+    "artifact_digest": "sha256:ef14367fdd32d79a93ad63cb5c19190e8d6029af7323546ec9246ae219c8bb65",
+    "application_source_changed": false,
+    "retained_failed_run": {
+      "source_commit": "6b009b952f0f98d9692725ec99c999fd47cc5abf",
+      "run_id": 39079891341,
+      "tests": 1796,
+      "failures": 1,
+      "artifact_id": 12117434829,
+      "artifact_digest": "sha256:adf6f534d5414a8620eccc5c983f0b18669a2daf3c1ad9261cc4a1b5d2c7911d",
+      "actual_reason": "Integer.MIN_VALUE is invalid negative segment input; logs became separately unreadable before sorting"
+    }
   },
   "latest_application_evidence": {
     "application_source": "dcdec4a936a0b159f6dcf1a60da6a8c5e663d6a1",
