@@ -1,41 +1,42 @@
 {
   "date": "2026-10-17",
-  "previous_source": "c761afc25902954060daf5fffbd87e728b8b1887",
-  "previous_run": 39014635516,
-  "previous_label": "Codex TEST 267",
+  "previous_source": "abbd936515873384a6d299f037ec925cc5185f51",
+  "previous_run": 39049580620,
+  "previous_label": "Codex TEST 268",
   "changes": [
     {
       "category": "Bug Fixes",
       "sprite": "ICON_PREFS",
-      "title": "Make title Hide UI easier to tap",
-      "text": "Expand the small bottom chevron's touch target into its reserved footer and prioritize its input handler. Keep the original Hide UI and restore behavior, icon, layout and game state unchanged.",
+      "title": "Scroll even when a swipe begins on a button",
+      "text": "A vertical swipe on About, APD Settings or Cleric Grudge now scrolls even when starting on a button or link. Moving far enough prevents the underlying control from clicking; an ordinary tap continues to work. Other scroll panes and slider gestures remain unchanged.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/TitleGeometry.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/TitleScene.java"
+        "SPD-classes/src/main/java/com/watabou/input/PointerEvent.java",
+        "SPD-classes/src/main/java/com/watabou/noosa/PointerArea.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/AboutScene.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/ScrollPane.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndAPDSettings.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndClericGrudge.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Preserve footer touch and previous-build evidence",
-      "text": "Retain a non-overlap geometry regression, native outside-icon press and restore coverage, exact original title-layout goldens, and all intervening published verification, history and handoff records.",
+      "title": "Preserve scroll gesture and verification history",
+      "text": "Retain swipe-versus-tap and cancel regressions, an Android real-touch checkbox-origin swipe check, source/runner evidence, and every intervening documented verification and history record since the immediately previous compiled APK.",
       "paths": [
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/TitleMenuLayoutDeviceTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/TitleGeometryTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/UimsdWiringTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/ApdSettingsClickDeviceTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/ui/ScrollClickSuppressionTest.java",
         "docs/APD-ALPHA-PREPARATION.json",
+        "docs/APD-BUTTON-ORIGIN-SCROLL-2026-10-17.md",
+        "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/APD-CODEX-CORE-TEST-REQUEST.txt",
-        "docs/APD-S22PLUS-TITLE-HIDE-TOUCH-2026-10-17.md",
-        "docs/APD-TEST267-UIMSD-LEGACY-DATES-2026-10-17.md",
-        "docs/APD-TEST267-VERIFICATION-2026-10-17.json",
-        "docs/APD-UIMSD-REVIEW-CONTINUATION-2026-10-17.json",
-        "docs/HANDOFF.md",
-        "docs/UIMSD-AUDIT-BUG-LOG.md",
-        "docs/WORK-COMPLETED-LEDGER.md",
         "docs/APD-NEXT-BUILD-HISTORY.json",
-        "docs/APD-CODEX-BUILD-REQUEST.txt"
+        "docs/APD-S22PLUS-TITLE-HIDE-TOUCH-2026-10-17.md",
+        "docs/APD-TEST268-S22PLUS-TITLE-VERIFICATION-2026-10-17.json",
+        "docs/HANDOFF.md",
+        "docs/WORK-COMPLETED-LEDGER.md"
       ]
     }
   ],
-  "commentary": "Core-only run 39048921810 first failed one strict-layout golden; corrected complete core run 39049282660 passed. This application candidate awaits full source/debug/API34/visual/history acceptance. No publication, tester distribution or physical-phone claim."
+  "commentary": "Core-only run39053210660 succeeded against candidate f6f94c98c5e99c239b5ec7dab7029c1bfffe7cf0, including 1776 tests. Full debug/APK/history/API34/display verification pending. No delivery, publication or physical-phone claim. Keep staged TEST268 and published TEST262 as fallbacks."
 }
