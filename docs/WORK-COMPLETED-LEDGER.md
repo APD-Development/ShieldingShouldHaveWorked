@@ -1,3 +1,10 @@
+## 2026-10-17T01:41:04Z — UIMSD optional-cache contention candidate closed
+- Added test-only `CacheConcurrencyTest` at `759d8ef3cc55e2504fc902d71f6242876f3dc0f9`: 96 contested full-store operations across `DerivedStore` and `DatasetStore`, validating every result and final cache reuse.
+- Retained the older deterministic low-level `RowCacheConcurrentWriterTest`; the new coverage exercises real raw-log parsing and complete independent store instances.
+- Core-only run `38991720872` / head `49d21a1bf83cb33a4ab4cd7bb1573eae874ea9c7` passed 1,763 tests in 348 suites, zero failures/errors/skips. New methods: 2/2 passed in 0.093s.
+- Artifact `12085507234`, 826,001 bytes, digest `sha256:3213dcc47b5cfea050807bc3e4b4cebd5ec16ad7fe67a542494011099e391d3d`.
+- Production application and APK build request unchanged; no APK build/publication/phone claim. TEST263 staged and TEST262 published statuses are unchanged.
+
 ## 2026-10-17T01:18:00Z — TEST263 APD Settings native-touch coverage completed
 - Added real API-34 pointer coverage for the five APD Settings controls omitted by the misleading older “every control” test: Healing to Shielding, Enhanced Tile Visibility, Automatic Stair Navigation, Healing confirmation and Custom Dungeon Rules.
 - Added a 19-field reflection ownership manifest binding every interactive `APDSettingsPane` field to a named native acceptance test; future unowned controls fail acceptance.

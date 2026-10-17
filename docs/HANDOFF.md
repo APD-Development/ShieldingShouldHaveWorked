@@ -1,3 +1,10 @@
+## UIMSD optional-cache cross-instance acceptance — 2026-10-17T01:41:04Z
+Current `DerivedStore` and `DatasetStore` already use unique per-writer temporary files. Test-only source `759d8ef3cc55e2504fc902d71f6242876f3dc0f9` adds end-to-end contention coverage: four independent instances perform 12 operations each against one raw-history root in each cache layer (96 contested operations total), every returned table/catalog remains correct, and a fresh reader must reuse the surviving cache. The pre-existing deterministic `RowCacheConcurrentWriterTest` remains the low-level replacement-race guard.
+
+Core-only run `38991720872` at request head `49d21a1bf83cb33a4ab4cd7bb1573eae874ea9c7` passed 1,763 tests in 348 suites with zero failures, errors or skips; the two new methods passed in 0.093 seconds. Artifact `12085507234`, 826,001 bytes, digest `sha256:3213dcc47b5cfea050807bc3e4b4cebd5ec16ad7fe67a542494011099e391d3d`. This closes only the optional-cache cross-instance investigation candidate; it does not claim the full UIMSD audit complete.
+
+No production application source, raw history, saves, scoring, gameplay, executable APK build request or APK bytes changed. No APK was built or published and no physical-phone claim is made. TEST263 remains the verified/staged candidate; TEST262 remains the latest actually published owner APK. See `docs/APD-UIMSD-CACHE-CONTENTION-ACCEPTANCE-2026-10-17.md`.
+
 ## TEST263 APD Settings complete touch acceptance — 2026-10-17T01:18:00Z
 A source audit found that the native method named `everyControlOfApdSettingsAnswersATouch` did not actually touch five visible APD Settings controls. Test-only source `db5239ffa8439a71a46cc49f0b77781e149343f2` adds real pointer coverage for Healing to Shielding, Enhanced Tile Visibility, Automatic Stair Navigation, Healing confirmation and Custom Dungeon Rules, plus a reflection manifest assigning all 19 interactive `APDSettingsPane` fields to named native acceptance tests. The manifest fails if a future interactive field has no explicit owner. No application source, save format, scoring, gameplay or executable build request changed.
 
