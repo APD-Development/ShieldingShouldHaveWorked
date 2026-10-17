@@ -106,6 +106,10 @@ public class SPDSettings extends GameSettings {
     public static void enhancedTileVisibility(boolean value) { put("apd_enhanced_tile_visibility", value); GameScene.updateMap(); }
     public static boolean stairNavigationShortcut() { return getBoolean("apd_stair_navigation_shortcut", true); }
     public static void stairNavigationShortcut(boolean value) { put("apd_stair_navigation_shortcut", value); GameScene.updateTags=true; }
+    // Opt-in: the stair shortcut walks normally, then uses that direction's stairs.
+    // A manual map tap or ordinary movement never triggers this preference.
+    public static boolean autoEnterStairs() { return getBoolean("apd_auto_enter_stairs", false); }
+    public static void autoEnterStairs(boolean value) { put("apd_auto_enter_stairs", value); }
 
 	public static void cameraFollow( int value ){
 		put( KEY_CAMERA_FOLLOW, value );

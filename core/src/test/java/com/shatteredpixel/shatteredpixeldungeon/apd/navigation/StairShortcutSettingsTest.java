@@ -17,6 +17,20 @@ public class StairShortcutSettingsTest {
             assertFalse(prefs.contains("apd_stair_navigation_shortcut"));
         });
     }
+    @Test public void autoEntryDefaultsOffAndCanBeSavedSeparately() throws Exception {
+        withPreferences(prefs -> {
+            assertFalse(SPDSettings.autoEnterStairs());
+            assertFalse(prefs.contains("apd_auto_enter_stairs"));
+            SPDSettings.autoEnterStairs(true);
+            GameSettings.set(new HeadlessPreferences(prefs.getFile()));
+            assertTrue(SPDSettings.autoEnterStairs());
+            assertTrue(SPDSettings.stairNavigationShortcut());
+            SPDSettings.autoEnterStairs(false);
+            GameSettings.set(new HeadlessPreferences(prefs.getFile()));
+            assertFalse(SPDSettings.autoEnterStairs());
+            assertTrue(SPDSettings.stairNavigationShortcut());
+        });
+    }
     @Test public void explicitOffAndOnSurviveReload() throws Exception {
         withPreferences(prefs -> {
             SPDSettings.stairNavigationShortcut(false);

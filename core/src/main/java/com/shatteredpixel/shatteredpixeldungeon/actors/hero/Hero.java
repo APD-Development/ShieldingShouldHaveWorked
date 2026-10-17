@@ -1055,8 +1055,21 @@ public class Hero extends Char {
                     (com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.Walk) action;
             boolean blocked = path != null && !path.isEmpty()
                     && !com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.safeStep(Dungeon.level,this,path.getFirst());
-            if (walk.level != Dungeon.level || pos == action.dst || visibleEnemies() > 0 || rooted || blocked) {
+            if (walk.level != Dungeon.level || visibleEnemies() > 0 || rooted || Dungeon.level.locked || blocked) {
                 if (blocked) com.shatteredpixel.shatteredpixeldungeon.utils.GLog.w("Stair navigation stopped: the route is blocked or unsafe.");
+                interrupt(); lastAction=null; ready(); return false;
+            }
+            if (pos == action.dst) {
+                if (com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.canEnterOnArrival(this,walk)) {
+                    // Use the game's normal transition code, but only for the explicit stair shortcut.
+                    // Its movement has already cost ordinary turns; changing floors costs no extra turn.
+                    curAction = new HeroAction.LvlTransition(action.dst);
+                    lastAction = null;
+                    return actTransition((HeroAction.LvlTransition)curAction);
+                }
+                if (walk.enterOnArrival) {
+                    com.shatteredpixel.shatteredpixeldungeon.utils.GLog.w("Stair navigation stopped: the stairs are no longer safe.");
+                }
                 interrupt(); lastAction=null; ready(); return false;
             }
         }

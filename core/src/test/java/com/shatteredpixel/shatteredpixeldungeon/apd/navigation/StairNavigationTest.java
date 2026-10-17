@@ -11,13 +11,21 @@ import org.junit.*;
 import java.util.*;
 import static org.junit.Assert.*;
 public class StairNavigationTest {
- static class Empty extends Level {protected boolean build(){return true;}protected void createMobs(){}protected void createItems(){}}
+ static class Empty extends Level {
+  int activations;LevelTransition activatedStair;
+  protected boolean build(){return true;}protected void createMobs(){}protected void createItems(){}
+  @Override public boolean activateTransition(Hero hero,LevelTransition transition){
+   activations++;activatedStair=transition;return true;
+  }
+ }
  static class Player extends Hero {int enemies;@Override public int visibleEnemies(){return enemies;}}
- private Level previousLevel, level;private Hero previousHero;private Player hero; private Object previousSelector;
+ private Level previousLevel, level;private Hero previousHero;private Player hero; private Object previousSelector;private boolean previousAutoEnter;
  @Before public void setup() throws Exception {HeadlessTestSupport.start();java.lang.reflect.Field selector=com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.class.getDeclaredField("cellSelector");selector.setAccessible(true);previousSelector=selector.get(null);
  java.lang.reflect.Field uf=sun.misc.Unsafe.class.getDeclaredField("theUnsafe");uf.setAccessible(true);sun.misc.Unsafe unsafe=(sun.misc.Unsafe)uf.get(null);selector.set(null,unsafe.allocateInstance(com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector.class));
+ previousAutoEnter=com.shatteredpixel.shatteredpixeldungeon.SPDSettings.autoEnterStairs();
+ com.shatteredpixel.shatteredpixeldungeon.SPDSettings.autoEnterStairs(false);
  previousLevel=Dungeon.level;previousHero=Dungeon.hero;level=new Empty();level.setSize(5,5);level.transitions=new ArrayList<>();level.mobs=new HashSet<>();level.traps=new com.watabou.utils.SparseArray<>();level.blobs=new HashMap<>();level.heaps=new com.watabou.utils.SparseArray<>();level.plants=new com.watabou.utils.SparseArray<>();Arrays.fill(level.map,Terrain.EMPTY);Arrays.fill(level.visited,true);Arrays.fill(level.passable,true);hero=new Player();hero.heroClass=HeroClass.WARRIOR;Talent.initClassTalents(hero);hero.pos=12;hero.ready=true;hero.fieldOfView=new boolean[25];Dungeon.level=level;Dungeon.hero=hero;}
- @After public void cleanup() throws Exception {Dungeon.level=previousLevel;Dungeon.hero=previousHero;java.lang.reflect.Field selector=com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.class.getDeclaredField("cellSelector");selector.setAccessible(true);selector.set(null,previousSelector);}
+ @After public void cleanup() throws Exception {com.shatteredpixel.shatteredpixeldungeon.SPDSettings.autoEnterStairs(previousAutoEnter);Dungeon.level=previousLevel;Dungeon.hero=previousHero;java.lang.reflect.Field selector=com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.class.getDeclaredField("cellSelector");selector.setAccessible(true);selector.set(null,previousSelector);}
  private void stairs(){level.transitions.add(new LevelTransition(level,11,LevelTransition.Type.REGULAR_ENTRANCE));level.transitions.add(new LevelTransition(level,13,LevelTransition.Type.REGULAR_EXIT));}
  static class InvisibleSprite extends com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite {
   void attach(Hero h){ch=h;h.sprite=this;visible=false;}
@@ -32,6 +40,63 @@ public class StairNavigationTest {
   java.lang.reflect.Method move=Hero.class.getDeclaredMethod("actMove",HeroAction.Move.class);move.setAccessible(true);
   assertTrue((Boolean)move.invoke(hero,hero.curAction));assertEquals(13,hero.pos);assertEquals(before+1f/hero.speed(),hero.cooldown(),0.00001f);
   assertTrue(hero.curAction instanceof HeroAction.Move);assertEquals(depth,Dungeon.depth);
+ }
+ @Test public void enablingAutoEnterCompletesNormalStairWalkThenTransitionsExactlyOnce() throws Exception {
+  stairs();new InvisibleSprite().attach(hero);com.shatteredpixel.shatteredpixeldungeon.SPDSettings.autoEnterStairs(true);
+  float before=hero.cooldown();assertNull(StairNavigation.begin(hero,false));
+  HeroAction.Move walk=(HeroAction.Move)hero.curAction;
+  assertTrue(walk instanceof StairNavigation.Walk);
+  assertTrue(((StairNavigation.Walk)walk).enterOnArrival);
+  java.lang.reflect.Method move=Hero.class.getDeclaredMethod("actMove",HeroAction.Move.class);move.setAccessible(true);
+  assertTrue((Boolean)move.invoke(hero,walk));
+  assertEquals(13,hero.pos);
+  assertEquals(before+1f/hero.speed(),hero.cooldown(),0.00001f);
+  assertEquals(0,((Empty)level).activations);
+  assertFalse((Boolean)move.invoke(hero,walk));
+  assertEquals(1,((Empty)level).activations);
+  assertEquals(LevelTransition.Type.REGULAR_EXIT,((Empty)level).activatedStair.type);
+  assertNull(hero.curAction);
+ }
+ @Test public void disabledAutoEntryStillStopsOnStairs() throws Exception {
+  stairs();new InvisibleSprite().attach(hero);
+  assertNull(StairNavigation.begin(hero,false));
+  java.lang.reflect.Method move=Hero.class.getDeclaredMethod("actMove",HeroAction.Move.class);move.setAccessible(true);
+  assertTrue((Boolean)move.invoke(hero,hero.curAction));
+  assertFalse((Boolean)move.invoke(hero,hero.curAction));
+  assertEquals(0,((Empty)level).activations);
+  assertNull(hero.curAction);
+ }
+ @Test public void autoEnterCanUseStairsAlreadyUnderHero() throws Exception {
+  stairs();hero.pos=13;hero.ready=true;com.shatteredpixel.shatteredpixeldungeon.SPDSettings.autoEnterStairs(true);
+  assertNull(StairNavigation.begin(hero,false));
+  assertTrue(hero.curAction instanceof HeroAction.LvlTransition);
+  java.lang.reflect.Method transition=Hero.class.getDeclaredMethod("actTransition",HeroAction.LvlTransition.class);transition.setAccessible(true);
+  assertFalse((Boolean)transition.invoke(hero,hero.curAction));
+  assertEquals(1,((Empty)level).activations);
+ }
+ @Test public void unsafeOrEnemyArrivalNeverAutoEnters() throws Exception {
+  stairs();new InvisibleSprite().attach(hero);com.shatteredpixel.shatteredpixeldungeon.SPDSettings.autoEnterStairs(true);
+  assertNull(StairNavigation.begin(hero,true));
+  hero.pos=11;hero.enemies=1;
+  java.lang.reflect.Method move=Hero.class.getDeclaredMethod("actMove",HeroAction.Move.class);move.setAccessible(true);
+  assertFalse((Boolean)move.invoke(hero,hero.curAction));
+  assertEquals(0,((Empty)level).activations);
+  assertNull(hero.lastAction);
+  hero.pos=12;hero.enemies=0;hero.ready=true;
+  assertNull(StairNavigation.begin(hero,false));
+  hero.pos=13;
+  com.shatteredpixel.shatteredpixeldungeon.levels.traps.WornDartTrap trap=new WornDartTrap();
+  trap.pos=13;trap.visible=true;level.traps.put(13,trap);
+  assertFalse((Boolean)move.invoke(hero,hero.curAction));
+  assertEquals(0,((Empty)level).activations);
+ }
+ @Test public void autoEntryNeverResumesAfterManualCancelOrDamage(){
+  stairs();com.shatteredpixel.shatteredpixeldungeon.SPDSettings.autoEnterStairs(true);
+  assertNull(StairNavigation.begin(hero,false));
+  hero.interrupt();assertNull(hero.curAction);assertNull(hero.lastAction);
+  assertNull(StairNavigation.begin(hero,false));new InvisibleSprite().attach(hero);
+  hero.damage(1,new com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger());
+  assertNull(hero.curAction);assertNull(hero.lastAction);assertEquals(0,((Empty)level).activations);
  }
  @Test public void offscreenAndObscuredKnownStairsStillHaveExactDestinations(){stairs();Arrays.fill(hero.fieldOfView,false);assertNull(StairNavigation.begin(hero,false));assertEquals(13,hero.curAction.dst);assertTrue(com.shatteredpixel.shatteredpixeldungeon.effects.StairHighlight.known(13));level.visited[11]=false;assertFalse(com.shatteredpixel.shatteredpixeldungeon.effects.StairHighlight.known(11));}
  @Test public void bothDirectionsChooseOnlyTheirOwnStair(){stairs();assertEquals(11,StairNavigation.discoveredStair(level,true));assertEquals(13,StairNavigation.discoveredStair(level,false));}

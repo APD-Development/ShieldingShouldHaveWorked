@@ -60,6 +60,7 @@ public class APDSettingsPane extends Component {
 	private CheckBox chkAdult;
     private CheckBox chkTileVisibility;
     private CheckBox chkStairNavigation;
+    private CheckBox chkAutoEnterStairs;
 	private RenderedTextBlock status;
 	private RenderedTextBlock storage;
 	private RedButton btnClericQuickCasts;
@@ -136,10 +137,14 @@ public class APDSettingsPane extends Component {
         chkStairNavigation=new CheckBox("Automatic Stair Navigation"){
             @Override protected void onClick(){super.onClick();SPDSettings.stairNavigationShortcut(checked());
                 if(checked()) ShatteredPixelDungeon.scene().addToFront(new WndMessage(
-                    "Tap the staircase icon beside the hotbar, above the side controls. Choose Stairs Up or Stairs Down. Only discovered stairs are available; reaching them never changes floors."));
+                    "Tap the staircase icon beside the hotbar, above the side controls, and choose Stairs Up or Stairs Down. Only discovered stairs are available. Enable Auto-enter Stairs below to also change floors on arrival."));
             }
         };
         chkStairNavigation.checked(SPDSettings.stairNavigationShortcut());add(chkStairNavigation);
+        chkAutoEnterStairs=new CheckBox("Auto-enter Stairs on Arrival"){
+            @Override protected void onClick(){super.onClick();SPDSettings.autoEnterStairs(checked());}
+        };
+        chkAutoEnterStairs.checked(SPDSettings.autoEnterStairs());add(chkAutoEnterStairs);
 
         btnPlaybackSpeed = new RedButton("Game speed: "
                 + com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.label(SPDSettings.playbackSpeed())) {
@@ -346,6 +351,7 @@ public class APDSettingsPane extends Component {
 		pos = chkAdult.bottom() + GAP;
         chkTileVisibility.setRect(x,pos,width,16);pos=chkTileVisibility.bottom()+GAP;
         chkStairNavigation.setRect(x,pos,width,16);pos=chkStairNavigation.bottom()+GAP;
+        chkAutoEnterStairs.setRect(x,pos,width,16);pos=chkAutoEnterStairs.bottom()+GAP;
         btnPlaybackSpeed.setRect(x,pos,width,16);pos=btnPlaybackSpeed.bottom()+GAP;
         btnHealingConfirmation.setRect(x,pos,width,16);pos=btnHealingConfirmation.bottom()+GAP;
         btnCustomRules.setRect(x,pos,width,20);pos=btnCustomRules.bottom()+GAP;
