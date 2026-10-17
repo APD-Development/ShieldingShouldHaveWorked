@@ -1,10 +1,9 @@
-APD CORE-ONLY TEST RESULT — expanded retained Shocking derived-damage acceptance
+APD CORE-ONLY TEST REQUEST — UIMSD optional-cache cross-instance contention
 branch=codex/apd-phone-fixes-2026-10-09
-source_commit=63dbbf9d5bf28d567c036322994d67184a38511c
-regression_source=b742acc043e5f69ebac958339d94deb3c345b188
-run=38729005866
-result=passed 1620 core tests in 318 XML suites; zero failures, errors or skips
-artifact=11968778024 size754862 digest412fb0f9ad04b7f11b7d7a74c1f839e6fd2580ac8b5a0424ed75e373a0bec953
-scope=real Shocking proc after existing attackDamage at all20 settings for player, enemy and boss actual creators (60 cases); original source and one splash, no double scaling
-apk_build=none; production application source unchanged
-application_note=TEST204 exact corrected source9549d3638de133cb09864e1c325f15b325c550b2/run38722796011 remains the latest verified compiled candidate. Reuse its exact CodexTEST200 artifacts; do not rebuild unchanged source.
+test_source=759d8ef3cc55e2504fc902d71f6242876f3dc0f9
+scope=run the complete :core:test suite, including CacheConcurrencyTest
+acceptance=multiple independent DerivedStore and DatasetStore instances repeatedly contend on one raw-history root; every returned table/catalog remains correct; the final derived and per-log caches are readable and reused
+production_application_source=unchanged
+apk_build=none
+executable_apk_build_request=unchanged
+publication=none
