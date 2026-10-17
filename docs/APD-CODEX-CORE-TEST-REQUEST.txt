@@ -1,10 +1,9 @@
-APD CORE-ONLY TEST REQUEST — UIMSD complete query serialization contract
+APD CORE-ONLY TEST REQUEST — reproduce invalid UIMSD legacy calendar dates
 branch=codex/apd-phone-fixes-2026-10-09
-source=c2014077526dfa87b6062ab1762548d74d632290
-scope=run the complete :core:test suite, including QueryEngineTest
-expected_core_tests=1771
-acceptance=QueryCodec round-trips tabs, newlines, pipes and backslashes in every query field; preserves single-empty versus zero text values; preserves aggregate labels, extreme targets and optional fields; repeated encoding is stable
+source=c48ed80c538695356dbda05b8faab51aca6d456c
+scope=run the complete :core:test suite, including DatasetBuildersTest
+expected_core_tests=1774
+acceptance=impossible Gregorian calendar dates such as 2025-02-29, 2024-04-31 and 1900-02-29 remain unknown; valid leap days 2024-02-29 and 2000-02-29 remain accepted
 production_application_source=unchanged
 apk_build=none
 executable_apk_build_request=unchanged
-publication=none
