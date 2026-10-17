@@ -31,6 +31,31 @@ jobs:
           name: get-fucked-existing-engine-runtime
           path: core/build/get-fucked-runtime/
           retention-days: 7
+      - name: Replay continuous Cleric through actual partial DM300 encounter without resets
+        run: |
+          python3 - <<'PYCODE'
+          import hashlib, json, os, pathlib, subprocess, tarfile
+          source=pathlib.Path('research/get-fucked')
+          root=pathlib.Path(os.environ['RUNNER_TEMP'])/'get-fucked-continuous-6929'
+          root.mkdir(parents=True,exist_ok=True)
+          manifest=json.loads((source/'continuous-6929-parts.json').read_text())
+          chunks=[]
+          for part in manifest['parts']:
+              data=(source/part['name']).read_bytes()
+              assert len(data)==part['size'] and hashlib.sha256(data).hexdigest()==part['sha256']
+              chunks.append(data)
+          data=b''.join(chunks)
+          assert len(data)==manifest['size'] and hashlib.sha256(data).hexdigest()==manifest['sha256']
+          archive=root/manifest['archive']
+          archive.write_bytes(data)
+          with tarfile.open(archive) as tar: tar.extractall(root)
+          args=json.loads((root/'dm300-live-args.json').read_text())
+          props={a[2:].split('=',1)[0]:a.split('=',1)[1] for a in args if a.startswith('-D') and '=' in a}
+          props.pop('route.expectedMissileIdEquivalence',None)
+          props.update({'route.testTimeoutSeconds':'600','route.stableHash':'true','route.noSnapshots':'true','route.manualReplay':str(root/'dm300-live-complete.journal'),'route.manualContinue':'false','route.manualJournal':str(root/'actual-6929.journal'),'route.expectedEnd':str(root/'native/dm300-live-end'),'route.expectedActiveRngOnly':'true','route.earlySwarmOut':str(root/'actual-fresh-6929')})
+          subprocess.run(['./gradlew',':core:test','--tests','*GetFuckedRouteTest']+['-D'+k+'='+v for k,v in props.items()],check=True)
+          subprocess.run(['python3','research/get-fucked/native_equivalence.py',props['route.expectedEnd'],props['route.earlySwarmOut']],check=True)
+          PYCODE
       - name: Replay continuous Cleric through earned seed cooking and actual hunger447 survival
         run: |
           python3 - <<'PYCODE'
@@ -224,7 +249,7 @@ jobs:
         run: |
           mkdir -p "$RUNNER_TEMP/get-fucked-floor-nine"
           tar -xJf research/get-fucked/floor-nine-live-provenance.tar.xz -C "$RUNNER_TEMP/get-fucked-floor-nine"
-          ./gradlew :core:test --tests '*GetFuckedRouteTest' \
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' -Droute.testTimeoutSeconds=600 \
             -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor7_intercept" \
             -Droute.stableHash=true -Droute.noSnapshots=true -Droute.liveNineFromSeven=true \
             -Droute.expectedEnd="$RUNNER_TEMP/get-fucked-floor-nine/native/earned-live-floor9-corner" \
@@ -423,7 +448,7 @@ jobs:
           path: core/build/test-results/test/
       - name: Replay corrected level-one origin through actual floor-three entry
         run: >-
-          ./gradlew :core:test --tests '*GetFuckedRouteTest'
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' -Droute.testTimeoutSeconds=600
           -Droute.stableHash=true -Droute.noSnapshots=true -Droute.certifyPrefix=true -Droute.stopAfterFloor3=true -Droute.expectedActiveRngOnly=true
           -Droute.expectedEnd="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor3_certified_origin"
       - name: Preserve corrected level-one origin replay
@@ -433,7 +458,7 @@ jobs:
           path: core/build/test-results/test/
       - name: Replay the earned floor-three state through floor-four entry
         run: >-
-          ./gradlew :core:test --tests '*GetFuckedRouteTest'
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' -Droute.testTimeoutSeconds=600
           -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor3"
           -Droute.stableHash=true -Droute.noSnapshots=true -Droute.stopAfterFloor4=true
       - name: Preserve floor-three continuation results
@@ -443,7 +468,7 @@ jobs:
           path: core/build/test-results/test/
       - name: Replay floor four through earned Goo-floor entry
         run: >-
-          ./gradlew :core:test --tests '*GetFuckedRouteTest'
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' -Droute.testTimeoutSeconds=600
           -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor4"
           -Droute.stableHash=true -Droute.noSnapshots=true -Droute.retainFlame=true -Droute.toGoo=true
       - name: Preserve floor-four continuation results
@@ -453,7 +478,7 @@ jobs:
           path: core/build/test-results/test/
       - name: Return from earned floor five and acquire barricade supplies
         run: >-
-          ./gradlew :core:test --tests '*GetFuckedRouteTest'
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' -Droute.testTimeoutSeconds=600
           -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor5"
           -Droute.stableHash=true -Droute.noSnapshots=true -Droute.gooPrep=200 -Droute.returnToFour=true
       - name: Preserve acquired barricade supplies replay
@@ -463,7 +488,7 @@ jobs:
           path: core/build/test-results/test/
       - name: Defeat pursuing crab and acquire purity from retained resources
         run: >-
-          ./gradlew :core:test --tests '*GetFuckedRouteTest'
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' -Droute.testTimeoutSeconds=600
           -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor4_return_complete"
           -Droute.stableHash=true -Droute.noSnapshots=true -Droute.stopAtPurity=true
       - name: Preserve purity acquisition replay
@@ -473,7 +498,7 @@ jobs:
           path: core/build/test-results/test/
       - name: Replay actual Ghost quest and safe food recovery
         run: >-
-          ./gradlew :core:test --tests '*GetFuckedRouteTest'
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' -Droute.testTimeoutSeconds=600
           -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor4_purity_complete"
           -Droute.stableHash=true -Droute.noSnapshots=true
           -Droute.killSlimeBeforeTrap=true -Droute.skipSlimeShield=true
@@ -484,7 +509,7 @@ jobs:
           path: core/build/test-results/test/
       - name: Replay meal reward armor upgrade and existing Goo floor return
         run: >-
-          ./gradlew :core:test --tests '*GetFuckedRouteTest'
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' -Droute.testTimeoutSeconds=600
           -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor4_food_complete"
           -Droute.stableHash=true -Droute.noSnapshots=true
       - name: Preserve earned armor replay
@@ -494,7 +519,7 @@ jobs:
           path: core/build/test-results/test/
       - name: Defeat Goo with the earned armor and continuous resources
         run: >-
-          ./gradlew :core:test --tests '*GetFuckedRouteTest'
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' -Droute.testTimeoutSeconds=600
           -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor5_armored_complete"
           -Droute.stableHash=true -Droute.noSnapshots=true
           -Droute.armoredGoo=true -Droute.gooHolyWeapon=true -Droute.assertGooDefeated=true
@@ -505,80 +530,80 @@ jobs:
           path: core/build/test-results/test/
       - name: Replay post-Goo recovery recharge and native prison entry
         run: >-
-          ./gradlew :core:test --tests '*GetFuckedRouteTest'
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' -Droute.testTimeoutSeconds=600
           -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_goo_defeated"
           -Droute.stableHash=true -Droute.noSnapshots=true -Droute.postGoo=true
       - name: Replay prison shop purchase and meal
         run: >-
-          ./gradlew :core:test --tests '*GetFuckedRouteTest'
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' -Droute.testTimeoutSeconds=600
           -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor6"
           -Droute.stableHash=true -Droute.noSnapshots=true
       - name: Replay trap disarm strength room and first skeleton
         run: >-
-          ./gradlew :core:test --tests '*GetFuckedRouteTest'
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' -Droute.testTimeoutSeconds=600
           -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor6_food"
           -Droute.stableHash=true -Droute.noSnapshots=true
       - name: Replay second skeleton and earned armor upgrade
         run: >-
-          ./gradlew :core:test --tests '*GetFuckedRouteTest'
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' -Droute.testTimeoutSeconds=600
           -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor6_strength"
           -Droute.stableHash=true -Droute.noSnapshots=true
       - name: Continue through floor-six swarm food and retained enemies
         run: >-
-          ./gradlew :core:test --tests '*GetFuckedRouteTest'
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' -Droute.testTimeoutSeconds=600
           -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor6_upgraded"
           -Droute.stableHash=true -Droute.noSnapshots=true 
       - name: Continue floor six through actual floor-seven entry
         run: >-
-          ./gradlew :core:test --tests '*GetFuckedRouteTest'
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' -Droute.testTimeoutSeconds=600
           -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor6_northfood"
           -Droute.stableHash=true -Droute.noSnapshots=true 
       - name: Pay for floor-seven entrance recharge with the recovered ration
         run: >-
-          ./gradlew :core:test --tests '*GetFuckedRouteTest'
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' -Droute.testTimeoutSeconds=600
           -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor7"
           -Droute.stableHash=true -Droute.noSnapshots=true 
       - name: Defeat actual floor-seven skeletons and acquire the next ration
         run: >-
-          ./gradlew :core:test --tests '*GetFuckedRouteTest'
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' -Droute.testTimeoutSeconds=600
           -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor7_rested"
           -Droute.stableHash=true -Droute.noSnapshots=true -Droute.sevenContinue=true
       - name: Intercept returning thief before Rage is lost
         run: >-
-          ./gradlew :core:test --tests '*GetFuckedRouteTest'
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' -Droute.testTimeoutSeconds=600
           -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor7_food"
           -Droute.stableHash=true -Droute.noSnapshots=true -Droute.interceptThief=true
       - name: Check the real guard chain pull and lethal negative control
         run: >-
-          ./gradlew :core:test --tests '*GetFuckedRouteTest'
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' -Droute.testTimeoutSeconds=600
           -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor7_intercept"
           -Droute.stableHash=true -Droute.noSnapshots=true -Droute.guardPullAudit=true
       - name: Use retained Rage to escape through actual floor-eight entry
         run: >-
-          ./gradlew :core:test --tests '*GetFuckedRouteTest'
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' -Droute.testTimeoutSeconds=600
           -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor7_intercept"
           -Droute.stableHash=true -Droute.noSnapshots=true 
       - name: Pay actual floor-eight preparation cost
         run: >-
-          ./gradlew :core:test --tests '*GetFuckedRouteTest'
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' -Droute.testTimeoutSeconds=600
           -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor8"
           -Droute.stableHash=true -Droute.noSnapshots=true -Droute.eightWait=150
           -Droute.expectedEnd="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor8_rested150"
       - name: Earn level seven Bless and acquire the fourth strength potion
         run: >-
-          ./gradlew :core:test --tests '*GetFuckedRouteTest'
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' -Droute.testTimeoutSeconds=600
           -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor8_rested150"
           -Droute.stableHash=true -Droute.noSnapshots=true -Droute.eightContinue=true
           -Droute.expectedEnd="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor8_bless"
       - name: Defeat guard and both DMs and acquire actual food with continuous resources
         run: >-
-          ./gradlew :core:test --tests '*GetFuckedRouteTest'
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' -Droute.testTimeoutSeconds=600
           -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor8_bless"
           -Droute.stableHash=true -Droute.noSnapshots=true
           -Droute.expectedEnd="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor8_pasty"
       - name: Fall legally acquire and equip Hourglass and escape actual crystal exit
         run: |
-          ./gradlew :core:test --tests '*GetFuckedRouteTest' \
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' -Droute.testTimeoutSeconds=600 \
             -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor7_intercept" \
             -Droute.stableHash=true -Droute.noSnapshots=true -Droute.hourglassAccess=true \
             -Droute.expectedEnd="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_hourglass_exit"
@@ -586,7 +611,7 @@ jobs:
           cp core/build/test-results/test/TEST-*.xml "$RUNNER_TEMP/get-fucked-hourglass/pit/"
       - name: Pay four Hourglass charges to bypass the living northern guard
         run: |
-          ./gradlew :core:test --tests '*GetFuckedRouteTest' \
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' -Droute.testTimeoutSeconds=600 \
             -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_hourglass_exit" \
             -Droute.stableHash=true -Droute.noSnapshots=true  \
             -Droute.expectedEnd="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_hourglass_northpool"
@@ -594,7 +619,7 @@ jobs:
           cp core/build/test-results/test/TEST-*.xml "$RUNNER_TEMP/get-fucked-hourglass/bypass/"
       - name: Continue to central pool door with pursuing guard and actual charges
         run: |
-          ./gradlew :core:test --tests '*GetFuckedRouteTest' \
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' -Droute.testTimeoutSeconds=600 \
             -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_hourglass_northpool" \
             -Droute.stableHash=true -Droute.noSnapshots=true  \
             -Droute.expectedEnd="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_hourglass_central"
@@ -602,7 +627,7 @@ jobs:
           cp core/build/test-results/test/TEST-*.xml "$RUNNER_TEMP/get-fucked-hourglass/central/"
       - name: Read retained Rage at the actual central room doorway
         run: |
-          ./gradlew :core:test --tests '*GetFuckedRouteTest' \
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' -Droute.testTimeoutSeconds=600 \
             -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_hourglass_central" \
             -Droute.stableHash=true -Droute.noSnapshots=true -Droute.hourglassRageAtDoor=true \
             -Droute.expectedEnd="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_hourglass_door"
@@ -610,7 +635,7 @@ jobs:
           cp core/build/test-results/test/TEST-*.xml "$RUNNER_TEMP/get-fucked-hourglass/door/"
       - name: Replay exact interrupted movement and retain central enemies
         run: |
-          ./gradlew :core:test --tests '*GetFuckedRouteTest' \
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' -Droute.testTimeoutSeconds=600 \
             -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_hourglass_door" \
             -Droute.stableHash=true -Droute.noSnapshots=true  \
             -Droute.expectedEnd="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_hourglass_duel"
@@ -618,7 +643,7 @@ jobs:
           cp core/build/test-results/test/TEST-*.xml "$RUNNER_TEMP/get-fucked-hourglass/duel/"
       - name: Verify attacking ends Time Freeze and the guard really kills the hero
         run: |
-          ./gradlew :core:test --tests '*GetFuckedRouteTest' \
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' -Droute.testTimeoutSeconds=600 \
             -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_hourglass_exit" \
             -Droute.stableHash=true -Droute.noSnapshots=true -Droute.hourglassAttack=true
           mkdir -p "$RUNNER_TEMP/get-fucked-hourglass/negative"
@@ -631,7 +656,7 @@ jobs:
           path: ${{ runner.temp }}/get-fucked-hourglass/
       - name: Verify paid recharge continuation recharged-pit
         run: |
-          ./gradlew :core:test --tests '*GetFuckedRouteTest' \
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' -Droute.testTimeoutSeconds=600 \
             -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor7_intercept" \
             -Droute.stableHash=true -Droute.noSnapshots=true -Droute.hourglassAccess=true -Droute.pitRecharge=150 \
             -Droute.expectedEnd="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_hourglass_exit_recharged"
@@ -639,7 +664,7 @@ jobs:
           cp core/build/test-results/test/TEST-*.xml "$RUNNER_TEMP/get-fucked-recharged/recharged-pit/"
       - name: Verify paid recharge continuation six-bypass
         run: |
-          ./gradlew :core:test --tests '*GetFuckedRouteTest' \
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' -Droute.testTimeoutSeconds=600 \
             -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_hourglass_exit_recharged" \
             -Droute.stableHash=true -Droute.noSnapshots=true -Droute.guardFreezeMoves=6 \
             -Droute.expectedEnd="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_hourglass_northpool_six"
@@ -647,7 +672,7 @@ jobs:
           cp core/build/test-results/test/TEST-*.xml "$RUNNER_TEMP/get-fucked-recharged/six-bypass/"
       - name: Verify paid recharge continuation six-central
         run: |
-          ./gradlew :core:test --tests '*GetFuckedRouteTest' \
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' -Droute.testTimeoutSeconds=600 \
             -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_hourglass_northpool_six" \
             -Droute.stableHash=true -Droute.noSnapshots=true  \
             -Droute.expectedEnd="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_hourglass_central_six"
@@ -655,7 +680,7 @@ jobs:
           cp core/build/test-results/test/TEST-*.xml "$RUNNER_TEMP/get-fucked-recharged/six-central/"
       - name: Verify paid recharge continuation six-skeleton
         run: |
-          ./gradlew :core:test --tests '*GetFuckedRouteTest' \
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' -Droute.testTimeoutSeconds=600 \
             -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_hourglass_central_six" \
             -Droute.stableHash=true -Droute.noSnapshots=true -Droute.hourglassRangedSkeleton=true \
             -Droute.expectedEnd="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_hourglass_skeleton_six"
@@ -663,7 +688,7 @@ jobs:
           cp core/build/test-results/test/TEST-*.xml "$RUNNER_TEMP/get-fucked-recharged/six-skeleton/"
       - name: Verify paid recharge continuation dm-rage
         run: |
-          ./gradlew :core:test --tests '*GetFuckedRouteTest' \
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' -Droute.testTimeoutSeconds=600 \
             -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_hourglass_skeleton_six" \
             -Droute.stableHash=true -Droute.noSnapshots=true -Droute.hourglassMeleeDM=true -Droute.hourglassRageAfterFirstHit=true \
             -Droute.expectedEnd="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_hourglass_dm_rage"
@@ -671,7 +696,7 @@ jobs:
           cp core/build/test-results/test/TEST-*.xml "$RUNNER_TEMP/get-fucked-recharged/dm-rage/"
       - name: Verify paid recharge continuation dm-finish
         run: |
-          ./gradlew :core:test --tests '*GetFuckedRouteTest' \
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' -Droute.testTimeoutSeconds=600 \
             -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_hourglass_dm_rage" \
             -Droute.stableHash=true -Droute.noSnapshots=true  \
             -Droute.expectedEnd="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_hourglass_bless_earned"
@@ -679,7 +704,7 @@ jobs:
           cp core/build/test-results/test/TEST-*.xml "$RUNNER_TEMP/get-fucked-recharged/dm-finish/"
       - name: Verify paid recharge continuation escape
         run: |
-          ./gradlew :core:test --tests '*GetFuckedRouteTest' \
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' -Droute.testTimeoutSeconds=600 \
             -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_hourglass_bless_earned" \
             -Droute.stableHash=true -Droute.noSnapshots=true  \
             -Droute.expectedEnd="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_hourglass_escape"
@@ -687,7 +712,7 @@ jobs:
           cp core/build/test-results/test/TEST-*.xml "$RUNNER_TEMP/get-fucked-recharged/escape/"
       - name: Verify paid recharge continuation first-bless
         run: |
-          ./gradlew :core:test --tests '*GetFuckedRouteTest' \
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' -Droute.testTimeoutSeconds=600 \
             -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_hourglass_escape" \
             -Droute.stableHash=true -Droute.noSnapshots=true  \
             -Droute.expectedEnd="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_hourglass_first_bless"
@@ -695,7 +720,7 @@ jobs:
           cp core/build/test-results/test/TEST-*.xml "$RUNNER_TEMP/get-fucked-recharged/first-bless/"
       - name: Verify paid recharge continuation thief
         run: |
-          ./gradlew :core:test --tests '*GetFuckedRouteTest' \
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' -Droute.testTimeoutSeconds=600 \
             -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_hourglass_first_bless" \
             -Droute.stableHash=true -Droute.noSnapshots=true  \
             -Droute.expectedEnd="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_hourglass_thief_exchange"
@@ -709,7 +734,7 @@ jobs:
           path: ${{ runner.temp }}/get-fucked-recharged/
       - name: Replay earned Goo approach and first ranged retreat
         run: >-
-          ./gradlew :core:test --tests '*GetFuckedRouteTest'
+          ./gradlew :core:test --tests '*GetFuckedRouteTest' -Droute.testTimeoutSeconds=600
           -Droute.resume="$GITHUB_WORKSPACE/core/src/test/resources/apd/get_fucked_seed266_floor5"
           -Droute.stableHash=true -Droute.noSnapshots=true
       - name: Upload test results
