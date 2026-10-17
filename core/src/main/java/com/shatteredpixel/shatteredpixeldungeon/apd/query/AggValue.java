@@ -67,4 +67,8 @@ public final class AggValue {
 	public boolean isInferred(){
 		return (flags & INFERRED) != 0;
 	}
+
+	public boolean isLegacy(){
+		return (flags & LEGACY) != 0;
+	}
 }

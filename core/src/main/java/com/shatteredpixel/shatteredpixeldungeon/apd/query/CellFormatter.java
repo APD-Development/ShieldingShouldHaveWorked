@@ -211,6 +211,7 @@ public final class CellFormatter {
 			prefix = prefix + "~";
 			if (state == CellText.EXACT) state = CellText.INFERRED;
 		}
+		if (v.isLegacy() && state == CellText.EXACT) state = CellText.LEGACY;
 		String body;
 		String detail = v.contributing + " of " + v.total + " known";
 		ColumnDef c = a.column.isEmpty() ? null : def.column(a.column);
@@ -242,6 +243,7 @@ public final class CellFormatter {
 				body = c != null && c.type == ColumnDef.Type.NUM ? value(c, Math.round(v.value)) : Long.toString(Math.round(v.value));
 		}
 		if (v.isUnsure()) detail += "; some entries could not be judged";
+		if (v.isLegacy()) detail += "; includes imported ranking data";
 		boolean small = a.fn != Aggregate.Fn.COUNT && v.contributing < SMALL_SAMPLE;
 		if (small) detail += "; small sample";
 		String compactBody = body;
