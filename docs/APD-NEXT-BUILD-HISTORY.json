@@ -1,39 +1,31 @@
 {
   "date": "2026-10-17",
-  "previous_source": "9a712453443573f2027150cb204cb6be304da57c",
-  "previous_run": 39000124500,
-  "previous_label": "Codex TEST 264",
+  "previous_source": "e678d38c4c34bc755ed0cd501f7f44c88bc3c465",
+  "previous_run": 39011090870,
+  "previous_label": "Codex TEST 266",
   "changes": [
     {
       "category": "Bug Fixes",
       "sprite": "ICON_PREFS",
-      "title": "Keep hidden questions consistent",
-      "text": "When Hidden details is turned off, remove internal measures, split fields and conditions before redrawing or answering so the displayed question and executed query remain identical.",
+      "title": "Reject impossible imported dates",
+      "text": "Keep malformed legacy calendar dates unknown instead of normalizing them into false later dates; valid Gregorian leap days remain accepted.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/Questions.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndUimsdAsk.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/QuestionsTest.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowBuilders.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/DatasetBuildersTest.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Retain post-TEST264 acceptance",
-      "text": "Preserve verified and staged TEST264 receipts plus the accepted UIMSD self-test, Home scope, query-formatting and query-serialization checkpoints with their exact core-only evidence.",
+      "title": "Preserve TEST266 and date evidence",
+      "text": "Retain the complete TEST266 verification and staging records, the exact one-failure legacy-date reproduction, the corrected full core pass and the current review handoff.",
       "paths": [
-        ".github/workflows/codex-alpha-preview-stage.yml",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/QueryEngineTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdHomePresentationTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdSelfTestTest.java",
         "docs/APD-ALPHA-PREPARATION.json",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/APD-CODEX-CORE-TEST-REQUEST.txt",
-        "docs/APD-TEST264-AGGREGATE-PROVENANCE-2026-10-17.md",
-        "docs/APD-TEST264-VERIFICATION-2026-10-17.json",
-        "docs/APD-UIMSD-HOME-SCOPE-ACCEPTANCE-2026-10-17.md",
-        "docs/APD-UIMSD-QUERY-CODEC-ACCEPTANCE-2026-10-17.md",
+        "docs/APD-TEST266-UIMSD-HIDDEN-QUESTION-2026-10-17.md",
+        "docs/APD-TEST266-VERIFICATION-2026-10-17.json",
         "docs/APD-UIMSD-REVIEW-CONTINUATION-2026-10-17.json",
-        "docs/APD-UIMSD-SELFTEST-PRIVACY-ACCEPTANCE-2026-10-17.md",
         "docs/HANDOFF.md",
         "docs/UIMSD-AUDIT-BUG-LOG.md",
         "docs/WORK-COMPLETED-LEDGER.md",
@@ -41,5 +33,5 @@
       ]
     }
   ],
-  "commentary": "TEST265 is pending its complete gate; verified staged TEST264 and published TEST262 remain fallbacks. No automatic publication, tester distribution or physical-phone claim."
+  "commentary": "TEST267 is pending its complete gate; verified staged TEST266 and published TEST262 remain fallbacks. No automatic publication, tester distribution or physical-phone claim."
 }
