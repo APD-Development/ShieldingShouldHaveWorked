@@ -4,7 +4,7 @@
   "component_review": {
     "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/CellText.java",
     "blob": "922faa2f9d4c6d7f07cea8c1b45ce36a1647cb9b",
-    "lines": 51,
+    "lines": 50,
     "complete": true,
     "new_production_defect_confirmed": false
   },

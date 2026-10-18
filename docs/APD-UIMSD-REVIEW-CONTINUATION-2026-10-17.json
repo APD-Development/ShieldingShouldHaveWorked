@@ -405,7 +405,7 @@
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/CellText.java",
       "sha": "922faa2f9d4c6d7f07cea8c1b45ce36a1647cb9b",
-      "lines": 51,
+      "lines": 50,
       "reviewed": true,
       "basis": "Complete current-source review of stable display-provenance identifiers, immutable text/state/small-sample fields, constructor defaults and table, Home, detail and report consumers found no production defect. A retained direct contract now prevents state-id drift and loss of normal/small-sample semantics.",
       "retained_test": {
