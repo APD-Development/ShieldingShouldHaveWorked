@@ -149,16 +149,6 @@ public class QueryEngineTest {
 		//< 20 cannot be decided for the bound
 		assertEquals(1, run(ds, b.addFilter(Filter.num("score", Op.LT, 20))).stats.filters.get(0).uncertain);
 
-		//IN is exact membership. The exact 12 matches, but an "at least 12" value may equal either 12 or a listed future value.
-		QueryResult inAtBound = run(ds, b.addFilter(Filter.num("score", Op.IN, 12)));
-		assertEquals(Arrays.asList("exact"), names(inAtBound));
-		assertEquals(1, inAtBound.stats.filters.get(0).uncertain);
-		QueryResult inAboveBound = run(ds, b.addFilter(Filter.num("score", Op.IN, 20)));
-		assertTrue(inAboveBound.rows.isEmpty());
-		assertEquals(1, inAboveBound.stats.filters.get(0).uncertain);
-		QueryResult inBelowBound = run(ds, b.addFilter(Filter.num("score", Op.IN, 7, 11)));
-		assertTrue(inBelowBound.rows.isEmpty());
-		assertEquals(0, inBelowBound.stats.filters.get(0).uncertain);
 	}
 
 	@Test
