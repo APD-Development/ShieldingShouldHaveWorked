@@ -1,9 +1,9 @@
 {
-  "source": "349f7976fc6a026fd4fb9dead2ca2e3a6e8c9462",
-  "recorded_at": "2026-10-18T12:39:16Z",
+  "source": "64beb4867feb73eb03257f6cbe1a32648e84ae10",
+  "recorded_at": "2026-10-18T14:01:17.290Z",
   "complete": false,
   "prior_checkpoint_preserved": "docs/APD-UIMSD-REVIEW-CHECKPOINT-2026-10-13.json",
-  "count_note": "Current-blob reconciliation found 96 exact machine-recorded entries before this continuation. Datasets.java, AggValue.java, UimsdSelfTest.java, UimsdHome.java, QueryCodec.java, Question.java, Questions.java, RowBuilders.java, RowCodec.java, DatasetStore.java, QueryEngine.java, ReportExport.java, ReportBuilder.java, ReportRenderer.java, Report.java, ResultTable.java, Catalog.java, BossClasses.java, Op.java, UimsdTopicSearch.java, CellFormatter.java, Aggregate.java and CellText.java add twenty-three reviewed current production blobs, for 119 exact reviewed paths; prose-only completed reviews remain separate until reconciled.",
+  "count_note": "Current-blob reconciliation found 96 exact machine-recorded entries before this continuation. The prior twenty-three reviewed blobs plus ChoicePage.java and ClericHistory.java bring the exact reviewed production-path count to 121; prose-only completed reviews remain separate until reconciled.",
   "entries": [
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/Datasets.java",
@@ -414,6 +414,48 @@
         "source_commit": "b87efdc6bc4f8a62bc4828dbc1e5d4a7bc404ad5",
         "methods": 3
       }
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/ChoicePage.java",
+      "sha": "e549f9518e69b36f15850680c1a44c089b8d89b5",
+      "lines": 16,
+      "reviewed": true,
+      "basis": "Complete current-source review of page-count arithmetic, negative/oversized page clamps, empty/exact/partial pages and WndUimsdReport comparison navigation found no production defect. Existing retained tests already cover reachability and Integer.MAX_VALUE without overflow.",
+      "supporting_reads": [
+        {
+          "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndUimsdReport.java",
+          "sha": "793c93a1cf5343bbbe9bdd19dfb5b5ff600c1c13"
+        }
+      ],
+      "retained_test": {
+        "path": "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/ChoicePageTest.java",
+        "sha": "7744d9210f8f62c95a8c0875d8db98c536ecf66d",
+        "methods": 3
+      }
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/ClericHistory.java",
+      "sha": "fd4979eb2a148aa4a173e474f2730c2638c9397e",
+      "lines": 56,
+      "reviewed": true,
+      "basis": "Complete current-source review with the background GrudgeHooks consumer confirmed that a finished Cleric row with recorded class but missing outcome was counted as a real run, contradicting the explicit no-estimation contract. The bounded guard now requires both fields before counting.",
+      "supporting_reads": [
+        {
+          "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/GrudgeHooks.java",
+          "sha": "7b51a2755ac2fa2cab9b305bbbb6b9ae3615c21a"
+        }
+      ],
+      "confirmed_defect": "The run counter incremented before the outcome-presence check.",
+      "retained_test": {
+        "path": "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/ClericHistoryTest.java",
+        "sha": "d46d9ff2e5ea802d4eef3ce22337cf57f37b8679",
+        "source_commit": "e098f1b1fccf55137d70bf7aa176680877ce1671",
+        "fix_commit": "64beb4867feb73eb03257f6cbe1a32648e84ae10",
+        "methods": 3,
+        "new_method": "finishedRowsWithoutARecordedOutcomeAreNotInventedAsRuns",
+        "reproduction_run": 39133186514,
+        "corrected_run": 39133418875
+      }
     }
   ],
   "supporting_reads": [
@@ -488,14 +530,14 @@
     "application_source_changed": false
   },
   "latest_application_evidence": {
-    "application_source": "349f7976fc6a026fd4fb9dead2ca2e3a6e8c9462",
-    "request_commit": "87254f62f5430e1da050fdd77108e94495e78e77",
-    "run_id": 39120394227,
-    "started_at": "2026-10-18T10:43:44Z",
-    "completed_at": "2026-10-18T10:59:19Z",
-    "target": "Exact UIMSD fixed-point filter decimal parsing and long boundaries",
-    "core_tests": 1821,
-    "core_suites": 360,
+    "application_source": "2b85088c8745e4163994c84858a4dca8398f0e2d",
+    "request_commit": "3b1f29b87d5658bdaf1b7ecc1b019a48955a49d6",
+    "run_id": 39131918637,
+    "started_at": "2026-10-18T13:31:28Z",
+    "completed_at": "2026-10-18T13:46:45Z",
+    "target": "Exact offline public-schema UIMSD question grammar and native search selection",
+    "core_tests": 1831,
+    "core_suites": 362,
     "core_failures": 0,
     "core_errors": 0,
     "core_skipped": 0,
@@ -505,44 +547,56 @@
     "android_skipped": 0,
     "required_images_reviewed": 57,
     "image_dimensions": "320x640",
-    "visual_review": "three contact sheets; every required PNG decoded; no blank, corrupt or obvious clipping regression",
-    "apk_name": "ADHD-Pixel-Dungeon-CODEX-TEST-278.apk",
-    "apk_sha256": "3f7782068e1be78b9fc1f1e0e69b5ca2e880f0d9bacfc84c00a2ea0a476dbd30",
-    "apk_bytes": 38615171,
-    "apk_artifact_id": 12133194546,
-    "apk_artifact_bytes": 36116555,
-    "apk_artifact_digest": "sha256:12c196dc60657c17b18583a02d8db326c977a345202586fb4b3c8ee717509809",
-    "core_artifact_id": 12133953164,
-    "core_artifact_bytes": 851663,
-    "core_artifact_digest": "sha256:1d65bb29be0f49321f557872182b61623028d4b1b83e5839f00199c74dc129d4",
-    "android_artifact_id": 12133859780,
-    "android_artifact_bytes": 4958627,
-    "android_artifact_digest": "sha256:fa5fb60aea30d498ba5760f7e463d652f79feaceb085ac4b9c92f4c1b2e33366",
-    "application_id": "com.charltonchris29.adhdpixeldungeon.indev",
-    "signing_certificate_sha256": "067688b3ab6bd5820a67f4c1ba7d5859db578173771cf31d3252b3e4e012246e",
-    "signing_public_key_sha256": "efc113902c65a6825990ab9e496601fd9e08a55612238d0641de04e5c15ce288",
-    "signing_and_application_id_match_test277": true,
-    "history_previous_application_source": "10df853e6d505ea080abaecde98c793f76397e12",
-    "history_previous_producer": "ec373bc8d52f682d12799b0b7e1d78afa83deead",
-    "history_previous_run": 39094336421,
+    "visual_review": "All decoded; three contact sheets manually inspected with no blank, corrupt or obvious clipping regression.",
+    "apk_name": "ADHD-Pixel-Dungeon-CODEX-TEST-279.apk",
+    "apk_sha256": "4c49b3d43b0bd9b9969353d10df420fd77a9f688f636fee1697930ed68d6642c",
+    "apk_bytes": 38615958,
+    "apk_artifact_id": 12137843296,
+    "apk_artifact_bytes": 36118032,
+    "apk_artifact_digest": "sha256:f6485980b01134cc2c42148b6592d4dc4359f600195d3a2d4b6e8572ca08ff23",
+    "core_artifact_id": 12138138806,
+    "core_artifact_bytes": 854596,
+    "core_artifact_digest": "sha256:147cba53de452de97dfb63577d2594f980237d02c5c32a91dac035341ed69e9f",
+    "android_artifact_id": 12138707257,
+    "android_artifact_bytes": 4944355,
+    "android_artifact_digest": "sha256:e1deabb1fee2d9961151e0fda16277184e227c27c31a391b227d6878c599ee71",
+    "history_previous_application_source": "349f7976fc6a026fd4fb9dead2ca2e3a6e8c9462",
+    "history_previous_producer": "87254f62f5430e1da050fdd77108e94495e78e77",
+    "history_previous_run": 39120394227,
     "supplemental_display": {
-      "run_id": 39120394228,
-      "passed_profiles": [
+      "run_id": 39131918709,
+      "attempt_1": {
+        "passed": [
+          "compact-virtual",
+          "small-virtual"
+        ],
+        "failed": [
+          "short-landscape",
+          "m53-representative",
+          "square-virtual"
+        ],
+        "failure": "Native title condition did not become true; failed captures retained."
+      },
+      "attempt_2": {
+        "scope": "failed jobs only against the unchanged TEST279 APK",
+        "passed": [
+          "short-landscape",
+          "m53-representative",
+          "square-virtual"
+        ],
+        "failed": []
+      },
+      "accepted_profiles": [
+        "compact-virtual",
+        "small-virtual",
         "short-landscape",
         "m53-representative",
-        "square-virtual",
-        "compact-virtual"
-      ],
-      "failed_profiles": [
-        "small-virtual"
-      ],
-      "failure": "Native title condition did not become true; post-failure screenshot was not a valid PNG",
-      "accepted_required_gate": false
+        "square-virtual"
+      ]
     },
     "staging": {
-      "run_id": 39120394215,
+      "run_id": 39131918699,
       "conclusion": "failure",
-      "preparation_source": "abbd936515873384a6d299f037ec925cc5185f51",
       "failure": "Publication commit changes application/build inputs",
       "staged": false
     },
@@ -930,5 +984,94 @@
     "artifact_bytes": 849132,
     "artifact_digest": "sha256:41cb9ac7c558ff55ec45dd57dbdfaacfb43fbc578f566413384fe822e065e635",
     "application_source_changed": true
+  },
+  "prior_application_evidence_test278": {
+    "application_source": "349f7976fc6a026fd4fb9dead2ca2e3a6e8c9462",
+    "request_commit": "87254f62f5430e1da050fdd77108e94495e78e77",
+    "run_id": 39120394227,
+    "started_at": "2026-10-18T10:43:44Z",
+    "completed_at": "2026-10-18T10:59:19Z",
+    "target": "Exact UIMSD fixed-point filter decimal parsing and long boundaries",
+    "core_tests": 1821,
+    "core_suites": 360,
+    "core_failures": 0,
+    "core_errors": 0,
+    "core_skipped": 0,
+    "android_tests": 38,
+    "android_failures": 0,
+    "android_errors": 0,
+    "android_skipped": 0,
+    "required_images_reviewed": 57,
+    "image_dimensions": "320x640",
+    "visual_review": "three contact sheets; every required PNG decoded; no blank, corrupt or obvious clipping regression",
+    "apk_name": "ADHD-Pixel-Dungeon-CODEX-TEST-278.apk",
+    "apk_sha256": "3f7782068e1be78b9fc1f1e0e69b5ca2e880f0d9bacfc84c00a2ea0a476dbd30",
+    "apk_bytes": 38615171,
+    "apk_artifact_id": 12133194546,
+    "apk_artifact_bytes": 36116555,
+    "apk_artifact_digest": "sha256:12c196dc60657c17b18583a02d8db326c977a345202586fb4b3c8ee717509809",
+    "core_artifact_id": 12133953164,
+    "core_artifact_bytes": 851663,
+    "core_artifact_digest": "sha256:1d65bb29be0f49321f557872182b61623028d4b1b83e5839f00199c74dc129d4",
+    "android_artifact_id": 12133859780,
+    "android_artifact_bytes": 4958627,
+    "android_artifact_digest": "sha256:fa5fb60aea30d498ba5760f7e463d652f79feaceb085ac4b9c92f4c1b2e33366",
+    "application_id": "com.charltonchris29.adhdpixeldungeon.indev",
+    "signing_certificate_sha256": "067688b3ab6bd5820a67f4c1ba7d5859db578173771cf31d3252b3e4e012246e",
+    "signing_public_key_sha256": "efc113902c65a6825990ab9e496601fd9e08a55612238d0641de04e5c15ce288",
+    "signing_and_application_id_match_test277": true,
+    "history_previous_application_source": "10df853e6d505ea080abaecde98c793f76397e12",
+    "history_previous_producer": "ec373bc8d52f682d12799b0b7e1d78afa83deead",
+    "history_previous_run": 39094336421,
+    "supplemental_display": {
+      "run_id": 39120394228,
+      "passed_profiles": [
+        "short-landscape",
+        "m53-representative",
+        "square-virtual",
+        "compact-virtual"
+      ],
+      "failed_profiles": [
+        "small-virtual"
+      ],
+      "failure": "Native title condition did not become true; post-failure screenshot was not a valid PNG",
+      "accepted_required_gate": false
+    },
+    "staging": {
+      "run_id": 39120394215,
+      "conclusion": "failure",
+      "preparation_source": "abbd936515873384a6d299f037ec925cc5185f51",
+      "failure": "Publication commit changes application/build inputs",
+      "staged": false
+    },
+    "published": false,
+    "distributed": false,
+    "physical_phone_tested": false,
+    "owner_save_install_over_tested": false
+  },
+  "latest_core_evidence_cleric_history": {
+    "source_commit": "64beb4867feb73eb03257f6cbe1a32648e84ae10",
+    "run_id": 39133418875,
+    "target": "Require a recorded outcome before counting a finished Cleric history row",
+    "core_tests": 1832,
+    "suites": 362,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "focused_class": "ClericHistoryTest",
+    "focused_methods": 3,
+    "artifact_id": 12138877302,
+    "artifact_bytes": 851783,
+    "artifact_digest": "sha256:017cc3a013e6fc470592a70b557cab953e957b9f28d1ce8cb7c4bde66dd782eb",
+    "retained_failed_run": {
+      "source_commit": "6acf81f65100ede201a5613e2cb6fb8a80725f87",
+      "run_id": 39133186514,
+      "tests": 1832,
+      "failures": 1,
+      "artifact_id": 12139205223,
+      "artifact_bytes": 855380,
+      "artifact_digest": "sha256:685c3a5ea34f6a6146eff329d85f97a108eb4d8dc58f6c2e7e65b4e9d133d85c",
+      "failed_method": "finishedRowsWithoutARecordedOutcomeAreNotInventedAsRuns"
+    }
   }
 }

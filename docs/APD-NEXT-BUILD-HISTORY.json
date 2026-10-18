@@ -1,42 +1,36 @@
 {
   "date": "2026-10-18",
-  "previous_source": "87254f62f5430e1da050fdd77108e94495e78e77",
-  "previous_run": 39120394227,
-  "previous_label": "Codex TEST 278",
+  "previous_source": "3b1f29b87d5658bdaf1b7ecc1b019a48955a49d6",
+  "previous_run": 39131918637,
+  "previous_label": "Codex TEST 279",
   "changes": [
     {
       "category": "Statistics / UIMSD",
       "sprite": "ICON_CHECKED",
-      "title": "Ask supported questions offline",
-      "text": "The UIMSD search accepts exact public-schema questions about counts, totals, averages, highs, lows and medians, optionally split by one public field. Results go into the existing question builder. Unsupported phrases and ambiguous or internal fields fail closed without silently dropping conditions.",
+      "title": "Count only complete recorded Cleric history",
+      "text": "Finished Cleric history rows now contribute to the private history facts only when both class and outcome are recorded. Incomplete rows remain unknown instead of being invented as runs; valid wins and deaths are unchanged.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdTopicSearch.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndUimsdAsk.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/ClericHistory.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Protect question parsing and native selection",
-      "text": "Ten retained topic-search tests cover deterministic names, Unicode, unknown and hidden information, ambiguity, source-independent schemas and the generated query. The native UIMSD screen regression now taps the search control, enters a sample question and selects the result. Earlier aggregate and display-state tests remain.",
+      "title": "Reproduce and retain the incomplete-row boundary",
+      "text": "A focused regression first failed alone against the prior counter and then passed with the outcome-presence guard. The complete corrected core suite passed 1,832 methods in 362 suites.",
       "paths": [
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdScreensDeviceTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdTopicSearchTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/AggregateContractTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/CellTextContractTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/ClericHistoryTest.java",
         "docs/APD-CODEX-CORE-TEST-REQUEST.txt"
       ]
     },
     {
       "category": "Developer Commentary",
       "sprite": "ICON_CHECKED",
-      "title": "Preserve verified UIMSD audit evidence",
-      "text": "Retain all audits, fixtures, core verification records and reviewed paths since the immediately previous compiled TEST278 APK. No prior verified history is removed, no scoring or gameplay is changed, and private build evidence is separate from publication or physical-phone results.",
+      "title": "Preserve TEST279 and audit evidence",
+      "text": "Record the verified TEST279 APK, its initial supplemental failures and unchanged-APK retry, the ChoicePage and ClericHistory reviews, exact core artifacts, and the pending TEST280 scope. Publication remains separate.",
       "paths": [
-        "docs/APD-TEST278-CELLFORMATTER-VERIFICATION-2026-10-18.json",
-        "docs/APD-UIMSD-AGGREGATE-REVIEW-2026-10-18.json",
-        "docs/APD-UIMSD-CELLFORMATTER-REVIEW-2026-10-18.json",
-        "docs/APD-UIMSD-CELLTEXT-REVIEW-2026-10-18.json",
+        "docs/APD-TEST279-OFFLINE-QUESTIONS-VERIFICATION-2026-10-18.json",
+        "docs/APD-TEST280-CLERIC-HISTORY-CANDIDATE-2026-10-18.md",
         "docs/APD-UIMSD-REVIEW-CONTINUATION-2026-10-17.json",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",
@@ -45,5 +39,5 @@
       ]
     }
   ],
-  "commentary": "Core-only run 39131468925 at source 2b85088c8745e4163994c84858a4dca8398f0e2d passed 1,831 core tests in 362 XML suites with zero failures/errors/skips and ten focused UimsdTopicSearchTest methods. Report artifact 12137454243 ZIP SHA-256 e5a4e6a3a991a29ddde36d1d3befc5073134e12cb550eb60743834bc22f0636d. Intentionally request complete private Android gate against immediately previous compiled TEST278 APK from producer commit 87254f62f5430e1da050fdd77108e94495e78e77 / run 39120394227, embedded label Codex TEST 278, raw APK SHA-256 3f7782068e1be78b9fc1f1e0e69b5ca2e880f0d9bacfc84c00a2ea0a476dbd30. Require debug/history/core/API34 native 38 tests and 57 reviewed PNGs. Candidate pending. No automatic staging, publication, tester distribution, owner-save install-over or physical-device claims."
+  "commentary": "Core-only run 39133418875 at application source 64beb4867feb73eb03257f6cbe1a32648e84ae10 passed 1,832 tests in 362 XML suites with zero failures/errors/skips after run 39133186514 reproduced exactly the one intended incomplete-outcome assertion. Intentionally request complete private TEST280 Android gate against immediately previous compiled TEST279 producer 3b1f29b87d5658bdaf1b7ecc1b019a48955a49d6 / run 39131918637, embedded label Codex TEST 279, raw APK SHA-256 4c49b3d43b0bd9b9969353d10df420fd77a9f688f636fee1697930ed68d6642c. Require debug/history/core/API34 native 38 tests and 57 reviewed PNGs. Candidate pending; no automatic staging, publication, tester distribution, owner-save install-over or physical-device claim."
 }
