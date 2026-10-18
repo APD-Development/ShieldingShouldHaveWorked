@@ -1,6 +1,6 @@
-APD CORE-ONLY TEST REQUEST - UIMSD exact offline question grammar 2026-10-18T13:24:50.558Z
-candidate=current latest head containing schema-backed simple question parser plus native search UI regression
-checks=full ./gradlew :core:test including UimsdTopicSearchTest now 10 methods; preserve other existing tests
-scope=intentional new application source, no gameplay/scoring/history/save changes; standalone core-only prerequisite, NOT APK acceptance
-next=after passing core and reconciling concurrent work, request one exact full private Android gate against prior compiled TEST278 (source 87254f62f5430e1da050fdd77108e94495e78e77 / run39120394227) with complete path history, 38 native tests including UI interaction and 57 reviewed screenshots
-restriction=no automatic publication/staging/tester distribution; leave docs/APD-CODEX-BUILD-REQUEST.txt unchanged until intentional full candidate
+APD CORE-ONLY TEST REQUEST - reproduce incomplete Cleric history count 2026-10-18T13:49:00Z
+candidate=e098f1b1fccf55137d70bf7aa176680877ce1671 adds only the focused ClericHistory regression; production source is intentionally unchanged
+checks=full ./gradlew :core:test; expect exactly the new finishedRowsWithoutARecordedOutcomeAreNotInventedAsRuns assertion to fail before the bounded correction
+scope=test-only reproduction of UIMSD-derived history accuracy; no APK build, gameplay, scoring, saves, raw history, application ID or signing change
+next=preserve the exact failure, then require a one-line production correction and a new complete core-only pass before any Android candidate request
+restriction=no automatic publication/staging/tester distribution; docs/APD-CODEX-BUILD-REQUEST.txt remains unchanged
