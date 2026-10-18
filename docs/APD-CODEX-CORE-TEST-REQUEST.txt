@@ -1,7 +1,6 @@
-APD CORE-ONLY TEST REQUEST - Op filter contract coverage 2026-10-18T08:36:48Z
-base=061f4909085e56ecd704ed656580a0feebcac8bf
-review=complete current-source review of Op.java blob 5d9b8e177a949e430e65522a98603873ab6ac258 across per-type picker operators, order, value arity and internal drilldown predicates
-finding=no production defect confirmed; direct coverage was missing for exact NUM/TEXT/ENUM operator sets and the exclusion of internal group/identifier predicates from ordinary player filters
-check=complete core unit suite including OpContractTest and all existing query/UIMSD regressions
-scope=bounded filter-model regression coverage; no production, gameplay, scoring, save/history data, RNG, APK, publication or distribution change
-next=if core passes, record exact evidence in HANDOFF, completed ledger, component receipt and UIMSD audit continuation without changing the executable build request
+APD CORE-ONLY TEST REQUEST - UIMSD topic-search boundary coverage 2026-10-18T09:35:05Z
+base=13fb367962365273866856ffb91d05e3303eb1bd
+review=complete current-source review of UimsdTopicSearch.java blob 1e0f0a2b92192e80190ca1a7b6f58a96a318b560 across schema-only matching, privacy, normalization, result ordering/limit and question-builder navigation
+finding=no production defect confirmed; direct coverage was missing for the exact 48-hit prefix and stale-question reset on dataset navigation
+expected=1820 tests across 360 suites; focused UimsdTopicSearchTest has 6 methods
+scope=test-only; do not run Android build, publish, stage or distribute; docs/APD-CODEX-BUILD-REQUEST.txt remains unchanged

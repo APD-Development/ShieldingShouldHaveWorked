@@ -67,4 +67,40 @@ public class UimsdTopicSearchTest {
         assertEquals(Arrays.asList("name"), grouped.groupBy);
         assertFalse(grouped.showInternal);
     }
+
+    @Test public void resultLimitPreservesCatalogAndColumnOrder() {
+        Catalog c = new Catalog();
+        for (int i = 0; i < 30; i++) {
+            DatasetDef def = new DatasetDef("match-" + i, "Match " + i, "Catalog match");
+            def.add(ColumnDef.text("match-column", "Match column"));
+            c.add(QuerySupport.dataset(def, Collections.singletonList(new Row("row-" + i, null, "run-" + i, 1))));
+        }
+        List<UimsdTopicSearch.Hit> hits = UimsdTopicSearch.find(c, "match");
+        assertEquals(48, hits.size());
+        assertEquals("match-0", hits.get(0).datasetId);
+        assertEquals("", hits.get(0).columnId);
+        assertEquals("match-column", hits.get(1).columnId);
+        assertEquals("match-23", hits.get(46).datasetId);
+        assertEquals("", hits.get(46).columnId);
+        assertEquals("match-column", hits.get(47).columnId);
+    }
+
+    @Test public void datasetTopicClearsStaleQuestionPartsBeforeOpeningBuilder() {
+        Catalog c = catalog();
+        Question before = Question.about("old")
+                .withMeasure(Question.Measure.TOTAL, "old-total")
+                .withPer(PerUnit.Unit.RUN)
+                .withGroupBy(Collections.singletonList("old-group"))
+                .withScope(new Scope(Scope.Rules.ALL, "rules", true, true, true, true));
+        UimsdTopicSearch.Hit topic = UimsdTopicSearch.find(c, "things").get(0);
+        Question opened = topic.question(before, c.dataset("things").def);
+        assertEquals("things", opened.dataset);
+        assertEquals(Question.Measure.COUNT, opened.measure);
+        assertEquals("", opened.column);
+        assertNull(opened.per);
+        assertTrue(opened.groupBy.isEmpty());
+        assertTrue(opened.filters.isEmpty());
+        assertSame(before.scope, opened.scope);
+        assertFalse(opened.showInternal);
+    }
 }
