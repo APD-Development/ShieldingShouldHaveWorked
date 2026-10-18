@@ -1,3 +1,4 @@
+Quality of Life	ICON_INFO	Examine every item in a pile	Inspect every item in an open floor pile, top item first, with its existing visible icon, name and stack quantity. Scroll large piles and tap an item for its normal description; examining never picks anything up or reveals unidentified properties.
 New Content	ICON_CHALLENGE_COLOR	Custom Dungeon Rules	Customize combat, survival, enemy spawning and loot with 18 experimental controls; your selected rules stay fixed for each run.
 New Content	ITEM_SCROLL_KAUNAN	Choose your upgrades	Choose 1–60 dungeon Scrolls of Upgrade; the normal setting remains 15.
 Statistics / UIMSD	ICON_STATS	Your dungeon history	Explore recorded runs, combat events and individual item histories in UIMSD.

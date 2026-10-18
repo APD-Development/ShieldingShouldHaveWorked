@@ -1,3 +1,6 @@
+Quality of Life:
+- Tile examination of open multi-item piles shows every item in top-first order with visible identity, icons and quantities. Inspect an item for its normal description without collecting it, advancing turns or identifying anything.
+
 APD 4.0.8-apd
 Added:
 - UIMSD interface and wording pass: dialogs are now grouped into sections with a short description under each choice and the current choice marked; filtering is a guided three-step flow that offers real choices (your classes, Won/Died/Abandoned, difficulty levels) instead of typed text, with every operator still available; tables show full two-line headings, a selected row, and say when more columns are off to the right; Options, Notes, Sort, Columns and the table list are laid out in sections; row and group sheets are easier to read; the Guide has sections and a plain-language glossary; the tour, status lines, column names and reports use player words (rules, runs, items, worked out, recording version); the first-run Home welcomes you and offers the tour. Nothing was removed and the ? >= ~ hidden marks are unchanged
