@@ -35,7 +35,10 @@ import java.util.HashMap;
 
 public class GamesInProgress {
 	
-	public static final int MAX_SLOTS = HeroClass.values().length;
+	public static final int SLOTS_PER_CLASS = 20;
+	public static final int LEGACY_SLOT_COUNT = 6;
+	public static final int MAX_SLOTS = SLOTS_PER_CLASS * HeroClass.values().length;
+	public static final int MAX_SLOT_ID = LEGACY_SLOT_COUNT + MAX_SLOTS;
 	
 	//null means we have loaded info and it is empty, no entry means unknown.
 	private static HashMap<Integer, Info> slotStates = new HashMap<>();
@@ -70,16 +73,67 @@ public class GamesInProgress {
 		}
 	}
 	
-	public static int firstEmpty(){
-		for (int i = 1; i <= MAX_SLOTS; i++){
-			if (check(i) == null) return i;
-		}
-		return -1;
-	}
-	
+    /** Class-specific permanent physical IDs start above the original game1..game6. */
+    public static int dedicatedSlot(HeroClass heroClass, int index) {
+        if (heroClass == null || index < 0 || index >= SLOTS_PER_CLASS)
+            throw new IllegalArgumentException("class/index");
+        return LEGACY_SLOT_COUNT + heroClass.ordinal() * SLOTS_PER_CLASS + index + 1;
+    }
+
+    /** Old physical folders are never renumbered. Existing legacy saves count toward the owner's 20 slots. */
+    public static ArrayList<Integer> slotsFor(HeroClass heroClass) {
+        java.util.Map<Integer, HeroClass> legacy = new java.util.LinkedHashMap<>();
+        for (int i = 1; i <= LEGACY_SLOT_COUNT; i++) {
+            Info saved = check(i);
+            if (saved != null && saved.heroClass != null) legacy.put(i, saved.heroClass);
+        }
+        return slotsFor(heroClass, legacy);
+    }
+
+    /** Pure allocation plan, independent of the filesystem, also used by migration tests. */
+    public static ArrayList<Integer> slotsFor(HeroClass heroClass, java.util.Map<Integer, HeroClass> legacy) {
+        if (heroClass == null) throw new IllegalArgumentException("hero class");
+        ArrayList<Integer> slots = new ArrayList<>(SLOTS_PER_CLASS);
+        for (int i = 1; i <= LEGACY_SLOT_COUNT; i++) {
+            if (heroClass == legacy.get(i)) slots.add(i);
+        }
+        for (int i = 0; slots.size() < SLOTS_PER_CLASS && i < SLOTS_PER_CLASS; i++) {
+            slots.add(dedicatedSlot(heroClass, i));
+        }
+        return slots;
+    }
+
+    /** Never assign a new run to a legacy folder, even an unreadable save. */
+    public static int firstEmpty(HeroClass heroClass) {
+        if (heroClass == null) return -1;
+        for (int slot : slotsFor(heroClass)) {
+            if (slot > LEGACY_SLOT_COUNT && !gameExists(slot)) return slot;
+        }
+        return -1;
+    }
+
+    public static int firstEmpty() {
+        if (selectedClass != null) return firstEmpty(selectedClass);
+        for (HeroClass heroClass : HeroClass.values()) {
+            int slot = firstEmpty(heroClass);
+            if (slot >= 0) return slot;
+        }
+        return -1;
+    }
+
+    public static boolean isAvailableNewSlot(HeroClass heroClass, int slot) {
+        return slot > LEGACY_SLOT_COUNT && slotsFor(heroClass).contains(slot) && !gameExists(slot);
+    }
+
+    public static int activeCount(HeroClass heroClass) {
+        int result = 0;
+        for (int slot : slotsFor(heroClass)) if (check(slot) != null) result++;
+        return result;
+    }
+
 	public static ArrayList<Info> checkAll(){
 		ArrayList<Info> result = new ArrayList<>();
-		for (int i = 1; i <= MAX_SLOTS; i++){
+		for (int i = 1; i <= MAX_SLOT_ID; i++){
 			Info curr = check(i);
 			if (curr != null) result.add(curr);
 		}
@@ -143,6 +197,10 @@ public class GamesInProgress {
 		
 		info.depth = Dungeon.depth;
 		info.challenges = Dungeon.challenges;
+        info.difficultyKnown = Dungeon.difficultyKnown;
+        info.difficulty = Dungeon.difficulty;
+        info.customRulesKnown = Dungeon.customRules() != null;
+        info.customRulesChanged = info.customRulesKnown && !Dungeon.customRules().isNeutral();
 
 		info.seed = Dungeon.seed;
 		info.customSeed = Dungeon.customSeedText;
@@ -180,6 +238,10 @@ public class GamesInProgress {
 		public int depth;
 		public int version;
 		public int challenges;
+        public int difficulty;
+        public boolean difficultyKnown;
+        public boolean customRulesKnown;
+        public boolean customRulesChanged;
 
 		public long seed;
 		public String customSeed;
