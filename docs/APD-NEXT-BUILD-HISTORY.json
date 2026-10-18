@@ -1,40 +1,50 @@
 {
   "date": "2026-10-18",
-  "previous_source": "d44903bbc138ac653e43e58341e7b7a33de12581",
-  "previous_run": 39086579292,
-  "previous_label": "Codex TEST 276",
+  "previous_source": "ec373bc8d52f682d12799b0b7e1d78afa83deead",
+  "previous_run": 39094336421,
+  "previous_label": "Codex TEST 277",
   "changes": [
     {
       "category": "Statistics / UIMSD",
       "sprite": "ICON_CHECKED",
-      "title": "Harden CSV report cells against prefixed formulas",
-      "text": "CSV export now checks the first non-whitespace character before deciding whether a cell could be interpreted as a spreadsheet formula. Tab- and space-prefixed =,+,-,@ content is neutralized, while ordinary signed numeric values remain numeric. No report data, saved history or scoring is changed.",
+      "title": "Parse fixed-point filters from the exact typed decimal",
+      "text": "Decimal filters no longer pass through binary floating point. Values such as 1.005 hundredths now map to raw 101, exact large in-range decimals retain every typed digit, Java's prior half-step direction is preserved, and out-of-range results remain invalid. Stored history, query math and displayed values are unchanged.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/report/ReportRenderer.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/CellFormatter.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Keep report export boundaries and row caps verified",
-      "text": "Report tests directly cover prefixed-formula neutralization and signed numbers. Retained test-only work also checks exact share limits, picker callbacks, UTC filenames, ordinary and grouped 1,000-row report caps and truthful omission counts.",
+      "title": "Retain UIMSD boundary coverage added after TEST277",
+      "text": "The full core suite now includes exact decimal/long boundaries plus retained report model, result-table, catalog, boss classification, filter-operator and topic-search contracts.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/ReportTableTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/report/ReportExportBoundaryTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/report/ReportTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/BossClassesTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/CatalogContractTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/CellFormatterTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/OpContractTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/ResultTableBoundaryTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdTopicSearchTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/report/ReportModelTest.java",
         "docs/APD-CODEX-CORE-TEST-REQUEST.txt"
       ]
     },
     {
       "category": "Developer Commentary",
       "sprite": "ICON_CHECKED",
-      "title": "Retain TEST276 and complete report-audit evidence",
-      "text": "TEST276 remains the immediate previous compiled private candidate and TEST262 remains the latest owner publication. ReportRenderer, ReportBuilder and ReportExport review evidence is retained without implying publication, staging, owner-save install-over or physical-phone testing.",
+      "title": "Carry the complete reviewed TEST277-to-TEST278 history",
+      "text": "Every meaningful path since the immediate previous compiled TEST277 is retained, including the changed build-history ledger and request itself. TEST277 remains the rollback candidate and TEST262 remains the latest owner publication.",
       "paths": [
-        "docs/APD-TEST276-UIMSD-TOPIC-SEARCH-VERIFICATION-2026-10-18.json",
-        "docs/APD-UIMSD-REPORTBUILDER-REVIEW-2026-10-18.json",
-        "docs/APD-UIMSD-REPORTEXPORT-REVIEW-2026-10-18.json",
+        "docs/APD-TEST277-REPORT-CSV-VERIFICATION-2026-10-18.json",
+        "docs/APD-UIMSD-BOSSCLASSES-REVIEW-2026-10-18.json",
+        "docs/APD-UIMSD-CATALOG-REVIEW-2026-10-18.json",
+        "docs/APD-UIMSD-CELLFORMATTER-REVIEW-2026-10-18.json",
+        "docs/APD-UIMSD-OP-REVIEW-2026-10-18.json",
+        "docs/APD-UIMSD-REPORT-MODEL-REVIEW-2026-10-18.json",
+        "docs/APD-UIMSD-REPORTRENDERER-REVIEW-2026-10-18.json",
+        "docs/APD-UIMSD-RESULTTABLE-REVIEW-2026-10-18.json",
         "docs/APD-UIMSD-REVIEW-CONTINUATION-2026-10-17.json",
+        "docs/APD-UIMSD-TOPICSEARCH-REVIEW-2026-10-18.json",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",
         "docs/APD-NEXT-BUILD-HISTORY.json",
@@ -42,5 +52,5 @@
       ]
     }
   ],
-  "commentary": "Intentional private TEST277 candidate after successful core-only run 39094097064: 1,806 core tests in 356 XML suites, zero failures/errors/skips, ReportTest 12/12. Require a fresh private debug APK gate using immediate previous compiled TEST276 producer d44903bbc138ac653e43e58341e7b7a33de12581 / run 39086579292 and exact embedded label Codex TEST 276, complete path history, all 38 API34 methods and 57 required screenshots. No automatic staging, publication, tester distribution, owner-save install-over or physical-phone claim."
+  "commentary": "Intentional private TEST278 candidate after core-only run 39120107057 passed 1,821 tests in 360 XML suites with zero failures/errors/skips; CellFormatterTest passed 7/7. Require fresh full core/debug/immediate-previous compiled TEST277 history (producer ec373bc8d52f682d12799b0b7e1d78afa83deead / run 39094336421, embedded label Codex TEST 277), all 38 API34 methods and 57 valid reviewed screenshots. No automatic staging, publication, tester distribution, owner-save install-over or physical-phone claim."
 }

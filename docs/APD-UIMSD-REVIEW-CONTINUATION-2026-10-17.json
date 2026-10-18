@@ -1,9 +1,9 @@
 {
-  "source": "9ed5fe49c7f50cc54443e30fded18addc03c6878",
-  "recorded_at": "2026-10-18T09:37:32Z",
+  "source": "349f7976fc6a026fd4fb9dead2ca2e3a6e8c9462",
+  "recorded_at": "2026-10-18T10:41:43Z",
   "complete": false,
   "prior_checkpoint_preserved": "docs/APD-UIMSD-REVIEW-CHECKPOINT-2026-10-13.json",
-  "count_note": "Current-blob reconciliation found 96 exact machine-recorded entries before this continuation. Datasets.java, AggValue.java, UimsdSelfTest.java, UimsdHome.java, QueryCodec.java, Question.java, Questions.java, RowBuilders.java, RowCodec.java, DatasetStore.java, QueryEngine.java, ReportExport.java, ReportBuilder.java, ReportRenderer.java, Report.java, ResultTable.java, Catalog.java, BossClasses.java, Op.java and UimsdTopicSearch.java add twenty reviewed current production blobs, for 116 exact reviewed paths; prose-only completed reviews remain separate until reconciled.",
+  "count_note": "Current-blob reconciliation found 96 exact machine-recorded entries before this continuation. Datasets.java, AggValue.java, UimsdSelfTest.java, UimsdHome.java, QueryCodec.java, Question.java, Questions.java, RowBuilders.java, RowCodec.java, DatasetStore.java, QueryEngine.java, ReportExport.java, ReportBuilder.java, ReportRenderer.java, Report.java, ResultTable.java, Catalog.java, BossClasses.java, Op.java, UimsdTopicSearch.java and CellFormatter.java add twenty-one reviewed current production blobs, for 117 exact reviewed paths; prose-only completed reviews remain separate until reconciled.",
   "entries": [
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/Datasets.java",
@@ -369,6 +369,20 @@
           "datasetTopicClearsStaleQuestionPartsBeforeOpeningBuilder"
         ]
       }
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/CellFormatter.java",
+      "sha": "a07b2d8a66ab75398917038695ac52835aa65482",
+      "lines": 323,
+      "reviewed": true,
+      "basis": "Complete current-source review reproduced binary-double drift in fixed-point filter parsing, including 1.005 hundredths rounding down and the exact Long.MAX_VALUE hundredths boundary being rejected. Exact BigDecimal scaling now preserves the typed value and existing Math.round tie direction while rejecting out-of-long results.",
+      "retained_test": {
+        "path": "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/CellFormatterTest.java",
+        "sha": "b9a54b8d82024ea18cacd7143e925a783ca3325b",
+        "source_commit": "349f7976fc6a026fd4fb9dead2ca2e3a6e8c9462",
+        "methods": 7,
+        "new_method": "decimalFiltersUseTheTypedValueInsteadOfBinaryApproximation"
+      }
     }
   ],
   "supporting_reads": [
@@ -419,28 +433,28 @@
     "errors": 0,
     "skipped": 0
   },
-  "confirmed_new_production_defects": 5,
+  "confirmed_new_production_defects": 6,
   "application_changes": true,
-  "new_apk_needed": false,
+  "new_apk_needed": true,
   "latest_verified_private_candidate": 277,
   "latest_published_owner_build": 262,
   "latest_test_only_evidence": {
-    "source_commit": "9ed5fe49c7f50cc54443e30fded18addc03c6878",
-    "request_commit": "9ed5fe49c7f50cc54443e30fded18addc03c6878",
-    "run_id": 39115923723,
-    "target": "UIMSD topic-search 48-hit ordering and dataset-navigation reset boundaries",
-    "core_tests": 1820,
+    "source_commit": "349f7976fc6a026fd4fb9dead2ca2e3a6e8c9462",
+    "request_commit": "349f7976fc6a026fd4fb9dead2ca2e3a6e8c9462",
+    "run_id": 39120107057,
+    "target": "Exact UIMSD fixed-point filter decimal parsing and long boundaries",
+    "core_tests": 1821,
     "suites": 360,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "focused_class": "UimsdTopicSearchTest",
-    "focused_methods": 6,
-    "focused_time_seconds": 0.012,
-    "artifact_id": 12132626259,
-    "artifact_bytes": 849064,
-    "artifact_digest": "sha256:407d6080d39813f960d7fbd6a6e281fb5448ca49e5751fb112ac45e66af487e7",
-    "application_source_changed": false
+    "focused_class": "CellFormatterTest",
+    "focused_methods": 7,
+    "focused_time_seconds": 0.002,
+    "artifact_id": 12133164096,
+    "artifact_bytes": 849132,
+    "artifact_digest": "sha256:41cb9ac7c558ff55ec45dd57dbdfaacfb43fbc578f566413384fe822e065e635",
+    "application_source_changed": true
   },
   "latest_application_evidence": {
     "application_source": "10df853e6d505ea080abaecde98c793f76397e12",
@@ -784,6 +798,24 @@
     "artifact_id": 12131275527,
     "artifact_bytes": 847895,
     "artifact_digest": "sha256:05b7957303afe738b49d77d7e856c85b73d623842a8ec012f7b78d18be46662e",
+    "application_source_changed": false
+  },
+  "prior_test_only_evidence_topic_search": {
+    "source_commit": "9ed5fe49c7f50cc54443e30fded18addc03c6878",
+    "request_commit": "9ed5fe49c7f50cc54443e30fded18addc03c6878",
+    "run_id": 39115923723,
+    "target": "UIMSD topic-search 48-hit ordering and dataset-navigation reset boundaries",
+    "core_tests": 1820,
+    "suites": 360,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "focused_class": "UimsdTopicSearchTest",
+    "focused_methods": 6,
+    "focused_time_seconds": 0.012,
+    "artifact_id": 12132626259,
+    "artifact_bytes": 849064,
+    "artifact_digest": "sha256:407d6080d39813f960d7fbd6a6e281fb5448ca49e5751fb112ac45e66af487e7",
     "application_source_changed": false
   }
 }

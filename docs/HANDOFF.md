@@ -1,3 +1,10 @@
+## 2026-10-18T10:41:43Z — Exact fixed-point filters corrected; TEST278 full gate requested
+- Reviewed all 315 pre-change lines of `CellFormatter.java` (blob `a9d19d87168490baae2e9df28c75d5afbfe1d6b5`) across cell provenance, class/title/date/fixed-point formatting and parsing, aggregate labels/details, fixed-point ratios and conservative lower-bound rounding.
+- Confirmed a bounded production defect: binary-double parsing changed the typed decimal `1.005` to `100.49999999999999`, yielding raw hundredths `100` instead of `101`; it also rejected the exact in-range hundredths text for `Long.MAX_VALUE`.
+- Source commit `349f7976fc6a026fd4fb9dead2ca2e3a6e8c9462` parses the player's decimal exactly with `BigDecimal`, retains Java `Math.round`'s `floor(value + 0.5)` tie direction, and rejects only rounded results outside `long`. No query math, stored values, raw history, scoring, saves or gameplay changed.
+- Core-only [run 39120107057](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/39120107057) passed 1,821 tests / 360 suites with 0 failures, errors or skips; `CellFormatterTest` passed 7/7 in 0.002s. Artifact `12133164096` is 849,132 bytes with SHA-256 `41cb9ac7c558ff55ec45dd57dbdfaacfb43fbc578f566413384fe822e065e635`.
+- Because application source changed, an intentional private TEST278 full gate is requested against immediate previous compiled TEST277. It is pending and is not published, staged, distributed, phone-tested or install-over-tested.
+
 ## 2026-10-18T09:37:32Z — UIMSD topic-search boundary review complete; 1,820 core tests pass
 - Reviewed all 88 current lines of `UimsdTopicSearch.java` (blob `1e0f0a2b92192e80190ca1a7b6f58a96a318b560`) across schema-only matching, public/internal visibility, normalization, catalog/column ordering, the 48-result ceiling and Question-builder navigation. No production defect was confirmed.
 - Expanded `UimsdTopicSearchTest` at source commit `9ed5fe49c7f50cc54443e30fded18addc03c6878` from 4 to 6 methods: the exact first 48 catalog/column hits remain deterministic, and opening a dataset topic clears stale measure/per/group/filter state while preserving scope.

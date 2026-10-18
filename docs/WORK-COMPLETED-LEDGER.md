@@ -1,3 +1,10 @@
+## 2026-10-18T10:41:43Z — CellFormatter exact fixed-point parsing correction core-verified
+- Reproduced binary drift in `parseFixed`: `1.005 * 100` became `100.49999999999999`, and exact `Long.MAX_VALUE` hundredths could not be entered.
+- Replaced double parsing with exact decimal scaling and the same `floor(value + 0.5)` tie rule at source commit `349f7976fc6a026fd4fb9dead2ca2e3a6e8c9462`; out-of-range rounded raw values still fail closed.
+- Added `decimalFiltersUseTheTypedValueInsteadOfBinaryApproximation` to `CellFormatterTest`, covering positive/negative half steps, thousandths, values above double's exact-integer range and both positive-long boundaries.
+- Core-only [run 39120107057](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/39120107057) passed 1,821 tests / 360 suites; focused 7/7; artifact `12133164096`, 849,132 bytes, SHA-256 `41cb9ac7c558ff55ec45dd57dbdfaacfb43fbc578f566413384fe822e065e635`.
+- TEST278 full Android/debug/history/visual verification is intentionally requested and pending; no publication, staging or distribution is authorized.
+
 ## 2026-10-18T09:37:32Z — UIMSD topic-search boundary review and regressions complete
 - Current `UimsdTopicSearch.java` blob `1e0f0a2b92192e80190ca1a7b6f58a96a318b560` (88 lines) fully reviewed; no production defect confirmed.
 - Expanded `UimsdTopicSearchTest` from 4 to 6 methods (blob `4a6369517364769f0659856ce562003aaa1a4e90`) to lock the exact 48-hit catalog/column prefix and stale-question reset when opening a dataset topic.

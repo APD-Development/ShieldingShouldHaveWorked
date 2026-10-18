@@ -1,0 +1,54 @@
+{
+  "recorded_at": "2026-10-18T10:41:43Z",
+  "component_review": {
+    "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/CellFormatter.java",
+    "previous_blob": "a9d19d87168490baae2e9df28c75d5afbfe1d6b5",
+    "corrected_blob": "a07b2d8a66ab75398917038695ac52835aa65482",
+    "lines": 323,
+    "complete": true,
+    "new_production_defect_confirmed": true
+  },
+  "defect": {
+    "reproduction": "Double parsing turns typed 1.005 hundredths into 100.49999999999999 and raw 100; the exact Long.MAX_VALUE hundredths text rounds to binary 2^63 and is rejected.",
+    "correction": "Exact BigDecimal scaling with Java Math.round-compatible floor(value + 0.5), followed by explicit long-range validation.",
+    "preserved": [
+      "stored/query numeric representation",
+      "aggregate math",
+      "raw history",
+      "saves",
+      "scoring",
+      "gameplay and RNG"
+    ]
+  },
+  "retained_test": {
+    "path": "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/CellFormatterTest.java",
+    "blob": "b9a54b8d82024ea18cacd7143e925a783ca3325b",
+    "commit": "349f7976fc6a026fd4fb9dead2ca2e3a6e8c9462",
+    "methods": 7,
+    "new_method": "decimalFiltersUseTheTypedValueInsteadOfBinaryApproximation"
+  },
+  "core_verification": {
+    "run_id": 39120107057,
+    "conclusion": "success",
+    "started_at": "2026-10-18T10:39:23Z",
+    "completed_at": "2026-10-18T10:41:43Z",
+    "tests": 1821,
+    "suites": 360,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "focused_methods": 7,
+    "focused_seconds": 0.002,
+    "artifact_id": 12133164096,
+    "artifact_bytes": 849132,
+    "artifact_digest": "sha256:41cb9ac7c558ff55ec45dd57dbdfaacfb43fbc578f566413384fe822e065e635",
+    "downloaded_zip_digest_match": true
+  },
+  "application_source_changed": true,
+  "apk_rebuild_needed": true,
+  "full_candidate": "TEST278 pending",
+  "published": false,
+  "distributed": false,
+  "physical_phone_tested": false,
+  "owner_save_install_over_tested": false
+}
