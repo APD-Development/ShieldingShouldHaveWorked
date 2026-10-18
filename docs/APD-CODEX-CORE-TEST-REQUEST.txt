@@ -1,7 +1,7 @@
-APD CORE-ONLY TEST REQUEST - Catalog contract coverage 2026-10-18T06:32:42Z
-base=acd549cd7ac34a1b83fcaec1429ff81dbd609399
-review=complete current-source review of Catalog.java blob 126535930994090260cc86d784085f48e0342129
-finding=no production defect confirmed; direct coverage was missing for detached list snapshots, stable replacement-by-ID ordering and current view-to-dataset resolution
-check=complete core unit suite including CatalogContractTest and all existing query/UIMSD regressions
-scope=bounded catalog-model regression coverage; no production, gameplay, scoring, save/history data, RNG, APK, publication or distribution change
+APD CORE-ONLY TEST REQUEST - BossClasses exact classification coverage 2026-10-18T07:35:54Z
+base=2006819918265dec6a3c96a15f48a16c2dfa68aa
+review=complete current-source review of BossClasses.java blob 984c3d940d95c73302cbae75fe98eae633c2b152 against all current Property.BOSS mob classes and nested Yog fists
+finding=no production defect confirmed; existing coverage sampled only seven of sixteen supported boss class names and did not guard helper/lookalike nested classes
+check=complete core unit suite including exhaustive BossClassesTest and all existing query/UIMSD regressions
+scope=bounded boss-statistics classification regression coverage; no production, gameplay, boss scaling, scoring, save/history data, RNG, APK, publication or distribution change
 next=if core passes, record exact evidence in HANDOFF, completed ledger, component receipt and UIMSD audit continuation without changing the executable build request

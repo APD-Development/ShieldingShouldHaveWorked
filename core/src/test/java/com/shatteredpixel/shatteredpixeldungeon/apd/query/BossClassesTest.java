@@ -21,6 +21,17 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.apd.query;
 
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CrystalSpire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM300;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DwarfKing;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FungalCore;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollGeomancer;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogDzewa;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogFist;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.quest.vault.VaultBossElemental;
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -28,13 +39,29 @@ import org.junit.Test;
 
 public class BossClassesTest {
 
+	private static final Class<?>[] BOSSES = {
+			Goo.class, Tengu.class, DM300.class, DwarfKing.class, YogDzewa.class, YogFist.class,
+			YogFist.BurningFist.class, YogFist.SoiledFist.class, YogFist.RottingFist.class,
+			YogFist.RustedFist.class, YogFist.BrightFist.class, YogFist.DarkFist.class,
+			CrystalSpire.class, GnollGeomancer.class, FungalCore.class, VaultBossElemental.class
+	};
+
 	@Test
-	public void knownBossesAreBossesAndOrdinaryMobsAreNot(){
-		for (String n : new String[]{ "com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo", "Tengu", "com.x.DM300", "DwarfKing", "YogDzewa", "com.x.YogFist$BurningFist", "RottingFist" }){
-			assertTrue(n, BossClasses.isBoss(n));
+	public void everyCurrentBossClassIsRecognizedByFullAndSimpleName(){
+		for (Class<?> boss : BOSSES){
+			assertTrue(boss.getName(), BossClasses.isBoss(boss.getName()));
+			assertTrue(boss.getSimpleName(), BossClasses.isBoss(boss.getSimpleName()));
 		}
-		for (String n : new String[]{ "Rat", "com.x.Gnoll", "DM201", "(several)", "", null }){
-			assertFalse(String.valueOf(n), BossClasses.isBoss(n));
+	}
+
+	@Test
+	public void bossHelpersAndLookalikesAreNotBosses(){
+		for (String name : new String[]{
+				"Rat", "com.x.Gnoll", "DM201", "Gooey", "Tengu$BombItem", "DwarfKing$DKGhoul",
+				"YogDzewa$Larva", "YogFist$LightBeam", "CrystalSpire$SpireSpike",
+				"VaultBossElemental$FireWall", "(several)", "", null
+		}){
+			assertFalse(String.valueOf(name), BossClasses.isBoss(name));
 		}
 	}
 }
