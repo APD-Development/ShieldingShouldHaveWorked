@@ -199,6 +199,18 @@ public class SPDSettings extends GameSettings {
 		return getBoolean( KEY_SLOTWATERSKIN, true );
 	}
 
+	// -1: legacy first-empty behavior; 0..5: chosen slot on NEW runs;
+	// 6: never auto-assign. Separate from the legacy yes/no preference so
+	// updating an older installation does not silently move its Waterskin.
+	public static final String KEY_WATERSKIN_START_SLOT = "apd_waterskin_start_slot";
+	public static int waterskinStartingSlot() {
+		return getInt(KEY_WATERSKIN_START_SLOT, -1, -1, 6);
+	}
+	public static void waterskinStartingSlot(int position) {
+		if (position < -1 || position > 6) throw new IllegalArgumentException("waterskin starting slot");
+		put(KEY_WATERSKIN_START_SLOT, position);
+	}
+
 	public static void systemFont(boolean value){
 		put(KEY_SYSTEMFONT, value);
 	}

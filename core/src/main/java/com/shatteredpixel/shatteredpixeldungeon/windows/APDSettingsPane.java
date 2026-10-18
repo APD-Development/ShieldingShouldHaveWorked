@@ -65,6 +65,7 @@ public class APDSettingsPane extends Component {
 	private RenderedTextBlock storage;
 	private RedButton btnClericQuickCasts;
     private RedButton btnPlaybackSpeed;
+    private RedButton btnWaterskinSlot;
     private RedButton btnHealingConfirmation;
     private RedButton btnCustomRules;
     private RedButton btnCurrentCustomRules;
@@ -178,6 +179,32 @@ public class APDSettingsPane extends Component {
             }
         };
         add(btnPlaybackSpeed);
+        // This is intentionally on the shared APD settings pane: both ordinary
+        // player builds and private developer builds receive the same control.
+        btnWaterskinSlot = new RedButton("Waterskin start: "
+                + com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.WaterskinStartupSlot.label(
+                        SPDSettings.waterskinStartingSlot()), 7) {
+            @Override protected void onClick() {
+                final java.util.List<WndUimsdList.Entry> choices = new java.util.ArrayList<>();
+                int selected = SPDSettings.waterskinStartingSlot();
+                for (int position = -1; position <= 6; position++) {
+                    choices.add(WndUimsdList.Entry.item(
+                            com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.WaterskinStartupSlot.label(position))
+                            .current(position == selected));
+                }
+                ShatteredPixelDungeon.scene().addToFront(WndUimsdList.menu(
+                        "Waterskin starting slot",
+                        "New runs only. Off removes the shortcut, not the item. Category hotbars have separate layouts.",
+                        choices, (index, checked) -> {
+                            if (index < 0 || index > 7) return;
+                            SPDSettings.waterskinStartingSlot(index - 1);
+                            btnWaterskinSlot.text("Waterskin start: "
+                                    + com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.WaterskinStartupSlot.label(
+                                            SPDSettings.waterskinStartingSlot()));
+                        }));
+            }
+        };
+        add(btnWaterskinSlot);
         btnHealingConfirmation = new RedButton("Healing confirmation") {
             @Override protected void onClick() { WndHealingConfirmation.settings(); }
         };
@@ -353,6 +380,7 @@ public class APDSettingsPane extends Component {
         chkStairNavigation.setRect(x,pos,width,16);pos=chkStairNavigation.bottom()+GAP;
         chkAutoEnterStairs.setRect(x,pos,width,16);pos=chkAutoEnterStairs.bottom()+GAP;
         btnPlaybackSpeed.setRect(x,pos,width,16);pos=btnPlaybackSpeed.bottom()+GAP;
+        btnWaterskinSlot.setRect(x,pos,width,16);pos=btnWaterskinSlot.bottom()+GAP;
         btnHealingConfirmation.setRect(x,pos,width,16);pos=btnHealingConfirmation.bottom()+GAP;
         btnCustomRules.setRect(x,pos,width,20);pos=btnCustomRules.bottom()+GAP;
         if(btnCurrentCustomRules.visible){btnCurrentCustomRules.setRect(x,pos,width,20);pos=btnCurrentCustomRules.bottom()+GAP;}

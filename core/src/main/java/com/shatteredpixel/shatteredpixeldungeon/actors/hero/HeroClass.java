@@ -142,14 +142,11 @@ public enum HeroClass {
 				break;
 		}
 
-		if (SPDSettings.quickslotWaterskin()) {
-			for (int s = 0; s < QuickSlot.MOBILE_VISIBLE_SLOTS; s++) {
-				if (Dungeon.quickslot.getItem(s) == null) {
-					Dungeon.quickslot.setSlot(s, waterskin);
-					break;
-				}
-			}
-		}
+		// Starting preference applies to a NEW run only. Existing saved quickslots
+		// are restored independently and class starting equipment is never lost.
+		com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.WaterskinStartupSlot.assign(
+				Dungeon.quickslot, waterskin, SPDSettings.waterskinStartingSlot(),
+				SPDSettings.quickslotWaterskin());
 
 	}
 
