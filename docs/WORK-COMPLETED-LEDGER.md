@@ -1,3 +1,9 @@
+## 2026-10-18T06:35:50Z — Catalog contract review and regressions complete
+- Current `Catalog.java` blob `126535930994090260cc86d784085f48e0342129` (80 lines) fully reviewed; existing concurrency coverage retained and no production defect confirmed.
+- Added `CatalogContractTest` (3 methods; blob `d65d57880b2872337c0485007364b3cc27f26dfc`) for detached list snapshots, stable replacement-by-ID ordering and current view-to-dataset resolution.
+- Core-only run `39104441554` passed 1,815/359 with zero failures/errors/skips; artifact `12127158889`, 848,464 bytes, SHA-256 `3248ed1dee990f76c05af2d3f696c7e616476fd4f0d1bfe64fb246b3569ac905`.
+- Test/documentation-only: build request unchanged, no APK rebuild, TEST277 remains the private candidate and TEST262 remains published.
+
 ## 2026-10-18T05:36:30Z — ResultTable boundary review and regressions complete
 - Current `ResultTable.java` blob `870987a9d8336747df4aeead2cd18010ef4a0ea1` (157 lines) fully reviewed; no production defect confirmed.
 - Added `ResultTableBoundaryTest` (3 methods; blob `6cfefef44f74fe5d564d0443fc028e5d375ac946`) for direct paging clamps/nonpositive sizes, empty results and grouped cell/detail alignment.
