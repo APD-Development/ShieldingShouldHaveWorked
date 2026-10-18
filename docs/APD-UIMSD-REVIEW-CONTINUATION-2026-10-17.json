@@ -1,9 +1,9 @@
 {
   "source": "349f7976fc6a026fd4fb9dead2ca2e3a6e8c9462",
-  "recorded_at": "2026-10-18T10:59:19Z",
+  "recorded_at": "2026-10-18T11:44:48Z",
   "complete": false,
   "prior_checkpoint_preserved": "docs/APD-UIMSD-REVIEW-CHECKPOINT-2026-10-13.json",
-  "count_note": "Current-blob reconciliation found 96 exact machine-recorded entries before this continuation. Datasets.java, AggValue.java, UimsdSelfTest.java, UimsdHome.java, QueryCodec.java, Question.java, Questions.java, RowBuilders.java, RowCodec.java, DatasetStore.java, QueryEngine.java, ReportExport.java, ReportBuilder.java, ReportRenderer.java, Report.java, ResultTable.java, Catalog.java, BossClasses.java, Op.java, UimsdTopicSearch.java and CellFormatter.java add twenty-one reviewed current production blobs, for 117 exact reviewed paths; prose-only completed reviews remain separate until reconciled.",
+  "count_note": "Current-blob reconciliation found 96 exact machine-recorded entries before this continuation. Datasets.java, AggValue.java, UimsdSelfTest.java, UimsdHome.java, QueryCodec.java, Question.java, Questions.java, RowBuilders.java, RowCodec.java, DatasetStore.java, QueryEngine.java, ReportExport.java, ReportBuilder.java, ReportRenderer.java, Report.java, ResultTable.java, Catalog.java, BossClasses.java, Op.java, UimsdTopicSearch.java, CellFormatter.java and Aggregate.java add twenty-two reviewed current production blobs, for 118 exact reviewed paths; prose-only completed reviews remain separate until reconciled.",
   "entries": [
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/Datasets.java",
@@ -383,6 +383,24 @@
         "methods": 7,
         "new_method": "decimalFiltersUseTheTypedValueInsteadOfBinaryApproximation"
       }
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/Aggregate.java",
+      "sha": "1a18f2ef823d6a0eaa351e682476c0fae4c31bff",
+      "lines": 129,
+      "reviewed": true,
+      "basis": "Complete current-source review of immutable aggregate descriptions, constructor normalization, factories, conditional/distinct refinements, stable generated ids, label-neutral equality and hash behavior plus QueryCodec, GroupBy, QueryEngine and report consumers found no production defect. Dedicated retained tests now lock the previously indirect value-object boundary contracts.",
+      "retained_test": {
+        "path": "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/AggregateContractTest.java",
+        "sha": "5a1d8aee8f0a4d2c3caccb44e9da93b5fef82156",
+        "source_commit": "6dd34188e6ed009e5859aab927085cdd40e16abe",
+        "methods": 3,
+        "method_names": [
+          "constructorsNormalizeNullTextAndInactiveWhereValues",
+          "factoriesAndFluentRefinementsKeepEveryMeaningfulField",
+          "identityIncludesEverySemanticRefinementButNotTheDisplayLabel"
+        ]
+      }
     }
   ],
   "supporting_reads": [
@@ -434,27 +452,27 @@
     "skipped": 0
   },
   "confirmed_new_production_defects": 6,
-  "application_changes": true,
+  "application_changes": false,
   "new_apk_needed": false,
   "latest_verified_private_candidate": 278,
   "latest_published_owner_build": 262,
   "latest_test_only_evidence": {
-    "source_commit": "349f7976fc6a026fd4fb9dead2ca2e3a6e8c9462",
-    "request_commit": "349f7976fc6a026fd4fb9dead2ca2e3a6e8c9462",
-    "run_id": 39120107057,
-    "target": "Exact UIMSD fixed-point filter decimal parsing and long boundaries",
-    "core_tests": 1821,
-    "suites": 360,
+    "source_commit": "6dd34188e6ed009e5859aab927085cdd40e16abe",
+    "request_commit": "6dd34188e6ed009e5859aab927085cdd40e16abe",
+    "run_id": 39124288162,
+    "target": "Aggregate immutable constructors, factories, refinements and semantic identity contracts",
+    "core_tests": 1824,
+    "suites": 361,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "focused_class": "CellFormatterTest",
-    "focused_methods": 7,
-    "focused_time_seconds": 0.002,
-    "artifact_id": 12133164096,
-    "artifact_bytes": 849132,
-    "artifact_digest": "sha256:41cb9ac7c558ff55ec45dd57dbdfaacfb43fbc578f566413384fe822e065e635",
-    "application_source_changed": true
+    "focused_class": "AggregateContractTest",
+    "focused_methods": 3,
+    "focused_time_seconds": 0.001,
+    "artifact_id": 12135716399,
+    "artifact_bytes": 853048,
+    "artifact_digest": "sha256:c408c2ae284576b32eb0574d8e1bc4bfb4cb149adbe854c37852d7a0bc3193cf",
+    "application_source_changed": false
   },
   "latest_application_evidence": {
     "application_source": "349f7976fc6a026fd4fb9dead2ca2e3a6e8c9462",
@@ -881,5 +899,23 @@
     "published": false,
     "physical_phone_tested": false,
     "owner_save_install_over_tested": false
+  },
+  "prior_test_only_evidence_cell_formatter": {
+    "source_commit": "349f7976fc6a026fd4fb9dead2ca2e3a6e8c9462",
+    "request_commit": "349f7976fc6a026fd4fb9dead2ca2e3a6e8c9462",
+    "run_id": 39120107057,
+    "target": "Exact UIMSD fixed-point filter decimal parsing and long boundaries",
+    "core_tests": 1821,
+    "suites": 360,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "focused_class": "CellFormatterTest",
+    "focused_methods": 7,
+    "focused_time_seconds": 0.002,
+    "artifact_id": 12133164096,
+    "artifact_bytes": 849132,
+    "artifact_digest": "sha256:41cb9ac7c558ff55ec45dd57dbdfaacfb43fbc578f566413384fe822e065e635",
+    "application_source_changed": true
   }
 }
