@@ -1,9 +1,9 @@
 {
   "source": "349f7976fc6a026fd4fb9dead2ca2e3a6e8c9462",
-  "recorded_at": "2026-10-18T11:44:48Z",
+  "recorded_at": "2026-10-18T12:39:16Z",
   "complete": false,
   "prior_checkpoint_preserved": "docs/APD-UIMSD-REVIEW-CHECKPOINT-2026-10-13.json",
-  "count_note": "Current-blob reconciliation found 96 exact machine-recorded entries before this continuation. Datasets.java, AggValue.java, UimsdSelfTest.java, UimsdHome.java, QueryCodec.java, Question.java, Questions.java, RowBuilders.java, RowCodec.java, DatasetStore.java, QueryEngine.java, ReportExport.java, ReportBuilder.java, ReportRenderer.java, Report.java, ResultTable.java, Catalog.java, BossClasses.java, Op.java, UimsdTopicSearch.java, CellFormatter.java and Aggregate.java add twenty-two reviewed current production blobs, for 118 exact reviewed paths; prose-only completed reviews remain separate until reconciled.",
+  "count_note": "Current-blob reconciliation found 96 exact machine-recorded entries before this continuation. Datasets.java, AggValue.java, UimsdSelfTest.java, UimsdHome.java, QueryCodec.java, Question.java, Questions.java, RowBuilders.java, RowCodec.java, DatasetStore.java, QueryEngine.java, ReportExport.java, ReportBuilder.java, ReportRenderer.java, Report.java, ResultTable.java, Catalog.java, BossClasses.java, Op.java, UimsdTopicSearch.java, CellFormatter.java, Aggregate.java and CellText.java add twenty-three reviewed current production blobs, for 119 exact reviewed paths; prose-only completed reviews remain separate until reconciled.",
   "entries": [
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/Datasets.java",
@@ -400,6 +400,19 @@
           "factoriesAndFluentRefinementsKeepEveryMeaningfulField",
           "identityIncludesEverySemanticRefinementButNotTheDisplayLabel"
         ]
+      }
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/CellText.java",
+      "sha": "922faa2f9d4c6d7f07cea8c1b45ce36a1647cb9b",
+      "lines": 51,
+      "reviewed": true,
+      "basis": "Complete current-source review of stable display-provenance identifiers, immutable text/state/small-sample fields, constructor defaults and table, Home, detail and report consumers found no production defect. A retained direct contract now prevents state-id drift and loss of normal/small-sample semantics.",
+      "retained_test": {
+        "path": "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/CellTextContractTest.java",
+        "sha": "60e91ba8d87d3e75a8dc0e3bc6c6b7af34fe597b",
+        "source_commit": "b87efdc6bc4f8a62bc4828dbc1e5d4a7bc404ad5",
+        "methods": 3
       }
     }
   ],
