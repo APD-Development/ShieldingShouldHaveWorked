@@ -1,6 +1,6 @@
-APD CORE-ONLY TEST REQUEST - DatasetStore valid segment boundary ordering 2026-10-17T23:43:47.459Z
-goal=Verify equal-created-time segments at the valid nonnegative boundaries 0 and Integer.MAX_VALUE merge into one logical run, preserve both level entries and use the higher segment as newest/open.
-candidate=exact corrected test-only push after retained failed run 39079891341 proved Integer.MIN_VALUE is an invalid log fixture that becomes unreadable before DatasetStore ordering
-tests=run full ./gradlew :core:test, including DatasetBuildersTest.equalTimestampBoundarySegmentNumbersUseNumericOrder; do not weaken prior assertions
-scope=test-only UIMSD DatasetStore boundary coverage; no production code, raw history, saves, gameplay, scoring, APK or release change
+APD CORE-ONLY TEST REQUEST - QueryEngine incomplete numeric IN reproduction 2026-10-18T00:36:07.838Z
+goal=Retain the current failure proving numeric IN must not treat a lower-bound value as exact: exact 12 matches IN(12), while an at-least-12 row is uncertain for IN(12) and IN(20), and definitively false only when every listed value is below 12.
+candidate=reproduction-only test push from live branch head 4eb83574c52970be1222d04c4bda92a770e488e8; production QueryEngine remains unchanged
+tests=run full ./gradlew :core:test, including QueryEngineTest.aLowerBoundIsNeverTreatedAsExact; do not weaken prior assertions
+scope=test-only UIMSD QueryEngine boundary reproduction; no production code, raw history, saves, gameplay, scoring, APK or release change
 delivery=core verification only; do not trigger an APK build, publish, stage, distribute or edit docs/APD-CODEX-BUILD-REQUEST.txt
