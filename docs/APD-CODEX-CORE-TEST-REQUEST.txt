@@ -1,7 +1,8 @@
-APD CORE-ONLY TEST REQUEST - corrected ReportExport boundary fixture 2026-10-18T01:48:00Z
-base=6efa504a096d10e856de740aefe14dac856d6621
-retained_failure=run 39087528560 executed 1805 tests with exactly one new failure because the test assumed title text renders once; plain text intentionally renders title plus matching underline
-correction=size an INFO note body, which contributes exactly one output character per input character, while retaining exact 100000/100001 share-boundary assertions
-check=complete core unit suite including all 3 ReportExportBoundaryTest methods and existing report/export/UIMSD tests
-scope=test-fixture-only correction; no production source, gameplay, scoring, save/history data, APK source, or executable Android build request change
-next=record exact core result and continue the next unreviewed UIMSD production blob; no automatic publication or distribution
+APD CORE-ONLY TEST REQUEST - ReportBuilder grouped row-cap regression 2026-10-18T02:42:19Z
+base=5bfac1ca0cf4b771ffb3304e76e1bc16ae7a6569
+review=complete current-source review of ReportBuilder.java blob cb44398221e5243cd133ad6dda59dae134939661
+finding=no production defect confirmed; valid SeedFloors assembly keeps recorded floors out of canonical item/mob datasets
+gap=existing ReportTableTest covered only an ordinary 1500-row view; add the equivalent 1500-distinct-group path through QueryEngine, ReportBuilder.view and rendered omission notice
+check=complete core unit suite including both ordinary and grouped ReportTableTest row-cap methods and existing report/UIMSD tests
+scope=test-only; no production source, gameplay, scoring, save/history data, APK source, executable Android build request, publication or distribution change
+next=record exact core result and continue the next unreviewed UIMSD production blob
