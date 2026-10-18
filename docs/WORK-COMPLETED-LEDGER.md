@@ -1,3 +1,9 @@
+## 2026-10-18T02:45:38Z — ReportBuilder review and grouped row-cap regression complete
+- Current production blob `cb44398221e5243cd133ad6dda59dae134939661` (332 lines) fully reviewed; no production defect confirmed.
+- Added grouped coverage beside the retained ordinary-table cap: 1,500 groups become exactly 1,000 listed plus 500 truthfully omitted.
+- Test-only commit `76cc107b3d663ff17f742682003ad086857fa4c3`; run `39091069790` passed 1,806 tests/356 suites, 0 failure/error/skip. `ReportTableTest`: 3 methods in 0.020s; new grouped method 0.011s. Artifact `12122263511`, 842,788 bytes, SHA-256 `5dd3c91137ff8d2a2de20e325028b1978045010ddbe6c64e285af9ee6d0f8227`.
+- No production/build-request/APK/gameplay/save/history/scoring/RNG change. TEST276 remains the verified private fallback; TEST262 remains the published owner delivery.
+
 ## 2026-10-18T01:50:19Z — ReportExport review and boundary tests complete
 - Current production blob `d65b31638b757cdad28b550657fc9b7820771345` (133 lines) fully reviewed; no production defect confirmed.
 - Retained failed core-only run `39087528560`: 1,805 tests, exactly one new fixture failure (title plus underline means two rendered characters per title character), artifact `12121865024`, ZIP SHA-256 `0eb52dc5efde234289efe0f31d05a4e580fca5b7d94b2659878f2a9ed6e86e94`.

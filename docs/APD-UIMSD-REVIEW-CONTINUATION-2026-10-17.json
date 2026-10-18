@@ -1,9 +1,9 @@
 {
-  "source": "d41dc0b95510f6c320d8b97f8bb71130d3e8571d",
-  "recorded_at": "2026-10-18T01:50:19Z",
+  "source": "76cc107b3d663ff17f742682003ad086857fa4c3",
+  "recorded_at": "2026-10-18T02:45:38Z",
   "complete": false,
   "prior_checkpoint_preserved": "docs/APD-UIMSD-REVIEW-CHECKPOINT-2026-10-13.json",
-  "count_note": "Current-blob reconciliation found 96 exact machine-recorded entries before this continuation. Datasets.java, AggValue.java, UimsdSelfTest.java, UimsdHome.java, QueryCodec.java, Question.java, Questions.java, RowBuilders.java, RowCodec.java, DatasetStore.java, QueryEngine.java and ReportExport.java add twelve reviewed current production blobs, for 108 exact reviewed paths; prose-only completed reviews remain separate until reconciled.",
+  "count_note": "Current-blob reconciliation found 96 exact machine-recorded entries before this continuation. Datasets.java, AggValue.java, UimsdSelfTest.java, UimsdHome.java, QueryCodec.java, Question.java, Questions.java, RowBuilders.java, RowCodec.java, DatasetStore.java, QueryEngine.java, ReportExport.java and ReportBuilder.java add thirteen reviewed current production blobs, for 109 exact reviewed paths; prose-only completed reviews remain separate until reconciled.",
   "entries": [
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/Datasets.java",
@@ -215,6 +215,34 @@
           "saveReportsPickerCancellationAndFailureExactlyOnce"
         ]
       }
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/report/ReportBuilder.java",
+      "sha": "cb44398221e5243cd133ad6dda59dae134939661",
+      "lines": 332,
+      "reviewed": true,
+      "basis": "Complete current-source review of lifetime, current-view, group, group comparison, run, run comparison and seed-floor report construction; hidden-data gating, provenance and omission accounting found no production defect. Valid SeedFloors assembly keeps recorded floors out of canonical item/mob rows. Retained grouped stress closes the remaining row-cap branch.",
+      "supporting_reads": [
+        {
+          "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/ResultTable.java",
+          "sha": "870987a9d8336747df4aeead2cd18010ef4a0ea1"
+        },
+        {
+          "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/SeedFloors.java",
+          "sha": "0b6e5a236bb48ea25eeb747f2dd2544bf73986ed"
+        },
+        {
+          "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/report/Report.java",
+          "sha": "ea9feddaa65e670ece45f5b60c63844652502135"
+        }
+      ],
+      "retained_test": {
+        "path": "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/ReportTableTest.java",
+        "sha": "a59bf5be42d305270e2e1bf95d1a86b320f0f4c6",
+        "source_commit": "76cc107b3d663ff17f742682003ad086857fa4c3",
+        "methods": 3,
+        "new_method": "aHugeGroupedTableIsCutByGroupsAndSaysHowMuchIsMissing"
+      }
     }
   ],
   "supporting_reads": [
@@ -271,35 +299,23 @@
   "latest_verified_private_candidate": 276,
   "latest_published_owner_build": 262,
   "latest_test_only_evidence": {
-    "source_commit": "d41dc0b95510f6c320d8b97f8bb71130d3e8571d",
-    "request_commit": "d41dc0b95510f6c320d8b97f8bb71130d3e8571d",
-    "run_id": 39087761072,
-    "target": "ReportExport UTC/safe filename, exact share-size cutoff and picker callback boundaries",
-    "core_tests": 1805,
-    "suites": 355,
+    "source_commit": "76cc107b3d663ff17f742682003ad086857fa4c3",
+    "request_commit": "76cc107b3d663ff17f742682003ad086857fa4c3",
+    "run_id": 39091069790,
+    "target": "ReportBuilder grouped 1,000-row cap and exact omitted-count rendering",
+    "core_tests": 1806,
+    "suites": 356,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
+    "focused_class": "ReportTableTest",
     "focused_methods": 3,
-    "focused_time_seconds": 0.013,
-    "artifact_id": 12121437654,
-    "artifact_bytes": 842835,
-    "artifact_digest": "sha256:e45487654bb9b7d764ed6129e12a8b4a0c589e5e6cc2d46847e924115681aa98",
-    "application_source_changed": false,
-    "retained_failed_runs": [
-      {
-        "source_commit": "6efa504a096d10e856de740aefe14dac856d6621",
-        "run_id": 39087528560,
-        "tests": 1805,
-        "failures": 1,
-        "errors": 0,
-        "skipped": 0,
-        "artifact_id": 12121865024,
-        "artifact_bytes": 843814,
-        "artifact_digest": "sha256:0eb52dc5efde234289efe0f31d05a4e580fca5b7d94b2659878f2a9ed6e86e94",
-        "actual_reason": "test fixture assumed title text rendered once; plain text intentionally renders title plus equal-length underline"
-      }
-    ]
+    "focused_time_seconds": 0.02,
+    "new_method_time_seconds": 0.011,
+    "artifact_id": 12122263511,
+    "artifact_bytes": 842788,
+    "artifact_digest": "sha256:5dd3c91137ff8d2a2de20e325028b1978045010ddbe6c64e285af9ee6d0f8227",
+    "application_source_changed": false
   },
   "latest_application_evidence": {
     "application_source": "b6d3a8be0f4337d4bd8d1a1bbe38dc1981d99bf3",
@@ -421,5 +437,36 @@
     "published": false,
     "physical_phone_tested": false,
     "owner_save_install_over_tested": false
+  },
+  "prior_test_only_evidence_report_export": {
+    "source_commit": "d41dc0b95510f6c320d8b97f8bb71130d3e8571d",
+    "request_commit": "d41dc0b95510f6c320d8b97f8bb71130d3e8571d",
+    "run_id": 39087761072,
+    "target": "ReportExport UTC/safe filename, exact share-size cutoff and picker callback boundaries",
+    "core_tests": 1805,
+    "suites": 355,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "focused_methods": 3,
+    "focused_time_seconds": 0.013,
+    "artifact_id": 12121437654,
+    "artifact_bytes": 842835,
+    "artifact_digest": "sha256:e45487654bb9b7d764ed6129e12a8b4a0c589e5e6cc2d46847e924115681aa98",
+    "application_source_changed": false,
+    "retained_failed_runs": [
+      {
+        "source_commit": "6efa504a096d10e856de740aefe14dac856d6621",
+        "run_id": 39087528560,
+        "tests": 1805,
+        "failures": 1,
+        "errors": 0,
+        "skipped": 0,
+        "artifact_id": 12121865024,
+        "artifact_bytes": 843814,
+        "artifact_digest": "sha256:0eb52dc5efde234289efe0f31d05a4e580fca5b7d94b2659878f2a9ed6e86e94",
+        "actual_reason": "test fixture assumed title text rendered once; plain text intentionally renders title plus equal-length underline"
+      }
+    ]
   }
-}\n
+}
