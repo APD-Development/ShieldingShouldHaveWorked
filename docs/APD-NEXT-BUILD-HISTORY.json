@@ -1,38 +1,40 @@
 {
   "date": "2026-10-18",
-  "previous_source": "3a9d86395c4b4243c853128d346f8c1d7fea002e",
-  "previous_application_source": "0229d9c77b8d1e235d1dac2e9972eb459f3bfa86",
-  "previous_run": 39141915301,
-  "previous_label": "Codex TEST 281",
+  "previous_source": "625522a9d5a59c3c53e8766539c9e6dfe24972b5",
+  "previous_application_source": "77382a50180c8718d9f11d7911ca2c8e7a191ee4",
+  "previous_run": 39160728039,
+  "previous_label": "Codex TEST 282",
   "changes": [
     {
-      "category": "Gameplay / visual timing",
+      "category": "Quality of life / UI",
       "sprite": "ICON_CHECKED",
-      "title": "Stop standing-monster body flicker at developer 4x",
-      "text": "Monster IDLE frames now advance at real time above developer 2x, sharing the proven hero-idle visual-clock helper. Moving, attacking, dying and effects still use selected playback speed; original public modes and game-state timing are unchanged.",
+      "title": "Choose the Waterskin's starting hotbar slot",
+      "text": "The APD Settings pane shared by player and developer builds now offers Automatic, Slots 1-6 and Off for future runs. Existing installs retain the former automatic default and existing saved quickslots remain unchanged. Occupied class items are relocated to empty slots without item loss.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/sprites/MobSprite.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/SPDSettings.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/HeroClass.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/hotbar/WaterskinStartupSlot.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/APDSettingsPane.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Retain 4x idle and unchanged public animation regression tests",
-      "text": "Two deterministic monster-idle tests verify 4x idle normal-clock and action acceleration, existing 0.5/1/2x behavior, and global elapsed restoration; source 77382a50180c8718d9f11d7911ca2c8e7a191ee4 passed 1,837 core methods across 363 suites.",
+      "title": "Verify Waterskin slot preferences and touch selection",
+      "text": "Five new core regression methods pass, covering persistence, all six selected slots, legacy preference, class equipment preservation and Off. The API34 owner-coverage guard and real-touch selection are included for full Android verification.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/sprites/MobIdlePlaybackTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/hotbar/WaterskinStartupSlotTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/ApdSettingsClickDeviceTest.java",
         "docs/APD-CODEX-CORE-TEST-REQUEST.txt"
       ]
     },
     {
       "category": "Developer Commentary",
       "sprite": "ICON_CHECKED",
-      "title": "Preserve prior TEST281 evidence and UIMSD review",
-      "text": "Carry forward verified TEST281 publication and review records, and document pending developer-4x physical-phone acceptance without conflating source fix with device proof.",
+      "title": "Record the shared-build scope and TEST283 verification request",
+      "text": "Preserve all prior compiled history, verified TEST281/TEST282 evidence, and existing saves while documenting this pending user-facing preference; do not stage or distribute until independently verified.",
       "paths": [
-        "docs/APD-TEST281-UIMSD-GUIDE-VERIFICATION-2026-10-18.json",
-        "docs/APD-UIMSD-GUIDE-REVIEW-2026-10-18.json",
-        "docs/APD-UIMSD-REVIEW-CONTINUATION-2026-10-17.json",
+        "docs/APD-TEST283-WATERSKIN-SLOT-CANDIDATE-2026-10-18.md",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",
         "docs/APD-NEXT-BUILD-HISTORY.json",
@@ -40,5 +42,5 @@
       ]
     }
   ],
-  "commentary": "Intentional new private Android candidate after source correction at 77382a50180c8718d9f11d7911ca2c8e7a191ee4 and complete core-only run 39160401772 (1,837 tests / 363 suites, no failures, errors or skips). Compare exact immediate-previous compiled TEST281 producer 3a9d86395c4b4243c853128d346f8c1d7fea002e / run39141915301; prior raw APK SHA-256 4ea3a5501ef9e6870f6016e94ef28623f0aefbe944091f1a282e5fe2275b21df. Require complete debug/core/immediate-previous history/38 API34 checks/57 reviewed PNGs before verification. Candidate is pending; TEST281 remains latest fully gated fallback, TEST262 latest published. No automatic staging, publication or distribution."
+  "commentary": "After source 17b3636958d817cdcd26f2b4ffe7bd6ecc87434b and complete core-only source1325b7b/run39165438742 with 1842 methods/364 suites all passing, request full TEST283 against actual immediate previous compiled TEST282 from producer625522a9/run39160728039, raw APK SHA2d6281014c44e8cc49b38fb5cef08f8fc668c7468b1e7091fe88f95df6290547. Include every changed path, including THIS manifest and build-request note. Require 1842 core tests, debug/history verification, 38 native API34 checks, 57 reviewed screenshots. Not published or sent to testers, no physical phone acceptance."
 }
