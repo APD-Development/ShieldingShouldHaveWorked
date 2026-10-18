@@ -61,6 +61,18 @@ public class ClericHistoryTest {
 	}
 
 	@Test
+	public void finishedRowsWithoutARecordedOutcomeAreNotInventedAsRuns(){
+		Row incomplete = new Row( "incomplete", null, "incomplete", def.columns().size() );
+		incomplete.finished = true;
+		incomplete.setText( def.indexOf( FactKeys.HERO_CLASS ), "CLERIC", Fact.PROV_RECORDED );
+		rows.add( incomplete );
+		ClericHistory h = ClericHistory.compute( new Dataset( def, rows, new ArrayList<Dataset.RunInfo>() ) );
+		assertEquals( 0, h.runs );
+		assertEquals( 0, h.wins );
+		assertEquals( 0, h.deaths );
+	}
+
+	@Test
 	public void noHistoryMeansZeroAndNothingIsInvented(){
 		ClericHistory h = ClericHistory.compute( null );
 		assertEquals( 0, h.runs );
