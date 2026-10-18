@@ -167,11 +167,19 @@ public final class CellFormatter {
 	}
 
 	private static Long parseFixed(String text, int scale){
-		double scaled = Double.parseDouble(text) * scale;
-		//Math.round turns NaN into zero and saturates infinities/overflow. Neither is a
-		//number the player asked to filter by. Keep the existing finite rounding rules.
-		if (Double.isNaN(scaled) || Double.isInfinite(scaled) || scaled >= 0x1p63 || scaled < -0x1p63) return null;
-		return Math.round(scaled);
+		//Parse the player's decimal exactly. Going through double can move a half-step
+		//below its typed value (1.005 * 100 becomes 100.49999...) or lose integer
+		//precision near Long.MAX_VALUE.
+		java.math.BigDecimal scaled = new java.math.BigDecimal(text).multiply(java.math.BigDecimal.valueOf(scale));
+		java.math.BigDecimal min = java.math.BigDecimal.valueOf(Long.MIN_VALUE);
+		java.math.BigDecimal maxExclusive = java.math.BigDecimal.valueOf(Long.MAX_VALUE).add(java.math.BigDecimal.ONE);
+		//Keep Math.round's floor(value + 0.5) tie direction, but apply it to the
+		//decimal the player actually typed.
+		if (scaled.compareTo(min) < 0 || scaled.compareTo(maxExclusive) >= 0) return null;
+		java.math.BigDecimal rounded = scaled.add(new java.math.BigDecimal("0.5"))
+				.setScale(0, java.math.RoundingMode.FLOOR);
+		if (rounded.compareTo(min) < 0 || rounded.compareTo(java.math.BigDecimal.valueOf(Long.MAX_VALUE)) > 0) return null;
+		return rounded.longValueExact();
 	}
 
 	//the value of an aggregate, and in 'detail' how many values it is made of

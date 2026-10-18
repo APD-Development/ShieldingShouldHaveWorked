@@ -1,6 +1,6 @@
-APD CORE-ONLY TEST REQUEST - UIMSD topic-search boundary coverage 2026-10-18T09:35:05Z
-base=13fb367962365273866856ffb91d05e3303eb1bd
-review=complete current-source review of UimsdTopicSearch.java blob 1e0f0a2b92192e80190ca1a7b6f58a96a318b560 across schema-only matching, privacy, normalization, result ordering/limit and question-builder navigation
-finding=no production defect confirmed; direct coverage was missing for the exact 48-hit prefix and stale-question reset on dataset navigation
-expected=1820 tests across 360 suites; focused UimsdTopicSearchTest has 6 methods
-scope=test-only; do not run Android build, publish, stage or distribute; docs/APD-CODEX-BUILD-REQUEST.txt remains unchanged
+APD CORE-ONLY TEST REQUEST - exact UIMSD fixed-point filter parsing 2026-10-18T10:39:08Z
+base=f0cbfa5dba1d7e3c5e8bf7cf2aa11100b6370048
+finding=confirmed CellFormatter.parseFixed binary-double drift: typed 1.005 hundredths became raw100 instead of101 and the exact Long.MAX_VALUE hundredths text was rejected
+fix=parse typed decimals with BigDecimal, retain Math.round floor(value+0.5) tie direction, reject values whose rounded raw result cannot fit long
+expected=1821 tests across 360 suites; focused CellFormatterTest has 7 methods
+scope=production-plus-test core gate before intentional TEST278 Android candidate; do not publish, stage or distribute

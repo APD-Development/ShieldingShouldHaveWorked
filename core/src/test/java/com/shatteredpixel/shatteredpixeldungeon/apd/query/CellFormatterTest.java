@@ -73,4 +73,16 @@ public class CellFormatterTest {
 			assertEquals(Long.valueOf(format == ColumnDef.Format.HUNDREDTHS ? 125 : 1250), CellFormatter.parse(decimal, "1.25"));
 		}
 	}
+
+	@Test public void decimalFiltersUseTheTypedValueInsteadOfBinaryApproximation(){
+		ColumnDef hundredths = ColumnDef.num("hundredths", "Hundredths").format(ColumnDef.Format.HUNDREDTHS);
+		ColumnDef thousandths = ColumnDef.num("thousandths", "Thousandths").format(ColumnDef.Format.THOUSANDTHS);
+		assertEquals(Long.valueOf(101), CellFormatter.parse(hundredths, "1.005"));
+		assertEquals("preserve Math.round's negative half-step direction", Long.valueOf(-100), CellFormatter.parse(hundredths, "-1.005"));
+		assertEquals(Long.valueOf(1235), CellFormatter.parse(thousandths, "1.2345"));
+		assertEquals("values above double's exact-integer range keep every typed digit",
+				Long.valueOf(9007199254740991L), CellFormatter.parse(hundredths, "90071992547409.91"));
+		assertEquals(Long.valueOf(Long.MAX_VALUE), CellFormatter.parse(hundredths, "92233720368547758.07"));
+		assertNull(CellFormatter.parse(hundredths, "92233720368547758.075"));
+	}
 }
