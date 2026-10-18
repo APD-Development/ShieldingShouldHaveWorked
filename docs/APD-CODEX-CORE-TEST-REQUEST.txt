@@ -1,6 +1,6 @@
-APD CORE-ONLY TEST REQUEST - exact UIMSD fixed-point filter parsing 2026-10-18T10:39:08Z
-base=f0cbfa5dba1d7e3c5e8bf7cf2aa11100b6370048
-finding=confirmed CellFormatter.parseFixed binary-double drift: typed 1.005 hundredths became raw100 instead of101 and the exact Long.MAX_VALUE hundredths text was rejected
-fix=parse typed decimals with BigDecimal, retain Math.round floor(value+0.5) tie direction, reject values whose rounded raw result cannot fit long
-expected=1821 tests across 360 suites; focused CellFormatterTest has 7 methods
-scope=production-plus-test core gate before intentional TEST278 Android candidate; do not publish, stage or distribute
+APD CORE-ONLY TEST REQUEST - Aggregate immutable identity contracts 2026-10-18T11:43:00Z
+base=fd62b69fe691772839cc68867a235fd8f9acd7c7
+review=complete current Aggregate.java constructors, factories, refinements, stable ids, equality and hash contracts with QueryCodec, GroupBy, QueryEngine and report consumers
+finding=no production defect confirmed; add direct retained boundary coverage for null normalization, inactive where values, fluent immutability and semantic aggregate identity
+expected=1824 tests across 361 suites; focused AggregateContractTest has 3 methods
+scope=test-only UIMSD audit gate; application source and docs/APD-CODEX-BUILD-REQUEST.txt unchanged; do not build, stage, publish or distribute an APK
