@@ -1,3 +1,9 @@
+## 2026-10-18T05:36:30Z — ResultTable boundary review and regressions complete
+- Current `ResultTable.java` blob `870987a9d8336747df4aeead2cd18010ef4a0ea1` (157 lines) fully reviewed; no production defect confirmed.
+- Added `ResultTableBoundaryTest` (3 methods; blob `6cfefef44f74fe5d564d0443fc028e5d375ac946`) for direct paging clamps/nonpositive sizes, empty results and grouped cell/detail alignment.
+- Core-only run `39100982660` passed 1,812/358 with zero failures/errors/skips; artifact `12126970320`, 846,785 bytes, SHA-256 `281c282125074b382793ff949b2897156ac218310ecf3e9b9275ef9e5b16ce22`.
+- Test/documentation-only: build request unchanged, no APK rebuild, TEST277 remains the private candidate and TEST262 remains published.
+
 ## 2026-10-18T04:39:16Z — Report model contract review and regressions complete
 - Current `Report.java` blob `ea9feddaa65e670ece45f5b60c63844652502135` fully reviewed; no production defect confirmed.
 - Added `ReportModelTest` (3 methods; blob `342d09436795efaade59014fda6d9758803a6998`) for constructor/heading boundaries, provenance and first-table discovery, and state tracking including null/invalid inputs.
