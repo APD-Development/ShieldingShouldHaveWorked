@@ -1,0 +1,52 @@
+{
+  "recorded_at": "2026-10-18T15:45:16.754Z",
+  "status": "core_verified_application_candidate_pending_full_gate",
+  "application_source": "0229d9c77b8d1e235d1dac2e9972eb459f3bfa86",
+  "target": "Name median in the UIMSD Asking a question guide",
+  "reviewed": {
+    "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdGuide.java",
+    "sha": "922e0ccae03995ef672c894179d80cf65ea8ebbe",
+    "lines": 181
+  },
+  "defect": "The guide omitted median although the Question builder and exact offline grammar support it.",
+  "reproduction": {
+    "source_commit": "d5928c32f3482f6c4a316605e1927fbbc06a6f47",
+    "run_id": 39141272953,
+    "tests": 1835,
+    "suites": 362,
+    "failures": 1,
+    "errors": 0,
+    "skipped": 0,
+    "failed_method": "guideNamesEverySupportedQuestionMeasure",
+    "artifact_id": 12141472420,
+    "artifact_bytes": 857172,
+    "artifact_digest": "sha256:cc4554fcfb057023a437781a0a856e17a1301eaf80cf27b0816c110f464ae05e"
+  },
+  "corrected_core": {
+    "run_id": 39141568092,
+    "started_at": "2026-10-18T15:40:46Z",
+    "completed_at": "2026-10-18T15:43:33Z",
+    "tests": 1835,
+    "suites": 362,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "focused_class": "UimsdHomeTourTest",
+    "focused_methods": 15,
+    "artifact_id": 12142126161,
+    "artifact_bytes": 856342,
+    "artifact_digest": "sha256:70f2046ed2869329bc95efae95e1e5975d4aff2a0277eb67fe7353dcc5ad7087",
+    "downloaded_zip_digest_matches": true
+  },
+  "exact_reviewed_production_paths": 124,
+  "full_gate_requested": 281,
+  "full_gate_pending": true,
+  "apk_built": false,
+  "staged": false,
+  "published": false,
+  "distributed": false,
+  "latest_verified_private_candidate": 280,
+  "latest_actual_owner_publication": 262,
+  "physical_phone_tested": false,
+  "owner_save_install_over_tested": false
+}
