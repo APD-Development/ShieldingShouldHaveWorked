@@ -1,9 +1,9 @@
 {
-  "source": "ec373bc8d52f682d12799b0b7e1d78afa83deead",
-  "recorded_at": "2026-10-18T03:53:31Z",
+  "source": "c64f90cda7a970ea340a62813e0893c2b065acb5",
+  "recorded_at": "2026-10-18T04:39:16Z",
   "complete": false,
   "prior_checkpoint_preserved": "docs/APD-UIMSD-REVIEW-CHECKPOINT-2026-10-13.json",
-  "count_note": "Current-blob reconciliation found 96 exact machine-recorded entries before this continuation. Datasets.java, AggValue.java, UimsdSelfTest.java, UimsdHome.java, QueryCodec.java, Question.java, Questions.java, RowBuilders.java, RowCodec.java, DatasetStore.java, QueryEngine.java, ReportExport.java, ReportBuilder.java and ReportRenderer.java add fourteen reviewed current production blobs, for 110 exact reviewed paths; prose-only completed reviews remain separate until reconciled.",
+  "count_note": "Current-blob reconciliation found 96 exact machine-recorded entries before this continuation. Datasets.java, AggValue.java, UimsdSelfTest.java, UimsdHome.java, QueryCodec.java, Question.java, Questions.java, RowBuilders.java, RowCodec.java, DatasetStore.java, QueryEngine.java, ReportExport.java, ReportBuilder.java, ReportRenderer.java and Report.java add fifteen reviewed current production blobs, for 111 exact reviewed paths; prose-only completed reviews remain separate until reconciled.",
   "entries": [
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/Datasets.java",
@@ -264,6 +264,24 @@
           "space-prefixed negative number preserved"
         ]
       }
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/report/Report.java",
+      "sha": "ea9feddaa65e670ece45f5b60c63844652502135",
+      "lines": 129,
+      "reviewed": true,
+      "basis": "Complete current-source review of model construction, nullable display normalization, heading bounds, block/provenance inspection, first-table selection and state tracking found no production defect. Dedicated retained tests now cover the previously indirect boundary contracts.",
+      "retained_test": {
+        "path": "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/report/ReportModelTest.java",
+        "sha": "342d09436795efaade59014fda6d9758803a6998",
+        "source_commit": "c64f90cda7a970ea340a62813e0893c2b065acb5",
+        "methods": 3,
+        "method_names": [
+          "constructorsKeepDisplayDefaultsAndHeadingBounds",
+          "provenanceAndFirstTableInspectionTraverseOnlyDataBlocks",
+          "statesUsedIncludesFactsAndTablesButIgnoresSectionsNullsAndInvalidStates"
+        ]
+      }
     }
   ],
   "supporting_reads": [
@@ -320,24 +338,22 @@
   "latest_verified_private_candidate": 277,
   "latest_published_owner_build": 262,
   "latest_test_only_evidence": {
-    "source_commit": "10df853e6d505ea080abaecde98c793f76397e12",
-    "request_commit": "10df853e6d505ea080abaecde98c793f76397e12",
-    "run_id": 39094097064,
-    "target": "ReportRenderer leading-whitespace CSV formula neutralization and signed-number preservation",
-    "core_tests": 1806,
-    "suites": 356,
+    "source_commit": "c64f90cda7a970ea340a62813e0893c2b065acb5",
+    "request_commit": "c64f90cda7a970ea340a62813e0893c2b065acb5",
+    "run_id": 39097690640,
+    "target": "Report model constructor, provenance, first-table and state-tracking boundaries",
+    "core_tests": 1809,
+    "suites": 357,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "focused_class": "ReportTest",
-    "focused_methods": 12,
-    "focused_time_seconds": 2.164,
-    "changed_method": "renderersEscapeAndQuoteSafely",
-    "changed_method_time_seconds": 0.175,
-    "artifact_id": 12123668362,
-    "artifact_bytes": 840952,
-    "artifact_digest": "sha256:01626ac50b8d8250d3380ff1245b41460ca1340a9d8a33d7d03edaa6fad271b7",
-    "application_source_changed": true
+    "focused_class": "ReportModelTest",
+    "focused_methods": 3,
+    "focused_time_seconds": 0,
+    "artifact_id": 12125321600,
+    "artifact_bytes": 845476,
+    "artifact_digest": "sha256:8a795ee806c13cf4e3a40fcacaf46899597de9134344b691684be3dcb31a4821",
+    "application_source_changed": false
   },
   "latest_application_evidence": {
     "application_source": "10df853e6d505ea080abaecde98c793f76397e12",
@@ -567,5 +583,25 @@
     "published": false,
     "physical_phone_tested": false,
     "owner_save_install_over_tested": false
+  },
+  "prior_test_only_evidence_report_renderer": {
+    "source_commit": "10df853e6d505ea080abaecde98c793f76397e12",
+    "request_commit": "10df853e6d505ea080abaecde98c793f76397e12",
+    "run_id": 39094097064,
+    "target": "ReportRenderer leading-whitespace CSV formula neutralization and signed-number preservation",
+    "core_tests": 1806,
+    "suites": 356,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "focused_class": "ReportTest",
+    "focused_methods": 12,
+    "focused_time_seconds": 2.164,
+    "changed_method": "renderersEscapeAndQuoteSafely",
+    "changed_method_time_seconds": 0.175,
+    "artifact_id": 12123668362,
+    "artifact_bytes": 840952,
+    "artifact_digest": "sha256:01626ac50b8d8250d3380ff1245b41460ca1340a9d8a33d7d03edaa6fad271b7",
+    "application_source_changed": true
   }
 }

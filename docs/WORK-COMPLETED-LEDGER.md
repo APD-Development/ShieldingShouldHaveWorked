@@ -1,3 +1,9 @@
+## 2026-10-18T04:39:16Z — Report model contract review and regressions complete
+- Current `Report.java` blob `ea9feddaa65e670ece45f5b60c63844652502135` fully reviewed; no production defect confirmed.
+- Added `ReportModelTest` (3 methods; blob `342d09436795efaade59014fda6d9758803a6998`) for constructor/heading boundaries, provenance and first-table discovery, and state tracking including null/invalid inputs.
+- Core-only run `39097690640` passed 1,809/357 with zero failures/errors/skips; artifact `12125321600`, 845,476 bytes, SHA-256 `8a795ee806c13cf4e3a40fcacaf46899597de9134344b691684be3dcb31a4821`.
+- Test/documentation-only: build request unchanged, no APK rebuild, TEST277 remains the private fallback candidate and TEST262 remains published.
+
 ## 2026-10-18T03:53:31Z — TEST277 ReportRenderer CSV hardening verified
 - Fixed leading-whitespace CSV formula exposure in `ReportRenderer.java` (source `10df853e6d505ea080abaecde98c793f76397e12`, blob `b4894f23a91fc23cc879c6a72cd900198c390bd2`) while retaining ordinary signed numbers; permanent `ReportTest` coverage added.
 - Core-only run `39094097064` passed 1,806/356. Full run `39094336421` passed 1,806 core, debug/history and 38 API34; 57/57 required 320x640 PNGs decoded and were reviewed. APK: 38,614,452 bytes, SHA-256 `a11ebf7ac40d71afaa5b1f0ea83726501e6c108931cb9a09ac9a7e0455e2b554`.
