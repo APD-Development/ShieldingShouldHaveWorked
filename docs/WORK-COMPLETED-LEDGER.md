@@ -1,3 +1,10 @@
+## 2026-10-18T16:07:02.840Z — TEST281 UIMSD guide verification complete
+- Corrected the guide's supported-question list to include median and retained `guideNamesEverySupportedQuestionMeasure`; the test-only reproduction failed exactly once on `median`, then corrected core and full-gate suites passed.
+- Full TEST281 evidence: run `39141915301`; 1,835/1,835 core tests across 362 suites; 38/38 API34 methods; 57/57 required 320×640 PNGs decoded and manually reviewed; strict history against immediate previous compiled TEST280 passed.
+- APK: `ADHD-Pixel-Dungeon-CODEX-TEST-281.apk`, 38,617,180 bytes, SHA-256 `4ea3a5501ef9e6870f6016e94ef28623f0aefbe944091f1a282e5fe2275b21df`; artifact `12142520025`, ZIP SHA-256 `6efff9fb509284d10630937fb4c0f475ea95fde3c3f7e929854a0653a7958b59`.
+- Supplemental profiles all have successful evidence after one unchanged-APK retry of the initially failed short-landscape job; the original hang evidence remains preserved. Staging failed closed on incompatible preparation inputs; no staging/publication/distribution occurred.
+- Exact current-blob UIMSD audit coverage remains 124 production paths. TEST281 becomes latest verified private candidate; TEST262 remains latest published owner build.
+
 ## 2026-10-18T15:45:16.754Z — UIMSD Guide median wording corrected; TEST281 full gate requested
 - Full review of all 181 current lines of `UimsdGuide.java` and its guide/topic windows, tutorial and existing Home/tour/wording tests confirmed one bounded user-facing defect: the “Asking a question” topic omitted median even though both the Question builder and exact offline grammar support it.
 - Test-only commit `d5928c32f3482f6c4a316605e1927fbbc06a6f47` reproduced exactly one failure in [run 39141272953](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/39141272953): 1,835 tests / 362 suites, only `guideNamesEverySupportedQuestionMeasure` failed on `median`; zero errors or skips.
