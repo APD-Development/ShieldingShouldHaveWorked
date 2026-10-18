@@ -160,4 +160,18 @@ public class WindowGeometryTest {
 		}
 		assertTrue(src("windows/WndUimsdList.java").contains("WindowGeometry.width("));
 	}
+
+	@Test
+	public void emptyAndExactRowBoundariesDoNotInventTouches(){
+		float[] empty = WindowGeometry.stack(new float[0]);
+		assertEquals(1, empty.length);
+		assertEquals(0f, empty[0], 0f);
+		assertEquals(-1, WindowGeometry.rowAt(empty, 0));
+
+		float[] tops = WindowGeometry.stack(new float[]{15, 31});
+		assertEquals(0, WindowGeometry.rowAt(tops, 0));
+		assertEquals(1, WindowGeometry.rowAt(tops, 15));
+		assertEquals(-1, WindowGeometry.rowAt(tops, 46));
+	}
+
 }

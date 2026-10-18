@@ -1,7 +1,6 @@
-APD CORE-ONLY TEST REQUEST - correct incomplete Cleric history count 2026-10-18T13:51:00Z
-candidate=latest head adds the proven one-line outcome-presence guard plus its retained focused regression
-checks=full ./gradlew :core:test; expect 1832 tests with zero failures, including ClericHistoryTest now 3 methods
-reproduction=run 39133186514 at 6acf81f65100ede201a5613e2cb6fb8a80725f87 executed 1832 tests and failed only finishedRowsWithoutARecordedOutcomeAreNotInventedAsRuns
-scope=bounded UIMSD-derived history accuracy; no gameplay, balance, scoring, saves, raw history, application ID, signing or random behavior change
-next=only after this complete core pass and branch reconciliation, request one intentional private Android candidate against verified TEST279 with full debug/API34/visual/history checks
-restriction=no automatic publication/staging/tester distribution; docs/APD-CODEX-BUILD-REQUEST.txt remains unchanged in this core prerequisite
+APD CORE-ONLY TEST REQUEST - reconcile current UIMSD table/window geometry boundaries 2026-10-18T14:31:13Z
+candidate=latest head adds two retained test-only methods after complete current-source review of TableGeometry.java and WindowGeometry.java found no production defect
+checks=full ./gradlew :core:test; expect 1834 tests with zero failures, including TableGeometryTest now 8 methods and WindowGeometryTest now 11 methods
+scope=exact half-open column/row touch boundaries, empty stack behavior and final-edge exclusion; existing width, wrapping, scrolling and pane-placement coverage remains
+production=none; application source, APK bytes, gameplay, scoring, saves, raw history, signing, application ID and RNG remain unchanged
+restriction=no APK rebuild, publication, staging or tester distribution; docs/APD-CODEX-BUILD-REQUEST.txt remains unchanged
