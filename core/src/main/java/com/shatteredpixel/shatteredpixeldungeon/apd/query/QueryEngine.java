@@ -327,9 +327,14 @@ public final class QueryEngine {
 				if (!lb) return v >= lo && v <= hi ? TRUE : FALSE;
 				return v > hi ? FALSE : UNCERTAIN;
 			}
-			case IN:
-				for (long n : f.nums) if (v == n) return TRUE;
-				return FALSE;
+			case IN: {
+				boolean possible = false;
+				for (long n : f.nums){
+					if (!lb && v == n) return TRUE;
+					if (lb && n >= v) possible = true;
+				}
+				return lb && possible ? UNCERTAIN : FALSE;
+			}
 			default:
 				return FALSE;
 		}

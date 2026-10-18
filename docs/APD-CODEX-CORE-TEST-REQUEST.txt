@@ -1,6 +1,6 @@
-APD CORE-ONLY TEST REQUEST - QueryEngine incomplete numeric IN reproduction 2026-10-18T00:36:07.838Z
-goal=Retain the current failure proving numeric IN must not treat a lower-bound value as exact: exact 12 matches IN(12), while an at-least-12 row is uncertain for IN(12) and IN(20), and definitively false only when every listed value is below 12.
-candidate=reproduction-only test push from live branch head 4eb83574c52970be1222d04c4bda92a770e488e8; production QueryEngine remains unchanged
-tests=run full ./gradlew :core:test, including QueryEngineTest.aLowerBoundIsNeverTreatedAsExact; do not weaken prior assertions
-scope=test-only UIMSD QueryEngine boundary reproduction; no production code, raw history, saves, gameplay, scoring, APK or release change
-delivery=core verification only; do not trigger an APK build, publish, stage, distribute or edit docs/APD-CODEX-BUILD-REQUEST.txt
+APD CORE-ONLY TEST REQUEST - QueryEngine incomplete numeric IN correction 2026-10-18T00:39:19.890Z
+goal=Verify numeric IN preserves incomplete-value semantics: exact 12 alone matches IN(12); an at-least-12 value is uncertain for IN(12) and IN(20), and false only when every listed value is below 12.
+candidate=bounded production QueryEngine correction after retained failing reproduction run 39083369571 at d2a64433abb984fb05cc38ff411d59f1cbe61e9e
+tests=run full ./gradlew :core:test, including QueryEngineTest.aLowerBoundIsNeverTreatedAsExact and all prior UIMSD/gameplay regressions
+scope=one QueryEngine numeric filter correction plus retained regression; raw history, saves, gameplay, RNG, scoring and build request unchanged
+delivery=core verification only; do not publish, stage or distribute; a full APK gate is required only after this exact source passes core
