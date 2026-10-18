@@ -1,3 +1,9 @@
+## 2026-10-18T08:40:02Z — Filter operator contract review and regressions complete
+- Current `Op.java` blob `5d9b8e177a949e430e65522a98603873ab6ac258` (71 lines) fully reviewed; no production defect confirmed.
+- Added `OpContractTest` (2 methods; blob `851c0e6a0c90c14e7c24db119a2c0b799a243547`) for exact ordered NUM/TEXT/ENUM operator sets, value arity and internal predicate exclusion.
+- Core-only run `39112189166` passed 1,818/360 with zero failures/errors/skips; artifact `12131275527`, 847,895 bytes, SHA-256 `05b7957303afe738b49d77d7e856c85b73d623842a8ec012f7b78d18be46662e`.
+- Test/documentation-only: build request unchanged, no APK rebuild, TEST277 remains the private candidate and TEST262 remains published.
+
 ## 2026-10-18T07:38:43Z — Boss statistics classifier review and exhaustive regression complete
 - Current `BossClasses.java` blob `984c3d940d95c73302cbae75fe98eae633c2b152` (44 lines) fully reviewed against all current `Property.BOSS` mob sources; no production defect confirmed.
 - Expanded `BossClassesTest` (2 methods; blob `99500f3081c46c33ac2bff3d73d9c4a48a1eed6f`) to all 16 supported bosses/Yog fists and negative helper/lookalike cases.

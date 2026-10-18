@@ -1,9 +1,9 @@
 {
-  "source": "4c0e4f2256fe58faa5b23856eff16fc7c2b61860",
-  "recorded_at": "2026-10-18T07:38:43Z",
+  "source": "b48e2fa7103f13a5d9faa985a20d329de6e37e94",
+  "recorded_at": "2026-10-18T08:40:02Z",
   "complete": false,
   "prior_checkpoint_preserved": "docs/APD-UIMSD-REVIEW-CHECKPOINT-2026-10-13.json",
-  "count_note": "Current-blob reconciliation found 96 exact machine-recorded entries before this continuation. Datasets.java, AggValue.java, UimsdSelfTest.java, UimsdHome.java, QueryCodec.java, Question.java, Questions.java, RowBuilders.java, RowCodec.java, DatasetStore.java, QueryEngine.java, ReportExport.java, ReportBuilder.java, ReportRenderer.java, Report.java, ResultTable.java, Catalog.java and BossClasses.java add eighteen reviewed current production blobs, for 114 exact reviewed paths; prose-only completed reviews remain separate until reconciled.",
+  "count_note": "Current-blob reconciliation found 96 exact machine-recorded entries before this continuation. Datasets.java, AggValue.java, UimsdSelfTest.java, UimsdHome.java, QueryCodec.java, Question.java, Questions.java, RowBuilders.java, RowCodec.java, DatasetStore.java, QueryEngine.java, ReportExport.java, ReportBuilder.java, ReportRenderer.java, Report.java, ResultTable.java, Catalog.java, BossClasses.java and Op.java add nineteen reviewed current production blobs, for 115 exact reviewed paths; prose-only completed reviews remain separate until reconciled.",
   "entries": [
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/Datasets.java",
@@ -335,6 +335,23 @@
           "bossHelpersAndLookalikesAreNotBosses"
         ]
       }
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/Op.java",
+      "sha": "5d9b8e177a949e430e65522a98603873ab6ac258",
+      "lines": 71,
+      "reviewed": true,
+      "basis": "Complete current-source review of per-type picker sets, ordering, value arity and internal drilldown predicates found no production defect. Direct retained tests now lock every public operator set and keep internal predicates outside ordinary filters.",
+      "retained_test": {
+        "path": "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/OpContractTest.java",
+        "sha": "851c0e6a0c90c14e7c24db119a2c0b799a243547",
+        "source_commit": "b48e2fa7103f13a5d9faa985a20d329de6e37e94",
+        "methods": 2,
+        "method_names": [
+          "eachColumnTypeOffersExactlyItsPublicOperatorsInPickerOrder",
+          "onlyPresenceOperatorsOmitAValueAndInternalOperatorsAreNeverOffered"
+        ]
+      }
     }
   ],
   "supporting_reads": [
@@ -391,21 +408,21 @@
   "latest_verified_private_candidate": 277,
   "latest_published_owner_build": 262,
   "latest_test_only_evidence": {
-    "source_commit": "4c0e4f2256fe58faa5b23856eff16fc7c2b61860",
-    "request_commit": "4c0e4f2256fe58faa5b23856eff16fc7c2b61860",
-    "run_id": 39108318966,
-    "target": "Exhaustive UIMSD boss-statistics class classification",
-    "core_tests": 1816,
-    "suites": 359,
+    "source_commit": "b48e2fa7103f13a5d9faa985a20d329de6e37e94",
+    "request_commit": "b48e2fa7103f13a5d9faa985a20d329de6e37e94",
+    "run_id": 39112189166,
+    "target": "UIMSD filter operator sets, ordering, arity and internal-predicate separation",
+    "core_tests": 1818,
+    "suites": 360,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "focused_class": "BossClassesTest",
+    "focused_class": "OpContractTest",
     "focused_methods": 2,
-    "focused_time_seconds": 0.001,
-    "artifact_id": 12129536691,
-    "artifact_bytes": 845652,
-    "artifact_digest": "sha256:be0f95ed46e724be16ad249611ee2984642784368e30d6d6661a1b3a58332aa9",
+    "focused_time_seconds": 0,
+    "artifact_id": 12131275527,
+    "artifact_bytes": 847895,
+    "artifact_digest": "sha256:05b7957303afe738b49d77d7e856c85b73d623842a8ec012f7b78d18be46662e",
     "application_source_changed": false
   },
   "latest_application_evidence": {
@@ -714,6 +731,24 @@
     "artifact_id": 12127158889,
     "artifact_bytes": 848464,
     "artifact_digest": "sha256:3248ed1dee990f76c05af2d3f696c7e616476fd4f0d1bfe64fb246b3569ac905",
+    "application_source_changed": false
+  },
+  "prior_test_only_evidence_boss_classes": {
+    "source_commit": "4c0e4f2256fe58faa5b23856eff16fc7c2b61860",
+    "request_commit": "4c0e4f2256fe58faa5b23856eff16fc7c2b61860",
+    "run_id": 39108318966,
+    "target": "Exhaustive UIMSD boss-statistics class classification",
+    "core_tests": 1816,
+    "suites": 359,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "focused_class": "BossClassesTest",
+    "focused_methods": 2,
+    "focused_time_seconds": 0.001,
+    "artifact_id": 12129536691,
+    "artifact_bytes": 845652,
+    "artifact_digest": "sha256:be0f95ed46e724be16ad249611ee2984642784368e30d6d6661a1b3a58332aa9",
     "application_source_changed": false
   }
 }

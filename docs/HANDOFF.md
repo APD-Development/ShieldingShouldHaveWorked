@@ -1,3 +1,9 @@
+## 2026-10-18T08:40:02Z — Filter operator contract review complete; 1,818 core tests pass
+- Reviewed all 71 current lines of `Op.java` (blob `5d9b8e177a949e430e65522a98603873ab6ac258`) across numeric/text/enum picker sets, operator ordering, value arity and the separation of internal drilldown predicates. No production defect was confirmed.
+- Added `OpContractTest` at source commit `b48e2fa7103f13a5d9faa985a20d329de6e37e94`: exact ordered public operators are locked for every column type; only Known/Unknown omit values; Group Value/Bound/Text and Identifier In remain unavailable to ordinary player filters.
+- Core-only [run 39112189166](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/39112189166) passed 1,818 tests / 360 suites with 0 failures, errors or skips. The focused class passed 2/2 methods. Artifact `12131275527` is 847,895 bytes with SHA-256 `05b7957303afe738b49d77d7e856c85b73d623842a8ec012f7b78d18be46662e`; the downloaded ZIP matched that digest.
+- This is test/documentation-only work. `docs/APD-CODEX-BUILD-REQUEST.txt` was not changed, no APK build started, TEST277 remains the latest fully gated private candidate, and TEST262 remains the latest actual owner publication.
+
 ## 2026-10-18T07:38:43Z — Boss statistics classification review complete; 1,816 core tests pass
 - Reviewed all 44 current lines of `BossClasses.java` (blob `984c3d940d95c73302cbae75fe98eae633c2b152`) against every current mob source that installs `Property.BOSS`: Goo, Tengu, DM-300, Dwarf King, Yog-Dzewa, all six Yog fists, Crystal Spire, Gnoll Geomancer, Fungal Core and Vault Boss Elemental. No production defect was confirmed.
 - Expanded `BossClassesTest` at source commit `4c0e4f2256fe58faa5b23856eff16fc7c2b61860` from sampled coverage to all 16 supported full/simple class names, while rejecting ordinary mobs, boss helpers and lookalike nested classes.
