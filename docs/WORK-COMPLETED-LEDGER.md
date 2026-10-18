@@ -1,3 +1,8 @@
+## 2026-10-18T03:53:31Z — TEST277 ReportRenderer CSV hardening verified
+- Fixed leading-whitespace CSV formula exposure in `ReportRenderer.java` (source `10df853e6d505ea080abaecde98c793f76397e12`, blob `b4894f23a91fc23cc879c6a72cd900198c390bd2`) while retaining ordinary signed numbers; permanent `ReportTest` coverage added.
+- Core-only run `39094097064` passed 1,806/356. Full run `39094336421` passed 1,806 core, debug/history and 38 API34; 57/57 required 320x640 PNGs decoded and were reviewed. APK: 38,614,452 bytes, SHA-256 `a11ebf7ac40d71afaa5b1f0ea83726501e6c108931cb9a09ac9a7e0455e2b554`.
+- TEST276/277 application ID and v2 signing certificate/public key hashes match. Supplemental display retained 2 pass / 3 failure; stage `39094336403` failed stale TEST268 tree equality and produced no staged package. TEST277 remains private; TEST262 remains published; no phone/install-over claim.
+
 ## 2026-10-18T02:45:38Z — ReportBuilder review and grouped row-cap regression complete
 - Current production blob `cb44398221e5243cd133ad6dda59dae134939661` (332 lines) fully reviewed; no production defect confirmed.
 - Added grouped coverage beside the retained ordinary-table cap: 1,500 groups become exactly 1,000 listed plus 500 truthfully omitted.

@@ -1,9 +1,9 @@
 {
-  "source": "76cc107b3d663ff17f742682003ad086857fa4c3",
-  "recorded_at": "2026-10-18T02:45:38Z",
+  "source": "ec373bc8d52f682d12799b0b7e1d78afa83deead",
+  "recorded_at": "2026-10-18T03:53:31Z",
   "complete": false,
   "prior_checkpoint_preserved": "docs/APD-UIMSD-REVIEW-CHECKPOINT-2026-10-13.json",
-  "count_note": "Current-blob reconciliation found 96 exact machine-recorded entries before this continuation. Datasets.java, AggValue.java, UimsdSelfTest.java, UimsdHome.java, QueryCodec.java, Question.java, Questions.java, RowBuilders.java, RowCodec.java, DatasetStore.java, QueryEngine.java, ReportExport.java and ReportBuilder.java add thirteen reviewed current production blobs, for 109 exact reviewed paths; prose-only completed reviews remain separate until reconciled.",
+  "count_note": "Current-blob reconciliation found 96 exact machine-recorded entries before this continuation. Datasets.java, AggValue.java, UimsdSelfTest.java, UimsdHome.java, QueryCodec.java, Question.java, Questions.java, RowBuilders.java, RowCodec.java, DatasetStore.java, QueryEngine.java, ReportExport.java, ReportBuilder.java and ReportRenderer.java add fourteen reviewed current production blobs, for 110 exact reviewed paths; prose-only completed reviews remain separate until reconciled.",
   "entries": [
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/Datasets.java",
@@ -243,6 +243,27 @@
         "methods": 3,
         "new_method": "aHugeGroupedTableIsCutByGroupsAndSaysHowMuchIsMissing"
       }
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/report/ReportRenderer.java",
+      "sha": "b4894f23a91fc23cc879c6a72cd900198c390bd2",
+      "lines": 332,
+      "reviewed": true,
+      "basis": "Complete review of Markdown, plain-text, self-contained HTML and CSV rendering, marks/legend/provenance, row omission accounting, escaping, UTC footer and determinism. Confirmed and fixed leading-whitespace CSV formula exposure without changing ordinary signed numbers.",
+      "confirmed_defect": "CSV formula neutralization inspected only character zero; spreadsheet whitespace trimming could expose tab/space-prefixed =,+,-,@ input.",
+      "fix_commit": "10df853e6d505ea080abaecde98c793f76397e12",
+      "retained_test": {
+        "path": "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/report/ReportTest.java",
+        "sha": "90bb7c5d57d780eb4ca8801197c147882a3bbfb2",
+        "method": "renderersEscapeAndQuoteSafely",
+        "assertions": [
+          "direct formula neutralized",
+          "tab-prefixed formula neutralized",
+          "space-prefixed formula neutralized",
+          "plain negative number preserved",
+          "space-prefixed negative number preserved"
+        ]
+      }
     }
   ],
   "supporting_reads": [
@@ -293,68 +314,83 @@
     "errors": 0,
     "skipped": 0
   },
-  "confirmed_new_production_defects": 4,
+  "confirmed_new_production_defects": 5,
   "application_changes": true,
   "new_apk_needed": false,
-  "latest_verified_private_candidate": 276,
+  "latest_verified_private_candidate": 277,
   "latest_published_owner_build": 262,
   "latest_test_only_evidence": {
-    "source_commit": "76cc107b3d663ff17f742682003ad086857fa4c3",
-    "request_commit": "76cc107b3d663ff17f742682003ad086857fa4c3",
-    "run_id": 39091069790,
-    "target": "ReportBuilder grouped 1,000-row cap and exact omitted-count rendering",
+    "source_commit": "10df853e6d505ea080abaecde98c793f76397e12",
+    "request_commit": "10df853e6d505ea080abaecde98c793f76397e12",
+    "run_id": 39094097064,
+    "target": "ReportRenderer leading-whitespace CSV formula neutralization and signed-number preservation",
     "core_tests": 1806,
     "suites": 356,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "focused_class": "ReportTableTest",
-    "focused_methods": 3,
-    "focused_time_seconds": 0.02,
-    "new_method_time_seconds": 0.011,
-    "artifact_id": 12122263511,
-    "artifact_bytes": 842788,
-    "artifact_digest": "sha256:5dd3c91137ff8d2a2de20e325028b1978045010ddbe6c64e285af9ee6d0f8227",
-    "application_source_changed": false
+    "focused_class": "ReportTest",
+    "focused_methods": 12,
+    "focused_time_seconds": 2.164,
+    "changed_method": "renderersEscapeAndQuoteSafely",
+    "changed_method_time_seconds": 0.175,
+    "artifact_id": 12123668362,
+    "artifact_bytes": 840952,
+    "artifact_digest": "sha256:01626ac50b8d8250d3380ff1245b41460ca1340a9d8a33d7d03edaa6fad271b7",
+    "application_source_changed": true
   },
   "latest_application_evidence": {
-    "application_source": "b6d3a8be0f4337d4bd8d1a1bbe38dc1981d99bf3",
-    "request_commit": "d44903bbc138ac653e43e58341e7b7a33de12581",
-    "run_id": 39086579292,
-    "target": "Offline schema/public-field UIMSD topic search wired into Ask without searching values or hidden columns",
-    "core_tests": 1802,
-    "core_suites": 355,
+    "application_source": "10df853e6d505ea080abaecde98c793f76397e12",
+    "request_commit": "ec373bc8d52f682d12799b0b7e1d78afa83deead",
+    "run_id": 39094336421,
+    "started_at": "2026-10-18T03:38:31Z",
+    "completed_at": "2026-10-18T03:53:31Z",
+    "target": "Neutralize CSV spreadsheet formulas after leading whitespace without changing signed numeric cells",
+    "core_tests": 1806,
+    "core_suites": 356,
     "android_tests": 38,
     "required_images_reviewed": 57,
     "image_dimensions": "320x640",
-    "apk_sha256": "6e0996d4a51d53a816ab2851556766188d72dbaf81fe3464d4512d04266b0725",
-    "apk_bytes": 38613689,
-    "apk_artifact_id": 12121081485,
-    "apk_artifact_bytes": 36114648,
-    "apk_artifact_digest": "sha256:04bb52efa85f4f05391e33186b3127a0e9d377bf0913bbd8b0377df12b50d7bc",
-    "core_artifact_id": 12120418428,
-    "core_artifact_digest": "sha256:638d2171ea3865a58b40f3496b87dd0f6b0100370aab0dff60ec5005badfe446",
-    "android_artifact_id": 12121158561,
-    "android_artifact_digest": "sha256:0434d0e4134bf76ea36a799ebf30ac4361b9e5baacd067e858829aa3c08708e5",
-    "history_previous_application_source": "dcdec4a936a0b159f6dcf1a60da6a8c5e663d6a1",
-    "history_previous_run": 39076194628,
+    "visual_review": "three contact sheets; no blank, corrupt or obvious clipping regression",
+    "apk_sha256": "a11ebf7ac40d71afaa5b1f0ea83726501e6c108931cb9a09ac9a7e0455e2b554",
+    "apk_bytes": 38614452,
+    "apk_artifact_id": 12124520254,
+    "apk_artifact_bytes": 36115663,
+    "apk_artifact_digest": "sha256:a401cb0ecbd4db203d94a3cb31cf05dec28e61d2589af1ac4a2004eaec46af6a",
+    "core_artifact_id": 12124420689,
+    "core_artifact_bytes": 842868,
+    "core_artifact_digest": "sha256:604c34e94d01aacc4d671fc3216fdda8bed0d185e7c13bb2d6f36da1227442b7",
+    "android_artifact_id": 12124610620,
+    "android_artifact_bytes": 5093621,
+    "android_artifact_digest": "sha256:481cfd7a8d82760bd6d0ce71c89204dddc6149ca1da4e21fa4dd4afe5f05a253",
+    "application_id": "com.charltonchris29.adhdpixeldungeon.indev",
+    "signing_certificate_sha256": "067688b3ab6bd5820a67f4c1ba7d5859db578173771cf31d3252b3e4e012246e",
+    "signing_public_key_sha256": "efc113902c65a6825990ab9e496601fd9e08a55612238d0641de04e5c15ce288",
+    "signing_and_application_id_match_test276": true,
+    "history_previous_application_source": "b6d3a8be0f4337d4bd8d1a1bbe38dc1981d99bf3",
+    "history_previous_producer": "d44903bbc138ac653e43e58341e7b7a33de12581",
+    "history_previous_run": 39086579292,
     "supplemental_display": {
-      "run_id": 39086579298,
+      "run_id": 39094336426,
       "passed_profiles": [
-        "small-virtual",
-        "compact-virtual",
-        "square-virtual",
-        "short-landscape"
+        "m53-representative",
+        "square-virtual"
       ],
       "failed_profiles": [
-        "m53-representative"
+        "compact-virtual",
+        "small-virtual",
+        "short-landscape"
       ],
-      "failure": "Native title condition did not become true",
+      "failures": {
+        "compact_and_small": "Native title condition did not become true",
+        "short_landscape": "TitleMenuLayoutDeviceTest.java:87 assertion"
+      },
       "accepted_required_gate": false
     },
     "staging": {
-      "run_id": 39086579303,
+      "run_id": 39094336403,
       "conclusion": "failure",
+      "failure": "stale TEST268 preparation profile changed application/build inputs",
       "staged": false
     },
     "published": false,
@@ -468,5 +504,68 @@
         "actual_reason": "test fixture assumed title text rendered once; plain text intentionally renders title plus equal-length underline"
       }
     ]
+  },
+  "prior_test_only_evidence_report_builder": {
+    "source_commit": "76cc107b3d663ff17f742682003ad086857fa4c3",
+    "request_commit": "76cc107b3d663ff17f742682003ad086857fa4c3",
+    "run_id": 39091069790,
+    "target": "ReportBuilder grouped 1,000-row cap and exact omitted-count rendering",
+    "core_tests": 1806,
+    "suites": 356,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "focused_class": "ReportTableTest",
+    "focused_methods": 3,
+    "focused_time_seconds": 0.02,
+    "new_method_time_seconds": 0.011,
+    "artifact_id": 12122263511,
+    "artifact_bytes": 842788,
+    "artifact_digest": "sha256:5dd3c91137ff8d2a2de20e325028b1978045010ddbe6c64e285af9ee6d0f8227",
+    "application_source_changed": false
+  },
+  "prior_application_evidence_test276": {
+    "application_source": "b6d3a8be0f4337d4bd8d1a1bbe38dc1981d99bf3",
+    "request_commit": "d44903bbc138ac653e43e58341e7b7a33de12581",
+    "run_id": 39086579292,
+    "target": "Offline schema/public-field UIMSD topic search wired into Ask without searching values or hidden columns",
+    "core_tests": 1802,
+    "core_suites": 355,
+    "android_tests": 38,
+    "required_images_reviewed": 57,
+    "image_dimensions": "320x640",
+    "apk_sha256": "6e0996d4a51d53a816ab2851556766188d72dbaf81fe3464d4512d04266b0725",
+    "apk_bytes": 38613689,
+    "apk_artifact_id": 12121081485,
+    "apk_artifact_bytes": 36114648,
+    "apk_artifact_digest": "sha256:04bb52efa85f4f05391e33186b3127a0e9d377bf0913bbd8b0377df12b50d7bc",
+    "core_artifact_id": 12120418428,
+    "core_artifact_digest": "sha256:638d2171ea3865a58b40f3496b87dd0f6b0100370aab0dff60ec5005badfe446",
+    "android_artifact_id": 12121158561,
+    "android_artifact_digest": "sha256:0434d0e4134bf76ea36a799ebf30ac4361b9e5baacd067e858829aa3c08708e5",
+    "history_previous_application_source": "dcdec4a936a0b159f6dcf1a60da6a8c5e663d6a1",
+    "history_previous_run": 39076194628,
+    "supplemental_display": {
+      "run_id": 39086579298,
+      "passed_profiles": [
+        "small-virtual",
+        "compact-virtual",
+        "square-virtual",
+        "short-landscape"
+      ],
+      "failed_profiles": [
+        "m53-representative"
+      ],
+      "failure": "Native title condition did not become true",
+      "accepted_required_gate": false
+    },
+    "staging": {
+      "run_id": 39086579303,
+      "conclusion": "failure",
+      "staged": false
+    },
+    "published": false,
+    "physical_phone_tested": false,
+    "owner_save_install_over_tested": false
   }
 }
