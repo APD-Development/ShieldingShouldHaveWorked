@@ -1,6 +1,6 @@
-APD CORE-ONLY TEST REQUEST - offline UIMSD topic search 2026-10-18T01:22:54.986Z
-candidate=source and UI added based on a415515cffb28a0e5254b2b5c442e4a03c8e155a
-goal=verify a bounded offline UIMSD topic/visible field search against registered schemas and question builder; no arbitrary language parsing
-check=complete core unit suite including UimsdTopicSearchTest (4 new methods) and existing UIMSD questions/privacy tests
-scope=application source candidate; core-only prerequisite only, NOT full APK acceptance
-next=full source/debug/API34/visual/history gates if core passes and no competing build; no automatic publication or distribution
+APD CORE-ONLY TEST REQUEST - ReportExport boundary coverage 2026-10-18T01:45:00Z
+base=d44903bbc138ac653e43e58341e7b7a33de12581 after successful TEST276 full gate
+goal=verify existing report export filename, exact share-size boundary, and picker cancel/failure behavior
+check=complete core unit suite including ReportExportBoundaryTest (3 new methods) and existing report/export/UIMSD tests
+scope=test-only; no production source, gameplay, scoring, save/history data, APK source, or executable Android build request change
+next=record exact core result and continue the next unreviewed UIMSD production blob; no automatic publication or distribution
