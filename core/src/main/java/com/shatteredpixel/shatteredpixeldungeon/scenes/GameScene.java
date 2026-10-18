@@ -1842,7 +1842,12 @@ public class GameScene extends PixelScene {
 				GameScene.flashForDocument(Document.ADVENTURERS_GUIDE, Document.GUIDE_SURPRISE_ATKS);
 			}
 		} else if ( o instanceof Heap && !((Heap) o).isEmpty() ){
-			GameScene.show(new WndInfoItem((Heap)o));
+            Heap examined = (Heap)o;
+            if (com.shatteredpixel.shatteredpixeldungeon.apd.qol.HeapExamination.hasVisiblePile(examined)) {
+                GameScene.show(new com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoPile(examined));
+            } else {
+                GameScene.show(new WndInfoItem(examined));
+            }
 		} else if ( o instanceof Plant ){
 			GameScene.show( new WndInfoPlant((Plant) o) );
 			//plants can be harmful to trample, so let the player ID just by examine
