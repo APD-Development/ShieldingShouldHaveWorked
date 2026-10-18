@@ -1,7 +1,7 @@
-APD CORE-ONLY TEST REQUEST - Report model contract boundaries 2026-10-18T04:36:05Z
-base=f28011ffa47f92159d434f7acf377197f12d32fe
-review=complete current-source review of Report.java blob ea9feddaa65e670ece45f5b60c63844652502135
-finding=no production defect confirmed; direct coverage was missing for constructor normalization, heading clamps, provenance discovery, first-table selection and state tracking boundaries
-check=complete core unit suite including ReportModelTest and all existing report/UIMSD regressions
-scope=bounded model-only regression coverage; no production, gameplay, scoring, save/history data, RNG, APK, publication or distribution change
+APD CORE-ONLY TEST REQUEST - ResultTable boundary contracts 2026-10-18T05:33:17Z
+base=b756185b81e85a874fd0e07dff2fd1be6929fbf1
+review=complete current-source review of ResultTable.java blob 870987a9d8336747df4aeead2cd18010ef4a0ea1
+finding=no production defect confirmed; direct coverage was missing for negative/past-end pages, nonpositive page sizes, empty results and grouped-page cell/detail alignment
+check=complete core unit suite including ResultTableBoundaryTest and all existing query/UIMSD regressions
+scope=bounded table-model regression coverage; no production, gameplay, scoring, save/history data, RNG, APK, publication or distribution change
 next=if core passes, record exact evidence in HANDOFF, completed ledger, component receipt and UIMSD audit continuation without changing the executable build request
