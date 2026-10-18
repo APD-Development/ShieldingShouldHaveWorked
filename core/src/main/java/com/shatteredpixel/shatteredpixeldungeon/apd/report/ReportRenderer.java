@@ -282,11 +282,17 @@ public final class ReportRenderer {
 
 	static String csv( String s ){
 		boolean quote = s.indexOf(',') >= 0 || s.indexOf('"') >= 0 || s.indexOf('\n') >= 0 || s.indexOf('\r') >= 0;
-		//a cell must never be read by a spreadsheet as a formula
-		if (!s.isEmpty() && "=+-@".indexOf(s.charAt(0)) >= 0 && !looksNumeric(s)){
+		//a cell must never be read by a spreadsheet as a formula, including when a spreadsheet trims leading whitespace
+		if (startsFormula(s)){
 			s = "'" + s;
 		}
 		return quote ? "\"" + s.replace("\"", "\"\"") + "\"" : s;
+	}
+
+	private static boolean startsFormula( String s ){
+		int first = 0;
+		while (first < s.length() && Character.isWhitespace(s.charAt(first))) first++;
+		return first < s.length() && "=+-@".indexOf(s.charAt(first)) >= 0 && !looksNumeric(s.trim());
 	}
 
 	private static boolean looksNumeric( String s ){

@@ -1,8 +1,8 @@
-APD CORE-ONLY TEST REQUEST - ReportBuilder grouped row-cap regression 2026-10-18T02:42:19Z
-base=5bfac1ca0cf4b771ffb3304e76e1bc16ae7a6569
-review=complete current-source review of ReportBuilder.java blob cb44398221e5243cd133ad6dda59dae134939661
-finding=no production defect confirmed; valid SeedFloors assembly keeps recorded floors out of canonical item/mob datasets
-gap=existing ReportTableTest covered only an ordinary 1500-row view; add the equivalent 1500-distinct-group path through QueryEngine, ReportBuilder.view and rendered omission notice
-check=complete core unit suite including both ordinary and grouped ReportTableTest row-cap methods and existing report/UIMSD tests
-scope=test-only; no production source, gameplay, scoring, save/history data, APK source, executable Android build request, publication or distribution change
-next=record exact core result and continue the next unreviewed UIMSD production blob
+APD CORE-ONLY TEST REQUEST - ReportRenderer leading-whitespace CSV formula hardening 2026-10-18T03:34:15Z
+base=c7235557dd9ecd69b44200b667b240c05cabd99e
+review=complete current-source review of ReportRenderer.java blob 585986cc50bc8769063816e30ee43f3bfe3644b0
+finding=CSV neutralised formula markers only in the first character; spreadsheet trimming could expose a tab/space-prefixed =,+,-,@ formula carried by report data
+fix=scan past leading Java whitespace before formula detection, while preserving ordinary signed numbers including whitespace-prefixed negative numbers
+check=complete core unit suite including ReportTest.renderersEscapeAndQuoteSafely and all existing report/UIMSD regressions
+scope=bounded ReportRenderer production hardening plus focused regression; no gameplay, scoring, save/history data, RNG, publication or distribution change
+next=if core passes, run the required full Android candidate gate because application production source changed

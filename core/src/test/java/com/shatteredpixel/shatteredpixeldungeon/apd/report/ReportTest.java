@@ -299,8 +299,11 @@ public class ReportTest {
 		t.coverage.add("");
 		t.rows.add(new Report.Cell[]{ new Report.Cell("<script>alert(1)</script> & \"q\"", CellText.EXACT) });
 		t.rows.add(new Report.Cell[]{ new Report.Cell("=HYPERLINK(\"http://x\")", CellText.EXACT) });
+		t.rows.add(new Report.Cell[]{ new Report.Cell("\t=1+1", CellText.EXACT) });
+		t.rows.add(new Report.Cell[]{ new Report.Cell("  @SUM(1,1)", CellText.EXACT) });
 		t.rows.add(new Report.Cell[]{ new Report.Cell("a,b\nc", CellText.EXACT) });
 		t.rows.add(new Report.Cell[]{ new Report.Cell("-5", CellText.EXACT) });
+		t.rows.add(new Report.Cell[]{ new Report.Cell("  -5", CellText.EXACT) });
 		t.rows.add(new Report.Cell[]{ new Report.Cell("a|b", CellText.EXACT) });
 		r.add(t);
 		String html = ReportRenderer.html(r);
@@ -309,8 +312,11 @@ public class ReportTest {
 		assertTrue(html.contains("&quot;q&quot;"));
 		String csv = ReportRenderer.csv(r);
 		assertTrue("formula cell must be neutralised", csv.contains("'=HYPERLINK"));
+		assertTrue("tab-prefixed formula must be neutralised", csv.contains("'\t=1+1"));
+		assertTrue("space-prefixed formula must be neutralised", csv.contains("'  @SUM(1,1)"));
 		assertTrue(csv.contains("\"a,b\nc\""));
 		assertTrue("plain negative numbers stay numbers", csv.contains("\r\n-5\r\n"));
+		assertTrue("space-prefixed negative numbers stay numbers", csv.contains("\r\n  -5\r\n"));
 		assertTrue(ReportRenderer.markdown(r).contains("a\\|b"));
 		//deterministic
 		assertEquals(ReportRenderer.markdown(r), ReportRenderer.markdown(r));
