@@ -1,40 +1,36 @@
 {
   "date": "2026-10-18",
-  "previous_source": "6a4924376df646ab8d609696553220dbd008ca2b",
-  "previous_application_source": "64beb4867feb73eb03257f6cbe1a32648e84ae10",
-  "previous_run": 39134124945,
-  "previous_label": "Codex TEST 280",
+  "previous_source": "3a9d86395c4b4243c853128d346f8c1d7fea002e",
+  "previous_application_source": "0229d9c77b8d1e235d1dac2e9972eb459f3bfa86",
+  "previous_run": 39141915301,
+  "previous_label": "Codex TEST 281",
   "changes": [
     {
-      "category": "Statistics / UIMSD",
+      "category": "Gameplay / visual timing",
       "sprite": "ICON_CHECKED",
-      "title": "Name median in the UIMSD question guide",
-      "text": "The Asking a question guide now names median alongside every already-implemented question measure. Query behavior, recorded data, saves, gameplay and scoring are unchanged.",
+      "title": "Stop standing-monster body flicker at developer 4x",
+      "text": "Monster IDLE frames now advance at real time above developer 2x, sharing the proven hero-idle visual-clock helper. Moving, attacking, dying and effects still use selected playback speed; original public modes and game-state timing are unchanged.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdGuide.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/sprites/MobSprite.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Retain guide and geometry boundaries",
-      "text": "A focused guide regression first reproduced the median omission and then passed after the wording correction. The existing test-only geometry boundary coverage remains included.",
+      "title": "Retain 4x idle and unchanged public animation regression tests",
+      "text": "Two deterministic monster-idle tests verify 4x idle normal-clock and action acceleration, existing 0.5/1/2x behavior, and global elapsed restoration; source 77382a50180c8718d9f11d7911ca2c8e7a191ee4 passed 1,837 core methods across 363 suites.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdHomeTourTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/TableGeometryTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/WindowGeometryTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/sprites/MobIdlePlaybackTest.java",
         "docs/APD-CODEX-CORE-TEST-REQUEST.txt"
       ]
     },
     {
       "category": "Developer Commentary",
       "sprite": "ICON_CHECKED",
-      "title": "Preserve TEST280 and exact audit evidence",
-      "text": "Record TEST280 verification, the geometry review, the guide reproduction/correction, and every current handoff/history input. Publication remains separate.",
+      "title": "Preserve prior TEST281 evidence and UIMSD review",
+      "text": "Carry forward verified TEST281 publication and review records, and document pending developer-4x physical-phone acceptance without conflating source fix with device proof.",
       "paths": [
-        "docs/APD-TEST280-CLERIC-HISTORY-CANDIDATE-2026-10-18.md",
-        "docs/APD-TEST280-CLERIC-HISTORY-VERIFICATION-2026-10-18.json",
-        "docs/APD-UIMSD-GEOMETRY-REVIEW-2026-10-18.json",
+        "docs/APD-TEST281-UIMSD-GUIDE-VERIFICATION-2026-10-18.json",
         "docs/APD-UIMSD-GUIDE-REVIEW-2026-10-18.json",
         "docs/APD-UIMSD-REVIEW-CONTINUATION-2026-10-17.json",
         "docs/HANDOFF.md",
@@ -44,5 +40,5 @@
       ]
     }
   ],
-  "commentary": "Core-only run 39141568092 at application source 0229d9c77b8d1e235d1dac2e9972eb459f3bfa86 passed 1,835 tests in 362 XML suites with zero failures/errors/skips after run 39141272953 reproduced exactly the one intended missing-median guide assertion. Intentionally request private TEST281 against immediately previous compiled TEST280 producer 6a4924376df646ab8d609696553220dbd008ca2b / run 39134124945, embedded label Codex TEST 280, raw APK SHA-256 634d3ef1826be93ac6af73421257dae09fd2f87940c17a9f81910cde6849c410. Require debug/history/core/38 API34 native methods and 57 reviewed PNGs. Candidate pending; no automatic staging, publication, tester distribution, owner-save install-over or physical-device claim."
+  "commentary": "Intentional new private Android candidate after source correction at 77382a50180c8718d9f11d7911ca2c8e7a191ee4 and complete core-only run 39160401772 (1,837 tests / 363 suites, no failures, errors or skips). Compare exact immediate-previous compiled TEST281 producer 3a9d86395c4b4243c853128d346f8c1d7fea002e / run39141915301; prior raw APK SHA-256 4ea3a5501ef9e6870f6016e94ef28623f0aefbe944091f1a282e5fe2275b21df. Require complete debug/core/immediate-previous history/38 API34 checks/57 reviewed PNGs before verification. Candidate is pending; TEST281 remains latest fully gated fallback, TEST262 latest published. No automatic staging, publication or distribution."
 }
