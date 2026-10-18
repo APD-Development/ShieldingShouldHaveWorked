@@ -1,6 +1,6 @@
-APD CORE-ONLY TEST REQUEST - QueryEngine deterministic 10000-row stress 2026-10-18T00:44:33.348Z
-goal=Verify the legitimate public query path over 10000 deterministic rows: independent-model filter results, stable two-key sorting, coverage, grouped count/sum/average/min/max, and source-dataset immutability.
-candidate=test-only QueryEngine stress after retaining failed runs 39083369571 and 39083564199; numeric IN is intentionally invalid and the unreachable attempted production change is fully reverted
-tests=run full ./gradlew :core:test, including both QueryEngineStressTest methods and all prior regressions
-scope=test-only UIMSD query/filter/sort/group stress; no production code, raw history, saves, gameplay, scoring, APK or release change
-delivery=core verification only; do not trigger an APK build, publish, stage, distribute or edit docs/APD-CODEX-BUILD-REQUEST.txt
+APD CORE-ONLY TEST REQUEST - offline UIMSD topic search 2026-10-18T01:22:54.986Z
+candidate=source and UI added based on a415515cffb28a0e5254b2b5c442e4a03c8e155a
+goal=verify a bounded offline UIMSD topic/visible field search against registered schemas and question builder; no arbitrary language parsing
+check=complete core unit suite including UimsdTopicSearchTest (4 new methods) and existing UIMSD questions/privacy tests
+scope=application source candidate; core-only prerequisite only, NOT full APK acceptance
+next=full source/debug/API34/visual/history gates if core passes and no competing build; no automatic publication or distribution

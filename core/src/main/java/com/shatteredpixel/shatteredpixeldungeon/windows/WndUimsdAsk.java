@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.query.Questions;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.Scope;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.StatusText;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdModel;
+import com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdTopicSearch;
 
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.Entry;
 
@@ -95,8 +96,9 @@ public final class WndUimsdAsk {
 		entries.add(Entry.heading("Your question"));
 		entries.add(Entry.note(Questions.describe(q, def) + "?"));
 		entries.add(Entry.heading("Change it"));
-		final int ABOUT = 0, MEASURE = 1, PER = 2, SPLIT = 3, WHERE = 4, RUNS = 5, HIDDEN = 6, ASK = 7;
+		final int ABOUT = 0, MEASURE = 1, PER = 2, SPLIT = 3, WHERE = 4, RUNS = 5, HIDDEN = 6, ASK = 7, SEARCH = 8;
 		final List<Integer> ids = new ArrayList<>();
+		entries.add(Entry.item("Search UIMSD topics", "find recorded subjects and public fields by name, offline")); ids.add(SEARCH);
 		entries.add(Entry.item("About: " + def.title, "what to look at")); ids.add(ABOUT);
 		entries.add(Entry.item("Measure: " + q.measure.phrase + (q.measure.needsColumn() && def.column(q.column) != null ? " " + def.column(q.column).label.toLowerCase() : ""),
 				"count them, or add up, average or find the highest of a number")); ids.add(MEASURE);
@@ -118,6 +120,7 @@ public final class WndUimsdAsk {
 			@Override
 			public void onPick( int i, boolean checked ){
 				switch (ids.get(i)){
+					case SEARCH: searchTopics(cat, ruleset, host, cur); break;
 					case ABOUT: pickDataset(cat, ruleset, host, cur); break;
 					case MEASURE: pickMeasure(cat, ruleset, host, cur, def); break;
 					case PER: pickPer(cat, ruleset, host, cur); break;
@@ -131,6 +134,41 @@ public final class WndUimsdAsk {
 			}
 		}).restoreWith(() -> builder(cat, ruleset, host, q)));
 	}
+
+
+    // Narrow offline search of registered subjects and PUBLIC field names.
+    // Results go through the existing query builder; this is not an AI or raw-history search.
+    private static void searchTopics(final Catalog cat, final String ruleset, final Host host, final Question q) {
+        show(new WndUimsdTextInput("Search UIMSD", "Search recorded topics and fields. This does not search the values inside your runs.",
+                "", 100, false, "Search", "Cancel", (positive, words) -> {
+                    if (positive) topicResults(cat, ruleset, host, q, words);
+                }));
+    }
+
+    private static void topicResults(final Catalog cat, final String ruleset, final Host host,
+                                     final Question q, final String words) {
+        final List<UimsdTopicSearch.Hit> hits = UimsdTopicSearch.find(cat, words);
+        List<Entry> entries = new ArrayList<>();
+        if (hits.isEmpty()) {
+            entries.add(Entry.note("No recorded topic or public field matches. Try another name, or use the normal question builder."));
+            entries.add(Entry.item("Search again", "try other words"));
+        } else {
+            for (UimsdTopicSearch.Hit hit : hits) entries.add(Entry.item(hit.label, hit.detail));
+            entries.add(Entry.item("Search again", "look for another topic"));
+        }
+        showKept(WndUimsdList.menu("Search UIMSD", "Search finds subjects and public fields, not recorded values or whole questions. Pick a result to refine its question.",
+                entries, new WndUimsdList.Picker() {
+                    @Override public void onPick(int i, boolean checked) {
+                        if (i == hits.size()) {
+                            searchTopics(cat, ruleset, host, q);
+                            return;
+                        }
+                        UimsdTopicSearch.Hit hit = hits.get(i);
+                        Dataset selected = cat.dataset(hit.datasetId);
+                        if (selected != null) builder(cat, ruleset, host, hit.question(q, selected.def));
+                    }
+                }).restoreWith(() -> topicResults(cat, ruleset, host, q, words)));
+    }
 
 	private static String joinLabels( DatasetDef def, List<String> ids ){
 		StringBuilder b = new StringBuilder();
