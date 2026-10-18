@@ -3,12 +3,25 @@ package com.shatteredpixel.shatteredpixeldungeon.apd.hotbar;
 import com.shatteredpixel.shatteredpixeldungeon.QuickSlot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 
-/** Selects a fresh run's Classic quickslot. No save-load or category-layout mutation. */
+/** Repositions a Waterskin shortcut without losing other assignments or altering gameplay. */
 public final class WaterskinStartupSlot {
     public static final int AUTOMATIC = -1;
     public static final int OFF = QuickSlot.MOBILE_VISIBLE_SLOTS;
 
     private WaterskinStartupSlot() {}
+
+    /** Apply the saved preference to the actual Waterskin in a loaded or active game. */
+    public static void applyToCurrentRun() {
+        if (com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero == null) return;
+        java.util.ArrayList<com.shatteredpixel.shatteredpixeldungeon.items.Waterskin> waterskins =
+                com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero.belongings.getAllItems(
+                        com.shatteredpixel.shatteredpixeldungeon.items.Waterskin.class);
+        if (!waterskins.isEmpty()) assign(
+                com.shatteredpixel.shatteredpixeldungeon.Dungeon.quickslot,
+                waterskins.get(0),
+                com.shatteredpixel.shatteredpixeldungeon.SPDSettings.waterskinStartingSlot(),
+                com.shatteredpixel.shatteredpixeldungeon.SPDSettings.quickslotWaterskin());
+    }
 
     public static String label(int position) {
         if (position == AUTOMATIC) return "Automatic";
@@ -37,17 +50,21 @@ public final class WaterskinStartupSlot {
 
         Item displaced = quickslot.getItem(position);
         if (displaced == waterskin) return;
+        int previous = quickslot.getSlot(waterskin);
         if (displaced != null) {
-            int empty = -1;
-            for (int i = 0; i < limit; i++) {
-                if (quickslot.getItem(i) == null) {
-                    empty = i;
-                    break;
+            int destination = previous;
+            if (destination < 0) {
+                for (int i = 0; i < limit; i++) {
+                    if (quickslot.getItem(i) == null) {
+                        destination = i;
+                        break;
+                    }
                 }
             }
-            // Never discard or overwrite a class starting item for layout preferences.
-            if (empty < 0) return;
-            quickslot.setSlot(empty, displaced);
+            // Swap if the bar is full and Waterskin already had a slot.
+            // Otherwise leave everything untouched rather than deleting a shortcut.
+            if (destination < 0) return;
+            quickslot.setSlot(destination, displaced);
         }
         quickslot.setSlot(position, waterskin);
     }
