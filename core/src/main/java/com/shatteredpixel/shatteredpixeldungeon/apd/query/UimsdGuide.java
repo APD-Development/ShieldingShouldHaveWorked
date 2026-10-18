@@ -68,7 +68,7 @@ public final class UimsdGuide {
 						+ "Home shows runs played under your own rules by default. \"Rules: all (mixed)\" adds runs played under other rules, and says so, because "
 						+ "numbers from different rules are not directly comparable.", "home"));
 		t.add(new Topic("ask", start, "Asking a question",
-				"The Ask a question card on Home is the easy way in. A question is a sentence with blanks: how many, or the average, total, highest or lowest of a number; "
+				"The Ask a question card on Home is the easy way in. A question is a sentence with blanks: how many, or the average, total, highest, lowest or median of a number; "
 						+ "of what; per floor, per run, per turn or per hour you played; split by class, spell, floor and so on; only where some condition is true.\n\n"
 						+ "# What it can answer\n"
 						+ "APD writes down what happens while you play: every step, rest and search, every item you use, every effect that starts or ends, every talent, spell and "
