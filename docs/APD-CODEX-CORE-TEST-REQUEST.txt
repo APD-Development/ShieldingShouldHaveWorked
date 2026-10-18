@@ -1,7 +1,7 @@
-APD CORE-ONLY TEST REQUEST - ResultTable boundary contracts 2026-10-18T05:33:17Z
-base=b756185b81e85a874fd0e07dff2fd1be6929fbf1
-review=complete current-source review of ResultTable.java blob 870987a9d8336747df4aeead2cd18010ef4a0ea1
-finding=no production defect confirmed; direct coverage was missing for negative/past-end pages, nonpositive page sizes, empty results and grouped-page cell/detail alignment
-check=complete core unit suite including ResultTableBoundaryTest and all existing query/UIMSD regressions
-scope=bounded table-model regression coverage; no production, gameplay, scoring, save/history data, RNG, APK, publication or distribution change
+APD CORE-ONLY TEST REQUEST - Catalog contract coverage 2026-10-18T06:32:42Z
+base=acd549cd7ac34a1b83fcaec1429ff81dbd609399
+review=complete current-source review of Catalog.java blob 126535930994090260cc86d784085f48e0342129
+finding=no production defect confirmed; direct coverage was missing for detached list snapshots, stable replacement-by-ID ordering and current view-to-dataset resolution
+check=complete core unit suite including CatalogContractTest and all existing query/UIMSD regressions
+scope=bounded catalog-model regression coverage; no production, gameplay, scoring, save/history data, RNG, APK, publication or distribution change
 next=if core passes, record exact evidence in HANDOFF, completed ledger, component receipt and UIMSD audit continuation without changing the executable build request
