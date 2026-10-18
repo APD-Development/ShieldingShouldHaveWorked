@@ -45,9 +45,9 @@ public final class ClericHistory {
 		if (cClass < 0 || cOutcome < 0) return new ClericHistory( 0, 0, 0 );
 		int n = 0, won = 0, died = 0;
 		for (Row r : runs.rows){
-			if (r.duplicate || !r.finished || !r.isKnown( cClass ) || !r.text( cClass ).equalsIgnoreCase( "CLERIC" )) continue;
+			if (r.duplicate || !r.finished || !r.isKnown( cClass ) || !r.isKnown( cOutcome )
+					|| !r.text( cClass ).equalsIgnoreCase( "CLERIC" )) continue;
 			n++;
-			if (!r.isKnown( cOutcome )) continue;
 			if (r.num( cOutcome ) == LifecycleEvents.OUTCOME_WON) won++;
 			else if (r.num( cOutcome ) == LifecycleEvents.OUTCOME_DIED) died++;
 		}

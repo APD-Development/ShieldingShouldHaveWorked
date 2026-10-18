@@ -1,6 +1,7 @@
-APD CORE-ONLY TEST REQUEST - reproduce incomplete Cleric history count 2026-10-18T13:49:00Z
-candidate=e098f1b1fccf55137d70bf7aa176680877ce1671 adds only the focused ClericHistory regression; production source is intentionally unchanged
-checks=full ./gradlew :core:test; expect exactly the new finishedRowsWithoutARecordedOutcomeAreNotInventedAsRuns assertion to fail before the bounded correction
-scope=test-only reproduction of UIMSD-derived history accuracy; no APK build, gameplay, scoring, saves, raw history, application ID or signing change
-next=preserve the exact failure, then require a one-line production correction and a new complete core-only pass before any Android candidate request
-restriction=no automatic publication/staging/tester distribution; docs/APD-CODEX-BUILD-REQUEST.txt remains unchanged
+APD CORE-ONLY TEST REQUEST - correct incomplete Cleric history count 2026-10-18T13:51:00Z
+candidate=latest head adds the proven one-line outcome-presence guard plus its retained focused regression
+checks=full ./gradlew :core:test; expect 1832 tests with zero failures, including ClericHistoryTest now 3 methods
+reproduction=run 39133186514 at 6acf81f65100ede201a5613e2cb6fb8a80725f87 executed 1832 tests and failed only finishedRowsWithoutARecordedOutcomeAreNotInventedAsRuns
+scope=bounded UIMSD-derived history accuracy; no gameplay, balance, scoring, saves, raw history, application ID, signing or random behavior change
+next=only after this complete core pass and branch reconciliation, request one intentional private Android candidate against verified TEST279 with full debug/API34/visual/history checks
+restriction=no automatic publication/staging/tester distribution; docs/APD-CODEX-BUILD-REQUEST.txt remains unchanged in this core prerequisite
