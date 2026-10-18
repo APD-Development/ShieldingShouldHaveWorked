@@ -1,9 +1,9 @@
 {
   "source": "64beb4867feb73eb03257f6cbe1a32648e84ae10",
-  "recorded_at": "2026-10-18T14:01:17.290Z",
+  "recorded_at": "2026-10-18T14:40:12.513Z",
   "complete": false,
   "prior_checkpoint_preserved": "docs/APD-UIMSD-REVIEW-CHECKPOINT-2026-10-13.json",
-  "count_note": "Current-blob reconciliation found 96 exact machine-recorded entries before this continuation. The prior twenty-three reviewed blobs plus ChoicePage.java and ClericHistory.java bring the exact reviewed production-path count to 121; prose-only completed reviews remain separate until reconciled.",
+  "count_note": "Current-blob reconciliation found 96 exact machine-recorded entries before this continuation. The prior twenty-five reviewed blobs plus TableGeometry.java and WindowGeometry.java bring the exact reviewed production-path count to 123; prose-only completed reviews remain separate until reconciled.",
   "entries": [
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/Datasets.java",
@@ -456,6 +456,34 @@
         "reproduction_run": 39133186514,
         "corrected_run": 39133418875
       }
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/TableGeometry.java",
+      "sha": "22d28526a76de7a5c0f2144d552e94c2041b0791",
+      "lines": 112,
+      "reviewed": true,
+      "basis": "Complete current-source review of proportional column sizing, wrapping, row count, ellipsis and half-open column/row touch lookup found no production defect. Retained boundary coverage now locks exact starts, excluded endpoints, negative coordinates and the final table edge.",
+      "retained_test": {
+        "path": "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/TableGeometryTest.java",
+        "sha": "c545d29b64848874bc64a62f5cdc8ca3e4ceacbb",
+        "source_commit": "e6c841c1ecbaf7ee75b39f13ff698953605a5890",
+        "methods": 8,
+        "new_method": "touchBoundariesUseHalfOpenCells"
+      }
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/WindowGeometry.java",
+      "sha": "8b68016d931040114c9fef07c31f78b5def020c0",
+      "lines": 95,
+      "reviewed": true,
+      "basis": "Complete current-source review of responsive window width, visible list height, wrapped action rows, stacked endpoints and half-open row lookup found no production defect. Retained boundary coverage now locks empty stacks, exact row transitions and exclusion of the final endpoint.",
+      "retained_test": {
+        "path": "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/WindowGeometryTest.java",
+        "sha": "11af54c0c7d758c8d89370b852b28de8080baa30",
+        "source_commit": "e6c841c1ecbaf7ee75b39f13ff698953605a5890",
+        "methods": 11,
+        "new_method": "emptyAndExactRowBoundariesDoNotInventTouches"
+      }
     }
   ],
   "supporting_reads": [
@@ -509,34 +537,41 @@
   "confirmed_new_production_defects": 6,
   "application_changes": true,
   "new_apk_needed": false,
-  "latest_verified_private_candidate": 278,
+  "latest_verified_private_candidate": 280,
   "latest_published_owner_build": 262,
   "latest_test_only_evidence": {
-    "source_commit": "6dd34188e6ed009e5859aab927085cdd40e16abe",
-    "request_commit": "6dd34188e6ed009e5859aab927085cdd40e16abe",
-    "run_id": 39124288162,
-    "target": "Aggregate immutable constructors, factories, refinements and semantic identity contracts",
-    "core_tests": 1824,
-    "suites": 361,
+    "source_commit": "e6c841c1ecbaf7ee75b39f13ff698953605a5890",
+    "request_commit": "e6c841c1ecbaf7ee75b39f13ff698953605a5890",
+    "run_id": 39136612959,
+    "target": "UIMSD table/window half-open touch boundaries and empty-stack geometry",
+    "core_tests": 1834,
+    "suites": 362,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "focused_class": "AggregateContractTest",
-    "focused_methods": 3,
-    "focused_time_seconds": 0.001,
-    "artifact_id": 12135716399,
-    "artifact_bytes": 853048,
-    "artifact_digest": "sha256:c408c2ae284576b32eb0574d8e1bc4bfb4cb149adbe854c37852d7a0bc3193cf",
+    "focused_classes": {
+      "TableGeometryTest": {
+        "methods": 8,
+        "new_method": "touchBoundariesUseHalfOpenCells"
+      },
+      "WindowGeometryTest": {
+        "methods": 11,
+        "new_method": "emptyAndExactRowBoundariesDoNotInventTouches"
+      }
+    },
+    "artifact_id": 12139976488,
+    "artifact_bytes": 855464,
+    "artifact_digest": "sha256:94f3b57cbc6f53eb3817a3dc6a6ea98f1929b407684d0dc2d1abf3ec9fb2667e",
+    "downloaded_zip_digest_matches": true,
     "application_source_changed": false
   },
   "latest_application_evidence": {
-    "application_source": "2b85088c8745e4163994c84858a4dca8398f0e2d",
-    "request_commit": "3b1f29b87d5658bdaf1b7ecc1b019a48955a49d6",
-    "run_id": 39131918637,
-    "started_at": "2026-10-18T13:31:28Z",
-    "completed_at": "2026-10-18T13:46:45Z",
-    "target": "Exact offline public-schema UIMSD question grammar and native search selection",
-    "core_tests": 1831,
+    "application_source": "64beb4867feb73eb03257f6cbe1a32648e84ae10",
+    "request_commit": "6a4924376df646ab8d609696553220dbd008ca2b",
+    "run_id": 39134124945,
+    "completed_at": "2026-10-18T14:15:45Z",
+    "target": "Require a recorded outcome before counting a finished Cleric history row",
+    "core_tests": 1832,
     "core_suites": 362,
     "core_failures": 0,
     "core_errors": 0,
@@ -548,54 +583,35 @@
     "required_images_reviewed": 57,
     "image_dimensions": "320x640",
     "visual_review": "All decoded; three contact sheets manually inspected with no blank, corrupt or obvious clipping regression.",
-    "apk_name": "ADHD-Pixel-Dungeon-CODEX-TEST-279.apk",
-    "apk_sha256": "4c49b3d43b0bd9b9969353d10df420fd77a9f688f636fee1697930ed68d6642c",
-    "apk_bytes": 38615958,
-    "apk_artifact_id": 12137843296,
-    "apk_artifact_bytes": 36118032,
-    "apk_artifact_digest": "sha256:f6485980b01134cc2c42148b6592d4dc4359f600195d3a2d4b6e8572ca08ff23",
-    "core_artifact_id": 12138138806,
-    "core_artifact_bytes": 854596,
-    "core_artifact_digest": "sha256:147cba53de452de97dfb63577d2594f980237d02c5c32a91dac035341ed69e9f",
-    "android_artifact_id": 12138707257,
-    "android_artifact_bytes": 4944355,
-    "android_artifact_digest": "sha256:e1deabb1fee2d9961151e0fda16277184e227c27c31a391b227d6878c599ee71",
-    "history_previous_application_source": "349f7976fc6a026fd4fb9dead2ca2e3a6e8c9462",
-    "history_previous_producer": "87254f62f5430e1da050fdd77108e94495e78e77",
-    "history_previous_run": 39120394227,
+    "apk_name": "ADHD-Pixel-Dungeon-CODEX-TEST-280.apk",
+    "apk_sha256": "634d3ef1826be93ac6af73421257dae09fd2f87940c17a9f81910cde6849c410",
+    "apk_bytes": 38616605,
+    "apk_artifact_id": 12139257314,
+    "apk_artifact_bytes": 36118534,
+    "apk_artifact_digest": "sha256:07dcf9e31cc8974d8c291dd6466dd60abbad4460b45dd15acdd15f6de1acfd8e",
+    "core_artifact_id": 12139377093,
+    "core_artifact_bytes": 853874,
+    "core_artifact_digest": "sha256:616dad63403a1cea8b31c091a60310d6140334e989f3143b484531bba2e82f20",
+    "android_artifact_id": 12138529673,
+    "android_artifact_bytes": 4897516,
+    "android_artifact_digest": "sha256:8eb9b4f9c0ae0b242a54789b124cf512fee35b7e7539d72d6fde318308f0df64",
+    "history_previous_label": "Codex TEST 279",
+    "history_previous_run": 39131918637,
+    "history_strict_validation_passed": true,
     "supplemental_display": {
-      "run_id": 39131918709,
-      "attempt_1": {
-        "passed": [
-          "compact-virtual",
-          "small-virtual"
-        ],
-        "failed": [
-          "short-landscape",
-          "m53-representative",
-          "square-virtual"
-        ],
-        "failure": "Native title condition did not become true; failed captures retained."
-      },
-      "attempt_2": {
-        "scope": "failed jobs only against the unchanged TEST279 APK",
-        "passed": [
-          "short-landscape",
-          "m53-representative",
-          "square-virtual"
-        ],
-        "failed": []
-      },
+      "run_id": 39134124928,
       "accepted_profiles": [
         "compact-virtual",
         "small-virtual",
-        "short-landscape",
         "m53-representative",
         "square-virtual"
+      ],
+      "unresolved_profiles": [
+        "short-landscape"
       ]
     },
     "staging": {
-      "run_id": 39131918699,
+      "run_id": 39134124948,
       "conclusion": "failure",
       "failure": "Publication commit changes application/build inputs",
       "staged": false
@@ -1073,5 +1089,81 @@
       "artifact_digest": "sha256:685c3a5ea34f6a6146eff329d85f97a108eb4d8dc58f6c2e7e65b4e9d133d85c",
       "failed_method": "finishedRowsWithoutARecordedOutcomeAreNotInventedAsRuns"
     }
+  },
+  "prior_application_evidence_test279": {
+    "application_source": "2b85088c8745e4163994c84858a4dca8398f0e2d",
+    "request_commit": "3b1f29b87d5658bdaf1b7ecc1b019a48955a49d6",
+    "run_id": 39131918637,
+    "started_at": "2026-10-18T13:31:28Z",
+    "completed_at": "2026-10-18T13:46:45Z",
+    "target": "Exact offline public-schema UIMSD question grammar and native search selection",
+    "core_tests": 1831,
+    "core_suites": 362,
+    "core_failures": 0,
+    "core_errors": 0,
+    "core_skipped": 0,
+    "android_tests": 38,
+    "android_failures": 0,
+    "android_errors": 0,
+    "android_skipped": 0,
+    "required_images_reviewed": 57,
+    "image_dimensions": "320x640",
+    "visual_review": "All decoded; three contact sheets manually inspected with no blank, corrupt or obvious clipping regression.",
+    "apk_name": "ADHD-Pixel-Dungeon-CODEX-TEST-279.apk",
+    "apk_sha256": "4c49b3d43b0bd9b9969353d10df420fd77a9f688f636fee1697930ed68d6642c",
+    "apk_bytes": 38615958,
+    "apk_artifact_id": 12137843296,
+    "apk_artifact_bytes": 36118032,
+    "apk_artifact_digest": "sha256:f6485980b01134cc2c42148b6592d4dc4359f600195d3a2d4b6e8572ca08ff23",
+    "core_artifact_id": 12138138806,
+    "core_artifact_bytes": 854596,
+    "core_artifact_digest": "sha256:147cba53de452de97dfb63577d2594f980237d02c5c32a91dac035341ed69e9f",
+    "android_artifact_id": 12138707257,
+    "android_artifact_bytes": 4944355,
+    "android_artifact_digest": "sha256:e1deabb1fee2d9961151e0fda16277184e227c27c31a391b227d6878c599ee71",
+    "history_previous_application_source": "349f7976fc6a026fd4fb9dead2ca2e3a6e8c9462",
+    "history_previous_producer": "87254f62f5430e1da050fdd77108e94495e78e77",
+    "history_previous_run": 39120394227,
+    "supplemental_display": {
+      "run_id": 39131918709,
+      "attempt_1": {
+        "passed": [
+          "compact-virtual",
+          "small-virtual"
+        ],
+        "failed": [
+          "short-landscape",
+          "m53-representative",
+          "square-virtual"
+        ],
+        "failure": "Native title condition did not become true; failed captures retained."
+      },
+      "attempt_2": {
+        "scope": "failed jobs only against the unchanged TEST279 APK",
+        "passed": [
+          "short-landscape",
+          "m53-representative",
+          "square-virtual"
+        ],
+        "failed": []
+      },
+      "accepted_profiles": [
+        "compact-virtual",
+        "small-virtual",
+        "short-landscape",
+        "m53-representative",
+        "square-virtual"
+      ]
+    },
+    "staging": {
+      "run_id": 39131918699,
+      "conclusion": "failure",
+      "failure": "Publication commit changes application/build inputs",
+      "staged": false
+    },
+    "published": false,
+    "distributed": false,
+    "physical_phone_tested": false,
+    "owner_save_install_over_tested": false
   }
 }
