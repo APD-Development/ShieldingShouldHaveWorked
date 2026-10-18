@@ -527,6 +527,7 @@ public class ApdSettingsClickDeviceTest {
 			final boolean oldTiles = SPDSettings.enhancedTileVisibility();
 			final boolean oldStairs = SPDSettings.stairNavigationShortcut();
             final boolean oldAutoEnter = SPDSettings.autoEnterStairs();
+            final int oldWaterskinStart = SPDSettings.waterskinStartingSlot();
 			final AtomicReference<WndAPDSettings> window = new AtomicReference<>();
 			try {
 				onRender(() -> {
@@ -534,6 +535,7 @@ public class ApdSettingsClickDeviceTest {
 					SPDSettings.enhancedTileVisibility(false);
 					SPDSettings.stairNavigationShortcut(false);
                     SPDSettings.autoEnterStairs(false);
+                    SPDSettings.waterskinStartingSlot(-1);
 					window.set(new WndAPDSettings());
 					ShatteredPixelDungeon.scene().add(window.get());
 				});
@@ -561,6 +563,22 @@ public class ApdSettingsClickDeviceTest {
 				dismissMessages();
                 tapUntil("Auto-enter Stairs on Arrival", scroll, (Gizmo) field(pane, "chkAutoEnterStairs"),
                         SPDSettings::autoEnterStairs, 30000);
+
+                // The shared player/developer APD pane must expose all eight
+                // Waterskin choices. Verify actual screen touches and persistence.
+                final RedButton waterskinStart = (RedButton) field(pane, "btnWaterskinSlot");
+                assertNotNull("Waterskin preference available in shared settings", waterskinStart);
+                tapUntil("Waterskin start slot picker", scroll, waterskinStart,
+                        () -> find(Game.scene(), com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.class) != null, 30000);
+                com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList slotChoices =
+                        find(Game.scene(), com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.class);
+                assertEquals("automatic, six slots and off", 8, communityEntries(slotChoices).size());
+                assertEquals("Automatic", communityEntries(slotChoices).get(0).label);
+                assertEquals("Slot 2", communityEntries(slotChoices).get(2).label);
+                assertEquals("Off", communityEntries(slotChoices).get(7).label);
+                tapCommunityEntry(slotChoices, 2);
+                waitUntil("Waterskin start Slot 2 saved", () -> SPDSettings.waterskinStartingSlot() == 1, 10000);
+                assertEquals("Waterskin start: Slot 2", waterskinStart.text());
 
 				tapUntil("Healing confirmation", scroll, (Gizmo) field(pane, "btnHealingConfirmation"),
 						() -> find(Game.scene(), com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions.class) != null, 30000);
@@ -600,6 +618,7 @@ public class ApdSettingsClickDeviceTest {
 					SPDSettings.enhancedTileVisibility(oldTiles);
 					SPDSettings.stairNavigationShortcut(oldStairs);
                     SPDSettings.autoEnterStairs(oldAutoEnter);
+                    SPDSettings.waterskinStartingSlot(oldWaterskinStart);
 				});
 			}
 		}
@@ -617,6 +636,7 @@ public class ApdSettingsClickDeviceTest {
 		owners.put("chkStairNavigation", new Object[]{ ApdSettingsClickDeviceTest.class, "remainingApdSettingsControlsRespondToActualTouches" });
         owners.put("chkAutoEnterStairs", new Object[]{ ApdSettingsClickDeviceTest.class, "remainingApdSettingsControlsRespondToActualTouches" });
 		owners.put("btnPlaybackSpeed", new Object[]{ ApdSettingsClickDeviceTest.class, "adultHumorControlWorksWithoutAnAgeProviderAndReopensWithSavedChoice" });
+        owners.put("btnWaterskinSlot", new Object[]{ ApdSettingsClickDeviceTest.class, "remainingApdSettingsControlsRespondToActualTouches" });
 		owners.put("btnHealingConfirmation", new Object[]{ ApdSettingsClickDeviceTest.class, "remainingApdSettingsControlsRespondToActualTouches" });
 		owners.put("btnCustomRules", new Object[]{ ApdSettingsClickDeviceTest.class, "remainingApdSettingsControlsRespondToActualTouches" });
 		owners.put("btnCurrentCustomRules", new Object[]{ CustomRulesNoticeDeviceTest.class, "noticeStaysAboveUsableControlsAndDoesNotChangeLockedRunOrScores" });
