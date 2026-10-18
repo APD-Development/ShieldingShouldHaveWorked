@@ -32,8 +32,8 @@ public class WaterskinStartupSlotTest {
 
     @After public void tearDown() { GameSettings.set(old); }
 
-    @Test public void absentPreferencePreservesExistingAutomaticAndOptOut() {
-        assertEquals(WaterskinStartupSlot.AUTOMATIC, SPDSettings.waterskinStartingSlot());
+    @Test public void absentPreferenceDefaultsToSlotTwoAndPreservesLegacyAutomatic() {
+        assertEquals(1, SPDSettings.waterskinStartingSlot());
         QuickSlot slots = new QuickSlot(6);
         Item classItem = new Item();
         Waterskin skin = new Waterskin();
@@ -43,7 +43,11 @@ public class WaterskinStartupSlotTest {
         assertSame(skin, slots.getItem(1));
         QuickSlot optedOut = new QuickSlot(6);
         WaterskinStartupSlot.assign(optedOut, skin, SPDSettings.waterskinStartingSlot(), false);
-        assertEquals(-1, optedOut.getSlot(skin));
+        assertEquals(1, optedOut.getSlot(skin));
+        SPDSettings.waterskinStartingSlot(WaterskinStartupSlot.AUTOMATIC);
+        QuickSlot legacy=new QuickSlot(6);
+        WaterskinStartupSlot.assign(legacy,skin,SPDSettings.waterskinStartingSlot(),false);
+        assertEquals(-1,legacy.getSlot(skin));
     }
 
     @Test public void selectedSlotPersistsAndOverridesLegacyAutomaticOptOut() {
@@ -84,6 +88,32 @@ public class WaterskinStartupSlotTest {
             assertNotEquals(slots.getSlot(first), slots.getSlot(second));
             assertEquals(1, count(slots, skin));
         }
+    }
+
+    @Test public void swappingExistingWaterskinInFullHotbarPreservesEverything() {
+        QuickSlot slots=new QuickSlot(6);
+        Waterskin skin=new Waterskin();
+        Item swapped=new Item();
+        slots.setSlot(0,skin);
+        slots.setSlot(1,swapped);
+        for(int i=2;i<6;i++)slots.setSlot(i,new Item());
+        WaterskinStartupSlot.assign(slots,skin,1,true);
+        assertSame(skin,slots.getItem(1));
+        assertSame(swapped,slots.getItem(0));
+        assertEquals(1,count(slots,skin));
+        assertEquals(1,count(slots,swapped));
+    }
+
+    @Test public void movingExistingWaterskinToChosenSlotKeepsOtherAssignments() {
+        QuickSlot slots=new QuickSlot(6);
+        Waterskin skin=new Waterskin();
+        Item second=new Item();
+        slots.setSlot(4,skin);
+        slots.setSlot(1,second);
+        WaterskinStartupSlot.assign(slots,skin,1,true);
+        assertSame(skin,slots.getItem(1));
+        assertSame(second,slots.getItem(4));
+        assertEquals(1,count(slots,skin));
     }
 
     @Test public void fullHotbarDoesNotReplaceStartingClassItem() {

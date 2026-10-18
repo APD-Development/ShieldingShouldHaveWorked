@@ -918,6 +918,7 @@ public class Dungeon {
 		
 		hero = null;
 		hero = (Hero)bundle.get( HERO );
+        if (fullLoad) com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.WaterskinStartupSlot.applyToCurrentRun();
 		
 		depth = bundle.getInt( DEPTH );
 		branch = bundle.getInt( BRANCH );

@@ -181,7 +181,7 @@ public class APDSettingsPane extends Component {
         add(btnPlaybackSpeed);
         // This is intentionally on the shared APD settings pane: both ordinary
         // player builds and private developer builds receive the same control.
-        btnWaterskinSlot = new RedButton("Waterskin start: "
+        btnWaterskinSlot = new RedButton("Waterskin Starting Hotbar Slot: "
                 + com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.WaterskinStartupSlot.label(
                         SPDSettings.waterskinStartingSlot()), 7) {
             @Override protected void onClick() {
@@ -193,11 +193,12 @@ public class APDSettingsPane extends Component {
                             .current(position == selected));
                 }
                 ShatteredPixelDungeon.scene().addToFront(WndUimsdList.menu(
-                        "Waterskin starting slot",
-                        "New runs only. Off removes the shortcut, not the item. Category hotbars have separate layouts.",
+                        "Waterskin Starting Hotbar Slot",
+                        "Slots 1-6, default Slot 2. Existing runs rearrange safely when loaded. Category hotbars have separate layouts.",
                         choices, (index, checked) -> {
                             if (index < 0 || index > 7) return;
                             SPDSettings.waterskinStartingSlot(index - 1);
+                            com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.WaterskinStartupSlot.applyToCurrentRun();
                             btnWaterskinSlot.text("Waterskin start: "
                                     + com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.WaterskinStartupSlot.label(
                                             SPDSettings.waterskinStartingSlot()));
