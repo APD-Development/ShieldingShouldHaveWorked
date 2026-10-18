@@ -1,6 +1,6 @@
-APD CORE-ONLY TEST REQUEST - Aggregate immutable identity contracts 2026-10-18T11:43:00Z
-base=fd62b69fe691772839cc68867a235fd8f9acd7c7
-review=complete current Aggregate.java constructors, factories, refinements, stable ids, equality and hash contracts with QueryCodec, GroupBy, QueryEngine and report consumers
-finding=no production defect confirmed; add direct retained boundary coverage for null normalization, inactive where values, fluent immutability and semantic aggregate identity
-expected=1824 tests across 361 suites; focused AggregateContractTest has 3 methods
+APD CORE-ONLY TEST REQUEST - CellText immutable display-provenance contracts 2026-10-18T12:34:06Z
+base=bb17f9c9d20e022a0cd7f45b068fe2a9285e6e75
+review=complete current CellText.java state identifiers, constructor defaults, immutable fields and table/home/detail/report consumers
+finding=no production defect confirmed; add direct retained coverage for stable state ids, default normal-sample behavior, explicit small-sample state and exact text rendering
+expected=1827 tests across 362 suites; focused CellTextContractTest has 3 methods
 scope=test-only UIMSD audit gate; application source and docs/APD-CODEX-BUILD-REQUEST.txt unchanged; do not build, stage, publish or distribute an APK
