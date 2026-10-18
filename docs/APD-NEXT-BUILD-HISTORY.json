@@ -1,46 +1,50 @@
 {
   "date": "2026-10-18",
-  "previous_source": "625522a9d5a59c3c53e8766539c9e6dfe24972b5",
-  "previous_application_source": "77382a50180c8718d9f11d7911ca2c8e7a191ee4",
-  "previous_run": 39160728039,
-  "previous_label": "Codex TEST 282",
+  "previous_source": "e14921ed4cadb68b2c2748ed287ed2ea802df0c4",
+  "previous_application_source": "17b3636958d817cdcd26f2b4ffe7bd6ecc87434b",
+  "previous_run": 39165868402,
+  "previous_label": "Codex TEST 283",
   "changes": [
     {
       "category": "Quality of life / UI",
       "sprite": "ICON_CHECKED",
-      "title": "Choose the Waterskin's starting hotbar slot",
-      "text": "The APD Settings pane shared by player and developer builds now offers Automatic, Slots 1-6 and Off for future runs. Existing installs retain the former automatic default and existing saved quickslots remain unchanged. Occupied class items are relocated to empty slots without item loss.",
+      "title": "120 active runs: 20 for each of six classes",
+      "text": "APD now provides a class-first six-button selector with 20 scrollable active-run entries per class, each marked occupied or empty with saved floor, difficulty, challenges, Custom Dungeon Rules and last-played context.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/SPDSettings.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/HeroClass.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/hotbar/WaterskinStartupSlot.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/APDSettingsPane.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/GamesInProgress.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/StartScene.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/HeroSelectScene.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/Dungeon.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Verify Waterskin slot preferences and touch selection",
-      "text": "Five new core regression methods pass, covering persistence, all six selected slots, legacy preference, class equipment preservation and Off. The API34 owner-coverage guard and real-touch selection are included for full Android verification.",
+      "title": "Verify original save preservation and cross-class isolation",
+      "text": "All six character classes, 20 independent slots each, 120 persisted physical folders, preserved original game1..6 IDs, no accidental cross-class overwrite, class-local deletion, actual save/load inventories, saved difficulty and rules are core tested; API34 class picker and scrolling assertions added.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/hotbar/WaterskinStartupSlotTest.java",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/ApdSettingsClickDeviceTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/ClassSaveSlotsTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/ClassSavePersistenceTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/ClassSaveSlotsDeviceTest.java",
+        "tools/run-codex-android-checks.sh",
         "docs/APD-CODEX-CORE-TEST-REQUEST.txt"
       ]
     },
     {
       "category": "Developer Commentary",
       "sprite": "ICON_CHECKED",
-      "title": "Record the shared-build scope and TEST283 verification request",
-      "text": "Preserve all prior compiled history, verified TEST281/TEST282 evidence, and existing saves while documenting this pending user-facing preference; do not stage or distribute until independently verified.",
+      "title": "Preserve independent turn-history model and release traceability",
+      "text": "The independently added pure TurnHistory model and tests remain on the Codex branch, distinct from the active-save feature; note the full 1859 green core tests and request TEST284 against TEST283's actual compiled history.",
       "paths": [
-        "docs/APD-TEST283-WATERSKIN-SLOT-CANDIDATE-2026-10-18.md",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/TurnHistory.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/TurnHistoryTest.java",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",
+        "docs/APD-120-ACTIVE-RUNS-2026-10-18.md",
         "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/APD-CODEX-BUILD-REQUEST.txt"
       ]
     }
   ],
-  "commentary": "After source 17b3636958d817cdcd26f2b4ffe7bd6ecc87434b and complete core-only source1325b7b/run39165438742 with 1842 methods/364 suites all passing, request full TEST283 against actual immediate previous compiled TEST282 from producer625522a9/run39160728039, raw APK SHA2d6281014c44e8cc49b38fb5cef08f8fc668c7468b1e7091fe88f95df6290547. Include every changed path, including THIS manifest and build-request note. Require 1842 core tests, debug/history verification, 38 native API34 checks, 57 reviewed screenshots. Not published or sent to testers, no physical phone acceptance."
+  "commentary": "Request full private TEST284 after two passing complete core-only runs, last run39171444947 has 1859 methods/367 suites/0 errors/failures/skips. Strict compare exact immediately previous compiled TEST283 producer e14921ed4cadb68b2c2748ed287ed2ea802df0c4/run39165868402, raw APK size38618602 sha256 4c35916f93b204af9811a69be8aabc6be27d51e37d05bdc440d97ab530a846c2. Require all 1859 core, debug assembly, signed manifest and history, at least 39 native API34 checks and 57 reviewed PNGs; Test284 is pending; no staging, publication, distribution or physical-device acceptance claim."
 }
