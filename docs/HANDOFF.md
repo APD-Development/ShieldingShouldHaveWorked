@@ -1,3 +1,9 @@
+## 2026-10-18T09:37:32Z — UIMSD topic-search boundary review complete; 1,820 core tests pass
+- Reviewed all 88 current lines of `UimsdTopicSearch.java` (blob `1e0f0a2b92192e80190ca1a7b6f58a96a318b560`) across schema-only matching, public/internal visibility, normalization, catalog/column ordering, the 48-result ceiling and Question-builder navigation. No production defect was confirmed.
+- Expanded `UimsdTopicSearchTest` at source commit `9ed5fe49c7f50cc54443e30fded18addc03c6878` from 4 to 6 methods: the exact first 48 catalog/column hits remain deterministic, and opening a dataset topic clears stale measure/per/group/filter state while preserving scope.
+- Core-only [run 39115923723](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/39115923723) passed 1,820 tests / 360 suites with 0 failures, errors or skips. The focused class passed 6/6 methods in 0.012s. Artifact `12132626259` is 849,064 bytes with SHA-256 `407d6080d39813f960d7fbd6a6e281fb5448ca49e5751fb112ac45e66af487e7`; the downloaded ZIP matched that digest.
+- This is test/documentation-only work. `docs/APD-CODEX-BUILD-REQUEST.txt` was not changed, no APK build started, TEST277 remains the latest fully gated private candidate, and TEST262 remains the latest actual owner publication.
+
 ## 2026-10-18T08:40:02Z — Filter operator contract review complete; 1,818 core tests pass
 - Reviewed all 71 current lines of `Op.java` (blob `5d9b8e177a949e430e65522a98603873ab6ac258`) across numeric/text/enum picker sets, operator ordering, value arity and the separation of internal drilldown predicates. No production defect was confirmed.
 - Added `OpContractTest` at source commit `b48e2fa7103f13a5d9faa985a20d329de6e37e94`: exact ordered public operators are locked for every column type; only Known/Unknown omit values; Group Value/Bound/Text and Identifier In remain unavailable to ordinary player filters.

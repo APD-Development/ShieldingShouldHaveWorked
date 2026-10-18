@@ -1,3 +1,9 @@
+## 2026-10-18T09:37:32Z — UIMSD topic-search boundary review and regressions complete
+- Current `UimsdTopicSearch.java` blob `1e0f0a2b92192e80190ca1a7b6f58a96a318b560` (88 lines) fully reviewed; no production defect confirmed.
+- Expanded `UimsdTopicSearchTest` from 4 to 6 methods (blob `4a6369517364769f0659856ce562003aaa1a4e90`) to lock the exact 48-hit catalog/column prefix and stale-question reset when opening a dataset topic.
+- Core-only [run 39115923723](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/39115923723) passed 1,820 tests / 360 suites; focused class 6/6 in 0.012s; artifact `12132626259`, 849,064 bytes, SHA-256 `407d6080d39813f960d7fbd6a6e281fb5448ca49e5751fb112ac45e66af487e7`.
+- Production source, APK bytes and the executable Android build request are unchanged. TEST277 remains the latest fully gated private candidate; TEST262 remains the latest owner publication.
+
 ## 2026-10-18T08:40:02Z — Filter operator contract review and regressions complete
 - Current `Op.java` blob `5d9b8e177a949e430e65522a98603873ab6ac258` (71 lines) fully reviewed; no production defect confirmed.
 - Added `OpContractTest` (2 methods; blob `851c0e6a0c90c14e7c24db119a2c0b799a243547`) for exact ordered NUM/TEXT/ENUM operator sets, value arity and internal predicate exclusion.
