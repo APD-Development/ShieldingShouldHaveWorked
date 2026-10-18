@@ -452,7 +452,7 @@
     "skipped": 0
   },
   "confirmed_new_production_defects": 6,
-  "application_changes": false,
+  "application_changes": true,
   "new_apk_needed": false,
   "latest_verified_private_candidate": 278,
   "latest_published_owner_build": 262,
