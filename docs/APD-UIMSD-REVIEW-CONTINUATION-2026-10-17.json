@@ -1,9 +1,9 @@
 {
-  "source": "40ac35f382e5b4337da477cadf3ecf3339506f17",
-  "recorded_at": "2026-10-18T06:35:50Z",
+  "source": "4c0e4f2256fe58faa5b23856eff16fc7c2b61860",
+  "recorded_at": "2026-10-18T07:38:43Z",
   "complete": false,
   "prior_checkpoint_preserved": "docs/APD-UIMSD-REVIEW-CHECKPOINT-2026-10-13.json",
-  "count_note": "Current-blob reconciliation found 96 exact machine-recorded entries before this continuation. Datasets.java, AggValue.java, UimsdSelfTest.java, UimsdHome.java, QueryCodec.java, Question.java, Questions.java, RowBuilders.java, RowCodec.java, DatasetStore.java, QueryEngine.java, ReportExport.java, ReportBuilder.java, ReportRenderer.java, Report.java, ResultTable.java and Catalog.java add seventeen reviewed current production blobs, for 113 exact reviewed paths; prose-only completed reviews remain separate until reconciled.",
+  "count_note": "Current-blob reconciliation found 96 exact machine-recorded entries before this continuation. Datasets.java, AggValue.java, UimsdSelfTest.java, UimsdHome.java, QueryCodec.java, Question.java, Questions.java, RowBuilders.java, RowCodec.java, DatasetStore.java, QueryEngine.java, ReportExport.java, ReportBuilder.java, ReportRenderer.java, Report.java, ResultTable.java, Catalog.java and BossClasses.java add eighteen reviewed current production blobs, for 114 exact reviewed paths; prose-only completed reviews remain separate until reconciled.",
   "entries": [
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/Datasets.java",
@@ -318,6 +318,23 @@
           "aViewResolvesTheCurrentDatasetByIdAndMissingIdsStayMissing"
         ]
       }
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/BossClasses.java",
+      "sha": "984c3d940d95c73302cbae75fe98eae633c2b152",
+      "lines": 44,
+      "reviewed": true,
+      "basis": "Complete current-source review against every current mob source that installs Property.BOSS found no production defect. Retained coverage now ties all sixteen supported top-level/nested boss classes to their real Class names and rejects helpers/lookalikes.",
+      "retained_test": {
+        "path": "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/BossClassesTest.java",
+        "sha": "99500f3081c46c33ac2bff3d73d9c4a48a1eed6f",
+        "source_commit": "4c0e4f2256fe58faa5b23856eff16fc7c2b61860",
+        "methods": 2,
+        "method_names": [
+          "everyCurrentBossClassIsRecognizedByFullAndSimpleName",
+          "bossHelpersAndLookalikesAreNotBosses"
+        ]
+      }
     }
   ],
   "supporting_reads": [
@@ -374,21 +391,21 @@
   "latest_verified_private_candidate": 277,
   "latest_published_owner_build": 262,
   "latest_test_only_evidence": {
-    "source_commit": "ca15ab46ea3572bc05a957f22f75970af22ff97e",
-    "request_commit": "ca15ab46ea3572bc05a957f22f75970af22ff97e",
-    "run_id": 39104441554,
-    "target": "Catalog snapshot, replacement ordering and view-to-dataset contracts",
-    "core_tests": 1815,
+    "source_commit": "4c0e4f2256fe58faa5b23856eff16fc7c2b61860",
+    "request_commit": "4c0e4f2256fe58faa5b23856eff16fc7c2b61860",
+    "run_id": 39108318966,
+    "target": "Exhaustive UIMSD boss-statistics class classification",
+    "core_tests": 1816,
     "suites": 359,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "focused_class": "CatalogContractTest",
-    "focused_methods": 3,
+    "focused_class": "BossClassesTest",
+    "focused_methods": 2,
     "focused_time_seconds": 0.001,
-    "artifact_id": 12127158889,
-    "artifact_bytes": 848464,
-    "artifact_digest": "sha256:3248ed1dee990f76c05af2d3f696c7e616476fd4f0d1bfe64fb246b3569ac905",
+    "artifact_id": 12129536691,
+    "artifact_bytes": 845652,
+    "artifact_digest": "sha256:be0f95ed46e724be16ad249611ee2984642784368e30d6d6661a1b3a58332aa9",
     "application_source_changed": false
   },
   "latest_application_evidence": {
@@ -679,6 +696,24 @@
     "artifact_id": 12126970320,
     "artifact_bytes": 846785,
     "artifact_digest": "sha256:281c282125074b382793ff949b2897156ac218310ecf3e9b9275ef9e5b16ce22",
+    "application_source_changed": false
+  },
+  "prior_test_only_evidence_catalog": {
+    "source_commit": "ca15ab46ea3572bc05a957f22f75970af22ff97e",
+    "request_commit": "ca15ab46ea3572bc05a957f22f75970af22ff97e",
+    "run_id": 39104441554,
+    "target": "Catalog snapshot, replacement ordering and view-to-dataset contracts",
+    "core_tests": 1815,
+    "suites": 359,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "focused_class": "CatalogContractTest",
+    "focused_methods": 3,
+    "focused_time_seconds": 0.001,
+    "artifact_id": 12127158889,
+    "artifact_bytes": 848464,
+    "artifact_digest": "sha256:3248ed1dee990f76c05af2d3f696c7e616476fd4f0d1bfe64fb246b3569ac905",
     "application_source_changed": false
   }
 }

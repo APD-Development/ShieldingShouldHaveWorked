@@ -1,3 +1,9 @@
+## 2026-10-18T07:38:43Z — Boss statistics classifier review and exhaustive regression complete
+- Current `BossClasses.java` blob `984c3d940d95c73302cbae75fe98eae633c2b152` (44 lines) fully reviewed against all current `Property.BOSS` mob sources; no production defect confirmed.
+- Expanded `BossClassesTest` (2 methods; blob `99500f3081c46c33ac2bff3d73d9c4a48a1eed6f`) to all 16 supported bosses/Yog fists and negative helper/lookalike cases.
+- Core-only run `39108318966` passed 1,816/359 with zero failures/errors/skips; artifact `12129536691`, 845,652 bytes, SHA-256 `be0f95ed46e724be16ad249611ee2984642784368e30d6d6661a1b3a58332aa9`.
+- Test/documentation-only: build request unchanged, no APK rebuild, TEST277 remains the private candidate and TEST262 remains published.
+
 ## 2026-10-18T06:35:50Z — Catalog contract review and regressions complete
 - Current `Catalog.java` blob `126535930994090260cc86d784085f48e0342129` (80 lines) fully reviewed; existing concurrency coverage retained and no production defect confirmed.
 - Added `CatalogContractTest` (3 methods; blob `d65d57880b2872337c0485007364b3cc27f26dfc`) for detached list snapshots, stable replacement-by-ID ordering and current view-to-dataset resolution.
