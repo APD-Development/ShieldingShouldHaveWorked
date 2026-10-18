@@ -199,7 +199,7 @@ public class APDSettingsPane extends Component {
                             if (index < 0 || index > 7) return;
                             SPDSettings.waterskinStartingSlot(index - 1);
                             com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.WaterskinStartupSlot.applyToCurrentRun();
-                            btnWaterskinSlot.text("Waterskin start: "
+                            btnWaterskinSlot.text("Waterskin Starting Hotbar Slot: "
                                     + com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.WaterskinStartupSlot.label(
                                             SPDSettings.waterskinStartingSlot()));
                         }));

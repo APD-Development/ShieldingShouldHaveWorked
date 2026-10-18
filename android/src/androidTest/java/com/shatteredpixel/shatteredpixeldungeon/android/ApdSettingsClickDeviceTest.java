@@ -578,7 +578,7 @@ public class ApdSettingsClickDeviceTest {
                 assertEquals("Off", communityEntries(slotChoices).get(7).label);
                 tapCommunityEntry(slotChoices, 2);
                 waitUntil("Waterskin start Slot 2 saved", () -> SPDSettings.waterskinStartingSlot() == 1, 10000);
-                assertEquals("Waterskin start: Slot 2", waterskinStart.text());
+                assertEquals("Waterskin Starting Hotbar Slot: Slot 2", waterskinStart.text());
 
 				tapUntil("Healing confirmation", scroll, (Gizmo) field(pane, "btnHealingConfirmation"),
 						() -> find(Game.scene(), com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions.class) != null, 30000);
