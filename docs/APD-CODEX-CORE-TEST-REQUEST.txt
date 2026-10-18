@@ -1,6 +1,6 @@
-APD CORE-ONLY TEST REQUEST - reconcile current UIMSD table/window geometry boundaries 2026-10-18T14:31:13Z
-candidate=latest head adds two retained test-only methods after complete current-source review of TableGeometry.java and WindowGeometry.java found no production defect
-checks=full ./gradlew :core:test; expect 1834 tests with zero failures, including TableGeometryTest now 8 methods and WindowGeometryTest now 11 methods
-scope=exact half-open column/row touch boundaries, empty stack behavior and final-edge exclusion; existing width, wrapping, scrolling and pane-placement coverage remains
+APD CORE-ONLY TEST REQUEST - reproduce omitted median wording in the UIMSD guide 2026-10-18T15:34:39Z
+candidate=latest head adds one retained test-only assertion after complete review of UimsdGuide.java and its guide window, topic window, tutorial and existing Home/tour/wording tests
+checks=full ./gradlew :core:test; expect 1835 tests and exactly guideNamesEverySupportedQuestionMeasure to fail because the implemented Question builder and offline grammar support median while the Asking a question guide omits it
+scope=user-facing UIMSD guide accuracy only; do not change production in this reproduction commit
 production=none; application source, APK bytes, gameplay, scoring, saves, raw history, signing, application ID and RNG remain unchanged
 restriction=no APK rebuild, publication, staging or tester distribution; docs/APD-CODEX-BUILD-REQUEST.txt remains unchanged

@@ -197,6 +197,14 @@ public class UimsdHomeTourTest {
 		assertTrue(UimsdTutorial.indexOf("reports") < UimsdTutorial.indexOf("home"));
 	}
 
+
+	@Test
+	public void guideNamesEverySupportedQuestionMeasure() {
+		String ask = UimsdGuide.topic("ask").text.toLowerCase(java.util.Locale.ROOT);
+		for (String measure : new String[]{ "how many", "total", "average", "highest", "lowest", "median" })
+			assertTrue(measure, ask.contains(measure));
+	}
+
 	@Test
 	public void homeShowsTheDifficultyCardWhenThereIsSomethingToCompare() {
 		UimsdHome h = UimsdHome.build(cat, RULES.id, false);
