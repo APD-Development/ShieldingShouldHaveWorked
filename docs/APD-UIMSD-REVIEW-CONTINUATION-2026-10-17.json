@@ -1,9 +1,9 @@
 {
-  "source": "15e323e81de2ae0913269c8906d867916885ddc9",
-  "recorded_at": "2026-10-18T00:49:26.692Z",
+  "source": "d41dc0b95510f6c320d8b97f8bb71130d3e8571d",
+  "recorded_at": "2026-10-18T01:50:19Z",
   "complete": false,
   "prior_checkpoint_preserved": "docs/APD-UIMSD-REVIEW-CHECKPOINT-2026-10-13.json",
-  "count_note": "Current-blob reconciliation found 96 exact machine-recorded entries before this continuation. Datasets.java, AggValue.java, UimsdSelfTest.java, UimsdHome.java, QueryCodec.java, Question.java, Questions.java, RowBuilders.java, RowCodec.java, DatasetStore.java and QueryEngine.java add eleven reviewed current production blobs, for 107 exact reviewed paths; prose-only completed reviews remain separate until reconciled.",
+  "count_note": "Current-blob reconciliation found 96 exact machine-recorded entries before this continuation. Datasets.java, AggValue.java, UimsdSelfTest.java, UimsdHome.java, QueryCodec.java, Question.java, Questions.java, RowBuilders.java, RowCodec.java, DatasetStore.java, QueryEngine.java and ReportExport.java add twelve reviewed current production blobs, for 108 exact reviewed paths; prose-only completed reviews remain separate until reconciled.",
   "entries": [
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/Datasets.java",
@@ -183,6 +183,38 @@
           "tenThousandRowsGroupedAggregatesMatchIndependentModel"
         ]
       }
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/report/ReportExport.java",
+      "sha": "d65b31638b757cdad28b550657fc9b7820771345",
+      "lines": 133,
+      "reviewed": true,
+      "basis": "Complete current-source review of render dispatch, UTC/safe filenames, file-picker callbacks and asynchronous output completion, exact share-size gating, provider exception handling and player-visible outcomes found no production defect. Retained tests now cover the previously untested filename/share/picker boundaries.",
+      "supporting_reads": [
+        {
+          "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/archive/ApdFiles.java",
+          "sha": "937ed1afdc5db108b6878ba7bfc8a0c9bda86950"
+        },
+        {
+          "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/report/Report.java",
+          "sha": "ea9feddaa65e670ece45f5b60c63844652502135"
+        },
+        {
+          "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/report/ReportRenderer.java",
+          "sha": "58596bb362ba5d8761c363208c7e39e5e5d7bd9e"
+        }
+      ],
+      "retained_test": {
+        "path": "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/report/ReportExportBoundaryTest.java",
+        "sha": "f934b47aac26386beddcfd4ebf21c75e2f7cdbe6",
+        "source_commit": "d41dc0b95510f6c320d8b97f8bb71130d3e8571d",
+        "methods": 3,
+        "method_names": [
+          "fileNamesUseUtcAndSafeFallbackSlugs",
+          "shareAcceptsExactLimitAndRejectsOneCharacterMore",
+          "saveReportsPickerCancellationAndFailureExactlyOnce"
+        ]
+      }
     }
   ],
   "supporting_reads": [
@@ -236,9 +268,84 @@
   "confirmed_new_production_defects": 4,
   "application_changes": true,
   "new_apk_needed": false,
-  "latest_verified_private_candidate": 275,
+  "latest_verified_private_candidate": 276,
   "latest_published_owner_build": 262,
   "latest_test_only_evidence": {
+    "source_commit": "d41dc0b95510f6c320d8b97f8bb71130d3e8571d",
+    "request_commit": "d41dc0b95510f6c320d8b97f8bb71130d3e8571d",
+    "run_id": 39087761072,
+    "target": "ReportExport UTC/safe filename, exact share-size cutoff and picker callback boundaries",
+    "core_tests": 1805,
+    "suites": 355,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "focused_methods": 3,
+    "focused_time_seconds": 0.013,
+    "artifact_id": 12121437654,
+    "artifact_bytes": 842835,
+    "artifact_digest": "sha256:e45487654bb9b7d764ed6129e12a8b4a0c589e5e6cc2d46847e924115681aa98",
+    "application_source_changed": false,
+    "retained_failed_runs": [
+      {
+        "source_commit": "6efa504a096d10e856de740aefe14dac856d6621",
+        "run_id": 39087528560,
+        "tests": 1805,
+        "failures": 1,
+        "errors": 0,
+        "skipped": 0,
+        "artifact_id": 12121865024,
+        "artifact_bytes": 843814,
+        "artifact_digest": "sha256:0eb52dc5efde234289efe0f31d05a4e580fca5b7d94b2659878f2a9ed6e86e94",
+        "actual_reason": "test fixture assumed title text rendered once; plain text intentionally renders title plus equal-length underline"
+      }
+    ]
+  },
+  "latest_application_evidence": {
+    "application_source": "b6d3a8be0f4337d4bd8d1a1bbe38dc1981d99bf3",
+    "request_commit": "d44903bbc138ac653e43e58341e7b7a33de12581",
+    "run_id": 39086579292,
+    "target": "Offline schema/public-field UIMSD topic search wired into Ask without searching values or hidden columns",
+    "core_tests": 1802,
+    "core_suites": 355,
+    "android_tests": 38,
+    "required_images_reviewed": 57,
+    "image_dimensions": "320x640",
+    "apk_sha256": "6e0996d4a51d53a816ab2851556766188d72dbaf81fe3464d4512d04266b0725",
+    "apk_bytes": 38613689,
+    "apk_artifact_id": 12121081485,
+    "apk_artifact_bytes": 36114648,
+    "apk_artifact_digest": "sha256:04bb52efa85f4f05391e33186b3127a0e9d377bf0913bbd8b0377df12b50d7bc",
+    "core_artifact_id": 12120418428,
+    "core_artifact_digest": "sha256:638d2171ea3865a58b40f3496b87dd0f6b0100370aab0dff60ec5005badfe446",
+    "android_artifact_id": 12121158561,
+    "android_artifact_digest": "sha256:0434d0e4134bf76ea36a799ebf30ac4361b9e5baacd067e858829aa3c08708e5",
+    "history_previous_application_source": "dcdec4a936a0b159f6dcf1a60da6a8c5e663d6a1",
+    "history_previous_run": 39076194628,
+    "supplemental_display": {
+      "run_id": 39086579298,
+      "passed_profiles": [
+        "small-virtual",
+        "compact-virtual",
+        "square-virtual",
+        "short-landscape"
+      ],
+      "failed_profiles": [
+        "m53-representative"
+      ],
+      "failure": "Native title condition did not become true",
+      "accepted_required_gate": false
+    },
+    "staging": {
+      "run_id": 39086579303,
+      "conclusion": "failure",
+      "staged": false
+    },
+    "published": false,
+    "physical_phone_tested": false,
+    "owner_save_install_over_tested": false
+  },
+  "prior_test_only_evidence": {
     "source_commit": "70493689e6261c9d71f605fa9f27a277ae05c10a",
     "request_commit": "70493689e6261c9d71f605fa9f27a277ae05c10a",
     "run_id": 39083890978,
@@ -279,7 +386,7 @@
       }
     ]
   },
-  "latest_application_evidence": {
+  "prior_application_evidence": {
     "application_source": "dcdec4a936a0b159f6dcf1a60da6a8c5e663d6a1",
     "request_commit": "909286ed86788d462f853fd47b9632cefac96691",
     "run_id": 39076194628,
@@ -315,4 +422,4 @@
     "physical_phone_tested": false,
     "owner_save_install_over_tested": false
   }
-}
+}\n

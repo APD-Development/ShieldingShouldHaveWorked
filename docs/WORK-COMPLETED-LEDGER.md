@@ -1,3 +1,14 @@
+## 2026-10-18T01:50:19Z — ReportExport review and boundary tests complete
+- Current production blob `d65b31638b757cdad28b550657fc9b7820771345` (133 lines) fully reviewed; no production defect confirmed.
+- Retained failed core-only run `39087528560`: 1,805 tests, exactly one new fixture failure (title plus underline means two rendered characters per title character), artifact `12121865024`, ZIP SHA-256 `0eb52dc5efde234289efe0f31d05a4e580fca5b7d94b2659878f2a9ed6e86e94`.
+- Corrected test-only commit `d41dc0b95510f6c320d8b97f8bb71130d3e8571d`; run `39087761072` passed 1,805 tests/355 suites, 0 failure/error/skip. Three focused methods passed in 0.013s. Artifact `12121437654`, ZIP SHA-256 `e45487654bb9b7d764ed6129e12a8b4a0c589e5e6cc2d46847e924115681aa98`.
+- No application/build-request/APK/gameplay/save/history/scoring/RNG change. TEST276 remains private verified fallback; TEST262 remains published owner delivery.
+
+## 2026-10-18T01:42:01Z — TEST276 private full gate passed; no publication
+- Source/request `b6d3a8be0f4337d4bd8d1a1bbe38dc1981d99bf3` / `d44903bbc138ac653e43e58341e7b7a33de12581`; run `39086579292` passed 1,802 core/355 suites, debug, complete TEST275 history and 38 API34 methods.
+- Raw APK 38,613,689 bytes, SHA-256 `6e0996d4a51d53a816ab2851556766188d72dbaf81fe3464d4512d04266b0725`; artifact `12121081485`. All 57 required 320x640 PNGs decoded and were visually reviewed.
+- Supplemental display `39086579298`: 4/5 profiles passed; M53 retained the existing native-title timeout. Stage `39086579303` failed before acceptance; nothing was published or distributed. Latest actual owner publication remains TEST262.
+
 ## 2026-10-18T01:27:37.811Z — offline UIMSD topic search passed full core and entered necessary private full-gate build
 - Candidate source `b6d3a8be0f4337d4bd8d1a1bbe38dc1981d99bf3`: new schema-only offline finder wired into Ask screen. It does not search run values or internal fields or implement unrestricted natural-language parsing.
 - Core-only [run 39086294891](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/39086294891) passed **1,802 tests in 355 suites**, 0 failures/errors/skips, including all four new UimsdTopicSearchTest methods. Report artifact `12120434530`, SHA-256 `05a9af368c334321955fbce047737c501ee00a0d10a8051a08875ccd45a2ff23`.
