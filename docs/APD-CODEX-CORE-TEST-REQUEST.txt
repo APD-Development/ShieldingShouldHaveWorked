@@ -1,6 +1,6 @@
-APD CORE-ONLY TEST REQUEST - CellText immutable display-provenance contracts 2026-10-18T12:34:06Z
-base=bb17f9c9d20e022a0cd7f45b068fe2a9285e6e75
-review=complete current CellText.java state identifiers, constructor defaults, immutable fields and table/home/detail/report consumers
-finding=no production defect confirmed; add direct retained coverage for stable state ids, default normal-sample behavior, explicit small-sample state and exact text rendering
-expected=1827 tests across 362 suites; focused CellTextContractTest has 3 methods
-scope=test-only UIMSD audit gate; application source and docs/APD-CODEX-BUILD-REQUEST.txt unchanged; do not build, stage, publish or distribute an APK
+APD CORE-ONLY TEST REQUEST - UIMSD exact offline question grammar 2026-10-18T13:24:50.558Z
+candidate=current latest head containing schema-backed simple question parser plus native search UI regression
+checks=full ./gradlew :core:test including UimsdTopicSearchTest now 10 methods; preserve other existing tests
+scope=intentional new application source, no gameplay/scoring/history/save changes; standalone core-only prerequisite, NOT APK acceptance
+next=after passing core and reconciling concurrent work, request one exact full private Android gate against prior compiled TEST278 (source 87254f62f5430e1da050fdd77108e94495e78e77 / run39120394227) with complete path history, 38 native tests including UI interaction and 57 reviewed screenshots
+restriction=no automatic publication/staging/tester distribution; leave docs/APD-CODEX-BUILD-REQUEST.txt unchanged until intentional full candidate

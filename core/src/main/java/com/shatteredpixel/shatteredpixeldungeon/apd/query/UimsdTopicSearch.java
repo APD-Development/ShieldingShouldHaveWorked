@@ -71,6 +71,80 @@ public final class UimsdTopicSearch {
         return hits;
     }
 
+
+    // A deliberately small, deterministic English grammar. Only exact public schema labels
+    // are accepted. Unsupported phrases fail closed, never silently dropping conditions.
+    // No recorded values are indexed or searched here.
+    public static Question interpret(Catalog catalog, String words, Question previous) {
+        if (catalog == null || words == null || previous == null) return null;
+        String phrase = normalize(words);
+        Question.Measure measure;
+        String tail;
+        if (phrase.startsWith("how many ")) {
+            measure = Question.Measure.COUNT;
+            tail = phrase.substring("how many ".length());
+        } else {
+            String[] prefixes = {"total ", "sum ", "average ", "mean ", "highest ", "lowest ", "median "};
+            Question.Measure[] measures = {Question.Measure.TOTAL, Question.Measure.TOTAL,
+                    Question.Measure.AVERAGE, Question.Measure.AVERAGE,
+                    Question.Measure.HIGHEST, Question.Measure.LOWEST, Question.Measure.TYPICAL};
+            int index = -1;
+            for (int i = 0; i < prefixes.length; i++) {
+                if (phrase.startsWith(prefixes[i])) { index = i; break; }
+            }
+            if (index < 0) return null;
+            measure = measures[index];
+            tail = phrase.substring(prefixes[index].length());
+        }
+
+        int split = tail.indexOf(" by ");
+        if (split >= 0 && tail.indexOf(" by ", split + 4) >= 0) return null;
+        String group = split < 0 ? "" : tail.substring(split + 4);
+        if (split >= 0) tail = tail.substring(0, split);
+        if (tail.isEmpty() || (split >= 0 && group.isEmpty())) return null;
+
+        String measured = "";
+        if (measure != Question.Measure.COUNT) {
+            int of = tail.indexOf(" of ");
+            if (of < 1 || of + 4 >= tail.length() || tail.indexOf(" of ", of + 4) >= 0) return null;
+            measured = tail.substring(0, of);
+            tail = tail.substring(of + 4);
+        }
+        Dataset selected = null;
+        for (Dataset ds : Questions.askable(catalog)) {
+            DatasetDef def = ds.def;
+            if (!tail.equals(normalize(def.title))
+                    && !tail.equals(normalize(def.countLabel))
+                    && !tail.equals(normalize(def.unitSingular()))) continue;
+            if (selected != null) return null; // ambiguous topic, ask the player to choose
+            selected = ds;
+        }
+        if (selected == null) return null;
+        DatasetDef def = selected.def;
+        ColumnDef measuredColumn = null;
+        if (measure != Question.Measure.COUNT) {
+            for (ColumnDef col : Questions.measurable(def, false)) {
+                if (!measured.equals(normalize(col.label))) continue;
+                if (measuredColumn != null) return null;
+                measuredColumn = col;
+            }
+            if (measuredColumn == null) return null;
+        }
+        ColumnDef grouping = null;
+        if (!group.isEmpty()) {
+            for (ColumnDef col : Questions.groupable(def, false)) {
+                if (!group.equals(normalize(col.label))) continue;
+                if (grouping != null) return null;
+                grouping = col;
+            }
+            if (grouping == null) return null;
+        }
+        Question q = Question.about(def.id).withScope(previous.scope);
+        if (measuredColumn != null) q = q.withMeasure(measure, measuredColumn.id);
+        if (grouping != null) q = q.withGroupBy(Collections.singletonList(grouping.id));
+        return q;
+    }
+
     private static boolean matches(String[] terms, String haystack) {
         String text = normalize(haystack);
         for (String term : terms) if (!text.contains(term)) return false;

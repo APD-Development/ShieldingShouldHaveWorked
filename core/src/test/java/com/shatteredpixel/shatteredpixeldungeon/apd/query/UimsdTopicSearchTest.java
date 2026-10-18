@@ -103,4 +103,75 @@ public class UimsdTopicSearchTest {
         assertSame(before.scope, opened.scope);
         assertFalse(opened.showInternal);
     }
+
+    @Test public void offlineGrammarCreatesExactCountAndGroupedAggregateQueries() {
+        Catalog c = catalog();
+        Question start = Question.about("prior").withScope(new Scope(Scope.Rules.ALL, "", true, true, true, true));
+        Question count = UimsdTopicSearch.interpret(c, "How many Things by Name?", start);
+        assertNotNull(count);
+        assertEquals("things", count.dataset);
+        assertEquals(Question.Measure.COUNT, count.measure);
+        assertEquals(Collections.singletonList("name"), count.groupBy);
+        assertSame(start.scope, count.scope);
+        assertFalse(count.showInternal);
+
+        Question average = UimsdTopicSearch.interpret(c, "AVERAGE SCORE OF THINGS BY NAME", start);
+        assertNotNull(average);
+        assertEquals(Question.Measure.AVERAGE, average.measure);
+        assertEquals("score", average.column);
+        assertEquals(Collections.singletonList("name"), average.groupBy);
+        assertEquals(Aggregate.Fn.AVG, Questions.toQuery(average, c.dataset("things").def).group.aggregates.get(0).fn);
+
+        Question total = UimsdTopicSearch.interpret(c, "total score of things", start);
+        assertNotNull(total);
+        assertEquals(Question.Measure.TOTAL, total.measure);
+        assertTrue(total.groupBy.isEmpty());
+    }
+
+    @Test public void unsupportedAndHiddenQuestionPartsAreNeverDiscardedOrExposed() {
+        Catalog c = catalog();
+        Question start = Question.about("prior").withShowInternal(true);
+        for (String phrase : new String[]{
+                "how many things by secret", "average secret of things",
+                "how many things where score is 2",
+                "average score of things by secret",
+                "average score of things by unknown",
+                "how many things by name by kind",
+                "average score of things of something",
+                "average score of things by name where score is 2",
+                "how many empty topic", "how many things from yesterday"
+        }) assertNull(phrase, UimsdTopicSearch.interpret(c, phrase, start));
+        Question accepted = UimsdTopicSearch.interpret(c, "how many things", start);
+        assertNotNull(accepted);
+        assertFalse("parsed questions do not inherit internal visibility", accepted.showInternal);
+    }
+
+    @Test public void ambiguousSchemaLabelsDoNotSilentlyChooseAColumnOrDataset() {
+        DatasetDef d = new DatasetDef("sample", "Samples", "");
+        d.add(ColumnDef.num("a", "Value"));
+        d.add(ColumnDef.num("b", "Value"));
+        d.add(ColumnDef.text("group1", "Kind"));
+        d.add(ColumnDef.text("group2", "Kind"));
+        Catalog cat = new Catalog().add(QuerySupport.dataset(d, Collections.singletonList(new Row("a", null, "r", d.size()))));
+        assertNull(UimsdTopicSearch.interpret(cat, "total value of samples", Question.about("sample")));
+        assertNull(UimsdTopicSearch.interpret(cat, "how many samples by kind", Question.about("sample")));
+        DatasetDef another = new DatasetDef("other", "Samples", "");
+        another.add(ColumnDef.num("number", "Number"));
+        cat.add(QuerySupport.dataset(another, Collections.singletonList(new Row("b", null, "r", another.size()))));
+        assertNull(UimsdTopicSearch.interpret(cat, "how many samples", Question.about("sample")));
+    }
+
+    @Test public void registeredDatasetsRemainQueryableWithoutHardcodedTopicNames() {
+        DatasetDef created = new DatasetDef("new-spell", "Spell casts", "New registered events");
+        created.add(ColumnDef.num("spent", "Mana spent"));
+        created.add(ColumnDef.text("spell", "Spell"));
+        Catalog c = new Catalog().add(QuerySupport.dataset(created, Collections.singletonList(new Row("a", null, "r", created.size()))));
+        Question q = UimsdTopicSearch.interpret(c, "mean mana spent of spell casts by spell", Question.about("old"));
+        assertNotNull(q);
+        assertEquals("new-spell", q.dataset);
+        assertEquals(Question.Measure.AVERAGE, q.measure);
+        assertEquals("spent", q.column);
+        assertEquals(Collections.singletonList("spell"), q.groupBy);
+    }
 }
+

@@ -139,7 +139,7 @@ public final class WndUimsdAsk {
     // Narrow offline search of registered subjects and PUBLIC field names.
     // Results go through the existing query builder; this is not an AI or raw-history search.
     private static void searchTopics(final Catalog cat, final String ruleset, final Host host, final Question q) {
-        show(new WndUimsdTextInput("Search UIMSD", "Search recorded topics and fields. This does not search the values inside your runs.",
+        show(new WndUimsdTextInput("Search UIMSD", "Try 'how many runs by class' or search recorded topics. This never searches raw values.",
                 "", 100, false, "Search", "Cancel", (positive, words) -> {
                     if (positive) topicResults(cat, ruleset, host, q, words);
                 }));
@@ -148,22 +148,29 @@ public final class WndUimsdAsk {
     private static void topicResults(final Catalog cat, final String ruleset, final Host host,
                                      final Question q, final String words) {
         final List<UimsdTopicSearch.Hit> hits = UimsdTopicSearch.find(cat, words);
+        final Question interpreted = UimsdTopicSearch.interpret(cat, words, q);
         List<Entry> entries = new ArrayList<>();
-        if (hits.isEmpty()) {
-            entries.add(Entry.note("No recorded topic or public field matches. Try another name, or use the normal question builder."));
-            entries.add(Entry.item("Search again", "try other words"));
-        } else {
-            for (UimsdTopicSearch.Hit hit : hits) entries.add(Entry.item(hit.label, hit.detail));
-            entries.add(Entry.item("Search again", "look for another topic"));
+        if (interpreted != null) {
+            Dataset matched = cat.dataset(interpreted.dataset);
+            entries.add(Entry.item("Open this question", Questions.describe(interpreted, matched.def)));
         }
-        showKept(WndUimsdList.menu("Search UIMSD", "Search finds subjects and public fields, not recorded values or whole questions. Pick a result to refine its question.",
+        if (hits.isEmpty() && interpreted == null)
+            entries.add(Entry.note("No supported question or public topic matches. Try a name, or 'average score of runs by class'."));
+        for (UimsdTopicSearch.Hit hit : hits) entries.add(Entry.item(hit.label, hit.detail));
+        entries.add(Entry.item("Search again", "look for another topic"));
+        showKept(WndUimsdList.menu("Search UIMSD", "Search public topics or simple questions (how many, total, average, highest, lowest, median; optional 'by' a public field). Other phrases are not interpreted.",
                 entries, new WndUimsdList.Picker() {
                     @Override public void onPick(int i, boolean checked) {
-                        if (i == hits.size()) {
+                        if (interpreted != null && i == 0) {
+                            builder(cat, ruleset, host, interpreted);
+                            return;
+                        }
+                        int hitIndex = i - (interpreted == null ? 0 : 1);
+                        if (hitIndex == hits.size()) {
                             searchTopics(cat, ruleset, host, q);
                             return;
                         }
-                        UimsdTopicSearch.Hit hit = hits.get(i);
+                        UimsdTopicSearch.Hit hit = hits.get(hitIndex);
                         Dataset selected = cat.dataset(hit.datasetId);
                         if (selected != null) builder(cat, ruleset, host, hit.question(q, selected.def));
                     }

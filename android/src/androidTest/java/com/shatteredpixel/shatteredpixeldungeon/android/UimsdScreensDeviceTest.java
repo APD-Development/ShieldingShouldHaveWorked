@@ -138,6 +138,72 @@ public class UimsdScreensDeviceTest {
     }
 
 
+
+    // Exercise the *native* Ask -> search input -> result picker -> question-builder
+    // path with real pointer selection. Typed text is injected into the actual
+    // Android text box; no synthetic gameplay history or owner data is changed.
+    private static void verifyTopicSearchInteraction(UimsdModel model) throws Exception {
+        onRender(() -> {
+            com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.closeAll();
+            com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdAsk.builder(
+                    model.catalog(), model.currentRuleset(), (q, back) -> {},
+                    com.shatteredpixel.shatteredpixeldungeon.apd.query.Question.about("runs"));
+        });
+        final int[] searchRow = {-1};
+        onRender(() -> { try {
+            com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList list = comparisonWindow();
+            Field entries = list.getClass().getDeclaredField("entries");
+            entries.setAccessible(true);
+            java.util.List<?> rows = (java.util.List<?>) entries.get(list);
+            for (int i = 0; i < rows.size(); i++) {
+                Object row = rows.get(i);
+                if (row instanceof com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.Entry
+                        && "Search UIMSD topics".equals(
+                        ((com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.Entry) row).label)) {
+                    searchRow[0] = i; break;
+                }
+            }
+            assertTrue("native search action exists in Ask builder", searchRow[0] >= 0);
+        } catch(Exception e) { throw new RuntimeException(e); } });
+        tapComparisonEntry(searchRow[0]);
+        onRender(() -> { try {
+            Field members = com.watabou.noosa.Group.class.getDeclaredField("members");
+            members.setAccessible(true);
+            com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdTextInput prompt = null;
+            for (Object child : (java.util.List<?>) members.get(Game.scene()))
+                if (child instanceof com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdTextInput
+                        && ((com.watabou.noosa.Gizmo) child).alive)
+                    prompt = (com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdTextInput) child;
+            assertNotNull("pointer opens the real offline-search input", prompt);
+            Field box = com.shatteredpixel.shatteredpixeldungeon.windows.WndTextInput.class.getDeclaredField("textBox");
+            box.setAccessible(true);
+            ((com.watabou.noosa.TextInput) box.get(prompt)).setText("average score of runs by class");
+            prompt.hide();
+            prompt.onSelect(true, "average score of runs by class");
+            Field entries = com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.class.getDeclaredField("entries");
+            entries.setAccessible(true);
+            java.util.List<?> result = (java.util.List<?>) entries.get(comparisonWindow());
+            assertTrue("the interpreted question is offered before any topic hits",
+                    ((com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.Entry) result.get(0))
+                            .label.equals("Open this question"));
+        } catch(Exception e) { throw new RuntimeException(e); } });
+        tapComparisonEntry(0);
+        onRender(() -> { try {
+            Field last = com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdAsk.class.getDeclaredField("last");
+            last.setAccessible(true);
+            com.shatteredpixel.shatteredpixeldungeon.apd.query.Question selected =
+                    (com.shatteredpixel.shatteredpixeldungeon.apd.query.Question) last.get(null);
+            assertNotNull(selected);
+            assertEquals("runs", selected.dataset);
+            assertEquals(com.shatteredpixel.shatteredpixeldungeon.apd.query.Question.Measure.AVERAGE, selected.measure);
+            assertEquals(com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKeys.SCORE, selected.column);
+            assertEquals(java.util.Collections.singletonList(
+                    com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKeys.HERO_CLASS), selected.groupBy);
+            assertFalse("search cannot enable hidden history", selected.showInternal);
+            com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.closeAll();
+        } catch(Exception e) { throw new RuntimeException(e); } });
+    }
+
     private static void verifyQuestionRateRendering() throws Exception {
         onRender(()->{try{
             com.shatteredpixel.shatteredpixeldungeon.apd.query.DatasetDef heals=com.shatteredpixel.shatteredpixeldungeon.apd.query.EventDatasets.def("heals");
@@ -411,6 +477,7 @@ public class UimsdScreensDeviceTest {
 			final UimsdModel m = (UimsdModel) field("model");
 			assertNotNull("the tour has a model", m);
             verifyComparisonPages();
+            verifyTopicSearchInteraction(m);
             verifyQuestionRateRendering();
             verifyKnownEmptyFilterChoice();
             verifyGroupDrilldownByTouch();
