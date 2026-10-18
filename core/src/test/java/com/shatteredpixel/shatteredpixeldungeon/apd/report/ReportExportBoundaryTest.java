@@ -19,13 +19,17 @@ public class ReportExportBoundaryTest {
 	}
 
 	private static Report reportWithRenderedTextLength( int target ){
-		int oneCharacterLength = ReportRenderer.text(new Report("x", 0, "test")).length();
-		int twoCharacterLength = ReportRenderer.text(new Report("xx", 0, "test")).length();
-		assertEquals("report title must contribute one character per input character",
-				1, twoCharacterLength - oneCharacterLength);
-		int titleLength = target - (oneCharacterLength - 1);
-		assertTrue("target must leave room for renderer framing", titleLength > 0);
-		Report report = new Report(repeat('x', titleLength), 0, "test");
+		Report emptyNote = new Report("x", 0, "test")
+				.add(new Report.Note(Report.NoteKind.INFO, ""));
+		Report oneCharacterNote = new Report("x", 0, "test")
+				.add(new Report.Note(Report.NoteKind.INFO, "x"));
+		int framingLength = ReportRenderer.text(emptyNote).length();
+		assertEquals("note body must contribute one character per input character",
+				1, ReportRenderer.text(oneCharacterNote).length() - framingLength);
+		int noteLength = target - framingLength;
+		assertTrue("target must leave room for renderer framing", noteLength > 0);
+		Report report = new Report("x", 0, "test")
+				.add(new Report.Note(Report.NoteKind.INFO, repeat('x', noteLength)));
 		assertEquals(target, ReportRenderer.text(report).length());
 		return report;
 	}

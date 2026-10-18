@@ -1,6 +1,7 @@
-APD CORE-ONLY TEST REQUEST - ReportExport boundary coverage 2026-10-18T01:45:00Z
-base=d44903bbc138ac653e43e58341e7b7a33de12581 after successful TEST276 full gate
-goal=verify existing report export filename, exact share-size boundary, and picker cancel/failure behavior
-check=complete core unit suite including ReportExportBoundaryTest (3 new methods) and existing report/export/UIMSD tests
-scope=test-only; no production source, gameplay, scoring, save/history data, APK source, or executable Android build request change
+APD CORE-ONLY TEST REQUEST - corrected ReportExport boundary fixture 2026-10-18T01:48:00Z
+base=6efa504a096d10e856de740aefe14dac856d6621
+retained_failure=run 39087528560 executed 1805 tests with exactly one new failure because the test assumed title text renders once; plain text intentionally renders title plus matching underline
+correction=size an INFO note body, which contributes exactly one output character per input character, while retaining exact 100000/100001 share-boundary assertions
+check=complete core unit suite including all 3 ReportExportBoundaryTest methods and existing report/export/UIMSD tests
+scope=test-fixture-only correction; no production source, gameplay, scoring, save/history data, APK source, or executable Android build request change
 next=record exact core result and continue the next unreviewed UIMSD production blob; no automatic publication or distribution
