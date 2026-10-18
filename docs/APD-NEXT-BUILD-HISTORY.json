@@ -1,43 +1,39 @@
 {
-  "date": "2026-10-17",
-  "previous_source": "909286ed86788d462f853fd47b9632cefac96691",
-  "previous_run": 39076194628,
-  "previous_label": "Codex TEST 275",
+  "date": "2026-10-18",
+  "previous_source": "d44903bbc138ac653e43e58341e7b7a33de12581",
+  "previous_run": 39086579292,
+  "previous_label": "Codex TEST 276",
   "changes": [
     {
       "category": "Statistics / UIMSD",
       "sprite": "ICON_CHECKED",
-      "title": "Find recorded topics by typing",
-      "text": "The Ask a Question screen gains an offline topic search across registered recorded subjects and public field labels. Choosing a result opens the existing question builder with a count, breakdown or total to refine. It does not use AI or search player values.",
+      "title": "Harden CSV report cells against prefixed formulas",
+      "text": "CSV export now checks the first non-whitespace character before deciding whether a cell could be interpreted as a spreadsheet formula. Tab- and space-prefixed =,+,-,@ content is neutralized, while ordinary signed numeric values remain numeric. No report data, saved history or scoring is changed.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdTopicSearch.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndUimsdAsk.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/report/ReportRenderer.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Protect UIMSD search and data accuracy",
-      "text": "Four new tests cover public-only indexing, hidden-column exclusion, accent and case folding, and correct question handoff. Retained deterministic large-cache and query tests guard earlier work without altering scores, saves or raw records.",
+      "title": "Keep report export boundaries and row caps verified",
+      "text": "Report tests directly cover prefixed-formula neutralization and signed numbers. Retained test-only work also checks exact share limits, picker callbacks, UTC filenames, ordinary and grouped 1,000-row report caps and truthful omission counts.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/DatasetBuildersTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/QueryEngineStressTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/QueryEngineTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowCacheRandomizedIntegrityTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdTopicSearchTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/ReportTableTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/report/ReportExportBoundaryTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/report/ReportTest.java",
         "docs/APD-CODEX-CORE-TEST-REQUEST.txt"
       ]
     },
     {
       "category": "Developer Commentary",
       "sprite": "ICON_CHECKED",
-      "title": "Retain verification and complete history",
-      "text": "The previous private TEST275 compiled APK and its complete verified records are preserved. UIMSD reliability, stress verification and audit receipts remain distinct from this candidate; no earlier delivery or physical test is implied.",
+      "title": "Retain TEST276 and complete report-audit evidence",
+      "text": "TEST276 remains the immediate previous compiled private candidate and TEST262 remains the latest owner publication. ReportRenderer, ReportBuilder and ReportExport review evidence is retained without implying publication, staging, owner-save install-over or physical-phone testing.",
       "paths": [
-        "docs/APD-TEST275-ROW-CACHE-VERIFICATION-2026-10-17.json",
-        "docs/APD-UIMSD-DATASETSTORE-REVIEW-2026-10-17.json",
-        "docs/APD-UIMSD-QUERYENGINE-STRESS-2026-10-17.json",
-        "docs/APD-UIMSD-RANDOMIZED-CACHE-STRESS-2026-10-17.json",
+        "docs/APD-TEST276-UIMSD-TOPIC-SEARCH-VERIFICATION-2026-10-18.json",
+        "docs/APD-UIMSD-REPORTBUILDER-REVIEW-2026-10-18.json",
+        "docs/APD-UIMSD-REPORTEXPORT-REVIEW-2026-10-18.json",
         "docs/APD-UIMSD-REVIEW-CONTINUATION-2026-10-17.json",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",
@@ -46,5 +42,5 @@
       ]
     }
   ],
-  "commentary": "Private source candidate following successful core-only run 39086294891: 1,802 core tests, 355 XML suites, four UimsdTopicSearchTest tests, zero failures/errors/skips. Require a completely new private debug APK gate using actual immediately previous compiled TEST275 producer source 909286ed86788d462f853fd47b9632cefac96691 / run 39076194628, same signing/application ID, complete Git path comparison, all 38 API34 tests and at least 57 required screenshots. TEST275 remains playable fallback; TEST262 latest owner publication. No automatic staging or distribution, phone/tester claims, or release."
+  "commentary": "Intentional private TEST277 candidate after successful core-only run 39094097064: 1,806 core tests in 356 XML suites, zero failures/errors/skips, ReportTest 12/12. Require a fresh private debug APK gate using immediate previous compiled TEST276 producer d44903bbc138ac653e43e58341e7b7a33de12581 / run 39086579292 and exact embedded label Codex TEST 276, complete path history, all 38 API34 methods and 57 required screenshots. No automatic staging, publication, tester distribution, owner-save install-over or physical-phone claim."
 }
