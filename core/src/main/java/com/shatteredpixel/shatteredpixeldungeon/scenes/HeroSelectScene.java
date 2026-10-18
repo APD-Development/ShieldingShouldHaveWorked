@@ -92,6 +92,19 @@ public class HeroSelectScene extends PixelScene {
 
 	//start a normal (non-daily) run with the selected class
 	private void startRun(){
+        // Hero selection can change class after an empty slot was chosen, or
+        // be launched from the title/restart shortcut. Bind to the SELECTED
+        // class only and never overwrite a legacy or occupied save folder.
+        if (GamesInProgress.selectedClass == null) return;
+        if (!GamesInProgress.isAvailableNewSlot(GamesInProgress.selectedClass, GamesInProgress.curSlot)) {
+            int free = GamesInProgress.firstEmpty(GamesInProgress.selectedClass);
+            if (free < 0) {
+                ShatteredPixelDungeon.scene().addToFront(new WndMessage(
+                        "All 20 " + GamesInProgress.selectedClass.title() + " runs are occupied. Finish or remove one before starting another."));
+                return;
+            }
+            GamesInProgress.curSlot = free;
+        }
 		Dungeon.hero = null;
 		Dungeon.daily = Dungeon.dailyReplay = false;
 		Dungeon.initSeed();

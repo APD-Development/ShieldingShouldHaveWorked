@@ -975,6 +975,21 @@ public class Dungeon {
 		info.depth = bundle.getInt( DEPTH );
 		info.version = bundle.getInt( VERSION );
 		info.challenges = bundle.getInt( CHALLENGES );
+        info.difficultyKnown = bundle.contains( APD_DIFFICULTY );
+        info.difficulty = info.difficultyKnown ? bundle.getInt( APD_DIFFICULTY ) : 0;
+        info.customRulesKnown = bundle.contains("apd_custom_rules");
+        info.customRulesChanged = false;
+        if (info.customRulesKnown) {
+            try {
+                com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules rules =
+                        com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.restore(
+                                bundle.getBundle("apd_custom_rules"));
+                info.customRulesChanged = rules != null && !rules.isNeutral();
+            } catch (RuntimeException badRules) {
+                // Preview never changes the actual save or invents replacement slider values.
+                info.customRulesChanged = true;
+            }
+        }
 		info.seed = bundle.getLong( SEED );
 		info.customSeed = bundle.getString( CUSTOM_SEED );
 		info.daily = bundle.getBoolean( DAILY );
