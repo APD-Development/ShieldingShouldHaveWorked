@@ -136,6 +136,8 @@ public class WndUimsdRow extends Window {
 					}));
 				}
 			}
+			if (com.shatteredpixel.shatteredpixeldungeon.apd.query.EventDatasets.EQUIPMENT.equals(def.id))
+                actions.add(new Action("Damage after equipping", () -> WndUimsdResearch.equipmentWindow(m,r,row)));
 			if (WndUimsdReport.isRunsTable(def)){
                 actions.add(new Action("Run DNA", () -> WndUimsdResearch.dnaRun(m,row)));
                 actions.add(new Action("Luck laboratory", () -> WndUimsdResearch.luckRun(m,row)));

@@ -96,9 +96,12 @@ public final class WndUimsdAsk {
 		entries.add(Entry.heading("Your question"));
 		entries.add(Entry.note(Questions.describe(q, def) + "?"));
 		entries.add(Entry.heading("Change it"));
-		final int ABOUT = 0, MEASURE = 1, PER = 2, SPLIT = 3, WHERE = 4, RUNS = 5, HIDDEN = 6, ASK = 7, SEARCH = 8;
+		final int ABOUT = 0, MEASURE = 1, PER = 2, SPLIT = 3, WHERE = 4, RUNS = 5, HIDDEN = 6, ASK = 7, SEARCH = 8, WINDOW = 9;
 		final List<Integer> ids = new ArrayList<>();
 		entries.add(Entry.item("Search UIMSD topics", "find recorded subjects and public fields by name, offline")); ids.add(SEARCH);
+        if(com.shatteredpixel.shatteredpixeldungeon.apd.query.EventDatasets.EQUIPMENT.equals(q.dataset)){
+            entries.add(Entry.item("Damage after equipping", "Choose a matching equipment occurrence and an explicit following-turn window."));ids.add(WINDOW);
+        }
 		entries.add(Entry.item("About: " + def.title, "what to look at")); ids.add(ABOUT);
 		entries.add(Entry.item("Measure: " + q.measure.phrase + (q.measure.needsColumn() && def.column(q.column) != null ? " " + def.column(q.column).label.toLowerCase() : ""),
 				"count them, or add up, average or find the highest of a number")); ids.add(MEASURE);
@@ -121,6 +124,10 @@ public final class WndUimsdAsk {
 			public void onPick( int i, boolean checked ){
 				switch (ids.get(i)){
 					case SEARCH: searchTopics(cat, ruleset, host, cur); break;
+                    case WINDOW:
+                        UimsdModel windowModel=new UimsdModel(ruleset, "");windowModel.setCatalog(cat);
+                        windowModel.showQuery(Questions.toQuery(cur,def).withGroup(null));
+                        WndUimsdResearch.equipmentWindows(windowModel);break;
 					case ABOUT: pickDataset(cat, ruleset, host, cur); break;
 					case MEASURE: pickMeasure(cat, ruleset, host, cur, def); break;
 					case PER: pickPer(cat, ruleset, host, cur); break;
@@ -366,4 +373,3 @@ public final class WndUimsdAsk {
 		}).restoreWith(() -> answer(cat, ruleset, host, q)));
 	}
 }
-

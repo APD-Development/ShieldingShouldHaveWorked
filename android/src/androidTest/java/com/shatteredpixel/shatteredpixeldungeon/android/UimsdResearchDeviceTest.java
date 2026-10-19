@@ -23,6 +23,39 @@ import static org.junit.Assert.*;
 /** Actual menu/pointer acceptance for every research capability, with visible evidence drill-down. */
 @RunWith(AndroidJUnit4.class)
 public class UimsdResearchDeviceTest {
+    @Test public void recordedEquipmentWindowSurvivesReloadAndOpensExactDamage()throws Exception{
+        try(ActivityScenario<AndroidLauncher> app=ActivityScenario.launch(AndroidLauncher.class)){
+            Fixture f=begin();
+            java.io.File root=new java.io.File(androidx.test.core.app.ApplicationProvider.getApplicationContext().getCacheDir(),"uimsd-window-"+System.nanoTime());
+            java.io.File raw=new java.io.File(root,"runs/window.apdlog");
+            RunLogWriter w=RunLogWriter.create(raw,TelemetryVersion.CURRENT,"window","test",100);
+            LifecycleEvents.RunStart start=new LifecycleEvents.RunStart();start.runId="window-run";start.heroClass="WARRIOR";start.rulesetId="rules";start.apdVersionName="test";
+            LifecycleEvents.emitRunStart(w,1,false,start);
+            ItemEvents.Equip equip=new ItemEvents.Equip();equip.uid="armor";equip.where=new ItemEvents.Where();equip.where.depth=1;equip.state=new ItemEvents.VisibleState();equip.state.name="Leather armor";equip.state.category=ItemEvents.CAT_ARMOR;
+            ItemEvents.emitEquip(w,10,ItemEvents.SLOT_ARMOR,true,equip);
+            for(int i=0;i<3;i++){
+                CombatEvents.Damage damage=new CombatEvents.Damage();damage.where=new CombatEvents.Where();damage.where.depth=1;
+                damage.target.kind=CombatEvents.KIND_HERO;damage.source.kind=CombatEvents.SRC_CHAR;damage.source.label="rat";damage.shown=new int[]{4,3,9}[i];
+                CombatEvents.emitDamage(w,new int[]{11,20,21}[i],damage);
+            }
+            LifecycleEvents.RunEnd end=new LifecycleEvents.RunEnd();end.outcome=LifecycleEvents.OUTCOME_DIED;end.turns=30;
+            LifecycleEvents.emitRunEnd(w,30,end);assertTrue(w.close(true));
+            byte[] original=java.nio.file.Files.readAllBytes(raw.toPath());
+            Catalog catalog=new DatasetStore(root).load(); // read only after persistence; no fabricated table rows
+            render(()->{f.model.setCatalog(catalog);f.model.showQuery(Query.of(EventDatasets.EQUIPMENT).withScope(new Scope(Scope.Rules.ALL,"",false,false,false,false)));WndUimsdResearch.equipmentWindows(f.model);});
+            tap("Leather armor / turn 10");tap("Next 10 turns");await("Observed damage, next 10 turns");
+            render(()->{try{for(WndUimsdList.Entry e:entries())if(e.label.equals("Observed damage, next 10 turns"))assertEquals("7 observed (at least)",e.detail);
+                WndUimsdList list=top(WndUimsdList.class);Runnable restore=list.restoreOnSceneReset();list.hide();restore.run();
+            }catch(Exception e){throw new RuntimeException(e);}});
+            PlayRunDeviceTest.visibilityScreenshot("uimsd-equipment-window.png");
+            tap("Observed damage, next 10 turns");tap("Contributing damage records");
+            render(()->{try{assertEquals(2,entries().size());}catch(Exception e){throw new RuntimeException(e);}});tap(0);
+            render(()->{try{assertNotNull(top(WndUimsdRow.class));assertEquals(2,f.model.result().rows.size());assertTrue(f.model.canGoBack());assertEquals(f.model.query(),QueryCodec.decode(QueryCodec.encode(f.model.query())));}catch(Exception e){throw new RuntimeException(e);}});
+            assertArrayEquals(original,java.nio.file.Files.readAllBytes(raw.toPath()));
+            closeWindows();render(()->{assertTrue(f.model.back());WndUimsdResearch.equipmentWindows(f.model);});tap("Leather armor / turn 10");tap("Next 5 turns");await("Observed damage, next 5 turns");
+            render(()->{try{for(WndUimsdList.Entry e:entries())if(e.label.equals("Observed damage, next 5 turns"))assertEquals("4 observed (at least)",e.detail);}catch(Exception e){throw new RuntimeException(e);}});
+        }
+    }
     private static void render(Runnable task)throws Exception{
         CountDownLatch done=new CountDownLatch(1);AtomicReference<Throwable> error=new AtomicReference<>();
         Game.runOnRenderThread(()->{try{task.run();}catch(Throwable t){error.set(t);}finally{done.countDown();}});

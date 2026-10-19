@@ -1,96 +1,48 @@
 {
   "date": "2026-10-19",
-  "previous_source": "e9f028a35285d919258088cd5360d954ceb429f4",
-  "previous_application_source": "e9f028a35285d919258088cd5360d954ceb429f4",
-  "previous_run": 39309774810,
-  "previous_label": "Codex TEST 292",
+  "previous_source": "84b465af7e12fce897d318fcf385529a50ad48e2",
+  "previous_application_source": "84b465af7e12fce897d318fcf385529a50ad48e2",
+  "previous_run": 39317528112,
+  "previous_label": "Codex TEST 294",
   "changes": [
     {
       "category": "Statistics / UIMSD",
       "sprite": "ICON_INFO",
-      "title": "Run DNA fingerprints and comparisons",
-      "text": "Measure a run with defined combat, healing, equipment and exploration rates. Compare two fingerprints, retain unknown and inferred marks, and inspect the original run and recorded context events behind each metric.",
+      "title": "Damage after equipment questions with evidence",
+      "text": "Choose an equipment occurrence and an explicit following-turn window. See exactly how the question was interpreted, then inspect the anchor and contributing public hero damage records. Observed totals remain lower bounds, and missing historical events are never invented.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/research/RunDna.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndUimsdRow.java"
-      ]
-    },
-    {
-      "category": "Statistics / UIMSD",
-      "sprite": "ICON_INFO",
-      "title": "Luck laboratory with matched generation evidence",
-      "text": "Compare recorded generation outcomes against finished random-seed runs with matching class, rules, custom settings, version and progress. Inspect exact reference samples, exclusions and tie-aware empirical percentiles. Generation details require an explicit finished-run disclosure choice. This does not invent theoretical RNG odds or change scores.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/research/RunLuck.java"
-      ]
-    },
-    {
-      "category": "Statistics / UIMSD",
-      "sprite": "ICON_INFO",
-      "title": "Automatic discoveries from sufficient recorded data",
-      "text": "Find exploratory win-rate contrasts between matched class or subclass groups with at least twenty exact outcomes each. Adjusted uncertainty bands, screened-comparison counts and both contributor groups remain inspectable. Insufficient data produces no invented discovery; association is not treated as causation.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/research/Discoveries.java"
-      ]
-    },
-    {
-      "category": "Statistics / UIMSD",
-      "sprite": "ICON_INFO",
-      "title": "Statistical investigation lab",
-      "text": "Capture filtered populations A and B and compare numeric statistics or recorded win rates. Show exact sample sizes, exclusions, distributions and overlap; suppress inference when independence or matching requirements fail. Separately saved query snapshots retain their filters and rules with integrity checks, without altering saved views or history.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/research/PopulationStudy.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/research/ResearchPins.java"
-      ]
-    },
-    {
-      "category": "Quality of Life",
-      "sprite": "ICON_INFO",
-      "title": "Research evidence and exports",
-      "text": "Open Research lab from Home, a table or Options. Each analysis offers source records and exports its definitions, sample exclusions, limitations and evidence identities in existing report formats. Background analysis and restored menus reject changed contexts; unfinished hidden information remains protected.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/research/ResearchData.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/research/ResearchDocument.java",
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndUimsdResearch.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndUimsdOptions.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/UimsdScene.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdModel.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdGuide.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/research/EquipmentWindow.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndUimsdRow.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndUimsdAsk.java",
         "core/src/main/assets/apd/apd_changes.txt"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_INFO",
-      "title": "Four-capability regression and native acceptance",
-      "text": "Thirty-one core regressions cover schema-backed rates, uncertainty, matched peers, sample overlap, binary intervals, discovery screening, pin persistence and tamper protection, evidence navigation and reports. Four Android methods select every research capability with real pointer events, inspect contributors, exercise the finished-run disclosure choice and check restoration guards. All previous tests and captures remain required.",
+      "title": "Recorded window, persistence and native evidence regressions",
+      "text": "Verify actual binary recording through reload, querying, visible Android results and exact evidence. Cover boundaries, run identity, incomplete observations, overflow, persistence and timing/storage; retain all existing checks.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/research/PopulationStudyTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/research/ResearchFixture.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/research/RunLuckTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/research/RunDnaTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/research/ResearchReportTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/research/DiscoveriesTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/research/ResearchPinsTest.java",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdResearchDeviceTest.java",
-        "tools/run-codex-android-checks.sh"
+        "tools/run-codex-android-checks.sh",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/EquipmentWindowTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdResearchDeviceTest.java"
       ]
     },
     {
       "category": "Developer Commentary",
       "sprite": "ICON_INFO",
-      "title": "Recorded evidence throughout the research lab",
-      "text": "I kept existing saves, saved views, recorded scores and in-game Changes history intact. These tools analyze recorded evidence, identify insufficient data and preserve unknowns. I have not added a luck-based score multiplier.",
+      "title": "Connected investigation milestone",
+      "text": "I started the five-capability checklist and the first connected question-to-evidence milestone. The larger timeline, experiments and progress work remains in progress. I preserved existing saves, outcomes and recorded history.",
       "paths": [
-        "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/APD-CODEX-CORE-TEST-REQUEST.txt",
-        "docs/APD-NEXT-BUILD-HISTORY.json",
-        "docs/APD-UIMSD-RESEARCH-ACCEPTANCE-2026-10-19.md",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",
-        "docs/APD-UIMSD-CHARTS-2026-10-19.md"
+        "docs/APD-CODEX-BUILD-REQUEST.txt",
+        "docs/APD-UIMSD-INVESTIGATION-CHECKLIST.md",
+        "docs/APD-UIMSD-EQUIPMENT-WINDOW-2026-10-19.md",
+        "docs/APD-NEXT-BUILD-HISTORY.json"
       ]
     }
   ],
-  "commentary": "Owner explicitly requested completion of all four remaining UIMSD research capabilities. Core checkpoint4272d2e2f82ee80648891fcb6069626faf7a1d22/run39315882901 passed1948unique core tests. Current source includes final context guards, class-matched luck peers, native acceptance and in-game documentation. Full gate requires1948core/48API34methods/64PNG, every prior gate retained, plus matched developer/player APKs. Preserve all actual preceding TEST292 history and signing. No public release or physical-phone claim. TEST293 failed one Guide section-order invariant before APK assembly. Correct topic classification without changing any test, and make native demo/empty states explicit. Immediate previous produced APK remains TEST292."
+  "commentary": "Owner explicitly authorized immediate implementation and paired private APKs. First useful end-to-end slice of capabilities1/2, not completion of allfive. Verify1954core/49Android/65PNG. TEST294 actually produced an APK; preserve all its history and signature even while its Android acceptance is finishing. No release or physical-phone claim."
 }

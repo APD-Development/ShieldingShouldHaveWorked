@@ -55,7 +55,32 @@ public final class WndUimsdResearch {
         add(entries,actions,"Luck laboratory","Compare recorded generated loot and enemies against matching finished, random-seed runs. No scoring changes.",()->runs(m,r->chooseRun(m,r,"Luck laboratory",row->presentLuck(m,r,row))));
         add(entries,actions,"Automatic discoveries","Find exploratory win-rate contrasts with sufficient matched data, then inspect the contributors.",()->runs(m,r->work(m,"Automatic discoveries",()->ResearchDocument.discoveries(Discoveries.build(r)),d->document(m,d))));
         add(entries,actions,"Statistical investigation lab","Capture filtered populations A and B, choose a metric, compare samples and inspect evidence.",()->studyMenu(m));
+        add(entries,actions,"Damage after equipping","Choose an equipment occurrence and a turn window, then inspect observed damage and its source records.",()->equipmentWindows(m));
         menu(m,"Research lab","These tools read recorded history. Unknowns stay unknown. Demo results are made up and are always identified as demo data.",entries,actions,()->show(m));
+    }
+    public static void equipmentWindows(UimsdModel m){
+        if(!EventDatasets.EQUIPMENT.equals(m.query().dataset)){
+            List<WndUimsdList.Entry> entries=new ArrayList<>();List<Runnable> actions=new ArrayList<>();
+            add(entries,actions,"Open Equipment","Set equipment and run conditions there, then choose Damage after equipping. Conditions from another table cannot be translated implicitly.",()->UimsdScene.showResearchEvidence(m,Query.of(EventDatasets.EQUIPMENT).withScope(m.query().scope).withShowInternal(m.query().showInternal)));
+            menu(m,"Damage after equipping","This question starts with one recorded equipment occurrence.",entries,actions,()->equipmentWindows(m));return;
+        }
+        Catalog cat=m.catalog();Query query=m.query();String rules=m.currentRuleset();
+        work(m,"Recorded equipment",()->ResearchData.select(cat,query,rules),r->{
+            List<WndUimsdList.Entry> entries=new ArrayList<>();List<Runnable> actions=new ArrayList<>();
+            int n=0;for(Row row:ResearchData.distinct(r)){
+                if(n++>=80)break;
+                add(entries,actions,ResearchData.label(r,row,"equip.item")+" / turn "+ResearchData.label(r,row,"equip.start"),"Occurrence "+row.id,()->equipmentWindow(m,r,row));
+            }
+            if(entries.isEmpty())entries.add(WndUimsdList.Entry.warning("No recorded equipment matches. Older runs may not have equipment observations."));
+            menu(m,"Choose equipment occurrence","First 80 matching occurrences, in the current sort order. Narrow the table filters to find another. No equip occurrence is invented.",entries,actions,()->equipmentWindows(m));
+        });
+    }
+    public static void equipmentWindow(UimsdModel m,QueryResult anchors,Row anchor){
+        List<WndUimsdList.Entry> entries=new ArrayList<>();List<Runnable> actions=new ArrayList<>();
+        for(int turns:new int[]{1,5,10,20,50})add(entries,actions,"Next "+turns+" turns","Strictly after the equip turn, through equip turn + "+turns+" inclusive. Includes shield absorption.",()->{
+            Catalog cat=m.catalog();String rules=m.currentRuleset();work(m,"Damage after equipping",()->EquipmentWindow.answer(cat,anchors,anchor,turns,rules),d->document(m,d));
+        });
+        menu(m,"Damage after equipping","Choose the time window. This measures observed damage after an event, not whether the equipment caused it.",entries,actions,()->equipmentWindow(m,anchors,anchor));
     }
     private static final class Loading extends Window {
         private final Runnable restore;
