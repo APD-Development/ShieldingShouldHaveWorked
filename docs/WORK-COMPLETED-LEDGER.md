@@ -1917,3 +1917,8 @@ Separate inherited-audio diagnostic evidence reconciled: optional fake-endpoint 
 
 ## 2026-10-19 National Pie death outcome and table viewport fixes
 Implemented the explicit death-cleanup path, optional recorded ascension fact, and shared table viewport restoration. Historical ambiguous outcomes are preserved; no destructive migration. Added core lifecycle/archive/cache/filter/report regressions and Android menu-touch/scroll tests. Exact-source verification and paired private APK generation requested by the owner. See docs/APD-NATIONAL-PIE-OUTCOMES-VIEWPORT-2026-10-19.md.
+
+
+## 2026-10-19 TEST291 final verification
+
+Source `d7e0ae16b80e7f09b73197217ffdcd7a4a8bc6aa`. Fixes permanent-death cleanup prematurely sealing APD logs as Abandoned, preserves UIMSD horizontal position across rebuilds and focuses the changed sort key (including secondary/tertiary keys), and restores Outcome/Ascended facts in CSV exports. New ascension data is optional and backward compatible; ambiguous historical outcomes are not rewritten. Both fixes are in in-game Bug Fixes. Developer and player complete core suites each passed 1,913 tests with no failures/errors/skips. Exact-APK Android comparison reproduces the death failure on TEST287 and passes on TEST291. Full Android results: 43 API 34 tests passed with zero failures/errors/skips; all 57 evidence PNGs decoded. See `docs/APD-NATIONAL-PIE-OUTCOMES-VIEWPORT-2026-10-19.md` for root causes, all 32 files, checksums and evidence. No saves or authoritative history were cleared.
