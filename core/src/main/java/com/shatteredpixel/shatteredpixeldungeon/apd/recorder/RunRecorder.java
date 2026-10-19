@@ -418,6 +418,8 @@ final class RunRecorder {
 
 		LifecycleEvents.RunEnd e = new LifecycleEvents.RunEnd();
 		e.outcome = outcome;
+		e.ascendedKnown = true;
+		e.ascended = outcome == LifecycleEvents.OUTCOME_WON && Statistics.ascended;
 		if (cause != null){
 			e.cause = GameSnapshot.shortName(cause instanceof Class ? (Class<?>) cause : cause.getClass());
 		}
@@ -487,4 +489,5 @@ final class RunRecorder {
 		return "unknown";
 	}
 }
+
 

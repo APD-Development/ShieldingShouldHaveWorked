@@ -63,6 +63,8 @@ public final class Datasets {
 		d.add(ColumnDef.enumeration(FactKeys.OUTCOME, "Outcome").label(0, "Died").label(1, "Won").label(2, "Abandoned").shown()
 				.merge(Merge.LAST).group("Result"));
 		d.add(ColumnDef.num(FactKeys.DEEPEST, "Deepest").shown().merge(Merge.MAX).group("Result"));
+		d.add(yesNo(ColumnDef.enumeration("run.ascended", "Ascended")).merge(Merge.LAST).group("Result")
+				.describe("Whether a winning run completed the ascent. ? means this result was not recorded."));
 		d.add(ColumnDef.num(FactKeys.HERO_LEVEL, "Level").shown().merge(Merge.LAST).group("Result"));
 		d.add(ColumnDef.num(FactKeys.SCORE, "Score").shown().merge(Merge.LAST).group("Result"));
 		d.add(ColumnDef.num(FactKeys.TURNS, "Turns").shown().merge(Merge.LAST).group("Result"));
@@ -521,4 +523,5 @@ public final class Datasets {
 		return views();
 	}
 }
+
 

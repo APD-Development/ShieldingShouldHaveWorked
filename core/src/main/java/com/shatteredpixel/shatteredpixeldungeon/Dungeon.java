@@ -954,9 +954,20 @@ public class Dungeon {
 	}
 	
 	public static void deleteGame( int save, boolean deleteLevels ) {
+		deleteGame(save, deleteLevels, true);
+	}
+
+	// Death cleanup is not a player abandonment. For non-Doom damage sources
+	// this runs inside Hero.die(), BEFORE the caller submits the death ranking.
+	// Keep the recorder open so Dungeon.fail can record the final score and link.
+	public static void deleteGameAfterDeath( int save, boolean deleteLevels ) {
+		deleteGame(save, deleteLevels, false);
+	}
+
+	private static void deleteGame( int save, boolean deleteLevels, boolean abandoned ) {
 
 		//APD: a run whose save is deleted while it is still open ends as abandoned
-		ApdRecorder.onSlotDeleted( save );
+		if (abandoned) ApdRecorder.onSlotDeleted( save );
 
 		if (deleteLevels) {
 			String folder = GamesInProgress.gameFolder(save);
@@ -1234,4 +1245,5 @@ public class Dungeon {
 	}
 
 }
+
 

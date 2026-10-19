@@ -228,6 +228,7 @@ public final class RunFactsBuilder {
 
 		if (end != null){
 			f.num(FactKeys.OUTCOME, end.outcome, Fact.PROV_RECORDED);
+			if (end.ascendedKnown) f.num("run.ascended", end.ascended ? 1 : 0, Fact.PROV_RECORDED);
 			if (endDetails){
 				if (!end.cause.isEmpty()) f.text(FactKeys.CAUSE, end.cause, Fact.PROV_RECORDED);
 				f.num(FactKeys.DEPTH, end.depth, Fact.PROV_RECORDED);
@@ -287,4 +288,5 @@ public final class RunFactsBuilder {
 		return f;
 	}
 }
+
 

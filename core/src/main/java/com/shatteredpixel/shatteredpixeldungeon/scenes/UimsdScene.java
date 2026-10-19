@@ -234,13 +234,23 @@ public class UimsdScene extends PixelScene {
 	}
 
 	private void rebuild(){
+		com.shatteredpixel.shatteredpixeldungeon.apd.query.TableViewport viewport = activeTable == null ? null : activeTable.captureViewport();
+		String previousDataset = tableDataset;
+		boolean previousGrouped = tableGrouped;
+		activeTable = null;
 		erase(ui);
 		ui.destroy();
 		ui = new Group();
 		add(ui);
 		bringToFront(btnExit);
 		build();
+		if (activeTable != null && tableDataset.equals(previousDataset) && tableGrouped == previousGrouped)
+			activeTable.restoreViewport(viewport);
 	}
+
+	private UimsdTable activeTable;
+	private String tableDataset = "";
+	private boolean tableGrouped;
 
 	//---- drawing the model ----
 
@@ -646,6 +656,9 @@ public class UimsdScene extends PixelScene {
 			y = more.bottom() + 2;
 		}
 		UimsdTable t = new UimsdTable();
+		activeTable = t;
+		tableDataset = model.dataset().def.id;
+		tableGrouped = table.grouped;
 		t.setListener(new UimsdTable.Listener(){
 			@Override
 			public void onSort( String columnId ){
@@ -997,6 +1010,7 @@ public class UimsdScene extends PixelScene {
 		else ShatteredPixelDungeon.switchScene(backTo);
 	}
 }
+
 
 
 

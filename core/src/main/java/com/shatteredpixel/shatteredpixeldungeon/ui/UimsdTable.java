@@ -25,6 +25,7 @@ package com.shatteredpixel.shatteredpixeldungeon.ui;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.CellText;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.ResultTable;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.TableGeometry;
+import com.shatteredpixel.shatteredpixeldungeon.apd.query.TableViewport;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.watabou.input.PointerEvent;
 import com.shatteredpixel.shatteredpixeldungeon.ui.UimsdStyle;
@@ -88,10 +89,25 @@ public class UimsdTable extends Component {
 	}
 
 	public void setTable( ResultTable t ){
+		TableViewport previous=captureViewport();
 		table = t;
 		geo = t == null ? null : TableGeometry.of(t);
 		dirty = true;
 		layout();
+		restoreViewport(previous);
+	}
+
+	public TableViewport captureViewport(){
+		return body==null || table==null ? null : TableViewport.capture(table,
+				body.content().camera.scroll.x, body.content().camera.scroll.y);
+	}
+
+	public void restoreViewport(TableViewport viewport){
+		if(viewport==null || table==null || body==null)return;
+		float[] at=viewport.position(table,body.width(),body.height());
+		body.scrollTo(at[0],at[1]);
+		header.scrollTo(at[0],0);
+		firstCol.scrollTo(0,at[1]);
 	}
 
 	@Override
@@ -242,10 +258,11 @@ public class UimsdTable extends Component {
 		firstCol.setRect(x, y + headerH, first, Math.max(0, height - headerH));
 		body.setRect(x + first, y + headerH, Math.max(0, width - first), Math.max(0, height - headerH));
 		if (dirty || builtWidth != width){
+			TableViewport previous=captureViewport();
 			rebuild(first, scrolling);
 			dirty = false;
 			builtWidth = width;
-			body.scrollTo(0, 0);
+			restoreViewport(previous);
 		}
 	}
 
@@ -273,8 +290,7 @@ public class UimsdTable extends Component {
 			NinePatch background = Chrome.get(Chrome.Type.GREY_BUTTON_TR);
 			background.size(w,headerH);background.x=left;target.add(background);
 			int chars = Math.max(3, (int) ((w - TableGeometry.PAD) / TableGeometry.CHAR_WIDTH));
-			String arrow = h.sortDirection == 0 ? "" : (h.sortDirection > 0 ? " ^" : " v") + (h.sortRank > 1 ? h.sortRank : "");
-			String[] lines = TableGeometry.twoLines(h.label + arrow, chars);
+			String[] lines = TableGeometry.twoLines(TableViewport.heading(h), chars);
 			int labelColor = h.sortDirection == 0 ? HEADER_COLOR : 0xFFFFFF;
 			RenderedTextBlock label = PixelScene.renderTextBlock(lines[0], 6);
 			label.hardlight(labelColor);
@@ -327,3 +343,4 @@ public class UimsdTable extends Component {
 		}
 	}
 }
+

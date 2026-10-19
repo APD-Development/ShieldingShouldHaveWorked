@@ -168,6 +168,9 @@ public final class LifecycleEvents {
 		public int rulesetChanges;
         public boolean customAdjustedKnown;
         public long customAdjustedScore;
+		// Optional tail: older logs leave ascension unknown, never false by default.
+		public boolean ascendedKnown;
+		public boolean ascended;
 	}
 
 	public static boolean emitRunEnd( RunLogWriter w, long clock, RunEnd r ){
@@ -179,6 +182,8 @@ public final class LifecycleEvents {
                 .unsigned(Math.max(0, r.deepest)).unsigned(Math.max(0, r.heroLevel)).signed(r.score).unsigned(Math.max(0, r.turns))
                 .unsigned(r.rulesetChanges).bool(r.customAdjustedKnown);
         if(r.customAdjustedKnown)b.signed(r.customAdjustedScore);
+		b.bool(r.ascendedKnown);
+		if (r.ascendedKnown) b.bool(r.ascended);
         return b.emit();
 	}
 
@@ -195,6 +200,8 @@ public final class LifecycleEvents {
 		r.rulesetChanges = p.unsignedInt();
         if(p.hasRemaining())r.customAdjustedKnown=p.bool();
         if(r.customAdjustedKnown)r.customAdjustedScore=p.signed();
+		if (p.hasRemaining()) r.ascendedKnown=p.bool();
+		if (r.ascendedKnown) r.ascended=p.bool();
 		return r;
 	}
 
@@ -438,4 +445,5 @@ public final class LifecycleEvents {
 		return s == null ? "" : s;
 	}
 }
+
 
