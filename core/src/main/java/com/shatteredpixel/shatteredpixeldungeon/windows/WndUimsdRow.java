@@ -137,6 +137,8 @@ public class WndUimsdRow extends Window {
 				}
 			}
 			if (WndUimsdReport.isRunsTable(def)){
+                actions.add(new Action("Run DNA", () -> WndUimsdResearch.dnaRun(m,row)));
+                actions.add(new Action("Luck laboratory", () -> WndUimsdResearch.luckRun(m,row)));
                 if (row.runId != null && !row.runId.isEmpty() && m.catalog() != null){
                     actions.add(new Action("Turn-by-turn history", () -> {
                         ShatteredPixelDungeon.scene().addToFront(new WndRunTurnBrowser(
@@ -347,3 +349,4 @@ public class WndUimsdRow extends Window {
 		ShatteredPixelDungeon.scene().addToFront(new WndUimsdRow(m, line));
 	}
 }
+

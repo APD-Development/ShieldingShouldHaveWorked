@@ -107,6 +107,8 @@ public final class WndUimsdOptions {
 		actions.add(new Runnable(){ public void run(){ pickMinSample(m); } });
 
 		entries.add(Entry.heading("Understanding this table"));
+        entries.add(Entry.item("Research lab", "Run DNA, luck laboratory, automatic discoveries and population comparisons, each with inspectable evidence."));
+        actions.add(() -> WndUimsdResearch.show(m));
 		entries.add(Entry.item("Charts", "Compare this table's groups as bars, with the same filters, values and uncertainty marks."));
 		actions.add(() -> WndUimsdChart.show(m));
 		entries.add(Entry.item("How much is known, per column", "How many values were recorded exactly, only partly, or not at all."));

@@ -394,8 +394,12 @@ public class UimsdScene extends PixelScene {
         StyledButton search = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "Search UIMSD", 7){
             @Override protected void onClick(){openSearch();}
         };
-        search.setRect(x0,y,contentW,16);ui.add(search);
-        reg("search",x0,y,contentW,16);
+        search.setRect(x0,y,(contentW-2)*.6f,16);ui.add(search);
+        StyledButton research=new StyledButton(Chrome.Type.GREY_BUTTON_TR,"Research lab",6){
+            @Override protected void onClick(){com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdResearch.show(model);}
+        };
+        research.setRect(x0+(contentW-2)*.6f+2,y,(contentW-2)*.4f,16);ui.add(research);
+        reg("search",x0,y,(contentW-2)*.6f,16);
         y+=18;
 		StyledButton rules = new StyledButton(Chrome.Type.GREY_BUTTON_TR, home.mixedRulesets ? "Rules: Mixed" : homeAllRules ? "Rules: all" : "Rules: current", 6){
 			@Override protected void onClick(){ homeAllRules=!homeAllRules;dirty=true; }
@@ -481,6 +485,12 @@ public class UimsdScene extends PixelScene {
 		ui.add(read);
 	}
 
+    public static void showResearchEvidence(UimsdModel m,com.shatteredpixel.shatteredpixeldungeon.apd.query.Query q){
+        if(m.openResearchQuery(q) && com.watabou.noosa.Game.scene() instanceof UimsdScene){
+            atHome=false;((UimsdScene)com.watabou.noosa.Game.scene()).dirty=true;
+        }
+    }
+
 	//---- the advanced tables (everything UIMSD could always do) ----
 
 	private float buildAdvanced( int h, RectF insets ){
@@ -535,7 +545,11 @@ public class UimsdScene extends PixelScene {
         StyledButton search = new StyledButton(Chrome.Type.GREY_BUTTON_TR,"Search UIMSD",6){
             @Override protected void onClick(){openSearch();}
         };
-        search.setRect(x0,y,contentW,16);ui.add(search);y+=18;
+        search.setRect(x0,y,(contentW-2)*.6f,16);ui.add(search);
+        StyledButton research=new StyledButton(Chrome.Type.GREY_BUTTON_TR,"Research lab",6){
+            @Override protected void onClick(){com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdResearch.show(model);}
+        };
+        research.setRect(x0+(contentW-2)*.6f+2,y,(contentW-2)*.4f,16);ui.add(research);y+=18;
 
 		//The complete table description remains in the existing Tables picker.
 
