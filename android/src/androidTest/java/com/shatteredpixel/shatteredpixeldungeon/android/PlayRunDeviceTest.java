@@ -802,7 +802,12 @@ public class PlayRunDeviceTest {
 			onRender(() -> { try { assertGameplayControls(); assertCategoryHotbarControls(); } catch (Exception e){ throw new RuntimeException(e); } });
 
 			//die: the run must be sealed with its outcome
-			onRender(new Runnable(){ public void run(){ Dungeon.fail(Rat.class); } });
+			onRender(new Runnable(){ public void run(){
+                Dungeon.hero.HP=0;
+                Dungeon.hero.die(Rat.class);
+                assertEquals("death cleanup awaits the final ranking",runId,ApdRecorder.currentRunId());
+                Dungeon.fail(Rat.class);
+            } });
 			Thread.sleep(1500);
 			RunFacts done = factsOfLog(logPath);
 			assertEquals("the run ended", LifecycleEvents.OUTCOME_DIED, done.numOr(FactKeys.OUTCOME, -1));
