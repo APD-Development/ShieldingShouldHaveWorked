@@ -259,10 +259,15 @@ public class ApdSettingsClickDeviceTest {
                 final ScrollPane gesturePane = scroll;
                 final Gizmo gestureButton = (Gizmo) field(pane, "chkAdult");
                 onRender(()->{paneFor(gestureButton).reveal((com.watabou.noosa.ui.Component)gestureButton);
-                    gesturePane.setRect(gesturePane.left(),gesturePane.top(),gesturePane.width(),48);window.get().resize((int)gesturePane.width(),48);});
+                    window.get().resize((int)gesturePane.width(),48);gesturePane.setRect(gesturePane.left(),gesturePane.top(),gesturePane.width(),48);});
                 Point start = centreOnScreen(gesturePane, gestureButton);
                 float[] beforeSwipe = new float[1], afterSwipe = new float[1];
-                onRender(() -> beforeSwipe[0] = gesturePane.content().camera.scroll.y);
+                onRender(() -> {beforeSwipe[0] = gesturePane.content().camera.scroll.y;
+                    assertTrue("Swipe fixture must have room below its starting position", beforeSwipe[0]+3 < gesturePane.content().height()-gesturePane.height());
+                    Point top=gesturePane.camera().cameraToScreen(gesturePane.left(),gesturePane.top());
+                    Point bottom=gesturePane.camera().cameraToScreen(gesturePane.right(),gesturePane.bottom());
+                    assertTrue("Checkbox gesture must begin inside the actual scrolling touch area",start.x>=top.x && start.x<bottom.x && start.y>=top.y && start.y<bottom.y);
+                });
                 final int gestureId = 37;
                 PointerEvent.addPointerEvent(new PointerEvent(start.x, start.y, gestureId, PointerEvent.Type.DOWN, PointerEvent.LEFT));
                 Thread.sleep(90);
