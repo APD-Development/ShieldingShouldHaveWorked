@@ -1,43 +1,41 @@
 {
   "date": "2026-10-19",
-  "previous_source": "d41631b3e5b43bf832036426a9e7c7a0694d07ed",
-  "previous_application_source": "d41631b3e5b43bf832036426a9e7c7a0694d07ed",
-  "previous_run": 39327169505,
-  "previous_label": "Codex TEST 300",
+  "previous_source": "5c11b1fc346efd8f398ab2cf2872e03b15b29dc0",
+  "previous_application_source": "5c11b1fc346efd8f398ab2cf2872e03b15b29dc0",
+  "previous_run": 39332706151,
+  "previous_label": "Codex TEST 301",
   "changes": [
     {
       "category": "Bug Fixes",
       "sprite": "ICON_INFO",
-      "title": "Evidence navigation remembers each UIMSD table",
-      "text": "Checkpoint the parent query, sorting, page and column/row position per navigation place. Back and scene recreation restore the correct table; new evidence starts at its own origin. Keep modal touch handling and sort visibility intact.",
+      "title": "Saved UIMSD questions reopen exactly",
+      "text": "Save a friendly question by name and reopen the same measure, per-unit choice, split, filters, run scope and hidden-information choice against current history. Legacy saved table views remain readable and future optional question formats fail closed without losing the executable query.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/TableViewport.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdModel.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/QuestionCodec.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/SavedViews.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndUimsdAsk.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndUimsdOptions.java",
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/UimsdScene.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/NavigationViewportTest.java",
-        "core/src/main/assets/apd/apd_changes.txt",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdColumnsModalDeviceTest.java",
-        "tools/run-codex-android-checks.sh"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/QuestionCodecTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdSearchDeviceTest.java",
+        "tools/run-codex-android-checks.sh",
+        "core/src/main/assets/apd/apd_changes.txt"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_INFO",
-      "title": "Preserve TEST300 acceptance and weighted loot evidence",
-      "text": "Retain corrected Android settings gesture geometry, verified hotbar/settings/equipment-window reports and eight seeded Ring of Wealth regressions. Loot mechanics are unchanged. All five broad investigation capabilities remain partial or pending.",
+      "title": "Preserve TEST301 navigation acceptance and full history",
+      "text": "Retain the verified nested-evidence navigation fix and every previous Android, cold-restart, API 34, display-profile, signing, application-ID and history check. Core checkpoint passed 1,978 methods with zero failures; exact-question native acceptance is required in this candidate.",
       "paths": [
-        ".github/workflows/codex-test300-settings-gesture.yml",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/ApdSettingsClickDeviceTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/RingOfWealthLootInvestigationTest.java",
+        ".github/workflows/codex-test301-navigation.yml",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdColumnsModalDeviceTest.java",
         "docs/APD-CODEX-CORE-TEST-REQUEST.txt",
-        "docs/APD-HOTBAR-SETTINGS-2026-10-19.md",
-        "docs/APD-RING-WEALTH-INVESTIGATION-2026-10-19.md",
-        "docs/APD-RING-WEALTH-SIMULATION-2026-10-19.txt",
-        "docs/APD-UIMSD-EQUIPMENT-WINDOW-2026-10-19.md",
         "docs/APD-UIMSD-INVESTIGATION-CHECKLIST.md",
+        "docs/APD-UIMSD-NAVIGATION-2026-10-19.md",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",
-        "tools/run-test300-settings-gesture.sh",
+        "tools/run-test301-navigation.sh",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/APD-NEXT-BUILD-HISTORY.json"
       ]
