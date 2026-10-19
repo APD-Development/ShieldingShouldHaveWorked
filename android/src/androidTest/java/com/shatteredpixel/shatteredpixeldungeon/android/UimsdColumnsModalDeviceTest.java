@@ -45,9 +45,10 @@ public class UimsdColumnsModalDeviceTest {
 
     @SuppressWarnings("unchecked")
     private static WndUimsdList picker()throws Exception{
+        WndUimsdList top=null;
         for(Gizmo g:(List<Gizmo>)field(Game.scene(),"members"))
-            if(g instanceof WndUimsdList && g.alive)return (WndUimsdList)g;
-        return null;
+            if(g instanceof WndUimsdList && g.alive)top=(WndUimsdList)g;
+        return top;
     }
 
     private static void until(Callable<Boolean> check)throws Exception{
@@ -78,6 +79,99 @@ public class UimsdColumnsModalDeviceTest {
         Thread.sleep(120);
         PointerEvent.addPointerEvent(new PointerEvent(p.x,p.y,82,PointerEvent.Type.UP,PointerEvent.LEFT));
         Thread.sleep(450);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void tapLabel(String label)throws Exception {
+        final int[] index={-1};
+        render(()->{try{
+            List<WndUimsdList.Entry> entries=(List<WndUimsdList.Entry>)field(picker(),"entries");
+            for(int i=0;i<entries.size();i++)if(entries.get(i).label.equals(label))index[0]=i;
+            assertTrue("Menu entry: "+label,index[0]>=0);
+        }catch(Exception e){throw new RuntimeException(e);}});
+        tapRow(index[0]);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void tapSort()throws Exception {
+        AtomicReference<Point> at=new AtomicReference<>();
+        render(()->{try{
+            float[] r=((Map<String,float[]>)field(Game.scene(),"targets")).get("sort");
+            at.set(com.watabou.noosa.Camera.main.cameraToScreen(r[0]+r[2]/2,r[1]+r[3]/2));
+        }catch(Exception e){throw new RuntimeException(e);}});
+        Point p=at.get();
+        PointerEvent.addPointerEvent(new PointerEvent(p.x,p.y,83,PointerEvent.Type.DOWN,PointerEvent.LEFT));
+        Thread.sleep(120);
+        PointerEvent.addPointerEvent(new PointerEvent(p.x,p.y,83,PointerEvent.Type.UP,PointerEvent.LEFT));
+        Thread.sleep(400);
+    }
+
+    @Test public void sortingThroughNativeMenusKeepsRightHandColumnAndDirectionVisible()throws Exception {
+        try(ActivityScenario<AndroidLauncher> scenario=ActivityScenario.launch(AndroidLauncher.class)){
+            until(()->Game.scene()!=null);
+            render(()->UimsdScene.openNow(TitleScene.class));
+            until(()->Game.scene() instanceof UimsdScene);
+            AtomicReference<UimsdModel> model=new AtomicReference<>();
+            render(()->{try{
+                UimsdModel m=(UimsdModel)field(UimsdScene.class,"model");model.set(m);
+                DatasetDef d=new DatasetDef("viewportfixture","Viewport fixture","Native sorting regression");
+                for(int c=0;c<12;c++)d.add(ColumnDef.num("c"+c,"Statistic "+c).shown());
+                List<Row> rows=new ArrayList<>();List<Dataset.RunInfo> runs=new ArrayList<>();
+                for(int i=0;i<60;i++){
+                    Row r=new Row("r"+i,null,"run"+i,d.size());r.finished=true;r.ruleset="r1-test";
+                    for(int c=0;c<12;c++)r.setNum(c,i+c,com.shatteredpixel.shatteredpixeldungeon.apd.stats.Fact.PROV_RECORDED);
+                    rows.add(r);runs.add(new Dataset.RunInfo(r.runId,true,r.ruleset,true,false));
+                }
+                Catalog cat=new Catalog();cat.add(new Dataset(d,rows,runs));
+                cat.add(new ViewDef("viewportfixture","Viewport fixture","Wide table",Query.of("viewportfixture")
+                        .withScope(new Scope(Scope.Rules.ALL,"",true,true,true,true))));
+                m.setCatalog(cat);m.showRoot("viewportfixture");
+                Field home=UimsdScene.class.getDeclaredField("atHome");home.setAccessible(true);home.set(null,false);
+            }catch(Exception e){throw new RuntimeException(e);}});
+            Thread.sleep(400);
+            final float[] expected={0};
+            render(()->{try{
+                Object t=field(Game.scene(),"activeTable");ScrollPane body=(ScrollPane)field(t,"body");
+                TableGeometry g=TableGeometry.of(model.get().table());expected[0]=g.lefts[6]-g.firstWidth();
+                body.scrollTo(expected[0],88);
+                assertEquals(expected[0],body.content().camera().scroll.x,0.1f);
+            }catch(Exception e){throw new RuntimeException(e);}});
+            tapSort();tapLabel("Add a sort key");tapLabel("Statistic 6");tapLabel("Highest first");
+            until(()->{try{return picker()==null && !(Boolean)field(Game.scene(),"dirty");}catch(Exception e){return false;}});
+            assertViewport(model.get(),expected[0],-1);
+            tapSort();tapLabel("1. Statistic 6, highest first");tapLabel("Reverse it");
+            until(()->{try{return picker()==null && !(Boolean)field(Game.scene(),"dirty");}catch(Exception e){return false;}});
+            assertViewport(model.get(),expected[0],1);
+            render(()->{try{
+                ScrollPane body=(ScrollPane)field(field(Game.scene(),"activeTable"),"body");body.scrollTo(expected[0],55);
+                model.get().setShowInternal(!model.get().query().showInternal);
+            }catch(Exception e){throw new RuntimeException(e);}});
+            Thread.sleep(400);
+            render(()->{try{
+                ScrollPane body=(ScrollPane)field(field(Game.scene(),"activeTable"),"body");
+                assertEquals(expected[0],body.content().camera().scroll.x,0.1f);
+                assertEquals(55,body.content().camera().scroll.y,0.1f);
+                model.get().addFilter(Filter.num("c6",Op.GE,10));
+            }catch(Exception e){throw new RuntimeException(e);}});
+            Thread.sleep(400);
+            render(()->{try{
+                ScrollPane body=(ScrollPane)field(field(Game.scene(),"activeTable"),"body");
+                assertEquals("Filter refresh retains right-hand column",expected[0],body.content().camera().scroll.x,0.1f);
+                assertEquals("Filter refresh retains vertical offset where possible",55,body.content().camera().scroll.y,0.1f);
+            }catch(Exception e){throw new RuntimeException(e);}});
+        }
+    }
+
+    private static void assertViewport(UimsdModel model,float x,int direction)throws Exception {
+        render(()->{try{
+            Object t=field(Game.scene(),"activeTable");ScrollPane body=(ScrollPane)field(t,"body");
+            assertEquals("Sorting retains horizontal viewport",x,body.content().camera().scroll.x,0.1f);
+            assertEquals("New sort starts at the first result",0,body.content().camera().scroll.y,0.1f);
+            ResultTable table=model.table();assertEquals(direction,table.headers.get(6).sortDirection);
+            assertTrue(TableViewport.heading(table.headers.get(6)).startsWith(direction>0?"^ ":"v "));
+            long expected=direction>0?6:65;
+            assertEquals("Actual sorted result",expected,table.lines.get(0).row.num(6));
+        }catch(Exception e){throw new RuntimeException(e);}});
     }
 
     @Test public void multipleColumnTapsRemainAboveTableUntilDone()throws Exception {
@@ -130,3 +224,4 @@ public class UimsdColumnsModalDeviceTest {
         }
     }
 }
+

@@ -1912,3 +1912,8 @@ Separate inherited-audio diagnostic evidence reconciled: optional fake-endpoint 
 - Core-only run `39006675168` / request `27de932775034c51ba7ea5c33063056204142d77` passed 1,771 tests in 350 suites, 0 failures/errors/skips. `QueryEngineTest` passed 21/21 methods.
 - Artifact `12091417221`, 828,440 bytes, digest/ZIP SHA `sha256:4c94568a467fcfe8198024a5372ab6a0eb4e0269d7ffaa6067f23f3a412e6bc3`.
 - No application source, executable APK request, APK, history/save/scoring/gameplay/signing/app-ID/publication state changed. TEST264 remains staged; TEST262 remains published. UIMSD exact review is 101 paths and remains incomplete.
+
+
+
+## 2026-10-19 National Pie death outcome and table viewport fixes
+Implemented the explicit death-cleanup path, optional recorded ascension fact, and shared table viewport restoration. Historical ambiguous outcomes are preserved; no destructive migration. Added core lifecycle/archive/cache/filter/report regressions and Android menu-touch/scroll tests. Exact-source verification and paired private APK generation requested by the owner. See docs/APD-NATIONAL-PIE-OUTCOMES-VIEWPORT-2026-10-19.md.

@@ -1,3 +1,10 @@
+Bug Fixes:
+- Final deaths no longer become Abandoned when death cleanup removes the save before the death ranking is submitted. Manually abandoned runs remain distinct. Existing ambiguous records are preserved.
+- UIMSD sorting preserves the horizontal column position through table refreshes. The active column shows an ascending or descending marker. Filters, column edits and table settings preserve the viewport where possible; sorting starts at the first result.
+
+Statistics / UIMSD:
+- Winning runs now record whether the ascent was completed. The Ascended column is available for filtering, summaries and exports; older unrecorded results remain unknown.
+
 Quality of Life:
 - Tile examination of open multi-item piles shows every item in top-first order with visible identity, icons and quantities. Inspect an item for its normal description without collecting it, advancing turns or identifying anything.
 
@@ -36,3 +43,4 @@ Fixed:
 Removed:
 - Cleric as a playable class
 - Support button on the home screen
+

@@ -2,6 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.apd.stats;
 
 import com.shatteredpixel.shatteredpixeldungeon.apd.archive.*;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.*;
+import com.shatteredpixel.shatteredpixeldungeon.apd.report.*;
 import org.junit.*;
 import org.junit.rules.TemporaryFolder;
 import java.io.*;
@@ -43,10 +44,19 @@ public class RunOutcomePersistenceTest {
             assertTrue(report.summary(),report.ok);
             File copy=new File(dest,"runs/result.apdlog");assertArrayEquals(Files.readAllBytes(original.toPath()),Files.readAllBytes(copy.toPath()));
             for(int pass=0;pass<2;pass++){
-                Dataset runs=new DatasetStore(dest).load().dataset(Datasets.RUNS);Row row=runs.rows.get(0);
+                Catalog cat=new DatasetStore(dest).load();Dataset runs=cat.dataset(Datasets.RUNS);Row row=runs.rows.get(0);
                 assertEquals(outcome,row.num(runs.def.indexOf(FactKeys.OUTCOME)));
                 assertEquals(ascended?1:0,row.num(runs.def.indexOf("run.ascended")));
                 assertEquals(outcome,new DerivedStore(dest).load().apdRows.get(0).numOr(FactKeys.OUTCOME,-1));
+                Query all=Query.of(Datasets.RUNS).withScope(new Scope(Scope.Rules.ALL,"",true,true,true,true));
+                for(int selected=0;selected<=2;selected++)assertEquals(selected==outcome?1:0,
+                        QueryEngine.run(runs,all.addFilter(Filter.num(FactKeys.OUTCOME,Op.EQ,selected)),"").rows.size());
+                Dataset deaths=cat.dataset(Datasets.DEATHS);
+                assertEquals(outcome,deaths.rows.get(0).num(deaths.def.indexOf("death.runOutcome")));
+                Report reportRun=ReportBuilder.run(cat,row,false,"",1,"test");
+                String label=new String[]{"Died","Won","Abandoned"}[outcome];
+                assertTrue(ReportRenderer.csv(reportRun).contains(label));
+                assertTrue(ReportRenderer.markdown(reportRun).contains(label));
             }
         }
     }

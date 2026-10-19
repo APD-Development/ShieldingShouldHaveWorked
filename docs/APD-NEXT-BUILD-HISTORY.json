@@ -1,55 +1,76 @@
 {
   "date": "2026-10-19",
-  "previous_source": "33e2751aae905f227a55bb29281467bd928b477d",
-  "previous_application_source": "33e2751aae905f227a55bb29281467bd928b477d",
-  "previous_run": 39262968413,
-  "previous_label": "Codex TEST 286",
+  "previous_source": "cad6c52789beb5c05f07b40031965e09a497b661",
+  "previous_application_source": "cad6c52789beb5c05f07b40031965e09a497b661",
+  "previous_run": 39284577455,
+  "previous_label": "Codex TEST 287",
   "changes": [
     {
       "category": "Bug Fixes",
       "sprite": "ICON_CHECKED",
-      "title": "UIMSD Columns popup stays responsive to repeated touches",
-      "text": "UIMSD now defers rebuilding the table behind open modal windows so a column choice cannot put fresh table pointer controls above the still-open Columns picker. Multiple checkboxes remain selectable; the table refreshes after Done or close.",
+      "title": "Final deaths stay deaths during save cleanup",
+      "text": "Death cleanup no longer seals a live recording as Abandoned before the final death ranking arrives. Explicit player abandonment remains distinct. Original saved games and uncertain older history remain unchanged.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/UimsdScene.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/Dungeon.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/Hero.java"
+      ]
+    },
+    {
+      "category": "Bug Fixes",
+      "sprite": "ICON_CHECKED",
+      "title": "UIMSD keeps the column you were inspecting",
+      "text": "Sorting preserves the horizontal table position, keeps a newly selected sort statistic visible and shows its ascending or descending marker at the start of the heading. Filters, column edits and settings retain the viewport where possible. Sorting begins at the first newly ordered row.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/TableViewport.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/UimsdTable.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/UimsdScene.java",
+        "core/src/main/assets/apd/apd_changes.txt"
       ]
     },
     {
       "category": "Statistics / UIMSD",
       "sprite": "ICON_STATS",
-      "title": "Privacy-safe groundwork for UIMSD charts",
-      "text": "An immutable bounded chart-series model is derived only from authorized grouped UIMSD query results, retaining original scope, uncertainty/provenance and group order. No actual chart window or gameplay changes yet.",
+      "title": "Recorded ascensions remain distinguishable from other wins",
+      "text": "New completed runs explicitly record whether the ascent was completed. Existing serialized outcome values and win-rate semantics stay compatible; older unrecorded ascensions stay unknown. Derived caches refresh automatically without changing raw logs.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdChart.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdModel.java",
-        "docs/APD-STATS-UIMSD.md"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/LifecycleEvents.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/RunRecorder.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/RunFactsBuilder.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/LegacyImporter.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/DerivedStore.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RowBuilders.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/Datasets.java"
       ]
     },
     {
       "category": "Testing",
-      "sprite": "ICON_CHECKED",
-      "title": "Regression checks for multi-selection and chart provenance",
-      "text": "Core chart foundation previously passed 1895 tests. A new API34 native touch test taps two Columns switches in succession, verifies modal priority and post-close refresh; all prior native tests remain required.",
+      "sprite": "ICON_INFO",
+      "title": "Outcome persistence and Android sort viewport regressions",
+      "text": "Regression tests cover final death timing, abandonment, wins, ascensions, save/load, archives, caches, filters and reports; real menu touches cover repeated Columns choices, both sort directions and viewport retention.",
       "paths": [
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/RunOutcomeRegressionTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/RunOutcomePersistenceTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/TableViewportTest.java",
         "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdColumnsModalDeviceTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdChartTest.java",
-        "tools/run-codex-android-checks.sh",
-        "docs/APD-CODEX-CORE-TEST-REQUEST.txt"
+        "docs/APD-CODEX-CORE-TEST-REQUEST.txt",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/DamagedFactsProvenanceTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/MalformedPayloadProvenanceTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/QuestBossClassificationTest.java"
       ]
     },
     {
       "category": "Developer Commentary",
       "sprite": "ICON_INFO",
-      "title": "Request paired private TEST287 builds",
-      "text": "Private matched developer and regular-player APKs built against exact previously verified TEST286 signing, history and application identity; no public release, staging or tester distribution.",
+      "title": "Private matched developer and player APK request",
+      "text": "Both variants use identical game source and preserve signing, save identity and reviewed historical Changes records. No destructive outcome migration or public release.",
       "paths": [
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",
-        "docs/APD-TEST287-UIMSD-COLUMNS-TOUCH-2026-10-19.md"
+        "docs/APD-NATIONAL-PIE-OUTCOMES-VIEWPORT-2026-10-19.md"
       ]
     }
   ],
-  "commentary": "TEST287 private paired build against previous exact TEST286 producer33e2751aae905f227a55bb29281467bd928b477d/run39262968413 APK SHA6520fd7e2bc2442b62a3bb7eef997c06d39c196e07cfab5497c2c2abf126c1a5, size38638595. Source change fixes modal pointer priority plus chart-data foundation. Require 1895+ core, 42+ API34 tests including new UimsdColumnsModalDeviceTest, all required 57 PNG evidence, signing/history integrity, then paired regular-player APK no test feature flag. No external distro or physical phone claim."
+  "commentary": "Owner-requested paired private developer/player build after National Pie outcome and viewport regression fixes. Preserve preceding TEST287 raw APK checksum cee67180079c829ef6767eadc3050a96e46a1623d13bc569af375080c969fadb and all embedded history, package and signing identity. No public publication or physical-phone claim. Require complete core suite, native API34 regression checks and existing visual evidence."
 }
