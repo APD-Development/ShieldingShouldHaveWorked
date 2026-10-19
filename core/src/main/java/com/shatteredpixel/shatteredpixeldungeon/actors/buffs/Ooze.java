@@ -44,7 +44,12 @@ public class Ooze extends Buff implements Buff.DOTbuff {
 	private static final String APD_ORIGIN="apd_ooze_origin";
 	private boolean acted = false; //whether the debuff has done any damage at all yet
 
-	private static final String LEFT	= "left";
+	public float apdRemaining(){return left;}
+    public int apdNextRaw(){
+        if (Dungeon.scalingDepth()>5)return 1+Dungeon.scalingDepth()/5;
+        return Dungeon.scalingDepth()==5 || (int)left%2==0 ? 1 : 0;
+    }
+    private static final String LEFT	= "left";
 	private static final String ACTED   = "acted";
 	
 	@Override

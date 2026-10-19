@@ -54,6 +54,7 @@ public class Bleeding extends Buff implements Buff.DOTbuff {
 	public float level(){
 		return level;
 	}
+    public int apdNextRaw(){return Math.round(level);}
 	
 	private static final String LEVEL	= "level";
 	private static final String SOURCE	= "source";

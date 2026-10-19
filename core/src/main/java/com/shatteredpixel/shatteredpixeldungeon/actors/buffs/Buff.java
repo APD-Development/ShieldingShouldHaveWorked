@@ -39,6 +39,18 @@ public class Buff extends Actor {
 	
 	public Char target;
 
+    // Display-only damage history, saved with the buff. Never feeds back into combat.
+    private long apdDotRaw, apdDotHp, apdDotShield;
+    public long apdDotRaw(){return apdDotRaw;}
+    public long apdDotHp(){return apdDotHp;}
+    public long apdDotShield(){return apdDotShield;}
+    public void apdRecordDot(int input,int shield,int hp){
+        if (!(this instanceof DOTbuff)) return;
+        apdDotRaw+=Math.max(0,input);
+        apdDotShield+=Math.max(0,shield);
+        apdDotHp+=Math.max(0,hp);
+    }
+
 	// Transient metadata used only while a newly-created offensive buff is attaching.
 	// It is deliberately not serialized: persistent damage buffs own their saved provenance.
 	private OffensiveDamageOrigin apdAttachOrigin = OffensiveDamageOrigin.UNATTRIBUTED;
@@ -182,11 +194,15 @@ public class Buff extends Actor {
 	}
 
 	private static final String MNEMONIC_EXTENDED    = "mnemonic_extended";
+    private static final String APD_DOT_RAW = "apd_dot_raw", APD_DOT_HP="apd_dot_hp", APD_DOT_SHIELD="apd_dot_shield";
 
 	@Override
 	public void storeInBundle(Bundle bundle) {
 		super.storeInBundle(bundle);
 		if (mnemonicExtended) bundle.put(MNEMONIC_EXTENDED, mnemonicExtended);
+        if (apdDotRaw>0)bundle.put(APD_DOT_RAW,apdDotRaw);
+        if (apdDotHp>0)bundle.put(APD_DOT_HP,apdDotHp);
+        if (apdDotShield>0)bundle.put(APD_DOT_SHIELD,apdDotShield);
 	}
 
 	@Override

@@ -39,7 +39,9 @@ public class Poison extends Buff implements Hero.Doom, Buff.DOTbuff {
     private com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.DurationDamageProvenance damageProvenance;
     private static final String APD_PROVENANCE="apd_poison_origin";
 	
-	private static final String LEFT	= "left";
+	public float apdRemaining(){return left;}
+    public int apdNextInput(){return damageTick();}
+    private static final String LEFT	= "left";
 
 	{
 		type = buffType.NEGATIVE;

@@ -868,6 +868,7 @@ public abstract class Char extends Actor {
 	}
 	
 	public void damage( int dmg, Object src ) {
+        final int apdDotInput = dmg;
 		
 		if (!isAlive() || dmg < 0) {
 			return;
@@ -1114,6 +1115,9 @@ public abstract class Char extends Actor {
 		if (HP < 0) HP = 0;
 
 		ApdCombat.onDamage( this, src, apdRequested, apdHpBefore, apdShieldBefore, shielded, dmg );
+        if (src instanceof Buff.DOTbuff && src instanceof Buff) {
+            ((Buff)src).apdRecordDot(apdDotInput,shielded,Math.max(0,apdHpBefore-HP));
+        }
 
 		if (!isAlive()) {
 			die( src );

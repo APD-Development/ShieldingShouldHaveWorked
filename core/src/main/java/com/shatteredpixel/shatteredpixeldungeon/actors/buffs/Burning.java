@@ -61,7 +61,11 @@ public class Burning extends Buff implements Hero.Doom, Buff.DOTbuff {
 	private int burnIncrement = 0; //for tracking burning of hero items
 	private int nextHit = 0; //we pre-caulcate the incoming hit for a bit more accuracy in totalIncomingDMG()
 	
-	private static final String LEFT	= "left";
+	/** Display-only view; never calls the RNG unlike legacy totalIncomingDMG(). */
+    public float apdRemaining(){return left;}
+    public int apdNextRaw(){return nextHit;}
+    public int apdRandomMaximum(){return 3+Dungeon.scalingDepth()/4;}
+    private static final String LEFT	= "left";
 	private static final String ACTED	= "acted";
 	private static final String BURN	= "burnIncrement";
 	private static final String NEXT_DMG= "next_dmg";

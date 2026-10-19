@@ -44,7 +44,9 @@ public class Corrosion extends Buff implements Hero.Doom, Buff.DOTbuff {
 	//used in specific cases where the source of the corrosion is important for death logic
 	private Class source;
 
-	private static final String DAMAGE	= "damage";
+	public float apdRemaining(){return left;}
+    public int apdNextRaw(){return (int)damage;}
+    private static final String DAMAGE	= "damage";
 	private static final String LEFT	= "left";
 	private static final String SOURCE	= "source";
 
