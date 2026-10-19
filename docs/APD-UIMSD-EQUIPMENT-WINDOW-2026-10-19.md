@@ -9,3 +9,5 @@ The observed sum is always marked as a lower bound. Zero observed does not estab
 No raw log schema, save format, RNG, recording volume, outcomes, scoring or old history is changed. No migration required. Named/general sequence questions, translated terminology registry, complete death context, named experiments and progress remain separate pending work in the tracked checklist.
 
 Verification required: 1,954 core tests, 49 Android methods, 65 screenshots, matched uniquely numbered APKs, all previous history/signing checks. Core includes real RunLogWriter close/reopen/DatasetStore path and a non-mutating timing/storage probe. Android includes actual binary writer -> reload -> pointer menu selection -> visible sum -> damage evidence -> Back -> repeated window selection and menu restoration. Emulator verification will not be described as physical-device testing.
+
+Rejected first full gate: TEST296 had1954 methods with one existing generic-wiring assertion failure; six new methods passed. Corrected dataset applicability delegation; no assertions changed and no APK produced. Acceptance remains pending.

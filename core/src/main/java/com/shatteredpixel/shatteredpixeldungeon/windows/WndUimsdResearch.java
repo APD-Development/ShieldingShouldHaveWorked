@@ -58,6 +58,7 @@ public final class WndUimsdResearch {
         add(entries,actions,"Damage after equipping","Choose an equipment occurrence and a turn window, then inspect observed damage and its source records.",()->equipmentWindows(m));
         menu(m,"Research lab","These tools read recorded history. Unknowns stay unknown. Demo results are made up and are always identified as demo data.",entries,actions,()->show(m));
     }
+    public static boolean canEquipmentWindow(QueryResult r){return r!=null && !r.isGrouped() && EventDatasets.EQUIPMENT.equals(r.def.id);}
     public static void equipmentWindows(UimsdModel m){
         if(!EventDatasets.EQUIPMENT.equals(m.query().dataset)){
             List<WndUimsdList.Entry> entries=new ArrayList<>();List<Runnable> actions=new ArrayList<>();
