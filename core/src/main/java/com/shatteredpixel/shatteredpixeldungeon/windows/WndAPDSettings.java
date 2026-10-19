@@ -48,7 +48,8 @@ public class WndAPDSettings extends Window {
             positions.put(previous,scroll.content().camera().scroll.y);
             reflow();Float saved=positions.get(pane.section());scroll.scrollTo(0,saved==null?0:saved);
         });
-        reflow();add(scroll);scroll.allowDragFromButtons();
+        // ScrollPane.layout needs the window camera; attach it before the first reflow.
+        add(scroll);reflow();scroll.allowDragFromButtons();
     }
     private void reflow(){
         pane.setSize(paneWidth,0);

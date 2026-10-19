@@ -1,6 +1,8 @@
 # Hotbar persistence and APD Settings acceptance
 
-Status: implementation checkpoint, verification pending.
+Status: corrected TEST300 candidate, verification pending. TEST299 was produced but is not accepted or delivered.
+
+Android TEST299 exposed a real constructor-order defect: ScrollPane.layout accessed its camera before attachment to the Window. Attach the pane before its first reflow. Also correct native fixture camera dimension types, provide a compact gesture viewport, and initialize the standard CONTINUE interlevel mode when displaying a loaded fixture. The first upgrade assertion incorrectly expected unsaved TEST285 edits to be recoverable; record the actual pre-edit disk layout and require that exact state on upgrade, while corrected new saves must preserve the complete manual layout. Keep all original assertions for newly saved assignments and both baseline defect modes.
 
 Confirmed source defect: Dungeon.loadGame restored saved quickslots and then reapplied the Waterskin startup preference, and the preference picker also rearranged the active game. The preference must affect new runs only. Serialization already stores item quickslotpos and placeholders; retain those existing formats, capacities and player preferences. Remove load-time/picker reapplication; keep HeroClass initialization.
 

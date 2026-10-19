@@ -56,7 +56,7 @@ public class HotbarColdRestartDeviceTest {
                     if(scenario==0){
                         // Persist an older arrangement, then perform only actual UI shortcut commands.
                         // The test ends on Title, so an Activity pause cannot save these commands for us.
-                        SPDSettings.apdHotbarMode(0);Dungeon.quickslot.setSlot(1,Dungeon.hero.belongings.getItem(Food.class));Dungeon.quickslot.setSlot(2,spikes);Dungeon.quickslot.setSlot(4,skin);Dungeon.saveGame(1);
+                        SPDSettings.apdHotbarMode(0);Dungeon.quickslot.setSlot(1,Dungeon.hero.belongings.getItem(Food.class));Dungeon.quickslot.setSlot(2,spikes);Dungeon.quickslot.setSlot(4,skin);fixture.put("old_disk_slots_0",assignments());Dungeon.saveGame(1);
                         Dungeon.hero.ready=true;com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton.set(1,skin);com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton.set(4,spikes);com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton.set(2,Dungeon.hero.belongings.getItem(Food.class));
                     }
                     if(scenario==2){Dungeon.quickslot.setSlot(5,skin);Dungeon.quickslot.clearSlot(2);}
@@ -79,13 +79,18 @@ public class HotbarColdRestartDeviceTest {
                     SPDSettings.waterskinStartingSlot(scenario==0?1:scenario==2?-1:4);SPDSettings.apdHotbarMode(scenario);
                     GamesInProgress.curSlot=scenario+1;Dungeon.hero=null;Dungeon.quickslot=new QuickSlot(6);Dungeon.loadGame(scenario+1);
                     System.out.println("HOTBAR_COLD_RESTORED scenario="+scenario+" mode="+SPDSettings.apdHotbarMode()+" preference="+SPDSettings.waterskinStartingSlot()+" assignments="+java.util.Arrays.toString(assignments()));
-                    if(!java.util.Arrays.equals(fixture.getStringArray("slots_"+scenario),assignments()))mismatches.add("scenario="+scenario+" expected="+java.util.Arrays.toString(fixture.getStringArray("slots_"+scenario))+" actual="+java.util.Arrays.toString(assignments()));
+                    // An upgrade must preserve the actual old disk record. It cannot invent
+                    // manual edits which TEST285 never wrote. Fresh corrected saves below
+                    // must retain the complete manually edited layout instead.
+                    boolean oldDisk=Boolean.parseBoolean(androidx.test.platform.app.InstrumentationRegistry.getArguments().getString("apdOldDiskState","false"));
+                    String[] expected=fixture.getStringArray(oldDisk && scenario==0?"old_disk_slots_0":"slots_"+scenario);
+                    if(!java.util.Arrays.equals(expected,assignments()))mismatches.add("scenario="+scenario+" expected="+java.util.Arrays.toString(expected)+" actual="+java.util.Arrays.toString(assignments()));
                     assertEquals(scenario,SPDSettings.apdHotbarMode());
                 }
                 assertTrue("Manual Waterskin and throwing-spike assignments must survive cold restart: "+mismatches,mismatches.isEmpty());
                 assertEquals(Waterskin.class.getName(),SPDSettings.apdHotbarItem(1));assertEquals(ThrowingSpike.class.getName(),SPDSettings.apdHotbarItem(4));
                 // Display the resumed run using the normal game scene, with all six Classic slots visible when the viewport permits.
-                SPDSettings.apdHotbarMode(0);GamesInProgress.curSlot=1;Dungeon.loadGame(1);Dungeon.level=Dungeon.loadLevel(1);Dungeon.switchLevel(Dungeon.level,Dungeon.hero.pos);ShatteredPixelDungeon.switchNoFade(GameScene.class);
+                SPDSettings.apdHotbarMode(0);GamesInProgress.curSlot=1;Dungeon.loadGame(1);Dungeon.level=Dungeon.loadLevel(1);Dungeon.switchLevel(Dungeon.level,Dungeon.hero.pos);InterlevelScene.mode=InterlevelScene.Mode.CONTINUE;ShatteredPixelDungeon.switchNoFade(GameScene.class);
             }catch(Exception e){throw new RuntimeException(e);}});
             long until=System.currentTimeMillis()+60000;while(!(Game.scene() instanceof GameScene)&&System.currentTimeMillis()<until)Thread.sleep(100);assertTrue(Game.scene() instanceof GameScene);Thread.sleep(900);
             PlayRunDeviceTest.visibilityScreenshot("hotbar-cold-restored.png");
