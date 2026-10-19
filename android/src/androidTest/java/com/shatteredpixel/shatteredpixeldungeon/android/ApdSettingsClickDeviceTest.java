@@ -48,7 +48,7 @@ public class ApdSettingsClickDeviceTest {
     @Test public void categorizedSettingsPreserveControlsAndRespondOnSmallScreens()throws Exception{
         try(ActivityScenario<AndroidLauncher> app=ActivityScenario.launch(AndroidLauncher.class)){
             openTitleForTest();final AtomicReference<WndAPDSettings> window=new AtomicReference<>();
-            final int oldMode=SPDSettings.apdHotbarMode();final boolean oldFood=SPDSettings.apdFoodInHealing();final float[] dimensions=new float[2];
+            final int oldMode=SPDSettings.apdHotbarMode();final boolean oldFood=SPDSettings.apdFoodInHealing();final int[] dimensions=new int[2];
             try{
                 onRender(()->{dimensions[0]=com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene.uiCamera.width;dimensions[1]=com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene.uiCamera.height;
                     long started=System.nanoTime();window.set(new WndAPDSettings());Game.scene().addToFront(window.get());System.out.println("APD_SETTINGS_ROOT_CREATE_NS="+(System.nanoTime()-started));});Thread.sleep(400);
