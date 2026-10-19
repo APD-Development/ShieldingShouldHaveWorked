@@ -33,6 +33,9 @@ import com.watabou.noosa.particles.Emitter;
 public class BlacksmithSprite extends MobSprite {
 	
 	private Emitter emitter;
+    // Blacksmith hammer strikes should not repeat faster at 2x+ playback.
+    private final com.shatteredpixel.shatteredpixeldungeon.apd.RealTimeSoundCadence hammerSound =
+            new com.shatteredpixel.shatteredpixeldungeon.apd.RealTimeSoundCadence(12f/15f);
 	
 	public BlacksmithSprite() {
 		super();
@@ -65,6 +68,8 @@ public class BlacksmithSprite extends MobSprite {
 	
 	@Override
 	public void update() {
+        // Count actual elapsed time before the animation's completion callback.
+        hammerSound.advance(com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.realElapsed());
 		super.update();
 		
 		if (emitter != null) {
@@ -78,7 +83,7 @@ public class BlacksmithSprite extends MobSprite {
 		
 		if (visible && emitter != null && anim == idle) {
 			emitter.burst( Speck.factory( Speck.FORGE ), 3 );
-			if (!Music.INSTANCE.paused()) {
+			if (!Music.INSTANCE.paused() && hammerSound.accept()) {
 				float volume = 0.2f / (Dungeon.level.distance(ch.pos, Dungeon.hero.pos));
 				Sample.INSTANCE.play(Assets.Sounds.EVOKE, volume, volume, 0.8f);
 			}

@@ -33,6 +33,12 @@ public final class PlaybackGroup extends Group {
         speed = FACTORS[allowed(selection) ? selection : NORMAL];
     }
 
+    /** Unscaled wall-frame delta even when this group's visuals are accelerated.
+     * Audio cadence must not be tied to selected visual playback speed. */
+    public static float realElapsed() {
+        return updating > 0 ? Game.elapsed / speed : Game.elapsed;
+    }
+
     /**
      * Keep the hero's two-frame standing animation readable when experimental
      * visual playback is extremely fast. This runs only inside a PlaybackGroup;
