@@ -36,7 +36,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-// The player's named views: a saved query under a name. A view is a question, not data, so it stays correct as history grows. Local to the device; the file is replaced atomically and damaged lines are skipped on load.
+// The player's named views: a saved query under a name. Question-builder views may also retain the exact friendly Question which produced the query.
+// Both forms stay correct as history grows. Local to the device; the file is replaced atomically and damaged lines are skipped on load.
 public final class SavedViews {
 
 	public static final int MAX_VIEWS = 100, MAX_NAME = 60;
@@ -44,19 +45,31 @@ public final class SavedViews {
 	public static final String LOAD_WARNING = "Some saved views could not be read. The original file is preserved. Saving, renaming and deleting views are paused to avoid losing those entries.";
 
 	public static final class View {
-		public final String name, encodedQuery;
+		public final String name, encodedQuery, encodedQuestion;
 		public final long createdAtMillis;
 
-		View( String name, String encodedQuery, long createdAtMillis ){
+		View( String name, String encodedQuery, String encodedQuestion, long createdAtMillis ){
 			this.name = name;
 			this.encodedQuery = encodedQuery;
+			this.encodedQuestion = encodedQuestion == null ? "" : encodedQuestion;
 			this.createdAtMillis = createdAtMillis;
 		}
 
-		//the question; null if this build cannot read it any more
+		//the table query; null if this build cannot read it any more
 		public Query query(){
 			try {
 				return QueryCodec.decode(encodedQuery);
+			} catch (RuntimeException e){
+				return null;
+			}
+		}
+
+		//The exact friendly question, when this view came from the question builder.
+		//Older table-only views and future question formats this build cannot read return null.
+		public Question question(){
+			if (encodedQuestion.isEmpty()) return null;
+			try {
+				return QuestionCodec.decode(encodedQuestion);
 			} catch (RuntimeException e){
 				return null;
 			}
@@ -109,11 +122,24 @@ public final class SavedViews {
 
 	//saving under a name that exists replaces that view (the player chose the name)
 	public Result save( String name, Query q, long nowMillis ){
+		return saveEncoded(name, QueryCodec.encode(q), "", nowMillis);
+	}
+
+	//Save the exact friendly question and its executable query together. Hidden selections
+	//are sanitized once at this visibility boundary, so reopened wording and execution agree.
+	public Result saveQuestion( String name, Question question, DatasetDef def, long nowMillis ){
+		if (question == null || def == null) return Result.BAD_NAME;
+		Question effective = Questions.withInternalVisibility(question, def, question.showInternal);
+		return saveEncoded(name, QueryCodec.encode(Questions.toQuery(effective, def)),
+				QuestionCodec.encode(effective), nowMillis);
+	}
+
+	private Result saveEncoded( String name, String encodedQuery, String encodedQuestion, long nowMillis ){
 		String n = cleanName(name);
 		if (n == null) return Result.BAD_NAME;
 		View old = get(n);
 		if (old == null && views.size() >= MAX_VIEWS) return Result.TOO_MANY;
-		View v = new View(n, QueryCodec.encode(q), nowMillis);
+		View v = new View(n, encodedQuery, encodedQuestion, nowMillis);
 		if (old != null){
 			views.set(views.indexOf(old), v);
 			return Result.REPLACED;
@@ -134,7 +160,7 @@ public final class SavedViews {
 		if (v == null || n == null) return false;
 		View other = get(n);
 		if (other != null && other != v) return false;
-		views.set(views.indexOf(v), new View(n, v.encodedQuery, v.createdAtMillis));
+		views.set(views.indexOf(v), new View(n, v.encodedQuery, v.encodedQuestion, v.createdAtMillis));
 		return true;
 	}
 
@@ -164,6 +190,7 @@ public final class SavedViews {
 				}
 				for (View v : views){
 					w.write(b64(v.name) + "\t" + v.createdAtMillis + "\t" + b64(v.encodedQuery));
+					if (!v.encodedQuestion.isEmpty()) w.write("\t" + b64(v.encodedQuestion));
 					w.newLine();
 				}
 			}
@@ -183,10 +210,10 @@ public final class SavedViews {
 				if (line.isEmpty()) continue;
 				try {
 					String[] p = line.split("\t", -1);
-					if (p.length != 3) throw new IllegalArgumentException("fields");
+					if (p.length != 3 && p.length != 4) throw new IllegalArgumentException("fields");
 					String name = cleanName(unb64(p[0]));
 					if (name == null || s.get(name) != null || s.views.size() >= MAX_VIEWS) throw new IllegalArgumentException("name");
-					s.views.add(new View(name, unb64(p[2]), Long.parseLong(p[1])));
+					s.views.add(new View(name, unb64(p[2]), p.length == 4 ? unb64(p[3]) : "", Long.parseLong(p[1])));
 				} catch (RuntimeException e){
 					s.skippedOnLoad++;
 				}

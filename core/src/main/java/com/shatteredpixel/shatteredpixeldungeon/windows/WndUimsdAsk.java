@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.query.PerUnit;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.Question;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.Questions;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.Scope;
+import com.shatteredpixel.shatteredpixeldungeon.apd.query.SavedViews;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.StatusText;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdModel;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdTopicSearch;
@@ -56,6 +57,8 @@ public final class WndUimsdAsk {
 		//open this question's query as a table with the full tools
 		//'backToAnswer' reopens the answer the table came from (what Back should do from that table); may be null
 		void openAsTable( com.shatteredpixel.shatteredpixeldungeon.apd.query.Query q, Runnable backToAnswer );
+		//Where named questions live. Tests and hosts without persistent history may leave this null.
+		default java.io.File root(){ return null; }
 	}
 
 	private static final int MAX_LINES = 40;
@@ -349,6 +352,8 @@ public final class WndUimsdAsk {
 		}
 		entries.add(Entry.heading("Next"));
 		entries.add(Entry.item("Open as a table", "the same question with every filter, sort and column tool"));
+		final boolean canSave = host != null && host.root() != null;
+		if (canSave) entries.add(Entry.item("Save this question...", "Keep the exact wording and choices under a name, then ask it again as history grows."));
 		entries.add(Entry.item("Change the question", ""));
 		final List<Entry> all = entries;
 		showKept(WndUimsdList.menu("Answer", a.question + "?", entries, new WndUimsdList.Picker(){
@@ -356,7 +361,8 @@ public final class WndUimsdAsk {
 			public void onPick( int i, boolean checked ){
 				int items = 0;
 				for (Entry e : all) if (e.isItem()) items++;
-				if (i == items - 2){
+				int open = items - (canSave ? 3 : 2);
+				if (i == open){
 					WndUimsdList.closeAll();
 					if (host != null) host.openAsTable(a.query, new Runnable(){
 						@Override
@@ -366,10 +372,35 @@ public final class WndUimsdAsk {
 							answer(cat, ruleset, host, q);
 						}
 					});
+				} else if (canSave && i == open + 1){
+					saveQuestion(cat, host, q);
 				} else if (i == items - 1){
 					builder(cat, ruleset, host, q);
 				}
 			}
 		}).restoreWith(() -> answer(cat, ruleset, host, q)));
+	}
+
+	private static void saveQuestion( final Catalog cat, final Host host, final Question q ){
+		final Dataset dataset = cat == null ? null : cat.dataset(q.dataset);
+		if (host == null || host.root() == null || dataset == null) return;
+		show(new WndUimsdTextInput("Save this question", "A name for this question (up to " + SavedViews.MAX_NAME + " characters). An existing saved view with the same name is replaced.",
+				"", SavedViews.MAX_NAME, false, "Save", "Cancel", (positive, text) -> {
+			if (!positive) return;
+			SavedViews views = SavedViews.load(SavedViews.fileIn(host.root()));
+			SavedViews.Result result = views.saveQuestion(text, q, dataset.def, System.currentTimeMillis());
+			try {
+				if (result == SavedViews.Result.SAVED || result == SavedViews.Result.REPLACED)
+					views.store(SavedViews.fileIn(host.root()));
+			} catch (java.io.IOException failure){
+				show(new WndUimsdText("UIMSD", "The question could not be saved: " + failure.getMessage(), false));
+				return;
+			}
+			String message = result == SavedViews.Result.SAVED ? "Question saved."
+					: result == SavedViews.Result.REPLACED ? "Question saved, replacing the view with that name."
+					: result == SavedViews.Result.TOO_MANY ? "You have " + SavedViews.MAX_VIEWS + " saved views. Delete one first."
+					: "That is not a usable name.";
+			show(new WndUimsdText("UIMSD", message, false));
+		}));
 	}
 }

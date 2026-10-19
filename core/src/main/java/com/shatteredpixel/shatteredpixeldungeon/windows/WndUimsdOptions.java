@@ -43,6 +43,7 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.query.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.ColumnDef;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.GroupBy;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.Query;
+import com.shatteredpixel.shatteredpixeldungeon.apd.query.Question;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.QueryEngine;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.QueryResult;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.SavedViews;
@@ -407,7 +408,9 @@ public final class WndUimsdOptions {
 
 	private static void viewActions( final UimsdModel m, final SavedViews.View view ){
 		final List<Entry> entries = new ArrayList<>();
-		entries.add(Entry.item("Open", "Shows this view now."));
+		if (view.question() != null)
+			entries.add(Entry.item("Open question", "Restores the exact question-builder choices and asks it of your history now."));
+		entries.add(Entry.item(view.question() == null ? "Open" : "Open as table", "Shows this view now."));
 		entries.add(Entry.item("Delete", "Removes this saved view. Your history is not touched."));
 		showViewActions(view.name, entries, m, view);
 	}
@@ -416,21 +419,33 @@ public final class WndUimsdOptions {
 		ShatteredPixelDungeon.scene().addToFront(WndUimsdList.menu(title, "", entries, new WndUimsdList.Picker(){
 			@Override
 			public void onPick( int i, boolean checked ){
-				if (i == 0){
+				final Question question = view.question();
+				if (question != null && i == 0){
+					if (m.catalog() == null || m.catalog().dataset(question.dataset) == null){
+						say("This question cannot be opened: what it asks about is not available in this version.");
+						return;
+					}
+					WndUimsdAsk.builder(m.catalog(), m.currentRuleset(), new WndUimsdAsk.Host(){
+						@Override public void openAsTable( Query q, Runnable backToAnswer ){ m.showQuery(q); }
+						@Override public java.io.File root(){ return m.root(); }
+					}, question);
+					return;
+				}
+				if ((question == null && i == 0) || (question != null && i == 1)){
 					Query q = view.query();
 					if (q == null || m.catalog() == null || m.catalog().view(q.dataset) == null){
 						say("This view cannot be opened: the table it uses is not available in this version.");
 						return;
 					}
 					m.showQuery(q);
-				} else {
-					SavedViews v = views(m);
-					v.delete(view.name);
-					try {
-						v.store(SavedViews.fileIn(m.root()));
-					} catch (java.io.IOException e){
-						say("The view could not be deleted: " + e.getMessage());
-					}
+					return;
+				}
+				SavedViews v = views(m);
+				v.delete(view.name);
+				try {
+					v.store(SavedViews.fileIn(m.root()));
+				} catch (java.io.IOException e){
+					say("The view could not be deleted: " + e.getMessage());
 				}
 			}
 		}).restoreWith(() -> viewActions(m, view)));

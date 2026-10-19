@@ -441,6 +441,7 @@ public class UimsdScene extends PixelScene {
 							atHome = false;
 							//showQuery notifies the current scene's model listener.
 						}
+						@Override public File root(){ return model.root(); }
 					});
 					return;
 				}
