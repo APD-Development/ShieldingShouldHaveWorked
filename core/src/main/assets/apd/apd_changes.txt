@@ -1,5 +1,5 @@
 Bug Fixes:
-- Resuming a saved run keeps manual hotbar assignments, empty slots and placeholders. The Waterskin starting-slot preference only affects new runs and never rearranges an existing run.
+- Resuming a saved run keeps manual hotbar assignments, empty slots and placeholders. Manual edits save immediately while the hero is waiting for input. The Waterskin starting-slot preference only affects new runs and never rearranges an existing run.
 - A completed UIMSD seed replay publishes its result and clears the busy message together.
 - Adding or reversing a secondary sort key keeps that selected statistic visible instead of jumping to the primary key. Column reordering preserves vertical position when the sort itself is unchanged.
 - CSV run reports now include their recorded fact sections, including Outcome and Ascended, alongside existing tables.

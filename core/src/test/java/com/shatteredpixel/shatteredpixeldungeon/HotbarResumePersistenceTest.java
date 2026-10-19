@@ -65,4 +65,15 @@ public class HotbarResumePersistenceTest {
         assertTrue("A depleted stack leaves inventory before its placeholder is saved",Dungeon.hero.belongings.backpack.items.remove(consumed));
         Dungeon.quickslot.clearSlot(2);String[] before=snapshot();Dungeon.saveGame(1);SPDSettings.waterskinStartingSlot(-1);reload();assertArrayEquals(before,snapshot());assertEquals(0,Dungeon.quickslot.getItem(4).quantity());assertNull(Dungeon.quickslot.getItem(2));
     }
+    @Test public void manualUserAssignmentsReachDiskBeforeAnyAppPauseOrNextTurn()throws Exception{
+        create();Dungeon.hero.ready=true;String[] before=snapshot();int hp=Dungeon.hero.HP;float turns=Statistics.duration;
+        com.watabou.utils.Random.pushGenerator(93841);long expected;try{expected=com.watabou.utils.Random.Long();}finally{com.watabou.utils.Random.popGenerator();}
+        com.watabou.utils.Random.pushGenerator(93841);try{
+            com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton.set(1,Dungeon.hero.belongings.getItem(Waterskin.class));
+            com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton.set(4,Dungeon.hero.belongings.getItem(ThrowingSpike.class));
+            assertEquals("Saving a shortcut consumes no gameplay RNG",expected,com.watabou.utils.Random.Long());
+        }finally{com.watabou.utils.Random.popGenerator();}
+        assertEquals(hp,Dungeon.hero.HP);assertEquals(turns,Statistics.duration,0);
+        reload();assertArrayEquals("No explicit save or pause happened after these user edits",before,snapshot());
+    }
 }

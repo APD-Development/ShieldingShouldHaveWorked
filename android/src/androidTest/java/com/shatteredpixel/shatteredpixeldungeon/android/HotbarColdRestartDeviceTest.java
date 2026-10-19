@@ -53,10 +53,16 @@ public class HotbarColdRestartDeviceTest {
                     Dungeon.quickslot.setSlot(1,skin);Dungeon.quickslot.setSlot(4,spikes);Dungeon.quickslot.setSlot(2,Dungeon.hero.belongings.getItem(Food.class));
                     Item scroll=new ScrollOfIdentify();Dungeon.hero.belongings.backpack.items.add(scroll);Dungeon.quickslot.setSlot(3,scroll);
                     Item potion=new PotionOfHealing();Dungeon.hero.belongings.backpack.items.add(potion);Dungeon.quickslot.setSlot(5,potion);
+                    if(scenario==0){
+                        // Persist an older arrangement, then perform only actual UI shortcut commands.
+                        // The test ends on Title, so an Activity pause cannot save these commands for us.
+                        SPDSettings.apdHotbarMode(0);Dungeon.quickslot.setSlot(1,Dungeon.hero.belongings.getItem(Food.class));Dungeon.quickslot.setSlot(2,spikes);Dungeon.quickslot.setSlot(4,skin);Dungeon.saveGame(1);
+                        Dungeon.hero.ready=true;com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton.set(1,skin);com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton.set(4,spikes);com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton.set(2,Dungeon.hero.belongings.getItem(Food.class));
+                    }
                     if(scenario==2){Dungeon.quickslot.setSlot(5,skin);Dungeon.quickslot.clearSlot(2);}
                     if(scenario==3)Dungeon.quickslot.clearItem(skin);
                     if(scenario==4){CategoryHotbar.chooseItem(1,skin);CategoryHotbar.chooseItem(4,spikes);Dungeon.quickslot.convertToPlaceholder(spikes);assertTrue(Dungeon.hero.belongings.backpack.items.remove(spikes));}
-                    SPDSettings.apdHotbarMode(scenario);fixture.put("slots_"+scenario,assignments());Dungeon.saveGame(scenario+1);
+                    SPDSettings.apdHotbarMode(scenario);fixture.put("slots_"+scenario,assignments());if(scenario!=0)Dungeon.saveGame(scenario+1);
                 }
                 // A preference change for future runs must not change any saved manual assignments.
                 SPDSettings.waterskinStartingSlot(4);fixture.put("prepared_preference",4);FileUtils.bundleToFile("fixture.dat",fixture);
@@ -68,13 +74,15 @@ public class HotbarColdRestartDeviceTest {
         try(ActivityScenario<AndroidLauncher> app=ActivityScenario.launch(AndroidLauncher.class)){
             title();render(()->{try{
                 directory();Bundle fixture=FileUtils.bundleFromFile("fixture.dat");assertEquals(1,fixture.getInt("version"));assertEquals("Preference persisted through a real process stop",fixture.getInt("prepared_preference"),SPDSettings.waterskinStartingSlot());
+                java.util.List<String> mismatches=new java.util.ArrayList<>();
                 for(int scenario=0;scenario<5;scenario++){
                     SPDSettings.waterskinStartingSlot(scenario==0?1:scenario==2?-1:4);SPDSettings.apdHotbarMode(scenario);
                     GamesInProgress.curSlot=scenario+1;Dungeon.hero=null;Dungeon.quickslot=new QuickSlot(6);Dungeon.loadGame(scenario+1);
                     System.out.println("HOTBAR_COLD_RESTORED scenario="+scenario+" mode="+SPDSettings.apdHotbarMode()+" preference="+SPDSettings.waterskinStartingSlot()+" assignments="+java.util.Arrays.toString(assignments()));
-                    assertArrayEquals("Manual Waterskin and throwing-spike assignments must survive cold restart; scenario="+scenario,fixture.getStringArray("slots_"+scenario),assignments());
+                    if(!java.util.Arrays.equals(fixture.getStringArray("slots_"+scenario),assignments()))mismatches.add("scenario="+scenario+" expected="+java.util.Arrays.toString(fixture.getStringArray("slots_"+scenario))+" actual="+java.util.Arrays.toString(assignments()));
                     assertEquals(scenario,SPDSettings.apdHotbarMode());
                 }
+                assertTrue("Manual Waterskin and throwing-spike assignments must survive cold restart: "+mismatches,mismatches.isEmpty());
                 assertEquals(Waterskin.class.getName(),SPDSettings.apdHotbarItem(1));assertEquals(ThrowingSpike.class.getName(),SPDSettings.apdHotbarItem(4));
                 // Display the resumed run using the normal game scene, with all six Classic slots visible when the viewport permits.
                 SPDSettings.apdHotbarMode(0);GamesInProgress.curSlot=1;Dungeon.loadGame(1);Dungeon.level=Dungeon.loadLevel(1);Dungeon.switchLevel(Dungeon.level,Dungeon.hero.pos);ShatteredPixelDungeon.switchNoFade(GameScene.class);

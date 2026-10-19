@@ -315,6 +315,8 @@ public class QuickSlotButton extends Button {
 			}
 			if (containsWaterskin) SPDSettings.quickslotWaterskin(true);
 		}
+		// A manual shortcut edit must survive a process kill without waiting for a later pause or turn.
+		com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.HotbarPersistence.saveManualAssignment();
 	}
 
 	private static Item select(int slotNum){
@@ -454,4 +456,3 @@ public class QuickSlotButton extends Button {
 		}
 	}
 }
-
