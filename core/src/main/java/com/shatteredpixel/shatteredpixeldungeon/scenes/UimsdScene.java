@@ -344,6 +344,12 @@ public class UimsdScene extends PixelScene {
 		return cachedHome;
 	}
 
+    private void openSearch(){
+        if(model==null || model.catalog()==null)return;
+        com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdSearch.open(
+                model.catalog(),this::openView);
+    }
+
 	private void openView( String viewId ){
 		model.showRoot(viewId);
 		atHome = false;
@@ -369,6 +375,12 @@ public class UimsdScene extends PixelScene {
 		};
 		tables.setRect(report.right()+gap, y, each, 18);ui.add(tables);reg("tables", tables.left(), y, each, 18);
 		y += 20;
+        StyledButton search = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "Search UIMSD", 7){
+            @Override protected void onClick(){openSearch();}
+        };
+        search.setRect(x0,y,contentW,16);ui.add(search);
+        reg("search",x0,y,contentW,16);
+        y+=18;
 		StyledButton rules = new StyledButton(Chrome.Type.GREY_BUTTON_TR, home.mixedRulesets ? "Rules: Mixed" : homeAllRules ? "Rules: all" : "Rules: current", 6){
 			@Override protected void onClick(){ homeAllRules=!homeAllRules;dirty=true; }
 		};
@@ -504,6 +516,10 @@ public class UimsdScene extends PixelScene {
 		ui.add(help);
 		reg("guide", cx0, y, helpW, 16);
 		y += 18;
+        StyledButton search = new StyledButton(Chrome.Type.GREY_BUTTON_TR,"Search UIMSD",6){
+            @Override protected void onClick(){openSearch();}
+        };
+        search.setRect(x0,y,contentW,16);ui.add(search);y+=18;
 
 		//The complete table description remains in the existing Tables picker.
 
