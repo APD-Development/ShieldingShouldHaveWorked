@@ -220,11 +220,17 @@ public class UimsdScene extends PixelScene {
 				dirty = true;
 			}
 		}
-		if (dirty){
-			dirty = false;
-			rebuild();
-		}
-		super.update();
+        // A UIMSD modal (especially Columns) can change the table model
+        // while staying open. Rebuilding the screen behind that window creates
+        // new pointer listeners AFTER the modal's listeners, so on phones they
+        // can capture subsequent taps through the apparently visible popup.
+        // Keep the dirty flag until the last window closes. Window picker rows
+        // still redraw their own checked state immediately.
+        if (dirty && !hasWindow(this)){
+            dirty = false;
+            rebuild();
+        }
+        super.update();
 	}
 
 	private void rebuild(){
