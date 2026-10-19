@@ -20,7 +20,7 @@ public class QuestionCodecTest {
 				.withPer(PerUnit.Unit.THOUSAND_TURNS)
 				.withGroupBy(Arrays.asList("name", "a"))
 				.addFilter(Filter.text("name", Op.EQ, ""))
-				.addFilter(Filter.num("a", Op.GTE, 7))
+				.addFilter(Filter.num("a", Op.GE, 7))
 				.withScope(new Scope(Scope.Rules.SPECIFIC, "rules-2", true, true, true, true, true))
 				.withShowInternal(true);
 	}
