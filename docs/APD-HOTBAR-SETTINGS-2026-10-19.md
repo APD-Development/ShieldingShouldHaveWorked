@@ -11,3 +11,5 @@ Settings: six focused categories using the same shared pane, compact gray pixel-
 Regression gates: real save files and fresh models/preferences, all five layouts and custom item types, empty slots/placeholders; actual Android category/navigation/control touches, compact screen, recreation; force-stop/restart save restoration on exact APKs. Preserve all previous core/native tests and UIMSD outcomes/history/viewport/modal fixes.
 
 Pending: full core, native cold-process before/after proof, screenshot review, exact paired APKs and signing/history comparison. No physical-device claim, publication or tester distribution.
+
+Second confirmed gap: manual Classic commands changed memory without persisting immediately; a hard kill could retain earlier saved positions. HotbarPersistence commits ready-boundary edits using existing Dungeon.saveAll, reports IO failures, and leaves automatic/unready bookkeeping to normal saves. New core regression reloads disk without any pause or explicit save after the UI commands and checks no RNG draw/HP/turn change.1959-core checkpoint passed. Full paired/native acceptance remains pending.

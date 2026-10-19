@@ -51,7 +51,7 @@ public class ApdSettingsClickDeviceTest {
             final int oldMode=SPDSettings.apdHotbarMode();final boolean oldFood=SPDSettings.apdFoodInHealing();final float[] dimensions=new float[2];
             try{
                 onRender(()->{dimensions[0]=com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene.uiCamera.width;dimensions[1]=com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene.uiCamera.height;
-                    window.set(new WndAPDSettings());Game.scene().addToFront(window.get());});Thread.sleep(400);
+                    long started=System.nanoTime();window.set(new WndAPDSettings());Game.scene().addToFront(window.get());System.out.println("APD_SETTINGS_ROOT_CREATE_NS="+(System.nanoTime()-started));});Thread.sleep(400);
                 APDSettingsPane pane=find(window.get(),APDSettingsPane.class);ScrollPane scroll=find(window.get(),ScrollPane.class);
                 assertEquals(null,pane.section());assertEquals("",((com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock)field(pane,"status")).text());
                 PlayRunDeviceTest.visibilityScreenshot("apd-settings-categories.png");

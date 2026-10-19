@@ -66,7 +66,7 @@ public class HotbarResumePersistenceTest {
         Dungeon.quickslot.clearSlot(2);String[] before=snapshot();Dungeon.saveGame(1);SPDSettings.waterskinStartingSlot(-1);reload();assertArrayEquals(before,snapshot());assertEquals(0,Dungeon.quickslot.getItem(4).quantity());assertNull(Dungeon.quickslot.getItem(2));
     }
     @Test public void manualUserAssignmentsReachDiskBeforeAnyAppPauseOrNextTurn()throws Exception{
-        create();Dungeon.hero.ready=true;String[] before=snapshot();int hp=Dungeon.hero.HP;float turns=Statistics.duration;
+        create();Dungeon.hero.ready=true;String[] before=snapshot();int hp=Dungeon.hero.HP;float turns=Statistics.duration;long started=System.nanoTime();
         com.watabou.utils.Random.pushGenerator(93841);long expected;try{expected=com.watabou.utils.Random.Long();}finally{com.watabou.utils.Random.popGenerator();}
         com.watabou.utils.Random.pushGenerator(93841);try{
             com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton.set(1,Dungeon.hero.belongings.getItem(Waterskin.class));
@@ -74,6 +74,7 @@ public class HotbarResumePersistenceTest {
             assertEquals("Saving a shortcut consumes no gameplay RNG",expected,com.watabou.utils.Random.Long());
         }finally{com.watabou.utils.Random.popGenerator();}
         assertEquals(hp,Dungeon.hero.HP);assertEquals(turns,Statistics.duration,0);
+        System.out.println("HOTBAR_SAVE_PROBE commands=2 elapsedNs="+(System.nanoTime()-started)+" gameBytes="+FileUtils.getFileHandle(GamesInProgress.gameFile(1)).length());
         reload();assertArrayEquals("No explicit save or pause happened after these user edits",before,snapshot());
     }
 }

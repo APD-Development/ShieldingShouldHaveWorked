@@ -26,7 +26,9 @@
       "paths": [
         "tools/run-codex-android-checks.sh",
         "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/EquipmentWindowTest.java",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdResearchDeviceTest.java"
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdResearchDeviceTest.java",
+        ".github/workflows/codex-hotbar-cold-restart.yml",
+        "tools/run-hotbar-cold-restart.sh"
       ]
     },
     {
@@ -85,5 +87,5 @@
       ]
     }
   ],
-  "commentary": "Owner explicitly authorized immediate implementation and paired private APKs. First useful end-to-end slice of capabilities1/2, not completion of allfive. Verify1954core/49Android/65PNG. TEST294 actually produced an APK; preserve all its history and signature even while its Android acceptance is finishing. No release or physical-phone claim."
+  "commentary": "Owner explicitly authorized immediate implementation and paired private APKs. First useful end-to-end slice of capabilities1/2, not completion of allfive. Verify1954core/49Android/65PNG. TEST294 actually produced an APK; preserve all its history and signature even while its Android acceptance is finishing. No release or physical-phone claim. Urgent owner scope adds manual-hotbar immediate persistence, new-run-only Waterskin policy, six APD Settings categories and exact-APK process-restart/player UI acceptance. Core1959 passed. Previous produced remains TEST294; TEST298 failed the retained seed publication race before assembly, now fixed atomically."
 }
