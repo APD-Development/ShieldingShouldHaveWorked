@@ -31,29 +31,36 @@ import com.watabou.noosa.ui.Component;
 //APD: the in-game menu's "APD Settings" window. The same pane is also the "APD" tab of Options (WndSettings).
 public class WndAPDSettings extends Window {
 
-	private static final int WIDTH = 120;
-
-	public WndAPDSettings() {
-		super();
-
-		//ORDER MATTERS. The newest touch area is asked first, and a scrolling pane's own touch area covers everything inside it. So the pane
-		//is made FIRST (empty) and the controls are created AFTER it: then every button, slider and tick box is asked before the pane is, and
-		//the pane only gets what the controls do not take (the drag that scrolls it). Built the other way round, the pane swallows every touch
-		//and every control is dead (ApdSettingsClickDeviceTest touches each one).
-		Component content = new Component();
-		ScrollPane scroll = new ScrollPane( content );
-		APDSettingsPane pane = new APDSettingsPane();
-		pane.setSize( WIDTH, 0 );
-
-		//the pane has grown with the storage meter and the history buttons: when it is taller than the screen it scrolls
-		content.add( pane );
-		float contentHeight = (float)Math.ceil( pane.height() );
-		content.setSize( WIDTH, contentHeight );
-		float height = WindowGeometry.paneHeight( contentHeight, WindowGeometry.maxPane( PixelScene.uiCamera.height, 0, 0 ) );
-		//size the window first: it moves the window's camera, and the pane works out its screen position when it is placed
-		resize( WIDTH, (int)height );
-		add( scroll );
-		scroll.setRect( 0, 0, WIDTH, height );
-		scroll.allowDragFromButtons();
-	}
+    private final Component content;
+    private final ScrollPane scroll;
+    private final APDSettingsPane pane;
+    private final int paneWidth;
+    private final java.util.Map<com.shatteredpixel.shatteredpixeldungeon.apd.settings.ApdSettingsSection,Float> positions=new java.util.HashMap<>();
+    public WndAPDSettings(){this(null);}
+    public WndAPDSettings(com.shatteredpixel.shatteredpixeldungeon.apd.settings.ApdSettingsSection section){
+        super();
+        paneWidth=Math.max(72,Math.min(180,(int)PixelScene.uiCamera.width-16));
+        content=new Component();
+        // Keep the scrolling area's pointer listener older than every control.
+        scroll=new ScrollPane(content);
+        pane=new APDSettingsPane();content.add(pane);pane.showSection(section);
+        pane.navigation(previous->{
+            positions.put(previous,scroll.content().camera().scroll.y);
+            reflow();Float saved=positions.get(pane.section());scroll.scrollTo(0,saved==null?0:saved);
+        });
+        reflow();add(scroll);scroll.allowDragFromButtons();
+    }
+    private void reflow(){
+        pane.setSize(paneWidth,0);
+        float contentHeight=(float)Math.ceil(pane.height());content.setSize(paneWidth,contentHeight);
+        float height=WindowGeometry.paneHeight(contentHeight,WindowGeometry.maxPane(PixelScene.uiCamera.height,0,0));
+        resize(paneWidth,(int)height);scroll.setRect(0,0,paneWidth,height);
+    }
+    @Override public void onBackPressed(){if(pane.section()!=null)pane.showSection(null);else super.onBackPressed();}
+    @Override public Runnable restoreOnSceneReset(){
+        com.shatteredpixel.shatteredpixeldungeon.apd.settings.ApdSettingsSection section=pane.section();
+        float offset=scroll.content().camera().scroll.y;
+        return ()->{WndAPDSettings restored=new WndAPDSettings(section);restored.scroll.scrollTo(0,offset);
+            com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon.scene().addToFront(restored);};
+    }
 }

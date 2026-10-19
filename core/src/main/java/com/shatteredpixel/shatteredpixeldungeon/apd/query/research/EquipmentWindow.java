@@ -31,6 +31,9 @@ public final class EquipmentWindow {
     private EquipmentWindow(){}
     public static ResearchDocument answer(Catalog catalog,QueryResult anchors,Row anchor,int turns,String rules){
         ResearchDocument d=new ResearchDocument("Damage after equipping");
+        if(anchors!=null && !anchors.problems.isEmpty()){
+            d.notes.add("Cannot interpret this equipment query: "+String.join("; ",anchors.problems));return d;
+        }
         if(anchors==null || !anchors.problems.isEmpty() || anchors.isGrouped() || !EventDatasets.EQUIPMENT.equals(anchors.def.id)
                 || !anchors.rows.contains(anchor) || anchor.imported || anchor.duplicate
                 || anchor.runId.isEmpty() || !ResearchData.exact(anchors,anchor,"equip.start")){
@@ -43,6 +46,9 @@ public final class EquipmentWindow {
         long end=start+turns;
         d.notes.add("Interpreted question: total observed hero-target damage in run "+anchor.runId+", strictly after equipment turn "+start+" through turn "+end+" inclusive ("+turns+" turns). Equipment: "+ResearchData.label(anchors,anchor,"equip.item")+". The equip turn is excluded because within-turn ordering is not established by these table rows. Later equipment changes do not end this time window.");
         d.notes.add("Damage is the recorded displayed amount, including shield absorption, not just HP lost. This is an observed lower bound, not a claim of complete recording, armor effectiveness or causation. Missing historical events, gaps and unsupported recording versions are never reconstructed. Scope and disclosure are retained; the anchor already satisfied the Equipment filters. Equipment-only filters are not reinterpreted as damage filters.");
+        Dataset data=catalog==null ? null:catalog.dataset(EventDatasets.DAMAGE);boolean covered=false;
+        if(data!=null)for(Dataset.RunInfo info:data.runs)if(anchor.runId.equals(info.runId) && info.covered && !info.duplicate)covered=true;
+        if(!covered){d.notes.add("Damage recording coverage for this run is unavailable. Older logs may record equipment without recording damage. The total is unknown, not zero.");return d;}
         Query q=Query.of(EventDatasets.DAMAGE).withScope(anchors.query.scope).withShowInternal(anchors.query.showInternal)
                 .addFilter(Filter.text("damage.run",Op.GROUP_TEXT,anchor.runId))
                 .addFilter(Filter.num("damage.turn",Op.BETWEEN,start+1,end))

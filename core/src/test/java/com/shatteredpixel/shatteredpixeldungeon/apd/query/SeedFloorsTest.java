@@ -314,6 +314,8 @@ public class SeedFloorsTest {
 		m.setSeedFloorsProvider(com.shatteredpixel.shatteredpixeldungeon.apd.replay.SeedFloorsRunner.INSTANCE);
 		m.selectView("runs");
 		assertTrue(m.canSeedFloors(run));
+		java.util.concurrent.atomic.AtomicReference<String> publishedNotice = new java.util.concurrent.atomic.AtomicReference<>();
+		m.setListener(() -> { if (SeedFloors.ITEMS.equals(m.viewId())) publishedNotice.set(m.notice()); });
 		m.startSeedFloors(run);
 		long end = System.currentTimeMillis() + 60000;
 		while (!SeedFloors.ITEMS.equals(m.viewId()) && System.currentTimeMillis() < end){
@@ -323,6 +325,7 @@ public class SeedFloorsTest {
 		assertTrue(m.query().showInternal);
 		assertFalse(m.result().rows.isEmpty());
 		assertEquals("", m.notice());
+		assertEquals("The first success notification must already have retired its busy notice", "", publishedNotice.get());
 		//Back leads to the run table again
 		assertTrue(m.back());
 		assertEquals("runs", m.viewId());

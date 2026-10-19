@@ -20,6 +20,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
 import com.shatteredpixel.shatteredpixeldungeon.windows.APDSettingsPane;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndAPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList;
 import com.watabou.input.PointerEvent;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Gizmo;
@@ -44,6 +45,52 @@ import java.util.concurrent.atomic.AtomicReference;
 //This opens the real window, scrolls each control into view, sends real pointer events (the same ones the touch screen produces) and checks the response.
 @RunWith(AndroidJUnit4.class)
 public class ApdSettingsClickDeviceTest {
+    @Test public void categorizedSettingsPreserveControlsAndRespondOnSmallScreens()throws Exception{
+        try(ActivityScenario<AndroidLauncher> app=ActivityScenario.launch(AndroidLauncher.class)){
+            openTitleForTest();final AtomicReference<WndAPDSettings> window=new AtomicReference<>();
+            final int oldMode=SPDSettings.apdHotbarMode();final boolean oldFood=SPDSettings.apdFoodInHealing();final float[] dimensions=new float[2];
+            try{
+                onRender(()->{dimensions[0]=com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene.uiCamera.width;dimensions[1]=com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene.uiCamera.height;
+                    window.set(new WndAPDSettings());Game.scene().addToFront(window.get());});Thread.sleep(400);
+                APDSettingsPane pane=find(window.get(),APDSettingsPane.class);ScrollPane scroll=find(window.get(),ScrollPane.class);
+                assertEquals(null,pane.section());assertEquals("",((com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock)field(pane,"status")).text());
+                PlayRunDeviceTest.visibilityScreenshot("apd-settings-categories.png");
+                String[] captures={"gameplay","rules","hotbar","visibility","history","advanced"};
+                for(int i=0;i<6;i++){
+                    final List<?> categories=(List<?>)field(pane,"categories");tap(centreOnScreen(scroll,(Gizmo)categories.get(i)));
+                    assertEquals(com.shatteredpixel.shatteredpixeldungeon.apd.settings.ApdSettingsSection.values()[i],pane.section());
+                    final APDSettingsPane current=pane;
+                    onRender(()->{try{
+                        List<?> rows=(List<?>)field(current,"rows");java.util.Set<Object> seen=new java.util.HashSet<>();
+                        for(Object row:rows){com.watabou.noosa.ui.Component control=(com.watabou.noosa.ui.Component)field(row,"control");assertTrue("A control appears in exactly one section",seen.add(control));
+                            if(control.visible){assertTrue(control.left()>=current.left());assertTrue(control.right()<=current.right()+0.1f);
+                                if(control instanceof RedButton)assertTrue("Usable touch height",control.height()>=20);}
+                        }
+                    }catch(Exception e){throw new RuntimeException(e);}});
+                    PlayRunDeviceTest.visibilityScreenshot("apd-settings-"+captures[i]+".png");
+                    tap(centreOnScreen(scroll,(Gizmo)field(pane,"btnSections")));assertEquals(null,pane.section());
+                }
+                RedButton mode=(RedButton)field(pane,"btnHotbarLayout");
+                for(int i:new int[]{0,1,2,3,4,0,4}){
+                    tap(centreOnScreen(scroll,mode));WndUimsdList list=find(Game.scene(),WndUimsdList.class);assertNotNull(list);assertEquals(5,communityEntries(list).size());tapCommunityEntry(list,i);assertEquals(i,SPDSettings.apdHotbarMode());
+                }
+                tap(centreOnScreen(scroll,(Gizmo)field(pane,"chkFoodInHealing")));assertEquals(!oldFood,SPDSettings.apdFoodInHealing());
+                tap(centreOnScreen(scroll,(Gizmo)field(pane,"btnHotbarCustom")));WndUimsdList custom=find(Game.scene(),WndUimsdList.class);assertNotNull(custom);assertEquals(6,communityEntries(custom).size());onRender(custom::hide);
+                final APDSettingsPane restorePane=pane;
+                onRender(()->{Runnable restore=window.get().restoreOnSceneReset();window.get().hide();restore.run();});
+                window.set(find(Game.scene(),WndAPDSettings.class));pane=find(window.get(),APDSettingsPane.class);assertEquals(restorePane.section(),pane.section());scroll=find(window.get(),ScrollPane.class);
+                tap(centreOnScreen(scroll,(Gizmo)field(pane,"btnSections")));assertEquals(null,pane.section());
+                onRender(()->{window.get().hide();com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene.uiCamera.width=102;com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene.uiCamera.height=160;
+                    window.set(new WndAPDSettings(com.shatteredpixel.shatteredpixeldungeon.apd.settings.ApdSettingsSection.HOTBAR));Game.scene().addToFront(window.get());});Thread.sleep(400);
+                scroll=find(window.get(),ScrollPane.class);final ScrollPane narrow=scroll;
+                onRender(()->{narrow.scrollTo(0,Float.MAX_VALUE);assertTrue(narrow.content().camera().scroll.y>0);});
+                PlayRunDeviceTest.visibilityScreenshot("apd-settings-narrow.png");
+                onRender(()->window.get().onBackPressed());assertEquals(null,find(window.get(),APDSettingsPane.class).section());
+            }finally{onRender(()->{if(window.get()!=null)window.get().hide();SPDSettings.apdHotbarMode(oldMode);SPDSettings.apdFoodInHealing(oldFood);
+                com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene.uiCamera.width=dimensions[0];com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene.uiCamera.height=dimensions[1];});}
+        }
+    }
+    private static APDSettingsPane paneFor(Gizmo control){return (APDSettingsPane)control.parent;}
 
 	private static final String TAG = "APDUI";
 
@@ -120,6 +167,7 @@ public class ApdSettingsClickDeviceTest {
 		onRender(new Runnable(){
 			public void run(){
 				com.watabou.noosa.ui.Component c = (com.watabou.noosa.ui.Component) control;
+				if(c.parent instanceof APDSettingsPane)((APDSettingsPane)c.parent).reveal(c);
 				scroll.scrollTo(0, Math.max(0, c.top() - 20));
 			}
 		});
@@ -209,6 +257,8 @@ public class ApdSettingsClickDeviceTest {
                 // without activating the checkbox; a deliberate tap still activates it.
                 final ScrollPane gesturePane = scroll;
                 final Gizmo gestureButton = (Gizmo) field(pane, "chkAdult");
+                onRender(()->{paneFor(gestureButton).reveal((com.watabou.noosa.ui.Component)gestureButton);
+                    gesturePane.setRect(gesturePane.left(),gesturePane.top(),gesturePane.width(),72);window.get().resize((int)gesturePane.width(),72);});
                 Point start = centreOnScreen(gesturePane, gestureButton);
                 float[] beforeSwipe = new float[1], afterSwipe = new float[1];
                 onRender(() -> beforeSwipe[0] = gesturePane.content().camera.scroll.y);
@@ -549,7 +599,8 @@ public class ApdSettingsClickDeviceTest {
 						(com.shatteredpixel.shatteredpixeldungeon.ui.OptionSlider) field(pane, "optExotic");
 				final AtomicReference<Point> sliderPoint = new AtomicReference<>();
 				onRender(() -> {
-					scroll.scrollTo(0, Math.max(0, exotic.top() - 20));
+					pane.reveal(exotic);
+                    scroll.scrollTo(0, Math.max(0, exotic.top() - 20));
 					sliderPoint.set(exotic.camera().cameraToScreen(exotic.right() - 3, exotic.bottom() - 7));
 				});
 				Thread.sleep(300);
@@ -578,7 +629,7 @@ public class ApdSettingsClickDeviceTest {
                 assertEquals("Off", communityEntries(slotChoices).get(7).label);
                 tapCommunityEntry(slotChoices, 2);
                 waitUntil("Waterskin start Slot 2 saved", () -> SPDSettings.waterskinStartingSlot() == 1, 10000);
-                assertEquals("Waterskin Starting Hotbar Slot: Slot 2", waterskinStart.text());
+                assertEquals("Waterskin start: Slot 2", waterskinStart.text());
 
 				tapUntil("Healing confirmation", scroll, (Gizmo) field(pane, "btnHealingConfirmation"),
 						() -> find(Game.scene(), com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions.class) != null, 30000);
@@ -652,6 +703,7 @@ public class ApdSettingsClickDeviceTest {
 		owners.put("btnDemoRemove", new Object[]{ DemoUnlockDeviceTest.class, "theDemoUnlockMakesTenDemoRunsOpensUimsdForGoodAndItsButtonIsUsedUp" });
 		owners.put("btnDemoView", new Object[]{ DemoUnlockDeviceTest.class, "theDemoUnlockMakesTenDemoRunsOpensUimsdForGoodAndItsButtonIsUsedUp" });
 
+        for(String id:new String[]{"btnSections","btnHotbarLayout","btnHotbarCustom","chkFoodInHealing"})owners.put(id,new Object[]{ApdSettingsClickDeviceTest.class,"categorizedSettingsPreserveControlsAndRespondOnSmallScreens"});
 		final java.util.Set<String> declared = new java.util.TreeSet<>();
 		for (Field f : APDSettingsPane.class.getDeclaredFields()) {
 			Class<?> type = f.getType();

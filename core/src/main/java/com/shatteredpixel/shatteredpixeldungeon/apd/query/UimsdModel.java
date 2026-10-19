@@ -387,6 +387,8 @@ public final class UimsdModel {
 						SeedFloors.install(cat, b);
 						if (!SeedFloors.isSeedView(viewId)) hiddenBeforeSeed = query.showInternal;
 						back.add(new Place(viewId, query, page));
+						// Publish the completed state together; observers must not see the new view with the old busy notice.
+						notice = "";
 						viewId = SeedFloors.ITEMS;
 						apply(cat.view(SeedFloors.ITEMS).initialQuery().withShowInternal(true));
 					}

@@ -402,6 +402,7 @@ public class CustomRulesNoticeDeviceTest {
                     com.shatteredpixel.shatteredpixeldungeon.windows.APDSettingsPane pane=find(window[0],com.shatteredpixel.shatteredpixeldungeon.windows.APDSettingsPane.class).get(0);
                     RenderedTextBlock info=(RenderedTextBlock)field(pane,"info");
                     OptionSlider slider=(OptionSlider)field(pane,"optExotic");
+                    pane.reveal(slider);
                     RenderedTextBlock title=(RenderedTextBlock)field(slider,"title");
                     assertEquals("Healing to Shielding chance (new runs)",title.text());
                     assertTrue(info.text().contains("generated Potion of Healing"));

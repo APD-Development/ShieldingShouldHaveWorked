@@ -47,6 +47,10 @@ public class EquipmentWindowTest {
         ResearchDocument d=EquipmentWindow.answer(c,a,anchor,10,RULES);assertEquals("0 observed (at least)",d.cards.get(0).value);assertEquals(CellText.LOWER,d.cards.get(0).state);
         assertTrue(d.cards.get(0).detail.contains("not proof that no damage happened"));
         assertTrue(EquipmentWindow.answer(new Catalog(),a,anchor,10,RULES).cards.isEmpty());
+        new SyntheticLog(tmp.getRoot(),"old",new TelemetryVersion(1,2),100).start("old",0,"WARRIOR",RULES,0,30,false).enter(1)
+                .equip("old-armor","Leather armor",ItemEvents.CAT_ARMOR).end(LifecycleEvents.OUTCOME_DIED,"rat",1,1,10).close(true);
+        Catalog legacy=new DatasetStore(tmp.getRoot()).load();QueryResult old=ResearchData.select(legacy,Query.of(EventDatasets.EQUIPMENT).withScope(all()).addFilter(Filter.text("equip.run",Op.GROUP_TEXT,"old")),RULES);
+        ResearchDocument unknown=EquipmentWindow.answer(legacy,old,old.rows.get(0),10,RULES);assertTrue(unknown.cards.isEmpty());assertTrue(unknown.notes.get(unknown.notes.size()-1).contains("unknown, not zero"));
     }
     @Test public void uncertainAnchorAndOverflowingWindowFailClosed(){
         Catalog c=recorded();QueryResult a=anchors(c);Row anchor=a.rows.get(0);

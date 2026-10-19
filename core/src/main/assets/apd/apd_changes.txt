@@ -1,4 +1,6 @@
 Bug Fixes:
+- Resuming a saved run keeps manual hotbar assignments, empty slots and placeholders. The Waterskin starting-slot preference only affects new runs and never rearranges an existing run.
+- A completed UIMSD seed replay publishes its result and clears the busy message together.
 - Adding or reversing a secondary sort key keeps that selected statistic visible instead of jumping to the primary key. Column reordering preserves vertical position when the sort itself is unchanged.
 - CSV run reports now include their recorded fact sections, including Outcome and Ascended, alongside existing tables.
 - Final deaths no longer become Abandoned when death cleanup removes the save before the death ranking is submitted. Manually abandoned runs remain distinct. Existing ambiguous records are preserved.
@@ -14,6 +16,7 @@ Statistics / UIMSD:
 - Winning runs now record whether the ascent was completed. The Ascended column is available for filtering, summaries and exports; older unrecorded results remain unknown.
 
 Quality of Life:
+- APD Settings now opens a compact category index with focused Gameplay, Difficulty & Rules, Hotbar & Controls, Visibility & Navigation, Statistics & History, and Advanced sections. Controls use consistent compact styling, explain when changes apply, and keep diagnostics out of the main page.
 - Tile examination of open multi-item piles shows every item in top-first order with visible identity, icons and quantities. Inspect an item for its normal description without collecting it, advancing turns or identifying anything.
 
 APD 4.0.8-apd

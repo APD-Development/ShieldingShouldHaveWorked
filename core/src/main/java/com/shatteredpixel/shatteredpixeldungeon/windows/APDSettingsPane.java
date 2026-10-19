@@ -23,6 +23,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.apd.settings.ApdSettingsSection;
+import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.apd.demo.DemoData;
 import com.shatteredpixel.shatteredpixeldungeon.apd.demo.DemoGenerator;
@@ -82,8 +84,41 @@ public class APDSettingsPane extends Component {
 	private RedButton btnDemoRemove;
 	private RedButton btnDemoView;
 
+    private ApdSettingsSection section;
+    private java.util.List<SettingRow> rows;
+    private java.util.List<SettingButton> categories;
+    private SettingButton btnSections,btnHotbarLayout,btnHotbarCustom;
+    private CheckBox chkFoodInHealing;
+    private RenderedTextBlock sectionInfo;
+    private boolean diagnosticsLoaded;
+    public interface Navigation { void changed(ApdSettingsSection previous); }
+    private Navigation navigation;
+    public void navigation(Navigation value){navigation=value;}
+    public ApdSettingsSection section(){return section;}
+    public void showSection(ApdSettingsSection next){
+        ApdSettingsSection previous=section;section=next;layout();
+        if(navigation!=null)navigation.changed(previous);
+    }
+    /** Also supports direct links to a setting without changing its value. */
+    public void reveal(Component control){for(SettingRow r:rows)if(r.control==control){if(section!=r.section)showSection(r.section);return;}}
+    private final class SettingRow {
+        final ApdSettingsSection section;final Component control;final RenderedTextBlock description;
+        SettingRow(ApdSettingsSection section,Component control,String note){this.section=section;this.control=control;
+            description=PixelScene.renderTextBlock(note,6);description.hardlight(0xBBBBBB);add(description);}
+    }
+    private void row(ApdSettingsSection section,Component control,String note){if(control!=null)rows.add(new SettingRow(section,control,note));}
+    private static class SettingButton extends RedButton {
+        SettingButton(String label){this(label,7);}
+        SettingButton(String label,int ignored){super(label,7);remove(bg);bg=Chrome.get(Chrome.Type.GREY_BUTTON);addToBack(bg);multiline=true;}
+    }
+    private static class SettingCheckBox extends CheckBox {
+        SettingCheckBox(String label){super(label);remove(bg);bg=Chrome.get(Chrome.Type.GREY_BUTTON);addToBack(bg);
+            remove(text);text=PixelScene.renderTextBlock(label,7);add(text);}
+    }
+
 	@Override
 	protected void createChildren() {
+        rows=new java.util.ArrayList<>();categories=new java.util.ArrayList<>();
 		title = PixelScene.renderTextBlock( "APD Settings", 9 );
 		title.hardlight( Window.TITLE_COLOR );
 		add( title );
@@ -100,10 +135,10 @@ public class APDSettingsPane extends Component {
 		add( optExotic );
 
 		info = PixelScene.renderTextBlock(
-				"Minimum chance that a generated Potion of Healing becomes Shielding. Other potions and scrolls keep normal SPD behavior. 0% keeps normal behavior.", 5 );
+				"Minimum chance that a generated Potion of Healing becomes Shielding. Other potions and scrolls keep normal SPD behavior. 0% keeps normal behavior.", 6 );
 		add( info );
 
-		chkRecord = new CheckBox( "Record run history" ) {
+		chkRecord = new SettingCheckBox( "Record run history" ) {
 			@Override
 			protected void onClick() {
 				super.onClick();
@@ -113,14 +148,14 @@ public class APDSettingsPane extends Component {
 		};
 		chkRecord.checked( SPDSettings.apdRecording() );
 		add( chkRecord );
-        chkDotOverlay=new CheckBox("On-screen damage-over-time details"){
+        chkDotOverlay=new SettingCheckBox("Damage-over-time panel"){
             @Override protected void onClick(){super.onClick();SPDSettings.dotOverlayEnabled(checked());}
         };
         chkDotOverlay.checked(SPDSettings.dotOverlayEnabled());
         add(chkDotOverlay);
 
 		//Unknown age leaves the choice usable; verified underage players receive Clean.
-		chkAdult = new CheckBox( "Adult humor (18+)" ) {
+		chkAdult = new SettingCheckBox( "Adult humor (18+)" ) {
 			@Override
 			protected void onClick() {
 				if (!com.shatteredpixel.shatteredpixeldungeon.apd.age.AgeEligibility.permitsAdult(
@@ -137,23 +172,23 @@ public class APDSettingsPane extends Component {
 		chkAdult.checked( SPDSettings.apdAdultHumor() );
 		add( chkAdult );
 
-        chkTileVisibility=new CheckBox("Enhanced Tile Visibility"){
+        chkTileVisibility=new SettingCheckBox("Enhanced tile visibility"){
             @Override protected void onClick(){super.onClick();SPDSettings.enhancedTileVisibility(checked());}
         };
         chkTileVisibility.checked(SPDSettings.enhancedTileVisibility());add(chkTileVisibility);
-        chkStairNavigation=new CheckBox("Automatic Stair Navigation"){
+        chkStairNavigation=new SettingCheckBox("Stair navigation shortcut"){
             @Override protected void onClick(){super.onClick();SPDSettings.stairNavigationShortcut(checked());
                 if(checked()) ShatteredPixelDungeon.scene().addToFront(new WndMessage(
                     "Tap the staircase icon beside the hotbar, above the side controls, and choose Stairs Up or Stairs Down. Only discovered stairs are available. Enable Auto-enter Stairs below to also change floors on arrival."));
             }
         };
         chkStairNavigation.checked(SPDSettings.stairNavigationShortcut());add(chkStairNavigation);
-        chkAutoEnterStairs=new CheckBox("Auto-enter Stairs on Arrival"){
+        chkAutoEnterStairs=new SettingCheckBox("Auto-enter stairs"){
             @Override protected void onClick(){super.onClick();SPDSettings.autoEnterStairs(checked());}
         };
         chkAutoEnterStairs.checked(SPDSettings.autoEnterStairs());add(chkAutoEnterStairs);
 
-        btnPlaybackSpeed = new RedButton("Game speed: "
+        btnPlaybackSpeed = new SettingButton("Game speed: "
                 + com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.label(SPDSettings.playbackSpeed())) {
             @Override protected void onClick() {
                 if (com.shatteredpixel.shatteredpixeldungeon.apd.ApdFeatures.testBuild()) {
@@ -187,7 +222,7 @@ public class APDSettingsPane extends Component {
         add(btnPlaybackSpeed);
         // This is intentionally on the shared APD settings pane: both ordinary
         // player builds and private developer builds receive the same control.
-        btnWaterskinSlot = new RedButton("Waterskin Starting Hotbar Slot: "
+        btnWaterskinSlot = new SettingButton("Waterskin start: "
                 + com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.WaterskinStartupSlot.label(
                         SPDSettings.waterskinStartingSlot()), 7) {
             @Override protected void onClick() {
@@ -200,29 +235,28 @@ public class APDSettingsPane extends Component {
                 }
                 ShatteredPixelDungeon.scene().addToFront(WndUimsdList.menu(
                         "Waterskin Starting Hotbar Slot",
-                        "Slots 1-6, default Slot 2. Existing runs rearrange safely when loaded. Category hotbars have separate layouts.",
+                        "New runs only. Default Slot 2. Resuming a saved run keeps every manual assignment. Category hotbars have separate layouts.",
                         choices, (index, checked) -> {
                             if (index < 0 || index > 7) return;
                             SPDSettings.waterskinStartingSlot(index - 1);
-                            com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.WaterskinStartupSlot.applyToCurrentRun();
-                            btnWaterskinSlot.text("Waterskin Starting Hotbar Slot: "
+                            btnWaterskinSlot.text("Waterskin start: "
                                     + com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.WaterskinStartupSlot.label(
                                             SPDSettings.waterskinStartingSlot()));
                         }));
             }
         };
         add(btnWaterskinSlot);
-        btnHealingConfirmation = new RedButton("Healing confirmation") {
+        btnHealingConfirmation = new SettingButton("Healing confirmation") {
             @Override protected void onClick() { WndHealingConfirmation.settings(); }
         };
         add(btnHealingConfirmation);
-        btnCustomRules = new RedButton("Custom Dungeon Rules", 6) {
+        btnCustomRules = new SettingButton("Custom Dungeon Rules", 6) {
             @Override protected void onClick() {
                 ShatteredPixelDungeon.scene().addToFront(new WndCustomDungeonRules());
             }
         };
         add(btnCustomRules);
-        btnCurrentCustomRules = new RedButton("View current run rules", 6) {
+        btnCurrentCustomRules = new SettingButton("View current run rules", 6) {
             @Override protected void onClick() {
                 ShatteredPixelDungeon.scene().addToFront(new WndCustomDungeonRules(true));
             }
@@ -230,25 +264,18 @@ public class APDSettingsPane extends Component {
         btnCurrentCustomRules.visible = Game.scene() instanceof GameScene;
         btnCurrentCustomRules.active = btnCurrentCustomRules.visible;
         add(btnCurrentCustomRules);
-		btnClericQuickCasts = new RedButton("Cleric quick-cast buttons") {
+		btnClericQuickCasts = new SettingButton("Cleric quick-cast buttons") {
             @Override protected void onClick() { WndClericQuickCasts.settings(); }
         };
         add(btnClericQuickCasts);
 
-		status = PixelScene.renderTextBlock( ApdRecorder.status().summary(), 5 );
+		status = PixelScene.renderTextBlock( "", 6 );
 		add( status );
 
-		//measured once when the pane opens (a few directory listings), so the window is sized for the text it holds
-		String meter;
-		try {
-			meter = HistoryTransfer.storage().summary();
-		} catch (Throwable e) {
-			meter = "History: could not be measured (" + e + ")";
-		}
-		storage = PixelScene.renderTextBlock( meter, 5 );
+		storage = PixelScene.renderTextBlock( "", 6 );
 		add( storage );
 
-		btnTest = new RedButton( "Run self-test" ) {
+		btnTest = new SettingButton( "Run self-test" ) {
 			@Override
 			protected void onClick() {
 				runSelfTest( this );
@@ -256,7 +283,7 @@ public class APDSettingsPane extends Component {
 		};
 		add( btnTest );
 
-		btnImport = new RedButton( "Import APD rankings" ) {
+		btnImport = new SettingButton( "Import APD rankings" ) {
 			@Override
 			protected void onClick() {
 				runImport( this );
@@ -264,7 +291,7 @@ public class APDSettingsPane extends Component {
 		};
 		add( btnImport );
 
-		btnExportHistory = new RedButton( "Export history (ZIP)" ) {
+		btnExportHistory = new SettingButton( "Export history (ZIP)" ) {
 			@Override
 			protected void onClick() {
 				runTransfer( this, "Export history (ZIP)", true );
@@ -272,7 +299,7 @@ public class APDSettingsPane extends Component {
 		};
 		add( btnExportHistory );
 
-		btnImportHistory = new RedButton( "Import history (ZIP)" ) {
+		btnImportHistory = new SettingButton( "Import history (ZIP)" ) {
 			@Override
 			protected void onClick() {
 				runTransfer( this, "Import history (ZIP)", false );
@@ -280,7 +307,7 @@ public class APDSettingsPane extends Component {
 		};
 		add( btnImportHistory );
 
-		btnUimsd = new RedButton( "Open UIMSD (preview)" ) {
+		btnUimsd = new SettingButton( "Open UIMSD (preview)" ) {
 			@Override
 			protected void onClick() {
 				UimsdScene.open( ShatteredPixelDungeon.scene().getClass() == GameScene.class ? GameScene.class : TitleScene.class );
@@ -289,7 +316,7 @@ public class APDSettingsPane extends Component {
 		add( btnUimsd );
 
 		if (GrudgeHooks.available()) {
-			btnGrudge = new RedButton( "About / Developer: The Grudge" ) {
+			btnGrudge = new SettingButton( "About / Developer: The Grudge" ) {
 				@Override
 				protected void onClick() {
 					ShatteredPixelDungeon.scene().addToFront( new WndClericGrudge() );
@@ -299,7 +326,7 @@ public class APDSettingsPane extends Component {
 		}
 
 		if (DemoData.available()) {
-			btnDemoGenerate = new RedButton( "DEMO data: generate / reset" ) {
+			btnDemoGenerate = new SettingButton( "DEMO data: generate / reset" ) {
 				@Override
 				protected void onClick() {
 					generateDemo( this );
@@ -307,7 +334,7 @@ public class APDSettingsPane extends Component {
 			};
 			add( btnDemoGenerate );
 
-			btnDemoRemove = new RedButton( "DEMO data: remove all" ) {
+			btnDemoRemove = new SettingButton( "DEMO data: remove all" ) {
 				@Override
 				protected void onClick() {
 					DemoData.viewDemo( false );
@@ -320,7 +347,7 @@ public class APDSettingsPane extends Component {
 			};
 			add( btnDemoRemove );
 
-			btnDemoView = new RedButton( demoViewText() ) {
+			btnDemoView = new SettingButton( demoViewText() ) {
 				@Override
 				protected void onClick() {
 					DemoData.viewDemo( !DemoData.viewingDemo() );
@@ -329,6 +356,51 @@ public class APDSettingsPane extends Component {
 			};
 			add( btnDemoView );
 		}
+        btnHotbarLayout=new SettingButton("Hotbar: "+com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.CategoryHotbar.MODES[SPDSettings.apdHotbarMode()]){ @Override protected void onClick(){
+            java.util.List<WndUimsdList.Entry> choices=new java.util.ArrayList<>();
+            for(int i=0;i<com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.CategoryHotbar.MODES.length;i++)choices.add(WndUimsdList.Entry.item(com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.CategoryHotbar.MODES[i]).current(i==SPDSettings.apdHotbarMode()));
+            ShatteredPixelDungeon.scene().addToFront(WndUimsdList.menu("Hotbar layout","Immediate. Classic item positions and saved custom layouts are kept when switching modes.",choices,(index,checked)->{
+                SPDSettings.apdHotbarMode(index);btnHotbarLayout.text("Hotbar: "+com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.CategoryHotbar.MODES[index]);com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton.cancel();com.shatteredpixel.shatteredpixeldungeon.ui.Toolbar.updateLayout();com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton.refresh();
+            }));
+        }};add(btnHotbarLayout);
+        btnHotbarCustom=new SettingButton("Configure custom hotbar"){ @Override protected void onClick(){WndCategoryHotbar.slots();}};add(btnHotbarCustom);
+        chkFoodInHealing=new SettingCheckBox("Food in Healing"){@Override protected void onClick(){super.onClick();SPDSettings.apdFoodInHealing(checked());com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton.refresh();}};
+        chkFoodInHealing.checked(SPDSettings.apdFoodInHealing());add(chkFoodInHealing);
+        row(ApdSettingsSection.GAMEPLAY,btnPlaybackSpeed,"Immediate visual playback speed. Turn costs and combat rules stay unchanged.");
+        row(ApdSettingsSection.GAMEPLAY,btnHealingConfirmation,"Immediate. Choose which healing actions ask first, including low-health thresholds.");
+        row(ApdSettingsSection.GAMEPLAY,chkAdult,"Immediate content preference. Off keeps humor clean; verified under-18 accounts cannot enable adult humor.");
+        row(ApdSettingsSection.RULES,optExotic,"New runs only. Your current run keeps its recorded Healing-to-Shielding chance.");
+        row(ApdSettingsSection.RULES,info,"");
+        row(ApdSettingsSection.RULES,btnCustomRules,"New runs only. Configure the 18 experimental Custom Dungeon Rules. Existing runs keep their saved rules.");
+        row(ApdSettingsSection.RULES,btnCurrentCustomRules,"Read only. Inspect the rules saved with the current run.");
+        row(ApdSettingsSection.HOTBAR,btnHotbarLayout,"Immediate. Choose Classic SPD, category presets or Custom. Switching layouts retains the other layouts and Classic item assignments.");
+        row(ApdSettingsSection.HOTBAR,btnHotbarCustom,"Immediate. Assign categories or known item types to six custom positions. Classic assignments are retained.");
+        row(ApdSettingsSection.HOTBAR,chkFoodInHealing,"Immediate. Also offer food from a Healing category slot; normal food costs still apply.");
+        row(ApdSettingsSection.HOTBAR,btnWaterskinSlot,"New runs only. This starting preference never rearranges a resumed run or changes manual hotbar assignments.");
+        row(ApdSettingsSection.HOTBAR,btnClericQuickCasts,"Immediate control preference. Configure Cleric quick-cast buttons without changing spell costs.");
+        row(ApdSettingsSection.VISIBILITY,chkTileVisibility,"Display preference. Make visible tiles easier to distinguish without revealing undiscovered terrain.");
+        row(ApdSettingsSection.VISIBILITY,chkDotOverlay,"Immediate display preference. Show or hide the collapsible damage-over-time panel.");
+        row(ApdSettingsSection.VISIBILITY,chkStairNavigation,"Immediate shortcut to discovered stairs only. This does not reveal hidden stairs.");
+        row(ApdSettingsSection.VISIBILITY,chkAutoEnterStairs,"Immediate. Automatically change floors when a stair-navigation path reaches the staircase.");
+        row(ApdSettingsSection.HISTORY,btnUimsd,"Open your recorded statistics, queries and investigation tools.");
+        row(ApdSettingsSection.HISTORY,chkRecord,"After restarting APD. Enable or disable recording; existing history is preserved.");
+        row(ApdSettingsSection.HISTORY,btnExportHistory,"Save a ZIP backup of run history using the platform file chooser.");
+        row(ApdSettingsSection.HISTORY,btnImportHistory,"Import a history ZIP through the platform file chooser. Existing records remain protected.");
+        row(ApdSettingsSection.HISTORY,btnImport,"Import existing APD rankings. Unrecorded historical details stay unknown.");
+        row(ApdSettingsSection.ADVANCED,status,"Recording diagnostics: version, log identity and event counts. These are information, not gameplay settings.");
+        row(ApdSettingsSection.ADVANCED,storage,"Storage used by recorded history and caches.");
+        row(ApdSettingsSection.ADVANCED,btnTest,"Run offline statistics, query and archive self-tests. This does not alter your saves.");
+        row(ApdSettingsSection.ADVANCED,btnGrudge,"Open the existing Cleric lore and developer information controls.");
+        row(ApdSettingsSection.ADVANCED,btnDemoGenerate,"Developer tool. Generate made-up demo history separately from real records.");
+        row(ApdSettingsSection.ADVANCED,btnDemoRemove,"Developer tool. Remove demo history only; real run history is not deleted.");
+        row(ApdSettingsSection.ADVANCED,btnDemoView,"Developer tool. Choose whether UIMSD displays real history or clearly marked demo data.");
+        sectionInfo=PixelScene.renderTextBlock("",6);sectionInfo.hardlight(0xBBBBBB);add(sectionInfo);
+        btnSections=new SettingButton("< All APD settings"){@Override protected void onClick(){showSection(null);}};add(btnSections);
+        for(ApdSettingsSection choice:ApdSettingsSection.values()){
+            SettingButton button=new SettingButton(choice.title){@Override protected void onClick(){showSection(choice);}};
+            categories.add(button);add(button);
+        }
+
 	}
 
 	private static String demoViewText() {
@@ -371,61 +443,37 @@ public class APDSettingsPane extends Component {
 	}
 
 	@Override
-	protected void layout() {
-		title.setPos( (width - title.width())/2f, y );
-		float pos = title.bottom() + GAP;
-		optExotic.setRect( x, pos, width, 24 );
-		pos = optExotic.bottom() + GAP;
-		info.maxWidth( (int)width );
-		info.setPos( x, pos );
-		pos = info.bottom() + GAP;
-		chkRecord.setRect( x, pos, width, 16 );
-		pos = chkRecord.bottom() + GAP;
-        chkDotOverlay.setRect(x,pos,width,16);
-        pos=chkDotOverlay.bottom()+GAP;
-		chkAdult.setRect( x, pos, width, 16 );
-		pos = chkAdult.bottom() + GAP;
-        chkTileVisibility.setRect(x,pos,width,16);pos=chkTileVisibility.bottom()+GAP;
-        chkStairNavigation.setRect(x,pos,width,16);pos=chkStairNavigation.bottom()+GAP;
-        chkAutoEnterStairs.setRect(x,pos,width,16);pos=chkAutoEnterStairs.bottom()+GAP;
-        btnPlaybackSpeed.setRect(x,pos,width,16);pos=btnPlaybackSpeed.bottom()+GAP;
-        btnWaterskinSlot.setRect(x,pos,width,16);pos=btnWaterskinSlot.bottom()+GAP;
-        btnHealingConfirmation.setRect(x,pos,width,16);pos=btnHealingConfirmation.bottom()+GAP;
-        btnCustomRules.setRect(x,pos,width,20);pos=btnCustomRules.bottom()+GAP;
-        if(btnCurrentCustomRules.visible){btnCurrentCustomRules.setRect(x,pos,width,20);pos=btnCurrentCustomRules.bottom()+GAP;}
-        btnClericQuickCasts.setRect(x,pos,width,16);
-        pos = btnClericQuickCasts.bottom() + GAP;
-		status.maxWidth( (int)width );
-		status.setPos( x, pos );
-		pos = status.bottom() + GAP;
-		storage.maxWidth( (int)width );
-		storage.setPos( x, pos );
-		pos = storage.bottom() + GAP;
-		btnTest.setRect( x, pos, width, 16 );
-		pos = btnTest.bottom() + GAP;
-		btnImport.setRect( x, pos, width, 16 );
-		pos = btnImport.bottom() + GAP;
-		btnExportHistory.setRect( x, pos, width, 16 );
-		pos = btnExportHistory.bottom() + GAP;
-		btnImportHistory.setRect( x, pos, width, 16 );
-		pos = btnImportHistory.bottom() + GAP;
-		btnUimsd.setRect( x, pos, width, 16 );
-		height = btnUimsd.bottom() - y;
-		if (btnGrudge != null) {
-			pos = btnUimsd.bottom() + GAP;
-			btnGrudge.setRect( x, pos, width, 16 );
-			height = btnGrudge.bottom() - y;
-		}
-		if (btnDemoGenerate != null) {
-			pos = (btnGrudge != null ? btnGrudge : btnUimsd).bottom() + GAP;
-			btnDemoGenerate.setRect( x, pos, width, 16 );
-			pos = btnDemoGenerate.bottom() + GAP;
-			btnDemoRemove.setRect( x, pos, width, 16 );
-			pos = btnDemoRemove.bottom() + GAP;
-			btnDemoView.setRect( x, pos, width, 16 );
-			height = btnDemoView.bottom() - y;
-		}
-	}
+    protected void layout(){
+        if(rows==null || width<=0)return;
+        title.text(section==null ? "APD Settings":section.title);title.maxWidth((int)width);title.setPos(x+(width-title.width())/2,y);
+        float pos=title.bottom()+GAP;
+        sectionInfo.text(section==null ? "Choose a category. Each setting explains when it applies.":section.description);
+        sectionInfo.maxWidth((int)width);sectionInfo.setPos(x,pos);pos=sectionInfo.bottom()+GAP;
+        for(SettingRow r:rows){r.control.visible=r.control.active=false;r.description.visible=r.description.active=false;}
+        for(SettingButton button:categories)button.visible=button.active=false;
+        btnSections.visible=btnSections.active=section!=null;
+        if(section==null){
+            for(SettingButton button:categories){button.visible=button.active=true;button.setRect(x,pos,width,24);pos=button.bottom()+GAP;}
+        }else{
+            btnSections.setRect(x,pos,width,20);pos=btnSections.bottom()+2*GAP;
+            if(section==ApdSettingsSection.ADVANCED && !diagnosticsLoaded){
+                status.text(ApdRecorder.status().summary());
+                try{storage.text(HistoryTransfer.storage().summary());}catch(Throwable e){storage.text("History storage could not be measured: "+e.getMessage());}
+                diagnosticsLoaded=true;
+            }
+            for(SettingRow r:rows){
+                if(r.section!=section || r.control==btnCurrentCustomRules && !(Game.scene() instanceof GameScene))continue;
+                r.control.visible=r.control.active=true;
+                if(r.control instanceof RenderedTextBlock){RenderedTextBlock t=(RenderedTextBlock)r.control;t.maxWidth((int)width);t.setPos(x,pos);}
+                else if(r.control==optExotic)r.control.setRect(x,pos,width,26);
+                else r.control.setRect(x,pos,width,22);
+                pos=r.control.bottom()+2;
+                if(!r.description.text().isEmpty()){r.description.visible=r.description.active=true;r.description.maxWidth((int)width);r.description.setPos(x,pos);pos=r.description.bottom()+GAP+2;}
+                else pos+=GAP;
+            }
+        }
+        height=pos-y;
+    }
 
 	//export or import the whole history through the platform's file chooser; the result is shown in plain words
 	private void runTransfer( final RedButton button, final String label, boolean export ) {
@@ -506,5 +554,3 @@ public class APDSettingsPane extends Component {
 		t.start();
 	}
 }
-
-

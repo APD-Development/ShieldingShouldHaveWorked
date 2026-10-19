@@ -10,18 +10,6 @@ public final class WaterskinStartupSlot {
 
     private WaterskinStartupSlot() {}
 
-    /** Apply the saved preference to the actual Waterskin in a loaded or active game. */
-    public static void applyToCurrentRun() {
-        if (com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero == null) return;
-        java.util.ArrayList<com.shatteredpixel.shatteredpixeldungeon.items.Waterskin> waterskins =
-                com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero.belongings.getAllItems(
-                        com.shatteredpixel.shatteredpixeldungeon.items.Waterskin.class);
-        if (!waterskins.isEmpty()) assign(
-                com.shatteredpixel.shatteredpixeldungeon.Dungeon.quickslot,
-                waterskins.get(0),
-                com.shatteredpixel.shatteredpixeldungeon.SPDSettings.waterskinStartingSlot(),
-                com.shatteredpixel.shatteredpixeldungeon.SPDSettings.quickslotWaterskin());
-    }
 
     public static String label(int position) {
         if (position == AUTOMATIC) return "Automatic";

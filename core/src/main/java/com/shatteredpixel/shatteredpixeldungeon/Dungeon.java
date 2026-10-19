@@ -918,7 +918,7 @@ public class Dungeon {
 		
 		hero = null;
 		hero = (Hero)bundle.get( HERO );
-        if (fullLoad) com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.WaterskinStartupSlot.applyToCurrentRun();
+		// Saved item positions are authoritative. Starting-slot preferences apply in HeroClass.initHero only.
 		
 		depth = bundle.getInt( DEPTH );
 		branch = bundle.getInt( BRANCH );
