@@ -67,7 +67,9 @@
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndAPDSettings.java",
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/settings/ApdSettingsSection.java",
         "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/ApdSettingsClickDeviceTest.java",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java"
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/UiEntryPointsTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/HotbarColdRestartDeviceTest.java"
       ]
     },
     {

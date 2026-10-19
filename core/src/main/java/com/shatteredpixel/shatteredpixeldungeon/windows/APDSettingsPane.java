@@ -47,8 +47,8 @@ import com.watabou.noosa.ui.Component;
 import com.watabou.utils.Callback;
 import com.watabou.utils.FileUtils;
 
-//APD: the APD settings, shown as the "APD" tab of Options (WndSettings) and in the in-game menu's "APD Settings" window.
-//Both use the same pane, so the controls are the same wherever you open them.
+//APD: shared settings pane opened directly from the title screen and in-game menu.
+//Category navigation changes presentation only; preference keys and callbacks stay shared.
 public class APDSettingsPane extends Component {
 
 	private static final int GAP = 4;

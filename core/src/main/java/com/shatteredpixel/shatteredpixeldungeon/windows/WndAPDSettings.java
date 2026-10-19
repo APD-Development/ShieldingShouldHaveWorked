@@ -28,7 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.ui.Component;
 
-//APD: the in-game menu's "APD Settings" window. The same pane is also the "APD" tab of Options (WndSettings).
+//APD: the shared APD Settings window reached from the title screen and in-game menu.
 public class WndAPDSettings extends Window {
 
     private final Component content;

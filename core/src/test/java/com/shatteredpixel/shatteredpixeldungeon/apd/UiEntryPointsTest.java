@@ -42,8 +42,13 @@ public class UiEntryPointsTest {
 		//every control must be added to the pane and positioned
 		for (String c : new String[]{"optExotic", "info", "chkRecord", "status", "btnTest", "btnImport", "btnUimsd", "storage", "btnExportHistory", "btnImportHistory"}){
 			assertTrue(c + " not added", pane.contains("add( " + c + " )"));
-			assertTrue(c + " not laid out", pane.contains(c + ".setRect(") || pane.contains(c + ".setPos("));
+			java.util.regex.Matcher route = java.util.regex.Pattern.compile("row\\(ApdSettingsSection\\.[A-Z]+,\\s*" + c + ",").matcher(pane);
+			int routes=0;while(route.find())routes++;
+			assertTrue(c + " must have exactly one reachable category route",routes==1);
 		}
+		assertTrue("Registered controls must be positioned by the category layout",pane.contains("r.control.setRect(x,pos,width,22)"));
+		assertTrue("Every category must be offered by the index",pane.contains("for(ApdSettingsSection choice:ApdSettingsSection.values())"));
+		assertTrue("Hidden sections cannot remain interactive",pane.contains("r.control.visible=r.control.active=false"));
 	}
 
 	@Test

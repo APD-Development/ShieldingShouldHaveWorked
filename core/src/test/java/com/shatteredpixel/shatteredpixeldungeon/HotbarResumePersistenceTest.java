@@ -61,6 +61,8 @@ public class HotbarResumePersistenceTest {
         }
     }
     @Test public void savedPlaceholderAndEmptySlotsSurviveWithoutBeingFilledFromStartingPreference()throws Exception{
-        create();Dungeon.quickslot.convertToPlaceholder(Dungeon.quickslot.getItem(4));Dungeon.quickslot.clearSlot(2);String[] before=snapshot();Dungeon.saveGame(1);SPDSettings.waterskinStartingSlot(-1);reload();assertArrayEquals(before,snapshot());assertEquals(0,Dungeon.quickslot.getItem(4).quantity());assertNull(Dungeon.quickslot.getItem(2));
+        create();Item consumed=Dungeon.quickslot.getItem(4);Dungeon.quickslot.convertToPlaceholder(consumed);
+        assertTrue("A depleted stack leaves inventory before its placeholder is saved",Dungeon.hero.belongings.backpack.items.remove(consumed));
+        Dungeon.quickslot.clearSlot(2);String[] before=snapshot();Dungeon.saveGame(1);SPDSettings.waterskinStartingSlot(-1);reload();assertArrayEquals(before,snapshot());assertEquals(0,Dungeon.quickslot.getItem(4).quantity());assertNull(Dungeon.quickslot.getItem(2));
     }
 }
