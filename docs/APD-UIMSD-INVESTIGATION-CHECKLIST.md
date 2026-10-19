@@ -3,11 +3,11 @@ Updated 2026-10-19. Owner's five-capability request is the acceptance scope. Sup
 
 ## Audited baseline
 Working source: 84b465af7e12fce897d318fcf385529a50ad48e2 (TEST294 candidate); preceding accepted APK: TEST292 / e9f028a35285d919258088cd5360d954ceb429f4.
-TEST294 core: 1,948 tests passed; Android acceptance pending. No feature is accepted on backend/tests/documentation alone.
+TEST294 accepted: 1,948 core +48 API34 Android, 64 decoded screenshots; four research tools accepted at their specific scope. Current first-window source7f2d37bd6be3dbb38d3379c8f6217ffdfd236e1f is pending TEST296 acceptance. TEST295 was superseded while pending, before execution. No feature is accepted on backend/tests/documentation alone.
 Existing: binary offline recorder with rollback-aware canonical history, public/internal disclosure, typed provenance, queryable events/equipment/facts, all 18 Custom Rules, grouping, row links, saved views, exports, viewport restoration and accurate death/abandonment outcomes.
 Partial: topic/simple-question search and fixed multilingual aliases; basic RunTurnBrowser public event text; research A/B query pins and descriptive/inferential comparisons.
 Missing: general sequence/window queries, extensible interpreted terminology, comprehensive contributing-record navigation, complete death context/resource snapshots, named persisted experiments, longitudinal comparable-condition analysis.
-Preserve Columns deferred-rebuild fix, sorting viewport fix, raw logs, saved views and existing outcomes.
+Known broken/missing behavior: Back restores query/page but loses cross-table horizontal/vertical scroll position. Track and test that separately; do not claim all evidence-navigation position requirements are complete. Preserve Columns deferred-rebuild fix, sorting viewport fix, raw logs, saved views and existing outcomes.
 
 ## Acceptance checklist
 | Capability | Status | Acceptance criteria |
@@ -40,3 +40,14 @@ This milestone is a useful subset of capabilities 1 and 2, not completion of the
 
 ## Release acceptance
 No user save/history migration or deletion. No inferred outcomes rewritten. All prior tests retained. Report completed, partial and pending separately with immutable source/build/evidence links. Android emulator evidence must not be called physical-device verification.
+
+## Benchmark scope checked against primary project sources
+These are design benchmarks, not evidence of uniqueness. No claim that UIMSD is the first or only system is supported.
+| Benchmark | Confirmed reference quality | UIMSD implication |
+| --- | --- | --- |
+| [Cogmind Dataminer source](https://github.com/leiavoia/cogmind-dataminer) and [Cogmind scoresheets](https://www.gridsagegames.com/cogmind/scores/) | Scoresheet visualization and local-file analysis; client-side operation | Offline analysis and deep run records already exist elsewhere; preserve public recorded evidence and version boundaries. |
+| [Sequell query syntax](https://github.com/crawl/sequell/blob/master/docs/listgame.md) | Filtered/grouped queries and explicit field syntax | Extend the real query system, show interpretation, reject unsupported conditions. |
+| [Spire Codex source/API](https://github.com/ptrlrd/spire-codex/blob/main/README.md) | Filtered runs, version metadata, decisions and sample/uncertainty metrics | Inspect decisions and condition differences; associations are not causal survival guarantees. |
+| [Dota Plus Death Summary](https://www.dota2.com/plus/?l=english) | Incoming damage/disabling-effect chronology and source breakdown | Death investigation needs chronological source/context observations; a basic turn text browser is insufficient. |
+| [Factorio statistics GUI design](https://www.factorio.com/blog/post/fff-337) | Readable graphs, highlighting and shared search | Connected phone navigation and clear labels matter alongside calculation depth. |
+Checked 2026-10-19. This is a scoped comparison of documented capabilities, not an exhaustive competitive survey.
