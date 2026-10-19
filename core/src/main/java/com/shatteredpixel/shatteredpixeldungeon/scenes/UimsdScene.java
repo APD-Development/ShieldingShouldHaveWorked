@@ -234,9 +234,7 @@ public class UimsdScene extends PixelScene {
 	}
 
 	private void rebuild(){
-		com.shatteredpixel.shatteredpixeldungeon.apd.query.TableViewport viewport = activeTable == null ? null : activeTable.captureViewport();
-		String previousDataset = tableDataset;
-		boolean previousGrouped = tableGrouped;
+		rememberTableViewport();
 		activeTable = null;
 		erase(ui);
 		ui.destroy();
@@ -244,13 +242,23 @@ public class UimsdScene extends PixelScene {
 		add(ui);
 		bringToFront(btnExit);
 		build();
-		if (activeTable != null && tableDataset.equals(previousDataset) && tableGrouped == previousGrouped)
-			activeTable.restoreViewport(viewport);
+		if (activeTable != null) activeTable.restoreViewport(tableModel.viewport());
 	}
 
 	private UimsdTable activeTable;
-	private String tableDataset = "";
-	private boolean tableGrouped;
+	private UimsdModel tableModel;
+	private long tablePlaceId;
+
+	private void rememberTableViewport(){
+		if (activeTable != null && tableModel != null)
+			tableModel.rememberViewport(tablePlaceId, activeTable.captureViewport());
+	}
+
+	@Override public void destroy(){
+		// The model survives rotation; its table cameras do not.
+		rememberTableViewport();
+		super.destroy();
+	}
 
 	//---- drawing the model ----
 
@@ -671,8 +679,8 @@ public class UimsdScene extends PixelScene {
 		}
 		UimsdTable t = new UimsdTable();
 		activeTable = t;
-		tableDataset = model.dataset().def.id;
-		tableGrouped = table.grouped;
+		tableModel = model;
+		tablePlaceId = model.placeId();
 		t.setListener(new UimsdTable.Listener(){
 			@Override
 			public void onSort( String columnId ){

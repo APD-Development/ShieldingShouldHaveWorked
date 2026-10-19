@@ -45,11 +45,15 @@ public final class UimsdModel {
 		final String viewId;
 		final Query query;
 		final int page;
+		final long id;
+		TableViewport viewport;
 
-		Place( String viewId, Query query, int page ){
+		Place( String viewId, Query query, int page, long id, TableViewport viewport ){
 			this.viewId = viewId;
 			this.query = query;
 			this.page = page;
+			this.id = id;
+			this.viewport = viewport;
 		}
 	}
 
@@ -63,6 +67,25 @@ public final class UimsdModel {
 	private final String currentRuleset;
 	private final String currentRulesetLabel;
 	private final List<Place> back = new ArrayList<>();
+	private long nextPlaceId, placeId;
+	private TableViewport viewport;
+
+	// A scene can checkpoint the outgoing table after navigation has already
+	// happened (including a worker's seed-replay completion). The unique place
+	// token routes that checkpoint to its own Back entry, never the new table.
+	public synchronized long placeId(){ return placeId; }
+	public synchronized TableViewport viewport(){ return viewport; }
+	public synchronized void rememberViewport(long id, TableViewport position){
+		if (position == null) return;
+		if (id == placeId){ viewport = position; return; }
+		for (Place p : back) if (p.id == id){ p.viewport = position; return; }
+	}
+
+	private void newPlace(){ placeId = ++nextPlaceId; viewport = null; }
+	private void pushPlace(){
+		back.add(new Place(viewId, query, page, placeId, viewport));
+		newPlace();
+	}
 	//Column choices are preferences for a view, separate from named saved queries.
 	public static final String COLUMN_LAYOUTS_FILE = "column_layouts.txt";
 	private SavedViews columnLayouts = new SavedViews();
@@ -149,6 +172,7 @@ public final class UimsdModel {
 		query = initialQuery(first, false);
 		page = 0;
 		back.clear();
+		newPlace();
 		recompute();
 		state = State.READY;
 	}
@@ -386,7 +410,7 @@ public final class UimsdModel {
 						if (generation != seedFloorsGeneration) return;
 						SeedFloors.install(cat, b);
 						if (!SeedFloors.isSeedView(viewId)) hiddenBeforeSeed = query.showInternal;
-						back.add(new Place(viewId, query, page));
+						pushPlace();
 						// Publish the completed state together; observers must not see the new view with the old busy notice.
 						notice = "";
 						viewId = SeedFloors.ITEMS;
@@ -411,7 +435,7 @@ public final class UimsdModel {
 
 	public synchronized void selectView( String id ){
 		if (catalog == null || catalog.view(id) == null) return;
-		back.add(new Place(viewId, query, page));
+		pushPlace();
 		viewId = id;
 		apply(initialQuery(catalog.view(id), query.showInternal));
 	}
@@ -420,6 +444,7 @@ public final class UimsdModel {
 	public synchronized void showRoot( String id ){
 		if (catalog == null || catalog.view(id) == null) return;
 		back.clear();
+		newPlace();
 		viewId = id;
 		apply(initialQuery(catalog.view(id), query.showInternal));
 	}
@@ -429,6 +454,7 @@ public final class UimsdModel {
 	public synchronized void showQuery( Query q ){
 		if (catalog == null || catalog.view(q.dataset) == null) return;
 		back.clear();
+		newPlace();
 		viewId = q.dataset;
 		apply(q);
 	}
@@ -438,7 +464,7 @@ public final class UimsdModel {
         if(catalog==null || q==null || catalog.view(q.dataset)==null || catalog.dataset(q.dataset)==null)return false;
         QueryResult check=QueryEngine.run(catalog.dataset(q.dataset),q,currentRuleset);
         if(!check.problems.isEmpty()){notice="This evidence query no longer matches the available schema.";fire();return false;}
-        back.add(new Place(viewId,query,page));viewId=q.dataset;query=q;page=0;result=check;fire();restoreHiddenAfterSeed();return true;
+        pushPlace();viewId=q.dataset;query=q;page=0;result=check;fire();restoreHiddenAfterSeed();return true;
     }
 
 	//back to how the open view started
@@ -635,7 +661,7 @@ public final class UimsdModel {
                     g.sample.prov(c.index) == com.shatteredpixel.shatteredpixeldungeon.apd.stats.Fact.PROV_INCOMPLETE
                             ? Op.GROUP_BOUND : Op.GROUP_VALUE, g.sample.num(c.index)));
 		}
-		back.add(new Place(viewId, query, page));
+		pushPlace();
 		apply(q);
 	}
 
@@ -675,7 +701,7 @@ public final class UimsdModel {
 			if (ids.add(r.text(col))) s = widen(s, r);
 		}
 		if (ids.isEmpty()) return 0;
-		back.add(new Place(viewId, query, page));
+		pushPlace();
 		viewId = target.id;
 		apply(target.initialQuery().withScope(s).withShowInternal(query.showInternal)
 				.addFilter(Filter.text(link.targetColumn, Op.IDENTIFIER_IN, ids.toArray(new String[0]))));
@@ -694,7 +720,7 @@ public final class UimsdModel {
 		if (tc == null) return;
 		Scope s = widen(query.scope, row);
 		Filter f = tc.type == ColumnDef.Type.TEXT ? Filter.text(tc.id, Op.GROUP_TEXT, row.text(col)) : Filter.num(tc.id, Op.EQ, row.num(col));
-		back.add(new Place(viewId, query, page));
+		pushPlace();
 		viewId = target.id;
 		apply(target.initialQuery().withScope(s).withShowInternal(query.showInternal).addFilter(f));
 	}
@@ -705,6 +731,8 @@ public final class UimsdModel {
 		viewId = p.viewId;
 		query = p.query;
 		page = p.page;
+		placeId = p.id;
+		viewport = p.viewport;
 		recompute();
 		fire();
 		restoreHiddenAfterSeed();

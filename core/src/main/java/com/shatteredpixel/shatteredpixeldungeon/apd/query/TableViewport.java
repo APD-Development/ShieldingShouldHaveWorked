@@ -4,9 +4,11 @@ package com.shatteredpixel.shatteredpixeldungeon.apd.query;
 public final class TableViewport {
     private final String anchor, sorting;
     private final float offset, x, y;
+    private final boolean grouped;
 
-    private TableViewport(String anchor, String sorting, float offset, float x, float y) {
+    private TableViewport(String anchor, String sorting, float offset, float x, float y, boolean grouped) {
         this.anchor=anchor; this.sorting=sorting; this.offset=offset; this.x=x; this.y=y;
+        this.grouped=grouped;
     }
 
     private static String sorting(ResultTable table) {
@@ -28,11 +30,12 @@ public final class TableViewport {
             float left=g.lefts[i]-g.firstWidth();
             if(x>=left && x<left+g.widths[i]) {anchor=table.headers.get(i).id;offset=x-left;break;}
         }
-        return new TableViewport(anchor,sorting(table),offset,Math.max(0,x),Math.max(0,y));
+        return new TableViewport(anchor,sorting(table),offset,Math.max(0,x),Math.max(0,y),table.grouped);
     }
 
     /** Width and height are the scrolling body, excluding frozen header/column. */
     public float[] position(ResultTable table, float width, float height) {
+        if(table.grouped!=grouped)return new float[]{0,0};
         TableGeometry g=TableGeometry.of(table);
         float sx=x;
         for(int i=1;i<table.headers.size();i++) if(table.headers.get(i).id.equals(anchor)) {
