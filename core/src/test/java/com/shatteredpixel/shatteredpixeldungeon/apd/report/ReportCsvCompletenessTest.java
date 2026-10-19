@@ -7,6 +7,22 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class ReportCsvCompletenessTest {
+    @Test public void csvIncludesOutcomeFactsAndKeepsTableRowsAndEscaping(){
+        Report report=new Report("Run report",0,"test");
+        Report.Facts facts=new Report.Facts(Report.Provenance.RECORDED);
+        facts.section("Result").add("Outcome",new Report.Cell("Died",CellText.EXACT),"")
+                .add("Ascended",new Report.Cell("No",CellText.EXACT),"")
+                .add("Note",new Report.Cell("=formula,quoted",CellText.EXACT),"a,b");
+        report.add(facts);
+        Report.Table table=new Report.Table("Items",Report.Provenance.RECORDED);
+        table.headers.add("Item");table.rows.add(new Report.Cell[]{new Report.Cell("kept",CellText.EXACT)});report.add(table);
+        String csv=ReportRenderer.csv(report);
+        assertTrue(csv,csv.contains("Result,Outcome,Died,"));
+        assertTrue(csv,csv.contains("Result,Ascended,No,"));
+        assertTrue(csv,csv.contains("\"'=formula,quoted\""));
+        assertTrue(csv,csv.contains("\"a,b\""));
+        assertTrue(csv,csv.contains("\r\nkept\r\n"));
+    }
     @Test public void largeReportCsvDisclosesEveryOmittedTableRowLikeOtherFormats() {
         DatasetDef d=new DatasetDef("example","Example","").add(ColumnDef.text("label","Label").shown());
         List<Row> rows=new ArrayList<>();

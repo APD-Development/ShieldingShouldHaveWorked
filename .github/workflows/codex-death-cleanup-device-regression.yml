@@ -40,7 +40,7 @@ jobs:
               if matching:target=max(matching,key=lambda r:r['id']);break
               assert time.monotonic()<deadline,'Matching developer run not found'
               time.sleep(10)
-          with open(os.environ['GITHUB_ENV'],'a') as env:env.write('APD_TARGET_TEST_NUMBER='+str(target['run_number'])+'\n')
+          with open(os.environ['GITHUB_ENV'],'a') as env:env.write('APD_TARGET_TEST_NUMBER='+str(target['run_number'])+chr(10))
           for label,run_id,source in [('before',39284577455,'cad6c52789beb5c05f07b40031965e09a497b661'),('after',target['id'],source)]:
               deadline=time.monotonic()+15*60
               while True:

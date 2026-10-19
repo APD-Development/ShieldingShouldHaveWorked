@@ -1,4 +1,5 @@
 Bug Fixes:
+- CSV run reports now include their recorded fact sections, including Outcome and Ascended, alongside existing tables.
 - Final deaths no longer become Abandoned when death cleanup removes the save before the death ranking is submitted. Manually abandoned runs remain distinct. Existing ambiguous records are preserved.
 - UIMSD sorting preserves the horizontal column position through table refreshes. The active column shows an ascending or descending marker. Filters, column edits and table settings preserve the viewport where possible; sorting starts at the first result.
 

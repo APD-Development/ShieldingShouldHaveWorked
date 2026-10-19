@@ -311,6 +311,20 @@ public final class ReportRenderer {
 		boolean any = false;
 		if (r.synthetic) sb.append("# ").append(SYNTHETIC_NOTICE).append("\r\n");
 		for (Report.Block b : r.blocks){
+			if (b instanceof Report.Facts){
+				Report.Facts facts = (Report.Facts) b;
+				if (any) sb.append("\r\n");
+				any = true;
+				sb.append("# ").append(r.title).append(" facts [").append(provLabel(facts.provenance)).append("]\r\n");
+				sb.append("Section,Field,Value,Detail\r\n");
+				String section = "";
+				for (Report.Fact fact : facts.facts){
+					if (fact.value == null){ section = fact.label; continue; }
+					sb.append(csv(section)).append(',').append(csv(fact.label)).append(',')
+							.append(csv(fact.value.text)).append(',').append(csv(fact.detail)).append("\r\n");
+				}
+				continue;
+			}
 			if (!(b instanceof Report.Table)) continue;
 			Report.Table t = (Report.Table) b;
 			if (any) sb.append("\r\n");

@@ -56,8 +56,9 @@ public class RunOutcomePersistenceTest {
                         deaths.rows.get(0).num(deaths.def.indexOf("death.final")));
                 Report reportRun=ReportBuilder.run(cat,row,false,"",1,"test");
                 String label=new String[]{"Died","Won","Abandoned"}[outcome];
-                assertTrue(ReportRenderer.csv(reportRun).contains(label));
-                assertTrue(ReportRenderer.markdown(reportRun).contains(label));
+                String csv=ReportRenderer.csv(reportRun),markdown=ReportRenderer.markdown(reportRun);
+                assertTrue(csv,csv.contains(label));
+                assertTrue(markdown,markdown.contains(label));
             }
         }
     }
