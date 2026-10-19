@@ -255,10 +255,11 @@ public class ApdSettingsClickDeviceTest {
 				APDSettingsPane pane = find(window.get(), APDSettingsPane.class);
                 // Finger starts on a real checkbox. Its swipe must move the page
                 // without activating the checkbox; a deliberate tap still activates it.
+                // The shorter category needs a compact viewport so this starts before its scroll limit.
                 final ScrollPane gesturePane = scroll;
                 final Gizmo gestureButton = (Gizmo) field(pane, "chkAdult");
                 onRender(()->{paneFor(gestureButton).reveal((com.watabou.noosa.ui.Component)gestureButton);
-                    gesturePane.setRect(gesturePane.left(),gesturePane.top(),gesturePane.width(),72);window.get().resize((int)gesturePane.width(),72);});
+                    gesturePane.setRect(gesturePane.left(),gesturePane.top(),gesturePane.width(),48);window.get().resize((int)gesturePane.width(),48);});
                 Point start = centreOnScreen(gesturePane, gestureButton);
                 float[] beforeSwipe = new float[1], afterSwipe = new float[1];
                 onRender(() -> beforeSwipe[0] = gesturePane.content().camera.scroll.y);
