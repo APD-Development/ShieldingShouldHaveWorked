@@ -5,6 +5,7 @@ Bug Fixes:
 - UIMSD sorting preserves the horizontal column position through table refreshes. The active column shows an ascending or descending marker. Filters, column edits and table settings preserve the viewport where possible; sorting starts at the first result.
 
 Statistics / UIMSD:
+- Options > Charts compares grouped results with scrollable bars. Choose a measure, keep the table's filters and uncertainty marks, and tap a group for details. Unknown values have no bar; the first 24 groups follow table order.
 - Winning runs now record whether the ascent was completed. The Ascended column is available for filtering, summaries and exports; older unrecorded results remain unknown.
 
 Quality of Life:

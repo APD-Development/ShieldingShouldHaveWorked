@@ -1,43 +1,48 @@
 {
   "date": "2026-10-19",
-  "previous_source": "2920f74f4c2c0a8e3d6ad0d9e12da3e1a9834e4c",
-  "previous_application_source": "2920f74f4c2c0a8e3d6ad0d9e12da3e1a9834e4c",
-  "previous_run": 39295652470,
-  "previous_label": "Codex TEST 290",
+  "previous_source": "d7e0ae16b80e7f09b73197217ffdcd7a4a8bc6aa",
+  "previous_application_source": "d7e0ae16b80e7f09b73197217ffdcd7a4a8bc6aa",
+  "previous_run": 39297401198,
+  "previous_label": "Codex TEST 291",
   "changes": [
     {
-      "category": "Bug Fixes",
-      "sprite": "ICON_CHECKED",
-      "title": "Keep the sort key you just changed visible",
-      "text": "When a table already has sorting, adding or reversing a secondary or tertiary key keeps that selected statistic in view instead of jumping back to the primary key. Reordering visible columns preserves vertical position without pretending that sorting changed.",
+      "category": "Statistics / UIMSD",
+      "sprite": "ICON_STATS",
+      "title": "Charts for grouped statistics",
+      "text": "Open Options > Charts to compare groups using their counts or available totals and averages. Scroll the bars, choose a measure and tap a group for its existing detail view. Filters, rules, order and uncertainty marks match the table. Unknown values have no bar; up to 24 groups are shown with omitted groups identified.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/TableViewport.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/ChartBar.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndUimsdChart.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndUimsdOptions.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdGuide.java",
         "core/src/main/assets/apd/apd_changes.txt"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_INFO",
-      "title": "Multiple sort keys and finalized APK history checks",
-      "text": "Core regressions cover adding and reversing secondary keys and reordering sorted columns. Android menu-touch coverage now adds a far-right secondary key while a different primary key remains active. Prior history is accepted only from its successfully completed producing job and exact artifact, even while separate device checks are running.",
+      "title": "Chart geometry and native interaction coverage",
+      "text": "Regression coverage checks positive, negative, zero and extreme bar scales. Android acceptance uses real touches to open Charts, change measures repeatedly, restore scroll position and open a group after scrolling; it checks query preservation and captures count and value charts. Existing Columns and sorting checks remain required.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/TableViewportTest.java",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdColumnsModalDeviceTest.java",
-        ".github/workflows/codex-sprint-check.yml",
-        ".github/workflows/codex-death-cleanup-device-regression.yml"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/ChartBarTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdChartDeviceTest.java",
+        "tools/run-codex-android-checks.sh"
       ]
     },
     {
       "category": "Developer Commentary",
       "sprite": "ICON_INFO",
-      "title": "Next matched private APK pair after sort edge-case review",
-      "text": "Preserve the produced TEST290 APK and all its Changes records, retaining its core verification and exact source identity without implying its still-running device checks passed. Request a new unique matched developer/player pair with every existing gate retained.",
+      "title": "Continue UIMSD after verified outcome and scrolling fixes",
+      "text": "The preceding private pair passed its complete core and Android suites. I am adding the native chart presentation to the existing grouped-result model. Preserve every prior Changes record and both APK variants; this adds no gameplay, scoring or save-format changes.",
       "paths": [
-        "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/APD-NEXT-BUILD-HISTORY.json",
+        "docs/APD-CODEX-BUILD-REQUEST.txt",
+        "docs/HANDOFF.md",
+        "docs/WORK-COMPLETED-LEDGER.md",
+        "docs/APD-UIMSD-CHARTS-2026-10-19.md",
         "docs/APD-NATIONAL-PIE-OUTCOMES-VIEWPORT-2026-10-19.md"
       ]
     }
   ],
-  "commentary": "Owner requested complete sorting behavior including selected key visibility. TEST290 produced APK SHA256 5cceacfcb9012ef173032970daac804875ce1c7a654772248bec3e8a0ca3b504 with1911core tests passed; its Android checks remain separate. Keep all previous history and signing. Next full gate must pass1913core and43API34 methods plus original screenshots; run exact APK actual-death before/after acceptance. No public release or phone claim."
+  "commentary": "Owner requested continued UIMSD development. Preserve verified TEST291, all1913priorcore and43priorAPI34checks. New gate expects1917core and44API34methods/59PNG. No public release or physical-phone claim."
 }

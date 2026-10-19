@@ -88,6 +88,11 @@ public final class UimsdGuide {
 				"A table has one line for each thing it lists. In tables like Weapons, each line is one KIND of thing, for example every War Hammer together, "
 						+ "with numbers about all of them: how many you met, how often you equipped them, how often you won with them.\n\n"
 						+ "Tap a column heading to sort by it. Tap a line to open it.", "table"));
+		t.add(new Topic("charts", read, "Charts",
+                "In a grouped table, open Options > Charts. Choose the count or one of the table's totals or averages. "
+                        + "Bars share a zero baseline, including negative values. Unknown values have no bar. The same filters, rules, group order and uncertainty marks apply.\n\n"
+                        + "Tap a group for its details and links to the matching entries. At most 24 groups are shown; extra groups remain in the table. "
+                        + "For an ungrouped table, choose Options > Group by first.", ""));
 		t.add(new Topic("drill", read, "Opening a line: going deeper",
 				"Tapping a line opens a window with everything known about it, value by value, with the colour and mark of how sure each one is.\n\n"
 						+ "From there you can go one level down: to the individual items of that kind, or to the runs they appeared in. Each level down is a new table you can sort and filter too. "
@@ -185,3 +190,4 @@ public final class UimsdGuide {
 		return null;
 	}
 }
+

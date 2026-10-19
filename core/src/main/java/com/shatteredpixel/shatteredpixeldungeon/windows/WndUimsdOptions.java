@@ -107,6 +107,8 @@ public final class WndUimsdOptions {
 		actions.add(new Runnable(){ public void run(){ pickMinSample(m); } });
 
 		entries.add(Entry.heading("Understanding this table"));
+		entries.add(Entry.item("Charts", "Compare this table's groups as bars, with the same filters, values and uncertainty marks."));
+		actions.add(() -> WndUimsdChart.show(m));
 		entries.add(Entry.item("How much is known, per column", "How many values were recorded exactly, only partly, or not at all."));
 		actions.add(new Runnable(){ public void run(){ coverage(m); } });
 		entries.add(Entry.item("What the marks mean", "?  >=  ~  and hidden, and the colours."));
@@ -553,3 +555,4 @@ public final class WndUimsdOptions {
 						+ "They only use values that are known, and say how many that was. A total that includes an \"at least\" value is itself an \"at least\"."));
 	}
 }
+
