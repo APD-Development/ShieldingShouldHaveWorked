@@ -31,7 +31,7 @@ public final class EquipmentWindow {
     private EquipmentWindow(){}
     public static ResearchDocument answer(Catalog catalog,QueryResult anchors,Row anchor,int turns,String rules){
         ResearchDocument d=new ResearchDocument("Damage after equipping");
-        if(anchors==null || anchors.isGrouped() || !EventDatasets.EQUIPMENT.equals(anchors.def.id)
+        if(anchors==null || !anchors.problems.isEmpty() || anchors.isGrouped() || !EventDatasets.EQUIPMENT.equals(anchors.def.id)
                 || !anchors.rows.contains(anchor) || anchor.imported || anchor.duplicate
                 || anchor.runId.isEmpty() || !ResearchData.exact(anchors,anchor,"equip.start")){
             d.notes.add("Select a recorded equipment occurrence with an exact start turn in the current filtered Equipment table. Imported or duplicate records cannot establish this sequence.");return d;

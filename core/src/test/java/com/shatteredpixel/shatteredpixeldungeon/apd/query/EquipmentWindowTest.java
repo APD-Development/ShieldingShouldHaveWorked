@@ -50,6 +50,8 @@ public class EquipmentWindowTest {
     }
     @Test public void uncertainAnchorAndOverflowingWindowFailClosed(){
         Catalog c=recorded();QueryResult a=anchors(c);Row anchor=a.rows.get(0);
+        QueryResult unsupported=QueryEngine.run(c.dataset(EventDatasets.EQUIPMENT),a.query.addFilter(Filter.num("missing.field",Op.EQ,1)),RULES);
+        assertFalse(unsupported.problems.isEmpty());assertTrue(EquipmentWindow.answer(c,unsupported,anchor,10,RULES).cards.isEmpty());
         anchor.setNum(a.def.indexOf("equip.start"),10,Fact.PROV_INCOMPLETE);assertTrue(EquipmentWindow.answer(c,a,anchor,10,RULES).cards.isEmpty());
         anchor.setNum(a.def.indexOf("equip.start"),Long.MAX_VALUE-2,Fact.PROV_RECORDED);assertTrue(EquipmentWindow.answer(c,a,anchor,10,RULES).cards.isEmpty());
         assertTrue(EquipmentWindow.answer(c,a,anchor,0,RULES).cards.isEmpty());
