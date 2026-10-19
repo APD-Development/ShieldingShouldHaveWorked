@@ -52,7 +52,7 @@ public final class WndUimsdResearch {
         List<WndUimsdList.Entry> entries=new ArrayList<>();List<Runnable> actions=new ArrayList<>();
         add(entries,actions,"Run DNA","Defined combat, healing, equipment and exploration rates; compare two run fingerprints.",()->runs(m,r->chooseRun(m,r,"Run DNA",row->document(m,ResearchDocument.dna(r,RunDna.build(r,row))))));
         add(entries,actions,"Compare Run DNA","Choose run A and run B; inspect both original runs behind every difference.",()->runs(m,r->chooseRun(m,r,"Run A",a->chooseRun(m,r,"Run B",b->document(m,ResearchDocument.dnaComparison(r,RunDna.build(r,a),RunDna.build(r,b)))))));
-        add(entries,actions,"Luck laboratory","Compare recorded generated loot and enemies against matching finished, random-seed runs. No scoring changes.",()->runs(m,r->chooseRun(m,r,"Luck laboratory",row->document(m,ResearchDocument.luck(r,RunLuck.build(r,row))))));
+        add(entries,actions,"Luck laboratory","Compare recorded generated loot and enemies against matching finished, random-seed runs. No scoring changes.",()->runs(m,r->chooseRun(m,r,"Luck laboratory",row->presentLuck(m,r,row))));
         add(entries,actions,"Automatic discoveries","Find exploratory win-rate contrasts with sufficient matched data, then inspect the contributors.",()->runs(m,r->work(m,"Automatic discoveries",()->ResearchDocument.discoveries(Discoveries.build(r)),d->document(m,d))));
         add(entries,actions,"Statistical investigation lab","Capture filtered populations A and B, choose a metric, compare samples and inspect evidence.",()->studyMenu(m));
         menu(m,"Research lab","These tools read recorded history. Unknowns stay unknown. Demo results are made up and are always identified as demo data.",entries,actions,()->show(m));
@@ -85,7 +85,19 @@ public final class WndUimsdResearch {
         Catalog cat=m.catalog();Query q=m.query();String rules=m.currentRuleset();work(m,"Preparing run analysis",()->ResearchData.select(cat,q,rules),done);
     }
     public static void dnaRun(UimsdModel m,Row row){runs(m,r->{RunDna.Profile p=RunDna.build(r,row);if(p==null)tell("Run DNA","This run is no longer in the selected query.");else document(m,ResearchDocument.dna(r,p));});}
-    public static void luckRun(UimsdModel m,Row row){runs(m,r->{RunLuck.Result l=RunLuck.build(r,row);if(l==null)tell("Luck laboratory","This run is no longer in the selected query.");else document(m,ResearchDocument.luck(r,l));});}
+    public static void luckRun(UimsdModel m,Row row){runs(m,r->presentLuck(m,r,row));}
+    private static void presentLuck(UimsdModel m,QueryResult r,Row row){
+        RunLuck.Result l=RunLuck.build(r,row);
+        if(l==null){tell("Luck laboratory","This run is no longer in the selected query.");return;}
+        if(!r.query.showInternal && row.finished){
+            List<WndUimsdList.Entry> entries=new ArrayList<>();List<Runnable> actions=new ArrayList<>();
+            add(entries,actions,"Use generation details for finished runs","Turn on hidden-information viewing for the selected filtered query and restrict it to finished runs. No save or history is changed.",()->{
+                UimsdScene.showResearchEvidence(m,r.query.withShowInternal(true).withScope(r.query.scope.withFinishedOnly(true)));luckRun(m,row);
+            });
+            menu(m,"Luck laboratory","Generation facts are hidden. You can explicitly include them for finished runs; unfinished run secrets remain unavailable.",entries,actions,()->presentLuck(m,r,row));return;
+        }
+        document(m,ResearchDocument.luck(r,l));
+    }
     private static void chooseRun(UimsdModel m,QueryResult r,String title,Consumer<Row> picked){chooseRows(m,title,new ResearchDocument.Evidence("Matching runs",r,ResearchData.distinct(r)),0,picked);}
     private static void chooseRows(UimsdModel m,String title,ResearchDocument.Evidence evidence,int page,Consumer<Row> picked){
         List<WndUimsdList.Entry> entries=new ArrayList<>();List<Runnable> actions=new ArrayList<>();int start=page*80,end=Math.min(start+80,evidence.rows.size());
@@ -98,8 +110,15 @@ public final class WndUimsdResearch {
     private static void document(UimsdModel m,ResearchDocument d){
         List<WndUimsdList.Entry> entries=new ArrayList<>();List<Runnable> actions=new ArrayList<>();
         for(ResearchDocument.Card c:d.cards)add(entries,actions,c.label,c.value,()->inspect(m,d,c));
-        add(entries,actions,"Export this analysis","Text, Markdown, HTML or CSV; includes definitions, exclusions and capped evidence lists.",()->WndUimsdReport.show(m,d.title,()->d.report(System.currentTimeMillis(),Game.version,m.catalog().synthetic)));
+        add(entries,actions,"Export this analysis","Text, Markdown, HTML or CSV; includes definitions, exclusions and capped evidence lists.",()->export(m,d));
         menu(m,d.title,(m.catalog().synthetic?"DEMO DATA (made up).\n":"")+String.join("\n\n",d.notes),entries,actions,()->document(m,d));
+    }
+    private static void export(UimsdModel m,ResearchDocument d){
+        Catalog catalog=m.catalog();Query query=m.query();boolean synthetic=catalog.synthetic;
+        WndUimsdReport.show(m,d.title,()->{
+            if(m.catalog()!=catalog || !m.query().equals(query))throw new IllegalStateException("The query or history changed; reopen the analysis before exporting.");
+            return d.report(System.currentTimeMillis(),Game.version,synthetic);
+        });
     }
     private static void inspect(UimsdModel m,ResearchDocument d,ResearchDocument.Card c){
         List<WndUimsdList.Entry> entries=new ArrayList<>();List<Runnable> actions=new ArrayList<>();

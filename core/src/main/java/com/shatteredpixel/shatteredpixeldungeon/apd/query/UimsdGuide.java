@@ -88,7 +88,12 @@ public final class UimsdGuide {
 				"A table has one line for each thing it lists. In tables like Weapons, each line is one KIND of thing, for example every War Hammer together, "
 						+ "with numbers about all of them: how many you met, how often you equipped them, how often you won with them.\n\n"
 						+ "Tap a column heading to sort by it. Tap a line to open it.", "table"));
-		t.add(new Topic("charts", read, "Charts",
+		t.add(new Topic("research", find, "Research lab",
+                "Open Research lab on Home, inside a table, or through Options. Run DNA describes a run using explicitly defined rates and can compare two fingerprints. Tap a metric to inspect the source run and its recorded context events.\n\n"
+                        + "Luck laboratory compares recorded generation values with matching finished random-seed runs. Generation details require your explicit hidden-information choice and never expose unfinished-run secrets. Empirical ranks describe your reference history, not theoretical RNG odds or a score multiplier.\n\n"
+                        + "Automatic discoveries screen recorded class/subclass win-rate contrasts with at least 20 known outcomes per group, matching rules and version, and adjusted uncertainty bands. No result is invented when data are insufficient. Inspect both groups; association does not establish a cause.\n\n"
+                        + "For a custom investigation, apply table filters and capture population A, change the filters and capture B, then choose a numeric metric or run win rate. Pins save the question separately from your saved views; values are recalculated. Grouping and paging are not population filters. Unknown and uncertain values are excluded explicitly, and overlapping or unmatched samples suppress inference. Every analysis can be exported with its definitions and evidence.", ""));
+        t.add(new Topic("charts", read, "Charts",
                 "In a grouped table, open Options > Charts. Choose the count or one of the table's totals or averages. "
                         + "Bars share a zero baseline, including negative values. Unknown values have no bar. The same filters, rules, group order and uncertainty marks apply.\n\n"
                         + "Tap a group for its details and links to the matching entries. At most 24 groups are shown; extra groups remain in the table. "

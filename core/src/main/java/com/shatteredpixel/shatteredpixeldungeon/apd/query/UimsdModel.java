@@ -436,7 +436,7 @@ public final class UimsdModel {
         if(catalog==null || q==null || catalog.view(q.dataset)==null || catalog.dataset(q.dataset)==null)return false;
         QueryResult check=QueryEngine.run(catalog.dataset(q.dataset),q,currentRuleset);
         if(!check.problems.isEmpty()){notice="This evidence query no longer matches the available schema.";fire();return false;}
-        back.add(new Place(viewId,query,page));viewId=q.dataset;apply(q);return true;
+        back.add(new Place(viewId,query,page));viewId=q.dataset;query=q;page=0;result=check;fire();restoreHiddenAfterSeed();return true;
     }
 
 	//back to how the open view started

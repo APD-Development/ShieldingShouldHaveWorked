@@ -48,7 +48,7 @@ public final class PopulationStudy {
                 if(!row.finished || row.runId.isEmpty() || !units.add(row.runId))onePerRun=false;
                 String version=ResearchData.text(r,row,"run.apdVersion");
                 if(!ResearchData.exact(r,row,"run.apdVersion"))version=null;
-                if(row.ruleset==null || Row.RULESET_MIXED.equals(row.ruleset) || version==null)strata.add(Arrays.asList("unknown",row.id));
+                if(row.ruleset==null || row.ruleset.isEmpty() || Row.RULESET_MIXED.equals(row.ruleset) || version==null || version.isEmpty())strata.add(Arrays.asList("unknown",row.id));
                 else strata.add(Arrays.asList("known",row.ruleset,version));
             }
             Collections.sort(values);n=rows.size();excluded=matching-n;wins=winCount;

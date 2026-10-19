@@ -54,8 +54,8 @@ public final class RunLuck {
     }
     private static String eligibility(QueryResult r,Row row){
         if(!row.finished || row.imported || row.duplicate)return "Needs a finished recorded run, not an imported or repeated ranking.";
-        if(row.ruleset==null || row.ruleset.equals(Row.RULESET_MIXED) || row.telemetry.isEmpty())return "Exact rules or recording version are unknown.";
-        for(String k:new String[]{"run.apdVersion",CustomRuleFacts.IDENTITY,"gen.levels","result.deepest","run.seedType","run.seed"})
+        if(row.ruleset==null || row.ruleset.isEmpty() || row.ruleset.equals(Row.RULESET_MIXED) || row.telemetry.isEmpty())return "Exact rules or recording version are unknown.";
+        for(String k:new String[]{"run.apdVersion","run.heroClass",CustomRuleFacts.IDENTITY,"gen.levels","result.deepest","run.seedType","run.seed"})
             if(!ResearchData.exact(r,row,k))return "Missing or hidden exact evidence: "+k+". Generation and seed details require Show hidden information for finished runs.";
         Long levels=ResearchData.number(r,row,"gen.levels"),kind=ResearchData.number(r,row,"run.seedType");
         if(levels==null || levels<=0 || kind==null || kind!=0 || ResearchData.number(r,row,"run.seed")==null)return "Needs a random-seed run with a positive recorded generated-level count. Daily/custom seeds are not independent reference samples.";
@@ -70,7 +70,7 @@ public final class RunLuck {
         for(Row peer:rows){
             if(peer==subject || !eligibility(r,peer).isEmpty() || !Objects.equals(peer.ruleset,subject.ruleset) || !peer.telemetry.equals(subject.telemetry))continue;
             boolean same=true;
-            for(String k:new String[]{"run.apdVersion",CustomRuleFacts.IDENTITY,"gen.levels","result.deepest"})
+            for(String k:new String[]{"run.apdVersion","run.heroClass",CustomRuleFacts.IDENTITY,"gen.levels","result.deepest"})
                 if(!Objects.equals(ResearchData.text(r,subject,k),ResearchData.text(r,peer,k))){same=false;break;}
             if(same && seeds.add(ResearchData.number(r,peer,"run.seed")))peers.add(peer);
         }

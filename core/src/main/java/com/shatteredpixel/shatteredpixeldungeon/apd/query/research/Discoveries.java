@@ -53,7 +53,7 @@ public final class Discoveries {
         Map<List<String>,Map<String,Group>> strata=new LinkedHashMap<>();int eligible=0;
         for(Row row:ResearchData.distinct(r)){
             Long outcome=ResearchData.number(r,row,"result.outcome");
-            if(!row.finished || row.imported || row.ruleset==null || Row.RULESET_MIXED.equals(row.ruleset)
+            if(!row.finished || row.imported || row.ruleset==null || row.ruleset.isEmpty() || Row.RULESET_MIXED.equals(row.ruleset)
                     || outcome==null || outcome<0 || outcome>2 || !ResearchData.exact(r,row,"result.outcome") || !ResearchData.exact(r,row,"run.apdVersion"))continue;
             String version=ResearchData.text(r,row,"run.apdVersion");if(version==null || version.isEmpty())continue;
             eligible++;
