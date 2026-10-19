@@ -74,6 +74,8 @@ public class WndWandmaker extends Window {
 		message.setPos(0, titlebar.bottom() + GAP);
 		add( message );
 
+		// Show ONLY the real upgrade level, not wand identity, curse or properties.
+        Wandmaker.Quest.revealOfferedLevels();
 		ItemButton btnWand1 = new ItemButton(){
 			@Override
 			protected void onClick() {
@@ -85,6 +87,7 @@ public class WndWandmaker extends Window {
 			}
 		};
 		btnWand1.item(Wandmaker.Quest.wand1);
+        btnWand1.slot().showTrueUpgradeLevel();
 		btnWand1.setRect( (WIDTH - BTN_GAP) / 2 - BTN_SIZE, message.top() + message.height() + BTN_GAP, BTN_SIZE, BTN_SIZE );
 		add( btnWand1 );
 		
@@ -99,6 +102,7 @@ public class WndWandmaker extends Window {
 			}
 		};
 		btnWand2.item(Wandmaker.Quest.wand2);
+        btnWand2.slot().showTrueUpgradeLevel();
 		btnWand2.setRect( btnWand1.right() + BTN_GAP, btnWand1.top(), BTN_SIZE, BTN_SIZE );
 		add(btnWand2);
 		

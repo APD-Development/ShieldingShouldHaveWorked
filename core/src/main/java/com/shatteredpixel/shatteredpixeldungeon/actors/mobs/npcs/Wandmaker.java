@@ -229,6 +229,12 @@ public class Wandmaker extends NPC {
 		
 		public static Wand wand1;
 		public static Wand wand2;
+
+        /** Same explicit reward-level disclosure as Sad Ghost and Blacksmith. */
+        public static void revealOfferedLevels() {
+            if (wand1 != null) wand1.levelKnown = true;
+            if (wand2 != null) wand2.levelKnown = true;
+        }
 		
 		public static void reset() {
 			spawned = false;
