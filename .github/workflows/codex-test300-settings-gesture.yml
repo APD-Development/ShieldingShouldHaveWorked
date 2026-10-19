@@ -1,4 +1,5 @@
 name: APD TEST300 exact APK settings gesture acceptance
+# Screenshots are retained by the full main suite; this gate verifies the corrected gesture only.
 on:
   push:
     branches: [codex/apd-phone-fixes-2026-10-09]

@@ -16,5 +16,3 @@ p=pathlib.Path('settings-gesture-evidence');s=(p/'instrumentation.txt').read_tex
 assert 'OK (1 test)' in s and 'FAILURES!!!' not in s,s[-8000:]
 (p/'result.json').write_text(json.dumps({'passed':1,'original_scroll_and_non_activation_assertions_retained':True,'touch_origin_inside_scroll_area_asserted':True,'room_to_scroll_asserted':True,'application_rebuilt':False},indent=2))
 PY
-adb exec-out cat /sdcard/Pictures/APD-Test-Visuals/hotbar-controls.png > settings-gesture-evidence/hotbar-controls.png
-python3 tools/validate_android_visuals.py settings-gesture-evidence hotbar-controls.png
