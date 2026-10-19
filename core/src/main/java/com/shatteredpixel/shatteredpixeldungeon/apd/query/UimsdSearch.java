@@ -126,14 +126,21 @@ public final class UimsdSearch {
         String decomposed=Normalizer.normalize(compatible,Normalizer.Form.NFD);
         StringBuilder sb=new StringBuilder();
         boolean prevSpace=true;
+        boolean lastLatinBase=false;
         for(int i=0;i<decomposed.length();) {
             int cp=decomposed.codePointAt(i);i+=Character.charCount(cp);
             int type=Character.getType(cp);
-            if(type==Character.NON_SPACING_MARK)continue;
+            if(type==Character.NON_SPACING_MARK){
+                // Latin accents are folded, but Japanese dakuten and other
+                // script marks must survive; dropping them changes words.
+                if(!lastLatinBase)sb.appendCodePoint(cp);
+                continue;
+            }
             if(Character.isLetterOrDigit(cp)){
                 sb.appendCodePoint(cp);prevSpace=false;
+                lastLatinBase=Character.UnicodeScript.of(cp)==Character.UnicodeScript.LATIN;
             }else if(!prevSpace){
-                sb.append(' ');prevSpace=true;
+                sb.append(' ');prevSpace=true;lastLatinBase=false;
             }
         }
         return sb.toString().trim();
