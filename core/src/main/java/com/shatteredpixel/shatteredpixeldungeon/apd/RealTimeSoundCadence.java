@@ -13,7 +13,8 @@ public final class RealTimeSoundCadence {
         remaining = Math.max(0,remaining-unscaledSeconds);
     }
     public boolean accept() {
-        if (remaining > 0) return false;
+        // A fractional frame of floating-point drift must not postpone a strike.
+        if (remaining > 0.001f) return false;
         remaining = minimumSeconds;
         return true;
     }
