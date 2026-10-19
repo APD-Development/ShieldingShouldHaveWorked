@@ -1,116 +1,53 @@
 {
-  "date": "2026-10-18",
-  "previous_source": "438bde5a418461a8b75fa0fdcff3eabbdb41262b",
-  "previous_application_source": "1a7941459f347f647a648cbc4a66467f1f219a62",
-  "previous_run": 39171799376,
-  "previous_label": "Codex TEST 284",
+  "date": "2026-10-19",
+  "previous_source": "0652d715cea86fb0242f4470cf870b3761672d0f",
+  "previous_application_source": "0652d715cea86fb0242f4470cf870b3761672d0f",
+  "previous_run": 39187804530,
+  "previous_label": "Codex TEST 285",
   "changes": [
     {
-      "category": "Quality of life / UI",
-      "sprite": "ICON_INFO",
-      "title": "Browse every visible item in an open pile",
-      "text": "Examine a tile pile of two or more revealed items as a scrollable native item-icon and item-name list, in original top-first order and visible quantities, opening normal descriptions without pickup or identification.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/GameScene.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/qol/HeapExamination.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndInfoPile.java"
-      ]
-    },
-    {
-      "category": "Quality of life / UI",
+      "category": "Statistics / UIMSD",
       "sprite": "ICON_STATS",
-      "title": "Read your run history turn by turn",
-      "text": "Open any recorded UIMSD run and browse actual event rows turn by turn, jumping one, ten, a hundred, a thousand or a custom amount. Empty/unrecorded turns never invent outcomes.",
+      "title": "Offline multilingual search for UIMSD tables and statistics",
+      "text": "Search all public UIMSD table/view titles, categories, descriptions and field names from Home or any table. Ranked results open normal UIMSD views; Unicode and common multilingual terms are supported locally, without an AI service or private-data indexing.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RunTurnBrowser.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndRunTurnBrowser.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndUimsdRow.java"
-      ]
-    },
-    {
-      "category": "Quality of life / UI",
-      "sprite": "ICON_INFO",
-      "title": "Live collapsible damage effect information",
-      "text": "The active dungeon shows a small expandable HUD covering each current hero DoT and focused visible enemy: measured raw-input/HP/shield damage and live estimated future ticks with explicit uncertainty, retaining the original WndInfoBuff after opting out.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/DotOverlay.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/qol/DotForecast.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/Char.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Buff.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Burning.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Poison.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Bleeding.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Corrosion.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Ooze.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/BuffIndicator.java"
-      ]
-    },
-    {
-      "category": "Quality of life / UI",
-      "sprite": "ICON_PREFS",
-      "title": "Waterskin starts in the player's selected slot",
-      "text": "Player/test setting defaults to quickslot 2, remains adjustable across positions 1–6 and old Automatic/Off modes, persisted across app restarts. Existing runs swap without lost assignments when possible.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/SPDSettings.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/hotbar/WaterskinStartupSlot.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/Dungeon.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/APDSettingsPane.java"
-      ]
-    },
-    {
-      "category": "Quality of life / UI",
-      "sprite": "ICON_INFO",
-      "title": "Show Wandmaker wand upgrade levels",
-      "text": "Reveal just the offered wands' real upgrade levels before selection, with the regular ItemSlot visual, leaving otherwise unidentified items, curses and properties hidden.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/npcs/Wandmaker.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndWandmaker.java"
-      ]
-    },
-    {
-      "category": "Bug Fixes",
-      "sprite": "ICON_INFO",
-      "title": "Blacksmith hammering stays at normal audio cadence",
-      "text": "Fast visual playback no longer retriggers the forge sound repeatedly at >1x; real-time SFX limiter with fractional-frame tolerance, no change to combat or visual playback.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/RealTimeSoundCadence.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/PlaybackGroup.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/sprites/BlacksmithSprite.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdSearch.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndUimsdSearch.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/UimsdScene.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdGuide.java",
+        "core/src/main/assets/apd/releases/apd-alpha-preview.tsv"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Core and native acceptance coverage",
-      "text": "Complete core suite passed source bcd775f5..., including newly added turn browsing, pile, audio cadence, Wandmaker levels, DoT forecast, and Waterskin tests. Native PileExaminationDeviceTest touches scrolled pile items. Full API34 check pending.",
+      "title": "Protect privacy and test multilingual search",
+      "text": "Full core run39261967725 passed 1890 methods with zero failure/error/skip; new search regressions cover relevance, Unicode, Spanish/Russian/Chinese/Korean/Japanese terms, AND filtering, private metadata safety, limit, all without internet. New real Android picker touch method queued for API34.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RunTurnBrowserTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/qol/HeapExaminationTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/qol/DotForecastTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/hotbar/WaterskinStartupSlotTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/RealTimeSoundCadenceTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/WandmakerRewardLevelsTest.java",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/ApdSettingsClickDeviceTest.java",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PileExaminationDeviceTest.java",
-        "tools/run-codex-android-checks.sh"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdSearchTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdSearchDeviceTest.java",
+        "tools/run-codex-android-checks.sh",
+        "docs/APD-CODEX-CORE-TEST-REQUEST.txt"
       ]
     },
     {
       "category": "Developer Commentary",
       "sprite": "ICON_INFO",
-      "title": "Document private TEST285 against verified TEST284",
-      "text": "Keep release notes and permanent verified history without replacing prior APKs; request full private core/debug APK/native/visual verification. No tester distribution or actual physical phone claim.",
+      "title": "Deliver matched developer and player APKs every build",
+      "text": "Establish automatic two-APK parity for this and later private Codex builds, including TEST285's separately delivered normal player preview; preserve embedded histories, same debug signing, app identity and prior APKs without publishing.",
       "paths": [
-        "core/src/main/assets/apd/apd_changes.txt",
-        "core/src/main/assets/apd/releases/apd-alpha-preview.tsv",
-        "docs/APD-CODEX-CORE-TEST-REQUEST.txt",
+        ".github/workflows/codex-player-preview-285.yml",
+        ".github/workflows/codex-player-with-every-test.yml",
+        "docs/APD-PLAYER-PREVIEW-285-REQUEST.txt",
+        "docs/APD-TWO-APK-BUILD-POLICY.md",
+        "docs/APD-TEST285-COMBINED-QOL-2026-10-18.md",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",
-        "docs/APD-TEST285-COMBINED-QOL-2026-10-18.md",
+        "docs/APD-TEST286-UIMSD-SEARCH-2026-10-19.md",
         "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/APD-CODEX-BUILD-REQUEST.txt"
       ]
     }
   ],
-  "commentary": "TEST285 private developer candidate includes all changed paths from immediately prior compiled TEST284 source438bde5a418461a8b75fa0fdcff3eabbdb41262b/run39171799376, raw APK SHA256 2fbc6c76c5f077084a7aa486ebad685cc66fc3ab3d3a7e8a1ea7a6ca5133257e, size38619329 bytes. Complete core-only run39187368305 passed 1883 methods with no known failures; instrumentation adds pile real-touch test. Full build, 40+ native API34 methods, screens, signature history, review and physical phone still pending. No publication, staging, tester delivery; preserve all 18 sliders, score, game saves, UIMSD history."
+  "commentary": "Private matched TEST286 from previous compiled TEST285 producer0652d715cea86fb0242f4470cf870b3761672d0f/run39187804530/sha256 9429245a7ef5c01e5b36baf50a17b4f6b0ebfb67dfd90810160ba958a22a2a4b. Strict diff all source/UI/test/docs/workflows; 1890 core already passed from source ee49a0fd3f4ad65ecef98812a0c5c987a0673f5f, plus one Android native test pending. Require developer APK and matching separate regular-player APK via new paired workflow triggered on same exact build request. Full Android emulator min 41 methods and at least 57 PNGs, preservation of history/signing/application ID, no public stage/tester distribution or physical device claims."
 }
