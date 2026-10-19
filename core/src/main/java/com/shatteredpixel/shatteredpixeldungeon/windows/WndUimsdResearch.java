@@ -42,7 +42,7 @@ public final class WndUimsdResearch {
     private static void menu(UimsdModel m,String title,String note,List<WndUimsdList.Entry> entries,List<Runnable> actions,Runnable restore){
         Catalog catalog=m.catalog();Query query=m.query();
         Runnable checkedRestore=()->{if(m.catalog()==catalog && m.query().equals(query))restore.run();else tell(title,"The query or history changed. Open Research lab again for current results.");};
-        ShatteredPixelDungeon.scene().addToFront(WndUimsdList.menu(title,note,entries,(i,checked)->{
+        ShatteredPixelDungeon.scene().addToFront(WndUimsdList.menu(catalog.synthetic ? "Demo data: "+title:title,note,entries,(i,checked)->{
             if(m.catalog()==catalog && m.query().equals(query))actions.get(i).run();else tell(title,"The query or history changed. Open Research lab again.");
         }).restoreWith(checkedRestore));
     }
@@ -109,6 +109,7 @@ public final class WndUimsdResearch {
     }
     private static void document(UimsdModel m,ResearchDocument d){
         List<WndUimsdList.Entry> entries=new ArrayList<>();List<Runnable> actions=new ArrayList<>();
+        if(d.cards.isEmpty())entries.add(WndUimsdList.Entry.warning(d.notes.isEmpty() ? "No result for this query.":d.notes.get(d.notes.size()-1)));
         for(ResearchDocument.Card c:d.cards)add(entries,actions,c.label,c.value,()->inspect(m,d,c));
         add(entries,actions,"Export this analysis","Text, Markdown, HTML or CSV; includes definitions, exclusions and capped evidence lists.",()->export(m,d));
         menu(m,d.title,(m.catalog().synthetic?"DEMO DATA (made up).\n":"")+String.join("\n\n",d.notes),entries,actions,()->document(m,d));

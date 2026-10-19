@@ -88,7 +88,7 @@ public final class UimsdGuide {
 				"A table has one line for each thing it lists. In tables like Weapons, each line is one KIND of thing, for example every War Hammer together, "
 						+ "with numbers about all of them: how many you met, how often you equipped them, how often you won with them.\n\n"
 						+ "Tap a column heading to sort by it. Tap a line to open it.", "table"));
-		t.add(new Topic("research", find, "Research lab",
+		t.add(new Topic("research", read, "Research lab",
                 "Open Research lab on Home, inside a table, or through Options. Run DNA describes a run using explicitly defined rates and can compare two fingerprints. Tap a metric to inspect the source run and its recorded context events.\n\n"
                         + "Luck laboratory compares recorded generation values with matching finished random-seed runs. Generation details require your explicit hidden-information choice and never expose unfinished-run secrets. Empirical ranks describe your reference history, not theoretical RNG odds or a score multiplier.\n\n"
                         + "Automatic discoveries screen recorded class/subclass win-rate contrasts with at least 20 known outcomes per group, matching rules and version, and adjusted uncertainty bands. No result is invented when data are insufficient. Inspect both groups; association does not establish a cause.\n\n"
