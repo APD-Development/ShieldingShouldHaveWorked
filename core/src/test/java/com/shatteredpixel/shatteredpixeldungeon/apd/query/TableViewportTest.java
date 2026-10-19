@@ -35,6 +35,24 @@ public class TableViewportTest {
         float[] at=saved.position(after,150,100);
         assertEquals(left(after,6),at[0],0.01f);assertEquals(6,after.lines.get(0).row.num(6));
     }
+    @Test public void addingAndReversingSecondarySortNeverJumpsToThePrimaryColumn(){
+        ResultTable before=table(Collections.singletonList(new Sort("c1",false)));
+        TableViewport saved=TableViewport.capture(before,left(before,8),44);
+        ResultTable after=table(Arrays.asList(new Sort("c1",false),new Sort("c8",true)));
+        float[] at=saved.position(after,150,100);
+        assertEquals(left(after,8),at[0],0.01f);assertEquals(0,at[1],0);
+        saved=TableViewport.capture(after,at[0],55);
+        ResultTable reversed=table(Arrays.asList(new Sort("c1",false),new Sort("c8",false)));
+        assertEquals(left(reversed,8),saved.position(reversed,150,100)[0],0.01f);
+    }
+    @Test public void reorderingColumnsDoesNotMistakeSortKeyOrderForANewSort(){
+        List<Sort> sorts=Arrays.asList(new Sort("c3",false),new Sort("c7",true));
+        ResultTable before=table(sorts);TableViewport saved=TableViewport.capture(before,left(before,8),55);
+        List<String> columns=new ArrayList<>();for(int i=0;i<12;i++)columns.add("c"+i);
+        Collections.swap(columns,3,7);
+        ResultTable reordered=table(sorts,columns,80);
+        assertEquals(55,saved.position(reordered,150,100)[1],0);
+    }
     @Test public void refreshingSettingsOrFilteringPreservesBothOffsetsAndClampsShortResults(){
         ResultTable t=table(Collections.emptyList());TableViewport saved=TableViewport.capture(t,190,120);
         assertArrayEquals(new float[]{190,120},saved.position(t,150,100),0.01f);

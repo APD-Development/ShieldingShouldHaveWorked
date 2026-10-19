@@ -43,7 +43,9 @@ jobs:
           repo=os.environ['GITHUB_REPOSITORY']
           run_id=str(ledger['previous_run'])
           previous=json.loads(subprocess.check_output(['gh','api','repos/'+repo+'/actions/runs/'+run_id]))
-          assert previous['status']=='completed' and previous['head_sha']==ledger['previous_source']
+          assert previous['head_sha']==ledger['previous_source']
+          # The producing job below must have completed successfully and finalized
+          # its artifact. Other verification jobs may still be running.
           # A prior APK can exist despite a later Android failure. Preserve its
           # exact history without declaring that prior APK playable or verified.
           jobs=json.loads(subprocess.check_output(['gh','api','repos/'+repo+'/actions/runs/'+run_id+'/jobs']))['jobs']
@@ -137,7 +139,9 @@ jobs:
           repo=os.environ['GITHUB_REPOSITORY']
           run_id=str(ledger['previous_run'])
           previous=json.loads(subprocess.check_output(['gh','api','repos/'+repo+'/actions/runs/'+run_id]))
-          assert previous['status']=='completed' and previous['head_sha']==ledger['previous_source']
+          assert previous['head_sha']==ledger['previous_source']
+          # The producing job below must have completed successfully and finalized
+          # its artifact. Other verification jobs may still be running.
           # A prior APK can exist despite a later Android failure. Preserve its
           # exact history without declaring that prior APK playable or verified.
           jobs=json.loads(subprocess.check_output(['gh','api','repos/'+repo+'/actions/runs/'+run_id+'/jobs']))['jobs']

@@ -21,3 +21,7 @@ Core and Android gates must be read from exact-source workflow results before cl
 ## Export issue found by regression
 
 The new export assertion exposed that ReportRenderer.csv skipped Report.Facts blocks entirely. A run report therefore omitted Outcome, Ascended and other run facts from CSV even though the table/model and Markdown held them. CSV now emits these as escaped Section/Field/Value/Detail rows alongside all pre-existing tables. ReportCsvCompletenessTest covers the result fields, preserved table rows and formula/comma escaping. Failed TEST288 and TEST289 gates produced no APK; the immediate previous compiled history remains TEST287.
+
+## Multi-key sorting completion
+
+Viewport focus now tracks the sort key actually changed, including secondary and tertiary keys; it does not automatically scroll back to an unchanged primary key. Sort signatures are ordered by sort rank rather than column display order, so moving columns does not spuriously reset vertical scrolling. Two additional core regressions and the actual Android menu test cover these cases. The next uniquely numbered pair preserves the produced TEST290 history.

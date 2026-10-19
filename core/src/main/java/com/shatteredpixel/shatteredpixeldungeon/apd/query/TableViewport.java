@@ -11,10 +11,14 @@ public final class TableViewport {
 
     private static String sorting(ResultTable table) {
         StringBuilder s=new StringBuilder();
+        java.util.SortedMap<Integer,String> keys=new java.util.TreeMap<>();
         for(ResultTable.Header h:table.headers) if(h.sortDirection!=0)
-            s.append(h.id).append(':').append(h.sortDirection).append(':').append(h.sortRank).append(';');
+            keys.put(h.sortRank,key(h));
+        for(String key:keys.values())s.append(key);
         return s.toString();
     }
+
+    private static String key(ResultTable.Header h){return h.id+":"+h.sortDirection+":"+h.sortRank+";";}
 
     public static TableViewport capture(ResultTable table, float x, float y) {
         if(table==null)return null;
@@ -36,11 +40,17 @@ public final class TableViewport {
         }
         boolean changed=!sorting.equals(sorting(table));
         if(changed) {
-            for(int i=1;i<table.headers.size();i++) if(table.headers.get(i).sortRank==1) {
-                float left=g.lefts[i]-g.firstWidth(), right=left+g.widths[i];
+            int focus=-1,rank=Integer.MAX_VALUE;
+            for(int i=0;i<table.headers.size();i++){
+                ResultTable.Header h=table.headers.get(i);
+                if(h.sortDirection!=0 && h.sortRank<rank && !(";"+sorting).contains(";"+key(h))){
+                    focus=i;rank=h.sortRank;
+                }
+            }
+            if(focus>0){
+                float left=g.lefts[focus]-g.firstWidth(), right=left+g.widths[focus];
                 if(left<sx)sx=left;
-                else if(right>sx+width)sx=g.widths[i]>width?left:right-width;
-                break;
+                else if(right>sx+width)sx=g.widths[focus]>width?left:right-width;
             }
         }
         return new float[]{clamp(sx,g.scrollingWidth()-width),

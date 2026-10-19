@@ -143,6 +143,19 @@ public class UimsdColumnsModalDeviceTest {
             until(()->{try{return picker()==null && !(Boolean)field(Game.scene(),"dirty");}catch(Exception e){return false;}});
             assertViewport(model.get(),expected[0],1);
             render(()->{try{
+                ScrollPane body=(ScrollPane)field(field(Game.scene(),"activeTable"),"body");
+                TableGeometry g=TableGeometry.of(model.get().table());expected[0]=g.lefts[9]-g.firstWidth();
+                body.scrollTo(expected[0],55);
+            }catch(Exception e){throw new RuntimeException(e);}});
+            tapSort();tapLabel("Add a sort key");tapLabel("Statistic 9");tapLabel("Highest first");
+            until(()->{try{return picker()==null && !(Boolean)field(Game.scene(),"dirty");}catch(Exception e){return false;}});
+            render(()->{try{
+                ScrollPane body=(ScrollPane)field(field(Game.scene(),"activeTable"),"body");
+                assertEquals("Secondary sort must not jump to the primary column",expected[0],body.content().camera().scroll.x,0.1f);
+                assertEquals(-1,model.get().table().headers.get(9).sortDirection);
+                assertEquals(2,model.get().table().headers.get(9).sortRank);
+            }catch(Exception e){throw new RuntimeException(e);}});
+            render(()->{try{
                 ScrollPane body=(ScrollPane)field(field(Game.scene(),"activeTable"),"body");body.scrollTo(expected[0],55);
                 model.get().setShowInternal(!model.get().query().showInternal);
             }catch(Exception e){throw new RuntimeException(e);}});
