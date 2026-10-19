@@ -1,50 +1,116 @@
 {
   "date": "2026-10-18",
-  "previous_source": "e14921ed4cadb68b2c2748ed287ed2ea802df0c4",
-  "previous_application_source": "17b3636958d817cdcd26f2b4ffe7bd6ecc87434b",
-  "previous_run": 39165868402,
-  "previous_label": "Codex TEST 283",
+  "previous_source": "438bde5a418461a8b75fa0fdcff3eabbdb41262b",
+  "previous_application_source": "1a7941459f347f647a648cbc4a66467f1f219a62",
+  "previous_run": 39171799376,
+  "previous_label": "Codex TEST 284",
   "changes": [
     {
       "category": "Quality of life / UI",
-      "sprite": "ICON_CHECKED",
-      "title": "120 active runs: 20 for each of six classes",
-      "text": "APD now provides a class-first six-button selector with 20 scrollable active-run entries per class, each marked occupied or empty with saved floor, difficulty, challenges, Custom Dungeon Rules and last-played context.",
+      "sprite": "ICON_INFO",
+      "title": "Browse every visible item in an open pile",
+      "text": "Examine a tile pile of two or more revealed items as a scrollable native item-icon and item-name list, in original top-first order and visible quantities, opening normal descriptions without pickup or identification.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/GamesInProgress.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/StartScene.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/HeroSelectScene.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/Dungeon.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/GameScene.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/qol/HeapExamination.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndInfoPile.java"
+      ]
+    },
+    {
+      "category": "Quality of life / UI",
+      "sprite": "ICON_STATS",
+      "title": "Read your run history turn by turn",
+      "text": "Open any recorded UIMSD run and browse actual event rows turn by turn, jumping one, ten, a hundred, a thousand or a custom amount. Empty/unrecorded turns never invent outcomes.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RunTurnBrowser.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndRunTurnBrowser.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndUimsdRow.java"
+      ]
+    },
+    {
+      "category": "Quality of life / UI",
+      "sprite": "ICON_INFO",
+      "title": "Live collapsible damage effect information",
+      "text": "The active dungeon shows a small expandable HUD covering each current hero DoT and focused visible enemy: measured raw-input/HP/shield damage and live estimated future ticks with explicit uncertainty, retaining the original WndInfoBuff after opting out.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/DotOverlay.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/qol/DotForecast.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/Char.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Buff.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Burning.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Poison.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Bleeding.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Corrosion.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Ooze.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/BuffIndicator.java"
+      ]
+    },
+    {
+      "category": "Quality of life / UI",
+      "sprite": "ICON_PREFS",
+      "title": "Waterskin starts in the player's selected slot",
+      "text": "Player/test setting defaults to quickslot 2, remains adjustable across positions 1–6 and old Automatic/Off modes, persisted across app restarts. Existing runs swap without lost assignments when possible.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/SPDSettings.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/hotbar/WaterskinStartupSlot.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/Dungeon.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/APDSettingsPane.java"
+      ]
+    },
+    {
+      "category": "Quality of life / UI",
+      "sprite": "ICON_INFO",
+      "title": "Show Wandmaker wand upgrade levels",
+      "text": "Reveal just the offered wands' real upgrade levels before selection, with the regular ItemSlot visual, leaving otherwise unidentified items, curses and properties hidden.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/npcs/Wandmaker.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndWandmaker.java"
+      ]
+    },
+    {
+      "category": "Bug Fixes",
+      "sprite": "ICON_INFO",
+      "title": "Blacksmith hammering stays at normal audio cadence",
+      "text": "Fast visual playback no longer retriggers the forge sound repeatedly at >1x; real-time SFX limiter with fractional-frame tolerance, no change to combat or visual playback.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/RealTimeSoundCadence.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/PlaybackGroup.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/sprites/BlacksmithSprite.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Verify original save preservation and cross-class isolation",
-      "text": "All six character classes, 20 independent slots each, 120 persisted physical folders, preserved original game1..6 IDs, no accidental cross-class overwrite, class-local deletion, actual save/load inventories, saved difficulty and rules are core tested; API34 class picker and scrolling assertions added.",
+      "title": "Core and native acceptance coverage",
+      "text": "Complete core suite passed source bcd775f5..., including newly added turn browsing, pile, audio cadence, Wandmaker levels, DoT forecast, and Waterskin tests. Native PileExaminationDeviceTest touches scrolled pile items. Full API34 check pending.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/ClassSaveSlotsTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/ClassSavePersistenceTest.java",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/ClassSaveSlotsDeviceTest.java",
-        "tools/run-codex-android-checks.sh",
-        "docs/APD-CODEX-CORE-TEST-REQUEST.txt"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RunTurnBrowserTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/qol/HeapExaminationTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/qol/DotForecastTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/hotbar/WaterskinStartupSlotTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/RealTimeSoundCadenceTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/WandmakerRewardLevelsTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/ApdSettingsClickDeviceTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PileExaminationDeviceTest.java",
+        "tools/run-codex-android-checks.sh"
       ]
     },
     {
       "category": "Developer Commentary",
-      "sprite": "ICON_CHECKED",
-      "title": "Preserve independent turn-history model and release traceability",
-      "text": "The independently added pure TurnHistory model and tests remain on the Codex branch, distinct from the active-save feature; note the full 1859 green core tests and request TEST284 against TEST283's actual compiled history.",
+      "sprite": "ICON_INFO",
+      "title": "Document private TEST285 against verified TEST284",
+      "text": "Keep release notes and permanent verified history without replacing prior APKs; request full private core/debug APK/native/visual verification. No tester distribution or actual physical phone claim.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/TurnHistory.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/TurnHistoryTest.java",
+        "core/src/main/assets/apd/apd_changes.txt",
+        "core/src/main/assets/apd/releases/apd-alpha-preview.tsv",
+        "docs/APD-CODEX-CORE-TEST-REQUEST.txt",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",
-        "docs/APD-120-ACTIVE-RUNS-2026-10-18.md",
+        "docs/APD-TEST285-COMBINED-QOL-2026-10-18.md",
         "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/APD-CODEX-BUILD-REQUEST.txt"
       ]
     }
   ],
-  "commentary": "Request full private TEST284 after two passing complete core-only runs, last run39171444947 has 1859 methods/367 suites/0 errors/failures/skips. Strict compare exact immediately previous compiled TEST283 producer e14921ed4cadb68b2c2748ed287ed2ea802df0c4/run39165868402, raw APK size38618602 sha256 4c35916f93b204af9811a69be8aabc6be27d51e37d05bdc440d97ab530a846c2. Require all 1859 core, debug assembly, signed manifest and history, at least 39 native API34 checks and 57 reviewed PNGs; Test284 is pending; no staging, publication, distribution or physical-device acceptance claim."
+  "commentary": "TEST285 private developer candidate includes all changed paths from immediately prior compiled TEST284 source438bde5a418461a8b75fa0fdcff3eabbdb41262b/run39171799376, raw APK SHA256 2fbc6c76c5f077084a7aa486ebad685cc66fc3ab3d3a7e8a1ea7a6ca5133257e, size38619329 bytes. Complete core-only run39187368305 passed 1883 methods with no known failures; instrumentation adds pile real-touch test. Full build, 40+ native API34 methods, screens, signature history, review and physical phone still pending. No publication, staging, tester delivery; preserve all 18 sliders, score, game saves, UIMSD history."
 }
