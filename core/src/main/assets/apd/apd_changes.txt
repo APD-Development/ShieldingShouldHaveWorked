@@ -8,6 +8,7 @@ Bug Fixes:
 - UIMSD sorting preserves the horizontal column position through table refreshes. The active column shows an ascending or descending marker. Filters, column edits and table settings preserve the viewport where possible; sorting starts at the first result.
 
 Statistics / UIMSD:
+- Exact questions can be saved by name and reopened later with the same measure, per-unit choice, split, conditions, run scope and hidden-information choice. They are asked again against current history; legacy saved tables still open normally.
 - Damage after equipping: choose a recorded equipment occurrence and a following-turn window, inspect the exact interpreted boundaries and open contributing damage records. Missing history stays unknown; observed totals are lower bounds.
 - Research lab: Run DNA measures each run's combat, healing, equipment and exploration rates, compares two fingerprints and opens their source records.
 - Luck laboratory compares recorded generation outcomes against matching finished random-seed runs. It shows reference samples and empirical percentiles without changing scores or inventing RNG probabilities.
