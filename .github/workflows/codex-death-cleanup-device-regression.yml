@@ -30,11 +30,18 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          git fetch --no-tags --depth=1 origin 0dca423a294310a768a5defbbf9ee4015d24925d
           python3 - <<'PY'
           import hashlib,json,os,pathlib,subprocess,time,zipfile
           repo=os.environ['GITHUB_REPOSITORY']; out=pathlib.Path('death-order-evidence');out.mkdir()
-          for label,run_id,source in [('before',39284577455,'cad6c52789beb5c05f07b40031965e09a497b661'),('after',39294298335,'0dca423a294310a768a5defbbf9ee4015d24925d')]:
+          source=os.environ['GITHUB_SHA'];deadline=time.monotonic()+5*60
+          while True:
+              runs=json.loads(subprocess.check_output(['gh','api',f'repos/{repo}/actions/runs?head_sha={source}&per_page=30']))['workflow_runs']
+              matching=[r for r in runs if r['name']=='Codex APD sprint verification' and r['head_sha']==source]
+              if matching:target=max(matching,key=lambda r:r['id']);break
+              assert time.monotonic()<deadline,'Matching developer run not found'
+              time.sleep(10)
+          with open(os.environ['GITHUB_ENV'],'a') as env:env.write('APD_TARGET_TEST_NUMBER='+str(target['run_number'])+'\n')
+          for label,run_id,source in [('before',39284577455,'cad6c52789beb5c05f07b40031965e09a497b661'),('after',target['id'],source)]:
               deadline=time.monotonic()+15*60
               while True:
                   jobs=json.loads(subprocess.check_output(['gh','api',f'repos/{repo}/actions/runs/{run_id}/jobs']))['jobs']
@@ -55,13 +62,10 @@ jobs:
                   assert hashlib.sha256(data).hexdigest()==expected
                   (out/(label+'.apk')).write_bytes(data)
               (out/(label+'-source.json')).write_text(json.dumps({'source':source,'run':run_id,'sha256':expected,'apk':name},indent=2))
-          # Instrumentation is compiled against the same production source as TEST288.
-          changed=subprocess.check_output(['git','diff','0dca423a294310a768a5defbbf9ee4015d24925d','HEAD','--','core/src/main','SPD-classes','android/src/main','android/build.gradle','build.gradle']).decode()
-          assert not changed,'Supplemental check must not change application production source'
           PY
       - name: Compile only the stronger instrumentation test
-        run: ./gradlew :android:assembleDebugAndroidTest -PapdTestBuild -PapdBuild=C288
-      - name: Reproduce on TEST287 then pass on the unchanged TEST288 APK
+        run: ./gradlew :android:assembleDebugAndroidTest -PapdTestBuild -PapdBuild=C${{ env.APD_TARGET_TEST_NUMBER }}
+      - name: Reproduce on TEST287 then pass on the exact corrected APK
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 34

@@ -20,5 +20,5 @@ p=pathlib.Path('death-order-evidence')
 before=(p/'before-instrumentation.txt').read_text();after=(p/'after-instrumentation.txt').read_text()
 assert 'death cleanup awaits the final ranking' in before and 'FAILURES!!!' in before,before[-4000:]
 assert 'OK (1 test)' in after and 'FAILURES!!!' not in after,after[-4000:]
-(p/'result.json').write_text(json.dumps({'before_test287_expected_failure':'death cleanup awaits the final ranking','after_test288_passed':1,'production_rebuilt':False,'physical_phone_verified':False},indent=2))
+(p/'result.json').write_text(json.dumps({'before_test287_expected_failure':'death cleanup awaits the final ranking','after_corrected_apk_passed':1,'production_rebuilt':False,'physical_phone_verified':False},indent=2))
 PY

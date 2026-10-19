@@ -55,7 +55,10 @@
         "docs/APD-CODEX-CORE-TEST-REQUEST.txt",
         "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/DamagedFactsProvenanceTest.java",
         "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/MalformedPayloadProvenanceTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/QuestBossClassificationTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/QuestBossClassificationTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PlayRunDeviceTest.java",
+        ".github/workflows/codex-death-cleanup-device-regression.yml",
+        "tools/run-death-cleanup-device-regression.sh"
       ]
     },
     {

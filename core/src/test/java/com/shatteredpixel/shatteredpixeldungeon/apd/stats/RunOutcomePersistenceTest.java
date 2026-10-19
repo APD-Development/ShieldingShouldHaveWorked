@@ -52,7 +52,8 @@ public class RunOutcomePersistenceTest {
                 for(int selected=0;selected<=2;selected++)assertEquals(selected==outcome?1:0,
                         QueryEngine.run(runs,all.addFilter(Filter.num(FactKeys.OUTCOME,Op.EQ,selected)),"").rows.size());
                 Dataset deaths=cat.dataset(Datasets.DEATHS);
-                assertEquals(outcome,deaths.rows.get(0).num(deaths.def.indexOf("death.runOutcome")));
+                assertEquals("Deaths table identifies the final death correctly",outcome==LifecycleEvents.OUTCOME_DIED?1:0,
+                        deaths.rows.get(0).num(deaths.def.indexOf("death.final")));
                 Report reportRun=ReportBuilder.run(cat,row,false,"",1,"test");
                 String label=new String[]{"Died","Won","Abandoned"}[outcome];
                 assertTrue(ReportRenderer.csv(reportRun).contains(label));
