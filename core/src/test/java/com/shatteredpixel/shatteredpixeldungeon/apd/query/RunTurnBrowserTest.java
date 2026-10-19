@@ -23,5 +23,5 @@ public class RunTurnBrowserTest {
     @Test public void startsAtOneAndPreservesSparseEmptyTurns(){RunTurnBrowser b=example();assertEquals(1,b.turn());assertTrue(b.events().isEmpty());assertEquals(5000,b.lastTurn);}
     @Test public void correctTurnAndCustomNavigation(){RunTurnBrowser b=example();b.go(21);assertEquals(1,b.events().size());b.step(100);b.next();assertEquals(121,b.turn());b.previous();assertEquals(21,b.turn());b.go(999999);assertEquals(5000,b.turn());}
     @Test public void zeroStepRejected(){RunTurnBrowser b=example();try{b.step(0);fail();}catch(IllegalArgumentException expected){}}
-    @Test public void importedRunRejected(){Catalog cat=new Catalog();DatasetDef d=Datasets.runs();Row r=new Row("x",null,"x",d.size());r.imported=true;try{new RunTurnBrowser(cat,r);fail();}catch(IllegalArgumentException expected){}}
+    @Test public void importedRunWithoutEventsIsExplicitlyEmpty(){Catalog cat=new Catalog();DatasetDef d=Datasets.runs();Row r=new Row("x",null,"x",d.size());r.imported=true;RunTurnBrowser browser=new RunTurnBrowser(cat,r);assertTrue(browser.events().isEmpty());assertTrue(browser.summary().contains("No recorded event"));}
 }
