@@ -1,4 +1,5 @@
 Bug Fixes:
+- Returning from UIMSD evidence restores each table's filters, sorting, page and horizontal/vertical position. Following a new link starts at its own results; returning or rotating restores the parent position without mixing tables that share the same columns.
 - Resuming a saved run keeps manual hotbar assignments, empty slots and placeholders. Manual edits save immediately while the hero is waiting for input. The Waterskin starting-slot preference only affects new runs and never rearranges an existing run.
 - A completed UIMSD seed replay publishes its result and clears the busy message together.
 - Adding or reversing a secondary sort key keeps that selected statistic visible instead of jumping to the primary key. Column reordering preserves vertical position when the sort itself is unchanged.

@@ -6,7 +6,7 @@ Accepted supporting-tool baseline: TEST294 /84b465af7e12fce897d318fcf385529a50ad
 Existing: binary offline recorder with rollback-aware canonical history, public/internal disclosure, typed provenance, queryable events/equipment/facts, all 18 Custom Rules, grouping, row links, saved views, exports, viewport restoration and accurate death/abandonment outcomes.
 Partial: topic/simple-question search and fixed multilingual aliases; basic RunTurnBrowser public event text; research A/B query pins and descriptive/inferential comparisons.
 Missing: general sequence/window queries, extensible interpreted terminology, comprehensive contributing-record navigation, complete death context/resource snapshots, named persisted experiments, longitudinal comparable-condition analysis.
-Known broken/missing behavior: Back restores query/page but loses cross-table horizontal/vertical scroll position. Track and test that separately; do not claim all evidence-navigation position requirements are complete. Preserve Columns deferred-rebuild fix, sorting viewport fix, raw logs, saved views and existing outcomes.
+Navigation milestone in verification: per-place Back checkpoints now include horizontal/vertical position alongside query/page, including same-dataset evidence and scene recreation. Six new core regressions and a three-screen Android pointer regression await recorded acceptance. Do not claim all evidence-navigation requirements are complete. Preserve Columns deferred-rebuild fix, sorting viewport fix, raw logs, saved views and existing outcomes.
 
 ## Acceptance checklist
 | Capability | Status | Acceptance criteria |
@@ -28,6 +28,15 @@ Known broken/missing behavior: Back restores query/page but loses cross-table ho
 - [x] Measure execution cost and APK/history growth; record test environment and limits.
 - [x] In-game Changes, paired uniquely numbered developer/player APKs; verify player cheats gate.
 This milestone is a useful subset of capabilities 1 and 2, not completion of the five.
+
+## Evidence-navigation position milestone (in verification)
+- [x] Store transient viewport checkpoints per unique navigation place, including late checkpoints after asynchronous navigation.
+- [x] Route ordinary links, groups, research evidence and seed replay through the shared navigation stack.
+- [x] Restore exact parent query/sort/page, anchor column and clamped vertical offset; new links start at their own origin.
+- [x] Checkpoint before scene destruction so rotation can restore the surviving model.
+- [ ] Inspect full core and actual Android pointer/scene-recreation acceptance results.
+- [ ] Verify paired APKs, prior build history, player feature gates and in-game Changes.
+No raw/save/query schema changes or historical migration. This closes a navigation gap within capability 2, not the entire capability.
 
 ## Later connected milestones
 - [ ] Extensible terminology + question persistence and general correlated windows.

@@ -25,6 +25,107 @@ import static org.junit.Assert.*;
 /** Regression: selecting Columns repeatedly must not let clicks go through the modal. */
 @RunWith(AndroidJUnit4.class)
 public class UimsdColumnsModalDeviceTest {
+    private static ScrollPane tableBody()throws Exception{
+        return (ScrollPane)field(field(Game.scene(),"activeTable"),"body");
+    }
+
+    private static void pointer(Point p)throws Exception{
+        PointerEvent.addPointerEvent(new PointerEvent(p.x,p.y,85,PointerEvent.Type.DOWN,PointerEvent.LEFT));
+        Thread.sleep(120);
+        PointerEvent.addPointerEvent(new PointerEvent(p.x,p.y,85,PointerEvent.Type.UP,PointerEvent.LEFT));
+        Thread.sleep(400);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void followOnlyRowLink()throws Exception{
+        AtomicReference<Point> at=new AtomicReference<>();
+        render(()->{try{
+            ScrollPane body=tableBody();
+            at.set(body.content().camera().cameraToScreen(body.content().camera().scroll.x+body.width()/2,
+                    body.content().camera().scroll.y+5));
+        }catch(Exception e){throw new RuntimeException(e);}});
+        pointer(at.get());
+        render(()->{try{
+            com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdRow row=null;
+            for(Gizmo g:(List<Gizmo>)field(Game.scene(),"members"))
+                if(g instanceof com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdRow && g.alive)
+                    row=(com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdRow)g;
+            assertNotNull("Pointer opened the inspected record",row);
+            ScrollPane pane=null;
+            for(Gizmo g:(List<Gizmo>)field(row,"members"))if(g instanceof ScrollPane)pane=(ScrollPane)g;
+            assertNotNull(pane);
+            // Fixture records each expose exactly one link, after their details.
+            float y=pane.content().height()-12;
+            pane.scrollTo(0,Math.max(0,y-pane.height()/2));
+            at.set(pane.content().camera().cameraToScreen(pane.width()/2,y));
+        }catch(Exception e){throw new RuntimeException(e);}});
+        pointer(at.get());
+        until(()->{try{return !(Boolean)field(Game.scene(),"dirty");}catch(Exception e){return false;}});
+    }
+
+    private static void backThroughVisibleExit()throws Exception{
+        AtomicReference<Point> at=new AtomicReference<>();
+        render(()->{try{
+            com.shatteredpixel.shatteredpixeldungeon.ui.ExitButton b=
+                    (com.shatteredpixel.shatteredpixeldungeon.ui.ExitButton)field(Game.scene(),"btnExit");
+            at.set(b.camera().cameraToScreen(b.left()+b.width()/2,b.top()+b.height()/2));
+        }catch(Exception e){throw new RuntimeException(e);}});
+        pointer(at.get());
+        until(()->{try{return !(Boolean)field(Game.scene(),"dirty");}catch(Exception e){return false;}});
+    }
+
+    private static void assertPosition(float x,float y)throws Exception{
+        render(()->{try{
+            ScrollPane body=tableBody();assertEquals(x,body.content().camera().scroll.x,.1f);
+            assertEquals(y,body.content().camera().scroll.y,.1f);
+        }catch(Exception e){throw new RuntimeException(e);}});
+    }
+
+    @Test public void evidenceBackRestoresEachTableAndSurvivesSceneRecreation()throws Exception{
+        try(ActivityScenario<AndroidLauncher> scenario=ActivityScenario.launch(AndroidLauncher.class)){
+            until(()->Game.scene()!=null);render(()->UimsdScene.openNow(TitleScene.class));
+            until(()->Game.scene() instanceof UimsdScene);
+            AtomicReference<UimsdModel> model=new AtomicReference<>();AtomicReference<Query> original=new AtomicReference<>();
+            render(()->{try{
+                UimsdModel m=(UimsdModel)field(UimsdScene.class,"model");model.set(m);
+                Catalog cat=new Catalog();
+                for(String name:Arrays.asList("parent","child")){
+                    DatasetDef d=new DatasetDef(name,name,"Navigation acceptance fixture");
+                    for(int c=0;c<12;c++)d.add(ColumnDef.num("c"+c,"Statistic "+c).shown());
+                    d.add(ColumnDef.text("join","Shared record key"));
+                    d.link(new LinkDef("Follow recorded evidence",name.equals("parent")?"child":"parent","join","join"));
+                    List<Row> rows=new ArrayList<>();List<Dataset.RunInfo> runs=new ArrayList<>();
+                    for(int i=0;i<130;i++){
+                        Row r=new Row(name+i,null,"run"+i,d.size());r.finished=true;r.ruleset="rules";
+                        for(int c=0;c<12;c++)r.setNum(c,i+c,com.shatteredpixel.shatteredpixeldungeon.apd.stats.Fact.PROV_RECORDED);
+                        r.setText(12,"shared",com.shatteredpixel.shatteredpixeldungeon.apd.stats.Fact.PROV_RECORDED);
+                        rows.add(r);runs.add(new Dataset.RunInfo(r.runId,true,r.ruleset,true,false));
+                    }
+                    cat.add(new Dataset(d,rows,runs));cat.add(new ViewDef(name,name,"Linked evidence",
+                            Query.of(name).withScope(new Scope(Scope.Rules.ALL,"",true,true,true,true))));
+                }
+                m.setCatalog(cat);m.showRoot("parent");m.addFilter(Filter.num("c1",Op.GE,10));
+                m.setSorts(Collections.singletonList(new Sort("c8",true)));m.setPage(1);original.set(m.query());
+                Field h=UimsdScene.class.getDeclaredField("atHome");h.setAccessible(true);h.set(null,false);
+            }catch(Exception e){throw new RuntimeException(e);}});
+            Thread.sleep(450);
+            render(()->{try{tableBody().scrollTo(300,66);}catch(Exception e){throw new RuntimeException(e);}});
+            assertPosition(300,66);PlayRunDeviceTest.visibilityScreenshot("uimsd-navigation-parent.png");
+            followOnlyRowLink();assertEquals("child",model.get().query().dataset);assertEquals(1,model.get().depth());assertPosition(0,0);
+            render(()->{try{tableBody().scrollTo(150,44);}catch(Exception e){throw new RuntimeException(e);}});
+            followOnlyRowLink();assertEquals("parent",model.get().query().dataset);assertEquals(2,model.get().depth());assertPosition(0,0);
+            render(()->{try{tableBody().scrollTo(80,22);}catch(Exception e){throw new RuntimeException(e);}});
+            backThroughVisibleExit();assertEquals("child",model.get().query().dataset);assertPosition(150,44);
+            PlayRunDeviceTest.visibilityScreenshot("uimsd-navigation-child-back.png");
+            backThroughVisibleExit();assertEquals(original.get(),model.get().query());assertEquals(1,model.get().page());assertPosition(300,66);
+            Object previous=Game.scene();render(()->ShatteredPixelDungeon.switchNoFade(UimsdScene.class));
+            until(()->Game.scene() instanceof UimsdScene && Game.scene()!=previous);
+            until(()->{try{return field(Game.scene(),"activeTable")!=null && !(Boolean)field(Game.scene(),"dirty");}catch(Exception e){return false;}});
+            assertPosition(300,66);assertEquals(original.get(),model.get().query());assertEquals(1,model.get().page());
+            PlayRunDeviceTest.visibilityScreenshot("uimsd-navigation-restored.png");
+        }
+    }
+
     private static void render(Runnable task)throws Exception {
         CountDownLatch finished=new CountDownLatch(1);
         AtomicReference<Throwable> exception=new AtomicReference<>();

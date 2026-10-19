@@ -1,35 +1,43 @@
 {
   "date": "2026-10-19",
-  "previous_source": "d274cfce8b14b48766be2cbe1cb5aa63558f9a23",
-  "previous_application_source": "d274cfce8b14b48766be2cbe1cb5aa63558f9a23",
-  "previous_run": 39324623692,
-  "previous_label": "Codex TEST 299",
+  "previous_source": "d41631b3e5b43bf832036426a9e7c7a0694d07ed",
+  "previous_application_source": "d41631b3e5b43bf832036426a9e7c7a0694d07ed",
+  "previous_run": 39327169505,
+  "previous_label": "Codex TEST 300",
   "changes": [
     {
       "category": "Bug Fixes",
       "sprite": "ICON_INFO",
-      "title": "APD Settings opens with its scroll camera initialized",
-      "text": "Attach the settings scroll host to its window before layout. Preserve the new focused categories and every existing setting, alongside saved hotbar assignment fixes.",
+      "title": "Evidence navigation remembers each UIMSD table",
+      "text": "Checkpoint the parent query, sorting, page and column/row position per navigation place. Back and scene recreation restore the correct table; new evidence starts at its own origin. Keep modal touch handling and sort visibility intact.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndAPDSettings.java",
-        "core/src/main/assets/apd/apd_changes.txt"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/TableViewport.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdModel.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/UimsdScene.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/NavigationViewportTest.java",
+        "core/src/main/assets/apd/apd_changes.txt",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdColumnsModalDeviceTest.java",
+        "tools/run-codex-android-checks.sh"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_INFO",
-      "title": "Exact APK cold restart and complete Android regression evidence",
-      "text": "Retain the full native suite, actual pointer checks, small-screen coverage and old/new saved-run comparisons. An upgrade preserves the actual recorded old layout; manual edits never saved by TEST285 cannot be invented.",
+      "title": "Preserve TEST300 acceptance and weighted loot evidence",
+      "text": "Retain corrected Android settings gesture geometry, verified hotbar/settings/equipment-window reports and eight seeded Ring of Wealth regressions. Loot mechanics are unchanged. All five broad investigation capabilities remain partial or pending.",
       "paths": [
-        ".github/workflows/codex-test299-acceptance.yml",
-        ".github/workflows/codex-test299-death-regression.yml",
-        ".github/workflows/codex-test299-full-native.yml",
-        ".github/workflows/codex-test299-title-matrix.yml",
+        ".github/workflows/codex-test300-settings-gesture.yml",
         "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/ApdSettingsClickDeviceTest.java",
-        "tools/run-test299-full-native.sh",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/HotbarColdRestartDeviceTest.java",
-        "tools/run-hotbar-cold-restart.sh",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/RingOfWealthLootInvestigationTest.java",
+        "docs/APD-CODEX-CORE-TEST-REQUEST.txt",
         "docs/APD-HOTBAR-SETTINGS-2026-10-19.md",
+        "docs/APD-RING-WEALTH-INVESTIGATION-2026-10-19.md",
+        "docs/APD-RING-WEALTH-SIMULATION-2026-10-19.txt",
+        "docs/APD-UIMSD-EQUIPMENT-WINDOW-2026-10-19.md",
+        "docs/APD-UIMSD-INVESTIGATION-CHECKLIST.md",
+        "docs/HANDOFF.md",
+        "docs/WORK-COMPLETED-LEDGER.md",
+        "tools/run-test300-settings-gesture.sh",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/APD-NEXT-BUILD-HISTORY.json"
       ]
