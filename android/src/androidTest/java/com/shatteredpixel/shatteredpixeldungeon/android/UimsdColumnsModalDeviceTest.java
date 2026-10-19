@@ -75,15 +75,24 @@ public class UimsdColumnsModalDeviceTest {
     }
 
     private static void assertPosition(float x,float y)throws Exception{
+        // A direct fixture scroll occurs outside ScrollPane.update. Allow the
+        // normal table update to synchronize its frozen panes before capture.
+        Thread.sleep(200);
         render(()->{try{
             ScrollPane body=tableBody();assertEquals(x,body.content().camera().scroll.x,.1f);
             assertEquals(y,body.content().camera().scroll.y,.1f);
+            Object table=field(Game.scene(),"activeTable");
+            assertEquals(x,((ScrollPane)field(table,"header")).content().camera().scroll.x,.1f);
+            assertEquals(y,((ScrollPane)field(table,"firstCol")).content().camera().scroll.y,.1f);
         }catch(Exception e){throw new RuntimeException(e);}});
     }
 
     @Test public void evidenceBackRestoresEachTableAndSurvivesSceneRecreation()throws Exception{
         try(ActivityScenario<AndroidLauncher> scenario=ActivityScenario.launch(AndroidLauncher.class)){
-            until(()->Game.scene()!=null);render(()->UimsdScene.openNow(TitleScene.class));
+            until(()->Game.scene()!=null);render(()->{
+                com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdUimsdGuideSeen(true);
+                UimsdScene.openNow(TitleScene.class);
+            });
             until(()->Game.scene() instanceof UimsdScene);
             AtomicReference<UimsdModel> model=new AtomicReference<>();AtomicReference<Query> original=new AtomicReference<>();
             render(()->{try{
