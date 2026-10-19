@@ -10,13 +10,13 @@ public class RunTurnBrowserTest {
         Catalog cat=new Catalog();
         DatasetDef runs=Datasets.runs();
         Row run=new Row("run-one",null,"id-one",runs.size());
-        run.setNum(runs.indexOf(FactKeys.TURNS),5000,Fact.PROV_EXACT);
+        run.setNum(runs.indexOf(FactKeys.TURNS),5000,Fact.PROV_RECORDED);
         cat.add(new Dataset(runs,Arrays.asList(run),new ArrayList<>()));
         DatasetDef def=EventDatasets.attacks();
         Row r=new Row("event-one",null,"id-one",def.size());
-        r.setNum(def.indexOf("attack.turn"),21,Fact.PROV_EXACT);
+        r.setNum(def.indexOf("attack.turn"),21,Fact.PROV_RECORDED);
         int attacker=def.indexOf("attack.attacker");
-        if(attacker>=0)r.setText(attacker,"Rat",Fact.PROV_EXACT);
+        if(attacker>=0)r.setText(attacker,"Rat",Fact.PROV_RECORDED);
         cat.add(new Dataset(def,Arrays.asList(r),new ArrayList<>()));
         return new RunTurnBrowser(cat,run);
     }

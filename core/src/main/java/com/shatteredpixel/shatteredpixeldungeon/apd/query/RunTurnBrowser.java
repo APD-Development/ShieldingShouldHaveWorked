@@ -13,7 +13,7 @@ public final class RunTurnBrowser {
     private final NavigableMap<Long,List<String>> timeline = new TreeMap<>();
 
     public RunTurnBrowser(Catalog catalog, Row run) {
-        if (catalog == null || run == null || run.runId == null || run.runId.isEmpty() || run.imported)
+        if (catalog == null || run == null || run.runId == null || run.runId.isEmpty() )
             throw new IllegalArgumentException("A recorded APD run is required");
         runId = run.runId;
         long max = 1;

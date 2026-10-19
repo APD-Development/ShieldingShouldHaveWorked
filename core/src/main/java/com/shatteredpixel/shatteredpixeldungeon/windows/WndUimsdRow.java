@@ -137,7 +137,7 @@ public class WndUimsdRow extends Window {
 				}
 			}
 			if (WndUimsdReport.isRunsTable(def)){
-                if (!row.imported && row.runId != null && !row.runId.isEmpty() && m.catalog() != null){
+                if (row.runId != null && !row.runId.isEmpty() && m.catalog() != null){
                     actions.add(new Action("Turn-by-turn history", () -> {
                         ShatteredPixelDungeon.scene().addToFront(new WndRunTurnBrowser(
                                 new com.shatteredpixel.shatteredpixeldungeon.apd.query.RunTurnBrowser(m.catalog(),row)));
