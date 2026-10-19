@@ -80,12 +80,6 @@ public final class UimsdGuide {
 						+ "Open as a table gives the very same question in the table tools, with every filter, sort and column, for anyone who wants to keep digging. "
 						+ "Things you could not have known during a run (what an unidentified item really was) are shown only once the run is over and only if you switch hidden "
 						+ "details on.", ""));
-        t.add(new Topic("search", find, "Search all statistics",
-                "Tap Search UIMSD on Home or inside any table. Type the name of a mechanic, item type, enemy, number or category, "
-                        + "and UIMSD finds matching tables and public statistic fields. Tap a result to open that table with normal filters and sorting.\\n\\n"
-                        + "Search works offline, including Unicode text and a few common terms across languages. It does not use an AI service, "
-                        + "so it does not understand arbitrary questions in every language yet. For custom calculations, use Ask a question.\\n\\n"
-                        + "Search does not read secret row values or expose unidentified items; incomplete recordings still show unknown data as unknown.", ""));
 		t.add(new Topic("datasets", read, "Tables",
 				"UIMSD keeps four kinds of record: Runs, Items, Enemies and Deaths. A table is one way of looking at a record: Weapons and Armor are tables of Items, "
 						+ "Characters is a table of Runs.\n\n"
@@ -109,6 +103,12 @@ public final class UimsdGuide {
 				"Tap a column heading to sort by it. Tap again to reverse, and again to go back to the original order. "
 						+ "Lines where the value is unknown (?) always go to the end, so unknown never looks like zero.\n\n"
 						+ "The Sort button lets you sort by up to three columns, so ties are broken by the next one.", "sort"));
+        t.add(new Topic("search", find, "Search all statistics",
+                "Tap Search UIMSD on Home or inside any table. Type the name of a mechanic, item type, enemy, number or category, "
+                        + "and UIMSD finds matching tables and public statistic fields. Tap a result to open that table with normal filters and sorting.\n\n"
+                        + "Search works offline, including Unicode text and a few common terms across languages. It does not use an AI service, "
+                        + "so it does not understand arbitrary questions in every language yet. For custom calculations, use Ask a question.\n\n"
+                        + "Search does not read secret row values or expose unidentified items; incomplete recordings still show unknown data as unknown.", ""));
 		t.add(new Topic("filters", find, "Filters",
 				"A filter keeps only the lines that match a rule, for example \"Class is Mage\" or \"Deepest is at least 5\".\n\n"
 						+ "Tap Filter and follow three steps: choose what to filter on, choose how to compare (is, is not, is at least, is between, is one of...), "
