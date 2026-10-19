@@ -1,9 +1,8 @@
 # UIMSD connected investigation implementation checklist
-Updated 2026-10-19. Owner's five-capability request is the acceptance scope. Supporting tools do not complete a whole capability.
+Updated 2026-10-19 after TEST300 acceptance. Owner's five-capability request is the acceptance scope. Supporting tools do not complete a whole capability.
 
 ## Audited baseline
-Working source: 84b465af7e12fce897d318fcf385529a50ad48e2 (TEST294 candidate); preceding accepted APK: TEST292 / e9f028a35285d919258088cd5360d954ceb429f4.
-TEST294 accepted: 1,948 core +48 API34 Android, 64 decoded screenshots; four research tools accepted at their specific scope. Current first-window source7f2d37bd6be3dbb38d3379c8f6217ffdfd236e1f is pending TEST296 acceptance. TEST295 was superseded while pending, before execution. No feature is accepted on backend/tests/documentation alone.
+Accepted supporting-tool baseline: TEST294 /84b465af7e12fce897d318fcf385529a50ad48e2,1,948 core +48 API34 methods/64 captures. First connected equipment-window milestone is now accepted in TEST300 /d41631b3e5b43bf832036426a9e7c7a0694d07ed:1,959 build-time core methods (later1,967 after independent loot regressions),50 unique Android cases verified across the49-pass full run and corrected one-case exact-APK gesture rerun,73 full-suite captures. Exact cold-restart/player Settings and five display profiles also passed. No broader capability is complete on backend/tests/documentation alone.
 Existing: binary offline recorder with rollback-aware canonical history, public/internal disclosure, typed provenance, queryable events/equipment/facts, all 18 Custom Rules, grouping, row links, saved views, exports, viewport restoration and accurate death/abandonment outcomes.
 Partial: topic/simple-question search and fixed multilingual aliases; basic RunTurnBrowser public event text; research A/B query pins and descriptive/inferential comparisons.
 Missing: general sequence/window queries, extensible interpreted terminology, comprehensive contributing-record navigation, complete death context/resource snapshots, named persisted experiments, longitudinal comparable-condition analysis.
@@ -19,15 +18,15 @@ Known broken/missing behavior: Back restores query/page but loses cross-table ho
 | 5 Personal progress | Pending | Time-ordered cohorts with recorded dates; comparable conditions; version/rule/balance strata explicit; uncertainty and missing observations; drill-down/export; never confuse mixed settings with improvement. |
 
 ## First end-to-end milestone: equipment-following damage window
-- [ ] Select a recorded equipment occurrence, retain current equipment filters/scope.
-- [ ] Choose N=1/5/10/20/50 turns; show interpretation: same run, strictly after equip turn through start+N inclusive, hero-target damage including shield absorption.
-- [ ] Read existing real recording through DatasetStore and QueryEngine; no gameplay/RNG changes.
-- [ ] Show observed sum with exact contributors; missing/partial recording never becomes an asserted zero or a full-history total.
-- [ ] Inspect anchor equipment and each matching damage record; exact query round-trip and Back navigation.
-- [ ] Native phone menu, repeated selections, lifecycle/disclosure safety and screenshot evidence.
-- [ ] Writer -> save/close -> reload -> query -> result regression, boundary/overflow/other-run/unknown/gap tests.
-- [ ] Measure execution cost and APK/history growth; record test environment and limits.
-- [ ] In-game Changes, paired uniquely numbered developer/player APKs; verify player cheats gate.
+- [x] Select a recorded equipment occurrence, retain current equipment filters/scope.
+- [x] Choose N=1/5/10/20/50 turns; show interpretation: same run, strictly after equip turn through start+N inclusive, hero-target damage including shield absorption.
+- [x] Read existing real recording through DatasetStore and QueryEngine; no gameplay/RNG changes.
+- [x] Show observed sum with exact contributors; missing/partial recording never becomes an asserted zero or a full-history total.
+- [x] Inspect anchor equipment and each matching damage record; exact query round-trip and Back navigation.
+- [x] Native Android menu (emulator), repeated selections, lifecycle/disclosure safety and screenshot evidence.
+- [x] Writer -> save/close -> reload -> query -> result regression, boundary/overflow/other-run/unknown/gap tests.
+- [x] Measure execution cost and APK/history growth; record test environment and limits.
+- [x] In-game Changes, paired uniquely numbered developer/player APKs; verify player cheats gate.
 This milestone is a useful subset of capabilities 1 and 2, not completion of the five.
 
 ## Later connected milestones
