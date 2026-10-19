@@ -209,6 +209,15 @@ public final class UimsdModel {
 		return result == null ? null : ResultTable.build(result, page, PAGE_SIZE);
 	}
 
+	//Measures and chart data for the current grouped result. Drawing stays in the phone UI.
+	public synchronized List<UimsdChart.Measure> chartMeasures(){
+		return result == null ? new ArrayList<UimsdChart.Measure>() : UimsdChart.measures(result);
+	}
+
+	public synchronized UimsdChart.Series chart( String measureId, int maxPoints ){
+		return result == null ? null : UimsdChart.build(result, measureId, maxPoints);
+	}
+
 	public synchronized List<StatusText.Line> status(){
 		ViewDef v = view();
 		return result == null ? new ArrayList<StatusText.Line>() : StatusText.lines(result, v == null ? "" : v.title, currentRulesetLabel);
