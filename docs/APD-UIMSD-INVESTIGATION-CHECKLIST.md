@@ -1,12 +1,12 @@
 # UIMSD connected investigation implementation checklist
-Updated 2026-10-19 after TEST300 acceptance. Owner's five-capability request is the acceptance scope. Supporting tools do not complete a whole capability.
+Updated 2026-10-19 after TEST301 navigation milestone verification. Owner's five-capability request is the acceptance scope. Supporting tools do not complete a whole capability.
 
 ## Audited baseline
 Accepted supporting-tool baseline: TEST294 /84b465af7e12fce897d318fcf385529a50ad48e2,1,948 core +48 API34 methods/64 captures. First connected equipment-window milestone is now accepted in TEST300 /d41631b3e5b43bf832036426a9e7c7a0694d07ed:1,959 build-time core methods (later1,967 after independent loot regressions),50 unique Android cases verified across the49-pass full run and corrected one-case exact-APK gesture rerun,73 full-suite captures. Exact cold-restart/player Settings and five display profiles also passed. No broader capability is complete on backend/tests/documentation alone.
 Existing: binary offline recorder with rollback-aware canonical history, public/internal disclosure, typed provenance, queryable events/equipment/facts, all 18 Custom Rules, grouping, row links, saved views, exports, viewport restoration and accurate death/abandonment outcomes.
 Partial: topic/simple-question search and fixed multilingual aliases; basic RunTurnBrowser public event text; research A/B query pins and descriptive/inferential comparisons.
 Missing: general sequence/window queries, extensible interpreted terminology, comprehensive contributing-record navigation, complete death context/resource snapshots, named persisted experiments, longitudinal comparable-condition analysis.
-Navigation milestone in verification: per-place Back checkpoints now include horizontal/vertical position alongside query/page, including same-dataset evidence and scene recreation. Six new core regressions and a three-screen Android pointer regression await recorded acceptance. Do not claim all evidence-navigation requirements are complete. Preserve Columns deferred-rebuild fix, sorting viewport fix, raw logs, saved views and existing outcomes.
+Verified TEST301 navigation milestone: per-place Back checkpoints include horizontal/vertical position alongside query/page, including same-dataset evidence and scene recreation. Source5c11b1fc346efd8f398ab2cf2872e03b15b29dc0 passed1,973 core and51 API34 methods/76 captures; strengthened exact-APK replay39335009747 passed all original and frozen-pane assertions. This closes the tracked cross-table Back position gap. Do not claim all evidence-navigation requirements are complete. Preserve Columns deferred-rebuild fix, sorting viewport fix, raw logs, saved views and existing outcomes.
 
 ## Acceptance checklist
 | Capability | Status | Acceptance criteria |
@@ -29,14 +29,14 @@ Navigation milestone in verification: per-place Back checkpoints now include hor
 - [x] In-game Changes, paired uniquely numbered developer/player APKs; verify player cheats gate.
 This milestone is a useful subset of capabilities 1 and 2, not completion of the five.
 
-## Evidence-navigation position milestone (in verification)
+## Evidence-navigation position milestone (verified in TEST301)
 - [x] Store transient viewport checkpoints per unique navigation place, including late checkpoints after asynchronous navigation.
 - [x] Route ordinary links, groups, research evidence and seed replay through the shared navigation stack.
 - [x] Restore exact parent query/sort/page, anchor column and clamped vertical offset; new links start at their own origin.
 - [x] Checkpoint before scene destruction so rotation can restore the surviving model.
-- [ ] Inspect full core and actual Android pointer/scene-recreation acceptance results.
-- [ ] Verify paired APKs, prior build history, player feature gates and in-game Changes.
-No raw/save/query schema changes or historical migration. This closes a navigation gap within capability 2, not the entire capability.
+- [x] Inspect full core and actual Android pointer/scene-recreation acceptance results:1,973 core /51 API34,0 failures/errors/skips; strengthened1-case exact-APK repeat and3 stable captures also passed.
+- [x] Verify paired TEST301 APKs, all328 previous history files, player feature gates and in-game Changes; exact cold restart/death gates and all5 display profiles passed.
+See [TEST301 report](APD-UIMSD-NAVIGATION-2026-10-19.md) for immutable source, checksums, retained original display failures and exact evidence. No raw/save/query schema changes or historical migration. This closes a navigation gap within capability 2, not the entire capability.
 
 ## Later connected milestones
 - [ ] Extensible terminology + question persistence and general correlated windows.
