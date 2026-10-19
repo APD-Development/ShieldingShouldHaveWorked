@@ -383,7 +383,12 @@ public class BuffIndicator extends Component {
 
 		@Override
 		protected void onClick() {
-			if (buff.icon() != NONE) GameScene.show(new WndInfoBuff(buff));
+			if (buff.icon() == NONE) return;
+            if (buff instanceof Buff.DOTbuff && com.shatteredpixel.shatteredpixeldungeon.SPDSettings.dotOverlayEnabled()) {
+                GameScene.focusDamageEffect(buff);
+            } else {
+                GameScene.show(new WndInfoBuff(buff));
+            }
 		}
 
 		@Override

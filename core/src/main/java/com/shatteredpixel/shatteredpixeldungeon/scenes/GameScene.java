@@ -174,6 +174,7 @@ public class GameScene extends PixelScene {
 
 	private MenuPane menu;
 	private StatusPane status;
+    private com.shatteredpixel.shatteredpixeldungeon.ui.DotOverlay dotOverlay;
 
 	private BossHealthBar boss;
 
@@ -538,6 +539,11 @@ public class GameScene extends PixelScene {
 		log.camera = uiCamera;
 		log.newLine();
 		add( log );
+        dotOverlay=new com.shatteredpixel.shatteredpixeldungeon.ui.DotOverlay();
+        dotOverlay.camera=uiCamera;
+        float dotWidth=Math.min(138,Math.max(65,uiCamera.width/2f-4));
+        dotOverlay.setRect(uiCamera.width-dotWidth-3,screentop+42,dotWidth,14);
+        add(dotOverlay);
 
 		if (uiSize > 0){
 			bringToFront(status);
@@ -1449,6 +1455,12 @@ public class GameScene extends PixelScene {
 		}
 	}
 	
+    /** Read-only display focus from an observed buff icon, no modal window. */
+    public static void focusDamageEffect(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff buff) {
+        if (scene != null && scene.dotOverlay != null && buff != null)
+            scene.dotOverlay.focus(buff.target);
+    }
+
 	public static void show( Window wnd ) {
 		if (scene != null) {
 			cancel();

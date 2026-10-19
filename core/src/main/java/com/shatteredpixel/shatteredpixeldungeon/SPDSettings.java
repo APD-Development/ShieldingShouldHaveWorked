@@ -710,6 +710,8 @@ public class SPDSettings extends GameSettings {
     public static void playbackSpeed(int value) {
         put("apd_playback_speed", com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.allowed(value) ? value : 1);
     }
+    public static boolean dotOverlayEnabled(){return getBoolean("apd_dot_overlay",true);}
+    public static void dotOverlayEnabled(boolean enabled){put("apd_dot_overlay",enabled);}
     public static boolean confirmWaterskin(){return getBoolean("apd_confirm_waterskin",true);}
     public static void confirmWaterskin(boolean enabled){put("apd_confirm_waterskin",enabled);}
     public static boolean confirmKnownTraps(){return getBoolean("apd_confirm_known_traps",true);}

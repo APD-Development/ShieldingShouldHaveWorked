@@ -631,6 +631,7 @@ public class ApdSettingsClickDeviceTest {
 		final java.util.Map<String, Object[]> owners = new java.util.LinkedHashMap<>();
 		owners.put("optExotic", new Object[]{ ApdSettingsClickDeviceTest.class, "remainingApdSettingsControlsRespondToActualTouches" });
 		owners.put("chkRecord", new Object[]{ ApdSettingsClickDeviceTest.class, "everyControlOfApdSettingsAnswersATouch" });
+        owners.put("chkDotOverlay", new Object[]{ ApdSettingsClickDeviceTest.class, "remainingApdSettingsControlsRespondToActualTouches" });
 		owners.put("chkAdult", new Object[]{ ApdSettingsClickDeviceTest.class, "adultHumorControlWorksWithoutAnAgeProviderAndReopensWithSavedChoice" });
 		owners.put("chkTileVisibility", new Object[]{ ApdSettingsClickDeviceTest.class, "remainingApdSettingsControlsRespondToActualTouches" });
 		owners.put("chkStairNavigation", new Object[]{ ApdSettingsClickDeviceTest.class, "remainingApdSettingsControlsRespondToActualTouches" });

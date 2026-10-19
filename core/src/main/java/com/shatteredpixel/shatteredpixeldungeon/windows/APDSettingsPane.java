@@ -57,6 +57,7 @@ public class APDSettingsPane extends Component {
 	private OptionSlider optExotic;
 	private RenderedTextBlock info;
 	private CheckBox chkRecord;
+    private CheckBox chkDotOverlay;
 	private CheckBox chkAdult;
     private CheckBox chkTileVisibility;
     private CheckBox chkStairNavigation;
@@ -112,6 +113,11 @@ public class APDSettingsPane extends Component {
 		};
 		chkRecord.checked( SPDSettings.apdRecording() );
 		add( chkRecord );
+        chkDotOverlay=new CheckBox("On-screen damage-over-time details"){
+            @Override protected void onClick(){super.onClick();SPDSettings.dotOverlayEnabled(checked());}
+        };
+        chkDotOverlay.checked(SPDSettings.dotOverlayEnabled());
+        add(chkDotOverlay);
 
 		//Unknown age leaves the choice usable; verified underage players receive Clean.
 		chkAdult = new CheckBox( "Adult humor (18+)" ) {
@@ -375,6 +381,8 @@ public class APDSettingsPane extends Component {
 		pos = info.bottom() + GAP;
 		chkRecord.setRect( x, pos, width, 16 );
 		pos = chkRecord.bottom() + GAP;
+        chkDotOverlay.setRect(x,pos,width,16);
+        pos=chkDotOverlay.bottom()+GAP;
 		chkAdult.setRect( x, pos, width, 16 );
 		pos = chkAdult.bottom() + GAP;
         chkTileVisibility.setRect(x,pos,width,16);pos=chkTileVisibility.bottom()+GAP;
