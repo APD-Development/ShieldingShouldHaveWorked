@@ -55,6 +55,7 @@ public final class WndUimsdResearch {
         add(entries,actions,"Luck laboratory","Compare recorded generated loot and enemies against matching finished, random-seed runs. No scoring changes.",()->runs(m,r->chooseRun(m,r,"Luck laboratory",row->presentLuck(m,r,row))));
         add(entries,actions,"Automatic discoveries","Find exploratory win-rate contrasts with sufficient matched data, then inspect the contributors.",()->runs(m,r->work(m,"Automatic discoveries",()->ResearchDocument.discoveries(Discoveries.build(r)),d->document(m,d))));
         add(entries,actions,"Statistical investigation lab","Capture filtered populations A and B, choose a metric, compare samples and inspect evidence.",()->studyMenu(m));
+        add(entries,actions,"Saved experiments","Named questions and population definitions; results recalculate from the latest loaded history.",()->savedExperiments(m));
         add(entries,actions,"Damage after equipping","Choose an equipment occurrence and a turn window, then inspect observed damage and its source records.",()->equipmentWindows(m));
         menu(m,"Research lab","These tools read recorded history. Unknowns stay unknown. Demo results are made up and are always identified as demo data.",entries,actions,()->show(m));
     }
@@ -187,18 +188,23 @@ public final class WndUimsdResearch {
         add(entries,actions,"Capture current query as population A","Keeps the current dataset, filters, rules and disclosure choices; before grouping and paging.",()->pin(m,true));
         add(entries,actions,"Capture current query as population B","Change table filters first to define the second population.",()->pin(m,false));
         add(entries,actions,"Compare populations A and B","Choose a numeric metric or recorded run win rate. Missing and uncertain values are excluded explicitly.",()->pickMeasure(m));
+        add(entries,actions,"Save named experiment","Keep a question, both population definitions and a metric. Matching future records join when history is reloaded.",()->pickMeasure(m,true));
+        add(entries,actions,"Saved experiments","Reopen results, inspect populations, rename or delete a saved definition.",()->savedExperiments(m));
         add(entries,actions,"Open population A","Reopen its exact captured query.",()->openPin(m,true));
         add(entries,actions,"Open population B","Reopen its exact captured query.",()->openPin(m,false));
         menu(m,"Statistical investigation lab","Capture A, change your table filters, then capture B. These snapshots are separate from saved views and never change run history.",entries,actions,()->studyMenu(m));
     }
     private static void openPin(UimsdModel m,boolean first){try{ResearchPins p=pins(m);Query q=first?p.a:p.b;if(q==null)tell("Population","Capture this population first.");else UimsdScene.showResearchEvidence(m,q);}catch(IOException e){tell("Population",e.getMessage());}}
     private static void pickMeasure(UimsdModel m){
+        pickMeasure(m,false);
+    }
+    private static void pickMeasure(UimsdModel m,boolean saving){
         try{ResearchPins p=pins(m);if(p.a==null || p.b==null || !p.a.dataset.equals(p.b.dataset)){tell("Compare populations","Capture both populations from the same dataset first.");return;}
             Dataset data=m.catalog().dataset(p.a.dataset);if(data==null){tell("Compare populations","The captured dataset is no longer available.");return;}
             List<WndUimsdList.Entry> entries=new ArrayList<>();List<Runnable> actions=new ArrayList<>();
-            if(Datasets.RUNS.equals(data.def.id))add(entries,actions,"Win rate (%)","Finished runs with exactly recorded outcomes; ascensions count as wins.",()->compare(m,p,PopulationStudy.WIN_RATE));
-            for(ColumnDef column:data.def.columns())if(column.type==ColumnDef.Type.NUM && (!column.isInternal() || p.a.showInternal && p.b.showInternal))add(entries,actions,column.label,column.description,()->compare(m,p,column.id));
-            menu(m,"Comparison metric","Only exact recorded values contribute. Inspect both contributor lists and exclusions.",entries,actions,()->pickMeasure(m));
+            if(Datasets.RUNS.equals(data.def.id))add(entries,actions,"Win rate (%)","Finished runs with exactly recorded outcomes; ascensions count as wins.",()->{if(saving)saveExperiment(m,p,PopulationStudy.WIN_RATE);else compare(m,p,PopulationStudy.WIN_RATE);});
+            for(ColumnDef column:data.def.columns())if(column.type==ColumnDef.Type.NUM && (!column.isInternal() || p.a.showInternal && p.b.showInternal))add(entries,actions,column.label,column.description,()->{if(saving)saveExperiment(m,p,column.id);else compare(m,p,column.id);});
+            menu(m,"Comparison metric","Only exact recorded values contribute. Inspect both contributor lists and exclusions.",entries,actions,()->pickMeasure(m,saving));
         }catch(IOException e){tell("Compare populations",e.getMessage());}
     }
     private static void compare(UimsdModel m,ResearchPins p,String measure){
@@ -207,5 +213,66 @@ public final class WndUimsdResearch {
             PopulationStudy.Comparison c=PopulationStudy.compare(PopulationStudy.sample(a,measure),PopulationStudy.sample(b,measure));
             return c==null ? null:ResearchDocument.study(a,b,c);
         },d->document(m,d));
+    }
+
+    private static File experimentFile(UimsdModel m)throws IOException{
+        if(m.root()==null)throw new IOException("No local history folder is available. Open your recorded history before saving experiments; a temporary session is not persistent.");
+        return SavedExperiments.file(m.root());
+    }
+    private static void saveExperiment(UimsdModel m,ResearchPins p,String measure){
+        try{experimentFile(m);}catch(IOException e){tell("Saved experiments",e.getMessage());return;}
+        Catalog cat=m.catalog();Query query=m.query();
+        ShatteredPixelDungeon.scene().addToFront(new WndUimsdTextInput("Experiment question","Use a short question as its name (up to 60 characters). Both captured populations and this metric are saved; results recalculate on opening.","",SavedViews.MAX_NAME,false,"Save","Cancel",(positive,text)->{
+            if(!positive)return;
+            if(m.catalog()!=cat || !m.query().equals(query)){tell("Saved experiments","History or disclosure choices changed. Reopen the lab before saving.");return;}
+            try{SavedExperiments.Experiment e=SavedExperiments.create(experimentFile(m),text,text,p.a,p.b,measure,m.currentRuleset(),System.currentTimeMillis());experimentMenu(m,e.id);}
+            catch(IOException error){tell("Saved experiments",error.getMessage());}
+        }));
+    }
+    public static void savedExperiments(UimsdModel m){
+        try{
+            List<SavedExperiments.Experiment> saved=SavedExperiments.load(experimentFile(m));
+            List<WndUimsdList.Entry> entries=new ArrayList<>();List<Runnable> actions=new ArrayList<>();
+            for(SavedExperiments.Experiment e:saved)add(entries,actions,e.name,e.a.dataset+" / "+e.measure,()->experimentMenu(m,e.id));
+            if(saved.isEmpty())entries.add(WndUimsdList.Entry.warning("No saved experiments yet. Capture A and B in Statistical investigation lab, then choose Save named experiment."));
+            menu(m,"Saved experiments","Definitions stay separate from saved table views and run history. Each results view recalculates using the currently loaded history, including qualifying new records. Demo definitions stay in the demo history folder.",entries,actions,()->savedExperiments(m));
+        }catch(IOException e){tell("Saved experiments",e.getMessage());}
+    }
+    private static SavedExperiments.Experiment experiment(UimsdModel m,String id)throws IOException{
+        for(SavedExperiments.Experiment e:SavedExperiments.load(experimentFile(m)))if(e.id.equals(id))return e;
+        throw new IOException("This experiment no longer exists. Reopen Saved experiments.");
+    }
+    private static void experimentMenu(UimsdModel m,String id){
+        try{
+            SavedExperiments.Experiment e=experiment(m,id);
+            List<WndUimsdList.Entry> entries=new ArrayList<>();List<Runnable> actions=new ArrayList<>();
+            add(entries,actions,"View current results","Recalculate both populations, sample sizes, exclusions, condition differences and uncertainty from current history.",()->{
+                Catalog cat=m.catalog();String rules=m.currentRuleset();boolean hidden=m.query().showInternal;
+                work(m,e.name,()->ExperimentReport.build(e,e.evaluate(cat,rules,hidden)),d->document(m,d));
+            });
+            add(entries,actions,"Open population A","Exact saved conditions; no population filters are silently dropped.",()->openExperimentPopulation(m,e.a));
+            add(entries,actions,"Open population B","Exact saved conditions; no population filters are silently dropped.",()->openExperimentPopulation(m,e.b));
+            add(entries,actions,"Rename experiment","Changes the name, preserving its question, populations and metric.",()->renameExperiment(m,e));
+            add(entries,actions,"Delete experiment","Requires confirmation; only this definition is removed.",()->deleteExperiment(m,e));
+            menu(m,e.name,"Question: "+e.question+"\nMetric: "+e.measure+"\nCreated: "+new java.text.SimpleDateFormat("yyyy-MM-dd",Locale.ROOT).format(new Date(e.createdAtMillis))+"\nFuture matching records join on history reload. Results describe an association, not a guaranteed cause.",entries,actions,()->experimentMenu(m,id));
+        }catch(IOException e){tell("Saved experiments",e.getMessage());}
+    }
+    private static void openExperimentPopulation(UimsdModel m,Query q){
+        if(q.showInternal&&!m.query().showInternal){tell("Population","This saved population includes hidden-information viewing. Explicitly enable it in table Options first.");return;}
+        if(ResearchData.select(m.catalog(),q,m.currentRuleset())==null){tell("Population","The saved population is unavailable in this build. No filter was ignored.");return;}
+        UimsdScene.showResearchEvidence(m,q);
+    }
+    private static void renameExperiment(UimsdModel m,SavedExperiments.Experiment e){
+        Catalog cat=m.catalog();Query q=m.query();
+        ShatteredPixelDungeon.scene().addToFront(new WndUimsdTextInput("Rename experiment","The original question and both population definitions are preserved.",e.name,SavedViews.MAX_NAME,false,"Rename","Cancel",(positive,text)->{
+            if(!positive)return;if(m.catalog()!=cat || !m.query().equals(q)){tell("Saved experiments","History or disclosure choices changed. Reopen the lab.");return;}
+            try{SavedExperiments.rename(experimentFile(m),e.id,text);experimentMenu(m,e.id);}catch(IOException error){tell("Saved experiments",error.getMessage());}
+        }));
+    }
+    private static void deleteExperiment(UimsdModel m,SavedExperiments.Experiment e){
+        List<WndUimsdList.Entry> entries=new ArrayList<>();List<Runnable> actions=new ArrayList<>();
+        add(entries,actions,"Delete this definition","Run history, saved views and other experiments remain available.",()->{try{SavedExperiments.delete(experimentFile(m),e.id);savedExperiments(m);}catch(IOException error){tell("Saved experiments",error.getMessage());}});
+        add(entries,actions,"Keep experiment","",()->experimentMenu(m,e.id));
+        menu(m,"Delete "+e.name+"?","Only the saved experiment definition will be deleted.",entries,actions,()->deleteExperiment(m,e));
     }
 }
