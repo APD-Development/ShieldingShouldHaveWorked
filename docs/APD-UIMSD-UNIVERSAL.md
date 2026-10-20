@@ -76,7 +76,7 @@ level summaries). U4 the question builder and topic pages. Each step ends with c
   (what was worn and for how long), and one dataset per registered fact kind. Each gets a table in the Tables picker automatically (sections "Play by play" and "Details: <topic>").
 - **Measures:** count, total, average, highest, lowest, median over any recorded number, grouped by any recorded column, filtered by anything; `PerUnit` divides by runs, floor
   visits, turns, 1,000 turns or hours played, measured against the Floors table so quiet floors count.
-- **Question builder:** Home card "Ask a question" (`WndUimsdAsk`, `Question`, `Questions`); "Open as a table" hands the same question to the full table tools (`UimsdModel.showQuery`).
+- **Question builder:** Home card "Ask a question" (`WndUimsdAsk`, `Question`, `Questions`); "Open as a table" hands the same question to the full table tools (`UimsdModel.showQuery`). `UimsdTerminology` supplies one immutable offline vocabulary to view search, topic discovery and exact interpretation. Dataset/public-column/measure/connector aliases extend by registry copy rather than parser edits; internal columns and recorded values never enter the vocabulary, and unsupported or ambiguous wording fails closed (core verified Oct20, run39437010997).
 - **Recorded in this pass (PUBLIC unless noted):** steps, rest turns, searches, containers opened, traps triggered, item actions (+ INTERNAL true item, level, charges), status effects
   by their shown name (+ INTERNAL true class of every effect), talent points, subclass and armor-ability choices, spell casts, armor-ability uses, every gold change with its cause, shop
   trades, played time. Plus row-level views of everything already recorded.

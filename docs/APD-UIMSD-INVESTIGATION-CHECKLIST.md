@@ -1,5 +1,5 @@
 # UIMSD connected investigation implementation checklist
-Updated Oct19 ET / Oct20 UTC: TEST303 named numeric/win-rate experiment milestone verified and privately delivered; all five broad capabilities remain partial/pending. Owner's five-capability request is the acceptance scope. Supporting tools do not complete a whole capability.
+Updated Oct20 ET: the extensible offline terminology registry is core-verified at `16b1686a7640ab3d025a29ec770ae88043c94405` / run `39437010997`; native acceptance and general correlated windows remain pending. TEST303 named numeric/win-rate experiments remain the newest produced APK milestone. All five broad capabilities remain partial/pending; supporting tools do not complete a whole capability.
 
 ## Audited baseline
 Accepted supporting-tool baseline: TEST294 /84b465af7e12fce897d318fcf385529a50ad48e2,1,948 core +48 API34 methods/64 captures. First connected equipment-window milestone is now accepted in TEST300 /d41631b3e5b43bf832036426a9e7c7a0694d07ed:1,959 build-time core methods (later1,967 after independent loot regressions),50 unique Android cases verified across the49-pass full run and corrected one-case exact-APK gesture rerun,73 full-suite captures. Exact cold-restart/player Settings and five display profiles also passed. No broader capability is complete on backend/tests/documentation alone.
@@ -51,8 +51,9 @@ Source7505a36ae1567458ba854db9427196a893824806 / TEST303:1,988 core methods per 
 This first named-experiment milestone supports numeric mean differences and win rates. It does not claim arbitrary natural-language or temporal experiment execution, causal effects, or completion of the five-capability system.
 
 ## Later connected milestones
-- [x] Exact question persistence and native reopen (TEST302); extensible terminology/general correlated windows remain pending.
-- [ ] Extensible terminology and general correlated windows.
+- [x] Exact question persistence and native reopen (TEST302).
+- [x] Extensible offline dataset/column/measure/connector terminology shared by view search, topic discovery and exact interpretation; core verified in run39437010997. Native acceptance remains pending.
+- [ ] General correlated windows beyond the fixed equipment→damage path, with explicit sequence/time boundaries and exact evidence.
 - [ ] Timeline/death evidence and necessary forward-only recorded snapshots.
 - [x] Named numeric/win-rate experiment registry using shared QueryCodec/PopulationStudy and future-run reevaluation (TEST303).
 - [ ] Broader experiment execution over sequence/window questions and additional metrics.

@@ -1,3 +1,9 @@
+## 2026-10-20 — UIMSD extensible terminology registry (core verified)
+
+Committed source/test checkpoint `16b1686a7640ab3d025a29ec770ae88043c94405` from expected parent `0485222428916b5c7ebd7241f4c469c0df51f8b7`. Added immutable `UimsdTerminology` and shared it across `UimsdSearch` and `UimsdTopicSearch`; registered aliases cover schema only, never row values or internal columns. Exact question interpretation accepts registered dataset/column/measure/connector terms and still rejects ambiguity or unsupported conditions without dropping them.
+
+Core run `39437010997` succeeded; artifact `12272916909`, digest `sha256:59c9304316030081b08a8f954e968b7716bf463927ce9c5b8c1f9b011009ee65`; extracted XML: 2,013 tests, 392 suites, zero failures/errors/skips. Five new tests retain all 2,008 predecessors. No APK/build-request edit, Android/physical evidence, publication, distribution, gameplay/RNG/save/history/scoring change or migration. TEST303 remains newest produced; published TEST262 remains unchanged. General correlated windows and native acceptance remain pending. Report: `docs/APD-UIMSD-TERMINOLOGY-2026-10-20.md`.
+
 ## 2026-10-20 — whynot36666 cursed-electricity/mimic report investigated; no mechanics change
 
 Source inspection and real-engine deterministic tests distinguish Wondrous/CursedWand.LightningBolt's two fixed3x3 areas from RandomAreaEffect -> ShockingTrap -> persistent Electricity's cardinal water conduction. A far disguised mimic in connected water is not reached by the instantaneous curse burst. Zero-damage dispatch, full shielding and accepted negative status all reveal normal mimics; the earlier “0 damage does not wake” explanation is incorrect. A field can reveal through paralysis before any HP-damage tick. Exact historical branch/positions/HP are not established by the supplied conversation screenshot. No gameplay bug was reproduced and no arbitrary mimic/electricity/balance change is warranted.
