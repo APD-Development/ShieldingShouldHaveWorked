@@ -8,6 +8,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.*;
 import com.shatteredpixel.shatteredpixeldungeon.apd.HeadlessTestSupport;
 import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.*;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.RainbowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.WondrousResin;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.CursedWand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
@@ -16,6 +17,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.levels.*;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.MimicSprite;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.*;
@@ -27,9 +29,8 @@ import static org.junit.Assert.*;
 public class MimicElectricityInteractionTest {
     private static final int USER=112, TARGET=113, FAR=116;
     private static class Quiet extends CharSprite {
-        private final Emitter particles=new Emitter(){
-            @Override public void start(Factory f,float interval,int quantity){}
-        };
+        // Real emitter start preserves its normal RNG draw; particles are never rendered/updated.
+        private final Emitter particles=new Emitter();
         Quiet(){visible=false;new Group().add(this);}
         @Override public void showStatus(int c,String s,Object...args){}
         @Override public void showStatusWithIcon(int c,String s,int icon,Object...args){}
@@ -63,6 +64,9 @@ public class MimicElectricityInteractionTest {
         ZeroAttacker(){HP=HT=100;pos=USER;sprite=new Quiet();alignment=Alignment.ALLY;}
         @Override public int attackSkill(Char target){return guaranteedHit?INFINITE_ACCURACY:0;}
         @Override public int damageRoll(){return 0;}
+    }
+    private static class RevealSprite extends MimicSprite {
+        boolean hidingNow(){return curAnim==hiding||curAnim==advancedHiding;}
     }
     private Hero oldHero;private Level oldLevel;private int oldDepth,oldChallenges;
     private boolean oldRecording,oldPositive;private Bundle oldRules;
@@ -111,6 +115,7 @@ public class MimicElectricityInteractionTest {
             Random.pushGenerator(seed);try{
                 if(Random.Float()>=1/8f)continue;
                 boolean positive=Random.Float()<WondrousResin.positiveCurseEffectChance();
+                new Emitter().burst(RainbowParticle.BURST,25);
                 CursedWand.CursedEffect chosen=CursedWand.randomValidEffect(weapon,Dungeon.hero,bolt(),positive);
                 if(effect.isInstance(chosen))return seed;
             }finally{Random.popGenerator();}
@@ -123,7 +128,7 @@ public class MimicElectricityInteractionTest {
         Probe adjacent=mimic(USER-1),far=mimic(FAR);long seed=seedForProc(CursedWand.LightningBolt.class);
         Random.pushGenerator(seed);try{assertEquals(7,new Wondrous().proc(weapon,Dungeon.hero,target,7));}
         finally{Random.popGenerator();}
-        assertEquals(1,adjacent.calls);assertTrue(adjacent.hpLoss>0);revealed(adjacent);
+        assertEquals(1,adjacent.calls);assertTrue(adjacent.hpLoss>0);assertTrue(adjacent.source instanceof Electricity);revealed(adjacent);
         assertEquals(0,far.calls);assertEquals(1000,far.HP);hidden(far);
         assertNull("Instant burst does not seed a conductive field",Dungeon.level.blobs.get(Electricity.class));
         System.out.println("Wondrous lightning reproduction seed="+seed+" adjacent_calls="+adjacent.calls+" far_calls="+far.calls);
@@ -168,8 +173,10 @@ public class MimicElectricityInteractionTest {
         assertTrue(e.cur[FAR]>0);assertEquals(0,e.cur[m.pos]);assertEquals(0,m.calls);hidden(m);
     }
     @Test public void zeroDirectDamageRevealsEvenWithoutAnyHpLoss(){
-        Probe m=mimic(TARGET);m.damage(0,new Electricity());
+        Probe m=mimic(TARGET);RevealSprite sprite=new RevealSprite();m.sprite=sprite;sprite.visible=false;
+        sprite.hideMimic(m);assertTrue(sprite.hidingNow());m.damage(0,new Electricity());
         assertEquals(1,m.calls);assertEquals(0,m.hpLoss);assertEquals(1000,m.HP);revealed(m);
+        assertFalse("Real mimic animation leaves its chest disguise",sprite.hidingNow());
     }
     @Test public void successfulZeroDamageAttackDefenseProcReveals(){
         Probe m=mimic(TARGET);ZeroAttacker attacker=new ZeroAttacker();
