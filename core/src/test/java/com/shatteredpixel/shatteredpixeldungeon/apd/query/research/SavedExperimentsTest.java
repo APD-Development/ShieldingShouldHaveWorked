@@ -16,7 +16,10 @@ public class SavedExperimentsTest {
     }
     @Test public void definitionsRoundTripSeparatelyFromViewsAndKeepExactQueries()throws Exception{
         ResearchFixture f=new ResearchFixture();File file=file();byte[] original={1,2,3};File views=new File(file.getParentFile(),SavedViews.FILE_NAME);Files.write(views.toPath(),original);
-        SavedExperiments.Experiment e=create(file,f,"Armor comparison");SavedExperiments.Experiment loaded=SavedExperiments.load(file).get(0);
+        com.watabou.utils.Random.pushGenerator(98127L);long expectedRandom=com.watabou.utils.Random.Long();com.watabou.utils.Random.popGenerator();
+        SavedExperiments.Experiment e;
+        com.watabou.utils.Random.pushGenerator(98127L);try{e=create(file,f,"Armor comparison");assertEquals("Saving definitions must not consume gameplay RNG",expectedRandom,com.watabou.utils.Random.Long());}finally{com.watabou.utils.Random.popGenerator();}
+        SavedExperiments.Experiment loaded=SavedExperiments.load(file).get(0);
         assertEquals(e.id,loaded.id);assertEquals(e.a,loaded.a);assertEquals(e.b,loaded.b);assertEquals("Does score differ?",loaded.question);assertEquals("result.score",loaded.measure);assertEquals(123,loaded.createdAtMillis);assertArrayEquals(original,Files.readAllBytes(views.toPath()));
         try{create(file,f,"ARMOR COMPARISON");fail();}catch(IOException expected){}assertEquals(1,SavedExperiments.load(file).size());
     }
@@ -40,6 +43,9 @@ public class SavedExperimentsTest {
         assertEquals(-20,e.evaluate(f.catalog(),"rules",true).comparison.difference,0);
         f.add("future","mage",1,50);f.add("outside","rogue",0,999);
         SavedExperiments.Evaluation now=SavedExperiments.load(file).get(0).evaluate(f.catalog(),"rules",true);assertEquals(2,now.comparison.a.n);assertEquals(1,now.comparison.b.n);assertEquals(0,now.comparison.difference,0);assertArrayEquals(definition,Files.readAllBytes(file.toPath()));
+        long started=System.nanoTime();for(int i=0;i<100;i++)assertEquals(2,e.evaluate(f.catalog(),"rules",true).comparison.a.n);
+        System.out.println("UIMSD experiment fixture: definition_bytes="+definition.length+", evaluations=100, rows="+f.rows.size()+", elapsed_ns="+(System.nanoTime()-started));
+        assertArrayEquals(definition,Files.readAllBytes(file.toPath()));
     }
     @Test public void writerCloseReloadThenFutureVictoryIncludesAscensionAndPreservesAbandonment()throws Exception{
         File root=Files.createTempDirectory("apd-experiment-recording-").toFile();record(root,"win",1,10,false);record(root,"dead",0,30,false);record(root,"abandoned",2,999,false);

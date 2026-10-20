@@ -9,6 +9,7 @@ public final class ExperimentReport {
     public static ResearchDocument build(SavedExperiments.Experiment e,SavedExperiments.Evaluation result){
         ResearchDocument d=new ResearchDocument(e.name);
         d.notes.add("Question: "+e.question);
+        d.notes.add("The question is your label. The actual calculation uses the saved metric and exact population definitions shown below; no extra conditions are inferred from its wording.");
         d.notes.add("Saved definitions, recalculated from the currently loaded history each time you view results. Future matching records join automatically when history is reloaded. This is an observational comparison, not a randomized experiment or proof of causation.");
         if(!result.problem.isEmpty()){d.notes.add(result.problem);return d;}
         ResearchDocument study=ResearchDocument.study(result.a,result.b,result.comparison);

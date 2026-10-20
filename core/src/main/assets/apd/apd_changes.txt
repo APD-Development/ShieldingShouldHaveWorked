@@ -8,6 +8,7 @@ Bug Fixes:
 - UIMSD sorting preserves the horizontal column position through table refreshes. The active column shows an ascending or descending marker. Filters, column edits and table settings preserve the viewport where possible; sorting starts at the first result.
 
 Statistics / UIMSD:
+- Named personal experiments keep a question, both population definitions and a metric. Reopen results to include matching records from the latest loaded history, inspect contributors and recorded condition differences, and rename or delete definitions. Unknown values remain unknown; observational comparisons do not prove causation.
 - Exact questions can be saved by name and reopened later with the same measure, per-unit choice, split, conditions, run scope and hidden-information choice. They are asked again against current history; legacy saved tables still open normally.
 - Damage after equipping: choose a recorded equipment occurrence and a following-turn window, inspect the exact interpreted boundaries and open contributing damage records. Missing history stays unknown; observed totals are lower bounds.
 - Research lab: Run DNA measures each run's combat, healing, equipment and exploration rates, compares two fingerprints and opens their source records.

@@ -23,6 +23,68 @@ import static org.junit.Assert.*;
 /** Actual menu/pointer acceptance for every research capability, with visible evidence drill-down. */
 @RunWith(AndroidJUnit4.class)
 public class UimsdResearchDeviceTest {
+    private static void recordedExperimentRun(java.io.File root,String id,int outcome,long score,boolean ascended)throws Exception{
+        RunLogWriter w=RunLogWriter.create(new java.io.File(root,"runs/"+id+".apdlog"),TelemetryVersion.CURRENT,id,"test",1);
+        LifecycleEvents.RunStart start=new LifecycleEvents.RunStart();start.runId=id;start.heroClass="WARRIOR";start.rulesetId="rules";start.apdVersionName="experiment-test";LifecycleEvents.emitRunStart(w,1,false,start);
+        LifecycleEvents.RunEnd end=new LifecycleEvents.RunEnd();end.outcome=outcome;end.score=score;end.turns=10;end.ascendedKnown=true;end.ascended=ascended;LifecycleEvents.emitRunEnd(w,10,end);assertTrue(w.close(true));
+    }
+    private static UimsdModel readExperimentHistory(java.io.File root)throws Exception{
+        UimsdModel m=new UimsdModel("rules","Rules");m.load(root);m.awaitLoad(15000);assertEquals(UimsdModel.State.READY,m.state());return m;
+    }
+    @SuppressWarnings("unchecked")
+    private static void typeAndConfirm(String text,String button)throws Exception{
+        AtomicReference<Point> where=new AtomicReference<>();render(()->{try{
+            WndUimsdTextInput input=top(WndUimsdTextInput.class);assertNotNull("Experiment naming input",input);
+            Object box=field(input,"textBox");java.lang.reflect.Method set=box.getClass().getMethod("setText",String.class);set.setAccessible(true);set.invoke(box,text);
+            for(Object child:(List<?>)field(input,"members"))if(child instanceof com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton){
+                com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton b=(com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton)child;
+                if(button.equals(((com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock)field(b,"text")).text()))where.set(b.camera().cameraToScreen(b.left()+b.width()/2,b.top()+b.height()/2));
+            }
+            assertNotNull("Native confirmation button "+button,where.get());
+        }catch(Exception e){throw new RuntimeException(e);}});
+        Point p=where.get();PointerEvent.addPointerEvent(new PointerEvent(p.x,p.y,98,PointerEvent.Type.DOWN,PointerEvent.LEFT));Thread.sleep(140);
+        PointerEvent.addPointerEvent(new PointerEvent(p.x,p.y,98,PointerEvent.Type.UP,PointerEvent.LEFT));Thread.sleep(400);
+    }
+    private static void metricValue(String label,String value)throws Exception{
+        await(label);render(()->{try{boolean found=false;for(WndUimsdList.Entry e:entries())if(e.label.equals(label)){assertEquals(value,e.detail);found=true;}assertTrue(found);}catch(Exception e){throw new RuntimeException(e);}});
+    }
+    @Test public void namedExperimentPersistsReevaluatesFutureRunsAndKeepsExactEvidence()throws Exception{
+        try(ActivityScenario<AndroidLauncher> app=ActivityScenario.launch(AndroidLauncher.class)){
+            render(()->ShatteredPixelDungeon.switchNoFade(TitleScene.class));Thread.sleep(650);
+            java.io.File root=new java.io.File(androidx.test.core.app.ApplicationProvider.getApplicationContext().getCacheDir(),"uimsd-experiment-"+System.nanoTime());
+            recordedExperimentRun(root,"win",LifecycleEvents.OUTCOME_WON,10,false);
+            recordedExperimentRun(root,"dead",LifecycleEvents.OUTCOME_DIED,30,false);
+            recordedExperimentRun(root,"abandoned",LifecycleEvents.OUTCOME_ABANDONED,999,false);
+            byte[] original=java.nio.file.Files.readAllBytes(new java.io.File(root,"runs/abandoned.apdlog").toPath());
+            Query all=Query.of(Datasets.RUNS).withScope(new Scope(Scope.Rules.ALL,"",false,false,false,false));
+            UimsdModel first=readExperimentHistory(root);
+            render(()->{first.showQuery(all.addFilter(Filter.num("result.outcome",Op.EQ,LifecycleEvents.OUTCOME_WON)));WndUimsdResearch.studyMenu(first);});
+            tap("Capture current query as population A");closeWindows();
+            render(()->{first.showQuery(all.addFilter(Filter.num("result.outcome",Op.EQ,LifecycleEvents.OUTCOME_DIED)));WndUimsdResearch.studyMenu(first);});
+            tap("Capture current query as population B");closeWindows();
+            render(()->WndUimsdResearch.studyMenu(first));tap("Save named experiment");tap("Score");typeAndConfirm("Scores by outcome","Save");await("View current results");
+            java.io.File file=com.shatteredpixel.shatteredpixeldungeon.apd.query.research.SavedExperiments.file(root);
+            byte[] definition=java.nio.file.Files.readAllBytes(file.toPath());
+            assertEquals(1,com.shatteredpixel.shatteredpixeldungeon.apd.query.research.SavedExperiments.load(file).size());
+            closeWindows();UimsdModel reopened=readExperimentHistory(root);render(()->WndUimsdResearch.savedExperiments(reopened));tap("Scores by outcome");tap("View current results");metricValue("Score: A minus B","-20.00");
+            PlayRunDeviceTest.visibilityScreenshot("uimsd-experiment-initial.png");
+            tap("Score: A minus B");tap("Population A contributors");render(()->{try{assertEquals(1,entries().size());}catch(Exception e){throw new RuntimeException(e);}});tap(0);
+            render(()->{try{ResultTable.Line line=(ResultTable.Line)field(top(WndUimsdRow.class),"selected");assertEquals("win",line.row.runId);assertTrue(reopened.canGoBack());}catch(Exception e){throw new RuntimeException(e);}});
+            closeWindows();recordedExperimentRun(root,"future-ascended",LifecycleEvents.OUTCOME_WON,50,true);
+            UimsdModel future=readExperimentHistory(root);render(()->WndUimsdResearch.savedExperiments(future));tap("Scores by outcome");tap("View current results");metricValue("Score: A minus B","0.00");
+            PlayRunDeviceTest.visibilityScreenshot("uimsd-experiment-future.png");
+            tap("Score: A minus B");tap("Population A contributors");render(()->{try{assertEquals("New qualifying ascension joins without changing the definition",2,entries().size());}catch(Exception e){throw new RuntimeException(e);}});
+            assertArrayEquals(definition,java.nio.file.Files.readAllBytes(file.toPath()));assertArrayEquals(original,java.nio.file.Files.readAllBytes(new java.io.File(root,"runs/abandoned.apdlog").toPath()));
+            closeWindows();Query beforePopulation=future.query();render(()->WndUimsdResearch.savedExperiments(future));tap("Scores by outcome");tap("Open population B");
+            render(()->{assertEquals("One navigation entry per population link",1,future.depth());assertEquals(1,future.result().rows.size());assertEquals("dead",future.result().rows.get(0).runId);assertTrue(future.back());assertEquals(beforePopulation,future.query());});
+            closeWindows();render(()->WndUimsdResearch.savedExperiments(future));tap("Scores by outcome");tap("Rename experiment");typeAndConfirm("Renamed study","Rename");await("View current results");
+            com.shatteredpixel.shatteredpixeldungeon.apd.query.research.SavedExperiments.Experiment renamed=com.shatteredpixel.shatteredpixeldungeon.apd.query.research.SavedExperiments.load(file).get(0);
+            assertEquals("Renamed study",renamed.name);assertEquals("Scores by outcome",renamed.question);
+            tap("Delete experiment");tap("Keep experiment");await("View current results");tap("Delete experiment");tap("Delete this definition");
+            assertTrue(com.shatteredpixel.shatteredpixeldungeon.apd.query.research.SavedExperiments.load(file).isEmpty());
+            assertArrayEquals(original,java.nio.file.Files.readAllBytes(new java.io.File(root,"runs/abandoned.apdlog").toPath()));
+        }
+    }
     @Test public void recordedEquipmentWindowSurvivesReloadAndOpensExactDamage()throws Exception{
         try(ActivityScenario<AndroidLauncher> app=ActivityScenario.launch(AndroidLauncher.class)){
             Fixture f=begin();

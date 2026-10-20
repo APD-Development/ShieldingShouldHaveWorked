@@ -1,23 +1,21 @@
 {
-  "date": "2026-10-19",
-  "previous_source": "5c11b1fc346efd8f398ab2cf2872e03b15b29dc0",
-  "previous_application_source": "5c11b1fc346efd8f398ab2cf2872e03b15b29dc0",
-  "previous_run": 39332706151,
-  "previous_label": "Codex TEST 301",
+  "date": "2026-10-20",
+  "previous_source": "49b85e20b6eb5ec9152d988d304788cf574d78b2",
+  "previous_application_source": "c8614a8034b5065cba52456315d7d0898629845f",
+  "previous_run": 39337392637,
+  "previous_label": "Codex TEST 302",
   "changes": [
     {
-      "category": "Bug Fixes",
+      "category": "Statistics / UIMSD",
       "sprite": "ICON_INFO",
-      "title": "Saved UIMSD questions reopen exactly",
-      "text": "Save a friendly question by name and reopen the same measure, per-unit choice, split, filters, run scope and hidden-information choice against current history. Legacy saved table views remain readable and future optional question formats fail closed without losing the executable query.",
+      "title": "Named personal experiments follow future history",
+      "text": "Keep a question, exact captured populations and metric in a separate atomic registry; reopen results against current history, inspect missing data/conditions/uncertainty/contributors and manage definitions. Unknowns remain unknown and observational differences are not causal claims.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/QuestionCodec.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/SavedViews.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndUimsdAsk.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndUimsdOptions.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/UimsdScene.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/QuestionCodecTest.java",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdSearchDeviceTest.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/research/ExperimentReport.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/research/SavedExperiments.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndUimsdResearch.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/research/SavedExperimentsTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdResearchDeviceTest.java",
         "tools/run-codex-android-checks.sh",
         "core/src/main/assets/apd/apd_changes.txt"
       ]
@@ -25,19 +23,16 @@
     {
       "category": "Testing",
       "sprite": "ICON_INFO",
-      "title": "Preserve TEST301 navigation acceptance and full history",
-      "text": "Retain the verified nested-evidence navigation fix and every previous Android, cold-restart, API 34, display-profile, signing, application-ID and history check. Core checkpoint passed 1,978 methods with zero failures; exact-question native acceptance is required in this candidate.",
+      "title": "Verify persistent experiments and preserve TEST302",
+      "text": "Ten core methods plus native recording/save/reload/future-run result and pointer checks. Preserve existing exact questions, navigation, outcomes, settings/hotbar, exports, all prior tests, history, signing and player feature gates.",
       "paths": [
-        ".github/workflows/codex-test301-navigation.yml",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdColumnsModalDeviceTest.java",
+        "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/APD-CODEX-CORE-TEST-REQUEST.txt",
-        "docs/APD-UIMSD-INVESTIGATION-CHECKLIST.md",
-        "docs/APD-UIMSD-NAVIGATION-2026-10-19.md",
+        "docs/APD-NEXT-BUILD-HISTORY.json",
+        "docs/APD-TEST302-EXACT-QUESTIONS-2026-10-19.md",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",
-        "tools/run-test301-navigation.sh",
-        "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/APD-NEXT-BUILD-HISTORY.json"
+        "docs/APD-UIMSD-INVESTIGATION-CHECKLIST.md"
       ]
     }
   ]
