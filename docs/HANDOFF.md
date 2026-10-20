@@ -1,3 +1,11 @@
+## 2026-10-20 — Blacksmith/special-branch return navigation core verified; no APK built
+
+Application source `f6c0552e31fc23853521d36b90723eeac8e3cef4` fixes the confirmed Blacksmith quest shortcut failure by modelling `BRANCH_ENTRANCE` as one explicit **Return to Main Dungeon** route. The shortcut pathfinds through the existing safe stair walk and revalidates the exact transition before optional auto-entry. Returning to a main floor restores the ordinary **Stairs Up / Stairs Down** menu because main-floor `BRANCH_EXIT` transitions are not treated as return routes. Current-source audit covers the same contract in Mining, DeadEnd/Imp and Vault branches; quest transitions themselves were not rewritten.
+
+Core run `39506031984` succeeded at exact final checkpoint `b1a534ac9c1ab64dedf47b1ce8dfbefc97e03141`; artifact `12303236898`, 953,932 bytes, `sha256:06dcf42aacc52a2bd51fd896e4244a8cccaf2100901f9d717ea01d26025ba834`. Extracted XML: **2,019 tests / 393 suites / 0 failures / 0 errors / 0 skipped**. All six new branch-route cases passed. Prior run `39505527082` is retained as an actual fixture failure: production compiled, but one new movement test omitted the established no-op sprite and failed before its assertion; corrected without changing production or weakening tests.
+
+No APK, API34/emulator, display or physical evidence was produced; `docs/APD-CODEX-BUILD-REQUEST.txt` stayed untouched. TEST303 remains newest produced and published TEST262 remains unchanged. Wraith remains a separate investigation with no speculative change in this checkpoint. Next safe step: include this verified source with the Wraith work only when the owner requests the next test build, then perform exact-APK special-area visual/gameplay acceptance. Report: `docs/APD-BLACKSMITH-QUEST-EXIT-NAVIGATION-2026-10-20.md`.
+
 ## 2026-10-20 — extensible offline UIMSD terminology core verified; general windows remain next
 
 Source checkpoint `16b1686a7640ab3d025a29ec770ae88043c94405`; core-only run `39437010997`; artifact `12272916909` (ZIP digest `sha256:59c9304316030081b08a8f954e968b7716bf463927ce9c5b8c1f9b011009ee65`). The retained XML contains **2,013 tests / 392 suites / 0 failures / 0 errors / 0 skipped**, including all 2,008 prior methods and five new `UimsdTerminologyTest` cases.

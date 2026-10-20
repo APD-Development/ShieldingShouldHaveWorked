@@ -1,3 +1,11 @@
+## 2026-10-20 — Blacksmith and special-branch return navigation (core verified)
+
+Committed application source `f6c0552e31fc23853521d36b90723eeac8e3cef4` from expected parent `4a61260c156a0a7ad19e9d3db4f7542732824204`. Added explicit branch-return routing and a one-button **Return to Main Dungeon** quest-exit prompt while preserving ordinary main-floor Up/Down behavior. Shared transition audit covers Mining, DeadEnd/Imp and Vault branches. Six regressions cover menu route selection, safe path target, exactly-once auto-entry, restored main-floor directions, discovery privacy and changed-transition rejection.
+
+Run `39505527082` retained an honest new-fixture failure (2,019 executed / one failure): missing headless no-op sprite before real Hero movement, artifact `12304100040`, `sha256:39eccc2a79df880333b59bd0dfb5c0aa84e16277caad9b5d11205238c73390e8`. Fixture-only commit `b4c92ca76710a51076dfcfafb72722fb5e175965` attached the existing test pattern without production/assertion changes. Final run `39506031984` at checkpoint `b1a534ac9c1ab64dedf47b1ce8dfbefc97e03141` passed **2,019 tests / 393 suites / 0 failures / 0 errors / 0 skipped**; artifact `12303236898`, 953,932 bytes, `sha256:06dcf42aacc52a2bd51fd896e4244a8cccaf2100901f9d717ea01d26025ba834`.
+
+No APK/build-request edit, device/physical claim, scoring/save/history/RNG change, distribution or Wraith mechanics change. TEST303 remains newest produced; published TEST262 remains latest owner delivery. Report: `docs/APD-BLACKSMITH-QUEST-EXIT-NAVIGATION-2026-10-20.md`.
+
 ## 2026-10-20 — UIMSD extensible terminology registry (core verified)
 
 Committed source/test checkpoint `16b1686a7640ab3d025a29ec770ae88043c94405` from expected parent `0485222428916b5c7ebd7241f4c469c0df51f8b7`. Added immutable `UimsdTerminology` and shared it across `UimsdSearch` and `UimsdTopicSearch`; registered aliases cover schema only, never row values or internal columns. Exact question interpretation accepts registered dataset/column/measure/connector terms and still rejects ambiguity or unsupported conditions without dropping them.
