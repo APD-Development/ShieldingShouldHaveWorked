@@ -58,6 +58,12 @@ public class MimicElectricityInteractionTest {
     private static class Target extends Char {
         Target(){HP=HT=1000;alignment=Alignment.ENEMY;pos=TARGET;sprite=new Quiet();}
     }
+    private static class ZeroAttacker extends Char {
+        boolean guaranteedHit;
+        ZeroAttacker(){HP=HT=100;pos=USER;sprite=new Quiet();alignment=Alignment.ALLY;}
+        @Override public int attackSkill(Char target){return guaranteedHit?INFINITE_ACCURACY:0;}
+        @Override public int damageRoll(){return 0;}
+    }
     private Hero oldHero;private Level oldLevel;private int oldDepth,oldChallenges;
     private boolean oldRecording,oldPositive;private Bundle oldRules;
     private Weapon weapon;
@@ -78,6 +84,7 @@ public class MimicElectricityInteractionTest {
             board.map[i]=Terrain.WALL;board.solid[i]=true;board.passable[i]=false;
         }
         board.heaps=new SparseArray<>();board.blobs=new java.util.HashMap<>();
+        board.plants=new SparseArray<>();board.traps=new SparseArray<>();
         board.mobs=new java.util.HashSet<>();Dungeon.hero.fieldOfView=new boolean[225];
         Actor.add(Dungeon.hero);weapon=new Dagger();weapon.enchant(new Wondrous());
     }
@@ -165,8 +172,11 @@ public class MimicElectricityInteractionTest {
         assertEquals(1,m.calls);assertEquals(0,m.hpLoss);assertEquals(1000,m.HP);revealed(m);
     }
     @Test public void successfulZeroDamageAttackDefenseProcReveals(){
-        Probe m=mimic(TARGET);assertEquals(0,m.defenseProc(Dungeon.hero,0));
-        assertEquals(0,m.calls);assertEquals(1000,m.HP);revealed(m);
+        Probe m=mimic(TARGET);ZeroAttacker attacker=new ZeroAttacker();
+        assertFalse("A missed attack does not reach the damage/defense handlers",attacker.attack(m));
+        hidden(m);assertEquals(0,m.calls);
+        attacker.guaranteedHit=true;assertTrue(attacker.attack(m));
+        assertEquals(1,m.calls);assertEquals(0,m.input);assertEquals(1000,m.HP);revealed(m);
     }
     @Test public void fullShieldAbsorptionStillReveals(){
         Probe m=mimic(TARGET);Buff.affect(m,Barrier.class).setShield(50);hidden(m);
