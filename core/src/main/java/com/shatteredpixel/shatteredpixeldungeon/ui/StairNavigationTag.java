@@ -19,11 +19,32 @@ public final class StairNavigationTag extends Tag {
     @Override protected void onClick(){
         super.onClick();
         if(Dungeon.hero==null || !Dungeon.hero.ready) return;
-        String hint = SPDSettings.autoEnterStairs()
-                ? "Walk to discovered stairs and take them automatically. Stops for enemies, damage or danger."
-                : "Walk to discovered stairs. Stops for enemies, damage or danger. Enable Auto-enter Stairs in APD Settings to change floors on arrival.";
-        GameScene.show(new WndOptions(Icons.get(Icons.STAIRS),"Stairs",hint,"Stairs Up","Stairs Down"){
-            @Override protected void onSelect(int index){int target=StairNavigation.discoveredStair(Dungeon.level,index==0);com.shatteredpixel.shatteredpixeldungeon.effects.StairHighlight.showKnown(target);String problem=StairNavigation.begin(Dungeon.hero,index==0);if(problem!=null)GLog.w(problem);else Dungeon.hero.next();}
+        final StairNavigation.Route[] routes=StairNavigation.availableRoutes(Dungeon.level);
+        final boolean returning=routes.length==1 && routes[0]==StairNavigation.Route.RETURN_TO_MAIN_DUNGEON;
+        String hint;
+        String title;
+        String[] options;
+        if(returning){
+            title="Quest Exit";
+            hint=SPDSettings.autoEnterStairs()
+                    ? "Walk to the discovered quest exit and return to the main dungeon automatically. Stops for enemies, damage or danger."
+                    : "Walk to the discovered quest exit. Stops for enemies, damage or danger. Enable Auto-enter Stairs in APD Settings to return to the main dungeon on arrival.";
+            options=new String[]{"Return to Main Dungeon"};
+        } else {
+            title="Stairs";
+            hint=SPDSettings.autoEnterStairs()
+                    ? "Walk to discovered stairs and take them automatically. Stops for enemies, damage or danger."
+                    : "Walk to discovered stairs. Stops for enemies, damage or danger. Enable Auto-enter Stairs in APD Settings to change floors on arrival.";
+            options=new String[]{"Stairs Up","Stairs Down"};
+        }
+        GameScene.show(new WndOptions(Icons.get(Icons.STAIRS),title,hint,options){
+            @Override protected void onSelect(int index){
+                StairNavigation.Route route=routes[index];
+                int target=StairNavigation.discoveredTarget(Dungeon.level,route);
+                com.shatteredpixel.shatteredpixeldungeon.effects.StairHighlight.showKnown(target);
+                String problem=StairNavigation.begin(Dungeon.hero,route);
+                if(problem!=null)GLog.w(problem);else Dungeon.hero.next();
+            }
         });
     }
 }
