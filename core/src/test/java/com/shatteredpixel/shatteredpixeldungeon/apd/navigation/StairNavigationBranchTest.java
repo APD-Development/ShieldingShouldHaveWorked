@@ -42,6 +42,17 @@ public class StairNavigationBranchTest {
         }
     }
 
+    private static class InvisibleSprite extends com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite {
+        void attach(Hero hero){ch=hero;hero.sprite=this;visible=false;}
+        @Override public void place(int cell){}
+        @Override public void move(int from,int to){}
+        @Override public void idle(){}
+        @Override public void showStatus(int color,String text,Object...args){}
+        @Override public void showStatusWithIcon(int color,String text,int icon,Object...args){}
+        @Override public void showAlert(){}
+        @Override public void hideAlert(){}
+    }
+
     private Level previousLevel;
     private Hero previousHero;
     private Object previousSelector;
@@ -121,6 +132,7 @@ public class StairNavigationBranchTest {
 
     @Test public void autoEnterReturnsThroughBranchEntranceExactlyOnce() throws Exception {
         add(13,LevelTransition.Type.BRANCH_ENTRANCE);
+        new InvisibleSprite().attach(hero);
         SPDSettings.autoEnterStairs(true);
         assertNull(StairNavigation.begin(hero,StairNavigation.Route.RETURN_TO_MAIN_DUNGEON));
         StairNavigation.Walk walk=(StairNavigation.Walk)hero.curAction;
