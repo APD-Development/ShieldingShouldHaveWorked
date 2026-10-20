@@ -1,3 +1,17 @@
+## TEST303 — named personal experiments verified and paired private APKs saved (2026-10-19 ET / Oct20 UTC)
+
+Application/build source `7505a36ae1567458ba854db9427196a893824806`; main run `39352224211`, player run `39352224391`. Named numeric/win-rate experiments now persist a question/name, exact A/B populations and metric separately from views/raw logs; reopen results on reloaded history to include qualifying future records, inspect shared comparison/evidence/conditions and rename/delete only definitions. Question wording is a label, not an inferred natural-language calculation. No gameplay/RNG/recording/save/outcome changes or migration.
+
+Both variants passed1,988 core tests/390 suites with0 failures/errors/skips, retaining all1,978 prior methods; fullAPI34 passed53/0/0/0 with79 decoded PNGs, retaining52 prior methods/77 captures. New actual-pointer acceptance saves/reloads, verifies -20 initial to0 after future ascension, drills into exact contributors/populations/Back and tests rename/delete/cancel while preserving abandoned raw bytes. Both new screenshots visually reviewed. Exact cold restart/player-settings run39352224343 and actual-death before/after39352224386 passed. Five-profile matrix39352224409 passed; initial small/compact Quickstep ANRs retained and unchanged-APK failed-job retries passed. Emulator evidence only.
+
+Developer `ADHD-Pixel-Dungeon-CODEX-TEST-303.apk`:38,714,105 bytes SHA256 `a7a665f79d1e6376c790ea840da7ccf9a83040f4d714263625dcbdc8899795e7`, saved identity `libfile_411ad313827c81919bfb308c37edf879`.
+Player `APD-Player-TEST303.apk`:38,713,932 bytes SHA256 `91de724cd14c40585ce20477094907c102702dd4e431f9b195605ce85357391a`, saved identity `libfile_9ecaaeb80e4481918a2cf98bbb2937ea`.
+Same signer as302; all330 preceding historical TSVs preserved byte-identically; both contain331 identical records. Private feature asset absent/player gate passed. Owner-only paired delivery; no release, staging, testers, uninstall or user-data clearing.
+
+Small CI4-row fixture:518-byte definition;100 reevaluations3,623,958ns developer/3,293,205ns player. Not representative history/phone profiling. Broader interpreted/temporal questions, complete evidence/timeline/death and progress capabilities remain partial/pending; all five are not complete and no uniqueness claim. [Full TEST303 acceptance report](APD-UIMSD-EXPERIMENTS-2026-10-20.md) and [tracked checklist](APD-UIMSD-INVESTIGATION-CHECKLIST.md).
+
+**Next produced build predecessor is TEST303 source/run7505a36ae1567458ba854db9427196a893824806 /39352224211 and331 records**, including this evidence/documentation commit in the next manifest. Do not return to302 as predecessor or overwrite303. Preserve unrelated work, saves, raw histories, accurate outcomes, all18 rules, v2.6R lookup scoring, Cleric fixes, manual hotbars/settings and viewport/modal fixes. General priorities remain the remaining connected capabilities, not duplicate standalone tools.
+
 ## TEST302 — exact UIMSD questions verified and paired private APKs saved (2026-10-19)
 
 Application source `c8614a8034b5065cba52456315d7d0898629845f`; executable request/source head `49b85e20b6eb5ec9152d988d304788cf574d78b2`. Friendly UIMSD questions now save and reopen the exact measure, measured column, per-unit choice, splits, filters (including empty text), run scope and hidden-information choice beside the executable query. Legacy three-field table views remain readable; unreadable future optional question bytes fail closed without discarding the executable table query.

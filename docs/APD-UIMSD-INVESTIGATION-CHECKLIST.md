@@ -1,11 +1,11 @@
 # UIMSD connected investigation implementation checklist
-Updated Oct19 ET / Oct20 UTC: TEST302 question persistence verified; named experiment milestone in implementation. Owner's five-capability request is the acceptance scope. Supporting tools do not complete a whole capability.
+Updated Oct19 ET / Oct20 UTC: TEST303 named numeric/win-rate experiment milestone verified and privately delivered; all five broad capabilities remain partial/pending. Owner's five-capability request is the acceptance scope. Supporting tools do not complete a whole capability.
 
 ## Audited baseline
 Accepted supporting-tool baseline: TEST294 /84b465af7e12fce897d318fcf385529a50ad48e2,1,948 core +48 API34 methods/64 captures. First connected equipment-window milestone is now accepted in TEST300 /d41631b3e5b43bf832036426a9e7c7a0694d07ed:1,959 build-time core methods (later1,967 after independent loot regressions),50 unique Android cases verified across the49-pass full run and corrected one-case exact-APK gesture rerun,73 full-suite captures. Exact cold-restart/player Settings and five display profiles also passed. No broader capability is complete on backend/tests/documentation alone.
 Existing: binary offline recorder with rollback-aware canonical history, public/internal disclosure, typed provenance, queryable events/equipment/facts, all 18 Custom Rules, grouping, row links, saved views, exports, viewport restoration and accurate death/abandonment outcomes.
 Partial: topic/simple-question search and fixed multilingual aliases; basic RunTurnBrowser public event text; research A/B query pins and descriptive/inferential comparisons.
-Missing: general sequence/window queries, extensible interpreted terminology, comprehensive contributing-record navigation, complete death context/resource snapshots, named persisted experiments, longitudinal comparable-condition analysis.
+Missing: general sequence/window queries, extensible interpreted terminology, comprehensive contributing-record navigation, complete death context/resource snapshots, general experiment execution beyond saved numeric/win-rate comparisons, longitudinal comparable-condition analysis.
 Verified TEST301 navigation milestone: per-place Back checkpoints include horizontal/vertical position alongside query/page, including same-dataset evidence and scene recreation. Source5c11b1fc346efd8f398ab2cf2872e03b15b29dc0 passed1,973 core and51 API34 methods/76 captures; strengthened exact-APK replay39335009747 passed all original and frozen-pane assertions. This closes the tracked cross-table Back position gap. Do not claim all evidence-navigation requirements are complete. Preserve Columns deferred-rebuild fix, sorting viewport fix, raw logs, saved views and existing outcomes.
 
 ## Acceptance checklist
@@ -14,7 +14,7 @@ Verified TEST301 navigation milestone: per-place Back checkpoints include horizo
 | 1 Search and questions | Partial | Offline conjunctions across events/equipment/class/subclass/floor/version/difficulty/challenges/all 18 controls; explicit sequence and time-window boundaries; extensible translated aliases; visible exact interpretation; unsupported parts fail closed; persist and reopen exact question. |
 | 2 Evidence navigation | Partial | Each calculation opens exact contributors, source run/floor/fight/turn; includes numerator/denominator provenance and unknowns; Back restores filters/sorts/scroll; stale/disclosure changes reject old results; exports retain evidence identities. |
 | 3 Timeline and death investigation | Partial foundation | Canonical chronological events; health/shield/source/status/equipment/action/resource observations where recorded; adjustable final-turn window; revival versus final death explicit; gaps/unknowns visible; no invented older events or guaranteed-survival claims. |
-| 4 Personal experiments | Partial foundation | Named saved question plus A/B definitions and metric; automatically reevaluate qualifying future runs after reload; sample/exclusion/condition differences and uncertainty; exact contributor navigation; separately versioned, nondestructive persistence. |
+| 4 Personal experiments | Partial; named numeric/win-rate workflow verified TEST303 | Named saved question plus A/B definitions and metric; automatically reevaluate qualifying future runs after reload; sample/exclusion/condition differences and uncertainty; exact contributor navigation; separately versioned, nondestructive persistence. |
 | 5 Personal progress | Pending | Time-ordered cohorts with recorded dates; comparable conditions; version/rule/balance strata explicit; uncertainty and missing observations; drill-down/export; never confuse mixed settings with improvement. |
 
 ## First end-to-end milestone: equipment-following damage window
@@ -38,20 +38,24 @@ This milestone is a useful subset of capabilities 1 and 2, not completion of the
 - [x] Verify paired TEST301 APKs, all328 previous history files, player feature gates and in-game Changes; exact cold restart/death gates and all5 display profiles passed.
 See [TEST301 report](APD-UIMSD-NAVIGATION-2026-10-19.md) for immutable source, checksums, retained original display failures and exact evidence. No raw/save/query schema changes or historical migration. This closes a navigation gap within capability 2, not the entire capability.
 
-## Named personal experiments (in verification)
+## Named personal experiments (verified in TEST303)
 - [x] Persist a name/question, exact A/B row queries and numeric/win-rate metric separately from saved views, pins and raw history; CURRENT rules freeze at capture.
 - [x] Atomic bounded registry; duplicate names cannot overwrite definitions; corrupt/future files block edits without changing original bytes; rename/delete preserve unrelated definitions.
 - [x] Reevaluate on currently loaded history, including newly recorded matching wins/ascensions after close/reload, without editing definitions; excluded or missing values never become zero.
 - [x] Shared comparison/evidence/report pipeline shows sample sizes, exclusions, overlap, uncertainty, versions/rules/classes and recorded-condition unknowns.
-- [ ] Native naming, save/reopen, future-run recalculation, evidence/population links and rename/delete confirmation on Android.
-- [ ] Confirm RNG isolation, measured storage/query cost and unchanged raw logs from actual regression artifacts.
-- [ ] Full prior regression gates, paired uniquely numbered APKs, player cheat gate, in-game Changes and final evidence report.
+- [x] Native naming, save/reopen, future-run recalculation, evidence/population links and rename/delete confirmation on Android.
+- [x] Confirm RNG isolation, measured storage/query cost and unchanged raw logs from actual regression artifacts.
+- [x] Full prior regression gates, paired uniquely numbered APKs, player cheat gate, in-game Changes and final evidence report.
+Source7505a36ae1567458ba854db9427196a893824806 / TEST303:1,988 core methods per variant,53 API34 cases/79 decoded PNGs, exact-death/cold-restart/player gates and all5 display profiles passed. All prior1,978 core/52 native methods and77 captures retained. New screens visually reviewed. [Acceptance report](APD-UIMSD-EXPERIMENTS-2026-10-20.md).
+
 This first named-experiment milestone supports numeric mean differences and win rates. It does not claim arbitrary natural-language or temporal experiment execution, causal effects, or completion of the five-capability system.
 
 ## Later connected milestones
-- [ ] Extensible terminology + question persistence and general correlated windows.
+- [x] Exact question persistence and native reopen (TEST302); extensible terminology/general correlated windows remain pending.
+- [ ] Extensible terminology and general correlated windows.
 - [ ] Timeline/death evidence and necessary forward-only recorded snapshots.
-- [ ] Named experiment registry using shared QueryCodec/PopulationStudy and future-run reevaluation.
+- [x] Named numeric/win-rate experiment registry using shared QueryCodec/PopulationStudy and future-run reevaluation (TEST303).
+- [ ] Broader experiment execution over sequence/window questions and additional metrics.
 - [ ] Comparable-condition progress using the same experiment/evidence model.
 - [ ] Benchmark comparison from primary project sources before any specific uniqueness claim.
 - [ ] Storage/latency profiling on representative histories and Android, including recording overhead.
