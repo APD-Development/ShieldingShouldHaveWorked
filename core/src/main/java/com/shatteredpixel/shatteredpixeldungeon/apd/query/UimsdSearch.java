@@ -29,7 +29,11 @@ public final class UimsdSearch {
     }
 
     public static List<Hit> find(Catalog catalog, String question, int limit) {
-        if(catalog==null || limit<=0 || question==null)return Collections.emptyList();
+        return find(catalog,question,limit,UimsdTerminology.standard());
+    }
+
+    public static List<Hit> find(Catalog catalog, String question, int limit, UimsdTerminology terminology) {
+        if(catalog==null || limit<=0 || question==null || terminology==null)return Collections.emptyList();
         String input=normalize(question);
         if(input.isEmpty())return Collections.emptyList();
         String[] terms=input.split(" +");
@@ -42,16 +46,15 @@ public final class UimsdSearch {
             String overview=normalize(view.description+" "+view.group+" "+dataset.def.title+" "+
                     dataset.def.description);
             StringBuilder columnText=new StringBuilder();
-            String firstColumn="";
             for(ColumnDef col:dataset.def.columns()) {
-                // Hidden column labels and derived secrets aren't advertised by search.
+                // Hidden column labels, aliases and derived secrets aren't advertised by search.
                 if(col.isInternal())continue;
                 columnText.append(' ').append(col.label).append(' ').append(col.group)
-                        .append(' ').append(col.description);
-                if(firstColumn.isEmpty())firstColumn=col.label;
+                        .append(' ').append(col.description).append(' ')
+                        .append(terminology.columnText(dataset.def.id,col.id));
             }
             String columns=normalize(columnText.toString());
-            String aliases=normalize(aliasesFor(view.id,view.dataset()));
+            String aliases=normalize(terminology.searchAliases(view.id,view.dataset()));
             int rank=0;
             boolean all=true;
             for(String term:terms){
@@ -86,36 +89,6 @@ public final class UimsdSearch {
         return (" "+in+" ").contains(" "+term+" ");
     }
 
-    /** Built-in aliases work entirely on device. Unlisted languages still match
-     * original Unicode view names, columns, and descriptions, without sending text anywhere.
-     */
-    private static String aliasesFor(String view,String dataset) {
-        String target=(view+" "+dataset).toLowerCase(Locale.ROOT);
-        if(target.contains("death")||target.contains("died")||target.contains("outcome"))
-            return "deaths died dying mortality muerte muertes morir mort décès mort morti tot tod sterben "
-                    +"смерть смерти умер смертью décèses 死亡 死 去世 death";
-        if(target.contains("attack")||target.contains("combat")||target.contains("damage"))
-            return "attack attacks damage fight fighting attacks combate daño daño ataques "
-                    +"attaques degats dégats combat schaden angriffe kampf урон атаки атака бой "
-                    +"伤害 攻击 攻擊 戦闘 攻撃 ダメージ 전투 공격 피해";
-        if(target.contains("item")||target.contains("weapon")||target.contains("armor")
-                ||target.contains("wand")||target.contains("potion")||target.contains("scroll"))
-            return "item items gear loot inventory objetos objetos equipo armas ítems "
-                    +"objets equipement équipement armes gegenstände ausrüstung waffen "
-                    +"предмет вещи оружие 物品 装备 裝備 アイテム 装備 아이템 장비";
-        if(target.contains("run")||target.contains("victor")||target.contains("win"))
-            return "run runs game games victoire victory win wins carreras partidas partidas "
-                    +"parties runs siege sieg победа забег прохождение "
-                    +"胜利 游戏 游戏局 記録 勝利 승리";
-        if(target.contains("boss")||target.contains("enemy")||target.contains("enemies")||target.contains("kill"))
-            return "boss bosses enemy enemies monster monsters killed enemies enemigos jefes "
-                    +"ennemis patrons boss gegner feinde босс враги убийство 敌人 首领 首領 ボス 敵 보스 적";
-        if(target.contains("floor")||target.contains("step")||target.contains("explor"))
-            return "floor floors step steps movement travel movement suelo pisos étage étages "
-                    +"etage etagen stockwerke schritte этаж этажи шаги 楼层 步数 階層 歩数 층 걸음";
-        return "";
-    }
-
     /** NFKC folds full-width input; accent removal is for Latin text only.
      * All other scripts remain intact, including Chinese, Cyrillic and Korean.
      */
@@ -131,8 +104,6 @@ public final class UimsdSearch {
             int cp=decomposed.codePointAt(i);i+=Character.charCount(cp);
             int type=Character.getType(cp);
             if(type==Character.NON_SPACING_MARK){
-                // Latin accents are folded, but Japanese dakuten and other
-                // script marks must survive; dropping them changes words.
                 if(!lastLatinBase)sb.appendCodePoint(cp);
                 continue;
             }
