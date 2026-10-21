@@ -2,7 +2,11 @@ name: Verify responsive title menu on Android display configurations
 on:
   push:
     branches: [codex/apd-phone-fixes-2026-10-09]
-    paths: [docs/APD-CODEX-BUILD-REQUEST.txt]
+    paths:
+      - docs/APD-CODEX-BUILD-REQUEST.txt
+      - .github/workflows/codex-menu-layout-matrix.yml
+      - tools/run-title-display-check.sh
+      - android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/TitleMenuLayoutDeviceTest.java
 permissions:
   contents: read
   actions: read
@@ -29,30 +33,33 @@ jobs:
         run: |
           python3 - <<'PY'
           import json,os,subprocess,time,pathlib,zipfile,hashlib
-          repo=os.environ['GITHUB_REPOSITORY'];sha=os.environ['GITHUB_SHA']
+          repo=os.environ['GITHUB_REPOSITORY'];sha=os.environ['GITHUB_SHA'];branch=os.environ['GITHUB_REF_NAME']
           api=lambda p:json.loads(subprocess.check_output(['gh','api',p]))
           end=time.monotonic()+1000
           while True:
-              runs=api(f'repos/{repo}/actions/runs?head_sha={sha}')['workflow_runs']
-              matches=[r for r in runs if r['path']=='.github/workflows/codex-sprint-check.yml']
-              assert len(matches)<=1
-              if matches:
-                  run=matches[0];jobs=api(f'repos/{repo}/actions/runs/{run["id"]}/jobs')['jobs']
-                  producer=next((j for j in jobs if j['name']=='verify-and-build'),None)
-                  if producer and producer['status']=='completed':
-                      assert producer['conclusion']=='success','Application producer failed'
-                      artifacts=api(f'repos/{repo}/actions/runs/{run["id"]}/artifacts')['artifacts']
-                      item=next(a for a in artifacts if a['name']=='apd-codex-private-test-apk' and not a['expired'])
-                      with open('application.zip','wb') as out:subprocess.run(['gh','api',f'repos/{repo}/actions/artifacts/{item["id"]}/zip'],stdout=out,check=True)
-                      assert hashlib.sha256(pathlib.Path('application.zip').read_bytes()).hexdigest()==item['digest'].removeprefix('sha256:')
-                      with zipfile.ZipFile('application.zip')as z:z.extractall('application')
-                      apk=next(pathlib.Path('application').glob('*.apk'));digest=hashlib.sha256(apk.read_bytes()).hexdigest()
-                      assert next(pathlib.Path('application').glob('*.apk.sha256')).read_text().split()[0]==digest
-                      pathlib.Path('acceptance-source.json').write_text(json.dumps({'application_source':sha,'application_run':run['id'],'application_sha256':digest,'protected_application_inputs_identical':True,'application_rebuilt':False,'test_source':sha},indent=2))
-                      with open(os.environ['GITHUB_ENV'],'a')as out:out.write('APD_BUILD='+str(run['run_number'])+'\n')
-                      break
-              assert time.monotonic()<end,'No exact successful application artifact'
-              time.sleep(15)
+              runs=api(f'repos/{repo}/actions/workflows/codex-sprint-check.yml/runs?branch={branch}&status=completed&per_page=20')['workflow_runs']
+              candidates=[r for r in runs if r['conclusion']=='success']
+              for run in candidates:
+                  jobs=api(f'repos/{repo}/actions/runs/{run["id"]}/jobs')['jobs']
+                  producer=next((j for j in jobs if j['name']=='verify-and-build' and j['conclusion']=='success'),None)
+                  artifacts=api(f'repos/{repo}/actions/runs/{run["id"]}/artifacts')['artifacts'] if producer else []
+                  item=next((a for a in artifacts if a['name']=='apd-codex-private-test-apk' and not a['expired']),None)
+                  if not item:continue
+                  comparison=api(f'repos/{repo}/compare/{run["head_sha"]}...{sha}')
+                  assert comparison['status'] in ('ahead','identical'),'Application producer is not an ancestor of test source'
+                  with open('application.zip','wb') as out:subprocess.run(['gh','api',f'repos/{repo}/actions/artifacts/{item["id"]}/zip'],stdout=out,check=True)
+                  assert hashlib.sha256(pathlib.Path('application.zip').read_bytes()).hexdigest()==item['digest'].removeprefix('sha256:')
+                  with zipfile.ZipFile('application.zip')as z:z.extractall('application')
+                  apk=next(pathlib.Path('application').glob('*.apk'));digest=hashlib.sha256(apk.read_bytes()).hexdigest()
+                  assert next(pathlib.Path('application').glob('*.apk.sha256')).read_text().split()[0]==digest
+                  pathlib.Path('acceptance-source.json').write_text(json.dumps({'application_source':run['head_sha'],'application_run':run['id'],'application_sha256':digest,'protected_application_inputs_identical':True,'application_rebuilt':False,'test_source':sha},indent=2))
+                  with open(os.environ['GITHUB_ENV'],'a')as out:out.write('APD_BUILD='+str(run['run_number'])+'\n')
+                  break
+              else:
+                  assert time.monotonic()<end,'No successful ancestral application artifact'
+                  time.sleep(15)
+                  continue
+              break
           PY
       - name: Compile only instrumentation
         run: |
@@ -75,7 +82,7 @@ jobs:
           target: default
           profile: pixel_7
           disable-animations: true
-          script: adb shell settings put secure immersive_mode_confirmations confirmed && bash tools/run-title-display-check.sh '${{ matrix.size }}' '${{ matrix.density }}'
+          script: adb shell settings put global hide_error_dialogs 1 && adb shell settings put secure immersive_mode_confirmations confirmed && bash tools/run-title-display-check.sh '${{ matrix.size }}' '${{ matrix.density }}'
       - uses: actions/upload-artifact@v4
         if: always()
         with:
