@@ -1,11 +1,11 @@
 # UIMSD connected investigation implementation checklist
-Updated Oct20 ET: the extensible offline terminology registry is core-verified at `16b1686a7640ab3d025a29ec770ae88043c94405` / run `39437010997`; native acceptance and general correlated windows remain pending. TEST303 named numeric/win-rate experiments remain the newest produced APK milestone. All five broad capabilities remain partial/pending; supporting tools do not complete a whole capability.
+Updated Oct21 ET: the shared exact following-window specification is core-verified at application source `a66182becd893574977193b878cd7c6cd3362954` / evidence run `39684507117` (2,031 tests /395 suites, all six focused cases); a second anchor→target integration and native acceptance remain pending. The extensible terminology registry remains core-verified. TEST304 is the newest produced/emulator-verified private APK pair; TEST262 remains the newest actually published owner APK. All five broad capabilities remain partial/pending; supporting tools do not complete a whole capability.
 
 ## Audited baseline
 Accepted supporting-tool baseline: TEST294 /84b465af7e12fce897d318fcf385529a50ad48e2,1,948 core +48 API34 methods/64 captures. First connected equipment-window milestone is now accepted in TEST300 /d41631b3e5b43bf832036426a9e7c7a0694d07ed:1,959 build-time core methods (later1,967 after independent loot regressions),50 unique Android cases verified across the49-pass full run and corrected one-case exact-APK gesture rerun,73 full-suite captures. Exact cold-restart/player Settings and five display profiles also passed. No broader capability is complete on backend/tests/documentation alone.
 Existing: binary offline recorder with rollback-aware canonical history, public/internal disclosure, typed provenance, queryable events/equipment/facts, all 18 Custom Rules, grouping, row links, saved views, exports, viewport restoration and accurate death/abandonment outcomes.
-Partial: topic/simple-question search and fixed multilingual aliases; basic RunTurnBrowser public event text; research A/B query pins and descriptive/inferential comparisons.
-Missing: general sequence/window queries, extensible interpreted terminology, comprehensive contributing-record navigation, complete death context/resource snapshots, general experiment execution beyond saved numeric/win-rate comparisons, longitudinal comparable-condition analysis.
+Partial: topic/simple-question search with extensible registered terminology; a shared exact same-run following-window specification used by equipment→damage; basic RunTurnBrowser public event text; research A/B query pins and descriptive/inferential comparisons.
+Missing: additional/general sequence-window query integrations, comprehensive contributing-record navigation, complete death context/resource snapshots, general experiment execution beyond saved numeric/win-rate comparisons, longitudinal comparable-condition analysis.
 Verified TEST301 navigation milestone: per-place Back checkpoints include horizontal/vertical position alongside query/page, including same-dataset evidence and scene recreation. Source5c11b1fc346efd8f398ab2cf2872e03b15b29dc0 passed1,973 core and51 API34 methods/76 captures; strengthened exact-APK replay39335009747 passed all original and frozen-pane assertions. This closes the tracked cross-table Back position gap. Do not claim all evidence-navigation requirements are complete. Preserve Columns deferred-rebuild fix, sorting viewport fix, raw logs, saved views and existing outcomes.
 
 ## Acceptance checklist
@@ -53,7 +53,7 @@ This first named-experiment milestone supports numeric mean differences and win 
 ## Later connected milestones
 - [x] Exact question persistence and native reopen (TEST302).
 - [x] Extensible offline dataset/column/measure/connector terminology shared by view search, topic discovery and exact interpretation; core verified in run39437010997. Native acceptance remains pending.
-- [ ] General correlated windows beyond the fixed equipment→damage path, with explicit sequence/time boundaries and exact evidence.
+- [ ] General correlated windows beyond the fixed equipment→damage path, with explicit sequence/time boundaries and exact evidence. Shared exact following-window arithmetic/wording/query filters are core-verified in run39684507117; second anchor→target integration and native acceptance remain pending.
 - [ ] Timeline/death evidence and necessary forward-only recorded snapshots.
 - [x] Named numeric/win-rate experiment registry using shared QueryCodec/PopulationStudy and future-run reevaluation (TEST303).
 - [ ] Broader experiment execution over sequence/window questions and additional metrics.

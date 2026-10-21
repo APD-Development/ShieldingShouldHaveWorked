@@ -1,3 +1,11 @@
+## 2026-10-21T22:13:06Z — shared UIMSD run/turn-window specification core verified; TEST304 unchanged
+
+- Application source `a66182becd893574977193b878cd7c6cd3362954` adds immutable `RunTurnWindow` and refactors `EquipmentWindow` to use its exact same-run, exclusive-start/inclusive-end arithmetic, wording and filters. TEST300 equipment→damage behavior, scope/disclosure, evidence, coverage/unknown handling and overflow rejection are preserved.
+- Initial full-core run `39683649159` passed and retained artifact `12384748603`; repeated HTTP 503 from the external artifact-download handoff prevented independent XML aggregation during the run.
+- Evidence-only workflow commit `c2eec3d2e321d71ac018a51cd3be1c4280efdc56` added fail-closed XML totals and exact targeted-case inventory. Rerun `39684507117` passed: **2,031 tests / 395 suites / 0 failures / 0 errors / 0 skipped**. All six `RunTurnWindowTest` methods were logged. Artifact `12386420312`, 959,407 bytes, `sha256:87ba0569d7835c776ec5b7c5cb3bc5ef02762507470fe0596dcf83a379eb9718`.
+- This completes the shared following-window specification at core level only. A second anchor→target integration, general sequence/question UI and native acceptance remain pending; no broad-capability completion claim.
+- No APK/API34/display/history comparison or publication was run because no candidate was requested. Build-request blob `b618df67d45a4b07e5105b3e6c222e8e8ad1ac2a` stayed untouched. TEST304 remains newest produced/emulator-verified private pair; TEST262 remains newest actually published owner APK. No gameplay/RNG/scoring/save/history/schema/signing/application-ID change.
+
 ## 2026-10-21T14:12:12Z — TEST304 paired private candidate fully emulator-verified; Quickstep-blocked square harness corrected
 
 - Source `b5faf8f951001489f7004a507efbf37df6e9e070`; developer run `39541268516`, player run `39541268552`. Both core executions passed **2,025/2,025** methods in 394 suites. API34 passed **53/53**.
