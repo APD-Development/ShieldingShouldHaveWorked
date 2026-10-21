@@ -395,8 +395,37 @@ public abstract class Actor implements Bundlable {
 			if (ch.pos == pos)
 				return ch;
 		}
-		return null;
+        // A level can retain a Wraith in its authoritative mob collection
+        // after its Actor registration is lost. Its sprite is still drawn and
+        // Dread can still target it through level.mobs, but melee targeting,
+        // thrown weapons, bombs, burning, and Examine all consult findChar.
+        // Rejoin the exact live Wraith, rather than adding a fake character,
+        // changing its evasion/HP, or respawning it with new RNG.
+        // Only heal this mismatch while actually playing the current floor.
+        return repairMissingWraithAt(pos,
+                Game.scene() instanceof com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene);
 	}
+
+    /** Idempotent repair of one orphaned *live* Wraith's actor registration.
+     * This never creates a mob, touches its HP/loot, or changes its position.
+     * The explicit scene flag lets headless regressions exercise the repair
+     * without constructing a graphical Android GameScene.
+     */
+    public static synchronized Char repairMissingWraithAt(int pos, boolean activeGame) {
+        if (!activeGame || Dungeon.level == null || Dungeon.level.mobs == null
+                || pos < 0 || pos >= Dungeon.level.length()) return null;
+        // Do not displace another live actor or hide an overlapping placement.
+        for (Char ch : chars) if (ch.pos == pos) return ch;
+        for (Mob mob : Dungeon.level.mobs) {
+            if (mob instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith
+                    && mob.pos == pos && mob.isAlive() && !chars.contains(mob)) {
+                addDelayed(mob, 0f);
+                mob.spendToWhole();
+                return mob;
+            }
+        }
+        return null;
+    }
 
 	public static synchronized Actor findById( int id ) {
 		return ids.get( id );
