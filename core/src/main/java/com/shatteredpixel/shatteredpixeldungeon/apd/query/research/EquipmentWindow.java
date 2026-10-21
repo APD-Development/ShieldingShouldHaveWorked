@@ -40,18 +40,20 @@ public final class EquipmentWindow {
             d.notes.add("Select a recorded equipment occurrence with an exact start turn in the current filtered Equipment table. Imported or duplicate records cannot establish this sequence.");return d;
         }
         Long start=ResearchData.number(anchors,anchor,"equip.start");
-        if(start==null || start<0 || turns<1 || turns>1000 || start>Long.MAX_VALUE-turns){
+        RunTurnWindow window;
+        try{
+            if(start==null || turns>1000)throw new IllegalArgumentException();
+            window=RunTurnWindow.strictlyFollowing(anchor.runId,start,turns);
+        }catch(IllegalArgumentException bad){
             d.notes.add("The turn window is invalid or exceeds the recorded clock range.");return d;
         }
-        long end=start+turns;
-        d.notes.add("Interpreted question: total observed hero-target damage in run "+anchor.runId+", strictly after equipment turn "+start+" through turn "+end+" inclusive ("+turns+" turns). Equipment: "+ResearchData.label(anchors,anchor,"equip.item")+". The equip turn is excluded because within-turn ordering is not established by these table rows. Later equipment changes do not end this time window.");
+        d.notes.add("Interpreted question: total observed hero-target damage in "+window.describeStrictlyFollowing("equipment")+". Equipment: "+ResearchData.label(anchors,anchor,"equip.item")+". The equip turn is excluded because within-turn ordering is not established by these table rows. Later equipment changes do not end this time window.");
         d.notes.add("Damage is the recorded displayed amount, including shield absorption, not just HP lost. This is an observed lower bound, not a claim of complete recording, armor effectiveness or causation. Missing historical events, gaps and unsupported recording versions are never reconstructed. Scope and disclosure are retained; the anchor already satisfied the Equipment filters. Equipment-only filters are not reinterpreted as damage filters.");
         Dataset data=catalog==null ? null:catalog.dataset(EventDatasets.DAMAGE);boolean covered=false;
         if(data!=null)for(Dataset.RunInfo info:data.runs)if(anchor.runId.equals(info.runId) && info.covered && !info.duplicate)covered=true;
         if(!covered){d.notes.add("Damage recording coverage for this run is unavailable. Older logs may record equipment without recording damage. The total is unknown, not zero.");return d;}
-        Query q=Query.of(EventDatasets.DAMAGE).withScope(anchors.query.scope).withShowInternal(anchors.query.showInternal)
-                .addFilter(Filter.text("damage.run",Op.GROUP_TEXT,anchor.runId))
-                .addFilter(Filter.num("damage.turn",Op.BETWEEN,start+1,end))
+        Query q=window.apply(Query.of(EventDatasets.DAMAGE).withScope(anchors.query.scope).withShowInternal(anchors.query.showInternal),
+                        "damage.run","damage.turn")
                 .addFilter(Filter.num("damage.targetKind",Op.EQ,CombatEvents.KIND_HERO));
         QueryResult damage=ResearchData.select(catalog,q,rules);
         if(damage==null){d.notes.add("Damage observations are unavailable, or the schema cannot apply this question. No numeric answer can be established.");return d;}
