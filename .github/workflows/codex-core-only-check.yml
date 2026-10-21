@@ -32,6 +32,29 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
       - name: Run complete core unit test suite
         run: ./gradlew :core:test
+      - name: Summarize retained JUnit XML
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import glob
+          import xml.etree.ElementTree as ET
+
+          files = sorted(glob.glob("core/build/test-results/test/TEST-*.xml"))
+          totals = {"tests": 0, "failures": 0, "errors": 0, "skipped": 0}
+          cases = []
+          for path in files:
+              root = ET.parse(path).getroot()
+              for key in totals:
+                  totals[key] += int(root.attrib.get(key, "0"))
+              if root.attrib.get("name", "").endswith("RunTurnWindowTest"):
+                  cases = [case.attrib.get("name", "") for case in root.findall("testcase")]
+          print("JUNIT_TOTALS suites={0} tests={tests} failures={failures} errors={errors} skipped={skipped}".format(len(files), **totals))
+          print("RUN_TURN_WINDOW_CASES count={0} names={1}".format(len(cases), ",".join(sorted(cases))))
+          if not files or totals["failures"] or totals["errors"] or totals["skipped"]:
+              raise SystemExit("JUnit evidence is absent or non-green")
+          if len(cases) != 6:
+              raise SystemExit("Expected all six RunTurnWindowTest methods")
+          PY
       - name: Keep the unit-test report
         if: always()
         uses: actions/upload-artifact@v4
