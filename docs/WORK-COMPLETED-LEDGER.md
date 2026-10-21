@@ -1,3 +1,11 @@
+## 2026-10-21T14:12:12Z — TEST304 paired private candidate fully emulator-verified; Quickstep-blocked square harness corrected
+
+- Source `b5faf8f951001489f7004a507efbf37df6e9e070`; developer run `39541268516`, player run `39541268552`. Both core executions passed **2,025/2,025** methods in 394 suites. API34 passed **53/53**.
+- Developer APK: 38,731,548 bytes, SHA-256 `284739d810a341c6fe920c3acb191d9e8bb018b9353e415c5f38923ff0f76de6`, artifact `12319648800`. Player APK: 38,731,375 bytes, SHA-256 `85613951baed76829f36009020d388efafd6996d012c69f7eae71f5a58830f8e`, artifact `12319383278`. Same source/application identity/signer; developer features absent from player.
+- Direct TEST303→TEST304 APK audit: all 330 prior indexed build TSVs byte-identical; TEST304 adds one record. Both TEST304 variants contain 331 indexed records / 332 TSV assets including the index.
+- Display run `39541268481`: four profiles passed; square failed twice under a captured Android Quickstep ANR overlay, not an APD layout assertion. Harness source `dd8f55b355e036facc9d532173395cfa9585cf9d` hides emulator error dialogs and reuses a verified ancestral APK without rebuilding. Run `39614034598` passed all five profiles on the unchanged developer APK; square produced five valid 720×720 PNGs and one clean native pass.
+- Staging `39541268428` failed closed on mismatched preparation/application inputs. No staging, publication or distribution. TEST304 newest produced private pair; TEST303 fallback; TEST262 remains newest actually published. Physical phone/install-over/reporter retest remain unmeasured.
+
 ## 2026-10-20 — Blacksmith and special-branch return navigation (core verified)
 
 Committed application source `f6c0552e31fc23853521d36b90723eeac8e3cef4` from expected parent `4a61260c156a0a7ad19e9d3db4f7542732824204`. Added explicit branch-return routing and a one-button **Return to Main Dungeon** quest-exit prompt while preserving ordinary main-floor Up/Down behavior. Shared transition audit covers Mining, DeadEnd/Imp and Vault branches. Six regressions cover menu route selection, safe path target, exactly-once auto-entry, restored main-floor directions, discovery privacy and changed-transition rejection.
