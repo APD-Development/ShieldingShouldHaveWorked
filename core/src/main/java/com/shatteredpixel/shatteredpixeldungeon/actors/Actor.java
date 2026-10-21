@@ -403,7 +403,8 @@ public abstract class Actor implements Bundlable {
         // changing its evasion/HP, or respawning it with new RNG.
         // Only heal this mismatch while actually playing the current floor.
         return repairMissingWraithAt(pos,
-                Game.scene() instanceof com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene);
+                Game.instance != null
+                && Game.scene() instanceof com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene);
 	}
 
     /** Idempotent repair of one orphaned *live* Wraith's actor registration.
