@@ -28,8 +28,9 @@ import java.util.List;
 
 //The interactive tour of UIMSD: a list of steps shown over the real screen, each of which either just explains something (the player
 //presses Next) or asks the player to do something and notices when they have, by looking at the model (the same one the screen draws).
-//It never changes the model itself and never touches the player's history: it runs on a model of its own, loaded from the player's
-//data or from a small sample history. Pure logic, so the whole tour can be tested without a screen.
+//It uses a separate tour-owned model, loaded from the player's data or from small sample history.
+//The Columns lesson may ungroup that tour view; neither real history nor the player's own model changes.
+//Pure logic, so the whole tour can be tested without a screen.
 public final class UimsdTutorial {
 
 	//what the player has to do for a step to finish by itself
@@ -101,6 +102,9 @@ public final class UimsdTutorial {
 			QueryResult r = m.result();
 			if (r != null && r.isGrouped() && !r.groups.isEmpty()) m.openGroupRows(r.groups.get(0));
 		}
+		//The Weapons card opens a grouped summary. Grouped tables intentionally refuse
+		//column editing, so a Guide jump to Columns must start from editable rows.
+		if (stepIndex >= indexOf("columns") && m.query().group != null) m.setGroup(null);
 	}
 
 	//---- one run of the tour ----
@@ -152,6 +156,11 @@ public final class UimsdTutorial {
 		return STEPS.get(index);
 	}
 
+	//Only the tour-owned model is adjusted; all real history stays intact.
+	private void prepareColumnsStep(){
+		if (step().expect == Expect.COLUMNS && model.query().group != null) model.setGroup(null);
+	}
+
 	//moves on (the Next and Skip buttons)
 	public void next(){
 		if (finished) return;
@@ -160,12 +169,14 @@ public final class UimsdTutorial {
 			return;
 		}
 		index++;
+		prepareColumnsStep();
 		base = new Snapshot(model);
 	}
 
 	public void previous(){
 		if (finished || index == 0) return;
 		index--;
+		prepareColumnsStep();
 		base = new Snapshot(model);
 	}
 

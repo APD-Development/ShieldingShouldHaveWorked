@@ -259,6 +259,44 @@ public class UimsdHomeTourTest {
 	}
 
 	@Test
+	public void columnsLessonUngroupsTheTourInsteadOfOpeningTheGroupedTableTooltip() {
+		UimsdModel player = model();
+		player.showRoot("weapons");
+		Query playerQuery = player.query();
+		assertTrue("Weapons starts as a grouped summary", player.result().isGrouped());
+
+		UimsdModel tourModel = model();
+		tourModel.showRoot("weapons");
+		UimsdTutorial tour = new UimsdTutorial(tourModel, UimsdTutorial.indexOf("sort"));
+		assertTrue(tourModel.result().isGrouped());
+		tour.next(); // The sort lesson advances into Columns, as in the player report.
+		assertEquals("columns", tour.step().id);
+		assertEquals("weapons", tourModel.viewId());
+		assertFalse("Columns must be an editable ungrouped table", tourModel.result().isGrouped());
+		assertFalse("Ungrouping must not accidentally finish the lesson", tour.check());
+
+		String extra = null;
+		for (ColumnDef c : tourModel.offeredColumns()) {
+			if (!tourModel.query().columns.contains(c.id)) { extra = c.id; break; }
+		}
+		assertNotNull("A column can be enabled from this lesson", extra);
+		tourModel.toggleColumn(extra);
+		assertTrue("A real column selection completes step 10", tour.check());
+		assertEquals("marks", tour.step().id);
+
+		// The Guide can also jump directly into the Columns lesson.
+		UimsdModel fromGuide = model();
+		UimsdTutorial.prepare(fromGuide, UimsdTutorial.indexOf("columns"));
+		assertEquals("weapons", fromGuide.viewId());
+		assertFalse("Guide jumps must not hit the grouped-only explanation", fromGuide.result().isGrouped());
+
+		// Neither tour route changes the separate player's view or underlying history.
+		assertEquals(playerQuery, player.query());
+		assertTrue(player.result().isGrouped());
+		assertFalse(new File(realRoot, "x").exists());
+	}
+
+	@Test
 	public void tourNeverChangesTheRealHistory() throws Exception {
 		File before = new File(realRoot, "x");
 		assertFalse(before.exists());
