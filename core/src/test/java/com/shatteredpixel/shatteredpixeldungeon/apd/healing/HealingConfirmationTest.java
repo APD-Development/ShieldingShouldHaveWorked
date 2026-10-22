@@ -70,9 +70,18 @@ public class HealingConfirmationTest {
                 CapturedPotion potion=new CapturedPotion() {
                     @Override protected void drink(Hero h) { confirmedDrinkCount++; }
                 };
-                potion.execute(hero,PotionOfHealing.AC_DRINK);
-                assertNull(potion.confirmed);
-                assertEquals(1,confirmedDrinkCount);
+                java.lang.reflect.Field selector=com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.class.getDeclaredField("cellSelector");
+                selector.setAccessible(true);
+                Object previousSelector=selector.get(null);
+                java.lang.reflect.Field field=sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
+                field.setAccessible(true);
+                sun.misc.Unsafe unsafe=(sun.misc.Unsafe)field.get(null);
+                selector.set(null,unsafe.allocateInstance(com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector.class));
+                try {
+                    potion.execute(hero,PotionOfHealing.AC_DRINK);
+                    assertNull(potion.confirmed);
+                    assertEquals(1,potion.confirmedDrinkCount);
+                } finally { selector.set(null,previousSelector); }
                 assertEquals(-1,SPDSettings.healingConfirmationThreshold());
             } finally { Dungeon.hero=previous; }
         });

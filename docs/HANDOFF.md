@@ -1,3 +1,7 @@
+## 2026-10-22T00:31:51.687Z — core compile fixture correction after actual failure; application source unchanged
+- Run [39700019601](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/39700019601) failed at :core:compileTestJava due to new HealingConfirmationTest using an unqualified instance test counter; the application classes compiled successfully; no JUnit results and no APK. Kept the failure visible. The correction asserts the actual potion instance counter and supplies the established headless cell-selector fixture. Shop ring test now supplies a live hero for genuine item identify progress. No changes to production, save, behavior, scoring, or build-request CI input.
+- Re-run full core on the same production app source; if fails, inspect actual test XML/logs and preserve verified TEST304.
+
 ## 2026-10-22T00:29:36.795Z — APD owner-reported movement, healing and Purity navigation fixes; ring disclosure audit candidate, verification pending
 
 - Read actual approved branch head `0d784cbf8e26ad8655c60dad7ad650987b42f252`, source guide, completed ledger, TEST262 publication receipt and current build request before source changes. Latest publication remains TEST262; TEST304 stays last emulator-verified private pair.

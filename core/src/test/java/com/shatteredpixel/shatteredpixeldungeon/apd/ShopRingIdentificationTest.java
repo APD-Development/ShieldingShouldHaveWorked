@@ -16,16 +16,20 @@ import static org.junit.Assert.*;
 public class ShopRingIdentificationTest {
     private Object previousHandler;
     private int previousDepth;
+    private com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero previousHero;
     @Before public void setup() {
         HeadlessTestSupport.start();
         previousHandler=Ring.apdHandler();
         previousDepth=Dungeon.depth;
+        previousHero=Dungeon.hero;
+        Dungeon.hero=new com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero();
         Ring.initGems();
         Dungeon.depth=6;
     }
     @After public void cleanup() {
         Ring.apdHandler(previousHandler);
         Dungeon.depth=previousDepth;
+        Dungeon.hero=previousHero;
     }
     private Ring stock(Ring ring) {
         // Mirrors ShopRoom's ring stock generation: known uncursed status, NOT ring type.

@@ -43,3 +43,5 @@ Fixture correction after run39505527082: production compiled and2019 tests execu
 
 
 2026-10-22T00:29:36.795Z — bounded actual owner-reported bug repair candidate. Run full core :core:test on this branch's real new application source, including ShopRingIdentificationTest, StairNavigationTest and HealingConfirmationTest. Preserve existing six RunTurnWindowTest case inventory, all prior methods, and zero failures/errors/skips. No APK/private-test build request edit, release, tester distribution or fake API34 claims. Candidate remains unverified until XML evidence.
+
+2026-10-22T00:31:51.687Z — fixture-only correction after run39700019601 test compilation failure (no JUnit). Run full :core:test; production game unchanged from 99197377, require all prior+new cases and 0 failures/errors/skips, including six RunTurnWindowTest cases. No APK requested.
