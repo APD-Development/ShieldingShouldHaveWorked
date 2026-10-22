@@ -39,8 +39,8 @@ public class AuthoredLanguageTest {
    }
   }
   // Exact review: 4,998 inherited English messages, three Projecting UI keys,
-  // 60 individually source-audited Arcana effect/strength keys. Every value checked above.
-  assertEquals(9,files);assertEquals("Reviewed English message inventory",5061,values);
+  // 60 individually source-audited Arcana effect/strength keys, plus one rounding notice. Every value checked above.
+  assertEquals(9,files);assertEquals("Reviewed English message inventory",5062,values);
  }
  @Test public void localizedAlternativesDoNotDamageInnocentWordsOrOtherLanguages(){
   for(String innocent:new String[]{"Hell","slut","kesialan","Verdammte Charaktere","dictionary","classic","Scunthorpe","Prick","Fan of Blades"})assertEquals(innocent,AuthoredLanguage.select(innocent,false));

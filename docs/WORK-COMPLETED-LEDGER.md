@@ -1,3 +1,8 @@
+## 2026-10-22T02:02:39.605Z — Arcana description cleanup and real ring-level reach regression; verification pending
+- Previous full core run39708731383 passed **2045/2045 methods,397 suites,0 failures/errors/skips**, retaining the six UIMSD shared-window cases. Content inventory now 5061 and every built-in's named effect description verified.
+- Removed duplicated named-effect text from numeric-strength helpers, retained one effect note per item, added text that unchanged rounded reach truly yields no extra tile. Runic Slash preview now combines the actual read-only power of all other active modifiers with its separate +boost, rather than assuming Arcana is the only modifier. Added real Arcana ring buff reach-boundary test for three ring levels, preserving original no-consume and finite reach.
+- No APK yet; full core test must pass before candidate; build request left untouched. No balance, RNG, scoring, save, identity or history changes.
+
 ## 2026-10-22T01:58:03.432Z — additional Arcana source detail and exact content inventory correction; core pending
 - First core run39707812284 executed 2,044/397 suites; all five new reach/preview cases passed, one audited English-properties key-count failure due to three new Arcana keys. No APK produced.
 - Added named, effect-specific explanation for all48 shipped enchantments/curses and glyphs/curses, with source-calculated numerical shield/chill/shock/poison/fear/knockback/vegetation/wand charge/earth armor/charm/bleeding where deterministic. Shared game formula calculations remain read-only; random effects and target-dependent outcomes clearly qualified. Reviewed English count now 5061; this is an exact count correction with all content safety checks retained.

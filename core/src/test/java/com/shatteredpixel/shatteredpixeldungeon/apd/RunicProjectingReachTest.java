@@ -6,6 +6,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfArcana;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Projecting;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RunicBlade;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -64,6 +65,23 @@ public class RunicProjectingReachTest {
         assertEquals(7f,Weapon.Enchantment.genericProcChanceMultiplier(hero),0.0001f);
         assertNull(hero.buff(RunicBlade.RunicSlashTracker.class));
         assertEquals(2,blade.reachFactor(hero));
+    }
+    @Test public void arcanaLevelsAdjustRunicRangeButNeverBypassItsBoundary() {
+        for (int ringLevel:new int[]{0,2,8}) {
+            RingOfArcana ring=new RingOfArcana();
+            ring.level(ringLevel);ring.activate(hero);
+            float power=RingOfArcana.enchantPowerMultiplier(hero);
+            assertEquals(1+Projecting.additionalReach(power,1),blade.reachFactor(hero));
+            RunicBlade.RunicSlashTracker tracker=Buff.affect(hero,RunicBlade.RunicSlashTracker.class);
+            tracker.boost=blade.runicSlashEnchantBoost();
+            int intended=1+Projecting.additionalReach(power+tracker.boost,1);
+            assertEquals(intended,blade.reachFactor(hero));
+            assertTrue(blade.canReach(hero,hero.pos+intended));
+            assertFalse(blade.canReach(hero,hero.pos+intended+1));
+            assertSame(tracker,hero.buff(RunicBlade.RunicSlashTracker.class));
+            tracker.detach();
+            ring.deactivate();
+        }
     }
     @Test public void finiteLevelCapsPowerOnlyBeyondAnyPhysicallyReachableTile() {
         int possible=level.length()-1;

@@ -151,7 +151,8 @@ public class ArcanaInfoDisplayTest {
         String s=ArcanaInfoDisplay.weapon(blade);
         assertTrue(s,s.contains("added melee reach 1 to 1 tiles"));
         assertTrue(s,s.contains("Runic Slash separately adds +600%"));
-        assertTrue(s,s.contains("total melee reach while using it: 8 tiles"));
+        assertTrue(s,s.contains("total melee reach with other active modifiers: 8 tiles"));
+        assertTrue(s,s.contains("rounding grants no additional reach"));
         assertFalse(s,s.contains("\uFFFD"));
         assertFalse(s,s.contains("→"));
     }

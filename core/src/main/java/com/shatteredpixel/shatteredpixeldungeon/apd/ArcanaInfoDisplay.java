@@ -69,13 +69,13 @@ public final class ArcanaInfoDisplay {
         float strength=Math.max(1f,baseChance*multi);
         float level=Math.max(0,weapon.buffedLvl());
         switch(name) {
-            case "Chilling": return " " + text("chill_strength",number(3),number(3*strength),number(6),number(6*strength)) + effect(name);
-            case "Blocking": return " " + text("blocking_strength",number(Math.round(2+weapon.buffedLvl())),number(Math.round((2+weapon.buffedLvl())*strength))) + effect(name);
-            case "Shocking": return " " + text("shock_strength",number(50),number(50*strength)) + effect(name);
-            case "Venomous": return " " + text("venom_strength",number(3+level/2f),number((3+level/2f)*strength)) + effect(name);
-            case "Eldritch": return " " + text("eldritch_strength",number(5),number(5*strength)) + effect(name);
-            case "Elastic": return " " + text("elastic_strength",number(2),number(Math.round(2*strength))) + effect(name);
-            case "Blooming": return " " + text("bloom_strength",number(1+.1f*level),number((1+.1f*level)*strength)) + effect(name);
+            case "Chilling": return " " + text("chill_strength",number(3),number(3*strength),number(6),number(6*strength));
+            case "Blocking": return " " + text("blocking_strength",number(Math.round(2+weapon.buffedLvl())),number(Math.round((2+weapon.buffedLvl())*strength)));
+            case "Shocking": return " " + text("shock_strength",number(50),number(50*strength));
+            case "Venomous": return " " + text("venom_strength",number(3+level/2f),number((3+level/2f)*strength));
+            case "Eldritch": return " " + text("eldritch_strength",number(5),number(5*strength));
+            case "Elastic": return " " + text("elastic_strength",number(2),number(Math.round(2*strength)));
+            case "Blooming": return " " + text("bloom_strength",number(1+.1f*level),number((1+.1f*level)*strength));
             default: return "";
         }
     }
@@ -83,14 +83,14 @@ public final class ArcanaInfoDisplay {
         float strength=Math.max(1f,baseChance*multi);
         float level=Math.max(0,armor.buffedLvl());
         switch(name) {
-            case "Potential": return " " + text("potential_strength",number(1),number(strength)) + effect(name);
-            case "Entanglement": return " " + text("entangle_strength",number(Math.round(5+2*level)),number(Math.round((5+2*level)*strength))) + effect(name);
-            case "Repulsion": return " " + text("repulse_strength",number(2),number(Math.round(2*strength))) + effect(name);
+            case "Potential": return " " + text("potential_strength",number(1),number(strength));
+            case "Entanglement": return " " + text("entangle_strength",number(Math.round(5+2*level)),number(Math.round((5+2*level)*strength)));
+            case "Repulsion": return " " + text("repulse_strength",number(2),number(Math.round(2*strength)));
             case "Affection": {
                 float d=com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm.DURATION;
                 return " " + text("affection_strength",number(Math.round(d)),number(Math.round(d*strength)));
             }
-            case "Thorns": return " " + text("thorns_strength",number(Math.round(4+level)),number(Math.round((4+level)*strength))) + effect(name);
+            case "Thorns": return " " + text("thorns_strength",number(Math.round(4+level)),number(Math.round((4+level)*strength)));
             default: return "";
         }
     }
@@ -122,9 +122,15 @@ public final class ArcanaInfoDisplay {
             int arcana=Projecting.additionalReach(multi,base);
             String details="\n\n" + metric("reach",normal,arcana)
                     + " " + text("total_reach",base+arcana);
+            if (normal == arcana) details += " " + text("reach_rounding");
             if (weapon instanceof RunicBlade && weapon.levelKnown && hero.heroClass == HeroClass.DUELIST) {
                 float slash=((RunicBlade)weapon).runicSlashEnchantBoost();
-                int slashBonus=Projecting.additionalReach(multi+slash,base);
+                // Use the same read-only combat power authority for all other active
+                // modifiers, including Berserk, without consuming any one-use buff.
+                float otherPower=Weapon.Enchantment.genericProcChanceMultiplierReadOnly(hero);
+                RunicBlade.RunicSlashTracker active=hero.buff(RunicBlade.RunicSlashTracker.class);
+                if (active!=null) otherPower-=active.boost;
+                int slashBonus=Projecting.additionalReach(otherPower+slash,base);
                 details += " " + text("runic_reach",number(100f*slash),base+slashBonus);
             }
             return details + effect(name);
