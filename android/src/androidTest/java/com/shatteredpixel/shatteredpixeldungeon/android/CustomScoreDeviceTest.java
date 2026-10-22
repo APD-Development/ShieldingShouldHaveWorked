@@ -69,7 +69,7 @@ public class CustomScoreDeviceTest{
     for(int state=0;state<4;state++){
      final float[] dimensions=new float[2];if(state==3)TopScoresDeviceTest.render(()->{dimensions[0]=PixelScene.uiCamera.width;dimensions[1]=PixelScene.uiCamera.height;PixelScene.uiCamera.width=(int)Math.min(dimensions[0],140);PixelScene.uiCamera.height=(int)Math.min(dimensions[1],120);});
      final Bundle record=new Bundle();if(state<2 || state==3){Bundle settings=new Bundle();(state==0?CustomDungeonRules.defaults():CustomDungeonRules.defaults().with(CustomDungeonRules.Slider.UPGRADE_SCROLLS,60)).store(settings);record.put("apd_custom_rules",settings);com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomScoreSnapshot.forNewRun(CustomDungeonRules.restore(settings)).store(record);}
-     final String expected=state==0?"1.0000×":state==1 || state==3?"0.5609×":"?";final WndScoreBreakdown[] window=new WndScoreBreakdown[1];
+     final String expected=state==0?"1.0000×":state==1 || state==3?"0.2000×":"?";final WndScoreBreakdown[] window=new WndScoreBreakdown[1];
      TopScoresDeviceTest.render(()->{window[0]=new WndScoreBreakdown(record);Game.scene().add(window[0]);});Thread.sleep(700);
      TopScoresDeviceTest.render(()->{try{
       List<RenderedTextBlock> blocks=TopScoresDeviceTest.find(window[0],RenderedTextBlock.class);RenderedTextBlock custom=null,challenge=null;boolean value=false,original=false;

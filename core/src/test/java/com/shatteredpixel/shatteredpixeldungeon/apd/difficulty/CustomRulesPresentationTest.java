@@ -20,9 +20,14 @@ public class CustomRulesPresentationTest {
     @Test public void lockedHistoricalRunShowsItsOwnScoringVersionInsteadOfTodaysScrollPreview() {
         CustomDungeonRules.Slider scrolls=CustomDungeonRules.Slider.UPGRADE_SCROLLS;
         assertEquals("0.5609×",CustomRulesPresentation.multiplierTextForVersion(scrolls,60,CustomRuleMultipliers.PREVIOUS_VERSION));
+        assertEquals("0.5703×",CustomRulesPresentation.multiplierTextForVersion(scrolls,59,CustomRuleMultipliers.INTERIM_VERSION));
+        assertEquals("0.2000×",CustomRulesPresentation.multiplierTextForVersion(scrolls,60,CustomRuleMultipliers.INTERIM_VERSION));
+        assertEquals("0.2172×",CustomRulesPresentation.multiplierTextForVersion(scrolls,59,CustomRuleMultipliers.VERSION));
         assertEquals("0.2000×",CustomRulesPresentation.multiplierTextForVersion(scrolls,60,CustomRuleMultipliers.VERSION));
         assertEquals("1.0000×",CustomRulesPresentation.multiplierTextForVersion(scrolls,15,CustomRuleMultipliers.PREVIOUS_VERSION));
+        assertEquals("1.0000×",CustomRulesPresentation.multiplierTextForVersion(scrolls,15,CustomRuleMultipliers.INTERIM_VERSION));
         assertEquals("1.0000×",CustomRulesPresentation.multiplierTextForVersion(scrolls,15,CustomRuleMultipliers.VERSION));
+        assertEquals("0.2172×",CustomRulesPresentation.multiplierText(scrolls,59));
         assertEquals("0.2000×",CustomRulesPresentation.multiplierText(scrolls,60));
     }
     @Test public void allEighteenGameplayControlsAreAvailableForNewRuns() {

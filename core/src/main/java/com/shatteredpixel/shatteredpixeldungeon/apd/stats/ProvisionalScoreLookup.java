@@ -4,11 +4,13 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 /** Frozen supplied lookup shared by offline history and gameplay; contains no engine dependencies. */
 public final class ProvisionalScoreLookup {
-    /** Previous authority is frozen for existing runs and stored score snapshots. */
+    /** Original v2.6R authority is frozen for existing runs and stored score snapshots. */
     public static final String PREVIOUS_VERSION="apd-experimental-v2.6R-isolated-product-v1";
-    /** Active owner-approved change: 60 upgrade scrolls now contribute 20% to new scores. */
-    public static final String VERSION="apd-experimental-v2.6R-scroll60-20pct-v2";
-    private static final BigDecimal PREVIOUS_60_SCROLL_FACTOR=new BigDecimal("0.5608735153608649");
+    /** Short-lived endpoint-only authority remains frozen for any run created before the curve correction. */
+    public static final String INTERIM_VERSION="apd-experimental-v2.6R-scroll60-20pct-v2";
+    /** Active authority rescales the complete above-default scroll curve to the owner-approved 0.20 endpoint. */
+    public static final String VERSION="apd-experimental-v2.6R-scroll16-60-20pct-v3";
+    private static final BigDecimal INTERIM_60_SCROLL_FACTOR=new BigDecimal("0.20");
     public static final String MODEL="phase6-experimental-resource-v2.6R";
     private static final int[] MIN={25,25,0,25,0,25,25,25,25,25,25,0,0,25,25,0,25,1};
     private static final int[] STEP={25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,1};
@@ -30,14 +32,29 @@ public final class ProvisionalScoreLookup {
         { "0.7578582832551991", "0.8705505632961241", "0.944087511294902", "1.0", "1.0456240757764514", "1.0843756728001164", "1.1181670610241505", "1.148192767734492", "1.1752528291082978", "1.199911257427337", "1.2225816469516781", "1.2435769192819923", "1.2631399266268786", "1.2814631631517945", "1.298701949898375", "1.3149835381286255" }, // HUNGER
         { "2.352502932787169", "1.4119404837894332", "1.1532406230257493", "1.0499810688244078", "1.0", "0.972469039771522", "0.955829152186526", "0.9450545209513466", "0.9376990237508958" }, // HEALING
         { "1.2293357398258242", "1.1093626443826707", "1.044082938800207", "1.0", "0.9670824410682997", "0.9409928231902495", "0.9194842461092364", "0.9012504626108302" }, // EQUIPMENT
-        { "6.806909547284773", "4.34039383914458", "3.165869035855368", "2.5961811362595286", "1.825727011574271", "1.7733371364864838", "1.6108068829327054", "1.4696977323440616", "1.3800902788547058", "1.2025365764934863", "1.1896946642790294", "1.1455111756240994", "1.1013873453675156", "1.070843379286759", "1.0", "0.9945586421475376", "0.9744830956405368", "0.9522369857393829", "0.9350107729426926", "0.8914269414719004", "0.8877025160543204", "0.87377425170773", "0.8580335381099782", "0.8456820427715573", "0.8135660785543036", "0.8108073837809969", "0.8004022517408378", "0.7884937773627139", "0.7790683264117771", "0.7541039581897323", "0.7519522700361482", "0.7437888131753527", "0.7343634191825597", "0.7268578628462553", "0.7067120959321055", "0.7049715560366872", "0.6983395986289014", "0.6906327253693819", "0.6844679491102297", "0.667753682485528", "0.6663070411831445", "0.6607768653070614", "0.6543183582047136", "0.6491341862381381", "0.6349675277656976", "0.6337396996391191", "0.629033889665276", "0.6235164872106723", "0.6190754910699569", "0.6068626781931671", "0.6058030343513674", "0.6017333502369981", "0.5969465445289948", "0.5930849484909788", "0.5824101758879979", "0.5814831571937297", "0.5779167171752965", "0.5737107489329726", "0.5703113964318902", "0.20" }, // UPGRADE_SCROLLS
+        { "6.806909547284773", "4.34039383914458", "3.165869035855368", "2.5961811362595286", "1.825727011574271", "1.7733371364864838", "1.6108068829327054", "1.4696977323440616", "1.3800902788547058", "1.2025365764934863", "1.1896946642790294", "1.1455111756240994", "1.1013873453675156", "1.070843379286759", "1.0", "0.9945586421475376", "0.9744830956405368", "0.9522369857393829", "0.9350107729426926", "0.8914269414719004", "0.8877025160543204", "0.87377425170773", "0.8580335381099782", "0.8456820427715573", "0.8135660785543036", "0.8108073837809969", "0.8004022517408378", "0.7884937773627139", "0.7790683264117771", "0.7541039581897323", "0.7519522700361482", "0.7437888131753527", "0.7343634191825597", "0.7268578628462553", "0.7067120959321055", "0.7049715560366872", "0.6983395986289014", "0.6906327253693819", "0.6844679491102297", "0.667753682485528", "0.6663070411831445", "0.6607768653070614", "0.6543183582047136", "0.6491341862381381", "0.6349675277656976", "0.6337396996391191", "0.629033889665276", "0.6235164872106723", "0.6190754910699569", "0.6068626781931671", "0.6058030343513674", "0.6017333502369981", "0.5969465445289948", "0.5930849484909788", "0.5824101758879979", "0.5814831571937297", "0.5779167171752965", "0.5737107489329726", "0.5703113964318902", "0.5608735153608649" }, // UPGRADE_SCROLLS
+    };
+    private static final String[] ACTIVE_UPGRADE_SCROLLS_15_TO_60={
+        "1.0", "0.9900869420673927", "0.9535133402296471", "0.9129854091130618", "0.8816027193427622", "0.8022017576693009", "0.7954166047844492", "0.7700421127712219", "0.7413657033113148", "0.7188637668160545", "0.6603549492599539", "0.6553291630779635", "0.6363731084483553", "0.6146782669032637", "0.5975069938771197", "0.5520269436495685", "0.5481070012569300", "0.5332348272544823", "0.5160636579946029", "0.5023900462242314", "0.4656885169494392", "0.4625176038639328", "0.4504355133687794", "0.4363951427163869", "0.4251641621678676", "0.3947141351995564", "0.3920786461493848", "0.3820037796687120", "0.3702376806912746", "0.3607931636367667", "0.3349843655469273", "0.3327475100266550", "0.3241744721645270", "0.3141228762847881", "0.3060322758841042", "0.2837829908985701", "0.2818525332671285", "0.2744383885835735", "0.2657177928091018", "0.2586827426846451", "0.2392354572643577", "0.2375466159365020", "0.2310492806252619", "0.2233868537128332", "0.2171939182010963", "0.20"
     };
     private ProvisionalScoreLookup() { }
     public static BigDecimal individual(int slider,int value) {
+        return individualForVersion(slider,value,VERSION);
+    }
+    private static BigDecimal tableIndividual(int slider,int value) {
         if(slider<0||slider>=VALUES.length)throw new IllegalArgumentException("Unknown scoring slider");
         int offset=value-MIN[slider];
         if(offset<0||offset%STEP[slider]!=0||offset/STEP[slider]>=VALUES[slider].length)throw new IllegalArgumentException("Invalid scoring position");
         return new BigDecimal(VALUES[slider][offset/STEP[slider]]);
+    }
+    public static BigDecimal individualForVersion(int slider,int value,String calculationVersion) {
+        if(!VERSION.equals(calculationVersion)&&!INTERIM_VERSION.equals(calculationVersion)&&!PREVIOUS_VERSION.equals(calculationVersion))
+            throw new IllegalArgumentException("Unknown scoring calculation; preserve the run");
+        BigDecimal base=tableIndividual(slider,value);
+        if(slider!=17||value<15)return base;
+        if(VERSION.equals(calculationVersion))return new BigDecimal(ACTIVE_UPGRADE_SCROLLS_15_TO_60[value-15]);
+        if(INTERIM_VERSION.equals(calculationVersion)&&value==60)return INTERIM_60_SCROLL_FACTOR;
+        return base;
     }
     public static BigDecimal combined(int[] values) {
         return combinedForVersion(values, VERSION);
@@ -45,14 +62,8 @@ public final class ProvisionalScoreLookup {
     /** Exact historical calculation, selected by the run's frozen calculation version. */
     public static BigDecimal combinedForVersion(int[] values, String calculationVersion) {
         if(values==null||values.length!=VALUES.length)throw new IllegalArgumentException("Incomplete scoring configuration");
-        if(!VERSION.equals(calculationVersion)&&!PREVIOUS_VERSION.equals(calculationVersion))
-            throw new IllegalArgumentException("Unknown scoring calculation; preserve the run");
         BigDecimal result=BigDecimal.ONE;
-        for(int i=0;i<values.length;i++){
-            BigDecimal factor=individual(i,values[i]);
-            if(PREVIOUS_VERSION.equals(calculationVersion)&&i==17&&values[i]==60)factor=PREVIOUS_60_SCROLL_FACTOR;
-            result=result.multiply(factor);
-        }
+        for(int i=0;i<values.length;i++)result=result.multiply(individualForVersion(i,values[i],calculationVersion));
         return result.stripTrailingZeros();
     }
     /** Round the final earned score once; preserve SPD's already-computed original score. */
