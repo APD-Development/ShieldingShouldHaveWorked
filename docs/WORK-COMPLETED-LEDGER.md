@@ -1,3 +1,7 @@
+## 2026-10-22T02:04:55.636Z — exact Arcana ring-level fixture compile correction
+- Run [39709184603](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/39709184603) failed at test Java compilation before JUnit because the new test called nonexistent Ring.deactivate(). Corrected fixture to detach the actual Arcana buff via Buff.detach and enlarged its playable map so long-range targets remain inside the border. No production changes or weakened assertions.
+- Last verified core success remains run39708731383: 2045 tests,397 suites,0 failures. Re-run current exact-source full core expecting 2046 tests, zero failures/errors/skips. No APK build yet.
+
 ## 2026-10-22T02:02:39.605Z — Arcana description cleanup and real ring-level reach regression; verification pending
 - Previous full core run39708731383 passed **2045/2045 methods,397 suites,0 failures/errors/skips**, retaining the six UIMSD shared-window cases. Content inventory now 5061 and every built-in's named effect description verified.
 - Removed duplicated named-effect text from numeric-strength helpers, retained one effect note per item, added text that unchanged rounded reach truly yields no extra tile. Runic Slash preview now combines the actual read-only power of all other active modifiers with its separate +boost, rather than assuming Arcana is the only modifier. Added real Arcana ring buff reach-boundary test for three ring levels, preserving original no-consume and finite reach.

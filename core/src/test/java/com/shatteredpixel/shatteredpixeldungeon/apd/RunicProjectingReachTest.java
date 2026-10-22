@@ -30,13 +30,13 @@ public class RunicProjectingReachTest {
     @Before public void setup(){
         HeadlessTestSupport.start();
         priorLevel=Dungeon.level;priorHero=Dungeon.hero;
-        level=new Flat(); level.setSize(25,25);
+        level=new Flat(); level.setSize(35,35);
         Arrays.fill(level.map,Terrain.EMPTY);
         Arrays.fill(level.passable,true);Arrays.fill(level.visited,true);
-        for(int i=0;i<625;i++) if(i/25==0||i/25==24||i%25==0||i%25==24)level.passable[i]=false;
-        PathFinder.setMapSize(25,25);
+        for(int i=0;i<1225;i++) if(i/35==0||i/35==34||i%35==0||i%35==34)level.passable[i]=false;
+        PathFinder.setMapSize(35,35);
         Dungeon.level=level;
-        hero=new Hero();hero.heroClass=HeroClass.DUELIST;Talent.initClassTalents(hero);hero.pos=13*25+13;hero.HT=hero.HP=30;
+        hero=new Hero();hero.heroClass=HeroClass.DUELIST;Talent.initClassTalents(hero);hero.pos=15*35+8;hero.HT=hero.HP=30;
         Dungeon.hero=hero;
         blade=new RunicBlade();blade.level(6);blade.enchant(new Projecting());
         hero.belongings.abilityWeapon=blade;
@@ -80,7 +80,7 @@ public class RunicProjectingReachTest {
             assertFalse(blade.canReach(hero,hero.pos+intended+1));
             assertSame(tracker,hero.buff(RunicBlade.RunicSlashTracker.class));
             tracker.detach();
-            ring.deactivate();
+            Buff.detach(hero,RingOfArcana.Arcana.class);
         }
     }
     @Test public void finiteLevelCapsPowerOnlyBeyondAnyPhysicallyReachableTile() {

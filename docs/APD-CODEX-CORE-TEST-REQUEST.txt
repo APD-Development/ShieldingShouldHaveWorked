@@ -55,3 +55,5 @@ Fixture correction after run39505527082: production compiled and2019 tests execu
 2026-10-22T01:58:03.432Z — Re-run exact current core after source-specific Arcana enhancements: expected 2045 methods/397 suites, 0 failures/errors/skips and exact 5061 reviewed English keys. Preserve 48 built-in name coverage and 6 RunTurnWindow cases. No APK requested by this record.
 
 2026-10-22T02:02:39.605Z — Require full 2046 methods/397 suites after actual Arcana 0/2/8 ring-buff range, cleaned effect descriptions and exact 5062 English message count. Preserve original 2045 methods + six RunTurnWindow. No build request edit or publication.
+
+2026-10-22T02:04:55.636Z — Test-only correction after run39709184603 compile failure (no JUnit). Full core suite mandatory; expected2046 methods/397 suites, exact5062 English keys, full all48 built-in Arcana cases plus actual Arcana rings 0/2/8 on in-bounds map. No APK build-request edit.
