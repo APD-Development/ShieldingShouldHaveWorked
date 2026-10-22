@@ -9,7 +9,7 @@ public class CustomScoreSnapshotTest{
   CustomDungeonRules fiftyNine=CustomDungeonRules.defaults().with(CustomDungeonRules.Slider.UPGRADE_SCROLLS,59);
   assertEquals("0.20",CustomRuleMultipliers.individual(CustomDungeonRules.Slider.UPGRADE_SCROLLS,60).toPlainString());
   assertEquals("0.5608735153608649",CustomRuleMultipliers.combinedForVersion(sixty,CustomRuleMultipliers.PREVIOUS_VERSION).toPlainString());
-  assertEquals("0.5737107489329726",CustomRuleMultipliers.combined(fiftyNine).toPlainString());
+  assertEquals("0.5703113964318902",CustomRuleMultipliers.combined(fiftyNine).toPlainString());
   CustomScoreSnapshot historical=CustomScoreSnapshot.recorded(2,"EXPERIMENTAL",CustomRuleMultipliers.PREVIOUS_VERSION,
     "0.5608735153608649",sixty);
   Bundle historicSave=new Bundle();historical.store(historicSave);

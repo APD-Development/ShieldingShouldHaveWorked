@@ -17,6 +17,14 @@ public class CustomRulesPresentationTest {
         assertEquals("15 (100.00%)",CustomRulesPresentation.valueText(CustomDungeonRules.Slider.UPGRADE_SCROLLS,15));
         assertEquals("60 (400.00%)",CustomRulesPresentation.valueText(CustomDungeonRules.Slider.UPGRADE_SCROLLS,60));
     }
+    @Test public void lockedHistoricalRunShowsItsOwnScoringVersionInsteadOfTodaysScrollPreview() {
+        CustomDungeonRules.Slider scrolls=CustomDungeonRules.Slider.UPGRADE_SCROLLS;
+        assertEquals("0.5609×",CustomRulesPresentation.multiplierTextForVersion(scrolls,60,CustomRuleMultipliers.PREVIOUS_VERSION));
+        assertEquals("0.2000×",CustomRulesPresentation.multiplierTextForVersion(scrolls,60,CustomRuleMultipliers.VERSION));
+        assertEquals("1.0000×",CustomRulesPresentation.multiplierTextForVersion(scrolls,15,CustomRuleMultipliers.PREVIOUS_VERSION));
+        assertEquals("1.0000×",CustomRulesPresentation.multiplierTextForVersion(scrolls,15,CustomRuleMultipliers.VERSION));
+        assertEquals("0.2000×",CustomRulesPresentation.multiplierText(scrolls,60));
+    }
     @Test public void allEighteenGameplayControlsAreAvailableForNewRuns() {
         assertEquals(18,CustomDungeonRules.Slider.values().length);
         for(CustomDungeonRules.Slider slider:CustomDungeonRules.Slider.values())

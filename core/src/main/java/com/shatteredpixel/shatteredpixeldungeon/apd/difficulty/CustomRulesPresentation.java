@@ -46,6 +46,11 @@ public final class CustomRulesPresentation {
         return (value-slider.min)/slider.step();
     }
     public static String multiplierText(CustomDungeonRules.Slider slider,int value){return CustomRuleMultipliers.format(CustomRuleMultipliers.individual(slider,value));}
+    /** The locked run's factor must use its recorded calculation authority, not next-run preferences. */
+    public static String multiplierTextForVersion(CustomDungeonRules.Slider slider,int value,String calculationVersion){
+        return CustomRuleMultipliers.format(CustomRuleMultipliers.combinedForVersion(
+                CustomDungeonRules.defaults().with(slider,value),calculationVersion));
+    }
     public static String valueText(CustomDungeonRules.Slider slider,int value) {
         if(!slider.valid(value))throw new IllegalArgumentException("Invalid slider value");
         return slider==CustomDungeonRules.Slider.UPGRADE_SCROLLS

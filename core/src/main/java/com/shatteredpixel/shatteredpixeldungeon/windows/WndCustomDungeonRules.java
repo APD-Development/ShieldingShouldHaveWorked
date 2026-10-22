@@ -3,6 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules;
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomScoreSnapshot;
 import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomRulesPresentation;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.WindowGeometry;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -16,12 +17,16 @@ import com.watabou.noosa.ui.Component;
 /** Native controls edit next-run preferences, never the locked active-run configuration. */
 public class WndCustomDungeonRules extends Window {
     private CustomDungeonRules draft;
+    private final boolean currentRun;
+    private final CustomScoreSnapshot frozenScoring;
     private final RenderedTextBlock scoringNotice;
     private final ScrollPane scroll;
     private final RenderedTextBlock combined;
     public WndCustomDungeonRules() {this(false);}
     public WndCustomDungeonRules(final boolean currentRun) {
         super();
+        this.currentRun=currentRun;
+        frozenScoring=currentRun ? Dungeon.customScoring() : null;
         draft=currentRun ? Dungeon.customRules() : SPDSettings.apdCustomRules();
         int width=WindowGeometry.width(PixelScene.landscape(),PixelScene.uiCamera.width);
         RenderedTextBlock title=PixelScene.renderTextBlock("Custom Dungeon Rules",9);
@@ -83,10 +88,17 @@ public class WndCustomDungeonRules extends Window {
         finish.setRect(0,above+paneHeight+4,width,22);add(finish);
     }
     private void updateCombined(){
-        combined.text("Combined Custom Rules Multiplier\n"+(draft==null?"Not recorded":com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomRuleMultipliers.format(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomRuleMultipliers.combined(draft))));
+        String factor=draft==null?"Not recorded":
+                currentRun && frozenScoring!=null && frozenScoring.status==CustomScoreSnapshot.Status.EXPERIMENTAL
+                    ? com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomRuleMultipliers.format(new java.math.BigDecimal(frozenScoring.multiplierExact))
+                    : com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomRuleMultipliers.format(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomRuleMultipliers.combined(draft));
+        combined.text("Combined Custom Rules Multiplier\n"+factor);
     }
     private String caption(CustomDungeonRules.Slider rule) {
+        String factor=currentRun && frozenScoring!=null && frozenScoring.status==CustomScoreSnapshot.Status.EXPERIMENTAL
+                ? CustomRulesPresentation.multiplierTextForVersion(rule,draft.get(rule),frozenScoring.calculationVersion)
+                : CustomRulesPresentation.multiplierText(rule,draft.get(rule));
         return CustomRulesPresentation.label(rule)+": "+CustomRulesPresentation.valueText(rule,draft.get(rule))
-            +" · "+CustomRulesPresentation.multiplierText(rule,draft.get(rule));
+            +" · "+factor;
     }
 }
