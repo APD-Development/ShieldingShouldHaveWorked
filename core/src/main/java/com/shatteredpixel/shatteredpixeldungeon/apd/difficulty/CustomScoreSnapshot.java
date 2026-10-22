@@ -25,7 +25,7 @@ public final class CustomScoreSnapshot {
   if(version==0&&status.isEmpty()&&calculation.isEmpty()&&multiplier.isEmpty())return null;
   if((version!=1&&version!=VERSION)||rules==null)throw new IllegalArgumentException("Unsupported scoring snapshot; preserve history");
   Status s=Status.valueOf(status);
-  if(s==Status.EXPERIMENTAL){if(version!=VERSION||!calculation.equals(CustomRuleMultipliers.VERSION)||!multiplier.equals(CustomRuleMultipliers.combined(rules).toPlainString()))throw new IllegalArgumentException("Invalid experimental scoring snapshot");}
+  if(s==Status.EXPERIMENTAL){if(version!=VERSION||!multiplier.equals(CustomRuleMultipliers.combinedForVersion(rules,calculation).toPlainString()))throw new IllegalArgumentException("Invalid experimental scoring snapshot");}
   else if(version!=1)throw new IllegalArgumentException("Legacy status requires legacy version");
   else if(s==Status.NEUTRAL_IDENTITY){if(!rules.isNeutral()||!calculation.equals("neutral-identity-v1")||!multiplier.equals("1.00"))throw new IllegalArgumentException("Invalid neutral scoring snapshot");}
   else if(rules.isNeutral()||!calculation.equals("pending-calibration-v1")||!multiplier.isEmpty())throw new IllegalArgumentException("Invalid pending scoring snapshot");
