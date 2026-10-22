@@ -1,37 +1,49 @@
 {
   "date": "2026-10-22",
-  "previous_source": "26f19563edeca990ea7edd2e4bc6287c8ebb01b1",
-  "previous_application_source": "26f19563edeca990ea7edd2e4bc6287c8ebb01b1",
-  "previous_run": 39709967038,
-  "previous_label": "Codex TEST 306",
+  "previous_source": "1910739929f646ea8f79422843856677601df968",
+  "previous_application_source": "1910739929f646ea8f79422843856677601df968",
+  "previous_run": 39818416634,
+  "previous_label": "Codex TEST 307",
   "changes": [
     {
-      "category": "Bug Fixes",
+      "category": "Nerfs",
       "sprite": "ICON_INFO",
-      "title": "Make UIMSD Columns tour step editable after grouped tables",
-      "text": "The tour's Weapons summary is grouped, where the Columns button only explains that grouping prevents column editing. Moving into the Columns lesson now switches only the separate tour-owned model to an ungrouped editable table. Normal advance, Skip, Previous and direct Guide entry use the same preparation; a real column toggle, not ungrouping alone, completes the lesson. No real-player history, view or saves are mutated.",
+      "title": "60 upgrade scrolls now contribute 20 percent to new-run scores",
+      "text": "Owner-approved provisional score multiplier for 60 upgrade scrolls is now 0.20x rather than 0.5608735153608649x. This changes only one of the 357 lookup values for newly created runs: other settings, the 1 to 60 scroll count and generated scrolls stay unchanged. Original SPD score categories, challenge factors, score calculation once and gameplay RNG are preserved.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdTutorial.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/stats/ProvisionalScoreLookup.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomRuleMultipliers.java"
       ]
     },
     {
-      "category": "Testing",
-      "sprite": "ICON_CHECKED",
-      "title": "Regress UIMSD Tour 10/15 and preserve full core coverage",
-      "text": "Permanent new UimsdHomeTourTest reproduces the grouped-Weapons/Columns mismatch and validates tour advance, editable selection, direct Guide access and distinct player model. Exact-source full core-only GitHub Actions run39817604548 verified 2047 methods,397 suites,zero failures/errors/skips and all six shared per-turn window cases. Android device and physical-phone acceptance are distinct and remain pending.",
+      "category": "Bug Fixes",
+      "sprite": "ICON_INFO",
+      "title": "Old runs keep their frozen scoring authority and accurate current-run display",
+      "text": "New runs freeze a distinct scoring calculation version; previously started runs retain the original 60-scroll factor and earned scores through save, ranking and recorded statistics. Viewing a locked existing run now uses its own saved scoring authority rather than next-run previews, including the exact per-slider description. No historical rerating or save format migration.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdHomeTourTest.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomScoreSnapshot.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomRulesPresentation.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndCustomDungeonRules.java"
+      ]
+    },
+    {
+      "category": "Developer Commentary",
+      "sprite": "ICON_CHECKED",
+      "title": "Regress exact lookup values and historical saved scores",
+      "text": "Retained all 357 original authoritative reference decimals as historical verification and checked every new-position factor, with only 60 scrolls changed. Tests cover correct 59-scroll value, 15-scroll neutral, frozen old versus new run payout, version mismatch protection, current-run descriptions and every original UIMSD window regression. Exact full core-only run39826048570 passed 2049 tests in 397 suites, zero failures/errors/skips; earlier source fixture had one wrong expected 59-scroll value, now corrected.",
+      "paths": [
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomRuleMultipliersTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomScoreSnapshotTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomRulesPresentationTest.java",
         "docs/APD-CODEX-CORE-TEST-REQUEST.txt"
       ]
     },
     {
       "category": "Developer Commentary",
       "sprite": "ICON_INFO",
-      "title": "Retain verified TEST306 receipts and record new beta tester evidence",
-      "text": "This new private APK candidate follows the actually compiled developer TEST306, not TEST305. Retain all predecessor build history and the existing TEST306 verification receipt, keep TEST262 as last actual published owner APK and TEST304 as fallback. Player reports of scoring inflation and suggested presets/counters are recorded separately; scoring's 357 frozen values, 18 slider controls, scroll range and saved records do not change.",
+      "title": "Private source acceptance and build-history continuity",
+      "text": "The immediate previous actually compiled developer artifact is TEST307 from successful producer39818416634 at source1910739929f646ea8f79422843856677601df968. Preserve all previous compiled history byte-for-byte, maintain identical developer/player histories and signing/application identity, and verify full core, Android, visual and regression requirements. Previous TEST307 death-order supplemental failed at SDK image setup, not proven gameplay. No public release, automated tester delivery or physical device evidence is claimed.",
       "paths": [
-        "docs/APD-RUNIC-SLASH-ARCANA-2026-10-21.md",
-        "docs/APD-TEST306-VERIFICATION-2026-10-22.json",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",
         "docs/APD-NEXT-BUILD-HISTORY.json",
@@ -39,5 +51,5 @@
       ]
     }
   ],
-  "commentary": "Intentional one-change native candidate for UIMSD Tour 10/15 Columns grouped-table mismatch. Source-only commit31386eae18623390b36550f6eb9d9839f9541dd2 passed exact 2047-core/397-suite run39817604548. Immediately previous compiled developer TEST306 request/source26f19563edeca990ea7edd2e4bc6287c8ebb01b1, successful producer39709967038; preserve its 333 indexed history entries/334 TSV including index. Reviewed nine meaningful paths across original source and new build request. Require debug APK, immediate-previous actual APK history, paired regular-player, 53+ API34 existing methods, 79+ valid reviewed visuals, no public/tester release or owner-phone claim."
+  "commentary": "Approved narrow scoring adjustment: count60 -> 0.20x in new run authority only. Frozen prior 0.5608735153608649x and remaining356 values preserved. Source b58c3269d1b09fe2d7106c79cae2698bc343d2b8 passed full core-only run39826048570 (2049 methods,397 suites, zero failures/errors/skips), after first run39825573128 exposed only wrong 59-scroll expected fixture. Previous actually compiled developer is TEST307, producer39818416634 at request/source1910739929f646ea8f79422843856677601df968; paired player39818416633. Preserve its exact history, require matched private developer/player build, native API34/display/checksum/identity. Do not stage or distribute without separate approval."
 }
