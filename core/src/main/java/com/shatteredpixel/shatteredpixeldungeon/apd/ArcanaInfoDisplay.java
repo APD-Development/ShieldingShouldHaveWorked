@@ -8,6 +8,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfArcana;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Projecting;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RunicBlade;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 
 /** Read-only Arcana contribution. Never call genericProcChanceMultiplier here:
@@ -73,7 +77,24 @@ public final class ArcanaInfoDisplay {
         }
         if (name.equals("Kinetic")) return "\n\n" + result + " " + text("kinetic");
         if (name.equals("Crystal")) return "\n\n" + metric("magic", 25, 25*multi);
-        if (name.equals("Projecting")) return "\n\n" + metric("reach", 1, Math.round(multi));
+        if (name.equals("Projecting")) {
+            if (weapon instanceof MissileWeapon) {
+                // MissileWeapon.throwPos uses four times enchantment power
+                // for its wall-penetrating target radius, not melee reach.
+                return "\n\n" + metric("missile_reach", 4, Math.round(4f*multi));
+            }
+            int base=weapon.RCH;
+            int normal=Projecting.additionalReach(1f,base);
+            int arcana=Projecting.additionalReach(multi,base);
+            String details="\n\n" + metric("reach",normal,arcana)
+                    + " " + text("total_reach",base+arcana);
+            if (weapon instanceof RunicBlade && weapon.levelKnown && hero.heroClass == HeroClass.DUELIST) {
+                float slash=((RunicBlade)weapon).runicSlashEnchantBoost();
+                int slashBonus=Projecting.additionalReach(multi+slash,base);
+                details += " " + text("runic_reach",number(100f*slash),base+slashBonus);
+            }
+            return details;
+        }
         if (name.equals("Unstable")) return "\n\n" + result + " " + text("unstable");
         if (name.equals("Explosive")) return "\n\n" + result + " " + text("explosive");
         if (name.equals("Vampiric")) {

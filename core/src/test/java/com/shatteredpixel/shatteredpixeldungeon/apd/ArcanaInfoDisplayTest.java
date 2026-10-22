@@ -68,8 +68,8 @@ public class ArcanaInfoDisplayTest {
     @Test public void identifiedRingShowsCalculatedChanceAndMovementEffect() {
         equip(0);
         String w=ArcanaInfoDisplay.weapon(sword), a=ArcanaInfoDisplay.armor(armor);
-        assertTrue(w,w.contains("17.5% increase")); assertTrue(w,w.contains("33.33% → 39.17%"));
-        assertTrue(a,a.contains("×2 → ×2.35")); assertTrue(a,a.contains("Only on water"));
+        assertTrue(w,w.contains("17.5% increase")); assertTrue(w,w.contains("33.33% to 39.17%"));
+        assertTrue(a,a.contains("x2 to x2.35")); assertTrue(a,a.contains("Only on water"));
     }
     @Test public void combinedAndEnhancedRingsUseTheirKnownEffectiveLevels() {
         equip(0); Dungeon.hero.belongings.misc=ring(0);
@@ -140,6 +140,25 @@ public class ArcanaInfoDisplayTest {
                 assertTrue(text,text.length()<300);
             }
         }
+    }
+    @Test public void projectingSeparatesArcanaAndRunicSlashWithoutCorruptGlyphs() {
+        equip(0);
+        RunicBlade blade=new RunicBlade(); blade.level(6); blade.levelKnown=true;
+        blade.enchant(new Projecting());
+        Dungeon.hero.heroClass=com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.DUELIST;
+        String s=ArcanaInfoDisplay.weapon(blade);
+        assertTrue(s,s.contains("added melee reach 1 to 1 tiles"));
+        assertTrue(s,s.contains("Runic Slash separately adds +600%"));
+        assertTrue(s,s.contains("total melee reach while using it: 8 tiles"));
+        assertFalse(s,s.contains("\uFFFD"));
+        assertFalse(s,s.contains("→"));
+    }
+    @Test public void missileProjectingDoesNotClaimAddedMeleeReach() {
+        equip(0);
+        HeavyBoomerang boomerang=new HeavyBoomerang();boomerang.enchant(new Projecting());
+        String s=ArcanaInfoDisplay.weapon(boomerang);
+        assertTrue(s,s.contains("wall-penetration target distance 4 to 5 tiles"));
+        assertFalse(s,s.contains("added melee reach"));
     }
     @Test public void identifiedArcanaInMiscSlotAlsoWorks() {
         Dungeon.hero.belongings.misc=ring(0);

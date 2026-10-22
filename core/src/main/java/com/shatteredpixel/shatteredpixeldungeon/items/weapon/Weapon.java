@@ -383,7 +383,7 @@ abstract public class Weapon extends KindOfWeapon {
 			reach += 2;
 		}
 		if (hasEnchant(Projecting.class, owner)){
-			return reach + Math.round(Enchantment.genericProcChanceMultiplier(owner));
+			return reach + Projecting.additionalReach(Enchantment.genericProcChanceMultiplierReadOnly(owner), reach);
 		} else {
 			return reach;
 		}
@@ -586,6 +586,15 @@ abstract public class Weapon extends KindOfWeapon {
 		}
 
 		public static float genericProcChanceMultiplier( Char attacker ){
+            return calculateProcChanceMultiplier(attacker, true);
+        }
+
+        /** Range previews must not consume one-attack enchantment power buffs. */
+        public static float genericProcChanceMultiplierReadOnly( Char attacker ){
+            return calculateProcChanceMultiplier(attacker, false);
+        }
+
+        private static float calculateProcChanceMultiplier(Char attacker, boolean consume) {
 			float multi = RingOfArcana.enchantPowerMultiplier(attacker);
 			Berserk rage = attacker.buff(Berserk.class);
 			if (rage != null) {
@@ -594,7 +603,7 @@ abstract public class Weapon extends KindOfWeapon {
 
 			if (attacker.buff(RunicBlade.RunicSlashTracker.class) != null){
 				multi += attacker.buff(RunicBlade.RunicSlashTracker.class).boost;
-				attacker.buff(RunicBlade.RunicSlashTracker.class).detach();
+                if (consume) attacker.buff(RunicBlade.RunicSlashTracker.class).detach();
 			}
 
 			if (attacker.buff(Smite.SmiteTracker.class) != null){
@@ -603,7 +612,7 @@ abstract public class Weapon extends KindOfWeapon {
 
 			if (attacker.buff(ElementalStrike.DirectedPowerTracker.class) != null){
 				multi += attacker.buff(ElementalStrike.DirectedPowerTracker.class).enchBoost;
-				attacker.buff(ElementalStrike.DirectedPowerTracker.class).detach();
+                if (consume) attacker.buff(ElementalStrike.DirectedPowerTracker.class).detach();
 			}
 
 			if (attacker.buff(Talent.SpiritBladesTracker.class) != null
