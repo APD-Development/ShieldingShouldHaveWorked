@@ -110,7 +110,10 @@ public final class StairNavigation {
             if (Actor.findChar(cell)!=null && cell!=hero.pos) return false;
             if (level.blobs!=null) for (Class<? extends Blob> type: DANGERS) {
                 Blob blob=level.blobs.get(type);
-                if (blob!=null && blob.cur!=null && cell<blob.cur.length && blob.cur[cell]>0) return false;
+                // Respect current immunity (e.g. Purity), never a potion merely carried in inventory.
+                // Rechecked on each turn, so an expiring protection cannot authorize later steps.
+                if (blob!=null && blob.cur!=null && cell<blob.cur.length && blob.cur[cell]>0
+                        && !hero.isImmune(type)) return false;
             }
         }
         return true;

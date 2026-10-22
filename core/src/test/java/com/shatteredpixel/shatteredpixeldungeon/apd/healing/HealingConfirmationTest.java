@@ -54,8 +54,32 @@ public class HealingConfirmationTest {
             } finally { Dungeon.hero=old; }
         });
     }
+    @Test public void categoryHotbarUsesOneTapOnlyForKnownHealingWhenOff() {
+        assertTrue(HealingConfirmation.categoryDirectDrink(true, -1));
+        assertFalse(HealingConfirmation.categoryDirectDrink(false, -1));
+        for (int threshold=0; threshold<=100; threshold++) {
+            assertFalse(HealingConfirmation.categoryDirectDrink(true, threshold));
+        }
+    }
+    @Test public void offBypassesConfirmationAndDrinksThroughRealPotionExecute() throws Exception {
+        withPreferences(file -> {
+            SPDSettings.healingConfirmationThreshold(-1);
+            Hero previous=Dungeon.hero; Hero hero=new Hero(); Dungeon.hero=hero;
+            try {
+                hero.HT=20; hero.HP=10; hero.ready=true;
+                CapturedPotion potion=new CapturedPotion() {
+                    @Override protected void drink(Hero h) { confirmedDrinkCount++; }
+                };
+                potion.execute(hero,PotionOfHealing.AC_DRINK);
+                assertNull(potion.confirmed);
+                assertEquals(1,confirmedDrinkCount);
+                assertEquals(-1,SPDSettings.healingConfirmationThreshold());
+            } finally { Dungeon.hero=previous; }
+        });
+    }
     private static class CapturedPotion extends PotionOfHealing {
         Runnable confirmed;
+        int confirmedDrinkCount;
         CapturedPotion() { anonymous = true; }
         @Override protected void requestHealingConfirmation(Hero hero,Runnable confirmed){this.confirmed=confirmed;}
     }

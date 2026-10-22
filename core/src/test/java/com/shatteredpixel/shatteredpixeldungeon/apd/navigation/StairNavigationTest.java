@@ -5,6 +5,9 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.*;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WornDartTrap;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BlobImmunity;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.apd.HeadlessTestSupport;
 import com.watabou.utils.Random;
 import org.junit.*;
@@ -107,6 +110,26 @@ public class StairNavigationTest {
  @Test public void knownTrapsAndPitsAreUnsafeButSecretTrapsAreNotRevealed(){WornDartTrap trap=new WornDartTrap();trap.pos=13;trap.visible=true;level.traps.put(13,trap);assertFalse(StairNavigation.safeStep(level,hero,13));trap.visible=false;assertTrue(StairNavigation.safeStep(level,hero,13));level.pit[13]=true;assertFalse(StairNavigation.safeStep(level,hero,13));}
  @Test public void blockedAvoidedAndUnknownTilesAreUnsafe(){level.passable[13]=false;assertFalse(StairNavigation.safeStep(level,hero,13));level.passable[13]=true;level.avoid[13]=true;assertFalse(StairNavigation.safeStep(level,hero,13));level.avoid[13]=false;level.visited[13]=false;assertFalse(StairNavigation.safeStep(level,hero,13));}
  @Test public void visibleFireIsUnsafeWithoutRevealingUnseenGas(){Fire fire=new Fire();fire.cur=new int[25];fire.cur[13]=1;level.blobs.put(Fire.class,fire);assertTrue(StairNavigation.safeStep(level,hero,13));hero.fieldOfView[13]=true;assertFalse(StairNavigation.safeStep(level,hero,13));}
+ @Test public void purityImmunityAllowsCurrentlyProtectedGasButStopsAfterItExpires(){
+  stairs();hero.fieldOfView[13]=true;
+  ToxicGas gas=new ToxicGas();gas.cur=new int[25];gas.cur[13]=12;level.blobs.put(ToxicGas.class,gas);
+  assertFalse(StairNavigation.safeStep(level,hero,13));
+  assertEquals("No safe discovered route reaches those stairs.",StairNavigation.begin(hero,false));
+  Buff.affect(hero,BlobImmunity.class);
+  assertTrue(StairNavigation.safeStep(level,hero,13));
+  assertNull(StairNavigation.begin(hero,false));
+  Buff.detach(hero,BlobImmunity.class);
+  assertFalse(StairNavigation.safeStep(level,hero,13));
+ }
+ @Test public void zeroDamageDoesNotInterruptRegularTravel(){
+  stairs();new InvisibleSprite().attach(hero);
+  assertNull(StairNavigation.begin(hero,false)); // create a live route, then test normal travel
+  hero.interrupt();hero.ready=true;
+  hero.curAction=new HeroAction.Move(13,HeroAction.Move.Mode.TRAVEL);
+  hero.damage(0,new ToxicGas());
+  assertTrue(hero.curAction instanceof HeroAction.Move);
+  assertNull(hero.lastAction);
+ }
  @Test public void enemyPreventsNavigationWithoutUsingATurn(){stairs();hero.enemies=1;float before=hero.cooldown();assertNotNull(StairNavigation.begin(hero,false));assertNull(hero.curAction);assertEquals(before,hero.cooldown(),0);}
  @Test public void normalMoveIsSelectedInsteadOfFloorTransition(){stairs();float before=hero.cooldown();assertNull(StairNavigation.begin(hero,false));assertTrue(hero.curAction instanceof HeroAction.Move);assertFalse(hero.curAction instanceof HeroAction.LvlTransition);assertEquals(13,hero.curAction.dst);assertEquals(before,hero.cooldown(),0);}
  @Test public void manualCancellationCannotResumeAStaleStairRoute(){stairs();assertNull(StairNavigation.begin(hero,false));hero.interrupt();assertNull(hero.curAction);assertNull(hero.lastAction);}

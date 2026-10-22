@@ -1712,16 +1712,8 @@ public class Hero extends Char {
 			return;
 		}
 
-        if (dmg > 0 && curAction instanceof com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.Walk) {
-            interrupt(); lastAction=null;
-        }
-
-		//regular damage interrupt, triggers on any damage except specific mild DOT effects
-		// unless the player recently hit 'continue moving', in which case this is ignored
-		if (!(src instanceof Hunger || src instanceof Viscosity.DeferedDamage) && damageInterrupt) {
-			interrupt();
-		}
-
+		// Movement interruption is decided after real HP/shielding loss is known.
+		// Raw damage can be fully negated by immunity, defense or shielding effects.
 		if (this.buff(Drowsy.class) != null){
 			Buff.detach(this, Drowsy.class);
 			GLog.w( Messages.get(this, "pain_resist") );
@@ -1770,6 +1762,15 @@ public class Hero extends Char {
 		int effectiveDamage = preHP - postHP;
 
 		if (effectiveDamage <= 0) return;
+
+        // A real hit still stops stair autopilot. Ordinary travel retains the game's
+        // original mild-DOT and explicit "continue moving" behavior.
+        if (curAction instanceof com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.Walk) {
+            interrupt();
+            lastAction = null;
+        } else if (!(src instanceof Hunger || src instanceof Viscosity.DeferedDamage) && damageInterrupt) {
+            interrupt();
+        }
 
 		if (buff(Challenge.DuelParticipant.class) != null){
 			buff(Challenge.DuelParticipant.class).addDamage(effectiveDamage);

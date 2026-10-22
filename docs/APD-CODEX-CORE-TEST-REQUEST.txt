@@ -40,3 +40,6 @@ Fixture correction after run39505527082: production compiled and2019 tests execu
 
 
 2026-10-21 ET UIMSD shared exact correlated-window checkpoint: replace the fixed equipment-to-damage run/turn arithmetic with immutable RunTurnWindow specification shared by future correlated questions. Preserve TEST300 behavior exactly: same case-sensitive run, strictly after the anchor turn through anchor+N inclusive; explicit wording; scope/disclosure; exact evidence; coverage/unknown/overflow fail-closed handling. Six focused RunTurnWindowTest methods bring the expected complete core suite from2025 to2031 methods /395 suites. No gameplay, RNG, recording, save/history, scoring, APK, build-request or distribution change. Run full :core:test; do not weaken prior assertions.
+
+
+2026-10-22T00:29:36.795Z — bounded actual owner-reported bug repair candidate. Run full core :core:test on this branch's real new application source, including ShopRingIdentificationTest, StairNavigationTest and HealingConfirmationTest. Preserve existing six RunTurnWindowTest case inventory, all prior methods, and zero failures/errors/skips. No APK/private-test build request edit, release, tester distribution or fake API34 claims. Candidate remains unverified until XML evidence.

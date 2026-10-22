@@ -81,8 +81,16 @@ public final class WndCategoryHotbar {
         show(WndUimsdList.menu(CategoryHotbar.label(slot), "Choose an item, then its normal action. Opening this list spends no turn.",
                 entries, (index, checked) -> {
                     Item item=items.get(index);
-                    if (Dungeon.hero!=null && Dungeon.hero.isAlive() && Dungeon.hero.ready && Dungeon.hero.belongings.contains(item))
-                        show(new WndUseItem(null,item));
+                    if (Dungeon.hero!=null && Dungeon.hero.isAlive() && Dungeon.hero.ready && Dungeon.hero.belongings.contains(item)) {
+                        if (item instanceof com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing
+                                && com.shatteredpixel.shatteredpixeldungeon.apd.healing.HealingConfirmation.categoryDirectDrink(
+                                    ((com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing)item).isKnown(),
+                                    com.shatteredpixel.shatteredpixeldungeon.SPDSettings.healingConfirmationThreshold())) {
+                            item.execute(Dungeon.hero, com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion.AC_DRINK);
+                        } else {
+                            show(new WndUseItem(null,item));
+                        }
+                    }
                 }).restoreWith(() -> open(slot)));
     }
     private static void abilities() {
