@@ -138,21 +138,34 @@ public class StairNavigationTest {
   try {
    for(int visualSpeed:new int[]{0,1,2}) {
     com.shatteredpixel.shatteredpixeldungeon.SPDSettings.playbackSpeed(visualSpeed);
-    hero.interrupt();hero.pos=24;hero.ready=true;hero.fieldOfView=new boolean[25];
-    HeroAction.Move walk=new HeroAction.Move(0,HeroAction.Move.Mode.TRAVEL);
+    // Real pathfinding requires the global map dimensions and impassable border
+    // to agree with the fixture. The old 5x5 mock never called PathFinder.setMapSize.
+    level.setSize(9,9);
+    Arrays.fill(level.map,Terrain.EMPTY);
+    Arrays.fill(level.visited,true);
+    Arrays.fill(level.passable,true);
+    for(int cell=0;cell<81;cell++) {
+     if(cell/9==0 || cell/9==8 || cell%9==0 || cell%9==8) level.passable[cell]=false;
+    }
+    com.watabou.utils.PathFinder.setMapSize(9,9);
+    hero.interrupt();hero.pos=70;hero.ready=true;hero.fieldOfView=new boolean[81];
+    HeroAction.Move walk=new HeroAction.Move(10,HeroAction.Move.Mode.TRAVEL);
     hero.curAction=walk;
     int steps=0;
-    while(hero.pos!=0 && steps<16){
+    while(hero.pos!=10 && steps<16){
       assertTrue("Nonhazardous travel stopped at speed "+visualSpeed+" pos="+hero.pos,
         (Boolean)move.invoke(hero,walk));
       steps++;
       assertSame(walk,hero.curAction);
       assertNull(hero.lastAction);
     }
-    assertEquals("Travel destination at speed "+visualSpeed,0,hero.pos);
-    assertTrue("Traversal should span several turns",steps>=4);
+    assertEquals("Travel destination at speed "+visualSpeed,10,hero.pos);
+    assertTrue("Traversal should span several turns",steps>=6);
    }
-  } finally {com.shatteredpixel.shatteredpixeldungeon.SPDSettings.playbackSpeed(prior);}
+  } finally {
+   com.shatteredpixel.shatteredpixeldungeon.SPDSettings.playbackSpeed(prior);
+   com.watabou.utils.PathFinder.setMapSize(5,5);
+  }
  }
  @Test public void enemyPreventsNavigationWithoutUsingATurn(){stairs();hero.enemies=1;float before=hero.cooldown();assertNotNull(StairNavigation.begin(hero,false));assertNull(hero.curAction);assertEquals(before,hero.cooldown(),0);}
  @Test public void normalMoveIsSelectedInsteadOfFloorTransition(){stairs();float before=hero.cooldown();assertNull(StairNavigation.begin(hero,false));assertTrue(hero.curAction instanceof HeroAction.Move);assertFalse(hero.curAction instanceof HeroAction.LvlTransition);assertEquals(13,hero.curAction.dst);assertEquals(before,hero.cooldown(),0);}
