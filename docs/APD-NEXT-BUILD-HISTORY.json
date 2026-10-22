@@ -1,72 +1,62 @@
 {
   "date": "2026-10-21",
-  "previous_source": "7505a36ae1567458ba854db9427196a893824806",
-  "previous_application_source": "7505a36ae1567458ba854db9427196a893824806",
-  "previous_run": 39352224211,
-  "previous_label": "Codex TEST 303",
+  "previous_source": "b5faf8f951001489f7004a507efbf37df6e9e070",
+  "previous_application_source": "b5faf8f951001489f7004a507efbf37df6e9e070",
+  "previous_run": 39541268516,
+  "previous_label": "Codex TEST 304",
   "changes": [
     {
       "category": "Bug Fixes",
       "sprite": "ICON_INFO",
-      "title": "Repair untargetable Wraiths without changing combat balance",
-      "text": "If a live Wraith or Tormented Spirit remains visible in the current floor but its actor registration was lost, reattach that same monster to the combat actor registry. Melee, projectiles, bombs, fire and Examine then address the real character; never respawn or adjust its HP/evasion.",
+      "title": "Restore reliable travel, Purity-aware stairs and one-tap healing",
+      "text": "Ordinary travel no longer stops for completely negated hits; true post-mitigation damage, newly visible enemies and dangerous obstacles still interrupt. Already-active blob immunity permits discovered safe stair travel, rechecked each step. Selecting a known healing potion from the category hotbar drinks directly only with confirmation Off; other thresholds still ask.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/Actor.java"
-      ]
-    },
-    {
-      "category": "Bug Fixes",
-      "sprite": "ICON_INFO",
-      "title": "Blacksmith quest exits return to the main dungeon",
-      "text": "The quest branch navigation now shows Return to Main Dungeon instead of a nonfunctional Descend option; safe existing stair travel and the ordinary main-floor Up/Down controls are preserved.",
-      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/Hero.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/healing/HealingConfirmation.java",
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/navigation/StairNavigation.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/StairNavigationTag.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndCategoryHotbar.java"
       ]
     },
     {
       "category": "Statistics / UIMSD",
       "sprite": "ICON_INFO",
-      "title": "Extend offline UIMSD terminology safely",
-      "text": "UIMSD search, topic exploration and exact question matching share one immutable extensible schema-term registry. Ambiguous wording and hidden columns fail closed. No AI service or row-value indexing.",
+      "title": "Preserve exact shared UIMSD following-window calculations",
+      "text": "Existing equipment-to-damage evidence keeps exact same-run, strictly following turn boundaries through the immutable shared RunTurnWindow model. The six scoped regression cases preserve unknown values, evidence contributors, and original UIMSD selection semantics. Native investigation remains a separate pending milestone.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdTerminology.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdSearch.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdTopicSearch.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/research/EquipmentWindow.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/research/RunTurnWindow.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RunTurnWindowTest.java",
+        "docs/APD-UIMSD-INVESTIGATION-CHECKLIST.md",
+        "docs/APD-UIMSD-SHARED-RUN-TURN-WINDOW-2026-10-21.md"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Validate exact Wraith/Blacksmith behavior and retain existing source investigations",
-      "text": "Six new Wraith orphan-repair tests and six already-green branch return regressions, plus twenty unrelated Mimic/electricity exact source tests and UIMSD terminology coverage. Full core and native Android verifications required. No fictitious original-player reproduction claim.",
+      "title": "Add real shop-ring, healing and multi-speed travel regressions",
+      "text": "Core verification passed 2039 methods and 396 suites. Tests confirm unknown ring types retain gem descriptions and equal prices, identification persists and purchasing logic does not identify, healing Off/threshold choices, immunity-aware stair safety, and six-plus uninterrupted steps at 0.5x, 1x and 2x speeds. Earlier fixture failures remain recorded, without weakening guards.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/actors/WraithActorRegistrationTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/navigation/StairNavigationBranchTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/combat/MimicElectricityInteractionTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdTerminologyTest.java",
-        "docs/APD-CODEX-CORE-TEST-REQUEST.txt"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/ShopRingIdentificationTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/healing/HealingConfirmationTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/navigation/StairNavigationTest.java",
+        "docs/APD-CODEX-CORE-TEST-REQUEST.txt",
+        ".github/workflows/codex-core-only-check.yml",
+        ".github/workflows/codex-menu-layout-matrix.yml"
       ]
     },
     {
       "category": "Developer Commentary",
       "sprite": "ICON_INFO",
-      "title": "Retain TEST303 source history and two-APK delivery requirements",
-      "text": "Permanent Wraith and Blacksmith source checkpoint plus earlier Mimic and UIMSD reports, exact previous produced APK history, signing, 18 rules and original saves. Build both separately named owner-private variants with no publication.",
+      "title": "Document private release gates and preserve all previous APK history",
+      "text": "Reconcile TEST304 as the actual previous produced developer APK, retain its complete embedded history, verify every changed source, tests, workflow and evidence document, and compile a private developer/player pair. This candidate is neither published nor distributed; physical-phone gameplay, native ring shop interaction, signing and API34 evidence require separate verified checks.",
       "paths": [
-        "docs/APD-MIMIC-ELECTRICITY-2026-10-20.md",
-        "docs/APD-UIMSD-EXPERIMENTS-2026-10-20.md",
-        "docs/APD-UIMSD-INVESTIGATION-CHECKLIST.md",
-        "docs/APD-UIMSD-TERMINOLOGY-2026-10-20.md",
-        "docs/APD-UIMSD-UNIVERSAL.md",
-        "docs/APD-BLACKSMITH-QUEST-EXIT-NAVIGATION-2026-10-20.md",
+        "docs/APD-WRAITH-AND-BLACKSMITH-FIXES-2026-10-21.md",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",
-        "docs/APD-WRAITH-AND-BLACKSMITH-FIXES-2026-10-21.md",
         "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/APD-CODEX-BUILD-REQUEST.txt"
       ]
     }
   ],
-  "commentary": "Owner-requested both Wraith untargetable actor recovery and Blacksmith Return to Main Dungeon quest stair navigation; build next unique TEST304 developer+regular player from source after successful complete core suite, exact prior produced TEST303 source7505a36ae1567458ba854db9427196a893824806/run39352224211, developer APK sha256 a7a665f79d1e6376c790ea840da7ccf9a83040f4d714263625dcbdc8899795e7. Require all changed paths including docs, native API34 tests, 80+ PNG evidence, same app signer/identity/331 history, no staging, public release, tester sharing or physical device claim."
+  "commentary": "Intentional next private paired developer/player build after core run39700913438 passed 2039/2039 methods with no failures, errors or skips. Include actual TEST304 artifact source b5faf8f951001489f7004a507efbf37df6e9e070/run39541268516 as immediate previous compiled APK, retain all 331 indexed records, and validate every changed meaningful path. All 18 rules, v2.6R scoring, saves, signing/application identity, Cleric fixes and original history must stay intact. No publication, tester sharing or physical-device success claim."
 }
