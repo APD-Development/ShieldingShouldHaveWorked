@@ -130,6 +130,30 @@ public class StairNavigationTest {
   assertTrue(hero.curAction instanceof HeroAction.Move);
   assertNull(hero.lastAction);
  }
+ @Test public void longDistanceTapsReachChosenTileAcrossVisualPlaybackSpeeds() throws Exception {
+  int prior=com.shatteredpixel.shatteredpixeldungeon.SPDSettings.playbackSpeed();
+  new InvisibleSprite().attach(hero);
+  java.lang.reflect.Method move=Hero.class.getDeclaredMethod("actMove",HeroAction.Move.class);
+  move.setAccessible(true);
+  try {
+   for(int visualSpeed:new int[]{0,1,2}) {
+    com.shatteredpixel.shatteredpixeldungeon.SPDSettings.playbackSpeed(visualSpeed);
+    hero.interrupt();hero.pos=24;hero.ready=true;hero.fieldOfView=new boolean[25];
+    HeroAction.Move walk=new HeroAction.Move(0,HeroAction.Move.Mode.TRAVEL);
+    hero.curAction=walk;
+    int steps=0;
+    while(hero.pos!=0 && steps<16){
+      assertTrue("Nonhazardous travel stopped at speed "+visualSpeed+" pos="+hero.pos,
+        (Boolean)move.invoke(hero,walk));
+      steps++;
+      assertSame(walk,hero.curAction);
+      assertNull(hero.lastAction);
+    }
+    assertEquals("Travel destination at speed "+visualSpeed,0,hero.pos);
+    assertTrue("Traversal should span several turns",steps>=4);
+   }
+  } finally {com.shatteredpixel.shatteredpixeldungeon.SPDSettings.playbackSpeed(prior);}
+ }
  @Test public void enemyPreventsNavigationWithoutUsingATurn(){stairs();hero.enemies=1;float before=hero.cooldown();assertNotNull(StairNavigation.begin(hero,false));assertNull(hero.curAction);assertEquals(before,hero.cooldown(),0);}
  @Test public void normalMoveIsSelectedInsteadOfFloorTransition(){stairs();float before=hero.cooldown();assertNull(StairNavigation.begin(hero,false));assertTrue(hero.curAction instanceof HeroAction.Move);assertFalse(hero.curAction instanceof HeroAction.LvlTransition);assertEquals(13,hero.curAction.dst);assertEquals(before,hero.cooldown(),0);}
  @Test public void manualCancellationCannotResumeAStaleStairRoute(){stairs();assertNull(StairNavigation.begin(hero,false));hero.interrupt();assertNull(hero.curAction);assertNull(hero.lastAction);}
