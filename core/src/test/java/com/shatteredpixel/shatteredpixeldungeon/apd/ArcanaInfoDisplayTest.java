@@ -129,7 +129,9 @@ public class ArcanaInfoDisplayTest {
                 sword.enchantment=(Weapon.Enchantment)type.getDeclaredConstructor().newInstance(); sword.cursedKnown=true;
                 String text=ArcanaInfoDisplay.weapon(sword);
                 assertFalse(type.getName(),text.isEmpty()); assertFalse(text,text.contains(Messages.NO_TEXT_FOUND));
-                assertTrue(text,text.length()<300);
+                assertTrue(type.getName()+" missing effect label",text.contains("Arcana changes:"));
+                assertTrue(type.getName()+" missing effect label",text.contains("Arcana changes:"));
+                assertTrue(text,text.length()<600);
             }
         }
         for (Class<?>[] types : new Class<?>[][]{Armor.Glyph.common,Armor.Glyph.uncommon,Armor.Glyph.rare,Armor.Glyph.curses}) {
@@ -137,7 +139,7 @@ public class ArcanaInfoDisplayTest {
                 armor.glyph=(Armor.Glyph)type.getDeclaredConstructor().newInstance(); armor.cursedKnown=true;
                 String text=ArcanaInfoDisplay.armor(armor);
                 assertFalse(type.getName(),text.isEmpty()); assertFalse(text,text.contains(Messages.NO_TEXT_FOUND));
-                assertTrue(text,text.length()<300);
+                assertTrue(text,text.length()<600);
             }
         }
     }
@@ -159,6 +161,18 @@ public class ArcanaInfoDisplayTest {
         String s=ArcanaInfoDisplay.weapon(boomerang);
         assertTrue(s,s.contains("wall-penetration target distance 4 to 5 tiles"));
         assertFalse(s,s.contains("added melee reach"));
+    }
+    @Test public void effectDescriptionsExposeCalculatedStrengthWithoutACombatProc(){
+        equip(8);
+        sword.level(6);sword.enchant(new Blocking());
+        String block=ArcanaInfoDisplay.weapon(sword);
+        assertTrue(block,block.contains("Shield on activation:"));
+        sword.enchant(new Chilling());
+        String chill=ArcanaInfoDisplay.weapon(sword);
+        assertTrue(chill,chill.contains("Chill added per activation:"));
+        armor.level(6);armor.inscribe(new Thorns());
+        String thorns=ArcanaInfoDisplay.armor(armor);
+        assertTrue(thorns,thorns.contains("Bleeding strength:"));
     }
     @Test public void identifiedArcanaInMiscSlotAlsoWorks() {
         Dungeon.hero.belongings.misc=ring(0);

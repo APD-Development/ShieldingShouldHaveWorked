@@ -51,3 +51,5 @@ Fixture correction after run39505527082: production compiled and2019 tests execu
 2026-10-22T00:38:28.374Z — retained run39700597558 1/2039 isolated missing PathFinder dimensions in new travel fixture; run full core after test-only 9x9 map setup correction with 2039 required and six RunTurnWindow targeted. App source unchanged; no APK.
 
 2026-10-22T01:48:25.811Z — Verify exact-source Runic Slash/Projecting non-consuming reach test, expected 2044 core methods/397 suites (five new). Preserve all 2039 earlier methods, all6 RunTurnWindow cases, normal +6 slash 8/9 reach boundary and Arcana visible description checks, 0 failures/errors/skips. No APK build request or release touched.
+
+2026-10-22T01:58:03.432Z — Re-run exact current core after source-specific Arcana enhancements: expected 2045 methods/397 suites, 0 failures/errors/skips and exact 5061 reviewed English keys. Preserve 48 built-in name coverage and 6 RunTurnWindow cases. No APK requested by this record.

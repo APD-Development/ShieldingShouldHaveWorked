@@ -61,6 +61,40 @@ public final class ArcanaInfoDisplay {
                 number(100f*Math.max(0, Math.min(1, base*multi))));
     }
 
+
+    private static String effect(String name) {
+        return " " + text("effect_" + name.toLowerCase(java.util.Locale.ROOT));
+    }
+    private static String weaponStrength(String name, Weapon weapon, float baseChance, float multi) {
+        float strength=Math.max(1f,baseChance*multi);
+        float level=Math.max(0,weapon.buffedLvl());
+        switch(name) {
+            case "Chilling": return " " + text("chill_strength",number(3),number(3*strength),number(6),number(6*strength)) + effect(name);
+            case "Blocking": return " " + text("blocking_strength",number(Math.round(2+weapon.buffedLvl())),number(Math.round((2+weapon.buffedLvl())*strength))) + effect(name);
+            case "Shocking": return " " + text("shock_strength",number(50),number(50*strength)) + effect(name);
+            case "Venomous": return " " + text("venom_strength",number(3+level/2f),number((3+level/2f)*strength)) + effect(name);
+            case "Eldritch": return " " + text("eldritch_strength",number(5),number(5*strength)) + effect(name);
+            case "Elastic": return " " + text("elastic_strength",number(2),number(Math.round(2*strength))) + effect(name);
+            case "Blooming": return " " + text("bloom_strength",number(1+.1f*level),number((1+.1f*level)*strength)) + effect(name);
+            default: return "";
+        }
+    }
+    private static String armorStrength(String name, Armor armor, float baseChance, float multi) {
+        float strength=Math.max(1f,baseChance*multi);
+        float level=Math.max(0,armor.buffedLvl());
+        switch(name) {
+            case "Potential": return " " + text("potential_strength",number(1),number(strength)) + effect(name);
+            case "Entanglement": return " " + text("entangle_strength",number(Math.round(5+2*level)),number(Math.round((5+2*level)*strength))) + effect(name);
+            case "Repulsion": return " " + text("repulse_strength",number(2),number(Math.round(2*strength))) + effect(name);
+            case "Affection": {
+                float d=com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm.DURATION;
+                return " " + text("affection_strength",number(Math.round(d)),number(Math.round(d*strength)));
+            }
+            case "Thorns": return " " + text("thorns_strength",number(Math.round(4+level)),number(Math.round((4+level)*strength))) + effect(name);
+            default: return "";
+        }
+    }
+
     public static String weapon(Weapon weapon) {
         Hero hero = Dungeon.hero;
         float multi = visibleMultiplier(hero);
@@ -75,13 +109,13 @@ public final class ArcanaInfoDisplay {
                 && !pkg.equals("com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses")) {
             return "\n\n" + text("custom", number(multi));
         }
-        if (name.equals("Kinetic")) return "\n\n" + result + " " + text("kinetic");
-        if (name.equals("Crystal")) return "\n\n" + metric("magic", 25, 25*multi);
+        if (name.equals("Kinetic")) return "\n\n" + result + " " + text("kinetic") + effect(name);
+        if (name.equals("Crystal")) return "\n\n" + metric("magic", 25, 25*multi) + effect(name);
         if (name.equals("Projecting")) {
             if (weapon instanceof MissileWeapon) {
                 // MissileWeapon.throwPos uses four times enchantment power
                 // for its wall-penetrating target radius, not melee reach.
-                return "\n\n" + metric("missile_reach", 4, Math.round(4f*multi));
+                return "\n\n" + metric("missile_reach", 4, Math.round(4f*multi)) + effect(name);
             }
             int base=weapon.RCH;
             int normal=Projecting.additionalReach(1f,base);
@@ -93,13 +127,13 @@ public final class ArcanaInfoDisplay {
                 int slashBonus=Projecting.additionalReach(multi+slash,base);
                 details += " " + text("runic_reach",number(100f*slash),base+slashBonus);
             }
-            return details;
+            return details + effect(name);
         }
-        if (name.equals("Unstable")) return "\n\n" + result + " " + text("unstable");
-        if (name.equals("Explosive")) return "\n\n" + result + " " + text("explosive");
+        if (name.equals("Unstable")) return "\n\n" + result + " " + text("unstable") + effect(name);
+        if (name.equals("Explosive")) return "\n\n" + result + " " + text("explosive") + effect(name);
         if (name.equals("Vampiric")) {
             float base = hero.HT > 0 ? 0.05f + 0.25f*(hero.HT-hero.HP)/(float)hero.HT : 0.05f;
-            return "\n\n" + result + " " + chance(base, multi) + " " + text("current_hp");
+            return "\n\n" + result + " " + chance(base, multi) + " " + text("current_hp") + effect(name);
         }
         if (!weapon.levelKnown) return "\n\n" + result + " " + text("unknown_level");
         float level = Math.max(0, weapon.buffedLvl()), base;
@@ -111,16 +145,16 @@ public final class ArcanaInfoDisplay {
             case "Eldritch": case "Elastic": base=(level+1)/(level+5); break;
             case "Vorpal": case "Wayward": base=1/4f; break;
             case "Corrupting": base=(level+5)/(level+25); break;
-            case "Grim": return "\n\n" + result + " " + text("grim");
+            case "Grim": return "\n\n" + result + " " + text("grim") + effect(name);
             case "Annoying": base=1/20f; break;
             case "Displacing": base=1/12f; break;
             case "Dazzling": case "Friendly": base=1/10f; break;
             case "Polarized": base=1/2f; break;
             case "Pressurized": case "Wondrous": base=1/8f; break;
-            case "Sacrificial": return "\n\n" + result + " " + text("sacrificial");
+            case "Sacrificial": return "\n\n" + result + " " + text("sacrificial") + effect(name);
             default: return "\n\n" + text("custom", number(multi));
         }
-        return "\n\n" + result + " " + chance(base, multi);
+        return "\n\n" + result + " " + chance(base, multi) + weaponStrength(name,weapon,base,multi) + effect(name);
     }
 
     public static String armor(Armor armor) {
@@ -136,21 +170,21 @@ public final class ArcanaInfoDisplay {
                 && !pkg.equals("com.shatteredpixel.shatteredpixeldungeon.items.armor.curses")) {
             return "\n\n" + text("custom", number(multi));
         }
-        if (name.equals("Brimstone")) return "\n\n" + text("brimstone");
+        if (name.equals("Brimstone")) return "\n\n" + text("brimstone") + effect(name);
         if (!armor.levelKnown) return "\n\n" + result + " " + text("unknown_level");
         float actualLevel=armor.buffedLvl(), level=Math.max(0, actualLevel), base;
         if (actualLevel == -1 && (name.equals("Obfuscation") || name.equals("Swiftness")
                 || name.equals("Flow") || name.equals("Camouflage") || name.equals("AntiMagic")
                 || name.equals("Bulk"))) return "\n\n" + text("inactive");
         switch (name) {
-            case "Obfuscation": return "\n\n" + metric("stealth", 1+actualLevel/3f, (1+actualLevel/3f)*multi);
-            case "Swiftness": return "\n\n" + metric("speed", 1.2f+0.04f*actualLevel, (1.2f+0.04f*actualLevel)*multi) + " " + text("swiftness");
-            case "Flow": return "\n\n" + metric("speed", 2+0.5f*actualLevel, (2+0.5f*actualLevel)*multi) + " " + text("water");
-            case "Camouflage": return "\n\n" + metric("turns", Math.round(3+actualLevel/2f), Math.round((3+actualLevel/2f)*multi));
-            case "AntiMagic": return "\n\n" + text("magic_dr", number(Math.round(actualLevel)), number(Math.round(3+1.5f*actualLevel)), number(Math.round(actualLevel*multi)), number(Math.round((3+1.5f*actualLevel)*multi)));
-            case "Stone": return "\n\n" + result + " " + text("stone");
-            case "Bulk": return "\n\n" + metric("speed", 1/3f, multi/3f) + " " + text("door");
-            case "Viscosity": return "\n\n" + result + " " + text("viscosity", number((level+1)/(level+6)*multi));
+            case "Obfuscation": return "\n\n" + metric("stealth", 1+actualLevel/3f, (1+actualLevel/3f)*multi) + effect(name);
+            case "Swiftness": return "\n\n" + metric("speed", 1.2f+0.04f*actualLevel, (1.2f+0.04f*actualLevel)*multi) + " " + text("swiftness") + effect(name);
+            case "Flow": return "\n\n" + metric("speed", 2+0.5f*actualLevel, (2+0.5f*actualLevel)*multi) + " " + text("water") + effect(name);
+            case "Camouflage": return "\n\n" + metric("turns", Math.round(3+actualLevel/2f), Math.round((3+actualLevel/2f)*multi)) + effect(name);
+            case "AntiMagic": return "\n\n" + text("magic_dr", number(Math.round(actualLevel)), number(Math.round(3+1.5f*actualLevel)), number(Math.round(actualLevel*multi)), number(Math.round((3+1.5f*actualLevel)*multi))) + effect(name);
+            case "Stone": return "\n\n" + result + " " + text("stone") + effect(name);
+            case "Bulk": return "\n\n" + metric("speed", 1/3f, multi/3f) + " " + text("door") + effect(name);
+            case "Viscosity": return "\n\n" + result + " " + text("viscosity", number((level+1)/(level+6)*multi)) + effect(name);
             case "Potential": base=(level+1)/(level+6); break;
             case "Entanglement": base=1/4f; break;
             case "Repulsion": base=(level+1)/(level+5); break;
@@ -162,6 +196,6 @@ public final class ArcanaInfoDisplay {
             case "Metabolism": base=1/6f; break;
             default: return "\n\n" + text("custom", number(multi));
         }
-        return "\n\n" + result + " " + chance(base, multi);
+        return "\n\n" + result + " " + chance(base, multi) + armorStrength(name,armor,base,multi) + effect(name);
     }
 }
