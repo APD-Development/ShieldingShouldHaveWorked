@@ -42,6 +42,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeType;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.apd.ApdFeatures;
 import com.shatteredpixel.shatteredpixeldungeon.apd.archive.ApdFiles;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.News;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.NewsImpl;
@@ -49,6 +50,7 @@ import com.shatteredpixel.shatteredpixeldungeon.services.updates.UpdateImpl;
 import com.shatteredpixel.shatteredpixeldungeon.services.updates.Updates;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Button;
 import com.watabou.input.BackGate;
+import com.watabou.input.BackTrace;
 import com.watabou.input.KeyEvent;
 import com.watabou.noosa.Game;
 import com.watabou.utils.FileUtils;
@@ -198,9 +200,18 @@ public class AndroidLauncher extends AndroidApplication {
 
 	//one Back for the game, from whichever route it arrived by
 	private static void sendBack() {
-		if (!BackGate.accept()) return;
-		KeyEvent.addKeyEvent(new KeyEvent(Input.Keys.BACK, true));
-		KeyEvent.addKeyEvent(new KeyEvent(Input.Keys.BACK, false));
+		//Timing-only diagnostics are packaged in the private developer APK. They do
+		//not change Back behavior and do not run in the regular player APK.
+		BackTrace.setEnabled(ApdFeatures.testBuild());
+		long trace = BackTrace.route("android-system");
+		if (!BackGate.accept()) {
+			BackTrace.rejected(trace, "BackGate duplicate");
+			return;
+		}
+		BackTrace.accepted(trace);
+		KeyEvent.addKeyEvent(new KeyEvent(Input.Keys.BACK, true, trace));
+		BackTrace.stage(trace, "key-down-enqueued", "");
+		KeyEvent.addKeyEvent(new KeyEvent(Input.Keys.BACK, false, trace));
 	}
 
 	@Override

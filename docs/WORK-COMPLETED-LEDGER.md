@@ -1,3 +1,10 @@
+## Android Back latency correlation (2026-10-23, pending core)
+
+- Added timing-only private-build trace points from Android callback/GDX route through BackGate, enqueue, render dispatch and Window hide.
+- Regular player builds remain disabled; no Back behavior or debounce changed.
+- Three new core regressions added; full suite requested, APK build request untouched.
+- This is diagnostic instrumentation, not a claimed physical-phone lag fix.
+
 ## TEST310 — enemy Healing Potion pickup telemetry, paired private acceptance (2026-10-23)
 
 - Source/request `413732834f2f0325ce206ad9e554747558c00a1c`; developer run 39933072344 and player run 39933072302.

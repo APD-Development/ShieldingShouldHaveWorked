@@ -21,6 +21,7 @@
 
 package com.watabou.input;
 
+import com.badlogic.gdx.Input;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Signal;
 
@@ -30,10 +31,16 @@ public class KeyEvent {
 	
 	public int code;
 	public boolean pressed;
+	public long backTraceId;
 	
 	public KeyEvent( int code, boolean pressed ) {
+		this(code, pressed, 0);
+	}
+
+	public KeyEvent( int code, boolean pressed, long backTraceId ) {
 		this.code = code;
 		this.pressed = pressed;
+		this.backTraceId = backTraceId;
 	}
 	
 	// **********************
@@ -67,17 +74,23 @@ public class KeyEvent {
 		}
 
 		for (KeyEvent k : keyEvents){
-			if (KeyBindings.getActionForKey(k) == GameAction.LEFT_CLICK){
-				Game.inputHandler.emulateTouch(ControllerHandler.CONTROLLER_POINTER_ID, PointerEvent.LEFT, k.pressed);
-				if (KeyBindings.bindingKey) keySignal.dispatch(k);
-			} else if (KeyBindings.getActionForKey(k) == GameAction.RIGHT_CLICK){
-				Game.inputHandler.emulateTouch(ControllerHandler.CONTROLLER_POINTER_ID, PointerEvent.RIGHT, k.pressed);
-				if (KeyBindings.bindingKey) keySignal.dispatch(k);
-			} else if (KeyBindings.getActionForKey(k) == GameAction.MIDDLE_CLICK){
-				Game.inputHandler.emulateTouch(ControllerHandler.CONTROLLER_POINTER_ID, PointerEvent.MIDDLE, k.pressed);
-				if (KeyBindings.bindingKey) keySignal.dispatch(k);
-			} else {
-				keySignal.dispatch(k);
+			boolean tracedBack = k.pressed && k.code == Input.Keys.BACK && k.backTraceId != 0;
+			if (tracedBack) BackTrace.beginDispatch(k.backTraceId);
+			try {
+				if (KeyBindings.getActionForKey(k) == GameAction.LEFT_CLICK){
+					Game.inputHandler.emulateTouch(ControllerHandler.CONTROLLER_POINTER_ID, PointerEvent.LEFT, k.pressed);
+					if (KeyBindings.bindingKey) keySignal.dispatch(k);
+				} else if (KeyBindings.getActionForKey(k) == GameAction.RIGHT_CLICK){
+					Game.inputHandler.emulateTouch(ControllerHandler.CONTROLLER_POINTER_ID, PointerEvent.RIGHT, k.pressed);
+					if (KeyBindings.bindingKey) keySignal.dispatch(k);
+				} else if (KeyBindings.getActionForKey(k) == GameAction.MIDDLE_CLICK){
+					Game.inputHandler.emulateTouch(ControllerHandler.CONTROLLER_POINTER_ID, PointerEvent.MIDDLE, k.pressed);
+					if (KeyBindings.bindingKey) keySignal.dispatch(k);
+				} else {
+					keySignal.dispatch(k);
+				}
+			} finally {
+				if (tracedBack) BackTrace.endDispatch(k.backTraceId);
 			}
 		}
 		keyEvents.clear();

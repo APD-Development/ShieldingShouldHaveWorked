@@ -138,9 +138,18 @@ public class InputHandler extends InputAdapter {
 	@Override
 	public synchronized boolean keyDown( int keyCode ) {
 		//one press of Back is one Back, whichever route it came by (see BackGate)
-		if (keyCode == Input.Keys.BACK && !BackGate.accept()) return true;
+		long backTrace = 0;
+		if (keyCode == Input.Keys.BACK) {
+			backTrace = BackTrace.route("gdx-key");
+			if (!BackGate.accept()) {
+				BackTrace.rejected(backTrace, "BackGate duplicate");
+				return true;
+			}
+			BackTrace.accepted(backTrace);
+		}
 		if (KeyBindings.isKeyBound( keyCode )) {
-			KeyEvent.addKeyEvent( new KeyEvent( keyCode, true ) );
+			KeyEvent.addKeyEvent( new KeyEvent( keyCode, true, backTrace ) );
+			BackTrace.stage(backTrace, "key-down-enqueued", "");
 			return true;
 		} else {
 			return false;
