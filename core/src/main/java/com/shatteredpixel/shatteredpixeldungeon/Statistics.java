@@ -156,6 +156,7 @@ public class Statistics {
 	private static final String HAZARD_ASSISTS	= "hazard_assists";
 	private static final String ANKHS		= "ankhsUsed";
 	private static final String ENEMY_HEAL_REGIONS = "apd_enemy_healing_pickups_regions_v1";
+	private static final String ENEMY_HEAL_COMPLETE = "apd_enemy_healing_pickups_complete_v1";
 
 	private static final String PROG_SCORE	    = "prog_score";
 	private static final String ITEM_VAL	    = "item_val";
@@ -199,8 +200,9 @@ public class Statistics {
 		bundle.put( PIRANHAS,	piranhasKilled );
 		bundle.put(HAZARD_ASSISTS, hazardAssistedKills);
 		bundle.put( ANKHS,		ankhsUsed );
-		// Keep the 'not recorded' state through later saves of older runs.
-		if (enemyHealingPotionsRecorded) bundle.put(ENEMY_HEAL_REGIONS, enemyHealingPotionsByRegion);
+		// Preserve partial pickups in upgraded legacy saves without inventing earlier history.
+		bundle.put(ENEMY_HEAL_REGIONS, enemyHealingPotionsByRegion);
+		bundle.put(ENEMY_HEAL_COMPLETE, enemyHealingPotionsRecorded);
 		bundle.put( ITEM_TYPES_DISCOVERED, itemTypesDiscovered.toArray(new Class<?>[0]) );
 
 		bundle.put( PROG_SCORE,  progressScore );
@@ -257,7 +259,8 @@ public class Statistics {
 				for (int n : restored) if (n < 0) valid = false;
 				if (valid) {
 					enemyHealingPotionsByRegion = restored.clone();
-					enemyHealingPotionsRecorded = true;
+					enemyHealingPotionsRecorded = !bundle.contains(ENEMY_HEAL_COMPLETE)
+								|| bundle.getBoolean(ENEMY_HEAL_COMPLETE);
 				}
 			}
 		}

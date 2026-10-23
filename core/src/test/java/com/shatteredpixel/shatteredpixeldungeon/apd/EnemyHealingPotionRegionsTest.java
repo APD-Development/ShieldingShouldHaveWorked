@@ -60,6 +60,13 @@ public class EnemyHealingPotionRegionsTest {
         Statistics.restoreFromBundle(new Bundle());
         assertFalse("legacy saves must not be assigned invented earlier drops", Statistics.enemyHealingPotionsRecorded);
         assertArrayEquals(new int[]{0,0,0,0,0}, Statistics.enemyHealingPotionsByRegion);
+        Statistics.recordEnemyHealingPickup(new int[]{0,0,0,0,2});
+        Bundle upgradedLegacy = new Bundle();
+        Statistics.storeInBundle(upgradedLegacy);
+        Statistics.reset();
+        Statistics.restoreFromBundle(upgradedLegacy);
+        assertFalse("partial history remains marked incomplete across upgraded saves", Statistics.enemyHealingPotionsRecorded);
+        assertArrayEquals(new int[]{0,0,0,0,2}, Statistics.enemyHealingPotionsByRegion);
     }
 
     @Test public void noEnemyMarkForFloorShopsOrInvalidDepthAndRegionIsOriginal() {
