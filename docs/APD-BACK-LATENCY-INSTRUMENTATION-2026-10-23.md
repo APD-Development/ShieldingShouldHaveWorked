@@ -13,4 +13,4 @@ For a real phone occurrence:
 
 Emulator key injection can verify correlation and ordinary closure, but cannot prove RedMagic edge-gesture dispatch timing. No lag fix is claimed until a slow physical occurrence identifies the delayed segment.
 
-Base verified private pair: TEST310 source `413732834f2f0325ce206ad9e554747558c00a1c`. Latest actual owner publication remains TEST262. This instrumentation source is pending complete core evidence and has not produced an APK.
+Base verified private pair: TEST310 source `413732834f2f0325ce206ad9e554747558c00a1c`. Latest actual owner publication remains TEST262. Instrumentation source `d8f7174744376fdee87608cc63fad87f5f96053c` passed core-only run 39966442320 with 2059 methods / 399 suites / zero failures, errors or skips. It has not produced an APK or physical-phone trace.

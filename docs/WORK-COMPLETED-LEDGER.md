@@ -1,3 +1,9 @@
+## Android Back latency instrumentation core verified (2026-10-23)
+
+- Source `d8f7174744376fdee87608cc63fad87f5f96053c`; core run 39966442320 passed 2059 methods / 399 suites, zero failures/errors/skips.
+- All three new BackTrace cases executed; artifact 12506688821, digest `c73ff4c30575f4887b96422193b475c8a5a4187f58ba15bcbe4b702b059ce575`.
+- Core-only diagnostic checkpoint. No APK/API34/phone proof and no claimed lag fix; TEST310 remains verified private fallback and build request remains untouched.
+
 ## Android Back latency correlation (2026-10-23, pending core)
 
 - Added timing-only private-build trace points from Android callback/GDX route through BackGate, enqueue, render dispatch and Window hide.
