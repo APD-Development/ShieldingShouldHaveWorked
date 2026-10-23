@@ -73,6 +73,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArm
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfWealth;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
@@ -1079,6 +1080,7 @@ public abstract class Mob extends Char {
                             () -> com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.extraLike(original));
                     for (Item generated : ordinary) {
                         loot = generated;
+                        if (loot instanceof PotionOfHealing) ((PotionOfHealing)loot).apdMarkEnemyDrop(Dungeon.depth);
                         com.shatteredpixel.shatteredpixeldungeon.apd.GuaranteedLootIdentification.identifyNormalDrop(this, loot);
                         ApdGen.onLootCreated( this, loot );
                         Dungeon.level.drop(loot, pos).sprite.drop();
@@ -1094,14 +1096,19 @@ public abstract class Mob extends Char {
 			else if (properties.contains(Property.MINIBOSS)) rolls = 5;
 			ArrayList<Item> bonus = RingOfWealth.tryForBonusDrop(Dungeon.hero, rolls);
 			if (bonus != null && !bonus.isEmpty()) {
-				for (Item b : bonus) for (Heap heap : com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.dropGenerated(Dungeon.level, b, pos, null, false))heap.sprite.drop();
+				for (Item b : bonus) {
+					if (b instanceof PotionOfHealing) ((PotionOfHealing)b).apdMarkEnemyDrop(Dungeon.depth);
+					for (Heap heap : com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.dropGenerated(Dungeon.level, b, pos, null, false)) heap.sprite.drop();
+				}
 				RingOfWealth.showFlareForBonusDrop(sprite);
 			}
 		}
 		
 		//lucky enchant logic
 		if (buff(Lucky.LuckProc.class) != null){
-			for (Heap heap : com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.dropGenerated(Dungeon.level, buff(Lucky.LuckProc.class).genLoot(), pos, null, false))heap.sprite.drop();
+			Item luckyLoot = buff(Lucky.LuckProc.class).genLoot();
+			if (luckyLoot instanceof PotionOfHealing) ((PotionOfHealing)luckyLoot).apdMarkEnemyDrop(Dungeon.depth);
+			for (Heap heap : com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.dropGenerated(Dungeon.level, luckyLoot, pos, null, false))heap.sprite.drop();
 			Lucky.showFlare(sprite);
 		}
 

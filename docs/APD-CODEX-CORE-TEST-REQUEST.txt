@@ -66,3 +66,6 @@ Fixture correction after run39505527082: production compiled and2019 tests execu
 
 
 2026-10-22T22:01:59Z owner clarification supersedes the endpoint-only 60-scroll scoring interpretation. Run the complete core suite on the exact v3 checkpoint. Verify all 357 original v1 lookup values, all 357 frozen endpoint-only v2 positions, the explicit active v3 count15–60 curve (15=1.0, 59=0.2171939182010963, 60=0.20), monotonic/no-cliff guard, three-version save authority and current-run presentation. Preserve TEST308's raw API34 failure; do not trigger or claim a new APK from this core-only request. The application build request remains unchanged until exact-source core evidence passes.
+
+
+2026-10-23 owner-approved enemy healing-potion pickup counts by dungeon region, shown only on identified Healing Potion information without a total. Run all core tests including five new EnemyHealingPotionRegionsTest methods; preserve TEST309 as verified private fallback. Count after successful pickup, maintain floor-pile provenance, older save missing state, and no gameplay RNG modification. Separately investigate intermittent Android back-gesture latency; root cause not measured on owner phone; no claimed timing/fix or redundant APK build.
