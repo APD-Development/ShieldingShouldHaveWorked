@@ -19,6 +19,14 @@ public class EnemyHealingPotionRegionsTest {
         assertEquals(-1, Statistics.enemyHealingRegionForDepth(26));
     }
 
+    @Test public void basePotionConstructorCanResetBeforeSubclassFieldsInitialize() {
+        PotionOfHealing potion = new PotionOfHealing();
+        potion.apdMarkEnemyDrop(1);
+        potion.reset();
+        potion.apdClaimCollectedEnemyDrops();
+        assertArrayEquals("reset clears pending drop origin", new int[5], Statistics.enemyHealingPotionsByRegion);
+    }
+
     @Test public void enemyDropCountedOnlyAfterCollectionAndOnlyOnce() {
         PotionOfHealing enemy = new PotionOfHealing();
         enemy.apdMarkEnemyDrop(7);

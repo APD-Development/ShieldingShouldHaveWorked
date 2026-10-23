@@ -202,7 +202,9 @@ public class PotionOfHealing extends Potion {
 	@Override
 	public void reset() {
 		super.reset();
-		Arrays.fill(apdUncollectedEnemyDrops, 0);
+		// Potion's constructor calls reset before subclass field initialization.
+		if (apdUncollectedEnemyDrops == null) apdUncollectedEnemyDrops = new int[5];
+		else Arrays.fill(apdUncollectedEnemyDrops, 0);
 	}
 
 	@Override
