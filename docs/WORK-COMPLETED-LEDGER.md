@@ -1,3 +1,8 @@
+## Damage-recovery fixture compilation correction (2026-10-23)
+
+- Run40031186659 retained: production compiled, but the new test referenced nonexistent `KIND_MOB`; zero JUnit methods ran.
+- Test-only correction uses existing `KIND_ENEMY`. Full 2064-method suite still required; no production/APK change.
+
 ## UIMSD hero-damage → healing window (2026-10-23, pending core)
 
 - Implemented the second exact correlated-window integration over existing records: recorded hero damage → following HP healing with +1/5/10/20/50 inclusive windows.

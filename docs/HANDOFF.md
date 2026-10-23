@@ -1,3 +1,7 @@
+## 2026-10-23T22:06:14Z — Damage-recovery first core attempt retained; fixture symbol corrected
+- Full-core run [40031186659](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/40031186659) compiled production classes, then stopped at test compilation with zero JUnit methods because the new negative-path fixture named nonexistent `CombatEvents.KIND_MOB`. The real existing non-hero constant is `KIND_ENEMY`; production behavior was not implicated.
+- Corrected only that test symbol. All five new assertions and the complete preceding suite remain required. A new full core-only request follows; no APK request, native claim or test weakening.
+
 ## 2026-10-23T22:02:00Z — Second UIMSD correlated window implemented; full core verification pending
 - Added a bounded second anchor→target investigation, **Healing after damage**: choose an exact recorded hero-damage row, then inspect exact HP-healing records strictly after that turn through +1/5/10/20/50 inclusive. It reuses the shared case-sensitive RunTurnWindow authority and preserves scope/disclosure, exact contributor evidence, query/export round trips, lower-bound wording and unknown coverage.
 - Same-turn healing is excluded because event ordering within a clock tick is not recorded. Healing is not shielding, and the report does not claim causation or complete recovery. Damage-only filters are not silently applied to Healing. No new telemetry, gameplay, RNG, scoring, save/history format, migration or historical inference.

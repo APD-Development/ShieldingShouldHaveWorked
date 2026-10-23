@@ -72,7 +72,7 @@ public class DamageRecoveryWindowTest {
         QueryResult a=anchors(c);
         Row anchor=a.rows.get(0);
         int kind=a.def.indexOf("damage.targetKind"),turn=a.def.indexOf("damage.turn");
-        anchor.setNum(kind,CombatEvents.KIND_MOB,Fact.PROV_RECORDED);
+        anchor.setNum(kind,CombatEvents.KIND_ENEMY,Fact.PROV_RECORDED);
         assertTrue(DamageRecoveryWindow.answer(c,a,anchor,10,RULES).cards.isEmpty());
         anchor.setNum(kind,CombatEvents.KIND_HERO,Fact.PROV_RECORDED);
         anchor.setNum(turn,10,Fact.PROV_INCOMPLETE);
