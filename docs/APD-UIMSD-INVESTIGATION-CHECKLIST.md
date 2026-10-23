@@ -1,5 +1,5 @@
 # UIMSD connected investigation implementation checklist
-Updated Oct21 ET: the shared exact following-window specification is core-verified at application source `a66182becd893574977193b878cd7c6cd3362954` / evidence run `39684507117` (2,031 tests /395 suites, all six focused cases); a second anchor→target integration and native acceptance remain pending. The extensible terminology registry remains core-verified. TEST304 is the newest produced/emulator-verified private APK pair; TEST262 remains the newest actually published owner APK. All five broad capabilities remain partial/pending; supporting tools do not complete a whole capability.
+Updated Oct23 ET: the shared exact following-window specification remains core-verified. A second anchor→target integration, recorded hero damage → following HP healing, is implemented with binary-log regressions and awaits the complete core gate; native/API34 acceptance remains pending. The extensible terminology registry remains core-verified. TEST304 is the newest produced/emulator-verified private APK pair; TEST262 remains the newest actually published owner APK. All five broad capabilities remain partial/pending; supporting tools do not complete a whole capability.
 
 ## Audited baseline
 Accepted supporting-tool baseline: TEST294 /84b465af7e12fce897d318fcf385529a50ad48e2,1,948 core +48 API34 methods/64 captures. First connected equipment-window milestone is now accepted in TEST300 /d41631b3e5b43bf832036426a9e7c7a0694d07ed:1,959 build-time core methods (later1,967 after independent loot regressions),50 unique Android cases verified across the49-pass full run and corrected one-case exact-APK gesture rerun,73 full-suite captures. Exact cold-restart/player Settings and five display profiles also passed. No broader capability is complete on backend/tests/documentation alone.
@@ -53,7 +53,7 @@ This first named-experiment milestone supports numeric mean differences and win 
 ## Later connected milestones
 - [x] Exact question persistence and native reopen (TEST302).
 - [x] Extensible offline dataset/column/measure/connector terminology shared by view search, topic discovery and exact interpretation; core verified in run39437010997. Native acceptance remains pending.
-- [ ] General correlated windows beyond the fixed equipment→damage path, with explicit sequence/time boundaries and exact evidence. Shared exact following-window arithmetic/wording/query filters are core-verified in run39684507117; second anchor→target integration and native acceptance remain pending.
+- [ ] General correlated windows beyond fixed paths, with explicit sequence/time boundaries and exact evidence. Shared exact following-window arithmetic is core-verified; the second hero-damage→healing integration is source-complete and pending full-core/native acceptance. Broader generalization remains pending.
 - [ ] Timeline/death evidence and necessary forward-only recorded snapshots.
 - [x] Named numeric/win-rate experiment registry using shared QueryCodec/PopulationStudy and future-run reevaluation (TEST303).
 - [ ] Broader experiment execution over sequence/window questions and additional metrics.

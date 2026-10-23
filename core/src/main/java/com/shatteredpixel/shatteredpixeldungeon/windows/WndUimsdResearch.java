@@ -57,6 +57,7 @@ public final class WndUimsdResearch {
         add(entries,actions,"Statistical investigation lab","Capture filtered populations A and B, choose a metric, compare samples and inspect evidence.",()->studyMenu(m));
         add(entries,actions,"Saved experiments","Named questions and population definitions; results recalculate from the latest loaded history.",()->savedExperiments(m));
         add(entries,actions,"Damage after equipping","Choose an equipment occurrence and a turn window, then inspect observed damage and its source records.",()->equipmentWindows(m));
+        add(entries,actions,"Healing after damage","Choose recorded damage to the hero and inspect exact HP healing in a following turn window.",()->damageRecoveryWindows(m));
         menu(m,"Research lab","These tools read recorded history. Unknowns stay unknown. Demo results are made up and are always identified as demo data.",entries,actions,()->show(m));
     }
     public static boolean canEquipmentWindow(QueryResult r){return r!=null && !r.isGrouped() && EventDatasets.EQUIPMENT.equals(r.def.id);}
@@ -84,6 +85,37 @@ public final class WndUimsdResearch {
         });
         menu(m,"Damage after equipping","Choose the time window. This measures observed damage after an event, not whether the equipment caused it.",entries,actions,()->equipmentWindow(m,anchors,anchor));
     }
+    public static boolean canDamageRecoveryWindow(QueryResult r,Row row){
+        return r!=null && row!=null && !r.isGrouped() && EventDatasets.DAMAGE.equals(r.def.id)
+                && ResearchData.exact(r,row,"damage.targetKind")
+                && Objects.equals(ResearchData.number(r,row,"damage.targetKind"),(long)com.shatteredpixel.shatteredpixeldungeon.apd.stats.CombatEvents.KIND_HERO);
+    }
+    public static void damageRecoveryWindows(UimsdModel m){
+        if(!EventDatasets.DAMAGE.equals(m.query().dataset)){
+            List<WndUimsdList.Entry> entries=new ArrayList<>();List<Runnable> actions=new ArrayList<>();
+            add(entries,actions,"Open Damage","Set damage and run conditions there, then choose Healing after damage. Conditions from another table cannot be translated implicitly.",()->UimsdScene.showResearchEvidence(m,Query.of(EventDatasets.DAMAGE).withScope(m.query().scope).withShowInternal(m.query().showInternal)));
+            menu(m,"Healing after damage","This question starts with one exact damage occurrence against the hero.",entries,actions,()->damageRecoveryWindows(m));return;
+        }
+        Catalog cat=m.catalog();Query query=m.query();String rules=m.currentRuleset();
+        Query heroQuery=query.addFilter(Filter.num("damage.targetKind",Op.EQ,com.shatteredpixel.shatteredpixeldungeon.apd.stats.CombatEvents.KIND_HERO));
+        work(m,"Recorded hero damage",()->ResearchData.select(cat,heroQuery,rules),r->{
+            List<WndUimsdList.Entry> entries=new ArrayList<>();List<Runnable> actions=new ArrayList<>();
+            int n=0;for(Row row:ResearchData.distinct(r)){
+                if(n++>=80)break;
+                add(entries,actions,ResearchData.label(r,row,"damage.source")+" / turn "+ResearchData.label(r,row,"damage.turn"),"Occurrence "+row.id,()->damageRecoveryWindow(m,r,row));
+            }
+            if(entries.isEmpty())entries.add(WndUimsdList.Entry.warning("No exact recorded hero damage matches. Older runs may not have damage observations."));
+            menu(m,"Choose hero-damage occurrence","First 80 matching occurrences, in the current sort order. Narrow the Damage filters to find another. No occurrence is invented.",entries,actions,()->damageRecoveryWindows(m));
+        });
+    }
+    public static void damageRecoveryWindow(UimsdModel m,QueryResult anchors,Row anchor){
+        List<WndUimsdList.Entry> entries=new ArrayList<>();List<Runnable> actions=new ArrayList<>();
+        for(int turns:new int[]{1,5,10,20,50})add(entries,actions,"Next "+turns+" turns","Strictly after the damage turn, through damage turn + "+turns+" inclusive. Counts recorded HP healing, not shielding.",()->{
+            Catalog cat=m.catalog();String rules=m.currentRuleset();work(m,"Healing after damage",()->DamageRecoveryWindow.answer(cat,anchors,anchor,turns,rules),d->document(m,d));
+        });
+        menu(m,"Healing after damage","Choose the time window. This reports observed recovery after an event; it does not claim that the damage caused the heal.",entries,actions,()->damageRecoveryWindow(m,anchors,anchor));
+    }
+
     private static final class Loading extends Window {
         private final Runnable restore;
         Loading(String title,Runnable restore){this.restore=restore;RenderedTextBlock t=PixelScene.renderTextBlock(title+"\nAnalyzing recorded history... Close to cancel.",7);int w=WndUimsdList.windowWidth();t.maxWidth(w-8);t.setPos(4,4);add(t);resize(w,(int)t.bottom()+4);}

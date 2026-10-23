@@ -1,3 +1,9 @@
+## UIMSD hero-damage → healing window (2026-10-23, pending core)
+
+- Implemented the second exact correlated-window integration over existing records: recorded hero damage → following HP healing with +1/5/10/20/50 inclusive windows.
+- Reuses shared RunTurnWindow; exact run identity, scope, disclosure, lower-bound/unknown handling, evidence links and exports are preserved.
+- Five binary-log regressions added. No telemetry, gameplay, save/history format, scoring or RNG change. Core-only verification requested; Android/native acceptance and any APK remain pending.
+
 ## Android Back latency instrumentation core verified (2026-10-23)
 
 - Source `d8f7174744376fdee87608cc63fad87f5f96053c`; core run 39966442320 passed 2059 methods / 399 suites, zero failures/errors/skips.
