@@ -1,3 +1,10 @@
+## UIMSD hero-damage → healing window core verified (2026-10-23)
+
+- Corrected source `783d1d0c6caa07a2bb43abe9428d77a97b058d04`; run40031443456 passed 2064 methods /400 suites, zero failures/errors/skips.
+- All five new binary-log cases executed; artifact12534544189, digest `15ebb824bef2e4c4c120fc676ba08222a8719c4ae31802222d79823a58360b15`.
+- Preserve raw run40031186659: production compiled, then test compilation failed on a nonexistent negative-path fixture constant; zero JUnit methods ran. Test-only correction followed.
+- Second exact correlated window is core-verified; native/API34 and physical-phone acceptance remain pending. No APK build request, telemetry, gameplay, save/history format, scoring or RNG change.
+
 ## Damage-recovery fixture compilation correction (2026-10-23)
 
 - Run40031186659 retained: production compiled, but the new test referenced nonexistent `KIND_MOB`; zero JUnit methods ran.
