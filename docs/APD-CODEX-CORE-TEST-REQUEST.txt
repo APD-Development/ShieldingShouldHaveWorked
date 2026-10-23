@@ -75,3 +75,6 @@ Fixture correction after run39505527082: production compiled and2019 tests execu
 
 
 2026-10-23 fix reproduced full-core failure in run39931339224: 2055 tests/398 suites with249 failures from Potion.<init> calling overridden PotionOfHealing.reset before subclass array initialization. Guard null in reset without altering base lifecycle, add one direct constructor/reset regression. Re-run complete core at this exact corrected commit; expected 2056 tests, existing397 suites plus EnemyHealingPotionRegionsTest (398). Inspect XML and preserve failing prior evidence, avoid APK build.
+
+
+2026-10-23 exact English resource inventory: previous fixed 5062-count test is superseded by exactly seven new healing-potion information keys in items.properties. Reviewed texts have five region names, title and legacy-incomplete notice, no profanity; expected 5069 across same nine English files. Keep exact-count assertion, do not relax the language guard. Core-only gate on current source with safe Potion reset and all tests (2056 expected). Existing initial failed NPE run and queued old checkpoints remain evidence, not accepted builds.
