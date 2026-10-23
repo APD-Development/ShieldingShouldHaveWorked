@@ -69,3 +69,6 @@ Fixture correction after run39505527082: production compiled and2019 tests execu
 
 
 2026-10-23 owner-approved enemy healing-potion pickup counts by dungeon region, shown only on identified Healing Potion information without a total. Run all core tests including five new EnemyHealingPotionRegionsTest methods; preserve TEST309 as verified private fallback. Count after successful pickup, maintain floor-pile provenance, older save missing state, and no gameplay RNG modification. Separately investigate intermittent Android back-gesture latency; root cause not measured on owner phone; no claimed timing/fix or redundant APK build.
+
+
+2026-10-23T09:26:25.742Z core-only verification for owner-requested enemy healing pickup counters from source aa32550ae489c212a5052defa8f5fb82af541f10 plus handoff/ledger. Expect at least 2055 core test methods; five new EnemyHealingPotionRegionsTest methods including legacy partial save persistence and exact five regions. Preserve TEST309; do not build APK from docs-only request. Keep all existing core failures visible.
