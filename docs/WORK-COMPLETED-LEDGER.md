@@ -1,3 +1,8 @@
+## 2026-10-24T22:07:18Z — Recorded death-context first slice (verification pending)
+- Added `DeathContext`: public recorded observations only, adjustable bounded final-turn window, explicit revived/final/non-final/unknown outcome, exact case-sensitive run identity, visible missing-data and non-causation wording.
+- Added five focused `DeathContextTest` methods; complete core target is 2069 methods /401 suites. No telemetry, save/history schema, gameplay, RNG, scoring, APK request or release change.
+- TEST312 remains the verified private APK pair and TEST262 the latest owner publication until separate evidence says otherwise.
+
 ## TEST312 — Healing-after-damage native acceptance (2026-10-24)
 
 - Source/request `bcd657b8b4c524b9da00ac44211065b3eb47ab8f`; developer run 40102443917 and player run 40102443841.
