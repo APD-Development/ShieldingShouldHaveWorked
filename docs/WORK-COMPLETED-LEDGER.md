@@ -1,3 +1,8 @@
+## 2026-10-24T22:12:54Z — Recorded death-context core accepted
+- Run [40137272801](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/40137272801) passed **2069/401**, zero failure/error/skip; retained artifact `12578106262`, digest `sha256:59b48feefb055637ec0207ebcbd58601920f98deb7f31cae94157c8b63633f03`.
+- All five new bounded chronology/revival/finality/missing-data/identity regressions passed. Core model accepted; native/UI/API34/APK/phone acceptance remains pending.
+- Executable APK request unchanged; TEST312 remains current private pair and TEST262 latest owner publication.
+
 ## 2026-10-24T22:07:18Z — Recorded death-context first slice (verification pending)
 - Added `DeathContext`: public recorded observations only, adjustable bounded final-turn window, explicit revived/final/non-final/unknown outcome, exact case-sensitive run identity, visible missing-data and non-causation wording.
 - Added five focused `DeathContextTest` methods; complete core target is 2069 methods /401 suites. No telemetry, save/history schema, gameplay, RNG, scoring, APK request or release change.
