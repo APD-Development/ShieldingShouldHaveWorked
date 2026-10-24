@@ -118,6 +118,45 @@ public class UimsdResearchDeviceTest {
             render(()->{try{for(WndUimsdList.Entry e:entries())if(e.label.equals("Observed damage, next 5 turns"))assertEquals("4 observed (at least)",e.detail);}catch(Exception e){throw new RuntimeException(e);}});
         }
     }
+    @Test public void recordedDamageRecoveryWindowSurvivesReloadAndRowAction()throws Exception{
+        try(ActivityScenario<AndroidLauncher> app=ActivityScenario.launch(AndroidLauncher.class)){
+            Fixture f=begin();
+            java.io.File root=new java.io.File(androidx.test.core.app.ApplicationProvider.getApplicationContext().getCacheDir(),"uimsd-recovery-"+System.nanoTime());
+            java.io.File raw=new java.io.File(root,"runs/recovery.apdlog");
+            RunLogWriter w=RunLogWriter.create(raw,TelemetryVersion.CURRENT,"recovery","test",100);
+            LifecycleEvents.RunStart start=new LifecycleEvents.RunStart();start.runId="recovery-run";start.heroClass="WARRIOR";start.rulesetId="rules";start.apdVersionName="test";
+            LifecycleEvents.emitRunStart(w,1,false,start);
+            CombatEvents.Damage damage=new CombatEvents.Damage();damage.where=new CombatEvents.Where();damage.where.depth=1;
+            damage.target.kind=CombatEvents.KIND_HERO;damage.source.kind=CombatEvents.SRC_CHAR;damage.source.fighterKind=CombatEvents.KIND_ENEMY;damage.source.label="rat";damage.shown=8;
+            CombatEvents.emitDamage(w,10,damage);
+            int[] turns={10,11,20,21},amounts={99,4,3,9};
+            for(int i=0;i<turns.length;i++){
+                CombatEvents.Heal heal=new CombatEvents.Heal();heal.where=new CombatEvents.Where();heal.where.depth=1;
+                heal.amount=amounts[i];heal.hpAfter=10+amounts[i];heal.hpMax=30;
+                CombatEvents.emitHeal(w,turns[i],heal,true);
+            }
+            LifecycleEvents.RunEnd end=new LifecycleEvents.RunEnd();end.outcome=LifecycleEvents.OUTCOME_DIED;end.turns=30;
+            LifecycleEvents.emitRunEnd(w,30,end);assertTrue(w.close(true));
+            byte[] original=java.nio.file.Files.readAllBytes(raw.toPath());
+            Catalog catalog=new DatasetStore(root).load();
+            Query damageQuery=Query.of(EventDatasets.DAMAGE).withScope(new Scope(Scope.Rules.ALL,"",false,false,false,false));
+            render(()->{f.model.setCatalog(catalog);f.model.showQuery(damageQuery);WndUimsdResearch.show(f.model);});
+            tap("Healing after damage");tap("rat / turn 10");tap("Next 10 turns");await("Observed healing, next 10 turns");
+            render(()->{try{for(WndUimsdList.Entry e:entries())if(e.label.equals("Observed healing, next 10 turns"))assertEquals("7 observed (at least)",e.detail);
+                WndUimsdList list=top(WndUimsdList.class);Runnable restore=list.restoreOnSceneReset();list.hide();restore.run();
+            }catch(Exception e){throw new RuntimeException(e);}});
+            PlayRunDeviceTest.visibilityScreenshot("uimsd-damage-recovery-window.png");
+            tap("Observed healing, next 10 turns");tap("Contributing healing records");
+            render(()->{try{assertEquals(2,entries().size());}catch(Exception e){throw new RuntimeException(e);}});tap(0);
+            render(()->{try{assertNotNull(top(WndUimsdRow.class));assertEquals(2,f.model.result().rows.size());assertTrue(f.model.canGoBack());assertEquals(f.model.query(),QueryCodec.decode(QueryCodec.encode(f.model.query())));}catch(Exception e){throw new RuntimeException(e);}});
+            assertArrayEquals(original,java.nio.file.Files.readAllBytes(raw.toPath()));
+            closeWindows();
+            render(()->{f.model.showQuery(damageQuery);ResultTable table=ResultTable.build(f.model.result(),0,50);WndUimsdRow.show(f.model,table.lines.get(0));});
+            tap("Healing after damage");tap("Next 5 turns");await("Observed healing, next 5 turns");
+            render(()->{try{for(WndUimsdList.Entry e:entries())if(e.label.equals("Observed healing, next 5 turns"))assertEquals("4 observed (at least)",e.detail);}catch(Exception e){throw new RuntimeException(e);}});
+        }
+    }
+
     private static void render(Runnable task)throws Exception{
         CountDownLatch done=new CountDownLatch(1);AtomicReference<Throwable> error=new AtomicReference<>();
         Game.runOnRenderThread(()->{try{task.run();}catch(Throwable t){error.set(t);}finally{done.countDown();}});

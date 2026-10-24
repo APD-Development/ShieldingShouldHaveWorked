@@ -33,3 +33,10 @@ Core artifact: `12534544189`, 974,351 bytes, ZIP SHA-256 `15ebb824bef2e4c4c120fc
 ## Remaining acceptance
 
 Native/API34 menu, row-action, repeated-window, evidence/Back and screenshot acceptance remains pending. No APK was requested or produced. TEST310 remains the latest fully emulator-verified private developer/player pair; TEST262 remains the latest actually owner-published APK. Physical-phone acceptance is unclaimed.
+
+
+## Native candidate acceptance request (2026-10-24)
+
+Added an API34 pointer test using a real persisted binary run log. It enters Research lab, chooses Healing after damage, selects the recorded rat hit, verifies the 10-turn lower-bound total of 7, restores the window after scene recreation, captures `uimsd-damage-recovery-window.png`, opens the exact two healing contributors, confirms QueryCodec/evidence navigation and byte-identical raw history, then reopens the analysis through the damage-row action and verifies the 5-turn total of 4.
+
+The complete native inventory is now 54 methods and 80 required PNGs. Acceptance remains pending until the intentional matched private candidate finishes full core/debug/API34/visual/history/signing gates. The test does not substitute for physical-phone Back-latency measurement.

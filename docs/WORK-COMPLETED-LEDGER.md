@@ -1,3 +1,10 @@
+## TEST311 native acceptance candidate (2026-10-24, pending)
+
+- Added one real API34 pointer test and retained screenshot for hero-damage → following-healing analysis, including scene restore, exact contributors, row action, repeated window and raw-history immutability.
+- Requested one matched private developer/player candidate against actual compiled TEST310. Require 2064 core /400 suites, 54 API34 methods, 80 PNGs and every existing history/identity/display/save/death gate.
+- Candidate also packages core-green private-only BackTrace instrumentation for later physical measurement; player trace remains disabled and no lag fix is claimed.
+- No publication, tester distribution, destructive migration, scoring/gameplay/RNG change or phone result. TEST310 remains verified fallback pending terminal evidence.
+
 ## UIMSD hero-damage → healing window core verified (2026-10-23)
 
 - Corrected source `783d1d0c6caa07a2bb43abe9428d77a97b058d04`; run40031443456 passed 2064 methods /400 suites, zero failures/errors/skips.
