@@ -40,3 +40,12 @@ Native/API34 menu, row-action, repeated-window, evidence/Back and screenshot acc
 Added an API34 pointer test using a real persisted binary run log. It enters Research lab, chooses Healing after damage, selects the recorded rat hit, verifies the 10-turn lower-bound total of 7, restores the window after scene recreation, captures `uimsd-damage-recovery-window.png`, opens the exact two healing contributors, confirms QueryCodec/evidence navigation and byte-identical raw history, then reopens the analysis through the damage-row action and verifies the 5-turn total of 4.
 
 The complete native inventory is now 54 methods and 80 required PNGs. Acceptance remains pending until the intentional matched private candidate finishes full core/debug/API34/visual/history/signing gates. The test does not substitute for physical-phone Back-latency measurement.
+
+
+## TEST311 native result and bounded correction (2026-10-24)
+
+TEST311 compiled matched developer/player APKs and passed 2,064 core methods in 400 suites, paired history/signing/application identity, exact-APK death order, cold restart/save upgrade and the final five-profile display matrix. All 337 TEST310 predecessor history records are byte-identical; only the reviewed TEST311 record was added.
+
+API34 executed all 54 methods and retained all 80 PNGs, but one new method failed after its successful `uimsd-damage-recovery-window.png` capture. That image shows the exact 10-turn result of 7 observed healing. The failure was the final direct-row step: the test called the helper for `WndUimsdList`, while `WndUimsdRow` renders actions as touchable text inside its scroll pane. Production routing was not removed, and the test did not actually touch that action.
+
+TEST312 therefore changes only native automation: assert the selected row is an exact hero-damage anchor, locate the visible row-window action, touch it through the pointer path, and retain the required 5-turn total of 4. All core, API34, visual, history and supplemental gates remain mandatory. TEST311 is not accepted; TEST310 stays the verified fallback and physical-phone Back-latency measurement remains pending.

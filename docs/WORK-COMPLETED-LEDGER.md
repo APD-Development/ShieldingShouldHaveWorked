@@ -1,3 +1,11 @@
+## TEST311 compiled but rejected; TEST312 native harness correction (2026-10-24)
+
+- TEST311 matched developer/player APKs compiled from `47a73c4be2bfb8586d8996069bcd0e780c773cdf`; hashes and sizes are recorded in `APD-TEST311-VERIFICATION-2026-10-24.json`.
+- Core 2064/400, player identity/history, five display profiles after two preserved infrastructure retries, cold restart/save upgrade and death-order gates passed.
+- API34 ran 54 methods with 53 passing and one harness-only failure after producing all 80 PNGs. The main Healing-after-damage route rendered the exact 10-turn total; the final native action was sought with a helper that can only inspect list windows.
+- Correct the test to touch the real `WndUimsdRow` action; keep eligibility, 5-turn total, history immutability and all predecessor assertions. Request one TEST312 exact-source rerun.
+- TEST311 is not accepted; TEST310 remains the verified private fallback, TEST262 the last owner publication, and no distribution/physical-phone claim was made.
+
 ## TEST311 native acceptance candidate (2026-10-24, pending)
 
 - Added one real API34 pointer test and retained screenshot for hero-damage → following-healing analysis, including scene restore, exact contributors, row action, repeated window and raw-history immutability.

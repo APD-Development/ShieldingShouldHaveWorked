@@ -7,6 +7,7 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.query.*;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.*;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
+import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.windows.*;
 import com.watabou.input.PointerEvent;
@@ -151,8 +152,10 @@ public class UimsdResearchDeviceTest {
             render(()->{try{assertNotNull(top(WndUimsdRow.class));assertEquals(2,f.model.result().rows.size());assertTrue(f.model.canGoBack());assertEquals(f.model.query(),QueryCodec.decode(QueryCodec.encode(f.model.query())));}catch(Exception e){throw new RuntimeException(e);}});
             assertArrayEquals(original,java.nio.file.Files.readAllBytes(raw.toPath()));
             closeWindows();
-            render(()->{f.model.showQuery(damageQuery);ResultTable table=ResultTable.build(f.model.result(),0,50);WndUimsdRow.show(f.model,table.lines.get(0));});
-            tap("Healing after damage");tap("Next 5 turns");await("Observed healing, next 5 turns");
+            render(()->{f.model.showQuery(damageQuery);ResultTable table=ResultTable.build(f.model.result(),0,50);
+                assertTrue("Exact hero-damage row exposes the recovery action",WndUimsdResearch.canDamageRecoveryWindow(f.model.result(),table.lines.get(0).row));
+                WndUimsdRow.show(f.model,table.lines.get(0));});
+            tapRowAction("Healing after damage");tap("Next 5 turns");await("Observed healing, next 5 turns");
             render(()->{try{for(WndUimsdList.Entry e:entries())if(e.label.equals("Observed healing, next 5 turns"))assertEquals("4 observed (at least)",e.detail);}catch(Exception e){throw new RuntimeException(e);}});
         }
     }
@@ -187,6 +190,20 @@ public class UimsdResearchDeviceTest {
         PointerEvent.addPointerEvent(new PointerEvent(p.x,p.y,97,PointerEvent.Type.UP,PointerEvent.LEFT));Thread.sleep(400);
     }
     private static void tap(String label)throws Exception{await(label);AtomicInteger index=new AtomicInteger(-1);render(()->{try{List<WndUimsdList.Entry> e=entries();for(int i=0;i<e.size();i++)if(e.get(i).label.equals(label))index.set(i);}catch(Exception e){throw new RuntimeException(e);}});assertTrue(index.get()>=0);tap(index.get());}
+    private static void tapRowAction(String label)throws Exception{
+        AtomicReference<Point> where=new AtomicReference<>();render(()->{try{
+            WndUimsdRow row=top(WndUimsdRow.class);assertNotNull("Native row window",row);
+            ScrollPane pane=null;for(Object child:(List<?>)field(row,"members"))if(child instanceof ScrollPane)pane=(ScrollPane)child;
+            assertNotNull("Native row scroll pane",pane);
+            RenderedTextBlock action=null;for(Object child:(List<?>)field(pane.content(),"members"))if(child instanceof RenderedTextBlock){
+                RenderedTextBlock text=(RenderedTextBlock)child;if(label.equals(text.text()))action=text;
+            }
+            assertNotNull("Native row action "+label,action);float y=action.top()+action.height()/2;
+            pane.scrollTo(0,Math.max(0,y-pane.height()/2));where.set(pane.content().camera().cameraToScreen(pane.width()/2,y));
+        }catch(Exception e){throw new RuntimeException(e);}});
+        Point p=where.get();PointerEvent.addPointerEvent(new PointerEvent(p.x,p.y,99,PointerEvent.Type.DOWN,PointerEvent.LEFT));Thread.sleep(140);
+        PointerEvent.addPointerEvent(new PointerEvent(p.x,p.y,99,PointerEvent.Type.UP,PointerEvent.LEFT));Thread.sleep(400);
+    }
     private static void closeWindows()throws Exception{render(()->{try{for(Object o:new ArrayList<>((List<?>)field(Game.scene(),"members")))if(o instanceof Window)((Window)o).hide();}catch(Exception e){throw new RuntimeException(e);}});}
     private static final class Fixture {
         DatasetDef def;final List<Row> rows=new ArrayList<>();final UimsdModel model=new UimsdModel("rules","Rules");

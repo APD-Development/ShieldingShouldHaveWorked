@@ -53,7 +53,7 @@ This first named-experiment milestone supports numeric mean differences and win 
 ## Later connected milestones
 - [x] Exact question persistence and native reopen (TEST302).
 - [x] Extensible offline dataset/column/measure/connector terminology shared by view search, topic discovery and exact interpretation; core verified in run39437010997. Native acceptance remains pending.
-- [ ] General correlated windows beyond fixed paths, with explicit sequence/time boundaries and exact evidence. Shared arithmetic and the second hero-damage→healing integration are full-core verified; native acceptance for the second path is requested in TEST311, while broader generalization remains pending.
+- [ ] General correlated windows beyond fixed paths, with explicit sequence/time boundaries and exact evidence. Shared arithmetic and the second hero-damage→healing integration are full-core verified. TEST311 proved the main native route/window but failed its final direct-row step because the test used a list-only touch helper; the exact WndUimsdRow touch correction is requested in TEST312. Broader generalization remains pending.
 - [ ] Timeline/death evidence and necessary forward-only recorded snapshots.
 - [x] Named numeric/win-rate experiment registry using shared QueryCodec/PopulationStudy and future-run reevaluation (TEST303).
 - [ ] Broader experiment execution over sequence/window questions and additional metrics.

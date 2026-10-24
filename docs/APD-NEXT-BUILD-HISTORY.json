@@ -1,50 +1,28 @@
 {
   "date": "2026-10-24",
-  "previous_source": "413732834f2f0325ce206ad9e554747558c00a1c",
-  "previous_application_source": "413732834f2f0325ce206ad9e554747558c00a1c",
-  "previous_run": 39933072344,
-  "previous_label": "Codex TEST 310",
+  "previous_source": "47a73c4be2bfb8586d8996069bcd0e780c773cdf",
+  "previous_application_source": "47a73c4be2bfb8586d8996069bcd0e780c773cdf",
+  "previous_run": 40100599329,
+  "previous_label": "Codex TEST 311",
   "changes": [
     {
       "category": "Developer Commentary",
-      "sprite": "ICON_INFO",
-      "title": "Measured Android Back correlation without navigation changes",
-      "text": "Private developer builds correlate Android system/GDX Back routing, duplicate-gate decisions, queue, render dispatch, window handler and hide timing with monotonic route IDs. Normal player builds remain disabled. The complete 2059-method core gate passed; this is instrumentation for physical phone evidence, not a claimed lag fix or a debounce change.",
+      "sprite": "ICON_CHECKED",
+      "title": "Native row-action touch uses the actual row window",
+      "text": "TEST311 proved the main Healing-after-damage route and exact 10-turn result, then its final step failed because a list-window-only helper could not see the WndUimsdRow action. The corrected API34 test asserts the exact hero-damage row is eligible, locates the visible row-window action in its scroll pane, touches it and retains the exact 5-turn result without weakening any assertion.",
       "paths": [
-        "SPD-classes/src/main/java/com/watabou/input/BackTrace.java",
-        "SPD-classes/src/main/java/com/watabou/input/InputHandler.java",
-        "SPD-classes/src/main/java/com/watabou/input/KeyEvent.java",
-        "android/src/main/java/com/shatteredpixel/shatteredpixeldungeon/android/AndroidLauncher.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/Window.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/BackTraceTest.java",
-        "docs/APD-BACK-LATENCY-INSTRUMENTATION-2026-10-23.md"
-      ]
-    },
-    {
-      "category": "Statistics / UIMSD",
-      "sprite": "ICON_INFO",
-      "title": "Exact healing after recorded hero damage",
-      "text": "Choose an exact recorded hit against the hero and inspect HP healing strictly after that turn through 1, 5, 10, 20 or 50 turns inclusive. Same-turn healing is excluded because its ordering is unknown. Results retain exact run identity, scope, disclosure, evidence and exports; missing coverage is unknown and observed totals are lower bounds without a causation claim.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/research/DamageRecoveryWindow.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndUimsdResearch.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndUimsdRow.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/DamageRecoveryWindowTest.java",
         "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdResearchDeviceTest.java",
-        "tools/run-codex-android-checks.sh",
-        "core/src/main/assets/apd/apd_changes.txt",
         "docs/APD-UIMSD-DAMAGE-RECOVERY-WINDOW-2026-10-23.md",
         "docs/APD-UIMSD-INVESTIGATION-CHECKLIST.md"
       ]
     },
     {
       "category": "Developer Commentary",
-      "sprite": "ICON_CHECKED",
-      "title": "Complete core evidence and current fallback retained",
-      "text": "Corrected source passed 2064 methods in 400 suites with zero failures, errors or skips, including all five damage-recovery, six shared turn-window and three BackTrace cases. The initial fixture-only compile failure remains recorded. TEST310 acceptance remains the fallback until the new native and artifact gates pass.",
+      "sprite": "ICON_INFO",
+      "title": "TEST311 failure and fallback remain explicit",
+      "text": "TEST311 compiled matched artifacts and passed core, history, identity, death, cold-restart and final display gates, but it is rejected because API34 finished 53 of 54 methods. The raw harness failure, two infrastructure retries and fail-closed staging result remain recorded; TEST310 stays the verified fallback and TEST262 the owner publication.",
       "paths": [
-        "docs/APD-CODEX-CORE-TEST-REQUEST.txt",
-        "docs/APD-TEST310-VERIFICATION-2026-10-23.json",
+        "docs/APD-TEST311-VERIFICATION-2026-10-24.json",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md"
       ]
@@ -52,13 +30,13 @@
     {
       "category": "Developer Commentary",
       "sprite": "ICON_INFO",
-      "title": "Strict compiled TEST310 history baseline and paired private acceptance",
-      "text": "The immediate predecessor is actual compiled and accepted developer TEST310 from producer39933072344 at source/request 413732834f2f0325ce206ad9e554747558c00a1c. Review every meaningful path including this manifest and executable request, preserve all 337 indexed predecessor records byte-for-byte, and require matched developer/player artifacts with complete core, native, visual, signer and application identity checks. Nothing is published or distributed automatically.",
+      "title": "Strict compiled TEST311 history baseline and TEST312 acceptance",
+      "text": "The immediate predecessor is actual compiled developer TEST311 from producer40100599329 at source/request 47a73c4be2bfb8586d8996069bcd0e780c773cdf. Preserve all 338 indexed predecessor records byte-for-byte, append only this reviewed TEST312 record, and rerun the complete matched private core, native, visual, identity, save and death matrix without publication or physical-phone claims.",
       "paths": [
         "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/APD-CODEX-BUILD-REQUEST.txt"
       ]
     }
   ],
-  "commentary": "Intentional TEST311 private candidate for native acceptance of the core-green healing-after-damage UIMSD window and packaging of private-only Back timing instrumentation for later physical measurement. Compare against actual compiled TEST310 producer39933072344/source413732834f2f0325ce206ad9e554747558c00a1c. Require 2064 core methods, 54 API34 methods, 80 reviewed PNGs, complete immediate-predecessor history, signing/application identity and matched developer/player artifacts. No publication, distribution or physical-phone claim."
+  "commentary": "Intentional TEST312 private candidate correcting only the API34 native pointer harness after TEST311 compiled but failed one of 54 methods. The production Healing-after-damage route already rendered its exact 10-turn result; TEST312 touches the real WndUimsdRow action and retains the exact 5-turn result. Compare against actual compiled TEST311 producer40100599329/source47a73c4be2bfb8586d8996069bcd0e780c773cdf, preserve all 338 indexed history records, and require 2064 core methods, 54 API34 methods, 80 reviewed PNGs, complete display/cold/death/history/signing/application identity and matched developer/player artifacts. No publication, distribution or physical-phone claim."
 }
