@@ -49,3 +49,14 @@ TEST311 compiled matched developer/player APKs and passed 2,064 core methods in 
 API34 executed all 54 methods and retained all 80 PNGs, but one new method failed after its successful `uimsd-damage-recovery-window.png` capture. That image shows the exact 10-turn result of 7 observed healing. The failure was the final direct-row step: the test called the helper for `WndUimsdList`, while `WndUimsdRow` renders actions as touchable text inside its scroll pane. Production routing was not removed, and the test did not actually touch that action.
 
 TEST312 therefore changes only native automation: assert the selected row is an exact hero-damage anchor, locate the visible row-window action, touch it through the pointer path, and retain the required 5-turn total of 4. All core, API34, visual, history and supplemental gates remain mandatory. TEST311 is not accepted; TEST310 stays the verified fallback and physical-phone Back-latency measurement remains pending.
+
+
+## TEST312 native acceptance (2026-10-24)
+
+TEST312 source/request `bcd657b8b4c524b9da00ac44211065b3eb47ab8f` passed the complete acceptance matrix. Both producer paths ran 2,064 core methods in 400 suites with zero failures, errors or skips. API34 passed all 54 methods with zero failure/error/skip and retained all 80 required screenshots; every capture was reviewed without a blank, corrupt or obvious clipping regression.
+
+The corrected native automation found the visible action inside the actual `WndUimsdRow` scroll pane and injected a real pointer touch. The full binary-log case passed: exact hero-damage eligibility, close/reload, Research-lab 10-turn lower-bound total 7, scene restore, exact two healing contributors, query/evidence navigation, byte-identical raw history, direct row action and repeated 5-turn total 4. The retained `uimsd-damage-recovery-window.png` visibly shows “7 observed (at least).”
+
+Matched TEST312 developer/player APKs, history preservation, signing/application identity, regular-player exclusions, exact-APK death order and cold restart/save restoration all passed. All 338 indexed TEST311 predecessor history records are byte-identical and only the reviewed TEST312 record was added. Five display profiles reused TEST310 because protected application inputs are identical and passed their complete layout/hide/restore/confirmation checks.
+
+This closes native acceptance for this fixed hero-damage → healing investigation, not general correlated-window support or the five broader UIMSD capabilities. TEST312 is the latest fully emulator-verified private pair; TEST262 remains the latest actual owner publication. Staging failed closed, nothing was distributed, and physical-phone Back-latency verification remains pending.

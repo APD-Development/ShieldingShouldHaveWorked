@@ -1,3 +1,12 @@
+## TEST312 — Healing-after-damage native acceptance (2026-10-24)
+
+- Source/request `bcd657b8b4c524b9da00ac44211065b3eb47ab8f`; developer run 40102443917 and player run 40102443841.
+- Both producer paths passed 2,064 core methods /400 suites with zero failures/errors/skips; API34 passed 54/54 and retained 80 visually reviewed PNGs.
+- The real `WndUimsdRow` touch path passed the complete persisted Healing-after-damage flow: 10-turn total 7, restore/evidence navigation, unchanged raw history, then row-action 5-turn total 4.
+- Developer APK SHA-256 `94215b09eb07ca7440ab07132af8a81a3db1801e027d998743137676ac8bb1f1`; player APK SHA-256 `6480fa6124f6b576f8b7390bf64d33481ce858462ddc7829e9c7cfc0a2447179`. Signing/application identity and regular-player feature exclusion passed.
+- All 338 indexed TEST311 predecessor records are byte-identical, one TEST312 record was added, and compiled developer/player histories match. Exact-APK death order and cold restart/save restoration passed; five protected-input-equivalent display profiles passed.
+- Accepted only as a private emulator-verified pair. Staging failed closed; no publication, distribution or physical-phone claim. TEST310 remains fallback, TEST311 rejected, TEST262 latest owner publication. Back latency remains a physical-measurement task.
+
 ## TEST311 compiled but rejected; TEST312 native harness correction (2026-10-24)
 
 - TEST311 matched developer/player APKs compiled from `47a73c4be2bfb8586d8996069bcd0e780c773cdf`; hashes and sizes are recorded in `APD-TEST311-VERIFICATION-2026-10-24.json`.
