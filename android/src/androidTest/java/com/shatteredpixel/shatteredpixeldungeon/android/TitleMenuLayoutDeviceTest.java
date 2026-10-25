@@ -82,7 +82,7 @@ public class TitleMenuLayoutDeviceTest {
             nativeTap(centre("btnFade"));Thread.sleep(900);
             TopScoresDeviceTest.render(()->{try{assertFalse(((Component)field(Game.scene(),"btnChanges")).active);}catch(Exception e){throw new RuntimeException(e);}});
             TopScoresDeviceTest.screenshot("main-title-hidden.png");
-            Point[] reset=new Point[1];TopScoresDeviceTest.render(()->reset[0]=com.watabou.noosa.Camera.main.cameraToScreen(3,3));
+            Point[] reset=new Point[1];TopScoresDeviceTest.render(()->reset[0]=com.watabou.noosa.Camera.main.cameraToScreen(com.watabou.noosa.Camera.main.width/2f,com.watabou.noosa.Camera.main.height/2f));
             nativeTap(reset[0]);waitFor(()->{try{return ((Component)field(Game.scene(),"btnChanges")).active;}catch(Exception e){return false;}});
             TopScoresDeviceTest.render(()->{try{assertTrue(((Component)field(Game.scene(),"btnChanges")).active);}catch(Exception e){throw new RuntimeException(e);}});
             TopScoresDeviceTest.screenshot("main-title-restored.png");
@@ -94,9 +94,9 @@ public class TitleMenuLayoutDeviceTest {
                 com.watabou.noosa.PointerArea target=(com.watabou.noosa.PointerArea)field(icon,"hotArea");
                 assertTrue("Footer hit area reaches outside the visible icon",target.x+4<icon.left());
                 assertTrue("Footer hit area extends upward",target.y<icon.top());
-                outerEdge[0]=target.camera().cameraToScreen(target.x+2,target.y+target.height/2);
+                outerEdge[0]=target.camera().cameraToScreen(icon.left()-2,target.y+target.height/2);
             }catch(Exception e){throw new RuntimeException(e);}});
-            nativeTap(outerEdge[0]);Thread.sleep(900);
+            nativeTap(outerEdge[0]);waitFor(()->{try{return !((Component)field(Game.scene(),"btnChanges")).active;}catch(Exception e){return false;}});
             TopScoresDeviceTest.render(()->{try{
                 assertFalse("Outside-icon touch must hide UI",((Component)field(Game.scene(),"btnChanges")).active);
             }catch(Exception e){throw new RuntimeException(e);}});
