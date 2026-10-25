@@ -1,3 +1,8 @@
+## 2026-10-25T14:00:56Z — Native Deaths-row context action (verification pending)
+- Added fixed and custom bounded final-turn selection over the core-verified DeathContext model, with stale-history rejection and explicit unknown/non-causal wording.
+- Four focused core methods added; full target 2073/402. No telemetry/save/history/gameplay/RNG/scoring/build-request change.
+- TEST312 remains the verified private artifact pair; TEST262 remains the newest APK uploaded to GitHub as a release.
+
 ## 2026-10-24T22:12:54Z — Recorded death-context core accepted
 - Run [40137272801](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/40137272801) passed **2069/401**, zero failure/error/skip; retained artifact `12578106262`, digest `sha256:59b48feefb055637ec0207ebcbd58601920f98deb7f31cae94157c8b63633f03`.
 - All five new bounded chronology/revival/finality/missing-data/identity regressions passed. Core model accepted; native/UI/API34/APK/phone acceptance remains pending.

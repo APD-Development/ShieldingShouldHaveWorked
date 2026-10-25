@@ -140,6 +140,8 @@ public class WndUimsdRow extends Window {
                 actions.add(new Action("Damage after equipping", () -> WndUimsdResearch.equipmentWindow(m,r,row)));
 			if (WndUimsdResearch.canDamageRecoveryWindow(r,row))
                 actions.add(new Action("Healing after damage", () -> WndUimsdResearch.damageRecoveryWindow(m,r,row)));
+			if (WndDeathContext.canOpen(r,row))
+                actions.add(new Action("Death context", () -> WndDeathContext.show(m,row)));
 			if (WndUimsdReport.isRunsTable(def)){
                 actions.add(new Action("Run DNA", () -> WndUimsdResearch.dnaRun(m,row)));
                 actions.add(new Action("Luck laboratory", () -> WndUimsdResearch.luckRun(m,row)));
@@ -353,4 +355,3 @@ public class WndUimsdRow extends Window {
 		ShatteredPixelDungeon.scene().addToFront(new WndUimsdRow(m, line));
 	}
 }
-

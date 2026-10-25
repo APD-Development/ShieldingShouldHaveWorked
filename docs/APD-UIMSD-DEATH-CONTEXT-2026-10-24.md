@@ -19,3 +19,6 @@ Exact source `dea4a490158be46e24a2bd116c2f158de55de391` passed [run40137272801](
 
 ## Acceptance boundary
 The core model is accepted. It has no native UIMSD surface, API34/display verification or APK request. TEST312 remains the latest emulator-verified private pair; TEST262 remains the latest actual owner publication. Physical-device Back latency remains unmeasured. The executable APK request stayed byte-identical at `42af2cfe9a72655b5f1e7a2dbdf4777219b809e0`.
+
+## Native row action — 2026-10-25T14:00:56Z
+Implemented a Deaths-row action with 5/10/25/50/100-turn presets and validated custom 1–1000 input. It uses the same verified DeathContext authority, rejects stale history, restores through existing window contracts and keeps public-only/missing-data caveats visible. Four focused core methods bring the pending full-suite target to 2,073 methods /402 suites. Native/API34/visual acceptance and any APK remain pending; the executable APK request is unchanged.
