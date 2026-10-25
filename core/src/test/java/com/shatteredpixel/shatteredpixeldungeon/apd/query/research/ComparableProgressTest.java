@@ -1,0 +1,106 @@
+package com.shatteredpixel.shatteredpixeldungeon.apd.query.research;
+
+import com.shatteredpixel.shatteredpixeldungeon.apd.query.Filter;
+import com.shatteredpixel.shatteredpixeldungeon.apd.query.Op;
+import com.shatteredpixel.shatteredpixeldungeon.apd.query.Query;
+import com.shatteredpixel.shatteredpixeldungeon.apd.query.QueryResult;
+import com.shatteredpixel.shatteredpixeldungeon.apd.query.Row;
+import com.shatteredpixel.shatteredpixeldungeon.apd.stats.CustomRuleFacts;
+import com.shatteredpixel.shatteredpixeldungeon.apd.stats.Fact;
+import com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKeys;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+public class ComparableProgressTest {
+
+    @Test public void comparableCohortsReportRecentMinusEarlierWithExactEvidence() {
+        ResearchFixture f = new ResearchFixture();
+        complete(f, f.add("old-1", "warrior", 0, 10), 1_000);
+        complete(f, f.add("old-2", "warrior", 0, 30), 2_000);
+        complete(f, f.add("new-1", "warrior", 0, 50), 3_000);
+        complete(f, f.add("new-2", "warrior", 1, 70), 4_000);
+
+        ComparableProgress.Result result = ComparableProgress.compare(
+                f.result(before(f, 2_000)), f.result(after(f, 3_000)), "result.score");
+
+        assertTrue(result.available());
+        assertEquals(40, result.comparison.difference, 0);
+        assertEquals(2, result.earlier.n);
+        assertEquals(2, result.recent.n);
+        assertEquals(1_000, result.earlierFirstMillis);
+        assertEquals(2_000, result.earlierLastMillis);
+        assertEquals(3_000, result.recentFirstMillis);
+        assertEquals(4_000, result.recentLastMillis);
+        assertEquals(7, result.conditions.size());
+        assertTrue(result.interpretation().contains("not proof of improvement"));
+        assertFalse(result.comparison.intervalKnown);
+    }
+
+    @Test public void overlapAndInterleavedDatesFailClosed() {
+        ResearchFixture f = new ResearchFixture();
+        complete(f, f.add("a", "warrior", 0, 10), 1_000);
+        complete(f, f.add("b", "warrior", 0, 20), 2_000);
+        ComparableProgress.Result overlap = ComparableProgress.compare(f.result(), f.result(), "result.score");
+        assertFalse(overlap.available());
+        assertTrue(overlap.problem.contains("same run"));
+
+        QueryResult first = f.result(f.query().addFilter(Filter.num(FactKeys.START_MILLIS, Op.EQ, 2_000)));
+        QueryResult second = f.result(f.query().addFilter(Filter.num(FactKeys.START_MILLIS, Op.EQ, 1_000)));
+        ComparableProgress.Result reversed = ComparableProgress.compare(first, second, "result.score");
+        assertFalse(reversed.available());
+        assertTrue(reversed.problem.contains("earlier cohort"));
+    }
+
+    @Test public void changedOrUnknownRunConditionsAreNeverCalledProgress() {
+        ResearchFixture f = new ResearchFixture();
+        Row old = f.add("old", "warrior", 0, 10); complete(f, old, 1_000);
+        Row changed = f.add("changed", "warrior", 0, 30); complete(f, changed, 2_000);
+        f.num(changed, FactKeys.DIFFICULTY, 4);
+        ComparableProgress.Result difficulty = ComparableProgress.compare(
+                f.result(before(f, 1_000)), f.result(after(f, 2_000)), "result.score");
+        assertFalse(difficulty.available());
+        assertTrue(difficulty.problem.contains("Difficulty"));
+
+        f.num(changed, FactKeys.DIFFICULTY, 3);
+        changed.clear(f.def.indexOf(CustomRuleFacts.IDENTITY));
+        ComparableProgress.Result unknown = ComparableProgress.compare(
+                f.result(before(f, 1_000)), f.result(after(f, 2_000)), "result.score");
+        assertFalse(unknown.available());
+        assertTrue(unknown.problem.contains("Exact custom settings"));
+    }
+
+    @Test public void missingDatesAndMetricsStayUnknownInsteadOfDefaultsOrZero() {
+        ResearchFixture f = new ResearchFixture();
+        Row old = f.add("old", "warrior", 0, 10); complete(f, old, 1_000);
+        Row recent = f.add("recent", "warrior", 0, 30); complete(f, recent, 2_000);
+        recent.clear(f.def.indexOf(FactKeys.START_MILLIS));
+        ComparableProgress.Result noDate = ComparableProgress.compare(
+                f.result(f.query().addFilter(Filter.num("result.score", Op.EQ, 10))),
+                f.result(f.query().addFilter(Filter.num("result.score", Op.EQ, 30))), "result.score");
+        assertFalse(noDate.available());
+        assertTrue(noDate.problem.contains("start date"));
+
+        f.num(recent, FactKeys.START_MILLIS, 2_000);
+        recent.setNum(f.def.indexOf("result.score"), 30, Fact.PROV_INCOMPLETE);
+        ComparableProgress.Result noMetric = ComparableProgress.compare(
+                f.result(before(f, 1_000)), f.result(after(f, 2_000)), "result.score");
+        assertFalse(noMetric.available());
+        assertTrue(noMetric.problem.contains("exact recorded metric"));
+    }
+
+    private static void complete(ResearchFixture f, Row row, long started) {
+        f.num(row, FactKeys.START_MILLIS, started);
+        f.num(row, FactKeys.DIFFICULTY, 3);
+        f.num(row, FactKeys.DIFFICULTY_BALANCE, 0);
+        f.num(row, FactKeys.CHALLENGES, 0);
+    }
+
+    private static Query before(ResearchFixture f, long inclusive) {
+        return f.query().addFilter(Filter.num(FactKeys.START_MILLIS, Op.LE, inclusive));
+    }
+
+    private static Query after(ResearchFixture f, long inclusive) {
+        return f.query().addFilter(Filter.num(FactKeys.START_MILLIS, Op.GE, inclusive));
+    }
+}
