@@ -1,5 +1,5 @@
 # UIMSD connected investigation implementation checklist
-Updated Oct24 ET: TEST312 remains fully emulator-verified (2,064 core /400 suites and54 API34 /80 reviewed captures). A first read-only death-context core slice is now core-verified in run40137272801 (2,069 methods /401 suites, zero fail/error/skip): existing public observations only, bounded adjustable final-turn windows, explicit revival/finality and visible unknowns. It adds no telemetry and is not native acceptance. TEST262 remains the newest actually published owner APK. All five broad capabilities remain partial/pending.
+Updated Oct25 ET: TEST313 remains fully emulator-verified (2,073 core /402 suites and55 API34 /81 reviewed captures). Death-context native acceptance is complete. The first comparable-condition personal-progress core foundation is verified in run40238803735 (2,077 methods /403 suites, zero fail/error/skip): explicit non-overlapping chronological cohorts, exact matching recorded conditions, visible uncertainty and recent-minus-earlier wording without an improvement/causation claim. It adds no telemetry and is not native acceptance. TEST262 remains the newest APK uploaded to GitHub as a release. All five broad capabilities remain partial/pending.
 
 ## Audited baseline
 Accepted supporting-tool baseline: TEST294 /84b465af7e12fce897d318fcf385529a50ad48e2,1,948 core +48 API34 methods/64 captures. First connected equipment-window milestone is now accepted in TEST300 /d41631b3e5b43bf832036426a9e7c7a0694d07ed:1,959 build-time core methods (later1,967 after independent loot regressions),50 unique Android cases verified across the49-pass full run and corrected one-case exact-APK gesture rerun,73 full-suite captures. Exact cold-restart/player Settings and five display profiles also passed. No broader capability is complete on backend/tests/documentation alone.
@@ -13,9 +13,9 @@ Verified TEST301 navigation milestone: per-place Back checkpoints include horizo
 | --- | --- | --- |
 | 1 Search and questions | Partial | Offline conjunctions across events/equipment/class/subclass/floor/version/difficulty/challenges/all 18 controls; explicit sequence and time-window boundaries; extensible translated aliases; visible exact interpretation; unsupported parts fail closed; persist and reopen exact question. |
 | 2 Evidence navigation | Partial | Each calculation opens exact contributors, source run/floor/fight/turn; includes numerator/denominator provenance and unknowns; Back restores filters/sorts/scroll; stale/disclosure changes reject old results; exports retain evidence identities. |
-| 3 Timeline and death investigation | Partial foundation; bounded death-context core verified, native row action pending | Canonical chronological events; health/shield/source/status/equipment/action/resource observations where recorded; adjustable final-turn window; revival versus final death explicit; gaps/unknowns visible; no invented older events or guaranteed-survival claims. |
+| 3 Timeline and death investigation | Partial foundation; bounded death-context native row action verified in TEST313 | Canonical chronological events; health/shield/source/status/equipment/action/resource observations where recorded; adjustable final-turn window; revival versus final death explicit; gaps/unknowns visible; no invented older events or guaranteed-survival claims. |
 | 4 Personal experiments | Partial; named numeric/win-rate workflow verified TEST303 | Named saved question plus A/B definitions and metric; automatically reevaluate qualifying future runs after reload; sample/exclusion/condition differences and uncertainty; exact contributor navigation; separately versioned, nondestructive persistence. |
-| 5 Personal progress | Pending | Time-ordered cohorts with recorded dates; comparable conditions; version/rule/balance strata explicit; uncertainty and missing observations; drill-down/export; never confuse mixed settings with improvement. |
+| 5 Personal progress | Partial foundation; comparable-condition core model verified in run40238803735 | Time-ordered cohorts with recorded dates; comparable conditions; version/rule/balance strata explicit; uncertainty and missing observations; drill-down/export; never confuse mixed settings with improvement. |
 
 ## First end-to-end milestone: equipment-following damage window
 - [x] Select a recorded equipment occurrence, retain current equipment filters/scope.
@@ -57,7 +57,7 @@ This first named-experiment milestone supports numeric mean differences and win 
 - [ ] Timeline/death evidence and necessary forward-only recorded snapshots. The no-new-telemetry DeathContext core model is verified in run40137272801; a native Deaths-row picker is implemented and pending core/API34 presentation evidence, while any necessary forward-only snapshots remain pending.
 - [x] Named numeric/win-rate experiment registry using shared QueryCodec/PopulationStudy and future-run reevaluation (TEST303).
 - [ ] Broader experiment execution over sequence/window questions and additional metrics.
-- [ ] Comparable-condition progress using the same experiment/evidence model.
+- [ ] Comparable-condition progress using the same experiment/evidence model. The fail-closed core comparison foundation is verified in run40238803735; connected document/evidence, persistence/export and native acceptance remain pending.
 - [ ] Benchmark comparison from primary project sources before any specific uniqueness claim.
 - [ ] Storage/latency profiling on representative histories and Android, including recording overhead.
 
