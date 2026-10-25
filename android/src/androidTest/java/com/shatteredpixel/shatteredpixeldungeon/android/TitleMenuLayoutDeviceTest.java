@@ -83,7 +83,7 @@ public class TitleMenuLayoutDeviceTest {
             TopScoresDeviceTest.render(()->{try{assertFalse(((Component)field(Game.scene(),"btnChanges")).active);}catch(Exception e){throw new RuntimeException(e);}});
             TopScoresDeviceTest.screenshot("main-title-hidden.png");
             Point[] reset=new Point[1];TopScoresDeviceTest.render(()->reset[0]=com.watabou.noosa.Camera.main.cameraToScreen(3,3));
-            nativeTap(reset[0]);Thread.sleep(900);
+            nativeTap(reset[0]);waitFor(()->{try{return ((Component)field(Game.scene(),"btnChanges")).active;}catch(Exception e){return false;}});
             TopScoresDeviceTest.render(()->{try{assertTrue(((Component)field(Game.scene(),"btnChanges")).active);}catch(Exception e){throw new RuntimeException(e);}});
             TopScoresDeviceTest.screenshot("main-title-restored.png");
             // A physical finger can land beside the tiny icon. This native press must still
@@ -100,7 +100,7 @@ public class TitleMenuLayoutDeviceTest {
             TopScoresDeviceTest.render(()->{try{
                 assertFalse("Outside-icon touch must hide UI",((Component)field(Game.scene(),"btnChanges")).active);
             }catch(Exception e){throw new RuntimeException(e);}});
-            nativeTap(reset[0]);Thread.sleep(900);
+            nativeTap(reset[0]);waitFor(()->{try{return ((Component)field(Game.scene(),"btnChanges")).active;}catch(Exception e){return false;}});
             TopScoresDeviceTest.render(()->{try{
                 assertTrue("UI must restore after expanded touch",((Component)field(Game.scene(),"btnChanges")).active);
             }catch(Exception e){throw new RuntimeException(e);}});
