@@ -1,3 +1,11 @@
+## TEST313 — Native death-context acceptance (2026-10-25)
+- Application source `eb0053283be631c0286bda7d0efbeb3c13590a11`; developer run40201003446 and player run40201003498. Core/debug passed **2073 methods /402 suites** with zero failure/error/skip; API34 passed **55/55** and all **81** retained PNGs were decoded and reviewed.
+- Actual persisted Deaths rows now open native 10-turn evidence for distinct revived and final deaths, retain explicit non-causation/incomplete-record wording through scene restoration, and leave raw history unchanged.
+- Developer APK SHA-256 `a8db05478ba292822954987a008982697a60104cf33267fa8465e31d660ac0f8`; player APK SHA-256 `47a2b2a4f4dd4b11c628aa78895ee99795dcd6349647209475c6cb2238c15b1e`. Signing/application identity, player feature exclusion, exact death order, cold restart/save preservation and player settings passed.
+- All **339** TEST312 predecessor history records remain byte-identical; only TEST313 was added. Developer/player histories match at **340 indexed records /341 TSV assets**.
+- Display acceptance run40205712754 passed all five profiles on the unchanged TEST313 APK after retaining the raw emulator GL/input failures and correcting only the harness wait/coordinates/renderer. All 25 final PNGs were decoded and visually reviewed.
+- TEST313 is the newest emulator-verified APK pair in GitHub Actions artifacts. TEST262 is still the newest APK uploaded to GitHub as a release. TEST313 was not uploaded as a release, sent to testers or physically phone-tested. Build-request blob `bf0d2b412db8000a8619974acbd63363fdecc2ba` was unchanged by verification.
+
 ## 2026-10-25T14:09:33Z — Native death-context TEST313 candidate requested
 - Full core evidence for source `9815d044b9bcd7a9342cd74f09b1ac817aee393f`: run `40200352834`, artifact `12601428408`, **2,073/402**, zero failure/error/skip; four dedicated native-source guard tests confirmed in retained XML.
 - Added one API34 method and one required screenshot for the actual Deaths-row pointer path, explicit final/revived summaries, scene restoration and raw-history immutability. Expected complete candidate inventory: **55 API34 methods /81 PNGs**.
