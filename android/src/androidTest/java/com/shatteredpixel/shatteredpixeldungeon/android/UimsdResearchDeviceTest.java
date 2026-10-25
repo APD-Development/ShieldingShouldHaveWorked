@@ -160,6 +160,54 @@ public class UimsdResearchDeviceTest {
         }
     }
 
+
+    @Test public void recordedDeathContextShowsFinalAndRevivedEvidenceFromRealHistory()throws Exception{
+        try(ActivityScenario<AndroidLauncher> app=ActivityScenario.launch(AndroidLauncher.class)){
+            Fixture f=begin();
+            java.io.File root=new java.io.File(androidx.test.core.app.ApplicationProvider.getApplicationContext().getCacheDir(),"uimsd-death-context-"+System.nanoTime());
+            DeviceLogs log=new DeviceLogs(root,"death-context",TelemetryVersion.CURRENT,100)
+                    .start("death-context-run",0,"WARRIOR","rules",0,30,false).enter(1).tick(4)
+                    .damageToHero("rat","actors.mobs.Rat",7).heroDies("rat",CombatEvents.SRC_CHAR).revived().tick(4)
+                    .damageToHero("fire","Burning",9).heroDies("fire",CombatEvents.SRC_BLOB)
+                    .end(LifecycleEvents.OUTCOME_DIED,"fire",1,1,0);
+            java.io.File raw=log.close(true);
+            byte[] original=java.nio.file.Files.readAllBytes(raw.toPath());
+            Catalog catalog=new DatasetStore(root).load();
+            Dataset deaths=catalog.dataset(Datasets.DEATHS);assertNotNull(deaths);assertEquals(2,deaths.rows.size());
+            int revivedColumn=deaths.def.indexOf("death.revived"),finalColumn=deaths.def.indexOf("death.final");
+            Row revivedDeath=null,finalDeath=null;
+            for(Row row:deaths.rows){
+                if(row.isKnown(revivedColumn)&&row.num(revivedColumn)==1)revivedDeath=row;
+                if(row.isKnown(finalColumn)&&row.num(finalColumn)==1)finalDeath=row;
+            }
+            assertNotNull("Explicit revived death",revivedDeath);assertNotNull("Explicit final death",finalDeath);
+            Query deathQuery=Query.of(Datasets.DEATHS).withScope(new Scope(Scope.Rules.ALL,"",false,false,false,false));
+            final Row finalRow=finalDeath;
+            render(()->{f.model.setCatalog(catalog);f.model.showQuery(deathQuery);ResultTable table=ResultTable.build(f.model.result(),0,50);
+                for(ResultTable.Line line:table.lines)if(line.row==finalRow){WndUimsdRow.show(f.model,line);return;}fail("Final death row");});
+            tapRowAction("Death context");tap("Last 10 turns");
+            render(()->{try{
+                WndUimsdText text=top(WndUimsdText.class);assertNotNull("Final death context text",text);
+                String summary=(String)field(text,"savedText");
+                assertTrue(summary.contains("Killed by: fire"));assertTrue(summary.contains("Outcome: This death ended the run."));
+                assertTrue(summary.contains("this does not prove survival, causation, or absence of other events."));
+                Runnable restore=text.restoreOnSceneReset();text.hide();restore.run();
+                assertEquals(summary,field(top(WndUimsdText.class),"savedText"));
+            }catch(Exception e){throw new RuntimeException(e);}});
+            PlayRunDeviceTest.visibilityScreenshot("uimsd-death-context.png");
+            closeWindows();
+            final Row revivedRow=revivedDeath;
+            render(()->{f.model.showQuery(deathQuery);ResultTable table=ResultTable.build(f.model.result(),0,50);
+                for(ResultTable.Line line:table.lines)if(line.row==revivedRow){WndUimsdRow.show(f.model,line);return;}fail("Revived death row");});
+            tapRowAction("Death context");tap("Last 10 turns");
+            render(()->{try{
+                String summary=(String)field(top(WndUimsdText.class),"savedText");
+                assertTrue(summary.contains("Killed by: rat"));assertTrue(summary.contains("Outcome: Revived after this death."));
+            }catch(Exception e){throw new RuntimeException(e);}});
+            assertArrayEquals("Read-only context must preserve raw history",original,java.nio.file.Files.readAllBytes(raw.toPath()));
+        }
+    }
+
     private static void render(Runnable task)throws Exception{
         CountDownLatch done=new CountDownLatch(1);AtomicReference<Throwable> error=new AtomicReference<>();
         Game.runOnRenderThread(()->{try{task.run();}catch(Throwable t){error.set(t);}finally{done.countDown();}});

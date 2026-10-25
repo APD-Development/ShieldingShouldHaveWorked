@@ -1,3 +1,8 @@
+## 2026-10-25T14:09:33Z — Native death-context TEST313 candidate requested
+- Full core evidence for source `9815d044b9bcd7a9342cd74f09b1ac817aee393f`: run `40200352834`, artifact `12601428408`, **2,073/402**, zero failure/error/skip; four dedicated native-source guard tests confirmed in retained XML.
+- Added one API34 method and one required screenshot for the actual Deaths-row pointer path, explicit final/revived summaries, scene restoration and raw-history immutability. Expected complete candidate inventory: **55 API34 methods /81 PNGs**.
+- TEST313 is pending full compile/native/visual/history/player acceptance. TEST312 remains the current verified build artifact; TEST262 is the newest APK uploaded to GitHub as a release. Nothing was uploaded as a release or distributed by this checkpoint.
+
 ## 2026-10-25T14:00:56Z — Native Deaths-row context action (verification pending)
 - Added fixed and custom bounded final-turn selection over the core-verified DeathContext model, with stale-history rejection and explicit unknown/non-causal wording.
 - Four focused core methods added; full target 2073/402. No telemetry/save/history/gameplay/RNG/scoring/build-request change.

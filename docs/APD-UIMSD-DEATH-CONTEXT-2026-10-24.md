@@ -22,3 +22,10 @@ The core model is accepted. It has no native UIMSD surface, API34/display verifi
 
 ## Native row action — 2026-10-25T14:00:56Z
 Implemented a Deaths-row action with 5/10/25/50/100-turn presets and validated custom 1–1000 input. It uses the same verified DeathContext authority, rejects stale history, restores through existing window contracts and keeps public-only/missing-data caveats visible. Four focused core methods bring the pending full-suite target to 2,073 methods /402 suites. Native/API34/visual acceptance and any APK remain pending; the executable APK request is unchanged.
+
+## 2026-10-25T14:09:33Z native candidate checkpoint
+
+The native `Death context` row action is full-core green at source `9815d044b9bcd7a9342cd74f09b1ac817aee393f`: run `40200352834` executed 2,073 methods in 402 suites with zero failure, error or skip. Retained XML confirms all four `WndDeathContextTest` cases.
+
+TEST313 now adds a real API34 binary-log path for two distinct recorded deaths in one run: one explicitly revived and one final. It must open both actual Deaths rows, touch the native action and 10-turn choice, retain the outcome/caveat text across scene restoration, capture `uimsd-death-context.png`, and leave the raw log byte-identical. Full debug, 55-method API34, 81-image visual, history, player, identity, save, death-order, cold-restart and display evidence remains pending. TEST312 stays current until all evidence passes; TEST262 remains the newest APK uploaded to GitHub as a release.
+
