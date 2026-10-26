@@ -352,5 +352,66 @@ public class RunSetupDifficultyDeviceTest {
             }
         }
     }
+    @Test
+    public void clericStartsWithoutPrivateFeatureFlagInsteadOfShowingBlackScreen() throws Exception {
+        boolean introBefore = SPDSettings.intro();
+        try (ActivityScenario<AndroidLauncher> scenario = ActivityScenario.launch(AndroidLauncher.class)) {
+            waitUntil("game startup", () -> Gdx.files != null && Game.scene() != null, 120000);
+            final String packagedFeatures = Gdx.files.internal("apd/features.txt").exists()
+                    ? Gdx.files.internal("apd/features.txt").readString("UTF-8") : "";
+            try {
+                onRender(() -> {
+                    com.shatteredpixel.shatteredpixeldungeon.apd.ApdFeatures.parse("");
+                    assertFalse("test regular-player feature flags",
+                            com.shatteredpixel.shatteredpixeldungeon.apd.ApdFeatures.clericPlayable());
+                    assertFalse(com.shatteredpixel.shatteredpixeldungeon.apd.ApdFeatures.grudge());
+                    SPDSettings.intro(false);
+                    GamesInProgress.selectedClass = null;
+                    ShatteredPixelDungeon.switchNoFade(HeroSelectScene.class);
+                });
+                waitUntil("hero selection", () -> Game.scene() instanceof HeroSelectScene, 30000);
+                final AtomicReference<com.watabou.utils.Point> start = new AtomicReference<>();
+                onRender(() -> {
+                    try {
+                        int free = GamesInProgress.firstEmpty(HeroClass.CLERIC);
+                        assertTrue("never replace an existing Cleric save", free >= 0);
+                        GamesInProgress.curSlot = free;
+                        Method select = HeroSelectScene.class.getDeclaredMethod("setSelectedHero", HeroClass.class);
+                        select.setAccessible(true);
+                        select.invoke(Game.scene(), HeroClass.CLERIC);
+                        assertEquals(HeroClass.CLERIC, GamesInProgress.selectedClass);
+                        Field startField = HeroSelectScene.class.getDeclaredField("startBtn");
+                        startField.setAccessible(true);
+                        com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton button =
+                            (com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton) startField.get(Game.scene());
+                        assertTrue("Cleric Start must be usable", button.visible && button.active);
+                        start.set(button.camera().cameraToScreen(
+                                button.left() + button.width()/2f, button.top() + button.height()/2f));
+                    } catch (Exception e) { throw new RuntimeException(e); }
+                });
+                tap(start.get()); // Real touchscreen Start, not direct startRun().
+                waitUntil("Cleric entered the actual dungeon",
+                    () -> Game.scene() instanceof com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene
+                        && com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero != null
+                        && com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero.heroClass == HeroClass.CLERIC,
+                    90000);
+                android.graphics.Bitmap shot = androidx.test.platform.app.InstrumentationRegistry
+                    .getInstrumentation().getUiAutomation().takeScreenshot();
+                assertNotNull("dungeon screenshot", shot);
+                java.io.File dir = new java.io.File(
+                    android.os.Environment.getExternalStoragePublicDirectory(
+                        android.os.Environment.DIRECTORY_PICTURES), "APD-Test-Visuals");
+                assertTrue(dir.isDirectory() || dir.mkdirs());
+                try (java.io.FileOutputStream output = new java.io.FileOutputStream(
+                        new java.io.File(dir, "cleric-unflagged-start.png"))) {
+                    assertTrue(shot.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, output));
+                } finally { shot.recycle(); }
+            } finally {
+                com.shatteredpixel.shatteredpixeldungeon.apd.ApdFeatures.parse(packagedFeatures);
+                SPDSettings.intro(introBefore);
+            }
+        }
+    }
+
 }
 

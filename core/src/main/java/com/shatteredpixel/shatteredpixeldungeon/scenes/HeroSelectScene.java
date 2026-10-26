@@ -45,7 +45,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndChallenges;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndClericRemoved;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHeroInfo;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndKeyBindings;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
@@ -182,11 +181,9 @@ public class HeroSelectScene extends PixelScene {
 
 				if (GamesInProgress.selectedClass == null) return;
 
-				//APD: Cleric is deliberately blocked, see WndClericRemoved, unless the private test build's switch un-bans it
-				if (GamesInProgress.selectedClass == HeroClass.CLERIC && !com.shatteredpixel.shatteredpixeldungeon.apd.ApdFeatures.clericPlayable()){
-					WndClericRemoved.trigger();
-					return;
-				}
+				// Cleric is owner-approved for all alpha player APKs. The normal
+				// player variant intentionally lacks the developer-only feature asset.
+				// Lore remains separately gated by GrudgeHooks.
 
 				//APD: the one-time Cleric grudge warning (reachable only once Cleric is un-banned, and inert while the grudge is switched off).
 				//The run starts when the player dismisses it, so it can never stop anyone from playing Cleric.
