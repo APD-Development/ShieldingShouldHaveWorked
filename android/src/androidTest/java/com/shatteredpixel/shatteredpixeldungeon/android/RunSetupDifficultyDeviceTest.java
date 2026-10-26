@@ -414,7 +414,8 @@ public class RunSetupDifficultyDeviceTest {
                 waitUntil("Cleric entered the actual dungeon",
                     () -> Game.scene() instanceof com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene
                         && com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero != null
-                        && com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero.heroClass == HeroClass.CLERIC,
+                        && com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero.heroClass == HeroClass.CLERIC
+                        && com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero.ready,
                     90000);
                 android.graphics.Bitmap shot = androidx.test.platform.app.InstrumentationRegistry
                     .getInstrumentation().getUiAutomation().takeScreenshot();
