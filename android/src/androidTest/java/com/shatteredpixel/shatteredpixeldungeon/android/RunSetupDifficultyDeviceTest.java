@@ -417,6 +417,15 @@ public class RunSetupDifficultyDeviceTest {
                         && com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero.heroClass == HeroClass.CLERIC
                         && com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero.ready,
                     90000);
+                // Never accept a transient GameScene frame if a later loading scene replaces it.
+                Thread.sleep(3000);
+                onRender(() -> {
+                    assertTrue("Cleric must remain on the dungeon floor after loading",
+                            Game.scene() instanceof com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene
+                                && com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero != null
+                                && com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero.ready
+                                && com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero.heroClass == HeroClass.CLERIC);
+                });
                 android.graphics.Bitmap shot = androidx.test.platform.app.InstrumentationRegistry
                     .getInstrumentation().getUiAutomation().takeScreenshot();
                 assertNotNull("dungeon screenshot", shot);
