@@ -1,43 +1,53 @@
 {
-  "date": "2026-10-25",
-  "previous_source": "bcd657b8b4c524b9da00ac44211065b3eb47ab8f",
-  "previous_application_source": "bcd657b8b4c524b9da00ac44211065b3eb47ab8f",
-  "previous_run": 40102443917,
-  "previous_label": "Codex TEST 312",
+  "date": "2026-10-26",
+  "previous_source": "eb0053283be631c0286bda7d0efbeb3c13590a11",
+  "previous_application_source": "eb0053283be631c0286bda7d0efbeb3c13590a11",
+  "previous_run": 40201003446,
+  "previous_label": "Codex TEST 313",
   "changes": [
     {
       "category": "Developer Commentary",
       "sprite": "ICON_INFO",
-      "title": "Recorded death context uses exact public history",
-      "text": "A bounded read-only model joins one exact case-sensitive Deaths row to already recorded public observations for 1-1000 final turns. It distinguishes revived, final, non-final and unknown outcomes, preserves missing data, and explicitly does not infer survival, causation or absent events.",
+      "title": "Comparable run cohorts with inspectable evidence",
+      "text": "Read-only comparable-condition progress and export identify exact earlier and recent cohorts, recorded matching conditions, run identities, UTC date ranges, unknown metrics, exclusions and uncertainty. No causal improvement claim, historical defaulting, scoring change or raw-history rewrite.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/DeathContext.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/DeathContextTest.java",
-        "docs/APD-UIMSD-DEATH-CONTEXT-2026-10-24.md",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/research/ComparableProgress.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/research/ResearchDocument.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/research/ComparableProgressTest.java",
+        "docs/APD-UIMSD-COMPARABLE-PROGRESS-2026-10-25.md",
         "docs/APD-UIMSD-INVESTIGATION-CHECKLIST.md"
       ]
     },
     {
       "category": "Developer Commentary",
       "sprite": "ICON_CHECKED",
-      "title": "Deaths rows open native final-turn evidence",
-      "text": "Individual Deaths rows gain a Death context action with 5, 10, 25, 50 and 100 turn choices plus validated 1-1000 custom input. The API34 gate uses a persisted binary run to open explicit revived and final deaths through real pointer actions, checks caveats and restoration, captures the new screen and proves raw history unchanged.",
+      "title": "Verified death context and display harness retained",
+      "text": "Preserves the previously emulator-accepted TEST313 death-context view and verification receipt. The supplemental Android display harness keeps supported software rendering, native tap alignment and state-driven waiting without altering gameplay or rebuilding the accepted predecessor APK.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndDeathContext.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndUimsdRow.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/WndDeathContextTest.java",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdResearchDeviceTest.java",
+        ".github/workflows/codex-menu-layout-matrix.yml",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/TitleMenuLayoutDeviceTest.java",
+        "docs/APD-TEST313-VERIFICATION-2026-10-25.json",
+        "docs/APD-UIMSD-DEATH-CONTEXT-2026-10-24.md"
+      ]
+    },
+    {
+      "category": "Developer Commentary",
+      "sprite": "ICON_CHECKED",
+      "title": "Cleric Start no longer traps regular alpha players",
+      "text": "Removes the legacy black-screen Start gate that depended on a developer-only feature file absent from normal player APKs. Both build variants can now start a new Cleric run without changing existing saves, classes, ruleset history or the independently gated lore. New Android real-tap verification explicitly disables private flags and requires reaching the dungeon.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/HeroSelectScene.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/humor/GrudgeSettingsTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/RunSetupDifficultyDeviceTest.java",
         "tools/run-codex-android-checks.sh"
       ]
     },
     {
       "category": "Developer Commentary",
       "sprite": "ICON_INFO",
-      "title": "Strict TEST312 baseline and TEST313 acceptance",
-      "text": "The immediate predecessor is fully emulator-verified TEST312 from producer 40102443917 at source bcd657b8b4c524b9da00ac44211065b3eb47ab8f. Preserve all 339 indexed predecessor records byte-for-byte, append only this reviewed TEST313 record, and require 2073 core methods, 55 API34 methods, 81 reviewed PNGs and every existing player, identity, save, death, cold-restart and display gate.",
+      "title": "Strict core and native verification history",
+      "text": "Retains the first failed 2080-method core run from an outdated Cleric-block test and its corrected passing 2080-method retest. Requires the complete native matrix with the new Cleric screenshot, previous compiled TEST313 history preserved byte for byte, unchanged signing and application ID, paired developer and player checks, and no automatic release.",
       "paths": [
-        "docs/APD-TEST312-VERIFICATION-2026-10-24.json",
-        "docs/APD-UIMSD-DAMAGE-RECOVERY-WINDOW-2026-10-23.md",
         "docs/APD-CODEX-CORE-TEST-REQUEST.txt",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",
@@ -46,5 +56,5 @@
       ]
     }
   ],
-  "commentary": "Intentional TEST313 private candidate for the core-green read-only UIMSD Death context action. Compare against actual compiled and accepted TEST312 producer 40102443917/source bcd657b8b4c524b9da00ac44211065b3eb47ab8f, preserve all 339 indexed predecessor records and append only TEST313. Require 2073 core methods in 402 suites, 55 API34 methods, 81 reviewed PNGs, complete history, identity, save, death-order, cold-restart, display and matched developer/player artifacts. No GitHub release upload, tester distribution or physical-phone claim."
+  "commentary": "Intentional matched private developer/player candidate to correct tester-reproduced Cleric black-screen Start in regular APKs. Use immediate previous actually compiled TEST313 source eb0053283be631c0286bda7d0efbeb3c13590a11 producer 40201003446. Preserve all 340 indexed predecessor history records byte-identically and append one new reviewed record. Core run 40380669686 passed 2080 methods/403 suites. Require full core/debug, 56 API34 checks, 82 validated PNGs including cleric-unflagged-start.png, signing/application identity, save/death/cold-restart, five display profiles and matched player validation. No automatic tester distribution or GitHub Release."
 }
