@@ -402,18 +402,18 @@ public class GrudgeSettingsTest {
 	}
 
 	@Test
-	public void theRunStartHookKeepsTheClericBlockAndNeverStopsAStart() throws Exception {
+	public void clericRunStartNeverUsesTheRemovedBlackScreenAndLoreNeverBlocksStart() throws Exception {
 		String hero = new String( java.nio.file.Files.readAllBytes( new File( System.getProperty( "apd.game.src" ), "scenes/HeroSelectScene.java" ).toPath() ), java.nio.charset.StandardCharsets.UTF_8 );
-		int block = hero.indexOf( "WndClericRemoved.trigger();" );
 		int hook = hero.indexOf( "GrudgeHooks.firstClericRun" );
-		assertTrue( "the Cleric block is still there (the un-ban is the owner's decision)", block > 0 );
-		assertTrue( "the warning hook comes after the block, so it is only reachable once Cleric can be started", hook > block );
-		//the run is started by the same method whether or not the warning was shown
-		assertTrue( hero.contains( "private void startRun()" ) );
-		assertTrue( hero.indexOf( "startRun();", hook ) > hook );
-		//the hook window starts the run however it is closed
+		assertFalse( "approved Cleric starts must never route to the undismissable black screen", hero.contains( "WndClericRemoved.trigger();" ) );
+		assertFalse( "normal APKs must not be blocked by their missing private feature asset", hero.contains( "&& !com.shatteredpixel.shatteredpixeldungeon.apd.ApdFeatures.clericPlayable()" ) );
+		assertTrue( "the separate optional Cleric lore warning is preserved", hook > 0 );
+		assertTrue( "only Cleric runs invoke the optional first-run lore hook",
+				hero.substring(Math.max(0, hook - 130), hook).contains( "selectedClass == HeroClass.CLERIC" ) );
+		assertTrue( "all classes still use the same guarded new-slot start method", hero.contains( "private void startRun()" ) );
+		assertTrue( "both first-run lore completion and the normal path start the run", hero.indexOf( "startRun();", hook ) > hook );
 		String wnd = new String( java.nio.file.Files.readAllBytes( new File( System.getProperty( "apd.game.src" ), "windows/WndClericGrudge.java" ).toPath() ), java.nio.charset.StandardCharsets.UTF_8 );
-		assertTrue( wnd.contains( "onBackPressed" ) && wnd.contains( "proceed.run()" ) );
+		assertTrue( "closing the optional lore warning continues the same start", wnd.contains( "onBackPressed" ) && wnd.contains( "proceed.run()" ) );
 	}
 
 	@Test
