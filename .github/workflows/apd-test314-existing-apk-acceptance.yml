@@ -1,0 +1,98 @@
+name: APD TEST314 exact-APK native acceptance
+on:
+  push:
+    branches: [codex/apd-phone-fixes-2026-10-09]
+    paths: [.github/workflows/apd-test314-existing-apk-acceptance.yml]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  exact-native:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {variant: developer, artifact: 12679410898, digest: 43517d2fb23163fc69d635e35c24a8b5d438df85a54824d93108c4571a78db55}
+          - {variant: player, artifact: 12679246357, digest: b0166515e74180d627faf78e2bbbbc6f15ac7546a6c3416847d8c7445f82e22f}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: {distribution: temurin, java-version: '21'}
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Assert test-only changes since compiled TEST314
+        run: |
+          git diff --name-only eda307d567bd7eacd1b304042747b65d0ea4ed72 HEAD > test-only-diff.txt
+          python3 - <<'PY'
+          p=set(open('test-only-diff.txt').read().splitlines())
+          allow={'.github/workflows/apd-test314-existing-apk-acceptance.yml','android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/RunSetupDifficultyDeviceTest.java'}
+          assert p<=allow, p-allow
+          PY
+      - name: Download and hash check existing compiled APK
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ID: ${{ matrix.artifact }}
+          SHA: ${{ matrix.digest }}
+          VARIANT: ${{ matrix.variant }}
+        run: |
+          gh api repos/${{ github.repository }}/actions/artifacts/$ID/zip > exact-application.zip
+          python3 - <<'PY'
+          import zipfile,os,hashlib,pathlib,io
+          with zipfile.ZipFile('exact-application.zip') as z:
+              p=[n for n in z.namelist() if n.endswith('.apk')]
+              assert len(p)==1
+              apk=z.read(p[0])
+          digest=hashlib.sha256(apk).hexdigest()
+          assert digest==os.environ['SHA'],(digest,os.environ['SHA'])
+          with zipfile.ZipFile(io.BytesIO(apk)) as z:
+              assert ('assets/apd/features.txt' in z.namelist())==(os.environ['VARIANT']=='developer')
+          pathlib.Path('exact.apk').write_bytes(apk)
+          print(os.environ['VARIANT'],len(apk),digest)
+          PY
+      - name: Compile ONLY changed Android instrumentation tests
+        run: |
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36"
+          ./gradlew :android:assembleDebugAndroidTest -PapdTestBuild -PapdBuild=C314
+          test ! -f android/build/outputs/apk/debug/android-debug.apk
+      - name: Enable emulator KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Re-run exact Cleric Start and title UI assertions
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          arch: x86_64
+          target: default
+          profile: pixel_7
+          emulator-options: -no-window -gpu software -no-snapshot -noaudio -no-boot-anim
+          disable-animations: true
+          script: |
+            set -euo pipefail
+            adb logcat -c
+            adb logcat -v time > exact-logcat.txt &
+            adb install -r exact.apk
+            TESTAPK="$(find android/build/outputs/apk/androidTest -name '*.apk' -type f | head -1)"
+            test -n "$TESTAPK"
+            adb install -r "$TESTAPK"
+            adb shell am instrument -w -r -e class 'com.shatteredpixel.shatteredpixeldungeon.android.RunSetupDifficultyDeviceTest#clericStartsWithoutPrivateFeatureFlagInsteadOfShowingBlackScreen,com.shatteredpixel.shatteredpixeldungeon.android.TitleMenuLayoutDeviceTest#titleControlsStaySeparateAndNativeChangesAndHideUiRemainUsable' com.charltonchris29.adhdpixeldungeon.indev.test/androidx.test.runner.AndroidJUnitRunner | tee native-result.txt
+            grep -q '^OK (2 tests)' native-result.txt
+            mkdir -p native-screens
+            adb exec-out cat /sdcard/Pictures/APD-Test-Visuals/cleric-unflagged-start.png > native-screens/cleric-unflagged-start.png
+            python3 - <<'PY'
+            b=open('native-screens/cleric-unflagged-start.png','rb').read()
+            assert b.startswith(bytes.fromhex('89504e470d0a1a0a')) and len(b)>4096,len(b)
+            print('Verified actual Cleric dungeon screenshot bytes',len(b))
+            PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test314-${{ matrix.variant }}-native-evidence
+          path: |
+            test-only-diff.txt
+            native-result.txt
+            exact-logcat.txt
+            native-screens/
+          retention-days: 7

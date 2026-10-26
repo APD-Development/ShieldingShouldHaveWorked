@@ -352,6 +352,21 @@ public class RunSetupDifficultyDeviceTest {
             }
         }
     }
+
+    // Send a true Android touch through the window dispatcher.
+    private static void nativeTapCleric(com.watabou.utils.Point at) throws Exception {
+        long down=android.os.SystemClock.uptimeMillis();
+        for(int action:new int[]{android.view.MotionEvent.ACTION_DOWN,android.view.MotionEvent.ACTION_UP}){
+            android.view.MotionEvent event=android.view.MotionEvent.obtain(down,android.os.SystemClock.uptimeMillis(),action,at.x,at.y,0);
+            event.setSource(android.view.InputDevice.SOURCE_TOUCHSCREEN);
+            try{assertTrue("Android accepted native Cleric Start touch",
+                androidx.test.platform.app.InstrumentationRegistry.getInstrumentation()
+                    .getUiAutomation().injectInputEvent(event,true));}
+            finally{event.recycle();}
+            if(action==android.view.MotionEvent.ACTION_DOWN)Thread.sleep(100);
+        }
+    }
+
     @Test
     public void clericStartsWithoutPrivateFeatureFlagInsteadOfShowingBlackScreen() throws Exception {
         boolean introBefore = SPDSettings.intro();
@@ -389,7 +404,13 @@ public class RunSetupDifficultyDeviceTest {
                                 button.left() + button.width()/2f, button.top() + button.height()/2f));
                     } catch (Exception e) { throw new RuntimeException(e); }
                 });
-                tap(start.get()); // Real touchscreen Start, not direct startRun().
+                nativeTapCleric(start.get());
+                Thread.sleep(1500);
+                onRender(() -> android.util.Log.w(TAG,"CLERIC_START_STATE scene="
+                  +(Game.scene()==null?"null":Game.scene().getClass().getName())
+                  +" selected="+GamesInProgress.selectedClass+" hero="
+                  +(com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero==null?"null":
+                    com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero.heroClass)));
                 waitUntil("Cleric entered the actual dungeon",
                     () -> Game.scene() instanceof com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene
                         && com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero != null
