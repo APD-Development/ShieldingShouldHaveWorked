@@ -71,7 +71,7 @@ jobs:
           emulator-options: -no-window -gpu software -no-snapshot -noaudio -no-boot-anim
           disable-animations: true
           script: |
-            set -euo pipefail
+            set -eu
             adb logcat -c
             adb logcat -v time > exact-logcat.txt &
             adb install -r exact.apk
