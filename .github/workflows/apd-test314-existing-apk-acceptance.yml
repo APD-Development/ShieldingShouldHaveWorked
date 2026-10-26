@@ -2,7 +2,7 @@ name: APD TEST314 player-only compact Cleric acceptance
 on:
   push:
     branches: [codex/apd-phone-fixes-2026-10-09]
-    paths: [.github/workflows/apd-test314-existing-apk-acceptance.yml]
+    paths: [.github/workflows/apd-test314-existing-apk-acceptance.yml, tools/run-test314-exact-android.sh, android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/RunSetupDifficultyDeviceTest.java]
 permissions:
   contents: read
   actions: read
