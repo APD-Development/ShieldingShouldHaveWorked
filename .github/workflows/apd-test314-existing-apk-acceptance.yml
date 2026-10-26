@@ -1,4 +1,4 @@
-name: APD TEST314 player-only compact Cleric acceptance
+name: APD TEST314 matched exact-APK Cleric acceptance
 on:
   push:
     branches: [codex/apd-phone-fixes-2026-10-09]
@@ -15,9 +15,10 @@ jobs:
       matrix:
         include:
           - {variant: player, artifact: 12679246357, digest: b0166515e74180d627faf78e2bbbbc6f15ac7546a6c3416847d8c7445f82e22f}
+          - {variant: developer, artifact: 12679410898, digest: 43517d2fb23163fc69d635e35c24a8b5d438df85a54824d93108c4571a78db55}
     steps:
       - uses: actions/checkout@v4
-        with: {fetch-depth: 10}
+        with: {fetch-depth: 20}
       - uses: actions/setup-java@v4
         with: {distribution: temurin, java-version: '21'}
       - uses: gradle/actions/setup-gradle@v4
