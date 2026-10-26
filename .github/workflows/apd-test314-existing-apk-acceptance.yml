@@ -18,6 +18,7 @@ jobs:
           - {variant: player, artifact: 12679246357, digest: b0166515e74180d627faf78e2bbbbc6f15ac7546a6c3416847d8c7445f82e22f}
     steps:
       - uses: actions/checkout@v4
+        with: {fetch-depth: 5}
       - uses: actions/setup-java@v4
         with: {distribution: temurin, java-version: '21'}
       - uses: gradle/actions/setup-gradle@v4
