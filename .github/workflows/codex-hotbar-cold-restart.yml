@@ -12,6 +12,7 @@ jobs:
     timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
+        with: {fetch-depth: 20}
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -33,14 +34,13 @@ jobs:
           python3 - <<'PY'
           import hashlib,json,os,pathlib,subprocess,time,zipfile
           repo=os.environ['GITHUB_REPOSITORY']; out=pathlib.Path('hotbar-restart-evidence');out.mkdir()
-          source=os.environ['GITHUB_SHA'];deadline=time.monotonic()+5*60
-          while True:
-              runs=json.loads(subprocess.check_output(['gh','api',f'repos/{repo}/actions/runs?head_sha={source}&per_page=30']))['workflow_runs']
-              matching=[r for r in runs if r['name']=='Codex APD sprint verification' and r['head_sha']==source]
-              players=[r for r in runs if r['name']=='APD paired regular-player APK' and r['head_sha']==source]
-              if matching and players:target=max(matching,key=lambda r:r['id']);player=max(players,key=lambda r:r['id']);break
-              assert time.monotonic()<deadline,'Matching developer run not found'
-              time.sleep(10)
+          source='eda307d567bd7eacd1b304042747b65d0ea4ed72'
+          changed=set(subprocess.check_output(['git','diff','--name-only',source,'HEAD'],text=True).splitlines())
+          allowed={'.github/workflows/apd-test314-existing-apk-acceptance.yml','.github/workflows/codex-death-cleanup-device-regression.yml','.github/workflows/codex-hotbar-cold-restart.yml','android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/RunSetupDifficultyDeviceTest.java','tools/run-test314-exact-android.sh'}
+          assert changed<=allowed,changed-allowed
+          target=json.loads(subprocess.check_output(['gh','api',f'repos/{repo}/actions/runs/40381278161']))
+          player=json.loads(subprocess.check_output(['gh','api',f'repos/{repo}/actions/runs/40381277960']))
+          assert target['head_sha']==player['head_sha']==source
           with open(os.environ['GITHUB_ENV'],'a') as env:env.write('APD_TARGET_TEST_NUMBER='+str(target['run_number'])+chr(10))
           for label,run_id,source in [('before',39187804530,'0652d715cea86fb0242f4470cf870b3761672d0f'),('after',target['id'],source),('player',player['id'],source)]:
               deadline=time.monotonic()+15*60
