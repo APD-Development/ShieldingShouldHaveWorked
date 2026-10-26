@@ -4,6 +4,7 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.query.Filter;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.Op;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.Query;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.QueryResult;
+import com.shatteredpixel.shatteredpixeldungeon.apd.query.QueryCodec;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.Row;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.CustomRuleFacts;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.Fact;
@@ -87,6 +88,56 @@ public class ComparableProgressTest {
                 f.result(before(f, 1_000)), f.result(after(f, 2_000)), "result.score");
         assertFalse(noMetric.available());
         assertTrue(noMetric.problem.contains("exact recorded metric"));
+    }
+
+    @Test public void progressDocumentExportsDefinitionsDatesConditionsAndExactContributors() {
+        ResearchFixture f = new ResearchFixture();
+        complete(f, f.add("old", "warrior", 0, 10), 86_400_000L);
+        complete(f, f.add("new", "warrior", 1, 30), 172_800_000L);
+        QueryResult earlier = f.result(before(f, 86_400_000L)), recent = f.result(after(f, 172_800_000L));
+        ComparableProgress.Result result = ComparableProgress.compare(earlier, recent, "result.score");
+        ResearchDocument document = ResearchDocument.progress(earlier, recent, result);
+        assertEquals("Comparable personal progress", document.title);
+        assertEquals(4, document.cards.size());
+        assertTrue(document.cards.get(0).label.contains("recent minus earlier"));
+        assertTrue(document.cards.get(0).detail.contains("1970-01-02"));
+        assertTrue(document.cards.get(0).detail.contains("1970-01-03"));
+        assertEquals("run-new", document.cards.get(0).evidence.get(0).rows.get(0).runId);
+        assertEquals("run-old", document.cards.get(0).evidence.get(1).rows.get(0).runId);
+        String csv = com.shatteredpixel.shatteredpixeldungeon.apd.report.ReportRenderer.csv(document.report(1, "test", false));
+        assertTrue(csv.contains("not proof of improvement or causation"));
+        assertTrue(csv.contains("run-new"));
+        assertTrue(csv.contains("run-old"));
+        assertTrue(csv.contains("Exact query"));
+    }
+
+    @Test public void unavailableProgressDocumentExportsTheExactFailureWithoutEvidence() {
+        ResearchFixture f = new ResearchFixture();
+        Row old = f.add("old", "warrior", 0, 10); complete(f, old, 1_000);
+        Row recent = f.add("recent", "warrior", 0, 30); complete(f, recent, 2_000); f.num(recent, FactKeys.DIFFICULTY, 4);
+        QueryResult earlier = f.result(before(f, 1_000)), newer = f.result(after(f, 2_000));
+        ComparableProgress.Result result = ComparableProgress.compare(earlier, newer, "result.score");
+        ResearchDocument document = ResearchDocument.progress(earlier, newer, result);
+        assertFalse(result.available());
+        assertTrue(document.cards.isEmpty());
+        assertTrue(document.notes.get(0).contains("Difficulty"));
+        assertTrue(com.shatteredpixel.shatteredpixeldungeon.apd.report.ReportRenderer.csv(document.report(1, "test", false)).contains("Difficulty"));
+    }
+
+    @Test public void excludedMetricRowsRemainInspectibleButNotContributors() {
+        ResearchFixture f = new ResearchFixture();
+        complete(f, f.add("old", "warrior", 0, 10), 1_000);
+        complete(f, f.add("new", "warrior", 0, 30), 2_000);
+        Row unknown = f.add("new-unknown", "warrior", 0, 999); complete(f, unknown, 3_000); unknown.clear(f.def.indexOf("result.score"));
+        QueryResult earlier = f.result(before(f, 1_000)), recent = f.result(after(f, 2_000));
+        ComparableProgress.Result result = ComparableProgress.compare(earlier, recent, "result.score");
+        ResearchDocument document = ResearchDocument.progress(earlier, recent, result);
+        assertTrue(result.available());
+        assertEquals(1, result.recent.n); assertEquals(1, result.recent.excluded);
+        assertEquals(1, document.cards.get(0).evidence.get(0).rows.size());
+        assertEquals(2, document.cards.get(3).evidence.get(0).rows.size());
+        assertTrue(document.cards.get(3).detail.contains("1 matching rows excluded"));
+        assertTrue(document.cards.get(3).detail.contains(QueryCodec.encode(recent.query)));
     }
 
     private static void complete(ResearchFixture f, Row row, long started) {

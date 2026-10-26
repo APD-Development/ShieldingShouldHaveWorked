@@ -77,6 +77,40 @@ public final class ResearchDocument {
                 new Evidence("Population A contributors",ar,c.a.contributors),new Evidence("Population B contributors",br,c.b.contributors)));
         return d;
     }
+    /** Connected evidence/export presentation for the fail-closed personal-progress model. */
+    public static ResearchDocument progress(QueryResult earlierRows,QueryResult recentRows,ComparableProgress.Result result){
+        ResearchDocument d=new ResearchDocument("Comparable personal progress");
+        if(result==null){d.notes.add("The comparison is unavailable. No answer was invented.");return d;}
+        d.notes.add(result.interpretation());
+        if(!result.available())return d;
+        d.notes.add("Only exact metric contributors establish dates and matching conditions. Cohort definitions also retain every matching row so excluded unknown or uncertain metric values remain inspectable.");
+        PopulationStudy.Comparison c=result.comparison;ColumnDef metric=recentRows.def.column(c.a.column);
+        String label=PopulationStudy.WIN_RATE.equals(c.a.column) ? "Win rate (%)":metric.label;
+        double divisor=1;if(!PopulationStudy.WIN_RATE.equals(c.a.column)){if(metric.format==ColumnDef.Format.HUNDREDTHS)divisor=100;if(metric.format==ColumnDef.Format.THOUSANDTHS)divisor=1000;}
+        String dates="Earlier: "+CellFormatter.date(result.earlierFirstMillis)+" through "+CellFormatter.date(result.earlierLastMillis)
+                +"; recent: "+CellFormatter.date(result.recentFirstMillis)+" through "+CellFormatter.date(result.recentLastMillis)+".";
+        String interval=c.intervalKnown ? ResearchData.value(c.low/divisor)+" to "+ResearchData.value(c.high/divisor):"? (requirements not met)";
+        d.cards.add(new Card(label+": recent minus earlier",ResearchData.value(c.difference/divisor),Double.isFinite(c.difference)?CellText.EXACT:CellText.UNKNOWN,
+                dates+"\nRecent: n="+c.a.n+", mean="+ResearchData.value(c.a.mean/divisor)+", median="+ResearchData.value(c.a.median/divisor)+", SD="+ResearchData.value(c.a.sd/divisor)+", excluded="+c.a.excluded+".\nEarlier: n="+c.b.n+", mean="+ResearchData.value(c.b.mean/divisor)+", median="+ResearchData.value(c.b.median/divisor)+", SD="+ResearchData.value(c.b.sd/divisor)+", excluded="+c.b.excluded+".\nApproximate 95% difference interval="+interval+". "+c.note,
+                new Evidence("Recent exact metric contributors",recentRows,result.recent.contributors),new Evidence("Earlier exact metric contributors",earlierRows,result.earlier.contributors)));
+        List<String> conditions=new ArrayList<>();conditions.add("Rules identity: "+result.recent.contributors.get(0).ruleset);
+        for(String key:new String[]{com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKeys.APD_VERSION,com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKeys.HERO_CLASS,com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKeys.DIFFICULTY,com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKeys.DIFFICULTY_BALANCE,com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKeys.CHALLENGES,com.shatteredpixel.shatteredpixeldungeon.apd.stats.CustomRuleFacts.IDENTITY}){
+            ColumnDef column=recentRows.def.column(key);conditions.add(column.label+": "+ResearchData.label(recentRows,result.recent.contributors.get(0),key));
+        }
+        conditions.add("These recorded conditions match exactly across all metric contributors. Equipment, route, player choices and unrecorded facts can still differ.");
+        d.cards.add(new Card("Comparable recorded conditions",result.conditions.size()+" exact matches",CellText.EXACT,String.join("\n",conditions),
+                new Evidence("Recent condition records",recentRows,result.recent.contributors),new Evidence("Earlier condition records",earlierRows,result.earlier.contributors)));
+        progressDefinition(d,"Earlier cohort definition",earlierRows,result.earlier,dates);
+        progressDefinition(d,"Recent cohort definition",recentRows,result.recent,dates);
+        return d;
+    }
+    private static void progressDefinition(ResearchDocument d,String title,QueryResult result,PopulationStudy.Sample sample,String dates){
+        Query q=result.query;List<String> lines=new ArrayList<>();lines.add("Exact query: "+QueryCodec.encode(q));
+        lines.add("Rules scope: "+q.scope.rules+" "+q.scope.ruleset+". Hidden-information choice: "+q.showInternal+".");
+        for(Filter filter:q.filters)lines.add(StatusText.describe(result.def,filter));if(q.filters.isEmpty())lines.add("No column filters.");
+        lines.add(dates);lines.add(sample.n+" exact metric contributors; "+sample.excluded+" matching rows excluded from the metric. Excluded values are not zero.");
+        d.cards.add(new Card(title,result.rows.size()+" matching runs",CellText.EXACT,String.join("\n",lines),new Evidence("All matching cohort rows",result,result.rows)));
+    }
     public static ResearchDocument discoveries(Discoveries.Result result){
         ResearchDocument d=new ResearchDocument("Automatic discoveries");
         d.notes.add("Exploratory recorded win-rate contrasts, not causes or predictions. Requires at least 20 known outcomes per group, the same exact rules and APD version, and non-overlapping multiplicity-adjusted Wilson bands. Wins include ascensions; recorded deaths and abandonment remain distinct non-wins. Imported, unfinished, duplicate and uncertain-outcome records do not contribute.");
