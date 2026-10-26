@@ -27,7 +27,7 @@ jobs:
           git diff --name-only eda307d567bd7eacd1b304042747b65d0ea4ed72 HEAD > test-only-diff.txt
           python3 - <<'PY'
           p=set(open('test-only-diff.txt').read().splitlines())
-          allow={'.github/workflows/apd-test314-existing-apk-acceptance.yml','android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/RunSetupDifficultyDeviceTest.java'}
+          allow={'.github/workflows/apd-test314-existing-apk-acceptance.yml','android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/RunSetupDifficultyDeviceTest.java','tools/run-test314-exact-android.sh'}
           assert p<=allow, p-allow
           PY
       - name: Download and hash check existing compiled APK
@@ -70,23 +70,7 @@ jobs:
           profile: pixel_7
           emulator-options: -no-window -gpu software -no-snapshot -noaudio -no-boot-anim
           disable-animations: true
-          script: |
-            set -eu
-            adb logcat -c
-            adb logcat -v time > exact-logcat.txt &
-            adb install -r exact.apk
-            TESTAPK="$(find android/build/outputs/apk/androidTest -name '*.apk' -type f | head -1)"
-            test -n "$TESTAPK"
-            adb install -r "$TESTAPK"
-            adb shell am instrument -w -r -e class 'com.shatteredpixel.shatteredpixeldungeon.android.RunSetupDifficultyDeviceTest#clericStartsWithoutPrivateFeatureFlagInsteadOfShowingBlackScreen,com.shatteredpixel.shatteredpixeldungeon.android.TitleMenuLayoutDeviceTest#titleControlsStaySeparateAndNativeChangesAndHideUiRemainUsable' com.charltonchris29.adhdpixeldungeon.indev.test/androidx.test.runner.AndroidJUnitRunner | tee native-result.txt
-            grep -q '^OK (2 tests)' native-result.txt
-            mkdir -p native-screens
-            adb exec-out cat /sdcard/Pictures/APD-Test-Visuals/cleric-unflagged-start.png > native-screens/cleric-unflagged-start.png
-            python3 - <<'PY'
-            b=open('native-screens/cleric-unflagged-start.png','rb').read()
-            assert b.startswith(bytes.fromhex('89504e470d0a1a0a')) and len(b)>4096,len(b)
-            print('Verified actual Cleric dungeon screenshot bytes',len(b))
-            PY
+          script: bash tools/run-test314-exact-android.sh
       - uses: actions/upload-artifact@v4
         if: always()
         with:
