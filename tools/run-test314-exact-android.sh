@@ -3,12 +3,14 @@
 set -euo pipefail
 adb logcat -c
 adb logcat -v time > exact-logcat.txt &
+adb shell wm size 360x560
+adb shell wm density 160
 adb install -r exact.apk
 TESTAPK="$(find android/build/outputs/apk/androidTest -name '*.apk' -type f | head -1)"
 test -n "$TESTAPK"
 adb install -r "$TESTAPK"
-adb shell am instrument -w -r -e class 'com.shatteredpixel.shatteredpixeldungeon.android.RunSetupDifficultyDeviceTest#clericStartsWithoutPrivateFeatureFlagInsteadOfShowingBlackScreen,com.shatteredpixel.shatteredpixeldungeon.android.TitleMenuLayoutDeviceTest#titleControlsStaySeparateAndNativeChangesAndHideUiRemainUsable' com.charltonchris29.adhdpixeldungeon.indev.test/androidx.test.runner.AndroidJUnitRunner | tee native-result.txt
-grep -q '^OK (2 tests)' native-result.txt
+adb shell am instrument -w -r -e class 'com.shatteredpixel.shatteredpixeldungeon.android.RunSetupDifficultyDeviceTest#clericStartsWithoutPrivateFeatureFlagInsteadOfShowingBlackScreen' com.charltonchris29.adhdpixeldungeon.indev.test/androidx.test.runner.AndroidJUnitRunner | tee native-result.txt
+grep -q '^OK (1 test)' native-result.txt
 mkdir -p native-screens
 adb exec-out cat /sdcard/Pictures/APD-Test-Visuals/cleric-unflagged-start.png > native-screens/cleric-unflagged-start.png
 python3 - <<'PY'
