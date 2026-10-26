@@ -57,7 +57,7 @@ This first named-experiment milestone supports numeric mean differences and win 
 - [ ] Timeline/death evidence and necessary forward-only recorded snapshots. TEST313 verifies the no-new-telemetry DeathContext model and native Deaths-row picker through persisted revived/final rows, scene restoration, exact evidence and byte-identical raw history; broader canonical timeline coverage and any necessary forward-only snapshots remain pending.
 - [x] Named numeric/win-rate experiment registry using shared QueryCodec/PopulationStudy and future-run reevaluation (TEST303).
 - [ ] Broader experiment execution over sequence/window questions and additional metrics.
-- [ ] Comparable-condition progress using the same experiment/evidence model. The fail-closed core comparison foundation is verified in run40238803735; connected document/evidence, persistence/export and native acceptance remain pending.
+- [ ] Comparable-condition progress using the same experiment/evidence model. The fail-closed comparison foundation is verified in run40238803735 and its exact evidence/export document in run40336065670; persistent entry/navigation and native acceptance remain pending.
 - [ ] Benchmark comparison from primary project sources before any specific uniqueness claim.
 - [ ] Storage/latency profiling on representative histories and Android, including recording overhead.
 

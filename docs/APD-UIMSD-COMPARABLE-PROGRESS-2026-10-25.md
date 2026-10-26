@@ -28,3 +28,12 @@ The numeric direction is recent minus earlier. The interpretation explicitly say
 ## Boundaries
 
 This is a read-only core/model foundation. It adds no UI, export, telemetry, gameplay, save/history migration, raw-history mutation, scoring change, Custom Rules change or RNG use. No APK was built. TEST313 remains the newest emulator-verified developer/player APK pair in GitHub Actions artifacts; TEST262 remains the newest APK uploaded to GitHub as a release. Physical-device behavior is unmeasured.
+
+
+## Evidence/export checkpoint — 2026-10-26T14:07:14Z
+
+Exact source `7c2d46edae9bc884bac1bd1309259249be2335ba` passed the complete core suite in [run 40336065670](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/40336065670), job `121617849976`: 2,080 methods in 403 suites, zero failures, errors or skips. Retained artifact `12655929494`, 979,736 bytes, digest `sha256:21acd6482b14a33c419b5828f2a876e43d953efe6a6dfd333859dfa6ef4512d7`.
+
+The verified model now produces one read-only `ResearchDocument` shared with the existing report exporters. It contains recent-minus-earlier, exact UTC date ranges, exact matching rules/version/class/difficulty/balance/challenges/Custom Rules, sample and exclusion counts, uncertainty, both exact query encodings, separate contributor evidence, and all matching cohort rows. Unknown or uncertain metric rows remain visible in cohort-definition evidence but are not contributors and never become zero. Failed comparisons contain the exact rejection and no contributor evidence.
+
+Three new tests retain the exported disclaimer and run identities, reject unavailable conditions without evidence, and distinguish all matching rows from exact contributors. No native screen or persistence entry was added in this checkpoint. No APK was built; TEST313 remains the newest emulator-verified pair in GitHub Actions artifacts and TEST262 remains the newest APK uploaded to GitHub as a release.
