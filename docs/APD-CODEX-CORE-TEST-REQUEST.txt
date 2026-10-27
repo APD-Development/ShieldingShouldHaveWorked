@@ -106,3 +106,6 @@ Fixture correction after run39505527082: production compiled and2019 tests execu
 
 
 2026-10-27T14:08:10.128Z — test-only correction after core run 40517582101 compiled all production source but executed zero JUnit methods because the new invalid-dataset fixture omitted the existing Scope import. Add only that import; retain all three navigation assertions and the unchanged full 2083-method /403-suite requirement. Preserve the raw failed run and do not edit or trigger the APK build request.
+
+
+2026-10-27T14:13:25.856Z — test-fixture correction after run 40518242628 executed all 2083 methods/403 suites with exactly one failure. The successful-reopen fixture uses ResearchFixture's intentionally internal-capable query, so explicitly allow disclosure in that success case; retain the separate disclosure-off rejection test unchanged. Re-run all 2083 methods with zero failures/errors/skips; no production or APK build-request change.

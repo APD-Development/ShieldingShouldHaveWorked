@@ -155,7 +155,7 @@ public class ComparableProgressTest {
 
         ResearchPins reopened = ResearchPins.load(file);
         ComparableProgressEntry.Opened opened = ComparableProgressEntry.open(
-                f.catalog(), reopened, "different-current-rules", false, "result.score");
+                f.catalog(), reopened, "different-current-rules", true, "result.score");
         ResearchDocument document = opened.document();
 
         assertTrue(opened.result.available());
