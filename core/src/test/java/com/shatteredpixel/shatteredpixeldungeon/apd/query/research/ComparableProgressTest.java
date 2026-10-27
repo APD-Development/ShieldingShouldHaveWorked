@@ -6,6 +6,7 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.query.Query;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.QueryResult;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.QueryCodec;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.Row;
+import com.shatteredpixel.shatteredpixeldungeon.apd.query.Scope;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.CustomRuleFacts;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.Fact;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKeys;

@@ -103,3 +103,6 @@ Fixture correction after run39505527082: production compiled and2019 tests execu
 
 
 2026-10-27T14:03:43.401Z — persistent comparable-progress navigation core gate. Run the complete suite with three additional ComparableProgressTest methods; expect 2083 methods /403 suites, 0 failures/errors/skips. Verify persistent checksummed population A reopens as the explicit earlier cohort and B as recent, exact stored queries remain byte-identical, opening is read-only, hidden disclosure requires an explicit current choice, and missing/non-Runs snapshots fail closed without silently translating conditions. Retain recent-minus-earlier direction, exact contributor/all-matching evidence, all2080 predecessor methods, TEST314's bounded Cleric acceptance, all18 rules, frozen score authorities, saves/raw history and RNG. Core only: do not edit or trigger docs/APD-CODEX-BUILD-REQUEST.txt and do not claim native/API34/physical-phone acceptance.
+
+
+2026-10-27T14:08:10.128Z — test-only correction after core run 40517582101 compiled all production source but executed zero JUnit methods because the new invalid-dataset fixture omitted the existing Scope import. Add only that import; retain all three navigation assertions and the unchanged full 2083-method /403-suite requirement. Preserve the raw failed run and do not edit or trigger the APK build request.
