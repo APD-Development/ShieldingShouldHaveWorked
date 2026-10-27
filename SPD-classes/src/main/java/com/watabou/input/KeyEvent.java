@@ -68,6 +68,19 @@ public class KeyEvent {
 		keyEvents.add( event );
 	}
 	
+	// Scan only queued events. A pending Android Back press should not wait
+	// behind the next frame's rendering; other input keeps its normal order.
+	static boolean containsBackPress(Iterable<KeyEvent> events){
+		for (KeyEvent event : events){
+			if (event.pressed && event.code == Input.Keys.BACK) return true;
+		}
+		return false;
+	}
+
+	public static synchronized boolean hasPendingBackPress(){
+		return containsBackPress(keyEvents);
+	}
+
 	public static synchronized void processKeyEvents(){
 		if (keyEvents.isEmpty()) {
 			return;

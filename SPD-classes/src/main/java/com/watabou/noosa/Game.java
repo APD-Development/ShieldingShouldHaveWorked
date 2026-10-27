@@ -32,6 +32,7 @@ import com.watabou.glwrap.Blending;
 import com.watabou.glwrap.Vertexbuffer;
 import com.watabou.input.ControllerHandler;
 import com.watabou.input.InputHandler;
+import com.watabou.input.KeyEvent;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
@@ -157,6 +158,16 @@ public class Game implements ApplicationListener {
 		if (justResumed){
 			justResumed = false;
 			if (DeviceCompat.isAndroid()) return;
+		}
+
+		// The Android system Back callback queues into KeyEvent rather than
+		// libGDX's input processor. If it arrived before this frame, drain all
+		// pending input in its existing pointer/key/scroll order before drawing.
+		// Otherwise drawing can block the Back handler for an additional frame.
+		// Scene switches must still create the new scene before dispatch.
+		if (!requestedReset && scene != null && inputHandler != null
+				&& KeyEvent.hasPendingBackPress()) {
+			inputHandler.processAllEvents();
 		}
 
 		NoosaScript.get().resetCamera();

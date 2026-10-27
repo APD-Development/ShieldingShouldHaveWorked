@@ -1,3 +1,6 @@
+## 2026-10-27T23:29:11.327Z — Android Back responsiveness candidate pending core
+- Actual branch base `23d0aeadedeb193bcb6d7580f7d1470bb99d42b8`. Real Android system Back could wait behind frame rendering because Game.render drew before processing input; callback lacked requestRendering. Candidate checks queued Back before draw on a stable scene while preserving queue order and other frames, and wakes rendering after callback. Three queue-recognition tests added, full core pending. This is not yet phone-verified and no APK/build request changed. Preserve TEST314/TEST313/TEST262 receipts.
+
 ## 2026-10-27T22:05:09Z — Exact floor/equipment timeline core accepted
 - Source `4ebea36d2c33a85d3fcc631663686c7008843cdf` / tree `517568b711d4d9e80d6c3768199b49b1815dcdef`; run [40591652701](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/40591652701), job `122497146085`, passed **2086/403** with zero failure/error/skip. Artifact `12773574394`, 978,037 bytes, digest `sha256:7af9e01d63b69120cae12a577e2140ab1d44a672ff0a31ff0d0c2bd181606dbd`.
 - RunTurnBrowser and DeathContext now expose exact public floor-enter/known-exit and equipment-on/known-off transitions already present in canonical records. Open intervals, hidden rows, other runs and missing turns remain excluded/unknown; three new methods preserve explicit incomplete/non-causal wording.

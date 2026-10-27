@@ -212,6 +212,9 @@ public class AndroidLauncher extends AndroidApplication {
 		KeyEvent.addKeyEvent(new KeyEvent(Input.Keys.BACK, true, trace));
 		BackTrace.stage(trace, "key-down-enqueued", "");
 		KeyEvent.addKeyEvent(new KeyEvent(Input.Keys.BACK, false, trace));
+		// The Android callback does not itself pass through libGDX input.
+		// Wake an on-demand or throttled renderer so the queued Back is handled.
+		if (Gdx.graphics != null) Gdx.graphics.requestRendering();
 	}
 
 	@Override
