@@ -140,6 +140,66 @@ public class ComparableProgressTest {
         assertTrue(document.cards.get(3).detail.contains(QueryCodec.encode(recent.query)));
     }
 
+    @Test public void persistentPopulationPinsReopenTheSameReadOnlyProgressDocument() throws Exception {
+        ResearchFixture f = new ResearchFixture();
+        complete(f, f.add("old", "warrior", 0, 10), 1_000);
+        complete(f, f.add("new", "warrior", 1, 30), 2_000);
+        java.io.File root = java.nio.file.Files.createTempDirectory("progress-entry-").toFile();
+        java.io.File file = ResearchPins.file(root);
+        ResearchPins stored = new ResearchPins(null, null)
+                .with(true, before(f, 1_000), "rules")
+                .with(false, after(f, 2_000), "rules");
+        stored.store(file);
+        byte[] before = java.nio.file.Files.readAllBytes(file.toPath());
+
+        ResearchPins reopened = ResearchPins.load(file);
+        ComparableProgressEntry.Opened opened = ComparableProgressEntry.open(
+                f.catalog(), reopened, "different-current-rules", false, "result.score");
+        ResearchDocument document = opened.document();
+
+        assertTrue(opened.result.available());
+        assertEquals("Comparable personal progress", document.title);
+        assertEquals(4, document.cards.size());
+        assertEquals(QueryCodec.encode(stored.a), QueryCodec.encode(opened.earlier.query));
+        assertEquals(QueryCodec.encode(stored.b), QueryCodec.encode(opened.recent.query));
+        assertTrue(document.cards.get(0).label.contains("recent minus earlier"));
+        assertArrayEquals(before, java.nio.file.Files.readAllBytes(file.toPath()));
+    }
+
+    @Test public void progressEntryRequiresExplicitHiddenDisclosureWithoutChangingPins() throws Exception {
+        ResearchFixture f = new ResearchFixture();
+        complete(f, f.add("old", "warrior", 0, 10), 1_000);
+        complete(f, f.add("new", "warrior", 0, 30), 2_000);
+        ResearchPins pins = new ResearchPins(null, null)
+                .with(true, before(f, 1_000).withShowInternal(true), "rules")
+                .with(false, after(f, 2_000), "rules");
+        String earlier = QueryCodec.encode(pins.a), recent = QueryCodec.encode(pins.b);
+
+        ComparableProgressEntry.Opened blocked = ComparableProgressEntry.open(
+                f.catalog(), pins, "rules", false, "result.score");
+
+        assertNull(blocked.result);
+        assertTrue(blocked.document().cards.isEmpty());
+        assertTrue(blocked.document().notes.get(0).contains("Explicitly enable"));
+        assertEquals(earlier, QueryCodec.encode(pins.a));
+        assertEquals(recent, QueryCodec.encode(pins.b));
+    }
+
+    @Test public void progressEntryRejectsMissingAndNonRunSnapshotsWithoutInventingNavigation() {
+        ResearchFixture f = new ResearchFixture();
+        ComparableProgressEntry.Opened missing = ComparableProgressEntry.open(
+                f.catalog(), new ResearchPins(null, null), "rules", false, "result.score");
+        assertTrue(missing.document().notes.get(0).contains("population A is earlier"));
+        ResearchPins other = new ResearchPins(
+                Query.of("items").withScope(Scope.DEFAULT.withRules(Scope.Rules.SPECIFIC, "rules")),
+                Query.of("items").withScope(Scope.DEFAULT.withRules(Scope.Rules.SPECIFIC, "rules")));
+        ComparableProgressEntry.Opened wrong = ComparableProgressEntry.open(
+                f.catalog(), other, "rules", false, "result.score");
+        assertTrue(wrong.document().notes.get(0).contains("Runs dataset"));
+        assertNull(wrong.earlier);
+        assertNull(wrong.recent);
+    }
+
     private static void complete(ResearchFixture f, Row row, long started) {
         f.num(row, FactKeys.START_MILLIS, started);
         f.num(row, FactKeys.DIFFICULTY, 3);

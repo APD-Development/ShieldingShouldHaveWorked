@@ -52,6 +52,7 @@ public final class WndUimsdResearch {
         List<WndUimsdList.Entry> entries=new ArrayList<>();List<Runnable> actions=new ArrayList<>();
         add(entries,actions,"Run DNA","Defined combat, healing, equipment and exploration rates; compare two run fingerprints.",()->runs(m,r->chooseRun(m,r,"Run DNA",row->document(m,ResearchDocument.dna(r,RunDna.build(r,row))))));
         add(entries,actions,"Compare Run DNA","Choose run A and run B; inspect both original runs behind every difference.",()->runs(m,r->chooseRun(m,r,"Run A",a->chooseRun(m,r,"Run B",b->document(m,ResearchDocument.dnaComparison(r,RunDna.build(r,a),RunDna.build(r,b)))))));
+        add(entries,actions,ComparableProgressEntry.TITLE,"Use persistent population A as the earlier cohort and B as the recent cohort; choose a metric and inspect the exact definitions and contributors.",()->progressMenu(m));
         add(entries,actions,"Luck laboratory","Compare recorded generated loot and enemies against matching finished, random-seed runs. No scoring changes.",()->runs(m,r->chooseRun(m,r,"Luck laboratory",row->presentLuck(m,r,row))));
         add(entries,actions,"Automatic discoveries","Find exploratory win-rate contrasts with sufficient matched data, then inspect the contributors.",()->runs(m,r->work(m,"Automatic discoveries",()->ResearchDocument.discoveries(Discoveries.build(r)),d->document(m,d))));
         add(entries,actions,"Statistical investigation lab","Capture filtered populations A and B, choose a metric, compare samples and inspect evidence.",()->studyMenu(m));
@@ -226,6 +227,34 @@ public final class WndUimsdResearch {
         add(entries,actions,"Open population B","Reopen its exact captured query.",()->openPin(m,false));
         menu(m,"Statistical investigation lab","Capture A, change your table filters, then capture B. These snapshots are separate from saved views and never change run history.",entries,actions,()->studyMenu(m));
     }
+    private static void progressMenu(UimsdModel m){
+        List<WndUimsdList.Entry> entries=new ArrayList<>();List<Runnable> actions=new ArrayList<>();
+        add(entries,actions,"Capture current query as earlier cohort (A)","Stores the exact ungrouped query, rules and disclosure choices in persistent population A.",()->pin(m,true));
+        add(entries,actions,"Capture current query as recent cohort (B)","Stores the exact ungrouped query, rules and disclosure choices in persistent population B.",()->pin(m,false));
+        add(entries,actions,"Compare earlier A with recent B","Choose a metric. Results are recent minus earlier and fail closed unless recorded conditions and dates are comparable.",()->pickProgressMeasure(m));
+        add(entries,actions,"Open earlier cohort A","Reopen the exact stored query.",()->openPin(m,true));
+        add(entries,actions,"Open recent cohort B","Reopen the exact stored query.",()->openPin(m,false));
+        menu(m,ComparableProgressEntry.TITLE,"This reuses the persistent A/B population snapshots from Statistical investigation lab. Capturing here explicitly replaces that A or B definition, never run history. The result is observational and is not proof of improvement or causation.",entries,actions,()->progressMenu(m));
+    }
+    private static void pickProgressMeasure(UimsdModel m){
+        try{
+            ResearchPins p=pins(m);
+            if(p.a==null || p.b==null){tell(ComparableProgressEntry.TITLE,"Capture both earlier A and recent B first.");return;}
+            if(!Datasets.RUNS.equals(p.a.dataset) || !Datasets.RUNS.equals(p.b.dataset)){tell(ComparableProgressEntry.TITLE,"Both stored cohorts must come from the Runs table. No other-table conditions were ignored.");return;}
+            Dataset data=m.catalog().dataset(Datasets.RUNS);
+            if(data==null){tell(ComparableProgressEntry.TITLE,"The Runs dataset is unavailable in this build.");return;}
+            List<WndUimsdList.Entry> entries=new ArrayList<>();List<Runnable> actions=new ArrayList<>();
+            add(entries,actions,"Win rate (%)","Finished runs with exact outcomes; ascensions count as wins.",()->progress(m,p,PopulationStudy.WIN_RATE));
+            for(ColumnDef column:data.def.columns())if(column.type==ColumnDef.Type.NUM && (!column.isInternal() || p.a.showInternal && p.b.showInternal && m.query().showInternal))
+                add(entries,actions,column.label,column.description,()->progress(m,p,column.id));
+            menu(m,"Progress metric","Recent B minus earlier A. Exact metric values contribute; matching unknown or uncertain rows remain inspectable and are never zero.",entries,actions,()->pickProgressMeasure(m));
+        }catch(IOException e){tell(ComparableProgressEntry.TITLE,e.getMessage());}
+    }
+    private static void progress(UimsdModel m,ResearchPins p,String measure){
+        Catalog cat=m.catalog();String rules=m.currentRuleset();boolean hidden=m.query().showInternal;
+        work(m,ComparableProgressEntry.TITLE,()->ComparableProgressEntry.open(cat,p,rules,hidden,measure).document(),d->document(m,d));
+    }
+
     private static void openPin(UimsdModel m,boolean first){try{ResearchPins p=pins(m);Query q=first?p.a:p.b;if(q==null)tell("Population","Capture this population first.");else UimsdScene.showResearchEvidence(m,q);}catch(IOException e){tell("Population",e.getMessage());}}
     private static void pickMeasure(UimsdModel m){
         pickMeasure(m,false);
