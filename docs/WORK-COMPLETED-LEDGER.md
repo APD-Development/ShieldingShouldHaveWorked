@@ -1,3 +1,7 @@
+## 2026-10-27T23:33:51.236Z — Android Back responsiveness: core accepted, private candidate verification pending
+- Source `a0f40f229c4273f0d7154d43b3b119b491851c2e` full core [40602479045](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/40602479045) passed 2,089 methods/404 suites (0 failed/error/skip), including three new queue detection/preservation regressions. Android frame path schedules already queued Back before draw on stable scenes; wake renderer after Android callback without changing duplicate gate. Device latency unknown.
+- Intentional private developer/player build request against previous compiled TEST314 source `eda307d567bd7eacd1b304042747b65d0ea4ed72`; reviewed all 23 meaningful changed paths including both ledgers, manifest and request. APK/debug/API34/visual/identity/history/save/phone status pending. Preserve TEST314, TEST313 and TEST262 published receipt.
+
 ## 2026-10-27T23:29:11.327Z — Android Back responsiveness candidate pending core
 - Actual branch base `23d0aeadedeb193bcb6d7580f7d1470bb99d42b8`. Real Android system Back could wait behind frame rendering because Game.render drew before processing input; callback lacked requestRendering. Candidate checks queued Back before draw on a stable scene while preserving queue order and other frames, and wakes rendering after callback. Three queue-recognition tests added, full core pending. This is not yet phone-verified and no APK/build request changed. Preserve TEST314/TEST313/TEST262 receipts.
 
