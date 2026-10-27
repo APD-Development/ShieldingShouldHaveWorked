@@ -135,4 +135,33 @@ public class DeathContextTest {
         assertTrue(context.summary().contains("Recorded as non-final"));
         assertTrue(context.summary().contains("no revival is established"));
     }
+
+    @Test
+    public void exactFloorAndEquipmentTransitionsAppearInsideDeathWindow() {
+        Fixture f = fixture("timeline", 20L, 0L, 1L);
+
+        DatasetDef equipment = EventDatasets.equipment();
+        Row gear = new Row("gear", null, "timeline", equipment.size());
+        gear.setText(equipment.indexOf("equip.item"), "Mail", Fact.PROV_RECORDED);
+        gear.setNum(equipment.indexOf("equip.start"), 17, Fact.PROV_RECORDED);
+        gear.setNum(equipment.indexOf("equip.end"), 19, Fact.PROV_RECORDED);
+        f.catalog.add(new Dataset(equipment, Arrays.asList(gear), new ArrayList<Dataset.RunInfo>()));
+
+        DatasetDef floors = EventDatasets.floors();
+        Row visit = new Row("visit", null, "timeline", floors.size());
+        visit.setNum(floors.indexOf("floor.depth"), 3, Fact.PROV_RECORDED);
+        visit.setNum(floors.indexOf("floor.enterTurn"), 1, Fact.PROV_RECORDED);
+        visit.setNum(floors.indexOf("floor.exitTurn"), 18, Fact.PROV_RECORDED);
+        visit.setNum(floors.indexOf("floor.exit"), 0, Fact.PROV_RECORDED);
+        f.catalog.add(new Dataset(floors, Arrays.asList(visit), new ArrayList<Dataset.RunInfo>()));
+
+        DeathContext context = new DeathContext(f.catalog, f.death, 5);
+
+        assertEquals(4, context.observedRecords());
+        assertEquals(4, context.recordedTurns());
+        assertTrue(context.summary().contains("Turn 17: Equipment put on: Item Mail"));
+        assertTrue(context.summary().contains("Turn 18: Floor left"));
+        assertTrue(context.summary().contains("Turn 19: Equipment taken off: Item Mail"));
+        assertTrue(context.summary().contains("Turn 20: Death: killed by Gnoll brute"));
+    }
 }

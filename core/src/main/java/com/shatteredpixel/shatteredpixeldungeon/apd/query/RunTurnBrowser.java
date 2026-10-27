@@ -25,7 +25,14 @@ public final class RunTurnBrowser {
         for (Dataset ds : catalog.datasets()) {
             String id = ds.def.id;
             if (!EventDatasets.isEventDataset(id) && !FactDatasets.isFactDataset(id)) continue;
-            if (EventDatasets.EQUIPMENT.equals(id) || EventDatasets.FLOORS.equals(id)) continue;
+            if (EventDatasets.EQUIPMENT.equals(id)) {
+                max = Math.max(max, equipmentTransitions(ds));
+                continue;
+            }
+            if (EventDatasets.FLOORS.equals(id)) {
+                max = Math.max(max, floorTransitions(ds));
+                continue;
+            }
             String clockName = FactDatasets.isFactDataset(id) ? FactDatasets.TURN : EventDatasets.prefixOf(id)+".turn";
             int ti = ds.def.indexOf(clockName);
             if (ti < 0) continue;
@@ -54,6 +61,77 @@ public final class RunTurnBrowser {
             }
         }
         lastTurn = max;
+    }
+
+    private long equipmentTransitions(Dataset ds) {
+        long max = 1;
+        int start = ds.def.indexOf("equip.start");
+        int end = ds.def.indexOf("equip.end");
+        for (Row row : ds.rows) {
+            if (!runId.equals(row.runId) || !row.publicRow) continue;
+            if (known(row,start) && row.num(start) >= 1) {
+                long turn = row.num(start);
+                max = Math.max(max,turn);
+                add(turn,transition(ds,row,"Equipment put on",
+                        "equip.item","equip.slot","equip.depth","equip.level"));
+            }
+            if (known(row,end) && row.num(end) >= 1) {
+                long turn = row.num(end);
+                max = Math.max(max,turn);
+                add(turn,transition(ds,row,"Equipment taken off",
+                        "equip.item","equip.slot"));
+            }
+        }
+        return max;
+    }
+
+    private long floorTransitions(Dataset ds) {
+        long max = 1;
+        int enter = ds.def.indexOf("floor.enterTurn");
+        int exit = ds.def.indexOf("floor.exitTurn");
+        for (Row row : ds.rows) {
+            if (!runId.equals(row.runId) || !row.publicRow) continue;
+            if (known(row,enter) && row.num(enter) >= 1) {
+                long turn = row.num(enter);
+                max = Math.max(max,turn);
+                add(turn,transition(ds,row,"Floor entered",
+                        "floor.depth","floor.entry","floor.levelClass","floor.feeling"));
+            }
+            if (known(row,exit) && row.num(exit) >= 1) {
+                long turn = row.num(exit);
+                max = Math.max(max,turn);
+                add(turn,transition(ds,row,"Floor left",
+                        "floor.depth","floor.exit"));
+            }
+        }
+        return max;
+    }
+
+    private static boolean known(Row row, int column) {
+        return column >= 0 && column < row.size() && row.isKnown(column);
+    }
+
+    private static String transition(Dataset ds, Row row, String title, String... columns) {
+        StringBuilder line = new StringBuilder(title);
+        int count = 0;
+        for (String id : columns) {
+            ColumnDef column = column(ds.def,id);
+            if (column == null || !row.isKnown(column.index())) continue;
+            line.append(count++ == 0 ? ": " : ", ").append(column.label).append(" ")
+                    .append(CellFormatter.cellOpen(row,column).text);
+        }
+        return line.toString();
+    }
+
+    private static ColumnDef column(DatasetDef def, String id) {
+        for (ColumnDef column : def.columns()) if (id.equals(column.id)) return column;
+        return null;
+    }
+
+    private void add(long turn, String event) {
+        List<String> at = timeline.get(turn);
+        if (at == null) timeline.put(turn,at=new ArrayList<>());
+        at.add(event);
     }
 
     public long turn(){return current;}
