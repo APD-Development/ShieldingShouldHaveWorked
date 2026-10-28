@@ -45,11 +45,20 @@ public class APDTextScene extends PixelScene {
  private final List<ChangeInfo> changes=new ArrayList<>();
  private static String authored(String text){return com.shatteredpixel.shatteredpixeldungeon.apd.text.AuthoredLanguage.english(text,SPDSettings.apdAdultHumor());}
  private String read(String path){try{return Gdx.files.internal(path).readString("UTF-8");}catch(Exception e){return "";}}
+ private Group visiblePage;
  @Override public void create(){
-  super.create();changes.clear();
+  super.create();
+  int w=Camera.main.width,h=Camera.main.height;
+  add(new TitleBackground(w,h));add(new ColorBlock(w,h,0x44000000));
+  refreshPage();
+ }
+ // A page change replaces only page widgets and their own cameras/listeners.
+ // Keep the scene, background and main scene input routing alive.
+ private void refreshPage(){
+  if(visiblePage!=null){remove(visiblePage);visiblePage.destroy();}
+  visiblePage=new Group();add(visiblePage);changes.clear();
   int w=Camera.main.width,h=Camera.main.height;
   RectF insets=getCommonInsets();
-  add(new TitleBackground(w,h));add(new ColorBlock(w,h,0x44000000));
   Component title;
   if(page==Page.CHANGES){
    com.shatteredpixel.shatteredpixeldungeon.windows.IconTitle nativeTitle=new com.shatteredpixel.shatteredpixeldungeon.windows.IconTitle(Icons.CHANGES.get(),"APD Changes");
@@ -57,7 +66,7 @@ public class APDTextScene extends PixelScene {
   }else{
    RenderedTextBlock newsTitle=renderTextBlock("APD News",12);newsTitle.hardlight(Window.TITLE_COLOR);newsTitle.setPos((w-newsTitle.width())/2,insets.top+6);title=newsTitle;
   }
-  add(title);
+  visiblePage.add(title);
   final int paneWidth=(int)Math.min(page==Page.CHANGES?135:220,w-insets.left-insets.right-12);
   final float left=insets.left+(w-insets.left-insets.right-paneWidth)/2f;
   ScrollPane pane=new ScrollPane(new Component()){
@@ -69,7 +78,7 @@ public class APDTextScene extends PixelScene {
   float paneHeight=Math.max(20,h-insets.bottom-28-paneTop);
   panel.size(paneWidth+panel.marginHor(),paneHeight+panel.marginVer());
   panel.x=left-panel.marginLeft();panel.y=paneTop-panel.marginTop();
-  add(panel);add(pane);Component content=pane.content();float y=0;
+  visiblePage.add(panel);visiblePage.add(pane);Component content=pane.content();float y=0;
   int total=0;
   if(page==Page.CHANGES){
    List<ApdHistory.Build> builds=historyBuilds();
@@ -116,20 +125,20 @@ public class APDTextScene extends PixelScene {
   content.setSize(paneWidth,y+4);
   pane.setRect(left,title.bottom()+6,paneWidth,Math.max(20,h-insets.bottom-28-title.bottom()-6));
   final int count=total;
-  StyledButton older=new StyledButton(page==Page.CHANGES?Chrome.Type.GREY_BUTTON_TR:Chrome.Type.RED_BUTTON,"Older",6){@Override protected void onClick(){if(page==Page.CHANGES)buildSelected+=BUILDS_PER_PAGE;else newsPage++;ShatteredPixelDungeon.seamlessResetScene();}};
-  StyledButton newer=new StyledButton(page==Page.CHANGES?Chrome.Type.GREY_BUTTON_TR:Chrome.Type.RED_BUTTON,"Newer",6){@Override protected void onClick(){if(page==Page.CHANGES)buildSelected=Math.max(0,buildSelected-BUILDS_PER_PAGE);else newsPage--;ShatteredPixelDungeon.seamlessResetScene();}};
+  StyledButton older=new StyledButton(page==Page.CHANGES?Chrome.Type.GREY_BUTTON_TR:Chrome.Type.RED_BUTTON,"Older",6){@Override protected void onClick(){if(page==Page.CHANGES)buildSelected+=BUILDS_PER_PAGE;else newsPage++;refreshPage();}};
+  StyledButton newer=new StyledButton(page==Page.CHANGES?Chrome.Type.GREY_BUTTON_TR:Chrome.Type.RED_BUTTON,"Newer",6){@Override protected void onClick(){if(page==Page.CHANGES)buildSelected=Math.max(0,buildSelected-BUILDS_PER_PAGE);else newsPage--;refreshPage();}};
   int selected=page==Page.CHANGES?buildSelected:newsPage;
   older.enable(selected+(page==Page.CHANGES?BUILDS_PER_PAGE:1)<count);newer.enable(selected>0);
   float buttonWidth=page==Page.CHANGES?(paneWidth-4)/3f:(paneWidth-2)/2f;
-  newer.setRect(left,h-insets.bottom-22,buttonWidth,20);add(newer);
+  newer.setRect(left,h-insets.bottom-22,buttonWidth,20);visiblePage.add(newer);
   float olderLeft=newer.right()+2;
   if(page==Page.CHANGES){
    StyledButton versions=new StyledButton(Chrome.Type.GREY_BUTTON_TR,"Versions",6){@Override protected void onClick(){showHistoryOptions();}};
-   versions.setRect(olderLeft,newer.top(),buttonWidth,20);add(versions);olderLeft=versions.right()+2;
+   versions.setRect(olderLeft,newer.top(),buttonWidth,20);visiblePage.add(versions);olderLeft=versions.right()+2;
   }
-  older.setRect(olderLeft,newer.top(),buttonWidth,20);add(older);
+  older.setRect(olderLeft,newer.top(),buttonWidth,20);visiblePage.add(older);
   ExitButton exit=new ExitButton(){@Override protected void onClick(){onBackPressed();}};
-  exit.setPos(w-insets.right-exit.width(),insets.top);add(exit);
+  exit.setPos(w-insets.right-exit.width(),insets.top);visiblePage.add(exit);
  }
  private List<ApdHistory.Build> historyBuilds(){
   return technicalHistory?ApdHistory.builds(read("apd/history/index.tsv")):ApdReleaseNotes.releases(read("apd/releases/index.tsv"));
@@ -141,7 +150,7 @@ public class APDTextScene extends PixelScene {
   List<String> options=Arrays.asList("Release notes","Build records (technical)","Choose version");
   addToFront(new com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList("History","",options,null,(index,checked)->{
    if(index==2)showBuildRanges(historyBuilds(),0);
-   else{technicalHistory=index==1;buildSelected=0;ShatteredPixelDungeon.seamlessResetScene();}
+   else{technicalHistory=index==1;buildSelected=0;refreshPage();}
   }));
  }
  private int categoryColor(String category){
@@ -172,7 +181,7 @@ public class APDTextScene extends PixelScene {
   int end=Math.min(builds.size(),start+ApdHistory.PAGE_SIZE);List<String> labels=new ArrayList<>();
   for(int i=start;i<end;i++)labels.add(historyLabel(builds.get(i)));
   addToFront(new com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList("Choose version","",labels,null,(index,checked)->{
-   buildSelected=start+index;ShatteredPixelDungeon.seamlessResetScene();
+   buildSelected=start+index;refreshPage();
   }));
  }
  private class NewsCard extends StyledButton {

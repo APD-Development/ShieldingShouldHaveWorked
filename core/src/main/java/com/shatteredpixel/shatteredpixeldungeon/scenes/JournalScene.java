@@ -53,6 +53,45 @@ public class JournalScene extends PixelScene {
 	public static final int WIDTH_L     = 216;
 
 	public static int lastIDX = 0;
+	private NinePatch journalPanel;
+	private com.watabou.noosa.ui.Component currentTab;
+	private final StyledButton[] tabButtons = new StyledButton[4];
+
+	private void showSelectedTab(){
+		if(currentTab != null){
+			remove(currentTab);
+			currentTab.destroy();
+		}
+		switch(lastIDX){
+			case 1: currentTab = new WndJournal.CatalogTab(); break;
+			case 2: currentTab = new WndJournal.GuideTab(); break;
+			case 3: currentTab = new WndJournal.AlchemyTab(); break;
+			default: currentTab = new WndJournal.BadgesTab(); break;
+		}
+		add(currentTab);
+		currentTab.setRect(journalPanel.x + journalPanel.marginLeft(),
+				journalPanel.y + journalPanel.marginTop(),
+				journalPanel.width() - journalPanel.marginHor(),
+				journalPanel.height() - journalPanel.marginVer());
+		if(currentTab instanceof WndJournal.CatalogTab)
+			((WndJournal.CatalogTab)currentTab).updateList();
+		else if(currentTab instanceof WndJournal.GuideTab)
+			((WndJournal.GuideTab)currentTab).updateList();
+	}
+
+	private void selectTab(int index){
+		if(index < 0 || index >= tabButtons.length || index == lastIDX) return;
+		lastIDX = index;
+		showSelectedTab();
+		for(int i=0;i<tabButtons.length;i++){
+			StyledButton button = tabButtons[i];
+			if(button==null)continue;
+			button.setRect(button.left(),button.top(),button.width(),i == index ? 25 : 20);
+			button.icon().brightness(i == index ? 1f : 0.6f);
+			align(button);
+		}
+	}
+
 
 	@Override
 	public void create() {
@@ -109,51 +148,14 @@ public class JournalScene extends PixelScene {
 		panel.y = insets.top + top;
 		add(panel);
 
-		switch (lastIDX){
-			case 0: default:
-				WndJournal.BadgesTab badges = new WndJournal.BadgesTab();
-				add(badges);
-				badges.setRect(panel.x + panel.marginLeft(),
-						panel.y + panel.marginTop(),
-						panel.width() - panel.marginHor(),
-						panel.height() - panel.marginVer());
-				break;
-			case 1:
-				WndJournal.CatalogTab catalog = new WndJournal.CatalogTab();
-				add(catalog);
-				catalog.setRect(panel.x + panel.marginLeft(),
-						panel.y + panel.marginTop(),
-						panel.width() - panel.marginHor(),
-						panel.height() - panel.marginVer());
-				catalog.updateList();
-				break;
-			case 2:
-				WndJournal.GuideTab guidebook = new WndJournal.GuideTab();
-				add(guidebook);
-				guidebook.setRect(panel.x + panel.marginLeft(),
-						panel.y + panel.marginTop(),
-						panel.width() - panel.marginHor(),
-						panel.height() - panel.marginVer());
-				guidebook.updateList();
-				break;
-			case 3:
-				WndJournal.AlchemyTab alchemy = new WndJournal.AlchemyTab();
-				add(alchemy);
-				alchemy.setRect(panel.x + panel.marginLeft(),
-						panel.y + panel.marginTop(),
-						panel.width() - panel.marginHor(),
-						panel.height() - panel.marginVer());
-				break;
-		}
+		journalPanel = panel;
+		showSelectedTab();
 
 		StyledButton btnBadges =  new StyledButton(Chrome.Type.GREY_BUTTON_TR, ""){
 			@Override
 			protected void onClick() {
-				if (lastIDX != 0) {
-					lastIDX = 0;
-				}
-				ShatteredPixelDungeon.seamlessResetScene();
 				super.onClick();
+				selectTab(0);
 			}
 
 			@Override
@@ -166,15 +168,13 @@ public class JournalScene extends PixelScene {
 		align(btnBadges);
 		if (lastIDX != 0) btnBadges.icon().brightness(0.6f);
 		addToBack(btnBadges);
+		tabButtons[0] = btnBadges;
 
 		StyledButton btnCatalog =  new StyledButton(Chrome.Type.GREY_BUTTON_TR, ""){
 			@Override
 			protected void onClick() {
-				if (lastIDX != 1) {
-					lastIDX = 1;
-				}
-				ShatteredPixelDungeon.seamlessResetScene();
 				super.onClick();
+				selectTab(1);
 			}
 			@Override
 			protected String hoverText() {
@@ -186,15 +186,13 @@ public class JournalScene extends PixelScene {
 		align(btnCatalog);
 		if (lastIDX != 1) btnCatalog.icon().brightness(0.6f);
 		addToBack(btnCatalog);
+		tabButtons[1] = btnCatalog;
 
 		StyledButton btnGuide =  new StyledButton(Chrome.Type.GREY_BUTTON_TR, ""){
 			@Override
 			protected void onClick() {
-				if (lastIDX != 2) {
-					lastIDX = 2;
-				}
-				ShatteredPixelDungeon.seamlessResetScene();
 				super.onClick();
+				selectTab(2);
 			}
 			@Override
 			protected String hoverText() {
@@ -206,15 +204,13 @@ public class JournalScene extends PixelScene {
 		align(btnGuide);
 		if (lastIDX != 2) btnGuide.icon().brightness(0.6f);
 		addToBack(btnGuide);
+		tabButtons[2] = btnGuide;
 
 		StyledButton btnAlchemy =  new StyledButton(Chrome.Type.GREY_BUTTON_TR, ""){
 			@Override
 			protected void onClick() {
-				if (lastIDX != 3) {
-					lastIDX = 3;
-				}
-				ShatteredPixelDungeon.seamlessResetScene();
 				super.onClick();
+				selectTab(3);
 			}
 			@Override
 			protected String hoverText() {
@@ -226,6 +222,7 @@ public class JournalScene extends PixelScene {
 		align(btnAlchemy);
 		if (lastIDX != 3) btnAlchemy.icon().brightness(0.6f);
 		addToBack(btnAlchemy);
+		tabButtons[3] = btnAlchemy;
 
 		addToBack(BG);
 
