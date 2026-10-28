@@ -50,15 +50,21 @@ the scene lifecycle itself.
   dataset replacement and single-consumption scene requests.
 - `bash -n tools/run-codex-android-checks.sh` passed.
 
-This is a focused local subset, not the full Gradle/core suite. UimsdScene and
-UimsdGate require full-game compilation in Android/Gradle verification. No APK
-was built, no GitHub Actions was triggered, and no physical-phone speed or
-complete lag-resolution claim is made. TEST319 remains rejected.
+The complete Gradle core gate subsequently passed at source
+`288b6f59ae568ffbc263bd31be6931d092261c9e`, run `40712827076`, job
+`122902408110`: 2,110 methods /409 suites, zero failures/errors/skips, with all
+six RunTurnWindow cases retained. Artifact `12827556330` has ZIP SHA-256
+`6b75b65643cd2da47554462e21754ad35e7034a1b158dc370e9bdb3a2d92f65a`.
+No physical-phone speed or complete lag-resolution claim is made. TEST319
+remains rejected. A subsequent native-only test adds actual Android Back timing
+across nine menu routes with a 250ms responsive-title budget. The footer test now
+waits until the restore tween re-enables Hide UI before retapping the exact same
+outside-icon location, preserving its native hit and hide assertions.
 
 ## Next verification
 
-Obtain the repository-required specific approval for GitHub Actions. Run the
-full core suite and Android compilation/native checks on this exact source,
+Following the owner's reiterated request after the verification/build question,
+continue with the full core suite and Android compilation/native checks on this exact source,
 including actual UIMSD entry timing and Back across all menu destinations.
 Retain prior failed footer-touch checks rather than masking or skipping them.
 Inspect resulting timing evidence before deciding whether remaining menu scene

@@ -1,49 +1,62 @@
 {
   "date": "2026-10-28",
-  "previous_source": "4e0306e2409309f7f890bcf0aec7415fe7af42d3",
-  "previous_application_source": "df5cc85c9a2a0d8a291e55386eab5c7093b12141",
-  "previous_run": 40616453743,
-  "previous_label": "Codex TEST 318",
+  "previous_source": "72a484112eebb8fe79c82e9348711cd46b6c9948",
+  "previous_application_source": "646cccb5e96df0ed2c47fe0ffac4710b8e506e81",
+  "previous_run": 40703096742,
+  "previous_label": "Codex TEST 319",
   "changes": [
     {
       "category": "Quality of Life",
       "sprite": "ICON_CHECKED",
-      "title": "UIMSD prepares its fully usable Home before the title-menu tap",
-      "text": "While the title is visible and UIMSD is permitted, a low-priority daemon prepares the exact saved layouts, cryptographically validated history catalog and initial Home statistics. Tapping claims only a fully READY exact-match model; changed history, rules or scope falls back to the unchanged authoritative loader.",
+      "title": "UIMSD opens without blocking the rendering thread on history preparation",
+      "text": "Recorder flushing and warm-history freshness scans run on the loader. Exact validated saved layouts, catalog and Home statistics are reused after the flush when still current; changed history follows full validation. A ready Home is built before the first scene draw.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdWarmCache.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/TitleScene.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdModel.java",
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/UimsdScene.java",
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/UimsdGate.java"
       ]
     },
     {
+      "category": "Quality of Life",
+      "sprite": "ICON_CHECKED",
+      "title": "Back and table pages avoid repeated work",
+      "text": "UIMSD preserves exact query results for its four nearest Back destinations, verifies dataset identity before reuse and changes pages without running the same query again. Android Back applies a pending menu transition before drawing the outgoing screen again. APD Settings implementation is unchanged.",
+      "paths": [
+        "SPD-classes/src/main/java/com/watabou/noosa/Game.java"
+      ]
+    },
+    {
       "category": "Developer Commentary",
       "sprite": "ICON_CHECKED",
-      "title": "Warm-cache identity, invalidation and title wiring are guarded",
-      "text": "Three permanent cache tests cover READY single-owner handoff, changed raw-history rejection and rule/scope mismatch. The title guard positively checks the approved hook placement while retaining the prior responsive-layout checksum. Full core run 40701500539 passed 2100 methods across 408 suites.",
+      "title": "Exact results and background ownership have regression coverage",
+      "text": "New tests check background-only flushing, post-flush invalidation, exact warm catalog and Home transfer, stale-load rejection, bounded Back results, pagination and scene-request single consumption. Complete core run40712827076 passed2110 methods in409 suites with zero failure, error or skip.",
       "paths": [
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/NavigationViewportTest.java",
         "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdWarmCacheTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/UimsdWiringTest.java",
+        "core/src/test/java/com/watabou/noosa/SceneRequestTest.java",
         "docs/APD-CODEX-CORE-TEST-REQUEST.txt"
       ]
     },
     {
       "category": "Developer Commentary",
-      "sprite": "ICON_CHECKED",
-      "title": "Android acceptance follows the approved in-place Settings behavior",
-      "text": "The native restoration suite no longer waits for an ordinary Settings close to rebuild UIMSD; it requires the same scene and no stale window. The realistic 72-run timing fixture separately records background preparation and requires a READY tap-time handoff under one second without waiting, with single-use ownership.",
+      "sprite": "ICON_INFO",
+      "title": "Actual menu Back timing and completed-animation footer touches are required",
+      "text": "Android Back fixtures explicitly enter the title. A physical-key timing check covers nine menu routes with a250ms responsiveness budget and no fixed sleep inside the measurement. UIMSD timing is included in the standard native inventory. Footer retaps wait for the restore animation to re-enable Hide UI, retaining the outside-icon hit and hide assertions. Display profiles use only the exact-source producer, never an older ancestral APK.",
       "paths": [
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdRestoreDeviceTest.java",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdDeviceTimingTest.java"
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/AndroidBackDeviceTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/TitleMenuLayoutDeviceTest.java",
+        "tools/run-codex-android-checks.sh",
+        ".github/workflows/codex-menu-layout-matrix.yml"
       ]
     },
     {
       "category": "Developer Commentary",
       "sprite": "ICON_INFO",
-      "title": "Strict TEST319 comparison uses the actual compiled TEST318 pair",
-      "text": "TEST318 developer and player APKs compiled, but its broad Android run is rejected after four failures and an invalid placeholder image. Preserve all 345 indexed TEST318 history records, append one reviewed TEST319 record, and require complete native, visual, identity, save and matched-pair evidence before acceptance. Physical phone speed remains unmeasured.",
+      "title": "Preserve compiled TEST319 history while verifying this private pair",
+      "text": "TEST319 compiled both variants but failed Android acceptance and was not distributed. Preserve its346 indexed records exactly, append one reviewed record, and require full core, Android, timing, visual, identity and matched-player evidence. Physical REDMAGIC responsiveness remains unverified.",
       "paths": [
+        "docs/APD-MENU-UIMSD-LATENCY-2026-10-28.md",
+        "docs/APD-TEST319-VERIFICATION-2026-10-28.json",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",
         "docs/APD-NEXT-BUILD-HISTORY.json",
@@ -51,5 +64,5 @@
       ]
     }
   ],
-  "commentary": "One necessary private matched developer/player candidate for the owner-reported UIMSD opening delay. Compare against immediate previous actually compiled TEST318 source/request 4e0306e2409309f7f890bcf0aec7415fe7af42d3, developer run40616453743 and paired player run40616453748. TEST318 is not accepted: its Android job recorded four failures after 51/58 methods and invalid visual evidence. Preserve all 345 indexed predecessor records byte-for-byte and add one reviewed current record. Require 2100 core methods/408 suites, debug build, all58 API34 methods including realistic title-prewarm/handoff timing, all valid workflow screenshots, five display profiles, matched signer/application ID/history, saves, cold restart and death-order evidence. Do not claim physical REDMAGIC improvement, publish, distribute, clear data or uninstall."
+  "commentary": "Necessary matched private developer/player candidate for the owner-reiterated UIMSD opening and menu Back latency request, excluding APD Settings. Full core2110/409 passed in40712827076 at288b6f59. Immediate previous actually compiled developer TEST319 request/source72a484112eebb8fe79c82e9348711cd46b6c9948, run40703096742, APK SHA2565129659a752a6b7d0ac454287b7ab80acbaabce55201cd160abe0e391984b6b7. Preserve all346 predecessor records and add exactly one. Native-only additions measure nine real Back routes and wait for footer restoration completion without weakening touch assertions. Require matched APKs, full2110core, complete API34 including UIMSD timing, five displays, valid reviewed images, identity/history/save gates. No release/distribution or physical-phone lag-fix claim."
 }

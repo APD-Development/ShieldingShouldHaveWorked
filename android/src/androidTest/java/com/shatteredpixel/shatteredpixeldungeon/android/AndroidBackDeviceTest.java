@@ -61,6 +61,58 @@ public class AndroidBackDeviceTest {
 				&& !Game.switchingScene(), 30000);
 	}
 
+	@Test
+	public void menuBackReachesAResponsiveTitleWithoutHalfSecondWaits() throws Exception {
+		try (ActivityScenario<AndroidLauncher> scenario = ActivityScenario.launch(AndroidLauncher.class)){
+			enterTitle();
+			boolean guideSeen=com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdUimsdGuideSeen();
+			com.shatteredpixel.shatteredpixeldungeon.scenes.APDTextScene.Page oldPage=
+					com.shatteredpixel.shatteredpixeldungeon.scenes.APDTextScene.page;
+			Class<? extends com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene> oldBack=
+					com.shatteredpixel.shatteredpixeldungeon.scenes.APDTextScene.backTo;
+			List<String> slow=new ArrayList<>();
+			try {
+				onRender(()->com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdUimsdGuideSeen(true));
+				List<Runnable> routes=java.util.Arrays.asList(
+					()->ShatteredPixelDungeon.switchNoFade(com.shatteredpixel.shatteredpixeldungeon.scenes.AboutScene.class),
+					()->ShatteredPixelDungeon.switchNoFade(JournalScene.class),
+					()->ShatteredPixelDungeon.switchNoFade(com.shatteredpixel.shatteredpixeldungeon.scenes.RankingsScene.class),
+					()->ShatteredPixelDungeon.switchNoFade(com.shatteredpixel.shatteredpixeldungeon.scenes.StartScene.class),
+					()->ShatteredPixelDungeon.switchNoFade(com.shatteredpixel.shatteredpixeldungeon.scenes.HeroSelectScene.class),
+					()->{com.shatteredpixel.shatteredpixeldungeon.scenes.APDTextScene.page=com.shatteredpixel.shatteredpixeldungeon.scenes.APDTextScene.Page.NEWS;com.shatteredpixel.shatteredpixeldungeon.scenes.APDTextScene.backTo=TitleScene.class;ShatteredPixelDungeon.switchNoFade(com.shatteredpixel.shatteredpixeldungeon.scenes.APDTextScene.class);},
+					()->{com.shatteredpixel.shatteredpixeldungeon.scenes.APDTextScene.page=com.shatteredpixel.shatteredpixeldungeon.scenes.APDTextScene.Page.CHANGES;com.shatteredpixel.shatteredpixeldungeon.scenes.APDTextScene.backTo=TitleScene.class;ShatteredPixelDungeon.switchNoFade(com.shatteredpixel.shatteredpixeldungeon.scenes.APDTextScene.class);},
+					()->com.shatteredpixel.shatteredpixeldungeon.scenes.CommunityScene.open(),
+					()->UimsdScene.openNow(TitleScene.class));
+				String[] names={"About","Journal","Top Scores","Play slots","Hero selection","News","Changes","Community","UIMSD"};
+				for(int i=0;i<routes.size();i++){
+					onRender(routes.get(i));
+					waitUntil(names[i]+" menu",()->!(Game.scene() instanceof TitleScene)&&!Game.switchingScene(),30000);
+					// Outside the measurement: let setup finish and the existing 120ms
+					// duplicate-route gate expire before injecting an independent press.
+					Thread.sleep(200);
+					long begin=System.nanoTime();
+					InstrumentationRegistry.getInstrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_BACK);
+					long deadline=System.nanoTime()+TimeUnit.SECONDS.toNanos(5);
+					while(!(Game.scene() instanceof TitleScene)&&System.nanoTime()<deadline)Thread.sleep(5);
+					assertTrue(names[i]+" Back must return to Title",Game.scene() instanceof TitleScene);
+					// A render-thread round trip includes completed scene construction,
+					// rather than merely seeing Game.scene assigned before create().
+					onRender(()->assertTrue(Game.scene() instanceof TitleScene));
+					long millis=TimeUnit.NANOSECONDS.toMillis(System.nanoTime()-begin);
+					Log.w("APDPERF","MENU_BACK menu="+names[i]+" responsive_title_ms="+millis+" budget_ms=250");
+					if(millis>=250)slow.add(names[i]+"="+millis+"ms");
+				}
+				assertTrue("Menu Back responsiveness budget exceeded: "+slow,slow.isEmpty());
+			}finally{
+				onRender(()->{
+					com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdUimsdGuideSeen(guideSeen);
+					com.shatteredpixel.shatteredpixeldungeon.scenes.APDTextScene.page=oldPage;
+					com.shatteredpixel.shatteredpixeldungeon.scenes.APDTextScene.backTo=oldBack;
+				});
+			}
+		}
+	}
+
 	private static void onRender( final Runnable r ) throws Exception {
 		final CountDownLatch done = new CountDownLatch(1);
 		final AtomicReference<Throwable> failure = new AtomicReference<>();

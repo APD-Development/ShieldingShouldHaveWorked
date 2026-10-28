@@ -50,6 +50,17 @@ public class TitleMenuLayoutDeviceTest {
             p[0]=b.camera().cameraToScreen(b.left()+b.width()/2,b.top()+b.height()/2);
         }catch(Exception e){throw new RuntimeException(e);}});return p[0];
     }
+    private static boolean fullyRestored()throws Exception {
+        boolean[] ready={false};
+        TopScoresDeviceTest.render(()->{try{
+            if(Game.scene() instanceof TitleScene){
+                ready[0]=((Number)field(Game.scene(),"uiAlpha")).floatValue()>=1f
+                        && ((Component)field(Game.scene(),"btnFade")).active
+                        && ((Component)field(Game.scene(),"btnChanges")).active;
+            }
+        }catch(Exception e){throw new RuntimeException(e);}});
+        return ready[0];
+    }
     @Test public void titleControlsStaySeparateAndNativeChangesAndHideUiRemainUsable()throws Exception {
         try(ActivityScenario<AndroidLauncher> scenario=ActivityScenario.launch(AndroidLauncher.class)){
             waitFor(()->Game.scene()!=null && PixelScene.uiCamera!=null);
@@ -83,7 +94,7 @@ public class TitleMenuLayoutDeviceTest {
             TopScoresDeviceTest.render(()->{try{assertFalse(((Component)field(Game.scene(),"btnChanges")).active);}catch(Exception e){throw new RuntimeException(e);}});
             TopScoresDeviceTest.screenshot("main-title-hidden.png");
             Point[] reset=new Point[1];TopScoresDeviceTest.render(()->reset[0]=com.watabou.noosa.Camera.main.cameraToScreen(com.watabou.noosa.Camera.main.width/2f,com.watabou.noosa.Camera.main.height/2f));
-            nativeTap(reset[0]);waitFor(()->{try{return ((Component)field(Game.scene(),"btnChanges")).active;}catch(Exception e){return false;}});
+            nativeTap(reset[0]);waitFor(TitleMenuLayoutDeviceTest::fullyRestored);
             TopScoresDeviceTest.render(()->{try{assertTrue(((Component)field(Game.scene(),"btnChanges")).active);}catch(Exception e){throw new RuntimeException(e);}});
             TopScoresDeviceTest.screenshot("main-title-restored.png");
             // A physical finger can land beside the tiny icon. This native press must still
@@ -100,7 +111,7 @@ public class TitleMenuLayoutDeviceTest {
             TopScoresDeviceTest.render(()->{try{
                 assertFalse("Outside-icon touch must hide UI",((Component)field(Game.scene(),"btnChanges")).active);
             }catch(Exception e){throw new RuntimeException(e);}});
-            nativeTap(reset[0]);waitFor(()->{try{return ((Component)field(Game.scene(),"btnChanges")).active;}catch(Exception e){return false;}});
+            nativeTap(reset[0]);waitFor(TitleMenuLayoutDeviceTest::fullyRestored);
             TopScoresDeviceTest.render(()->{try{
                 assertTrue("UI must restore after expanded touch",((Component)field(Game.scene(),"btnChanges")).active);
             }catch(Exception e){throw new RuntimeException(e);}});
@@ -135,3 +146,4 @@ public class TitleMenuLayoutDeviceTest {
         }
     }
 }
+

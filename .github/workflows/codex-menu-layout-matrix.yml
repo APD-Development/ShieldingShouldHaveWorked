@@ -37,8 +37,8 @@ jobs:
           api=lambda p:json.loads(subprocess.check_output(['gh','api',p]))
           end=time.monotonic()+1000
           while True:
-              runs=api(f'repos/{repo}/actions/workflows/codex-sprint-check.yml/runs?branch={branch}&status=completed&per_page=20')['workflow_runs']
-              candidates=[r for r in runs if r['conclusion']=='success']
+              runs=api(f'repos/{repo}/actions/workflows/codex-sprint-check.yml/runs?branch={branch}&per_page=20')['workflow_runs']
+              candidates=[r for r in runs if r['head_sha']==sha]
               for run in candidates:
                   jobs=api(f'repos/{repo}/actions/runs/{run["id"]}/jobs')['jobs']
                   producer=next((j for j in jobs if j['name']=='verify-and-build' and j['conclusion']=='success'),None)
@@ -46,7 +46,7 @@ jobs:
                   item=next((a for a in artifacts if a['name']=='apd-codex-private-test-apk' and not a['expired']),None)
                   if not item:continue
                   comparison=api(f'repos/{repo}/compare/{run["head_sha"]}...{sha}')
-                  assert comparison['status'] in ('ahead','identical'),'Application producer is not an ancestor of test source'
+                  assert comparison['status']=='identical','Display acceptance must use the exact current application source'
                   with open('application.zip','wb') as out:subprocess.run(['gh','api',f'repos/{repo}/actions/artifacts/{item["id"]}/zip'],stdout=out,check=True)
                   assert hashlib.sha256(pathlib.Path('application.zip').read_bytes()).hexdigest()==item['digest'].removeprefix('sha256:')
                   with zipfile.ZipFile('application.zip')as z:z.extractall('application')
