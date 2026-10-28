@@ -31,7 +31,7 @@ public final class GoldenChildMain {
 			// Keep the historical pre-recorder baseline on its original twelve-item pool.
 			com.shatteredpixel.shatteredpixeldungeon.items.Generator.Category scrolls = com.shatteredpixel.shatteredpixeldungeon.items.Generator.Category.SCROLL;
 			for (int i=0;i<scrolls.classes.length;i++) if (scrolls.classes[i] == com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfGathering.class){
-				scrolls.defaultProbs[i]=0;scrolls.defaultProbs2[i]=0;
+				scrolls.defaultProbs[i]=0;scrolls.defaultProbs2[i]=0;scrolls.defaultProbsTotal[i]=0;
 			}
 		}
 
@@ -55,3 +55,4 @@ public final class GoldenChildMain {
 		System.exit(0);
 	}
 }
+
