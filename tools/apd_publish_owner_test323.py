@@ -1,11 +1,16 @@
 """Publish owner-requested unchanged TEST323 APK pair to the private repository."""
-import hashlib,json,os,pathlib,re,subprocess,zipfile
+import hashlib,json,os,pathlib,re,subprocess,zipfile,sys
 def cmd(*a): return subprocess.check_output(a,text=True)
 def api(p): return json.loads(cmd('gh','api',p))
 def sha(p): return hashlib.sha256(p.read_bytes()).hexdigest()
 def main():
  repo=os.environ['GITHUB_REPOSITORY'];root=pathlib.Path('delivery');source='51fe6b502bee67893b9773eacddeb01eac778547'
  assert api('repos/'+repo)['private']
+ sys.path.insert(0,'tools')
+ from apd_existing_build_evidence import application_inputs
+ trees=[api(f'repos/{repo}/git/trees/{ref}?recursive=1') for ref in (source,os.environ['GITHUB_SHA'])]
+ assert all(not t.get('truncated') for t in trees)
+ assert application_inputs(trees[0]['tree'])==application_inputs(trees[1]['tree'])
  for rid,src in [(40737013809,source),(40737013887,source),(40744323333,'4c29331a19025f926d4785e822d4d5e04ee516c8')]:
   r=api(f'repos/{repo}/actions/runs/{rid}')
   assert r['head_sha']==src and r['status']=='completed' and r['conclusion']=='success'
@@ -46,7 +51,7 @@ Source: """+source
  tag='apd-alpha-preview-323'
  assert subprocess.run(['gh','release','view',tag,'--repo',repo],capture_output=True).returncode!=0,'Existing release preserved'
  files=[dev,dest,pathlib.Path(str(dev)+'.sha256'),pathlib.Path(str(dest)+'.sha256'),root/'APD-Alpha-Preview-323.pdf',root/'TEST323-Verification.json']
- subprocess.run(['gh','release','create',tag,'--repo',repo,'--target',source,'--prerelease','--latest=false','--title','APD Alpha Preview 323 — private owner test','--notes-file',str(root/'owner-release-notes.txt')]+list(map(str,files)),check=True)
+ subprocess.run(['gh','release','create',tag,'--repo',repo,'--target',os.environ['GITHUB_SHA'],'--prerelease','--latest=false','--title','APD Alpha Preview 323 — private owner test','--notes-file',str(root/'owner-release-notes.txt')]+list(map(str,files)),check=True)
  release=api(f'repos/{repo}/releases/tags/{tag}')
  assert not release['draft'] and release['prerelease']
  for p in files:
