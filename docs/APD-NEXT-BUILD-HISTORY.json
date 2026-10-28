@@ -1,28 +1,47 @@
 {
   "date": "2026-10-27",
-  "previous_source": "c52b583703f2e54f6ddc33674def3215860d37eb",
-  "previous_application_source": "c52b583703f2e54f6ddc33674def3215860d37eb",
-  "previous_run": 40603010114,
-  "previous_label": "Codex TEST 315",
+  "previous_source": "d569a42c3068277eb6e5d12900564bdb84b60c28",
+  "previous_application_source": "d569a42c3068277eb6e5d12900564bdb84b60c28",
+  "previous_run": 40606510614,
+  "previous_label": "Codex TEST 316",
   "changes": [
     {
       "category": "Quality of Life",
       "sprite": "ICON_CHECKED",
-      "title": "Faster ordinary Settings Back without a scene rebuild",
-      "text": "Closing ordinary Settings now returns directly to its underlying game or title scene rather than forcing a complete scene reconstruction and font-generator reset every time. Explicit language selection and system-font controls keep their existing authorized reset behavior. This does not claim all unrelated Back routes are faster.",
+      "title": "Journal tabs update without rebuilding the game scene",
+      "text": "Journal Badges, Catalog, Guide and Alchemy tab selection now replaces only the active tab and updates the highlighted tab. Repeated selection is a no-op. Existing tab contents and real Title exit remain unchanged.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndSettings.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/SettingsBackSceneTest.java",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/AndroidBackDeviceTest.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/JournalScene.java"
+      ]
+    },
+    {
+      "category": "Quality of Life",
+      "sprite": "ICON_CHECKED",
+      "title": "News and Changes navigate in place",
+      "text": "Older and newer pages, technical history mode and version choice update only the current page group, preserving the underlying scene and background. Old page cameras and listeners are disposed on replacement; a real exit still navigates to its destination.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/APDTextScene.java"
       ]
     },
     {
       "category": "Developer Commentary",
       "sprite": "ICON_INFO",
-      "title": "Back performance acceptance and preserved history",
-      "text": "Owner reports TEST315 remained slow on physical REDMAGIC but Back inside APD Settings sections is immediate. Full source core suite passed 2090 tests in 405 suites with zero failures errors or skips. A real Android Back test requires the underlying scene identity to remain unchanged; device and phone results remain pending.",
+      "title": "Full navigation regression and native evidence requirements",
+      "text": "Retains 2092 passing core methods across 406 suites including two no-whole-scene-reset guards. Adds Android real-screen assertions that Journal tabs and News or Changes mode and version selection retain their exact scene identity and full text layout. Phone responsiveness is still unmeasured.",
       "paths": [
-        "docs/APD-CODEX-CORE-TEST-REQUEST.txt",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/NavigationNoRebuildTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/AndroidBackDeviceTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/ChangesVisualDeviceTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/ReleaseNotesNavigationDeviceTest.java",
+        "docs/APD-CODEX-CORE-TEST-REQUEST.txt"
+      ]
+    },
+    {
+      "category": "Developer Commentary",
+      "sprite": "ICON_INFO",
+      "title": "Reviewed build history and gated private validation",
+      "text": "Compare this exact source against immediately previous compiled TEST316 developer APK, preserving all 343 predecessor build-history records and app identity. Require matched private developer and player APK, complete core, debug, API34, visual and history checks. No unverified success or release claim.",
+      "paths": [
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",
         "docs/APD-NEXT-BUILD-HISTORY.json",
@@ -30,5 +49,5 @@
       ]
     }
   ],
-  "commentary": "Necessary private paired ordinary Settings Back performance candidate after TEST315 owner reported persistent lag. Immediate previous actually compiled producer TEST315 run40603010114, source c52b583703f2e54f6ddc33674def3215860d37eb; do not treat TEST315 as fully emulator accepted, main API34 and one display profile failed. Preserve its 342 indexed history records exactly, append one reviewed build record and require full core 2090 methods/405 suites, debug, native 57 methods including new actual Back from WndSettings, 82 screenshots if existing unchanged inventory, display five profiles, signatures/saves/history and paired builds. Source core run40606022316 passed. Phone claim pending, no public release or automatic tester distribution."
+  "commentary": "Necessary private exact-source developer/player candidate for previously core-green Journal and APD News/Changes in-place navigation. TEST316 developer APK actually compiled at run40606510614 and has 343 indexed history records, but overall workflow failed Android; preserve as a compiled history baseline, not full acceptance. Source at c4c111f7389b10eb36043ea328c7aa0095bf788b includes Android real-tap/evidence safeguards. Core run40609409315 passed2092 methods/406 suites. Require complete paired developer/player tests, exact prior APK preservation, existing 57 plus one new native test (58 expected), screenshots, display, cold restart, death, signing and history. Real REDMAGIC Back is immediate inside run and APD Settings; do not change gameplay Back or claim physical speed fix."
 }
