@@ -442,9 +442,12 @@ public class UimsdRestoreDeviceTest {
                 assertTrue(windows().get(0) instanceof WndSettings);
                 clearWindows();
             });
-            //Closing Settings schedules its own font-reset scene rebuild.
-            //Wait for that real lifecycle event before opening the next menu.
-            awaitScene(settingsScene);
+            //Ordinary Settings close deliberately stays in this UIMSD scene. Only the
+            //specific language/system-font controls request their own reset.
+            onRender(() -> {
+                assertSame("ordinary Settings close must not rebuild UIMSD", settingsScene, Game.scene());
+                assertTrue("ordinary Settings close leaves no stale window", windows().isEmpty());
+            });
             onRender(() -> {
                 UimsdModel model = model(); assertNotNull(model);
                 model.selectView("runs");
