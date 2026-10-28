@@ -58,7 +58,7 @@ public class LootScrollDeviceTest {
             for(RedButton button:TopScoresDeviceTest.find(window,RedButton.class))if(label.equals(button.text())){
                 assertTrue(button.active&&button.visible);
                 Point p=button.camera().cameraToScreen(button.centerX(),button.centerY());
-                assertTrue(p.x>=0&&p.x<Game.dispWidth&&p.y>=0&&p.y<Game.dispHeight);point.set(p);
+                assertTrue(p.x>=0&&p.x<Game.width&&p.y>=0&&p.y<Game.height);point.set(p);
             }
             assertNotNull("Native item window exposes Read",point.get());
         }catch(Exception e){throw new RuntimeException(e);}});
