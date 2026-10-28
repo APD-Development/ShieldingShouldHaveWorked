@@ -615,7 +615,8 @@ public class HeroSelectScene extends PixelScene {
 	@Override
 	protected void onBackPressed() {
 		if (btnExit.active){
-			ShatteredPixelDungeon.switchScene(TitleScene.class);
+			// Returning to the title is navigation, not a new-game entrance fade.
+			ShatteredPixelDungeon.switchNoFade(TitleScene.class);
 		} else {
 			super.onBackPressed();
 		}

@@ -222,6 +222,11 @@ public class APDTextScene extends PixelScene {
   }
   return new ChangeButton(sprite,authored(entry.title),authored(historyLabel(build))+"\n\n"+authored(entry.text));
  }
- @Override protected void onBackPressed(){technicalHistory=false;buildSelected=0;ShatteredPixelDungeon.switchScene(backTo);}
+ @Override protected void onBackPressed(){
+  technicalHistory=false;buildSelected=0;
+  // The title should show immediately on Back; About uses its normal route.
+  if(backTo==TitleScene.class)ShatteredPixelDungeon.switchNoFade(backTo);
+  else ShatteredPixelDungeon.switchScene(backTo);
+ }
 }
 

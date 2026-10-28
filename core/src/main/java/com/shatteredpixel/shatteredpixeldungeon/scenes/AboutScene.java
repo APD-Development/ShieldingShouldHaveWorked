@@ -369,7 +369,10 @@ public class AboutScene extends PixelScene {
 	
 	@Override
 	protected void onBackPressed() {
-		ShatteredPixelDungeon.switchScene(TitleScene.class);
+		// A Back return must not hide an otherwise ready title behind the
+		// standard one-second scene-entry fade. A genuine scene switch is still
+		// required, but the title can be visible on its first rendered frame.
+		ShatteredPixelDungeon.switchNoFade(TitleScene.class);
 	}
 
 	private void addLine( float y, Group content ){
