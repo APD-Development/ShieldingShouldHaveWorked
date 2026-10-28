@@ -59,7 +59,7 @@ public class Scene extends Group {
 	}
 
 	/** Menu-only retention, distinct from the application's pause/resume lifecycle. */
-	public void onRetain() {}
+	public void onRetain() { cancelPointerPresses(); }
 	public void onRestore() {}
 
 	@Override

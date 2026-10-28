@@ -95,6 +95,13 @@ public class Group extends Gizmo {
 	public synchronized int indexOf( Gizmo g ) {
 		return members.indexOf( g );
 	}
+
+	public synchronized void cancelPointerPresses(){
+		for (Gizmo child : members){
+			if (child instanceof PointerArea) ((PointerArea)child).cancelPress();
+			if (child instanceof Group) ((Group)child).cancelPointerPresses();
+		}
+	}
 	
 	public synchronized Gizmo add( Gizmo g ) {
 		
@@ -323,3 +330,4 @@ public class Group extends Gizmo {
 		}
 	}
 }
+

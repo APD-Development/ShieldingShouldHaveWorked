@@ -124,4 +124,16 @@ public class RetainedMenuTest {
             assertEquals(1,title.backs);
         } finally { KeyBindings.setAllBindings(bindings); }
     }
+
+    @Test public void aPressHeldAcrossNavigationCannotClickTheReturnedTitle(){
+        Title title=(Title)Game.scene(); final int[] clicks={0},ups={0};
+        PointerArea area=new PointerArea(0,0,20,20){
+            @Override protected void onClick(PointerEvent event){clicks[0]++;}
+            @Override protected void onPointerUp(PointerEvent event){ups[0]++;}
+        };
+        Group nested=new Group(); nested.add(area); title.add(nested);
+        PointerEvent press=new PointerEvent(2,3,7,PointerEvent.Type.DOWN);
+        area.onSignal(press); game.go(Child.class); assertEquals(1,ups[0]);
+        game.go(Title.class); area.onSignal(press.up()); assertEquals(0,clicks[0]);
+    }
 }

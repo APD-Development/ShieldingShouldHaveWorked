@@ -46,6 +46,16 @@ public class Button extends Component {
 	protected float pressTime;
 	protected boolean clickReady;
 
+	public static void cancelPressedButton(){
+		Button button = pressedButton;
+		pressedButton = null;
+		if (button != null){
+			button.clickReady = false;
+			button.hotArea.reset();
+			button.onPointerUp();
+		}
+	}
+
 	@Override
 	protected void createChildren() {
 		hotArea = new PointerArea( 0, 0, 0, 0 ) {

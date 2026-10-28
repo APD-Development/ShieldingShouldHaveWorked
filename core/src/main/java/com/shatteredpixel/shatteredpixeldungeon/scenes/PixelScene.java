@@ -102,6 +102,8 @@ public class PixelScene extends Scene {
 
 	@Override
 	public void onRetain(){
+		super.onRetain();
+		com.shatteredpixel.shatteredpixeldungeon.ui.Button.cancelPressedButton();
 		retainedUiCamera = uiCamera;
 		// An early menu tap must not pause a title fade and replay it on Back.
 		for (com.watabou.noosa.Gizmo child : new ArrayList<>(members)){

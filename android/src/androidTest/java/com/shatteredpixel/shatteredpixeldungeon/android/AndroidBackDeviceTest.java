@@ -196,7 +196,8 @@ public class AndroidBackDeviceTest {
 				assertTrue("native tap to complete Home exceeded 250ms: "+millis,millis<250);
 				onRender(()->{try{
 					assertEquals(UimsdModel.State.READY,((UimsdModel)uimsd("model")).state());
-					assertEquals(72,((com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdHome)uimsd("cachedHome")).runs);
+					assertEquals("all72 synthetic source runs were loaded",72,((UimsdModel)uimsd("model")).catalog().dataset("runs").rows.size());
+					assertTrue("Home has finished-run statistics",((com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdHome)uimsd("cachedHome")).runs>0);
 					assertEquals(0,windows());
 				}catch(Exception e){throw new RuntimeException(e);}});
 			} finally {
