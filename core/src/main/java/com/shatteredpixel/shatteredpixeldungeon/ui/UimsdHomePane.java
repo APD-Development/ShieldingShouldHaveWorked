@@ -53,14 +53,17 @@ public class UimsdHomePane extends ScrollPane {
  }
  private RenderedTextBlock text(String value,int size,int color,float max,float x,float y){
   RenderedTextBlock t=PixelScene.renderTextBlock(size);
-  t.setHightlighting(false);t.text(value);
-  if(t.width()>max){
+  int limit=Math.max(1,(int)max);
+  // Set wrapping before text: ordinary labels and values need one build,
+  // not an unbounded build followed by a second build for maxWidth.
+  t.setHightlighting(false);t.text(value,limit);
+  if(t.width()>limit){
    final RenderedTextBlock probe=PixelScene.renderTextBlock(size);probe.setHightlighting(false);
    try {value=com.shatteredpixel.shatteredpixeldungeon.apd.query.LongWordWrap.wrap(value,Math.max(1,(int)max),part->{probe.text(part);return probe.width();});}
    finally {probe.destroy();}
-   t.text(value);
+   t.text(value,limit);
   }
-  t.hardlight(color);t.maxWidth((int)max);t.setPos(x,y);content.add(t);return t;
+  t.hardlight(color);t.setPos(x,y);content.add(t);return t;
  }
  private void link(float x,float y,float w,float h,String id){boxes.add(new float[]{x,y,w,h});boxViews.add(id);}
  private void info(float x,float y,float w,float h,String title,String value){infoBoxes.add(new float[]{x,y,w,h});infoText.add(new String[]{title,value});}
@@ -118,4 +121,5 @@ public class UimsdHomePane extends ScrollPane {
   content.setSize(w,y);
  }
 }
+
 

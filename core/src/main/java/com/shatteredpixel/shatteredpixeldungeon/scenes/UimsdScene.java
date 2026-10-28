@@ -117,6 +117,7 @@ public class UimsdScene extends PixelScene {
 	private ExitButton btnExit;
 	// Timestamp only after a complete, interactive Home has actually been drawn.
 	private volatile long firstReadyHomeDrawNanos;
+	private long createDurationNanos, rebuildDurationNanos, firstHomeDrawDurationNanos;
 
 	//A replay borrows the game's static state: never while a game is open behind this screen.
 	public static com.shatteredpixel.shatteredpixeldungeon.apd.replay.FloorReplay.LiveGameCheck liveGameCheck(){
@@ -187,6 +188,7 @@ public class UimsdScene extends PixelScene {
 
 	@Override
 	public void create(){
+		long createStart = System.nanoTime();
 		super.create();
 		uiCamera.visible = false;
 
@@ -229,17 +231,21 @@ public class UimsdScene extends PixelScene {
 			dirty = false;
 			rebuild();
 		}
+		createDurationNanos = System.nanoTime() - createStart;
 	}
 
 	@Override
 	public void draw(){
+		long drawStart = System.nanoTime();
 		// The worker can publish after update(). Build ready content before the
 		// next draw instead of spending another frame on the loading screen.
 		if (rebuildIfNeeded()) Camera.refreshMatrices();
 		super.draw();
 		if (firstReadyHomeDrawNanos == 0 && !dirty && atHome && model != null
 				&& model.state() == UimsdModel.State.READY && targets.containsKey("home.cards")){
-			firstReadyHomeDrawNanos = System.nanoTime();
+			long readyDraw = System.nanoTime();
+			firstHomeDrawDurationNanos = readyDraw - drawStart;
+			firstReadyHomeDrawNanos = readyDraw;
 		}
 	}
 
@@ -279,6 +285,7 @@ public class UimsdScene extends PixelScene {
 	}
 
 	private void rebuild(){
+		long rebuildStart = System.nanoTime();
 		rememberTableViewport();
 		activeTable = null;
 		erase(ui);
@@ -288,6 +295,7 @@ public class UimsdScene extends PixelScene {
 		bringToFront(btnExit);
 		build();
 		if (activeTable != null) activeTable.restoreViewport(tableModel.viewport());
+		rebuildDurationNanos = System.nanoTime() - rebuildStart;
 	}
 
 	private UimsdTable activeTable;
@@ -310,9 +318,9 @@ public class UimsdScene extends PixelScene {
 	private float x0, contentW, y;
 
 	private RenderedTextBlock text( String s, int size, int color, float maxW ){
-		RenderedTextBlock t = renderTextBlock(s, size);
+		RenderedTextBlock t = renderTextBlock(size);
+		t.text(s, (int) maxW);
 		t.hardlight(color);
-		t.maxWidth((int) maxW);
 		ui.add(t);
 		return t;
 	}

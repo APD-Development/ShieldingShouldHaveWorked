@@ -59,6 +59,19 @@ public class AndroidBackDeviceTest {
 		onRender(() -> ShatteredPixelDungeon.switchNoFade(TitleScene.class));
 		waitUntil("the title scene", () -> Game.scene() instanceof TitleScene
 				&& !Game.switchingScene(), 30000);
+		// Assignment precedes create(); cross the render thread before using
+		// the scene, rather than treating the published reference as a barrier.
+		AtomicReference<com.watabou.noosa.Scene> observed=new AtomicReference<>();
+		AtomicInteger stableFrames=new AtomicInteger();
+		waitUntil("completed stable title frames",()->{
+			onRender(()->{
+				boolean stable=Game.scene() instanceof TitleScene&&!Game.switchingScene()
+						&& Game.scene()==observed.get() && Game.width==Gdx.graphics.getWidth()
+						&& Game.height==Gdx.graphics.getHeight();
+				stableFrames.set(stable?stableFrames.get()+1:0); observed.set(Game.scene());
+			});
+			return stableFrames.get()>=2;
+		},30000);
 	}
 
 	@Test
@@ -140,6 +153,25 @@ public class AndroidBackDeviceTest {
 	}
 
 	@Test
+	public void homeTextKeepsItsWordsAndFitsOversizedTokens() throws Exception {
+		try (ActivityScenario<AndroidLauncher> scenario = ActivityScenario.launch(AndroidLauncher.class)){
+			enterTitle();
+			onRender(()->{try{
+				com.shatteredpixel.shatteredpixeldungeon.ui.UimsdHomePane pane=new com.shatteredpixel.shatteredpixeldungeon.ui.UimsdHomePane();
+				try {
+					Method text=pane.getClass().getDeclaredMethod("text",String.class,int.class,int.class,float.class,float.class,float.class);text.setAccessible(true);
+					for(String value:new String[]{"Short","Several words wrap into a narrow Home column","very_long_synthetic_identifier_that_must_fit_the_column"}){
+						com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock block=(com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock)text.invoke(pane,value,6,0xffffff,30f,0f,0f);
+						assertEquals("presentation breaks preserve every character",value,block.text().replace("\n",""));
+						assertTrue("Home text stays within its column: "+value,block.width()<=30.01f);
+						if(value.length()>10)assertTrue("long text wraps",block.nLines>1);
+					}
+				} finally {pane.destroy();}
+			}catch(Exception e){throw new RuntimeException(e);}});
+		}
+	}
+
+	@Test
 	public void warmUimsdTapDrawsTheComplete72RunHomeWithin250ms() throws Exception {
 		try (ActivityScenario<AndroidLauncher> scenario = ActivityScenario.launch(AndroidLauncher.class)){
 			enterTitle();
@@ -193,6 +225,10 @@ public class AndroidBackDeviceTest {
 				assertTrue("complete Home was drawn after the native tap",drawNanos>begin);
 				long millis=TimeUnit.NANOSECONDS.toMillis(drawNanos-begin);
 				Log.w("APDPERF","UIMSD_NATIVE_TAP ready_72_run_home_draw_ms="+millis+" budget_ms=250");
+				for(String phase:new String[]{"createDurationNanos","rebuildDurationNanos","firstHomeDrawDurationNanos"}){
+					Field timing=UimsdScene.class.getDeclaredField(phase);timing.setAccessible(true);
+					Log.w("APDPERF","UIMSD_DRAW_PHASE "+phase+"="+timing.getLong(Game.scene())+"ns");
+				}
 				assertTrue("native tap to complete Home exceeded 250ms: "+millis,millis<250);
 				onRender(()->{try{
 					assertEquals(UimsdModel.State.READY,((UimsdModel)uimsd("model")).state());
@@ -257,13 +293,17 @@ public class AndroidBackDeviceTest {
 	public void ordinarySettingsBackClosesOnlyTheWindowWithoutRebuildingTheScene() throws Exception {
 		try (ActivityScenario<AndroidLauncher> scenario = ActivityScenario.launch(AndroidLauncher.class)){
 			enterTitle();
-			final com.watabou.noosa.Scene sceneBefore = Game.scene();
-			final int before = windows();
-			onRender(() -> ShatteredPixelDungeon.scene().add(new com.shatteredpixel.shatteredpixeldungeon.windows.WndSettings()));
-			waitUntil("ordinary Settings window", () -> windows() == before + 1, 30000);
+			final AtomicReference<com.watabou.noosa.Scene> sceneBefore = new AtomicReference<>();
+			final AtomicInteger before = new AtomicInteger();
+			onRender(() -> {try{
+				sceneBefore.set(Game.scene()); before.set(windows());
+				ShatteredPixelDungeon.scene().add(new com.shatteredpixel.shatteredpixeldungeon.windows.WndSettings());
+			}catch(Exception e){throw new RuntimeException(e);}});
+			waitUntil("ordinary Settings window", () -> windows() == before.get() + 1, 30000);
+			onRender(()->assertTrue("Settings fixture must still be on its opening scene before Back",Game.scene()==sceneBefore.get()));
 			pressBack();
-			waitUntil("ordinary Settings window closed", () -> windows() == before, 30000);
-			assertTrue("ordinary Settings Back must leave the current scene intact", Game.scene() == sceneBefore);
+			waitUntil("ordinary Settings window closed", () -> windows() == before.get(), 30000);
+			assertTrue("ordinary Settings Back must leave the current scene intact", Game.scene() == sceneBefore.get());
 		}
 	}
 

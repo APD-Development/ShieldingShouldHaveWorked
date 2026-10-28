@@ -1,43 +1,41 @@
 {
   "date": "2026-10-28",
-  "previous_source": "d1529fbfd68b9f3a5a23e7277ed9a2fd0ea1b67a",
-  "previous_application_source": "d1529fbfd68b9f3a5a23e7277ed9a2fd0ea1b67a",
-  "previous_run": 40729078688,
-  "previous_label": "Codex TEST 321",
+  "previous_source": "0ad7f6c5e2bbef3f57341cf0cc2c4aef6cebf04a",
+  "previous_application_source": "0ad7f6c5e2bbef3f57341cf0cc2c4aef6cebf04a",
+  "previous_run": 40730420742,
+  "previous_label": "Codex TEST 322",
   "changes": [
     {
-      "category": "Bug Fixes",
+      "category": "Statistics / UIMSD",
       "sprite": "ICON_CHECKED",
-      "title": "Prepare camera projection before the first visible frame",
-      "text": "Earlier menu and UIMSD draws now refresh new camera matrices before rendering, including scroll cameras created during Home layout. Matrix refresh does not advance game time, pans, shakes or RNG. This corrects a reviewed first-frame flaw in the preceding compiled candidate; retained title returns and APD Settings behavior are preserved.",
+      "title": "Build Home labels and values once at their final width",
+      "text": "Home labels and values now wrap during their first text build instead of constructing unbounded text and rebuilding it for maxWidth. The existing oversized-token fallback remains, and general UIMSD labels also receive their width before construction. Store overlapping create/rebuild/draw timings for diagnosis only; query data and saved/exported text are unchanged.",
       "paths": [
-        "SPD-classes/src/main/java/com/watabou/noosa/Camera.java",
-        "SPD-classes/src/main/java/com/watabou/noosa/Game.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/UimsdScene.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/UimsdScene.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/UimsdHomePane.java"
       ]
     },
     {
       "category": "Developer Commentary",
       "sprite": "ICON_CHECKED",
-      "title": "Require a correctly projected Home in performance acceptance",
-      "text": "An eleventh engine regression verifies actual projection values and confirms no camera simulation update occurs. Native tap-to-Home timing additionally verifies the pixel projection, retaining the250ms budget and full72-run source fixture. Focused97 methods pass with28134 unchanged-query comparisons.",
+      "title": "Verify actual text bounds and Settings scene ownership",
+      "text": "A native font check preserves every character while wrapping spaced text and oversized identifiers into narrow Home columns. Title setup crosses completed stable frames. Settings identity is captured in the same render callback that opens its window, then asserted before and after Back. All prior checks and250ms timing budgets remain.",
       "paths": [
-        "core/src/test/java/com/watabou/noosa/RetainedMenuTest.java",
         "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/AndroidBackDeviceTest.java"
       ]
     },
     {
       "category": "Developer Commentary",
       "sprite": "ICON_INFO",
-      "title": "Preserve the compiled preceding pair without claiming delivery",
-      "text": "TEST321 compiled both variants and2120 core methods, with348 indexed history records. It was superseded during source review without delivery because the first-frame projection could be uninitialized. Preserve those348 records exactly and append one reviewed record; require complete core, native, display, matching player and identity/history acceptance for this correction.",
+      "title": "Retain rejected TEST322 evidence and all compiled history",
+      "text": "TEST322 compiled matched variants and2121 core methods, but failed2 of61 main native methods:288ms Home draw and Settings scene identity. Five exact-source display profiles passed. Preserve all349 predecessor history records exactly, append one reviewed record, and require complete core,62native, display, matching player and identity/history acceptance before delivery.",
       "paths": [
-        "docs/APD-TEST321-VERIFICATION-2026-10-28.json",
+        "docs/APD-TEST322-VERIFICATION-2026-10-28.json",
         "docs/APD-MENU-UIMSD-QUICKER-2026-10-28.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/APD-NEXT-BUILD-HISTORY.json"
       ]
     }
   ],
-  "commentary": "Necessary correction within the owner-authorized quicker UIMSD/menu work. TEST321 immediate compiled predecessor sourced1529fbfd68b9f3a5a23e7277ed9a2fd0ea1b67a/run40729078688, developerSHA256555799ab30844fea422d4478dcda28075b1f8c911108a2b1f46bca62f6ba4f70; matched player40729078679. Preserve348 indexed records. Full2121core is required before assembly;61 native, five displays and matching regular-player evidence required before delivery. No release/main/tester distribution or phone-speed claim."
+  "commentary": "Necessary UIMSD layout correction in the owner-authorized quicker-menu work. TEST322 source0ad7f6c5e2bbef3f57341cf0cc2c4aef6cebf04a/run40730420742 is the immediate actually compiled predecessor; no321/322 delivery. Preserve349 indexed history records. Require2121core and62native without loosening250ms budgets, five exact-source displays, matched regular player and existing identity/history/save gates. TEST320 remains the last delivered pair. No release/main/tester distribution or physical-phone claim."
 }
