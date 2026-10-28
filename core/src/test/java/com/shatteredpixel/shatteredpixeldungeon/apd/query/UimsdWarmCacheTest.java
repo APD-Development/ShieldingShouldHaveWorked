@@ -101,9 +101,14 @@ public class UimsdWarmCacheTest {
             assertNotNull(second);assertNotSame(first,second);
             assertEquals(UimsdModel.State.READY,second.state());
             assertNotNull(second.preparedHome(second.catalog(),false));
-            String source=new String(Files.readAllBytes(java.nio.file.Paths.get(
-                "src/main/java/com/shatteredpixel/shatteredpixeldungeon/ShatteredPixelDungeon.java")),
-                java.nio.charset.StandardCharsets.UTF_8);
+            java.nio.file.Path rootPath=java.nio.file.Paths.get("").toAbsolutePath();
+            java.nio.file.Path sourcePath=null;
+            for(java.nio.file.Path dir=rootPath;dir!=null;dir=dir.getParent()){
+                java.nio.file.Path candidate=dir.resolve("core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ShatteredPixelDungeon.java");
+                if(Files.isRegularFile(candidate)){sourcePath=candidate;break;}
+            }
+            assertNotNull("Repository source must be available to the lifecycle guard",sourcePath);
+            String source=new String(Files.readAllBytes(sourcePath),java.nio.charset.StandardCharsets.UTF_8);
             int switchStart=source.indexOf("protected void switchScene()");
             int switchEnd=source.indexOf("protected boolean isReturnMenu",switchStart);
             assertTrue("restored titles must replenish prewarming without changing Back",
