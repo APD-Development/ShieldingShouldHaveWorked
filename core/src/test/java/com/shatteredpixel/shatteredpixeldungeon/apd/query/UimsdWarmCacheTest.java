@@ -86,6 +86,32 @@ public class UimsdWarmCacheTest {
             assertSame(current,model.catalog());
         }finally{release.countDown();assertTrue(first.delete());assertTrue(second.delete());}
     }
+
+    @Test public void returningTitleReplenishesTheConsumedPreloadWithoutSharingModels() throws Exception {
+        File root = Files.createTempDirectory("apd-warm-return").toFile();
+        try {
+            UimsdWarmCache.prewarm(root,"rules-a","label",false);
+            UimsdWarmCache.awaitPrewarmForTest(10000);
+            UimsdModel first=UimsdWarmCache.takeReady(root,"rules-a","label",false);
+            assertNotNull(first);
+            assertNull(UimsdWarmCache.takeReady(root,"rules-a","label",false));
+            UimsdWarmCache.prewarm(root,"rules-a","label",false);
+            UimsdWarmCache.awaitPrewarmForTest(10000);
+            UimsdModel second=UimsdWarmCache.takeReady(root,"rules-a","label",false);
+            assertNotNull(second);assertNotSame(first,second);
+            assertEquals(UimsdModel.State.READY,second.state());
+            assertNotNull(second.preparedHome(second.catalog(),false));
+            String source=new String(Files.readAllBytes(java.nio.file.Paths.get(
+                "src/main/java/com/shatteredpixel/shatteredpixeldungeon/ShatteredPixelDungeon.java")),
+                java.nio.charset.StandardCharsets.UTF_8);
+            int switchStart=source.indexOf("protected void switchScene()");
+            int switchEnd=source.indexOf("protected boolean isReturnMenu",switchStart);
+            assertTrue("restored titles must replenish prewarming without changing Back",
+                source.substring(switchStart,switchEnd).contains(
+                    "if (scene instanceof TitleScene) UimsdScene.prewarmTitle();"));
+        } finally { assertTrue(root.delete()); }
+    }
+
     @After public void cleanup() { UimsdWarmCache.resetForTest(); }
 
     @Test public void titlePrewarmProvidesAnImmediatelyReadyModel() throws Exception {

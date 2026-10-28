@@ -134,6 +134,9 @@ public class ShatteredPixelDungeon extends Game {
 		super.switchScene();
 		if (scene instanceof PixelScene){
 			((PixelScene) scene).restoreWindows();
+			// A retained title skips create(); replenish the single-use UIMSD
+			// preload on return as well as on the first title construction.
+			if (scene instanceof TitleScene) UimsdScene.prewarmTitle();
 		}
 	}
 
