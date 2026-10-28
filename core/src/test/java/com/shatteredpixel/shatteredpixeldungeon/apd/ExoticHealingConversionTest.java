@@ -16,16 +16,17 @@ import static org.junit.Assert.*;
 public class ExoticHealingConversionTest {
     private Hero hero;
     private boolean known;
-    private int exotic, preference;
+    private int exotic, preference, depth;
     @Before public void setup() {
         HeadlessTestSupport.start(); Badges.loadGlobal(); hero = Dungeon.hero; known = Dungeon.apdExoticKnown;
+        depth = Dungeon.depth; Dungeon.depth = 1; // Conversion fixture must use an eligible spawn depth.
         exotic = Dungeon.apdExotic; preference = SPDSettings.apdExoticSetting();
         Random.pushGenerator(41);
         try { Potion.initColors(); Scroll.initLabels(); } finally { Random.popGenerator(); }
         Dungeon.apdExoticKnown = true;
     }
     @After public void restore() {
-        Dungeon.hero = hero; Dungeon.apdExoticKnown = known; Dungeon.apdExotic = exotic;
+        Dungeon.depth = depth; Dungeon.hero = hero; Dungeon.apdExoticKnown = known; Dungeon.apdExotic = exotic;
         SPDSettings.apdExoticChance(preference);
     }
     private void trinket(int level) {

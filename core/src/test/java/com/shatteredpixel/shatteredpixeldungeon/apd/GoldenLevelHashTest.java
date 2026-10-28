@@ -22,6 +22,9 @@ import java.util.Set;
 //Each line of the golden file is one generated level (a case, a depth) and either
 //  STABLE   - came out byte-identical in every one of RECORD_JVMS fresh, deliberately perturbed JVMs, with its fingerprint
 //  UNSTABLE - came out differently depending on JVM history (an existing SPD property, see docs/APD-STATS-PHASE0.md)
+//This historical pre-recorder fixture uses its original twelve-scroll pool. The
+//approved Gathering row is covered separately by LootScrollGenerationTest; do not
+//rewrite the old baseline merely because a new item was deliberately added.
 //Only STABLE levels are compared. A future recorder build must reproduce every STABLE line exactly.
 //
 //The baseline was recorded from the code as it stood before any statistics recorder existed.
@@ -45,7 +48,7 @@ public class GoldenLevelHashTest {
 	}
 
 	private static List<String> runChild( int perturb ) throws Exception {
-		return runChild(perturb, "");
+		return runChild(perturb, "legacy-scrolls");
 	}
 
 	static List<String> runChild( int perturb, String mode ) throws Exception {
@@ -127,7 +130,7 @@ public class GoldenLevelHashTest {
 		File golden = new File(System.getProperty("apd.golden.file"));
 		if (Boolean.parseBoolean(System.getProperty("apd.golden.update", "false"))) return;
 		List<String> expected = Files.readAllLines(golden.toPath(), StandardCharsets.UTF_8);
-		Map<String, String> actual = parse(runChild(0, "rec"));
+		Map<String, String> actual = parse(runChild(0, "legacy-scrolls-rec"));
 		assertEquals("number of generated levels", expected.size(), actual.size());
 		int compared = 0, i = 0;
 		for (Map.Entry<String, String> e : actual.entrySet()){
