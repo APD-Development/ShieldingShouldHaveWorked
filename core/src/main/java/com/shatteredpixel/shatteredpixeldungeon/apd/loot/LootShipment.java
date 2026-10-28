@@ -25,7 +25,7 @@ public final class LootShipment implements Bundlable {
     }
     private void validate() {
         if(id==null || id.isEmpty() || sourceDepth<1 || sourceBranch<0
-                || destinationDepth<=sourceDepth || destinationDepth>26 || items==null || items.isEmpty())
+                || destinationDepth!=LootScrollRules.destinationDepth(sourceDepth) || destinationDepth<1 || items==null || items.isEmpty())
             throw new IllegalArgumentException("Invalid shipment metadata");
         Set<Item> unique=Collections.newSetFromMap(new IdentityHashMap<Item,Boolean>());
         for(Item item:items)if(item==null || item.quantity()<=0 || !unique.add(item))

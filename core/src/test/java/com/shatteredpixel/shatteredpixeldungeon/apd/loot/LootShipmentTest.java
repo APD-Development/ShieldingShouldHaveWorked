@@ -35,6 +35,14 @@ public class LootShipmentTest {
   Bundle b=new Bundle();parcel().storeInBundle(b);b.put("items",Collections.singletonList(new Pasty()));
   try{new LootShipment().restoreFromBundle(b);fail("Lost items must not be silently dropped");}catch(IllegalArgumentException expected){}
  }
+ @Test public void demonHallsAndTheShopFloorCanRouteToTheImp()throws Exception {
+  HeadlessTestSupport.start();Item item=new Pasty();
+  for(int depth=20;depth<=26;depth++){
+   LootShipment p=new LootShipment("return-"+depth,depth,0,20,Collections.singletonList(item));
+   Bundle b=new Bundle();p.storeInBundle(b);LootShipment restored=new LootShipment();restored.restoreFromBundle(b);
+   assertEquals(depth,restored.sourceDepth());assertEquals(20,restored.destinationDepth());
+  }
+ }
  @Test public void aliasedStacksAndBackwardsDeliveryAreRejected()throws Exception {
   HeadlessTestSupport.start();Item item=new Pasty();
   try{new LootShipment("t",8,0,11,Arrays.asList(item,item));fail("Aliased stack");}catch(IllegalArgumentException expected){}
