@@ -213,7 +213,7 @@ public class AndroidBackDeviceTest {
 				for(int opening=1;opening<=2;opening++){
 					Object prepared=ready.get(null);
 					assertNotNull("opening "+opening+" title preload completed",prepared);
-					if(previousReady!=null)assertNotSame("returning title replenishes a distinct READY model",previousReady,prepared);
+					if(previousReady!=null)assertTrue("returning title replenishes a distinct READY model",previousReady!=prepared);
 					AtomicReference<com.watabou.utils.Point> target=new AtomicReference<>();
 					onRender(()->{try{
 						Field field=TitleScene.class.getDeclaredField("btnStatistics"); field.setAccessible(true);
@@ -242,7 +242,7 @@ public class AndroidBackDeviceTest {
 					}
 					assertTrue("opening "+opening+" native tap to complete Home exceeded 250ms: "+millis,millis<250);
 					onRender(()->{try{
-						assertSame("opening claims the exact READY model",prepared,uimsd("model"));
+						assertTrue("opening claims the exact READY model",prepared==uimsd("model"));
 						assertEquals(UimsdModel.State.READY,((UimsdModel)uimsd("model")).state());
 						assertEquals("first Home draw has a pixel projection",2f*com.watabou.noosa.Camera.main.zoom/Game.width,com.watabou.noosa.Camera.main.matrix[0],0.000001f);
 						assertEquals("all72 synthetic source runs were loaded",72,((UimsdModel)uimsd("model")).catalog().dataset("runs").rows.size());
@@ -254,8 +254,8 @@ public class AndroidBackDeviceTest {
 						pressBack();
 						waitUntil("same retained title after first UIMSD opening",()->Game.scene() instanceof TitleScene&&!Game.switchingScene(),30000);
 						onRender(()->{
-							assertSame("Back restores the exact retained title",titleIdentity.get(),Game.scene());
-							assertSame("Back restores the exact retained title camera",titleCamera.get(),com.watabou.noosa.Camera.main);
+							assertTrue("Back restores the exact retained title",titleIdentity.get()==Game.scene());
+							assertTrue("Back restores the exact retained title camera",titleCamera.get()==com.watabou.noosa.Camera.main);
 						});
 						await.invoke(null,60000L);
 					}

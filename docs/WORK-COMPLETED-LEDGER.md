@@ -1,3 +1,8 @@
+## 2026-10-28T22:14:00Z — TEST324 compiled but native acceptance rejected before execution
+- Source1f393b/run40777494966 passed strict history,2144core/414 suites, debug assembly and embedded-history verification; private TEST324 artifact exists only as a compiled rejected candidate.
+- Android/display jobs failed compiling four unavailable JUnit identity helpers in the new two-opening regression; zero native methods from that job may be credited.
+- Prepared a test-only replacement with existing assertTrue identity comparisons. The next exact candidate must compare against TEST324 and rerun every required gate. Production and250ms limits are unchanged.
+
 ## 2026-10-28T22:05:05Z — repeated UIMSD entry acceptance moved from single-open to two-open native coverage
 - Starting head711ec48a was core-green at2144 methods/414 suites (run40771485374) with no active workflow.
 - Added one bounded native regression path: actual title tap → complete72-run Home under250ms → native Back to exact same title/camera → fresh distinct READY preload → second actual title tap → complete Home under250ms.
