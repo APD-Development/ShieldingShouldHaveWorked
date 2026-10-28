@@ -39,3 +39,5 @@ jobs:
             delivery/publication.json
             delivery/owner-release-notes.txt
           if-no-files-found: warn
+
+# Preserve exact APK hashes while parsing variant-specific package branding.

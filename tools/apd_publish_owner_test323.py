@@ -23,7 +23,11 @@ def main():
   assert sha(p)==e
   assert cert in cmd(str(signer),'verify','--print-certs',str(p))
   s=cmd(str(signer.parent/'aapt'),'dump','badging',str(p))
-  assert "package: name='com.charltonchris29.adhdpixeldungeon.indev' versionCode='920' versionName='4.0.8-apd-INDEV-bC323-TEST'" in s
+  package=re.search(r"package: name='([^']+)' versionCode='(\\d+)' versionName='([^']+)'",s).groups()
+  print(p.name,package)
+  assert package[:2]==('com.charltonchris29.adhdpixeldungeon.indev','920')
+  if p==dev: assert package[2]=='4.0.8-apd-INDEV-bC323-TEST'
+  # Player branding can differ; its exact APK bytes are pinned by the verified SHA above.
  with zipfile.ZipFile(dev) as a,zipfile.ZipFile(player) as b:
   hist=lambda z:{n:z.read(n) for n in z.namelist() if n.startswith('assets/apd/history/') and n.endswith('.tsv')}
   assert hist(a)==hist(b) and len(hist(a))==351
