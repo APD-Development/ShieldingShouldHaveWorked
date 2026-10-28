@@ -174,11 +174,23 @@ public class UimsdScene extends PixelScene {
 		if (root == null){
 			model = null;
 		} else {
-			model = new UimsdModel(rulesId, rulesLabel);
+			Runnable beforeRead = ApdRecorder::flushForReading;
+			UimsdModel warmed = null;
+			if (backTo == TitleScene.class){
+				// Title prewarming already did every catalog query. Flush first, then
+				// validate and claim that exact READY model on the calling thread so
+				// an otherwise complete Home is not delayed by worker scheduling.
+				beforeRead.run();
+				warmed = UimsdWarmCache.takeReady(root, rulesId, rulesLabel, homeAllRules);
+				beforeRead = null;
+			}
+			model = warmed == null ? new UimsdModel(rulesId, rulesLabel) : warmed;
 			model.setSeedFloorsProvider(com.shatteredpixel.shatteredpixeldungeon.apd.replay.SeedFloorsRunner.INSTANCE);
-			// Flush, freshness scan and warm-model handoff all happen on the loader.
-			// The title's preload is never accepted before pending records flush.
-			model.loadForOpen(root, homeAllRules, ApdRecorder::flushForReading);
+			if (warmed == null){
+				// Game-scene opens retain the recorder flush on the loader. A title
+				// miss falls back to the same loader after its one completed flush.
+				model.loadForOpen(root, homeAllRules, beforeRead);
+			}
 		}
 		mainModel = model;
 		mainRoot = root;

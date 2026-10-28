@@ -117,6 +117,30 @@ public class UimsdWarmCacheTest {
         } finally { assertTrue(root.delete()); }
     }
 
+    @Test public void titleOpenFlushesThenClaimsReadyModelBeforeStartingFallbackWorker() throws Exception {
+        java.nio.file.Path rootPath=java.nio.file.Paths.get("").toAbsolutePath();
+        java.nio.file.Path sourcePath=null;
+        for(java.nio.file.Path dir=rootPath;dir!=null;dir=dir.getParent()){
+            java.nio.file.Path candidate=dir.resolve("core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/UimsdScene.java");
+            if(Files.isRegularFile(candidate)){sourcePath=candidate;break;}
+        }
+        assertNotNull("UIMSD scene source must be available to the title handoff guard",sourcePath);
+        String source=new String(Files.readAllBytes(sourcePath),java.nio.charset.StandardCharsets.UTF_8);
+        int open=source.indexOf("public static void openNow");
+        int create=source.indexOf("@Override\n\tpublic void create",open);
+        assertTrue("openNow source section must remain inspectable",open>=0 && create>open);
+        String path=source.substring(open,create);
+        int flush=path.indexOf("beforeRead.run()");
+        int claim=path.indexOf("UimsdWarmCache.takeReady");
+        int fallback=path.indexOf("warmed == null ? new UimsdModel");
+        int loader=path.indexOf("model.loadForOpen");
+        assertTrue("title must flush before validating its READY model",flush>=0 && flush<claim);
+        assertTrue("READY handoff must precede allocation of the fallback model",claim<fallback);
+        assertTrue("fallback worker must start only after the direct handoff misses",fallback<loader);
+        assertTrue("title fallback must not flush the recorder a second time",
+                path.contains("beforeRead = null") && path.contains("model.loadForOpen(root, homeAllRules, beforeRead)"));
+    }
+
     @After public void cleanup() { UimsdWarmCache.resetForTest(); }
 
     @Test public void titlePrewarmProvidesAnImmediatelyReadyModel() throws Exception {
