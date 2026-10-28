@@ -87,6 +87,11 @@ public class CityBossLevel extends Level {
 
 	private ImpShopRoom impShop;
 
+	/** Loot shipments wait until the conditional shop has actually opened. */
+	public ImpShopRoom apdLootShop() {
+		return impShop != null && impShop.shopSpawned() ? impShop : null;
+	}
+
 	@Override
 	public void playLevelMusic() {
 		if (locked){
@@ -831,3 +836,4 @@ public class CityBossLevel extends Level {
 		}
 	}
 }
+

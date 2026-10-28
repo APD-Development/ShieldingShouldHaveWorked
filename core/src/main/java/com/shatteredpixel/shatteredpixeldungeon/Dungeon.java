@@ -274,6 +274,9 @@ public class Dungeon {
 	}
 	
 	public static void init() {
+        try { com.shatteredpixel.shatteredpixeldungeon.apd.loot.LootTransfers.requireClear(GamesInProgress.curSlot); }
+        catch (IOException e) { throw new IllegalStateException("Loot transfer recovery is required", e); }
+        com.shatteredpixel.shatteredpixeldungeon.apd.loot.LootTransfers.reset();
 		//APD: never overlap a floor replay (it borrows the same static state)
 		com.shatteredpixel.shatteredpixeldungeon.apd.replay.FloorReplay.awaitIdle();
 
@@ -687,97 +690,102 @@ public class Dungeon {
 	private static final String APD_DIFFICULTY_BALANCE	= "apd_difficulty_balance";
 	private static final String APD_EXOTIC	= "apd_exotic";
 
-	public static void saveGame( int save ) {
-		//APD: give every item the hero holds its identity before it is written (the recorder only reads and labels)
-		ApdRecorder.onBeforeGameSave();
-		try {
-			Bundle bundle = new Bundle();
+	public static Bundle apdCreateGameBundle() {
+        ApdRecorder.onBeforeGameSave();
+		Bundle bundle = new Bundle();
+        com.shatteredpixel.shatteredpixeldungeon.apd.loot.LootTransfers.state.save(bundle);
 
-			bundle.put( INIT_VER, initialVersion );
-			bundle.put( VERSION, version = Game.versionCode );
-			bundle.put( SEED, seed );
-			bundle.put( CUSTOM_SEED, customSeedText );
-			bundle.put( DAILY, daily );
-			bundle.put( DAILY_REPLAY, dailyReplay );
-			bundle.put( LAST_PLAYED, lastPlayed = Game.realTime);
-			bundle.put( CHALLENGES, challenges );
-			apdStoreCustomRules(bundle);
-			//APD: only a run whose difficulty was recorded writes it (an older run stays "not recorded")
-			if (difficultyKnown){
-				bundle.put( APD_DIFFICULTY, difficulty );
-				bundle.put( APD_DIFFICULTY_BALANCE, difficultyBalance );
-			}
-			//APD: the exotic setting the run started with (a run saved without it stays "not recorded")
-			if (apdExoticKnown) bundle.put( APD_EXOTIC, apdExotic );
-			bundle.put( MOBS_TO_CHAMPION, mobsToChampion );
-			bundle.put( HERO, hero );
-			bundle.put( DEPTH, depth );
-			bundle.put( BRANCH, branch );
-
-			bundle.put( GOLD, gold );
-			bundle.put( ENERGY, energy );
-
-			for (int d : droppedItems.keyArray()) {
-				bundle.put(Messages.format(DROPPED, d), droppedItems.get(d));
-			}
-
-			quickslot.storePlaceholders( bundle );
-
-			Bundle limDrops = new Bundle();
-			LimitedDrops.store( limDrops );
-			bundle.put ( LIMDROPS, limDrops );
-			
-			int count = 0;
-			int ids[] = new int[chapters.size()];
-			for (Integer id : chapters) {
-				ids[count++] = id;
-			}
-			bundle.put( CHAPTERS, ids );
-			
-			Bundle quests = new Bundle();
-			Ghost		.Quest.storeInBundle( quests );
-			Wandmaker	.Quest.storeInBundle( quests );
-			Blacksmith	.Quest.storeInBundle( quests );
-			Imp			.Quest.storeInBundle( quests );
-			bundle.put( QUESTS, quests );
-			
-			SpecialRoom.storeRoomsInBundle( bundle );
-			SecretRoom.storeRoomsInBundle( bundle );
-			
-			Statistics.storeInBundle( bundle );
-			Notes.storeInBundle( bundle );
-			Generator.storeInBundle( bundle );
-
-			int[] bundleArr = new int[generatedLevels.size()];
-			for (int i = 0; i < generatedLevels.size(); i++){
-				bundleArr[i] = generatedLevels.get(i);
-			}
-			bundle.put( GENERATED_LEVELS, bundleArr);
-			
-			Scroll.save( bundle );
-			Potion.save( bundle );
-			Ring.save( bundle );
-
-			Actor.storeNextID( bundle );
-			
-			Bundle badges = new Bundle();
-			Badges.saveLocal( badges );
-			bundle.put( BADGES, badges );
-			
-			//APD: link this save to its run history
-			String apdRunId = ApdRecorder.currentRunId();
-			if (apdRunId != null) bundle.put( APD_RUN_ID, apdRunId );
-
-			FileUtils.bundleToFile( GamesInProgress.gameFile(save), bundle);
-			ApdRecorder.onGameSaved( lastPlayed );
-			
-		} catch (IOException e) {
-			GamesInProgress.setUnknown( save );
-			ShatteredPixelDungeon.reportException(e);
+		bundle.put( INIT_VER, initialVersion );
+		bundle.put( VERSION, version = Game.versionCode );
+		bundle.put( SEED, seed );
+		bundle.put( CUSTOM_SEED, customSeedText );
+		bundle.put( DAILY, daily );
+		bundle.put( DAILY_REPLAY, dailyReplay );
+		bundle.put( LAST_PLAYED, lastPlayed = Game.realTime);
+		bundle.put( CHALLENGES, challenges );
+		apdStoreCustomRules(bundle);
+		//APD: only a run whose difficulty was recorded writes it (an older run stays "not recorded")
+		if (difficultyKnown){
+			bundle.put( APD_DIFFICULTY, difficulty );
+			bundle.put( APD_DIFFICULTY_BALANCE, difficultyBalance );
 		}
-	}
-	
+		//APD: the exotic setting the run started with (a run saved without it stays "not recorded")
+		if (apdExoticKnown) bundle.put( APD_EXOTIC, apdExotic );
+		bundle.put( MOBS_TO_CHAMPION, mobsToChampion );
+		bundle.put( HERO, hero );
+		bundle.put( DEPTH, depth );
+		bundle.put( BRANCH, branch );
+
+		bundle.put( GOLD, gold );
+		bundle.put( ENERGY, energy );
+
+		for (int d : droppedItems.keyArray()) {
+			bundle.put(Messages.format(DROPPED, d), droppedItems.get(d));
+		}
+
+		quickslot.storePlaceholders( bundle );
+
+		Bundle limDrops = new Bundle();
+		LimitedDrops.store( limDrops );
+		bundle.put ( LIMDROPS, limDrops );
+		
+		int count = 0;
+		int ids[] = new int[chapters.size()];
+		for (Integer id : chapters) {
+			ids[count++] = id;
+		}
+		bundle.put( CHAPTERS, ids );
+		
+		Bundle quests = new Bundle();
+		Ghost		.Quest.storeInBundle( quests );
+		Wandmaker	.Quest.storeInBundle( quests );
+		Blacksmith	.Quest.storeInBundle( quests );
+		Imp		.Quest.storeInBundle( quests );
+		bundle.put( QUESTS, quests );
+		
+		SpecialRoom.storeRoomsInBundle( bundle );
+		SecretRoom.storeRoomsInBundle( bundle );
+		
+		Statistics.storeInBundle( bundle );
+		Notes.storeInBundle( bundle );
+		Generator.storeInBundle( bundle );
+
+		int[] bundleArr = new int[generatedLevels.size()];
+		for (int i = 0; i < generatedLevels.size(); i++){
+			bundleArr[i] = generatedLevels.get(i);
+		}
+		bundle.put( GENERATED_LEVELS, bundleArr);
+		
+		Scroll.save( bundle );
+		Potion.save( bundle );
+		Ring.save( bundle );
+
+		Actor.storeNextID( bundle );
+		
+		Bundle badges = new Bundle();
+		Badges.saveLocal( badges );
+		bundle.put( BADGES, badges );
+		
+		//APD: link this save to its run history
+		String apdRunId = ApdRecorder.currentRunId();
+		if (apdRunId != null) bundle.put( APD_RUN_ID, apdRunId );
+
+        return bundle;
+    }
+
+    public static void saveGame(int save) {
+        try {
+            com.shatteredpixel.shatteredpixeldungeon.apd.loot.LootTransfers.requireClear(save);
+            FileUtils.bundleToFile(GamesInProgress.gameFile(save), apdCreateGameBundle());
+            ApdRecorder.onGameSaved(lastPlayed);
+        } catch (IOException e) {
+            GamesInProgress.setUnknown(save);
+            ShatteredPixelDungeon.reportException(e);
+        }
+    }
+
 	public static void saveLevel( int save ) throws IOException {
+        com.shatteredpixel.shatteredpixeldungeon.apd.loot.LootTransfers.requireClear(save);
 		Bundle bundle = new Bundle();
 		bundle.put( LEVEL, level );
 		
@@ -785,9 +793,11 @@ public class Dungeon {
 	}
 	
 	public static void saveAll() throws IOException {
+        com.shatteredpixel.shatteredpixeldungeon.apd.loot.LootTransfers.requireClear(GamesInProgress.curSlot);
 		if (hero != null && (hero.isAlive() || WndResurrect.instance != null)) {
 			
-			Actor.fixTime();
+			com.shatteredpixel.shatteredpixeldungeon.apd.loot.LootTransfers.deliver();
+            Actor.fixTime();
 			updateLevelExplored();
 			saveGame( GamesInProgress.curSlot );
 			saveLevel( GamesInProgress.curSlot );
@@ -827,7 +837,8 @@ public class Dungeon {
 	public static void loadGame( int save, boolean fullLoad ) throws IOException {
 		com.shatteredpixel.shatteredpixeldungeon.apd.replay.FloorReplay.awaitIdle();
 		
-		Bundle bundle = FileUtils.bundleFromFile( GamesInProgress.gameFile( save ) );
+		com.shatteredpixel.shatteredpixeldungeon.apd.loot.LootTransfers.recover(save);
+        Bundle bundle = FileUtils.bundleFromFile( GamesInProgress.gameFile( save ) );
 
 		initialVersion = bundle.getInt( INIT_VER );
 		version = bundle.getInt( VERSION );
@@ -844,7 +855,8 @@ public class Dungeon {
 		QuickSlotButton.reset();
 		Toolbar.swappedQuickslots = false;
 
-		Dungeon.challenges = bundle.getInt( CHALLENGES );
+		com.shatteredpixel.shatteredpixeldungeon.apd.loot.LootTransfers.state = com.shatteredpixel.shatteredpixeldungeon.apd.loot.LootTransitState.restore(bundle);
+        Dungeon.challenges = bundle.getInt( CHALLENGES );
 		apdRestoreDifficulty( bundle );
 
 		Dungeon.mobsToChampion = bundle.getFloat( MOBS_TO_CHAMPION );
@@ -938,6 +950,7 @@ public class Dungeon {
 	}
 	
 	public static Level loadLevel( int save ) throws IOException {
+        com.shatteredpixel.shatteredpixeldungeon.apd.loot.LootTransfers.requireClear(save);
 		
 		Dungeon.level = null;
 		Actor.clear();
@@ -965,6 +978,8 @@ public class Dungeon {
 	}
 
 	private static void deleteGame( int save, boolean deleteLevels, boolean abandoned ) {
+        try { com.shatteredpixel.shatteredpixeldungeon.apd.loot.LootTransfers.requireClear(save); }
+        catch (IOException e) { ShatteredPixelDungeon.reportException(e); return; }
 
 		//APD: a run whose save is deleted while it is still open ends as abandoned
 		if (abandoned) ApdRecorder.onSlotDeleted( save );
@@ -1245,5 +1260,6 @@ public class Dungeon {
 	}
 
 }
+
 
 

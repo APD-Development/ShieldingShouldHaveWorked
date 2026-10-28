@@ -91,6 +91,7 @@ public class APDSettingsPane extends Component {
     private CheckBox chkFoodInHealing;
     private RenderedTextBlock sectionInfo;
     private boolean diagnosticsLoaded;
+    private RedButton btnDiagnosticReport;
     public interface Navigation { void changed(ApdSettingsSection previous); }
     private Navigation navigation;
     public void navigation(Navigation value){navigation=value;}
@@ -283,6 +284,21 @@ public class APDSettingsPane extends Component {
 		};
 		add( btnTest );
 
+        final RedButton diagnosticReport=new SettingButton("Create bug report") {
+            @Override protected void onClick() {
+                final com.watabou.noosa.Game engine=Game.instance;
+                final com.watabou.noosa.Scene owner=Game.scene();
+                enable(false);
+                com.shatteredpixel.shatteredpixeldungeon.apd.diagnostics.DiagnosticReport.export(message->Game.runOnRenderThread(()->{
+                    if(Game.instance!=engine || Game.scene()!=owner || parent==null)return;
+                    enable(true);owner.addToFront(new WndMessage(message));
+                }));
+            }
+        };
+        add(diagnosticReport);btnDiagnosticReport=diagnosticReport;
+        row(ApdSettingsSection.ADVANCED,diagnosticReport,
+                "Save a support file with build/device details, recent input and screen timings, errors, and memory readings. Saved games and run histories are not included.");
+
 		btnImport = new SettingButton( "Import APD rankings" ) {
 			@Override
 			protected void onClick() {
@@ -453,6 +469,7 @@ public class APDSettingsPane extends Component {
         for(SettingButton button:categories)button.visible=button.active=false;
         btnSections.visible=btnSections.active=section!=null;
         if(section==null){
+            btnDiagnosticReport.visible=btnDiagnosticReport.active=true;btnDiagnosticReport.setRect(x,pos,width,24);pos=btnDiagnosticReport.bottom()+GAP;
             for(SettingButton button:categories){button.visible=button.active=true;button.setRect(x,pos,width,24);pos=button.bottom()+GAP;}
         }else{
             btnSections.setRect(x,pos,width,20);pos=btnSections.bottom()+2*GAP;
@@ -554,3 +571,4 @@ public class APDSettingsPane extends Component {
 		t.start();
 	}
 }
+

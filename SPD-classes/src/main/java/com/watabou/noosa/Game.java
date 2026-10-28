@@ -192,6 +192,8 @@ public class Game implements ApplicationListener {
 	//justResumed is a bit of a hack to improve start time metrics on Android,
 	// as texture refreshing leads to slow warm starts. TODO would be nice to fix this properly
 	private boolean justResumed = true;
+    private long resumeStartedNanos = System.nanoTime();
+    private boolean awaitingFirstDraw = true;
 
 	@Override
 	public void render() {
@@ -229,6 +231,10 @@ public class Game implements ApplicationListener {
 		Gdx.gl.glDisable(Gdx.gl.GL_SCISSOR_TEST);
 		Gdx.gl.glClear(Gdx.gl.GL_COLOR_BUFFER_BIT);
 		draw();
+        if (awaitingFirstDraw) {
+            awaitingFirstDraw = false;
+            com.watabou.utils.SupportDiagnostics.event("render.first_draw", "after_resume_ms="+((System.nanoTime()-resumeStartedNanos)/1000000L));
+        }
 
 		Gdx.gl.glDisable( Gdx.gl.GL_SCISSOR_TEST );
 		
@@ -237,6 +243,8 @@ public class Game implements ApplicationListener {
 	
 	@Override
 	public void pause() {
+		com.watabou.utils.SupportDiagnostics.event("game.pause", scene == null ? "no scene" : scene.getClass().getSimpleName());
+		InputHandler.discardPendingEvents();
 		if (scene != null) {
 			scene.onPause();
 		}
@@ -246,6 +254,9 @@ public class Game implements ApplicationListener {
 	
 	@Override
 	public void resume() {
+		com.watabou.utils.SupportDiagnostics.event("game.resume", "");
+		resumeStartedNanos=System.nanoTime();awaitingFirstDraw=true;
+		InputHandler.discardPendingEvents();
 		invalidateRetainedReturn();
 		justResumed = true;
 	}
@@ -282,6 +293,7 @@ public class Game implements ApplicationListener {
 	}
 	
 	public static void switchScene(Class<? extends Scene> c, SceneChangeCallback callback) {
+		com.watabou.utils.SupportDiagnostics.event("scene.request", c.getSimpleName());
 		instance.sceneClass = c;
 		instance.requestedReset = true;
 		instance.onChange = callback;
@@ -294,6 +306,10 @@ public class Game implements ApplicationListener {
 	public static boolean switchingScene() {
 		return instance.requestedReset;
 	}
+
+    public static boolean switchingTo(Class<? extends Scene> target) {
+        return instance != null && instance.requestedReset && sceneClass == target;
+    }
 	
 	protected void step() {
 		applyRequestedScene();
@@ -322,6 +338,8 @@ public class Game implements ApplicationListener {
 	}
 	
 	protected void switchScene() {
+        long sceneStart=System.nanoTime();
+        com.watabou.utils.SupportDiagnostics.event("scene.begin", requestedScene.getClass().getSimpleName());
 
 		if (onChange != null || !isReturnMenu(sceneClass)
 				|| (scene != null && scene.getClass() == sceneClass)) clearRetainedReturn();
@@ -355,6 +373,7 @@ public class Game implements ApplicationListener {
 		Game.elapsed = 0f;
 		Game.timeScale = 1f;
 		Game.timeTotal = 0f;
+        com.watabou.utils.SupportDiagnostics.event("scene.ready", scene.getClass().getSimpleName()+" load_ms="+((System.nanoTime()-sceneStart)/1000000L));
 	}
 
 	protected void update() {
@@ -387,6 +406,7 @@ public class Game implements ApplicationListener {
 	}
 	
 	protected void logException( Throwable tr ){
+		com.watabou.utils.SupportDiagnostics.error(tr);
 		StringWriter sw = new StringWriter();
 		PrintWriter pw = new PrintWriter(sw);
 		tr.printStackTrace(pw);
@@ -415,4 +435,5 @@ public class Game implements ApplicationListener {
 	}
 	
 }
+
 

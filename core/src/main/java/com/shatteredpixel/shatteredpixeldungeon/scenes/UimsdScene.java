@@ -153,6 +153,7 @@ public class UimsdScene extends PixelScene {
 
 	//Opens UIMSD from a screen. 'from' is where Back returns to.
 	public static void openNow( Class<? extends PixelScene> from ){
+		com.watabou.utils.SupportDiagnostics.event("uimsd.open", from == GameScene.class ? "from=game" : "from=menu");
 		backTo = from == GameScene.class ? GameScene.class : TitleScene.class;
 		File root = ApdRecorder.historyRoot();
 		//demo data can be shown in any build once it exists (the Demo Unlock makes it in release builds too)
@@ -215,6 +216,7 @@ public class UimsdScene extends PixelScene {
 			model.setListener(new UimsdModel.Listener(){
 				@Override
 				public void changed(){
+					com.watabou.utils.SupportDiagnostics.event("uimsd.model", "state=" + (model == null ? "none" : model.state()));
 					dirty = true;
 				}
 			});
@@ -286,6 +288,7 @@ public class UimsdScene extends PixelScene {
 
 	private void rebuild(){
 		long rebuildStart = System.nanoTime();
+		com.watabou.utils.SupportDiagnostics.event("uimsd.layout.begin", "home=" + atHome + " state=" + (model == null ? "none" : model.state()));
 		rememberTableViewport();
 		activeTable = null;
 		erase(ui);
@@ -296,6 +299,7 @@ public class UimsdScene extends PixelScene {
 		build();
 		if (activeTable != null) activeTable.restoreViewport(tableModel.viewport());
 		rebuildDurationNanos = System.nanoTime() - rebuildStart;
+		com.watabou.utils.SupportDiagnostics.event("uimsd.layout.ready", "ms=" + (rebuildDurationNanos / 1000000L) + " home=" + atHome);
 	}
 
 	private UimsdTable activeTable;
@@ -1087,6 +1091,7 @@ public class UimsdScene extends PixelScene {
 		else ShatteredPixelDungeon.switchScene(backTo);
 	}
 }
+
 
 
 

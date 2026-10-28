@@ -38,12 +38,11 @@ public final class GroundLootPlan {
         List<Source> sources=new ArrayList<>();
         Set<Item> seen=Collections.newSetFromMap(new IdentityHashMap<Item,Boolean>());
         for(Heap heap:heaps) {
-            if(heap.type!=Heap.Type.HEAP)continue;
             List<Item> items=new ArrayList<>();
             for(Item item:heap.items) {
                 if(item==null || item.quantity()<=0 || !seen.add(item))
                     throw new IllegalStateException("Invalid or aliased ground item");
-                if(eligible.test(item))items.add(item);
+                if(heap.type==Heap.Type.HEAP && eligible.test(item))items.add(item);
             }
             if(!items.isEmpty())sources.add(new Source(heap,items));
         }
@@ -65,4 +64,7 @@ public final class GroundLootPlan {
         }
         return true;
     }
+
+    boolean belongsTo(Level candidate) { return level == candidate; }
 }
+

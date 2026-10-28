@@ -31,6 +31,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class PointerEvent {
+    public final long diagnosticId=com.watabou.utils.SupportDiagnostics.nextInputId();
+    public final long queuedNanos=System.nanoTime();
+    public long sourceEventNanos; // GDX backend timestamp when available; zero means unknown.
 
 	public enum Type {
 		DOWN,
@@ -128,6 +131,14 @@ public class PointerEvent {
 	private static ArrayList<PointerEvent> pointerEvents = new ArrayList<>();
 	private static HashMap<Integer, PointerEvent> activePointers = new HashMap<>();
 
+	/** A lifecycle boundary cancels held pointers; it must never turn them into clicks. */
+	public static synchronized void discardPendingEvents(){
+        if(!pointerEvents.isEmpty() || !activePointers.isEmpty())com.watabou.utils.SupportDiagnostics.event("input.discard","touch_queued="+pointerEvents.size()+" held="+activePointers.size());
+		for (PointerEvent event : new ArrayList<>(activePointers.values())) pointerSignal.dispatch(event.cancel());
+		activePointers.clear();
+		pointerEvents.clear();
+	}
+
 	private static PointF lastHoverPos = new PointF();
 
 	public static PointF currentHoverPos(){
@@ -143,6 +154,7 @@ public class PointerEvent {
 	}
 	
 	public static synchronized void addPointerEvent( PointerEvent event ){
+		if(event.type!=Type.HOVER)com.watabou.utils.SupportDiagnostics.input("queued","touch."+event.type,event.diagnosticId,event.queuedNanos,event.sourceEventNanos);
 		pointerEvents.add( event );
 	}
 
@@ -173,6 +185,7 @@ public class PointerEvent {
 			if (p.type == Type.HOVER){
 				continue;
 			}
+			com.watabou.utils.SupportDiagnostics.input("dispatched","touch."+p.type,p.diagnosticId,p.queuedNanos,p.sourceEventNanos);
 			clearKeyboardThisPress = true;
 			if (activePointers.containsKey(p.id)){
 				PointerEvent existing = activePointers.get(p.id);
@@ -208,4 +221,5 @@ public class PointerEvent {
 	}
 
 }
+
 

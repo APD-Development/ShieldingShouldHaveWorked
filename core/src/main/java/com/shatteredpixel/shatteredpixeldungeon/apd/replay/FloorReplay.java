@@ -44,7 +44,7 @@ public final class FloorReplay {
 	private FloorReplay(){}
 
 	//bump when the engine, reference context or scan changes what a replay returns: cached results become stale
-	public static final int ENGINE_VERSION = 1;
+	public static final int ENGINE_VERSION = 2; // Approved Gathering scroll changes current reference loot, never raw recorded history.
 	public static final String CONTEXT_ID = "ref1-classkit";
 	public static final int LAST_FLOOR = 26;
 
@@ -319,3 +319,4 @@ public final class FloorReplay {
 		}
 	}
 }
+

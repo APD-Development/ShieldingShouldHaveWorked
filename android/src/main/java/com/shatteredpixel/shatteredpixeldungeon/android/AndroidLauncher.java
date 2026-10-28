@@ -136,6 +136,8 @@ public class AndroidLauncher extends AndroidApplication {
 			instance = this;
 		}
 
+        AndroidSupportDiagnostics.initialize(this);
+
 		//Shattered still overrides the back gesture behaviour, but we need to do it in a new way
 		// (API added in Android 13, functionality enforced in Android 16)
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -184,12 +186,28 @@ public class AndroidLauncher extends AndroidApplication {
 
 	@Override
 	protected void onResume() {
+		com.watabou.utils.SupportDiagnostics.event("activity.resume", "");
 		//prevents weird rare cases where the app is running twice
 		if (instance != this){
 			finishAndRemoveTask();
 		}
 		super.onResume();
 	}
+
+    @Override protected void onPause() {
+        com.watabou.utils.SupportDiagnostics.event("activity.pause", "");
+        super.onPause();
+    }
+
+    @Override public void onTrimMemory(int level) {
+        com.watabou.utils.SupportDiagnostics.event("android.trim_memory", "level="+level);
+        super.onTrimMemory(level);
+    }
+
+    @Override public void onLowMemory() {
+        com.watabou.utils.SupportDiagnostics.event("android.low_memory", "OS memory-pressure notification");
+        super.onLowMemory();
+    }
 
 	@SuppressLint("GestureBackNavigation")
 	@Override

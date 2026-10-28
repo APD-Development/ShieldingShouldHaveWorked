@@ -62,7 +62,14 @@ public class CustomEquipmentGenerationTest {
             assertEquals(1,room.heaps.valueList().size());
         }finally{Dungeon.level=previous;}
     }
-    @Test public void neutralFloorAndShopSnapshotsMatchVerifiedTest121Source() throws Exception {
+    @Test public void legacyTwelveScrollPoolNeutralSnapshotsStillMatchVerifiedTest121Source() throws Exception {
+        // Keep the complete historical baseline. The separately approved thirteenth
+        // scroll changes the current loot pool; isolate ONLY that addition here.
+        Generator.Category scrolls=Generator.Category.SCROLL;
+        org.junit.Assert.assertEquals(13,scrolls.classes.length);
+        float first=scrolls.defaultProbs[12],second=scrolls.defaultProbs2[12],combined=scrolls.defaultProbsTotal[12];
+        scrolls.defaultProbs[12]=0;scrolls.defaultProbs2[12]=0;scrolls.defaultProbsTotal[12]=0;
+        try {
         java.util.List<String> expected=new ArrayList<>();
         try(java.io.BufferedReader reader=new java.io.BufferedReader(new java.io.InputStreamReader(
                 getClass().getResourceAsStream("/apd/custom_equipment_neutral_test121.sha256"),java.nio.charset.StandardCharsets.UTF_8))){
@@ -74,6 +81,10 @@ public class CustomEquipmentGenerationTest {
             StringBuilder hex=new StringBuilder();for(byte value:digest)hex.append(String.format(java.util.Locale.ROOT,"%02x",value&255));actual.add(hex.toString());
         }
         assertEquals(24,expected.size());assertEquals(expected,actual);
+        } finally {
+            scrolls.defaultProbs[12]=first;scrolls.defaultProbs2[12]=second;scrolls.defaultProbsTotal[12]=combined;
+            Generator.fullReset();
+        }
     }
     public static void main(String[] args){for(String record:neutralRecords())System.out.println(record);}
     private static void guideIntroState(int state) {
@@ -119,3 +130,4 @@ public class CustomEquipmentGenerationTest {
         }finally{guideIntroState(priorIntro);}
     }
 }
+

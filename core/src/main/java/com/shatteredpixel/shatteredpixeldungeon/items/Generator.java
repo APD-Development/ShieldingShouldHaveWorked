@@ -372,10 +372,11 @@ public class Generator {
 					ScrollOfRage.class,
 					ScrollOfRetribution.class,
 					ScrollOfTerror.class,
-					ScrollOfTransmutation.class
+					ScrollOfTransmutation.class,
+                    com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfGathering.class
 			};
-			SCROLL.defaultProbs  = new float[]{ 0, 3, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1 };
-			SCROLL.defaultProbs2 = new float[]{ 0, 3, 2, 2, 1, 2, 1, 1, 1, 1, 1, 0 };
+			SCROLL.defaultProbs  = new float[]{ 0, 3, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1 };
+			SCROLL.defaultProbs2 = new float[]{ 0, 3, 2, 2, 1, 2, 1, 1, 1, 1, 1, 0, 2 };
 			SCROLL.probs = SCROLL.defaultProbs.clone();
 			
 			STONE.classes = new Class<?>[]{
@@ -749,10 +750,10 @@ public class Generator {
 					for (int i = 0; i < cat.dropped; i++) Random.Long();
 				}
 
-				int i = Random.chances(cat.probs);
+				int i = Random.chances(apdAllowedProbs(cat, cat.probs));
 				if (i == -1) {
 					reset(cat);
-					i = Random.chances(cat.probs);
+					i = Random.chances(apdAllowedProbs(cat, cat.probs));
 				}
 				if (cat.defaultProbs != null) cat.probs[i]--;
 				Class<?> itemCls = cat.classes[i];
@@ -797,9 +798,9 @@ public class Generator {
 		} else if (cat.defaultProbs == null || cat == Category.ARTIFACT) {
 			return random(cat);
 		} else if (cat.defaultProbsTotal != null){
-			return ((Item) Reflection.newInstance(cat.classes[Random.chances(cat.defaultProbsTotal)])).random();
+			return ((Item) Reflection.newInstance(cat.classes[Random.chances(apdAllowedProbs(cat, cat.defaultProbsTotal))])).random();
 		} else {
-			Class<?> itemCls = cat.classes[Random.chances(cat.defaultProbs)];
+			Class<?> itemCls = cat.classes[Random.chances(apdAllowedProbs(cat, cat.defaultProbs))];
 
 			if (ExoticPotion.regToExo.containsKey(itemCls)){
 				if (Random.Float() < ExoticCrystals.consumableExoticChance(itemCls)){
@@ -827,6 +828,7 @@ public class Generator {
 	}
 
 	private static Item randomImpl( Class<? extends Item> cl ) {
+        if (apdGatheringClass(cl) && !com.shatteredpixel.shatteredpixeldungeon.apd.loot.LootScrollRules.canGenerate(Dungeon.depth)) return null;
 		return Reflection.newInstance(cl).random();
 	}
 
@@ -958,6 +960,17 @@ public class Generator {
 		return false;
 	}
 
+    private static boolean apdGatheringClass(Class<?> type) {
+        return type == com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfGathering.class
+                || type == com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfForwarding.class;
+    }
+    private static float[] apdAllowedProbs(Category cat, float[] weights) {
+        if (cat != Category.SCROLL || com.shatteredpixel.shatteredpixeldungeon.apd.loot.LootScrollRules.canGenerate(Dungeon.depth)) return weights;
+        float[] allowed = weights.clone();
+        for (int i=0;i<cat.classes.length;i++) if (apdGatheringClass(cat.classes[i])) allowed[i]=0;
+        return allowed;
+    }
+
 	private static final String FIRST_DECK = "first_deck";
 	private static final String GENERAL_PROBS = "general_probs";
 	private static final String CATEGORY_PROBS = "_probs";
@@ -1008,6 +1021,12 @@ public class Generator {
 		for (Category cat : Category.values()){
 			if (bundle.contains(cat.name().toLowerCase() + CATEGORY_PROBS)){
 				float[] probs = bundle.getFloatArray(cat.name().toLowerCase() + CATEGORY_PROBS);
+                if (cat == Category.SCROLL && probs.length == cat.classes.length-1) {
+                    // Add one new deck entry without resetting any of the twelve saved counts.
+                    float[] extended = java.util.Arrays.copyOf(probs, cat.classes.length);
+                    extended[extended.length-1] = bundle.getBoolean("scroll_using_probs2") ? 2 : 1;
+                    probs = extended;
+                }
 				if (cat.defaultProbs != null && probs.length == cat.defaultProbs.length){
 					cat.probs = probs;
 				}
@@ -1040,3 +1059,4 @@ public class Generator {
 		
 	}
 }
+

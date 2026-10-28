@@ -910,6 +910,7 @@ public class GameScene extends PixelScene {
 		}
 
 		if (!Actor.processing() && Dungeon.hero.isAlive()) {
+			if (!com.shatteredpixel.shatteredpixeldungeon.apd.loot.LootTransfers.tick()) return;
 			if (actorThread == null || !actorThread.isAlive()) {
 				
 				actorThread = new Thread() {
@@ -1990,4 +1991,5 @@ public class GameScene extends PixelScene {
 		}
 	};
 }
+
 

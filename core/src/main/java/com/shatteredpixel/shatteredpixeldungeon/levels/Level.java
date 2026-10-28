@@ -178,6 +178,7 @@ public abstract class Level implements Bundlable {
 	public int exit;
 
 	public ArrayList<LevelTransition> transitions;
+    public final java.util.Set<String> apdLootReceipts = new java.util.HashSet<>();
 
 	//when a boss level has become locked.
 	public boolean locked = false;
@@ -377,6 +378,13 @@ public abstract class Level implements Bundlable {
 	
 	@Override
 	public void restoreFromBundle( Bundle bundle ) {
+        apdLootReceipts.clear();
+        if (bundle.contains("apd_loot_receipts")) {
+            for (String id : bundle.getStringArray("apd_loot_receipts")) {
+                if (id == null || id.isEmpty() || !apdLootReceipts.add(id))
+                    throw new IllegalArgumentException("Invalid loot delivery receipts");
+            }
+        }
 
 		version = bundle.getInt( VERSION );
 		
@@ -492,6 +500,7 @@ public abstract class Level implements Bundlable {
 	
 	@Override
 	public void storeInBundle( Bundle bundle ) {
+        if (!apdLootReceipts.isEmpty()) bundle.put("apd_loot_receipts", apdLootReceipts.toArray(new String[0]));
 		bundle.put( VERSION, Game.versionCode );
 		bundle.put( WIDTH, width );
 		bundle.put( HEIGHT, height );
@@ -1701,4 +1710,5 @@ public abstract class Level implements Bundlable {
 		}
 	}
 }
+
 

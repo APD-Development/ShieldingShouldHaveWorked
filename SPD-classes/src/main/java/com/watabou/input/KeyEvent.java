@@ -28,6 +28,9 @@ import com.watabou.utils.Signal;
 import java.util.ArrayList;
 
 public class KeyEvent {
+    public final long diagnosticId=com.watabou.utils.SupportDiagnostics.nextInputId();
+    public final long queuedNanos=System.nanoTime();
+    public long sourceEventNanos; // GDX backend timestamp when available; zero means unknown.
 	
 	public int code;
 	public boolean pressed;
@@ -63,8 +66,14 @@ public class KeyEvent {
 	
 	//Accumulated key events
 	private static ArrayList<KeyEvent> keyEvents = new ArrayList<>();
+
+	public static synchronized void discardPendingEvents(){
+        if(!keyEvents.isEmpty())com.watabou.utils.SupportDiagnostics.event("input.discard","keys_queued="+keyEvents.size());
+        keyEvents.clear();
+    }
 	
 	public static synchronized void addKeyEvent( KeyEvent event ){
+        com.watabou.utils.SupportDiagnostics.input("queued",event.code==Input.Keys.BACK?"back":"key (value not recorded)",event.diagnosticId,event.queuedNanos,event.sourceEventNanos);
 		keyEvents.add( event );
 	}
 	
@@ -87,6 +96,7 @@ public class KeyEvent {
 		}
 
 		for (KeyEvent k : keyEvents){
+            com.watabou.utils.SupportDiagnostics.input("dispatched",k.code==Input.Keys.BACK?"back":"key (value not recorded)",k.diagnosticId,k.queuedNanos,k.sourceEventNanos);
 			boolean tracedBack = k.pressed && k.code == Input.Keys.BACK && k.backTraceId != 0;
 			if (tracedBack) BackTrace.beginDispatch(k.backTraceId);
 			try {

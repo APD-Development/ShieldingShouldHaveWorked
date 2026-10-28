@@ -31,14 +31,32 @@ import com.watabou.utils.PointF;
 public class InputHandler extends InputAdapter {
 
 	private InputMultiplexer multiplexer;
+    private final Input sourceInput;
 
 	public InputHandler( Input input ){
+        sourceInput=input;
+		discardPendingEvents();
 		multiplexer = new InputMultiplexer();
 		input.setInputProcessor(multiplexer);
 		addInputProcessor(this);
 		input.setCatchKey( Input.Keys.BACK, true);
 		input.setCatchKey( Input.Keys.MENU, true);
 	}
+
+	/** Queued input belongs to the foreground lifecycle that received it. */
+	public static void discardPendingEvents(){
+		PointerEvent.discardPendingEvents();
+		KeyEvent.discardPendingEvents();
+		ScrollEvent.discardPendingEvents();
+	}
+
+    private long sourceTime(){
+        long time=sourceInput.getCurrentEventTime();
+        return time>0 && time<=System.nanoTime() ? time : 0;
+    }
+    private PointerEvent stamp(PointerEvent event){event.sourceEventNanos=sourceTime();return event;}
+    private KeyEvent stamp(KeyEvent event){event.sourceEventNanos=sourceTime();return event;}
+    private ScrollEvent stamp(ScrollEvent event){event.sourceEventNanos=sourceTime();return event;}
 
 	public void addInputProcessor(InputProcessor processor){
 		multiplexer.addProcessor(0, processor);
@@ -64,6 +82,9 @@ public class InputHandler extends InputAdapter {
 	
 	public void processAllEvents(){
 		PointerEvent.processPointerEvents();
+        // A menu click may have requested another scene. Preserve Back/scroll
+        // for that scene instead of delivering them to the outgoing title.
+        if (Game.instance != null && Game.switchingScene()) return;
 		KeyEvent.processKeyEvents();
 		ScrollEvent.processScrollEvents();
 	}
@@ -84,9 +105,9 @@ public class InputHandler extends InputAdapter {
 		}
 
 		if (button >= 3 && KeyBindings.isKeyBound( button + 1000 )) {
-			KeyEvent.addKeyEvent( new KeyEvent( button + 1000, true ) );
+			KeyEvent.addKeyEvent( stamp(new KeyEvent( button + 1000, true ) ));
 		} else if (button < 3) {
-			PointerEvent.addPointerEvent(new PointerEvent(screenX, screenY, pointer, PointerEvent.Type.DOWN, button));
+			PointerEvent.addPointerEvent(stamp(new PointerEvent(screenX, screenY, pointer, PointerEvent.Type.DOWN, button)));
 		}
 		return true;
 	}
@@ -95,9 +116,9 @@ public class InputHandler extends InputAdapter {
 	public synchronized boolean touchUp(int screenX, int screenY, int pointer, int button) {
 
 		if (button >= 3 && KeyBindings.isKeyBound( button + 1000 )) {
-			KeyEvent.addKeyEvent( new KeyEvent( button + 1000, false ) );
+			KeyEvent.addKeyEvent( stamp(new KeyEvent( button + 1000, false ) ));
 		} else if (button < 3) {
-			PointerEvent.addPointerEvent(new PointerEvent(screenX, screenY, pointer, PointerEvent.Type.UP, button));
+			PointerEvent.addPointerEvent(stamp(new PointerEvent(screenX, screenY, pointer, PointerEvent.Type.UP, button)));
 		}
 		return true;
 	}
@@ -106,16 +127,16 @@ public class InputHandler extends InputAdapter {
 	public boolean touchCancelled(int screenX, int screenY, int pointer, int button) {
 
 		if (button >= 3 && KeyBindings.isKeyBound( button + 1000 )) {
-			KeyEvent.addKeyEvent( new KeyEvent( button + 1000, false ) );
+			KeyEvent.addKeyEvent( stamp(new KeyEvent( button + 1000, false ) ));
 		} else if (button < 3) {
-			PointerEvent.addPointerEvent(new PointerEvent(screenX, screenY, pointer, PointerEvent.Type.CANCEL, button));
+			PointerEvent.addPointerEvent(stamp(new PointerEvent(screenX, screenY, pointer, PointerEvent.Type.CANCEL, button)));
 		}
 		return true;
 	}
 
 	@Override
 	public synchronized boolean touchDragged(int screenX, int screenY, int pointer) {
-		PointerEvent.addIfExisting(new PointerEvent(screenX, screenY, pointer, PointerEvent.Type.DOWN));
+		PointerEvent.addIfExisting(stamp(new PointerEvent(screenX, screenY, pointer, PointerEvent.Type.DOWN)));
 		return true;
 	}
 	
@@ -127,7 +148,7 @@ public class InputHandler extends InputAdapter {
 			screenX = (int)hover.x;
 			screenY = (int)hover.y;
 		}
-		PointerEvent.addPointerEvent(new PointerEvent(screenX, screenY, -1, PointerEvent.Type.HOVER));
+		PointerEvent.addPointerEvent(stamp(new PointerEvent(screenX, screenY, -1, PointerEvent.Type.HOVER)));
 		return true;
 	}
 	
@@ -148,7 +169,7 @@ public class InputHandler extends InputAdapter {
 			BackTrace.accepted(backTrace);
 		}
 		if (KeyBindings.isKeyBound( keyCode )) {
-			KeyEvent.addKeyEvent( new KeyEvent( keyCode, true, backTrace ) );
+			KeyEvent.addKeyEvent( stamp(new KeyEvent( keyCode, true, backTrace ) ));
 			BackTrace.stage(backTrace, "key-down-enqueued", "");
 			return true;
 		} else {
@@ -159,7 +180,7 @@ public class InputHandler extends InputAdapter {
 	@Override
 	public synchronized boolean keyUp( int keyCode ) {
 		if (KeyBindings.isKeyBound( keyCode )) {
-			KeyEvent.addKeyEvent( new KeyEvent( keyCode, false ) );
+			KeyEvent.addKeyEvent( stamp(new KeyEvent( keyCode, false ) ));
 			return true;
 		} else {
 			return false;
@@ -172,7 +193,7 @@ public class InputHandler extends InputAdapter {
 	
 	@Override
 	public boolean scrolled(float amountX, float amountY) {
-		ScrollEvent.addScrollEvent( new ScrollEvent(PointerEvent.currentHoverPos(), amountY));
+		ScrollEvent.addScrollEvent( stamp(new ScrollEvent(PointerEvent.currentHoverPos(), amountY)));
 		return true;
 	}
 }
