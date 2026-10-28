@@ -1,57 +1,26 @@
 {
   "date": "2026-10-27",
-  "previous_source": "eda307d567bd7eacd1b304042747b65d0ea4ed72",
-  "previous_application_source": "eda307d567bd7eacd1b304042747b65d0ea4ed72",
-  "previous_run": 40381278161,
-  "previous_label": "Codex TEST 314",
+  "previous_source": "c52b583703f2e54f6ddc33674def3215860d37eb",
+  "previous_application_source": "c52b583703f2e54f6ddc33674def3215860d37eb",
+  "previous_run": 40603010114,
+  "previous_label": "Codex TEST 315",
   "changes": [
     {
       "category": "Quality of Life",
       "sprite": "ICON_CHECKED",
-      "title": "Earlier Android Back response",
-      "text": "A queued Android Back press now receives one early input drain on a stable scene before expensive frame drawing. The system callback wakes rendering. Original gesture duplication protection, input ordering, turn progression and window semantics remain unchanged. Core tests pass; physical phone latency is not yet accepted.",
+      "title": "Faster ordinary Settings Back without a scene rebuild",
+      "text": "Closing ordinary Settings now returns directly to its underlying game or title scene rather than forcing a complete scene reconstruction and font-generator reset every time. Explicit language selection and system-font controls keep their existing authorized reset behavior. This does not claim all unrelated Back routes are faster.",
       "paths": [
-        "SPD-classes/src/main/java/com/watabou/input/KeyEvent.java",
-        "SPD-classes/src/main/java/com/watabou/noosa/Game.java",
-        "android/src/main/java/com/shatteredpixel/shatteredpixeldungeon/android/AndroidLauncher.java",
-        "core/src/test/java/com/watabou/input/KeyEventBackPriorityTest.java"
-      ]
-    },
-    {
-      "category": "Statistics / UIMSD",
-      "sprite": "ICON_INFO",
-      "title": "Read-only research and timeline evidence",
-      "text": "Retains comparable personal progress entry and exact floor or equipment event transitions in bounded run turn browsing and death context. Missing information remains unknown, hidden rows are excluded, and none of these views changes saves, raw history, rewards or scoring.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RunTurnBrowser.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/research/ComparableProgressEntry.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndUimsdResearch.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/DeathContextTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/RunTurnBrowserTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/research/ComparableProgressTest.java",
-        "docs/APD-UIMSD-COMPARABLE-PROGRESS-2026-10-25.md",
-        "docs/APD-UIMSD-TIMELINE-TRANSITIONS-2026-10-27.md"
-      ]
-    },
-    {
-      "category": "Developer Commentary",
-      "sprite": "ICON_CHECKED",
-      "title": "Exact Cleric Start and native verification records",
-      "text": "Preserves the earlier matching Cleric Start correction, both exact source APK verification receipts, and strengthened native tests. Earlier baseline artifact availability failures are retained rather than falsely reported as completed physical tests.",
-      "paths": [
-        ".github/workflows/apd-test314-existing-apk-acceptance.yml",
-        ".github/workflows/codex-death-cleanup-device-regression.yml",
-        ".github/workflows/codex-hotbar-cold-restart.yml",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/RunSetupDifficultyDeviceTest.java",
-        "docs/APD-TEST314-VERIFICATION-2026-10-26.json",
-        "tools/run-test314-exact-android.sh"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndSettings.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/SettingsBackSceneTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/AndroidBackDeviceTest.java"
       ]
     },
     {
       "category": "Developer Commentary",
       "sprite": "ICON_INFO",
-      "title": "Full provenance and core verification",
-      "text": "The complete 2089 method, 404 suite core run passed. Records exact source, new Back pending dispatch tests and retained previous acceptance limits. Requests one necessary private matched developer and player build with strict immediate predecessor history, API34, display, signer, game save and release protections.",
+      "title": "Back performance acceptance and preserved history",
+      "text": "Owner reports TEST315 remained slow on physical REDMAGIC but Back inside APD Settings sections is immediate. Full source core suite passed 2090 tests in 405 suites with zero failures errors or skips. A real Android Back test requires the underlying scene identity to remain unchanged; device and phone results remain pending.",
       "paths": [
         "docs/APD-CODEX-CORE-TEST-REQUEST.txt",
         "docs/HANDOFF.md",
@@ -61,5 +30,5 @@
       ]
     }
   ],
-  "commentary": "Intentional private matched Back responsiveness candidate following core green run40602479045 (2089 methods/404 suites). Previous ACTUALLY COMPILED developer TEST314, source eda307d567bd7eacd1b304042747b65d0ea4ed72, producer40381278161, has 341 indexed records and developer SHA-256 43517d2fb23163fc69d635e35c24a8b5d438df85a54824d93108c4571a78db55. Preserve all predecessor history and append one new reviewed record. New source moves queued Back dispatch before draw if scene stable and requests Android render; source/core green is not physical phone proof. Require complete 2089 core, debug, 56 API34, 82 images, five display profiles, signing/identity, exact APK history, saves/death/cold restart and matched developer/player. No release or tester distribution."
+  "commentary": "Necessary private paired ordinary Settings Back performance candidate after TEST315 owner reported persistent lag. Immediate previous actually compiled producer TEST315 run40603010114, source c52b583703f2e54f6ddc33674def3215860d37eb; do not treat TEST315 as fully emulator accepted, main API34 and one display profile failed. Preserve its 342 indexed history records exactly, append one reviewed build record and require full core 2090 methods/405 suites, debug, native 57 methods including new actual Back from WndSettings, 82 screenshots if existing unchanged inventory, display five profiles, signatures/saves/history and paired builds. Source core run40606022316 passed. Phone claim pending, no public release or automatic tester distribution."
 }
