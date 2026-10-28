@@ -67,6 +67,31 @@ public class UimsdModelTest {
 		return m;
 	}
 
+	@Test public void columnLayoutLoadAndCatalogPublishShareTheSameGeneration() throws Exception {
+		java.io.File root = java.nio.file.Files.createTempDirectory("apd-layout-generation").toFile();
+		try {
+			UimsdModel first = new UimsdModel(R, "");
+			first.load(root);
+			first.awaitLoad(10000);
+			assertEquals(UimsdModel.State.READY, first.state());
+			first.showRoot("runs");
+			List<String> wanted = Arrays.asList(
+					com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKeys.SCORE,
+					com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKeys.HERO_CLASS);
+			first.setColumns(wanted);
+			UimsdModel reopened = new UimsdModel(R, "");
+			reopened.load(root);
+			reopened.awaitLoad(10000);
+			assertEquals(UimsdModel.State.READY, reopened.state());
+			reopened.showRoot("runs");
+			assertEquals("saved layout must be available with the loaded catalog", wanted, reopened.query().columns);
+		} finally {
+			java.io.File layout = new java.io.File(root, UimsdModel.COLUMN_LAYOUTS_FILE);
+			if (layout.exists()) assertTrue(layout.delete());
+			if (root.exists()) assertTrue(root.delete());
+		}
+	}
+
 	@Test public void columnsPersistWhenNoRunHasCreatedTheHistoryFolder() throws Exception {
 		java.nio.file.Path parent = java.nio.file.Files.createTempDirectory("apd-first-layout");
 		java.io.File root = parent.resolve("history").toFile();

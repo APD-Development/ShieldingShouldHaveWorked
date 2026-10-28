@@ -116,7 +116,10 @@ public final class UimsdModel {
 	public synchronized void load( final File root ){
 		retireSeedFloorsLocked();
 		this.root = root;
-		columnLayouts = SavedViews.load(root == null ? null : new File(root, COLUMN_LAYOUTS_FILE));
+		// Do not read or decode saved column layouts on the render thread.
+		// This method is called directly before the UIMSD scene transition.
+		// The worker publishes its complete layout + catalog as one generation.
+		columnLayouts = new SavedViews();
 		state = State.LOADING;
 		failure = "";
 		final long generation = ++loadGeneration;
@@ -124,10 +127,12 @@ public final class UimsdModel {
 			@Override
 			public void run(){
 				try {
+					SavedViews loadedColumnLayouts = SavedViews.load(root == null ? null : new File(root, COLUMN_LAYOUTS_FILE));
 					Catalog c = new DatasetStore(root).load();
 					synchronized (UimsdModel.this){
 						if (generation != loadGeneration) return;
 						retireSeedFloorsLocked();
+						columnLayouts = loadedColumnLayouts;
 						setCatalogLocked(c);
 					}
 				} catch (Throwable e){
