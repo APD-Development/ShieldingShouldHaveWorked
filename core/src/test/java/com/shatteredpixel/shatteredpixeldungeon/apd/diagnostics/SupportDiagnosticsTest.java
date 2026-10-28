@@ -11,6 +11,16 @@ import java.util.concurrent.*;
 import static org.junit.Assert.*;
 
 public class SupportDiagnosticsTest {
+    @Test public void diagnosticCaptureCannotReplaceTheOriginalFailureWhenStackAllocationFails()throws Exception{
+        File dir=Files.createTempDirectory("apd-diag-low-memory-").toFile();SupportDiagnostics.configure(dir,"capture failure fixture");
+        RuntimeException original=new RuntimeException("original failure"){
+            @Override public StackTraceElement[] getStackTrace(){throw new OutOfMemoryError("injected stack allocation failure");}
+        };
+        SupportDiagnostics.error(original);
+        String report=SupportDiagnostics.report("");
+        assertTrue(report.contains("original failure"));
+        assertTrue(report.contains("Error diagnostic capture unavailable"));
+    }
     @Test public void traceIsBoundedAndKeepsTheMostRecentEvents()throws Exception{
         File dir=Files.createTempDirectory("apd-diagnostic-test-").toFile();SupportDiagnostics.configure(dir,"TEST fixture build / fixture device");
         for(int i=0;i<1000;i++)SupportDiagnostics.event("fixture."+i,String.join("",java.util.Collections.nCopies(100,"detail")));

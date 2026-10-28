@@ -61,9 +61,14 @@ public final class SupportDiagnostics {
     }
     public static void error(Throwable error){
         if(error==null)return;
-        event("error",error.getClass().getName()+": "+shortText(error.getMessage(),300));
-        StackTraceElement[] frames=error.getStackTrace();
-        for(int i=0;i<Math.min(frames.length,12);i++)event("at",frames[i].toString());
+        try {
+            event("error",error.getClass().getName()+": "+shortText(error.getMessage(),300));
+            StackTraceElement[] frames=error.getStackTrace();
+            for(int i=0;i<Math.min(frames.length,12);i++)event("at",frames[i].toString());
+        } catch(RuntimeException | OutOfMemoryError unavailable) {
+            // Diagnostic allocation must never replace the failure being reported.
+            writeFailure="Error diagnostic capture unavailable";
+        }
     }
     private static String snapshot(){
         StringBuilder out=new StringBuilder("APD diagnostic session v1\n").append(environment).append('\n');
