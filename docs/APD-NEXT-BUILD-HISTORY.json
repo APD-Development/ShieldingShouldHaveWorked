@@ -1,55 +1,48 @@
 {
-  "date": "2026-10-27",
-  "previous_source": "43d9ebc91bd6458100d89926b00c0a7457098d25",
-  "previous_application_source": "43d9ebc91bd6458100d89926b00c0a7457098d25",
-  "previous_run": 40610182585,
-  "previous_label": "Codex TEST 317",
+  "date": "2026-10-28",
+  "previous_source": "4e0306e2409309f7f890bcf0aec7415fe7af42d3",
+  "previous_application_source": "df5cc85c9a2a0d8a291e55386eab5c7093b12141",
+  "previous_run": 40616453743,
+  "previous_label": "Codex TEST 318",
   "changes": [
     {
       "category": "Quality of Life",
       "sprite": "ICON_CHECKED",
-      "title": "UIMSD opens without blocking on saved-layout file reading",
-      "text": "UIMSD moves its saved column layout file read to the existing background history loader instead of holding the initial screen navigation. Saved layouts are applied together with the current catalog, preserving exact column order, source integrity and stale-load rejection.",
+      "title": "UIMSD prepares its fully usable Home before the title-menu tap",
+      "text": "While the title is visible and UIMSD is permitted, a low-priority daemon prepares the exact saved layouts, cryptographically validated history catalog and initial Home statistics. Tapping claims only a fully READY exact-match model; changed history, rules or scope falls back to the unchanged authoritative loader.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdModel.java"
-      ]
-    },
-    {
-      "category": "Quality of Life",
-      "sprite": "ICON_CHECKED",
-      "title": "UIMSD Home summary calculation does not freeze rendering",
-      "text": "The initial Home statistics are prepared using the fully validated history catalog on its background thread, then reused only for matching catalog identity and ruleset scope. Later scope changes retain the authoritative computation. No statistics or historical events are skipped.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/UimsdScene.java"
-      ]
-    },
-    {
-      "category": "Quality of Life",
-      "sprite": "ICON_CHECKED",
-      "title": "Returning to title skips the unnecessary one-second black fade",
-      "text": "About, hero selection and APD News or Changes use the existing no-fade title return without avoiding real scene creation; non-title returns retain their normal behavior. The initial startup fade remains unchanged.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/AboutScene.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/HeroSelectScene.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/APDTextScene.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdWarmCache.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/TitleScene.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/UimsdScene.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/UimsdGate.java"
       ]
     },
     {
       "category": "Developer Commentary",
       "sprite": "ICON_CHECKED",
-      "title": "Regression verification and preserved player data",
-      "text": "The complete 2097 core-method suite passed across 407 suites with zero failures, errors or skips. Tests cover both background UIMSD loading and saved column layout/scope consistency, title-return no-fade routing and retained historical run boundaries. Physical phone responsiveness is still unmeasured.",
+      "title": "Warm-cache identity, invalidation and title wiring are guarded",
+      "text": "Three permanent cache tests cover READY single-owner handoff, changed raw-history rejection and rule/scope mismatch. The title guard positively checks the approved hook placement while retaining the prior responsive-layout checksum. Full core run 40701500539 passed 2100 methods across 408 suites.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdModelTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/TitleReturnNoFadeTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdWarmCacheTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/UimsdWiringTest.java",
         "docs/APD-CODEX-CORE-TEST-REQUEST.txt"
       ]
     },
     {
       "category": "Developer Commentary",
+      "sprite": "ICON_CHECKED",
+      "title": "Android acceptance follows the approved in-place Settings behavior",
+      "text": "The native restoration suite no longer waits for an ordinary Settings close to rebuild UIMSD; it requires the same scene and no stale window. The realistic 72-run timing fixture separately records background preparation and requires a READY tap-time handoff under one second without waiting, with single-use ownership.",
+      "paths": [
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdRestoreDeviceTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdDeviceTimingTest.java"
+      ]
+    },
+    {
+      "category": "Developer Commentary",
       "sprite": "ICON_INFO",
-      "title": "Strict exact-source private paired APK build",
-      "text": "The immediate previous actually compiled developer TEST317 remains the build-history baseline. Preserve all 344 prior indexed history records byte for byte, append one reviewed record and verify matched developer/player history, signer, application identity, saves, core/debug and native evidence before acceptance. No public release.",
+      "title": "Strict TEST319 comparison uses the actual compiled TEST318 pair",
+      "text": "TEST318 developer and player APKs compiled, but its broad Android run is rejected after four failures and an invalid placeholder image. Preserve all 345 indexed TEST318 history records, append one reviewed TEST319 record, and require complete native, visual, identity, save and matched-pair evidence before acceptance. Physical phone speed remains unmeasured.",
       "paths": [
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",
@@ -58,5 +51,5 @@
       ]
     }
   ],
-  "commentary": "One necessary private matched developer/player APK candidate for actual owner-requested UIMSD initial-screen responsiveness improvement and separately verified no-fade title returns. Immediate previous actually COMPILED developer TEST317 source 43d9ebc91bd6458100d89926b00c0a7457098d25 producer40610182585 contains 344 indexed historical records; its broad Android workflow failed, so do not describe it as accepted. Current production source df5cc85c9a2a0d8a291e55386eab5c7093b12141 passed full core run40616087301:2097 methods/407 suites, zero fail/error/skip; earlier staged layout optimization run40615601784 also passed. Preserve exactly all 344 predecessor records and add one reviewed current record. Require full core/debug, Android API34, visuals, five display profiles, signing/identity, save/cold restart/death checks, both exact-source private developer+player APKs. No historical source rewriting, no user data clearing/uninstall, no public release/automatic tester distribution; physical REDMAGIC subsecond improvements remain unverified."
+  "commentary": "One necessary private matched developer/player candidate for the owner-reported UIMSD opening delay. Compare against immediate previous actually compiled TEST318 source/request 4e0306e2409309f7f890bcf0aec7415fe7af42d3, developer run40616453743 and paired player run40616453748. TEST318 is not accepted: its Android job recorded four failures after 51/58 methods and invalid visual evidence. Preserve all 345 indexed predecessor records byte-for-byte and add one reviewed current record. Require 2100 core methods/408 suites, debug build, all58 API34 methods including realistic title-prewarm/handoff timing, all valid workflow screenshots, five display profiles, matched signer/application ID/history, saves, cold restart and death-order evidence. Do not claim physical REDMAGIC improvement, publish, distribute, clear data or uninstall."
 }
