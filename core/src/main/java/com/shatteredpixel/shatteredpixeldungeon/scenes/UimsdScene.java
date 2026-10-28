@@ -170,14 +170,11 @@ public class UimsdScene extends PixelScene {
 		if (root == null){
 			model = null;
 		} else {
-			ApdRecorder.flushForReading();
-			// Title screen may have fully validated everything before this tap.
-			// Never reuse a different scope or modified on-disk history.
-			UimsdModel warm = backTo == TitleScene.class
-					? UimsdWarmCache.takeReady(root, rulesId, rulesLabel, homeAllRules) : null;
-			model = warm == null ? new UimsdModel(rulesId, rulesLabel) : warm;
+			model = new UimsdModel(rulesId, rulesLabel);
 			model.setSeedFloorsProvider(com.shatteredpixel.shatteredpixeldungeon.apd.replay.SeedFloorsRunner.INSTANCE);
-			if (warm == null) model.load(root, homeAllRules);
+			// Flush, freshness scan and warm-model handoff all happen on the loader.
+			// The title's preload is never accepted before pending records flush.
+			model.loadForOpen(root, homeAllRules, ApdRecorder::flushForReading);
 		}
 		mainModel = model;
 		mainRoot = root;
@@ -223,6 +220,12 @@ public class UimsdScene extends PixelScene {
 		if (!SPDSettings.apdUimsdGuideSeen() && mainModel != null && tutorial == null && com.shatteredpixel.shatteredpixeldungeon.windows.UimsdGate.tourAvailable()){
 			SPDSettings.apdUimsdGuideSeen(true);
 			offerPending = true;
+		}
+		// A completed title preload can draw its actual statistics on the first
+		// frame, instead of waiting for update() after an empty background draw.
+		if (model != null && model.state() == UimsdModel.State.READY){
+			dirty = false;
+			rebuild();
 		}
 	}
 
@@ -1056,6 +1059,7 @@ public class UimsdScene extends PixelScene {
 		else ShatteredPixelDungeon.switchScene(backTo);
 	}
 }
+
 
 
 

@@ -47,6 +47,8 @@ public final class UimsdModel {
 		final int page;
 		final long id;
 		TableViewport viewport;
+		QueryResult result;
+		Dataset dataset;
 
 		Place( String viewId, Query query, int page, long id, TableViewport viewport ){
 			this.viewId = viewId;
@@ -83,7 +85,17 @@ public final class UimsdModel {
 
 	private void newPlace(){ placeId = ++nextPlaceId; viewport = null; }
 	private void pushPlace(){
-		back.add(new Place(viewId, query, page, placeId, viewport));
+		Place saved = new Place(viewId, query, page, placeId, viewport);
+		saved.result = result;
+		saved.dataset = dataset();
+		back.add(saved);
+		// Keep query results for only the four nearest Back destinations.
+		// Older navigation entries remain usable through normal recomputation.
+		if (back.size() > 4){
+			Place older = back.get(back.size() - 5);
+			older.result = null;
+			older.dataset = null;
+		}
 		newPlace();
 	}
 	//Column choices are preferences for a view, separate from named saved queries.
@@ -125,6 +137,17 @@ public final class UimsdModel {
 	// The viewer supplies its current Home scope; the common API retains the
 	// default current-rules-only behavior for existing integrations and tests.
 	public synchronized void load( final File root, final boolean homeAllRules ){
+		load(root, homeAllRules, null, false);
+	}
+
+	// Opening the viewer must not wait for recorder I/O or scan history metadata
+	// on the render thread. The warm model is still validated after the flush.
+	public synchronized void loadForOpen(File root, boolean homeAllRules, Runnable beforeRead){
+		load(root, homeAllRules, beforeRead, true);
+	}
+
+	private synchronized void load(final File root, final boolean homeAllRules,
+	                              final Runnable beforeRead, final boolean useWarm){
 		retireSeedFloorsLocked();
 		preparedHome = null;
 		preparedHomeCatalog = null;
@@ -140,11 +163,19 @@ public final class UimsdModel {
 			@Override
 			public void run(){
 				try {
-					SavedViews loadedColumnLayouts = SavedViews.load(root == null ? null : new File(root, COLUMN_LAYOUTS_FILE));
-					Catalog c = new DatasetStore(root).load();
+					if (beforeRead != null) beforeRead.run();
+					synchronized (UimsdModel.this){
+						if (generation != loadGeneration) return;
+					}
+					UimsdModel warm = useWarm ? UimsdWarmCache.takeReady(
+							root, currentRuleset, currentRulesetLabel, homeAllRules) : null;
+					SavedViews loadedColumnLayouts = warm == null
+							? SavedViews.load(root == null ? null : new File(root, COLUMN_LAYOUTS_FILE)) : warm.columnLayouts;
+					Catalog c = warm == null ? new DatasetStore(root).load() : warm.catalog;
 					// These are read-only queries. Computing the initial Home here
 					// keeps them off the frame that displays the finished catalog.
-					UimsdHome initialHome = UimsdHome.build(c, currentRuleset, homeAllRules);
+					UimsdHome initialHome = warm == null ? UimsdHome.build(c, currentRuleset, homeAllRules)
+							: warm.preparedHome(c, homeAllRules);
 					synchronized (UimsdModel.this){
 						if (generation != loadGeneration) return;
 						retireSeedFloorsLocked();
@@ -347,6 +378,10 @@ public final class UimsdModel {
 	private void recompute(){
 		Dataset ds = catalog == null ? null : catalog.dataset(query.dataset);
 		result = ds == null ? null : QueryEngine.run(ds, query, currentRuleset);
+		clampPage();
+	}
+
+	private void clampPage(){
 		int total = result == null ? 0 : result.isGrouped() ? result.groups.size() : result.rows.size();
 		int maxPage = Math.max(0, (total + PAGE_SIZE - 1) / PAGE_SIZE - 1);
 		if (page > maxPage) page = maxPage;
@@ -650,7 +685,8 @@ public final class UimsdModel {
 
 	public synchronized void setPage( int p ){
 		page = Math.max(0, p);
-		recompute();
+		// Pagination changes only the viewport over the existing exact result.
+		clampPage();
 		fire();
 	}
 
@@ -767,7 +803,12 @@ public final class UimsdModel {
 		page = p.page;
 		placeId = p.id;
 		viewport = p.viewport;
-		recompute();
+		if (p.result != null && p.result.query == query && p.dataset == dataset()){
+			result = p.result;
+			clampPage();
+		} else {
+			recompute();
+		}
 		fire();
 		restoreHiddenAfterSeed();
 		return true;
@@ -788,4 +829,5 @@ public final class UimsdModel {
 		}
 	}
 }
+
 

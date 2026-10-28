@@ -168,6 +168,9 @@ public class Game implements ApplicationListener {
 		if (!requestedReset && scene != null && inputHandler != null
 				&& KeyEvent.hasPendingBackPress()) {
 			inputHandler.processAllEvents();
+			// Back may have requested a menu transition. Apply it before drawing,
+			// rather than drawing the outgoing menu and waiting another frame.
+			applyRequestedScene();
 		}
 
 		NoosaScript.get().resetCamera();
@@ -239,6 +242,11 @@ public class Game implements ApplicationListener {
 	}
 	
 	protected void step() {
+		applyRequestedScene();
+		update();
+	}
+
+	protected void applyRequestedScene() {
 		
 		if (requestedReset) {
 			requestedReset = false;
@@ -250,7 +258,6 @@ public class Game implements ApplicationListener {
 
 		}
 		
-		update();
 	}
 	
 	protected void draw() {
@@ -335,3 +342,4 @@ public class Game implements ApplicationListener {
 	}
 	
 }
+

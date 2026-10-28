@@ -87,7 +87,10 @@ public final class UimsdGate {
 
 	static String annotationFor( UimsdUnlock.Flags flags, File root, boolean enforced, boolean adultHumor, String usual ){
 		if (!enforced) return usual;
-		if (flags.tourUnlocked() || UimsdUnlock.genuineRuns(root, UimsdUnlock.TEN_RUNS) >= UimsdUnlock.TEN_RUNS)
+		// Persist an earned genuine-run unlock through the existing policy. Merely
+		// checking the count here used to rebuild the database on every menu return
+		// for players who had not yet opened the tour (including demo-unlocked ones).
+		if (UimsdUnlock.isTourUnlocked(flags, root, true))
 			return adultHumor ? TENTH_RUN_ARROW_ADULT : TENTH_RUN_ARROW_CLEAN;
 		// Demo access opens the database, but does not replace ten genuine runs.
 		return LOCKED_ARROW_TEXT;
@@ -164,3 +167,4 @@ public final class UimsdGate {
 		t.start();
 	}
 }
+

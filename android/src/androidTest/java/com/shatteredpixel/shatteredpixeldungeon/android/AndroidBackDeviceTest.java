@@ -51,6 +51,16 @@ public class AndroidBackDeviceTest {
 
 	private static final String TAG = "APDUI";
 
+	// Activity recreation retains Game.sceneClass. The previous test may leave
+	// UIMSD open, so launch is not evidence that this fixture starts at the title.
+	private static void enterTitle() throws Exception {
+		waitUntil("the running game", () -> Gdx.app != null && Game.instance != null
+				&& Game.scene() != null, 120000);
+		onRender(() -> ShatteredPixelDungeon.switchNoFade(TitleScene.class));
+		waitUntil("the title scene", () -> Game.scene() instanceof TitleScene
+				&& !Game.switchingScene(), 30000);
+	}
+
 	private static void onRender( final Runnable r ) throws Exception {
 		final CountDownLatch done = new CountDownLatch(1);
 		final AtomicReference<Throwable> failure = new AtomicReference<>();
@@ -109,8 +119,7 @@ public class AndroidBackDeviceTest {
 	@Test
 	public void ordinarySettingsBackClosesOnlyTheWindowWithoutRebuildingTheScene() throws Exception {
 		try (ActivityScenario<AndroidLauncher> scenario = ActivityScenario.launch(AndroidLauncher.class)){
-			waitUntil("the title scene", () -> Gdx.app != null && Game.instance != null
-					&& Game.scene() instanceof TitleScene, 120000);
+			enterTitle();
 			final com.watabou.noosa.Scene sceneBefore = Game.scene();
 			final int before = windows();
 			onRender(() -> ShatteredPixelDungeon.scene().add(new com.shatteredpixel.shatteredpixeldungeon.windows.WndSettings()));
@@ -124,8 +133,7 @@ public class AndroidBackDeviceTest {
 	@Test
 	public void journalTabChangesKeepTheSameSceneAndOnlyReplaceTheCurrentTab() throws Exception {
 		try (ActivityScenario<AndroidLauncher> scenario = ActivityScenario.launch(AndroidLauncher.class)) {
-			waitUntil("the title scene", () -> Gdx.app != null && Game.instance != null
-					&& Game.scene() instanceof TitleScene, 120000);
+			enterTitle();
 			onRender(() -> { JournalScene.lastIDX = 0; ShatteredPixelDungeon.switchScene(JournalScene.class); });
 			waitUntil("the Journal scene", () -> Game.scene() instanceof JournalScene, 30000);
 			final com.watabou.noosa.Scene original = Game.scene();
@@ -155,8 +163,7 @@ public class AndroidBackDeviceTest {
 			long end = System.currentTimeMillis() + 120000;
 			while ((Gdx.app == null || Gdx.files == null || Game.scene() == null) && System.currentTimeMillis() < end) Thread.sleep(250);
 			assertNotNull("the game did not start", Game.scene());
-			waitUntil("the title scene", new java.util.concurrent.Callable<Boolean>(){
-				public Boolean call(){ return Game.scene() instanceof TitleScene; } }, 120000);
+			enterTitle();
 			Thread.sleep(2500);
 
 			//1. two dialogs over the title: each Back closes ONE, the newest first, and the title stays
@@ -265,3 +272,4 @@ public class AndroidBackDeviceTest {
 		}
 	}
 }
+

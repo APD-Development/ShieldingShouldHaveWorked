@@ -7,6 +7,35 @@ import static org.junit.Assert.*;
 
 /** Navigation acceptance: positions belong to places, not dataset names or cameras. */
 public class NavigationViewportTest {
+    @Test public void paginationReusesTheExactResultAndStillClampsTheLastPage(){
+        UimsdModel m=model();QueryResult original=m.result();
+        m.setPage(1);assertSame(original,m.result());assertEquals(1,m.page());
+        m.setPage(Integer.MAX_VALUE);assertSame(original,m.result());assertEquals(2,m.page());
+        m.setPage(-1);assertSame(original,m.result());assertEquals(0,m.page());
+    }
+
+    @Test public void nearbyBackRestoresTheAlreadyComputedExactQueryResult(){
+        UimsdModel m=model();m.addFilter(Filter.num("c0",Op.GE,10));m.setPage(1);
+        QueryResult original=m.result();
+        m.selectView("child");assertTrue(m.back());
+        assertSame("Back must not rerun the parent query",original,m.result());
+        assertEquals(120,m.result().rows.size());assertEquals(1,m.page());
+    }
+
+    @Test public void resultsBeyondTheFourEntryCacheStillRecomputeCorrectly(){
+        UimsdModel m=model();QueryResult first=m.result();
+        for(int i=0;i<5;i++)m.selectView(i%2==0?"child":"parent");
+        for(int i=0;i<5;i++)assertTrue(m.back());
+        assertNotSame("older result is released rather than retained indefinitely",first,m.result());
+        assertEquals(130,m.result().rows.size());assertEquals("parent",m.query().dataset);
+    }
+
+    @Test public void replacedDatasetCannotReuseAnEarlierResult(){
+        UimsdModel m=model();QueryResult first=m.result();Dataset previous=m.dataset();
+        m.selectView("child");
+        m.catalog().add(QuerySupport.dataset(previous.def,Collections.emptyList()));
+        assertTrue(m.back());assertNotSame(first,m.result());assertEquals(0,m.result().rows.size());
+    }
     private UimsdModel model(){
         Catalog cat=new Catalog();
         for(String name:Arrays.asList("parent","child")){
@@ -80,3 +109,4 @@ public class NavigationViewportTest {
         assertArrayEquals(new float[]{0,0},raw.position(m.table(),130,80),0);
     }
 }
+
