@@ -4,6 +4,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.apd.query.QuerySupport.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.Fact;
@@ -65,6 +66,23 @@ public class UimsdModelTest {
 		UimsdModel m = new UimsdModel(R, "made up rules");
 		m.setCatalog(catalog());
 		return m;
+	}
+
+	@Test public void initialHomePreparedOnlyForTheLoadedCatalogAndScope() throws Exception {
+		java.io.File root = java.nio.file.Files.createTempDirectory("apd-prepared-home").toFile();
+		try {
+			UimsdModel m = new UimsdModel(R, "");
+			m.load(root, true);
+			m.awaitLoad(10000);
+			assertEquals(UimsdModel.State.READY, m.state());
+			Catalog loaded = m.catalog();
+			assertNotNull("initial Home summary is prepared with the loaded catalog",m.preparedHome(loaded, true));
+			assertNull("a different scope cannot reuse the prepared summary",m.preparedHome(loaded, false));
+			m.setCatalog(catalog());
+			assertNull("replacing the catalog retires the previous summary",m.preparedHome(m.catalog(), true));
+		} finally {
+			assertTrue(root.delete());
+		}
 	}
 
 	@Test public void columnLayoutLoadAndCatalogPublishShareTheSameGeneration() throws Exception {

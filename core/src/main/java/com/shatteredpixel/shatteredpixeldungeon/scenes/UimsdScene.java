@@ -155,7 +155,7 @@ public class UimsdScene extends PixelScene {
 			model = null;
 		} else {
 			ApdRecorder.flushForReading();
-			model.load(root);
+			model.load(root, homeAllRules);
 		}
 		mainModel = model;
 		mainRoot = root;
@@ -361,7 +361,8 @@ public class UimsdScene extends PixelScene {
 		Catalog c = model.catalog();
 		if (c == null) return null;
 		if (cachedHome == null || cachedCatalog != c || cachedAll != homeAllRules){
-			cachedHome = UimsdHome.build(c, model.currentRuleset(), homeAllRules);
+			UimsdHome prepared = model.preparedHome(c, homeAllRules);
+			cachedHome = prepared == null ? UimsdHome.build(c, model.currentRuleset(), homeAllRules) : prepared;
 			cachedCatalog = c;
 			cachedAll = homeAllRules;
 		}

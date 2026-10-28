@@ -89,6 +89,11 @@ public final class UimsdModel {
 	//Column choices are preferences for a view, separate from named saved queries.
 	public static final String COLUMN_LAYOUTS_FILE = "column_layouts.txt";
 	private SavedViews columnLayouts = new SavedViews();
+	// Prepared alongside the history catalog off the render thread, so opening
+	// Home doesn't run all its statistical queries in a blocking UI frame.
+	private UimsdHome preparedHome;
+	private Catalog preparedHomeCatalog;
+	private boolean preparedHomeAllRules;
 	private Listener listener;
 	private volatile Thread loader;
 	//Each new load (or an explicitly installed catalogue) retires older background completions.
@@ -114,7 +119,15 @@ public final class UimsdModel {
 
 	//Builds the catalog from the raw logs on a background thread. Never throws.
 	public synchronized void load( final File root ){
+		load(root, false);
+	}
+
+	// The viewer supplies its current Home scope; the common API retains the
+	// default current-rules-only behavior for existing integrations and tests.
+	public synchronized void load( final File root, final boolean homeAllRules ){
 		retireSeedFloorsLocked();
+		preparedHome = null;
+		preparedHomeCatalog = null;
 		this.root = root;
 		// Do not read or decode saved column layouts on the render thread.
 		// This method is called directly before the UIMSD scene transition.
@@ -129,10 +142,16 @@ public final class UimsdModel {
 				try {
 					SavedViews loadedColumnLayouts = SavedViews.load(root == null ? null : new File(root, COLUMN_LAYOUTS_FILE));
 					Catalog c = new DatasetStore(root).load();
+					// These are read-only queries. Computing the initial Home here
+					// keeps them off the frame that displays the finished catalog.
+					UimsdHome initialHome = UimsdHome.build(c, currentRuleset, homeAllRules);
 					synchronized (UimsdModel.this){
 						if (generation != loadGeneration) return;
 						retireSeedFloorsLocked();
 						columnLayouts = loadedColumnLayouts;
+						preparedHome = initialHome;
+						preparedHomeCatalog = c;
+						preparedHomeAllRules = homeAllRules;
 						setCatalogLocked(c);
 					}
 				} catch (Throwable e){
@@ -160,6 +179,8 @@ public final class UimsdModel {
 
 	public synchronized void setCatalog( Catalog c ){
 		retireSeedFloorsLocked();
+		preparedHome = null;
+		preparedHomeCatalog = null;
 		++loadGeneration;
 		setCatalogLocked(c);
 		fire();
@@ -180,6 +201,14 @@ public final class UimsdModel {
 		newPlace();
 		recompute();
 		state = State.READY;
+	}
+
+	// Only a matching, fully loaded catalog and Home scope may reuse the
+	// worker's summary; a replaced catalog or toggled scope must recompute.
+	public synchronized UimsdHome preparedHome(Catalog expected, boolean allRules){
+		return expected != null && expected == catalog
+				&& expected == preparedHomeCatalog && allRules == preparedHomeAllRules
+				? preparedHome : null;
 	}
 
 	//the folder of the history this model shows (where the player's saved views are kept too); null before load
