@@ -1,3 +1,9 @@
+## 2026-10-28T22:05:05Z — repeated UIMSD entry acceptance moved from single-open to two-open native coverage
+- Starting head711ec48a was core-green at2144 methods/414 suites (run40771485374) with no active workflow.
+- Added one bounded native regression path: actual title tap → complete72-run Home under250ms → native Back to exact same title/camera → fresh distinct READY preload → second actual title tap → complete Home under250ms.
+- Requested an intentional exact-source candidate against immediate compiled TEST323 source51fe6b/run40737013809 with strict history and existing API34/display gates. No APK is verified until those jobs pass; no physical-phone or distribution claim.
+- Gathering-scroll classes/journal remain inactive scaffolding only; gameplay, saves, rules, scoring and RNG are unchanged.
+
 # TEST323 verified: quicker menu returns and Home draw (2026-10-28)
 
 DONE: exact source `51fe6b502bee67893b9773eacddeb01eac778547` passed both matched APK builds, full2121 core methods/410 suites per variant, all62 main API34 native methods and all five exact-source display profiles. Zero failures/errors/skips in those gates. Full native run40737013809/job122990508456 includes the new actual-font narrow/long-token wrapping case, original-title/camera Back assertions, in-place ordinary Settings close, UIMSD tours/modals, and play/save/continue/end coverage. Native raw artifact12837893787 retained.

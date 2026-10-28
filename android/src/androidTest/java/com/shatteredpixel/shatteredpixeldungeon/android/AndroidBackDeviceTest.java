@@ -172,7 +172,7 @@ public class AndroidBackDeviceTest {
 	}
 
 	@Test
-	public void warmUimsdTapDrawsTheComplete72RunHomeWithin250ms() throws Exception {
+	public void warmUimsdTapDrawsTheComplete72RunHomeTwiceWithin250ms() throws Exception {
 		try (ActivityScenario<AndroidLauncher> scenario = ActivityScenario.launch(AndroidLauncher.class)){
 			enterTitle();
 			java.io.File base = new java.io.File(InstrumentationRegistry.getInstrumentation()
@@ -203,40 +203,63 @@ public class AndroidBackDeviceTest {
 				await.invoke(null,60000L);
 				Field ready = com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdWarmCache.class.getDeclaredField("ready");
 				ready.setAccessible(true); assertNotNull("actual title preload completed",ready.get(null));
-				AtomicReference<com.watabou.utils.Point> target=new AtomicReference<>();
-				onRender(()->{try{
-					Field field=TitleScene.class.getDeclaredField("btnStatistics"); field.setAccessible(true);
-					com.shatteredpixel.shatteredpixeldungeon.ui.Button button=(com.shatteredpixel.shatteredpixeldungeon.ui.Button)field.get(Game.scene());
-					assertTrue("UIMSD title button accepts taps",button.isActive());
-					target.set(button.camera().cameraToScreen(button.left()+button.width()/2,button.top()+button.height()/2));
-				}catch(Exception e){throw new RuntimeException(e);}});
-				long begin=System.nanoTime(), down=android.os.SystemClock.uptimeMillis();
-				for(int action:new int[]{android.view.MotionEvent.ACTION_DOWN,android.view.MotionEvent.ACTION_UP}){
-					android.view.MotionEvent event=android.view.MotionEvent.obtain(down,android.os.SystemClock.uptimeMillis(),action,target.get().x,target.get().y,0);
-					try {InstrumentationRegistry.getInstrumentation().sendPointerSync(event);} finally {event.recycle();}
+				AtomicReference<com.watabou.noosa.Scene> titleIdentity=new AtomicReference<>();
+				AtomicReference<com.watabou.noosa.Camera> titleCamera=new AtomicReference<>();
+				onRender(()->{
+					titleIdentity.set(Game.scene());
+					titleCamera.set(com.watabou.noosa.Camera.main);
+				});
+				Object previousReady=null;
+				for(int opening=1;opening<=2;opening++){
+					Object prepared=ready.get(null);
+					assertNotNull("opening "+opening+" title preload completed",prepared);
+					if(previousReady!=null)assertNotSame("returning title replenishes a distinct READY model",previousReady,prepared);
+					AtomicReference<com.watabou.utils.Point> target=new AtomicReference<>();
+					onRender(()->{try{
+						Field field=TitleScene.class.getDeclaredField("btnStatistics"); field.setAccessible(true);
+						com.shatteredpixel.shatteredpixeldungeon.ui.Button button=(com.shatteredpixel.shatteredpixeldungeon.ui.Button)field.get(Game.scene());
+						assertTrue("UIMSD title button accepts taps",button.isActive());
+						target.set(button.camera().cameraToScreen(button.left()+button.width()/2,button.top()+button.height()/2));
+					}catch(Exception e){throw new RuntimeException(e);}});
+					long begin=System.nanoTime(), down=android.os.SystemClock.uptimeMillis();
+					for(int action:new int[]{android.view.MotionEvent.ACTION_DOWN,android.view.MotionEvent.ACTION_UP}){
+						android.view.MotionEvent event=android.view.MotionEvent.obtain(down,android.os.SystemClock.uptimeMillis(),action,target.get().x,target.get().y,0);
+						try {InstrumentationRegistry.getInstrumentation().sendPointerSync(event);} finally {event.recycle();}
+					}
+					Field drawn=UimsdScene.class.getDeclaredField("firstReadyHomeDrawNanos"); drawn.setAccessible(true);
+					long deadline=System.nanoTime()+TimeUnit.SECONDS.toNanos(10),drawNanos=0;
+					while(System.nanoTime()<deadline){
+						if(Game.scene() instanceof UimsdScene) drawNanos=drawn.getLong(Game.scene());
+						if(drawNanos>begin) break;
+						Thread.sleep(2);
+					}
+					assertTrue("opening "+opening+" complete Home was drawn after the native tap",drawNanos>begin);
+					long millis=TimeUnit.NANOSECONDS.toMillis(drawNanos-begin);
+					Log.w("APDPERF","UIMSD_NATIVE_TAP opening="+opening+" ready_72_run_home_draw_ms="+millis+" budget_ms=250");
+					for(String phase:new String[]{"createDurationNanos","rebuildDurationNanos","firstHomeDrawDurationNanos"}){
+						Field timing=UimsdScene.class.getDeclaredField(phase);timing.setAccessible(true);
+						Log.w("APDPERF","UIMSD_DRAW_PHASE opening="+opening+" "+phase+"="+timing.getLong(Game.scene())+"ns");
+					}
+					assertTrue("opening "+opening+" native tap to complete Home exceeded 250ms: "+millis,millis<250);
+					onRender(()->{try{
+						assertSame("opening claims the exact READY model",prepared,uimsd("model"));
+						assertEquals(UimsdModel.State.READY,((UimsdModel)uimsd("model")).state());
+						assertEquals("first Home draw has a pixel projection",2f*com.watabou.noosa.Camera.main.zoom/Game.width,com.watabou.noosa.Camera.main.matrix[0],0.000001f);
+						assertEquals("all72 synthetic source runs were loaded",72,((UimsdModel)uimsd("model")).catalog().dataset("runs").rows.size());
+						assertTrue("Home has finished-run statistics",((com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdHome)uimsd("cachedHome")).runs>0);
+						assertEquals(0,windows());
+					}catch(Exception e){throw new RuntimeException(e);}});
+					previousReady=prepared;
+					if(opening==1){
+						pressBack();
+						waitUntil("same retained title after first UIMSD opening",()->Game.scene() instanceof TitleScene&&!Game.switchingScene(),30000);
+						onRender(()->{
+							assertSame("Back restores the exact retained title",titleIdentity.get(),Game.scene());
+							assertSame("Back restores the exact retained title camera",titleCamera.get(),com.watabou.noosa.Camera.main);
+						});
+						await.invoke(null,60000L);
+					}
 				}
-				Field drawn=UimsdScene.class.getDeclaredField("firstReadyHomeDrawNanos"); drawn.setAccessible(true);
-				long deadline=System.nanoTime()+TimeUnit.SECONDS.toNanos(10),drawNanos=0;
-				while(System.nanoTime()<deadline){
-					if(Game.scene() instanceof UimsdScene) drawNanos=drawn.getLong(Game.scene());
-					if(drawNanos>begin) break;
-					Thread.sleep(2);
-				}
-				assertTrue("complete Home was drawn after the native tap",drawNanos>begin);
-				long millis=TimeUnit.NANOSECONDS.toMillis(drawNanos-begin);
-				Log.w("APDPERF","UIMSD_NATIVE_TAP ready_72_run_home_draw_ms="+millis+" budget_ms=250");
-				for(String phase:new String[]{"createDurationNanos","rebuildDurationNanos","firstHomeDrawDurationNanos"}){
-					Field timing=UimsdScene.class.getDeclaredField(phase);timing.setAccessible(true);
-					Log.w("APDPERF","UIMSD_DRAW_PHASE "+phase+"="+timing.getLong(Game.scene())+"ns");
-				}
-				assertTrue("native tap to complete Home exceeded 250ms: "+millis,millis<250);
-				onRender(()->{try{
-					assertEquals(UimsdModel.State.READY,((UimsdModel)uimsd("model")).state());
-					assertEquals("first Home draw has a pixel projection",2f*com.watabou.noosa.Camera.main.zoom/Game.width,com.watabou.noosa.Camera.main.matrix[0],0.000001f);
-					assertEquals("all72 synthetic source runs were loaded",72,((UimsdModel)uimsd("model")).catalog().dataset("runs").rows.size());
-					assertTrue("Home has finished-run statistics",((com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdHome)uimsd("cachedHome")).runs>0);
-					assertEquals(0,windows());
-				}catch(Exception e){throw new RuntimeException(e);}});
 			} finally {
 				onRender(()->{
 					com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder.configure(originalRoot,recording);
