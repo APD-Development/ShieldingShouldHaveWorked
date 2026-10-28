@@ -28,6 +28,13 @@ public class ChangesVisualDeviceTest {
  private List<Gizmo> children(Group group)throws Exception{
   Field f=Group.class.getDeclaredField("members");f.setAccessible(true);return new ArrayList<>((List<Gizmo>)f.get(group));
  }
+ private com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane currentPageScroll(APDTextScene scene)throws Exception{
+  Field field=APDTextScene.class.getDeclaredField("visiblePage");field.setAccessible(true);
+  Group page=(Group)field.get(scene);assertNotNull("the visible page container exists",page);
+  for(Gizmo child:children(page))if(child instanceof com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane)
+   return (com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane)child;
+  return null;
+ }
  private void waitScene(Class<?> type)throws Exception{
   long end=System.currentTimeMillis()+15000;while(!type.isInstance(Game.scene())&&System.currentTimeMillis()<end)Thread.sleep(100);assertTrue(type.isInstance(Game.scene()));Thread.sleep(500);
  }
@@ -115,8 +122,7 @@ public class ChangesVisualDeviceTest {
       }
      }
      assertEquals(expected.size(),seen);assertEquals(ApdHistory.categories(expected).size(),categories);
-     com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane pane=null;
-     for(Gizmo g:children(Game.scene()))if(g instanceof com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane)pane=(com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane)g;
+     com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane pane=currentPageScroll((APDTextScene)Game.scene());
      assertNotNull(pane);assertTrue(pane.content().height()>0);
      if(wanted.equals("build-22"))assertTrue(pane.content().height()>pane.height());
     }catch(Exception e){throw new RuntimeException(e);}});

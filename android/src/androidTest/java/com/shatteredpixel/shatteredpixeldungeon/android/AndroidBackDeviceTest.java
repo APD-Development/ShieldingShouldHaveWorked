@@ -21,6 +21,7 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.query.Question;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.Questions;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdModel;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.JournalScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.UimsdScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndAPDSettings;
@@ -117,6 +118,34 @@ public class AndroidBackDeviceTest {
 			pressBack();
 			waitUntil("ordinary Settings window closed", () -> windows() == before, 30000);
 			assertTrue("ordinary Settings Back must leave the current scene intact", Game.scene() == sceneBefore);
+		}
+	}
+
+	@Test
+	public void journalTabChangesKeepTheSameSceneAndOnlyReplaceTheCurrentTab() throws Exception {
+		try (ActivityScenario<AndroidLauncher> scenario = ActivityScenario.launch(AndroidLauncher.class)) {
+			waitUntil("the title scene", () -> Gdx.app != null && Game.instance != null
+					&& Game.scene() instanceof TitleScene, 120000);
+			onRender(() -> { JournalScene.lastIDX = 0; ShatteredPixelDungeon.switchScene(JournalScene.class); });
+			waitUntil("the Journal scene", () -> Game.scene() instanceof JournalScene, 30000);
+			final com.watabou.noosa.Scene original = Game.scene();
+			final Field currentTab = JournalScene.class.getDeclaredField("currentTab");
+			currentTab.setAccessible(true);
+			final Method selectTab = JournalScene.class.getDeclaredMethod("selectTab", int.class);
+			selectTab.setAccessible(true);
+			for (int tab : new int[]{1, 2, 3, 0}) {
+				onRender(() -> {
+					try {
+						selectTab.invoke(original, tab);
+						assertEquals(tab, JournalScene.lastIDX);
+						assertTrue("Journal tab changes keep the current scene", Game.scene() == original);
+						assertTrue("Journal tab changes do not request a scene reset", !Game.switchingScene());
+						assertTrue("selected tab must be attached", ((Gizmo)currentTab.get(original)).parent == original);
+					} catch (Exception exception) {
+						throw new RuntimeException(exception);
+					}
+				});
+			}
 		}
 	}
 

@@ -96,12 +96,16 @@ public class ReleaseNotesNavigationDeviceTest {
                 ShatteredPixelDungeon.switchScene(AboutScene.class);
             }catch(Exception e){throw new RuntimeException(e);}});scene(AboutScene.class);
             tap(scenario,"APD Changes");scene(APDTextScene.class);mode(false);
+            final com.watabou.noosa.Scene originalTextScene=Game.scene();
             tap(scenario,"Versions");screenshot("release-notes-navigation.png");
             tap(scenario,"Build records (technical)");scene(APDTextScene.class);mode(true);
+            assertSame("technical mode must not recreate the text scene",originalTextScene,Game.scene());
             render(()->{try {assertNotNull(labelled(Game.scene(),technicalLabel));if(!latest.label.equals(technicalLabel))assertNull(labelled(Game.scene(),latest.label));}catch(Exception e){throw new RuntimeException(e);}});
             tap(scenario,"Versions");tap(scenario,"Release notes");scene(APDTextScene.class);mode(false);
+            assertSame("release mode must not recreate the text scene",originalTextScene,Game.scene());
             tap(scenario,"Versions");tap(scenario,"Choose version");
             tap(scenario,"APD Alpha Preview - APD Alpha Preview");tap(scenario,"APD Alpha Preview");scene(APDTextScene.class);mode(false);noWindows();
+            assertSame("version selection must not recreate the text scene",originalTextScene,Game.scene());
             tap(scenario,"Versions");back();scene(APDTextScene.class);noWindows();
             tap(scenario,"Versions");tap(scenario,"Build records (technical)");scene(APDTextScene.class);mode(true);
             back();scene(AboutScene.class);noWindows();mode(false);
