@@ -75,6 +75,10 @@ public final class UimsdGate {
 
 	private UimsdGate(){}
 
+	// Do not scan a locked player's history just to warm an unavailable screen.
+	// Once permanently unlocked, the title may prepare the real database early.
+	public static boolean canPrewarm(){ return !enforced() || FLAGS.unlocked(); }
+
 	// The text under the title screen's arrow: after the tenth genuine run the drugs/dopamine message (by humor setting) until UIMSD has been
 	// opened once; before ten runs the owner's locked message; otherwise the usual text.
 	public static String titleAnnotation( String usual ){

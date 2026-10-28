@@ -431,6 +431,9 @@ public class TitleScene extends PixelScene {
 		}
 
 		fadeIn();
+		// Prepare the exact UIMSD Home in the background while the title is open.
+		// When it is ready, tapping UIMSD does not begin a new history load.
+		UimsdScene.prewarmTitle();
 	}
 
 	//2 columns x 3 rows, then a row of three smaller buttons

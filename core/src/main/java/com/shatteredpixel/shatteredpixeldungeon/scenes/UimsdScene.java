@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.apd.demo.DemoData;
 import com.shatteredpixel.shatteredpixeldungeon.apd.demo.DemoGenerator;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.Catalog;
+import com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdWarmCache;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.Filter;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.GuideGeometry;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdHome;
@@ -130,6 +131,23 @@ public class UimsdScene extends PixelScene {
 		com.shatteredpixel.shatteredpixeldungeon.windows.UimsdGate.open(from);
 	}
 
+	// Start a complete, validated Home model while the player is at the title.
+	// All file scans and statistics computation run on the prewarm worker.
+	public static void prewarmTitle(){
+		if (!com.shatteredpixel.shatteredpixeldungeon.windows.UimsdGate.canPrewarm()) return;
+		File root = ApdRecorder.historyRoot();
+		if (root == null) return;
+		if (DemoData.viewingDemo() && (DemoData.available() || DemoData.isSyntheticRoot(DemoData.demoRootFor(root)))){
+			root = DemoData.demoRootFor(root);
+			if (!DemoData.isSyntheticRoot(root)) return;
+		}
+		Ruleset rules = Ruleset.forNewRun();
+		String label = "challenges " + SPDSettings.challenges() + ", exotic "
+				+ (rules.isUnknown() ? "not recorded (older run)" : rules.exoticChance + "%")
+				+ ", difficulty " + SPDSettings.apdDifficulty();
+		UimsdWarmCache.prewarm(root, rules.id, label, homeAllRules);
+	}
+
 	//Opens UIMSD from a screen. 'from' is where Back returns to.
 	public static void openNow( Class<? extends PixelScene> from ){
 		backTo = from == GameScene.class ? GameScene.class : TitleScene.class;
@@ -148,14 +166,18 @@ public class UimsdScene extends PixelScene {
 		endTutorial();
 		removeLeftoverSample();
 		atHome = true;
-		model = new UimsdModel(rulesId, rulesLabel);
-		model.setSeedFloorsProvider(com.shatteredpixel.shatteredpixeldungeon.apd.replay.SeedFloorsRunner.INSTANCE);
 		com.shatteredpixel.shatteredpixeldungeon.apd.replay.FloorReplay.setLiveGameCheck(liveGameCheck());
 		if (root == null){
 			model = null;
 		} else {
 			ApdRecorder.flushForReading();
-			model.load(root, homeAllRules);
+			// Title screen may have fully validated everything before this tap.
+			// Never reuse a different scope or modified on-disk history.
+			UimsdModel warm = backTo == TitleScene.class
+					? UimsdWarmCache.takeReady(root, rulesId, rulesLabel, homeAllRules) : null;
+			model = warm == null ? new UimsdModel(rulesId, rulesLabel) : warm;
+			model.setSeedFloorsProvider(com.shatteredpixel.shatteredpixeldungeon.apd.replay.SeedFloorsRunner.INSTANCE);
+			if (warm == null) model.load(root, homeAllRules);
 		}
 		mainModel = model;
 		mainRoot = root;
