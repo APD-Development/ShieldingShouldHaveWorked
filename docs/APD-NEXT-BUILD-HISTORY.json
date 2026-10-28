@@ -1,31 +1,89 @@
 {
   "date": "2026-10-28",
-  "previous_source": "1f393b2c4003744e2df6d35c400f046805df3952",
-  "previous_application_source": "1f393b2c4003744e2df6d35c400f046805df3952",
-  "previous_run": 40777494966,
-  "previous_label": "Codex TEST 324",
+  "previous_source": "d6b38a47b00f6a57c80b95c2310817610a3483f0",
+  "previous_application_source": "d6b38a47b00f6a57c80b95c2310817610a3483f0",
+  "previous_run": 40781216998,
+  "previous_label": "Codex TEST 326",
   "changes": [
     {
-      "category": "Developer Commentary",
-      "sprite": "ICON_CHECKED",
-      "title": "Compile the two-opening native UIMSD identity checks",
-      "text": "Use the Android test class's existing boolean assertion style for distinct READY models and exact title, camera and claimed-model identity. TEST324 already passed strict history, the complete2144-method core suite, debug assembly and embedded-history verification, but Android instrumentation compilation rejected four unavailable JUnit identity helper calls before any native test ran. Production behavior and the unchanged250ms budgets are untouched.",
+      "category": "New Content",
+      "sprite": "ITEM_SCROLL_KAUNAN",
+      "title": "Gather and forward surplus floor loot",
+      "text": "Gathering collects loose ground loot beside the downstairs. Forwarding keeps exact item properties pending delivery outside the next region shop, or Imp20 when used later. Both start identified for all six classes, stop generating after19, and use approved provisional weights and six-energy conversion. Containers, keys, quest items and Lost Backpack stay untouched. Journaled compound saves preserve interrupted transfers without duplication.",
       "paths": [
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/AndroidBackDeviceTest.java"
+        "SPD-classes/src/main/java/com/watabou/utils/FileUtils.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/LootScrollDeviceTest.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/Dungeon.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/loot/GroundLootMover.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/loot/GroundLootPlan.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/loot/LootPlacement.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/loot/LootTransfers.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/loot/LootTransitState.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/replay/FloorReplay.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Generator.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/Scroll.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/ScrollOfGathering.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/exotic/ExoticScroll.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/exotic/ScrollOfForwarding.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/CityBossLevel.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/Level.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/GameScene.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/loot/GroundLootMovementTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/loot/LootRuntimeTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/loot/LootScrollGenerationTest.java"
+      ]
+    },
+    {
+      "category": "Bug Fixes",
+      "sprite": "ICON_INFO",
+      "title": "Discard obsolete taps and preserve Back ordering",
+      "text": "Reproduced queued taps surviving engine recreation and Back reaching a departing title after a menu tap. Discard old input at lifecycle boundaries using cancellation, and defer keys while a pointer requests another screen. Fresh input and deferred Back remain functional. These fixes do not establish the separate sustained phone black-screen cause.",
+      "paths": [
+        "SPD-classes/src/main/java/com/watabou/input/InputHandler.java",
+        "SPD-classes/src/main/java/com/watabou/input/KeyEvent.java",
+        "SPD-classes/src/main/java/com/watabou/input/PointerEvent.java",
+        "SPD-classes/src/main/java/com/watabou/input/ScrollEvent.java",
+        "SPD-classes/src/main/java/com/watabou/noosa/Game.java",
+        "core/src/test/java/com/watabou/input/InputRestartTest.java"
+      ]
+    },
+    {
+      "category": "Quality of Life",
+      "sprite": "ICON_INFO",
+      "title": "Export device and input evidence for support",
+      "text": "Create bug report at APD Settings exports exact build/device/APK identity, recent screen/lifecycle/loading/input timestamps, bounded errors and memory readings, previous-session evidence and self-package Android exit reasons. Export runs in the background through the native document provider. No saved games, raw histories or automatic uploads are included. Memory exhaustion remains unconfirmed.",
+      "paths": [
+        "SPD-classes/src/main/java/com/watabou/utils/SupportDiagnostics.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/DiagnosticReportDeviceTest.java",
+        "android/src/main/java/com/shatteredpixel/shatteredpixeldungeon/android/AndroidLauncher.java",
+        "android/src/main/java/com/shatteredpixel/shatteredpixeldungeon/android/AndroidSupportDiagnostics.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/diagnostics/DiagnosticReport.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/UimsdScene.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/APDSettingsPane.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/diagnostics/SupportDiagnosticsTest.java"
       ]
     },
     {
       "category": "Developer Commentary",
-      "sprite": "ICON_INFO",
-      "title": "Retain TEST324's compiled artifact and rejected native evidence",
-      "text": "Compare against the immediate previous compiled TEST324 APK even though native acceptance was rejected. Preserve its successful core, history and assembly evidence, record the compile-only failure exactly, and require the corrected candidate to pass both actual UIMSD openings plus the existing API34 and display checks before verification. No publication, distribution or physical-phone claim.",
+      "sprite": "ICON_CHECKED",
+      "title": "Preserve historical baselines and require exact Android acceptance",
+      "text": "Core parent164c5ad passed2183methods/419suites with zero failures/errors/skips in40786162117. Preserve newer1394a37 direct READY UIMSD title handoff and its added guard; require complete2184core methods, both new native touch/export/continue tests, all64API34 checks,88valid screenshots, five displays and matched signed APKs. Historical fixtures keep original hashes; current thirteen-row pool has independent coverage. Preserve earlier rejected evidence and unchanged250ms budget. No physical-phone or confirmed black-screen/OOM claim.",
       "paths": [
+        "core/src/main/assets/apd/releases/apd-alpha-preview.tsv",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/ExoticHealingConversionTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/GoldenChildMain.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/GoldenLevelHashTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomEquipmentGenerationTest.java",
+        "docs/APD-CODEX-CORE-TEST-REQUEST.txt",
+        "docs/APD-GATHERING-INPUT-DIAGNOSTICS-2026-10-28.md",
+        "docs/HANDOFF.md",
+        "tools/run-codex-android-checks.sh",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/APD-NEXT-BUILD-HISTORY.json",
-        "docs/HANDOFF.md",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdWarmCacheTest.java",
         "docs/WORK-COMPLETED-LEDGER.md"
       ]
     }
   ],
-  "commentary": "Test-only correction after TEST324 source1f393b2c4003744e2df6d35c400f046805df3952/run40777494966 passed strict TEST323 predecessor history,2144 core methods/414 suites, debug assembly and embedded history, then Android test compilation rejected four missing identity helper imports before native execution. Use existing assertTrue identity expressions; production source and250ms budgets unchanged. Immediate previous compiled APK is TEST324. No automatic release/tester distribution or physical-phone claim."
+  "commentary": "Immediate previous compiled APK is TEST326, source d6b38a/run40781216998. Its core/build/display succeeded but main native missed unchanged250ms UIMSD budget at253ms; retain rejected status, do not call it fallback. Owner-installed TEST323 remains fallback. Owner explicitly resumed combined work after Stop. Both scrolls always known for six classes; no post19 generation and late Imp20 route. No multiplier, balance, raw-history or signing changes."
 }
