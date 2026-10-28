@@ -37,6 +37,35 @@ public class Camera extends Gizmo {
 	
 	public static Camera main;
 
+	/** Camera ownership for a menu kept out of the active update/draw loop. */
+	public static final class State {
+		private final ArrayList<Camera> cameras;
+		private final Camera mainCamera;
+		private State(ArrayList<Camera> cameras, Camera mainCamera){
+			this.cameras = cameras;
+			this.mainCamera = mainCamera;
+		}
+		public void destroy(){
+			for (Camera camera : cameras) camera.destroy();
+			cameras.clear();
+		}
+	}
+
+	public static synchronized State detach(){
+		State state = new State(all, main);
+		all = new ArrayList<>();
+		main = null;
+		return state;
+	}
+
+	public static synchronized void restore(State state){
+		for (Camera camera : all) camera.destroy();
+		all = state.cameras;
+		main = state.mainCamera;
+		invW2 = 2f / Game.width;
+		invH2 = 2f / Game.height;
+	}
+
 	public boolean fullScreen;
 
 	public float zoom;
@@ -319,3 +348,4 @@ public class Camera extends Gizmo {
 		shakeTime = shakeDuration = duration;
 	}
 }
+

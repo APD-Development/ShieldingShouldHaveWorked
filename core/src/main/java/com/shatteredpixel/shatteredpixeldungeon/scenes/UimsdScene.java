@@ -115,6 +115,8 @@ public class UimsdScene extends PixelScene {
 	private volatile boolean dirty = true;
 	private Group ui;
 	private ExitButton btnExit;
+	// Timestamp only after a complete, interactive Home has actually been drawn.
+	private volatile long firstReadyHomeDrawNanos;
 
 	//A replay borrows the game's static state: never while a game is open behind this screen.
 	public static com.shatteredpixel.shatteredpixeldungeon.apd.replay.FloorReplay.LiveGameCheck liveGameCheck(){
@@ -230,6 +232,25 @@ public class UimsdScene extends PixelScene {
 	}
 
 	@Override
+	public void draw(){
+		// The worker can publish after update(). Build ready content before the
+		// next draw instead of spending another frame on the loading screen.
+		rebuildIfNeeded();
+		super.draw();
+		if (firstReadyHomeDrawNanos == 0 && !dirty && atHome && model != null
+				&& model.state() == UimsdModel.State.READY && targets.containsKey("home.cards")){
+			firstReadyHomeDrawNanos = System.nanoTime();
+		}
+	}
+
+	private void rebuildIfNeeded(){
+		if (dirty && !hasWindow(this)){
+			dirty = false;
+			rebuild();
+		}
+	}
+
+	@Override
 	public synchronized void update(){
 		if (offerPending){
 			offerPending = false;
@@ -251,10 +272,7 @@ public class UimsdScene extends PixelScene {
         // can capture subsequent taps through the apparently visible popup.
         // Keep the dirty flag until the last window closes. Window picker rows
         // still redraw their own checked state immediately.
-        if (dirty && !hasWindow(this)){
-            dirty = false;
-            rebuild();
-        }
+        rebuildIfNeeded();
         super.update();
 	}
 

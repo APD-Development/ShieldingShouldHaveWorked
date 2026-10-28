@@ -100,6 +100,17 @@ public class PointerEvent {
 	// **********************
 	
 	private static Signal<PointerEvent> pointerSignal = new Signal<>( true );
+
+	/** Move a dormant scene's listeners out of dispatch without changing their order. */
+	public static synchronized Signal<PointerEvent> detachListeners(){
+		return swapListeners(new Signal<>(true));
+	}
+
+	public static synchronized Signal<PointerEvent> swapListeners(Signal<PointerEvent> listeners){
+		Signal<PointerEvent> previous = pointerSignal;
+		pointerSignal = listeners;
+		return previous;
+	}
 	
 	public static void addPointerListener( Signal.Listener<PointerEvent> listener ){
 		pointerSignal.add(listener);
@@ -197,3 +208,4 @@ public class PointerEvent {
 	}
 
 }
+

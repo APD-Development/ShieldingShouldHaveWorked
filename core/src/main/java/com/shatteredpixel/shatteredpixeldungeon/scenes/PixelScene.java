@@ -91,6 +91,35 @@ public class PixelScene extends Scene {
 	protected boolean inGameScene = false;
 
 	private Signal.Listener<KeyEvent> fullscreenListener;
+	private Camera retainedUiCamera;
+
+	public boolean canRetainMenu(){
+		for (com.watabou.noosa.Gizmo child : members){
+			if (child instanceof com.shatteredpixel.shatteredpixeldungeon.ui.Window) return false;
+		}
+		return true;
+	}
+
+	@Override
+	public void onRetain(){
+		retainedUiCamera = uiCamera;
+		// An early menu tap must not pause a title fade and replay it on Back.
+		for (com.watabou.noosa.Gizmo child : new ArrayList<>(members)){
+			if (child instanceof Fader){
+				remove(child);
+				child.destroy();
+			}
+		}
+	}
+
+	@Override
+	public void onRestore(){
+		uiCamera = retainedUiCamera;
+		retainedUiCamera = null;
+		noFade = false;
+		Tooltip.resetLastUsedTime();
+		if (this instanceof TitleScene) UimsdScene.prewarmTitle();
+	}
 
 	@Override
 	public void create() {
@@ -522,3 +551,4 @@ public class PixelScene extends Scene {
 		}
 	}
 }
+

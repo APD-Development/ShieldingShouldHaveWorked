@@ -85,6 +85,8 @@ public class AndroidBackDeviceTest {
 					()->UimsdScene.openNow(TitleScene.class));
 				String[] names={"About","Journal","Top Scores","Play slots","Hero selection","News","Changes","Community","UIMSD"};
 				for(int i=0;i<routes.size();i++){
+					final com.watabou.noosa.Scene titleBefore = Game.scene();
+					final com.watabou.noosa.Camera cameraBefore = com.watabou.noosa.Camera.main;
 					onRender(routes.get(i));
 					waitUntil(names[i]+" menu",()->!(Game.scene() instanceof TitleScene)&&!Game.switchingScene(),30000);
 					// Outside the measurement: let setup finish and the existing 120ms
@@ -97,7 +99,12 @@ public class AndroidBackDeviceTest {
 					assertTrue(names[i]+" Back must return to Title",Game.scene() instanceof TitleScene);
 					// A render-thread round trip includes completed scene construction,
 					// rather than merely seeing Game.scene assigned before create().
-					onRender(()->assertTrue(Game.scene() instanceof TitleScene));
+					onRender(()->{
+						assertTrue(Game.scene() instanceof TitleScene);
+						assertTrue("Back reuses the existing title", titleBefore == Game.scene());
+						assertTrue("Back restores the title camera", cameraBefore == com.watabou.noosa.Camera.main);
+						assertTrue("restored title accepts input", Game.scene().isActive());
+					});
 					long millis=TimeUnit.NANOSECONDS.toMillis(System.nanoTime()-begin);
 					Log.w("APDPERF","MENU_BACK menu="+names[i]+" responsive_title_ms="+millis+" budget_ms=250");
 					if(millis>=250)slow.add(names[i]+"="+millis+"ms");
@@ -130,6 +137,82 @@ public class AndroidBackDeviceTest {
 		});
 		assertTrue("the render thread did not answer", done.await(60, TimeUnit.SECONDS));
 		if (failure.get() != null) throw new AssertionError("failed on the render thread: " + failure.get(), failure.get());
+	}
+
+	@Test
+	public void warmUimsdTapDrawsTheComplete72RunHomeWithin250ms() throws Exception {
+		try (ActivityScenario<AndroidLauncher> scenario = ActivityScenario.launch(AndroidLauncher.class)){
+			enterTitle();
+			java.io.File base = new java.io.File(InstrumentationRegistry.getInstrumentation()
+					.getTargetContext().getFilesDir(), "apd-open-timing-"+System.nanoTime());
+			java.io.File real = new java.io.File(base,"apd");
+			java.io.File demo = com.shatteredpixel.shatteredpixeldungeon.apd.demo.DemoData.demoRootFor(real);
+			java.io.File originalRoot = com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder.historyRoot();
+			boolean recording = com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder.status().enabled;
+			boolean oldDemo = com.shatteredpixel.shatteredpixeldungeon.apd.demo.DemoData.viewingDemo();
+			boolean oldGuide = com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdUimsdGuideSeen();
+			boolean oldUnlocked = com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdUimsdUnlocked();
+			Method reset = com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdWarmCache.class.getDeclaredMethod("resetForTest");
+			Method await = com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdWarmCache.class.getDeclaredMethod("awaitPrewarmForTest",long.class);
+			reset.setAccessible(true); await.setAccessible(true);
+			try {
+				com.shatteredpixel.shatteredpixeldungeon.apd.demo.DemoGenerator.generate(demo,
+						com.shatteredpixel.shatteredpixeldungeon.apd.recorder.Ruleset.forNewRun(),System.currentTimeMillis());
+				reset.invoke(null);
+				onRender(()->{
+					com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder.configure(real,false);
+					com.shatteredpixel.shatteredpixeldungeon.apd.demo.DemoData.viewDemo(true);
+					com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdUimsdGuideSeen(true);
+					com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdUimsdUnlocked(true);
+					Game.resetScene();
+				});
+				waitUntil("fresh title for synthetic timing history",()->Game.scene() instanceof TitleScene&&!Game.switchingScene(),30000);
+				onRender(()->{}); // title creation and its prewarm request have completed
+				await.invoke(null,60000L);
+				Field ready = com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdWarmCache.class.getDeclaredField("ready");
+				ready.setAccessible(true); assertNotNull("actual title preload completed",ready.get(null));
+				AtomicReference<com.watabou.utils.Point> target=new AtomicReference<>();
+				onRender(()->{try{
+					Field field=TitleScene.class.getDeclaredField("btnStatistics"); field.setAccessible(true);
+					com.shatteredpixel.shatteredpixeldungeon.ui.Button button=(com.shatteredpixel.shatteredpixeldungeon.ui.Button)field.get(Game.scene());
+					assertTrue("UIMSD title button accepts taps",button.isActive());
+					target.set(button.camera().cameraToScreen(button.left()+button.width()/2,button.top()+button.height()/2));
+				}catch(Exception e){throw new RuntimeException(e);}});
+				long begin=System.nanoTime(), down=android.os.SystemClock.uptimeMillis();
+				for(int action:new int[]{android.view.MotionEvent.ACTION_DOWN,android.view.MotionEvent.ACTION_UP}){
+					android.view.MotionEvent event=android.view.MotionEvent.obtain(down,android.os.SystemClock.uptimeMillis(),action,target.get().x,target.get().y,0);
+					try {InstrumentationRegistry.getInstrumentation().sendPointerSync(event);} finally {event.recycle();}
+				}
+				Field drawn=UimsdScene.class.getDeclaredField("firstReadyHomeDrawNanos"); drawn.setAccessible(true);
+				long deadline=System.nanoTime()+TimeUnit.SECONDS.toNanos(10),drawNanos=0;
+				while(System.nanoTime()<deadline){
+					if(Game.scene() instanceof UimsdScene) drawNanos=drawn.getLong(Game.scene());
+					if(drawNanos>begin) break;
+					Thread.sleep(2);
+				}
+				assertTrue("complete Home was drawn after the native tap",drawNanos>begin);
+				long millis=TimeUnit.NANOSECONDS.toMillis(drawNanos-begin);
+				Log.w("APDPERF","UIMSD_NATIVE_TAP ready_72_run_home_draw_ms="+millis+" budget_ms=250");
+				assertTrue("native tap to complete Home exceeded 250ms: "+millis,millis<250);
+				onRender(()->{try{
+					assertEquals(UimsdModel.State.READY,((UimsdModel)uimsd("model")).state());
+					assertEquals(72,((com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdHome)uimsd("cachedHome")).runs);
+					assertEquals(0,windows());
+				}catch(Exception e){throw new RuntimeException(e);}});
+			} finally {
+				onRender(()->{
+					com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder.configure(originalRoot,recording);
+					com.shatteredpixel.shatteredpixeldungeon.apd.demo.DemoData.viewDemo(oldDemo);
+					com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdUimsdGuideSeen(oldGuide);
+					com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdUimsdUnlocked(oldUnlocked);
+					Game.invalidateRetainedReturn(); ShatteredPixelDungeon.switchNoFade(TitleScene.class);
+				});
+				waitUntil("title restored after timing",()->Game.scene() instanceof TitleScene&&!Game.switchingScene(),30000);
+				reset.invoke(null);
+				assertTrue("only the marked temporary demo is deleted",com.shatteredpixel.shatteredpixeldungeon.apd.demo.DemoData.delete(demo));
+				base.delete();
+			}
+		}
 	}
 
 	private static void waitUntil( String what, java.util.concurrent.Callable<Boolean> c, long millis ) throws Exception {
@@ -324,4 +407,5 @@ public class AndroidBackDeviceTest {
 		}
 	}
 }
+
 

@@ -122,7 +122,7 @@ public class Button extends Component {
 		KeyEvent.addKeyListener( keyListener = new Signal.Listener<KeyEvent>() {
 			@Override
 			public boolean onSignal ( KeyEvent event ) {
-				if ( active && KeyBindings.getActionForKey( event ) == keyAction()){
+				if ( isActive() && KeyBindings.getActionForKey( event ) == keyAction()){
 					if (event.pressed){
 						pressedButton = Button.this;
 						pressTime = 0;
@@ -228,3 +228,4 @@ public class Button extends Component {
 	}
 	
 }
+
