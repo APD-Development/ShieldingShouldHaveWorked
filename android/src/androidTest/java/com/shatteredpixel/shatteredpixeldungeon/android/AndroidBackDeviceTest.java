@@ -106,6 +106,21 @@ public class AndroidBackDeviceTest {
 	}
 
 	@Test
+	public void ordinarySettingsBackClosesOnlyTheWindowWithoutRebuildingTheScene() throws Exception {
+		try (ActivityScenario<AndroidLauncher> scenario = ActivityScenario.launch(AndroidLauncher.class)){
+			waitUntil("the title scene", () -> Gdx.app != null && Game.instance != null
+					&& Game.scene() instanceof TitleScene, 120000);
+			final com.watabou.noosa.Scene sceneBefore = Game.scene();
+			final int before = windows();
+			onRender(() -> ShatteredPixelDungeon.scene().add(new com.shatteredpixel.shatteredpixeldungeon.windows.WndSettings()));
+			waitUntil("ordinary Settings window", () -> windows() == before + 1, 30000);
+			pressBack();
+			waitUntil("ordinary Settings window closed", () -> windows() == before, 30000);
+			assertTrue("ordinary Settings Back must leave the current scene intact", Game.scene() == sceneBefore);
+		}
+	}
+
+	@Test
 	public void backWalksBackwardsOneStepPerPress() throws Exception {
 		try (ActivityScenario<AndroidLauncher> scenario = ActivityScenario.launch(AndroidLauncher.class)){
 			long end = System.currentTimeMillis() + 120000;

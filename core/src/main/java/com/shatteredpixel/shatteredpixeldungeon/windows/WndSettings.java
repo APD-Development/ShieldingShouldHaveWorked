@@ -199,21 +199,10 @@ public class WndSettings extends WndTabbed {
 
 	}
 
-	@Override
-	public void hide() {
-		super.hide();
-		//resets generators because there's no need to retain chars for languages not selected
-		ShatteredPixelDungeon.seamlessResetScene(new Game.SceneChangeCallback() {
-			@Override
-			public void beforeCreate() {
-				Game.platform.resetGenerators();
-			}
-			@Override
-			public void afterCreate() {
-				//do nothing
-			}
-		});
-	}
+	// Ordinary Back closing this window must not reconstruct the entire
+	// dungeon/title scene or recreate font textures. Language selections and
+	// system-font changes already request their own seamless scene reset at
+	// the exact option that changes those generators. Inherit Window.hide().
 
 	private static class DisplayTab extends Component {
 
