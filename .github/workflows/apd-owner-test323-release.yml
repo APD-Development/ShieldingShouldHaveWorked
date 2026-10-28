@@ -41,3 +41,5 @@ jobs:
           if-no-files-found: warn
 
 # Preserve exact APK hashes while parsing variant-specific package branding.
+
+# Parse package fields independently of SDK output ordering.

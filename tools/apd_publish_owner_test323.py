@@ -23,7 +23,7 @@ def main():
   assert sha(p)==e
   assert cert in cmd(str(signer),'verify','--print-certs',str(p))
   s=cmd(str(signer.parent/'aapt'),'dump','badging',str(p))
-  package=re.search(r"package: name='([^']+)' versionCode='(\\d+)' versionName='([^']+)'",s).groups()
+  package=tuple(re.search(pattern,s).group(1) for pattern in (r"package: name='([^']+)'",r"versionCode='([^']+)'",r"versionName='([^']+)'"))
   print(p.name,package)
   assert package[:2]==('com.charltonchris29.adhdpixeldungeon.indev','920')
   if p==dev: assert package[2]=='4.0.8-apd-INDEV-bC323-TEST'
