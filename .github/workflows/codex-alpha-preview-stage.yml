@@ -144,7 +144,7 @@ jobs:
           profile=json.loads(pathlib.Path('docs/APD-ALPHA-PREPARATION.json').read_text())
           pathlib.Path('delivery/current-report.md').write_text('\n\n'.join(pathlib.Path(name).read_text() for name in profile['reports']))
           PY
-          python3 tools/apd_bug_report_pdf.py delivery/current-report.md "delivery/APD-Alpha-Preview-$APD_TEST_NUMBER.pdf" --verification delivery/verification.txt --appendix lunch-preparation/docs/APD-EARLY-ALPHA-ACCEPTANCE-2026-10-16.md
+          python3 tools/apd_bug_report_pdf.py delivery/current-report.md "delivery/APD-Alpha-Preview-$APD_TEST_NUMBER.pdf" --verification delivery/verification.txt
       - uses: actions/upload-artifact@v4
         with:
           name: staged-alpha-preview${{ env.APD_TEST_NUMBER }}
