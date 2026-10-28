@@ -1,41 +1,26 @@
 {
   "date": "2026-10-28",
-  "previous_source": "71901973f0fe1364690a4f9b41aba420d2b3e83f",
-  "previous_application_source": "71901973f0fe1364690a4f9b41aba420d2b3e83f",
-  "previous_run": 40713885330,
-  "previous_label": "Codex TEST 320",
+  "previous_source": "d1529fbfd68b9f3a5a23e7277ed9a2fd0ea1b67a",
+  "previous_application_source": "d1529fbfd68b9f3a5a23e7277ed9a2fd0ea1b67a",
+  "previous_run": 40729078688,
+  "previous_label": "Codex TEST 321",
   "changes": [
     {
-      "category": "Quality of Life",
+      "category": "Bug Fixes",
       "sprite": "ICON_CHECKED",
-      "title": "Menu Back restores the existing title",
-      "text": "Android keeps one inactive title while known menus are open. Back restores its existing controls, graphics, cameras and pointer order without recreating the screen. Hidden controls cannot receive input; held presses are cancelled. Resume, reset, context/display changes, callbacks and gameplay discard the retained title. APD Settings and title layout remain unchanged.",
+      "title": "Prepare camera projection before the first visible frame",
+      "text": "Earlier menu and UIMSD draws now refresh new camera matrices before rendering, including scroll cameras created during Home layout. Matrix refresh does not advance game time, pans, shakes or RNG. This corrects a reviewed first-frame flaw in the preceding compiled candidate; retained title returns and APD Settings behavior are preserved.",
       "paths": [
-        "SPD-classes/src/main/java/com/watabou/input/PointerEvent.java",
         "SPD-classes/src/main/java/com/watabou/noosa/Camera.java",
-        "SPD-classes/src/main/java/com/watabou/noosa/Scene.java",
         "SPD-classes/src/main/java/com/watabou/noosa/Game.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/Button.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/PixelScene.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ShatteredPixelDungeon.java",
-        "SPD-classes/src/main/java/com/watabou/noosa/PointerArea.java",
-        "SPD-classes/src/main/java/com/watabou/noosa/Group.java"
-      ]
-    },
-    {
-      "category": "Statistics / UIMSD",
-      "sprite": "ICON_CHECKED",
-      "title": "Ready UIMSD content is drawn without an extra frame",
-      "text": "UIMSD builds ready content before drawing as well as during update, retaining modal protection. Pending menu requests are applied before draw so an outgoing screen is not drawn again after navigation has already chosen its destination. History integrity and asynchronous loading remain intact.",
-      "paths": [
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/UimsdScene.java"
       ]
     },
     {
       "category": "Developer Commentary",
       "sprite": "ICON_CHECKED",
-      "title": "Real lifecycle and native tap performance are checked",
-      "text": "Ten engine cases check retained title identity, cameras, isolated pointers and Back, one-parent lifetime, held press cancellation, invalidation, callbacks and destruction. Nine native Back routes require the original title and camera. A real Android tap must draw the complete Home from a separately marked72-run fixture within250ms, respecting ordinary Home filtering.",
+      "title": "Require a correctly projected Home in performance acceptance",
+      "text": "An eleventh engine regression verifies actual projection values and confirms no camera simulation update occurs. Native tap-to-Home timing additionally verifies the pixel projection, retaining the250ms budget and full72-run source fixture. Focused97 methods pass with28134 unchanged-query comparisons.",
       "paths": [
         "core/src/test/java/com/watabou/noosa/RetainedMenuTest.java",
         "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/AndroidBackDeviceTest.java"
@@ -44,19 +29,15 @@
     {
       "category": "Developer Commentary",
       "sprite": "ICON_INFO",
-      "title": "Preserve TEST320 acceptance and all compiled history",
-      "text": "TEST320 passed2110core,60native methods and five displays; preserve its347 indexed history records exactly and append one reviewed record. Its7ms UIMSD metric measured model handoff only. This follow-up requires complete core and native acceptance, real tap-to-draw timing, matching player APK, identity/history and reviewed images. Physical phone acceptance remains unverified.",
+      "title": "Preserve the compiled preceding pair without claiming delivery",
+      "text": "TEST321 compiled both variants and2120 core methods, with348 indexed history records. It was superseded during source review without delivery because the first-frame projection could be uninitialized. Preserve those348 records exactly and append one reviewed record; require complete core, native, display, matching player and identity/history acceptance for this correction.",
       "paths": [
-        "docs/APD-CODEX-CORE-TEST-REQUEST.txt",
-        "docs/APD-MENU-UIMSD-LATENCY-2026-10-28.md",
+        "docs/APD-TEST321-VERIFICATION-2026-10-28.json",
         "docs/APD-MENU-UIMSD-QUICKER-2026-10-28.md",
-        "docs/APD-TEST320-VERIFICATION-2026-10-28.json",
-        "docs/HANDOFF.md",
-        "docs/WORK-COMPLETED-LEDGER.md",
-        "docs/APD-NEXT-BUILD-HISTORY.json",
-        "docs/APD-CODEX-BUILD-REQUEST.txt"
+        "docs/APD-CODEX-BUILD-REQUEST.txt",
+        "docs/APD-NEXT-BUILD-HISTORY.json"
       ]
     }
   ],
-  "commentary": "Owner asked for quicker UIMSD/menu response and resumed after the journal question. Necessary private matched developer/player candidate; no public release, main push or tester distribution. Preserve all347 indexed TEST320 records and append exactly one. Final full core gate40728414117 at9970327b9602de803a693624b1a3cd6cd8bbb002 passed2120 methods/410 suites with zero failures/errors/skips, including ten retention cases; focused96 also passed. Keep all existing budgets and privacy/save/gameplay invariants. TEST320 source71901973f0fe1364690a4f9b41aba420d2b3e83f/run40713885330 developer SHA256bd3782190d25506543404780036986b8d323545318ae95e2782f13746c7c4800 and matching player40713885318 are the immediate compiled predecessors."
+  "commentary": "Necessary correction within the owner-authorized quicker UIMSD/menu work. TEST321 immediate compiled predecessor sourced1529fbfd68b9f3a5a23e7277ed9a2fd0ea1b67a/run40729078688, developerSHA256555799ab30844fea422d4478dcda28075b1f8c911108a2b1f46bca62f6ba4f70; matched player40729078679. Preserve348 indexed records. Full2121core is required before assembly;61 native, five displays and matching regular-player evidence required before delivery. No release/main/tester distribution or phone-speed claim."
 }

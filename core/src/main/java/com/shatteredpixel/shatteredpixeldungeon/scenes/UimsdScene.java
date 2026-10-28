@@ -235,7 +235,7 @@ public class UimsdScene extends PixelScene {
 	public void draw(){
 		// The worker can publish after update(). Build ready content before the
 		// next draw instead of spending another frame on the loading screen.
-		rebuildIfNeeded();
+		if (rebuildIfNeeded()) Camera.refreshMatrices();
 		super.draw();
 		if (firstReadyHomeDrawNanos == 0 && !dirty && atHome && model != null
 				&& model.state() == UimsdModel.State.READY && targets.containsKey("home.cards")){
@@ -243,11 +243,13 @@ public class UimsdScene extends PixelScene {
 		}
 	}
 
-	private void rebuildIfNeeded(){
+	private boolean rebuildIfNeeded(){
 		if (dirty && !hasWindow(this)){
 			dirty = false;
 			rebuild();
+			return true;
 		}
+		return false;
 	}
 
 	@Override

@@ -136,4 +136,21 @@ public class RetainedMenuTest {
         area.onSignal(press); game.go(Child.class); assertEquals(1,ups[0]);
         game.go(Title.class); area.onSignal(press.up()); assertEquals(0,clicks[0]);
     }
+
+    @Test public void firstDrawHasRealCameraTransformsWithoutAdvancingSimulation(){
+        final int[] updates={0};
+        Camera camera=new Camera(0,0,160,320,2){
+            @Override public synchronized void update(){updates[0]++;super.update();}
+        };
+        Camera.add(camera);
+        assertEquals(1f,camera.matrix[0],0f);
+        float total=Game.timeTotal,elapsed=Game.elapsed;
+        Camera.refreshMatrices();
+        assertEquals(4f/320,camera.matrix[0],0f);
+        assertEquals(-4f/640,camera.matrix[5],0f);
+        assertEquals(-1f,camera.matrix[12],0f);
+        assertEquals(1f,camera.matrix[13],0f);
+        assertEquals(0,updates[0]);
+        assertEquals(total,Game.timeTotal,0f);assertEquals(elapsed,Game.elapsed,0f);
+    }
 }

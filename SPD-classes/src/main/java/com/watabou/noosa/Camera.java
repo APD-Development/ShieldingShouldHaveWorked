@@ -129,6 +129,13 @@ public class Camera extends Gizmo {
 			}
 		}
 	}
+
+	/** Prepare a first draw without advancing pans, shakes, RNG or elapsed time. */
+	public static synchronized void refreshMatrices(){
+		for (Camera camera : all){
+			if (camera != null && camera.exists) camera.updateMatrix();
+		}
+	}
 	
 	public static Camera createFullscreen( float zoom ) {
 		int w = (int)Math.ceil( Game.width / zoom );

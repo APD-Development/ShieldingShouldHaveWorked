@@ -223,6 +223,7 @@ public class Game implements ApplicationListener {
 		// A tap dispatched by the previous update has already chosen its scene.
 		// Create it before this draw instead of showing another outgoing frame.
 		applyRequestedScene();
+		Camera.refreshMatrices();
 		NoosaScript.get().resetCamera();
 		NoosaScriptNoLighting.get().resetCamera();
 		Gdx.gl.glDisable(Gdx.gl.GL_SCISSOR_TEST);
