@@ -1,3 +1,8 @@
+## 2026-10-28T22:35:31Z — TEST325 strict history rejection preserved; exact TEST324 label prepared
+- Source64ec5369/run40778636920 stopped before core/build and produced no sprint APK because the manifest predecessor label did not exactly match TEST324's embedded record name.
+- Corrected only previous_label to exact "Codex TEST 324"; immediate previous compiled source/run remain1f393b/40777494966 and its native-rejected status remains preserved in evidence.
+- No production/test behavior or250ms budget change. TEST326 must rerun strict history, full core, APK assembly, API34 two-opening native acceptance and five displays before verification.
+
 ## 2026-10-28T22:14:00Z — TEST324 compiled but native acceptance rejected before execution
 - Source1f393b/run40777494966 passed strict history,2144core/414 suites, debug assembly and embedded-history verification; private TEST324 artifact exists only as a compiled rejected candidate.
 - Android/display jobs failed compiling four unavailable JUnit identity helpers in the new two-opening regression; zero native methods from that job may be credited.
