@@ -203,16 +203,20 @@ public class AndroidBackDeviceTest {
 				await.invoke(null,60000L);
 				Field ready = com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdWarmCache.class.getDeclaredField("ready");
 				ready.setAccessible(true); assertNotNull("actual title preload completed",ready.get(null));
+				Field readyModel = ready.get(null).getClass().getDeclaredField("model");
+				readyModel.setAccessible(true);
 				AtomicReference<com.watabou.noosa.Scene> titleIdentity=new AtomicReference<>();
 				AtomicReference<com.watabou.noosa.Camera> titleCamera=new AtomicReference<>();
 				onRender(()->{
 					titleIdentity.set(Game.scene());
 					titleCamera.set(com.watabou.noosa.Camera.main);
 				});
-				Object previousReady=null;
+				UimsdModel previousReady=null;
 				for(int opening=1;opening<=2;opening++){
-					Object prepared=ready.get(null);
-					assertNotNull("opening "+opening+" title preload completed",prepared);
+					Object preparedEntry=ready.get(null);
+					assertNotNull("opening "+opening+" title preload completed",preparedEntry);
+					UimsdModel prepared=(UimsdModel)readyModel.get(preparedEntry);
+					assertNotNull("opening "+opening+" preload contains its READY model",prepared);
 					if(previousReady!=null)assertTrue("returning title replenishes a distinct READY model",previousReady!=prepared);
 					AtomicReference<com.watabou.utils.Point> target=new AtomicReference<>();
 					onRender(()->{try{

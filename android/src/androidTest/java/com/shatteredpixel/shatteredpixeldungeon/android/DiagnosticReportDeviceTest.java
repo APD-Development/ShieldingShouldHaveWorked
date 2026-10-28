@@ -15,6 +15,7 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.archive.ApdFiles;
 import com.shatteredpixel.shatteredpixeldungeon.apd.settings.ApdSettingsSection;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.*;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
+import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
 import com.shatteredpixel.shatteredpixeldungeon.windows.*;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Point;
@@ -71,7 +72,14 @@ public class DiagnosticReportDeviceTest {
                 java.lang.reflect.Field field=WndAPDSettings.class.getDeclaredField("pane");field.setAccessible(true);
                 assertNull(((APDSettingsPane)field.get(window)).section());
                 for(RedButton button:TopScoresDeviceTest.find(window,RedButton.class))if("Create bug report".equals(button.text())){
-                    assertTrue(button.active&&button.visible);touch.set(button.camera().cameraToScreen(button.centerX(),button.centerY()));
+                    assertTrue(button.active&&button.visible);
+                    java.lang.reflect.Field scrollField=WndAPDSettings.class.getDeclaredField("scroll");scrollField.setAccessible(true);
+                    ScrollPane scroll=(ScrollPane)scrollField.get(window);
+                    scroll.scrollTo(0,Math.max(0,button.top()-20));
+                    float top=scroll.content().camera().scroll.y,bottom=top+scroll.height();
+                    assertTrue("Diagnostic report button is inside the touchscreen viewport",
+                            button.centerY()>=top&&button.centerY()<=bottom);
+                    touch.set(button.camera().cameraToScreen(button.centerX(),button.centerY()));
                 }
                 assertNotNull("Diagnostic report button is visible at APD Settings root",touch.get());
             }catch(Exception e){throw new RuntimeException(e);}});

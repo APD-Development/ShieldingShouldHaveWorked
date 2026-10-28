@@ -1,34 +1,41 @@
 {
   "date": "2026-10-28",
-  "previous_source": "c77cb6251859a6433e81c9f1406d62761c71f18b",
-  "previous_application_source": "c77cb6251859a6433e81c9f1406d62761c71f18b",
-  "previous_run": 40786801089,
-  "previous_label": "Codex TEST 327",
+  "previous_source": "26843d1a3c648b52c821a60b5a058b7b3e6047f2",
+  "previous_application_source": "26843d1a3c648b52c821a60b5a058b7b3e6047f2",
+  "previous_run": 40788009163,
+  "previous_label": "Codex TEST 328",
   "changes": [
     {
-      "category": "Bug Fixes",
-      "sprite": "ICON_INFO",
-      "title": "Keep low-memory diagnostic capture from replacing the original failure",
-      "text": "Guard diagnostic message and stack capture when stack allocation itself throws. Preserve the original failure text and mark diagnostics unavailable instead of throwing a second failure. This is diagnostic hardening, not proof that the reported phone black screen was caused by memory exhaustion.",
+      "category": "Developer Commentary",
+      "sprite": "ICON_CHECKED",
+      "title": "Compare the actual warmed UIMSD model after two native openings",
+      "text": "TEST328 completed the 72-run Home draw but its fixture compared UimsdWarmCache's private Entry wrapper to the UimsdModel stored inside that entry. Reflect the contained model and retain exact identity, distinct-second-model, retained-title/camera, complete-Home and unchanged 250ms assertions.",
       "paths": [
-        "SPD-classes/src/main/java/com/watabou/utils/SupportDiagnostics.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/diagnostics/SupportDiagnosticsTest.java"
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/AndroidBackDeviceTest.java"
       ]
     },
     {
       "category": "Developer Commentary",
       "sprite": "ICON_CHECKED",
-      "title": "Compile the retained native loot-scroll coordinate check",
-      "text": "TEST327 passed strict history, full core, assembly and the matched player build, but API34 and every display job stopped before native execution because one new test referenced nonexistent display fields. Use Game.width and Game.height, the engine's actual public EGL surface dimensions, while retaining the same on-screen coordinate assertion and all native timing, save, input and screenshot requirements.",
+      "title": "Touch the diagnostic report control inside its real scroll viewport",
+      "text": "TEST328's export fixture located the root-setting report control but did not scroll it into the window viewport before native touch, so no export completed. Scroll the existing pane to that control, assert its center is inside the viewport, then send the same touchscreen tap and retain the 60-second close/content checks.",
       "paths": [
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/LootScrollDeviceTest.java",
-        "docs/APD-CODEX-CORE-TEST-REQUEST.txt",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/DiagnosticReportDeviceTest.java"
+      ]
+    },
+    {
+      "category": "Developer Commentary",
+      "sprite": "ICON_INFO",
+      "title": "Preserve rejected TEST328 and request one exact acceptance rerun",
+      "text": "Record the compiled matched APK hashes, 2185-core success, five-display success, 62/64 native result, raw Android artifact and missing saved-report image. TEST329 changes no production behavior and must rerun strict history, complete core/build, all64 native methods, valid images, five displays and matched player identity.",
+      "paths": [
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/APD-NEXT-BUILD-HISTORY.json",
+        "docs/APD-TEST328-VERIFICATION-2026-10-28.json",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md"
       ]
     }
   ],
-  "commentary": "Immediate previous compiled APK is TEST327 source c77cb625/run40786801089/label Codex TEST 327. It is rejected because instrumentation compilation failed before native execution; preserve its successful core/history/assembly/player evidence separately. TEST328 keeps the coordinate assertion and corrects only field names, while also compiling the newer diagnostic allocation guard. Require all64 native methods, five displays and valid images; TEST323 remains verified fallback. No release, distribution, physical-phone or confirmed OOM claim."
+  "commentary": "Immediate previous compiled APK is TEST328 source 26843d1/run40788009163/label Codex TEST 328. It is rejected despite core/build/player/five-display success because main API34 passed62/64 and main visual validation failed closed. TEST329 corrects only two test fixtures and retains all production behavior and limits. TEST323 remains verified fallback; TEST262 remains latest published release. No release, distribution, physical-phone or confirmed-OOM claim."
 }
