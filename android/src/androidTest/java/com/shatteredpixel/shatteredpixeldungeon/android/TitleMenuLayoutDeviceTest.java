@@ -53,7 +53,7 @@ public class TitleMenuLayoutDeviceTest {
         for(int action:new int[]{MotionEvent.ACTION_DOWN,MotionEvent.ACTION_UP}){
             MotionEvent e=MotionEvent.obtain(down,SystemClock.uptimeMillis(),action,devicePoint.x,devicePoint.y,0);
             e.setSource(InputDevice.SOURCE_TOUCHSCREEN);
-            try{assertTrue(InstrumentationRegistry.getInstrumentation().getUiAutomation().injectInputEvent(e,true));}
+            try{assertTrue(InstrumentationRegistry.getInstrumentation().getUiAutomation().injectInputEvent(e,action==MotionEvent.ACTION_UP));}
             finally{e.recycle();}
             if(action==MotionEvent.ACTION_DOWN)Thread.sleep(80);
         }
