@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.InputDevice;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -123,7 +124,7 @@ public class TitleMenuLayoutDeviceTest {
             TopScoresDeviceTest.screenshot("main-title-layout.png");
             nativeTap(centre("btnChanges"));waitFor(()->Game.scene() instanceof APDTextScene);
             assertEquals(APDTextScene.Page.CHANGES,APDTextScene.page);
-            InstrumentationRegistry.getInstrumentation().getUiAutomation().performGlobalAction(android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_BACK);
+            InstrumentationRegistry.getInstrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_BACK);
             waitFor(TitleMenuLayoutDeviceTest::fullyRestored);
             if(android.os.Build.VERSION.SDK_INT>=33){
                 assertTrue("Registered Android callback owns Back",com.watabou.input.BackGate.systemBackOwned());
@@ -278,14 +279,14 @@ public class TitleMenuLayoutDeviceTest {
                 }
                 assertFalse(com.shatteredpixel.shatteredpixeldungeon.SPDSettings.confirmWaterskin());
                 assertFalse(com.shatteredpixel.shatteredpixeldungeon.SPDSettings.confirmKnownTraps());
-                InstrumentationRegistry.getInstrumentation().getUiAutomation().performGlobalAction(android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_BACK);
+                InstrumentationRegistry.getInstrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_BACK);
                 Thread.sleep(1200);waitFor(()->Game.scene() instanceof TitleScene);
                 nativeTap(centre("btnOptions"));waitForSettingsDraw();
                 TopScoresDeviceTest.render(()->{try{
                     for(com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox b:TopScoresDeviceTest.find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox.class))
                         if(b.text().equals("Confirm Waterskin") || b.text().equals("Warn about traps"))assertFalse("Preference retained on reopening",b.checked());
                 }catch(Exception e){throw new RuntimeException(e);}});
-                InstrumentationRegistry.getInstrumentation().getUiAutomation().performGlobalAction(android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_BACK);
+                InstrumentationRegistry.getInstrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_BACK);
                 Thread.sleep(1000);
             }finally{TopScoresDeviceTest.render(()->{com.shatteredpixel.shatteredpixeldungeon.SPDSettings.confirmWaterskin(waterWas);com.shatteredpixel.shatteredpixeldungeon.SPDSettings.confirmKnownTraps(trapWas);});}
 
