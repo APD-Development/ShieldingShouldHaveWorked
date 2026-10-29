@@ -39,7 +39,7 @@
     },
     {
       "category": "Quality of Life",
-      "sprite": "ITEM_POTION_STRENGTH",
+      "sprite": "ITEM_POTION_CRIMSON",
       "title": "Track collected upgrades and strength by region",
       "text": "Upgrade Scrolls and Strength Potions now show how many you collected from each region. Strength Potions also show whether the guaranteed potion from each early or late floor pair was collected. Bonus potions cannot hide a missed guaranteed potion. Older saves show partial counts and unknown earlier history. Drop-and-pickup repeats do not inflate counts.",
       "paths": [
