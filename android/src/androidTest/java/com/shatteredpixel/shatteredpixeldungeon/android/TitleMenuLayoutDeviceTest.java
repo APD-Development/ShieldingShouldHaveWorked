@@ -78,15 +78,21 @@ public class TitleMenuLayoutDeviceTest {
     }
     private static void waitForSettingsDraw()throws Exception {
         AtomicInteger drawn=new AtomicInteger();
-        TopScoresDeviceTest.render(()->{try{
-            List<com.shatteredpixel.shatteredpixeldungeon.windows.WndSettings> windows=
-                    TopScoresDeviceTest.find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.windows.WndSettings.class);
-            assertEquals("One actual settings window",1,windows.size());
-            windows.get(0).add(new com.watabou.noosa.Gizmo(){
-                @Override public void draw(){super.draw();drawn.incrementAndGet();}
-            });
-        }catch(Exception e){throw new RuntimeException(e);}});
-        waitFor(()->drawn.get()>=2);
+        java.util.concurrent.atomic.AtomicBoolean watching=new java.util.concurrent.atomic.AtomicBoolean();
+        waitFor(()->{
+            if(!watching.get())TopScoresDeviceTest.render(()->{try{
+                List<com.shatteredpixel.shatteredpixeldungeon.windows.WndSettings> windows=
+                        TopScoresDeviceTest.find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.windows.WndSettings.class);
+                assertTrue("At most one actual settings window",windows.size()<=1);
+                if(windows.size()==1){
+                    windows.get(0).add(new com.watabou.noosa.Gizmo(){
+                        @Override public void draw(){super.draw();drawn.incrementAndGet();}
+                    });
+                    watching.set(true);
+                }
+            }catch(Exception e){throw new RuntimeException(e);}});
+            return watching.get()&&drawn.get()>=2;
+        });
     }
     @Test public void titleControlsStaySeparateAndNativeChangesAndHideUiRemainUsable()throws Exception {
         try(ActivityScenario<AndroidLauncher> scenario=ActivityScenario.launch(AndroidLauncher.class)){
