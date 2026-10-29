@@ -36,6 +36,35 @@
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md"
       ]
+    },
+    {
+      "category": "Quality of Life",
+      "sprite": "ITEM_POTION_STRENGTH",
+      "title": "Track collected upgrades and strength by region",
+      "text": "Upgrade Scrolls and Strength Potions now show how many you collected from each region. Strength Potions also show whether the guaranteed potion from each early or late floor pair was collected. Bonus potions cannot hide a missed guaranteed potion. Older saves show partial counts and unknown earlier history. Drop-and-pickup repeats do not inflate counts.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Item.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/Statistics.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/Level.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/PotionOfStrength.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/ScrollOfUpgrade.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/PotionOfHealing.java",
+        "core/src/main/assets/messages/items/items.properties",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/ProgressionPickups.java"
+      ]
+    },
+    {
+      "category": "Developer Commentary",
+      "sprite": "ICON_CHECKED",
+      "title": "Preserve resource origins across saves and loot movement",
+      "text": "Sparse resource origins survive actual bundle reloads, merged and split stacks, forwarding and accepted inventory collection. Preserve unknown legacy history and unplaced newly saved rewards. Keep generation RNG, challenge mechanics, upgrade counts, strength effects and historical scores unchanged. Existing healing text now uses actual line breaks.",
+      "paths": [
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/ProgressionPickupsTest.java",
+        "docs/HANDOFF.md",
+        "docs/APD-CODEX-CORE-TEST-REQUEST.txt",
+        "docs/APD-NEXT-BUILD-HISTORY.json"
+      ]
     }
-  ]
+  ],
+  "commentary": " Resource tooltips were added after concurrent TEST332 source94fb6d was fixed; that APK doesnotcontainthem. Before next APK, rebase comparison/notes against immediate produced332 if available; do not duplicate its compiled history. Local34 methods passed; full2205core pending. No new APK requested by core-only commit."
 }

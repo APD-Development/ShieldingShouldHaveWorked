@@ -109,6 +109,9 @@ public class Item implements Bundlable {
 	//APD: set on duplicate(): the uid of the item this one is a copy of, so the copy's lineage can be recorded if it
 	//is ever observed. Not saved.
 	public String apdCopyOf = null;
+	// Optional, first-collection provenance for Upgrade Scrolls and Strength Potions only.
+	public com.shatteredpixel.shatteredpixeldungeon.apd.ProgressionPickups.Origins apdProgressionOrigins;
+	public boolean apdProgressionLegacy;
 	
 	public static final Comparator<Item> itemComparator = new Comparator<Item>() {
 		@Override
@@ -158,6 +161,8 @@ public class Item implements Bundlable {
 		//APD: reset() is how an item from another run (bones) is made fit for this one, it must not keep that run's identity
 		apdUid = null;
 		apdCopyOf = null;
+		apdProgressionOrigins = null;
+		apdProgressionLegacy = false;
 	}
 
 	public boolean keptThroughLostInventory(){
@@ -214,6 +219,7 @@ public class Item implements Bundlable {
 	public Item merge( Item other ){
 		if (isSimilar( other )){
 			ApdItems.onMerge( this, other, other.quantity );
+			com.shatteredpixel.shatteredpixeldungeon.apd.ProgressionPickups.merge(this, other);
 			quantity += other.quantity;
 			other.quantity = 0;
 		}
@@ -226,6 +232,7 @@ public class Item implements Bundlable {
 			return true;
 		}
 
+		com.shatteredpixel.shatteredpixeldungeon.apd.ProgressionPickups.prepare(this);
 		ArrayList<Item> items = container.items;
 
 		if (items.contains( this )) {
@@ -248,6 +255,7 @@ public class Item implements Bundlable {
 			for (Item item:items) {
 				if (isSimilar( item )) {
 					item.merge( this );
+					com.shatteredpixel.shatteredpixeldungeon.apd.ProgressionPickups.collected(item, container);
 					item.updateQuickslot();
 					if (Dungeon.hero != null && Dungeon.hero.isAlive()) {
 						Badges.validateItemLevelAquired( this );
@@ -289,6 +297,7 @@ public class Item implements Bundlable {
 		}
 
 		items.add( this );
+		com.shatteredpixel.shatteredpixeldungeon.apd.ProgressionPickups.collected(this, container);
 		Dungeon.quickslot.replacePlaceholder(this);
 		Collections.sort( items, itemComparator );
 		updateQuickslot();
@@ -317,6 +326,7 @@ public class Item implements Bundlable {
 			split.restoreFromBundle(copy);
 			split.quantity(amount);
 			quantity -= amount;
+			com.shatteredpixel.shatteredpixeldungeon.apd.ProgressionPickups.split(this, split, amount);
 
 			//APD: the piece is a new item, it must not share this stack's identity
 			split.apdUid = null;
@@ -627,6 +637,7 @@ public class Item implements Bundlable {
 		bundle.put( KEPT_LOST, keptThoughLostInvent );
 		if (customNoteID != -1)     bundle.put(CUSTOM_NOTE_ID, customNoteID);
 		if (apdUid != null)         bundle.put(APD_UID, apdUid);
+		com.shatteredpixel.shatteredpixeldungeon.apd.ProgressionPickups.storeItem(this, bundle);
 	}
 	
 	@Override
@@ -657,6 +668,7 @@ public class Item implements Bundlable {
 		if (bundle.contains(CUSTOM_NOTE_ID))    customNoteID = bundle.getInt(CUSTOM_NOTE_ID);
 		//APD: saves made before item identity have no apd_uid, the item simply stays without one until it is observed
 		if (bundle.contains(APD_UID))           apdUid = bundle.getString(APD_UID);
+		com.shatteredpixel.shatteredpixeldungeon.apd.ProgressionPickups.restoreItem(this, bundle);
 	}
 
 	public int targetingPos( Hero user, int dst ){

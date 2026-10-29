@@ -162,6 +162,13 @@ public class ScrollOfUpgrade extends InventoryScroll {
 	}
 	
 	@Override
+	public String info() {
+		String description = super.info();
+		if (!isKnown() || com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero == null) return description;
+		return description + com.shatteredpixel.shatteredpixeldungeon.apd.ProgressionPickups.info(false);
+	}
+
+	@Override
 	public int value() {
 		return isKnown() ? 50 * quantity : super.value();
 	}

@@ -212,7 +212,7 @@ public class PotionOfHealing extends Potion {
 		String description = super.info();
 		if (!isKnown() || Dungeon.hero == null) return description;
 		StringBuilder out = new StringBuilder(description);
-		out.append("\n\\n_").append(Messages.get(this, "enemy_regions")).append("_");
+		out.append("\n\n_").append(Messages.get(this, "enemy_regions")).append("_");
 		if (!Statistics.enemyHealingPotionsRecorded) {
 			out.append("\n").append(Messages.get(this, "enemy_regions_legacy"));
 		}

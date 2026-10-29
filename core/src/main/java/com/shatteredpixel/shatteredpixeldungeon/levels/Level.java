@@ -231,7 +231,9 @@ public abstract class Level implements Bundlable {
 
 			if (Dungeon.posNeeded()) {
 				Dungeon.LimitedDrops.STRENGTH_POTIONS.count++;
-				addItemToSpawn( new PotionOfStrength() );
+				PotionOfStrength strength = new PotionOfStrength();
+				com.shatteredpixel.shatteredpixeldungeon.apd.ProgressionPickups.mark(strength, Dungeon.depth, true);
+				addItemToSpawn(strength);
 			}
 			int upgradeCount = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomGenerationHooks.upgradeScrollsForFloor();
 			for (int upgrade = 0; upgrade < upgradeCount; upgrade++) {
@@ -840,6 +842,7 @@ public abstract class Level implements Bundlable {
 	
 	public void addItemToSpawn( Item item ) {
 		if (item != null) {
+			com.shatteredpixel.shatteredpixeldungeon.apd.ProgressionPickups.mark(item, Dungeon.depth, false);
 			itemsToSpawn.add( item );
 		}
 	}
@@ -1032,6 +1035,7 @@ public abstract class Level implements Bundlable {
 
 		}
 		
+		com.shatteredpixel.shatteredpixeldungeon.apd.ProgressionPickups.mark(item, Dungeon.depth, false);
 		Heap heap = heaps.get( cell );
 		if (heap == null) {
 			

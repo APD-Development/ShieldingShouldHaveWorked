@@ -110,6 +110,7 @@ public class Statistics {
 		ankhsUsed		= 0;
 		enemyHealingPotionsByRegion = new int[5];
 		enemyHealingPotionsRecorded = true;
+		com.shatteredpixel.shatteredpixeldungeon.apd.ProgressionPickups.reset(true);
 		itemTypesDiscovered.clear();
 
 		progressScore   = 0;
@@ -191,6 +192,7 @@ public class Statistics {
 	private static final String ASCENDED		= "ascended";
 	
 	public static void storeInBundle( Bundle bundle ) {
+		com.shatteredpixel.shatteredpixeldungeon.apd.ProgressionPickups.store(bundle);
 		bundle.put( GOLD,		goldCollected );
 		bundle.put( DEEPEST,	deepestFloor );
 		bundle.put( HIGHEST,	highestAscent );
@@ -241,6 +243,7 @@ public class Statistics {
 	}
 	
 	public static void restoreFromBundle( Bundle bundle ) {
+		com.shatteredpixel.shatteredpixeldungeon.apd.ProgressionPickups.restore(bundle);
 		goldCollected	= bundle.getInt( GOLD );
 		deepestFloor	= bundle.getInt( DEEPEST );
 		highestAscent   = bundle.getInt( HIGHEST );

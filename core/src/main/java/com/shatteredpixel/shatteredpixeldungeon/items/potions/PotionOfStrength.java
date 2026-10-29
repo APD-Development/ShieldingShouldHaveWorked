@@ -53,6 +53,13 @@ public class PotionOfStrength extends Potion {
 	}
 
 	@Override
+	public String info() {
+		String description = super.info();
+		if (!isKnown() || com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero == null) return description;
+		return description + com.shatteredpixel.shatteredpixeldungeon.apd.ProgressionPickups.info(true);
+	}
+
+	@Override
 	public int value() {
 		return isKnown() ? 50 * quantity : super.value();
 	}
