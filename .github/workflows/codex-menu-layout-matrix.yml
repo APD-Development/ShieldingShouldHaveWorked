@@ -33,34 +33,37 @@ jobs:
         env: {GH_TOKEN: "${{ github.token }}"}
         run: |
           python3 - <<'PY'
-          import json,os,subprocess,time,pathlib,zipfile,hashlib
+          import hashlib,json,os,pathlib,subprocess,sys,zipfile
+          sys.path.insert(0,'tools')
+          from apd_existing_build_evidence import application_inputs
           repo=os.environ['GITHUB_REPOSITORY'];sha=os.environ['GITHUB_SHA'];branch=os.environ['GITHUB_REF_NAME']
           api=lambda p:json.loads(subprocess.check_output(['gh','api',p]))
-          end=time.monotonic()+1000
-          while True:
-              runs=api(f'repos/{repo}/actions/workflows/codex-sprint-check.yml/runs?branch={branch}&per_page=20')['workflow_runs']
-              candidates=[r for r in runs if r['head_sha']==sha]
-              for run in candidates:
-                  jobs=api(f'repos/{repo}/actions/runs/{run["id"]}/jobs')['jobs']
-                  producer=next((j for j in jobs if j['name']=='verify-and-build' and j['conclusion']=='success'),None)
-                  artifacts=api(f'repos/{repo}/actions/runs/{run["id"]}/artifacts')['artifacts'] if producer else []
-                  item=next((a for a in artifacts if a['name']=='apd-codex-private-test-apk' and not a['expired']),None)
-                  if not item:continue
-                  comparison=api(f'repos/{repo}/compare/{run["head_sha"]}...{sha}')
-                  assert comparison['status']=='identical','Display acceptance must use the exact current application source'
-                  with open('application.zip','wb') as out:subprocess.run(['gh','api',f'repos/{repo}/actions/artifacts/{item["id"]}/zip'],stdout=out,check=True)
-                  assert hashlib.sha256(pathlib.Path('application.zip').read_bytes()).hexdigest()==item['digest'].removeprefix('sha256:')
-                  with zipfile.ZipFile('application.zip')as z:z.extractall('application')
-                  apk=next(pathlib.Path('application').glob('*.apk'));digest=hashlib.sha256(apk.read_bytes()).hexdigest()
-                  assert next(pathlib.Path('application').glob('*.apk.sha256')).read_text().split()[0]==digest
-                  pathlib.Path('acceptance-source.json').write_text(json.dumps({'application_source':run['head_sha'],'application_run':run['id'],'application_sha256':digest,'protected_application_inputs_identical':True,'application_rebuilt':False,'test_source':sha},indent=2))
-                  with open(os.environ['GITHUB_ENV'],'a')as out:out.write('APD_BUILD='+str(run['run_number'])+'\n')
+          current_tree=api(f'repos/{repo}/git/trees/{sha}?recursive=1')
+          assert not current_tree.get('truncated')
+          current_inputs=application_inputs(current_tree['tree'])
+          runs=api(f'repos/{repo}/actions/workflows/codex-sprint-check.yml/runs?branch={branch}&per_page=20')['workflow_runs']
+          selected=None
+          for run in runs:
+              if run['status']!='completed':continue
+              jobs=api(f'repos/{repo}/actions/runs/{run["id"]}/jobs')['jobs']
+              if not any(j['name']=='verify-and-build' and j['conclusion']=='success' for j in jobs):continue
+              source_tree=api(f'repos/{repo}/git/trees/{run["head_sha"]}?recursive=1')
+              assert not source_tree.get('truncated')
+              if application_inputs(source_tree['tree'])!=current_inputs:continue
+              artifacts=api(f'repos/{repo}/actions/runs/{run["id"]}/artifacts')['artifacts']
+              item=next((a for a in artifacts if a['name']=='apd-codex-private-test-apk' and not a['expired']),None)
+              if item:
+                  selected=(run,item)
                   break
-              else:
-                  assert time.monotonic()<end,'No successful ancestral application artifact'
-                  time.sleep(15)
-                  continue
-              break
+          assert selected is not None,'No successful protected-input-identical application artifact'
+          run,item=selected
+          with open('application.zip','wb') as out:subprocess.run(['gh','api',f'repos/{repo}/actions/artifacts/{item["id"]}/zip'],stdout=out,check=True)
+          assert hashlib.sha256(pathlib.Path('application.zip').read_bytes()).hexdigest()==item['digest'].removeprefix('sha256:')
+          with zipfile.ZipFile('application.zip')as z:z.extractall('application')
+          apk=next(pathlib.Path('application').glob('*.apk'));digest=hashlib.sha256(apk.read_bytes()).hexdigest()
+          assert next(pathlib.Path('application').glob('*.apk.sha256')).read_text().split()[0]==digest
+          pathlib.Path('acceptance-source.json').write_text(json.dumps({'application_source':run['head_sha'],'application_run':run['id'],'application_sha256':digest,'protected_application_inputs_identical':True,'application_rebuilt':False,'test_source':sha,'supersedes_failed_lookup_run':40888337192},indent=2))
+          with open(os.environ['GITHUB_ENV'],'a')as out:out.write('APD_BUILD='+str(run['run_number'])+'\n')
           PY
       - name: Compile only instrumentation
         run: |
