@@ -1,15 +1,31 @@
 {
   "date": "2026-10-29",
-  "previous_source": "168e49778c18dd6a2c82bea48aa41028d513f60a",
-  "previous_application_source": "168e49778c18dd6a2c82bea48aa41028d513f60a",
-  "previous_run": 40929924852,
-  "previous_label": "Codex TEST 331",
+  "previous_source": "94fb6d19e126e53db86e20dc8121f850e5b77d37",
+  "previous_application_source": "94fb6d19e126e53db86e20dc8121f850e5b77d37",
+  "previous_run": 40937102716,
+  "previous_label": "Codex TEST 332",
   "changes": [
+    {
+      "category": "Quality of Life",
+      "sprite": "ITEM_POTION_CRIMSON",
+      "title": "Track collected upgrades and strength by region",
+      "text": "Upgrade Scrolls and Strength Potions now show first successful inventory collection counts by original region. Strength Potions also show whether each guaranteed early or late floor pair was collected. Bonus potions cannot hide a missed guaranteed potion. Older saves keep partial counts and explicitly unknown earlier pairs. Merges, splits, transfers, saves and drop-and-pickup repeats preserve or consume each origin exactly once without changing generation.",
+      "paths": [
+        "core/src/main/assets/messages/items/items.properties",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/Statistics.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/ProgressionPickups.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Item.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/PotionOfHealing.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/PotionOfStrength.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/ScrollOfUpgrade.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/Level.java"
+      ]
+    },
     {
       "category": "Bug Fixes",
       "sprite": "ICON_CHECKED",
-      "title": "Keep UIMSD freshness work off the render thread",
-      "text": "Opening UIMSD now keeps the recorder flush and complete warm-cache freshness validation on its loader. Only the short prepared-cache claim receives temporary scheduling priority; any cold history rebuild returns to normal priority. The raw-history checks, saved layouts, prepared Home, exact 250ms acceptance limit and visible statistics are unchanged.",
+      "title": "Hand UIMSD the exact validated READY model",
+      "text": "The title preload is now claimed on a short prioritized worker and the exact validated mutable model is handed to the render thread before switching scenes. Stale open callbacks cannot replace a later scene, and cache misses return to normal priority before cold loading. Full raw-history freshness validation and the unchanged 250 ms two-opening acceptance limit remain intact.",
       "paths": [
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdModel.java",
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/UimsdScene.java",
@@ -18,67 +34,21 @@
     },
     {
       "category": "Developer Commentary",
-      "sprite": "ICON_INFO",
-      "title": "Retain failed TEST331 evidence and compare its exact successor",
-      "text": "Preserve the compiled Gathering-icon candidate and every failed Android, UIMSD and API36 attempt without claiming delivery. TEST332 compares the immediate TEST331 APK history and must pass full paired core, Android, display, identity and checksum gates before any private publication. Emulator evidence remains separate from physical-phone acceptance.",
+      "sprite": "ICON_CHECKED",
+      "title": "Preserve original generation, language and failed-candidate evidence",
+      "text": "Keep all original level-generation golden hashes with recorder off and on while excluding only new statistics bookkeeping from the historical test snapshot; real saves retain it. Audit all 5076 English strings. Preserve TEST332's exact artifacts, six-profile display success and sole exact-model-identity failure without claiming acceptance or delivery. Require complete core, Android, history, identity, tooltip and display evidence for TEST333.",
       "paths": [
-        ".github/workflows/apd-existing331-api36-isolated.yml",
-        ".github/workflows/apd-existing331-uimsd-retest.yml",
-        ".github/workflows/apd-gathering331-delivery.yml",
-        ".github/workflows/codex-menu-layout-matrix.yml",
-        "tools/apd_publish_gathering331.py",
-        "tools/run-gathering331-api36-isolated.sh",
-        "tools/run-gathering331-uimsd-retest.sh",
-        "docs/APD-GATHERING-ICON-331-STATUS.json",
-        "docs/APD-CODEX-CORE-TEST-REQUEST.txt",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/LevelGenerationHarness.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/ProgressionPickupsTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/humor/AuthoredLanguageTest.java",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
+        "docs/APD-CODEX-CORE-TEST-REQUEST.txt",
         "docs/APD-NEXT-BUILD-HISTORY.json",
+        "docs/APD-RESOURCE-PICKUP-VERIFICATION.json",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md"
       ]
-    },
-    {
-      "category": "Quality of Life",
-      "sprite": "ITEM_POTION_CRIMSON",
-      "title": "Track collected upgrades and strength by region",
-      "text": "Upgrade Scrolls and Strength Potions now show how many you collected from each region. Strength Potions also show whether the guaranteed potion from each early or late floor pair was collected. Bonus potions cannot hide a missed guaranteed potion. Older saves show partial counts and unknown earlier history. Drop-and-pickup repeats do not inflate counts.",
-      "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Item.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/Statistics.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/Level.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/PotionOfStrength.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/ScrollOfUpgrade.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/PotionOfHealing.java",
-        "core/src/main/assets/messages/items/items.properties",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/ProgressionPickups.java"
-      ]
-    },
-    {
-      "category": "Developer Commentary",
-      "sprite": "ICON_CHECKED",
-      "title": "Preserve resource origins across saves and loot movement",
-      "text": "Sparse resource origins survive actual bundle reloads, merged and split stacks, forwarding and accepted inventory collection. Preserve unknown legacy history and unplaced newly saved rewards. Keep generation RNG, challenge mechanics, upgrade counts, strength effects and historical scores unchanged. Existing healing text now uses actual line breaks.",
-      "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/ProgressionPickupsTest.java",
-        "docs/HANDOFF.md",
-        "docs/APD-CODEX-CORE-TEST-REQUEST.txt",
-        "docs/APD-NEXT-BUILD-HISTORY.json"
-      ]
-    },
-    {
-      "category": "Developer Commentary",
-      "sprite": "ICON_CHECKED",
-      "title": "Preserve original generation fingerprints and clean-text audit",
-      "text": "Keep the original level-generation baselines unchanged while excluding only new collection bookkeeping from the historical snapshot mode. Current fingerprints and actual item saves retain the metadata. Verify all other map, item and enemy fields remain exact. Review all seven new neutral labels and retain the full clean-language scan for all 5076 English strings. Preserve the failed initial run and require the complete regression suite.",
-      "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/LevelGenerationHarness.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/humor/AuthoredLanguageTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/ProgressionPickupsTest.java",
-        "docs/HANDOFF.md",
-        "docs/APD-CODEX-CORE-TEST-REQUEST.txt",
-        "docs/APD-NEXT-BUILD-HISTORY.json"
-      ]
     }
   ],
-  "commentary": " Resource tooltips were added after concurrent TEST332 source94fb6d was fixed; that APK doesnotcontainthem. Before next APK, rebase comparison/notes against immediate produced332 if available; do not duplicate its compiled history. Local34 methods passed; full2205core pending. No new APK requested by core-only commit."
+  "commentary": "TEST333 compares the immediate compiled TEST332, not TEST330. TEST332 developer/player artifacts exist and passed identity plus all six display profiles, but main API34 finished64/65 because the viewer did not own the exact prepared model; it is not accepted or published. TEST333 must retain that failure, the regional feature's verified2206-core evidence, and every changed production/test/document path. Emulator evidence remains separate from physical-phone acceptance."
 }
