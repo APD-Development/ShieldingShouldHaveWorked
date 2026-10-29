@@ -2,6 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.android;
 
 import static org.junit.Assert.*;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.InputDevice;
 import android.view.MotionEvent;
 import androidx.test.core.app.ActivityScenario;
@@ -16,6 +17,9 @@ import com.watabou.utils.Point;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import com.watabou.input.PointerEvent;
+import com.watabou.utils.Signal;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -102,17 +106,48 @@ public class TitleMenuLayoutDeviceTest {
             // A physical finger can land beside the tiny icon. This native press must still
             // hide the menu and allow the existing restore behavior to run afterward.
             Point[] outerEdge=new Point[1];
+            String[] outerGeometry=new String[1];
+            AtomicInteger observedDown=new AtomicInteger(), observedUp=new AtomicInteger();
+            Signal.Listener<PointerEvent> observer=event->{
+                if(event!=null && event.type!=PointerEvent.Type.HOVER){
+                    Log.i("APDTitleNative","expanded-target event="+event.type+" x="+event.current.x+" y="+event.current.y+" expected="+outerEdge[0]);
+                    if(Math.abs(event.current.x-outerEdge[0].x)<=2 && Math.abs(event.current.y-outerEdge[0].y)<=2){
+                        if(event.type==PointerEvent.Type.DOWN)observedDown.incrementAndGet();
+                        if(event.type==PointerEvent.Type.UP)observedUp.incrementAndGet();
+                    }
+                }
+                return false;
+            };
             TopScoresDeviceTest.render(()->{try{
                 Component icon=(Component)field(Game.scene(),"btnFade");
                 com.watabou.noosa.PointerArea target=(com.watabou.noosa.PointerArea)field(icon,"hotArea");
                 assertTrue("Footer hit area reaches outside the visible icon",target.x+4<icon.left());
                 assertTrue("Footer hit area extends upward",target.y<icon.top());
                 outerEdge[0]=target.camera().cameraToScreen(icon.left()-2,target.y+target.height/2);
+                assertFalse("Diagnostic point must remain outside the visible icon",icon.overlapsScreenPoint(outerEdge[0].x,outerEdge[0].y));
+                assertTrue("Diagnostic point must be inside the expanded target",target.overlapsScreenPoint(outerEdge[0].x,outerEdge[0].y));
+                outerGeometry[0]="raw="+outerEdge[0]+" icon="+icon.left()+","+icon.top()+","+icon.right()+","+icon.bottom()
+                        +" target="+target.x+","+target.y+","+(target.x+target.width)+","+(target.y+target.height)
+                        +" camera="+target.camera().width+"x"+target.camera().height+" zoom="+target.camera().zoom;
+                Log.i("APDTitleNative","expanded-target "+outerGeometry[0]);
+                PointerEvent.addPointerListener(observer);
             }catch(Exception e){throw new RuntimeException(e);}});
-            nativeTap(outerEdge[0]);waitFor(()->{try{return !((Component)field(Game.scene(),"btnChanges")).active;}catch(Exception e){return false;}});
-            TopScoresDeviceTest.render(()->{try{
-                assertFalse("Outside-icon touch must hide UI",((Component)field(Game.scene(),"btnChanges")).active);
-            }catch(Exception e){throw new RuntimeException(e);}});
+            boolean[] stillActive={true};
+            try{
+                nativeTap(outerEdge[0]);
+                long diagnosticEnd=SystemClock.uptimeMillis()+10000;
+                do{
+                    TopScoresDeviceTest.render(()->{try{
+                        stillActive[0]=((Component)field(Game.scene(),"btnChanges")).active;
+                    }catch(Exception e){throw new RuntimeException(e);}});
+                    if(!stillActive[0])break;
+                    Thread.sleep(100);
+                }while(SystemClock.uptimeMillis()<diagnosticEnd);
+                assertFalse("Outside-icon touch must hide UI; observedDown="+observedDown.get()
+                        +" observedUp="+observedUp.get()+" "+outerGeometry[0],stillActive[0]);
+            }finally{
+                TopScoresDeviceTest.render(()->PointerEvent.removePointerListener(observer));
+            }
             nativeTap(reset[0]);waitFor(TitleMenuLayoutDeviceTest::fullyRestored);
             TopScoresDeviceTest.render(()->{try{
                 assertTrue("UI must restore after expanded touch",((Component)field(Game.scene(),"btnChanges")).active);
