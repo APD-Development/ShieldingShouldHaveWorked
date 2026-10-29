@@ -64,6 +64,20 @@
         "docs/APD-CODEX-CORE-TEST-REQUEST.txt",
         "docs/APD-NEXT-BUILD-HISTORY.json"
       ]
+    },
+    {
+      "category": "Developer Commentary",
+      "sprite": "ICON_CHECKED",
+      "title": "Preserve original generation fingerprints and clean-text audit",
+      "text": "Keep the original level-generation baselines unchanged while excluding only new collection bookkeeping from the historical snapshot mode. Current fingerprints and actual item saves retain the metadata. Verify all other map, item and enemy fields remain exact. Review all seven new neutral labels and retain the full clean-language scan for all 5076 English strings. Preserve the failed initial run and require the complete regression suite.",
+      "paths": [
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/LevelGenerationHarness.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/humor/AuthoredLanguageTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/ProgressionPickupsTest.java",
+        "docs/HANDOFF.md",
+        "docs/APD-CODEX-CORE-TEST-REQUEST.txt",
+        "docs/APD-NEXT-BUILD-HISTORY.json"
+      ]
     }
   ],
   "commentary": " Resource tooltips were added after concurrent TEST332 source94fb6d was fixed; that APK doesnotcontainthem. Before next APK, rebase comparison/notes against immediate produced332 if available; do not duplicate its compiled history. Local34 methods passed; full2205core pending. No new APK requested by core-only commit."

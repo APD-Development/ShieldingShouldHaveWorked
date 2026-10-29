@@ -40,8 +40,9 @@ public class AuthoredLanguageTest {
   }
   // Exact review: 4,998 inherited English messages, three Projecting UI keys,
   // 60 individually source-audited Arcana effect/strength keys, one rounding notice, and
-  // seven exact reviewed per-region healing potion information strings. Every value checked above.
-  assertEquals(9,files);assertEquals("Reviewed English message inventory",5069,values);
+  // seven exact reviewed per-region healing strings and seven neutral progression-pickup labels.
+  // Every value, including all seven new labels, is checked above with Adult Humor OFF and ON.
+  assertEquals(9,files);assertEquals("Reviewed English message inventory",5076,values);
  }
  @Test public void localizedAlternativesDoNotDamageInnocentWordsOrOtherLanguages(){
   for(String innocent:new String[]{"Hell","slut","kesialan","Verdammte Charaktere","dictionary","classic","Scunthorpe","Prick","Fan of Blades"})assertEquals(innocent,AuthoredLanguage.select(innocent,false));

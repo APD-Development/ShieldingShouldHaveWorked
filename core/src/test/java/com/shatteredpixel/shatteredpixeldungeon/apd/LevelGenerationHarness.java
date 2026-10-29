@@ -282,6 +282,9 @@ public final class LevelGenerationHarness {
 				//apd_uid is the statistics recorder's item id (a random UUID, assigned to generated items since Phase 5). It is
 				//not part of the dungeon, so it must not be part of the fingerprint.
 				if (key.equals("apd_uid")) continue;
+				// Original golden snapshots predate collection bookkeeping. Only that legacy
+				// comparison omits this one key; live fingerprints and saved items retain it.
+				if (historicalTutorialFingerprint && key.equals("apd_progression_origins_v1")) continue;
 				Object val = obj.opt(key);
 				//ShopRoom.ChooseBag picks the bag for sale from a HashMap keyed by Bag objects, and ties between bags
 				//are broken by that map's iteration order, which depends on object identity hashes. Which bag a shop

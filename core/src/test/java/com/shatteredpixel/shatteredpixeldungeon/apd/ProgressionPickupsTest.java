@@ -159,4 +159,21 @@ public class ProgressionPickupsTest {
             assertFalse(potion.info().contains("\\n"));assertFalse(scroll.info().contains("\\n"));assertFalse(heal.info().contains("\\n"));
         }
     }
+    @Test public void legacyGoldenComparisonOmitsOnlyCollectionMetadataAndNeverMutatesTheSavedLevel()throws Exception{
+        boolean previous=LevelGenerationHarness.historicalTutorialFingerprint;
+        try{
+            LevelGenerationHarness.historicalTutorialFingerprint=false;
+            LevelGenerationHarness.generate(918271,0,HeroClass.WARRIOR,LevelGenerationHarness.Context.VETERAN,1);
+            String live=LevelGenerationHarness.canonicalJson(Dungeon.level);
+            assertTrue("Actual saved levels retain resource origins",live.contains("apd_progression_origins_v1"));
+            String justBookkeepingRemoved=live.replaceAll(",\\\"apd_progression_origins_v1\\\":\\[(?:-?\\d+(?:,-?\\d+)*)?\\]", "");
+            assertNotEquals(live,justBookkeepingRemoved);
+            LevelGenerationHarness.historicalTutorialFingerprint=true;
+            assertEquals("All original map/item/mob fields are still exact",justBookkeepingRemoved,
+                    LevelGenerationHarness.canonicalJson(Dungeon.level));
+            LevelGenerationHarness.historicalTutorialFingerprint=false;
+            assertEquals("Historical comparison never edits live item save data",live,
+                    LevelGenerationHarness.canonicalJson(Dungeon.level));
+        }finally{LevelGenerationHarness.historicalTutorialFingerprint=previous;}
+    }
 }
