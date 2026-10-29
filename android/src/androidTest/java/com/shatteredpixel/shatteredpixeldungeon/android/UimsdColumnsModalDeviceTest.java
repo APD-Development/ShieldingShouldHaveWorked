@@ -25,6 +25,22 @@ import static org.junit.Assert.*;
 /** Regression: selecting Columns repeatedly must not let clicks go through the modal. */
 @RunWith(AndroidJUnit4.class)
 public class UimsdColumnsModalDeviceTest {
+    private static void openReadyUimsd()throws Exception{
+        until(()->Game.instance!=null&&Game.scene()!=null);
+        render(()->{
+            com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdUimsdGuideSeen(true);
+            ShatteredPixelDungeon.switchNoFade(TitleScene.class);
+        });
+        until(()->Game.scene() instanceof TitleScene&&!Game.switchingScene());
+        render(()->UimsdScene.openNow(TitleScene.class));
+        until(()->{
+            if(!(Game.scene() instanceof UimsdScene)||Game.switchingScene())return false;
+            UimsdModel m=(UimsdModel)field(UimsdScene.class,"model");
+            return m!=null&&m.state()==UimsdModel.State.READY
+                    &&((Number)field(Game.scene(),"firstReadyHomeDrawNanos")).longValue()>0;
+        });
+    }
+
     private static ScrollPane tableBody()throws Exception{
         return (ScrollPane)field(field(Game.scene(),"activeTable"),"body");
     }
@@ -89,11 +105,7 @@ public class UimsdColumnsModalDeviceTest {
 
     @Test public void evidenceBackRestoresEachTableAndSurvivesSceneRecreation()throws Exception{
         try(ActivityScenario<AndroidLauncher> scenario=ActivityScenario.launch(AndroidLauncher.class)){
-            until(()->Game.scene()!=null);render(()->{
-                com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdUimsdGuideSeen(true);
-                UimsdScene.openNow(TitleScene.class);
-            });
-            until(()->Game.scene() instanceof UimsdScene);
+            openReadyUimsd();
             AtomicReference<UimsdModel> model=new AtomicReference<>();AtomicReference<Query> original=new AtomicReference<>();
             render(()->{try{
                 UimsdModel m=(UimsdModel)field(UimsdScene.class,"model");model.set(m);
@@ -218,9 +230,7 @@ public class UimsdColumnsModalDeviceTest {
 
     @Test public void sortingThroughNativeMenusKeepsRightHandColumnAndDirectionVisible()throws Exception {
         try(ActivityScenario<AndroidLauncher> scenario=ActivityScenario.launch(AndroidLauncher.class)){
-            until(()->Game.scene()!=null);
-            render(()->UimsdScene.openNow(TitleScene.class));
-            until(()->Game.scene() instanceof UimsdScene);
+            openReadyUimsd();
             AtomicReference<UimsdModel> model=new AtomicReference<>();
             render(()->{try{
                 UimsdModel m=(UimsdModel)field(UimsdScene.class,"model");model.set(m);
@@ -299,9 +309,7 @@ public class UimsdColumnsModalDeviceTest {
 
     @Test public void multipleColumnTapsRemainAboveTableUntilDone()throws Exception {
         try(ActivityScenario<AndroidLauncher> scenario=ActivityScenario.launch(AndroidLauncher.class)){
-            until(()->Game.scene()!=null);
-            render(()->UimsdScene.openNow(TitleScene.class));
-            until(()->Game.scene() instanceof UimsdScene);
+            openReadyUimsd();
             until(()->{try{return field(UimsdScene.class,"model")!=null;}catch(Exception e){return false;}});
             final AtomicReference<UimsdModel> model=new AtomicReference<>();
             final AtomicReference<Group> background=new AtomicReference<>();
