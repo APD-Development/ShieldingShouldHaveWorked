@@ -164,17 +164,60 @@ public class TitleMenuLayoutDeviceTest {
                 TopScoresDeviceTest.render(()->{com.shatteredpixel.shatteredpixeldungeon.SPDSettings.confirmWaterskin(true);com.shatteredpixel.shatteredpixeldungeon.SPDSettings.confirmKnownTraps(true);com.shatteredpixel.shatteredpixeldungeon.windows.WndSettings.last_index=1;});
                 nativeTap(centre("btnOptions"));Thread.sleep(500);
                 Point[] toggles=new Point[2];
+                String[] toggleGeometry=new String[2];
                 TopScoresDeviceTest.render(()->{try{
                     List<com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox> boxes=TopScoresDeviceTest.find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox.class);
                     for(com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox b:boxes){
                         int index=b.text().equals("Confirm Waterskin")?0:b.text().equals("Warn about traps")?1:-1;
-                        if(index>=0){assertTrue(b.checked());assertTrue(b.visible && b.active);toggles[index]=b.camera().cameraToScreen(b.left()+b.width()/2,b.top()+b.height()/2);}
+                        if(index>=0){
+                            assertTrue(b.checked());assertTrue(b.visible && b.active);
+                            toggles[index]=b.camera().cameraToScreen(b.left()+b.width()/2,b.top()+b.height()/2);
+                            Point screenTopLeft=b.camera().cameraToScreen(b.left(),b.top());
+                            Point screenBottomRight=b.camera().cameraToScreen(b.right(),b.bottom());
+                            toggleGeometry[index]="label="+b.text()+" tap="+toggles[index].x+","+toggles[index].y
+                                    +" logical="+b.left()+","+b.top()+","+b.right()+","+b.bottom()
+                                    +" screen="+screenTopLeft.x+","+screenTopLeft.y+","+screenBottomRight.x+","+screenBottomRight.y
+                                    +" camera="+b.camera().width+"x"+b.camera().height+" zoom="+b.camera().zoom;
+                            Log.i("APDTitleNative","settings-toggle "+toggleGeometry[index]);
+                        }
                     }
                     assertNotNull(toggles[0]);assertNotNull(toggles[1]);
                 }catch(Exception e){throw new RuntimeException(e);}});
                 TopScoresDeviceTest.screenshot("options-confirmations.png");
-                nativeTap(toggles[0]);waitFor(()->!com.shatteredpixel.shatteredpixeldungeon.SPDSettings.confirmWaterskin());assertFalse(com.shatteredpixel.shatteredpixeldungeon.SPDSettings.confirmWaterskin());assertTrue(com.shatteredpixel.shatteredpixeldungeon.SPDSettings.confirmKnownTraps());
-                nativeTap(toggles[1]);waitFor(()->!com.shatteredpixel.shatteredpixeldungeon.SPDSettings.confirmKnownTraps());assertFalse(com.shatteredpixel.shatteredpixeldungeon.SPDSettings.confirmKnownTraps());
+                for(int toggleIndex=0;toggleIndex<2;toggleIndex++){
+                    final int index=toggleIndex;
+                    AtomicInteger toggleDown=new AtomicInteger(),toggleUp=new AtomicInteger();
+                    Signal.Listener<PointerEvent> toggleObserver=event->{
+                        if(event!=null && event.type!=PointerEvent.Type.HOVER){
+                            Log.i("APDTitleNative","settings-toggle event="+event.type+" x="+event.current.x+" y="+event.current.y+" expected="+toggles[index].x+","+toggles[index].y);
+                            if(Math.abs(event.current.x-toggles[index].x)<=2 && Math.abs(event.current.y-toggles[index].y)<=2){
+                                if(event.type==PointerEvent.Type.DOWN)toggleDown.incrementAndGet();
+                                if(event.type==PointerEvent.Type.UP)toggleUp.incrementAndGet();
+                            }
+                        }
+                        return false;
+                    };
+                    TopScoresDeviceTest.render(()->PointerEvent.addPointerListener(toggleObserver));
+                    boolean changed=false;
+                    try{
+                        nativeTap(toggles[index]);
+                        long diagnosticEnd=SystemClock.uptimeMillis()+10000;
+                        do{
+                            changed=index==0
+                                    ? !com.shatteredpixel.shatteredpixeldungeon.SPDSettings.confirmWaterskin()
+                                    : !com.shatteredpixel.shatteredpixeldungeon.SPDSettings.confirmKnownTraps();
+                            if(changed)break;
+                            Thread.sleep(100);
+                        }while(SystemClock.uptimeMillis()<diagnosticEnd);
+                        assertTrue("Native settings toggle did not change; observedDown="+toggleDown.get()
+                                +" observedUp="+toggleUp.get()+" "+toggleGeometry[index],changed);
+                    }finally{
+                        TopScoresDeviceTest.render(()->PointerEvent.removePointerListener(toggleObserver));
+                    }
+                    if(index==0)assertTrue(com.shatteredpixel.shatteredpixeldungeon.SPDSettings.confirmKnownTraps());
+                }
+                assertFalse(com.shatteredpixel.shatteredpixeldungeon.SPDSettings.confirmWaterskin());
+                assertFalse(com.shatteredpixel.shatteredpixeldungeon.SPDSettings.confirmKnownTraps());
                 InstrumentationRegistry.getInstrumentation().getUiAutomation().performGlobalAction(android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_BACK);
                 Thread.sleep(1200);waitFor(()->Game.scene() instanceof TitleScene);
                 nativeTap(centre("btnOptions"));Thread.sleep(500);
