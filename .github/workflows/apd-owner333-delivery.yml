@@ -26,3 +26,4 @@ jobs:
           if-no-files-found: warn
           retention-days: 7
 # Require corrected tooltip compilation; retain historical TEST314-only preflight failures separately.
+# Gate on complete66-method same-APK rerun with actual async/window readiness; preserve failed initial65 run.
