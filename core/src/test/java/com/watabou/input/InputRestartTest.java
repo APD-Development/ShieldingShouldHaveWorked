@@ -119,7 +119,7 @@ public class InputRestartTest {
     }
 
 
-    @Test public void systemOwnedBackSuppressesBothLegacyEdgesAfterInputReset(){
+    @Test public void deliveredSystemBackSuppressesBothLegacyEdgesButRegistrationKeepsFallback(){
         HeadlessTestSupport.start();
         InputHandler handler=new InputHandler(Gdx.input);
         Object activity=new Object();
@@ -128,12 +128,19 @@ public class InputRestartTest {
         BackGate.setSystemBackOwner(activity);
         KeyEvent.addKeyListener(listener);
         try{
+            assertTrue("System callback delivered the first Back",BackGate.acceptSystem());
             assertTrue(handler.keyDown(com.badlogic.gdx.Input.Keys.BACK));
             assertTrue(handler.keyUp(com.badlogic.gdx.Input.Keys.BACK));
             KeyEvent.processKeyEvents();
-            assertEquals("No second Back or orphan key-up may reach the returned scene",0,backs[0]);
+            assertEquals("No delayed second Back or orphan key-up may reach the returned scene",0,backs[0]);
+
             InputHandler.discardPendingEvents();
+            BackGate.reset();
             assertTrue("Input reset does not unregister Android callback ownership",BackGate.systemBackOwned());
+            assertTrue("Registration without delivery keeps the fallback key-down",handler.keyDown(com.badlogic.gdx.Input.Keys.BACK));
+            assertTrue(handler.keyUp(com.badlogic.gdx.Input.Keys.BACK));
+            KeyEvent.processKeyEvents();
+            assertEquals("Fallback delivers exactly one edge",1,backs[0]);
         }finally{
             KeyEvent.removeKeyListener(listener);
             BackGate.clearSystemBackOwner(activity);
@@ -142,7 +149,7 @@ public class InputRestartTest {
         }
     }
 
-    @Test public void aReplacementInputHandlerCannotReclaimTheNativeBackCallback(){
+    @Test public void aReplacementInputHandlerKeepsFallbackWithoutReleasingNativeOwnership(){
         HeadlessTestSupport.start();
         int[] backRegistrations={0},menuRegistrations={0};
         com.badlogic.gdx.Input input=(com.badlogic.gdx.Input)java.lang.reflect.Proxy.newProxyInstance(
@@ -157,11 +164,12 @@ public class InputRestartTest {
         try{
             BackGate.setSystemBackOwner(activity);
             new InputHandler(input);
-            assertEquals("Registered Android Back owner must not be replaced by libGDX",0,backRegistrations[0]);
+            assertEquals("Registered Android callback retains one GDX fallback",1,backRegistrations[0]);
+            assertTrue("Fallback registration must not release native ownership",BackGate.systemBackOwned());
             assertEquals("Other input routing remains registered",1,menuRegistrations[0]);
             BackGate.clearSystemBackOwner(activity);
             new InputHandler(input);
-            assertEquals("Older Android/desktop retain the legacy registration",1,backRegistrations[0]);
+            assertEquals("Older Android/desktop retain the same legacy registration",2,backRegistrations[0]);
             assertEquals(2,menuRegistrations[0]);
         }finally{
             BackGate.clearSystemBackOwner(activity);
