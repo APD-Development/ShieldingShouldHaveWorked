@@ -124,7 +124,7 @@ public class TitleMenuLayoutDeviceTest {
             nativeTap(centre("btnChanges"));waitFor(()->Game.scene() instanceof APDTextScene);
             assertEquals(APDTextScene.Page.CHANGES,APDTextScene.page);
             InstrumentationRegistry.getInstrumentation().getUiAutomation().performGlobalAction(android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_BACK);
-            waitFor(()->Game.scene() instanceof TitleScene);Thread.sleep(800);
+            waitFor(TitleMenuLayoutDeviceTest::fullyRestored);
             nativeTap(centre("btnFade"));Thread.sleep(900);
             TopScoresDeviceTest.render(()->{try{assertFalse(((Component)field(Game.scene(),"btnChanges")).active);}catch(Exception e){throw new RuntimeException(e);}});
             TopScoresDeviceTest.screenshot("main-title-hidden.png");

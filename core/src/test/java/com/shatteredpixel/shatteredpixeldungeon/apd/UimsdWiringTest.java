@@ -101,6 +101,23 @@ public class UimsdWiringTest {
 		assertTrue(scene.contains("switchNoFade(backTo)"));
 	}
 
+
+	@Test
+	public void aReadyHomeBuildsAfterSceneCreationButBeforeItsFirstVisibleDraw() throws Exception {
+		String scene = src("scenes/UimsdScene.java");
+		int create = scene.indexOf("public void create()");
+		int draw = scene.indexOf("public void draw()", create);
+		int drawHelper = scene.indexOf("private boolean rebuildIfNeeded()", draw);
+		assertTrue("reviewed scene lifecycle methods exist", create >= 0 && draw > create && drawHelper > draw);
+		String createBody = scene.substring(create, draw);
+		String drawBody = scene.substring(draw, drawHelper);
+		assertFalse("READY Home layout must not run inside scene creation", createBody.contains("rebuild();"));
+		assertTrue("the first draw still builds pending READY content before drawing",
+				drawBody.contains("if (rebuildIfNeeded()) Camera.refreshMatrices();")
+						&& drawBody.indexOf("rebuildIfNeeded()") < drawBody.indexOf("super.draw();"));
+	}
+
+
 	@Test
 	public void theScreenAndItsWindowsNeverNameAShippedDatasetOrColumn() throws Exception {
 		String[] files = { "scenes/UimsdScene.java", "ui/UimsdTable.java", "windows/WndUimsdList.java", "windows/WndUimsdFilter.java",

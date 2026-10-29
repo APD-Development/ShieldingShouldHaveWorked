@@ -254,12 +254,10 @@ public class UimsdScene extends PixelScene {
 			SPDSettings.apdUimsdGuideSeen(true);
 			offerPending = true;
 		}
-		// A completed title preload can draw its actual statistics on the first
-		// frame, instead of waiting for update() after an empty background draw.
-		if (model != null && model.state() == UimsdModel.State.READY){
-			dirty = false;
-			rebuild();
-		}
+		// A completed title preload is built by draw(), after scene and camera
+		// creation. draw() calls rebuildIfNeeded() before super.draw(), so the
+		// first visible frame is still the complete Home without doing expensive
+		// text layout inside create().
 		createDurationNanos = System.nanoTime() - createStart;
 	}
 
