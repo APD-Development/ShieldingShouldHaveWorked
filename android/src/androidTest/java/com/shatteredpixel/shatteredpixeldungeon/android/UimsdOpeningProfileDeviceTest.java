@@ -17,7 +17,7 @@ public class UimsdOpeningProfileDeviceTest {
         Map<String,Integer> stacks=new HashMap<>();
         Thread sampler=new Thread(()->{
             while(running.get()){
-                if(Game.scene() instanceof UimsdScene){
+                if(Game.instance != null && Game.scene() instanceof UimsdScene){
                     for(Map.Entry<Thread,StackTraceElement[]> entry:Thread.getAllStackTraces().entrySet()){
                         if(!entry.getKey().getName().startsWith("GLThread"))continue;
                         StringBuilder key=new StringBuilder();

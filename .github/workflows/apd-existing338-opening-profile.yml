@@ -74,3 +74,5 @@ jobs:
             opening-profile/
           retention-days: 7
 # Fixture callback accepts checked reflection failures; APK and assertions unchanged.
+
+# Guard the diagnostic sampler before Activity creates Game.instance; actual APK unchanged.
