@@ -25,3 +25,4 @@ jobs:
           if-no-files-found: warn
           retention-days: 7
 # Retry uses exact TEST331; original premature display lookup remains recorded.
+# Composite native evidence retains322ms failure and all unchanged isolated retries.
