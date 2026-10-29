@@ -44,6 +44,7 @@ public class Button extends Component {
 	//only one button should be pressed at a time
 	protected static Button pressedButton;
 	protected float pressTime;
+	private boolean pressStartedThisUpdate;
 	protected boolean clickReady;
 
 	public static void cancelPressedButton(){
@@ -63,6 +64,7 @@ public class Button extends Component {
 			protected void onPointerDown( PointerEvent event ) {
 				pressedButton = Button.this;
 				pressTime = 0;
+				pressStartedThisUpdate = true;
 				clickReady = true;
 				Button.this.onPointerDown();
 			}
@@ -136,6 +138,7 @@ public class Button extends Component {
 					if (event.pressed){
 						pressedButton = Button.this;
 						pressTime = 0;
+						pressStartedThisUpdate = true;
 						clickReady = true;
 						Button.this.onPointerDown();
 					} else {
@@ -169,7 +172,11 @@ public class Button extends Component {
 		
 		hotArea.active = visible;
 		
-		if (pressedButton == this && (pressTime += Game.elapsed) >= longClick) {
+		// Game.elapsed covers the interval before input was dispatched too.
+		// A fresh press must not inherit that pre-press frame time.
+		boolean justStarted = pressStartedThisUpdate;
+		pressStartedThisUpdate = false;
+		if (pressedButton == this && !justStarted && (pressTime += Game.elapsed) >= longClick) {
 			pressedButton = null;
 			if (onLongClick()) {
 
