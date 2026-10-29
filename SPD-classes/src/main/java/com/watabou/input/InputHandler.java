@@ -57,7 +57,9 @@ public class InputHandler extends InputAdapter {
 		multiplexer = new InputMultiplexer();
 		input.setInputProcessor(multiplexer);
 		addInputProcessor(this);
-		if (!BackGate.systemBackOwned()) input.setCatchKey( Input.Keys.BACK, true);
+		// Keep the GDX route as a fallback when Android registers but does not
+		// deliver its system callback. BackGate deduplicates only after delivery.
+		input.setCatchKey( Input.Keys.BACK, true);
 		input.setCatchKey( Input.Keys.MENU, true);
 	}
 

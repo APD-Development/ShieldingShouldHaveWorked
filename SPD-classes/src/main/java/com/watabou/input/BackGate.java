@@ -34,13 +34,18 @@ public final class BackGate {
 	private static long last;
 	private static boolean any;
 	private static Object systemBackOwner;
+	private static boolean suppressNextLegacy;
 
 	public static synchronized void setSystemBackOwner(Object owner){
+		if (systemBackOwner != owner) suppressNextLegacy = false;
 		systemBackOwner = owner;
 	}
 
 	public static synchronized void clearSystemBackOwner(Object owner){
-		if (systemBackOwner == owner) systemBackOwner = null;
+		if (systemBackOwner == owner) {
+			systemBackOwner = null;
+			suppressNextLegacy = false;
+		}
 	}
 
 	public static synchronized boolean systemBackOwned(){
@@ -52,7 +57,24 @@ public final class BackGate {
 	}
 
 	public static synchronized boolean acceptLegacy(long nowNanos){
-		return systemBackOwner == null && accept(nowNanos);
+		// Registration alone cannot prove the system callback delivered this press.
+		// Preserve the legacy route as a fallback, but consume the one late copy
+		// produced after a system callback actually accepted the same press.
+		if (systemBackOwner != null && suppressNextLegacy) {
+			suppressNextLegacy = false;
+			return false;
+		}
+		return accept(nowNanos);
+	}
+
+	public static synchronized boolean acceptSystem(){
+		return acceptSystem(System.nanoTime());
+	}
+
+	public static synchronized boolean acceptSystem(long nowNanos){
+		if (!accept(nowNanos)) return false;
+		if (systemBackOwner != null) suppressNextLegacy = true;
+		return true;
 	}
 
 	//true if this Back should be acted on
@@ -70,5 +92,6 @@ public final class BackGate {
 	public static synchronized void reset(){
 		any = false;
 		last = 0;
+		suppressNextLegacy = false;
 	}
 }

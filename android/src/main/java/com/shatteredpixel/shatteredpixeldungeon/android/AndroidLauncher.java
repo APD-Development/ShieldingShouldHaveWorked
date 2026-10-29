@@ -147,9 +147,9 @@ public class AndroidLauncher extends AndroidApplication {
 				@Override
 				public void run() {
 					if (instance != AndroidLauncher.this || isFinishing() || isDestroyed()) return;
-					// Remove libGDX's competing predictive callback and let raw Back
-					// reach Android's dispatcher rather than consuming it in the View.
-					if (Gdx.input != null) Gdx.input.setCatchKey(Input.Keys.BACK, false);
+					// Keep libGDX's route as a fallback: registration does not guarantee
+					// Android will deliver this callback for every Back input source.
+					// BackGate suppresses the one legacy copy only after this callback fires.
 					getOnBackInvokedDispatcher().registerOnBackInvokedCallback(OnBackInvokedDispatcher.PRIORITY_DEFAULT, new OnBackInvokedCallback() {
 						@Override
 						public void onBackInvoked() {
@@ -235,7 +235,7 @@ public class AndroidLauncher extends AndroidApplication {
 		//not change Back behavior and do not run in the regular player APK.
 		BackTrace.setEnabled(ApdFeatures.testBuild());
 		long trace = BackTrace.route("android-system");
-		if (!BackGate.accept()) {
+		if (!BackGate.acceptSystem()) {
 			BackTrace.rejected(trace, "BackGate duplicate");
 			return;
 		}
