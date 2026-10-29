@@ -1,74 +1,42 @@
 {
   "date": "2026-10-29",
-  "previous_source": "16cb3c2de72595239573fe87bb72ad46a90d0fb0",
-  "previous_application_source": "16cb3c2de72595239573fe87bb72ad46a90d0fb0",
-  "previous_run": 40790379363,
-  "previous_label": "Codex TEST 329",
+  "previous_source": "35e1c85fcea93381a4f107cafd4f89f5264af391",
+  "previous_application_source": "35e1c85fcea93381a4f107cafd4f89f5264af391",
+  "previous_run": 40800528756,
+  "previous_label": "Codex TEST 330",
   "changes": [
     {
-      "category": "Bug Fixes",
-      "sprite": "ICON_CHECKED",
-      "title": "Safer interface scaling and menu input",
-      "text": "The menu background now fills the display at different interface scales, and button frames exclude stray artwork below their edges. Taps queued during a menu rebuild cannot activate the new screen. Cancelling a scale gesture keeps the previous setting. The title's unlock-history check runs in the background.",
+      "category": "Quality of Life",
+      "sprite": "ITEM_SCROLL_GATHERING",
+      "title": "A distinct Scroll of Gathering",
+      "text": "The Scroll of Gathering now has its own parchment-and-cyan gathering symbol instead of borrowing another scroll's appearance. Existing scrolls receive the corrected icon when loaded. Its effects and crafting are unchanged.",
       "paths": [
-        "SPD-classes/src/main/java/com/watabou/input/InputHandler.java",
-        "SPD-classes/src/main/java/com/watabou/noosa/Game.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/TitleGeometry.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/demo/TitleUnlockProbe.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/TitleScene.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/OptionSlider.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/UimsdGate.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndSettings.java"
+        "core/src/main/assets/sprites/items.png",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/sprites/ItemSpriteSheet.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/ScrollOfGathering.java"
       ]
     },
     {
       "category": "Developer Commentary",
       "sprite": "ICON_CHECKED",
-      "title": "Regression coverage for scale changes and delayed taps",
-      "text": "Verify visible-scene input fences, fresh/controller touches, asynchronous validated unlock checks, integer-pixel background coverage and actual button artwork. Preserve original menu source fingerprints through exact reviewed-patch normalization; retain failed guard runs and full core results.",
+      "title": "Preserve verified builds and check scroll artwork",
+      "text": "Retain TEST330 delivery and display evidence, preserve every compiled historical entry, and verify the dedicated Gathering appearance across six classes, bundle reloads and native item windows. Emulator verification is separate from physical-phone acceptance.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/TitleBackgroundCoverTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/demo/TitleUnlockProbeTest.java",
-        "core/src/test/java/com/watabou/input/InputRestartTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/UimsdWiringTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/APDMenuArtworkTest.java"
-      ]
-    },
-    {
-      "category": "Developer Commentary",
-      "sprite": "ICON_CHECKED",
-      "title": "Android touchscreen and lifecycle verification",
-      "text": "Add delayed native touch reproduction and a 7x-to-6x touchscreen scale change with cancellation and frame assertions. Retain corrected existing diagnostic export lifecycle checks. Verify six virtual displays including Android 16 at the reported phone dimensions and density; emulator evidence does not establish physical-device acceptance.",
-      "paths": [
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/DiagnosticReportDeviceTest.java",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/ScaleChangeDeviceTest.java",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/TitleMenuLayoutDeviceTest.java"
-      ]
-    },
-    {
-      "category": "Developer Commentary",
-      "sprite": "ICON_INFO",
-      "title": "Preserve exact TEST329 delivery evidence and verify its successor",
-      "text": "Retain existing private publication and exact-APK retry evidence, including the unchanged UIMSD performance failure. Request one new numbered build only for changed production behavior, preserve every compiled history record and original signing/application identity, and keep the verified fallback. No confirmed memory-overflow claim.",
-      "paths": [
-        ".github/workflows/apd-existing329-native-retest.yml",
-        ".github/workflows/apd-owner-diagnostic329-release.yml",
-        "docs/APD-CODEX-CORE-TEST-REQUEST.txt",
-        "docs/APD-COMBINED-OWNER-DELIVERY.json",
-        "docs/APD-TEST329-NATIVE-RETRY.md",
-        "docs/APD-TEST329-OWNER-DELIVERY.json",
-        "docs/APD-TEST329-VERIFICATION-2026-10-29.json",
+        ".github/workflows/apd-existing330-scale-retest.yml",
+        ".github/workflows/apd-lunch-delivery-2026-10-29.yml",
+        ".github/workflows/codex-menu-layout-matrix.yml",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/TitleMenuLayoutDeviceTest.java",
+        "docs/APD-LUNCH-DELIVERED-2026-10-29.json",
+        "docs/APD-TEST330-DISPLAY-API36-VERIFICATION-2026-10-29.json",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",
-        "tools/apd_publish_owner_diagnostic329.py",
-        "tools/run-existing329-native-retest.sh",
-        ".github/workflows/codex-menu-layout-matrix.yml",
-        "tools/run-title-display-check.sh",
-        "tools/run-codex-android-checks.sh",
+        "tools/apd_lunch_apk_20261029.py",
+        "tools/apd_lunch_report_20261029.py",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/loot/LootScrollGenerationTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/LootScrollDeviceTest.java",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/APD-NEXT-BUILD-HISTORY.json"
       ]
     }
-  ],
-  "commentary": "Immediate previous compiled application is TEST329 source16cb3c2/run40790379363/label Codex TEST 329. Preserve all356compiled TSVs and append one. Full2191core green for5a1315a; additional button-art crop and regression require full2192 in this build. Main native65 and sixth API36 profile pending. No publication/distribution/physical-phone or OOM-proof claim; preserve TEST329 owner diagnostic and TEST323 accepted fallback."
+  ]
 }

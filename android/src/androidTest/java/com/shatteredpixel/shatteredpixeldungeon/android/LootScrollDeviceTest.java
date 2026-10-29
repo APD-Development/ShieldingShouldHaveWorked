@@ -52,6 +52,10 @@ public class LootScrollDeviceTest {
     private static void showAndRead(Scroll scroll,String image)throws Exception {
         AtomicReference<Point> point=new AtomicReference<>();
         render(()->{try{
+            if (scroll instanceof ScrollOfGathering) {
+                assertEquals(com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet.SCROLL_GATHERING,scroll.image());
+                assertEquals(-1,scroll.icon);
+            }
             assertTrue(Dungeon.hero.ready);assertTrue(scroll.collect(Dungeon.hero.belongings.backpack));
             WndUseItem window=new WndUseItem(null,scroll);GameScene.show(window);
             String label=scroll.actionName(Scroll.AC_READ,Dungeon.hero);

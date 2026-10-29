@@ -6,7 +6,12 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 
 /** Working-name prototype; test-build acquisition uses approved provisional Teleportation weights. */
 public class ScrollOfGathering extends Scroll {
-    { icon = ItemSpriteSheet.Icons.SCROLL_TELEPORT; }
+    { icon = -1; }
+    @Override public void reset() {
+        super.reset();
+        // A fixed, always-known scroll: never borrow a randomized vanilla rune.
+        image = ItemSpriteSheet.SCROLL_GATHERING;
+    }
     @Override public boolean isKnown() { return true; }
     @Override public void setKnown() { }
     @Override public String name() { return "Scroll of Gathering"; }

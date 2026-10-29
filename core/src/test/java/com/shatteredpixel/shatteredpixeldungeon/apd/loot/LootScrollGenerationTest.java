@@ -25,6 +25,13 @@ public class LootScrollGenerationTest {
                 java.io.ByteArrayOutputStream bytes=new java.io.ByteArrayOutputStream();Bundle.write(save,bytes);
                 Scroll loaded=(Scroll)Bundle.read(new java.io.ByteArrayInputStream(bytes.toByteArray())).get("scroll");
                 assertEquals(scroll.name(),loaded.name());assertEquals(scroll.desc(),loaded.desc());
+                assertEquals("Appearance survives a real bundle reload",scroll.image(),loaded.image());
+                if (loaded instanceof ScrollOfGathering) {
+                    assertEquals(com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet.SCROLL_GATHERING,loaded.image());
+                    loaded.reset();
+                    assertEquals("Reset must retain Gathering artwork",com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet.SCROLL_GATHERING,loaded.image());
+                    assertEquals("Do not overlay the unrelated Teleportation badge",-1,loaded.icon);
+                }
                 assertTrue(type+" still knows "+loaded.name(),loaded.isKnown());
                 assertTrue(loaded.isIdentified());
             }
