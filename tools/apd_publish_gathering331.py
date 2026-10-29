@@ -9,10 +9,10 @@ old.ROOT=pathlib.Path('verification-work');old.ROOT.mkdir(exist_ok=True)
 api=old.api;cmd=old.cmd;digest=old.digest;artifact=old.artifact
 assert api('repos/'+repo)['private']
 runs={};deadline=time.monotonic()+2400
-for name,rid in [('developer',40929924852),('player',40929925038),('display',40929924967)]:
+for name,rid in [('developer',40929924852),('player',40929925038),('display',40930579280)]:
  while True:
   r=api(f'repos/{repo}/actions/runs/{rid}')
-  assert r['head_sha']==source
+  assert r['head_sha']==('72368ffd11ca610a1a2f5422dab7667611aaeee7' if name=='display' else source)
   if r['status']=='completed':
    assert r['conclusion']=='success',f'{name} verification failed: {r["html_url"]}'
    runs[name]=r;break
@@ -21,7 +21,7 @@ for name,rid in [('developer',40929924852),('player',40929925038),('display',409
 trees=[api(f'repos/{repo}/git/trees/{s}?recursive=1') for s in (source,os.environ['GITHUB_SHA'])]
 assert all(not t.get('truncated') for t in trees)
 assert application_inputs(trees[0]['tree'])==application_inputs(trees[1]['tree'])
-jobs=api(f'repos/{repo}/actions/runs/40929924967/jobs')['jobs']
+jobs=api(f'repos/{repo}/actions/runs/40930579280/jobs')['jobs']
 assert len(jobs)==6 and all(j['conclusion']=='success' for j in jobs)
 dev,da=artifact(40929924852,'apd-codex-private-test-apk','developer')
 player,pa=artifact(40929925038,'apd-player-matching-developer','player')
@@ -50,7 +50,7 @@ for label,folder in [('Developer',dev),('Alpha-Testers',player)]:
  files.extend([target,sidecar]);hashes[label]=h
 assert histories[0]==histories[1] and len(histories[0])==358
 receipt=root/'APD-331-Verification.json'
-receipt.write_text(json.dumps(dict(application_source=source,publication_source=os.environ['GITHUB_SHA'],signing_certificate=cert,application_id='com.charltonchris29.adhdpixeldungeon.indev',version_code=920,hashes=hashes,summaries=summaries,display_jobs=jobs,runs=runs,physical_phone_verified=False,owner_only=True,tester_distribution_approved=False,checked_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),artifacts={'developer':da,'player':pa,'core':ca,'android':na},link_sent=False),indent=2));files.append(receipt)
+receipt.write_text(json.dumps(dict(application_source=source,publication_source=os.environ['GITHUB_SHA'],signing_certificate=cert,application_id='com.charltonchris29.adhdpixeldungeon.indev',version_code=920,hashes=hashes,summaries=summaries,display_jobs=jobs,retained_failed_display_attempt={'run':40929924967,'cause':'All six jobs failed before emulator/APD launch because completed-workflow filtering excluded the still-running producer despite its successful build job; retry accepts only finalized successful producing job and identical application inputs'},retained_failed_publication_attempt=40930161767,runs=runs,physical_phone_verified=False,owner_only=True,tester_distribution_approved=False,checked_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),artifacts={'developer':da,'player':pa,'core':ca,'android':na},link_sent=False),indent=2));files.append(receipt)
 notes=root/'notes.txt';notes.write_text('The Scroll of Gathering now uses dedicated parchment-and-cyan gathering artwork instead of a generic rune and Teleportation badge. Existing scrolls receive the new image when loaded. Forwarding, loot movement, quantities, generation, scoring and saves are unchanged.\n\nBoth variants:2192 core tests;65 main Android checks; six display profiles. Original signing identity/application ID and actual APK checksums verified. Physical-phone acceptance remains pending. Install over the existing app; never uninstall or clear data. Private owner delivery; no automatic tester distribution.\n')
 tag='apd-alpha-preview-331'
 if subprocess.run(['gh','release','view',tag,'--repo',repo],capture_output=True).returncode==0:raise SystemExit('Existing release preserved; verify and reuse its assets')
