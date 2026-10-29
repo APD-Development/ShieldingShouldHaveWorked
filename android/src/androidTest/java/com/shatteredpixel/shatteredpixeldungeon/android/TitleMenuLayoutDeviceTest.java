@@ -76,6 +76,18 @@ public class TitleMenuLayoutDeviceTest {
         }catch(Exception e){throw new RuntimeException(e);}});
         return ready[0];
     }
+    private static void waitForSettingsDraw()throws Exception {
+        AtomicInteger drawn=new AtomicInteger();
+        TopScoresDeviceTest.render(()->{try{
+            List<com.shatteredpixel.shatteredpixeldungeon.windows.WndSettings> windows=
+                    TopScoresDeviceTest.find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.windows.WndSettings.class);
+            assertEquals("One actual settings window",1,windows.size());
+            windows.get(0).add(new com.watabou.noosa.Gizmo(){
+                @Override public void draw(){super.draw();drawn.incrementAndGet();}
+            });
+        }catch(Exception e){throw new RuntimeException(e);}});
+        waitFor(()->drawn.get()>=2);
+    }
     @Test public void titleControlsStaySeparateAndNativeChangesAndHideUiRemainUsable()throws Exception {
         try(ActivityScenario<AndroidLauncher> scenario=ActivityScenario.launch(AndroidLauncher.class)){
             waitFor(()->Game.scene()!=null && PixelScene.uiCamera!=null);
@@ -173,7 +185,7 @@ public class TitleMenuLayoutDeviceTest {
             final boolean trapWas=com.shatteredpixel.shatteredpixeldungeon.SPDSettings.confirmKnownTraps();
             try{
                 TopScoresDeviceTest.render(()->{com.shatteredpixel.shatteredpixeldungeon.SPDSettings.confirmWaterskin(true);com.shatteredpixel.shatteredpixeldungeon.SPDSettings.confirmKnownTraps(true);com.shatteredpixel.shatteredpixeldungeon.windows.WndSettings.last_index=1;});
-                nativeTap(centre("btnOptions"));Thread.sleep(500);
+                nativeTap(centre("btnOptions"));waitForSettingsDraw();
                 Point[] toggles=new Point[2];
                 String[] toggleGeometry=new String[2];
                 TopScoresDeviceTest.render(()->{try{
@@ -197,6 +209,17 @@ public class TitleMenuLayoutDeviceTest {
                 TopScoresDeviceTest.screenshot("options-confirmations.png");
                 for(int toggleIndex=0;toggleIndex<2;toggleIndex++){
                     final int index=toggleIndex;
+                    if(index>0){
+                        waitForSettingsDraw();
+                        TopScoresDeviceTest.render(()->{try{
+                            for(com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox b:
+                                    TopScoresDeviceTest.find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox.class))
+                                if(b.text().equals("Warn about traps")){
+                                    toggles[index]=b.camera().cameraToScreen(b.left()+b.width()/2,b.top()+b.height()/2);
+                                    toggleGeometry[index]+=" settledTap="+toggles[index].x+","+toggles[index].y;
+                                }
+                        }catch(Exception e){throw new RuntimeException(e);}});
+                    }
                     AtomicInteger toggleDown=new AtomicInteger(),toggleUp=new AtomicInteger();
                     Signal.Listener<PointerEvent> toggleObserver=event->{
                         if(event!=null && event.type!=PointerEvent.Type.HOVER){
@@ -231,7 +254,7 @@ public class TitleMenuLayoutDeviceTest {
                 assertFalse(com.shatteredpixel.shatteredpixeldungeon.SPDSettings.confirmKnownTraps());
                 InstrumentationRegistry.getInstrumentation().getUiAutomation().performGlobalAction(android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_BACK);
                 Thread.sleep(1200);waitFor(()->Game.scene() instanceof TitleScene);
-                nativeTap(centre("btnOptions"));Thread.sleep(500);
+                nativeTap(centre("btnOptions"));waitForSettingsDraw();
                 TopScoresDeviceTest.render(()->{try{
                     for(com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox b:TopScoresDeviceTest.find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox.class))
                         if(b.text().equals("Confirm Waterskin") || b.text().equals("Warn about traps"))assertFalse("Preference retained on reopening",b.checked());
