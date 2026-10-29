@@ -37,15 +37,31 @@ public class DiagnosticReportDeviceTest {
     private static void waitFor(Callable<Boolean> ready)throws Exception {
         long end=SystemClock.uptimeMillis()+120000;while(SystemClock.uptimeMillis()<end){if(ready.call())return;Thread.sleep(100);}fail("Timed out waiting for rendered application");
     }
+    private static void awaitResumedTitle()throws Exception {
+        AtomicReference<com.watabou.noosa.Scene> observed=new AtomicReference<>();
+        java.util.concurrent.atomic.AtomicInteger frames=new java.util.concurrent.atomic.AtomicInteger();
+        java.lang.reflect.Field firstDraw=Game.class.getDeclaredField("awaitingFirstDraw");firstDraw.setAccessible(true);
+        waitFor(()->{
+            render(()->{try{
+                boolean stable=Game.scene() instanceof TitleScene&&!Game.switchingScene()
+                        &&Game.scene()==observed.get()&&!firstDraw.getBoolean(Game.instance)
+                        &&Game.width==com.badlogic.gdx.Gdx.graphics.getWidth()
+                        &&Game.height==com.badlogic.gdx.Gdx.graphics.getHeight();
+                frames.set(stable?frames.get()+1:0);observed.set(Game.scene());
+            }catch(Exception e){throw new RuntimeException(e);}});
+            return frames.get()>=2;
+        });
+    }
     @Test public void actualReportButtonSavesDeviceEvidenceAndMenusSurvivePauseResume()throws Exception {
         ApdFiles.Provider original=ApdFiles.provider;Context context=InstrumentationRegistry.getInstrumentation().getTargetContext();
         Uri[] saved={null};CountDownLatch exported=new CountDownLatch(1);AtomicReference<String> failure=new AtomicReference<>();
         try(ActivityScenario<AndroidLauncher> scenario=ActivityScenario.launch(AndroidLauncher.class)) {
             waitFor(()->Game.instance!=null&&Game.scene()!=null);
             render(()->Game.switchScene(TitleScene.class));waitFor(()->Game.scene() instanceof TitleScene);
+            awaitResumedTitle();
             for(int i=0;i<3;i++){
                 scenario.moveToState(Lifecycle.State.CREATED);scenario.moveToState(Lifecycle.State.RESUMED);
-                render(()->assertTrue(Game.scene() instanceof TitleScene));
+                awaitResumedTitle();
             }
             ApdFiles.provider=new ApdFiles.Provider(){
                 public void chooseExport(String n,ApdFiles.ExportTarget t){throw new AssertionError("Expected text MIME");}
@@ -67,8 +83,10 @@ public class DiagnosticReportDeviceTest {
                 public String where(){return "the test's own Downloads document";}
             };
             AtomicReference<Point> touch=new AtomicReference<>();
+            AtomicReference<WndAPDSettings> opened=new AtomicReference<>();
             render(()->{try{
                 WndAPDSettings window=new WndAPDSettings();Game.scene().addToFront(window);
+                opened.set(window);
                 java.lang.reflect.Field field=WndAPDSettings.class.getDeclaredField("pane");field.setAccessible(true);
                 assertNull(((APDSettingsPane)field.get(window)).section());
                 for(RedButton button:TopScoresDeviceTest.find(window,RedButton.class))if("Create bug report".equals(button.text())){
@@ -77,13 +95,20 @@ public class DiagnosticReportDeviceTest {
                     ScrollPane scroll=(ScrollPane)scrollField.get(window);
                     scroll.scrollTo(0,Math.max(0,button.top()-20));
                     float top=scroll.content().camera().scroll.y,bottom=top+scroll.height();
-                    assertTrue("Diagnostic report button is inside the touchscreen viewport",
-                            button.centerY()>=top&&button.centerY()<=bottom);
+                    assertTrue(button.centerY()>=top&&button.centerY()<=bottom);
                     touch.set(button.camera().cameraToScreen(button.centerX(),button.centerY()));
                 }
                 assertNotNull("Diagnostic report button is visible at APD Settings root",touch.get());
             }catch(Exception e){throw new RuntimeException(e);}});
-            Thread.sleep(400);TopScoresDeviceTest.screenshot("diagnostic-report-button.png");
+            Thread.sleep(400);
+            render(()->{
+                assertTrue("Settings must still be attached after its completed draw",TopScoresDeviceTest.find(Game.scene(),WndAPDSettings.class).contains(opened.get()));
+                for(RedButton button:TopScoresDeviceTest.find(opened.get(),RedButton.class))if("Create bug report".equals(button.text())){
+                    assertTrue(button.active&&button.visible);touch.set(button.camera().cameraToScreen(button.centerX(),button.centerY()));
+                    assertTrue(touch.get().x>=0&&touch.get().x<Game.width&&touch.get().y>=0&&touch.get().y<Game.height);
+                }
+            });
+            TopScoresDeviceTest.screenshot("diagnostic-report-button.png");
             long now=SystemClock.uptimeMillis();
             for(int action:new int[]{MotionEvent.ACTION_DOWN,MotionEvent.ACTION_UP}){
                 MotionEvent event=MotionEvent.obtain(now,SystemClock.uptimeMillis(),action,touch.get().x,touch.get().y,0);event.setSource(InputDevice.SOURCE_TOUCHSCREEN);
