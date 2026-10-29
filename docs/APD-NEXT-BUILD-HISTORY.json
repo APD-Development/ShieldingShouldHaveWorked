@@ -3,7 +3,7 @@
   "previous_source": "b173239487dde4f0c070e6d2eda1f116cf349c31",
   "previous_application_source": "65ad4f75ef7c573a6bf985588dc8b0301594fcdb",
   "previous_run": 40959928129,
-  "previous_label": "APD Alpha Preview338 (rejected; compiled predecessor)",
+  "previous_label": "Codex TEST 338",
   "changes": [
     {
       "category": "Bug Fixes",
@@ -50,9 +50,10 @@
         "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "tools/apd_publish_owner339.py",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/TitleMenuLayoutDeviceTest.java"
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/TitleMenuLayoutDeviceTest.java",
+        "tools/apd_publish_owner340.py"
       ]
     }
   ],
-  "commentary": "One consolidated application candidate after owner's no-serial-build instruction. Preserve all364 compiled predecessor history TSVs; append one reviewed record (365 total). TEST338 is rejected/unpublished, not a verified fallback:60/66 native with6failures including UIMSD362ms and Back navigation. TEST330 remains actual published fallback and lacks pending Gathering/resource changes. Headless and candidate-injected prototype evidence must not be called shipped-APK acceptance."
+  "commentary": "One consolidated application candidate after owner's no-serial-build instruction. Preserve all364 compiled predecessor history TSVs; append one reviewed record (365 total). TEST338 is rejected/unpublished, not a verified fallback:60/66 native with6failures including UIMSD362ms and Back navigation. TEST330 remains actual published fallback and lacks pending Gathering/resource changes. Headless and candidate-injected prototype evidence must not be called shipped-APK acceptance. Attempt339 failed before compilation because its predecessor label did not match the historical index; no339APK exists. Correct label is Codex TEST 338, preserving all364 actual predecessor records."
 }
