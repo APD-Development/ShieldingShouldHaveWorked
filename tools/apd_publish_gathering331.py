@@ -1,0 +1,65 @@
+"""Verify and privately deliver the exact paired Gathering-icon APKs; never rebuild."""
+import datetime,hashlib,json,os,pathlib,re,subprocess,sys,time,zipfile
+sys.path.insert(0,'tools')
+import apd_publish_owner_diagnostic329 as old
+from apd_existing_build_evidence import application_inputs,certificates,xml_summary
+repo=os.environ['GITHUB_REPOSITORY'];source='168e49778c18dd6a2c82bea48aa41028d513f60a'
+root=pathlib.Path('gathering-delivery');root.mkdir(exist_ok=True)
+old.ROOT=pathlib.Path('verification-work');old.ROOT.mkdir(exist_ok=True)
+api=old.api;cmd=old.cmd;digest=old.digest;artifact=old.artifact
+assert api('repos/'+repo)['private']
+runs={};deadline=time.monotonic()+2400
+for name,rid in [('developer',40929924852),('player',40929925038),('display',40929924967)]:
+ while True:
+  r=api(f'repos/{repo}/actions/runs/{rid}')
+  assert r['head_sha']==source
+  if r['status']=='completed':
+   assert r['conclusion']=='success',f'{name} verification failed: {r["html_url"]}'
+   runs[name]=r;break
+  assert time.monotonic()<deadline,'Verification is still pending; do not publish'
+  time.sleep(20)
+trees=[api(f'repos/{repo}/git/trees/{s}?recursive=1') for s in (source,os.environ['GITHUB_SHA'])]
+assert all(not t.get('truncated') for t in trees)
+assert application_inputs(trees[0]['tree'])==application_inputs(trees[1]['tree'])
+jobs=api(f'repos/{repo}/actions/runs/40929924967/jobs')['jobs']
+assert len(jobs)==6 and all(j['conclusion']=='success' for j in jobs)
+dev,da=artifact(40929924852,'apd-codex-private-test-apk','developer')
+player,pa=artifact(40929925038,'apd-player-matching-developer','player')
+core,ca=artifact(40929924852,'apd-codex-core-tests','core')
+native,na=artifact(40929924852,'apd-codex-android-checks','android')
+summaries={'core':xml_summary(core),'player_core':xml_summary(player),'android':xml_summary(native)}
+assert summaries['core']['tests']==summaries['player_core']['tests']==2192
+assert summaries['android']['tests']==65
+signer=sorted((pathlib.Path(os.environ['ANDROID_HOME'])/'build-tools').glob('*/apksigner'))[-1]
+cert='067688b3ab6bd5820a67f4c1ba7d5859db578173771cf31d3252b3e4e012246e'
+files=[];hashes={};histories=[]
+for label,folder in [('Developer',dev),('Alpha-Testers',player)]:
+ apk,=folder.rglob('*.apk');checksum,=apk.parent.glob('*.apk.sha256')
+ h=digest(apk);assert h==checksum.read_text().split()[0]
+ assert certificates(cmd(str(signer),'verify','--print-certs',str(apk)))==[cert]
+ badging=cmd(str(signer.parent/'aapt'),'dump','badging',str(apk))
+ assert re.search(r"package: name='([^']+)'",badging).group(1)=='com.charltonchris29.adhdpixeldungeon.indev'
+ assert re.search(r"versionCode='([^']+)'",badging).group(1)=='920'
+ if label=='Developer':assert re.search(r"versionName='([^']+)'",badging).group(1)=='4.0.8-apd-INDEV-bC331-TEST'
+ with zipfile.ZipFile(apk) as z:
+  assert hashlib.sha256(z.read('assets/sprites/items.png')).hexdigest()=='44b248cc4192ba6035c89b8e90fd1fd18114a9b78bd5addd9bbbdd26e174c279'
+  histories.append({n:z.read(n) for n in z.namelist() if n.startswith('assets/apd/history/') and n.endswith('.tsv')})
+  if label=='Alpha-Testers':assert 'assets/apd/features.txt' not in z.namelist()
+ target=root/f'APD-{label}-331.apk';target.write_bytes(apk.read_bytes())
+ sidecar=pathlib.Path(str(target)+'.sha256');sidecar.write_text(h+'  '+target.name+'\n')
+ files.extend([target,sidecar]);hashes[label]=h
+assert histories[0]==histories[1] and len(histories[0])==358
+receipt=root/'APD-331-Verification.json'
+receipt.write_text(json.dumps(dict(application_source=source,publication_source=os.environ['GITHUB_SHA'],signing_certificate=cert,application_id='com.charltonchris29.adhdpixeldungeon.indev',version_code=920,hashes=hashes,summaries=summaries,display_jobs=jobs,runs=runs,physical_phone_verified=False,owner_only=True,tester_distribution_approved=False,checked_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),artifacts={'developer':da,'player':pa,'core':ca,'android':na},link_sent=False),indent=2));files.append(receipt)
+notes=root/'notes.txt';notes.write_text('The Scroll of Gathering now uses dedicated parchment-and-cyan gathering artwork instead of a generic rune and Teleportation badge. Existing scrolls receive the new image when loaded. Forwarding, loot movement, quantities, generation, scoring and saves are unchanged.\n\nBoth variants:2192 core tests;65 main Android checks; six display profiles. Original signing identity/application ID and actual APK checksums verified. Physical-phone acceptance remains pending. Install over the existing app; never uninstall or clear data. Private owner delivery; no automatic tester distribution.\n')
+tag='apd-alpha-preview-331'
+if subprocess.run(['gh','release','view',tag,'--repo',repo],capture_output=True).returncode==0:raise SystemExit('Existing release preserved; verify and reuse its assets')
+subprocess.run(['gh','release','create',tag,'--repo',repo,'--target',source,'--prerelease','--latest=false','--title','APD Alpha Preview331 — distinct Gathering scroll icon','--notes-file',str(notes),*map(str,files)],check=True)
+r=api(f'repos/{repo}/releases/tags/{tag}');assert r['prerelease'] and not r['draft']
+for p in files:
+ a,=[a for a in r['assets'] if a['name']==p.name]
+ assert a['state']=='uploaded' and a['size']==p.stat().st_size and a['digest']=='sha256:'+digest(p)
+ check=root/('download-check-'+p.name)
+ with check.open('wb') as out:subprocess.run(['gh','api','-H','Accept: application/octet-stream',f'repos/{repo}/releases/assets/{a["id"]}'],stdout=out,check=True)
+ assert digest(check)==digest(p);print('VERIFIED_DOWNLOAD',a['browser_download_url'])
+print('ACTUAL_ASSET_PUBLICATION_UTC',r['published_at'])
