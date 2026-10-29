@@ -121,6 +121,7 @@ public class InputRestartTest {
 
     @Test public void deliveredSystemBackSuppressesBothLegacyEdgesButRegistrationKeepsFallback(){
         HeadlessTestSupport.start();
+        KeyBindings.addHardBinding(com.badlogic.gdx.Input.Keys.BACK,GameAction.BACK);
         InputHandler handler=new InputHandler(Gdx.input);
         Object activity=new Object();
         int[] backs={0};
@@ -140,7 +141,7 @@ public class InputRestartTest {
             assertTrue("Registration without delivery keeps the fallback key-down",handler.keyDown(com.badlogic.gdx.Input.Keys.BACK));
             assertTrue(handler.keyUp(com.badlogic.gdx.Input.Keys.BACK));
             KeyEvent.processKeyEvents();
-            assertEquals("Fallback delivers exactly one edge",1,backs[0]);
+            assertEquals("Accepted fallback preserves its complete down/up pair",2,backs[0]);
         }finally{
             KeyEvent.removeKeyListener(listener);
             BackGate.clearSystemBackOwner(activity);

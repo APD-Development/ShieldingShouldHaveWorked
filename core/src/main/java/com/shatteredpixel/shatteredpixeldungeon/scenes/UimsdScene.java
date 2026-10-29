@@ -46,7 +46,8 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.ui.UimsdStyle;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
-import com.shatteredpixel.shatteredpixeldungeon.ui.TitleBackground;
+import com.shatteredpixel.shatteredpixeldungeon.apd.TitleGeometry;
+import com.watabou.noosa.Image;
 import com.shatteredpixel.shatteredpixeldungeon.ui.UimsdHomePane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.UimsdTable;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
@@ -222,7 +223,13 @@ public class UimsdScene extends PixelScene {
 
 		int w = Camera.main.width;
 		int h = Camera.main.height;
-		TitleBackground bg = new TitleBackground(w, h);
+		// Reuse APD's existing title artwork. The inherited animated backdrop
+		// allocates many VBOs and loads several atlases on the first Home frame.
+		Image bg = new Image(landscape() ? "splashes/title/apd_bg_land.png" : "splashes/title/apd_bg_port.png");
+		bg.scale.set(TitleGeometry.backgroundCoverScale(w, h, bg.width(), bg.height(), Camera.main.zoom));
+		bg.x = (w - bg.width()) / 2f;
+		bg.y = (h - bg.height()) / 2f;
+		align(bg);
 		add(bg);
 		add(new com.watabou.noosa.ColorBlock(w, h, 0x66000000));
 

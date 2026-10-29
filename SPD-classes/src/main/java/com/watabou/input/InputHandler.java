@@ -31,6 +31,7 @@ import com.watabou.utils.PointF;
 public class InputHandler extends InputAdapter {
 
 	private InputMultiplexer multiplexer;
+	private boolean acceptedBackDown;
     private final Input sourceInput;
     private long visibleSceneNanos;
     private boolean emulating;
@@ -39,6 +40,7 @@ public class InputHandler extends InputAdapter {
     /** Called after the new scene's first complete draw, not after every frame. */
     public synchronized void scenePresented(long completedDrawNanos){
         visibleSceneNanos=Math.max(visibleSceneNanos,completedDrawNanos);
+        if(!KeyEvent.hasPendingBackPress())acceptedBackDown=false;
         pressedTouches.clear();
         PointerEvent.discardPendingEvents();
     }
@@ -195,10 +197,11 @@ public class InputHandler extends InputAdapter {
 		long backTrace = 0;
 		if (keyCode == Input.Keys.BACK) {
 			backTrace = BackTrace.route("gdx-key");
-			if (!BackGate.acceptLegacy()) {
+			if (!BackGate.acceptLegacy(System.nanoTime(), sourceTime())) {
 				BackTrace.rejected(backTrace, "BackGate legacy route suppressed");
 				return true;
 			}
+			acceptedBackDown = true;
 			BackTrace.accepted(backTrace);
 		}
 		if (KeyBindings.isKeyBound( keyCode )) {
@@ -212,7 +215,13 @@ public class InputHandler extends InputAdapter {
 	
 	@Override
 	public synchronized boolean keyUp( int keyCode ) {
-		if (keyCode == Input.Keys.BACK && BackGate.systemBackOwned()) return true;
+		if (keyCode == Input.Keys.BACK) {
+			BackGate.recordLegacyRelease(sourceTime());
+			// A Back-bound native button clicks on release. Preserve the matching
+			// UP for an accepted DOWN; discard only an orphan/duplicate release.
+			if (!acceptedBackDown) return true;
+			acceptedBackDown = false;
+		}
 		if (KeyBindings.isKeyBound( keyCode )) {
 			KeyEvent.addKeyEvent( stamp(new KeyEvent( keyCode, false ) ));
 			return true;

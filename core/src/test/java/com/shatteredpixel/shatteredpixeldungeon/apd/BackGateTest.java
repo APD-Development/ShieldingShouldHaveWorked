@@ -41,8 +41,8 @@ public class BackGateTest {
 	@Test public void delayedLegacyCopyCannotCloseTheReturnedTitle(){
 		BackGate.setSystemBackOwner(new Object());
 		assertTrue(BackGate.acceptSystem(1000 * MS));
-		assertFalse("Observed API36 duplicate arrived 356ms later", BackGate.acceptLegacy(1356 * MS));
-		assertTrue("Suppression is one delivered-copy token, not a permanent route ban", BackGate.acceptLegacy(6000 * MS));
+		assertFalse("Observed API36 duplicate arrived 356ms later", BackGate.acceptLegacy(1356 * MS, 999 * MS));
+		assertTrue("A new backend timestamp identifies a genuine independent fallback", BackGate.acceptLegacy(6000 * MS, 6000 * MS));
 	}
 
 	@Test public void registeredCallbackKeepsLegacyFallbackUntilSystemDelivery(){
@@ -55,9 +55,9 @@ public class BackGateTest {
 	@Test public void eachSystemPressSuppressesOnlyItsOwnLegacyCopy(){
 		BackGate.setSystemBackOwner(new Object());
 		assertTrue(BackGate.acceptSystem(1000 * MS));
-		assertFalse(BackGate.acceptLegacy(1356 * MS));
+		assertFalse(BackGate.acceptLegacy(1356 * MS, 999 * MS));
 		assertTrue(BackGate.acceptSystem(1600 * MS));
-		assertFalse(BackGate.acceptLegacy(1956 * MS));
+		assertFalse(BackGate.acceptLegacy(1956 * MS, 1599 * MS));
 		assertTrue("A later fallback still works", BackGate.acceptLegacy(2200 * MS));
 	}
 
@@ -93,4 +93,24 @@ public class BackGateTest {
 		assertTrue(BackGate.acceptSystem(1120 * MS));
 		assertTrue(BackGate.acceptSystem(1240 * MS));
 	}
+
+ @Test public void missingDuplicateDoesNotConsumeANewIndependentFallback(){
+  BackGate.setSystemBackOwner(new Object());
+  assertTrue(BackGate.acceptSystem(1000*MS));
+  assertTrue("No old-copy debt can swallow a genuine new press",BackGate.acceptLegacy(6000*MS,6000*MS));
+ }
+ @Test public void completedBackendPressRejectsOldCopiesButAllowsFreshPresses(){
+  BackGate.setSystemBackOwner(new Object());
+  assertTrue(BackGate.acceptLegacy(1000*MS,990*MS));
+  assertFalse("An already accepted backend DOWN is not a new press",BackGate.acceptLegacy(1400*MS,990*MS));
+  BackGate.recordLegacyRelease(1010*MS);
+  assertFalse(BackGate.acceptLegacy(1400*MS,1010*MS));
+  assertFalse(BackGate.acceptLegacy(6000*MS,1010*MS));
+  assertTrue(BackGate.acceptLegacy(6200*MS,6190*MS));
+ }
+ @Test public void unknownBackendTimeNeverConsumesAFuturePressOnAnUnprovenDuplicate(){
+  BackGate.setSystemBackOwner(new Object());
+  assertTrue(BackGate.acceptSystem(1000*MS));
+  assertTrue(BackGate.acceptLegacy(6000*MS,0));
+ }
 }
