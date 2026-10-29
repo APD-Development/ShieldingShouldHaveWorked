@@ -38,9 +38,20 @@ public class TitleMenuLayoutDeviceTest {
         fail("Native title condition did not become true");
     }
     private static void nativeTap(Point p)throws Exception {
+        // Camera points are local to the live GDX content surface. Native injection is in
+        // absolute display coordinates, which differ when Android exposes a cutout/inset.
+        int[] contentOrigin=new int[2];
+        InstrumentationRegistry.getInstrumentation().runOnMainSync(()->{
+            android.view.View content=AndroidLauncher.instance.findViewById(android.R.id.content);
+            assertNotNull("Android content view",content);
+            content.getLocationOnScreen(contentOrigin);
+        });
+        Point devicePoint=new Point(p.x+contentOrigin[0],p.y+contentOrigin[1]);
+        Log.i("APDTitleNative","native-tap local="+p.x+","+p.y+" contentOrigin="
+                +contentOrigin[0]+","+contentOrigin[1]+" device="+devicePoint.x+","+devicePoint.y);
         long down=SystemClock.uptimeMillis();
         for(int action:new int[]{MotionEvent.ACTION_DOWN,MotionEvent.ACTION_UP}){
-            MotionEvent e=MotionEvent.obtain(down,SystemClock.uptimeMillis(),action,p.x,p.y,0);
+            MotionEvent e=MotionEvent.obtain(down,SystemClock.uptimeMillis(),action,devicePoint.x,devicePoint.y,0);
             e.setSource(InputDevice.SOURCE_TOUCHSCREEN);
             try{assertTrue(InstrumentationRegistry.getInstrumentation().getUiAutomation().injectInputEvent(e,true));}
             finally{e.recycle();}
