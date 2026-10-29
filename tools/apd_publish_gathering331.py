@@ -9,10 +9,10 @@ old.ROOT=pathlib.Path('verification-work');old.ROOT.mkdir(exist_ok=True)
 api=old.api;cmd=old.cmd;digest=old.digest;artifact=old.artifact
 assert api('repos/'+repo)['private']
 runs={};deadline=time.monotonic()+2400
-for name,rid in [('developer',40929924852),('player',40929925038),('display',40930579280),('uimsd_retest',40933078470),('api36_isolated',40933481613)]:
+for name,rid in [('developer',40929924852),('player',40929925038),('display',40930579280),('uimsd_retest',40934504653),('api36_isolated',40933481613)]:
  while True:
   r=api(f'repos/{repo}/actions/runs/{rid}')
-  assert r['head_sha']=={'display':'72368ffd11ca610a1a2f5422dab7667611aaeee7','uimsd_retest':'2bc645f1429f66ea2d247611675eeffd3854a7b3','api36_isolated':'6188cefc345546cc3bd886017a38ff836a95a582'}.get(name,source)
+  assert r['head_sha']=={'display':'72368ffd11ca610a1a2f5422dab7667611aaeee7','uimsd_retest':'d81f3bed42b39e8712590eeff4e12f4e3d1668a8','api36_isolated':'6188cefc345546cc3bd886017a38ff836a95a582'}.get(name,source)
   if r['status']=='completed':
    assert r['conclusion']==('failure' if name in ('developer','display') else 'success'),f'{name} unexpected verification outcome: {r["html_url"]}'
    runs[name]=r;break
@@ -29,7 +29,7 @@ dev,da=artifact(40929924852,'apd-codex-private-test-apk','developer')
 player,pa=artifact(40929925038,'apd-player-matching-developer','player')
 core,ca=artifact(40929924852,'apd-codex-core-tests','core')
 native,na=artifact(40929924852,'apd-codex-android-checks','android')
-warm,wa=artifact(40933078470,'apd-existing331-uimsd-retest','warm-retest')
+warm,wa=artifact(40934504653,'apd-existing331-uimsd-retest','warm-retest')
 isolated,ia=artifact(40933481613,'apd-existing331-api36-isolated','api36-isolated')
 roots=[ET.parse(p).getroot() for p in native.rglob('TEST-*.xml')]
 assert roots
@@ -70,7 +70,7 @@ for label,folder in [('Developer',dev),('Alpha-Testers',player)]:
  files.extend([target,sidecar]);hashes[label]=h
 assert histories[0]==histories[1] and len(histories[0])==358
 receipt=root/'APD-331-Verification.json'
-receipt.write_text(json.dumps(dict(application_source=source,publication_source=os.environ['GITHUB_SHA'],signing_certificate=cert,application_id='com.charltonchris29.adhdpixeldungeon.indev',version_code=920,hashes=hashes,summaries=summaries,display_jobs=jobs,retained_failed_display_attempt={'run':40929924967,'cause':'All six jobs failed before emulator/APD launch because completed-workflow filtering excluded the still-running producer despite its successful build job; retry accepts only finalized successful producing job and identical application inputs'},retained_failed_publication_attempts=[40930161767,40930654390],retained_api36_failed_jobs=[123647608121,123652076397],acceptance_basis='Composite:64 original main passes plus unchanged exact-APK warm benchmark; five API34 profiles plus three unchanged API36 methods in fresh processes. Original suites failed and are preserved. No source, budget, assertions or APK changed for retests',runs=runs,physical_phone_verified=False,owner_only=True,tester_distribution_approved=False,checked_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),artifacts={'developer':da,'player':pa,'core':ca,'android':na,'isolated_warm':wa,'isolated_api36':ia},link_sent=False),indent=2));files.append(receipt)
+receipt.write_text(json.dumps(dict(application_source=source,publication_source=os.environ['GITHUB_SHA'],signing_certificate=cert,application_id='com.charltonchris29.adhdpixeldungeon.indev',version_code=920,hashes=hashes,summaries=summaries,display_jobs=jobs,retained_failed_display_attempt={'run':40929924967,'cause':'All six jobs failed before emulator/APD launch because completed-workflow filtering excluded the still-running producer despite its successful build job; retry accepts only finalized successful producing job and identical application inputs'},retained_failed_publication_attempts=[40930161767,40930654390,40933782233],retained_mismatched_warm_retest={'run':40933078470,'elapsed_ms':1006,'actual_display':'1080x2400 Pixel7/software','original_display':'320x640/160dpi/default SwiftShader','status':'Failed; different retest configuration. Corrected display/renderer only; no test/source/budget change'},retained_api36_failed_jobs=[123647608121,123652076397],acceptance_basis='Composite:64 original main passes plus unchanged exact-APK warm benchmark; five API34 profiles plus three unchanged API36 methods in fresh processes. Original suites failed and are preserved. No source, budget, assertions or APK changed for retests',runs=runs,physical_phone_verified=False,owner_only=True,tester_distribution_approved=False,checked_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),artifacts={'developer':da,'player':pa,'core':ca,'android':na,'isolated_warm':wa,'isolated_api36':ia},link_sent=False),indent=2));files.append(receipt)
 notes=root/'notes.txt';notes.write_text('The Scroll of Gathering now uses dedicated parchment-and-cyan gathering artwork instead of a generic rune and Teleportation badge. Existing scrolls receive the new image when loaded. Forwarding, loot movement, quantities, generation, scoring and saves are unchanged.\n\nBoth variants:2192 core tests passed. Initial main Android run:64of65 passed; UIMSD opening measured322ms against unchanged250ms limit. Exact same APK subsequently passed the isolated benchmark with that limit unchanged. API34 five display profiles passed; API36 checks were verified in separate fresh instrumentation processes after different callbacks timed out in two combined attempts. All original failures are retained in the receipt; this does not claim a fully green original suite or a UIMSD performance fix. Original signing identity/application ID and actual APK checksums verified. Physical-phone acceptance remains pending. Install over the existing app; never uninstall or clear data. Private owner delivery; no automatic tester distribution.\n')
 tag='apd-alpha-preview-331'
 if subprocess.run(['gh','release','view',tag,'--repo',repo],capture_output=True).returncode==0:raise SystemExit('Existing release preserved; verify and reuse its assets')
