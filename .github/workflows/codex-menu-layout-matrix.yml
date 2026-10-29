@@ -33,7 +33,7 @@ jobs:
         env: {GH_TOKEN: "${{ github.token }}"}
         run: |
           python3 - <<'PY'
-          import hashlib,json,os,pathlib,subprocess,sys,zipfile
+          import hashlib,json,os,pathlib,subprocess,sys,time,zipfile
           sys.path.insert(0,'tools')
           from apd_existing_build_evidence import application_inputs
           repo=os.environ['GITHUB_REPOSITORY'];sha=os.environ['GITHUB_SHA'];branch=os.environ['GITHUB_REF_NAME']
@@ -41,22 +41,26 @@ jobs:
           current_tree=api(f'repos/{repo}/git/trees/{sha}?recursive=1')
           assert not current_tree.get('truncated')
           current_inputs=application_inputs(current_tree['tree'])
-          runs=api(f'repos/{repo}/actions/workflows/codex-sprint-check.yml/runs?branch={branch}&per_page=20')['workflow_runs']
-          selected=None
-          for run in runs:
-              if run['status']=='queued':continue
-              # A successful producing job is sufficient; native verification may still be running.
-              jobs=api(f'repos/{repo}/actions/runs/{run["id"]}/jobs')['jobs']
-              if not any(j['name']=='verify-and-build' and j['conclusion']=='success' for j in jobs):continue
-              source_tree=api(f'repos/{repo}/git/trees/{run["head_sha"]}?recursive=1')
-              assert not source_tree.get('truncated')
-              if application_inputs(source_tree['tree'])!=current_inputs:continue
-              artifacts=api(f'repos/{repo}/actions/runs/{run["id"]}/artifacts')['artifacts']
-              item=next((a for a in artifacts if a['name']=='apd-codex-private-test-apk' and not a['expired']),None)
-              if item:
-                  selected=(run,item)
-                  break
-          assert selected is not None,'No successful protected-input-identical application artifact'
+          deadline=time.monotonic()+720
+          while True:
+              runs=api(f'repos/{repo}/actions/workflows/codex-sprint-check.yml/runs?branch={branch}&per_page=20')['workflow_runs']
+              selected=None
+              for run in runs:
+                  if run['status']=='queued':continue
+                  # A successful producing job is sufficient; native verification may still be running.
+                  jobs=api(f'repos/{repo}/actions/runs/{run["id"]}/jobs')['jobs']
+                  if not any(j['name']=='verify-and-build' and j['conclusion']=='success' for j in jobs):continue
+                  source_tree=api(f'repos/{repo}/git/trees/{run["head_sha"]}?recursive=1')
+                  assert not source_tree.get('truncated')
+                  if application_inputs(source_tree['tree'])!=current_inputs:continue
+                  artifacts=api(f'repos/{repo}/actions/runs/{run["id"]}/artifacts')['artifacts']
+                  item=next((a for a in artifacts if a['name']=='apd-codex-private-test-apk' and not a['expired']),None)
+                  if item:
+                      selected=(run,item)
+                      break
+              if selected is not None:break
+              assert time.monotonic()<deadline,'No successful protected-input-identical application artifact within 12 minutes'
+              time.sleep(20)
           run,item=selected
           with open('application.zip','wb') as out:subprocess.run(['gh','api',f'repos/{repo}/actions/artifacts/{item["id"]}/zip'],stdout=out,check=True)
           assert hashlib.sha256(pathlib.Path('application.zip').read_bytes()).hexdigest()==item['digest'].removeprefix('sha256:')

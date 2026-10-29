@@ -1,44 +1,38 @@
 {
   "date": "2026-10-29",
-  "previous_source": "3dfd3d3b51cab4794e921da579e6856d68da0758",
-  "previous_application_source": "07e6fbd4e7ca5d643883efdcd71d99e97ccc469d",
-  "previous_run": 40941203300,
-  "previous_label": "Codex TEST 333",
+  "previous_source": "0ba7b1cbf57501b081c8e38b1bbd72e70229df50",
+  "previous_application_source": "b109930fef15afd8512aca8357eeae1585f8334b",
+  "previous_run": 40948894878,
+  "previous_label": "Codex TEST 335",
   "changes": [
     {
       "category": "Bug Fixes",
       "sprite": "ICON_CHECKED",
-      "title": "Build the ready UIMSD Home after scene setup",
-      "text": "A fully validated warm UIMSD model now builds its Home through the existing pre-draw path after scene and camera creation, instead of laying out text inside scene creation. The complete Home still appears on the first visible frame. Exact model identity, freshness validation, saved views, raw histories and the unchanged 250 ms acceptance limit remain intact.",
+      "title": "One Android Back press stays one Back",
+      "text": "On recent Android versions, a delayed duplicate Back event could close the game after returning from Changes. The registered system callback now owns Back input and discards its redundant legacy copy, without delaying normal navigation. Older Android and desktop navigation are preserved.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/UimsdScene.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/UimsdWiringTest.java"
+        "SPD-classes/src/main/java/com/watabou/input/BackGate.java",
+        "SPD-classes/src/main/java/com/watabou/input/InputHandler.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/TitleMenuLayoutDeviceTest.java",
+        "android/src/main/java/com/shatteredpixel/shatteredpixeldungeon/android/AndroidLauncher.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/BackGateTest.java",
+        "core/src/test/java/com/watabou/input/InputRestartTest.java"
       ]
     },
     {
-      "category": "Developer Commentary",
+      "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Retain TEST333 failures and synchronize native acceptance",
-      "text": "Preserve TEST333's original and controlled failures, exact artifacts and rejected delivery. Native fixtures now wait for completed asynchronous Home, Settings and post-Back title readiness before using unchanged touch and geometry assertions. Exact-APK workflows, resource tooltip evidence, build requests, reports and ledgers are reviewed as history-only or test-only changes and do not stand in for fresh TEST334 APK evidence.",
+      "title": "Verify resource windows and Android navigation",
+      "text": "The full Android suite now checks current and older-save Strength Potion and Upgrade Scroll collection information. Display checks wait for the matching compiled APK instead of failing before it exists. Preserve failed and unpublished predecessor evidence, exact build numbering, original signing identity, saved data and compiled history.",
       "paths": [
-        ".github/workflows/apd-existing333-full-native.yml",
-        ".github/workflows/apd-existing333-resource-tooltips.yml",
-        ".github/workflows/apd-owner333-delivery.yml",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/ProgressionTooltipsDeviceTest.java",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/TitleMenuLayoutDeviceTest.java",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdColumnsModalDeviceTest.java",
-        "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/APD-CODEX-CORE-TEST-REQUEST.txt",
-        "docs/APD-NEXT-BUILD-HISTORY.json",
-        "docs/APD-TEST333-STATUS-2026-10-29.json",
-        "docs/APD-TEST334-CANDIDATE-2026-10-29.json",
         "docs/HANDOFF.md",
-        "docs/WORK-COMPLETED-LEDGER.md",
-        "tools/apd_publish_owner333.py",
-        "tools/run-exact333-full-native.sh",
-        "tools/run-resource333-tooltips.sh"
+        "tools/run-codex-android-checks.sh",
+        ".github/workflows/codex-menu-layout-matrix.yml",
+        "docs/APD-CODEX-BUILD-REQUEST.txt",
+        "docs/APD-NEXT-BUILD-HISTORY.json"
       ]
     }
   ],
-  "commentary": "TEST334 compares immediate compiled TEST333, not TEST332 or TEST330. TEST333 developer/player artifacts exist and retain all360 matching history files, but repeated exact-APK acceptance ended65/66 because warm UIMSD measured300ms after a prior295ms reproduction; it is rejected and unpublished. The first TEST334 request run40948584819 failed before compilation because this executable ledger still pointed to TEST332 and omitted reviewed post-TEST333 paths. This corrected ledger preserves that failure and requires fresh paired/core/API34/display/history/identity evidence. Emulator evidence remains separate from physical-phone acceptance."
+  "commentary": "TEST334 failed before compilation. TEST335 is the immediately compiled predecessor once its producer succeeds, not an accepted release. This candidate preserves the Gathering icon, regional resource tracker and UIMSD first-draw correction, and adds the independently evidenced Android Back correction. Full unit/native/display/signing/history/download evidence is required before private owner delivery. No physical-phone verification or automatic tester distribution is claimed."
 }
