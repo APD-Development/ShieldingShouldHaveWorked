@@ -57,7 +57,7 @@ public class InputHandler extends InputAdapter {
 		multiplexer = new InputMultiplexer();
 		input.setInputProcessor(multiplexer);
 		addInputProcessor(this);
-		input.setCatchKey( Input.Keys.BACK, true);
+		if (!BackGate.systemBackOwned()) input.setCatchKey( Input.Keys.BACK, true);
 		input.setCatchKey( Input.Keys.MENU, true);
 	}
 

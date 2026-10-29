@@ -141,4 +141,32 @@ public class InputRestartTest {
             InputHandler.discardPendingEvents();
         }
     }
+
+    @Test public void aReplacementInputHandlerCannotReclaimTheNativeBackCallback(){
+        HeadlessTestSupport.start();
+        int[] backRegistrations={0},menuRegistrations={0};
+        com.badlogic.gdx.Input input=(com.badlogic.gdx.Input)java.lang.reflect.Proxy.newProxyInstance(
+            getClass().getClassLoader(),new Class<?>[]{com.badlogic.gdx.Input.class},(proxy,method,args)->{
+                if(method.getName().equals("setCatchKey")&&Boolean.TRUE.equals(args[1])){
+                    if(((Integer)args[0])==com.badlogic.gdx.Input.Keys.BACK)backRegistrations[0]++;
+                    if(((Integer)args[0])==com.badlogic.gdx.Input.Keys.MENU)menuRegistrations[0]++;
+                }
+                return null;
+            });
+        Object activity=new Object();
+        try{
+            BackGate.setSystemBackOwner(activity);
+            new InputHandler(input);
+            assertEquals("Registered Android Back owner must not be replaced by libGDX",0,backRegistrations[0]);
+            assertEquals("Other input routing remains registered",1,menuRegistrations[0]);
+            BackGate.clearSystemBackOwner(activity);
+            new InputHandler(input);
+            assertEquals("Older Android/desktop retain the legacy registration",1,backRegistrations[0]);
+            assertEquals(2,menuRegistrations[0]);
+        }finally{
+            BackGate.clearSystemBackOwner(activity);
+            BackGate.reset();
+            InputHandler.discardPendingEvents();
+        }
+    }
 }

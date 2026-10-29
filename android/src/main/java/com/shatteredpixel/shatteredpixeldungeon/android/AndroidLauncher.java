@@ -147,6 +147,9 @@ public class AndroidLauncher extends AndroidApplication {
 				@Override
 				public void run() {
 					if (instance != AndroidLauncher.this || isFinishing() || isDestroyed()) return;
+					// Remove libGDX's competing predictive callback and let raw Back
+					// reach Android's dispatcher rather than consuming it in the View.
+					if (Gdx.input != null) Gdx.input.setCatchKey(Input.Keys.BACK, false);
 					getOnBackInvokedDispatcher().registerOnBackInvokedCallback(OnBackInvokedDispatcher.PRIORITY_DEFAULT, new OnBackInvokedCallback() {
 						@Override
 						public void onBackInvoked() {
