@@ -52,7 +52,19 @@ jobs:
               assert z.read(checksum).decode().split()[0]==digest
               pathlib.Path('application/exact340.apk').write_bytes(data)
           print('EXACT_TEST340_APK_SHA256',digest)
-          pathlib.Path('acceptance-source.json').write_text(json.dumps({'application_source':source,'application_run':run_id,'application_sha256':digest,'compilation_application_source':source,'production_inputs_restored_in_disposable_runner':changed,'protected_compilation_inputs_verified':True,'candidate_handler_injected':True,'application_rebuilt':False,'test_source':os.environ['GITHUB_SHA'],'purpose':'Candidate pre-DOWN timing handler injected by instrumentation into frozen340; prototype evidence only; no app rebuild'},indent=2))
+          pathlib.Path('acceptance-source.json').write_text(json.dumps({'application_source':source,'application_run':run_id,'application_sha256':digest,'compilation_application_source':source,'production_inputs_restored_in_disposable_runner':changed,'protected_compilation_inputs_verified':True,'candidate_press_timing_injected':True,'input_handler_replaced':False,'application_rebuilt':False,'test_source':os.environ['GITHUB_SHA'],'purpose':'Candidate pre-DOWN timing observer injected by instrumentation into frozen340; prototype evidence only; no app rebuild'},indent=2))
+          PY
+      - name: Generate the same native assertions with correctly timed short taps
+        run: |
+          python3 - <<'PY'
+          import pathlib,hashlib,json
+          src=pathlib.Path('android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/TitleMenuLayoutDeviceTest.java')
+          original=src.read_text()
+          needle='getUiAutomation().injectInputEvent(e,true)'
+          assert original.count(needle)==1
+          corrected=original.replace('TitleMenuLayoutDeviceTest','TitleMenuTapTimingDeviceTest').replace(needle,'getUiAutomation().injectInputEvent(e,action==MotionEvent.ACTION_UP)')
+          dst=src.with_name('TitleMenuTapTimingDeviceTest.java');dst.write_text(corrected)
+          pathlib.Path('native-fixture-source.json').write_text(json.dumps({'original_sha256':hashlib.sha256(original.encode()).hexdigest(),'generated_sha256':hashlib.sha256(corrected.encode()).hexdigest(),'changes':['class name only','DOWN queued without synchronous acknowledgement; UP still waits for dispatch'],'all_original_assertions_preserved':True},indent=2))
           PY
       - name: Compile instrumentation only
         run: |
@@ -98,8 +110,12 @@ jobs:
           name: apd-existing340-button-timing-prototype
           path: |
             acceptance-source.json
+            native-fixture-source.json
+            android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/TitleMenuTapTimingDeviceTest.java
             button-timing-prototype/
           retention-days: 7
 # Fixture callback accepts checked reflection failures; APK and assertions unchanged.
 
 # Same-scene first draw preserves accepted Button timing; detailed edge logs retained.
+
+# Passive observer preserves the original backend registration and true native tap timing.

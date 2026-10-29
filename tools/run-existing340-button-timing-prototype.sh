@@ -24,6 +24,6 @@ for name in ('main-title-layout.png','main-title-hidden.png','main-title-restore
  try:
   with Image.open(root/name) as im:images[name]=im.size;im.verify()
  except Exception:passed=False
-(root/'result.json').write_text(json.dumps(dict(diagnostic_only=True,shipped_apk_acceptance=False,candidate_handler_injected=True,instrumentation_passed=passed,terminal_codes=codes,images=images),indent=2))
+(root/'result.json').write_text(json.dumps(dict(diagnostic_only=True,shipped_apk_acceptance=False,candidate_press_timing_injected=True,input_handler_replaced=False,instrumentation_passed=passed,terminal_codes=codes,images=images),indent=2))
 if not passed:raise SystemExit('Pre-DOWN timing prototype failed; no APK acceptance or publication')
 PY
