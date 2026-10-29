@@ -169,6 +169,10 @@ public final class UimsdModel {
 					}
 					UimsdModel warm = useWarm ? UimsdWarmCache.takeReady(
 							root, currentRuleset, currentRulesetLabel, homeAllRules) : null;
+					// A cold rebuild can be substantial; only the short, interactive
+					// flush/freshness/cache-claim phase receives elevated priority.
+					if (useWarm && warm == null)
+						Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
 					SavedViews loadedColumnLayouts = warm == null
 							? SavedViews.load(root == null ? null : new File(root, COLUMN_LAYOUTS_FILE)) : warm.columnLayouts;
 					Catalog c = warm == null ? new DatasetStore(root).load() : warm.catalog;
@@ -196,6 +200,7 @@ public final class UimsdModel {
 			}
 		}, "uimsd-load");
 		t.setDaemon(true);
+		if (useWarm) t.setPriority(Math.min(Thread.MAX_PRIORITY, Thread.NORM_PRIORITY + 2));
 		loader = t;
 		t.start();
 	}

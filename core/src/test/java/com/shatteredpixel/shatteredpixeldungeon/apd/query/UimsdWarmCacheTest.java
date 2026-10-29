@@ -62,8 +62,12 @@ public class UimsdWarmCacheTest {
             });
             assertTrue(entered.await(5,java.util.concurrent.TimeUnit.SECONDS));
             assertNotSame(caller,worker.get());assertEquals(UimsdModel.State.LOADING,model.state());
+            assertTrue("interactive warm claim receives temporary scheduling priority",
+                    worker.get().getPriority() > Thread.NORM_PRIORITY);
             release.countDown();model.awaitLoad(10000);
             assertEquals(UimsdModel.State.READY,model.state());
+            assertEquals("cold fallback returns to ordinary worker priority",
+                    Thread.NORM_PRIORITY, worker.get().getPriority());
         }finally{release.countDown();model.awaitLoad(10000);assertTrue(root.delete());}
     }
 
@@ -117,7 +121,7 @@ public class UimsdWarmCacheTest {
         } finally { assertTrue(root.delete()); }
     }
 
-    @Test public void titleOpenFlushesThenClaimsReadyModelBeforeStartingFallbackWorker() throws Exception {
+    @Test public void titleOpenHandsFreshnessToTheWorkerBeforeSwitchingScenes() throws Exception {
         java.nio.file.Path rootPath=java.nio.file.Paths.get("").toAbsolutePath();
         java.nio.file.Path sourcePath=null;
         for(java.nio.file.Path dir=rootPath;dir!=null;dir=dir.getParent()){
@@ -130,15 +134,12 @@ public class UimsdWarmCacheTest {
         int create=source.indexOf("@Override\n\tpublic void create",open);
         assertTrue("openNow source section must remain inspectable",open>=0 && create>open);
         String path=source.substring(open,create);
-        int flush=path.indexOf("beforeRead.run()");
-        int claim=path.indexOf("UimsdWarmCache.takeReady");
-        int fallback=path.indexOf("warmed == null ? new UimsdModel");
-        int loader=path.indexOf("model.loadForOpen");
-        assertTrue("title must flush before validating its READY model",flush>=0 && flush<claim);
-        assertTrue("READY handoff must precede allocation of the fallback model",claim<fallback);
-        assertTrue("fallback worker must start only after the direct handoff misses",fallback<loader);
-        assertTrue("title fallback must not flush the recorder a second time",
-                path.contains("beforeRead = null") && path.contains("model.loadForOpen(root, homeAllRules, beforeRead)"));
+        int loader=path.indexOf("model.loadForOpen(root, homeAllRules, ApdRecorder::flushForReading)");
+        int change=path.indexOf("ShatteredPixelDungeon.switchNoFade(UimsdScene.class)");
+        assertTrue("title open delegates flush and full freshness to the loader",loader>=0);
+        assertTrue("loader starts before requesting the new scene",loader<change);
+        assertFalse("render thread must not run the recorder flush",path.contains("beforeRead.run()"));
+        assertFalse("render thread must not validate the warm cache",path.contains("UimsdWarmCache.takeReady"));
     }
 
     @After public void cleanup() { UimsdWarmCache.resetForTest(); }
