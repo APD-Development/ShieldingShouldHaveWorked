@@ -1,36 +1,36 @@
 {
   "date": "2026-10-29",
-  "previous_source": "47cffd4ba9dd409907da5e9f506a215b0a15d00f",
-  "previous_application_source": "b3e0a1fb1663904c7bcd5179f214fb7e6cce8695",
-  "previous_run": 40949692381,
-  "previous_label": "Codex TEST 336",
+  "previous_source": "713c4d1e7b3ddf1a9c27a6874e79829b12b66bf6",
+  "previous_application_source": "5e8f4ecddc20e199496ebe78b1f8b90e47397417",
+  "previous_run": 40953513240,
+  "previous_label": "Codex TEST 337",
   "changes": [
     {
       "category": "Bug Fixes",
       "sprite": "ICON_CHECKED",
-      "title": "Keep Android Back on its registered route",
-      "text": "Unregister libGDX's competing predictive-Back callback before registering APD's callback, and prevent replacement input handlers from reclaiming it. This corrects the Android14 compatibility failure found in the preceding candidate while preserving delayed-duplicate protection, normal navigation and legacy platforms.",
+      "title": "Keep Android Back usable until its system callback actually delivers",
+      "text": "Retain the registered Android callback and the last-known-working GDX Back fallback. Callback registration alone no longer disables Back. When the system callback actually accepts a press, exactly its one delayed legacy copy is suppressed, including the observed API36 356ms copy. Activity ownership fencing and original same-route timing remain.",
       "paths": [
+        "SPD-classes/src/main/java/com/watabou/input/BackGate.java",
         "SPD-classes/src/main/java/com/watabou/input/InputHandler.java",
-        "android/src/main/java/com/shatteredpixel/shatteredpixeldungeon/android/AndroidLauncher.java",
-        "core/src/test/java/com/watabou/input/InputRestartTest.java"
+        "android/src/main/java/com/shatteredpixel/shatteredpixeldungeon/android/AndroidLauncher.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Retain rejected candidates and delivery evidence",
-      "text": "Preserve the rejected Android Back behavior and earlier UIMSD341ms timing failure. Internal cancellation and strict private-delivery tooling retain compiled predecessors and never substitute partial tests for current acceptance. Every current native, display, signature, source, checksum and saved-history gate remains required.",
+      "title": "Preserve the repeated six-profile failure and verify delivered-callback deduplication",
+      "text": "Retain both rejected TEST337 display matrices and the incomplete API34 result. Expanded guards distinguish callback registration from actual delivery, require one-token delayed-copy suppression and preserve fallback, ownership and reset behavior. The complete 2216-method core rerun is green; all native, display, UIMSD latency, identity, signature, checksum and history gates still remain mandatory.",
       "paths": [
-        ".github/workflows/apd-stop-superseded335-check.yml",
-        ".github/workflows/apd-stop-rejected336-check.yml",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/BackGateTest.java",
+        "core/src/test/java/com/watabou/input/InputRestartTest.java",
         "docs/APD-CODEX-CORE-TEST-REQUEST.txt",
         "docs/HANDOFF.md",
-        "tools/apd_publish_owner336.py",
+        "docs/WORK-COMPLETED-LEDGER.md",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/APD-NEXT-BUILD-HISTORY.json"
       ]
     }
   ],
-  "commentary": "Compare immediate compiled rejected TEST336, not older published TEST330. Preserve all362 prior matching history TSVs and append only this record. Native duplicate-Back guard alone was incomplete; actual API34 and API36 failures are retained. The follow-up explicitly removes the competing libGDX callback and prevents its replacement. UIMSD latency variability including prior341ms remains documented. No physical-phone acceptance, public release or tester auto-distribution is claimed."
+  "commentary": "Compare the immediate compiled rejected TEST337, not older published TEST330. Preserve all363 prior matching history TSVs and append only this record. TEST337 failed the returned-title assertion on its original six profiles, its API34 run, and a second six-profile exact-APK fixture rerun; the latter changed no application source and disproved the injection-only hypothesis. TEST335's 341ms UIMSD latency failure remains disclosed. No physical-phone acceptance, public release or tester auto-distribution is claimed."
 }
