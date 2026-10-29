@@ -101,13 +101,13 @@ public class DiagnosticReportDeviceTest {
                 assertNotNull("Diagnostic report button is visible at APD Settings root",touch.get());
             }catch(Exception e){throw new RuntimeException(e);}});
             Thread.sleep(400);
-            render(()->{
+            render(()->{try{
                 assertTrue("Settings must still be attached after its completed draw",TopScoresDeviceTest.find(Game.scene(),WndAPDSettings.class).contains(opened.get()));
                 for(RedButton button:TopScoresDeviceTest.find(opened.get(),RedButton.class))if("Create bug report".equals(button.text())){
                     assertTrue(button.active&&button.visible);touch.set(button.camera().cameraToScreen(button.centerX(),button.centerY()));
                     assertTrue(touch.get().x>=0&&touch.get().x<Game.width&&touch.get().y>=0&&touch.get().y<Game.height);
                 }
-            });
+            }catch(Exception e){throw new RuntimeException(e);}});
             TopScoresDeviceTest.screenshot("diagnostic-report-button.png");
             long now=SystemClock.uptimeMillis();
             for(int action:new int[]{MotionEvent.ACTION_DOWN,MotionEvent.ACTION_UP}){
