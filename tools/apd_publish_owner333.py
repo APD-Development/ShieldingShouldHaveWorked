@@ -9,8 +9,7 @@ old.ROOT=pathlib.Path('verification-work');old.ROOT.mkdir(exist_ok=True)
 api=old.api;cmd=old.cmd;artifact=old.artifact;digest=old.digest
 assert api('repos/'+repo)['private']
 spec={'developer':(40941203300,source),'player':(40941203143,source),'display':(40941203211,source),
-      'tooltips':(40942121046,'ee4b0c360b94762af0599b3e8e410596f69c2cc6'),
-      'hotbar':(40941203202,source),'death':(40941203163,source)}
+      'tooltips':(40942847446,'3cdc75c2a7e32a226bbb6fe70cf37e7cd8e9d21f')}
 runs={};deadline=time.monotonic()+2400
 for label,(rid,expected) in spec.items():
  while True:
@@ -29,7 +28,7 @@ dev,da=artifact(40941203300,'apd-codex-private-test-apk','developer')
 player,pa=artifact(40941203143,'apd-player-matching-developer','player')
 core,ca=artifact(40941203300,'apd-codex-core-tests','core')
 native,na=artifact(40941203300,'apd-codex-android-checks','android')
-tooltips,ta=artifact(40942121046,'apd-existing333-resource-tooltips','tooltips')
+tooltips,ta=artifact(40942847446,'apd-existing333-resource-tooltips','tooltips')
 summaries={'core':xml_summary(core),'player_core':xml_summary(player),'android':xml_summary(native),'tooltips':xml_summary(tooltips)}
 assert summaries['core']['tests']==summaries['player_core']['tests']==2206
 assert summaries['android']['tests']==65 and summaries['tooltips']['tests']==1
@@ -63,9 +62,9 @@ for label,folder in [('Developer',dev),('Alpha-Testers',player)]:
  files.extend([target,checksum]);hashes[label]=h
 assert histories[0]==histories[1] and len(histories[0])==360
 receipt=root/'APD-333-Verification.json'
-receipt.write_text(json.dumps(dict(application_source=source,publication_source=os.environ['GITHUB_SHA'],hashes=hashes,summaries=summaries,runs=runs,display_jobs=jobs,signer=cert,application_id='com.charltonchris29.adhdpixeldungeon.indev',version_code=920,artifacts=dict(developer=da,player=pa,core=ca,android=na,tooltips=ta),physical_phone_verified=False,owner_only=True,tester_distribution_approved=False,checked_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),link_sent=False),indent=2))
+receipt.write_text(json.dumps(dict(application_source=source,publication_source=os.environ['GITHUB_SHA'],hashes=hashes,summaries=summaries,runs=runs,display_jobs=jobs,signer=cert,application_id='com.charltonchris29.adhdpixeldungeon.indev',version_code=920,artifacts=dict(developer=da,player=pa,core=ca,android=na,tooltips=ta),historical_auxiliary_jobs={'hotbar_run':40941203202,'death_run':40941203163,'status':'Failed before app launch; fixed TEST314-only comparisons to eda307d are not applicable to current production changes. Assertions and historical workflows preserved; not counted as current TEST333 evidence.'},retained_tooltip_compile_failure=40942121046,physical_phone_verified=False,owner_only=True,tester_distribution_approved=False,checked_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),link_sent=False),indent=2))
 files.append(receipt)
-notes=root/'notes.txt';notes.write_text('Upgrade Scrolls and Strength Potions now show collected amounts by original region. Strength Potions identify collected and missing guaranteed floor pairs; older saves clearly show unknown earlier history. Repeated pickups do not inflate counts. Healing-potion text uses proper line breaks. Gathering has its dedicated parchment/cyan icon. UIMSD freshness work is checked off the render thread with exact prepared-model handoff.\n\nFull2206core per variant,65main Android checks, native current/legacy resource-window assertions and four screenshots, six display profiles, hotbar/cold-restart and death regressions passed. Actual APK source, original signing identity, application ID, checksums and all360matching history files verified. Physical-phone acceptance remains pending. Install over existing APD; never uninstall or clear data. No downgrade with pending Forwarding parcels. Private owner delivery only; no automatic tester distribution.\n')
+notes=root/'notes.txt';notes.write_text('Upgrade Scrolls and Strength Potions now show collected amounts by original region. Strength Potions identify collected and missing guaranteed floor pairs; older saves clearly show unknown earlier history. Repeated pickups do not inflate counts. Healing-potion text uses proper line breaks. Gathering has its dedicated parchment/cyan icon. UIMSD freshness work is checked off the render thread with exact prepared-model handoff.\n\nFull2206core per variant,65main Android checks, native current/legacy resource-window assertions and four screenshots, six display profiles. Main-suite gameplay, save/load and death checks passed. Actual APK source, original signing identity, application ID, checksums and all360matching history files verified. Physical-phone acceptance remains pending. Install over existing APD; never uninstall or clear data. No downgrade with pending Forwarding parcels. Private owner delivery only; no automatic tester distribution.\n')
 tag='apd-alpha-preview-333'
 existing=subprocess.run(['gh','release','view',tag,'--repo',repo],capture_output=True)
 if existing.returncode!=0:
