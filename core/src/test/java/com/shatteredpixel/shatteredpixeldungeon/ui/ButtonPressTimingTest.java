@@ -14,12 +14,15 @@ public class ButtonPressTimingTest {
   @Override protected boolean onLongClick(){longs++;return handlesLong;}
   @Override public GameAction keyAction(){return GameAction.BACK;}
  }
- com.watabou.utils.PlatformSupport savedPlatform;float savedElapsed,savedLong;
- @Before public void start(){HeadlessTestSupport.start();savedElapsed=Game.elapsed;savedLong=Button.longClick;Button.longClick=.5f;savedPlatform=Game.platform;Game.platform=new com.watabou.utils.PlatformSupport(){
- public void updateDisplaySize(){} public void updateSystemUI(){} public boolean connectedToUnmeteredNetwork(){return false;} public boolean supportsVibration(){return false;} public void setupFontGenerators(int p,boolean s){} protected com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator getGeneratorForString(String s){return null;} public String[] splitforTextBlock(String s,boolean m){return new String[]{s};} public void setOnscreenKeyboardVisible(boolean v,boolean m){}
- };InputHandler.discardPendingEvents();KeyBindings.addHardBinding(Input.Keys.BACK,GameAction.BACK);}
- @After public void clean(){Button.cancelPressedButton();InputHandler.discardPendingEvents();Game.elapsed=savedElapsed;Button.longClick=savedLong;Game.platform=savedPlatform;}
- private void pointer(boolean down){PointerEvent.addPointerEvent(new PointerEvent(16,16,871,down?PointerEvent.Type.DOWN:PointerEvent.Type.UP));PointerEvent.processPointerEvents();}
+ float savedElapsed,savedLong;boolean savedVibration;
+ @Before public void start(){HeadlessTestSupport.start();savedElapsed=Game.elapsed;savedLong=Button.longClick;Button.longClick=.5f;savedVibration=com.shatteredpixel.shatteredpixeldungeon.SPDSettings.vibration();com.shatteredpixel.shatteredpixeldungeon.SPDSettings.vibration(false);InputHandler.discardPendingEvents();KeyBindings.addHardBinding(Input.Keys.BACK,GameAction.BACK);}
+ @After public void clean(){Button.cancelPressedButton();InputHandler.discardPendingEvents();Game.elapsed=savedElapsed;Button.longClick=savedLong;com.shatteredpixel.shatteredpixeldungeon.SPDSettings.vibration(savedVibration);}
+ private void pointer(boolean down){
+  com.watabou.utils.Signal.Listener<PointerEvent> observer=e->{PointerEvent.clearKeyboardThisPress=false;return false;};
+  PointerEvent.addPointerListener(observer);
+  try{PointerEvent.addPointerEvent(new PointerEvent(16,16,871,down?PointerEvent.Type.DOWN:PointerEvent.Type.UP));PointerEvent.processPointerEvents();}
+  finally{PointerEvent.removePointerListener(observer);}
+ }
  private void frame(Probe p,float elapsed){Game.elapsed=elapsed;p.update();}
  @Test public void aFrameBeforePointerDownMustNotTurnAShortPressIntoALongPress(){
   Probe p=new Probe(true);try{
