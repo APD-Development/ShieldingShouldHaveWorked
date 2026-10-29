@@ -94,4 +94,28 @@ public class InputRestartTest {
             String report=com.watabou.utils.SupportDiagnostics.report("");assertTrue(report.contains("source_nanos="+nativeTime));assertTrue(report.contains("app_queue_ms="));
         }finally{PointerEvent.removePointerListener(listener);InputHandler.discardPendingEvents();com.watabou.noosa.Game.width=oldW;com.watabou.noosa.Game.height=oldH;}
     }
+    @Test public void backendTapsFromBlockedSceneCreationCannotActivateNewScene(){
+        HeadlessTestSupport.start();long[] time={System.nanoTime()-4950000000L};
+        com.badlogic.gdx.Input input=(com.badlogic.gdx.Input)java.lang.reflect.Proxy.newProxyInstance(getClass().getClassLoader(),new Class<?>[]{com.badlogic.gdx.Input.class},(p,m,a)->{
+            if(m.getName().equals("getCurrentEventTime"))return time[0];
+            Class<?> t=m.getReturnType();if(t==boolean.class)return false;if(t==int.class)return 0;if(t==long.class)return 0L;if(t==float.class)return 0f;return null;
+        });
+        InputHandler handler=new InputHandler(input);int[] downs={0},ups={0};
+        int w=com.watabou.noosa.Game.width,h=com.watabou.noosa.Game.height;
+        Signal.Listener<PointerEvent> listener=e->{if(e!=null){if(e.type==PointerEvent.Type.DOWN)downs[0]++;if(e.type==PointerEvent.Type.UP)ups[0]++;}PointerEvent.clearKeyboardThisPress=false;return false;};
+        PointerEvent.addPointerListener(listener);
+        try{
+            com.watabou.noosa.Game.width=100;com.watabou.noosa.Game.height=100;
+            handler.scenePresented(System.nanoTime());
+            handler.touchDown(20,20,998,0);handler.touchUp(20,20,998,0);PointerEvent.processPointerEvents();
+            assertEquals(0,downs[0]);assertEquals(0,ups[0]);
+            time[0]=System.nanoTime();handler.touchUp(20,20,998,0);PointerEvent.processPointerEvents();assertEquals(0,ups[0]);
+            handler.touchDown(20,20,998,0);handler.touchUp(20,20,998,0);PointerEvent.processPointerEvents();assertEquals(1,downs[0]);assertEquals(1,ups[0]);
+            handler.scenePresented(System.nanoTime());
+            // Controller-emulated touches have no backend timestamp; the last old native event must not suppress them.
+            time[0]=System.nanoTime()-4950000000L;handler.emulateTouch(998,0,true);handler.emulateTouch(998,0,false);
+            PointerEvent.processPointerEvents();assertEquals(2,downs[0]);assertEquals(2,ups[0]);
+        }finally{PointerEvent.removePointerListener(listener);InputHandler.discardPendingEvents();com.watabou.noosa.Game.width=w;com.watabou.noosa.Game.height=h;}
+    }
+
 }

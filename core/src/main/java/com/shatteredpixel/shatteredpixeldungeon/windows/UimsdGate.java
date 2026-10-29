@@ -75,6 +75,11 @@ public final class UimsdGate {
 
 	private UimsdGate(){}
 
+    private static final com.shatteredpixel.shatteredpixeldungeon.apd.demo.TitleUnlockProbe TITLE_UNLOCK =
+        new com.shatteredpixel.shatteredpixeldungeon.apd.demo.TitleUnlockProbe(task->{
+            Thread worker=new Thread(task,"apd-title-unlock");worker.setDaemon(true);worker.start();
+        },root->com.shatteredpixel.shatteredpixeldungeon.apd.demo.UnlockProgression.genuineRuns(root,10));
+
 	// Do not scan a locked player's history just to warm an unavailable screen.
 	// Once permanently unlocked, the title may prepare the real database early.
 	public static boolean canPrewarm(){ return !enforced() || FLAGS.unlocked(); }
@@ -82,7 +87,15 @@ public final class UimsdGate {
 	// The text under the title screen's arrow: after the tenth genuine run the drugs/dopamine message (by humor setting) until UIMSD has been
 	// opened once; before ten runs the owner's locked message; otherwise the usual text.
 	public static String titleAnnotation( String usual ){
-		return annotationFor(FLAGS, ApdRecorder.historyRoot(), enforced(), SPDSettings.apdAdultHumor(), usual);
+		if(!enforced())return usual;
+        File root=ApdRecorder.historyRoot();
+        if(!FLAGS.tourUnlocked()){
+            // Rendering uses permanent flags/a completed probe only. The worker
+            // retains the original validated count; no guessed or synthetic runs.
+            if(TITLE_UNLOCK.earned(root)){FLAGS.setTourUnlocked();FLAGS.setUnlocked();}
+            else TITLE_UNLOCK.request(root);
+        }
+        return FLAGS.tourUnlocked() ? (SPDSettings.apdAdultHumor()?TENTH_RUN_ARROW_ADULT:TENTH_RUN_ARROW_CLEAN) : LOCKED_ARROW_TEXT;
 	}
 
 	static String annotationFor( UimsdUnlock.Flags flags, File root, boolean enforced, boolean adultHumor, String usual ){
@@ -99,6 +112,7 @@ public final class UimsdGate {
 	// Called from the end of a finished run, after everything the run needs is done. It only records the tenth-run state, on its own thread:
 	// it never changes scene, never touches the save, and the title screen shows the prompt the next time it is built.
 	public static void onRunEnded(){
+        TITLE_UNLOCK.invalidate();
 		final File root = ApdRecorder.historyRoot();
 		final boolean on = enforced();
 		if (!on || root == null) return;
@@ -167,4 +181,5 @@ public final class UimsdGate {
 		t.start();
 	}
 }
+
 

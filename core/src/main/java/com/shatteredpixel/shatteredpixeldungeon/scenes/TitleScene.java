@@ -124,6 +124,7 @@ public class TitleScene extends PixelScene {
 		add( new ColorBlock( fullW, fullH, BG_COLOR ) );
 
 		Image plate = new Image( landscape() ? "splashes/title/apd_bg_land.png" : "splashes/title/apd_bg_port.png" );
+		plate.scale.set(TitleGeometry.backgroundCoverScale(fullW,fullH,plate.width(),plate.height(),Camera.main.zoom));
 		plate.x = (fullW - plate.width()) / 2f;
 		plate.y = (fullH - plate.height()) / 2f;
 		align( plate );
@@ -717,3 +718,4 @@ public class TitleScene extends PixelScene {
 		}
 	}
 }
+

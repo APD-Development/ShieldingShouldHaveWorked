@@ -398,6 +398,7 @@ public class WndSettings extends WndTabbed {
 					@Override
 					protected void onChange() {
 						if (getSelectedValue() != SPDSettings.scale()) {
+                            com.watabou.utils.SupportDiagnostics.event("ui.scale", "from="+PixelScene.defaultZoom+" to="+getSelectedValue());
 							SPDSettings.scale(getSelectedValue());
 							ShatteredPixelDungeon.seamlessResetScene();
 						}
@@ -1260,3 +1261,4 @@ public class WndSettings extends WndTabbed {
 		}
 	}
 }
+

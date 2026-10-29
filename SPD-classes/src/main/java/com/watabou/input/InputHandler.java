@@ -32,6 +32,24 @@ public class InputHandler extends InputAdapter {
 
 	private InputMultiplexer multiplexer;
     private final Input sourceInput;
+    private long visibleSceneNanos;
+    private boolean emulating;
+    private final java.util.HashSet<Long> pressedTouches=new java.util.HashSet<>();
+
+    /** Called after the new scene's first complete draw, not after every frame. */
+    public synchronized void scenePresented(long completedDrawNanos){
+        visibleSceneNanos=Math.max(visibleSceneNanos,completedDrawNanos);
+        pressedTouches.clear();
+        PointerEvent.discardPendingEvents();
+    }
+    private long touchKey(int pointer,int button){return ((long)pointer<<32)|(button&0xffffffffL);}
+    private boolean obsolete(long source){
+        if(source>0&&source<visibleSceneNanos){
+            com.watabou.utils.SupportDiagnostics.event("input.obsolete","source_age_ms="+((System.nanoTime()-source)/1000000L));
+            return true;
+        }
+        return false;
+    }
 
 	public InputHandler( Input input ){
         sourceInput=input;
@@ -51,6 +69,7 @@ public class InputHandler extends InputAdapter {
 	}
 
     private long sourceTime(){
+        if(emulating)return 0;
         long time=sourceInput.getCurrentEventTime();
         return time>0 && time<=System.nanoTime() ? time : 0;
     }
@@ -66,18 +85,22 @@ public class InputHandler extends InputAdapter {
 		multiplexer.removeProcessor(processor);
 	}
 
-	public void emulateTouch(int id, int button, boolean down){
+	public synchronized void emulateTouch(int id, int button, boolean down){
 		PointF hoverPos = PointerEvent.currentHoverPos();
+		emulating=true;
+		try{
 		if (down){
 			multiplexer.touchDown((int)hoverPos.x, (int)hoverPos.y, id, button);
 		} else {
 			multiplexer.touchUp((int)hoverPos.x, (int)hoverPos.y, id, button);
 		}
+		}finally{emulating=false;}
 	}
 
-	public void emulateDrag(int id){
+	public synchronized void emulateDrag(int id){
 		PointF hoverPos = PointerEvent.currentHoverPos();
-		multiplexer.touchDragged((int)hoverPos.x, (int)hoverPos.y, id);
+		emulating=true;
+		try{multiplexer.touchDragged((int)hoverPos.x, (int)hoverPos.y, id);}finally{emulating=false;}
 	}
 	
 	public void processAllEvents(){
@@ -95,6 +118,7 @@ public class InputHandler extends InputAdapter {
 	
 	@Override
 	public synchronized boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		if(obsolete(sourceTime()))return true;
 		if (screenX < 0 || screenX > Game.width || screenY < 0 || screenY > Game.height){
 			return true;
 		}
@@ -103,6 +127,7 @@ public class InputHandler extends InputAdapter {
 			ControllerHandler.setControllerPointer(false);
 			ControllerHandler.controllerActive = false;
 		}
+		if(button<3)pressedTouches.add(touchKey(pointer,button));
 
 		if (button >= 3 && KeyBindings.isKeyBound( button + 1000 )) {
 			KeyEvent.addKeyEvent( stamp(new KeyEvent( button + 1000, true ) ));
@@ -114,6 +139,8 @@ public class InputHandler extends InputAdapter {
 	
 	@Override
 	public synchronized boolean touchUp(int screenX, int screenY, int pointer, int button) {
+		if(obsolete(sourceTime()))return true;
+		if(button<3&&!pressedTouches.remove(touchKey(pointer,button)))return true;
 
 		if (button >= 3 && KeyBindings.isKeyBound( button + 1000 )) {
 			KeyEvent.addKeyEvent( stamp(new KeyEvent( button + 1000, false ) ));
@@ -124,7 +151,9 @@ public class InputHandler extends InputAdapter {
 	}
 
 	@Override
-	public boolean touchCancelled(int screenX, int screenY, int pointer, int button) {
+	public synchronized boolean touchCancelled(int screenX, int screenY, int pointer, int button) {
+		if(obsolete(sourceTime()))return true;
+		if(button<3&&!pressedTouches.remove(touchKey(pointer,button)))return true;
 
 		if (button >= 3 && KeyBindings.isKeyBound( button + 1000 )) {
 			KeyEvent.addKeyEvent( stamp(new KeyEvent( button + 1000, false ) ));
@@ -136,12 +165,14 @@ public class InputHandler extends InputAdapter {
 
 	@Override
 	public synchronized boolean touchDragged(int screenX, int screenY, int pointer) {
+		if(obsolete(sourceTime()))return true;
 		PointerEvent.addIfExisting(stamp(new PointerEvent(screenX, screenY, pointer, PointerEvent.Type.DOWN)));
 		return true;
 	}
 	
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
+		if(obsolete(sourceTime()))return true;
 		if (ControllerHandler.controllerPointerActive()) {
 			ControllerHandler.setControllerPointer(false);
 			PointF hover = ControllerHandler.getControllerPointerPos();
@@ -197,3 +228,4 @@ public class InputHandler extends InputAdapter {
 		return true;
 	}
 }
+

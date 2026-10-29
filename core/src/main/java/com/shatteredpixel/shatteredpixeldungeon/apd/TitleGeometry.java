@@ -28,6 +28,13 @@ public final class TitleGeometry {
 
 	private TitleGeometry(){}
 
+    /** Keep background pixels uniform and cover the viewport independently of UI scale. */
+    public static float backgroundCoverScale(float width,float height,float imageWidth,float imageHeight,float zoom){
+        if(!(width>0&&height>0&&imageWidth>0&&imageHeight>0&&zoom>0)
+                ||!Float.isFinite(width)||!Float.isFinite(height)||!Float.isFinite(imageWidth)||!Float.isFinite(imageHeight)||!Float.isFinite(zoom))throw new IllegalArgumentException("Invalid background dimensions");
+        return (float)Math.ceil(Math.max(width*zoom/imageWidth,height*zoom/imageHeight))/zoom;
+    }
+
 	public static final int LOGO_W = 139;
 	public static final int LOGO_H = 100;
 	public static final int MAIN_GAP = 3;
@@ -165,3 +172,4 @@ public final class TitleGeometry {
         r.fadeX=left+(w-FADE_SIZE)/2; r.fadeY=top+h-FADE_SIZE;
     }
 }
+

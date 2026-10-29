@@ -152,10 +152,13 @@ public abstract class OptionSlider extends Component {
 			@Override
 			protected void onPointerUp( PointerEvent event ) {
 				if (pressed && event==curEvent) {
+                    if(event.type==PointerEvent.Type.CANCEL){
+                        boolean restore=liveChanges&&selectedVal!=pressedValue;
+                        setSelectedValue(pressedValue);sliderNode.resetColor();pressed=false;
+                        if(restore)onChange();
+                        return;
+                    }
                     if(verticalPane!=null){
-                        if(event.type==PointerEvent.Type.CANCEL){
-                            if(liveChanges&&selectedVal!=pressedValue){setSelectedValue(pressedValue);onChange();}else setSelectedValue(selectedVal);sliderNode.resetColor();pressed=false;return;
-                        }
                         SliderGesture.Direction direction=gesture.finish(event.current.x,event.current.y);
                         if(direction==SliderGesture.Direction.VERTICAL){
                             vertical(event);setSelectedValue(selectedVal);sliderNode.resetColor();pressed=false;return;
@@ -242,3 +245,4 @@ public abstract class OptionSlider extends Component {
 
 	}
 }
+

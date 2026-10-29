@@ -194,6 +194,7 @@ public class Game implements ApplicationListener {
 	private boolean justResumed = true;
     private long resumeStartedNanos = System.nanoTime();
     private boolean awaitingFirstDraw = true;
+    private boolean awaitingScenePresentation = true;
 
 	@Override
 	public void render() {
@@ -231,6 +232,10 @@ public class Game implements ApplicationListener {
 		Gdx.gl.glDisable(Gdx.gl.GL_SCISSOR_TEST);
 		Gdx.gl.glClear(Gdx.gl.GL_COLOR_BUFFER_BIT);
 		draw();
+        if(awaitingScenePresentation){
+            awaitingScenePresentation=false;
+            if(inputHandler!=null)inputHandler.scenePresented(System.nanoTime());
+        }
         if (awaitingFirstDraw) {
             awaitingFirstDraw = false;
             com.watabou.utils.SupportDiagnostics.event("render.first_draw", "after_resume_ms="+((System.nanoTime()-resumeStartedNanos)/1000000L));
@@ -338,6 +343,7 @@ public class Game implements ApplicationListener {
 	}
 	
 	protected void switchScene() {
+        awaitingScenePresentation=true;
         long sceneStart=System.nanoTime();
         com.watabou.utils.SupportDiagnostics.event("scene.begin", requestedScene.getClass().getSimpleName());
 
@@ -435,5 +441,6 @@ public class Game implements ApplicationListener {
 	}
 	
 }
+
 
 
