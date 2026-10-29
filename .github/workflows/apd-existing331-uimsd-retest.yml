@@ -41,7 +41,7 @@ jobs:
               assert z.read(checksum).decode().split()[0]==digest
               pathlib.Path('application/exact331.apk').write_bytes(data)
           print('EXACT_TEST331_APK_SHA256',digest)
-          pathlib.Path('acceptance-source.json').write_text(json.dumps({'application_source':source,'application_run':run_id,'application_sha256':digest,'protected_application_inputs_identical':True,'application_rebuilt':False,'test_source':os.environ['GITHUB_SHA'],'prior_failed_job':123646794271,'prior_failure':'Original full Android run passed64of65; opening1 measured322ms against unchanged250ms budget. This retries only that method on exact same APK; no production or timing-budget change'},indent=2))
+          pathlib.Path('acceptance-source.json').write_text(json.dumps({'application_source':source,'application_run':run_id,'application_sha256':digest,'protected_application_inputs_identical':True,'application_rebuilt':False,'test_source':os.environ['GITHUB_SHA'],'prior_failed_job':123646794271,'prior_failure':'Original full Android run passed64of65; opening1 measured322ms against250ms. First isolated retry mistakenly used1080x2400 Pixel7/software instead of original320x640/160dpi/default SwiftShader and measured1006ms. Restore the original benchmark display and renderer; same method, source, APK and250ms limit'},indent=2))
           PY
       - name: Compile instrumentation only
         run: |
@@ -62,11 +62,9 @@ jobs:
           api-level: 34
           arch: x86_64
           target: default
-          profile: pixel_7
           emulator-boot-timeout: 300
-          emulator-options: -no-window -gpu software -no-snapshot -noaudio -no-boot-anim
           disable-animations: true
-          script: bash tools/run-gathering331-uimsd-retest.sh
+          script: adb shell wm size 320x640 && adb shell wm density 160 && adb shell wm size && adb shell wm density && bash tools/run-gathering331-uimsd-retest.sh
       - uses: actions/upload-artifact@v4
         if: always()
         with:
