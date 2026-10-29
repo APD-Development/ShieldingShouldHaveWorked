@@ -74,3 +74,5 @@ jobs:
             back-routing-diagnostic/
           retention-days: 7
 # Fixture callback accepts checked reflection failures; APK and assertions unchanged.
+
+# Observe action identity, scene transitions and retained diagnostics after confirmed raw dispatch.

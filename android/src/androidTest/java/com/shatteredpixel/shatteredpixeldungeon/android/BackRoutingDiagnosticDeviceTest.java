@@ -22,6 +22,7 @@ public class BackRoutingDiagnosticDeviceTest {
                 String action=String.valueOf(KeyBindings.getActionForKey(new com.watabou.input.KeyEvent(Input.Keys.BACK,true)));
                 Log.w("APDBACKDIAG",edge+" scene="+scene+" active="+(Game.scene()!=null&&Game.scene().isActive())
                     +" registered="+BackGate.systemBackOwned()+" action="+action
+                    +" isBack="+(KeyBindings.getActionForKey(new com.watabou.input.KeyEvent(Input.Keys.BACK,true))==com.watabou.input.GameAction.BACK)
                     +" caught="+Gdx.input.isCatchKey(Input.Keys.BACK)+" event_ns="+Gdx.input.getCurrentEventTime());
             }
             @Override public boolean keyDown(int code){if(code==Input.Keys.BACK)record("raw-down");return false;}
@@ -29,7 +30,12 @@ public class BackRoutingDiagnosticDeviceTest {
         };
         Thread watcher=new Thread(()->{
             InputProcessor last=null;
+            Object lastScene=null;
             while(running.get()){
+                if(Game.instance!=null){
+                    Object scene=Game.scene();
+                    if(scene!=lastScene){lastScene=scene;Log.w("APDBACKDIAG","scene-now="+(scene==null?"none":scene.getClass().getSimpleName()));}
+                }
                 Input source=Gdx.input;
                 InputProcessor processor=source==null?null:source.getInputProcessor();
                 if(processor instanceof InputMultiplexer&&processor!=last){
@@ -51,6 +57,7 @@ public class BackRoutingDiagnosticDeviceTest {
             running.set(false);watcher.interrupt();watcher.join(3000);
             Log.w("APDBACKDIAG","DIAGNOSTIC_ONLY: original assertions preserved; observer never consumes input");
             for(String event:BackTrace.snapshot())Log.w("APDBACKDIAG",event);
+            for(String event:com.watabou.utils.SupportDiagnostics.report("Native Back diagnosis").split("\\n"))Log.w("APDBACKDIAG",event);
             BackTrace.setEnabled(false);
         }
     }
