@@ -1,36 +1,57 @@
 {
   "date": "2026-10-29",
-  "previous_source": "713c4d1e7b3ddf1a9c27a6874e79829b12b66bf6",
-  "previous_application_source": "5e8f4ecddc20e199496ebe78b1f8b90e47397417",
-  "previous_run": 40953513240,
-  "previous_label": "Codex TEST 337",
+  "previous_source": "b173239487dde4f0c070e6d2eda1f116cf349c31",
+  "previous_application_source": "65ad4f75ef7c573a6bf985588dc8b0301594fcdb",
+  "previous_run": 40959928129,
+  "previous_label": "APD Alpha Preview338 (rejected; compiled predecessor)",
   "changes": [
     {
       "category": "Bug Fixes",
       "sprite": "ICON_CHECKED",
-      "title": "Keep Android Back usable until its system callback actually delivers",
-      "text": "Retain the registered Android callback and the last-known-working GDX Back fallback. Callback registration alone no longer disables Back. When the system callback actually accepts a press, exactly its one delayed legacy copy is suppressed, including the observed API36 356ms copy. Activity ownership fencing and original same-route timing remain.",
+      "title": "Complete Android Back button presses",
+      "text": "Preserve the matching release for an accepted Back press, including the same scene's first completed draw. Reject identified old backend copies by timestamps without consuming a later genuine Back press. Preserve callback ownership, old-platform fallback and original debounce.",
       "paths": [
         "SPD-classes/src/main/java/com/watabou/input/BackGate.java",
-        "SPD-classes/src/main/java/com/watabou/input/InputHandler.java",
-        "android/src/main/java/com/shatteredpixel/shatteredpixeldungeon/android/AndroidLauncher.java"
+        "SPD-classes/src/main/java/com/watabou/input/InputHandler.java"
+      ]
+    },
+    {
+      "category": "Quality of Life",
+      "sprite": "ICON_CHECKED",
+      "title": "Reduce unnecessary menu work",
+      "text": "Records uses the existing APD backdrop instead of constructing the inherited animated background. Selecting an unchanged interface mode, brightness or grid value avoids an unnecessary reset or redraw. Actual changed settings retain their original behavior.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/UimsdScene.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndSettings.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Preserve the repeated six-profile failure and verify delivered-callback deduplication",
-      "text": "Retain both rejected TEST337 display matrices and the incomplete API34 result. Expanded guards distinguish callback registration from actual delivery, require one-token delayed-copy suppression and preserve fallback, ownership and reset behavior. The complete 2216-method core rerun is green; all native, display, UIMSD latency, identity, signature, checksum and history gates still remain mandatory.",
+      "title": "Consolidated native input and resource verification",
+      "text": "Retain all rejected338 Back and362ms UIMSD evidence. Add real Button and real Scene regression tests, timestamp provenance coverage and instrumentation-only diagnostics. Require full2225 core, all66 native methods, unchanged250ms two-opening UIMSD threshold, six display profiles, resource visuals, signing and matching complete history. No physical-phone verification claimed.",
       "paths": [
+        ".github/workflows/apd-existing338-back-release-prototype.yml",
+        ".github/workflows/apd-existing338-back-routing-diagnostic.yml",
+        ".github/workflows/apd-existing338-opening-profile.yml",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/BackReleasePrototypeDeviceTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/BackRoutingDiagnosticDeviceTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdOpeningProfileDeviceTest.java",
+        "android/src/androidTest/java/com/watabou/input/ProvenanceBackGate.java",
+        "android/src/androidTest/java/com/watabou/input/ProvenanceInputHandler.java",
         "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/BackGateTest.java",
+        "core/src/test/java/com/watabou/input/BackButtonReleaseTest.java",
         "core/src/test/java/com/watabou/input/InputRestartTest.java",
         "docs/APD-CODEX-CORE-TEST-REQUEST.txt",
         "docs/HANDOFF.md",
-        "docs/WORK-COMPLETED-LEDGER.md",
+        "tools/run-existing338-back-release-prototype.sh",
+        "tools/run-existing338-back-routing-diagnostic.sh",
+        "tools/run-existing338-opening-profile.sh",
+        "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/APD-NEXT-BUILD-HISTORY.json"
+        "tools/apd_publish_owner339.py"
       ]
     }
   ],
-  "commentary": "Compare the immediate compiled rejected TEST337, not older published TEST330. Preserve all363 prior matching history TSVs and append only this record. TEST337 failed the returned-title assertion on its original six profiles, its API34 run, and a second six-profile exact-APK fixture rerun; the latter changed no application source and disproved the injection-only hypothesis. TEST335's 341ms UIMSD latency failure remains disclosed. No physical-phone acceptance, public release or tester auto-distribution is claimed."
+  "commentary": "One consolidated application candidate after owner's no-serial-build instruction. Preserve all364 compiled predecessor history TSVs; append one reviewed record (365 total). TEST338 is rejected/unpublished, not a verified fallback:60/66 native with6failures including UIMSD362ms and Back navigation. TEST330 remains actual published fallback and lacks pending Gathering/resource changes. Headless and candidate-injected prototype evidence must not be called shipped-APK acceptance."
 }

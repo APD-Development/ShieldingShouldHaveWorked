@@ -59,18 +59,20 @@ public class BackButtonReleaseTest {
  }
  @Test public void presentationCancelsAReleaseWhoseDownWasAlreadyDispatched(){
   HeadlessTestSupport.start();KeyBindings.addHardBinding(Input.Keys.BACK,GameAction.BACK);
-  Object owner=new Object();BackGate.setSystemBackOwner(owner);BackGate.reset();
+  com.watabou.noosa.Game previous=com.watabou.noosa.Game.instance;
+  SceneGame game=new SceneGame();Object owner=new Object();BackGate.setSystemBackOwner(owner);BackGate.reset();
   InputHandler handler=handler(System.nanoTime());int[] clicks={0},events={0};Button button=button(clicks);
   com.watabou.utils.Signal.Listener<KeyEvent> observer=event->{events[0]++;return false;};
   try{
    handler.keyDown(Input.Keys.BACK);KeyEvent.processKeyEvents();
-   Button.cancelPressedButton();handler.scenePresented(System.nanoTime());
+   Button.cancelPressedButton();game.nextScene();handler.scenePresented(System.nanoTime());
    KeyEvent.addKeyListener(observer);handler.keyUp(Input.Keys.BACK);KeyEvent.processKeyEvents();
    assertEquals("A release cannot leak into the newly presented scene",0,events[0]);
    assertEquals(0,clicks[0]);
-  }finally{KeyEvent.removeKeyListener(observer);button.destroy();BackGate.clearSystemBackOwner(owner);BackGate.reset();InputHandler.discardPendingEvents();}
+  }finally{KeyEvent.removeKeyListener(observer);button.destroy();BackGate.clearSystemBackOwner(owner);BackGate.reset();InputHandler.discardPendingEvents();com.watabou.noosa.Game.instance=previous;}
  }
  private static class SceneGame extends com.watabou.noosa.Game {
+  void nextScene(){scene=new com.watabou.noosa.Scene();}
   SceneGame(){super(com.watabou.noosa.Scene.class,com.watabou.noosa.Game.platform);scene=new com.watabou.noosa.Scene();requestedReset=false;}
  }
  @Test public void firstDrawOfTheSameSceneKeepsAnAlreadyDispatchedBackRelease(){
