@@ -124,7 +124,13 @@ public class TitleMenuLayoutDeviceTest {
                 assertTrue("Footer hit area reaches outside the visible icon",target.x+4<icon.left());
                 assertTrue("Footer hit area extends upward",target.y<icon.top());
                 outerEdge[0]=target.camera().cameraToScreen(icon.left()-2,target.y+target.height/2);
-                assertFalse("Diagnostic point must remain outside the visible icon",icon.overlapsScreenPoint(outerEdge[0].x,outerEdge[0].y));
+                Point iconTopLeft=icon.camera().cameraToScreen(icon.left(),icon.top());
+                Point iconBottomRight=icon.camera().cameraToScreen(icon.right(),icon.bottom());
+                assertTrue("Diagnostic point must remain outside the visible icon",
+                        outerEdge[0].x<Math.min(iconTopLeft.x,iconBottomRight.x)
+                                || outerEdge[0].x>Math.max(iconTopLeft.x,iconBottomRight.x)
+                                || outerEdge[0].y<Math.min(iconTopLeft.y,iconBottomRight.y)
+                                || outerEdge[0].y>Math.max(iconTopLeft.y,iconBottomRight.y));
                 assertTrue("Diagnostic point must be inside the expanded target",target.overlapsScreenPoint(outerEdge[0].x,outerEdge[0].y));
                 outerGeometry[0]="raw="+outerEdge[0]+" icon="+icon.left()+","+icon.top()+","+icon.right()+","+icon.bottom()
                         +" target="+target.x+","+target.y+","+(target.x+target.width)+","+(target.y+target.height)

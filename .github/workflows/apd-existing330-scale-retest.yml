@@ -41,7 +41,7 @@ jobs:
               assert z.read(checksum).decode().split()[0]==digest=='3e38b1164169e404c6606d2baa6d23f61fdb4e1625bb1be53c1424ba41c20842'
               pathlib.Path('application/exact330.apk').write_bytes(data)
           print('EXACT_TEST330_APK_SHA256',digest)
-          pathlib.Path('acceptance-source.json').write_text(json.dumps({'application_source':source,'application_run':run_id,'application_sha256':digest,'protected_application_inputs_identical':True,'application_rebuilt':False,'test_source':os.environ['GITHUB_SHA'],'prior_failed_job':123218241272,'prior_failure':'API36 booted and passed scale plus stale-input methods; expanded side hit produced no Hide UI transition before the unchanged assertion timed out'},indent=2))
+          pathlib.Path('acceptance-source.json').write_text(json.dumps({'application_source':source,'application_run':run_id,'application_sha256':digest,'protected_application_inputs_identical':True,'application_rebuilt':False,'test_source':os.environ['GITHUB_SHA'],'prior_failed_job':123496862351,'prior_failure':'Instrumentation-only diagnostic compile failed before emulator: Component lacks overlapsScreenPoint; replace only that visible-icon proof with camera-projected bounds'},indent=2))
           PY
       - name: Compile instrumentation only
         run: |
@@ -69,7 +69,7 @@ jobs:
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
-      - name: Diagnose the exact expanded footer hit while retaining all API36 assertions
+      - name: Diagnose the exact expanded footer hit with compiled screen bounds and all API36 assertions
         env: {APD_ENFORCE_DISPLAY: 'true'}
         uses: reactivecircus/android-emulator-runner@v2
         with:
