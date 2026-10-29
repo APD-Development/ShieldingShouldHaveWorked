@@ -70,4 +70,19 @@ public class BackButtonReleaseTest {
    assertEquals(0,clicks[0]);
   }finally{KeyEvent.removeKeyListener(observer);button.destroy();BackGate.clearSystemBackOwner(owner);BackGate.reset();InputHandler.discardPendingEvents();}
  }
+ private static class SceneGame extends com.watabou.noosa.Game {
+  SceneGame(){super(com.watabou.noosa.Scene.class,com.watabou.noosa.Game.platform);scene=new com.watabou.noosa.Scene();requestedReset=false;}
+ }
+ @Test public void firstDrawOfTheSameSceneKeepsAnAlreadyDispatchedBackRelease(){
+  HeadlessTestSupport.start();KeyBindings.addHardBinding(Input.Keys.BACK,GameAction.BACK);
+  com.watabou.noosa.Game previous=com.watabou.noosa.Game.instance;
+  new SceneGame();Object owner=new Object();BackGate.setSystemBackOwner(owner);BackGate.reset();
+  InputHandler handler=handler(System.nanoTime());int[] clicks={0};Button button=button(clicks);
+  try{
+   handler.keyDown(Input.Keys.BACK);KeyEvent.processKeyEvents();
+   handler.scenePresented(System.nanoTime());handler.keyUp(Input.Keys.BACK);KeyEvent.processKeyEvents();
+   assertEquals("First draw of the same scene must not strand its armed Back button",1,clicks[0]);
+  }finally{button.destroy();BackGate.clearSystemBackOwner(owner);BackGate.reset();InputHandler.discardPendingEvents();com.watabou.noosa.Game.instance=previous;}
+ }
+
 }

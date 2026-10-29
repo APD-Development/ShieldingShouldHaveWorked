@@ -32,6 +32,7 @@ public class InputHandler extends InputAdapter {
 
 	private InputMultiplexer multiplexer;
 	private boolean acceptedBackDown;
+    private com.watabou.noosa.Scene acceptedBackScene;
     private final Input sourceInput;
     private long visibleSceneNanos;
     private boolean emulating;
@@ -40,7 +41,8 @@ public class InputHandler extends InputAdapter {
     /** Called after the new scene's first complete draw, not after every frame. */
     public synchronized void scenePresented(long completedDrawNanos){
         visibleSceneNanos=Math.max(visibleSceneNanos,completedDrawNanos);
-        if(!KeyEvent.hasPendingBackPress())acceptedBackDown=false;
+        boolean sameScene=Game.instance!=null && acceptedBackScene==Game.scene();
+        if(!sameScene && !KeyEvent.hasPendingBackPress()){acceptedBackDown=false;acceptedBackScene=null;}
         pressedTouches.clear();
         PointerEvent.discardPendingEvents();
     }
@@ -202,6 +204,7 @@ public class InputHandler extends InputAdapter {
 				return true;
 			}
 			acceptedBackDown = true;
+            acceptedBackScene = Game.instance==null?null:Game.scene();
 			BackTrace.accepted(backTrace);
 		}
 		if (KeyBindings.isKeyBound( keyCode )) {
@@ -221,6 +224,7 @@ public class InputHandler extends InputAdapter {
 			// UP for an accepted DOWN; discard only an orphan/duplicate release.
 			if (!acceptedBackDown) return true;
 			acceptedBackDown = false;
+            acceptedBackScene = null;
 		}
 		if (KeyBindings.isKeyBound( keyCode )) {
 			KeyEvent.addKeyEvent( stamp(new KeyEvent( keyCode, false ) ));

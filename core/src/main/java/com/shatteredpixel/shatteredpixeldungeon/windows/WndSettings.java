@@ -265,7 +265,7 @@ public class WndSettings extends WndTabbed {
 					Messages.get(this, "dark"), Messages.get(this, "bright"), -1, 1) {
 				@Override
 				protected void onChange() {
-					SPDSettings.brightness(getSelectedValue());
+					if(getSelectedValue()!=SPDSettings.brightness()) SPDSettings.brightness(getSelectedValue());
 				}
 			};
 			optBrightness.setSelectedValue(SPDSettings.brightness());
@@ -275,7 +275,7 @@ public class WndSettings extends WndTabbed {
 					Messages.get(this, "off"), Messages.get(this, "high"), -1, 2) {
 				@Override
 				protected void onChange() {
-					SPDSettings.visualGrid(getSelectedValue());
+					if(getSelectedValue()!=SPDSettings.visualGrid()) SPDSettings.visualGrid(getSelectedValue());
 				}
 			};
 			optVisGrid.setSelectedValue(SPDSettings.visualGrid());
@@ -381,8 +381,10 @@ public class WndSettings extends WndTabbed {
 				) {
 					@Override
 					protected void onChange() {
-						SPDSettings.interfaceSize(getSelectedValue());
-						ShatteredPixelDungeon.seamlessResetScene();
+						if(getSelectedValue()!=SPDSettings.interfaceSize()){
+							SPDSettings.interfaceSize(getSelectedValue());
+							ShatteredPixelDungeon.seamlessResetScene();
+						}
 					}
 				};
 				optUIMode.setSelectedValue(SPDSettings.interfaceSize());
@@ -1261,4 +1263,3 @@ public class WndSettings extends WndTabbed {
 		}
 	}
 }
-

@@ -15,7 +15,7 @@ jobs:
       - uses: actions/setup-java@v4
         with: {distribution: temurin, java-version: '21'}
       - uses: gradle/actions/setup-gradle@v4
-      - name: Download exact produced APK and prove unchanged application inputs
+      - name: Download exact APK and restore frozen production inputs for instrumentation
         env: {GH_TOKEN: "${{ github.token }}"}
         run: |
           python3 - <<'PY'
@@ -27,7 +27,18 @@ jobs:
           assert api('repos/'+repo)['private']
           trees=[api(f'repos/{repo}/git/trees/{s}?recursive=1') for s in (source,os.environ['GITHUB_SHA'])]
           assert all(not t.get('truncated') for t in trees)
-          assert application_inputs(trees[0]['tree'])==application_inputs(trees[1]['tree'])
+          expected=application_inputs(trees[0]['tree']);current=application_inputs(trees[1]['tree'])
+          changed=sorted(p for p in expected.keys()|current.keys() if expected.get(p)!=current.get(p))
+          if changed:
+              subprocess.run(['git','fetch','--no-tags','--depth=1','origin',source],check=True)
+              restore=[p for p in changed if p in expected]
+              if restore:subprocess.run(['git','checkout',source,'--',*restore],check=True)
+              for p in changed:
+                  if p not in expected:pathlib.Path(p).unlink()
+          for p,sha in expected.items():
+              assert pathlib.Path(p).is_file(),p
+              assert subprocess.check_output(['git','hash-object','--',p],text=True).strip()==sha,p
+          assert not any(pathlib.Path(p).exists() for p in current.keys()-expected.keys())
           run=api(f'repos/{repo}/actions/runs/{run_id}');assert run['head_sha']==source
           assert any(j['name']=='verify-and-build' and j['conclusion']=='success' for j in api(f'repos/{repo}/actions/runs/{run_id}/jobs')['jobs'])
           a,=[a for a in api(f'repos/{repo}/actions/runs/{run_id}/artifacts')['artifacts'] if a['name']=='apd-codex-private-test-apk' and not a['expired']]
@@ -41,7 +52,7 @@ jobs:
               assert z.read(checksum).decode().split()[0]==digest
               pathlib.Path('application/exact338.apk').write_bytes(data)
           print('EXACT_TEST338_APK_SHA256',digest)
-          pathlib.Path('acceptance-source.json').write_text(json.dumps({'application_source':source,'application_run':run_id,'application_sha256':digest,'protected_application_inputs_identical':True,'application_rebuilt':False,'test_source':os.environ['GITHUB_SHA'],'purpose':'Diagnostic GL stack sampling around unchanged native 72-run opening regression; not timing acceptance; no app rebuild'},indent=2))
+          pathlib.Path('acceptance-source.json').write_text(json.dumps({'application_source':source,'application_run':run_id,'application_sha256':digest,'compilation_application_source':source,'production_inputs_restored_in_disposable_runner':changed,'protected_compilation_inputs_verified':True,'candidate_handler_injected':True,'application_rebuilt':False,'test_source':os.environ['GITHUB_SHA'],'purpose':'Candidate Back handler injected by instrumentation into frozen338; prototype evidence only; no app rebuild'},indent=2))
           PY
       - name: Compile instrumentation only
         run: |
@@ -74,3 +85,5 @@ jobs:
             back-release-prototype/
           retention-days: 7
 # Fixture callback accepts checked reflection failures; APK and assertions unchanged.
+
+# Same-scene first draw preserves accepted Back release; detailed edge logs retained.
