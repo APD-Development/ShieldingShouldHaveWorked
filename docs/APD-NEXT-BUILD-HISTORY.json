@@ -1,41 +1,40 @@
 {
   "date": "2026-10-29",
-  "previous_source": "35e1c85fcea93381a4f107cafd4f89f5264af391",
-  "previous_application_source": "35e1c85fcea93381a4f107cafd4f89f5264af391",
-  "previous_run": 40800528756,
-  "previous_label": "Codex TEST 330",
+  "previous_source": "168e49778c18dd6a2c82bea48aa41028d513f60a",
+  "previous_application_source": "168e49778c18dd6a2c82bea48aa41028d513f60a",
+  "previous_run": 40929924852,
+  "previous_label": "Codex TEST 331",
   "changes": [
     {
-      "category": "Quality of Life",
-      "sprite": "ITEM_SCROLL_GATHERING",
-      "title": "A distinct Scroll of Gathering",
-      "text": "The Scroll of Gathering now has its own parchment-and-cyan gathering symbol instead of borrowing another scroll's appearance. Existing scrolls receive the corrected icon when loaded. Its effects and crafting are unchanged.",
+      "category": "Bug Fixes",
+      "sprite": "ICON_CHECKED",
+      "title": "Keep UIMSD freshness work off the render thread",
+      "text": "Opening UIMSD now keeps the recorder flush and complete warm-cache freshness validation on its loader. Only the short prepared-cache claim receives temporary scheduling priority; any cold history rebuild returns to normal priority. The raw-history checks, saved layouts, prepared Home, exact 250ms acceptance limit and visible statistics are unchanged.",
       "paths": [
-        "core/src/main/assets/sprites/items.png",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/sprites/ItemSpriteSheet.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/ScrollOfGathering.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdModel.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/UimsdScene.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdWarmCacheTest.java"
       ]
     },
     {
       "category": "Developer Commentary",
-      "sprite": "ICON_CHECKED",
-      "title": "Preserve verified builds and check scroll artwork",
-      "text": "Retain TEST330 delivery and display evidence, preserve every compiled historical entry, and verify the dedicated Gathering appearance across six classes, bundle reloads and native item windows. Emulator verification is separate from physical-phone acceptance.",
+      "sprite": "ICON_INFO",
+      "title": "Retain failed TEST331 evidence and compare its exact successor",
+      "text": "Preserve the compiled Gathering-icon candidate and every failed Android, UIMSD and API36 attempt without claiming delivery. TEST332 compares the immediate TEST331 APK history and must pass full paired core, Android, display, identity and checksum gates before any private publication. Emulator evidence remains separate from physical-phone acceptance.",
       "paths": [
-        ".github/workflows/apd-existing330-scale-retest.yml",
-        ".github/workflows/apd-lunch-delivery-2026-10-29.yml",
+        ".github/workflows/apd-existing331-api36-isolated.yml",
+        ".github/workflows/apd-existing331-uimsd-retest.yml",
+        ".github/workflows/apd-gathering331-delivery.yml",
         ".github/workflows/codex-menu-layout-matrix.yml",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/TitleMenuLayoutDeviceTest.java",
-        "docs/APD-LUNCH-DELIVERED-2026-10-29.json",
-        "docs/APD-TEST330-DISPLAY-API36-VERIFICATION-2026-10-29.json",
-        "docs/HANDOFF.md",
-        "docs/WORK-COMPLETED-LEDGER.md",
-        "tools/apd_lunch_apk_20261029.py",
-        "tools/apd_lunch_report_20261029.py",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/loot/LootScrollGenerationTest.java",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/LootScrollDeviceTest.java",
+        "tools/apd_publish_gathering331.py",
+        "tools/run-gathering331-api36-isolated.sh",
+        "tools/run-gathering331-uimsd-retest.sh",
+        "docs/APD-GATHERING-ICON-331-STATUS.json",
+        "docs/APD-CODEX-CORE-TEST-REQUEST.txt",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "docs/APD-NEXT-BUILD-HISTORY.json"
+        "docs/APD-NEXT-BUILD-HISTORY.json",
+        "docs/HANDOFF.md",
+        "docs/WORK-COMPLETED-LEDGER.md"
       ]
     }
   ]
