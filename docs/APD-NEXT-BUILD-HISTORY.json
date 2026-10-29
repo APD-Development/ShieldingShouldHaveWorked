@@ -1,38 +1,36 @@
 {
   "date": "2026-10-29",
-  "previous_source": "0ba7b1cbf57501b081c8e38b1bbd72e70229df50",
-  "previous_application_source": "b109930fef15afd8512aca8357eeae1585f8334b",
-  "previous_run": 40948894878,
-  "previous_label": "Codex TEST 335",
+  "previous_source": "47cffd4ba9dd409907da5e9f506a215b0a15d00f",
+  "previous_application_source": "b3e0a1fb1663904c7bcd5179f214fb7e6cce8695",
+  "previous_run": 40949692381,
+  "previous_label": "Codex TEST 336",
   "changes": [
     {
       "category": "Bug Fixes",
       "sprite": "ICON_CHECKED",
-      "title": "One Android Back press stays one Back",
-      "text": "On recent Android versions, a delayed duplicate Back event could close the game after returning from Changes. The registered system callback now owns Back input and discards its redundant legacy copy, without delaying normal navigation. Older Android and desktop navigation are preserved.",
+      "title": "Keep Android Back on its registered route",
+      "text": "Unregister libGDX's competing predictive-Back callback before registering APD's callback, and prevent replacement input handlers from reclaiming it. This corrects the Android14 compatibility failure found in the preceding candidate while preserving delayed-duplicate protection, normal navigation and legacy platforms.",
       "paths": [
-        "SPD-classes/src/main/java/com/watabou/input/BackGate.java",
         "SPD-classes/src/main/java/com/watabou/input/InputHandler.java",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/TitleMenuLayoutDeviceTest.java",
         "android/src/main/java/com/shatteredpixel/shatteredpixeldungeon/android/AndroidLauncher.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/BackGateTest.java",
         "core/src/test/java/com/watabou/input/InputRestartTest.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Verify resource windows and Android navigation",
-      "text": "The full Android suite now checks current and older-save Strength Potion and Upgrade Scroll collection information. Display checks wait for the matching compiled APK instead of failing before it exists. Preserve failed and unpublished predecessor evidence, exact build numbering, original signing identity, saved data and compiled history.",
+      "title": "Retain rejected candidates and delivery evidence",
+      "text": "Preserve the rejected Android Back behavior and earlier UIMSD341ms timing failure. Internal cancellation and strict private-delivery tooling retain compiled predecessors and never substitute partial tests for current acceptance. Every current native, display, signature, source, checksum and saved-history gate remains required.",
       "paths": [
+        ".github/workflows/apd-stop-superseded335-check.yml",
+        ".github/workflows/apd-stop-rejected336-check.yml",
         "docs/APD-CODEX-CORE-TEST-REQUEST.txt",
         "docs/HANDOFF.md",
-        "tools/run-codex-android-checks.sh",
-        ".github/workflows/codex-menu-layout-matrix.yml",
+        "tools/apd_publish_owner336.py",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/APD-NEXT-BUILD-HISTORY.json"
       ]
     }
   ],
-  "commentary": "TEST334 failed before compilation. TEST335 is the immediately compiled predecessor once its producer succeeds, not an accepted release. This candidate preserves the Gathering icon, regional resource tracker and UIMSD first-draw correction, and adds the independently evidenced Android Back correction. Full unit/native/display/signing/history/download evidence is required before private owner delivery. No physical-phone verification or automatic tester distribution is claimed."
+  "commentary": "Compare immediate compiled rejected TEST336, not older published TEST330. Preserve all362 prior matching history TSVs and append only this record. Native duplicate-Back guard alone was incomplete; actual API34 and API36 failures are retained. The follow-up explicitly removes the competing libGDX callback and prevents its replacement. UIMSD latency variability including prior341ms remains documented. No physical-phone acceptance, public release or tester auto-distribution is claimed."
 }
