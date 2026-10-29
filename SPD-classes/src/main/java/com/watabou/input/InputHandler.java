@@ -193,8 +193,8 @@ public class InputHandler extends InputAdapter {
 		long backTrace = 0;
 		if (keyCode == Input.Keys.BACK) {
 			backTrace = BackTrace.route("gdx-key");
-			if (!BackGate.accept()) {
-				BackTrace.rejected(backTrace, "BackGate duplicate");
+			if (!BackGate.acceptLegacy()) {
+				BackTrace.rejected(backTrace, "BackGate legacy route suppressed");
 				return true;
 			}
 			BackTrace.accepted(backTrace);
@@ -210,6 +210,7 @@ public class InputHandler extends InputAdapter {
 	
 	@Override
 	public synchronized boolean keyUp( int keyCode ) {
+		if (keyCode == Input.Keys.BACK && BackGate.systemBackOwned()) return true;
 		if (KeyBindings.isKeyBound( keyCode )) {
 			KeyEvent.addKeyEvent( stamp(new KeyEvent( keyCode, false ) ));
 			return true;

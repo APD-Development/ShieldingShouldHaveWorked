@@ -21,9 +21,9 @@
 
 package com.watabou.input;
 
-//Android can deliver one press of Back by two routes at once (the game's own key handling and the system back-gesture callback, depending
-//on the Android version and how the app was opened). Both routes go through this gate, so one press is ONE Back, never two: a second
-//Back arriving within a very short moment of the first is the same press.
+// Modern Android owns Back through the registered system callback. Its delayed
+// legacy libGDX copy must never become another press, even after a render stall.
+// Older Android and desktop keep the original timing gate.
 public final class BackGate {
 
 	private BackGate(){}
@@ -33,6 +33,27 @@ public final class BackGate {
 
 	private static long last;
 	private static boolean any;
+	private static Object systemBackOwner;
+
+	public static synchronized void setSystemBackOwner(Object owner){
+		systemBackOwner = owner;
+	}
+
+	public static synchronized void clearSystemBackOwner(Object owner){
+		if (systemBackOwner == owner) systemBackOwner = null;
+	}
+
+	public static synchronized boolean systemBackOwned(){
+		return systemBackOwner != null;
+	}
+
+	public static synchronized boolean acceptLegacy(){
+		return acceptLegacy(System.nanoTime());
+	}
+
+	public static synchronized boolean acceptLegacy(long nowNanos){
+		return systemBackOwner == null && accept(nowNanos);
+	}
 
 	//true if this Back should be acted on
 	public static synchronized boolean accept(){

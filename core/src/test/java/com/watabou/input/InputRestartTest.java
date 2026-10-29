@@ -118,4 +118,27 @@ public class InputRestartTest {
         }finally{PointerEvent.removePointerListener(listener);InputHandler.discardPendingEvents();com.watabou.noosa.Game.width=w;com.watabou.noosa.Game.height=h;}
     }
 
+
+    @Test public void systemOwnedBackSuppressesBothLegacyEdgesAfterInputReset(){
+        HeadlessTestSupport.start();
+        InputHandler handler=new InputHandler(Gdx.input);
+        Object activity=new Object();
+        int[] backs={0};
+        Signal.Listener<KeyEvent> listener=e->{backs[0]++;return false;};
+        BackGate.setSystemBackOwner(activity);
+        KeyEvent.addKeyListener(listener);
+        try{
+            assertTrue(handler.keyDown(com.badlogic.gdx.Input.Keys.BACK));
+            assertTrue(handler.keyUp(com.badlogic.gdx.Input.Keys.BACK));
+            KeyEvent.processKeyEvents();
+            assertEquals("No second Back or orphan key-up may reach the returned scene",0,backs[0]);
+            InputHandler.discardPendingEvents();
+            assertTrue("Input reset does not unregister Android callback ownership",BackGate.systemBackOwned());
+        }finally{
+            KeyEvent.removeKeyListener(listener);
+            BackGate.clearSystemBackOwner(activity);
+            BackGate.reset();
+            InputHandler.discardPendingEvents();
+        }
+    }
 }

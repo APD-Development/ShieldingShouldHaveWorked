@@ -125,6 +125,26 @@ public class TitleMenuLayoutDeviceTest {
             assertEquals(APDTextScene.Page.CHANGES,APDTextScene.page);
             InstrumentationRegistry.getInstrumentation().getUiAutomation().performGlobalAction(android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_BACK);
             waitFor(TitleMenuLayoutDeviceTest::fullyRestored);
+            if(android.os.Build.VERSION.SDK_INT>=33){
+                assertTrue("Registered Android callback owns Back",com.watabou.input.BackGate.systemBackOwned());
+                // Replay the observed late libGDX copy after an actual OS Back.
+                // Timing-window-only deduplication wrongly closes Title here.
+                Thread.sleep(356);
+                AtomicInteger frames=new AtomicInteger();
+                TopScoresDeviceTest.render(()->{
+                    assertTrue(com.badlogic.gdx.Gdx.input.getInputProcessor().keyDown(com.badlogic.gdx.Input.Keys.BACK));
+                    assertTrue(com.badlogic.gdx.Gdx.input.getInputProcessor().keyUp(com.badlogic.gdx.Input.Keys.BACK));
+                    Game.scene().add(new com.watabou.noosa.Gizmo(){
+                        @Override public void draw(){super.draw();frames.incrementAndGet();}
+                    });
+                });
+                waitFor(()->frames.get()>=2);
+                assertTrue("Delayed legacy Back must preserve the returned title",fullyRestored());
+                InstrumentationRegistry.getInstrumentation().runOnMainSync(()->{
+                    assertFalse("One Back must not finish the Activity",AndroidLauncher.instance.isFinishing());
+                    assertFalse(AndroidLauncher.instance.isDestroyed());
+                });
+            }
             nativeTap(centre("btnFade"));Thread.sleep(900);
             TopScoresDeviceTest.render(()->{try{assertFalse(((Component)field(Game.scene(),"btnChanges")).active);}catch(Exception e){throw new RuntimeException(e);}});
             TopScoresDeviceTest.screenshot("main-title-hidden.png");

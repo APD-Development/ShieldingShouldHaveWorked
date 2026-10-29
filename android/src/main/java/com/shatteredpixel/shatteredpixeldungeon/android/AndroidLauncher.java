@@ -146,12 +146,16 @@ public class AndroidLauncher extends AndroidApplication {
 			runnables.add(new Runnable() {
 				@Override
 				public void run() {
+					if (instance != AndroidLauncher.this || isFinishing() || isDestroyed()) return;
 					getOnBackInvokedDispatcher().registerOnBackInvokedCallback(OnBackInvokedDispatcher.PRIORITY_DEFAULT, new OnBackInvokedCallback() {
 						@Override
 						public void onBackInvoked() {
-							sendBack();
+							if (instance == AndroidLauncher.this) sendBack();
 						}
 					});
+					// Only claim the route after registration succeeded. Legacy copies
+					// can arrive hundreds of milliseconds after this callback.
+					BackGate.setSystemBackOwner(AndroidLauncher.this);
 				}
 			});
 		}
@@ -192,6 +196,12 @@ public class AndroidLauncher extends AndroidApplication {
 			finishAndRemoveTask();
 		}
 		super.onResume();
+	}
+
+	@Override protected void onDestroy() {
+		// An old Activity must not release the newer Activity's callback ownership.
+		BackGate.clearSystemBackOwner(this);
+		super.onDestroy();
 	}
 
     @Override protected void onPause() {
