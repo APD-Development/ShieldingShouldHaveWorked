@@ -44,7 +44,8 @@ jobs:
           runs=api(f'repos/{repo}/actions/workflows/codex-sprint-check.yml/runs?branch={branch}&per_page=20')['workflow_runs']
           selected=None
           for run in runs:
-              if run['status']!='completed':continue
+              if run['status']=='queued':continue
+              # A successful producing job is sufficient; native verification may still be running.
               jobs=api(f'repos/{repo}/actions/runs/{run["id"]}/jobs')['jobs']
               if not any(j['name']=='verify-and-build' and j['conclusion']=='success' for j in jobs):continue
               source_tree=api(f'repos/{repo}/git/trees/{run["head_sha"]}?recursive=1')
