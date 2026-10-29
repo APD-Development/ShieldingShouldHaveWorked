@@ -92,6 +92,8 @@ public class UimsdScene extends PixelScene {
 	//the player's own model (the one the screen shows unless the tour is running on a model of its own)
 	private static UimsdModel mainModel;
 	private static File mainRoot;
+	// Invalidates an off-thread title claim if another open or navigation wins first.
+	private static long openGeneration;
 	private static String rulesId = "", rulesLabel = "";
 	//Home or the advanced tables; and whether Home counts runs under all rules
 	private static volatile boolean atHome = true;
@@ -155,6 +157,8 @@ public class UimsdScene extends PixelScene {
 	public static void openNow( Class<? extends PixelScene> from ){
 		com.watabou.utils.SupportDiagnostics.event("uimsd.open", from == GameScene.class ? "from=game" : "from=menu");
 		backTo = from == GameScene.class ? GameScene.class : TitleScene.class;
+		final Class<? extends PixelScene> targetBackTo = backTo;
+		final com.watabou.noosa.Scene openingScene = ShatteredPixelDungeon.scene();
 		File root = ApdRecorder.historyRoot();
 		//demo data can be shown in any build once it exists (the Demo Unlock makes it in release builds too)
 		showingDemo = DemoData.viewingDemo() && (DemoData.available() || DemoData.isSyntheticRoot(DemoData.demoRootFor(root)));
@@ -171,16 +175,38 @@ public class UimsdScene extends PixelScene {
 		removeLeftoverSample();
 		atHome = true;
 		com.shatteredpixel.shatteredpixeldungeon.apd.replay.FloorReplay.setLiveGameCheck(liveGameCheck());
-		if (root == null){
-			model = null;
-		} else {
-			model = new UimsdModel(rulesId, rulesLabel);
-			model.setSeedFloorsProvider(com.shatteredpixel.shatteredpixeldungeon.apd.replay.SeedFloorsRunner.INSTANCE);
-			// Flush and full on-disk freshness validation stay off the render
-			// thread. The loader briefly prioritizes only the already-prepared
-			// cache claim, then returns to normal priority before any cold load.
-			model.loadForOpen(root, homeAllRules, ApdRecorder::flushForReading);
+		final long generation = ++openGeneration;
+		final File openRoot = root;
+		final String openRulesId = rulesId, openRulesLabel = rulesLabel;
+		final boolean openAllRules = homeAllRules;
+		if (openRoot == null){
+			completeOpen(generation, openingScene, targetBackTo, null, null);
+			return;
 		}
+		// Flush and complete freshness validation run on a short prioritized
+		// worker. It hands the exact validated READY model to the render thread;
+		// a cache miss returns to normal priority before starting a cold load.
+		UimsdModel.claimForOpen(openRoot, openRulesId, openRulesLabel, openAllRules,
+				ApdRecorder::flushForReading, new UimsdModel.OpenClaimListener(){
+			@Override
+			public void claimed(final UimsdModel claimed){
+				com.watabou.noosa.Game.runOnRenderThread(new com.watabou.utils.Callback(){
+					@Override
+					public void call(){
+						completeOpen(generation, openingScene, targetBackTo, openRoot, claimed);
+					}
+				});
+			}
+		});
+	}
+
+	private static void completeOpen(long generation, com.watabou.noosa.Scene openingScene,
+			Class<? extends PixelScene> targetBackTo, File root, UimsdModel opened){
+		if (generation != openGeneration || ShatteredPixelDungeon.scene() != openingScene) return;
+		backTo = targetBackTo;
+		model = opened;
+		if (model != null)
+			model.setSeedFloorsProvider(com.shatteredpixel.shatteredpixeldungeon.apd.replay.SeedFloorsRunner.INSTANCE);
 		mainModel = model;
 		mainRoot = root;
 		//from the title screen it switches the way the other title screens do (no fade through black)

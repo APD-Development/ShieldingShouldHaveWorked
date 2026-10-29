@@ -140,8 +140,46 @@ public final class UimsdModel {
 		load(root, homeAllRules, null, false);
 	}
 
-	// Opening the viewer must not wait for recorder I/O or scan history metadata
-	// on the render thread. The warm model is still validated after the flush.
+	public interface OpenClaimListener {
+		void claimed(UimsdModel model);
+	}
+
+	// Claiming the title preload is deliberately separate from instance loading:
+	// acceptance requires the viewer to own the exact validated mutable model,
+	// not a second model that merely shares its catalog.
+	public static Thread claimForOpen(final File root, final String ruleset, final String label,
+			final boolean homeAllRules, final Runnable beforeRead, final OpenClaimListener listener){
+		Thread claim = new Thread(new Runnable(){
+			@Override
+			public void run(){
+				UimsdModel opened;
+				try {
+					if (beforeRead != null) beforeRead.run();
+					opened = UimsdWarmCache.takeReady(root, ruleset, label, homeAllRules);
+					if (opened == null){
+						Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
+						opened = new UimsdModel(ruleset, label);
+						opened.load(root, homeAllRules);
+					}
+				} catch (Throwable error){
+					opened = new UimsdModel(ruleset, label);
+					synchronized (opened){
+						opened.root = root;
+						opened.failure = String.valueOf(error);
+						opened.state = State.FAILED;
+					}
+				}
+				listener.claimed(opened);
+			}
+		}, "uimsd-open-claim");
+		claim.setDaemon(true);
+		claim.setPriority(Math.min(Thread.MAX_PRIORITY, Thread.NORM_PRIORITY + 2));
+		claim.start();
+		return claim;
+	}
+
+	// Retained for non-scene integrations; the title path uses claimForOpen so
+	// it can preserve the prepared model's identity as well as its catalog.
 	public synchronized void loadForOpen(File root, boolean homeAllRules, Runnable beforeRead){
 		load(root, homeAllRules, beforeRead, true);
 	}

@@ -21,54 +21,61 @@ public class UimsdWarmCacheTest {
         return (UimsdModel)model.get(entry);
     }
 
-    @Test public void asynchronousOpenReusesTheFullyValidatedCatalogAndHome() throws Exception {
+    @Test public void asynchronousClaimReturnsTheExactValidatedModel() throws Exception {
         File root=Files.createTempDirectory("apd-open-warm").toFile();
         try {
             UimsdWarmCache.prewarm(root,"rules-a","label",false);UimsdWarmCache.awaitPrewarmForTest(10000);
-            UimsdModel prepared=readyModel();UimsdModel opened=new UimsdModel("rules-a","label");
-            opened.loadForOpen(root,false,()->{});opened.awaitLoad(10000);
-            assertEquals(UimsdModel.State.READY,opened.state());assertSame(prepared.catalog(),opened.catalog());
-            assertSame(prepared.preparedHome(prepared.catalog(),false),opened.preparedHome(opened.catalog(),false));
+            UimsdModel prepared=readyModel();
+            java.util.concurrent.CountDownLatch claimed=new java.util.concurrent.CountDownLatch(1);
+            java.util.concurrent.atomic.AtomicReference<UimsdModel> opened=new java.util.concurrent.atomic.AtomicReference<>();
+            UimsdModel.claimForOpen(root,"rules-a","label",false,()->{},model->{opened.set(model);claimed.countDown();});
+            assertTrue(claimed.await(10,java.util.concurrent.TimeUnit.SECONDS));
+            assertSame("the viewer owns the exact mutable READY model",prepared,opened.get());
+            assertEquals(UimsdModel.State.READY,opened.get().state());
             assertNull(UimsdWarmCache.takeReady(root,"rules-a","label",false));
         }finally{assertTrue(root.delete());}
     }
 
-    @Test public void recorderFlushInvalidatesTheWarmSnapshotBeforeItCanBeAccepted() throws Exception {
+    @Test public void recorderFlushInvalidatesBeforeTheExactModelCanBeClaimed() throws Exception {
         File root=Files.createTempDirectory("apd-open-flush").toFile();File runs=new File(root,"runs");
         try {
             UimsdWarmCache.prewarm(root,"rules-a","label",false);UimsdWarmCache.awaitPrewarmForTest(10000);
-            UimsdModel prepared=readyModel();UimsdModel opened=new UimsdModel("rules-a","label");
-            opened.loadForOpen(root,false,()->{
+            UimsdModel prepared=readyModel();
+            java.util.concurrent.CountDownLatch claimed=new java.util.concurrent.CountDownLatch(1);
+            java.util.concurrent.atomic.AtomicReference<UimsdModel> opened=new java.util.concurrent.atomic.AtomicReference<>();
+            UimsdModel.claimForOpen(root,"rules-a","label",false,()->{
                 try {assertTrue(runs.mkdir());Files.write(new File(runs,"flushed.apdlog").toPath(),new byte[]{1,2,3});}
                 catch(java.io.IOException error){throw new RuntimeException(error);}
-            });
-            opened.awaitLoad(10000);assertEquals(UimsdModel.State.READY,opened.state());
-            assertNotSame("newly flushed bytes require a fresh catalog",prepared.catalog(),opened.catalog());
-        }finally{
-            deleteTree(root);
-        }
+            },model->{opened.set(model);claimed.countDown();});
+            assertTrue(claimed.await(10,java.util.concurrent.TimeUnit.SECONDS));
+            opened.get().awaitLoad(10000);assertEquals(UimsdModel.State.READY,opened.get().state());
+            assertNotSame("newly flushed bytes require a fresh model",prepared,opened.get());
+            assertNotSame("newly flushed bytes require a fresh catalog",prepared.catalog(),opened.get().catalog());
+        }finally{deleteTree(root);}
     }
+
     @Test public void openingNeverWaitsForTheRecorderOnTheCallingThread() throws Exception {
         File root=Files.createTempDirectory("apd-open-worker").toFile();
         java.util.concurrent.CountDownLatch entered=new java.util.concurrent.CountDownLatch(1);
         java.util.concurrent.CountDownLatch release=new java.util.concurrent.CountDownLatch(1);
+        java.util.concurrent.CountDownLatch claimed=new java.util.concurrent.CountDownLatch(1);
         Thread caller=Thread.currentThread();
         java.util.concurrent.atomic.AtomicReference<Thread> worker=new java.util.concurrent.atomic.AtomicReference<>();
-        UimsdModel model=new UimsdModel("rules-a","label");
+        java.util.concurrent.atomic.AtomicReference<UimsdModel> opened=new java.util.concurrent.atomic.AtomicReference<>();
         try {
-            model.loadForOpen(root,false,()->{
+            Thread claim=UimsdModel.claimForOpen(root,"rules-a","label",false,()->{
                 worker.set(Thread.currentThread());entered.countDown();
                 try {release.await();}catch(InterruptedException e){Thread.currentThread().interrupt();}
-            });
+            },model->{opened.set(model);claimed.countDown();});
             assertTrue(entered.await(5,java.util.concurrent.TimeUnit.SECONDS));
-            assertNotSame(caller,worker.get());assertEquals(UimsdModel.State.LOADING,model.state());
+            assertNotSame(caller,worker.get());assertSame(claim,worker.get());
             assertTrue("interactive warm claim receives temporary scheduling priority",
                     worker.get().getPriority() > Thread.NORM_PRIORITY);
-            release.countDown();model.awaitLoad(10000);
-            assertEquals(UimsdModel.State.READY,model.state());
+            release.countDown();assertTrue(claimed.await(10,java.util.concurrent.TimeUnit.SECONDS));
+            opened.get().awaitLoad(10000);assertEquals(UimsdModel.State.READY,opened.get().state());
             assertEquals("cold fallback returns to ordinary worker priority",
                     Thread.NORM_PRIORITY, worker.get().getPriority());
-        }finally{release.countDown();model.awaitLoad(10000);assertTrue(root.delete());}
+        }finally{release.countDown();assertTrue(root.delete());}
     }
 
     @Test public void staleOpenCannotPublishAfterAnotherLoad() throws Exception {
@@ -134,10 +141,13 @@ public class UimsdWarmCacheTest {
         int create=source.indexOf("@Override\n\tpublic void create",open);
         assertTrue("openNow source section must remain inspectable",open>=0 && create>open);
         String path=source.substring(open,create);
-        int loader=path.indexOf("model.loadForOpen(root, homeAllRules, ApdRecorder::flushForReading)");
+        int loader=path.indexOf("UimsdModel.claimForOpen");
+        int handoff=path.indexOf("Game.runOnRenderThread");
         int change=path.indexOf("ShatteredPixelDungeon.switchNoFade(UimsdScene.class)");
-        assertTrue("title open delegates flush and full freshness to the loader",loader>=0);
-        assertTrue("loader starts before requesting the new scene",loader<change);
+        assertTrue("title open delegates flush and exact-model freshness to the claim worker",loader>=0);
+        assertTrue("claim worker starts before the render-thread handoff",loader<handoff);
+        assertTrue("the exact model is handed off before requesting the new scene",handoff<change);
+        assertTrue("stale open workers cannot replace a later scene",path.contains("generation != openGeneration"));
         assertFalse("render thread must not run the recorder flush",path.contains("beforeRead.run()"));
         assertFalse("render thread must not validate the warm cache",path.contains("UimsdWarmCache.takeReady"));
     }
