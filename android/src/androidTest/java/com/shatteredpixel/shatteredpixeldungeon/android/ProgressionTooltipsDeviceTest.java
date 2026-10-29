@@ -22,7 +22,8 @@ import org.junit.runner.RunWith;
 /** Disposable emulator slot only: actual native popup bounds and new/legacy text. */
 @RunWith(AndroidJUnit4.class)
 public class ProgressionTooltipsDeviceTest {
-    private static void render(Runnable action)throws Exception {
+    private interface Action { void run() throws Exception; }
+    private static void render(Action action)throws Exception {
         CountDownLatch done=new CountDownLatch(1);AtomicReference<Throwable> error=new AtomicReference<>();
         Game.runOnRenderThread(()->{try{action.run();}catch(Throwable t){error.set(t);}finally{done.countDown();}});
         assertTrue("render callback",done.await(60,TimeUnit.SECONDS));

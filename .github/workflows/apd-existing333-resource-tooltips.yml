@@ -73,3 +73,4 @@ jobs:
             acceptance-source.json
             resource-evidence/
           retention-days: 7
+# Fixture callback accepts checked reflection failures; APK and assertions unchanged.
