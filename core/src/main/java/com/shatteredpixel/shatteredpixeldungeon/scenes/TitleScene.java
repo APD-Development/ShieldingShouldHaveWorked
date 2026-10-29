@@ -718,4 +718,3 @@ public class TitleScene extends PixelScene {
 		}
 	}
 }
-

@@ -172,4 +172,3 @@ public final class TitleGeometry {
         r.fadeX=left+(w-FADE_SIZE)/2; r.fadeY=top+h-FADE_SIZE;
     }
 }
-
