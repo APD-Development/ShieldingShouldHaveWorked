@@ -25,6 +25,10 @@ elif [ "$apd_mode" = captures ]; then
   apd_classes='com.shatteredpixel.shatteredpixeldungeon.android.PlayRunDeviceTest#aRunCanBePlayedSavedContinuedAndEndedWithItsHistoryRecorded,com.shatteredpixel.shatteredpixeldungeon.android.CustomScoreDeviceTest#dailyCalendarShowsFrozenLongEarnedScoreWithoutOverlappingDates,com.shatteredpixel.shatteredpixeldungeon.android.CustomRulesNoticeDeviceTest#scoringVisionPopupOpensScrollsAndBackPreservesDraftOnSmallScreens'
   apd_images='hotbar-controls.png daily-earned-score.png daily-earned-score-scrolled.png custom-scoring-vision.png custom-scoring-vision-narrow.png'
   apd_methods=3
+elif [ "$apd_mode" = scale ]; then
+  apd_classes='com.shatteredpixel.shatteredpixeldungeon.android.TitleMenuLayoutDeviceTest,com.shatteredpixel.shatteredpixeldungeon.android.ScaleChangeDeviceTest'
+  apd_images='main-title-layout.png main-title-hidden.png main-title-restored.png options-confirmations.png scale-phone-seven.png scale-phone-six.png'
+  apd_methods=3
 else
   apd_classes=com.shatteredpixel.shatteredpixeldungeon.android.TitleMenuLayoutDeviceTest
   apd_images='main-title-layout.png main-title-hidden.png main-title-restored.png options-confirmations.png'

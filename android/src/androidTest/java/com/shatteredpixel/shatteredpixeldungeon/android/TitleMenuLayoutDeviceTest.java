@@ -75,6 +75,8 @@ public class TitleMenuLayoutDeviceTest {
                     assertTrue(name+" inside actual viewport",b.left()>=0 && b.top()>=0 && b.right()<=b.camera().width+0.01 && b.bottom()<=b.camera().height+0.01);
                     assertTrue(name+" usable target",b.width()>=16 && b.height()>=16);
                     if(b instanceof StyledButton){
+                        Object frame=field(b,"bg");
+                        assertEquals(name+" uses only the actual button frame, excluding the lower swatch",18f,((Number)field(frame,"nHeight")).floatValue(),0f);
                         com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock text=(com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock)field(b,"text");
                         assertTrue(name+" label fits horizontally",text.left()>=b.left()-0.5 && text.right()<=b.right()+0.5);
                         assertTrue(name+" label fits vertically",text.top()>=b.top()-0.5 && text.bottom()<=b.bottom()+0.5);

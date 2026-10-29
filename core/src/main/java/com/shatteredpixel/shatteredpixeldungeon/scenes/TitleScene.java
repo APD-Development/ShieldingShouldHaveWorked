@@ -694,7 +694,7 @@ public class TitleScene extends PixelScene {
 			this.stacked = stacked;
 
 			remove( bg );
-			bg = new NinePatch( "interfaces/apd_button.png", 8 );
+			bg = new NinePatch( "interfaces/apd_button.png", 0, 0, 24, 18, 8 );
 			addToBack( bg );
 
 			icon( Icons.get( icon ) );
