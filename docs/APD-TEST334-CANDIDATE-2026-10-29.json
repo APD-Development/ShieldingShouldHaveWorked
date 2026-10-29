@@ -1,5 +1,5 @@
 {
-  "checked_utc": "2026-10-29T20:22:52Z",
+  "checked_utc": "2026-10-29T20:24:06Z",
   "status": "TEST334 requested; source core-verified, APK evidence pending",
   "application_source": "b109930fef15afd8512aca8357eeae1585f8334b",
   "parent_compiled_candidate": {
@@ -38,14 +38,16 @@
     "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdColumnsModalDeviceTest.java",
     "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/UimsdScene.java",
     "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/UimsdWiringTest.java",
+    "docs/APD-CODEX-BUILD-REQUEST.txt",
     "docs/APD-CODEX-CORE-TEST-REQUEST.txt",
+    "docs/APD-NEXT-BUILD-HISTORY.json",
     "docs/APD-TEST333-STATUS-2026-10-29.json",
+    "docs/APD-TEST334-CANDIDATE-2026-10-29.json",
     "docs/HANDOFF.md",
     "docs/WORK-COMPLETED-LEDGER.md",
     "tools/apd_publish_owner333.py",
     "tools/run-exact333-full-native.sh",
-    "tools/run-resource333-tooltips.sh",
-    "docs/APD-CODEX-BUILD-REQUEST.txt"
+    "tools/run-resource333-tooltips.sh"
   ],
   "required_acceptance": {
     "api34_methods": 66,
@@ -65,5 +67,15 @@
   "accepted": false,
   "published": false,
   "tester_distribution": false,
-  "physical_phone_verified": false
+  "physical_phone_verified": false,
+  "preflight_failures": [
+    {
+      "run_id": 40948584819,
+      "job_id": 123710343595,
+      "phase": "history validation before compilation",
+      "reason": "APD-NEXT-BUILD-HISTORY referenced TEST332 and omitted 12 reviewed post-TEST333 paths",
+      "apk_produced": false
+    }
+  ],
+  "retry_reason": "Executable history reconciled to immediate compiled TEST333; same source and acceptance thresholds."
 }

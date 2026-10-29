@@ -1,54 +1,44 @@
 {
   "date": "2026-10-29",
-  "previous_source": "94fb6d19e126e53db86e20dc8121f850e5b77d37",
-  "previous_application_source": "94fb6d19e126e53db86e20dc8121f850e5b77d37",
-  "previous_run": 40937102716,
-  "previous_label": "Codex TEST 332",
+  "previous_source": "3dfd3d3b51cab4794e921da579e6856d68da0758",
+  "previous_application_source": "07e6fbd4e7ca5d643883efdcd71d99e97ccc469d",
+  "previous_run": 40941203300,
+  "previous_label": "Codex TEST 333",
   "changes": [
-    {
-      "category": "Quality of Life",
-      "sprite": "ITEM_POTION_CRIMSON",
-      "title": "Track collected upgrades and strength by region",
-      "text": "Upgrade Scrolls and Strength Potions now show first successful inventory collection counts by original region. Strength Potions also show whether each guaranteed early or late floor pair was collected. Bonus potions cannot hide a missed guaranteed potion. Older saves keep partial counts and explicitly unknown earlier pairs. Merges, splits, transfers, saves and drop-and-pickup repeats preserve or consume each origin exactly once without changing generation.",
-      "paths": [
-        "core/src/main/assets/messages/items/items.properties",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/Statistics.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/ProgressionPickups.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Item.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/PotionOfHealing.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/PotionOfStrength.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/ScrollOfUpgrade.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/Level.java"
-      ]
-    },
     {
       "category": "Bug Fixes",
       "sprite": "ICON_CHECKED",
-      "title": "Hand UIMSD the exact validated READY model",
-      "text": "The title preload is now claimed on a short prioritized worker and the exact validated mutable model is handed to the render thread before switching scenes. Stale open callbacks cannot replace a later scene, and cache misses return to normal priority before cold loading. Full raw-history freshness validation and the unchanged 250 ms two-opening acceptance limit remain intact.",
+      "title": "Build the ready UIMSD Home after scene setup",
+      "text": "A fully validated warm UIMSD model now builds its Home through the existing pre-draw path after scene and camera creation, instead of laying out text inside scene creation. The complete Home still appears on the first visible frame. Exact model identity, freshness validation, saved views, raw histories and the unchanged 250 ms acceptance limit remain intact.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdModel.java",
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/UimsdScene.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdWarmCacheTest.java"
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/UimsdWiringTest.java"
       ]
     },
     {
       "category": "Developer Commentary",
       "sprite": "ICON_CHECKED",
-      "title": "Preserve original generation, language and failed-candidate evidence",
-      "text": "Keep all original level-generation golden hashes with recorder off and on while excluding only new statistics bookkeeping from the historical test snapshot; real saves retain it. Audit all 5076 English strings. Preserve TEST332's exact artifacts, six-profile display success and sole exact-model-identity failure without claiming acceptance or delivery. Require complete core, Android, history, identity, tooltip and display evidence for TEST333.",
+      "title": "Retain TEST333 failures and synchronize native acceptance",
+      "text": "Preserve TEST333's original and controlled failures, exact artifacts and rejected delivery. Native fixtures now wait for completed asynchronous Home, Settings and post-Back title readiness before using unchanged touch and geometry assertions. Exact-APK workflows, resource tooltip evidence, build requests, reports and ledgers are reviewed as history-only or test-only changes and do not stand in for fresh TEST334 APK evidence.",
       "paths": [
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/LevelGenerationHarness.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/ProgressionPickupsTest.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/humor/AuthoredLanguageTest.java",
+        ".github/workflows/apd-existing333-full-native.yml",
+        ".github/workflows/apd-existing333-resource-tooltips.yml",
+        ".github/workflows/apd-owner333-delivery.yml",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/ProgressionTooltipsDeviceTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/TitleMenuLayoutDeviceTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdColumnsModalDeviceTest.java",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/APD-CODEX-CORE-TEST-REQUEST.txt",
         "docs/APD-NEXT-BUILD-HISTORY.json",
-        "docs/APD-RESOURCE-PICKUP-VERIFICATION.json",
+        "docs/APD-TEST333-STATUS-2026-10-29.json",
+        "docs/APD-TEST334-CANDIDATE-2026-10-29.json",
         "docs/HANDOFF.md",
-        "docs/WORK-COMPLETED-LEDGER.md"
+        "docs/WORK-COMPLETED-LEDGER.md",
+        "tools/apd_publish_owner333.py",
+        "tools/run-exact333-full-native.sh",
+        "tools/run-resource333-tooltips.sh"
       ]
     }
   ],
-  "commentary": "TEST333 compares the immediate compiled TEST332, not TEST330. TEST332 developer/player artifacts exist and passed identity plus all six display profiles, but main API34 finished64/65 because the viewer did not own the exact prepared model; it is not accepted or published. TEST333 must retain that failure, the regional feature's verified2206-core evidence, and every changed production/test/document path. Emulator evidence remains separate from physical-phone acceptance."
+  "commentary": "TEST334 compares immediate compiled TEST333, not TEST332 or TEST330. TEST333 developer/player artifacts exist and retain all360 matching history files, but repeated exact-APK acceptance ended65/66 because warm UIMSD measured300ms after a prior295ms reproduction; it is rejected and unpublished. The first TEST334 request run40948584819 failed before compilation because this executable ledger still pointed to TEST332 and omitted reviewed post-TEST333 paths. This corrected ledger preserves that failure and requires fresh paired/core/API34/display/history/identity evidence. Emulator evidence remains separate from physical-phone acceptance."
 }

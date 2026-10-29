@@ -1,3 +1,8 @@
+## 2026-10-29T20:24:06Z — First TEST334 request failed closed before compilation; executable history reconciled
+Run `40948584819` / job `123710343595` reached no compilation and produced no APK. `tools/apd_build_history.py` correctly rejected 12 unreviewed paths because `docs/APD-NEXT-BUILD-HISTORY.json` still named TEST332 instead of immediate compiled TEST333. Player, display, staging and supplemental workflows consequently failed or skipped before candidate evidence; none is gameplay, API34 or visual evidence.
+
+The executable history now uses TEST333 producer head `3dfd3d3b51cab4794e921da579e6856d68da0758`, application source `07e6fbd4e7ca5d643883efdcd71d99e97ccc469d`, run `40941203300`, label `Codex TEST 333`, and reviews all18 actual paths through this ledger itself. It embeds only the UIMSD first-draw production correction plus retained/synchronized TEST333 acceptance evidence. The build request records the failed preflight and intentionally retries the same core-green TEST334 source; no application source or acceptance threshold changed.
+
 ## 2026-10-29T20:22:52Z — UIMSD first-draw candidate passed complete core; intentional TEST334 requested
 Candidate source `b109930fef15afd8512aca8357eeae1585f8334b` passed core-only run `40947969436` / job `123708228034`: 2,207 methods / 423 suites / 0 failures / 0 errors / 0 skips, including the new scene-order guard and all six RunTurnWindow cases. Artifact `12929583852`, ZIP digest `f89684c013686a50d5c75b4c6ec625887c24bd21ef6154050f40f9e42985bacb`. The six attempted TEST333-display reuse jobs in run `40947969421` correctly failed closed before emulator launch because production input `UimsdScene.java` changed; they are not visual or interaction evidence.
 
