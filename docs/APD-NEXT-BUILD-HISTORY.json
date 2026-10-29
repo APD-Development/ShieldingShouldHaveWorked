@@ -29,7 +29,7 @@
       "category": "Testing",
       "sprite": "ICON_CHECKED",
       "title": "Consolidated native input and resource verification",
-      "text": "Retain all rejected338 Back and362ms UIMSD evidence. Add real Button and real Scene regression tests, timestamp provenance coverage and instrumentation-only diagnostics. Require full2225 core, all66 native methods, unchanged250ms two-opening UIMSD threshold, six display profiles, resource visuals, signing and matching complete history. No physical-phone verification claimed.",
+      "text": "Retain all rejected338 Back and362ms UIMSD evidence. Add real Button and real Scene regression tests, timestamp provenance coverage and instrumentation-only diagnostics. Require full2225 core, all66 native methods, unchanged250ms two-opening UIMSD threshold, six display profiles, resource visuals, signing and matching complete history. No physical-phone verification claimed. Correct the returned-title predicate to assert actual rendered opacity rather than an unapplied default-zero fade bookkeeping field; preserve all native Back, duplicate, active-control and subsequent hide/restore checks.",
       "paths": [
         ".github/workflows/apd-existing338-back-release-prototype.yml",
         ".github/workflows/apd-existing338-back-routing-diagnostic.yml",
@@ -49,7 +49,8 @@
         "tools/run-existing338-opening-profile.sh",
         "docs/APD-NEXT-BUILD-HISTORY.json",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "tools/apd_publish_owner339.py"
+        "tools/apd_publish_owner339.py",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/TitleMenuLayoutDeviceTest.java"
       ]
     }
   ],

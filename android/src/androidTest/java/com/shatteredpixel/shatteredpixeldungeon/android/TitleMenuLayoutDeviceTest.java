@@ -69,7 +69,7 @@ public class TitleMenuLayoutDeviceTest {
         boolean[] ready={false};
         TopScoresDeviceTest.render(()->{try{
             if(Game.scene() instanceof TitleScene){
-                ready[0]=((Number)field(Game.scene(),"uiAlpha")).floatValue()>=1f
+                ready[0]=((com.watabou.noosa.Visual)field(Game.scene(),"logo")).am>=1f
                         && ((Component)field(Game.scene(),"btnFade")).active
                         && ((Component)field(Game.scene(),"btnChanges")).active;
             }
