@@ -831,6 +831,9 @@ public class UimsdScene extends PixelScene {
 			public void onPick( int i, boolean checked ){
 				model.selectView(order.get(i).id);
 			}
+		}).restoreWith(() -> {
+			com.watabou.noosa.Scene active = com.watabou.noosa.Game.scene();
+			if (active instanceof UimsdScene) ((UimsdScene) active).pickView();
 		}));
 	}
 

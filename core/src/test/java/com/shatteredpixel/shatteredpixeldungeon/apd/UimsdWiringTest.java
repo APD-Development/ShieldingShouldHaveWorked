@@ -168,5 +168,18 @@ public class UimsdWiringTest {
 		String rankings = src("scenes/RankingsScene.java");
 		assertTrue(rankings.contains("switchNoFade(TitleScene.class)"));
 	}
+	@Test
+	public void theTablesPickerProvidesAnExactSceneRecreationRestorer() throws Exception {
+		String scene = src("scenes/UimsdScene.java");
+		int start = scene.indexOf("private void pickView()");
+		int end = scene.indexOf("//---- the interactive tour ----", start);
+		assertTrue("Tables picker method is present", start >= 0 && end > start);
+		String picker = scene.substring(start, end);
+		assertTrue("parameterized Tables picker must not fall through reflection restoration",
+				picker.contains(".restoreWith(() -> {"));
+		assertTrue("restoration targets only a rebuilt UIMSD scene",
+				picker.contains("active instanceof UimsdScene") && picker.contains("((UimsdScene) active).pickView();"));
+	}
+
 }
 

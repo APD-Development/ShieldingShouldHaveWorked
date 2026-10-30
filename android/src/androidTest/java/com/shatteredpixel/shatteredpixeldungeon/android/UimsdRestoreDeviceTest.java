@@ -433,6 +433,30 @@ public class UimsdRestoreDeviceTest {
             awaitScene(previous);
             onRender(() -> {
                 clearWindows();
+                try {
+                    java.lang.reflect.Method pickView = UimsdScene.class.getDeclaredMethod("pickView");
+                    pickView.setAccessible(true);
+                    pickView.invoke(Game.scene());
+                } catch (Exception e) { throw new RuntimeException(e); }
+                assertEquals("Tables picker opened once", 1, windows().size());
+                assertTrue(windows().get(0) instanceof WndUimsdList);
+                assertNotNull("Tables picker supplies an exact restorer", windows().get(0).restoreOnSceneReset());
+            });
+            for (int reset = 0; reset < 2; reset++) {
+                rebuildScene();
+                onRender(() -> {
+                    assertEquals("Tables picker restored exactly once", 1, windows().size());
+                    assertTrue(windows().get(0) instanceof WndUimsdList);
+                    assertNotNull(windows().get(0).restoreOnSceneReset());
+                });
+            }
+            onRender(() -> {
+                pickItem((WndUimsdList) windows().get(0), 0);
+                assertTrue("restored Tables callback closes only its picker", windows().isEmpty());
+                assertNotNull("restored Tables callback keeps a selected view", model().viewId());
+            });
+            onRender(() -> {
+                clearWindows();
                 Game.scene().addToFront(new WndSettings());
             });
             rebuildScene();
