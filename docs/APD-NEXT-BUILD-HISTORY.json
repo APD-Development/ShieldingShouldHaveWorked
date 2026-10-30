@@ -1,40 +1,43 @@
 {
-  "date": "2026-10-29",
-  "previous_source": "f45313cc27db0f754778e264e1bfc990110af1ee",
-  "previous_application_source": "34588a2476f787ee45c94731bb71845fc83c4c42",
-  "previous_run": 40969096256,
-  "previous_label": "Codex TEST 340",
+  "date": "2026-10-30",
+  "previous_source": "acb69c653033ee0d8df68264395ca27e08eb566d",
+  "previous_application_source": "acb69c653033ee0d8df68264395ca27e08eb566d",
+  "previous_run": 40976774216,
+  "previous_label": "Codex TEST 341",
   "changes": [
     {
       "category": "Bug Fixes",
       "sprite": "ICON_CHECKED",
-      "title": "Short presses retain their intended action",
-      "text": "Button holds no longer include frame time from before the press began. A short touch or key press keeps its normal action after a slow frame; genuine holds retain their original behavior. Combat timing and the long-press threshold are unchanged.",
+      "title": "Tables stay open through display recreation",
+      "text": "The UIMSD Tables chooser now restores exactly once after Android recreates the active statistics scene, including repeated display-setting or system-font rebuilds. Its selected table, query and callback stay intact; no run history, score, save, rules, combat or content behavior changes.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/Button.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/UimsdScene.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Retain failed native evidence and verify corrected presses",
-      "text": "Preserve the rejected Android16 results from the preceding APK. Four real Button regressions reproduce three old timing failures and verify short touches, keyboard input and genuine holds. Complete core verification passes2229 methods. Native tap injection queues DOWN without synchronous acknowledgement and still waits for UP; all geometry, Back, duplicate-event, hide/restore and Settings assertions remain. Require the complete Android suite, six display profiles, original250ms records threshold, resource visuals, signing and complete matching history before private delivery. No physical-phone verification claimed.",
+      "title": "Retain TEST341 evidence and verify the Tables restorer",
+      "text": "Preserve the owner-only TEST341 publication and all prior fallbacks. A core source guard and the existing Android restoration scenario cover the exact Tables picker through two rebuilds and a restored selection. Retain acceptance, visual, publication, documentation-checkpoint and history evidence; require complete core, API34, API36, display, resource, signing and immediate-predecessor history gates before any new private candidate is named.",
       "paths": [
-        ".github/workflows/apd-existing340-button-timing-prototype.yml",
-        ".github/workflows/apd-stop-superseded339-check.yml",
+        ".github/workflows/apd-existing341-native-acceptance.yml",
+        ".github/workflows/apd-owner341-delivery.yml",
         "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/ButtonTimingPrototypeDeviceTest.java",
-        "android/src/androidTest/java/com/watabou/input/PressTimingInputHandler.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/ui/ButtonPressTimingTest.java",
-        "docs/APD-BUTTON-TAP-TIMING-2026-10-29.md",
-        "docs/APD-CODEX-CORE-TEST-REQUEST.txt",
-        "docs/HANDOFF.md",
-        "tools/run-existing340-button-timing-prototype.sh",
         "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/TitleMenuLayoutDeviceTest.java",
-        "docs/APD-NEXT-BUILD-HISTORY.json",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdRestoreDeviceTest.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/UimsdWiringTest.java",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
-        "tools/apd_publish_owner341.py"
+        "docs/APD-CODEX-CORE-TEST-REQUEST.txt",
+        "docs/APD-NEXT-BUILD-HISTORY.json",
+        "docs/APD-TEST341-VISUAL-REVIEW.json",
+        "docs/HANDOFF.md",
+        "docs/WORK-COMPLETED-LEDGER.md",
+        "tools/apd_documentation_checkpoint_guard.py",
+        "tools/apd_publish_owner341.py",
+        "tools/run-existing341-native-acceptance.sh",
+        "tools/test_apd_documentation_checkpoint_guard.py"
       ]
     }
   ],
-  "commentary": "Preserve all365 compiled TEST340 history TSVs and append one (366 total). TEST340 passed66 main API34 checks,2225 core and five display profiles; API36 title failed twice. Those failures remain retained, not accepted or published. Published330 remains unchanged fallback. One final consolidated application build for a regression-proven production Button correction; no APK requested for diagnostic-only iterations. The owner deadline was missed; do not report on-time delivery."
+  "commentary": "Preserve every compiled TEST341 history TSV and append exactly one new record. TEST341 is the immediate previous compiled APK and the current owner-only published pair after separate successful acceptance; TEST330 remains a verified fallback. This is one intentional application candidate for a reproduced offline UIMSD scene-recreation loss, not a verification-only rebuild. No public release, automatic tester distribution, physical-phone claim or billing change."
 }
