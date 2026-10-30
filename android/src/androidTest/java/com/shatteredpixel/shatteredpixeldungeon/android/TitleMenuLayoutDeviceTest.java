@@ -293,3 +293,5 @@ public class TitleMenuLayoutDeviceTest {
     }
 }
 
+
+// Diagnostic helper dependency corrected; all native assertions unchanged.

@@ -62,7 +62,7 @@ public class ButtonTimingPrototypeDeviceTest {
   },"APD-passive-timing-prototype");
   watcher.start();
   try{
-   new TitleMenuTapTimingDeviceTest().titleControlsStaySeparateAndNativeChangesAndHideUiRemainUsable();
+   new TitleMenuLayoutDeviceTest().titleControlsStaySeparateAndNativeChangesAndHideUiRemainUsable();
    org.junit.Assert.assertTrue("Real native presses exercised pre-DOWN credit correction",corrected.get()>0);
   }finally{
    alive.set(false);watcher.interrupt();watcher.join(3000);
