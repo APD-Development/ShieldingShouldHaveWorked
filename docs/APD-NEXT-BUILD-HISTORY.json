@@ -1,43 +1,38 @@
 {
-  "date": "2026-10-30",
-  "previous_source": "acb69c653033ee0d8df68264395ca27e08eb566d",
-  "previous_application_source": "acb69c653033ee0d8df68264395ca27e08eb566d",
-  "previous_run": 40976774216,
-  "previous_label": "Codex TEST 341",
+  "date": "2026-10-31",
+  "previous_source": "c1f04a0b8edb9aba51008ae66cda7e3b65d614b7",
+  "previous_application_source": "c1f04a0b8edb9aba51008ae66cda7e3b65d614b7",
+  "previous_run": 41113901529,
+  "previous_label": "Codex TEST 342",
   "changes": [
     {
       "category": "Bug Fixes",
       "sprite": "ICON_CHECKED",
-      "title": "Tables stay open through display recreation",
-      "text": "The UIMSD Tables chooser now restores exactly once after Android recreates the active statistics scene, including repeated display-setting or system-font rebuilds. Its selected table, query and callback stay intact; no run history, score, save, rules, combat or content behavior changes.",
+      "title": "Search results survive display recreation",
+      "text": "The UIMSD search-results list now restores exactly once after Android recreates the active statistics scene. It retains the exact query and result ordering, and a restored selection targets the rebuilt scene rather than the destroyed one; no run history, score, save, rules, combat or content behavior changes.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/UimsdScene.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/UimsdScene.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndUimsdSearch.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Retain TEST341 evidence and verify the Tables restorer",
-      "text": "Preserve the owner-only TEST341 publication and all prior fallbacks. A core source guard and the existing Android restoration scenario cover the exact Tables picker through two rebuilds and a restored selection. Retain acceptance, visual, publication, documentation-checkpoint and history evidence; require complete core, API34, API36, display, resource, signing and immediate-predecessor history gates before any new private candidate is named.",
+      "title": "Retain TEST342 evidence and verify the Search restorer",
+      "text": "Preserve rejected TEST342 as the immediate compiled comparison and keep owner-only TEST341 plus TEST330 as verified fallbacks. Core guards and the existing Android restoration scenario cover the exact Search results through two rebuilds and a restored selection on the active scene. Retain every diagnostic, report and history checkpoint; require complete core, debug, API34, API36, display, resource, signing and history gates before naming a new private candidate.",
       "paths": [
-        ".github/workflows/apd-existing341-native-acceptance.yml",
-        ".github/workflows/apd-owner341-delivery.yml",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/ButtonTimingPrototypeDeviceTest.java",
         "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/TitleMenuLayoutDeviceTest.java",
         "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdRestoreDeviceTest.java",
         "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/UimsdWiringTest.java",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/APD-CODEX-CORE-TEST-REQUEST.txt",
         "docs/APD-NEXT-BUILD-HISTORY.json",
-        "docs/APD-TEST341-VISUAL-REVIEW.json",
+        "docs/APD-TEST342-UIMSD-TABLES-VERIFICATION-2026-10-30.md",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",
-        "tools/apd_documentation_checkpoint_guard.py",
-        "tools/apd_publish_owner341.py",
-        "tools/run-existing341-native-acceptance.sh",
-        "tools/test_apd_documentation_checkpoint_guard.py"
+        "tools/run-title-display-check.sh"
       ]
     }
   ],
-  "commentary": "Preserve every compiled TEST341 history TSV and append exactly one new record. TEST341 is the immediate previous compiled APK and the current owner-only published pair after separate successful acceptance; TEST330 remains a verified fallback. This is one intentional application candidate for a reproduced offline UIMSD scene-recreation loss, not a verification-only rebuild. No public release, automatic tester distribution, physical-phone claim or billing change."
+  "commentary": "Preserve every compiled TEST342 history TSV and append exactly one new reviewed record. TEST342 is the immediate previous compiled APK but remains rejected and unpublished; TEST341 is the current owner-only published pair and TEST330 remains a verified fallback. This is one intentional application candidate for a reproduced offline UIMSD scene-recreation loss, not a verification-only rebuild. No public release, automatic tester distribution, physical-phone claim or billing change."
 }

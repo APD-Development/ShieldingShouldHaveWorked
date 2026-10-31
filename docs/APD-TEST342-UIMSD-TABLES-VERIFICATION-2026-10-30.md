@@ -66,3 +66,12 @@ Display run41209586264 reused the protected-input-identical TEST342 APK and comp
 Four API34 profiles completed successfully. The M53 instrumentation itself completed `OK (1 test)`; its emulator went offline afterward during evidence collection, so the screenshot validator correctly rejected a non-PNG and the job remained failed. Artifact13046166155 digest `ff948e1d6ad653b542c8ed317f76e0a18341fd818f2c64e88b3dd76d3b330082`. This is emulator-only evidence.
 
 No application source, executable build request, APK, compiled history, scoring, saves, all18 rules, combat, RNG, signing identity, publication or tester distribution changed. TEST342 remains rejected and unpublished. TEST341 remains the current published private pair; TEST330 remains fallback.
+
+
+## 2026-10-31T19:03:06Z — Independent Search-results restoration and TEST343 request
+
+After the TEST342 rejection, an independent UIMSD audit reproduced another bounded process-recreation loss. `WndUimsdSearch.results` created a parameterized `WndUimsdList` without an exact restorer, and its opener retained the destroyed scene. Production commit `0298c2f8f3704d0b0ba47b8ae2975ace2ef2152a` restores the exact query/catalog and routes a restored selection only to the rebuilt active `UimsdScene`.
+
+Core-only run41232001787/job124627987345 at head `e9b32d4e87eb4eb3d5bb2f4f79954e3b42011453` passed425 suites/2231 tests with0 failures,0 errors and0 skips, including all6 `RunTurnWindowTest` methods. Artifact13053689442 digest: `ab666858b5eed949f804ea3202195d556bdc2a9c58837bb4fd895d939cf09e73`.
+
+The existing Android restoration scenario now opens a real search, retains the exact ordered results and unchanged query through two consecutive scene rebuilds, and proves the restored selection dirties the rebuilt scene. TEST343 is intentionally requested with compiled TEST342 run41113901529/artifact13003779687 as its immediate predecessor. It remains pending until full producer, history, API34, API36 and display evidence completes. TEST341 remains the current published private pair; TEST330 remains fallback. Nothing new was published or distributed.

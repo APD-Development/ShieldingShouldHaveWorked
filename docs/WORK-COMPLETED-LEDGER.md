@@ -1,3 +1,8 @@
+## 2026-10-31T19:03:06Z — UIMSD Search restoration core-green; TEST343 requested
+- Production commit0298c2f8f3704d0b0ba47b8ae2975ace2ef2152a adds the missing exact restorer for parameterized UIMSD Search results and routes restored selection to the rebuilt active UIMSD scene. Added focused core guard and extended Android two-rebuild/callback acceptance; no save/history/scoring/rules/combat/RNG/content/signing/app-ID/version change.
+- Core head e9b32d4e87eb4eb3d5bb2f4f79954e3b42011453; run41232001787/job124627987345 passed425 suites/2231 tests/0 failures-errors-skips/all6 RunTurnWindow cases. Artifact13053689442/SHA256ab666858b5eed949f804ea3202195d556bdc2a9c58837bb4fd895d939cf09e73.
+- Intentional TEST343 request uses rejected/unpublished TEST342 run41113901529/artifact13003779687 as the immediate compiled history comparison. TEST341 remains current published private pair; TEST330 remains fallback. No APK has yet been named, published or distributed for this change.
+
 ## 2026-10-31T14:30:48Z — TEST342 API36 Back diagnosis strengthened; candidate remains rejected
 - Diagnosed retained TEST342 API36 evidence instead of rerunning unchanged. The original60-second render timeout occurred only after AndroidLauncher was PAUSED/STOPPED/DESTROYED during cleanup, so it was not proof of a live render-thread freeze.
 - Test-only a423f98d5532c9b008a34f5828afce618aca2302 made Settings window closure/reopen lifecycle-exact. Run41208749842 passed five API34 profiles; API36 failed earlier because the first Changes-page accessibility Back produced no APD-BACK route.

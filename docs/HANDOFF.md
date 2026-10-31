@@ -1,10 +1,10 @@
 # APD HANDOFF
 
-**Recorded:** 2026-10-31T14:30:48Z  
+**Recorded:** 2026-10-31T19:03:06Z  
 **Approved branch:** `codex/apd-phone-fixes-2026-10-09`  
-**Acceptance evidence head:** `b8e336a427846d35535521e3c2a44dbdd004e843`  
-**Application source under review:** `c1f04a0b8edb9aba51008ae66cda7e3b65d614b7` (TEST342)  
-**Disposition:** TEST342 compiled but rejected; not published or distributed
+**Acceptance evidence head:** `e9b32d4e87eb4eb3d5bb2f4f79954e3b42011453`  
+**Application source under review:** `0298c2f8f3704d0b0ba47b8ae2975ace2ef2152a` (TEST343 pending)  
+**Disposition:** TEST342 remains rejected; TEST343 intentionally requested after core green; nothing new published or distributed
 
 ## Current published APK
 
@@ -35,10 +35,19 @@ All18 Custom Dungeon Rules remain implemented/enabled. The357-value v2.6R scorin
 
 ## Next safe step
 
-Do not rerun TEST342 unchanged or publish it. Preserve the retained artifacts and TEST341. The remaining acceptance blocker is API36 Google-image delivery of an accepted accessibility global Back to the already registered priority-0 app callback. Continue only with a bounded platform-delivery diagnosis that still exercises the real Android callback path, or independent read-only UIMSD audit work. Keep emulator and physical evidence separate.
+Do not publish TEST342. TEST343 is an intentional pending candidate for the independent UIMSD search-restoration fix; await its complete producer, history, API34, API36 and display evidence before naming any APK. Preserve TEST341 as current and TEST330 as fallback. Keep emulator and physical evidence separate.
 
 
 ---
+
+## 2026-10-31T19:03:06Z — UIMSD Search restoration core-green; TEST343 intentionally requested
+- Reproduced an independent parameterized-window loss: `WndUimsdSearch.results` had no exact restorer, so `PixelScene.saveWindows` discarded the open results list during scene recreation. Its callback also captured the destroyed `UimsdScene`.
+- Production commit `0298c2f8f3704d0b0ba47b8ae2975ace2ef2152a` restores the exact query/catalog and routes selections only to the rebuilt active scene. Focused `UimsdWiringTest` protects both behaviors.
+- Core request head `e9b32d4e87eb4eb3d5bb2f4f79954e3b42011453`; run41232001787/job124627987345 passed425 suites/2231 tests/0 failures/0 errors/0 skips and all6 RunTurnWindow methods. Artifact13053689442 digest `ab666858b5eed949f804ea3202195d556bdc2a9c58837bb4fd895d939cf09e73`.
+- The existing Android restoration case now also retains an exact ordered Search result list through two rebuilds and proves its restored callback dirties the rebuilt scene.
+- TEST343 is intentionally requested against immediate previous compiled TEST342 run41113901529/artifact13003779687. This is pending source, not a verified APK. TEST342 remains rejected/unpublished; TEST341 remains current and TEST330 fallback.
+- Saves, permanent history,357-value v2.6R scoring, original scores, all18 rules, combat, RNG, content, signer, application ID and versionCode remain unchanged. No data was cleared, no app uninstalled, and no publication/distribution occurred.
+
 
 ## 2026-10-30T19:36:11Z — TEST342 Tables-restoration fix passes core/API34; API36 title timeout blocks promotion
 Latest published private APK remains TEST341, release428527455/tag apd-alpha-preview-341, published2026-10-30T00:24:54Z. Its developer/player SHA256 values remain ad6281b3e41fe414187ca40824157a5bbcf102d7d86e569dbdb8439e7f47d694 / 639ce15ddb4b02d037cd29f995c9f38514e03cf577370cf38488f4602bfd65bd. TEST330 remains a published fallback. Nothing from TEST342 was published, distributed, installed on the owner's phone or called current.

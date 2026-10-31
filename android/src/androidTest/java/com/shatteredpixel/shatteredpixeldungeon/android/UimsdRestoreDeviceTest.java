@@ -455,6 +455,60 @@ public class UimsdRestoreDeviceTest {
                 assertTrue("restored Tables callback closes only its picker", windows().isEmpty());
                 assertNotNull("restored Tables callback keeps a selected view", model().viewId());
             });
+
+            final AtomicReference<List<String>> searchLabels = new AtomicReference<>();
+            final AtomicReference<Query> searchQuery = new AtomicReference<>();
+            onRender(() -> {
+                clearWindows();
+                model().selectView("runs");
+                searchQuery.set(model().query());
+                try {
+                    java.lang.reflect.Method openSearch = UimsdScene.class.getDeclaredMethod("openSearch");
+                    openSearch.setAccessible(true);
+                    openSearch.invoke(Game.scene());
+                } catch (Exception e) { throw new RuntimeException(e); }
+                assertEquals("Search prompt opened once", 1, windows().size());
+                assertTrue(windows().get(0) instanceof WndTextInput);
+                WndTextInput prompt = (WndTextInput) windows().get(0);
+                prompt.onSelect(true, "run");
+                prompt.hide();
+                assertEquals("Search results opened once", 1, windows().size());
+                assertTrue(windows().get(0) instanceof WndUimsdList);
+                assertNotNull("Search results supply an exact restorer", windows().get(0).restoreOnSceneReset());
+                List<String> labels = new ArrayList<>();
+                for (WndUimsdList.Entry entry : listEntries((WndUimsdList) windows().get(0))) {
+                    if (entry.isItem()) labels.add(entry.label);
+                }
+                assertFalse("fixture query returns visible results", labels.isEmpty());
+                searchLabels.set(labels);
+            });
+            for (int reset = 0; reset < 2; reset++) {
+                rebuildScene();
+                onRender(() -> {
+                    assertEquals("Search results restored exactly once", 1, windows().size());
+                    assertTrue(windows().get(0) instanceof WndUimsdList);
+                    assertNotNull(windows().get(0).restoreOnSceneReset());
+                    List<String> labels = new ArrayList<>();
+                    for (WndUimsdList.Entry entry : listEntries((WndUimsdList) windows().get(0))) {
+                        if (entry.isItem()) labels.add(entry.label);
+                    }
+                    assertEquals("restored results retain the exact query ordering", searchLabels.get(), labels);
+                    assertSame("restoring search results never changes the active query",
+                            searchQuery.get(), model().query());
+                });
+            }
+            onRender(() -> {
+                try {
+                    Field dirty = UimsdScene.class.getDeclaredField("dirty");
+                    dirty.setAccessible(true);
+                    dirty.setBoolean(Game.scene(), false);
+                    pickItem((WndUimsdList) windows().get(0), 0);
+                    assertTrue("restored Search callback closes only its picker", windows().isEmpty());
+                    assertTrue("restored Search callback targets the rebuilt active scene",
+                            dirty.getBoolean(Game.scene()));
+                } catch (Exception e) { throw new RuntimeException(e); }
+            });
+
             onRender(() -> {
                 clearWindows();
                 Game.scene().addToFront(new WndSettings());
