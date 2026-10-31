@@ -59,6 +59,11 @@ public class TitleMenuLayoutDeviceTest {
             if(action==MotionEvent.ACTION_DOWN)Thread.sleep(80);
         }
     }
+    private static void performSystemBack(){
+        assertTrue("Android accessibility service must accept the system Back request",
+                InstrumentationRegistry.getInstrumentation().getUiAutomation().performGlobalAction(
+                        android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_BACK));
+    }
     private static Point centre(String name)throws Exception {
         Point[] p=new Point[1];
         TopScoresDeviceTest.render(()->{try{
@@ -144,7 +149,7 @@ public class TitleMenuLayoutDeviceTest {
             TopScoresDeviceTest.screenshot("main-title-layout.png");
             nativeTap(centre("btnChanges"));waitFor(()->Game.scene() instanceof APDTextScene);
             assertEquals(APDTextScene.Page.CHANGES,APDTextScene.page);
-            InstrumentationRegistry.getInstrumentation().getUiAutomation().performGlobalAction(android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_BACK);
+            performSystemBack();
             waitFor(TitleMenuLayoutDeviceTest::fullyRestored);
             if(android.os.Build.VERSION.SDK_INT>=33){
                 assertTrue("Registered Android callback owns Back",com.watabou.input.BackGate.systemBackOwned());
@@ -300,7 +305,7 @@ public class TitleMenuLayoutDeviceTest {
                 }
                 assertFalse(com.shatteredpixel.shatteredpixeldungeon.SPDSettings.confirmWaterskin());
                 assertFalse(com.shatteredpixel.shatteredpixeldungeon.SPDSettings.confirmKnownTraps());
-                InstrumentationRegistry.getInstrumentation().getUiAutomation().performGlobalAction(android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_BACK);
+                performSystemBack();
                 waitForSettingsClosed(scenario);
                 waitFor(()->Game.scene() instanceof TitleScene);
                 nativeTap(centre("btnOptions"));
@@ -310,7 +315,7 @@ public class TitleMenuLayoutDeviceTest {
                     for(com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox b:TopScoresDeviceTest.find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox.class))
                         if(b.text().equals("Confirm Waterskin") || b.text().equals("Warn about traps"))assertFalse("Preference retained on reopening",b.checked());
                 }catch(Exception e){throw new RuntimeException(e);}});
-                InstrumentationRegistry.getInstrumentation().getUiAutomation().performGlobalAction(android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_BACK);
+                performSystemBack();
                 waitForSettingsClosed(scenario);
             }finally{
                 if(scenario.getState()==androidx.lifecycle.Lifecycle.State.RESUMED){

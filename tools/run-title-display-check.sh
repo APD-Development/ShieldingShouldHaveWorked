@@ -15,6 +15,12 @@ assert sizes and sizes[-1]==sys.argv[1],("Requested/effective display differ",sy
 PY
 fi
 cp acceptance-source.json title-evidence/
+apd_sdk="$(adb shell getprop ro.build.version.sdk | tr -d '\r')"
+if [ "$apd_sdk" -ge 36 ]; then
+  # The Google API 36 image can still be draining first-boot broadcasts after
+  # sys.boot_completed. Do not begin real Back delivery checks in that state.
+  timeout 180 adb shell am wait-for-broadcast-idle
+fi
 adb logcat -c
 adb logcat -v time > title-logcat.txt &
 if [ "$apd_mode" = full ]; then
