@@ -18,6 +18,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import com.watabou.input.PointerEvent;
 import com.watabou.utils.Signal;
 import org.junit.Test;
@@ -76,23 +77,43 @@ public class TitleMenuLayoutDeviceTest {
         }catch(Exception e){throw new RuntimeException(e);}});
         return ready[0];
     }
-    private static void waitForSettingsDraw()throws Exception {
+    private static com.shatteredpixel.shatteredpixeldungeon.windows.WndSettings waitForSettingsDraw(
+            com.shatteredpixel.shatteredpixeldungeon.windows.WndSettings previous)throws Exception {
         AtomicInteger drawn=new AtomicInteger();
-        java.util.concurrent.atomic.AtomicBoolean watching=new java.util.concurrent.atomic.AtomicBoolean();
+        AtomicReference<com.shatteredpixel.shatteredpixeldungeon.windows.WndSettings> watching=new AtomicReference<>();
         waitFor(()->{
-            if(!watching.get())TopScoresDeviceTest.render(()->{try{
+            TopScoresDeviceTest.render(()->{try{
                 List<com.shatteredpixel.shatteredpixeldungeon.windows.WndSettings> windows=
                         TopScoresDeviceTest.find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.windows.WndSettings.class);
                 assertTrue("At most one actual settings window",windows.size()<=1);
-                if(windows.size()==1){
-                    windows.get(0).add(new com.watabou.noosa.Gizmo(){
-                        @Override public void draw(){super.draw();drawn.incrementAndGet();}
-                    });
-                    watching.set(true);
+                if(windows.size()==1 && windows.get(0)!=previous){
+                    if(watching.compareAndSet(null,windows.get(0))){
+                        windows.get(0).add(new com.watabou.noosa.Gizmo(){
+                            @Override public void draw(){super.draw();drawn.incrementAndGet();}
+                        });
+                    }else assertSame("Settings window changed before its second draw",watching.get(),windows.get(0));
                 }
             }catch(Exception e){throw new RuntimeException(e);}});
-            return watching.get()&&drawn.get()>=2;
+            return watching.get()!=null&&drawn.get()>=2;
         });
+        return watching.get();
+    }
+    private static void waitForSettingsClosed(ActivityScenario<AndroidLauncher> scenario)throws Exception {
+        waitFor(()->{
+            assertEquals("Back must not leave APD while closing Settings",
+                    androidx.lifecycle.Lifecycle.State.RESUMED,scenario.getState());
+            AtomicInteger open=new AtomicInteger();
+            TopScoresDeviceTest.render(()->{try{
+                List<com.shatteredpixel.shatteredpixeldungeon.windows.WndSettings> windows=
+                        TopScoresDeviceTest.find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.windows.WndSettings.class);
+                assertTrue("At most one actual settings window",windows.size()<=1);
+                open.set(windows.size());
+            }catch(Exception e){throw new RuntimeException(e);}});
+            return open.get()==0;
+        });
+        Thread.sleep(300);
+        assertEquals("Closing Settings must keep APD resumed",
+                androidx.lifecycle.Lifecycle.State.RESUMED,scenario.getState());
     }
     @Test public void titleControlsStaySeparateAndNativeChangesAndHideUiRemainUsable()throws Exception {
         try(ActivityScenario<AndroidLauncher> scenario=ActivityScenario.launch(AndroidLauncher.class)){
@@ -211,7 +232,8 @@ public class TitleMenuLayoutDeviceTest {
             final boolean trapWas=com.shatteredpixel.shatteredpixeldungeon.SPDSettings.confirmKnownTraps();
             try{
                 TopScoresDeviceTest.render(()->{com.shatteredpixel.shatteredpixeldungeon.SPDSettings.confirmWaterskin(true);com.shatteredpixel.shatteredpixeldungeon.SPDSettings.confirmKnownTraps(true);com.shatteredpixel.shatteredpixeldungeon.windows.WndSettings.last_index=1;});
-                nativeTap(centre("btnOptions"));waitForSettingsDraw();
+                nativeTap(centre("btnOptions"));
+                com.shatteredpixel.shatteredpixeldungeon.windows.WndSettings firstSettings=waitForSettingsDraw(null);
                 Point[] toggles=new Point[2];
                 String[] toggleGeometry=new String[2];
                 TopScoresDeviceTest.render(()->{try{
@@ -236,7 +258,7 @@ public class TitleMenuLayoutDeviceTest {
                 for(int toggleIndex=0;toggleIndex<2;toggleIndex++){
                     final int index=toggleIndex;
                     if(index>0){
-                        waitForSettingsDraw();
+                        waitForSettingsDraw(null);
                         TopScoresDeviceTest.render(()->{try{
                             for(com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox b:
                                     TopScoresDeviceTest.find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox.class))
@@ -279,15 +301,26 @@ public class TitleMenuLayoutDeviceTest {
                 assertFalse(com.shatteredpixel.shatteredpixeldungeon.SPDSettings.confirmWaterskin());
                 assertFalse(com.shatteredpixel.shatteredpixeldungeon.SPDSettings.confirmKnownTraps());
                 InstrumentationRegistry.getInstrumentation().getUiAutomation().performGlobalAction(android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_BACK);
-                Thread.sleep(1200);waitFor(()->Game.scene() instanceof TitleScene);
-                nativeTap(centre("btnOptions"));waitForSettingsDraw();
+                waitForSettingsClosed(scenario);
+                waitFor(()->Game.scene() instanceof TitleScene);
+                nativeTap(centre("btnOptions"));
+                com.shatteredpixel.shatteredpixeldungeon.windows.WndSettings reopenedSettings=waitForSettingsDraw(firstSettings);
+                assertNotSame("Settings must reopen as a new window",firstSettings,reopenedSettings);
                 TopScoresDeviceTest.render(()->{try{
                     for(com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox b:TopScoresDeviceTest.find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox.class))
                         if(b.text().equals("Confirm Waterskin") || b.text().equals("Warn about traps"))assertFalse("Preference retained on reopening",b.checked());
                 }catch(Exception e){throw new RuntimeException(e);}});
                 InstrumentationRegistry.getInstrumentation().getUiAutomation().performGlobalAction(android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_BACK);
-                Thread.sleep(1000);
-            }finally{TopScoresDeviceTest.render(()->{com.shatteredpixel.shatteredpixeldungeon.SPDSettings.confirmWaterskin(waterWas);com.shatteredpixel.shatteredpixeldungeon.SPDSettings.confirmKnownTraps(trapWas);});}
+                waitForSettingsClosed(scenario);
+            }finally{
+                if(scenario.getState()==androidx.lifecycle.Lifecycle.State.RESUMED){
+                    TopScoresDeviceTest.render(()->{com.shatteredpixel.shatteredpixeldungeon.SPDSettings.confirmWaterskin(waterWas);com.shatteredpixel.shatteredpixeldungeon.SPDSettings.confirmKnownTraps(trapWas);});
+                }else{
+                    // Preference cleanup must not mask a real Activity-lifecycle failure.
+                    com.shatteredpixel.shatteredpixeldungeon.SPDSettings.confirmWaterskin(waterWas);
+                    com.shatteredpixel.shatteredpixeldungeon.SPDSettings.confirmKnownTraps(trapWas);
+                }
+            }
 
         }
     }
