@@ -44,6 +44,6 @@ public final class WndUimsdSearch {
                 "Choose a table. Its normal filters and hidden-information rules still apply.",
                 choices,(index,checked)->{
                     if(index>=0 && index<matches.size())opener.open(matches.get(index).viewId);
-                }));
+                }).restoreWith(() -> results(catalog,term,opener)));
     }
 }

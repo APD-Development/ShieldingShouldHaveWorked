@@ -181,5 +181,23 @@ public class UimsdWiringTest {
 				picker.contains("active instanceof UimsdScene") && picker.contains("((UimsdScene) active).pickView();"));
 	}
 
+	@Test
+	public void searchResultsRestoreTheirExactQueryAndTargetTheRebuiltScene() throws Exception {
+		String search = src("windows/WndUimsdSearch.java");
+		assertTrue("parameterized search results must provide an exact scene-reset restorer",
+				search.contains("}).restoreWith(() -> results(catalog,term,opener)))"));
+
+		String scene = src("scenes/UimsdScene.java");
+		assertTrue("search selections must not retain the destroyed scene instance",
+				scene.contains("model.catalog(),UimsdScene::openSearchResult"));
+		int start = scene.indexOf("private static void openSearchResult(String viewId)");
+		int end = scene.indexOf("\n    }", start);
+		assertTrue("rebuilt-scene search result router is present", start >= 0 && end > start);
+		String router = scene.substring(start, end);
+		assertTrue("result routing is limited to the active rebuilt UIMSD scene",
+				router.contains("ShatteredPixelDungeon.scene() instanceof UimsdScene")
+						&& router.contains("((UimsdScene)ShatteredPixelDungeon.scene()).openView(viewId)"));
+	}
+
 }
 

@@ -461,7 +461,13 @@ public class UimsdScene extends PixelScene {
     private void openSearch(){
         if(model==null || model.catalog()==null)return;
         com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdSearch.open(
-                model.catalog(),this::openView);
+                model.catalog(),UimsdScene::openSearchResult);
+    }
+
+    private static void openSearchResult(String viewId){
+        if(ShatteredPixelDungeon.scene() instanceof UimsdScene){
+            ((UimsdScene)ShatteredPixelDungeon.scene()).openView(viewId);
+        }
     }
 
 	private void openView( String viewId ){
