@@ -1,10 +1,10 @@
 # APD HANDOFF
 
-**Recorded:** 2026-10-31T19:17:01Z  
+**Recorded:** 2026-10-31T19:37:22Z  
 **Approved branch:** `codex/apd-phone-fixes-2026-10-09`  
-**Acceptance evidence head:** `e9b32d4e87eb4eb3d5bb2f4f79954e3b42011453`  
-**Application source under review:** `0298c2f8f3704d0b0ba47b8ae2975ace2ef2152a` (TEST344 pending)  
-**Disposition:** TEST343 failed before compilation on a provenance mismatch; corrected TEST344 requested; nothing new published or distributed
+**Acceptance evidence head:** `d63962ba6a814584aadb91bd65bff5f2dfeb17ba`  
+**Application source under review:** `0298c2f8f3704d0b0ba47b8ae2975ace2ef2152a` (TEST344)  
+**Disposition:** TEST344 compiled and passed core/API34 but is rejected on API36 and short-landscape display evidence; not published or distributed
 
 ## Current published APK
 
@@ -35,10 +35,21 @@ All18 Custom Dungeon Rules remain implemented/enabled. The357-value v2.6R scorin
 
 ## Next safe step
 
-Do not publish TEST342 or name TEST343 as an APK; TEST343 stopped before compilation. TEST344 is the corrected pending candidate for the independent UIMSD search-restoration fix. Await its complete producer, history, API34, API36 and display evidence. Preserve TEST341 as current and TEST330 as fallback; keep emulator and physical evidence separate.
+Do not publish TEST342 or TEST344. Preserve the exact TEST344 artifacts for bounded diagnosis only; do not rerun unchanged for green hunting. The UIMSD Search fix is core/API34 green, but API36 again failed to deliver the first system Back and short-landscape lost render responsiveness after an offline emulator start. Preserve TEST341 as current and TEST330 as fallback; keep emulator and physical evidence separate.
 
 
 ---
+
+## 2026-10-31T19:37:22Z — TEST344 core/API34 green; display/API36 rejection retained
+- Candidate head `d63962ba6a814584aadb91bd65bff5f2dfeb17ba`; sprint344 run41233486143. Verify/build job124632323324 passed predecessor-history preservation from compiled TEST342, reviewed-path tooling, complete core, debug assembly, compiled-history verification and private artifact upload.
+- Developer APK SHA256 `3c47ff1acfd816c720d24f30d5d569c4b73c44fda68e9ac55985406955e911bd`; artifact13054557985 ZIP digest `0c0c20f1e9178335ee2d7896677210e0721fa497129a1a402926e616646e952b`. Matching player SHA256 `8c3fa76d68e7f7b712dab0c0d080095d52d28c586057712350c9be0aaa509175`; run41233486166/artifact13054503862 ZIP digest `44f923934b6277b2c7f31d961aa0f3477b95bbc3094e13b914716c432014dbb4`. Identity and signer matched.
+- Core-only run41232001787 passed425 suites/2231 tests/0 failures-errors-skips/all6 RunTurnWindow cases. The producer core task also passed; core artifact13054622720 digest `7de7347e1cdcee4bd02b64046d2186aa7d07b361e87a13c0751fdf4b75f9ee67`.
+- API34 smoke job124633260197 passed the complete existing66-method suite, including the new real Search-results two-rebuild/restored-callback acceptance, and validated92 320x640 PNG captures. Artifact13054109759 digest `9f7c94ee47254aac8d8ddcd649b290693ad01d301dddba3f5cb35a24de1a005b`.
+- Display run41233486146: small, compact, square and M53 profiles passed. Short-landscape began with an offline emulator, later timed out at `TitleMenuLayoutDeviceTest.java:175` after Hide UI, and produced a non-PNG; artifact13054452833 digest `a29f3a9effc901d21f1891fe25aa705f2c8071989279ac18f3f8a664bcd51128`.
+- API36 reached broadcast-idle, then failed the first Changes-page title restoration at line150 because no system-Back route reached the app; both later scale methods passed. Artifact13054223697 digest `ee9203646e8477b860755e1a700dc64edaf7020e72a4d349fb4284023e96c916`.
+- Stage41233486154 failed its publication-tree equality guard; legacy hotbar41233486149 and death41233486080 failed on missing object `eda307d567bd7eacd1b304042747b65d0ea4ed72`. They add no acceptance evidence.
+- TEST344 is rejected/unpublished. TEST341 remains the latest published private pair; TEST330 remains fallback. No physical-phone testing, data clearing, uninstall, publication or distribution occurred.
+
 
 ## 2026-10-31T19:17:01Z — TEST343 failed closed before compilation; TEST344 provenance corrected
 - Sprint run41232361292 was actual ordinal343. `Preserve history from the preceding produced APK` failed because `previous_source` incorrectly used TEST342's application-source SHA `c1f04a0b8edb9aba51008ae66cda7e3b65d614b7`; the guard requires the producer run head `ff3dae8c6610bcfe033c6c3e7928d08d0b215e91`. No core rerun, APK build, history append, publication or distribution occurred.
