@@ -47,3 +47,22 @@ TEST330 remains a published fallback. TEST342 is a private workflow artifact onl
 ## Next safe step
 
 Reuse the exact TEST342 APK and retained API36 artifact for a bounded render-thread-timeout diagnosis without rebuilding application source. Do not weaken the60-second assertion, erase the failed attempt or publish TEST342. If that diagnosis is deferred, preserve TEST341 and continue independent read-only UIMSD audit work. Physical-phone verification remains separate and absent.
+
+
+## 2026-10-31 API36 lifecycle diagnosis and guarded rerun
+
+The original API36 artifact was diagnosed rather than rerun unchanged. Its final Back closed the Activity; `AndroidLauncher` then reached PAUSED, STOPPED and DESTROYED before the test's `finally` cleanup called the 60-second render guard. That timeout therefore did not prove a live render-thread freeze.
+
+Test-only commit `a423f98d5532c9b008a34f5828afce618aca2302` made Settings acceptance lifecycle-exact: the first window must close while the Activity remains RESUMED, the reopened window must be a distinct instance, and cleanup cannot mask a stopped Activity. Run41208749842 passed all five API34 profiles. API36 failed earlier at the first Changes-page accessibility Back: no `APD-BACK` route appeared and title restoration timed out. Artifact13045836067 digest `f4ba58d5b63b4b97e43748c1140a5a34d9ff4c8a6d16f6a1f52c1d7dd546285b`.
+
+Test-infrastructure commit `b8e336a427846d35535521e3c2a44dbdd004e843` then:
+
+- requires the Android accessibility service to accept each system-Back request;
+- on API36, waits at most180 seconds for Android's broadcast queues to become idle before instrumentation;
+- leaves the real system callback path,120-second title condition,60-second render guard and all window/lifecycle assertions unchanged.
+
+Display run41209586264 reused the protected-input-identical TEST342 APK and compiled instrumentation only. Android reported `All broadcast queues are idle!`; the accessibility request returned true; the app's registered priority-0 `OnBackInvokedCallback` was visible in logcat. Nevertheless, no `APD-BACK` route reached the app and the first Changes-page title restoration again timed out at `TitleMenuLayoutDeviceTest.java:150`. Both subsequent API36 scale/stale-input methods passed. Retained artifact13045274020 digest `29dd440b91c264819868c5b8de8e082c33b1a5f64ca94470c7eaa9d67dfe2a97`.
+
+Four API34 profiles completed successfully. The M53 instrumentation itself completed `OK (1 test)`; its emulator went offline afterward during evidence collection, so the screenshot validator correctly rejected a non-PNG and the job remained failed. Artifact13046166155 digest `ff948e1d6ad653b542c8ed317f76e0a18341fd818f2c64e88b3dd76d3b330082`. This is emulator-only evidence.
+
+No application source, executable build request, APK, compiled history, scoring, saves, all18 rules, combat, RNG, signing identity, publication or tester distribution changed. TEST342 remains rejected and unpublished. TEST341 remains the current published private pair; TEST330 remains fallback.
