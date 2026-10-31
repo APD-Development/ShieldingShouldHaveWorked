@@ -1,10 +1,10 @@
 # APD HANDOFF
 
-**Recorded:** 2026-10-31T19:03:06Z  
+**Recorded:** 2026-10-31T19:17:01Z  
 **Approved branch:** `codex/apd-phone-fixes-2026-10-09`  
 **Acceptance evidence head:** `e9b32d4e87eb4eb3d5bb2f4f79954e3b42011453`  
-**Application source under review:** `0298c2f8f3704d0b0ba47b8ae2975ace2ef2152a` (TEST343 pending)  
-**Disposition:** TEST342 remains rejected; TEST343 intentionally requested after core green; nothing new published or distributed
+**Application source under review:** `0298c2f8f3704d0b0ba47b8ae2975ace2ef2152a` (TEST344 pending)  
+**Disposition:** TEST343 failed before compilation on a provenance mismatch; corrected TEST344 requested; nothing new published or distributed
 
 ## Current published APK
 
@@ -35,10 +35,17 @@ All18 Custom Dungeon Rules remain implemented/enabled. The357-value v2.6R scorin
 
 ## Next safe step
 
-Do not publish TEST342. TEST343 is an intentional pending candidate for the independent UIMSD search-restoration fix; await its complete producer, history, API34, API36 and display evidence before naming any APK. Preserve TEST341 as current and TEST330 as fallback. Keep emulator and physical evidence separate.
+Do not publish TEST342 or name TEST343 as an APK; TEST343 stopped before compilation. TEST344 is the corrected pending candidate for the independent UIMSD search-restoration fix. Await its complete producer, history, API34, API36 and display evidence. Preserve TEST341 as current and TEST330 as fallback; keep emulator and physical evidence separate.
 
 
 ---
+
+## 2026-10-31T19:17:01Z — TEST343 failed closed before compilation; TEST344 provenance corrected
+- Sprint run41232361292 was actual ordinal343. `Preserve history from the preceding produced APK` failed because `previous_source` incorrectly used TEST342's application-source SHA `c1f04a0b8edb9aba51008ae66cda7e3b65d614b7`; the guard requires the producer run head `ff3dae8c6610bcfe033c6c3e7928d08d0b215e91`. No core rerun, APK build, history append, publication or distribution occurred.
+- Display run41232361337 held all six jobs to the exact source for the full bounded lookup, then failed because no protected-input-identical producer existed. It built no substitute APK and supplied no acceptance evidence.
+- The corrected history keeps `previous_source=ff3dae8c6610bcfe033c6c3e7928d08d0b215e91` and separately keeps `previous_application_source=c1f04a0b8edb9aba51008ae66cda7e3b65d614b7`. This is the only change to candidate provenance.
+- TEST344 is intentionally requested against the same core-green application source. TEST341 remains the latest published private pair and TEST330 fallback. TEST342 remains rejected; TEST343 names no compiled APK.
+
 
 ## 2026-10-31T19:03:06Z — UIMSD Search restoration core-green; TEST343 intentionally requested
 - Reproduced an independent parameterized-window loss: `WndUimsdSearch.results` had no exact restorer, so `PixelScene.saveWindows` discarded the open results list during scene recreation. Its callback also captured the destroyed `UimsdScene`.

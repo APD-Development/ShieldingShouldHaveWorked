@@ -75,3 +75,10 @@ After the TEST342 rejection, an independent UIMSD audit reproduced another bound
 Core-only run41232001787/job124627987345 at head `e9b32d4e87eb4eb3d5bb2f4f79954e3b42011453` passed425 suites/2231 tests with0 failures,0 errors and0 skips, including all6 `RunTurnWindowTest` methods. Artifact13053689442 digest: `ab666858b5eed949f804ea3202195d556bdc2a9c58837bb4fd895d939cf09e73`.
 
 The existing Android restoration scenario now opens a real search, retains the exact ordered results and unchanged query through two consecutive scene rebuilds, and proves the restored selection dirties the rebuilt scene. TEST343 is intentionally requested with compiled TEST342 run41113901529/artifact13003779687 as its immediate predecessor. It remains pending until full producer, history, API34, API36 and display evidence completes. TEST341 remains the current published private pair; TEST330 remains fallback. Nothing new was published or distributed.
+
+
+## 2026-10-31T19:17:01Z — TEST343 pre-build provenance rejection
+
+Sprint run41232361292 was actual ordinal343 and stopped at its first history gate. `previous_source` had been set to TEST342's application source `c1f04a0b8edb9aba51008ae66cda7e3b65d614b7`, but the workflow correctly requires the exact prior producer head `ff3dae8c6610bcfe033c6c3e7928d08d0b215e91`. Core, APK build and history append were skipped; TEST343 therefore names no compiled APK.
+
+Display run41232361337 kept all six jobs bound to the same protected application inputs and, after its bounded exact-producer lookup, failed without compiling or substituting an APK. The corrected TEST344 request separates `previous_source=ff3dae8c...` from `previous_application_source=c1f04a0b...`. No production or test behavior changed in this correction.

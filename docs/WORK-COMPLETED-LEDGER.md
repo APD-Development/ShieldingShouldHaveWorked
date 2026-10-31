@@ -1,3 +1,7 @@
+## 2026-10-31T19:17:01Z — TEST343 failed before compilation; TEST344 history provenance corrected
+- Sprint41232361292 (actual ordinal343) failed its first history-preservation gate: previous_source used application source c1f04a0b8edb9aba51008ae66cda7e3b65d614b7 instead of producer head ff3dae8c6610bcfe033c6c3e7928d08d0b215e91. No APK or history record was built. Display41232361337 waited fail-closed for an exact producer and all6 jobs then failed without building a substitute.
+- Corrected only the run-head/application-source distinction and intentionally requested TEST344. The application fix and core evidence are unchanged. TEST341 remains current; TEST330 fallback; TEST342 rejected; TEST343 has no compiled APK.
+
 ## 2026-10-31T19:03:06Z — UIMSD Search restoration core-green; TEST343 requested
 - Production commit0298c2f8f3704d0b0ba47b8ae2975ace2ef2152a adds the missing exact restorer for parameterized UIMSD Search results and routes restored selection to the rebuilt active UIMSD scene. Added focused core guard and extended Android two-rebuild/callback acceptance; no save/history/scoring/rules/combat/RNG/content/signing/app-ID/version change.
 - Core head e9b32d4e87eb4eb3d5bb2f4f79954e3b42011453; run41232001787/job124627987345 passed425 suites/2231 tests/0 failures-errors-skips/all6 RunTurnWindow cases. Artifact13053689442/SHA256ab666858b5eed949f804ea3202195d556bdc2a9c58837bb4fd895d939cf09e73.
