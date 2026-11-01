@@ -44,6 +44,14 @@ public class UimsdWiringTest {
 	}
 
 	private static String shaOf( String text ) throws Exception {
+		// Only the exact legal notice may differ; retain both original executable-source hashes.
+		String notice = " * ADHD Pixel Dungeon\n * Copyright (C) 2026 Chris Charlton\n *\n";
+		int at = text.indexOf(notice);
+		if (at >= 0) {
+			assertTrue("Notice is confined to the initial copyright header", at < text.indexOf("package "));
+			assertEquals("One APD notice only", -1, text.indexOf(notice, at + notice.length()));
+			text = text.substring(0, at) + text.substring(at + notice.length());
+		}
 		byte[] d = MessageDigest.getInstance("SHA-256").digest(text.getBytes("UTF-8"));
 		StringBuilder b = new StringBuilder();
 		for (byte x : d) b.append(String.format("%02x", x));
