@@ -491,13 +491,13 @@ public class UimsdRestoreDeviceTest {
                     clearWindows();
                     options("evidenceRequests", new Class<?>[]{UimsdModel.class}, fixtureModel);
                     assertEquals("local evidence list opened once", 1, windows().size());
-                    assertEquals(java.util.Collections.singletonList("restore-fixture-run"),
+                    assertEquals(java.util.Collections.singletonList("Run restore-fixture-run"),
                             itemLabels((WndUimsdList) windows().get(0)));
                 });
                 rebuildScene();
                 onRender(() -> {
                     assertEquals("evidence list restored exactly once", 1, windows().size());
-                    assertEquals(java.util.Collections.singletonList("restore-fixture-run"),
+                    assertEquals(java.util.Collections.singletonList("Run restore-fixture-run"),
                             itemLabels((WndUimsdList) windows().get(0)));
                     pickItem((WndUimsdList) windows().get(0), 0);
                     assertEquals("evidence decision opened once", 1, windows().size());
