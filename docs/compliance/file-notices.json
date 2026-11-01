@@ -738,6 +738,13 @@
       "style": "inline GPL notice; original copyright lines retained"
     },
     {
+      "path": ".gitignore",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "inline GPL notice; original copyright lines retained"
+    },
+    {
       "path": "AGENTS.md",
       "years": "2026",
       "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
@@ -14146,27 +14153,6 @@
       "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
       "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
       "style": "inline GPL notice; original copyright lines retained"
-    },
-    {
-      "path": "tools/__pycache__/apd_copyright_headers.cpython-312.pyc",
-      "years": "2026",
-      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
-      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
-      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
-    },
-    {
-      "path": "tools/__pycache__/apd_gpl_release_gate.cpython-312.pyc",
-      "years": "2026",
-      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
-      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
-      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
-    },
-    {
-      "path": "tools/__pycache__/test_apd_gpl_compliance.cpython-312.pyc",
-      "years": "2026",
-      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
-      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
-      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
     },
     {
       "path": "tools/apd_bug_report_pdf.py",

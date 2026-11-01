@@ -35,7 +35,7 @@ def apply(root):
         years=existing.get(name,['2026']);years='-'.join([min(years),max(years)]) if len(set(years))>1 else years[0]
         block=' * ADHD Pixel Dungeon\n * Copyright (C) '+years+' Chris Charlton\n *\n'
         suffix=p.suffix.lower()
-        inline = suffix in ('.java','.gradle','.py','.sh','.yml','.yaml','.properties','.xml')
+        inline = name == '.gitignore' or suffix in ('.java','.gradle','.py','.sh','.yml','.yaml','.properties','.xml')
         if name.startswith('keystore/'):
             notices.append(dict(path=name,style='NOT DONE: signing material left untouched; report findings only',years=years));continue
         if inline:
