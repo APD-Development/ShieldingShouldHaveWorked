@@ -157,6 +157,13 @@
       "style": "inline GPL notice; original copyright lines retained"
     },
     {
+      "path": ".github/workflows/apd-source341-recovery.yml",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "inline GPL notice; original copyright lines retained"
+    },
+    {
       "path": ".github/workflows/apd-stop-rejected336-check.yml",
       "years": "2026",
       "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
@@ -14465,6 +14472,20 @@
       "style": "external per-file notice; bytes preserved (binary/strict data/document)"
     },
     {
+      "path": "docs/compliance/source341-recovery-request.txt",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "docs/compliance/source341-scan.json",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
       "path": "docs/evidence/armor-100000/ArmorStudy.java",
       "years": "2026",
       "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
@@ -14794,7 +14815,21 @@
       "style": "inline GPL notice; original copyright lines retained"
     },
     {
+      "path": "tools/apd_compare_apk_payload.py",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "inline GPL notice; original copyright lines retained"
+    },
+    {
       "path": "tools/apd_copyright_headers.py",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "inline GPL notice; original copyright lines retained"
+    },
+    {
+      "path": "tools/apd_corresponding_source.py",
       "years": "2026",
       "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
       "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
@@ -14907,6 +14942,13 @@
     },
     {
       "path": "tools/apd_publish_owner_test323.py",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "inline GPL notice; original copyright lines retained"
+    },
+    {
+      "path": "tools/apd_publish_source_archive.py",
       "years": "2026",
       "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
       "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
