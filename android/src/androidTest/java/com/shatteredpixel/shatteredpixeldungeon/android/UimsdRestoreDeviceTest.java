@@ -166,6 +166,18 @@ public class UimsdRestoreDeviceTest {
         throw new AssertionError("Missing picker item " + item);
     }
 
+    private static List<String> itemLabels(WndUimsdList list){
+        List<String> labels = new ArrayList<>();
+        for (WndUimsdList.Entry entry : listEntries(list)) if (entry.isItem()) labels.add(entry.label);
+        return labels;
+    }
+
+    private static List<Boolean> itemChecks(WndUimsdList list){
+        List<Boolean> checks = new ArrayList<>();
+        for (WndUimsdList.Entry entry : listEntries(list)) if (entry.isItem()) checks.add(Boolean.TRUE.equals(entry.checked));
+        return checks;
+    }
+
     private static void assertSplitChecks(WndUimsdList list){
         try {
             Field f = WndUimsdList.class.getDeclaredField("labelTexts"); f.setAccessible(true);
@@ -419,6 +431,171 @@ public class UimsdRestoreDeviceTest {
                     assertEquals(0, showActions.get());
                 } finally { clearWindows(); PixelScene.uiCamera.height = originalHeight; }
             });
+        }
+    }
+
+    @Test public void privacySubflowsRestoreExactLocalStateWithoutQueueingOrSending() throws Exception {
+        try (ActivityScenario<AndroidLauncher> scenario = ActivityScenario.launch(AndroidLauncher.class)) {
+            long deadline = System.currentTimeMillis() + 120000;
+            while (Game.scene() == null && System.currentTimeMillis() < deadline) Thread.sleep(200);
+            assertNotNull("game did not start", Game.scene());
+            Object previous = Game.scene();
+            onRender(() -> UimsdScene.openNow(TitleScene.class));
+            awaitScene(previous);
+
+            java.io.File cache = androidx.test.platform.app.InstrumentationRegistry.getInstrumentation()
+                    .getTargetContext().getCacheDir();
+            java.io.File container = java.nio.file.Files.createTempDirectory(cache.toPath(), "privacy-restore-").toFile();
+            java.io.File fixture = new java.io.File(container, "history");
+            assertTrue(fixture.mkdir());
+            try {
+                UimsdModel fixtureModel = new UimsdModel("fixture-rules", "Fixture rules");
+                Field root = UimsdModel.class.getDeclaredField("root");
+                root.setAccessible(true);
+                root.set(fixtureModel, fixture);
+
+                long now = System.currentTimeMillis();
+                com.shatteredpixel.shatteredpixeldungeon.apd.backend.EvidenceMessages.Asked asked =
+                        new com.shatteredpixel.shatteredpixeldungeon.apd.backend.EvidenceMessages.Asked(
+                                new com.shatteredpixel.shatteredpixeldungeon.apd.backend.Evidence.Request(
+                                        com.shatteredpixel.shatteredpixeldungeon.apd.backend.Id.of(
+                                                com.shatteredpixel.shatteredpixeldungeon.apd.backend.Id.Kind.SUBMISSION,
+                                                "sub_restore_fixture"),
+                                        com.shatteredpixel.shatteredpixeldungeon.apd.backend.Evidence.Kind.FULL_RUN_LOG,
+                                        now + 3600000L),
+                                "restore-fixture-run");
+                assertTrue(com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge.EvidenceInbox.add(
+                        fixture, asked, now));
+
+                java.util.Set<String> voteOptions = new java.util.TreeSet<>(
+                        java.util.Arrays.asList("Keep exact state", "Queue nothing", "Restore checks"));
+                com.shatteredpixel.shatteredpixeldungeon.apd.backend.VoteMessages.Offer offer =
+                        new com.shatteredpixel.shatteredpixeldungeon.apd.backend.VoteMessages.Offer(
+                                new com.shatteredpixel.shatteredpixeldungeon.apd.backend.Voting.Round(
+                                        com.shatteredpixel.shatteredpixeldungeon.apd.backend.Id.of(
+                                                com.shatteredpixel.shatteredpixeldungeon.apd.backend.Id.Kind.VOTE_ROUND,
+                                                "vr_restore_fixture"),
+                                        voteOptions, 2, now - 1000L, now + 3600000L),
+                                "Restoration fixture vote");
+                assertTrue(com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge.VoteActions.store(
+                        fixture, offer));
+
+                java.io.File evidenceFile =
+                        com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge.EvidenceInbox.fileIn(fixture);
+                java.io.File votesFile = new java.io.File(fixture,
+                        com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge.VoteActions.FILE_NAME);
+                byte[] evidenceBefore = java.nio.file.Files.readAllBytes(evidenceFile.toPath());
+                byte[] votesBefore = java.nio.file.Files.readAllBytes(votesFile.toPath());
+
+                onRender(() -> {
+                    clearWindows();
+                    options("evidenceRequests", new Class<?>[]{UimsdModel.class}, fixtureModel);
+                    assertEquals("local evidence list opened once", 1, windows().size());
+                    assertEquals(java.util.Collections.singletonList("restore-fixture-run"),
+                            itemLabels((WndUimsdList) windows().get(0)));
+                });
+                rebuildScene();
+                onRender(() -> {
+                    assertEquals("evidence list restored exactly once", 1, windows().size());
+                    assertEquals(java.util.Collections.singletonList("restore-fixture-run"),
+                            itemLabels((WndUimsdList) windows().get(0)));
+                    pickItem((WndUimsdList) windows().get(0), 0);
+                    assertEquals("evidence decision opened once", 1, windows().size());
+                    assertEquals(java.util.Arrays.asList("Agree", "Decline", "Decide later"),
+                            itemLabels((WndUimsdList) windows().get(0)));
+                });
+                for (int reset = 0; reset < 2; reset++) {
+                    rebuildScene();
+                    onRender(() -> {
+                        assertEquals("evidence decision restored exactly once", 1, windows().size());
+                        assertEquals(java.util.Arrays.asList("Agree", "Decline", "Decide later"),
+                                itemLabels((WndUimsdList) windows().get(0)));
+                        assertEquals("restoration never answers evidence", 1,
+                                com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge.EvidenceInbox.pending(fixture));
+                        assertEquals("restoration never queues evidence", 0,
+                                com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge.SubmissionQueue.pending(fixture));
+                    });
+                }
+                onRender(() -> {
+                    windows().get(0).onBackPressed();
+                    assertTrue("Back leaves the evidence request unanswered", windows().isEmpty());
+                });
+                assertArrayEquals("evidence fixture bytes stay exact", evidenceBefore,
+                        java.nio.file.Files.readAllBytes(evidenceFile.toPath()));
+
+                onRender(() -> {
+                    options("communityVotes", new Class<?>[]{UimsdModel.class}, fixtureModel);
+                    assertEquals("local vote list opened once", 1, windows().size());
+                    assertEquals(java.util.Collections.singletonList("Restoration fixture vote"),
+                            itemLabels((WndUimsdList) windows().get(0)));
+                });
+                rebuildScene();
+                onRender(() -> {
+                    assertEquals("vote offer list restored exactly once", 1, windows().size());
+                    assertEquals(java.util.Collections.singletonList("Restoration fixture vote"),
+                            itemLabels((WndUimsdList) windows().get(0)));
+                    pickItem((WndUimsdList) windows().get(0), 0);
+                    assertEquals(java.util.Arrays.asList("Keep exact state", "Queue nothing", "Restore checks"),
+                            itemLabels((WndUimsdList) windows().get(0)));
+                    pickItem((WndUimsdList) windows().get(0), 0);
+                    pickItem((WndUimsdList) windows().get(0), 2);
+                    assertEquals(java.util.Arrays.asList(true, false, true),
+                            itemChecks((WndUimsdList) windows().get(0)));
+                });
+                for (int reset = 0; reset < 2; reset++) {
+                    rebuildScene();
+                    onRender(() -> {
+                        assertEquals("in-progress vote restored exactly once", 1, windows().size());
+                        assertEquals(java.util.Arrays.asList("Keep exact state", "Queue nothing", "Restore checks"),
+                                itemLabels((WndUimsdList) windows().get(0)));
+                        assertEquals("the exact two vote ticks survive", java.util.Arrays.asList(true, false, true),
+                                itemChecks((WndUimsdList) windows().get(0)));
+                        assertEquals("restoration never queues a ballot", 0,
+                                com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge.SubmissionQueue.pending(fixture));
+                    });
+                }
+                onRender(() -> {
+                    windows().get(0).onBackPressed();
+                    assertTrue("Back leaves without voting", windows().isEmpty());
+                });
+                assertArrayEquals("stored vote offer bytes stay exact", votesBefore,
+                        java.nio.file.Files.readAllBytes(votesFile.toPath()));
+
+                onRender(() -> {
+                    options("accountRequest", new Class<?>[]{
+                                    UimsdModel.class,
+                                    com.shatteredpixel.shatteredpixeldungeon.apd.backend.AccountRequests.Kind.class},
+                            fixtureModel,
+                            com.shatteredpixel.shatteredpixeldungeon.apd.backend.AccountRequests.Kind.EXPORT);
+                    assertEquals("account request confirmation opened once", 1, windows().size());
+                    assertEquals(java.util.Arrays.asList("Queue the request", "Cancel"),
+                            itemLabels((WndUimsdList) windows().get(0)));
+                });
+                rebuildScene();
+                onRender(() -> {
+                    assertEquals("account confirmation restored exactly once", 1, windows().size());
+                    assertEquals(java.util.Arrays.asList("Queue the request", "Cancel"),
+                            itemLabels((WndUimsdList) windows().get(0)));
+                    assertEquals("restoration never queues an account request", 0,
+                            com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge.SubmissionQueue.pending(fixture));
+                    assertFalse("restoration never creates a session",
+                            new java.io.File(fixture,
+                                    com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge.SessionStore.FILE_NAME).exists());
+                    windows().get(0).onBackPressed();
+                    assertTrue("Back cancels the account confirmation", windows().isEmpty());
+                });
+
+                assertArrayEquals(evidenceBefore, java.nio.file.Files.readAllBytes(evidenceFile.toPath()));
+                assertArrayEquals(votesBefore, java.nio.file.Files.readAllBytes(votesFile.toPath()));
+                assertEquals("all restoration paths leave the local queue empty", 0,
+                        com.shatteredpixel.shatteredpixeldungeon.apd.backendbridge.SubmissionQueue.pending(fixture));
+            } finally {
+                onRender(() -> clearWindows());
+                java.io.File[] created = fixture.listFiles();
+                if (created != null) for (java.io.File file : created) assertTrue(file.delete());
+                assertTrue(fixture.delete());
+                assertTrue(container.delete());
+            }
         }
     }
 
