@@ -38,3 +38,8 @@ local.properties
 # Python build/test artifacts are not corresponding source.
 __pycache__/
 *.py[cod]
+
+# Signing material is held externally, including the existing install-compatible key.
+keystore/
+*.jks
+*.keystore

@@ -32,7 +32,10 @@ jobs:
         with: {distribution: temurin, java-version: '21'}
       - uses: gradle/actions/setup-gradle@v4
       - name: Compliance regressions
-        run: python3 -m unittest discover -s tools -p test_apd_gpl_compliance.py
+        run: |
+          python3 -m pip install Pillow==12.0.0
+          python3 -m unittest discover -s tools -p test_apd_gpl_compliance.py
+          python3 -m unittest discover -s tools -p test_apd_branding.py
       - name: Complete core suite and platform compilation without APK assembly
         run: |
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36"

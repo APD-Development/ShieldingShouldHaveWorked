@@ -1,0 +1,34 @@
+[
+  {
+    "path": "core/src/main/assets/fonts/pixel_font.ttf",
+    "sha256": "b0e3f69a08ed72c54e150060d2bfb99a39e75cfbbe2aeb12db9b2831bd816e17",
+    "license": "Apache-2.0",
+    "embedded_notices": {
+      "0": [
+        "Character sizing based on Roboto by Google\n\nOriginal bitmaps by Oleg Dolya(Watabou)\n\nTTF Conversion by Evan Debenham(Shattered Pixel)\n\nThis font uses Characters from Roboto for in certain cases, all Roboto font data copyright Google 2014"
+      ],
+      "13": [
+        "Licensed under the Apache License, Version 2.0"
+      ],
+      "14": [
+        "http://www.apache.org/licenses/LICENSE-2.0"
+      ]
+    }
+  },
+  {
+    "path": "desktop/src/main/assets/fonts/droid_sans.ttf",
+    "sha256": "a20c729bc1c91cefcf6e227cba675fff2761968fb7f8f2ae30cd58fec85f6867",
+    "license": "Apache-2.0",
+    "embedded_notices": {
+      "0": [
+        "Digitized data copyright Google Corporation \u00a9 2006"
+      ],
+      "13": [
+        "Licensed under the Apache License, Version 2.0"
+      ],
+      "14": [
+        "http://www.apache.org/licenses/LICENSE-2.0"
+      ]
+    }
+  }
+]

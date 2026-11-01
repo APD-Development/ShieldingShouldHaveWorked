@@ -3,6 +3,13 @@
   "limitation": "Binary/strict-format data are not relabeled internally. This manifest records APD modification notices without altering their bytes. It does not grant rights in third-party material or signing keys.",
   "files": [
     {
+      "path": ".github/actions/apd-signing/action.yml",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "inline GPL notice; original copyright lines retained"
+    },
+    {
       "path": ".github/ci/run-device-tests.sh",
       "years": "2026",
       "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
@@ -1186,6 +1193,153 @@
       "style": "inline GPL notice; original copyright lines retained"
     },
     {
+      "path": "android/src/debug/res/mipmap-hdpi/ic_launcher.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "android/src/debug/res/mipmap-hdpi/ic_launcher_background.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "android/src/debug/res/mipmap-hdpi/ic_launcher_foreground.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "android/src/debug/res/mipmap-hdpi/ic_launcher_monochrome.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "android/src/debug/res/mipmap-ldpi/ic_launcher.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "android/src/debug/res/mipmap-mdpi/ic_launcher.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "android/src/debug/res/mipmap-mdpi/ic_launcher_background.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "android/src/debug/res/mipmap-mdpi/ic_launcher_foreground.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "android/src/debug/res/mipmap-mdpi/ic_launcher_monochrome.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "android/src/debug/res/mipmap-xhdpi/ic_launcher.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "android/src/debug/res/mipmap-xhdpi/ic_launcher_background.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "android/src/debug/res/mipmap-xhdpi/ic_launcher_foreground.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "android/src/debug/res/mipmap-xhdpi/ic_launcher_monochrome.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "android/src/debug/res/mipmap-xxhdpi/ic_launcher.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "android/src/debug/res/mipmap-xxhdpi/ic_launcher_background.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "android/src/debug/res/mipmap-xxhdpi/ic_launcher_foreground.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "android/src/debug/res/mipmap-xxhdpi/ic_launcher_monochrome.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "android/src/debug/res/mipmap-xxxhdpi/ic_launcher.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "android/src/debug/res/mipmap-xxxhdpi/ic_launcher_background.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "android/src/debug/res/mipmap-xxxhdpi/ic_launcher_foreground.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "android/src/debug/res/mipmap-xxxhdpi/ic_launcher_monochrome.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
       "path": "android/src/main/java/com/shatteredpixel/shatteredpixeldungeon/android/AndroidFileProvider.java",
       "years": "2026",
       "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
@@ -1219,6 +1373,153 @@
       "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
       "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
       "style": "inline GPL notice; original copyright lines retained"
+    },
+    {
+      "path": "android/src/main/res/mipmap-hdpi/ic_launcher.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "android/src/main/res/mipmap-hdpi/ic_launcher_background.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "android/src/main/res/mipmap-hdpi/ic_launcher_foreground.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "android/src/main/res/mipmap-hdpi/ic_launcher_monochrome.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "android/src/main/res/mipmap-ldpi/ic_launcher.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "android/src/main/res/mipmap-mdpi/ic_launcher.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "android/src/main/res/mipmap-mdpi/ic_launcher_background.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "android/src/main/res/mipmap-mdpi/ic_launcher_foreground.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "android/src/main/res/mipmap-mdpi/ic_launcher_monochrome.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "android/src/main/res/mipmap-xhdpi/ic_launcher.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "android/src/main/res/mipmap-xhdpi/ic_launcher_background.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "android/src/main/res/mipmap-xhdpi/ic_launcher_foreground.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "android/src/main/res/mipmap-xhdpi/ic_launcher_monochrome.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "android/src/main/res/mipmap-xxhdpi/ic_launcher.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "android/src/main/res/mipmap-xxhdpi/ic_launcher_background.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "android/src/main/res/mipmap-xxhdpi/ic_launcher_foreground.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "android/src/main/res/mipmap-xxhdpi/ic_launcher_monochrome.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "android/src/main/res/mipmap-xxxhdpi/ic_launcher.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "android/src/main/res/mipmap-xxxhdpi/ic_launcher_background.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "android/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "android/src/main/res/mipmap-xxxhdpi/ic_launcher_monochrome.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
     },
     {
       "path": "build.gradle",
@@ -2467,6 +2768,34 @@
       "style": "external per-file notice; bytes preserved (binary/strict data/document)"
     },
     {
+      "path": "core/src/main/assets/interfaces/banners.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "core/src/main/assets/interfaces/change_icons.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "core/src/main/assets/interfaces/icons.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "core/src/main/assets/legal/Apache-2.0.txt",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
       "path": "core/src/main/assets/legal/GPL-3.0.txt",
       "years": "2026",
       "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
@@ -2475,6 +2804,13 @@
     },
     {
       "path": "core/src/main/assets/legal/NOTICE.txt",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "core/src/main/assets/legal/THIRD-PARTY-NOTICES.txt",
       "years": "2026",
       "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
       "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
@@ -3158,6 +3494,13 @@
       "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
       "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
       "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/Assets.java",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "inline GPL notice; original copyright lines retained"
     },
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/Badges.java",
@@ -7087,6 +7430,13 @@
       "style": "inline GPL notice; original copyright lines retained"
     },
     {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/TitleBackground.java",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "inline GPL notice; original copyright lines retained"
+    },
+    {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/Toolbar.java",
       "years": "2026",
       "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
@@ -10706,6 +11056,76 @@
       "style": "inline GPL notice; original copyright lines retained"
     },
     {
+      "path": "desktop/src/main/assets/fonts/Apache-2.0.txt",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "desktop/src/main/assets/fonts/THIRD-PARTY-NOTICES.txt",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "desktop/src/main/assets/icons/icon_128.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "desktop/src/main/assets/icons/icon_16.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "desktop/src/main/assets/icons/icon_256.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "desktop/src/main/assets/icons/icon_32.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "desktop/src/main/assets/icons/icon_48.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "desktop/src/main/assets/icons/icon_64.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "desktop/src/main/assets/icons/mac.icns",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "desktop/src/main/assets/icons/windows.ico",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
       "path": "desktop/src/main/java/com/shatteredpixel/shatteredpixeldungeon/desktop/DesktopLaunchValidator.java",
       "years": "2026",
       "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
@@ -13968,6 +14388,13 @@
       "style": "external per-file notice; bytes preserved (binary/strict data/document)"
     },
     {
+      "path": "docs/compliance/branding-assets.json",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
       "path": "docs/compliance/builds.json",
       "years": "2026",
       "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
@@ -13983,6 +14410,13 @@
     },
     {
       "path": "docs/compliance/file-notices.json",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "docs/compliance/font-licenses.json",
       "years": "2026",
       "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
       "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
@@ -14018,6 +14452,13 @@
     },
     {
       "path": "docs/compliance/secrets-redacted.json",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "docs/compliance/signing-integration.json",
       "years": "2026",
       "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
       "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
@@ -14129,16 +14570,158 @@
       "style": "external per-file notice; bytes preserved (binary/strict data/document)"
     },
     {
+      "path": "ios/assets/Assets.xcassets/AppIcon.appiconset/Icon-1024.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "ios/assets/Assets.xcassets/AppIcon.appiconset/Icon-20.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "ios/assets/Assets.xcassets/AppIcon.appiconset/Icon-20@2x.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "ios/assets/Assets.xcassets/AppIcon.appiconset/Icon-20@3x.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "ios/assets/Assets.xcassets/AppIcon.appiconset/Icon-29.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "ios/assets/Assets.xcassets/AppIcon.appiconset/Icon-29@2x.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "ios/assets/Assets.xcassets/AppIcon.appiconset/Icon-29@3x.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "ios/assets/Assets.xcassets/AppIcon.appiconset/Icon-40.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "ios/assets/Assets.xcassets/AppIcon.appiconset/Icon-40@2x.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "ios/assets/Assets.xcassets/AppIcon.appiconset/Icon-40@3x.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "ios/assets/Assets.xcassets/AppIcon.appiconset/Icon-60@2x.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "ios/assets/Assets.xcassets/AppIcon.appiconset/Icon-60@3x.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "ios/assets/Assets.xcassets/AppIcon.appiconset/Icon-76.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "ios/assets/Assets.xcassets/AppIcon.appiconset/Icon-76@2x.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "ios/assets/Assets.xcassets/AppIcon.appiconset/Icon-83.5@2x.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "ios/assets/Assets.xcassets/Banner.imageset/Banner.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "ios/assets/Assets.xcassets/Banner.imageset/Banner@2x.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "ios/assets/Assets.xcassets/Banner.imageset/Banner@3x.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "ios/assets/Assets.xcassets/BannerWide.imageset/BannerWide.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "ios/assets/Assets.xcassets/BannerWide.imageset/BannerWide@2x.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "ios/assets/Assets.xcassets/BannerWide.imageset/BannerWide@3x.png",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
       "path": "ios/build.gradle",
       "years": "2026",
       "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
       "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
       "style": "inline GPL notice; original copyright lines retained"
-    },
-    {
-      "path": "keystore/apd-debug.jks",
-      "style": "NOT DONE: signing material left untouched; report findings only",
-      "years": "2026"
     },
     {
       "path": "services/news/debugNews/src/main/java/com/shatteredpixel/shatteredpixeldungeon/services/news/DebugNews.java",
@@ -14267,6 +14850,13 @@
       "style": "inline GPL notice; original copyright lines retained"
     },
     {
+      "path": "tools/apd_prepare_signing.py",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "inline GPL notice; original copyright lines retained"
+    },
+    {
       "path": "tools/apd_publish_gathering331.py",
       "years": "2026",
       "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
@@ -14338,6 +14928,13 @@
     },
     {
       "path": "tools/armor-study/ArmorStudy.java",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "inline GPL notice; original copyright lines retained"
+    },
+    {
+      "path": "tools/build_apd_branding.py",
       "years": "2026",
       "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
       "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
@@ -14566,6 +15163,13 @@
       "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
       "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
       "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "tools/test_apd_branding.py",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "inline GPL notice; original copyright lines retained"
     },
     {
       "path": "tools/test_apd_bug_report_pdf.py",

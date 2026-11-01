@@ -1,0 +1,181 @@
+{
+  "jobs": [
+    {
+      "workflow": ".github/workflows/apd-test314-existing-apk-acceptance.yml",
+      "job": "exact-native"
+    },
+    {
+      "workflow": ".github/workflows/apd-existing329-native-retest.yml",
+      "job": "exact-apk"
+    },
+    {
+      "workflow": ".github/workflows/codex-player-with-every-test.yml",
+      "job": "build-player"
+    },
+    {
+      "workflow": ".github/workflows/codex-test301-navigation.yml",
+      "job": "navigation"
+    },
+    {
+      "workflow": ".github/workflows/build.yml",
+      "job": "build"
+    },
+    {
+      "workflow": ".github/workflows/codex-m53-exact258.yml",
+      "job": "title-display"
+    },
+    {
+      "workflow": ".github/workflows/private-test-apk.yml",
+      "job": "build"
+    },
+    {
+      "workflow": ".github/workflows/apd-existing331-api36-isolated.yml",
+      "job": "exact-scale-api36"
+    },
+    {
+      "workflow": ".github/workflows/codex-retest-small261.yml",
+      "job": "title-display"
+    },
+    {
+      "workflow": ".github/workflows/codex-early-alpha-roster-acceptance.yml",
+      "job": "six-class-acceptance"
+    },
+    {
+      "workflow": ".github/workflows/codex-simulator-check.yml",
+      "job": "real-game-adapter"
+    },
+    {
+      "workflow": ".github/workflows/codex-test299-death-regression.yml",
+      "job": "exact-apk-death-order"
+    },
+    {
+      "workflow": ".github/workflows/codex-test299-acceptance.yml",
+      "job": "exact-apk-hotbar-restart"
+    },
+    {
+      "workflow": ".github/workflows/codex-hotbar-cold-restart.yml",
+      "job": "exact-apk-hotbar-restart"
+    },
+    {
+      "workflow": ".github/workflows/apd-existing338-back-routing-diagnostic.yml",
+      "job": "resource-tooltips-api34"
+    },
+    {
+      "workflow": ".github/workflows/codex-test299-title-matrix.yml",
+      "job": "title-display"
+    },
+    {
+      "workflow": ".github/workflows/codex-test300-settings-gesture.yml",
+      "job": "settings-gesture"
+    },
+    {
+      "workflow": ".github/workflows/codex-sprint-check.yml",
+      "job": "verify-and-build"
+    },
+    {
+      "workflow": ".github/workflows/apd-existing333-resource-tooltips.yml",
+      "job": "resource-tooltips-api34"
+    },
+    {
+      "workflow": ".github/workflows/codex-alpha-controls-acceptance.yml",
+      "job": "existing-apk-controls"
+    },
+    {
+      "workflow": ".github/workflows/codex-uimsd-resource-check.yml",
+      "job": "resource-check"
+    },
+    {
+      "workflow": ".github/workflows/apd-existing333-full-native.yml",
+      "job": "full-native-api34"
+    },
+    {
+      "workflow": ".github/workflows/codex-android16-acceptance.yml",
+      "job": "existing-apk-controls"
+    },
+    {
+      "workflow": ".github/workflows/codex-capture-gap262.yml",
+      "job": "title-display"
+    },
+    {
+      "workflow": ".github/workflows/codex-test299-full-native.yml",
+      "job": "exact-apk-hotbar-restart"
+    },
+    {
+      "workflow": ".github/workflows/apd-existing341-native-acceptance.yml",
+      "job": "exact-native-api34"
+    },
+    {
+      "workflow": ".github/workflows/apd-existing340-button-timing-prototype.yml",
+      "job": "button-timing-api36"
+    },
+    {
+      "workflow": ".github/workflows/codex-player-preview-285.yml",
+      "job": "build-player"
+    },
+    {
+      "workflow": ".github/workflows/codex-retest-owner261.yml",
+      "job": "title-display"
+    },
+    {
+      "workflow": ".github/workflows/codex-death-cleanup-device-regression.yml",
+      "job": "exact-apk-death-order"
+    },
+    {
+      "workflow": ".github/workflows/apd-existing331-uimsd-retest.yml",
+      "job": "exact-uimsd-api34"
+    },
+    {
+      "workflow": ".github/workflows/apd-existing338-opening-profile.yml",
+      "job": "resource-tooltips-api34"
+    },
+    {
+      "workflow": ".github/workflows/apd-existing338-back-release-prototype.yml",
+      "job": "resource-tooltips-api34"
+    },
+    {
+      "workflow": ".github/workflows/codex-final-alpha-acceptance.yml",
+      "job": "reuse-and-check"
+    },
+    {
+      "workflow": ".github/workflows/codex-player-preview-273.yml",
+      "job": "build-player"
+    },
+    {
+      "workflow": ".github/workflows/codex-release-navigation-acceptance.yml",
+      "job": "existing-apk-navigation"
+    },
+    {
+      "workflow": ".github/workflows/codex-menu-layout-matrix.yml",
+      "job": "title-display"
+    },
+    {
+      "workflow": ".github/workflows/apd-existing330-scale-retest.yml",
+      "job": "exact-scale-api36"
+    },
+    {
+      "workflow": ".github/workflows/codex-retest-owner258.yml",
+      "job": "title-display"
+    },
+    {
+      "workflow": ".github/workflows/codex-apd-settings-touch-acceptance.yml",
+      "job": "existing-test263-settings"
+    },
+    {
+      "workflow": ".github/workflows/codex-audio-queue-diagnostic.yml",
+      "job": "controlled-audio"
+    },
+    {
+      "workflow": ".github/workflows/codex-adult-restart-acceptance.yml",
+      "job": "existing-apk-controls"
+    }
+  ],
+  "existing_certificate_sha256": "067688b3ab6bd5820a67f4c1ba7d5859db578173771cf31d3252b3e4e012246e",
+  "behavior": "Fail closed unless externally supplied key exports the existing certificate. No replacement key is generated. Actual repository secret installation is a separate administrative operation.",
+  "secret_installation": {
+    "status": "NEEDS CHRIS",
+    "operation": "gh secret list --repo APD-Development/ShieldingShouldHaveWorked --json name",
+    "actual_error": "HTTP 403: Resource not accessible by integration (repository Actions secrets endpoint)",
+    "secrets_written": false,
+    "certificate_preserved": "067688b3ab6bd5820a67f4c1ba7d5859db578173771cf31d3252b3e4e012246e"
+  }
+}

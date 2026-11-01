@@ -1,0 +1,773 @@
+{
+  "outputs": {
+    "core/src/main/assets/interfaces/apd_logo.png": {
+      "sha256": "549947cf567afca245842895f20b0216490349e8d848d513e09687f77cec9ad8",
+      "size": [
+        139,
+        100
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "core/src/main/assets/interfaces/apd_logo_glow.png": {
+      "sha256": "dc74a802181e7d7900ee1cbd657dbb0205d9603b0c6124525ed3248de981e8fc",
+      "size": [
+        139,
+        100
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "core/src/main/assets/splashes/title/apd_bg_port.png": {
+      "sha256": "8a1d3b53fd142481d5cb900660b83157626fbbb83c7bef8d0d2624347f8ff06e",
+      "size": [
+        200,
+        360
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "core/src/main/assets/splashes/title/apd_bg_land.png": {
+      "sha256": "f48e02296c56d1dbb1d35788dc62f7687cca65e83826fd28f8c1933d32328567",
+      "size": [
+        400,
+        200
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "core/src/main/assets/interfaces/apd_button.png": {
+      "sha256": "764edbb6b24fc89397bd01d5de2cb740b11486a211ae782ee93c770830524938",
+      "size": [
+        24,
+        24
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "core/src/main/assets/effects/apd_flame.png": {
+      "sha256": "9245d22540f0d16a43652c9cff9e403356cc0e0da6b472bbe8f497976e5ef748",
+      "size": [
+        256,
+        256
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "android/src/main/res/mipmap-hdpi/ic_launcher.png": {
+      "sha256": "5c42cc52a67a1ca62dae34543bee0f168648629dfee412c0e5b07fa36fc8ec68",
+      "size": [
+        72,
+        72
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "android/src/main/res/mipmap-hdpi/ic_launcher_background.png": {
+      "sha256": "6527aa564b2023665541f077726b8881dc70cb3bdd63a256c1c772c23eff950e",
+      "size": [
+        162,
+        162
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "android/src/main/res/mipmap-hdpi/ic_launcher_foreground.png": {
+      "sha256": "a2fa79385216d54a9552013faaf058d0f87e88b64dcfda149ea31b5f776259eb",
+      "size": [
+        162,
+        162
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "android/src/main/res/mipmap-hdpi/ic_launcher_monochrome.png": {
+      "sha256": "1b7b686616a6077f00787362b0ac7c58ed85dc79b51e11500d3d39990c6da371",
+      "size": [
+        162,
+        162
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "android/src/main/res/mipmap-ldpi/ic_launcher.png": {
+      "sha256": "8ff61721864cb47ed1db34eec2becc079f9df3602ad99f2b5ead36f2bea787a5",
+      "size": [
+        36,
+        36
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "android/src/main/res/mipmap-mdpi/ic_launcher.png": {
+      "sha256": "89dd10326d104b6552e0f0ed47ee88b3e019e2e268bb3f2af7c62d47e47b84b5",
+      "size": [
+        48,
+        48
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "android/src/main/res/mipmap-mdpi/ic_launcher_background.png": {
+      "sha256": "c6d52f284912c73b063e6e09d4d7dfcd79975e8e71335ed3a7ce98ea7d1420a7",
+      "size": [
+        108,
+        108
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "android/src/main/res/mipmap-mdpi/ic_launcher_foreground.png": {
+      "sha256": "97d0a377c09a249c2f8f67f20f020c8e4b06ae5bec4db5ddb51f7a37f515abc7",
+      "size": [
+        108,
+        108
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "android/src/main/res/mipmap-mdpi/ic_launcher_monochrome.png": {
+      "sha256": "a229f74ccd6726c5e0a858b12cd02410a78e274393eba5405500e987ce687534",
+      "size": [
+        108,
+        108
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "android/src/main/res/mipmap-xhdpi/ic_launcher.png": {
+      "sha256": "84991e1a4783ab94d6ede995f2b94a7966edf5478c333bb8c322da2b0cb46a6d",
+      "size": [
+        96,
+        96
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "android/src/main/res/mipmap-xhdpi/ic_launcher_background.png": {
+      "sha256": "87ba18000ad73ca65283442f471f6a45e47acc07392e3a7f636aa76da97baf83",
+      "size": [
+        216,
+        216
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "android/src/main/res/mipmap-xhdpi/ic_launcher_foreground.png": {
+      "sha256": "2b7ff450e3766a3c9ff96bb68ae796941c9b5081e80a68b8ac9193388fe5be73",
+      "size": [
+        216,
+        216
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "android/src/main/res/mipmap-xhdpi/ic_launcher_monochrome.png": {
+      "sha256": "bb1cd7631e3805037dcfb24efb8c639f89a87d75af91e9967df8ab2611359c75",
+      "size": [
+        216,
+        216
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "android/src/main/res/mipmap-xxhdpi/ic_launcher.png": {
+      "sha256": "1c67bce1f1fe486f4f57b411ebecc91536e3635f027965022eedc39b90bad7a6",
+      "size": [
+        144,
+        144
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "android/src/main/res/mipmap-xxhdpi/ic_launcher_background.png": {
+      "sha256": "e367d7f9d667609c873ad9aad8082ec0cfcbe9535292dcded3373afdc2a4abf7",
+      "size": [
+        324,
+        324
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "android/src/main/res/mipmap-xxhdpi/ic_launcher_foreground.png": {
+      "sha256": "779aba9ac0fe3482f72b30d1eec47f3a7039f55e5db3f85cf34c0eafbf8cad51",
+      "size": [
+        324,
+        324
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "android/src/main/res/mipmap-xxhdpi/ic_launcher_monochrome.png": {
+      "sha256": "ed5149621227ac8a2d08478a24304dadfc741d10600ff7378a33d8c035de0488",
+      "size": [
+        324,
+        324
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "android/src/main/res/mipmap-xxxhdpi/ic_launcher.png": {
+      "sha256": "0cb13a8ba80b66969bce9f50f25d9a5e2830647febb07bf43dab7e9b7039e1bf",
+      "size": [
+        192,
+        192
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "android/src/main/res/mipmap-xxxhdpi/ic_launcher_background.png": {
+      "sha256": "7ce67ebd8f9789b454e7734e4892bfe145c51ed16cfb172836e4d4093f4709b4",
+      "size": [
+        432,
+        432
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "android/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.png": {
+      "sha256": "dd465d7e00dd4a40ff37a91f10f818edad83197e27784f74abd30acc6090b2b4",
+      "size": [
+        432,
+        432
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "android/src/main/res/mipmap-xxxhdpi/ic_launcher_monochrome.png": {
+      "sha256": "02f547b259796cf48f8a6019f5045924fdcad7ad50c18aa9ec658637759f9d3d",
+      "size": [
+        432,
+        432
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "android/src/debug/res/mipmap-hdpi/ic_launcher.png": {
+      "sha256": "5c42cc52a67a1ca62dae34543bee0f168648629dfee412c0e5b07fa36fc8ec68",
+      "size": [
+        72,
+        72
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "android/src/debug/res/mipmap-hdpi/ic_launcher_background.png": {
+      "sha256": "6527aa564b2023665541f077726b8881dc70cb3bdd63a256c1c772c23eff950e",
+      "size": [
+        162,
+        162
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "android/src/debug/res/mipmap-hdpi/ic_launcher_foreground.png": {
+      "sha256": "a2fa79385216d54a9552013faaf058d0f87e88b64dcfda149ea31b5f776259eb",
+      "size": [
+        162,
+        162
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "android/src/debug/res/mipmap-hdpi/ic_launcher_monochrome.png": {
+      "sha256": "1b7b686616a6077f00787362b0ac7c58ed85dc79b51e11500d3d39990c6da371",
+      "size": [
+        162,
+        162
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "android/src/debug/res/mipmap-ldpi/ic_launcher.png": {
+      "sha256": "8ff61721864cb47ed1db34eec2becc079f9df3602ad99f2b5ead36f2bea787a5",
+      "size": [
+        36,
+        36
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "android/src/debug/res/mipmap-mdpi/ic_launcher.png": {
+      "sha256": "89dd10326d104b6552e0f0ed47ee88b3e019e2e268bb3f2af7c62d47e47b84b5",
+      "size": [
+        48,
+        48
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "android/src/debug/res/mipmap-mdpi/ic_launcher_background.png": {
+      "sha256": "c6d52f284912c73b063e6e09d4d7dfcd79975e8e71335ed3a7ce98ea7d1420a7",
+      "size": [
+        108,
+        108
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "android/src/debug/res/mipmap-mdpi/ic_launcher_foreground.png": {
+      "sha256": "97d0a377c09a249c2f8f67f20f020c8e4b06ae5bec4db5ddb51f7a37f515abc7",
+      "size": [
+        108,
+        108
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "android/src/debug/res/mipmap-mdpi/ic_launcher_monochrome.png": {
+      "sha256": "a229f74ccd6726c5e0a858b12cd02410a78e274393eba5405500e987ce687534",
+      "size": [
+        108,
+        108
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "android/src/debug/res/mipmap-xhdpi/ic_launcher.png": {
+      "sha256": "84991e1a4783ab94d6ede995f2b94a7966edf5478c333bb8c322da2b0cb46a6d",
+      "size": [
+        96,
+        96
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "android/src/debug/res/mipmap-xhdpi/ic_launcher_background.png": {
+      "sha256": "87ba18000ad73ca65283442f471f6a45e47acc07392e3a7f636aa76da97baf83",
+      "size": [
+        216,
+        216
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "android/src/debug/res/mipmap-xhdpi/ic_launcher_foreground.png": {
+      "sha256": "2b7ff450e3766a3c9ff96bb68ae796941c9b5081e80a68b8ac9193388fe5be73",
+      "size": [
+        216,
+        216
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "android/src/debug/res/mipmap-xhdpi/ic_launcher_monochrome.png": {
+      "sha256": "bb1cd7631e3805037dcfb24efb8c639f89a87d75af91e9967df8ab2611359c75",
+      "size": [
+        216,
+        216
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "android/src/debug/res/mipmap-xxhdpi/ic_launcher.png": {
+      "sha256": "1c67bce1f1fe486f4f57b411ebecc91536e3635f027965022eedc39b90bad7a6",
+      "size": [
+        144,
+        144
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "android/src/debug/res/mipmap-xxhdpi/ic_launcher_background.png": {
+      "sha256": "e367d7f9d667609c873ad9aad8082ec0cfcbe9535292dcded3373afdc2a4abf7",
+      "size": [
+        324,
+        324
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "android/src/debug/res/mipmap-xxhdpi/ic_launcher_foreground.png": {
+      "sha256": "779aba9ac0fe3482f72b30d1eec47f3a7039f55e5db3f85cf34c0eafbf8cad51",
+      "size": [
+        324,
+        324
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "android/src/debug/res/mipmap-xxhdpi/ic_launcher_monochrome.png": {
+      "sha256": "ed5149621227ac8a2d08478a24304dadfc741d10600ff7378a33d8c035de0488",
+      "size": [
+        324,
+        324
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "android/src/debug/res/mipmap-xxxhdpi/ic_launcher.png": {
+      "sha256": "0cb13a8ba80b66969bce9f50f25d9a5e2830647febb07bf43dab7e9b7039e1bf",
+      "size": [
+        192,
+        192
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "android/src/debug/res/mipmap-xxxhdpi/ic_launcher_background.png": {
+      "sha256": "7ce67ebd8f9789b454e7734e4892bfe145c51ed16cfb172836e4d4093f4709b4",
+      "size": [
+        432,
+        432
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "android/src/debug/res/mipmap-xxxhdpi/ic_launcher_foreground.png": {
+      "sha256": "dd465d7e00dd4a40ff37a91f10f818edad83197e27784f74abd30acc6090b2b4",
+      "size": [
+        432,
+        432
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "android/src/debug/res/mipmap-xxxhdpi/ic_launcher_monochrome.png": {
+      "sha256": "02f547b259796cf48f8a6019f5045924fdcad7ad50c18aa9ec658637759f9d3d",
+      "size": [
+        432,
+        432
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "desktop/src/main/assets/icons/icon_128.png": {
+      "sha256": "97fcc355c16d3a7c22a39f495886cc9cc653cc55c4a160c09d2aa5b2b78d20dc",
+      "size": [
+        128,
+        128
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "desktop/src/main/assets/icons/icon_16.png": {
+      "sha256": "7a392a1a3899cc20ecdfa1ff3e83502e3e23d894d5d18e7bc5f915a7b4d38e13",
+      "size": [
+        16,
+        16
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "desktop/src/main/assets/icons/icon_256.png": {
+      "sha256": "dcbeb898b02b8082c7712f0ca8e20084d6cedc5671cf6b6da19fac60052596cf",
+      "size": [
+        256,
+        256
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "desktop/src/main/assets/icons/icon_32.png": {
+      "sha256": "8054c493d7013c02be0c4d7cc65b0f0747327e6e114edf37411eb72bdb86650c",
+      "size": [
+        32,
+        32
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "desktop/src/main/assets/icons/icon_48.png": {
+      "sha256": "89dd10326d104b6552e0f0ed47ee88b3e019e2e268bb3f2af7c62d47e47b84b5",
+      "size": [
+        48,
+        48
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "desktop/src/main/assets/icons/icon_64.png": {
+      "sha256": "74ca4514ddd3522306c131c320704dfddb36d5f1d09137eb3e197d44faea6b5f",
+      "size": [
+        64,
+        64
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "ios/assets/Assets.xcassets/AppIcon.appiconset/Icon-1024.png": {
+      "sha256": "1726735c0d181a0f765a76176dff9429bbdd52a0c86002e8e0c529320f4f5f92",
+      "size": [
+        1024,
+        1024
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "ios/assets/Assets.xcassets/AppIcon.appiconset/Icon-20.png": {
+      "sha256": "c35f11c4aa71d5a732a3c9ba5e349bdbaec91cfc227bf398c0219adaa74f4a29",
+      "size": [
+        20,
+        20
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "ios/assets/Assets.xcassets/AppIcon.appiconset/Icon-20@2x.png": {
+      "sha256": "0b9586fa67da8b8d7507b3e3d0fcf6f9a1630d53e4007c96f1ed494cc272feda",
+      "size": [
+        40,
+        40
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "ios/assets/Assets.xcassets/AppIcon.appiconset/Icon-20@3x.png": {
+      "sha256": "c469083e567169f640342bd5733ad8a2a92c5b7faeed36656633b3d4e237f958",
+      "size": [
+        60,
+        60
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "ios/assets/Assets.xcassets/AppIcon.appiconset/Icon-29.png": {
+      "sha256": "cb633d9e63089ad95ecdf34c0fe47dcf81c77ed5a9e3f41be898cea614f2ae9c",
+      "size": [
+        29,
+        29
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "ios/assets/Assets.xcassets/AppIcon.appiconset/Icon-29@2x.png": {
+      "sha256": "51b80025f14ef66210b46e3ae560b953e1e84eb568af44d60cb51c0c8ba9ac1d",
+      "size": [
+        58,
+        58
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "ios/assets/Assets.xcassets/AppIcon.appiconset/Icon-29@3x.png": {
+      "sha256": "1ca132b2a3b2eec05434021bdcf127736ac8e8cabf0efe05baf9c8e8c8ebe9d4",
+      "size": [
+        87,
+        87
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "ios/assets/Assets.xcassets/AppIcon.appiconset/Icon-40.png": {
+      "sha256": "0b9586fa67da8b8d7507b3e3d0fcf6f9a1630d53e4007c96f1ed494cc272feda",
+      "size": [
+        40,
+        40
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "ios/assets/Assets.xcassets/AppIcon.appiconset/Icon-40@2x.png": {
+      "sha256": "400a152a61f5c75e42693ac9470bb66847e2852416f5eee86aec1b539d6706ea",
+      "size": [
+        80,
+        80
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "ios/assets/Assets.xcassets/AppIcon.appiconset/Icon-40@3x.png": {
+      "sha256": "7b98cd4b0598f1dbcccb0b1de1c69c5af4ca842bef87441e2749f7612ec10500",
+      "size": [
+        120,
+        120
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "ios/assets/Assets.xcassets/AppIcon.appiconset/Icon-60@2x.png": {
+      "sha256": "7b98cd4b0598f1dbcccb0b1de1c69c5af4ca842bef87441e2749f7612ec10500",
+      "size": [
+        120,
+        120
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "ios/assets/Assets.xcassets/AppIcon.appiconset/Icon-60@3x.png": {
+      "sha256": "c5fe7eee2e5162e90c249a8ac82ab4d35f58082e11668ff20855aa2b3fee6d4f",
+      "size": [
+        180,
+        180
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "ios/assets/Assets.xcassets/AppIcon.appiconset/Icon-76.png": {
+      "sha256": "5e52c81dc0cf2daa9eccbfaf0b4c2f69a6a59803ca701b76ba11a3ea9a792a3e",
+      "size": [
+        76,
+        76
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "ios/assets/Assets.xcassets/AppIcon.appiconset/Icon-76@2x.png": {
+      "sha256": "db9aa831b113463279cbbec8981d5cb9001584aeb2fa323beab294d4b8f180a9",
+      "size": [
+        152,
+        152
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "ios/assets/Assets.xcassets/AppIcon.appiconset/Icon-83.5@2x.png": {
+      "sha256": "33cea20caca23c43f3f0c144dda825d06c6c37c1260d1cf8f562c98894d8cc65",
+      "size": [
+        167,
+        167
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "desktop/src/main/assets/icons/windows.ico": {
+      "sha256": "34ddcaf06b86edc001375e3fe531659010e3814b737148687433cda1ff29a9e1",
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork"
+    },
+    "desktop/src/main/assets/icons/mac.icns": {
+      "sha256": "a51ec5ab1a917e730bf8fd89a2492689a4220ba8e2e353dd59b0488c663d81f6",
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork"
+    },
+    "ios/assets/Assets.xcassets/Banner.imageset/Banner@2x.png": {
+      "sha256": "9f5069a8a9b9d0950ede7e49d43055afdcad4dfb0e3f059e3b904ce886708395",
+      "size": [
+        840,
+        600
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "ios/assets/Assets.xcassets/Banner.imageset/Banner@3x.png": {
+      "sha256": "718882f5d4b4e2b245ff87f8539a7758f38c196dd8a1ba8df0dfe5b5c3e3fbe2",
+      "size": [
+        1260,
+        900
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "ios/assets/Assets.xcassets/Banner.imageset/Banner.png": {
+      "sha256": "ca0a29a78b76916f9ace768c113b1cc33d3fa1c8de365b35f9f27380e73ebfff",
+      "size": [
+        420,
+        300
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "ios/assets/Assets.xcassets/BannerWide.imageset/BannerWide@2x.png": {
+      "sha256": "830652adab74b45daa4ca249b555f2c85a86e5daec18ab1f81bad65301bf9a03",
+      "size": [
+        1440,
+        360
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "ios/assets/Assets.xcassets/BannerWide.imageset/BannerWide@3x.png": {
+      "sha256": "5709e5238bf729e0b182b3b4c6a7d14d02211ca01624fa8e25800d4a08d7e4f3",
+      "size": [
+        2160,
+        540
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "ios/assets/Assets.xcassets/BannerWide.imageset/BannerWide.png": {
+      "sha256": "8a42d995d168f371de3989f40a37153a70cb2118be176c37d057df2e0378ca48",
+      "size": [
+        720,
+        180
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "core/src/main/assets/interfaces/banners.png": {
+      "sha256": "45b06447e04ed1621d5c6200834982de0eb9e70e012877ee25a917cb02f063f0",
+      "size": [
+        512,
+        256
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "core/src/main/assets/interfaces/icons.png": {
+      "sha256": "adaa8557ae07070c1f85033431c074d6ecb5feaa5690872811df2b53b4dc4640",
+      "size": [
+        256,
+        128
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "core/src/main/assets/interfaces/change_icons.png": {
+      "sha256": "9296b34fc2bb7170fab4929a2eb357234ea6227c5cfa5d717bcc5715f2f26424",
+      "size": [
+        128,
+        1024
+      ],
+      "license": "GPL-3.0-or-later",
+      "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
+    },
+    "generator": {
+      "path": "tools/build_apd_branding.py",
+      "sha256": "7bae8b50c7598297a934361ba0d4f3ee600a7b41901d066631e89866225f5d5e",
+      "license": "GPL-3.0-or-later",
+      "font": "Original elementary 5x7 glyph geometry included in this generator; no external font"
+    }
+  },
+  "repacked_branding_regions": {
+    "core/src/main/assets/interfaces/banners.png": [
+      [
+        0,
+        0,
+        139,
+        100
+      ],
+      [
+        139,
+        0,
+        278,
+        100
+      ],
+      [
+        0,
+        100,
+        240,
+        157
+      ],
+      [
+        240,
+        100,
+        480,
+        157
+      ]
+    ],
+    "core/src/main/assets/interfaces/icons.png": [
+      [
+        119,
+        0,
+        135,
+        16
+      ]
+    ],
+    "core/src/main/assets/interfaces/change_icons.png": [
+      [
+        32,
+        32,
+        48,
+        48
+      ],
+      [
+        96,
+        272,
+        112,
+        288
+      ]
+    ]
+  },
+  "unchanged_regions": "All pixels outside the listed rectangles are copied verbatim; no gameplay item/enemy art is redrawn."
+}

@@ -40,12 +40,16 @@ class GplComplianceTests(unittest.TestCase):
     def test_app_identity_and_signing_configuration_are_not_changed(self):
         original=subprocess.check_output(['git','show','377c3e20b7dc6ec6c4d149c5c1b4ea7cda3bb7ed:build.gradle'],cwd=ROOT,text=True)
         self.assertIn("appPackageName = 'com.charltonchris29.adhdpixeldungeon'",original)
-        self.assertEqual(hashlib.sha256((ROOT/'keystore/apd-debug.jks').read_bytes()).digest(),hashlib.sha256(subprocess.check_output(['git','show','377c3e20b7dc6ec6c4d149c5c1b4ea7cda3bb7ed:keystore/apd-debug.jks'],cwd=ROOT)).digest())
+        self.assertFalse((ROOT/'keystore/apd-debug.jks').exists())
+        signing=(ROOT/'android/build.gradle').read_text()
+        self.assertIn("System.getenv('APD_SIGNING_KEYSTORE')",signing)
+        self.assertIn('no replacement key will be generated',signing)
+        self.assertIn('apdUnsignedVerification',signing)
     def test_release_gate_does_not_claim_compliance_with_known_blockers(self):
         import sys
         sys.path.insert(0,str(ROOT/'tools'))
         from apd_gpl_release_gate import check
-        errors=check(ROOT,None);self.assertTrue(errors);self.assertIn('Tracked signing material remains',errors)
+        errors=check(ROOT,None);self.assertTrue(errors);self.assertIn('Missing exact-binary/source release manifest',errors)
     def test_binary_publication_is_refused_before_any_write_when_blocked(self):
         import sys
         from unittest.mock import patch
