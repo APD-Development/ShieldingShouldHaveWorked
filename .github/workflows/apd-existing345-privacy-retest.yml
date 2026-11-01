@@ -92,12 +92,8 @@ jobs:
             adb install -r application/exact345.apk
             adb install -r android/build/outputs/apk/androidTest/debug/android-debug-androidTest.apk
             adb shell am instrument -w -r -e class com.shatteredpixel.shatteredpixeldungeon.android.UimsdRestoreDeviceTest#privacySubflowsRestoreExactLocalStateWithoutQueueingOrSending com.charltonchris29.adhdpixeldungeon.indev.test/androidx.test.runner.AndroidJUnitRunner | tee privacy-result.txt
-            python3 - <<'PY'
-            import pathlib,re
-            text=pathlib.Path('privacy-result.txt').read_text()
-            assert 'FAILURES!!!' not in text,text
-            assert re.search(r'OK \(1 test\)',text),text
-            PY
+            ! grep -q 'FAILURES!!!' privacy-result.txt
+            grep -Fq 'OK (1 test)' privacy-result.txt
       - uses: actions/upload-artifact@v4
         if: always()
         with:
