@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -149,7 +152,7 @@ public class NewsScene extends PixelScene {
 			@Override
 			protected void onClick() {
 				super.onClick();
-				ShatteredPixelDungeon.platform.openURI("https://ShatteredPixel.com");
+				ShatteredPixelDungeon.platform.openURI("https://github.com/APD-Development/ShieldingShouldHaveWorked");
 			}
 		};
 		btnSite.icon(Icons.get(Icons.NEWS));

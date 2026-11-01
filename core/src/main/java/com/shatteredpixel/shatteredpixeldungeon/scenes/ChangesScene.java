@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -149,6 +152,8 @@ public class ChangesScene extends PixelScene {
 		add( panel );
 		
 		final ArrayList<ChangeInfo> changeInfos = new ArrayList<>();
+		changeInfos.add(new ChangeInfo("Upstream reference history", true,
+				"Original Shattered Pixel Dungeon release notes by Evan Debenham, with original Pixel Dungeon history by Oleg Dolya. These are preserved for attribution and historical reference; they are not APD release announcements."));
 
 		if (Messages.lang() != Languages.ENGLISH){
 			ChangeInfo langWarn = new ChangeInfo("", true, Messages.get(this, "lang_warn"));

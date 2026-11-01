@@ -7241,6 +7241,13 @@
       "style": "inline GPL notice; original copyright lines retained"
     },
     {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/ChangesScene.java",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "inline GPL notice; original copyright lines retained"
+    },
+    {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/CommunityScene.java",
       "years": "2026",
       "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
@@ -7263,6 +7270,13 @@
     },
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/JournalScene.java",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "inline GPL notice; original copyright lines retained"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/NewsScene.java",
       "years": "2026",
       "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
       "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
@@ -15250,6 +15264,13 @@
     },
     {
       "path": "tools/test_apd_gpl_compliance.py",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "inline GPL notice; original copyright lines retained"
+    },
+    {
+      "path": "tools/test_apd_source_recovery.py",
       "years": "2026",
       "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
       "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",

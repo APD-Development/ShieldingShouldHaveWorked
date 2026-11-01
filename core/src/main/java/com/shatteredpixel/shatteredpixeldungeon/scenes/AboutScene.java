@@ -306,7 +306,7 @@ public class AboutScene extends PixelScene {
 				Window.TITLE_COLOR,
 				null,
 				null,
-				"Shattered Pixel Dungeon uses the following sound samples from _freesound.org_:\n\n" +
+				"APD inherits the following sound samples from Shattered Pixel Dungeon from _freesound.org_:\n\n" +
 
 				"Creative Commons Attribution License:\n" +
 				"_SFX ATTACK SWORD 001.wav_ by _JoelAudio_\n" +

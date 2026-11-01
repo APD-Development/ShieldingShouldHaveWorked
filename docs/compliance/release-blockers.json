@@ -4,27 +4,27 @@
     {
       "id": "signing-material",
       "status": "NEEDS CHRIS",
-      "reason": "Committed private signing key/passwords. Report only; no key migration or history rewrite authorized."
+      "reason": "Key removed from current PR tree; identical key/certificate preserved externally and 42 workflow jobs wired to encrypted secrets. Actions secrets API returned HTTP403; admin installation remains blocked. History retains original exposure and will not be shared."
     },
     {
       "id": "json-license",
-      "status": "NOT DONE",
-      "reason": "Original JSON License is GPL-incompatible. Public Domain20240303 candidate failed2 unchanged golden hashes and was rolled back. Compatibility work or appropriate upstream permissions remain outstanding; no routine owner approval is being requested for a version bump."
+      "status": "DONE",
+      "reason": "Public Domain20240303 replacement verified at4d86c4898 by2239 tests/427 suites with no failures, errors or skips, unchanged original golden hashes, Android debug/release and desktop compilation plus zero unsupported float JSON method descriptors."
     },
     {
       "id": "asset-provenance",
-      "status": "NEEDS CHRIS",
-      "reason": "Confirm licenses/provenance for seven APD-added/modified assets; inherited font/sample license mapping is incomplete."
+      "status": "NOT DONE",
+      "reason": "Original APD branding now generated from included glyph/geometry source; embedded Apache2 font declarations verified and full license bundled. Per-sample inherited CC-BY versions and complete native/transitive notice mapping remain to be independently verified."
     },
     {
       "id": "recipient-source-access",
-      "status": "NEEDS CHRIS",
-      "reason": "Private repository access is not established for every APK recipient. Complete key-free matching source archives have not been delivered."
+      "status": "NOT DONE",
+      "reason": "Both key-free TEST341 source archives assembled with all366 generated history TSVs; local direct upload failedHTTP401. CI recovery/publication and player reconstruction currently running; external recipient source access still requires owner distribution evidence."
     },
     {
       "id": "remaining-branding",
       "status": "NOT DONE",
-      "reason": "Inherited launcher icons and packed historical SPD logos remain; replacement art and complete Android/desktop/iOS resource verification are outstanding."
+      "reason": "All Android/desktop/iOS launchers and reserved upstream-logo atlas cells replaced with original APD art, four stock title layers deleted. Four artwork tests pass. Full latest core/platform rerun and native visual acceptance remain pending."
     }
   ]
 }

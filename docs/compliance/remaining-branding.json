@@ -3,7 +3,7 @@
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/messages/Languages.java",
       "line": 28,
-      "classification": "NOT DONE: review in actual player-facing context",
+      "classification": "factual translator attribution: retain contributor handle",
       "text": "ShatteredFlameBlast"
     },
     {
@@ -63,7 +63,7 @@
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/NewsScene.java",
       "line": 152,
-      "classification": "NOT DONE: review in actual player-facing context",
+      "classification": "DONE: former upstream site fallback repointed to actual private APD source repository",
       "text": "https://ShatteredPixel.com"
     },
     {
@@ -87,7 +87,7 @@
     {
       "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/Ruleset.java",
       "line": 46,
-      "classification": "NOT DONE: review in actual player-facing context",
+      "classification": "factual inherited base-game identity, persisted and hashed into historical rulesets; preserve compatibility",
       "text": "Shattered Pixel Dungeon 4.0.0"
     },
     {
@@ -967,5 +967,11 @@
       "text": "This update also included Shattered's first new challenge! The goal of hostile champions was to increase overall difficulty by adding new mechanics to the game, instead of removing them. This worked out very well, and led to a followup challenge addition just a couple of updates later."
     }
   ],
-  "limitations": "Lexical string scan, not proof every string is displayed. Proper upstream attributions and saved technical identifiers are distinguished. Platform launcher/packed atlas branding remains unresolved; see REPORT.md. Non-ASCII translations need manual review."
+  "limitations": "Lexical string scan, not proof every string is displayed. Proper upstream attributions and saved technical identifiers are distinguished. Platform launcher/packed atlas branding remains unresolved; see REPORT.md. Non-ASCII translations need manual review.",
+  "locale_review": {
+    "proper_name_matches_remaining": 0,
+    "ordinary_word_shattered": "Retained descriptive shattered pots/brews; not an identity or promotion",
+    "greek_daily_copy": "Two remaining title abbreviations replaced with APD; no gameplay change"
+  },
+  "historical_notes": "Original upstream changelog text remains under an explicit Evan/Oleg reference-history attribution, not presented as APD announcements. Packed stock logos replaced with original neutral APD-generated markers."
 }
