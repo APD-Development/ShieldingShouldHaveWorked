@@ -60,6 +60,15 @@ class GplComplianceTests(unittest.TestCase):
             check.assert_not_called()
             run.assert_called_once()
 
+    def test_current_binary_publishing_paths_have_preflight_guards(self):
+        import re
+        paths=json.loads((ROOT/'docs/compliance/publication-guards.json').read_text())['guarded_current_paths']
+        self.assertEqual(25,len(paths))
+        for item in paths:
+            source=(ROOT/item['path']).read_text()
+            self.assertTrue('publication_run' in source or 'GPL corresponding-source preflight' in source,item['path'])
+            self.assertIsNone(re.search(r"subprocess\.run\(\s*\[\s*['\"]gh['\"]\s*,\s*['\"]release['\"]\s*,\s*['\"](?:create|upload)['\"]",source),item['path'])
+
     def test_full_asset_and_dependency_inventories_are_present(self):
         a=json.loads((ROOT/'docs/compliance/assets.json').read_text());d=json.loads((ROOT/'docs/compliance/dependencies.json').read_text())
         self.assertEqual(7,sum(x['status']!='inherited' for x in a['assets']))

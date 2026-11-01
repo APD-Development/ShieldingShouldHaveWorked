@@ -25,6 +25,8 @@ Build instructions: <recipe in source archive>
 GPLv3 or later; no warranty. APD is an unofficial modified version of SPD.
 ```
 
-**NOT DONE: universal enforcement.** Legacy publishing scripts/workflows have not all been migrated to this preflight. The new source-only CI checks do not publish or build APKs. Repository/organization release permission and required-check policies are **NEEDS CHRIS**; a documentation rule cannot prevent an authorized account from bypassing it. Do not claim future deliveries are automatically compliant until all active publication paths are gated and the blockers are resolved.
+**DONE in this PR: current-path preflights.** `publication-guards.json` records25 current binary-publishing paths and30 actual create/upload calls or release actions guarded before writes. Python publishers call `publication_run`; inline workflows and binary `action-gh-release` steps use the same preflight. Targeted tests verify write refusal and preserve read-only operations. PDF-only reports and already-published assets are untouched. These changes take effect only when the PR is merged into the branch used to execute them.
+
+**NOT DONE: universal enforcement.** Old workflows rerun at historical source, direct manual API/UI uploads, and publication paths not using the inspected patterns cannot be prevented by a source patch. The new source-only CI does not publish or build APKs. Repository/organization release permissions and required-check policies are **NEEDS CHRIS**. A preflight is not a substitute for actual archive/rebuild/access verification and resolved licenses.
 
 Keep the owner's three-APK-per-day maximum. This audit requests **no APK builds or releases**.

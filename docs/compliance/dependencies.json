@@ -953,8 +953,22 @@
       "note": "Gradle plugin license needs independent verification",
       "status": "NOT DONE: per-component/native/transitive compatibility review remains necessary",
       "license_reference": "https://github.com/beryx/badass-runtime-plugin/blob/v2.0.1/LICENSE",
-      "declared_license_summary": "Apache-2.0 per upstream project; plugin/native tool distribution still needs review"
+      "declared_license_summary": "Apache-2.0 per upstream project; plugin/native tool distribution still needs review",
+      "license_reference_sha256": "b40930bbcf80744c86c46a12bc9da056641d722716c378f5659b9e555ef833e1",
+      "license_verified_text_contains_apache2": true
     }
   ],
-  "limitations": "POM-declared licenses are evidence, not verification of bundled native/transitive licenses. Test libraries/build tools are separately identified and are not asserted to ship in APKs."
+  "limitations": "POM-declared licenses are evidence, not verification of bundled native/transitive licenses. Test libraries/build tools are separately identified and are not asserted to ship in APKs.",
+  "rejected_replacement": {
+    "artifact": "org.json:json:20240303",
+    "declared_license": "Public Domain",
+    "pom_url": "https://repo.maven.apache.org/maven2/org/json/json/20240303/json-20240303.pom",
+    "binary_jar_sha256": "3cf6cd6892e32e2b4c1c39e0f52f5248a2f5b37646fdfbb79a66b46b618414ed",
+    "sources_jar_sha256": "3078d4471e3be3dcbd07b3cf1cf0b610158d4605c1151c3dbf27a248c9aa04cc",
+    "source_headers_checked": "JSONObject.java declares Public Domain; no Good/not-Evil clause found in Java/text source entries.",
+    "tested_commit": "62890a2be23c50b1d8fc469bc16f792b59198e42",
+    "workflow_run": 41266617554,
+    "result": "REJECTED:2234 tests,2 golden-hash failures; Android debug/release and desktop compilation passed. Old hashes retained; dependency pin restored.",
+    "limitation": "Hash mismatch has not been established as actual dungeon or save corruption; compatibility was not established, so no default/library/format change is shipped."
+  }
 }

@@ -1,10 +1,30 @@
 {
   "audited_source": "377c3e20b7dc6ec6c4d149c5c1b4ea7cda3bb7ed",
   "blockers": [
-    {"id": "signing-material", "status": "NEEDS CHRIS", "reason": "Committed private signing key/passwords. Report only; no key migration or history rewrite authorized."},
-    {"id": "json-license", "status": "NEEDS CHRIS", "reason": "org.json 20170516 has GPL-incompatible JSON License. Replacement requires save/statistics compatibility verification."},
-    {"id": "asset-provenance", "status": "NEEDS CHRIS", "reason": "Confirm licenses/provenance for seven APD-added/modified assets; inherited font/sample license mapping is incomplete."},
-    {"id": "recipient-source-access", "status": "NEEDS CHRIS", "reason": "Private repository access is not established for every APK recipient. Complete key-free matching source archives have not been delivered."},
-    {"id": "remaining-branding", "status": "NOT DONE", "reason": "Inherited launcher icons and packed historical SPD logos remain; replacement art and complete Android/desktop/iOS resource verification are outstanding."}
+    {
+      "id": "signing-material",
+      "status": "NEEDS CHRIS",
+      "reason": "Committed private signing key/passwords. Report only; no key migration or history rewrite authorized."
+    },
+    {
+      "id": "json-license",
+      "status": "NOT DONE",
+      "reason": "Original JSON License is GPL-incompatible. Public Domain20240303 candidate failed2 unchanged golden hashes and was rolled back. Compatibility work or appropriate upstream permissions remain outstanding; no routine owner approval is being requested for a version bump."
+    },
+    {
+      "id": "asset-provenance",
+      "status": "NEEDS CHRIS",
+      "reason": "Confirm licenses/provenance for seven APD-added/modified assets; inherited font/sample license mapping is incomplete."
+    },
+    {
+      "id": "recipient-source-access",
+      "status": "NEEDS CHRIS",
+      "reason": "Private repository access is not established for every APK recipient. Complete key-free matching source archives have not been delivered."
+    },
+    {
+      "id": "remaining-branding",
+      "status": "NOT DONE",
+      "reason": "Inherited launcher icons and packed historical SPD logos remain; replacement art and complete Android/desktop/iOS resource verification are outstanding."
+    }
   ]
 }

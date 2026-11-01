@@ -1,3 +1,19 @@
+## 2026-11-01 — GPL audit PR3; no APK and no compliance certification
+
+Audit branch `codex/gplv3-compliance-2026-11-01`, based on real approved head377c3e20b7dc6ec6c4d149c5c1b4ea7cda3bb7ed. Private draft PR: https://github.com/APD-Development/ShieldingShouldHaveWorked/pull/3 . Detailed DONE / NOT DONE / NEEDS CHRIS report: docs/compliance/REPORT.md. No merge, main/Claude changes, visibility change, game rename or history rewrite.
+
+Implemented APD notices while retaining all upstream copyright lines and unchanged root GPL; offline native GPL viewer with bounded pages and APD/source/non-endorsement notices; misleading identity/contact text corrections; inert inherited update/news services on Android/desktop/iOS; source/dependency/asset/secret inventories and Play listing draft.25 current binary-publishing paths/30 writes/actions now have fail-closed preflights in this PR. Historical reruns/manual API/UI actions need repository permission policy; do not claim universal enforcement. Existing assets and PDF-only reports untouched.
+
+Known blockers: tracked signing key and hard-coded passwords (report-only, key and appID920 unchanged); private/unverified recipient source access and absent complete generated-input archive for341; GPL-incompatible org.json20170516; unknown asset provenance and inherited launcher/historical logo branding. Do not call APD fully GPL-compliant or assume this unmerged PR changed APK341. Preserve published341 and330 assets; rejected342/344 remain rejected.
+
+Full gitleaks8.30.1 scan of reachable branches/tags and worktree completed, with sanitized metadata only committed. Confirmed signing material not removed/rotated; never publish private keys with source. Baseline10 history/6 worktree generic candidates were not confirmed API credentials; report explicitly distinguishes scanner output and supplemental findings.
+
+Source verification8b4503e7662d44654da13384b4a69730b1a6b50a/run41266949018/job124731618647 PASSED2234 core cases/426suites/0 failures-errors-skips and Android debug/release+desktop compilation, without APK assembly. Artifact13068011563 ZIPffd8a6c9143c129696b6f1f325df8749b387d7c494b7e1db43b2fe52f4446b03 independently parsed.8 final local tool regressions,3 GPL-page cases and8 UIMSD wiring cases pass. No emulator/physical-phone acceptance for the new license UI.
+
+Failures preserved: initial1/2234 source-hash failure was legal-notice-only; exact prefix exclusion retains both original layout hashes and all assertions. Public Domain JSON20240303 candidate62890a2be/run41266617554 compiled but failed2/2234 original golden hashes, so dependency pins were rolled back without rewriting expected data. No actual dungeon/save corruption cause established; compatibility remains unresolved. No new APK/source archive/release or tester messages created. Owner3-APK/day cap unchanged; this audit used zero APK builds.
+
+---
+
 # APD HANDOFF
 
 **Recorded:** 2026-10-31T19:37:22Z  
