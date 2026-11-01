@@ -182,6 +182,25 @@ public class UimsdWiringTest {
 	}
 
 	@Test
+	public void privacySubflowsRestoreTheirExactLocalStateAcrossSceneResets() throws Exception {
+		String options = src("windows/WndUimsdOptions.java");
+		assertTrue("evidence-request restoration must retain the exact displayed entries",
+				options.contains("evidenceRequests(m, new ArrayList<>(EvidenceInbox.list(m.root())))")
+						&& options.contains("restoreWith(() -> evidenceRequests(m, list))"));
+		assertTrue("an evidence decision must restore the same request",
+				options.contains("restoreWith(() -> answerRequest(m, entry))"));
+		assertTrue("community-vote restoration must retain the exact displayed offers",
+				options.contains("communityVotes(m, new ArrayList<>(VoteActions.offers(m.root())))")
+						&& options.contains("restoreWith(() -> communityVotes(m, offers))"));
+		assertTrue("an in-progress vote must restore every current tick without casting it",
+				options.contains("Entry.item(o).checked(chosen.contains(o))")
+						&& options.contains("restoreWith(() -> castVote(m, offer, new java.util.TreeSet<>(chosen)))"));
+		assertTrue("an account request confirmation must restore the same request kind",
+				options.contains("restoreWith(() -> accountRequest(m, kind))"));
+	}
+
+
+	@Test
 	public void searchResultsRestoreTheirExactQueryAndTargetTheRebuiltScene() throws Exception {
 		String search = src("windows/WndUimsdSearch.java");
 		assertTrue("parameterized search results must provide an exact scene-reset restorer",

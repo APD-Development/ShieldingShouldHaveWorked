@@ -281,7 +281,10 @@ public final class WndUimsdOptions {
 	}
 
 	private static void evidenceRequests( final UimsdModel m ){
-		final List<EvidenceInbox.Entry> list = EvidenceInbox.list(m.root());
+		evidenceRequests(m, new ArrayList<>(EvidenceInbox.list(m.root())));
+	}
+
+	private static void evidenceRequests( final UimsdModel m, final List<EvidenceInbox.Entry> list ){
 		if (list.isEmpty()){
 			say("Nothing is waiting for your answer.");
 			return;
@@ -293,7 +296,7 @@ public final class WndUimsdOptions {
 			public void onPick( int i, boolean checked ){
 				answerRequest(m, list.get(i));
 			}
-		}));
+		}).restoreWith(() -> evidenceRequests(m, list)));
 	}
 
 	private static void answerRequest( final UimsdModel m, final EvidenceInbox.Entry entry ){
@@ -317,11 +320,15 @@ public final class WndUimsdOptions {
 				}
 				say(msg);
 			}
-		});
+		}.restoreWith(() -> answerRequest(m, entry)));
 	}
 
 	private static void communityVotes( final UimsdModel m ){
-		final List<com.shatteredpixel.shatteredpixeldungeon.apd.backend.VoteMessages.Offer> offers = VoteActions.offers(m.root());
+		communityVotes(m, new ArrayList<>(VoteActions.offers(m.root())));
+	}
+
+	private static void communityVotes( final UimsdModel m,
+			final List<com.shatteredpixel.shatteredpixeldungeon.apd.backend.VoteMessages.Offer> offers ){
 		if (offers.isEmpty()){
 			say("No vote is open. Votes the server opens appear here after you press Send.");
 			return;
@@ -335,14 +342,19 @@ public final class WndUimsdOptions {
 			public void onPick( int i, boolean checked ){
 				castVote(m, offers.get(i));
 			}
-		}));
+		}).restoreWith(() -> communityVotes(m, offers)));
 	}
 
 	private static void castVote( final UimsdModel m, final com.shatteredpixel.shatteredpixeldungeon.apd.backend.VoteMessages.Offer offer ){
+		castVote(m, offer, new java.util.TreeSet<>());
+	}
+
+	private static void castVote( final UimsdModel m,
+			final com.shatteredpixel.shatteredpixeldungeon.apd.backend.VoteMessages.Offer offer,
+			final java.util.Set<String> chosen ){
 		final List<String> options = new ArrayList<>(offer.round.options);
-		final java.util.Set<String> chosen = new java.util.TreeSet<>();
 		List<Entry> entries = new ArrayList<>();
-		for (String o : options) entries.add(Entry.item(o).checked(false));
+		for (String o : options) entries.add(Entry.item(o).checked(chosen.contains(o)));
 		ShatteredPixelDungeon.scene().addToFront(new WndUimsdList(offer.title.isEmpty() ? "Vote" : offer.title,
 				"Tick up to " + offer.round.maxChoices + ", then tap Done. Nothing is sent until you press Send. Back leaves without voting.", true, entries, new WndUimsdList.Picker(){
 			@Override
@@ -365,7 +377,7 @@ public final class WndUimsdOptions {
 				}
 				say(msg);
 			}
-		});
+		}.restoreWith(() -> castVote(m, offer, new java.util.TreeSet<>(chosen))));
 	}
 
 	private static void accountRequest( final UimsdModel m, final com.shatteredpixel.shatteredpixeldungeon.apd.backend.AccountRequests.Kind kind ){
@@ -384,7 +396,7 @@ public final class WndUimsdOptions {
 					default: say("The request could not be queued.");
 				}
 			}
-		});
+		}.restoreWith(() -> accountRequest(m, kind)));
 	}
 
 	private static void serverAddress(){
