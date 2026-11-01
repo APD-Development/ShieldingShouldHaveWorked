@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -70,9 +73,9 @@ public class AboutScene extends PixelScene {
 		final int APD_COLOR = 0x44DD88; //differs from the stock SHPX, Pixel Dungeon and libGDX colors
 		CreditsBlock apd = new CreditsBlock(true, APD_COLOR,
 				"ADHD Pixel Dungeon", null,
-				"Created by Chris (charltonchris29)\n" +
+				"Modified by Chris Charlton (2026)\n" +
 				"Version " + com.watabou.noosa.Game.version + " (build " + com.watabou.noosa.Game.versionCode + ")\n" +
-				"A community-driven expansion of Shattered Pixel Dungeon, focused on deeper statistics, greater replayability, gameplay transparency, and player choice.\n" +
+				"An unofficial modified version of Shattered Pixel Dungeon by Evan Debenham, based on Pixel Dungeon by Oleg Dolya (Watabou). APD is not affiliated with or endorsed by Evan Debenham or Shattered Pixel.\n" +
 				(com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdAdultHumor()
                     ? "Founded on the principle that shielding should have fucking worked."
                     : "Founded on the principle that shielding should have worked."), null, null);
@@ -124,7 +127,14 @@ public class AboutScene extends PixelScene {
 		content.add(info4);
 		RedButton info5 = new RedButton("Source & Licenses", 6){
 			@Override protected void onClick(){
-				AboutScene.this.addToFront(new com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdText("Source & Licenses", "APD is an expansion of Shattered Pixel Dungeon by Evan Debenham, itself based on Pixel Dungeon by Watabou.\n\nAPD preserves the GNU General Public License version 3 or later. Source distributions retain copyright and license notices; corresponding source must accompany distribution as required by the GPL.\n\nThe original contributor credits and links remain on this screen. Public upstream source: github.com/00-Evan/shattered-pixel-dungeon and github.com/watabou/pixel-dungeon.\n\nLicense reference: www.gnu.org/licenses/gpl-3.0.html. APD source access is provided with its distribution; no private development links are exposed here."));
+                AboutScene.this.addToFront(new com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions(
+                        "Source & Licenses", com.shatteredpixel.shatteredpixeldungeon.apd.GplLicense.NOTICE,
+                        "GPLv3 (offline)", "APD source") {
+                    @Override protected void onSelect(int index) {
+                        if (index == 0) com.shatteredpixel.shatteredpixeldungeon.windows.WndGplLicense.show();
+                        else ShatteredPixelDungeon.platform.openURI(com.shatteredpixel.shatteredpixeldungeon.apd.GplLicense.SOURCE_URL);
+                    }
+                });
 			}
 		};
 		info5.multiline = true;
@@ -137,7 +147,7 @@ public class AboutScene extends PixelScene {
 
 		CreditsBlock shpx = new CreditsBlock(true, Window.SHPX_COLOR,
 				"Shattered Pixel Dungeon",
-				Icons.SHPX.get(),
+				null,
 				"Developed by: _Evan Debenham_\nBased on Pixel Dungeon's open source",
 				"ShatteredPixel.com",
 				"https://ShatteredPixel.com");
@@ -239,7 +249,7 @@ public class AboutScene extends PixelScene {
 				GDX_COLOR,
 				"libGDX",
 				Icons.LIBGDX.get(),
-				"ShatteredPD is powered by _libGDX_!",
+				"APD is powered by _libGDX_!",
 				"libgdx.com",
 				"https://libgdx.com/");
 		if (landscape()){
@@ -280,9 +290,9 @@ public class AboutScene extends PixelScene {
 				Window.TITLE_COLOR,
 				null,
 				null,
-				"ShatteredPD is community-translated via _Transifex_! Thank you so much to all of Shattered's volunteer translators!",
-				"transifex.com/shattered-pixel/...",
-				"https://explore.transifex.com/shattered-pixel/shattered-pixel-dungeon/");
+				"Inherited Shattered Pixel Dungeon translations were contributed by volunteers through Transifex. Thank you to the original translators! APD-specific text may remain in English.",
+				null,
+				null);
 		transifex.setRect((Camera.main.width - colWidth)/2f, purigro.bottom() + 12, colWidth, 0);
 		content.add(transifex);
 

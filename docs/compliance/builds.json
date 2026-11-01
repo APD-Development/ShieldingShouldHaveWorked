@@ -1,0 +1,36 @@
+{
+  "latest_distributed_build": 341,
+  "source_commit": "acb69c653033ee0d8df68264395ca27e08eb566d",
+  "existing_exact_source_tag": "apd-alpha-preview-341",
+  "release_id": 428527455,
+  "published_utc": "2026-10-30T00:24:54Z",
+  "application_id": "com.charltonchris29.adhdpixeldungeon.indev",
+  "version_code": 920,
+  "variants": [
+    {
+      "name": "Developer",
+      "version_name": "4.0.8-apd-INDEV-bC341-TEST",
+      "recipe": ":core:test :android:assembleDebug -PapdTestBuild -PapdBuild=C341; preserve prior compiled history as in producing run40976774216",
+      "sha256": "ad6281b3e41fe414187ca40824157a5bbcf102d7d86e569dbdb8439e7f47d694"
+    },
+    {
+      "name": "Alpha-Testers",
+      "version_name": "4.0.8-apd-INDEV-bP341",
+      "recipe": ":core:test :android:assembleDebug -PapdBuild=P341; restore the identical compiled history from developer artifact, as in40976774195",
+      "sha256": "639ce15ddb4b02d037cd29f995c9f38514e03cf577370cf38488f4602bfd65bd"
+    }
+  ],
+  "source_complete_verified": false,
+  "reasons": [
+    "Source tree includes a signing key and hard-coded passwords.",
+    "CI injects generated feature/history assets, including366 history TSVs, that must accompany corresponding source.",
+    "No accessible matching source archive is attached to341.",
+    "Bit-for-bit reproducibility of signed binaries has not been established; GPL corresponding-source obligations are distinct from reproducible signing."
+  ],
+  "not_distributed": [
+    342,
+    343,
+    344
+  ],
+  "scope": "341 is the latest published APK, not a claim every tester installed it. Older installs and historical source completeness remain unverified."
+}

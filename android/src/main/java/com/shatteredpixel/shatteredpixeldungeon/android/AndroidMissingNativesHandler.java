@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -66,8 +69,8 @@ public class AndroidMissingNativesHandler extends Activity {
 		}
 
 		TextView text = new TextView(this);
-		String message = "Shattered Pixel Dungeon failed to access some of its internal code and cannot start!\n\n" +
-				"Try downloading the game from an official source if you haven't already. You can also screenshot this debug info and send it to the developer (Evan@ShatteredPixel.com):";
+		String message = "ADHD Pixel Dungeon failed to access some of its internal code and cannot start!\n\n" +
+				"Try downloading the game from your trusted APD source if you haven't already. You can also screenshot this debug info and send it to Chris through the APD bug-report channel:";
 
 		message += "\n\nPackage: " + getPackageName();
 		message += "\nVersion: " + versionName + " (" + versionCode + ")";
