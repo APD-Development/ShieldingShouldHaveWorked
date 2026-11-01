@@ -1,38 +1,36 @@
 {
-  "date": "2026-10-31",
-  "previous_source": "ff3dae8c6610bcfe033c6c3e7928d08d0b215e91",
-  "previous_application_source": "c1f04a0b8edb9aba51008ae66cda7e3b65d614b7",
-  "previous_run": 41113901529,
-  "previous_label": "Codex TEST 342",
+  "date": "2026-11-01",
+  "previous_source": "d63962ba6a814584aadb91bd65bff5f2dfeb17ba",
+  "previous_application_source": "0298c2f8f3704d0b0ba47b8ae2975ace2ef2152a",
+  "previous_run": 41233486143,
+  "previous_label": "Codex TEST 344",
   "changes": [
     {
       "category": "Bug Fixes",
       "sprite": "ICON_CHECKED",
-      "title": "Search results survive display recreation",
-      "text": "The UIMSD search-results list now restores exactly once after Android recreates the active statistics scene. It retains the exact query and result ordering, and a restored selection targets the rebuilt scene rather than the destroyed one; no run history, score, save, rules, combat or content behavior changes.",
+      "title": "Privacy choices survive Android scene recreation",
+      "text": "UIMSD Privacy now restores the exact pending evidence-request list, evidence decision, community-vote offer list, in-progress vote ticks and account-request confirmation after Android recreates the statistics scene. Restoration repeats no answer, ballot or account action, queues nothing and sends nothing; saves, run history, scores, rules, combat, RNG and content are unchanged.",
       "paths": [
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/UimsdScene.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndUimsdSearch.java"
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndUimsdOptions.java"
       ]
     },
     {
       "category": "Testing",
       "sprite": "ICON_CHECKED",
-      "title": "Retain TEST342 evidence and verify the Search restorer",
-      "text": "Preserve rejected TEST342 as the immediate compiled comparison and keep owner-only TEST341 plus TEST330 as verified fallbacks. Core guards and the existing Android restoration scenario cover the exact Search results through two rebuilds and a restored selection on the active scene. Retain every diagnostic, report and history checkpoint; require complete core, debug, API34, API36, display, resource, signing and history gates before naming a new private candidate.",
+      "title": "Verify exact local Privacy state without side effects",
+      "text": "A core source guard and native API34 fixture cover every restored Privacy subflow. The device case uses an isolated synthetic evidence and vote history, retains exact labels and two selected vote ticks through repeated scene rebuilds, and requires unchanged fixture bytes, an empty submission queue and no created session. Preserve rejected TEST344 as the immediate compiled comparison; TEST341 remains the current owner-only published pair and TEST330 remains a verified fallback until all gates pass.",
       "paths": [
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/TitleMenuLayoutDeviceTest.java",
         "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdRestoreDeviceTest.java",
         "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/UimsdWiringTest.java",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/APD-CODEX-CORE-TEST-REQUEST.txt",
         "docs/APD-NEXT-BUILD-HISTORY.json",
-        "docs/APD-TEST342-UIMSD-TABLES-VERIFICATION-2026-10-30.md",
+        "docs/APD-TEST344-UIMSD-SEARCH-VERIFICATION-2026-10-31.md",
+        "docs/APD-UIMSD-PRIVACY-RESTORATION-2026-11-01.md",
         "docs/HANDOFF.md",
-        "docs/WORK-COMPLETED-LEDGER.md",
-        "tools/run-title-display-check.sh"
+        "docs/WORK-COMPLETED-LEDGER.md"
       ]
     }
   ],
-  "commentary": "Preserve every compiled TEST342 history TSV and append exactly one new reviewed record. TEST342 is the immediate previous compiled APK but remains rejected and unpublished; TEST341 is the current owner-only published pair and TEST330 remains a verified fallback. This is one intentional application candidate for a reproduced offline UIMSD scene-recreation loss, not a verification-only rebuild. No public release, automatic tester distribution, physical-phone claim or billing change."
+  "commentary": "Preserve every compiled TEST344 history TSV and append exactly one reviewed record. TEST344 is the immediate previous compiled APK but remains rejected and unpublished after retained API36 Back and short-landscape failures; TEST341 is the current owner-only published pair and TEST330 remains a verified fallback. This is one intentional application candidate for bounded offline UIMSD Privacy restoration, not a verification-only rebuild. No public release, automatic tester distribution, physical-phone claim, online activation or billing change."
 }
