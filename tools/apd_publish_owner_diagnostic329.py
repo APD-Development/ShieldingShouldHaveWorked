@@ -180,7 +180,7 @@ def main():
     tag=f'apd-alpha-preview-{number}'
     files=apks+[pathlib.Path(str(p)+'.sha256') for p in apks]+[pdf,receipt]
     assert subprocess.run(['gh','release','view',tag,'--repo',REPO],capture_output=True).returncode != 0, 'Existing release preserved; verify/reuse it separately'
-    subprocess.run(['gh','release','create',tag,'--repo',REPO,'--target',os.environ['GITHUB_SHA'],'--prerelease','--latest=false','--title',f'APD Alpha Preview {number} — owner diagnostic candidate','--notes-file',str(notes)]+[str(p) for p in files],check=True)
+    __import__('apd_gpl_release_gate', fromlist=['publication_run']).publication_run(['gh','release','create',tag,'--repo',REPO,'--target',os.environ['GITHUB_SHA'],'--prerelease','--latest=false','--title',f'APD Alpha Preview {number} — owner diagnostic candidate','--notes-file',str(notes)]+[str(p) for p in files],check=True)
     release=api(f'repos/{REPO}/releases/tags/{tag}')
     assert not release['draft'] and release['prerelease']
     for path in files:

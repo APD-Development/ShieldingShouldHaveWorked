@@ -99,6 +99,8 @@ jobs:
           echo "SRC_SHA=$SRC_SHA" >> "$GITHUB_ENV"
           echo "TAG=apd-test-${{ github.run_number }}" >> "$GITHUB_ENV"
           echo "BUILT_FROM=$N" >> "$GITHUB_ENV"
+      - name: GPL corresponding-source preflight before binary publication
+        run: python3 tools/apd_gpl_release_gate.py --manifest "${APD_GPL_RELEASE_MANIFEST:-}"
       - name: Publish pre-release (APK attached directly)
         if: ${{ inputs.publish }}
         uses: softprops/action-gh-release@v2

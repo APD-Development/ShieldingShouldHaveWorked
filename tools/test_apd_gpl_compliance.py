@@ -46,6 +46,20 @@ class GplComplianceTests(unittest.TestCase):
         sys.path.insert(0,str(ROOT/'tools'))
         from apd_gpl_release_gate import check
         errors=check(ROOT,None);self.assertTrue(errors);self.assertIn('Tracked signing material remains',errors)
+    def test_binary_publication_is_refused_before_any_write_when_blocked(self):
+        import sys
+        from unittest.mock import patch
+        sys.path.insert(0,str(ROOT/'tools'))
+        import apd_gpl_release_gate as gate
+        with patch.object(gate, 'check', return_value=['known blocker']), patch.object(gate.subprocess, 'run') as run:
+            with self.assertRaisesRegex(RuntimeError, 'GPL publication blocked'):
+                gate.publication_run(['gh', 'release', 'create', 'not-a-real-release'])
+            run.assert_not_called()
+        with patch.object(gate, 'check') as check, patch.object(gate.subprocess, 'run') as run:
+            gate.publication_run(['gh', 'release', 'view', 'not-a-real-release'])
+            check.assert_not_called()
+            run.assert_called_once()
+
     def test_full_asset_and_dependency_inventories_are_present(self):
         a=json.loads((ROOT/'docs/compliance/assets.json').read_text());d=json.loads((ROOT/'docs/compliance/dependencies.json').read_text())
         self.assertEqual(7,sum(x['status']!='inherited' for x in a['assets']))

@@ -100,13 +100,13 @@ notes.write_text("Gathering now has its own parchment/cyan icon. Upgrade Scrolls
 tag='apd-alpha-preview-336'
 existing=subprocess.run(['gh','release','view',tag,'--repo',repo],capture_output=True)
 if existing.returncode!=0:
- subprocess.run(['gh','release','create',tag,'--repo',repo,'--target',source,'--prerelease','--latest=false','--title','APD Alpha Preview336 — resource tracking, Gathering icon and Android navigation','--notes-file',str(notes),*map(str,files)],check=True)
+ __import__('apd_gpl_release_gate', fromlist=['publication_run']).publication_run(['gh','release','create',tag,'--repo',repo,'--target',source,'--prerelease','--latest=false','--title','APD Alpha Preview336 — resource tracking, Gathering icon and Android navigation','--notes-file',str(notes),*map(str,files)],check=True)
 release=api(f'repos/{repo}/releases/tags/{tag}')
 assert release['prerelease'] and not release['draft']
 for p in files:
  matches=[a for a in release['assets'] if a['name']==p.name]
  if not matches and existing.returncode==0:
-  subprocess.run(['gh','release','upload',tag,'--repo',repo,str(p)],check=True)
+  __import__('apd_gpl_release_gate', fromlist=['publication_run']).publication_run(['gh','release','upload',tag,'--repo',repo,str(p)],check=True)
   release=api(f'repos/{repo}/releases/tags/{tag}');matches=[a for a in release['assets'] if a['name']==p.name]
  a,=matches
  if existing.returncode==0 and p.name.endswith('.json'):continue

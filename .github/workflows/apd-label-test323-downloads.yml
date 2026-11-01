@@ -52,7 +52,7 @@ jobs:
               side=pathlib.Path(new+'.sha256')
               side.write_text(digest+'  '+new+'\n')
               if not any(x['name']==side.name for x in release['assets']):files.append(str(side))
-          if files:subprocess.run(['gh','release','upload','apd-alpha-preview-323','--repo',repo]+files,check=True)
+          if files:__import__('tools.apd_gpl_release_gate', fromlist=['publication_run']).publication_run(['gh','release','upload','apd-alpha-preview-323','--repo',repo]+files,check=True)
           updated=api('repos/'+repo+'/releases/tags/apd-alpha-preview-323')
           for old,new,label,digest in pairs:
               a=next(a for a in updated['assets'] if a['name']==new)

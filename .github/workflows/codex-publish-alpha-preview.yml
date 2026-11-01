@@ -106,7 +106,7 @@ jobs:
           assert json.loads(subprocess.check_output(['gh','api','repos/'+repo]))['private']
           assert subprocess.run(['gh','release','view',tag,'--repo',repo],capture_output=True).returncode!=0,'Preserve existing release and assets'
           names=['ADHD-Pixel-Dungeon-Alpha-Preview-231.apk','ADHD-Pixel-Dungeon-Alpha-Preview-231.apk.sha256','APD-Alpha-Preview-231.pdf','TEST231-Verification.json','APD-Preview-Delivery.json','APD-Verified-Source.zip','APD-Verified-Source.zip.sha256']
-          subprocess.run(['gh','release','create',tag,'--repo',repo,'--target',os.environ['GITHUB_SHA'],'--prerelease','--latest=false','--title','APD Alpha Preview — private owner test','--notes-file',str(root/'owner-release-notes.txt')]+[str(root/name) for name in names],check=True)
+          __import__('tools.apd_gpl_release_gate', fromlist=['publication_run']).publication_run(['gh','release','create',tag,'--repo',repo,'--target',os.environ['GITHUB_SHA'],'--prerelease','--latest=false','--title','APD Alpha Preview — private owner test','--notes-file',str(root/'owner-release-notes.txt')]+[str(root/name) for name in names],check=True)
           release=json.loads(subprocess.check_output(['gh','api',f'repos/{repo}/releases/tags/{tag}']))
           assert release['prerelease'] and not release['draft']
           actual=[a for a in release['assets'] if a['name']==names[0]];assert len(actual)==1

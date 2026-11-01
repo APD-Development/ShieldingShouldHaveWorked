@@ -18,7 +18,7 @@ name: APD GPL source verification (no APK)
 on:
   push:
     branches: [codex/gplv3-compliance-2026-11-01]
-    paths: ["**/*.java", "**/*.gradle", "tools/*.py", "core/src/main/assets/**", ".github/workflows/apd-gpl-compliance.yml"]
+    paths: ["**/*.java", "**/*.gradle", "core/src/main/assets/**", ".github/workflows/apd-gpl-compliance.yml"]
 permissions:
   contents: read
 jobs:

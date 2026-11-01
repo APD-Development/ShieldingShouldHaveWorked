@@ -13975,6 +13975,13 @@
       "style": "external per-file notice; bytes preserved (binary/strict data/document)"
     },
     {
+      "path": "docs/compliance/publication-guards.json",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
       "path": "docs/compliance/release-blockers.json",
       "years": "2026",
       "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",

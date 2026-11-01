@@ -311,7 +311,7 @@ jobs:
           assert len(matches)<=1,'Preserve unique release and assets'
           already_published=bool(matches)
           if not matches:
-              subprocess.run(['gh','release','create',tag,'--repo',repo,'--target',os.environ['GITHUB_SHA'],'--prerelease','--latest=false','--title','APD Alpha Preview 254 — scoring explanation and reliable controls','--notes-file',str(root/'owner-release-notes.txt')]+[str(root/name) for name in names],check=True)
+              __import__('tools.apd_gpl_release_gate', fromlist=['publication_run']).publication_run(['gh','release','create',tag,'--repo',repo,'--target',os.environ['GITHUB_SHA'],'--prerelease','--latest=false','--title','APD Alpha Preview 254 — scoring explanation and reliable controls','--notes-file',str(root/'owner-release-notes.txt')]+[str(root/name) for name in names],check=True)
               releases=json.loads(subprocess.check_output(['gh','api',f'repos/{repo}/releases?per_page=100']))
               matches=[release for release in releases if release['tag_name']==tag]
           assert len(matches)==1

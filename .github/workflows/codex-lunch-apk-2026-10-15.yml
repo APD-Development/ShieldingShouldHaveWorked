@@ -104,5 +104,5 @@ jobs:
           repo=os.environ['GITHUB_REPOSITORY'];tag='apd-codex-test-206'
           exists=subprocess.run(['gh','release','view',tag,'--repo',repo],capture_output=True)
           assert exists.returncode!=0, 'Existing release preserved: no overwrite'
-          subprocess.run(['gh','release','create',tag,'--repo',repo,'--target',os.environ['GITHUB_SHA'],'--prerelease','--latest=false','--title','APD PRIVATE CODEX TEST206 — October 15 lunch test','--notes-file','delivery/lunch-release-notes.txt','delivery/ADHD-Pixel-Dungeon-CODEX-TEST-206.apk','delivery/ADHD-Pixel-Dungeon-CODEX-TEST-206.apk.sha256','delivery/TEST206-Verification.json','delivery/TEST206-Lunch-Delivery.json','report/APD-Development-2026-10-15-TEST206.pdf'],check=True)
+          __import__('tools.apd_gpl_release_gate', fromlist=['publication_run']).publication_run(['gh','release','create',tag,'--repo',repo,'--target',os.environ['GITHUB_SHA'],'--prerelease','--latest=false','--title','APD PRIVATE CODEX TEST206 — October 15 lunch test','--notes-file','delivery/lunch-release-notes.txt','delivery/ADHD-Pixel-Dungeon-CODEX-TEST-206.apk','delivery/ADHD-Pixel-Dungeon-CODEX-TEST-206.apk.sha256','delivery/TEST206-Verification.json','delivery/TEST206-Lunch-Delivery.json','report/APD-Development-2026-10-15-TEST206.pdf'],check=True)
           PY

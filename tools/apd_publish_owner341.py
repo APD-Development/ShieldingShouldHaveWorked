@@ -138,13 +138,13 @@ notes.write_text("Short presses no longer include frame time from before DOWN; g
 tag='apd-alpha-preview-341'
 existing=subprocess.run(['gh','release','view',tag,'--repo',repo],capture_output=True)
 if existing.returncode!=0:
- subprocess.run(['gh','release','create',tag,'--repo',repo,'--target',source,'--prerelease','--latest=false','--title','APD Alpha Preview 341 — Gathering icon, resource tracking and responsive input','--notes-file',str(notes),*map(str,files)],check=True)
+ __import__('apd_gpl_release_gate', fromlist=['publication_run']).publication_run(['gh','release','create',tag,'--repo',repo,'--target',source,'--prerelease','--latest=false','--title','APD Alpha Preview 341 — Gathering icon, resource tracking and responsive input','--notes-file',str(notes),*map(str,files)],check=True)
 release=api(f'repos/{repo}/releases/tags/{tag}')
 assert release['prerelease'] and not release['draft']
 for p in files:
  matches=[a for a in release['assets'] if a['name']==p.name]
  if not matches and existing.returncode==0:
-  subprocess.run(['gh','release','upload',tag,'--repo',repo,str(p)],check=True)
+  __import__('apd_gpl_release_gate', fromlist=['publication_run']).publication_run(['gh','release','upload',tag,'--repo',repo,str(p)],check=True)
   release=api(f'repos/{repo}/releases/tags/{tag}');matches=[a for a in release['assets'] if a['name']==p.name]
  a,=matches
  if existing.returncode==0 and p.name.endswith('.json'):continue

@@ -40,6 +40,15 @@ def check(root, manifest):
             # and original scan records are independent required evidence, not inferred from a URL.
     return errors
 
+def publication_run(command, *args, **kwargs):
+    """Guard real GitHub binary-release writes, leaving read-only checks untouched."""
+    if list(command[:3]) in (['gh', 'release', 'create'], ['gh', 'release', 'upload']):
+        import os
+        errors = check(pathlib.Path(__file__).resolve().parents[1], os.environ.get('APD_GPL_RELEASE_MANIFEST'))
+        if errors:
+            raise RuntimeError('GPL publication blocked: ' + '; '.join(errors))
+    return subprocess.run(command, *args, **kwargs)
+
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--root',default='.');p.add_argument('--manifest');a=p.parse_args()
     errors=check(a.root,a.manifest)

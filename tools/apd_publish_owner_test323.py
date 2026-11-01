@@ -67,7 +67,7 @@ Source: """+source
  tag='apd-alpha-preview-323'
  assert subprocess.run(['gh','release','view',tag,'--repo',repo],capture_output=True).returncode!=0,'Existing release preserved'
  files=[dev,dest,pathlib.Path(str(dev)+'.sha256'),pathlib.Path(str(dest)+'.sha256'),root/'APD-Alpha-Preview-323.pdf',root/'TEST323-Verification.json']
- subprocess.run(['gh','release','create',tag,'--repo',repo,'--target',os.environ['GITHUB_SHA'],'--prerelease','--latest=false','--title','APD Alpha Preview 323 — private owner test','--notes-file',str(root/'owner-release-notes.txt')]+list(map(str,files)),check=True)
+ __import__('apd_gpl_release_gate', fromlist=['publication_run']).publication_run(['gh','release','create',tag,'--repo',repo,'--target',os.environ['GITHUB_SHA'],'--prerelease','--latest=false','--title','APD Alpha Preview 323 — private owner test','--notes-file',str(root/'owner-release-notes.txt')]+list(map(str,files)),check=True)
  release=api(f'repos/{repo}/releases/tags/{tag}')
  assert not release['draft'] and release['prerelease']
  for p in files:

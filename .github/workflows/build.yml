@@ -44,6 +44,8 @@ jobs:
         run: ./gradlew :android:assembleDebug -PapdBuild=${{ github.run_number }}
       - name: Rename APK
         run: cp android/build/outputs/apk/debug/android-debug.apk ADHD-Pixel-Dungeon-4.0.8-apd-${{ github.run_number }}.apk
+      - name: GPL corresponding-source preflight before binary publication
+        run: python3 tools/apd_gpl_release_gate.py --manifest "${APD_GPL_RELEASE_MANIFEST:-}"
       - name: Publish release
         uses: softprops/action-gh-release@v2
         with:

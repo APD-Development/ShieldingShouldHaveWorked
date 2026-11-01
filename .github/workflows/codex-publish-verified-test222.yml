@@ -98,7 +98,7 @@ jobs:
           import os,subprocess
           repo=os.environ['GITHUB_REPOSITORY'];tag='apd-codex-test-222'
           assert subprocess.run(['gh','release','view',tag,'--repo',repo],capture_output=True).returncode!=0,'Existing release retained'
-          subprocess.run(['gh','release','create',tag,'--repo',repo,'--target',os.environ['GITHUB_SHA'],'--prerelease','--latest=false','--title','APD PRIVATE CODEX TEST222 — Healing slider and clean About','--notes-file','delivery/release-notes.txt','delivery/ADHD-Pixel-Dungeon-CODEX-TEST-222.apk','delivery/ADHD-Pixel-Dungeon-CODEX-TEST-222.apk.sha256','delivery/TEST222-Verification.json','delivery/TEST222-Delivery.json','delivery/APD-Bug-Fixes-2026-10-15-TEST222.pdf','delivery/APD-Verified-Source.zip','delivery/APD-Verified-Source.zip.sha256'],check=True)
+          __import__('tools.apd_gpl_release_gate', fromlist=['publication_run']).publication_run(['gh','release','create',tag,'--repo',repo,'--target',os.environ['GITHUB_SHA'],'--prerelease','--latest=false','--title','APD PRIVATE CODEX TEST222 — Healing slider and clean About','--notes-file','delivery/release-notes.txt','delivery/ADHD-Pixel-Dungeon-CODEX-TEST-222.apk','delivery/ADHD-Pixel-Dungeon-CODEX-TEST-222.apk.sha256','delivery/TEST222-Verification.json','delivery/TEST222-Delivery.json','delivery/APD-Bug-Fixes-2026-10-15-TEST222.pdf','delivery/APD-Verified-Source.zip','delivery/APD-Verified-Source.zip.sha256'],check=True)
           PY
       - uses: actions/upload-artifact@v4
         if: always()

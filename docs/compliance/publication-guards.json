@@ -1,0 +1,130 @@
+{
+  "guarded_current_paths": [
+    {
+      "path": "tools/publish_owner_unlocks262.py",
+      "guarded_writes": 1,
+      "kind": "Python binary publisher"
+    },
+    {
+      "path": "tools/apd_publish_owner_test323.py",
+      "guarded_writes": 1,
+      "kind": "Python binary publisher"
+    },
+    {
+      "path": "tools/apd_publish_owner340.py",
+      "guarded_writes": 2,
+      "kind": "Python binary publisher"
+    },
+    {
+      "path": "tools/apd_publish_gathering331.py",
+      "guarded_writes": 1,
+      "kind": "Python binary publisher"
+    },
+    {
+      "path": "tools/apd_publish_owner333.py",
+      "guarded_writes": 2,
+      "kind": "Python binary publisher"
+    },
+    {
+      "path": "tools/apd_publish_owner_diagnostic329.py",
+      "guarded_writes": 1,
+      "kind": "Python binary publisher"
+    },
+    {
+      "path": "tools/apd_publish_owner339.py",
+      "guarded_writes": 2,
+      "kind": "Python binary publisher"
+    },
+    {
+      "path": "tools/apd_lunch_apk_20261029.py",
+      "guarded_writes": 1,
+      "kind": "Python binary publisher"
+    },
+    {
+      "path": "tools/apd_publish_owner336.py",
+      "guarded_writes": 2,
+      "kind": "Python binary publisher"
+    },
+    {
+      "path": "tools/apd_publish_owner341.py",
+      "guarded_writes": 2,
+      "kind": "Python binary publisher"
+    },
+    {
+      "path": "tools/publish_owner_promotion261.py",
+      "guarded_writes": 1,
+      "kind": "Python binary publisher"
+    },
+    {
+      "path": ".github/workflows/codex-publish-alpha-preview.yml",
+      "guarded_writes": 1,
+      "kind": "workflow binary publisher"
+    },
+    {
+      "path": ".github/workflows/codex-lunch-apk-2026-10-16.yml",
+      "guarded_writes": 1,
+      "kind": "workflow binary publisher"
+    },
+    {
+      "path": ".github/workflows/codex-owner-menu-confirmations.yml",
+      "guarded_writes": 1,
+      "kind": "workflow binary publisher"
+    },
+    {
+      "path": ".github/workflows/build.yml",
+      "guarded_writes": 1,
+      "kind": "workflow binary publisher"
+    },
+    {
+      "path": ".github/workflows/private-test-apk.yml",
+      "guarded_writes": 1,
+      "kind": "workflow binary publisher"
+    },
+    {
+      "path": ".github/workflows/apd-label-test323-downloads.yml",
+      "guarded_writes": 1,
+      "kind": "workflow binary publisher"
+    },
+    {
+      "path": ".github/workflows/codex-lunch-apk-2026-10-15.yml",
+      "guarded_writes": 1,
+      "kind": "workflow binary publisher"
+    },
+    {
+      "path": ".github/workflows/codex-lunch-publish.yml",
+      "guarded_writes": 1,
+      "kind": "workflow binary publisher"
+    },
+    {
+      "path": ".github/workflows/codex-healing-apk-delivery.yml",
+      "guarded_writes": 1,
+      "kind": "workflow binary publisher"
+    },
+    {
+      "path": ".github/workflows/codex-existing-apk-delivery.yml",
+      "guarded_writes": 1,
+      "kind": "workflow binary publisher"
+    },
+    {
+      "path": ".github/workflows/codex-publish-verified-test222.yml",
+      "guarded_writes": 1,
+      "kind": "workflow binary publisher"
+    },
+    {
+      "path": ".github/workflows/codex-alpha-final-owner254.yml",
+      "guarded_writes": 1,
+      "kind": "workflow binary publisher"
+    },
+    {
+      "path": ".github/workflows/codex-stage-owner-scoring249.yml",
+      "guarded_writes": 1,
+      "kind": "workflow binary publisher"
+    },
+    {
+      "path": ".github/workflows/codex-sprint-check.yml",
+      "guarded_writes": 1,
+      "kind": "workflow binary publisher"
+    }
+  ],
+  "scope": "Actual gh create/upload calls in binary publisher Python files and inline workflows, plus softprops binary-release actions. Existing PDF-only reports are not gated. Existing published assets are untouched. Historical workflow reruns at old source and direct manual API/UI operations cannot be restricted by a source patch; repository release permission policy remains NEEDS CHRIS."
+}

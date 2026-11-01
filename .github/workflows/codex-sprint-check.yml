@@ -266,6 +266,8 @@ jobs:
           while time.time() < deadline:
               time.sleep(min(30, deadline - time.time()))
           PY
+      - name: GPL corresponding-source preflight before binary publication
+        run: python3 tools/apd_gpl_release_gate.py --manifest "${APD_GPL_RELEASE_MANIFEST:-}"
       - name: Attach the APK and PDF to a private test prerelease
         uses: softprops/action-gh-release@v2
         with:

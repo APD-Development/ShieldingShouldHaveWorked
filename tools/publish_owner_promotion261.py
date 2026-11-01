@@ -185,7 +185,7 @@ with zipfile.ZipFile(ROOT/'APD-Android-Evidence-261.zip','w',zipfile.ZIP_DEFLATE
 
 assets=[name,name+'.sha256','APD-Alpha-Preview-261.pdf','TEST261-Verification.json','APD-Promotion-Removal-261.json','APD-Android-Evidence-261.zip']
 assert not any(r['tag_name']==TAG for r in api(f'repos/{REPO}/releases?per_page=100')),'Preserve any existing release and assets'
-subprocess.run(['gh','release','create',TAG,'--repo',REPO,'--target',os.environ['GITHUB_SHA'],'--prerelease','--latest=false','--title','APD Alpha Preview 261 — uninterrupted boss rewards','--notes','Private owner test: removed inherited boss-key and victory donation promotions; original contributor credits and normal rewards preserved. Complete tests, screenshots, failures and compatibility details are in the PDF. Install over APD; never uninstall or clear data. No automatic tester distribution.']+[str(ROOT/n)for n in assets],check=True)
+__import__('apd_gpl_release_gate', fromlist=['publication_run']).publication_run(['gh','release','create',TAG,'--repo',REPO,'--target',os.environ['GITHUB_SHA'],'--prerelease','--latest=false','--title','APD Alpha Preview 261 — uninterrupted boss rewards','--notes','Private owner test: removed inherited boss-key and victory donation promotions; original contributor credits and normal rewards preserved. Complete tests, screenshots, failures and compatibility details are in the PDF. Install over APD; never uninstall or clear data. No automatic tester distribution.']+[str(ROOT/n)for n in assets],check=True)
 release=api(f'repos/{REPO}/releases/tags/{TAG}');assert release['prerelease']and not release['draft']
 for n in assets:
     a=next(a for a in release['assets']if a['name']==n)
