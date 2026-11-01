@@ -63,6 +63,16 @@ public class GplJsonCompatibilityTest {
             assertEquals(Double.doubleToRawLongBits(before.getDouble("damage")),Double.doubleToRawLongBits(after.getDouble("damage")));
         }
     }
+    @Test public void floatWritesUseTheLegacyDoubleOverloadsAndExactNumericValues() throws Exception {
+        Bundle bundle=new Bundle();
+        float[] values={0.0001f,0.1f,-0.0f,Float.MIN_VALUE,Float.MAX_VALUE};
+        bundle.put("scalar",values[0]);bundle.put("array",values);
+        JSONObject written=new JSONObject(bundle.toString());
+        assertEquals(Double.doubleToRawLongBits((double)values[0]),Double.doubleToRawLongBits(written.getDouble("scalar")));
+        JSONArray array=written.getJSONArray("array");
+        for(int i=0;i<values.length;i++)
+            assertEquals(Double.doubleToRawLongBits((double)values[i]),Double.doubleToRawLongBits(array.getDouble(i)));
+    }
     @Test public void fingerprintStillDetectsIntegerAndDecimalChanges() {
         assertNotEquals(canonical(Long.MAX_VALUE),canonical(Long.MAX_VALUE-1));
         assertNotEquals(canonical(new BigDecimal("0.0001")),canonical(new BigDecimal("0.0002")));

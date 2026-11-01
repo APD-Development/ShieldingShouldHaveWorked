@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -332,7 +335,8 @@ public class Bundle {
 
 	public void put( String key, float value ) {
 		try {
-			data.put( key, value );
+			// Explicit widening preserves the legacy JSON representation and Android-compatible overload.
+			data.put( key, (double)value );
 		} catch (JSONException e) {
 			Game.reportException(e);
 		}
@@ -413,7 +417,8 @@ public class Bundle {
 		try {
 			JSONArray jsonArray = new JSONArray();
 			for (int i=0; i < array.length; i++) {
-				jsonArray.put( i, array[i] );
+				// Android org.json has no put(int,float); retain the original double call.
+				jsonArray.put( i, (double)array[i] );
 			}
 			data.put( key, jsonArray );
 		} catch (JSONException e) {

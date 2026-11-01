@@ -37,6 +37,8 @@ jobs:
         run: |
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36"
           ./gradlew :core:test :desktop:classes :android:compileDebugJavaWithJavac :android:compileReleaseJavaWithJavac
+      - name: Verify production JSON calls retain Android-compatible signatures
+        run: python3 tools/check_android_json_abi.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
