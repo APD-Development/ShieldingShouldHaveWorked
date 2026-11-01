@@ -212,6 +212,7 @@ public class AndroidBackDeviceTest {
 					titleCamera.set(com.watabou.noosa.Camera.main);
 				});
 				UimsdModel previousReady=null;
+				List<String> slowOpenings=new ArrayList<>();
 				for(int opening=1;opening<=2;opening++){
 					Object preparedEntry=ready.get(null);
 					assertNotNull("opening "+opening+" title preload completed",preparedEntry);
@@ -226,25 +227,38 @@ public class AndroidBackDeviceTest {
 						target.set(button.camera().cameraToScreen(button.left()+button.width()/2,button.top()+button.height()/2));
 					}catch(Exception e){throw new RuntimeException(e);}});
 					long begin=System.nanoTime(), down=android.os.SystemClock.uptimeMillis();
+					long downDeliveredNanos=0, inputDeliveredNanos=0;
 					for(int action:new int[]{android.view.MotionEvent.ACTION_DOWN,android.view.MotionEvent.ACTION_UP}){
 						android.view.MotionEvent event=android.view.MotionEvent.obtain(down,android.os.SystemClock.uptimeMillis(),action,target.get().x,target.get().y,0);
 						try {InstrumentationRegistry.getInstrumentation().sendPointerSync(event);} finally {event.recycle();}
+						if(action==android.view.MotionEvent.ACTION_DOWN)downDeliveredNanos=System.nanoTime();
+						else inputDeliveredNanos=System.nanoTime();
 					}
 					Field drawn=UimsdScene.class.getDeclaredField("firstReadyHomeDrawNanos"); drawn.setAccessible(true);
-					long deadline=System.nanoTime()+TimeUnit.SECONDS.toNanos(10),drawNanos=0;
+					long deadline=System.nanoTime()+TimeUnit.SECONDS.toNanos(10),drawNanos=0,sceneSeenNanos=0;
 					while(System.nanoTime()<deadline){
-						if(Game.scene() instanceof UimsdScene) drawNanos=drawn.getLong(Game.scene());
+						if(Game.scene() instanceof UimsdScene){
+							if(sceneSeenNanos==0)sceneSeenNanos=System.nanoTime();
+							drawNanos=drawn.getLong(Game.scene());
+						}
 						if(drawNanos>begin) break;
 						Thread.sleep(2);
 					}
 					assertTrue("opening "+opening+" complete Home was drawn after the native tap",drawNanos>begin);
+					assertTrue("opening "+opening+" UIMSD scene was observed after the native tap",sceneSeenNanos>begin);
 					long millis=TimeUnit.NANOSECONDS.toMillis(drawNanos-begin);
 					Log.w("APDPERF","UIMSD_NATIVE_TAP opening="+opening+" ready_72_run_home_draw_ms="+millis+" budget_ms=250");
+					Log.w("APDPERF","UIMSD_NATIVE_TAP_MILESTONE opening="+opening
+							+" down_dispatch_ms="+TimeUnit.NANOSECONDS.toMillis(downDeliveredNanos-begin)
+							+" input_dispatch_ms="+TimeUnit.NANOSECONDS.toMillis(inputDeliveredNanos-begin)
+							+" scene_observed_ms="+TimeUnit.NANOSECONDS.toMillis(sceneSeenNanos-begin)
+							+" scene_to_home_ms="+TimeUnit.NANOSECONDS.toMillis(drawNanos-sceneSeenNanos)
+							+" input_to_home_ms="+TimeUnit.NANOSECONDS.toMillis(drawNanos-inputDeliveredNanos));
 					for(String phase:new String[]{"createDurationNanos","rebuildDurationNanos","firstHomeDrawDurationNanos"}){
 						Field timing=UimsdScene.class.getDeclaredField(phase);timing.setAccessible(true);
 						Log.w("APDPERF","UIMSD_DRAW_PHASE opening="+opening+" "+phase+"="+timing.getLong(Game.scene())+"ns");
 					}
-					assertTrue("opening "+opening+" native tap to complete Home exceeded 250ms: "+millis,millis<250);
+					if(millis>=250)slowOpenings.add("opening "+opening+"="+millis+"ms");
 					onRender(()->{try{
 						assertTrue("opening claims the exact READY model",prepared==uimsd("model"));
 						assertEquals(UimsdModel.State.READY,((UimsdModel)uimsd("model")).state());
@@ -264,6 +278,7 @@ public class AndroidBackDeviceTest {
 						await.invoke(null,60000L);
 					}
 				}
+				assertTrue("native tap to complete Home exceeded 250ms: "+slowOpenings,slowOpenings.isEmpty());
 			} finally {
 				onRender(()->{
 					com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder.configure(originalRoot,recording);
