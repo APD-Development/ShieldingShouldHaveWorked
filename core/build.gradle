@@ -33,7 +33,7 @@ dependencies {
     testImplementation "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
     testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
     //same version SPD-classes uses at runtime, needed at compile time to canonicalize bundle JSON in tests
-    testImplementation 'org.json:json:20170516'
+    testImplementation 'org.json:json:20240303'
 }
 
 test {
