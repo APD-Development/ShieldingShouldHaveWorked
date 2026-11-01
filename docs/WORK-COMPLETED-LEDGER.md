@@ -1,4 +1,15 @@
 ## 2026-11-01T15:07:34Z — UIMSD Privacy parameterized restoration core-green; native pending
+
+## 2026-11-01T20:26:24Z — TEST345 exact-APK Privacy restoration evidence
+
+- Added native API34 acceptance for evidence list/decision, vote list/in-progress checked set and account confirmation using isolated synthetic local state.
+- Producer head `207ed6819ed2a36cd4f6ccd02eaca5d7b9aa1457`: complete core/debug/history producer green; private developer APK SHA256 `a6c5653d5eaf182c65a5352146ce8660cdfd0f71ad70796049a87dc35b3e5b46`.
+- Corrected a test-only expected label at `586a71620bc459ded9dd19668826070290c22390`; no application input changed.
+- Focused exact-APK API34 run41346533622/job124967431276 passed one test in 3.465 s with zero failures; artifact13099059654 digest `6a97f7644a50ced03dc3a1859c6ed50ba2bfa52521d0d70b8a3131f266e31deb`.
+- Full API34 run retained 65/67 passed. Existing warm-Home timing acceptance failed at 276 ms versus 250 ms; TEST345 remains rejected/unpublished. All six display profiles passed.
+- TEST341 remains current; TEST330 remains fallback. No physical-device claim, publication, distribution, online activation, data clearing or uninstall.
+- Next: bounded diagnosis of the retained timing miss; do not rerun unchanged or trigger a new build without an application correction.
+
 - Source c501320ccdcbeb15659f7de228771180779cfcae adds exact scene-reset restorers for the remaining parameterized Privacy lists/choices identified in WndUimsdOptions: evidence requests, one evidence decision, community-vote offers, an in-progress checked vote, and account request kind. Vote restoration copies the currently checked set and performs no cast/queue/send/connect action. No online activation, save/history/gameplay/RNG/scoring/rule/signing/app-ID/version change.
 - Core request2a8d3e4139bef18b602e37a7fae2457d66a0ecc1; run41319425592/job124886277582 passed425 suites/2232 tests/0 failures-errors-skips and all6 RunTurnWindow methods. Artifact13089090788/1,046,318bytes/digest d88d08608b9de5bfd81f64c2d888dc0afb72ad73ecbb0b8149ad27e38930a4f3.
 - No APK/build request/Android/visual/phone/publication/distribution evidence. TEST344 rejected; TEST341 current, APK bytes unchanged by its2026-11-01 matching-source release update; TEST330 fallback. Native scene-recreation acceptance remains next. Report docs/APD-UIMSD-PRIVACY-RESTORATION-2026-11-01.md.
