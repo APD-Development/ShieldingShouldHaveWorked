@@ -1,10 +1,10 @@
 # APD HANDOFF
 
-**Recorded:** 2026-10-31T19:37:22Z  
+**Recorded:** 2026-11-01T15:07:34Z  
 **Approved branch:** `codex/apd-phone-fixes-2026-10-09`  
-**Acceptance evidence head:** `d63962ba6a814584aadb91bd65bff5f2dfeb17ba`  
-**Application source under review:** `0298c2f8f3704d0b0ba47b8ae2975ace2ef2152a` (TEST344)  
-**Disposition:** TEST344 compiled and passed core/API34 but is rejected on API36 and short-landscape display evidence; not published or distributed
+**Acceptance evidence head:** `2a8d3e4139bef18b602e37a7fae2457d66a0ecc1`  
+**Application source under review:** `c501320ccdcbeb15659f7de228771180779cfcae` (UIMSD Privacy restoration; core-green, no APK requested)  
+**Disposition:** UIMSD Privacy restoration passed complete core verification; Android/APK acceptance remains pending. TEST344 remains rejected and unpublished.
 
 ## Current published APK
 
@@ -13,6 +13,8 @@ The latest actual private publication remains TEST341, release428527455/tag `apd
 - Developer SHA256 `ad6281b3e41fe414187ca40824157a5bbcf102d7d86e569dbdb8439e7f47d694`
 - Alpha-Testers SHA256 `639ce15ddb4b02d037cd29f995c9f38514e03cf577370cf38488f4602bfd65bd`
 - Receipt SHA256 `e74d079b9b4df2d1d9778d2e15c4eebf72ee121449a38b525c1ceaf36aeab9a1`
+
+The release record was updated2026-11-01T03:49:33Z to add matching-source archives and an explicit compliance disclosure. The Developer and Alpha-Testers APK asset bytes/hashes did not change. TEST341 still contains the older restricted JSON dependency and must not be described as fully GPL-compliant; relay the matching source archive with an APK when repository access is unavailable.
 
 TEST330 remains a published fallback. No physical-phone verification is claimed.
 
@@ -31,14 +33,23 @@ TEST330 remains a published fallback. No physical-phone verification is claimed.
 
 All18 Custom Dungeon Rules remain implemented/enabled. The357-value v2.6R scoring authority, original scores, saves, permanent UIMSD history, Cleric corrections, UIMSD fixes, circular-vault timing, signer, application ID and versionCode are unchanged. No player data was cleared and no app was uninstalled.
 
-`docs/APD-CODEX-BUILD-REQUEST.txt` remains byte-identical at blob `3db90d8ac9cd2e17acaba08330694c516856b0ee`; verification-only work did not request another build.
+`docs/APD-CODEX-BUILD-REQUEST.txt` remains byte-identical at blob `4f73694d9a0a9e6d6e4d4ca9ccffc71e94a07709`; this core-only package did not request another APK build.
 
 ## Next safe step
 
-Do not publish TEST342 or TEST344. Preserve the exact TEST344 artifacts for bounded diagnosis only; do not rerun unchanged for green hunting. The UIMSD Search fix is core/API34 green, but API36 again failed to deliver the first system Back and short-landscape lost render responsiveness after an offline emulator start. Preserve TEST341 as current and TEST330 as fallback; keep emulator and physical evidence separate.
+Do not publish TEST342 or TEST344, and do not rerun either unchanged for green hunting. Source c501320c is core-green only. The next bounded acceptance step is a real API34 scene-recreation case using local synthetic evidence/vote state that proves the exact list, confirmation and in-progress vote ticks survive without casting, queuing, sending or connecting. Only after that test is ready may a deliberate new application candidate be considered. Preserve TEST341 as current and TEST330 as fallback; keep emulator and physical evidence separate.
 
 
 ---
+
+
+## 2026-11-01T15:07:34Z — UIMSD Privacy subflow restoration complete-core PASS; no APK request
+- Reconciled exact branch head377c3e20b7dc6ec6c4d149c5c1b4ea7cda3bb7ed with no queued/running workflow before mutation. The current audit found the only parameterized UIMSD list/choice paths still lacking restorers in WndUimsdOptions: evidence list/decision, community-vote list/selection and account-request confirmation.
+- Production commit c501320ccdcbeb15659f7de228771180779cfcae restores the exact captured evidence entries and vote offers. An in-progress vote snapshots every current tick into a new set during recreation; restoration itself does not cast, queue, send or connect. The exact evidence entry/account-request kind also survives. No server/sign-in path was activated.
+- Focused retained guard `privacySubflowsRestoreTheirExactLocalStateAcrossSceneResets` protects all five restoration routes and the vote-tick copy. Core request head2a8d3e4139bef18b602e37a7fae2457d66a0ecc1; run41319425592/job124886277582 passed425 suites/2232 tests/0 failures/0 errors/0 skips. All6 RunTurnWindow cases passed. Artifact13089090788 is1,046,318bytes with digest `d88d08608b9de5bfd81f64c2d888dc0afb72ad73ecbb0b8149ad27e38930a4f3`.
+- This is core/source evidence only: no Android method, APK build, visual review, physical-phone test, publication or distribution occurred. Saves, permanent statistics/history, all18 rules, nine challenges, difficulty,357-value v2.6R scoring/original scores, combat, RNG, signer, app ID and version remain unchanged.
+- TEST344 remains rejected/unpublished. TEST341 remains the current published private pair; its release was updated2026-11-01T03:49:33Z only with matching-source/compliance assets, while the two APK hashes remained unchanged. TEST330 remains fallback.
+- Detailed report: docs/APD-UIMSD-PRIVACY-RESTORATION-2026-11-01.md.
 
 ## 2026-10-31T19:37:22Z — TEST344 core/API34 green; display/API36 rejection retained
 - Candidate head `d63962ba6a814584aadb91bd65bff5f2dfeb17ba`; sprint344 run41233486143. Verify/build job124632323324 passed predecessor-history preservation from compiled TEST342, reviewed-path tooling, complete core, debug assembly, compiled-history verification and private artifact upload.
