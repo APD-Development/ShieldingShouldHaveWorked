@@ -76,6 +76,6 @@ class GplComplianceTests(unittest.TestCase):
     def test_full_asset_and_dependency_inventories_are_present(self):
         a=json.loads((ROOT/'docs/compliance/assets.json').read_text());d=json.loads((ROOT/'docs/compliance/dependencies.json').read_text())
         self.assertEqual(7,sum(x['status']!='inherited' for x in a['assets']))
-        self.assertTrue(any(x['artifact']=='json' and 'Good, not Evil' in x.get('issue','') for x in d['direct_gradle_declarations']))
+        self.assertTrue(any(x['artifact']=='json' and x['version']=='20240303' and 'Public Domain' in str(x['declared_licenses']) for x in d['direct_gradle_declarations']))
 
 if __name__=='__main__':unittest.main()

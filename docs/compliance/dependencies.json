@@ -90,23 +90,24 @@
       "line": 12,
       "group": "org.json",
       "artifact": "json",
-      "version": "20170516",
+      "version": "20240303",
       "scope": "production",
-      "pom_url": "https://repo.maven.apache.org/maven2/org/json/json/20170516/json-20170516.pom",
+      "pom_url": "https://repo.maven.apache.org/maven2/org/json/json/20240303/json-20240303.pom",
       "pom_sha256": "64c15543a3d5db279a20aeb0dfa034a2a79c2159f8cd401dea48ff0f234c18dd",
       "declared_licenses": [
         {
-          "name": "The JSON License",
-          "url": "http://json.org/license.html",
-          "distribution": "repo",
-          "comments": "Copyright (c) 2002 JSON.org\n\n\t\t\t\tPermission is hereby granted, free of charge, to any person obtaining a copy of this software and\n\t\t\t\tassociated documentation files (the \"Software\"), to deal in the Software without restriction, including\n\t\t\t\twithout limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n\t\t\t\tcopies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the\n\t\t\t\tfollowing conditions:\n\n\t\t\t\tThe above copyright notice and this permission notice shall be included in all copies or substantial\n\t\t\t\tportions of the Software.\n\n\t\t\t\tThe Software shall be used for Good, not Evil.\n\n\t\t\t\tTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT\n\t\t\t\tLIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN\n\t\t\t\tNO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,\n\t\t\t\tWHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE\n\t\t\t\tSOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n\t\t\t"
+          "name": "Public Domain",
+          "url": "https://github.com/stleary/JSON-java/blob/20240303/LICENSE"
         }
       ],
-      "status": "NEEDS CHRIS",
-      "issue": "JSON License includes Good, not Evil use restriction; incompatible with GPL. Preserve data compatibility when selecting a replacement.",
+      "status": "DONE: Public Domain replacement verified by full 2239-test suite and Android ABI guard",
       "declared_coordinates": [
         "org.json:json:20170516"
-      ]
+      ],
+      "historical_version": "20170516",
+      "historical_issue": "JSON License includes Good, not Evil use restriction; incompatible with GPL. Preserve data compatibility when selecting a replacement.",
+      "jar_sha256": "3cf6cd6892e32e2b4c1c39e0f52f5248a2f5b37646fdfbb79a66b46b618414ed",
+      "issue": "Historical distributed TEST341 still uses the incompatible old dependency; PR changes do not alter that APK."
     },
     {
       "file": "ios/build.gradle",
@@ -663,23 +664,24 @@
       "line": 18,
       "group": "org.json",
       "artifact": "json",
-      "version": "20170516",
+      "version": "20240303",
       "scope": "test-only",
-      "pom_url": "https://repo.maven.apache.org/maven2/org/json/json/20170516/json-20170516.pom",
+      "pom_url": "https://repo.maven.apache.org/maven2/org/json/json/20240303/json-20240303.pom",
       "pom_sha256": "64c15543a3d5db279a20aeb0dfa034a2a79c2159f8cd401dea48ff0f234c18dd",
       "declared_licenses": [
         {
-          "name": "The JSON License",
-          "url": "http://json.org/license.html",
-          "distribution": "repo",
-          "comments": "Copyright (c) 2002 JSON.org\n\n\t\t\t\tPermission is hereby granted, free of charge, to any person obtaining a copy of this software and\n\t\t\t\tassociated documentation files (the \"Software\"), to deal in the Software without restriction, including\n\t\t\t\twithout limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n\t\t\t\tcopies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the\n\t\t\t\tfollowing conditions:\n\n\t\t\t\tThe above copyright notice and this permission notice shall be included in all copies or substantial\n\t\t\t\tportions of the Software.\n\n\t\t\t\tThe Software shall be used for Good, not Evil.\n\n\t\t\t\tTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT\n\t\t\t\tLIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN\n\t\t\t\tNO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,\n\t\t\t\tWHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE\n\t\t\t\tSOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n\t\t\t"
+          "name": "Public Domain",
+          "url": "https://github.com/stleary/JSON-java/blob/20240303/LICENSE"
         }
       ],
-      "status": "NEEDS CHRIS",
-      "issue": "JSON License includes Good, not Evil use restriction; incompatible with GPL. Preserve data compatibility when selecting a replacement.",
+      "status": "DONE: Public Domain replacement verified by full 2239-test suite and Android ABI guard",
       "declared_coordinates": [
         "org.json:json:20170516"
-      ]
+      ],
+      "historical_version": "20170516",
+      "historical_issue": "JSON License includes Good, not Evil use restriction; incompatible with GPL. Preserve data compatibility when selecting a replacement.",
+      "jar_sha256": "3cf6cd6892e32e2b4c1c39e0f52f5248a2f5b37646fdfbb79a66b46b618414ed",
+      "issue": "Historical distributed TEST341 still uses the incompatible old dependency; PR changes do not alter that APK."
     },
     {
       "file": "desktop/build.gradle",
@@ -970,5 +972,14 @@
     "workflow_run": 41266617554,
     "result": "REJECTED:2234 tests,2 golden-hash failures; Android debug/release and desktop compilation passed. Old hashes retained; dependency pin restored.",
     "limitation": "Hash mismatch has not been established as actual dungeon or save corruption; compatibility was not established, so no default/library/format change is shipped."
+  },
+  "accepted_replacement": {
+    "version": "20240303",
+    "commit": "4d86c48985bd007000dae0ee2d4cfa46367200ab",
+    "run": 41268811315,
+    "tests": 2239,
+    "failures": 0,
+    "root_cause": "New parser uses BigDecimal; old Bundle float writes accidentally bind to newly added non-Android JSONObject float overloads. Explicit float-to-double preserves serialization and Android ABI; test-only canonicalizer normalizes only precision-safe numeric spelling. Original golden hashes unchanged.",
+    "abi_guard": "3827 production classes;35 distinct JSON references;zero float signatures"
   }
 }

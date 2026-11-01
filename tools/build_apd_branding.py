@@ -106,6 +106,8 @@ def build():
     button=Image.new('RGBA',(24,24));d=ImageDraw.Draw(button)
     d.rectangle((0,0,23,17),fill=(56,65,58,255),outline=(113,140,117,255),width=1)
     d.rectangle((2,2,21,15),outline=(28,38,32,255),width=1)
+    # Retain the source atlas contract: transparent separator then an unused solid swatch.
+    d.rectangle((0,21,23,23),fill=(56,65,58,255))
     save(button,'core/src/main/assets/interfaces/apd_button.png')
     flame=Image.new('RGBA',(256,256));d=ImageDraw.Draw(flame)
     for frame in range(24):

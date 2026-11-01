@@ -37,7 +37,7 @@
       "copyright": "2026 Chris Charlton, original APD artwork; inherited unbranded atlas pixels retain upstream notices"
     },
     "core/src/main/assets/interfaces/apd_button.png": {
-      "sha256": "764edbb6b24fc89397bd01d5de2cb740b11486a211ae782ee93c770830524938",
+      "sha256": "74f3cca3d7701b95fc422ef3fed9ac41cbea22f33bd340c75fb7c2be38a63257",
       "size": [
         24,
         24
@@ -714,7 +714,7 @@
     },
     "generator": {
       "path": "tools/build_apd_branding.py",
-      "sha256": "7bae8b50c7598297a934361ba0d4f3ee600a7b41901d066631e89866225f5d5e",
+      "sha256": "6cffaa99f62eff92c5b82dfdab7dacd08854e48bf426c7f60fc5cc9314f862c3",
       "license": "GPL-3.0-or-later",
       "font": "Original elementary 5x7 glyph geometry included in this generator; no external font"
     }
