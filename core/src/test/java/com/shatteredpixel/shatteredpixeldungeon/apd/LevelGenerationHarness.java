@@ -286,7 +286,7 @@ public final class LevelGenerationHarness {
 		return hex.toString();
 	}
 
-	private static void canonicalize( Object value, StringBuilder out ){
+	static void canonicalize( Object value, StringBuilder out ){
 		if (value instanceof JSONObject){
 			JSONObject obj = (JSONObject) value;
 			TreeMap<String, Object> sorted = new TreeMap<>();
@@ -346,6 +346,17 @@ public final class LevelGenerationHarness {
 				}
 			}
 			out.append(']');
+		} else if (value instanceof java.math.BigDecimal){
+            // Modern public-domain JSON-java parses decimals without immediately rounding to Double.
+            // The unchanged historical goldens used Double.toString. Match only its spelling,
+            // and reject any decimal whose numeric value would change. Never narrow integers.
+            java.math.BigDecimal decimal = (java.math.BigDecimal)value;
+            double legacy = decimal.doubleValue();
+            if (!Double.isFinite(legacy)
+                    || new java.math.BigDecimal(Double.toString(legacy)).compareTo(decimal) != 0) {
+                throw new AssertionError("Fingerprint decimal cannot use legacy spelling without losing precision: " + decimal);
+            }
+            out.append(Double.toString(legacy));
 		} else if (value instanceof String){
 			out.append('"').append(value).append('"');
 		} else {
