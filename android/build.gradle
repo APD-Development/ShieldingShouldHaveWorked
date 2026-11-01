@@ -1,3 +1,21 @@
+/*
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
+
 apply plugin: 'com.android.application'
 
 android {
@@ -44,18 +62,18 @@ android {
     }
 
     signingConfigs {
-        //APD: committed keystore so every debug build is signed with the same key, see docs/SIGNING.md
+        // The existing install identity lives outside source control. Never generate a fallback key.
         apdDebug {
-            storeFile rootProject.file('keystore/apd-debug.jks')
-            storePassword 'apdpassword'
-            keyAlias 'apd'
-            keyPassword 'apdpassword'
+            storeFile rootProject.file(System.getenv('APD_SIGNING_KEYSTORE') ?: 'keystore/EXTERNAL-KEY-REQUIRED.jks')
+            storePassword System.getenv('APD_SIGNING_STORE_PASSWORD') ?: ''
+            keyAlias System.getenv('APD_SIGNING_KEY_ALIAS') ?: 'apd'
+            keyPassword System.getenv('APD_SIGNING_KEY_PASSWORD') ?: System.getenv('APD_SIGNING_STORE_PASSWORD') ?: ''
         }
     }
 
     buildTypes {
         debug {
-            signingConfig signingConfigs.apdDebug
+            signingConfig project.hasProperty('apdUnsignedVerification') ? null : signingConfigs.apdDebug
             applicationIdSuffix ".indev"
             //APD: CI passes -PapdBuild=<run number> so the installed app says which build it is (shown in UIMSD and in Android's app info)
             versionNameSuffix '-INDEV' + (project.hasProperty('apdBuild') ? '-b' + project.property('apdBuild') : '') + (project.hasProperty('apdTestBuild') ? '-TEST' : '')
@@ -75,8 +93,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
             dependencies {
-                releaseImplementation project(':services:updates:githubUpdates')
-                releaseImplementation project(':services:news:shatteredNews')
+                releaseImplementation project(':services:updates:debugUpdates')
+                releaseImplementation project(':services:news:debugNews')
             }
         }
     }
@@ -139,4 +157,15 @@ task copyAndroidNatives() {
 
 tasks.matching { it.name.contains("merge") && it.name.contains("JniLibFolders") }.configureEach { packageTask ->
     packageTask.dependsOn 'copyAndroidNatives'
+}
+
+// Source/compile checks do not require a key. A real debug APK must retain the established signer.
+tasks.configureEach { task ->
+    if (task.name == 'validateSigningDebug' && !project.hasProperty('apdUnsignedVerification')) {
+        task.doFirst {
+            if (!System.getenv('APD_SIGNING_KEYSTORE') || !System.getenv('APD_SIGNING_STORE_PASSWORD')) {
+                throw new GradleException('Existing APD signing identity is not configured. Set APD_SIGNING_KEYSTORE and APD_SIGNING_STORE_PASSWORD; no replacement key will be generated.')
+            }
+        }
+    }
 }

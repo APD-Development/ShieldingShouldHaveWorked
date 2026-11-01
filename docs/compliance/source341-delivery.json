@@ -1,0 +1,57 @@
+{
+  "source_commit": "acb69c653033ee0d8df68264395ca27e08eb566d",
+  "recovery_code_commit": "a3a298f0b6fb097f6ec8eb9f765f23f27146cb93",
+  "workflow_run": 41270469863,
+  "workflow_job": 124742017471,
+  "private_release_id": 428527455,
+  "assets": [
+    {
+      "id": 697245104,
+      "name": "APD-Source-341-Alpha-Testers.zip",
+      "size": 71371342,
+      "digest": "sha256:a8deb903bc4e9cf2bae0286544410371203c8f7bed2bba87c7e07274c5674060",
+      "created_at": "2026-11-01T03:46:44Z",
+      "updated_at": "2026-11-01T03:46:46Z",
+      "browser_download_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-alpha-preview-341/APD-Source-341-Alpha-Testers.zip"
+    },
+    {
+      "id": 697245105,
+      "name": "APD-Source-341-Alpha-Testers.zip.sha256",
+      "size": 99,
+      "digest": "sha256:73ca7c9dd5140a3a5b1338ea10edf4263af688fc663e43db763b8fdfb3240cc0",
+      "created_at": "2026-11-01T03:46:44Z",
+      "updated_at": "2026-11-01T03:46:44Z",
+      "browser_download_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-alpha-preview-341/APD-Source-341-Alpha-Testers.zip.sha256"
+    },
+    {
+      "id": 697245102,
+      "name": "APD-Source-341-Developer.zip",
+      "size": 71341154,
+      "digest": "sha256:13b684ff0980779f1934740b8ecfb5c1ceb178187678bbbfdb00b6e731ac5577",
+      "created_at": "2026-11-01T03:46:44Z",
+      "updated_at": "2026-11-01T03:46:47Z",
+      "browser_download_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-alpha-preview-341/APD-Source-341-Developer.zip"
+    },
+    {
+      "id": 697245103,
+      "name": "APD-Source-341-Developer.zip.sha256",
+      "size": 95,
+      "digest": "sha256:c05ef0ea16fc3a14326a86573825aa3e7ff893ace6d57288d889f8644c3c9ab9",
+      "created_at": "2026-11-01T03:46:44Z",
+      "updated_at": "2026-11-01T03:46:45Z",
+      "browser_download_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-alpha-preview-341/APD-Source-341-Developer.zip.sha256"
+    }
+  ],
+  "downloaded_back_verified": true,
+  "local_direct_upload_failure": "HTTP401 Bad credentials; normal repository Actions publication then succeeded",
+  "player_reconstruction": {
+    "application_payload_identical": true,
+    "entry_count": 970,
+    "missing": [],
+    "extra": [],
+    "different": [],
+    "excluded": "ZIP metadata, APK signing block, META-INF signature files only"
+  },
+  "developer_reconstruction": "Not separately rebuilt; exact source and feature-generation input recovered and archive checksums verified",
+  "external_recipient_access": "NEEDS CHRIS: relay source archives alongside APKs shared outside private repository; no recipient access evidence provided"
+}

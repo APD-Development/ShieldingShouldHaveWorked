@@ -1,0 +1,977 @@
+{
+  "findings": [
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/messages/Languages.java",
+      "line": 28,
+      "classification": "factual translator attribution: retain contributor handle",
+      "text": "ShatteredFlameBlast"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/AboutScene.java",
+      "line": 78,
+      "classification": "factual upstream attribution/history",
+      "text": "An unofficial modified version of Shattered Pixel Dungeon by Evan Debenham, based on Pixel Dungeon by Oleg Dolya (Watabou). APD is not affiliated with or endorsed by Evan Debenham or Shattered Pixel.\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/AboutScene.java",
+      "line": 90,
+      "classification": "factual upstream attribution/history",
+      "text": "\\n\\nAfter years playing Shattered Pixel Dungeon, I wanted to expand the experience. APD builds on SPD's accomplishments, rather than diminishing them."
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/AboutScene.java",
+      "line": 114,
+      "classification": "factual upstream attribution/history",
+      "text": "I've spent years playing Shattered Pixel Dungeon, and APD is my attempt to build the experience I've always wanted.\\n\\nI'm one person developing a game for people who love Pixel Dungeon as much as I do.\\n\\nMy goal is for players to never run out of content they actually WANT to play.\\n\\nAnd if the c"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/AboutScene.java",
+      "line": 149,
+      "classification": "factual upstream attribution/history",
+      "text": "Shattered Pixel Dungeon"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/AboutScene.java",
+      "line": 152,
+      "classification": "factual upstream attribution/history",
+      "text": "ShatteredPixel.com"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/AboutScene.java",
+      "line": 153,
+      "classification": "factual upstream attribution/history",
+      "text": "https://ShatteredPixel.com"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/AboutScene.java",
+      "line": 279,
+      "classification": "factual upstream attribution/history",
+      "text": "Shattered GDX Help:"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/AboutScene.java",
+      "line": 293,
+      "classification": "factual upstream attribution/history",
+      "text": "Inherited Shattered Pixel Dungeon translations were contributed by volunteers through Transifex. Thank you to the original translators! APD-specific text may remain in English."
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/AboutScene.java",
+      "line": 309,
+      "classification": "factual upstream attribution/history",
+      "text": "Shattered Pixel Dungeon uses the following sound samples from _freesound.org_:\\n\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/NewsScene.java",
+      "line": 152,
+      "classification": "DONE: former upstream site fallback repointed to actual private APD source repository",
+      "text": "https://ShatteredPixel.com"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/GplLicense.java",
+      "line": 30,
+      "classification": "factual upstream attribution/history",
+      "text": "It is based on Shattered Pixel Dungeon by Evan Debenham and Pixel Dungeon by Oleg Dolya (Watabou).\\n\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/GplLicense.java",
+      "line": 33,
+      "classification": "factual upstream attribution/history",
+      "text": "APD is not affiliated with or endorsed by Evan Debenham or Shattered Pixel.\\n\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndSupportPrompt.java",
+      "line": 30,
+      "classification": "factual upstream attribution/history",
+      "text": "ADHD Pixel Dungeon builds on Shattered Pixel Dungeon by Evan Debenham and Pixel Dungeon by Watabou. Credits, source and GPL licensing information are available in About."
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/Ruleset.java",
+      "line": 46,
+      "classification": "factual inherited base-game identity, persisted and hashed into historical rulesets; preserve compatibility",
+      "text": "Shattered Pixel Dungeon 4.0.0"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v2_X_Changes.java",
+      "line": 185,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ ShatteredPD is now categorized as a game on Android devices\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v2_X_Changes.java",
+      "line": 342,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 118 days after Shattered v2.3.0\\n\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v2_X_Changes.java",
+      "line": 364,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ Shattered's Birthday in early August\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v2_X_Changes.java",
+      "line": 571,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 92 days after Shattered v2.2.0\\n\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v2_X_Changes.java",
+      "line": 576,
+      "classification": "factual upstream attribution/history",
+      "text": "This update also included several fun extra items. I had always intended to add more holiday items after the initial ones in v0.3.3, but it ended up taking me a bit more than 9 years years to do it! Remains in Shattered have also been heavily nerfed from their original form, and so I wanted to add s"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v2_X_Changes.java",
+      "line": 595,
+      "classification": "factual upstream attribution/history",
+      "text": "Shattered has had little holiday food items that temporarily replace cornish pasties ever since 2016, but only for Halloween and the Winter Holidays. Throughout 2024 you'll see a bunch of new items for more holidays through the year, which all have different tiny bonus effects when eaten.\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v2_X_Changes.java",
+      "line": 645,
+      "classification": "factual upstream attribution/history",
+      "text": "I've updated to the latest version of Shattered's game library (libGDX), which has a few benefits:\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v2_X_Changes.java",
+      "line": 761,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 138 days after Shattered v2.1.0\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v2_X_Changes.java",
+      "line": 765,
+      "classification": "factual upstream attribution/history",
+      "text": "This highlights just how much Shattered has grown since those days. A quest overhaul has gone from adding a couple rooms and enemy types to an entire new sub-region of the game with its own unique gameplay. It ended up taking me a lot longer to make this new quest than I initially expected though, a"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v2_X_Changes.java",
+      "line": 767,
+      "classification": "factual upstream attribution/history",
+      "text": "Originally this quest was going to be much more focused on mining and ores, like Motherlode, Dome Keeper, or Miner Disturbance. In early testing this just wasn't fun though. I eventually realized that I was trying to jam a different game into the middle of Shattered, but instead I needed to use mini"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v2_X_Changes.java",
+      "line": 770,
+      "classification": "factual upstream attribution/history",
+      "text": "_Shattered Pixel Dungeon's blacksmith quest has been completely redone!_\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v2_X_Changes.java",
+      "line": 779,
+      "classification": "factual upstream attribution/history",
+      "text": "_Shattered Pixel Dungeon's soundtrack has been massively expanded!_ The game's soundtrack runtime has doubled in total, with almost 20 minutes of new audio by the game's composer: Kristjan Thomas Haaristo.\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v2_X_Changes.java",
+      "line": 851,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ The Google Play version of Shattered now uses Google Play Games v2, which requires Android 4.4+\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v2_X_Changes.java",
+      "line": 955,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 83 days after Shattered v2.0.0\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v2_X_Changes.java",
+      "line": 1006,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ Shattered Supporters on Google Play now have access to 10 HoH pages, up from 4"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v2_X_Changes.java",
+      "line": 1185,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 160 days after Shattered v1.4.0\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v2_X_Changes.java",
+      "line": 1186,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 413 days after Shattered v1.0.0\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v2_X_Changes.java",
+      "line": 1188,
+      "classification": "factual upstream attribution/history",
+      "text": "v2.0.0 introduced Shattered Pixel Dungeon's first ever new hero: the Duelist!\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v2_X_Changes.java",
+      "line": 1190,
+      "classification": "factual upstream attribution/history",
+      "text": "The Duelist was the first of two new heroes that were focused around active abilities, as opposed to focusing on equipment power (Warrior and Mage), or environment interaction (Rogue and Huntress). I see v2.0 as the beginning of another new era in Shattered's development, as after focusing on new pl"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v2_X_Changes.java",
+      "line": 1195,
+      "classification": "factual upstream attribution/history",
+      "text": "_Shattered Pixel Dungeon has a new playable character!!_\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_7_X_Changes.java",
+      "line": 53,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 76 days after Shattered v0.7.4\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_7_X_Changes.java",
+      "line": 170,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 56 days after Shattered v0.7.3\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_7_X_Changes.java",
+      "line": 176,
+      "classification": "factual upstream attribution/history",
+      "text": "v0.7.4 was also the first update to begin laying groundwork for releasing Shattered on other platforms! While it would still take a while after this to actually release there, these technical changes were an important first step."
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_7_X_Changes.java",
+      "line": 187,
+      "classification": "factual upstream attribution/history",
+      "text": "Large sections of Shattered's codebase is now using the multiplatform game library _libGDX._ Making the game's codebase less heavily tied to Android is a big step towards making the game available on other platforms!\\n\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_7_X_Changes.java",
+      "line": 210,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ Shattered Pixel Dungeon now requires Android 2.3+ to run, up from Android 2.2+.\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_7_X_Changes.java",
+      "line": 223,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ Shattered pots being lost if the player has a full inventory\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_7_X_Changes.java",
+      "line": 300,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 66 days after Shattered v0.7.2\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_7_X_Changes.java",
+      "line": 335,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ Shattered honeypots are now stackable, and can be sold for a small amount of gold.\\n\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_7_X_Changes.java",
+      "line": 432,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 90 days after Shattered v0.7.1\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_7_X_Changes.java",
+      "line": 484,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ Added a privacy policy link to the Google Play edition of Shattered."
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_7_X_Changes.java",
+      "line": 587,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 61 days after Shattered v0.7.0\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_7_X_Changes.java",
+      "line": 589,
+      "classification": "factual upstream attribution/history",
+      "text": "v0.7.1 featured the last of Shattered's hero reworks, this time to the Huntress! I wanted to keep her theme of ranged combat, but expand on how her range could interact with the environment. This led to her being able to 'furrow' grass, which creates all sorts of interesting gameplay. Her primary ra"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_7_X_Changes.java",
+      "line": 721,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 168 days after Shattered v0.6.5\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_7_X_Changes.java",
+      "line": 722,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 501 days after Shattered v0.6.0\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_7_X_Changes.java",
+      "line": 724,
+      "classification": "factual upstream attribution/history",
+      "text": "v0.7.0 was Shattered's second longest-developed update at almost 6 months! This update took so long because it included my first attempt at an entirely new gameplay system: item crafting via alchemy!\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_4_X_Changes.java",
+      "line": 51,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 37 days after Shattered v0.4.2\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_4_X_Changes.java",
+      "line": 55,
+      "classification": "factual upstream attribution/history",
+      "text": "While it doesn't affect the content of the game, I also massively improved how Shattered is built from its source code in v0.4.2 and v0.4.3. This makes Shattered easier to compile for people who want to work with its open source, and also results in a compiled game that's a bit smaller and more effi"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_4_X_Changes.java",
+      "line": 58,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ Added rankings and hall of heroes sync via Google Play Games, for the Google Play version of Shattered.\\n\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_4_X_Changes.java",
+      "line": 82,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 46 days after Shattered v0.4.1\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_4_X_Changes.java",
+      "line": 86,
+      "classification": "factual upstream attribution/history",
+      "text": "The most user-visible change in this update was the decoupling of Shattered's display logic and gameplay logic. This doubled the amount of processor power that the game had access to and meant that the game wouldn't freeze or hitch if gameplay logic was taking a while. This made the game run much sm"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_4_X_Changes.java",
+      "line": 116,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 35 days after Shattered v0.4.0\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_4_X_Changes.java",
+      "line": 120,
+      "classification": "factual upstream attribution/history",
+      "text": "Aside from the obvious numbers changes in this update, I also made armor much more reliable. In Shattered damage calculations have always used a 'triangular distribution', where the middle value is the most likely result, and the max or min are quite rare. Armor didn't use this prior to v0.4.1, whic"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_4_X_Changes.java",
+      "line": 185,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 50 days after Shattered v0.3.5\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_4_X_Changes.java",
+      "line": 186,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 391 days after Shattered v0.3.0\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_4_X_Changes.java",
+      "line": 188,
+      "classification": "factual upstream attribution/history",
+      "text": "v0.4.0 was Shattered's third major item category update, this time addressing weapons! I see this update as the start of a new era for Shattered's development. For the first time a major update was adding far more content than it was reworking or repurposing.\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_6_X_Changes.java",
+      "line": 53,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 32 days after Shattered v0.6.4\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_6_X_Changes.java",
+      "line": 180,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 46 days after Shattered v0.6.3\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_6_X_Changes.java",
+      "line": 324,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 113 days after Shattered v0.6.2\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_6_X_Changes.java",
+      "line": 328,
+      "classification": "factual upstream attribution/history",
+      "text": "v0.6.3 is also an excellent case for why I run betas for every Shattered update. In the original beta for v0.6.3 thrown weapons were seriously overpowered, and threatened to make regular weapons pointless. I ended up significantly reducing their stats and quantity before the full release.\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_6_X_Changes.java",
+      "line": 330,
+      "classification": "factual upstream attribution/history",
+      "text": "This update also demonstrates Shattered's ever-increasing scope and update size. Despite reworking a whole category of items, I ended up just calling this a minor update."
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_6_X_Changes.java",
+      "line": 473,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 70 days after Shattered v0.6.1\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_6_X_Changes.java",
+      "line": 660,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 72 days after Shattered v0.6.0\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_6_X_Changes.java",
+      "line": 662,
+      "classification": "factual upstream attribution/history",
+      "text": "v0.6.1 was light on core game content, but made some critical improvements to the new player experience by expanding the journal system. I really wanted to make the player feel less compelled to seek out external guides for Shattered, and so I wrote up an in-game guide that pointed the player in the"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_6_X_Changes.java",
+      "line": 664,
+      "classification": "factual upstream attribution/history",
+      "text": "v0.6.1 also overhauled the changes screen, which you're viewing right now! Long text-based changelogs just don't work on mobile screens, as there's much less screen real-estate to work with. I didn't want Shattered's changelog to be a big wall of text, but I also didn't want to abbreviate lots of de"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_6_X_Changes.java",
+      "line": 829,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 116 days after Shattered v0.5.0\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_6_X_Changes.java",
+      "line": 835,
+      "classification": "factual upstream attribution/history",
+      "text": "I feel v0.6.0 also represents the start of another era in Shattered's development. While Shattered was still missing some big updates (most notably v0.8.0), after v0.6.0 Shattered started to resemble its current incarnation more than the original Pixel Dungeon."
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v4_X_Changes.java",
+      "line": 50,
+      "classification": "factual upstream attribution/history",
+      "text": "The next major update to Shattered will be v4.1.0! I expect this will be a quite small update, focusing mainly on being a followup to v4.0.0.\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v4_X_Changes.java",
+      "line": 69,
+      "classification": "factual upstream attribution/history",
+      "text": "Unfortunately, due to an impending requirement by Apple, v4.0.0 and any immediate patches will be the last versions of Shattered compatible with iOS 12.\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v4_X_Changes.java",
+      "line": 105,
+      "classification": "factual upstream attribution/history",
+      "text": "**After almost two years since I initially teased it, the first wave of visual improvements to Shattered's in-game pixel art are finally here!**\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v4_X_Changes.java",
+      "line": 120,
+      "classification": "factual upstream attribution/history",
+      "text": "**After almost two years since I initially teased it, the first wave of visual improvements to Shattered's in-game pixel art are finally here!**\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v4_X_Changes.java",
+      "line": 122,
+      "classification": "factual upstream attribution/history",
+      "text": "Most of Shattered's consumable items have been given overhauled sprites by **PumpkinVolt**! This time around we focused on consumable items, and some items directly related to those consumables. The following sprites have been redone:\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v4_X_Changes.java",
+      "line": 175,
+      "classification": "factual upstream attribution/history",
+      "text": "With another major release coming to Shattered, I've decided to look back and make a few adjustments to spruce up the changes screen.\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_2_X_Changes.java",
+      "line": 56,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 48 days after Shattered v0.2.3\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_2_X_Changes.java",
+      "line": 62,
+      "classification": "factual upstream attribution/history",
+      "text": "After a lot of consideration, I decided to not implement degradation into Shattered. Instead I started planning other changes to solve this problem without restricting gameplay quite as much. Those changes would eventually show up in updates like v0.4.0 and v0.8.0."
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_2_X_Changes.java",
+      "line": 97,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 64 days after Shattered v0.2.2\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_2_X_Changes.java",
+      "line": 125,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ Implemented a donation system in the Google Play version of Shattered\\n\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_2_X_Changes.java",
+      "line": 138,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 21 days after Shattered v0.2.1\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_2_X_Changes.java",
+      "line": 140,
+      "classification": "factual upstream attribution/history",
+      "text": "v0.2.2 was Shattered's first update that didn't have a specific focus. Instead this update was focused on making a bunch of little improvements.\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_2_X_Changes.java",
+      "line": 184,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 28 days after Shattered v0.2.0\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_2_X_Changes.java",
+      "line": 186,
+      "classification": "factual upstream attribution/history",
+      "text": "v0.2.1 was the first in a short lived series of 'region overhaul' updates. Thanks to releasing on Google Play, Shattered was getting a huge influx of new players, and I wanted to make some changes that they would appreciate. The three new minibosses and Goo changes were all made to try and help new "
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_2_X_Changes.java",
+      "line": 188,
+      "classification": "factual upstream attribution/history",
+      "text": "This update also continued v0.2.0's trend of expanding Shattered's scope. I was no longer just planning to change items, but was now making additions and reworks to regions of the dungeon as well!"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_2_X_Changes.java",
+      "line": 211,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 31 days after Shattered v0.1.1\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_2_X_Changes.java",
+      "line": 212,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 41 days after Shattered v0.1.0\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_2_X_Changes.java",
+      "line": 214,
+      "classification": "factual upstream attribution/history",
+      "text": "v0.2.0 was the first version of Shattered to release on Google Play! I had originally wanted to wait longer, but I was getting flooded with messages about it.\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_2_X_Changes.java",
+      "line": 216,
+      "classification": "factual upstream attribution/history",
+      "text": "Artifacts came from realizing it would be very difficult to make some rings worth upgrading by just buffing them. Instead, I decided to put their mechanics  on a new class of item that didn't need upgrades. Artifacts ended up becoming Shattered's first flagship feature!\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_2_X_Changes.java",
+      "line": 218,
+      "classification": "factual upstream attribution/history",
+      "text": "I feel like this was the start of a new era for Shattered's development, as updates become about making much more significant changes to content than just balance adjustments.\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v1_X_Changes.java",
+      "line": 52,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 90 days after Shattered v1.3.0\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v1_X_Changes.java",
+      "line": 56,
+      "classification": "factual upstream attribution/history",
+      "text": "I've kept getting so many reports that future updates have been pretty fix-heavy too though. Some of Shattered's players are very, very dedicated to pushing the game to its limits, and so it sometimes feels like every fix I make just prompts these people to go find problems elsewhere.\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v1_X_Changes.java",
+      "line": 58,
+      "classification": "factual upstream attribution/history",
+      "text": "There was new content in v1.4.0 as well, most notably the addition of in-game lore! I've had lots of loose ideas for a proper backstory to Shattered for a long time, and v1.4.0 was the first update that started to put some of that into the actual game! Future lore has had to wait until after the add"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v1_X_Changes.java",
+      "line": 106,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ Added more achievements to Shattered on Google Play Games\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v1_X_Changes.java",
+      "line": 277,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 105 days after Shattered v1.2.0\\n\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v1_X_Changes.java",
+      "line": 454,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 103 days after Shattered v1.1.0\\n\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v1_X_Changes.java",
+      "line": 455,
+      "classification": "factual upstream attribution/history",
+      "text": "v1.2.0 focused on a number of improvements to try and make Shattered play just as well for desktop users as it does for phone users. While these changes weren't perfect right at launch, they played a major role in making Shattered feel like more than a mobile port and helped it have a successful lau"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v1_X_Changes.java",
+      "line": 457,
+      "classification": "factual upstream attribution/history",
+      "text": "One big change for desktop users that's external to the game itself was native executables. Previously Shattered's desktop version required a separate installation of Java to run. After v1.2.0, I started making versions of Shattered with built-in Java instead. This meant that most users could just d"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v1_X_Changes.java",
+      "line": 462,
+      "classification": "factual upstream attribution/history",
+      "text": "_Shattered Pixel Dungeon has received a bunch of new features in preparation for its release on Steam!_\\n\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v1_X_Changes.java",
+      "line": 641,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 115 days after Shattered v1.0.0\\n\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v1_X_Changes.java",
+      "line": 642,
+      "classification": "factual upstream attribution/history",
+      "text": "v1.1.0 was the start of Shattered's alchemy system actually doing the job it was supposed to do way back in v0.7.0. Previously alchemical energy sort of sat on top of the alchemy system and acted as a hard cap on how many 'powerful' recipes the player could use in a run. Thanks to v1.1.0's changes, "
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v1_X_Changes.java",
+      "line": 644,
+      "classification": "factual upstream attribution/history",
+      "text": "This update also included new region-specific music tracks composed by Kristjan Haaristo! Kristjan was actually a fan of Shattered before working on the music and contacted me about potentially adding new tracks. I feel extremely fortunate to have been able to work with people that are just as passi"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v1_X_Changes.java",
+      "line": 816,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 71 days after Shattered v0.9.3\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v1_X_Changes.java",
+      "line": 817,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 316 days after Shattered v0.9.0\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v1_X_Changes.java",
+      "line": 820,
+      "classification": "factual upstream attribution/history",
+      "text": "_That's right, the big v1.0.0!_ In this update Shattered switched to the industry standard _major.minor.patch_ version naming scheme. Prior to this Shattered's first version number was always 0, and patches were appended as letters. Rather than jumping all the way from v0.9.3 to v10.0.0, I opted to "
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v1_X_Changes.java",
+      "line": 822,
+      "classification": "factual upstream attribution/history",
+      "text": "I actually originally intended for this update to be v0.9.4, but a requirement by Apple forced me to change the versioning scheme just before the full release. In retrospect, I'm extremely glad that this update became v1.0.0. While it wasn't the largest update content-wise, I can think of no better "
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v1_X_Changes.java",
+      "line": 825,
+      "classification": "factual upstream attribution/history",
+      "text": "_Shattered Pixel Dungeon is now available on the iOS App Store!_\\n\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v1_X_Changes.java",
+      "line": 826,
+      "classification": "factual upstream attribution/history",
+      "text": "After years of requests, Shattered is finally available on Apple devices! The iOS version of the game will release in lockstep with the Android version moving forward, with some small variance due to different update approval processes.\\n\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_8_X_Changes.java",
+      "line": 50,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 40 days after Shattered v0.8.1\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_8_X_Changes.java",
+      "line": 65,
+      "classification": "factual upstream attribution/history",
+      "text": "This feed pulls in blog posts from ShatteredPixel.com, and displays then within the game. It will also notify players when new posts are available.\\n\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_8_X_Changes.java",
+      "line": 87,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ Shattered now supports Android instant app and instant game functionality, which lets new users try the game without installing it\\n\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_8_X_Changes.java",
+      "line": 237,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 72 days after Shattered v0.8.0\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_8_X_Changes.java",
+      "line": 241,
+      "classification": "factual upstream attribution/history",
+      "text": "This update had some pretty big additions aside from game content though, with hero splash art and new sound effects! The splash art in particular was a long time coming, I first approached Aleksandar about them in 2016! While new game content is perhaps more exciting, these presentation improvement"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_8_X_Changes.java",
+      "line": 447,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 197 days after Shattered v0.7.5\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_8_X_Changes.java",
+      "line": 448,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 546 days after Shattered v0.7.0\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_8_X_Changes.java",
+      "line": 450,
+      "classification": "factual upstream attribution/history",
+      "text": "v0.8.0 is easily the largest update Shattered has ever received in terms of game content. It included sweeping changes to basically every enemy after floor 10. This included full reworks to three of the game's bosses, which were some of the most well-received changes I've ever made to Shattered.\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_8_X_Changes.java",
+      "line": 452,
+      "classification": "factual upstream attribution/history",
+      "text": "These changes also heavily influenced item and class balance. Offense and defense became more fairly balanced, as many enemies gained mechanics that couldn't be ignored by just dealing more damage to them. I would say this update marks another new era in Shattered's development, as the experience of"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_1_X_Changes.java",
+      "line": 48,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 10 days after Shattered v0.1.0\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_1_X_Changes.java",
+      "line": 52,
+      "classification": "factual upstream attribution/history",
+      "text": "This update also included Shattered's first contentious change: I removed the automatic revival feature from the dew vial. This led to many accidental deaths for players who were used to the automatic revive from Pixel Dungeon. I kept receiving complaints about it years later!\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_1_X_Changes.java",
+      "line": 92,
+      "classification": "factual upstream attribution/history",
+      "text": "v0.1.0 and v0.1.1 were extremely early Shattered updates that were only distributed via the Pixel Dungeon Subreddit. At this stage of development Shattered was basically the same game as Pixel Dungeon v1.7.1.\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_1_X_Changes.java",
+      "line": 94,
+      "classification": "factual upstream attribution/history",
+      "text": "I started playing Pixel Dungeon in mid 2013. I loved the game but was frustrated with the balance of some items. When Pixel Dungeon went open source I decided to make Shattered as a balance modification. I called it Shattered as 'Shattered Pixel' was an old trade name I had, and the mod was going to"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_3_X_Changes.java",
+      "line": 53,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 81 days after Shattered v0.3.4\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_3_X_Changes.java",
+      "line": 97,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 54 days after Shattered v0.3.3\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_3_X_Changes.java",
+      "line": 99,
+      "classification": "factual upstream attribution/history",
+      "text": "v0.3.4 made Shattered available in multiple languages! This update was a direct response to messages I kept getting from users who wanted to share the game with their friends, but couldn't due to the language barrier.\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_3_X_Changes.java",
+      "line": 101,
+      "classification": "factual upstream attribution/history",
+      "text": "Translating the game was no small feat, Shattered has a huge amount of text that is constantly changing and growing, over 50 thousand words in total. Because of the volume of text it would have been prohibitively expensive to get the game professionally translated, and so I opted to ask for communit"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_3_X_Changes.java",
+      "line": 103,
+      "classification": "factual upstream attribution/history",
+      "text": "The response from the community was and continues to be incredible! Even multiple years later Shattered's updates are still consistently translated into a number of languages."
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_3_X_Changes.java",
+      "line": 106,
+      "classification": "factual upstream attribution/history",
+      "text": "Shattered Pixel Dungeon now supports multiple languages, thanks to a new community translation project!\\n\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_3_X_Changes.java",
+      "line": 139,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 44 days after Shattered v0.3.2\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_3_X_Changes.java",
+      "line": 143,
+      "classification": "factual upstream attribution/history",
+      "text": "Google Play Games was the first online functionality ever added to Shattered. Some people were worried that this was the start of me turning Shattered into a game that would require internet. I tried to address this worry by making the functionality as optional as possible and heavily emphasizing th"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_3_X_Changes.java",
+      "line": 150,
+      "classification": "factual upstream attribution/history",
+      "text": "Shattered remains a 100% offline game if Google Play Games is not enabled"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_3_X_Changes.java",
+      "line": 175,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 79 days after Shattered v0.3.1\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_3_X_Changes.java",
+      "line": 230,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 83 days after Shattered v0.3.0\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_3_X_Changes.java",
+      "line": 278,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 92 days after Shattered v0.2.4\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_3_X_Changes.java",
+      "line": 279,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 253 days after Shattered v0.2.0\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_3_X_Changes.java",
+      "line": 281,
+      "classification": "factual upstream attribution/history",
+      "text": "v0.3.0 was Shattered's second major item category rework, and Shattered's first real class rework!\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/Pixel_Dungeon_Changes.java",
+      "line": 42,
+      "classification": "factual upstream attribution/history",
+      "text": "Shattered Pixel Dungeon is based on the open source code of Pixel Dungeon, which was developed by Watabou from 2012 to 2015.\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/Pixel_Dungeon_Changes.java",
+      "line": 46,
+      "classification": "factual upstream attribution/history",
+      "text": "Note that the timelines for Pixel Dungeon and Shattered Pixel Dungeon overlap a bit during 2014-2016:\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v3_X_Changes.java",
+      "line": 131,
+      "classification": "factual upstream attribution/history",
+      "text": "**-** Shattered's Windows version now requires Windows 10, up from 7\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v3_X_Changes.java",
+      "line": 284,
+      "classification": "factual upstream attribution/history",
+      "text": "(v3.2.4) **Shattered Pixel Dungeon has a new title screen background, with art by Aleksandar Komitov!**\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v3_X_Changes.java",
+      "line": 304,
+      "classification": "factual upstream attribution/history",
+      "text": "**Shattered's menu screens** (v3.2.2) **and in-game UI** (v3.2.4) **now render in true fullscreen on most mobile devices!**\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v3_X_Changes.java",
+      "line": 354,
+      "classification": "factual upstream attribution/history",
+      "text": "**-** Shattered Pixel Dungeon now requires Android 5.0+, up from 4.0+.\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v3_X_Changes.java",
+      "line": 360,
+      "classification": "factual upstream attribution/history",
+      "text": "**-** Updated macOS code libraries to fix game launch speed on newer macs. This also means Shattered now requires at least macOS 10.12 Sierra, up from 10.10 Yosemite.\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v3_X_Changes.java",
+      "line": 601,
+      "classification": "factual upstream attribution/history",
+      "text": "**-** Switched Shattered's rendering backend on iOS to use Metal (new) instead of OpenGL (legacy). This should result in better performance and higher frame rates on supported devices.\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v3_X_Changes.java",
+      "line": 646,
+      "classification": "factual upstream attribution/history",
+      "text": "**-** Shattered locking to 60fps on 120hz iOS devices\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v3_X_Changes.java",
+      "line": 721,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 197 days after Shattered v2.5.0\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v3_X_Changes.java",
+      "line": 722,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 548 days after Shattered v2.0.0\\n\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v3_X_Changes.java",
+      "line": 726,
+      "classification": "factual upstream attribution/history",
+      "text": "**Shattered Pixel Dungeon has another new hero, making for six total!!**\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v3_X_Changes.java",
+      "line": 753,
+      "classification": "factual upstream attribution/history",
+      "text": "**Shattered's title graphic has been totally redrawn!** The new title graphic, by Aleksandar Komitov, improves on text quality and style while trying to stay true to the original title. There is now a landscape and portrait variant of this title as well.\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_5_X_Changes.java",
+      "line": 44,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 115 days after Shattered v0.4.3\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_5_X_Changes.java",
+      "line": 45,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 233 days after Shattered v0.4.0\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_5_X_Changes.java",
+      "line": 47,
+      "classification": "factual upstream attribution/history",
+      "text": "v0.5.0 was the first major update that didn't focus on a category of items, instead it was all about the game's visuals! This visual overhaul was a very important update for Shattered, as it created an immediate visual difference between it and the original Pixel Dungeon. At this stage Shattered was"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_5_X_Changes.java",
+      "line": 49,
+      "classification": "factual upstream attribution/history",
+      "text": "v0.5.0 was also Shattered's longest-developed update yet. While I don't think there was much I could do about this for v0.5.0 and v0.6.0, it started an unfortunate trend of major updates taking up to half a year! I eventually broke this trend in v0.9.0 by splitting these larger updates into smaller "
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_9_X_Changes.java",
+      "line": 51,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 101 days after Shattered v0.9.2\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_9_X_Changes.java",
+      "line": 55,
+      "classification": "factual upstream attribution/history",
+      "text": "This update also included Shattered's second new challenge! Badder bosses was rattling around in my head ever since the release of v0.8.0, as I knew it would be very easy to make stronger versions of each of the new boss encounters that weren't just based on higher stats. Badder bosses was well rece"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_9_X_Changes.java",
+      "line": 216,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 78 days after Shattered v0.9.1\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_9_X_Changes.java",
+      "line": 370,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 68 days after Shattered v0.9.0\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_9_X_Changes.java",
+      "line": 521,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 61 days after Shattered v0.8.2\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_9_X_Changes.java",
+      "line": 522,
+      "classification": "factual upstream attribution/history",
+      "text": "_-_ 173 days after Shattered v0.8.0\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_9_X_Changes.java",
+      "line": 524,
+      "classification": "factual upstream attribution/history",
+      "text": "v0.9.0 was the beginning of Shattered's second new gameplay system! The talent system was primarily designed to address consistent feedback that leveling up wasn't very satisfying. I wanted talents to deepen character customization and give the player a reason to feel excited about levelling up.\\n"
+    },
+    {
+      "path": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/v0_9_X_Changes.java",
+      "line": 528,
+      "classification": "factual upstream attribution/history",
+      "text": "This update also included Shattered's first new challenge! The goal of hostile champions was to increase overall difficulty by adding new mechanics to the game, instead of removing them. This worked out very well, and led to a followup challenge addition just a couple of updates later."
+    }
+  ],
+  "limitations": "Lexical string scan, not proof every string is displayed. Proper upstream attributions and saved technical identifiers are distinguished. Platform launcher/packed atlas branding remains unresolved; see REPORT.md. Non-ASCII translations need manual review.",
+  "locale_review": {
+    "proper_name_matches_remaining": 0,
+    "ordinary_word_shattered": "Retained descriptive shattered pots/brews; not an identity or promotion",
+    "greek_daily_copy": "Two remaining title abbreviations replaced with APD; no gameplay change"
+  },
+  "historical_notes": "Original upstream changelog text remains under an explicit Evan/Oleg reference-history attribution, not presented as APD announcements. Packed stock logos replaced with original neutral APD-generated markers."
+}

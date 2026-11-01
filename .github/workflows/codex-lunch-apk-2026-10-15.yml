@@ -1,3 +1,19 @@
+# ADHD Pixel Dungeon
+# Copyright (C) 2026 Chris Charlton
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>
+
 name: Deliver private staged lunch TEST206
 on:
   push:
@@ -88,5 +104,5 @@ jobs:
           repo=os.environ['GITHUB_REPOSITORY'];tag='apd-codex-test-206'
           exists=subprocess.run(['gh','release','view',tag,'--repo',repo],capture_output=True)
           assert exists.returncode!=0, 'Existing release preserved: no overwrite'
-          subprocess.run(['gh','release','create',tag,'--repo',repo,'--target',os.environ['GITHUB_SHA'],'--prerelease','--latest=false','--title','APD PRIVATE CODEX TEST206 — October 15 lunch test','--notes-file','delivery/lunch-release-notes.txt','delivery/ADHD-Pixel-Dungeon-CODEX-TEST-206.apk','delivery/ADHD-Pixel-Dungeon-CODEX-TEST-206.apk.sha256','delivery/TEST206-Verification.json','delivery/TEST206-Lunch-Delivery.json','report/APD-Development-2026-10-15-TEST206.pdf'],check=True)
+          __import__('tools.apd_gpl_release_gate', fromlist=['publication_run']).publication_run(['gh','release','create',tag,'--repo',repo,'--target',os.environ['GITHUB_SHA'],'--prerelease','--latest=false','--title','APD PRIVATE CODEX TEST206 — October 15 lunch test','--notes-file','delivery/lunch-release-notes.txt','delivery/ADHD-Pixel-Dungeon-CODEX-TEST-206.apk','delivery/ADHD-Pixel-Dungeon-CODEX-TEST-206.apk.sha256','delivery/TEST206-Verification.json','delivery/TEST206-Lunch-Delivery.json','report/APD-Development-2026-10-15-TEST206.pdf'],check=True)
           PY

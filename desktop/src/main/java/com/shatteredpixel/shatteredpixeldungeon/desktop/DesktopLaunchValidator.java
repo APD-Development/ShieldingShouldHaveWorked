@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -64,7 +67,7 @@ public class DesktopLaunchValidator {
 			jvmArgs.add(System.getProperty("java.class.path"));
 			jvmArgs.add(DesktopLauncher.class.getName());
 
-			System.err.println("Error: ShatteredPD must start on the first thread in order to work on macOS.");
+			System.err.println("Error: APD must start on the first thread in order to work on macOS.");
 			System.err.println("  To avoid this error, run the game with the \"-XstartOnFirstThread\" argument");
 			System.err.println("  Now attempting to relaunch the game on the first thread automatically:\n");
 

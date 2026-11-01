@@ -1,3 +1,19 @@
+# ADHD Pixel Dungeon
+# Copyright (C) 2026 Chris Charlton
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>
+
 """Private owner diagnostic delivery with explicit unresolved timing failure. Never builds or replaces assets."""
 import datetime, hashlib, json, os, pathlib, re, subprocess, sys, zipfile
 import xml.etree.ElementTree as ET
@@ -164,7 +180,7 @@ def main():
     tag=f'apd-alpha-preview-{number}'
     files=apks+[pathlib.Path(str(p)+'.sha256') for p in apks]+[pdf,receipt]
     assert subprocess.run(['gh','release','view',tag,'--repo',REPO],capture_output=True).returncode != 0, 'Existing release preserved; verify/reuse it separately'
-    subprocess.run(['gh','release','create',tag,'--repo',REPO,'--target',os.environ['GITHUB_SHA'],'--prerelease','--latest=false','--title',f'APD Alpha Preview {number} — owner diagnostic candidate','--notes-file',str(notes)]+[str(p) for p in files],check=True)
+    __import__('apd_gpl_release_gate', fromlist=['publication_run']).publication_run(['gh','release','create',tag,'--repo',REPO,'--target',os.environ['GITHUB_SHA'],'--prerelease','--latest=false','--title',f'APD Alpha Preview {number} — owner diagnostic candidate','--notes-file',str(notes)]+[str(p) for p in files],check=True)
     release=api(f'repos/{REPO}/releases/tags/{tag}')
     assert not release['draft'] and release['prerelease']
     for path in files:

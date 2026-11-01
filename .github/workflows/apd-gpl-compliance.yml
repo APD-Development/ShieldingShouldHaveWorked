@@ -1,0 +1,51 @@
+# ADHD Pixel Dungeon
+# Copyright (C) 2026 Chris Charlton
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>
+
+name: APD GPL source verification (no APK)
+on:
+  push:
+    branches: [codex/gplv3-compliance-2026-11-01]
+    paths: ["**/*.java", "**/*.gradle", "core/src/main/assets/**", ".github/workflows/apd-gpl-compliance.yml"]
+permissions:
+  contents: read
+jobs:
+  source-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-java@v4
+        with: {distribution: temurin, java-version: '21'}
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Compliance regressions
+        run: |
+          python3 -m pip install Pillow==12.0.0
+          python3 -m unittest discover -s tools -p test_apd_gpl_compliance.py
+          python3 -m unittest discover -s tools -p test_apd_branding.py
+          python3 -m unittest discover -s tools -p test_apd_source_recovery.py
+      - name: Complete core suite and platform compilation without APK assembly
+        run: |
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36"
+          ./gradlew :core:test :desktop:classes :android:compileDebugJavaWithJavac :android:compileReleaseJavaWithJavac
+      - name: Verify production JSON calls retain Android-compatible signatures
+        run: python3 tools/check_android_json_abi.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: apd-gpl-source-verification
+          path: core/build/test-results/test/
+          retention-days: 7

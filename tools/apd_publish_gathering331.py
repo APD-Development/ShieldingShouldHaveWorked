@@ -1,3 +1,19 @@
+# ADHD Pixel Dungeon
+# Copyright (C) 2026 Chris Charlton
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>
+
 """Verify and privately deliver the exact paired Gathering-icon APKs; never rebuild."""
 import datetime,hashlib,json,os,pathlib,re,subprocess,sys,time,zipfile,xml.etree.ElementTree as ET
 sys.path.insert(0,'tools')
@@ -74,7 +90,7 @@ receipt.write_text(json.dumps(dict(application_source=source,publication_source=
 notes=root/'notes.txt';notes.write_text('The Scroll of Gathering now uses dedicated parchment-and-cyan gathering artwork instead of a generic rune and Teleportation badge. Existing scrolls receive the new image when loaded. Forwarding, loot movement, quantities, generation, scoring and saves are unchanged.\n\nBoth variants:2192 core tests passed. Initial main Android run:64of65 passed; UIMSD opening measured322ms against unchanged250ms limit. Exact same APK subsequently passed the isolated benchmark with that limit unchanged. API34 five display profiles passed; API36 checks were verified in separate fresh instrumentation processes after different callbacks timed out in two combined attempts. All original failures are retained in the receipt; this does not claim a fully green original suite or a UIMSD performance fix. Original signing identity/application ID and actual APK checksums verified. Physical-phone acceptance remains pending. Install over the existing app; never uninstall or clear data. Private owner delivery; no automatic tester distribution.\n')
 tag='apd-alpha-preview-331'
 if subprocess.run(['gh','release','view',tag,'--repo',repo],capture_output=True).returncode==0:raise SystemExit('Existing release preserved; verify and reuse its assets')
-subprocess.run(['gh','release','create',tag,'--repo',repo,'--target',source,'--prerelease','--latest=false','--title','APD Alpha Preview331 — distinct Gathering scroll icon','--notes-file',str(notes),*map(str,files)],check=True)
+__import__('apd_gpl_release_gate', fromlist=['publication_run']).publication_run(['gh','release','create',tag,'--repo',repo,'--target',source,'--prerelease','--latest=false','--title','APD Alpha Preview331 — distinct Gathering scroll icon','--notes-file',str(notes),*map(str,files)],check=True)
 r=api(f'repos/{repo}/releases/tags/{tag}');assert r['prerelease'] and not r['draft']
 for p in files:
  a,=[a for a in r['assets'] if a['name']==p.name]

@@ -1,3 +1,21 @@
+/*
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
+
 package com.shatteredpixel.shatteredpixeldungeon.apd;
 
 import static org.junit.Assert.assertEquals;
@@ -26,6 +44,14 @@ public class UimsdWiringTest {
 	}
 
 	private static String shaOf( String text ) throws Exception {
+		// Only the exact legal notice may differ; retain both original executable-source hashes.
+		String notice = " * ADHD Pixel Dungeon\n * Copyright (C) 2026 Chris Charlton\n *\n";
+		int at = text.indexOf(notice);
+		if (at >= 0) {
+			assertTrue("Notice is confined to the initial copyright header", at < text.indexOf("package "));
+			assertEquals("One APD notice only", -1, text.indexOf(notice, at + notice.length()));
+			text = text.substring(0, at) + text.substring(at + notice.length());
+		}
 		byte[] d = MessageDigest.getInstance("SHA-256").digest(text.getBytes("UTF-8"));
 		StringBuilder b = new StringBuilder();
 		for (byte x : d) b.append(String.format("%02x", x));

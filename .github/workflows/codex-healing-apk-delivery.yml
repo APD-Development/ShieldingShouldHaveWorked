@@ -1,3 +1,19 @@
+# ADHD Pixel Dungeon
+# Copyright (C) 2026 Chris Charlton
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>
+
 name: Deliver verified Healing and clean-language owner APK TEST222
 
 # Delivery only: reuse the already tested APK; no Gradle or app rebuild.
@@ -160,5 +176,5 @@ jobs:
           notes+='\n\nHealing-to-Shielding slider correction: override applies only to generated Potions of Healing; other potion/scroll conversions preserve vanilla Exotic Crystals behavior. Includes TEST218 all-control and full-field export acceptance. Includes clean About and English authored messages plus the first 25 reviewed alternatives. Expanded translated-language review found further variants after this source; full game-wide localization audit remains open and those later changes are NOT included. This is an owner test APK, not the tester-distribution candidate. No automatic distribution to alpha testers.\n'
           Path('delivery/release-notes.txt').write_text(notes)
           assert subprocess.run(['gh','release','view',tag,'--repo',repo],capture_output=True).returncode!=0, 'Preserve existing release'
-          subprocess.run(['gh','release','create',tag,'--repo',repo,'--target',os.environ['APD_SOURCE_SHA'],'--prerelease','--latest=false','--title','APD PRIVATE CODEX TEST222 — Healing slider and clean language','--notes-file','delivery/release-notes.txt','delivery/ADHD-Pixel-Dungeon-CODEX-TEST-222.apk','delivery/ADHD-Pixel-Dungeon-CODEX-TEST-222.apk.sha256','delivery/TEST222-Verification.json','delivery/APD-Bug-Fixes-2026-10-15-TEST222.pdf'],check=True)
+          __import__('tools.apd_gpl_release_gate', fromlist=['publication_run']).publication_run(['gh','release','create',tag,'--repo',repo,'--target',os.environ['APD_SOURCE_SHA'],'--prerelease','--latest=false','--title','APD PRIVATE CODEX TEST222 — Healing slider and clean language','--notes-file','delivery/release-notes.txt','delivery/ADHD-Pixel-Dungeon-CODEX-TEST-222.apk','delivery/ADHD-Pixel-Dungeon-CODEX-TEST-222.apk.sha256','delivery/TEST222-Verification.json','delivery/APD-Bug-Fixes-2026-10-15-TEST222.pdf'],check=True)
           PY

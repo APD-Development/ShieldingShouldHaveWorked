@@ -1,3 +1,19 @@
+# ADHD Pixel Dungeon
+# Copyright (C) 2026 Chris Charlton
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>
+
 name: Publish verified TEST222 without rebuilding
 on:
   push:
@@ -82,7 +98,7 @@ jobs:
           import os,subprocess
           repo=os.environ['GITHUB_REPOSITORY'];tag='apd-codex-test-222'
           assert subprocess.run(['gh','release','view',tag,'--repo',repo],capture_output=True).returncode!=0,'Existing release retained'
-          subprocess.run(['gh','release','create',tag,'--repo',repo,'--target',os.environ['GITHUB_SHA'],'--prerelease','--latest=false','--title','APD PRIVATE CODEX TEST222 — Healing slider and clean About','--notes-file','delivery/release-notes.txt','delivery/ADHD-Pixel-Dungeon-CODEX-TEST-222.apk','delivery/ADHD-Pixel-Dungeon-CODEX-TEST-222.apk.sha256','delivery/TEST222-Verification.json','delivery/TEST222-Delivery.json','delivery/APD-Bug-Fixes-2026-10-15-TEST222.pdf','delivery/APD-Verified-Source.zip','delivery/APD-Verified-Source.zip.sha256'],check=True)
+          __import__('tools.apd_gpl_release_gate', fromlist=['publication_run']).publication_run(['gh','release','create',tag,'--repo',repo,'--target',os.environ['GITHUB_SHA'],'--prerelease','--latest=false','--title','APD PRIVATE CODEX TEST222 — Healing slider and clean About','--notes-file','delivery/release-notes.txt','delivery/ADHD-Pixel-Dungeon-CODEX-TEST-222.apk','delivery/ADHD-Pixel-Dungeon-CODEX-TEST-222.apk.sha256','delivery/TEST222-Verification.json','delivery/TEST222-Delivery.json','delivery/APD-Bug-Fixes-2026-10-15-TEST222.pdf','delivery/APD-Verified-Source.zip','delivery/APD-Verified-Source.zip.sha256'],check=True)
           PY
       - uses: actions/upload-artifact@v4
         if: always()

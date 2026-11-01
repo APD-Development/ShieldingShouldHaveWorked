@@ -1,3 +1,19 @@
+# ADHD Pixel Dungeon
+# Copyright (C) 2026 Chris Charlton
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>
+
 """Reverify an existing APK and privately deliver it; never build or overwrite."""
 import datetime,hashlib,json,os,pathlib,subprocess,sys,zipfile
 from PIL import Image
@@ -124,7 +140,7 @@ with zipfile.ZipFile(root/'APD-Android-Evidence-262.zip','w',zipfile.ZIP_DEFLATE
             if p.is_file():z.write(p,str(p))
 assets=[name,name+'.sha256','APD-Alpha-Preview-262.pdf','TEST262-Verification.json','APD-Android-Evidence-262.zip']
 assert not any(r['tag_name']==TAG for r in api(f'repos/{REPO}/releases?per_page=100')),'Preserve existing release assets'
-subprocess.run(['gh','release','create',TAG,'--repo',REPO,'--target',os.environ['GITHUB_SHA'],'--prerelease','--latest=false','--title','APD Alpha Preview 262 — character unlock notices','--notes','Private owner test: already-playable characters no longer show redundant unlock notifications. Availability, original progression and all prior fixes preserved. Full verification and limitations in PDF. Install over APD; never uninstall or clear data. No automatic tester distribution.']+[str(root/n)for n in assets],check=True)
+__import__('apd_gpl_release_gate', fromlist=['publication_run']).publication_run(['gh','release','create',TAG,'--repo',REPO,'--target',os.environ['GITHUB_SHA'],'--prerelease','--latest=false','--title','APD Alpha Preview 262 — character unlock notices','--notes','Private owner test: already-playable characters no longer show redundant unlock notifications. Availability, original progression and all prior fixes preserved. Full verification and limitations in PDF. Install over APD; never uninstall or clear data. No automatic tester distribution.']+[str(root/n)for n in assets],check=True)
 release=api(f'repos/{REPO}/releases/tags/{TAG}');assert release['prerelease']and not release['draft']
 for n in assets:
     a=next(a for a in release['assets']if a['name']==n)

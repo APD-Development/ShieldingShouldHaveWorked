@@ -1,0 +1,985 @@
+{
+  "audited_source": "377c3e20b7dc6ec6c4d149c5c1b4ea7cda3bb7ed",
+  "direct_gradle_declarations": [
+    {
+      "file": "build.gradle",
+      "line": 7,
+      "group": "com.android.tools.build",
+      "artifact": "gradle",
+      "version": "9.2.0",
+      "scope": "build-tool",
+      "pom_url": "https://dl.google.com/dl/android/maven2/com/android/tools/build/gradle/9.2.0/gradle-9.2.0.pom",
+      "declared_licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt",
+          "distribution": "repo"
+        }
+      ],
+      "status": "NOT DONE: per-component/native/transitive compatibility review remains necessary",
+      "declared_coordinates": [
+        "com.android.tools.build:gradle:9.2.0"
+      ],
+      "pom_sha256": "ced5946b7ea80444035b9fc09527039f0bb1f47a51238a530cd8f16262522647"
+    },
+    {
+      "file": "SPD-classes/build.gradle",
+      "line": 7,
+      "group": "com.badlogicgames.gdx",
+      "artifact": "gdx",
+      "version": "1.14.0",
+      "scope": "production",
+      "pom_url": "https://repo.maven.apache.org/maven2/com/badlogicgames/gdx/gdx/1.14.0/gdx-1.14.0.pom",
+      "pom_sha256": "0a25053629d1c1f46064c37ba2b382d0c46642cb4a4ecb151778db35710a9a0c",
+      "declared_licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt",
+          "distribution": "repo"
+        }
+      ],
+      "status": "NOT DONE: per-component/native/transitive compatibility review remains necessary",
+      "declared_coordinates": [
+        "com.badlogicgames.gdx:gdx:$gdxVersion"
+      ]
+    },
+    {
+      "file": "SPD-classes/build.gradle",
+      "line": 8,
+      "group": "com.badlogicgames.gdx-controllers",
+      "artifact": "gdx-controllers-core",
+      "version": "2.2.4",
+      "scope": "production",
+      "pom_url": "https://repo.maven.apache.org/maven2/com/badlogicgames/gdx-controllers/gdx-controllers-core/2.2.4/gdx-controllers-core-2.2.4.pom",
+      "pom_sha256": "93b1cede701eb7c18d65f15e8bb79db39cf31a4eaee6931c78897ce0d80e3254",
+      "declared_licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt",
+          "distribution": "repo"
+        }
+      ],
+      "status": "NOT DONE: per-component/native/transitive compatibility review remains necessary",
+      "declared_coordinates": [
+        "com.badlogicgames.gdx-controllers:gdx-controllers-core:$gdxControllersVersion"
+      ]
+    },
+    {
+      "file": "SPD-classes/build.gradle",
+      "line": 9,
+      "group": "com.badlogicgames.gdx",
+      "artifact": "gdx-freetype",
+      "version": "1.14.0",
+      "scope": "production",
+      "pom_url": "https://repo.maven.apache.org/maven2/com/badlogicgames/gdx/gdx-freetype/1.14.0/gdx-freetype-1.14.0.pom",
+      "pom_sha256": "46dabdaa543a6510e050638c366a6145d90691b21a06211ffab49b202332422c",
+      "declared_licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt",
+          "distribution": "repo"
+        }
+      ],
+      "status": "NOT DONE: per-component/native/transitive compatibility review remains necessary",
+      "declared_coordinates": [
+        "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+      ]
+    },
+    {
+      "file": "SPD-classes/build.gradle",
+      "line": 12,
+      "group": "org.json",
+      "artifact": "json",
+      "version": "20240303",
+      "scope": "production",
+      "pom_url": "https://repo.maven.apache.org/maven2/org/json/json/20240303/json-20240303.pom",
+      "pom_sha256": "64c15543a3d5db279a20aeb0dfa034a2a79c2159f8cd401dea48ff0f234c18dd",
+      "declared_licenses": [
+        {
+          "name": "Public Domain",
+          "url": "https://github.com/stleary/JSON-java/blob/20240303/LICENSE"
+        }
+      ],
+      "status": "DONE: Public Domain replacement verified by full 2239-test suite and Android ABI guard",
+      "declared_coordinates": [
+        "org.json:json:20170516"
+      ],
+      "historical_version": "20170516",
+      "historical_issue": "JSON License includes Good, not Evil use restriction; incompatible with GPL. Preserve data compatibility when selecting a replacement.",
+      "jar_sha256": "3cf6cd6892e32e2b4c1c39e0f52f5248a2f5b37646fdfbb79a66b46b618414ed",
+      "issue": "Historical distributed TEST341 still uses the incompatible old dependency; PR changes do not alter that APK."
+    },
+    {
+      "file": "ios/build.gradle",
+      "line": 6,
+      "group": "com.mobidevelop.robovm",
+      "artifact": "robovm-gradle-plugin",
+      "version": "2.3.24",
+      "scope": "build-tool",
+      "pom_url": "https://repo.maven.apache.org/maven2/com/mobidevelop/robovm/robovm-gradle-plugin/2.3.24/robovm-gradle-plugin-2.3.24.pom",
+      "pom_sha256": "65c1b52d2a85d846baa7463db725d84f36091c16af20d95a1bd0af5d55e15930",
+      "declared_licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt",
+          "distribution": "repo"
+        }
+      ],
+      "status": "NOT DONE: per-component/native/transitive compatibility review remains necessary",
+      "declared_coordinates": [
+        "com.mobidevelop.robovm:robovm-gradle-plugin:$robovmVersion"
+      ]
+    },
+    {
+      "file": "ios/build.gradle",
+      "line": 46,
+      "group": "com.badlogicgames.gdx",
+      "artifact": "gdx-freetype",
+      "version": "1.14.0",
+      "scope": "production",
+      "pom_url": "https://repo.maven.apache.org/maven2/com/badlogicgames/gdx/gdx-freetype/1.14.0/gdx-freetype-1.14.0.pom",
+      "pom_sha256": "46dabdaa543a6510e050638c366a6145d90691b21a06211ffab49b202332422c",
+      "declared_licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt",
+          "distribution": "repo"
+        }
+      ],
+      "status": "NOT DONE: per-component/native/transitive compatibility review remains necessary",
+      "declared_coordinates": [
+        "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+      ]
+    },
+    {
+      "file": "ios/build.gradle",
+      "line": 47,
+      "group": "com.mobidevelop.robovm",
+      "artifact": "robovm-rt",
+      "version": "2.3.24",
+      "scope": "production",
+      "pom_url": "https://repo.maven.apache.org/maven2/com/mobidevelop/robovm/robovm-rt/2.3.24/robovm-rt-2.3.24.pom",
+      "pom_sha256": "b99ca7cb6e818548965ebb165f4ce530698d0d8123ea931cac745ecc4cbcd0fe",
+      "declared_licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt",
+          "distribution": "repo"
+        }
+      ],
+      "status": "NOT DONE: per-component/native/transitive compatibility review remains necessary",
+      "declared_coordinates": [
+        "com.mobidevelop.robovm:robovm-rt:$robovmVersion"
+      ]
+    },
+    {
+      "file": "ios/build.gradle",
+      "line": 48,
+      "group": "com.mobidevelop.robovm",
+      "artifact": "robovm-cocoatouch",
+      "version": "2.3.24",
+      "scope": "production",
+      "pom_url": "https://repo.maven.apache.org/maven2/com/mobidevelop/robovm/robovm-cocoatouch/2.3.24/robovm-cocoatouch-2.3.24.pom",
+      "pom_sha256": "af6a619f1370616b57dbe86e272dc94993d02f59b221342350a7ca2db0415d9f",
+      "declared_licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt",
+          "distribution": "repo"
+        }
+      ],
+      "status": "NOT DONE: per-component/native/transitive compatibility review remains necessary",
+      "declared_coordinates": [
+        "com.mobidevelop.robovm:robovm-cocoatouch:$robovmVersion"
+      ]
+    },
+    {
+      "file": "ios/build.gradle",
+      "line": 52,
+      "group": "com.badlogicgames.gdx",
+      "artifact": "gdx-backend-robovm-metalangle",
+      "version": "1.13.1",
+      "scope": "production",
+      "pom_url": "https://repo.maven.apache.org/maven2/com/badlogicgames/gdx/gdx-backend-robovm-metalangle/1.13.1/gdx-backend-robovm-metalangle-1.13.1.pom",
+      "pom_sha256": "5c65ebd399172f9db5d2fb01cb29a9859f048e330d7ec590234fd26b81fbe9af",
+      "declared_licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt",
+          "distribution": "repo"
+        }
+      ],
+      "status": "NOT DONE: per-component/native/transitive compatibility review remains necessary",
+      "declared_coordinates": [
+        "com.badlogicgames.gdx:gdx-backend-robovm-metalangle:1.13.1"
+      ]
+    },
+    {
+      "file": "ios/build.gradle",
+      "line": 53,
+      "group": "com.badlogicgames.gdx",
+      "artifact": "gdx-platform",
+      "version": "1.14.0",
+      "scope": "production",
+      "pom_url": "https://repo.maven.apache.org/maven2/com/badlogicgames/gdx/gdx-platform/1.14.0/gdx-platform-1.14.0.pom",
+      "pom_sha256": "d8fb3be00f36791afab61a8591e542afbaa4910107a057549cc97006ed8da11b",
+      "declared_licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt",
+          "distribution": "repo"
+        }
+      ],
+      "status": "NOT DONE: per-component/native/transitive compatibility review remains necessary",
+      "declared_coordinates": [
+        "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"
+      ]
+    },
+    {
+      "file": "ios/build.gradle",
+      "line": 54,
+      "group": "com.badlogicgames.gdx",
+      "artifact": "gdx-freetype-platform",
+      "version": "1.14.0",
+      "scope": "production",
+      "pom_url": "https://repo.maven.apache.org/maven2/com/badlogicgames/gdx/gdx-freetype-platform/1.14.0/gdx-freetype-platform-1.14.0.pom",
+      "pom_sha256": "a9099dd276f8016d8ee62ffe4d49de69e1a88668d2d9cad7ac673b3ef49b28cd",
+      "declared_licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt",
+          "distribution": "repo"
+        }
+      ],
+      "status": "NOT DONE: per-component/native/transitive compatibility review remains necessary",
+      "declared_coordinates": [
+        "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-ios"
+      ]
+    },
+    {
+      "file": "ios/build.gradle",
+      "line": 55,
+      "group": "com.badlogicgames.gdx-controllers",
+      "artifact": "gdx-controllers-ios",
+      "version": "2.2.4",
+      "scope": "production",
+      "pom_url": "https://repo.maven.apache.org/maven2/com/badlogicgames/gdx-controllers/gdx-controllers-ios/2.2.4/gdx-controllers-ios-2.2.4.pom",
+      "pom_sha256": "7f3a023e3d98934c2b1a01d3b69c196f8a50a055e765c4307773a677748705e3",
+      "declared_licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt",
+          "distribution": "repo"
+        }
+      ],
+      "status": "NOT DONE: per-component/native/transitive compatibility review remains necessary",
+      "declared_coordinates": [
+        "com.badlogicgames.gdx-controllers:gdx-controllers-ios:$gdxControllersVersion"
+      ]
+    },
+    {
+      "file": "android/build.gradle",
+      "line": 96,
+      "group": "com.badlogicgames.gdx",
+      "artifact": "gdx-backend-android",
+      "version": "1.14.0",
+      "scope": "production",
+      "pom_url": "https://repo.maven.apache.org/maven2/com/badlogicgames/gdx/gdx-backend-android/1.14.0/gdx-backend-android-1.14.0.pom",
+      "pom_sha256": "b971f3feab47e86817105aefba58c9a92d88749a5fc601dc93fccd47e1ec6f29",
+      "declared_licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt",
+          "distribution": "repo"
+        }
+      ],
+      "status": "NOT DONE: per-component/native/transitive compatibility review remains necessary",
+      "declared_coordinates": [
+        "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
+      ]
+    },
+    {
+      "file": "android/build.gradle",
+      "line": 97,
+      "group": "com.badlogicgames.gdx",
+      "artifact": "gdx-platform",
+      "version": "1.14.0",
+      "scope": "production",
+      "pom_url": "https://repo.maven.apache.org/maven2/com/badlogicgames/gdx/gdx-platform/1.14.0/gdx-platform-1.14.0.pom",
+      "pom_sha256": "d8fb3be00f36791afab61a8591e542afbaa4910107a057549cc97006ed8da11b",
+      "declared_licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt",
+          "distribution": "repo"
+        }
+      ],
+      "status": "NOT DONE: per-component/native/transitive compatibility review remains necessary",
+      "declared_coordinates": [
+        "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a",
+        "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a",
+        "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86",
+        "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86_64"
+      ]
+    },
+    {
+      "file": "android/build.gradle",
+      "line": 98,
+      "group": "com.badlogicgames.gdx",
+      "artifact": "gdx-platform",
+      "version": "1.14.0",
+      "scope": "production",
+      "pom_url": "https://repo.maven.apache.org/maven2/com/badlogicgames/gdx/gdx-platform/1.14.0/gdx-platform-1.14.0.pom",
+      "pom_sha256": "d8fb3be00f36791afab61a8591e542afbaa4910107a057549cc97006ed8da11b",
+      "declared_licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt",
+          "distribution": "repo"
+        }
+      ],
+      "status": "NOT DONE: per-component/native/transitive compatibility review remains necessary",
+      "declared_coordinates": [
+        "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a",
+        "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a",
+        "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86",
+        "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86_64"
+      ]
+    },
+    {
+      "file": "android/build.gradle",
+      "line": 99,
+      "group": "com.badlogicgames.gdx",
+      "artifact": "gdx-platform",
+      "version": "1.14.0",
+      "scope": "production",
+      "pom_url": "https://repo.maven.apache.org/maven2/com/badlogicgames/gdx/gdx-platform/1.14.0/gdx-platform-1.14.0.pom",
+      "pom_sha256": "d8fb3be00f36791afab61a8591e542afbaa4910107a057549cc97006ed8da11b",
+      "declared_licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt",
+          "distribution": "repo"
+        }
+      ],
+      "status": "NOT DONE: per-component/native/transitive compatibility review remains necessary",
+      "declared_coordinates": [
+        "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a",
+        "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a",
+        "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86",
+        "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86_64"
+      ]
+    },
+    {
+      "file": "android/build.gradle",
+      "line": 100,
+      "group": "com.badlogicgames.gdx",
+      "artifact": "gdx-platform",
+      "version": "1.14.0",
+      "scope": "production",
+      "pom_url": "https://repo.maven.apache.org/maven2/com/badlogicgames/gdx/gdx-platform/1.14.0/gdx-platform-1.14.0.pom",
+      "pom_sha256": "d8fb3be00f36791afab61a8591e542afbaa4910107a057549cc97006ed8da11b",
+      "declared_licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt",
+          "distribution": "repo"
+        }
+      ],
+      "status": "NOT DONE: per-component/native/transitive compatibility review remains necessary",
+      "declared_coordinates": [
+        "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a",
+        "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a",
+        "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86",
+        "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86_64"
+      ]
+    },
+    {
+      "file": "android/build.gradle",
+      "line": 101,
+      "group": "com.badlogicgames.gdx",
+      "artifact": "gdx-freetype",
+      "version": "1.14.0",
+      "scope": "production",
+      "pom_url": "https://repo.maven.apache.org/maven2/com/badlogicgames/gdx/gdx-freetype/1.14.0/gdx-freetype-1.14.0.pom",
+      "pom_sha256": "46dabdaa543a6510e050638c366a6145d90691b21a06211ffab49b202332422c",
+      "declared_licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt",
+          "distribution": "repo"
+        }
+      ],
+      "status": "NOT DONE: per-component/native/transitive compatibility review remains necessary",
+      "declared_coordinates": [
+        "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+      ]
+    },
+    {
+      "file": "android/build.gradle",
+      "line": 102,
+      "group": "com.badlogicgames.gdx",
+      "artifact": "gdx-freetype-platform",
+      "version": "1.14.0",
+      "scope": "production",
+      "pom_url": "https://repo.maven.apache.org/maven2/com/badlogicgames/gdx/gdx-freetype-platform/1.14.0/gdx-freetype-platform-1.14.0.pom",
+      "pom_sha256": "a9099dd276f8016d8ee62ffe4d49de69e1a88668d2d9cad7ac673b3ef49b28cd",
+      "declared_licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt",
+          "distribution": "repo"
+        }
+      ],
+      "status": "NOT DONE: per-component/native/transitive compatibility review remains necessary",
+      "declared_coordinates": [
+        "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-arm64-v8a",
+        "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-armeabi-v7a",
+        "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86",
+        "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86_64"
+      ]
+    },
+    {
+      "file": "android/build.gradle",
+      "line": 103,
+      "group": "com.badlogicgames.gdx",
+      "artifact": "gdx-freetype-platform",
+      "version": "1.14.0",
+      "scope": "production",
+      "pom_url": "https://repo.maven.apache.org/maven2/com/badlogicgames/gdx/gdx-freetype-platform/1.14.0/gdx-freetype-platform-1.14.0.pom",
+      "pom_sha256": "a9099dd276f8016d8ee62ffe4d49de69e1a88668d2d9cad7ac673b3ef49b28cd",
+      "declared_licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt",
+          "distribution": "repo"
+        }
+      ],
+      "status": "NOT DONE: per-component/native/transitive compatibility review remains necessary",
+      "declared_coordinates": [
+        "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-arm64-v8a",
+        "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-armeabi-v7a",
+        "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86",
+        "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86_64"
+      ]
+    },
+    {
+      "file": "android/build.gradle",
+      "line": 104,
+      "group": "com.badlogicgames.gdx",
+      "artifact": "gdx-freetype-platform",
+      "version": "1.14.0",
+      "scope": "production",
+      "pom_url": "https://repo.maven.apache.org/maven2/com/badlogicgames/gdx/gdx-freetype-platform/1.14.0/gdx-freetype-platform-1.14.0.pom",
+      "pom_sha256": "a9099dd276f8016d8ee62ffe4d49de69e1a88668d2d9cad7ac673b3ef49b28cd",
+      "declared_licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt",
+          "distribution": "repo"
+        }
+      ],
+      "status": "NOT DONE: per-component/native/transitive compatibility review remains necessary",
+      "declared_coordinates": [
+        "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-arm64-v8a",
+        "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-armeabi-v7a",
+        "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86",
+        "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86_64"
+      ]
+    },
+    {
+      "file": "android/build.gradle",
+      "line": 105,
+      "group": "com.badlogicgames.gdx",
+      "artifact": "gdx-freetype-platform",
+      "version": "1.14.0",
+      "scope": "production",
+      "pom_url": "https://repo.maven.apache.org/maven2/com/badlogicgames/gdx/gdx-freetype-platform/1.14.0/gdx-freetype-platform-1.14.0.pom",
+      "pom_sha256": "a9099dd276f8016d8ee62ffe4d49de69e1a88668d2d9cad7ac673b3ef49b28cd",
+      "declared_licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt",
+          "distribution": "repo"
+        }
+      ],
+      "status": "NOT DONE: per-component/native/transitive compatibility review remains necessary",
+      "declared_coordinates": [
+        "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-arm64-v8a",
+        "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-armeabi-v7a",
+        "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86",
+        "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86_64"
+      ]
+    },
+    {
+      "file": "android/build.gradle",
+      "line": 106,
+      "group": "com.badlogicgames.gdx-controllers",
+      "artifact": "gdx-controllers-android",
+      "version": "2.2.4",
+      "scope": "production",
+      "pom_url": "https://repo.maven.apache.org/maven2/com/badlogicgames/gdx-controllers/gdx-controllers-android/2.2.4/gdx-controllers-android-2.2.4.pom",
+      "pom_sha256": "e9fe86bfeaba66c35dd90139e8aa8a03fa3698e3e2263b70fd934ae7cb76a63b",
+      "declared_licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt",
+          "distribution": "repo"
+        }
+      ],
+      "status": "NOT DONE: per-component/native/transitive compatibility review remains necessary",
+      "declared_coordinates": [
+        "com.badlogicgames.gdx-controllers:gdx-controllers-android:$gdxControllersVersion"
+      ]
+    },
+    {
+      "file": "android/build.gradle",
+      "line": 108,
+      "group": "androidx.test.ext",
+      "artifact": "junit",
+      "version": "1.2.1",
+      "scope": "test-only",
+      "pom_url": "https://dl.google.com/dl/android/maven2/androidx/test/ext/junit/1.2.1/junit-1.2.1.pom",
+      "declared_licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt",
+          "distribution": "repo"
+        }
+      ],
+      "status": "NOT DONE: per-component/native/transitive compatibility review remains necessary",
+      "declared_coordinates": [
+        "androidx.test.ext:junit:1.2.1"
+      ],
+      "pom_sha256": "983e474e47aafea0d078c4bd0b72aab1a292aceac198856371a02e1e1cb51751"
+    },
+    {
+      "file": "android/build.gradle",
+      "line": 109,
+      "group": "androidx.test",
+      "artifact": "core",
+      "version": "1.6.1",
+      "scope": "test-only",
+      "pom_url": "https://dl.google.com/dl/android/maven2/androidx/test/core/1.6.1/core-1.6.1.pom",
+      "declared_licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt",
+          "distribution": "repo"
+        }
+      ],
+      "status": "NOT DONE: per-component/native/transitive compatibility review remains necessary",
+      "declared_coordinates": [
+        "androidx.test:core:1.6.1"
+      ],
+      "pom_sha256": "44d102e5879664a4a4e1006881f2e6d886af99db362d20cb9a659d997b32464b"
+    },
+    {
+      "file": "android/build.gradle",
+      "line": 110,
+      "group": "androidx.test",
+      "artifact": "runner",
+      "version": "1.6.2",
+      "scope": "test-only",
+      "pom_url": "https://dl.google.com/dl/android/maven2/androidx/test/runner/1.6.2/runner-1.6.2.pom",
+      "declared_licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt",
+          "distribution": "repo"
+        }
+      ],
+      "status": "NOT DONE: per-component/native/transitive compatibility review remains necessary",
+      "declared_coordinates": [
+        "androidx.test:runner:1.6.2"
+      ],
+      "pom_sha256": "e6abf0cb643a79f3e120b3d6a03dd8906f8d6a9edb73cfbb7a64048d073a4f16"
+    },
+    {
+      "file": "core/build.gradle",
+      "line": 12,
+      "group": "junit",
+      "artifact": "junit",
+      "version": "4.13.2",
+      "scope": "test-only",
+      "pom_url": "https://repo.maven.apache.org/maven2/junit/junit/4.13.2/junit-4.13.2.pom",
+      "pom_sha256": "569b6977ee4603c965c1c46c3058fa6e969291b0160eb6964dd092cd89eadd94",
+      "declared_licenses": [
+        {
+          "name": "Eclipse Public License 1.0",
+          "url": "http://www.eclipse.org/legal/epl-v10.html",
+          "distribution": "repo"
+        }
+      ],
+      "status": "NOT DONE: per-component/native/transitive compatibility review remains necessary",
+      "declared_coordinates": [
+        "junit:junit:4.13.2"
+      ],
+      "issue": "EPL-1.0 is not GPL-compatible as a combined distributed work; JUnit is test-only here, not packaged in the playable APK."
+    },
+    {
+      "file": "core/build.gradle",
+      "line": 15,
+      "group": "com.badlogicgames.gdx",
+      "artifact": "gdx-backend-headless",
+      "version": "1.14.0",
+      "scope": "test-only",
+      "pom_url": "https://repo.maven.apache.org/maven2/com/badlogicgames/gdx/gdx-backend-headless/1.14.0/gdx-backend-headless-1.14.0.pom",
+      "pom_sha256": "cabdd6ec1f3064e448367a74fdf4a71de065114c576198cf60d2723d4f5a7596",
+      "declared_licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt",
+          "distribution": "repo"
+        }
+      ],
+      "status": "NOT DONE: per-component/native/transitive compatibility review remains necessary",
+      "declared_coordinates": [
+        "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
+      ]
+    },
+    {
+      "file": "core/build.gradle",
+      "line": 16,
+      "group": "com.badlogicgames.gdx",
+      "artifact": "gdx-platform",
+      "version": "1.14.0",
+      "scope": "test-only",
+      "pom_url": "https://repo.maven.apache.org/maven2/com/badlogicgames/gdx/gdx-platform/1.14.0/gdx-platform-1.14.0.pom",
+      "pom_sha256": "d8fb3be00f36791afab61a8591e542afbaa4910107a057549cc97006ed8da11b",
+      "declared_licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt",
+          "distribution": "repo"
+        }
+      ],
+      "status": "NOT DONE: per-component/native/transitive compatibility review remains necessary",
+      "declared_coordinates": [
+        "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+      ]
+    },
+    {
+      "file": "core/build.gradle",
+      "line": 18,
+      "group": "org.json",
+      "artifact": "json",
+      "version": "20240303",
+      "scope": "test-only",
+      "pom_url": "https://repo.maven.apache.org/maven2/org/json/json/20240303/json-20240303.pom",
+      "pom_sha256": "64c15543a3d5db279a20aeb0dfa034a2a79c2159f8cd401dea48ff0f234c18dd",
+      "declared_licenses": [
+        {
+          "name": "Public Domain",
+          "url": "https://github.com/stleary/JSON-java/blob/20240303/LICENSE"
+        }
+      ],
+      "status": "DONE: Public Domain replacement verified by full 2239-test suite and Android ABI guard",
+      "declared_coordinates": [
+        "org.json:json:20170516"
+      ],
+      "historical_version": "20170516",
+      "historical_issue": "JSON License includes Good, not Evil use restriction; incompatible with GPL. Preserve data compatibility when selecting a replacement.",
+      "jar_sha256": "3cf6cd6892e32e2b4c1c39e0f52f5248a2f5b37646fdfbb79a66b46b618414ed",
+      "issue": "Historical distributed TEST341 still uses the incompatible old dependency; PR changes do not alter that APK."
+    },
+    {
+      "file": "desktop/build.gradle",
+      "line": 113,
+      "group": "com.badlogicgames.gdx",
+      "artifact": "gdx-freetype",
+      "version": "1.14.0",
+      "scope": "production",
+      "pom_url": "https://repo.maven.apache.org/maven2/com/badlogicgames/gdx/gdx-freetype/1.14.0/gdx-freetype-1.14.0.pom",
+      "pom_sha256": "46dabdaa543a6510e050638c366a6145d90691b21a06211ffab49b202332422c",
+      "declared_licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt",
+          "distribution": "repo"
+        }
+      ],
+      "status": "NOT DONE: per-component/native/transitive compatibility review remains necessary",
+      "declared_coordinates": [
+        "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+      ]
+    },
+    {
+      "file": "desktop/build.gradle",
+      "line": 114,
+      "group": "com.badlogicgames.gdx",
+      "artifact": "gdx-backend-lwjgl3",
+      "version": "1.14.0",
+      "scope": "production",
+      "pom_url": "https://repo.maven.apache.org/maven2/com/badlogicgames/gdx/gdx-backend-lwjgl3/1.14.0/gdx-backend-lwjgl3-1.14.0.pom",
+      "pom_sha256": "4bec5a016b57c6483446bbb3af85d5d15f5fe2079d852a674dc54b30e59df696",
+      "declared_licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt",
+          "distribution": "repo"
+        }
+      ],
+      "status": "NOT DONE: per-component/native/transitive compatibility review remains necessary",
+      "declared_coordinates": [
+        "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
+      ]
+    },
+    {
+      "file": "desktop/build.gradle",
+      "line": 115,
+      "group": "com.badlogicgames.gdx",
+      "artifact": "gdx-platform",
+      "version": "1.14.0",
+      "scope": "production",
+      "pom_url": "https://repo.maven.apache.org/maven2/com/badlogicgames/gdx/gdx-platform/1.14.0/gdx-platform-1.14.0.pom",
+      "pom_sha256": "d8fb3be00f36791afab61a8591e542afbaa4910107a057549cc97006ed8da11b",
+      "declared_licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt",
+          "distribution": "repo"
+        }
+      ],
+      "status": "NOT DONE: per-component/native/transitive compatibility review remains necessary",
+      "declared_coordinates": [
+        "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+      ]
+    },
+    {
+      "file": "desktop/build.gradle",
+      "line": 116,
+      "group": "com.badlogicgames.gdx",
+      "artifact": "gdx-freetype-platform",
+      "version": "1.14.0",
+      "scope": "production",
+      "pom_url": "https://repo.maven.apache.org/maven2/com/badlogicgames/gdx/gdx-freetype-platform/1.14.0/gdx-freetype-platform-1.14.0.pom",
+      "pom_sha256": "a9099dd276f8016d8ee62ffe4d49de69e1a88668d2d9cad7ac673b3ef49b28cd",
+      "declared_licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt",
+          "distribution": "repo"
+        }
+      ],
+      "status": "NOT DONE: per-component/native/transitive compatibility review remains necessary",
+      "declared_coordinates": [
+        "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
+      ]
+    },
+    {
+      "file": "desktop/build.gradle",
+      "line": 117,
+      "group": "com.badlogicgames.gdx-controllers",
+      "artifact": "gdx-controllers-desktop",
+      "version": "2.2.4",
+      "scope": "production",
+      "pom_url": "https://repo.maven.apache.org/maven2/com/badlogicgames/gdx-controllers/gdx-controllers-desktop/2.2.4/gdx-controllers-desktop-2.2.4.pom",
+      "pom_sha256": "da93b4d594daf0431df90edb3cf10e1e3a469c28020c765be4ff9f60a0fa6d36",
+      "declared_licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt",
+          "distribution": "repo"
+        }
+      ],
+      "status": "NOT DONE: per-component/native/transitive compatibility review remains necessary",
+      "declared_coordinates": [
+        "com.badlogicgames.gdx-controllers:gdx-controllers-desktop:$gdxControllersVersion"
+      ]
+    },
+    {
+      "file": "desktop/build.gradle",
+      "line": 120,
+      "group": "org.lwjgl",
+      "artifact": "lwjgl-tinyfd",
+      "version": "3.3.3",
+      "scope": "production",
+      "pom_url": "https://repo.maven.apache.org/maven2/org/lwjgl/lwjgl-tinyfd/3.3.3/lwjgl-tinyfd-3.3.3.pom",
+      "pom_sha256": "2c1bd119f41e65a544613f91e7160e006b81916e73a6ef75f549242cc4f3bef2",
+      "declared_licenses": [
+        {
+          "name": "BSD-3-Clause",
+          "url": "https://www.lwjgl.org/license",
+          "distribution": "repo"
+        }
+      ],
+      "status": "NOT DONE: per-component/native/transitive compatibility review remains necessary",
+      "declared_coordinates": [
+        "org.lwjgl:lwjgl-tinyfd:3.3.3",
+        "org.lwjgl:lwjgl-tinyfd:3.3.3:natives-linux",
+        "org.lwjgl:lwjgl-tinyfd:3.3.3:natives-linux-arm64",
+        "org.lwjgl:lwjgl-tinyfd:3.3.3:natives-macos",
+        "org.lwjgl:lwjgl-tinyfd:3.3.3:natives-macos-arm64",
+        "org.lwjgl:lwjgl-tinyfd:3.3.3:natives-windows"
+      ]
+    },
+    {
+      "file": "desktop/build.gradle",
+      "line": 121,
+      "group": "org.lwjgl",
+      "artifact": "lwjgl-tinyfd",
+      "version": "3.3.3",
+      "scope": "production",
+      "pom_url": "https://repo.maven.apache.org/maven2/org/lwjgl/lwjgl-tinyfd/3.3.3/lwjgl-tinyfd-3.3.3.pom",
+      "pom_sha256": "2c1bd119f41e65a544613f91e7160e006b81916e73a6ef75f549242cc4f3bef2",
+      "declared_licenses": [
+        {
+          "name": "BSD-3-Clause",
+          "url": "https://www.lwjgl.org/license",
+          "distribution": "repo"
+        }
+      ],
+      "status": "NOT DONE: per-component/native/transitive compatibility review remains necessary",
+      "declared_coordinates": [
+        "org.lwjgl:lwjgl-tinyfd:3.3.3",
+        "org.lwjgl:lwjgl-tinyfd:3.3.3:natives-linux",
+        "org.lwjgl:lwjgl-tinyfd:3.3.3:natives-linux-arm64",
+        "org.lwjgl:lwjgl-tinyfd:3.3.3:natives-macos",
+        "org.lwjgl:lwjgl-tinyfd:3.3.3:natives-macos-arm64",
+        "org.lwjgl:lwjgl-tinyfd:3.3.3:natives-windows"
+      ]
+    },
+    {
+      "file": "desktop/build.gradle",
+      "line": 122,
+      "group": "org.lwjgl",
+      "artifact": "lwjgl-tinyfd",
+      "version": "3.3.3",
+      "scope": "production",
+      "pom_url": "https://repo.maven.apache.org/maven2/org/lwjgl/lwjgl-tinyfd/3.3.3/lwjgl-tinyfd-3.3.3.pom",
+      "pom_sha256": "2c1bd119f41e65a544613f91e7160e006b81916e73a6ef75f549242cc4f3bef2",
+      "declared_licenses": [
+        {
+          "name": "BSD-3-Clause",
+          "url": "https://www.lwjgl.org/license",
+          "distribution": "repo"
+        }
+      ],
+      "status": "NOT DONE: per-component/native/transitive compatibility review remains necessary",
+      "declared_coordinates": [
+        "org.lwjgl:lwjgl-tinyfd:3.3.3",
+        "org.lwjgl:lwjgl-tinyfd:3.3.3:natives-linux",
+        "org.lwjgl:lwjgl-tinyfd:3.3.3:natives-linux-arm64",
+        "org.lwjgl:lwjgl-tinyfd:3.3.3:natives-macos",
+        "org.lwjgl:lwjgl-tinyfd:3.3.3:natives-macos-arm64",
+        "org.lwjgl:lwjgl-tinyfd:3.3.3:natives-windows"
+      ]
+    },
+    {
+      "file": "desktop/build.gradle",
+      "line": 123,
+      "group": "org.lwjgl",
+      "artifact": "lwjgl-tinyfd",
+      "version": "3.3.3",
+      "scope": "production",
+      "pom_url": "https://repo.maven.apache.org/maven2/org/lwjgl/lwjgl-tinyfd/3.3.3/lwjgl-tinyfd-3.3.3.pom",
+      "pom_sha256": "2c1bd119f41e65a544613f91e7160e006b81916e73a6ef75f549242cc4f3bef2",
+      "declared_licenses": [
+        {
+          "name": "BSD-3-Clause",
+          "url": "https://www.lwjgl.org/license",
+          "distribution": "repo"
+        }
+      ],
+      "status": "NOT DONE: per-component/native/transitive compatibility review remains necessary",
+      "declared_coordinates": [
+        "org.lwjgl:lwjgl-tinyfd:3.3.3",
+        "org.lwjgl:lwjgl-tinyfd:3.3.3:natives-linux",
+        "org.lwjgl:lwjgl-tinyfd:3.3.3:natives-linux-arm64",
+        "org.lwjgl:lwjgl-tinyfd:3.3.3:natives-macos",
+        "org.lwjgl:lwjgl-tinyfd:3.3.3:natives-macos-arm64",
+        "org.lwjgl:lwjgl-tinyfd:3.3.3:natives-windows"
+      ]
+    },
+    {
+      "file": "desktop/build.gradle",
+      "line": 124,
+      "group": "org.lwjgl",
+      "artifact": "lwjgl-tinyfd",
+      "version": "3.3.3",
+      "scope": "production",
+      "pom_url": "https://repo.maven.apache.org/maven2/org/lwjgl/lwjgl-tinyfd/3.3.3/lwjgl-tinyfd-3.3.3.pom",
+      "pom_sha256": "2c1bd119f41e65a544613f91e7160e006b81916e73a6ef75f549242cc4f3bef2",
+      "declared_licenses": [
+        {
+          "name": "BSD-3-Clause",
+          "url": "https://www.lwjgl.org/license",
+          "distribution": "repo"
+        }
+      ],
+      "status": "NOT DONE: per-component/native/transitive compatibility review remains necessary",
+      "declared_coordinates": [
+        "org.lwjgl:lwjgl-tinyfd:3.3.3",
+        "org.lwjgl:lwjgl-tinyfd:3.3.3:natives-linux",
+        "org.lwjgl:lwjgl-tinyfd:3.3.3:natives-linux-arm64",
+        "org.lwjgl:lwjgl-tinyfd:3.3.3:natives-macos",
+        "org.lwjgl:lwjgl-tinyfd:3.3.3:natives-macos-arm64",
+        "org.lwjgl:lwjgl-tinyfd:3.3.3:natives-windows"
+      ]
+    },
+    {
+      "file": "desktop/build.gradle",
+      "line": 125,
+      "group": "org.lwjgl",
+      "artifact": "lwjgl-tinyfd",
+      "version": "3.3.3",
+      "scope": "production",
+      "pom_url": "https://repo.maven.apache.org/maven2/org/lwjgl/lwjgl-tinyfd/3.3.3/lwjgl-tinyfd-3.3.3.pom",
+      "pom_sha256": "2c1bd119f41e65a544613f91e7160e006b81916e73a6ef75f549242cc4f3bef2",
+      "declared_licenses": [
+        {
+          "name": "BSD-3-Clause",
+          "url": "https://www.lwjgl.org/license",
+          "distribution": "repo"
+        }
+      ],
+      "status": "NOT DONE: per-component/native/transitive compatibility review remains necessary",
+      "declared_coordinates": [
+        "org.lwjgl:lwjgl-tinyfd:3.3.3",
+        "org.lwjgl:lwjgl-tinyfd:3.3.3:natives-linux",
+        "org.lwjgl:lwjgl-tinyfd:3.3.3:natives-linux-arm64",
+        "org.lwjgl:lwjgl-tinyfd:3.3.3:natives-macos",
+        "org.lwjgl:lwjgl-tinyfd:3.3.3:natives-macos-arm64",
+        "org.lwjgl:lwjgl-tinyfd:3.3.3:natives-windows"
+      ]
+    },
+    {
+      "file": "desktop/build.gradle",
+      "line": 1,
+      "group": "gradle-plugin",
+      "artifact": "org.beryx.runtime",
+      "version": "2.0.1",
+      "scope": "build-tool",
+      "declared_licenses": [],
+      "note": "Gradle plugin license needs independent verification",
+      "status": "NOT DONE: per-component/native/transitive compatibility review remains necessary",
+      "license_reference": "https://github.com/beryx/badass-runtime-plugin/blob/v2.0.1/LICENSE",
+      "declared_license_summary": "Apache-2.0 per upstream project; plugin/native tool distribution still needs review",
+      "license_reference_sha256": "b40930bbcf80744c86c46a12bc9da056641d722716c378f5659b9e555ef833e1",
+      "license_verified_text_contains_apache2": true
+    }
+  ],
+  "limitations": "POM-declared licenses are evidence, not verification of bundled native/transitive licenses. Test libraries/build tools are separately identified and are not asserted to ship in APKs.",
+  "rejected_replacement": {
+    "artifact": "org.json:json:20240303",
+    "declared_license": "Public Domain",
+    "pom_url": "https://repo.maven.apache.org/maven2/org/json/json/20240303/json-20240303.pom",
+    "binary_jar_sha256": "3cf6cd6892e32e2b4c1c39e0f52f5248a2f5b37646fdfbb79a66b46b618414ed",
+    "sources_jar_sha256": "3078d4471e3be3dcbd07b3cf1cf0b610158d4605c1151c3dbf27a248c9aa04cc",
+    "source_headers_checked": "JSONObject.java declares Public Domain; no Good/not-Evil clause found in Java/text source entries.",
+    "tested_commit": "62890a2be23c50b1d8fc469bc16f792b59198e42",
+    "workflow_run": 41266617554,
+    "result": "REJECTED:2234 tests,2 golden-hash failures; Android debug/release and desktop compilation passed. Old hashes retained; dependency pin restored.",
+    "limitation": "Hash mismatch has not been established as actual dungeon or save corruption; compatibility was not established, so no default/library/format change is shipped."
+  },
+  "accepted_replacement": {
+    "version": "20240303",
+    "commit": "4d86c48985bd007000dae0ee2d4cfa46367200ab",
+    "run": 41268811315,
+    "tests": 2239,
+    "failures": 0,
+    "root_cause": "New parser uses BigDecimal; old Bundle float writes accidentally bind to newly added non-Android JSONObject float overloads. Explicit float-to-double preserves serialization and Android ABI; test-only canonicalizer normalizes only precision-safe numeric spelling. Original golden hashes unchanged.",
+    "abi_guard": "3827 production classes;35 distinct JSON references;zero float signatures"
+  }
+}

@@ -1,3 +1,19 @@
+# ADHD Pixel Dungeon
+# Copyright (C) 2026 Chris Charlton
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>
+
 name: Deliver verified existing APD TEST204
 
 # Delivery only: reuse the already tested APK; no Gradle or app rebuild.
@@ -171,7 +187,7 @@ jobs:
               raise SystemExit('Existing assets preserved: refusing to overwrite release.')
           with open('delivery/verification.txt','a') as notes:
               notes.write('\n\nRelease tag identifies the delivery workflow commit, not the compiled application source. The APK source remains '+os.environ['APD_SOURCE_SHA']+'. Later branch changes are not included in this APK.\n')
-          subprocess.run(['gh','release','create',tag,'--repo',repo,
+          __import__('tools.apd_gpl_release_gate', fromlist=['publication_run']).publication_run(['gh','release','create',tag,'--repo',repo,
               '--target',os.environ['GITHUB_SHA'],'--prerelease','--latest=false',
               '--title',f'APD PRIVATE CODEX TEST {number}','--notes-file','delivery/verification.txt',
               f'delivery/ADHD-Pixel-Dungeon-CODEX-TEST-{number}.apk',

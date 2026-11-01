@@ -1,0 +1,38 @@
+# ADHD Pixel Dungeon
+# Copyright (C) 2026 Chris Charlton
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>
+
+name: Restore existing external APD signing identity
+description: Never generate a replacement key or commit signing material
+inputs:
+  keystore-base64:
+    required: true
+  store-password:
+    required: true
+  key-password:
+    required: false
+  key-alias:
+    required: false
+    default: apd
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      env:
+        APD_SIGNING_KEYSTORE_BASE64: ${{ inputs.keystore-base64 }}
+        APD_SIGNING_STORE_PASSWORD: ${{ inputs.store-password }}
+        APD_SIGNING_KEY_PASSWORD: ${{ inputs.key-password }}
+        APD_SIGNING_KEY_ALIAS: ${{ inputs.key-alias }}
+      run: python3 tools/apd_prepare_signing.py

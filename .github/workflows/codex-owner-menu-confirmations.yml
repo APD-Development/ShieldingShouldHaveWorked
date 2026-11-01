@@ -1,3 +1,19 @@
+# ADHD Pixel Dungeon
+# Copyright (C) 2026 Chris Charlton
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>
+
 name: Deliver TEST258 after corrected native acceptance
 on:
   push:
@@ -169,7 +185,7 @@ jobs:
           assert api('repos/'+repo)['private']
           names=['ADHD-Pixel-Dungeon-Alpha-Preview-258.apk','ADHD-Pixel-Dungeon-Alpha-Preview-258.apk.sha256','APD-Alpha-Preview-258.pdf','TEST258-Verification.json','APD-Tester-Feedback-258.json','APD-Android-Evidence-258.zip']
           assert not any(r['tag_name']==tag for r in api(f'repos/{repo}/releases?per_page=100')),'Preserve existing assets'
-          subprocess.run(['gh','release','create',tag,'--repo',repo,'--target',os.environ['GITHUB_SHA'],'--prerelease','--latest=false','--title','APD Alpha Preview258 — tester safety and responsive menu','--notes','Private owner test: optional default-on Waterskin and known-trap confirmations in Options; responsive menu footer. Full core and corrected Android evidence, failures and display boundaries are documented in the PDF. Install over APD; never uninstall or clear data. No automatic tester distribution.']+[str(root/n)for n in names],check=True)
+          __import__('tools.apd_gpl_release_gate', fromlist=['publication_run']).publication_run(['gh','release','create',tag,'--repo',repo,'--target',os.environ['GITHUB_SHA'],'--prerelease','--latest=false','--title','APD Alpha Preview258 — tester safety and responsive menu','--notes','Private owner test: optional default-on Waterskin and known-trap confirmations in Options; responsive menu footer. Full core and corrected Android evidence, failures and display boundaries are documented in the PDF. Install over APD; never uninstall or clear data. No automatic tester distribution.']+[str(root/n)for n in names],check=True)
           release=api(f'repos/{repo}/releases/tags/{tag}');assert release['prerelease'] and not release['draft']
           for n in names:
               a=next(a for a in release['assets']if a['name']==n);assert a['digest']=='sha256:'+hashlib.sha256((root/n).read_bytes()).hexdigest()

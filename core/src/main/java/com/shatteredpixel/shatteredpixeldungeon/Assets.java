@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -257,12 +260,7 @@ public class Assets {
 		public static final String CITY     = "splashes/city.jpg";
 		public static final String HALLS    = "splashes/halls.jpg";
 
-		public static class Title {
-			public static final String ARCHS         = "splashes/title/archs.png";
-			public static final String BACK_CLUSTERS = "splashes/title/back_clusters.png";
-			public static final String MID_MIXED     = "splashes/title/mid_mixed.png";
-			public static final String FRONT_SMALL   = "splashes/title/front_small.png";
-		}
+
 	}
 
 	public static class Sprites {

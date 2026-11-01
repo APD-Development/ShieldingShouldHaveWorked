@@ -1,3 +1,19 @@
+# ADHD Pixel Dungeon
+# Copyright (C) 2026 Chris Charlton
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>
+
 name: Deliver verified TEST250 private lunch APK
 on:
   push:
@@ -95,7 +111,7 @@ jobs:
           matches=[release for release in releases if release['tag_name']==tag]
           assert len(matches)<=1,'Preserve unique release and assets'
           if not matches:
-              subprocess.run(['gh','release','create',tag,'--repo',repo,'--target',os.environ['GITHUB_SHA'],'--prerelease','--latest=false','--title','APD Alpha Preview 250 — private lunch test','--notes-file',str(root/'owner-release-notes.txt')]+[str(root/name) for name in names],check=True)
+              __import__('tools.apd_gpl_release_gate', fromlist=['publication_run']).publication_run(['gh','release','create',tag,'--repo',repo,'--target',os.environ['GITHUB_SHA'],'--prerelease','--latest=false','--title','APD Alpha Preview 250 — private lunch test','--notes-file',str(root/'owner-release-notes.txt')]+[str(root/name) for name in names],check=True)
               releases=json.loads(subprocess.check_output(['gh','api',f'repos/{repo}/releases?per_page=100']))
               matches=[release for release in releases if release['tag_name']==tag]
           assert len(matches)==1

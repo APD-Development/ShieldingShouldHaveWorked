@@ -1,3 +1,19 @@
+# ADHD Pixel Dungeon
+# Copyright (C) 2026 Chris Charlton
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>
+
 """Publish owner-requested unchanged TEST323 APK pair to the private repository."""
 import hashlib,json,os,pathlib,re,subprocess,zipfile,sys
 def cmd(*a): return subprocess.check_output(a,text=True)
@@ -51,7 +67,7 @@ Source: """+source
  tag='apd-alpha-preview-323'
  assert subprocess.run(['gh','release','view',tag,'--repo',repo],capture_output=True).returncode!=0,'Existing release preserved'
  files=[dev,dest,pathlib.Path(str(dev)+'.sha256'),pathlib.Path(str(dest)+'.sha256'),root/'APD-Alpha-Preview-323.pdf',root/'TEST323-Verification.json']
- subprocess.run(['gh','release','create',tag,'--repo',repo,'--target',os.environ['GITHUB_SHA'],'--prerelease','--latest=false','--title','APD Alpha Preview 323 — private owner test','--notes-file',str(root/'owner-release-notes.txt')]+list(map(str,files)),check=True)
+ __import__('apd_gpl_release_gate', fromlist=['publication_run']).publication_run(['gh','release','create',tag,'--repo',repo,'--target',os.environ['GITHUB_SHA'],'--prerelease','--latest=false','--title','APD Alpha Preview 323 — private owner test','--notes-file',str(root/'owner-release-notes.txt')]+list(map(str,files)),check=True)
  release=api(f'repos/{repo}/releases/tags/{tag}')
  assert not release['draft'] and release['prerelease']
  for p in files:

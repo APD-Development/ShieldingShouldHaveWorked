@@ -1,3 +1,19 @@
+# ADHD Pixel Dungeon
+# Copyright (C) 2026 Chris Charlton
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>
+
 """Deliver the exact verified private TEST341 pair; no builds, overwrites or PDF."""
 import datetime,hashlib,json,os,pathlib,re,subprocess,sys,time,zipfile
 sys.path.insert(0,'tools')
@@ -122,13 +138,13 @@ notes.write_text("Short presses no longer include frame time from before DOWN; g
 tag='apd-alpha-preview-341'
 existing=subprocess.run(['gh','release','view',tag,'--repo',repo],capture_output=True)
 if existing.returncode!=0:
- subprocess.run(['gh','release','create',tag,'--repo',repo,'--target',source,'--prerelease','--latest=false','--title','APD Alpha Preview 341 — Gathering icon, resource tracking and responsive input','--notes-file',str(notes),*map(str,files)],check=True)
+ __import__('apd_gpl_release_gate', fromlist=['publication_run']).publication_run(['gh','release','create',tag,'--repo',repo,'--target',source,'--prerelease','--latest=false','--title','APD Alpha Preview 341 — Gathering icon, resource tracking and responsive input','--notes-file',str(notes),*map(str,files)],check=True)
 release=api(f'repos/{repo}/releases/tags/{tag}')
 assert release['prerelease'] and not release['draft']
 for p in files:
  matches=[a for a in release['assets'] if a['name']==p.name]
  if not matches and existing.returncode==0:
-  subprocess.run(['gh','release','upload',tag,'--repo',repo,str(p)],check=True)
+  __import__('apd_gpl_release_gate', fromlist=['publication_run']).publication_run(['gh','release','upload',tag,'--repo',repo,str(p)],check=True)
   release=api(f'repos/{repo}/releases/tags/{tag}');matches=[a for a in release['assets'] if a['name']==p.name]
  a,=matches
  if existing.returncode==0 and p.name.endswith('.json'):continue

@@ -1,0 +1,781 @@
+{
+  "scanner": "gitleaks 8.30.1",
+  "scan_exit": 1,
+  "candidate_count": 96,
+  "all_candidates_reviewed": true,
+  "supplemental_checks": [
+    "No key filenames or Git history included",
+    "Historical password substitutions checked in every archive entry",
+    "APK checksums and 366 generated history inputs verified"
+  ],
+  "findings": [
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/.github/workflows/codex-android16-acceptance.yml",
+      "StartLine": 93,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/.github/workflows/codex-android16-acceptance.yml:generic-api-key:93",
+      "disposition": "Literal sound resource name used in diagnostic grep, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 1070,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json:generic-api-key:1070",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 1194,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json:generic-api-key:1194",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 1195,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json:generic-api-key:1195",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 2095,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json:generic-api-key:2095",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 2194,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json:generic-api-key:2194",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "sentry-access-token",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 2142,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json:sentry-access-token:2142",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "sentry-access-token",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 2176,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json:sentry-access-token:2176",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 2469,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json:generic-api-key:2469",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "sentry-access-token",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 2410,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json:sentry-access-token:2410",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "sentry-access-token",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 2468,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json:sentry-access-token:2468",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 2742,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json:generic-api-key:2742",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "sentry-access-token",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 2691,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json:sentry-access-token:2691",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 2907,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json:generic-api-key:2907",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 2944,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json:generic-api-key:2944",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 2945,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json:generic-api-key:2945",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 2946,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json:generic-api-key:2946",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 2947,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json:generic-api-key:2947",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 2948,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json:generic-api-key:2948",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 2994,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json:generic-api-key:2994",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 3163,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json:generic-api-key:3163",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 3265,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json:generic-api-key:3265",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 3284,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json:generic-api-key:3284",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 3296,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json:generic-api-key:3296",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 3297,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json:generic-api-key:3297",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 3298,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json:generic-api-key:3298",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 3299,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json:generic-api-key:3299",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 3300,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json:generic-api-key:3300",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 3301,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json:generic-api-key:3301",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 3302,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json:generic-api-key:3302",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 3303,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json:generic-api-key:3303",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 3304,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json:generic-api-key:3304",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 3305,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json:generic-api-key:3305",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 3306,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json:generic-api-key:3306",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 3307,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json:generic-api-key:3307",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 3308,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json:generic-api-key:3308",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "sentry-access-token",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 3331,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json:sentry-access-token:3331",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 3581,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json:generic-api-key:3581",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 3630,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json:generic-api-key:3630",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "sentry-access-token",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 3521,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json:sentry-access-token:3521",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "sentry-access-token",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 3561,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json:sentry-access-token:3561",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 3729,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json:generic-api-key:3729",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 4856,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/CORRESPONDING-SOURCE/manifest.json:generic-api-key:4856",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndKeyBindings.java",
+      "StartLine": 399,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndKeyBindings.java:generic-api-key:399",
+      "disposition": "Named integer keyboard binding fields, not credentials"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndKeyBindings.java",
+      "StartLine": 400,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndKeyBindings.java:generic-api-key:400",
+      "disposition": "Named integer keyboard binding fields, not credentials"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/tools/apd_publish_gathering331.py",
+      "StartLine": 15,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/tools/apd_publish_gathering331.py:generic-api-key:15",
+      "disposition": "Pinned public build commit/checksum assertions, not credentials"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/tools/apd_publish_gathering331.py",
+      "StartLine": 33,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/tools/apd_publish_gathering331.py:generic-api-key:33",
+      "disposition": "Pinned public build commit/checksum assertions, not credentials"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/.github/workflows/codex-android16-acceptance.yml",
+      "StartLine": 93,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/.github/workflows/codex-android16-acceptance.yml:generic-api-key:93",
+      "disposition": "Literal sound resource name used in diagnostic grep, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 1070,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json:generic-api-key:1070",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 1195,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json:generic-api-key:1195",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 1196,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json:generic-api-key:1196",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 2096,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json:generic-api-key:2096",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 2195,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json:generic-api-key:2195",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "sentry-access-token",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 2143,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json:sentry-access-token:2143",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "sentry-access-token",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 2177,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json:sentry-access-token:2177",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/docs/HANDOFF.md",
+      "StartLine": 2512,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Alpha-Testers/docs/HANDOFF.md:generic-api-key:2512",
+      "disposition": "Pinned public build commit/checksum assertions, not credentials"
+    },
+    {
+      "RuleID": "sentry-access-token",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 2411,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json:sentry-access-token:2411",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "sentry-access-token",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 2469,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json:sentry-access-token:2469",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 2470,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json:generic-api-key:2470",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 2743,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json:generic-api-key:2743",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "sentry-access-token",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 2692,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json:sentry-access-token:2692",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 2908,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json:generic-api-key:2908",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 2945,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json:generic-api-key:2945",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 2946,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json:generic-api-key:2946",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 2947,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json:generic-api-key:2947",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 2948,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json:generic-api-key:2948",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 2949,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json:generic-api-key:2949",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 2995,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json:generic-api-key:2995",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 3164,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json:generic-api-key:3164",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 3266,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json:generic-api-key:3266",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 3285,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json:generic-api-key:3285",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 3297,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json:generic-api-key:3297",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 3298,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json:generic-api-key:3298",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 3299,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json:generic-api-key:3299",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 3300,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json:generic-api-key:3300",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 3301,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json:generic-api-key:3301",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 3302,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json:generic-api-key:3302",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 3303,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json:generic-api-key:3303",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 3304,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json:generic-api-key:3304",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 3305,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json:generic-api-key:3305",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 3306,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json:generic-api-key:3306",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 3307,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json:generic-api-key:3307",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 3308,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json:generic-api-key:3308",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 3309,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json:generic-api-key:3309",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "sentry-access-token",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 3332,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json:sentry-access-token:3332",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 3582,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json:generic-api-key:3582",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 3631,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json:generic-api-key:3631",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "sentry-access-token",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 3522,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json:sentry-access-token:3522",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "sentry-access-token",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 3562,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json:sentry-access-token:3562",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 3730,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json:generic-api-key:3730",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json",
+      "StartLine": 4857,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/CORRESPONDING-SOURCE/manifest.json:generic-api-key:4857",
+      "disposition": "SHA-256 file-integrity field, not an access credential"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndKeyBindings.java",
+      "StartLine": 399,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndKeyBindings.java:generic-api-key:399",
+      "disposition": "Named integer keyboard binding fields, not credentials"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndKeyBindings.java",
+      "StartLine": 400,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndKeyBindings.java:generic-api-key:400",
+      "disposition": "Named integer keyboard binding fields, not credentials"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/tools/apd_publish_gathering331.py",
+      "StartLine": 15,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/tools/apd_publish_gathering331.py:generic-api-key:15",
+      "disposition": "Pinned public build commit/checksum assertions, not credentials"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/tools/apd_publish_gathering331.py",
+      "StartLine": 33,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/tools/apd_publish_gathering331.py:generic-api-key:33",
+      "disposition": "Pinned public build commit/checksum assertions, not credentials"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "File": "/workspace/apd-source-validation/APD-Source-341-Developer/docs/HANDOFF.md",
+      "StartLine": 2512,
+      "Commit": "",
+      "Fingerprint": "/workspace/apd-source-validation/APD-Source-341-Developer/docs/HANDOFF.md:generic-api-key:2512",
+      "disposition": "Pinned public build commit/checksum assertions, not credentials"
+    }
+  ]
+}
