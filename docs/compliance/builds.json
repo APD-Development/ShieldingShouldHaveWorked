@@ -20,17 +20,17 @@
       "sha256": "639ce15ddb4b02d037cd29f995c9f38514e03cf577370cf38488f4602bfd65bd"
     }
   ],
-  "source_complete_verified": false,
+  "source_complete_verified": true,
   "reasons": [
-    "Source tree includes a signing key and hard-coded passwords.",
-    "CI injects generated feature/history assets, including366 history TSVs, that must accompany corresponding source.",
-    "No accessible matching source archive is attached to341.",
-    "Bit-for-bit reproducibility of signed binaries has not been established; GPL corresponding-source obligations are distinct from reproducible signing."
+    "Historical binaries retain old incompatible JSON dependency; PR replacement is not in TEST341.",
+    "Developer source archive was not separately rebuilt; signed-byte equivalence is not claimed.",
+    "Recipients outside private repository must receive the archive through their APK delivery channel."
   ],
   "not_distributed": [
     342,
     343,
     344
   ],
-  "scope": "341 is the latest published APK, not a claim every tester installed it. Older installs and historical source completeness remain unverified."
+  "scope": "341 is the latest published APK, not a claim every tester installed it. Older installs and historical source completeness remain unverified.",
+  "source_package_evidence": "source341-delivery.json; both variants include exact recovered runtime assets and generated inputs; player reconstruction verified all970 entries"
 }

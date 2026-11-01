@@ -50,7 +50,11 @@ if __name__=='__main__':
  if a.publish:
   repo=json.loads(subprocess.check_output(['gh','api','repos/'+REPO]));assert repo['private'] is True
   release=json.loads(subprocess.check_output(['gh','api','repos/'+REPO+'/releases/tags/apd-alpha-preview-341']));assert release['id']==428527455
-  existing={x['name'] for x in release['assets']}
+  existing={x['name']:x for x in release['assets']}
+  for asset in assets:
+   remote=existing.get(pathlib.Path(asset).name)
+   if remote and remote.get('digest')!='sha256:'+hashlib.sha256(pathlib.Path(asset).read_bytes()).hexdigest():
+    raise ValueError('Existing source asset differs or lacks a verified digest; refusing overwrite')
   assets=[x for x in assets if pathlib.Path(x).name not in existing]
   if assets:subprocess.run(['gh','release','upload','apd-alpha-preview-341','--repo',REPO,*assets],check=True)
  print('Validated key-free matching source archives; existing assets are preserved.')

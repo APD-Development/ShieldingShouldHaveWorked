@@ -14437,6 +14437,13 @@
       "style": "external per-file notice; bytes preserved (binary/strict data/document)"
     },
     {
+      "path": "docs/compliance/final-verification.json",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
       "path": "docs/compliance/font-licenses.json",
       "years": "2026",
       "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
@@ -14480,6 +14487,13 @@
     },
     {
       "path": "docs/compliance/signing-integration.json",
+      "years": "2026",
+      "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
+      "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",
+      "style": "external per-file notice; bytes preserved (binary/strict data/document)"
+    },
+    {
+      "path": "docs/compliance/source341-delivery.json",
       "years": "2026",
       "copyright": "ADHD Pixel Dungeon / Copyright (C) 2026 Chris Charlton (APD modifications only)",
       "license": "GPL-3.0-or-later for APD modifications; see dependency/asset exceptions and unresolved provenance",

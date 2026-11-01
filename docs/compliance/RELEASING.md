@@ -29,4 +29,8 @@ GPLv3 or later; no warranty. APD is an unofficial modified version of SPD.
 
 **NOT DONE: universal enforcement.** Old workflows rerun at historical source, direct manual API/UI uploads, and publication paths not using the inspected patterns cannot be prevented by a source patch. The new source-only CI does not publish or build APKs. Repository/organization release permissions and required-check policies are **NEEDS CHRIS**. A preflight is not a substitute for actual archive/rebuild/access verification and resolved licenses.
 
-Keep the owner's three-APK-per-day maximum. This audit requests **no APK builds or releases**.
+Keep the owner's three-APK-per-day maximum. One unsigned historical player reconstruction was built by run41270469863; no new playable APK or APK release was produced. Count reconstruction builds toward the daily maximum. Matching source-only archives were added beside the existing private341 binaries, without replacing any assets.
+
+Use `tools/apd_corresponding_source.py` for pinned historical341 recovery and `tools/apd_publish_source_archive.py` for its restricted source-only delivery. The latter accepts only the verified341 source ZIP/checksum names, checks every entry/hash and reviewed scan metadata, verifies the existing private release, cannot upload APKs or create releases, and never overwrites existing assets. It does not clear the general binary-release gate or retroactively fix341 licensing.
+
+CI signing now uses `.github/actions/apd-signing`, with the exact original external certificate enforced. See `docs/SIGNING.md`: administrator configuration is required because the Actions-secrets API returned403. Source-only compilation and unsigned reconstruction do not require that private signing key.

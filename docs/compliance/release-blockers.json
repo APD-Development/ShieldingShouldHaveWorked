@@ -18,13 +18,13 @@
     },
     {
       "id": "recipient-source-access",
-      "status": "NOT DONE",
-      "reason": "Both key-free TEST341 source archives assembled with all366 generated history TSVs; local direct upload failedHTTP401. CI recovery/publication and player reconstruction currently running; external recipient source access still requires owner distribution evidence."
+      "status": "NEEDS CHRIS",
+      "reason": "Both TEST341 source archives privately published, downloaded back and hashed; tester reconstruction matches970 application entries. Owner must relay matching source to external APK recipients without private-repo access; no source access for those recipients has been demonstrated."
     },
     {
       "id": "remaining-branding",
-      "status": "NOT DONE",
-      "reason": "All Android/desktop/iOS launchers and reserved upstream-logo atlas cells replaced with original APD art, four stock title layers deleted. Four artwork tests pass. Full latest core/platform rerun and native visual acceptance remain pending."
+      "status": "DONE",
+      "reason": "Original APD replacement artwork and atlas integrity tests implemented. Final source8c54fb2cf passed2239 core/15 tool tests, Android debug/release and desktop compilation. Physical/native visual acceptance remains separately NOT DONE; no SPD title/launcher cells are retained by active rendering."
     }
   ]
 }

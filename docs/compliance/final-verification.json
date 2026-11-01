@@ -1,0 +1,20 @@
+{
+  "source_commit": "8c54fb2cfc006549bd78117f502b7b86778001b3",
+  "run": 41270753736,
+  "job": 124742851521,
+  "artifact": 13068809125,
+  "artifact_sha256": "cfc940a034270c49606c6d0ef782bc67cb802d5c72b1ef66e8c1a803c33a254e",
+  "suites": 427,
+  "tests": 2239,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "tool_tests": 15,
+  "android_debug_release_java": "PASSED",
+  "desktop_classes": "PASSED",
+  "production_class_count": 3826,
+  "json_method_reference_count": 35,
+  "json_float_descriptors": 0,
+  "native_or_physical_acceptance": false,
+  "apk_assembled_by_this_run": false
+}

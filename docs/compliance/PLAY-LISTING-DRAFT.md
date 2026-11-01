@@ -11,4 +11,4 @@ Original projects and attribution:
 - Shattered Pixel Dungeon — Evan Debenham: https://github.com/00-Evan/shattered-pixel-dungeon
 - Pixel Dungeon — Oleg Dolya / Watabou: https://github.com/watabou/pixel-dungeon
 
-NEEDS CHRIS before submission: select a recipient-accessible source location; verify all asset rights; replace remaining upstream visual branding; review title/icon/store identity. The words “Pixel Dungeon” in the APD title may create impersonation-review risk on Play. This is not a finding that a specific store policy has already been violated. No game rename, listing submission, author contact or repository visibility change is authorized by this draft.
+NEEDS CHRIS before submission: select a recipient-accessible source location; verify inherited sample/native license exceptions; review the original APD branding in this PR and final title/icon/store identity. The words “Pixel Dungeon” in the APD title may create impersonation-review risk on Play. This is not a finding that a specific store policy has already been violated. No game rename, listing submission, author contact or repository visibility change is authorized by this draft.

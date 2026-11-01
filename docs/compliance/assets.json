@@ -8,7 +8,10 @@
       "sha256": "2f391793482820527e77369c08936be985e4cc624cf53393fc4c0992609716db",
       "baseline_blob": "150e6fc83c70d5efee10cd66d6b6c3ed6b9f614a",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "5c42cc52a67a1ca62dae34543bee0f168648629dfee412c0e5b07fa36fc8ec68",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "android/src/debug/res/mipmap-hdpi/ic_launcher_background.png",
@@ -16,7 +19,10 @@
       "sha256": "55a8bd09ca33e874bd3712e5b71fd77dc89e46f00bbde7a8cf3805f0eac06cda",
       "baseline_blob": "72cfcaf4fb01dcde0f10b15fb3ddad95f254ea12",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "6527aa564b2023665541f077726b8881dc70cb3bdd63a256c1c772c23eff950e",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "android/src/debug/res/mipmap-hdpi/ic_launcher_foreground.png",
@@ -24,7 +30,10 @@
       "sha256": "38082c37ef45159c29528718f6b376811bcc5cac77307161e3c13d657afc7add",
       "baseline_blob": "5eb0d2b6ac2eb31e7b6d89a6dc2adce6a61d3cf9",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "a2fa79385216d54a9552013faaf058d0f87e88b64dcfda149ea31b5f776259eb",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "android/src/debug/res/mipmap-hdpi/ic_launcher_monochrome.png",
@@ -32,7 +41,10 @@
       "sha256": "42d2a84f96d6b8fec550aa41e0d0aea9e68c978bbfab7339303f039e0e9ccddd",
       "baseline_blob": "a9df577153c9b24ec79bae03eb08a3a087f05cea",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "1b7b686616a6077f00787362b0ac7c58ed85dc79b51e11500d3d39990c6da371",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "android/src/debug/res/mipmap-ldpi/ic_launcher.png",
@@ -40,7 +52,10 @@
       "sha256": "5dc64ad7b4df808a477718c2bbd3e1d8375a3ca6c3e89ac7cde5115096a9c7e2",
       "baseline_blob": "4c7b3da667d81e2101477a76cb43476e8c81eca8",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "8ff61721864cb47ed1db34eec2becc079f9df3602ad99f2b5ead36f2bea787a5",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "android/src/debug/res/mipmap-mdpi/ic_launcher.png",
@@ -48,7 +63,10 @@
       "sha256": "fab1b0a25958eea3984772b2fd983dace5e6aa74396f756ee160392275535e56",
       "baseline_blob": "59bd8ed72f639c6563da3972227f4d8235dfe2ca",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "89dd10326d104b6552e0f0ed47ee88b3e019e2e268bb3f2af7c62d47e47b84b5",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "android/src/debug/res/mipmap-mdpi/ic_launcher_background.png",
@@ -56,7 +74,10 @@
       "sha256": "b6ae00c186dbc7227a1b69de4de53c6e77b21d01c0ab08c213a0f318fe523755",
       "baseline_blob": "825d3118fb21e3e22d3773cc4b3a66f216209a6b",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "c6d52f284912c73b063e6e09d4d7dfcd79975e8e71335ed3a7ce98ea7d1420a7",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "android/src/debug/res/mipmap-mdpi/ic_launcher_foreground.png",
@@ -64,7 +85,10 @@
       "sha256": "0a61cf81d0500a16bcf44b487222ca21e5fce7e7611fc549e4f5bac4ee741587",
       "baseline_blob": "0fe48f084e5159276e15fb8d5b946ea245677611",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "97d0a377c09a249c2f8f67f20f020c8e4b06ae5bec4db5ddb51f7a37f515abc7",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "android/src/debug/res/mipmap-mdpi/ic_launcher_monochrome.png",
@@ -72,7 +96,10 @@
       "sha256": "b9d0b79ed077c978835916408b1c06d481d76dd77a3d1c29658867132c381104",
       "baseline_blob": "b0f2e65f61b39bc8cdbdaf08d48dedfd9a513fde",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "a229f74ccd6726c5e0a858b12cd02410a78e274393eba5405500e987ce687534",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "android/src/debug/res/mipmap-xhdpi/ic_launcher.png",
@@ -80,7 +107,10 @@
       "sha256": "a6fe117377b095fa5b8b2e2a6596146a5737c531e60276d1bfe15f5533346f28",
       "baseline_blob": "bc8a51c900c0cccf6bbe6daa6b45ffa3163b4655",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "84991e1a4783ab94d6ede995f2b94a7966edf5478c333bb8c322da2b0cb46a6d",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "android/src/debug/res/mipmap-xhdpi/ic_launcher_background.png",
@@ -88,7 +118,10 @@
       "sha256": "2219f9d8cee582eb3220cf6b1d80341739e6e07c33b7d13d7b7f8120b22615a2",
       "baseline_blob": "3414a79f2fc1e0c6b58f7e6033466805074d8aa2",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "87ba18000ad73ca65283442f471f6a45e47acc07392e3a7f636aa76da97baf83",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "android/src/debug/res/mipmap-xhdpi/ic_launcher_foreground.png",
@@ -96,7 +129,10 @@
       "sha256": "b1ee81fea5e1338aaa7498d67c502105dff5feecef7f98047e05b984dab81921",
       "baseline_blob": "364f53331c9680b7671452e4b9ea8a4c9bbfa49e",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "2b7ff450e3766a3c9ff96bb68ae796941c9b5081e80a68b8ac9193388fe5be73",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "android/src/debug/res/mipmap-xhdpi/ic_launcher_monochrome.png",
@@ -104,7 +140,10 @@
       "sha256": "1e115fc9d3b4974535afc61ee445c8a64c8035f947442ea91674de3000594040",
       "baseline_blob": "2a4d5451a7663f5df5cefba57d375fd7bc605e93",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "bb1cd7631e3805037dcfb24efb8c639f89a87d75af91e9967df8ab2611359c75",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "android/src/debug/res/mipmap-xxhdpi/ic_launcher.png",
@@ -112,7 +151,10 @@
       "sha256": "9bc04a66f2c3a7ef39fba472ee49ee9b43a00169c745db41838ab825ac33f218",
       "baseline_blob": "4d560c91b63e289a34981a07257b4f81c09fe12e",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "1c67bce1f1fe486f4f57b411ebecc91536e3635f027965022eedc39b90bad7a6",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "android/src/debug/res/mipmap-xxhdpi/ic_launcher_background.png",
@@ -120,7 +162,10 @@
       "sha256": "ee0195dddcdf7a493f4f250d16e67429da3120565e5a677b6877bbcd7bd422f6",
       "baseline_blob": "2443a53045dddeb11f9401dab47d403b6ac486a1",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "e367d7f9d667609c873ad9aad8082ec0cfcbe9535292dcded3373afdc2a4abf7",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "android/src/debug/res/mipmap-xxhdpi/ic_launcher_foreground.png",
@@ -128,7 +173,10 @@
       "sha256": "57007b23e339268f09786237097f0515c61a99d52fdd6c9e4dcbcd46bd085a95",
       "baseline_blob": "7cf8f43d925c3650809a88d85dc20e35bebee48f",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "779aba9ac0fe3482f72b30d1eec47f3a7039f55e5db3f85cf34c0eafbf8cad51",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "android/src/debug/res/mipmap-xxhdpi/ic_launcher_monochrome.png",
@@ -136,7 +184,10 @@
       "sha256": "c376fde25b35f3810e7b90e7d5e459c5553867175e4e76725b8928ab5f7ef574",
       "baseline_blob": "e3a736ee4c476b1089545e70052cda82388e3ca3",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "ed5149621227ac8a2d08478a24304dadfc741d10600ff7378a33d8c035de0488",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "android/src/debug/res/mipmap-xxxhdpi/ic_launcher.png",
@@ -144,7 +195,10 @@
       "sha256": "177a788c53b242b015624b1bee89293c7e1afecbc32ff1403b9838a96c595594",
       "baseline_blob": "60dee7d1f8f91e6956c58348a710349be8e8c44f",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "0cb13a8ba80b66969bce9f50f25d9a5e2830647febb07bf43dab7e9b7039e1bf",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "android/src/debug/res/mipmap-xxxhdpi/ic_launcher_background.png",
@@ -152,7 +206,10 @@
       "sha256": "c3c298909ebdcbc8e65384e199c71984493e95a03d15e09fc79b07bf1c2c9684",
       "baseline_blob": "45532c373d9861e39bcc9e0b634eed53a8fa5b48",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "7ce67ebd8f9789b454e7734e4892bfe145c51ed16cfb172836e4d4093f4709b4",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "android/src/debug/res/mipmap-xxxhdpi/ic_launcher_foreground.png",
@@ -160,7 +217,10 @@
       "sha256": "8dbb26ebde57021b9611785f57f92ff4a66ff4b010760ccff386abf99fa09d3d",
       "baseline_blob": "04b5fddf253060e30f0ee78ae5c9b69c038308ef",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "dd465d7e00dd4a40ff37a91f10f818edad83197e27784f74abd30acc6090b2b4",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "android/src/debug/res/mipmap-xxxhdpi/ic_launcher_monochrome.png",
@@ -168,7 +228,10 @@
       "sha256": "644c42acd11a6c72d6a19b3363b0da41f7d0e3babda57523ad187335065ac01a",
       "baseline_blob": "814833fd5784ba6c052d40f4d74e8c4d92f88bc5",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "02f547b259796cf48f8a6019f5045924fdcad7ad50c18aa9ec658637759f9d3d",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "android/src/main/res/mipmap-hdpi/ic_launcher.png",
@@ -176,7 +239,10 @@
       "sha256": "7db169c9f441470bc4aceb02a962e42cef7bf2ad72ae744b6045e4f446839173",
       "baseline_blob": "d782d00a923535e8db32fe32f7021df3bed24501",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "5c42cc52a67a1ca62dae34543bee0f168648629dfee412c0e5b07fa36fc8ec68",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "android/src/main/res/mipmap-hdpi/ic_launcher_background.png",
@@ -184,7 +250,10 @@
       "sha256": "55a8bd09ca33e874bd3712e5b71fd77dc89e46f00bbde7a8cf3805f0eac06cda",
       "baseline_blob": "72cfcaf4fb01dcde0f10b15fb3ddad95f254ea12",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "6527aa564b2023665541f077726b8881dc70cb3bdd63a256c1c772c23eff950e",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "android/src/main/res/mipmap-hdpi/ic_launcher_foreground.png",
@@ -192,7 +261,10 @@
       "sha256": "23e4056cd71793e84d4bfef41552376415043d3c03d2dd3e36da1b562565eb90",
       "baseline_blob": "601a3a13de23a87a538e8ecec6fdb52704e96675",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "a2fa79385216d54a9552013faaf058d0f87e88b64dcfda149ea31b5f776259eb",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "android/src/main/res/mipmap-hdpi/ic_launcher_monochrome.png",
@@ -200,7 +272,10 @@
       "sha256": "254b1db0ad4f616003b7337f8e8d42eda0e0144b3247da2f83b13868a556686c",
       "baseline_blob": "a705e9c3145a2c4c839feed1eb904a7a8a391e8e",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "1b7b686616a6077f00787362b0ac7c58ed85dc79b51e11500d3d39990c6da371",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "android/src/main/res/mipmap-ldpi/ic_launcher.png",
@@ -208,7 +283,10 @@
       "sha256": "898b7a58ff0f687a902c7a6f49cd36e3d1d436ddc20f35c9e37103ef5d2abea1",
       "baseline_blob": "8c98ea7926779deec744cc5f66510a1a7b44a240",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "8ff61721864cb47ed1db34eec2becc079f9df3602ad99f2b5ead36f2bea787a5",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "android/src/main/res/mipmap-mdpi/ic_launcher.png",
@@ -216,7 +294,10 @@
       "sha256": "03ede4ee8da4e48dc5b10044b860e19ecfe65a5a3ddb999c530174119dc18bee",
       "baseline_blob": "3d606b04d858313dd635d79e4baa09fe113603f7",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "89dd10326d104b6552e0f0ed47ee88b3e019e2e268bb3f2af7c62d47e47b84b5",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "android/src/main/res/mipmap-mdpi/ic_launcher_background.png",
@@ -224,7 +305,10 @@
       "sha256": "b6ae00c186dbc7227a1b69de4de53c6e77b21d01c0ab08c213a0f318fe523755",
       "baseline_blob": "825d3118fb21e3e22d3773cc4b3a66f216209a6b",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "c6d52f284912c73b063e6e09d4d7dfcd79975e8e71335ed3a7ce98ea7d1420a7",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "android/src/main/res/mipmap-mdpi/ic_launcher_foreground.png",
@@ -232,7 +316,10 @@
       "sha256": "0fa08198982d4da562ca316ed39cbc21e179f696db4d8ccad19f37f19d81127f",
       "baseline_blob": "cbceccce7ccfc2bb5c9d3c251d48d4c2ce240433",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "97d0a377c09a249c2f8f67f20f020c8e4b06ae5bec4db5ddb51f7a37f515abc7",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "android/src/main/res/mipmap-mdpi/ic_launcher_monochrome.png",
@@ -240,7 +327,10 @@
       "sha256": "4cda53692c680237313bc71d5eab9ecf740eca71bab5a2964a5f5ec44dfd52b1",
       "baseline_blob": "abd00fe493b58b223d0344b7e5df71e087b4f8b2",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "a229f74ccd6726c5e0a858b12cd02410a78e274393eba5405500e987ce687534",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "android/src/main/res/mipmap-xhdpi/ic_launcher.png",
@@ -248,7 +338,10 @@
       "sha256": "1dae3323f7e794b750b689f35a5d31528259841b4d7b676da12ef0f4e6ee5bb4",
       "baseline_blob": "4c38d31ef68a9834f2c825b3d8985ed838309b60",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "84991e1a4783ab94d6ede995f2b94a7966edf5478c333bb8c322da2b0cb46a6d",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "android/src/main/res/mipmap-xhdpi/ic_launcher_background.png",
@@ -256,7 +349,10 @@
       "sha256": "2219f9d8cee582eb3220cf6b1d80341739e6e07c33b7d13d7b7f8120b22615a2",
       "baseline_blob": "3414a79f2fc1e0c6b58f7e6033466805074d8aa2",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "87ba18000ad73ca65283442f471f6a45e47acc07392e3a7f636aa76da97baf83",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "android/src/main/res/mipmap-xhdpi/ic_launcher_foreground.png",
@@ -264,7 +360,10 @@
       "sha256": "c7e069499a03ec6a8da8b9b471cadb9b7a3c839465f390ea13922bcb0e5e85d5",
       "baseline_blob": "1c2beca7743bf7dd4d0c27af4bd5589f9179ab99",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "2b7ff450e3766a3c9ff96bb68ae796941c9b5081e80a68b8ac9193388fe5be73",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "android/src/main/res/mipmap-xhdpi/ic_launcher_monochrome.png",
@@ -272,7 +371,10 @@
       "sha256": "0addec66363bee7dd63817880ed0521113553b4fcd4fd799acf936f025530a92",
       "baseline_blob": "5c38e04bdbd2d9764a62a394a3af851692fc992e",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "bb1cd7631e3805037dcfb24efb8c639f89a87d75af91e9967df8ab2611359c75",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "android/src/main/res/mipmap-xxhdpi/ic_launcher.png",
@@ -280,7 +382,10 @@
       "sha256": "a3aa296b66f873cf589cf9d756a3072a541b8bf984be4cd49bee5d961c7468c5",
       "baseline_blob": "3f29e2757410b7e14ba9aa17598f85a50e95cc11",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "1c67bce1f1fe486f4f57b411ebecc91536e3635f027965022eedc39b90bad7a6",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "android/src/main/res/mipmap-xxhdpi/ic_launcher_background.png",
@@ -288,7 +393,10 @@
       "sha256": "ee0195dddcdf7a493f4f250d16e67429da3120565e5a677b6877bbcd7bd422f6",
       "baseline_blob": "2443a53045dddeb11f9401dab47d403b6ac486a1",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "e367d7f9d667609c873ad9aad8082ec0cfcbe9535292dcded3373afdc2a4abf7",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "android/src/main/res/mipmap-xxhdpi/ic_launcher_foreground.png",
@@ -296,7 +404,10 @@
       "sha256": "3b93e46819268c8e795f072fe3563fdbe6e9c2f45c927a0212a3bb490adee936",
       "baseline_blob": "d51bda2ca5db3ce435e5027e47df747037b6de01",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "779aba9ac0fe3482f72b30d1eec47f3a7039f55e5db3f85cf34c0eafbf8cad51",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "android/src/main/res/mipmap-xxhdpi/ic_launcher_monochrome.png",
@@ -304,7 +415,10 @@
       "sha256": "368bb0092686b3b475d11fa600156b29063d0285c5375ebe5ec815eccf55f37d",
       "baseline_blob": "272d31561cf8abc002e56a08c0ebe798e0f9f5d8",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "ed5149621227ac8a2d08478a24304dadfc741d10600ff7378a33d8c035de0488",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "android/src/main/res/mipmap-xxxhdpi/ic_launcher.png",
@@ -312,7 +426,10 @@
       "sha256": "0945d8150eb1c7cf890ed64d6c5c1ed25ef645f5ae19fa07be3182dbf90e43ff",
       "baseline_blob": "4e98f1033ab29953c14a5ae40d5d20193cc42e16",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "0cb13a8ba80b66969bce9f50f25d9a5e2830647febb07bf43dab7e9b7039e1bf",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "android/src/main/res/mipmap-xxxhdpi/ic_launcher_background.png",
@@ -320,7 +437,10 @@
       "sha256": "c3c298909ebdcbc8e65384e199c71984493e95a03d15e09fc79b07bf1c2c9684",
       "baseline_blob": "45532c373d9861e39bcc9e0b634eed53a8fa5b48",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "7ce67ebd8f9789b454e7734e4892bfe145c51ed16cfb172836e4d4093f4709b4",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "android/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.png",
@@ -328,7 +448,10 @@
       "sha256": "37d31ada9a509c38a67b710a45f2d0bef595d8424c851d699db4a54d650b4ac2",
       "baseline_blob": "0b4e0c28ad2a6e9e5bd312c4168a8b6162c6e5b6",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "dd465d7e00dd4a40ff37a91f10f818edad83197e27784f74abd30acc6090b2b4",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "android/src/main/res/mipmap-xxxhdpi/ic_launcher_monochrome.png",
@@ -336,7 +459,10 @@
       "sha256": "642874307f4e58a71598362b03235c21163805203dfb4d7754512d34fe3451e1",
       "baseline_blob": "e657373b4ef782f65aca93a33c5d1b85673facda",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "02f547b259796cf48f8a6019f5045924fdcad7ad50c18aa9ec658637759f9d3d",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "core/src/main/assets/effects/apd_flame.png",
@@ -344,7 +470,10 @@
       "sha256": "7a128a267af4fd47adfc09beb7a0ada50060693eca91a7f2b6c677ad30ed488f",
       "baseline_blob": null,
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "9245d22540f0d16a43652c9cff9e403356cc0e0da6b472bbe8f497976e5ef748",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "core/src/main/assets/effects/effects.png",
@@ -631,8 +760,8 @@
       "status": "inherited",
       "sha256": "b0e3f69a08ed72c54e150060d2bfb99a39e75cfbbe2aeb12db9b2831bd816e17",
       "baseline_blob": "fab1ec0635c7e87261fa3f176c457d36bbd44dc2",
-      "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "license": "Apache-2.0, explicitly embedded name table declaration",
+      "action": "DONE: font-licenses.json records notices and hash; full license bundled offline."
     },
     {
       "path": "core/src/main/assets/gdx/cursor_controller.png",
@@ -664,7 +793,10 @@
       "sha256": "e6a31b9db3f141c657336a5b46b562665d6d65f3a1edc3fd0f769ec3a3742bc0",
       "baseline_blob": null,
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "74f3cca3d7701b95fc422ef3fed9ac41cbea22f33bd340c75fb7c2be38a63257",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "core/src/main/assets/interfaces/apd_logo.png",
@@ -672,7 +804,10 @@
       "sha256": "1b7bd5dc5b384a9a8f53f5e401aaa2d3e1bc1f1bccbb6983cae273173a2244d0",
       "baseline_blob": null,
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "549947cf567afca245842895f20b0216490349e8d848d513e09687f77cec9ad8",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "core/src/main/assets/interfaces/apd_logo_glow.png",
@@ -680,7 +815,10 @@
       "sha256": "ba7c97d47415203c6b00b28820811dce75ed399ed00413424081142ab59f77a0",
       "baseline_blob": null,
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "dc74a802181e7d7900ee1cbd657dbb0205d9603b0c6124525ed3248de981e8fc",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "core/src/main/assets/interfaces/arcs1.png",
@@ -712,7 +850,10 @@
       "sha256": "e78742506245cf96170f3c1405a87b00aa966679a26c90d3f35dfe661d3b13d7",
       "baseline_blob": "b73cb3ee35cd46193bc83ddda7116f88b736b5e8",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "45b06447e04ed1621d5c6200834982de0eb9e70e012877ee25a917cb02f063f0",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "core/src/main/assets/interfaces/boss_hp.png",
@@ -736,7 +877,10 @@
       "sha256": "90537845693ec8b47dde6ccee05160ae0e132294a03c6f5d1f1b857332c8b1f9",
       "baseline_blob": "4632bb3328460fe1664e280b5586847ae5d3b516",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "9296b34fc2bb7170fab4929a2eb357234ea6227c5cfa5d717bcc5715f2f26424",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "core/src/main/assets/interfaces/chrome.png",
@@ -760,7 +904,10 @@
       "sha256": "3087ee0e113a6ebe59060be53dbaef18734ebc5f4011fb4a053d361a026b4bae",
       "baseline_blob": "4b07f01105d4be2e97ea1fab83439e3ef443ca2b",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "adaa8557ae07070c1f85033431c074d6ecb5feaa5690872811df2b53b4dc4640",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "core/src/main/assets/interfaces/large_buffs.png",
@@ -1720,7 +1867,10 @@
       "sha256": "69f4ed23349f51934e1e86fe8a7b414b1166b43295f014ab3cf47e8c1c13c4c7",
       "baseline_blob": null,
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "f48e02296c56d1dbb1d35788dc62f7687cca65e83826fd28f8c1933d32328567",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "core/src/main/assets/splashes/title/apd_bg_port.png",
@@ -1728,7 +1878,10 @@
       "sha256": "7c0a5c86d627ae81799c70dd962c5e89abfea77288823e42d76578e05a8b3679",
       "baseline_blob": null,
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "8a1d3b53fd142481d5cb900660b83157626fbbb83c7bef8d0d2624347f8ff06e",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "core/src/main/assets/splashes/title/archs.png",
@@ -2040,7 +2193,9 @@
       "sha256": "44b248cc4192ba6035c89b8e90fd1fd18114a9b78bd5addd9bbbdd26e174c279",
       "baseline_blob": "3103f356f3a7368e07e7e73458f7cf01be0bcf7b",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE: isolated APD change recorded; no unrelated item artwork replaced.",
+      "current_license": "GPL-3.0-or-later project license; APD-authored Gathering glyph, inherited rest of atlas",
+      "current_evidence": "Pixel comparison with exact SPD baseline: only rectangle x192..206,y304..317 differs; currentsha unchanged by GPL audit. Original upstream attribution retained."
     },
     {
       "path": "core/src/main/assets/sprites/king.png",
@@ -2408,7 +2563,10 @@
       "sha256": "eeb3a5230003704752bc24beb91aa0a3a269f57bb61f4445ffc8751674d00879",
       "baseline_blob": "cc736953d66906f20877d924b027c5ba8b625777",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "97fcc355c16d3a7c22a39f495886cc9cc653cc55c4a160c09d2aa5b2b78d20dc",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "desktop/src/main/assets/icons/icon_16.png",
@@ -2416,7 +2574,10 @@
       "sha256": "346204f441329df848161554c62a13bff1a8a67861b0dc5456e19e865830d598",
       "baseline_blob": "73838b4ebb33ad6bf552cbceffb33f97414198d2",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "7a392a1a3899cc20ecdfa1ff3e83502e3e23d894d5d18e7bc5f915a7b4d38e13",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "desktop/src/main/assets/icons/icon_256.png",
@@ -2424,7 +2585,10 @@
       "sha256": "00962b4d99401827b24bce91bc76672ee69380d075085f6d5148a085d7badcb5",
       "baseline_blob": "a128f0e97ed63d1548acf939932ae4f714e21fb1",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "dcbeb898b02b8082c7712f0ca8e20084d6cedc5671cf6b6da19fac60052596cf",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "desktop/src/main/assets/icons/icon_32.png",
@@ -2432,7 +2596,10 @@
       "sha256": "d64be318c9ca7cc40d6d270d5c28b067245e21b52304631c1480d4efb1fe5f52",
       "baseline_blob": "ab34af48fc6c711f7f5eedec00792e3b574753b8",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "8054c493d7013c02be0c4d7cc65b0f0747327e6e114edf37411eb72bdb86650c",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "desktop/src/main/assets/icons/icon_48.png",
@@ -2440,7 +2607,10 @@
       "sha256": "03ede4ee8da4e48dc5b10044b860e19ecfe65a5a3ddb999c530174119dc18bee",
       "baseline_blob": "3d606b04d858313dd635d79e4baa09fe113603f7",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "89dd10326d104b6552e0f0ed47ee88b3e019e2e268bb3f2af7c62d47e47b84b5",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "desktop/src/main/assets/icons/icon_64.png",
@@ -2448,7 +2618,10 @@
       "sha256": "e556d143ea9269b3a2ec2267170f12365ce81b0cd7a91cac6dd3c61a3e88ba62",
       "baseline_blob": "2bef23cb7ddc680f8f91534e6db25431e00717ed",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "74ca4514ddd3522306c131c320704dfddb36d5f1d09137eb3e197d44faea6b5f",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "desktop/src/main/assets/icons/mac.icns",
@@ -2456,7 +2629,10 @@
       "sha256": "9083fa89afe821b200fdafe2f7485f97d8b060a7b06feeb5ba950f9a7571f285",
       "baseline_blob": "b05e59ce62e12056431e175c29556cb8de6a8c30",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "a51ec5ab1a917e730bf8fd89a2492689a4220ba8e2e353dd59b0488c663d81f6",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "desktop/src/main/assets/icons/windows.ico",
@@ -2464,7 +2640,10 @@
       "sha256": "e676e30be090a668ce4035be6d7f1669fc060dde564df2d070e567ac842698cd",
       "baseline_blob": "6a75980a0440b04a3d5dbc8be2cc506a68bacbc1",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "34ddcaf06b86edc001375e3fe531659010e3814b737148687433cda1ff29a9e1",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "ios/assets/Assets.xcassets/AppIcon.appiconset/Icon-1024.png",
@@ -2472,7 +2651,10 @@
       "sha256": "5fd09c16439f046af53314fffb89d772a0fda200a30b349e92104ec9473cdb71",
       "baseline_blob": "044ec3d72cd3ac99fdc30e1756d333315ba326fb",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "1726735c0d181a0f765a76176dff9429bbdd52a0c86002e8e0c529320f4f5f92",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "ios/assets/Assets.xcassets/AppIcon.appiconset/Icon-20.png",
@@ -2480,7 +2662,10 @@
       "sha256": "3b76eb77ac31e2e0e98d1e46838b3d626f47a36ee10df20f87d12f882e3381c3",
       "baseline_blob": "5dac20f618359073fbd02b259e39cc85f798cd98",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "c35f11c4aa71d5a732a3c9ba5e349bdbaec91cfc227bf398c0219adaa74f4a29",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "ios/assets/Assets.xcassets/AppIcon.appiconset/Icon-20@2x.png",
@@ -2488,7 +2673,10 @@
       "sha256": "7d6a840fabaf3d62bb289281e866c39e277a674799f5bbd30ca2704be6166fc7",
       "baseline_blob": "80c915be2f53d49349ecf1ec17d925d5ca028bff",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "0b9586fa67da8b8d7507b3e3d0fcf6f9a1630d53e4007c96f1ed494cc272feda",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "ios/assets/Assets.xcassets/AppIcon.appiconset/Icon-20@3x.png",
@@ -2496,7 +2684,10 @@
       "sha256": "2e70b7e47a7d6e256f837b22494472c55103f7b718375d9752d26cdf4478cacb",
       "baseline_blob": "20dff0c3618a00dcfb621c7a65e78ecc6298c85e",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "c469083e567169f640342bd5733ad8a2a92c5b7faeed36656633b3d4e237f958",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "ios/assets/Assets.xcassets/AppIcon.appiconset/Icon-29.png",
@@ -2504,7 +2695,10 @@
       "sha256": "b643a78480ea4d8203286ac11d6280c94efd30ef20087265017b8bf60b203b09",
       "baseline_blob": "a143de4a5b760bf2f0bba2a8f8c9dd38df438ff3",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "cb633d9e63089ad95ecdf34c0fe47dcf81c77ed5a9e3f41be898cea614f2ae9c",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "ios/assets/Assets.xcassets/AppIcon.appiconset/Icon-29@2x.png",
@@ -2512,7 +2706,10 @@
       "sha256": "e59056bafb9217ecb7344a43481bdbbdda4f58f80d8e37fd87b9e909f5a5254f",
       "baseline_blob": "1b4ffef47becc660cd458309e2629e25b0475d28",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "51b80025f14ef66210b46e3ae560b953e1e84eb568af44d60cb51c0c8ba9ac1d",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "ios/assets/Assets.xcassets/AppIcon.appiconset/Icon-29@3x.png",
@@ -2520,7 +2717,10 @@
       "sha256": "4568927d1518509c6c9ac44703ae00ee6847f2eb7d6cf75b62d6b14db7578ecb",
       "baseline_blob": "c1e2714cabeb5a20bc48a2b16bdef965ce9948e6",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "1ca132b2a3b2eec05434021bdcf127736ac8e8cabf0efe05baf9c8e8c8ebe9d4",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "ios/assets/Assets.xcassets/AppIcon.appiconset/Icon-40.png",
@@ -2528,7 +2728,10 @@
       "sha256": "7d6a840fabaf3d62bb289281e866c39e277a674799f5bbd30ca2704be6166fc7",
       "baseline_blob": "80c915be2f53d49349ecf1ec17d925d5ca028bff",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "0b9586fa67da8b8d7507b3e3d0fcf6f9a1630d53e4007c96f1ed494cc272feda",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "ios/assets/Assets.xcassets/AppIcon.appiconset/Icon-40@2x.png",
@@ -2536,7 +2739,10 @@
       "sha256": "145c5c6ec72ca80d42252ffb85981550993d8b864ca4f48e817ccd89bcac17f2",
       "baseline_blob": "bb9b724afe8124ef95f53a13343f4c65bf08d1e5",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "400a152a61f5c75e42693ac9470bb66847e2852416f5eee86aec1b539d6706ea",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "ios/assets/Assets.xcassets/AppIcon.appiconset/Icon-40@3x.png",
@@ -2544,7 +2750,10 @@
       "sha256": "b8789b86c6fabdd9e3637503b1dec4bda6923dc535cb6dd6fe8bf9420e0b4580",
       "baseline_blob": "eee38a33d6f137e2769b6e98fe2e7132150feb88",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "7b98cd4b0598f1dbcccb0b1de1c69c5af4ca842bef87441e2749f7612ec10500",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "ios/assets/Assets.xcassets/AppIcon.appiconset/Icon-60@2x.png",
@@ -2552,7 +2761,10 @@
       "sha256": "b8789b86c6fabdd9e3637503b1dec4bda6923dc535cb6dd6fe8bf9420e0b4580",
       "baseline_blob": "eee38a33d6f137e2769b6e98fe2e7132150feb88",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "7b98cd4b0598f1dbcccb0b1de1c69c5af4ca842bef87441e2749f7612ec10500",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "ios/assets/Assets.xcassets/AppIcon.appiconset/Icon-60@3x.png",
@@ -2560,7 +2772,10 @@
       "sha256": "f227b0b56f9d3409b0a55f16d0e6b8b010ffc2475a3d23485db085c91d1fcd05",
       "baseline_blob": "30c9283b22fe36948fc01d0b0d30142e853b63c9",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "c5fe7eee2e5162e90c249a8ac82ab4d35f58082e11668ff20855aa2b3fee6d4f",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "ios/assets/Assets.xcassets/AppIcon.appiconset/Icon-76.png",
@@ -2568,7 +2783,10 @@
       "sha256": "34ada4e2eb719192143a8ecb53f6d6bcd3b96bd2e434289615d24e0b5b549ae4",
       "baseline_blob": "ee9b921b436b0ef30f3d746ce3643f691caf2037",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "5e52c81dc0cf2daa9eccbfaf0b4c2f69a6a59803ca701b76ba11a3ea9a792a3e",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "ios/assets/Assets.xcassets/AppIcon.appiconset/Icon-76@2x.png",
@@ -2576,7 +2794,10 @@
       "sha256": "4d80313c7db7668977d4893442d711025d13696d34064e0dacbebca97f6d7cb6",
       "baseline_blob": "e65089565c91bc07f6b2a8e70545217b1bd3ba91",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "db9aa831b113463279cbbec8981d5cb9001584aeb2fa323beab294d4b8f180a9",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "ios/assets/Assets.xcassets/AppIcon.appiconset/Icon-83.5@2x.png",
@@ -2584,7 +2805,10 @@
       "sha256": "c76d79d7fc3843f8c4cd827af0ab171440a7655076a84b9fae1357a1ac297cfc",
       "baseline_blob": "570ee3368f573eb1daba931526fd90f31d39a40d",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "33cea20caca23c43f3f0c144dda825d06c6c37c1260d1cf8f562c98894d8cc65",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "ios/assets/Assets.xcassets/Banner.imageset/Banner.png",
@@ -2592,7 +2816,10 @@
       "sha256": "d80c76273e616890ec8403e462f27580a8852c6c8ddf7cfab0d2ff35b651df3f",
       "baseline_blob": "66cf8a00771a3cf7d397cbc05d14e48d6cae51f8",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "ca0a29a78b76916f9ace768c113b1cc33d3fa1c8de365b35f9f27380e73ebfff",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "ios/assets/Assets.xcassets/Banner.imageset/Banner@2x.png",
@@ -2600,7 +2827,10 @@
       "sha256": "6c354bbee8781d8410b3f74c353f45bb75334233f5ba09e7d72427532e714ade",
       "baseline_blob": "c7a3f62b0fabbf3f9c9044c5d71412550f9364d8",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "9f5069a8a9b9d0950ede7e49d43055afdcad4dfb0e3f059e3b904ce886708395",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "ios/assets/Assets.xcassets/Banner.imageset/Banner@3x.png",
@@ -2608,7 +2838,10 @@
       "sha256": "09e6d53a8ca34f57f69c386f67eaf71c2363f18c7e28887a43499a7f4b2b3284",
       "baseline_blob": "e45f1022c2737591e894065372d22756dd841ab2",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "718882f5d4b4e2b245ff87f8539a7758f38c196dd8a1ba8df0dfe5b5c3e3fbe2",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "ios/assets/Assets.xcassets/BannerWide.imageset/BannerWide.png",
@@ -2616,7 +2849,10 @@
       "sha256": "e340b5a4e8a55b3ea43f2b0e035ff287d9cdb6dd82ce5a42eace4e0e29106a99",
       "baseline_blob": "79f0f18b4dacc34f450df03a1adc9fffb8a7b9a2",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "8a42d995d168f371de3989f40a37153a70cb2118be176c37d057df2e0378ca48",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "ios/assets/Assets.xcassets/BannerWide.imageset/BannerWide@2x.png",
@@ -2624,7 +2860,10 @@
       "sha256": "ea66da6d7e3deee5c9856d954c36c5abac145ef152e8b21aa03742c75a551483",
       "baseline_blob": "83f7b697ba2a31ee1f09f93df54ff1305e0177b8",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "830652adab74b45daa4ca249b555f2c85a86e5daec18ab1f81bad65301bf9a03",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "ios/assets/Assets.xcassets/BannerWide.imageset/BannerWide@3x.png",
@@ -2632,7 +2871,10 @@
       "sha256": "40519171ab7b30d84e8276d0f9d258c4513e88b87517d903042e36e98d2edadc",
       "baseline_blob": "4ef0353e46cc5a02878debbfe1c2da61f4b570cc",
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
-      "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
+      "action": "DONE for current original APD replacement; historical asset provenance is not inferred.",
+      "current_sha256": "5709e5238bf729e0b182b3b4c6a7d14d02211ca01624fa8e25800d4a08d7e4f3",
+      "current_license": "GPL-3.0-or-later",
+      "current_evidence": "Original procedural artwork; editable glyph geometry and deterministic generator tools/build_apd_branding.py, branding-assets.json"
     },
     {
       "path": "ios/assets/music/caves_1.mp3",
@@ -2882,5 +3124,6 @@
       "license": "UNKNOWN per-file license/provenance; inherited repository declares GPL-3.0-or-later, but About credits also identify CC-BY and CC0 samples",
       "action": "NEEDS CHRIS: obtain/confirm per-asset license and authorship; do not infer permission from a filename"
     }
-  ]
+  ],
+  "catalog_scope": "Original audited 360-asset baseline retained for historical traceability. Current branding replacements and hashes are authoritative in branding-assets.json; font licenses in font-licenses.json."
 }
