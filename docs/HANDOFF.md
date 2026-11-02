@@ -5,13 +5,7 @@
 - Exact producing source0d938a994359b6a0e5cb2533b1207d5722df6cab.2287 core tests, complete69-case corrected exact-APK API34 suite41523673215 and all six display profiles41520121601 passed. Five QoL captures visually reviewed; no physical-phone acceptance claimed.
 - Existing signing identity/application ID/versionCode920 preserved. DeveloperC346-TEST and Alpha-TestersP346 are install-over alternatives; never uninstall or clear player data. Both include grass-dew pickup, saved manually searched-wall markers and affected-item ring readouts including Force and Sharpshooting.
 - Original68/69 native run's obsolete About-popup expectation remains recorded. Delivery attempt41524810346 failed on CLI ANSI-log output;41526069371 failed on draft-by-tag404. Both corrected in delivery tooling only. Last workflow succeeded. Prior341/330 releases and existing assets retained; private owner delivery only, no automatic external tester post/public release. Full GPL audit remains separately unclosed.
-
-## 2026-11-02 — TEST346 owner delivery in progress (not yet delivered)
-
-- Exact APK source `0d938a994359b6a0e5cb2533b1207d5722df6cab`; developer producer41520122020 build job125533672106 passed2287 core tests; paired player41520122195 passed. All six display profiles41520121601 passed.
-- Original API34 suite ran69 cases,68 passed; obsolete About popup expectation failed. Concurrent test-only fix b4312b00e is preserved; full exact-APK retry41523673215 is running, no app rebuild. Publication requires all original69 cases passing and unchanged application inputs.
-- Five new QoL captures independently visually reviewed from artifact13178925827; all98 original PNGs decoded. Key-free source pre-scan found only five previously inspected non-secret integer/checksum findings. Private delivery tooling verifies signatures, package/version, actual APK/source downloads and preserves341 fallback. Native acceptance/publication/download/link delivery remain pending; do not infer success from this preparation.
-- Only two application APKs built for this task, developer+player346. No new ordinal, phone verification, external tester posting or public release.
+- **Next safe step:** preserve TEST346 as current private owner release and TEST341/330 as fallbacks; perform owner-controlled physical install-over/gameplay acceptance without clearing data, then continue the documented UIMSD/backlog order. Do not rebuild or republish unchanged TEST346 merely to record verification.
 
 ## 2026-11-02T20:29:14Z — Comparable personal progress native API34 behavior accepted; screenshot archive pending
 
