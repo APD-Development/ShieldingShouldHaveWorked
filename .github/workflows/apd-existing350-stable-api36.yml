@@ -16,7 +16,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  exact-apk-full-api34:
+  exact-apk-stable-api36:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -90,15 +90,17 @@ jobs:
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
-      - name: Run complete current API34 suite against exact APK
+      - name: Verify settled API36 rendering and pause/resume against exact APK
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 36
           arch: x86_64
           target: google_apis
+          profile: pixel_7
           emulator-options: -no-window -gpu software -no-snapshot -noaudio -no-boot-anim
           disable-animations: true
           script: |
+            timeout 180 adb shell am wait-for-broadcast-idle
             adb logcat -c
             adb logcat -v time > exact350-retry-logcat.txt &
             adb install -r application/exact350.apk

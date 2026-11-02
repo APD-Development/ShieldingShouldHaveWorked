@@ -132,7 +132,21 @@ public class QolStableCaptureDeviceTest {
             for(int i=0;i<12;i++){
                 waitFor(()->Dungeon.hero.ready);TopScoresDeviceTest.render(()->Dungeon.hero.search(true));Thread.sleep(150);
             }
-            scenario.moveToState(androidx.lifecycle.Lifecycle.State.CREATED);Thread.sleep(100);scenario.moveToState(androidx.lifecycle.Lifecycle.State.RESUMED);
+            settleFrames();
+            Thread pauseProbe=new Thread(()->{
+                try{Thread.sleep(2500);}catch(InterruptedException stopped){return;}
+                for(java.util.Map.Entry<Thread,StackTraceElement[]> entry:Thread.getAllStackTraces().entrySet()){
+                    StringBuilder trace=new StringBuilder(entry.getKey().getName()+" "+entry.getKey().getState());
+                    for(StackTraceElement line:entry.getValue())trace.append("\n at ").append(line);
+                    android.util.Log.w("APD_PAUSE_PROBE",trace.toString());
+                }
+            },"APD-pause-test-probe");
+            pauseProbe.setDaemon(true);pauseProbe.start();
+            try{
+                scenario.moveToState(androidx.lifecycle.Lifecycle.State.CREATED);
+                Thread.sleep(100);
+                scenario.moveToState(androidx.lifecycle.Lifecycle.State.RESUMED);
+            }finally{pauseProbe.interrupt();}
             waitFor(()->Game.scene() instanceof GameScene&&!Game.switchingScene());
             TopScoresDeviceTest.render(()->assertTrue("searched south wall survives resume",Dungeon.level.searchedWalls.shows(Dungeon.level,center[0]+Dungeon.level.width())));
             System.gc();Thread.sleep(300);Runtime runtime=Runtime.getRuntime();
