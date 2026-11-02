@@ -45,11 +45,23 @@ public class AboutDeviceTest {
      assertTrue("label stays inside a narrow native button",labelText.width()<=button.width());
      assertTrue("wrapped label stays inside button height",labelText.height()<=button.height());button.setSize(oldWidth,20);
      Method click=button.getClass().getDeclaredMethod("onClick");click.setAccessible(true);click.invoke(button);
-     WndUimsdText popup=null;
-     for(Gizmo g:children(Game.scene()))if(g instanceof WndUimsdText && g.alive)popup=(WndUimsdText)g;
-     assertNotNull(popup);assertSame(Game.scene(),popup.parent);assertTrue(popup.camera.width>0);
-     for(Gizmo g:children(popup))if(g instanceof ScrollPane)((ScrollPane)g).scrollTo(0,1000);
-     popup.hide();
+     if("Source & Licenses".equals(label)){
+      com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions options=null;
+      for(Gizmo g:children(Game.scene()))if(g instanceof com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions && g.alive)options=(com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions)g;
+      assertNotNull("Source & Licenses choices open",options);assertSame(Game.scene(),options.parent);
+      RedButton offline=find(options,"GPLv3 (offline)");assertNotNull("offline GPL choice",offline);
+      Method choose=offline.getClass().getDeclaredMethod("onClick");choose.setAccessible(true);choose.invoke(offline);
+      com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList license=null;
+      for(Gizmo g:children(Game.scene()))if(g instanceof com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList && g.alive)license=(com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList)g;
+      assertNotNull("complete GPL index opens offline",license);assertSame(Game.scene(),license.parent);
+      assertTrue(renderedText(license).contains("Complete license, available offline."));license.hide();
+     }else{
+      WndUimsdText popup=null;
+      for(Gizmo g:children(Game.scene()))if(g instanceof WndUimsdText && g.alive)popup=(WndUimsdText)g;
+      assertNotNull(label,popup);assertSame(Game.scene(),popup.parent);assertTrue(popup.camera.width>0);
+      for(Gizmo g:children(popup))if(g instanceof ScrollPane)((ScrollPane)g).scrollTo(0,1000);
+      popup.hide();
+     }
     }catch(Exception e){throw new RuntimeException(e);}});
    }
    render(()->{try{assertNotNull(find(Game.scene(),"APD News"));assertNotNull(find(Game.scene(),"APD Changes"));}catch(Exception e){throw new RuntimeException(e);}});
