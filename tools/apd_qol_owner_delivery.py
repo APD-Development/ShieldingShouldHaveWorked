@@ -16,7 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 """Deliver one already-tested private APK pair and exact key-free shared source. Never rebuild."""
-import datetime,hashlib,io,json,os,pathlib,re,subprocess,tarfile,zipfile
+import datetime,hashlib,io,json,os,pathlib,re,subprocess,tarfile,time,zipfile
 from apd_existing_build_evidence import application_inputs,certificates,xml_summary
 from PIL import Image
 ROOT=pathlib.Path.cwd();REPO=os.environ['GITHUB_REPOSITORY'];OUT=ROOT/'owner-delivery';OUT.mkdir(exist_ok=True)
@@ -33,6 +33,13 @@ def artifact(run,name):
  return folder,a
 spec=json.loads(pathlib.Path('docs/APD-QOL-OWNER-DELIVERY.json').read_text());source=spec['source'];number=spec['number'];tag=f'apd-alpha-preview-{number}'
 assert api('repos/'+REPO)['private']
+deadline=time.monotonic()+900
+while True:
+ native_run=api(f'repos/{REPO}/actions/runs/{spec["native"]}')
+ if native_run['status']=='completed':break
+ assert time.monotonic()<deadline,'Exact-APK retest has not completed; publication remains blocked'
+ print('Waiting for already-running exact-APK acceptance; no application rebuild.',flush=True)
+ time.sleep(20)
 for field in ('player','display','native'):
  r=api(f'repos/{REPO}/actions/runs/{spec[field]}');assert r['status']=='completed' and r['conclusion']=='success',(field,r['status'],r['conclusion'])
  if field!='native':assert r['head_sha']==source
@@ -89,12 +96,13 @@ assert [name for (cls,name),code in original_cases.items() if code!=0]==['everyA
 assert set(original_cases)=={(c['classname'],c['name']) for c in results['android']['cases']},'Retest lost or replaced an original test'
 
 assert any(c['name']=='grassDewControlsRingBreakdownsSearchedWallAndOfflineLicenseRenderNatively' for c in results['android']['cases'])
+visual,va=artifact(spec['developer'],'apd-codex-android-checks')
 images={}
 assert set(spec['visual_review'])=={'qol-dew-settings.png','qol-force-weapon.png','qol-sharpshooting-weapon.png','qol-searched-wall.png','qol-offline-license.png'}
 for image in native.rglob('*.png'):
  with Image.open(image) as im:im.verify()
 for name,expected in spec['visual_review'].items():
- paths=list(native.rglob(name));assert len(paths)==1;assert sha(paths[0])==expected
+ paths=list(visual.rglob(name));assert len(paths)==1;assert sha(paths[0])==expected
  with Image.open(paths[0]) as im:assert im.size==(320,640);im.verify()
  images[name]=expected
 profiles={};jobs=api(f'repos/{REPO}/actions/runs/{spec["display"]}/jobs')['jobs'];assert len(jobs)==6 and all(j['conclusion']=='success' for j in jobs)
@@ -152,7 +160,7 @@ side=pathlib.Path(str(sourcezip)+'.sha256');side.write_text(sha(sourcezip)+'  '+
 # Preserve the existing verified fallback and verify its actual uploaded APK assets before any new write.
 fallback=api(f'repos/{REPO}/releases/tags/apd-alpha-preview-341');assert fallback['id']==428527455
 for label,h in [('Developer','ad6281b3e41fe414187ca40824157a5bbcf102d7d86e569dbdb8439e7f47d694'),('Alpha-Testers','639ce15ddb4b02d037cd29f995c9f38514e03cf577370cf38488f4602bfd65bd')]:assert any(a['name']==f'APD-{label}-341.apk' and a.get('digest')=='sha256:'+h for a in fallback['assets'])
-evidence={'source_commit':source,'tag':tag,'number':number,'runs':{k:spec[k] for k in ('developer','player','display','native')},'test_summaries':results,'core_tests':2287,'android_tests':results['android']['tests'],'profiles':profiles,'signing_certificate':expected_cert,'application_id':'com.charltonchris29.adhdpixeldungeon.indev','version_code':920,'apk_hashes':hashes,'source_sha256':sha(sourcezip),'visual_review':images,'physical_phone_verified':False,'new_application_apks_created':2,'owner_private_delivery':True,'fallback_preserved':True,'prepared_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'original_native_failure':{'job':original_job['id'],'tests':69,'failures':1,'method':'everyAboutPopupOpensScrollsAndCloses','resolution':'Corrected test for existing Source & Licenses menu; complete 69-case retest passed against the exact original APK, without rebuilding'},'retained_auxiliary_failures':{'41520121956':'Obsolete stager rejected changed application inputs against a historical source; no APK test executed','41520121884':'Historical death workflow referenced an unfetched obsolete source; no APK test executed','41520121870':'Historical hotbar proof has obsolete source constraints; retained separately, not represented as passed'}}
+evidence={'source_commit':source,'tag':tag,'number':number,'runs':{k:spec[k] for k in ('developer','player','display','native')},'test_summaries':results,'core_tests':2287,'android_tests':results['android']['tests'],'profiles':profiles,'signing_certificate':expected_cert,'application_id':'com.charltonchris29.adhdpixeldungeon.indev','version_code':920,'apk_hashes':hashes,'source_sha256':sha(sourcezip),'visual_review':images,'visual_capture_artifact':va['id'],'visual_capture_note':'Reviewed five QoL captures from original exact-APK suite; its unrelated obsolete About test failed and is retained. Full corrected same-APK acceptance is separately bound to native retest.','physical_phone_verified':False,'new_application_apks_created':2,'owner_private_delivery':True,'fallback_preserved':True,'prepared_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'original_native_failure':{'job':original_job['id'],'tests':69,'failures':1,'method':'everyAboutPopupOpensScrollsAndCloses','resolution':'Corrected test for existing Source & Licenses menu; complete 69-case retest passed against the exact original APK, without rebuilding'},'retained_auxiliary_failures':{'41520121956':'Obsolete stager rejected changed application inputs against a historical source; no APK test executed','41520121884':'Historical death workflow referenced an unfetched obsolete source; no APK test executed','41520121870':'Historical hotbar proof has obsolete source constraints; retained separately, not represented as passed'}}
 receipt=OUT/f'APD-Preview-{number}-Verification.json';receipt.write_text(json.dumps(evidence,indent=2)+'\n');files.append(receipt)
 notes=f'''Grass dew auto-pickup (separate normal pickup turn; visible-enemy safeguard and options), saved manual-search wall markers, and equipped-ring contribution readouts in affected-item descriptions, including Force and Sharpshooting. Includes Public Domain JSON compatibility and offline GPL notices. Ring formulas,357 slider multipliers, original scoring, saves/statistics and drop rates are unchanged.\n\nSource `{source}`; core2287 and API34{results['android']['tests']} tests passed; all six display profiles passed, including API36. This is automated/emulator evidence, not physical-phone acceptance. The original API34 run had one obsolete About-popup expectation (68/69 passed); the corrected complete 69-case suite passed against the same APK without rebuilding. Exact signatures/app ID verified. Install over APD; never uninstall or clear data.\n\n'''
 for label in ('Developer','Alpha-Testers'):notes+=f'- [{label} APK](https://github.com/{REPO}/releases/download/{tag}/APD-{label}-{number}.apk) — SHA256 `{hashes[label]}`\n'

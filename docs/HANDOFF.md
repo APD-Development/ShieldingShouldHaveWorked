@@ -1,3 +1,10 @@
+## 2026-11-02 — TEST346 owner delivery in progress (not yet delivered)
+
+- Exact APK source `0d938a994359b6a0e5cb2533b1207d5722df6cab`; developer producer41520122020 build job125533672106 passed2287 core tests; paired player41520122195 passed. All six display profiles41520121601 passed.
+- Original API34 suite ran69 cases,68 passed; obsolete About popup expectation failed. Concurrent test-only fix b4312b00e is preserved; full exact-APK retry41523673215 is running, no app rebuild. Publication requires all original69 cases passing and unchanged application inputs.
+- Five new QoL captures independently visually reviewed from artifact13178925827; all98 original PNGs decoded. Key-free source pre-scan found only five previously inspected non-secret integer/checksum findings. Private delivery tooling verifies signatures, package/version, actual APK/source downloads and preserves341 fallback. Native acceptance/publication/download/link delivery remain pending; do not infer success from this preparation.
+- Only two application APKs built for this task, developer+player346. No new ordinal, phone verification, external tester posting or public release.
+
 ## 2026-11-02T20:29:14Z — Comparable personal progress native API34 behavior accepted; screenshot archive pending
 
 - Test-only source `e7fce780ff2ff67fa6e53a9ad96dcc65397cc60e`, merged into the current branch through `5362acb17a4dc34cc36c48e450564a44c04822b4`, adds a real pointer-driven API34 path for Comparable personal progress. It captures exact earlier/recent cohorts, compares Score as recent minus earlier, preserves the active query and source scores across scene recreation, opens 30 exact recent contributors, selects `run-30`, and retains Back navigation.
