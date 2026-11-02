@@ -50,7 +50,7 @@ assert any(j['name']=='verify-and-build' and j['conclusion']=='success' for j in
 original_job,=[j for j in producer_jobs if j['name']=='android-smoke-check']
 assert producer['conclusion']=='failure' and original_job['conclusion']=='failure'
 # The original single obsolete About expectation is preserved, not relabelled as passed.
-original_log=subprocess.check_output(['gh','api',f'repos/{REPO}/actions/jobs/{original_job["id"]}/logs']).decode('utf-8')
+original_log=subprocess.check_output(['gh','api','--allow-escape-sequences',f'repos/{REPO}/actions/jobs/{original_job["id"]}/logs']).decode('utf-8')
 assert 'Tests run: 69,  Failures: 1' in original_log or re.search(r'Tests run:\s*69,\s*Failures:\s*1',original_log)
 assert 'everyAboutPopupOpensScrollsAndCloses' in original_log
 (OUT/'API34-original-failed-job-console.txt').write_text(original_log)
@@ -63,7 +63,7 @@ dev,da=artifact(spec['developer'],'apd-codex-private-test-apk');player,pa=artifa
 if not list(native.rglob('TEST-*.xml')):
     import xml.etree.ElementTree as ET
     job,=[j for j in api(f'repos/{REPO}/actions/runs/{spec["native"]}/jobs')['jobs'] if j['name']=='exact-apk-full-api34']
-    raw=subprocess.check_output(['gh','api',f'repos/{REPO}/actions/jobs/{job["id"]}/logs']).decode('utf-8')
+    raw=subprocess.check_output(['gh','api','--allow-escape-sequences',f'repos/{REPO}/actions/jobs/{job["id"]}/logs']).decode('utf-8')
     clean=re.sub(r'\x1b\[[0-9;]*m','',raw)
     clean=re.sub(r'(?m)^\d{4}-\d\d-\d\dT[0-9:.]+Z\s*','',clean)
     parts=re.split(r'INSTRUMENTATION_STATUS_CODE:\s*(-?\d+)',clean);cases=[]
