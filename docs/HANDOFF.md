@@ -1,3 +1,10 @@
+## TEST350 withheld: exact-APK API36 pause failure under investigation
+
+- Source `1d4bd7268fdb01dedadecddd1fcfd19d72ffa05c`; producer41540278341 passed2302 core tests and complete Android debug/release/desktop build checks. Native case passed before missing-rg host-wrapper failure. Exact-APK repaired API34 retest41542190077 passed; all five captured screens reviewed.
+- Six-profile matrix41540278325 passed assertions. High-resolution API36 wall image reviewed: straight/top/bottom marks remain; owner-circled thin side ends are blank. Other incomplete API36 popup images were not accepted.
+- Fresh frame-settled API36 run41542973206 failed: AndroidGraphics pause synchronization timed out and PID2549 sent itself SIG9 at23:14:01.748. Artifact13188385115 retained. No Java OOM in that run. Other boot-service ANRs do not establish APD failure cause.
+- Retry41544735338 reuses the same APK, waits for boot broadcasts, uses pixel_7 profile and adds test-only pause thread tracing. Pending, not passed. No new APK published; latest actual delivery remains TEST346 developer+alpha. Phone allocation origin remains unproven beyond confirmed memory-pressure findings. See docs/APD-HEAP-AND-SEARCHED-WALLS-2026-11-02.md.
+
 ## Owner-circled partial corner ends — final correction pending
 
 - Owner clarified with18186.jpg that the unwanted checks are the narrow side-wall ends beside the bottom corners, not only enclosed diagonal cells. Marker selection now suppresses side profiles at ends unless the exposed floor continues both above and below; straight side sections, upper faces and bottom lips keep their checks. Search memory and mechanics do not change.
