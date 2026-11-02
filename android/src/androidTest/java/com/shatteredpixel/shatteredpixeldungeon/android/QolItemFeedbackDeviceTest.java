@@ -115,7 +115,7 @@ public class QolItemFeedbackDeviceTest {
                 assertEquals("west wall inward edge",com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallMarkers.RIGHT,com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallMarkers.visual(Dungeon.level,center[0]-1));
                 assertEquals("east wall inward edge",com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallMarkers.LEFT,com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallMarkers.visual(Dungeon.level,center[0]+1));
             });
-            Thread.sleep(600);TopScoresDeviceTest.screenshot("qol-searched-wall.png");
+            Thread.sleep(1800);TopScoresDeviceTest.screenshot("qol-searched-wall.png");
             for(int i=0;i<12;i++){
                 waitFor(()->Dungeon.hero.ready);TopScoresDeviceTest.render(()->Dungeon.hero.search(true));Thread.sleep(150);
             }
