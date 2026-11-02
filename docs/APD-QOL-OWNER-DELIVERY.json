@@ -14,9 +14,11 @@
     "qol-dew-settings.png": "9011c4d4c69c10f2ca457bc701b33d5b21ab410a88e67751b796b00080d02997",
     "qol-force-weapon.png": "dec5b29903366df4309b1249f6e5e5c2b6deb6a578616476199ae67ba71ccd69"
   },
-  "delivery_attempt": 2,
+  "delivery_attempt": 3,
   "previous_delivery_failure": {
     "run": 41524810346,
     "reason": "GitHub CLI refused ANSI escape sequences in the actual job console; raw logs are parsed after ANSI removal"
-  }
+  },
+  "draft_release_id": 431975450,
+  "draft_lookup_failure_run": 41526069371
 }

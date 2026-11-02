@@ -16,7 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 """Publish only prepared verified private owner artifacts, preserving all prior assets."""
-import datetime,hashlib,json,os,pathlib,subprocess,time
+import datetime,hashlib,json,os,pathlib,subprocess,time,urllib.request,urllib.parse
 repo=os.environ['GITHUB_REPOSITORY'];out=pathlib.Path('owner-delivery');spec=json.loads(pathlib.Path('docs/APD-QOL-OWNER-DELIVERY.json').read_text());number=spec['number'];tag=f'apd-alpha-preview-{number}'
 api=lambda p:json.loads(subprocess.check_output(['gh','api',p]));sha=lambda p:hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest()
 assert api('repos/'+repo)['private'];scan=json.loads((out/'APD-Source-Scan.json').read_text());assert scan['supplemental']['source_findings_reviewed']
@@ -29,26 +29,34 @@ if ref.returncode:
  assert '404' in ref.stderr,ref.stderr
  subprocess.run(['gh','api','--method','POST',f'repos/{repo}/git/refs','-f','ref=refs/tags/'+tag,'-f','sha='+spec['source']],check=True)
 resolved=api(f'repos/{repo}/git/ref/tags/{tag}')['object'];assert resolved['type']=='commit' and resolved['sha']==spec['source']
-lookup=subprocess.run(['gh','api',f'repos/{repo}/releases/tags/{tag}'],text=True,capture_output=True)
-if lookup.returncode:
- assert '404' in lookup.stderr,lookup.stderr
+matches=[r for r in api(f'repos/{repo}/releases?per_page=100') if r['tag_name']==tag]
+assert len(matches)<=1,'Duplicate release tag; preserve existing releases'
+if not matches:
  subprocess.run(['gh','release','create',tag,'--repo',repo,'--target',spec['source'],'--title',f'APD Alpha Preview {number} — dew, searched walls and ring details','--notes-file',str(out/'release-notes.md'),'--draft','--prerelease','--latest=false'],check=True)
-release=api(f'repos/{repo}/releases/tags/{tag}');resolved=api(f'repos/{repo}/git/ref/tags/{tag}')['object'];assert resolved['type']=='commit' and resolved['sha']==spec['source']
+ matches=[r for r in api(f'repos/{repo}/releases?per_page=100') if r['tag_name']==tag]
+release,=matches
+release_id=release['id']
+def refresh():return api(f'repos/{repo}/releases/{release_id}')
+def upload(p):
+ url=release['upload_url'].split('{',1)[0]+'?'+urllib.parse.urlencode({'name':p.name})
+ request=urllib.request.Request(url,data=p.read_bytes(),method='POST',headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Content-Type':'application/octet-stream','Accept':'application/vnd.github+json'})
+ with urllib.request.urlopen(request,timeout=300) as response:return json.load(response)
+release=refresh();resolved=api(f'repos/{repo}/git/ref/tags/{tag}')['object'];assert resolved['type']=='commit' and resolved['sha']==spec['source']
 existing={a['name']:a for a in release['assets']}
 for p in files:
  if p.name in existing:assert existing[p.name].get('digest')=='sha256:'+sha(p),'Existing asset differs; never overwrite'
- else:subprocess.run(['gh','release','upload',tag,'--repo',repo,str(p)],check=True)
-release=api(f'repos/{repo}/releases/tags/{tag}');existing={a['name']:a for a in release['assets']}
+ else:upload(p)
+release=refresh();existing={a['name']:a for a in release['assets']}
 assert all(existing[p.name].get('digest')=='sha256:'+sha(p) for p in files)
-if release['draft']:subprocess.run(['gh','release','edit',tag,'--repo',repo,'--draft=false','--prerelease','--latest=false'],check=True)
+if release['draft']:subprocess.run(['gh','api','--method','PATCH',f'repos/{repo}/releases/{release_id}','-F','draft=false','-F','prerelease=true','-f','make_latest=false'],check=True,stdout=subprocess.DEVNULL)
 # Actual successful downloads, not metadata alone, establish delivery readiness.
 verify=pathlib.Path('downloaded-back');verify.mkdir(exist_ok=True)
 for pattern in (f'APD-Developer-{number}.apk',f'APD-Alpha-Testers-{number}.apk',source.name):
  subprocess.run(['gh','release','download',tag,'--repo',repo,'--pattern',pattern,'--dir',str(verify)],check=True)
  assert sha(verify/pattern)==sha(out/pattern)
-release=api(f'repos/{repo}/releases/tags/{tag}');evidence.update({'release_id':release['id'],'asset_publication':[{k:a.get(k) for k in ('id','name','digest','created_at','browser_download_url')} for a in release['assets']],'published_at':release['published_at'],'downloaded_back_verified':True,'link_sent':False,'delivery_workflow_run':os.environ['GITHUB_RUN_ID'],'download_verified_utc':datetime.datetime.now(datetime.timezone.utc).isoformat()})
+release=refresh();evidence.update({'release_id':release['id'],'asset_publication':[{k:a.get(k) for k in ('id','name','digest','created_at','browser_download_url')} for a in release['assets']],'published_at':release['published_at'],'downloaded_back_verified':True,'link_sent':False,'delivery_workflow_run':os.environ['GITHUB_RUN_ID'],'download_verified_utc':datetime.datetime.now(datetime.timezone.utc).isoformat()})
 proof.write_text(json.dumps(evidence,indent=2)+'\n')
-if proof.name not in {a['name'] for a in release['assets']}:subprocess.run(['gh','release','upload',tag,'--repo',repo,str(proof)],check=True)
+if proof.name not in {a['name'] for a in release['assets']}:upload(proof)
 print('VERIFIED DOWNLOAD LINKS')
 for label in ('Developer','Alpha-Testers'):print(f'https://github.com/{repo}/releases/download/{tag}/APD-{label}-{number}.apk')
 print(f'https://github.com/{repo}/releases/tag/{tag}')
