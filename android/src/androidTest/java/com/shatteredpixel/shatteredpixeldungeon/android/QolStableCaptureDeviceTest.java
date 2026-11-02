@@ -98,7 +98,13 @@ public class QolStableCaptureDeviceTest {
                 java.util.List<CheckBox> controls=TopScoresDeviceTest.find(w,CheckBox.class);assertEquals(2,controls.size());
                 CheckBox enemy=controls.get(1);assertFalse(enemy.checked());p[0]=enemy.camera().cameraToScreen(enemy.left()+enemy.width()/2,enemy.top()+enemy.height()/2);
             }catch(Exception e){throw new RuntimeException(e);}});
-            touch(p[0]);TopScoresDeviceTest.render(()->assertTrue(SPDSettings.autoCollectDewWithEnemies()));
+            settleFrames();
+            TopScoresDeviceTest.render(()->{try{
+                CheckBox enemy=TopScoresDeviceTest.find(settings.get(),CheckBox.class).get(1);
+                p[0]=enemy.camera().cameraToScreen(enemy.left()+enemy.width()/2,enemy.top()+enemy.height()/2);
+            }catch(Exception e){throw new RuntimeException(e);}});
+            touch(p[0]);waitFor(()->SPDSettings.autoCollectDewWithEnemies());
+            TopScoresDeviceTest.render(()->assertTrue(SPDSettings.autoCollectDewWithEnemies()));
             settleFrames();TopScoresDeviceTest.screenshot("qol-dew-settings.png");TopScoresDeviceTest.render(()->settings.get().hide());
             Sword sword=new Sword();sword.levelKnown=true;sword.cursedKnown=true;
             TopScoresDeviceTest.render(()->{RingOfForce r=new RingOfForce();r.anonymize();r.levelKnown=true;r.cursedKnown=true;Dungeon.hero.belongings.ring=r;r.activate(Dungeon.hero);});
