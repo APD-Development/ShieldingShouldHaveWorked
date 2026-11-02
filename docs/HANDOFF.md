@@ -1,3 +1,9 @@
+## Corrective candidate status before urgent delivery
+
+-347 is rejected/unreleased:67/69 API34 methods, with both original UIMSD prewarm timing cases blocked by an overly strict new admission policy; all six profiles and the manual Search/cache-release/resume case passed. Human visual review also found the southern glyph below the lip. Neither failure is hidden or called fixed by a test-green claim.
+-348 workflow41535626983 cancelled; artifacts retained, no publication. Final source corrects the prewarm allowance for the measured unchanged72-run fixture1,470,194 bytes on192MiB, preserves all original250ms assertions and moves cap glyph pixels onto stone rows8–11. Full core/debug/release/desktop checks are consolidated in the producer, without extra application builds for compilation gates.
+- Delivery remains pending. One final developer APK only; do not exceed3 delivered APKs today. Details in APD-HEAP-AND-SEARCHED-WALLS-2026-11-02.md.
+
 ## Urgent TEST346 phone OOM and bottom searched-wall marker correction — in progress
 
 - Owner supplied diagnostic212922 and recalls manual Search. OOM/256MiB ceiling is confirmed; exact originating APD allocation is absent from captured Android-only frames. Do not claim sole root-cause attribution or physical acceptance.

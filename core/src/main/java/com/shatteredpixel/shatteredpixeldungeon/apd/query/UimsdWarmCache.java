@@ -102,8 +102,8 @@ public final class UimsdWarmCache {
 
     // Optional preload must leave room for gameplay and foreground screens.
     static boolean withinMemoryBudget(long limit,long used,long sourceBytes){
-        long budget=Math.min(32L*1024*1024,limit/8);
-        return limit>0&&sourceBytes>=0&&sourceBytes<=budget/64&&used<=limit-limit/4-budget;
+        long budget=Math.min(64L*1024*1024,limit/4);
+        return limit>0&&sourceBytes>=0&&sourceBytes<=budget/32&&used<=limit-limit/4-budget;
     }
     private static boolean canPrepare(File root){
         long bytes=0;

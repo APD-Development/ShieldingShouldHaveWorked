@@ -80,8 +80,8 @@ jobs:
           python3 tools/apd_build_history.py --comparison apd-history-comparison.json --ledger docs/APD-NEXT-BUILD-HISTORY.json --build ${{ github.run_number }} --previous-apk previous-verified.apk
       - name: Verify history and player release-note tooling
         run: python3 -m unittest discover -s tools -p test_apd_build_history.py -v
-      - name: Run the complete core unit test suite
-        run: ./gradlew :core:test
+      - name: Complete core, Android debug/release and desktop checks
+        run: ./gradlew :core:test :desktop:classes :android:compileDebugJavaWithJavac :android:compileReleaseJavaWithJavac
       - name: Build the private debug APK
         run: ./gradlew :android:assembleDebug -PapdTestBuild -PapdBuild=C${{ github.run_number }}
       - name: Verify Android-compatible JSON method signatures
@@ -192,8 +192,7 @@ jobs:
             adb logcat -v time > codex-logcat.txt &
             adb install -r exact-application/ADHD-Pixel-Dungeon-CODEX-TEST-${{ github.run_number }}.apk
             adb install -r android/build/outputs/apk/androidTest/debug/android-debug-androidTest.apk
-            python3 tools/apd_marker_asset_boundary.py
-            bash tools/run-marker-asset-acceptance.sh
+            APD_EXISTING_APK=1 bash tools/run-codex-android-checks.sh '${{ github.run_number }}'
       - name: Keep Android evidence even if a check fails
         if: always()
         uses: actions/upload-artifact@v4

@@ -1,5 +1,5 @@
 name: Verify responsive title menu on Android display configurations
-# TEST347 also exercises manual Search, all four wall edges and gameplay cache release on API36.
+# Final wall-lip pixel alignment and normal 72-run prewarm eligibility are verified on the same next APK.
 on:
   push:
     branches: [codex/apd-phone-fixes-2026-10-09]
