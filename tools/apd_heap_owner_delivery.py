@@ -44,10 +44,14 @@ assert application_inputs(trees[0]['tree'])==application_inputs(trees[1]['tree']
 compile_source=api(f'repos/{REPO}/actions/runs/{spec["compile"]}')['head_sha']
 compile_tree=api(f'repos/{REPO}/git/trees/{compile_source}?recursive=1');assert not compile_tree.get('truncated')
 assert application_inputs(trees[0]['tree'])==application_inputs(compile_tree['tree'])
-compile_reports,coa=artifact(spec['compile'],'apd-qol-source-verification')
-compile_proof,=compile_reports.rglob('qol-verification.json');cp=json.loads(compile_proof.read_text())
-assert cp['source_commit']==compile_source and cp['tests']==2300 and cp['apk_assembled'] is False
-assert xml_summary(compile_reports)['tests']==2300
+if spec['compile']==spec['developer']:
+ compilation_job,=[j for j in api(f'repos/{REPO}/actions/runs/{spec["developer"]}/jobs')['jobs'] if j['name']=='verify-and-build']
+ assert any(step['name']=='Complete core, Android debug/release and desktop checks' and step['conclusion']=='success' for step in compilation_job['steps'])
+else:
+ compile_reports,coa=artifact(spec['compile'],'apd-qol-source-verification')
+ compile_proof,=compile_reports.rglob('qol-verification.json');cp=json.loads(compile_proof.read_text())
+ assert cp['source_commit']==compile_source and cp['tests']==2300 and cp['apk_assembled'] is False
+ assert xml_summary(compile_reports)['tests']==2300
 
 dev,da=artifact(spec['developer'],'apd-codex-private-test-apk');core,ca=artifact(spec['developer'],'apd-codex-core-tests');native,na=artifact(spec['developer'],'apd-codex-android-checks')
 # Manual exact-APK instrumentation prints terminal records to the immutable job console.
@@ -137,13 +141,15 @@ side=pathlib.Path(str(sourcezip)+'.sha256');side.write_text(sha(sourcezip)+'  '+
 # Preserve the existing verified fallback and verify its actual uploaded APK assets before any new write.
 fallback=api(f'repos/{REPO}/releases/tags/apd-alpha-preview-341');assert fallback['id']==428527455
 for label,h in [('Developer','ad6281b3e41fe414187ca40824157a5bbcf102d7d86e569dbdb8439e7f47d694'),('Alpha-Testers','639ce15ddb4b02d037cd29f995c9f38514e03cf577370cf38488f4602bfd65bd')]:assert any(a['name']==f'APD-{label}-341.apk' and a.get('digest')=='sha256:'+h for a in fallback['assets'])
-evidence={'source_commit':source,'tag':tag,'number':number,'runs':{k:spec[k] for k in ('developer','display','compile')},'test_summaries':results,'core_tests':2300,'android_tests':results['android']['tests'],'profiles':profiles,'signing_certificate':expected_cert,'application_id':'com.charltonchris29.adhdpixeldungeon.indev','version_code':920,'apk_hashes':hashes,'source_sha256':sha(sourcezip),'visual_review':images,'physical_phone_verified':False,'new_application_apks_created':1,'owner_private_delivery':True,'fallback_preserved':True,'prepared_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'baseline_memory_probe':{'run':41530223216,'apd_launched':False,'reason':'Insufficient disk for emulator userdata; no reproduction or heap dump'},'phone_allocation_origin_confirmed':False,'retained_auxiliary_failures':{'41520121956':'Obsolete stager rejected changed application inputs against a historical source; no APK test executed','41520121884':'Historical death workflow referenced an unfetched obsolete source; no APK test executed','41520121870':'Historical hotbar proof has obsolete source constraints; retained separately, not represented as passed'}}
+evidence={'source_commit':source,'tag':tag,'number':number,'runs':{k:spec[k] for k in ('developer','display','compile')},'test_summaries':results,'core_tests':2300,'android_tests':results['android']['tests'],'profiles':profiles,'signing_certificate':expected_cert,'application_id':'com.charltonchris29.adhdpixeldungeon.indev','version_code':920,'apk_hashes':hashes,'source_sha256':sha(sourcezip),'visual_review':images,'physical_phone_verified':False,'new_application_apks_created':1,'owner_private_delivery':True,'fallback_preserved':True,'prepared_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'baseline_memory_probe':{'run':41530223216,'apd_launched':False,'reason':'Insufficient disk for emulator userdata; no reproduction or heap dump'},'phone_allocation_origin_confirmed':False,'retained_rejected_candidates':{'347':'67/69 Android methods; two prewarm-admission failures and rejected southern marker alignment; never published','348':'Verification cancelled after findings; never published'},'retained_auxiliary_failures':{'41520121956':'Obsolete stager rejected changed application inputs against a historical source; no APK test executed','41520121884':'Historical death workflow referenced an unfetched obsolete source; no APK test executed','41520121870':'Historical hotbar proof has obsolete source constraints; retained separately, not represented as passed'}}
 receipt=OUT/f'APD-Preview-{number}-Verification.json';receipt.write_text(json.dumps(evidence,indent=2)+'\n');files.append(receipt)
 notes=f'''Urgent memory stability and searched-wall correction. Gameplay releases unused statistics catalogs/results, cancels unfinished preloads and stale completions, and applies a conservative memory budget to optional title preparation. Lower and side searched-wall indicators follow the actual visible wall edges under existing fog/blockers. Search chances, timing, raw history, saves and scores are unchanged.
 
 The owner's TEST346 diagnostic confirms Java heap exhaustion at256MiB while reportedly searching. Source inspection confirms avoidable catalog retention; the earlier real export retained29,104,416 JVM bytes for69,169 derived rows. That desktop measurement does not identify the exact phone allocation. BaselineAPI36 probe41530223216 never launched APD: emulator userdata had6814.48MB free versus7372.80MB required. Its failure is retained, not counted as APD evidence.
 
 Exact source `{source}`; all2300 core tests, API34{results['android']['tests']} tests and all six display profiles passed. API36 also exercised actual manual Search, four marker orientations, cache release and pause/resume. Automated/emulator evidence only; physical-phone acceptance remains pending.
+
+Rejected candidate347 had two prewarm-admission failures in its69-case run and a visually misplaced marker. Candidate348 was cancelled; neither was published. This final candidate keeps the original72-run and250ms assertions unchanged.
 
 This single developer APK is today's third and final delivered APK, following the346 pair. Install over APD; never uninstall or clear player data.
 
