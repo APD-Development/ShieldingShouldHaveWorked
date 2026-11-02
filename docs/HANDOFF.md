@@ -1,4 +1,14 @@
+## 2026-11-02T15:37:43Z — TEST345 exact APK accepted on complete emulator gates
 
+- Accepted application is the unchanged TEST345 developer APK from producer run41344574181/application source `207ed6819ed2a36cd4f6ccd02eaca5d7b9aa1457`, SHA256 `a6c5653d5eaf182c65a5352146ce8660cdfd0f71ad70796049a87dc35b3e5b46`.
+- Exact-APK [run41470277645](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/41470277645), attempt2/job125363526637 passed the complete API34 list: `OK (67 tests)`, 0 failed/ignored. Privacy restoration passed. Warm 72-run UIMSD Home passed at 204 ms and 116 ms against the unchanged 250 ms limit.
+- All 92 retained visual PNGs decoded and validated at 320×640. Artifact13155976745 is 7,377,011 bytes; digest `dae59e8d8176cf388b4609b375f97073eb2c20f84581a4a97838b63569527151`.
+- All six producer display profiles and matching player checks were already green. Player APK SHA256 is `a910500b72f77906827cdf699da69b7f1151ebdb52f85b941bc6adc8cd6b7bda`.
+- Retained failures remain documented: missing-KVM diagnostic run41347351842 had no APD timing result; focused exact-APK run41469223189 was test-green (`OK (1 test)`, 210/101 ms) but wrapper-failed; attempt1 of run41470277645 stopped before emulator creation on a corrupt SDK system image.
+- **Disposition:** TEST345 is accepted as the latest private emulator-verified candidate. It is not published, distributed or physical-device verified. Latest actual private publication remains TEST341 release428527455; TEST330 remains fallback.
+- No application source or APK changed. Build-request blob `3fe0ce4437fb3129a69588b2f943b1cc368c691d` remains unchanged.
+- Full evidence: [APD-TEST345-FINAL-ACCEPTANCE-2026-11-02.md](./APD-TEST345-FINAL-ACCEPTANCE-2026-11-02.md).
+- **Next safe step:** under separate publication authorization, reuse the already-built TEST345 pair and create/re-verify an actual receipt; otherwise continue the next documented UIMSD backlog slice. Do not rebuild TEST345 merely to record acceptance.
 
 ## 2026-11-01T20:26:24Z — TEST345 Privacy restoration accepted narrowly; candidate rejected overall
 

@@ -1,3 +1,12 @@
+## 2026-11-02T15:37:43Z — TEST345 final exact-APK emulator acceptance
+
+- Exact unchanged TEST345 application source `207ed6819ed2a36cd4f6ccd02eaca5d7b9aa1457`; developer APK SHA256 `a6c5653d5eaf182c65a5352146ce8660cdfd0f71ad70796049a87dc35b3e5b46`; no application rebuild.
+- Run41470277645 attempt2/job125363526637 passed 67/67 API34 methods with 0 failures/ignored, including Privacy restoration and warm 72-run Home at 204/116 ms under 250 ms. It validated 92 PNGs at 320×640.
+- Artifact13155976745/7,377,011bytes/digest `dae59e8d8176cf388b4609b375f97073eb2c20f84581a4a97838b63569527151`.
+- Retained infrastructure failures: run41347351842 missing KVM/no timing; run41469223189 test-green but wrapper-failed; run41470277645 attempt1 corrupt SDK system image/no APD test. No evidence was replaced or deleted.
+- All six prior display profiles and matching player checks remain green. TEST345 is accepted as a private emulator-verified candidate, not published/distributed/physical-device verified. TEST341 release428527455 remains the latest actual publication; TEST330 fallback preserved.
+- No saves, permanent statistics, all18 rule values, scores, combat, RNG, signing/application ID/version, history, online state or APK changed. Build request remains unchanged. Report: `docs/APD-TEST345-FINAL-ACCEPTANCE-2026-11-02.md`.
+
 ## 2026-11-01T15:07:34Z — UIMSD Privacy parameterized restoration core-green; native pending
 
 ## 2026-11-01T20:26:24Z — TEST345 exact-APK Privacy restoration evidence
