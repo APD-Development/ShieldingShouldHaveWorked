@@ -23,6 +23,12 @@ assert api('repos/'+repo)['private'];scan=json.loads((out/'APD-Source-Scan.json'
 source,=out.glob('APD-Source-*.zip');assert scan['supplemental']['source_sha256']==sha(source)
 proof=out/f'APD-Preview-{number}-Verification.json';evidence=json.loads(proof.read_text());assert evidence['source_commit']==spec['source'] and evidence['core_tests']==2287 and evidence['android_tests']==spec['android_tests']
 files=[p for p in out.iterdir() if p.suffix in ('.apk','.sha256','.zip') or p.name=='APD-Source-Scan.json']
+# GitHub does not create a draft release's tag until publication; establish and verify it explicitly.
+ref=subprocess.run(['gh','api',f'repos/{repo}/git/ref/tags/{tag}'],text=True,capture_output=True)
+if ref.returncode:
+ assert '404' in ref.stderr,ref.stderr
+ subprocess.run(['gh','api','--method','POST',f'repos/{repo}/git/refs','-f','ref=refs/tags/'+tag,'-f','sha='+spec['source']],check=True)
+resolved=api(f'repos/{repo}/git/ref/tags/{tag}')['object'];assert resolved['type']=='commit' and resolved['sha']==spec['source']
 lookup=subprocess.run(['gh','api',f'repos/{repo}/releases/tags/{tag}'],text=True,capture_output=True)
 if lookup.returncode:
  assert '404' in lookup.stderr,lookup.stderr
