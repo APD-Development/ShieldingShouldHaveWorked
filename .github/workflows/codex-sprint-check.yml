@@ -80,6 +80,9 @@ jobs:
           python3 tools/apd_build_history.py --comparison apd-history-comparison.json --ledger docs/APD-NEXT-BUILD-HISTORY.json --build ${{ github.run_number }} --previous-apk previous-verified.apk
       - name: Verify history and player release-note tooling
         run: python3 -m unittest discover -s tools -p test_apd_build_history.py -v
+      - name: Prove the owner corner correction changes only marker selection against the green full suite
+        env: {GH_TOKEN: '${{ github.token }}'}
+        run: python3 tools/apd_corner_scope.py
       - name: Complete core, Android debug/release and desktop checks
         run: ./gradlew :core:test :desktop:classes :android:compileDebugJavaWithJavac :android:compileReleaseJavaWithJavac
       - name: Build the private debug APK
@@ -192,7 +195,7 @@ jobs:
             adb logcat -v time > codex-logcat.txt &
             adb install -r exact-application/ADHD-Pixel-Dungeon-CODEX-TEST-${{ github.run_number }}.apk
             adb install -r android/build/outputs/apk/androidTest/debug/android-debug-androidTest.apk
-            APD_EXISTING_APK=1 bash tools/run-codex-android-checks.sh '${{ github.run_number }}'
+            bash tools/run-corner-search-check.sh
       - name: Keep Android evidence even if a check fails
         if: always()
         uses: actions/upload-artifact@v4

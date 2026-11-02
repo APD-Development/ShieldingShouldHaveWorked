@@ -1,5 +1,5 @@
 name: Verify responsive title menu on Android display configurations
-# Final wall-lip pixel alignment and normal 72-run prewarm eligibility are verified on the same next APK.
+# Owner-circled partial corner ends are unmarked; straight edges, bottom lip and memory release remain verified.
 on:
   push:
     branches: [codex/apd-phone-fixes-2026-10-09]

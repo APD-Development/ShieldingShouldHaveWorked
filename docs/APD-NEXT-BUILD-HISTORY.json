@@ -1,31 +1,27 @@
 {
   "date": "2026-11-02",
-  "previous_source": "5aa76b55f6b57166ff0ddd68794e9fbb6803e71e",
-  "previous_application_source": "5aa76b55f6b57166ff0ddd68794e9fbb6803e71e",
-  "previous_run": 41532850839,
-  "previous_label": "Codex TEST 347",
+  "previous_source": "03522e5a6813ea6881b0fb8b70a85c7806e3411e",
+  "previous_application_source": "03522e5a6813ea6881b0fb8b70a85c7806e3411e",
+  "previous_run": 41536788270,
+  "previous_label": "Codex TEST 349",
   "changes": [
     {
-      "category": "Bug Fixes",
+      "category": "Quality of Life",
       "sprite": "ICON_CHECKED",
-      "title": "Wall-edge alignment and safe statistics preload",
-      "text": "Searched-wall checks align with the visible lower wall lip. Statistics preparation keeps the normal quick-opening path within its corrected memory budget. Gameplay releases unused statistics tables and stops stale preloads, preserving saved history and search mechanics.",
+      "title": "Uncluttered searched-wall corners",
+      "text": "Partial side-wall ends beside corners remain unmarked. Straight wall sections, front faces and the bottom wall lip retain their searched indicators. Includes the already-verified statistics memory-safety changes without changing search timing, chances or saved history.",
       "paths": [
-        ".github/workflows/apd-heap-owner-delivery.yml",
-        ".github/workflows/apd-qol-source-check.yml",
         ".github/workflows/codex-menu-layout-matrix.yml",
         ".github/workflows/codex-sprint-check.yml",
         "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/QolItemFeedbackDeviceTest.java",
-        "core/src/main/assets/interfaces/apd_searched_wall.png",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdWarmCache.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdWarmCacheTest.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/qol/SearchedWallMarkers.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/qol/SearchedWallsTest.java",
         "docs/APD-HEAP-AND-SEARCHED-WALLS-2026-11-02.md",
         "docs/APD-NEXT-BUILD-HISTORY.json",
-        "docs/APD-QOL-SOURCE-VERIFY-REQUEST.txt",
         "docs/HANDOFF.md",
+        "tools/apd_corner_scope.py",
         "tools/apd_heap_owner_delivery.py",
-        "tools/apd_qol_publish_prepared.py",
-        "tools/build_searched_wall_marker.py"
+        "tools/run-corner-search-check.sh"
       ]
     }
   ]

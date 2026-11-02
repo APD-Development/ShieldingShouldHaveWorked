@@ -32,8 +32,8 @@ public final class SearchedWallMarkers {
         if(l.searchedWalls.shows(l,p)){
             if(p+w<l.length()&&open(l,p+w))mask|=FACE;
             else {
-                if(p%w>0&&open(l,p-1))mask|=LEFT;
-                if(p%w<w-1&&open(l,p+1))mask|=RIGHT;
+                if(p%w>0&&open(l,p-1)&&open(l,p-1-w)&&open(l,p-1+w))mask|=LEFT;
+                if(p%w<w-1&&open(l,p+1)&&open(l,p+1-w)&&open(l,p+1+w))mask|=RIGHT;
             }
         }
         // SPD draws a southern wall's visible lip on the preceding floor tile.

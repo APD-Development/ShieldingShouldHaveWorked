@@ -112,10 +112,18 @@ public class QolItemFeedbackDeviceTest {
                 Dungeon.hero.search(true);GameScene.updateMap();
                 assertTrue("north front face",com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallMarkers.visual(Dungeon.level,center[0]-w)>0);
                 assertEquals("south lip drawn on visible floor above",com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallMarkers.OVERHANG,com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallMarkers.visual(Dungeon.level,center[0]));
-                assertEquals("west wall inward edge",com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallMarkers.RIGHT,com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallMarkers.visual(Dungeon.level,center[0]-1));
-                assertEquals("east wall inward edge",com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallMarkers.LEFT,com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallMarkers.visual(Dungeon.level,center[0]+1));
+                assertEquals("west partial corner end is unmarked",-1,com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallMarkers.visual(Dungeon.level,center[0]-1));
+                assertEquals("east partial corner end is unmarked",-1,com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallMarkers.visual(Dungeon.level,center[0]+1));
             });
             Thread.sleep(1800);TopScoresDeviceTest.screenshot("qol-searched-wall.png");
+            TopScoresDeviceTest.render(()->{
+                int w=Dungeon.level.width();Level.set(center[0]-w,Terrain.EMPTY);Level.set(center[0]+w,Terrain.EMPTY);
+                Dungeon.level.heroFOV[center[0]-w]=true;Dungeon.level.heroFOV[center[0]+w]=true;
+                GameScene.updateMap();
+                assertEquals("straight west section remains marked",com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallMarkers.RIGHT,com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallMarkers.visual(Dungeon.level,center[0]-1));
+                assertEquals("straight east section remains marked",com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallMarkers.LEFT,com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallMarkers.visual(Dungeon.level,center[0]+1));
+                Level.set(center[0]-w,Terrain.WALL);Level.set(center[0]+w,Terrain.WALL);GameScene.updateMap();
+            });
             for(int i=0;i<12;i++){
                 waitFor(()->Dungeon.hero.ready);TopScoresDeviceTest.render(()->Dungeon.hero.search(true));Thread.sleep(150);
             }

@@ -1,3 +1,10 @@
+## Owner-circled partial corner ends — final correction pending
+
+- Owner clarified with18186.jpg that the unwanted checks are the narrow side-wall ends beside the bottom corners, not only enclosed diagonal cells. Marker selection now suppresses side profiles at ends unless the exposed floor continues both above and below; straight side sections, upper faces and bottom lips keep their checks. Search memory and mechanics do not change.
+- TEST349 producer41536788270 is fully green:2300 core plus all69 API34 methods, including unchanged72-run/250ms timing checks; display41536788282 all6 green, including4 API36 methods. Actual wall-lip alignment visually reviewed.349 is NOT published because owner requested this additional correction before delivery.
+- Next candidate uses the same memory/gameplay code: protected-input comparison allows only SearchedWallMarkers.java to differ from349. Full core (including2 new corner cases), Android debug/release and desktop compilation remain required; current APK runs strengthened manual Search/corner/straight-wall/cache/resume acceptance on API34 and API36. Prior69-case gameplay evidence is explicitly from349; do not claim all69 ran on the next APK.
+- Publish one final developer APK only, the third delivered today, with matching key-free source and actual verified download. No new routine permission needed. All earlier candidate artifacts/failures retained.
+
 ## Corrective candidate status before urgent delivery
 
 -347 is rejected/unreleased:67/69 API34 methods, with both original UIMSD prewarm timing cases blocked by an overly strict new admission policy; all six profiles and the manual Search/cache-release/resume case passed. Human visual review also found the southern glyph below the lip. Neither failure is hidden or called fixed by a test-green claim.
