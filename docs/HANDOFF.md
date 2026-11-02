@@ -1,3 +1,11 @@
+## TEST346 delivered privately — November 2, 2026
+
+- Actual release431975450/tag `apd-alpha-preview-346` published2026-11-02T21:16:04Z. Successful delivery-only workflow41526510993 uploaded both existing developer/player APKs plus key-free matching source, SHA sidecars, scan report and verification JSON; downloaded both APKs and source back and verified hashes. No application rebuild or new ordinal during delivery.
+- Direct Developer/Alpha-Testers download links sent to owner in chat commentary, recorded separately from publication/download time in `docs/APD-QOL-346-DELIVERY-RECEIPT.json`. This was owner-requested delivery; no scheduler causation claim.
+- Exact producing source0d938a994359b6a0e5cb2533b1207d5722df6cab.2287 core tests, complete69-case corrected exact-APK API34 suite41523673215 and all six display profiles41520121601 passed. Five QoL captures visually reviewed; no physical-phone acceptance claimed.
+- Existing signing identity/application ID/versionCode920 preserved. DeveloperC346-TEST and Alpha-TestersP346 are install-over alternatives; never uninstall or clear player data. Both include grass-dew pickup, saved manually searched-wall markers and affected-item ring readouts including Force and Sharpshooting.
+- Original68/69 native run's obsolete About-popup expectation remains recorded. Delivery attempt41524810346 failed on CLI ANSI-log output;41526069371 failed on draft-by-tag404. Both corrected in delivery tooling only. Last workflow succeeded. Prior341/330 releases and existing assets retained; private owner delivery only, no automatic external tester post/public release. Full GPL audit remains separately unclosed.
+
 ## 2026-11-02 — TEST346 owner delivery in progress (not yet delivered)
 
 - Exact APK source `0d938a994359b6a0e5cb2533b1207d5722df6cab`; developer producer41520122020 build job125533672106 passed2287 core tests; paired player41520122195 passed. All six display profiles41520121601 passed.
