@@ -39,6 +39,7 @@ public class MemoryReproDeviceTest {
     GamesInProgress.selectedClass=HeroClass.WARRIOR;Dungeon.hero=null;Dungeon.daily=false;Dungeon.dailyReplay=false;Dungeon.customSeedText="";Dungeon.initSeed();
     InterlevelScene.mode=InterlevelScene.Mode.DESCEND;Game.switchScene(InterlevelScene.class);
    });waitFor(()->Game.scene() instanceof GameScene&&Dungeon.hero!=null&&Dungeon.hero.ready);
+   render(()->{Dungeon.hero.HT=100000;Dungeon.hero.HP=100000;});
    long initial=memory("game-initial");
    for(int cycle=0;cycle<12;cycle++){
     render(()->{for(int i=0;i<20;i++)Dungeon.hero.search(true);});Thread.sleep(700);
