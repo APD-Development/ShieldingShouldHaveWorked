@@ -1,5 +1,14 @@
 # UIMSD comparable-condition progress foundation — 2026-10-25T22:11:36Z
 
+## Native API34 acceptance checkpoint — 2026-11-02T20:29:14Z
+
+Test-only source `e7fce780ff2ff67fa6e53a9ad96dcc65397cc60e` added a real native-pointer acceptance path for the production Comparable personal progress menu. Against the unchanged exact TEST345 APK, the test captured two exact 30-run cohorts with identical class/version/difficulty/balance/challenges/Custom Rules, displayed Score as `20.00` recent minus earlier, preserved the recent query and original 10/30 scores across scene recreation, opened all 30 recent exact metric contributors, selected `run-30`, and retained Back navigation.
+
+Run 41515078067 attempt 1 passed the new path and 67 other methods except for one pre-existing warm-Home timing miss at 256 ms versus 250 ms. The single unchanged retry passed all 68 methods in 546.978 s. The first and second artifacts are `13176610306` (digest `c6e076…`) and `13177051685` (digest `49d607…`). Exact provenance and limitations are recorded in `APD-UIMSD-COMPARABLE-PROGRESS-ACCEPTANCE-2026-11-02.md`.
+
+The test screenshot was created on-device but omitted from both archives because its new filename was absent from the shared pull/validation allowlist. Therefore native behavioral acceptance is green, while new-screen visual artifact acceptance remains pending. The allowlist is corrected for the next applicable current-source display run. No APK was rebuilt, and no QoL source was relabelled as TEST345 evidence.
+
+
 ## Result
 
 Exact source `a771a64087d1c926c2057d66a1f10946577b9f0e` passed the complete core suite in [run 40238803735](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/40238803735), job `121305970033`: 2,077 methods in 403 suites, zero failures, errors or skips.
