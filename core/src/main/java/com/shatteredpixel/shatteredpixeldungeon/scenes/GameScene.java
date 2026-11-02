@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -168,6 +171,7 @@ public class GameScene extends PixelScene {
 	private TerrainFeaturesTilemap terrainFeatures;
 	private RaisedTerrainTilemap raisedTerrain;
 	private DungeonWallsTilemap walls;
+    private com.shatteredpixel.shatteredpixeldungeon.tiles.SearchedWallTilemap searchedWalls;
 	private WallBlockingTilemap wallBlocking;
 	private FogOfWar fog;
 	private HeroSprite hero;
@@ -341,6 +345,9 @@ public class GameScene extends PixelScene {
 
 		levelWallVisuals = Dungeon.level.addWallVisuals();
 		add( levelWallVisuals );
+
+        searchedWalls = new com.shatteredpixel.shatteredpixeldungeon.tiles.SearchedWallTilemap();
+        add(searchedWalls);
 
 		wallBlocking = new WallBlockingTilemap();
 		add (wallBlocking);
@@ -1414,6 +1421,7 @@ public class GameScene extends PixelScene {
 			scene.terrainFeatures.map(Dungeon.level.map, Dungeon.level.width() );
 			scene.raisedTerrain.map(Dungeon.level.map, Dungeon.level.width() );
 			scene.walls.map(Dungeon.level.map, Dungeon.level.width() );
+            if (scene.searchedWalls != null) scene.searchedWalls.map(Dungeon.level.map, Dungeon.level.width());
 		}
 		updateFog();
 	}
@@ -1427,6 +1435,7 @@ public class GameScene extends PixelScene {
 			scene.terrainFeatures.updateMap();
 			scene.raisedTerrain.updateMap();
 			scene.walls.updateMap();
+            if (scene.searchedWalls != null) scene.searchedWalls.updateMap();
 			updateFog();
 		}
 	}
@@ -1439,10 +1448,15 @@ public class GameScene extends PixelScene {
 			scene.terrainFeatures.updateMapCell( cell );
 			scene.raisedTerrain.updateMapCell( cell );
 			scene.walls.updateMapCell( cell );
+            if (scene.searchedWalls != null) scene.searchedWalls.updateMapCell(cell);
 			//update adjacent cells too
 			updateFog( cell, 1 );
 		}
 	}
+
+    public static void updateSearchedWall(int cell) {
+        if (scene != null && scene.searchedWalls != null) scene.searchedWalls.updateMapCell(cell);
+    }
 
 	public static void plantSeed( int cell ) {
 		if (scene != null) {

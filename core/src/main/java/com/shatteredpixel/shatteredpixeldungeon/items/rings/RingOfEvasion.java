@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -58,8 +61,12 @@ public class RingOfEvasion extends Ring {
 	}
 	
 	public static float evasionMultiplier( Char target ){
-		return (float) Math.pow( 1.125, getBuffedBonus(target, Evasion.class));
+        return evasionMultiplier(getBuffedBonus(target, Evasion.class));
 	}
+
+    public static float evasionMultiplier(int bonus) {
+        return (float)Math.pow(1.125, bonus);
+    }
 
 	public class Evasion extends RingBuff {
 	}

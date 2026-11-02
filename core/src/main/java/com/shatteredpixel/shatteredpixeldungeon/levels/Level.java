@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -154,6 +157,8 @@ public abstract class Level implements Bundlable {
 	
 	public int[] map;
 	public boolean[] visited;
+    public final com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWalls searchedWalls =
+            new com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWalls();
 	public boolean[] mapped;
 	public boolean[] discoverable;
 
@@ -337,6 +342,7 @@ public abstract class Level implements Bundlable {
 	}
 	
 	public void setSize(int w, int h){
+        searchedWalls.clear();
 		
 		width = w;
 		height = h;
@@ -410,6 +416,7 @@ public abstract class Level implements Bundlable {
 
 		visited	= bundle.getBooleanArray( VISITED );
 		mapped	= bundle.getBooleanArray( MAPPED );
+        searchedWalls.restore(bundle, length());
 
 		transitions = new ArrayList<>();
 		for (Bundlable b : bundle.getCollection( TRANSITIONS )){
@@ -509,6 +516,7 @@ public abstract class Level implements Bundlable {
 		bundle.put( MAP, map );
 		bundle.put( VISITED, visited );
 		bundle.put( MAPPED, mapped );
+        searchedWalls.store(bundle);
 		bundle.put( TRANSITIONS, transitions );
 		bundle.put( LOCKED, locked );
 		bundle.put( HEAPS, heaps.valueList() );

@@ -1,0 +1,1 @@
+2026-11-02: verify grass dew pickup, searched-wall memory and affected-item ring readouts; 2279 core tests and all source compilation gates. No APK assembly or release.

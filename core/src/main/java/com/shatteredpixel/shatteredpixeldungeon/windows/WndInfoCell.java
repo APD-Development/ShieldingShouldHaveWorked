@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -182,6 +185,9 @@ public class WndInfoCell extends Window {
 			}
 		}
 		
+        if (Dungeon.level.searchedWalls.shows(Dungeon.level, cell)) {
+            desc += "\n\n" + Messages.get(this, "searched_wall");
+        }
 		info.text( desc.length() == 0 ? Messages.get(this, "nothing") : desc );
 		info.maxWidth(WIDTH);
 		info.setPos(titlebar.left(), titlebar.bottom() + 2*GAP);

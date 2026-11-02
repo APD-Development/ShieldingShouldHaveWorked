@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -187,16 +190,24 @@ public class SpiritBow extends Weapon {
 	
 	@Override
 	public int min(int lvl) {
+        return previewMin(RingOfSharpshooting.levelDamageBonus(Dungeon.hero));
+    }
+
+    public int previewMin(int sharpshooting) {
 		int dmg = 1 + Dungeon.hero.lvl/5
-				+ RingOfSharpshooting.levelDamageBonus(Dungeon.hero)
+				+ sharpshooting
 				+ (curseInfusionBonus ? 1 + Dungeon.hero.lvl/30 : 0);
 		return Math.max(0, dmg);
 	}
 	
 	@Override
 	public int max(int lvl) {
+        return previewMax(RingOfSharpshooting.levelDamageBonus(Dungeon.hero));
+    }
+
+    public int previewMax(int sharpshooting) {
 		int dmg = 6 + (int)(Dungeon.hero.lvl/2.5f)
-				+ 2*RingOfSharpshooting.levelDamageBonus(Dungeon.hero)
+				+ 2*sharpshooting
 				+ (curseInfusionBonus ? 2 + Dungeon.hero.lvl/15 : 0);
 		return Math.max(0, dmg);
 	}

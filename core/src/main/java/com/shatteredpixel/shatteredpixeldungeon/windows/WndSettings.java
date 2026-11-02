@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -358,6 +361,7 @@ public class WndSettings extends WndTabbed {
 		CheckBox chkFont;
 		CheckBox chkVibrate;
         CheckBox chkConfirmWaterskin,chkConfirmTraps;
+        RedButton btnGrassDew;
 
 		@Override
 		protected void createChildren() {
@@ -602,6 +606,13 @@ public class WndSettings extends WndTabbed {
                 @Override protected void onClick(){super.onClick();SPDSettings.confirmKnownTraps(checked());}
             };
             chkConfirmTraps.checked(SPDSettings.confirmKnownTraps());add(chkConfirmTraps);
+            btnGrassDew = new RedButton(Messages.get(this, "dew_pickup")) {
+                @Override protected void onClick() {
+                    super.onClick();
+                    ShatteredPixelDungeon.scene().addToFront(new WndGrassDewSettings());
+                }
+            };
+            add(btnGrassDew);
 		}
 
 		@Override
@@ -651,7 +662,8 @@ public class WndSettings extends WndTabbed {
 			}
             chkConfirmWaterskin.setRect(0,height+GAP,width,BTN_HEIGHT);
             chkConfirmTraps.setRect(0,chkConfirmWaterskin.bottom()+GAP,width,BTN_HEIGHT);
-            height=chkConfirmTraps.bottom();
+            btnGrassDew.setRect(0,chkConfirmTraps.bottom()+GAP,width,BTN_HEIGHT);
+            height=btnGrassDew.bottom();
 		}
 
 	}

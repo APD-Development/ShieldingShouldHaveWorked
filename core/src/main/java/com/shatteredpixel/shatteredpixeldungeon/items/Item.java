@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -557,17 +560,17 @@ public class Item implements Bundlable {
 			Notes.CustomRecord note = Notes.findCustomRecord(customNoteID);
 			if (note != null) {
 				//we swap underscore(0x5F) with low macron(0x2CD) here to avoid highlighting in the item window
-				return Messages.get(this, "custom_note", note.title().replace('_', 'ˍ')) + "\n\n" + desc();
+				return Messages.get(this, "custom_note", note.title().replace('_', 'ˍ')) + "\n\n" + desc() + com.shatteredpixel.shatteredpixeldungeon.apd.qol.RingItemEffects.describe(this);
 			} else {
 				note = Notes.findCustomRecord(getClass());
 				if (note != null) {
 					//we swap underscore(0x5F) with low macron(0x2CD) here to avoid highlighting in the item window
-					return Messages.get(this, "custom_note_type", note.title().replace('_', 'ˍ')) + "\n\n" + desc();
+					return Messages.get(this, "custom_note_type", note.title().replace('_', 'ˍ')) + "\n\n" + desc() + com.shatteredpixel.shatteredpixeldungeon.apd.qol.RingItemEffects.describe(this);
 				}
 			}
 		}
 
-		return desc();
+		return desc() + com.shatteredpixel.shatteredpixeldungeon.apd.qol.RingItemEffects.describe(this);
 	}
 	
 	public String desc() {

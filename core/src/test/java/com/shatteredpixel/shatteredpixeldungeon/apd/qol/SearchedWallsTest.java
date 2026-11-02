@@ -1,0 +1,55 @@
+/*
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
+package com.shatteredpixel.shatteredpixeldungeon.apd.qol;
+
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.apd.HeadlessTestSupport;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
+import com.watabou.utils.Bundle;
+import com.watabou.utils.Random;
+import org.junit.*;
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import static org.junit.Assert.*;
+
+public class SearchedWallsTest {
+    private Level oldLevel;
+    private Hero oldHero;
+    private GrassDewPickupTest.TestLevel level;
+    public static class NoopSprite extends HeroSprite {
+        @Override public void operate(int pos){}
+        @Override public void showStatus(int color,String text,Object...args){}
+    }
+    private static class SearchHero extends Hero {@Override public void next(){}}
+    @Before public void setup(){HeadlessTestSupport.start();oldLevel=Dungeon.level;oldHero=Dungeon.hero;level=new GrassDewPickupTest.TestLevel();level.setSize(7,7);Dungeon.level=level;Arrays.fill(level.map,Terrain.WALL);Arrays.fill(level.heroFOV,true);}
+    @After public void cleanup(){Dungeon.level=oldLevel;Dungeon.hero=oldHero;}
+    @Test public void onlyVisibleWallTilesCanBeMarkedAndItDoesNotRevealSecrets(){for(int t:new int[]{Terrain.WALL,Terrain.WALL_DECO,Terrain.SECRET_DOOR,Terrain.BOOKSHELF}){level.map[16]=t;assertTrue(level.searchedWalls.mark(level,16));assertEquals(t,level.map[16]);assertTrue(level.searchedWalls.shows(level,16));level.searchedWalls.clear();}level.heroFOV[16]=false;assertFalse(level.searchedWalls.mark(level,16));level.heroFOV[16]=true;level.map[16]=Terrain.EMPTY;assertFalse(level.searchedWalls.mark(level,16));assertFalse(level.searchedWalls.mark(level,-1));assertFalse(level.searchedWalls.mark(level,49));}
+    @Test public void sparseMemoryRoundTripsWithoutFabricatingLegacySearches(){level.searchedWalls.mark(level,16);Bundle b=new Bundle();level.searchedWalls.store(b);SearchedWalls restored=new SearchedWalls();restored.restore(b,level.length());assertTrue(restored.shows(level,16));assertFalse(restored.shows(level,17));restored.restore(new Bundle(),level.length());assertFalse(restored.shows(level,16));}
+    @Test public void unsearchedFloorAddsNoSaveFields(){Bundle b=new Bundle();String before=b.toString();level.searchedWalls.store(b);assertEquals(before,b.toString());}
+    @Test public void marksFollowFogMemoryAndDisappearWhenWallIsOpened(){level.searchedWalls.mark(level,16);level.heroFOV[16]=false;assertFalse(level.searchedWalls.shows(level,16));level.visited[16]=true;assertTrue(level.searchedWalls.shows(level,16));level.map[16]=Terrain.DOOR;assertFalse(level.searchedWalls.shows(level,16));}
+    @Test public void floorResetAndSeparateFloorsHaveIndependentMemory(){level.searchedWalls.mark(level,16);Level other=new GrassDewPickupTest.TestLevel();other.setSize(7,7);assertFalse(other.searchedWalls.shows(other,16));level.setSize(7,7);assertFalse(level.searchedWalls.shows(level,16));}
+    @Test public void damagedOutOfRangeIndicesDoNotBreakLoading(){Bundle b=new Bundle();b.put("apd_searched_walls_v1",new int[]{-1,16,16,Integer.MAX_VALUE});level.searchedWalls.restore(b,49);assertTrue(level.searchedWalls.shows(level,16));assertFalse(level.searchedWalls.shows(level,17));}
+    @Test public void recordingDoesNotConsumeRandomness(){Random.pushGenerator(71);long expected=Random.Long();Random.popGenerator();Random.pushGenerator(71);try{level.searchedWalls.mark(level,16);assertEquals(expected,Random.Long());}finally{Random.popGenerator();}}
+    @Test public void realManualSearchMarksOnlyItsVisibleRadiusAndKeepsNormalTurnCost()throws Exception{SearchHero h=hero();float before=h.cooldown();assertFalse(h.search(true));assertTrue(level.searchedWalls.shows(level,16));assertFalse(level.searchedWalls.shows(level,10));assertEquals(before+2f,h.cooldown(),0);}
+    @Test public void realAutomaticSearchDoesNotAddAnyMarkersOrExtraTurn()throws Exception{SearchHero h=hero();float before=h.cooldown();assertFalse(h.search(false));Bundle b=new Bundle();level.searchedWalls.store(b);assertEquals("{}",b.toString());assertEquals(before,h.cooldown(),0);}
+    private SearchHero hero()throws Exception{Field u=Class.forName("sun.misc.Unsafe").getDeclaredField("theUnsafe");u.setAccessible(true);Object unsafe=u.get(null);SearchHero h=new SearchHero();h.heroClass=HeroClass.WARRIOR;h.pos=24;h.fieldOfView=level.heroFOV;h.sprite=(NoopSprite)unsafe.getClass().getMethod("allocateInstance",Class.class).invoke(unsafe,NoopSprite.class);Dungeon.hero=h;level.locked=true;return h;}
+}

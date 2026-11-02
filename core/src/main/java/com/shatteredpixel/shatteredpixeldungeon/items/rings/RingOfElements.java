@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -90,13 +93,17 @@ public class RingOfElements extends Ring {
 		
 		for (Class c : RESISTS){
 			if (c.isAssignableFrom(effect)){
-				return (float)Math.pow(0.825, getBuffedBonus(target, Resistance.class));
+				return elementalMultiplier(getBuffedBonus(target, Resistance.class));
 			}
 		}
 		
 		return 1f;
 	}
 	
+    public static float elementalMultiplier(int bonus) {
+        return (float)Math.pow(0.825, bonus);
+    }
+
 	public class Resistance extends RingBuff {
 	
 	}

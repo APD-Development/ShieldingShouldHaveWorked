@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -248,6 +251,15 @@ public class Hero extends Char {
 	
 	private ArrayList<Mob> visibleEnemies;
 
+    // One freshly generated grass drop only; transient automation is never saved as a player action.
+    private final transient com.shatteredpixel.shatteredpixeldungeon.apd.qol.GrassDewPickup grassDewPickup =
+            new com.shatteredpixel.shatteredpixeldungeon.apd.qol.GrassDewPickup();
+
+    public void queueGrassDew(Level level, int cell, Heap heap) {
+        grassDewPickup.offer(this, level, cell, heap);
+    }
+
+
 	//This list is maintained so that some logic checks can be skipped
 	// for enemies we know we aren't seeing normally, resulting in better performance
 	public ArrayList<Mob> mindVisionEnemies = new ArrayList<>();
@@ -293,9 +305,12 @@ public class Hero extends Char {
 	}
 
 	public int STR() {
-		int strBonus = 0;
+        return previewStrength(RingOfMight.strengthBonus(this));
+    }
 
-		strBonus += RingOfMight.strengthBonus( this );
+    /** Same strength calculation with a known ring contribution, without querying mutable spell items. */
+    public int previewStrength(int ringBonus) {
+        int strBonus = ringBonus;
 		
 		AdrenalineSurge buff = buff(AdrenalineSurge.class);
 		if (buff != null){
@@ -886,13 +901,17 @@ public class Hero extends Char {
 		BuffIndicator.refreshBoss();
 		
 		if (paralysed > 0) {
-			
+            grassDewPickup.clear();
 			curAction = null;
 			
 			spendAndNext( TICK );
 			return false;
 		}
 		
+        // Movement and its enemy turns have already completed. FOV is now refreshed.
+        // The normal Dewdrop pickup below spends its own turn, never the movement turn.
+        if (grassDewPickup.collectIfSafe(this)) return false;
+
 		boolean actResult;
 		if (curAction == null) {
 			
@@ -2662,6 +2681,10 @@ public class Hero extends Char {
 			for (curr = left + y * Dungeon.level.width(); curr <= right + y * Dungeon.level.width(); curr++){
 
 				if ((foresight || fieldOfView[curr]) && curr != pos) {
+
+                    if (intentional && Dungeon.level.searchedWalls.mark(Dungeon.level, curr)) {
+                        GameScene.updateSearchedWall(curr);
+                    }
 
 					if ((foresight && (!Dungeon.level.mapped[curr] || foresightScan))){
 						GameScene.checkedCell(curr, foresightScan ? pos : curr);

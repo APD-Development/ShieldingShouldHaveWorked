@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -153,7 +156,11 @@ public class HighGrass {
 				}
 
 				if (Random.Float() < lootChance) {
-					level.drop(new Dewdrop(), pos).sprite.drop();
+                    com.shatteredpixel.shatteredpixeldungeon.items.Heap dewHeap = level.drop(new Dewdrop(), pos);
+                    dewHeap.sprite.drop();
+                    if (ch == Dungeon.hero && ch instanceof Hero) {
+                        ((Hero) ch).queueGrassDew(level, pos, dewHeap);
+                    }
 				}
 			}
 

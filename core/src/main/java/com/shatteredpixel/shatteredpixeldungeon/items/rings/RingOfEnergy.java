@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -62,7 +65,7 @@ public class RingOfEnergy extends Ring {
 	}
 	
 	public static float wandChargeMultiplier( Char target ){
-		float bonus = (float)Math.pow(1.175, getBuffedBonus(target, Energy.class));
+		float bonus = ringChargeMultiplier(getBuffedBonus(target, Energy.class));
 
 		if (target instanceof Hero && ((Hero) target).heroClass != HeroClass.CLERIC && ((Hero) target).hasTalent(Talent.LIGHT_READING)){
 			bonus *= 1f + (0.2f * ((Hero) target).pointsInTalent(Talent.LIGHT_READING)/3f);
@@ -72,7 +75,7 @@ public class RingOfEnergy extends Ring {
 	}
 
 	public static float artifactChargeMultiplier( Char target ){
-		float bonus = (float)Math.pow(1.175, getBuffedBonus(target, Energy.class));
+		float bonus = ringChargeMultiplier(getBuffedBonus(target, Energy.class));
 
 		if (target instanceof Hero && ((Hero) target).heroClass != HeroClass.ROGUE && ((Hero) target).hasTalent(Talent.LIGHT_CLOAK)){
 			bonus *= 1f + (0.2f * ((Hero) target).pointsInTalent(Talent.LIGHT_CLOAK)/3f);
@@ -82,9 +85,13 @@ public class RingOfEnergy extends Ring {
 	}
 
 	public static float armorChargeMultiplier( Char target ){
-		return (float)Math.pow(1.175, getBuffedBonus(target, Energy.class));
+		return ringChargeMultiplier(getBuffedBonus(target, Energy.class));
 	}
 	
+    public static float ringChargeMultiplier(int bonus) {
+        return (float)Math.pow(1.175, bonus);
+    }
+
 	public class Energy extends RingBuff {
 	}
 }

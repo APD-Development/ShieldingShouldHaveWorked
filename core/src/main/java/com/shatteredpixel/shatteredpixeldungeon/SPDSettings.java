@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -712,6 +715,10 @@ public class SPDSettings extends GameSettings {
     }
     public static boolean dotOverlayEnabled(){return getBoolean("apd_dot_overlay",true);}
     public static void dotOverlayEnabled(boolean enabled){put("apd_dot_overlay",enabled);}
+    public static boolean autoCollectGrassDew(){return getBoolean("apd_auto_grass_dew",true);}
+    public static void autoCollectGrassDew(boolean enabled){put("apd_auto_grass_dew",enabled);}
+    public static boolean autoCollectDewWithEnemies(){return getBoolean("apd_auto_dew_with_enemies",false);}
+    public static void autoCollectDewWithEnemies(boolean enabled){put("apd_auto_dew_with_enemies",enabled);}
     public static boolean confirmWaterskin(){return getBoolean("apd_confirm_waterskin",true);}
     public static void confirmWaterskin(boolean enabled){put("apd_confirm_waterskin",enabled);}
     public static boolean confirmKnownTraps(){return getBoolean("apd_confirm_known_traps",true);}

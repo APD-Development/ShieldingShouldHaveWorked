@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -59,8 +62,12 @@ public class RingOfTenacity extends Ring {
 	
 	public static float damageMultiplier( Char t ){
 		//(HT - HP)/HT = heroes current % missing health.
-		return (float)Math.pow(0.85, getBuffedBonus( t, Tenacity.class)*((float)(t.HT - t.HP)/t.HT));
+		return damageMultiplier(getBuffedBonus(t, Tenacity.class), (float)(t.HT - t.HP)/t.HT);
 	}
+
+    public static float damageMultiplier(int bonus, float missingHealth) {
+        return (float)Math.pow(0.85, bonus * missingHealth);
+    }
 
 	public class Tenacity extends RingBuff {
 	}

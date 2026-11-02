@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -149,9 +152,17 @@ public class SpiritForm extends ClericSpell {
 
         /** Current built-in ring bonus without changing the stored Spirit Form item. */
         public int previewRingBonus(Hero hero, Class<? extends Ring> type) {
+            return previewRingBonus(hero, type, true);
+        }
+
+        public boolean previewRingIdentified() {
+            return !(effect instanceof Ring) || ((Ring) effect).isIdentified();
+        }
+
+        public int previewRingBonus(Hero hero, Class<? extends Ring> type, boolean buffed) {
             if (hero == null || type == null || !(effect instanceof Ring) || !type.isInstance(effect)) return 0;
             int level = hero.pointsInTalent(Talent.SPIRIT_FORM);
-            if (hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedRings.class) != null) level++;
+            if (buffed && hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedRings.class) != null) level++;
             return ((Ring) effect).cursed ? Math.min(0, level - 2) : level + 1;
         }
 

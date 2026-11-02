@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -58,9 +61,13 @@ public class RingOfHaste extends Ring {
 	}
 	
 	public static float speedMultiplier( Char target ){
-		return (float)Math.pow(1.15, getBuffedBonus(target, Haste.class));
+        return speedMultiplier(getBuffedBonus(target, Haste.class));
 	}
 	
+    public static float speedMultiplier(int bonus) {
+        return (float)Math.pow(1.15, bonus);
+    }
+
 	public class Haste extends RingBuff {
 	}
 }

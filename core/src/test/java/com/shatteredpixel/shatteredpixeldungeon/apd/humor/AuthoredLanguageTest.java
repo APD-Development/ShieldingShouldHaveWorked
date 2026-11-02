@@ -1,3 +1,20 @@
+/*
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 package com.shatteredpixel.shatteredpixeldungeon.apd.humor;
 import com.shatteredpixel.shatteredpixeldungeon.apd.text.AuthoredLanguage;
 
@@ -41,8 +58,9 @@ public class AuthoredLanguageTest {
   // Exact review: 4,998 inherited English messages, three Projecting UI keys,
   // 60 individually source-audited Arcana effect/strength keys, one rounding notice, and
   // seven exact reviewed per-region healing strings and seven neutral progression-pickup labels.
-  // Every value, including all seven new labels, is checked above with Adult Humor OFF and ON.
-  assertEquals(9,files);assertEquals("Reviewed English message inventory",5076,values);
+  // Plus 22 reviewed dew settings, searched-wall feedback and numeric ring-contribution messages.
+  // Every value, including all new labels, is checked above with Adult Humor OFF and ON.
+  assertEquals(9,files);assertEquals("Reviewed English message inventory",5098,values);
  }
  @Test public void localizedAlternativesDoNotDamageInnocentWordsOrOtherLanguages(){
   for(String innocent:new String[]{"Hell","slut","kesialan","Verdammte Charaktere","dictionary","classic","Scunthorpe","Prick","Fan of Blades"})assertEquals(innocent,AuthoredLanguage.select(innocent,false));
