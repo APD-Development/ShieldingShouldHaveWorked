@@ -45,6 +45,21 @@ public class AboutDeviceTest {
      assertTrue("label stays inside a narrow native button",labelText.width()<=button.width());
      assertTrue("wrapped label stays inside button height",labelText.height()<=button.height());button.setSize(oldWidth,20);
      Method click=button.getClass().getDeclaredMethod("onClick");click.setAccessible(true);click.invoke(button);
+     if (label.equals("Source & Licenses")) {
+      com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions menu=null;
+      for(Gizmo g:children(Game.scene()))if(g instanceof com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions && g.alive)menu=(com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions)g;
+      assertNotNull("source/license menu opens",menu);assertSame(Game.scene(),menu.parent);
+      RedButton offline=find(menu,"GPLv3 (offline)");assertNotNull("offline license action",offline);
+      assertNotNull("source link retained",find(menu,"APD source"));
+      Method offlineClick=offline.getClass().getDeclaredMethod("onClick");offlineClick.setAccessible(true);offlineClick.invoke(offline);
+      com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList pages=null;
+      for(Gizmo g:children(Game.scene()))if(g instanceof com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList && g.alive)pages=(com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList)g;
+      assertNotNull("offline GPL pages open",pages);assertSame(Game.scene(),pages.parent);
+      assertTrue(renderedText(pages).contains("Complete license, available offline."));
+      for(Gizmo g:children(pages))if(g instanceof ScrollPane)((ScrollPane)g).scrollTo(0,1000);
+      pages.hide();
+      return;
+     }
      WndUimsdText popup=null;
      for(Gizmo g:children(Game.scene()))if(g instanceof WndUimsdText && g.alive)popup=(WndUimsdText)g;
      assertNotNull(popup);assertSame(Game.scene(),popup.parent);assertTrue(popup.camera.width>0);
