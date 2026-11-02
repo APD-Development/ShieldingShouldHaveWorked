@@ -100,13 +100,15 @@ jobs:
           emulator-options: -no-window -gpu software -no-snapshot -noaudio -no-boot-anim
           disable-animations: true
           script: |
+            adb shell settings put global hide_error_dialogs 1
+            adb shell settings put secure immersive_mode_confirmations confirmed
+            adb shell wm size 1216x2688
+            adb shell wm density 442
             timeout 180 adb shell am wait-for-broadcast-idle
             adb logcat -c
             adb logcat -v time > exact350-retry-logcat.txt &
             adb install -r application/exact350.apk
             adb install -r android/build/outputs/apk/androidTest/debug/android-debug-androidTest.apk
-            adb shell wm size 1216x2688
-            adb shell wm density 442
             sed 's/android.QolItemFeedbackDeviceTest/android.QolStableCaptureDeviceTest/' tools/run-corner-search-check.sh > /tmp/apd-stable-capture.sh
             bash /tmp/apd-stable-capture.sh
       - uses: actions/upload-artifact@v4
