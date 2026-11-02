@@ -3,7 +3,9 @@ name: Complete exact TEST345 API34 acceptance
 on:
   push:
     branches: [codex/apd-phone-fixes-2026-10-09]
-    paths: [.github/workflows/apd-existing345-full-api34.yml]
+    paths:
+      - .github/workflows/apd-existing345-full-api34.yml
+      - android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/UimsdResearchDeviceTest.java
 
 permissions:
   contents: read

@@ -312,4 +312,67 @@ public class UimsdResearchDeviceTest {
             render(()->{try{ResultTable.Line line=(ResultTable.Line)field(top(WndUimsdRow.class),"selected");assertEquals("mage",line.row.text(f.def.indexOf("run.heroClass")));assertTrue(f.model.canGoBack());}catch(Exception e){throw new RuntimeException(e);}});
         }
     }
+    @Test public void comparableProgressCapturesExactCohortsAndOpensContributors()throws Exception{
+        try(ActivityScenario<AndroidLauncher> app=ActivityScenario.launch(AndroidLauncher.class)){
+            Fixture f=begin();
+            render(()->{
+                for(int i=0;i<f.rows.size();i++){
+                    Row row=f.rows.get(i);
+                    f.text(row,FactKeys.HERO_CLASS,"mage");
+                    f.num(row,FactKeys.START_MILLIS,i<30?1_000+i:2_000+i);
+                    f.num(row,FactKeys.DIFFICULTY,3);
+                    f.num(row,FactKeys.DIFFICULTY_BALANCE,0);
+                    f.num(row,FactKeys.CHALLENGES,0);
+                    f.num(row,"result.score",i<30?10:30);
+                }
+            });
+            Query earlier=f.query().addFilter(Filter.num(FactKeys.START_MILLIS,Op.LE,1_029));
+            Query recent=f.query().addFilter(Filter.num(FactKeys.START_MILLIS,Op.GE,2_000));
+
+            render(()->{f.model.showQuery(earlier);WndUimsdResearch.show(f.model);});
+            tap("Comparable personal progress");
+            tap("Capture current query as earlier cohort (A)");
+            closeWindows();
+
+            render(()->{f.model.showQuery(recent);WndUimsdResearch.show(f.model);});
+            tap("Comparable personal progress");
+            tap("Capture current query as recent cohort (B)");
+            closeWindows();
+
+            render(()->WndUimsdResearch.show(f.model));
+            tap("Comparable personal progress");
+            tap("Compare earlier A with recent B");
+            tap("Score");
+            metricValue("Score: recent minus earlier","20.00");
+            render(()->{try{
+                assertEquals(recent,f.model.query());
+                WndUimsdList w=top(WndUimsdList.class);assertNotNull(w);
+                Runnable restore=w.restoreOnSceneReset();w.hide();restore.run();
+                metricValueOnRender("Score: recent minus earlier","20.00");
+                assertEquals(10,f.rows.get(0).num(f.def.indexOf("result.score")));
+                assertEquals(30,f.rows.get(30).num(f.def.indexOf("result.score")));
+            }catch(Exception e){throw new RuntimeException(e);}});
+            PlayRunDeviceTest.visibilityScreenshot("uimsd-comparable-progress.png");
+
+            tap("Score: recent minus earlier");
+            tap("Recent exact metric contributors");
+            render(()->{try{assertEquals(30,entries().size());}catch(Exception e){throw new RuntimeException(e);}});
+            tap(0);
+            render(()->{try{
+                ResultTable.Line selected=(ResultTable.Line)field(top(WndUimsdRow.class),"selected");
+                assertEquals("run-30",selected.row.runId);
+                assertTrue(f.model.canGoBack());
+            }catch(Exception e){throw new RuntimeException(e);}});
+        }
+    }
+
+    private static void metricValueOnRender(String label,String value)throws Exception{
+        boolean found=false;
+        for(WndUimsdList.Entry entry:entries())if(entry.label.equals(label)){
+            assertEquals(value,entry.detail);
+            found=true;
+        }
+        assertTrue(found);
+    }
+
 }
