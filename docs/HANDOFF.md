@@ -1,3 +1,13 @@
+## Urgent TEST346 phone OOM and bottom searched-wall marker correction — in progress
+
+- Owner supplied diagnostic212922 and recalls manual Search. OOM/256MiB ceiling is confirmed; exact originating APD allocation is absent from captured Android-only frames. Do not claim sole root-cause attribution or physical acceptance.
+- Source correction releases UIMSD full derived catalogs/results/listeners before level loading/gameplay, cancels generation-bound workers and stale opening callbacks, bounds optional prewarm by heap/source-size eligibility, and retires stale preloads. No raw history/save/scoring/storage format change.
+- Southern wall lip is drawn on preceding floor tile in SPD. New bitmask marker atlas projects onto that visible lip and inward side edges while retaining normal fog/blockers/search-memory semantics. Core regressions cover all four orientations/hidden/unsearched/opened/border cases.
+- Full2297 local core cases passed before3 additional budget tests; budget/model/search/library contracts passed targeted. Current full required build/native checks remain pending; strengthened native QoL case verifies actual Search/resume and catalog release on API34/API36.
+- Baseline profiling41530223216 failed before APD launch:6814.48MB free versus7372.80MB needed for API36 userdata. No APD test or heap dump ran. Earlier41530056776 cancelled to keep the disposable stress hero alive. Preserve failures; corrected build uses existing matrix disk cleanup.
+- One urgent developer APK347 only; do not trigger paired-player build through the ordinary request document. Two346 APKs have already been delivered this NewYork day;347 is the third maximum. Preserve signed identity and all previous assets. Publication and download verification are pending, not done.
+- Detail: docs/APD-HEAP-AND-SEARCHED-WALLS-2026-11-02.md.
+
 ## TEST346 delivered privately — November 2, 2026
 
 - Actual release431975450/tag `apd-alpha-preview-346` published2026-11-02T21:16:04Z. Successful delivery-only workflow41526510993 uploaded both existing developer/player APKs plus key-free matching source, SHA sidecars, scan report and verification JSON; downloaded both APKs and source back and verified hashes. No application rebuild or new ordinal during delivery.

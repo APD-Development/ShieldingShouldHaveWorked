@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -96,7 +99,10 @@ public final class DatasetStore {
 	}
 
 	//Never throws.
-	public Catalog load(){
+    public interface Cancellation {boolean cancelled();}
+    public Catalog load(){return load(() -> false);}
+    public Catalog load(Cancellation cancelled){
+        checkCancelled(cancelled);
 		long t0 = System.nanoTime();
 		Catalog cat = new Catalog();
 		Map<String, DatasetDef> defs = defs();
@@ -106,16 +112,20 @@ public final class DatasetStore {
 		boolean demoFolder = new File(root, DEMO_MARKER_FILE).isFile();
 		cat.synthetic = demoFolder;
 		for (File f : logs(new File(root, "runs"))){
+            checkCancelled(cancelled);
 			if (idOf(f).startsWith(DEMO_LOG_PREFIX) != demoFolder) continue;
 			LogRows lr = rowsFor(f, false, defs, cat, fingerprintBuffer);
 			if (lr != null) recorded.add(lr);
 		}
 		for (File f : logs(new File(root, "legacy"))){
+            checkCancelled(cancelled);
 			if (idOf(f).startsWith(DEMO_LOG_PREFIX) != demoFolder) continue;
 			LogRows lr = rowsFor(f, true, defs, cat, fingerprintBuffer);
 			if (lr != null) imported.add(lr);
 		}
+        checkCancelled(cancelled);
 		assemble(cat, defs, recorded, imported);
+        checkCancelled(cancelled);
 		for (ViewDef v : Datasets.allViews()) cat.add(v);
 		//every generated dataset that has rows gets a table, under the topic it belongs to
 		for (Dataset ds : cat.datasets()){
@@ -129,6 +139,10 @@ public final class DatasetStore {
 		cat.millis = (System.nanoTime() - t0) / 1000000L;
 		return cat;
 	}
+
+    private static void checkCancelled(Cancellation cancelled){
+        if(cancelled.cancelled())throw new java.util.concurrent.CancellationException("Catalog load retired for gameplay");
+    }
 
 	private LogRows rowsFor( File log, boolean legacy, Map<String, DatasetDef> defs, Catalog cat, byte[] fingerprintBuffer ){
 		String id = idOf(log);

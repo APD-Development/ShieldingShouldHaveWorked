@@ -71,6 +71,12 @@ public class QolItemFeedbackDeviceTest {
         try(ActivityScenario<AndroidLauncher> scenario=ActivityScenario.launch(AndroidLauncher.class)){
             waitFor(()->Game.instance!=null&&Game.scene()!=null);
             TopScoresDeviceTest.render(()->Game.switchScene(TitleScene.class));waitFor(()->Game.scene() instanceof TitleScene);
+            com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdModel parked=new com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdModel("fixture","fixture");
+            parked.load(new java.io.File(androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().getTargetContext().getCacheDir(),"qol-memory-fixture"));parked.awaitLoad(30000);
+            assertNotNull(parked.catalog());
+            TopScoresDeviceTest.render(()->{try{
+                for(String name:new String[]{"model","mainModel"}){java.lang.reflect.Field f=UimsdScene.class.getDeclaredField(name);f.setAccessible(true);f.set(null,parked);}
+            }catch(Exception e){throw new RuntimeException(e);}});
             TopScoresDeviceTest.render(()->{
                 SPDSettings.intro(false);int free=GamesInProgress.firstEmpty(HeroClass.WARRIOR);assertTrue(free>0);
                 GamesInProgress.curSlot=free;GamesInProgress.selectedClass=HeroClass.WARRIOR;Dungeon.hero=null;
@@ -78,6 +84,8 @@ public class QolItemFeedbackDeviceTest {
                 InterlevelScene.mode=InterlevelScene.Mode.DESCEND;Game.switchScene(InterlevelScene.class);
             });
             waitFor(()->Game.scene() instanceof GameScene&&Dungeon.hero!=null&&Dungeon.hero.ready);
+            assertNull("gameplay releases the parked full catalog",parked.catalog());
+            assertNull("gameplay releases its query result",parked.result());
             AtomicReference<WndGrassDewSettings> settings=new AtomicReference<>();Point[] p=new Point[1];
             TopScoresDeviceTest.render(()->{try{
                 SPDSettings.autoCollectGrassDew(true);SPDSettings.autoCollectDewWithEnemies(false);
@@ -93,13 +101,29 @@ public class QolItemFeedbackDeviceTest {
             ThrowingKnife knife=new ThrowingKnife();knife.levelKnown=true;knife.cursedKnown=true;
             TopScoresDeviceTest.render(()->{RingOfSharpshooting r=new RingOfSharpshooting();r.anonymize();r.levelKnown=true;r.cursedKnown=true;Dungeon.hero.belongings.misc=r;r.activate(Dungeon.hero);});
             showItem(knife,"2-6 -> 3-8","qol-sharpshooting-weapon.png");
+            final int[] center={0};
             TopScoresDeviceTest.render(()->{
-                int cell=Dungeon.hero.pos+1;assertTrue(Dungeon.level.insideMap(cell));Level.set(cell,Terrain.WALL);
-                Dungeon.level.heroFOV[cell]=true;Dungeon.level.visited[cell]=true;
-                assertTrue(Dungeon.level.searchedWalls.mark(Dungeon.level,cell));GameScene.updateMap(cell);
-                assertTrue(Dungeon.level.searchedWalls.shows(Dungeon.level,cell));
+                int w=Dungeon.level.width();center[0]=(Dungeon.level.height()/2)*w+w/2;
+                Dungeon.hero.HT=100000;Dungeon.hero.HP=100000;
+                for(int y=-2;y<=2;y++)for(int x=-2;x<=2;x++){
+                    int c=center[0]+y*w+x;Level.set(c,Terrain.WALL);Dungeon.level.heroFOV[c]=true;Dungeon.level.visited[c]=true;Dungeon.level.discoverable[c]=true;
+                }
+                Level.set(center[0],Terrain.EMPTY);Dungeon.hero.fieldOfView=Dungeon.level.heroFOV;Dungeon.hero.pos=center[0];Dungeon.hero.sprite.place(center[0]);
+                Dungeon.hero.search(true);GameScene.updateMap();
+                assertTrue("north front face",com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallMarkers.visual(Dungeon.level,center[0]-w)>0);
+                assertEquals("south lip drawn on visible floor above",com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallMarkers.OVERHANG,com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallMarkers.visual(Dungeon.level,center[0]));
+                assertEquals("west wall inward edge",com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallMarkers.RIGHT,com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallMarkers.visual(Dungeon.level,center[0]-1));
+                assertEquals("east wall inward edge",com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallMarkers.LEFT,com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallMarkers.visual(Dungeon.level,center[0]+1));
             });
-            Thread.sleep(400);TopScoresDeviceTest.screenshot("qol-searched-wall.png");
+            Thread.sleep(600);TopScoresDeviceTest.screenshot("qol-searched-wall.png");
+            for(int i=0;i<12;i++){
+                waitFor(()->Dungeon.hero.ready);TopScoresDeviceTest.render(()->Dungeon.hero.search(true));Thread.sleep(150);
+            }
+            scenario.moveToState(androidx.lifecycle.Lifecycle.State.CREATED);Thread.sleep(100);scenario.moveToState(androidx.lifecycle.Lifecycle.State.RESUMED);
+            waitFor(()->Game.scene() instanceof GameScene&&!Game.switchingScene());
+            TopScoresDeviceTest.render(()->assertTrue("searched south wall survives resume",Dungeon.level.searchedWalls.shows(Dungeon.level,center[0]+Dungeon.level.width())));
+            System.gc();Thread.sleep(300);Runtime runtime=Runtime.getRuntime();
+            android.util.Log.i("APD_MEMORY_PROBE","fixed-search-resume used="+(runtime.totalMemory()-runtime.freeMemory())+" limit="+runtime.maxMemory());
             TopScoresDeviceTest.render(WndGplLicense::show);Thread.sleep(300);TopScoresDeviceTest.screenshot("qol-offline-license.png");
             TopScoresDeviceTest.render(()->Game.switchScene(TitleScene.class));waitFor(()->Game.scene() instanceof TitleScene);
         }finally{SPDSettings.intro(intro);SPDSettings.autoCollectGrassDew(auto);SPDSettings.autoCollectDewWithEnemies(enemies);GamesInProgress.curSlot=slot;GamesInProgress.selectedClass=selected;}

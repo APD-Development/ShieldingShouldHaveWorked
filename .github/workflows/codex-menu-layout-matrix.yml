@@ -1,4 +1,5 @@
 name: Verify responsive title menu on Android display configurations
+# TEST347 also exercises manual Search, all four wall edges and gameplay cache release on API36.
 on:
   push:
     branches: [codex/apd-phone-fixes-2026-10-09]

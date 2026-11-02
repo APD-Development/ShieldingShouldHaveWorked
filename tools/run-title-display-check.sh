@@ -32,9 +32,10 @@ elif [ "$apd_mode" = captures ]; then
   apd_images='hotbar-controls.png daily-earned-score.png daily-earned-score-scrolled.png custom-scoring-vision.png custom-scoring-vision-narrow.png'
   apd_methods=3
 elif [ "$apd_mode" = scale ]; then
-  apd_classes='com.shatteredpixel.shatteredpixeldungeon.android.TitleMenuLayoutDeviceTest,com.shatteredpixel.shatteredpixeldungeon.android.ScaleChangeDeviceTest'
+  apd_classes='com.shatteredpixel.shatteredpixeldungeon.android.TitleMenuLayoutDeviceTest,com.shatteredpixel.shatteredpixeldungeon.android.ScaleChangeDeviceTest,com.shatteredpixel.shatteredpixeldungeon.android.QolItemFeedbackDeviceTest'
   apd_images='main-title-layout.png main-title-hidden.png main-title-restored.png options-confirmations.png scale-phone-seven.png scale-phone-six.png'
-  apd_methods=3
+  apd_images="$apd_images qol-dew-settings.png qol-force-weapon.png qol-sharpshooting-weapon.png qol-searched-wall.png qol-offline-license.png"
+  apd_methods=4
 else
   apd_classes=com.shatteredpixel.shatteredpixeldungeon.android.TitleMenuLayoutDeviceTest
   apd_images='main-title-layout.png main-title-hidden.png main-title-restored.png options-confirmations.png'

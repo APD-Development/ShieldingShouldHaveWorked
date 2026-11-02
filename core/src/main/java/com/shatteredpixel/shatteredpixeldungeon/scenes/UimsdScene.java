@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -127,6 +130,16 @@ public class UimsdScene extends PixelScene {
 		return () -> backTo == GameScene.class ? "a game is open behind this screen" : null;
 	}
 
+    /** Called before level loading and when returning to gameplay; no persistent data is touched. */
+    public static void releaseForGameplay(){
+        ++openGeneration;
+        UimsdWarmCache.releaseForGameplay();
+        if(model!=null)model.releaseForGameplay();
+        if(mainModel!=null&&mainModel!=model)mainModel.releaseForGameplay();
+        cachedHome=null;cachedCatalog=null;
+        com.watabou.utils.SupportDiagnostics.event("memory.release_stats", "gameplay: derived catalogs and pending preload released");
+    }
+
 	//Opens UIMSD again where Back would have gone (after switching between demo and real data, or deleting the demo data).
 	public static void reopen(){
 		openNow(backTo);
@@ -203,7 +216,10 @@ public class UimsdScene extends PixelScene {
 
 	private static void completeOpen(long generation, com.watabou.noosa.Scene openingScene,
 			Class<? extends PixelScene> targetBackTo, File root, UimsdModel opened){
-		if (generation != openGeneration || ShatteredPixelDungeon.scene() != openingScene) return;
+		if (generation != openGeneration || ShatteredPixelDungeon.scene() != openingScene) {
+            if(opened!=null)opened.releaseForGameplay();
+            return;
+        }
 		backTo = targetBackTo;
 		model = opened;
 		if (model != null)

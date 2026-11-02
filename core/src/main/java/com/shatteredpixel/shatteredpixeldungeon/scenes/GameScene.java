@@ -229,6 +229,7 @@ public class GameScene extends PixelScene {
 
 	@Override
 	public void create() {
+        UimsdScene.releaseForGameplay();
 		
 		if (Dungeon.hero == null || Dungeon.level == null){
 			ShatteredPixelDungeon.switchNoFade(TitleScene.class);

@@ -1,3 +1,20 @@
+/*
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 package com.shatteredpixel.shatteredpixeldungeon.apd.query;
 
 import static com.shatteredpixel.shatteredpixeldungeon.apd.query.QuerySupport.*;
@@ -18,6 +35,34 @@ import java.util.List;
 //The view model and the table it feeds, driven with a made-up dataset that is not one of the shipped ones: nothing in them may
 //depend on Runs, Items or any other particular dataset.
 public class UimsdModelTest {
+
+    @Test public void gameplayReleaseDropsTablesAndBackResultsButKeepsQuery()throws Exception{
+        UimsdModel m=new UimsdModel(R,"rules");m.setCatalog(catalog());m.selectView("parts");
+        Query before=m.query();m.releaseForGameplay();
+        assertNull(m.catalog());assertNull(m.result());org.junit.Assert.assertSame(before,m.query());assertEquals(UimsdModel.State.EMPTY,m.state());
+        for(String name:new String[]{"preparedHome","preparedHomeCatalog","listener"}){
+            java.lang.reflect.Field f=UimsdModel.class.getDeclaredField(name);f.setAccessible(true);assertNull(name,f.get(m));
+        }
+        java.lang.reflect.Field back=UimsdModel.class.getDeclaredField("back");back.setAccessible(true);
+        java.util.List<?> places=(java.util.List<?>)back.get(m);assertEquals(1,places.size());
+        for(Object place:places)for(String name:new String[]{"result","dataset"}){java.lang.reflect.Field f=place.getClass().getDeclaredField(name);f.setAccessible(true);assertNull(name,f.get(place));}
+        m.setCatalog(catalog());assertEquals(UimsdModel.State.READY,m.state());assertNotNull(m.result());
+    }
+    @Test public void gameplayReleaseRetiresAnInFlightLoaderBeforeItCanPublish()throws Exception{
+        UimsdModel m=new UimsdModel(R,"rules");java.util.concurrent.CountDownLatch entered=new java.util.concurrent.CountDownLatch(1),finish=new java.util.concurrent.CountDownLatch(1);
+        java.io.File root=java.nio.file.Files.createTempDirectory("apd-retired-load").toFile();
+        try{
+            m.loadForOpen(root,false,()->{entered.countDown();try{finish.await(10,java.util.concurrent.TimeUnit.SECONDS);}catch(InterruptedException expected){}});
+            assertTrue(entered.await(10,java.util.concurrent.TimeUnit.SECONDS));m.releaseForGameplay();finish.countDown();Thread.sleep(100);
+            assertEquals(UimsdModel.State.EMPTY,m.state());assertNull(m.catalog());assertNull(m.result());
+        }finally{finish.countDown();root.delete();}
+    }
+    @Test public void cancelledCatalogReadDoesNotTouchRecordedFiles()throws Exception{
+        java.io.File root=java.nio.file.Files.createTempDirectory("apd-cancelled-catalog").toFile();java.io.File history=new java.io.File(root,"keep.txt");
+        java.nio.file.Files.write(history.toPath(),new byte[]{1,2,3});
+        try{try{new DatasetStore(root).load(()->true);org.junit.Assert.fail("cancelled load");}catch(java.util.concurrent.CancellationException expected){}assertEquals(3,history.length());}
+        finally{history.delete();root.delete();}
+    }
 
 	private static final String R = "r-now";
 	private final DatasetDef things = QuerySupport.def();

@@ -1,3 +1,20 @@
+/*
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 package com.shatteredpixel.shatteredpixeldungeon.apd.query;
 
 import java.io.File;
@@ -50,6 +67,7 @@ public final class UimsdWarmCache {
         final Key key;
         final long id;
         Thread thread;
+        volatile UimsdModel model;
         Job(Key key, long id) {
             this.key = key;
             this.id = id;
@@ -82,6 +100,23 @@ public final class UimsdWarmCache {
                 .append(':').append(file.length()).append(':').append(file.lastModified());
     }
 
+    // Optional preload must leave room for gameplay and foreground screens.
+    static boolean withinMemoryBudget(long limit,long used,long sourceBytes){
+        long budget=Math.min(32L*1024*1024,limit/8);
+        return limit>0&&sourceBytes>=0&&sourceBytes<=budget/64&&used<=limit-limit/4-budget;
+    }
+    private static boolean canPrepare(File root){
+        long bytes=0;
+        for(String folder:new String[]{"runs","legacy"}){
+            File[] files=new File(root,folder).listFiles();
+            if(files!=null)for(File file:files)if(file.isFile()&&file.getName().endsWith(".apdlog")){
+                long length=file.length();if(length>Long.MAX_VALUE-bytes)return false;bytes+=length;
+            }
+        }
+        Runtime runtime=Runtime.getRuntime();
+        return withinMemoryBudget(runtime.maxMemory(),runtime.totalMemory()-runtime.freeMemory(),bytes);
+    }
+
     /**
      * Begin preparing the real Home before the player taps UIMSD.
      * Repeated title appearances do not create concurrent duplicate loaders.
@@ -102,9 +137,15 @@ public final class UimsdWarmCache {
                 synchronized (LOCK) {
                     if (ready != null && ready.key.matches(key)
                             && before.equals(ready.sourceStamp)) return;
+                    if(ready!=null){ready.model.releaseForGameplay();ready=null;}
                 }
+                if(!canPrepare(key.root))return; // explicit UIMSD opening still reads complete history normally
                 UimsdModel prepared = new UimsdModel(key.ruleset, key.label);
-                prepared.load(key.root, key.allRules);
+                synchronized(LOCK){
+                    if(preparing!=job||job.id!=generation)return;
+                    job.model=prepared;
+                    prepared.load(key.root, key.allRules);
+                }
                 prepared.awaitLoad(60000);
                 String after = stamp(key.root);
                 if (prepared.state() != UimsdModel.State.READY ||
@@ -140,6 +181,20 @@ public final class UimsdWarmCache {
             ready = null; // only one viewer can own a mutable model
             if (now == null || !now.equals(candidate.sourceStamp)) return null;
             return candidate.model.state() == UimsdModel.State.READY ? candidate.model : null;
+        }
+    }
+
+    /** Cancel optional title preparation and drop its strong model reference before a game loads. */
+    public static void releaseForGameplay(){
+        synchronized(LOCK){
+            ++generation;
+            if(ready!=null)ready.model.releaseForGameplay();
+            ready=null;
+            Job old=preparing;preparing=null;
+            if(old!=null){
+                if(old.model!=null)old.model.releaseForGameplay();
+                if(old.thread!=null)old.thread.interrupt();
+            }
         }
     }
 

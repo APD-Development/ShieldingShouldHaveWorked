@@ -17,8 +17,16 @@
 """Editable original 16px overlay tile; no external artwork or font inputs."""
 from pathlib import Path
 from PIL import Image
-im=Image.new('RGBA',(16,16))
-points=[(5,9),(6,10),(7,11),(8,10),(9,9),(10,8)]
-for x,y in points:im.putpixel((x+1,y+1),(10,25,20,255))
-for x,y in points:im.putpixel((x,y),(147,223,171,255))
+# Bitmask atlas: visible front face, southern overhang, left edge, right edge.
+im=Image.new('RGBA',(16*16,16))
+shapes={1:[(5,9),(6,10),(7,11),(8,10),(9,9),(10,8)],
+        2:[(5,13),(6,14),(7,15),(8,14),(9,13),(10,12)],
+        4:[(1,6),(2,7),(1,8),(1,9),(2,10)],
+        8:[(14,6),(13,7),(14,8),(14,9),(13,10)]}
+for mask in range(1,16):
+ for bit,points in shapes.items():
+  if mask&bit:
+   for x,y in points:
+    if x+1<16 and y+1<16:im.putpixel((mask*16+x+1,y+1),(10,25,20,255))
+   for x,y in points:im.putpixel((mask*16+x,y),(147,223,171,255))
 im.save(Path(__file__).resolve().parents[1]/'core/src/main/assets/interfaces/apd_searched_wall.png')

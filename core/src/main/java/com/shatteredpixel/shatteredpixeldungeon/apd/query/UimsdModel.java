@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -213,7 +216,7 @@ public final class UimsdModel {
 						Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
 					SavedViews loadedColumnLayouts = warm == null
 							? SavedViews.load(root == null ? null : new File(root, COLUMN_LAYOUTS_FILE)) : warm.columnLayouts;
-					Catalog c = warm == null ? new DatasetStore(root).load() : warm.catalog;
+					Catalog c = warm == null ? new DatasetStore(root).load(() -> loadRetired(generation)) : warm.catalog;
 					// These are read-only queries. Computing the initial Home here
 					// keeps them off the frame that displays the finished catalog.
 					UimsdHome initialHome = warm == null ? UimsdHome.build(c, currentRuleset, homeAllRules)
@@ -242,6 +245,20 @@ public final class UimsdModel {
 		loader = t;
 		t.start();
 	}
+
+    /** Drop derived tables while gameplay needs the heap; keep query/navigation preferences. */
+    public synchronized void releaseForGameplay(){
+        ++loadGeneration;
+        retireSeedFloorsLocked();
+        Thread old=loader;
+        loader=null;
+        if(old!=null)old.interrupt();
+        if(seedFloorsLoader!=null)seedFloorsLoader.interrupt();
+        catalog=null;result=null;preparedHome=null;preparedHomeCatalog=null;listener=null;
+        for(Place place:back){place.result=null;place.dataset=null;}
+        state=State.EMPTY;
+    }
+    private synchronized boolean loadRetired(long generation){return generation!=loadGeneration;}
 
 	public void awaitLoad( long millis ){
 		Thread t = loader;

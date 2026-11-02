@@ -26,6 +26,6 @@ public final class SearchedWallTilemap extends DungeonTilemap {
         map(Dungeon.level.map, Dungeon.level.width());
     }
     @Override protected int getTileVisual(int pos, int tile, boolean flat) {
-        return Dungeon.level.searchedWalls.shows(Dungeon.level, pos) ? 0 : -1;
+        return com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallMarkers.visual(Dungeon.level, pos);
     }
 }

@@ -1,3 +1,20 @@
+/*
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 package com.shatteredpixel.shatteredpixeldungeon.apd.query;
 
 import static org.junit.Assert.*;
@@ -10,9 +27,20 @@ import java.nio.file.Files;
 
 /** Reuse is immediate only for a complete, unchanged model. */
 public class UimsdWarmCacheTest {
+    @Test public void lowHeapPhonesDoNotPreloadLargeHistoriesBesideGameplay(){assertFalse(UimsdWarmCache.withinMemoryBudget(256L*1024*1024,100L*1024*1024,1300000));}
+    @Test public void smallHistoriesCanStillOpenWithPreparedHome(){assertTrue(UimsdWarmCache.withinMemoryBudget(256L*1024*1024,80L*1024*1024,100000));}
+    @Test public void optionalPreparationStopsWhenTheHeapIsAlreadyBusy(){assertFalse(UimsdWarmCache.withinMemoryBudget(256L*1024*1024,200L*1024*1024,0));assertFalse(UimsdWarmCache.withinMemoryBudget(256L*1024*1024,0,Long.MAX_VALUE));}
     private static void deleteTree(File root){
         File[] children=root.listFiles();if(children!=null)for(File child:children)deleteTree(child);
         assertTrue(root.delete());
+    }
+    @Test public void gameplayDropsReadyPreloadAndCanWarmAgain()throws Exception{
+        File root=Files.createTempDirectory("apd-release-warm").toFile();
+        try{
+            UimsdWarmCache.prewarm(root,"rules-a","label",false);UimsdWarmCache.awaitPrewarmForTest(10000);
+            UimsdModel prior=readyModel();UimsdWarmCache.releaseForGameplay();assertNull(prior.catalog());assertNull(UimsdWarmCache.takeReady(root,"rules-a","label",false));
+            UimsdWarmCache.prewarm(root,"rules-a","label",false);UimsdWarmCache.awaitPrewarmForTest(10000);assertNotNull(UimsdWarmCache.takeReady(root,"rules-a","label",false));
+        }finally{deleteTree(root);}
     }
     private UimsdModel readyModel() throws Exception {
         java.lang.reflect.Field ready=UimsdWarmCache.class.getDeclaredField("ready");ready.setAccessible(true);
