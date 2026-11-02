@@ -33,14 +33,22 @@ def artifact(run,name):
  return folder,a
 spec=json.loads(pathlib.Path('docs/APD-HEAP-OWNER-DELIVERY.json').read_text());source=spec['source'];number=spec['number'];tag=f'apd-alpha-preview-{number}'
 assert api('repos/'+REPO)['private']
-for field in ('developer','display'):
- r=api(f'repos/{REPO}/actions/runs/{spec[field]}');assert r['status']=='completed' and r['conclusion']=='success' and r['head_sha']==source,(field,r['status'],r['conclusion'])
+for field in ('developer','display','compile'):
+ r=api(f'repos/{REPO}/actions/runs/{spec[field]}');assert r['status']=='completed' and r['conclusion']=='success' and (field=='compile' or r['head_sha']==source),(field,r['status'],r['conclusion'])
 assert api(f'repos/{REPO}/actions/runs/{spec["developer"]}')['run_number']==number
 for label in ('verify-and-build','android-smoke-check'):
  assert any(j['name']==label and j['conclusion']=='success' for j in api(f'repos/{REPO}/actions/runs/{spec["developer"]}/jobs')['jobs'])
 # Delivery tooling/docs may change; application/build inputs must remain exact.
 trees=[api(f'repos/{REPO}/git/trees/{s}?recursive=1') for s in (source,os.environ['GITHUB_SHA'])];assert all(not x.get('truncated') for x in trees)
 assert application_inputs(trees[0]['tree'])==application_inputs(trees[1]['tree'])
+compile_source=api(f'repos/{REPO}/actions/runs/{spec["compile"]}')['head_sha']
+compile_tree=api(f'repos/{REPO}/git/trees/{compile_source}?recursive=1');assert not compile_tree.get('truncated')
+assert application_inputs(trees[0]['tree'])==application_inputs(compile_tree['tree'])
+compile_reports,coa=artifact(spec['compile'],'apd-qol-source-verification')
+compile_proof,=compile_reports.rglob('qol-verification.json');cp=json.loads(compile_proof.read_text())
+assert cp['source_commit']==compile_source and cp['tests']==2300 and cp['apk_assembled'] is False
+assert xml_summary(compile_reports)['tests']==2300
+
 dev,da=artifact(spec['developer'],'apd-codex-private-test-apk');core,ca=artifact(spec['developer'],'apd-codex-core-tests');native,na=artifact(spec['developer'],'apd-codex-android-checks')
 # Manual exact-APK instrumentation prints terminal records to the immutable job console.
 # Convert those actual records to JUnit; do not infer success from a job status or screenshot.
@@ -129,7 +137,7 @@ side=pathlib.Path(str(sourcezip)+'.sha256');side.write_text(sha(sourcezip)+'  '+
 # Preserve the existing verified fallback and verify its actual uploaded APK assets before any new write.
 fallback=api(f'repos/{REPO}/releases/tags/apd-alpha-preview-341');assert fallback['id']==428527455
 for label,h in [('Developer','ad6281b3e41fe414187ca40824157a5bbcf102d7d86e569dbdb8439e7f47d694'),('Alpha-Testers','639ce15ddb4b02d037cd29f995c9f38514e03cf577370cf38488f4602bfd65bd')]:assert any(a['name']==f'APD-{label}-341.apk' and a.get('digest')=='sha256:'+h for a in fallback['assets'])
-evidence={'source_commit':source,'tag':tag,'number':number,'runs':{k:spec[k] for k in ('developer','display')},'test_summaries':results,'core_tests':2300,'android_tests':results['android']['tests'],'profiles':profiles,'signing_certificate':expected_cert,'application_id':'com.charltonchris29.adhdpixeldungeon.indev','version_code':920,'apk_hashes':hashes,'source_sha256':sha(sourcezip),'visual_review':images,'physical_phone_verified':False,'new_application_apks_created':1,'owner_private_delivery':True,'fallback_preserved':True,'prepared_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'baseline_memory_probe':{'run':41530223216,'apd_launched':False,'reason':'Insufficient disk for emulator userdata; no reproduction or heap dump'},'phone_allocation_origin_confirmed':False,'retained_auxiliary_failures':{'41520121956':'Obsolete stager rejected changed application inputs against a historical source; no APK test executed','41520121884':'Historical death workflow referenced an unfetched obsolete source; no APK test executed','41520121870':'Historical hotbar proof has obsolete source constraints; retained separately, not represented as passed'}}
+evidence={'source_commit':source,'tag':tag,'number':number,'runs':{k:spec[k] for k in ('developer','display','compile')},'test_summaries':results,'core_tests':2300,'android_tests':results['android']['tests'],'profiles':profiles,'signing_certificate':expected_cert,'application_id':'com.charltonchris29.adhdpixeldungeon.indev','version_code':920,'apk_hashes':hashes,'source_sha256':sha(sourcezip),'visual_review':images,'physical_phone_verified':False,'new_application_apks_created':1,'owner_private_delivery':True,'fallback_preserved':True,'prepared_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'baseline_memory_probe':{'run':41530223216,'apd_launched':False,'reason':'Insufficient disk for emulator userdata; no reproduction or heap dump'},'phone_allocation_origin_confirmed':False,'retained_auxiliary_failures':{'41520121956':'Obsolete stager rejected changed application inputs against a historical source; no APK test executed','41520121884':'Historical death workflow referenced an unfetched obsolete source; no APK test executed','41520121870':'Historical hotbar proof has obsolete source constraints; retained separately, not represented as passed'}}
 receipt=OUT/f'APD-Preview-{number}-Verification.json';receipt.write_text(json.dumps(evidence,indent=2)+'\n');files.append(receipt)
 notes=f'''Urgent memory stability and searched-wall correction. Gameplay releases unused statistics catalogs/results, cancels unfinished preloads and stale completions, and applies a conservative memory budget to optional title preparation. Lower and side searched-wall indicators follow the actual visible wall edges under existing fog/blockers. Search chances, timing, raw history, saves and scores are unchanged.
 
