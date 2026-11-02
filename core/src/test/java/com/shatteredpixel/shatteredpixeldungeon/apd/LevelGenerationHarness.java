@@ -1,3 +1,21 @@
+/*
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
+
 package com.shatteredpixel.shatteredpixeldungeon.apd;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -268,7 +286,7 @@ public final class LevelGenerationHarness {
 		return hex.toString();
 	}
 
-	private static void canonicalize( Object value, StringBuilder out ){
+	static void canonicalize( Object value, StringBuilder out ){
 		if (value instanceof JSONObject){
 			JSONObject obj = (JSONObject) value;
 			TreeMap<String, Object> sorted = new TreeMap<>();
@@ -328,6 +346,17 @@ public final class LevelGenerationHarness {
 				}
 			}
 			out.append(']');
+		} else if (value instanceof java.math.BigDecimal){
+            // Modern public-domain JSON-java parses decimals without immediately rounding to Double.
+            // The unchanged historical goldens used Double.toString. Match only its spelling,
+            // and reject any decimal whose numeric value would change. Never narrow integers.
+            java.math.BigDecimal decimal = (java.math.BigDecimal)value;
+            double legacy = decimal.doubleValue();
+            if (!Double.isFinite(legacy)
+                    || new java.math.BigDecimal(Double.toString(legacy)).compareTo(decimal) != 0) {
+                throw new AssertionError("Fingerprint decimal cannot use legacy spelling without losing precision: " + decimal);
+            }
+            out.append(Double.toString(legacy));
 		} else if (value instanceof String){
 			out.append('"').append(value).append('"');
 		} else {

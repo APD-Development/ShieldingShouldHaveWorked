@@ -83,6 +83,8 @@ jobs:
         run: ./gradlew :core:test
       - name: Build the private debug APK
         run: ./gradlew :android:assembleDebug -PapdTestBuild -PapdBuild=C${{ github.run_number }}
+      - name: Verify Android-compatible JSON method signatures
+        run: python3 tools/check_android_json_abi.py
       - name: Verify every compiled historical record matches reviewed contents
         run: |
           python3 tools/apd_build_history.py --comparison apd-history-comparison.json --ledger docs/APD-NEXT-BUILD-HISTORY.json --build ${{ github.run_number }} --verify-apk android/build/outputs/apk/debug/android-debug.apk
@@ -169,6 +171,14 @@ jobs:
           with open('apd-history-comparison.json','w') as out: json.dump(data,out)
           PY
           python3 tools/apd_build_history.py --comparison apd-history-comparison.json --ledger docs/APD-NEXT-BUILD-HISTORY.json --build ${{ github.run_number }} --previous-apk previous-verified.apk
+      - uses: actions/download-artifact@v4
+        with:
+          name: apd-codex-private-test-apk
+          path: exact-application
+          github-token: ${{ github.token }}
+          run-id: ${{ github.run_id }}
+      - name: Compile instrumentation only; reuse the produced application APK
+        run: ./gradlew :android:assembleDebugAndroidTest -PapdTestBuild -PapdBuild=C${{ github.run_number }}
       - name: Check UI restoration and play/save/continue/end on API 34
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -179,7 +189,9 @@ jobs:
           script: |
             adb logcat -c
             adb logcat -v time > codex-logcat.txt &
-            bash tools/run-codex-android-checks.sh '${{ github.run_number }}'
+            adb install -r exact-application/ADHD-Pixel-Dungeon-CODEX-TEST-${{ github.run_number }}.apk
+            adb install -r android/build/outputs/apk/androidTest/debug/android-debug-androidTest.apk
+            APD_EXISTING_APK=1 bash tools/run-codex-android-checks.sh '${{ github.run_number }}'
       - name: Keep Android evidence even if a check fails
         if: always()
         uses: actions/upload-artifact@v4
