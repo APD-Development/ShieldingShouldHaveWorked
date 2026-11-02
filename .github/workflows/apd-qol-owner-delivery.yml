@@ -6,6 +6,9 @@ on:
 permissions:
   contents: write
   actions: read
+concurrency:
+  group: apd-qol-owner-delivery-single
+  cancel-in-progress: false
 jobs:
   verify-source-and-deliver:
     runs-on: ubuntu-latest
