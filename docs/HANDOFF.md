@@ -1,3 +1,11 @@
+## APD Settings hidden-description latency source-verified; APK acceptance pending
+
+At 2026-11-03T15:05:08Z, source-only run41659741978 completed successfully on exact head82a05900b2ffe8a7e76cf8cf180276c41554f871:434 suites /2331 core tests /0 failures-errors-skips, plus desktop classes and Android debug/release/instrumentation Java compilation. No APK was assembled and no physical-phone timing is claimed.
+
+Bounded correction cd133e41603c3cee62b649b21d14fcf5bc345745 changes one production input, APDSettingsPane.java. The category root previously allocated29 non-empty hidden explanatory RenderedTextBlocks across30 rows before a category was chosen. It now allocates zero descriptions on the root; each non-empty note materializes when its section is first shown and is retained for later visits. Every control, exact note, section order, preference, scroll restoration and touch path remains. The existing categorized real-touch case now asserts zero root descriptions, visited-only materialization, all six sections, scene-reset restoration and narrow layout without adding or removing a native method.
+
+Initial build run41659269859 stopped before compilation because the history entry used unsupported ICON_SETTINGS; paired-player41659269856 consequently found no developer artifact. Corrected ledger commit efd0b4cba2b243b7baf5a008c1bed1c0abb3dbcd uses existing ICON_CHECKED and its reviewed paths exactly match the TEST358 comparison. Preserve those failures. The old display run41659270021 is still in its bounded missing-producer wait; do not start a competing matrix until it ends. No359 APK exists yet. TEST358 release432425860 remains the current private release/fallback; do not rebuild or republish it.
+
 ## TEST358 real healing On/Off toggle delivered through private Releases
 
 Owner clarified the actual requirement: tap the button labelled Off and have it become On, without using an HP slider. Root cause: the old Off option only saved-1 repeatedly and was not a toggle. This is newly corrected in358;357 did not meet that request. Native SettingsWindow changes the same button in place. Off-to-On immediately saves0 (ask before every identified Healing drink); On-to-Off saves-1. No slider or Save is required to toggle. Optional custom thresholds remain available separately; source healing math/consumption and preferences defaults are unchanged.
