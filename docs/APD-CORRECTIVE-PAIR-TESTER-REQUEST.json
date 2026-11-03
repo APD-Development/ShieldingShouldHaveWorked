@@ -2,5 +2,5 @@
   "number": 358,
   "source": "51a0819552a1b8d6c888cb273057f50dc79f2635",
   "player": 41596335643,
-  "verification": "Correct stale unsaved-slider expectation to saved On=0; rerun same tester358 APK, no application rebuild"
+  "verification": "Close parent APD settings before testing pause persistence; assert no modal covers Off hotbar. Same358 APK; actual toggle and Drink checks retained."
 }

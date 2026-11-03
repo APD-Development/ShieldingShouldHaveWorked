@@ -100,12 +100,13 @@ public class HealingSettingsDeviceTest {
             assertEquals("changing the toggle spends no turn",turnBeforeToggle,Dungeon.hero.cooldown(),0f);
             TopScoresDeviceTest.screenshot("healing-settings-toggle-on.png");
             button(settings,"Close");
+            TopScoresDeviceTest.render(()->parent.get().hide());
             scenario.moveToState(androidx.lifecycle.Lifecycle.State.CREATED);scenario.moveToState(androidx.lifecycle.Lifecycle.State.RESUMED);frames();
             assertEquals("On persists after pause/resume",0,SPDSettings.healingConfirmationThreshold());
             PotionOfHealing enabledPotion=new PotionOfHealing();enabledPotion.quantity(2);enabledPotion.setKnown();
             final float[] enabledTurn={0};
             TopScoresDeviceTest.render(()->{
-                parent.get().hide();Dungeon.hero.HT=100;Dungeon.hero.HP=10;
+                Dungeon.hero.HT=100;Dungeon.hero.HP=10;
                 assertTrue(enabledPotion.collect(Dungeon.hero.belongings.backpack));enabledTurn[0]=Dungeon.hero.cooldown();
                 GameScene.show(new WndUseItem(null,enabledPotion));
             });
@@ -151,6 +152,7 @@ public class HealingSettingsDeviceTest {
                 assertTrue(com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.CategoryHotbar.chooseItem(0,potion));
                 QuickSlotButton.cancel();Toolbar.updateLayout();QuickSlotButton.refresh();
             });frames();
+            TopScoresDeviceTest.render(()->{try{assertTrue("settings must be closed before tapping the game hotbar",TopScoresDeviceTest.find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.ui.Window.class).isEmpty());}catch(Exception e){throw new RuntimeException(e);}});
             AtomicReference<Point> hotbarPoint=new AtomicReference<>();
             TopScoresDeviceTest.render(()->{try{
                 for(QuickSlotButton b:TopScoresDeviceTest.find(Game.scene(),QuickSlotButton.class))if((Integer)field(b,"slotNum")==0&&b.visible&&b.active){
