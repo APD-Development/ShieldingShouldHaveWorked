@@ -12,6 +12,12 @@ def validate(delta,ledger):
     missing=meaningful-covered
     if missing: raise ValueError("Unreviewed build changes: "+", ".join(sorted(missing)))
     if meaningful and not ledger["changes"]: raise ValueError("A changed build cannot have empty history")
+    icon_source=pathlib.Path(__file__).resolve().parents[1]/"core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/changelist/ChangeIcons.java"
+    icons=set(re.findall(r"(?m)^\s*([A-Z][A-Z0-9_]*)\s*[,;]",icon_source.read_text()))
+    ui_source=icon_source.parent.parent/"Icons.java"
+    icons.update("ICON_"+n for n in re.findall(r"(?m)^\s*([A-Z][A-Z0-9_]*)\s*[,;]",ui_source.read_text()))
+    item_source=icon_source.parents[2]/"sprites/ItemSpriteSheet.java"
+    icons.update("ITEM_"+n for n in re.findall(r"public static final int\s+([A-Z][A-Z0-9_]*)",item_source.read_text().split("public static class Icons",1)[0]))
     seen=set()
     for change in ledger["changes"]:
         if not change["text"] or any("\t" in change[k] or "\n" in change[k] for k in ("category","sprite","title","text")) or len(change["text"].split())>100: raise ValueError("Invalid or excessive description")
@@ -19,6 +25,7 @@ def validate(delta,ledger):
         if key in seen: raise ValueError("Duplicate change description")
         seen.add(key)
         if not change["title"] or not change["sprite"]: raise ValueError("Missing title or sprite")
+        if change["sprite"] not in icons: raise ValueError("Unknown changelog icon: "+change["sprite"])
     return meaningful
 def merge_previous_apk(root,apk,expected_label):
     """Preserve compiled history between APKs; reviewed corrections already in source win."""

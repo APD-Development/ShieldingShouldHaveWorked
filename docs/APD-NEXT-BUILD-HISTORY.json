@@ -30,16 +30,19 @@
         "docs/APD-PLAYER350-DELIVERY-REQUEST.json",
         "docs/APD-TEST350-DELIVERY-RECEIPT.json",
         "docs/HANDOFF.md",
+        "tools/apd_build_history.py",
+        "tools/apd_corrective_pair_delivery.py",
         "tools/apd_heap_owner_delivery.py",
         "tools/apd_player350_delivery.py",
         "tools/run-codex-android-checks.sh",
         "tools/run-corner-search-check.sh",
-        "tools/run-title-display-check.sh"
+        "tools/run-title-display-check.sh",
+        "tools/test_apd_build_history.py"
       ]
     },
     {
       "category": "Bug Fixes",
-      "sprite": "THROWING_KNIFE",
+      "sprite": "ITEM_THROWING_KNIFE",
       "title": "Clear shots at visible enemies",
       "text": "Thrown weapons can reach a visible enemy when one continuous straight shot is clear, including diagonal grid-rounding edge cases. Walls, corners and creatures still block shots; existing Projecting enchantment behavior is preserved.",
       "paths": [

@@ -2,6 +2,13 @@ import importlib.util,pathlib,tempfile,unittest
 spec=importlib.util.spec_from_file_location('history',pathlib.Path(__file__).with_name('apd_build_history.py'));history=importlib.util.module_from_spec(spec);spec.loader.exec_module(history)
 class BuildHistoryTests(unittest.TestCase):
  def ledger(self):return {'date':'2026-10-11','previous_label':'TEST50','changes':[{'category':'Bug Fixes','sprite':'V061_BUGFIX','title':'Save protection','text':'Failed writes preserve existing saves.','paths':['core/src/main/java/Test.java']}]}
+ def test_item_sprite_names_cannot_be_used_as_changelog_icons(self):
+  ledger=self.ledger();ledger['changes'][0]['sprite']='THROWING_KNIFE'
+  with self.assertRaisesRegex(ValueError,'Unknown changelog icon'):
+   history.validate({'status':'ahead','files':[{'filename':'core/src/main/java/Test.java'}]},ledger)
+ def test_native_item_sprite_prefix_is_accepted(self):
+  ledger=self.ledger();ledger['changes'][0]['sprite']='ITEM_THROWING_KNIFE'
+  history.validate({'status':'ahead','files':[{'filename':'core/src/main/java/Test.java'}]},ledger)
  def test_missing_application_change_rejected(self):
   with self.assertRaises(ValueError):history.validate({'status':'ahead','files':[{'filename':'android/src/main/AndroidManifest.xml'}]},self.ledger())
  def test_reviewed_changes_embedded_and_duplicate_build_replaced(self):
