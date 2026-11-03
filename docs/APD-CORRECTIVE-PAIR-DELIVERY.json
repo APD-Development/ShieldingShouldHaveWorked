@@ -1,26 +1,53 @@
 {
-  "kind": "searched-wall-appearance",
-  "number": 357,
-  "source": "6bb2172e0cd45c9b2826625c094137097f6c40d0",
-  "developer": 41588017413,
-  "player": 41588017549,
-  "display": 41588017485,
-  "native": 41588017413,
-  "tester": 41588086882,
-  "tester_test_source": "70e7d335bf52667e8f2e7df6336ae05d8e8fb951",
+  "kind": "healing-toggle",
+  "number": 358,
+  "source": "51a0819552a1b8d6c888cb273057f50dc79f2635",
+  "developer": 41596335602,
+  "player": 41596335643,
+  "display": 41596335585,
+  "native": 41600059461,
+  "tester": 41599308950,
+  "tester_test_source": "87691e8f95351bd26b8ea11293cb29c11433c6d4",
   "core_tests": 2331,
   "android_tests": 71,
-  "title": "APD Alpha Preview 357 \u2014 searched-wall colors and doorway filtering",
-  "visual_review": {
-    "qol-dew-settings.png": "52d448409239cb6b34bd7107f9b97b272f3bf030bc75bfc8811c991f3a35889f",
-    "qol-force-weapon.png": "b8c6f007f960a3c7a0636acf0c82aed6a7aad9c86e35fa6fdc5c04cbb4cb3e07",
-    "qol-sharpshooting-weapon.png": "381517de0033d88666bcf0da70840b775c8542ed45f9e082b723eaf4d06db87a",
-    "qol-searched-wall.png": "55f65dd34f13006f7f599bd2f3d255bc29ff5b1ce1c88761af723aaef1a08a3a",
-    "qol-searched-wall-color.png": "18fddce5dbeee523bb9f92646f15b50f257a276fa6755886d494cf5dea335d0c",
-    "qol-offline-license.png": "7a2ba824013d6b33735524fb7c5d48794b47b809860362ac95fdf7cedfdeabda"
+  "title": "APD Alpha Preview 358 \u2014 healing confirmation On/Off toggle",
+  "fallback_number": 357,
+  "fallback_hashes": {
+    "Developer": "6452e25f61cc3ef3c4542b4e080f489357f8c719258feb1c6b744c7cb71037de",
+    "Alpha-Testers": "eb13d5bbcc293640cf8b37884868641ce37b05dd45531e3eebc09847cc723e24"
   },
-  "retained_display_failure": {
-    "job": 125757942940,
-    "reason": "Emulator GPU/device went offline; missing title captures; retry only this same-APK job."
-  }
+  "visual_review": {
+    "qol-dew-settings.png": "47c9b8d02c0323f1a4eeaf27e0df683f27e8852010403ac755e3e13e134a494b",
+    "qol-force-weapon.png": "a7c67330093e63bdbc9ee0674026fb875f87fa25c43455bbe9fabe24c02e8c7f",
+    "qol-sharpshooting-weapon.png": "e7130928ffc3a2a52ea8eae5719225a0977a384f08dc3014145e053a924aac8a",
+    "qol-searched-wall.png": "3abfc914a604a6ea7cbfd565123eaf327dfb629a33dcf7224769459c7a62896e",
+    "qol-searched-wall-color.png": "9e9983c962318f825c6b04325a17462b957369de2d1be86e7205c63c9003b8d3",
+    "qol-offline-license.png": "403895b4e93bfbc2be8b1670d0bbde09a46f967351c455c04876002534ee55bf",
+    "healing-settings-toggle-on.png": "63ccba4bdbe693d62cd13537a4da56a934af122a1a242ddaf82dce28747dc005",
+    "healing-settings-toggle-off.png": "301b309168752857e5d527d49b52718ce488cc10f70beb7746cce984b0e35797"
+  },
+  "native_test_source": "e3d7c45aa45e9187b13c3a5d18d5392a9cfde4d6",
+  "native_job_name": "same-apk-api34",
+  "native_artifact": "apd-healing358-api34",
+  "profile_overrides": {
+    "redmagic-representative-api36": {
+      "run": 41600059461,
+      "artifact": "apd-healing358-api36",
+      "test_source": "e3d7c45aa45e9187b13c3a5d18d5392a9cfde4d6"
+    }
+  },
+  "original_stale_assertion_runs": [
+    41596335602,
+    41596335585,
+    41596519859
+  ],
+  "native_case_count": 1,
+  "combine_original_native": true,
+  "retained_fixture_failure_runs": [
+    41598151553,
+    41598151808
+  ],
+  "retained_runner_failure_runs": [
+    41599309031
+  ]
 }
