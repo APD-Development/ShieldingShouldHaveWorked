@@ -34,47 +34,57 @@ def artifact(run,name):
 spec=json.loads(pathlib.Path('docs/APD-CORRECTIVE-PAIR-DELIVERY.json').read_text());source=spec['source'];number=spec['number'];tag=f'apd-alpha-preview-{number}'
 assert api('repos/'+REPO)['private']
 deadline=time.monotonic()+1500
-for field in ('developer','player','display'):
+for field in ('developer','player','display','correction'):
  while True:
   record=api(f'repos/{REPO}/actions/runs/{spec[field]}')
-  assert record['head_sha']==source
+  assert record['head_sha']==(spec['correction_test_source'] if field=='correction' else source)
   if record['status']=='completed':
-   assert record['conclusion']=='success',(field,record['conclusion']);break
+   assert record['conclusion']=='success' or field=='developer' and record['conclusion']=='failure',(field,record['conclusion']);break
   assert time.monotonic()<deadline,'Verification still pending; publication remains blocked'
   time.sleep(15)
 producer=api(f'repos/{REPO}/actions/runs/{spec['developer']}')
 assert producer['run_number']==number and spec['native']==spec['developer']
 producer_jobs=api(f'repos/{REPO}/actions/runs/{spec['developer']}/jobs')['jobs']
 assert any(j['name']=='verify-and-build' and j['conclusion']=='success' for j in producer_jobs)
-native_job,=[j for j in producer_jobs if j['name']=='android-smoke-check' and j['conclusion']=='success']
+native_job,=[j for j in producer_jobs if j['name']=='android-smoke-check' and j['conclusion']=='failure']
 # Delivery tooling/docs may change; application/build inputs must remain exact.
 trees=[api(f'repos/{REPO}/git/trees/{s}?recursive=1') for s in (source,os.environ['GITHUB_SHA'])];assert all(not x.get('truncated') for x in trees)
 assert application_inputs(trees[0]['tree'])==application_inputs(trees[1]['tree'])
 dev,da=artifact(spec['developer'],'apd-codex-private-test-apk');player,pa=artifact(spec['player'],'apd-player-matching-developer');core,ca=artifact(spec['developer'],'apd-codex-core-tests');native,na=artifact(spec['native'],'apd-codex-android-checks')
-# Manual exact-APK instrumentation prints terminal records to the immutable job console.
-# Convert those actual records to JUnit; do not infer success from a job status or screenshot.
-if not list(native.rglob('TEST-*.xml')):
-    import xml.etree.ElementTree as ET
-    job,=[j for j in api(f'repos/{REPO}/actions/runs/{spec["native"]}/jobs')['jobs'] if j['name']=='android-smoke-check']
-    raw=subprocess.check_output(['gh','api','--allow-escape-sequences',f'repos/{REPO}/actions/jobs/{job["id"]}/logs']).decode('utf-8')
-    clean=re.sub(r'\x1b\[[0-9;]*m','',raw)
-    clean=re.sub(r'(?m)^\d{4}-\d\d-\d\dT[0-9:.]+Z\s*','',clean)
-    parts=re.split(r'INSTRUMENTATION_STATUS_CODE:\s*(-?\d+)',clean);cases=[]
-    for i in range(0,len(parts)-1,2):
-        block,code=parts[i],int(parts[i+1]);cls=re.findall(r'(?m)^INSTRUMENTATION_STATUS: class=(.+)$',block);name=re.findall(r'(?m)^INSTRUMENTATION_STATUS: test=(.+)$',block)
-        if code==1:continue
-        if cls and name:
-            assert code==0,(cls[-1],name[-1],code)
-            cases.append((cls[-1].strip(),name[-1].strip()))
-    assert len(cases)==len(set(cases))==spec['android_tests'],len(cases)
-    assert re.search(r'OK \('+str(len(cases))+r' tests?\)',clean)
-    suite=ET.Element('testsuite',name='ExactAPKAndroidJUnit',tests=str(len(cases)),failures='0',errors='0',skipped='0')
-    for cls,name in cases:ET.SubElement(suite,'testcase',classname=cls,name=name)
-    ET.ElementTree(suite).write(native/'TEST-exact-apk.xml',encoding='utf-8',xml_declaration=True)
-    (OUT/'API34-exact-apk-retest-job-console.txt').write_text(raw)
-np={'application_source':source,'application_run':spec['developer'],'application_rebuilt':False,
- 'application_sha256':sha(next(dev.rglob('*.apk'))),'binding':'Successful native job downloads the same producing-run APK artifact, verifies its checksum, compiles instrumentation only and installs that exact APK.','native_job':native_job['id']}
-assert f'ADHD-Pixel-Dungeon-CODEX-TEST-{number}.apk' in raw and 'OK (71 tests)' in raw
+# Preserve the original 70 passes and its one obsolete text assertion, then require
+# that exact case to pass with the corrected stronger assertions against the SAME APK.
+import xml.etree.ElementTree as ET
+raw=subprocess.check_output(['gh','api','--allow-escape-sequences',f'repos/{REPO}/actions/jobs/{native_job['id']}/logs']).decode()
+def terminal_cases(text):
+ text=re.sub(r'(?m)^\d{4}-\d\d-\d\dT[0-9:.]+Z\s*','',re.sub(r'\x1b\[[0-9;]*m','',text))
+ parts=re.split(r'INSTRUMENTATION_STATUS_CODE:\s*(-?\d+)',text);records=[]
+ for i in range(0,len(parts)-1,2):
+  block,code=parts[i],int(parts[i+1]);classes=re.findall(r'(?m)^INSTRUMENTATION_STATUS: class=(.+)$',block);names=re.findall(r'(?m)^INSTRUMENTATION_STATUS: test=(.+)$',block)
+  if code!=1 and classes and names:records.append((classes[-1].strip(),names[-1].strip(),code))
+ return records
+original=terminal_cases(raw)
+wanted=('com.shatteredpixel.shatteredpixeldungeon.android.CustomRulesNoticeDeviceTest','healingConversionSettingExplainsItsExactScopeWithoutChangingSavedValue')
+assert len(original)==len({r[:2] for r in original})==71
+assert [r[:2] for r in original if r[2]!=0]==[wanted]
+assert 'Tests run: 71,  Failures: 1' in raw and f'ADHD-Pixel-Dungeon-CODEX-TEST-{number}.apk' in raw
+(OUT/'API34-original-70-of-71-console.txt').write_text(raw)
+correction,cora=artifact(spec['correction'],'apd-test354-scope-retest')
+cp_file,=correction.rglob('acceptance-source.json');cp=json.loads(cp_file.read_text())
+assert cp['application_source']==source and cp['application_run']==spec['developer'] and cp['application_rebuilt'] is False and cp['application_inputs_unchanged'] is True
+assert cp['test_source']==spec['correction_test_source'] and cp['application_sha256']==sha(next(dev.rglob('*.apk')))
+ct=api(f'repos/{REPO}/git/trees/{cp['test_source']}?recursive=1');assert not ct.get('truncated') and application_inputs(ct['tree'])==application_inputs(trees[0]['tree'])
+correction_console,=correction.rglob('scope-instrumentation.txt');corrected_text=correction_console.read_text()
+assert terminal_cases(corrected_text)==[(wanted[0],wanted[1],0)] and 'OK (1 test)' in corrected_text
+cases=[r[:2] for r in original if r[2]==0]+[wanted]
+assert len(cases)==len(set(cases))==71
+suite=ET.Element('testsuite',name='SameAPKCompletedCaseEvidence',tests='71',failures='0',errors='0',skipped='0')
+for cls,name in cases:
+ case=ET.SubElement(suite,'testcase',classname=cls,name=name)
+ ET.SubElement(ET.SubElement(case,'properties'),'property',name='evidence_run',value=str(spec['correction'] if (cls,name)==wanted else spec['developer']))
+ET.ElementTree(suite).write(native/'TEST-reviewed-native-case-evidence.xml',encoding='utf-8',xml_declaration=True)
+old_capture,=native.rglob('healing-conversion-setting.png');new_capture,=correction.rglob('healing-conversion-setting.png')
+invalid_capture_sha=sha(old_capture);(OUT/'original-unavailable-healing-conversion-capture.bin').write_bytes(old_capture.read_bytes());old_capture.write_bytes(new_capture.read_bytes())
+np={'application_source':source,'application_run':spec['developer'],'application_rebuilt':False,'application_sha256':sha(next(dev.rglob('*.apk'))),'native_job':native_job['id'],'original_cases':71,'original_passes':70,'original_failed_case':wanted,'corrected_case_run':spec['correction'],'corrected_case_passed':True,'single_invocation_71_pass_claim':False,'capture_replacement':{'original_sha256':invalid_capture_sha,'corrected_sha256':sha(new_capture),'original_artifact':na['id'],'corrected_artifact':cora['id']}}
 results={'core':xml_summary(core),'player_core':xml_summary(player),'android':xml_summary(native)}
 assert results['core']['tests']==results['player_core']['tests']==spec['core_tests']==2320
 assert results['android']['tests']==spec['android_tests']
@@ -151,6 +161,8 @@ for n in common:snapshot['core/src/main/assets/'+n]=assets['Developer'][n]
 snapshot['CORRESPONDING-SOURCE/generated-inputs/apd/features.txt']=assets['Developer']['apd/features.txt']
 readme=f'''APD source for both owner APK variants {number}\nProducing commit {source}; tag {tag}; versionCode920.\nJDK21; Android SDK36; included Gradle9.5 wrapper. Set ANDROID_HOME/local.properties.\nDeveloper: ./gradlew :android:assembleDebug -PapdUnsignedVerification -PapdTestBuild -PapdBuild=C{number}\nAlpha-Testers: ./gradlew :android:assembleDebug -PapdUnsignedVerification -PapdBuild=P{number}\nThese recipes build unsigned reconstructions. For an install-over update, supply the EXISTING external APD key via APD_SIGNING_KEYSTORE / APD_SIGNING_STORE_PASSWORD (optional separate key password) and omit -PapdUnsignedVerification. A different signing key cannot update existing installations; never uninstall or clear player data to work around signing.\nNo key/password/Git history is included. All generated history TSVs and runtime assets match the verified APKs. Developer features are generated by the preserved Gradle flag; the exact input is copied outside the asset root. Signing-only substitutions are explicit in manifest.json. Source reconstruction was not separately rebuilt; do not infer signed-byte reproducibility. GPLv3 or later, no warranty; original attribution/notices retained. Separate compliance audit findings remain documented; no public or external tester distribution was performed here.\n'''
 snapshot['docs/SIGNING.md']=readme.encode();substitutions.append('docs/SIGNING.md (replace outdated signing advice with exact safe build instructions)')
+readme+='\nNative test correction: the original 71-case run passed70 and failed one obsolete sentence assertion. A stronger corrected exact-chance/zero/Crystals assertion passed separately on the same APK. The test-only diff below reproduces that correction; it changes no application input and creates no replacement APK.\n'
+snapshot['CORRESPONDING-SOURCE/native-assertion-correction.patch']=subprocess.check_output(['git','diff',source,cp['test_source'],'--','android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/CustomRulesNoticeDeviceTest.java'])
 snapshot['CORRESPONDING-SOURCE/README.txt']=readme.encode();manifest={'source_commit':source,'source_tag':tag,'variants':variants,'removed_signing_paths':removed,'credential_substitutions':substitutions,'signing_config_externalized':True,'generated_history_tsv_count':sum(n.startswith('core/src/main/assets/apd/history/') and n.endswith('.tsv') for n in snapshot),'files':{n:hashlib.sha256(b).hexdigest() for n,b in sorted(snapshot.items())}}
 for n,b in snapshot.items():assert not any(v.encode() in b for v in credentials)
 snapshot['CORRESPONDING-SOURCE/manifest.json']=(json.dumps(manifest,indent=2)+'\n').encode();sourcezip=OUT/f'APD-Source-{number}.zip'
@@ -162,9 +174,9 @@ side=pathlib.Path(str(sourcezip)+'.sha256');side.write_text(sha(sourcezip)+'  '+
 fallback=api(f'repos/{REPO}/releases/tags/apd-alpha-preview-350')
 for label,h in [('Developer','468d99f7041f81c21416222bf1718a742e476d9fdd707c1cd4ab25ee304122c6'),('Alpha-Testers','53cd99d75def53a35cbb876e10bd222d3670bf633bc63ea2b00e19485f635951')]:
  assert any(a['name']==f'APD-{label}-350.apk' and a.get('digest')=='sha256:'+h for a in fallback['assets'])
-evidence={'source_commit':source,'tag':tag,'number':number,'runs':{k:spec[k] for k in ('developer','player','display','native')},'test_summaries':results,'core_tests':2320,'android_tests':results['android']['tests'],'tester_api34_tests':2,'tester_proof':tp,'tester_artifact':ta['id'],'tester_capture_review':spec.get('tester_capture_review',{}),'baseline69_cases_preserved':True,'profiles':profiles,'signing_certificate':expected_cert,'application_id':'com.charltonchris29.adhdpixeldungeon.indev','version_code':920,'apk_hashes':hashes,'source_sha256':sha(sourcezip),'visual_review':images,'visual_capture_artifact':va['id'],'physical_phone_verified':False,'new_application_apks_created':2,'owner_private_delivery':True,'fallback_preserved':True,'prepared_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'confirmed_original_failures':{'41564748055':'Actual TEST350 Off setting saved -1 but the subsequent real healing quickslot tap opened a chooser and did not drink','351_producer_41566121314':'History-review metadata lacked its own changed ledger path; stopped before any application compilation or APK creation'},'behavior':{'healing_chance_absolute':True,'zero_blocks_healing_conversion_with_exotic_crystals':True,'old_run_selected_chance_adopted_once_on_continue':True,'raw_history_rewritten':False,'existing_items_converted':False,'score_formulas_changed':False,'throwing_only_clear_visible_straight_rays':True}}
+evidence={'source_commit':source,'tag':tag,'number':number,'runs':{k:spec[k] for k in ('developer','player','display','native','tester','correction')},'test_summaries':results,'core_tests':2320,'android_tests':results['android']['tests'],'native_case_evidence':np,'corrected_native_case_artifact':cora['id'],'tester_api34_tests':2,'tester_proof':tp,'tester_artifact':ta['id'],'tester_capture_review':spec.get('tester_capture_review',{}),'baseline69_cases_preserved':True,'profiles':profiles,'signing_certificate':expected_cert,'application_id':'com.charltonchris29.adhdpixeldungeon.indev','version_code':920,'apk_hashes':hashes,'source_sha256':sha(sourcezip),'visual_review':images,'visual_capture_artifact':va['id'],'physical_phone_verified':False,'new_application_apks_created':2,'owner_private_delivery':True,'fallback_preserved':True,'prepared_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'confirmed_original_failures':{'41564748055':'Actual TEST350 Off setting saved -1 but the subsequent real healing quickslot tap opened a chooser and did not drink','351_producer_41566121314':'History-review metadata lacked its own changed ledger path; stopped before any application compilation or APK creation'},'retained_prebuild_failures':{'352':'Invalid historical-note icon prefix; no APK assembled','353':'Exposed row-cache staging-file invalidation race; deterministic regression added and fixed before354'},'behavior':{'healing_chance_absolute':True,'zero_blocks_healing_conversion_with_exotic_crystals':True,'old_run_selected_chance_adopted_once_on_continue':True,'raw_history_rewritten':False,'existing_items_converted':False,'score_formulas_changed':False,'throwing_only_clear_visible_straight_rays':True}}
 receipt=OUT/f'APD-Preview-{number}-Verification.json';receipt.write_text(json.dumps(evidence,indent=2)+'\n');files.append(receipt)
-notes=f'''Healing confirmation Off now drinks directly from a quickslot containing one identified Healing stack, with no extra chooser. Ambiguous slots and enabled warnings retain normal selection. Thrown weapons reach visible enemies when the continuous straight line is clear, including grid-rounding edge cases; walls, corners and intervening creatures still block normal shots. Existing Spirit Bow and Projecting behavior is preserved.\n\nHealing-to-Shielding now uses the exact selected percentage, including bat and other monster drops affected by Exotic Crystals. At0%, Healing never converts to Shielding. On first continue of an older save, its run adopts the selected chance once; later next-run preference changes do not rewrite that upgraded run. Existing items, raw statistics,18 Custom Rules and earned-score snapshots are preserved. Newly recorded rules distinguish the absolute policy; historical records are not rewritten.\n\nSource `{source}`. All2320 core tests passed for both variants; complete71-case API34 developer suite includes every prior69 case and both new actual-tap/old-run upgrade cases. The actual tester APK separately passed those two end-to-end API34 cases. All six display profiles passed; API36 ran six cases including both new regressions. These are automated/emulator results; physical-phone acceptance remains pending. Original signing identity/application ID retained. Install over the existing app; never uninstall or clear data.\n\nThe earlier351 attempt failed history-review metadata before compiling an APK. The original TEST350 Off failure is retained as red-before-fix evidence.\n\n'''
+notes=f'''Healing confirmation Off now drinks directly from a quickslot containing one identified Healing stack, with no extra chooser. Ambiguous slots and enabled warnings retain normal selection. Thrown weapons reach visible enemies when the continuous straight line is clear, including grid-rounding edge cases; walls, corners and intervening creatures still block normal shots. Existing Spirit Bow and Projecting behavior is preserved.\n\nHealing-to-Shielding now uses the exact selected percentage, including bat and other monster drops affected by Exotic Crystals. At0%, Healing never converts to Shielding. On first continue of an older save, its run adopts the selected chance once; later next-run preference changes do not rewrite that upgraded run. Existing items, raw statistics,18 Custom Rules and earned-score snapshots are preserved. Newly recorded rules distinguish the absolute policy; historical records are not rewritten.\n\nSource `{source}`. All2320 core tests passed for both variants; the original API34 developer run passed70/71; one case expected the superseded other-consumables sentence. That case passed separately with stronger exact-chance/zero/Crystals assertions against the SAME unchanged APK, completing all71 distinct case checks. Every prior69 case and both new actual-tap/old-run upgrade cases are retained; this is not a claim of one71-pass invocation. The actual tester APK separately passed those two end-to-end API34 cases. All six display profiles passed; API36 ran six cases including both new regressions. These are automated/emulator results; physical-phone acceptance remains pending. Original signing identity/application ID retained. Install over the existing app; never uninstall or clear data.\n\nThe earlier351 attempt failed history-review metadata before compiling an APK. The original TEST350 Off failure is retained as red-before-fix evidence.\n\n'''
 for label in ('Developer','Alpha-Testers'):notes+=f'- [{label} APK](https://github.com/{REPO}/releases/download/{tag}/APD-{label}-{number}.apk) — SHA256 `{hashes[label]}`\n'
 notes+=f'\n[Matching source for both variants](https://github.com/{REPO}/releases/download/{tag}/{sourcezip.name}) — SHA256 `{sha(sourcezip)}`. Build instructions and generated inputs are included; signing material is excluded. GPLv3 or later, no warranty; unofficial independent fork with original credits retained. Separate GPL audit findings, including historical key exposure and inherited license exceptions, remain recorded and are not declared closed by this owner preview.\n\nExisting350 fallback and all assets are preserved. Private owner delivery only; no automatic posting to external testers or public release.\n';body=OUT/'release-notes.md';body.write_text(notes)
 # Preparation is separated from publication so scan and reviewed archive evidence can be inspected first.
