@@ -1,3 +1,7 @@
+## November3 UTC: TEST354 corrective pair delivered privately
+
+DONE with immutable evidence: Off one-tap healing shortcut; exact Healing-to-Shielding chance including0%/+3 Crystals and class-based drops; first-continue adoption in existing saves with retained inventory/gold/Custom Rules/score; clear straight thrown-ray rounding; concurrent cache-writer staging safety. Application source682f784c5ce5c8b6a2b33945025a9893137e8257; release apd-alpha-preview-354; delivery41574242891, APK/source readback verified. Both variants2320 core cases, six display profiles, actual tester2 native cases. Developer70/71 original plus corrected same-APK single case =71 completed distinct cases; do NOT claim one71-pass invocation. Details/failures/signature/checksums/timing in docs/APD-TEST354-DELIVERY-RECEIPT.json and HANDOFF. NOT DONE: physical-phone acceptance and broader UIMSD/settings latency backlog. All previous historical completion entries remain below.
+
 ## 2026-11-02T21:17:41Z — TEST346 private owner release delivered and download-verified
 
 - Actual private prerelease [apd-alpha-preview-346](https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-346), release `431975450`, published `2026-11-02T21:16:04Z`. Tag and target resolve to exact application source `0d938a994359b6a0e5cb2533b1207d5722df6cab`; TEST341 and TEST330 remain intact fallbacks.
