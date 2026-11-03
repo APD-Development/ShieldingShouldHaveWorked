@@ -63,12 +63,17 @@ for i in range(0,len(parts)-1,2):
   actual.append((classes[-1].strip(),names[-1].strip()))
 assert len(actual)==len(set(actual))==spec['android_tests']
 assert re.search(r'OK \('+str(len(actual))+r' tests?\)',clean)
-# Existing XML comes from the actual same-APK console converter, not inferred job status.
+# Convert only the actual terminal console records when adb produced no JUnit file.
+if not list(native.rglob('TEST-*.xml')):
+ suite=ET.Element('testsuite',name='ActualSameAPKNativeRun',tests=str(len(actual)),failures='0',errors='0',skipped='0')
+ for cls,name in actual:ET.SubElement(suite,'testcase',classname=cls,name=name)
+ ET.ElementTree(suite).write(native/'TEST-actual-native-run.xml',encoding='utf-8',xml_declaration=True)
 np={'application_source':source,'application_run':spec['developer'],'application_rebuilt':False,'application_sha256':sha(next(dev.rglob('*.apk'))),'native_job':native_job['id'],'passed_cases':len(actual),'single_successful_invocation':True}
 (OUT/'API34-successful-job-console.txt').write_text(raw)
 results={'core':xml_summary(core),'player_core':xml_summary(player),'android':xml_summary(native)}
 assert results['core']['tests']==results['player_core']['tests']==spec['core_tests']
 assert results['android']['tests']==spec['android_tests']
+assert {(c['classname'],c['name']) for c in results['android']['cases']}==set(actual)
 # Every previously passing full-suite case must remain, along with both new end-to-end cases.
 baseline_jobs=api(f'repos/{REPO}/actions/runs/41536788270/jobs')['jobs']
 baseline_job,=[j for j in baseline_jobs if j['name']=='android-smoke-check' and j['conclusion']=='success']
