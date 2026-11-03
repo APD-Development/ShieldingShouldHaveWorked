@@ -74,7 +74,24 @@ final class SearchedWallColorDeviceChecks {
                 assertEquals(((rgb>>16)&255)/255f,layer.rm,.00001f);assertEquals(((rgb>>8)&255)/255f,layer.gm,.00001f);assertEquals((rgb&255)/255f,layer.bm,.00001f);
                 Bundle after=new Bundle();Dungeon.level.searchedWalls.store(after);assertEquals(memory.toString(),after.toString());
                 assertEquals("appearance changes spend no turn",cooldown[0],Dungeon.hero.cooldown(),0f);parent.get().hide();parent.set(null);
-            }catch(Exception e){throw new RuntimeException(e);}});frames();TopScoresDeviceTest.screenshot("qol-searched-wall-color.png");
+            }catch(Exception e){throw new RuntimeException(e);}});frames();
+            final int[] bounds=new int[4];
+            TopScoresDeviceTest.render(()->{try{
+                SearchedWallTilemap layer=TopScoresDeviceTest.find(Game.scene(),SearchedWallTilemap.class).get(0);
+                int w=Dungeon.level.width(),p=Dungeon.hero.pos-w;
+                Point a=layer.camera().cameraToScreen((p%w)*16,(p/w)*16),b=layer.camera().cameraToScreen((p%w+1)*16,(p/w+1)*16);
+                bounds[0]=a.x;bounds[1]=a.y;bounds[2]=b.x;bounds[3]=b.y;
+            }catch(Exception e){throw new RuntimeException(e);}});
+            android.graphics.Bitmap pixels=InstrumentationRegistry.getInstrumentation().getUiAutomation().takeScreenshot();assertNotNull(pixels);
+            try{
+                int magenta=0;
+                for(int y=Math.max(0,bounds[1]);y<Math.min(pixels.getHeight(),bounds[3]);y++)for(int x=Math.max(0,bounds[0]);x<Math.min(pixels.getWidth(),bounds[2]);x++){
+                    int rgb=pixels.getPixel(x,y),r=android.graphics.Color.red(rgb),g=android.graphics.Color.green(rgb),b=android.graphics.Color.blue(rgb);
+                    if(r>180&&g<150&&b>120)magenta++;
+                }
+                assertTrue("actual wall pixels must use Magenta, not a shader-ignored white glyph",magenta>0);
+            }finally{pixels.recycle();}
+            TopScoresDeviceTest.screenshot("qol-searched-wall-color.png");
         }finally{TopScoresDeviceTest.render(()->{if(parent.get()!=null)parent.get().hide();SPDSettings.searchedWallColor(previous);});}
     }
 }

@@ -11,6 +11,8 @@
       "title": "Clearer searched-wall marks",
       "text": "Choose a saved checkmark color in APD Settings under Visibility. Marks update immediately, and wall positions that known terrain rules out as doorways are left unmarked. A checkmark still means searched, not guaranteed free of secrets.",
       "paths": [
+        ".github/workflows/apd-corrective-pair-delivery.yml",
+        ".github/workflows/apd-corrective-tester-check.yml",
         ".github/workflows/apd-existing350-corner-retest.yml",
         ".github/workflows/apd-existing350-stable-api36.yml",
         ".github/workflows/apd-existing354-scope-retest.yml",
@@ -40,6 +42,7 @@
         "docs/APD-TEST354-DELIVERY-RECEIPT.json",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",
+        "tools/apd_appearance_pair_delivery.py",
         "tools/apd_corrective_pair_delivery.py",
         "tools/build_searched_wall_marker.py",
         "tools/run-codex-android-checks.sh",

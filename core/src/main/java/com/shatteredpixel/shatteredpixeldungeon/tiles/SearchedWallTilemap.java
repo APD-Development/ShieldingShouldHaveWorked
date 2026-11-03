@@ -26,6 +26,10 @@ public final class SearchedWallTilemap extends DungeonTilemap {
         applyAppearance();
         map(Dungeon.level.map, Dungeon.level.width());
     }
+    @Override protected com.watabou.noosa.NoosaScript script(){
+        // Tilemap defaults to NoLighting, which intentionally ignores hardlight().
+        return com.watabou.noosa.NoosaScript.get();
+    }
     public void applyAppearance(){
         hardlight(com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallAppearance.color(
                 com.shatteredpixel.shatteredpixeldungeon.SPDSettings.searchedWallColor()).rgb);
