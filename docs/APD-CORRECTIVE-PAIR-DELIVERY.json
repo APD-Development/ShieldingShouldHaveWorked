@@ -1,0 +1,37 @@
+{
+  "number": 354,
+  "source": "682f784c5ce5c8b6a2b33945025a9893137e8257",
+  "developer": 41571190415,
+  "player": 41571190052,
+  "display": 41571190036,
+  "native": 41571190415,
+  "core_tests": 2320,
+  "android_tests": 71,
+  "variants": [
+    "Developer",
+    "Alpha-Testers"
+  ],
+  "title": "APD Alpha Preview 354 \u2014 healing controls, exact conversion and clear throws",
+  "visual_review": {
+    "qol-searched-wall.png": "71e358251bd449aa0eef6032db9db7862065492f40fd6e422db6501db6eceeb3",
+    "qol-sharpshooting-weapon.png": "d6212edee4c17a699182f67299dd4d93d35b4794d896183394d9bad03b693f02",
+    "qol-offline-license.png": "67e9fb7cd69fc97f1fd6e881ab106cbc4d02eb0981fbf8bfb355cd1c4e05fb35",
+    "qol-dew-settings.png": "bb5f18b4a8f99d506f039ad94fe5e37856af43ba3a98f0393aa7a4f1585a9cd1",
+    "qol-force-weapon.png": "1b360a606456c2478d17d0e991750c97bf3f73fd0a24ef82863b2086cff21afb"
+  },
+  "tester": 41571245092,
+  "tester_capture_review": {
+    "healing-settings-confirm.png": {
+      "sha256": "c6c9270dfb1dadb43568d426e896d913b7cfb01b3a41e4d5addfffedfbeb8ba9",
+      "status": "not accepted as warning-dialog visual evidence: captured before paint; actual warning/cancel/confirm actions passed separately in the native case"
+    },
+    "healing-settings-entry.png": {
+      "sha256": "2b504d45f603d7be9f55fcbccd92c7396c9cb9b5e716a92b77fe655c51d57bc7",
+      "status": "reviewed: settings controls visible and readable"
+    },
+    "healing-settings-editor.png": {
+      "sha256": "4187f1518fb6a157645f838998ce96101a664fe8101c63f05023b3f092b9fcc6",
+      "status": "reviewed: settings controls visible and readable"
+    }
+  }
+}
