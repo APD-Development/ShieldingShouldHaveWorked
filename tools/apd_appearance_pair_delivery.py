@@ -34,41 +34,68 @@ def artifact(run,name):
 spec=json.loads(pathlib.Path('docs/APD-CORRECTIVE-PAIR-DELIVERY.json').read_text());source=spec['source'];number=spec['number'];tag=f'apd-alpha-preview-{number}'
 assert api('repos/'+REPO)['private']
 deadline=time.monotonic()+1500
-for field in ('developer','player','display','tester'):
+for field in ('developer','player','display','tester','native'):
  while True:
   record=api(f'repos/{REPO}/actions/runs/{spec[field]}')
-  assert record['head_sha']==(spec['tester_test_source'] if field=='tester' else source)
+  assert record['head_sha']==(spec['tester_test_source'] if field=='tester' else spec.get('native_test_source',source) if field=='native' else source)
   if record['status']=='completed':
-   assert record['conclusion']=='success',(field,record['conclusion']);break
+   assert record['conclusion']=='success' or record['conclusion']=='failure' and (field=='developer' and spec['native']!=spec['developer'] or field=='display' and spec.get('profile_overrides')),(field,record['conclusion']);break
   assert time.monotonic()<deadline,'Verification still pending; publication remains blocked'
   time.sleep(15)
 producer=api(f'repos/{REPO}/actions/runs/{spec['developer']}')
-assert producer['run_number']==number and spec['native']==spec['developer']
+assert producer['run_number']==number
 producer_jobs=api(f'repos/{REPO}/actions/runs/{spec['developer']}/jobs')['jobs']
 assert any(j['name']=='verify-and-build' and j['conclusion']=='success' for j in producer_jobs)
-native_job,=[j for j in producer_jobs if j['name']=='android-smoke-check' and j['conclusion']=='success']
+native_jobs=producer_jobs if spec['native']==spec['developer'] else api(f'repos/{REPO}/actions/runs/{spec["native"]}/jobs')['jobs']
+native_job,=[j for j in native_jobs if j['name']==spec.get('native_job_name','android-smoke-check') and j['conclusion']=='success']
+if producer['conclusion']=='failure':
+ original_job,=[j for j in producer_jobs if j['name']=='android-smoke-check' and j['conclusion']=='failure']
+ original_log=subprocess.check_output(['gh','api','--allow-escape-sequences',f'repos/{REPO}/actions/jobs/{original_job["id"]}/logs']).decode()
+ assert 'expected:<-1> but was:<0>' in original_log
+ assert re.search(r'Tests run:\s*71,\s*Failures:\s*1',original_log)
+ (OUT/'API34-original-stale-test-expectation.txt').write_text(original_log)
 # Delivery tooling/docs may change; application/build inputs must remain exact.
 trees=[api(f'repos/{REPO}/git/trees/{s}?recursive=1') for s in (source,os.environ['GITHUB_SHA'])];assert all(not x.get('truncated') for x in trees)
 assert application_inputs(trees[0]['tree'])==application_inputs(trees[1]['tree'])
-dev,da=artifact(spec['developer'],'apd-codex-private-test-apk');player,pa=artifact(spec['player'],'apd-player-matching-developer');core,ca=artifact(spec['developer'],'apd-codex-core-tests');native,na=artifact(spec['native'],'apd-codex-android-checks')
+if spec.get('native_test_source'):
+ test_tree=api(f'repos/{REPO}/git/trees/{spec["native_test_source"]}?recursive=1')
+ assert not test_tree.get('truncated') and application_inputs(test_tree['tree'])==application_inputs(trees[0]['tree'])
+dev,da=artifact(spec['developer'],'apd-codex-private-test-apk');player,pa=artifact(spec['player'],'apd-player-matching-developer');core,ca=artifact(spec['developer'],'apd-codex-core-tests');native,na=artifact(spec['native'],spec.get('native_artifact','apd-codex-android-checks'))
+if spec['native']!=spec['developer']:
+ proofs=list(native.rglob('acceptance-source.json'));assert proofs
+ native_proof=json.loads(proofs[0].read_text());assert all(json.loads(f.read_text())==native_proof for f in proofs)
+ assert native_proof['application_source']==source and native_proof['application_run']==spec['developer'] and native_proof['application_rebuilt'] is False
+ assert native_proof['test_source']==spec['native_test_source'] and native_proof['application_sha256']==sha(next(dev.rglob('*.apk')))
 # Require every terminal instrumentation result from the successful full run.
 import xml.etree.ElementTree as ET
 raw=subprocess.check_output(['gh','api','--allow-escape-sequences',f'repos/{REPO}/actions/jobs/{native_job['id']}/logs']).decode()
-clean=re.sub(r'(?m)^\d{4}-\d\d-\d\dT[0-9:.]+Z\s*','',re.sub(r'\x1b\[[0-9;]*m','',raw))
-parts=re.split(r'INSTRUMENTATION_STATUS_CODE:\s*(-?\d+)',clean);actual=[]
-for i in range(0,len(parts)-1,2):
- block,code=parts[i],int(parts[i+1]);classes=re.findall(r'(?m)^INSTRUMENTATION_STATUS: class=(.+)$',block);names=re.findall(r'(?m)^INSTRUMENTATION_STATUS: test=(.+)$',block)
- if code!=1 and classes and names:
-  assert code==0,(classes[-1],names[-1],code)
-  actual.append((classes[-1].strip(),names[-1].strip()))
+def terminal_rows(text):
+ clean=re.sub(r'(?m)^\d{4}-\d\d-\d\dT[0-9:.]+Z\s*','',re.sub(r'\x1b\[[0-9;]*m','',text))
+ parts=re.split(r'INSTRUMENTATION_STATUS_CODE:\s*(-?\d+)',clean);rows=[]
+ for i in range(0,len(parts)-1,2):
+  block,code=parts[i],int(parts[i+1]);classes=re.findall(r'(?m)^INSTRUMENTATION_STATUS: class=(.+)$',block);names=re.findall(r'(?m)^INSTRUMENTATION_STATUS: test=(.+)$',block)
+  if code!=1 and classes and names:rows.append((classes[-1].strip(),names[-1].strip(),code))
+ return rows
+rows=terminal_rows(raw);expected_count=spec.get('native_case_count',spec['android_tests'])
+assert len(rows)==len({r[:2] for r in rows})==expected_count and all(r[2]==0 for r in rows)
+assert re.search(r'OK \('+str(expected_count)+r' tests?\)',raw)
+actual=[r[:2] for r in rows];case_sources={r[:2]:spec['native'] for r in rows}
+if spec.get('combine_original_native'):
+ original_rows=terminal_rows(original_log)
+ assert len(original_rows)==len({r[:2] for r in original_rows})==spec['android_tests']
+ wanted=('com.shatteredpixel.shatteredpixeldungeon.android.HealingSettingsDeviceTest','actualSettingsChooserSavesThresholdAndGatesRealPotionUse')
+ assert [r[:2] for r in original_rows if r[2]!=0]==[wanted] and actual==[wanted]
+ passed=[r[:2] for r in original_rows if r[2]==0];actual=passed+actual
+ case_sources.update({case:spec['developer'] for case in passed})
 assert len(actual)==len(set(actual))==spec['android_tests']
-assert re.search(r'OK \('+str(len(actual))+r' tests?\)',clean)
 # Convert only the actual terminal console records when adb produced no JUnit file.
 if not list(native.rglob('TEST-*.xml')):
  suite=ET.Element('testsuite',name='ActualSameAPKNativeRun',tests=str(len(actual)),failures='0',errors='0',skipped='0')
- for cls,name in actual:ET.SubElement(suite,'testcase',classname=cls,name=name)
+ for cls,name in actual:
+  case=ET.SubElement(suite,'testcase',classname=cls,name=name)
+  ET.SubElement(ET.SubElement(case,'properties'),'property',name='evidence_run',value=str(case_sources[(cls,name)]))
  ET.ElementTree(suite).write(native/'TEST-actual-native-run.xml',encoding='utf-8',xml_declaration=True)
-np={'application_source':source,'application_run':spec['developer'],'application_rebuilt':False,'application_sha256':sha(next(dev.rglob('*.apk'))),'native_job':native_job['id'],'passed_cases':len(actual),'single_successful_invocation':True}
+np={'application_source':source,'application_run':spec['developer'],'application_rebuilt':False,'application_sha256':sha(next(dev.rglob('*.apk'))),'native_job':native_job['id'],'passed_cases':len(actual),'single_successful_invocation':not spec.get('combine_original_native',False),'case_sources':[{"class":c,"name":n,"run":case_sources[(c,n)]} for c,n in actual]}
 (OUT/'API34-successful-job-console.txt').write_text(raw)
 results={'core':xml_summary(core),'player_core':xml_summary(player),'android':xml_summary(native)}
 assert results['core']['tests']==results['player_core']['tests']==spec['core_tests']
@@ -88,7 +115,8 @@ assert len(prior)==len(set(prior))==69
 assert set(prior)<={(c['classname'],c['name']) for c in results['android']['cases']}
 assert {c['name'] for c in results['android']['cases']} >= {'actualSettingsChooserSavesThresholdAndGatesRealPotionUse','continuingOlderRunAdoptsZeroWithCrystalsAndPreservesItsItemsAndScore'}
 assert any(c['name']=='grassDewControlsRingBreakdownsSearchedWallAndOfflineLicenseRenderNatively' for c in results['android']['cases'])
-visual,va=artifact(spec['display'],'apd-title-display-redmagic-representative-api36')
+visual_override=spec.get('profile_overrides',{}).get('redmagic-representative-api36',{})
+visual,va=artifact(visual_override.get('run',spec['display']),visual_override.get('artifact','apd-title-display-redmagic-representative-api36'))
 images={}
 required_visuals={'qol-dew-settings.png','qol-force-weapon.png','qol-sharpshooting-weapon.png','qol-searched-wall.png','qol-searched-wall-color.png','qol-offline-license.png'}
 if spec.get('kind')=='healing-toggle':required_visuals|={'healing-settings-toggle-on.png','healing-settings-toggle-off.png'}
@@ -101,12 +129,19 @@ for name,expected in spec['visual_review'].items():
  images[name]=expected
 profiles={};attempts=api(f'repos/{REPO}/actions/runs/{spec["display"]}/jobs?filter=all&per_page=100')['jobs']
 jobs=list({j['name']:j for j in sorted(attempts,key=lambda j:j['id'])}.values())
-assert len(jobs)==6 and all(j['conclusion']=='success' for j in jobs)
+assert len(jobs)==6
+for job in jobs:
+ if job['conclusion']!='success':
+  assert job['conclusion']=='failure' and any(profile in job['name'] for profile in spec.get('profile_overrides',{})),job['name']
 for name in ('m53-representative','compact-virtual','small-virtual','square-virtual','short-landscape','redmagic-representative-api36'):
- folder,a=artifact(spec['display'],'apd-title-display-'+name);summary=xml_summary(folder)
+ override=spec.get('profile_overrides',{}).get(name,{})
+ folder,a=artifact(override.get('run',spec['display']),override.get('artifact','apd-title-display-'+name));summary=xml_summary(folder)
  assert summary['tests']==(6 if name.endswith('api36') else 1)
- proof,=folder.rglob('acceptance-source.json');p=json.loads(proof.read_text());assert p['application_source']==source and p['application_run']==spec['developer'] and p['application_rebuilt'] is False
- profiles[name]={'artifact':a['id'],'tests':summary['tests'],'application_sha256':p['application_sha256']}
+ proofs=list(folder.rglob('acceptance-source.json'));assert proofs
+ p=json.loads(proofs[0].read_text());assert all(json.loads(f.read_text())==p for f in proofs)
+ if override:assert p['test_source']==override['test_source']
+ assert p['application_source']==source and p['application_run']==spec['developer'] and p['application_rebuilt'] is False
+ profiles[name]={'run':override.get('run',spec['display']),'test_source':p.get('test_source'),'artifact':a['id'],'tests':summary['tests'],'application_sha256':p['application_sha256']}
  # All retained image files must decode, not only a representative capture.
  for image in folder.rglob('*.png'):
   with Image.open(image) as im:im.verify()
@@ -151,6 +186,9 @@ for n in common:snapshot['core/src/main/assets/'+n]=assets['Developer'][n]
 snapshot['CORRESPONDING-SOURCE/generated-inputs/apd/features.txt']=assets['Developer']['apd/features.txt']
 readme=f'''APD source for both owner APK variants {number}\nProducing commit {source}; tag {tag}; versionCode920.\nJDK21; Android SDK36; included Gradle9.5 wrapper. Set ANDROID_HOME/local.properties.\nDeveloper: ./gradlew :android:assembleDebug -PapdUnsignedVerification -PapdTestBuild -PapdBuild=C{number}\nAlpha-Testers: ./gradlew :android:assembleDebug -PapdUnsignedVerification -PapdBuild=P{number}\nThese recipes build unsigned reconstructions. For an install-over update, supply the EXISTING external APD key via APD_SIGNING_KEYSTORE / APD_SIGNING_STORE_PASSWORD (optional separate key password) and omit -PapdUnsignedVerification. A different signing key cannot update existing installations; never uninstall or clear player data to work around signing.\nNo key/password/Git history is included. All generated history TSVs and runtime assets match the verified APKs. Developer features are generated by the preserved Gradle flag; the exact input is copied outside the asset root. Signing-only substitutions are explicit in manifest.json. Source reconstruction was not separately rebuilt; do not infer signed-byte reproducibility. GPLv3 or later, no warranty; original attribution/notices retained. Separate compliance audit findings remain documented; no public or external tester distribution was performed here.\n'''
 snapshot['docs/SIGNING.md']=readme.encode();substitutions.append('docs/SIGNING.md (replace outdated signing advice with exact safe build instructions)')
+if spec.get('native_test_source'):
+ snapshot['CORRESPONDING-SOURCE/native-test-only-correction.patch']=subprocess.check_output(['git','diff',source,spec['native_test_source'],'--','android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/HealingSettingsDeviceTest.java'])
+ readme+='\nCorrected native test source: '+spec['native_test_source']+'. Apply CORRESPONDING-SOURCE/native-test-only-correction.patch to reproduce the accepted instrumentation. The original test expected Off(-1) after turning On; corrected expectation requires saved On(0) to remain unchanged until optional-slider Save. No application input changed and no replacement APK was built. Original failed test runs remain recorded.\n'
 snapshot['CORRESPONDING-SOURCE/README.txt']=readme.encode();manifest={'source_commit':source,'source_tag':tag,'variants':variants,'removed_signing_paths':removed,'credential_substitutions':substitutions,'signing_config_externalized':True,'generated_history_tsv_count':sum(n.startswith('core/src/main/assets/apd/history/') and n.endswith('.tsv') for n in snapshot),'files':{n:hashlib.sha256(b).hexdigest() for n,b in sorted(snapshot.items())}}
 for n,b in snapshot.items():assert not any(v.encode() in b for v in credentials)
 snapshot['CORRESPONDING-SOURCE/manifest.json']=(json.dumps(manifest,indent=2)+'\n').encode();sourcezip=OUT/f'APD-Source-{number}.zip'
@@ -164,7 +202,7 @@ fallback=api(f'repos/{REPO}/releases/tags/apd-alpha-preview-{fallback_number}')
 fallback_hashes=spec.get('fallback_hashes',{'Developer':'41f0b01ed520007741e01c274b3cd7194bf24e561c28352689c8e86fa1079755','Alpha-Testers':'3b5eaaa8df43a00c11ad4df0e7034f5d6ab701a09e61cb6c1d9e663ea83b4c31'})
 for label,h in fallback_hashes.items():
  assert any(a['name']==f'APD-{label}-{fallback_number}.apk' and a.get('digest')=='sha256:'+h for a in fallback['assets'])
-evidence={'source_commit':source,'tag':tag,'number':number,'runs':{k:spec[k] for k in ('developer','player','display','native','tester')},'test_summaries':results,'core_tests':spec['core_tests'],'android_tests':results['android']['tests'],'native_case_evidence':np,'tester_api34_tests':3,'tester_proof':tp,'tester_artifact':ta['id'],'baseline69_cases_preserved':True,'profiles':profiles,'signing_certificate':expected_cert,'application_id':'com.charltonchris29.adhdpixeldungeon.indev','version_code':920,'apk_hashes':hashes,'source_sha256':sha(sourcezip),'visual_review':images,'visual_capture_artifact':va['id'],'display_job_attempts':[{k:j.get(k) for k in ('id','name','conclusion')} for j in attempts],'retained_display_failure':spec.get('retained_display_failure'),'physical_phone_verified':False,'new_application_apks_created':2,'owner_private_delivery':True,'fallback_preserved':True,'prepared_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'rejected_candidate':{'356':'Saved settings and tint fields passed, but visual review found white glyphs: the unlit tilemap shader ignored tint. Replacement uses the standard tint shader plus actual rendered-pixel checks. No356 publication.'},'retained_prebuild_failure':{'355':'Reviewed-change list omitted the build-request document; stopped before application compilation. Metadata fixed without changing application inputs.'},'behavior':{'saved_colors':8,'immediate_tint':True,'unknown_geometry_consulted':False,'search_memory_preserved':True,'search_rng_or_turns_changed':False,'score_formulas_changed':False}}
+evidence={'source_commit':source,'tag':tag,'number':number,'runs':{k:spec[k] for k in ('developer','player','display','native','tester')},'test_summaries':results,'core_tests':spec['core_tests'],'android_tests':results['android']['tests'],'native_case_evidence':np,'native_test_source':spec.get('native_test_source'),'profile_overrides':spec.get('profile_overrides',{}),'original_stale_assertion_runs':spec.get('original_stale_assertion_runs',[]),'retained_fixture_failure_runs':spec.get('retained_fixture_failure_runs',[]),'tester_api34_tests':3,'tester_proof':tp,'tester_artifact':ta['id'],'baseline69_cases_preserved':True,'profiles':profiles,'signing_certificate':expected_cert,'application_id':'com.charltonchris29.adhdpixeldungeon.indev','version_code':920,'apk_hashes':hashes,'source_sha256':sha(sourcezip),'visual_review':images,'visual_capture_artifact':va['id'],'display_job_attempts':[{k:j.get(k) for k in ('id','name','conclusion')} for j in attempts],'retained_display_failure':spec.get('retained_display_failure'),'physical_phone_verified':False,'new_application_apks_created':2,'owner_private_delivery':True,'fallback_preserved':True,'prepared_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'rejected_candidate':{'356':'Saved settings and tint fields passed, but visual review found white glyphs: the unlit tilemap shader ignored tint. Replacement uses the standard tint shader plus actual rendered-pixel checks. No356 publication.'},'retained_prebuild_failure':{'355':'Reviewed-change list omitted the build-request document; stopped before application compilation. Metadata fixed without changing application inputs.'},'behavior':{'saved_colors':8,'immediate_tint':True,'unknown_geometry_consulted':False,'search_memory_preserved':True,'search_rng_or_turns_changed':False,'score_formulas_changed':False}}
 receipt=OUT/f'APD-Preview-{number}-Verification.json';receipt.write_text(json.dumps(evidence,indent=2)+'\n');files.append(receipt)
 notes=f"""Choose from eight saved searched-wall checkmark colors in APD Settings under Visibility. Color changes apply immediately, with no scene reload or turn. Positions which known terrain geometry rules out as doorways are left unmarked; hidden room layout and secret-door identity are never consulted. Marks still mean searched, not guaranteed secret-free. Saved search history and actual searching remain unchanged.
 
@@ -174,9 +212,9 @@ Attempt355 stopped on a missing reviewed metadata path before application compil
 
 """
 if spec.get('kind')=='healing-toggle':
- notes=f"""Healing confirmation now has a real On/Off toggle. Tapping Off turns it On immediately and the same button displays On; tapping On turns it Off. Turning On asks before every identified Healing-potion drink without requiring a slider. Optional HP thresholds remain available. The preference persists, and changing it or canceling a drink consumes no potion or turn. Previously, the Off button only saved Off again; it was not a toggle. This correction is new in{number}, not357.
+ notes=f"""Healing confirmation now has a real On/Off toggle. Tapping Off turns it On immediately and the same button displays On; tapping On turns it Off. Turning On asks before every identified Healing-potion drink without requiring a slider. Optional HP thresholds remain available. The preference persists, and changing it or canceling a drink consumes no potion or turn. Previously, the Off button only saved Off again; it was not a toggle. This correction is new in {number}, not357.
 
-Both APKs passed all{spec['core_tests']} core tests. The Developer APK passed all{spec['android_tests']} native API34 cases, the actual Alpha-Testers APK passed3 acceptance cases, and all six display profiles passed, including API36. Native taps verify Off-to-On-to-Off, immediate label changes, persistence, and a real Drink tap at low HP followed by cancellation. These are automated/emulator results; physical-phone acceptance is pending. Existing357 checkmark colors and doorway filtering are retained.
+Both APKs passed all{spec['core_tests']} core tests. Native acceptance completed all {spec['android_tests']} API34 case identities:70 passed in the original full run, and the corrected toggle case passed separately on the same APK. This is not a single71-pass invocation. The actual Alpha-Testers APK passed3 acceptance cases, and all six display profiles passed, including API36. Native taps verify Off-to-On-to-Off, immediate label changes, persistence, and a real Drink tap at low HP followed by cancellation. Original runs failed a stale Off expectation after enabling On. The expanded fixture also left a restored settings modal over its later hotbar tap; the fixture now closes the parent before pause and asserts the hotbar is unobstructed. Corrected instrumentation passed on the same unchanged APKs, with both failure histories retained. No replacement application build or new build number was made for that test correction. These are automated/emulator results; physical-phone acceptance is pending. Existing357 checkmark colors and doorway filtering are retained.
 
 Exact source `{source}`. Original signing/application ID retained; install over the existing app, never uninstall or clear data. No application rebuild for publication.
 
