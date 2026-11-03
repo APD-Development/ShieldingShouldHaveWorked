@@ -108,7 +108,27 @@ public class HealingSettingsDeviceTest {
             TopScoresDeviceTest.render(()->{assertEquals(2,potion.quantity());assertEquals(before[0],Dungeon.hero.cooldown(),0);assertEquals(hp[0],Dungeon.hero.HP);potion.execute(Dungeon.hero,PotionOfHealing.AC_DRINK);});
             waitFor("warning reopens",()->window(WndOptions.class)!=null);button(window(WndOptions.class),"USE HEALING ITEM");
             TopScoresDeviceTest.render(()->{assertEquals(1,potion.quantity());assertNotNull(Dungeon.hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing.class));});
-            waitFor("hero ready",()->Dungeon.hero.ready);TopScoresDeviceTest.render(()->Game.switchScene(TitleScene.class));waitFor("title ready",()->Game.scene() instanceof TitleScene);frames();
+            waitFor("hero ready",()->Dungeon.hero.ready);
+            TopScoresDeviceTest.render(WndHealingConfirmation::settings);
+            waitFor("Off option available",()->window(WndOptions.class)!=null);
+            button(window(WndOptions.class),"Off (one tap)");
+            assertEquals("Off button disables the saved threshold",-1,SPDSettings.healingConfirmationThreshold());
+            TopScoresDeviceTest.render(()->{
+                potion.quantity(2);Dungeon.hero.HP=90;
+                assertTrue(com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.CategoryHotbar.chooseItem(0,potion));
+                QuickSlotButton.cancel();Toolbar.updateLayout();QuickSlotButton.refresh();
+            });frames();
+            AtomicReference<Point> hotbarPoint=new AtomicReference<>();
+            TopScoresDeviceTest.render(()->{try{
+                for(QuickSlotButton b:TopScoresDeviceTest.find(Game.scene(),QuickSlotButton.class))if((Integer)field(b,"slotNum")==0&&b.visible&&b.active){
+                    hotbarPoint.set(b.camera().cameraToScreen(b.left()+b.width()/2,b.top()+b.height()/2));break;
+                }assertNotNull("actual healing quickslot",hotbarPoint.get());
+            }catch(Exception e){throw new RuntimeException(e);}});tap(hotbarPoint.get());
+            waitFor("Off tap drinks or exposes unexpected chooser",()->potion.quantity()==1||window(WndUimsdList.class)!=null);
+            assertEquals("Off (one tap) must drink directly from an unambiguous healing quickslot",1,potion.quantity());
+            assertNull("Off quickslot must not open an item chooser",window(WndUimsdList.class));
+            waitFor("ready after Off drink",()->Dungeon.hero.ready);
+            TopScoresDeviceTest.render(()->Game.switchScene(TitleScene.class));waitFor("title ready",()->Game.scene() instanceof TitleScene);frames();
         }finally{if(initialized){SPDSettings.healingConfirmationThreshold(previous);SPDSettings.intro(intro);GamesInProgress.curSlot=slot;GamesInProgress.selectedClass=selected;}}
     }
 }
