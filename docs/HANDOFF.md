@@ -1,3 +1,7 @@
+## Owner delivery policy corrected: three of EACH variant per New York day
+
+Owner clarified six total APK deliveries per day: up to3 Developer and3 Alpha-Testers, superseding the earlier3-total interpretation. Alpha-Testers350 companion authorized; use exact released source1d4bd7268fdb01dedadecddd1fcfd19d72ffa05c and original signing/app ID. No new developer APK requested or needed. Dedicated workflow builds only tester variant, preserves identical runtime assets except developer marker, checks2302 core cases and actual tester native QoL/lifecycle plus playable save/load/history, then adds new clearly named assets to the existing private350 release. All existing assets and source remain intact. Pending checks/publication are not delivery.
+
 ## TEST350 Developer delivered privately — 2026-11-03 UTC / November 2 New York
 
 - Private release apd-alpha-preview-350 published at2026-11-03T00:13:04Z; successful delivery run41550800833 attempt2. Exact application source `1d4bd7268fdb01dedadecddd1fcfd19d72ffa05c`. APK and matching key-free source were downloaded back and checked by the workflow. No application rebuild occurred during publication/retries. Only one Developer APK delivered; no Alpha-Testers variant was created or delivered in this correction.
