@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -1133,11 +1136,11 @@ public abstract class Mob extends Char {
 		} else if (loot instanceof Class<?>) {
 
 			if (ExoticPotion.regToExo.containsKey(loot)){
-				if (Random.Float() < ExoticCrystals.consumableExoticChance()){
+				if (Random.Float() < ExoticCrystals.consumableExoticChance((Class<?>)loot)){
 					return Generator.random(ExoticPotion.regToExo.get(loot));
 				}
 			} else if (ExoticScroll.regToExo.containsKey(loot)){
-				if (Random.Float() < ExoticCrystals.consumableExoticChance()){
+				if (Random.Float() < ExoticCrystals.consumableExoticChance((Class<?>)loot)){
 					return Generator.random(ExoticScroll.regToExo.get(loot));
 				}
 			}

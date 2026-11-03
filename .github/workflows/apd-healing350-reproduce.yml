@@ -1,12 +1,7 @@
 name: Reproduce healing threshold settings on exact TEST350 without rebuilding
 
 on:
-  push:
-    branches: [codex/apd-phone-fixes-2026-10-09]
-    paths:
-      - .github/workflows/apd-healing350-reproduce.yml
-      - android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/HealingSettingsDeviceTest.java
-      - android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/QolItemFeedbackDeviceTest.java
+  workflow_dispatch:
 
 permissions:
   contents: read

@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -136,7 +139,7 @@ public class APDSettingsPane extends Component {
 		add( optExotic );
 
 		info = PixelScene.renderTextBlock(
-				"Minimum chance that a generated Potion of Healing becomes Shielding. Other potions and scrolls keep normal SPD behavior. 0% keeps normal behavior.", 6 );
+				"Exact chance that a generated Potion of Healing becomes Shielding, including drops affected by Exotic Crystals. 0% prevents this conversion. Other potions and scrolls keep their normal behavior.", 6 );
 		add( info );
 
 		chkRecord = new SettingCheckBox( "Record run history" ) {

@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -711,6 +714,7 @@ public class Dungeon {
 		}
 		//APD: the exotic setting the run started with (a run saved without it stays "not recorded")
 		if (apdExoticKnown) bundle.put( APD_EXOTIC, apdExotic );
+        com.shatteredpixel.shatteredpixeldungeon.apd.healing.HealingConversionUpgrade.store(bundle);
 		bundle.put( MOBS_TO_CHAMPION, mobsToChampion );
 		bundle.put( HERO, hero );
 		bundle.put( DEPTH, depth );
@@ -858,6 +862,7 @@ public class Dungeon {
 		com.shatteredpixel.shatteredpixeldungeon.apd.loot.LootTransfers.state = com.shatteredpixel.shatteredpixeldungeon.apd.loot.LootTransitState.restore(bundle);
         Dungeon.challenges = bundle.getInt( CHALLENGES );
 		apdRestoreDifficulty( bundle );
+        com.shatteredpixel.shatteredpixeldungeon.apd.healing.HealingConversionUpgrade.applyToLoadedRun(bundle);
 
 		Dungeon.mobsToChampion = bundle.getFloat( MOBS_TO_CHAMPION );
 		

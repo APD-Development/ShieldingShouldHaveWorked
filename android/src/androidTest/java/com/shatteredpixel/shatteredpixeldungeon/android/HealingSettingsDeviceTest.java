@@ -131,4 +131,53 @@ public class HealingSettingsDeviceTest {
             TopScoresDeviceTest.render(()->Game.switchScene(TitleScene.class));waitFor("title ready",()->Game.scene() instanceof TitleScene);frames();
         }finally{if(initialized){SPDSettings.healingConfirmationThreshold(previous);SPDSettings.intro(intro);for(int i=0;i<6;i++){SPDSettings.apdHotbarCategory(i,oldCategories[i]);SPDSettings.apdHotbarItem(i,oldItems[i]);}SPDSettings.apdHotbarMode(oldMode);GamesInProgress.curSlot=slot;GamesInProgress.selectedClass=selected;}}
     }
+    @Test public void continuingOlderRunAdoptsZeroWithCrystalsAndPreservesItsItemsAndScore()throws Exception{
+        int previous=0,slot=0;boolean initialized=false,intro=false;HeroClass selected=null;
+        try(ActivityScenario<AndroidLauncher> scenario=ActivityScenario.launch(AndroidLauncher.class)){
+            waitFor("activity ready",()->Game.instance!=null&&Game.scene()!=null);
+            previous=SPDSettings.apdExoticSetting();slot=GamesInProgress.curSlot;selected=GamesInProgress.selectedClass;intro=SPDSettings.intro();initialized=true;
+            TopScoresDeviceTest.render(()->{
+                SPDSettings.intro(false);SPDSettings.apdExoticChance(0);int free=GamesInProgress.firstEmpty(HeroClass.WARRIOR);assertTrue(free>0);
+                GamesInProgress.curSlot=free;GamesInProgress.selectedClass=HeroClass.WARRIOR;Dungeon.hero=null;Dungeon.daily=false;Dungeon.dailyReplay=false;Dungeon.customSeedText="";Dungeon.initSeed();
+                InterlevelScene.mode=InterlevelScene.Mode.DESCEND;Game.switchScene(InterlevelScene.class);
+            });waitFor("game ready",()->Game.scene() instanceof GameScene&&Dungeon.hero!=null&&Dungeon.hero.ready);frames();
+            AtomicReference<com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero> oldHero=new AtomicReference<>();
+            final String[] preserved=new String[2];final int[] depth={0};
+            TopScoresDeviceTest.render(()->{try{
+                com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ExoticCrystals crystals=new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ExoticCrystals();crystals.level(3);assertTrue(crystals.collect());
+                Dungeon.gold=211;Dungeon.apdExotic=80;oldHero.set(Dungeon.hero);depth[0]=Dungeon.depth;
+                preserved[0]=Dungeon.customRules().identityText();preserved[1]=Dungeon.customScoring().multiplierExact;
+                Dungeon.saveAll();Game.switchScene(TitleScene.class);
+            }catch(Exception e){throw new RuntimeException(e);}});
+            waitFor("left gameplay before preparing legacy save",()->Game.scene() instanceof TitleScene);frames();
+            TopScoresDeviceTest.render(()->{try{
+                String file=GamesInProgress.gameFile(GamesInProgress.curSlot);
+                com.watabou.utils.Bundle save=com.watabou.utils.FileUtils.bundleFromFile(file);
+                save.put(com.shatteredpixel.shatteredpixeldungeon.apd.healing.HealingConversionUpgrade.KEY,1);
+                com.watabou.utils.FileUtils.bundleToFile(file,save);
+                InterlevelScene.mode=InterlevelScene.Mode.CONTINUE;Game.switchScene(InterlevelScene.class);
+            }catch(Exception e){throw new RuntimeException(e);}});
+            waitFor("old run resumed",()->Game.scene() instanceof GameScene&&Dungeon.hero!=oldHero.get()&&Dungeon.hero.ready);frames();
+            TopScoresDeviceTest.render(()->{try{
+                assertEquals("current run adopts selected zero",0,Dungeon.apdExotic);assertEquals(0,SPDSettings.apdExoticChance());
+                assertEquals(211,Dungeon.gold);assertEquals(depth[0],Dungeon.depth);assertEquals(preserved[0],Dungeon.customRules().identityText());assertEquals(preserved[1],Dungeon.customScoring().multiplierExact);
+                assertEquals(3,Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ExoticCrystals.class).level());
+                int before=Dungeon.LimitedDrops.BAT_HP.count;
+                try{for(int i=0;i<32;i++)assertEquals(PotionOfHealing.class,new com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bat().createLoot().getClass());}
+                finally{Dungeon.LimitedDrops.BAT_HP.count=before;}
+                Dungeon.saveAll();com.watabou.utils.Bundle save=com.watabou.utils.FileUtils.bundleFromFile(GamesInProgress.gameFile(GamesInProgress.curSlot));
+                assertEquals(2,save.getInt(com.shatteredpixel.shatteredpixeldungeon.apd.healing.HealingConversionUpgrade.KEY));
+                assertEquals(0,save.getInt("apd_exotic"));
+                SPDSettings.apdExoticChance(80);oldHero.set(Dungeon.hero);Game.switchScene(TitleScene.class);
+            }catch(Exception e){throw new RuntimeException(e);}});
+            waitFor("left upgraded gameplay",()->Game.scene() instanceof TitleScene);frames();
+            TopScoresDeviceTest.render(()->{InterlevelScene.mode=InterlevelScene.Mode.CONTINUE;Game.switchScene(InterlevelScene.class);});
+            waitFor("upgraded run resumed again",()->Game.scene() instanceof GameScene&&Dungeon.hero!=oldHero.get()&&Dungeon.hero.ready);frames();
+            TopScoresDeviceTest.render(()->{
+                assertEquals("later new-run preference does not rewrite this run",0,Dungeon.apdExotic);assertEquals(80,SPDSettings.apdExoticSetting());assertEquals(211,Dungeon.gold);
+                assertEquals(preserved[1],Dungeon.customScoring().multiplierExact);Game.switchScene(TitleScene.class);
+            });waitFor("title ready",()->Game.scene() instanceof TitleScene);frames();
+        }finally{if(initialized){SPDSettings.apdExoticChance(previous);SPDSettings.intro(intro);GamesInProgress.curSlot=slot;GamesInProgress.selectedClass=selected;}}
+    }
+
 }

@@ -1,3 +1,20 @@
+/*
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 package com.shatteredpixel.shatteredpixeldungeon.apd;
 
 import com.shatteredpixel.shatteredpixeldungeon.*;
@@ -73,7 +90,7 @@ public class ExoticHealingConversionTest {
         for (int level=-1;level<=3;level++) {
             trinket(level);
             for (int percent : new int[]{0,20,40,60,80}) for(boolean defaults : new boolean[]{false,true}) for(int seed=0;seed<64;seed++) {
-                float chance = Math.max(ExoticCrystals.consumableExoticChance(level), percent/100f);
+                float chance = percent/100f;
                 boolean shield; long next;
                 Random.pushGenerator(seed);
                 try { Random.chances(new float[]{1}); shield=Random.Float()<chance; next=Random.Long(); }
@@ -92,13 +109,50 @@ public class ExoticHealingConversionTest {
             assertEquals(ExoticCrystals.consumableExoticChance(level), ExoticCrystals.consumableExoticChance(PotionOfFrost.class), 0);
         }
     }
-    @Test public void correctedConversionSeparatesOnlyNonzeroLiveRulesFromHistoricalIdentities() {
+    @Test public void zeroAndEverySelectedHealingChanceOverrideEveryCrystalsLevel() {
+        for(int level=-1;level<=3;level++){
+            trinket(level);
+            for(int percent=0;percent<=80;percent++){
+                Dungeon.apdExotic=percent;
+                assertEquals(percent/100f,ExoticCrystals.consumableExoticChance(PotionOfHealing.class),.000001f);
+            }
+        }
+    }
+    @Test public void actualBatDropsUseZeroEvenWithFullyUpgradedCrystals() {
+        int before=Dungeon.LimitedDrops.BAT_HP.count;
+        try{
+            Dungeon.apdExotic=0;
+            for(int level=-1;level<=3;level++){
+                trinket(level);
+                for(int seed=0;seed<64;seed++){
+                    Random.pushGenerator(seed);
+                    try{assertEquals(PotionOfHealing.class,new com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bat().createLoot().getClass());}
+                    finally{Random.popGenerator();}
+                }
+            }
+        }finally{Dungeon.LimitedDrops.BAT_HP.count=before;}
+    }
+    @Test public void actualBatConversionsUseExactSavedChanceAndOneOriginalRandomDraw() {
+        int before=Dungeon.LimitedDrops.BAT_HP.count;
+        try{
+            for(int level=-1;level<=3;level++)for(int percent:new int[]{0,20,40,60,80})for(int seed=0;seed<64;seed++){
+                trinket(level);Dungeon.apdExotic=percent;boolean expected;long next;
+                Random.pushGenerator(seed);try{expected=Random.Float()<percent/100f;next=Random.Long();}finally{Random.popGenerator();}
+                Random.pushGenerator(seed);try{
+                    Item item=new com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bat().createLoot();
+                    assertEquals(expected?PotionOfShielding.class:PotionOfHealing.class,item.getClass());
+                    assertEquals("mob conversion keeps original RNG draw count",next,Random.Long());
+                }finally{Random.popGenerator();}
+            }
+        }finally{Dungeon.LimitedDrops.BAT_HP.count=before;}
+    }
+    @Test public void absoluteConversionSeparatesAllKnownLiveRulesFromHistoricalIdentities() {
         for(int percent : new int[]{0,20,40,60,80}) {
             com.shatteredpixel.shatteredpixeldungeon.apd.recorder.Ruleset legacy = com.shatteredpixel.shatteredpixeldungeon.apd.recorder.Ruleset.of(percent,0);
             com.shatteredpixel.shatteredpixeldungeon.apd.recorder.Ruleset corrected = com.shatteredpixel.shatteredpixeldungeon.apd.recorder.Ruleset.withHealingOnlyConversion(legacy);
             assertEquals(percent,corrected.exoticChance);
-            if(percent==0) assertSame(legacy,corrected);
-            else { assertNotEquals(legacy.id,corrected.id); assertTrue(corrected.text.endsWith(";exotic-scope=healing-v1")); }
+            assertNotEquals(legacy.id,corrected.id);
+            assertTrue(corrected.text.endsWith(";exotic-scope=healing-absolute-v2"));
             assertEquals(legacy.id,com.shatteredpixel.shatteredpixeldungeon.apd.recorder.Ruleset.of(percent,0).id);
         }
         com.shatteredpixel.shatteredpixeldungeon.apd.recorder.Ruleset unknown = com.shatteredpixel.shatteredpixeldungeon.apd.recorder.Ruleset.unknown();

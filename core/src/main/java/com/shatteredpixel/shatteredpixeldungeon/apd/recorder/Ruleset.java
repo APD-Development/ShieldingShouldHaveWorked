@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -115,9 +118,9 @@ public final class Ruleset {
 
     /** Distinguish the corrected healing-only override without rewriting stored historical identities. */
     public static Ruleset withHealingOnlyConversion(Ruleset base){
-        if(base.isUnknown() || base.exoticChance == 0)return base;
-        String text=base.text+";exotic-scope=healing-v1";
-        return new Ruleset("r3-"+hash12(text),text,base.exoticChance);
+        if(base.isUnknown())return base;
+        String text=base.text+";exotic-scope=healing-absolute-v2";
+        return new Ruleset("r4-"+hash12(text),text,base.exoticChance);
     }
 
 	private static String hash12( String text ){

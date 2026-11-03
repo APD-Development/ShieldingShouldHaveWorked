@@ -80,7 +80,7 @@ jobs:
           python3 tools/apd_build_history.py --comparison apd-history-comparison.json --ledger docs/APD-NEXT-BUILD-HISTORY.json --build ${{ github.run_number }} --previous-apk previous-verified.apk
       - name: Verify history and player release-note tooling
         run: python3 -m unittest discover -s tools -p test_apd_build_history.py -v
-      - name: Prove only healing shortcut and thrown-line production code changed since released TEST350
+      - name: Prove only the approved healing, conversion save upgrade and thrown-line code differs from TEST350
         env: {GH_TOKEN: '${{ github.token }}'}
         run: |
           python3 - <<'PY_SCOPE'
@@ -91,7 +91,7 @@ jobs:
           tree=lambda sha:json.loads(subprocess.check_output(['gh','api',f'repos/{os.environ["GITHUB_REPOSITORY"]}/git/trees/{sha}?recursive=1']))
           a,b=tree(source),tree(os.environ['GITHUB_SHA']);assert not a.get('truncated') and not b.get('truncated')
           x,y=application_inputs(a['tree']),application_inputs(b['tree']);changed={p for p in x.keys()|y.keys() if x.get(p)!=y.get(p)}
-          assert changed=={'core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/healing/HealingConfirmation.java','core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndCategoryHotbar.java','core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/MissileWeapon.java'},changed
+          assert changed=={'core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/APDSettingsPane.java', 'core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndCategoryHotbar.java', 'core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/trinkets/ExoticCrystals.java', 'core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Mob.java', 'core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/Ruleset.java', 'core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/healing/HealingConversionUpgrade.java', 'core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/healing/HealingConfirmation.java', 'core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/Dungeon.java', 'core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/MissileWeapon.java'},changed
           print('Only approved Off shortcut and clear straight thrown-line production inputs differ:',sorted(changed))
           PY_SCOPE
       - name: Complete core, Android debug/release and desktop checks

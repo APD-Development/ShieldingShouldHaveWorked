@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -40,11 +43,15 @@ public class ExoticCrystals extends Trinket {
 	@Override
 	public String statsDesc() {
 		if (isIdentified()){
-			return Messages.get(this, "stats_desc", Messages.decimalFormat("#.##", 100*consumableExoticChance(buffedLvl())));
+			return Messages.get(this, "stats_desc", Messages.decimalFormat("#.##", 100*consumableExoticChance(buffedLvl()))) + healingRuleDescription();
 		} else {
-			return Messages.get(this, "typical_stats_desc", Messages.decimalFormat("#.##", 100*consumableExoticChance(0)));
+			return Messages.get(this, "typical_stats_desc", Messages.decimalFormat("#.##", 100*consumableExoticChance(0))) + healingRuleDescription();
 		}
 	}
+
+    private String healingRuleDescription(){
+        return "\n\nPotions of Healing follow the run's selected Healing-to-Shielding chance instead: " + SPDSettings.apdExoticChance() + "%. At 0%, they never convert.";
+    }
 
 	public static float consumableExoticChance(){
 		return consumableExoticChance(trinketLevel(ExoticCrystals.class));
@@ -53,9 +60,8 @@ public class ExoticCrystals extends Trinket {
 	//APD's next-run override applies only to Healing -> Shielding, not other consumables.
 	//The saved run/replay setting is resolved by SPDSettings; this method consumes no RNG.
 	public static float consumableExoticChance( Class<?> regularType ){
-		float vanilla = consumableExoticChance();
-		return regularType == com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing.class
-				? Math.max(vanilla, SPDSettings.apdExoticChance() / 100f) : vanilla;
+        return regularType == com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing.class
+                ? SPDSettings.apdExoticChance() / 100f : consumableExoticChance();
 	}
 
 	public static float consumableExoticChance( int level ){

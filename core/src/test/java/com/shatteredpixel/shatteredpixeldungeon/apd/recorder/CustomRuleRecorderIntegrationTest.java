@@ -25,7 +25,7 @@ public class CustomRuleRecorderIntegrationTest {
    assertEquals(selected.preferenceText(),Dungeon.customRules().preferenceText());
    ReadResult raw=session.read(id);LifecycleEvents.RunStart start=RecorderTestSupport.runStart(raw);assertEquals(clazz.name(),start.heroClass);assertEquals(selected.preferenceText(),start.customRules);
    RunFacts facts=RunFactsBuilder.fromLog(raw,id);for(CustomDungeonRules.Slider slider:CustomDungeonRules.Slider.values())assertEquals(selected.get(slider),facts.numOr(CustomRuleFacts.key(slider.name()),-1));
-   assertTrue(facts.textOr(FactKeys.RULESET,"").startsWith("r2-"));assertEquals("experimental provisional",facts.textOr(CustomRuleFacts.SCORE_STATUS,""));assertTrue(facts.isKnown(CustomRuleFacts.MULTIPLIER));
+   assertEquals(Ruleset.current().id,facts.textOr(FactKeys.RULESET,""));assertTrue(Ruleset.current().text.contains("exotic-scope=healing-absolute-v2"));assertEquals("experimental provisional",facts.textOr(CustomRuleFacts.SCORE_STATUS,""));assertTrue(facts.isKnown(CustomRuleFacts.MULTIPLIER));
   }
  }
  @Test public void everyDifficultyAndOriginalChallengeMaskAreRecordedAlongsideCustomValues()throws Exception{
