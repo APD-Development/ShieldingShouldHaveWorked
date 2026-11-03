@@ -1,39 +1,26 @@
 {
-  "number": 354,
-  "source": "682f784c5ce5c8b6a2b33945025a9893137e8257",
-  "developer": 41571190415,
-  "player": 41571190052,
-  "display": 41571190036,
-  "native": 41571190415,
-  "core_tests": 2320,
+  "kind": "searched-wall-appearance",
+  "number": 357,
+  "source": "6bb2172e0cd45c9b2826625c094137097f6c40d0",
+  "developer": 41588017413,
+  "player": 41588017549,
+  "display": 41588017485,
+  "native": 41588017413,
+  "tester": 41588086882,
+  "tester_test_source": "70e7d335bf52667e8f2e7df6336ae05d8e8fb951",
+  "core_tests": 2331,
   "android_tests": 71,
-  "variants": [
-    "Developer",
-    "Alpha-Testers"
-  ],
-  "title": "APD Alpha Preview 354 \u2014 healing controls, exact conversion and clear throws",
+  "title": "APD Alpha Preview 357 \u2014 searched-wall colors and doorway filtering",
   "visual_review": {
-    "qol-searched-wall.png": "71e358251bd449aa0eef6032db9db7862065492f40fd6e422db6501db6eceeb3",
-    "qol-sharpshooting-weapon.png": "d6212edee4c17a699182f67299dd4d93d35b4794d896183394d9bad03b693f02",
-    "qol-offline-license.png": "67e9fb7cd69fc97f1fd6e881ab106cbc4d02eb0981fbf8bfb355cd1c4e05fb35",
-    "qol-dew-settings.png": "bb5f18b4a8f99d506f039ad94fe5e37856af43ba3a98f0393aa7a4f1585a9cd1",
-    "qol-force-weapon.png": "1b360a606456c2478d17d0e991750c97bf3f73fd0a24ef82863b2086cff21afb"
+    "qol-dew-settings.png": "52d448409239cb6b34bd7107f9b97b272f3bf030bc75bfc8811c991f3a35889f",
+    "qol-force-weapon.png": "b8c6f007f960a3c7a0636acf0c82aed6a7aad9c86e35fa6fdc5c04cbb4cb3e07",
+    "qol-sharpshooting-weapon.png": "381517de0033d88666bcf0da70840b775c8542ed45f9e082b723eaf4d06db87a",
+    "qol-searched-wall.png": "55f65dd34f13006f7f599bd2f3d255bc29ff5b1ce1c88761af723aaef1a08a3a",
+    "qol-searched-wall-color.png": "18fddce5dbeee523bb9f92646f15b50f257a276fa6755886d494cf5dea335d0c",
+    "qol-offline-license.png": "7a2ba824013d6b33735524fb7c5d48794b47b809860362ac95fdf7cedfdeabda"
   },
-  "tester": 41571245092,
-  "tester_capture_review": {
-    "healing-settings-confirm.png": {
-      "sha256": "c6c9270dfb1dadb43568d426e896d913b7cfb01b3a41e4d5addfffedfbeb8ba9",
-      "status": "not accepted as warning-dialog visual evidence: captured before paint; actual warning/cancel/confirm actions passed separately in the native case"
-    },
-    "healing-settings-entry.png": {
-      "sha256": "2b504d45f603d7be9f55fcbccd92c7396c9cb9b5e716a92b77fe655c51d57bc7",
-      "status": "reviewed: settings controls visible and readable"
-    },
-    "healing-settings-editor.png": {
-      "sha256": "4187f1518fb6a157645f838998ce96101a664fe8101c63f05023b3f092b9fcc6",
-      "status": "reviewed: settings controls visible and readable"
-    }
-  },
-  "correction": 41573512338,
-  "correction_test_source": "9243bd9623e85e894cf3208ec7671c7d1483f67c"
+  "retained_display_failure": {
+    "job": 125757942940,
+    "reason": "Emulator GPU/device went offline; missing title captures; retry only this same-APK job."
+  }
 }
