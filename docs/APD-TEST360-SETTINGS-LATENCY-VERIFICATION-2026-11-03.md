@@ -1,0 +1,12 @@
+# TEST360 APD Settings latency verification
+
+Status at 2026-11-03T15:36:20Z: compiled private candidate; full API34 acceptance pending exact-APK fixture correction. TEST358 remains the latest actual private release and fallback.
+
+- Application/build source: `88b2e837e10a73290791861824542c9d8616d8e3`; only production input differing from TEST358 is `APDSettingsPane.java`.
+- Producer run `41661720393`, job `126006339720`: success. Complete 434-suite/2,331-core inventory, desktop classes, Android debug/release compilation, reviewed history and APK assembly passed. Developer APK SHA256 `bfc829fc92b950b6c13228922eb2fe4cc1f6aa802e6427be961b12f97a94a07e`; artifact `13241313903`, ZIP digest `sha256:fb2e0b166a703b67954ff0284f5f3035920071f33716418de37da279e8e06bfd`.
+- Player run `41661719864`, job `126006336766`: success with full 2,331 core cases and matched signer/application ID/history. Player APK SHA256 `8d40c084e51a86c424f96913a630739cb69313df66a570806129855f4dd7d221`; artifact `13243216100`, ZIP digest `sha256:8b906cd5b5602aa2b5356818bd8d8814a215769b7b00f76aadffd1b3070a9378`.
+- Display run `41661720020`: attempt 1 retained infrastructure failures (small-profile GitHub API stream cancellation; short-landscape native test passed before emulator-offline corrupt capture). Failed-job-only attempt 2 completed at `2026-11-03T15:36:20Z`; all six exact-APK profiles passed: small, compact, square, short landscape, M53 representative and RedMagic/API36 representative.
+- Main API34 job `126008868337` ran all 71 cases in 561.655 seconds and passed 70. The sole failure was `categorizedSettingsPreserveControlsAndRespondOnSmallScreens`: the fixture treated the title-only `btnCurrentCustomRules` row as eligible. Production intentionally skips it outside `GameScene`, so its note correctly remained unallocated. The aborted run then lacked one valid screenshot; both failures remain retained.
+- Test-only correction requires descriptions for eligible visited rows, while explicitly retaining zero allocation for unvisited, empty and context-ineligible rows. Exact-APK retest request `docs/APD-TEST360-EXACT-API34-RETEST.txt` reuses the original Developer APK and compiles instrumentation only.
+
+Boundaries: automated emulator evidence only. No physical-device acceptance, publication, tester distribution, public release, paid service, save/statistics/rules/scoring/RNG/gameplay/signing/application-ID change or new application build is claimed.

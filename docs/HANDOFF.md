@@ -1,3 +1,10 @@
+## TEST360 compiled; six displays green; exact-APK API34 fixture retest pending
+
+At 2026-11-03T15:38:40.824Z, TEST360 application source88b2e837e10a73290791861824542c9d8616d8e3 remains unchanged. Producer41661720393/job126006339720 passed2331 core cases, desktop and Android debug/release checks, history and private assembly. Developer APK SHA256 bfc829fc92b950b6c13228922eb2fe4cc1f6aa802e6427be961b12f97a94a07e. Player41661719864 passed full core plus signer/application-ID/history matching; player SHA256 8d40c084e51a86c424f96913a630739cb69313df66a570806129855f4dd7d221.
+
+Display41661720020 attempt2 completed all six exact-APK profiles successfully after retrying only the two retained attempt1 infrastructure/capture failures. Main API34 job126008868337 ran71 and passed70; its sole failure was the strengthened fixture requiring the title-only View current run rules row to materialize outside GameScene. Production correctly keeps that row unavailable and unallocated. Test-only source now distinguishes eligible visited rows from context-ineligible rows and requests a complete71-case instrumentation-only rerun on the exact original TEST360 APK. Build request is untouched; no new application APK or number.
+
+TEST360 is not accepted until that exact retest passes. TEST358 release432425860 remains the latest actual private release/fallback. No publication/distribution or physical-phone claim. Full interim report: docs/APD-TEST360-SETTINGS-LATENCY-VERIFICATION-2026-11-03.md.
 ## APD Settings hidden-description latency source-verified; APK acceptance pending
 
 At 2026-11-03T15:05:08Z, source-only run41659741978 completed successfully on exact head82a05900b2ffe8a7e76cf8cf180276c41554f871:434 suites /2331 core tests /0 failures-errors-skips, plus desktop classes and Android debug/release/instrumentation Java compilation. No APK was assembled and no physical-phone timing is claimed.

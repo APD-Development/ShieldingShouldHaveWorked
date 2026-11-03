@@ -66,11 +66,14 @@ public class ApdSettingsClickDeviceTest {
                         com.shatteredpixel.shatteredpixeldungeon.apd.settings.ApdSettingsSection rowSection=
                                 (com.shatteredpixel.shatteredpixeldungeon.apd.settings.ApdSettingsSection)field(row,"section");
                         String note=(String)field(row,"note");
+                        Object control=field(row,"control");
                         Object description=field(row,"description");
-                        if(!note.isEmpty()&&rowSection.ordinal()<=i)
-                            assertNotNull("Visited section descriptions materialize once",description);
+                        boolean eligible=control!=field(pane,"btnCurrentCustomRules")
+                                || Game.scene() instanceof com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+                        if(!note.isEmpty()&&rowSection.ordinal()<=i&&eligible)
+                            assertNotNull("Visited eligible section descriptions materialize once",description);
                         else
-                            assertEquals("Unvisited and empty descriptions stay unallocated",null,description);
+                            assertEquals("Unvisited, empty and context-ineligible descriptions stay unallocated",null,description);
                     }
                     final APDSettingsPane current=pane;
                     onRender(()->{try{
