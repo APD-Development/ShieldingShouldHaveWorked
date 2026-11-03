@@ -4,8 +4,7 @@ on:
   push:
     branches: [codex/apd-phone-fixes-2026-10-09]
     paths:
-      - .github/workflows/apd-existing350-stable-api36.yml
-      - android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/QolStableCaptureDeviceTest.java
+      - docs/APD-EXISTING350-STABLE-RETEST.txt
 
 permissions:
   contents: read
