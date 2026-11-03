@@ -2,7 +2,7 @@ name: APD hotbar cold restart and player settings acceptance
 on:
   push:
     branches: [codex/apd-phone-fixes-2026-10-09]
-    paths: [.github/workflows/codex-hotbar-cold-restart.yml, docs/APD-CODEX-BUILD-REQUEST.txt]
+    paths: [docs/APD-HOTBAR-COLD-RESTART-REQUEST.txt]
 permissions:
   contents: read
   actions: read

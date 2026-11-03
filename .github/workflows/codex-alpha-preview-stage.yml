@@ -5,7 +5,7 @@ name: Stage verified APD alpha preview candidate
 on:
   push:
     branches: [codex/apd-phone-fixes-2026-10-09]
-    paths: [docs/APD-CODEX-BUILD-REQUEST.txt, docs/APD-ALPHA-PREPARATION.json, .github/workflows/codex-alpha-preview-stage.yml]
+    paths: [docs/APD-ALPHA-PREPARATION.json]
 
 permissions:
   contents: read

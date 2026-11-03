@@ -2,7 +2,7 @@ name: APD actual death cleanup before-after Android regression
 on:
   push:
     branches: [codex/apd-phone-fixes-2026-10-09]
-    paths: [.github/workflows/codex-death-cleanup-device-regression.yml, docs/APD-CODEX-BUILD-REQUEST.txt]
+    paths: [docs/APD-DEATH-CLEANUP-REQUEST.txt]
 permissions:
   contents: read
   actions: read
