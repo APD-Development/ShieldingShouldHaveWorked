@@ -1,3 +1,20 @@
+/*
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 package com.shatteredpixel.shatteredpixeldungeon.android;
 
 import static org.junit.Assert.*;
@@ -391,7 +408,10 @@ public class CustomRulesNoticeDeviceTest {
         try(ActivityScenario<AndroidLauncher> scenario=ActivityScenario.launch(AndroidLauncher.class)) {
             long deadline=System.currentTimeMillis()+120000;
             while((Game.scene()==null || PixelScene.uiCamera==null)&&System.currentTimeMillis()<deadline)Thread.sleep(200);
-            assertNotNull(Game.scene());Thread.sleep(1500);
+            assertNotNull(Game.scene());
+            render(()->Game.switchScene(com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene.class));
+            while(!(Game.scene() instanceof com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene)&&System.currentTimeMillis()<deadline)Thread.sleep(100);
+            assertTrue(Game.scene() instanceof com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene);Thread.sleep(1500);
             final com.shatteredpixel.shatteredpixeldungeon.windows.WndAPDSettings[] window=new com.shatteredpixel.shatteredpixeldungeon.windows.WndAPDSettings[1];
             final int[] saved=new int[1];
             try {
@@ -406,12 +426,18 @@ public class CustomRulesNoticeDeviceTest {
                     RenderedTextBlock title=(RenderedTextBlock)field(slider,"title");
                     assertEquals("Healing to Shielding chance (new runs)",title.text());
                     assertTrue(info.text().contains("generated Potion of Healing"));
-                    assertTrue(info.text().contains("Other potions and scrolls keep normal SPD behavior"));
+                    assertTrue(info.text().startsWith("Exact chance"));
+                    assertTrue(info.text().contains("including drops affected by Exotic Crystals"));
+                    assertTrue(info.text().contains("0% prevents this conversion"));
+                    assertFalse(info.text().contains("Minimum chance"));
+                    assertTrue(info.text().contains("Other potions and scrolls keep their normal behavior"));
                     assertTrue(info.width()<=pane.width());
                     assertTrue(info.top()>slider.bottom());
                     assertEquals(saved[0]/10,slider.getSelectedValue());
                 }catch(Exception e){throw new RuntimeException(e);}});
-                Thread.sleep(750);screenshot("healing-conversion-setting.png");
+                Thread.sleep(750);long frame=com.badlogic.gdx.Gdx.graphics.getFrameId();
+                while(com.badlogic.gdx.Gdx.graphics.getFrameId()<frame+4&&System.currentTimeMillis()<deadline)Thread.sleep(100);
+                screenshot("healing-conversion-setting.png");
                 render(()->{window[0].onBackPressed();assertEquals(saved[0],SPDSettings.apdExoticSetting());});
             } finally {render(()->{if(window[0]!=null)window[0].hide();});}
         }
