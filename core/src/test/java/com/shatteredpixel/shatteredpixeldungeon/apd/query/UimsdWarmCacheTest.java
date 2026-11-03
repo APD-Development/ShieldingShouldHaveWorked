@@ -205,10 +205,14 @@ public class UimsdWarmCacheTest {
         try {
             UimsdWarmCache.prewarm(root, "rules-a", "label", false);
             UimsdWarmCache.awaitPrewarmForTest(10000);
+            UimsdModel stale = readyModel();
             assertTrue(runs.mkdir());
             Files.write(new File(runs, "new-run.apdlog").toPath(), new byte[]{1,2,3});
             assertNull("new recorded log invalidates even a fully prepared model",
                     UimsdWarmCache.takeReady(root, "rules-a", "label", false));
+            assertEquals("the rejected catalog is released before a cold replacement loads",
+                    UimsdModel.State.EMPTY, stale.state());
+            assertNull("stale derived tables must not overlap the replacement catalog", stale.catalog());
         } finally {
             new File(runs, "new-run.apdlog").delete();
             runs.delete();

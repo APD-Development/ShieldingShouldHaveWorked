@@ -176,12 +176,22 @@ public final class UimsdWarmCache {
             if (candidate == null || !candidate.key.matches(key)) return null;
         }
         String now = stamp(key.root);
+        UimsdModel accepted = null;
+        UimsdModel discarded = null;
         synchronized (LOCK) {
             if (candidate != ready) return null;
             ready = null; // only one viewer can own a mutable model
-            if (now == null || !now.equals(candidate.sourceStamp)) return null;
-            return candidate.model.state() == UimsdModel.State.READY ? candidate.model : null;
+            if (now != null && now.equals(candidate.sourceStamp)
+                    && candidate.model.state() == UimsdModel.State.READY)
+                accepted = candidate.model;
+            else
+                discarded = candidate.model;
         }
+        // A cold replacement may allocate another complete catalog immediately.
+        // Drop the rejected catalog deterministically instead of retaining both
+        // histories until the garbage collector happens to run.
+        if (discarded != null) discarded.releaseForGameplay();
+        return accepted;
     }
 
     /** Cancel optional title preparation and drop its strong model reference before a game loads. */
