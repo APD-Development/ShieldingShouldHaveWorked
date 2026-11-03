@@ -32,8 +32,9 @@ resolved=api(f'repos/{repo}/git/ref/tags/{tag}')['object'];assert resolved['type
 matches=[r for r in api(f'repos/{repo}/releases?per_page=100') if r['tag_name']==tag]
 assert len(matches)<=1,'Duplicate release tag; preserve existing releases'
 if not matches:
- subprocess.run(['gh','release','create',tag,'--repo',repo,'--target',spec['source'],'--title',spec.get('title',f'APD Alpha Preview {number} — dew, searched walls and ring details'),'--notes-file',str(out/'release-notes.md'),'--draft','--prerelease','--latest=false'],check=True)
- matches=[r for r in api(f'repos/{repo}/releases?per_page=100') if r['tag_name']==tag]
+ payload={'tag_name':tag,'target_commitish':spec['source'],'name':spec.get('title',f'APD Alpha Preview {number}'),'body':(out/'release-notes.md').read_text(),'draft':True,'prerelease':True,'make_latest':'false'}
+ request=urllib.request.Request(f'https://api.github.com/repos/{repo}/releases',data=json.dumps(payload).encode(),method='POST',headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Content-Type':'application/json','Accept':'application/vnd.github+json'})
+ with urllib.request.urlopen(request,timeout=60) as response:matches=[json.load(response)]
 release,=matches
 release_id=release['id']
 def refresh():return api(f'repos/{repo}/releases/{release_id}')

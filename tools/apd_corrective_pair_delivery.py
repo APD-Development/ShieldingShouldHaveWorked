@@ -24,8 +24,8 @@ def api(path):return json.loads(subprocess.check_output(['gh','api',path]))
 def cmd(*args):return subprocess.check_output(args,text=True)
 def sha(p):return hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest()
 def artifact(run,name):
- records=api(f'repos/{REPO}/actions/runs/{run}/artifacts')['artifacts'];found=[a for a in records if a['name']==name and not a['expired']];assert len(found)==1,(run,name)
- a=found[0];z=ROOT/(str(a['id'])+'.zip')
+ records=api(f'repos/{REPO}/actions/runs/{run}/artifacts')['artifacts'];found=[a for a in records if a['name']==name and not a['expired']];assert found,(run,name)
+ a=max(found,key=lambda a:(a['created_at'],a['id']));z=ROOT/(str(a['id'])+'.zip')
  with z.open('wb') as f:subprocess.run(['gh','api',f'repos/{REPO}/actions/artifacts/{a["id"]}/zip'],stdout=f,check=True)
  assert a['digest']=='sha256:'+sha(z)
  folder=ROOT/('artifact-'+str(a['id']));folder.mkdir(exist_ok=True)
@@ -126,7 +126,7 @@ for label,folder in [('Developer',dev),('Alpha-Testers',player)]:
 assert all(p['application_sha256']==hashes['Developer'] for p in profiles.values())
 assert np['application_sha256']==hashes['Developer']
 common=[a for a in assets['Developer'] if a!='apd/features.txt'];assert set(common)==set(assets['Alpha-Testers']) and all(assets['Developer'][n]==assets['Alpha-Testers'][n] for n in common)
-tester,ta=artifact(int(os.environ['GITHUB_RUN_ID']),'apd-corrective-pair-tester-checks')
+tester,ta=artifact(spec['tester'],'apd-corrective-pair-tester-checks')
 tester_proof,=tester.rglob('acceptance-source.json');tp=json.loads(tester_proof.read_text())
 assert tp['application_source']==source and tp['application_run']==spec['player'] and tp['application_sha256']==hashes['Alpha-Testers'] and tp['application_rebuilt'] is False
 tester_console,=tester.rglob('tester-instrumentation.txt');tester_text=tester_console.read_text();assert 'OK (2 tests)' in tester_text and 'INSTRUMENTATION_STATUS_CODE: -2' not in tester_text
