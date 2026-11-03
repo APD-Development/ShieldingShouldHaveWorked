@@ -65,6 +65,7 @@ public class APDSettingsPane extends Component {
     private CheckBox chkDotOverlay;
 	private CheckBox chkAdult;
     private CheckBox chkTileVisibility;
+    private RedButton btnSearchedWallColor;
     private CheckBox chkStairNavigation;
     private CheckBox chkAutoEnterStairs;
 	private RenderedTextBlock status;
@@ -175,6 +176,17 @@ public class APDSettingsPane extends Component {
 		};
 		chkAdult.checked( SPDSettings.apdAdultHumor() );
 		add( chkAdult );
+
+        btnSearchedWallColor=new SettingButton(searchedWallColorText()){
+            @Override protected void onClick(){
+                java.util.List<WndUimsdList.Entry> choices=new java.util.ArrayList<>();
+                for(com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallAppearance.Color color:com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallAppearance.Color.values())
+                    choices.add(WndUimsdList.Entry.item(color.label+(color.ordinal()==SPDSettings.searchedWallColor()?" (current)":"")));
+                ShatteredPixelDungeon.scene().addToFront(WndUimsdList.menu("Searched-wall checkmarks",
+                        "Choose a color. Changes apply immediately to remembered marks. A mark means searched, not guaranteed free of secrets. Only plausible door positions are marked.",choices,
+                        (index,checked)->{SPDSettings.searchedWallColor(index);btnSearchedWallColor.text(searchedWallColorText());}));
+            }
+        };add(btnSearchedWallColor);
 
         chkTileVisibility=new SettingCheckBox("Enhanced tile visibility"){
             @Override protected void onClick(){super.onClick();SPDSettings.enhancedTileVisibility(checked());}
@@ -397,6 +409,7 @@ public class APDSettingsPane extends Component {
         row(ApdSettingsSection.HOTBAR,chkFoodInHealing,"Immediate. Also offer food from a Healing category slot; normal food costs still apply.");
         row(ApdSettingsSection.HOTBAR,btnWaterskinSlot,"New runs only. This starting preference never rearranges a resumed run or changes manual hotbar assignments.");
         row(ApdSettingsSection.HOTBAR,btnClericQuickCasts,"Immediate control preference. Configure Cleric quick-cast buttons without changing spell costs.");
+        row(ApdSettingsSection.VISIBILITY,btnSearchedWallColor,"Immediate display preference, saved between sessions. Choose a high-contrast checkmark color. Impossible door positions are left unmarked; search chances and saved search memory stay unchanged.");
         row(ApdSettingsSection.VISIBILITY,chkTileVisibility,"Display preference. Make visible tiles easier to distinguish without revealing undiscovered terrain.");
         row(ApdSettingsSection.VISIBILITY,chkDotOverlay,"Immediate display preference. Show or hide the collapsible damage-over-time panel.");
         row(ApdSettingsSection.VISIBILITY,chkStairNavigation,"Immediate shortcut to discovered stairs only. This does not reveal hidden stairs.");
@@ -421,6 +434,10 @@ public class APDSettingsPane extends Component {
         }
 
 	}
+
+    private static String searchedWallColorText(){
+        return "Searched-wall color: "+com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallAppearance.color(SPDSettings.searchedWallColor()).label;
+    }
 
 	private static String demoViewText() {
 		return DemoData.viewingDemo() ? "UIMSD shows: DEMO data" : "UIMSD shows: REAL data";

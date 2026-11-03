@@ -105,6 +105,14 @@ public class SPDSettings extends GameSettings {
 		return getInt( KEY_GRID, 0, -1, 2 );
 	}
 
+    public static int searchedWallColor(){
+        return com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallAppearance.normalize(getInt("apd_searched_wall_color",0));
+    }
+    public static void searchedWallColor(int index){
+        put("apd_searched_wall_color",com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallAppearance.normalize(index));
+        GameScene.updateSearchedWallAppearance();
+    }
+
     public static boolean enhancedTileVisibility() { return getBoolean("apd_enhanced_tile_visibility", false); }
     public static void enhancedTileVisibility(boolean value) { put("apd_enhanced_tile_visibility", value); GameScene.updateMap(); }
     public static boolean stairNavigationShortcut() { return getBoolean("apd_stair_navigation_shortcut", true); }

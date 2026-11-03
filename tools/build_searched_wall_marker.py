@@ -27,6 +27,6 @@ for mask in range(1,16):
  for bit,points in shapes.items():
   if mask&bit:
    for x,y in points:
-    if x+1<16 and y+1<16 and (bit!=2 or y+1<=11):im.putpixel((mask*16+x+1,y+1),(10,25,20,255))
-   for x,y in points:im.putpixel((mask*16+x,y),(147,223,171,255))
+    if x+1<16 and y+1<16 and (bit!=2 or y+1<=11):im.putpixel((mask*16+x+1,y+1),(0,0,0,255))
+   for x,y in points:im.putpixel((mask*16+x,y),(255,255,255,255))
 im.save(Path(__file__).resolve().parents[1]/'core/src/main/assets/interfaces/apd_searched_wall.png')

@@ -1,3 +1,9 @@
+## Searched-wall appearance update — source checks in progress; not in TEST354
+
+Owner clarified that any wall which cannot be a door should not carry a checkmark. Added conservative doorway geometry using only FOV/visited/mapped terrain; never inspect hidden room layout or distinguish a secret door from its wall disguise. Known pillars, corners, thick stone and map edges are filtered while saved search bits stay intact. Marks still mean searched, not guaranteed secret-free. Existing wall-face/southern-lip/straight-side rendering remains.
+
+APD Settings -> Visibility adds eight saved colors (original green default; white, yellow, cyan, magenta, orange, red, blue). Changes tint the existing overlay immediately with no scene reload or turn. A neutral procedural atlas keeps the glyph geometry and adds a dark outline. Local full2331 core cases pass (0 failures/errors/skips), including11 new geometry/palette regressions. A local generated-level probe retained all74 actual secret-door positions across depths1–24; this is headless evidence, not phone testing. Native real-tap color/memory/turn checks and display capture are added but NOT RUN. Required source-only CI includes instrumentation Java compilation. No new APK assembled/published; TEST354 remains the latest delivered pair. Do not spend a fourth Developer or Alpha-Testers delivery on November2 New York. No signing/app ID/scoring/357-value/search mechanics change.
+
 ## TEST354 pair privately delivered — November3 UTC / November2 New York
 
 - Developer and Alpha-Testers354 published2026-11-03T03:48:22Z in existing private repo, release432256531/tag apd-alpha-preview-354. Successful delivery workflow41574242891. APKs and matching key-free source downloaded back and hash-checked before owner links were sent. Exact application source682f784c5ce5c8b6a2b33945025a9893137e8257. No new application binary was built for the test-assertion correction or publication.

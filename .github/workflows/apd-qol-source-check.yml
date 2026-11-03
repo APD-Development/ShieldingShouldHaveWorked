@@ -32,7 +32,7 @@ jobs:
       - name: Complete core suite and Android debug/release plus desktop compilation
         run: |
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36"
-          ./gradlew :core:test :desktop:classes :android:compileDebugJavaWithJavac :android:compileReleaseJavaWithJavac
+          ./gradlew :core:test :desktop:classes :android:compileDebugJavaWithJavac :android:compileReleaseJavaWithJavac :android:compileDebugAndroidTestJavaWithJavac
       - name: Summarize exact JUnit results
         if: always()
         run: |
@@ -43,7 +43,7 @@ jobs:
           summary={'source_commit':__import__('os').environ['GITHUB_SHA'],'suites':len(roots),**totals,'apk_assembled':False,'physical_phone_tested':False}
           pathlib.Path('qol-verification.json').write_text(json.dumps(summary,indent=2)+'\n')
           print(json.dumps(summary))
-          if not roots or totals['tests']!=2300 or any(totals[k] for k in ['failures','errors','skipped']):raise SystemExit('Missing, changed or failed test inventory')
+          if not roots or totals['tests']!=2331 or any(totals[k] for k in ['failures','errors','skipped']):raise SystemExit('Missing, changed or failed test inventory')
           PY
       - uses: actions/upload-artifact@v4
         if: always()

@@ -51,13 +51,51 @@ public class SearchedWallsTest {
     @Test public void recordingDoesNotConsumeRandomness(){Random.pushGenerator(71);long expected=Random.Long();Random.popGenerator();Random.pushGenerator(71);try{level.searchedWalls.mark(level,16);assertEquals(expected,Random.Long());}finally{Random.popGenerator();}}
     @Test public void realManualSearchMarksOnlyItsVisibleRadiusAndKeepsNormalTurnCost()throws Exception{SearchHero h=hero();float before=h.cooldown();assertFalse(h.search(true));assertTrue(level.searchedWalls.shows(level,16));assertFalse(level.searchedWalls.shows(level,10));assertEquals(before+2f,h.cooldown(),0);}
     @Test public void realAutomaticSearchDoesNotAddAnyMarkersOrExtraTurn()throws Exception{SearchHero h=hero();float before=h.cooldown();assertFalse(h.search(false));Bundle b=new Bundle();level.searchedWalls.store(b);assertEquals("{}",b.toString());assertEquals(before,h.cooldown(),0);}
-    @Test public void bottomWallProjectsOntoItsVisibleOverhang(){level.map[24]=Terrain.EMPTY;level.searchedWalls.mark(level,31);assertEquals(SearchedWallMarkers.OVERHANG,SearchedWallMarkers.visual(level,24));assertEquals(-1,SearchedWallMarkers.visual(level,31));}
-    @Test public void upperWallKeepsItsFrontFaceMarker(){level.map[24]=Terrain.EMPTY;level.searchedWalls.mark(level,17);assertEquals(SearchedWallMarkers.FACE,SearchedWallMarkers.visual(level,17));}
-    @Test public void sideWallsUseTheExposedEdge(){level.map[17]=Terrain.EMPTY;level.map[24]=Terrain.EMPTY;level.map[31]=Terrain.EMPTY;level.searchedWalls.mark(level,23);level.searchedWalls.mark(level,25);assertEquals(SearchedWallMarkers.RIGHT,SearchedWallMarkers.visual(level,23));assertEquals(SearchedWallMarkers.LEFT,SearchedWallMarkers.visual(level,25));}
-    @Test public void projectionNeverInventsUnsearchedOrHiddenMarks(){level.map[24]=Terrain.EMPTY;assertEquals(-1,SearchedWallMarkers.visual(level,24));level.searchedWalls.mark(level,31);level.heroFOV[24]=false;assertEquals(-1,SearchedWallMarkers.visual(level,24));level.heroFOV[24]=true;level.heroFOV[31]=false;assertEquals(-1,SearchedWallMarkers.visual(level,24));}
+    @Test public void bottomWallProjectsOntoItsVisibleOverhang(){level.map[24]=Terrain.EMPTY;level.heroFOV[38]=false;level.searchedWalls.mark(level,31);assertEquals(SearchedWallMarkers.OVERHANG,SearchedWallMarkers.visual(level,24));assertEquals(-1,SearchedWallMarkers.visual(level,31));}
+    @Test public void upperWallKeepsItsFrontFaceMarker(){level.map[24]=Terrain.EMPTY;level.heroFOV[10]=false;level.searchedWalls.mark(level,17);assertEquals(SearchedWallMarkers.FACE,SearchedWallMarkers.visual(level,17));}
+    @Test public void sideWallsUseTheExposedEdge(){level.heroFOV[22]=false;level.heroFOV[26]=false;level.map[17]=Terrain.EMPTY;level.map[24]=Terrain.EMPTY;level.map[31]=Terrain.EMPTY;level.searchedWalls.mark(level,23);level.searchedWalls.mark(level,25);assertEquals(SearchedWallMarkers.RIGHT,SearchedWallMarkers.visual(level,23));assertEquals(SearchedWallMarkers.LEFT,SearchedWallMarkers.visual(level,25));}
+    @Test public void projectionNeverInventsUnsearchedOrHiddenMarks(){level.map[24]=Terrain.EMPTY;level.heroFOV[38]=false;assertEquals(-1,SearchedWallMarkers.visual(level,24));level.searchedWalls.mark(level,31);level.heroFOV[24]=false;assertEquals(-1,SearchedWallMarkers.visual(level,24));level.heroFOV[24]=true;level.heroFOV[31]=false;assertEquals(-1,SearchedWallMarkers.visual(level,24));}
     @Test public void openingSearchedWallRemovesItsProjectedMark(){level.map[24]=Terrain.EMPTY;level.searchedWalls.mark(level,31);level.map[31]=Terrain.DOOR;assertEquals(-1,SearchedWallMarkers.visual(level,24));}
     @Test public void projectionDoesNotWrapBetweenRowsOrPastMap(){level.map[0]=Terrain.EMPTY;level.searchedWalls.mark(level,6);assertEquals(-1,SearchedWallMarkers.visual(level,6));assertEquals(-1,SearchedWallMarkers.visual(level,-1));assertEquals(-1,SearchedWallMarkers.visual(level,49));}
     @Test public void enclosedDiagonalCornersHaveNoCheckmark(){level.map[24]=Terrain.EMPTY;for(int cell:new int[]{16,18,30,32}){level.searchedWalls.mark(level,cell);assertEquals("inside corner "+cell,-1,SearchedWallMarkers.visual(level,cell));assertEquals("no projected check on its wall neighbour",-1,SearchedWallMarkers.visual(level,cell-7));}}
-    @Test public void sideWallEndsBesideCornersHaveNoCheckmark(){level.map[17]=Terrain.EMPTY;level.map[24]=Terrain.EMPTY;level.map[31]=Terrain.EMPTY;for(int cell:new int[]{16,18,30,32}){level.searchedWalls.mark(level,cell);assertEquals("partial side-wall end "+cell,-1,SearchedWallMarkers.visual(level,cell));}level.searchedWalls.mark(level,23);assertEquals("straight middle wall keeps its marker",SearchedWallMarkers.RIGHT,SearchedWallMarkers.visual(level,23));}
+    @Test public void sideWallEndsBesideCornersHaveNoCheckmark(){level.heroFOV[22]=false;level.map[17]=Terrain.EMPTY;level.map[24]=Terrain.EMPTY;level.map[31]=Terrain.EMPTY;for(int cell:new int[]{16,18,30,32}){level.searchedWalls.mark(level,cell);assertEquals("partial side-wall end "+cell,-1,SearchedWallMarkers.visual(level,cell));}level.searchedWalls.mark(level,23);assertEquals("straight middle wall keeps its marker",SearchedWallMarkers.RIGHT,SearchedWallMarkers.visual(level,23));}
+    @Test public void isolatedPillarsAndVisibleCornersCannotBeDoors(){
+        Arrays.fill(level.map,Terrain.EMPTY);level.map[24]=Terrain.WALL;level.searchedWalls.mark(level,24);
+        assertFalse(SearchedWallMarkers.couldBeDoor(level,24));assertEquals(-1,SearchedWallMarkers.visual(level,24));
+        level.map[23]=Terrain.WALL;level.map[17]=Terrain.WALL;
+        assertFalse("L-shaped corner",SearchedWallMarkers.couldBeDoor(level,24));
+    }
+    @Test public void straightRoomBoundaryKeepsARealDoorCandidate(){
+        level.map[17]=Terrain.EMPTY;level.map[31]=Terrain.EMPTY;level.searchedWalls.mark(level,24);
+        assertTrue(SearchedWallMarkers.couldBeDoor(level,24));assertEquals(SearchedWallMarkers.FACE,SearchedWallMarkers.visual(level,24));
+    }
+    @Test public void knownThickStoneAndMapEdgesCannotBeDoors(){
+        level.map[31]=Terrain.EMPTY;level.searchedWalls.mark(level,24);
+        assertFalse(SearchedWallMarkers.couldBeDoor(level,24));assertEquals(-1,SearchedWallMarkers.visual(level,24));
+        for(int p:new int[]{0,3,6,7,13,42,45,48})assertFalse("edge "+p,SearchedWallMarkers.couldBeDoor(level,p));
+        assertTrue("filtering preserves search memory",level.searchedWalls.shows(level,24));
+    }
+    @Test public void undiscoveredTerrainCannotRevealWhetherARoomExists(){
+        level.map[31]=Terrain.EMPTY;level.heroFOV[17]=false;
+        assertTrue(SearchedWallMarkers.couldBeDoor(level,24));
+        for(int tile:new int[]{Terrain.WALL,Terrain.EMPTY,Terrain.WATER,Terrain.SECRET_DOOR,Terrain.BOOKSHELF}){
+            level.map[17]=tile;assertTrue("unseen tile must not affect eligibility",SearchedWallMarkers.couldBeDoor(level,24));
+        }
+        level.map[17]=Terrain.WALL;level.visited[17]=true;assertFalse("known stone now rules it out",SearchedWallMarkers.couldBeDoor(level,24));
+    }
+    @Test public void secretDoorAndMatchingStoneHaveIdenticalVisualEligibility(){
+        level.map[17]=Terrain.EMPTY;level.map[31]=Terrain.EMPTY;
+        for(int tile:new int[]{Terrain.WALL,Terrain.WALL_DECO,Terrain.SECRET_DOOR}){
+            level.map[24]=tile;assertTrue(SearchedWallMarkers.couldBeDoor(level,24));
+        }
+    }
+    @Test public void breakableShelvesAndExistingDoorFramesDoNotIncorrectlyExcludeAnEntrance(){
+        level.map[17]=Terrain.EMPTY;level.map[31]=Terrain.BOOKSHELF;level.map[23]=Terrain.OPEN_DOOR;
+        assertTrue(SearchedWallMarkers.couldBeDoor(level,24));
+    }
+    @Test public void appearanceEligibilityDoesNotConsumeSearchOrCombatRandomness(){
+        Random.pushGenerator(8673);long expected=Random.Long();Random.popGenerator();Random.pushGenerator(8673);
+        try{SearchedWallMarkers.couldBeDoor(level,24);SearchedWallMarkers.visual(level,24);assertEquals(expected,Random.Long());}finally{Random.popGenerator();}
+    }
     private SearchHero hero()throws Exception{Field u=Class.forName("sun.misc.Unsafe").getDeclaredField("theUnsafe");u.setAccessible(true);Object unsafe=u.get(null);SearchHero h=new SearchHero();h.heroClass=HeroClass.WARRIOR;h.pos=24;h.fieldOfView=level.heroFOV;h.sprite=(NoopSprite)unsafe.getClass().getMethod("allocateInstance",Class.class).invoke(unsafe,NoopSprite.class);Dungeon.hero=h;level.locked=true;return h;}
 }

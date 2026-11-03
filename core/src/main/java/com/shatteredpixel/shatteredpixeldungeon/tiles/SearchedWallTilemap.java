@@ -23,7 +23,20 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 public final class SearchedWallTilemap extends DungeonTilemap {
     public SearchedWallTilemap() {
         super("interfaces/apd_searched_wall.png");
+        applyAppearance();
         map(Dungeon.level.map, Dungeon.level.width());
+    }
+    public void applyAppearance(){
+        hardlight(com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallAppearance.color(
+                com.shatteredpixel.shatteredpixeldungeon.SPDSettings.searchedWallColor()).rgb);
+    }
+    public void refreshKnownGeometry(){
+        if(data==null||data.length!=Dungeon.level.length())return;
+        int width=Dungeon.level.width();
+        for(int p=Dungeon.level.searchedWalls.nextMarked(0);p>=0;p=Dungeon.level.searchedWalls.nextMarked(p+1)){
+            if(data[p]!=getTileVisual(p,map[p],false)
+                    ||p>=width&&data[p-width]!=getTileVisual(p-width,map[p-width],false))updateMapCell(p);
+        }
     }
     @Override protected int getTileVisual(int pos, int tile, boolean flat) {
         return com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallMarkers.visual(Dungeon.level, pos);

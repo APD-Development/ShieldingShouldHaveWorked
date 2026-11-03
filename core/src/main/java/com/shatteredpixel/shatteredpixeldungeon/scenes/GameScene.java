@@ -1455,6 +1455,10 @@ public class GameScene extends PixelScene {
 		}
 	}
 
+    public static void updateSearchedWallAppearance(){
+        if(scene!=null&&scene.searchedWalls!=null)scene.searchedWalls.applyAppearance();
+    }
+
     public static void updateSearchedWall(int cell) {
         if (scene != null && scene.searchedWalls != null) scene.searchedWalls.updateMapCell(cell);
     }
@@ -1572,6 +1576,7 @@ public class GameScene extends PixelScene {
 	
 	public static void afterObserve() {
 		if (scene != null) {
+            if(scene.searchedWalls!=null)scene.searchedWalls.refreshKnownGeometry();
 			for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
 				if (mob.sprite != null) {
 					if (mob instanceof Mimic && mob.state == mob.PASSIVE && ((Mimic) mob).stealthy() && Dungeon.level.visited[mob.pos]){

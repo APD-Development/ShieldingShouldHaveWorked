@@ -18,6 +18,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.apd.qol;
 
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTileSheet;
 
 /** Projects saved search memory onto visible wall faces, edges and raised overhangs. */
@@ -26,10 +27,28 @@ public final class SearchedWallMarkers {
     private SearchedWallMarkers(){}
     private static boolean known(Level l,int p){return p>=0&&p<l.length()&&(l.heroFOV[p]||l.visited[p]||l.mapped[p]);}
     private static boolean open(Level l,int p){return known(l,p)&&!DungeonTileSheet.wallStitcheable(l.map[p]);}
+    private static boolean possibleFrame(Level l,int p){
+        if(!known(l,p))return true;
+        int tile=l.map[p];
+        return (Terrain.flags[tile]&Terrain.SOLID)!=0||tile==Terrain.OPEN_DOOR;
+    }
+    private static boolean possiblePassage(Level l,int p){
+        if(!known(l,p))return true;
+        // These look like permanent stone. Never distinguish SECRET_DOOR from its disguise.
+        int tile=l.map[p];return tile!=Terrain.WALL&&tile!=Terrain.WALL_DECO&&tile!=Terrain.SECRET_DOOR;
+    }
+    /** Known geometry may rule out a doorway; unseen terrain must never influence this answer. */
+    public static boolean couldBeDoor(Level l,int p){
+        int w=l.width();
+        if(w<3||p<w||p>=l.length()-w||p%w==0||p%w==w-1)return false;
+        return possibleFrame(l,p-1)&&possibleFrame(l,p+1)&&possiblePassage(l,p-w)&&possiblePassage(l,p+w)
+                ||possibleFrame(l,p-w)&&possibleFrame(l,p+w)&&possiblePassage(l,p-1)&&possiblePassage(l,p+1);
+    }
+    private static boolean showWall(Level l,int p){return l.searchedWalls.shows(l,p)&&couldBeDoor(l,p);}
     public static int visual(Level l,int p){
         if(p<0||p>=l.length())return -1;
         int w=l.width(),mask=0;
-        if(l.searchedWalls.shows(l,p)){
+        if(showWall(l,p)){
             if(p+w<l.length()&&open(l,p+w))mask|=FACE;
             else {
                 if(p%w>0&&open(l,p-1)&&open(l,p-1-w)&&open(l,p-1+w))mask|=LEFT;
@@ -38,7 +57,7 @@ public final class SearchedWallMarkers {
         }
         // SPD draws a southern wall's visible lip on the preceding floor tile.
         // Its own tile is obscured by wall blocking/fog; never bypass either layer.
-        if(open(l,p)&&p+w<l.length()&&l.searchedWalls.shows(l,p+w))mask|=OVERHANG;
+        if(open(l,p)&&p+w<l.length()&&showWall(l,p+w))mask|=OVERHANG;
         return mask==0?-1:mask;
     }
 }

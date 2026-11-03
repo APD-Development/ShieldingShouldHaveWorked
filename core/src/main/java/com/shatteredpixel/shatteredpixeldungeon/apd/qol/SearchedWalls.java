@@ -45,6 +45,8 @@ public final class SearchedWalls {
                 || tile == Terrain.SECRET_DOOR || tile == Terrain.BOOKSHELF;
     }
 
+    /** Allocation-free traversal for refreshing only saved markers after observation. */
+    public int nextMarked(int from){return cells.nextSetBit(Math.max(0,from));}
     public void clear() { cells.clear(); }
 
     public void store(Bundle bundle) {

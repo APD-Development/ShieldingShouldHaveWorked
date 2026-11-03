@@ -108,6 +108,9 @@ public class QolItemFeedbackDeviceTest {
                 for(int y=-2;y<=2;y++)for(int x=-2;x<=2;x++){
                     int c=center[0]+y*w+x;Level.set(c,Terrain.WALL);Dungeon.level.heroFOV[c]=true;Dungeon.level.visited[c]=true;Dungeon.level.discoverable[c]=true;
                 }
+                for(int delta:new int[]{-2*w,2*w,-2,2}){
+                    int behind=center[0]+delta;Dungeon.level.heroFOV[behind]=false;Dungeon.level.visited[behind]=false;Dungeon.level.mapped[behind]=false;
+                }
                 Level.set(center[0],Terrain.EMPTY);Dungeon.hero.fieldOfView=Dungeon.level.heroFOV;Dungeon.hero.pos=center[0];Dungeon.hero.sprite.place(center[0]);
                 Dungeon.hero.search(true);GameScene.updateMap();
                 assertTrue("north front face",com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallMarkers.visual(Dungeon.level,center[0]-w)>0);
@@ -116,6 +119,7 @@ public class QolItemFeedbackDeviceTest {
                 assertEquals("east partial corner end is unmarked",-1,com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallMarkers.visual(Dungeon.level,center[0]+1));
             });
             Thread.sleep(1800);TopScoresDeviceTest.screenshot("qol-searched-wall.png");
+            SearchedWallColorDeviceChecks.chooseColorThroughSettingsAndVerifyLiveLayer();
             TopScoresDeviceTest.render(()->{
                 int w=Dungeon.level.width();Level.set(center[0]-w,Terrain.EMPTY);Level.set(center[0]+w,Terrain.EMPTY);
                 Dungeon.level.heroFOV[center[0]-w]=true;Dungeon.level.heroFOV[center[0]+w]=true;
