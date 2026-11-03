@@ -1,6 +1,23 @@
+/*
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 package com.shatteredpixel.shatteredpixeldungeon.apd.query;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertTrue;
 
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.DerivedStore;
@@ -116,4 +133,25 @@ public class CacheConcurrencyTest {
 		assertEquals("the surviving per-log cache remains readable", 1, cached.logsCached);
 		assertEquals(0, cached.logsRebuilt);
 	}
+    @Test public void clearingRowsDoesNotDestroyAnotherWritersCompletedStagingFile()throws Exception{
+        apdRun("r1",2000);DatasetStore store=new DatasetStore(tmp.getRoot());store.load();
+        java.lang.reflect.Method directory=DatasetStore.class.getDeclaredMethod("rowsDir");directory.setAccessible(true);
+        File[] rows=((File)directory.invoke(store)).listFiles((d,n)->n.endsWith(".apdr"));assertNotNull(rows);assertEquals(1,rows.length);
+        byte[] data=java.nio.file.Files.readAllBytes(rows[0].toPath());
+        final CountDownLatch staged=new CountDownLatch(1),publish=new CountDownLatch(1);
+        final java.util.concurrent.atomic.AtomicReference<Throwable> error=new java.util.concurrent.atomic.AtomicReference<>();
+        File destination=new File(rows[0].getPath()){
+            @Override public boolean exists(){
+                staged.countDown();try{assertTrue("staged writer released",publish.await(10,TimeUnit.SECONDS));}catch(InterruptedException e){throw new RuntimeException(e);}
+                return super.exists();
+            }
+        };
+        java.lang.reflect.Method write=DatasetStore.class.getDeclaredMethod("writeCache",File.class,byte[].class);write.setAccessible(true);
+        Thread writer=new Thread(()->{try{write.invoke(store,destination,data);}catch(Throwable t){error.set(t);}},"cache-staged-writer");writer.setDaemon(true);writer.start();
+        try{assertTrue("writer has completed staging bytes",staged.await(10,TimeUnit.SECONDS));store.deleteCache();}
+        finally{publish.countDown();writer.join(10000);}
+        assertFalse(writer.isAlive());assertNull(error.get());Catalog cached=new DatasetStore(tmp.getRoot()).load();
+        assertEquals("completed writer still publishes a readable cache after clear",1,cached.logsCached);assertEquals(0,cached.logsRebuilt);
+    }
+
 }

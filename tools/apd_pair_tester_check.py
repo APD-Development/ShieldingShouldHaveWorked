@@ -27,3 +27,5 @@ with zipfile.ZipFile('tester-artifact.zip') as z:
  pathlib.Path('application/exact-tester.apk').write_bytes(data)
 pathlib.Path('acceptance-source.json').write_text(json.dumps({'application_source':spec['source'],'application_run':spec['player'],'application_artifact':a['id'],'application_artifact_digest':a['digest'],'application_sha256':digest,'application_rebuilt':False,'test_source':os.environ['GITHUB_SHA'],'physical_phone_test':False},indent=2)+'\n')
 print('Exact tester APK SHA256',digest)
+
+with open(os.environ["GITHUB_ENV"],"a") as env:env.write("APD_TEST_NUMBER="+str(spec["number"])+"\n")

@@ -20,7 +20,7 @@ jobs:
       - name: Compile instrumentation only
         run: |
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36"
-          ./gradlew :android:assembleDebugAndroidTest -PapdBuild=P353
+          ./gradlew :android:assembleDebugAndroidTest -PapdBuild=P${{ env.APD_TEST_NUMBER }}
           test ! -f android/build/outputs/apk/debug/android-debug.apk
       - name: Enable emulator acceleration
         run: |

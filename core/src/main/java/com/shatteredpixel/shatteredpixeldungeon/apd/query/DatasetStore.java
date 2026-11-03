@@ -95,7 +95,9 @@ public final class DatasetStore {
 
 	public void deleteCache(){
 		File[] files = rowsDir().listFiles();
-		if (files != null) for (File f : files) f.delete();
+		// Invalidation must not remove staging files owned by an in-flight writer.
+        // Otherwise that writer can delete a newer committed cache and fail its own rename.
+        if (files != null) for (File f : files) if (f.getName().endsWith(".apdr")) f.delete();
 	}
 
 	//Never throws.

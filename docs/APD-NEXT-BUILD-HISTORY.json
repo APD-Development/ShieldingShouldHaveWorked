@@ -11,6 +11,8 @@
       "title": "Healing quickslots respect Off",
       "text": "With healing confirmation off, a quickslot containing one identified healing-potion stack now drinks directly. Slots with multiple choices still offer their normal selection menu, and enabled HP warnings retain their normal behavior.",
       "paths": [
+        ".github/workflows/apd-corrective-pair-delivery.yml",
+        ".github/workflows/apd-corrective-tester-check.yml",
         ".github/workflows/apd-existing350-corner-retest.yml",
         ".github/workflows/apd-existing350-stable-api36.yml",
         ".github/workflows/apd-healing350-reproduce.yml",
@@ -23,6 +25,7 @@
         "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/healing/HealingConfirmationTest.java",
         "docs/APD-ALPHA-TESTERS350-DELIVERY-RECEIPT.json",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
+        "docs/APD-CORRECTIVE-PAIR-TESTER-REQUEST.json",
         "docs/APD-HEALING-AND-THROWN-LINE-2026-11-03.md",
         "docs/APD-HEAP-AND-SEARCHED-WALLS-2026-11-02.md",
         "docs/APD-HEAP-OWNER-DELIVERY.json",
@@ -33,7 +36,9 @@
         "tools/apd_build_history.py",
         "tools/apd_corrective_pair_delivery.py",
         "tools/apd_heap_owner_delivery.py",
+        "tools/apd_pair_tester_check.py",
         "tools/apd_player350_delivery.py",
+        "tools/apd_qol_publish_prepared.py",
         "tools/run-codex-android-checks.sh",
         "tools/run-corner-search-check.sh",
         "tools/run-title-display-check.sh",
@@ -67,6 +72,16 @@
         "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/healing/HealingConversionUpgradeTest.java",
         "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/CustomRuleRecorderIntegrationTest.java",
         "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/recorder/RecorderLifecycleTest.java"
+      ]
+    },
+    {
+      "category": "Bug Fixes",
+      "sprite": "ICON_CHECKED",
+      "title": "Reliable statistics cache rebuilding",
+      "text": "Rebuilding the statistics cache no longer interrupts another cache writer, preventing unnecessary history rebuilds afterward. Recorded run logs and statistics stay intact.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/DatasetStore.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/CacheConcurrencyTest.java"
       ]
     }
   ]
