@@ -1,3 +1,7 @@
+## Active: Off(one tap) healing fix + clear visible thrown shots
+
+Owner confirmed Off button report. Native exact350 case41564748055 proved Off saves -1 but a real healing quickslot tap opens chooser and does not consume the potion. Correction bypasses chooser only for exactly one known healing stack with Off; all ambiguity/unknown/enabled warning behavior preserved. Also reproduced visible ThrowingKnife grid-rounding failure and corrected only visible clear reverse straight rays, retaining blocked corners, creatures, unseen targets, Spirit Bow and Projecting. Details docs/APD-HEALING-AND-THROWN-LINE-2026-11-03.md. Local complete2311 core cases pass; new pair (expected ordinal351) pending full build/native/display/tester verification. No new correction APK delivered yet. Quota remains3 of EACH variant per New York day; preserve350 fallback and every existing asset.
+
 ## Alpha-Testers350 companion delivered — corrected six-APK daily policy
 
 - Owner clarified the quota as up to3 Developer AND3 Alpha-Testers APKs per New York day,6 total. This supersedes old statements limiting the combined total to3. No new developer APK was made for this companion.

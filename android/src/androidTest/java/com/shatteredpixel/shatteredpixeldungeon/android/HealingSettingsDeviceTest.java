@@ -73,10 +73,10 @@ public class HealingSettingsDeviceTest {
         }catch(Exception e){throw new RuntimeException(e);}});tap(point.get());
     }
     @Test public void actualSettingsChooserSavesThresholdAndGatesRealPotionUse()throws Exception{
-        int previous=-1,slot=0;boolean intro=false,initialized=false;HeroClass selected=null;
+        int previous=-1,slot=0,oldMode=0;int[] oldCategories=new int[6];String[] oldItems=new String[6];boolean intro=false,initialized=false;HeroClass selected=null;
         try(ActivityScenario<AndroidLauncher> scenario=ActivityScenario.launch(AndroidLauncher.class)){
             waitFor("activity ready",()->Game.instance!=null&&Game.scene()!=null);
-            previous=SPDSettings.healingConfirmationThreshold();slot=GamesInProgress.curSlot;intro=SPDSettings.intro();selected=GamesInProgress.selectedClass;initialized=true;
+            previous=SPDSettings.healingConfirmationThreshold();slot=GamesInProgress.curSlot;intro=SPDSettings.intro();selected=GamesInProgress.selectedClass;oldMode=SPDSettings.apdHotbarMode();for(int i=0;i<6;i++){oldCategories[i]=SPDSettings.apdHotbarCategory(i);oldItems[i]=SPDSettings.apdHotbarItem(i);}initialized=true;
             TopScoresDeviceTest.render(()->{
                 SPDSettings.healingConfirmationThreshold(-1);SPDSettings.intro(false);
                 int free=GamesInProgress.firstEmpty(HeroClass.WARRIOR);assertTrue(free>0);GamesInProgress.curSlot=free;GamesInProgress.selectedClass=HeroClass.WARRIOR;
@@ -129,6 +129,6 @@ public class HealingSettingsDeviceTest {
             assertNull("Off quickslot must not open an item chooser",window(WndUimsdList.class));
             waitFor("ready after Off drink",()->Dungeon.hero.ready);
             TopScoresDeviceTest.render(()->Game.switchScene(TitleScene.class));waitFor("title ready",()->Game.scene() instanceof TitleScene);frames();
-        }finally{if(initialized){SPDSettings.healingConfirmationThreshold(previous);SPDSettings.intro(intro);GamesInProgress.curSlot=slot;GamesInProgress.selectedClass=selected;}}
+        }finally{if(initialized){SPDSettings.healingConfirmationThreshold(previous);SPDSettings.intro(intro);for(int i=0;i<6;i++){SPDSettings.apdHotbarCategory(i,oldCategories[i]);SPDSettings.apdHotbarItem(i,oldItems[i]);}SPDSettings.apdHotbarMode(oldMode);GamesInProgress.curSlot=slot;GamesInProgress.selectedClass=selected;}}
     }
 }

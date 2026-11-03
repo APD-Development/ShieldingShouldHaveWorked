@@ -1,3 +1,20 @@
+/*
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 package com.shatteredpixel.shatteredpixeldungeon.apd.healing;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -85,6 +102,23 @@ public class HealingConfirmationTest {
                 assertEquals(-1,SPDSettings.healingConfirmationThreshold());
             } finally { Dungeon.hero=previous; }
         });
+    }
+    @Test public void offQuickslotReturnsTheOneKnownHealingStackWithoutUsingIt() {
+        CapturedPotion potion=new CapturedPotion();potion.quantity(3);
+        assertSame(potion,HealingConfirmation.directQuickslotPotion(java.util.Collections.singletonList(potion),-1));
+        assertEquals(3,potion.quantity());assertNull(potion.confirmed);
+    }
+    @Test public void ambiguousAndNonHealingQuickslotsRetainTheirChooser() {
+        CapturedPotion potion=new CapturedPotion();
+        assertNull(HealingConfirmation.directQuickslotPotion(java.util.Collections.emptyList(),-1));
+        assertNull(HealingConfirmation.directQuickslotPotion(java.util.Arrays.asList(potion,new CapturedPotion()),-1));
+        assertNull(HealingConfirmation.directQuickslotPotion(java.util.Collections.singletonList(new com.shatteredpixel.shatteredpixeldungeon.items.food.Food()),-1));
+    }
+    @Test public void unknownOrConfirmationEnabledPotionsNeverUseTheOffShortcut() {
+        CapturedPotion unknown=new CapturedPotion(){@Override public boolean isKnown(){return false;}};
+        assertNull(HealingConfirmation.directQuickslotPotion(java.util.Collections.singletonList(unknown),-1));
+        for(int threshold=0;threshold<=100;threshold++)
+            assertNull(HealingConfirmation.directQuickslotPotion(java.util.Collections.singletonList(new CapturedPotion()),threshold));
     }
     private static class CapturedPotion extends PotionOfHealing {
         Runnable confirmed;

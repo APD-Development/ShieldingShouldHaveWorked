@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -207,7 +210,19 @@ abstract public class MissileWeapon extends Weapon {
 				&& Dungeon.level.distance(user.pos, dst) <= Math.round(projecting * Enchantment.genericProcChanceMultiplier(user))){
 			return dst;
 		} else {
-			return super.throwPos(user, dst);
+            int collision = super.throwPos(user, dst);
+            // A Bresenham tie can choose opposite sides of the same straight ray
+            // in opposite directions. Accept its clear reverse rounding only for
+            // a currently visible enemy; this never bends a projectile path.
+            Char target = Actor.findChar(dst);
+            if (collision != dst && !(this instanceof SpiritBow.SpiritArrow)
+                    && user == Dungeon.hero && target != null && target.alignment == Char.Alignment.ENEMY
+                    && user.fieldOfView != null && dst >= 0 && dst < user.fieldOfView.length && user.fieldOfView[dst]
+                    && new com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica(
+                            dst, user.pos, com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica.PROJECTILE).collisionPos == user.pos) {
+                return dst;
+            }
+            return collision;
 		}
 	}
 

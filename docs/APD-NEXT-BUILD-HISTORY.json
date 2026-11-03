@@ -1,27 +1,49 @@
 {
-  "date": "2026-11-02",
-  "previous_source": "03522e5a6813ea6881b0fb8b70a85c7806e3411e",
-  "previous_application_source": "03522e5a6813ea6881b0fb8b70a85c7806e3411e",
-  "previous_run": 41536788270,
-  "previous_label": "Codex TEST 349",
+  "date": "2026-11-03",
+  "previous_source": "1d4bd7268fdb01dedadecddd1fcfd19d72ffa05c",
+  "previous_application_source": "1d4bd7268fdb01dedadecddd1fcfd19d72ffa05c",
+  "previous_run": 41540278341,
+  "previous_label": "Codex TEST 350",
   "changes": [
     {
-      "category": "Quality of Life",
+      "category": "Bug Fixes",
       "sprite": "ICON_CHECKED",
-      "title": "Uncluttered searched-wall corners",
-      "text": "Partial side-wall ends beside corners remain unmarked. Straight wall sections, front faces and the bottom wall lip retain their searched indicators. Includes the already-verified statistics memory-safety changes without changing search timing, chances or saved history.",
+      "title": "Healing quickslots respect Off",
+      "text": "With healing confirmation off, a quickslot containing one identified healing-potion stack now drinks directly. Slots with multiple choices still offer their normal selection menu, and enabled HP warnings retain their normal behavior.",
       "paths": [
-        ".github/workflows/codex-menu-layout-matrix.yml",
+        ".github/workflows/apd-existing350-corner-retest.yml",
+        ".github/workflows/apd-existing350-stable-api36.yml",
+        ".github/workflows/apd-healing350-reproduce.yml",
+        ".github/workflows/apd-player350-owner-delivery.yml",
         ".github/workflows/codex-sprint-check.yml",
-        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/QolItemFeedbackDeviceTest.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/qol/SearchedWallMarkers.java",
-        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/qol/SearchedWallsTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/HealingSettingsDeviceTest.java",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/QolStableCaptureDeviceTest.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/healing/HealingConfirmation.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndCategoryHotbar.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/healing/HealingConfirmationTest.java",
+        "docs/APD-ALPHA-TESTERS350-DELIVERY-RECEIPT.json",
+        "docs/APD-CODEX-BUILD-REQUEST.txt",
+        "docs/APD-HEALING-AND-THROWN-LINE-2026-11-03.md",
         "docs/APD-HEAP-AND-SEARCHED-WALLS-2026-11-02.md",
-        "docs/APD-NEXT-BUILD-HISTORY.json",
+        "docs/APD-HEAP-OWNER-DELIVERY.json",
+        "docs/APD-PLAYER350-DELIVERY-REQUEST.json",
+        "docs/APD-TEST350-DELIVERY-RECEIPT.json",
         "docs/HANDOFF.md",
-        "tools/apd_corner_scope.py",
         "tools/apd_heap_owner_delivery.py",
-        "tools/run-corner-search-check.sh"
+        "tools/apd_player350_delivery.py",
+        "tools/run-codex-android-checks.sh",
+        "tools/run-corner-search-check.sh",
+        "tools/run-title-display-check.sh"
+      ]
+    },
+    {
+      "category": "Bug Fixes",
+      "sprite": "THROWING_KNIFE",
+      "title": "Clear shots at visible enemies",
+      "text": "Thrown weapons can reach a visible enemy when one continuous straight shot is clear, including diagonal grid-rounding edge cases. Walls, corners and creatures still block shots; existing Projecting enchantment behavior is preserved.",
+      "paths": [
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/MissileWeapon.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/MissileLineOfFireTest.java"
       ]
     }
   ]
