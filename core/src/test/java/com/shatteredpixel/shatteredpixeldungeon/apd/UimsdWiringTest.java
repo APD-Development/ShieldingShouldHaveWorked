@@ -93,6 +93,18 @@ public class UimsdWiringTest {
 		String pane = src("windows/APDSettingsPane.java");
 		assertTrue(pane.contains("\"Open UIMSD (preview)\""));
 		assertTrue(pane.contains("UimsdScene.open("));
+		int rowStart = pane.indexOf("private final class SettingRow");
+		int rowEnd = pane.indexOf("private void row(", rowStart);
+		assertTrue("Settings row implementation must remain present", rowStart >= 0 && rowEnd > rowStart);
+		String row = pane.substring(rowStart, rowEnd);
+		int constructor = row.indexOf("SettingRow(");
+		int lazyFactory = row.indexOf("RenderedTextBlock description()");
+		assertTrue("Hidden category descriptions must be deferred until their section is shown",
+				constructor >= 0 && lazyFactory > constructor
+						&& !row.substring(constructor, lazyFactory).contains("renderTextBlock")
+						&& row.substring(lazyFactory).contains("PixelScene.renderTextBlock(note,6)"));
+		assertTrue("Layout must tolerate descriptions that have not been allocated",
+				pane.contains("if(r.description!=null)r.description.visible=r.description.active=false;"));
 		String scene = src("scenes/UimsdScene.java");
 		assertTrue(scene.contains("backTo"));
 		assertTrue(scene.contains("onBackPressed"));

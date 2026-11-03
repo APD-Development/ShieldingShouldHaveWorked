@@ -53,12 +53,25 @@ public class ApdSettingsClickDeviceTest {
                 onRender(()->{dimensions[0]=com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene.uiCamera.width;dimensions[1]=com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene.uiCamera.height;
                     long started=System.nanoTime();window.set(new WndAPDSettings());Game.scene().addToFront(window.get());System.out.println("APD_SETTINGS_ROOT_CREATE_NS="+(System.nanoTime()-started));});Thread.sleep(400);
                 APDSettingsPane pane=find(window.get(),APDSettingsPane.class);ScrollPane scroll=find(window.get(),ScrollPane.class);
+                final List<?> initialRows=(List<?>)field(pane,"rows");
+                for(Object row:initialRows)assertEquals("Category root must not allocate hidden descriptions",null,field(row,"description"));
                 assertEquals(null,pane.section());assertEquals("",((com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock)field(pane,"status")).text());
                 PlayRunDeviceTest.visibilityScreenshot("apd-settings-categories.png");
                 String[] captures={"gameplay","rules","hotbar","visibility","history","advanced"};
                 for(int i=0;i<6;i++){
                     final List<?> categories=(List<?>)field(pane,"categories");tap(centreOnScreen(scroll,(Gizmo)categories.get(i)));
                     assertEquals(com.shatteredpixel.shatteredpixeldungeon.apd.settings.ApdSettingsSection.values()[i],pane.section());
+                    final List<?> lazyRows=(List<?>)field(pane,"rows");
+                    for(Object row:lazyRows){
+                        com.shatteredpixel.shatteredpixeldungeon.apd.settings.ApdSettingsSection rowSection=
+                                (com.shatteredpixel.shatteredpixeldungeon.apd.settings.ApdSettingsSection)field(row,"section");
+                        String note=(String)field(row,"note");
+                        Object description=field(row,"description");
+                        if(!note.isEmpty()&&rowSection.ordinal()<=i)
+                            assertNotNull("Visited section descriptions materialize once",description);
+                        else
+                            assertEquals("Unvisited and empty descriptions stay unallocated",null,description);
+                    }
                     final APDSettingsPane current=pane;
                     onRender(()->{try{
                         List<?> rows=(List<?>)field(current,"rows");java.util.Set<Object> seen=new java.util.HashSet<>();

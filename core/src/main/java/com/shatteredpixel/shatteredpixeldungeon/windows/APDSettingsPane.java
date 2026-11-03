@@ -107,9 +107,19 @@ public class APDSettingsPane extends Component {
     /** Also supports direct links to a setting without changing its value. */
     public void reveal(Component control){for(SettingRow r:rows)if(r.control==control){if(section!=r.section)showSection(r.section);return;}}
     private final class SettingRow {
-        final ApdSettingsSection section;final Component control;final RenderedTextBlock description;
-        SettingRow(ApdSettingsSection section,Component control,String note){this.section=section;this.control=control;
-            description=PixelScene.renderTextBlock(note,6);description.hardlight(0xBBBBBB);add(description);}
+        final ApdSettingsSection section;final Component control;final String note;
+        RenderedTextBlock description;
+        SettingRow(ApdSettingsSection section,Component control,String note){
+            this.section=section;this.control=control;this.note=note;
+        }
+        RenderedTextBlock description(){
+            if(description==null&&!note.isEmpty()){
+                description=PixelScene.renderTextBlock(note,6);
+                description.hardlight(0xBBBBBB);
+                APDSettingsPane.this.add(description);
+            }
+            return description;
+        }
     }
     private void row(ApdSettingsSection section,Component control,String note){if(control!=null)rows.add(new SettingRow(section,control,note));}
     private static class SettingButton extends RedButton {
@@ -485,7 +495,10 @@ public class APDSettingsPane extends Component {
         float pos=title.bottom()+GAP;
         sectionInfo.text(section==null ? "Choose a category. Each setting explains when it applies.":section.description);
         sectionInfo.maxWidth((int)width);sectionInfo.setPos(x,pos);pos=sectionInfo.bottom()+GAP;
-        for(SettingRow r:rows){r.control.visible=r.control.active=false;r.description.visible=r.description.active=false;}
+        for(SettingRow r:rows){
+            r.control.visible=r.control.active=false;
+            if(r.description!=null)r.description.visible=r.description.active=false;
+        }
         for(SettingButton button:categories)button.visible=button.active=false;
         btnSections.visible=btnSections.active=section!=null;
         if(section==null){
@@ -505,7 +518,8 @@ public class APDSettingsPane extends Component {
                 else if(r.control==optExotic)r.control.setRect(x,pos,width,26);
                 else r.control.setRect(x,pos,width,22);
                 pos=r.control.bottom()+2;
-                if(!r.description.text().isEmpty()){r.description.visible=r.description.active=true;r.description.maxWidth((int)width);r.description.setPos(x,pos);pos=r.description.bottom()+GAP+2;}
+                RenderedTextBlock description=r.description();
+                if(description!=null){description.visible=description.active=true;description.maxWidth((int)width);description.setPos(x,pos);pos=description.bottom()+GAP+2;}
                 else pos+=GAP;
             }
         }

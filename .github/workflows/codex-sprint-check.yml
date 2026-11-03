@@ -79,19 +79,19 @@ jobs:
           python3 tools/apd_build_history.py --comparison apd-history-comparison.json --ledger docs/APD-NEXT-BUILD-HISTORY.json --build ${{ github.run_number }} --previous-apk previous-verified.apk
       - name: Verify history and player release-note tooling
         run: python3 -m unittest discover -s tools -p test_apd_build_history.py -v
-      - name: Prove only the healing confirmation toggle differs from TEST357
+      - name: Prove only the settings-latency correction differs from TEST358
         env: {GH_TOKEN: '${{ github.token }}'}
         run: |
           python3 - <<'PY_SCOPE'
           import json,os,subprocess,sys
           sys.path.insert(0,'tools')
           from apd_existing_build_evidence import application_inputs
-          source='6bb2172e0cd45c9b2826625c094137097f6c40d0'
+          source='51a0819552a1b8d6c888cb273057f50dc79f2635'
           tree=lambda sha:json.loads(subprocess.check_output(['gh','api',f'repos/{os.environ["GITHUB_REPOSITORY"]}/git/trees/{sha}?recursive=1']))
           a,b=tree(source),tree(os.environ['GITHUB_SHA']);assert not a.get('truncated') and not b.get('truncated')
           x,y=application_inputs(a['tree']),application_inputs(b['tree']);changed={p for p in x.keys()|y.keys() if x.get(p)!=y.get(p)}
-          assert changed=={'core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndHealingConfirmation.java'},changed
-          print('Only approved healing toggle production inputs differ:',sorted(changed))
+          assert changed=={'core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/APDSettingsPane.java'},changed
+          print('Only approved APD Settings latency production input differs:',sorted(changed))
           PY_SCOPE
       - name: Complete core, Android debug/release and desktop checks
         run: ./gradlew :core:test :desktop:classes :android:compileDebugJavaWithJavac :android:compileReleaseJavaWithJavac

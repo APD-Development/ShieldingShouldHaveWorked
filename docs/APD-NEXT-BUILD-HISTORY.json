@@ -1,33 +1,32 @@
 {
   "date": "2026-11-03",
-  "previous_source": "6bb2172e0cd45c9b2826625c094137097f6c40d0",
-  "previous_application_source": "6bb2172e0cd45c9b2826625c094137097f6c40d0",
-  "previous_run": 41588017413,
-  "previous_label": "Codex TEST 357",
+  "previous_source": "51a0819552a1b8d6c888cb273057f50dc79f2635",
+  "previous_application_source": "51a0819552a1b8d6c888cb273057f50dc79f2635",
+  "previous_run": 41596335602,
+  "previous_label": "Codex TEST 358",
   "changes": [
     {
-      "category": "Bug Fixes",
-      "sprite": "ICON_CHECKED",
-      "title": "Healing confirmation has a real On/Off button",
-      "text": "Tap Off to turn healing confirmation On immediately, then tap On to turn it Off. On asks before every identified Healing-potion drink without requiring a slider. The state updates in place and stays saved; optional HP thresholds remain available. Canceling a drink spends no potion or turn.",
+      "category": "Performance",
+      "sprite": "ICON_SETTINGS",
+      "title": "APD Settings avoids hidden description work",
+      "text": "Opening APD Settings now creates only the visible category screen. Explanatory text is built when its category is first opened and then retained for later visits. Every setting, saved value, note, section, touch target and scroll restoration remains available.",
       "paths": [
-        ".github/workflows/apd-corrective-pair-delivery.yml",
-        ".github/workflows/codex-alpha-preview-stage.yml",
-        ".github/workflows/codex-death-cleanup-device-regression.yml",
-        ".github/workflows/codex-hotbar-cold-restart.yml",
+        ".github/workflows/apd-healing358-exact-retest.yml",
         ".github/workflows/codex-sprint-check.yml",
+        "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/ApdSettingsClickDeviceTest.java",
         "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/HealingSettingsDeviceTest.java",
-        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndHealingConfirmation.java",
+        "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/APDSettingsPane.java",
+        "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/UimsdWiringTest.java",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/APD-CORRECTIVE-PAIR-DELIVERY.json",
         "docs/APD-CORRECTIVE-PAIR-TESTER-REQUEST.json",
+        "docs/APD-HEALING358-EXACT-RETEST.txt",
         "docs/APD-NEXT-BUILD-HISTORY.json",
-        "docs/APD-TEST357-RELEASE-DELIVERY-RECEIPT.json",
+        "docs/APD-TEST358-RELEASE-DELIVERY-RECEIPT.json",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",
         "tools/apd_appearance_pair_delivery.py",
-        "tools/run-codex-android-checks.sh",
-        "tools/run-title-display-check.sh"
+        "tools/run-healing358-exact.sh"
       ]
     }
   ]
