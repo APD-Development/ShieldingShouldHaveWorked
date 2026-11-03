@@ -31,6 +31,7 @@
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/APDSettingsPane.java",
         "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/qol/SearchedWallAppearanceTest.java",
         "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/qol/SearchedWallsTest.java",
+        "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/APD-CORRECTIVE-PAIR-DELIVERY.json",
         "docs/APD-CORRECTIVE-PAIR-TESTER-REQUEST.json",
         "docs/APD-NEXT-BUILD-HISTORY.json",
