@@ -1,6 +1,6 @@
 ## November3: older-build burning crash triaged — issue remains open
 
-DONE: source comparison of tentative254 report against current098353d29, checkpoint/rollback review and42 targeted headless fire/save/diagnostics cases (8 suites,0 failures/errors/skips). NOT DONE: reproduce tester's phone crash or identify root cause; no diagnostic, exact version/device/seed or fire source supplied. No source fix/APK/source rebuild/publication; preserve360 work and358 release. Evidence docs/APD-REPORTED-FIRE-CRASH-254-2026-11-03.md.
+DONE: source comparison of tentative254 report against current098353d29, checkpoint/rollback review and42 targeted headless fire/save/diagnostics cases (8 suites,0 failures/errors/skips). NOT DONE: reproduce tester's phone crash or identify root cause; no diagnostic, exact version/device/seed or fire source supplied. No application source fix, APK assembly or publication; preserve360 work and358 release. Evidence docs/APD-REPORTED-FIRE-CRASH-254-2026-11-03.md.
 
 ## 2026-11-03T15:53:39Z — TEST360 APD Settings latency accepted on exact APK
 - Exact-APK run41666064548/job126021584536 proved unchanged application inputs and original Developer SHA256 bfc829fc92b950b6c13228922eb2fe4cc1f6aa802e6427be961b12f97a94a07e; instrumentation-only build,71/71 API34 in648.911s,104/104 required PNGs valid. Artifact13246513726/7,849,285bytes/digest sha256:0b5c66cdaea08061bed80e418c7fba52b4cb22e46888255d939d0d6b9746468a.
