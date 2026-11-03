@@ -128,7 +128,7 @@ public class HealingSettingsDeviceTest {
             TopScoresDeviceTest.render(()->{try{
                 OptionSlider slider=(OptionSlider)field(editor,"percentage");sliderPoint.set(slider.camera().cameraToScreen(slider.left()+slider.width()/2,slider.bottom()-7));
             }catch(Exception e){throw new RuntimeException(e);}});tap(sliderPoint.get());
-            TopScoresDeviceTest.render(()->{try{assertEquals(50,((OptionSlider)field(editor,"percentage")).getSelectedValue());assertEquals(-1,SPDSettings.healingConfirmationThreshold());}catch(Exception e){throw new RuntimeException(e);}});
+            TopScoresDeviceTest.render(()->{try{assertEquals(50,((OptionSlider)field(editor,"percentage")).getSelectedValue());assertEquals("unsaved slider leaves the enabled On value intact",0,SPDSettings.healingConfirmationThreshold());}catch(Exception e){throw new RuntimeException(e);}});
             TopScoresDeviceTest.screenshot("healing-settings-editor.png");button(editor,"Save");waitFor("threshold saved",()->SPDSettings.healingConfirmationThreshold()==50);
             TopScoresDeviceTest.render(()->parent.get().hide());frames();
             scenario.moveToState(androidx.lifecycle.Lifecycle.State.CREATED);scenario.moveToState(androidx.lifecycle.Lifecycle.State.RESUMED);frames();assertEquals(50,SPDSettings.healingConfirmationThreshold());
