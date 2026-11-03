@@ -73,9 +73,10 @@ public class HealingSettingsDeviceTest {
         }catch(Exception e){throw new RuntimeException(e);}});tap(point.get());
     }
     @Test public void actualSettingsChooserSavesThresholdAndGatesRealPotionUse()throws Exception{
-        int previous=SPDSettings.healingConfirmationThreshold(),slot=GamesInProgress.curSlot;boolean intro=SPDSettings.intro();HeroClass selected=GamesInProgress.selectedClass;
+        int previous=-1,slot=0;boolean intro=false,initialized=false;HeroClass selected=null;
         try(ActivityScenario<AndroidLauncher> scenario=ActivityScenario.launch(AndroidLauncher.class)){
             waitFor("activity ready",()->Game.instance!=null&&Game.scene()!=null);
+            previous=SPDSettings.healingConfirmationThreshold();slot=GamesInProgress.curSlot;intro=SPDSettings.intro();selected=GamesInProgress.selectedClass;initialized=true;
             TopScoresDeviceTest.render(()->{
                 SPDSettings.healingConfirmationThreshold(-1);SPDSettings.intro(false);
                 int free=GamesInProgress.firstEmpty(HeroClass.WARRIOR);assertTrue(free>0);GamesInProgress.curSlot=free;GamesInProgress.selectedClass=HeroClass.WARRIOR;
@@ -108,6 +109,6 @@ public class HealingSettingsDeviceTest {
             waitFor("warning reopens",()->window(WndOptions.class)!=null);button(window(WndOptions.class),"USE HEALING ITEM");
             TopScoresDeviceTest.render(()->{assertEquals(1,potion.quantity());assertNotNull(Dungeon.hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing.class));});
             waitFor("hero ready",()->Dungeon.hero.ready);TopScoresDeviceTest.render(()->Game.switchScene(TitleScene.class));waitFor("title ready",()->Game.scene() instanceof TitleScene);frames();
-        }finally{SPDSettings.healingConfirmationThreshold(previous);SPDSettings.intro(intro);GamesInProgress.curSlot=slot;GamesInProgress.selectedClass=selected;}
+        }finally{if(initialized){SPDSettings.healingConfirmationThreshold(previous);SPDSettings.intro(intro);GamesInProgress.curSlot=slot;GamesInProgress.selectedClass=selected;}}
     }
 }

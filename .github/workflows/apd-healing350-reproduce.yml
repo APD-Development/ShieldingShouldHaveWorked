@@ -1,10 +1,11 @@
-name: Finish exact TEST350 corner verification without rebuilding
+name: Reproduce healing threshold settings on exact TEST350 without rebuilding
 
 on:
   push:
     branches: [codex/apd-phone-fixes-2026-10-09]
     paths:
       - .github/workflows/apd-healing350-reproduce.yml
+      - android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/HealingSettingsDeviceTest.java
       - android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/QolItemFeedbackDeviceTest.java
 
 permissions:
@@ -83,7 +84,7 @@ jobs:
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
-      - name: Run complete current API34 suite against exact APK
+      - name: Exercise actual healing settings and potion-use path on API34
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 34
