@@ -79,19 +79,19 @@ jobs:
           python3 tools/apd_build_history.py --comparison apd-history-comparison.json --ledger docs/APD-NEXT-BUILD-HISTORY.json --build ${{ github.run_number }} --previous-apk previous-verified.apk
       - name: Verify history and player release-note tooling
         run: python3 -m unittest discover -s tools -p test_apd_build_history.py -v
-      - name: Prove only the approved searched-wall appearance inputs differ from TEST354
+      - name: Prove only the healing confirmation toggle differs from TEST357
         env: {GH_TOKEN: '${{ github.token }}'}
         run: |
           python3 - <<'PY_SCOPE'
           import json,os,subprocess,sys
           sys.path.insert(0,'tools')
           from apd_existing_build_evidence import application_inputs
-          source='682f784c5ce5c8b6a2b33945025a9893137e8257'
+          source='6bb2172e0cd45c9b2826625c094137097f6c40d0'
           tree=lambda sha:json.loads(subprocess.check_output(['gh','api',f'repos/{os.environ["GITHUB_REPOSITORY"]}/git/trees/{sha}?recursive=1']))
           a,b=tree(source),tree(os.environ['GITHUB_SHA']);assert not a.get('truncated') and not b.get('truncated')
           x,y=application_inputs(a['tree']),application_inputs(b['tree']);changed={p for p in x.keys()|y.keys() if x.get(p)!=y.get(p)}
-          assert changed=={'core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/APDSettingsPane.java', 'core/src/main/assets/interfaces/apd_searched_wall.png', 'core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/tiles/SearchedWallTilemap.java', 'core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/qol/SearchedWallAppearance.java', 'core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/GameScene.java', 'core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/SPDSettings.java', 'core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/qol/SearchedWalls.java', 'core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/qol/SearchedWallMarkers.java'},changed
-          print('Only approved searched-wall appearance production inputs differ:',sorted(changed))
+          assert changed=={'core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndHealingConfirmation.java'},changed
+          print('Only approved healing toggle production inputs differ:',sorted(changed))
           PY_SCOPE
       - name: Complete core, Android debug/release and desktop checks
         run: ./gradlew :core:test :desktop:classes :android:compileDebugJavaWithJavac :android:compileReleaseJavaWithJavac

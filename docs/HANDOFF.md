@@ -1,3 +1,9 @@
+## Active owner correction: healing confirmation needs a true Off/On toggle
+
+Owner clarified that the button itself must change Off to On when tapped, without choosing an HP threshold. Source confirmed the old Off(one tap) action only wrote-1; previous statements that this already met the toggle request were wrong. Implemented a native SettingsWindow with an in-place Off/On button: Off-to-On saves0 and asks before each identified Healing drink; On-to-Off saves-1. Optional HP thresholds remain separately available. No default preference migration, healing formula, inventory, turn or scoring change.
+
+Local full2331 core tests and20 history-tool tests pass. Strengthened existing native healing case taps both states, verifies visible labels and persistence, taps real DRINK at10% HP with On, and cancels without consumption/turn/HP change; retains custom-threshold and actual quickslot-Off behavior. On/Off captures added to both native/display collectors. Packaging one next Developer/Alpha-Testers pair (expected358) with required full build/native/display checks. No new toggle APK verified or published yet.357 remains the downloadable fallback and does NOT contain this toggle correction. Use Releases for completed delivery and retain3-of-each/day limit;357 is currently the sole newly delivered pair on November3 New York.
+
 ## TEST357 now published under private GitHub Releases — prior blocker resolved
 
 Release432369723/tag apd-alpha-preview-357 points to exact application source6bb2172e0cd45c9b2826625c094137097f6c40d0. Published2026-11-03T07:08:16Z; workflow download-back verified07:08:22.824839Z, followed by independent local downloads/hash checks of BOTH APKs and source. Delivery workflow41589812056 attempt2 succeeded; no application rebuild. The owner explicitly requested Releases publication. This was not a scheduler invocation.

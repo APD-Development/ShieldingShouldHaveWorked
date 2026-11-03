@@ -1,3 +1,20 @@
+/*
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
@@ -12,15 +29,49 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 public final class WndHealingConfirmation {
     private WndHealingConfirmation() {}
     public static void settings() {
-        int current = SPDSettings.healingConfirmationThreshold();
-        ShatteredPixelDungeon.scene().addToFront(new WndOptions("Healing confirmation",
-                "Identified Healing potions only. Current: " + (current < 0 ? "Off (one tap)." : current + "% HP.")
-                        + " At or above the threshold, confirm before drinking.", "Choose HP threshold", "Off (one tap)", "Cancel") {
-            @Override protected void onSelect(int index) {
-                if (index == 1) SPDSettings.healingConfirmationThreshold(-1);
-                else if (index == 0) ShatteredPixelDungeon.scene().addToFront(new ThresholdWindow());
-            }
-        });
+        ShatteredPixelDungeon.scene().addToFront(new SettingsWindow());
+    }
+
+    /** A persistent native state button: tapping Off enables confirmation immediately. */
+    public static final class SettingsWindow extends Window {
+        private final RenderedTextBlock description;
+        private final RedButton threshold;
+        private final RedButton toggle;
+        private final RedButton close;
+        public SettingsWindow() {
+            final int width=140;
+            RenderedTextBlock title=PixelScene.renderTextBlock("Healing confirmation",9);
+            title.hardlight(TITLE_COLOR);title.maxWidth(width);title.setPos(0,0);add(title);
+            description=PixelScene.renderTextBlock(6);description.maxWidth(width);
+            description.setPos(0,title.bottom()+4);add(description);
+            threshold=new RedButton("Choose HP threshold") {
+                @Override protected void onClick() {
+                    SettingsWindow.this.hide();
+                    ShatteredPixelDungeon.scene().addToFront(new ThresholdWindow());
+                }
+            };add(threshold);
+            toggle=new RedButton("") {
+                @Override protected void onClick() {
+                    // Turning On needs no slider: zero means confirm at every HP level.
+                    SPDSettings.healingConfirmationThreshold(SPDSettings.healingConfirmationThreshold()<0?0:-1);
+                    refreshState();
+                }
+            };add(toggle);
+            close=new RedButton("Close") {
+                @Override protected void onClick() { hide(); }
+            };add(close);
+            refreshState();
+        }
+        private void refreshState() {
+            final int width=140,current=SPDSettings.healingConfirmationThreshold();
+            toggle.text(current<0?"Off":"On");
+            description.text("Identified Healing potions only. Tap Off to turn confirmation On; tap On to turn it Off. Current: "
+                    +(current<0?"Off (one tap).":current==0?"On (every time).":"On at or above "+current+"% HP."),width);
+            threshold.setRect(0,description.bottom()+4,width,18);
+            toggle.setRect(0,threshold.bottom()+2,width,18);
+            close.setRect(0,toggle.bottom()+2,width,18);
+            resize(width,(int)close.bottom());
+        }
     }
     public static final class ThresholdWindow extends Window {
         private final OptionSlider percentage;

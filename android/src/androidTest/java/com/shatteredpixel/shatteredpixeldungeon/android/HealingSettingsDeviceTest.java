@@ -90,8 +90,38 @@ public class HealingSettingsDeviceTest {
                 APDSettingsPane pane=(APDSettingsPane)field(parent.get(),"pane");RedButton b=(RedButton)field(pane,"btnHealingConfirmation");
                 ((ScrollPane)field(parent.get(),"scroll")).scrollTo(0,Math.max(0,b.top()-8));
             }catch(Exception e){throw new RuntimeException(e);}});
-            button(parent.get(),"Healing confirmation");waitFor("healing options opens",()->window(WndOptions.class)!=null);
-            TopScoresDeviceTest.screenshot("healing-settings-entry.png");button(window(WndOptions.class),"Choose HP threshold");
+            button(parent.get(),"Healing confirmation");waitFor("healing options opens",()->window(WndHealingConfirmation.SettingsWindow.class)!=null);
+            WndHealingConfirmation.SettingsWindow settings=window(WndHealingConfirmation.SettingsWindow.class);
+            float turnBeforeToggle=Dungeon.hero.cooldown();
+            button(settings,"Off");assertEquals("Off button enables confirmation without a slider",0,SPDSettings.healingConfirmationThreshold());
+            assertSame("toggle stays open and updates in place",settings,window(WndHealingConfirmation.SettingsWindow.class));
+            button(settings,"On");assertEquals(-1,SPDSettings.healingConfirmationThreshold());
+            button(settings,"Off");assertEquals(0,SPDSettings.healingConfirmationThreshold());
+            assertEquals("changing the toggle spends no turn",turnBeforeToggle,Dungeon.hero.cooldown(),0f);
+            TopScoresDeviceTest.screenshot("healing-settings-toggle-on.png");
+            button(settings,"Close");
+            scenario.moveToState(androidx.lifecycle.Lifecycle.State.CREATED);scenario.moveToState(androidx.lifecycle.Lifecycle.State.RESUMED);frames();
+            assertEquals("On persists after pause/resume",0,SPDSettings.healingConfirmationThreshold());
+            PotionOfHealing enabledPotion=new PotionOfHealing();enabledPotion.quantity(2);enabledPotion.setKnown();
+            final float[] enabledTurn={0};
+            TopScoresDeviceTest.render(()->{
+                parent.get().hide();Dungeon.hero.HT=100;Dungeon.hero.HP=10;
+                assertTrue(enabledPotion.collect(Dungeon.hero.belongings.backpack));enabledTurn[0]=Dungeon.hero.cooldown();
+                GameScene.show(new WndUseItem(null,enabledPotion));
+            });
+            button(window(WndUseItem.class),"DRINK");
+            waitFor("On asks even at low HP after a real Drink tap",()->window(WndOptions.class)!=null);
+            button(window(WndOptions.class),"CANCEL");
+            TopScoresDeviceTest.render(()->{
+                assertEquals(2,enabledPotion.quantity());assertEquals(10,Dungeon.hero.HP);
+                assertEquals("cancel spends no turn",enabledTurn[0],Dungeon.hero.cooldown(),0f);
+                Dungeon.hero.belongings.backpack.items.remove(enabledPotion);
+                WndAPDSettings w=new WndAPDSettings(com.shatteredpixel.shatteredpixeldungeon.apd.settings.ApdSettingsSection.GAMEPLAY);GameScene.show(w);parent.set(w);
+            });
+            TopScoresDeviceTest.render(WndHealingConfirmation::settings);
+            waitFor("saved On settings reopens",()->window(WndHealingConfirmation.SettingsWindow.class)!=null);
+            settings=window(WndHealingConfirmation.SettingsWindow.class);
+            TopScoresDeviceTest.screenshot("healing-settings-entry.png");button(settings,"Choose HP threshold");
             waitFor("Choose HP threshold opens editor",()->window(WndHealingConfirmation.ThresholdWindow.class)!=null);
             WndHealingConfirmation.ThresholdWindow editor=window(WndHealingConfirmation.ThresholdWindow.class);frames();
             AtomicReference<Point> sliderPoint=new AtomicReference<>();
@@ -110,8 +140,11 @@ public class HealingSettingsDeviceTest {
             TopScoresDeviceTest.render(()->{assertEquals(1,potion.quantity());assertNotNull(Dungeon.hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing.class));});
             waitFor("hero ready",()->Dungeon.hero.ready);
             TopScoresDeviceTest.render(WndHealingConfirmation::settings);
-            waitFor("Off option available",()->window(WndOptions.class)!=null);
-            button(window(WndOptions.class),"Off (one tap)");
+            waitFor("On toggle available",()->window(WndHealingConfirmation.SettingsWindow.class)!=null);
+            button(window(WndHealingConfirmation.SettingsWindow.class),"On");
+            assertEquals(-1,SPDSettings.healingConfirmationThreshold());
+            TopScoresDeviceTest.screenshot("healing-settings-toggle-off.png");
+            button(window(WndHealingConfirmation.SettingsWindow.class),"Close");
             assertEquals("Off button disables the saved threshold",-1,SPDSettings.healingConfirmationThreshold());
             TopScoresDeviceTest.render(()->{
                 potion.quantity(2);Dungeon.hero.HP=90;

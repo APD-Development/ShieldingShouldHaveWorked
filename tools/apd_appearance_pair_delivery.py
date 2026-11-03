@@ -90,7 +90,9 @@ assert {c['name'] for c in results['android']['cases']} >= {'actualSettingsChoos
 assert any(c['name']=='grassDewControlsRingBreakdownsSearchedWallAndOfflineLicenseRenderNatively' for c in results['android']['cases'])
 visual,va=artifact(spec['display'],'apd-title-display-redmagic-representative-api36')
 images={}
-assert set(spec['visual_review'])=={'qol-dew-settings.png','qol-force-weapon.png','qol-sharpshooting-weapon.png','qol-searched-wall.png','qol-searched-wall-color.png','qol-offline-license.png'}
+required_visuals={'qol-dew-settings.png','qol-force-weapon.png','qol-sharpshooting-weapon.png','qol-searched-wall.png','qol-searched-wall-color.png','qol-offline-license.png'}
+if spec.get('kind')=='healing-toggle':required_visuals|={'healing-settings-toggle-on.png','healing-settings-toggle-off.png'}
+assert set(spec['visual_review'])==required_visuals
 for image in native.rglob('*.png'):
  with Image.open(image) as im:im.verify()
 for name,expected in spec['visual_review'].items():
@@ -157,9 +159,11 @@ with zipfile.ZipFile(sourcezip,'w',zipfile.ZIP_DEFLATED,compresslevel=9) as arch
   info=zipfile.ZipInfo(f'APD-Source-{number}/'+n,date_time=(2026,11,2,0,0,0));info.compress_type=zipfile.ZIP_DEFLATED;info.external_attr=(0o100755 if n=='gradlew' or n.endswith('.sh') else 0o100644)<<16;archive.writestr(info,b)
 side=pathlib.Path(str(sourcezip)+'.sha256');side.write_text(sha(sourcezip)+'  '+sourcezip.name+'\n');files.extend([sourcezip,side])
 # Preserve the existing verified fallback and verify its actual uploaded APK assets before any new write.
-fallback=api(f'repos/{REPO}/releases/tags/apd-alpha-preview-354')
-for label,h in [('Developer','41f0b01ed520007741e01c274b3cd7194bf24e561c28352689c8e86fa1079755'),('Alpha-Testers','3b5eaaa8df43a00c11ad4df0e7034f5d6ab701a09e61cb6c1d9e663ea83b4c31')]:
- assert any(a['name']==f'APD-{label}-354.apk' and a.get('digest')=='sha256:'+h for a in fallback['assets'])
+fallback_number=spec.get('fallback_number',354)
+fallback=api(f'repos/{REPO}/releases/tags/apd-alpha-preview-{fallback_number}')
+fallback_hashes=spec.get('fallback_hashes',{'Developer':'41f0b01ed520007741e01c274b3cd7194bf24e561c28352689c8e86fa1079755','Alpha-Testers':'3b5eaaa8df43a00c11ad4df0e7034f5d6ab701a09e61cb6c1d9e663ea83b4c31'})
+for label,h in fallback_hashes.items():
+ assert any(a['name']==f'APD-{label}-{fallback_number}.apk' and a.get('digest')=='sha256:'+h for a in fallback['assets'])
 evidence={'source_commit':source,'tag':tag,'number':number,'runs':{k:spec[k] for k in ('developer','player','display','native','tester')},'test_summaries':results,'core_tests':spec['core_tests'],'android_tests':results['android']['tests'],'native_case_evidence':np,'tester_api34_tests':3,'tester_proof':tp,'tester_artifact':ta['id'],'baseline69_cases_preserved':True,'profiles':profiles,'signing_certificate':expected_cert,'application_id':'com.charltonchris29.adhdpixeldungeon.indev','version_code':920,'apk_hashes':hashes,'source_sha256':sha(sourcezip),'visual_review':images,'visual_capture_artifact':va['id'],'display_job_attempts':[{k:j.get(k) for k in ('id','name','conclusion')} for j in attempts],'retained_display_failure':spec.get('retained_display_failure'),'physical_phone_verified':False,'new_application_apks_created':2,'owner_private_delivery':True,'fallback_preserved':True,'prepared_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'rejected_candidate':{'356':'Saved settings and tint fields passed, but visual review found white glyphs: the unlit tilemap shader ignored tint. Replacement uses the standard tint shader plus actual rendered-pixel checks. No356 publication.'},'retained_prebuild_failure':{'355':'Reviewed-change list omitted the build-request document; stopped before application compilation. Metadata fixed without changing application inputs.'},'behavior':{'saved_colors':8,'immediate_tint':True,'unknown_geometry_consulted':False,'search_memory_preserved':True,'search_rng_or_turns_changed':False,'score_formulas_changed':False}}
 receipt=OUT/f'APD-Preview-{number}-Verification.json';receipt.write_text(json.dumps(evidence,indent=2)+'\n');files.append(receipt)
 notes=f"""Choose from eight saved searched-wall checkmark colors in APD Settings under Visibility. Color changes apply immediately, with no scene reload or turn. Positions which known terrain geometry rules out as doorways are left unmarked; hidden room layout and secret-door identity are never consulted. Marks still mean searched, not guaranteed secret-free. Saved search history and actual searching remain unchanged.
@@ -169,7 +173,15 @@ Source `{source}`. Both variants passed all{spec['core_tests']} core cases. The 
 Attempt355 stopped on a missing reviewed metadata path before application compilation; it produced no APK. Candidate356 was rejected during visual review because the unlit tilemap shader ignored tint. The replacement uses the standard tint-aware shader and requires actual Magenta pixels after a native color-picker tap.356 was not published. No application rebuild was performed for delivery.
 
 """
+if spec.get('kind')=='healing-toggle':
+ notes=f"""Healing confirmation now has a real On/Off toggle. Tapping Off turns it On immediately and the same button displays On; tapping On turns it Off. Turning On asks before every identified Healing-potion drink without requiring a slider. Optional HP thresholds remain available. The preference persists, and changing it or canceling a drink consumes no potion or turn. Previously, the Off button only saved Off again; it was not a toggle. This correction is new in{number}, not357.
+
+Both APKs passed all{spec['core_tests']} core tests. The Developer APK passed all{spec['android_tests']} native API34 cases, the actual Alpha-Testers APK passed3 acceptance cases, and all six display profiles passed, including API36. Native taps verify Off-to-On-to-Off, immediate label changes, persistence, and a real Drink tap at low HP followed by cancellation. These are automated/emulator results; physical-phone acceptance is pending. Existing357 checkmark colors and doorway filtering are retained.
+
+Exact source `{source}`. Original signing/application ID retained; install over the existing app, never uninstall or clear data. No application rebuild for publication.
+
+"""
 for label in ('Developer','Alpha-Testers'):notes+=f'- [{label} APK](https://github.com/{REPO}/releases/download/{tag}/APD-{label}-{number}.apk) — SHA256 `{hashes[label]}`\n'
-notes+=f'\n[Matching source for both variants](https://github.com/{REPO}/releases/download/{tag}/{sourcezip.name}) — SHA256 `{sha(sourcezip)}`. Build instructions and generated inputs are included; signing material is excluded. GPLv3 or later, no warranty; unofficial independent fork with original credits retained. Separate GPL audit findings, including historical key exposure and inherited license exceptions, remain recorded and are not declared closed by this owner preview.\n\nExisting354 fallback and all assets are preserved. Private owner delivery only; no automatic posting to external testers or public release.\n';body=OUT/'release-notes.md';body.write_text(notes)
+notes+=f'\n[Matching source for both variants](https://github.com/{REPO}/releases/download/{tag}/{sourcezip.name}) — SHA256 `{sha(sourcezip)}`. Build instructions and generated inputs are included; signing material is excluded. GPLv3 or later, no warranty; unofficial independent fork with original credits retained. Separate GPL audit findings, including historical key exposure and inherited license exceptions, remain recorded and are not declared closed by this owner preview.\n\nExisting verified fallback and all assets are preserved. Private owner delivery only; no automatic posting to external testers or public release.\n';body=OUT/'release-notes.md';body.write_text(notes)
 # Preparation is separated from publication so scan and reviewed archive evidence can be inspected first.
 print(json.dumps({'prepared':True,'files':[p.name for p in files],'hashes':hashes,'source_sha256':sha(sourcezip),'history_count':manifest['generated_history_tsv_count']}))
