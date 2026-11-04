@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.apd.query;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.stats.Fact;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKeys;
 import java.util.*;
 
@@ -11,6 +12,57 @@ public final class RunTurnBrowser {
     private long current = 1;
     private long step = 1;
     private final NavigableMap<Long,List<String>> timeline = new TreeMap<>();
+
+    /** True only for a selected, exact public occurrence with one matching recorded run. */
+    public static boolean canOpenAt(Catalog catalog, QueryResult source, Row occurrence) {
+        return anchor(catalog,source,occurrence)!=null;
+    }
+
+    /**
+     * Opens the canonical public timeline on the selected occurrence's exact turn.
+     * Imported, duplicate, hidden, uncertain, stale and ambiguously-owned rows fail closed.
+     */
+    public static RunTurnBrowser openAt(Catalog catalog, QueryResult source, Row occurrence) {
+        Anchor anchor=anchor(catalog,source,occurrence);
+        if(anchor==null)throw new IllegalArgumentException("An exact recorded occurrence and matching run are required");
+        RunTurnBrowser browser=new RunTurnBrowser(catalog,anchor.run);
+        browser.go(anchor.turn);
+        return browser;
+    }
+
+    private static Anchor anchor(Catalog catalog, QueryResult source, Row occurrence) {
+        if(catalog==null || source==null || source.isGrouped() || !source.problems.isEmpty()
+                || occurrence==null || !source.rows.contains(occurrence)
+                || occurrence.imported || occurrence.duplicate || !occurrence.publicRow
+                || occurrence.runId==null || occurrence.runId.isEmpty())return null;
+        String id=source.def.id;
+        String clock;
+        if(Datasets.DEATHS.equals(id))clock="death.turn";
+        else if(FactDatasets.isFactDataset(id))clock=FactDatasets.TURN;
+        else if(EventDatasets.FLOORS.equals(id))clock="floor.enterTurn";
+        else if(EventDatasets.EQUIPMENT.equals(id))clock="equip.start";
+        else if(EventDatasets.isEventDataset(id))clock=EventDatasets.prefixOf(id)+".turn";
+        else return null;
+        ColumnDef turn=source.def.column(clock);
+        if(turn==null || turn.index()>=occurrence.size() || !QueryEngine.open(source.query,occurrence,turn)
+                || !occurrence.isKnown(turn.index()) || occurrence.prov(turn.index())!=Fact.PROV_RECORDED
+                || occurrence.kind(turn.index())!=Row.K_NUM || occurrence.num(turn.index())<1)return null;
+        Dataset runs=catalog.dataset(Datasets.RUNS);
+        if(runs==null)return null;
+        Row match=null;
+        for(Row candidate:runs.rows)if(occurrence.runId.equals(candidate.runId)
+                && !candidate.imported && !candidate.duplicate && candidate.publicRow){
+            if(match!=null)return null;
+            match=candidate;
+        }
+        return match==null ? null:new Anchor(match,occurrence.num(turn.index()));
+    }
+
+    private static final class Anchor {
+        final Row run;
+        final long turn;
+        Anchor(Row run,long turn){this.run=run;this.turn=turn;}
+    }
 
     public RunTurnBrowser(Catalog catalog, Row run) {
         if (catalog == null || run == null || run.runId == null || run.runId.isEmpty() )

@@ -34,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.query.GroupRow;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.LinkDef;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.QueryResult;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.ResultTable;
+import com.shatteredpixel.shatteredpixeldungeon.apd.query.RunTurnBrowser;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.Row;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdModel;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.WindowGeometry;
@@ -136,6 +137,16 @@ public class WndUimsdRow extends Window {
 					}));
 				}
 			}
+			if (RunTurnBrowser.canOpenAt(m.catalog(), r, row))
+				actions.add(new Action("Run history at this turn", () -> {
+					try {
+						ShatteredPixelDungeon.scene().addToFront(new WndRunTurnBrowser(
+								RunTurnBrowser.openAt(m.catalog(), r, row)));
+					} catch (IllegalArgumentException stale) {
+						ShatteredPixelDungeon.scene().addToFront(new WndMessage(
+								"This occurrence or its recorded run changed. Reopen the table."));
+					}
+				}));
 			if (WndUimsdResearch.canEquipmentWindow(r))
                 actions.add(new Action("Damage after equipping", () -> WndUimsdResearch.equipmentWindow(m,r,row)));
 			if (WndUimsdResearch.canDamageRecoveryWindow(r,row))
