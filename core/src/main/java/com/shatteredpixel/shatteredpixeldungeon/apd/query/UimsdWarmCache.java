@@ -125,45 +125,69 @@ public final class UimsdWarmCache {
         if (root == null) return;
         final Key key = new Key(root, ruleset, label, allRules);
         final Job job;
+        final Job superseded;
+        final Thread worker;
         synchronized (LOCK) {
             if (preparing != null && preparing.key.matches(key)) return;
             job = new Job(key, ++generation);
+            worker = new Thread(() -> {
+                try {
+                    String before = stamp(key.root);
+                    if (before == null) return;
+                    synchronized (LOCK) {
+                        if (ready != null && ready.key.matches(key)
+                                && before.equals(ready.sourceStamp)) return;
+                        if(ready!=null){ready.model.releaseForGameplay();ready=null;}
+                    }
+                    if(!canPrepare(key.root))return; // explicit UIMSD opening still reads complete history normally
+                    UimsdModel prepared = new UimsdModel(key.ruleset, key.label);
+                    synchronized(LOCK){
+                        if(preparing!=job||job.id!=generation)return;
+                        job.model=prepared;
+                        prepared.load(key.root, key.allRules);
+                    }
+                    prepared.awaitLoad(60000);
+                    String after = stamp(key.root);
+                    if (prepared.state() != UimsdModel.State.READY ||
+                            after == null || !before.equals(after)) return;
+                    synchronized (LOCK) {
+                        if (preparing == job && job.id == generation)
+                            ready = new Entry(key, prepared, after);
+                    }
+                } finally {
+                    UimsdModel abandoned = null;
+                    synchronized (LOCK) {
+                        if (preparing == job) {
+                            preparing = null;
+                            if (job.model != null && (ready == null || ready.model != job.model))
+                                abandoned = job.model;
+                        }
+                    }
+                    if (abandoned != null) abandoned.releaseForGameplay();
+                }
+            }, "uimsd-title-prewarm");
+            worker.setDaemon(true);
+            worker.setPriority(Thread.MIN_PRIORITY);
+            job.thread = worker;
+            superseded = preparing;
+            if (superseded != null && ready != null && ready.model == superseded.model)
+                ready = null;
             preparing = job;
         }
-        Thread worker = new Thread(() -> {
-            try {
-                String before = stamp(key.root);
-                if (before == null) return;
-                synchronized (LOCK) {
-                    if (ready != null && ready.key.matches(key)
-                            && before.equals(ready.sourceStamp)) return;
-                    if(ready!=null){ready.model.releaseForGameplay();ready=null;}
-                }
-                if(!canPrepare(key.root))return; // explicit UIMSD opening still reads complete history normally
-                UimsdModel prepared = new UimsdModel(key.ruleset, key.label);
-                synchronized(LOCK){
-                    if(preparing!=job||job.id!=generation)return;
-                    job.model=prepared;
-                    prepared.load(key.root, key.allRules);
-                }
-                prepared.awaitLoad(60000);
-                String after = stamp(key.root);
-                if (prepared.state() != UimsdModel.State.READY ||
-                        after == null || !before.equals(after)) return;
-                synchronized (LOCK) {
-                    if (preparing == job && job.id == generation)
-                        ready = new Entry(key, prepared, after);
-                }
-            } finally {
-                synchronized (LOCK) {
-                    if (preparing == job) preparing = null;
-                }
-            }
-        }, "uimsd-title-prewarm");
-        worker.setDaemon(true);
-        worker.setPriority(Thread.MIN_PRIORITY);
-        job.thread = worker;
-        worker.start();
+        retire(superseded);
+        // Starting only while this job still owns the slot closes the narrow
+        // publish/cancel race between concurrent title appearances.
+        synchronized (LOCK) {
+            if (preparing == job && job.id == generation) worker.start();
+        }
+    }
+
+    private static void retire(Job job) {
+        if (job == null) return;
+        UimsdModel model = job.model;
+        if (model != null) model.releaseForGameplay();
+        Thread thread = job.thread;
+        if (thread != null) thread.interrupt();
     }
 
     /** Return a fully READY model or nothing; never waits for the loader. */

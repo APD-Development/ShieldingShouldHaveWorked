@@ -180,6 +180,38 @@ public class UimsdWarmCacheTest {
         assertFalse("render thread must not validate the warm cache",path.contains("UimsdWarmCache.takeReady"));
     }
 
+    @Test public void changedPrewarmCancelsSupersededWorkerBeforeStartingReplacement() throws Exception {
+        File first=Files.createTempDirectory("apd-warm-old").toFile();
+        File second=Files.createTempDirectory("apd-warm-new").toFile();
+        Thread superseded;
+        java.lang.reflect.Field lockField=UimsdWarmCache.class.getDeclaredField("LOCK");
+        java.lang.reflect.Field preparingField=UimsdWarmCache.class.getDeclaredField("preparing");
+        lockField.setAccessible(true);preparingField.setAccessible(true);
+        Object lock=lockField.get(null);
+        try {
+            synchronized(lock){
+                UimsdWarmCache.prewarm(first,"rules-a","old",false);
+                Object oldJob=preparingField.get(null);
+                assertNotNull(oldJob);
+                java.lang.reflect.Field threadField=oldJob.getClass().getDeclaredField("thread");
+                threadField.setAccessible(true);
+                superseded=(Thread)threadField.get(oldJob);
+                assertNotNull(superseded);assertTrue(superseded.isAlive());
+                UimsdWarmCache.prewarm(second,"rules-b","new",true);
+                assertTrue("a different preload must interrupt the superseded optional worker",
+                        superseded.isInterrupted());
+            }
+            superseded.join(10000);
+            assertFalse("the superseded worker must stop before histories can overlap",superseded.isAlive());
+            UimsdWarmCache.awaitPrewarmForTest(10000);
+            assertNull(UimsdWarmCache.takeReady(first,"rules-a","old",false));
+            UimsdModel replacement=UimsdWarmCache.takeReady(second,"rules-b","new",true);
+            assertNotNull(replacement);assertEquals(UimsdModel.State.READY,replacement.state());
+        } finally {
+            assertTrue(first.delete());assertTrue(second.delete());
+        }
+    }
+
     @After public void cleanup() { UimsdWarmCache.resetForTest(); }
 
     @Test public void titlePrewarmProvidesAnImmediatelyReadyModel() throws Exception {
