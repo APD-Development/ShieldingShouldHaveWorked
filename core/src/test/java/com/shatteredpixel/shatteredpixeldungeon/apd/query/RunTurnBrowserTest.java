@@ -166,7 +166,7 @@ public class RunTurnBrowserTest {
 
     private static QueryResult result(Catalog cat,String dataset){
         return QueryEngine.run(cat.dataset(dataset),Query.of(dataset)
-                .withScope(new Scope(Scope.Rules.ALL,"",false,false,false,false)),"");
+                .withScope(new Scope(Scope.Rules.ALL,"",true,false,true,false)),"");
     }
 
     private static void assertOpenAt(Catalog cat,String dataset,Row row,long turn){
