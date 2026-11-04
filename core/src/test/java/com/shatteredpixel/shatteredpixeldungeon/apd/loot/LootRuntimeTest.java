@@ -53,6 +53,7 @@ public class LootRuntimeTest {
     @Test public void realRegularEffectConsumesOnceAndSurvivesReloadWithoutDuplication() throws Exception {
         Dungeon.level.heaps.clear(); Pasty food=new Pasty();food.quantity(7);food.apdUid="runtime-food";
         Dagger weapon=new Dagger();weapon.upgrade(3);weapon.enchant(new Projecting());weapon.cursed=true;weapon.apdUid="runtime-weapon";
+        weapon.apdFoundOrigin=new com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.Origin(1,0,0,"ArmoryRoom");
         pile(safeAway(),Heap.Type.HEAP,food,weapon);
         Gathering scroll=new Gathering();assertTrue(scroll.collect(Dungeon.hero.belongings.backpack));
         scroll.execute(Dungeon.hero,com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll.AC_READ);
@@ -62,11 +63,14 @@ public class LootRuntimeTest {
         reload();assertEquals(1,named("runtime-food"));assertEquals(1,named("runtime-weapon"));
         Item restored=Dungeon.level.heaps.valueList().get(0).items.stream().filter(i->"runtime-weapon".equals(i.apdUid)).findFirst().get();
         assertEquals(3,restored.level());assertTrue(restored.cursed);assertTrue(((Dagger)restored).enchantment instanceof Projecting);
+        assertEquals(weapon.apdFoundOrigin,restored.apdFoundOrigin);
     }
 
     @Test public void exoticPayloadSurvivesSaveThenDeliversOutsideGeneratedShopOnce() throws Exception {
         Dungeon.level.heaps.clear();Pasty food=new Pasty();food.quantity(9);food.apdUid="forwarded-food";
-        pile(safeAway(),Heap.Type.HEAP,food);
+        Dagger gear=new Dagger();gear.apdUid="forwarded-gear";
+        gear.apdFoundOrigin=new com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.Origin(1,0,com.shatteredpixel.shatteredpixeldungeon.apd.stats.GenerationEvents.C_LOCKED_CHEST,"ArmoryRoom");
+        pile(safeAway(),Heap.Type.HEAP,food,gear);
         Forwarding scroll=new Forwarding();assertTrue(scroll.collect(Dungeon.hero.belongings.backpack));
         scroll.execute(Dungeon.hero,com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll.AC_READ);
         assertEquals(1,scroll.reads);assertEquals(1,LootTransfers.state.pending().size());assertEquals(0,named("forwarded-food"));
@@ -78,8 +82,13 @@ public class LootRuntimeTest {
         Heap target=Dungeon.level.heaps.get(destination);assertNotNull(target);assertEquals(Heap.Type.HEAP,target.type);
         for(Room room:((RegularLevel)Dungeon.level).rooms())if(room instanceof ShopRoom)
             assertFalse(room.inside(Dungeon.level.cellToPoint(destination)));
+        Item delivered=target.items.stream().filter(i->"forwarded-gear".equals(i.apdUid)).findFirst().get();
+        assertEquals(gear.apdFoundOrigin,delivered.apdFoundOrigin);
+        assertEquals(1,delivered.apdFoundOrigin.floor);
         Set<String> receipts=new HashSet<>(Dungeon.level.apdLootReceipts);assertEquals(1,receipts.size());
         reload();Dungeon.saveAll();assertEquals(1,named("forwarded-food"));assertEquals(receipts,Dungeon.level.apdLootReceipts);
+        Item loadedGear=Dungeon.level.heaps.get(destination).items.stream().filter(i->"forwarded-gear".equals(i.apdUid)).findFirst().get();
+        assertEquals(gear.apdFoundOrigin,loadedGear.apdFoundOrigin);
     }
 
     @Test public void noExitNoLootAndArmedBombNeverConsumeScrollOrReadTurn() throws Exception {

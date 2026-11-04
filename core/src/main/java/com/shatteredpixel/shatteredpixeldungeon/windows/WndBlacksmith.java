@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -522,6 +525,7 @@ public class WndBlacksmith extends Window {
 							((Armor) item).inscribe(Blacksmith.Quest.smithGlyph);
 						}
 
+						com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.recordSource(item, Dungeon.level, troll.pos, com.shatteredpixel.shatteredpixeldungeon.apd.stats.GenerationEvents.C_QUEST_REWARD);
 						item.identify(false);
 						Sample.INSTANCE.play(Assets.Sounds.EVOKE);
 						Item.evoke( Dungeon.hero );

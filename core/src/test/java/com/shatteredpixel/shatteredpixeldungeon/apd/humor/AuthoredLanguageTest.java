@@ -60,7 +60,8 @@ public class AuthoredLanguageTest {
   // seven exact reviewed per-region healing strings and seven neutral progression-pickup labels.
   // Plus 22 reviewed dew settings, searched-wall feedback and numeric ring-contribution messages.
   // Every value, including all new labels, is checked above with Adult Humor OFF and ON.
-  assertEquals(9,files);assertEquals("Reviewed English message inventory",5098,values);
+  // Plus 186 neutral item-origin source, floor and explicit room-classification labels.
+  assertEquals(9,files);assertEquals("Reviewed English message inventory",5284,values);
  }
  @Test public void localizedAlternativesDoNotDamageInnocentWordsOrOtherLanguages(){
   for(String innocent:new String[]{"Hell","slut","kesialan","Verdammte Charaktere","dictionary","classic","Scunthorpe","Prick","Fan of Blades"})assertEquals(innocent,AuthoredLanguage.select(innocent,false));

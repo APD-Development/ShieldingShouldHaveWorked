@@ -1,3 +1,20 @@
+/*
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 package com.shatteredpixel.shatteredpixeldungeon.apd.difficulty;
 
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -29,6 +46,15 @@ public final class CustomEquipmentHooks {
         for(com.shatteredpixel.shatteredpixeldungeon.items.Heap heap:heaps){
             if(haunted)heap.setHauntedIfCursed();
             if(type!=null)heap.type=type;
+        }
+        return heaps;
+    }
+    public static List<com.shatteredpixel.shatteredpixeldungeon.items.Heap> dropEnemyGenerated(
+            com.shatteredpixel.shatteredpixeldungeon.levels.Level level, Item original, int cell, int source) {
+        List<com.shatteredpixel.shatteredpixeldungeon.items.Heap> heaps = new ArrayList<>();
+        for (Item item : adjust(original, () -> extraLike(original))) {
+            com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.recordSource(item, level, cell, source);
+            heaps.add(level.drop(item, cell));
         }
         return heaps;
     }

@@ -1100,8 +1100,9 @@ public abstract class Mob extends Char {
 			ArrayList<Item> bonus = RingOfWealth.tryForBonusDrop(Dungeon.hero, rolls);
 			if (bonus != null && !bonus.isEmpty()) {
 				for (Item b : bonus) {
+					com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.recordSource(b, Dungeon.level, pos, com.shatteredpixel.shatteredpixeldungeon.apd.stats.GenerationEvents.C_MOB_LOOT);
 					if (b instanceof PotionOfHealing) ((PotionOfHealing)b).apdMarkEnemyDrop(Dungeon.depth);
-					for (Heap heap : com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.dropGenerated(Dungeon.level, b, pos, null, false)) heap.sprite.drop();
+					for (Heap heap : com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.dropEnemyGenerated(Dungeon.level, b, pos, com.shatteredpixel.shatteredpixeldungeon.apd.stats.GenerationEvents.C_MOB_LOOT)) heap.sprite.drop();
 				}
 				RingOfWealth.showFlareForBonusDrop(sprite);
 			}
@@ -1110,8 +1111,9 @@ public abstract class Mob extends Char {
 		//lucky enchant logic
 		if (buff(Lucky.LuckProc.class) != null){
 			Item luckyLoot = buff(Lucky.LuckProc.class).genLoot();
+			com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.recordSource(luckyLoot, Dungeon.level, pos, com.shatteredpixel.shatteredpixeldungeon.apd.stats.GenerationEvents.C_MOB_LOOT);
 			if (luckyLoot instanceof PotionOfHealing) ((PotionOfHealing)luckyLoot).apdMarkEnemyDrop(Dungeon.depth);
-			for (Heap heap : com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.dropGenerated(Dungeon.level, luckyLoot, pos, null, false))heap.sprite.drop();
+			for (Heap heap : com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.dropEnemyGenerated(Dungeon.level, luckyLoot, pos, com.shatteredpixel.shatteredpixeldungeon.apd.stats.GenerationEvents.C_MOB_LOOT))heap.sprite.drop();
 			Lucky.showFlare(sprite);
 		}
 

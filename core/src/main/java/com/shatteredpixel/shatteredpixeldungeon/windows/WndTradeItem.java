@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -303,6 +306,7 @@ public class WndTradeItem extends WndInfoItem {
 		Item item = heap.pickUp();
 		if (item == null) return;
 		
+		com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.recordSource(item, Dungeon.level, heap.pos, com.shatteredpixel.shatteredpixeldungeon.apd.stats.GenerationEvents.C_FOR_SALE);
 		int price = Shopkeeper.sellPrice( item );
 		Dungeon.gold -= price;
 		ApdPlay.onGoldChanged( "shop.buy" );

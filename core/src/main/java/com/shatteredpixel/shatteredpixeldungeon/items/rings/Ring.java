@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -196,7 +199,7 @@ public class Ring extends KindofMisc {
 		//skip custom notes if anonymized and un-Ided
 		String desc;
 		if (anonymous && (handler == null || !handler.isKnown( this ))){
-			desc = desc();
+			desc = desc() + com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.describe(this);
 
 		} else {
 			desc = super.info();

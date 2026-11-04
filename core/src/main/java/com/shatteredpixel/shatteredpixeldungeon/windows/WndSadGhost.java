@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -119,6 +122,7 @@ public class WndSadGhost extends Window {
 			((Armor) reward).inscribe(Ghost.Quest.glyph);
 		}
 		
+		com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.recordSource(reward, Dungeon.level, ghost.pos, com.shatteredpixel.shatteredpixeldungeon.apd.stats.GenerationEvents.C_QUEST_REWARD);
 		reward.identify(false);
 		if (reward.doPickUp( Dungeon.hero )) {
 			GLog.i( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", reward.name())) );

@@ -112,6 +112,9 @@ public class Item implements Bundlable {
 	//APD: set on duplicate(): the uid of the item this one is a copy of, so the copy's lineage can be recorded if it
 	//is ever observed. Not saved.
 	public String apdCopyOf = null;
+	// Optional original location/source; absent in older saves until evidence is available.
+	public com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.Origin apdFoundOrigin;
+	public transient boolean apdOriginLegacyUnknown;
 	// Optional, first-collection provenance for Upgrade Scrolls and Strength Potions only.
 	public com.shatteredpixel.shatteredpixeldungeon.apd.ProgressionPickups.Origins apdProgressionOrigins;
 	public boolean apdProgressionLegacy;
@@ -139,6 +142,8 @@ public class Item implements Bundlable {
 	}
 
 	public boolean doPickUp(Hero hero, int pos) {
+		com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.Origin previousOrigin = apdFoundOrigin;
+		if (!apdOriginLegacyUnknown) com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.recordSource(this, Dungeon.level, pos, com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.PICKUP);
 		if (collect( hero.belongings.backpack )) {
 			
 			GameScene.pickUp( this, pos );
@@ -147,6 +152,7 @@ public class Item implements Bundlable {
 			return true;
 			
 		} else {
+			apdFoundOrigin = previousOrigin;
 			return false;
 		}
 	}
@@ -222,6 +228,7 @@ public class Item implements Bundlable {
 	public Item merge( Item other ){
 		if (isSimilar( other )){
 			ApdItems.onMerge( this, other, other.quantity );
+			com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.merge(this, other);
 			com.shatteredpixel.shatteredpixeldungeon.apd.ProgressionPickups.merge(this, other);
 			quantity += other.quantity;
 			other.quantity = 0;
@@ -560,17 +567,17 @@ public class Item implements Bundlable {
 			Notes.CustomRecord note = Notes.findCustomRecord(customNoteID);
 			if (note != null) {
 				//we swap underscore(0x5F) with low macron(0x2CD) here to avoid highlighting in the item window
-				return Messages.get(this, "custom_note", note.title().replace('_', 'ˍ')) + "\n\n" + desc() + com.shatteredpixel.shatteredpixeldungeon.apd.qol.RingItemEffects.describe(this);
+				return Messages.get(this, "custom_note", note.title().replace('_', 'ˍ')) + "\n\n" + desc() + com.shatteredpixel.shatteredpixeldungeon.apd.qol.RingItemEffects.describe(this) + com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.describe(this);
 			} else {
 				note = Notes.findCustomRecord(getClass());
 				if (note != null) {
 					//we swap underscore(0x5F) with low macron(0x2CD) here to avoid highlighting in the item window
-					return Messages.get(this, "custom_note_type", note.title().replace('_', 'ˍ')) + "\n\n" + desc() + com.shatteredpixel.shatteredpixeldungeon.apd.qol.RingItemEffects.describe(this);
+					return Messages.get(this, "custom_note_type", note.title().replace('_', 'ˍ')) + "\n\n" + desc() + com.shatteredpixel.shatteredpixeldungeon.apd.qol.RingItemEffects.describe(this) + com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.describe(this);
 				}
 			}
 		}
 
-		return desc() + com.shatteredpixel.shatteredpixeldungeon.apd.qol.RingItemEffects.describe(this);
+		return desc() + com.shatteredpixel.shatteredpixeldungeon.apd.qol.RingItemEffects.describe(this) + com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.describe(this);
 	}
 	
 	public String desc() {
@@ -640,6 +647,7 @@ public class Item implements Bundlable {
 		bundle.put( KEPT_LOST, keptThoughLostInvent );
 		if (customNoteID != -1)     bundle.put(CUSTOM_NOTE_ID, customNoteID);
 		if (apdUid != null)         bundle.put(APD_UID, apdUid);
+		com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.store(this, bundle);
 		com.shatteredpixel.shatteredpixeldungeon.apd.ProgressionPickups.storeItem(this, bundle);
 	}
 	
@@ -671,6 +679,7 @@ public class Item implements Bundlable {
 		if (bundle.contains(CUSTOM_NOTE_ID))    customNoteID = bundle.getInt(CUSTOM_NOTE_ID);
 		//APD: saves made before item identity have no apd_uid, the item simply stays without one until it is observed
 		if (bundle.contains(APD_UID))           apdUid = bundle.getString(APD_UID);
+		com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.restore(this, bundle);
 		com.shatteredpixel.shatteredpixeldungeon.apd.ProgressionPickups.restoreItem(this, bundle);
 	}
 

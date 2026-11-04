@@ -1,3 +1,9 @@
+## Unidentified gear origins implemented, including already-owned ongoing-run gear — source CI pending
+
+Item-owned floor/actual room/source labels now appear only while equipment/wands are unidentified. Iron Key room doors, Golden Key chests and Crystal Key chests/doors remain distinct. Original source survives pickup/drop/equip/save, stack lineage and actual Gathering/Forwarding transfers. Already-carried and equipped gear recover from exact-UID observed history on ordinary load; no restart or re-pickup is required. Missing historical facts are not invented; incomplete evidence may establish only a labelled historical pickup floor. No hidden item properties enter this projection.
+
+Local2392 tests/436 suites pass, including39 new origin/recovery cases and strengthened real scroll-transfer regressions. Android/debug/release/instrumentation/desktop source CI pending; native UI, physical-phone acceptance and APK packaging NOT DONE. Preserve previous pickup/UIMSD work and TEST358/TEST360 artifact boundaries. No version bump or APK build-request edit. Details: docs/APD-ITEM-ORIGINS-2026-11-04.md.
+
 ## Dew and grass-loot scope source-verified; no APK
 
 Owner clarified one shared auto-pickup flow: existing ground dew when walking, grass seeds, and Petrified Seed grass runestones; simultaneous seed+dew or stone+dew both collect. Existing saved master toggle/enemy override preserved, with no extra preference switches. Ground-dew voluntary-step hook plus merged transient grass queue uses ordinary pickup actions, one stack per action; movement and each pickup retain their normal costs. Full bag/vial or missing vial leaves corresponding loot; no auto-healing, rate/capacity/scoring change. Enemy safety is rechecked between pickups. New dialog wording and scrollable layout describe all three types.

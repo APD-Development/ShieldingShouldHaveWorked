@@ -159,7 +159,7 @@ public class ProgressionPickupsTest {
             assertFalse(potion.info().contains("\\n"));assertFalse(scroll.info().contains("\\n"));assertFalse(heal.info().contains("\\n"));
         }
     }
-    @Test public void legacyGoldenComparisonOmitsOnlyCollectionMetadataAndNeverMutatesTheSavedLevel()throws Exception{
+    @Test public void legacyGoldenComparisonOmitsOnlyOptionalMetadataAndNeverMutatesTheSavedLevel()throws Exception{
         boolean previous=LevelGenerationHarness.historicalTutorialFingerprint;
         try{
             LevelGenerationHarness.historicalTutorialFingerprint=false;
@@ -167,6 +167,9 @@ public class ProgressionPickupsTest {
             String live=LevelGenerationHarness.canonicalJson(Dungeon.level);
             assertTrue("Actual saved levels retain resource origins",live.contains("apd_progression_origins_v1"));
             String justBookkeepingRemoved=live.replaceAll(",\\\"apd_progression_origins_v1\\\":\\[(?:-?\\d+(?:,-?\\d+)*)?\\]", "");
+            assertTrue("Actual saved equipment retains original location metadata", live.contains("apd_item_origin_v1"));
+            justBookkeepingRemoved = justBookkeepingRemoved.replaceAll(",\\\"apd_item_origin_v1\\\":\\{[^{}]*\\}", "");
+            assertFalse(justBookkeepingRemoved.contains("apd_item_origin_v1"));
             assertNotEquals(live,justBookkeepingRemoved);
             LevelGenerationHarness.historicalTutorialFingerprint=true;
             assertEquals("All original map/item/mob fields are still exact",justBookkeepingRemoved,
