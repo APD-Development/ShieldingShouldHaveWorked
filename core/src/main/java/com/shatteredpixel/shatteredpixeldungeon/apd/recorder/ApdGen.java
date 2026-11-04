@@ -77,6 +77,7 @@ public final class ApdGen {
 
 	//Mob.rollToDropLoot: a creature's death produced this item
 	public static void onLootCreated( Mob mob, Item item ){
+		com.shatteredpixel.shatteredpixeldungeon.apd.qol.GenerationUpgradeRanges.finalMobSupport(item, mob);
 		if (mob != null) com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.recordSource(item, com.shatteredpixel.shatteredpixeldungeon.Dungeon.level, mob.pos, com.shatteredpixel.shatteredpixeldungeon.apd.stats.GenerationEvents.C_MOB_LOOT);
 		if (active) ApdRecorder.genLoot(mob, item);
 	}

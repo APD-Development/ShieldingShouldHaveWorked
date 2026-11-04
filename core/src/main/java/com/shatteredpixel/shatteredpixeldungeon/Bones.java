@@ -240,6 +240,7 @@ public class Bones {
 					item.reset();
 					// Remains are a new acquisition in this run, not the previous hero's original find.
 					item.apdFoundOrigin = null;
+					item.apdGenerationRange = null;
 					item.apdOriginLegacyUnknown = false;
 				}
 

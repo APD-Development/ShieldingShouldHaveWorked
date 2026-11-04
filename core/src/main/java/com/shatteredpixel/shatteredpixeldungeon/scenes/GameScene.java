@@ -1011,6 +1011,12 @@ public class GameScene extends PixelScene {
 	private boolean tagResume    = false;
     private boolean tagStairs = false;
 
+    private static void placeCombatTag(Tag tag,int column,int row,float edge,float base,float width,boolean left,int rows) {
+        int[] cell=com.shatteredpixel.shatteredpixeldungeon.apd.qol.CombatTagLayout.fit(column,row,rows);
+        tag.setRect(edge+(left?1:-1)*cell[0]*width,base-(cell[1]+1)*Tag.SIZE,width,Tag.SIZE);
+        tag.flip(left);
+    }
+
 	public static void layoutTags() {
 
 		updateTags = false;
@@ -1035,16 +1041,23 @@ public class GameScene extends PixelScene {
 		float tagWidth = Tag.SIZE + (tagsOnLeft ? insets.left : insets.right);
 		float tagLeft = tagsOnLeft ? 0 : uiCamera.width - tagWidth;
 
+        int clericColumns = com.shatteredpixel.shatteredpixeldungeon.ui.ClericQuickCastTag.count() > 0 ? 3 : 1;
+        boolean duelistAction = Dungeon.hero != null && Dungeon.hero.heroClass == com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.DUELIST
+                && ActionIndicator.action instanceof MeleeWeapon.Charger;
+        boolean extraAction = scene.tagAction && !duelistAction;
+        int occupiedColumns = clericColumns > 1 ? clericColumns + (extraAction ? 1 : 0)
+                : (scene.tagLoot || scene.tagResume || extraAction ? 2 : 1);
+        float logTagWidth = Math.min(tagWidth*occupiedColumns, uiCamera.width-insets.left-insets.right-48);
 		float y = SPDSettings.interfaceSize() == 0 ? scene.toolbar.messageTop()-2 : scene.status.top()-2;
 		if (SPDSettings.interfaceSize() == 0){
 			if (tagsOnLeft) {
-				scene.log.setRect(tagWidth, y, uiCamera.width - tagWidth - insets.right, 0);
+				scene.log.setRect(logTagWidth, y, uiCamera.width - logTagWidth - insets.right, 0);
 			} else {
-				scene.log.setRect(insets.left, y, uiCamera.width - tagWidth - insets.left, 0);
+				scene.log.setRect(insets.left, y, uiCamera.width - logTagWidth - insets.left, 0);
 			}
 		} else {
 			if (tagsOnLeft) {
-				scene.log.setRect(tagWidth, y, 160 - tagWidth, 0);
+				scene.log.setRect(logTagWidth, y, 160 - logTagWidth, 0);
 			} else {
 				scene.log.setRect(insets.left, y, 160 - insets.left, 0);
 			}
@@ -1056,65 +1069,26 @@ public class GameScene extends PixelScene {
 		}
 
 
+        boolean duelist = Dungeon.hero != null && Dungeon.hero.heroClass == com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.DUELIST;
         int spellCount = com.shatteredpixel.shatteredpixeldungeon.ui.ClericQuickCastTag.count();
-        if (spellCount > 0) {
-            // Keep spell 1 nearest the inventory and higher positions directly above it.
-            // Other tags wrap into an adjacent column on short screens instead of overlapping.
-            float base = pos;
-            for (int i=0; i<scene.clericSpells.length; i++) {
-                // Hidden tags stop updating; restore input as well as drawing when the count grows.
-                scene.clericSpells[i].visible = scene.clericSpells[i].active = i < spellCount;
-                if (i < spellCount) {
-                    scene.clericSpells[i].setRect(tagLeft, pos-Tag.SIZE, tagWidth, Tag.SIZE);
-                    scene.clericSpells[i].flip(tagsOnLeft);
-                    pos -= Tag.SIZE;
-                }
-            }
-            float column = tagLeft;
-            Tag[] other = {scene.attack, scene.loot, scene.action, scene.resume, scene.stairs};
-            boolean[] show = {scene.tagAttack, scene.tagLoot, scene.tagAction, scene.tagResume, scene.tagStairs};
-            for (int i=0; i<other.length; i++) {
-                if (!show[i]) continue;
-                if (pos-Tag.SIZE < insets.top+Tag.SIZE) {
-                    column += tagsOnLeft ? tagWidth : -tagWidth;
-                    pos = base;
-                }
-                other[i].setRect(column,pos-Tag.SIZE,tagWidth,Tag.SIZE);
-                other[i].flip(tagsOnLeft);
-                pos -= Tag.SIZE;
-            }
-            return;
+        float base = pos;
+        int rows = Math.max(1, (int)((base-insets.top)/Tag.SIZE));
+        placeCombatTag(scene.attack,0,0,tagLeft,base,tagWidth,tagsOnLeft,rows);
+        boolean weaponAbility = scene.tagAction && ActionIndicator.action instanceof MeleeWeapon.Charger && duelist;
+        if (weaponAbility) placeCombatTag(scene.action,0,1,tagLeft,base,tagWidth,tagsOnLeft,rows);
+        if (scene.tagStairs) placeCombatTag(scene.stairs,0,
+                com.shatteredpixel.shatteredpixeldungeon.apd.qol.CombatTagLayout.stairRow(duelist),tagLeft,base,tagWidth,tagsOnLeft,rows);
+        for (int i=0;i<scene.clericSpells.length;i++) {
+            Tag spell=scene.clericSpells[i];
+            spell.visible=spell.active=i<spellCount;
+            if (i<spellCount) placeCombatTag(spell,
+                    com.shatteredpixel.shatteredpixeldungeon.apd.qol.CombatTagLayout.spellColumn(i),
+                    com.shatteredpixel.shatteredpixeldungeon.apd.qol.CombatTagLayout.spellRow(i),tagLeft,base,tagWidth,tagsOnLeft,rows);
         }
-        if (scene.clericSpells != null) for (Tag spell : scene.clericSpells) spell.visible = false;
-
-		if (scene.tagAttack){
-			scene.attack.setRect( tagLeft, pos - Tag.SIZE, tagWidth, Tag.SIZE );
-			scene.attack.flip(tagsOnLeft);
-			pos = scene.attack.top();
-		}
-
-		if (scene.tagLoot) {
-			scene.loot.setRect( tagLeft, pos - Tag.SIZE, tagWidth, Tag.SIZE );
-			scene.loot.flip(tagsOnLeft);
-			pos = scene.loot.top();
-		}
-
-		if (scene.tagAction) {
-			scene.action.setRect( tagLeft, pos - Tag.SIZE, tagWidth, Tag.SIZE );
-			scene.action.flip(tagsOnLeft);
-			pos = scene.action.top();
-		}
-
-		if (scene.tagResume) {
-			scene.resume.setRect( tagLeft, pos - Tag.SIZE, tagWidth, Tag.SIZE );
-			scene.resume.flip(tagsOnLeft);
-            pos=scene.resume.top();
-		}
-        if(scene.tagStairs){
-            float column=tagLeft;
-            if(pos-Tag.SIZE < insets.top+Tag.SIZE){column+=tagsOnLeft ? tagWidth : -tagWidth;pos=scene.toolbar.top();}
-            scene.stairs.setRect(column,pos-Tag.SIZE,tagWidth,Tag.SIZE);scene.stairs.flip(tagsOnLeft);
-        }
+        // Keep other legitimate actions available without displacing the class/navigation controls.
+        if (scene.tagLoot) placeCombatTag(scene.loot,1,spellCount>0?2:0,tagLeft,base,tagWidth,tagsOnLeft,rows);
+        if (scene.tagResume) placeCombatTag(scene.resume,spellCount>0?2:1,spellCount>0?2:1,tagLeft,base,tagWidth,tagsOnLeft,rows);
+        if (scene.tagAction && !weaponAbility) placeCombatTag(scene.action,spellCount>0?3:1,spellCount>0?0:2,tagLeft,base,tagWidth,tagsOnLeft,rows);
 	}
 	
 	@Override

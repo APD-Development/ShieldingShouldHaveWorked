@@ -111,7 +111,7 @@ public class ItemOriginsTest {
         s.identify(false); assertEquals("", ItemOrigins.describe(s)); assertNotNull(s.apdFoundOrigin);
     }
     @Test public void hiddenPropertiesNeverAffectOriginText() {
-        Sword a = placed(new CryptRoom(), Heap.Type.TOMB), b = sword(); b.apdFoundOrigin = a.apdFoundOrigin;
+        Sword a = placed(new CryptRoom(), Heap.Type.TOMB), b = sword(); b.apdFoundOrigin = a.apdFoundOrigin; b.apdGenerationRange = a.apdGenerationRange;
         b.upgrade(12); b.cursed = true;
         assertEquals(ItemOrigins.describe(a), ItemOrigins.describe(b));
         assertFalse(ItemOrigins.describe(b).contains("+12")); assertFalse(ItemOrigins.describe(b).toLowerCase().contains("cursed"));
@@ -127,6 +127,11 @@ public class ItemOriginsTest {
     @Test public void legacyItemsHaveNoInventedOrigin() {
         Bundle old = new Bundle(); old.put("quantity", 1); Sword s = sword(); s.restoreFromBundle(old);
         assertNull(s.apdFoundOrigin); assertTrue(s.apdOriginLegacyUnknown); assertEquals("", ItemOrigins.describe(s));
+    }
+    @Test public void unknownLegacyGearCannotBeRelabelledByARepeatedPickupPurchaseOrChestOpening() {
+        Bundle old=new Bundle();old.put("quantity",1);Sword s=sword();s.restoreFromBundle(old);
+        for(int source:new int[]{GenerationEvents.C_FOR_SALE,GenerationEvents.C_CHEST,GenerationEvents.C_MIMIC})ItemOrigins.recordSource(s,level,18,source);
+        assertNull(s.apdFoundOrigin);assertEquals("",ItemOrigins.describe(s));
     }
     @Test public void malformedSavedOriginDoesNotInventFloorZero() {
         Bundle save = new Bundle(), origin = new Bundle(); origin.put("floor", 0); origin.put("source", 0); origin.put("branch", 0); save.put("apd_item_origin_v1", origin);

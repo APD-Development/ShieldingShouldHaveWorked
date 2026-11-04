@@ -39,8 +39,10 @@ public final class ItemOrigins {
 
     public static final class Origin {
         public final int floor, branch, source;
-        public final String room;
-        public Origin(int floor, int branch, int source, String room) {
+        public final String room, generationRule;
+        public Origin(int floor, int branch, int source, String room) { this(floor, branch, source, room, ""); }
+        public Origin(int floor, int branch, int source, String room, String generationRule) {
+            this.generationRule = generationRule == null ? "" : generationRule;
             this.floor = floor; this.branch = branch; this.source = source;
             this.room = room != null && room.matches("[A-Za-z]{1,80}") ? room : "";
         }
@@ -82,7 +84,10 @@ public final class ItemOrigins {
     }
 
     public static void record(Item item, Origin origin) {
-        if (eligible(item) && item.apdFoundOrigin == null && valid(origin)) item.apdFoundOrigin = origin;
+        if (!eligible(item) || !valid(origin)) return;
+        if (item.apdFoundOrigin == null || item.apdFoundOrigin.equals(origin)
+                && item.apdFoundOrigin.generationRule.isEmpty() && !origin.generationRule.isEmpty()) item.apdFoundOrigin = origin;
+        GenerationUpgradeRanges.recover(item, item.apdFoundOrigin);
     }
 
     /** Final heaps only: after painting/chest sealing, never on general Level.drop (which moves old loot too). */
@@ -90,21 +95,28 @@ public final class ItemOrigins {
         if (level == null || level.heaps == null) return;
         for (Heap heap : level.heaps.valueList()) {
             Origin origin = at(level, heap.pos, container(heap.type));
-            for (Item item : heap.items) record(item, origin);
+            for (Item item : heap.items) {
+                GenerationUpgradeRanges.finalRoomSupport(item, origin);
+                record(item, origin);
+            }
         }
     }
 
     public static void recordSource(Item item, Level level, int cell, int source) {
-        if (eligible(item) && item.apdFoundOrigin == null) record(item, at(level, cell, source));
+        // A legacy object may already have been carried, dropped, sold or stolen. Only recorded evidence can recover its origin.
+        if (eligible(item) && !item.apdOriginLegacyUnknown && item.apdFoundOrigin == null) record(item, at(level, cell, source));
     }
 
     public static Origin combine(Origin a, Origin b) {
-        if (Objects.equals(a, b)) return a;
+        if (Objects.equals(a, b) && (a == null || a.generationRule.equals(b.generationRule))) return a;
         return a == null && b == null ? null : new Origin(0, 0, MIXED, "");
     }
 
     public static void merge(Item survivor, Item absorbed) {
-        if (eligible(survivor)) survivor.apdFoundOrigin = combine(survivor.apdFoundOrigin, absorbed.apdFoundOrigin);
+        if (eligible(survivor)) {
+            survivor.apdFoundOrigin = combine(survivor.apdFoundOrigin, absorbed.apdFoundOrigin);
+            GenerationUpgradeRanges.merge(survivor, absorbed);
+        }
     }
 
     public static void store(Item item, Bundle bundle) {
@@ -113,6 +125,7 @@ public final class ItemOrigins {
         Bundle saved = new Bundle();
         saved.put("floor", o.floor); saved.put("branch", o.branch);
         saved.put("source", o.source); saved.put("room", o.room);
+        if (!o.generationRule.isEmpty()) saved.put("generation_rule", o.generationRule);
         bundle.put(SAVE_KEY, saved);
     }
 
@@ -122,7 +135,7 @@ public final class ItemOrigins {
         if (!eligible(item) || !bundle.contains(SAVE_KEY)) return;
         Bundle saved = bundle.getBundle(SAVE_KEY);
         if (!saved.contains("floor") || !saved.contains("branch") || !saved.contains("source")) return;
-        Origin o = new Origin(saved.getInt("floor"), saved.getInt("branch"), saved.getInt("source"), saved.getString("room"));
+        Origin o = new Origin(saved.getInt("floor"), saved.getInt("branch"), saved.getInt("source"), saved.getString("room"), saved.getString("generation_rule"));
         if (valid(o)) item.apdFoundOrigin = o;
     }
 
@@ -135,7 +148,7 @@ public final class ItemOrigins {
     public static String describe(Item item) {
         if (!eligible(item) || item.isIdentified() || !valid(item.apdFoundOrigin)) return "";
         Origin o = item.apdFoundOrigin;
-        if (o.source == MIXED) return "\n\n" + text("mixed");
+        if (o.source == MIXED) return "\n\n" + text("mixed") + GenerationUpgradeRanges.describe(item);
         String source;
         switch (o.source) {
             case GenerationEvents.C_CHEST: source = text("chest"); break;
@@ -156,7 +169,7 @@ public final class ItemOrigins {
         String room = roomName(o.room);
         String detail = source.isEmpty() ? room : room.isEmpty() ? source : text("source_room", source, room);
         String location = text(o.branch == 0 ? "floor" : "branch_floor", o.floor, o.branch);
-        return "\n\n" + text(o.source == PICKUP ? "picked_up" : "found", location, detail.isEmpty() ? "" : ", " + detail);
+        return "\n\n" + text(o.source == PICKUP ? "picked_up" : "found", location, detail.isEmpty() ? "" : ", " + detail) + GenerationUpgradeRanges.describe(item);
     }
 
     public static String roomName(String room) {

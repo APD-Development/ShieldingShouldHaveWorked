@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -353,6 +356,8 @@ public class Ghost extends NPC {
 				}
 				weapon.upgrade(itemLevel);
 				armor.upgrade(itemLevel);
+				com.shatteredpixel.shatteredpixeldungeon.apd.qol.GenerationUpgradeRanges.set(weapon, 0, 3);
+				com.shatteredpixel.shatteredpixeldungeon.apd.qol.GenerationUpgradeRanges.set(armor, 0, 3);
 
 				// 20% base chance to be enchanted, stored separately so status isn't revealed early
 				//we generate first so that the outcome doesn't affect the number of RNG rolls

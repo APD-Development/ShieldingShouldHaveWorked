@@ -18,6 +18,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.apd.recorder;
 
 import com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins;
+import com.shatteredpixel.shatteredpixeldungeon.apd.qol.GenerationUpgradeRanges;
 import com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.Origin;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.*;
 import java.util.HashMap;
@@ -27,6 +28,7 @@ import java.util.Map;
 final class ItemOriginHistory {
     final Map<String, Origin> origins = new HashMap<>();
     private final Map<String, GenerationEvents.ItemGenerated> generated = new HashMap<>();
+    private final java.util.Set<String> acquiredBefore = new java.util.HashSet<>();
 
     void accept(ApdEvent event, ReadResult log) {
         switch (event.type) {
@@ -36,6 +38,7 @@ final class ItemOriginHistory {
                 GenerationEvents.ItemGenerated location = new GenerationEvents.ItemGenerated();
                 location.uid = g.uid; location.where = g.where; location.pos = g.pos;
                 location.room = g.room; location.container = g.container;
+                location.owner = GenerationUpgradeRanges.historicalRule(g);
                 generated.putIfAbsent(g.uid, location);
                 break;
             }
@@ -44,18 +47,26 @@ final class ItemOriginHistory {
                 GenerationEvents.ItemGenerated g = generated.get(seen.uid);
                 if (g != null && seen.where.depth == g.where.depth && seen.where.branch == g.where.branch
                         && seen.where.pos == g.pos) {
-                    origins.putIfAbsent(seen.uid, new Origin(g.where.depth, g.where.branch, g.container, g.room));
+                    origins.putIfAbsent(seen.uid, new Origin(g.where.depth, g.where.branch, g.container, g.room, g.owner));
                 }
                 break;
             }
             case EventTypes.ITEM_ACQUIRED: {
                 ItemEvents.Acquired a = ItemEvents.decodeAcquired(event, log);
+                boolean firstReceipt = acquiredBefore.add(a.uid);
                 GenerationEvents.ItemGenerated g = generated.get(a.uid);
                 if (a.context != ItemEvents.ACQ_START_KIT && a.context != ItemEvents.ACQ_RECONCILED
                         && g != null && a.where.depth == g.where.depth && a.where.branch == g.where.branch && a.where.pos == g.pos) {
-                    origins.putIfAbsent(a.uid, new Origin(g.where.depth, g.where.branch, g.container, g.room));
+                    origins.putIfAbsent(a.uid, new Origin(g.where.depth, g.where.branch, g.container, g.room, g.owner));
                 }
-                if (a.context == ItemEvents.ACQ_SHOP || a.context == ItemEvents.ACQ_PICKUP) {
+                if (g != null && a.context != ItemEvents.ACQ_RECONCILED && a.context != ItemEvents.ACQ_START_KIT
+                        && a.where.depth == g.where.depth && a.where.branch == g.where.branch
+                        && (g.container == GenerationEvents.C_QUEST_REWARD || g.container == GenerationEvents.C_MOB_LOOT
+                        || g.container == GenerationEvents.C_MIMIC || g.container == GenerationEvents.C_STATUE)) {
+                    // Receipt proves the same item's source, but not the giver's old room after they moved.
+                    origins.putIfAbsent(a.uid, new Origin(g.where.depth, g.where.branch, g.container, "", g.owner));
+                }
+                if (firstReceipt && (a.context == ItemEvents.ACQ_SHOP || a.context == ItemEvents.ACQ_PICKUP)) {
                     origins.putIfAbsent(a.uid, new Origin(a.where.depth, a.where.branch,
                             a.context == ItemEvents.ACQ_SHOP ? GenerationEvents.C_FOR_SALE : ItemOrigins.PICKUP, ""));
                 }

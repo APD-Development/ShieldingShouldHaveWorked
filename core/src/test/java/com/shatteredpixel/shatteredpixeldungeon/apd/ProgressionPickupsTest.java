@@ -169,7 +169,9 @@ public class ProgressionPickupsTest {
             String justBookkeepingRemoved=live.replaceAll(",\\\"apd_progression_origins_v1\\\":\\[(?:-?\\d+(?:,-?\\d+)*)?\\]", "");
             assertTrue("Actual saved equipment retains original location metadata", live.contains("apd_item_origin_v1"));
             justBookkeepingRemoved = justBookkeepingRemoved.replaceAll(",\\\"apd_item_origin_v1\\\":\\{[^{}]*\\}", "");
+            justBookkeepingRemoved = justBookkeepingRemoved.replaceAll(",\\\"apd_item_upgrade_range_v1\\\":\\[-?\\d+,-?\\d+\\]", "");
             assertFalse(justBookkeepingRemoved.contains("apd_item_origin_v1"));
+            assertFalse(justBookkeepingRemoved.contains("apd_item_upgrade_range_v1"));
             assertNotEquals(live,justBookkeepingRemoved);
             LevelGenerationHarness.historicalTutorialFingerprint=true;
             assertEquals("All original map/item/mob fields are still exact",justBookkeepingRemoved,

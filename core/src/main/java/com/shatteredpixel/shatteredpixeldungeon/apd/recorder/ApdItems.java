@@ -69,12 +69,16 @@ public final class ApdItems {
 
 	//'newItem' replaced 'oldItem' (transmutation, class armor upgrade, ...)
 	public static void onTransformed( Item oldItem, Item newItem, String cause ){
-		if (oldItem != null) com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.record(newItem, oldItem.apdFoundOrigin);
+		if (oldItem != null) {
+			com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.record(newItem, oldItem.apdFoundOrigin);
+			if (newItem != null) newItem.apdGenerationRange = oldItem.apdGenerationRange;
+		}
 		if (active) ApdRecorder.itemTransformed(oldItem, newItem, cause);
 	}
 
 	//alchemy made 'result' out of 'ingredients'
 	public static void onCrafted( List<Item> ingredients, Item result ){
+		if (result != null && (ingredients == null || !ingredients.contains(result))) result.apdGenerationRange = null;
 		if (com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero != null) com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.recordSource(result, com.shatteredpixel.shatteredpixeldungeon.Dungeon.level, com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero.pos, com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.CRAFTED);
 		if (active) ApdRecorder.itemCrafted(ingredients, result);
 	}

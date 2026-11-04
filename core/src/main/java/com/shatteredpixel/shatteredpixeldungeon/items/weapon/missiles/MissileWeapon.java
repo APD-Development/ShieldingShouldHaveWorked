@@ -389,6 +389,7 @@ abstract public class MissileWeapon extends Weapon {
 			}
 		}
 		level(n);
+		com.shatteredpixel.shatteredpixeldungeon.apd.qol.GenerationUpgradeRanges.baseline(this);
 
 		//we use a separate RNG here so that variance due to things like parchment scrap
 		//does not affect levelgen

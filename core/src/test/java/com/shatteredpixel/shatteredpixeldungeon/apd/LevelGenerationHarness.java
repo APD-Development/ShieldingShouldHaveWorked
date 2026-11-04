@@ -305,6 +305,7 @@ public final class LevelGenerationHarness {
 				if (historicalTutorialFingerprint && key.equals("apd_progression_origins_v1")) continue;
 				// The archived pre-feature snapshot cannot contain optional item-origin metadata.
 				if (historicalTutorialFingerprint && key.equals("apd_item_origin_v1")) continue;
+				if (historicalTutorialFingerprint && key.equals("apd_item_upgrade_range_v1")) continue;
 				Object val = obj.opt(key);
 				//ShopRoom.ChooseBag picks the bag for sale from a HashMap keyed by Bag objects, and ties between bags
 				//are broken by that map's iteration order, which depends on object identity hashes. Which bag a shop

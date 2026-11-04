@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -73,6 +76,8 @@ public class TormentedSpirit extends Wraith {
 			prize.upgrade();
 		}
 
+		com.shatteredpixel.shatteredpixeldungeon.apd.qol.GenerationUpgradeRanges.minimumBonus(prize, false);
+		com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdGen.onLootCreated(this, prize);
 		Dungeon.level.drop(prize, pos).sprite.drop();
 
 		destroy();

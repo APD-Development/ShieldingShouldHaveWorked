@@ -283,6 +283,7 @@ public class Ring extends KindofMisc {
 			}
 		}
 		level(n);
+		com.shatteredpixel.shatteredpixeldungeon.apd.qol.GenerationUpgradeRanges.baseline(this);
 		
 		//30% chance to be cursed
 		if (Random.Float() < 0.3f) {

@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -92,6 +95,7 @@ public class GoldenMimic extends Mimic {
 		//all existing prize items are guaranteed uncursed, and have a 50% chance to be +1 if they were +0
 		for (Item i : items){
 			if (i instanceof EquipableItem || i instanceof Wand){
+				com.shatteredpixel.shatteredpixeldungeon.apd.qol.GenerationUpgradeRanges.minimumBonus(i, false);
 				i.cursed = false;
 				i.cursedKnown = true;
 				if (i instanceof Weapon && ((Weapon) i).hasCurseEnchant()){

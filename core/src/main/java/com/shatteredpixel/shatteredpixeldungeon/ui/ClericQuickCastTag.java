@@ -1,3 +1,20 @@
+/*
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 package com.shatteredpixel.shatteredpixeldungeon.ui;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -28,7 +45,7 @@ public final class ClericQuickCastTag extends Tag implements ActionIndicator.Act
         visible=false;
     }
     public static int count() {
-        if(Dungeon.hero==null || !Dungeon.hero.isAlive()) return 0;
+        if(Dungeon.hero==null || !Dungeon.hero.isAlive() || Dungeon.hero.heroClass != com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.CLERIC) return 0;
         HolyTome tome=Dungeon.hero.belongings.getItem(HolyTome.class);
         return tome!=null && (tome.isEquipped(Dungeon.hero) || Dungeon.hero.hasTalent(Talent.LIGHT_READING))
                 ? SPDSettings.apdClericQuickSlots() : 0;

@@ -115,6 +115,7 @@ public class Item implements Bundlable {
 	// Optional original location/source; absent in older saves until evidence is available.
 	public com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.Origin apdFoundOrigin;
 	public transient boolean apdOriginLegacyUnknown;
+	public com.shatteredpixel.shatteredpixeldungeon.apd.qol.GenerationUpgradeRanges.Range apdGenerationRange;
 	// Optional, first-collection provenance for Upgrade Scrolls and Strength Potions only.
 	public com.shatteredpixel.shatteredpixeldungeon.apd.ProgressionPickups.Origins apdProgressionOrigins;
 	public boolean apdProgressionLegacy;
@@ -647,6 +648,7 @@ public class Item implements Bundlable {
 		bundle.put( KEPT_LOST, keptThoughLostInvent );
 		if (customNoteID != -1)     bundle.put(CUSTOM_NOTE_ID, customNoteID);
 		if (apdUid != null)         bundle.put(APD_UID, apdUid);
+		com.shatteredpixel.shatteredpixeldungeon.apd.qol.GenerationUpgradeRanges.store(this, bundle);
 		com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.store(this, bundle);
 		com.shatteredpixel.shatteredpixeldungeon.apd.ProgressionPickups.storeItem(this, bundle);
 	}
@@ -679,6 +681,7 @@ public class Item implements Bundlable {
 		if (bundle.contains(CUSTOM_NOTE_ID))    customNoteID = bundle.getInt(CUSTOM_NOTE_ID);
 		//APD: saves made before item identity have no apd_uid, the item simply stays without one until it is observed
 		if (bundle.contains(APD_UID))           apdUid = bundle.getString(APD_UID);
+		com.shatteredpixel.shatteredpixeldungeon.apd.qol.GenerationUpgradeRanges.restore(this, bundle);
 		com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.restore(this, bundle);
 		com.shatteredpixel.shatteredpixeldungeon.apd.ProgressionPickups.restoreItem(this, bundle);
 	}

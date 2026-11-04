@@ -39,6 +39,9 @@ public class ClericQuickCastsTest {
     }
     @After public void cleanup() { GameSettings.set(oldPrefs); Dungeon.hero=oldHero; }
 
+    @Test public void whiteQuickCastSlotsAreOnlyShownForCleric() {
+        for(HeroClass type:HeroClass.values()) { hero.heroClass=type;assertEquals(type==HeroClass.CLERIC?SPDSettings.apdClericQuickSlots():0,com.shatteredpixel.shatteredpixeldungeon.ui.ClericQuickCastTag.count()); }
+    }
     @Test public void countDefaultsToOneAndClampsToFour() {
         assertEquals(1,SPDSettings.apdClericQuickSlots());
         SPDSettings.apdClericQuickSlots(99); assertEquals(4,SPDSettings.apdClericQuickSlots());

@@ -91,23 +91,51 @@ public class ItemOriginRecoveryTest {
             if (Dungeon.level.passable[pos] && Dungeon.level.heaps.get(pos) == null && !ItemOrigins.roomAt(Dungeon.level, pos).isEmpty()) { cell = pos; break; }
         }
         assertTrue(cell >= 0);
-        Sword gear = new Sword(); gear.levelKnown = false; gear.cursedKnown = false;
-        com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat rat = new com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat(); rat.pos = cell;
+        Sword gear = (Sword)Generator.random(Sword.class); gear.levelKnown = false; gear.cursedKnown = false;
+        com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Skeleton rat = new com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Skeleton(); rat.pos = cell;
         ApdGen.onLootCreated(rat, gear);
         Heap heap = ItemTestSupport.putInSight(gear, cell);
         ItemOrigins.Origin expected = gear.apdFoundOrigin; String uid = gear.apdUid;
+        com.shatteredpixel.shatteredpixeldungeon.apd.qol.GenerationUpgradeRanges.Range expectedRange = gear.apdGenerationRange;
         ItemTestSupport.turn(); assertTrue(gear.collect(Dungeon.hero.belongings.backpack)); heap.items.remove(gear);
         ApdItems.noteAcquireContext(ItemEvents.ACQ_PICKUP); ItemTestSupport.turn();
         // Emulate pre-feature owned equipment: UID/public history exist, origin bundle field does not.
-        gear.apdFoundOrigin = null;
+        gear.apdFoundOrigin = null; gear.apdGenerationRange = null;
         if (equip) { gear.detachAll(Dungeon.hero.belongings.backpack); Dungeon.hero.belongings.weapon = gear; }
         Dungeon.saveAll(); session.restartApp(); Dungeon.loadGame(session.slot);
         Item restored = null; for (Item item : Dungeon.hero.belongings) if (uid.equals(item.apdUid)) restored = item;
         assertNotNull(restored); assertEquals(expected, restored.apdFoundOrigin);
+        assertEquals(expectedRange, restored.apdGenerationRange);
         assertEquals(equip, restored == Dungeon.hero.belongings.weapon);
+        assertTrue(ItemOrigins.describe(restored).contains("Possible upgrade level: +0 to +2"));
         assertFalse(ItemOrigins.describe(restored).isEmpty());
         Dungeon.saveAll(); session.restartApp(); Dungeon.loadGame(session.slot);
         for (Item item : Dungeon.hero.belongings) if (uid.equals(item.apdUid)) assertEquals(expected, item.apdFoundOrigin);
+    }
+    @Test public void oldGearRangeRecoveryNeverUsesRecordedHiddenLevelOrCurse() throws Exception {
+        for(int value=0;value<=3;value++) { generated("range"+value,8,18,"CryptRoom",GenerationEvents.C_TOMB);seen("range"+value,8,18); }
+        ItemOriginHistory history=read();
+        for(int hidden=0;hidden<=3;hidden++) {
+            Sword item=new Sword();item.level(hidden);item.cursed=hidden%2==0;item.levelKnown=false;item.cursedKnown=false;
+            ItemOrigins.record(item,history.origins.get("range"+hidden));
+            assertEquals(new com.shatteredpixel.shatteredpixeldungeon.apd.qol.GenerationUpgradeRanges.Range(0,3),item.apdGenerationRange);
+        }
+    }
+    @Test public void reconciliationThenRepickDoesNotFabricateAnOriginalSource() throws Exception {
+        acquired("a",8,18,ItemEvents.ACQ_RECONCILED);acquired("a",12,25,ItemEvents.ACQ_SHOP);
+        assertFalse(read().origins.containsKey("a"));
+    }
+    @Test public void questReceiptRecoversItsSourceAndRangeWithoutInventingTheGiversOldRoom() throws Exception {
+        GenerationEvents.ItemGenerated g=new GenerationEvents.ItemGenerated();g.uid="quest";g.where.depth=8;g.pos=18;g.room="LaboratoryRoom";
+        g.owner="actors.mobs.npcs.Wandmaker";g.container=GenerationEvents.C_QUEST_REWARD;GenerationEvents.emitItemGenerated(writer,1,g);
+        acquired("quest",8,25,ItemEvents.ACQ_OTHER);ItemOrigins.Origin source=read().origins.get("quest");
+        assertEquals(GenerationEvents.C_QUEST_REWARD,source.source);assertEquals("",source.room);
+        com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile wand=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile();ItemOrigins.record(wand,source);
+        assertEquals(new com.shatteredpixel.shatteredpixeldungeon.apd.qol.GenerationUpgradeRanges.Range(1,3),wand.apdGenerationRange);
+    }
+    @Test public void movingMimicSourceIsRecoveredWithoutDisclosingAnUnseenSpawnRoom() throws Exception {
+        generated("m",8,18,"SecretHoardRoom",GenerationEvents.C_MIMIC);acquired("m",8,25,ItemEvents.ACQ_PICKUP);
+        ItemOrigins.Origin source=read().origins.get("m");assertEquals(GenerationEvents.C_MIMIC,source.source);assertEquals("",source.room);
     }
     @Test public void eventsAfterTheLoadedSaveCannotPopulateOrigin() throws Exception {
         generated("a", 8, 18, "ArmoryRoom", 0); seen("a", 8, 18); writer.close(); ReadResult log = RunLogReader.read(file);
