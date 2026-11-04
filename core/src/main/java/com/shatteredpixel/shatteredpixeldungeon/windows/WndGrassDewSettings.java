@@ -28,35 +28,31 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 public class WndGrassDewSettings extends Window {
     public WndGrassDewSettings() {
         super();
-        int width = 122;
-        RenderedTextBlock title = PixelScene.renderTextBlock(Messages.get(this, "title"), 9);
-        title.hardlight(TITLE_COLOR);
-        title.maxWidth(width);
-        add(title);
-        RenderedTextBlock description = PixelScene.renderTextBlock(Messages.get(this, "desc"), 6);
-        description.maxWidth(width);
-        description.setPos(0, title.bottom() + 4);
-        add(description);
-        final CheckBox withEnemies = new CheckBox(Messages.get(this, "with_enemies")) {
-            @Override protected void onClick() {
-                super.onClick();
-                SPDSettings.autoCollectDewWithEnemies(checked());
-            }
+        int width=Math.max(92,Math.min(160,(int)PixelScene.uiCamera.width-16));
+        RenderedTextBlock title=PixelScene.renderTextBlock(Messages.get(this,"title"),9);
+        title.hardlight(TITLE_COLOR);title.maxWidth(width);add(title);
+        com.watabou.noosa.ui.Component content=new com.watabou.noosa.ui.Component();
+        com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane scroll=new com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane(content);
+        add(scroll);
+        RenderedTextBlock description=PixelScene.renderTextBlock(Messages.get(this,"desc"),6);
+        description.maxWidth(width);content.add(description);
+        final CheckBox withEnemies=new CheckBox(Messages.get(this,"with_enemies")){
+            @Override protected void onClick(){super.onClick();SPDSettings.autoCollectDewWithEnemies(checked());}
         };
-        CheckBox enabled = new CheckBox(Messages.get(this, "enabled")) {
-            @Override protected void onClick() {
-                super.onClick();
-                SPDSettings.autoCollectGrassDew(checked());
-                withEnemies.enable(checked());
-            }
+        Runnable updateEnemyControl=()->withEnemies.enable(SPDSettings.autoCollectGrassDew());
+        CheckBox dew=new CheckBox(Messages.get(this,"enabled")){
+            @Override protected void onClick(){super.onClick();SPDSettings.autoCollectGrassDew(checked());updateEnemyControl.run();}
         };
-        enabled.checked(SPDSettings.autoCollectGrassDew());
-        withEnemies.checked(SPDSettings.autoCollectDewWithEnemies());
-        withEnemies.enable(enabled.checked());
-        enabled.setRect(0, description.bottom() + 4, width, 16);
-        withEnemies.setRect(0, enabled.bottom() + 2, width, 16);
-        add(enabled);
-        add(withEnemies);
-        resize(width, (int) withEnemies.bottom());
+        dew.checked(SPDSettings.autoCollectGrassDew());
+        withEnemies.checked(SPDSettings.autoCollectDewWithEnemies());updateEnemyControl.run();
+        float y=description.bottom()+4;
+        for(CheckBox control:new CheckBox[]{dew,withEnemies}){
+            control.setRect(0,y,width,16);content.add(control);y=control.bottom()+2;
+        }
+        content.setSize(width,y-2);
+        float top=title.bottom()+4;
+        float max=Math.max(36,com.shatteredpixel.shatteredpixeldungeon.apd.query.WindowGeometry.maxPane(PixelScene.uiCamera.height,0,0)-top);
+        float height=com.shatteredpixel.shatteredpixeldungeon.apd.query.WindowGeometry.paneHeight(content.height(),max);
+        resize(width,(int)Math.ceil(top+height));scroll.setRect(0,top,width,height);scroll.allowDragFromButtons();
     }
 }

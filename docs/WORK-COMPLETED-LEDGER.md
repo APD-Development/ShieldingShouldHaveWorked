@@ -1,3 +1,7 @@
+## November4: expanded dew/grass-loot pickup implemented; source CI pending
+
+Ground dew on voluntary walking plus grass seeds and Petrified Seed runestones share the original saved master/visible-enemy controls. A queue retains simultaneous drops and pays each ordinary pickup action, preserving generation RNG, capacity, quantities and existing pickup semantics. Local2353 tests pass, including19 new regressions. Android/desktop source CI pending; native/phone and next APK acceptance NOT DONE. Preserve all newer UIMSD work and358/360 artifact boundaries. See docs/APD-DEW-AND-GRASS-LOOT-2026-11-04.md.
+
 ## 2026-11-04T20:18:20Z — UIMSD exact occurrence-to-timeline bridge source-verified
 
 DONE at exact source `b5cd56716b2363a011f7e05876178be969fe9e44` (production `dd112ee122fc21657b7583327214341d5df59494`): eligible exact public event/floor/equipment/death/fact rows can open the canonical recorded run timeline at their authoritative turn. The bridge rejects uncertain, hidden, stale, imported, duplicate, missing-run and ambiguous-run inputs and changes no raw history, save, statistic, scoring, gameplay or RNG.

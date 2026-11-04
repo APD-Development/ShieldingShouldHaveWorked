@@ -251,12 +251,19 @@ public class Hero extends Char {
 	
 	private ArrayList<Mob> visibleEnemies;
 
-    // One freshly generated grass drop only; transient automation is never saved as a player action.
+    // Queued small-loot pickups are transient and keep normal individual turn costs.
     private final transient com.shatteredpixel.shatteredpixeldungeon.apd.qol.GrassDewPickup grassDewPickup =
             new com.shatteredpixel.shatteredpixeldungeon.apd.qol.GrassDewPickup();
 
+    private transient boolean apdAutomaticLootStep;
     public void queueGrassDew(Level level, int cell, Heap heap) {
-        grassDewPickup.offer(this, level, cell, heap);
+        if(apdAutomaticLootStep)grassDewPickup.offer(this, level, cell, heap);
+    }
+    private void apdBeginLootStep(){grassDewPickup.clear();apdAutomaticLootStep=true;}
+    private void apdFinishLootStep(Level steppedLevel,int requestedCell,boolean eligible){
+        if(eligible && Dungeon.level==steppedLevel && steppedLevel.heaps!=null && pos==requestedCell)
+            grassDewPickup.offerDewOnStep(this,steppedLevel,pos,steppedLevel.heaps.get(pos));
+        else grassDewPickup.clear();
     }
 
 
@@ -1103,7 +1110,11 @@ public class Hero extends Char {
 		//Hero moves in place if there is grass to trample
 		} else if (pos == action.dst && canSelfTrample()){
 			canSelfTrample = false;
-			Dungeon.level.pressCell(pos);
+            Level apdStepLevel=Dungeon.level;int apdStepCell=pos;
+            apdBeginLootStep();boolean apdEligible=false;
+            try{Dungeon.level.pressCell(pos);apdEligible=apdAutomaticLootStep;}
+            finally{apdAutomaticLootStep=false;}
+            apdFinishLootStep(apdStepLevel,apdStepCell,apdEligible);
 			spendAndNext( 1 / speed() );
 			return false;
 		} else {
@@ -2040,7 +2051,11 @@ public class Hero extends Char {
 			}
 			
 			sprite.move(pos, step);
-			move(step);
+            Level apdStepLevel=Dungeon.level;
+            apdBeginLootStep();boolean apdEligible=false;
+            try{move(step);apdEligible=apdAutomaticLootStep;}
+            finally{apdAutomaticLootStep=false;}
+            apdFinishLootStep(apdStepLevel,step,apdEligible);
 
 			spend( delay / speed() );
 			
@@ -2472,6 +2487,7 @@ public class Hero extends Char {
 
 	@Override
 	public void move(int step, boolean travelling) {
+        if(!travelling){apdAutomaticLootStep=false;grassDewPickup.clear();}
 		boolean wasHighGrass = Dungeon.level.map[step] == Terrain.HIGH_GRASS;
 
 		super.move( step, travelling);

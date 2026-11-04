@@ -1,3 +1,9 @@
+## Dew and grass-loot scope implemented — source checks pending; no APK
+
+Owner clarified one shared auto-pickup flow: existing ground dew when walking, grass seeds, and Petrified Seed grass runestones; simultaneous seed+dew or stone+dew both collect. Existing saved master toggle/enemy override preserved, with no extra preference switches. Ground-dew voluntary-step hook plus merged transient grass queue uses ordinary pickup actions, one stack per action; movement and each pickup retain their normal costs. Full bag/vial or missing vial leaves corresponding loot; no auto-healing, rate/capacity/scoring change. Enemy safety is rechecked between pickups. New dialog wording and scrollable layout describe all three types.
+
+Local2353 core cases pass, including37 pickup cases/19 new regressions and real getCloser movement ingress. Source-only Android/debug/release/instrumentation/desktop CI is pending. No new APK/native/phone/publication claim. TEST358 actual release and360 accepted/unreleased status preserved; newer UIMSD preload cancellation and exact-timeline changes remain intact. Future intentional test candidate must include native collection/stack/cancel/queue/FOV checks alongside pending UIMSD acceptance. Full detail docs/APD-DEW-AND-GRASS-LOOT-2026-11-04.md. Executable APK build request is unchanged.
+
 ## UIMSD exact-occurrence timeline evidence bridge source-verified — no APK
 
 - **Exact source:** `b5cd56716b2363a011f7e05876178be969fe9e44` (production implementation `dd112ee122fc21657b7583327214341d5df59494`). Eligible occurrence rows now expose **Run history at this turn** and open the existing canonical public timeline at the row's exact recorded clock. Ordinary events, floor entry, equipment start, death and registered facts use their defined clock authority.

@@ -30,62 +30,76 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.Runestone;
+import java.util.ArrayDeque;
 
-/** One-shot, unsaved pickup request for dew just generated beneath the hero by grass. */
+/** Transient movement pickup queue. Every item still uses its ordinary pickup action. */
 public final class GrassDewPickup {
     private Level level;
     private Heap heap;
-    private Dewdrop dew;
+    private final ArrayDeque<Item> items=new ArrayDeque<>();
     private HeroAction sourceAction;
     private int cell;
 
+    /** Grass may generate a seed/stone and dew together; merge offers instead of losing either. */
     public void offer(Hero hero, Level level, int cell, Heap heap) {
-        clear();
-        if (!SPDSettings.autoCollectGrassDew() || hero != Dungeon.hero || level != Dungeon.level
-                || hero == null || level == null || hero.pos != cell || heap == null || heap.pos != cell
-                || heap.type != Heap.Type.HEAP || level.heaps.get(cell) != heap || !hasRoom(hero)) return;
-        // Grass uses ordinary drop/merge rules. Remember the actual resulting dew, not its stack index.
-        for (Item item : heap.items) {
-            if (item instanceof Dewdrop && item.quantity() > 0) {
-                this.level = level;
-                this.cell = cell;
-                this.heap = heap;
-                this.dew = (Dewdrop) item;
-                this.sourceAction = hero.curAction;
-                return;
-            }
+        offer(hero,level,cell,heap,false);
+    }
+
+    /** Existing floor dew is eligible on a normal step, independently of grass generation. */
+    public void offerDewOnStep(Hero hero, Level level, int cell, Heap heap) {
+        offer(hero,level,cell,heap,true);
+    }
+
+    private void offer(Hero hero, Level level, int cell, Heap heap, boolean dewOnly) {
+        if(hero==null || hero!=Dungeon.hero || level==null || level!=Dungeon.level
+                || hero.pos!=cell || heap==null || heap.pos!=cell || heap.hidden
+                || heap.type!=Heap.Type.HEAP || level.heaps==null || level.heaps.get(cell)!=heap)return;
+        if(this.level!=level || this.heap!=heap || this.cell!=cell || sourceAction!=hero.curAction){
+            clear();this.level=level;this.heap=heap;this.cell=cell;sourceAction=hero.curAction;
         }
+        for(Item item:heap.items){
+            if(item.quantity()>0 && (!dewOnly || item instanceof Dewdrop) && enabled(item)
+                    && (!(item instanceof Dewdrop) || hasRoom(hero)) && !items.contains(item))items.add(item);
+        }
+        if(items.isEmpty())clear();
+    }
+
+    private static boolean enabled(Item item){
+        // Preserve the existing saved on/off choice as the master pickup preference.
+        return SPDSettings.autoCollectGrassDew() &&
+                (item instanceof Dewdrop || item instanceof Plant.Seed || item instanceof Runestone);
     }
 
     public void clear() {
-        level = null;
-        heap = null;
-        dew = null;
-        sourceAction = null;
+        level=null;heap=null;sourceAction=null;items.clear();
     }
 
-    /** Called after the next normal hero-turn FOV update, before continuing a travel action. */
+    /** Called after movement/enemy turns and refreshed FOV; collect at most one stack per action. */
     public boolean collectIfSafe(Hero hero) {
-        Level pendingLevel = level;
-        Heap pendingHeap = heap;
-        Dewdrop pendingDew = dew;
-        HeroAction pendingAction = sourceAction;
-        int pendingCell = cell;
-        clear(); // Cancelled/failed requests must never retry on a later turn or a different item.
-        if (pendingDew == null || !SPDSettings.autoCollectGrassDew() || hero != Dungeon.hero
-                || pendingLevel != Dungeon.level || hero == null || !hero.isAlive()
-                || hero.paralysed > 0 || hero.resting || hero.pos != pendingCell
-                || (hero.curAction != null && hero.curAction != pendingAction)
-                || pendingLevel.heaps.get(pendingCell) != pendingHeap
-                || pendingHeap.type != Heap.Type.HEAP || pendingHeap.hidden || !pendingHeap.items.contains(pendingDew)
-                || pendingDew.quantity() <= 0 || !hasRoom(hero)) return false;
-        if (!SPDSettings.autoCollectDewWithEnemies() && hasVisibleEnemy(pendingLevel)) return false;
-        // Reuse normal discovery, vial filling, sound, feedback and exactly one pickupDelay().
-        // Never call consumeDew when the Waterskin is full or absent.
-        ApdItems.noteAcquireContext(ItemEvents.ACQ_PICKUP);
-        if (!pendingDew.doPickUp(hero, pendingCell)) return false;
-        pendingHeap.remove(pendingDew); // Other loot (including a seed above the dew) stays untouched.
-        return true;
+        if(items.isEmpty()){clear();return false;}
+        if(hero==null || hero!=Dungeon.hero || level!=Dungeon.level || !hero.isAlive()
+                || hero.paralysed>0 || hero.resting || hero.pos!=cell
+                || (hero.curAction!=null && hero.curAction!=sourceAction)
+                || level.heaps==null || level.heaps.get(cell)!=heap || heap.type!=Heap.Type.HEAP || heap.hidden
+                || (!SPDSettings.autoCollectDewWithEnemies() && hasVisibleEnemy(level))){
+            clear();return false;
+        }
+        while(!items.isEmpty()){
+            Item item=items.removeFirst(); // A failed/full pickup never loops or retries itself.
+            if(!heap.items.contains(item) || item.quantity()<=0 || !enabled(item)
+                    || item instanceof Dewdrop && !hasRoom(hero))continue;
+            ApdItems.noteAcquireContext(ItemEvents.ACQ_PICKUP);
+            if(!item.doPickUp(hero,cell))continue;
+            heap.remove(item);
+            if(!(item instanceof Dewdrop))com.shatteredpixel.shatteredpixeldungeon.utils.GLog.i(
+                    com.shatteredpixel.shatteredpixeldungeon.messages.Messages.capitalize(
+                    com.shatteredpixel.shatteredpixeldungeon.messages.Messages.get(hero,"you_now_have",item.name())));
+            if(items.isEmpty())clear();
+            return true;
+        }
+        clear();return false;
     }
 
     private static boolean hasRoom(Hero hero) {

@@ -140,11 +140,14 @@ public class HighGrass {
 				}
 
 				if (Random.Float() < lootChance) {
+                    com.shatteredpixel.shatteredpixeldungeon.items.Heap grassHeap;
 					if (Random.Float() < PetrifiedSeed.stoneInsteadOfSeedChance()) {
-						level.drop(Generator.randomUsingDefaults(Generator.Category.STONE), pos).sprite.drop();
+                        grassHeap=level.drop(Generator.randomUsingDefaults(Generator.Category.STONE),pos);
 					} else {
-						level.drop(Generator.random(Generator.Category.SEED), pos).sprite.drop();
+                        grassHeap=level.drop(Generator.random(Generator.Category.SEED),pos);
 					}
+                    grassHeap.sprite.drop();
+                    if(ch==Dungeon.hero && ch instanceof Hero)((Hero)ch).queueGrassDew(level,pos,grassHeap);
 				}
 				
 				// Dew, scales from 1/6 to 1/4

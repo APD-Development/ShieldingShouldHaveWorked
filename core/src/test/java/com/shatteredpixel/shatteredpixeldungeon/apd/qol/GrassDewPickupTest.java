@@ -99,4 +99,121 @@ public class GrassDewPickupTest {
     @Test public void newManualActionSupersedesPickupAndTravelActionSurvivesIt(){offer();hero.curAction=new HeroAction.Move(13);assertFalse(pickup.collectIfSafe(hero));offer();HeroAction travel=hero.curAction;assertTrue(pickup.collectIfSafe(hero));assertSame(travel,hero.curAction);}
     @Test public void paralysisAndDeathDoNotExecuteQueuedPickup(){offer();hero.paralysed=1;assertFalse(pickup.collectIfSafe(hero));hero.paralysed=0;offer();hero.HP=0;assertFalse(pickup.collectIfSafe(hero));assertSame(dew,heap.peek());}
     @Test public void bookkeepingAndPickupUseNoAdditionalRandomDraws(){Random.pushGenerator(459);long expected=Random.Long();Random.popGenerator();Random.pushGenerator(459);try{offer();assertTrue(pickup.collectIfSafe(hero));assertEquals(expected,Random.Long());}finally{Random.popGenerator();}}
+    private com.shatteredpixel.shatteredpixeldungeon.plants.Sungrass.Seed seed(){
+        com.shatteredpixel.shatteredpixeldungeon.plants.Sungrass.Seed item=new com.shatteredpixel.shatteredpixeldungeon.plants.Sungrass.Seed();heap.items.addFirst(item);return item;
+    }
+    private com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression stone(){
+        com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression item=new com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression();heap.items.addFirst(item);return item;
+    }
+    @Test public void preexistingDewOnOrdinaryFloorIsEligibleAfterWalking(){
+        level.map[12]=com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY;
+        pickup.offerDewOnStep(hero,level,12,heap);hero.spend(1);
+        assertTrue(pickup.collectIfSafe(hero));assertEquals(2,hero.cooldown(),0);assertEquals("1/20",skin.status());
+    }
+    @Test public void ordinaryDewStepDoesNotVacuumSeedsOrStonesFromUnrelatedPiles(){
+        Item seed=seed(),stone=stone();pickup.offerDewOnStep(hero,level,12,heap);
+        assertTrue(pickup.collectIfSafe(hero));assertFalse(pickup.collectIfSafe(hero));
+        assertTrue(heap.items.contains(seed));assertTrue(heap.items.contains(stone));
+    }
+    @Test public void grassSeedAndDewBothCollectAsSeparateNormalActions(){
+        Item seed=seed();offer();hero.spend(1);
+        assertTrue(pickup.collectIfSafe(hero));assertEquals(2,hero.cooldown(),0);assertTrue(hero.belongings.contains(seed));
+        assertTrue(pickup.collectIfSafe(hero));assertEquals(3,hero.cooldown(),0);assertEquals("1/20",skin.status());
+        assertNull(level.heaps.get(12));assertFalse(pickup.collectIfSafe(hero));assertEquals(2,hero.nextCalls);
+    }
+    @Test public void petrifiedRunestoneAndDewBothCollectAsSeparateNormalActions(){
+        Item stone=stone();offer();hero.spend(1);
+        assertTrue(pickup.collectIfSafe(hero));assertTrue(hero.belongings.contains(stone));
+        assertTrue(pickup.collectIfSafe(hero));assertEquals(3,hero.cooldown(),0);assertEquals("1/20",skin.status());
+    }
+    @Test public void aSecondGrassDropAndStepOfferDoNotReplaceOrDuplicateTheFirst(){
+        heap.items.remove(dew);Item seed=seed();offer();heap.items.add(dew);offer();
+        pickup.offerDewOnStep(hero,level,12,heap);
+        assertTrue(pickup.collectIfSafe(hero));assertTrue(pickup.collectIfSafe(hero));assertFalse(pickup.collectIfSafe(hero));
+        assertTrue(hero.belongings.contains(seed));assertEquals("1/20",skin.status());assertEquals(2,hero.cooldown(),0);
+    }
+    @Test public void seedAndStoneDoNotRequireAnyDewToDrop(){
+        heap.items.remove(dew);Item seed=seed(),stone=stone();offer();
+        assertTrue(pickup.collectIfSafe(hero));assertTrue(pickup.collectIfSafe(hero));assertFalse(pickup.collectIfSafe(hero));
+        assertTrue(hero.belongings.contains(seed));assertTrue(hero.belongings.contains(stone));assertEquals("0/20",skin.status());
+    }
+    @Test public void fullWaterskinStillAllowsGrassSeedPickupWithoutHealing(){
+        skin.fill();Item seed=seed();offer();assertTrue(pickup.collectIfSafe(hero));assertFalse(pickup.collectIfSafe(hero));
+        assertTrue(hero.belongings.contains(seed));assertSame(dew,heap.peek());assertEquals(10,hero.HP);assertEquals("20/20",skin.status());
+    }
+    @Test public void missingWaterskinStillAllowsRunestoneButNeverConsumesDew(){
+        hero.belongings.backpack.items.clear();Item stone=stone();offer();
+        assertTrue(pickup.collectIfSafe(hero));assertFalse(pickup.collectIfSafe(hero));assertTrue(hero.belongings.contains(stone));
+        assertTrue(heap.items.contains(dew));assertEquals(10,hero.HP);
+    }
+    private void fillBag(){while(hero.belongings.backpack.items.size()<hero.belongings.backpack.capacity())hero.belongings.backpack.items.add(new Food());}
+    @Test public void fullInventoryLeavesSeedWithoutSpendingAPickupTurnOrRetrying(){
+        heap.items.remove(dew);Item seed=seed();fillBag();offer();
+        assertFalse(pickup.collectIfSafe(hero));assertTrue(heap.items.contains(seed));assertEquals(0,hero.cooldown(),0);
+        hero.belongings.backpack.items.remove(hero.belongings.backpack.items.size()-1);
+        assertFalse(pickup.collectIfSafe(hero));assertTrue(heap.items.contains(seed));
+    }
+    @Test public void fullInventoryStillAllowsMergingAnExistingSeedStack(){
+        com.shatteredpixel.shatteredpixeldungeon.plants.Sungrass.Seed existing=new com.shatteredpixel.shatteredpixeldungeon.plants.Sungrass.Seed();existing.quantity(4);
+        hero.belongings.backpack.items.add(existing);fillBag();heap.items.remove(dew);Item incoming=seed();incoming.quantity(3);offer();
+        assertTrue(pickup.collectIfSafe(hero));assertEquals(7,existing.quantity());assertNull(level.heaps.get(12));
+        assertEquals(hero.belongings.backpack.capacity(),hero.belongings.backpack.items.size());
+    }
+    @Test public void fullInventoryDoesNotStopDewFromFillingTheWaterskin(){
+        Item seed=seed();fillBag();offer();assertTrue(pickup.collectIfSafe(hero));assertEquals("1/20",skin.status());
+        assertTrue(heap.items.contains(seed));assertEquals(1,hero.cooldown(),0);
+    }
+    @Test public void visibleEnemyBlocksBothGrassLootTypesAndTheWholeQueue(){
+        heap.items.remove(dew);Item seed=seed(),stone=stone();offer();enemy(true);
+        assertFalse(pickup.collectIfSafe(hero));assertEquals(0,hero.cooldown(),0);assertTrue(heap.items.contains(seed));assertTrue(heap.items.contains(stone));
+    }
+    @Test public void enemyAppearingBetweenPickupsStopsTheRemainingItem(){
+        Item seed=seed();offer();assertTrue(pickup.collectIfSafe(hero));assertTrue(hero.belongings.contains(seed));enemy(true);
+        assertFalse(pickup.collectIfSafe(hero));assertTrue(heap.items.contains(dew));assertEquals("0/20",skin.status());assertEquals(1,hero.cooldown(),0);
+    }
+    @Test public void existingEnemyOverrideAllowsBothKindsOfGrassLoot(){
+        SPDSettings.autoCollectDewWithEnemies(true);enemy(true);Item seed=seed();offer();
+        assertTrue(pickup.collectIfSafe(hero));assertTrue(pickup.collectIfSafe(hero));assertTrue(hero.belongings.contains(seed));assertEquals("1/20",skin.status());
+    }
+    @Test public void savedMasterOffDisablesDewSeedsAndStonesTogether(){
+        Item seed=seed(),stone=stone();SPDSettings.autoCollectGrassDew(false);SPDSettings.set(new HeadlessPreferences(prefsFile));offer();
+        assertFalse(pickup.collectIfSafe(hero));assertTrue(heap.items.contains(seed));assertTrue(heap.items.contains(stone));assertTrue(heap.items.contains(dew));
+    }
+    @Test public void nonMovementGrassNotificationDoesNotQueueAForcedPickup()throws Exception{
+        hero.queueGrassDew(level,12,heap);
+        Field field=Hero.class.getDeclaredField("grassDewPickup");field.setAccessible(true);
+        assertFalse(((GrassDewPickup)field.get(hero)).collectIfSafe(hero));assertSame(dew,heap.peek());
+    }
+    @Test public void emptyOrFinishedRequestsReleaseTheirLevelAndHeapReferences()throws Exception{
+        pickup.offerDewOnStep(hero,level,12,heap);assertTrue(pickup.collectIfSafe(hero));
+        for(String name:new String[]{"level","heap","sourceAction"}){Field field=GrassDewPickup.class.getDeclaredField(name);field.setAccessible(true);assertNull(name,field.get(pickup));}
+    }
+
+    public static class WalkingSprite extends com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite {
+        @Override public void move(int from,int to){}
+        @Override public void place(int cell){}
+        @Override public void idle(){}
+        @Override public void sprint(float speed){}
+    }
+    private void prepareWalkingHero()throws Exception{
+        level.blobs=new java.util.HashMap<>();level.traps=new com.watabou.utils.SparseArray<>();level.plants=new com.watabou.utils.SparseArray<>();
+        java.lang.reflect.Field u=Class.forName("sun.misc.Unsafe").getDeclaredField("theUnsafe");u.setAccessible(true);Object unsafe=u.get(null);
+        hero.sprite=(WalkingSprite)unsafe.getClass().getMethod("allocateInstance",Class.class).invoke(unsafe,WalkingSprite.class);
+        hero.heroClass=com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.WARRIOR;
+        java.util.Arrays.fill(level.map,com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY);
+        java.util.Arrays.fill(level.passable,true);java.util.Arrays.fill(level.heroFOV,true);java.util.Arrays.fill(level.visited,true);
+        hero.fieldOfView=level.heroFOV;hero.pos=11;hero.curAction=new HeroAction.Move(12);
+    }
+    @Test public void realVoluntaryStepQueuesPreexistingDewAfterItsMovementTurn()throws Exception{
+        prepareWalkingHero();java.lang.reflect.Method closer=Hero.class.getDeclaredMethod("getCloser",int.class);closer.setAccessible(true);
+        assertTrue((Boolean)closer.invoke(hero,12));assertEquals(12,hero.pos);assertEquals(1,hero.cooldown(),0);assertEquals("0/20",skin.status());
+        Field f=Hero.class.getDeclaredField("grassDewPickup");f.setAccessible(true);GrassDewPickup queued=(GrassDewPickup)f.get(hero);
+        assertTrue(queued.collectIfSafe(hero));assertEquals(2,hero.cooldown(),0);assertEquals("1/20",skin.status());
+    }
+    @Test public void forcedMovementDoesNotQueueExistingDew()throws Exception{
+        prepareWalkingHero();hero.move(12,false);
+        Field f=Hero.class.getDeclaredField("grassDewPickup");f.setAccessible(true);
+        assertFalse(((GrassDewPickup)f.get(hero)).collectIfSafe(hero));assertSame(dew,heap.peek());assertEquals("0/20",skin.status());
+    }
+
 }
