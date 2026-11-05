@@ -185,13 +185,26 @@ public class WndInfoCell extends Window {
 			}
 		}
 		
-        if (Dungeon.level.searchedWalls.shows(Dungeon.level, cell)) {
-            desc += "\n\n" + Messages.get(this, "searched_wall");
+        if (Dungeon.level.searchedWalls.confirmed(Dungeon.level, cell)) {
+            desc += "\n\n" + Messages.get(this,"checked_door");
+        } else if (Dungeon.level.searchedWalls.attempted(cell)) {
+            desc += "\n\n" + Messages.get(this,"search_unconfirmed");
         }
+        boolean wall = com.shatteredpixel.shatteredpixeldungeon.apd.qol.WallSearchSession.wall(Dungeon.level.map[cell]);
+        boolean reachable = Dungeon.hero != null && Dungeon.level.heroFOV[cell]
+                && com.shatteredpixel.shatteredpixeldungeon.apd.qol.WallSearchSession.covers(Dungeon.hero,Dungeon.level,Dungeon.hero.pos,cell);
+        if(wall&&!reachable)desc += "\n\n"+Messages.get(this,"search_unavailable");
 		info.text( desc.length() == 0 ? Messages.get(this, "nothing") : desc );
 		info.maxWidth(WIDTH);
 		info.setPos(titlebar.left(), titlebar.bottom() + 2*GAP);
 		
-		resize( WIDTH, (int)info.bottom()+2 );
+        if(wall&&reachable){
+            com.shatteredpixel.shatteredpixeldungeon.ui.RedButton search=new com.shatteredpixel.shatteredpixeldungeon.ui.RedButton(Messages.get(WndInfoCell.class,"search_here")){
+                @Override protected void onClick(){
+                    if(Dungeon.hero.wallSearch.select(Dungeon.hero,cell)){hide();Dungeon.hero.search(true);}
+                }
+            };
+            search.setRect(0,info.bottom()+GAP,WIDTH,18);add(search);resize(WIDTH,(int)search.bottom()+2);
+        }else resize( WIDTH, (int)info.bottom()+2 );
 	}
 }

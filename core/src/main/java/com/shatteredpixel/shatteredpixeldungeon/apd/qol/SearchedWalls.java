@@ -26,6 +26,8 @@ import java.util.BitSet;
 public final class SearchedWalls {
     private static final String KEY = "apd_searched_walls_v1";
     private final BitSet cells = new BitSet();
+    private final BitSet doorChecks = new BitSet();
+    private static final String CHECKS_KEY="apd_door_checks_v1";
 
     public boolean mark(Level level, int cell) {
         if (cell < 0 || cell >= level.length() || !level.heroFOV[cell]
@@ -47,15 +49,28 @@ public final class SearchedWalls {
 
     /** Allocation-free traversal for refreshing only saved markers after observation. */
     public int nextMarked(int from){return cells.nextSetBit(Math.max(0,from));}
-    public void clear() { cells.clear(); }
+    public void clear() { cells.clear(); doorChecks.clear(); }
+    public void invalidate(int cell){if(cell>=0){cells.clear(cell);doorChecks.clear(cell);}}
+    public void recordCompletedDoorCheck(Level level,int cell,boolean guaranteed){
+        if(cell<0||cell>=level.length())return;
+        doorChecks.clear(cell);
+        // A paid check must actually have resolved; an unresolved hidden tile is never a negative result.
+        if(guaranteed&&level.heroFOV[cell]&&wall(level.map[cell])&&!level.secret[cell]
+                &&level.map[cell]!=Terrain.SECRET_DOOR)doorChecks.set(cell);
+    }
+    public boolean confirmed(Level level,int cell){return cell>=0&&cell<level.length()&&level.heroFOV[cell]&&wall(level.map[cell])&&doorChecks.get(cell);}
+    public boolean attempted(int cell){return cell>=0&&cells.get(cell);}
+
 
     public void store(Bundle bundle) {
         // An untouched floor retains its original payload and level-generation fingerprints.
         if (!cells.isEmpty()) bundle.put(KEY, cells.stream().toArray());
+        if (!doorChecks.isEmpty()) bundle.put(CHECKS_KEY,doorChecks.stream().toArray());
     }
 
     public void restore(Bundle bundle, int length) {
         clear();
+        if (bundle.contains(CHECKS_KEY))for(int cell:bundle.getIntArray(CHECKS_KEY))if(cell>=0&&cell<length)doorChecks.set(cell);
         if (!bundle.contains(KEY)) return; // Legacy saves have no fabricated search history.
         for (int cell : bundle.getIntArray(KEY)) {
             if (cell >= 0 && cell < length) cells.set(cell);

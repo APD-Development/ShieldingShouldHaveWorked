@@ -995,6 +995,7 @@ public abstract class Level implements Bundlable {
 	}
 	
 	public static void set( int cell, int terrain, Level level ) {
+		if(level.map[cell]!=terrain)level.searchedWalls.invalidate(cell);
 		Painter.set(level, cell, terrain);
 
 		if (terrain != Terrain.TRAP && terrain != Terrain.SECRET_TRAP && terrain != Terrain.INACTIVE_TRAP) {

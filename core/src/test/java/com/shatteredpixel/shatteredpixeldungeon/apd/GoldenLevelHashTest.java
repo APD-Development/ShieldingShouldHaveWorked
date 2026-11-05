@@ -70,6 +70,21 @@ public class GoldenLevelHashTest {
 		return harnessLine.substring(harnessLine.indexOf("sha256=") + 7);
 	}
 
+    // Owner-approved Floor 5 room redesign: retain the original archive untouched,
+    // require all eleven new Floor 5 fingerprints, and compare every other floor
+    // to its original hash. Gold conservation/RNG/orientations have separate real-room tests.
+    private static String reviewedHash(File golden,String key,String historical) throws Exception {
+        if(!key.endsWith("|5"))return hashOf(historical);
+        Map<String,String> reviewed=new LinkedHashMap<>();
+        for(String row:Files.readAllLines(new File(golden.getParentFile(),"golden_rat_king_floor5_20261104.tsv").toPath(),StandardCharsets.UTF_8)){
+            String[] parts=row.split("\t");assertEquals(2,parts.length);assertTrue(parts[0].endsWith("|5"));
+            assertEquals(64,parts[1].length());assertEquals(null,reviewed.put(parts[0],parts[1]));
+        }
+        assertEquals("All original Floor 5 cases remain covered",GoldenCases.all().size(),reviewed.size());
+        assertTrue("Missing reviewed Rat King case: "+key,reviewed.containsKey(key));
+        return reviewed.get(key);
+    }
+
 	@Test
 	public void generatedLevelsMatchGoldenBaseline() throws Exception {
 		File golden = new File(System.getProperty("apd.golden.file"));
@@ -116,7 +131,7 @@ public class GoldenLevelHashTest {
 		for (Map.Entry<String, String> e : actual.entrySet()){
 			String exp = expected.get(i++);
 			if (!exp.contains(" STABLE ")) continue;
-			String expectedHash = hashOf(exp);
+			String expectedHash = reviewedHash(golden,e.getKey(),exp);
 			assertEquals("golden mismatch for " + e.getKey() + " (line " + i + ")", expectedHash, hashOf(e.getValue()));
 			compared++;
 		}
@@ -137,7 +152,7 @@ public class GoldenLevelHashTest {
 			String exp = expected.get(i++);
 			if (!exp.contains(" STABLE ")) continue;
 			assertEquals("recording changed level generation for " + e.getKey() + " (line " + i + ")",
-					hashOf(exp), hashOf(e.getValue()));
+					reviewedHash(golden,e.getKey(),exp), hashOf(e.getValue()));
 			compared++;
 		}
 		System.out.println("APD-GOLDEN (recorder on) compared " + compared + " stable levels of " + expected.size());

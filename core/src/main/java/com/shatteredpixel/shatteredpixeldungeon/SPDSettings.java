@@ -105,6 +105,8 @@ public class SPDSettings extends GameSettings {
 		return getInt( KEY_GRID, 0, -1, 2 );
 	}
 
+    public static boolean ratKingQuickSearch(){return getBoolean("apd_rat_king_quick_search",false);}
+    public static void ratKingQuickSearch(boolean enabled){put("apd_rat_king_quick_search",enabled);}
     public static int searchedWallColor(){
         return com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallAppearance.normalize(getInt("apd_searched_wall_color",0));
     }

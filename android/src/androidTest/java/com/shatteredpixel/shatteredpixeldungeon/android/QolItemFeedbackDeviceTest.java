@@ -65,6 +65,28 @@ public class QolItemFeedbackDeviceTest {
         });
         Thread.sleep(300);TopScoresDeviceTest.screenshot(image);TopScoresDeviceTest.render(()->shown.get().hide());
     }
+    private static void combinedOriginsAndRatPreferenceRenderAndRespond()throws Exception{
+        boolean previous=SPDSettings.ratKingQuickSearch();AtomicReference<WndAPDSettings> shown=new AtomicReference<>();Point[] at=new Point[1];
+        try{
+            TopScoresDeviceTest.render(()->{
+                SPDSettings.ratKingQuickSearch(false);WndAPDSettings window=new WndAPDSettings(com.shatteredpixel.shatteredpixeldungeon.apd.settings.ApdSettingsSection.GAMEPLAY);GameScene.show(window);shown.set(window);
+                try{
+                    java.lang.reflect.Field f=WndAPDSettings.class.getDeclaredField("pane");f.setAccessible(true);APDSettingsPane pane=(APDSettingsPane)f.get(window);
+                    f=APDSettingsPane.class.getDeclaredField("chkRatKingSearch");f.setAccessible(true);CheckBox box=(CheckBox)f.get(pane);assertFalse(box.checked());
+                    ScrollPane scroll=TopScoresDeviceTest.find(window,ScrollPane.class).get(0);scroll.scrollTo(0,Math.max(0,box.top()-8));
+                    at[0]=box.camera().cameraToScreen(box.left()+box.width()/2,box.top()+box.height()/2);
+                }catch(Exception e){throw new RuntimeException(e);}
+            });Thread.sleep(300);touch(at[0]);TopScoresDeviceTest.render(()->assertTrue("Actual Quick Search checkbox tap enables preference",SPDSettings.ratKingQuickSearch()));
+            TopScoresDeviceTest.screenshot("qol-rat-quick-search-setting.png");touch(at[0]);TopScoresDeviceTest.render(()->{assertFalse(SPDSettings.ratKingQuickSearch());shown.get().hide();shown.set(null);});
+            Sword unknown=new Sword();unknown.levelKnown=false;unknown.cursedKnown=false;
+            unknown.apdFoundOrigin=new com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.Origin(8,0,com.shatteredpixel.shatteredpixeldungeon.apd.stats.GenerationEvents.C_LOCKED_CHEST,"TreasuryRoom");
+            com.shatteredpixel.shatteredpixeldungeon.apd.qol.GenerationUpgradeRanges.set(unknown,0,3);
+            showItem(unknown,"Possible upgrade level: +0 to +3","qol-unidentified-origin-range.png");
+            TopScoresDeviceTest.render(()->{assertTrue(unknown.info().contains("Floor 8"));assertTrue(unknown.info().contains("Golden Key"));unknown.identify();assertFalse(unknown.info().contains("Found on"));assertFalse(unknown.info().contains("Possible upgrade level:"));
+                try{AttackIndicator attack=TopScoresDeviceTest.find(Game.scene(),AttackIndicator.class).get(0);assertTrue("Attack control remains visible",attack.visible);}catch(Exception e){throw new RuntimeException(e);}
+            });
+        }finally{TopScoresDeviceTest.render(()->{if(shown.get()!=null)shown.get().hide();SPDSettings.ratKingQuickSearch(previous);});}
+    }
     @Test public void grassDewControlsRingBreakdownsSearchedWallAndOfflineLicenseRenderNatively()throws Exception{
         boolean intro=SPDSettings.intro(),auto=SPDSettings.autoCollectGrassDew(),enemies=SPDSettings.autoCollectDewWithEnemies();
         int slot=GamesInProgress.curSlot;HeroClass selected=GamesInProgress.selectedClass;
@@ -86,6 +108,7 @@ public class QolItemFeedbackDeviceTest {
             waitFor(()->Game.scene() instanceof GameScene&&Dungeon.hero!=null&&Dungeon.hero.ready);
             assertNull("gameplay releases the parked full catalog",parked.catalog());
             assertNull("gameplay releases its query result",parked.result());
+            combinedOriginsAndRatPreferenceRenderAndRespond();
             AtomicReference<WndGrassDewSettings> settings=new AtomicReference<>();Point[] p=new Point[1];
             TopScoresDeviceTest.render(()->{try{
                 SPDSettings.autoCollectGrassDew(true);SPDSettings.autoCollectDewWithEnemies(false);

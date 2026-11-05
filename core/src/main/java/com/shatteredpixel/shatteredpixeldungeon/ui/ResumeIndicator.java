@@ -69,7 +69,8 @@ public class ResumeIndicator extends Tag {
 	protected void onClick() {
 		super.onClick();
 		if (Dungeon.hero.ready) {
-			Dungeon.hero.resume();
+			if(Dungeon.hero.wallSearch.exists())com.shatteredpixel.shatteredpixeldungeon.windows.WndWallSearchResume.show();
+            else Dungeon.hero.resume();
 		}
 	}
 
@@ -82,8 +83,8 @@ public class ResumeIndicator extends Tag {
 	public void update() {
 		if (!Dungeon.hero.isAlive())
 			visible = false;
-		else if (visible != (Dungeon.hero.lastAction != null)){
-			visible = Dungeon.hero.lastAction != null;
+		else if (visible != (Dungeon.hero.lastAction != null || Dungeon.hero.wallSearch.exists())){
+			visible = Dungeon.hero.lastAction != null || Dungeon.hero.wallSearch.exists();
 			if (visible)
 				flash();
 		}

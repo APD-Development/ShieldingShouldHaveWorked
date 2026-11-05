@@ -68,6 +68,7 @@ public class APDSettingsPane extends Component {
     private RedButton btnSearchedWallColor;
     private CheckBox chkStairNavigation;
     private CheckBox chkAutoEnterStairs;
+    private CheckBox chkRatKingSearch;
 	private RenderedTextBlock status;
 	private RenderedTextBlock storage;
 	private RedButton btnClericQuickCasts;
@@ -407,6 +408,9 @@ public class APDSettingsPane extends Component {
         btnHotbarCustom=new SettingButton("Configure custom hotbar"){ @Override protected void onClick(){WndCategoryHotbar.slots();}};add(btnHotbarCustom);
         chkFoodInHealing=new SettingCheckBox("Food in Healing"){@Override protected void onClick(){super.onClick();SPDSettings.apdFoodInHealing(checked());com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton.refresh();}};
         chkFoodInHealing.checked(SPDSettings.apdFoodInHealing());add(chkFoodInHealing);
+        chkRatKingSearch=new SettingCheckBox("Rat King Quick Search"){@Override protected void onClick(){super.onClick();SPDSettings.ratKingQuickSearch(checked());}};
+        chkRatKingSearch.checked(SPDSettings.ratKingQuickSearch());add(chkRatKingSearch);
+        row(ApdSettingsSection.GAMEPLAY,chkRatKingSearch,"Off by default. After Goo is defeated, Search can reveal only the Rat King's entrance on Floor 5. Pays the minimum ordinary walking-and-search time through normal turns. Other floors and ordinary Search remain unchanged when off. Temporary effects that prevent a reliable price must finish first.");
         row(ApdSettingsSection.GAMEPLAY,btnPlaybackSpeed,"Immediate visual playback speed. Turn costs and combat rules stay unchanged.");
         row(ApdSettingsSection.GAMEPLAY,btnHealingConfirmation,"Immediate. Choose which healing actions ask first, including low-health thresholds.");
         row(ApdSettingsSection.GAMEPLAY,chkAdult,"Immediate content preference. Off keeps humor clean; verified under-18 accounts cannot enable adult humor.");
@@ -419,7 +423,7 @@ public class APDSettingsPane extends Component {
         row(ApdSettingsSection.HOTBAR,chkFoodInHealing,"Immediate. Also offer food from a Healing category slot; normal food costs still apply.");
         row(ApdSettingsSection.HOTBAR,btnWaterskinSlot,"New runs only. This starting preference never rearranges a resumed run or changes manual hotbar assignments.");
         row(ApdSettingsSection.HOTBAR,btnClericQuickCasts,"Immediate control preference. Configure Cleric quick-cast buttons without changing spell costs.");
-        row(ApdSettingsSection.VISIBILITY,btnSearchedWallColor,"Immediate display preference, saved between sessions. Choose a high-contrast checkmark color. Impossible door positions are left unmarked; search chances and saved search memory stay unchanged.");
+        row(ApdSettingsSection.VISIBILITY,btnSearchedWallColor,"Immediate display preference, saved between sessions. Choose a high-contrast checkmark color. Corner/end pieces are left unmarked. Checkmarks record searches, not proof that a wall is clear. Search chances stay unchanged.");
         row(ApdSettingsSection.VISIBILITY,chkTileVisibility,"Display preference. Make visible tiles easier to distinguish without revealing undiscovered terrain.");
         row(ApdSettingsSection.VISIBILITY,chkDotOverlay,"Immediate display preference. Show or hide the collapsible damage-over-time panel.");
         row(ApdSettingsSection.VISIBILITY,chkStairNavigation,"Immediate shortcut to discovered stairs only. This does not reveal hidden stairs.");

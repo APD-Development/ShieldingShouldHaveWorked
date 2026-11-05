@@ -236,6 +236,9 @@ public class Hero extends Char {
 	private Char attackTarget;
 	
 	public boolean resting = false;
+    public com.shatteredpixel.shatteredpixeldungeon.apd.qol.RatKingQuickSearch.Payment ratSearch;
+    public float apdBaseWalkingSpeed(){return baseSpeed;}
+    public final com.shatteredpixel.shatteredpixeldungeon.apd.qol.WallSearchSession wallSearch = new com.shatteredpixel.shatteredpixeldungeon.apd.qol.WallSearchSession();
 	
 	public Belongings belongings;
 	
@@ -365,6 +368,8 @@ public class Hero extends Char {
 		bundle.put( HTBOOST, HTBoost );
 
 		belongings.storeInBundle( bundle );
+        wallSearch.store(bundle);
+        com.shatteredpixel.shatteredpixeldungeon.apd.qol.RatKingQuickSearch.store(this,bundle);
 	}
 	
 	@Override
@@ -376,6 +381,8 @@ public class Hero extends Char {
 		HTBoost = bundle.getInt(HTBOOST);
 
 		super.restoreFromBundle( bundle );
+        wallSearch.restore(bundle);
+        com.shatteredpixel.shatteredpixeldungeon.apd.qol.RatKingQuickSearch.restore(this,bundle);
         apdCustomHealingFraction = bundle.contains("apd_custom_healing_fraction") ? bundle.getFloat("apd_custom_healing_fraction") : 0;
         if (Float.isNaN(apdCustomHealingFraction) || apdCustomHealingFraction < 0 || apdCustomHealingFraction >= 1)
             throw new IllegalArgumentException("Invalid custom healing fraction; preserve the save for recovery");
@@ -919,7 +926,9 @@ public class Hero extends Char {
         // The normal Dewdrop pickup below spends its own turn, never the movement turn.
         if (grassDewPickup.collectIfSafe(this)) return false;
 
-		boolean actResult;
+        if(curAction instanceof com.shatteredpixel.shatteredpixeldungeon.apd.qol.RatKingQuickSearch.Action)
+            return com.shatteredpixel.shatteredpixeldungeon.apd.qol.RatKingQuickSearch.advance(this,(com.shatteredpixel.shatteredpixeldungeon.apd.qol.RatKingQuickSearch.Action)curAction);
+        boolean actResult;
 		if (curAction == null) {
 			
 			if (resting) {
@@ -1037,6 +1046,8 @@ public class Hero extends Char {
 	}
 	
 	public void interrupt() {
+        if(curAction instanceof com.shatteredpixel.shatteredpixeldungeon.apd.qol.RatKingQuickSearch.Action){ratSearch=null;curAction=null;lastAction=null;}
+        if(curAction instanceof com.shatteredpixel.shatteredpixeldungeon.apd.qol.WallSearchSession.Walk){curAction=null;lastAction=null;}
         apdTrapGeneration++;
         if(apdTrapPermit!=null)apdTrapPermit.clear();
         if (curAction instanceof com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.Walk) {
@@ -1074,7 +1085,22 @@ public class Hero extends Char {
         interrupt(); lastAction=null; path=route; curAction=walk; damageInterrupt=true;
     }
 
+    public void finishRatQuickSearch(){ready();}
+    public void beginRatQuickSearch(com.shatteredpixel.shatteredpixeldungeon.apd.qol.RatKingQuickSearch.Payment payment){
+        interrupt();lastAction=null;curAction=new com.shatteredpixel.shatteredpixeldungeon.apd.qol.RatKingQuickSearch.Action(Dungeon.level,payment);damageInterrupt=true;busy();next();
+    }
+    public void beginWallSearchWalk(com.shatteredpixel.shatteredpixeldungeon.apd.qol.WallSearchSession.Walk walk,com.watabou.utils.PathFinder.Path route){
+        interrupt();lastAction=null;path=route;curAction=walk;damageInterrupt=true;
+    }
+
 	private boolean actMove( HeroAction.Move action ) {
+        if(action instanceof com.shatteredpixel.shatteredpixeldungeon.apd.qol.WallSearchSession.Walk){
+            com.shatteredpixel.shatteredpixeldungeon.apd.qol.WallSearchSession.Walk walk=(com.shatteredpixel.shatteredpixeldungeon.apd.qol.WallSearchSession.Walk)action;
+            boolean unsafe=path!=null&&!path.isEmpty()&&!com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.safeStep(Dungeon.level,this,path.getFirst());
+            if(walk.level!=Dungeon.level||!wallSearch.matches(Dungeon.level)||visibleEnemies()>0||rooted||paralysed>0||Dungeon.level.locked||unsafe){interrupt();lastAction=null;ready();return false;}
+            if(pos==action.dst){curAction=null;lastAction=null;search(true);return false;}
+        }
+
 
         if (action instanceof com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.Walk) {
             com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.Walk walk =
@@ -2012,6 +2038,9 @@ public class Hero extends Char {
 
 		}
 
+        if(curAction instanceof com.shatteredpixel.shatteredpixeldungeon.apd.qol.WallSearchSession.Walk && step!=-1
+                && !com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.safeStep(Dungeon.level,this,step)){path=null;return false;}
+
         if (curAction instanceof com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.Walk
                 && step != -1 && !com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.safeStep(Dungeon.level,this,step)) {
             path=null;
@@ -2650,6 +2679,7 @@ public class Hero extends Char {
 	}
 
 	public boolean search( boolean intentional ) {
+        if(intentional && com.shatteredpixel.shatteredpixeldungeon.apd.qol.RatKingQuickSearch.start(this))return false;
 		
 		if (!isAlive()) return false;
 		
@@ -2697,10 +2727,6 @@ public class Hero extends Char {
 			for (curr = left + y * Dungeon.level.width(); curr <= right + y * Dungeon.level.width(); curr++){
 
 				if ((foresight || fieldOfView[curr]) && curr != pos) {
-
-                    if (intentional && Dungeon.level.searchedWalls.mark(Dungeon.level, curr)) {
-                        GameScene.updateSearchedWall(curr);
-                    }
 
 					if ((foresight && (!Dungeon.level.mapped[curr] || foresightScan))){
 						GameScene.checkedCell(curr, foresightScan ? pos : curr);
@@ -2765,11 +2791,19 @@ public class Hero extends Char {
 							}
 						}
 					}
+                    if (intentional) {
+                        com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap searchedTrap = Dungeon.level.traps == null ? null : Dungeon.level.traps.get(curr);
+                        boolean guaranteed = foresight || searchedTrap == null || searchedTrap.canBeSearched;
+                        if (Dungeon.level.searchedWalls.mark(Dungeon.level,curr)) GameScene.updateSearchedWall(curr);
+                        Dungeon.level.searchedWalls.recordCompletedDoorCheck(Dungeon.level,curr,guaranteed);
+                    }
+
 				}
 			}
 		}
 		
 		if (intentional) {
+            wallSearch.searched(this);
 			sprite.showStatus( CharSprite.DEFAULT, Messages.get(this, "search") );
 			sprite.operate( pos );
 			if (!Dungeon.level.locked) {

@@ -286,6 +286,7 @@ public class Goo extends Mob {
 		
 		super.die( cause );
 		
+		if(Dungeon.depth==5&&Dungeon.branch==0&&Dungeon.level instanceof com.shatteredpixel.shatteredpixeldungeon.levels.SewerBossLevel)((com.shatteredpixel.shatteredpixeldungeon.levels.SewerBossLevel)Dungeon.level).apdGooDefeated=true;
 		Dungeon.level.unseal();
 		
 		GameScene.bossSlain();

@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -115,16 +118,46 @@ public class RatKingRoom extends SecretRoom {
 		level.customWalls.add(overhang);
 
 		RatKing king = new RatKing();
-		king.pos = center;
+		king.pos = Dungeon.depth == 5 && Dungeon.branch == 0 ? farthestWalkable(level, this, door) : center;
 		level.mobs.add( king );
 
-		for (Point p : getPoints()){
-			int cell = level.pointToCell(p);
-			if (cell != center && (level.map[cell] == Terrain.EMPTY || level.map[cell] == Terrain.EMPTY_SP)){
-				level.drop( new Gold( Random.IntRange( 5, 20 ) ), cell );
-			}
-		}
+        boolean consolidate = Dungeon.depth == 5 && Dungeon.branch == 0;
+        int totalGold = 0;
+        for (Point point : getPoints()) {
+            int cell = level.pointToCell(point);
+            if (cell != center && (level.map[cell] == Terrain.EMPTY || level.map[cell] == Terrain.EMPTY_SP)) {
+                // Preserve exactly the old eligible cells, draw order and gold rolls.
+                int amount = Random.IntRange(5,20);
+                if (consolidate) totalGold += amount;
+                else level.drop(new Gold(amount),cell);
+            }
+        }
+        if (consolidate) level.drop(new Gold(totalGold),center).type = com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type.CHEST;
 	}
+
+    /** Eight-direction shortest walking distance from the entrance after its ordinary discovery. No RNG. */
+    public static int farthestWalkable(Level level, Room room, int entrance) {
+        int[] distance = new int[level.length()]; java.util.Arrays.fill(distance,-1);
+        java.util.ArrayDeque<Integer> queue = new java.util.ArrayDeque<>();
+        distance[entrance]=0; queue.add(entrance);
+        int result=-1, longest=-1;
+        while (!queue.isEmpty()) {
+            int from=queue.removeFirst(), x=from%level.width(), y=from/level.width();
+            if (from!=entrance && (distance[from]>longest || distance[from]==longest && from<result)) {
+                longest=distance[from];result=from;
+            }
+            for (int dy=-1;dy<=1;dy++) for(int dx=-1;dx<=1;dx++) {
+                if (dx==0 && dy==0)continue;
+                int nx=x+dx,ny=y+dy;
+                if(nx<=room.left||nx>=room.right||ny<=room.top||ny>=room.bottom)continue;
+                int next=nx+ny*level.width();
+                if(distance[next]>=0 || (Terrain.flags[level.map[next]] & Terrain.PASSABLE)==0)continue;
+                distance[next]=distance[from]+1;queue.add(next);
+            }
+        }
+        if (result<0) throw new IllegalStateException("Rat King room has no accessible interior");
+        return result;
+    }
 
 	public static class RatKingRoomDeco extends CustomTilemap {
 
