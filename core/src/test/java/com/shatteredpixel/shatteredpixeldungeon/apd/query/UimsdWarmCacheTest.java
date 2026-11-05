@@ -34,6 +34,20 @@ public class UimsdWarmCacheTest {
         File[] children=root.listFiles();if(children!=null)for(File child:children)deleteTree(child);
         assertTrue(root.delete());
     }
+    private static File history(File root,int score)throws Exception{
+        com.shatteredpixel.shatteredpixeldungeon.apd.stats.SyntheticLog log=
+                new com.shatteredpixel.shatteredpixeldungeon.apd.stats.SyntheticLog(
+                        root,"same-log",new com.shatteredpixel.shatteredpixeldungeon.apd.stats.TelemetryVersion(1,4),100);
+        log.start("same-run",0,"WARRIOR","r1-aaaaaaaaaaaa",0,30,false)
+                .end(com.shatteredpixel.shatteredpixeldungeon.apd.stats.LifecycleEvents.OUTCOME_DIED,
+                        "Rat",1,1,score).close(true);
+        return log.file;
+    }
+    private static long recordedScore(UimsdModel model){
+        Dataset runs=model.catalog().dataset(Datasets.RUNS);
+        return runs.rows.get(0).num(runs.def.indexOf(
+                com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKeys.SCORE));
+    }
     @Test public void gameplayDropsReadyPreloadAndCanWarmAgain()throws Exception{
         File root=Files.createTempDirectory("apd-release-warm").toFile();
         try{
@@ -259,6 +273,39 @@ public class UimsdWarmCacheTest {
         }
     }
 
+    @Test public void sameLengthAndTimestampRawReplacementInvalidatesPreparedCatalog() throws Exception {
+        File root=Files.createTempDirectory("apd-warm-identity").toFile();
+        File other=Files.createTempDirectory("apd-warm-replacement").toFile();
+        UimsdModel fresh=null;
+        try {
+            File original=history(root,31),replacementFile=history(other,47);
+            byte[] replacement=Files.readAllBytes(replacementFile.toPath());
+            assertEquals("controlled valid logs must have identical lengths",original.length(),replacement.length);
+            UimsdWarmCache.prewarm(root,"rules-a","label",false);
+            UimsdWarmCache.awaitPrewarmForTest(10000);
+            UimsdModel stale=readyModel();
+            assertEquals(31,recordedScore(stale));
+            long timestamp=original.lastModified();
+            Files.write(original.toPath(),replacement);
+            assertTrue("controlled replacement restores the exact old timestamp",
+                    original.setLastModified(timestamp));
+            assertEquals(replacement.length,original.length());
+            assertEquals(timestamp,original.lastModified());
+            assertNull("different same-size/same-time raw bytes must invalidate the prepared catalog",
+                    UimsdWarmCache.takeReady(root,"rules-a","label",false));
+            assertEquals(UimsdModel.State.EMPTY,stale.state());
+            assertNull(stale.catalog());
+            fresh=new UimsdModel("rules-a","label");
+            fresh.load(root);fresh.awaitLoad(10000);
+            assertEquals(UimsdModel.State.READY,fresh.state());
+            assertEquals(47,recordedScore(fresh));
+            assertArrayEquals(replacement,Files.readAllBytes(original.toPath()));
+        } finally {
+            if(fresh!=null)fresh.releaseForGameplay();
+            deleteTree(root);deleteTree(other);
+        }
+    }
+
     @Test public void changingRawHistoryForcesFreshLoadingInsteadOfUsingStaleStats() throws Exception {
         File root = Files.createTempDirectory("apd-warm-stale").toFile();
         File runs = new File(root, "runs");
@@ -293,4 +340,3 @@ public class UimsdWarmCacheTest {
         }
     }
 }
-
