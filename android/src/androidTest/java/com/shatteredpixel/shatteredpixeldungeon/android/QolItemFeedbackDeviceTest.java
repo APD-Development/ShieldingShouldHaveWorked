@@ -89,7 +89,11 @@ public class QolItemFeedbackDeviceTest {
     }
     static void verifyOldBookshelfMarksAreHidden(int cell)throws Exception{
         // Real descent can award Pacifist; wait for its normal banner to expire before visual evidence.
-        Thread.sleep(3500);
+        waitFor(()->{
+            java.util.concurrent.atomic.AtomicBoolean expired=new java.util.concurrent.atomic.AtomicBoolean();
+            TopScoresDeviceTest.render(()->expired.set(com.shatteredpixel.shatteredpixeldungeon.effects.BadgeBanner.showing.isEmpty()));
+            return expired.get();
+        });
         TopScoresDeviceTest.render(()->assertTrue("achievement overlay expired",com.shatteredpixel.shatteredpixeldungeon.effects.BadgeBanner.showing.isEmpty()));
         TopScoresDeviceTest.render(()->{
             Level.set(cell,Terrain.BOOKSHELF);com.watabou.utils.Bundle legacy=new com.watabou.utils.Bundle();legacy.put("apd_searched_walls_v1",new int[]{cell});legacy.put("apd_door_checks_v1",new int[]{cell});

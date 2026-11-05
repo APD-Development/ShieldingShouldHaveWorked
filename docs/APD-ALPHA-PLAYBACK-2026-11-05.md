@@ -17,3 +17,7 @@ Extreme playback can make movement/effects visually abrupt, especially1000x; thi
 ## Verification
 
 Targeted playback tests pass, including an added Alpha-only flag regression exercising every factor, file-backed preference reload, unchanged global frame delta, and no Developer unlocks. Full core and required Android/debug/release/desktop checks plus full native/display/actual-tester checks must pass on the exact candidate before publication. No candidate is called verified based solely on this preparation report. Retain TEST364 and its assets as last verified fallback.
+
+## Retained verification failures
+
+M53 profile job127572477507 passed its title case then lost its emulator before mandatory screenshots could be pulled (device offline); rerun the same profile/APK. Original API36 job127572477572 and its unchanged retry hit the fixture's3.5-second achievement-banner assertion; actual rendering had not completed the banner. Correct only instrumentation to wait for normal banner expiry, retaining the final absence assertion and all original six cases. No game-source or application-artifact change. Alpha four-case native run42120968295 already passed, with the complete selector screenshot reviewed.
