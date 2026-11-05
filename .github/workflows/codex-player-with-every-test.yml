@@ -118,7 +118,7 @@ jobs:
           assert player.stat().st_size>30_000_000,"Player APK too small"
           with zipfile.ZipFile(dev) as d,zipfile.ZipFile(player) as p:
               assert "assets/apd/features.txt" in d.namelist()
-              assert "assets/apd/features.txt" not in p.namelist(),"Developer-only features leaked"
+              assert p.read("assets/apd/features.txt")==b"extendedPlayback\n","Only approved playback flag belongs in Alpha Testers"
               history=[n for n in d.namelist() if n.startswith("assets/apd/history/") and n.endswith(".tsv")]
               assert all(n in p.namelist() and p.read(n)==d.read(n) for n in history),"History differs"
               dex=[p.read(n) for n in p.namelist() if n.startswith("classes") and n.endswith(".dex")]

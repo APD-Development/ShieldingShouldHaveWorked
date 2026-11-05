@@ -18,10 +18,11 @@ public final class ApdFeatures {
 	public static final boolean GRUDGE_LORE_IN_THIS_RELEASE = false;
 
 	private static boolean loaded;
-	private static boolean testBuild, grudge, demoUnlock, clericPlayable;
+	private static boolean testBuild, grudge, demoUnlock, clericPlayable, extendedPlayback;
 
 	private ApdFeatures(){}
 
+	public static synchronized boolean extendedPlayback(){ ensure(); return testBuild || extendedPlayback; }
 	public static synchronized boolean testBuild(){ ensure(); return testBuild; }
 	public static synchronized boolean grudge(){ ensure(); return (GRUDGE_LORE_IN_THIS_RELEASE || testBuild) && grudge; }
 	public static synchronized boolean demoUnlock(){ ensure(); return demoUnlock; }
@@ -43,12 +44,13 @@ public final class ApdFeatures {
 	}
 
 	public static synchronized void parse( String text ){
-		testBuild = grudge = demoUnlock = clericPlayable = false;
+		testBuild = grudge = demoUnlock = clericPlayable = extendedPlayback = false;
 		loaded = true;
 		for (String raw : text.split( "\\r?\\n" )){
 			String s = raw.trim();
 			if (s.startsWith( "#" )) continue;
 			switch (s){
+				case "extendedPlayback": extendedPlayback = true; break;
 				case "testBuild": testBuild = true; break;
 				case "grudge": grudge = true; break;
 				case "demoUnlock": demoUnlock = true; break;
@@ -59,7 +61,7 @@ public final class ApdFeatures {
 
 	//tests only: back to the normal build
 	public static synchronized void resetForTest(){
-		testBuild = grudge = demoUnlock = clericPlayable = false;
+		testBuild = grudge = demoUnlock = clericPlayable = extendedPlayback = false;
 		loaded = true;
 	}
 }

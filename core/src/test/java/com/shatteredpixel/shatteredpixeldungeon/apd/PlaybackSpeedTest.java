@@ -65,6 +65,21 @@ public class PlaybackSpeedTest {
   Game.elapsed=.016f;float[] observed={0};PlaybackGroup g=new PlaybackGroup();g.add(observe(observed));g.update();
   assertEquals(.016f,observed[0],0.00001f);
  }
+ @Test public void alphaPlaybackFlagExposesAllSpeedsWithoutDeveloperFeatures(){
+  ApdFeatures.parse("extendedPlayback\n");
+  assertFalse(ApdFeatures.testBuild());assertFalse(ApdFeatures.demoUnlock());
+  assertFalse(ApdFeatures.grudge());assertFalse(ApdFeatures.clericPlayable());
+  assertEquals(10,PlaybackGroup.choiceCount());
+  float[] factors={.5f,1f,2f,4f,8f,16f,32f,64f,100f,1000f};
+  for(int mode=0;mode<factors.length;mode++){
+   SPDSettings.playbackSpeed(mode);GameSettings.set(new HeadlessPreferences(new FileHandle(file)));
+   assertEquals(mode,SPDSettings.playbackSpeed());PlaybackGroup.speed(SPDSettings.playbackSpeed());
+   Game.elapsed=.016f;float[] seen={0};PlaybackGroup group=new PlaybackGroup();group.add(observe(seen));group.update();
+   assertEquals(.016f*factors[mode],seen[0],.0001f);assertEquals(.016f,Game.elapsed,0f);
+  }
+  assertEquals("1000x",PlaybackGroup.label(9));assertFalse(PlaybackGroup.allowed(10));
+  ApdFeatures.parse("");assertEquals(3,PlaybackGroup.choiceCount());assertEquals(1,SPDSettings.playbackSpeed());
+ }
  @Test public void extremeVisualPlaybackPreservesNormalHeroIdleTiming(){
   ApdFeatures.parse("testBuild\n");
   assertEquals("Private build must expose every extreme speed",10,PlaybackGroup.choiceCount());

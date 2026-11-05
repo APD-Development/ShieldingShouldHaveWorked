@@ -218,7 +218,7 @@ public class APDSettingsPane extends Component {
         btnPlaybackSpeed = new SettingButton("Game speed: "
                 + com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.label(SPDSettings.playbackSpeed())) {
             @Override protected void onClick() {
-                if (com.shatteredpixel.shatteredpixeldungeon.apd.ApdFeatures.testBuild()) {
+                if (com.shatteredpixel.shatteredpixeldungeon.apd.ApdFeatures.extendedPlayback()) {
                     final java.util.List<WndUimsdList.Entry> choices = new java.util.ArrayList<>();
                     for (int i = 0; i < com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.choiceCount(); i++) {
                         choices.add(WndUimsdList.Entry.item(
@@ -226,7 +226,7 @@ public class APDSettingsPane extends Component {
                                 .current(i == SPDSettings.playbackSpeed()));
                     }
                     ShatteredPixelDungeon.scene().addToFront(WndUimsdList.menu("Game speed",
-                            "PRIVATE TEST BUILD: extreme visual playback only. Combat turns remain unchanged.",
+                            "Visual playback only. Combat turns and turn costs remain unchanged.",
                             choices, (index, checked) -> {
                                 if (!com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.allowed(index)) return;
                                 SPDSettings.playbackSpeed(index);

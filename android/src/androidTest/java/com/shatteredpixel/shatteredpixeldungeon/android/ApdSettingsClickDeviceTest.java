@@ -331,8 +331,8 @@ public class ApdSettingsClickDeviceTest {
                 tapCommunityEntry(choices, 2);
                 assertEquals("Cleric setting still answers real touches", 3, SPDSettings.apdClericQuickSlots());
                 final RedButton speedButton = (RedButton)field(pane,"btnPlaybackSpeed");
-                if (com.shatteredpixel.shatteredpixeldungeon.apd.ApdFeatures.testBuild()) {
-                    // Private builds have 10 choices and a scrollable window. Real touches
+                if (com.shatteredpixel.shatteredpixeldungeon.apd.ApdFeatures.extendedPlayback()) {
+                    // Developer and Alpha Testers builds have 10 choices and a scrollable window. Real touches
                     // must reach the first, intermediate and extreme values, then return to 2x.
                     for(int mode:new int[]{0,1,2,3,9,2}){
                         final int selected=mode;
@@ -340,8 +340,9 @@ public class ApdSettingsClickDeviceTest {
                                 () -> find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.class)!=null,30000);
                         com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList speedChoices =
                                 find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.class);
-                        assertEquals("only private builds can show ten speeds",10,communityEntries(speedChoices).size());
+                        assertEquals("approved test builds show ten speeds",10,communityEntries(speedChoices).size());
                         assertEquals("1000x",communityEntries(speedChoices).get(9).label);
+                        if(mode==9)TopScoresDeviceTest.screenshot("alpha-playback-choices.png");
                         tapCommunityEntry(speedChoices,mode);
                         waitUntil("private speed persists",()->SPDSettings.playbackSpeed()==selected,10000);
                     }

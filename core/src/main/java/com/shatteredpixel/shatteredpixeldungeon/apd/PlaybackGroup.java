@@ -18,7 +18,7 @@ public final class PlaybackGroup extends Group {
     private static int updating;
 
     public static int choiceCount() {
-        return ApdFeatures.testBuild() ? FACTORS.length : PUBLIC_CHOICES;
+        return ApdFeatures.extendedPlayback() ? FACTORS.length : PUBLIC_CHOICES;
     }
 
     public static boolean allowed(int selection) {
