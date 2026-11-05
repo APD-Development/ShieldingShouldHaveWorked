@@ -18,6 +18,10 @@
 package com.shatteredpixel.shatteredpixeldungeon.apd.query;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -26,9 +30,10 @@ import java.util.Comparator;
  *
  * No disk work or catalog computation happens in prewarm(); all validation
  * occurs on a daemon worker. A warmed catalog is offered only when every
- * relevant raw log and column-layout file still has matching metadata.
- * DatasetStore and SavedViews still perform their full normal reads and
- * cryptographic raw-log checks during preparation.
+ * relevant raw log and column-layout file still has matching metadata and
+ * SHA-256 content identity. The fingerprint is calculated only on preload and
+ * open workers, never on the render thread. DatasetStore and SavedViews still
+ * perform their full normal reads and cryptographic raw-log checks during preparation.
  */
 public final class UimsdWarmCache {
     private static final Object LOCK = new Object();
@@ -74,11 +79,14 @@ public final class UimsdWarmCache {
         }
     }
 
+    private static final char[] HEX = "0123456789abcdef".toCharArray();
+
     private static String stamp(File root) {
         try {
             StringBuilder out = new StringBuilder(root.getAbsolutePath());
-            stampOne(out, new File(root, UimsdModel.COLUMN_LAYOUTS_FILE));
-            stampOne(out, new File(root, DatasetStore.DEMO_MARKER_FILE));
+            byte[] buffer = new byte[64 * 1024];
+            stampOne(out, new File(root, UimsdModel.COLUMN_LAYOUTS_FILE), buffer);
+            stampOne(out, new File(root, DatasetStore.DEMO_MARKER_FILE), buffer);
             for (String folder : new String[]{"runs", "legacy"}) {
                 File directory = new File(root, folder);
                 out.append('|').append(folder).append('=').append(directory.isDirectory());
@@ -87,17 +95,32 @@ public final class UimsdWarmCache {
                 Arrays.sort(files, Comparator.comparing(File::getName));
                 for (File file : files) {
                     if (file.isFile() && file.getName().endsWith(".apdlog"))
-                        stampOne(out, file);
+                        stampOne(out, file, buffer);
                 }
             }
             return out.toString();
-        } catch (RuntimeException error) {
-            return null; // uncertain source state must never be accepted as fresh
+        } catch (IOException | NoSuchAlgorithmException | RuntimeException error) {
+            return null; // unreadable or uncertain source state must never be accepted as fresh
         }
     }
-    private static void stampOne(StringBuilder out, File file) {
+    private static void stampOne(StringBuilder out, File file, byte[] buffer)
+            throws IOException, NoSuchAlgorithmException {
         out.append('|').append(file.getName()).append(':').append(file.exists())
-                .append(':').append(file.length()).append(':').append(file.lastModified());
+                .append(':').append(file.isFile()).append(':').append(file.length())
+                .append(':').append(file.lastModified());
+        if (!file.isFile()) return;
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        try (FileInputStream input = new FileInputStream(file)) {
+            int count;
+            while ((count = input.read(buffer)) != -1) {
+                if (count > 0) digest.update(buffer, 0, count);
+            }
+        }
+        out.append(':');
+        for (byte value : digest.digest()) {
+            int unsigned = value & 0xff;
+            out.append(HEX[unsigned >>> 4]).append(HEX[unsigned & 0x0f]);
+        }
     }
 
     // Optional preload must leave room for gameplay and foreground screens.
