@@ -135,6 +135,9 @@ public final class UimsdWarmCache {
                     String before = stamp(key.root);
                     if (before == null) return;
                     synchronized (LOCK) {
+                        // A cancelled worker can finish its filesystem stamp after the
+                        // replacement has already published. It must not release that model.
+                        if(preparing!=job||job.id!=generation)return;
                         if (ready != null && ready.key.matches(key)
                                 && before.equals(ready.sourceStamp)) return;
                         if(ready!=null){ready.model.releaseForGameplay();ready=null;}

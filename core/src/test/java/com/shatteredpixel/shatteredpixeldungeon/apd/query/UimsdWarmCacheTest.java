@@ -212,6 +212,34 @@ public class UimsdWarmCacheTest {
         }
     }
 
+    @Test public void supersededStampCannotReleaseAnAlreadyPublishedReplacement() throws Exception {
+        File first=Files.createTempDirectory("apd-delayed-stamp").toFile(),second=Files.createTempDirectory("apd-published-replacement").toFile();
+        java.util.concurrent.CountDownLatch stamping=new java.util.concurrent.CountDownLatch(1),release=new java.util.concurrent.CountDownLatch(1);
+        File delayed=new File(first.getAbsolutePath()){
+            @Override public File getAbsoluteFile(){return this;}
+            @Override public String getAbsolutePath(){
+                if(Thread.currentThread().getName().equals("uimsd-title-prewarm")){
+                    stamping.countDown();boolean interrupted=false;
+                    while(true){try{release.await();break;}catch(InterruptedException ex){interrupted=true;}}
+                    if(interrupted)Thread.currentThread().interrupt();
+                }
+                return super.getAbsolutePath();
+            }
+        };
+        Thread old=null;
+        try{
+            UimsdWarmCache.prewarm(delayed,"rules-a","old",false);
+            assertTrue(stamping.await(10,java.util.concurrent.TimeUnit.SECONDS));
+            java.lang.reflect.Field pending=UimsdWarmCache.class.getDeclaredField("preparing");pending.setAccessible(true);Object job=pending.get(null);
+            java.lang.reflect.Field thread=job.getClass().getDeclaredField("thread");thread.setAccessible(true);old=(Thread)thread.get(job);
+            UimsdWarmCache.prewarm(second,"rules-b","new",true);UimsdWarmCache.awaitPrewarmForTest(10000);
+            UimsdModel replacement=readyModel();assertEquals(UimsdModel.State.READY,replacement.state());
+            release.countDown();old.join(10000);assertFalse(old.isAlive());
+            assertEquals("cancelled stamp must not empty the new catalog",UimsdModel.State.READY,replacement.state());
+            assertSame(replacement,UimsdWarmCache.takeReady(second,"rules-b","new",true));
+        }finally{release.countDown();if(old!=null)old.join(10000);assertTrue(first.delete());assertTrue(second.delete());}
+    }
+
     @After public void cleanup() { UimsdWarmCache.resetForTest(); }
 
     @Test public void titlePrewarmProvidesAnImmediatelyReadyModel() throws Exception {

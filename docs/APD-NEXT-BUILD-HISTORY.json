@@ -107,10 +107,12 @@
       "category": "Interface",
       "sprite": "ICON_CHECKED",
       "title": "Stable class controls and retained performance work",
-      "text": "Keep attack at the bottom, Duelist above it only for Duelist, and stairs in the vacant ability position for other classes. Cleric controls occupy inward columns only for Cleric; other actions remain accessible. Preserve the newer UIMSD warm-cache, run-timeline and equipment-history work. This private candidate retains the original signing identity, application ID, saves, statistics and prior build history.",
+      "text": "Keep attack at the bottom, Duelist above it only for Duelist, and stairs in the vacant ability position for other classes. Cleric controls occupy inward columns only for Cleric; other actions remain accessible. A retired UIMSD preload can no longer clear its replacement. Preserve the newer UIMSD warm-cache, run-timeline and equipment-history work. This private candidate retains the original signing identity, application ID, saves, statistics and prior build history.",
       "paths": [
+        ".github/workflows/apd-corrective-pair-delivery.yml",
         ".github/workflows/apd-qol-source-check.yml",
         ".github/workflows/apd-test360-exact-api34-retest.yml",
+        ".github/workflows/codex-menu-layout-matrix.yml",
         ".github/workflows/codex-sprint-check.yml",
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/SPDSettings.java",
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/Hero.java",
@@ -126,6 +128,7 @@
         "core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/query/UimsdWarmCacheTest.java",
         "docs/APD-CODEX-BUILD-REQUEST.txt",
         "docs/APD-COMBINED-CANDIDATE-2026-11-04.md",
+        "docs/APD-CORRECTIVE-PAIR-TESTER-REQUEST.json",
         "docs/APD-DEW-AND-GRASS-LOOT-2026-11-04.md",
         "docs/APD-ITEM-ORIGINS-2026-11-04.md",
         "docs/APD-NEXT-BUILD-HISTORY.json",
@@ -138,6 +141,7 @@
         "docs/APD-UIMSD-STALE-PRELOAD-RELEASE-2026-11-03.md",
         "docs/HANDOFF.md",
         "docs/WORK-COMPLETED-LEDGER.md",
+        "tools/apd_appearance_pair_delivery.py",
         "tools/run-codex-android-checks.sh"
       ]
     }

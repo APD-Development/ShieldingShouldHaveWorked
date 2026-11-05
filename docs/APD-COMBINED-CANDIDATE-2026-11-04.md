@@ -1,6 +1,6 @@
 # Combined owner candidate — November 4 evening / November 5 UTC
 
-Target: November 4, 8:15 p.m. America/New_York (01:15 UTC). This is a target, not a promise of runner execution or a delivered APK. No new APK has yet been created in this work session.
+Target: November 4, 8:15 p.m. America/New_York (01:15 UTC). This is a target, not a promise of runner execution or a delivered APK. At the original source checkpoint, no new APK had been created. TEST361 subsequently stopped before assembly; no APK was created by that failed attempt.
 
 ## Changes and causes
 
@@ -23,3 +23,9 @@ Origin-only source ea9fbeeaea8689766668ced7387c8c9842a40ca4 passed source-only r
 New tests cover real prize factories, no hidden-level reads, key-specific origins, ongoing already-equipped recovery, save/load/transfers/identification, class layout, manual vs passive evidence, remembered search/combat interruption, strict floor/branch gates, original gold/RNG conservation across seeds/orientations, shortest weighted walking/search cost, temporary speed expiry, real Actor elapsed time/hunger and unrelated secret preservation.
 
 Actual released fallback remains private TEST358 (source51a0819552a1b8d6c888cb273057f50dc79f2635). TEST360 is accepted but unreleased. Preserve all existing assets. No candidate is verified or delivered merely because source tests pass; signing/application ID, full native evidence, display profiles and actual private downloaded assets remain required. Install over only; never uninstall or clear saves/statistics.
+
+## Retained TEST361 prebuild failure and correction
+
+Run41941525796/job126963269467 failed before APK assembly:2475/2476 cases passed, UimsdWarmCacheTest.changedPrewarmCancelsSupersededWorkerBeforeStartingReplacement failed at replacement non-null. Root cause: a retired worker could complete its filesystem stamp late, enter the cache lock and clear a newer READY entry before checking ownership. The worker now checks ownership before touching any cache entry. A deterministic paused-stamp regression reproduces the catalog destruction without the guard and passes with it. No original assertion is removed or weakened. Final suite inventory2477. Original run and failure logs are retained. No TEST361 Developer or Alpha-Testers APK exists.
+
+The display job additionally failed reading an unrelated older run with GitHub HTTP502. Artifact discovery now selects only the exact requested source and retries only bounded transient502/503/504/429 responses; authorization errors remain failures. Remaining pointless old display work was cancelled after the producer failed.
