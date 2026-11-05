@@ -1,46 +1,57 @@
 {
-  "kind": "door-checks",
-  "number": 364,
-  "source": "1103a2e7caf72a094836a7cf6931468f3f800b36",
-  "developer": 42083792753,
-  "player": 42083792729,
-  "display": 42083792722,
-  "native": 42083792753,
-  "tester": 42086446743,
-  "tester_test_source": "4b250549f1fc205b642301672477875c68222bfe",
-  "core_tests": 2498,
+  "kind": "alpha-playback",
+  "number": 365,
+  "source": "6d55fec660389195b492f1ce2974781cfbc27bcc",
+  "developer": 42120844540,
+  "player": 42120844623,
+  "display": 42120844868,
+  "native": 42123644945,
+  "tester": 42120968295,
+  "tester_test_source": "ac46b5adde44c39e723a378e2528c25b64696c1f",
+  "core_tests": 2500,
   "android_tests": 72,
-  "title": "APD 364 \u2014 complete door-checkmark eligibility",
-  "report_path": "docs/APD-DOOR-CHECK-FIX-2026-11-05.md",
+  "tester_tests": 4,
+  "alpha_extended_playback": true,
+  "alpha_playback_visual_sha256": "25a521d082ed32af3099f6e95e784ac1a537e6c7bcb3a2066d7e6c1c41ddfdb8",
+  "title": "APD365 \u2014 Developer and Alpha Testers: full visual playback speeds",
+  "report_path": "docs/APD-ALPHA-PLAYBACK-2026-11-05.md",
   "visual_review": {
-    "qol-dew-settings.png": "d9d5099d304464d4103fb6dbb61d9c87adf165d6ef3b2ed777b9a0a86f678ad6",
-    "qol-force-weapon.png": "313694ad0e6256dc0c41077069604c3aadd65b5dafd0301bab1f2d861443bd41",
-    "qol-sharpshooting-weapon.png": "c4b8237edf536dd7ad757e255ba135282f74bc2bc0396539a5709ec04bdc5c76",
-    "qol-searched-wall.png": "fd6eb0699f0c6a9f021ba1baf11d1cb21845975e553ea8c0132e6894836aaf9b",
-    "qol-searched-wall-color.png": "b08ee38a78f0c2c2f411ceed282fb414694a05ad9b123c121445b51d30d97078",
-    "qol-offline-license.png": "acc4fd40312df60a8c84a5a9d8884afb8b3821acb19059183c00acebba1be5d8",
-    "healing-settings-toggle-on.png": "3a04c59f2c625c15478e6c82ebe07d89d20b105694adb3f1a93552a003f4be4b",
-    "healing-settings-toggle-off.png": "a1debb9d36c3e9e346c87d2a9f479301699a464f2fe8d8c8b2643d07c4c17587"
+    "qol-dew-settings.png": "5447c021e9fad4f988f13410a76d9282b80adffcfc9a0d36bdd1fc32e8e695a8",
+    "qol-force-weapon.png": "3539b69fcb4ab8892665946d56d4f757ac99624e720b53edb8d57823830db836",
+    "qol-sharpshooting-weapon.png": "7b007a119a51fdbefbecccc12730119734038f8b3c7a60d1caf61bb24e43e45c",
+    "qol-searched-wall.png": "349a2f5ff1ce63c16bdb1eb83c012e3451bcfb1802aef9b1159c058d78b644dc",
+    "qol-searched-wall-color.png": "8765057e8c6892815ea1e0fb4280cc14991181d4e0b3bf0cb71e325f4c618caa",
+    "qol-offline-license.png": "2455c761d1380c8a76b7e1a45dde50e4db646d2b0b115498061a16ede0754490"
   },
-  "combined_visual_review": {
-    "qol-doorless-floor1.png": "c5008009f513eabc6487df6188d7fefbf905cd3b4aa89a3dc5f09c49eca8b831",
-    "qol-door-ineligible-bookshelf.png": "f1efef37e47806a2aae953db0ed91294d1ab03952f727608c6fa82c6aede2f7a",
-    "qol-door-ineligible-decoration.png": "880e65655da12add57f030c1a74d5690fed9aa4eb843723c9bbd3b3d674c5770"
-  },
-  "combined_visual_review_source": "tester-api34",
-  "fallback_number": 362,
+  "fallback_number": 364,
   "fallback_hashes": {
-    "Developer": "1085bb39899a9c3c1ff5a9dd75ccaa0a73f05833aac8340b963bfdac16609f5a",
-    "Alpha-Testers": "9baa801d600ab72a4b9563d6bd687166eb9a7d4957f6c4503800540fbc764d41"
+    "Developer": "f706dce790001f24ea2586373212b9894ac3b8512f518824f0b036440b44aced",
+    "Alpha-Testers": "76c32d7445629e5d47c683658c7e35b1e4af67acdb2a04cf0f9c52c5727f24f8"
   },
-  "source_only_check": 42082418369,
-  "withheld_partial_candidate": {
-    "number": 363,
-    "source": "4749caf7a8dc2a3634ac52fbadf084758fc63f37",
-    "producer": 42080532920,
-    "player": 42080533002,
-    "apk_artifacts_created": true,
-    "verification": "Remaining native/display/tester jobs cancelled when decorated-wall audit showed incomplete eligibility; never verified or released as the fix.",
-    "private_release_created": false
+  "profile_overrides": {
+    "redmagic-representative-api36": {
+      "run": 42123049371,
+      "test_source": "65b13ccd009a7f547396d11c36f1f36b679633d7"
+    }
+  },
+  "retained_display_failure": {
+    "run": 42120844868,
+    "m53_job": 127572477507,
+    "api36_job": 127572477572,
+    "detail": "M53 title case passed then emulator disconnected before screenshots. API36 fixed3.5-second badge wait expired before banner completion. Same APK rechecks retain all cases and screenshots; instrumentation now observes actual normal banner expiry."
+  },
+  "native_job_name": "same-apk-api34",
+  "native_artifact": "apd-test365-exact-api34",
+  "native_test_source": "baa7e9a2678f0a34790c7d3077d890021dc62df9",
+  "retained_native_fixture_failure": {
+    "run": 42120844540,
+    "passed": 70,
+    "total": 72,
+    "failures": [
+      "warmUimsdTapDrawsTheComplete72RunHomeTwiceWithin250ms:263ms versus unchanged250ms",
+      "grassDewControlsRingBreakdownsSearchedWallAndOfflineLicenseRenderNatively:fixed badge delay insufficient"
+    ],
+    "retained_assertions": true,
+    "application_rebuilt": false
   }
 }
