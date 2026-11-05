@@ -34,7 +34,7 @@ elif [ "$apd_mode" = captures ]; then
 elif [ "$apd_mode" = scale ]; then
   apd_classes='com.shatteredpixel.shatteredpixeldungeon.android.TitleMenuLayoutDeviceTest,com.shatteredpixel.shatteredpixeldungeon.android.ScaleChangeDeviceTest,com.shatteredpixel.shatteredpixeldungeon.android.QolStableCaptureDeviceTest,com.shatteredpixel.shatteredpixeldungeon.android.HealingSettingsDeviceTest'
   apd_images='main-title-layout.png main-title-hidden.png main-title-restored.png options-confirmations.png scale-phone-seven.png scale-phone-six.png'
-  apd_images="$apd_images qol-doorless-floor1.png qol-door-ineligible-bookshelf.png qol-dew-settings.png qol-force-weapon.png qol-sharpshooting-weapon.png qol-searched-wall.png qol-searched-wall-color.png healing-settings-toggle-on.png healing-settings-toggle-off.png healing-settings-entry.png healing-settings-editor.png healing-settings-confirm.png qol-offline-license.png"
+  apd_images="$apd_images qol-doorless-floor1.png qol-door-ineligible-bookshelf.png qol-door-ineligible-decoration.png qol-dew-settings.png qol-force-weapon.png qol-sharpshooting-weapon.png qol-searched-wall.png qol-searched-wall-color.png healing-settings-toggle-on.png healing-settings-toggle-off.png healing-settings-entry.png healing-settings-editor.png healing-settings-confirm.png qol-offline-license.png"
   apd_methods=6
 else
   apd_classes=com.shatteredpixel.shatteredpixeldungeon.android.TitleMenuLayoutDeviceTest

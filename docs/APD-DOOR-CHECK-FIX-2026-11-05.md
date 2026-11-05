@@ -8,7 +8,7 @@ The old filter reused the renderer's broad wall category, which includes bookshe
 
 ## Code correction
 
-`DoorSearchEligibility` is the shared public-rule policy for marker eligibility, cell information, explicit wall-target selection and completed-check presentation. Only wall, decorated wall and their indistinguishable secret-door disguise can be candidates. Main-dungeon floors1,10,15,20,25,26 do not offer door checks. Scripted prison/caves/city/halls boss maps, final/dead-end maps, vault and mines are excluded by generator type too. Mining concealed connections are painted as diggable stone, not searchable secret-door tiles. Floor5 remains eligible, preserving Rat King searching and its separate optional Quick Search.
+`DoorSearchEligibility` is the shared public-rule policy for marker eligibility, cell information, explicit wall-target selection and completed-check presentation. Only ordinary wall and its visually indistinguishable secret-door disguise can be candidates. Decorated walls use a distinct tile graphic and cannot be hidden-door candidates; they can remain structural side frames beside a real door. Main-dungeon floors1,10,15,20,25,26 do not offer door checks. Scripted prison/caves/city/halls boss maps, final/dead-end maps, vault and mines are excluded by generator type too. Mining concealed connections are painted as diggable stone, not searchable secret-door tiles. Floor5 remains eligible, preserving Rat King searching and its separate optional Quick Search.
 
 Observed geometry must admit a doorway orientation: structural side frames and potentially open backing on opposite sides. Visible furniture, blocked backing, pillars, corners and map borders rule the tile out. Undiscovered neighbors remain unknown; their actual terrain, room identities/connections and whether a secret actually exists are never used to prune markers. The runtime rule does not scan hidden-door locations or count remaining secrets.
 
@@ -31,3 +31,9 @@ Sourcef7558b16d219641ca8a418d516a5601dabac0aa1 passed source-only42079861146/job
 ## One candidate pair — TEST363
 
 Producing source4749caf7a8dc2a3634ac52fbadf084758fc63f37. Developer/native42080532920 (producer job127432082963 succeeded), Alpha-Testers42080533002, six-profile display42080533049. Developer compiled successfully after the full2495 core cases and Android debug/release/desktop checks; the application artifact is not yet accepted or privately released. Exact tester acceptance is requested against the matching player artifact without rebuilding. Original signing/app ID and TEST362 fallback preserved.
+
+## Final decorated-wall audit; partial363 withheld
+
+The remaining renderer/decorator audit established that WALL_DECO is visibly distinct from WALL/SECRET_DOOR, and region painters only decorate ordinary WALL, not SECRET_DOOR. The first candidate still admitted WALL_DECO. Candidate363 was therefore withheld and its unfinished verification jobs cancelled before publication. It is unverified and must not be delivered as the fix. No published assets were overwritten. Its completed Developer/player artifacts remain the immediate previous compiled history, while TEST362 stays the last verified released fallback.
+
+Decorated tiles now never display marks, including legacy marks. They remain valid structural neighbors, preserving real adjacent door candidates. The added decorated-wall regression and all existing cases pass:2496 core tests441 suites, zero failures/errors/skips. Native fixtures now capture three negatives (real Floor1, saved bookshelf, saved decorated wall) before the retained normal Floor2 positive/color/save checks. One final corrected pair follows source acceptance; no application rebuild for document or fixture-only corrections.

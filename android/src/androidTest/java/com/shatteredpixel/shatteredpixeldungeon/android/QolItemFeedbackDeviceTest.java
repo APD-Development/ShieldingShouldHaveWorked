@@ -94,7 +94,11 @@ public class QolItemFeedbackDeviceTest {
             assertFalse("bookcase cannot be a hidden door",com.shatteredpixel.shatteredpixeldungeon.apd.qol.DoorSearchEligibility.candidate(Dungeon.level,cell));
             assertEquals(-1,com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallMarkers.visual(Dungeon.level,cell));
             assertEquals(-1,com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallMarkers.visual(Dungeon.level,cell-Dungeon.level.width()));GameScene.updateMap();
-        });Thread.sleep(300);TopScoresDeviceTest.screenshot("qol-door-ineligible-bookshelf.png");TopScoresDeviceTest.render(()->{Level.set(cell,Terrain.WALL);GameScene.updateMap();});
+        });Thread.sleep(300);TopScoresDeviceTest.screenshot("qol-door-ineligible-bookshelf.png");
+        TopScoresDeviceTest.render(()->{
+            Level.set(cell,Terrain.WALL_DECO);com.watabou.utils.Bundle legacy=new com.watabou.utils.Bundle();legacy.put("apd_searched_walls_v1",new int[]{cell});Dungeon.level.searchedWalls.restore(legacy,Dungeon.level.length());
+            assertFalse("decorated walls never hide doors",com.shatteredpixel.shatteredpixeldungeon.apd.qol.DoorSearchEligibility.candidate(Dungeon.level,cell));assertEquals(-1,com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallMarkers.visual(Dungeon.level,cell));GameScene.updateMap();
+        });Thread.sleep(300);TopScoresDeviceTest.screenshot("qol-door-ineligible-decoration.png");TopScoresDeviceTest.render(()->{Level.set(cell,Terrain.WALL);GameScene.updateMap();});
     }
     /** Actual floor-one exclusion followed by a real transition to a searchable floor. */
     static void prepareSearchableFloor()throws Exception{

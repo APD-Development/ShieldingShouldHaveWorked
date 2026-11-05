@@ -1,3 +1,7 @@
+## Final door-check correction includes decorated walls;363 withheld
+
+Final audit found WALL_DECO is visibly distinct and cannot hide doors. Excluded as candidate while retaining as structural side frame. Full2496 core tests441 suites pass. Source/Android check requested. Partial363 developer/player APKs assembled, but remaining verification was cancelled before publication; do not deliver them or call them verified. Preserve their compiled history, and retain released362 fallback. Native snapshots now cover Floor1, bookshelves and decorated walls, with real Floor2 positives and latest72 native cases retained. No player data/signing/generation changes.
+
 ## TEST363 door-check pair — assembled, native acceptance pending
 
 Producing source4749caf7a8dc2a3634ac52fbadf084758fc63f37. Developer/native42080532920; player42080533002; display42080533049. Developer producer127432082963 succeeded with full2495 core cases and required compile/assembly checks. Source-only42079861146 already passed2495 cases441 suites and instrumentation Java. Full72 native cases (including latest exact-occurrence timeline) and actual tester/visual acceptance pending; no private release yet. Preserve source4749 and the existing built artifacts, never rebuild for documentation or instrumentation-only corrections. TEST362 is the released fallback and still has the reported marker bug.

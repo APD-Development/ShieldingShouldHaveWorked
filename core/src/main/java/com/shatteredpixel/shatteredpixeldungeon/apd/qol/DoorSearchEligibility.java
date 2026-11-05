@@ -24,7 +24,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.*;
 public final class DoorSearchEligibility {
     private DoorSearchEligibility() { }
     public static boolean wallDisguise(int tile) {
-        return tile==Terrain.WALL || tile==Terrain.WALL_DECO || tile==Terrain.SECRET_DOOR;
+        return tile==Terrain.WALL || tile==Terrain.SECRET_DOOR;
     }
     public static boolean supportsDoors(Level level,int depth,int branch) {
         if(level==null)return false;
@@ -40,7 +40,7 @@ public final class DoorSearchEligibility {
     private static boolean frame(Level l,int p){
         if(!known(l,p))return true;
         int t=l.map[p];
-        return wallDisguise(t)||t==Terrain.DOOR||t==Terrain.OPEN_DOOR||t==Terrain.LOCKED_DOOR
+        return wallDisguise(t)||t==Terrain.WALL_DECO||t==Terrain.DOOR||t==Terrain.OPEN_DOOR||t==Terrain.LOCKED_DOOR
                 ||t==Terrain.HERO_LKD_DR||t==Terrain.CRYSTAL_DOOR||t==Terrain.BARRICADE;
     }
     private static boolean passage(Level l,int p){
