@@ -1,6 +1,6 @@
 {
-  "number": 363,
-  "source": "4749caf7a8dc2a3634ac52fbadf084758fc63f37",
-  "player": 42080533002,
-  "reason": "Actual tester acceptance on the already-built door-check correction: Floor1 legacy marks suppressed, actual Floor2 transition, saved bookshelf mark suppressed, original valid-wall/color/turn/save behavior retained. No application rebuild or new number for test/doc changes."
+  "number": 364,
+  "source": "1103a2e7caf72a094836a7cf6931468f3f800b36",
+  "player": 42083792729,
+  "reason": "Exact final tester APK; three negative captures: real Floor1, legacy bookshelf and legacy decorated wall, followed by normal Floor2 wall/color/save checks. Partial363 withheld; no reuse as verified fallback and no application rebuild for tester instrumentation."
 }

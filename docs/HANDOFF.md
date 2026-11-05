@@ -1,3 +1,7 @@
+## Final corrected candidate TEST364 — source frozen
+
+Producing source1103a2e7caf72a094836a7cf6931468f3f800b36. Developer/native42083792753; player42083792729; displays42083792722. Full2498 local core tests441 suites passed; producer repeats all required checks before assembly. Exact tester acceptance requested without another application build. Partial363 remains withheld/cancelled, not a verified fallback. Released362 and its assets remain preserved. Runtime uses only public floor rules, visible wall identity and known geometry, including decorated-wall/consecutive-door/map-border exclusions. Three negative screenshots and all retained positives/72 native cases required. No new source changes planned.
+
 ## Final door-check source frozen:2498 core cases pass
 
 Final public eligibility also rejects consecutive-door backing and immutable outer-map-border backing. Only plain WALL/SECRET_DOOR disguise can be candidates; decorated wall remains valid as a side frame, never as a candidate. Local2498 tests441 suites pass, including78 generated floors. Prior2496 source-only42082418369 passed all Android/instrumentation/desktop compilation. Request one final replacement pair; its producer runs full checks before assembly and retains full72 native cases. Partial363 remains withheld/unverified and its actual compiled history must be preserved. Released362 remains the verified fallback. No changes beyond this complete door-check correction.
