@@ -35,8 +35,8 @@ public class UimsdWarmCacheTest {
         assertTrue(root.delete());
     }
     private static File history(File root,int score)throws Exception{
-        com.shatteredpixel.shatteredpixeldungeon.apd.stats.SyntheticLog log=
-                new com.shatteredpixel.shatteredpixeldungeon.apd.stats.SyntheticLog(
+        SyntheticLog log=
+                new SyntheticLog(
                         root,"same-log",new com.shatteredpixel.shatteredpixeldungeon.apd.stats.TelemetryVersion(1,4),100);
         log.start("same-run",0,"WARRIOR","r1-aaaaaaaaaaaa",0,30,false)
                 .end(com.shatteredpixel.shatteredpixeldungeon.apd.stats.LifecycleEvents.OUTCOME_DIED,
