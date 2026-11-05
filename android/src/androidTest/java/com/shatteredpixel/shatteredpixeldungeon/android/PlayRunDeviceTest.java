@@ -906,8 +906,10 @@ public class PlayRunDeviceTest {
             assertTrue("spell inside horizontal screen", tags[i].left()>=0 && tags[i].right()<=GameScene.uiCamera.width);
             assertTrue("spell inside vertical screen", tags[i].top()>=0 && tags[i].bottom()<=GameScene.uiCamera.height);
             assertTrue("spell never covers hotbar", tags[i].bottom()<=toolbar.top());
-            assertEquals("spells stack vertically", tags[0].left(),tags[i].left(),0.01f);
-            assertEquals("spell 2/3/4 above previous spell", tags[0].top()-24*i,tags[i].top(),0.01f);
+            float inward=SPDSettings.flipTags()?1f:-1f;
+            assertEquals("approved two inward Cleric columns",tags[0].left()+inward*tags[0].width()*(i%2),tags[i].left(),0.01f);
+            assertEquals("approved two Cleric rows",tags[0].top()-tags[0].height()*(i/2),tags[i].top(),0.01f);
+            for(int j=0;j<i;j++)assertFalse("Cleric touch targets never overlap",tags[i].left()<tags[j].right()&&tags[i].right()>tags[j].left()&&tags[i].top()<tags[j].bottom()&&tags[i].bottom()>tags[j].top());
         }
     }
 
