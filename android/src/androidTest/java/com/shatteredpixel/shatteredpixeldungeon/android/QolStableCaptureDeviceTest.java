@@ -91,6 +91,7 @@ public class QolStableCaptureDeviceTest {
             waitFor(()->Game.scene() instanceof GameScene&&Dungeon.hero!=null&&Dungeon.hero.ready);
             assertNull("gameplay releases the parked full catalog",parked.catalog());
             assertNull("gameplay releases its query result",parked.result());
+            QolItemFeedbackDeviceTest.combinedOriginsAndRatPreferenceRenderAndRespond();
             AtomicReference<WndGrassDewSettings> settings=new AtomicReference<>();Point[] p=new Point[1];
             TopScoresDeviceTest.render(()->{try{
                 SPDSettings.autoCollectGrassDew(true);SPDSettings.autoCollectDewWithEnemies(false);

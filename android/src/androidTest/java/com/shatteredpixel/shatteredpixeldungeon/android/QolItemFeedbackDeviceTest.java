@@ -65,7 +65,7 @@ public class QolItemFeedbackDeviceTest {
         });
         Thread.sleep(300);TopScoresDeviceTest.screenshot(image);TopScoresDeviceTest.render(()->shown.get().hide());
     }
-    private static void combinedOriginsAndRatPreferenceRenderAndRespond()throws Exception{
+    static void combinedOriginsAndRatPreferenceRenderAndRespond()throws Exception{
         boolean previous=SPDSettings.ratKingQuickSearch();AtomicReference<WndAPDSettings> shown=new AtomicReference<>();Point[] at=new Point[1];
         try{
             TopScoresDeviceTest.render(()->{
