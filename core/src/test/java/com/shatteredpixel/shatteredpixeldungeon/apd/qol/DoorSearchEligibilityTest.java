@@ -59,4 +59,8 @@ public class DoorSearchEligibilityTest {
     }
     @Test public void decoratedWallsNeverHaveDoorMarksButRemainValidSideFrames(){level.map[24]=Terrain.WALL_DECO;legacy(24);assertFalse(DoorSearchEligibility.candidate(level,24));assertFalse(level.searchedWalls.mark(level,24));assertFalse(level.searchedWalls.confirmed(level,24));assertEquals(-1,SearchedWallMarkers.visual(level,24));level.map[24]=Terrain.WALL;level.map[23]=Terrain.WALL_DECO;assertTrue(DoorSearchEligibility.candidate(level,24));}
 
+    @Test public void existingDoorsCannotBeTheBackingTileOfAnotherDoor(){for(int tile:new int[]{Terrain.DOOR,Terrain.OPEN_DOOR,Terrain.LOCKED_DOOR,Terrain.HERO_LKD_DR,Terrain.CRYSTAL_DOOR}){level.map[17]=tile;assertFalse("consecutive doorway "+tile,DoorSearchEligibility.candidate(level,24));}}
+
+    @Test public void unseenMapBordersCannotBeInventedAsSpaceBeyondADoor(){for(int[] pair:new int[][]{{10,17},{38,31},{22,23},{26,25}}){Arrays.fill(level.map,Terrain.WALL);Arrays.fill(level.heroFOV,true);level.map[pair[1]]=Terrain.EMPTY;for(int p=0;p<49;p++)if(p<7||p>=42||p%7==0||p%7==6)level.heroFOV[p]=false;assertFalse("no passage through immutable map border at "+pair[0],DoorSearchEligibility.candidate(level,pair[0]));}}
+
 }

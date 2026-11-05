@@ -1,3 +1,7 @@
+## Final door-check source frozen:2498 core cases pass
+
+Final public eligibility also rejects consecutive-door backing and immutable outer-map-border backing. Only plain WALL/SECRET_DOOR disguise can be candidates; decorated wall remains valid as a side frame, never as a candidate. Local2498 tests441 suites pass, including78 generated floors. Prior2496 source-only42082418369 passed all Android/instrumentation/desktop compilation. Request one final replacement pair; its producer runs full checks before assembly and retains full72 native cases. Partial363 remains withheld/unverified and its actual compiled history must be preserved. Released362 remains the verified fallback. No changes beyond this complete door-check correction.
+
 ## Final door-check correction includes decorated walls;363 withheld
 
 Final audit found WALL_DECO is visibly distinct and cannot hide doors. Excluded as candidate while retaining as structural side frame. Full2496 core tests441 suites pass. Source/Android check requested. Partial363 developer/player APKs assembled, but remaining verification was cancelled before publication; do not deliver them or call them verified. Preserve their compiled history, and retain released362 fallback. Native snapshots now cover Floor1, bookshelves and decorated walls, with real Floor2 positives and latest72 native cases retained. No player data/signing/generation changes.

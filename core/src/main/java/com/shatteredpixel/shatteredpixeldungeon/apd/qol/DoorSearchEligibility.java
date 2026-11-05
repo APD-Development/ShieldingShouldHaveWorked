@@ -45,7 +45,13 @@ public final class DoorSearchEligibility {
     }
     private static boolean passage(Level l,int p){
         // Unobserved terrain is unknown, never a licence to inspect the actual map behind the wall.
-        return !known(l,p)||(Terrain.flags[l.map[p]]&Terrain.SOLID)==0;
+        int w=l.width();
+        if(p<w||p>=l.length()-w||p%w==0||p%w==w-1)return false;
+        if(!known(l,p))return true;
+        int t=l.map[p];
+        // Ordinary room/connection entrances have an interior tile between successive doorways.
+        // A visible door immediately in front/behind is not an interior passage tile.
+        return (Terrain.flags[t]&Terrain.SOLID)==0&&t!=Terrain.DOOR&&t!=Terrain.OPEN_DOOR&&t!=Terrain.HERO_LKD_DR;
     }
     public static boolean candidate(Level l,int p){
         if(!supportsDoors(l)||!known(l,p)||!wallDisguise(l.map[p]))return false;
