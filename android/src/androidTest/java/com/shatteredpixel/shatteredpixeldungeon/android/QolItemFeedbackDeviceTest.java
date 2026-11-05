@@ -91,10 +91,22 @@ public class QolItemFeedbackDeviceTest {
         // Real descent can award Pacifist; wait for its normal banner to expire before visual evidence.
         waitFor(()->{
             java.util.concurrent.atomic.AtomicBoolean expired=new java.util.concurrent.atomic.AtomicBoolean();
-            TopScoresDeviceTest.render(()->expired.set(com.shatteredpixel.shatteredpixeldungeon.effects.BadgeBanner.showing.isEmpty()));
+            TopScoresDeviceTest.render(()->{
+                try { expired.set(TopScoresDeviceTest.find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.effects.BadgeBanner.class)
+                        .stream().noneMatch(banner->banner.exists&&banner.visible)); }
+                catch(Exception error){throw new RuntimeException(error);}
+            });
             return expired.get();
         });
-        TopScoresDeviceTest.render(()->assertTrue("achievement overlay expired",com.shatteredpixel.shatteredpixeldungeon.effects.BadgeBanner.showing.isEmpty()));
+        TopScoresDeviceTest.render(()->{
+            try {
+                int active=0;
+                for(com.shatteredpixel.shatteredpixeldungeon.effects.BadgeBanner banner:TopScoresDeviceTest.find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.effects.BadgeBanner.class))
+                    if(banner.exists&&banner.visible)active++;
+                android.util.Log.i("APD_CAPTURE_BANNERS","globalReferences="+com.shatteredpixel.shatteredpixeldungeon.effects.BadgeBanner.showing.size()+" activeCurrentScene="+active);
+                assertEquals("no achievement overlay in current render tree",0,active);
+            }catch(Exception error){throw new RuntimeException(error);}
+        });
         TopScoresDeviceTest.render(()->{
             Level.set(cell,Terrain.BOOKSHELF);com.watabou.utils.Bundle legacy=new com.watabou.utils.Bundle();legacy.put("apd_searched_walls_v1",new int[]{cell});legacy.put("apd_door_checks_v1",new int[]{cell});
             Dungeon.level.searchedWalls.restore(legacy,Dungeon.level.length());assertTrue("legacy attempt retained",Dungeon.level.searchedWalls.attempted(cell));
