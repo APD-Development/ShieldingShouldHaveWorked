@@ -1,3 +1,17 @@
+## TEST364 complete door-check correction — verified private release
+
+Application source `1103a2e7caf72a094836a7cf6931468f3f800b36`; tag `apd-alpha-preview-364`; private release `435592879`. Both existing APK variants passed2498 core cases441 suites; full72-case Developer API34 native run42083792753 passed in one successful invocation; all six display profiles and three actual tester cases passed. Three negative captures verify real Floor1 legacy marks, bookshelf and decorated-wall marks absent; Floor2 valid wall/overhang/color/save checks retained. No physical-phone acceptance claim. Raw player statistics, generation/RNG/search turns/hunger, original app ID/key and all prior owner features preserved.
+
+Published `2026-11-05T18:47:23Z`; actual download-back verification `2026-11-05T18:47:31.018085+00:00`; final response links prepared `2026-11-05T18:47:54.999672+00:00`. Sending is evidenced separately by this task final response, not by invocation/scheduler metadata. Partial363 stayed withheld/unverified; no363 release and no untested candidate delivered. TEST362 and all old assets retained as fallback.
+
+Developer: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-alpha-preview-364/APD-Developer-364.apk
+
+Alpha-Testers: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-alpha-preview-364/APD-Alpha-Testers-364.apk
+
+Matching source: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-alpha-preview-364/APD-Source-364.zip
+
+Install over only; never uninstall or clear data. Exact receipt: APD-TEST364-RELEASE-DELIVERY-RECEIPT.json.
+
 ## Final corrected candidate TEST364 — source frozen
 
 Producing source1103a2e7caf72a094836a7cf6931468f3f800b36. Developer/native42083792753; player42083792729; displays42083792722. Full2498 local core tests441 suites passed; producer repeats all required checks before assembly. Exact tester acceptance requested without another application build. Partial363 remains withheld/cancelled, not a verified fallback. Released362 and its assets remain preserved. Runtime uses only public floor rules, visible wall identity and known geometry, including decorated-wall/consecutive-door/map-border exclusions. Three negative screenshots and all retained positives/72 native cases required. No new source changes planned.

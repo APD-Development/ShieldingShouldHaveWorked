@@ -45,3 +45,20 @@ Full2498 core cases441 suites pass, zero failures/errors/skips. Twenty-one added
 ## Final acceptance before private publication
 
 Frozen application source1103a2e7caf72a094836a7cf6931468f3f800b36: Developer/native42083792753 and matching tester producer42083792729 succeeded. Full2498 core tests441 suites; all72 native cases passed in one invocation; all six display profiles42083792722 passed. Initial actual-tester42084291430 passed3 cases, but visual review found an achievement banner obscuring two negative captures. Instrumentation-only4b250549f waits for the normal banner expiry and asserts its absence. Recheck42086446743 passed3 cases against the exact same APK; all three unobstructed negative captures were reviewed. No new application build or version increment for this capture correction. API36 baseline eight visual captures also reviewed. Physical-phone acceptance remains pending. Private publication/download-back checks are the remaining delivery gate.
+
+## Final verified publication
+
+## TEST364 complete door-check correction — verified private release
+
+Application source `1103a2e7caf72a094836a7cf6931468f3f800b36`; tag `apd-alpha-preview-364`; private release `435592879`. Both existing APK variants passed2498 core cases441 suites; full72-case Developer API34 native run42083792753 passed in one successful invocation; all six display profiles and three actual tester cases passed. Three negative captures verify real Floor1 legacy marks, bookshelf and decorated-wall marks absent; Floor2 valid wall/overhang/color/save checks retained. No physical-phone acceptance claim. Raw player statistics, generation/RNG/search turns/hunger, original app ID/key and all prior owner features preserved.
+
+Published `2026-11-05T18:47:23Z`; actual download-back verification `2026-11-05T18:47:31.018085+00:00`; final response links prepared `2026-11-05T18:47:54.999672+00:00`. Sending is evidenced separately by this task final response, not by invocation/scheduler metadata. Partial363 stayed withheld/unverified; no363 release and no untested candidate delivered. TEST362 and all old assets retained as fallback.
+
+Developer: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-alpha-preview-364/APD-Developer-364.apk
+
+Alpha-Testers: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-alpha-preview-364/APD-Alpha-Testers-364.apk
+
+Matching source: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-alpha-preview-364/APD-Source-364.zip
+
+Install over only; never uninstall or clear data. Exact receipt: APD-TEST364-RELEASE-DELIVERY-RECEIPT.json.
+
