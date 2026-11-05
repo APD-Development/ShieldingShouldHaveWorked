@@ -1,59 +1,46 @@
 {
-  "kind": "combined-owner",
-  "number": 362,
-  "source": "34f5ffd2ea08bef701f60c95298edcfacc239e0c",
-  "developer": 41942317979,
-  "player": 41942317989,
-  "display": 41942317994,
-  "native": 41944633239,
-  "tester": 41942434237,
-  "tester_test_source": "a94eac096ab491b4fd4a316bf283b2e93fb02ca8",
-  "core_tests": 2477,
-  "android_tests": 71,
-  "title": "APD 362 \u2014 Developer and Alpha-Testers: loot, gear origins and Rat King search",
+  "kind": "door-checks",
+  "number": 364,
+  "source": "1103a2e7caf72a094836a7cf6931468f3f800b36",
+  "developer": 42083792753,
+  "player": 42083792729,
+  "display": 42083792722,
+  "native": 42083792753,
+  "tester": 42086446743,
+  "tester_test_source": "4b250549f1fc205b642301672477875c68222bfe",
+  "core_tests": 2498,
+  "android_tests": 72,
+  "title": "APD 364 \u2014 complete door-checkmark eligibility",
+  "report_path": "docs/APD-DOOR-CHECK-FIX-2026-11-05.md",
   "visual_review": {
-    "qol-dew-settings.png": "1ddb9b627cc6fa41417a6d0b1fd70a8342a61c3e7fd49efbe4b36e4ca212e15e",
-    "qol-force-weapon.png": "ab9e528df164484274f813568537b18b3ee59624e48cb1966fa8dab5b2b76123",
-    "qol-sharpshooting-weapon.png": "f71f384e23999d8d7ceb2967c7b365ae14602f8dbe516bb80032fb8496557a4a",
-    "qol-searched-wall.png": "9195f763f55c3f6680acaec8f7683276f517ce9c7e0fb0eefc256b360172270a",
-    "qol-searched-wall-color.png": "b93f269234cbdef81205ff7f4f0b74bec0d2a674239d2ed44e8ca896789a1b05",
-    "qol-offline-license.png": "c9e4d18fd674e03319c6d87c5185819f5dc64979976d7f6efd3c2afe537b40f2",
-    "healing-settings-toggle-on.png": "bab0b2b28116f06c74032f09a8e289963690e0d3e4b20e7d515ce9976e92c81c",
-    "healing-settings-toggle-off.png": "a8acd8f99e984160b6fd91b09fd522c482109af46d1c108f2aa6291c8dd54505"
+    "qol-dew-settings.png": "d9d5099d304464d4103fb6dbb61d9c87adf165d6ef3b2ed777b9a0a86f678ad6",
+    "qol-force-weapon.png": "313694ad0e6256dc0c41077069604c3aadd65b5dafd0301bab1f2d861443bd41",
+    "qol-sharpshooting-weapon.png": "c4b8237edf536dd7ad757e255ba135282f74bc2bc0396539a5709ec04bdc5c76",
+    "qol-searched-wall.png": "fd6eb0699f0c6a9f021ba1baf11d1cb21845975e553ea8c0132e6894836aaf9b",
+    "qol-searched-wall-color.png": "b08ee38a78f0c2c2f411ceed282fb414694a05ad9b123c121445b51d30d97078",
+    "qol-offline-license.png": "acc4fd40312df60a8c84a5a9d8884afb8b3821acb19059183c00acebba1be5d8",
+    "healing-settings-toggle-on.png": "3a04c59f2c625c15478e6c82ebe07d89d20b105694adb3f1a93552a003f4be4b",
+    "healing-settings-toggle-off.png": "a1debb9d36c3e9e346c87d2a9f479301699a464f2fe8d8c8b2643d07c4c17587"
   },
   "combined_visual_review": {
-    "qol-rat-quick-search-setting.png": "60f8bafd78fb592c8cb8e29909a107ff7f76a2390ea62cd535d955748dd20362",
-    "qol-unidentified-origin-range.png": "89f506d97dd3e20f4e59febbc0d8c7994d3327008edf6cf06920a7d37a4142ab"
-  },
-  "fallback_number": 358,
-  "fallback_hashes": {
-    "Developer": "e87a7f17739f30acebd84d938a98da6c9b0f033e1c4a462542b2d44bb6d677a0",
-    "Alpha-Testers": "b63eccc43e35c5534b5718f403c627a053c5c71c08fb685a16d8c3fc26336e86"
-  },
-  "source_only_check": 41941064721,
-  "retained_prebuild_failure": {
-    "run": 41941525796,
-    "candidate": 361,
-    "apk_created": false,
-    "reason": "Superseded preload could empty a replacement catalog; deterministic regression reproduced and ownership guard corrected."
-  },
-  "retained_lookup_failure": {
-    "run": 41941525782,
-    "reason": "GitHub HTTP502 while querying an unrelated older producer; exact-source bounded retry implemented."
+    "qol-doorless-floor1.png": "c5008009f513eabc6487df6188d7fefbf905cd3b4aa89a3dc5f09c49eca8b831",
+    "qol-door-ineligible-bookshelf.png": "f1efef37e47806a2aae953db0ed91294d1ab03952f727608c6fa82c6aede2f7a",
+    "qol-door-ineligible-decoration.png": "880e65655da12add57f030c1a74d5690fed9aa4eb843723c9bbd3b3d674c5770"
   },
   "combined_visual_review_source": "tester-api34",
-  "native_test_source": "cb169aebc66ea1708f5772e267c1a84b2c97aa83",
-  "native_job_name": "same-apk-api34",
-  "native_artifact": "apd-test362-exact-api34",
-  "native_case_count": 71,
-  "original_stale_assertion_runs": [
-    41942317979
-  ],
-  "retained_native_fixture_failure": {
-    "run": 41942317979,
-    "passed": 70,
-    "total": 71,
-    "case": "clericQuickCastsPersistAndKeepNormalCostsAndTargeting",
-    "reason": "Superseded one-column expectation; only test geometry corrected to approved inward2x2, all gameplay/cost assertions retained."
+  "fallback_number": 362,
+  "fallback_hashes": {
+    "Developer": "1085bb39899a9c3c1ff5a9dd75ccaa0a73f05833aac8340b963bfdac16609f5a",
+    "Alpha-Testers": "9baa801d600ab72a4b9563d6bd687166eb9a7d4957f6c4503800540fbc764d41"
+  },
+  "source_only_check": 42082418369,
+  "withheld_partial_candidate": {
+    "number": 363,
+    "source": "4749caf7a8dc2a3634ac52fbadf084758fc63f37",
+    "producer": 42080532920,
+    "player": 42080533002,
+    "apk_artifacts_created": true,
+    "verification": "Remaining native/display/tester jobs cancelled when decorated-wall audit showed incomplete eligibility; never verified or released as the fix.",
+    "private_release_created": false
   }
 }
