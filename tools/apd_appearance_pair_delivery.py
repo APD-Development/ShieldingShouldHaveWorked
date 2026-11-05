@@ -119,7 +119,7 @@ visual_override=spec.get('profile_overrides',{}).get('redmagic-representative-ap
 visual,va=artifact(visual_override.get('run',spec['display']),visual_override.get('artifact','apd-title-display-redmagic-representative-api36'))
 images={}
 required_visuals={'qol-dew-settings.png','qol-force-weapon.png','qol-sharpshooting-weapon.png','qol-searched-wall.png','qol-searched-wall-color.png','qol-offline-license.png'}
-if spec.get('kind')=='healing-toggle':required_visuals|={'healing-settings-toggle-on.png','healing-settings-toggle-off.png'}
+if spec.get('kind') in ('healing-toggle','combined-owner'):required_visuals|={'healing-settings-toggle-on.png','healing-settings-toggle-off.png'}
 assert set(spec['visual_review'])==required_visuals
 for image in native.rglob('*.png'):
  with Image.open(image) as im:im.verify()
@@ -203,6 +203,20 @@ fallback_hashes=spec.get('fallback_hashes',{'Developer':'41f0b01ed520007741e01c2
 for label,h in fallback_hashes.items():
  assert any(a['name']==f'APD-{label}-{fallback_number}.apk' and a.get('digest')=='sha256:'+h for a in fallback['assets'])
 evidence={'source_commit':source,'tag':tag,'number':number,'runs':{k:spec[k] for k in ('developer','player','display','native','tester')},'test_summaries':results,'core_tests':spec['core_tests'],'android_tests':results['android']['tests'],'native_case_evidence':np,'native_test_source':spec.get('native_test_source'),'profile_overrides':spec.get('profile_overrides',{}),'original_stale_assertion_runs':spec.get('original_stale_assertion_runs',[]),'retained_fixture_failure_runs':spec.get('retained_fixture_failure_runs',[]),'retained_runner_failure_runs':spec.get('retained_runner_failure_runs',[]),'tester_api34_tests':3,'tester_proof':tp,'tester_artifact':ta['id'],'baseline69_cases_preserved':True,'profiles':profiles,'signing_certificate':expected_cert,'application_id':'com.charltonchris29.adhdpixeldungeon.indev','version_code':920,'apk_hashes':hashes,'source_sha256':sha(sourcezip),'visual_review':images,'visual_capture_artifact':va['id'],'display_job_attempts':[{k:j.get(k) for k in ('id','name','conclusion')} for j in attempts],'retained_display_failure':spec.get('retained_display_failure'),'physical_phone_verified':False,'new_application_apks_created':2,'owner_private_delivery':True,'fallback_preserved':True,'prepared_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'rejected_candidate':{'356':'Saved settings and tint fields passed, but visual review found white glyphs: the unlit tilemap shader ignored tint. Replacement uses the standard tint shader plus actual rendered-pixel checks. No356 publication.'},'retained_prebuild_failure':{'355':'Reviewed-change list omitted the build-request document; stopped before application compilation. Metadata fixed without changing application inputs.'},'behavior':{'saved_colors':8,'immediate_tint':True,'unknown_geometry_consulted':False,'search_memory_preserved':True,'search_rng_or_turns_changed':False,'score_formulas_changed':False}}
+if spec.get('kind')=='combined-owner':
+ new_images={}
+ for name in ('qol-rat-quick-search-setting.png','qol-unidentified-origin-range.png'):
+  image,=visual.rglob(name)
+  with Image.open(image) as decoded:assert decoded.size==(1216,2688);decoded.verify()
+  new_images[name]=sha(image)
+  native_image,=native.rglob(name)
+  with Image.open(native_image) as decoded:decoded.verify()
+  assert name in spec['combined_visual_review'] and sha(image)==spec['combined_visual_review'][name]
+ evidence['combined_visual_review']=new_images
+ evidence['behavior']={'source_specific_unidentified_origins':True,'legacy_recovery_requires_reliable_evidence':True,'generation_ranges_do_not_read_hidden_upgrade_level':True,'normal_pickup_turns_and_enemy_policy_preserved':True,'interrupted_wall_target_and_manual_count_saved':True,'negative_wall_feedback_requires_completed_guaranteed_check':True,'rat_room_redesign_floor5_only':True,'rat_quick_search_off_default':True,'rat_quick_search_requires_floor5_main_branch_and_goo_defeat':True,'normal_actor_turn_payment':True,'unsupported_temporary_effects_refused_until_safe_to_price':True,'existing_generated_rooms_not_repainted':True,'no_score_formula_change':True}
+ evidence['source_only_check']=spec.get('source_only_check')
+ evidence['target_delivery_utc']='2026-11-05T01:15:00Z'
+ evidence['candidate_report']='docs/APD-COMBINED-CANDIDATE-2026-11-04.md'
 receipt=OUT/f'APD-Preview-{number}-Verification.json';receipt.write_text(json.dumps(evidence,indent=2)+'\n');files.append(receipt)
 notes=f"""Choose from eight saved searched-wall checkmark colors in APD Settings under Visibility. Color changes apply immediately, with no scene reload or turn. Positions which known terrain geometry rules out as doorways are left unmarked; hidden room layout and secret-door identity are never consulted. Marks still mean searched, not guaranteed secret-free. Saved search history and actual searching remain unchanged.
 
@@ -219,6 +233,14 @@ Both APKs passed all{spec['core_tests']} core tests. Native acceptance completed
 Exact source `{source}`. Original signing/application ID retained; install over the existing app, never uninstall or clear data. No application rebuild for publication.
 
 """
+if spec.get('kind')=='combined-owner':
+ notes=(ROOT/'docs/APD-COMBINED-CANDIDATE-2026-11-04.md').read_text().split('## Evidence')[0]
+ notes+='\n## Completed candidate verification\n\n'
+ notes+=f'Exact producing source `{source}`. Both actual variants passed all {spec["core_tests"]} core tests. The Developer APK passed all {spec["android_tests"]} API34 native cases in one successful invocation, retaining the existing case identities and adding stronger combined-feature assertions. All six display profiles passed. The actual Alpha-Testers APK separately passed three native acceptance cases; new setting and origin/range rendering assertions ran on both variants. Automated/emulator evidence only; physical-phone acceptance remains pending.\n\n'
+ notes+='Rat King Quick Search refuses unsupported temporary timing effects rather than inventing a price. Existing generated rooms are preserved; new room layout applies when Floor5 is generated. Existing gear only recovers historically supported facts. Source reconstruction is supplied with generated inputs and external signing instructions; byte-for-byte reproduction has not been separately claimed.\n\n'
+ notes+='The initial historical Floor5 fingerprint failures remain documented. The original golden archive is unchanged, with eleven explicit new Floor5 references for the approved chest/king layout; every other stable floor remains on its original hash. Full candidate checks succeeded after that reviewed update.\n\n'
+ notes+=f'Verification runs: Developer/native {spec["developer"]}; Alpha-Testers {spec["player"]}; display {spec["display"]}; tester acceptance {spec["tester"]}. Source check {spec.get("source_only_check")}. APK publication, workflow invocation and owner link delivery are separate events; this report does not infer schedule causation.\n\n'
+ notes+='Install over the existing APD app using the same signing key/application ID. Never uninstall or clear player data. Private owner delivery only; existing release assets and TEST358 fallback remain preserved.\n\n'
 for label in ('Developer','Alpha-Testers'):notes+=f'- [{label} APK](https://github.com/{REPO}/releases/download/{tag}/APD-{label}-{number}.apk) — SHA256 `{hashes[label]}`\n'
 notes+=f'\n[Matching source for both variants](https://github.com/{REPO}/releases/download/{tag}/{sourcezip.name}) — SHA256 `{sha(sourcezip)}`. Build instructions and generated inputs are included; signing material is excluded. GPLv3 or later, no warranty; unofficial independent fork with original credits retained. Separate GPL audit findings, including historical key exposure and inherited license exceptions, remain recorded and are not declared closed by this owner preview.\n\nExisting verified fallback and all assets are preserved. Private owner delivery only; no automatic posting to external testers or public release.\n';body=OUT/'release-notes.md';body.write_text(notes)
 # Preparation is separated from publication so scan and reviewed archive evidence can be inspected first.

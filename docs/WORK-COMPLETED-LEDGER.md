@@ -1,3 +1,7 @@
+## November4 evening combined work — source checked, APK acceptance pending
+
+DONE source checkpointb5af9dc8e, source-only run41941064721:2476 core cases440 suites, Android debug/release/instrumentation Java and desktop compilation. Includes unidentified gear origins/ranges, combined grass loot, class controls, wall target/progress/proof and optional Floor5-only paid Rat King search/room redesign; exact limitations in APD-COMBINED-CANDIDATE-2026-11-04.md. NOT DONE at this entry: native acceptance and private release. One pair requested source789c7596c / TEST361 (runs41941525796,41941525923,41941525782). No claim of phone testing or delivered APK from invocation metadata.
+
 ## Unidentified gear origins implemented, including already-owned ongoing-run gear — source CI pending
 
 Item-owned floor/actual room/source labels now appear only while equipment/wands are unidentified. Iron Key room doors, Golden Key chests and Crystal Key chests/doors remain distinct. Original source survives pickup/drop/equip/save, stack lineage and actual Gathering/Forwarding transfers. Already-carried and equipped gear recover from exact-UID observed history on ordinary load; no restart or re-pickup is required. Missing historical facts are not invented; incomplete evidence may establish only a labelled historical pickup floor. No hidden item properties enter this projection.

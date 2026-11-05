@@ -1,3 +1,7 @@
+## TEST361 one intentional pair — build/native verification active
+
+Producing source789c7596c399f63cf12952c776d32ca386716b85. Developer/native41941525796; Alpha-Testers41941525923; six-profile display41941525782. Source-only41941064721 succeeded onb5af9dc8e:2476 tests440 suites,0 failures/errors/skips, Android debug/release/instrumentation Java and desktop. Final native test-source adds the same actual settings/description assertions to the stable API36/tester fixture; application source is unchanged. APKs are not yet accepted or released. Exact tester acceptance requested against the existing player artifact, never a rebuilt application. Target01:15UTC; source-only passes are not APK delivery. No other APK build request; preserve TEST358 released fallback and TEST360 unreleased evidence.
+
 ## Active combined candidate — final source checks before one deliberate APK pair
 
 See [APD-COMBINED-CANDIDATE-2026-11-04.md](APD-COMBINED-CANDIDATE-2026-11-04.md) for actual implementation, known limitations, failures and evidence. Target01:15UTC/8:15p.m.Nov4 NewYork. Combined2473 cases passed; final2476 and Android Java checks pending. No new APK yet. All requested features retained; Quick Search ordinary Gameplay toggle OFF by default; Floor5 redesign independent. Existing generated rooms are preserved. Physical-phone acceptance pending; TEST358 released fallback/360 accepted-unreleased unchanged.
