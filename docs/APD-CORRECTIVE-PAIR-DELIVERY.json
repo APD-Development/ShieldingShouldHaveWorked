@@ -5,7 +5,7 @@
   "developer": 41942317979,
   "player": 41942317989,
   "display": 41942317994,
-  "native": 41942317979,
+  "native": 41944633239,
   "tester": 41942434237,
   "tester_test_source": "a94eac096ab491b4fd4a316bf283b2e93fb02ca8",
   "core_tests": 2477,
@@ -41,5 +41,19 @@
     "run": 41941525782,
     "reason": "GitHub HTTP502 while querying an unrelated older producer; exact-source bounded retry implemented."
   },
-  "combined_visual_review_source": "tester-api34"
+  "combined_visual_review_source": "tester-api34",
+  "native_test_source": "cb169aebc66ea1708f5772e267c1a84b2c97aa83",
+  "native_job_name": "same-apk-api34",
+  "native_artifact": "apd-test362-exact-api34",
+  "native_case_count": 71,
+  "original_stale_assertion_runs": [
+    41942317979
+  ],
+  "retained_native_fixture_failure": {
+    "run": 41942317979,
+    "passed": 70,
+    "total": 71,
+    "case": "clericQuickCastsPersistAndKeepNormalCostsAndTargeting",
+    "reason": "Superseded one-column expectation; only test geometry corrected to approved inward2x2, all gameplay/cost assertions retained."
+  }
 }
