@@ -1,3 +1,7 @@
+## TEST361 prebuild failure; TEST362 verification retry
+
+DONE: deterministic cancellation regression fails without the ownership guard and passes with it; full2477 core tests440 suites,0 failures/errors/skips. NOT DONE: APK acceptance/delivery. Producer41941525796 failed2475/2476 before assembly, no361 application APK existed. New exact source34f5ffd2e, producer41942317979, player41942317989, display41942317994. Ordinary retired preload may no longer clear a newer ready catalog; display lookup uses exact source and bounded transientHTTP502/503/504/429 retries. No source history or old assets overwritten.
+
 ## November4 evening combined work — source checked, APK acceptance pending
 
 DONE source checkpointb5af9dc8e, source-only run41941064721:2476 core cases440 suites, Android debug/release/instrumentation Java and desktop compilation. Includes unidentified gear origins/ranges, combined grass loot, class controls, wall target/progress/proof and optional Floor5-only paid Rat King search/room redesign; exact limitations in APD-COMBINED-CANDIDATE-2026-11-04.md. NOT DONE at this entry: native acceptance and private release. One pair requested source789c7596c / TEST361 (runs41941525796,41941525923,41941525782). No claim of phone testing or delivered APK from invocation metadata.
