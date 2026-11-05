@@ -5,7 +5,7 @@
   "developer": 42120844540,
   "player": 42120844623,
   "display": 42120844868,
-  "native": 42123644945,
+  "native": 42125833870,
   "tester": 42120968295,
   "tester_test_source": "ac46b5adde44c39e723a378e2528c25b64696c1f",
   "core_tests": 2500,
@@ -42,7 +42,7 @@
   },
   "native_job_name": "same-apk-api34",
   "native_artifact": "apd-test365-exact-api34",
-  "native_test_source": "baa7e9a2678f0a34790c7d3077d890021dc62df9",
+  "native_test_source": "81ef2b9380c9ae2614f95b0f41f7cc911733bce3",
   "retained_native_fixture_failure": {
     "run": 42120844540,
     "passed": 70,
@@ -52,6 +52,16 @@
       "grassDewControlsRingBreakdownsSearchedWallAndOfflineLicenseRenderNatively:fixed badge delay insufficient"
     ],
     "retained_assertions": true,
-    "application_rebuilt": false
-  }
+    "application_rebuilt": false,
+    "second_full_run": {
+      "run": 42123644945,
+      "passed": 71,
+      "total": 72,
+      "latency_limit_passed": true,
+      "failure": "Global banner registry remained nonempty; current-scene rendered overlay condition replaces registry condition, without suppressing banners."
+    }
+  },
+  "retained_fixture_failure_runs": [
+    42123644945
+  ]
 }
