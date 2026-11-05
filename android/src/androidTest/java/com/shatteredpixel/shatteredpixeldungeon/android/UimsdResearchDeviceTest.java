@@ -86,6 +86,44 @@ public class UimsdResearchDeviceTest {
             assertArrayEquals(original,java.nio.file.Files.readAllBytes(new java.io.File(root,"runs/abandoned.apdlog").toPath()));
         }
     }
+    @Test public void exactOccurrenceRowOpensRecordedTurnAndRestoresReadOnlyTimeline()throws Exception{
+        try(ActivityScenario<AndroidLauncher> app=ActivityScenario.launch(AndroidLauncher.class)){
+            Fixture f=begin();
+            java.io.File root=new java.io.File(androidx.test.core.app.ApplicationProvider.getApplicationContext().getCacheDir(),"uimsd-occurrence-"+System.nanoTime());
+            java.io.File raw=new java.io.File(root,"runs/occurrence.apdlog");
+            RunLogWriter w=RunLogWriter.create(raw,TelemetryVersion.CURRENT,"occurrence","test",100);
+            LifecycleEvents.RunStart start=new LifecycleEvents.RunStart();start.runId="occurrence-run";start.heroClass="WARRIOR";start.rulesetId="rules";start.apdVersionName="test";
+            LifecycleEvents.emitRunStart(w,1,false,start);
+            CombatEvents.Damage damage=new CombatEvents.Damage();damage.where=new CombatEvents.Where();damage.where.depth=2;
+            damage.target.kind=CombatEvents.KIND_HERO;damage.source.kind=CombatEvents.SRC_CHAR;damage.source.fighterKind=CombatEvents.KIND_ENEMY;damage.source.label="rat";damage.shown=7;
+            CombatEvents.emitDamage(w,21,damage);
+            LifecycleEvents.RunEnd end=new LifecycleEvents.RunEnd();end.outcome=LifecycleEvents.OUTCOME_DIED;end.turns=30;
+            LifecycleEvents.emitRunEnd(w,30,end);assertTrue(w.close(true));
+            byte[] original=java.nio.file.Files.readAllBytes(raw.toPath());
+            Catalog catalog=new DatasetStore(root).load();
+            Query query=Query.of(EventDatasets.DAMAGE).withScope(new Scope(Scope.Rules.ALL,"",false,false,false,false));
+            render(()->{
+                f.model.setCatalog(catalog);f.model.showQuery(query);
+                ResultTable table=ResultTable.build(f.model.result(),0,50);
+                assertEquals("One exact recorded damage occurrence",1,table.lines.size());
+                WndUimsdRow.show(f.model,table.lines.get(0));
+            });
+            tapRowAction("Run history at this turn");
+            render(()->{try{
+                WndRunTurnBrowser window=top(WndRunTurnBrowser.class);assertNotNull("Exact occurrence timeline",window);
+                RunTurnBrowser browser=(RunTurnBrowser)field(window,"model");
+                assertEquals("occurrence-run",browser.runId);assertEquals(21,browser.turn());assertEquals(30,browser.lastTurn);
+                assertFalse("Recorded turn contains the selected occurrence",browser.events().isEmpty());
+                assertTrue(browser.summary().startsWith("Turn 21 / 30"));
+                Runnable restore=window.restoreOnSceneReset();window.hide();restore.run();
+                WndRunTurnBrowser restored=top(WndRunTurnBrowser.class);assertNotNull("Restored occurrence timeline",restored);
+                RunTurnBrowser restoredBrowser=(RunTurnBrowser)field(restored,"model");
+                assertEquals(21,restoredBrowser.turn());assertEquals(browser.summary(),restoredBrowser.summary());
+            }catch(Exception e){throw new RuntimeException(e);}});
+            PlayRunDeviceTest.visibilityScreenshot("uimsd-occurrence-history.png");
+            assertArrayEquals("Read-only occurrence navigation preserves raw history",original,java.nio.file.Files.readAllBytes(raw.toPath()));
+        }
+    }
     @Test public void recordedEquipmentWindowSurvivesReloadAndOpensExactDamage()throws Exception{
         try(ActivityScenario<AndroidLauncher> app=ActivityScenario.launch(AndroidLauncher.class)){
             Fixture f=begin();
