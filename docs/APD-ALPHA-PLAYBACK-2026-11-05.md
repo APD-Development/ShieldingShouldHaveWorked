@@ -33,3 +33,16 @@ Second full same-APK run42123644945 passed71/72, including the unchanged250ms Ho
 ## Complete final native acceptance
 
 Same-APK run42125833870 at instrumentation81ef2b938 passed all72 cases in a single571.117-second invocation. Original250ms latency gate retained and passed; no skipped or combined case results. Retained logcat confirms the fixture issue: globalReferences=1 activeCurrentScene=0. The old global banner reference was outside the current render tree; the final zero-visible-overlay assertion passed. Full2500 core cases, all six display profiles, four actual Alpha cases and reviewed real selector screenshot are complete. Signature/source/shared-asset checks and actual download-back remain publication gates. Physical-phone acceptance not claimed.
+
+## TEST365 Alpha Testers playback selector — verified private delivery
+
+Application source `6d55fec660389195b492f1ce2974781cfbc27bcc`, tag `apd-alpha-preview-365`, private release `435867860`. Both variants passed2500 core tests441 suites; full72 Developer native cases in one successful invocation, six display profiles and four actual Alpha native cases passed. Real touches selected0.5x/1x/2x/4x/1000x/back2x and reopened the saved choice; all10 factors/persistence covered headlessly. Reviewed actual Alpha selector capture. Alpha packages only extendedPlayback, without Developer switches; ordinary public builds retain three choices. Preserves newer UIMSD content identity fix and all prior features. No physical-phone claim; install over only, never uninstall or clear data.
+
+Publication `2026-11-05T23:13:15Z`; workflow actual download verification `2026-11-05T23:13:20.975650+00:00`; independent APK download/hash verification `2026-11-05T23:14:01.545587+00:00`. Final response links prepared, not preclaimed as already sent. Receipt APD-TEST365-RELEASE-DELIVERY-RECEIPT.json. No extra application builds for publication/test fixes; original TEST364 release/assets retained as fallback.
+
+Developer: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-alpha-preview-365/APD-Developer-365.apk
+
+Alpha Testers: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-alpha-preview-365/APD-Alpha-Testers-365.apk
+
+Matching source: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-alpha-preview-365/APD-Source-365.zip
+

@@ -1,3 +1,15 @@
+## TEST365 Alpha Testers playback selector — verified private delivery
+
+Application source `6d55fec660389195b492f1ce2974781cfbc27bcc`, tag `apd-alpha-preview-365`, private release `435867860`. Both variants passed2500 core tests441 suites; full72 Developer native cases in one successful invocation, six display profiles and four actual Alpha native cases passed. Real touches selected0.5x/1x/2x/4x/1000x/back2x and reopened the saved choice; all10 factors/persistence covered headlessly. Reviewed actual Alpha selector capture. Alpha packages only extendedPlayback, without Developer switches; ordinary public builds retain three choices. Preserves newer UIMSD content identity fix and all prior features. No physical-phone claim; install over only, never uninstall or clear data.
+
+Publication `2026-11-05T23:13:15Z`; workflow actual download verification `2026-11-05T23:13:20.975650+00:00`; independent APK download/hash verification `2026-11-05T23:14:01.545587+00:00`. Final response links prepared, not preclaimed as already sent. Receipt APD-TEST365-RELEASE-DELIVERY-RECEIPT.json. No extra application builds for publication/test fixes; original TEST364 release/assets retained as fallback.
+
+Developer: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-alpha-preview-365/APD-Developer-365.apk
+
+Alpha Testers: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-alpha-preview-365/APD-Alpha-Testers-365.apk
+
+Matching source: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-alpha-preview-365/APD-Source-365.zip
+
 ## 2026-11-05T20:11:46Z — UIMSD warm-cache content identity source-verified; no APK
 
 - **Defect and correction:** the title preload freshness stamp used only path/name/existence/length/mtime, so valid different raw history bytes with the same length and restored timestamp could reuse stale statistics. Application commit `131e6551a62f660f16de7e71439856872f622ca5` adds SHA-256 content identity for every relevant `.apdlog`, column-layout file and demo marker. Hashing remains on existing preload/open workers; unreadable or uncertain state fails closed, and rejected catalogs are released before cold loading.

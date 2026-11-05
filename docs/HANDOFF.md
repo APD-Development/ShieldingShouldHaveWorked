@@ -1,3 +1,15 @@
+## TEST365 Alpha Testers playback selector — verified private delivery
+
+Application source `6d55fec660389195b492f1ce2974781cfbc27bcc`, tag `apd-alpha-preview-365`, private release `435867860`. Both variants passed2500 core tests441 suites; full72 Developer native cases in one successful invocation, six display profiles and four actual Alpha native cases passed. Real touches selected0.5x/1x/2x/4x/1000x/back2x and reopened the saved choice; all10 factors/persistence covered headlessly. Reviewed actual Alpha selector capture. Alpha packages only extendedPlayback, without Developer switches; ordinary public builds retain three choices. Preserves newer UIMSD content identity fix and all prior features. No physical-phone claim; install over only, never uninstall or clear data.
+
+Publication `2026-11-05T23:13:15Z`; workflow actual download verification `2026-11-05T23:13:20.975650+00:00`; independent APK download/hash verification `2026-11-05T23:14:01.545587+00:00`. Final response links prepared, not preclaimed as already sent. Receipt APD-TEST365-RELEASE-DELIVERY-RECEIPT.json. No extra application builds for publication/test fixes; original TEST364 release/assets retained as fallback.
+
+Developer: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-alpha-preview-365/APD-Developer-365.apk
+
+Alpha Testers: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-alpha-preview-365/APD-Alpha-Testers-365.apk
+
+Matching source: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-alpha-preview-365/APD-Source-365.zip
+
 ## Alpha Testers playback selector — TEST365 candidate in verification
 
 Owner approved screenshot full0.5x–1000x visual selector in Alpha Testers. Application source6d55fec660389195b492f1ce2974781cfbc27bcc; local2500 core cases441 suites pass. Developer/native42120844540; matching Alpha42120844623; display42120844868. One new intentional pair (third pair today); no application rebuild for docs or instrumentation corrections. Alpha feature asset contains only extendedPlayback and retains all Developer feature gates. Preserve newer source131e6551a UIMSD content-identity fix, all door/search features, signing/appID and player data. TEST364 remains verified released fallback; candidate not yet accepted or published. Actual Alpha four-case acceptance and full72 native/six display checks are required. Report APD-ALPHA-PLAYBACK-2026-11-05.md.
