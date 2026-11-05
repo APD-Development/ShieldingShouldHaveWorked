@@ -1,3 +1,7 @@
+## TEST363 door-check pair — assembled, native acceptance pending
+
+Producing source4749caf7a8dc2a3634ac52fbadf084758fc63f37. Developer/native42080532920; player42080533002; display42080533049. Developer producer127432082963 succeeded with full2495 core cases and required compile/assembly checks. Source-only42079861146 already passed2495 cases441 suites and instrumentation Java. Full72 native cases (including latest exact-occurrence timeline) and actual tester/visual acceptance pending; no private release yet. Preserve source4749 and the existing built artifacts, never rebuild for documentation or instrumentation-only corrections. TEST362 is the released fallback and still has the reported marker bug.
+
 ## Door-check source verified; one replacement pair requested
 
 Sourcef7558b16d219641ca8a418d516a5601dabac0aa1 passed42079861146/job127429778801:2495 cases441 suites and complete Android debug/release/instrumentation Java plus desktop compilation. Original362 bookshelf/Floor1/Floor10 regressions reproduce against old code and pass with correction. One pair request includes full72 native cases and six display profiles, with real Floor1 negative and real Floor2 positive fixtures. No APK assembled yet for this fix. Existing TEST362 remains the released fallback and still contains this marker bug. Preserve existing assets/signature/saves and exact-occurrence timeline work.

@@ -27,3 +27,7 @@ TEST362 remains the last actually released pair and still contains this bug. Pre
 ## Source acceptance completed
 
 Sourcef7558b16d219641ca8a418d516a5601dabac0aa1 passed source-only42079861146/job127429778801:2495 core cases441 suites, zero failures/errors/skips, Android debug/release/instrumentation Java and desktop compilation. Both original362 bookshelf/doorless-floor regressions were reproduced against the original source and then passed unchanged against the corrected code. No source history was rewritten. One intentional replacement pair is requested next; native/device acceptance and publication are not claimed from source checks.
+
+## One candidate pair — TEST363
+
+Producing source4749caf7a8dc2a3634ac52fbadf084758fc63f37. Developer/native42080532920 (producer job127432082963 succeeded), Alpha-Testers42080533002, six-profile display42080533049. Developer compiled successfully after the full2495 core cases and Android debug/release/desktop checks; the application artifact is not yet accepted or privately released. Exact tester acceptance is requested against the matching player artifact without rebuilding. Original signing/app ID and TEST362 fallback preserved.
