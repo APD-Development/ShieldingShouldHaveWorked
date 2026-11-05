@@ -2,5 +2,5 @@
   "number": 364,
   "source": "1103a2e7caf72a094836a7cf6931468f3f800b36",
   "player": 42083792729,
-  "reason": "Exact final tester APK; three negative captures: real Floor1, legacy bookshelf and legacy decorated wall, followed by normal Floor2 wall/color/save checks. Partial363 withheld; no reuse as verified fallback and no application rebuild for tester instrumentation."
+  "reason": "Recheck same frozen364 tester APK with unobstructed negative screenshots after normal achievement banner expiry. Prior tester three cases passed; no application rebuild or version increment."
 }
