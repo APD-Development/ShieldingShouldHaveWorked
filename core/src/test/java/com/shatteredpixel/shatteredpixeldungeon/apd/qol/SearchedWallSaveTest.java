@@ -31,12 +31,12 @@ import static org.junit.Assert.*;
 
 /** Actual Level save/restore, including compressed Bundle bytes; disposable headless data only. */
 public class SearchedWallSaveTest {
-    private Level oldLevel;
+    private Level oldLevel;private int oldDepth,oldBranch;
     private Hero oldHero;
-    @Before public void setup(){HeadlessTestSupport.start();oldLevel=Dungeon.level;oldHero=Dungeon.hero;}
-    @After public void cleanup(){Dungeon.level=oldLevel;Dungeon.hero=oldHero;}
+    @Before public void setup(){HeadlessTestSupport.start();oldLevel=Dungeon.level;oldHero=Dungeon.hero;oldDepth=Dungeon.depth;oldBranch=Dungeon.branch;}
+    @After public void cleanup(){Dungeon.level=oldLevel;Dungeon.hero=oldHero;Dungeon.depth=oldDepth;Dungeon.branch=oldBranch;}
     private Level floor()throws Exception{
-        LevelGenerationHarness.generate(734811,0,HeroClass.WARRIOR,LevelGenerationHarness.Context.VETERAN,1);
+        LevelGenerationHarness.generate(734811,0,HeroClass.WARRIOR,LevelGenerationHarness.Context.VETERAN,2);
         return Dungeon.level;
     }
     private int wall(Level l){for(int i=0;i<l.length();i++)if(l.map[i]==Terrain.WALL){l.heroFOV[i]=true;l.visited[i]=true;return i;}throw new AssertionError("No wall in generated fixture");}

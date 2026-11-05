@@ -32,7 +32,7 @@ import java.util.Arrays;
 import static org.junit.Assert.*;
 
 public class SearchedWallsTest {
-    private Level oldLevel;
+    private Level oldLevel;private int oldDepth,oldBranch;
     private Hero oldHero;
     private GrassDewPickupTest.TestLevel level;
     public static class NoopSprite extends HeroSprite {
@@ -40,9 +40,9 @@ public class SearchedWallsTest {
         @Override public void showStatus(int color,String text,Object...args){}
     }
     private static class SearchHero extends Hero {@Override public void next(){}}
-    @Before public void setup(){HeadlessTestSupport.start();oldLevel=Dungeon.level;oldHero=Dungeon.hero;level=new GrassDewPickupTest.TestLevel();level.setSize(7,7);Dungeon.level=level;Arrays.fill(level.map,Terrain.WALL);Arrays.fill(level.heroFOV,true);}
-    @After public void cleanup(){Dungeon.level=oldLevel;Dungeon.hero=oldHero;}
-    @Test public void onlyVisibleWallTilesCanBeMarkedAndItDoesNotRevealSecrets(){for(int t:new int[]{Terrain.WALL,Terrain.WALL_DECO,Terrain.SECRET_DOOR,Terrain.BOOKSHELF}){level.map[16]=t;assertTrue(level.searchedWalls.mark(level,16));assertEquals(t,level.map[16]);assertTrue(level.searchedWalls.shows(level,16));level.searchedWalls.clear();}level.heroFOV[16]=false;assertFalse(level.searchedWalls.mark(level,16));level.heroFOV[16]=true;level.map[16]=Terrain.EMPTY;assertFalse(level.searchedWalls.mark(level,16));assertFalse(level.searchedWalls.mark(level,-1));assertFalse(level.searchedWalls.mark(level,49));}
+    @Before public void setup(){HeadlessTestSupport.start();oldLevel=Dungeon.level;oldHero=Dungeon.hero;oldDepth=Dungeon.depth;oldBranch=Dungeon.branch;Dungeon.depth=2;Dungeon.branch=0;level=new GrassDewPickupTest.TestLevel();level.setSize(7,7);Dungeon.level=level;Arrays.fill(level.map,Terrain.WALL);Arrays.fill(level.heroFOV,true);}
+    @After public void cleanup(){Dungeon.level=oldLevel;Dungeon.hero=oldHero;Dungeon.depth=oldDepth;Dungeon.branch=oldBranch;}
+    @Test public void onlyVisibleWallTilesCanBeMarkedAndItDoesNotRevealSecrets(){for(int t:new int[]{Terrain.WALL,Terrain.WALL_DECO,Terrain.SECRET_DOOR}){level.map[16]=t;assertTrue(level.searchedWalls.mark(level,16));assertEquals(t,level.map[16]);assertTrue(level.searchedWalls.shows(level,16));level.searchedWalls.clear();}level.heroFOV[16]=false;assertFalse(level.searchedWalls.mark(level,16));level.heroFOV[16]=true;level.map[16]=Terrain.EMPTY;assertFalse(level.searchedWalls.mark(level,16));assertFalse(level.searchedWalls.mark(level,-1));assertFalse(level.searchedWalls.mark(level,49));}
     @Test public void sparseMemoryRoundTripsWithoutFabricatingLegacySearches(){level.searchedWalls.mark(level,16);Bundle b=new Bundle();level.searchedWalls.store(b);SearchedWalls restored=new SearchedWalls();restored.restore(b,level.length());assertTrue(restored.shows(level,16));assertFalse(restored.shows(level,17));restored.restore(new Bundle(),level.length());assertFalse(restored.shows(level,16));}
     @Test public void unsearchedFloorAddsNoSaveFields(){Bundle b=new Bundle();String before=b.toString();level.searchedWalls.store(b);assertEquals(before,b.toString());}
     @Test public void marksFollowFogMemoryAndDisappearWhenWallIsOpened(){level.searchedWalls.mark(level,16);level.heroFOV[16]=false;assertFalse(level.searchedWalls.shows(level,16));level.visited[16]=true;assertTrue(level.searchedWalls.shows(level,16));level.map[16]=Terrain.DOOR;assertFalse(level.searchedWalls.shows(level,16));}
@@ -78,7 +78,7 @@ public class SearchedWallsTest {
     @Test public void undiscoveredTerrainCannotRevealWhetherARoomExists(){
         level.map[31]=Terrain.EMPTY;level.heroFOV[17]=false;
         assertTrue(SearchedWallMarkers.couldBeDoor(level,24));
-        for(int tile:new int[]{Terrain.WALL,Terrain.EMPTY,Terrain.WATER,Terrain.SECRET_DOOR,Terrain.BOOKSHELF}){
+        for(int tile:new int[]{Terrain.WALL,Terrain.EMPTY,Terrain.WATER,Terrain.SECRET_DOOR}){
             level.map[17]=tile;assertTrue("unseen tile must not affect eligibility",SearchedWallMarkers.couldBeDoor(level,24));
         }
         level.map[17]=Terrain.WALL;level.visited[17]=true;assertFalse("known stone now rules it out",SearchedWallMarkers.couldBeDoor(level,24));
@@ -89,8 +89,8 @@ public class SearchedWallsTest {
             level.map[24]=tile;assertTrue(SearchedWallMarkers.couldBeDoor(level,24));
         }
     }
-    @Test public void breakableShelvesAndExistingDoorFramesDoNotIncorrectlyExcludeAnEntrance(){
-        level.map[17]=Terrain.EMPTY;level.map[31]=Terrain.BOOKSHELF;level.map[23]=Terrain.OPEN_DOOR;
+    @Test public void existingDoorFramesDoNotIncorrectlyExcludeAnEntrance(){
+        level.map[17]=Terrain.EMPTY;level.map[31]=Terrain.EMPTY;level.map[23]=Terrain.OPEN_DOOR;
         assertTrue(SearchedWallMarkers.couldBeDoor(level,24));
     }
     @Test public void appearanceEligibilityDoesNotConsumeSearchOrCombatRandomness(){

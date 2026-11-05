@@ -39,7 +39,7 @@ public class WallSearchSessionTest {
         hero=new QuietHero();hero.pos=40;hero.heroClass=HeroClass.WARRIOR;hero.ready=true;hero.fieldOfView=level.heroFOV;Dungeon.hero=hero;
         java.lang.reflect.Field f=Class.forName("sun.misc.Unsafe").getDeclaredField("theUnsafe");f.setAccessible(true);Object u=f.get(null);hero.sprite=(QuietSprite)u.getClass().getMethod("allocateInstance",Class.class).invoke(u,QuietSprite.class);
         selectorField=com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.class.getDeclaredField("cellSelector");selectorField.setAccessible(true);oldSelector=selectorField.get(null);selectorField.set(null,u.getClass().getMethod("allocateInstance",Class.class).invoke(u,com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector.class));
-        level.map[41]=Terrain.WALL;
+        level.map[41]=Terrain.WALL;level.map[32]=Terrain.WALL;level.map[50]=Terrain.WALL;
     }
     @After public void restore() throws Exception {selectorField.set(null,oldSelector);Dungeon.hero=oldHero;Dungeon.level=oldLevel;Dungeon.depth=oldDepth;Dungeon.branch=oldBranch;}
     @Test public void manualSearchRemembersPositionAndCountAtNormalCost(){float before=hero.cooldown();hero.search(true);assertEquals(40,hero.wallSearch.anchor());assertEquals(1,hero.wallSearch.searches());assertEquals(2,hero.cooldown()-before,0.001f);hero.search(true);assertEquals(2,hero.wallSearch.searches());}
@@ -58,4 +58,7 @@ public class WallSearchSessionTest {
     @Test public void unseenOrUncoveredTilesDoNotGainProof(){level.heroFOV[41]=false;hero.search(true);assertFalse(level.searchedWalls.confirmed(level,41));level.heroFOV[41]=true;assertFalse(level.searchedWalls.confirmed(level,41));level.map[43]=Terrain.WALL;hero.search(true);assertFalse(level.searchedWalls.confirmed(level,43));}
     @Test public void terrainChangesInvalidateAnEarlierNegative(){hero.search(true);assertTrue(level.searchedWalls.confirmed(level,41));Level.set(41,Terrain.SECRET_DOOR,level);assertFalse(level.searchedWalls.confirmed(level,41));assertFalse(level.searchedWalls.attempted(41));}
     @Test public void searchingAgainAfterReturningPreservesOriginalActionTiming(){hero.search(true);hero.ready=true;level.locked=false;float before=hero.cooldown();assertNull(hero.wallSearch.resume(hero));assertEquals(2,hero.cooldown()-before,0.001f);assertEquals(2,hero.wallSearch.searches());}
+    @Test public void doorlessFloorsKeepNormalSearchTurnsWithoutPhantomWallTargets(){for(int depth:new int[]{1,10,15,20,25,26}){Dungeon.depth=depth;hero.ready=true;hero.wallSearch.clear();float before=hero.cooldown();hero.search(true);assertEquals(2,hero.cooldown()-before,0.001f);assertFalse(hero.wallSearch.exists());assertFalse(hero.wallSearch.select(hero,41));}}
+    @Test public void bookshelvesAndImpossibleGeometryCannotBecomeDoorSearchTargets(){level.map[41]=Terrain.BOOKSHELF;assertFalse(hero.wallSearch.select(hero,41));level.map[41]=Terrain.WALL;level.map[32]=level.map[50]=Terrain.EMPTY;assertFalse(hero.wallSearch.select(hero,41));assertFalse(hero.wallSearch.exists());}
+
 }

@@ -1,3 +1,7 @@
+## Active owner correction: whole door-check eligibility, not just bookshelf artwork
+
+Owner reports TEST362 marks impossible library/furniture locations and specifically excludes Floor1/Floor10. Shared public floor/generator/tile/known-geometry rule implemented; raw saved search history preserved while invalid old marks are hidden. Local2495 tests441 suites pass, including78 actual generated floors and18 new regressions. Source/Android/instrumentation checks pending. Exact details: APD-DOOR-CHECK-FIX-2026-11-05.md. New native fixtures use real Floor1 negative and real Floor2 positive instead of implying doors on Floor1; latest72 native cases preserved. No new APK yet and TEST362 remains unfixed released fallback. Do not overwrite newer exact-occurrence timeline work.
+
 ## TEST362 exact-occurrence timeline native acceptance closed — 2026-11-05T15:17:02Z
 
 Exact published Developer APK remains application source `34f5ffd2ea08bef701f60c95298edcfacc239e0c`, producer run `41942317979`, SHA-256 `1085bb39899a9c3c1ff5a9dd75ccaa0a73f05833aac8340b963bfdac16609f5a`. Test-source commit `59aeaf14e81725803725473cfd2c71f615a25980` adds one pointer-driven real-history occurrence-row check only; application inputs were proven unchanged and no application APK was rebuilt.

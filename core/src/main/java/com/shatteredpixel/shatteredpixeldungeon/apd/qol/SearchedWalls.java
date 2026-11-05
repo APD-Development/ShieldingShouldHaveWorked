@@ -30,7 +30,7 @@ public final class SearchedWalls {
     private static final String CHECKS_KEY="apd_door_checks_v1";
 
     public boolean mark(Level level, int cell) {
-        if (cell < 0 || cell >= level.length() || !level.heroFOV[cell]
+        if (!DoorSearchEligibility.supportsDoors(level) || cell < 0 || cell >= level.length() || !level.heroFOV[cell]
                 || !wall(level.map[cell]) || cells.get(cell)) return false;
         cells.set(cell);
         return true;
@@ -43,8 +43,7 @@ public final class SearchedWalls {
 
     private static boolean wall(int tile) {
         // Secret doors look exactly like ordinary walls until the original search code discovers them.
-        return tile == Terrain.WALL || tile == Terrain.WALL_DECO
-                || tile == Terrain.SECRET_DOOR || tile == Terrain.BOOKSHELF;
+        return DoorSearchEligibility.wallDisguise(tile);
     }
 
     /** Allocation-free traversal for refreshing only saved markers after observation. */
@@ -55,10 +54,10 @@ public final class SearchedWalls {
         if(cell<0||cell>=level.length())return;
         doorChecks.clear(cell);
         // A paid check must actually have resolved; an unresolved hidden tile is never a negative result.
-        if(guaranteed&&level.heroFOV[cell]&&wall(level.map[cell])&&!level.secret[cell]
+        if(DoorSearchEligibility.supportsDoors(level)&&guaranteed&&level.heroFOV[cell]&&wall(level.map[cell])&&!level.secret[cell]
                 &&level.map[cell]!=Terrain.SECRET_DOOR)doorChecks.set(cell);
     }
-    public boolean confirmed(Level level,int cell){return cell>=0&&cell<level.length()&&level.heroFOV[cell]&&wall(level.map[cell])&&doorChecks.get(cell);}
+    public boolean confirmed(Level level,int cell){return DoorSearchEligibility.candidate(level,cell)&&level.heroFOV[cell]&&doorChecks.get(cell);}
     public boolean attempted(int cell){return cell>=0&&cells.get(cell);}
 
 

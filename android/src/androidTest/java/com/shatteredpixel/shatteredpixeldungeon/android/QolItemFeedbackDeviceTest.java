@@ -87,6 +87,32 @@ public class QolItemFeedbackDeviceTest {
             });
         }finally{TopScoresDeviceTest.render(()->{if(shown.get()!=null)shown.get().hide();SPDSettings.ratKingQuickSearch(previous);});}
     }
+    static void verifyOldBookshelfMarksAreHidden(int cell)throws Exception{
+        TopScoresDeviceTest.render(()->{
+            Level.set(cell,Terrain.BOOKSHELF);com.watabou.utils.Bundle legacy=new com.watabou.utils.Bundle();legacy.put("apd_searched_walls_v1",new int[]{cell});legacy.put("apd_door_checks_v1",new int[]{cell});
+            Dungeon.level.searchedWalls.restore(legacy,Dungeon.level.length());assertTrue("legacy attempt retained",Dungeon.level.searchedWalls.attempted(cell));
+            assertFalse("bookcase cannot be a hidden door",com.shatteredpixel.shatteredpixeldungeon.apd.qol.DoorSearchEligibility.candidate(Dungeon.level,cell));
+            assertEquals(-1,com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallMarkers.visual(Dungeon.level,cell));
+            assertEquals(-1,com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallMarkers.visual(Dungeon.level,cell-Dungeon.level.width()));GameScene.updateMap();
+        });Thread.sleep(300);TopScoresDeviceTest.screenshot("qol-door-ineligible-bookshelf.png");TopScoresDeviceTest.render(()->{Level.set(cell,Terrain.WALL);GameScene.updateMap();});
+    }
+    /** Actual floor-one exclusion followed by a real transition to a searchable floor. */
+    static void prepareSearchableFloor()throws Exception{
+        TopScoresDeviceTest.render(()->{
+            assertEquals(1,Dungeon.depth);assertFalse(com.shatteredpixel.shatteredpixeldungeon.apd.qol.DoorSearchEligibility.supportsDoors(Dungeon.level));
+            com.watabou.utils.Bundle oldMarks=new com.watabou.utils.Bundle();java.util.ArrayList<Integer> walls=new java.util.ArrayList<>();
+            for(int p=0;p<Dungeon.level.length();p++)if(com.shatteredpixel.shatteredpixeldungeon.apd.qol.DoorSearchEligibility.wallDisguise(Dungeon.level.map[p])&&Dungeon.level.heroFOV[p])walls.add(p);
+            assertFalse("actual visible floor-one walls",walls.isEmpty());int[] cells=new int[walls.size()];for(int n=0;n<cells.length;n++)cells[n]=walls.get(n);
+            oldMarks.put("apd_searched_walls_v1",cells);Dungeon.level.searchedWalls.restore(oldMarks,Dungeon.level.length());GameScene.updateMap();
+            for(int p=0;p<Dungeon.level.length();p++)assertEquals("no old or new Floor 1 checkmarks",-1,com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallMarkers.visual(Dungeon.level,p));
+        });TopScoresDeviceTest.screenshot("qol-doorless-floor1.png");
+        TopScoresDeviceTest.render(()->{
+            InterlevelScene.curTransition=Dungeon.level.getTransition(com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition.Type.REGULAR_EXIT);
+            assertNotNull("real downstairs transition",InterlevelScene.curTransition);InterlevelScene.mode=InterlevelScene.Mode.DESCEND;Game.switchScene(InterlevelScene.class);
+        });
+        waitFor(()->Game.scene() instanceof GameScene&&Dungeon.depth==2&&Dungeon.hero.ready&&!Game.switchingScene());
+        TopScoresDeviceTest.render(()->assertTrue(com.shatteredpixel.shatteredpixeldungeon.apd.qol.DoorSearchEligibility.supportsDoors(Dungeon.level)));
+    }
     @Test public void grassDewControlsRingBreakdownsSearchedWallAndOfflineLicenseRenderNatively()throws Exception{
         boolean intro=SPDSettings.intro(),auto=SPDSettings.autoCollectGrassDew(),enemies=SPDSettings.autoCollectDewWithEnemies();
         int slot=GamesInProgress.curSlot;HeroClass selected=GamesInProgress.selectedClass;
@@ -124,6 +150,7 @@ public class QolItemFeedbackDeviceTest {
             ThrowingKnife knife=new ThrowingKnife();knife.levelKnown=true;knife.cursedKnown=true;
             TopScoresDeviceTest.render(()->{RingOfSharpshooting r=new RingOfSharpshooting();r.anonymize();r.levelKnown=true;r.cursedKnown=true;Dungeon.hero.belongings.misc=r;r.activate(Dungeon.hero);});
             showItem(knife,"2-6 -> 3-8","qol-sharpshooting-weapon.png");
+            prepareSearchableFloor();
             final int[] center={0};
             TopScoresDeviceTest.render(()->{
                 int w=Dungeon.level.width();center[0]=(Dungeon.level.height()/2)*w+w/2;
@@ -135,6 +162,10 @@ public class QolItemFeedbackDeviceTest {
                     int behind=center[0]+delta;Dungeon.level.heroFOV[behind]=false;Dungeon.level.visited[behind]=false;Dungeon.level.mapped[behind]=false;
                 }
                 Level.set(center[0],Terrain.EMPTY);Dungeon.hero.fieldOfView=Dungeon.level.heroFOV;Dungeon.hero.pos=center[0];Dungeon.hero.sprite.place(center[0]);
+            });
+            verifyOldBookshelfMarksAreHidden(center[0]-Dungeon.level.width());
+            TopScoresDeviceTest.render(()->{
+                int w=Dungeon.level.width();
                 Dungeon.hero.search(true);GameScene.updateMap();
                 assertTrue("north front face",com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallMarkers.visual(Dungeon.level,center[0]-w)>0);
                 assertEquals("south lip drawn on visible floor above",com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallMarkers.OVERHANG,com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallMarkers.visual(Dungeon.level,center[0]));

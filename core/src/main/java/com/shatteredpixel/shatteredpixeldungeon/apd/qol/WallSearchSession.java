@@ -36,7 +36,7 @@ public final class WallSearchSession {
     public boolean exists(){return anchor>=0;}
     public void clear(){anchor=target=-1;searches=0;}
     public boolean matches(Level level){return exists()&&level!=null&&floor==Dungeon.depth&&branch==Dungeon.branch&&width==level.width()&&height==level.height()&&anchor<level.length();}
-    public static boolean wall(int tile){return tile==com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL||tile==com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL_DECO||tile==com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.SECRET_DOOR||tile==com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.BOOKSHELF;}
+    public static boolean wall(int tile){return DoorSearchEligibility.wallDisguise(tile); }
     /** Same footprint arithmetic as Hero.search; unseen map contents are never consulted. */
     public static boolean covers(Hero hero,Level level,int from,int cell){
         if(hero==null||level==null||from<0||from>=level.length()||cell<0||cell>=level.length()||cell==from)return false;
@@ -64,10 +64,11 @@ public final class WallSearchSession {
     }
     public boolean select(Hero hero,int cell){
         Level l=Dungeon.level;
-        if(hero==null||!hero.isAlive()||!hero.ready||l==null||cell<0||cell>=l.length()||!l.heroFOV[cell]||!wall(l.map[cell])||!covers(hero,l,hero.pos,cell))return false;
+        if(hero==null||!hero.isAlive()||!hero.ready||l==null||cell<0||cell>=l.length()||!l.heroFOV[cell]||!DoorSearchEligibility.candidate(l,cell)||!covers(hero,l,hero.pos,cell))return false;
         if(!matches(l)||anchor!=hero.pos||target!=cell)begin(hero,cell);return true;
     }
     public void searched(Hero hero){
+        if(!DoorSearchEligibility.supportsDoors(Dungeon.level))return;
         if(!matches(Dungeon.level)||anchor!=hero.pos)begin(hero,-1);
         if(searches<Integer.MAX_VALUE)searches++;
     }
@@ -75,6 +76,8 @@ public final class WallSearchSession {
         Level l=Dungeon.level;
         if(hero==null||!hero.isAlive()||!hero.ready)return "Wait until you can act.";
         if(!matches(l))return "The saved search is on another floor or is no longer available.";
+        if(!DoorSearchEligibility.supportsDoors(l))return "Hidden doors do not generate on this floor. Ordinary Search still works.";
+        if(target>=0&&!DoorSearchEligibility.candidate(l,target))return "The saved tile cannot be a doorway. Ordinary Search still works.";
         if(hero.visibleEnemies()>0)return "An enemy is visible. Your search position is still remembered.";
         if(hero.rooted||hero.paralysed>0||l.locked)return "You cannot return to the search position right now.";
         if(!StairNavigation.safeStep(l,hero,anchor))return "The saved search position is blocked or unsafe.";

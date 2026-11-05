@@ -185,12 +185,13 @@ public class WndInfoCell extends Window {
 			}
 		}
 		
-        if (Dungeon.level.searchedWalls.confirmed(Dungeon.level, cell)) {
+        boolean doorCandidate=com.shatteredpixel.shatteredpixeldungeon.apd.qol.DoorSearchEligibility.candidate(Dungeon.level,cell);
+        if (doorCandidate && Dungeon.level.searchedWalls.confirmed(Dungeon.level, cell)) {
             desc += "\n\n" + Messages.get(this,"checked_door");
-        } else if (Dungeon.level.searchedWalls.attempted(cell)) {
+        } else if (doorCandidate && Dungeon.level.searchedWalls.attempted(cell)) {
             desc += "\n\n" + Messages.get(this,"search_unconfirmed");
         }
-        boolean wall = com.shatteredpixel.shatteredpixeldungeon.apd.qol.WallSearchSession.wall(Dungeon.level.map[cell]);
+        boolean wall = doorCandidate;
         boolean reachable = Dungeon.hero != null && Dungeon.level.heroFOV[cell]
                 && com.shatteredpixel.shatteredpixeldungeon.apd.qol.WallSearchSession.covers(Dungeon.hero,Dungeon.level,Dungeon.hero.pos,cell);
         if(wall&&!reachable)desc += "\n\n"+Messages.get(this,"search_unavailable");

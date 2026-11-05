@@ -113,6 +113,7 @@ public class QolStableCaptureDeviceTest {
             ThrowingKnife knife=new ThrowingKnife();knife.levelKnown=true;knife.cursedKnown=true;
             TopScoresDeviceTest.render(()->{RingOfSharpshooting r=new RingOfSharpshooting();r.anonymize();r.levelKnown=true;r.cursedKnown=true;Dungeon.hero.belongings.misc=r;r.activate(Dungeon.hero);});
             showItem(knife,"2-6 -> 3-8","qol-sharpshooting-weapon.png");
+            QolItemFeedbackDeviceTest.prepareSearchableFloor();
             final int[] center={0};
             TopScoresDeviceTest.render(()->{
                 int w=Dungeon.level.width();center[0]=(Dungeon.level.height()/2)*w+w/2;
@@ -124,6 +125,10 @@ public class QolStableCaptureDeviceTest {
                     int behind=center[0]+delta;Dungeon.level.heroFOV[behind]=false;Dungeon.level.visited[behind]=false;Dungeon.level.mapped[behind]=false;
                 }
                 Level.set(center[0],Terrain.EMPTY);Dungeon.hero.fieldOfView=Dungeon.level.heroFOV;Dungeon.hero.pos=center[0];Dungeon.hero.sprite.place(center[0]);
+            });
+            QolItemFeedbackDeviceTest.verifyOldBookshelfMarksAreHidden(center[0]-Dungeon.level.width());
+            TopScoresDeviceTest.render(()->{
+                int w=Dungeon.level.width();
                 Dungeon.hero.search(true);GameScene.updateMap();
                 assertTrue("north front face",com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallMarkers.visual(Dungeon.level,center[0]-w)>0);
                 assertEquals("south lip drawn on visible floor above",com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallMarkers.OVERHANG,com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallMarkers.visual(Dungeon.level,center[0]));

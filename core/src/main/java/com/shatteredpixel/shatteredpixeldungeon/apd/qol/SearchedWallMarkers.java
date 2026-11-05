@@ -27,23 +27,8 @@ public final class SearchedWallMarkers {
     private SearchedWallMarkers(){}
     private static boolean known(Level l,int p){return p>=0&&p<l.length()&&(l.heroFOV[p]||l.visited[p]||l.mapped[p]);}
     private static boolean open(Level l,int p){return known(l,p)&&!DungeonTileSheet.wallStitcheable(l.map[p]);}
-    private static boolean possibleFrame(Level l,int p){
-        if(!known(l,p))return true;
-        int tile=l.map[p];
-        return (Terrain.flags[tile]&Terrain.SOLID)!=0||tile==Terrain.OPEN_DOOR;
-    }
-    private static boolean possiblePassage(Level l,int p){
-        if(!known(l,p))return true;
-        // These look like permanent stone. Never distinguish SECRET_DOOR from its disguise.
-        int tile=l.map[p];return tile!=Terrain.WALL&&tile!=Terrain.WALL_DECO&&tile!=Terrain.SECRET_DOOR;
-    }
-    /** Known geometry may rule out a doorway; unseen terrain must never influence this answer. */
-    public static boolean couldBeDoor(Level l,int p){
-        int w=l.width();
-        if(w<3||p<w||p>=l.length()-w||p%w==0||p%w==w-1)return false;
-        return possibleFrame(l,p-1)&&possibleFrame(l,p+1)&&possiblePassage(l,p-w)&&possiblePassage(l,p+w)
-                ||possibleFrame(l,p-w)&&possibleFrame(l,p+w)&&possiblePassage(l,p-1)&&possiblePassage(l,p+1);
-    }
+    /** A renderer and UI must use the same public floor/terrain/geometry eligibility rule. */
+    public static boolean couldBeDoor(Level l,int p){return DoorSearchEligibility.candidate(l,p);}
     private static boolean showWall(Level l,int p){return l.searchedWalls.shows(l,p)&&couldBeDoor(l,p);}
     public static int visual(Level l,int p){
         if(p<0||p>=l.length())return -1;
