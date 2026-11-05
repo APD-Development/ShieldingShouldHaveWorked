@@ -1,6 +1,6 @@
 {
-  "number": 364,
-  "source": "1103a2e7caf72a094836a7cf6931468f3f800b36",
-  "player": 42083792729,
-  "reason": "Recheck same frozen364 tester APK with unobstructed negative screenshots after normal achievement banner expiry. Prior tester three cases passed; no application rebuild or version increment."
+  "number": 365,
+  "source": "6d55fec660389195b492f1ce2974781cfbc27bcc",
+  "player": 42120844623,
+  "reason": "Exact Alpha365 APK, no application rebuild. Four cases: original healing/combined QoL plus actual touch selection and reopen of all approved playback choices, using alpha extendedPlayback only."
 }

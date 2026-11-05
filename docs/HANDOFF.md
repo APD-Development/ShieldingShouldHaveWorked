@@ -1,3 +1,7 @@
+## Alpha Testers playback selector — TEST365 candidate in verification
+
+Owner approved screenshot full0.5x–1000x visual selector in Alpha Testers. Application source6d55fec660389195b492f1ce2974781cfbc27bcc; local2500 core cases441 suites pass. Developer/native42120844540; matching Alpha42120844623; display42120844868. One new intentional pair (third pair today); no application rebuild for docs or instrumentation corrections. Alpha feature asset contains only extendedPlayback and retains all Developer feature gates. Preserve newer source131e6551a UIMSD content-identity fix, all door/search features, signing/appID and player data. TEST364 remains verified released fallback; candidate not yet accepted or published. Actual Alpha four-case acceptance and full72 native/six display checks are required. Report APD-ALPHA-PLAYBACK-2026-11-05.md.
+
 ## 2026-11-05T20:11:46Z — UIMSD warm-cache content identity source-verified; no APK
 
 - **Defect and correction:** the title preload freshness stamp used only path/name/existence/length/mtime, so valid different raw history bytes with the same length and restored timestamp could reuse stale statistics. Application commit `131e6551a62f660f16de7e71439856872f622ca5` adds SHA-256 content identity for every relevant `.apdlog`, column-layout file and demo marker. Hashing remains on existing preload/open workers; unreadable or uncertain state fails closed, and rejected catalogs are released before cold loading.
