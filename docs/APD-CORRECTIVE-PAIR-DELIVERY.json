@@ -1,53 +1,45 @@
 {
-  "kind": "healing-toggle",
-  "number": 358,
-  "source": "51a0819552a1b8d6c888cb273057f50dc79f2635",
-  "developer": 41596335602,
-  "player": 41596335643,
-  "display": 41596335585,
-  "native": 41600059461,
-  "tester": 41599308950,
-  "tester_test_source": "87691e8f95351bd26b8ea11293cb29c11433c6d4",
-  "core_tests": 2331,
+  "kind": "combined-owner",
+  "number": 362,
+  "source": "34f5ffd2ea08bef701f60c95298edcfacc239e0c",
+  "developer": 41942317979,
+  "player": 41942317989,
+  "display": 41942317994,
+  "native": 41942317979,
+  "tester": 41942434237,
+  "tester_test_source": "a94eac096ab491b4fd4a316bf283b2e93fb02ca8",
+  "core_tests": 2477,
   "android_tests": 71,
-  "title": "APD Alpha Preview 358 \u2014 healing confirmation On/Off toggle",
-  "fallback_number": 357,
-  "fallback_hashes": {
-    "Developer": "6452e25f61cc3ef3c4542b4e080f489357f8c719258feb1c6b744c7cb71037de",
-    "Alpha-Testers": "eb13d5bbcc293640cf8b37884868641ce37b05dd45531e3eebc09847cc723e24"
-  },
+  "title": "APD 362 \u2014 Developer and Alpha-Testers: loot, gear origins and Rat King search",
   "visual_review": {
-    "qol-dew-settings.png": "47c9b8d02c0323f1a4eeaf27e0df683f27e8852010403ac755e3e13e134a494b",
-    "qol-force-weapon.png": "a7c67330093e63bdbc9ee0674026fb875f87fa25c43455bbe9fabe24c02e8c7f",
-    "qol-sharpshooting-weapon.png": "e7130928ffc3a2a52ea8eae5719225a0977a384f08dc3014145e053a924aac8a",
-    "qol-searched-wall.png": "3abfc914a604a6ea7cbfd565123eaf327dfb629a33dcf7224769459c7a62896e",
-    "qol-searched-wall-color.png": "9e9983c962318f825c6b04325a17462b957369de2d1be86e7205c63c9003b8d3",
-    "qol-offline-license.png": "403895b4e93bfbc2be8b1670d0bbde09a46f967351c455c04876002534ee55bf",
-    "healing-settings-toggle-on.png": "63ccba4bdbe693d62cd13537a4da56a934af122a1a242ddaf82dce28747dc005",
-    "healing-settings-toggle-off.png": "301b309168752857e5d527d49b52718ce488cc10f70beb7746cce984b0e35797"
+    "qol-dew-settings.png": "1ddb9b627cc6fa41417a6d0b1fd70a8342a61c3e7fd49efbe4b36e4ca212e15e",
+    "qol-force-weapon.png": "ab9e528df164484274f813568537b18b3ee59624e48cb1966fa8dab5b2b76123",
+    "qol-sharpshooting-weapon.png": "f71f384e23999d8d7ceb2967c7b365ae14602f8dbe516bb80032fb8496557a4a",
+    "qol-searched-wall.png": "9195f763f55c3f6680acaec8f7683276f517ce9c7e0fb0eefc256b360172270a",
+    "qol-searched-wall-color.png": "b93f269234cbdef81205ff7f4f0b74bec0d2a674239d2ed44e8ca896789a1b05",
+    "qol-offline-license.png": "c9e4d18fd674e03319c6d87c5185819f5dc64979976d7f6efd3c2afe537b40f2",
+    "healing-settings-toggle-on.png": "bab0b2b28116f06c74032f09a8e289963690e0d3e4b20e7d515ce9976e92c81c",
+    "healing-settings-toggle-off.png": "a8acd8f99e984160b6fd91b09fd522c482109af46d1c108f2aa6291c8dd54505"
   },
-  "native_test_source": "e3d7c45aa45e9187b13c3a5d18d5392a9cfde4d6",
-  "native_job_name": "same-apk-api34",
-  "native_artifact": "apd-healing358-api34",
-  "profile_overrides": {
-    "redmagic-representative-api36": {
-      "run": 41600059461,
-      "artifact": "apd-healing358-api36",
-      "test_source": "e3d7c45aa45e9187b13c3a5d18d5392a9cfde4d6"
-    }
+  "combined_visual_review": {
+    "qol-rat-quick-search-setting.png": "60f8bafd78fb592c8cb8e29909a107ff7f76a2390ea62cd535d955748dd20362",
+    "qol-unidentified-origin-range.png": "89f506d97dd3e20f4e59febbc0d8c7994d3327008edf6cf06920a7d37a4142ab"
   },
-  "original_stale_assertion_runs": [
-    41596335602,
-    41596335585,
-    41596519859
-  ],
-  "native_case_count": 1,
-  "combine_original_native": true,
-  "retained_fixture_failure_runs": [
-    41598151553,
-    41598151808
-  ],
-  "retained_runner_failure_runs": [
-    41599309031
-  ]
+  "fallback_number": 358,
+  "fallback_hashes": {
+    "Developer": "e87a7f17739f30acebd84d938a98da6c9b0f033e1c4a462542b2d44bb6d677a0",
+    "Alpha-Testers": "b63eccc43e35c5534b5718f403c627a053c5c71c08fb685a16d8c3fc26336e86"
+  },
+  "source_only_check": 41941064721,
+  "retained_prebuild_failure": {
+    "run": 41941525796,
+    "candidate": 361,
+    "apk_created": false,
+    "reason": "Superseded preload could empty a replacement catalog; deterministic regression reproduced and ownership guard corrected."
+  },
+  "retained_lookup_failure": {
+    "run": 41941525782,
+    "reason": "GitHub HTTP502 while querying an unrelated older producer; exact-source bounded retry implemented."
+  },
+  "combined_visual_review_source": "tester-api34"
 }

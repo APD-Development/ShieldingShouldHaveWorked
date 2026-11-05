@@ -205,16 +205,21 @@ for label,h in fallback_hashes.items():
 evidence={'source_commit':source,'tag':tag,'number':number,'runs':{k:spec[k] for k in ('developer','player','display','native','tester')},'test_summaries':results,'core_tests':spec['core_tests'],'android_tests':results['android']['tests'],'native_case_evidence':np,'native_test_source':spec.get('native_test_source'),'profile_overrides':spec.get('profile_overrides',{}),'original_stale_assertion_runs':spec.get('original_stale_assertion_runs',[]),'retained_fixture_failure_runs':spec.get('retained_fixture_failure_runs',[]),'retained_runner_failure_runs':spec.get('retained_runner_failure_runs',[]),'tester_api34_tests':3,'tester_proof':tp,'tester_artifact':ta['id'],'baseline69_cases_preserved':True,'profiles':profiles,'signing_certificate':expected_cert,'application_id':'com.charltonchris29.adhdpixeldungeon.indev','version_code':920,'apk_hashes':hashes,'source_sha256':sha(sourcezip),'visual_review':images,'visual_capture_artifact':va['id'],'display_job_attempts':[{k:j.get(k) for k in ('id','name','conclusion')} for j in attempts],'retained_display_failure':spec.get('retained_display_failure'),'physical_phone_verified':False,'new_application_apks_created':2,'owner_private_delivery':True,'fallback_preserved':True,'prepared_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'rejected_candidate':{'356':'Saved settings and tint fields passed, but visual review found white glyphs: the unlit tilemap shader ignored tint. Replacement uses the standard tint shader plus actual rendered-pixel checks. No356 publication.'},'retained_prebuild_failure':{'355':'Reviewed-change list omitted the build-request document; stopped before application compilation. Metadata fixed without changing application inputs.'},'behavior':{'saved_colors':8,'immediate_tint':True,'unknown_geometry_consulted':False,'search_memory_preserved':True,'search_rng_or_turns_changed':False,'score_formulas_changed':False}}
 if spec.get('kind')=='combined-owner':
  new_images={}
+ combined_folder=tester if spec.get('combined_visual_review_source')=='tester-api34' else visual
+ combined_size=(320,640) if combined_folder==tester else (1216,2688)
  for name in ('qol-rat-quick-search-setting.png','qol-unidentified-origin-range.png'):
-  image,=visual.rglob(name)
-  with Image.open(image) as decoded:assert decoded.size==(1216,2688);decoded.verify()
+  image,=combined_folder.rglob(name)
+  with Image.open(image) as decoded:assert decoded.size==combined_size;decoded.verify()
   new_images[name]=sha(image)
   native_image,=native.rglob(name)
   with Image.open(native_image) as decoded:decoded.verify()
   assert name in spec['combined_visual_review'] and sha(image)==spec['combined_visual_review'][name]
  evidence['combined_visual_review']=new_images
+ evidence['combined_visual_review_source']={'run':spec['tester'] if combined_folder==tester else spec['display'],'artifact':ta['id'] if combined_folder==tester else va['id'],'resolution':combined_size,'note':'API36 six native cases passed, but its old capture selector did not archive the two new images; these reviewed captures are from the actual tester APK on API34. Developer native captures are separately required.'}
  evidence['behavior']={'source_specific_unidentified_origins':True,'legacy_recovery_requires_reliable_evidence':True,'generation_ranges_do_not_read_hidden_upgrade_level':True,'normal_pickup_turns_and_enemy_policy_preserved':True,'interrupted_wall_target_and_manual_count_saved':True,'negative_wall_feedback_requires_completed_guaranteed_check':True,'rat_room_redesign_floor5_only':True,'rat_quick_search_off_default':True,'rat_quick_search_requires_floor5_main_branch_and_goo_defeat':True,'normal_actor_turn_payment':True,'unsupported_temporary_effects_refused_until_safe_to_price':True,'existing_generated_rooms_not_repainted':True,'no_score_formula_change':True}
  evidence['source_only_check']=spec.get('source_only_check')
+ evidence['retained_combined_prebuild_failure']=spec.get('retained_prebuild_failure')
+ evidence['retained_combined_lookup_failure']=spec.get('retained_lookup_failure')
  evidence['target_delivery_utc']='2026-11-05T01:15:00Z'
  evidence['candidate_report']='docs/APD-COMBINED-CANDIDATE-2026-11-04.md'
 receipt=OUT/f'APD-Preview-{number}-Verification.json';receipt.write_text(json.dumps(evidence,indent=2)+'\n');files.append(receipt)
