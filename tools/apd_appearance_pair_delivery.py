@@ -51,9 +51,14 @@ native_job,=[j for j in native_jobs if j['name']==spec.get('native_job_name','an
 if producer['conclusion']=='failure':
  original_job,=[j for j in producer_jobs if j['name']=='android-smoke-check' and j['conclusion']=='failure']
  original_log=subprocess.check_output(['gh','api','--allow-escape-sequences',f'repos/{REPO}/actions/jobs/{original_job["id"]}/logs']).decode()
- if spec.get('kind')=='combined-owner':assert 'spells stack vertically' in original_log and 'clericQuickCastsPersistAndKeepNormalCostsAndTargeting' in original_log
- else:assert 'expected:<-1> but was:<0>' in original_log
- assert re.search(r'Tests run:\s*71,\s*Failures:\s*1',original_log)
+ if spec.get('kind')=='alpha-playback':
+  assert set(re.findall(r'Error in ([A-Za-z0-9_]+)\(',original_log))=={'warmUimsdTapDrawsTheComplete72RunHomeTwiceWithin250ms','grassDewControlsRingBreakdownsSearchedWallAndOfflineLicenseRenderNatively'}
+  assert 'exceeded 250ms' in original_log and 'achievement overlay expired' in original_log
+  assert re.search(r'Tests run:\s*72,\s*Failures:\s*2',original_log)
+ else:
+  if spec.get('kind')=='combined-owner':assert 'spells stack vertically' in original_log and 'clericQuickCastsPersistAndKeepNormalCostsAndTargeting' in original_log
+  else:assert 'expected:<-1> but was:<0>' in original_log
+  assert re.search(r'Tests run:\s*71,\s*Failures:\s*1',original_log)
  (OUT/'API34-original-stale-test-expectation.txt').write_text(original_log)
 # Delivery tooling/docs may change; application/build inputs must remain exact.
 trees=[api(f'repos/{REPO}/git/trees/{s}?recursive=1') for s in (source,os.environ['GITHUB_SHA'])];assert all(not x.get('truncated') for x in trees)

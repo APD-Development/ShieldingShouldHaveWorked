@@ -21,3 +21,5 @@ Targeted playback tests pass, including an added Alpha-only flag regression exer
 ## Retained verification failures
 
 M53 profile job127572477507 passed its title case then lost its emulator before mandatory screenshots could be pulled (device offline); rerun the same profile/APK. Original API36 job127572477572 and its unchanged retry hit the fixture's3.5-second achievement-banner assertion; actual rendering had not completed the banner. Correct only instrumentation to wait for normal banner expiry, retaining the final absence assertion and all original six cases. No game-source or application-artifact change. Alpha four-case native run42120968295 already passed, with the complete selector screenshot reviewed.
+
+Full initial native42120844540 completed70/72: warm UIMSD opening263ms exceeded the unchanged250ms limit, and the fixed banner-delay assertion failed. Retain this failure. Full72-case exact-APK recheck keeps every original latency/turn/save assertion and only fixes the banner observation timing. No publication until a complete successful invocation; do not combine partial case results or weaken the250ms requirement.
