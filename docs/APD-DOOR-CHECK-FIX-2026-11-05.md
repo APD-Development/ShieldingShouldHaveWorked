@@ -23,3 +23,7 @@ Native fixtures retain all existing cases. They now assert zero marks on actual 
 ## Delivery boundary
 
 TEST362 remains the last actually released pair and still contains this bug. Preserve its private release/direct assets and all prior source/owner features, including the latest exact-occurrence timeline check (72-case Android inventory). No new APK or build number has been requested by this source-only check. One intentional replacement pair may follow successful source verification; no duplicate builds for documents or test-only corrections. Never call a failed or untested candidate verified.
+
+## Source acceptance completed
+
+Sourcef7558b16d219641ca8a418d516a5601dabac0aa1 passed source-only42079861146/job127429778801:2495 core cases441 suites, zero failures/errors/skips, Android debug/release/instrumentation Java and desktop compilation. Both original362 bookshelf/doorless-floor regressions were reproduced against the original source and then passed unchanged against the corrected code. No source history was rewritten. One intentional replacement pair is requested next; native/device acceptance and publication are not claimed from source checks.

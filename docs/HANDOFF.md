@@ -1,3 +1,7 @@
+## Door-check source verified; one replacement pair requested
+
+Sourcef7558b16d219641ca8a418d516a5601dabac0aa1 passed42079861146/job127429778801:2495 cases441 suites and complete Android debug/release/instrumentation Java plus desktop compilation. Original362 bookshelf/Floor1/Floor10 regressions reproduce against old code and pass with correction. One pair request includes full72 native cases and six display profiles, with real Floor1 negative and real Floor2 positive fixtures. No APK assembled yet for this fix. Existing TEST362 remains the released fallback and still contains this marker bug. Preserve existing assets/signature/saves and exact-occurrence timeline work.
+
 ## Active owner correction: whole door-check eligibility, not just bookshelf artwork
 
 Owner reports TEST362 marks impossible library/furniture locations and specifically excludes Floor1/Floor10. Shared public floor/generator/tile/known-geometry rule implemented; raw saved search history preserved while invalid old marks are hidden. Local2495 tests441 suites pass, including78 actual generated floors and18 new regressions. Source/Android/instrumentation checks pending. Exact details: APD-DOOR-CHECK-FIX-2026-11-05.md. New native fixtures use real Floor1 negative and real Floor2 positive instead of implying doors on Floor1; latest72 native cases preserved. No new APK yet and TEST362 remains unfixed released fallback. Do not overwrite newer exact-occurrence timeline work.
