@@ -1,3 +1,15 @@
+## TEST362 privately released and downloaded back — 2026-11-05T01:11:27.165513+00:00
+
+Exact application source `34f5ffd2ea08bef701f60c95298edcfacc239e0c`, private tag `apd-alpha-preview-362`, release `434647799`. Both existing APKs passed2477 core cases440 suites; corrected complete71-case Developer API34 run41944633239 passed in one invocation on the same APK. Original70/71 geometry failure and TEST361 prebuild failure remain recorded. Six display profiles and three actual tester cases passed. Original signing/app ID preserved; no physical-phone claim. Publication `2026-11-05T01:09:57Z`; actual download-back verification `2026-11-05T01:10:01.747920+00:00`; final-response links prepared `2026-11-05T01:11:27.165513+00:00`. Invocation/scheduler metadata is not used as proof of delivery. Actual owner link sending is the final response, not preclaimed here.
+
+Developer: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-alpha-preview-362/APD-Developer-362.apk
+
+Alpha-Testers: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-alpha-preview-362/APD-Alpha-Testers-362.apk
+
+Matching source: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-alpha-preview-362/APD-Source-362.zip
+
+Install over only; never uninstall or clear player saves/statistics. TEST358 fallback and all existing assets remain intact. Exact receipt: APD-TEST362-RELEASE-DELIVERY-RECEIPT.json. No additional APK assembled for fixture corrections or publication.
+
 ## TEST361 prebuild failure; TEST362 verification retry
 
 DONE: deterministic cancellation regression fails without the ownership guard and passes with it; full2477 core tests440 suites,0 failures/errors/skips. NOT DONE: APK acceptance/delivery. Producer41941525796 failed2475/2476 before assembly, no361 application APK existed. New exact source34f5ffd2e, producer41942317979, player41942317989, display41942317994. Ordinary retired preload may no longer clear a newer ready catalog; display lookup uses exact source and bounded transientHTTP502/503/504/429 retries. No source history or old assets overwritten.

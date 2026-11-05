@@ -41,3 +41,18 @@ Existing TEST358 private release/assets preserved. No new source changes or APK 
 ## Retained native fixture failure and exact-APK rerun — 00:55 UTC
 
 Original TEST362 native run41942317979/job126967043040 completed70/71 cases. Its Cleric case still asserted one vertical column, conflicting with the approved two inward columns/two rows. Fixture sourcecb169aebc66ea1708f5772e267c1a84b2c97aa83 now checks that grid and explicit pairwise non-overlap. All original casting-cost, targeting, assignment, viewport, flipping and save/load assertions and all71 case identities remain. Full exact-APK rerun41944633239 is pending; it proves unchanged application inputs/source/hash and no application rebuild. Failed preparation41944467693 correctly stopped before publication on failed native evidence. No permission blocker and no new APK/version. Publication remains gated on the corrected full suite.
+
+## Final verified publication
+
+## TEST362 privately released and downloaded back — 2026-11-05T01:11:27.165513+00:00
+
+Exact application source `34f5ffd2ea08bef701f60c95298edcfacc239e0c`, private tag `apd-alpha-preview-362`, release `434647799`. Both existing APKs passed2477 core cases440 suites; corrected complete71-case Developer API34 run41944633239 passed in one invocation on the same APK. Original70/71 geometry failure and TEST361 prebuild failure remain recorded. Six display profiles and three actual tester cases passed. Original signing/app ID preserved; no physical-phone claim. Publication `2026-11-05T01:09:57Z`; actual download-back verification `2026-11-05T01:10:01.747920+00:00`; final-response links prepared `2026-11-05T01:11:27.165513+00:00`. Invocation/scheduler metadata is not used as proof of delivery. Actual owner link sending is the final response, not preclaimed here.
+
+Developer: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-alpha-preview-362/APD-Developer-362.apk
+
+Alpha-Testers: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-alpha-preview-362/APD-Alpha-Testers-362.apk
+
+Matching source: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-alpha-preview-362/APD-Source-362.zip
+
+Install over only; never uninstall or clear player saves/statistics. TEST358 fallback and all existing assets remain intact. Exact receipt: APD-TEST362-RELEASE-DELIVERY-RECEIPT.json. No additional APK assembled for fixture corrections or publication.
+
