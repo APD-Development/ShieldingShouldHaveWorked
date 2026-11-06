@@ -1,0 +1,25 @@
+{
+  "number": 368,
+  "core_tests": 2835,
+  "android_tests": 72,
+  "application_id": "com.charltonchris29.adhdpixeldungeon.indev",
+  "version_code": 920,
+  "signing_certificate": "067688b3ab6bd5820a67f4c1ba7d5859db578173771cf31d3252b3e4e012246e",
+  "apk_hashes": {
+    "Developer": "8e23c1cb147a536212142a3f23d923773f02a9857e47a28a5d64a874c016ed12",
+    "Alpha-Testers": "f3228dd0259848d756a88d063fa11a84176ac483c7dd2bd97b4d7706362f1fd8"
+  },
+  "source_sha256": "c52135f8b66da133fc1f117bc006b4452440f0a1ce81faa356b3b68479a26241",
+  "source": "7ef0800dfd6c4e624d3c001e886eb1a711d80a68",
+  "artifact_id": 13526323860,
+  "artifact_sha256": "cac7436863477f01822174f91c9911d53b2cf6046c104c2c45c8b94fa9c277a0",
+  "prepared_run": 42264869642,
+  "prepared_source": "0863c487b81a05c71a19f34c2b4008fb6b2318a0",
+  "status_note": "docs/APD-368-KNOWN-SOURCE-BOUNDARIES.md",
+  "title": "APD368 \u2014 verified statistics memory fix; later candidate pending",
+  "variants": [
+    "Developer",
+    "Alpha-Testers"
+  ],
+  "purpose": "One diagnostic publication attempt with actual safe API denial capture; reuse exact verified fallback, no APK build or permission change"
+}

@@ -52,8 +52,12 @@ jobs:
               if(! /^[0-9a-f]{40}$/.test(request.delivery_source))throw new Error('Unexpected delivery source');
               permitted.set('apd-corrective-pair-delivery.yml','APD candidate private delivery run link');
             }
+            if(request.prepared_delivery_source){
+              if(! /^[0-9a-f]{40}$/.test(request.prepared_delivery_source))throw new Error('Unexpected prepared delivery source');
+              permitted.set('apd-prepared-pair-delivery.yml','APD prepared private delivery run link');
+            }
             for(const [workflow_id,statusContext] of permitted){
-              const observed=workflow_id==='apd-corrective-tester-check.yml'?request.tester_source:workflow_id==='apd-qol-exact-candidate-acceptance.yml'?request.qol_source:workflow_id==='apd-corrective-pair-delivery.yml'?request.delivery_source:request.source;
+              const observed=workflow_id==='apd-prepared-pair-delivery.yml'?request.prepared_delivery_source:workflow_id==='apd-corrective-tester-check.yml'?request.tester_source:workflow_id==='apd-qol-exact-candidate-acceptance.yml'?request.qol_source:workflow_id==='apd-corrective-pair-delivery.yml'?request.delivery_source:request.source;
               const response=await github.rest.actions.listWorkflowRuns({owner,repo,workflow_id,head_sha:observed,branch:'codex/apd-phone-fixes-2026-10-09',event:'push',per_page:10});
               const runs=response.data.workflow_runs.filter(r=>r.head_sha===observed&&r.head_branch==='codex/apd-phone-fixes-2026-10-09');
               if(runs.length!==1)throw new Error(`Expected one existing exact-source run for ${workflow_id}; found ${runs.length}`);
