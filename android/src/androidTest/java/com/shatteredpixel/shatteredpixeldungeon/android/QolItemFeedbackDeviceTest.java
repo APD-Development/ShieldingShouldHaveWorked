@@ -86,6 +86,51 @@ public class QolItemFeedbackDeviceTest {
         }
         TopScoresDeviceTest.screenshot(image);TopScoresDeviceTest.render(()->shown.get().hide());
     }
+    private static void calculationWindow(java.util.concurrent.Callable<Window> factory,String expected,String screenshot)throws Exception{
+        AtomicReference<Window> shown=new AtomicReference<>();
+        TopScoresDeviceTest.render(()->{try{Window window=factory.call();GameScene.show(window);shown.set(window);}catch(Exception e){throw new RuntimeException(e);}});
+        checkCalculationWindow(shown.get(),expected,screenshot);
+    }
+    private static void checkCalculationWindow(Window window,String expected,String screenshot)throws Exception{
+        AtomicReference<RedButton> expander=new AtomicReference<>();Point[] at=new Point[1];float[] time=new float[1],plainHeight=new float[1];int[] hp=new int[1],size=new int[2];
+        java.util.Map<Button,float[]> controls=new java.util.IdentityHashMap<>();
+        TopScoresDeviceTest.render(()->{try{
+            time[0]=Dungeon.hero.cooldown();hp[0]=Dungeon.hero.HP;
+            java.lang.reflect.Field width=Window.class.getDeclaredField("width"),height=Window.class.getDeclaredField("height");width.setAccessible(true);height.setAccessible(true);size[0]=width.getInt(window);size[1]=height.getInt(window);
+            Point first=window.camera().cameraToScreen(0,0),last=window.camera().cameraToScreen(size[0],size[1]);
+            assertTrue("Calculation window content fits the screen",first.x>=0&&first.y>=0&&last.x<=Game.width&&last.y<=Game.height);
+            for(Button button:TopScoresDeviceTest.find(window,Button.class)){
+                if(button instanceof RedButton&&((RedButton)button).text().equals("Show calculations")){expander.set((RedButton)button);at[0]=button.camera().cameraToScreen(button.left()+button.width()/2,button.top()+button.height()/2);}
+                else controls.put(button,new float[]{button.left(),button.top(),button.width(),button.height()});
+            }
+            for(RenderedTextBlock text:TopScoresDeviceTest.find(window,RenderedTextBlock.class))plainHeight[0]=Math.max(plainHeight[0],text.height());
+            assertNotNull("The actual information window offers calculations",expander.get());
+        }catch(Exception e){throw new RuntimeException(e);}});
+        touch(at[0]);TopScoresDeviceTest.render(()->{try{
+            assertEquals("Pointer opens advanced explanation","Hide calculations",expander.get().text());
+            boolean found=false;for(RenderedTextBlock text:TopScoresDeviceTest.find(window,RenderedTextBlock.class))if(text.text().contains(expected))found=true;assertTrue("Rendered calculation contains live explanation: "+expected,found);
+            for(java.util.Map.Entry<Button,float[]> entry:controls.entrySet()){Button b=entry.getKey();float[] before=entry.getValue();assertEquals(before[0],b.left(),0);assertEquals(before[1],b.top(),0);assertEquals(before[2],b.width(),0);assertEquals(before[3],b.height(),0);}
+            java.lang.reflect.Field width=Window.class.getDeclaredField("width"),height=Window.class.getDeclaredField("height");width.setAccessible(true);height.setAccessible(true);assertEquals(size[0],width.getInt(window));assertEquals(size[1],height.getInt(window));
+            assertEquals(time[0],Dungeon.hero.cooldown(),0);assertEquals(hp[0],Dungeon.hero.HP);
+            ScrollPane scroll=TopScoresDeviceTest.find(window,ScrollPane.class).get(0);scroll.scrollTo(0,Math.min(plainHeight[0],Math.max(0,scroll.content().height()-scroll.height())));
+        }catch(Exception e){throw new RuntimeException(e);}});
+        Thread.sleep(250);TopScoresDeviceTest.screenshot(screenshot);touch(at[0]);
+        TopScoresDeviceTest.render(()->{assertEquals("Pointer closes advanced explanation","Show calculations",expander.get().text());assertEquals(time[0],Dungeon.hero.cooldown(),0);assertEquals(hp[0],Dungeon.hero.HP);window.hide();});
+    }
+    private static void calculationWindowsRenderAndRespond()throws Exception{
+        calculationWindow(()->{com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier b=new com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier();b.setShield(17);return new WndInfoBuff(b);},"17 shield points","qol-mechanics-buff-expanded.png");
+        calculationWindow(()->new WndInfoTalent(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.ENHANCED_RINGS,1,null),"= 3 turns","qol-mechanics-talent-expanded.png");
+        calculationWindow(()->new WndInfoArmorAbility(HeroClass.WARRIOR,new com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.HeroicLeap()),"Actual current ability cost:","qol-mechanics-ability-expanded.png");
+        AtomicReference<WndClericSpells> menu=new AtomicReference<>();Point[] spellAt=new Point[1];
+        TopScoresDeviceTest.render(()->{try{
+            WndClericSpells w=new WndClericSpells(new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome(),Dungeon.hero,true);GameScene.show(w);menu.set(w);
+            for(WndClericSpells.SpellButton b:TopScoresDeviceTest.find(w,WndClericSpells.SpellButton.class)){java.lang.reflect.Field f=b.getClass().getDeclaredField("spell");f.setAccessible(true);if(f.get(b)==com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyWeapon.INSTANCE)spellAt[0]=b.camera().cameraToScreen(b.left()+b.width()/2,b.top()+b.height()/2);}
+            assertNotNull("Actual spell information button exists",spellAt[0]);
+        }catch(Exception e){throw new RuntimeException(e);}});
+        touch(spellAt[0]);AtomicReference<Window> spellWindow=new AtomicReference<>();
+        TopScoresDeviceTest.render(()->{try{java.util.List<WndTitledMessage> windows=TopScoresDeviceTest.find(Game.scene(),WndTitledMessage.class);assertEquals("Actual spell button opens its information",1,windows.size());spellWindow.set(windows.get(0));}catch(Exception e){throw new RuntimeException(e);}});
+        checkCalculationWindow(spellWindow.get(),"multiplied by weapon enchantment power and rounded","qol-mechanics-spell-expanded.png");TopScoresDeviceTest.render(()->menu.get().hide());
+    }
     static void combinedOriginsAndRatPreferenceRenderAndRespond()throws Exception{
         boolean previous=SPDSettings.ratKingQuickSearch();AtomicReference<WndAPDSettings> shown=new AtomicReference<>();Point[] at=new Point[1];
         try{
@@ -194,6 +239,7 @@ public class QolItemFeedbackDeviceTest {
             ThrowingKnife knife=new ThrowingKnife();knife.levelKnown=true;knife.cursedKnown=true;
             TopScoresDeviceTest.render(()->{RingOfSharpshooting r=new RingOfSharpshooting();r.anonymize();r.levelKnown=true;r.cursedKnown=true;Dungeon.hero.belongings.misc=r;r.activate(Dungeon.hero);});
             showItem(knife,"2-6 -> 3-8","qol-sharpshooting-weapon.png");
+            calculationWindowsRenderAndRespond();
             prepareSearchableFloor();
             final int[] center={0};
             TopScoresDeviceTest.render(()->{
