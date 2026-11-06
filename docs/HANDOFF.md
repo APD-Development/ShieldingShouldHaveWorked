@@ -1,3 +1,7 @@
+## 2026-11-06 Lay on Hands and native367 evidence
+
+Full local2719/445 pass. Actual Lay on Hands effect verifies separate self shield/other healing and additive cap; live amount reused. Broad audit still incomplete. Internal367 full native72 and six-display11 methods passed; screenshot reviews recorded in preparation JSON. Controlled bookshelf fixture camera corrected in instrumentation for same-APK recapture; not generated terrain. Alpha367 retry succeeded per workflow; downloaded artifact identity/raw4-case evidence being inspected before completion claim. Do not build another APK for test/doc changes; two pairs produced today, no owner delivery of unfinished scope.
+
 ## 2026-11-06 sensing and image checkpoint
 
 Full local2717/445 pass. Foresight passive mapping/cost and Prismatic Guard fractional/locked recovery/save regressions pass; remaining description audit continues. Internal367 corrected native viewport visually verified; full72/display checks pending. Alpha367 initial certificate-label parser failed before instrumentation; exact cert requirement retained, parsing fixed, same-APK retry requested. Do not claim Alpha native passed or publish367 yet.

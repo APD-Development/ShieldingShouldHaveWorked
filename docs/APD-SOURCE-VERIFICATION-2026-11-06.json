@@ -256,6 +256,54 @@
       "skipped": 0,
       "apk_assembled": false,
       "physical_phone_tested": false
+    },
+    {
+      "workflow_run": 42217234032,
+      "artifact_id": 13502436025,
+      "artifact_bytes": 494458,
+      "artifact_sha256": "77e589bc851b0e318f9a6d96fd3298d7e5d515250276584c77e9d161041d4bfd",
+      "local_evidence": "/workspace/attachments/afde6c95-a60e-4358-a122-75030662e119/github-actions-artifact-13502436025.zip",
+      "checks": "Full core; Android debug/release/instrumentation Java and desktop compilation; no APK assembly",
+      "source_commit": "de3b07d2210ced747e949e84b563bcfcb411158c",
+      "suites": 445,
+      "tests": 2712,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "apk_assembled": false,
+      "physical_phone_tested": false
+    },
+    {
+      "workflow_run": 42217789784,
+      "artifact_id": 13501404021,
+      "artifact_bytes": 496606,
+      "artifact_sha256": "a05d249a7b231ba926cc1d1035113b8f311e801e6489921105af5a77ecf9342f",
+      "local_evidence": "/workspace/attachments/67f9854c-7345-4a35-8f9f-bd9e0221bfc7/github-actions-artifact-13501404021.zip",
+      "checks": "Full core; Android debug/release/instrumentation Java and desktop compilation; no APK assembly",
+      "source_commit": "6a77c3087e01251197bfbd8a93cb50f6ed4450e1",
+      "suites": 445,
+      "tests": 2715,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "apk_assembled": false,
+      "physical_phone_tested": false
+    },
+    {
+      "workflow_run": 42218244876,
+      "artifact_id": 13503035174,
+      "artifact_bytes": 494048,
+      "artifact_sha256": "fd6965e03439afe8f27691c4f042e57be17c3d99803a342e480bfb8e36f8dbdc",
+      "local_evidence": "/workspace/attachments/099c8179-c63f-4bdf-90a3-833e0ff2b476/github-actions-artifact-13503035174.zip",
+      "checks": "Full core; Android debug/release/instrumentation Java and desktop compilation; no APK assembly",
+      "source_commit": "adcf8e299c795af88dd25940fa241599a9eb722c",
+      "suites": 445,
+      "tests": 2717,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "apk_assembled": false,
+      "physical_phone_tested": false
     }
   ]
 }

@@ -3627,6 +3627,11 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/PrismaticGuard.java",
       "sha256": "df578e99b6e2bbf6966fe2501cef92998c97a01130be8e786ef4701e77f79bfe",
       "boundary": "Primary sensing/ring-effective-level/guard reserve and deployment explanation only. Actual passive Foresight range/time/mapping, image fractional regen/lock/save checks; other ring rules separately verified. No hidden enemy state or item upgrade inspection."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/LayOnHands.java",
+      "sha256": "0791e7087df5280b676f6bd74b203d81407cd564d9249fa5be4290612d79f5ed",
+      "boundary": "Self Barrier vs other-character healing/remainder, additive capped shielding and source amount tested against actual private effect handler. No spell targeting/time/damage rules changed."
     }
   ]
 }

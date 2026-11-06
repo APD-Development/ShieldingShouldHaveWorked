@@ -1,1 +1,1 @@
-2026-11-06 Foresight radius/line-of-sight and manual/passive distinction, Enhanced Rings effective levels, Prismatic Guard stored health/regen/deployment. Full local2717/445 passed; verify Android debug/release/instrumentation and desktop without new application build.
+2026-11-06 Lay on Hands exact self/other restoration and additive Barrier cap; actual effect handler regression at each rank, stronger Barrier preservation and inspection invariance. Full local2719/445 passed. Source-only Android debug/release/instrumentation and desktop checks; no new application build.
