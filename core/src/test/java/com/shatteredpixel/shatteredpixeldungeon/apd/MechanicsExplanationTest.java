@@ -314,4 +314,25 @@ public class MechanicsExplanationTest {
    String text=MechanicsDetails.talent(Talent.DEADLY_FOLLOWUP,rank,"");assertTrue(text.contains("by "+ObfuscationExplanation.number(1+.1f*rank)));assertTrue(text.contains("one melee hit does not consume"));assertSame(mark,hero.buff(Talent.DeadlyFollowupTracker.class));
   }
  }
+
+ @Test public void growingChampionDetailsFollowActualGrowthAndSavedMultiplier(){
+  ChampionEnemy.Growing growing=new ChampionEnemy.Growing();
+  for(int tick=0;tick<20;tick++){
+   String text=MechanicsDetails.buff(growing,growing.desc());assertTrue(text.contains("attack damage by "+ObfuscationExplanation.number(growing.meleeDamageFactor())));assertTrue(text.contains("scores by "+ObfuscationExplanation.number(growing.evasionAndAccuracyFactor())));assertTrue(text.contains("step by "+ObfuscationExplanation.number(growing.damageTakenFactor())));
+   float before=growing.meleeDamageFactor();float time=growing.cooldown();growing.act();assertEquals(before+.01f,growing.meleeDamageFactor(),0);assertEquals(time+4,growing.cooldown(),0);
+  }
+  com.watabou.utils.Bundle saved=new com.watabou.utils.Bundle();growing.storeInBundle(saved);ChampionEnemy.Growing loaded=new ChampionEnemy.Growing();loaded.restoreFromBundle(saved);assertEquals(MechanicsDetails.buff(growing,growing.desc()),MechanicsDetails.buff(loaded,loaded.desc()));
+ }
+ @Test public void championDetailsUseRealFactorsAndNeverRollOrGrow(){
+  ChampionEnemy[] champions={new ChampionEnemy.Blazing(),new ChampionEnemy.Projecting(),new ChampionEnemy.AntiMagic(),new ChampionEnemy.Giant(),new ChampionEnemy.Blessed(),new ChampionEnemy.Growing()};
+  Random.pushGenerator(412);int expected=Random.Int();Random.popGenerator();Random.pushGenerator(412);
+  try{for(ChampionEnemy champion:champions){float time=champion.cooldown(),factor=champion.meleeDamageFactor();for(int i=0;i<30;i++){String text=MechanicsDetails.buff(champion,champion.desc());assertTrue(text.contains("scores by "+ObfuscationExplanation.number(champion.evasionAndAccuracyFactor())));assertTrue(text.contains("rounds upward"));}assertEquals(time,champion.cooldown(),0);assertEquals(factor,champion.meleeDamageFactor(),0);}assertEquals(expected,Random.Int());}finally{Random.popGenerator();}
+ }
+
+ @Test public void championIncomingRoundingExplainsSmallHitsUsingActualDamageHandler(){
+  for(int damage:new int[]{1,2,3,7,20}){
+   PlainStatusTarget giant=new PlainStatusTarget();ChampionEnemy.Giant effect=Buff.affect(giant,ChampionEnemy.Giant.class);giant.damage(damage,new Object());assertEquals((int)Math.ceil(damage*effect.damageTakenFactor()),100-giant.HP);
+   PlainStatusTarget antimagic=new PlainStatusTarget();ChampionEnemy.AntiMagic half=Buff.affect(antimagic,ChampionEnemy.AntiMagic.class);antimagic.damage(damage,new Object());assertEquals((int)Math.ceil(damage*half.damageTakenFactor()),100-antimagic.HP);
+  }
+ }
 }

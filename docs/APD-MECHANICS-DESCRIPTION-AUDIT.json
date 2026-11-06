@@ -3212,6 +3212,11 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/ScrollEmpower.java",
       "sha256": "cafffaf9481471f9921c3f32312d899677ff0f3a61c27aaf27f949d935b11e7a",
       "boundary": "Selected Liquid Willpower, Shield Battery, Inscribed Power, Liquid Nature, Liquid Agility and Precise Assault explanation facets only; remaining talents and abilities remain open."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/ChampionEnemy.java",
+      "sha256": "660c094ca8b14f0415f8e73f4c32c37a6fc617d55bbe3a81e28931a55b296eee",
+      "boundary": "Champion contribution factors, Growing timing and additive growth, incoming upward rounding, extra-reach path restrictions and supported Antimagic immunity. No hidden enemy score/HP disclosure or whole-file combat closure."
     }
   ]
 }

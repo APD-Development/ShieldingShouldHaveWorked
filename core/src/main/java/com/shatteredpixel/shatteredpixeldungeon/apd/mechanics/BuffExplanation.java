@@ -39,6 +39,18 @@ public final class BuffExplanation {
         if(buff instanceof Doom)return "_Doom's damage stage_\nEligible incoming damage is multiplied by 1.67 at Doom's stage, before later source-resistance, rounding and protection steps. It does not add a flat 67 damage points, bypass immunity, or guarantee 67% more final HP loss. Immunity to Doom prevents this modifier. The effect has no ordinary duration countdown.";
         if(buff instanceof Corruption)return "_Corruption's gradual harm_\nEach normal tick adds target maximum HP / 100 to a damage accumulator. Its whole damage points are sent to the normal damage handler and its fractional remainder is retained. This is base 1% maximum HP per tick, not 1% of the HP currently left or a guaranteed fixed lifetime through every defense. Corruption also changes allegiance; the original attack and target rules still apply.";
         if(buff instanceof Berserk){Berserk rage=(Berserk)buff;return "_Rage and damage_\nCurrent rage: "+n(100*rage.rageFraction())+"%. Its damage factor is min(1.5, 1 + rage / 2), where 100% rage means rage = 1; current factor: "+n(rage.damageFactor(1))+" times normal at this step. Rage above 100% does not raise that factor past 1.5. The berserk shield formula starts from 8 + 2 × effective armor level (zero armor contribution when no armor is available) and multiplies by 1 + 2 × (missing-HP fraction)³, then by rage when rage exceeds1, with integer rounding. Active berserk shield loss is based on total current shielding, not a fixed amount: ceil(total shield × 0.025), modified by Hold Fast and fractional rounding. Shield/HP, armor, recovery and other effects still follow their own rules.";}
+        if(buff instanceof ChampionEnemy){
+            ChampionEnemy champion=(ChampionEnemy)buff;
+            String result="_Champion contributions_\nThis champion effect multiplies qualifying attack damage by "+n(champion.meleeDamageFactor())
+                +", accuracy and evasion contest scores by "+n(champion.evasionAndAccuracyFactor())
+                +", and damage entering its incoming-damage step by "+n(champion.damageTakenFactor())
+                +". Incoming damage at that step rounds upward to a whole damage point. These are separate factors, not added damage points or hit/dodge percentages. Other defenses, immunity and shielding can still change the final health lost.";
+            if(buff instanceof ChampionEnemy.Growing)result+="\nEach scheduled growth tick adds 0.01 to the damage/accuracy/evasion factor and schedules the next tick four turns later. Incoming damage uses the reciprocal, 1 / that factor. Growth adds to the factor; it does not multiply the previous factor by 1.01. This effect has no fixed growth cap. Displayed whole percentages can hide a fractional difference; the factors above use the current saved state.";
+            if(buff instanceof ChampionEnemy.Projecting)result+="\nExtra-reach attacks require a legal path of at most four tiles through non-solid terrain, without other creatures blocking the path. The extra reach does not mean an attack can pass through a wall.";
+            if(buff instanceof ChampionEnemy.Giant)result+="\nExtra-reach attacks require a legal path of at most two tiles through non-solid terrain, without other creatures blocking the path. Large-creature movement restrictions still apply.";
+            if(buff instanceof ChampionEnemy.AntiMagic)result+="\nImmunity applies to the game's supported Antimagic spell and effect types. It is not immunity to every possible magical-looking attack or all damage sources.";
+            return result;
+        }
         return "";
     }
 }
