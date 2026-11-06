@@ -639,6 +639,7 @@
   "newer_source_followups_not_in_this_apk": [
     "Poison duration label correction verified in source0245f07e7",
     "13 plant/seed and TimeBubble details verified in source9ec83306e",
-    "Pending-shot crossbow inspection fix and Seal/bee-pot details source2845 local passed; remote pending"
+    "Pending-shot crossbow inspection fix and Seal/bee-pot details source2845 local passed; remote pending",
+    "Warding/Regrowth default description purity, no-hero Regrowth crash and plant context withholding; full2850 local passed, new-source compile pending"
   ]
 }
