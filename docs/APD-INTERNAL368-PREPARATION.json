@@ -648,5 +648,14 @@
     "inside_368": false,
     "new_APK": false,
     "release_verified": false
+  },
+  "current_publication_state": {
+    "status": "published_verified_fallback",
+    "release_id": 436913137,
+    "published_at": "2026-11-06T19:35:44Z",
+    "download_back_verified_at": "2026-11-06T19:35:51.893311Z",
+    "workflow_run": 42280704000,
+    "previous_403": "Retained historical failure. Existing-tag request resolved creation without permission changes.",
+    "superseded_by_verified_owner_delivery": 369
   }
 }
