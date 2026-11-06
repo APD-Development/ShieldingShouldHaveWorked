@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -187,7 +190,7 @@ public class WndClericSpells extends Window {
 		@Override
 		protected void onClick() {
 			if (info){
-				GameScene.show(new WndTitledMessage(new HeroIcon(spell), Messages.titleCase(spell.name()), spell.desc()));
+				GameScene.show(new WndTitledMessage(new HeroIcon(spell), Messages.titleCase(spell.name()), spell.desc()+"\n\n"+com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.SpellExplanation.summary(spell,Dungeon.hero), ()->com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.SpellExplanation.details(spell,Dungeon.hero),0));
 			} else {
 				hide();
 
@@ -243,7 +246,7 @@ public class WndClericSpells extends Window {
 							}
 							break;
 						case 1:
-							GameScene.show(new WndTitledMessage(new HeroIcon(spell), Messages.titleCase(spell.name()), spell.desc()));
+							GameScene.show(new WndTitledMessage(new HeroIcon(spell), Messages.titleCase(spell.name()), spell.desc()+"\n\n"+com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.SpellExplanation.summary(spell,Dungeon.hero), ()->com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.SpellExplanation.details(spell,Dungeon.hero),0));
 							break;
 						case 2:
 							hide();

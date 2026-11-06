@@ -1,3 +1,9 @@
+## 2026-11-06 — vision source verified; spell information follows
+
+Source9a466733008aeb07f1deaa8d54a8549dc4be43fe/run42161008405 verified2647 tests445 suites and all Android/desktop Java source gates. Actual artifact13476388289 downloaded489977bytes SHA2568140ce38cac544b79cec5fa343ddab3efc01a36e0eebd1b100cec483d8997224, JSON inspected. Current Tome spell window/11 effects/shared holy status batch local2654 tests445 suites green, remote source gate pending. No game calculations, class restrictions or save schema changed. Existing unarmored Holy Ward attacker-power branch is explained/preserved, not balance-fixed.
+
+Whole-game audit/native/phone acceptance incomplete; no APK/version change. Latest owner asked timing; current wand verification was completed and reported, overall estimate remains explicitly uncommitted. At04:10UTC it was still Nov5 New York and conservative363/364/365 daily pair allowance used; respect the cap before new APK/native candidate. Preserve approved Codex branch, Claude work, player data/signing/appID, TEST365 playable fallback and all approved Search/waiting source work. Exact scope/failures/receipts in APD-MECHANICS-DESCRIPTIONS-2026-11-06.md.
+
 ## 2026-11-06 — pool/reserve source verified; vision explanation follow-up
 
 Source9b2075ea4303bf2f734d30a72bc41749f9e02370/run42159603774 verified2643 tests445 suites/all Android/desktop Java source gates. Downloaded artifact13476277150 actual489771bytes SHA256b4f615ac96fb28133bd08a2d90bb92bbdb603e9dbe5e3718b3b1f4e7b9e1b9de, JSON inspected. Current vision/invisibility/invulnerability and timed-display batch local2647 tests445 suites green, remote gate pending. Source-only, no APK/version/native acceptance/phone claim; whole-game audit not complete.

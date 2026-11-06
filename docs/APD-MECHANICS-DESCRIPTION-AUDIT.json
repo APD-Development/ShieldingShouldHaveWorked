@@ -3190,8 +3190,8 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/MechanicsDetails.java",
-      "sha256": "1e56a696860f0c471fa1ba5a55222acb1bb3207aa5d3aa94da7278779b44653f",
-      "boundary": "Selected Liquid Willpower, Shield Battery, Inscribed Power, Liquid Nature, Liquid Agility and Precise Assault explanation facets only; remaining talents and abilities remain open. Read-only known wand level/damage/charge explanation and Wild Magic preview facets. Not all targeting, wand-specific secondary effects, staff abilities or non-damaging wand mechanics closure. Armor ability charge/recharge explanation and optional bounded description UI only; individual ability effect formulas and native rendered acceptance remain open. Thirteen built-in Battlemage imbued-staff on-hit explanation facets, including conditional probability versus amount/duration/resource units and read-only known-level previews. Not all direct-zap secondary effects or other class ability closure. Selected vision/radius/eligible-creature/invisibility-awareness/protection/timed-display explanation facets; not all sight/AI/special death mechanics closure."
+      "sha256": "b654ea1eb790b4e5a51194790211d3c6f7f02f5222c125995794448739f34d60",
+      "boundary": "Selected Liquid Willpower, Shield Battery, Inscribed Power, Liquid Nature, Liquid Agility and Precise Assault explanation facets only; remaining talents and abilities remain open. Read-only known wand level/damage/charge explanation and Wild Magic preview facets. Not all targeting, wand-specific secondary effects, staff abilities or non-damaging wand mechanics closure. Armor ability charge/recharge explanation and optional bounded description UI only; individual ability effect formulas and native rendered acceptance remain open. Thirteen built-in Battlemage imbued-staff on-hit explanation facets, including conditional probability versus amount/duration/resource units and read-only known-level previews. Not all direct-zap secondary effects or other class ability closure. Selected vision/radius/eligible-creature/invisibility-awareness/protection/timed-display explanation facets; not all sight/AI/special death mechanics closure. Tome resource/selected11 spell effect and holy status explanation facets, pure known Arcana/counter previews; not all spells/casting/targeting/secondary or class unlock closure."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/TalentExplanation.java",
@@ -3260,8 +3260,8 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/BuffExplanation.java",
-      "sha256": "2d027ab0a2ef96078bf78e9fe42dfe73930405c0a7e70a55c96242a195458f03",
-      "boundary": "Selected Fire/Frost Imbue, Fury, Adrenaline, Stamina/Cripple description formulas, timing/immunity boundaries and read-only duration; not full numerical-system closure. Selected Paralysis escape/check order/counter, Drowsy and Magical Sleep healing/wake facets; not full damage system or other statuses closure. Selected herbal healing pool/progress/request and armor reserve/last-hit/cap explanation facets, read-only getters; not whole plant/guardian/other secondary mechanic closure. Selected vision/radius/eligible-creature/invisibility-awareness/protection/timed-display explanation facets; not all sight/AI/special death mechanics closure."
+      "sha256": "857b78b50196695b4e0a5eb0bed39da33172e4a5c11eb0cb7d51fcb31262fcbb",
+      "boundary": "Selected Fire/Frost Imbue, Fury, Adrenaline, Stamina/Cripple description formulas, timing/immunity boundaries and read-only duration; not full numerical-system closure. Selected Paralysis escape/check order/counter, Drowsy and Magical Sleep healing/wake facets; not full damage system or other statuses closure. Selected herbal healing pool/progress/request and armor reserve/last-hit/cap explanation facets, read-only getters; not whole plant/guardian/other secondary mechanic closure. Selected vision/radius/eligible-creature/invisibility-awareness/protection/timed-display explanation facets; not all sight/AI/special death mechanics closure. Tome resource/selected11 spell effect and holy status explanation facets, pure known Arcana/counter previews; not all spells/casting/targeting/secondary or class unlock closure."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/FireImbue.java",
@@ -3387,6 +3387,76 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Invulnerability.java",
       "sha256": "fb76b0c11da9528fde312afdf5faaf6daf59405b3631b784d58a3d8d2178cf12",
       "boundary": "Selected vision/radius/eligible-creature/invisibility-awareness/protection/timed-display explanation facets; not all sight/AI/special death mechanics closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/SpellExplanation.java",
+      "sha256": "0af8b4bb97d3394fece60d0395b0565bec0749fdafde20dec06933d4e0d8ed63",
+      "boundary": "Tome resource/selected11 spell effect and holy status explanation facets, pure known Arcana/counter previews; not all spells/casting/targeting/secondary or class unlock closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndClericSpells.java",
+      "sha256": "5271bd049355048dc3f76f277bb6e9c9eeaeb378d4586e6f6feb45a87dd77ae3",
+      "boundary": "Tome resource/selected11 spell effect and holy status explanation facets, pure known Arcana/counter previews; not all spells/casting/targeting/secondary or class unlock closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/ClericSpell.java",
+      "sha256": "b39c7c98f44549d374173c135c2f8fa420a2c2194ddf50aea4b33421d8f27c65",
+      "boundary": "Tome resource/selected11 spell effect and holy status explanation facets, pure known Arcana/counter previews; not all spells/casting/targeting/secondary or class unlock closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/GuidingLight.java",
+      "sha256": "006d65316748c76152c2ac506785d983e27762288bcb82c6c0f5b85f07c3a6b8",
+      "boundary": "Tome resource/selected11 spell effect and holy status explanation facets, pure known Arcana/counter previews; not all spells/casting/targeting/secondary or class unlock closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/HolyWeapon.java",
+      "sha256": "7b68b2f37439a96b45573e8f3c224aee1f66ae81bc54703ad470b0f79e2c38de",
+      "boundary": "Tome resource/selected11 spell effect and holy status explanation facets, pure known Arcana/counter previews; not all spells/casting/targeting/secondary or class unlock closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/HolyWard.java",
+      "sha256": "65834692b9b5692d628db5fcabb2653a474aed5b1085460278ceccbccc0da917",
+      "boundary": "Tome resource/selected11 spell effect and holy status explanation facets, pure known Arcana/counter previews; not all spells/casting/targeting/secondary or class unlock closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/ShieldOfLight.java",
+      "sha256": "87ac4e4f450779db05f788393ac55c95a2d798bb2a7f8dac33acf84947c497a6",
+      "boundary": "Tome resource/selected11 spell effect and holy status explanation facets, pure known Arcana/counter previews; not all spells/casting/targeting/secondary or class unlock closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/Sunray.java",
+      "sha256": "c8d65a1ca18582215bea5813ace53ff0491a6a1dea0454df67df5f3e8ee73929",
+      "boundary": "Tome resource/selected11 spell effect and holy status explanation facets, pure known Arcana/counter previews; not all spells/casting/targeting/secondary or class unlock closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/BlessSpell.java",
+      "sha256": "a1cdc35d8159ba8d5790954ca2da07ae8d0f10c6348b8db04baa4b073e8fd133",
+      "boundary": "Tome resource/selected11 spell effect and holy status explanation facets, pure known Arcana/counter previews; not all spells/casting/targeting/secondary or class unlock closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/DivineSense.java",
+      "sha256": "f4d88701623f001f53e6d07059ae0cc3917094322887dfd931dc506856c0c3e8",
+      "boundary": "Tome resource/selected11 spell effect and holy status explanation facets, pure known Arcana/counter previews; not all spells/casting/targeting/secondary or class unlock closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/HolyLance.java",
+      "sha256": "7dd114548d55e76895aa87778270bd22f769cc77640ac89a53346b287287e76f",
+      "boundary": "Tome resource/selected11 spell effect and holy status explanation facets, pure known Arcana/counter previews; not all spells/casting/targeting/secondary or class unlock closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/Smite.java",
+      "sha256": "0773acc15d523b985323a967f2af632c83a1c920bec52975bd5bd877e3eb7b71",
+      "boundary": "Tome resource/selected11 spell effect and holy status explanation facets, pure known Arcana/counter previews; not all spells/casting/targeting/secondary or class unlock closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/Judgement.java",
+      "sha256": "9eb2d4a737a891f10b99e3a0d55d8040347ec9445010e670821d592e8b31093a",
+      "boundary": "Tome resource/selected11 spell effect and holy status explanation facets, pure known Arcana/counter previews; not all spells/casting/targeting/secondary or class unlock closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/AuraOfProtection.java",
+      "sha256": "3ecb87881e2b62b802e3a4e65d57ff9892cdd6b79907e41b4e8ad5ad3ff153c1",
+      "boundary": "Tome resource/selected11 spell effect and holy status explanation facets, pure known Arcana/counter previews; not all spells/casting/targeting/secondary or class unlock closure."
     }
   ]
 }
