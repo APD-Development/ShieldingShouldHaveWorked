@@ -1,3 +1,7 @@
+## Current source checkpoint under owner APK delivery HOLD
+
+Concurrent Ankh source preserved via normal merge9f02b9bc9, full merged2862/446 passed/raw /workspace/apd-ankh-holster-merged-local-junit.zip. Resin preview mutation red baseline /workspace/apd-resin-preview-before.log; preview uses pure known-level read, actual brew retains exact original cleanup/yield before consumption.1248 realpreview/brew comparisons, pure state/capacity/Hero/RNG and unknownlevel coverage; full2864/446 passed/raw /workspace/apd-resin-preview-local-junit.zip. Required remote source-only checks requested. No APK. Continue the audit; next focus Liquid Metal conversion/repair explanation. Owner hold remains active above all older automatic delivery instructions.
+
 ## Shared-branch merge — preserve both audit batches
 
 Newer remote3e5c184d9 adds verified blessed-Ankh explanation and exact unchanged revival helper. It is preserved alongside localHolster d56ccbd19; neither history is rewritten. Latest owner delivery HOLD above all older delivery instructions remains active. Full merged source verification is pending; separate predecessor receipts are not relabelled as merged evidence. Resin-preview red regression remains safely stashed and backed up at /workspace/apd-resin-preview-uncommitted.patch.

@@ -686,6 +686,27 @@ public class MechanicsExplanationTest {
   try{for(int draw=0;draw<100;draw++){Class<?> previous=target.glyph==null?null:target.glyph.getClass();target.inscribe();assertNotEquals(previous,target.glyph.getClass());assertEquals(3,target.level());}}finally{Random.popGenerator();}
   String text=UtilityItemExplanation.details(new com.shatteredpixel.shatteredpixeldungeon.items.Stylus(),hero);assertTrue(text.contains("excludes the selected armor's existing glyph"));assertTrue(text.contains("does not raise armor upgrade level"));
  }
+ @Test public void resinRecipePreviewDoesNotCleanUpOrConsumeTheInputWand(){
+  hero.talents.get(1).put(Talent.WAND_PRESERVATION,2);
+  com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand wand=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile();wand.cursed=true;wand.curseInfusionBonus=true;wand.resinBonus=2;wand.level(6);wand.cursed=false;wand.levelKnown=wand.cursedKnown=wand.curChargeKnown=true;
+  java.util.ArrayList<com.shatteredpixel.shatteredpixeldungeon.items.Item> ingredients=new java.util.ArrayList<>();ingredients.add(wand);com.shatteredpixel.shatteredpixeldungeon.items.ArcaneResin.Recipe recipe=new com.shatteredpixel.shatteredpixeldungeon.items.ArcaneResin.Recipe();assertTrue(recipe.testIngredients(ingredients));
+  com.watabou.utils.Bundle before=new com.watabou.utils.Bundle(),after=new com.watabou.utils.Bundle();wand.storeInBundle(before);int capacity=wand.maxCharges;String heroBefore=savedDescriptionHero();
+  Random.pushGenerator(419);int expected=Random.Int();Random.popGenerator();Random.pushGenerator(419);
+  try{assertEquals(16,recipe.sampleOutput(ingredients).quantity());assertEquals(expected,Random.Int());}finally{Random.popGenerator();}
+  wand.storeInBundle(after);assertEquals(before.toString(),after.toString());assertEquals(capacity,wand.maxCharges);assertEquals(heroBefore,savedDescriptionHero());assertEquals(1,wand.quantity());
+ }
+ @Test public void resinPreviewAndActualConversionAgreeAcrossWandTypesAndPreservationContexts()throws Exception{
+  int checked=0;
+  for(Class<?> type:com.shatteredpixel.shatteredpixeldungeon.items.Generator.Category.WAND.classes)for(int base:new int[]{0,2,6})for(int resin:new int[]{0,2})for(boolean infusion:new boolean[]{false,true})for(HeroClass heroClass:new HeroClass[]{HeroClass.WARRIOR,HeroClass.MAGE})for(int rank:new int[]{0,2})for(boolean known:new boolean[]{false,true}){
+   hero.heroClass=heroClass;hero.talents.get(1).put(Talent.WAND_PRESERVATION,rank);
+   com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand wand=(com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand)type.getDeclaredConstructor().newInstance();wand.cursed=true;wand.curseInfusionBonus=infusion;wand.resinBonus=resin;wand.level(base);wand.cursed=false;wand.levelKnown=known;wand.cursedKnown=wand.curChargeKnown=true;
+   java.util.ArrayList<com.shatteredpixel.shatteredpixeldungeon.items.Item> inputs=new java.util.ArrayList<>();inputs.add(wand);com.shatteredpixel.shatteredpixeldungeon.items.ArcaneResin.Recipe recipe=new com.shatteredpixel.shatteredpixeldungeon.items.ArcaneResin.Recipe();assertTrue(recipe.testIngredients(inputs));assertEquals(5,recipe.cost(inputs));
+   com.watabou.utils.Bundle before=new com.watabou.utils.Bundle(),after=new com.watabou.utils.Bundle();wand.storeInBundle(before);int expected=2*(base+1)+(heroClass==HeroClass.MAGE?0:rank);assertEquals(known?expected:1,recipe.sampleOutput(inputs).quantity());
+   wand.levelKnown=false;assertEquals(1,recipe.sampleOutput(inputs).quantity());wand.levelKnown=known;wand.storeInBundle(after);assertEquals(type.getSimpleName(),before.toString(),after.toString());
+   assertEquals(expected,recipe.brew(inputs).quantity());assertEquals(0,wand.quantity());assertFalse("Real conversion retains its original inactive-infusion cleanup",wand.curseInfusionBonus);checked++;
+  }
+  assertEquals(1248,checked);String text=UtilityItemExplanation.details(new com.shatteredpixel.shatteredpixeldungeon.items.ArcaneResin(),hero);assertTrue(text.contains("5 alchemy energy"));assertTrue(text.contains("current extra resin yield from Preservation is 0 resin units"));
+ }
  @Test public void holsterRechargeIntervalsMatchActualScheduledChargeProgress(){
   for(float factor:new float[]{com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand.normalRechargeScaleFactor(),com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster.HOLSTER_SCALE_FACTOR})for(int missing=1;missing<=9;missing++){
    com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand wand=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile();wand.maxCharges=10;wand.curCharges=10-missing;wand.partialCharge=0;wand.charge(hero,factor);
