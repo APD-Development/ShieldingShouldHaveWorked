@@ -1,3 +1,7 @@
+## 2026-11-06 food/intuition source checkpoint
+
+Full local2661 core pass. Hearty Meal, Iron Stomach, Hold Fast, five intuition talent explanations now use actual rules; real handlers and stacking verified. Prior5295a271c remote gate42204243259 passed all source checks; artifact downloaded/hash/source verified in mechanics report. New source gate requested; no new APK, emulator or phone acceptance. Whole-game semantic audit unfinished; continue development.
+
 ## 2026-11-06 alternate talent checkpoint
 
 Local full core: 2657 tests pass. Alternate Shield of Light/Bless now reflect actual selected-target defense and allied contest-score behavior; Metamorphosis preview is explicit. Failed source gate 42164692041 exposed ambiguous Window imports in new instrumentation assertions; fixed with explicit game Window import, pending remote compilation. Prior spell receipt verified as recorded in mechanics report. No new APK assembled; whole-game audit and native UI acceptance remain incomplete. Continue implementation after checkpoint.

@@ -112,7 +112,7 @@ public class MechanicsExplanationTest {
  public static class QuietMovementSprite extends com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite {@Override public com.watabou.noosa.particles.Emitter emitter(){return new com.watabou.noosa.particles.Emitter();} @Override public void add(com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite.State state){} @Override public void remove(com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite.State state){} @Override public void sprint(float speed){} @Override public void showStatus(int color,String text,Object...args){} @Override public void showStatusWithIcon(int color,String text,int icon,Object...args){}}
  private QuietMovementSprite quietSprite()throws Exception{java.lang.reflect.Field field=Class.forName("sun.misc.Unsafe").getDeclaredField("theUnsafe");field.setAccessible(true);Object unsafe=field.get(null);return (QuietMovementSprite)unsafe.getClass().getMethod("allocateInstance",Class.class).invoke(unsafe,QuietMovementSprite.class);}
  @Test public void hasteDetailsAgreeWithActualMovementFactorAndDoNotClaimFasterAttacks()throws Exception{java.lang.reflect.Field field=Class.forName("sun.misc.Unsafe").getDeclaredField("theUnsafe");field.setAccessible(true);Object unsafe=field.get(null);hero.sprite=(QuietMovementSprite)unsafe.getClass().getMethod("allocateInstance",Class.class).invoke(unsafe,QuietMovementSprite.class);float before=hero.speed();Haste haste=Buff.affect(hero,Haste.class,5);assertEquals(before*3,hero.speed(),.00001f);assertTrue(MechanicsDetails.buff(haste,haste.desc()).contains("does not multiply attack"));assertTrue(MechanicsDetails.buff(haste,haste.desc()).contains("scheduled update: "+ObfuscationExplanation.number(haste.cooldown())+" game-time units"));assertTrue(MechanicsDetails.buff(haste,haste.desc()).contains("counter adds one"));}
- @Test public void talentDetailsRefreshRankAndDistinguishTemporaryFromActualUpgrades(){String first=MechanicsDetails.talent(Talent.ENHANCED_RINGS,1,"");String next=MechanicsDetails.talent(Talent.ENHANCED_RINGS,3,"");assertTrue(first.contains("= 3 turns"));assertTrue(next.contains("= 9 turns"));assertTrue(next.contains("ordinary rather than effective"));assertTrue(MechanicsDetails.talent(Talent.HOLD_FAST,3,"").contains("factor of 0"));assertTrue(MechanicsDetails.talent(Talent.PROTECTIVE_SHADOWS,2,"").contains("5 shield points"));}
+ @Test public void talentDetailsRefreshRankAndDistinguishTemporaryFromActualUpgrades(){String first=MechanicsDetails.talent(Talent.ENHANCED_RINGS,1,"");String next=MechanicsDetails.talent(Talent.ENHANCED_RINGS,3,"");assertTrue(first.contains("= 3 turns"));assertTrue(next.contains("= 9 turns"));assertTrue(next.contains("ordinary rather than effective"));assertTrue(MechanicsDetails.talent(Talent.HOLD_FAST,3,"").contains("decay by 0"));assertTrue(MechanicsDetails.talent(Talent.PROTECTIVE_SHADOWS,2,"").contains("5 shield points"));}
  @Test public void passiveGlyphPreviewUsesInactiveSentinelForAllNegativeArmorLevels(){
   ring(1);Armor.Glyph[] glyphs={new com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Flow(),new com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Swiftness(),new com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Camouflage(),new com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic()};
   for(Armor.Glyph glyph:glyphs){armor.inscribe(glyph);for(int level:new int[]{-1,-2,-5}){armor.level(level);assertEquals(-1,hero.glyphLevel(glyph.getClass()));String info=ArcanaInfoDisplay.armor(armor);assertTrue(info,info.contains("inactive"));}}
@@ -538,5 +538,34 @@ public class MechanicsExplanationTest {
  }
  @Test public void talentDetailsRespectExplicitAlternatePreviewEvenOnACleric(){
   hero.heroClass=HeroClass.CLERIC;String regular=MechanicsDetails.talent(Talent.SHIELD_OF_LIGHT,1,"",false),alternate=MechanicsDetails.talent(Talent.SHIELD_OF_LIGHT,1,"",true);assertTrue(regular.contains("block roll from 2 to 4"));assertTrue(alternate.contains("33.333%"));assertFalse(alternate.contains("block roll from 2 to 4"));assertTrue(MechanicsDetails.talent(Talent.BLESS,2,"",true).contains("1.05"));assertTrue(MechanicsDetails.talent(Talent.BLESS,2,"",false).contains("15 Barrier points"));
+ }
+ @Test public void heartyMealExplanationMatchesActualThresholdAndHealing()throws Exception{
+  hero.sprite=quietSprite();
+  for(int rank=1;rank<=2;rank++){hero.talents.get(0).put(Talent.HEARTY_MEAL,rank);hero.HT=100;hero.HP=33;Talent.onFoodEaten(hero,1,null);assertEquals(33+2+2*rank,hero.HP);assertTrue(MechanicsDetails.talent(Talent.HEARTY_MEAL,rank,"").contains((2+2*rank)+" HP of healing"));hero.HP=34;Talent.onFoodEaten(hero,1,null);assertEquals(34,hero.HP);}
+ }
+ @Test public void ironStomachExplanationMatchesRealDamageProtection(){
+  Buff.affect(hero,Talent.WarriorFoodImmunity.class);hero.damageInterrupt=false;hero.HT=hero.HP=100;
+  for(int rank=1;rank<=2;rank++){hero.talents.get(1).put(Talent.IRON_STOMACH,rank);hero.HP=100;hero.damage(20,new Object());assertEquals(rank==1?95:100,hero.HP);assertTrue(MechanicsDetails.talent(Talent.IRON_STOMACH,rank,"").contains(rank==1?"divided by four":"set to zero"));}
+ }
+ @Test public void holdFastDescriptionMatchesArmorRollAndActualDecayWithoutQuerySideEffects(){
+  HoldFast hold=Buff.affect(hero,HoldFast.class);hold.pos=hero.pos;
+  for(int rank=1;rank<=3;rank++){hero.talents.get(2).put(Talent.HOLD_FAST,rank);String text=MechanicsDetails.talent(Talent.HOLD_FAST,rank,"");assertTrue(text.contains(rank+"–"+(2*rank)+" damage points"));assertTrue(text.contains("decay by "+ObfuscationExplanation.number(HoldFast.buffDecayFactor(hero))));
+   for(int seed=0;seed<30;seed++){Random.pushGenerator(seed);int expected=Random.NormalIntRange(rank,2*rank);Random.popGenerator();Random.pushGenerator(seed);try{assertEquals(expected,hold.armorBonus());}finally{Random.popGenerator();}}
+  }
+  hero.heroClass=HeroClass.ROGUE;hero.belongings.armor=null;assertEquals(0,hold.armorBonus());hold.pos=hero.pos+1;MechanicsDetails.talent(Talent.HOLD_FAST,3,"");assertSame(hold,hero.buff(HoldFast.class));
+ }
+ @Test public void intuitionDescriptionsMatchRealIdentificationFactorsAndStacking(){
+  Talent[] types={Talent.VETERANS_INTUITION,Talent.ADVENTURERS_INTUITION,Talent.SCHOLARS_INTUITION,Talent.SURVIVALISTS_INTUITION,Talent.THIEFS_INTUITION};
+  com.shatteredpixel.shatteredpixeldungeon.items.Item[] items={new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword(),new MailArmor(),new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife(),new RingOfAccuracy()};
+  for(Talent talent:types)for(int rank=1;rank<=2;rank++){for(Talent other:types)hero.talents.get(0).put(other,0);hero.talents.get(0).put(talent,rank);String text=MechanicsDetails.talent(talent,rank,"");assertTrue(text.contains("not damage"));for(int j=0;j<items.length;j++){float expected=1;
+    if(talent==Talent.VETERANS_INTUITION)expected=j==0?1+.75f*rank:j==1?1+rank:1;
+    if(talent==Talent.ADVENTURERS_INTUITION)expected=j==0?1+1.5f*rank:j==1?1+.75f*rank:1;
+    if(talent==Talent.SCHOLARS_INTUITION&&j==2)expected=1+2*rank;
+    if(talent==Talent.SURVIVALISTS_INTUITION&&j==3)expected=1+2*rank;
+    if(talent==Talent.THIEFS_INTUITION&&j==4)expected=1+rank;
+    assertEquals(expected,Talent.itemIDSpeedFactor(hero,items[j]),0);
+   }
+  }
+  hero.talents.get(0).put(Talent.VETERANS_INTUITION,2);hero.talents.get(0).put(Talent.ADVENTURERS_INTUITION,2);assertEquals(10f,Talent.itemIDSpeedFactor(hero,items[0]),0);assertEquals(7.5f,Talent.itemIDSpeedFactor(hero,items[1]),0);
  }
 }

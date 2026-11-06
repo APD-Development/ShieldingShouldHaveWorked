@@ -3457,6 +3457,36 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/AuraOfProtection.java",
       "sha256": "3ecb87881e2b62b802e3a4e65d57ff9892cdd6b79907e41b4e8ad5ad3ff153c1",
       "boundary": "Tome resource/selected11 spell effect and holy status explanation facets, pure known Arcana/counter previews; not all spells/casting/targeting/secondary or class unlock closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/Talent.java",
+      "sha256": "7488c8315c351c286cf3674af8f5f0a2ad1fb45098b0ee8e9d16df7ee60a73ef",
+      "boundary": "Reviewed food talent healing/protection, Hold Fast block/selected decay, and five intuition identification-progress facets only; not full source-file semantic closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/Hero.java",
+      "sha256": "470fe3de0d5b0f5b2d7053d7dfd096d63f0e6fd8ba237f9c785e5dad78fa4d98",
+      "boundary": "Reviewed food talent healing/protection, Hold Fast block/selected decay, and five intuition identification-progress facets only; not full source-file semantic closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/HoldFast.java",
+      "sha256": "7bb623b61fff4939bf0f83f45a89525e203d386a1db546c96a17ccfc315fb887",
+      "boundary": "Reviewed food talent healing/protection, Hold Fast block/selected decay, and five intuition identification-progress facets only; not full source-file semantic closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/food/Food.java",
+      "sha256": "9e2c66ac7a5aeabca2c33bb8ffd524e9f54c6d52ee1879ba629fbaa640842e42",
+      "boundary": "Reviewed food talent healing/protection, Hold Fast block/selected decay, and five intuition identification-progress facets only; not full source-file semantic closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/Wand.java",
+      "sha256": "3bf29c3223908ef93fea95b80dceed43a4e0b5744154080cc15e995213863f88",
+      "boundary": "Reviewed food talent healing/protection, Hold Fast block/selected decay, and five intuition identification-progress facets only; not full source-file semantic closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/MissileWeapon.java",
+      "sha256": "e7d79831c5076e5a0848f1a7e648bcb9a894a440c2d0a53a445031e18d656d94",
+      "boundary": "Reviewed food talent healing/protection, Hold Fast block/selected decay, and five intuition identification-progress facets only; not full source-file semantic closure."
     }
   ]
 }

@@ -210,3 +210,11 @@ Shield of Light now distinguishes the selected-enemy one-point passive from the 
 Source gate 42164692041 failed Android instrumentation compilation: wildcard imports made Window ambiguous. Core 2654 passed in that failed gate; it is not a successful complete verification. Added an explicit game Window import for the next gate. No native execution claimed.
 
 Prior successful spell gate 42163784292 receipt downloaded and inspected: artifact 13478405976, 493236 bytes, SHA256 2a5b470d5e0364bc5313ba61b9181fd32ee464f2e77aed31ddc57d5c478aff0e; source 795c53d69e36acb3cf18979fd17c3ba3db8b68aa, 2654 tests/445 suites, zero failures/errors/skips. No APK or physical-phone testing.
+
+## Food, Hold Fast and identification progress
+
+Hearty Meal explains the strict HP/maxHP <0.334 check and flat 4/6 HP offer before custom healing. Iron Stomach explains its action-time condition, divide-by-four versus zero-damage stage and rounding. Hold Fast explains added block points, class/equipment caps and the specific supported decay paths; removed an older MechanicsDetails override that prevented the new explanation from reaching the UI. Five intuition talents explain their own equipment-specific progress factors, multiplicative stacking, type versus full identification and passive-ID restrictions. No hidden equipment values read.
+
+Actual handlers tested: food healing below/above threshold, Hero.damage eating protection, three-rank seeded HoldFast.armorBonus and actual decay factors, five item categories/two ranks for Talent.itemIDSpeedFactor plus stacked melee/armor factors. Full local core:2661/445, zero failures/errors/skips. Initial headless food tests needed the existing quiet sprite and non-interrupting hero fixture; production mechanics unchanged. Initial Hold Fast text test exposed the older override; removed duplicate rather than weakening numeric assertions.
+
+Successful prior remote gate42204243259/source5295a271c31dee8787a3c8238866ab4df48586c0: full2657 core and Android debug/release/instrumentation plus desktop compiled. Downloaded artifact13495248905 verified489144 bytes/SHA25665b81f64723c8c03c50513df817387d3c2a78e169140dae72a72410046153a41; embedded JSON source/count inspected. No APK/native execution/physical phone testing.

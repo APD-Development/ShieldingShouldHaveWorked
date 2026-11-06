@@ -28,6 +28,37 @@ public final class TalentExplanation {
         if (rank <= 0) return "";
         int hp = Dungeon.hero == null ? 0 : Dungeon.hero.HT;
         switch (talent) {
+            case VETERANS_INTUITION:
+            case ADVENTURERS_INTUITION:
+            case SCHOLARS_INTUITION:
+            case SURVIVALISTS_INTUITION:
+            case THIEFS_INTUITION:
+                String effect;
+                switch(talent){
+                    case VETERANS_INTUITION:
+                        effect = "Melee-weapon use-identification progress is multiplied by " + ObfuscationExplanation.number(1f+.75f*rank) + "; armor progress by " + (1+rank) + ". At rank two, equipping armor also completes identification, subject to passive-identification restrictions."; break;
+                    case ADVENTURERS_INTUITION:
+                        effect = "Melee-weapon use-identification progress is multiplied by " + ObfuscationExplanation.number(1f+1.5f*rank) + "; armor progress by " + ObfuscationExplanation.number(1f+.75f*rank) + ". At rank two, equipping a weapon also completes identification, subject to passive-identification restrictions."; break;
+                    case SCHOLARS_INTUITION:
+                        effect = "Wand use-identification progress is multiplied by " + (1+2*rank) + ". At rank two, a qualifying wand use completes identification, subject to passive-identification restrictions."; break;
+                    case SURVIVALISTS_INTUITION:
+                        effect = "Thrown-weapon use-identification progress is multiplied by " + (1+2*rank) + ". At rank two, a qualifying thrown-weapon hit readies identification through the normal weapon-use handler."; break;
+                    default:
+                        effect = "Ring use-identification progress is multiplied by " + (1+rank) + ". Equipping reveals its ring type; at rank two, collecting also reveals the type and equipping completes identification, subject to passive-identification restrictions. Revealing a type alone does not reveal hidden upgrade or curse properties.";
+                }
+                return "_Identification progress_\n" + effect + " These factors multiply progress earned by eligible uses, not damage, drop chances, or a fixed number of turns saved. Other applicable intuition factors multiply together. Available identification progress and the item's own usage rules can limit progress from an individual action. Shard of Oblivion can mark identification ready instead of revealing the item. No hidden item values are used to produce this explanation.";
+            case HOLD_FAST:
+                return "_Protection while holding position_\nWaiting readies an added armor-block roll of " + rank + "–" + (2*rank)
+                    + " damage points, with rolls biased toward the middle. The Warrior needs the seal's shielding effect equipped to ready it; other classes use their own talent rules. Moving ends the benefit. The Warrior's added roll is capped at six points. For another class, the cap is worn armor tier plus its effective level, or zero without armor; an unidentified armor's hidden level is not disclosed here. "
+                    + "Supported combo and shield decay steps multiply their normal decay by " + ObfuscationExplanation.number(rank==1?.5f:rank==2?.25f:0f)
+                    + ". This slows decay by " + (rank==1?50:rank==2?75:100) + "%, rather than adding duration to every buff or reducing damage by that percentage. It applies to the supported Combo, Barrier, Blocking shield, seal shield-expiry delay and Berserk shielding decay paths; it does not freeze all status effects.";
+            case HEARTY_MEAL:
+                return "_Healing from eating_\nEating while current HP divided by maximum HP is strictly below 0.334 offers " + (2+2*rank)
+                    + " HP of healing before any custom healing modifier. This is a flat amount, not a percentage of maximum HP. At or above that threshold, this talent offers no healing. Actual health restored is limited by missing HP and the current run's healing rules; excess is not converted to shielding. Eating still spends the food and its normal action time.";
+            case IRON_STOMACH:
+                return "_Protection during the eating action_\nEating grants protection only while the hero has positive remaining action time from that meal. At this rank, incoming damage at the food-protection step is "
+                    + (rank == 2 ? "set to zero" : "divided by four, leaving 25% before rounding")
+                    + ". This is conditional protection during that action, not permanent armor or a shield-point reserve. Damage is rounded to whole points afterward, and later damage rules still apply. The effect does not make eating free or stop hunger from advancing.";
             case LIQUID_WILLPOWER:
                 float fraction = .030f + .035f * rank;
                 return "_Potion shielding_\nAn ordinary potion offers a Barrier equal to "
