@@ -1,3 +1,7 @@
+## 2026-11-06 primary armor-ability coverage checkpoint
+
+Full local2693/445 pass. All19 selectable abilities have read-only primary-effect explanations; actual Trinity cost/form and Rat combat/timer checks pass, preserving float truncation and existing save behavior. Shared receipt ledger docs/APD-SOURCE-VERIFICATION-2026-11-06.json preserves downloaded source gates; newest2689 receipt inspected. Main refreshed8228fbcb0, only unrelated automation differs. Current branch source still newer than withheld366; no new application pair requested. Continue remaining talent/status/nested-mechanic audit and then native replacement viewport acceptance. No checkpoints authorize stopping; no user input needed.
+
 ## 2026-11-06 Elemental Strike source checkpoint
 
 Full local2689/445 pass. All28 existing cone-effect map entries explained; actual barrier/directed-power handler and strict unknown-property invariance tested. No gameplay calculations changed. Prior2683 and2686 source gates42210206740/42210704509 passed, both artifact JSONs downloaded/inspected. Continue Trinity/Ratmogrify and remaining semantic audit.366 still withheld for real viewport rendering failure; its source fix and stronger assertions await a new application acceptance cycle. No new APK since366, source-only checkpoints do not request assembly.

@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -192,6 +195,8 @@ public class Ratmogrify extends ArmorAbility {
 
 	public static class TransmogRat extends Mob {
 
+        public static final float TRANSFORM_TIME = 6f;
+
 		{
 			spriteClass = RatSprite.class;
 
@@ -232,7 +237,7 @@ public class Ratmogrify extends ArmorAbility {
 			return original;
 		}
 
-		private float timeLeft = 6f;
+		private float timeLeft = TRANSFORM_TIME;
 
 		@Override
 		protected boolean act() {
