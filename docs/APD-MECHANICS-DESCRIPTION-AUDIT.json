@@ -2967,6 +2967,96 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Vorpal.java",
       "sha256": "888b19ec3c41c63618e605cddc910d36d973da0a0438eb2f6846e0d64cbe4ac1",
       "boundary": "Ordinary enchantment explanation/trigger and power facets; full translated/resource/durability engine audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/curses/Annoying.java",
+      "sha256": "bd75f253dc3b13ca110221d004d2c47100c7a995377a590ecfaf2051cfac3bbd",
+      "boundary": "Known-curse trigger, conditional effect and numerical explanation facets reviewed; untranslated/full engine audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/curses/Dazzling.java",
+      "sha256": "82801009f866f2ea82a044c4abcacaca6701454335eb5ff3048c169ecec954bc",
+      "boundary": "Known-curse trigger, conditional effect and numerical explanation facets reviewed; untranslated/full engine audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/curses/Displacing.java",
+      "sha256": "17e4f20c4cc6000a7aff0ccddcfb29d783c9bfad3db0a6b623a18643c3bd4dd1",
+      "boundary": "Known-curse trigger, conditional effect and numerical explanation facets reviewed; untranslated/full engine audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/curses/Explosive.java",
+      "sha256": "2c395033152a9d86768e654eab6107de898fa8335eee2baacb4b23b9ea5e2058",
+      "boundary": "Known-curse trigger, conditional effect and numerical explanation facets reviewed; untranslated/full engine audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/curses/Friendly.java",
+      "sha256": "d8576d61ab6e61c50e30c97a771aa49e65a299b505ffe8f527e723b53f88a6eb",
+      "boundary": "Known-curse trigger, conditional effect and numerical explanation facets reviewed; untranslated/full engine audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/curses/Polarized.java",
+      "sha256": "32bba91b2fd04d4fe86f91b5501eda24954ba21122d0a3f20c57b7f967d9d093",
+      "boundary": "Known-curse trigger, conditional effect and numerical explanation facets reviewed; untranslated/full engine audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/curses/Pressurized.java",
+      "sha256": "eeb565ed340ab045182925d30cce3df04944fa615d672c03dc85d4e59e055b42",
+      "boundary": "Known-curse trigger, conditional effect and numerical explanation facets reviewed; untranslated/full engine audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/curses/Sacrificial.java",
+      "sha256": "99f7ece73e192001fbf974dbca04cb2999de54ae3bc8c6034b77d5a0cb0c2694",
+      "boundary": "Known-curse trigger, conditional effect and numerical explanation facets reviewed; untranslated/full engine audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/curses/Wayward.java",
+      "sha256": "46d907057a427ae874035387df626189c288ef693fd1f3079167cca6692e98ab",
+      "boundary": "Known-curse trigger, conditional effect and numerical explanation facets reviewed; untranslated/full engine audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/curses/Wondrous.java",
+      "sha256": "11526fde7ef332d7e3e470c3bc2ee2eb390c54994c51e2efdec6a965edc86fb0",
+      "boundary": "Known-curse trigger, conditional effect and numerical explanation facets reviewed; untranslated/full engine audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/curses/AntiEntropy.java",
+      "sha256": "8a6c8c0f41b69868f6aa1824e33d3368a902aa4ee6cef68b6918fe7a81c916dd",
+      "boundary": "Known-curse trigger, conditional effect and numerical explanation facets reviewed; untranslated/full engine audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/curses/Bulk.java",
+      "sha256": "9c7f8eb0b5da90066efb537a988e1affcff82ef1eeb4a02b4a82fe50601f13af",
+      "boundary": "Known-curse trigger, conditional effect and numerical explanation facets reviewed; untranslated/full engine audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/curses/Corrosion.java",
+      "sha256": "c2d3a32bd0fab0afee5543b4230255590b5d8a2e453aed22af7a7258ff572f7b",
+      "boundary": "Known-curse trigger, conditional effect and numerical explanation facets reviewed; untranslated/full engine audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/curses/Displacement.java",
+      "sha256": "448fe2565b88fa6b6a48e296f71808bf241850ad0f195af6028d536a940337e8",
+      "boundary": "Known-curse trigger, conditional effect and numerical explanation facets reviewed; untranslated/full engine audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/curses/Metabolism.java",
+      "sha256": "ae7b7dbafea5db80ff01178a95e4280dcf7468257a4b948a67cfdb839380d6b7",
+      "boundary": "Known-curse trigger, conditional effect and numerical explanation facets reviewed; untranslated/full engine audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/curses/Multiplicity.java",
+      "sha256": "f439224e5bb83a19fcf8afc4bc88d741a5d4607d25d9a417429cb5362b46fadf",
+      "boundary": "Known-curse trigger, conditional effect and numerical explanation facets reviewed; untranslated/full engine audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/curses/Overgrowth.java",
+      "sha256": "42a60a5c7c12aab2e0f889886a1537feacd34e61d0343278ffbe8fbcd0e01958",
+      "boundary": "Known-curse trigger, conditional effect and numerical explanation facets reviewed; untranslated/full engine audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/curses/Stench.java",
+      "sha256": "6051f4c923916d11f4076058f8b5095b9ea5805593d882e4f109b55878946df0",
+      "boundary": "Known-curse trigger, conditional effect and numerical explanation facets reviewed; untranslated/full engine audit remains separate."
     }
   ]
 }

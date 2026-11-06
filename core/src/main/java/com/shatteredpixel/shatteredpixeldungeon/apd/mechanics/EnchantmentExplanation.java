@@ -68,7 +68,7 @@ public final class EnchantmentExplanation {
             default:return "";
         }
     }
-    public static String itemSummary(Weapon weapon,Hero hero){String text=describe(weapon,hero,false);return text.isEmpty()?ArcanaInfoDisplay.weapon(weapon):"\n\n"+text;}
+    public static String itemSummary(Weapon weapon,Hero hero){String text=describe(weapon,hero,false);if(text.isEmpty())text=CurseExplanation.weapon(weapon,hero,false);return text.isEmpty()?ArcanaInfoDisplay.weapon(weapon):"\n\n"+text;}
     public static String describe(Weapon weapon,Hero hero,boolean detailed){
         if(weapon.enchantment==null||weapon.enchantment.curse()||!weapon.enchantment.getClass().getPackage().getName().equals(Blazing.class.getPackage().getName()))return "";
         if(hero!=null&&(!weapon.hasEnchant(weapon.enchantment.getClass(),hero)||hero.buff(MagicImmune.class)!=null))return "This enchantment is currently suppressed or overridden; no active benefit is claimed.";

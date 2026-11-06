@@ -624,6 +624,7 @@ public class Armor extends EquipableItem {
                 info += "\n\n"+com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.ObfuscationExplanation.summary(this,Dungeon.hero);
             else {
                 String explanation=com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.GlyphExplanation.summary(this,Dungeon.hero);
+                if(explanation.isEmpty())explanation=com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.CurseExplanation.armor(this,Dungeon.hero,false);
                 if(!explanation.isEmpty())info+="\n\n"+explanation;
                 else info+=com.shatteredpixel.shatteredpixeldungeon.apd.ArcanaInfoDisplay.armor(this);
             }

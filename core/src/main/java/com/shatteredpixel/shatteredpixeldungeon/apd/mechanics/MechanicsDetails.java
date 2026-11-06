@@ -52,11 +52,11 @@ public final class MechanicsDetails {
         if(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring)result.append(RingExplanation.details((com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring)item)).append("\n\n");
         if(item instanceof Armor){
             Armor armor=(Armor)item;
-            result.append(GlyphExplanation.details(armor,Dungeon.hero)).append("\n\n");
+            result.append(GlyphExplanation.details(armor,Dungeon.hero)).append("\n\n").append(CurseExplanation.armor(armor,Dungeon.hero,true)).append("\n\n");
             if(armor.levelKnown)result.append("_Armor's current base absorption_\n").append(armor.DRMin()).append("–").append(armor.DRMax()).append(" damage points per applicable hit before other defensive effects. Strength requirement: ").append(armor.STRReq()).append(" points. Upgrades and augmentation change these displayed values; this range is not a flat reduction percentage.\n\n");
             else result.append("Armor-level calculations stay hidden until its upgrades are identified.\n\n");
         }
-        if(item instanceof Weapon)result.append(EnchantmentExplanation.describe((Weapon)item,Dungeon.hero,true)).append("\n\n").append("_Weapon's displayed values_\nThe damage range is the weapon's base damage before the target's defenses and other bonuses. The accuracy number is the weapon's contribution to an attack score, not a hit probability. Upgrade and ring comparisons above describe the stated contribution; they do not include every target, buff or dungeon rule. Unidentified upgrade-dependent calculations remain hidden.\n\n");
+        if(item instanceof Weapon)result.append(EnchantmentExplanation.describe((Weapon)item,Dungeon.hero,true)).append("\n\n").append(CurseExplanation.weapon((Weapon)item,Dungeon.hero,true)).append("\n\n").append("_Weapon's displayed values_\nThe damage range is the weapon's base damage before the target's defenses and other bonuses. The accuracy number is the weapon's contribution to an attack score, not a hit probability. Upgrade and ring comparisons above describe the stated contribution; they do not include every target, buff or dungeon rule. Unidentified upgrade-dependent calculations remain hidden.\n\n");
         String common=glossary(visibleDescription);if(!common.isEmpty())result.append(common);
         return result.toString().trim();
     }
