@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -97,6 +100,13 @@ public class Food extends Item {
 	protected void eatSFX(){
 		Sample.INSTANCE.play( Assets.Sounds.EAT );
 	}
+
+    public float previewEatingTime(){return Dungeon.hero==null?Float.NaN:eatingTime();}
+
+    @Override
+    public String info(){
+        return super.info()+"\n\n"+com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.FoodExplanation.summary(this);
+    }
 
 	protected float eatingTime(){
 		if (Dungeon.hero.hasTalent(Talent.IRON_STOMACH)

@@ -447,3 +447,14 @@ Rage/combo full local suite passed42s; expected inventory2754/446. Final Lethal 
 ### Combo count and time panel
 
 Collapsed buff details now show actual count and remaining fractional timer, current-position Hold Fast decay from a pure preview, enum move requirements, one-use restrictions and Slam/Crush/Fury primary damage-input meanings. No defense roll or attack query during inspection. Eight real act() cases compare decay with all Hold Fast ranks and valid/invalid positions; inspection preserves full Combo saved bundle and does not detach invalid Hold Fast (normal act still handles it). Full2755/446 zero failures/errors/skips; preserved raw local JUnit `/workspace/apd-combo-window-local-junit.zip` and summary JSON, full log `/workspace/apd-combo-window-full.log`. No new native/phone rendering proof.
+
+
+### Hunger and meal units
+
+Hunger panel now gives live fractional hunger and damage reserve, thresholds300/450, ordinary time progression and pause conditions, saturation atzero, separate rate versus positive nutrition, and exact already-starving request rule: addHT/1000, request whole part only if reserve strictly>1. Sixteen real act() cases match preview/request/reserve; description and save/load preserve state. Controlled Hero records damage requests without claiming final HP loss. No hunger/Wait mechanics changed; existing Wait tests pass. Full hunger-only2757/446 pass, preserved raw local summary/JUnit at `/workspace/apd-hunger-units-local-*`.
+
+Food summary displays actual base energy after current On Diet division, labelled before possible cursed-Horn penalty and hunger saturation; no unknown Horn curse is queried. Live eating-time preview delegates to actual subtype/talent eatingTime without execution. Raw Blandfruit and crafting placeholders explicitly avoid pretending they are edible. Advanced explanation separates hunger points, HP and action time, challenge/Horn/cap rules and independent special food effects. Actual normal/Small Ration/Chargrilled satisfaction tests match challenge nutrition; normal/berry/Supply Ration time rules and meal talent shortcuts checked. RNG/time/quantity/Hunger unchanged by inspection; catalog purity passes. Special food random effects are not claimed fully audited.
+
+Remote d54a75f44 receipt actually downloaded/verified:2754/446, Android/desktop source compile job127934644827/run42230439420; artifact13507922559 SHAa5024a5b8a82469403ec3e9ec20246f84c54bd03428385cffe61315cee0496da. Newer source verification follows; no application assembly or device claim.
+
+Final food/hunger full2759/446 zero failures/errors/skips, preserved `/workspace/apd-food-units-local-junit.zip` plus summary and `/workspace/apd-food-units-full.log`. Exact source-only verification requested.

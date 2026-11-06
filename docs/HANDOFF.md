@@ -1,3 +1,7 @@
+## 2026-11-06 hunger/food checkpoint
+
+Full local2759/446 passed; raw JUnit and summary preserved /workspace/apd-food-units-local-*. Hunger live fractional units, reserve and strict starvation request explanation backed by actual act/save tests. Food nutrition/current actual eating-time description backed by actual satisfaction/challenge and pure time/RNG tests; unsafe/special food effects remain separate. Source-only request2759 includes previous combo timer; wait for exact Android/desktop receipt. Remote d54a75f44 proof2754/446 downloaded/hashed, ledger updated. No APK assembly or delivery. Continue remaining visible status/running mechanics; preserve two-pair daily count and fallback365.
+
 ## 2026-11-06 combo timer checkpoint
 
 Local full2755/446 pass, raw JUnit preserved at /workspace/apd-combo-window-local-junit.zip and summary. Live combo timer/count and pure position-aware Hold Fast preview added to collapsed buff details; actual act/save-state regressions pass. Source-only2754 run42230439420 pending actual retrieval. No new application build or delivery; broad semantic audit continues. Next inspect hunger/food units and consequences without changing rules.

@@ -172,6 +172,15 @@ public class Hunger extends Buff implements Hero.Doom {
 		BuffIndicator.refreshHero();
 	}
 
+    /** Public status values only; preview never advances starvation or requests damage. */
+    public float hungerPoints(){return level;}
+    public float starvationDamageProgress(){return partialDamage;}
+    public int nextStarvationInput(){
+        if(target==null || !isStarving())return 0;
+        float progress=partialDamage+target.HT/1000f;
+        return progress>1 ? (int)progress : 0;
+    }
+
     public boolean isHungry(){return level>=HUNGRY;}
 
 	public boolean isStarving() {

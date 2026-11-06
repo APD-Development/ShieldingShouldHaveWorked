@@ -3777,6 +3777,21 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/MechanicsDetails.java",
       "sha256": "5b89e85406e0c71fb5c09751138503da7d6c5ac782ce4463de5acd2b94fc91b9",
       "boundary": "Read-only live combo timer/count, Hold Fast decay, move requirements and primary damage-input formula explanation. Actual timer/position/state regressions; not complete finisher splash/AI/VFX semantic closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Hunger.java",
+      "sha256": "f69cb09ac7575fafb015d5fc35d2f91b36d2da152a5c235004c4d6e2b827adce",
+      "boundary": "Hunger/food units, thresholds, strict starvation reserve, nutrition limits and actual meal-time preview with no RNG consumption. Not complete special food effect or all resource-loop semantic closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/food/Food.java",
+      "sha256": "d177155bb3ddaffe11fff461eb4ed2d2643dcf2e83d310a7c8e3861689c54fec",
+      "boundary": "Hunger/food units, thresholds, strict starvation reserve, nutrition limits and actual meal-time preview with no RNG consumption. Not complete special food effect or all resource-loop semantic closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/FoodExplanation.java",
+      "sha256": "ecf47ffa5eb8c64e6951b0a9d4ff2fb417e0144810b89394c51bc3af39c95377",
+      "boundary": "Hunger/food units, thresholds, strict starvation reserve, nutrition limits and actual meal-time preview with no RNG consumption. Not complete special food effect or all resource-loop semantic closure."
     }
   ]
 }
