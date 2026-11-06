@@ -3887,6 +3887,21 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/BuffExplanation.java",
       "sha256": "36cedcc369c04fc02185f61f30703a7f2fec1586c0dd4b5fd0169334fbcac6f7",
       "boundary": "Remaining39 talent candidate calculation explanations and six status facets. Actual soul restoration/hunger, invis duration, live prep tables, rounded dart wear, two recharge channels, twin tiers, damage rounding, decay/save and public-state purity tested. This does not close every nested behavior or full inventory audit."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/WeaponAbilityExplanation.java",
+      "sha256": "a44a5e900e764ee260007587d11d1f7dd689ca8d6c2107ac1b429e3fb088749e",
+      "boundary": "Primary weapon ability/projectile/trinket calculation facets; actual input, FOV, contest, state and privacy tests in MechanicsExplanationTest. Not whole-game/nested closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/MissileExplanation.java",
+      "sha256": "ed12596daa283e7d97dea2048f7a69acd3633f740b0f1c0e125e2395da426eaf",
+      "boundary": "Primary weapon ability/projectile/trinket calculation facets; actual input, FOV, contest, state and privacy tests in MechanicsExplanationTest. Not whole-game/nested closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/TrinketExplanation.java",
+      "sha256": "3516cc807cc6f5431eec5ea9b550728c6c56658d9d4cfc493e33cf5e02786330",
+      "boundary": "Primary weapon ability/projectile/trinket calculation facets; actual input, FOV, contest, state and privacy tests in MechanicsExplanationTest. Not whole-game/nested closure."
     }
   ]
 }

@@ -52,6 +52,7 @@ public final class MechanicsDetails {
         if(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand)result.append(WandExplanation.details((com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand)item)).append("\n\n");
         if(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact)result.append(ArtifactExplanation.details((com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact)item)).append("\n\n");
         if(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring)result.append(RingExplanation.details((com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring)item)).append("\n\n");
+        if(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket)result.append(TrinketExplanation.details((com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket)item)).append("\n\n");
         if(item instanceof Armor){
             Armor armor=(Armor)item;
             if(armor instanceof com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor && Dungeon.hero!=null && Dungeon.hero.armorAbility!=null)
@@ -61,6 +62,8 @@ public final class MechanicsDetails {
         }
         if(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff)
             result.append(((com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff)item).mechanicsDetails()).append("\n\n");
+        if(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon)result.append(WeaponAbilityExplanation.details((com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon)item,Dungeon.hero)).append("\n\n");
+        if(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon)result.append(MissileExplanation.details((com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon)item,Dungeon.hero)).append("\n\n");
         if(item instanceof Weapon)result.append(WeaponExplanation.details((Weapon)item,Dungeon.hero)).append("\n\n").append(EnchantmentExplanation.describe((Weapon)item,Dungeon.hero,true)).append("\n\n").append(CurseExplanation.weapon((Weapon)item,Dungeon.hero,true)).append("\n\n");
         String common=glossary(visibleDescription);if(!common.isEmpty())result.append(common);
         return result.toString().trim();

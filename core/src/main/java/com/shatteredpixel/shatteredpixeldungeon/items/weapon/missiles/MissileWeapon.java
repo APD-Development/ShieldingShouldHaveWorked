@@ -460,6 +460,13 @@ abstract public class MissileWeapon extends Weapon {
 		durability = Math.max(durability, 1); //cannot break from doing this
 	}
 
+    /** UI preview must not consume subclass pending-impact state. */
+    public final float previewDurabilityPerUse(){return previewDurabilityPerUse(level());}
+    public float previewDurabilityPerUse(int level){return durabilityPerUse(level);}
+
+    /** Base use input only; no durability simulation or subclass effect updates. */
+    public final float baseDurabilityUses(){return baseUses;}
+
 	public final float durabilityPerUse(){
 		return durabilityPerUse(level());
 	}
@@ -720,16 +727,16 @@ abstract public class MissileWeapon extends Weapon {
 		}
 
 		if (levelKnown) {
-			if (durabilityPerUse() > 0) {
+			if (previewDurabilityPerUse() > 0) {
 				info += "\n\n" + Messages.get(this, "uses_left",
-						(int) Math.ceil(durability / durabilityPerUse()),
-						(int) Math.ceil(MAX_DURABILITY / durabilityPerUse()));
+						(int) Math.ceil(durability / previewDurabilityPerUse()),
+						(int) Math.ceil(MAX_DURABILITY / previewDurabilityPerUse()));
 			} else {
 				info += "\n\n" + Messages.get(this, "unlimited_uses");
 			}
 		}  else {
-			if (durabilityPerUse(0) > 0) {
-				info += "\n\n" + Messages.get(this, "unknown_uses", (int) Math.ceil(MAX_DURABILITY / durabilityPerUse(0)));
+			if (previewDurabilityPerUse(0) > 0) {
+				info += "\n\n" + Messages.get(this, "unknown_uses", (int) Math.ceil(MAX_DURABILITY / previewDurabilityPerUse(0)));
 			} else {
 				info += "\n\n" + Messages.get(this, "unlimited_uses");
 			}

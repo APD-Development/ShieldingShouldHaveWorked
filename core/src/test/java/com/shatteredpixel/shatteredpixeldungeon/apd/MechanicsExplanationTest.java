@@ -33,6 +33,77 @@ public class MechanicsExplanationTest {
  @Before public void setup()throws Exception{HeadlessTestSupport.start();java.lang.reflect.Field notes=com.shatteredpixel.shatteredpixeldungeon.journal.Notes.class.getDeclaredField("records");notes.setAccessible(true);oldNotes=notes.get(null);com.shatteredpixel.shatteredpixeldungeon.journal.Notes.reset();oldChallenges=Dungeon.challenges;Dungeon.challenges=0;oldRules=new com.watabou.utils.Bundle();Dungeon.apdStoreCustomRules(oldRules);Dungeon.apdRestoreCustomRules(new com.watabou.utils.Bundle());oldHero=Dungeon.hero;oldLevel=Dungeon.level;Dungeon.level=new GrassDewPickupTest.TestLevel();Dungeon.level.setSize(7,7);hero=new Hero();hero.heroClass=HeroClass.WARRIOR;Talent.initClassTalents(hero);hero.pos=24;hero.HP=hero.HT=20;Dungeon.hero=hero;armor=new MailArmor();armor.levelKnown=armor.cursedKnown=true;armor.inscribe(new Obfuscation());hero.belongings.armor=armor;}
  @After public void restore()throws Exception{Dungeon.hero=oldHero;Dungeon.level=oldLevel;Dungeon.challenges=oldChallenges;Dungeon.apdRestoreCustomRules(oldRules);java.lang.reflect.Field notes=com.shatteredpixel.shatteredpixeldungeon.journal.Notes.class.getDeclaredField("records");notes.setAccessible(true);notes.set(null,oldNotes);}
  private RingOfArcana ring(int level){RingOfArcana ring=new RingOfArcana();ring.level(level);ring.anonymize();ring.levelKnown=ring.cursedKnown=true;hero.belongings.ring=ring;ring.activate(hero);return ring;}
+ @Test public void trinketDetailsUseCurrentKnownLevelsWithoutAdvancingSelectorsOrRandomness()throws Exception{
+  for(String type:new String[]{"EyeOfNewt","FerretTuft","SaltCube","VialOfBlood","ExoticCrystals","RatSkull","MimicTooth","ParchmentScrap","PetrifiedSeed","ThirteenLeafClover","DimensionalSundial","CrackedSpyglass","MossyClump","TrapMechanism","ChaoticCenser","WondrousResin","ShardOfOblivion"}){
+   com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket trinket=(com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket)Class.forName("com.shatteredpixel.shatteredpixeldungeon.items.trinkets."+type).getDeclaredConstructor().newInstance();trinket.levelKnown=trinket.cursedKnown=true;
+   for(int level=0;level<=3;level++){trinket.level(level);String heroBefore=savedDescriptionHero();com.watabou.utils.Bundle before=new com.watabou.utils.Bundle(),after=new com.watabou.utils.Bundle();trinket.storeInBundle(before);Random.pushGenerator(721);int next=Random.Int();Random.popGenerator();Random.pushGenerator(721);try{String text=TrinketExplanation.details(trinket);assertTrue(type,text.contains("Known effective trinket level: "+level));assertEquals(type,next,Random.Int());}finally{Random.popGenerator();}trinket.storeInBundle(after);assertEquals(type,before.toString(),after.toString());assertEquals(type,heroBefore,savedDescriptionHero());}
+   trinket.levelKnown=false;trinket.level(0);String zero=TrinketExplanation.details(trinket);trinket.level(3);assertEquals(type,zero,TrinketExplanation.details(trinket));
+  }
+ }
+ @Test public void eyeOfNewtDescriptionMatchesActualRoundedVisionRange(){
+  descriptionSightArena();hero.viewDistance=8;com.shatteredpixel.shatteredpixeldungeon.items.trinkets.EyeOfNewt eye=new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.EyeOfNewt();eye.cursedKnown=true;hero.belongings.backpack.items.add(eye);
+  for(int level=0;level<=3;level++){eye.level(level);boolean[] fov=new boolean[Dungeon.level.length()];Dungeon.level.updateFieldOfView(hero,fov);int radius=Math.round(8*com.shatteredpixel.shatteredpixeldungeon.items.trinkets.EyeOfNewt.visionRangeMultiplier(level));assertTrue(fov[hero.pos+radius]);assertFalse(fov[hero.pos+radius+1]);assertTrue(TrinketExplanation.details(eye).contains("= "+(2+level)+" tiles"));}
+ }
+ @Test public void ferretTuftDescriptionMatchesActualContestForEnemyAndHeroAllies(){
+  com.shatteredpixel.shatteredpixeldungeon.items.trinkets.FerretTuft tuft=new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.FerretTuft();tuft.cursedKnown=true;hero.belongings.backpack.items.add(tuft);ContestScoreTarget attacker=new ContestScoreTarget(),defender=new ContestScoreTarget();
+  for(int level=0;level<=3;level++){tuft.level(level);float factor=com.shatteredpixel.shatteredpixeldungeon.items.trinkets.FerretTuft.evasionMultiplier(level);
+   for(int seed=0;seed<40;seed++){Random.pushGenerator(seed);float attack=Random.Float(attacker.attackSkill(defender)),defense=Random.Float(defender.defenseSkill(attacker))*factor;Random.popGenerator();Random.pushGenerator(seed);try{assertEquals(attack>=defense,com.shatteredpixel.shatteredpixeldungeon.actors.Char.hit(attacker,defender,1,false));}finally{Random.popGenerator();}}
+   assertTrue(TrinketExplanation.details(tuft).contains("including enemies"));
+  }
+ }
+ @Test public void inspectingTippedDartDoesNotConsumePendingImpactPosition()throws Exception{
+  com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.PoisonDart dart=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.PoisonDart();dart.levelKnown=dart.cursedKnown=true;
+  java.lang.reflect.Field pending=com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.TippedDart.class.getDeclaredField("targetPos");pending.setAccessible(true);int previous=pending.getInt(null);
+  try{pending.setInt(null,hero.pos);dart.info();MechanicsDetails.item(dart,dart.info());assertEquals("description must preserve the pending gameplay impact",hero.pos,pending.getInt(null));float preview=dart.previewDurabilityPerUse();assertEquals(hero.pos,pending.getInt(null));assertEquals(preview,dart.durabilityPerUse(),0);assertEquals("gameplay calculation still consumes its impact marker",-1,pending.getInt(null));}finally{pending.setInt(null,previous);}
+ }
+ @Test public void missileDescriptionsTrackBleedingModifiersAndPreserveUnknownRingPrivacy(){
+  com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Tomahawk axe=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Tomahawk();axe.levelKnown=axe.cursedKnown=true;
+  RingOfSharpshooting aim=new RingOfSharpshooting();aim.anonymize();aim.levelKnown=aim.cursedKnown=true;hero.belongings.ring=aim;aim.activate(hero);
+  for(int level:new int[]{0,3,8})for(int bonus:new int[]{0,2,5}){axe.level(level);aim.level(bonus);int damageLevel=axe.buffedLvl()+RingOfSharpshooting.levelDamageBonus(hero);String text=MissileExplanation.details(axe,hero);assertTrue(text.contains(ObfuscationExplanation.number(axe.augment.damageFactor(axe.minBleed(damageLevel)))+"–"+ObfuscationExplanation.number(axe.augment.damageFactor(axe.maxBleed(damageLevel)))+" points"));}
+  aim.levelKnown=false;aim.level(0);String zero=MissileExplanation.details(axe,hero);aim.level(9);assertEquals(zero,MissileExplanation.details(axe,hero));
+ }
+ public static class CapturedAbilitySprite extends QuietMovementSprite {
+  public com.watabou.utils.Callback offered;
+  @Override public synchronized void attack(int cell,com.watabou.utils.Callback callback){offered=callback;}
+  @Override public void jump(int from,int to,float height,float duration,com.watabou.utils.Callback callback){offered=callback;}
+ }
+ @Test public void weaponAbilityAddedAmountsMatchActualDeferredAttackInputs()throws Exception{
+  descriptionSightArena();hero.STR=30;
+  java.lang.reflect.Field unsafeField=Class.forName("sun.misc.Unsafe").getDeclaredField("theUnsafe");unsafeField.setAccessible(true);Object unsafe=unsafeField.get(null);CapturedAbilitySprite sprite=(CapturedAbilitySprite)unsafe.getClass().getMethod("allocateInstance",Class.class).invoke(unsafe,CapturedAbilitySprite.class);hero.sprite=sprite;
+  PlainStatusTarget target=new PlainStatusTarget();target.sprite=quietSprite();target.HP=target.HT=100;com.shatteredpixel.shatteredpixeldungeon.actors.Actor.add(target);
+  try{
+   for(String type:new String[]{"WornShortsword","Shortsword","Sword","Longsword","Greatsword","Cudgel","HandAxe","Mace","BattleAxe","WarHammer","Spear","Glaive","Rapier","Katana","Gloves","Sai","Gauntlet","Sickle","WarScythe"}){
+    com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon weapon=(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon)Class.forName("com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee."+type).getDeclaredConstructor().newInstance();weapon.levelKnown=weapon.cursedKnown=true;hero.belongings.weapon=weapon;
+    java.lang.reflect.Method ability=weapon.getClass().getDeclaredMethod("duelistAbility",Hero.class,Integer.class);ability.setAccessible(true);
+    for(int level:new int[]{0,1,3,8})for(com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon.Augment augment:com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon.Augment.values()){
+     weapon.level(level);weapon.augment=augment;target.pos=hero.pos+((type.equals("Spear")||type.equals("Glaive")||type.equals("Rapier")||type.equals("Katana"))?2:1);Dungeon.level.heroFOV[target.pos]=true;sprite.offered=null;ability.invoke(weapon,hero,target.pos);assertNotNull(type,sprite.offered);
+     Integer actual=null;for(java.lang.reflect.Field field:sprite.offered.getClass().getDeclaredFields())if(field.getType()==int.class&&(field.getName().toLowerCase(java.util.Locale.ROOT).contains("boost"))){field.setAccessible(true);actual=field.getInt(sprite.offered);}
+     assertNotNull(type+" deferred added input",actual);String text=WeaponAbilityExplanation.details(weapon,hero);assertTrue(type+" "+actual+" "+text,text.contains("amount: "+actual+" damage points")||text.contains("defenses: "+actual+" points"));
+    }
+   }
+  }finally{com.shatteredpixel.shatteredpixeldungeon.actors.Actor.remove(target);}
+ }
+ private String savedDescriptionHero(){com.watabou.utils.Bundle saved=new com.watabou.utils.Bundle();hero.storeInBundle(saved);return saved.toString();}
+ @Test public void weaponAbilityBreakdownsCoverEveryImplementedFamilyWithoutSpendingState()throws Exception{
+  String[] types={"WornShortsword","Shortsword","Sword","Longsword","Greatsword","Cudgel","HandAxe","Mace","BattleAxe","WarHammer","Spear","Glaive","Rapier","Katana","Gloves","Sai","Gauntlet","Greataxe","Flail","Dagger","Dirk","AssassinsBlade","Sickle","WarScythe","RoundShield","Greatshield","Quarterstaff","Scimitar","RunicBlade","Whip","Crossbow"};
+  for(String type:types){com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon weapon=(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon)Class.forName("com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee."+type).getDeclaredConstructor().newInstance();weapon.levelKnown=weapon.cursedKnown=true;weapon.level(3);
+   com.watabou.utils.Bundle before=new com.watabou.utils.Bundle(),after=new com.watabou.utils.Bundle();weapon.storeInBundle(before);String heroBefore=savedDescriptionHero();Random.pushGenerator(187);int expected=Random.Int();Random.popGenerator();Random.pushGenerator(187);try{String text=WeaponAbilityExplanation.details(weapon,hero);assertTrue(type,text.contains("Duelist weapon ability"));assertEquals(type,expected,Random.Int());}finally{Random.popGenerator();}weapon.storeInBundle(after);assertEquals(type,before.toString(),after.toString());assertEquals(type,heroBefore,savedDescriptionHero());
+   weapon.levelKnown=false;weapon.level(0);String zero=WeaponAbilityExplanation.details(weapon,hero);weapon.level(9);assertEquals(type,zero,WeaponAbilityExplanation.details(weapon,hero));
+  }
+ }
+ @Test public void stanceAbilityDescriptionsAgreeWithActualDefenseAccuracyAndAttackSpeed(){
+  hero.STR=20;com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar sword=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar();hero.belongings.weapon=sword;sword.levelKnown=sword.cursedKnown=true;
+  PlainStatusTarget target=new PlainStatusTarget();int baseDefense=hero.defenseSkill(target),baseAccuracy=hero.attackSkill(target);
+  com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Quarterstaff.DefensiveStance defense=Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Quarterstaff.DefensiveStance.class,5);assertEquals(3*baseDefense,hero.defenseSkill(target));defense.detach();
+  float delay=sword.delayFactor(hero);com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar.SwordDance dance=Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar.SwordDance.class,5);assertEquals(delay/1.6f,sword.delayFactor(hero),.000001f);assertEquals(Math.round(baseAccuracy*1.5f),hero.attackSkill(target));dance.detach();
+  assertTrue(WeaponAbilityExplanation.details(new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Quarterstaff(),hero).contains("score by 3"));assertTrue(WeaponAbilityExplanation.details(sword,hero).contains("adds 0.6"));
+ }
+ @Test public void abilityChargeExplanationDoesNotConsumeCleaveOrSpinBenefits(){
+  com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword sword=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword();com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail flail=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail();
+  assertEquals(1,sword.abilityChargeUse(hero,null),0);assertEquals(1,flail.abilityChargeUse(hero,null),0);
+  com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword.CleaveTracker cleave=Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword.CleaveTracker.class,4);com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail.SpinAbilityTracker spin=Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail.SpinAbilityTracker.class,3);spin.spins=2;
+  String before=savedDescriptionHero();WeaponAbilityExplanation.details(sword,hero);WeaponAbilityExplanation.details(flail,hero);assertEquals(before,savedDescriptionHero());assertEquals(0,sword.abilityChargeUse(hero,null),0);assertEquals(0,flail.abilityChargeUse(hero,null),0);assertSame(cleave,hero.buff(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword.CleaveTracker.class));assertEquals(2,spin.spins);
+ }
  @Test public void protectionDecayDescriptionsMatchActualUpdateAndSaveRestore(){
   for(int interval:new int[]{1,3,5}){
    Barkskin bark=Buff.affect(hero,Barkskin.class);bark.set(8,interval);float before=bark.cooldown();String text=BuffExplanation.details(bark);assertTrue(text.contains(interval+" game-time units"));assertEquals(8,bark.level());assertEquals(before,bark.cooldown(),0);bark.act();assertEquals(7,bark.level());assertEquals(before+interval,bark.cooldown(),0);com.watabou.utils.Bundle saved=new com.watabou.utils.Bundle();bark.storeInBundle(saved);Barkskin loaded=new Barkskin();loaded.restoreFromBundle(saved);assertEquals(interval,loaded.decayInterval());bark.detach();
