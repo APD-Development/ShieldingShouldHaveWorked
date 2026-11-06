@@ -283,7 +283,10 @@ public class ItemSlot extends Button {
 		if (upgradeRange != null) {
 			level.text(upgradeRange);
 			level.measure();
-			level.hardlight(ENHANCED);
+			int[] bounds = ((Wand)item).previewEffectiveLevels();
+			if (bounds[0] > trueLvl) level.hardlight(ENHANCED);
+			else if (bounds[1] < trueLvl) level.hardlight(WARNING);
+			else level.resetColor();
 		} else if (trueLvl != 0 || buffedLvl != 0) {
 			level.text( Messages.format( TXT_LEVEL, buffedLvl ) );
 			level.measure();

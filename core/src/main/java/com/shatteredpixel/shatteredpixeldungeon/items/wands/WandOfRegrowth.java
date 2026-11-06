@@ -303,6 +303,7 @@ public class WandOfRegrowth extends Wand {
 
 	@Override
 	public String statsDesc() {
+		if (!curChargeKnown) return Messages.get(Wand.class, "unknown_charge_preview");
 		String desc = Messages.get(this, "stats_desc", chargesPerCast());
 		if (isIdentified() && Dungeon.hero != null){
 			int chargeLeft = previewChargeLimit(Dungeon.hero.lvl) - totChrgUsed;

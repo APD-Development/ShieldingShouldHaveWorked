@@ -4215,6 +4215,41 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/keys/WornKey.java",
       "sha256": "371fbd18f65c295599f8bf8aea79d6a02da319bf9112950181d12d7f841fd017",
       "boundary": "Ordinary lock purpose/type/floor matching, journal storage, consumption and time cost traced through Hero and Notes. Four concrete type/save/purity checks and actual Notes wrong-floor/type consumption regression pass. No lock or room behavior change. Other translations and native/phone text acceptance unfinished."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/Wand.java",
+      "sha256": "8039a4603992213c22bd512ae216740b49ed4b9c57088e42c454d467d6b3a779",
+      "boundary": "Unknown-charge description invariance across13 wand types; Desperate Power bounds ignore actual hidden count; multi-charge stats withheld until charge knowledge, known readouts and real effective levels retained. Full local2882/446 and final targeted tests passed; native/phone acceptance pending."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfFireblast.java",
+      "sha256": "bc41c8088cee3c5569addf72597b1fb20bffd1762d8c8cffefe00f38d2d7892c",
+      "boundary": "Unknown-charge description invariance across13 wand types; Desperate Power bounds ignore actual hidden count; multi-charge stats withheld until charge knowledge, known readouts and real effective levels retained. Full local2882/446 and final targeted tests passed; native/phone acceptance pending."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfRegrowth.java",
+      "sha256": "cb0a1618e27b6cb6eb5e1c3c66503745458c6feabbbdf7a4f508358d45d92329",
+      "boundary": "Unknown-charge description invariance across13 wand types; Desperate Power bounds ignore actual hidden count; multi-charge stats withheld until charge knowledge, known readouts and real effective levels retained. Full local2882/446 and final targeted tests passed; native/phone acceptance pending."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/LeatherArmor.java",
+      "sha256": "0eb8559e270d7675db22a38882b7e6087de7d3f43218e70224d52b5744278dd9",
+      "boundary": "Source-reviewed constructor-only ordinary variant: sets tier2 and image; no independent protection, strength, damage or timing formulas. Inherits the existing Armor.info/ArmorExplanation and shared base mechanics. No new application change or per-variant new-test claim; full translation/native/phone acceptance remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/MailArmor.java",
+      "sha256": "be0de4931403656e58b54a16cb0799b323e6f9f368e79dbb501159eb3045664e",
+      "boundary": "Source-reviewed constructor-only ordinary variant: sets tier3 and image; no independent protection, strength, damage or timing formulas. Inherits the existing Armor.info/ArmorExplanation and shared base mechanics. No new application change or per-variant new-test claim; full translation/native/phone acceptance remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/ScaleArmor.java",
+      "sha256": "c4d963fa25a2125dda09e46b78bf39f97f5cce67af35102608e2315fbeb80dac",
+      "boundary": "Source-reviewed constructor-only ordinary variant: sets tier4 and image; no independent protection, strength, damage or timing formulas. Inherits the existing Armor.info/ArmorExplanation and shared base mechanics. No new application change or per-variant new-test claim; full translation/native/phone acceptance remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/PlateArmor.java",
+      "sha256": "022c8a4c448d9e94bda5560b7c5003ac1e2df3942b980ce432dd8aca67bb7fc2",
+      "boundary": "Source-reviewed constructor-only ordinary variant: sets tier5 and image; no independent protection, strength, damage or timing formulas. Inherits the existing Armor.info/ArmorExplanation and shared base mechanics. No new application change or per-variant new-test claim; full translation/native/phone acceptance remains separate."
     }
   ]
 }

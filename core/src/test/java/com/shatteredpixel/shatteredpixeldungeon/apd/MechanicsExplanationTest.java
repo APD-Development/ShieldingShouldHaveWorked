@@ -686,6 +686,21 @@ public class MechanicsExplanationTest {
   try{for(int draw=0;draw<100;draw++){Class<?> previous=target.glyph==null?null:target.glyph.getClass();target.inscribe();assertNotEquals(previous,target.glyph.getClass());assertEquals(3,target.level());}}finally{Random.popGenerator();}
   String text=UtilityItemExplanation.details(new com.shatteredpixel.shatteredpixeldungeon.items.Stylus(),hero);assertTrue(text.contains("excludes the selected armor's existing glyph"));assertTrue(text.contains("does not raise armor upgrade level"));
  }
+ @Test public void everyWandStatDescriptionKeepsUnknownChargesPrivate() throws Exception {
+  hero.heroClass=HeroClass.MAGE;Talent.initClassTalents(hero);hero.talents.get(1).put(Talent.DESPERATE_POWER,2);java.util.List<String> leaked=new java.util.ArrayList<>();
+  for(String name:new String[]{"BlastWave","Corrosion","Corruption","Disintegration","Fireblast","Frost","Lightning","LivingEarth","MagicMissile","PrismaticLight","Regrowth","Transfusion","Warding"}){
+   com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand wand=(com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand)Class.forName("com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOf"+name).getConstructor().newInstance();wand.level(2);wand.levelKnown=wand.cursedKnown=true;wand.curChargeKnown=false;hero.belongings.backpack.items.add(wand);wand.charge(hero);
+   try{wand.curCharges=1;String first=wand.statsDesc();wand.curCharges=4;if(!first.equals(wand.statsDesc()))leaked.add(name);if(name.equals("Fireblast")||name.equals("Regrowth")){wand.curChargeKnown=true;String known=wand.statsDesc();wand.curCharges=1;assertNotEquals(name+" known charge-dependent values should return",known,wand.statsDesc());}}finally{wand.stopCharging();hero.belongings.backpack.items.remove(wand);}
+  }
+  assertEquals("Unidentified charge counts must not change visible effect descriptions",java.util.Collections.emptyList(),leaked);
+ }
+ @Test public void wandConditionalPreviewCannotRevealAnUnknownChargeCount(){
+  hero.heroClass=HeroClass.MAGE;Talent.initClassTalents(hero);hero.talents.get(1).put(Talent.DESPERATE_POWER,2);
+  com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand wand=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile();wand.levelKnown=wand.cursedKnown=true;wand.curChargeKnown=false;hero.belongings.backpack.items.add(wand);wand.charge(hero);
+  try{wand.curCharges=1;String single=wand.statsDesc(),badge=wand.previewUpgradeRange();int[] range=wand.previewEffectiveLevels();wand.curCharges=2;assertEquals("A conditional damage readout must not reveal the hidden last charge",single,wand.statsDesc());assertEquals(badge,wand.previewUpgradeRange());assertArrayEquals(range,wand.previewEffectiveLevels());assertArrayEquals(new int[]{0,2},range);
+   wand.curChargeKnown=true;wand.curCharges=1;assertArrayEquals(new int[]{2,2},wand.previewEffectiveLevels());assertEquals(2,wand.buffedLvl());wand.curCharges=2;assertArrayEquals(new int[]{0,0},wand.previewEffectiveLevels());assertEquals(0,wand.buffedLvl());
+  }finally{wand.stopCharging();hero.belongings.backpack.items.remove(wand);}
+ }
  @Test public void keyDescriptionsDistinguishLockTypesAndRecordedFloorWithoutUsingKeys() throws Exception {
   String[] names={"GoldenKey","CrystalKey","IronKey","WornKey"},targets={"a locked chest","a crystal chest or crystal door","an ordinary locked door","a locked exit"};
   for(int index=0;index<names.length;index++){

@@ -270,6 +270,7 @@ public class WandOfFireblast extends DamageWand {
 
 	@Override
 	public String statsDesc() {
+		if (!curChargeKnown) return Messages.get(Wand.class, "unknown_charge_preview");
 		if (levelKnown)
 			return Messages.get(this, "stats_desc", chargesPerCast(), min(previewEffectiveLevels()[0]), max(previewEffectiveLevels()[1]));
 		else

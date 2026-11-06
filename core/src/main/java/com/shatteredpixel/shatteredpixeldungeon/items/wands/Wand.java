@@ -457,10 +457,15 @@ public abstract class Wand extends Item {
                     && Dungeon.hero.buff(Degrade.class) != null)
                 low = high = Degrade.reduceLevel(base);
             if (charger.target.buff(ScrollEmpower.class) != null) { low += 2; high += 2; }
-            if (curCharges == 1 && charger.target instanceof Hero
+            if (charger.target instanceof Hero
                     && ((Hero)charger.target).hasTalent(Talent.DESPERATE_POWER)) {
                 int extra = ((Hero)charger.target).pointsInTalent(Talent.DESPERATE_POWER);
-                low += extra; high += extra;
+                if (!curChargeKnown) {
+                    // Include both legitimate charge conditions, without consulting the hidden count.
+                    high += extra;
+                } else if (curCharges == 1) {
+                    low += extra; high += extra;
+                }
             }
             if (charger.target.buff(WildMagic.WildMagicTracker.class) != null) {
                 int rank = ((Hero)charger.target).pointsInTalent(Talent.WILD_POWER);
