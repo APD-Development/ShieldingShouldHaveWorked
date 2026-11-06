@@ -143,6 +143,12 @@ public final class UimsdModel {
 		load(root, homeAllRules, null, false);
 	}
 
+    private static String loadFailureMessage(Throwable error){
+        return error instanceof OutOfMemoryError
+                ? "Not enough memory to open statistics. Your saved games and recorded history have not been deleted. Close statistics and try again."
+                : String.valueOf(error);
+    }
+
 	public interface OpenClaimListener {
 		void claimed(UimsdModel model);
 	}
@@ -158,7 +164,7 @@ public final class UimsdModel {
 				UimsdModel opened;
 				try {
 					if (beforeRead != null) beforeRead.run();
-					opened = UimsdWarmCache.takeReady(root, ruleset, label, homeAllRules);
+					opened = UimsdWarmCache.takeForOpen(root, ruleset, label, homeAllRules);
 					if (opened == null){
 						Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
 						opened = new UimsdModel(ruleset, label);
@@ -168,7 +174,7 @@ public final class UimsdModel {
 					opened = new UimsdModel(ruleset, label);
 					synchronized (opened){
 						opened.root = root;
-						opened.failure = String.valueOf(error);
+						opened.failure = loadFailureMessage(error);
 						opened.state = State.FAILED;
 					}
 				}
@@ -190,6 +196,9 @@ public final class UimsdModel {
 	private synchronized void load(final File root, final boolean homeAllRules,
 	                              final Runnable beforeRead, final boolean useWarm){
 		retireSeedFloorsLocked();
+        // Replacement loads must not retain the previous complete history beside the new one.
+        catalog=null;result=null;
+        for(Place place:back){place.result=null;place.dataset=null;}
 		preparedHome = null;
 		preparedHomeCatalog = null;
 		this.root = root;
@@ -208,7 +217,7 @@ public final class UimsdModel {
 					synchronized (UimsdModel.this){
 						if (generation != loadGeneration) return;
 					}
-					UimsdModel warm = useWarm ? UimsdWarmCache.takeReady(
+					UimsdModel warm = useWarm ? UimsdWarmCache.takeForOpen(
 							root, currentRuleset, currentRulesetLabel, homeAllRules) : null;
 					// A cold rebuild can be substantial; only the short, interactive
 					// flush/freshness/cache-claim phase receives elevated priority.
@@ -233,7 +242,7 @@ public final class UimsdModel {
 				} catch (Throwable e){
 					synchronized (UimsdModel.this){
 						if (generation != loadGeneration) return;
-						failure = String.valueOf(e);
+						failure = loadFailureMessage(e);
 						state = State.FAILED;
 					}
 				}

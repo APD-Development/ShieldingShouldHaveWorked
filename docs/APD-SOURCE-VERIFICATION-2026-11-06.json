@@ -561,6 +561,24 @@
       "skipped": 0,
       "apk_assembled": false,
       "physical_phone_tested": false
+    },
+    {
+      "workflow_run": 42250812587,
+      "artifact_id": 13520431642,
+      "artifact_bytes": 500079,
+      "artifact_sha256": "ca807017b30fb0f3706399ae107488306dc4059aa18e8430b4d1d9f575496afd",
+      "digest_matches_github": true,
+      "local_evidence": "/workspace/attachments/4b29a116-280f-4d93-8669-22ebeb12deed/github-actions-artifact-13520431642.zip",
+      "checks": "Full core; Android debug/release/instrumentation Java and desktop compilation; no APK assembly",
+      "job_id": 128005075142,
+      "source_commit": "eb4cffd3b820fb62d9e4041e226945f7fceb6ffb",
+      "suites": 446,
+      "tests": 2803,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "apk_assembled": false,
+      "physical_phone_tested": false
     }
   ]
 }

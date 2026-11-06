@@ -63,6 +63,98 @@ public class UimsdWarmCacheTest {
         return (UimsdModel)model.get(entry);
     }
 
+    @Test public void optionalPrewarmMemoryFailureDoesNotEscapeItsThread()throws Exception{
+        File root=Files.createTempDirectory("apd-optional-memory").toFile();java.util.concurrent.atomic.AtomicReference<Throwable> uncaught=new java.util.concurrent.atomic.AtomicReference<>();java.util.concurrent.atomic.AtomicReference<Thread> worker=new java.util.concurrent.atomic.AtomicReference<>();
+        File failing=new File(root.getAbsolutePath()){
+            @Override public File getAbsoluteFile(){return this;}
+            @Override public String getAbsolutePath(){
+                if(Thread.currentThread().getName().equals("uimsd-title-prewarm")){
+                    worker.set(Thread.currentThread());Thread.currentThread().setUncaughtExceptionHandler((thread,error)->uncaught.set(error));
+                    throw new OutOfMemoryError("controlled optional-prewarm failure");
+                }
+                return super.getAbsolutePath();
+            }
+        };
+        try{UimsdWarmCache.prewarm(failing,"rules-a","label",false);UimsdWarmCache.awaitPrewarmForTest(10000);if(worker.get()!=null)worker.get().join(10000);assertTrue(UimsdWarmCache.preparationFailure().contains("insufficient memory"));assertNull("an optional preparation error must not reach Android's process-killing uncaught handler",uncaught.get());}
+        finally{UimsdWarmCache.releaseForGameplay();deleteTree(root);}
+    }
+
+    @Test public void foregroundMemoryFailureBecomesFailedStateWithoutDeletingHistory()throws Exception{
+        File root=Files.createTempDirectory("apd-open-memory-state").toFile();java.util.concurrent.CountDownLatch done=new java.util.concurrent.CountDownLatch(1);java.util.concurrent.atomic.AtomicReference<UimsdModel> opened=new java.util.concurrent.atomic.AtomicReference<>();
+        try{
+            File raw=history(root,31);byte[] original=Files.readAllBytes(raw.toPath());
+            UimsdModel.claimForOpen(root,"rules-a","label",false,()->{throw new OutOfMemoryError("controlled test, no exhausted heap");},model->{opened.set(model);done.countDown();});
+            assertTrue(done.await(10,java.util.concurrent.TimeUnit.SECONDS));assertEquals(UimsdModel.State.FAILED,opened.get().state());assertNull(opened.get().catalog());assertArrayEquals(original,Files.readAllBytes(raw.toPath()));
+        }finally{if(opened.get()!=null)opened.get().releaseForGameplay();deleteTree(root);}
+    }
+    @Test public void replacingCatalogReleasesOldDerivedReferencesBeforeReading()throws Exception{
+        File root=Files.createTempDirectory("apd-reload-release").toFile();java.util.concurrent.CountDownLatch reading=new java.util.concurrent.CountDownLatch(1),release=new java.util.concurrent.CountDownLatch(1);UimsdModel model=new UimsdModel("rules-a","label");
+        try{
+            model.load(root);model.awaitLoad(10000);assertNotNull(model.catalog());
+            model.loadForOpen(root,false,()->{reading.countDown();try{release.await();}catch(InterruptedException e){Thread.currentThread().interrupt();}});
+            assertTrue(reading.await(10,java.util.concurrent.TimeUnit.SECONDS));assertNull(model.catalog());assertNull(model.table());assertEquals(UimsdModel.State.LOADING,model.state());
+            release.countDown();model.awaitLoad(10000);assertEquals(UimsdModel.State.READY,model.state());
+        }finally{release.countDown();model.releaseForGameplay();deleteTree(root);}
+    }
+
+    @Test public void cacheMemoryFailureDoesNotFallBackToRebuildingTheSameHistory()throws Exception{
+        File root=Files.createTempDirectory("apd-cache-memory-failure").toFile();
+        try{
+            File raw=history(root,31);byte[] original=Files.readAllBytes(raw.toPath());DatasetStore store=new DatasetStore(root);store.load();
+            OutOfMemoryError exhausted=new OutOfMemoryError("controlled test failure, not real heap exhaustion");
+            java.util.Map<String,DatasetDef> defs=new java.util.HashMap<String,DatasetDef>(){@Override public DatasetDef get(Object key){throw exhausted;}};
+            java.lang.reflect.Method rows=DatasetStore.class.getDeclaredMethod("rowsFor",File.class,boolean.class,java.util.Map.class,Catalog.class,byte[].class);rows.setAccessible(true);
+            try{rows.invoke(store,raw,false,defs,new Catalog(),new byte[32768]);fail("memory failure must propagate instead of retrying raw parsing");}
+            catch(java.lang.reflect.InvocationTargetException error){assertSame(exhausted,error.getCause());}
+            assertArrayEquals(original,Files.readAllBytes(raw.toPath()));
+        }finally{deleteTree(root);}
+    }
+
+    @Test public void foregroundClaimDiscardsMismatchedReadyCatalogWithoutChangingHistory()throws Exception{
+        File root=Files.createTempDirectory("apd-foreground-scope").toFile();
+        try{
+            UimsdWarmCache.prewarm(root,"rules-a","label",false);UimsdWarmCache.awaitPrewarmForTest(10000);UimsdModel prepared=readyModel();assertNotNull(prepared.catalog());
+            assertNull(UimsdWarmCache.takeForOpen(root,"rules-b","label",true));assertNull(prepared.catalog());assertEquals(0,root.list().length);
+        }finally{UimsdWarmCache.releaseForGameplay();deleteTree(root);}
+    }
+    @Test public void retiringViewerReleasesBothOldCatalogsAndHomeReferences()throws Exception{
+        File root=Files.createTempDirectory("apd-retire-viewer").toFile();
+        Class<?> scene=com.shatteredpixel.shatteredpixeldungeon.scenes.UimsdScene.class;
+        String[] names={"model","mainModel","cachedCatalog","cachedHome"};java.lang.reflect.Field[] fields=new java.lang.reflect.Field[names.length];Object[] previous=new Object[names.length];
+        for(int i=0;i<names.length;i++){fields[i]=scene.getDeclaredField(names[i]);fields[i].setAccessible(true);previous[i]=fields[i].get(null);}
+        try{
+            UimsdModel old=new UimsdModel("rules-a","label"),main=new UimsdModel("rules-a","label");old.load(root);main.load(root);old.awaitLoad(10000);main.awaitLoad(10000);assertNotNull(old.catalog());assertNotNull(main.catalog());
+            fields[0].set(null,old);fields[1].set(null,main);fields[2].set(null,old.catalog());fields[3].set(null,old.preparedHome(old.catalog(),false));
+            java.lang.reflect.Method retire=scene.getDeclaredMethod("retirePreviousViewer");retire.setAccessible(true);retire.invoke(null);
+            assertNull(old.catalog());assertNull(main.catalog());assertNull(fields[2].get(null));assertNull(fields[3].get(null));assertEquals(0,root.list().length);
+        }finally{for(int i=0;i<fields.length;i++)fields[i].set(null,previous[i]);deleteTree(root);}
+    }
+
+    @Test public void foregroundOpenRetiresPendingPreloadBeforeStartingAnotherCatalog() throws Exception {
+        File root=Files.createTempDirectory("apd-open-single-loader").toFile();
+        java.util.concurrent.CountDownLatch stamping=new java.util.concurrent.CountDownLatch(1),release=new java.util.concurrent.CountDownLatch(1),claimed=new java.util.concurrent.CountDownLatch(1);
+        File delayed=new File(root.getAbsolutePath()){
+            @Override public File getAbsoluteFile(){return this;}
+            @Override public String getAbsolutePath(){
+                if(Thread.currentThread().getName().equals("uimsd-title-prewarm")){
+                    stamping.countDown();boolean interrupted=false;
+                    while(true){try{release.await();break;}catch(InterruptedException ex){interrupted=true;}}
+                    if(interrupted)Thread.currentThread().interrupt();
+                }
+                return super.getAbsolutePath();
+            }
+        };
+        java.util.concurrent.atomic.AtomicReference<UimsdModel> opened=new java.util.concurrent.atomic.AtomicReference<>();
+        try{
+            UimsdWarmCache.prewarm(delayed,"rules-a","label",false);assertTrue(stamping.await(10,java.util.concurrent.TimeUnit.SECONDS));
+            UimsdModel.claimForOpen(root,"rules-a","label",false,()->{},model->{opened.set(model);claimed.countDown();});
+            assertTrue(claimed.await(10,java.util.concurrent.TimeUnit.SECONDS));
+            java.lang.reflect.Field pending=UimsdWarmCache.class.getDeclaredField("preparing");pending.setAccessible(true);
+            assertNull("foreground load must not coexist with optional preload ownership",pending.get(null));
+            opened.get().awaitLoad(10000);assertEquals(UimsdModel.State.READY,opened.get().state());
+        }finally{release.countDown();UimsdWarmCache.releaseForGameplay();if(opened.get()!=null)opened.get().releaseForGameplay();deleteTree(root);}
+    }
+
     @Test public void asynchronousClaimReturnsTheExactValidatedModel() throws Exception {
         File root=Files.createTempDirectory("apd-open-warm").toFile();
         try {

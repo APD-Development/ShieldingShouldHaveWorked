@@ -160,7 +160,7 @@ public final class DatasetStore {
 					cat.logsCached++;
 					return lr;
 				}
-			} catch (Throwable ignored){
+			} catch (IOException | RuntimeException ignored){
 				//rebuilt below
 			}
 		}
@@ -175,7 +175,7 @@ public final class DatasetStore {
 					writeCache(cache, RowCodec.encode(lr, length, defs, sourceFingerprint));
 			} catch (IOException ignored) { /* The cache is optional; retain the actual parsed rows. */ }
 			return lr;
-		} catch (Throwable t){
+		} catch (IOException | RuntimeException t){
 			return null;
 		}
 	}
@@ -223,7 +223,7 @@ public final class DatasetStore {
 			}
 			if (cache.exists() && !cache.delete()) return;
 			tmp.renameTo(cache);
-		} catch (Throwable ignored){
+		} catch (IOException | RuntimeException ignored){
 			// The cache is optional; no writer may remove another writer's temporary file.
 		} finally {
 			if (tmp != null) try { tmp.delete(); } catch (SecurityException ignored) { }

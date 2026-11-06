@@ -140,6 +140,14 @@ public class UimsdScene extends PixelScene {
         com.watabou.utils.SupportDiagnostics.event("memory.release_stats", "gameplay: derived catalogs and pending preload released");
     }
 
+    /** A new open must not retain the previous viewer's complete derived history. */
+    private static void retirePreviousViewer(){
+        if(model!=null)model.releaseForGameplay();
+        if(mainModel!=null && mainModel!=model)mainModel.releaseForGameplay();
+        cachedHome=null;cachedCatalog=null;
+        com.watabou.utils.SupportDiagnostics.event("uimsd.retire_previous", "derived viewer catalogs released; player history unchanged");
+    }
+
 	//Opens UIMSD again where Back would have gone (after switching between demo and real data, or deleting the demo data).
 	public static void reopen(){
 		openNow(backTo);
@@ -169,7 +177,7 @@ public class UimsdScene extends PixelScene {
 
 	//Opens UIMSD from a screen. 'from' is where Back returns to.
 	public static void openNow( Class<? extends PixelScene> from ){
-		com.watabou.utils.SupportDiagnostics.event("uimsd.open", from == GameScene.class ? "from=game" : "from=menu");
+		com.watabou.utils.SupportDiagnostics.event("uimsd.open", (from == GameScene.class ? "from=game" : "from=menu") + " prewarm_failure=" + UimsdWarmCache.preparationFailure());
 		backTo = from == GameScene.class ? GameScene.class : TitleScene.class;
 		final Class<? extends PixelScene> targetBackTo = backTo;
 		final com.watabou.noosa.Scene openingScene = ShatteredPixelDungeon.scene();
@@ -187,6 +195,7 @@ public class UimsdScene extends PixelScene {
 		rulesLabel = "challenges " + (from == GameScene.class ? com.shatteredpixel.shatteredpixeldungeon.Dungeon.challenges : SPDSettings.challenges()) + ", exotic " + (rules.isUnknown() ? "not recorded (older run)" : rules.exoticChance + "%") + ", difficulty " + level + (levelKnown ? "" : " (older run)");
 		endTutorial();
 		removeLeftoverSample();
+        retirePreviousViewer();
 		atHome = true;
 		com.shatteredpixel.shatteredpixeldungeon.apd.replay.FloorReplay.setLiveGameCheck(liveGameCheck());
 		final long generation = ++openGeneration;
@@ -266,7 +275,7 @@ public class UimsdScene extends PixelScene {
 			model.setListener(new UimsdModel.Listener(){
 				@Override
 				public void changed(){
-					com.watabou.utils.SupportDiagnostics.event("uimsd.model", "state=" + (model == null ? "none" : model.state()));
+					com.watabou.utils.SupportDiagnostics.event("uimsd.model", "state=" + (model == null ? "none" : model.state()) + (model != null && model.state() == UimsdModel.State.FAILED ? " failure=" + model.failure() : ""));
 					dirty = true;
 				}
 			});
@@ -1144,6 +1153,7 @@ public class UimsdScene extends PixelScene {
 		returnTo = null;
 		endTutorial();
 		if (model != null) model.setListener(null);
+        retirePreviousViewer();
 		if (backTo == TitleScene.class) ShatteredPixelDungeon.switchNoFade(backTo);
 		else ShatteredPixelDungeon.switchScene(backTo);
 	}

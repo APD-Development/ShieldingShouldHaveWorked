@@ -274,11 +274,25 @@ public class AndroidBackDeviceTest {
 						onRender(()->{
 							assertTrue("Back restores the exact retained title",titleIdentity.get()==Game.scene());
 							assertTrue("Back restores the exact retained title camera",titleCamera.get()==com.watabou.noosa.Camera.main);
+                            assertNull("leaving UIMSD releases its previous full catalog before title preparation",prepared.catalog());
+                            assertNull("leaving UIMSD releases its previous query result",prepared.result());
 						});
 						await.invoke(null,60000L);
 					}
 				}
 				assertTrue("native tap to complete Home exceeded 250ms: "+slowOpenings,slowOpenings.isEmpty());
+                UimsdModel prior=previousReady;
+                pressBack();waitUntil("title before cold reopening",()->Game.scene() instanceof TitleScene&&!Game.switchingScene(),30000);
+                assertNull("old catalog released before a cold reload",prior.catalog());
+                com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdWarmCache.releaseForGameplay();
+                onRender(()->UimsdScene.openNow(TitleScene.class));
+                waitUntil("cold UIMSD model loads and draws",()->{
+                    if(!(Game.scene() instanceof UimsdScene)||Game.switchingScene())return false;
+                    UimsdModel current=(UimsdModel)uimsd("model");
+                    return current!=null&&current.state()==UimsdModel.State.READY;
+                },60000);
+                onRender(()->{try{assertEquals("cold reopening preserves all synthetic runs",72,((UimsdModel)uimsd("model")).catalog().dataset("runs").rows.size());}catch(Exception error){throw new RuntimeException(error);}});
+                Runtime heap=Runtime.getRuntime();Log.w("APDPERF","UIMSD_REOPEN_HEAP used="+(heap.totalMemory()-heap.freeMemory())+" limit="+heap.maxMemory());
 			} finally {
 				onRender(()->{
 					com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder.configure(originalRoot,recording);

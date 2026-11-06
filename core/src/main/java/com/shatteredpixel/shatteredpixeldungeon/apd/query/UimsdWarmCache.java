@@ -40,6 +40,8 @@ public final class UimsdWarmCache {
     private static Entry ready;
     private static Job preparing;
     private static long generation;
+    private static volatile String preparationFailure="";
+    public static String preparationFailure(){return preparationFailure;}
 
     private UimsdWarmCache(){}
 
@@ -177,9 +179,15 @@ public final class UimsdWarmCache {
                     if (prepared.state() != UimsdModel.State.READY ||
                             after == null || !before.equals(after)) return;
                     synchronized (LOCK) {
-                        if (preparing == job && job.id == generation)
+                        if (preparing == job && job.id == generation){
                             ready = new Entry(key, prepared, after);
+                            preparationFailure="";
+                        }
                     }
+                } catch(OutOfMemoryError exhausted){
+                    preparationFailure="Background statistics preparation stopped: insufficient memory";
+                } catch(RuntimeException failed){
+                    preparationFailure="Background statistics preparation failed";
                 } finally {
                     UimsdModel abandoned = null;
                     synchronized (LOCK) {
@@ -214,6 +222,30 @@ public final class UimsdWarmCache {
         if (model != null) model.releaseForGameplay();
         Thread thread = job.thread;
         if (thread != null) thread.interrupt();
+    }
+
+    /** Foreground ownership transfer: optional preparation must not build a second catalog. */
+    public static UimsdModel takeForOpen(File root,String ruleset,String label,boolean allRules){
+        final Entry candidate;
+        final Job pending;
+        synchronized(LOCK){
+            ++generation;
+            candidate=ready;ready=null;
+            pending=preparing;preparing=null;
+        }
+        // Retire outside LOCK: model callbacks must not run under the cache lock.
+        if(pending!=null){
+            if(pending.model!=null && (candidate==null || pending.model!=candidate.model))
+                pending.model.releaseForGameplay();
+            if(pending.thread!=null)pending.thread.interrupt();
+        }
+        if(candidate==null)return null;
+        Key key=root==null?null:new Key(root,ruleset,label,allRules);
+        String now=key!=null&&candidate.key.matches(key)?stamp(key.root):null;
+        if(now!=null && now.equals(candidate.sourceStamp) && candidate.model.state()==UimsdModel.State.READY)
+            return candidate.model;
+        candidate.model.releaseForGameplay();
+        return null;
     }
 
     /** Return a fully READY model or nothing; never waits for the loader. */
