@@ -66,7 +66,12 @@ public final class RingItemEffects {
         return rage!=null && rage.activeForInspection();
     }
 
-    public static String describe(Item item) {
+    public static String describe(Item item){
+        if(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart)
+            return com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart.inspect(()->describeInContext(item));
+        return describeInContext(item);
+    }
+    private static String describeInContext(Item item) {
         Hero hero=Dungeon.hero;
         if (hero==null || !aliveForInspection(hero) || hero.buff(MagicImmune.class)!=null || item instanceof Ring) return "";
         if (!(item instanceof Weapon || item instanceof Armor || item instanceof Wand || item instanceof Artifact)) return "";

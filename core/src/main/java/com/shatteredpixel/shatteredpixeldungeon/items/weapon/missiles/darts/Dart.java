@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -82,6 +85,7 @@ public class Dart extends MissileWeapon {
 	
 	@Override
 	public int min(int lvl) {
+        Crossbow bow=crossbowForRead();
 		if (bow != null){
 			if (!(this instanceof TippedDart) && Dungeon.hero.buff(Crossbow.ChargedShot.class) != null){
 				return bow.dartMin()            //crossbow dart damage
@@ -99,6 +103,7 @@ public class Dart extends MissileWeapon {
 
 	@Override
 	public int max(int lvl) {
+        Crossbow bow=crossbowForRead();
 		if (bow != null){
 			if (!(this instanceof TippedDart) && Dungeon.hero.buff(Crossbow.ChargedShot.class) != null){
 				return bow.dartMax()            //crossbow dart damage
@@ -115,26 +120,41 @@ public class Dart extends MissileWeapon {
 	}
 	
 	protected static Crossbow bow;
-	
-	private void updateCrossbow(){
-		if (Dungeon.hero == null) {
-			bow = null;
-		} else if (Dungeon.hero.belongings.weapon() instanceof Crossbow){
-			bow = (Crossbow) Dungeon.hero.belongings.weapon();
-		} else if (Dungeon.hero.belongings.secondWep() instanceof Crossbow) {
-			//player can instant swap anyway, so this is just QoL
-			bow = (Crossbow) Dungeon.hero.belongings.secondWep();
-		} else {
-			bow = null;
-		}
-	}
+
+    private static final class InspectionBow {
+        final Crossbow value;
+        InspectionBow(Crossbow value){this.value=value;}
+    }
+    // UI calculations must not replace the crossbow retained by a deferred shot.
+    // Thread-local context also leaves another actor thread's damage inputs alone.
+    private static final ThreadLocal<InspectionBow> inspectionBow=new ThreadLocal<>();
+    private static Crossbow equippedCrossbow(){
+        if(Dungeon.hero==null)return null;
+        if(Dungeon.hero.belongings.weapon() instanceof Crossbow)return (Crossbow)Dungeon.hero.belongings.weapon();
+        if(Dungeon.hero.belongings.secondWep() instanceof Crossbow)return (Crossbow)Dungeon.hero.belongings.secondWep();
+        return null;
+    }
+    protected static Crossbow crossbowForRead(){
+        InspectionBow preview=inspectionBow.get();
+        return preview==null?bow:preview.value;
+    }
+    public static <T> T inspect(java.util.function.Supplier<T> explanation){
+        if(inspectionBow.get()!=null)return explanation.get();
+        Crossbow visible=equippedCrossbow();
+        if(visible!=null&&!visible.isIdentified())visible=new Crossbow();
+        inspectionBow.set(new InspectionBow(visible));
+        try{return explanation.get();}finally{inspectionBow.remove();}
+    }
+    private void updateCrossbow(){bow=equippedCrossbow();}
 
 	public boolean crossbowHasEnchant( Char owner ){
+        Crossbow bow=crossbowForRead();
 		return bow != null && bow.enchantment != null && owner.buff(MagicImmune.class) == null;
 	}
 	
 	@Override
 	public boolean hasEnchant(Class<? extends Enchantment> type, Char owner) {
+        Crossbow bow=crossbowForRead();
 		if (bow != null && bow.hasEnchant(type, owner)){
 			return true;
 		} else {
@@ -144,6 +164,7 @@ public class Dart extends MissileWeapon {
 
 	@Override
 	public float accuracyFactor(Char owner, Char target) {
+        Crossbow bow=crossbowForRead();
 		//don't update xbow here, as dart is the active weapon atm
 		if (bow != null && owner.buff(Crossbow.ChargedShot.class) != null){
 			return Char.INFINITE_ACCURACY;
@@ -229,20 +250,8 @@ public class Dart extends MissileWeapon {
 	}
 	
 	@Override
-	public String info() {
-		updateCrossbow();
-		if (bow != null && !bow.isIdentified()){
-			Crossbow realBow = bow;
-			//create a temporary bow for IDing purposes
-			bow = new Crossbow();
-			String info = super.info();
-			bow = realBow;
-			return info;
-		} else {
-			return super.info();
-		}
-	}
-	
+    public String info(){return inspect(()->super.info());}
+
 	@Override
 	public boolean isUpgradable() {
 		return false;

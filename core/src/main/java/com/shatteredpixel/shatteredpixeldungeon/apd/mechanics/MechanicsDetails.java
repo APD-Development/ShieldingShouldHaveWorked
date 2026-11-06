@@ -47,6 +47,11 @@ public final class MechanicsDetails {
         return out.toString().trim();
     }
     public static String item(Item item,String visibleDescription){
+        if(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart)
+            return com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart.inspect(()->itemInContext(item,visibleDescription));
+        return itemInContext(item,visibleDescription);
+    }
+    private static String itemInContext(Item item,String visibleDescription){
         StringBuilder result=new StringBuilder();
         if(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.food.Food)result.append(FoodExplanation.details((com.shatteredpixel.shatteredpixeldungeon.items.food.Food)item)).append("\n\n");
         if(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand)result.append(WandExplanation.details((com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand)item)).append("\n\n");

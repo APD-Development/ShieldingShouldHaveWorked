@@ -181,9 +181,10 @@ public abstract class TippedDart extends Dart {
 	public float durabilityPerUse(int level) {return calculateTipWear(level,true);}
 
     @Override
-    public float previewDurabilityPerUse(int level){return calculateTipWear(level,false);}
+    public float previewDurabilityPerUse(int level){return Dart.inspect(()->calculateTipWear(level,false));}
 
     private float calculateTipWear(int level,boolean consumeImpact){
+        Crossbow bow=consumeImpact?Dart.bow:crossbowForRead();
 		float use = super.durabilityPerUse(level);
 
 		if (Dungeon.hero != null) {

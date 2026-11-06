@@ -635,5 +635,10 @@
     "prepared_artifact": 13526323860,
     "prepared_artifact_sha256": "cac7436863477f01822174f91c9911d53b2cf6046c104c2c45c8b94fa9c277a0",
     "source_sha256": "c52135f8b66da133fc1f117bc006b4452440f0a1ce81faa356b3b68479a26241"
-  }
+  },
+  "newer_source_followups_not_in_this_apk": [
+    "Poison duration label correction verified in source0245f07e7",
+    "13 plant/seed and TimeBubble details verified in source9ec83306e",
+    "Pending-shot crossbow inspection fix and Seal/bee-pot details source2845 local passed; remote pending"
+  ]
 }
