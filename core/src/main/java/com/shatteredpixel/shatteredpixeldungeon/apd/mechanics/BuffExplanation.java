@@ -28,6 +28,13 @@ public final class BuffExplanation {
     private BuffExplanation(){}
     private static String n(float x){return ObfuscationExplanation.number(x);}
     public static String details(Buff buff){
+        if(buff instanceof com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight.HTBoost && buff.target instanceof Hero){
+            com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight.HTBoost boost=(com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight.HTBoost)buff;
+            return "_Temporary maximum-health contribution_\nRemaining hero level-up steps: "+boost.remainingLevelSteps()+" out of 5. Current base contribution: "+boost.boost()+" maximum-HP points before run modifiers. Formula: round(remaining steps × round(4 + (15 + 5 × hero level) / 20) / 5). This scales from hero level, not another buff's enlarged maximum HP. One hero level-up spends one step; ordinary turns do not. Inspection does not reset the resource or update health.";
+        }
+        if(buff instanceof com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfAquaticRejuvenation.AquaHealing){
+            return "_Stored water-healing reserve_\nRemaining base reserve: "+((com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfAquaticRejuvenation.AquaHealing)buff).remainingHealingPool()+" HP. A grounded character standing in water and missing HP can spend the next base offer, normally maximum HP / 50 with the existing minimum, caps and fractional rounding. Run modifiers can change actual HP restored. The reserve is not a turn counter; dry ground, flying or full health pauses its healing opportunity. Inspection does not heal or spend fractional credit.";
+        }
         if(buff instanceof Barkskin || buff instanceof ArcaneArmor){
             int interval=buff instanceof Barkskin?((Barkskin)buff).decayInterval():((ArcaneArmor)buff).decayInterval();
             return "_Protection strength decays_\nEach normal effect update subtracts one protection-strength point and schedules the next update "+interval+" game-time units later. The effect ends when strength reaches zero. This is the interval between strength losses, not guaranteed blocked damage per turn or the entire remaining duration. The current strength sets the upper bound of its separate random protection roll; later defenses and source eligibility still apply. Inspection does not roll protection, advance decay or refresh the effect.";

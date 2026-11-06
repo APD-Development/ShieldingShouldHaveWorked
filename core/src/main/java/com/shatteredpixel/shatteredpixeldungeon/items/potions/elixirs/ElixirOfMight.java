@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -64,7 +67,7 @@ public class ElixirOfMight extends Elixir {
 	}
 	
 	public String desc() {
-		return Messages.get(this, "desc", HTBoost.boost(Dungeon.hero != null ? Dungeon.hero.HT : 20));
+		return Messages.get(this, "desc", HTBoost.boost(Dungeon.hero != null ? 15 + 5*Dungeon.hero.lvl : 20));
 	}
 	
 	public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
@@ -89,6 +92,9 @@ public class ElixirOfMight extends Elixir {
 		
 		private int left;
 		
+        /** Remaining level-up steps, not a turn countdown. */
+        public int remainingLevelSteps(){return left;}
+
 		public void reset(){
 			left = 5;
 		}

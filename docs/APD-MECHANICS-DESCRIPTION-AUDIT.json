@@ -3902,6 +3902,11 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/TrinketExplanation.java",
       "sha256": "3516cc807cc6f5431eec5ea9b550728c6c56658d9d4cfc493e33cf5e02786330",
       "boundary": "Primary weapon ability/projectile/trinket calculation facets; actual input, FOV, contest, state and privacy tests in MechanicsExplanationTest. Not whole-game/nested closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/PotionExplanation.java",
+      "sha256": "279cab67ab68648e6888463ec3edefcd0d169e126034c833dac1bf46dcfe6d0e",
+      "boundary": "Known potion/exotic/elixir/brew primary effect descriptions; actual healing, shielding, prolong, Might and Aquatic resources tested. Not closure of every cloud/effect or entire inventory."
     }
   ]
 }

@@ -53,6 +53,7 @@ public final class MechanicsDetails {
         if(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact)result.append(ArtifactExplanation.details((com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact)item)).append("\n\n");
         if(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring)result.append(RingExplanation.details((com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring)item)).append("\n\n");
         if(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket)result.append(TrinketExplanation.details((com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket)item)).append("\n\n");
+        if(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion)result.append(PotionExplanation.details((com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion)item,Dungeon.hero)).append("\n\n");
         if(item instanceof Armor){
             Armor armor=(Armor)item;
             if(armor instanceof com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor && Dungeon.hero!=null && Dungeon.hero.armorAbility!=null)

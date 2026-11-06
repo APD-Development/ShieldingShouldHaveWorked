@@ -69,6 +69,9 @@ public class ElixirOfAquaticRejuvenation extends Elixir {
 		
 		private int left;
 		
+        /** Remaining base healing resource before run modifiers. */
+        public int remainingHealingPool(){return left;}
+
 		public void set( int amount ){
 			if (amount > left) left = amount;
 		}
