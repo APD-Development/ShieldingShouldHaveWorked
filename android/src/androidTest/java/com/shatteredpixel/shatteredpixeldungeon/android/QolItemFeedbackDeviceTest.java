@@ -267,6 +267,10 @@ public class QolItemFeedbackDeviceTest {
                     int behind=center[0]+delta;Dungeon.level.heroFOV[behind]=false;Dungeon.level.visited[behind]=false;Dungeon.level.mapped[behind]=false;
                 }
                 Level.set(center[0],Terrain.EMPTY);Dungeon.hero.fieldOfView=Dungeon.level.heroFOV;Dungeon.hero.pos=center[0];Dungeon.hero.sprite.place(center[0]);
+                // Controlled terrain fixture, not a generated room: center the renderer before proof images.
+                com.watabou.noosa.Camera.main.snapTo(Dungeon.hero.sprite.center());
+                com.watabou.utils.Point heroScreen=com.watabou.noosa.Camera.main.cameraToScreen(Dungeon.hero.sprite.center().x,Dungeon.hero.sprite.center().y);
+                assertTrue("controlled fixture hero is inside the viewport",heroScreen.x>0&&heroScreen.x<Game.width&&heroScreen.y>0&&heroScreen.y<Game.height);
             });
             verifyOldBookshelfMarksAreHidden(center[0]-Dungeon.level.width());
             TopScoresDeviceTest.render(()->{

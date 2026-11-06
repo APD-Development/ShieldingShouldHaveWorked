@@ -3,5 +3,5 @@
   "run": 42216313574,
   "build": 367,
   "purpose": "Internal exact-APK emulator acceptance for corrected mechanics viewport; no release or application rebuild",
-  "test_revision": "Same-source corrected viewport origin, clipping and offset assertions; actual waiting/settings touches and declaration ownership; preserve exact source/application signature checks"
+  "test_revision": "Same367 APK; center controlled terrain fixture before bookshelf/decor proof images and assert hero lies inside viewport. Previous camera/clipping/touch three-case acceptance passed; rerun preserves all assertions and adds readable fixture evidence, no application rebuild."
 }
