@@ -94,7 +94,7 @@ public final class MechanicsDetails {
             float rate=Math.min(1f,barrier.shielding()/20f)*factor;
             extra+="_Barrier decay_\nEach normal barrier tick adds min(1, current shield / 20) × the active Hold Fast factor toward losing one shield point. With the current state, that is "+ObfuscationExplanation.number(rate)+" per tick. Progress toward the next point lost is currently "+ObfuscationExplanation.number(100*barrier.decayProgress())+"%. At one whole point of progress, one shield point is removed and that progress resets. Incoming damage can also consume shielding.\n\n";
         }
-        if(buff instanceof FlavourBuff)extra+="_Current displayed duration_\n"+ObfuscationExplanation.number(Math.max(0,buff.visualcooldown()))+" game-time units. The icon can round this display; this is not real-world seconds.\n\n";
+        if(buff instanceof FlavourBuff)extra+="_Current displayed duration_\n"+ObfuscationExplanation.number(Math.max(0,buff.visualcooldown()))+" game-time units. Time until this effect's scheduled update: "+ObfuscationExplanation.number(Math.max(0,buff.cooldown()))+" game-time units. The standard timed-effect counter adds one because these updates follow character actions; individual effects can use a different display rule. Action costs can differ from one turn, and the icon can round its number. These are not real-world seconds.\n\n";
         return (extra+glossary(visibleDescription)).trim();
     }
     public static String talent(Talent talent,int points,String visibleDescription){

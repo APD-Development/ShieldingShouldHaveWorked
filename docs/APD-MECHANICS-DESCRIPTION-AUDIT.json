@@ -3190,8 +3190,8 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/MechanicsDetails.java",
-      "sha256": "e7ca9eab01216ebf9a1e5b26afe560bc8d2743199453f887dc1cdd863e29671e",
-      "boundary": "Selected Liquid Willpower, Shield Battery, Inscribed Power, Liquid Nature, Liquid Agility and Precise Assault explanation facets only; remaining talents and abilities remain open. Read-only known wand level/damage/charge explanation and Wild Magic preview facets. Not all targeting, wand-specific secondary effects, staff abilities or non-damaging wand mechanics closure. Armor ability charge/recharge explanation and optional bounded description UI only; individual ability effect formulas and native rendered acceptance remain open. Thirteen built-in Battlemage imbued-staff on-hit explanation facets, including conditional probability versus amount/duration/resource units and read-only known-level previews. Not all direct-zap secondary effects or other class ability closure."
+      "sha256": "1e56a696860f0c471fa1ba5a55222acb1bb3207aa5d3aa94da7278779b44653f",
+      "boundary": "Selected Liquid Willpower, Shield Battery, Inscribed Power, Liquid Nature, Liquid Agility and Precise Assault explanation facets only; remaining talents and abilities remain open. Read-only known wand level/damage/charge explanation and Wild Magic preview facets. Not all targeting, wand-specific secondary effects, staff abilities or non-damaging wand mechanics closure. Armor ability charge/recharge explanation and optional bounded description UI only; individual ability effect formulas and native rendered acceptance remain open. Thirteen built-in Battlemage imbued-staff on-hit explanation facets, including conditional probability versus amount/duration/resource units and read-only known-level previews. Not all direct-zap secondary effects or other class ability closure. Selected vision/radius/eligible-creature/invisibility-awareness/protection/timed-display explanation facets; not all sight/AI/special death mechanics closure."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/TalentExplanation.java",
@@ -3260,8 +3260,8 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/BuffExplanation.java",
-      "sha256": "75f9aa1905380b5177985340236d5fcbc2e62281655811da40c8c12f6f396f05",
-      "boundary": "Selected Fire/Frost Imbue, Fury, Adrenaline, Stamina/Cripple description formulas, timing/immunity boundaries and read-only duration; not full numerical-system closure. Selected Paralysis escape/check order/counter, Drowsy and Magical Sleep healing/wake facets; not full damage system or other statuses closure. Selected herbal healing pool/progress/request and armor reserve/last-hit/cap explanation facets, read-only getters; not whole plant/guardian/other secondary mechanic closure."
+      "sha256": "2d027ab0a2ef96078bf78e9fe42dfe73930405c0a7e70a55c96242a195458f03",
+      "boundary": "Selected Fire/Frost Imbue, Fury, Adrenaline, Stamina/Cripple description formulas, timing/immunity boundaries and read-only duration; not full numerical-system closure. Selected Paralysis escape/check order/counter, Drowsy and Magical Sleep healing/wake facets; not full damage system or other statuses closure. Selected herbal healing pool/progress/request and armor reserve/last-hit/cap explanation facets, read-only getters; not whole plant/guardian/other secondary mechanic closure. Selected vision/radius/eligible-creature/invisibility-awareness/protection/timed-display explanation facets; not all sight/AI/special death mechanics closure."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/FireImbue.java",
@@ -3367,6 +3367,26 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfLivingEarth.java",
       "sha256": "b4681fcafb61b2fb3f56889f1510bb9a64b784c0597a3c7fb7735dcdb01e60bd",
       "boundary": "Selected herbal healing pool/progress/request and armor reserve/last-hit/cap explanation facets, read-only getters; not whole plant/guardian/other secondary mechanic closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/MagicalSight.java",
+      "sha256": "b84c6e01ca24dae5d17cf36f139a94681780235c0bde3cfb10dbeb1687a0b90f",
+      "boundary": "Selected vision/radius/eligible-creature/invisibility-awareness/protection/timed-display explanation facets; not all sight/AI/special death mechanics closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/MindVision.java",
+      "sha256": "3b7ed75b895d848d53946bc1c95e64d6445fa7c25f6a16cc03706364fed9da14",
+      "boundary": "Selected vision/radius/eligible-creature/invisibility-awareness/protection/timed-display explanation facets; not all sight/AI/special death mechanics closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Invisibility.java",
+      "sha256": "eb02eaa9fcbe7cfb405911b32dec6f24f4af1a0c934e11c613707e0a4fb42551",
+      "boundary": "Selected vision/radius/eligible-creature/invisibility-awareness/protection/timed-display explanation facets; not all sight/AI/special death mechanics closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Invulnerability.java",
+      "sha256": "fb76b0c11da9528fde312afdf5faaf6daf59405b3631b784d58a3d8d2178cf12",
+      "boundary": "Selected vision/radius/eligible-creature/invisibility-awareness/protection/timed-display explanation facets; not all sight/AI/special death mechanics closure."
     }
   ]
 }

@@ -1,3 +1,9 @@
+## 2026-11-06 — pool/reserve source verified; vision explanation follow-up
+
+Source9b2075ea4303bf2f734d30a72bc41749f9e02370/run42159603774 verified2643 tests445 suites/all Android/desktop Java source gates. Downloaded artifact13476277150 actual489771bytes SHA256b4f615ac96fb28133bd08a2d90bb92bbdb603e9dbe5e3718b3b1f4e7b9e1b9de, JSON inspected. Current vision/invisibility/invulnerability and timed-display batch local2647 tests445 suites green, remote gate pending. Source-only, no APK/version/native acceptance/phone claim; whole-game audit not complete.
+
+At actual2026-11-06T04:10:23Z it was still Nov5 New York time. Conservative Nov5 daily allowance remains used by363 withheld,364 released,365 released; do not assemble another pair before Nov6 New York without authorization. Continue source review rather than waiting idle. Preserve TEST365 verified playable fallback, approved Codex branch, existing Search/waiting work, appID/signing/player data. Detailed exact scope, failures and receipts in APD-MECHANICS-DESCRIPTIONS-2026-11-06.md.
+
 ## 2026-11-06 — staff explanations verified; reserve/pool follow-up
 
 Sourceec2537c3a099dfa903c97b471cd21877dea34935/run42159107178 verified2640 tests445 suites and all Android/desktop Java source gates. Actual downloaded artifact13475624113 is492853bytes SHA256112839b6955e615a2b5fccd11dd468356e9bf1197fefd7426ba3ab4a6f55a7cd, JSON inspected. New herbal-pool/armor-reserve batch local full2643 tests445 suites green, remote gate pending. No gameplay calculation or save schema changes; pure getters and explanations only.
