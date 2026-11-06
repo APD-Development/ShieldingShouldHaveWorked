@@ -17,6 +17,7 @@
 
 """Publish only prepared verified private owner artifacts, preserving all prior assets."""
 import datetime,hashlib,json,os,pathlib,subprocess,time,urllib.request,urllib.parse
+from apd_github_response import json_response
 repo=os.environ['GITHUB_REPOSITORY'];out=pathlib.Path('owner-delivery');spec=json.loads(pathlib.Path(os.environ.get('APD_DELIVERY_SPEC','docs/APD-QOL-OWNER-DELIVERY.json')).read_text());number=spec['number'];tag=f'apd-alpha-preview-{number}'
 api=lambda p:json.loads(subprocess.check_output(['gh','api',p]));sha=lambda p:hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest()
 assert api('repos/'+repo)['private'];scan=json.loads((out/'APD-Source-Scan.json').read_text());assert scan['supplemental']['source_findings_reviewed']
@@ -34,14 +35,14 @@ assert len(matches)<=1,'Duplicate release tag; preserve existing releases'
 if not matches:
  payload={'tag_name':tag,'target_commitish':spec['source'],'name':spec.get('title',f'APD Alpha Preview {number}'),'body':(out/'release-notes.md').read_text(),'draft':True,'prerelease':True,'make_latest':'false'}
  request=urllib.request.Request(f'https://api.github.com/repos/{repo}/releases',data=json.dumps(payload).encode(),method='POST',headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Content-Type':'application/json','Accept':'application/vnd.github+json'})
- with urllib.request.urlopen(request,timeout=60) as response:matches=[json.load(response)]
+ matches=[json_response(request,timeout=60)]
 release,=matches
 release_id=release['id']
 def refresh():return api(f'repos/{repo}/releases/{release_id}')
 def upload(p):
  url=release['upload_url'].split('{',1)[0]+'?'+urllib.parse.urlencode({'name':p.name})
  request=urllib.request.Request(url,data=p.read_bytes(),method='POST',headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Content-Type':'application/octet-stream','Accept':'application/vnd.github+json'})
- with urllib.request.urlopen(request,timeout=300) as response:return json.load(response)
+ return json_response(request,timeout=300)
 release=refresh();resolved=api(f'repos/{repo}/git/ref/tags/{tag}')['object'];assert resolved['type']=='commit' and resolved['sha']==spec['source']
 existing={a['name']:a for a in release['assets']}
 for p in files:
