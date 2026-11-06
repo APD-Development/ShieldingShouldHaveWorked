@@ -2,5 +2,5 @@
   "number": 367,
   "source": "412117a9a60f05358e5bb125fcde0c71035e176e",
   "player": 42216313427,
-  "reason": "Internal exact Alpha367 emulator acceptance only; no publication. Reuse APK; pin application source and overlay only instrumentation. Verify signing/application identity and four actual tester controls/save cases."
+  "reason": "Internal exact Alpha367 emulator acceptance only; no publication. Reuse APK; pin application source and overlay only instrumentation. Verify signing/application identity and four actual tester controls/save cases. Retry verifier accepts version-dependent signer label while requiring the same exact SHA-256 certificate set and successful apksigner verification; prior run42217724472 stopped in label parsing before instrumentation."
 }

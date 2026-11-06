@@ -26,8 +26,10 @@ jobs:
           versions=[p for p in sdk.iterdir() if (p/'apksigner').exists() and (p/'aapt').exists()]
           tools=sorted(versions,key=lambda p:p.name)[-1]
           signature=subprocess.check_output([str(tools/'apksigner'),'verify','--print-certs','application/exact-tester.apk'],text=True)
-          cert=re.search(r'Signer #1 certificate SHA-256 digest: (\w+)',signature).group(1)
-          assert cert=='067688b3ab6bd5820a67f4c1ba7d5859db578173771cf31d3252b3e4e012246e'
+          digests=re.findall(r'certificate SHA-256 digest:\s*([0-9a-fA-F]{64})',signature)
+          expected='067688b3ab6bd5820a67f4c1ba7d5859db578173771cf31d3252b3e4e012246e'
+          assert digests and {d.lower() for d in digests}=={expected},signature
+          cert=expected
           package=subprocess.check_output([str(tools/'aapt'),'dump','badging','application/exact-tester.apk'],text=True).splitlines()[0]
           assert "name='com.charltonchris29.adhdpixeldungeon.indev'" in package and "versionCode='920'" in package
           pathlib.Path('tester-identity.json').write_text(json.dumps({'signature_verified':True,'certificate_sha256':cert,'package':package,'physical_phone_tested':False},indent=2)+'\n')
