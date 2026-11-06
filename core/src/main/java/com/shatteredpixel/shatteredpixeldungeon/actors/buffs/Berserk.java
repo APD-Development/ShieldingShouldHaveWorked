@@ -188,6 +188,11 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 		return state == State.BERSERK && target.shielding() > 0;
 	}
 
+    /** Description-only status query; never starts emergency berserk. */
+    public boolean activeForInspection(){
+        return state == State.BERSERK && target != null && target.shielding() > 0;
+    }
+
 	private void startBerserking(){
 		state = State.BERSERK;
 		SpellSprite.show(target, SpellSprite.BERSERK);

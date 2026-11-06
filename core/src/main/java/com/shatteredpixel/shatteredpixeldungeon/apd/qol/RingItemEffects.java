@@ -19,6 +19,7 @@ package com.shatteredpixel.shatteredpixeldungeon.apd.qol;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.SpiritForm;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -59,9 +60,15 @@ public final class RingItemEffects {
     private static String number(float value){return Messages.decimalFormat(Math.abs(value)>=1000000?"0.##E0":"0.###",value);}
     private static void multiplier(StringBuilder out,String key,float value){out.append("\n").append(text(key,number(value)));}
 
+    private static boolean aliveForInspection(Hero hero){
+        if(hero.HP>0)return true;
+        Berserk rage=hero.buff(Berserk.class);
+        return rage!=null && rage.activeForInspection();
+    }
+
     public static String describe(Item item) {
         Hero hero=Dungeon.hero;
-        if (hero==null || !hero.isAlive() || hero.buff(MagicImmune.class)!=null || item instanceof Ring) return "";
+        if (hero==null || !aliveForInspection(hero) || hero.buff(MagicImmune.class)!=null || item instanceof Ring) return "";
         if (!(item instanceof Weapon || item instanceof Armor || item instanceof Wand || item instanceof Artifact)) return "";
         if ((item instanceof Weapon || item instanceof Armor) && !item.levelKnown) return "";
         // Even suppressing only one unknown type would reveal it through the presence/absence of a line.

@@ -33,6 +33,37 @@ public class MechanicsExplanationTest {
  @Before public void setup()throws Exception{HeadlessTestSupport.start();java.lang.reflect.Field notes=com.shatteredpixel.shatteredpixeldungeon.journal.Notes.class.getDeclaredField("records");notes.setAccessible(true);oldNotes=notes.get(null);com.shatteredpixel.shatteredpixeldungeon.journal.Notes.reset();oldChallenges=Dungeon.challenges;Dungeon.challenges=0;oldRules=new com.watabou.utils.Bundle();Dungeon.apdStoreCustomRules(oldRules);Dungeon.apdRestoreCustomRules(new com.watabou.utils.Bundle());oldHero=Dungeon.hero;oldLevel=Dungeon.level;Dungeon.level=new GrassDewPickupTest.TestLevel();Dungeon.level.setSize(7,7);hero=new Hero();hero.heroClass=HeroClass.WARRIOR;Talent.initClassTalents(hero);hero.pos=24;hero.HP=hero.HT=20;Dungeon.hero=hero;armor=new MailArmor();armor.levelKnown=armor.cursedKnown=true;armor.inscribe(new Obfuscation());hero.belongings.armor=armor;}
  @After public void restore()throws Exception{Dungeon.hero=oldHero;Dungeon.level=oldLevel;Dungeon.challenges=oldChallenges;Dungeon.apdRestoreCustomRules(oldRules);java.lang.reflect.Field notes=com.shatteredpixel.shatteredpixeldungeon.journal.Notes.class.getDeclaredField("records");notes.setAccessible(true);notes.set(null,oldNotes);}
  private RingOfArcana ring(int level){RingOfArcana ring=new RingOfArcana();ring.level(level);ring.anonymize();ring.levelKnown=ring.cursedKnown=true;hero.belongings.ring=ring;ring.activate(hero);return ring;}
+ @Test public void sealTalentDetailsMatchCapacityAndGlyphEligibility(){
+  com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal seal=new com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal();
+  for(int rank=1;rank<=2;rank++){
+   hero.talents.get(0).put(Talent.IRON_WILL,rank);hero.talents.get(1).put(Talent.RUNIC_TRANSFERENCE,rank);
+   for(int tier=1;tier<=5;tier++)for(int level:new int[]{0,3,9})assertEquals(3+2*tier+rank,seal.maxShield(tier,level));
+   seal.setGlyph(new Obfuscation());assertTrue(seal.canTransferGlyph());
+   seal.setGlyph(new com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Affection());assertEquals(rank==2,seal.canTransferGlyph());
+   seal.setGlyph(null);assertFalse(seal.canTransferGlyph());
+   assertTrue(TalentExplanation.details(Talent.IRON_WILL,rank).contains(rank+" shield points"));
+   assertTrue(TalentExplanation.details(Talent.RUNIC_TRANSFERENCE,rank,true).contains("from +"+(5+rank)));
+  }
+ }
+ @Test public void allyWarpTalentDetailsMatchActualInteractionRange(){
+  descriptionSightArena();com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat ally=new com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat();ally.alignment=com.shatteredpixel.shatteredpixeldungeon.actors.Char.Alignment.ALLY;
+  for(int rank=1;rank<=3;rank++){
+   hero.talents.get(2).put(Talent.ALLY_WARP,rank);
+   for(int distance=2;distance<=8;distance++){ally.pos=hero.pos+distance;assertEquals(distance<=2*rank,ally.canInteract(hero));}
+   assertTrue(TalentExplanation.details(Talent.ALLY_WARP,rank).contains((2*rank)+" tiles"));
+  }
+ }
+ @Test public void inspectingRingEffectsDoesNotActivateEmergencyBerserk()throws Exception{
+  hero.sprite=quietSprite();hero.talents.get(0).put(Talent.DEATHLESS_FURY,1);
+  Berserk rage=Buff.affect(hero,Berserk.class);com.watabou.utils.Bundle before=new com.watabou.utils.Bundle();rage.storeInBundle(before);before.put("power",1.2f);rage.restoreFromBundle(before);hero.HP=0;
+  com.shatteredpixel.shatteredpixeldungeon.apd.qol.RingItemEffects.describe(armor);
+  com.watabou.utils.Bundle after=new com.watabou.utils.Bundle();rage.storeInBundle(after);
+  assertEquals("NORMAL",after.getString("state"));assertEquals(0,rage.shielding());
+  assertFalse(rage.activeForInspection());assertTrue(hero.isAlive());assertTrue(rage.activeForInspection());
+  rage.storeInBundle(before);com.shatteredpixel.shatteredpixeldungeon.apd.qol.RingItemEffects.describe(armor);rage.storeInBundle(after);
+  assertEquals(before.getString("state"),after.getString("state"));assertEquals(before.getFloat("levelrecovery"),after.getFloat("levelrecovery"),0);
+
+ }
  @Test public void armorProtectionPreviewMatchesActualHeroRollsAcrossStrengthAugmentsAndChallenge(){
   for(int challenge:new int[]{0,Challenges.NO_ARMOR})for(Armor.Augment augment:Armor.Augment.values())for(int level:new int[]{-3,0,3,8})for(int strength:new int[]{6,10,20}){
    Dungeon.challenges=challenge;armor.augment=augment;armor.level(level);hero.STR=strength;
