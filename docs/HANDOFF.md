@@ -1,3 +1,11 @@
+## 2026-11-06 owner3pm deadline; authorized369 testing and confirmed publication boundary
+
+Owner saidYes to extra pair, then go to10: interpreted10 APKs total/day, five Developer/five Alpha; keep369 unless real app correction needed. Exact app source/tag b8283598a43e13a2259d65cae69bf0529b7a65e2; tag apd-alpha-preview-369 pushed/verified. Producer42279158656 build job success, actual2856/446 core raw/hash verified and Developer artifact13533739670/APK88671a8624d53f61705d1b6e3c40d1ca6badc37780bac577a0f824e2f8c3d972 downloaded/sidecar checked. Full72 native, Alpha42279158734 and displays42279158774 stillpending.
+
+Initial panel42279534057 failed pre-native because fixture wronglyassumed versionCode921. Rootgradle actual920; no app defect/change. Corrected test-only source0546ef74e reads exact rootcode and verifies369 versionName plus originalcert/appID; new panel/Alpha runs requested. Original failure retained, no assertion weakened/newAPK.
+
+Exact368 diagnostic fallback publication42279432373/job128104219010 failed releasePOST403 Resource not accessible by integration, requestIDEC54:B342F:298C9B:898911:6AEE29C1; preparedbytes/scans passed. Official current GitHub docs explain Workflows-write needed for differing workflow target; GITHUB_TOKEN cannot receiveit. Owner asked via pendingasync to create PRIVATE DRAFT for exact existing369tag; attachment/publication stillunverified. No target/token/permission bypass, no more blind retry. See APD-GITHUB-RELEASE-BLOCKER-2026-11-06.md. Deadline3pmEastern=20:00UTC; preparation notdelivery; physicalphone/wholeaudit remainunclaimed.
+
 ## 2026-11-06 current application source534a21822 fully source-verified
 
 Remote42276005902/job128092371347 passed2856/446, zero failures/errors/skips plus Android debug/release/instrumentation Java and desktop compilation. Artifact13532759147,506055 bytes,SHAf5d078c989aacd7ef8b22f970d489f428f02323e8bc6dfe2e7cbaea4f9aa29e7 downloaded/digest/source/raw XML verified. No APK assembly, no new native/phone acceptance. Local full2856 raw preserved. Publisher-only follow-up e972bae08 has four passing Python tests/syntax check, no network mutation and no application input changes.

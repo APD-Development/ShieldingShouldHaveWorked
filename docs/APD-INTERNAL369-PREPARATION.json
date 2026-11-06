@@ -2,7 +2,7 @@
   "source": "b8283598a43e13a2259d65cae69bf0529b7a65e2",
   "expected_number": 369,
   "owner_exception": "Owner replied Yes to one additional Developer/Alpha pair on2026-11-06 after daily limit. No further pair authorized.",
-  "status": "requested_not_yet_verified",
+  "status": "produced_core_verified_native_pending",
   "previous_verified_local_pair": 368,
   "whole_semantic_audit_complete": false,
   "physical_phone_tested": false,
@@ -12,5 +12,21 @@
     "developer": 42279158656,
     "alpha": 42279158734,
     "display": 42279158774
-  }
+  },
+  "core_tests": 2856,
+  "core_suites": 446,
+  "core_artifact": 13533569900,
+  "core_artifact_sha256": "5476c0276a15f550b752def34146c7515841ced59c1ad950d209dd1a831f389f",
+  "developer_artifact": 13533739670,
+  "developer_artifact_sha256": "940320215a8dc50cbf76cd820bb3708fc3fcb533f7d9b74690590d1cc58c1a7f",
+  "developer_apk_sha256": "88671a8624d53f61705d1b6e3c40d1ca6badc37780bac577a0f824e2f8c3d972",
+  "developer_apk_bytes": 39156942,
+  "version_code": 920,
+  "retained_panel_fixture_failure": {
+    "run": 42279534057,
+    "job": 128104568023,
+    "cause": "Fixture wrongly assumed921; exact369 source/app code920. Failed before native tests; test-only correction checks source value and369 name. No new APK."
+  },
+  "test_source": "0546ef74e2fdef80afce7107c48d3cca403be047",
+  "release_blocker": "GitHub403 Resource not accessible by integration; current docs requireWorkflows-write on differing workflow target and Actions token cannot receiveit. Owner private draft creation pending."
 }
