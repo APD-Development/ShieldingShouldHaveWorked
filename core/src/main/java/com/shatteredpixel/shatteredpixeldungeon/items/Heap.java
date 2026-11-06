@@ -381,7 +381,7 @@ public class Heap implements Bundlable {
 			case FOR_SALE:
 				Item i = peek();
 				if (size() == 1) {
-					return Messages.get(this, "for_sale", Shopkeeper.sellPrice(i), i.title());
+					return Messages.get(this, "for_sale", Shopkeeper.previewSellPrice(i), i.title());
 				} else {
 					return i.title();
 				}

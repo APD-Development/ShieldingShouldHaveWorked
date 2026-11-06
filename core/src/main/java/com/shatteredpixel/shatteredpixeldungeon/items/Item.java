@@ -599,6 +599,9 @@ public class Item implements Bundlable {
 		return 0;
 	}
 
+	/** Read-only price for inventory and trade previews. */
+	public int previewValue() { return value(); }
+
 	//item's value in energy crystals
 	public int energyVal() {
 		return 0;

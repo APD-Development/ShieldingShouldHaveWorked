@@ -164,7 +164,7 @@ public class Alchemize extends Spell {
 						pos = warn.bottom();
 					}
 
-					RedButton btnSell = new RedButton(Messages.get(this, "sell", item.value())) {
+					RedButton btnSell = new RedButton(Messages.get(this, "sell", item.previewValue())) {
 						@Override
 						protected void onClick() {
 							WndTradeItem.sell(item);
@@ -180,7 +180,7 @@ public class Alchemize extends Spell {
 
 				} else {
 
-					int priceAll = item.value();
+					int priceAll = item.previewValue();
 					RedButton btnSell1 = new RedButton(Messages.get(this, "sell_1", priceAll / item.quantity())) {
 						@Override
 						protected void onClick() {

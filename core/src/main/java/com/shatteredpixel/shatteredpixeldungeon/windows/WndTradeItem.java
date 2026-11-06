@@ -92,7 +92,7 @@ public class WndTradeItem extends WndInfoItem {
 				pos = warn.bottom();
 			}
 
-			RedButton btnSell = new RedButton( Messages.get(this, "sell", item.value()) ) {
+			RedButton btnSell = new RedButton( Messages.get(this, "sell", item.previewValue()) ) {
 				@Override
 				protected void onClick() {
 					sell( item, finalShop);
@@ -107,7 +107,7 @@ public class WndTradeItem extends WndInfoItem {
 
 		} else {
 
-			int priceAll= item.value();
+			int priceAll= item.previewValue();
 			RedButton btnSell1 = new RedButton( Messages.get(this, "sell_1", priceAll / item.quantity()) ) {
 				@Override
 				protected void onClick() {
@@ -148,7 +148,7 @@ public class WndTradeItem extends WndInfoItem {
 
 		float pos = height;
 
-		final int price = Shopkeeper.sellPrice( item );
+		final int price = Shopkeeper.previewSellPrice( item );
 
 		RedButton btnBuy = new RedButton( Messages.get(this, "buy", price) ) {
 			@Override
@@ -165,9 +165,9 @@ public class WndTradeItem extends WndInfoItem {
 		pos = btnBuy.bottom();
 
 		final MasterThievesArmband.Thievery thievery = Dungeon.hero.buff(MasterThievesArmband.Thievery.class);
-		if (thievery != null && !thievery.isCursed() && thievery.chargesToUse(item) > 0) {
-			final float chance = thievery.stealChance(item);
-			final int chargesToUse = thievery.chargesToUse(item);
+		if (thievery != null && !thievery.isCursed() && thievery.previewChargesToUse(item) > 0) {
+			final float chance = thievery.previewStealChance(item);
+			final int chargesToUse = thievery.previewChargesToUse(item);
 			RedButton btnSteal = new RedButton(Messages.get(this, "steal", Math.min(100, (int) (chance * 100)), chargesToUse), 6) {
 				@Override
 				protected void onClick() {

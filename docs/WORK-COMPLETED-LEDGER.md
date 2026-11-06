@@ -1,3 +1,7 @@
+## Wand UI inspection purity — source only, APK hold active
+
+Three reproduced regressions fixed: titles/shop eligibility mutated inactive curse infusion; upgrade badges consumed Wild Magic RNG. Pure wand prices and cast-level ranges now used by UI; actual transactions/casts retain their behavior.416 wand quote contexts and nine armband cases plus actual Wild Magic/unknown-level checks; full local2872/446 passed. Raw /workspace/apd-wand-ui-verified-local-junit.zip. Required remote source-only Java checks pending. No APK assembled/delivered; whole audit remains unfinished. Report APD-WAND-UI-PURITY-2026-11-06.md. Prior Metal2866 remote receipt independently verified and recorded. Continue approved work after backup.
+
 ## Ongoing numerical audit — source only, owner APK hold active
 
 Merged Ankh/Holster and resin preview changes are remotely compile-verified (2862/2864 tests,446 suites, zero failures/errors/skips); exact downloaded receipts are recorded in APD-SOURCE-VERIFICATION-2026-11-06.json. Liquid Metal descriptions/default wording and live known-weapon readouts now pass2866 local tests; remote full Java checks pending, no native/phone claim. Report APD-METAL-EXPLANATION-2026-11-06.md. No furtherAPKdelivery before all remaining approved work is finished/verified; preserve369. Broader audit remains unfinished and work continues.

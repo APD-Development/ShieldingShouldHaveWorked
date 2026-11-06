@@ -4175,6 +4175,11 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/LiquidMetal.java",
       "sha256": "d3d74b873e3111071f4249bdfd3fcac1be38ac33616245087b75f32ef083c01b",
       "boundary": "Repair scale/rounding/spare conditions, separate recycling cost/default-stack/level-cap/condition formula and live known-weapon readouts;384 recipe/state cases plus consumption/accounting and privacy/purity verified locally. Native/phone new text acceptance pending."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/Wand.java",
+      "sha256": "0d9555b4e6c96bcd44c4b1f51f0173de788757439758267a47c7b000433dec53",
+      "boundary": "UI title/badge/price purity; exact and Wild Magic range visibility;416 quote comparisons plus nine armband cases and RNG/item privacy tests. Actual transactions/casts preserve cleanup, prices and random outcomes. Whole wand semantics/translation audit and native/phone range layout remain unfinished."
     }
   ]
 }

@@ -1,3 +1,7 @@
+## Wand UI inspection purity — source only, APK hold active
+
+Three reproduced regressions fixed: titles/shop eligibility mutated inactive curse infusion; upgrade badges consumed Wild Magic RNG. Pure wand prices and cast-level ranges now used by UI; actual transactions/casts retain their behavior.416 wand quote contexts and nine armband cases plus actual Wild Magic/unknown-level checks; full local2872/446 passed. Raw /workspace/apd-wand-ui-verified-local-junit.zip. Required remote source-only Java checks pending. No APK assembled/delivered; whole audit remains unfinished. Report APD-WAND-UI-PURITY-2026-11-06.md. Prior Metal2866 remote receipt independently verified and recorded. Continue approved work after backup.
+
 ## Current audit checkpoint — APK HOLD remains active
 
 Liquid Metal/default resin wording source now passes2866/446 locally; raw /workspace/apd-metal-explanation-local-junit.zip.384 actual weapon/recipe/state comparisons, pure known readouts, unknown-level equality, dart-impact/RNG preservation and real recycling consumption/set accounting. Repair two-step float formula retained in shared helper; conversion cost3/yield/defaultstack+5cap unchanged; no turns/slots/balance/save changes. Full required source-only Android/desktop check requested. Not in369; no newAPK/native/phone claim. Details docs/APD-METAL-EXPLANATION-2026-11-06.md.

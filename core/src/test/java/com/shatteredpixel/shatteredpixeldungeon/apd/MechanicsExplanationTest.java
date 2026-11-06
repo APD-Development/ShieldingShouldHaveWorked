@@ -686,6 +686,53 @@ public class MechanicsExplanationTest {
   try{for(int draw=0;draw<100;draw++){Class<?> previous=target.glyph==null?null:target.glyph.getClass();target.inscribe();assertNotEquals(previous,target.glyph.getClass());assertEquals(3,target.level());}}finally{Random.popGenerator();}
   String text=UtilityItemExplanation.details(new com.shatteredpixel.shatteredpixeldungeon.items.Stylus(),hero);assertTrue(text.contains("excludes the selected armor's existing glyph"));assertTrue(text.contains("does not raise armor upgrade level"));
  }
+ @Test public void armbandUiQuoteMatchesRealChargeBudgetWithoutCleaningUpWand() throws Exception {
+  for(int upgrade:new int[]{0,5,10})for(int charges:new int[]{0,1,4}) {
+   com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband armband=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband();armband.level(upgrade);
+   java.lang.reflect.Method factory=armband.getClass().getDeclaredMethod("passiveBuff");factory.setAccessible(true);
+   com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband.Thievery effect=(com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband.Thievery)factory.invoke(armband);effect.target=hero;
+   java.lang.reflect.Field charge=com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact.class.getDeclaredField("charge");charge.setAccessible(true);charge.setInt(armband,charges);
+   com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand wand=inactiveInfusionUiFixture();com.watabou.utils.Bundle before=new com.watabou.utils.Bundle(),after=new com.watabou.utils.Bundle(),armBefore=new com.watabou.utils.Bundle(),armAfter=new com.watabou.utils.Bundle();wand.storeInBundle(before);armband.storeInBundle(armBefore);
+   int budget=effect.previewChargesToUse(wand);float chance=effect.previewStealChance(wand);wand.storeInBundle(after);armband.storeInBundle(armAfter);assertEquals(before.toString(),after.toString());assertEquals(armBefore.toString(),armAfter.toString());
+   int expected=0;float value=0;while(value<75&&expected<charges){value+=10+upgrade/2f;expected++;}assertEquals(expected,budget);assertEquals(Math.min(1f,expected*(10+upgrade/2f)/75),chance,0f);assertEquals(budget,effect.chargesToUse(wand));assertEquals(chance,effect.stealChance(wand),0f);assertFalse(wand.curseInfusionBonus);
+  }
+ }
+ @Test public void wandUiQuotesMatchRealTransactionsWithoutChangingItemOrRandomness() throws Exception {
+  int previousDepth= Dungeon.depth;int comparisons=0;
+  try { for(String name:new String[]{"BlastWave","Corrosion","Corruption","Disintegration","Fireblast","Frost","Lightning","LivingEarth","MagicMissile","PrismaticLight","Regrowth","Transfusion","Warding"})
+   for(int level:new int[]{-1,0,3,6})for(boolean known:new boolean[]{false,true})for(boolean cursed:new boolean[]{false,true})for(boolean infusion:new boolean[]{false,true}) {
+    com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand wand=(com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand)Class.forName("com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOf"+name).getConstructor().newInstance();
+    wand.cursed=true;wand.curseInfusionBonus=infusion;wand.level(level);wand.cursed=cursed;wand.levelKnown=known;wand.cursedKnown=true;wand.resinBonus=1;
+    com.watabou.utils.Bundle before=new com.watabou.utils.Bundle(),after=new com.watabou.utils.Bundle();wand.storeInBundle(before);
+    Random.pushGenerator(407);int expectedRandom=Random.Int();Random.popGenerator();Random.pushGenerator(407);
+    int quote;
+    try{quote=wand.previewValue();wand.title();wand.buffedVisiblyUpgraded();wand.previewUpgradeRange();Dungeon.depth=16;assertEquals(quote*20,com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper.previewSellPrice(wand));assertEquals(expectedRandom,Random.Int());}finally{Random.popGenerator();}
+    wand.storeInBundle(after);assertEquals(name,before.toString(),after.toString());assertEquals(name,quote,wand.value());
+    assertEquals(name,known && !cursed ? false : infusion,wand.curseInfusionBonus);comparisons++;
+   }
+  }finally{Dungeon.depth=previousDepth;}
+  assertEquals(416,comparisons);
+ }
+ @Test public void wildMagicUiShowsBothPossibleLevelsWithoutIdentifyingUnknownWands(){
+  hero.heroClass=com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.MAGE;Talent.initClassTalents(hero);hero.talents.get(3).put(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.WILD_POWER,1);
+  com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand wand=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile();wand.levelKnown=true;hero.belongings.backpack.items.add(wand);wand.charge(hero);Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.WildMagic.WildMagicTracker.class);
+  try{assertEquals("+2..+3",wand.previewUpgradeRange());assertEquals(0,wand.buffedVisiblyUpgraded());java.util.Set<Integer> actual=new java.util.HashSet<>();Random.pushGenerator(409);try{for(int draw=0;draw<40;draw++)actual.add(wand.buffedLvl());}finally{Random.popGenerator();}assertEquals(new java.util.HashSet<>(java.util.Arrays.asList(2,3)),actual);wand.levelKnown=false;wand.level(7);assertNull(wand.previewUpgradeRange());assertEquals(0,wand.buffedVisiblyUpgraded());}
+  finally{wand.stopCharging();Buff.detach(hero,com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.WildMagic.WildMagicTracker.class);hero.belongings.backpack.items.remove(wand);}
+ }
+ private com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand inactiveInfusionUiFixture(){
+  com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand wand=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile();wand.cursed=true;wand.curseInfusionBonus=true;wand.level(0);wand.cursed=false;wand.levelKnown=wand.cursedKnown=wand.curChargeKnown=true;return wand;
+ }
+ @Test public void wandUiTitleDoesNotCleanUpTheItem(){
+  com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand wand=inactiveInfusionUiFixture();com.watabou.utils.Bundle before=new com.watabou.utils.Bundle(),after=new com.watabou.utils.Bundle();wand.storeInBundle(before);int capacity=wand.maxCharges;wand.title();wand.storeInBundle(after);assertEquals(before.toString(),after.toString());assertEquals(capacity,wand.maxCharges);
+ }
+ @Test public void wandUiShopEligibilityDoesNotCleanUpTheItem(){
+  com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand wand=inactiveInfusionUiFixture();com.watabou.utils.Bundle before=new com.watabou.utils.Bundle(),after=new com.watabou.utils.Bundle();wand.storeInBundle(before);assertTrue(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper.canSell(wand));wand.storeInBundle(after);assertEquals(before.toString(),after.toString());
+ }
+ @Test public void wandUiUpgradeBadgeDoesNotRollWildMagic(){
+  hero.heroClass=HeroClass.MAGE;Talent.initClassTalents(hero);hero.talents.get(3).put(Talent.WILD_POWER,1);
+  com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand wand=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile();wand.levelKnown=wand.cursedKnown=wand.curChargeKnown=true;hero.belongings.backpack.items.add(wand);wand.charge(hero);Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.WildMagic.WildMagicTracker.class);
+  try{Random.pushGenerator(978);int expected=Random.Int();Random.popGenerator();Random.pushGenerator(978);try{wand.buffedVisiblyUpgraded();assertEquals("Drawing an upgrade badge must not advance the cast RNG",expected,Random.Int());}finally{Random.popGenerator();}}finally{wand.stopCharging();Buff.detach(hero,com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.WildMagic.WildMagicTracker.class);}
+ }
  @Test public void metalReadoutsMatchActualRecipeAndPreserveKnownWeaponState()throws Exception{
   int compared=0;
   for(Class<?> type:com.shatteredpixel.shatteredpixeldungeon.journal.Catalog.THROWN_WEAPONS.items()){

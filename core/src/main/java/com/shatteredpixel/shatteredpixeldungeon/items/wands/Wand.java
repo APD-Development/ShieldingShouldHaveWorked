@@ -628,25 +628,38 @@ public abstract class Wand extends Item {
 		return new ItemSprite.Glowing(0xFFFFFF, 1f/(float)resinBonus);
 	}
 
-	@Override
-	public int value() {
-		int price = 75;
-		if (cursed && cursedKnown) {
-			price /= 2;
-		}
-		if (levelKnown) {
-			if (level() > 0) {
-				price *= (level() + 1);
-			} else if (level() < 0) {
-				price /= (1 - level());
-			}
-		}
-		if (price < 1) {
-			price = 1;
-		}
-		return price;
-	}
-	
+    @Override public int visiblyUpgraded() { return previewBaseLevel(); }
+
+    @Override public int buffedVisiblyUpgraded() {
+        int[] bounds = previewEffectiveLevels();
+        return bounds[0] == bounds[1] ? bounds[0] : previewBaseLevel();
+    }
+
+    /** A cast-dependent level cannot be represented by a single rolled UI number. */
+    public String previewUpgradeRange() {
+        int[] bounds = previewEffectiveLevels();
+        if (!levelKnown || bounds[0] == bounds[1]) return null;
+        return (bounds[0] >= 0 ? "+" : "") + bounds[0] + ".."
+                + (bounds[1] >= 0 ? "+" : "") + bounds[1];
+    }
+
+    @Override public int previewValue() { return priceAtLevel(previewBaseLevel()); }
+
+    @Override public int value() {
+        // Real transactions retain the existing inactive-infusion cleanup.
+        return priceAtLevel(levelKnown ? level() : 0);
+    }
+
+    private int priceAtLevel(int knownLevel) {
+        int price = 75;
+        if (cursed && cursedKnown) price /= 2;
+        if (levelKnown) {
+            if (knownLevel > 0) price *= knownLevel + 1;
+            else if (knownLevel < 0) price /= 1 - knownLevel;
+        }
+        return Math.max(1, price);
+    }
+
 	private static final String USES_LEFT_TO_ID     = "uses_left_to_id";
 	private static final String AVAILABLE_USES      = "available_uses";
 	private static final String CUR_CHARGES         = "curCharges";

@@ -203,12 +203,16 @@ public class Shopkeeper extends NPC {
 		return item.value() * 5 * (Dungeon.depth / 5 + 1);
 	}
 	
+	public static int previewSellPrice(Item item) {
+		return item.previewValue() * 5 * (Dungeon.depth / 5 + 1);
+	}
+
 	public static WndBag sell() {
 		return GameScene.selectItem( itemSelector );
 	}
 
 	public static boolean canSell(Item item){
-		if (item.value() <= 0)                                              return false;
+		if (item.previewValue() <= 0)                                              return false;
 		if (item.unique && !item.stackable)                                 return false;
 		if (item instanceof Armor && ((Armor) item).checkSeal() != null)    return false;
 		if (item.isEquipped(Dungeon.hero) && item.cursed)                   return false;
@@ -249,7 +253,7 @@ public class Shopkeeper extends NPC {
 				options[i++] = Messages.get(Shopkeeper.this, "sell");
 				options[i++] = Messages.get(Shopkeeper.this, "talk");
 				for (Item item : buybackItems){
-					options[i] = Messages.get(Heap.class, "for_sale", item.value(), Messages.titleCase(item.title()));
+					options[i] = Messages.get(Heap.class, "for_sale", item.previewValue(), Messages.titleCase(item.title()));
 					if (options[i].length() > maxLen) options[i] = options[i].substring(0, maxLen-3) + "...";
 					i++;
 				}
@@ -281,7 +285,7 @@ public class Shopkeeper extends NPC {
 					@Override
 					protected boolean enabled(int index) {
 						if (index > 1){
-							return Dungeon.gold >= buybackItems.get(index-2).value();
+							return Dungeon.gold >= buybackItems.get(index-2).previewValue();
 						} else {
 							return super.enabled(index);
 						}
