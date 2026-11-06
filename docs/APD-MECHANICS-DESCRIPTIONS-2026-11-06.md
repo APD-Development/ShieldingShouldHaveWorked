@@ -334,3 +334,10 @@ Full final local2707 tests/445 suites passed with zero failures/errors/skips aft
 Bless/Hex/Daze advanced explanations distinguish random-score multiplication from fixed hit chance and explain stacking and infinite-score precedence. Named literal factors are reused in the unchanged same-order Char.hit steps; no combined floating-point replacement or RNG changes. Actual seeded attack and defense contests cover all8 combinations/100 seeds each. Lethal Haste explains replacement budget2+2rank and updates consuming it before movement; actual enemy-kill hook verifies both ranks and replacement rather than addition. Targeted suite passes; full suite result pending at preparation time. Internal367 application source remains pinned412117a9a and excludes these later source additions; its native verification is separate.
 
 Full local2709/445 completed successfully, zero failures/errors/skips,42s. Source-only Android compilation still pending.
+
+
+## Ground contact, frozen actions and selective immunity
+
+Levitation default no longer claims every ground effect is ignored; actual occupancy checks web and sacrificial fire before flying skips ordinary ground contact. Details explain landing and root interaction. Magic Immunity no longer promises universal magic protection: actual AntiMagic.RESISTS and item-specific suppression are distinct. Frost explains thaw before shielding and water Chill; Roots distinguishes movement restrictions from teleportation. Actual attach/detach, shielded incoming hit/water Chill and all listed immunities with surviving unlisted Daze/physical damage are covered. Initial fixture compilation omitted quietSprite checked exceptions; corrected. Follow-up fixtures needed a safe restored non-game Game instance for Levitation.detach and used unlisted Daze to avoid unrelated Poison particle spawning. No production logic changed to accommodate fixtures. Targeted suite passes; full result recorded separately when complete.
+
+Full local2712/445 passed, zero failures/errors/skips,40s. No application assembled locally.

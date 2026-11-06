@@ -3577,6 +3577,26 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Daze.java",
       "sha256": "177cb350ff71869b91e15e0b73e852dab48cadb8497d7c813760cc1c060f799b",
       "boundary": "Ordinary accuracy/evasion random-roll factors, multiplicative stacking and guaranteed-rule priority. Same literal constants named and reused in unchanged hit steps; actual attack and defense contests checked across eight combinations and100 seeds."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Frost.java",
+      "sha256": "d64b4ed868a3a4393e7a8bdf5ac011156e112da6d2587bfefb5b96e8329a7052",
+      "boundary": "Inspected actual attachment/detachment/immunity/damage and ground-contact steps. Bounded explanation, no balance edits. Actual freeze shield/water, roots/flying and selected/unlisted immunity regressions. Does not close every possible terrain/equipment interaction."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Levitation.java",
+      "sha256": "eaeda5ee4db98f6b5e05f89f080929b793b9746657639c732d8266bceab462a4",
+      "boundary": "Inspected actual attachment/detachment/immunity/damage and ground-contact steps. Bounded explanation, no balance edits. Actual freeze shield/water, roots/flying and selected/unlisted immunity regressions. Does not close every possible terrain/equipment interaction."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Roots.java",
+      "sha256": "5aa0d069b7ada980b38f53a1a08decfcc0a5572ec0cb8d1a0e099c3eec8eba5d",
+      "boundary": "Inspected actual attachment/detachment/immunity/damage and ground-contact steps. Bounded explanation, no balance edits. Actual freeze shield/water, roots/flying and selected/unlisted immunity regressions. Does not close every possible terrain/equipment interaction."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/MagicImmune.java",
+      "sha256": "f1dc9b01316628e957d36b1aaf5cd9ea93861968c9af81adb0dd3308a3b21b73",
+      "boundary": "Inspected actual attachment/detachment/immunity/damage and ground-contact steps. Bounded explanation, no balance edits. Actual freeze shield/water, roots/flying and selected/unlisted immunity regressions. Does not close every possible terrain/equipment interaction."
     }
   ]
 }

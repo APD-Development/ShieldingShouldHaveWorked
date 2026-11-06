@@ -1,3 +1,7 @@
+## 2026-11-06 selective immunity/ground contact checkpoint
+
+Full local2712/445 pass. Default universal Levitation/Magic Immunity claims corrected, read-only detailed freeze/root/immunity rules tested against real attachment/damage handlers. Source-only2707 gate receipt verified and recorded. Internal367 producer passed and exact Developer APK/checksum staged; full72 native and viewport/touch acceptance still running, no verified/playable or delivery claim. Continue remaining descriptions while native verification runs.
+
 ## 2026-11-06 roll-contest checkpoint
 
 Full local2709/445 pass. Actual seeded hit handlers verify all8 Bless/Hex/Daze combinations in attack and defense; source factors and same-order calculations preserved. Lethal Haste actual kill budget/replacement tested and explained. Internal367 pair is running against exact412117a9a; corrected viewport native run42216362442 pending, not claimed passed. Continue immunity/movement-status semantic review. No delivery yet;365 verified fallback intact.

@@ -1,0 +1,21 @@
+{
+  "status": "BUILT_NATIVE_ACCEPTANCE_PENDING_NOT_DELIVERED",
+  "source": "412117a9a60f05358e5bb125fcde0c71035e176e",
+  "developer_run": 42216313574,
+  "alpha_run": 42216313427,
+  "targeted_native_run": 42216362442,
+  "display_matrix_run": 42216313155,
+  "developer_artifact": {
+    "id": 13501826824,
+    "zip": "/workspace/apd-internal367-developer.zip",
+    "zip_bytes": 36553823,
+    "zip_sha256": "39d4b6a9b2c5d3403b705482646572d9f34b3b7927c0c5372cf2080d39236c53",
+    "apk": "/workspace/apd-internal367-developer.apk",
+    "apk_bytes": 39056748,
+    "apk_sha256": "d1c43fdcbafd89f6af8151f1ec279f8a1380ad8e9a5a3a47e3675f3479432680",
+    "sidecar_matches": true,
+    "signature_verification": "pending exact native runner identity receipt"
+  },
+  "fallback": "Delivered365 remains verified fallback.366 withheld for actual rendering failure.367 whole-game audit unfinished; no owner or tester delivery.",
+  "physical_phone_tested": false
+}
