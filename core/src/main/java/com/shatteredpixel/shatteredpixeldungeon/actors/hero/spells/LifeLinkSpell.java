@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -48,9 +51,11 @@ public class LifeLinkSpell extends ClericSpell {
 		return HeroIcon.LIFE_LINK;
 	}
 
+	public static int linkDuration(Hero hero){ return Math.round(6.67f + 3.33f*hero.pointsInTalent(Talent.LIFE_LINK)); }
+
 	@Override
 	public String desc() {
-		return Messages.get(this, "desc", 4 + 2*Dungeon.hero.pointsInTalent(Talent.LIFE_LINK), 30 + 5*Dungeon.hero.pointsInTalent(Talent.LIFE_LINK)) + "\n\n" + Messages.get(this, "charge_cost", (int)chargeUse(Dungeon.hero));
+		return Messages.get(this, "desc", linkDuration(Dungeon.hero), 30 + 5*Dungeon.hero.pointsInTalent(Talent.LIFE_LINK)) + "\n\n" + Messages.get(this, "charge_cost", (int)chargeUse(Dungeon.hero));
 	}
 
 	@Override
@@ -68,7 +73,7 @@ public class LifeLinkSpell extends ClericSpell {
 	@Override
 	public void onCast(HolyTome tome, Hero hero) {
 
-		int duration = Math.round(6.67f + 3.33f*Dungeon.hero.pointsInTalent(Talent.LIFE_LINK));
+		int duration = linkDuration(Dungeon.hero);
 
 		Char ally = PowerOfMany.getPoweredAlly();
 
@@ -114,7 +119,7 @@ public class LifeLinkSpell extends ClericSpell {
 
 		@Override
 		public float iconFadePercent() {
-			int duration = Math.round(6.67f + 3.33f*Dungeon.hero.pointsInTalent(Talent.LIFE_LINK));
+			int duration = linkDuration(Dungeon.hero);
 			return Math.max(0, (duration - visualcooldown()) / duration);
 		}
 	}

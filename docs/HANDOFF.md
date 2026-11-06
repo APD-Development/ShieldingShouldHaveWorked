@@ -1,3 +1,7 @@
+## 2026-11-06 all27 primary spell checkpoint
+
+Full local2736/445 pass. All27 spell cases have specific primary explanations with no RNG inspection. Life Link display duration corrected to actual10/13/17/20; Beaming closest-default corrected without changing actual targeting. Real stasis save/cost, wall flags/free clear, ground negative shield and prayer effect-unit regressions pass. Existing Hallowed Ground shield reduction and other observed gameplay edges documented/preserved under no-calculation-change requirement. Remaining broad item/talent/nested audit continues; primary spell coverage does not close it. Latest known verified remote source receipts through2724; newer CI pending retrieval via connected tools because CLI token401. Git push works normally; no history recreation. Only366/367 pairs today, no new application request.
+
 ## 2026-11-06 form inspection fix
 
 Full local2729/445 pass. Confirmed pre-fix Spirit tooltip mutated cached ring7→1/artifact0→8; description now pure, actual gameplay getters retain same values. Form spell configuration/activation and live rank formulas explained. GitHub CLI token401; normal Git retry pushedf44f0f644 and connector verified remote. Known-run artifact tools work. Do not infer latest CI from source commit. Continue remaining six primary spells and broad audit. No more application pair requested;367 evidence retained, source newer.

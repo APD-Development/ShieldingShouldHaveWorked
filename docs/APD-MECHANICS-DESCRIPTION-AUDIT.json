@@ -3677,6 +3677,36 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/SpiritForm.java",
       "sha256": "5fc347c18008165aae0169649d5dd95fca1e39462ef49966cdf6a215916acdc4",
       "boundary": "Configuration vs activation/charge distinction and public talent-based effect level/duration; actual source formula matching and cached-object preservation. Spirit tooltip no longer invokes mutating gameplay getters; real getters still update as before. Not all selected-item mechanics closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/LifeLinkSpell.java",
+      "sha256": "9598e32460cf9fe6e3c732354027e1093deb8ff1b8d57cf5dcf3bb80ee1d7e1f",
+      "boundary": "Primary shared damage/duration/range/stasis/terrain/status-extension rules, actual behavior and saved-state regressions. All27 selectable spells now have specific primary explanation; not all nested item/terrain/AI semantics closed."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/BeamingRay.java",
+      "sha256": "97d23ab23078b78cc63dd37d39f59295746a3778909cba4a8021332da6d93a93",
+      "boundary": "Primary shared damage/duration/range/stasis/terrain/status-extension rules, actual behavior and saved-state regressions. All27 selectable spells now have specific primary explanation; not all nested item/terrain/AI semantics closed."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/Stasis.java",
+      "sha256": "0651931c9b1541d71d1241f3d1b1ae884ed9ceff398ca032f4f6ef386b682409",
+      "boundary": "Primary shared damage/duration/range/stasis/terrain/status-extension rules, actual behavior and saved-state regressions. All27 selectable spells now have specific primary explanation; not all nested item/terrain/AI semantics closed."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/WallOfLight.java",
+      "sha256": "8e7aa22a7d5a4a1b98603418d34dd01b7db2a0c582466b3dca9e19b834740be2",
+      "boundary": "Primary shared damage/duration/range/stasis/terrain/status-extension rules, actual behavior and saved-state regressions. All27 selectable spells now have specific primary explanation; not all nested item/terrain/AI semantics closed."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/HallowedGround.java",
+      "sha256": "c4afd00036f9de99ecfb754ec8c2a291155669c5359aa45c5f301be61a7236c4",
+      "boundary": "Primary shared damage/duration/range/stasis/terrain/status-extension rules, actual behavior and saved-state regressions. All27 selectable spells now have specific primary explanation; not all nested item/terrain/AI semantics closed."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/MnemonicPrayer.java",
+      "sha256": "82625a56a6081c764274de6f3ae306f70a8d6412a9c9a98e172f903973a791c7",
+      "boundary": "Primary shared damage/duration/range/stasis/terrain/status-extension rules, actual behavior and saved-state regressions. All27 selectable spells now have specific primary explanation; not all nested item/terrain/AI semantics closed."
     }
   ]
 }
