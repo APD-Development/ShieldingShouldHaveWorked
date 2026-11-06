@@ -57,6 +57,7 @@ public final class WeaponAbilityExplanation {
             case "Gauntlet":base=5;scale=1;break;
             case "Greataxe":base=15;scale=2;break;
             case "Flail":base=8;scale=2;break;
+            case "Pickaxe":base=8;scale=2;break;
         }
         boolean visible=known(weapon,hero);Integer level=visible?weapon.buffedLvl():null;
         if(base!=0){
@@ -93,6 +94,8 @@ public final class WeaponAbilityExplanation {
             case "RunicBlade":
                 effect="Runic Slash uses a temporary enchantment-power boost of 3 + 0.5 × effective weapon level. "+(level==null?"The upgrade-dependent boost remains hidden.":"Current boost: "+n(((RunicBlade)weapon).runicSlashEnchantBoost())+".")+" Each enchantment uses that boost through its own probability, strength and cap rules. It is not that many extra physical damage points or one universal proc percentage. The supported attack uses normal attack time and normal defenses.";break;
             case "Whip":effect="Lash attacks eligible visible, non-charming enemy targets already in the hero's legal attack reach, using one normal attack delay for the sequence. Each target receives its own normal attack processing and defenses with guaranteed-hit accuracy in the ordinary contest. This is not unlimited area damage through walls; inspection does not count hidden enemies or attempt an attack.";break;
+            case "Pickaxe":
+                effect="Pierce uses guaranteed-hit accuracy in the ordinary attack contest and normal attack time. Its added damage input below applies only to inorganic targets, Swarms, Bees, Crabs, Spinners and Scorpios; other eligible targets get zero added damage from this ability. A successful hit on a surviving target offers three scheduled game-time units of Vulnerable through the usual buff rules. Vulnerable makes supported subsequent attacks deal more damage while it lasts. The normal target defenses, special dodges and ability charge rules still apply. This is a conditional flat damage bonus, not a universal 100% damage multiplier. Mining keeps its separate action rules.";break;
             case "Crossbow":effect="Charged Shot readies a one-use benefit without ordinary setup time and cannot be readied again while already active. The supported dart shot applies its separate damage, extra-tip-use and nearby on-hit-effect rules. It does not fire a dart immediately, grant free ammunition or remove the subsequent shot's normal time cost.";break;
             default:return "";
         }

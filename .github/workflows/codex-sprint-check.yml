@@ -1,5 +1,5 @@
 name: Codex APD sprint verification
-# Owner policy: at most three Developer and three Alpha-Testers APK deliveries per New York day.
+# Owner policy updated November6: ten APKs total per New York day, at most five Developer and five Alpha-Testers.
 
 #Owner authorized this sprint and all development actions on 2026-10-09.
 #This trigger is confined to the Codex work branch and an explicit build request.

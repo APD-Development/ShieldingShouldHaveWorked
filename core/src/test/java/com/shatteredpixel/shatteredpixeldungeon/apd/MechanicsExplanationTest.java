@@ -686,6 +686,24 @@ public class MechanicsExplanationTest {
   try{for(int draw=0;draw<100;draw++){Class<?> previous=target.glyph==null?null:target.glyph.getClass();target.inscribe();assertNotEquals(previous,target.glyph.getClass());assertEquals(3,target.level());}}finally{Random.popGenerator();}
   String text=UtilityItemExplanation.details(new com.shatteredpixel.shatteredpixeldungeon.items.Stylus(),hero);assertTrue(text.contains("excludes the selected armor's existing glyph"));assertTrue(text.contains("does not raise armor upgrade level"));
  }
+ @Test public void pickaxeAbilityDetailsMatchActualConditionalDamageInput(){
+  com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe pick=new com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe();pick.levelKnown=pick.cursedKnown=true;
+  com.shatteredpixel.shatteredpixeldungeon.actors.Char[] qualified={new com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Crab(),new com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bee(),new com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Swarm(),new com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Spinner(),new com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Scorpio(),new com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100()};
+  com.shatteredpixel.shatteredpixeldungeon.actors.Char ordinary=new com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat();
+  for(int level:new int[]{0,1,3,8})for(com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon.Augment augment:com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon.Augment.values()){
+   pick.level(level);pick.augment=augment;String detail=WeaponAbilityExplanation.details(pick,hero);int expected=augment.damageFactor(8+2*pick.buffedLvl());
+   assertTrue(detail,detail.contains("amount: "+expected+" damage points"));
+   for(com.shatteredpixel.shatteredpixeldungeon.actors.Char target:qualified)assertEquals(target.getClass().getSimpleName(),expected,pick.pierceDamageBoost(target));
+   assertEquals(0,pick.pierceDamageBoost(ordinary));assertEquals(0,pick.pierceDamageBoost(null));
+  }
+  String detail=WeaponAbilityExplanation.details(pick,hero);assertTrue(detail.contains("only to inorganic targets"));assertTrue(detail.contains("three scheduled game-time units"));assertTrue(detail.contains("not a universal 100%"));
+ }
+ @Test public void pickaxeAbilityInspectionKeepsHiddenLevelsAndStatePrivate(){
+  com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe pick=new com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe();pick.levelKnown=false;pick.cursedKnown=true;pick.level(0);String low=WeaponAbilityExplanation.details(pick,hero);pick.level(7);assertEquals(low,WeaponAbilityExplanation.details(pick,hero));
+  pick.levelKnown=true;com.watabou.utils.Bundle before=new com.watabou.utils.Bundle(),after=new com.watabou.utils.Bundle();pick.storeInBundle(before);String heroBefore=savedDescriptionHero();
+  Random.pushGenerator(721);int expected=Random.Int();Random.popGenerator();Random.pushGenerator(721);try{WeaponAbilityExplanation.details(pick,hero);assertEquals(expected,Random.Int());}finally{Random.popGenerator();}
+  pick.storeInBundle(after);assertEquals(before.toString(),after.toString());assertEquals(heroBefore,savedDescriptionHero());
+ }
  @Test public void chaliceDescriptionDelayMatchesActualRegenerationAcrossLevels(){
   hero.HP=10;
   for(int level:new int[]{0,3,9}){
