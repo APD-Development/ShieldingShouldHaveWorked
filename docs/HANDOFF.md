@@ -1,3 +1,7 @@
+## 2026-11-06 Elemental Strike source checkpoint
+
+Full local2689/445 pass. All28 existing cone-effect map entries explained; actual barrier/directed-power handler and strict unknown-property invariance tested. No gameplay calculations changed. Prior2683 and2686 source gates42210206740/42210704509 passed, both artifact JSONs downloaded/inspected. Continue Trinity/Ratmogrify and remaining semantic audit.366 still withheld for real viewport rendering failure; its source fix and stronger assertions await a new application acceptance cycle. No new APK since366, source-only checkpoints do not request assembly.
+
 ## 2026-11-06 Challenge/Feint checkpoint
 
 Full local2686 core pass; actual image triggers and weapon-ability refund handlers tested, own duel loss/state inspection kept private/read-only. Source-only, not in withheld366. PriorCleric gate42210206740 concluded success; artifact receipt still to download/inspect. Continue Elemental Strike, Trinity/Ratmogrify and remaining semantic review; preserve APK cap (only366 pair produced today), saves/signing and365 fallback.
