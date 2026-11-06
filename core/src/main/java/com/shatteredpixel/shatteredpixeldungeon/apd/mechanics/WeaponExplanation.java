@@ -24,7 +24,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar;
 
-/** Standard attack timing only: never calls attackDelay, accuracyFactor or a damage roll. */
+/** Standard timing and passive blocking; never calls consuming combat helpers or damage rolls. */
 public final class WeaponExplanation {
     private WeaponExplanation() {}
 
@@ -41,11 +41,38 @@ public final class WeaponExplanation {
         return base * (1f / speed);
     }
 
+    private static boolean passiveBlockWeapon(Weapon weapon){
+        return weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier
+            ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Quarterstaff
+            ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Katana
+            ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield
+            ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatshield;
+    }
+    public static String blockSummary(Weapon weapon,Hero hero){
+        if(!passiveBlockWeapon(weapon))return "";
+        String text="When wielded normally, passive weapon blocking subtracts a rolled number of damage points; it is not a percentage chance to stop an entire attack. Missing strength lowers that roll, and unarmed-stance or ability rules can disable this contribution.";
+        if(!weapon.levelKnown)return text+" Upgrade-dependent protection remains hidden until identified.";
+        Integer strength=ArmorExplanation.knownStrength(hero);
+        if(strength==null)return text+" Personal strength penalties are withheld while contributing bonuses are unknown or unavailable.";
+        int maximum=weapon.defenseFactor(hero),missing=Math.max(0,weapon.STRReq()-strength);
+        return text+" With your known strength, its contribution is _0–"+Math.max(0,maximum-2*missing)+" protection points_ before other defenses.";
+    }
+    public static String blockDetails(Weapon weapon,Hero hero){
+        if(!passiveBlockWeapon(weapon))return "";
+        String text="_Passive weapon protection_\nFor a positive block maximum, the normal wielded-weapon defense path rolls from 0 to that maximum, favoring middle results, subtracts 2 for each missing strength point and keeps only a positive contribution. This is separate from worn armor's roll, active Guard or other ability protection. Unarmed fighting rules can disable the weapon's contribution even while it is equipped. Total-defense modifiers still apply afterward.\nRapier's maximum is 1, Quarterstaff's 2 and Katana's 3 damage points. Round Shield uses 4 + effective weapon level; Greatshield uses 6 + 2×effective weapon level. Their upgrades and temporary effective-level changes affect those shield maxima under the item rules; strength requirements use their own level rule.\n";
+        if(!weapon.levelKnown)return text+"This item's upgrade-dependent values stay hidden until identified.";
+        int maximum=weapon.defenseFactor(hero);text+="Current positive passive block maximum: "+Math.max(0,maximum)+" points before missing-strength penalties. A non-positive formula result gives no positive passive contribution. ";Integer strength=ArmorExplanation.knownStrength(hero);
+        if(strength==null)return text+"Personal penalties are withheld while contributing strength bonuses are unknown or unavailable.";
+        int missing=Math.max(0,weapon.STRReq()-strength);
+        return text+"Known strength: "+strength+"; missing strength: "+missing+"; subtract "+(2*missing)+" points from each roll, with a zero lower bound. Current normal weapon contribution: 0–"+Math.max(0,maximum-2*missing)+" protection points.";
+    }
+
     public static String summary(Weapon weapon, Hero hero) {
         String result = "Attack time is measured in game turns: a smaller time lets you attack sooner. Being below this weapon's strength requirement makes ordinary attacks slower and less accurate; an accuracy bonus changes your attack score, not your chance to hit by that percentage.";
         Float delay = normalAttackDelay(weapon, hero);
         if (delay != null) result += " Used normally with your known bonuses: _" + ObfuscationExplanation.number(delay)
                 + " turns per attack_ before effects that change all action times, special abilities or free attacks. Unarmed stances use their own timing.";
+        String block=blockSummary(weapon,hero);if(!block.isEmpty())result+="\n\n"+block;
         return result;
     }
 
@@ -54,6 +81,7 @@ public final class WeaponExplanation {
                 + "In the standard weapon calculation, each missing strength point divides the weapon's accuracy factor by 1.5 and multiplies its attack time by 1.2. Upgrades reduce strength requirements at +1, +3, +6, +10 and so on; negative levels count as zero for this reduction. Mastery reduces the requirement by 2. Temporary effective levels and permanent upgrades need not affect the requirement in the same way.\n"
                 + "Speed augmentation multiplies rolled damage by 0.7 and base attack time by 2/3. Damage augmentation multiplies rolled damage by 1.5 and base attack time by 5/3. Damage rounds to whole points. These are separate factors: faster does not mean a matching percentage reduction in damage.\n"
                 + "Standard attack time = augmented base time × 1.2^missing strength / attack-speed factor. Furor contributes 1.09051^effective ring bonus to that factor. Sword Dance adds 0.6 to the factor before division; it does not multiply final time by 0.6. Other all-action effects, free attacks, unarmed stances and special abilities apply their own rules.\n";
+        String block=blockDetails(weapon,hero);if(!block.isEmpty())result=block+"\n\n"+result;
         if (weapon instanceof SpiritBow || weapon instanceof SpiritBow.SpiritArrow)
             return result + "Spirit Bow shots also have special Sniper-shot timing and Nature's Power bonuses; the standard timing formula alone is not a complete shot preview.";
         if (!weapon.levelKnown) return result + "Personal upgrade-dependent timing stays hidden until this weapon's upgrades are identified.";

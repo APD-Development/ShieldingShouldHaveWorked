@@ -1,3 +1,7 @@
+## 2026-11-06 passive weapon block checkpoint
+
+Local full2778/446 pass, raw local JUnit/summary/log preserved. Five passive block classes now explain strength penalties and damage-point ranges;750 seeded actual Hero dr comparisons including negative levels, Force stance exclusion, hidden-value and catalog-purity tests pass. Descriptions never call mutating fightingUnarmed. Current remote source-only2776 gate still to retrieve; new helper not remotely compiled yet. No APK assembly/delivery. Continue Scroll Empower/Hold Fast status details and remaining applicable numerical semantics.
+
 ## 2026-11-06 Monk talents checkpoint
 
 Full local2776/446 pass, raw /workspace/apd-monk-talents-local-JUnit/summary and full log preserved (actual zip lowercase junit). Monastic rank2 exactly8/10 false baseline confirmed; descriptions corrected to slightly-above80% with exact ratio/current status, original mechanics retained. Combined Energy actual two-type handlers through save/load bothorders/ranks and lower-cost exclusions pass; tier gain explanation added. Remote4682f0f08 actual2773/446 compilation proof downloaded/hashed, ledger updated. Source-only2776 request queued; no new APK build or delivery. Continue remaining visible buffs/talents/item semantics; no stop/checkpoint pause authorized.

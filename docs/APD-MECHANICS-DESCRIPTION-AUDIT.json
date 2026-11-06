@@ -3827,6 +3827,11 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/TalentExplanation.java",
       "sha256": "d964c83ba6f456a1793030c1f14ce5fbc9ac69d7afce07d7172dbae793b9d627",
       "boundary": "Monk tier gain, original floating-point empowerment boundary and two-type energy refund/save-state explanation. Core comparisons/handlers unchanged. Not complete every equipment grant, timer-modifier or active ability interaction closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/WeaponExplanation.java",
+      "sha256": "ba8d9b3c23b2e9769a39459c205a97a41478018424401931a21d643b838ee211",
+      "boundary": "Five passive-block weapon damage-point ranges, strength penalty, positive-only contribution and unarmed exclusion, including cursed/negative levels. Actual seeded Hero defense handler tested; not full active Guard/stance/mitigation closure."
     }
   ]
 }
