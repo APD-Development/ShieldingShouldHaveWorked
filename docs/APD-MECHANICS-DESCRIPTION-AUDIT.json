@@ -3260,8 +3260,8 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/BuffExplanation.java",
-      "sha256": "e195d5c13708ac9891566c36aefc51216575bef4af3ed8dd948d2168f7915b69",
-      "boundary": "Selected Fire/Frost Imbue, Fury, Adrenaline, Stamina/Cripple description formulas, timing/immunity boundaries and read-only duration; not full numerical-system closure."
+      "sha256": "397e3927aa2e90646cca6ffd3e05f35e5931cf081d7340d02b09dae04d35a8d8",
+      "boundary": "Selected Fire/Frost Imbue, Fury, Adrenaline, Stamina/Cripple description formulas, timing/immunity boundaries and read-only duration; not full numerical-system closure. Selected Paralysis escape/check order/counter, Drowsy and Magical Sleep healing/wake facets; not full damage system or other statuses closure."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/FireImbue.java",
@@ -3317,6 +3317,21 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndTitledMessage.java",
       "sha256": "ee2540d926ea467272b34b6ac3db23ac50581aa1d6436fb5ffa32009743e0197",
       "boundary": "Armor ability charge/recharge explanation and optional bounded description UI only; individual ability effect formulas and native rendered acceptance remain open."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Paralysis.java",
+      "sha256": "ea4d1a98b5749224f6bbf786bd6ac06ff8bfa60d2249a29cad3e2a4bc19977d4",
+      "boundary": "Selected Paralysis escape/check order/counter, Drowsy and Magical Sleep healing/wake facets; not full damage system or other statuses closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Drowsy.java",
+      "sha256": "347969eafcd72d136e30f90e8769705a5c04f1aa3d027d36ab6c844322150ea2",
+      "boundary": "Selected Paralysis escape/check order/counter, Drowsy and Magical Sleep healing/wake facets; not full damage system or other statuses closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/MagicalSleep.java",
+      "sha256": "c66941587af37bfdfa7d0bca2072f1e2ce95a66f5218c47208b5f63411d2fea5",
+      "boundary": "Selected Paralysis escape/check order/counter, Drowsy and Magical Sleep healing/wake facets; not full damage system or other statuses closure."
     }
   ]
 }

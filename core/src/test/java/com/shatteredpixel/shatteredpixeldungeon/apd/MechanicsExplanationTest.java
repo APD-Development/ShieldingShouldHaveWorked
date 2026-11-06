@@ -410,4 +410,17 @@ public class MechanicsExplanationTest {
   RingOfEnergy energy=new RingOfEnergy();energy.anonymize();energy.levelKnown=energy.cursedKnown=true;hero.belongings.ring=energy;energy.activate(hero);com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.HeroicLeap ability=new com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.HeroicLeap();
   for(int level=0;level<=3;level++){energy.level(level);equipment.charge=0;charger.act();float actual=equipment.charge;assertTrue(com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.AbilityExplanation.details(ability,hero).contains("per eligible update: "+ObfuscationExplanation.number(actual)+" charge points"));equipment.charge=99.99f;charger.act();assertEquals(100,equipment.charge,0);}
  }
+
+ @Test public void paralysisExplanationMatchesActualEscapeRollBeforeShielding(){
+  for(int seed=0;seed<30;seed++){PlainStatusTarget target=new PlainStatusTarget();target.pos=24;Paralysis paralysis=Buff.affect(target,Paralysis.class,5);Barrier shield=Buff.affect(target,Barrier.class);shield.setShield(100);
+   Random.pushGenerator(seed);boolean breaks=Random.NormalIntRange(0,20)>=Random.NormalIntRange(0,100);Random.popGenerator();Random.pushGenerator(seed);try{target.damage(20,new Object());}finally{Random.popGenerator();}
+   assertEquals(breaks,target.buff(Paralysis.class)==null);assertEquals(100,target.HP);assertEquals(20,target.buff(Paralysis.ParalysisResist.class).accumulatedDamage());assertTrue(BuffExplanation.details(paralysis).contains("before shield points"));}
+ }
+ @Test public void paralysisDetailsHideEnemyCounterAndPreserveHeroCounter(){
+  Paralysis heroEffect=Buff.affect(hero,Paralysis.class,5);heroEffect.processDamage(3);Paralysis.ParalysisResist count=hero.buff(Paralysis.ParalysisResist.class);int before=count.accumulatedDamage();for(int i=0;i<30;i++)assertTrue(BuffExplanation.details(heroEffect).contains("counted damage: "+before+" damage points"));assertEquals(before,count.accumulatedDamage());
+  PlainStatusTarget enemy=new PlainStatusTarget();Paralysis other=Buff.affect(enemy,Paralysis.class,5);assertFalse(BuffExplanation.details(other).contains("current counted damage"));
+ }
+ @Test public void magicalSleepExplanationMatchesActualHealingAndFullHpEnding()throws Exception{
+  hero.sprite=quietSprite();hero.HP=18;MagicalSleep sleep=Buff.affect(hero,MagicalSleep.class);assertTrue(BuffExplanation.details(sleep).contains("one unmodified HP"));float fraction=hero.apdCustomHealingFraction;for(int i=0;i<30;i++)MechanicsDetails.buff(sleep,sleep.desc());assertEquals(18,hero.HP);assertEquals(fraction,hero.apdCustomHealingFraction,0);sleep.act();assertEquals(19,hero.HP);sleep.act();assertEquals(20,hero.HP);assertNull(hero.buff(MagicalSleep.class));
+ }
 }
