@@ -26,14 +26,12 @@ proof=out/f'APD-Preview-{number}-Verification.json';evidence=json.loads(proof.re
 files=[p for p in out.iterdir() if p.suffix in ('.apk','.sha256','.zip') or p.name=='APD-Source-Scan.json']
 # GitHub does not create a draft release's tag until publication; establish and verify it explicitly.
 ref=subprocess.run(['gh','api',f'repos/{repo}/git/ref/tags/{tag}'],text=True,capture_output=True)
-if ref.returncode:
- assert '404' in ref.stderr,ref.stderr
- subprocess.run(['gh','api','--method','POST',f'repos/{repo}/git/refs','-f','ref=refs/tags/'+tag,'-f','sha='+spec['source']],check=True)
+assert ref.returncode==0,'Publication requires the pre-existing exact source tag; no reference creation or update is performed: '+ref.stderr
 resolved=api(f'repos/{repo}/git/ref/tags/{tag}')['object'];assert resolved['type']=='commit' and resolved['sha']==spec['source']
 matches=[r for r in api(f'repos/{repo}/releases?per_page=100') if r['tag_name']==tag]
 assert len(matches)<=1,'Duplicate release tag; preserve existing releases'
 if not matches:
- payload={'tag_name':tag,'target_commitish':spec['source'],'name':spec.get('title',f'APD Alpha Preview {number}'),'body':(out/'release-notes.md').read_text(),'draft':True,'prerelease':True,'make_latest':'false'}
+ payload={'tag_name':tag,'name':spec.get('title',f'APD Alpha Preview {number}'),'body':(out/'release-notes.md').read_text(),'draft':True,'prerelease':True,'make_latest':'false'}
  request=urllib.request.Request(f'https://api.github.com/repos/{repo}/releases',data=json.dumps(payload).encode(),method='POST',headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Content-Type':'application/json','Accept':'application/vnd.github+json'})
  matches=[json_response(request,timeout=60)]
 release,=matches

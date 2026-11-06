@@ -21,5 +21,6 @@
     "Developer",
     "Alpha-Testers"
   ],
-  "purpose": "One diagnostic publication attempt with actual safe API denial capture; reuse exact verified fallback, no APK build or permission change"
+  "purpose": "One diagnostic publication attempt with actual safe API denial capture; reuse exact verified fallback, no APK build or permission change",
+  "existing_tag_only": "Use documented existing-tag request, omitting unused target_commitish; exact tag/source checked before/after, no reference creation/update or permission change."
 }
