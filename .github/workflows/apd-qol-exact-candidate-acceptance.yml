@@ -104,8 +104,8 @@ jobs:
             cat qol-instrumentation.txt
             python3 -c "import pathlib,re; text=pathlib.Path('qol-instrumentation.txt').read_text(); assert re.search(r'OK \(3 tests\)',text); assert not any(marker in text for marker in ['FAILURES!!!','INSTRUMENTATION_FAILED','Process crashed.'])"
             mkdir -p qol-visuals
-            for name in qol-mechanics-buff-expanded.png qol-mechanics-talent-expanded.png qol-mechanics-ability-expanded.png qol-mechanics-spell-expanded.png qol-waiting-independent-stops.png qol-waiting-saved-stops.png; do adb exec-out cat "/sdcard/Pictures/APD-Test-Visuals/$name" > "qol-visuals/$name"; done
-            python3 tools/validate_android_visuals.py qol-visuals qol-mechanics-buff-expanded.png qol-mechanics-talent-expanded.png qol-mechanics-ability-expanded.png qol-mechanics-spell-expanded.png qol-waiting-independent-stops.png qol-waiting-saved-stops.png
+            for name in qol-mechanics-buff-expanded.png qol-mechanics-talent-expanded.png qol-mechanics-ability-expanded.png qol-mechanics-spell-expanded.png qol-waiting-independent-stops.png qol-waiting-saved-stops.png qol-searched-wall.png qol-door-ineligible-bookshelf.png qol-door-ineligible-decoration.png; do adb exec-out cat "/sdcard/Pictures/APD-Test-Visuals/$name" > "qol-visuals/$name"; done
+            python3 tools/validate_android_visuals.py qol-visuals qol-mechanics-buff-expanded.png qol-mechanics-talent-expanded.png qol-mechanics-ability-expanded.png qol-mechanics-spell-expanded.png qol-waiting-independent-stops.png qol-waiting-saved-stops.png qol-searched-wall.png qol-door-ineligible-bookshelf.png qol-door-ineligible-decoration.png
       - name: Preserve actual acceptance evidence
         if: always()
         uses: actions/upload-artifact@v4

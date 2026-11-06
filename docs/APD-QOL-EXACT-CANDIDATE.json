@@ -3,5 +3,5 @@
   "run": 42216313574,
   "build": 367,
   "purpose": "Internal exact-APK emulator acceptance for corrected mechanics viewport; no release or application rebuild",
-  "test_revision": "Same367 APK; center controlled terrain fixture before bookshelf/decor proof images and assert hero lies inside viewport. Previous camera/clipping/touch three-case acceptance passed; rerun preserves all assertions and adds readable fixture evidence, no application rebuild."
+  "test_revision": "Same367 APK; center controlled terrain fixture before bookshelf/decor proof images and assert hero lies inside viewport. Previous camera/clipping/touch three-case acceptance passed; rerun preserves all assertions and adds readable fixture evidence, no application rebuild. Collect and validate all three wall fixture PNGs in addition to the six panel/settings PNGs; former collector archived only those six."
 }
