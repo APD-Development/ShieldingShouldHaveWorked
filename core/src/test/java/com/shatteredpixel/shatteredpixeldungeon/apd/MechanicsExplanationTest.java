@@ -423,4 +423,21 @@ public class MechanicsExplanationTest {
  @Test public void magicalSleepExplanationMatchesActualHealingAndFullHpEnding()throws Exception{
   hero.sprite=quietSprite();hero.HP=18;MagicalSleep sleep=Buff.affect(hero,MagicalSleep.class);assertTrue(BuffExplanation.details(sleep).contains("one unmodified HP"));float fraction=hero.apdCustomHealingFraction;for(int i=0;i<30;i++)MechanicsDetails.buff(sleep,sleep.desc());assertEquals(18,hero.HP);assertEquals(fraction,hero.apdCustomHealingFraction,0);sleep.act();assertEquals(19,hero.HP);sleep.act();assertEquals(20,hero.HP);assertNull(hero.buff(MagicalSleep.class));
  }
+
+ @Test public void regrowthAllowanceExplanationMatchesRealFormulaRatherThanStaleComments()throws Exception{
+  com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth wand=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth();wand.levelKnown=wand.cursedKnown=wand.curChargeKnown=true;
+  java.lang.reflect.Method actual=wand.getClass().getDeclaredMethod("chargeLimit",int.class);actual.setAccessible(true);
+  for(int heroLevel:new int[]{1,10,20,30}){hero.lvl=heroLevel;for(int level=0;level<=10;level++){wand.level(level);int expected=(Integer)actual.invoke(wand,heroLevel);assertEquals(expected,wand.previewChargeLimit(heroLevel));assertTrue(com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.WandExplanation.details(wand).contains("Current allowance: "+expected+" charge units"));}}
+ }
+ @Test public void regrowthDepletionDetailsFollowSavedCountersAndIgnoreTemporaryLevelForAllowance(){
+  com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth wand=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth();wand.levelKnown=wand.cursedKnown=wand.curChargeKnown=true;wand.level(3);int limit=wand.previewChargeLimit(hero.lvl);com.watabou.utils.Bundle saved=new com.watabou.utils.Bundle();wand.storeInBundle(saved);saved.put("totChrgUsed",limit);saved.put("chargesOverLimit",3);wand=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth();wand.restoreFromBundle(saved);
+  assertEquals(.8f,wand.previewFurrowedChance(hero.lvl),0);String text=com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.WandExplanation.details(wand);assertTrue(text.contains("grass checks: 80%"));wand.charge(hero);Buff.affect(hero,ScrollEmpower.class).reset(3);assertEquals(limit,wand.previewChargeLimit(hero.lvl));assertEquals(.8f,wand.previewFurrowedChance(hero.lvl),0);
+ }
+ @Test public void corruptionDetailsUseSharedLivePowerAndDoNotClaimOneSuccessChance(){
+  com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorruption wand=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorruption();wand.levelKnown=wand.cursedKnown=wand.curChargeKnown=true;
+  for(int level=0;level<=9;level++){wand.level(level);String text=com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.WandExplanation.details(wand);assertTrue(text.contains("Current strength: "+ObfuscationExplanation.number(com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorruption.corruptionPower(level))));assertTrue(text.contains("not the final corruption chance"));assertTrue(text.contains("strictly greater"));}
+ }
+ @Test public void wardSupportUsesOrdinaryKnownLevelRatherThanTemporaryCastingLevel(){
+  com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding wand=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding();wand.levelKnown=wand.cursedKnown=wand.curChargeKnown=true;wand.level(3);wand.charge(hero);Buff.affect(hero,ScrollEmpower.class).reset(3);assertEquals(5,wand.previewEffectiveLevels()[0]);String text=com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.WandExplanation.details(wand);assertTrue(text.contains("known level = 5 support points"));assertTrue(text.contains("Temporary casting levels do not increase"));
+ }
 }

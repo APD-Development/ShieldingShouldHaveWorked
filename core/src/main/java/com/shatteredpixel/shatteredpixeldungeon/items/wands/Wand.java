@@ -428,13 +428,21 @@ public abstract class Wand extends Item {
 		return lvl;
 	}
 
+    /** Ordinary known level, without the curse-cleanup side effects of level(). */
+    public int previewBaseLevel() {
+        if (!levelKnown) return 0;
+        int value = super.level();
+        if (cursed && curseInfusionBonus) value += 1 + value / 6;
+        return value + resinBonus;
+    }
+
+    public int previewChargeCost() { return curChargeKnown ? chargesPerCast() : 0; }
+
     /** Inclusive effective-level bounds for descriptions, without choosing a Wild Magic roll.
      * Unknown upgrade levels must never enter a numerical preview. */
     public int[] previewEffectiveLevels() {
         if (!levelKnown) return new int[]{0, 0};
-        int base = super.level();
-        if (cursed && curseInfusionBonus) base += 1 + base / 6;
-        base += resinBonus;
+        int base = previewBaseLevel();
         if (Dungeon.hero != null && Dungeon.hero.buff(Degrade.class) != null
                 && (isEquipped(Dungeon.hero) || Dungeon.hero.belongings.contains(this)))
             base = Degrade.reduceLevel(base);

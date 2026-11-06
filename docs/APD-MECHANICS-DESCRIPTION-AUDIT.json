@@ -3205,8 +3205,8 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/Wand.java",
-      "sha256": "78389043dc11bb8c2aac65623fd068226bfc1eb66722e4fdc7f96f10eddfa760",
-      "boundary": "Selected Liquid Willpower, Shield Battery, Inscribed Power, Liquid Nature, Liquid Agility and Precise Assault explanation facets only; remaining talents and abilities remain open. Read-only known wand level/damage/charge explanation and Wild Magic preview facets. Not all targeting, wand-specific secondary effects, staff abilities or non-damaging wand mechanics closure."
+      "sha256": "3bf29c3223908ef93fea95b80dceed43a4e0b5744154080cc15e995213863f88",
+      "boundary": "Selected Liquid Willpower, Shield Battery, Inscribed Power, Liquid Nature, Liquid Agility and Precise Assault explanation facets only; remaining talents and abilities remain open. Read-only known wand level/damage/charge explanation and Wild Magic preview facets. Not all targeting, wand-specific secondary effects, staff abilities or non-damaging wand mechanics closure. Selected non-direct wand charge/allowance/resistance/support facets: actual Regrowth integer-quotient formula, Corruption shared strength and read-only weighted effect pools, ordinary-versus-temporary Warding levels; not all staff/secondary/targeting effect closure."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/ScrollEmpower.java",
@@ -3220,8 +3220,8 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/WandExplanation.java",
-      "sha256": "9a3b61ea724b70d5b0216b94fb56c8aca6d2d73ca96247faa39f3e782b84a37c",
-      "boundary": "Read-only known wand level/damage/charge explanation and Wild Magic preview facets. Not all targeting, wand-specific secondary effects, staff abilities or non-damaging wand mechanics closure."
+      "sha256": "3124b9947c93677323f40e514d77f4fafcb4886ba6ab86ad691727ee4d02671a",
+      "boundary": "Read-only known wand level/damage/charge explanation and Wild Magic preview facets. Not all targeting, wand-specific secondary effects, staff abilities or non-damaging wand mechanics closure. Selected non-direct wand charge/allowance/resistance/support facets: actual Regrowth integer-quotient formula, Corruption shared strength and read-only weighted effect pools, ordinary-versus-temporary Warding levels; not all staff/secondary/targeting effect closure."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/DamageWand.java",
@@ -3332,6 +3332,21 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/MagicalSleep.java",
       "sha256": "c66941587af37bfdfa7d0bca2072f1e2ce95a66f5218c47208b5f63411d2fea5",
       "boundary": "Selected Paralysis escape/check order/counter, Drowsy and Magical Sleep healing/wake facets; not full damage system or other statuses closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfRegrowth.java",
+      "sha256": "fef39c6dedbfc0f6b3a476c99f72d512f19de2364d40b8ec50a0826171ddecac",
+      "boundary": "Selected non-direct wand charge/allowance/resistance/support facets: actual Regrowth integer-quotient formula, Corruption shared strength and read-only weighted effect pools, ordinary-versus-temporary Warding levels; not all staff/secondary/targeting effect closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfCorruption.java",
+      "sha256": "97dfb7f4cc96a5175af32721de9814389e264b5bf29f90e717421b37652b27cb",
+      "boundary": "Selected non-direct wand charge/allowance/resistance/support facets: actual Regrowth integer-quotient formula, Corruption shared strength and read-only weighted effect pools, ordinary-versus-temporary Warding levels; not all staff/secondary/targeting effect closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfWarding.java",
+      "sha256": "0574a0b44b50eeeef6c583e72bca0bd27ce75a87be5bd54fc1d7427c602b14d4",
+      "boundary": "Selected non-direct wand charge/allowance/resistance/support facets: actual Regrowth integer-quotient formula, Corruption shared strength and read-only weighted effect pools, ordinary-versus-temporary Warding levels; not all staff/secondary/targeting effect closure."
     }
   ]
 }

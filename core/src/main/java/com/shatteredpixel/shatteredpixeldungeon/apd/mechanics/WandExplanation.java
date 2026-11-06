@@ -24,6 +24,13 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.*;
 /** Known wand contributions, without casting, selecting a random level or consuming a use. */
 public final class WandExplanation {
     private WandExplanation() {}
+    private static String corruptionGroup(boolean major, boolean showWeights) {
+        java.util.Map<Class<? extends com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff>, Float> pool=WandOfCorruption.explanationEffectPool(major);
+        java.util.ArrayList<Class<? extends com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff>> types=new java.util.ArrayList<>(pool.keySet());
+        types.sort(java.util.Comparator.comparing(Class::getName));StringBuilder text=new StringBuilder();
+        for(Class<?> type:types){float weight=pool.get(type);if(showWeights&&weight<=0)continue;if(text.length()>0)text.append(", ");text.append(com.shatteredpixel.shatteredpixeldungeon.messages.Messages.get(type,"name"));if(showWeights)text.append(" (").append(ObfuscationExplanation.number(weight)).append(")");}
+        return text.toString();
+    }
     public static String details(Wand wand) {
         if (!wand.isIdentified()) return "Identify the wand before its upgrade-dependent calculations are shown.";
         int[] levels = wand.previewEffectiveLevels();
@@ -61,6 +68,33 @@ public final class WandExplanation {
             result += "\n\n_Corrosive gas_\nStarting unmodified gas damage uses 2 + effective wand level: "
                 + (2+levels[0]) + (levels[0]==levels[1]?"":" to "+(2+levels[1]))
                 + " damage points. This is the starting tick strength, not total damage from the entire cloud. Remaining in the gas and later Corrosion ticks have their own timing and increasing-strength rules; immunity and protection can change actual HP loss.";
+        }
+        if (wand instanceof WandOfCorruption) {
+            result += "\n\n_Corruption strength, not damage_\nCorrupting strength = 3 + effective wand level / 3. Current strength: "
+                + ObfuscationExplanation.number(WandOfCorruption.corruptionPower(levels[0]))
+                + (levels[0]==levels[1]?"":" to "+ObfuscationExplanation.number(WandOfCorruption.corruptionPower(levels[1])))
+                + ". This is compared with the target's corruption resistance; it is not a damage amount or a universal success percentage. "
+                + "Resistance uses a monster-specific base, multiplied by 1 + 4 × (current HP / maximum HP)². Each supported major negative effect halves that resistance; a minor or other qualifying negative effect multiplies it by 0.75. These reductions multiply, rather than adding percentage points. "
+                + "Ordinary base resistance is 1 + the monster's experience value, with ascension adjustments. Mimics and statues instead use 1 + floor depth; piranhas and bees use 1 + floor depth / 2; wraiths use (1 + scaling depth / 4) / 5; swarms use their special experience fallback. "
+                + "When strength is strictly greater than the adjusted resistance, attempt corruption; immunity can substitute Doom. Otherwise strength / resistance is the chance to attempt a major rather than minor negative effect. Unavailable or immune effects can cause escalation, so this ratio alone is not the final corruption chance. Already corrupted or doomed targets follow their special restriction. The ratio is compared with a random fraction from 0 up to 1: a ratio at or below zero never passes, and a ratio of one or more always passes that check. "
+                + "A selected ordinary negative effect is offered 6 + 3 × effective wand level turns before its resistance adjustment."
+                + "\nEffects in the half-resistance group: "+corruptionGroup(true,false)+". Effects in the quarter-reduction group: "+corruptionGroup(false,false)+"; other negative effects also use the quarter reduction."
+                + "\nPossible major effects and their relative selection weights: "+corruptionGroup(true,true)+". Minor effects and weights: "+corruptionGroup(false,true)+". Existing or immune effects are removed from selection; among remaining effects, weight two is twice as likely as weight one. Some statuses weaken resistance but are not offered by this wand itself.";
+        }
+        if (wand instanceof WandOfWarding) {
+            result += "\n\n_Ward support budget_\nThis wand contributes 2 + its ordinary known level = " + (2+wand.previewBaseLevel())
+                + " support points. This is a budget for active wards, not alchemy energy, damage or charges consumed on each attack. Each ward uses points equal to its tier; multiple charging Warding wands contribute to the total budget. Temporary casting levels do not increase that ordinary-level budget. "
+                + "Creating or upgrading wards needs available support points. At full support, higher-tier sentries can still be healed under their own rule rather than upgraded; ordinary wards cannot simply exceed the budget. Ward damage and healing use the cast's effective level separately.";
+        }
+        if (wand instanceof WandOfRegrowth && Dungeon.hero != null) {
+            WandOfRegrowth growth=(WandOfRegrowth)wand;int cost=wand.previewChargeCost();int limit=growth.previewChargeLimit(Dungeon.hero.lvl);
+            result += "\n\n_Regrowth area and depletion_\nCurrent cast uses "+cost+" charge units. Its tall/furrowed-grass placement budget is round((3.67 + effective level / 3) × charges used): "
+                + Math.round((3.67f+levels[0]/3f)*cost) + (levels[0]==levels[1]?"":" to "+Math.round((3.67f+levels[1]/3f)*cost))
+                + " tile attempts. Suitable terrain, existing plants, immovable creatures and available space limit actual placement. Qualifying affected creatures are offered 4 × charges used = "+(4*cost)+" turns of Roots before resistance. "
+                + "After passing a separate depletion check, eligible checks offer a seedpod/dewcatcher with charges used / 6 chance and a random plant with charges used / 3 chance, subject to space and planting rules. These are not guaranteed drops on every tile. "
+                + "Ordinary wand level controls the growth-charge allowance separately from temporary casting level. At ordinary level 10 or more, the allowance is "+Integer.MAX_VALUE+" charge units. Below 10, allowance = round(20 + hero level × (2 + ordinary wand level) × (1 + quotient)), where quotient is ordinary wand level divided by (50 − 5 × ordinary wand level), discarding the fractional part. "
+                + ("Current allowance: "+limit+" charge units; "+growth.usedGrowthCharges()+" units recorded as used.")
+                + " After the allowance is reached, furrowed-grass chance is (extra charges already used + 1) / 5, capped at 100%. Current chance on eligible grass checks: "+ObfuscationExplanation.number(100*growth.previewFurrowedChance(Dungeon.hero.lvl))+"%. Those depletion checks also restrict plant opportunities; furrowed grass does not give normal dew/seed rolls.";
         }
         return result;
     }

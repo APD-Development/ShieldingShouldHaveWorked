@@ -1,3 +1,9 @@
+## 2026-11-06 — ability and sleep source verified; non-direct wand facets follow
+
+Ability sourceb13ba58fcf91c796387e46244ee29bd6712fb7ff/run42156881957 verified2629 tests445 suites and all Java gates. Actual artifact13475161872 downloaded490960bytes SHA2565ddc7bb380239c43f05669d7c458e3f305cd90cf19d2da1c2299b81b5494378e, JSON inspected. Sleep/paralysis source7d39e83649d8f45730793747b8dd1803bd9b1080/run42157230235 verified2632 tests445 suites/all Java gates; artifact13474592963 actual489127bytes SHA2560bd8a253ab9f1a68d00962da90276549b383386d4a2455732d524d4b1a8c6392 downloaded/JSON inspected.
+
+New non-direct wand facets local2636 tests445 suites green; remote source gate pending. Regrowth explanation follows actual integer-quotient allowance rather than stale comment; balance unchanged. Corruption strength uses shared identical pure expression/pool read-only views; Warding explains ordinary-level support budget. Whole-game semantic/secondary effect/remaining ability/status/translation/native UI acceptance is still unfinished. No APK assembled/version change and no phone evidence. Preserve TEST365 unchanged verified playable fallback, signing/appID/player saves, existing Search/waiting source work and daily APK cap. Current exact scope/failures in APD-MECHANICS-DESCRIPTIONS-2026-11-06.md.
+
 ## 2026-11-06 — status explanations verified; armor ability charge UI follows
 
 Sourcef0a6548decfafb8b3787b264c2501e8f377eab1f/run42156262893 verified2626 tests445 suites plus full Android/desktop source gates. Downloaded artifact13474109712 actual490231bytes SHA25626d52b08f544c252558ac94b3f3f9b72e4e39c87e994f27ae28994f169162759, JSON inspected. Earlier talent artifact13475260945 actual490734bytes SHA25612399bc6cc4704d5685224dfa6b44bee9bfb201b230df8f173274336c1f19693 also downloaded/JSON verified.
