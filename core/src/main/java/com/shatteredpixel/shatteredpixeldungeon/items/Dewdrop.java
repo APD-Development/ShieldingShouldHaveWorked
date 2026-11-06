@@ -80,9 +80,18 @@ public class Dewdrop extends Item {
 		return true;
 	}
 
+    /** Base dew value before health caps, Vial allocation and run healing rules. */
+    public static int baseDewEffect(Hero hero, int drops) {
+        return Math.round(hero.HT * 0.05f * drops);
+    }
+
+    public static int shieldingDewCap(Hero hero) {
+        return Math.round(hero.HT * 0.2f * hero.pointsInTalent(Talent.SHIELDING_DEW));
+    }
+
 	public static boolean consumeDew(int quantity, Hero hero, boolean force){
 		//20 drops for a full heal
-		int effect = Math.round( hero.HT * 0.05f * quantity );
+		int effect = baseDewEffect(hero, quantity);
 
 		int heal = Math.min( hero.HT - hero.HP, effect );
 
@@ -97,7 +106,7 @@ public class Dewdrop extends Item {
 
 			shield = effect - heal;
 
-			int maxShield = Math.round(hero.HT *0.2f*hero.pointsInTalent(Talent.SHIELDING_DEW));
+			int maxShield = shieldingDewCap(hero);
 			int curShield = 0;
 			if (hero.buff(Barrier.class) != null) curShield = hero.buff(Barrier.class).shielding();
 			shield = Math.min(shield, maxShield-curShield);

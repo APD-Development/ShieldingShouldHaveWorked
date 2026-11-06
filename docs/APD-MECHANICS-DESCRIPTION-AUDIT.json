@@ -4180,6 +4180,11 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/Wand.java",
       "sha256": "0d9555b4e6c96bcd44c4b1f51f0173de788757439758267a47c7b000433dec53",
       "boundary": "UI title/badge/price purity; exact and Wild Magic range visibility;416 quote comparisons plus nine armband cases and RNG/item privacy tests. Actual transactions/casts preserve cleanup, prices and random outcomes. Whole wand semantics/translation audit and native/phone range layout remain unfinished."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Dewdrop.java",
+      "sha256": "dfe5854c83d327fc2f059f0aee112e797ef12bd459295db5a3dc8ef41b37e255",
+      "boundary": "Base healing and Shielding Dew cap use unchanged shared formulas. Live storage/HP/shield resource explanation and64 actual effect cases plus inspection purity. Vial whole cross-product, all translations and native/phone text acceptance remain unfinished."
     }
   ]
 }

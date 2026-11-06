@@ -1,3 +1,7 @@
+## Dew resource explanation — source only, owner APK hold active
+
+Dew panel now explains live base HP, whole-drop rounding, current Barrier/talent cap and Waterskin volume, and distinguishes those values from final modified healing. Same existing dew/cap formulas shared with actual healing/drop selection;64 actual healing/shield comparisons plus storage/Hero/item/RNG/fractional-credit purity pass. Full local2874/446 passed before final English tooltip correction (instant-heal promise removed); required remote source-only check requested for final source. No APK assembled/delivered. Report APD-DEW-EXPLANATION-2026-11-06.md. Wand2872 full remote Java checks passed and independently downloaded receipt recorded. Continue remaining approved audit; whole semantic/native/phone acceptance remains unfinished.
+
 ## Wand UI inspection purity — source only, APK hold active
 
 Three reproduced regressions fixed: titles/shop eligibility mutated inactive curse infusion; upgrade badges consumed Wild Magic RNG. Pure wand prices and cast-level ranges now used by UI; actual transactions/casts retain their behavior.416 wand quote contexts and nine armband cases plus actual Wild Magic/unknown-level checks; full local2872/446 passed. Raw /workspace/apd-wand-ui-verified-local-junit.zip. Required remote source-only Java checks pending. No APK assembled/delivered; whole audit remains unfinished. Report APD-WAND-UI-PURITY-2026-11-06.md. Prior Metal2866 remote receipt independently verified and recorded. Continue approved work after backup.

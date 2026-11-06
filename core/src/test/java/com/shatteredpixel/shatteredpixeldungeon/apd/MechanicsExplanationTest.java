@@ -686,6 +686,23 @@ public class MechanicsExplanationTest {
   try{for(int draw=0;draw<100;draw++){Class<?> previous=target.glyph==null?null:target.glyph.getClass();target.inscribe();assertNotEquals(previous,target.glyph.getClass());assertEquals(3,target.level());}}finally{Random.popGenerator();}
   String text=UtilityItemExplanation.details(new com.shatteredpixel.shatteredpixeldungeon.items.Stylus(),hero);assertTrue(text.contains("excludes the selected armor's existing glyph"));assertTrue(text.contains("does not raise armor upgrade level"));
  }
+ @Test public void dewExplanationUsesLiveHpStorageAndShieldCapWithoutSpendingAnything() throws Exception {
+  com.shatteredpixel.shatteredpixeldungeon.items.Waterskin skin=new com.shatteredpixel.shatteredpixeldungeon.items.Waterskin();skin.fill();hero.HP=13;hero.HT=53;hero.apdCustomHealingFraction=.75f;hero.talents.get(2).put(Talent.SHIELDING_DEW,2);Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier.class).setShield(7);
+  String heroBefore=savedDescriptionHero();com.watabou.utils.Bundle before=new com.watabou.utils.Bundle(),after=new com.watabou.utils.Bundle();skin.storeInBundle(before);
+  Random.pushGenerator(416);int next=Random.Int();Random.popGenerator();Random.pushGenerator(416);
+  try{String text=UtilityItemExplanation.details(skin,hero);assertTrue(text,text.contains("contains 20 of 20 drops"));assertTrue(text,text.contains("One drop's base value: 3 HP"));assertTrue(text,text.contains("five drops together: 13 HP"));assertTrue(text,text.contains("Shielding Dew cap: 21 Barrier points; current Barrier: 7 points"));assertEquals(next,Random.Int());}finally{Random.popGenerator();}
+  skin.storeInBundle(after);assertEquals(before.toString(),after.toString());assertEquals(heroBefore,savedDescriptionHero());assertEquals(.75f,hero.apdCustomHealingFraction,0f);hero.HT=100;assertTrue(UtilityItemExplanation.details(skin,hero).contains("five drops together: 25 HP"));assertTrue(UtilityItemExplanation.details(skin,null).contains("require a loaded character"));skin.empty();assertTrue(UtilityItemExplanation.details(skin,hero).contains("contains 0 of 20 drops"));
+ }
+ @Test public void dewReadoutSharedValuesMatchRealHealingAndTalentShieldCaps() throws Exception {
+  hero.sprite=quietSprite();int comparisons=0;
+  for(int maximum:new int[]{20,53,100,201})for(int drops:new int[]{1,2,5,20})for(int rank:new int[]{0,1,2,3}){
+   Buff.detach(hero,com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier.class);hero.HT=maximum;hero.HP=maximum;hero.talents.get(2).put(Talent.SHIELDING_DEW,rank);
+   int base=Math.round(maximum*.05f*drops),cap=Math.round(maximum*.2f*rank);assertEquals(base,com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop.baseDewEffect(hero,drops));assertEquals(cap,com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop.shieldingDewCap(hero));
+   assertTrue(com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop.consumeDew(drops,hero,true));com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier barrier=hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier.class);assertEquals(Math.min(base,cap),barrier==null?0:barrier.shielding());assertEquals(maximum,hero.HP);
+   Buff.detach(hero,com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier.class);hero.talents.get(2).put(Talent.SHIELDING_DEW,0);hero.HP=1;assertTrue(com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop.consumeDew(drops,hero,true));assertEquals(Math.min(maximum,1+base),hero.HP);comparisons++;
+  }
+  assertEquals(64,comparisons);
+ }
  @Test public void armbandUiQuoteMatchesRealChargeBudgetWithoutCleaningUpWand() throws Exception {
   for(int upgrade:new int[]{0,5,10})for(int charges:new int[]{0,1,4}) {
    com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband armband=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband();armband.level(upgrade);
