@@ -1,3 +1,7 @@
+## 2026-11-06 Challenge/Feint checkpoint
+
+Full local2686 core pass; actual image triggers and weapon-ability refund handlers tested, own duel loss/state inspection kept private/read-only. Source-only, not in withheld366. PriorCleric gate42210206740 concluded success; artifact receipt still to download/inspect. Continue Elemental Strike, Trinity/Ratmogrify and remaining semantic review; preserve APK cap (only366 pair produced today), saves/signing and365 fallback.
+
 ## 2026-11-06 Cleric ability checkpoint
 
 Full local2683/445 pass. AscendedForm/PowerOfMany ability and buff explanations match real shield/counter/damage/link/creation handlers; no balance changes. Prior Mage/UI source51efeafed remote gate42209527719 passed2680 plus all required Java/desktop compilation, artifact13498696889 downloaded/inspected. New source check requested. Continue Duelist/Trinity/Ratmogrify and remaining mechanics. Internal366 remains withheld for screenshot rendering failure; no new APK pair since366. Source viewport fix not yet tested in a new application.
