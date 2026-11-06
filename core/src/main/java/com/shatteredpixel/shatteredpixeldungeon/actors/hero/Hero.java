@@ -2379,7 +2379,7 @@ public class Hero extends Char {
 			interrupt();
 
 			if (ankh.isBlessed()) {
-				this.HP = HT / 4;
+				this.HP = Ankh.blessedReviveHP(HT);
 				ApdCombat.onHeroRevived( ApdCombat.REVIVE_BLESSED_ANKH );
 
 				PotionOfHealing.cure(this);

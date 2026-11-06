@@ -1,3 +1,9 @@
+## 2026-11-06 blessed Ankh revival source candidate — verification pending
+
+Read-only post369 review found normal resurrection already covered at Healing0%, while blessed revival still embedded its HT/4 expression directly in Hero.die and its expanded item text did not explicitly state the approved Healing-slider exemption. Candidate factors the exact same integer division into Ankh.blessedReviveHP and calls it from the unchanged live death-handler position and inspection text. It documents that revival is not ordinary recovery and therefore is not multiplied by Custom Dungeon Rules Healing. Cure list, invulnerability, item consumption, priority, events, RNG, turn order, saves and all balance inputs are unchanged.
+
+New regression covers Healing0/25/100/200% × six maximum-HP values, exact truncation, blessed state and inspection non-execution. Expected inventory2859/446. Full remote source gate requested; candidate remains pending until actual zero-failure core plus Android debug/release/instrumentation Java and desktop results exist. No APK request, publication, tester distribution or physical-phone claim; verified369 remains current. Prepared 2026-11-06T20:00Z from parent c982143c3ff1c5bbeb0c1651bb02ffea426ae7f0 with expected-head lease.
+
 ## 2026-11-06 delivered369 preserved; later Pickaxe source fully compile-verified
 
 Actual369 Developer/Alpha/matching-source links were sent19:45:39–49UTC, before3pmEastern. Release436914231/published19:42:57, signedcompatibleAPK/sourceactualdownloads independentlychecked. Detailed receipt docs/APD-369-OWNER-DELIVERY-RECEIPT.json; extra receiptasset upload401 is optional/notpartof successfulAPKdelivery. No owner permission/manualdraft action is needed.368 and all priorassets retained. Fourpairs/eightAPKs producedtoday; ownerlimit10total/fiveofeach, not a requirement tofillquota.
