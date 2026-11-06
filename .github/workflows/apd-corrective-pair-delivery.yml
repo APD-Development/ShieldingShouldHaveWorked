@@ -24,7 +24,7 @@ jobs:
       - name: Verify actual APKs, source, signatures, core and emulator evidence
         env: {GH_TOKEN: '${{ github.token }}'}
         run: |
-          tool=$(python3 -c "import json; print('apd_appearance_pair_delivery.py' if json.load(open('docs/APD-CORRECTIVE-PAIR-DELIVERY.json')).get('kind') in ('searched-wall-appearance','healing-toggle','combined-owner','door-checks','alpha-playback') else 'apd_corrective_pair_delivery.py')")
+          tool=$(python3 -c "import json; print('apd_appearance_pair_delivery.py' if json.load(open('docs/APD-CORRECTIVE-PAIR-DELIVERY.json')).get('kind') in ('searched-wall-appearance','healing-toggle','combined-owner','door-checks','alpha-playback','mechanics-memory') else 'apd_corrective_pair_delivery.py')")
           python3 "tools/$tool"
       - name: Scan exact sanitized source plus current reachable history before source sharing
         run: |

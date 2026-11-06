@@ -271,6 +271,27 @@ if spec.get('kind')=='alpha-playback':
  notes=(ROOT/spec['report_path']).read_text().split('## Verification')[0]
  notes+=f'\n## Actual acceptance\n\nExact source `{source}`. Both APKs passed {spec["core_tests"]} core tests. Full {spec["android_tests"]}-case Developer API34 run and all six display profiles passed. The exact Alpha Testers APK passed {spec["tester_tests"]} native cases, including real touches selecting 0.5x,1x,2x,4x,1000x and back to2x; reopening retains the choice. Alpha features contain only extendedPlayback; Developer switches remain absent. Automated/emulator evidence only; physical-phone acceptance pending. Existing saves/statistics, signing identity and turn costs preserved. Install over existing APD; never uninstall or clear data.\n'
  evidence['alpha_extended_playback']={'tester_tests':spec['tester_tests'],'visual_sha256':spec['alpha_playback_visual_sha256'],'public_build_three_choices_preserved':True,'developer_features_in_alpha':False,'turn_costs_changed':False}
+if spec.get('kind')=='mechanics-memory':
+ panel_run=api(f'repos/{REPO}/actions/runs/{spec["panel"]}')
+ assert panel_run['status']=='completed' and panel_run['conclusion']=='success' and panel_run['head_sha']==spec['panel_test_source']
+ panel,panel_artifact=artifact(spec['panel'],'apd-qol-exact-candidate-native')
+ panel_proof,=panel.rglob('acceptance-source.json');pp=json.loads(panel_proof.read_text())
+ assert pp['application_source']==source and pp['application_run']==spec['developer'] and pp['application_sha256']==hashes['Developer'] and pp['application_rebuilt'] is False
+ panel_console,=panel.rglob('qol-instrumentation.txt');text=panel_console.read_text()
+ assert re.search(r'OK \(3 tests\)',text) and not any(marker in text for marker in ('FAILURES!!!','INSTRUMENTATION_FAILED','Process crashed.'))
+ expected_panels={'qol-mechanics-buff-expanded.png','qol-mechanics-talent-expanded.png','qol-mechanics-ability-expanded.png','qol-mechanics-spell-expanded.png','qol-waiting-independent-stops.png','qol-waiting-saved-stops.png','qol-searched-wall.png','qol-door-ineligible-bookshelf.png','qol-door-ineligible-decoration.png'}
+ assert set(spec['panel_visual_review'])==expected_panels
+ for name,expected in spec['panel_visual_review'].items():
+  capture,=panel.rglob(name);assert sha(capture)==expected
+  with Image.open(capture)as im:assert im.size==(320,640);im.verify()
+ logcat,=native.rglob('codex-logcat.txt');memory=re.findall(r'UIMSD_REOPEN_HEAP used=(\d+) limit=(\d+)',logcat.read_text(errors='replace'))
+ assert memory,'Missing actual cold reopening memory reading'
+ evidence.pop('rejected_candidate',None);evidence.pop('retained_prebuild_failure',None)
+ evidence['behavior']={'statistics_ownership_and_memory_error_regressions_fixed':True,'physical_crash_heap_limit_bytes':268435456,'latest_native_reopen_heap_readings':[{'used':int(u),'limit':int(l)}for u,l in memory],'local_constrained_256m_tests':92,'normal_search_wait_food_and_gameplay_calculations_preserved':True,'whole_game_semantic_audit_complete':False,'physical_phone_verified':False}
+ evidence['mechanics_panels']={'run':spec['panel'],'artifact':panel_artifact['id'],'test_source':spec['panel_test_source'],'tests':3,'reviewed_images':spec['panel_visual_review'],'application_rebuilt':False}
+ notes=(ROOT/spec['report_path']).read_text().split('## Verification')[0]
+ notes+=f'\n## Actual acceptance\n\nExact application source `{source}`. Both variants passed {spec["core_tests"]} core tests; the Developer APK passed all {spec["android_tests"]} full API34 native cases, including cold statistics reopening and old-catalog release. All six display profiles passed. The exact Alpha APK passed {spec["tester_tests"]} native cases. A separate three-case exact-APK run verified expanded calculation panels, independent waiting settings and wall rendering. Artifact hashes, original signing identity and application ID were checked. These are automated/emulator results; physical-phone acceptance and the whole-game semantic audit remain pending. No save/statistic reset, balance change or extra application rebuild was used for delivery. Install over the existing app; never uninstall or clear data.\n'
+ notes+='\nKnown explanation follow-up: the newly added raw-meat/Poison Dart text calls the Poison value strength; the underlying value is duration and must be labelled in game-time units. The effect and its calculations are unchanged. This release must not be represented as completing every description request.\n'
 if spec.get('kind')=='door-checks':
  notes=(ROOT/spec['report_path']).read_text().split('## Verification')[0]
  notes+=f'\n## Actual acceptance\n\nExact source `{source}`. Both APK variants passed all {spec["core_tests"]} core tests. The existing Developer APK passed the complete {spec["android_tests"]}-case API34 native inventory in one successful invocation, including the exact-occurrence timeline case. All six display profiles passed, including six API36 cases. The actual Alpha-Testers APK separately passed three native acceptance cases. New captures show no saved marks on real Floor1, saved bookshelves or saved decorated walls, followed by retained valid-wall, southern-overhang, side-wall, color and save/resume checks on actual Floor2. These are automated/emulator results; physical-phone acceptance remains pending.\n\n'
