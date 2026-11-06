@@ -3742,6 +3742,11 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/ArmorExplanation.java",
       "sha256": "6361ac90ef2b033f26a648141f0bde5196ce84796e3e676862e05eb73c65fb9a",
       "boundary": "Advanced armor minimum/maximum conditional equations clarified. Same actual Armor methods used for live preview; no balance changes."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/BuffExplanation.java",
+      "sha256": "3243ee09ecb9a5dcc3f5de88e4b714b30b08312b788c33c3c35318eef49ed5c7",
+      "boundary": "Blindness local terrain sense versus independent senses, and Amok ordinary targeting priorities verified against actual FOV/chooseEnemy. Not full AI/status semantic closure."
     }
   ]
 }

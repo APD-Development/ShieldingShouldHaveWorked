@@ -428,3 +428,8 @@ Targeted actual delay equivalence across Glaive/Scimitar/Sai/Throwing Knife ×3 
 The first full weapon run correctly caught4 existing compact-accuracy contract failures when timing was appended inside accuracyDescription. Moved timing into Weapon.info instead, preserving the separate compact accuracy text and its exact numeric tests. No assertions weakened. Final verification follows; the failed run is not a passing build.
 
 Final corrected local weapon suite:2749 tests/446 suites, zero failures/errors/skips, `/workspace/apd-weapon-timing-final-full.log`. Latest paragraphs remain unrendered on a device; source-only remote verification requested.
+
+
+### Blindness and Amok
+
+Blindness details explain ordinary rounded one-tile terrain sensing, independent Mind Vision range (maximum, not addition), no invented accuracy percentage and no secret discovery merely from sensing. Real FOV test confirms near1/far5 without sense, near3/far5 with radius3 and unchanged secret terrain. Amok default previously implied indiscriminate nearby targeting; corrected to actual enemy-monster → allied-monster →hero candidate priority. Details cover visibility/invisibility and fear/aggression/charm/retained-target exceptions. Actual chooseEnemy test verifies distant enemy outranks nearby ally/hero, invisibility fallback and nonvisible exclusion. Alignment unchanged; inspection does not select targets. Full2751/446 zero failures/errors/skips (`/workspace/apd-blind-amok-full.log`). No phone/native rendering claim.

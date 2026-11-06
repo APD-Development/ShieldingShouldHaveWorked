@@ -1,3 +1,7 @@
+## 2026-11-06 Blindness/Amok checkpoint
+
+Full local2751/446 pass. Actual FOV and enemy target selection back new explanations; Amok misleading indiscriminate-target default corrected without AI changes. Remote source-only2749 run42229382772 pending retrieval, newest source not remotely compiled yet. No new APK requested. Continue numerical talent/status audit, preserving source backup and all367 evidence.
+
 ## 2026-11-06 standard weapon timing checkpoint
 
 Full local2749/446 passed after moving new timing paragraph into Weapon.info to preserve compact accuracyDescription contract. No existing assertions weakened. Actual delay checks72 combinations preserve Lethal Momentum; hidden ring/upgrade and Spirit Bow exception tests pass, catalog purity passes. Armor full conditional equations clarified. Source-only request updated (2749 expected) for Android/desktop compile verification; previous armor checkpoint f1dad984a had no new CI request and must not be called remotely verified. e46cf32cf receipt remains last downloaded remote proof until new run fetched. No new app build or delivery. Continue remaining buff/talent/item semantics.
