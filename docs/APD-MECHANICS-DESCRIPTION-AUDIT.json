@@ -4265,6 +4265,31 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/ClassArmor.java",
       "sha256": "bcfc225ccfce6140a985a7e882df74ff531edde8fe7726cc1cc920e3c802e707",
       "boundary": "Mask/crown selection, consumption/base time, class-armor conversion/property/knowledge and original starting50 charge source-reviewed. Two tests including48 actual conversions/all six classes and inspection purity; no class/balance/save changes. Seal copying source-reviewed only. Whole translations/native/phone acceptance pending."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Ankh.java",
+      "sha256": "3a5a6654b984fb5e72387963d1365807418ca3247fdf735c83a17196bcc17d28",
+      "boundary": "Revival/resource recovery or Torch timing/sight source traced through actual handlers. Plain descriptions with exact unchanged constants/formula; additive Light, inspection purity and existing24 blessed-Ankh Healing comparisons pass. No engine behavior change; native/phone/full translations pending."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/LostBackpack.java",
+      "sha256": "7c18f6d61f0cdfd2b9bc0cc2e506db95606f5ab9843381772a83fd6aa10b0f58",
+      "boundary": "Revival/resource recovery or Torch timing/sight source traced through actual handlers. Plain descriptions with exact unchanged constants/formula; additive Light, inspection purity and existing24 blessed-Ankh Healing comparisons pass. No engine behavior change; native/phone/full translations pending."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Torch.java",
+      "sha256": "84768f0e7882792997cb5f7875ec4a2d52894716f4e9a6326e9f93c26489f760",
+      "boundary": "Revival/resource recovery or Torch timing/sight source traced through actual handlers. Plain descriptions with exact unchanged constants/formula; additive Light, inspection purity and existing24 blessed-Ankh Healing comparisons pass. No engine behavior change; native/phone/full translations pending."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Gold.java",
+      "sha256": "7b3a94e0dc54f72e7d038027055dafbf587e9389feed112cfef76ee62a0f8f72",
+      "boundary": "Quantity/wallet source review: visible quantity adds to corresponding currency; existing default text names its resource and use. No new currency change or test claim. Complete loot-generation probabilities/native/phone acceptance outside this narrow facet."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/EnergyCrystal.java",
+      "sha256": "63a7b31a76ff62470e9a3aa84b0aebd00b26078bda9bda4b52359eb6b23188ee",
+      "boundary": "Quantity/wallet source review: visible quantity adds to corresponding currency; existing default text names its resource and use. No new currency change or test claim. Complete loot-generation probabilities/native/phone acceptance outside this narrow facet."
     }
   ]
 }
