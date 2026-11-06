@@ -1,0 +1,47 @@
+{
+  "status": "BUILT_CORE_PASSED_NATIVE_AND_IDENTITY_PENDING_NOT_DELIVERED",
+  "source": "7ef0800dfd6c4e624d3c001e886eb1a711d80a68",
+  "number": 368,
+  "developer_run": 42262060915,
+  "alpha_run": 42262060908,
+  "display_run": 42262060874,
+  "alpha_acceptance_run": 42262576345,
+  "panel_run": 42262761458,
+  "core": {
+    "suites": 446,
+    "tests": 2835,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "developer_artifact": {
+    "id": 13525965707,
+    "zip": "/workspace/apd-internal368-developer.zip",
+    "zip_bytes": 36643472,
+    "zip_sha256": "b4cc14fd0f05b1f10922c34445755e72ab4c297c0449eba4f9ea7d69d6ffe915",
+    "apk": "/workspace/apd-internal368-developer.apk",
+    "apk_bytes": 39156427,
+    "apk_sha256": "8e23c1cb147a536212142a3f23d923773f02a9857e47a28a5d64a874c016ed12",
+    "sidecar_matches": true
+  },
+  "alpha_artifact": {
+    "id": 13525478025,
+    "zip": "/workspace/apd-internal368-alpha.zip",
+    "zip_bytes": 37148297,
+    "zip_sha256": "622f44e9e822f82b72c88363f3a02d1337221667156acbc2f2a0124761f3eb14",
+    "apk": "/workspace/apd-internal368-alpha.apk",
+    "apk_bytes": 39156395,
+    "apk_sha256": "f3228dd0259848d756a88d063fa11a84176ac483c7dd2bd97b4d7706362f1fd8",
+    "sidecar_matches": true,
+    "feature_manifest": "extendedPlayback only; shared assets identical"
+  },
+  "physical_phone_tested": false,
+  "whole_game_semantic_audit_complete": false,
+  "followups": [
+    "Poison effect source value should be labelled duration rather than strength in the newly added raw-meat and Poison Dart details. Gameplay unchanged.",
+    "Full inventory/nested semantic closure remains unclaimed."
+  ],
+  "daily_pair_limit": "Third/final pair produced today; no further application APK requested",
+  "last_delivered": "365 private release preserved; owner reported confirmed UIMSD OOM there; it does not contain fixes",
+  "previous_internal_verified": "367 remains preserved with its own older-source native evidence"
+}

@@ -274,7 +274,7 @@ if spec.get('kind')=='alpha-playback':
 if spec.get('kind')=='mechanics-memory':
  panel_run=api(f'repos/{REPO}/actions/runs/{spec["panel"]}')
  assert panel_run['status']=='completed' and panel_run['conclusion']=='success' and panel_run['head_sha']==spec['panel_test_source']
- panel,panel_artifact=artifact(spec['panel'],'apd-qol-exact-candidate-native')
+ panel,panel_artifact=artifact(spec['panel'],'apd-qol-exact-candidate-acceptance')
  panel_proof,=panel.rglob('acceptance-source.json');pp=json.loads(panel_proof.read_text())
  assert pp['application_source']==source and pp['application_run']==spec['developer'] and pp['application_sha256']==hashes['Developer'] and pp['application_rebuilt'] is False
  panel_console,=panel.rglob('qol-instrumentation.txt');text=panel_console.read_text()
