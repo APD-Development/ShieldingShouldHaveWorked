@@ -80,7 +80,9 @@ jobs:
           assert certificates(signature)==[expected]
           metadata=subprocess.check_output([str(tools.parent/'aapt'),'dump','badging',str(apk)],text=True)
           package,=re.findall(r"^package: (.+)$",metadata,re.M)
-          assert "name='com.charltonchris29.adhdpixeldungeon.indev'" in package and "versionCode='921'" in package
+          expected_version=int(re.search(r"appVersionCode\s*=\s*(\d+)",pathlib.Path("build.gradle").read_text()).group(1))
+          assert "name='com.charltonchris29.adhdpixeldungeon.indev'" in package and f"versionCode='{expected_version}'" in package,package
+          assert "-bC"+os.environ["APD_BUILD"]+"-TEST" in package,package
           pathlib.Path('application-identity.json').write_text(json.dumps({'signature_verified':True,'certificate_sha256':expected,'package':package,'install_compatible_identity_with_365':True,'physical_phone_tested':False},indent=2))
           PY
       - name: Enable emulator acceleration

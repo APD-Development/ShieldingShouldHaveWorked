@@ -31,7 +31,9 @@ jobs:
           assert digests and {d.lower() for d in digests}=={expected},signature
           cert=expected
           package=subprocess.check_output([str(tools/'aapt'),'dump','badging','application/exact-tester.apk'],text=True).splitlines()[0]
-          assert "name='com.charltonchris29.adhdpixeldungeon.indev'" in package and "versionCode='921'" in package
+          expected_version=int(re.search(r"appVersionCode\s*=\s*(\d+)",pathlib.Path("build.gradle").read_text()).group(1))
+          assert "name='com.charltonchris29.adhdpixeldungeon.indev'" in package and f"versionCode='{expected_version}'" in package,package
+          assert "-bP"+os.environ["APD_TEST_NUMBER"] in package,package
           pathlib.Path('tester-identity.json').write_text(json.dumps({'signature_verified':True,'certificate_sha256':cert,'package':package,'physical_phone_tested':False},indent=2)+'\n')
           PYCODE
           ./gradlew :android:assembleDebugAndroidTest -PapdBuild=P${{ env.APD_TEST_NUMBER }}
