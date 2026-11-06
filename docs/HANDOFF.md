@@ -1,3 +1,7 @@
+## 2026-11-06 armor contribution checkpoint
+
+Local full2747/446 pass; unchanged combat equations now explained with actual strength/armor/augmentation values and hidden-bonus guards. Actual seeded DR/evasion/movement and identification regressions pass. Source-only expected inventory2747. Previous e46cf32cf remotely verified2743/446 + Android/desktop compile with downloaded/hash-verified receipt13506681717, ledger updated. No new APK requested;367 remains older partial internal candidate,365 delivered fallback. Continue weapon action-time and remaining semantic audit immediately.
+
 ## 2026-11-06 catalog safety and passive Spirit fix
 
 Full local2743/446 pass, plus5 CI status helper tests. New catalog tests289 inventory/85 hidden-level/69 equipped/13 Wild Magic cases pass. Active-Spirit baseline74 mutations reproduced; passive ring stat queries made read-only with960 actual legacy-getter equivalence checks, preserving ordinary-ring zero-sum fallback and immunity. All289 Spirit cases now preserve cache. Evidence JSON: docs/APD-DESCRIPTION-INSPECTION-SAFETY-2026-11-06.json. Whole textual/nested audit still unfinished; no app build requested.

@@ -56,8 +56,7 @@ public final class MechanicsDetails {
             if(armor instanceof com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor && Dungeon.hero!=null && Dungeon.hero.armorAbility!=null)
                 result.append(AbilityExplanation.details(Dungeon.hero.armorAbility,Dungeon.hero)).append("\n\n");
             result.append(GlyphExplanation.details(armor,Dungeon.hero)).append("\n\n").append(CurseExplanation.armor(armor,Dungeon.hero,true)).append("\n\n");
-            if(armor.levelKnown)result.append("_Armor's current base absorption_\n").append(armor.DRMin()).append("–").append(armor.DRMax()).append(" damage points per applicable hit before other defensive effects. Strength requirement: ").append(armor.STRReq()).append(" points. Upgrades and augmentation change these displayed values; this range is not a flat reduction percentage.\n\n");
-            else result.append("Armor-level calculations stay hidden until its upgrades are identified.\n\n");
+            result.append(ArmorExplanation.details(armor,Dungeon.hero)).append("\n\n");
         }
         if(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff)
             result.append(((com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff)item).mechanicsDetails()).append("\n\n");

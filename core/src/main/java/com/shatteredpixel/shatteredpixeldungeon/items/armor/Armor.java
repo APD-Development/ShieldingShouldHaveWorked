@@ -602,6 +602,8 @@ public class Armor extends EquipableItem {
 			}
 		}
 
+        info += "\n\n" + com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.ArmorExplanation.summary(this, Dungeon.hero);
+
 		switch (augment) {
 			case EVASION:
 				info += " " + Messages.get(Armor.class, "evasion");

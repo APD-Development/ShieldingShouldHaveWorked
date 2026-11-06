@@ -33,6 +33,36 @@ public class MechanicsExplanationTest {
  @Before public void setup()throws Exception{HeadlessTestSupport.start();java.lang.reflect.Field notes=com.shatteredpixel.shatteredpixeldungeon.journal.Notes.class.getDeclaredField("records");notes.setAccessible(true);oldNotes=notes.get(null);com.shatteredpixel.shatteredpixeldungeon.journal.Notes.reset();oldChallenges=Dungeon.challenges;Dungeon.challenges=0;oldRules=new com.watabou.utils.Bundle();Dungeon.apdStoreCustomRules(oldRules);Dungeon.apdRestoreCustomRules(new com.watabou.utils.Bundle());oldHero=Dungeon.hero;oldLevel=Dungeon.level;Dungeon.level=new GrassDewPickupTest.TestLevel();Dungeon.level.setSize(7,7);hero=new Hero();hero.heroClass=HeroClass.WARRIOR;Talent.initClassTalents(hero);hero.pos=24;hero.HP=hero.HT=20;Dungeon.hero=hero;armor=new MailArmor();armor.levelKnown=armor.cursedKnown=true;armor.inscribe(new Obfuscation());hero.belongings.armor=armor;}
  @After public void restore()throws Exception{Dungeon.hero=oldHero;Dungeon.level=oldLevel;Dungeon.challenges=oldChallenges;Dungeon.apdRestoreCustomRules(oldRules);java.lang.reflect.Field notes=com.shatteredpixel.shatteredpixeldungeon.journal.Notes.class.getDeclaredField("records");notes.setAccessible(true);notes.set(null,oldNotes);}
  private RingOfArcana ring(int level){RingOfArcana ring=new RingOfArcana();ring.level(level);ring.anonymize();ring.levelKnown=ring.cursedKnown=true;hero.belongings.ring=ring;ring.activate(hero);return ring;}
+ @Test public void armorProtectionPreviewMatchesActualHeroRollsAcrossStrengthAugmentsAndChallenge(){
+  for(int challenge:new int[]{0,Challenges.NO_ARMOR})for(Armor.Augment augment:Armor.Augment.values())for(int level:new int[]{-3,0,3,8})for(int strength:new int[]{6,10,20}){
+   Dungeon.challenges=challenge;armor.augment=augment;armor.level(level);hero.STR=strength;
+   int missing=Math.max(0,armor.STRReq()-hero.STR());
+   String summary=ArmorExplanation.summary(armor,hero),detail=ArmorExplanation.details(armor,hero);
+   assertTrue(summary,summary.contains("_"+missing+" points short_"));
+   assertTrue(detail,detail.contains("protection-roll penalty: "+2*missing+" points"));
+   for(int seed=0;seed<10;seed++){
+    Random.pushGenerator(seed);int expected;try{Random.NormalIntRange(0,0);expected=Math.max(0,Random.NormalIntRange(armor.DRMin(),armor.DRMax())-2*missing);}finally{Random.popGenerator();}
+    Random.pushGenerator(seed);try{assertEquals(expected,hero.drRoll());}finally{Random.popGenerator();}
+   }
+   assertEquals((float)(10/Math.pow(1.5,missing))+augment.evasionFactor(armor.buffedLvl()),armor.evasionFactor(hero,10),.00001f);
+   assertEquals((float)(1/Math.pow(1.2,missing)),armor.speedFactor(hero,1),.00001f);
+  }
+ }
+ @Test public void armorPreviewUsesKnownMightWithoutTreatingEnhancedRingsAsStrength(){
+  armor.level(3);hero.STR=10;RingOfMight might=new RingOfMight();might.level(1);might.anonymize();might.levelKnown=might.cursedKnown=true;hero.belongings.ring=might;might.activate(hero);
+  Buff.affect(hero,EnhancedRings.class);assertEquals(Integer.valueOf(hero.STR()),ArmorExplanation.knownStrength(hero));
+  assertTrue(ArmorExplanation.details(armor,hero).contains("Known strength: "+hero.STR()));
+  might.levelKnown=false;String unknown=ArmorExplanation.summary(armor,hero);might.level(9);assertEquals(unknown,ArmorExplanation.summary(armor,hero));assertTrue(unknown.contains("unavailable"));
+ }
+ @Test public void armorUnknownUpgradeDetailsDoNotChangeWithHiddenLevel(){
+  armor.levelKnown=false;armor.level(0);String detail=ArmorExplanation.details(armor,hero),summary=ArmorExplanation.summary(armor,hero);armor.level(9);
+  assertEquals(detail,ArmorExplanation.details(armor,hero));assertEquals(summary,ArmorExplanation.summary(armor,hero));assertTrue(detail.contains("stay hidden"));
+ }
+ @Test public void armorRequirementPreviewSeparatesDegradeFromOwnLevelAndMastery(){
+  armor.level(6);armor.masteryPotionBonus=true;int requirement=armor.STRReq();Buff.affect(hero,Degrade.class);
+  assertEquals(requirement,armor.STRReq());assertTrue(ArmorExplanation.details(armor,hero).contains("strength requirement: "+requirement+" points"));
+  assertTrue(ArmorExplanation.details(armor,hero).contains("effective armor level: "+armor.buffedLvl()));
+ }
  @Test public void mailPlusThreeExplainsUnitsAndUsesActualObfuscationScore(){armor.level(3);RingOfArcana ring=ring(3);float expected=Obfuscation.stealthBoost(hero,hero.glyphLevel(Obfuscation.class));String text=armor.info();assertTrue(text,text.contains("2 stealth points"));assertTrue(text,text.contains(ObfuscationExplanation.number(expected)+" points"));assertTrue(text,text.contains("not percentages"));assertTrue(text,text.contains("unaware enemy"));assertFalse(text,text.contains("added stealth 2 to"));}
  @Test public void upgradesAndArcanaRefreshBothReadableValuesAndDetailedResults(){armor.level(0);RingOfArcana ring=ring(0);String first=ObfuscationExplanation.details(armor,hero);armor.level(6);ring.upgrade();String next=ObfuscationExplanation.details(armor,hero);assertNotEquals(first,next);assertTrue(next,next.contains(ObfuscationExplanation.number(Obfuscation.stealthBoost(hero,hero.glyphLevel(Obfuscation.class)))));assertTrue(next,next.contains("3 stealth points"));}
  @Test public void enhancedRingsAndProtectiveAuraMatchLiveCalculation(){armor.level(3);ring(1);Buff.affect(hero,EnhancedRings.class);Buff.affect(hero,AuraOfProtection.AuraBuff.class);float actual=Obfuscation.stealthBoost(hero,hero.glyphLevel(Obfuscation.class));assertTrue(ObfuscationExplanation.summary(armor,hero).contains(ObfuscationExplanation.number(actual)+" points"));}
