@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -50,6 +53,9 @@ public class RotDart extends TippedDart {
 		return super.proc(attacker, defender, damage);
 	}
 	
+	@Override
+	public float previewDurabilityPerUse(int level) { return MAX_DURABILITY/5f; }
+
 	@Override
 	public float durabilityPerUse(int level) {
 		return MAX_DURABILITY/5f; //always 5 uses

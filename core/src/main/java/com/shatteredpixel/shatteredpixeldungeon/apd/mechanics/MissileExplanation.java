@@ -19,7 +19,8 @@ package com.shatteredpixel.shatteredpixeldungeon.apd.mechanics;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.*;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.apd.qol.RingItemEffects;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfSharpshooting;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.*;
@@ -42,6 +43,26 @@ public final class MissileExplanation {
         if(weapon instanceof HeavyBoomerang)text+="\n_Returning boomerang_\nA surviving boomerang schedules a return after five supported updates on the recorded floor and branch. The destination is the hero's recorded throwing cell, rather than following the hero wherever they move. A return to the hero can be collected with no normal pickup delay; an occupied destination follows the existing return-hit rules and can attack another character occupying that return cell. Collision, durability, inventory space and floor changes keep their normal effects.";
         if(weapon instanceof ForceCube)text+="\n_Force cube impact area_\nA supported impact processes the center cell and its eight immediate neighbors: a 3 × 3 area. Characters there receive separate attack processing; allies and the hero can be affected. Cell presses can trigger traps, with the existing Tengu-dart-trap exception for neighboring cells. An empty pit follows the ordinary dropped-projectile branch. Area size is not a guarantee that every target takes the displayed maximum damage.";
         if(weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.TippedDart)text+="\n_Dart tips_\nTip wear follows the dart's special calculation, including Durable Tips, supported lotus preservation and Charged Shot. Used-up tips return ordinary darts under the normal rules; a status effect's strength or duration is separate from how many tipped uses remain. This inspector does not simulate a future lotus position or charged impact.";
-        return text;
+        return text+dartEffect(weapon);
     }
+    private static String dartEffect(MissileWeapon weapon){
+        String effect;
+        switch(weapon.getClass().getSimpleName()){
+            case "AdrenalineDart":effect="On an allied target, offers Adrenaline for "+n(Adrenaline.DURATION)+" scheduled units and returns zero ordinary hit damage; on an enemy, offers Cripple for "+n(Cripple.DURATION/2)+" units. Its Charged Shot branch excludes the thrower.";break;
+            case "BlindingDart":effect="Offers Blindness for "+n(Blindness.DURATION)+" scheduled units; Charged Shot applies this status only across opposing alignments.";break;
+            case "ChillingDart":effect="Offers Chill for 6 scheduled units on dry terrain, or "+n(Chill.DURATION)+" in water. Charged Shot applies it only across opposing alignments.";break;
+            case "ParalyticDart":effect="Offers Paralysis for 5 scheduled units. Charged Shot applies it only across opposing alignments.";break;
+            case "PoisonDart":effect="Offers Poison strength 3 + floor(scaling floor / 2), currently "+(3+Dungeon.scalingDepth()/2)+". Strength feeds Poison's separate damage and decay rules; it is not guaranteed total damage. Charged Shot applies it only across opposing alignments.";break;
+            case "RotDart":effect="Offers Corrosion with a 10-unit duration input and strength equal to the scaling floor; bosses and minibosses instead use 5 units and floor(scaling floor / 3) strength. Current ordinary/boss strengths: "+Dungeon.scalingDepth()+" / "+(Dungeon.scalingDepth()/3)+". Tip wear is always 20 durability points per qualifying use: five full-reserve uses, independently of the ordinary dart-tip modifiers. Charged Shot excludes allied targets from this corrosion.";break;
+            case "ShockingDart":effect="Offers a separate middle-biased electricity damage roll from 5 + floor(scaling floor / 4) to 10 + floor(scaling floor / 4), currently "+(5+Dungeon.scalingDepth()/4)+"–"+(10+Dungeon.scalingDepth()/4)+" base damage points. Attribution, damage modifiers and defenses still apply. Charged Shot offers it only across opposing alignments.";break;
+            case "HealingDart":effect="Offers the Healing potion's supported ailment cure and a healing pool of floor(0.5 × target maximum HP + 30), using Healing's 0.25 per-update fraction input and zero flat increment. Allied hits return zero ordinary hit damage and skip normal on-hit effects. Charged Shot excludes the thrower and opposing-alignment targets from this healing. Target health and modifiers are not queried during inspection.";break;
+            case "HolyDart":effect="Allied hits offer Bless for "+Math.round(Bless.DURATION)+" scheduled units and return zero ordinary hit damage. Undead or demonic enemies instead receive a separate middle-biased bonus roll from 10 + floor(scaling floor / 3) to 20 + floor(scaling floor / 3), currently "+(10+Dungeon.scalingDepth()/3)+"–"+(20+Dungeon.scalingDepth()/3)+" base damage points before later modifiers. Other enemies can be Blessed on an ordinary shot. Charged Shot excludes the thrower and does not Bless ordinary enemies.";break;
+            case "CleansingDart":effect="Allied hits use the supported Cleansing effect for twice its ordinary duration and return zero ordinary hit damage. Enemy hits remove eligible positive buffs, excluding Champion effects and Charged Shot, then use the existing delayed wandering/beckoning behavior if the target survives. It can remove a buff that was keeping an enemy alive. Charged Shot excludes the thrower. Immunity, excluded buffs and target state still apply.";break;
+            case "DisplacingDart":effect="Attempts a teleport to a legal empty passable cell at movement-path distance 8–10 from the attacker. It prefers visible candidates and then the one nearest the defender; if no visible candidate exists it uses the nearest eligible unseen candidate and offers 5 scheduled units of character awareness. Immovable targets, large-character space, occupancy and lack of legal cells can prevent it. Charged Shot excludes allied targets. Inspection does not build a path map or query unseen destinations.";break;
+            case "IncendiaryDart":effect="Offers attributed Burning on a qualifying hit; Charged Shot burns only across opposing alignments. An eligible empty or thrower-occupied flammable impact cell instead receives 4 units of fire-cloud volume and normal tip wear. Cloud volume is not four damage points or a guaranteed four-turn burn.";break;
+            default:return "";
+        }
+        return "\n_Dart's on-hit effect_\n"+effect+" Offered status durations use game-time units before resistance and reapplication. The effect is separate from physical hit damage, accuracy and durability; inspection applies none of them.";
+    }
+
 }

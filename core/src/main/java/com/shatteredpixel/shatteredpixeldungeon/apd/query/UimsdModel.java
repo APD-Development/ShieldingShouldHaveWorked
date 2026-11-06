@@ -35,6 +35,11 @@ import java.util.List;
 //one thread (the screen's), except load(), which builds the catalog on its own thread and hands it over through the listener.
 public final class UimsdModel {
 
+    // Cancellation retires publication immediately, but a decoder may still own its
+    // current batch. Serialize background catalog work so a replacement cannot
+    // allocate a second working history until that batch has unwound.
+    private static final Object CATALOG_LOAD_MEMORY = new Object();
+
 	public interface Listener {
 		//the state changed (called on the loading thread for the result of load(): a screen must hand over to its own thread)
 		void changed();
@@ -225,6 +230,8 @@ public final class UimsdModel {
 						Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
 					SavedViews loadedColumnLayouts = warm == null
 							? SavedViews.load(root == null ? null : new File(root, COLUMN_LAYOUTS_FILE)) : warm.columnLayouts;
+                    synchronized(CATALOG_LOAD_MEMORY){
+                    if(loadRetired(generation))return;
 					Catalog c = warm == null ? new DatasetStore(root).load(() -> loadRetired(generation)) : warm.catalog;
 					// These are read-only queries. Computing the initial Home here
 					// keeps them off the frame that displays the finished catalog.
@@ -239,6 +246,7 @@ public final class UimsdModel {
 						preparedHomeAllRules = homeAllRules;
 						setCatalogLocked(c);
 					}
+                    }
 				} catch (Throwable e){
 					synchronized (UimsdModel.this){
 						if (generation != loadGeneration) return;

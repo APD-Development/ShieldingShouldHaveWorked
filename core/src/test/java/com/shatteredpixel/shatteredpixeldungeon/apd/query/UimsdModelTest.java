@@ -57,6 +57,20 @@ public class UimsdModelTest {
             assertEquals(UimsdModel.State.EMPTY,m.state());assertNull(m.catalog());assertNull(m.result());
         }finally{finish.countDown();root.delete();}
     }
+    @Test public void catalogWorkingMemoryIsExclusiveWithoutBlockingTheCaller()throws Exception{
+        java.lang.reflect.Field field=UimsdModel.class.getDeclaredField("CATALOG_LOAD_MEMORY");field.setAccessible(true);Object memory=field.get(null);
+        UimsdModel next=new UimsdModel(R,"next");java.util.concurrent.CountDownLatch interactive=new java.util.concurrent.CountDownLatch(1);
+        java.io.File root=java.nio.file.Files.createTempDirectory("apd-load-memory-ownership").toFile();
+        try{
+            synchronized(memory){
+                next.loadForOpen(root,false,interactive::countDown);
+                assertTrue("interactive flush must not wait for another decoder",interactive.await(10,java.util.concurrent.TimeUnit.SECONDS));
+                next.awaitLoad(200);
+                assertEquals("catalog work cannot allocate while another batch owns memory",UimsdModel.State.LOADING,next.state());assertNull(next.catalog());
+            }
+            next.awaitLoad(10000);assertEquals(UimsdModel.State.READY,next.state());assertNotNull(next.catalog());
+        }finally{next.releaseForGameplay();root.delete();}
+    }
     @Test public void cancelledCatalogReadDoesNotTouchRecordedFiles()throws Exception{
         java.io.File root=java.nio.file.Files.createTempDirectory("apd-cancelled-catalog").toFile();java.io.File history=new java.io.File(root,"keep.txt");
         java.nio.file.Files.write(history.toPath(),new byte[]{1,2,3});
