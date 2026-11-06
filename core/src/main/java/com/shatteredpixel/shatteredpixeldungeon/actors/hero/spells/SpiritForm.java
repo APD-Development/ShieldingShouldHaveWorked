@@ -186,10 +186,11 @@ public class SpiritForm extends ClericSpell {
 
 		@Override
 		public String desc() {
-			if (ring() != null){
-				return Messages.get(this, "desc", Messages.titleCase(ring().name()), dispTurns());
-			} else if (artifact() != null){
-				return Messages.get(this, "desc", Messages.titleCase(artifact().name()), dispTurns());
+			// Inspection names the stored effect without applying gameplay getter updates.
+			if (effect instanceof Ring){
+				return Messages.get(this, "desc", Messages.titleCase(((Ring)effect).name()), dispTurns());
+			} else if (effect instanceof Artifact){
+				return Messages.get(this, "desc", Messages.titleCase(((Artifact)effect).name()), dispTurns());
 			}
 			return super.desc();
 		}

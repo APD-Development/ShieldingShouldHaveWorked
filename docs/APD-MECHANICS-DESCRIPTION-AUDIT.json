@@ -3662,6 +3662,21 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/RecallInscription.java",
       "sha256": "786b029ab52ca6f0517aa912855503c2ed46e3839da6dcd913108009f896e471",
       "boundary": "Primary eligibility/curse-knowledge limits or actual recall record creation/window/class cost/save behavior. Actual selector matrix and Talent use hooks tested. No identification, charge or activation rules changed."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/BodyForm.java",
+      "sha256": "93bdce05538deedeba155b7c0133a253b6eaae34925b33f7a4133248251d13e4",
+      "boundary": "Configuration vs activation/charge distinction and public talent-based effect level/duration; actual source formula matching and cached-object preservation. Spirit tooltip no longer invokes mutating gameplay getters; real getters still update as before. Not all selected-item mechanics closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/MindForm.java",
+      "sha256": "b28294502a1a6cec28553f0dfa5d6dc690056212fe51f08d1c95b75d64e642f6",
+      "boundary": "Configuration vs activation/charge distinction and public talent-based effect level/duration; actual source formula matching and cached-object preservation. Spirit tooltip no longer invokes mutating gameplay getters; real getters still update as before. Not all selected-item mechanics closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/SpiritForm.java",
+      "sha256": "5fc347c18008165aae0169649d5dd95fca1e39462ef49966cdf6a215916acdc4",
+      "boundary": "Configuration vs activation/charge distinction and public talent-based effect level/duration; actual source formula matching and cached-object preservation. Spirit tooltip no longer invokes mutating gameplay getters; real getters still update as before. Not all selected-item mechanics closure."
     }
   ]
 }

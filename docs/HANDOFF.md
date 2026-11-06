@@ -1,3 +1,7 @@
+## 2026-11-06 form inspection fix
+
+Full local2729/445 pass. Confirmed pre-fix Spirit tooltip mutated cached ring7→1/artifact0→8; description now pure, actual gameplay getters retain same values. Form spell configuration/activation and live rank formulas explained. GitHub CLI token401; normal Git retry pushedf44f0f644 and connector verified remote. Known-run artifact tools work. Do not infer latest CI from source commit. Continue remaining six primary spells and broad audit. No more application pair requested;367 evidence retained, source newer.
+
 ## 2026-11-06 intuition/recall and centered native proof
 
 Full local2726/445 pass. Real item-selector and8-class use-record/cost/save regressions pass; identification/gameplay rules unchanged. Same367 centered recapture42219469519 raw3 methods and9 PNGs verified; three wall images now show correct exclusion/positive marks in controlled fixture. Both367 identities and Developer72/Alpha4/display11/viewport3 proven. Current source is newer; broad audit incomplete, no APK delivery. Main refreshed8228fbcb0, only two automation files differ. Continue forms and remaining mechanics.
