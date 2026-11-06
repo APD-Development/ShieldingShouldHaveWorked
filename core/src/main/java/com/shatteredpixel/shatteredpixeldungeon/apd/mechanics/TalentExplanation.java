@@ -28,6 +28,24 @@ public final class TalentExplanation {
         if (rank <= 0) return "";
         int hp = Dungeon.hero == null ? 0 : Dungeon.hero.HT;
         switch (talent) {
+            case FOCUSED_MEAL:
+                if(alternateDescription || (Dungeon.hero!=null&&Dungeon.hero.heroClass!=com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.DUELIST))
+                    return "_Alternate next-hit damage_\nEating offers one physical damage-roll benefit equal to round(hero level / (4 − rank)) damage points. " + (Dungeon.hero==null?"":"At your current hero level: +"+Math.round(Dungeon.hero.lvl/(4f-rank))+" points. ")
+                        + "This is a flat bonus, not a percentage or a weapon upgrade. A result of zero offers no useful damage benefit. It follows the Physical Empower replacement rule: replace only when offered bonus × offered rolls is greater than the existing bonus × remaining rolls.";
+                return "_Weapon ability charge from eating_\nEating offers " + ObfuscationExplanation.number((rank+1)/3f)
+                    + " weapon-ability charges. Formula: (rank + 1) / 3. Fractional progress accumulates toward a whole charge; it is not rounded up after each meal. The charger stops at its current capacity and discards excess fractional progress when full. These are ability charges, not wand charges, spell charges or free attacks.";
+            case ENLIGHTENING_MEAL:
+                if(alternateDescription || (Dungeon.hero!=null&&Dungeon.hero.heroClass!=com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.CLERIC))
+                    return "_Alternate recharge effects_\nEating offers " + (1+rank)
+                        + " game-time units of wand recharging and the same duration of artifact recharging. These are durations of recharge effects, not that many whole charges. Eligible items use their own charging rates and limits. Wand duration is prolonged; the artifact effect keeps a longer existing duration instead of adding another full duration. Meals supplied by the Horn do not recharge the Horn through this effect.";
+                return "_Tome charge from eating_\nWith a Holy Tome in your belongings, eating offers " + ObfuscationExplanation.number((rank+1)/3f)
+                    + " Tome charges, from (rank + 1) / 3. Fractional charge accumulates until it reaches one whole charge. The Tome stops at its current capacity and discards excess fractional progress when full. No Tome means no charge gained; this is not an immediate free spell or wand recharge.";
+            case EMPOWERING_MEAL:
+                return "_Added wand damage after eating_\nEating sets the added damage to " + (1+rank)
+                    + " points per qualifying direct-wand damage roll and offers three such rolls. This adds damage points, not effective wand levels or a percentage. The direct-damage roll consumes the counter, so a multi-roll action can spend more than one use. Reapplying replaces the bonus amount and keeps the larger remaining-roll count; it does not add three more to an existing count. Target defenses and later damage rules still apply.";
+            case STRENGTHENING_MEAL:
+                return "_Added physical damage after eating_\nEating offers +3 damage points on each of the next " + (1+rank)
+                    + " qualifying hero physical damage rolls. These are added points at the hero's damage-roll stage, not permanent weapon upgrades or a percentage of final HP lost. The counter is spent by damage rolls rather than merely by pressing Attack. Reapplication replaces the current benefit only if offered bonus × offered rolls is greater than the existing bonus × remaining rolls; it does not simply add the two pools. Later attack modifiers and defenses can change the final result.";
             case VETERANS_INTUITION:
             case ADVENTURERS_INTUITION:
             case SCHOLARS_INTUITION:

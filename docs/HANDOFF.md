@@ -1,3 +1,7 @@
+## 2026-11-06 meal damage/charge checkpoint and internal acceptance candidate
+
+Local full2665 core pass; actual meal offers, live-level alternate effects, fractional Tome charges/cap and replacement counters tested.947500d2e remote source gate42205041088 passed/receipt verified. Preparing one internal paired candidate366 for native UI acceptance after NY daily cap reset; NOT an owner release or whole-game completion claim. Last verified delivered fallback365 remains untouched. Next work: execute calculation-panel touch/bounds checks and continue semantic audit.
+
 ## 2026-11-06 food/intuition source checkpoint
 
 Full local2661 core pass. Hearty Meal, Iron Stomach, Hold Fast, five intuition talent explanations now use actual rules; real handlers and stacking verified. Prior5295a271c remote gate42204243259 passed all source checks; artifact downloaded/hash/source verified in mechanics report. New source gate requested; no new APK, emulator or phone acceptance. Whole-game semantic audit unfinished; continue development.

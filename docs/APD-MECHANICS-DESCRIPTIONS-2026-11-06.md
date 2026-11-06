@@ -218,3 +218,11 @@ Hearty Meal explains the strict HP/maxHP <0.334 check and flat 4/6 HP offer befo
 Actual handlers tested: food healing below/above threshold, Hero.damage eating protection, three-rank seeded HoldFast.armorBonus and actual decay factors, five item categories/two ranks for Talent.itemIDSpeedFactor plus stacked melee/armor factors. Full local core:2661/445, zero failures/errors/skips. Initial headless food tests needed the existing quiet sprite and non-interrupting hero fixture; production mechanics unchanged. Initial Hold Fast text test exposed the older override; removed duplicate rather than weakening numeric assertions.
 
 Successful prior remote gate42204243259/source5295a271c31dee8787a3c8238866ab4df48586c0: full2657 core and Android debug/release/instrumentation plus desktop compiled. Downloaded artifact13495248905 verified489144 bytes/SHA25665b81f64723c8c03c50513df817387d3c2a78e169140dae72a72410046153a41; embedded JSON source/count inspected. No APK/native execution/physical phone testing.
+
+## Meal damage and fractional charges
+
+Empowering Meal and Strengthening Meal explain added damage points, eligible roll counters and their different replacement rules. Physical Empower's normal and advanced descriptions now define live points/remaining rolls. Focused Meal explains fractional Duelist ability charges versus the alternate hero-level damage formula (including a zero result). Enlightening Meal distinguishes fractional Tome charges/cap from alternate recharge-effect durations and Horn exclusion. Explicit alternate previews remain supported.
+
+Actual onFoodEaten offers, live hero levels, buff replacement/save-state inspection and Tome fractional/cap behavior tested. Full local2665 tests/445 suites pass; initial zero-damage Focused Meal fixture incorrectly expected a useful roll at level1/rank1, corrected to match actual unchanged zero-offer behavior. No new gameplay formula or save-schema change.
+
+Prior source947500d2e3dded627fa7a08c56f7a31f3d4b6dac remote gate42205041088 passed2661 core plus Android debug/release/instrumentation and desktop compilation. Downloaded artifact13495867784 verified490464 bytes/SHA256c4e70fbf6ee1e5246dc931b06c2fd723bbfa34c146f4a5f226fb6f8ac9147a72; embedded source/count inspected. Native execution still pending.

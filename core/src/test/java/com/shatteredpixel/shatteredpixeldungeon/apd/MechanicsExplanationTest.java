@@ -568,4 +568,21 @@ public class MechanicsExplanationTest {
   }
   hero.talents.get(0).put(Talent.VETERANS_INTUITION,2);hero.talents.get(0).put(Talent.ADVENTURERS_INTUITION,2);assertEquals(10f,Talent.itemIDSpeedFactor(hero,items[0]),0);assertEquals(7.5f,Talent.itemIDSpeedFactor(hero,items[1]),0);
  }
+ @Test public void mealEmpowerDescriptionsMatchActualBuffOffersAndReplacementRules(){
+  for(int rank=1;rank<=2;rank++){hero.talents.get(0).put(Talent.EMPOWERING_MEAL,rank);hero.talents.get(0).put(Talent.STRENGTHENING_MEAL,rank);Talent.onFoodEaten(hero,1,null);WandEmpower wand=hero.buff(WandEmpower.class);PhysicalEmpower physical=hero.buff(PhysicalEmpower.class);assertEquals(1+rank,wand.dmgBoost);assertEquals(3,wand.left);assertEquals(3,physical.dmgBoost);assertEquals(1+rank,physical.left);assertTrue(MechanicsDetails.talent(Talent.EMPOWERING_MEAL,rank,"").contains((1+rank)+" points per qualifying"));assertTrue(MechanicsDetails.talent(Talent.STRENGTHENING_MEAL,rank,"").contains("next "+(1+rank)));assertTrue(MechanicsDetails.buff(physical,physical.desc()).contains("+3 damage points"));}
+  PhysicalEmpower physical=hero.buff(PhysicalEmpower.class);physical.set(1,2);assertEquals(3,physical.dmgBoost);assertEquals(3,physical.left);physical.set(5,2);assertEquals(5,physical.dmgBoost);assertEquals(2,physical.left);
+  WandEmpower wand=hero.buff(WandEmpower.class);wand.set(1,2);assertEquals(1,wand.dmgBoost);assertEquals(3,wand.left);
+ }
+ @Test public void physicalEmpowerInspectionPreservesSavedStateAndHiddenWeaponLevel(){
+  PhysicalEmpower physical=Buff.affect(hero,PhysicalEmpower.class);physical.set(4,7);com.watabou.utils.Bundle before=new com.watabou.utils.Bundle();physical.storeInBundle(before);String first=MechanicsDetails.buff(physical,physical.desc());assertTrue(first.contains("7 rolls remain"));armor.levelKnown=false;armor.level(9);assertEquals(first,MechanicsDetails.buff(physical,physical.desc()));com.watabou.utils.Bundle after=new com.watabou.utils.Bundle();physical.storeInBundle(after);assertEquals(before.toString(),after.toString());
+ }
+ @Test public void focusedMealAlternateDamageUsesLiveHeroLevelAndActualOffer(){
+  for(int rank=1;rank<=2;rank++)for(int level:new int[]{1,7,20}){PhysicalEmpower old=hero.buff(PhysicalEmpower.class);if(old!=null)old.detach();hero.lvl=level;hero.talents.get(0).put(Talent.FOCUSED_MEAL,rank);Talent.onFoodEaten(hero,1,null);int amount=Math.round(level/(4f-rank));PhysicalEmpower buff=hero.buff(PhysicalEmpower.class);assertEquals(amount,buff.dmgBoost);assertEquals(amount>0?1:0,buff.left);assertTrue(MechanicsDetails.talent(Talent.FOCUSED_MEAL,rank,"").contains("+"+amount+" points"));}
+  hero.heroClass=HeroClass.DUELIST;assertTrue(MechanicsDetails.talent(Talent.FOCUSED_MEAL,1,"",false).contains("0.667 weapon-ability charges"));assertTrue(MechanicsDetails.talent(Talent.FOCUSED_MEAL,1,"",true).contains("Alternate next-hit damage"));
+ }
+ @Test public void enlighteningMealTomeOfferMatchesActualFractionalChargeAndCap()throws Exception{
+  hero.heroClass=HeroClass.CLERIC;java.lang.reflect.Field charge=com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact.class.getDeclaredField("charge"),partial=com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact.class.getDeclaredField("partialCharge");charge.setAccessible(true);partial.setAccessible(true);com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome tome=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome();hero.belongings.artifact=tome;
+  for(int rank=1;rank<=2;rank++){charge.setInt(tome,0);partial.setFloat(tome,0);hero.talents.get(0).put(Talent.ENLIGHTENING_MEAL,rank);Talent.onFoodEaten(hero,1,null);assertEquals((rank+1)/3f,charge.getInt(tome)+partial.getFloat(tome),.00001f);assertTrue(MechanicsDetails.talent(Talent.ENLIGHTENING_MEAL,rank,"").contains(ObfuscationExplanation.number((rank+1)/3f)+" Tome charges"));assertTrue(MechanicsDetails.talent(Talent.ENLIGHTENING_MEAL,rank,"",true).contains((1+rank)+" game-time units"));}
+  tome.directCharge(100);int full=charge.getInt(tome);Talent.onFoodEaten(hero,1,null);assertEquals(full,charge.getInt(tome));assertEquals(0,partial.getFloat(tome),0);
+ }
 }
