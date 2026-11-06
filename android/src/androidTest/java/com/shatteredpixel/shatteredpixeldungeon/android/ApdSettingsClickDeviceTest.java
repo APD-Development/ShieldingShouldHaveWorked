@@ -691,11 +691,11 @@ public class ApdSettingsClickDeviceTest {
                 assertEquals("Waterskin start: Slot 2", waterskinStart.text());
 
 				tapUntil("Healing confirmation", scroll, (Gizmo) field(pane, "btnHealingConfirmation"),
-						() -> find(Game.scene(), com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions.class) != null, 30000);
+						() -> find(Game.scene(), com.shatteredpixel.shatteredpixeldungeon.windows.WndHealingConfirmation.SettingsWindow.class) != null, 30000);
 				onRender(() -> {
 					try {
-						com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions options =
-								find(Game.scene(), com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions.class);
+						com.shatteredpixel.shatteredpixeldungeon.windows.WndHealingConfirmation.SettingsWindow options =
+								find(Game.scene(), com.shatteredpixel.shatteredpixeldungeon.windows.WndHealingConfirmation.SettingsWindow.class);
 						assertNotNull(options);
 						options.hide();
 					} catch (Exception e) { throw new RuntimeException(e); }
@@ -768,6 +768,9 @@ public class ApdSettingsClickDeviceTest {
 		owners.put("btnDemoRemove", new Object[]{ DemoUnlockDeviceTest.class, "theDemoUnlockMakesTenDemoRunsOpensUimsdForGoodAndItsButtonIsUsedUp" });
 		owners.put("btnDemoView", new Object[]{ DemoUnlockDeviceTest.class, "theDemoUnlockMakesTenDemoRunsOpensUimsdForGoodAndItsButtonIsUsedUp" });
 
+        owners.put("btnSearchedWallColor",new Object[]{QolItemFeedbackDeviceTest.class,"grassDewControlsRingBreakdownsSearchedWallAndOfflineLicenseRenderNatively"});
+        owners.put("chkRatKingSearch",new Object[]{QolItemFeedbackDeviceTest.class,"grassDewControlsRingBreakdownsSearchedWallAndOfflineLicenseRenderNatively"});
+        owners.put("btnDiagnosticReport",new Object[]{DiagnosticReportDeviceTest.class,"actualReportButtonSavesDeviceEvidenceAndMenusSurvivePauseResume"});
         for(String id:new String[]{"btnSections","btnHotbarLayout","btnHotbarCustom","chkFoodInHealing"})owners.put(id,new Object[]{ApdSettingsClickDeviceTest.class,"categorizedSettingsPreserveControlsAndRespondOnSmallScreens"});
 		final java.util.Set<String> declared = new java.util.TreeSet<>();
 		for (Field f : APDSettingsPane.class.getDeclaredFields()) {

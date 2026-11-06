@@ -31,7 +31,17 @@ jobs:
           assert produced['head_sha']==source and produced['run_number']==spec['build']
           trees=[api(f'repos/{repo}/git/trees/{sha}?recursive=1') for sha in (source,os.environ['GITHUB_SHA'])]
           assert all(not tree.get('truncated') for tree in trees)
-          assert application_inputs(trees[0]['tree'])==application_inputs(trees[1]['tree'])
+          # Later production development must not become part of this older-APK test.
+          # Compile against the exact application snapshot, overlaying instrumentation only.
+          test_source=os.environ['GITHUB_SHA']
+          subprocess.run(['git','fetch','--no-tags','--depth=1','origin',source],check=True)
+          subprocess.run(['git','checkout','--detach',source],check=True)
+          subprocess.run(['git','checkout',test_source,'--','android/src/androidTest'],check=True)
+          changed=subprocess.check_output(['git','diff','--name-only',source],text=True).splitlines()
+          assert all(path.startswith('android/src/androidTest/') for path in changed)
+          pinned=api(f'repos/{repo}/git/trees/'+subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()+'?recursive=1')
+          assert not pinned.get('truncated')
+          assert application_inputs(trees[0]['tree'])==application_inputs(pinned['tree'])
           deadline=time.monotonic()+600
           while True:
               jobs=api(f'repos/{repo}/actions/runs/{run}/jobs')['jobs']
@@ -58,6 +68,21 @@ jobs:
           test ! -f android/build/outputs/apk/debug/android-debug.apk
           ./gradlew --stop
           python3 -m pip install pillow
+      - name: Verify exact application signature and package without rebuilding
+        run: |
+          python3 - <<'PY'
+          import json,os,pathlib,re,subprocess
+          tools=sorted((pathlib.Path(os.environ['ANDROID_HOME'])/'build-tools').glob('*/apksigner'))[-1]
+          apk,=pathlib.Path('application').glob('*.apk')
+          signature=subprocess.check_output([str(tools),'verify','--print-certs',str(apk)],text=True)
+          from tools.apd_existing_build_evidence import certificates
+          expected='067688b3ab6bd5820a67f4c1ba7d5859db578173771cf31d3252b3e4e012246e'
+          assert certificates(signature)==[expected]
+          metadata=subprocess.check_output([str(tools.parent/'aapt'),'dump','badging',str(apk)],text=True)
+          package,=re.findall(r"^package: (.+)$",metadata,re.M)
+          assert "name='com.charltonchris29.adhdpixeldungeon.indev'" in package and "versionCode='920'" in package
+          pathlib.Path('application-identity.json').write_text(json.dumps({'signature_verified':True,'certificate_sha256':expected,'package':package,'install_compatible_identity_with_365':True,'physical_phone_tested':False},indent=2))
+          PY
       - name: Enable emulator acceleration
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
@@ -88,6 +113,7 @@ jobs:
           name: apd-qol-exact-candidate-acceptance
           path: |
             acceptance-source.json
+            application-identity.json
             qol-instrumentation.txt
             qol-logcat.txt
             qol-visuals/

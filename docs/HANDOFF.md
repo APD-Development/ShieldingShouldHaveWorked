@@ -1,3 +1,7 @@
+## 2026-11-06 candidate native failure and test-only correction
+
+Targeted run42205750375 actually ran3 native methods: calculation-panel/QoL method passed; remaining-settings method failed expecting obsolete healing WndOptions instead of actual SettingsWindow; ownership method failed missing mappings for three existing controls. Registering actual executable owners and correcting expected dialog type. Same application366 reused, no new app build. Follow-up pins exact89663e4c0 application snapshot and overlays only Android instrumentation from newer test source, so later source-only Warrior changes are not misrepresented as tested in366. Added actual signature/package receipt before UI tests. No complete native pass claimed.
+
 ## 2026-11-06 Warrior ability explanation checkpoint
 
 Newer source-only Heroic Leap/Shockwave/Endure explanations: full2669 local core pass; real Endure handlers and pure inspection tested. They postdate internal366 and are not in those APKs. Internal366 has both variants locally staged, sidecars matched, feature isolation inspected; receipt docs/APD-INTERNAL366-PREPARATION.json deliberately says native/signature/package verification pending, not delivered. Full72 emulator, targeted3-method QoL acceptance and six-display checks still running. Whole-game audit remains unfinished; keep developing without rebuilding for docs/test-only fixes.
