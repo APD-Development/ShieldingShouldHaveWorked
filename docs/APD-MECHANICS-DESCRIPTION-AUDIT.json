@@ -3922,6 +3922,66 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/UtilityItemExplanation.java",
       "sha256": "6daba6052493249725694b07a5bdda8c195e9b2bf71f33aa796366825427910a",
       "boundary": "Known scroll, bomb and utility primary effect/resource facets; visible-snapshot privacy and unchanged source formula guards, fuse/floor/Hero/RNG/capacity purity tested. Not all nested interaction or full inventory closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/ClothArmor.java",
+      "sha256": "6bd5a9b0053b4047f6fb814359264b59dc5b797e459329bfa51d77f617e175ff",
+      "boundary": "Tier1 initialization only; inherits reviewed Armor numeric description. Primary-source review only, not universal nested-interaction closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/ClericArmor.java",
+      "sha256": "4614ab172c39fb4a5f788e064ca8d53232cca72ee956ea47f7832101c4b9ae06",
+      "boundary": "Image-only class; inherits reviewed ClassArmor/ability description, no Cleric gameplay change. Primary-source review only, not universal nested-interaction closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/WarriorArmor.java",
+      "sha256": "bebe3c572d1fd90658604bee1c50b83f0528085d8ebb782c49b505a83e257158",
+      "boundary": "Image-only class; inherits ClassArmor/ability description. Primary-source review only, not universal nested-interaction closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/MageArmor.java",
+      "sha256": "2a9fb296013b52dad794fc85dc93642240bb76730c5322a3be0a54571cbebaea",
+      "boundary": "Image-only class; inherits ClassArmor/ability description. Primary-source review only, not universal nested-interaction closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/DuelistArmor.java",
+      "sha256": "98cbaab1b5906763731ca6602aef37817208b4b76e1391c3586a9ae9c34ca946",
+      "boundary": "Image-only class; inherits ClassArmor/ability description. Primary-source review only, not universal nested-interaction closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/HuntressArmor.java",
+      "sha256": "736f807a005d84d6c0407fe985164fe70eeae255781c1d45badd0cd5a80cf5df",
+      "boundary": "Image-only class; inherits ClassArmor/ability description. Primary-source review only, not universal nested-interaction closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/RogueArmor.java",
+      "sha256": "d50011f64fdbe72934b5cc1dce3eb8492681bad323b9ec8afa3a16f29082f933",
+      "boundary": "Image-only class; inherits ClassArmor/ability description. Primary-source review only, not universal nested-interaction closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/bags/PotionBandolier.java",
+      "sha256": "f57fc9a8957d570bbccadd883c22945282d0ff62733607ed113ad0d05ea7b032",
+      "boundary": "Actual capacity19 and accepted item categories read; UtilityItemExplanation uses live capacity. No per-item quantity/slot conflation. Primary-source review only, not universal nested-interaction closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/bags/ScrollHolder.java",
+      "sha256": "4c70299c56edfb82f3e5766052b212110dbd9241b7c7f1da0fa192a78e3aed1a",
+      "boundary": "Actual capacity19 and category rules read; Beacon onDetach reset observed, no behavior change. Primary-source review only, not universal nested-interaction closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/bags/VelvetPouch.java",
+      "sha256": "c6b9c3ff9a1ab79436e37fe497ad9b70b28641bc6527a108ff3b285f881d41b9",
+      "boundary": "Actual capacity19 and category rules read; UtilityItemExplanation displays live slots. Primary-source review only, not universal nested-interaction closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Amulet.java",
+      "sha256": "88162c74e8ccf1bdf8c0ac7a56c6f9f40b4a5770e7c7437d0613d62dbf3a1ff6",
+      "boundary": "Always-identified progression item; action/pickup/ascension branches read. No equipment numeric modifier to invent. Primary-source review only, not universal nested-interaction closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Honeypot.java",
+      "sha256": "2a50ba9353f37693d2c7184fedb6995493925a86f777d75f28bfd4ad20563f15",
+      "boundary": "Placement, adjacent vacancy, scaling-depth Bee spawning and pot owner tracking read. Dedicated quantitative companion explanation remains follow-up; no hidden enemy stats queried. Primary-source review only, not universal nested-interaction closure."
     }
   ]
 }

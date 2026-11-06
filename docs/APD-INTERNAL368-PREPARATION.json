@@ -1,5 +1,5 @@
 {
-  "status": "BUILT_CORE_AND_TARGETED_PANEL_IDENTITY_PASSED_FULL_NATIVE_DISPLAY_ALPHA_PENDING_NOT_DELIVERED",
+  "status": "BUILT_CORE_PANEL_ALPHA_SIX_DISPLAYS_AND_IDENTITIES_PASSED_FULL72_PENDING_NOT_DELIVERED",
   "source": "7ef0800dfd6c4e624d3c001e886eb1a711d80a68",
   "number": 368,
   "developer_run": 42262060915,
@@ -71,5 +71,161 @@
       "qol-waiting-saved-stops.png": "698aa07aa561ed6ad70ff96d51ede029034832bd853866076e457195f41d98c5"
     },
     "visual_review": "All9 captures inspected together: expanded calculations clipped inside four windows with action buttons visible; waiting stops disabled and restored consistently; controlled bookshelf/decor negatives have no checkmarks and valid wall fixture retains rendered marks. Synthetic controlled terrain, not a naturally generated isolated room or seed."
+  },
+  "alpha_native": {
+    "run": 42262576345,
+    "artifact": 13526082016,
+    "artifact_bytes": 747200,
+    "artifact_sha256": "eb79f79862cd7b9af6864a7b818087b41f8e7ba69a70c933389fa7306fb6df9e",
+    "tests": 4,
+    "failures": 0,
+    "local_evidence": "/workspace/apd-internal368-alpha-native",
+    "identity": {
+      "signature_verified": true,
+      "certificate_sha256": "067688b3ab6bd5820a67f4c1ba7d5859db578173771cf31d3252b3e4e012246e",
+      "package": "package: name='com.charltonchris29.adhdpixeldungeon.indev' versionCode='920' versionName='4.0.8-apd-INDEV-bP368' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'",
+      "physical_phone_tested": false
+    },
+    "reviewed_visuals": "Actual Alpha playback selector, healing toggle Off/On and HP editor, Rat quick-search toggle and unidentified origin/range viewed. All17 PNGs decoded. Controlled negative terrain examples are synthetic."
+  },
+  "display_matrix": {
+    "run": 42262060874,
+    "profiles": 6,
+    "tests": 11,
+    "failures": 0,
+    "profiles_first_five": [
+      {
+        "id": 13526595279,
+        "sha": "2f04b72d8ddd3e6266ea5d826ef61671d0d5b1c89b7c8378f734a75f60fd278f",
+        "path": "/workspace/attachments/80c53c2a-47d8-49ba-b93d-0dd9fbda1fae/github-actions-artifact-13526595279.zip",
+        "size_bytes": 981787,
+        "tests": {
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "pngs": 5,
+        "proof": {
+          "application_source": "7ef0800dfd6c4e624d3c001e886eb1a711d80a68",
+          "application_run": 42262060915,
+          "application_sha256": "8e23c1cb147a536212142a3f23d923773f02a9857e47a28a5d64a874c016ed12",
+          "protected_application_inputs_identical": true,
+          "application_rebuilt": false,
+          "test_source": "7ef0800dfd6c4e624d3c001e886eb1a711d80a68",
+          "supersedes_failed_lookup_run": 40888337192
+        },
+        "folder": "/workspace/apd-internal368-display/13526595279"
+      },
+      {
+        "id": 13526141345,
+        "sha": "7fa863bd37a5e228dfb4ddfc3b137a26640cae5ced57fbd7f547e82ca93bd399",
+        "path": "/workspace/attachments/30ac1d5b-6dea-4ec4-8837-d98c9e759041/github-actions-artifact-13526141345.zip",
+        "size_bytes": 796951,
+        "tests": {
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "pngs": 5,
+        "proof": {
+          "application_source": "7ef0800dfd6c4e624d3c001e886eb1a711d80a68",
+          "application_run": 42262060915,
+          "application_sha256": "8e23c1cb147a536212142a3f23d923773f02a9857e47a28a5d64a874c016ed12",
+          "protected_application_inputs_identical": true,
+          "application_rebuilt": false,
+          "test_source": "7ef0800dfd6c4e624d3c001e886eb1a711d80a68",
+          "supersedes_failed_lookup_run": 40888337192
+        },
+        "folder": "/workspace/apd-internal368-display/13526141345"
+      },
+      {
+        "id": 13525816604,
+        "sha": "1f484b6e6ecc06a87f3373a9e6532849578eec092f2979114e52b6d87b75a117",
+        "path": "/workspace/attachments/3c467f13-8b61-47ed-bf52-2ea29f29c2e3/github-actions-artifact-13525816604.zip",
+        "size_bytes": 725621,
+        "tests": {
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "pngs": 5,
+        "proof": {
+          "application_source": "7ef0800dfd6c4e624d3c001e886eb1a711d80a68",
+          "application_run": 42262060915,
+          "application_sha256": "8e23c1cb147a536212142a3f23d923773f02a9857e47a28a5d64a874c016ed12",
+          "protected_application_inputs_identical": true,
+          "application_rebuilt": false,
+          "test_source": "7ef0800dfd6c4e624d3c001e886eb1a711d80a68",
+          "supersedes_failed_lookup_run": 40888337192
+        },
+        "folder": "/workspace/apd-internal368-display/13525816604"
+      },
+      {
+        "id": 13525094132,
+        "sha": "9140cdcc3da6881f8a908ed3543360d1e307d45a4ec10151b286747699b03328",
+        "path": "/workspace/attachments/bd65cb1e-a86e-47f5-96cf-967284984916/github-actions-artifact-13525094132.zip",
+        "size_bytes": 507305,
+        "tests": {
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "pngs": 5,
+        "proof": {
+          "application_source": "7ef0800dfd6c4e624d3c001e886eb1a711d80a68",
+          "application_run": 42262060915,
+          "application_sha256": "8e23c1cb147a536212142a3f23d923773f02a9857e47a28a5d64a874c016ed12",
+          "protected_application_inputs_identical": true,
+          "application_rebuilt": false,
+          "test_source": "7ef0800dfd6c4e624d3c001e886eb1a711d80a68",
+          "supersedes_failed_lookup_run": 40888337192
+        },
+        "folder": "/workspace/apd-internal368-display/13525094132"
+      },
+      {
+        "id": 13524819800,
+        "sha": "29434d6ecbcf5091c26b3736243cacd75dbc53ed9ee6c77c30509195dcce2afc",
+        "path": "/workspace/attachments/e5f09103-eadd-457b-94bc-3db5d7cc619f/github-actions-artifact-13524819800.zip",
+        "size_bytes": 2130285,
+        "tests": {
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "pngs": 5,
+        "proof": {
+          "application_source": "7ef0800dfd6c4e624d3c001e886eb1a711d80a68",
+          "application_run": 42262060915,
+          "application_sha256": "8e23c1cb147a536212142a3f23d923773f02a9857e47a28a5d64a874c016ed12",
+          "protected_application_inputs_identical": true,
+          "application_rebuilt": false,
+          "test_source": "7ef0800dfd6c4e624d3c001e886eb1a711d80a68",
+          "supersedes_failed_lookup_run": 40888337192
+        },
+        "folder": "/workspace/apd-internal368-display/13524819800"
+      }
+    ],
+    "api36": {
+      "artifact": 13526311971,
+      "artifact_bytes": 4880478,
+      "artifact_sha256": "365c7f26a5c5e9b5a15191f7a5f82f7aea43fb8602f16f1b9fb06a0834edfaf6",
+      "tests": 6,
+      "failures": 0,
+      "local_evidence": "/workspace/apd-internal368-api36",
+      "reviewed_visuals": {
+        "qol-dew-settings.png": "ec359c95f77ef8007b1ada6e8f090c737da66a8059b3be0588f5f0febd07b386",
+        "qol-force-weapon.png": "d4a4f70fa9f7588dbda30db02453ccd1969900a3ac623be809309459d6a71027",
+        "qol-sharpshooting-weapon.png": "614c961c20b7a6065e3cdc3adc947f787ce4586ad59a5820e379ca8fd7edd7be",
+        "qol-searched-wall.png": "3b230ed7a9f9edb1fa0567f5659c2f6881bfe45aa3fd6c0ed3da46144833ebe0",
+        "qol-searched-wall-color.png": "e2bdee26c81a21866cee1ed4679b265c08ba73fb25859511840edfac3eef23c2",
+        "qol-offline-license.png": "fefd0c468e9638502b557bd0f23a0edf80aed5019805df6c14c7309e5fea9764"
+      }
+    },
+    "visual_review": "All46 PNGs decoded; five restored title layouts and six API36 ring/settings/wall/license captures manually viewed. Original full-resolution image dimensions retained. Automated/emulator evidence only."
   }
 }
