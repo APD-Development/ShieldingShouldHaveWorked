@@ -4150,6 +4150,11 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/MagesStaff.java",
       "sha256": "4048c90d775c0dff919b5dcb65ce8dd25dc421aecb13f49edf36ae2a5a085a33",
       "boundary": "No-hero inventory/catalog inspection and hidden-level privacy reviewed.296 catalog no-hero contexts plus85 equipment hidden0/3/7 comparisons. Missing personal inputs withheld, no sample hero. Loaded-Hero formulas retained. This facet does not close all nested interactions, translations or native/phone UI acceptance. Source0aa2688b2; raw2851 remote source receipt and2852 test-only local receipt recorded separately."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Stylus.java",
+      "sha256": "717559c4875da5b9991ffd9efd4e22871e06696ab6b35ddeb9de7e030c561c98",
+      "boundary": "Ordinary inscription time, eligibility, live rarity pool/per-glyph no-exclusion odds and existing-glyph exclusion reviewed. Actual seeded selection/inscription, RNG purity and catalog privacy tests passed. Does not close nested glyph effects or native/phone acceptance."
     }
   ]
 }

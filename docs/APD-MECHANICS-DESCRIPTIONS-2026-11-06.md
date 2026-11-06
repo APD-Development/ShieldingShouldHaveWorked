@@ -598,3 +598,7 @@ Source0aa2688b2 fixes four missing-context families affecting15 red catalog case
 ### UIMSD phase heap observations
 
 Source035cf42ea adds bounded timestamped used/committed/limit-byte observations at four scene lifecycle points, without forcedGC/history reads/periodic polling. Two new persistence/export/bounding regressions and full local2854/446 passed. Remote source035cf42ea full2854/446 plus required Android/desktop compilation passed; raw receipt downloaded/digest/XML verified. Native/phone phase-event acceptance not run. Existing368 memory fix acceptance remains separate. This does not close the whole semantic-description audit, and no fourth daily APK pair is created. See APD-UIMSD-PHASE-MEMORY-2026-11-06.md.
+
+### Stylus selection and action time
+
+Reads live shared action cost, rarity weights and pool sizes. Distinguishes unconditional rarity-pool selection from eligible per-glyph choice and combat triggers/Arcana power. Existing-glyph exclusion and empty-pool fallback retained. Actual100 forced-pool selections and100 inscriptions plus catalog/inspection purity tested; full local2856/446 passed. First fixture compilation omitted Hero argument, corrected without production visibility change. New source only, not368; remote Android/desktop gate pending. See APD-STYLUS-DESCRIPTION-2026-11-06.md.

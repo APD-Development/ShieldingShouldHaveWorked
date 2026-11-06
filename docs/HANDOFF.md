@@ -1,3 +1,9 @@
+## 2026-11-06 Stylus source explanation checkpoint
+
+Full local2856/446 passed, raw /workspace/apd-stylus-details-local-junit.zip. Expanded details read actual2-unit inscription cost through shared constant accessor and public rarity weights/pool lengths; explains no-exclusion per-glyph odds, existing-glyph exclusion/fallback, eligibility and selection-versus-combat chances. RNG inspection purity, forced-rare100 actual draws with weights restored,100 actual inscriptions exclude previous glyph without level changes. First fixture omitted helper Hero arg and failed compilation; corrected fixture only. No gameplay formulas/RNG draws or rates changed. Current source-only Android/desktop gate requested. Prior035cf42ea exact2854 complete remote checks downloaded/verified; no phone/native new-source claim.
+
+New source remains absent from368; no fourth APK pair.368 verified local downloads and matching source unchanged. GitHub releasePOST403/GET404 remains pending owner action. Preserve all approved progress; continue remaining semantic facets without inventing audit closure.
+
 ## 2026-11-06 current source035cf42ea fully compile-verified; release publication blocked
 
 Run42274945480/job128088751938 succeeded:2854 tests/446 raw suites, zero failures/errors/skips, Android debug/release/instrumentation Java and desktop compilation. Artifact13531339728 (503127 bytes), SHA4d70af8a55315178d1ce0091eff1a632741be4b4a14c04f0fdcfa769e9026184 independently downloaded/digest/source/XML checked. Phase observations still have no native/phone acceptance; no APK assembled by source gates. Owner status note docs/APD-368-KNOWN-SOURCE-BOUNDARIES.md explicitly separates all later source fixes from exact7ef APK368.

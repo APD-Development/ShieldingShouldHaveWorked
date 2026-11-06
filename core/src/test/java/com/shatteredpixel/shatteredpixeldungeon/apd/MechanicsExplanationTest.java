@@ -669,6 +669,23 @@ public class MechanicsExplanationTest {
    Random.pushGenerator(35);try{for(int j=0;j<50;j++){int actual=RingOfForce.damageRoll(hero);assertTrue(actual>=RingOfForce.unarmedMinimum(hero.STR(),b));assertTrue(actual<=RingOfForce.unarmedMaximum(hero.STR(),b));}}finally{Random.popGenerator();}
   }
  }
+ @Test public void stylusDetailsFollowActualPoolWeightsAndActionCostWithoutRolling(){
+  com.shatteredpixel.shatteredpixeldungeon.items.Stylus stylus=new com.shatteredpixel.shatteredpixeldungeon.items.Stylus();
+  float[] weights=Armor.Glyph.typeChances;float[] saved=weights.clone();
+  try{
+   Random.pushGenerator(214);int expected=Random.Int();Random.popGenerator();Random.pushGenerator(214);
+   try{String ordinary=UtilityItemExplanation.details(stylus,hero);assertTrue(ordinary.contains(ObfuscationExplanation.number(com.shatteredpixel.shatteredpixeldungeon.items.Stylus.inscriptionTime())+" game-time units"));assertTrue(ordinary.contains("common 50%"));assertTrue(ordinary.contains("uncommon 40%"));assertTrue(ordinary.contains("rare 10%"));assertTrue(ordinary.contains("12.5% per glyph"));assertTrue(ordinary.contains("not a glyph's chance to trigger"));assertEquals(expected,Random.Int());}finally{Random.popGenerator();}
+   weights[0]=weights[1]=0;weights[2]=100;
+   String changed=UtilityItemExplanation.details(stylus,hero);assertTrue(changed.contains("rare 100%"));
+   Random.pushGenerator(216);try{for(int draw=0;draw<100;draw++){Armor.Glyph actual=Armor.Glyph.random();assertTrue(java.util.Arrays.asList(Armor.Glyph.rare).contains(actual.getClass()));}}finally{Random.popGenerator();}
+  }finally{System.arraycopy(saved,0,weights,0,weights.length);}
+ }
+ @Test public void ordinaryInscriptionExcludesExistingGlyphWithoutChangingArmorLevel(){
+  Armor target=new com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor();target.level(3);target.levelKnown=target.cursedKnown=true;
+  Random.pushGenerator(217);
+  try{for(int draw=0;draw<100;draw++){Class<?> previous=target.glyph==null?null:target.glyph.getClass();target.inscribe();assertNotEquals(previous,target.glyph.getClass());assertEquals(3,target.level());}}finally{Random.popGenerator();}
+  String text=UtilityItemExplanation.details(new com.shatteredpixel.shatteredpixeldungeon.items.Stylus(),hero);assertTrue(text.contains("excludes the selected armor's existing glyph"));assertTrue(text.contains("does not raise armor upgrade level"));
+ }
  @Test public void chaliceDescriptionDelayMatchesActualRegenerationAcrossLevels(){
   hero.HP=10;
   for(int level:new int[]{0,3,9}){
