@@ -1,3 +1,7 @@
+## 2026-11-06 rage/combo talent checkpoint
+
+Full local core passed (`/workspace/apd-rage-combo-full.log`); inventory expected2754/446. Final finisher alignment-conversion text clarification targeted suite also passed. Actual caps/additive enchant factor/kill time/seal recharge floor tested; no balance change. Shared pure helpers retain original equations/order. New source-only request expects2754 and verifies Android/desktop; await actual run receipt before reporting compile status. Remote9bc79fc71 actual2749/446 compile proof downloaded and ledger updated. No APK build/delivery, whole semantic audit incomplete; continue remaining mechanics.
+
 ## 2026-11-06 Blindness/Amok checkpoint
 
 Full local2751/446 pass. Actual FOV and enemy target selection back new explanations; Amok misleading indiscriminate-target default corrected without AI changes. Remote source-only2749 run42229382772 pending retrieval, newest source not remotely compiled yet. No new APK requested. Continue numerical talent/status audit, preserving source backup and all367 evidence.

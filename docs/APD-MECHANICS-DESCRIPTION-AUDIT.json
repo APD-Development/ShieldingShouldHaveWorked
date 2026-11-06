@@ -3747,6 +3747,26 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/BuffExplanation.java",
       "sha256": "3243ee09ecb9a5dcc3f5de88e4b714b30b08312b788c33c3c35318eef49ed5c7",
       "boundary": "Blindness local terrain sense versus independent senses, and Amok ordinary targeting priorities verified against actual FOV/chooseEnemy. Not full AI/status semantic closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Berserk.java",
+      "sha256": "b6fed2efcb083de3c26613280de33c2f708d631f050dd9442bf85cff3348c1e5",
+      "boundary": "Endless Rage maximum/storage versus damage cap, Enraged Catalyst additive power, Cleave kill-window replacement and Lethal Defense recharge-credit explanation facets. Actual handlers/save counters tested. No full finisher/rage/recovery semantic closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Combo.java",
+      "sha256": "ce2c6c861ddd19367bffaf21519b393842615a09edb604a206a8de67e832377f",
+      "boundary": "Endless Rage maximum/storage versus damage cap, Enraged Catalyst additive power, Cleave kill-window replacement and Lethal Defense recharge-credit explanation facets. Actual handlers/save counters tested. No full finisher/rage/recovery semantic closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/BrokenSeal.java",
+      "sha256": "2d6a97b486fe87bf1d0d32323c0d4b3b2622eee75b19f32223da9e0d2c7fbf0e",
+      "boundary": "Endless Rage maximum/storage versus damage cap, Enraged Catalyst additive power, Cleave kill-window replacement and Lethal Defense recharge-credit explanation facets. Actual handlers/save counters tested. No full finisher/rage/recovery semantic closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/TalentExplanation.java",
+      "sha256": "23e7cd00320edb8ce108461e686a388487c2167345cfc293ca0da053ae04a811",
+      "boundary": "Endless Rage maximum/storage versus damage cap, Enraged Catalyst additive power, Cleave kill-window replacement and Lethal Defense recharge-credit explanation facets. Actual handlers/save counters tested. No full finisher/rage/recovery semantic closure."
     }
   ]
 }

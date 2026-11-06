@@ -95,6 +95,30 @@ public class MechanicsExplanationTest {
   com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat ally=new com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat();ally.alignment=com.shatteredpixel.shatteredpixeldungeon.actors.Char.Alignment.ALLY;ally.pos=center+1;Dungeon.level.mobs.add(ally);
   Amok rage=Buff.affect(subject,Amok.class,8);String detail=MechanicsDetails.buff(rage,rage.desc());assertTrue(detail.contains("not a uniformly random choice"));assertSame(enemy,subject.chooseNow());enemy.invisible=1;assertSame(ally,subject.chooseNow());ally.invisible=1;assertSame(hero,subject.chooseNow());hero.invisible=1;assertNull(subject.chooseNow());hero.invisible=0;ally.invisible=0;enemy.invisible=0;subject.fieldOfView[enemy.pos]=false;assertSame(ally,subject.chooseNow());assertEquals(com.shatteredpixel.shatteredpixeldungeon.actors.Char.Alignment.ENEMY,subject.alignment);
  }
+ @Test public void rageTalentNumbersMatchActualCapsAndAdditiveEnchantmentPower()throws Exception{
+  Berserk rage=Buff.affect(hero,Berserk.class);java.lang.reflect.Field power=Berserk.class.getDeclaredField("power");power.setAccessible(true);ring(2);
+  for(int rank=1;rank<=3;rank++){
+   hero.talents.get(0).put(Talent.ENDLESS_RAGE,rank);hero.talents.get(0).put(Talent.ENRAGED_CATALYST,rank);power.setFloat(rage,0);rage.damage(hero.HT*40);
+   assertEquals(1f+.1667f*rank,rage.rageFraction(),0);assertTrue(TalentExplanation.details(Talent.ENDLESS_RAGE,rank).contains(ObfuscationExplanation.number(100*rage.rageFraction())+"%"));
+   for(float stored:new float[]{.25f,.8f,1.5f}){
+    power.setFloat(rage,stored);float expected=RingOfArcana.enchantPowerMultiplier(hero)+(Math.min(1,stored)*.15f)*rank;
+    assertEquals(expected,com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon.Enchantment.genericProcChanceMultiplierReadOnly(hero),0);
+    com.watabou.utils.Bundle before=new com.watabou.utils.Bundle();rage.storeInBundle(before);String text=TalentExplanation.details(Talent.ENRAGED_CATALYST,rank);assertTrue(text.contains("added after Arcana"));com.watabou.utils.Bundle after=new com.watabou.utils.Bundle();rage.storeInBundle(after);assertEquals(before.toString(),after.toString());
+   }
+  }
+ }
+ @Test public void cleaveExplanationMatchesActualKillWindowAndOrdinaryHitMinimum(){
+  for(int rank=1;rank<=3;rank++){
+   hero.talents.get(0).put(Talent.CLEAVE,rank);PlainStatusTarget victim=new PlainStatusTarget();victim.HP=0;Combo kill=new Combo();kill.target=hero;kill.hit(victim);com.watabou.utils.Bundle state=new com.watabou.utils.Bundle();kill.storeInBundle(state);assertEquals(15f+15f*rank,state.getFloat("combotime"),0);assertTrue(TalentExplanation.details(Talent.CLEAVE,rank).contains(ObfuscationExplanation.number(state.getFloat("combotime"))+" game-time units"));
+   victim.HP=100;Combo ordinary=new Combo();ordinary.target=hero;ordinary.hit(victim);ordinary.storeInBundle(state);assertEquals(5,state.getFloat("combotime"),0);
+  }
+ }
+ @Test public void lethalDefenseExplanationMatchesActualRechargeCreditFloorAndActivation(){
+  for(int rank=1;rank<=3;rank++){
+   com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal.WarriorShield seal=new com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal.WarriorShield();seal.target=hero;com.watabou.utils.Bundle state=new com.watabou.utils.Bundle();seal.storeInBundle(state);state.put("cooldown",120);seal.restoreFromBundle(state);seal.reduceCooldown(rank/3f);seal.storeInBundle(state);assertEquals(120-50*rank,state.getInt("cooldown"));assertTrue(TalentExplanation.details(Talent.LETHAL_DEFENSE,rank).contains((50*rank)+" turns"));
+   for(int i=0;i<20;i++)seal.reduceCooldown(rank/3f);seal.storeInBundle(state);assertEquals(-150,state.getInt("cooldown"));seal.activate();seal.storeInBundle(state);assertEquals(0,state.getInt("cooldown"));
+  }
+ }
  @Test public void mailPlusThreeExplainsUnitsAndUsesActualObfuscationScore(){armor.level(3);RingOfArcana ring=ring(3);float expected=Obfuscation.stealthBoost(hero,hero.glyphLevel(Obfuscation.class));String text=armor.info();assertTrue(text,text.contains("2 stealth points"));assertTrue(text,text.contains(ObfuscationExplanation.number(expected)+" points"));assertTrue(text,text.contains("not percentages"));assertTrue(text,text.contains("unaware enemy"));assertFalse(text,text.contains("added stealth 2 to"));}
  @Test public void upgradesAndArcanaRefreshBothReadableValuesAndDetailedResults(){armor.level(0);RingOfArcana ring=ring(0);String first=ObfuscationExplanation.details(armor,hero);armor.level(6);ring.upgrade();String next=ObfuscationExplanation.details(armor,hero);assertNotEquals(first,next);assertTrue(next,next.contains(ObfuscationExplanation.number(Obfuscation.stealthBoost(hero,hero.glyphLevel(Obfuscation.class)))));assertTrue(next,next.contains("3 stealth points"));}
  @Test public void enhancedRingsAndProtectiveAuraMatchLiveCalculation(){armor.level(3);ring(1);Buff.affect(hero,EnhancedRings.class);Buff.affect(hero,AuraOfProtection.AuraBuff.class);float actual=Obfuscation.stealthBoost(hero,hero.glyphLevel(Obfuscation.class));assertTrue(ObfuscationExplanation.summary(armor,hero).contains(ObfuscationExplanation.number(actual)+" points"));}

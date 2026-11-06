@@ -244,9 +244,11 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 		return baseShield*3;
 	}
 	
+    public static float maximumRage(int talentRank){return 1f + 0.1667f*talentRank;}
+
 	public void damage(int damage){
 		if (state != State.NORMAL) return;
-		float maxPower = 1f + 0.1667f*((Hero)target).pointsInTalent(Talent.ENDLESS_RAGE);
+		float maxPower = maximumRage(((Hero)target).pointsInTalent(Talent.ENDLESS_RAGE));
 		power = Math.min(maxPower, power + (damage/(float)target.HT)/4f );
 		BuffIndicator.refreshHero(); //show new power immediately
 		powerLossBuffer = 3; //2 turns until rage starts dropping
@@ -327,7 +329,7 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 	public float iconFadePercent() {
 		switch (state){
 			case NORMAL: default:
-				float maxPower = 1f + 0.1667f*((Hero)target).pointsInTalent(Talent.ENDLESS_RAGE);
+				float maxPower = maximumRage(((Hero)target).pointsInTalent(Talent.ENDLESS_RAGE));
 				return (maxPower - power)/maxPower;
 			case BERSERK:
 				return 1f - shielding() / (float)maxShieldBoost();
