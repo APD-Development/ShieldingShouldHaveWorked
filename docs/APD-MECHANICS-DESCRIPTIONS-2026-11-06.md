@@ -590,3 +590,11 @@ Reproduced Dart.info changing its static pending-shot crossbow to null when insp
 
 ### Warding/Regrowth default tooltip purity and absent-run context
 Actual baselines showed both default descriptions clear an inactive infusion flag through a gameplay level getter, and identified Regrowth crashes without a hero. UI now uses already shared pure previews and withholds absent-hero depletion. Real gameplay cleanup/formulas remain unchanged.312 state combinations cover13 wands, three base levels, resin/infusion/knowledge states with saved fields/capacity/RNG unchanged; explicit real cleanup and absent-context tests pass. The new plant helper also withholds stale floor results outside an active run. Full2850/446 local passes. Source-only compilation pending; not in368 and no new APK assembled.
+
+### No-hero catalog inspection and privacy follow-up
+
+Source0aa2688b2 fixes four missing-context families affecting15 red catalog cases: rings, Spirit Bow, Tomahawk and an imbued Mage staff.296 no-hero catalog contexts now inspect without changing saved item/RNG. Force and Tenacity withhold unavailable personal strength/missing-HP results instead of assuming a sample character. Real loaded-Hero formulas and enhanced-ring effects remain unchanged. Complete remote2851/446 plus Android debug/release/instrumentation Java and desktop compilation passed with downloaded raw receipt. Separate test-only2f787cbd2 compares85 equipment types at hidden+0/+3/+7 without a hero; identical ordinary/expanded descriptions, full local2852/446. These are separate inspector findings, not a claimed cause of the physical UIMSD heap exhaustion; none is in368.
+
+### UIMSD phase heap observations
+
+Source035cf42ea adds bounded timestamped used/committed/limit-byte observations at four scene lifecycle points, without forcedGC/history reads/periodic polling. Two new persistence/export/bounding regressions and full local2854/446 passed. Remote source035cf42ea full2854/446 plus required Android/desktop compilation passed; raw receipt downloaded/digest/XML verified. Native/phone phase-event acceptance not run. Existing368 memory fix acceptance remains separate. This does not close the whole semantic-description audit, and no fourth daily APK pair is created. See APD-UIMSD-PHASE-MEMORY-2026-11-06.md.

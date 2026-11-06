@@ -4125,6 +4125,31 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/BlandfruitBush.java",
       "sha256": "2c0a83272f370ae5190805d91076df00018751e8b66cefb9c11680b3aa5fa9ee",
       "boundary": "Ordinary/Warden primary plant effect reviewed and exposed through shared seed/ground inspector helper.13-species purity, actual Sungrass/Earthroot/Sorrowmoss branches and TimeBubble budget/save tested. Not a universal nested-interaction or native UI claim."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/rings/Ring.java",
+      "sha256": "5f9e306616be7e1effab8d60476a1ae426aa6083a35564d915efa60b76239c7f",
+      "boundary": "No-hero inventory/catalog inspection and hidden-level privacy reviewed.296 catalog no-hero contexts plus85 equipment hidden0/3/7 comparisons. Missing personal inputs withheld, no sample hero. Loaded-Hero formulas retained. This facet does not close all nested interactions, translations or native/phone UI acceptance. Source0aa2688b2; raw2851 remote source receipt and2852 test-only local receipt recorded separately."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/rings/RingOfForce.java",
+      "sha256": "af5875c544b324b28c31fea0bedb2e459ada968aeaa39653badf51abc30b7eae",
+      "boundary": "No-hero inventory/catalog inspection and hidden-level privacy reviewed.296 catalog no-hero contexts plus85 equipment hidden0/3/7 comparisons. Missing personal inputs withheld, no sample hero. Loaded-Hero formulas retained. This facet does not close all nested interactions, translations or native/phone UI acceptance. Source0aa2688b2; raw2851 remote source receipt and2852 test-only local receipt recorded separately."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/SpiritBow.java",
+      "sha256": "d61c37ed367fd753b2f99c91e931843e6452c90ad53d6241c78f792f5f2bf4b5",
+      "boundary": "No-hero inventory/catalog inspection and hidden-level privacy reviewed.296 catalog no-hero contexts plus85 equipment hidden0/3/7 comparisons. Missing personal inputs withheld, no sample hero. Loaded-Hero formulas retained. This facet does not close all nested interactions, translations or native/phone UI acceptance. Source0aa2688b2; raw2851 remote source receipt and2852 test-only local receipt recorded separately."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/Tomahawk.java",
+      "sha256": "fd5d66719b50266034a3bbca48296f795faec783ac86f9b361a46bde349d376f",
+      "boundary": "No-hero inventory/catalog inspection and hidden-level privacy reviewed.296 catalog no-hero contexts plus85 equipment hidden0/3/7 comparisons. Missing personal inputs withheld, no sample hero. Loaded-Hero formulas retained. This facet does not close all nested interactions, translations or native/phone UI acceptance. Source0aa2688b2; raw2851 remote source receipt and2852 test-only local receipt recorded separately."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/MagesStaff.java",
+      "sha256": "4048c90d775c0dff919b5dcb65ce8dd25dc421aecb13f49edf36ae2a5a085a33",
+      "boundary": "No-hero inventory/catalog inspection and hidden-level privacy reviewed.296 catalog no-hero contexts plus85 equipment hidden0/3/7 comparisons. Missing personal inputs withheld, no sample hero. Loaded-Hero formulas retained. This facet does not close all nested interactions, translations or native/phone UI acceptance. Source0aa2688b2; raw2851 remote source receipt and2852 test-only local receipt recorded separately."
     }
   ]
 }

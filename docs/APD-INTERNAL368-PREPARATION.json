@@ -641,5 +641,12 @@
     "13 plant/seed and TimeBubble details verified in source9ec83306e",
     "Pending-shot crossbow inspection fix and Seal/bee-pot details source2845 local passed; remote pending",
     "Warding/Regrowth default description purity, no-hero Regrowth crash and plant context withholding; full2850 local passed, new-source compile pending"
-  ]
+  ],
+  "current_owner_status_note": {
+    "path": "/workspace/APD368-Downloads/KNOWN-SOURCE-BOUNDARIES.md",
+    "latest_source_only": "035cf42ea",
+    "inside_368": false,
+    "new_APK": false,
+    "release_verified": false
+  }
 }
