@@ -242,3 +242,17 @@ Smoke Bomb explains reachable/visible/occupied destination constraints, its ordi
 Actual clone creation HP/accuracy across five ranks/three hero levels, log HP/seeded armor rolls, real marked Char.damage and repeated-view hidden-equipment/RNG/use preservation tested. Full local2673/445 pass. Initial log test omitted the base Char Barkskin roll's RNG draw even at zero protection; fixed fixture to include actual inherited roll, production unchanged.
 
 Prior fb30bbc0f35839635fcf2560cab7788e772d0d23 gate42206576159 passed2669 plus Android debug/release/instrumentation and desktop compilation. Artifact13496049504 downloaded/inspected494023 bytes/SHA2563056737b2d4799741a98876c1681ce826130131b262237cee99e2e25dd8dd5db.
+
+## Actual native evidence and rendering correction
+
+Targeted exact366 rerun42206857449 passed3 methods after test-only fixes. Downloaded artifact13495919968:417566 bytes/SHA256b414cae9e827dff7d08cfb99fd900dcd60bee1b67f4ce2c68db1f7cf9557f2a9. Actual apksigner verified Developer certificate067688b3ab6bd5820a67f4c1ba7d5859db578173771cf31d3252b3e4e012246e; aapt confirmed original appID/versionCode920/versionName4.0.8-apd-INDEV-bC366-TEST. This does not verify Alpha signature or physical-phone behavior.
+
+Visual inspection of four captured calculation windows exposed a real failure despite passing pointer/state assertions: text viewport remained at the screen position computed before its owning Window.resize, rendering displaced and outside the window. Internal366 is withheld. DescriptionScrollPane now realigns its own clipped camera before update/draw whenever the owning window moves/resizes/changes zoom. Short descriptions reserve a readable fixed viewport for advanced content without moving action controls during expansion. Native regression now checks actual viewport origin/size/zoom and text-camera ownership before and after window offsets. Fix awaits actual new-application native execution; no claim366 is fixed.
+
+Complete native run42205507851 ran72 cases with2 failures. Source-class assertion searched only direct children, but descriptions now live in the scroll pane; changed test to recursively find the same expected attribution. Blacksmith fixture invoked the first RedButton, now Show calculations; changed it to find the exact reward-confirm label and use actual pointer input, retaining exact object/upgrade/reward-consumption assertions. No existing cases removed. Six-display run42205507796 concluded success; display artifact inspection remains pending.
+
+## Huntress ability effects (source-only after366)
+
+Nature's Power explains distinct multiplicative movement speed versus added bow-speed contribution, scheduled duration, Wrath per-hit chance and two positive extensions. Spirit Hawk explains creation and updated sight radii, HP/opposed scores/damage, movement and lifetime units, guaranteed ordinary evasion checks without consuming them, and rank-dependent status offers. Spectral Blades explains primary/extra damage multipliers, attack-time cost, cone/target limits, wall penetration and accuracy-score units. Real hero movement/bow delay, extension state and actual hawk creation/dodge budget tests pass. Full local2676/445, zero failures/errors/skips. No balance or save-schema changes.
+
+Prior a7d318347 remote source gate42207420564 passed2673 plus required Java/desktop compilation. Artifact13497621232 downloaded and source/count inspected; digest recorded in handoff next checkpoint.

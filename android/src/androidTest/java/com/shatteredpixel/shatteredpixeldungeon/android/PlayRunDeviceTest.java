@@ -605,8 +605,8 @@ public class PlayRunDeviceTest {
             assertFalse("new choice messages are available",expected.contains("NO TEXT FOUND"));
             boolean shown=false;
             for(Object window:(java.util.List<?>)field(Game.scene(),"members"))if(window instanceof com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoTalent&&((com.watabou.noosa.Gizmo)window).alive)
-                for(Object child:(java.util.List<?>)field(window,"members"))if(child instanceof com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock)
-                    shown|=((com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock)child).text().contains(expected);
+                for(com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock child:TopScoresDeviceTest.find((com.watabou.noosa.Group)window,com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock.class))
+                    shown|=child.text().contains(expected);
             assertTrue("native detail identifies the source class",shown);
         }catch(Exception e){throw new RuntimeException(e);}});
         captureRenderedButton(com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoTalent.class,
@@ -1315,11 +1315,17 @@ public class PlayRunDeviceTest {
                     return false;
                 },30000);
                 Thread.sleep(350);visibilityScreenshot("blacksmith-reward-detail.png");
+                AtomicReference<com.shatteredpixel.shatteredpixeldungeon.ui.RedButton> rewardConfirm=new AtomicReference<>();
                 onRender(()->{try{
                     WndInfoItem info=null;
                     for(Object member:(java.util.List<?>)field(Game.scene(),"members"))if(member instanceof WndInfoItem)info=(WndInfoItem)member;
                     assertNotNull(info);
-                    for(Object member:(java.util.List<?>)field(info,"members")) if(member instanceof com.shatteredpixel.shatteredpixeldungeon.ui.RedButton){click(member,"onClick");break;}
+                    String label=com.shatteredpixel.shatteredpixeldungeon.messages.Messages.get(com.shatteredpixel.shatteredpixeldungeon.windows.WndSadGhost.class,"confirm");
+                    for(Object member:(java.util.List<?>)field(info,"members"))if(member instanceof com.shatteredpixel.shatteredpixeldungeon.ui.RedButton&&((com.shatteredpixel.shatteredpixeldungeon.ui.RedButton)member).text().equals(label))rewardConfirm.set((com.shatteredpixel.shatteredpixeldungeon.ui.RedButton)member);
+                    assertNotNull("Select the reward confirmation rather than a calculation toggle",rewardConfirm.get());
+                }catch(Exception e){throw new RuntimeException(e);}});
+                tapNative(rewardConfirm.get());
+                onRender(()->{try{
                     assertTrue("selected exact item is received",Dungeon.hero.belongings.contains(chosenReward[0]));
                     assertEquals(2,chosenReward[0].level());assertNull(Blacksmith.Quest.smithRewards);
                 }catch(Exception e){throw new RuntimeException(e);}});

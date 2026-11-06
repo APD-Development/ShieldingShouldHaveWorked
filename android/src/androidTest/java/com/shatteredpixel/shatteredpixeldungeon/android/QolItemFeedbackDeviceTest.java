@@ -92,6 +92,16 @@ public class QolItemFeedbackDeviceTest {
         TopScoresDeviceTest.render(()->{try{Window window=factory.call();GameScene.show(window);shown.set(window);}catch(Exception e){throw new RuntimeException(e);}});
         checkCalculationWindow(shown.get(),expected,screenshot);
     }
+    private static void assertDescriptionViewport(Window window){
+        ScrollPane scroll=TopScoresDeviceTest.find(window,ScrollPane.class).get(0);
+        Point origin=scroll.camera().cameraToScreen(scroll.left(),scroll.top());
+        assertEquals("Description viewport follows the resized/offset window horizontally",origin.x,scroll.content().camera.x,0);
+        assertEquals("Description viewport follows the resized/offset window vertically",origin.y,scroll.content().camera.y,0);
+        assertEquals(scroll.camera().zoom,scroll.content().camera.zoom,0);
+        assertEquals((int)scroll.width(),scroll.content().camera.width,0);
+        assertEquals((int)scroll.height(),scroll.content().camera.height,0);
+        for(RenderedTextBlock text:TopScoresDeviceTest.find(scroll.content(),RenderedTextBlock.class))assertSame("Body uses the clipped content camera",scroll.content().camera,text.camera());
+    }
     private static void checkCalculationWindow(Window window,String expected,String screenshot)throws Exception{
         AtomicReference<RedButton> expander=new AtomicReference<>();Point[] at=new Point[1];float[] time=new float[1],plainHeight=new float[1];int[] hp=new int[1],size=new int[2];
         java.util.Map<Button,float[]> controls=new java.util.IdentityHashMap<>();
@@ -115,7 +125,11 @@ public class QolItemFeedbackDeviceTest {
             assertEquals(time[0],Dungeon.hero.cooldown(),0);assertEquals(hp[0],Dungeon.hero.HP);
             ScrollPane scroll=TopScoresDeviceTest.find(window,ScrollPane.class).get(0);scroll.scrollTo(0,Math.min(plainHeight[0],Math.max(0,scroll.content().height()-scroll.height())));
         }catch(Exception e){throw new RuntimeException(e);}});
-        Thread.sleep(250);TopScoresDeviceTest.screenshot(screenshot);touch(at[0]);
+        Thread.sleep(250);TopScoresDeviceTest.render(()->assertDescriptionViewport(window));
+        Point originalOffset=window.getOffset();TopScoresDeviceTest.render(()->window.offset(originalOffset.x+1,originalOffset.y+1));
+        Thread.sleep(100);TopScoresDeviceTest.render(()->{assertDescriptionViewport(window);window.offset(originalOffset);});
+        Thread.sleep(100);TopScoresDeviceTest.render(()->assertDescriptionViewport(window));
+        TopScoresDeviceTest.screenshot(screenshot);touch(at[0]);
         TopScoresDeviceTest.render(()->{assertEquals("Pointer closes advanced explanation","Show calculations",expander.get().text());assertEquals(time[0],Dungeon.hero.cooldown(),0);assertEquals(hp[0],Dungeon.hero.HP);window.hide();});
     }
     private static void calculationWindowsRenderAndRespond()throws Exception{

@@ -27,9 +27,9 @@ public final class MechanicsInfoPanel {
         String plain=body.text();String initial=details==null?"":details.get();boolean hasDetails=!initial.isEmpty();
         com.watabou.noosa.ui.Component content=new com.watabou.noosa.ui.Component();
         body.setPos(0,0);body.maxWidth(width);content.add(body);content.setSize(width,body.height());
-        ScrollPane scroll=new ScrollPane(content);window.add(scroll);
+        ScrollPane scroll=new DescriptionScrollPane(content);window.add(scroll);
         float max=Math.max(36,com.shatteredpixel.shatteredpixeldungeon.apd.query.WindowGeometry.maxPane(PixelScene.uiCamera.height,0,0)-top-reserved-(hasDetails?20:0));
-        float height=Math.max(24,Math.min(body.height(),max));scroll.setRect(x,top,width,height);scroll.allowDragFromButtons();
+        float height=Math.max(24,Math.min(Math.max(body.height(),hasDetails?96:0),max));scroll.setRect(x,top,width,height);scroll.allowDragFromButtons();
         float bottom=top+height;
         if(hasDetails){
             final int textWidth=width;
@@ -43,5 +43,19 @@ public final class MechanicsInfoPanel {
             expand.setRect(x,bottom+2,width,16);window.add(expand);bottom=expand.bottom();
         }
         return bottom;
+    }
+    /** Window.resize/offset move its camera after this pane was laid out. */
+    private static final class DescriptionScrollPane extends ScrollPane {
+        DescriptionScrollPane(com.watabou.noosa.ui.Component content){super(content);}
+        private void alignViewport(){
+            com.watabou.noosa.Camera parentCamera=camera();
+            com.watabou.utils.Point origin=parentCamera.cameraToScreen(left(),top());
+            if(content.camera.x!=origin.x||content.camera.y!=origin.y||content.camera.zoom!=parentCamera.zoom){
+                content.camera.zoom=parentCamera.zoom;
+                layout();
+            }
+        }
+        @Override public synchronized void update(){alignViewport();super.update();}
+        @Override public void draw(){alignViewport();super.draw();}
     }
 }

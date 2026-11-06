@@ -1,3 +1,7 @@
+## 2026-11-06 real screenshot failure fixed in source; continue
+
+Full local2676 core pass. New Huntress explanations plus description viewport fix: ScrollPane camera had stale pre-Window.resize origin, visibly rendering outside window in366. Internal366 WITHHELD despite targeted3-method touch pass. Added exact camera origin/size/zoom/text-owner and offset regressions; fix not yet native-tested in a new APK. Full72 run had2 stale-fixture failures corrected without deleting cases;6-display workflow concluded success. All actual evidence/limits in mechanics report and docs/APD-INTERNAL366-PREPARATION.json. Current366 localAPKs remain untouched, released365 fallback intact. Continue remaining semantic audit and compile new source; do not create redundant APKs for test/docs-only changes. Only one pair(366) produced this NY day.
+
 ## 2026-11-06 Rogue ability source checkpoint
 
 Full local2673 core pass; Smoke Bomb/Shadow Clone/Death Mark explanation facets implemented and real handlers tested. Newer than internal366. Prior remote2669 gate42206576159 passed/receipt verified. Targeted native rerun42206857449 reuses exact366 with corrected test expectations and pinned application checkout; still pending. No additional APKs requested. Continue Huntress/Mage/other semantic review and actual acceptance investigation.
