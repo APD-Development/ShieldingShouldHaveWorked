@@ -4250,6 +4250,21 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/PlateArmor.java",
       "sha256": "022c8a4c448d9e94bda5560b7c5003ac1e2df3942b980ce432dd8aca67bb7fc2",
       "boundary": "Source-reviewed constructor-only ordinary variant: sets tier5 and image; no independent protection, strength, damage or timing formulas. Inherits the existing Armor.info/ArmorExplanation and shared base mechanics. No new application change or per-variant new-test claim; full translation/native/phone acceptance remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/TengusMask.java",
+      "sha256": "09a9358e47a1374eb9de1e2d52ea08217d3000317129176eb4040d078c74b826",
+      "boundary": "Mask/crown selection, consumption/base time, class-armor conversion/property/knowledge and original starting50 charge source-reviewed. Two tests including48 actual conversions/all six classes and inspection purity; no class/balance/save changes. Seal copying source-reviewed only. Whole translations/native/phone acceptance pending."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/KingsCrown.java",
+      "sha256": "e9e73bd914dbff767f310a4a0b871ed54eb607ca64a719f7c976b0b5459a50df",
+      "boundary": "Mask/crown selection, consumption/base time, class-armor conversion/property/knowledge and original starting50 charge source-reviewed. Two tests including48 actual conversions/all six classes and inspection purity; no class/balance/save changes. Seal copying source-reviewed only. Whole translations/native/phone acceptance pending."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/ClassArmor.java",
+      "sha256": "bcfc225ccfce6140a985a7e882df74ff531edde8fe7726cc1cc920e3c802e707",
+      "boundary": "Mask/crown selection, consumption/base time, class-armor conversion/property/knowledge and original starting50 charge source-reviewed. Two tests including48 actual conversions/all six classes and inspection purity; no class/balance/save changes. Seal copying source-reviewed only. Whole translations/native/phone acceptance pending."
     }
   ]
 }

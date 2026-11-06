@@ -686,6 +686,20 @@ public class MechanicsExplanationTest {
   try{for(int draw=0;draw<100;draw++){Class<?> previous=target.glyph==null?null:target.glyph.getClass();target.inscribe();assertNotEquals(previous,target.glyph.getClass());assertEquals(3,target.level());}}finally{Random.popGenerator();}
   String text=UtilityItemExplanation.details(new com.shatteredpixel.shatteredpixeldungeon.items.Stylus(),hero);assertTrue(text.contains("excludes the selected armor's existing glyph"));assertTrue(text.contains("does not raise armor upgrade level"));
  }
+ @Test public void progressionItemDetailsExplainRealTimeAndChargeWithoutChoosingAnything(){
+  for(com.shatteredpixel.shatteredpixeldungeon.items.Item item:new com.shatteredpixel.shatteredpixeldungeon.items.Item[]{new com.shatteredpixel.shatteredpixeldungeon.items.TengusMask(),new com.shatteredpixel.shatteredpixeldungeon.items.KingsCrown()}){
+   String heroBefore=savedDescriptionHero();com.watabou.utils.Bundle before=new com.watabou.utils.Bundle(),after=new com.watabou.utils.Bundle();item.storeInBundle(before);Random.pushGenerator(430);int next=Random.Int();Random.popGenerator();Random.pushGenerator(430);
+   try{String text=UtilityItemExplanation.details(item,hero);assertTrue(text,text.contains(ObfuscationExplanation.number(com.shatteredpixel.shatteredpixeldungeon.actors.Actor.TICK)+" game-time unit"));if(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.KingsCrown){assertTrue(text,text.contains("starts with "+ObfuscationExplanation.number(com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor.initialUpgradeCharge())+" charge points"));assertTrue(text,text.contains("unknown upgrade level stays unknown"));}assertEquals(next,Random.Int());}finally{Random.popGenerator();}
+   item.storeInBundle(after);assertEquals(before.toString(),after.toString());assertEquals(heroBefore,savedDescriptionHero());assertEquals(UtilityItemExplanation.details(item,hero),UtilityItemExplanation.details(item,null));
+  }
+ }
+ @Test public void crownInitialChargeAndPropertyExplanationMatchRealClassArmorConversion(){
+  int cases=0;for(HeroClass type:HeroClass.values())for(int upgrade:new int[]{0,7})for(boolean known:new boolean[]{false,true})for(boolean cursed:new boolean[]{false,true}){
+   hero.heroClass=type;Armor original=new com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor();original.level(upgrade);original.levelKnown=known;original.cursedKnown=false;original.cursed=cursed;original.augment=Armor.Augment.EVASION;original.inscribe(new Obfuscation());original.glyphHardened=true;original.masteryPotionBonus=true;
+   com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor converted=com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor.upgrade(hero,original);
+   assertEquals(type.name().substring(0,1)+type.name().substring(1).toLowerCase(java.util.Locale.ROOT)+"Armor",converted.getClass().getSimpleName());assertEquals(com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor.initialUpgradeCharge(),converted.charge,0f);assertEquals(50f,converted.charge,0f);assertEquals(upgrade,converted.trueLevel());assertEquals(original.tier,converted.tier);assertSame(original.glyph,converted.glyph);assertEquals(original.augment,converted.augment);assertTrue(converted.glyphHardened);assertTrue(converted.masteryPotionBonus);assertEquals(cursed,converted.cursed);assertEquals(known,converted.levelKnown);assertTrue(converted.cursedKnown);cases++;
+  }assertEquals(HeroClass.values().length*8,cases);
+ }
  @Test public void everyWandStatDescriptionKeepsUnknownChargesPrivate() throws Exception {
   hero.heroClass=HeroClass.MAGE;Talent.initClassTalents(hero);hero.talents.get(1).put(Talent.DESPERATE_POWER,2);java.util.List<String> leaked=new java.util.ArrayList<>();
   for(String name:new String[]{"BlastWave","Corrosion","Corruption","Disintegration","Fireblast","Frost","Lightning","LivingEarth","MagicMissile","PrismaticLight","Regrowth","Transfusion","Warding"}){
