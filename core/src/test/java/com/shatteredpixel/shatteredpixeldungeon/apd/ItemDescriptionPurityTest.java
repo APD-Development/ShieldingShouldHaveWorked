@@ -103,6 +103,26 @@ public class ItemDescriptionPurityTest {
         System.out.println("NO_HERO_DESCRIPTION inspected="+inspected+" total="+items.size()+" failures="+failures);
         assertTrue(items.size()>=290);assertEquals(failures.toString(),Collections.emptyList(),failures);assertEquals(items.size(),inspected);
     }
+    @Test public void unidentifiedCatalogEquipmentWithoutAHeroDoesNotRevealHiddenLevels()throws Exception{
+        Hero fixtureHero=Dungeon.hero;
+        List<String> failures=new ArrayList<>();int inspected=0;
+        for(Class<?> type:classes(Arrays.asList(Catalog.MELEE_WEAPONS,Catalog.ARMOR,Catalog.THROWN_WEAPONS,Catalog.WANDS,Catalog.RINGS)).values()){
+            try{
+                String baseline=null;
+                for(int level:new int[]{0,3,7}){
+                    Dungeon.hero=fixtureHero;
+                    Item candidate=item(type);candidate.level(level);candidate.levelKnown=candidate.cursedKnown=false;
+                    Dungeon.hero=null;Dungeon.level=null;
+                    String ordinary=candidate.info();String description=ordinary+"\n"+MechanicsDetails.item(candidate,ordinary);
+                    if(baseline==null)baseline=description;
+                    else assertEquals(type.getSimpleName()+" hidden level must not change no-hero descriptions",baseline,description);
+                }
+                inspected++;
+            }catch(Throwable failure){failures.add(type.getSimpleName()+": "+failure);}
+        }
+        System.out.println("NO_HERO_UNKNOWN_LEVEL inspected="+inspected+" failures="+failures);
+        assertTrue(inspected>50);assertEquals(failures.toString(),Collections.emptyList(),failures);
+    }
     @Test public void catalogInventoryInspectionPreservesSavedItemStateAndRandomness(){
         List<String> failures=new ArrayList<>();int inspected=0;
         Random.pushGenerator(7719);

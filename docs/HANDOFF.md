@@ -1,3 +1,7 @@
+## 2026-11-06 post368 unknown no-hero privacy verification
+
+Test-only follow-up compares85 actual equipment types at hidden+0/+3/+7 without a hero: identical ordinary/expanded descriptions. Full2852/446 passed, raw /workspace/apd-no-hero-privacy-local-junit.zip. App source unchanged since0aa2688b2; its required full Android/desktop source check42274074088 is running. No redundant APK or compile gate triggered solely for this test addition; next app-source gate must update inventory to2852. UIMSD crash report refreshed with actual368 completed native evidence and specific publication403; live release-tag GET still404. No GitHub delivery claim, owner action pending.
+
 ## 2026-11-06 post368 no-hero catalog crash fixes
 
 Full local2851/446 passes;296 no-hero catalog contexts preserve saved item/RNG. Baseline15 failing catalog cases represent four issue families: rings, Spirit Bow, Tomahawk and imbued Mage staff. Guard missing context and withhold personal strength/HP math without fake example heroes. Existing loaded-Hero bonuses/math retained. Prior full run interrupted by environment restart; complete rerun exit0/XML verified, raw /workspace/apd-no-hero-catalog-local-junit.zip. Remote c93af2bec exact2850 plus Android/desktop compile receipt verified. New2851 source-only gate pending. Not in368 and not physical UIMSD OOM attribution.
