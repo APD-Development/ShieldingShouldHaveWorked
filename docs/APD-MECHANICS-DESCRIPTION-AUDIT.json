@@ -3632,6 +3632,16 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/LayOnHands.java",
       "sha256": "0791e7087df5280b676f6bd74b203d81407cd564d9249fa5be4290612d79f5ed",
       "boundary": "Self Barrier vs other-character healing/remainder, additive capped shielding and source amount tested against actual private effect handler. No spell targeting/time/damage rules changed."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/Cleanse.java",
+      "sha256": "035cf7369ba72e3cf536179ef5cad09b7f11951d68b9db990666ab8fb2e23c49",
+      "boundary": "Primary per-character effect and target rules explained; exact original effect step extracted without FX/time/order changes for regression. Actual removed/preserved/rejected status/shield and first-mark/repeat-damage/visibility/alignment tests."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/Radiance.java",
+      "sha256": "ac89fae234e93d86b7a5ee6f5b0d424ab1a49efb9a7baf2613e7161087777fc2",
+      "boundary": "Primary per-character effect and target rules explained; exact original effect step extracted without FX/time/order changes for regression. Actual removed/preserved/rejected status/shield and first-mark/repeat-damage/visibility/alignment tests."
     }
   ]
 }

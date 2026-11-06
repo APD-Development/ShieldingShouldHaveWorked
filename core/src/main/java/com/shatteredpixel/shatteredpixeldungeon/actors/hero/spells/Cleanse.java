@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -87,19 +90,7 @@ public class Cleanse extends ClericSpell {
 		}
 
 		for (Char ch : affected) {
-			for (Buff b : ch.buffs()) {
-				if (b.type == Buff.buffType.NEGATIVE
-						&& !(b instanceof AllyBuff)
-						&& !(b instanceof LostInventory)) {
-					b.detach();
-				}
-			}
-
-			if (hero.pointsInTalent(Talent.CLEANSE) > 1) {
-				//0, 2, or 4. 1 less than displayed as spell is instant
-				Buff.prolong(ch, PotionOfCleansing.Cleanse.class, 2 * (Dungeon.hero.pointsInTalent(Talent.CLEANSE)-1));
-			}
-			Buff.affect(ch, Barrier.class).setShield(10 * hero.pointsInTalent(Talent.CLEANSE));
+			applyEffects(hero, ch);
 			new Flare( 6, 32 ).color(0xFF4CD2, true).show( ch.sprite, 2f );
 		}
 
@@ -112,4 +103,21 @@ public class Cleanse extends ClericSpell {
 
 	}
 
+
+	/** Effect step shared by casting and regression checks; visual effects remain at the call site. */
+	public static void applyEffects(Hero hero, Char ch){
+		for (Buff b : ch.buffs()) {
+			if (b.type == Buff.buffType.NEGATIVE
+				&& !(b instanceof AllyBuff)
+				&& !(b instanceof LostInventory)) {
+				b.detach();
+			}
+		}
+
+		if (hero.pointsInTalent(Talent.CLEANSE) > 1) {
+			//0, 2, or 4. 1 less than displayed as spell is instant
+			Buff.prolong(ch, PotionOfCleansing.Cleanse.class, 2 * (Dungeon.hero.pointsInTalent(Talent.CLEANSE)-1));
+		}
+		Buff.affect(ch, Barrier.class).setShield(10 * hero.pointsInTalent(Talent.CLEANSE));
+	}
 }

@@ -1,3 +1,7 @@
+## 2026-11-06 Cleanse/Radiance checkpoint
+
+Full local2722/445 pass. Actual per-character spell effects tested with original logic preserved; clearer filtering/shield/status/damage explanations. Remote2719 source gate success awaiting downloaded receipt. Both367 identities and Alpha4 actual tests verified; Developer72/display11/targeted3 passed. Second same-APK camera recapture running with wall images now actually collected. Continue remaining spell/talent/item audit without rebuilding application.
+
 ## 2026-11-06 Lay on Hands and native367 evidence
 
 Full local2719/445 pass. Actual Lay on Hands effect verifies separate self shield/other healing and additive cap; live amount reused. Broad audit still incomplete. Internal367 full native72 and six-display11 methods passed; screenshot reviews recorded in preparation JSON. Controlled bookshelf fixture camera corrected in instrumentation for same-APK recapture; not generated terrain. Alpha367 retry succeeded per workflow; downloaded artifact identity/raw4-case evidence being inspected before completion claim. Do not build another APK for test/doc changes; two pairs produced today, no owner delivery of unfinished scope.
