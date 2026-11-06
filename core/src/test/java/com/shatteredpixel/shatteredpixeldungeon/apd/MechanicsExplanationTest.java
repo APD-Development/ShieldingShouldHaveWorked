@@ -335,4 +335,35 @@ public class MechanicsExplanationTest {
    PlainStatusTarget antimagic=new PlainStatusTarget();ChampionEnemy.AntiMagic half=Buff.affect(antimagic,ChampionEnemy.AntiMagic.class);antimagic.damage(damage,new Object());assertEquals((int)Math.ceil(damage*half.damageTakenFactor()),100-antimagic.HP);
   }
  }
+
+ @Test public void wandStatsUnderWildMagicNeverConsumeRandomRoll(){
+  com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile wand=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile();wand.levelKnown=wand.cursedKnown=wand.curChargeKnown=true;wand.charge(hero);Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.WildMagic.WildMagicTracker.class);
+  Random.pushGenerator(412);int expected=Random.Int();Random.popGenerator();Random.pushGenerator(412);try{for(int i=0;i<30;i++)wand.statsDesc();assertEquals(expected,Random.Int());}finally{Random.popGenerator();}
+ }
+
+ @Test public void wandPreviewBoundsMatchActualWildMagicLevelsAcrossRanksAndModifiers(){
+  com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile wand=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile();wand.levelKnown=wand.cursedKnown=wand.curChargeKnown=true;wand.charge(hero);wand.curCharges=1;hero.talents.get(1).put(Talent.DESPERATE_POWER,1);Buff.affect(hero,ScrollEmpower.class).reset(3);Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.WildMagic.WildMagicTracker.class);
+  for(int rank=0;rank<=4;rank++){hero.talents.get(1).put(Talent.WILD_POWER,rank);for(int level=0;level<=7;level++){wand.level(level);int[] bounds=wand.previewEffectiveLevels();int seenMin=Integer.MAX_VALUE,seenMax=Integer.MIN_VALUE;for(int seed=0;seed<30;seed++){Random.pushGenerator(seed);int actual;try{actual=wand.buffedLvl();}finally{Random.popGenerator();}seenMin=Math.min(seenMin,actual);seenMax=Math.max(seenMax,actual);}assertEquals(seenMin,bounds[0]);assertEquals(seenMax,bounds[1]);}}
+ }
+ @Test public void unknownWandDetailsCannotRevealLevelsOrCharges(){
+  com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile wand=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile();wand.levelKnown=false;String first=com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.WandExplanation.details(wand);wand.level(12);wand.curCharges=9;assertEquals(first,com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.WandExplanation.details(wand));assertArrayEquals(new int[]{0,0},wand.previewEffectiveLevels());
+ }
+ @Test public void directWandExplanationsUseActualBoundsAndDoNotSpendEmpower(){
+  com.shatteredpixel.shatteredpixeldungeon.items.wands.DamageWand[] wands={new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile(),new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast(),new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost(),new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning(),new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave(),new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDisintegration(),new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth(),new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfPrismaticLight(),new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfTransfusion()};
+  WandEmpower empower=Buff.affect(hero,WandEmpower.class);empower.set(3,2);
+  for(com.shatteredpixel.shatteredpixeldungeon.items.wands.DamageWand wand:wands){wand.levelKnown=wand.cursedKnown=wand.curChargeKnown=true;for(int level=0;level<=9;level++){wand.level(level);String text=com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.WandExplanation.details(wand);assertTrue(text.contains("Current roll bounds: "+wand.min(level)+"–"+wand.max(level)));assertEquals(wand.min(0)+(wand.min(1)-wand.min(0))*level,wand.min(level));assertEquals(wand.max(0)+(wand.max(1)-wand.max(0))*level,wand.max(level));}assertEquals(2,empower.left);}
+ }
+ @Test public void staleUncursedInfusionPreviewDoesNotCleanStateOrChangeCharges(){
+  com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile wand=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile();wand.levelKnown=true;wand.level(3);wand.cursed=false;wand.curseInfusionBonus=true;wand.curCharges=4;assertArrayEquals(new int[]{3,3},wand.previewEffectiveLevels());assertTrue(wand.curseInfusionBonus);assertEquals(4,wand.curCharges);
+ }
+
+ @Test public void allNumericalWandInfoPreviewsPreserveRandomnessAndEmpowerUses(){
+  com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand[] wands={new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile(),new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast(),new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost(),new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning(),new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave(),new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDisintegration(),new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth(),new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfPrismaticLight(),new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfTransfusion(),new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorrosion()};
+  hero.talents.get(1).put(Talent.WILD_POWER,1);Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.WildMagic.WildMagicTracker.class);WandEmpower empower=Buff.affect(hero,WandEmpower.class);empower.set(3,2);
+  for(com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand wand:wands){wand.levelKnown=wand.cursedKnown=wand.curChargeKnown=true;wand.charge(hero);Random.pushGenerator(312);int expected=Random.Int();Random.popGenerator();Random.pushGenerator(312);try{for(int i=0;i<10;i++){wand.info();MechanicsDetails.item(wand,wand.info());}assertEquals(expected,Random.Int());}finally{Random.popGenerator();}assertEquals(2,empower.left);}
+ }
+ @Test public void wandPreviewMatchesDegradeInfusionResinAndStrongerMagicCharge(){
+  com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile wand=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile();wand.levelKnown=true;wand.level(6);wand.cursed=true;wand.curseInfusionBonus=true;wand.resinBonus=2;wand.charge(hero);Buff.affect(hero,Degrade.class);assertEquals(wand.buffedLvl(),wand.previewEffectiveLevels()[0]);assertEquals(wand.buffedLvl(),wand.previewEffectiveLevels()[1]);
+  com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile.MagicCharge charge=Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile.MagicCharge.class);com.watabou.utils.Bundle state=new com.watabou.utils.Bundle();charge.storeInBundle(state);state.put("level",20);charge.restoreFromBundle(state);assertEquals(wand.buffedLvl(),wand.previewEffectiveLevels()[0]);assertEquals(wand.buffedLvl(),wand.previewEffectiveLevels()[1]);
+ }
 }

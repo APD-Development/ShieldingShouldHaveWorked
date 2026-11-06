@@ -48,6 +48,7 @@ public final class MechanicsDetails {
     }
     public static String item(Item item,String visibleDescription){
         StringBuilder result=new StringBuilder();
+        if(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand)result.append(WandExplanation.details((com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand)item)).append("\n\n");
         if(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact)result.append(ArtifactExplanation.details((com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact)item)).append("\n\n");
         if(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring)result.append(RingExplanation.details((com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring)item)).append("\n\n");
         if(item instanceof Armor){

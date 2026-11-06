@@ -428,6 +428,44 @@ public abstract class Wand extends Item {
 		return lvl;
 	}
 
+    /** Inclusive effective-level bounds for descriptions, without choosing a Wild Magic roll.
+     * Unknown upgrade levels must never enter a numerical preview. */
+    public int[] previewEffectiveLevels() {
+        if (!levelKnown) return new int[]{0, 0};
+        int base = super.level();
+        if (cursed && curseInfusionBonus) base += 1 + base / 6;
+        base += resinBonus;
+        if (Dungeon.hero != null && Dungeon.hero.buff(Degrade.class) != null
+                && (isEquipped(Dungeon.hero) || Dungeon.hero.belongings.contains(this)))
+            base = Degrade.reduceLevel(base);
+        int low = base, high = base;
+        if (charger != null && charger.target != null) {
+            if (charger.target == Dungeon.hero && !Dungeon.hero.belongings.contains(this)
+                    && Dungeon.hero.buff(Degrade.class) != null)
+                low = high = Degrade.reduceLevel(base);
+            if (charger.target.buff(ScrollEmpower.class) != null) { low += 2; high += 2; }
+            if (curCharges == 1 && charger.target instanceof Hero
+                    && ((Hero)charger.target).hasTalent(Talent.DESPERATE_POWER)) {
+                int extra = ((Hero)charger.target).pointsInTalent(Talent.DESPERATE_POWER);
+                low += extra; high += extra;
+            }
+            if (charger.target.buff(WildMagic.WildMagicTracker.class) != null) {
+                int rank = ((Hero)charger.target).pointsInTalent(Talent.WILD_POWER);
+                int ceiling = 3 + rank;
+                if (low < ceiling) low = Math.min(low + (4 + rank) / 2, ceiling);
+                if (high < ceiling) high = Math.min(high + (5 + rank) / 2, ceiling);
+            }
+            WandOfMagicMissile.MagicCharge charge = charger.target.buff(WandOfMagicMissile.MagicCharge.class);
+            if (charge != null) { low = Math.max(low, charge.level()); high = Math.max(high, charge.level()); }
+        }
+        return new int[]{low, high};
+    }
+
+    public String previewUncertaintyNote() {
+        int[] levels = previewEffectiveLevels();
+        return levels[0] == levels[1] ? "" : "\n\n" + Messages.get(Wand.class, "wild_magic_preview", levels[0], levels[1]);
+    }
+
 	public void updateLevel() {
 		maxCharges = Math.min( initialCharges() + level(), 10 );
 		curCharges = Math.min( curCharges, maxCharges );

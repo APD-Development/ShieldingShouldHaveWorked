@@ -3190,8 +3190,8 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/MechanicsDetails.java",
-      "sha256": "e203cea69e755a1e796a1fb266c85d58ee5d2093a03519afb06946b11d8322fb",
-      "boundary": "Selected Liquid Willpower, Shield Battery, Inscribed Power, Liquid Nature, Liquid Agility and Precise Assault explanation facets only; remaining talents and abilities remain open."
+      "sha256": "d3f30977592910a970a3bf3b6c472093e82f049ada9d1c669504196fc090f28c",
+      "boundary": "Selected Liquid Willpower, Shield Battery, Inscribed Power, Liquid Nature, Liquid Agility and Precise Assault explanation facets only; remaining talents and abilities remain open. Read-only known wand level/damage/charge explanation and Wild Magic preview facets. Not all targeting, wand-specific secondary effects, staff abilities or non-damaging wand mechanics closure."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/TalentExplanation.java",
@@ -3205,8 +3205,8 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/Wand.java",
-      "sha256": "3a65e3e6518bc7a9847d578dea3f92e9924a2157a171477d9cfaa74a97d7ef27",
-      "boundary": "Selected Liquid Willpower, Shield Battery, Inscribed Power, Liquid Nature, Liquid Agility and Precise Assault explanation facets only; remaining talents and abilities remain open."
+      "sha256": "78389043dc11bb8c2aac65623fd068226bfc1eb66722e4fdc7f96f10eddfa760",
+      "boundary": "Selected Liquid Willpower, Shield Battery, Inscribed Power, Liquid Nature, Liquid Agility and Precise Assault explanation facets only; remaining talents and abilities remain open. Read-only known wand level/damage/charge explanation and Wild Magic preview facets. Not all targeting, wand-specific secondary effects, staff abilities or non-damaging wand mechanics closure."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/ScrollEmpower.java",
@@ -3217,6 +3217,31 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/ChampionEnemy.java",
       "sha256": "660c094ca8b14f0415f8e73f4c32c37a6fc617d55bbe3a81e28931a55b296eee",
       "boundary": "Champion contribution factors, Growing timing and additive growth, incoming upward rounding, extra-reach path restrictions and supported Antimagic immunity. No hidden enemy score/HP disclosure or whole-file combat closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/WandExplanation.java",
+      "sha256": "9a3b61ea724b70d5b0216b94fb56c8aca6d2d73ca96247faa39f3e782b84a37c",
+      "boundary": "Read-only known wand level/damage/charge explanation and Wild Magic preview facets. Not all targeting, wand-specific secondary effects, staff abilities or non-damaging wand mechanics closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/DamageWand.java",
+      "sha256": "cc640d79a3422565f2e2032b0bb6c6d05a19dcd13d43c6c8c48c96dc4e22a218",
+      "boundary": "Read-only known wand level/damage/charge explanation and Wild Magic preview facets. Not all targeting, wand-specific secondary effects, staff abilities or non-damaging wand mechanics closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfFireblast.java",
+      "sha256": "ca2910b122f90e8d2d56231fdd2fcd6dbd28c316ecff235996ac0fb1f0d5595a",
+      "boundary": "Read-only known wand level/damage/charge explanation and Wild Magic preview facets. Not all targeting, wand-specific secondary effects, staff abilities or non-damaging wand mechanics closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfCorrosion.java",
+      "sha256": "68250a00fbafab678bf4ee615d8301aa457be0c45220420ccd607163f62fd519",
+      "boundary": "Read-only known wand level/damage/charge explanation and Wild Magic preview facets. Not all targeting, wand-specific secondary effects, staff abilities or non-damaging wand mechanics closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfTransfusion.java",
+      "sha256": "de517b5d881a6925317b5f3bcb9d2c6123a5dcd975ee2d386727078c77c503c9",
+      "boundary": "Read-only known wand level/damage/charge explanation and Wild Magic preview facets. Not all targeting, wand-specific secondary effects, staff abilities or non-damaging wand mechanics closure."
     }
   ]
 }
