@@ -1,3 +1,9 @@
+## Current audit checkpoint — APK HOLD remains active
+
+Liquid Metal/default resin wording source now passes2866/446 locally; raw /workspace/apd-metal-explanation-local-junit.zip.384 actual weapon/recipe/state comparisons, pure known readouts, unknown-level equality, dart-impact/RNG preservation and real recycling consumption/set accounting. Repair two-step float formula retained in shared helper; conversion cost3/yield/defaultstack+5cap unchanged; no turns/slots/balance/save changes. Full required source-only Android/desktop check requested. Not in369; no newAPK/native/phone claim. Details docs/APD-METAL-EXPLANATION-2026-11-06.md.
+
+Earlier merged9f02b9bc9 full2862 and resin2662a8d7e full2864 remote source checks succeeded with Android debug/release/instrumentation Java and desktop. Raw artifacts13537334397 and13538702329 independently downloaded/digest/source/446XML checked, ledger updated. Current publisher guard hasfive passing Python regressions and stops before API work while hold active. Continue remaining audit from here; do not end at checkpoint or send anotherAPK.
+
 ## APK delivery hold is enforced in current publication entry points
 
 Current corrective/prepared delivery workflows now stop on the recorded active hold before expensive prep. The publisher also independently checks it before environment/API use. Missing/malformed policy blocks publication; only explicit recordedfalse allows a later completed/verified delivery. Five Python regressions include running the actual publisher with an activehold and no external calls. No publication/build triggered by these tooling changes. Delivered369 stays unchanged. Resin source2662a8d7e full2864 local; remote source checkpending. Continue source work while respectinghold.

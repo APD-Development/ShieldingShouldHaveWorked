@@ -4165,6 +4165,16 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/bags/MagicalHolster.java",
       "sha256": "0c2a4b00168c45d5a2287c597533a83ec066fdc1f943ff08bdffb9c32a913314",
       "boundary": "Capacity, ordinary thrown-wear budget and special-dart exceptions; live known-wand deficit-based recharge intervals and timing/bonus conditions source reviewed and tested against actual scheduled charger. Hidden-level/charge and Hero/item/RNG purity tested. New text source-only; native/phone acceptance pending."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/ArcaneResin.java",
+      "sha256": "14f4f3a635cba73f41c57d3ae7012ed168e717b18b5ad1bf3ccf1a0ca6ba9f4a",
+      "boundary": "Application cost/limit, conversion energy/yield and class-specific Preservation explanation; pure recipe preview and1248 actual preview/brew cases reviewed. Native/phone text acceptance pending."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/LiquidMetal.java",
+      "sha256": "d3d74b873e3111071f4249bdfd3fcac1be38ac33616245087b75f32ef083c01b",
+      "boundary": "Repair scale/rounding/spare conditions, separate recycling cost/default-stack/level-cap/condition formula and live known-weapon readouts;384 recipe/state cases plus consumption/accounting and privacy/purity verified locally. Native/phone new text acceptance pending."
     }
   ]
 }

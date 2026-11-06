@@ -686,6 +686,29 @@ public class MechanicsExplanationTest {
   try{for(int draw=0;draw<100;draw++){Class<?> previous=target.glyph==null?null:target.glyph.getClass();target.inscribe();assertNotEquals(previous,target.glyph.getClass());assertEquals(3,target.level());}}finally{Random.popGenerator();}
   String text=UtilityItemExplanation.details(new com.shatteredpixel.shatteredpixeldungeon.items.Stylus(),hero);assertTrue(text.contains("excludes the selected armor's existing glyph"));assertTrue(text.contains("does not raise armor upgrade level"));
  }
+ @Test public void metalReadoutsMatchActualRecipeAndPreserveKnownWeaponState()throws Exception{
+  int compared=0;
+  for(Class<?> type:com.shatteredpixel.shatteredpixeldungeon.journal.Catalog.THROWN_WEAPONS.items()){
+   if(!com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon.class.isAssignableFrom(type))continue;
+   for(int level:new int[]{0,2,5,8})for(float durability:new float[]{25,70,100})for(boolean spareMissing:new boolean[]{false,true}){
+    com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon weapon=(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon)type.getDeclaredConstructor().newInstance();weapon.level(level);weapon.levelKnown=weapon.cursedKnown=true;weapon.cursed=false;weapon.quantity(spareMissing?Math.max(1,weapon.defaultQuantity()-1):weapon.defaultQuantity());
+    com.watabou.utils.Bundle fixture=new com.watabou.utils.Bundle();weapon.storeInBundle(fixture);fixture.put("durability",durability);weapon.restoreFromBundle(fixture);
+    java.util.ArrayList<com.shatteredpixel.shatteredpixeldungeon.items.Item> ingredients=new java.util.ArrayList<>();ingredients.add(weapon);com.shatteredpixel.shatteredpixeldungeon.items.LiquidMetal.Recipe recipe=new com.shatteredpixel.shatteredpixeldungeon.items.LiquidMetal.Recipe();assertTrue(recipe.testIngredients(ingredients));
+    float perWeapon=5*(weapon.tier+1);if(weapon.defaultQuantity()!=3)perWeapon=3f/weapon.defaultQuantity();perWeapon*=Math.pow(1.35f,Math.min(5,weapon.level()));float weight=weapon.quantity()-1;weight+=.25f+.0075f*weapon.durabilityLeft();int expected=Math.round(weight*perWeapon);assertEquals(expected,recipe.sampleOutput(ingredients).quantity());assertEquals(3,recipe.cost(ingredients));
+    com.watabou.utils.Bundle before=new com.watabou.utils.Bundle(),after=new com.watabou.utils.Bundle();weapon.storeInBundle(before);String heroBefore=savedDescriptionHero();String detail=MetalExplanation.forWeapon(weapon);assertTrue(detail,detail.contains("yields "+expected+" metal units for 3 alchemy energy"));
+    if(!(weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart)){float original=5*(weapon.tier+1);original*=Math.pow(1.35f,weapon.level());assertEquals(Float.floatToIntBits(original),Float.floatToIntBits(com.shatteredpixel.shatteredpixeldungeon.items.LiquidMetal.repairMetalScale(weapon)));assertTrue(detail.contains(ObfuscationExplanation.number(original)+" metal units"));}
+    weapon.storeInBundle(after);assertEquals(type.getSimpleName(),before.toString(),after.toString());assertEquals(heroBefore,savedDescriptionHero());compared++;
+   }
+  }
+  System.out.println("METAL_READOUT_COMPARISONS="+compared);assertTrue(compared>=240);
+ }
+ @Test public void metalInspectionKeepsHiddenLevelsAndDartImpactPrivateWhileRealRecyclingConsumes(){
+  com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife weapon=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife();weapon.cursedKnown=true;weapon.levelKnown=false;weapon.level(0);String low=MetalExplanation.forWeapon(weapon);weapon.level(7);assertEquals(low,MetalExplanation.forWeapon(weapon));weapon.levelKnown=true;weapon.cursed=true;assertTrue(MetalExplanation.forWeapon(weapon).contains("ineligible for recycling"));weapon.cursed=false;
+  com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.RotDart dart=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.RotDart();dart.levelKnown=dart.cursedKnown=true;
+  try{java.lang.reflect.Field pending=com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.TippedDart.class.getDeclaredField("targetPos");pending.setAccessible(true);int previous=pending.getInt(null);try{pending.setInt(null,hero.pos);Random.pushGenerator(972);int expected=Random.Int();Random.popGenerator();Random.pushGenerator(972);try{assertTrue(MetalExplanation.forWeapon(dart).contains("cannot be selected for metal repair"));assertEquals(expected,Random.Int());assertEquals(hero.pos,pending.getInt(null));}finally{Random.popGenerator();}}finally{pending.setInt(null,previous);}}catch(ReflectiveOperationException error){throw new AssertionError(error);}
+  java.util.ArrayList<com.shatteredpixel.shatteredpixeldungeon.items.Item> inputs=new java.util.ArrayList<>();inputs.add(weapon);com.shatteredpixel.shatteredpixeldungeon.items.LiquidMetal.Recipe recipe=new com.shatteredpixel.shatteredpixeldungeon.items.LiquidMetal.Recipe();int expected=recipe.sampleOutput(inputs).quantity();
+  try{assertEquals(expected,recipe.brew(inputs).quantity());assertEquals(0,weapon.quantity());assertEquals(Integer.valueOf(Integer.MAX_VALUE),hero.buff(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon.UpgradedSetTracker.class).levelThresholds.get(weapon.setID));}finally{Buff.detach(hero,com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon.UpgradedSetTracker.class);}
+ }
  @Test public void resinRecipePreviewDoesNotCleanUpOrConsumeTheInputWand(){
   hero.talents.get(1).put(Talent.WAND_PRESERVATION,2);
   com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand wand=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile();wand.cursed=true;wand.curseInfusionBonus=true;wand.resinBonus=2;wand.level(6);wand.cursed=false;wand.levelKnown=wand.cursedKnown=wand.curChargeKnown=true;

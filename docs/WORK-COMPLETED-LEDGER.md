@@ -1,3 +1,7 @@
+## Ongoing numerical audit — source only, owner APK hold active
+
+Merged Ankh/Holster and resin preview changes are remotely compile-verified (2862/2864 tests,446 suites, zero failures/errors/skips); exact downloaded receipts are recorded in APD-SOURCE-VERIFICATION-2026-11-06.json. Liquid Metal descriptions/default wording and live known-weapon readouts now pass2866 local tests; remote full Java checks pending, no native/phone claim. Report APD-METAL-EXPLANATION-2026-11-06.md. No furtherAPKdelivery before all remaining approved work is finished/verified; preserve369. Broader audit remains unfinished and work continues.
+
 ## Active shared-branch audit: delivery hold and recipe purity
 
 Latest owner explicitly holds further APK delivery until remaining approved work is complete and verified. Preserve already-delivered369; no new APK. Holster and concurrent blessed-Ankh source were preserved through normal merge9f02b9bc9; merged local2862/446 passed. Resin preview mutation reproduced and fixed, actual conversion behavior retained; local2864/446 passed and full remote source checks pending. Docs/APD-RESIN-PREVIEW-2026-11-06.md and docs/APD-HOLSTER-RECHARGE-2026-11-06.md. Next active focus: Liquid Metal conversion/repair mathematical explanation. Whole semantic audit remains unfinished.
