@@ -2816,7 +2816,7 @@
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/Talent.java",
       "sha256": "7488c8315c351c286cf3674af8f5f0a2ad1fb45098b0ee8e9d16df7ee60a73ef",
-      "boundary": "Selected numerical explanation facets only; not a complete semantic audit of this entire file."
+      "boundary": "Selected numerical explanation facets only; not a complete semantic audit of this entire file. Selected Liquid Willpower, Shield Battery, Inscribed Power, Liquid Nature, Liquid Agility and Precise Assault explanation facets only; remaining talents and abilities remain open."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Affection.java",
@@ -3187,6 +3187,31 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Corruption.java",
       "sha256": "5264b02b6ff4f0b10dfa7ea8885e183a24b4fdc66ea1e825b3a0c6d4f21f72bf",
       "boundary": "Selected status/numerical explanation and read-only preview facets; not whole-file or every descendant spell/status closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/MechanicsDetails.java",
+      "sha256": "e203cea69e755a1e796a1fb266c85d58ee5d2093a03519afb06946b11d8322fb",
+      "boundary": "Selected Liquid Willpower, Shield Battery, Inscribed Power, Liquid Nature, Liquid Agility and Precise Assault explanation facets only; remaining talents and abilities remain open."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/TalentExplanation.java",
+      "sha256": "da1d0ed13bd1998fd9e40b1475bcd1b0f4fb44c1a42e8a4c0cab6cc3fc31b69b",
+      "boundary": "Selected Liquid Willpower, Shield Battery, Inscribed Power, Liquid Nature, Liquid Agility and Precise Assault explanation facets only; remaining talents and abilities remain open."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/Hero.java",
+      "sha256": "470fe3de0d5b0f5b2d7053d7dfd096d63f0e6fd8ba237f9c785e5dad78fa4d98",
+      "boundary": "Selected Liquid Willpower, Shield Battery, Inscribed Power, Liquid Nature, Liquid Agility and Precise Assault explanation facets only; remaining talents and abilities remain open."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/Wand.java",
+      "sha256": "3a65e3e6518bc7a9847d578dea3f92e9924a2157a171477d9cfaa74a97d7ef27",
+      "boundary": "Selected Liquid Willpower, Shield Battery, Inscribed Power, Liquid Nature, Liquid Agility and Precise Assault explanation facets only; remaining talents and abilities remain open."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/ScrollEmpower.java",
+      "sha256": "cafffaf9481471f9921c3f32312d899677ff0f3a61c27aaf27f949d935b11e7a",
+      "boundary": "Selected Liquid Willpower, Shield Battery, Inscribed Power, Liquid Nature, Liquid Agility and Precise Assault explanation facets only; remaining talents and abilities remain open."
     }
   ]
 }

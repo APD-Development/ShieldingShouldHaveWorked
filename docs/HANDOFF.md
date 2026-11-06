@@ -1,3 +1,7 @@
+## 2026-11-06 — status batch verified; selected talent descriptions next
+
+Source26f7a4bd8e41c29d67e0b6c82a64947356bf28d8/run42153075434 verified2601 tests445 suites and all source compilation gates. Actual artifact13472952519 downloaded487378bytes SHA256d41823b237e7aa271d18163f208397b6cb2b1117ea4e9e6dcec0e775e1512818, verification JSON inspected. New selected talent batch local2609 tests445 suites passes; remote compilation pending. No APK assembled or version incremented. Whole-game semantic audit and native visual acceptance remain incomplete. Preserve TEST365 unchanged verified fallback, daily limits, appID/signing and player data. See APD-MECHANICS-DESCRIPTIONS-2026-11-06.md for exact scope and fixture failures.
+
 ## 2026-11-06T02:36:23Z — artifact economies verified; status/deep interaction follow-up
 
 Source49bc21eb3f46435385501ec7ffbbfca0e08f9c80/run42151038226/job127674069696 passed2592 tests445 suites and Android debug/release/instrumentation Java/desktop compilation. Artifact13472615634 actual488361 bytes SHA2567819f428b7e60033ec1969ceae434ba52d6a9ceced24002d66564b1dc8f924c4 downloaded/hash verified. No APK. Next source batch has local2601 tests445 suites green: actual existing Brimstone attempted-ignition Barrier, pure Berserk description query, Healing live rate/pool/Vial cap and further status rules. Whole-game talent/ability/remaining-buff audit continues and is not complete. Keep TEST365 unchanged verified playable fallback; no version/build request change or cap exception. Current report APD-MECHANICS-DESCRIPTIONS-2026-11-06.md.

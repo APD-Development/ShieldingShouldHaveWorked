@@ -62,6 +62,10 @@ public final class MechanicsDetails {
     }
     public static String buff(Buff buff,String visibleDescription){
         String extra=BuffExplanation.details(buff);
+        if(buff instanceof Talent.LiquidAgilACCTracker && Dungeon.hero!=null){
+            extra+="\n\n_Remaining potion accuracy uses_\n"+((Talent.LiquidAgilACCTracker)buff).uses+" qualifying attack uses remain.\n"+TalentExplanation.details(Talent.LIQUID_AGILITY,Dungeon.hero.pointsInTalent(Talent.LIQUID_AGILITY));
+        }
+        if(buff instanceof Talent.PreciseAssaultTracker && Dungeon.hero!=null)extra+="\n\n"+TalentExplanation.details(Talent.PRECISE_ASSAULT,Dungeon.hero.pointsInTalent(Talent.PRECISE_ASSAULT));
         if(!extra.isEmpty())extra+="\n\n";
         if(buff instanceof Haste)extra+="_Movement contribution_\nHaste multiplies movement speed by 3, so an otherwise unchanged step costs one third of the game time. It does not multiply attack or recharge rates. Other movement modifiers can still combine with it.\n\n";
         if(buff instanceof Slow)extra+="_Action-time contribution_\nSlow sets the slow/chill action-rate factor to 0.5; an otherwise unchanged action costs twice as much game time. Slow and Chill do not multiply together: Slow takes priority. A separate all-action Speed effect multiplies the rate by 2 and can offset this factor.\n\n";
@@ -89,7 +93,8 @@ public final class MechanicsDetails {
         return (extra+glossary(visibleDescription)).trim();
     }
     public static String talent(Talent talent,int points,String visibleDescription){
-        String specific="";
+        String specific=TalentExplanation.details(talent,points);
+        if(!specific.isEmpty())specific+="\n\n";
         if(talent==Talent.ENHANCED_RINGS)specific="_Enhanced Rings calculation_\nQualifying artifact use grants +1 effective ring level for 3 × talent rank = "+(3*points)+" turns. This is temporary, not an actual upgrade. Effects using ordinary rather than effective ring level, such as Might's strength points and Sharpshooting's durability, do not gain that extra level. Rank zero grants no effect.\n\n";
         if(talent==Talent.HOLD_FAST)specific="_Hold Fast calculation_\nAt this rank the added per-hit armor roll is "+points+"–"+(2*points)+" damage-blocking points before its class/equipment cap. It is not a percentage reduction. While the position is held, qualifying buff-decay rates use a factor of "+(points==1?"0.5":points==2?"0.25":points==3?"0":"1")+"; a zero rate pauses that decay. Warrior's armor-roll cap is 6; other heroes use equipped armor tier + effective level. It ends on moving. Rank zero grants no armor benefit.\n\n";
         if(talent==Talent.PROTECTIVE_SHADOWS)specific="_Protective Shadows calculation_\nWhile invisible and below this talent's shield threshold, its tracker adds 0.5 × rank toward the next shield point each tick. Threshold at this rank: "+(1+2*points)+" shield points. At a whole point of progress it grants one point and resets progress. This limits new gain from this talent, not larger shielding supplied by other effects. The tracker refreshes barrier decay while it runs. Rank zero grants no effect.\n\n";

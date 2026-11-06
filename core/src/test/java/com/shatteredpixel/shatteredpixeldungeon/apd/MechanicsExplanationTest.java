@@ -109,7 +109,7 @@ public class MechanicsExplanationTest {
   Slow slow=Buff.affect(hero,Slow.class,5);start=hero.cooldown();hero.spend(1);assertEquals(2,hero.cooldown()-start,.00001f);assertTrue(MechanicsDetails.buff(slow,slow.desc()).contains("Slow takes priority"));
   Speed speed=Buff.affect(hero,Speed.class,5);start=hero.cooldown();hero.spend(1);assertEquals(1,hero.cooldown()-start,.00001f);assertTrue(MechanicsDetails.buff(speed,"speed").contains("multiplicatively"));
  }
- public static class QuietMovementSprite extends com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite {@Override public void sprint(float speed){} @Override public void showStatus(int color,String text,Object...args){} @Override public void showStatusWithIcon(int color,String text,int icon,Object...args){}}
+ public static class QuietMovementSprite extends com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite {@Override public void add(com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite.State state){} @Override public void remove(com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite.State state){} @Override public void sprint(float speed){} @Override public void showStatus(int color,String text,Object...args){} @Override public void showStatusWithIcon(int color,String text,int icon,Object...args){}}
  private QuietMovementSprite quietSprite()throws Exception{java.lang.reflect.Field field=Class.forName("sun.misc.Unsafe").getDeclaredField("theUnsafe");field.setAccessible(true);Object unsafe=field.get(null);return (QuietMovementSprite)unsafe.getClass().getMethod("allocateInstance",Class.class).invoke(unsafe,QuietMovementSprite.class);}
  @Test public void hasteDetailsAgreeWithActualMovementFactorAndDoNotClaimFasterAttacks()throws Exception{java.lang.reflect.Field field=Class.forName("sun.misc.Unsafe").getDeclaredField("theUnsafe");field.setAccessible(true);Object unsafe=field.get(null);hero.sprite=(QuietMovementSprite)unsafe.getClass().getMethod("allocateInstance",Class.class).invoke(unsafe,QuietMovementSprite.class);float before=hero.speed();Haste haste=Buff.affect(hero,Haste.class,5);assertEquals(before*3,hero.speed(),.00001f);assertTrue(MechanicsDetails.buff(haste,haste.desc()).contains("does not multiply attack"));}
  @Test public void talentDetailsRefreshRankAndDistinguishTemporaryFromActualUpgrades(){String first=MechanicsDetails.talent(Talent.ENHANCED_RINGS,1,"");String next=MechanicsDetails.talent(Talent.ENHANCED_RINGS,3,"");assertTrue(first.contains("= 3 turns"));assertTrue(next.contains("= 9 turns"));assertTrue(next.contains("ordinary rather than effective"));assertTrue(MechanicsDetails.talent(Talent.HOLD_FAST,3,"").contains("factor of 0"));assertTrue(MechanicsDetails.talent(Talent.PROTECTIVE_SHADOWS,2,"").contains("5 shield points"));}
@@ -251,4 +251,67 @@ public class MechanicsExplanationTest {
  public static class PlainStatusTarget extends com.shatteredpixel.shatteredpixeldungeon.actors.Char {public PlainStatusTarget(){HP=HT=100;}}
  @Test public void doomDescriptionMatchesActualIncomingDamageFactor(){PlainStatusTarget target=new PlainStatusTarget();Doom doom=Buff.affect(target,Doom.class);target.damage(20,new Object());assertEquals(67,target.HP);assertTrue(BuffExplanation.details(doom).contains("1.67"));}
  @Test public void healingDetailsExposeActualVialLimitAndItsEffectOnNextHeal(){Healing heal=new Healing();heal.setHeal(100,.25f,2);com.watabou.utils.Bundle state=new com.watabou.utils.Bundle();heal.storeInBundle(state);state.put("vial_level",0);heal.restoreFromBundle(state);int limit=com.shatteredpixel.shatteredpixeldungeon.items.trinkets.VialOfBlood.maxHealPerTurn(0);assertEquals(Math.min(27,limit),heal.nextRequestedHealing());assertTrue(BuffExplanation.details(heal).contains("Current Blood Vial limit: "+limit+" HP per tick"));}
+
+ @Test public void liquidWillpowerExplanationMatchesActualPotionShieldAndMaximumHp()throws Exception{
+  hero.sprite=quietSprite();hero.talents.get(1).put(Talent.LIQUID_WILLPOWER,1);
+  for(int rank=1;rank<=2;rank++){hero.talents.get(1).put(Talent.LIQUID_WILLPOWER,rank);
+   for(int hp:new int[]{20,81,143}){hero.HT=hp;Barrier old=hero.buff(Barrier.class);if(old!=null)old.detach();
+    Talent.onPotionUsed(hero,hero.pos,1);int actual=hero.buff(Barrier.class).shielding();
+    String text=MechanicsDetails.talent(Talent.LIQUID_WILLPOWER,rank,"");
+    assertTrue(text,text.contains("At your current "+hp+" maximum HP: "+actual+" shield points"));
+   }
+  }
+ }
+ @Test public void liquidWillpowerKeepsStrongerBarrierAndPreviewDoesNotApplyShield()throws Exception{
+  hero.sprite=quietSprite();hero.talents.get(1).put(Talent.LIQUID_WILLPOWER,2);Barrier barrier=Buff.affect(hero,Barrier.class);barrier.setShield(100);
+  Talent.onPotionUsed(hero,hero.pos,1);assertEquals(100,barrier.shielding());
+  for(int i=0;i<50;i++)MechanicsDetails.talent(Talent.LIQUID_WILLPOWER,2,"");assertEquals(100,barrier.shielding());
+ }
+ @Test public void inscribedPowerMatchesActualUseCounterAndKeepsLargerApplication(){
+  hero.talents.get(1).put(Talent.INSCRIBED_POWER,1);
+  for(int rank=1;rank<=2;rank++){hero.talents.get(1).put(Talent.INSCRIBED_POWER,rank);
+   Talent.onScrollUsed(hero,hero.pos,1,com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify.class);
+   assertEquals(Integer.toString(1+rank),hero.buff(ScrollEmpower.class).iconTextDisplay());
+   assertTrue(MechanicsDetails.talent(Talent.INSCRIBED_POWER,rank,"").contains((1+rank)+" empowered wand uses"));
+  }
+  Talent.onScrollUsed(hero,hero.pos,.25f,com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify.class);
+  assertEquals("3",hero.buff(ScrollEmpower.class).iconTextDisplay());
+ }
+ @Test public void talentDetailsDoNotInventChargeCountsAndRefreshWithRank(){
+  assertTrue(MechanicsDetails.talent(Talent.SHIELD_BATTERY,1,"").contains("4% of maximum HP"));
+  assertTrue(MechanicsDetails.talent(Talent.SHIELD_BATTERY,2,"").contains("6% of maximum HP"));
+  assertTrue(MechanicsDetails.talent(Talent.LIQUID_NATURE,2,"").contains("up to 6 nearby tiles"));
+  assertEquals("",com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.TalentExplanation.details(Talent.SHIELD_BATTERY,0));
+ }
+
+ @Test public void accuracyExplanationsNeverConsumeLiquidAgilityUsesOrRandomness(){
+  hero.talents.get(1).put(Talent.LIQUID_AGILITY,1);Talent.LiquidAgilACCTracker ready=Buff.affect(hero,Talent.LiquidAgilACCTracker.class,5);ready.uses=2;
+  Random.pushGenerator(482);int expected=Random.Int();Random.popGenerator();Random.pushGenerator(482);
+  try{for(int i=0;i<100;i++){String text=MechanicsDetails.buff(ready,"");assertTrue(text.contains("2 qualifying attack uses remain"));assertTrue(text.contains("multiplies its accuracy score by 3"));}assertEquals(expected,Random.Int());}finally{Random.popGenerator();}
+  assertEquals(2,ready.uses);hero.talents.get(1).put(Talent.LIQUID_AGILITY,2);assertTrue(MechanicsDetails.buff(ready,"").contains("uses guaranteed-hit accuracy"));assertEquals(2,ready.uses);
+ }
+ @Test public void preciseAssaultExplainsRankMultipliersAndGuaranteedEvasionPriority(){
+  assertTrue(MechanicsDetails.talent(Talent.PRECISE_ASSAULT,1,"").contains("2 times"));
+  assertTrue(MechanicsDetails.talent(Talent.PRECISE_ASSAULT,2,"").contains("5 times"));
+  String third=MechanicsDetails.talent(Talent.PRECISE_ASSAULT,3,"");assertTrue(third.contains("guaranteed-hit accuracy"));assertTrue(third.contains("1.3"));assertTrue(third.contains("Guaranteed evasion wins"));
+ }
+
+ @Test public void flatAttackTalentDescriptionsMatchRealProcAndConsumeOnlyActualAttack(){
+  com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat enemy=new com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat();enemy.HP=enemy.HT=20;
+  for(int rank=1;rank<=2;rank++){
+   hero.talents.get(0).put(Talent.PROVOKED_ANGER,rank);Buff.affect(hero,Talent.ProvokedAngerTracker.class,5);
+   String text=MechanicsDetails.talent(Talent.PROVOKED_ANGER,rank,"");assertNotNull(hero.buff(Talent.ProvokedAngerTracker.class));
+   int bonus=1+2*rank;assertTrue(text.contains("adds "+bonus+" damage points"));assertEquals(10+bonus,Talent.onAttackProc(hero,enemy,10));assertNull(hero.buff(Talent.ProvokedAngerTracker.class));hero.talents.get(0).remove(Talent.PROVOKED_ANGER);
+   hero.talents.get(0).put(Talent.LINGERING_MAGIC,rank);
+   for(int seed=0;seed<30;seed++){Buff.affect(hero,Talent.LingeringMagicTracker.class,5);Random.pushGenerator(seed);int actual;try{actual=Talent.onAttackProc(hero,enemy,10)-10;}finally{Random.popGenerator();}assertTrue(actual>=rank&&actual<=2);assertNull(hero.buff(Talent.LingeringMagicTracker.class));}
+   assertTrue(MechanicsDetails.talent(Talent.LINGERING_MAGIC,rank,"").contains(rank+"–2 damage points"));hero.talents.get(0).remove(Talent.LINGERING_MAGIC);
+  }
+ }
+ @Test public void deadlyFollowupMatchesActualRoundedMultiplicationAndRetainsMark(){
+  com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat enemy=new com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat();enemy.HP=enemy.HT=20;
+  for(int rank=1;rank<=3;rank++){hero.talents.get(2).put(Talent.DEADLY_FOLLOWUP,rank);Talent.DeadlyFollowupTracker mark=Buff.affect(hero,Talent.DeadlyFollowupTracker.class,5);mark.object=enemy.id();
+   for(int damage:new int[]{1,7,11,30})assertEquals(Math.round(damage*(1+.1f*rank)),Talent.onAttackProc(hero,enemy,damage));
+   String text=MechanicsDetails.talent(Talent.DEADLY_FOLLOWUP,rank,"");assertTrue(text.contains("by "+ObfuscationExplanation.number(1+.1f*rank)));assertTrue(text.contains("one melee hit does not consume"));assertSame(mark,hero.buff(Talent.DeadlyFollowupTracker.class));
+  }
+ }
 }
