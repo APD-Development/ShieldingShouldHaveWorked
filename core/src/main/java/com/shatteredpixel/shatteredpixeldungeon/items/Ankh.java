@@ -102,6 +102,11 @@ public class Ankh extends Item {
 		return blessed;
 	}
 
+	/** Exact HP assigned by the live blessed-revival handler; revival is not ordinary healing. */
+	public static int blessedReviveHP(int maximumHP){
+		return maximumHP / 4;
+	}
+
 	public void bless(){
 		blessed = true;
 	}

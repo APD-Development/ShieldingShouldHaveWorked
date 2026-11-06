@@ -1,3 +1,9 @@
+## Blessed Ankh revival Healing exemption — source-verified, no APK
+
+Exact source `bc88ced738d2152031fae053bad308b9c892ade3` passed run [42285061371](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/42285061371), job `128123626611`, completed 2026-11-06T20:05:50Z: 2,859 tests/446 suites, zero failures/errors/skips; Android debug/release/instrumentation Java and desktop compilation passed. Downloaded artifact `13537291623` is 502,465 bytes, SHA-256 `98a7c4b2aaf489fe9d082edb8866124f74003b646870a70506ddfe6caefc6302`; embedded receipt and the exact new regression were inspected.
+
+The live blessed-Ankh quarter-HP revival and its read-only explanation now use one identical integer-division helper. The panel accurately states that revival is outside ordinary Healing-percentage scaling. Healing 0/25/100/200%, six maximum-HP values, integer truncation, blessed state and inspection purity are covered. No gameplay value/order/RNG/save change. No APK assembled or phone tested; TEST369 remains current and excludes this post369 source work. Build request untouched; TEST368 preserved fallback.
+
 ## Search controls and door-end markers — source-verified, no APK
 
 Exact application source878a05f1d0f2884aba4efd50e24fe97c7d298143 passed source-only run42136747730/job127626727810 at2026-11-06T00:28:34Z:2505 tests442 suites, zero failures/errors/skips; Android debug/release/instrumentation Java and desktop compilation passed. No APK assembled and no physical-phone test claimed. Single-tap Search is an optional APD Settings > Gameplay checkbox, defaultoff, persisted across restarts. On: tap searches normally, hold inspects freely; off: existing controls. Actual pointer/toggle/cost tests are staged for the next permitted corrected APK, not reported executed.

@@ -4,6 +4,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.*;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.*;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
 import com.shatteredpixel.shatteredpixeldungeon.apd.HeadlessTestSupport;
+import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.watabou.utils.Bundle;
@@ -77,6 +78,21 @@ public class CustomHealingSliderTest {
         rules(0);hero.lvl=1;hero.updateHT(false);hero.HP=1;hero.apdCustomHealingFraction=.75f;
         hero.resurrect();assertEquals(hero.HT,hero.HP);assertEquals(0,hero.apdCustomHealingFraction,0);
         assertNotNull("Normal resurrection's backpack recovery behavior remains",hero.buff(LostInventory.class));
+    }
+    @Test public void blessedAnkhRevivalUsesTheLiveQuarterHpFormulaOutsideHealingScaling(){
+        Ankh ankh=new Ankh();ankh.bless();
+        for(int percent:new int[]{0,25,100,200}){
+            rules(percent);
+            for(int maximum:new int[]{20,21,99,100,101,1000}){
+                hero.HT=maximum;hero.HP=0;
+                int expected=maximum/4;
+                assertEquals(expected,Ankh.blessedReviveHP(hero.HT));
+                String detail=com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.UtilityItemExplanation.details(ankh,hero);
+                assertTrue(detail,detail.contains("blessed revival value is "+expected+" HP"));
+                assertTrue(detail,detail.contains("Healing percentage does not multiply it"));
+            }
+        }
+        assertTrue(ankh.isBlessed());assertEquals(0,hero.HP);
     }
     @Test public void actualHealingTicksWorkForEveryClassAtMinimumNeutralAndMaximum() {
         for (HeroClass type : HeroClass.values()) {

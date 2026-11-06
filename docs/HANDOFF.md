@@ -1,6 +1,18 @@
+## Shared-branch merge — preserve both audit batches
+
+Newer remote3e5c184d9 adds verified blessed-Ankh explanation and exact unchanged revival helper. It is preserved alongside localHolster d56ccbd19; neither history is rewritten. Latest owner delivery HOLD above all older delivery instructions remains active. Full merged source verification is pending; separate predecessor receipts are not relabelled as merged evidence. Resin-preview red regression remains safely stashed and backed up at /workspace/apd-resin-preview-uncommitted.patch.
+
 ## LATEST OWNER POLICY — hold further APK delivery until work is done
 
 Owner explicitly instructed: "Do not send me another APK till you are done." Continue sustained source audit, implementation, tests and backups; no further APK delivery before remaining approved work is complete and verified. Do not treat a checkpoint, passing tests or the old daily delivery schedule as permission to send another APK while this hold is active.369 is already delivered/verified and must be preserved. Ten total APKs/day is a maximum, not a requirement. Persistent policy docs/APD-OWNER-DELIVERY-HOLD.json. Magical Holster/wand recharge source now passes2861/446 locally; required source-only Android/desktop check requested. Shared pure interval preserves the original formula;18 actual scheduled-charge comparisons plus privacy/purity and special-dart exceptions tested. Raw /workspace/apd-holster-recharge-local-junit.zip; docs/APD-HOLSTER-RECHARGE-2026-11-06.md. Source is separate from delivered369. Continue remaining audit after this checkpoint.
+
+## 2026-11-06 blessed Ankh revival explanation — source-verified, no APK
+
+Exact application source `bc88ced738d2152031fae053bad308b9c892ade3` passed source-only run [42285061371](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/42285061371), job `128123626611`, completed 2026-11-06T20:05:50Z. The downloaded artifact `13537291623` is 502,465 bytes with SHA-256 `98a7c4b2aaf489fe9d082edb8866124f74003b646870a70506ddfe6caefc6302`; its embedded receipt reports 2,859 tests across 446 suites with zero failures, errors or skips, no APK assembly and no physical-phone test. The exact new blessed-Ankh regression is present and green. Desktop classes plus Android debug, release and instrumentation Java compilation all passed.
+
+The live blessed revival now shares one exact `maximumHP / 4` helper with its read-only explanation, at the unchanged death-handler assignment point. The panel explicitly states that revival is not ordinary HP recovery, so the Custom Dungeon Rules Healing percentage does not multiply it. Healing 0/25/100/200% × maximum HP 20/21/99/100/101/1000, integer truncation, blessed state and inspection non-execution are covered. Cure list, invulnerability, item consumption, priority, events, RNG, turns, save shape and balance remain unchanged.
+
+TEST369 remains the current actually delivered private release and does not contain this later source work. Pickaxe and blessed-Ankh improvements are post369 source only. No APK request, publication, distribution or redundant build occurred; `docs/APD-CODEX-BUILD-REQUEST.txt` was untouched. TEST368 remains the immediate fallback. Physical-phone acceptance and the broader semantic/mechanics audit remain open.
 
 ## 2026-11-06 delivered369 preserved; later Pickaxe source fully compile-verified
 
