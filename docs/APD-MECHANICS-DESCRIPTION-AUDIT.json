@@ -3877,6 +3877,16 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/MechanicsDetails.java",
       "sha256": "34f19b8b24393c65ec0327f4b8acffba5bb02ebb9d46cdacac8f71b73317cafb",
       "boundary": "22 learned Cleric spell-to-talent calculation bindings, Enhanced Combo count/parry and meal/vision explanation facets. Actual spell lists, resource hooks, parry, time/flags, free wall clear and FOV/cap tested. No change to spell availability or full combo/VFX interaction closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/TalentExplanation.java",
+      "sha256": "b1f9ae9e6bc3411e55566c7503fd1b0352749129b14eebfb3e44f1d1c38c12cb",
+      "boundary": "Remaining39 talent candidate calculation explanations and six status facets. Actual soul restoration/hunger, invis duration, live prep tables, rounded dart wear, two recharge channels, twin tiers, damage rounding, decay/save and public-state purity tested. This does not close every nested behavior or full inventory audit."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/BuffExplanation.java",
+      "sha256": "36cedcc369c04fc02185f61f30703a7f2fec1586c0dd4b5fd0169334fbcac6f7",
+      "boundary": "Remaining39 talent candidate calculation explanations and six status facets. Actual soul restoration/hunger, invis duration, live prep tables, rounded dart wear, two recharge channels, twin tiers, damage rounding, decay/save and public-state purity tested. This does not close every nested behavior or full inventory audit."
     }
   ]
 }

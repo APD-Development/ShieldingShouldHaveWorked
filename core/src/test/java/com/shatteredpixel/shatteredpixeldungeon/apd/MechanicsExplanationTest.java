@@ -33,6 +33,79 @@ public class MechanicsExplanationTest {
  @Before public void setup()throws Exception{HeadlessTestSupport.start();java.lang.reflect.Field notes=com.shatteredpixel.shatteredpixeldungeon.journal.Notes.class.getDeclaredField("records");notes.setAccessible(true);oldNotes=notes.get(null);com.shatteredpixel.shatteredpixeldungeon.journal.Notes.reset();oldChallenges=Dungeon.challenges;Dungeon.challenges=0;oldRules=new com.watabou.utils.Bundle();Dungeon.apdStoreCustomRules(oldRules);Dungeon.apdRestoreCustomRules(new com.watabou.utils.Bundle());oldHero=Dungeon.hero;oldLevel=Dungeon.level;Dungeon.level=new GrassDewPickupTest.TestLevel();Dungeon.level.setSize(7,7);hero=new Hero();hero.heroClass=HeroClass.WARRIOR;Talent.initClassTalents(hero);hero.pos=24;hero.HP=hero.HT=20;Dungeon.hero=hero;armor=new MailArmor();armor.levelKnown=armor.cursedKnown=true;armor.inscribe(new Obfuscation());hero.belongings.armor=armor;}
  @After public void restore()throws Exception{Dungeon.hero=oldHero;Dungeon.level=oldLevel;Dungeon.challenges=oldChallenges;Dungeon.apdRestoreCustomRules(oldRules);java.lang.reflect.Field notes=com.shatteredpixel.shatteredpixeldungeon.journal.Notes.class.getDeclaredField("records");notes.setAccessible(true);notes.set(null,oldNotes);}
  private RingOfArcana ring(int level){RingOfArcana ring=new RingOfArcana();ring.level(level);ring.anonymize();ring.levelKnown=ring.cursedKnown=true;hero.belongings.ring=ring;ring.activate(hero);return ring;}
+ @Test public void protectionDecayDescriptionsMatchActualUpdateAndSaveRestore(){
+  for(int interval:new int[]{1,3,5}){
+   Barkskin bark=Buff.affect(hero,Barkskin.class);bark.set(8,interval);float before=bark.cooldown();String text=BuffExplanation.details(bark);assertTrue(text.contains(interval+" game-time units"));assertEquals(8,bark.level());assertEquals(before,bark.cooldown(),0);bark.act();assertEquals(7,bark.level());assertEquals(before+interval,bark.cooldown(),0);com.watabou.utils.Bundle saved=new com.watabou.utils.Bundle();bark.storeInBundle(saved);Barkskin loaded=new Barkskin();loaded.restoreFromBundle(saved);assertEquals(interval,loaded.decayInterval());bark.detach();
+   ArcaneArmor arcane=Buff.affect(hero,ArcaneArmor.class);arcane.set(8,interval);before=arcane.cooldown();assertTrue(BuffExplanation.details(arcane).contains(interval+" game-time units"));assertEquals(8,arcane.level());arcane.act();assertEquals(7,arcane.level());assertEquals(before+interval,arcane.cooldown(),0);arcane.storeInBundle(saved);ArcaneArmor restored=new ArcaneArmor();restored.restoreFromBundle(saved);assertEquals(interval,restored.decayInterval());arcane.detach();
+  }
+ }
+ @Test public void remainingStatusDetailsUseSavedPublicStateWithoutAdvancingIt(){
+  PinCushion pins=Buff.affect(hero,PinCushion.class);com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife knife=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife();knife.quantity(3);pins.stick(knife);assertTrue(BuffExplanation.details(pins).contains("quantity: 3"));assertEquals(3,pins.getStuckItems().get(0).quantity());
+  SwarmIntelTracker swarm=new SwarmIntelTracker();com.watabou.utils.Bundle saved=new com.watabou.utils.Bundle();swarm.storeInBundle(saved);saved.put("alert_range",7);swarm.restoreFromBundle(saved);assertTrue(BuffExplanation.details(swarm).contains("7 tiles"));assertEquals(7,swarm.observedAlertRange());
+  GravityChaosTracker gravity=new GravityChaosTracker();gravity.left=11;gravity.positiveOnly=true;Random.pushGenerator(97);int expected=Random.Int();Random.popGenerator();Random.pushGenerator(97);try{String text=BuffExplanation.details(gravity);assertTrue(text.contains("count: 11"));assertTrue(text.contains("excludes allied"));assertEquals(expected,Random.Int());assertEquals(11,gravity.left);}finally{Random.popGenerator();}
+ }
+ @Test public void alternateLightTalentsMatchDistinctActualChargingChannels(){
+  for(int rank=1;rank<=3;rank++){
+   hero.talents.get(2).put(Talent.LIGHT_CLOAK,rank);hero.talents.get(2).put(Talent.LIGHT_READING,0);
+   assertEquals(1+.2f*rank/3f,RingOfEnergy.artifactChargeMultiplier(hero),.000001f);assertEquals(1,RingOfEnergy.wandChargeMultiplier(hero),0);
+   hero.talents.get(2).put(Talent.LIGHT_CLOAK,0);hero.talents.get(2).put(Talent.LIGHT_READING,rank);
+   assertEquals(1+.2f*rank/3f,RingOfEnergy.wandChargeMultiplier(hero),.000001f);assertEquals(1,RingOfEnergy.artifactChargeMultiplier(hero),0);
+   assertTrue(TalentExplanation.details(Talent.LIGHT_CLOAK,rank,true).contains("artifact charging factor"));assertTrue(TalentExplanation.details(Talent.LIGHT_READING,rank,true).contains("wand charging factor"));
+  }
+ }
+ @Test public void twinUpgradeDetailsMatchActualTierAndEffectiveLevelRules(){
+  com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword low=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword();
+  com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greataxe high=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greataxe();hero.belongings.weapon=low;hero.belongings.secondWep=high;low.level(1);high.level(7);
+  for(int rank=1;rank<=3;rank++)for(int gap=0;gap<=3;gap++){
+   hero.talents.get(2).put(Talent.TWIN_UPGRADES,rank);high.tier=low.tier+gap;
+   assertEquals(gap>=3-rank?7:1,low.buffedLvl());assertTrue(TalentExplanation.details(Talent.TWIN_UPGRADES,rank).contains("required tier gap is "+(3-rank)));
+  }
+ }
+ @Test public void alternateWeaponRechargeDetailsMatchActualDamageRounding(){
+  com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword sword=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword();hero.belongings.weapon=sword;hero.STR=10;
+  for(int rank=1;rank<=2;rank++)for(int seed=0;seed<30;seed++){
+   hero.talents.get(1).put(Talent.WEAPON_RECHARGING,0);Random.pushGenerator(seed);int base=hero.damageRoll();Random.popGenerator();hero.talents.get(1).put(Talent.WEAPON_RECHARGING,rank);Recharging effect=Buff.affect(hero,Recharging.class,5);
+   Random.pushGenerator(seed);try{assertEquals(Math.round(base*1.025f+.025f*rank),hero.damageRoll());}finally{Random.popGenerator();effect.detach();}
+   assertTrue(TalentExplanation.details(Talent.WEAPON_RECHARGING,rank,true).contains("1.025"));
+  }
+ }
+ @Test public void inscribedStealthDetailsMatchActualAdditiveDuration()throws Exception{
+  hero.sprite=quietSprite();
+  for(int rank=1;rank<=2;rank++)for(float factor:new float[]{.5f,1f,2f}){
+   Invisibility old=hero.buff(Invisibility.class);if(old!=null)old.detach();hero.talents.get(1).put(Talent.INSCRIBED_STEALTH,rank);
+   Invisibility effect=Buff.affect(hero,Invisibility.class,7);float before=effect.cooldown();
+   Talent.onScrollUsed(hero,hero.pos,factor,com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify.class);
+   assertEquals(before+factor*(1+2*rank),effect.cooldown(),.0001f);
+   assertTrue(TalentExplanation.details(Talent.INSCRIBED_STEALTH,rank).contains((1+2*rank)+" game-time units"));
+  }
+ }
+ @Test public void assassinTalentDetailsUseLiveTierTablesWithoutQueryingEnemyHealth(){
+  for(int rank=1;rank<=3;rank++){
+   hero.talents.get(2).put(Talent.ENHANCED_LETHALITY,rank);hero.talents.get(2).put(Talent.ASSASSINS_REACH,rank);
+   for(Talent talent:new Talent[]{Talent.ENHANCED_LETHALITY,Talent.ASSASSINS_REACH}){
+    String text=TalentExplanation.details(talent,rank);
+    for(Preparation.AttackLevel tier:Preparation.AttackLevel.values())assertTrue(text.contains("below "+ObfuscationExplanation.number(100*tier.KOThreshold())+"% HP, "+tier.blinkDistance()+" tiles"));
+   }
+  }
+ }
+ @Test public void durableTipsDetailsMatchActualUnroundedWearRatio(){
+  com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.PoisonDart dart=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.PoisonDart();
+  hero.talents.get(2).put(Talent.DURABLE_TIPS,0);float base=dart.durabilityPerUse(0);
+  for(int rank=1;rank<=3;rank++){hero.talents.get(2).put(Talent.DURABLE_TIPS,rank);float expected=100f/Math.round(100f/((base-.001f)/(1+rank)))+.001f;assertEquals(expected,dart.durabilityPerUse(0),.0001f);assertTrue(TalentExplanation.details(Talent.DURABLE_TIPS,rank).contains("= "+(1+rank)+"."));}
+ }
+ @Test public void soulTalentsMatchActualPhysicalRestorationAndHungerUnits()throws Exception{
+  hero.sprite=quietSprite();Hunger hunger=Buff.affect(hero,Hunger.class);
+  for(int rank=1;rank<=3;rank++)for(boolean heroAttack:new boolean[]{false,true}){
+   hero.talents.get(2).put(Talent.SOUL_SIPHON,rank);hero.talents.get(2).put(Talent.SOUL_EATER,rank);hero.HP=1;
+   com.watabou.utils.Bundle food=new com.watabou.utils.Bundle();hunger.storeInBundle(food);food.put("level",200f);hunger.restoreFromBundle(food);float oldHunger=hunger.hungerPoints();
+   com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat victim=new com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat();victim.HP=victim.HT=10;victim.pos=hero.pos+1;victim.sprite=quietSprite();victim.state=victim.HUNTING;Buff.affect(victim,SoulMark.class);Buff.affect(victim,Barrier.class).setShield(2);
+   com.shatteredpixel.shatteredpixeldungeon.actors.Char attacker=heroAttack?hero:new PlainStatusTarget();attacker.pos=hero.pos;
+   victim.defenseProc(attacker,20);int input=heroAttack?12:Math.round(12*.4f*rank/3f);
+   assertEquals(1+(int)Math.ceil(input*.4f),hero.HP);assertEquals(oldHunger-input*rank/3f,hunger.hungerPoints(),.0001f);
+   assertTrue(TalentExplanation.details(Talent.SOUL_SIPHON,rank).contains(ObfuscationExplanation.number(100*.4f*rank/3f)+"%"));
+   assertTrue(TalentExplanation.details(Talent.SOUL_EATER,rank).contains((10*rank)+"% chance"));
+  }
+ }
  @Test public void sealTalentDetailsMatchCapacityAndGlyphEligibility(){
   com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal seal=new com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal();
   for(int rank=1;rank<=2;rank++){

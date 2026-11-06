@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -32,6 +35,9 @@ public class SwarmIntelTracker extends Buff {
 
 	private int alertRange = 0;
 	private float leftAtZero;
+
+    /** Last observed alert range; does not scan unseen monsters. */
+    public int observedAlertRange(){return alertRange;}
 
 	@Override
 	public boolean act() {
