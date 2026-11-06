@@ -79,6 +79,12 @@ public class Healing extends Buff {
 		return true;
 	}
 	
+	public int remainingHealingPool(){return healingLeft;}
+    public float healingRate(){return percentHealPerTick;}
+    public int flatHealing(){return flatHealPerTick;}
+    public int healingPerTickLimit(){return bloodVialLimitingLevel==-1?Integer.MAX_VALUE:VialOfBlood.maxHealPerTurn(bloodVialLimitingLevel);}
+    public int nextRequestedHealing(){return healingThisTick();}
+
 	private int healingThisTick(){
 		int heal = (int)GameMath.gate(1,
 				Math.round(healingLeft * percentHealPerTick) + flatHealPerTick,

@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -206,15 +209,23 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 		BuffIndicator.refreshHero();
 	}
 
-	public int currentShieldBoost(){
+	public int currentShieldBoost(){return calculateShieldBoost(true);}
+
+    /** Same shield math, without changing recovery counters while rendering a description. */
+    public int previewShieldBoost(){return calculateShieldBoost(false);}
+    public float rageFraction(){return power;}
+
+    private int calculateShieldBoost(boolean adjustRecovery){
 		//base multiplier scales at 1/1.5/2/2.5/3x at 100/37/20/9/0% HP
 		float shieldMultiplier = 1f + 2*(float)Math.pow((1f-(target.HP/(float)target.HT)), 3);
 
 		//Endless rage effect on shield and cooldown
 		if (power > 1f){
 			shieldMultiplier *= power;
-			levelRecovery *= 2f - power;
-			turnRecovery *= 2f - power;
+			if(adjustRecovery){
+                levelRecovery *= 2f - power;
+                turnRecovery *= 2f - power;
+            }
 		}
 
 		int baseShield = 8;
@@ -361,7 +372,7 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 		float dispDamage = ((int)damageFactor(10000) / 100f) - 100f;
 		switch (state){
 			case NORMAL: default:
-				return Messages.get(this, "angered_desc", Math.floor(power * 100f), dispDamage, currentShieldBoost());
+				return Messages.get(this, "angered_desc", Math.floor(power * 100f), dispDamage, previewShieldBoost());
 			case BERSERK:
 				return Messages.get(this, "berserk_desc", shielding());
 			case RECOVERING:

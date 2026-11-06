@@ -3137,6 +3137,56 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/UnstableSpellbook.java",
       "sha256": "d76ee2ed3dee3f1a1ddd6fd02cce2cc4d892df0f9fd8d540d5e728fd6324f20b",
       "boundary": "Artifact resource/recharge and selected cursed/ability unit facets reviewed. Remaining target/selection/ability and full translated-copy audit separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Berserk.java",
+      "sha256": "10ee2068ddf83fd19b16b670b34ec08c52c5514981d0e98f8074eec33655bbc9",
+      "boundary": "Selected status/numerical explanation and read-only preview facets; not whole-file or every descendant spell/status closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Healing.java",
+      "sha256": "77e1abbd690b7d4117309654428fc1464808361faec8aca0fe35d4e89a15d46b",
+      "boundary": "Selected status/numerical explanation and read-only preview facets; not whole-file or every descendant spell/status closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Burning.java",
+      "sha256": "43e1c81990e99c6ea312583051789a10b31a8bd1f97be1a2fe1d48f7a21be31d",
+      "boundary": "Selected status/numerical explanation and read-only preview facets; not whole-file or every descendant spell/status closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Corrosion.java",
+      "sha256": "92da7f32be408dee5fee1f8efee9d33e4d5d1627b973720fe2da6682128a9517",
+      "boundary": "Selected status/numerical explanation and read-only preview facets; not whole-file or every descendant spell/status closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Ooze.java",
+      "sha256": "5140be2c9b7da1b0e00ed71fa9ca4b25fb8e48bec8b44b5d3fbe3f536be5f6ed",
+      "boundary": "Selected status/numerical explanation and read-only preview facets; not whole-file or every descendant spell/status closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/AdrenalineSurge.java",
+      "sha256": "163358a84bed54f7cb501cc917d7b46b738c903ccd18a86830779352ac994c19",
+      "boundary": "Selected status/numerical explanation and read-only preview facets; not whole-file or every descendant spell/status closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/WandEmpower.java",
+      "sha256": "659ce020c39aad88f033c44e05f9be3cce3151b251d4b4bd8d78921063049b49",
+      "boundary": "Selected status/numerical explanation and read-only preview facets; not whole-file or every descendant spell/status closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Degrade.java",
+      "sha256": "bc11ed28067c0f15a1f9ca83a380a0bbd7a7df0df93d10b8251ad1b44d89388d",
+      "boundary": "Selected status/numerical explanation and read-only preview facets; not whole-file or every descendant spell/status closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Doom.java",
+      "sha256": "3b640f2c2050c6fbc176f6f8e87176b94ca6f96d56eaeb535aa5568bbc38e4ed",
+      "boundary": "Selected status/numerical explanation and read-only preview facets; not whole-file or every descendant spell/status closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Corruption.java",
+      "sha256": "5264b02b6ff4f0b10dfa7ea8885e183a24b4fdc66ea1e825b3a0c6d4f21f72bf",
+      "boundary": "Selected status/numerical explanation and read-only preview facets; not whole-file or every descendant spell/status closure."
     }
   ]
 }

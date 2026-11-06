@@ -28,6 +28,19 @@ public final class GlyphExplanation {
     private GlyphExplanation(){}
     private static String n(float x){return ObfuscationExplanation.number(x);}
     private static String pct(float x){return n(100*Math.max(0,Math.min(1,x)))+"%";}
+    public static float brimstoneExpectedGain(float power,int currentBarrier){
+        float amount=2*(power-1);int cap=Math.round(amount*4);if(cap<=0||amount<=0)return 0;
+        double room=Math.max(0L,(long)cap-currentBarrier),whole=Math.min(Integer.MAX_VALUE,(int)amount);float fraction=amount%1;
+        return (float)(Math.min(room,whole)*(1-fraction)+Math.min(room,whole+1)*fraction);
+    }
+    private static String brimstone(float power,Hero hero,boolean detailed){
+        String text="Protects against Burning status damage while active, not every fire-themed attack. Extra glyph power can also grant Barrier shielding when something tries to ignite you; this is separate from immunity.";
+        if(!Float.isFinite(power))return text+" Identify contributing bonuses to see the shield preview.";
+        int current=hero==null||hero.buff(Barrier.class)==null?0:hero.buff(Barrier.class).shielding();int cap=Math.max(0,Math.round(8*(power-1)));
+        text+=" Current Barrier gain limit for this source: "+cap+" shield points. With your current Barrier, expected gain per eligible ignition attempt is "+n(brimstoneExpectedGain(power,current))+" shield points; a random fractional gain is not guaranteed each time.";
+        if(detailed)text+="\n\nGain offered = floor(2 × (power − 1)), with one extra point if a random roll passes the fractional remainder. Limit = round(8 × (power − 1)). Gain is added only when the limit and rolled gain are positive, and only up to the space below that total Barrier limit. Larger existing Barriers are not reduced. Armor upgrades do not directly enter this extra-shield formula, beyond needing the glyph to remain active. This check is per attempted Burning application, not a universal once-per-turn heal.";
+        return text;
+    }
     public static String summary(Armor armor,Hero hero){
         if(armor.glyph==null||armor.glyph.curse()||armor.glyph instanceof Obfuscation||!armor.glyph.getClass().getPackage().getName().equals(Flow.class.getPackage().getName()))return "";
         if(hero!=null&&(!armor.hasGlyph(armor.glyph.getClass(),hero)||hero.buff(MagicImmune.class)!=null))return "This glyph is currently suppressed or overridden.";
@@ -35,7 +48,7 @@ public final class GlyphExplanation {
         int raw=armor.buffedLvl(),level=Math.max(0,raw);float power=ArcanaInfoDisplay.knownArcanaPower(hero);
         if(Float.isFinite(power))power+=ObfuscationExplanation.aura(hero);
         if((armor.glyph instanceof Flow||armor.glyph instanceof Swiftness||armor.glyph instanceof Camouflage||armor.glyph instanceof AntiMagic||armor.glyph instanceof Brimstone)&&raw<0)return "This passive glyph is inactive at the current effective armor level.";
-        if(armor.glyph instanceof Brimstone)return "Protects against Burning status damage while active; further upgrades and Arcana do not increase that immunity. Other kinds of fire-themed damage can still hurt.";
+        if(armor.glyph instanceof Brimstone)return brimstone(power,hero,false);
         if(armor.glyph instanceof Stone)return "Replaces normal evasion-based dodging with conditional damage reduction. Better would-be evasion helps, but the attacker matters. This glyph's own reduction step cannot remove more than 75% of damage; it is not a fixed 75% reduction.";
         if(!Float.isFinite(power))return "Combined glyph values are withheld while contributing bonuses are unidentified or unavailable.";
         if(armor.glyph instanceof Flow)return "When moving through water, this glyph's current movement rate is "+n((2+.5f*raw)*power)+" times normal before other movement effects. Higher rate means less game time per step, not faster attacks.";
@@ -71,7 +84,7 @@ public final class GlyphExplanation {
         else if(armor.glyph instanceof Swiftness)effect="_Swiftness_\nWhen no enemy is within a 3-tile passable path, movement-rate contribution = (1.2 + 0.04 × armor level) × power. Base before power: "+n(1.2f+.04f*raw)+" times normal."+(Float.isFinite(power)?" With current known power: "+n((1.2f+.04f*raw)*power)+" times normal.":"")+" Each effective level adds 0.04 to the base factor. This is a conditional potential benefit, not a report that no unseen enemy is nearby. It does not directly speed attacks.";
         else if(armor.glyph instanceof Camouflage)effect="_Camouflage_\nEligible grass activation prolongs invisibility to round((3 + armor level / 2) × power) turns."+(Float.isFinite(power)?" Current duration offered: "+Math.round((3+raw/2f)*power)+" turns.":"")+" It keeps the longer invisibility duration rather than adding every activation's duration together. Each effective level adds half a turn before power and integer rounding. Invisibility can still end early through an action that breaks it.";
         else if(armor.glyph instanceof AntiMagic)effect="_Anti-magic_\nSupported magical damage gains a protection roll from round(armor level × power) to round((3 + 1.5 × armor level) × power) damage points."+(Float.isFinite(power)?" Current range: "+Math.round(raw*power)+"–"+Math.round((3+1.5f*raw)*power)+" points.":"")+" This is damage blocked per applicable hit, not a percentage or universal spell immunity. Armor tier does not enter this glyph's range; level and power do. Rolls are biased toward the middle.";
-        else if(armor.glyph instanceof Brimstone)effect="_Brimstone_\nAn active glyph grants immunity to the Burning status damage source. It does not promise immunity to every attack with a fire theme. Arcana and further upgrades do not strengthen this immunity; normal armor upgrades can still improve the armor's own protection.";
+        else if(armor.glyph instanceof Brimstone)effect="_Brimstone_\n"+brimstone(power,hero,true);
         else if(armor.glyph instanceof Stone)effect="_Stone_\nOrdinary evasion-based dodges are disabled. For an applicable attack, the glyph compares the attacker's accuracy with your would-be evasion, including its supported score modifiers and glyph power on evasion. Let p be its calculated hit chance: p = accuracy / (2 × evasion) when evasion ≥ accuracy, otherwise p = 1 − evasion / (2 × accuracy). Remaining damage factor = clamp((1 + 3 × p) / 4, 0.25, 1); damage is rounded upward after multiplying by this factor. Thus at most 75% is removed by this step, with the actual amount depending on that attacker and your scores. There is no fixed reduction percentage for all enemies. Armor level does not directly enter this glyph's conversion formula.";
         else if(armor.glyph instanceof Viscosity){float q=(level+1f)/(level+6f)*power;effect="_Viscosity_\nDeferred fraction q = (max(0, armor level) + 1) / (max(0, armor level) + 6) × power."+(Float.isFinite(power)?" Current q: "+n(q)+".":"")+" For q ≤ 1, ceil(remaining attack damage × q) is delayed. For q > 1, the remaining attack damage is first reduced to round(damage / q), and all of that is delayed. Delayed damage is not automatically cancelled: after an initial one-turn delay, each tick sends max(1, floor(remaining deferred damage × 0.1)) damage points to the normal damage handler. Existing deferred amounts add together. Later protection and immunity rules can still affect HP loss.";}
         else {
