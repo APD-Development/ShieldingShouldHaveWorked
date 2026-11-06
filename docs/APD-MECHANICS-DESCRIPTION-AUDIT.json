@@ -3792,6 +3792,16 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/FoodExplanation.java",
       "sha256": "ecf47ffa5eb8c64e6951b0a9d4ff2fb417e0144810b89394c51bc3af39c95377",
       "boundary": "Hunger/food units, thresholds, strict starvation reserve, nutrition limits and actual meal-time preview with no RNG consumption. Not complete special food effect or all resource-loop semantic closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Momentum.java",
+      "sha256": "0bf5b63bfbe02efc22ff30c6c0e216733677b9d81624b4d5ce7cb48a232a51c1",
+      "boundary": "Freerun counters/speed/armor evasion path and Speedy Stealth timing; shadowmeld refresh/sensing/hunger and adjacent-enemy exit explanation. Actual counter/evasion/expiry handlers tested; no complete stealth AI/movement semantic closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Shadows.java",
+      "sha256": "e8272b9c742ade454b8d795518a4f7623a4e45e0c25cafbb068c38f648ba4709",
+      "boundary": "Freerun counters/speed/armor evasion path and Speedy Stealth timing; shadowmeld refresh/sensing/hunger and adjacent-enemy exit explanation. Actual counter/evasion/expiry handlers tested; no complete stealth AI/movement semantic closure."
     }
   ]
 }

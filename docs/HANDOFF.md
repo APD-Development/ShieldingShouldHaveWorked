@@ -1,3 +1,7 @@
+## 2026-11-06 Momentum/Shadows checkpoint
+
+Full local2762/446 pass, raw JUnit and summary preserved /workspace/apd-momentum-shadows-local-*. Freerun counter/armor contribution and shadowmeld refresh/expiry/adjacency tests match actual handlers. Corrected universal invisibility protection and unconditional no-armor evasion default claims without changing mechanics. Last remote source-only2759 run42231749749 pending retrieval. No APK assembly/delivery; broad semantic audit continues with ascension pressure/timing.
+
 ## 2026-11-06 hunger/food checkpoint
 
 Full local2759/446 passed; raw JUnit and summary preserved /workspace/apd-food-units-local-*. Hunger live fractional units, reserve and strict starvation request explanation backed by actual act/save tests. Food nutrition/current actual eating-time description backed by actual satisfaction/challenge and pure time/RNG tests; unsafe/special food effects remain separate. Source-only request2759 includes previous combo timer; wait for exact Android/desktop receipt. Remote d54a75f44 proof2754/446 downloaded/hashed, ledger updated. No APK assembly or delivery. Continue remaining visible status/running mechanics; preserve two-pair daily count and fallback365.

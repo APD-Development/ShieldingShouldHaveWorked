@@ -458,3 +458,12 @@ Food summary displays actual base energy after current On Diet division, labelle
 Remote d54a75f44 receipt actually downloaded/verified:2754/446, Android/desktop source compile job127934644827/run42230439420; artifact13507922559 SHAa5024a5b8a82469403ec3e9ec20246f84c54bd03428385cffe61315cee0496da. Newer source verification follows; no application assembly or device claim.
 
 Final food/hunger full2759/446 zero failures/errors/skips, preserved `/workspace/apd-food-units-local-junit.zip` plus summary and `/workspace/apd-food-units-full.log`. Exact source-only verification requested.
+
+
+### Momentum and shadowmeld
+
+Momentum panel shows separate stored charges, freerun countdown and recharge countdown, actual movement rate and conversion2S/10+4S. Explains Speedy Stealth pause conditions, rank3 invisible speed without automatic freerun evasion, exact stationary charge loss, and armor-path evasion floor(heroL/2)+excessArmorStrength×EvasiveArmorRank. Existing no-armor path does not receive that armor contribution; Stone has its separate defense rule. Default running text corrected to reflect this limitation, without balance changes. Eight real act() states test invisibility/rank timer behavior, actual armor evasion adds10 in the controlled case; stationary10→7 and invisible speed without freerun dodge tested.
+
+Shadows is a subclass of Invisibility, so specialized explanation now precedes generic invisibility. Details cover nearby senses, hunger accumulation÷1.5, existing starvation not prevented, short counter refreshedto2 (replacement), countdown, differently aligned adjacent monster and normal dispel rules. Default universal attack-protection claim removed. Controlled real act() trigger tests verify refresh/expiry/adjacency; test double records detach request instead of rendering floor-observation cleanup. No claim of physical-phone testing.
+
+Full Momentum/Shadows2762/446 zero failures/errors/skips, preserved raw local summary/JUnit and42s full log. New text remains unrendered on a native device.

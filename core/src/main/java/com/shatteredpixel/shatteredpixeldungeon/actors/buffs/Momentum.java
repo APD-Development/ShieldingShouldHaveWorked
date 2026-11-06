@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -101,6 +104,10 @@ public class Momentum extends Buff implements ActionIndicator.Action {
 			BuffIndicator.refreshHero();
 		}
 	}
+
+    public int storedStacks(){return momentumStacks;}
+    public int remainingRunUpdates(){return freerunTurns;}
+    public int remainingCooldownUpdates(){return freerunCooldown;}
 
 	public boolean freerunning(){
 		return freerunTurns > 0;
