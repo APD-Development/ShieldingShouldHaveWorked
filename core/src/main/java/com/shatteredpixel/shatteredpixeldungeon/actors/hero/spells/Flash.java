@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -34,6 +37,8 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 public class Flash extends TargetedClericSpell {
 
 	public static Flash INSTANCE = new Flash();
+
+	public static int maximumDistance(Hero hero){ return 2+hero.pointsInTalent(Talent.FLASH); }
 
 	@Override
 	public int icon() {
@@ -69,7 +74,7 @@ public class Flash extends TargetedClericSpell {
 		}
 
 		if (Dungeon.level.solid[target] || (!Dungeon.level.mapped[target] && !Dungeon.level.visited[target])
-				|| Dungeon.level.distance(hero.pos, target) > 2+hero.pointsInTalent(Talent.FLASH)){
+				|| Dungeon.level.distance(hero.pos, target) > maximumDistance(hero)){
 			GLog.w(Messages.get(this, "invalid_target"));
 			return;
 		}

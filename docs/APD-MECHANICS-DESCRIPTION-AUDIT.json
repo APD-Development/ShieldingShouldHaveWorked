@@ -3642,6 +3642,16 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/Radiance.java",
       "sha256": "ac89fae234e93d86b7a5ee6f5b0d424ab1a49efb9a7baf2613e7161087777fc2",
       "boundary": "Primary per-character effect and target rules explained; exact original effect step extracted without FX/time/order changes for regression. Actual removed/preserved/rejected status/shield and first-mark/repeat-damage/visibility/alignment tests."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/Flash.java",
+      "sha256": "11e4a0dd8a74c6caebbc7bca660a2ccefdb9028444cb944e21f0502614d1339b",
+      "boundary": "Primary charge/range/invalid-target or shield/expiry rules. Named same runtime amount and actual reject/conditional-shield handler tests; no whole spell/terrain semantic closure claim."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/DivineIntervention.java",
+      "sha256": "edb0fc1144cac8e6b8eb04d7d761c484ae9147fca810bacfcfc76ce8171d5570",
+      "boundary": "Primary charge/range/invalid-target or shield/expiry rules. Named same runtime amount and actual reject/conditional-shield handler tests; no whole spell/terrain semantic closure claim."
     }
   ]
 }

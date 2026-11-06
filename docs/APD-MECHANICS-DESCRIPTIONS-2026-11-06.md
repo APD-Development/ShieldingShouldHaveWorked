@@ -367,3 +367,10 @@ Internal367 full native72 passed623.662s; six display configurations passed11 me
 ## Cleanse and Radiance effect rules
 
 Cleanse explains negative-status filtering, conversion/Lost Inventory exceptions, stronger existing Barrier preservation and rank-dependent status rejection; no universal invulnerability claim. Radiance explains first illumination vs repeated raw magic damage, visible non-allied/neutral targets, active-after-effect paralysis and dark-floor Light. Exact existing per-character logic moved to shared effect-step helpers, preserving casting target iteration/order, time, charge and VFX. Actual handlers verify exclusions/negative rejection/normal damage, shield preservation, neutral/allied/nonvisible targets and first/repeated casts. Full local2722/445 passes44s with no failures/errors/skips. Existing spell gating and balance unchanged.
+
+
+## Flash and Divine Intervention primary rules
+
+Flash explains2+rank range, known/non-solid target guard plus normal teleport reachability/occupancy, one-time-unit successful movement and2+recordedFlashCasts charge cost. Refreshing the same Ascended Form does not reset that counter. Actual rejected-target path verifies no action/counter spend; cost/range update at each count/rank. Divine Intervention explains100+50rank shield offers, stronger-shield preservation, the preceding ordinary spell shield contribution,2+rank extension and once-per-existing-effect flag. Allied DivineShield actual shielding becomes0 without hero AscendBuff and detaches next update, verified against actual effect. Same literals named/reused without balance edits. Targeted suite passes; final full count recorded separately. No new APK assembly.
+
+Full local2724/445 passes41s with zero failures/errors/skips. Prior2719 remote source receipt downloaded/source/count/hash verified and persisted.
