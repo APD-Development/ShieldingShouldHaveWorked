@@ -1,3 +1,9 @@
+## 2026-11-06 — non-direct wand source verified; staff explanation follow-up
+
+Source0e5b7a1a0453552dbdd03f03be553cfd4f7d23e0/run42158043851 verified2636 tests445 suites and all Android/desktop Java gates. Actual downloaded artifact13475159638 is488693bytes SHA256791d31dd9070330c78ea15dd4acd29fabc269860db931354d1cea4ef75a4a4e5, JSON inspected. New StaffExplanation covers all13 normal imbued on-hit paths; local full2640 tests445 suites plus final repeated full staff-info RNG test pass. Remote full source gate pending; no APK/version change/native acceptance/phone claim.
+
+Whole-game audit remains incomplete (remaining ability/spell/status/equipment secondary/translation facets and actual rendered acceptance). Source-only progress stays on approved Codex branch. Preserve TEST365 verified playable pair, all prior Search/waiting source fixes, appID/key/player saves and daily APK limits. Current detailed scope and real failed fixtures/source boundaries are in APD-MECHANICS-DESCRIPTIONS-2026-11-06.md.
+
 ## 2026-11-06 — ability and sleep source verified; non-direct wand facets follow
 
 Ability sourceb13ba58fcf91c796387e46244ee29bd6712fb7ff/run42156881957 verified2629 tests445 suites and all Java gates. Actual artifact13475161872 downloaded490960bytes SHA2565ddc7bb380239c43f05669d7c458e3f305cd90cf19d2da1c2299b81b5494378e, JSON inspected. Sleep/paralysis source7d39e83649d8f45730793747b8dd1803bd9b1080/run42157230235 verified2632 tests445 suites/all Java gates; artifact13474592963 actual489127bytes SHA2560bd8a253ab9f1a68d00962da90276549b383386d4a2455732d524d4b1a8c6392 downloaded/JSON inspected.

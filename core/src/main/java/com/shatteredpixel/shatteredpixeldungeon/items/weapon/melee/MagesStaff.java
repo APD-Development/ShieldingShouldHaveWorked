@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -294,6 +297,10 @@ public class MagesStaff extends MeleeWeapon {
 			wand.charge(owner, STAFF_SCALE_FACTOR);
 		}
 	}
+
+    public String mechanicsDetails() {
+        return com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.StaffExplanation.details(this, wand, Dungeon.hero);
+    }
 
 	public Class<?extends Wand> wandClass(){
 		return wand != null ? wand.getClass() : null;

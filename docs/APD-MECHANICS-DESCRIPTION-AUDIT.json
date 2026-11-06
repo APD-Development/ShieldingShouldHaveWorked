@@ -3190,8 +3190,8 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/MechanicsDetails.java",
-      "sha256": "89541e6c98cddde378df3b51e5a7547ef6e9573900970089a1c049b1cd4f593a",
-      "boundary": "Selected Liquid Willpower, Shield Battery, Inscribed Power, Liquid Nature, Liquid Agility and Precise Assault explanation facets only; remaining talents and abilities remain open. Read-only known wand level/damage/charge explanation and Wild Magic preview facets. Not all targeting, wand-specific secondary effects, staff abilities or non-damaging wand mechanics closure. Armor ability charge/recharge explanation and optional bounded description UI only; individual ability effect formulas and native rendered acceptance remain open."
+      "sha256": "e7ca9eab01216ebf9a1e5b26afe560bc8d2743199453f887dc1cdd863e29671e",
+      "boundary": "Selected Liquid Willpower, Shield Battery, Inscribed Power, Liquid Nature, Liquid Agility and Precise Assault explanation facets only; remaining talents and abilities remain open. Read-only known wand level/damage/charge explanation and Wild Magic preview facets. Not all targeting, wand-specific secondary effects, staff abilities or non-damaging wand mechanics closure. Armor ability charge/recharge explanation and optional bounded description UI only; individual ability effect formulas and native rendered acceptance remain open. Thirteen built-in Battlemage imbued-staff on-hit explanation facets, including conditional probability versus amount/duration/resource units and read-only known-level previews. Not all direct-zap secondary effects or other class ability closure."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/TalentExplanation.java",
@@ -3255,8 +3255,8 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/MagesStaff.java",
-      "sha256": "c535ecb3ccbd3b8933e519e4e6a2fe4d2d370b7962b826357a44cbd991cb6672",
-      "boundary": "Selected range accuracy, freerunning and Empowered Strike explanation facets only; other item abilities/secondary effects remain open."
+      "sha256": "b7d4f8cabce1fd7db2c3aed09e4e8a1798b431cd7d0e4d3d9fa218e40725a59c",
+      "boundary": "Selected range accuracy, freerunning and Empowered Strike explanation facets only; other item abilities/secondary effects remain open. Thirteen built-in Battlemage imbued-staff on-hit explanation facets, including conditional probability versus amount/duration/resource units and read-only known-level previews. Not all direct-zap secondary effects or other class ability closure."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/BuffExplanation.java",
@@ -3347,6 +3347,11 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfWarding.java",
       "sha256": "0574a0b44b50eeeef6c583e72bca0bd27ce75a87be5bd54fc1d7427c602b14d4",
       "boundary": "Selected non-direct wand charge/allowance/resistance/support facets: actual Regrowth integer-quotient formula, Corruption shared strength and read-only weighted effect pools, ordinary-versus-temporary Warding levels; not all staff/secondary/targeting effect closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/StaffExplanation.java",
+      "sha256": "18e1b5a7c21a341df2ce2a0fd4574b3928c759720b99636aac2455b44d1420d6",
+      "boundary": "Thirteen built-in Battlemage imbued-staff on-hit explanation facets, including conditional probability versus amount/duration/resource units and read-only known-level previews. Not all direct-zap secondary effects or other class ability closure."
     }
   ]
 }
