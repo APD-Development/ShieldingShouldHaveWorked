@@ -3767,6 +3767,16 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/TalentExplanation.java",
       "sha256": "23e7cd00320edb8ce108461e686a388487c2167345cfc293ca0da053ae04a811",
       "boundary": "Endless Rage maximum/storage versus damage cap, Enraged Catalyst additive power, Cleave kill-window replacement and Lethal Defense recharge-credit explanation facets. Actual handlers/save counters tested. No full finisher/rage/recovery semantic closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Combo.java",
+      "sha256": "cf888516fe59aa8dd6a99767efbdf473c4e2b1b1da941310f2eda6ee729cbe0a",
+      "boundary": "Read-only live combo timer/count, Hold Fast decay, move requirements and primary damage-input formula explanation. Actual timer/position/state regressions; not complete finisher splash/AI/VFX semantic closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/MechanicsDetails.java",
+      "sha256": "5b89e85406e0c71fb5c09751138503da7d6c5ac782ce4463de5acd2b94fc91b9",
+      "boundary": "Read-only live combo timer/count, Hold Fast decay, move requirements and primary damage-input formula explanation. Actual timer/position/state regressions; not complete finisher splash/AI/VFX semantic closure."
     }
   ]
 }

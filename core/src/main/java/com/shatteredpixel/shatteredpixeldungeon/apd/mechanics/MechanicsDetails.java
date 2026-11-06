@@ -66,6 +66,11 @@ public final class MechanicsDetails {
     }
     public static String buff(Buff buff,String visibleDescription){
         String extra=BuffExplanation.details(buff);
+        if(buff instanceof Combo){
+            Combo combo=(Combo)buff;int count=combo.getComboCount();
+            extra+="\n\n_Combo count and remaining window_\nCurrent count: "+count+" successful combo hits; remaining timer: "+ObfuscationExplanation.number(combo.remainingComboTime())+" game-time units. Each scheduled update normally subtracts 1. With the current position and Hold Fast benefit, the next update subtracts "+ObfuscationExplanation.number(holdFastDecay(buff.target))+". Inspecting does not consume a finisher, spend the timer or end an out-of-position Hold Fast benefit.\nAn ordinary hit keeps at least a five-unit window under its own rule. A qualifying kill replaces it with the Cleave window; it does not add that window. Finisher requirements are counts, not charges or weapon upgrade levels: Clobber "+Combo.ComboMove.CLOBBER.comboReq+", Slam "+Combo.ComboMove.SLAM.comboReq+", Parry "+Combo.ComboMove.PARRY.comboReq+", Crush "+Combo.ComboMove.CRUSH.comboReq+", Fury "+Combo.ComboMove.FURY.comboReq+". Clobber and Parry each have their own already-used restriction.\nSlam adds round(a defense roll × count / 5) damage before later attack processing; it does not multiply every damage source by that amount. Crush uses count / 4 as its direct attack damage factor; at your current count that is "+ObfuscationExplanation.number(.25f*count)+" times the normal attack input. Fury can attempt up to the combo count in strikes, each using a 0.6 attack-damage factor, and can end early if the target dies, leaves reach or the hero is paralysed. These are not promises of final HP loss. Ordinary finisher hit rules, immunity, defenses and other effects still apply.";
+        }
+
         if(buff instanceof Talent.LiquidAgilACCTracker && Dungeon.hero!=null){
             extra+="\n\n_Remaining potion accuracy uses_\n"+((Talent.LiquidAgilACCTracker)buff).uses+" qualifying attack uses remain.\n"+TalentExplanation.details(Talent.LIQUID_AGILITY,Dungeon.hero.pointsInTalent(Talent.LIQUID_AGILITY));
         }

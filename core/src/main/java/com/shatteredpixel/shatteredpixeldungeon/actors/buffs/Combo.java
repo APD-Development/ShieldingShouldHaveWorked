@@ -281,6 +281,8 @@ public class Combo extends Buff implements ActionIndicator.Action {
 		return best;
 	}
 
+    public float remainingComboTime(){return comboTime;}
+
 	public int getComboCount(){
 		return count;
 	}

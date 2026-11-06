@@ -119,6 +119,14 @@ public class MechanicsExplanationTest {
    for(int i=0;i<20;i++)seal.reduceCooldown(rank/3f);seal.storeInBundle(state);assertEquals(-150,state.getInt("cooldown"));seal.activate();seal.storeInBundle(state);assertEquals(0,state.getInt("cooldown"));
   }
  }
+ @Test public void comboDetailsMatchActualDecayAndPreserveInactiveHoldFastAndSavedState(){
+  for(int rank=0;rank<=3;rank++)for(boolean samePosition:new boolean[]{false,true}){
+   hero.talents.get(0).put(Talent.HOLD_FAST,rank);HoldFast hold=Buff.affect(hero,HoldFast.class);hold.pos=samePosition?hero.pos:hero.pos+1;
+   Combo combo=new Combo();combo.target=hero;com.watabou.utils.Bundle state=new com.watabou.utils.Bundle();combo.storeInBundle(state);state.put("combotime",10f);state.put("count",8);combo.restoreFromBundle(state);
+   com.watabou.utils.Bundle before=new com.watabou.utils.Bundle();combo.storeInBundle(before);String text=MechanicsDetails.buff(combo,combo.desc());assertTrue(text.contains("remaining timer: 10 game-time units"));assertTrue(text.contains("2 times the normal attack input"));assertSame(hold,hero.buff(HoldFast.class));com.watabou.utils.Bundle after=new com.watabou.utils.Bundle();combo.storeInBundle(after);assertEquals(before.toString(),after.toString());
+   float expected=!samePosition||rank==0?1:rank==1?.5f:rank==2?.25f:0;assertTrue(text.contains("next update subtracts "+ObfuscationExplanation.number(expected)));combo.act();assertEquals(10-expected,combo.remainingComboTime(),0);if(hero.buff(HoldFast.class)!=null)hero.buff(HoldFast.class).detach();
+  }
+ }
  @Test public void mailPlusThreeExplainsUnitsAndUsesActualObfuscationScore(){armor.level(3);RingOfArcana ring=ring(3);float expected=Obfuscation.stealthBoost(hero,hero.glyphLevel(Obfuscation.class));String text=armor.info();assertTrue(text,text.contains("2 stealth points"));assertTrue(text,text.contains(ObfuscationExplanation.number(expected)+" points"));assertTrue(text,text.contains("not percentages"));assertTrue(text,text.contains("unaware enemy"));assertFalse(text,text.contains("added stealth 2 to"));}
  @Test public void upgradesAndArcanaRefreshBothReadableValuesAndDetailedResults(){armor.level(0);RingOfArcana ring=ring(0);String first=ObfuscationExplanation.details(armor,hero);armor.level(6);ring.upgrade();String next=ObfuscationExplanation.details(armor,hero);assertNotEquals(first,next);assertTrue(next,next.contains(ObfuscationExplanation.number(Obfuscation.stealthBoost(hero,hero.glyphLevel(Obfuscation.class)))));assertTrue(next,next.contains("3 stealth points"));}
  @Test public void enhancedRingsAndProtectiveAuraMatchLiveCalculation(){armor.level(3);ring(1);Buff.affect(hero,EnhancedRings.class);Buff.affect(hero,AuraOfProtection.AuraBuff.class);float actual=Obfuscation.stealthBoost(hero,hero.glyphLevel(Obfuscation.class));assertTrue(ObfuscationExplanation.summary(armor,hero).contains(ObfuscationExplanation.number(actual)+" points"));}
