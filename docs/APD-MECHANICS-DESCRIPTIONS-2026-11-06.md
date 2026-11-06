@@ -296,3 +296,11 @@ Actual Rat combat delegates/timer spending, all five rank-based form levels, typ
 All19 selectable armor abilities now have nonempty primary-effect explanations, tested as a group without advancing RNG. This is primary-effect coverage, not a claim that every nested spell, terrain field, AI or talent has completed semantic review. Full local2693/445 pass. No replacement APK assembled;366 still withheld for screenshot clipping failure, whose source fix remains awaiting actual new-application native acceptance. Origin/main refreshed:8228fbcb0, main-only deltas remain two automation workflows; no application work overwritten or main merge performed.
 
 Downloaded successful source receipts are now recorded with exact SHA/bytes/source/count in docs/APD-SOURCE-VERIFICATION-2026-11-06.json. Prior2689 gate42211423613 receipt13498788013 was downloaded/inspected.
+
+## Fear, Vertigo and Light status details
+
+Charm/Terror explain actual five-unit recovery checks and their first-hit/allied-source exceptions, rather than inventing a damage-size-based chance. Dread now accurately requires both being outside current hero FOV and at least six tiles away before departure; its counter and whole-number half-XP/no-loot rule are explained. Named the existing six-tile threshold without changing it, exposed a pure remaining-update getter, and passed the actual threshold to English default text.
+
+Vertigo explains one equal eight-direction choice before validity checks, no reroll-until-open, and ordinary swap restrictions. Light explains max(floor base sight,6 tiles), subsequent visibility modifiers and restoring base sight at expiry. Default English Light/Dread numeric distances now use source parameters; older locales retain their existing duration argument. Initial Light text test exposed that it inherited the one-argument FlavourBuff.desc, so added the pure two-argument override.
+
+Actual recovery methods/flags, Dread counter/save-state equality, blocked Char.move RNG consumption and real Light attachment/expiry on dark/normal floor baselines tested. Full local2697/445 pass, zero failures/errors/skips. No movement, fear AI, turn cost or FOV math changed. Prior2693 gate42212246260 passed required source checks; receipt13498904382 downloaded/inspected and hashed in the shared JSON ledger.

@@ -1,3 +1,7 @@
+## 2026-11-06 fear/visibility status checkpoint
+
+Full local2697/445 pass. Five-unit fear/charm recovery, Dread actual six-tile plus out-of-FOV departure rule, Vertigo single blocked-direction roll and Light actual minimum/restored base sight explained and actual handlers tested. No mechanics changes. Prior2693 remote gate42212246260 passed; receipt13498904382 downloaded/hash/source/count inspected in shared ledger. Continue Life Link/Soul Mark/remaining descriptions; no new APK pair since withheld366. Native viewport source fix still pending replacement-application acceptance.
+
 ## 2026-11-06 primary armor-ability coverage checkpoint
 
 Full local2693/445 pass. All19 selectable abilities have read-only primary-effect explanations; actual Trinity cost/form and Rat combat/timer checks pass, preserving float truncation and existing save behavior. Shared receipt ledger docs/APD-SOURCE-VERIFICATION-2026-11-06.json preserves downloaded source gates; newest2689 receipt inspected. Main refreshed8228fbcb0, only unrelated automation differs. Current branch source still newer than withheld366; no new application pair requested. Continue remaining talent/status/nested-mechanic audit and then native replacement viewport acceptance. No checkpoints authorize stopping; no user input needed.

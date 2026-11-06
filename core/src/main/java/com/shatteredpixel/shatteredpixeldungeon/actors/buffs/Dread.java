@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -35,6 +38,8 @@ public class Dread extends Buff {
 	public int object = 0;
 
 	public static final float DURATION = 20f;
+    public static final int FLEE_DISTANCE = 6;
+    public int remainingFearUpdates(){return left;}
 
 	{
 		type = buffType.NEGATIVE;
@@ -60,7 +65,7 @@ public class Dread extends Buff {
 	public boolean act() {
 
 		if (!Dungeon.level.heroFOV[target.pos]
-				&& Dungeon.level.distance(target.pos, Dungeon.hero.pos) >= 6) {
+				&& Dungeon.level.distance(target.pos, Dungeon.hero.pos) >= FLEE_DISTANCE) {
 			if (target instanceof Mob){
 				((Mob) target).EXP /= 2;
 			}
@@ -121,7 +126,7 @@ public class Dread extends Buff {
 
 	@Override
 	public String desc() {
-		return Messages.get(this, "desc", left);
+		return Messages.get(this, "desc", left, FLEE_DISTANCE);
 	}
 
 	public void recover() {
