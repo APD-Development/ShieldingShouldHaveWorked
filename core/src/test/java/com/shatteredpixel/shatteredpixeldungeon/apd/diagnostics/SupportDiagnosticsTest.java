@@ -1,3 +1,20 @@
+/*
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 package com.shatteredpixel.shatteredpixeldungeon.apd.diagnostics;
 
 import com.shatteredpixel.shatteredpixeldungeon.apd.HeadlessTestSupport;
@@ -65,6 +82,30 @@ public class SupportDiagnosticsTest {
             ApdFiles.provider=new Provider(){@Override public void chooseExport(String n,String m,ApdFiles.ExportTarget t){t.onStream(new OutputStream(){public void write(int b)throws IOException{throw new IOException("controlled failure");}},n);}};
             DiagnosticReport.export(s->{message[0]=s;failed.countDown();});assertTrue(failed.await(5,TimeUnit.SECONDS));assertTrue(message[0].contains("could not be saved"));
         }finally{ApdFiles.provider=original;}
+    }
+    @Test public void phaseHeapSamplesHaveTimestampsUnitsAndSurviveExport()throws Exception{
+        File dir=Files.createTempDirectory("apd-diag-memory-phase-").toFile();
+        SupportDiagnostics.configure(dir,"heap phase fixture");
+        SupportDiagnostics.memoryEvent("uimsd.open_begin");SupportDiagnostics.memoryEvent("uimsd.model_READY");
+        assertTrue(SupportDiagnostics.awaitWrites(5000));
+        String report=SupportDiagnostics.report("");
+        java.util.regex.Matcher samples=java.util.regex.Pattern.compile("(?m)^(\\d+) memory.sample phase=(uimsd\\.\\w+) used_bytes=(\\d+) committed_bytes=(\\d+) limit_bytes=(\\d+)$").matcher(report);
+        int count=0;
+        while(samples.find()){
+            assertTrue(Long.parseLong(samples.group(1))>0);
+            long used=Long.parseLong(samples.group(3)),committed=Long.parseLong(samples.group(4)),limit=Long.parseLong(samples.group(5));
+            assertTrue(used>=0&&used<=committed);assertTrue(committed<=limit);count++;
+        }
+        assertEquals(2,count);
+        String persisted=new String(Files.readAllBytes(new File(dir,"session.txt").toPath()),StandardCharsets.UTF_8);
+        assertTrue(persisted.contains("phase=uimsd.open_begin"));assertTrue(persisted.contains("phase=uimsd.model_READY"));
+    }
+    @Test public void repeatedHeapSamplingRetainsOnlyBoundedRecentPhases()throws Exception{
+        File dir=Files.createTempDirectory("apd-diag-memory-bound-").toFile();SupportDiagnostics.configure(dir,"bounded phase fixture");
+        for(int i=0;i<1000;i++)SupportDiagnostics.memoryEvent("phase_"+i);
+        assertTrue(SupportDiagnostics.awaitWrites(5000));String report=SupportDiagnostics.report("");
+        assertTrue(report.contains("phase=phase_999 "));assertFalse(report.contains("phase=phase_0 "));
+        assertTrue(new File(dir,"session.txt").length()<=65536);
     }
     private static class Provider implements ApdFiles.Provider{
         public void chooseExport(String n,ApdFiles.ExportTarget t){throw new AssertionError("MIME-aware export expected");}

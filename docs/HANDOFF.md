@@ -1,3 +1,9 @@
+## 2026-11-06 UIMSD phase memory diagnostics source follow-up
+
+Full2854/446 local passed, raw /workspace/apd-uimsd-phase-local-junit.zip. Four scene phase observations capture timestamp/used/committed/limit bytes through existing bounded trace, no forcedGC/history read/new polling. Tests verify real persisted/exported readings and1000-sample bounds. These observations do not establish allocation ownership or immediate collection after release. Source-only, not368; native/phone event acceptance pending. Remote0aa2688b2 exact2851/446 plus Android debug/release/instrumentation Java and desktop compilation passed and raw receipt/digest verified. New current-source compile gate requested; no APK.
+
+368 prepared local APK/source hashes unchanged; release-tag GET still404 after original403 releasePOST. Owner prerelease/access action remains pending; no blind retry or permission bypass. Continue approved work and preserve third/final-pair cap.
+
 ## 2026-11-06 post368 unknown no-hero privacy verification
 
 Test-only follow-up compares85 actual equipment types at hidden+0/+3/+7 without a hero: identical ordinary/expanded descriptions. Full2852/446 passed, raw /workspace/apd-no-hero-privacy-local-junit.zip. App source unchanged since0aa2688b2; its required full Android/desktop source check42274074088 is running. No redundant APK or compile gate triggered solely for this test addition; next app-source gate must update inventory to2852. UIMSD crash report refreshed with actual368 completed native evidence and specific publication403; live release-tag GET still404. No GitHub delivery claim, owner action pending.

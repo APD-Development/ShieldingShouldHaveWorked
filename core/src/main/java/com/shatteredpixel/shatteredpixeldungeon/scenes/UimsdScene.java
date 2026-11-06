@@ -138,6 +138,7 @@ public class UimsdScene extends PixelScene {
         if(mainModel!=null&&mainModel!=model)mainModel.releaseForGameplay();
         cachedHome=null;cachedCatalog=null;
         com.watabou.utils.SupportDiagnostics.event("memory.release_stats", "gameplay: derived catalogs and pending preload released");
+        com.watabou.utils.SupportDiagnostics.memoryEvent("uimsd.released_for_gameplay");
     }
 
     /** A new open must not retain the previous viewer's complete derived history. */
@@ -146,6 +147,7 @@ public class UimsdScene extends PixelScene {
         if(mainModel!=null && mainModel!=model)mainModel.releaseForGameplay();
         cachedHome=null;cachedCatalog=null;
         com.watabou.utils.SupportDiagnostics.event("uimsd.retire_previous", "derived viewer catalogs released; player history unchanged");
+        com.watabou.utils.SupportDiagnostics.memoryEvent("uimsd.previous_retired");
     }
 
 	//Opens UIMSD again where Back would have gone (after switching between demo and real data, or deleting the demo data).
@@ -177,6 +179,7 @@ public class UimsdScene extends PixelScene {
 
 	//Opens UIMSD from a screen. 'from' is where Back returns to.
 	public static void openNow( Class<? extends PixelScene> from ){
+        com.watabou.utils.SupportDiagnostics.memoryEvent("uimsd.open_begin");
 		com.watabou.utils.SupportDiagnostics.event("uimsd.open", (from == GameScene.class ? "from=game" : "from=menu") + " prewarm_failure=" + UimsdWarmCache.preparationFailure());
 		backTo = from == GameScene.class ? GameScene.class : TitleScene.class;
 		final Class<? extends PixelScene> targetBackTo = backTo;
@@ -276,6 +279,7 @@ public class UimsdScene extends PixelScene {
 				@Override
 				public void changed(){
 					com.watabou.utils.SupportDiagnostics.event("uimsd.model", "state=" + (model == null ? "none" : model.state()) + (model != null && model.state() == UimsdModel.State.FAILED ? " failure=" + model.failure() : ""));
+                    com.watabou.utils.SupportDiagnostics.memoryEvent("uimsd.model_"+(model==null?"none":model.state()));
 					dirty = true;
 				}
 			});
