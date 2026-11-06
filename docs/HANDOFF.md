@@ -1,3 +1,9 @@
+## 2026-11-06 — wand verification complete; further talent/status review
+
+Wand source5dd2a3c2a83154875b5b87c1b6f1858c138f9abf/run42155374124/job127688155112 verified2619 tests445 suites and full Android/desktop Java gates. Actual downloaded artifact13474486568 is490600bytes SHA256631dc9fd51b74d27d338d8798179935b48cab357b22def91c3f097f64f402016, JSON inspected. Owner notified current wand verification passed, explicitly whole task still unfinished/no new APK/phone test.
+
+Further selected talent source63310016ead3a91d7630df9964bdbbdda63a3dbd/run42155816108 passed2622 tests and all Java gates; artifact13475260945 download is being verified/recorded. New status batch local2626 tests445 suites green after headless-sprite fixture correction, remote gate pending. Actual Adrenaline hero-versus-monster timing and Fury boundary corrections are explanation-only. Preserve TEST365 verified playable fallback, current daily APK limits, appID/key/player saves/statistics and all Search/waiting source work. Whole-game audit and native/phone visual acceptance remain incomplete; details in APD-MECHANICS-DESCRIPTIONS-2026-11-06.md.
+
 ## 2026-11-06 — talents/champions verified; wand UI preview follow-up
 
 Talent sourcef590de16484c5ef0dcccc089ffaa2b8e88f7b8f0/run42154278645 verified2609 tests; artifact13472988991 actual487352bytes SHA25667b2d16e524c65cdf8b1371b3fb7dc4450f6d57a060bceef1b157f54a2f34b0b downloaded/JSON inspected. Champion source64f2d0012157462f10ef2a0dc9aef3ae5d32b63b/run42154679223 verified2612 tests; artifact13473084449 actual489592bytes SHA256ab5ef38ffc1d2f073582b3e6ece79906f00b9d2eb802303b1b1ef9de7abd83cc downloaded/JSON inspected. Both passed Android debug/release/instrumentation Java and desktop source compilation; neither assembled APKs.

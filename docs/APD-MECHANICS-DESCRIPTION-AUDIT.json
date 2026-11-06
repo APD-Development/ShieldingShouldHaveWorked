@@ -3257,6 +3257,41 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/MagesStaff.java",
       "sha256": "c535ecb3ccbd3b8933e519e4e6a2fe4d2d370b7962b826357a44cbd991cb6672",
       "boundary": "Selected range accuracy, freerunning and Empowered Strike explanation facets only; other item abilities/secondary effects remain open."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/BuffExplanation.java",
+      "sha256": "e195d5c13708ac9891566c36aefc51216575bef4af3ed8dd948d2168f7915b69",
+      "boundary": "Selected Fire/Frost Imbue, Fury, Adrenaline, Stamina/Cripple description formulas, timing/immunity boundaries and read-only duration; not full numerical-system closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/FireImbue.java",
+      "sha256": "394a7aba36f0fba77f607f8360eba47f66161abad5c9cedf618f70efdd4618ec",
+      "boundary": "Selected Fire/Frost Imbue, Fury, Adrenaline, Stamina/Cripple description formulas, timing/immunity boundaries and read-only duration; not full numerical-system closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/FrostImbue.java",
+      "sha256": "14a34c71d96d6427ed1dca3956a52291ea5497c139b3c32d5c7e49441f4d36d4",
+      "boundary": "Selected Fire/Frost Imbue, Fury, Adrenaline, Stamina/Cripple description formulas, timing/immunity boundaries and read-only duration; not full numerical-system closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Fury.java",
+      "sha256": "4a9d094d164c46de1ebbfe7989b7599ffe8bae27c51f50acd317e1bb2f78ff8f",
+      "boundary": "Selected Fire/Frost Imbue, Fury, Adrenaline, Stamina/Cripple description formulas, timing/immunity boundaries and read-only duration; not full numerical-system closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Adrenaline.java",
+      "sha256": "7e715e1e130862a716b321d923a4b4a81a814bab789f211cc7fc1961b667a77c",
+      "boundary": "Selected Fire/Frost Imbue, Fury, Adrenaline, Stamina/Cripple description formulas, timing/immunity boundaries and read-only duration; not full numerical-system closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Stamina.java",
+      "sha256": "dafc08719705adaf6829da868609f8e02aa33234c7aa01354fec68cd876e542d",
+      "boundary": "Selected Fire/Frost Imbue, Fury, Adrenaline, Stamina/Cripple description formulas, timing/immunity boundaries and read-only duration; not full numerical-system closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Cripple.java",
+      "sha256": "e87b0322f1bbc1880d558fb1f0ef2ff6e9cd6b26a55140e64c5e5635e52c9131",
+      "boundary": "Selected Fire/Frost Imbue, Fury, Adrenaline, Stamina/Cripple description formulas, timing/immunity boundaries and read-only duration; not full numerical-system closure."
     }
   ]
 }
