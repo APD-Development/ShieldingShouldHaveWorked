@@ -2760,6 +2760,84 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Mob.java",
       "sha256": "7c7cbf97835918b6f1330573f56a17302d045d2afd31f3b6302265b3d7bef310",
       "status": "PENDING_SEMANTIC_REVIEW"
+    },
+    {
+      "category": "plants_and_seeds",
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Sungrass.java",
+      "sha256": "3343cde8c9f56f58e126e7bba6eeaedf770996eb5ba706fa98630644b7ed67a0",
+      "status": "PENDING_SEMANTIC_REVIEW"
+    },
+    {
+      "category": "plants_and_seeds",
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Earthroot.java",
+      "sha256": "c64d38bb55b0145e1f31270eb4d412acf3dd0f52f5a90174a178780ef3bca436",
+      "status": "PENDING_SEMANTIC_REVIEW"
+    },
+    {
+      "category": "plants_and_seeds",
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Blindweed.java",
+      "sha256": "e2aa7378bce125ca1640e921c0031b8057b59e61d2e735e210eb1ce70a3b70d7",
+      "status": "PENDING_SEMANTIC_REVIEW"
+    },
+    {
+      "category": "plants_and_seeds",
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Firebloom.java",
+      "sha256": "6a4ecda081029ab602bdc4832eaf4c3f16a63f18143203ac52473771a6a680ff",
+      "status": "PENDING_SEMANTIC_REVIEW"
+    },
+    {
+      "category": "plants_and_seeds",
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Icecap.java",
+      "sha256": "497f0ef15f9e5bfaa81800372e57c070ed4faff9820c7d01a14c2ec526d12663",
+      "status": "PENDING_SEMANTIC_REVIEW"
+    },
+    {
+      "category": "plants_and_seeds",
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Swiftthistle.java",
+      "sha256": "e15f72fe56be0399b6dabcb654583b0d05e7a12f6af5125bbbfab39fbf861a84",
+      "status": "PENDING_SEMANTIC_REVIEW"
+    },
+    {
+      "category": "plants_and_seeds",
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Starflower.java",
+      "sha256": "05fc1ca57f60b7a0388bf82a025836cdb7f50c27a22be30e042bbcb379cb4c1b",
+      "status": "PENDING_SEMANTIC_REVIEW"
+    },
+    {
+      "category": "plants_and_seeds",
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Fadeleaf.java",
+      "sha256": "8f13def41cc5bc478f74e871041b13e682ebd895cedc0b3908153979dcacc018",
+      "status": "PENDING_SEMANTIC_REVIEW"
+    },
+    {
+      "category": "plants_and_seeds",
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Mageroyal.java",
+      "sha256": "da803654823df72818fd85ce1bc1f6def634ae6093e69572cbf5c66a14100623",
+      "status": "PENDING_SEMANTIC_REVIEW"
+    },
+    {
+      "category": "plants_and_seeds",
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Sorrowmoss.java",
+      "sha256": "1da05c5f6eb6bc1f94bce8bf4bb270f1ce0de8c605b6ba34be5661b7649f2fe6",
+      "status": "PENDING_SEMANTIC_REVIEW"
+    },
+    {
+      "category": "plants_and_seeds",
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Stormvine.java",
+      "sha256": "52f1742354e1ad2614f8410fd20a782c8a788de1ae2083b2b09641fdc38495a1",
+      "status": "PENDING_SEMANTIC_REVIEW"
+    },
+    {
+      "category": "plants_and_seeds",
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Rotberry.java",
+      "sha256": "9901ea347257f6b8219413aea36eba731bfd0a40c1d199e921f237f42f6f5171",
+      "status": "PENDING_SEMANTIC_REVIEW"
+    },
+    {
+      "category": "plants_and_seeds",
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/BlandfruitBush.java",
+      "sha256": "2c0a83272f370ae5190805d91076df00018751e8b66cefb9c11680b3aa5fa9ee",
+      "status": "PENDING_SEMANTIC_REVIEW"
     }
   ],
   "review_boundaries": {
@@ -3982,6 +4060,71 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Honeypot.java",
       "sha256": "2a50ba9353f37693d2c7184fedb6995493925a86f777d75f28bfd4ad20563f15",
       "boundary": "Placement, adjacent vacancy, scaling-depth Bee spawning and pot owner tracking read. Dedicated quantitative companion explanation remains follow-up; no hidden enemy stats queried. Primary-source review only, not universal nested-interaction closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Sungrass.java",
+      "sha256": "3343cde8c9f56f58e126e7bba6eeaedf770996eb5ba706fa98630644b7ed67a0",
+      "boundary": "Ordinary/Warden primary plant effect reviewed and exposed through shared seed/ground inspector helper.13-species purity, actual Sungrass/Earthroot/Sorrowmoss branches and TimeBubble budget/save tested. Not a universal nested-interaction or native UI claim."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Earthroot.java",
+      "sha256": "c64d38bb55b0145e1f31270eb4d412acf3dd0f52f5a90174a178780ef3bca436",
+      "boundary": "Ordinary/Warden primary plant effect reviewed and exposed through shared seed/ground inspector helper.13-species purity, actual Sungrass/Earthroot/Sorrowmoss branches and TimeBubble budget/save tested. Not a universal nested-interaction or native UI claim."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Blindweed.java",
+      "sha256": "e2aa7378bce125ca1640e921c0031b8057b59e61d2e735e210eb1ce70a3b70d7",
+      "boundary": "Ordinary/Warden primary plant effect reviewed and exposed through shared seed/ground inspector helper.13-species purity, actual Sungrass/Earthroot/Sorrowmoss branches and TimeBubble budget/save tested. Not a universal nested-interaction or native UI claim."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Firebloom.java",
+      "sha256": "6a4ecda081029ab602bdc4832eaf4c3f16a63f18143203ac52473771a6a680ff",
+      "boundary": "Ordinary/Warden primary plant effect reviewed and exposed through shared seed/ground inspector helper.13-species purity, actual Sungrass/Earthroot/Sorrowmoss branches and TimeBubble budget/save tested. Not a universal nested-interaction or native UI claim."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Icecap.java",
+      "sha256": "497f0ef15f9e5bfaa81800372e57c070ed4faff9820c7d01a14c2ec526d12663",
+      "boundary": "Ordinary/Warden primary plant effect reviewed and exposed through shared seed/ground inspector helper.13-species purity, actual Sungrass/Earthroot/Sorrowmoss branches and TimeBubble budget/save tested. Not a universal nested-interaction or native UI claim."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Swiftthistle.java",
+      "sha256": "e15f72fe56be0399b6dabcb654583b0d05e7a12f6af5125bbbfab39fbf861a84",
+      "boundary": "Ordinary/Warden primary plant effect reviewed and exposed through shared seed/ground inspector helper.13-species purity, actual Sungrass/Earthroot/Sorrowmoss branches and TimeBubble budget/save tested. Not a universal nested-interaction or native UI claim."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Starflower.java",
+      "sha256": "05fc1ca57f60b7a0388bf82a025836cdb7f50c27a22be30e042bbcb379cb4c1b",
+      "boundary": "Ordinary/Warden primary plant effect reviewed and exposed through shared seed/ground inspector helper.13-species purity, actual Sungrass/Earthroot/Sorrowmoss branches and TimeBubble budget/save tested. Not a universal nested-interaction or native UI claim."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Fadeleaf.java",
+      "sha256": "8f13def41cc5bc478f74e871041b13e682ebd895cedc0b3908153979dcacc018",
+      "boundary": "Ordinary/Warden primary plant effect reviewed and exposed through shared seed/ground inspector helper.13-species purity, actual Sungrass/Earthroot/Sorrowmoss branches and TimeBubble budget/save tested. Not a universal nested-interaction or native UI claim."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Mageroyal.java",
+      "sha256": "da803654823df72818fd85ce1bc1f6def634ae6093e69572cbf5c66a14100623",
+      "boundary": "Ordinary/Warden primary plant effect reviewed and exposed through shared seed/ground inspector helper.13-species purity, actual Sungrass/Earthroot/Sorrowmoss branches and TimeBubble budget/save tested. Not a universal nested-interaction or native UI claim."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Sorrowmoss.java",
+      "sha256": "1da05c5f6eb6bc1f94bce8bf4bb270f1ce0de8c605b6ba34be5661b7649f2fe6",
+      "boundary": "Ordinary/Warden primary plant effect reviewed and exposed through shared seed/ground inspector helper.13-species purity, actual Sungrass/Earthroot/Sorrowmoss branches and TimeBubble budget/save tested. Not a universal nested-interaction or native UI claim."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Stormvine.java",
+      "sha256": "52f1742354e1ad2614f8410fd20a782c8a788de1ae2083b2b09641fdc38495a1",
+      "boundary": "Ordinary/Warden primary plant effect reviewed and exposed through shared seed/ground inspector helper.13-species purity, actual Sungrass/Earthroot/Sorrowmoss branches and TimeBubble budget/save tested. Not a universal nested-interaction or native UI claim."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Rotberry.java",
+      "sha256": "9901ea347257f6b8219413aea36eba731bfd0a40c1d199e921f237f42f6f5171",
+      "boundary": "Ordinary/Warden primary plant effect reviewed and exposed through shared seed/ground inspector helper.13-species purity, actual Sungrass/Earthroot/Sorrowmoss branches and TimeBubble budget/save tested. Not a universal nested-interaction or native UI claim."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/BlandfruitBush.java",
+      "sha256": "2c0a83272f370ae5190805d91076df00018751e8b66cefb9c11680b3aa5fa9ee",
+      "boundary": "Ordinary/Warden primary plant effect reviewed and exposed through shared seed/ground inspector helper.13-species purity, actual Sungrass/Earthroot/Sorrowmoss branches and TimeBubble budget/save tested. Not a universal nested-interaction or native UI claim."
     }
   ]
 }

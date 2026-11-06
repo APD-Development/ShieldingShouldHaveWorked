@@ -1,5 +1,5 @@
 {
-  "status": "CORE2835_NATIVE72_ALPHA4_DISPLAY11_PANEL3_VERIFIED_PRIVATE_PUBLICATION_REQUESTED_NOT_DELIVERED",
+  "status": "VERIFIED_PAIR_PRIVATE_RELEASE_CREATION_BLOCKED_HTTP403_LOCAL_WORKSPACE_COPIES_LINKED",
   "source": "7ef0800dfd6c4e624d3c001e886eb1a711d80a68",
   "number": 368,
   "developer_run": 42262060915,
@@ -613,5 +613,27 @@
     ],
     "validated_images": 110,
     "physical_phone_tested": false
+  },
+  "publication": {
+    "run": 42264869642,
+    "attempt1_job": 128054040965,
+    "attempt1_error": "POST git/refs for release tag: HTTP403 Resource not accessible by integration",
+    "tag_created_using_existing_authorized_git_connection": "apd-alpha-preview-368 ->7ef0800dfd6c4e624d3c001e886eb1a711d80a68; no ref overwritten",
+    "attempt2_job": 128056132749,
+    "attempt2_error": "POST releases: urllib.error.HTTPError HTTP Error403 Forbidden",
+    "actual_token_permissions": [
+      "Actions:read",
+      "Contents:write",
+      "Metadata:read"
+    ],
+    "source_and_history_scans": "Both actual attempts passed; key-free corresponding source preserved",
+    "github_release_published": false,
+    "owner_action": "Async question asks owner to create prerelease for existing tag or check repository access; no answer yet",
+    "local_workspace_links_sent": true,
+    "workspace_link_exact_time": "Not recorded; do not infer asset publication or GitHub delivery from workspace links",
+    "local_files": "/workspace/APD368-Downloads",
+    "prepared_artifact": 13526323860,
+    "prepared_artifact_sha256": "cac7436863477f01822174f91c9911d53b2cf6046c104c2c45c8b94fa9c277a0",
+    "source_sha256": "c52135f8b66da133fc1f117bc006b4452440f0a1ce81faa356b3b68479a26241"
   }
 }

@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -157,6 +160,9 @@ public abstract class Plant implements Bundlable {
 		}
 		
 		protected Class<? extends Plant> plantClass;
+
+        /** Visible seed species, without constructing or activating its plant. */
+        public Class<? extends Plant> plantType(){return plantClass;}
 		
 		@Override
 		public ArrayList<String> actions( Hero hero ) {

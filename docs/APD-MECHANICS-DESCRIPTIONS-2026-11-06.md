@@ -581,3 +581,6 @@ Source8ab4a7915 full2835/446 passes, constrained256MiB92/12 actual XML passes. R
 
 ### Post368 Poison units correction (newer source only)
 The newly added raw-meat and Poison Dart details called the source value strength. Actual Poison.set/setAttributed receives duration; each normal tick spends one unit and its damage rule depends on remaining duration. Text now says game-time duration; no gameplay formula changed. Regression invokes the actual seeded raw-meat Poison outcome and actual Dart.proc across health/floor inputs. Full2837/446 local passes; source-only compilation pending. Not included in the already-built368 pair; report admits that remaining wording issue.
+
+### Plant and seed explanations (newer source, not APK368)
+13 ordinary/Warden species now share details in inventory seeds and an expandable ground-plant inspector. Distinguishes cloud volume, Poison duration, healing reserve/progress, block limits, time-intercept allowance and subclass substitutions. Uses actual public species/floor/hero values, never creates a destination or triggers a plant. Tests compare actual Sungrass, Earthroot and Sorrowmoss handlers, all13 species×two subclass inspection purity, and fractional TimeBubble save/read invariants. Full2840/446 passes locally; Android/desktop source gate and native rendering pending. No new APK requested.

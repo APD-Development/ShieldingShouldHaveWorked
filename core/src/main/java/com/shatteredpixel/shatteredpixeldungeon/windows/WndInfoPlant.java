@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -31,7 +34,8 @@ public class WndInfoPlant extends WndTitledMessage {
 	public WndInfoPlant( Plant plant ) {
 		
 		super(TerrainFeaturesTilemap.tile( plant.pos, Dungeon.level.map[plant.pos]),
-				Messages.titleCase(plant.name()), plant.desc());
+				Messages.titleCase(plant.name()), plant.desc(),
+                ()->com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.PlantExplanation.details(plant.getClass(),Dungeon.hero),0);
 
 	}
 }
