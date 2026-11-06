@@ -1,3 +1,7 @@
+## 2026-11-06 Scroll Empower/Hold Fast checkpoint
+
+Full local2780/446 passed with raw local JUnit/summary/log preserved. Actual wand-use cleanup tests prove Magic Charge priority versus Scroll counter and preserve source marker through inspection; saved counts stable. Hold Fast moved-position preview remains pure while real act detaches. Remotee7e6acf4b actual2776/446 compile receipt downloaded/hashed, ledger updated. Source-only2780 request includes prior passive-block changes, pending exact remote results. No APK assembly/delivery; two app pairs today only. Continue remaining numerical talent/item audit after backup.
+
 ## 2026-11-06 passive weapon block checkpoint
 
 Local full2778/446 pass, raw local JUnit/summary/log preserved. Five passive block classes now explain strength penalties and damage-point ranges;750 seeded actual Hero dr comparisons including negative levels, Force stance exclusion, hidden-value and catalog-purity tests pass. Descriptions never call mutating fightingUnarmed. Current remote source-only2776 gate still to retrieve; new helper not remotely compiled yet. No APK assembly/delivery. Continue Scroll Empower/Hold Fast status details and remaining applicable numerical semantics.

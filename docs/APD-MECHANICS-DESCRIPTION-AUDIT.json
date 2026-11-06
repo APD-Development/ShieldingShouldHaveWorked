@@ -3832,6 +3832,16 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/WeaponExplanation.java",
       "sha256": "ba8d9b3c23b2e9769a39459c205a97a41478018424401931a21d643b838ee211",
       "boundary": "Five passive-block weapon damage-point ranges, strength penalty, positive-only contribution and unarmed exclusion, including cursed/negative levels. Actual seeded Hero defense handler tested; not full active Guard/stance/mitigation closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/ScrollEmpower.java",
+      "sha256": "6476be4296b5070ad1d57f168d27e80d41de5ae461cd7bdee49207464c8e8a63",
+      "boundary": "Scroll Empower effective-level/use counter versus charges/time, Magic Charge cleanup priority and Hold Fast stale-position details. Actual wand-use cleanup/save marker and Hold Fast effect handler tested; not full wand-curse/charge/timer interaction closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/BuffExplanation.java",
+      "sha256": "31616c4ea0309ef1199cb7edd38046072af4a90b25d5897a67deeb6979116869",
+      "boundary": "Scroll Empower effective-level/use counter versus charges/time, Magic Charge cleanup priority and Hold Fast stale-position details. Actual wand-use cleanup/save marker and Hold Fast effect handler tested; not full wand-curse/charge/timer interaction closure."
     }
   ]
 }
