@@ -1,3 +1,7 @@
+## 2026-11-06 Monk talents checkpoint
+
+Full local2776/446 pass, raw /workspace/apd-monk-talents-local-JUnit/summary and full log preserved (actual zip lowercase junit). Monastic rank2 exactly8/10 false baseline confirmed; descriptions corrected to slightly-above80% with exact ratio/current status, original mechanics retained. Combined Energy actual two-type handlers through save/load bothorders/ranks and lower-cost exclusions pass; tier gain explanation added. Remote4682f0f08 actual2773/446 compilation proof downloaded/hashed, ledger updated. Source-only2776 request queued; no new APK build or delivery. Continue remaining visible buffs/talents/item semantics; no stop/checkpoint pause authorized.
+
 ## 2026-11-06 Monk primary effects checkpoint
 
 Full local2773/446 pass; raw local JUnit/summary/log preserved. All five Monk primary effects in existing collapsed buff panel; no new chooser UI layout. Actual Focus setup/energy/evasion/parry and400 basic unarmed-roll checks pass. Low-strength Flurry/Kick display floor corrected; Dragon Kick push-path wording fixed without mechanics change. Primary enemy active-check observation documented, not silently gameplay-fixed. Remote5849816e3 exact2770/446 compile receipt downloaded/hashed; ledger updated. New source-only2773 request queues full core/Android/desktop verification. Broad/nested semantic audit and new native rendering remain incomplete, no APK assembly/delivery. Continue remaining visible status/talent/item explanations after checkpoint.
