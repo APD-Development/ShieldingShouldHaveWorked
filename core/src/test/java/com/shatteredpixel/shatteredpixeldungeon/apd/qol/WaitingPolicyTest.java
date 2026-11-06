@@ -128,6 +128,15 @@ public class WaitingPolicyTest {
   assertEquals(WaitingPolicy.Turn.ATE,WaitingPolicy.beforeWaitTurn(hero));Bundle savedFood=new Bundle(),savedHunger=new Bundle();food.storeInBundle(savedFood);hero.buff(Hunger.class).storeInBundle(savedHunger);
   Food restored=new Food();restored.restoreFromBundle(savedFood);assertEquals(1,restored.quantity());int hungerBefore=hero.buff(Hunger.class).hunger();hero.buff(Hunger.class).restoreFromBundle(savedHunger);assertEquals(hungerBefore,hero.buff(Hunger.class).hunger());assertTrue(SPDSettings.autoEatWhileWaiting());
  }
+ @Test public void starvationTriggerDoesNotUseRoundedUpDisplayHunger()throws Exception{
+  SPDSettings.autoEatWhileWaiting(true);food(new Food());hunger(449.5f);assertEquals(450,hero.buff(Hunger.class).hunger());assertFalse(hero.buff(Hunger.class).isStarving());assertFalse(WaitingPolicy.canAutoEat(hero));hunger(450);assertTrue(WaitingPolicy.canAutoEat(hero));
+ }
+ @Test public void hungryTriggerDoesNotUseRoundedUpDisplayHunger()throws Exception{
+  SPDSettings.autoEatWhileWaiting(true);SPDSettings.autoEatWhenHungry(true);food(new Food());hunger(299.5f);assertEquals(300,hero.buff(Hunger.class).hunger());assertFalse(WaitingPolicy.canAutoEat(hero));hunger(300);assertTrue(WaitingPolicy.canAutoEat(hero));
+ }
+ @Test public void normalNoFoodChallengeReductionStillAppliesToTheMeal()throws Exception{
+  Dungeon.challenges=Challenges.NO_FOOD;SPDSettings.autoEatWhileWaiting(true);hunger(450);food(new Food());float before=hero.cooldown();assertEquals(WaitingPolicy.Turn.ATE,WaitingPolicy.beforeWaitTurn(hero));assertEquals(350,hero.buff(Hunger.class).hunger());assertEquals(before+3,hero.cooldown(),0);
+ }
  @Test public void lockedFloorOrParalysisDoesNotConsumeFood()throws Exception{
   SPDSettings.autoEatWhileWaiting(true);hunger(450);Food food=new Food();food(food);Dungeon.level.locked=true;assertFalse(WaitingPolicy.canAutoEat(hero));Dungeon.level.locked=false;hero.paralysed=1;assertFalse(WaitingPolicy.canAutoEat(hero));assertEquals(1,food.quantity());
  }

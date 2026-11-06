@@ -109,7 +109,7 @@ public class QolStableCaptureDeviceTest {
             settleFrames();TopScoresDeviceTest.screenshot("qol-dew-settings.png");TopScoresDeviceTest.render(()->settings.get().hide());
             Sword sword=new Sword();sword.levelKnown=true;sword.cursedKnown=true;
             TopScoresDeviceTest.render(()->{RingOfForce r=new RingOfForce();r.anonymize();r.levelKnown=true;r.cursedKnown=true;Dungeon.hero.belongings.ring=r;r.activate(Dungeon.hero);});
-            showItem(sword,"Force, base armed damage","qol-force-weapon.png");
+            showItem(sword,"Force changes this weapon’s base armed damage","qol-force-weapon.png");
             ThrowingKnife knife=new ThrowingKnife();knife.levelKnown=true;knife.cursedKnown=true;
             TopScoresDeviceTest.render(()->{RingOfSharpshooting r=new RingOfSharpshooting();r.anonymize();r.levelKnown=true;r.cursedKnown=true;Dungeon.hero.belongings.misc=r;r.activate(Dungeon.hero);});
             showItem(knife,"2-6 -> 3-8","qol-sharpshooting-weapon.png");

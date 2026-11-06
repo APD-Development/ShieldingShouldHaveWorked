@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -64,7 +67,7 @@ public class WndInfoTalent extends Window {
         RenderedTextBlock txtInfo = PixelScene.renderTextBlock(description, 6);
 		txtInfo.maxWidth(width);
 		txtInfo.setPos(titlebar.left(), titlebar.bottom() + 2*GAP);
-		add( txtInfo );
+
 
 		while (PixelScene.landscape()
 				&& txtInfo.height() > 120
@@ -73,7 +76,9 @@ public class WndInfoTalent extends Window {
 			txtInfo.maxWidth(width);
 		}
 		titlebar.setRect( 0, 0, width, 0 );
-		resize( width, (int)(txtInfo.bottom() + GAP) );
+        final String visibleDescription=description;
+        float descriptionBottom=com.shatteredpixel.shatteredpixeldungeon.ui.MechanicsInfoPanel.add(this,txtInfo,titlebar.left(),titlebar.bottom()+2*GAP,width,buttonCallback==null?0:22,()->com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.MechanicsDetails.talent(talent,points,visibleDescription));
+        resize(width,(int)(descriptionBottom+GAP));
 
 		if (buttonCallback != null) {
 			RedButton button = new RedButton( buttonCallback.prompt() ) {
@@ -86,7 +91,7 @@ public class WndInfoTalent extends Window {
 			};
 			button.enable(buttonCallback.enabled());
             button.icon(Icons.get(Icons.TALENT));
-			button.setRect(0, txtInfo.bottom() + 2*GAP, width, 18);
+			button.setRect(0, descriptionBottom + 2*GAP, width, 18);
 			add(button);
 			resize( width, (int)button.bottom()+1 );
 		}

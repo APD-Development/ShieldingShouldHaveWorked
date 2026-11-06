@@ -69,7 +69,7 @@ public class ArcanaInfoDisplayTest {
         equip(0);
         String w=ArcanaInfoDisplay.weapon(sword), a=ArcanaInfoDisplay.armor(armor);
         assertTrue(w,w.contains("17.5% increase")); assertTrue(w,w.contains("33.33% to 39.17%"));
-        assertTrue(a,a.contains("x2 to x2.35")); assertTrue(a,a.contains("Only on water"));
+        assertTrue(a,a.contains("2 times normal; with Arcana: 2.35 times normal")); assertTrue(a,a.contains("Only on water"));
     }
     @Test public void combinedAndEnhancedRingsUseTheirKnownEffectiveLevels() {
         equip(0); Dungeon.hero.belongings.misc=ring(0);
@@ -87,9 +87,9 @@ public class ArcanaInfoDisplayTest {
     @Test public void descriptionsAreWiredForMeleeMissileAndArmor() {
         equip(0); assertTrue(sword.info().contains("Arcana only"));
         HeavyBoomerang missile=new HeavyBoomerang(); missile.enchant(new Blazing());
-        assertTrue(missile.info().contains("Arcana only")); assertTrue(armor.info().contains("Arcana only"));
+        assertTrue(missile.info().contains("Arcana only")); assertTrue(armor.info().contains("Movement speed without Arcana:"));
         Dungeon.hero.belongings.ring=null;
-        assertFalse(sword.info().contains("Arcana only")); assertFalse(armor.info().contains("Arcana only"));
+        assertFalse(sword.info().contains("Arcana only")); assertFalse(armor.info().contains("Movement speed without Arcana:"));
     }
     @Test public void magicImmunityAndMissingEnchantmentsShowNothing() {
         equip(0); Buff.affect(Dungeon.hero,MagicImmune.class);
@@ -173,7 +173,7 @@ public class ArcanaInfoDisplayTest {
         assertTrue(chill,chill.contains("Chill added per activation:"));
         armor.level(6);armor.inscribe(new Thorns());
         String thorns=ArcanaInfoDisplay.armor(armor);
-        assertTrue(thorns,thorns.contains("Bleeding strength:"));
+        assertTrue(thorns,thorns.contains("Bleeding amount offered on activation:"));
     }
     @Test public void identifiedArcanaInMiscSlotAlsoWorks() {
         Dungeon.hero.belongings.misc=ring(0);

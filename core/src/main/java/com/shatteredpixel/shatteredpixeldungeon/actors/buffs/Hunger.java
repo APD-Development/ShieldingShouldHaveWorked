@@ -172,6 +172,8 @@ public class Hunger extends Buff implements Hero.Doom {
 		BuffIndicator.refreshHero();
 	}
 
+    public boolean isHungry(){return level>=HUNGRY;}
+
 	public boolean isStarving() {
 		return level >= STARVING;
 	}

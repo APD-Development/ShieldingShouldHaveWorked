@@ -1024,7 +1024,7 @@ public class UimsdRestoreDeviceTest {
                     ring.anonymize(); ring.levelKnown = true; ring.cursedKnown = true;
                     hero.belongings.ring = ring;
                     assertTrue(sword.info().contains("Arcana only"));
-                    assertTrue(armor.info().contains("Arcana only"));
+                    assertTrue(armor.info().contains("Movement speed without Arcana:"));
                     for (com.shatteredpixel.shatteredpixeldungeon.items.Item item :
                             new com.shatteredpixel.shatteredpixeldungeon.items.Item[]{sword, armor}) {
                         com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoItem window =
@@ -1054,7 +1054,7 @@ public class UimsdRestoreDeviceTest {
                     }
                     ring.levelKnown = false;
                     assertFalse(sword.info().contains("Arcana only"));
-                    assertFalse(armor.info().contains("Arcana only"));
+                    assertFalse(armor.info().contains("Movement speed without Arcana:"));
                     ring.levelKnown = true; hero.belongings.ring = null;
                     assertFalse(sword.info().contains("Arcana only"));
                 } catch (Exception e) { throw new RuntimeException(e); }

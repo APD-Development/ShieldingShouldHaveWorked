@@ -1,0 +1,26 @@
+# APD player-readable mechanics — work in progress
+
+Owner approved explanation/UI changes only. No balance or detection mechanics are changed. This is a partial implementation, not completion of the whole-game audit.
+
+## Implemented source
+
+- Obfuscation now explains stealth **points**, its base armor contribution, known Arcana contribution and current protective aura separately. It explains the effect on unaware enemies and that alerted enemies do not forget the hero. The optional details show the live armor/ring formula and next effective armor-level values, conditional sleeping/wandering detection formulas, distance/visibility and special-behavior limitations. No single detection percentage is invented.
+- `apd/mechanics/ObfuscationExplanation.java` and `RingExplanation.java` read identified public values. Unknown armor/rings cannot reveal hidden levels or ring identities through a preview. Magic immunity and overridden glyphs are explained. Tiny positive values use scientific notation rather than appearing as zero.
+- `ui/MechanicsInfoPanel.java` supplies collapsed-by-default **Show calculations**, a bounded scrolling body and **Hide calculations** in item, buff and talent windows. Action-button geometry remains fixed while expanded. It recomputes detailed values on expansion. Native pointer assertions are added but have not run against a new application APK.
+- All twelve normal ring types have identified contribution explanations. The eleven exponential/score rings explain actual units, rates versus action time, qualifying effects, effective versus ordinary bonuses, current missing-health Tenacity and conditional combination. Force explains the existing public unarmed/armed ranges; its full strength/tier/stance formula audit remains pending. Pure ring calculation helpers are reused where available, with no combat rolls.
+- Corrected selected descriptions for score-based accuracy/evasion; Venomous duration; Entanglement reserve versus per-hit block; Potential charges; Thorns bleeding input; Blooming tile attempts; Blocking shielding; Barkskin/Arcane Armor; Bless/Hex/Daze; blindness, Chill, Poison and bleeding. Barrier details read current shield, decay progress and Hold Fast without calling its mutating combat helper. Earthroot preserves its existing last-hit block behavior; no balance correction is made.
+- `docs/APD-MECHANICS-DESCRIPTION-AUDIT.json` inventories 460 source paths. Entries remain **PENDING_SEMANTIC_REVIEW** until individually reviewed. Inventory, keyword glossary and generic rank text are not evidence that every mechanic is explained correctly. Artifacts, individual talents, remaining enchantments/glyphs, other numerical systems and translations still need review and targeted formula coverage.
+
+## Separate approved fixes preserved
+
+Single-tap Search preference source `878a05f1d0f2884aba4efd50e24fe97c7d298143` passed source-only workflow42136747730:2505 tests442 suites plus Android debug/release/instrumentation Java and desktop compilation. Waiting/Auto-Eat source `bbae8d1dd5d5d15cc02a2d95b8b091b25d3396f8` passed workflow42139336518:2525 tests443 suites and the same compilation gate. No APK was assembled by those workflows.
+
+Further regressions found and fixed: fractional hunger values were being rounded up by the display accessor before an Auto-Eat decision. The predicate now uses actual Hungry/Starving state. The real searched-wall tilemap refreshed only currently saved markers, so invalidated old projections could remain cached and disappear abruptly on a later rebuild. It now also refreshes previously projected cells, preserving raw saved history and valid marks. Controlled renderer tests reproduced two failures against the old layer and passed after correction. Valid marker retention through FOV/save/revisit is tested; an unrelated reported loss of valid raw history has not been reproduced and is not declared solved.
+
+## Verification and release boundary
+
+Local full2552 cases445 suites passed, including the tiny-number formatting regression. Android source compilation is pending at this document revision. Earlier changed-text assertion failure was corrected to assert the newly precise bleeding-input wording; numerical and privacy checks remain. No failures are concealed or tests skipped.
+
+Added tests compare real Obfuscation/Arcana/aura values across upgrades, suppress unknown values, preserve RNG/turns/HP/inventory, check Barrier read-only state and poison/armor units, ring changes and current-HP Tenacity. Existing waiting tests now cover fractional thresholds and the existing No Food challenge's normal eating behavior. Native pointer tests expand/collapse an actual item button and assert action positions and hero HP/time remain unchanged; they are staged, not executed.
+
+Last released playable pair is TEST365, exact source `6d55fec660389195b492f1ce2974781cfbc27bcc`, tag `apd-alpha-preview-365`. It does **not** contain this in-progress source. No new APK/version request, release, signing/app-ID change, source-history rewrite, save/statistics migration or player-data clearing. Three application pairs already used the November5 New York allowance; no fourth pair is built. Emulator/native acceptance remains separate from a physical phone.

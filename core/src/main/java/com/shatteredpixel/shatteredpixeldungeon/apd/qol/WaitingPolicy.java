@@ -46,7 +46,8 @@ public final class WaitingPolicy {
     }
     public static boolean canAutoEat(Hero hero){
         Hunger hunger=hero==null?null:hero.buff(Hunger.class);
-        return canAutoEatAt(hero,hunger==null?-1:hunger.hunger());
+        if(hunger==null||!(SPDSettings.autoEatWhenHungry()?hunger.isHungry():hunger.isStarving()))return false;
+        return canAutoEatAt(hero,SPDSettings.autoEatWhenHungry()?Hunger.HUNGRY:Hunger.STARVING);
     }
     private static boolean canAutoEatAt(Hero hero,float hungerLevel){
         if(hero==null||hero!=Dungeon.hero||!hero.resting||!hero.isAlive()||hero.paralysed>0

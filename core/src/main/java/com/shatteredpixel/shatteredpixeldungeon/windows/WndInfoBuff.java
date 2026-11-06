@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -47,11 +50,10 @@ public class WndInfoBuff extends Window {
 		titlebar.setRect( 0, 0, WIDTH, 0 );
 		add( titlebar );
 
-		RenderedTextBlock txtInfo = PixelScene.renderTextBlock(buff.desc(), 6);
+        String visibleInfo=buff.desc();
+		RenderedTextBlock txtInfo = PixelScene.renderTextBlock(visibleInfo, 6);
 		txtInfo.maxWidth(WIDTH);
-		txtInfo.setPos(titlebar.left(), titlebar.bottom() + 2*GAP);
-		add( txtInfo );
-
-		resize( WIDTH, (int)txtInfo.bottom() + 2 );
+        float bottom=com.shatteredpixel.shatteredpixeldungeon.ui.MechanicsInfoPanel.add(this,txtInfo,titlebar.left(),titlebar.bottom()+2*GAP,WIDTH,0,()->com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.MechanicsDetails.buff(buff,visibleInfo));
+        resize(WIDTH,(int)bottom+2);
 	}
 }

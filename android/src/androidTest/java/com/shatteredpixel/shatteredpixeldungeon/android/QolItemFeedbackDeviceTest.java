@@ -63,7 +63,28 @@ public class QolItemFeedbackDeviceTest {
                 assertTrue("Item action remains visible",a.x>=0&&a.y>=0&&z.x<=Game.width&&z.y<=Game.height);
             }}catch(Exception e){throw new RuntimeException(e);}
         });
-        Thread.sleep(300);TopScoresDeviceTest.screenshot(image);TopScoresDeviceTest.render(()->shown.get().hide());
+        Thread.sleep(300);
+        Point[] expandAt=new Point[1];java.util.Map<RedButton,float[]> actions=new java.util.IdentityHashMap<>();
+        AtomicReference<RedButton> expander=new AtomicReference<>();float[] time=new float[1];int[] hp=new int[1];
+        TopScoresDeviceTest.render(()->{
+            time[0]=Dungeon.hero.cooldown();hp[0]=Dungeon.hero.HP;
+            try{for(RedButton b:TopScoresDeviceTest.find(shown.get(),RedButton.class)){
+                if(b.text().equals("Show calculations")){expander.set(b);expandAt[0]=b.camera().cameraToScreen(b.left()+b.width()/2,b.top()+b.height()/2);}
+                else actions.put(b,new float[]{b.left(),b.top(),b.width(),b.height()});
+            }}catch(Exception e){throw new RuntimeException(e);}
+        });
+        if(expander.get()!=null){
+            touch(expandAt[0]);TopScoresDeviceTest.render(()->{
+                assertEquals("Actual pointer expands details","Hide calculations",expander.get().text());
+                for(java.util.Map.Entry<RedButton,float[]> entry:actions.entrySet()){
+                    RedButton b=entry.getKey();float[] before=entry.getValue();
+                    assertEquals(before[0],b.left(),0);assertEquals(before[1],b.top(),0);assertEquals(before[2],b.width(),0);assertEquals(before[3],b.height(),0);
+                }
+                assertEquals(time[0],Dungeon.hero.cooldown(),0);assertEquals(hp[0],Dungeon.hero.HP);
+            });
+            touch(expandAt[0]);TopScoresDeviceTest.render(()->assertEquals("Actual pointer collapses details","Show calculations",expander.get().text()));
+        }
+        TopScoresDeviceTest.screenshot(image);TopScoresDeviceTest.render(()->shown.get().hide());
     }
     static void combinedOriginsAndRatPreferenceRenderAndRespond()throws Exception{
         boolean previous=SPDSettings.ratKingQuickSearch();AtomicReference<WndAPDSettings> shown=new AtomicReference<>();Point[] at=new Point[1];
@@ -169,7 +190,7 @@ public class QolItemFeedbackDeviceTest {
             TopScoresDeviceTest.screenshot("qol-dew-settings.png");TopScoresDeviceTest.render(()->settings.get().hide());
             Sword sword=new Sword();sword.levelKnown=true;sword.cursedKnown=true;
             TopScoresDeviceTest.render(()->{RingOfForce r=new RingOfForce();r.anonymize();r.levelKnown=true;r.cursedKnown=true;Dungeon.hero.belongings.ring=r;r.activate(Dungeon.hero);});
-            showItem(sword,"Force, base armed damage","qol-force-weapon.png");
+            showItem(sword,"Force changes this weapon’s base armed damage","qol-force-weapon.png");
             ThrowingKnife knife=new ThrowingKnife();knife.levelKnown=true;knife.cursedKnown=true;
             TopScoresDeviceTest.render(()->{RingOfSharpshooting r=new RingOfSharpshooting();r.anonymize();r.levelKnown=true;r.cursedKnown=true;Dungeon.hero.belongings.misc=r;r.activate(Dungeon.hero);});
             showItem(knife,"2-6 -> 3-8","qol-sharpshooting-weapon.png");

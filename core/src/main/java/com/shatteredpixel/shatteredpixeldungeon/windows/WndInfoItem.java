@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -37,6 +40,7 @@ public class WndInfoItem extends Window {
 
 	//only one WndInfoItem can appear at a time
 	private static WndInfoItem INSTANCE;
+    private java.util.function.Supplier<String> calculations;
 
 	public WndInfoItem( Heap heap ) {
 
@@ -97,7 +101,9 @@ public class WndInfoItem extends Window {
 		IconTitle titlebar = new IconTitle( item );
 		titlebar.color( color );
 		
-		RenderedTextBlock txtInfo = PixelScene.renderTextBlock( item.info(), 6 );
+        String visibleInfo=item.info();
+        calculations=()->com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.MechanicsDetails.item(item,visibleInfo);
+		RenderedTextBlock txtInfo = PixelScene.renderTextBlock( visibleInfo, 6 );
 		
 		layoutFields(titlebar, txtInfo);
 	}
@@ -123,9 +129,7 @@ public class WndInfoItem extends Window {
 		}
 		add( title );
 
-		info.setPos(title.left(), title.bottom() + GAP);
-		add( info );
-
-		resize( width, (int)(info.bottom() + 2) );
+        float bottom=com.shatteredpixel.shatteredpixeldungeon.ui.MechanicsInfoPanel.add(this,info,title.left(),title.bottom()+GAP,width,this instanceof WndUseItem?72:0,calculations);
+        resize(width,(int)(bottom+2));
 	}
 }

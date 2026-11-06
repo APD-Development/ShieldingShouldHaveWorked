@@ -43,6 +43,18 @@ public final class ArcanaInfoDisplay {
         return equipped ? (float)Math.pow(1.175f, bonus) : Float.NaN;
     }
 
+    /** Read-only public-value preview; unknown rings are never identified by their numerical effect. */
+    public static float knownArcanaPower(Hero hero){
+        if(hero==null||hero.buff(MagicImmune.class)!=null)return Float.NaN;
+        for(Item item:new Item[]{hero.belongings.ring(),hero.belongings.misc()})
+            if(item instanceof Ring&&!item.isIdentified())return Float.NaN;
+        com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.SpiritForm.SpiritFormBuff spirit=hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.SpiritForm.SpiritFormBuff.class);
+        if(spirit!=null&&!spirit.previewRingIdentified())return Float.NaN;
+        float known=visibleMultiplier(hero);
+        if(!Float.isNaN(known))return known;
+        return spirit==null?1f:(float)Math.pow(1.175f,spirit.previewRingBonus(hero,RingOfArcana.class));
+    }
+
     private static String number(float value) {
         return Messages.decimalFormat(Math.abs(value) >= 1000000 ? "0.##E0" : "0.##", value);
     }
@@ -183,7 +195,7 @@ public final class ArcanaInfoDisplay {
                 || name.equals("Flow") || name.equals("Camouflage") || name.equals("AntiMagic")
                 || name.equals("Bulk"))) return "\n\n" + text("inactive");
         switch (name) {
-            case "Obfuscation": return "\n\n" + metric("stealth", 1+actualLevel/3f, (1+actualLevel/3f)*multi) + effect(name);
+            case "Obfuscation": return "\n\n" + com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.ObfuscationExplanation.summary(armor,hero);
             case "Swiftness": return "\n\n" + metric("speed", 1.2f+0.04f*actualLevel, (1.2f+0.04f*actualLevel)*multi) + " " + text("swiftness") + effect(name);
             case "Flow": return "\n\n" + metric("speed", 2+0.5f*actualLevel, (2+0.5f*actualLevel)*multi) + " " + text("water") + effect(name);
             case "Camouflage": return "\n\n" + metric("turns", Math.round(3+actualLevel/2f), Math.round((3+actualLevel/2f)*multi)) + effect(name);

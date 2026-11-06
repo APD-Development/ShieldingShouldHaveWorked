@@ -1,3 +1,9 @@
+## Active work — November6 UTC: player-readable mechanics; source only
+
+Owner requested the full explanation audit alongside all prior QoL work. See `APD-MECHANICS-DESCRIPTIONS-2026-11-06.md` and explicit pending inventory `APD-MECHANICS-DESCRIPTION-AUDIT.json`. Shared expandable UI, Obfuscation, ring contributions and selected effect-unit corrections are implemented; **the whole-game audit is not complete**. Full local2551 tests445 suites passed before final formatting regression; final source checks pending. No new APK or build number.
+
+Waiting/Auto-Eat commit `bbae8d1dd5d5d15cc02a2d95b8b091b25d3396f8` passed source-only workflow42139336518 on2026-11-06T00:50:15Z:2525 tests443 suites plus Android debug/release/instrumentation and desktop compilation. No APK assembled. Additional fractional-hunger and actual-renderer cached-marker regressions are in the next source batch. Earlier Search source878a05f1 remains preserved. TEST365 is the last verified released pair; none of the current QoL/descriptions source is in it. Respect November5 NY three-pair cap and preserve original signing, appID, raw statistics, saves and newer UIMSD changes.
+
 ## Search controls and door-end markers — source-verified, no APK
 
 Exact application source878a05f1d0f2884aba4efd50e24fe97c7d298143 passed source-only run42136747730/job127626727810 at2026-11-06T00:28:34Z:2505 tests442 suites, zero failures/errors/skips; Android debug/release/instrumentation Java and desktop compilation passed. No APK assembled and no physical-phone test claimed. Single-tap Search is an optional APD Settings > Gameplay checkbox, defaultoff, persisted across restarts. On: tap searches normally, hold inspects freely; off: existing controls. Actual pointer/toggle/cost tests are staged for the next permitted corrected APK, not reported executed.
