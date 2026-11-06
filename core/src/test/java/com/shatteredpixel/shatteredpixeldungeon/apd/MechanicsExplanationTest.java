@@ -395,4 +395,19 @@ public class MechanicsExplanationTest {
  @Test public void frostImbueDescriptionMatchesStackedChillAndActualImmunity()throws Exception{
   PlainStatusTarget enemy=new PlainStatusTarget();enemy.sprite=quietSprite();FrostImbue frost=Buff.affect(hero,FrostImbue.class,8);frost.proc(enemy);float first=enemy.buff(Chill.class).cooldown();frost.proc(enemy);assertEquals(first+3,enemy.buff(Chill.class).cooldown(),.00001f);assertTrue(hero.isImmune(Chill.class));assertTrue(hero.isImmune(Frost.class));assertTrue(MechanicsDetails.buff(frost,frost.desc()).contains("three turns of Chill"));
  }
+
+ @Test public void armorAbilityExplanationMatchesActualRankAndConditionalCost(){
+  com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.HeroicLeap leap=new com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.HeroicLeap();
+  for(int rank=0;rank<=4;rank++){hero.talents.get(2).put(Talent.HEROIC_ENERGY,rank);String text=com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.AbilityExplanation.summary(leap,hero);assertTrue(text.contains(ObfuscationExplanation.number(leap.chargeUse(hero))+" charge points"));}
+  hero.talents.get(2).put(Talent.DOUBLE_JUMP,2);Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.HeroicLeap.DoubleJumpTracker.class);assertTrue(com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.AbilityExplanation.details(leap,hero).contains("cost: "+ObfuscationExplanation.number(leap.chargeUse(hero))+" charge points"));hero.armorAbility=leap;assertTrue(MechanicsDetails.item(new WarriorArmor(),"").contains("Actual current ability cost: "+ObfuscationExplanation.number(leap.chargeUse(hero))+" charge points"));
+ }
+ @Test public void abilityDetailsNeverConsumeReadyDiscountOrExposeUnknownRingLevel(){
+  com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.HeroicLeap leap=new com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.HeroicLeap();hero.talents.get(2).put(Talent.DOUBLE_JUMP,1);com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.HeroicLeap.DoubleJumpTracker ready=Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.HeroicLeap.DoubleJumpTracker.class);RingOfEnergy energy=new RingOfEnergy();energy.levelKnown=false;hero.belongings.ring=energy;energy.activate(hero);String first=com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.AbilityExplanation.details(leap,hero);energy.level(9);assertEquals(first,com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.AbilityExplanation.details(leap,hero));assertSame(ready,hero.buff(ready.getClass()));
+ }
+
+ @Test public void armorRechargeDetailsMatchActualChargerAndMeterCap(){
+  com.shatteredpixel.shatteredpixeldungeon.items.armor.WarriorArmor equipment=new com.shatteredpixel.shatteredpixeldungeon.items.armor.WarriorArmor();com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor.Charger charger=equipment.new Charger();charger.target=hero;
+  RingOfEnergy energy=new RingOfEnergy();energy.anonymize();energy.levelKnown=energy.cursedKnown=true;hero.belongings.ring=energy;energy.activate(hero);com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.HeroicLeap ability=new com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.HeroicLeap();
+  for(int level=0;level<=3;level++){energy.level(level);equipment.charge=0;charger.act();float actual=equipment.charge;assertTrue(com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.AbilityExplanation.details(ability,hero).contains("per eligible update: "+ObfuscationExplanation.number(actual)+" charge points"));equipment.charge=99.99f;charger.act();assertEquals(100,equipment.charge,0);}
+ }
 }

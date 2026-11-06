@@ -3190,8 +3190,8 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/MechanicsDetails.java",
-      "sha256": "d3f30977592910a970a3bf3b6c472093e82f049ada9d1c669504196fc090f28c",
-      "boundary": "Selected Liquid Willpower, Shield Battery, Inscribed Power, Liquid Nature, Liquid Agility and Precise Assault explanation facets only; remaining talents and abilities remain open. Read-only known wand level/damage/charge explanation and Wild Magic preview facets. Not all targeting, wand-specific secondary effects, staff abilities or non-damaging wand mechanics closure."
+      "sha256": "89541e6c98cddde378df3b51e5a7547ef6e9573900970089a1c049b1cd4f593a",
+      "boundary": "Selected Liquid Willpower, Shield Battery, Inscribed Power, Liquid Nature, Liquid Agility and Precise Assault explanation facets only; remaining talents and abilities remain open. Read-only known wand level/damage/charge explanation and Wild Magic preview facets. Not all targeting, wand-specific secondary effects, staff abilities or non-damaging wand mechanics closure. Armor ability charge/recharge explanation and optional bounded description UI only; individual ability effect formulas and native rendered acceptance remain open."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/TalentExplanation.java",
@@ -3292,6 +3292,31 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Cripple.java",
       "sha256": "e87b0322f1bbc1880d558fb1f0ef2ff6e9cd6b26a55140e64c5e5635e52c9131",
       "boundary": "Selected Fire/Frost Imbue, Fury, Adrenaline, Stamina/Cripple description formulas, timing/immunity boundaries and read-only duration; not full numerical-system closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/AbilityExplanation.java",
+      "sha256": "a22a487775121172d720d3861afe36e328710dbd5cf5612bfd01f161d31e56dd",
+      "boundary": "Armor ability charge/recharge explanation and optional bounded description UI only; individual ability effect formulas and native rendered acceptance remain open."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/abilities/ArmorAbility.java",
+      "sha256": "95e7a7459afeda0171d26f602859201f4e3953f8101bd9a618acce5e01187453",
+      "boundary": "Armor ability charge/recharge explanation and optional bounded description UI only; individual ability effect formulas and native rendered acceptance remain open."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/ClassArmor.java",
+      "sha256": "9d3c474b1e1e7ca5237f7cdfd0403b5fcd871e7a1622116431dae927dc8f08ad",
+      "boundary": "Armor ability charge/recharge explanation and optional bounded description UI only; individual ability effect formulas and native rendered acceptance remain open."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndInfoArmorAbility.java",
+      "sha256": "3d723b4d4d90345e6a489ba3aa040a30d9ee80ef898687ef02b4a2622d946c4d",
+      "boundary": "Armor ability charge/recharge explanation and optional bounded description UI only; individual ability effect formulas and native rendered acceptance remain open."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndTitledMessage.java",
+      "sha256": "ee2540d926ea467272b34b6ac3db23ac50581aa1d6436fb5ffa32009743e0197",
+      "boundary": "Armor ability charge/recharge explanation and optional bounded description UI only; individual ability effect formulas and native rendered acceptance remain open."
     }
   ]
 }

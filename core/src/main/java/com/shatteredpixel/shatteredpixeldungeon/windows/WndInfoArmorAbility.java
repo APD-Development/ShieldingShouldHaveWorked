@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -36,7 +39,9 @@ import java.util.LinkedHashMap;
 public class WndInfoArmorAbility extends WndTitledMessage {
 
 	public WndInfoArmorAbility(HeroClass cls, ArmorAbility ability){
-		super( new HeroIcon(ability), Messages.titleCase(ability.name()), ability.desc());
+		super(new HeroIcon(ability), Messages.titleCase(ability.name()), ability.desc() + "\n\n"
+                + com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.AbilityExplanation.summary(ability, com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero),
+                () -> com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.AbilityExplanation.details(ability, com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero), 60);
 
 		ArrayList<LinkedHashMap<Talent, Integer>> talentList = new ArrayList<>();
 		Talent.initArmorTalents(ability, talentList);

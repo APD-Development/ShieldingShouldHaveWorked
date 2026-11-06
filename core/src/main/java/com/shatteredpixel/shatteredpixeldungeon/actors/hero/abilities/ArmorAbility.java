@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -70,6 +73,9 @@ public abstract class ArmorAbility implements Bundlable {
 	public int targetedPos( Char user, int dst ){
 		return new Ballistica( user.pos, dst, Ballistica.PROJECTILE ).collisionPos;
 	}
+
+    /** Unmodified charge points, for read-only ability explanations. */
+    public float baseChargePoints() { return baseChargeUse; }
 
 	public float chargeUse( Hero hero ){
 		float chargeUse = baseChargeUse;

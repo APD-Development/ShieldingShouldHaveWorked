@@ -1,3 +1,9 @@
+## 2026-11-06 — status explanations verified; armor ability charge UI follows
+
+Sourcef0a6548decfafb8b3787b264c2501e8f377eab1f/run42156262893 verified2626 tests445 suites plus full Android/desktop source gates. Downloaded artifact13474109712 actual490231bytes SHA25626d52b08f544c252558ac94b3f3f9b72e4e39c87e994f27ae28994f169162759, JSON inspected. Earlier talent artifact13475260945 actual490734bytes SHA25612399bc6cc4704d5685224dfa6b44bee9bfb201b230df8f173274336c1f19693 also downloaded/JSON verified.
+
+Armor ability charge explanation/window batch: local full2629 tests445 suites and subsequent final targeted integration pass; remote full source gate pending. Existing titled message constructors retain original null-details behavior. No native rendered acceptance/phone claim and no APK assembled or version changed. Whole-game review remains unfinished, including remaining abilities/statuses/equipment/translation facets. Keep TEST365 verified playable fallback and all prior Search/waiting work, appID/key/player data and daily APK limits. Owner was told current wand verification completed while overall scope remains incomplete. See APD-MECHANICS-DESCRIPTIONS-2026-11-06.md.
+
 ## 2026-11-06 — wand verification complete; further talent/status review
 
 Wand source5dd2a3c2a83154875b5b87c1b6f1858c138f9abf/run42155374124/job127688155112 verified2619 tests445 suites and full Android/desktop Java gates. Actual downloaded artifact13474486568 is490600bytes SHA256631dc9fd51b74d27d338d8798179935b48cab357b22def91c3f097f64f402016, JSON inspected. Owner notified current wand verification passed, explicitly whole task still unfinished/no new APK/phone test.

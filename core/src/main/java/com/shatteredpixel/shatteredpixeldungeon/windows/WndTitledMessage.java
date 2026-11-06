@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -39,9 +42,16 @@ public class WndTitledMessage extends Window {
 
 	}
 	
-	public WndTitledMessage( Component titlebar, String message ) {
+    public WndTitledMessage(Image icon, String title, String message, java.util.function.Supplier<String> details, float reserved) {
+        this(new IconTitle(icon, title), message, details, reserved);
+    }
 
-		super();
+    public WndTitledMessage(Component titlebar, String message) {
+        this(titlebar, message, null, 0);
+    }
+
+    private WndTitledMessage(Component titlebar, String message, java.util.function.Supplier<String> details, float reserved) {
+        super();
 
 		int width = WIDTH_MIN;
 
@@ -52,7 +62,7 @@ public class WndTitledMessage extends Window {
 		if (!useHighlighting()) text.setHightlighting(false);
 		text.text( message, width );
 		text.setPos( titlebar.left(), titlebar.bottom() + 2*GAP );
-		add( text );
+		if (details == null) add(text);
 
 		while (PixelScene.landscape()
 				&& text.bottom() > targetHeight()
@@ -65,7 +75,12 @@ public class WndTitledMessage extends Window {
 
 		bringToFront(titlebar);
 
-		resize( width, (int)text.bottom() + 2 );
+        if (details == null) resize(width, (int)text.bottom() + 2);
+        else {
+            float bottom = com.shatteredpixel.shatteredpixeldungeon.ui.MechanicsInfoPanel.add(this, text,
+                    titlebar.left(), titlebar.bottom() + 2*GAP, width, reserved, details);
+            resize(width, (int)bottom + 2);
+        }
 	}
 
 	protected boolean useHighlighting(){
