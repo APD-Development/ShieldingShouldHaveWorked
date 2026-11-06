@@ -41,6 +41,11 @@ public final class WandExplanation {
             + "Temporary +2 levels from Inscribed Power, one-charge Desperate Power, Wild Magic's capped random bonus and a stronger Magic Charge can change effective levels; they do not permanently upgrade the wand. "
             + "An ordinary upgrade raises the underlying level by one, consumes one existing resin bonus when present, and can remove a curse. Charge limits and each wand's effects follow their separate formulas.";
         if (levels[0] != levels[1]) result += "\nWild Magic has two equally likely bonus branches before its level cap and stronger Magic Charge apply. The range above includes both outcomes; the cast selects its outcome normally.";
+        if(Dungeon.hero!=null&&Dungeon.hero.subClass==com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass.WARLOCK){
+            result+="\n\n_Warlock Soul Mark_\nOn a qualifying effect check against a character other than the hero, mark chance = clamp(1 − (0.92 raised to (effective wand level × effect charge count + 1) − 0.07), 0, 1). This is a per-character effect check, not a guarantee that a cast finds a valid target. The effect's charge count can differ from Wild Magic's fractional resource payment.";
+            if(wand instanceof WandOfWarding)result+=" A ward checks using its own stored wand level when it attacks; current casting level is not treated as every existing ward's level.";
+            else{int cost=wand.previewChargeCost();if(cost>=0){float low=(float)Math.max(0,Math.min(1,1-Wand.soulMarkThreshold(levels[0],cost))),high=(float)Math.max(0,Math.min(1,1-Wand.soulMarkThreshold(levels[1],cost)));result+=" With the current standard effect charge count "+cost+": "+ObfuscationExplanation.number(100*low)+(levels[0]==levels[1]?"":"–"+ObfuscationExplanation.number(100*high))+"% per qualifying check; offered duration "+(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark.DURATION+levels[0])+(levels[0]==levels[1]?"":"–"+(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark.DURATION+levels[1]))+" scheduled units before target status rules.";}}
+        }
         if (wand instanceof DamageWand) {
             DamageWand direct = (DamageWand)wand;
             int min = direct.min(levels[0]), max = direct.max(levels[1]);

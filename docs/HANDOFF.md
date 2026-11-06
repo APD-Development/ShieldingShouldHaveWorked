@@ -1,3 +1,7 @@
+## 2026-11-06 linked damage and Soul Mark checkpoint
+
+Full local2700/445 pass. Life Link default fixed for actual multi-link ceiling/forwarding/hunger rules; Soul Mark actual restoration/mark chance explained with pure threshold source, no hidden target HP or healing-credit queries. Real methods/360 seed checks pass; no mechanics changed. Prior2697 remote source gate42213261129 passed/receipt downloaded and verified in JSON ledger. Continue Preparation/Sniper mark/remaining review. No new APK pair;366 remains withheld, viewport fix awaits replacement native acceptance.
+
 ## 2026-11-06 fear/visibility status checkpoint
 
 Full local2697/445 pass. Five-unit fear/charm recovery, Dread actual six-tile plus out-of-FOV departure rule, Vertigo single blocked-direction roll and Light actual minimum/restored base sight explained and actual handlers tested. No mechanics changes. Prior2693 remote gate42212246260 passed; receipt13498904382 downloaded/hash/source/count inspected in shared ledger. Continue Life Link/Soul Mark/remaining descriptions; no new APK pair since withheld366. Native viewport source fix still pending replacement-application acceptance.

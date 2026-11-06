@@ -209,6 +209,11 @@ public abstract class Wand extends Item {
 		wandProc(target, buffedLvl(), chargesUsed);
 	}
 
+    /** Same Warlock probability threshold used by actual wand procs; no random draw. */
+    public static double soulMarkThreshold(int wandLevel,int chargesUsed){
+        return Math.pow(0.92f,(wandLevel*chargesUsed)+1)-0.07f;
+    }
+
 	//TODO Consider externalizing char awareness buff
 	protected static void wandProc(Char target, int wandLevel, int chargesUsed){
 		if (Dungeon.hero.hasTalent(Talent.ARCANE_VISION)) {
@@ -219,7 +224,7 @@ public abstract class Wand extends Item {
 		if (target != Dungeon.hero &&
 				Dungeon.hero.subClass == HeroSubClass.WARLOCK &&
 				//standard 1 - 0.92^x chance, plus 7%. Starts at 15%
-				Random.Float() > (Math.pow(0.92f, (wandLevel*chargesUsed)+1) - 0.07f)){
+				Random.Float() > soulMarkThreshold(wandLevel,chargesUsed)){
 			SoulMark.prolong(target, SoulMark.class, SoulMark.DURATION + wandLevel);
 		}
 
