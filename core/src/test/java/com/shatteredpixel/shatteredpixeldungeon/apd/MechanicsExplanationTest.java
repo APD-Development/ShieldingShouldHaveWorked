@@ -459,4 +459,16 @@ public class MechanicsExplanationTest {
  @Test public void unidentifiedStaffOnHitDetailsDoNotRevealHiddenUpgrade()throws Exception{
   com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff staff=describedStaff(new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfTransfusion(),0);staff.levelKnown=false;String first=staff.mechanicsDetails();staff.level(9);assertEquals(first,staff.mechanicsDetails());assertTrue(first.contains("Identify"));
  }
+
+ @Test public void herbalHealingPreviewMatchesActualRequestsAndDoesNotSpendPool()throws Exception{
+  hero.sprite=quietSprite();hero.HP=1;com.shatteredpixel.shatteredpixeldungeon.plants.Sungrass.Health healing=Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.plants.Sungrass.Health.class);healing.boost(100);
+  for(int tick=0;tick<12;tick++){int expected=healing.nextUnmodifiedRequest(),pool=healing.remainingPool();float progress=healing.healingProgress();String text=MechanicsDetails.buff(healing,healing.desc());assertTrue(text.contains("next unmodified request: "+expected+" HP"));assertEquals(pool,healing.remainingPool());assertEquals(progress,healing.healingProgress(),0);hero.HP=1;healing.act();assertEquals(1+expected,hero.HP);assertEquals(pool-expected,healing.remainingPool());}
+  int remaining=healing.remainingPool(),next=healing.nextUnmodifiedRequest();float fraction=healing.healingProgress();com.watabou.utils.Bundle saved=new com.watabou.utils.Bundle();healing.storeInBundle(saved);healing.detach();com.shatteredpixel.shatteredpixeldungeon.plants.Sungrass.Health loaded=new com.shatteredpixel.shatteredpixeldungeon.plants.Sungrass.Health();loaded.restoreFromBundle(saved);loaded.attachTo(hero);assertEquals(remaining,loaded.remainingPool());assertEquals(fraction,loaded.healingProgress(),0);assertEquals(next,loaded.nextUnmodifiedRequest());
+ }
+ @Test public void rockArmorExplanationMatchesActualSmallHitRoundingAndLimitedReserve(){
+  com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth.RockArmor armor=Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth.RockArmor.class);com.watabou.utils.Bundle state=new com.watabou.utils.Bundle();armor.storeInBundle(state);state.put("armor",3);state.put("wand_level",3);armor.restoreFromBundle(state);assertTrue(MechanicsDetails.buff(armor,armor.desc()).contains("Current reserve: 3 damage-blocking points"));assertEquals(20,armor.guardianThreshold());assertEquals(0,armor.absorb(1));assertEquals(2,armor.remainingReserve());assertEquals(5,armor.absorb(7));assertNull(hero.buff(com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth.RockArmor.class));
+ }
+ @Test public void earthrootExplanationPreservesItsLastHitRuleRatherThanRockArmorRule(){
+  com.shatteredpixel.shatteredpixeldungeon.plants.Earthroot.Armor earth=Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.plants.Earthroot.Armor.class);earth.level(1);int limit=earth.perHitLimit();assertTrue(MechanicsDetails.buff(earth,earth.desc()).contains("Remaining reserve: 1 points"));assertEquals(11-Math.min(11,limit),earth.absorb(11));assertNull(hero.buff(com.shatteredpixel.shatteredpixeldungeon.plants.Earthroot.Armor.class));
+ }
 }

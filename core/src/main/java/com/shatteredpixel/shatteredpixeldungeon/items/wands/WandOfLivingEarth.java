@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -288,6 +291,9 @@ public class WandOfLivingEarth extends DamageWand {
 			armor += toAdd;
 			armor = Math.min(armor, 2*armorToGuardian());
 		}
+
+        public int remainingReserve() { return armor; }
+        public int guardianThreshold() { return armorToGuardian(); }
 
 		private int armorToGuardian(){
 			return 8 + wandLevel*4;

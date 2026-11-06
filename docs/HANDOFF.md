@@ -1,3 +1,9 @@
+## 2026-11-06 — staff explanations verified; reserve/pool follow-up
+
+Sourceec2537c3a099dfa903c97b471cd21877dea34935/run42159107178 verified2640 tests445 suites and all Android/desktop Java source gates. Actual downloaded artifact13475624113 is492853bytes SHA256112839b6955e615a2b5fccd11dd468356e9bf1197fefd7426ba3ab4a6f55a7cd, JSON inspected. New herbal-pool/armor-reserve batch local full2643 tests445 suites green, remote gate pending. No gameplay calculation or save schema changes; pure getters and explanations only.
+
+Whole-game audit remains incomplete; source-only (no new APK/version/native rendered/phone claim). Keep TEST365 playable fallback, signing/appID/player data, all approved Search/waiting source changes and daily APK limits. Current detailed scope, failures, remaining native/semantic boundaries in APD-MECHANICS-DESCRIPTIONS-2026-11-06.md.
+
 ## 2026-11-06 — non-direct wand source verified; staff explanation follow-up
 
 Source0e5b7a1a0453552dbdd03f03be553cfd4f7d23e0/run42158043851 verified2636 tests445 suites and all Android/desktop Java gates. Actual downloaded artifact13475159638 is488693bytes SHA256791d31dd9070330c78ea15dd4acd29fabc269860db931354d1cea4ef75a4a4e5, JSON inspected. New StaffExplanation covers all13 normal imbued on-hit paths; local full2640 tests445 suites plus final repeated full staff-info RNG test pass. Remote full source gate pending; no APK/version change/native acceptance/phone claim.

@@ -126,6 +126,14 @@ public class Sungrass extends Plant {
 			return true;
 		}
 
+        public int remainingPool() { return level; }
+        public float healingProgress() { return partialHeal; }
+        public int nextUnmodifiedRequest() {
+            if (target == null) return 0;
+            float next = partialHeal + (40 + target.HT)/150f;
+            return next > 1 ? (int)next : 0;
+        }
+
 		public void boost( int amount ){
 			if (target != null) {
 				level += amount;

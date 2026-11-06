@@ -3260,8 +3260,8 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/BuffExplanation.java",
-      "sha256": "397e3927aa2e90646cca6ffd3e05f35e5931cf081d7340d02b09dae04d35a8d8",
-      "boundary": "Selected Fire/Frost Imbue, Fury, Adrenaline, Stamina/Cripple description formulas, timing/immunity boundaries and read-only duration; not full numerical-system closure. Selected Paralysis escape/check order/counter, Drowsy and Magical Sleep healing/wake facets; not full damage system or other statuses closure."
+      "sha256": "75f9aa1905380b5177985340236d5fcbc2e62281655811da40c8c12f6f396f05",
+      "boundary": "Selected Fire/Frost Imbue, Fury, Adrenaline, Stamina/Cripple description formulas, timing/immunity boundaries and read-only duration; not full numerical-system closure. Selected Paralysis escape/check order/counter, Drowsy and Magical Sleep healing/wake facets; not full damage system or other statuses closure. Selected herbal healing pool/progress/request and armor reserve/last-hit/cap explanation facets, read-only getters; not whole plant/guardian/other secondary mechanic closure."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/FireImbue.java",
@@ -3352,6 +3352,21 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/StaffExplanation.java",
       "sha256": "18e1b5a7c21a341df2ce2a0fd4574b3928c759720b99636aac2455b44d1420d6",
       "boundary": "Thirteen built-in Battlemage imbued-staff on-hit explanation facets, including conditional probability versus amount/duration/resource units and read-only known-level previews. Not all direct-zap secondary effects or other class ability closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Sungrass.java",
+      "sha256": "3343cde8c9f56f58e126e7bba6eeaedf770996eb5ba706fa98630644b7ed67a0",
+      "boundary": "Selected herbal healing pool/progress/request and armor reserve/last-hit/cap explanation facets, read-only getters; not whole plant/guardian/other secondary mechanic closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Earthroot.java",
+      "sha256": "c64d38bb55b0145e1f31270eb4d412acf3dd0f52f5a90174a178780ef3bca436",
+      "boundary": "Selected herbal healing pool/progress/request and armor reserve/last-hit/cap explanation facets, read-only getters; not whole plant/guardian/other secondary mechanic closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfLivingEarth.java",
+      "sha256": "b4681fcafb61b2fb3f56889f1510bb9a64b784c0597a3c7fb7735dcdb01e60bd",
+      "boundary": "Selected herbal healing pool/progress/request and armor reserve/last-hit/cap explanation facets, read-only getters; not whole plant/guardian/other secondary mechanic closure."
     }
   ]
 }
