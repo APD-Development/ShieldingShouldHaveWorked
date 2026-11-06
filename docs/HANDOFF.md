@@ -1,3 +1,7 @@
+## 2026-11-06 Cleric ability checkpoint
+
+Full local2683/445 pass. AscendedForm/PowerOfMany ability and buff explanations match real shield/counter/damage/link/creation handlers; no balance changes. Prior Mage/UI source51efeafed remote gate42209527719 passed2680 plus all required Java/desktop compilation, artifact13498696889 downloaded/inspected. New source check requested. Continue Duelist/Trinity/Ratmogrify and remaining mechanics. Internal366 remains withheld for screenshot rendering failure; no new APK pair since366. Source viewport fix not yet tested in a new application.
+
 ## 2026-11-06 Mage explanation source checkpoint
 
 Full local2680/445 pass. Wild Magic actual afterZap payment/time checks; Beacon mode distinctions; Elemental Blast13 type effects and canonical factor lookup plus actual ward repair validated. All newer than withheld366. Fixed native viewport helper checked-exception compilation failure from gate42208335465; next full source gate requested. Earlier2673 receipt13497621232 hash bce0ed6a09e16a1b8b5a837d36cb4cb10c6c4af706cf5852687c9bbc678e4e4a verified. No new APK triggered; preserve source,366 artifacts and365 playable fallback. Continue Cleric/Duelist/remaining audit.
