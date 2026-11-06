@@ -21,6 +21,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invulnerability;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
 import com.shatteredpixel.shatteredpixeldungeon.items.*;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.*;
 
 /** Plain units for utility resources; never repairs, revives, blesses, collects or inscribes. */
@@ -42,9 +43,30 @@ public final class UtilityItemExplanation {
         }
         return text+". Inscribing excludes the selected armor's existing glyph, so eligible alternatives in that same pool share its chance. If an entire selected pool is excluded, the selector uses its existing unrestricted fallback. These are selection odds, not a glyph's chance to trigger in combat; Arcana affects the resulting glyph's own effect, not these rarity weights.";
     }
+    private static String holsterDetails(MagicalHolster holster){
+        StringBuilder text=new StringBuilder("\n_Normal thrown-weapon wear_\nFor weapons using the normal thrown durability rule, the holster increases the budget of uses before wear calculations by ")
+                .append(n(100*(MagicalHolster.HOLSTER_DURABILITY_FACTOR-1))).append("% (× ").append(n(MagicalHolster.HOLSTER_DURABILITY_FACTOR))
+                .append("). Rounding, existing wear, rings, talents and the weapon's own limits determine the actual whole throws left. Special dart types can use different wear rules; this does not multiply damage by the same percentage.\n\n_Wand charging_\nStored wands normally refill faster. The benefit depends on the number of charges currently missing. The ordinary recharge curve changes from ")
+                .append(n(Wand.normalRechargeScaleFactor())).append(" to ").append(n(MagicalHolster.HOLSTER_SCALE_FACTOR))
+                .append(". Base interval = ").append(n(Wand.baseRechargeDelay())).append(" + ").append(n(Wand.scalingRechargeDelay()))
+                .append(" × curve^(missing charges) game-time units per baseline charge. Missing charges means maximum charges minus current charges. As these wands get fuller, their baseline charging slows. Each refill changes the missing-charge count and therefore the rate. Existing partial progress can finish the next charge sooner; this interval is not a countdown to the next charge or the time to refill the entire wand. Energy and other charging effects apply separately. Locked-floor regeneration rules can pause base gain; Recharging adds its own fractional gain when the charger runs. Magic immunity skips the scheduled recharge step. Direct charge gifts retain their own rules.");
+        for(Item stored:holster.items){
+            if(!(stored instanceof Wand))continue;
+            Wand wand=(Wand)stored;
+            if(!wand.levelKnown||!wand.cursedKnown||!wand.curChargeKnown)continue;
+            int missing=Math.max(0,wand.maxCharges-wand.curCharges);
+            text.append("\n").append(wand.name()).append(": ");
+            if(missing==0)text.append("full or overcharged; the scheduled charger adds no further charge.");
+            else text.append(missing).append(" missing charges; ordinary → holstered baseline interval ")
+                    .append(n(Wand.baselineRechargeTurns(missing,Wand.normalRechargeScaleFactor()))).append(" → ")
+                    .append(n(Wand.baselineRechargeTurns(missing,MagicalHolster.HOLSTER_SCALE_FACTOR)))
+                    .append(" game-time units per baseline charge, before Energy and other effects.");
+        }
+        return text.append(" Unidentified wand calculations are withheld; inspection does not charge a wand or spend game time.").toString();
+    }
     public static String details(Item item,Hero hero){
         if(item instanceof Bag){Bag bag=(Bag)item;String text="_Container slots_\nCurrent capacity: "+bag.capacity()+" item slots. A compatible stack generally occupies one slot regardless of its quantity; nested-container and secondary-weapon rules keep their normal accounting. Capacity is not a weight limit, gold value or a guarantee that every item type belongs in this container. Inventory capacity and automatic pickup rules are unchanged.";
-            if(item instanceof MagicalHolster)text+="\nThe holster multiplies the ordinary thrown expected-use input by "+n(MagicalHolster.HOLSTER_DURABILITY_FACTOR)+" before later rounding. Wand recharge uses its curve parameter "+n(MagicalHolster.HOLSTER_SCALE_FACTOR)+" in 10 + 40 × parameter^(missing charges) game-time units per baseline charge, before Energy and recharge effects. A smaller parameter shortens this interval when charges are missing; it is not a flat 15% extra whole charges or a change to charge capacity.";
+            if(item instanceof MagicalHolster)text+=holsterDetails((MagicalHolster)item);
             return text;}
         if(item instanceof Honeypot)return "_Bee and broken pot_\nA supported shatter can create one bee at the impact cell. If that cell is occupied, it considers the four side-adjacent non-solid empty cells; when none is eligible, the pot is returned instead of guaranteeing a spawn. The bee uses the existing scaling-floor spawn rules. It is not automatically a harmless ally. A ground pot's bee normally looks for eligible targets within three tiles of the pot, counting a diagonal step as one tile. Carrying its matching broken pot can make the holder its target. Throwing into a pit follows the ordinary falling-item branch. Inspection does not choose a spawn cell, create a bee or advance randomness.";
         if(item instanceof Honeypot.ShatteredPot)return "_The bee's tracked home_\nThis is an existing bee's broken pot, not another unused summon. Picking it up updates matching hostile bees to track the holder; dropping, throwing or moving it updates their recorded pot location. A stack updates at most its quantity of matching bees. Destroying it clears those matching home records. A holder can become the bee's target; carrying the pot does not guarantee friendship or protection. Inspection does not move the pot, change a bee's target or reveal unseen bee locations.";

@@ -686,6 +686,30 @@ public class MechanicsExplanationTest {
   try{for(int draw=0;draw<100;draw++){Class<?> previous=target.glyph==null?null:target.glyph.getClass();target.inscribe();assertNotEquals(previous,target.glyph.getClass());assertEquals(3,target.level());}}finally{Random.popGenerator();}
   String text=UtilityItemExplanation.details(new com.shatteredpixel.shatteredpixeldungeon.items.Stylus(),hero);assertTrue(text.contains("excludes the selected armor's existing glyph"));assertTrue(text.contains("does not raise armor upgrade level"));
  }
+ @Test public void holsterRechargeIntervalsMatchActualScheduledChargeProgress(){
+  for(float factor:new float[]{com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand.normalRechargeScaleFactor(),com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster.HOLSTER_SCALE_FACTOR})for(int missing=1;missing<=9;missing++){
+   com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand wand=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile();wand.maxCharges=10;wand.curCharges=10-missing;wand.partialCharge=0;wand.charge(hero,factor);
+   try{com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand.Charger charger=null;for(com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand.Charger candidate:hero.buffs(com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand.Charger.class))if(candidate.wand()==wand)charger=candidate;assertNotNull(charger);
+    float original=(float)(10f+40f*Math.pow(factor,missing));assertEquals(Float.floatToIntBits(original),Float.floatToIntBits(com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand.baselineRechargeTurns(missing,factor)));charger.act();assertEquals(1f/original,wand.partialCharge,.0000001f);assertEquals(10-missing,wand.curCharges);
+   }finally{wand.stopCharging();}
+  }
+ }
+ @Test public void holsterStoredWandReadoutsUseKnownDeficitsWithoutChargingOrLeakingLevels(){
+  com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster holster=new com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster();holster.owner=hero;hero.belongings.backpack.items.add(holster);
+  com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand wand=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile();wand.level(3);wand.levelKnown=wand.cursedKnown=wand.curChargeKnown=true;wand.curCharges=wand.maxCharges-2;wand.partialCharge=.25f;holster.items.add(wand);
+  String before=savedDescriptionHero();String detail=UtilityItemExplanation.details(holster,hero);
+  String comparison=ObfuscationExplanation.number(com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand.baselineRechargeTurns(2,com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand.normalRechargeScaleFactor()))+" → "+ObfuscationExplanation.number(com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand.baselineRechargeTurns(2,com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster.HOLSTER_SCALE_FACTOR));
+  assertTrue(detail,detail.contains("2 missing charges"));assertTrue(detail,detail.contains(comparison));assertEquals(before,savedDescriptionHero());assertEquals(.25f,wand.partialCharge,0);
+  wand.curCharges=wand.maxCharges;wand.partialCharge=.8f;before=savedDescriptionHero();assertTrue(UtilityItemExplanation.details(holster,hero).contains("full or overcharged"));assertEquals(before,savedDescriptionHero());
+  wand.levelKnown=false;wand.level(0);String low=UtilityItemExplanation.details(holster,hero);wand.level(7);assertEquals(low,UtilityItemExplanation.details(holster,hero));
+  wand.levelKnown=true;wand.curChargeKnown=false;wand.curCharges=0;String unknownCharges=UtilityItemExplanation.details(holster,hero);wand.curCharges=wand.maxCharges;assertEquals(unknownCharges,UtilityItemExplanation.details(holster,hero));
+  Random.pushGenerator(672);int expected=Random.Int();Random.popGenerator();Random.pushGenerator(672);try{UtilityItemExplanation.details(holster,hero);assertEquals(expected,Random.Int());}finally{Random.popGenerator();}
+ }
+ @Test public void holsterExplanationDistinguishesNormalThrownWearFromSpecialDartRules(){
+  com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife knife=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife();knife.levelKnown=knife.cursedKnown=true;float damage=knife.max();knife.holster=false;float ordinary=knife.previewDurabilityPerUse();knife.holster=true;float holstered=knife.previewDurabilityPerUse();assertTrue(holstered<ordinary);assertEquals(damage,knife.max(),0);
+  com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.RotDart rot=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.RotDart();rot.holster=false;float outside=rot.previewDurabilityPerUse();rot.holster=true;assertEquals(outside,rot.previewDurabilityPerUse(),0);assertEquals(20,outside,0);
+  String text=UtilityItemExplanation.details(new com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster(),hero);assertTrue(text.contains("20%"));assertTrue(text.contains("Special dart types"));assertTrue(text.contains("whole throws left"));
+ }
  @Test public void pickaxeAbilityDetailsMatchActualConditionalDamageInput(){
   com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe pick=new com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe();pick.levelKnown=pick.cursedKnown=true;
   com.shatteredpixel.shatteredpixeldungeon.actors.Char[] qualified={new com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Crab(),new com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bee(),new com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Swarm(),new com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Spinner(),new com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Scorpio(),new com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100()};

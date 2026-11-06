@@ -4160,6 +4160,11 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/quest/Pickaxe.java",
       "sha256": "1a5b14347fd9ebfe607cc0a76b851e455fb8e824aabaaa1d3909c7719fdee01b",
       "boundary": "Duelist Pierce target qualification, augmented flat added input, timing/accuracy, survivor Vulnerable and separate mining rules source-reviewed.96 target/level/augment comparisons plus unknown-level/RNG/Hero/item privacy tests passed. Callback ordering/formula preserved. Post369 source only; native/phone new text acceptance pending."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/bags/MagicalHolster.java",
+      "sha256": "0c2a4b00168c45d5a2287c597533a83ec066fdc1f943ff08bdffb9c32a913314",
+      "boundary": "Capacity, ordinary thrown-wear budget and special-dart exceptions; live known-wand deficit-based recharge intervals and timing/bonus conditions source reviewed and tested against actual scheduled charger. Hidden-level/charge and Hero/item/RNG purity tested. New text source-only; native/phone acceptance pending."
     }
   ]
 }

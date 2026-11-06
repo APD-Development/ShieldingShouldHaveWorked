@@ -853,6 +853,15 @@ public abstract class Wand extends Item {
 		}
 	};
 	
+    /** Baseline scheduled-charge interval; does not charge, identify or clean up the wand. */
+    public static float baselineRechargeTurns(int missingCharges,float scale){
+        return (float)(Charger.BASE_CHARGE_DELAY
+                + Charger.SCALING_CHARGE_ADDITION*Math.pow(scale,Math.max(0,missingCharges)));
+    }
+    public static float normalRechargeScaleFactor(){return Charger.NORMAL_SCALE_FACTOR;}
+    public static float baseRechargeDelay(){return Charger.BASE_CHARGE_DELAY;}
+    public static float scalingRechargeDelay(){return Charger.SCALING_CHARGE_ADDITION;}
+
 	public class Charger extends Buff {
 		
 		private static final float BASE_CHARGE_DELAY = 10f;
@@ -899,8 +908,7 @@ public abstract class Wand extends Item {
 			int missingCharges = maxCharges - curCharges;
 			missingCharges = Math.max(0, missingCharges);
 
-			float turnsToCharge = (float) (BASE_CHARGE_DELAY
-					+ (SCALING_CHARGE_ADDITION * Math.pow(scalingFactor, missingCharges)));
+			float turnsToCharge = baselineRechargeTurns(missingCharges,scalingFactor);
 
 			if (Regeneration.regenOn())
 				partialCharge += (1f/turnsToCharge) * RingOfEnergy.wandChargeMultiplier(target);
