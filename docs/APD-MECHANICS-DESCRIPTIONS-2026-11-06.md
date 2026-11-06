@@ -327,3 +327,10 @@ Real queued Hero.attackProc mark actor tests cover unknown weapon, identified we
 Greater Haste now distinguishes its shared free-movement/scheduled-update budget from ordinary movement-speed Haste. Well Fed explains paused hunger, decrement-before-heal scheduling, one-HP requests each 18 counter units, challenge reset and Salt Cube timing. The existing healing interval is named in the actual handler and reused by its explanation. Pure getters expose only existing public effect counters. Actual consumption/update/healing and save-roundtrip tests pass in the targeted suite. No balance changes or healing-credit preview calls. First local compilation caught a missing checked-exception declaration in the test fixture; corrected before tests passed. Full suite evidence is recorded after completion. Prior source757eefe9f remote gate42215256290 verified2705 tests plus Android debug/release/instrumentation and desktop Java; downloaded receipt recorded separately from native acceptance.
 
 Full final local2707 tests/445 suites passed with zero failures/errors/skips after the shared interval constant change. No application assembly in this local check.
+
+
+## Stacked hit contests and Lethal Haste
+
+Bless/Hex/Daze advanced explanations distinguish random-score multiplication from fixed hit chance and explain stacking and infinite-score precedence. Named literal factors are reused in the unchanged same-order Char.hit steps; no combined floating-point replacement or RNG changes. Actual seeded attack and defense contests cover all8 combinations/100 seeds each. Lethal Haste explains replacement budget2+2rank and updates consuming it before movement; actual enemy-kill hook verifies both ranks and replacement rather than addition. Targeted suite passes; full suite result pending at preparation time. Internal367 application source remains pinned412117a9a and excludes these later source additions; its native verification is separate.
+
+Full local2709/445 completed successfully, zero failures/errors/skips,42s. Source-only Android compilation still pending.

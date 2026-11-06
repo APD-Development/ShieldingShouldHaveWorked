@@ -684,9 +684,9 @@ public abstract class Char extends Actor {
 		defStat = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomCombatHooks.evasion(defender, defStat);
 
 		float acuRoll = Random.Float( acuStat );
-		if (attacker.buff(Bless.class) != null) acuRoll *= 1.25f;
-		if (attacker.buff(  Hex.class) != null) acuRoll *= 0.8f;
-		if (attacker.buff( Daze.class) != null) acuRoll *= 0.5f;
+		if (attacker.buff(Bless.class) != null) acuRoll *= Bless.ROLL_FACTOR;
+		if (attacker.buff(  Hex.class) != null) acuRoll *= Hex.ROLL_FACTOR;
+		if (attacker.buff( Daze.class) != null) acuRoll *= Daze.ROLL_FACTOR;
 		for (ChampionEnemy buff : attacker.buffs(ChampionEnemy.class)){
 			acuRoll *= buff.evasionAndAccuracyFactor();
 		}
@@ -700,9 +700,9 @@ public abstract class Char extends Actor {
 		acuRoll *= accMulti;
 
 		float defRoll = Random.Float( defStat );
-		if (defender.buff(Bless.class) != null) defRoll *= 1.25f;
-		if (defender.buff(  Hex.class) != null) defRoll *= 0.8f;
-		if (defender.buff( Daze.class) != null) defRoll *= 0.5f;
+		if (defender.buff(Bless.class) != null) defRoll *= Bless.ROLL_FACTOR;
+		if (defender.buff(  Hex.class) != null) defRoll *= Hex.ROLL_FACTOR;
+		if (defender.buff( Daze.class) != null) defRoll *= Daze.ROLL_FACTOR;
 		for (ChampionEnemy buff : defender.buffs(ChampionEnemy.class)){
 			defRoll *= buff.evasionAndAccuracyFactor();
 		}

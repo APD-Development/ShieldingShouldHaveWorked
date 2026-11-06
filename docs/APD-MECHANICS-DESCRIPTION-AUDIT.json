@@ -3562,6 +3562,21 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/WellFed.java",
       "sha256": "b3946d78753b4af83fcbec808fc80ac0ff0046bf7f06b41804aa7699b0186abf",
       "boundary": "Read-only remaining budget, normal movement/update consumption or nutrition/healing schedule; actual handlers and save state tested. No action costs, healing rules or hunger rules changed."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Bless.java",
+      "sha256": "9772f41dcce1234337de145a297a34f449347bab2c57b24657f04b17b20fff44",
+      "boundary": "Ordinary accuracy/evasion random-roll factors, multiplicative stacking and guaranteed-rule priority. Same literal constants named and reused in unchanged hit steps; actual attack and defense contests checked across eight combinations and100 seeds."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Hex.java",
+      "sha256": "7ef5fbdf44afbfa409c841af3e6ff033e0a1ccd50f8146148f5e0b12a9c13a93",
+      "boundary": "Ordinary accuracy/evasion random-roll factors, multiplicative stacking and guaranteed-rule priority. Same literal constants named and reused in unchanged hit steps; actual attack and defense contests checked across eight combinations and100 seeds."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Daze.java",
+      "sha256": "177cb350ff71869b91e15e0b73e852dab48cadb8497d7c813760cc1c060f799b",
+      "boundary": "Ordinary accuracy/evasion random-roll factors, multiplicative stacking and guaranteed-rule priority. Same literal constants named and reused in unchanged hit steps; actual attack and defense contests checked across eight combinations and100 seeds."
     }
   ]
 }

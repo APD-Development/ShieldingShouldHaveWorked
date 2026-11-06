@@ -28,6 +28,9 @@ public final class TalentExplanation {
         if (rank <= 0) return "";
         int hp = Dungeon.hero == null ? 0 : Dungeon.hero.HT;
         switch (talent) {
+            case LETHAL_HASTE:
+                return "_Movement after an ability kill_\nA qualifying weapon-ability kill of an enemy sets the Greater Haste budget to 2 + 2 × rank = "+(2+2*rank)+" units. This replaces the old remaining budget rather than adding that amount. A normal movement step spends one unit and takes zero movement time; scheduled updates also spend one unit. The next update can therefore reduce the offered budget before you move, and attacks retain their normal time costs. This is not a promise of "+(2+2*rank)+" free steps after other actions.";
+
             case FOCUSED_MEAL:
                 if(alternateDescription || (Dungeon.hero!=null&&Dungeon.hero.heroClass!=com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.DUELIST))
                     return "_Alternate next-hit damage_\nEating offers one physical damage-roll benefit equal to round(hero level / (4 − rank)) damage points. " + (Dungeon.hero==null?"":"At your current hero level: +"+Math.round(Dungeon.hero.lvl/(4f-rank))+" points. ")

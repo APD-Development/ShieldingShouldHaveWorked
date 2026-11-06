@@ -1,3 +1,7 @@
+## 2026-11-06 roll-contest checkpoint
+
+Full local2709/445 pass. Actual seeded hit handlers verify all8 Bless/Hex/Daze combinations in attack and defense; source factors and same-order calculations preserved. Lethal Haste actual kill budget/replacement tested and explained. Internal367 pair is running against exact412117a9a; corrected viewport native run42216362442 pending, not claimed passed. Continue immunity/movement-status semantic review. No delivery yet;365 verified fallback intact.
+
 ## 2026-11-06 haste/nutrition checkpoint
 
 Full local2707/445 pass. Read-only counters and explanations cover Greater Haste movement/update budget and Well Fed actual periodic healing, Salt Cube spacing and On Diet reset; actual handlers/save inspection regressions pass. Prior757eefe9f source-only gate42215256290 verified2705 plus Android/debug/release/instrumentation/desktop; downloaded receipt persisted. Continue development and replacement native viewport acceptance.366 is withheld;365 remains verified fallback.
