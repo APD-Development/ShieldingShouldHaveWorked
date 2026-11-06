@@ -63,6 +63,23 @@ public class MechanicsExplanationTest {
   assertEquals(requirement,armor.STRReq());assertTrue(ArmorExplanation.details(armor,hero).contains("strength requirement: "+requirement+" points"));
   assertTrue(ArmorExplanation.details(armor,hero).contains("effective armor level: "+armor.buffedLvl()));
  }
+ @Test public void normalWeaponTimingMatchesActualDelayWithoutConsumingFreeAttack(){
+  com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon[] weapons={new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Glaive(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sai(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife()};
+  RingOfFuror furor=new RingOfFuror();furor.level(2);furor.anonymize();furor.levelKnown=furor.cursedKnown=true;hero.belongings.ring=furor;furor.activate(hero);
+  Talent.LethalMomentumTracker free=Buff.affect(hero,Talent.LethalMomentumTracker.class);
+  for(com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon weapon:weapons)for(com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon.Augment augment:com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon.Augment.values())for(int strength:new int[]{6,10,20})for(boolean dancing:new boolean[]{false,true}){
+   weapon.levelKnown=weapon.cursedKnown=true;weapon.level(3);weapon.augment=augment;hero.STR=strength;
+   if(dancing)Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar.SwordDance.class);else if(hero.buff(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar.SwordDance.class)!=null)hero.buff(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar.SwordDance.class).detach();
+   assertEquals(weapon.delayFactor(hero),WeaponExplanation.normalAttackDelay(weapon,hero),0);
+   assertTrue(WeaponExplanation.summary(weapon,hero).contains(ObfuscationExplanation.number(weapon.delayFactor(hero))+" turns per attack"));
+   WeaponExplanation.details(weapon,hero);assertSame(free,hero.buff(Talent.LethalMomentumTracker.class));
+  }
+ }
+ @Test public void weaponTimingHidesUnknownLevelsAndRingEffectsAndDoesNotPretendBowIsOrdinary(){
+  com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon weapon=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Glaive();weapon.levelKnown=false;String hidden=WeaponExplanation.details(weapon,hero);weapon.level(8);assertEquals(hidden,WeaponExplanation.details(weapon,hero));assertNull(WeaponExplanation.normalAttackDelay(weapon,hero));
+  weapon.levelKnown=true;RingOfFuror furor=new RingOfFuror();furor.levelKnown=false;hero.belongings.ring=furor;String unknown=WeaponExplanation.details(weapon,hero);furor.level(8);assertEquals(unknown,WeaponExplanation.details(weapon,hero));assertNull(WeaponExplanation.normalAttackDelay(weapon,hero));
+  com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow bow=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow();assertNull(WeaponExplanation.normalAttackDelay(bow,hero));assertTrue(WeaponExplanation.details(bow,hero).contains("Sniper-shot timing"));
+ }
  @Test public void mailPlusThreeExplainsUnitsAndUsesActualObfuscationScore(){armor.level(3);RingOfArcana ring=ring(3);float expected=Obfuscation.stealthBoost(hero,hero.glyphLevel(Obfuscation.class));String text=armor.info();assertTrue(text,text.contains("2 stealth points"));assertTrue(text,text.contains(ObfuscationExplanation.number(expected)+" points"));assertTrue(text,text.contains("not percentages"));assertTrue(text,text.contains("unaware enemy"));assertFalse(text,text.contains("added stealth 2 to"));}
  @Test public void upgradesAndArcanaRefreshBothReadableValuesAndDetailedResults(){armor.level(0);RingOfArcana ring=ring(0);String first=ObfuscationExplanation.details(armor,hero);armor.level(6);ring.upgrade();String next=ObfuscationExplanation.details(armor,hero);assertNotEquals(first,next);assertTrue(next,next.contains(ObfuscationExplanation.number(Obfuscation.stealthBoost(hero,hero.glyphLevel(Obfuscation.class)))));assertTrue(next,next.contains("3 stealth points"));}
  @Test public void enhancedRingsAndProtectiveAuraMatchLiveCalculation(){armor.level(3);ring(1);Buff.affect(hero,EnhancedRings.class);Buff.affect(hero,AuraOfProtection.AuraBuff.class);float actual=Obfuscation.stealthBoost(hero,hero.glyphLevel(Obfuscation.class));assertTrue(ObfuscationExplanation.summary(armor,hero).contains(ObfuscationExplanation.number(actual)+" points"));}

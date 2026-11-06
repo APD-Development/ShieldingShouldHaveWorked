@@ -3727,6 +3727,21 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/ArmorExplanation.java",
       "sha256": "5f7a4063ba9f983c5b88fc44f6021c097414213cba969d83b90af45db936f6bb",
       "boundary": "Armor own absorption, missing-strength protection/movement/evasion penalties, augmentation and effective-level versus own-level explanation. Original calculations unchanged. Not complete armor glyph/status/ability semantic closure; new rendered device acceptance pending."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/Weapon.java",
+      "sha256": "40aa834b5230ae9723d75d2a1960b584bc0037b029d0559170602ccce6f7029c",
+      "boundary": "Standard weapon timing, strength/augmentation/Furor/Sword Dance explanation with known-stat and Spirit Bow exceptions. Exact compact accuracy API preserved. Not complete weapon ability/enchantment/projectile semantic closure; new rendered acceptance pending."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/WeaponExplanation.java",
+      "sha256": "6e1062cf019f894df3e375b6b5c29b7050f9416c89c42df21f736303f316fa4d",
+      "boundary": "Standard weapon timing, strength/augmentation/Furor/Sword Dance explanation with known-stat and Spirit Bow exceptions. Exact compact accuracy API preserved. Not complete weapon ability/enchantment/projectile semantic closure; new rendered acceptance pending."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/ArmorExplanation.java",
+      "sha256": "6361ac90ef2b033f26a648141f0bde5196ce84796e3e676862e05eb73c65fb9a",
+      "boundary": "Advanced armor minimum/maximum conditional equations clarified. Same actual Armor methods used for live preview; no balance changes."
     }
   ]
 }

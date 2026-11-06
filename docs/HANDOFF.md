@@ -1,3 +1,7 @@
+## 2026-11-06 standard weapon timing checkpoint
+
+Full local2749/446 passed after moving new timing paragraph into Weapon.info to preserve compact accuracyDescription contract. No existing assertions weakened. Actual delay checks72 combinations preserve Lethal Momentum; hidden ring/upgrade and Spirit Bow exception tests pass, catalog purity passes. Armor full conditional equations clarified. Source-only request updated (2749 expected) for Android/desktop compile verification; previous armor checkpoint f1dad984a had no new CI request and must not be called remotely verified. e46cf32cf receipt remains last downloaded remote proof until new run fetched. No new app build or delivery. Continue remaining buff/talent/item semantics.
+
 ## 2026-11-06 armor contribution checkpoint
 
 Local full2747/446 pass; unchanged combat equations now explained with actual strength/armor/augmentation values and hidden-bonus guards. Actual seeded DR/evasion/movement and identification regressions pass. Source-only expected inventory2747. Previous e46cf32cf remotely verified2743/446 + Android/desktop compile with downloaded/hash-verified receipt13506681717, ledger updated. No new APK requested;367 remains older partial internal candidate,365 delivered fallback. Continue weapon action-time and remaining semantic audit immediately.

@@ -417,3 +417,14 @@ Armor now explains damage-point protection rather than a percentage, strength sh
 Targeted tests compare actual Hero.drRoll against seeded legacy rolls across2 challenge states ×3 augments ×4 armor levels ×3 strength values ×10 seeds; compare actual evasionFactor/speedFactor, known Might versus Enhanced Rings, Degrade/mastery separation and unknown-level/ring invariance. First oracle failed because Char.drRoll consumes the existing zero-Barkskin roll before armor; the test now preserves that actual RNG sequence, without changing gameplay. Catalog inspection purity rerun passes. New armor text not phone/emulator rendered yet.
 
 Source e46cf32cfce82eae9c00bcb0231051255d4be796 remotely verified: run42227562506, actual successful job127924819762 and downloaded artifact13506681717; raw446 suites/2743 tests and JSON agree, no failures/errors/skips. Android debug/release/instrumentation Java plus desktop compilation passed; no app assembly. Standard commit status locator now actually verified.
+
+
+### Standard weapon timing continuation
+
+Normal weapon attack delay now has a live preview in the item summary and collapsed calculation panel: augmented DLY ×1.2^missingStrength ×(1/(1.09051^knownFuror +0.6 when Sword Dance active)). Mirrors float multiplication/division order. It describes game-time units, accuracy scores rather than hit percentages, strength and mastery thresholds, separate damage/time augment factors, rounding and exceptions. Does not call Hero.attackDelay, Weapon.accuracyFactor or damageRoll: those can spend Lethal Momentum, Flail spin or Crossbow state. Spirit Bow/Spirit Arrow explicitly excluded from this standard numerical preview because Sniper/Nature's Power have extra rules. Unknown contributing rings or upgrades withhold numbers. No combat calculation changed.
+
+Targeted actual delay equivalence across Glaive/Scimitar/Sai/Throwing Knife ×3 augments ×3 strength values ×Sword Dance off/on, known Furor and ready Lethal Momentum; inspection leaves the free attack attached. Unknown-level/ring invariance and Spirit Bow exception tested. Expanded catalog purity passed. Initial compilation caught a malformed chained string replacement before any commit; corrected and targeted suite passed.
+
+The first full weapon run correctly caught4 existing compact-accuracy contract failures when timing was appended inside accuracyDescription. Moved timing into Weapon.info instead, preserving the separate compact accuracy text and its exact numeric tests. No assertions weakened. Final verification follows; the failed run is not a passing build.
+
+Final corrected local weapon suite:2749 tests/446 suites, zero failures/errors/skips, `/workspace/apd-weapon-timing-final-full.log`. Latest paragraphs remain unrendered on a device; source-only remote verification requested.

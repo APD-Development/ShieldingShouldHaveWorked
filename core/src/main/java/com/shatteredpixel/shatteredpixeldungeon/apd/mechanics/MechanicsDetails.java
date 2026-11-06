@@ -60,7 +60,7 @@ public final class MechanicsDetails {
         }
         if(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff)
             result.append(((com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff)item).mechanicsDetails()).append("\n\n");
-        if(item instanceof Weapon)result.append(EnchantmentExplanation.describe((Weapon)item,Dungeon.hero,true)).append("\n\n").append(CurseExplanation.weapon((Weapon)item,Dungeon.hero,true)).append("\n\n").append("_Weapon's displayed values_\nThe damage range is the weapon's base damage before the target's defenses and other bonuses. The accuracy number is the weapon's contribution to an attack score, not a hit probability. Upgrade and ring comparisons above describe the stated contribution; they do not include every target, buff or dungeon rule. Unidentified upgrade-dependent calculations remain hidden.\n\n");
+        if(item instanceof Weapon)result.append(WeaponExplanation.details((Weapon)item,Dungeon.hero)).append("\n\n").append(EnchantmentExplanation.describe((Weapon)item,Dungeon.hero,true)).append("\n\n").append(CurseExplanation.weapon((Weapon)item,Dungeon.hero,true)).append("\n\n");
         String common=glossary(visibleDescription);if(!common.isEmpty())result.append(common);
         return result.toString().trim();
     }

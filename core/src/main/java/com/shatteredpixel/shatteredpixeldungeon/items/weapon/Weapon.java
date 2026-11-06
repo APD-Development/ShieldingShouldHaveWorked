@@ -308,6 +308,11 @@ abstract public class Weapon extends KindOfWeapon {
 		return (float) (baseAccuracy / Math.pow(1.5, deficit));
 	}
 
+    @Override
+    public String info() {
+        return super.info() + "\n\n" + com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.WeaponExplanation.summary(this, Dungeon.hero);
+    }
+
 	protected String accuracyDescription() {
 		if (Dungeon.hero == null) return "";
 		float knownAccuracy = ACC;
