@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -82,6 +85,10 @@ public class Tomahawk extends MissileWeapon {
 
 	public String statsInfo(){
 		if (isIdentified()){
+            if(Dungeon.hero==null)return Messages.get(this,"stats_desc",
+                    Math.round(augment.damageFactor(minBleed(buffedLvl()))),
+                    Math.round(augment.damageFactor(maxBleed(buffedLvl()))))
+                    + " No wearer is loaded, so this is the weapon's own range before ring or temporary wearer bonuses.";
 			return Messages.get(this, "stats_desc",
 					Math.round(augment.damageFactor(minBleed())),
 					Math.round(augment.damageFactor(maxBleed())));

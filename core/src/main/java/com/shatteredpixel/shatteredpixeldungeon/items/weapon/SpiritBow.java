@@ -141,6 +141,9 @@ public class SpiritBow extends Weapon {
 	public String info() {
 		String info = super.info() + accuracyDescription();
 		
+        if(Dungeon.hero==null){
+            info+="\n\nSpirit Bow damage scales with the user's hero level and Sharpshooting. A personal damage range and strength penalties require a loaded hero; no example character is assumed.";
+        }else{
 		info += "\n\n" + Messages.get( SpiritBow.class, "stats",
 				Math.round(augment.damageFactor(min())),
 				Math.round(augment.damageFactor(max())),
@@ -151,7 +154,8 @@ public class SpiritBow extends Weapon {
 		} else if (Dungeon.hero.STR() > STRReq()){
 			info += " " + Messages.get(Weapon.class, "excess_str", Dungeon.hero.STR() - STRReq());
 		}
-		
+		        }
+
 		switch (augment) {
 			case SPEED:
 				info += "\n\n" + Messages.get(Weapon.class, "faster");

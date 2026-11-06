@@ -1,3 +1,9 @@
+## 2026-11-06 post368 no-hero catalog crash fixes
+
+Full local2851/446 passes;296 no-hero catalog contexts preserve saved item/RNG. Baseline15 failing catalog cases represent four issue families: rings, Spirit Bow, Tomahawk and imbued Mage staff. Guard missing context and withhold personal strength/HP math without fake example heroes. Existing loaded-Hero bonuses/math retained. Prior full run interrupted by environment restart; complete rerun exit0/XML verified, raw /workspace/apd-no-hero-catalog-local-junit.zip. Remote c93af2bec exact2850 plus Android/desktop compile receipt verified. New2851 source-only gate pending. Not in368 and not physical UIMSD OOM attribution.
+
+368 verified files remain /workspace/APD368-Downloads; GitHub releasePOST403 still pending owner action, no additional blind retry or APK. Continue approved work.
+
 ## 2026-11-06 post368 Warding/Regrowth default description fixes
 
 Three red baselines in /workspace/apd-wand-description-cleanup-before.log: Warding/Regrowth statsDesc mutates inactive infusion/charge capacity via level(), and identified Regrowth description throws without a hero. Use existing pure previewBaseLevel/previewChargeLimit only in descriptions; normal game cleanup unchanged.312 actual wand-state comparisons (not312 JUnit cases), explicit gameplay-cleanup and no-hero tests pass; plant helper withholds stale floor results outside active run. Full2850/446 local passed, raw /workspace/apd-wand-plant-context-local-junit.zip. Remote Dart/utility0d28f5e26 exact2845 plus full Android/desktop compile receipt verified. New2850 source-only gate pending; no new APK. These inspector findings are not claimed to cause UIMSD physical OOM.

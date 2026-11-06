@@ -93,6 +93,16 @@ public class ItemDescriptionPurityTest {
         try{String plain=item.info();return plain+"\n"+MechanicsDetails.item(item,plain);}
         finally{if(temporarilyOwned)Dungeon.hero.belongings.backpack.items.remove(item);}
     }
+    @Test public void catalogDescriptionsWithoutALoadedHeroPreserveItemsAndRandomness()throws Exception{
+        List<Item> items=new ArrayList<>();for(Class<?> type:classes(Arrays.asList(Catalog.values())).values())items.add(item(type));
+        com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff staff=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff();
+        com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand wand=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile();wand.levelKnown=wand.cursedKnown=wand.curChargeKnown=true;wand.maxCharges=Math.min(10,wand.maxCharges+1);wand.curCharges=wand.maxCharges;java.lang.reflect.Field embedded=staff.getClass().getDeclaredField("wand");embedded.setAccessible(true);embedded.set(staff,wand);items.add(staff);
+        for(String name:new String[]{"WarriorArmor","MageArmor","RogueArmor","HuntressArmor","DuelistArmor","ClericArmor"})items.add(item(Class.forName("com.shatteredpixel.shatteredpixeldungeon.items.armor."+name)));
+        List<String> failures=new ArrayList<>();int inspected=0;Dungeon.hero=null;Dungeon.level=null;
+        for(Item item:items){try{item.levelKnown=item.cursedKnown=true;if(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand)((com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand)item).curChargeKnown=true;Bundle before=new Bundle(),after=new Bundle();item.storeInBundle(before);Random.pushGenerator(3019);int expected=Random.Int();Random.popGenerator();Random.pushGenerator(3019);try{String plain=item.info();assertFalse(plain.trim().isEmpty());MechanicsDetails.item(item,plain);assertEquals(expected,Random.Int());}finally{Random.popGenerator();}item.storeInBundle(after);assertEquals(before.toString(),after.toString());inspected++;}catch(Throwable error){failures.add(item.getClass().getSimpleName()+": "+error);}}
+        System.out.println("NO_HERO_DESCRIPTION inspected="+inspected+" total="+items.size()+" failures="+failures);
+        assertTrue(items.size()>=290);assertEquals(failures.toString(),Collections.emptyList(),failures);assertEquals(items.size(),inspected);
+    }
     @Test public void catalogInventoryInspectionPreservesSavedItemStateAndRandomness(){
         List<String> failures=new ArrayList<>();int inspected=0;
         Random.pushGenerator(7719);

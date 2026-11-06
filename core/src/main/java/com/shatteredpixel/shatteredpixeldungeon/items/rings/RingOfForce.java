@@ -136,7 +136,9 @@ public class RingOfForce extends Ring {
 
 	@Override
 	public String statsInfo() {
-		float tier = tier(Dungeon.hero != null ? Dungeon.hero.STR() : 10);
+        if(Dungeon.hero==null)return "Unarmed damage depends on the wearer's strength; a personal range requires a loaded hero. "
+                +(isIdentified()?"This ring's armed damage contribution without temporary wearer effects is "+soloBonus()+" damage points.":"Identify the ring to see its exact contribution.");
+		float tier = tier(Dungeon.hero.STR());
 		if (isIdentified()) {
 			int level = soloBuffedBonus();
 			String info = Messages.get(this, "stats", min(level, tier), max(level, tier), level);
@@ -152,6 +154,7 @@ public class RingOfForce extends Ring {
 
 	@Override
 	public String upgradeStat1(int level) {
+        if(Dungeon.hero==null)return "Depends on strength";
 		if (cursed && cursedKnown) level = Math.min(-1, level-3);
 		float tier = tier(Dungeon.hero != null ? Dungeon.hero.STR() : 10);
 		return min(level+1, tier) + "-" + max(level+1, tier);
