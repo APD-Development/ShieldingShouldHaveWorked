@@ -686,6 +686,30 @@ public class MechanicsExplanationTest {
   try{for(int draw=0;draw<100;draw++){Class<?> previous=target.glyph==null?null:target.glyph.getClass();target.inscribe();assertNotEquals(previous,target.glyph.getClass());assertEquals(3,target.level());}}finally{Random.popGenerator();}
   String text=UtilityItemExplanation.details(new com.shatteredpixel.shatteredpixeldungeon.items.Stylus(),hero);assertTrue(text.contains("excludes the selected armor's existing glyph"));assertTrue(text.contains("does not raise armor upgrade level"));
  }
+ @Test public void sealShieldActivationExplanationMatchesOddHpThresholdAndHungerExclusion() throws Exception {
+  hero.sprite=quietSprite();hero.damageInterrupt=false;hero.heroClass=HeroClass.ROGUE;hero.talents.get(0).put(Talent.IRON_WILL,2);hero.HT=21;
+  for(int startingHp:new int[]{10,11,12})for(boolean hunger:new boolean[]{false,true}){
+   Buff.detach(hero,com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal.WarriorShield.class);hero.HP=startingHp;com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal.WarriorShield shield=Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal.WarriorShield.class);
+   String text=BuffExplanation.details(shield);assertTrue(text,text.contains("floor(maximum HP / 2)"));assertTrue(text,text.contains("non-hunger damage"));assertEquals(0,shield.remainingCooldown());
+   hero.damage(1,hunger?new Hunger():Object.class);assertEquals("HP="+startingHp+", hunger="+hunger,!hunger&&startingHp<=11,shield.coolingDown());
+  }
+ }
+ @Test public void sealShieldDetailsTrackRealCooldownRefundAndPreserveInspection() throws Exception {
+  hero.heroClass=HeroClass.ROGUE;hero.talents.get(0).put(Talent.IRON_WILL,2);
+  com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal.WarriorShield shield=Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal.WarriorShield.class);shield.activate();assertEquals(2,shield.shielding());assertEquals(150,shield.remainingCooldown());
+  com.watabou.utils.Bundle before=new com.watabou.utils.Bundle(),after=new com.watabou.utils.Bundle();shield.storeInBundle(before);String heroBefore=savedDescriptionHero();Random.pushGenerator(418);int next=Random.Int();Random.popGenerator();Random.pushGenerator(418);
+  try{String text=BuffExplanation.details(shield);assertTrue(text,text.contains("Current reserve: 2 temporary shield points"));assertTrue(text,text.contains("Recharge remaining: 150"));assertTrue(text,text.contains("Current activation capacity: 2"));assertEquals(next,Random.Int());}finally{Random.popGenerator();}
+  shield.storeInBundle(after);assertEquals(before.toString(),after.toString());assertEquals(heroBefore,savedDescriptionHero());
+  shield.act();assertEquals(149,shield.remainingCooldown());assertEquals(1,shield.enemyFreeProgress(),0);assertTrue(BuffExplanation.details(shield).contains("Recorded enemy-free decay progress: 1 of 5"));for(int tick=0;tick<4;tick++)shield.act();assertEquals(0,shield.shielding());assertEquals(70,shield.remainingCooldown());assertTrue(BuffExplanation.details(shield).contains("Recharge remaining: 70"));
+  shield.reduceCooldown(1);assertEquals(-80,shield.remainingCooldown());String credit=BuffExplanation.details(shield);assertTrue(credit,credit.contains("Stored cooldown reduction: 80 units"));shield.activate();assertEquals(70,shield.remainingCooldown());assertEquals(2,shield.shielding());
+ }
+ @Test public void sealShieldDescriptionDoesNotAdvancePausedCooldownOrOutOfPositionHoldFast() throws Exception {
+  hero.heroClass=HeroClass.ROGUE;hero.talents.get(0).put(Talent.IRON_WILL,2);hero.talents.get(2).put(Talent.HOLD_FAST,1);
+  com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal.WarriorShield shield=Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal.WarriorShield.class);shield.activate();com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor lock=Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor.class);lock.removeTime(lock.remainingGraceTime());
+  com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HoldFast hold=Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HoldFast.class);hold.pos=hero.pos+1;BuffExplanation.details(shield);assertSame(hold,hero.buff(hold.getClass()));assertEquals(0,shield.enemyFreeProgress(),0);assertEquals(150,shield.remainingCooldown());
+  hold.pos=hero.pos;shield.act();assertEquals(.5f,shield.enemyFreeProgress(),0);assertEquals(150,shield.remainingCooldown());
+  com.watabou.utils.Bundle saved=new com.watabou.utils.Bundle();shield.storeInBundle(saved);com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal.WarriorShield restored=new com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal.WarriorShield();restored.restoreFromBundle(saved);restored.target=hero;assertEquals(BuffExplanation.details(shield),BuffExplanation.details(restored));Buff.detach(hero,com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor.class);shield.act();assertEquals(149,shield.remainingCooldown());
+ }
  @Test public void dewExplanationUsesLiveHpStorageAndShieldCapWithoutSpendingAnything() throws Exception {
   com.shatteredpixel.shatteredpixeldungeon.items.Waterskin skin=new com.shatteredpixel.shatteredpixeldungeon.items.Waterskin();skin.fill();hero.HP=13;hero.HT=53;hero.apdCustomHealingFraction=.75f;hero.talents.get(2).put(Talent.SHIELDING_DEW,2);Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier.class).setShield(7);
   String heroBefore=savedDescriptionHero();com.watabou.utils.Bundle before=new com.watabou.utils.Bundle(),after=new com.watabou.utils.Bundle();skin.storeInBundle(before);

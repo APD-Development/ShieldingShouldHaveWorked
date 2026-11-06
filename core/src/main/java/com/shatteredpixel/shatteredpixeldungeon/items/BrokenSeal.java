@@ -359,6 +359,10 @@ public class BrokenSeal extends Item {
 		}
 
         public static int cooldownDuration(){return COOLDOWN_START;}
+        public synchronized int remainingCooldown(){ return cooldown; }
+        public synchronized float enemyFreeProgress(){ return turnsSinceEnemies; }
+        public synchronized int activationShield(){ return initialShield; }
+
 
 		public void reduceCooldown(float percentage){
 			cooldown -= Math.round(COOLDOWN_START*percentage);
