@@ -1,4 +1,6 @@
 {
   "source": "7ef0800dfd6c4e624d3c001e886eb1a711d80a68",
-  "purpose": "Discover existing final daily candidate runs through pending link-only statuses; never rebuild or claim verification/delivery"
+  "purpose": "Discover existing final daily candidate runs through pending link-only statuses; never rebuild or claim verification/delivery",
+  "tester_source": "98ed2fc50ff21cb32ac5009333c7f1cd7743f143",
+  "refresh": "Developer producing job now succeeded; discover exact existing Alpha acceptance too"
 }

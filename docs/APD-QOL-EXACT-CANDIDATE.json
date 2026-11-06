@@ -1,7 +1,7 @@
 {
-  "source": "412117a9a60f05358e5bb125fcde0c71035e176e",
-  "run": 42216313574,
-  "build": 367,
-  "purpose": "Internal exact-APK emulator acceptance for corrected mechanics viewport; no release or application rebuild",
-  "test_revision": "Same367 APK; center controlled terrain fixture before bookshelf/decor proof images and assert hero lies inside viewport. Previous camera/clipping/touch three-case acceptance passed; rerun preserves all assertions and adds readable fixture evidence, no application rebuild. Collect and validate all three wall fixture PNGs in addition to the six panel/settings PNGs; former collector archived only those six."
+  "source": "7ef0800dfd6c4e624d3c001e886eb1a711d80a68",
+  "run": 42262060915,
+  "build": 368,
+  "purpose": "Exact final-daily candidate mechanics, waiting controls and centered wall visuals; no application rebuild or publication",
+  "test_revision": "Same candidate368 APK. Preserve3-case actual pointer and expanded viewport/settings acceptance, collect nine validated images. Full72 native separately tests UIMSD cold reopening and old-catalog release."
 }
