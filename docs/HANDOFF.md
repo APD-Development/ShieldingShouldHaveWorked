@@ -1,3 +1,7 @@
+## 2026-11-06 Mage explanation source checkpoint
+
+Full local2680/445 pass. Wild Magic actual afterZap payment/time checks; Beacon mode distinctions; Elemental Blast13 type effects and canonical factor lookup plus actual ward repair validated. All newer than withheld366. Fixed native viewport helper checked-exception compilation failure from gate42208335465; next full source gate requested. Earlier2673 receipt13497621232 hash bce0ed6a09e16a1b8b5a837d36cb4cb10c6c4af706cf5852687c9bbc678e4e4a verified. No new APK triggered; preserve source,366 artifacts and365 playable fallback. Continue Cleric/Duelist/remaining audit.
+
 ## 2026-11-06 real screenshot failure fixed in source; continue
 
 Full local2676 core pass. New Huntress explanations plus description viewport fix: ScrollPane camera had stale pre-Window.resize origin, visibly rendering outside window in366. Internal366 WITHHELD despite targeted3-method touch pass. Added exact camera origin/size/zoom/text-owner and offset regressions; fix not yet native-tested in a new APK. Full72 run had2 stale-fixture failures corrected without deleting cases;6-display workflow concluded success. All actual evidence/limits in mechanics report and docs/APD-INTERNAL366-PREPARATION.json. Current366 localAPKs remain untouched, released365 fallback intact. Continue remaining semantic audit and compile new source; do not create redundant APKs for test/docs-only changes. Only one pair(366) produced this NY day.

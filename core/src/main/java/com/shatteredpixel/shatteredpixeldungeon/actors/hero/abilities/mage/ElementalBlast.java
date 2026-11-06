@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -122,6 +125,12 @@ public class ElementalBlast extends ArmorAbility {
 		damageFactors.put(WandOfCorruption.class,       0f);
 		damageFactors.put(WandOfRegrowth.class,         0f);
 	}
+
+    /** Read-only view of the same direct-damage factors used by activation. */
+    public static float blastDamageFactor(Class<? extends Wand> type){
+        Float factor=damageFactors.get(type);
+        return factor==null?Float.NaN:factor;
+    }
 
 	{
 		baseChargeUse = 35f;

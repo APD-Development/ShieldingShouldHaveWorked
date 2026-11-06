@@ -92,7 +92,7 @@ public class QolItemFeedbackDeviceTest {
         TopScoresDeviceTest.render(()->{try{Window window=factory.call();GameScene.show(window);shown.set(window);}catch(Exception e){throw new RuntimeException(e);}});
         checkCalculationWindow(shown.get(),expected,screenshot);
     }
-    private static void assertDescriptionViewport(Window window){
+    private static void assertDescriptionViewport(Window window){try{
         ScrollPane scroll=TopScoresDeviceTest.find(window,ScrollPane.class).get(0);
         Point origin=scroll.camera().cameraToScreen(scroll.left(),scroll.top());
         assertEquals("Description viewport follows the resized/offset window horizontally",origin.x,scroll.content().camera.x,0);
@@ -101,7 +101,7 @@ public class QolItemFeedbackDeviceTest {
         assertEquals((int)scroll.width(),scroll.content().camera.width,0);
         assertEquals((int)scroll.height(),scroll.content().camera.height,0);
         for(RenderedTextBlock text:TopScoresDeviceTest.find(scroll.content(),RenderedTextBlock.class))assertSame("Body uses the clipped content camera",scroll.content().camera,text.camera());
-    }
+    }catch(Exception e){throw new RuntimeException(e);}}
     private static void checkCalculationWindow(Window window,String expected,String screenshot)throws Exception{
         AtomicReference<RedButton> expander=new AtomicReference<>();Point[] at=new Point[1];float[] time=new float[1],plainHeight=new float[1];int[] hp=new int[1],size=new int[2];
         java.util.Map<Button,float[]> controls=new java.util.IdentityHashMap<>();

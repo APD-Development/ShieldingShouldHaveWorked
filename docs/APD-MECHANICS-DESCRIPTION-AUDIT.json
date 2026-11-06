@@ -3522,6 +3522,36 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/abilities/rogue/ShadowClone.java",
       "sha256": "b82ffddd361650f6060d848c104f8de2661c8e62650159480aad0473abdc8faa",
       "boundary": "Rogue armor-ability destination/timing, clone creation/copy rules, Death Mark damage and shield-basis explanation facets. No full enemy AI/proc/teleport semantic closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/abilities/mage/WildMagic.java",
+      "sha256": "9e3823a36bb44f27da99208759969643907a79cc3131964e2d7298ca14bbb398",
+      "boundary": "Mage/Huntress armor-ability primary resources/ranges/effect conditions and finite-use explanations, read-only inspection. Not complete casting, terrain, AI or spell/talent semantic closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/abilities/mage/WarpBeacon.java",
+      "sha256": "3a758d887e6e3f8a4ac1340f4fd9bad1f5b9f1e991f2cc596500d4726df739d3",
+      "boundary": "Mage/Huntress armor-ability primary resources/ranges/effect conditions and finite-use explanations, read-only inspection. Not complete casting, terrain, AI or spell/talent semantic closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/abilities/mage/ElementalBlast.java",
+      "sha256": "a73d2b582fa4586e1503c08478b55272a0f9907a1add6ab0bb5ef2ecb74bdfa4",
+      "boundary": "Mage/Huntress armor-ability primary resources/ranges/effect conditions and finite-use explanations, read-only inspection. Not complete casting, terrain, AI or spell/talent semantic closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/abilities/huntress/NaturesPower.java",
+      "sha256": "ea6f74dac9701bfa90597d59b447b79b796623ea24cd28184499c7de25f2e30b",
+      "boundary": "Mage/Huntress armor-ability primary resources/ranges/effect conditions and finite-use explanations, read-only inspection. Not complete casting, terrain, AI or spell/talent semantic closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/abilities/huntress/SpiritHawk.java",
+      "sha256": "ec088176e5a4eeb3b5029b640f64167604cd28e3f8ad64d4fe15574b61c1dd1d",
+      "boundary": "Mage/Huntress armor-ability primary resources/ranges/effect conditions and finite-use explanations, read-only inspection. Not complete casting, terrain, AI or spell/talent semantic closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/abilities/huntress/SpectralBlades.java",
+      "sha256": "529eba9eb6a7c30266cfad672ac3d64634481277a16e55b9d8d58c66bb41d615",
+      "boundary": "Mage/Huntress armor-ability primary resources/ranges/effect conditions and finite-use explanations, read-only inspection. Not complete casting, terrain, AI or spell/talent semantic closure."
     }
   ]
 }
