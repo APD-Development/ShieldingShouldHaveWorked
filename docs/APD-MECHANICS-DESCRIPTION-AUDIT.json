@@ -3597,6 +3597,21 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/MagicImmune.java",
       "sha256": "f1dc9b01316628e957d36b1aaf5cd9ea93861968c9af81adb0dd3308a3b21b73",
       "boundary": "Inspected actual attachment/detachment/immunity/damage and ground-contact steps. Bounded explanation, no balance edits. Actual freeze shield/water, roots/flying and selected/unlisted immunity regressions. Does not close every possible terrain/equipment interaction."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/ToxicImbue.java",
+      "sha256": "4f0d04e0e3945c18ae86ffdc4f3ffb5616aa49367dea5af9e69b354689679203",
+      "boundary": "Emission quantity/blocked-cell conservation/lingering immunity, locked recovery-grace threshold/cap or listed environmental source immunity; read-only explanations and actual handler regressions. No balance or turn-processing changes."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/LockedFloor.java",
+      "sha256": "ae7aa926609f2bec352e87a1e6720e66abf126f812961dc8ac0dbd3967cf3b2d",
+      "boundary": "Emission quantity/blocked-cell conservation/lingering immunity, locked recovery-grace threshold/cap or listed environmental source immunity; read-only explanations and actual handler regressions. No balance or turn-processing changes."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/BlobImmunity.java",
+      "sha256": "b8ca4664e3683183350c4b7925c8856dc0f7c63c2ecdbdb372792e05174bbf79",
+      "boundary": "Emission quantity/blocked-cell conservation/lingering immunity, locked recovery-grace threshold/cap or listed environmental source immunity; read-only explanations and actual handler regressions. No balance or turn-processing changes."
     }
   ]
 }

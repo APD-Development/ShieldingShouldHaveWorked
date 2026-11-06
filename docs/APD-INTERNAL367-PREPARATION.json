@@ -17,5 +17,34 @@
     "signature_verification": "pending exact native runner identity receipt"
   },
   "fallback": "Delivered365 remains verified fallback.366 withheld for actual rendering failure.367 whole-game audit unfinished; no owner or tester delivery.",
-  "physical_phone_tested": false
+  "physical_phone_tested": false,
+  "targeted_native": {
+    "run": 42216362442,
+    "artifact": 13501009292,
+    "artifact_sha256": "4c0b486fa1b1fe071abf95dff1d3089c381c933a98da318ff154d584e784c59c",
+    "tests": 3,
+    "passed": 3,
+    "local_evidence": "/workspace/apd-internal367-qol-native",
+    "visual_review": "All six PNGs inspected: calculation viewport clipped/aligned inside buff, talent, ability and spell windows; action controls remain visible. Waiting preferences all off and persisted display correctly.",
+    "physical_phone_tested": false
+  },
+  "developer_identity": {
+    "signature_verified": true,
+    "certificate_sha256": "067688b3ab6bd5820a67f4c1ba7d5859db578173771cf31d3252b3e4e012246e",
+    "package": "name='com.charltonchris29.adhdpixeldungeon.indev' versionCode='920' versionName='4.0.8-apd-INDEV-bC367-TEST' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'",
+    "install_compatible_identity_with_365": true,
+    "physical_phone_tested": false
+  },
+  "alpha_artifact": {
+    "id": 13501203730,
+    "zip": "/workspace/apd-internal367-alpha.zip",
+    "zip_bytes": 37050165,
+    "zip_sha256": "031faa7f178f02336061bd522ef6e43f35d35687867ce9a60be034d21216ab92",
+    "apk": "/workspace/apd-internal367-alpha.apk",
+    "apk_bytes": 39056716,
+    "apk_sha256": "4df26df545b8039ee5af99571bc5720fa319401f5511e16915ae5117fbdd0096",
+    "sidecar_matches": true,
+    "feature_manifest": "extendedPlayback only, actual APK inspected",
+    "identity_and_native_acceptance": "pending new exact-Alpha instrumentation run"
+  }
 }

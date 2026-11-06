@@ -1,3 +1,7 @@
+## 2026-11-06 environmental mechanics and actual viewport proof
+
+Full local2715/445 pass. Gas volume/lingering immunity, locked recovery grace and environmental source protections explained/tested using actual handlers. Internal367 exact native3 passed; all6 screenshots reviewed and viewport now correctly clipped/aligned. Original signer/appID verified for Developer; Alpha manifest isolated and exact APK staged, Alpha signature/native run requested. Full72 native and display-matrix evidence still pending. Current source exceeds367; no release. Continue broad remaining mechanic audit, not another application rebuild.
+
 ## 2026-11-06 selective immunity/ground contact checkpoint
 
 Full local2712/445 pass. Default universal Levitation/Magic Immunity claims corrected, read-only detailed freeze/root/immunity rules tested against real attachment/damage handlers. Source-only2707 gate receipt verified and recorded. Internal367 producer passed and exact Developer APK/checksum staged; full72 native and viewport/touch acceptance still running, no verified/playable or delivery claim. Continue remaining descriptions while native verification runs.

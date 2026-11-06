@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -41,7 +44,9 @@ public class ToxicImbue extends Buff {
 
 	public static final float DURATION	= 50f;
 
+	public static final int GAS_PER_CELL = 6;
 	protected float left;
+	public float emissionUpdatesLeft(){ return left; }
 
 	private static final String LEFT	= "left";
 
@@ -70,12 +75,12 @@ public class ToxicImbue extends Buff {
 	public boolean act() {
 		if (left > 0) {
 			//spreads 54 units of gas total
-			int centerVolume = 6;
+			int centerVolume = GAS_PER_CELL;
 			for (int i : PathFinder.NEIGHBOURS8) {
 				if (!Dungeon.level.solid[target.pos + i]) {
-					GameScene.add(Blob.seed(target.pos + i, 6, ToxicGas.class));
+					GameScene.add(Blob.seed(target.pos + i, GAS_PER_CELL, ToxicGas.class));
 				} else {
-					centerVolume += 6;
+					centerVolume += GAS_PER_CELL;
 				}
 			}
 			GameScene.add(Blob.seed(target.pos, centerVolume, ToxicGas.class));
