@@ -1,7 +1,7 @@
 {
-  "source": "7ef0800dfd6c4e624d3c001e886eb1a711d80a68",
-  "run": 42262060915,
-  "build": 368,
-  "purpose": "Exact final-daily candidate mechanics, waiting controls and centered wall visuals; no application rebuild or publication",
-  "test_revision": "Same candidate368 APK. Preserve3-case actual pointer and expanded viewport/settings acceptance, collect nine validated images. Full72 native separately tests UIMSD cold reopening and old-catalog release."
+  "source": "b8283598a43e13a2259d65cae69bf0529b7a65e2",
+  "run": 42279158656,
+  "build": 369,
+  "purpose": "Exact latest candidate369 mechanics, independent waiting controls and wall display acceptance; no application rebuild/publication",
+  "test_revision": "Reuse369 app source; three actual pointer/expanded/settings methods and nine images. Full72 producer native separately verifies UIMSD cold reopen; source2856 verified."
 }

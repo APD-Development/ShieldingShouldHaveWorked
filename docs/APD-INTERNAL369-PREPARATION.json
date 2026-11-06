@@ -6,5 +6,11 @@
   "previous_verified_local_pair": 368,
   "whole_semantic_audit_complete": false,
   "physical_phone_tested": false,
-  "github_release_delivery_complete": false
+  "github_release_delivery_complete": false,
+  "owner_daily_limit_update": "Owner explicitly said go to10; interpreted10 total APKs/day, five Developer and five Alpha. Keep369 fixed unless real application fix requires another pair.",
+  "runs": {
+    "developer": 42279158656,
+    "alpha": 42279158734,
+    "display": 42279158774
+  }
 }
