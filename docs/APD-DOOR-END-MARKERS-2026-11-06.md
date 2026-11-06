@@ -27,3 +27,12 @@ Owner clarified: make the flip selectable in APD Settings, not mandatory. Add Si
 ## Disappearing-mark boundary
 
 The shown corner's transition is reproduced and corrected without deleting historical bits. Additional regression keeps legitimate stone FACE and OVERHANG markers identical through leaving sight, restoring saved search memory and returning to sight. No separate loss of valid saved marks has been reproduced from the supplied evidence; do not claim every possible disappearance is fixed. The next APK must verify actual render-layer/camera/lifecycle behavior as well as the new input semantics.
+
+## Completed source verification
+
+## Search controls and door-end markers — source-verified, no APK
+
+Exact application source878a05f1d0f2884aba4efd50e24fe97c7d298143 passed source-only run42136747730/job127626727810 at2026-11-06T00:28:34Z:2505 tests442 suites, zero failures/errors/skips; Android debug/release/instrumentation Java and desktop compilation passed. No APK assembled and no physical-phone test claimed. Single-tap Search is an optional APD Settings > Gameplay checkbox, defaultoff, persisted across restarts. On: tap searches normally, hold inspects freely; off: existing controls. Actual pointer/toggle/cost tests are staged for the next permitted corrected APK, not reported executed.
+
+Known-door wall-end regression reproduced on365 then passed with structural-frame correction; visible doorway tiles cannot host projections. Search bits preserved. Valid wall FACE/OVERHANG projection retention tested through FOV loss, search-memory reload and revisiting. Separate unexplained disappearance of valid marks remains unconfirmed; next native candidate must verify camera/render/lifecycle and both control modes. Preserve all365 features/newer UIMSD source, player data, signing and private assets. Application build-request unchanged: no fourth November5 NewYork pair. Existing TEST365 is playable but does NOT include these source changes. Report APD-DOOR-END-MARKERS-2026-11-06.md.
+
