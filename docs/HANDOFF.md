@@ -1,3 +1,7 @@
+## 2026-11-06 sensing and image checkpoint
+
+Full local2717/445 pass. Foresight passive mapping/cost and Prismatic Guard fractional/locked recovery/save regressions pass; remaining description audit continues. Internal367 corrected native viewport visually verified; full72/display checks pending. Alpha367 initial certificate-label parser failed before instrumentation; exact cert requirement retained, parsing fixed, same-APK retry requested. Do not claim Alpha native passed or publish367 yet.
+
 ## 2026-11-06 environmental mechanics and actual viewport proof
 
 Full local2715/445 pass. Gas volume/lingering immunity, locked recovery grace and environmental source protections explained/tested using actual handlers. Internal367 exact native3 passed; all6 screenshots reviewed and viewport now correctly clipped/aligned. Original signer/appID verified for Developer; Alpha manifest isolated and exact APK staged, Alpha signature/native run requested. Full72 native and display-matrix evidence still pending. Current source exceeds367; no release. Continue broad remaining mechanic audit, not another application rebuild.

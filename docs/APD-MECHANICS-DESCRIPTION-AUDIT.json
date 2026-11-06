@@ -3612,6 +3612,21 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/BlobImmunity.java",
       "sha256": "b8ca4664e3683183350c4b7925c8856dc0f7c63c2ecdbdb372792e05174bbf79",
       "boundary": "Emission quantity/blocked-cell conservation/lingering immunity, locked recovery-grace threshold/cap or listed environmental source immunity; read-only explanations and actual handler regressions. No balance or turn-processing changes."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Foresight.java",
+      "sha256": "16613a9e6bc18e950aaa1cdcea930600749afb8ebd65403b4b1faccd573329d8",
+      "boundary": "Primary sensing/ring-effective-level/guard reserve and deployment explanation only. Actual passive Foresight range/time/mapping, image fractional regen/lock/save checks; other ring rules separately verified. No hidden enemy state or item upgrade inspection."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/EnhancedRings.java",
+      "sha256": "c81f6c90dce087a4f8ad71178e501d1d0f2232e7c2b35b260045be1edac290dc",
+      "boundary": "Primary sensing/ring-effective-level/guard reserve and deployment explanation only. Actual passive Foresight range/time/mapping, image fractional regen/lock/save checks; other ring rules separately verified. No hidden enemy state or item upgrade inspection."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/PrismaticGuard.java",
+      "sha256": "df578e99b6e2bbf6966fe2501cef92998c97a01130be8e786ef4701e77f79bfe",
+      "boundary": "Primary sensing/ring-effective-level/guard reserve and deployment explanation only. Actual passive Foresight range/time/mapping, image fractional regen/lock/save checks; other ring rules separately verified. No hidden enemy state or item upgrade inspection."
     }
   ]
 }

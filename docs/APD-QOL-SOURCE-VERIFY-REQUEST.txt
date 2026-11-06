@@ -1,1 +1,1 @@
-2026-11-06 Toxic Imbue actual gas conservation and lingering protection, locked-floor grace threshold/cap/save, environmental source immunity. Full local2715/445 passed; source-only Android debug/release/instrumentation and desktop verification requested. Do not rebuild application.
+2026-11-06 Foresight radius/line-of-sight and manual/passive distinction, Enhanced Rings effective levels, Prismatic Guard stored health/regen/deployment. Full local2717/445 passed; verify Android debug/release/instrumentation and desktop without new application build.
