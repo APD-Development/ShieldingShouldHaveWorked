@@ -575,3 +575,6 @@ Added26 known scroll types with effect-specific durations, resource rules, gener
 
 ### Crafting effects
 23 runestone/alchemy descriptions added without executing uses or selectors. Full2831/446 local passed; infusion and augmentation equations compared to real methods; intuition/reclaimed-trap saved state and RNG preserved. No APK/native acceptance claimed.
+
+### Special foods, twelve dart types and statistics memory
+Source8ab4a7915 full2835/446 passes, constrained256MiB92/12 actual XML passes. Retains fixed-five-use Rot wear in new pure preview; Lunar Pasty nutrition now previews actual300-point main meal. Food and dart status/damage rules explained without rolling effects or spending Berry progress. Background catalog builds excluded across models while interactive work stays outside guard. Initial broader guard failed unchanged stale-open test, corrected scope and full pass. New APK/native acceptance remains pending.

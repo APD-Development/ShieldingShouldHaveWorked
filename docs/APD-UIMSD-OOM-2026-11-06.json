@@ -16,18 +16,20 @@
   ],
   "local_full": {
     "suites": 446,
-    "tests": 2810,
+    "tests": 2835,
     "failures": 0,
     "errors": 0,
     "skipped": 0
   },
   "constrained_256m": {
     "suites": 12,
-    "tests": 85,
+    "tests": 92,
     "failures": 0,
     "errors": 0,
     "skipped": 0
   },
   "android_acceptance": "Existing native method extended with old-catalog release and cold reopen72-run assertions; not yet executed for these changes.",
-  "apk_status": "No new APK assembled or published; current365 phone failure acknowledged."
+  "apk_status": "No new APK assembled or published; current365 phone failure acknowledged.",
+  "replacement_memory_guard": "Only background catalog allocation and Home preparation are serialized across models. Interactive recorder flush/freshness remains outside this guard. Cancelled generation cannot publish; replacement waits for prior working batch. Initial broader guard failed unchanged stale-open replacement test; narrowed guard restores it.",
+  "constrained_evidence": "/workspace/apd-uimsd-256m-final-junit.zip"
 }
