@@ -3707,6 +3707,16 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/MnemonicPrayer.java",
       "sha256": "82625a56a6081c764274de6f3ae306f70a8d6412a9c9a98e172f903973a791c7",
       "boundary": "Primary shared damage/duration/range/stasis/terrain/status-extension rules, actual behavior and saved-state regressions. All27 selectable spells now have specific primary explanation; not all nested item/terrain/AI semantics closed."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/rings/Ring.java",
+      "sha256": "b36893abaaca4b475de16ced4373f7387c6612833f1935c42b2baeaeb0a47d6a",
+      "boundary": "Passive Spirit ring stat queries no longer normalize cached ring. Returned math matched actual legacy gameplay getter across960 family/rank/curse/enhance/degrade/ownership conditions, plus normal zero-sum fallback and Magic Immunity. Catalog289 active-Spirit contexts preserve state. Other semantic audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/SpiritForm.java",
+      "sha256": "065b2c52d81d41d75244c0bcf776e62d9f18ae568586cbe5e9ec25065073a4af",
+      "boundary": "Passive Spirit ring stat queries no longer normalize cached ring. Returned math matched actual legacy gameplay getter across960 family/rank/curse/enhance/degrade/ownership conditions, plus normal zero-sum fallback and Magic Immunity. Catalog289 active-Spirit contexts preserve state. Other semantic audit remains separate."
     }
   ]
 }

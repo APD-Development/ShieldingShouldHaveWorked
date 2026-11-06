@@ -162,8 +162,18 @@ public class SpiritForm extends ClericSpell {
         public int previewRingBonus(Hero hero, Class<? extends Ring> type, boolean buffed) {
             if (hero == null || type == null || !(effect instanceof Ring) || !type.isInstance(effect)) return 0;
             int level = hero.pointsInTalent(Talent.SPIRIT_FORM);
+            // Match Item.buffedLvl even if an unusual saved effect aliases owned equipment.
+            if (buffed && hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade.class) != null
+                    && (((Ring)effect).isEquipped(hero) || hero.belongings.contains((Ring)effect)))
+                level = com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade.reduceLevel(level);
             if (buffed && hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedRings.class) != null) level++;
             return ((Ring) effect).cursed ? Math.min(0, level - 2) : level + 1;
+        }
+
+        /** Same passive bonus as ring().soloBonus, without writing the stored ring level. */
+        public int ringBonusForBuff(Class<? extends Ring.RingBuff> type, boolean buffed) {
+            if (!(effect instanceof Ring) || !((Ring)effect).providesBuffType(type)) return 0;
+            return previewRingBonus(Dungeon.hero, ((Ring)effect).getClass(), buffed);
         }
 
 		public Ring ring(){

@@ -370,6 +370,9 @@ public class Ring extends KindofMisc {
 		return lvl;
 	}
 
+	/** Match a passive stat type without normalizing or activating an item. */
+	public boolean providesBuffType(Class<? extends RingBuff> type){ return buffClass == type; }
+
 	public static int getBonus(Char target, Class<?extends RingBuff> type){
 		if (target.buff(MagicImmune.class) != null) return 0;
 		int bonus = 0;
@@ -377,11 +380,8 @@ public class Ring extends KindofMisc {
 			bonus += buff.level();
 		}
 		SpiritForm.SpiritFormBuff spiritForm = target.buff(SpiritForm.SpiritFormBuff.class);
-		if (bonus == 0
-				&& spiritForm != null
-				&& spiritForm.ring() != null
-				&& spiritForm.ring().buffClass == type){
-			bonus += spiritForm.ring().soloBonus();
+		if (bonus == 0 && spiritForm != null){
+			bonus += spiritForm.ringBonusForBuff(type, false);
 		}
 		return bonus;
 	}
@@ -392,11 +392,9 @@ public class Ring extends KindofMisc {
 		for (RingBuff buff : target.buffs(type)) {
 			bonus += buff.buffedLvl();
 		}
-		if (bonus == 0
-				&& target.buff(SpiritForm.SpiritFormBuff.class) != null
-				&& target.buff(SpiritForm.SpiritFormBuff.class).ring() != null
-				&& target.buff(SpiritForm.SpiritFormBuff.class).ring().buffClass == type){
-			bonus += target.buff(SpiritForm.SpiritFormBuff.class).ring().soloBuffedBonus();
+		SpiritForm.SpiritFormBuff spiritForm = target.buff(SpiritForm.SpiritFormBuff.class);
+		if (bonus == 0 && spiritForm != null){
+			bonus += spiritForm.ringBonusForBuff(type, true);
 		}
 		return bonus;
 	}
