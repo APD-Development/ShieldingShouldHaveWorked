@@ -4290,6 +4290,26 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/EnergyCrystal.java",
       "sha256": "63a7b31a76ff62470e9a3aa84b0aebd00b26078bda9bda4b52359eb6b23188ee",
       "boundary": "Quantity/wallet source review: visible quantity adds to corresponding currency; existing default text names its resource and use. No new currency change or test claim. Complete loot-generation probabilities/native/phone acceptance outside this narrow facet."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/food/ChargrilledMeat.java",
+      "sha256": "b35199a59cc2ab63e4303740bb22cf565be5d966671b35a3a6fb0e41c4151e2a",
+      "boundary": "Sets nutrition to Hunger.HUNGRY/2 and sale value8\u00d7quantity; inherits actual eating/satisfaction and FoodExplanation. cook only preserves requested stack quantity. Existing actual satisfaction tests cover this type and On Diet. Source review only in this checkpoint; no application changes or new build. Whole translation/native/phone acceptance remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/food/SmallRation.java",
+      "sha256": "6f14d1f56a534ec3961b3df30f1bb1382852dce5c50d074fad7e796800d58752",
+      "boundary": "Sets nutrition to Hunger.HUNGRY/2 and sale value10\u00d7quantity; no distinct eating/effect override. Inherits shared live nutrition/time explanation. Existing actual satisfaction tests cover this type and On Diet. Source review only in this checkpoint; no application changes or new build. Whole translation/native/phone acceptance remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/food/StewedMeat.java",
+      "sha256": "c7243e0780902f9dd9983b7f8d6e7edfe348e487e260f29307e8086d0d0b3e22",
+      "boundary": "Sets nutrition to Hunger.HUNGRY/2 and sale value8\u00d7quantity; inherits normal Food satisfaction/time. Source-reviewed batch recipes:1/2/3 raw meat become matching cooked quantities for1/2/2 energy. No new recipe test or tooltip change claimed. Source review only in this checkpoint; no application changes or new build. Whole translation/native/phone acceptance remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/food/PhantomMeat.java",
+      "sha256": "d88f951d40deaf9af4df6728819d57e73d2eea8b039c23000f5cc29a8ae55496",
+      "boundary": "Sets nutrition to Hunger.STARVING and applies all four effects: quarter-HT Barkskin with one-unit decay, normal Invisibility, quarter-HT base healing through normal modifiers/cap, and PotionOfHealing.cure. Existing FoodExplanation matches these conditions and current-HT quantities; existing inspection purity tests cover it. No new actual-consumption test claimed. Source review only in this checkpoint; no application changes or new build. Whole translation/native/phone acceptance remains separate."
     }
   ]
 }
