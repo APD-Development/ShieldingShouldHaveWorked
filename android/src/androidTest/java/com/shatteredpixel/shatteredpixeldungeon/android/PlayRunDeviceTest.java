@@ -736,9 +736,30 @@ public class PlayRunDeviceTest {
             }catch(Exception e){throw new RuntimeException(e);}});
 			onRender(() -> { try { assertTrue("exercise controls before acknowledging intro", SPDSettings.intro()); assertGameplayControls(); assertCategoryHotbarControls(); } catch (Exception e){ throw new RuntimeException(e); } });
             captureAndTapCategoryPager();
-			//Use the actual toolbar callbacks; the tutorial must not suppress search or wait.
-			onRender(() -> { try { click(field(field(Game.scene(), "toolbar"), "btnSearch"), "onLongClick"); } catch (Exception e){ throw new RuntimeException(e); } });
-			waitUntil("ready after searching", () -> Dungeon.hero.ready, 30000);
+            // One real tap searches; holding inspects without spending a turn or firing on release.
+            boolean originalSearchPreference=SPDSettings.singleTapSearch();
+            SPDSettings.singleTapSearch(true);
+            try {
+            AtomicReference<com.watabou.noosa.ui.Component> searchControl=new AtomicReference<>();
+            onRender(()->{try{assertTrue(SPDSettings.intro());searchControl.set((com.watabou.noosa.ui.Component)field(field(Game.scene(),"toolbar"),"btnSearch"));}catch(Exception e){throw new RuntimeException(e);}});
+            float beforeSearch=com.shatteredpixel.shatteredpixeldungeon.actors.Actor.now();
+            tapNative(searchControl.get());
+            waitUntil("single tap completes its normal search",()->Dungeon.hero.ready&&com.shatteredpixel.shatteredpixeldungeon.actors.Actor.now()>=beforeSearch+2f,30000);
+            assertEquals("one tap pays exactly the normal search cost",beforeSearch+2f,com.shatteredpixel.shatteredpixeldungeon.actors.Actor.now(),0.001f);
+            AtomicReference<com.watabou.utils.Point> searchPoint=new AtomicReference<>();
+            onRender(()->{com.watabou.noosa.ui.Component c=searchControl.get();searchPoint.set(c.camera().cameraToScreen(c.left()+c.width()/2,c.top()+c.height()/2));});
+            com.watabou.utils.Point at=searchPoint.get();float beforeInspect=com.shatteredpixel.shatteredpixeldungeon.actors.Actor.now();
+            com.watabou.input.PointerEvent.addPointerEvent(new com.watabou.input.PointerEvent(at.x,at.y,15,com.watabou.input.PointerEvent.Type.DOWN,com.watabou.input.PointerEvent.LEFT));
+            try{
+                waitUntil("holding opens inspect selection",()->{AtomicReference<Boolean> opened=new AtomicReference<>(false);onRender(()->{try{opened.set((Boolean)field(field(Game.scene(),"toolbar"),"examining"));}catch(Exception e){throw new RuntimeException(e);}});return opened.get();},10000);
+            }finally{
+                com.watabou.input.PointerEvent.addPointerEvent(new com.watabou.input.PointerEvent(at.x,at.y,15,com.watabou.input.PointerEvent.Type.UP,com.watabou.input.PointerEvent.LEFT));
+            }
+            Thread.sleep(300);
+            assertEquals("holding and releasing never searches or spends turns",beforeInspect,com.shatteredpixel.shatteredpixeldungeon.actors.Actor.now(),0f);
+            onRender(()->{try{assertTrue((Boolean)field(field(Game.scene(),"toolbar"),"examining"));assertTrue(GameScene.cancelCellSelector());assertFalse((Boolean)field(field(Game.scene(),"toolbar"),"examining"));}catch(Exception e){throw new RuntimeException(e);}});
+
+            } finally {SPDSettings.singleTapSearch(originalSearchPreference);}
 
 			final String runId = ApdRecorder.currentRunId();
 			assertNotNull("a run id was given to the new run", runId);

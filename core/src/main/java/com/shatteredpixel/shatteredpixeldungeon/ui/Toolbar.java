@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -298,15 +301,16 @@ public class Toolbar extends Component {
 		add(btnSearch = new Tool(44, 0, 20, 26) {
 			@Override
 			protected void onClick() {
-				if (Dungeon.hero != null && Dungeon.hero.ready) {
-					if (!examining && !GameScene.cancel()) {
-						GameScene.selectCell(informer);
-						examining = true;
-					} else if (examining) {
-						informer.onSelect(null);
-						Dungeon.hero.search(true);
-					}
-				}
+                if (Dungeon.hero != null && Dungeon.hero.ready && Dungeon.hero.isAlive()) {
+                    if (SPDSettings.singleTapSearch()) {
+                        // Cancel targeting/inspection without swallowing the requested search.
+                        GameScene.cancel();examining=false;Dungeon.hero.search(true);
+                    } else if (!examining && !GameScene.cancel()) {
+                        GameScene.selectCell(informer);examining=true;
+                    } else if (examining) {
+                        informer.onSelect(null);Dungeon.hero.search(true);
+                    }
+                }
 			}
 			
 			@Override
@@ -316,14 +320,24 @@ public class Toolbar extends Component {
 
 			@Override
 			protected String hoverText() {
-				return Messages.titleCase(Messages.get(WndKeyBindings.class, "examine"));
+				return Messages.titleCase(SPDSettings.singleTapSearch()
+                        ? Messages.get(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero.class,"search")
+                        : Messages.get(WndKeyBindings.class,"examine"));
 			}
 			
 			@Override
 			protected boolean onLongClick() {
-				Dungeon.hero.search(true);
-				return true;
+                if (Dungeon.hero != null && Dungeon.hero.ready && Dungeon.hero.isAlive()) {
+                    if (SPDSettings.singleTapSearch()) {
+                        GameScene.cancel();GameScene.selectCell(informer);examining=true;
+                    } else {
+                        Dungeon.hero.search(true);
+                    }
+                }
+                // Consume the release even when busy; never queue an accidental search.
+                return true;
 			}
+
 		});
 		btnSearch.icon( 192, 0, 16, 16 );
 		

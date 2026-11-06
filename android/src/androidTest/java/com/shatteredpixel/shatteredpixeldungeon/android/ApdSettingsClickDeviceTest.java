@@ -600,6 +600,7 @@ public class ApdSettingsClickDeviceTest {
 			final boolean oldTiles = SPDSettings.enhancedTileVisibility();
 			final boolean oldStairs = SPDSettings.stairNavigationShortcut();
             final boolean oldAutoEnter = SPDSettings.autoEnterStairs();
+            final boolean oldSingleTapSearch = SPDSettings.singleTapSearch();
             final int oldWaterskinStart = SPDSettings.waterskinStartingSlot();
 			final AtomicReference<WndAPDSettings> window = new AtomicReference<>();
 			try {
@@ -637,6 +638,10 @@ public class ApdSettingsClickDeviceTest {
 				dismissMessages();
                 tapUntil("Auto-enter Stairs on Arrival", scroll, (Gizmo) field(pane, "chkAutoEnterStairs"),
                         SPDSettings::autoEnterStairs, 30000);
+
+                tapUntil("Single-tap Search toggle",scroll,(Gizmo)field(pane,"chkSingleTapSearch"),()->SPDSettings.singleTapSearch()!=oldSingleTapSearch,30000);
+                assertEquals(!oldSingleTapSearch,((com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox)field(pane,"chkSingleTapSearch")).checked());
+                tapUntil("Single-tap Search original mode",scroll,(Gizmo)field(pane,"chkSingleTapSearch"),()->SPDSettings.singleTapSearch()==oldSingleTapSearch,30000);
 
                 // The shared player/developer APD pane must expose all eight
                 // Waterskin choices. Verify actual screen touches and persistence.
@@ -692,6 +697,7 @@ public class ApdSettingsClickDeviceTest {
 					SPDSettings.enhancedTileVisibility(oldTiles);
 					SPDSettings.stairNavigationShortcut(oldStairs);
                     SPDSettings.autoEnterStairs(oldAutoEnter);
+                SPDSettings.singleTapSearch(oldSingleTapSearch);
                     SPDSettings.waterskinStartingSlot(oldWaterskinStart);
 				});
 			}
@@ -710,7 +716,8 @@ public class ApdSettingsClickDeviceTest {
 		owners.put("chkTileVisibility", new Object[]{ ApdSettingsClickDeviceTest.class, "remainingApdSettingsControlsRespondToActualTouches" });
 		owners.put("chkStairNavigation", new Object[]{ ApdSettingsClickDeviceTest.class, "remainingApdSettingsControlsRespondToActualTouches" });
         owners.put("chkAutoEnterStairs", new Object[]{ ApdSettingsClickDeviceTest.class, "remainingApdSettingsControlsRespondToActualTouches" });
-		owners.put("btnPlaybackSpeed", new Object[]{ ApdSettingsClickDeviceTest.class, "adultHumorControlWorksWithoutAnAgeProviderAndReopensWithSavedChoice" });
+		owners.put("chkSingleTapSearch", new Object[]{ ApdSettingsClickDeviceTest.class, "remainingApdSettingsControlsRespondToActualTouches" });
+        owners.put("btnPlaybackSpeed", new Object[]{ ApdSettingsClickDeviceTest.class, "adultHumorControlWorksWithoutAnAgeProviderAndReopensWithSavedChoice" });
         owners.put("btnWaterskinSlot", new Object[]{ ApdSettingsClickDeviceTest.class, "remainingApdSettingsControlsRespondToActualTouches" });
 		owners.put("btnHealingConfirmation", new Object[]{ ApdSettingsClickDeviceTest.class, "remainingApdSettingsControlsRespondToActualTouches" });
 		owners.put("btnCustomRules", new Object[]{ ApdSettingsClickDeviceTest.class, "remainingApdSettingsControlsRespondToActualTouches" });

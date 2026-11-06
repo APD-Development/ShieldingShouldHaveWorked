@@ -72,6 +72,7 @@ public class APDSettingsPane extends Component {
 	private RenderedTextBlock status;
 	private RenderedTextBlock storage;
 	private RedButton btnClericQuickCasts;
+    private CheckBox chkSingleTapSearch;
     private RedButton btnPlaybackSpeed;
     private RedButton btnWaterskinSlot;
     private RedButton btnHealingConfirmation;
@@ -214,6 +215,11 @@ public class APDSettingsPane extends Component {
             @Override protected void onClick(){super.onClick();SPDSettings.autoEnterStairs(checked());}
         };
         chkAutoEnterStairs.checked(SPDSettings.autoEnterStairs());add(chkAutoEnterStairs);
+
+        chkSingleTapSearch=new SettingCheckBox("Single-tap Search"){
+            @Override protected void onClick(){super.onClick();SPDSettings.singleTapSearch(checked());}
+        };
+        chkSingleTapSearch.checked(SPDSettings.singleTapSearch());add(chkSingleTapSearch);
 
         btnPlaybackSpeed = new SettingButton("Game speed: "
                 + com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.label(SPDSettings.playbackSpeed())) {
@@ -411,6 +417,7 @@ public class APDSettingsPane extends Component {
         chkRatKingSearch=new SettingCheckBox("Rat King Quick Search"){@Override protected void onClick(){super.onClick();SPDSettings.ratKingQuickSearch(checked());}};
         chkRatKingSearch.checked(SPDSettings.ratKingQuickSearch());add(chkRatKingSearch);
         row(ApdSettingsSection.GAMEPLAY,chkRatKingSearch,"Off by default. After Goo is defeated, Search can reveal only the Rat King's entrance on Floor 5. Pays the minimum ordinary walking-and-search time through normal turns. Other floors and ordinary Search remain unchanged when off. Temporary effects that prevent a reliable price must finish first.");
+        row(ApdSettingsSection.GAMEPLAY,chkSingleTapSearch,"On: tap to search nearby; hold to examine a tile, enemy or item. Off: tap to examine; hold to search. A search costs the normal turns; examining is free.");
         row(ApdSettingsSection.GAMEPLAY,btnPlaybackSpeed,"Immediate visual playback speed. Turn costs and combat rules stay unchanged.");
         row(ApdSettingsSection.GAMEPLAY,btnHealingConfirmation,"Immediate. Choose which healing actions ask first, including low-health thresholds.");
         row(ApdSettingsSection.GAMEPLAY,chkAdult,"Immediate content preference. Off keeps humor clean; verified under-18 accounts cannot enable adult humor.");

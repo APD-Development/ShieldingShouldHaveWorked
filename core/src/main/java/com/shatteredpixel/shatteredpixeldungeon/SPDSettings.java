@@ -716,6 +716,8 @@ public class SPDSettings extends GameSettings {
 	public static int fulLScreenMonitor(){
 		return getInt( KEY_FULLSCREEN_MONITOR, 0 );
 	}
+    public static boolean singleTapSearch(){return getBoolean("apd_single_tap_search",false);}
+    public static void singleTapSearch(boolean enabled){put("apd_single_tap_search",enabled);}
     public static int playbackSpeed() {
         int value = getInt("apd_playback_speed", 1);
         return com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.allowed(value) ? value : 1;

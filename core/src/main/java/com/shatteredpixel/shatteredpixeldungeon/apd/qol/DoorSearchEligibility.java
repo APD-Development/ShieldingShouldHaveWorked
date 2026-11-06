@@ -40,8 +40,9 @@ public final class DoorSearchEligibility {
     private static boolean frame(Level l,int p){
         if(!known(l,p))return true;
         int t=l.map[p];
-        return wallDisguise(t)||t==Terrain.WALL_DECO||t==Terrain.DOOR||t==Terrain.OPEN_DOOR||t==Terrain.LOCKED_DOOR
-                ||t==Terrain.HERO_LKD_DR||t==Terrain.CRYSTAL_DOOR||t==Terrain.BARRICADE;
+        // An existing doorway is an opening, not the solid side of another doorway.
+        // Otherwise the wall end directly below a door looks eligible until its backing is explored.
+        return wallDisguise(t)||t==Terrain.WALL_DECO;
     }
     private static boolean passage(Level l,int p){
         // Unobserved terrain is unknown, never a licence to inspect the actual map behind the wall.

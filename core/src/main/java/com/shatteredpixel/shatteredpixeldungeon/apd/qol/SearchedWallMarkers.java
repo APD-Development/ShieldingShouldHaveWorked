@@ -32,6 +32,10 @@ public final class SearchedWallMarkers {
     private static boolean showWall(Level l,int p){return l.searchedWalls.shows(l,p)&&couldBeDoor(l,p);}
     public static int visual(Level l,int p){
         if(p<0||p>=l.length())return -1;
+        // Never host another tile's raised-wall mark on a visible doorway.
+        int tile=l.map[p];
+        if(known(l,p)&&(tile==Terrain.DOOR||tile==Terrain.OPEN_DOOR||tile==Terrain.LOCKED_DOOR
+                ||tile==Terrain.HERO_LKD_DR||tile==Terrain.CRYSTAL_DOOR||tile==Terrain.BARRICADE))return -1;
         int w=l.width(),mask=0;
         if(showWall(l,p)){
             if(p+w<l.length()&&open(l,p+w))mask|=FACE;

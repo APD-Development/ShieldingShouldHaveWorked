@@ -43,7 +43,36 @@ public class DoorSearchEligibilityTest {
     @Test public void ordinaryUnknownBranchesAreNotGuessedFromAMainFloorNumber(){assertTrue(DoorSearchEligibility.supportsDoors(level,10,1));assertTrue(DoorSearchEligibility.supportsDoors(level,1,2));}
     @Test public void allKnownSolidBackingTilesRuleOutThatOrientation(){for(int t=0;t<Terrain.flags.length;t++)if((Terrain.flags[t]&Terrain.SOLID)!=0){level.map[17]=t;assertFalse("known backing "+t,DoorSearchEligibility.candidate(level,24));}}
     @Test public void furnitureCannotPretendToBeStructuralDoorFrames(){for(int t:new int[]{Terrain.BOOKSHELF,Terrain.ALCHEMY,Terrain.STATUE,Terrain.STATUE_SP,Terrain.MINE_CRYSTAL,Terrain.MINE_BOULDER,Terrain.CUSTOM_DECO}){level.map[23]=t;level.map[25]=t;assertFalse("furniture frame "+t,DoorSearchEligibility.candidate(level,24));}}
-    @Test public void existingDoorFramesRemainValid(){for(int t:new int[]{Terrain.WALL_DECO,Terrain.DOOR,Terrain.OPEN_DOOR,Terrain.LOCKED_DOOR,Terrain.CRYSTAL_DOOR,Terrain.HERO_LKD_DR,Terrain.BARRICADE}){level.map[23]=t;assertTrue("door frame "+t,DoorSearchEligibility.candidate(level,24));}}
+    @Test public void decoratedStoneRemainsAFrameButExistingDoorwaysDoNot(){
+        level.map[23]=Terrain.WALL_DECO;assertTrue(DoorSearchEligibility.candidate(level,24));
+        for(int t:new int[]{Terrain.DOOR,Terrain.OPEN_DOOR,Terrain.LOCKED_DOOR,Terrain.CRYSTAL_DOOR,Terrain.HERO_LKD_DR,Terrain.BARRICADE}){
+            level.map[23]=t;assertFalse("opening is not structural frame "+t,DoorSearchEligibility.candidate(level,24));
+        }
+    }
+    @Test public void wallEndBelowKnownDoorIsNeverMarkedBeforeOrAfterExploringItsBacking(){
+        Arrays.fill(level.map,Terrain.WALL);
+        level.map[17]=Terrain.DOOR;level.map[25]=level.map[18]=level.map[32]=Terrain.EMPTY;
+        level.heroFOV[23]=false;legacy(24);
+        Bundle before=new Bundle();level.searchedWalls.store(before);
+        assertFalse("a known door cannot frame another doorway at the wall end",DoorSearchEligibility.candidate(level,24));
+        assertEquals("no corner check",-1,SearchedWallMarkers.visual(level,24));
+        assertEquals("no projected check on the door",-1,SearchedWallMarkers.visual(level,17));
+        level.heroFOV[23]=true;
+        assertEquals(-1,SearchedWallMarkers.visual(level,24));assertEquals(-1,SearchedWallMarkers.visual(level,17));
+        Bundle after=new Bundle();level.searchedWalls.store(after);assertEquals(before.toString(),after.toString());
+        assertTrue("search history retained",level.searchedWalls.attempted(24));
+    }
+    @Test public void doorwayAdjacentEndsAreSuppressedInEveryOrientationAndDoorState(){
+        for(int step:new int[]{-7,7,-1,1})for(int door:new int[]{Terrain.DOOR,Terrain.OPEN_DOOR,Terrain.LOCKED_DOOR,Terrain.CRYSTAL_DOOR,Terrain.HERO_LKD_DR,Terrain.BARRICADE}){
+            Arrays.fill(level.map,Terrain.WALL);Arrays.fill(level.heroFOV,true);int across=Math.abs(step)==7?1:7;
+            level.map[24+step]=door;level.map[24-across]=level.map[24+across]=Terrain.EMPTY;
+            level.heroFOV[24-across]=false;legacy(24);
+            assertFalse("door state "+door+" direction "+step,DoorSearchEligibility.candidate(level,24));
+            assertEquals(-1,SearchedWallMarkers.visual(level,24));assertEquals(-1,SearchedWallMarkers.visual(level,24+step));
+            level.heroFOV[24-across]=true;
+            assertEquals(-1,SearchedWallMarkers.visual(level,24));assertTrue(level.searchedWalls.attempted(24));
+        }
+    }
     @Test public void unknownBackingHasTheSameAnswerForEveryActualHiddenTile(){level.heroFOV[17]=false;for(int t=0;t<Terrain.flags.length;t++){level.map[17]=t;assertTrue("unobserved backing "+t,DoorSearchEligibility.candidate(level,24));}}
     @Test public void unknownSideFramesHaveTheSameAnswerForEveryActualHiddenTile(){level.heroFOV[23]=false;for(int t=0;t<Terrain.flags.length;t++){level.map[23]=t;assertTrue("unobserved frame "+t,DoorSearchEligibility.candidate(level,24));}}
     @Test public void cornersPillarsThickStoneAndMapEdgesNeverDisplayChecks(){legacy(24);Arrays.fill(level.map,Terrain.EMPTY);level.map[24]=Terrain.WALL;assertEquals(-1,SearchedWallMarkers.visual(level,24));level.map[17]=level.map[23]=Terrain.WALL;assertEquals(-1,SearchedWallMarkers.visual(level,24));Arrays.fill(level.map,Terrain.WALL);level.map[31]=Terrain.EMPTY;assertEquals(-1,SearchedWallMarkers.visual(level,24));for(int p:new int[]{-1,0,3,6,7,13,42,45,48,49,Integer.MAX_VALUE})assertFalse(DoorSearchEligibility.candidate(level,p));assertFalse(DoorSearchEligibility.candidate(null,24));}

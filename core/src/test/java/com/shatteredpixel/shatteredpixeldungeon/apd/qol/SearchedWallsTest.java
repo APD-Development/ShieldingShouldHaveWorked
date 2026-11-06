@@ -89,9 +89,24 @@ public class SearchedWallsTest {
             level.map[24]=tile;assertTrue(SearchedWallMarkers.couldBeDoor(level,24));
         }
     }
-    @Test public void existingDoorFramesDoNotIncorrectlyExcludeAnEntrance(){
+    @Test public void validFaceAndLipSurviveLeavingSightAndReloadingSearchMemory(){
+        level.map[17]=Terrain.EMPTY;level.map[31]=Terrain.EMPTY;
+        assertTrue(level.searchedWalls.mark(level,24));
+        assertEquals(SearchedWallMarkers.FACE,SearchedWallMarkers.visual(level,24));
+        assertEquals(SearchedWallMarkers.OVERHANG,SearchedWallMarkers.visual(level,17));
+        int[] before=new int[level.length()];for(int p=0;p<before.length;p++)before[p]=SearchedWallMarkers.visual(level,p);
+        Bundle saved=new Bundle();level.searchedWalls.store(saved);
+        System.arraycopy(level.heroFOV,0,level.visited,0,level.length());Arrays.fill(level.heroFOV,false);
+        for(int p=0;p<before.length;p++)assertEquals("leaving sight cell "+p,before[p],SearchedWallMarkers.visual(level,p));
+        level.searchedWalls.clear();level.searchedWalls.restore(saved,level.length());
+        for(int p=0;p<before.length;p++)assertEquals("reload/revisit cell "+p,before[p],SearchedWallMarkers.visual(level,p));
+        Arrays.fill(level.heroFOV,true);
+        for(int p=0;p<before.length;p++)assertEquals("return to sight cell "+p,before[p],SearchedWallMarkers.visual(level,p));
+        Bundle after=new Bundle();level.searchedWalls.store(after);assertEquals(saved.toString(),after.toString());
+    }
+    @Test public void existingOpenDoorCannotFrameAnotherDoorwayAtAWallEnd(){
         level.map[17]=Terrain.EMPTY;level.map[31]=Terrain.EMPTY;level.map[23]=Terrain.OPEN_DOOR;
-        assertTrue(SearchedWallMarkers.couldBeDoor(level,24));
+        assertFalse(SearchedWallMarkers.couldBeDoor(level,24));
     }
     @Test public void appearanceEligibilityDoesNotConsumeSearchOrCombatRandomness(){
         Random.pushGenerator(8673);long expected=Random.Long();Random.popGenerator();Random.pushGenerator(8673);
