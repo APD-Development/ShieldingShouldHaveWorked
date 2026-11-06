@@ -1,3 +1,7 @@
+## 2026-11-06 Monk inspection checkpoint
+
+Full local2770/446 pass, raw local JUnit/summary/log preserved. Pre-fix all five Monk ability descriptions created MonkEnergy; three description Buff.affect calls replaced with read-only lookup, actual execution/gain/spend untouched. Known-strength guard prevents hidden Might upgrade leakage. Actual energy cap/gain/tier/stance/overflow/spend and no-wait-refill tests pass. Expanded resource explanation uses live costs. Whole semantic audit still incomplete; active five ability details/other remaining descriptions and new native rendering pending. Source-only request2770 now includes Momentum, ascension and Monk changes; await exact remote core/Android/desktop receipt. Two application pairs today only (366 withheld,367 older partial internal), no new APK delivery. Continue substantive approved development after checkpoint.
+
 ## 2026-11-06 ascension pressure checkpoint
 
 Local full2765/446 passed, raw local JUnit/summary/log preserved. Live pressure/reserve thresholds and actual damage, movement-cap, boss exception and takedown type-credit tests pass. UI never calls mutable statModifier/getOriginal or scans hidden enemies. Remote89e7894d0 receipt2759/446 downloaded/hash-verified; Android/desktop compile passed, ledger updated. No new app assembly/delivery. Continue Monk description purity: source inspection finds Buff.affect creating MonkEnergy from three ability desc methods; reproduce before fixing.

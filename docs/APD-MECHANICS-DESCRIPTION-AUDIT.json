@@ -3807,6 +3807,11 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/AscensionChallenge.java",
       "sha256": "c9d56104ba500e7c9ec7edfbe07260c1f7e4106ab7fc5373ffaa73859762ac79",
       "boundary": "Ascension pressure/speed/damage-reserve/boss exception/takedown-credit explanation, with actual handlers and read-only state tests. Not full type-stat multiplier, floor reset/spawn or scoring semantic closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/MonkEnergy.java",
+      "sha256": "ff1a841cdc420bac7e993e142793bc58efcef5910edf188974200e252f34c140",
+      "boundary": "Five ability description resource-creation bug reproduced/fixed; strength privacy; energy capacity/gain/overflow/spend and equipment-tier facets explained/tested. Not complete five active ability effect, Combined Energy or VFX/UI semantic closure."
     }
   ]
 }

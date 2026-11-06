@@ -20,6 +20,7 @@ package com.shatteredpixel.shatteredpixeldungeon.apd.mechanics;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.*;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 
 /** Additional reviewed status rules, with no random rolls or effect-handler calls. */
@@ -40,6 +41,13 @@ public final class BuffExplanation {
         if(buff instanceof Shadows){
             Shadows shadows=(Shadows)buff;
             return "_Shadowmeld, nearby senses and hunger_\nThis is an invisibility source, not permanent immunity to attacks or area effects. An enemy can still investigate your last known position. Normal distance sight is disabled while shadowmelded; nearby terrain sense and independent sensing effects have their own rules. Eligible hunger accumulation is divided by1.5, leaving two thirds of the normal increase before Salt Cube and the run's rate adjustment. This does not grant HP or prevent existing starvation damage.\nRemaining short refresh counter: "+n(shadows.remainingShadowUpdates())+" scheduled updates. Foliage refresh sets this counter to2, replacing rather than adding duration. Each normal update subtracts1; at zero the effect ends. It also refuses attachment or ends when a differently aligned monster is adjacent. Qualifying attacks or magic can dispel invisibility. Inspection does not refresh the counter, observe the floor or search for hidden enemies.";
+        }
+        if(buff instanceof MonkEnergy){
+            MonkEnergy energy=(MonkEnergy)buff;
+            if(Dungeon.hero==null)return "Monk energy is a spendable ability resource. A current hero is needed for level-dependent capacity and empowerment details.";
+            int cap=energy.energyCap(),rank=Dungeon.hero.pointsInTalent(Talent.MONASTIC_VIGOR);
+            StringBuilder costs=new StringBuilder();for(MonkEnergy.MonkAbility ability:MonkEnergy.MonkAbility.abilities){if(costs.length()>0)costs.append(", ");costs.append(ability.name()).append(" ").append(ability.energyCost());}
+            return "_Monk energy, capacity and empowerment_\nCurrent energy: "+n(energy.energy)+" units; ordinary capacity: "+cap+" units, from max(10,5+floor(hero level/2)). Fractional energy is retained even when a compact display shows only whole units. Ability costs are energy units, not turns: "+costs+"; each ability has its own action timing and eligibility rules.\nEligible energy gains start at1 per ordinary enemy,5 per boss,3 per miniboss, or0.5 for a ghoul, ripper demon, Yog larva or wraith, with boss/miniboss checks taking priority. Gains are blocked when the locked-floor rule blocks regeneration. Unencumbered Spirit uses a gain factor of1 plus separate armor and weapon contributions. For each qualifying worn item: add1 at rank3 with tier1 or lower; otherwise add0.75 at rank2 or higher with tier2 or lower; otherwise add0.5 at rank1 or higher with tier3 or lower. An absent item adds nothing. The weapon must be a melee weapon, and an active Brawler's Stance excludes its contribution. Multiply base energy by this combined factor; these are not permanent energy-cap increases.\nOrdinary gains stop at the capacity. During a qualifying unarmed ability, a kill can temporarily exceed the cap; the ability's spend step subtracts its cost and caps the remainder. At the current Monastic Vigor rank, empowerment requires energy /capacity ≥1.2−0.2×rank = "+n(100*(1.2f-.2f*rank))+"% of capacity. This tests the ability's current energy state, not an extra charge spent just for reading the description.\nEnergy does not normally refill merely by waiting. The separate legacy cooldown counter, currently "+energy.cooldown+", decreases on scheduled updates when positive; it is not this energy pool. Inspection does not create a Monk Energy buff, grant a kill, spend energy, advance cooldown or activate an ability.";
         }
         if(buff instanceof Momentum){
             Momentum momentum=(Momentum)buff;
