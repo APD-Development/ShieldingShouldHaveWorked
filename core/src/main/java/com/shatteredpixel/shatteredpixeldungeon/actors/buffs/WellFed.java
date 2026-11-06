@@ -37,12 +37,17 @@ import com.watabou.utils.Bundle;
 
 public class WellFed extends Buff {
 
+	public static final int HEAL_INTERVAL = 18;
+
 	{
 		type = buffType.POSITIVE;
 		announced = true;
 	}
 	
 	int left;
+
+	/** Scheduled updates remaining, before Salt Cube changes their spacing. */
+	public int remainingNutritionUpdates(){ return left; }
 	
 	@Override
 	public boolean act() {
@@ -53,7 +58,7 @@ public class WellFed extends Buff {
 				((Hero) target).resting = false;
 			}
 			return true;
-		} else if (left % 18 == 0 && target.HP < target.HT){
+		} else if (left % HEAL_INTERVAL == 0 && target.HP < target.HT){
 			int apdHpBefore = target.HP;
 			target.HP += com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.amount(target, 1);
 			ApdCombat.onHeal( target, apdHpBefore, ApdCombat.HEAL_FOOD_WELL_FED, 1 );

@@ -1,3 +1,7 @@
+## 2026-11-06 haste/nutrition checkpoint
+
+Full local2707/445 pass. Read-only counters and explanations cover Greater Haste movement/update budget and Well Fed actual periodic healing, Salt Cube spacing and On Diet reset; actual handlers/save inspection regressions pass. Prior757eefe9f source-only gate42215256290 verified2705 plus Android/debug/release/instrumentation/desktop; downloaded receipt persisted. Continue development and replacement native viewport acceptance.366 is withheld;365 remains verified fallback.
+
 ## 2026-11-06 Preparation/Sniper source checkpoint
 
 Full local2705/445 pass. Preparation best-of/KO/blink info and Sniper rounded mode/rate info implemented. New optional display-only mark knowledge bit is stamped by actual hit handler only when source gear/rings known; old marks remain mechanically unchanged with unknown history withheld. Actual queued mark/save/roll/rate tests pass. Prior2700 remote gate42214158237 passed and receipt verified. Next: source compilation gate, remaining status/talent review, replacement internal native viewport validation after necessary source checks. Only366 pair built today; held for real render failure.365 remains verified fallback.

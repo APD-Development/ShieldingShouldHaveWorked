@@ -3552,6 +3552,16 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/abilities/huntress/SpectralBlades.java",
       "sha256": "529eba9eb6a7c30266cfad672ac3d64634481277a16e55b9d8d58c66bb41d615",
       "boundary": "Mage/Huntress armor-ability primary resources/ranges/effect conditions and finite-use explanations, read-only inspection. Not complete casting, terrain, AI or spell/talent semantic closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/GreaterHaste.java",
+      "sha256": "34237f487eb2aaa3dfa1522fb4033cef23d8dd549cfd7c75eee1b8eb1e0b2db3",
+      "boundary": "Read-only remaining budget, normal movement/update consumption or nutrition/healing schedule; actual handlers and save state tested. No action costs, healing rules or hunger rules changed."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/WellFed.java",
+      "sha256": "b3946d78753b4af83fcbec808fc80ac0ff0046bf7f06b41804aa7699b0186abf",
+      "boundary": "Read-only remaining budget, normal movement/update consumption or nutrition/healing schedule; actual handlers and save state tested. No action costs, healing rules or hunger rules changed."
     }
   ]
 }
