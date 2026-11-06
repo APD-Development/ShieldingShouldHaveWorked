@@ -578,3 +578,6 @@ Added26 known scroll types with effect-specific durations, resource rules, gener
 
 ### Special foods, twelve dart types and statistics memory
 Source8ab4a7915 full2835/446 passes, constrained256MiB92/12 actual XML passes. Retains fixed-five-use Rot wear in new pure preview; Lunar Pasty nutrition now previews actual300-point main meal. Food and dart status/damage rules explained without rolling effects or spending Berry progress. Background catalog builds excluded across models while interactive work stays outside guard. Initial broader guard failed unchanged stale-open test, corrected scope and full pass. New APK/native acceptance remains pending.
+
+### Post368 Poison units correction (newer source only)
+The newly added raw-meat and Poison Dart details called the source value strength. Actual Poison.set/setAttributed receives duration; each normal tick spends one unit and its damage rule depends on remaining duration. Text now says game-time duration; no gameplay formula changed. Regression invokes the actual seeded raw-meat Poison outcome and actual Dart.proc across health/floor inputs. Full2837/446 local passes; source-only compilation pending. Not included in the already-built368 pair; report admits that remaining wording issue.
