@@ -3862,6 +3862,21 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/TalentExplanation.java",
       "sha256": "c53902542b19701a3d45aeda060e6bccc1fb101d70ef7a7de076a81da7337058",
       "boundary": "56 current selected-armor-ability T4 talent bindings reuse reviewed live primary effects across19 abilities, preserving focused Wild Power/Heroic Energy cases and context guards. Full Hero/RNG invariance tested, not complete all nested ability interactions."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/SpellExplanation.java",
+      "sha256": "babe17535a7d08efaa1f48db51050491336f3afb4d26e629e7fd849f44cc4f97",
+      "boundary": "22 learned Cleric spell-to-talent calculation bindings, Enhanced Combo count/parry and meal/vision explanation facets. Actual spell lists, resource hooks, parry, time/flags, free wall clear and FOV/cap tested. No change to spell availability or full combo/VFX interaction closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/TalentExplanation.java",
+      "sha256": "63bd06604ffbc0d273e828dcace8cb97ecbd7bb61e9f16084cff92e75a50bbe6",
+      "boundary": "22 learned Cleric spell-to-talent calculation bindings, Enhanced Combo count/parry and meal/vision explanation facets. Actual spell lists, resource hooks, parry, time/flags, free wall clear and FOV/cap tested. No change to spell availability or full combo/VFX interaction closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/MechanicsDetails.java",
+      "sha256": "34f19b8b24393c65ec0327f4b8acffba5bb02ebb9d46cdacac8f71b73317cafb",
+      "boundary": "22 learned Cleric spell-to-talent calculation bindings, Enhanced Combo count/parry and meal/vision explanation facets. Actual spell lists, resource hooks, parry, time/flags, free wall clear and FOV/cap tested. No change to spell availability or full combo/VFX interaction closure."
     }
   ]
 }
