@@ -3507,6 +3507,21 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/Char.java",
       "sha256": "0eb2099aa13798f4f132cdc58c8c45331e3731f8e3d3801e8b7e069e73844b53",
       "boundary": "Warrior leap/shockwave/endure effect, exposure/storage and hit-consumption explanation facets; no complete file/gameplay semantic closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/abilities/rogue/SmokeBomb.java",
+      "sha256": "172f11412805a3569ac00ed5d2d3d04382bba047d223ec7a95d2d36e7c8b563b",
+      "boundary": "Rogue armor-ability destination/timing, clone creation/copy rules, Death Mark damage and shield-basis explanation facets. No full enemy AI/proc/teleport semantic closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/abilities/rogue/DeathMark.java",
+      "sha256": "26cdb0c13a2d62b8ccf4bb43bdd099607fb6443c5ffd3c46fb7ace9185fc09f9",
+      "boundary": "Rogue armor-ability destination/timing, clone creation/copy rules, Death Mark damage and shield-basis explanation facets. No full enemy AI/proc/teleport semantic closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/abilities/rogue/ShadowClone.java",
+      "sha256": "b82ffddd361650f6060d848c104f8de2661c8e62650159480aad0473abdc8faa",
+      "boundary": "Rogue armor-ability destination/timing, clone creation/copy rules, Death Mark damage and shield-basis explanation facets. No full enemy AI/proc/teleport semantic closure."
     }
   ]
 }

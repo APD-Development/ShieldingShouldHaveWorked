@@ -234,3 +234,11 @@ Heroic Leap now explains straight-line/solid/occupied landing, rooted restrictio
 Actual Endure protection/storage handlers tested at ranks0–4; ready-hit consumption and saved-state equality verified. Live strength/rank calculations, unknown-equipment invariance and repeated-view RNG preservation tested. Full local2669/445 pass, zero failures/errors/skips. No gameplay calculation changed. These edits postdate internal366; no claim that366 contains them.
 
 Internal366 source89663e4c0c29bb1867c58f32a999e80b5fed5b06: source gate42205507799 passed2665 plus Android debug/release/instrumentation and desktop. Artifact13495773548 downloaded/verified489897 bytes SHA256eca88d13c84c73d06dd77101b3058eca5f50a0e5740a0b92b5fa1010dec550f0. Developer/Alpha application producers built, local artifact downloads staged; native checks still pending. Live native log fetch returned GitHub BlobNotFound404 while job was running, not evidence of test success/failure.
+
+## Rogue ability effects (after internal366)
+
+Smoke Bomb explains reachable/visible/occupied destination constraints, its ordinary one-turn effect versus zero-time Shadow Step, blindness, log HP/block roll and Hasty Retreat scheduled duration. Shadow Clone explains creation-level HP/opposed scores, separately rounded damage/delay copying, armor contribution and distinct conditional proc/glyph checks without invoking the hero's mutating attack or damage queries. Death Mark explains1.25 remaining-damage-stage factor, zero-HP survival until mark end, and initial-target-HP-based shielding without reading enemy health into the inspector.
+
+Actual clone creation HP/accuracy across five ranks/three hero levels, log HP/seeded armor rolls, real marked Char.damage and repeated-view hidden-equipment/RNG/use preservation tested. Full local2673/445 pass. Initial log test omitted the base Char Barkskin roll's RNG draw even at zero protection; fixed fixture to include actual inherited roll, production unchanged.
+
+Prior fb30bbc0f35839635fcf2560cab7788e772d0d23 gate42206576159 passed2669 plus Android debug/release/instrumentation and desktop compilation. Artifact13496049504 downloaded/inspected494023 bytes/SHA2563056737b2d4799741a98876c1681ce826130131b262237cee99e2e25dd8dd5db.

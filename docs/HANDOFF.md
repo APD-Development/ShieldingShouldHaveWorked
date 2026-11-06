@@ -1,3 +1,7 @@
+## 2026-11-06 Rogue ability source checkpoint
+
+Full local2673 core pass; Smoke Bomb/Shadow Clone/Death Mark explanation facets implemented and real handlers tested. Newer than internal366. Prior remote2669 gate42206576159 passed/receipt verified. Targeted native rerun42206857449 reuses exact366 with corrected test expectations and pinned application checkout; still pending. No additional APKs requested. Continue Huntress/Mage/other semantic review and actual acceptance investigation.
+
 ## 2026-11-06 candidate native failure and test-only correction
 
 Targeted run42205750375 actually ran3 native methods: calculation-panel/QoL method passed; remaining-settings method failed expecting obsolete healing WndOptions instead of actual SettingsWindow; ownership method failed missing mappings for three existing controls. Registering actual executable owners and correcting expected dialog type. Same application366 reused, no new app build. Follow-up pins exact89663e4c0 application snapshot and overlays only Android instrumentation from newer test source, so later source-only Warrior changes are not misrepresented as tested in366. Added actual signature/package receipt before UI tests. No complete native pass claimed.
