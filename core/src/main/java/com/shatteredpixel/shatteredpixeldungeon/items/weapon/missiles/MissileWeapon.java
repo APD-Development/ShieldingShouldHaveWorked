@@ -693,7 +693,7 @@ abstract public class MissileWeapon extends Weapon {
 			info += "\n\n" + Messages.capitalize(Messages.get(Weapon.class, "enchanted", enchantment.name()));
 			if (enchantHardened) info += " " + Messages.get(Weapon.class, "enchant_hardened");
 			info += " " + enchantment.desc();
-			info += com.shatteredpixel.shatteredpixeldungeon.apd.ArcanaInfoDisplay.weapon(this);
+			info += com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.EnchantmentExplanation.itemSummary(this,Dungeon.hero);
 		} else if (enchantHardened){
 			info += "\n\n" + Messages.get(Weapon.class, "hardened_no_enchant");
 		}

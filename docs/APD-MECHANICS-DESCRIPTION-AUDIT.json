@@ -2882,6 +2882,91 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Viscosity.java",
       "sha256": "8d664a6b1ab6f546e7afe3e0ab763ffb6713bb5874a320ffceca147b061dd4a1",
       "boundary": "Ordinary glyph numerical effect, trigger conditions, units and limits reviewed. Full engine and translated-copy audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Blazing.java",
+      "sha256": "b2dc19dac6fe5a1387c64f26e4acce89e9ffaa24766907c87cba6e80e3fc381e",
+      "boundary": "Ordinary enchantment explanation/trigger and power facets; full translated/resource/durability engine audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Blocking.java",
+      "sha256": "874b1c0ddc4357ed52b4c2c7ccd78677fcc66d87c08c13145a721277bcea6754",
+      "boundary": "Ordinary enchantment explanation/trigger and power facets; full translated/resource/durability engine audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Blooming.java",
+      "sha256": "769a96c36fad2578bcf3bfddb8846663e3713d03ab2d19b0ff1f617d9a1fa7ef",
+      "boundary": "Ordinary enchantment explanation/trigger and power facets; full translated/resource/durability engine audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Chilling.java",
+      "sha256": "642fe650106705867cad6d52116c937da58d800691eaaf03ab129bfd1e186cde",
+      "boundary": "Ordinary enchantment explanation/trigger and power facets; full translated/resource/durability engine audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Corrupting.java",
+      "sha256": "4b641096b0a621e891bae8ed3944f10de3825129c6f0d684944577d9858f1473",
+      "boundary": "Ordinary enchantment explanation/trigger and power facets; full translated/resource/durability engine audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Crystal.java",
+      "sha256": "ba0b5bb4a985fc86d1543c8de2cf36373b6a2f7d0ba30d3fd3070f091246beb1",
+      "boundary": "Ordinary enchantment explanation/trigger and power facets; full translated/resource/durability engine audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Elastic.java",
+      "sha256": "f44c7957df48ec699d621f4a3fa9786205eb5ae03c494c29a24366385075220b",
+      "boundary": "Ordinary enchantment explanation/trigger and power facets; full translated/resource/durability engine audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Eldritch.java",
+      "sha256": "45ccee2b5945a53ad70570bc6ecf43a982b1441506aa5587cd243f8c78908e2d",
+      "boundary": "Ordinary enchantment explanation/trigger and power facets; full translated/resource/durability engine audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Grim.java",
+      "sha256": "b5d6b67fdc601f1ea872f3e578baaaedb3adc8145b07cf9c2d99b5a09a5a387f",
+      "boundary": "Ordinary enchantment explanation/trigger and power facets; full translated/resource/durability engine audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Kinetic.java",
+      "sha256": "96703a018cab0d40f0987a24e94554d9d280993362c3812e5d30e9af82a2a04f",
+      "boundary": "Ordinary enchantment explanation/trigger and power facets; full translated/resource/durability engine audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Lucky.java",
+      "sha256": "fa6d37bc1e2edc970cfb26ddfc79d934fb816a32d28a0163aa92b6586e7bd906",
+      "boundary": "Ordinary enchantment explanation/trigger and power facets; full translated/resource/durability engine audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Projecting.java",
+      "sha256": "07d9c846d41bae4e5a9844a6330e8a956a52b3ff1223ca1a065de2d458c6a41a",
+      "boundary": "Ordinary enchantment explanation/trigger and power facets; full translated/resource/durability engine audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Shocking.java",
+      "sha256": "f120eccd4f3c12bb33ba280a6087a0f0e9d54816a570a9666eb11ff4ce3adec8",
+      "boundary": "Ordinary enchantment explanation/trigger and power facets; full translated/resource/durability engine audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Unstable.java",
+      "sha256": "8141c891526d4aace75fb8b00afb016161fbe2b6da2934240ff681a4f045cb14",
+      "boundary": "Ordinary enchantment explanation/trigger and power facets; full translated/resource/durability engine audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Vampiric.java",
+      "sha256": "f85fa4beb642d4caf6b5d69326f1c268432855512d0a3ffc289f880d30627bec",
+      "boundary": "Ordinary enchantment explanation/trigger and power facets; full translated/resource/durability engine audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Venomous.java",
+      "sha256": "d66060726db59a723600325c14fbd580d6f35b6ebd7f4bc468357757d1ec4fef",
+      "boundary": "Ordinary enchantment explanation/trigger and power facets; full translated/resource/durability engine audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Vorpal.java",
+      "sha256": "888b19ec3c41c63618e605cddc910d36d973da0a0438eb2f6846e0d64cbe4ac1",
+      "boundary": "Ordinary enchantment explanation/trigger and power facets; full translated/resource/durability engine audit remains separate."
     }
   ]
 }

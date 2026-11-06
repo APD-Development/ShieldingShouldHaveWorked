@@ -1018,12 +1018,12 @@ public class UimsdRestoreDeviceTest {
                             new com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor();
                     armor.inscribe(new com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Flow());
                     armor.levelKnown = true;
-                    assertFalse(sword.info().contains("Arcana only"));
+                    assertFalse(sword.info().contains("Current activation chance: 39.167%"));
                     com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfArcana ring =
                             new com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfArcana();
                     ring.anonymize(); ring.levelKnown = true; ring.cursedKnown = true;
                     hero.belongings.ring = ring;
-                    assertTrue(sword.info().contains("Arcana only"));
+                    assertTrue(sword.info().contains("Current activation chance: 39.167%"));
                     assertTrue(armor.info().contains("movement rate is"));
                     for (com.shatteredpixel.shatteredpixeldungeon.items.Item item :
                             new com.shatteredpixel.shatteredpixeldungeon.items.Item[]{sword, armor}) {
@@ -1053,10 +1053,10 @@ public class UimsdRestoreDeviceTest {
                         assertContainedText(window,width.getInt(window));window.hide();
                     }
                     ring.levelKnown = false;
-                    assertFalse(sword.info().contains("Arcana only"));
+                    assertFalse(sword.info().contains("Current activation chance: 39.167%"));
                     assertFalse(armor.info().contains("movement rate is"));
                     ring.levelKnown = true; hero.belongings.ring = null;
-                    assertFalse(sword.info().contains("Arcana only"));
+                    assertFalse(sword.info().contains("Current activation chance: 39.167%"));
                 } catch (Exception e) { throw new RuntimeException(e); }
                 finally {
                     clearWindows();

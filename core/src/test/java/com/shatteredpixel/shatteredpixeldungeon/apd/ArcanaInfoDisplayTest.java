@@ -85,11 +85,11 @@ public class ArcanaInfoDisplayTest {
         assertTrue(w.contains("stay hidden")); assertTrue(a.contains("stay hidden"));
     }
     @Test public void descriptionsAreWiredForMeleeMissileAndArmor() {
-        equip(0); assertTrue(sword.info().contains("Arcana only"));
-        HeavyBoomerang missile=new HeavyBoomerang(); missile.enchant(new Blazing());
-        assertTrue(missile.info().contains("Arcana only")); assertTrue(armor.info().contains("movement rate is"));
+        equip(0); assertTrue(sword.info(),sword.info().contains("Current activation chance: 39.167%"));
+        HeavyBoomerang missile=new HeavyBoomerang(); missile.enchant(new Blazing());missile.levelKnown=true;
+        assertTrue(missile.info(),missile.info().contains("Current activation chance: 39.167%")); assertTrue(armor.info().contains("movement rate is"));
         Dungeon.hero.belongings.ring=null;
-        assertFalse(sword.info().contains("Arcana only")); assertTrue(armor.info(),armor.info().contains("movement rate is 2 times normal"));
+        assertTrue(sword.info(),sword.info().contains("Current activation chance: 33.333%")); assertTrue(armor.info(),armor.info().contains("movement rate is 2 times normal"));
     }
     @Test public void magicImmunityAndMissingEnchantmentsShowNothing() {
         equip(0); Buff.affect(Dungeon.hero,MagicImmune.class);

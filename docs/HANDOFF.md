@@ -1,3 +1,7 @@
+## 2026-11-06T02:00:33Z — ordinary glyph source verified; enchantment follow-up
+
+Source409c190e68aa61dbf0e9261a7a8786f42a4f106c/run42147236725/job127661571368 passed2574 tests445 suites and Android debug/release/instrumentation Java plus desktop compilation. Artifact13470832559 actual485431 bytes SHA256cc08e63120381f09c03e0f3936358a610dc8473bb1ddc365fc4f043d27f98945 verified after download. No APK assembled. All17 ordinary enchantment description paths are the next source batch, with local2580 tests445 suites green and source gate pending. Full whole-game audit remains incomplete. Preserve TEST365, all source checkpoints and current QoL work; no new APK/version request or daily-cap exception.
+
 ## 2026-11-06T01:49:46Z — artifact/status and healing follow-up source verified
 
 Exact source `28b36a65a6174ba8b264096d794e4b63574eb9ca`; run42146155274/job127658011805 passed2568 tests445 suites, Android debug/release/instrumentation Java and desktop compilation. Artifact13469573962 downloaded and checked:483313 bytes SHA256`dfbb718b9645249d2bd00d1c73a7e16fc0513401b6a5176b4527fc554de51b1f`; real JSON confirms exact source/count, no APK and no physical-phone test. This includes the five healing full-health interruption paths and reviewed Force/artifact/status/talent facets. Ordinary glyph explanations are the next in-progress batch. Full whole-game audit remains open and TEST365 remains unchanged verified playable fallback.
