@@ -127,7 +127,20 @@
       "package": "package: name='com.charltonchris29.adhdpixeldungeon.indev' versionCode='920' versionName='4.0.8-apd-INDEV-bP367' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'",
       "physical_phone_tested": false
     },
-    "visual_review": "pending",
+    "visual_review": "Inspected actual On/Off healing toggle screenshots, unidentified origin/range and extended playback choices; controls and bounded content visible. Other Alpha images not exhaustively reviewed.",
+    "physical_phone_tested": false
+  },
+  "centered_wall_recapture": {
+    "run": 42219469519,
+    "artifact": 13503845109,
+    "sha256": "2f52c9e452ffdb937074246fead76704062c5f105ab9173d9cddb7c806f854e5",
+    "tests": 3,
+    "passed": 3,
+    "application_source": "412117a9a60f05358e5bb125fcde0c71035e176e",
+    "application_sha256": "d1c43fdcbafd89f6af8151f1ec279f8a1380ad8e9a5a3a47e3675f3479432680",
+    "application_rebuilt": false,
+    "visual_review": "All three wall PNGs inspected: controlled fixture centered, bookshelf/decor exclusion unmarked and valid wall marks visible. This terrain is a test fixture, not a generated room or seed.",
+    "local_evidence": "/workspace/apd-internal367-centered-wall-proof",
     "physical_phone_tested": false
   }
 }

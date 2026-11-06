@@ -374,3 +374,10 @@ Cleanse explains negative-status filtering, conversion/Lost Inventory exceptions
 Flash explains2+rank range, known/non-solid target guard plus normal teleport reachability/occupancy, one-time-unit successful movement and2+recordedFlashCasts charge cost. Refreshing the same Ascended Form does not reset that counter. Actual rejected-target path verifies no action/counter spend; cost/range update at each count/rank. Divine Intervention explains100+50rank shield offers, stronger-shield preservation, the preceding ordinary spell shield contribution,2+rank extension and once-per-existing-effect flag. Allied DivineShield actual shielding becomes0 without hero AscendBuff and detaches next update, verified against actual effect. Same literals named/reused without balance edits. Targeted suite passes; final full count recorded separately. No new APK assembly.
 
 Full local2724/445 passes41s with zero failures/errors/skips. Prior2719 remote source receipt downloaded/source/count/hash verified and persisted.
+
+
+## Intuition and recalled inscriptions
+
+Holy Intuition explains curse-status knowledge versus full identification, equipment/wand selector restrictions and4-rank cost. Actual selection matrix verifies hidden level/curse changes do not narrow eligibility and known curse status excludes selection. Recall Inscription explains real Cleric use-record creation, Upgrade exclusion,10/300 duration refresh, class-dependent2/3/4/6/8 costs and record consumption/effect behavior. Actual scroll/runestone talent hooks cover8 source classes, both ranks, nonadditive refresh and saved class identity. Full local2726/445 passes41s; no gameplay changes. Main refreshed8228fbcb0; main-only changes still two unrelated automation workflows, no application delta merged or overwritten.
+
+Same367 centered-wall native run42219469519 passed3, all9 PNGs collected and all3 wall images inspected. Bookshelf and decorative wall have no markers; valid searched faces retain theirs. This is explicitly a controlled test fixture. Original identities/compatible signatures remain verified for both367 APKs. No application rebuild or delivery.

@@ -1,3 +1,7 @@
+## 2026-11-06 intuition/recall and centered native proof
+
+Full local2726/445 pass. Real item-selector and8-class use-record/cost/save regressions pass; identification/gameplay rules unchanged. Same367 centered recapture42219469519 raw3 methods and9 PNGs verified; three wall images now show correct exclusion/positive marks in controlled fixture. Both367 identities and Developer72/Alpha4/display11/viewport3 proven. Current source is newer; broad audit incomplete, no APK delivery. Main refreshed8228fbcb0, only two automation files differ. Continue forms and remaining mechanics.
+
 ## 2026-11-06 ascended spell checkpoint
 
 Full local2724/445 pass. Flash dynamic cost/range/invalid-target path and DivineShield form-dependent protection tested and explained, no balance changes.2719 remote source receipt verified. Same367 native wall recapture running; both application identities, Developer72/Alpha4/display11/viewport3 already verified. Broad descriptions audit remains incomplete. Continue remaining approved work; no checkpoint authorizes stopping.

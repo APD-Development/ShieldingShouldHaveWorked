@@ -3652,6 +3652,16 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/DivineIntervention.java",
       "sha256": "edb0fc1144cac8e6b8eb04d7d761c484ae9147fca810bacfcfc76ce8171d5570",
       "boundary": "Primary charge/range/invalid-target or shield/expiry rules. Named same runtime amount and actual reject/conditional-shield handler tests; no whole spell/terrain semantic closure claim."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/HolyIntuition.java",
+      "sha256": "d481c30b3d488be5025937b50519d3304fc6b4bd691edba1a835c6de6933ec7a",
+      "boundary": "Primary eligibility/curse-knowledge limits or actual recall record creation/window/class cost/save behavior. Actual selector matrix and Talent use hooks tested. No identification, charge or activation rules changed."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/RecallInscription.java",
+      "sha256": "786b029ab52ca6f0517aa912855503c2ed46e3839da6dcd913108009f896e471",
+      "boundary": "Primary eligibility/curse-knowledge limits or actual recall record creation/window/class cost/save behavior. Actual selector matrix and Talent use hooks tested. No identification, charge or activation rules changed."
     }
   ]
 }

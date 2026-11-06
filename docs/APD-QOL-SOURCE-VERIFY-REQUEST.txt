@@ -1,1 +1,1 @@
-2026-11-06 Flash live count/range and invalid-target costs; Divine Intervention offer and allied form-dependent shielding; actual effect regressions. Full local2724/445 passed; Android debug/release/instrumentation and desktop source checks. No application rebuild.
+2026-11-06 Holy Intuition limited curse-knowledge eligibility and Recall Inscription actual use-record/cost/window/save rules. Full local2726/445 passed; Android debug/release/instrumentation and desktop source compilation, no application rebuild.
