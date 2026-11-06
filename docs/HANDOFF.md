@@ -1,3 +1,7 @@
+## 2026-11-06 heroic/recovery/evasion checkpoint
+
+Full local2783/446 passed, raw local JUnit/summary/log preserved. Three talent descriptions now backed by actual chargeUse(legacy default included), recovery-state partial XP and Hero.defenseSkill/unknown armor tests. Shared pure factors retain original operations and no balance changes. Remote2ab53bd24 exact2780/446 source compile receipt downloaded, raw/digest verified and ledger updated. New source-only request2783 pending exact remote result. No APK assembly/delivery, broad audit/native rendering unfinished. Continue by reusing reviewed current armor-ability calculations for its associated T4 talent panels where applicable, avoiding invented preview ranks.
+
 ## 2026-11-06 Scroll Empower/Hold Fast checkpoint
 
 Full local2780/446 passed with raw local JUnit/summary/log preserved. Actual wand-use cleanup tests prove Magic Charge priority versus Scroll counter and preserve source marker through inspection; saved counts stable. Hold Fast moved-position preview remains pure while real act detaches. Remotee7e6acf4b actual2776/446 compile receipt downloaded/hashed, ledger updated. Source-only2780 request includes prior passive-block changes, pending exact remote results. No APK assembly/delivery; two app pairs today only. Continue remaining numerical talent/item audit after backup.

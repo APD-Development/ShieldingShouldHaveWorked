@@ -519,3 +519,12 @@ Scroll Empower details show actual remaining-use counter, temporary+2 effective 
 Hold Fast status details now report active versus moved-off stored position and reuse the already reviewed talent protection/cap/decay explanation. Repeated stale-position inspection does not detach the buff or roll protection; its real act() still detaches normally. Full2780/446 zero failures/errors/skips,41s, preserved `/workspace/apd-empower-hold-local-junit.zip`, summary/log. No new native/phone testing or application assembly.
 
 Remotee7e6acf4b actual2776/446 source checks downloaded/hashed:run42236074164/job127953896943/artifact13512700947 SHAf4d346e0a75f63ee412ae5a03aa44f1997235bd46337d738d185dd8cfd6ba0f9. Android debug/release/instrumentation Java and desktop compilation passed; no APK.
+
+
+### Charge cost, emergency recovery and armor evasion talents
+
+Heroic Energy explains live shared0.88/0.77/0.68/0.6 charge-cost factors and distinction from recharge, capacity and action time. Extracted common factor retains old default0.88 for malformed out-of-range positive rank and original hasTalent guard. Actual Heroic Leap chargeUse tests ranks0..5 match unchanged factors exactly. Deathless Fury explains normal ready/100%-rage/0HP trigger, shared4−rank base recovery in experience-level equivalents, partial XP and above100%-rage scaling, shielding rather than HP healing. Default now says base cooldown, not guaranteed unmodified whole levels. Actual recovery-state quarter-level/clamp/ready tests do not call mutating berserking() or render activation.
+
+Evasive Armor explains added score points per excess strength while the armor path is freerunning, basic floor(heroL/2) separate, no-armor and invisible-speed-only exceptions, and personal number withheld for unidentified armor/Might. Actual Hero.defenseSkill differences match allthree ranks with worn armor, return to baseline without armor, and hidden upgrade changes do not alter preview. Full2783/446 zero failures/errors/skips,41s; raw local `/workspace/apd-hero-talents-local-junit.zip`, summary/log preserved. No new native activation/rendering evidence.
+
+Remote2ab53bd24 actual2780/446 compile receipt downloaded and digest matched GitHub:run42237924942/job127960334024/artifact13512203074 SHAb5600c40bbfecc577b0d4cdea09432d4b5ef7243507da211da1ee8d8b1028da0.

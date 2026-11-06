@@ -198,7 +198,7 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 			turnRecovery = TURN_RECOVERY_START;
 			levelRecovery = 0;
 		} else {
-			levelRecovery = LEVEL_RECOVER_START - ((Hero)target).pointsInTalent(Talent.DEATHLESS_FURY);
+			levelRecovery = baseLevelRecovery(((Hero)target).pointsInTalent(Talent.DEATHLESS_FURY));
 			turnRecovery = 0;
 		}
 
@@ -244,6 +244,8 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 		return baseShield*3;
 	}
 	
+    public static float baseLevelRecovery(int talentRank){return LEVEL_RECOVER_START-talentRank;}
+
     public static float maximumRage(int talentRank){return 1f + 0.1667f*talentRank;}
 
 	public void damage(int damage){
@@ -335,7 +337,7 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 				return 1f - shielding() / (float)maxShieldBoost();
 			case RECOVERING:
 				if (levelRecovery > 0) {
-					return levelRecovery/(LEVEL_RECOVER_START-Dungeon.hero.pointsInTalent(Talent.DEATHLESS_FURY));
+					return levelRecovery/baseLevelRecovery(Dungeon.hero.pointsInTalent(Talent.DEATHLESS_FURY));
 				} else {
 					return turnRecovery/(float)TURN_RECOVERY_START;
 				}

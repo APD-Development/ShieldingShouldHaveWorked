@@ -3842,6 +3842,21 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/BuffExplanation.java",
       "sha256": "31616c4ea0309ef1199cb7edd38046072af4a90b25d5897a67deeb6979116869",
       "boundary": "Scroll Empower effective-level/use counter versus charges/time, Magic Charge cleanup priority and Hold Fast stale-position details. Actual wand-use cleanup/save marker and Hold Fast effect handler tested; not full wand-curse/charge/timer interaction closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/abilities/ArmorAbility.java",
+      "sha256": "f247f9c7cf2398f7829d40b5d4e954aa952e512eef79d36383a7e1f96d029299",
+      "boundary": "Heroic Energy exact common charge factors, Deathless Fury base XP-equivalent recovery and Evasive Armor defense/identification explanation. Shared factor expressions preserve original operation/order/defaults. Not full ability-specific or death/VFX closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Berserk.java",
+      "sha256": "a0093f63766810e872b2871ed77c92630c5ae0f6bfec101026e6e046d70d6f94",
+      "boundary": "Heroic Energy exact common charge factors, Deathless Fury base XP-equivalent recovery and Evasive Armor defense/identification explanation. Shared factor expressions preserve original operation/order/defaults. Not full ability-specific or death/VFX closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/TalentExplanation.java",
+      "sha256": "1bc2cd7b255db41ea8e17c7e7edc772edb1c2fb2ceae870ca725c61e6a51f5ba",
+      "boundary": "Heroic Energy exact common charge factors, Deathless Fury base XP-equivalent recovery and Evasive Armor defense/identification explanation. Shared factor expressions preserve original operation/order/defaults. Not full ability-specific or death/VFX closure."
     }
   ]
 }

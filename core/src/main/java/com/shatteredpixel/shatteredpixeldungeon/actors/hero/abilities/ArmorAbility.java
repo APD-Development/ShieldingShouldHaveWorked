@@ -77,24 +77,12 @@ public abstract class ArmorAbility implements Bundlable {
     /** Unmodified charge points, for read-only ability explanations. */
     public float baseChargePoints() { return baseChargeUse; }
 
+    public static float heroicEnergyFactor(int rank){return rank==2?.77f:rank==3?.68f:rank==4?.6f:.88f;}
+
 	public float chargeUse( Hero hero ){
 		float chargeUse = baseChargeUse;
 		if (hero.hasTalent(Talent.HEROIC_ENERGY)){
-			//reduced charge use by 12%/23%/32%/40%
-			switch (hero.pointsInTalent(Talent.HEROIC_ENERGY)){
-				case 1: default:
-					chargeUse *= 0.88f;
-					break;
-				case 2:
-					chargeUse *= 0.77f;
-					break;
-				case 3:
-					chargeUse *= 0.68f;
-					break;
-				case 4:
-					chargeUse *= 0.6f;
-					break;
-			}
+            chargeUse *= heroicEnergyFactor(hero.pointsInTalent(Talent.HEROIC_ENERGY));
 		}
 		return chargeUse;
 	}
