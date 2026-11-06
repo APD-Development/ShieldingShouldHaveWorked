@@ -29,9 +29,9 @@ import com.watabou.utils.Random;
 import org.junit.*;
 import static org.junit.Assert.*;
 public class MechanicsExplanationTest {
- private Hero oldHero,hero;private com.shatteredpixel.shatteredpixeldungeon.levels.Level oldLevel;private MailArmor armor;
- @Before public void setup(){HeadlessTestSupport.start();oldHero=Dungeon.hero;oldLevel=Dungeon.level;Dungeon.level=new GrassDewPickupTest.TestLevel();Dungeon.level.setSize(7,7);hero=new Hero();hero.heroClass=HeroClass.WARRIOR;Talent.initClassTalents(hero);hero.pos=24;hero.HP=hero.HT=20;Dungeon.hero=hero;armor=new MailArmor();armor.levelKnown=armor.cursedKnown=true;armor.inscribe(new Obfuscation());hero.belongings.armor=armor;}
- @After public void restore(){Dungeon.hero=oldHero;Dungeon.level=oldLevel;}
+ private Object oldNotes;private int oldChallenges;private Hero oldHero,hero;private com.shatteredpixel.shatteredpixeldungeon.levels.Level oldLevel;private MailArmor armor;
+ @Before public void setup()throws Exception{HeadlessTestSupport.start();java.lang.reflect.Field notes=com.shatteredpixel.shatteredpixeldungeon.journal.Notes.class.getDeclaredField("records");notes.setAccessible(true);oldNotes=notes.get(null);com.shatteredpixel.shatteredpixeldungeon.journal.Notes.reset();oldChallenges=Dungeon.challenges;Dungeon.challenges=0;oldHero=Dungeon.hero;oldLevel=Dungeon.level;Dungeon.level=new GrassDewPickupTest.TestLevel();Dungeon.level.setSize(7,7);hero=new Hero();hero.heroClass=HeroClass.WARRIOR;Talent.initClassTalents(hero);hero.pos=24;hero.HP=hero.HT=20;Dungeon.hero=hero;armor=new MailArmor();armor.levelKnown=armor.cursedKnown=true;armor.inscribe(new Obfuscation());hero.belongings.armor=armor;}
+ @After public void restore()throws Exception{Dungeon.hero=oldHero;Dungeon.level=oldLevel;Dungeon.challenges=oldChallenges;java.lang.reflect.Field notes=com.shatteredpixel.shatteredpixeldungeon.journal.Notes.class.getDeclaredField("records");notes.setAccessible(true);notes.set(null,oldNotes);}
  private RingOfArcana ring(int level){RingOfArcana ring=new RingOfArcana();ring.level(level);ring.anonymize();ring.levelKnown=ring.cursedKnown=true;hero.belongings.ring=ring;ring.activate(hero);return ring;}
  @Test public void mailPlusThreeExplainsUnitsAndUsesActualObfuscationScore(){armor.level(3);RingOfArcana ring=ring(3);float expected=Obfuscation.stealthBoost(hero,hero.glyphLevel(Obfuscation.class));String text=armor.info();assertTrue(text,text.contains("2 stealth points"));assertTrue(text,text.contains(ObfuscationExplanation.number(expected)+" points"));assertTrue(text,text.contains("not percentages"));assertTrue(text,text.contains("unaware enemy"));assertFalse(text,text.contains("added stealth 2 to"));}
  @Test public void upgradesAndArcanaRefreshBothReadableValuesAndDetailedResults(){armor.level(0);RingOfArcana ring=ring(0);String first=ObfuscationExplanation.details(armor,hero);armor.level(6);ring.upgrade();String next=ObfuscationExplanation.details(armor,hero);assertNotEquals(first,next);assertTrue(next,next.contains(ObfuscationExplanation.number(Obfuscation.stealthBoost(hero,hero.glyphLevel(Obfuscation.class)))));assertTrue(next,next.contains("3 stealth points"));}
@@ -77,4 +77,43 @@ public class MechanicsExplanationTest {
  }
  @Test public void magicImmuneRingDetailsDoNotClaimAnActiveBonus(){RingOfHaste r=new RingOfHaste();r.anonymize();r.levelKnown=r.cursedKnown=true;Buff.affect(hero,MagicImmune.class);assertTrue(RingExplanation.details(r).contains("not active benefits"));}
  @Test public void tinyPositiveMultipliersNeverDisplayAsZero(){assertNotEquals("0",ObfuscationExplanation.number(.00001f));assertFalse(ObfuscationExplanation.number(Float.POSITIVE_INFINITY).contains("Infinity"));}
+ @Test public void forceDetailsUseActualStrengthTierAndCombatEndpointsWithoutRolling(){
+  RingOfForce r=new RingOfForce();r.anonymize();r.levelKnown=r.cursedKnown=true;r.level(3);hero.belongings.ring=r;r.activate(hero);
+  for(int strength:new int[]{8,10,18,22}){hero.STR=strength;String detail=RingExplanation.details(r);int b=r.soloBuffedBonus();assertTrue(detail,detail.contains(RingOfForce.unarmedMinimum(hero.STR(),b)+"–"+RingOfForce.unarmedMaximum(hero.STR(),b)+" damage points"));
+   Random.pushGenerator(35);try{for(int j=0;j<50;j++){int actual=RingOfForce.damageRoll(hero);assertTrue(actual>=RingOfForce.unarmedMinimum(hero.STR(),b));assertTrue(actual<=RingOfForce.unarmedMaximum(hero.STR(),b));}}finally{Random.popGenerator();}
+  }
+ }
+ @Test public void chaliceDescriptionDelayMatchesActualRegenerationAcrossLevels(){
+  hero.HP=10;
+  for(int level:new int[]{0,3,9}){
+   com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood chalice=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood();chalice.level(level);chalice.levelKnown=chalice.cursedKnown=true;hero.belongings.artifact=chalice;chalice.activate(hero);
+   Regeneration regen=Buff.affect(hero,Regeneration.class);regen.act();com.watabou.utils.Bundle state=new com.watabou.utils.Bundle();regen.storeInBundle(state);float actualDelay=1/state.getFloat(Regeneration.PARTIAL_REGEN);
+   assertEquals(10f-(1.33f+level*.667f),actualDelay,.00001f);String detail=ArtifactExplanation.details(chalice);assertTrue(detail,detail.contains(ObfuscationExplanation.number(actualDelay)+" turns per HP"));
+   regen.detach();hero.buff(com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood.chaliceRegen.class).detach();
+  }
+ }
+ @Test public void hornExperienceChargeNumbersMatchActualRecharge(){
+  com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty horn=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty();horn.levelKnown=horn.cursedKnown=true;hero.belongings.artifact=horn;horn.activate(hero);
+  hero.buff(com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty.hornRecharge.class).gainCharge(1);
+  com.watabou.utils.Bundle state=new com.watabou.utils.Bundle();horn.storeInBundle(state);assertEquals(1.25f,horn.currentCharges()+state.getFloat("partialcharge"),.0001f);
+  assertTrue(ArtifactExplanation.details(horn).contains("1.25 charges per whole hero-level"));assertTrue(ArtifactExplanation.summary(horn).contains("90 hunger points"));
+ }
+ @Test public void unknownArtifactNumbersStayHiddenAcrossLevelAndChargeChanges(){
+  com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood a=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood();a.levelKnown=false;String detail=ArtifactExplanation.details(a);a.level(9);assertEquals(detail,ArtifactExplanation.details(a));assertEquals("",ArtifactExplanation.summary(a));
+ }
+ @Test public void capeChargeCoefficientMatchesActualProcWithoutAnActivation(){
+  for(int level:new int[]{0,3,6}){com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns cape=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns();cape.level(level);cape.levelKnown=cape.cursedKnown=true;cape.activate(hero);com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns.Thorns effect=hero.buff(com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns.Thorns.class);assertEquals(10,effect.proc(10,null,hero));assertEquals((int)(10*(.5+level*.05)),cape.currentCharges());String details=ArtifactExplanation.details(cape);assertTrue(details,details.contains(ObfuscationExplanation.number(.5f+.05f*level)+" meter points per damage point"));effect.detach();}
+ }
+ @Test public void slowChillAndSpeedDetailsMatchActualActionTimeAndPriority(){
+  Chill chill=Buff.affect(hero,Chill.class,3);float factor=chill.speedFactor(),start=hero.cooldown();String detail=MechanicsDetails.buff(chill,chill.desc());hero.spend(1);assertEquals(1/factor,hero.cooldown()-start,.00001f);assertTrue(detail.contains("Current factor: "+ObfuscationExplanation.number(factor)));
+  Slow slow=Buff.affect(hero,Slow.class,5);start=hero.cooldown();hero.spend(1);assertEquals(2,hero.cooldown()-start,.00001f);assertTrue(MechanicsDetails.buff(slow,slow.desc()).contains("Slow takes priority"));
+  Speed speed=Buff.affect(hero,Speed.class,5);start=hero.cooldown();hero.spend(1);assertEquals(1,hero.cooldown()-start,.00001f);assertTrue(MechanicsDetails.buff(speed,"speed").contains("multiplicatively"));
+ }
+ public static class QuietMovementSprite extends com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite {@Override public void sprint(float speed){}}
+ @Test public void hasteDetailsAgreeWithActualMovementFactorAndDoNotClaimFasterAttacks()throws Exception{java.lang.reflect.Field field=Class.forName("sun.misc.Unsafe").getDeclaredField("theUnsafe");field.setAccessible(true);Object unsafe=field.get(null);hero.sprite=(QuietMovementSprite)unsafe.getClass().getMethod("allocateInstance",Class.class).invoke(unsafe,QuietMovementSprite.class);float before=hero.speed();Haste haste=Buff.affect(hero,Haste.class,5);assertEquals(before*3,hero.speed(),.00001f);assertTrue(MechanicsDetails.buff(haste,haste.desc()).contains("does not multiply attack"));}
+ @Test public void talentDetailsRefreshRankAndDistinguishTemporaryFromActualUpgrades(){String first=MechanicsDetails.talent(Talent.ENHANCED_RINGS,1,"");String next=MechanicsDetails.talent(Talent.ENHANCED_RINGS,3,"");assertTrue(first.contains("= 3 turns"));assertTrue(next.contains("= 9 turns"));assertTrue(next.contains("ordinary rather than effective"));assertTrue(MechanicsDetails.talent(Talent.HOLD_FAST,3,"").contains("factor of 0"));assertTrue(MechanicsDetails.talent(Talent.PROTECTIVE_SHADOWS,2,"").contains("5 shield points"));}
+ @Test public void passiveGlyphPreviewUsesInactiveSentinelForAllNegativeArmorLevels(){
+  ring(1);Armor.Glyph[] glyphs={new com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Flow(),new com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Swiftness(),new com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Camouflage(),new com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic()};
+  for(Armor.Glyph glyph:glyphs){armor.inscribe(glyph);for(int level:new int[]{-1,-2,-5}){armor.level(level);assertEquals(-1,hero.glyphLevel(glyph.getClass()));String info=ArcanaInfoDisplay.armor(armor);assertTrue(info,info.contains("inactive"));}}
+ }
 }

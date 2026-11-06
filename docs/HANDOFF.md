@@ -1,3 +1,7 @@
+## 2026-11-06T01:36:01Z — mechanics foundation source verified; audit continues
+
+Exact source `9749e461ce804328c42e64a9558201d8aaeb04fa`; source-only run42144593564/job127652893980 passed2552 tests445 suites, Android debug/release/instrumentation Java and desktop compilation. Artifact13468714546 actual downloaded/hash verified,484119 bytes SHA256`0389d8bc9de006b53b4b524161621dc594e143fdc34e6c267837fe22e5f6d944`. Native pointer expansion checks compile but are not called executed. No APK assembled. The full460-path semantic audit remains pending; this is the tested foundation/selected corrections, not whole-game completion. Additional full-health healing paths and Force formula follow-up are being verified separately. Keep TEST365 unchanged as last verified playable fallback.
+
 ## Active work — November6 UTC: player-readable mechanics; source only
 
 Owner requested the full explanation audit alongside all prior QoL work. See `APD-MECHANICS-DESCRIPTIONS-2026-11-06.md` and explicit pending inventory `APD-MECHANICS-DESCRIPTION-AUDIT.json`. Shared expandable UI, Obfuscation, ring contributions and selected effect-unit corrections are implemented; **the whole-game audit is not complete**. Full local2551 tests445 suites passed before final formatting regression; final source checks pending. No new APK or build number.

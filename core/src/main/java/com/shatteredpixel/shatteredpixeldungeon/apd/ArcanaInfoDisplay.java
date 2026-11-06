@@ -191,7 +191,7 @@ public final class ArcanaInfoDisplay {
         if (name.equals("Brimstone")) return "\n\n" + text("brimstone") + effect(name);
         if (!armor.levelKnown) return "\n\n" + result + " " + text("unknown_level");
         float actualLevel=armor.buffedLvl(), level=Math.max(0, actualLevel), base;
-        if (actualLevel == -1 && (name.equals("Obfuscation") || name.equals("Swiftness")
+        if (actualLevel < 0 && (name.equals("Obfuscation") || name.equals("Swiftness")
                 || name.equals("Flow") || name.equals("Camouflage") || name.equals("AntiMagic")
                 || name.equals("Bulk"))) return "\n\n" + text("inactive");
         switch (name) {

@@ -38,6 +38,8 @@ public class WaitingPolicyTest {
  private Preferences oldPrefs;private Hero oldHero;private com.shatteredpixel.shatteredpixeldungeon.levels.Level oldLevel;
  private Object oldSelector;private Field selector;private int oldFood,oldChallenges;private TestHero hero;private FileHandle file;
  public static class QuietSprite extends HeroSprite {
+  @Override public void add(com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite.State state){}
+  @Override public void remove(com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite.State state){}
   @Override public void operate(int pos){} @Override public void showStatus(int color,String text,Object...args){}
   @Override public void showStatusWithIcon(int color,String text,int icon,Object...args){}
   @Override public void flash(){} @Override public void showAlert(){} @Override public void hideAlert(){}
@@ -140,4 +142,21 @@ public class WaitingPolicyTest {
  @Test public void lockedFloorOrParalysisDoesNotConsumeFood()throws Exception{
   SPDSettings.autoEatWhileWaiting(true);hunger(450);Food food=new Food();food(food);Dungeon.level.locked=true;assertFalse(WaitingPolicy.canAutoEat(hero));Dungeon.level.locked=false;hero.paralysed=1;assertFalse(WaitingPolicy.canAutoEat(hero));assertEquals(1,food.quantity());
  }
+ @Test public void healingPotionFullHealthAndLastTickHonorWaitPreference(){
+  for(boolean stop:new boolean[]{true,false}){SPDSettings.waitStopFullHealth(stop);hero.HP=99;hero.resting=true;Healing heal=Buff.affect(hero,Healing.class);heal.setHeal(1,0,1);heal.act();assertEquals(100,hero.HP);assertEquals(!stop,hero.resting);}
+ }
+ @Test public void sungrassFullHealthHonorsWaitPreference(){
+  for(boolean stop:new boolean[]{true,false}){SPDSettings.waitStopFullHealth(stop);hero.HP=99;hero.resting=true;com.shatteredpixel.shatteredpixeldungeon.plants.Sungrass.Health heal=Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.plants.Sungrass.Health.class);heal.boost(100);heal.act();heal.act();assertEquals(100,hero.HP);assertEquals(!stop,hero.resting);heal.detach();}
+ }
+ @Test public void aquaticLastHealingTickAtFullHealthHonorsWaitPreference(){
+  Dungeon.level.water[hero.pos]=true;
+  for(boolean stop:new boolean[]{true,false}){SPDSettings.waitStopFullHealth(stop);hero.HP=99;hero.resting=true;com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfAquaticRejuvenation.AquaHealing heal=Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfAquaticRejuvenation.AquaHealing.class);heal.set(1);heal.act();assertEquals(100,hero.HP);assertEquals(!stop,hero.resting);}
+ }
+ @Test public void wellFedFullHealthHonorsWaitPreference()throws Exception{
+  for(boolean stop:new boolean[]{true,false}){SPDSettings.waitStopFullHealth(stop);hero.HP=99;hero.resting=true;WellFed fed=Buff.affect(hero,WellFed.class);Field f=WellFed.class.getDeclaredField("left");f.setAccessible(true);f.setInt(fed,19);fed.act();assertEquals(100,hero.HP);assertEquals(!stop,hero.resting);fed.detach();}
+ }
+ @Test public void chaliceInstantHealingAtFullHealthHonorsWaitPreference(){
+  for(boolean stop:new boolean[]{true,false}){SPDSettings.waitStopFullHealth(stop);hero.HP=99;hero.resting=true;new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood().charge(hero,10);assertEquals(100,hero.HP);assertEquals(!stop,hero.resting);}
+ }
+ @Test public void healingEffectExhaustionBelowFullHealthRetainsLegacyStop(){SPDSettings.waitStopFullHealth(false);hero.HP=50;hero.resting=true;Healing heal=Buff.affect(hero,Healing.class);heal.setHeal(1,0,1);heal.act();assertEquals(51,hero.HP);assertFalse(hero.resting);}
 }

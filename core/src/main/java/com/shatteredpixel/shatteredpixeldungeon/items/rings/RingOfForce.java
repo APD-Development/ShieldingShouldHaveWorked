@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -105,6 +108,11 @@ public class RingOfForce extends Ring {
 			return Hero.heroDamageIntRange(1, Math.max(hero.STR()-8, 1));
 		}
 	}
+
+    /** Pure base-range preview. Shares combat's tier and endpoint functions, never rolls damage. */
+    public static int unarmedMinimum(int strength, int bonus){return min(bonus,tier(strength));}
+    public static int unarmedMaximum(int strength, int bonus){return max(bonus,tier(strength));}
+    public static float unarmedTier(int strength){return tier(strength);}
 
 	//same as equivalent tier weapon
 	private static int min(int lvl, float tier){

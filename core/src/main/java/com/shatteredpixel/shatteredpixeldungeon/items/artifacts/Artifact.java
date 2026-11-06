@@ -175,16 +175,21 @@ public class Artifact extends KindofMisc {
 		}
 	}
 
+    /** Read-only values for identified-item explanations; UI must retain identification gates. */
+    public int currentCharges(){return charge;}
+    public int maximumCharges(){return chargeCap;}
+    public int effectCountdown(){return cooldown;}
+
 	@Override
 	public String info() {
 		if (cursed && cursedKnown && !isEquipped( Dungeon.hero )) {
-			return super.info() + "\n\n" + Messages.get(Artifact.class, "curse_known");
+			return super.info() + "\n\n" + Messages.get(Artifact.class, "curse_known") + com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.ArtifactExplanation.summary(this);
 			
 		} else if (!isIdentified() && cursedKnown && !isEquipped( Dungeon.hero)) {
-			return super.info() + "\n\n" + Messages.get(Artifact.class, "not_cursed");
+			return super.info() + "\n\n" + Messages.get(Artifact.class, "not_cursed") + com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.ArtifactExplanation.summary(this);
 			
 		} else {
-			return super.info();
+			return super.info() + com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.ArtifactExplanation.summary(this);
 			
 		}
 	}

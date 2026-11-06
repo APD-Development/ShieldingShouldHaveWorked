@@ -17,3 +17,7 @@ APK365 remains the last released verified pair and does not include this source.
 ## Continuing work
 
 Do not stop at this feature. Continue the owner's descriptions/formulas audit beginning with Obfuscation/Arcana, and retain the disappearing-marker investigation. The door-adjacent corner's disappearing mark is reproduced and corrected in earlier verified source878a05f1d; valid saved-marker retention tests pass. A separate unexplained loss of valid marks remains unconfirmed, and the next permitted native candidate must check rendered camera/lifecycle behavior rather than claim it fixed from model checks alone.
+
+## Follow-up audit
+
+Fractional hunger thresholds now use actual Hungry/Starving predicates instead of ceiling-rounded display values. Subsequent healing audit reproduced four additional full-health interruption paths ignoring the preference, and tested the potion Healing last-tick path too. Healing, Sungrass, aquatic rejuvenation, Well Fed and Chalice healing now honor the full-health preference; completion below full HP retains its original interruption. Healing amounts/time/RNG remain unchanged. Six more real-effect tests plus the three fractional/challenge cases are retained. Final follow-up source/Android gate must be recorded after completion, separate from the prior2525 source gate.

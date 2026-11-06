@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -105,7 +108,7 @@ public class Sungrass extends Plant {
 
 					if (target.HP >= target.HT) {
 						target.HP = target.HT;
-						if (target instanceof Hero) {
+						if (target instanceof Hero && com.shatteredpixel.shatteredpixeldungeon.SPDSettings.waitStopFullHealth()) {
 							((Hero) target).resting = false;
 						}
 					}
@@ -115,7 +118,7 @@ public class Sungrass extends Plant {
 			
 			if (level <= 0) {
 				detach();
-				if (target instanceof Hero){
+				if (target instanceof Hero && (target.HP < target.HT || com.shatteredpixel.shatteredpixeldungeon.SPDSettings.waitStopFullHealth())){
 					((Hero)target).resting = false;
 				}
 			}

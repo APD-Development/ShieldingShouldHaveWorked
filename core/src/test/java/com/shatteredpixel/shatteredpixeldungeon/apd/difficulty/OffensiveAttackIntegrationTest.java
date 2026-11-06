@@ -1,3 +1,20 @@
+/*
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 package com.shatteredpixel.shatteredpixeldungeon.apd.difficulty;
 import com.shatteredpixel.shatteredpixeldungeon.*;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -75,5 +92,14 @@ public class OffensiveAttackIntegrationTest {
     }
    }
   }finally{SPDSettings.apdCustomRules(prefs);GamesInProgress.selectedClass=chosen;SPDSettings.apdDifficulty(difficulty);SPDSettings.challenges(challenges);SPDSettings.intro(intro);}
+ }
+ @Test public void weaknessAndVulnerabilityDescriptionsAgreeWithActualArmorOrderAndRounding(){
+  rules(100,100,100);Enemy attacker=new Enemy(false);Receiver target=new Receiver();
+  com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness weak=com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff.affect(attacker,com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness.class);
+  com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable vulnerable=com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff.affect(target,com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable.class);
+  Random.pushGenerator(89237);try{assertTrue(attacker.attack(target));}finally{Random.popGenerator();}
+  assertEquals(Math.round(20*.67f),target.incoming);assertEquals(1000-(int)((target.incoming-5)*1.33f),target.HP);
+  assertTrue(com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.MechanicsDetails.buff(weak,weak.desc()).contains("0.67 before the target's armor"));
+  assertTrue(com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.MechanicsDetails.buff(vulnerable,vulnerable.desc()).contains("1.33 and truncated"));
  }
 }
