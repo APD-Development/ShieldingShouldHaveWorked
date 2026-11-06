@@ -14,6 +14,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with: {fetch-depth: 0}
+      - name: Enforce recorded owner APK delivery hold
+        run: python3 tools/apd_owner_delivery_policy.py
       - name: Verify safe API denial capture
         run: |
           python3 -m unittest discover -s tools -p test_apd_github_response.py -v

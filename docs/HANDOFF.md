@@ -1,3 +1,7 @@
+## APK delivery hold is enforced in current publication entry points
+
+Current corrective/prepared delivery workflows now stop on the recorded active hold before expensive prep. The publisher also independently checks it before environment/API use. Missing/malformed policy blocks publication; only explicit recordedfalse allows a later completed/verified delivery. Five Python regressions include running the actual publisher with an activehold and no external calls. No publication/build triggered by these tooling changes. Delivered369 stays unchanged. Resin source2662a8d7e full2864 local; remote source checkpending. Continue source work while respectinghold.
+
 ## Current source checkpoint under owner APK delivery HOLD
 
 Concurrent Ankh source preserved via normal merge9f02b9bc9, full merged2862/446 passed/raw /workspace/apd-ankh-holster-merged-local-junit.zip. Resin preview mutation red baseline /workspace/apd-resin-preview-before.log; preview uses pure known-level read, actual brew retains exact original cleanup/yield before consumption.1248 realpreview/brew comparisons, pure state/capacity/Hero/RNG and unknownlevel coverage; full2864/446 passed/raw /workspace/apd-resin-preview-local-junit.zip. Required remote source-only checks requested. No APK. Continue the audit; next focus Liquid Metal conversion/repair explanation. Owner hold remains active above all older automatic delivery instructions.

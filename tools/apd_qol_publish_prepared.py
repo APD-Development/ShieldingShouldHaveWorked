@@ -18,6 +18,8 @@
 """Publish only prepared verified private owner artifacts, preserving all prior assets."""
 import datetime,hashlib,json,os,pathlib,subprocess,time,urllib.request,urllib.parse
 from apd_github_response import json_response
+from apd_owner_delivery_policy import require_apk_delivery_allowed
+require_apk_delivery_allowed(pathlib.Path.cwd())
 repo=os.environ['GITHUB_REPOSITORY'];out=pathlib.Path('owner-delivery');spec=json.loads(pathlib.Path(os.environ.get('APD_DELIVERY_SPEC','docs/APD-QOL-OWNER-DELIVERY.json')).read_text());number=spec['number'];tag=f'apd-alpha-preview-{number}'
 api=lambda p:json.loads(subprocess.check_output(['gh','api',p]));sha=lambda p:hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest()
 assert api('repos/'+repo)['private'];scan=json.loads((out/'APD-Source-Scan.json').read_text());assert scan['supplemental']['source_findings_reviewed']
