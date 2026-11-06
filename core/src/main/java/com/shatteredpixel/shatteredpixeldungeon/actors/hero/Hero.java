@@ -1707,9 +1707,9 @@ public class Hero extends Char {
 								int levelBonus = Math.min( 2*pointsInTalent(Talent.SHARED_UPGRADES), wep.buffedLvl() );
 								// bonus dmg is 16.67% x weapon level, max of 2/4/6
 								float bonusDmg = levelBonus/6f;
-								Buff.prolong(Hero.this, SnipersMark.class, SnipersMark.DURATION + levelBonus).set(enemy.id(), bonusDmg);
+								Buff.prolong(Hero.this, SnipersMark.class, SnipersMark.DURATION + levelBonus).set(enemy.id(), bonusDmg, wep.isIdentified() && com.shatteredpixel.shatteredpixeldungeon.apd.qol.RingItemEffects.knownBonus(Hero.this, com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfSharpshooting.class, true) != null);
 							} else {
-								Buff.prolong(Hero.this, SnipersMark.class, SnipersMark.DURATION).set(enemy.id(), 0);
+								Buff.prolong(Hero.this, SnipersMark.class, SnipersMark.DURATION).set(enemy.id(), 0, true);
 							}
 						}
 						Actor.remove(this);

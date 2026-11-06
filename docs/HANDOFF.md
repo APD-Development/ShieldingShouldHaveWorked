@@ -1,3 +1,7 @@
+## 2026-11-06 Preparation/Sniper source checkpoint
+
+Full local2705/445 pass. Preparation best-of/KO/blink info and Sniper rounded mode/rate info implemented. New optional display-only mark knowledge bit is stamped by actual hit handler only when source gear/rings known; old marks remain mechanically unchanged with unknown history withheld. Actual queued mark/save/roll/rate tests pass. Prior2700 remote gate42214158237 passed and receipt verified. Next: source compilation gate, remaining status/talent review, replacement internal native viewport validation after necessary source checks. Only366 pair built today; held for real render failure.365 remains verified fallback.
+
 ## 2026-11-06 linked damage and Soul Mark checkpoint
 
 Full local2700/445 pass. Life Link default fixed for actual multi-link ceiling/forwarding/hunger rules; Soul Mark actual restoration/mark chance explained with pure threshold source, no hidden target HP or healing-credit queries. Real methods/360 seed checks pass; no mechanics changed. Prior2697 remote source gate42213261129 passed/receipt downloaded and verified in JSON ledger. Continue Preparation/Sniper mark/remaining review. No new APK pair;366 remains withheld, viewport fix awaits replacement native acceptance.

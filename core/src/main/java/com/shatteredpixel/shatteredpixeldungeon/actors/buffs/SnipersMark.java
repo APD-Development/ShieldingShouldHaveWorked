@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -37,6 +40,9 @@ public class SnipersMark extends FlavourBuff implements ActionIndicator.Action {
 
 	public int object = 0;
 	public float percentDmgBonus = 0;
+    private boolean bonusKnown;
+    private static final String BONUS_KNOWN="apd_bonus_known";
+    public boolean bonusIsKnown(){return bonusKnown;}
 
 	private static final String OBJECT    = "object";
 	private static final String BONUS    = "bonus";
@@ -47,7 +53,10 @@ public class SnipersMark extends FlavourBuff implements ActionIndicator.Action {
 		type = buffType.POSITIVE;
 	}
 
-	public void set(int object, float bonus){
+	public void set(int object,float bonus){set(object,bonus,false);}
+
+    public void set(int object,float bonus,boolean known){
+        bonusKnown=known;
 		this.object = object;
 		this.percentDmgBonus = bonus;
 		SpiritBow bow = Dungeon.hero.belongings.getItem(SpiritBow.class);
@@ -67,6 +76,7 @@ public class SnipersMark extends FlavourBuff implements ActionIndicator.Action {
 		super.storeInBundle( bundle );
 		bundle.put( OBJECT, object );
 		bundle.put( BONUS, percentDmgBonus );
+        bundle.put(BONUS_KNOWN,bonusKnown);
 	}
 
 	@Override
@@ -74,6 +84,7 @@ public class SnipersMark extends FlavourBuff implements ActionIndicator.Action {
 		super.restoreFromBundle( bundle );
 		object = bundle.getInt( OBJECT );
 		percentDmgBonus = bundle.getFloat( BONUS );
+        bonusKnown=bundle.getBoolean(BONUS_KNOWN);
 	}
 
 	@Override

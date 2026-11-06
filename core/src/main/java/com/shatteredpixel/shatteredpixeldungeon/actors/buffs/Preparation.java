@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -83,6 +86,10 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 				{.50f, .67f, .83f, 1.0f}
 		};
 
+        public int minimumUpdates(){return turnsReq;}
+        public float damageBonusFraction(){return baseDmgBonus;}
+        public int damageRollCount(){return damageRolls;}
+
 		public float KOThreshold(){
 			return KOThresholds[ordinal()][Dungeon.hero.pointsInTalent(Talent.ENHANCED_LETHALITY)];
 		}
@@ -130,6 +137,8 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 	}
 	
 	private int turnsInvis = 0;
+    public int preparedUpdates(){return turnsInvis;}
+    public AttackLevel currentAttackLevel(){return AttackLevel.getLvl(turnsInvis);}
 	
 	@Override
 	public boolean act() {
@@ -198,7 +207,7 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 				(int)(lvl.KOThreshold()*20));
 		
 		if (lvl.damageRolls > 1){
-			desc += " " + Messages.get(this, "desc_dmg_likely");
+			desc += " " + Messages.get(this, "desc_dmg_likely",lvl.damageRolls);
 		}
 		
 		if (lvl.blinkDistance() > 0){
