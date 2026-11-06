@@ -1,3 +1,7 @@
+## 2026-11-06 exact candidate native follow-up
+
+Internal366 source89663e4c0/run42205507851 producing; matching Alpha42205507813, source gate42205507799, display matrix42205507796. Added test-only follow-up for actual pointer expand/collapse/bounds and waiting settings independence/persistence with six screenshots; it verifies source/artifact digests and application-input equivalence, compiles instrumentation only, never assembles an application. Native results pending; not a delivery. Continue source audit while checks run.
+
 ## 2026-11-06 meal damage/charge checkpoint and internal acceptance candidate
 
 Local full2665 core pass; actual meal offers, live-level alternate effects, fractional Tome charges/cap and replacement counters tested.947500d2e remote source gate42205041088 passed/receipt verified. Preparing one internal paired candidate366 for native UI acceptance after NY daily cap reset; NOT an owner release or whole-game completion claim. Last verified delivered fallback365 remains untouched. Next work: execute calculation-panel touch/bounds checks and continue semantic audit.

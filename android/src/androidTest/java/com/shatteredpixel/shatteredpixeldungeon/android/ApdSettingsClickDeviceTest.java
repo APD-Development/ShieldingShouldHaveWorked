@@ -666,10 +666,12 @@ public class ApdSettingsClickDeviceTest {
                 RedButton none=null;for(RedButton button:TopScoresDeviceTest.find(waiting,RedButton.class))if(button.text().equals("Disable these three stops"))none=button;
                 assertNotNull(none);tapWaitingControl(none);assertFalse(SPDSettings.waitStopFullHealth());assertFalse(SPDSettings.waitStopStarving());assertFalse(SPDSettings.waitStopCritical());
                 assertEquals("preset does not alter Auto-Eat",!oldWaiting[3],SPDSettings.autoEatWhileWaiting());assertTrue(SPDSettings.autoEatWhenHungry());
+                TopScoresDeviceTest.screenshot("qol-waiting-independent-stops.png");
                 final com.shatteredpixel.shatteredpixeldungeon.windows.WndWaitingSettings closeWaiting=waiting;onRender(closeWaiting::hide);
                 tapUntil("Reopen saved waiting choices",scroll,(Gizmo)field(pane,"btnWaitingInterruptions"),()->find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.windows.WndWaitingSettings.class)!=null,30000);
                 waiting=find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.windows.WndWaitingSettings.class);
                 for(com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox check:TopScoresDeviceTest.find(waiting,com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox.class))assertFalse("disabled state restored",check.checked());
+                TopScoresDeviceTest.screenshot("qol-waiting-saved-stops.png");
                 final com.shatteredpixel.shatteredpixeldungeon.windows.WndWaitingSettings closeReopened=waiting;onRender(closeReopened::hide);
 
                 // The shared player/developer APD pane must expose all eight
