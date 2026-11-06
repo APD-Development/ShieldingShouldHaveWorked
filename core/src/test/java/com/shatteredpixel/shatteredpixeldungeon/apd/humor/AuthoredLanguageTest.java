@@ -61,7 +61,8 @@ public class AuthoredLanguageTest {
   // Plus 22 reviewed dew settings, searched-wall feedback and numeric ring-contribution messages.
   // Every value, including all new labels, is checked above with Adult Humor OFF and ON.
   // Plus 186 neutral origin/classification labels and two source-generation range labels, plus four action-evidence wall-search labels.
-  assertEquals(9,files);assertEquals("Reviewed English message inventory",5291,values);
+  // Plus the reviewed Wild Magic range message and one neutral seal-cooldown-ready message.
+  assertEquals(9,files);assertEquals("Reviewed English message inventory",5292,values);
  }
  @Test public void localizedAlternativesDoNotDamageInnocentWordsOrOtherLanguages(){
   for(String innocent:new String[]{"Hell","slut","kesialan","Verdammte Charaktere","dictionary","classic","Scunthorpe","Prick","Fan of Blades"})assertEquals(innocent,AuthoredLanguage.select(innocent,false));

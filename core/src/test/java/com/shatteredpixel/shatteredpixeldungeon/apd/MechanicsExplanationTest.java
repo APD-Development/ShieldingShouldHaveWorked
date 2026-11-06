@@ -686,6 +686,13 @@ public class MechanicsExplanationTest {
   try{for(int draw=0;draw<100;draw++){Class<?> previous=target.glyph==null?null:target.glyph.getClass();target.inscribe();assertNotEquals(previous,target.glyph.getClass());assertEquals(3,target.level());}}finally{Random.popGenerator();}
   String text=UtilityItemExplanation.details(new com.shatteredpixel.shatteredpixeldungeon.items.Stylus(),hero);assertTrue(text.contains("excludes the selected armor's existing glyph"));assertTrue(text.contains("does not raise armor upgrade level"));
  }
+ @Test public void sealShieldDefaultTooltipDistinguishesReadyWaitingAndSavedCredit(){
+  com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal.WarriorShield shield=new com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal.WarriorShield();shield.target=hero;
+  String ready=shield.desc();assertTrue(ready,ready.contains("cooldown is ready"));assertFalse(ready,ready.contains("recharging"));
+  com.watabou.utils.Bundle saved=new com.watabou.utils.Bundle();shield.storeInBundle(saved);saved.put("cooldown",37);shield.restoreFromBundle(saved);String waiting=shield.desc();assertTrue(waiting,waiting.contains("37 game-time units"));assertTrue(waiting,waiting.contains("recharging"));
+  saved.put("cooldown",-37);shield.restoreFromBundle(saved);String credit=shield.desc();assertTrue(credit,credit.contains("-37 game-time units"));assertTrue(credit,credit.contains("saved credit, not time still to wait"));
+  saved.put("cooldown",37);shield.restoreFromBundle(saved);shield.incShield(2);String active=shield.desc();assertTrue(active,active.contains("2 protection points"));assertTrue(active,active.contains("37 game-time units"));assertFalse(active,active.contains("max of 50"));
+ }
  @Test public void sealShieldActivationExplanationMatchesOddHpThresholdAndHungerExclusion() throws Exception {
   hero.sprite=quietSprite();hero.damageInterrupt=false;hero.heroClass=HeroClass.ROGUE;hero.talents.get(0).put(Talent.IRON_WILL,2);hero.HT=21;
   for(int startingHp:new int[]{10,11,12})for(boolean hunger:new boolean[]{false,true}){

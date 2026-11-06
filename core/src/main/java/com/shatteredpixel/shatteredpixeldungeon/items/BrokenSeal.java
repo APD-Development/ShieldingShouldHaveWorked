@@ -312,8 +312,10 @@ public class BrokenSeal extends Item {
 				return Messages.get(this, "desc_active", shielding(), cooldown);
 			} else if (cooldown < 0) {
 				return Messages.get(this, "desc_negative_cooldown", cooldown);
-			} else {
+			} else if (cooldown > 0) {
 				return Messages.get(this, "desc_cooldown", cooldown);
+			} else {
+				return Messages.get(this, "desc_ready");
 			}
 		}
 
