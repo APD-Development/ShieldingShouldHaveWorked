@@ -202,3 +202,11 @@ Spell source795c53d69e36acb3cf18979fd17c3ba3db8b68aa/run42163784292 passed2654 c
 The existing QolItemFeedbackDeviceTest case now additionally opens real buff, talent and armor ability information windows, and uses a real pointer on the Holy Weapon information button in the actual spell menu. Native assertions require the expander, matching rendered explanation, bounded content, unchanged other-button/window geometry, unchanged hero time/HP, and pointer collapse. It scrolls to/captures the expanded explanation for four new screenshots. Added inside the existing case; no complete-suite inventory reduction or old assertion removal. Application source did not change in this test-only step. Compilation is pending; **none of these new native assertions has executed yet**. Requires an actual new application candidate; TEST365 cannot verify changed UI.
 
 Refreshed real origin/main at8228fbcb0: the five main-only commits affect only `.github/workflows/apd-auto-development.yml` and `.github/workflows/private-test-apk.yml`, not application source. No merge of unrelated automation or main overwrite was performed. Existing main/Claude application changes remain preserved. The old main handoff's Claude-only branch/resume instructions are superseded by the owner's current approved Codex branch/autonomy rules; no extra resume schedule was created.
+
+## Alternate talent effects and verification correction
+
+Shield of Light now distinguishes the selected-enemy one-point passive from the Cleric spell; Bless distinguishes allied opposed-score factors from the temporary Bless buff. Metamorphosis preview explicitly selects alternate text. Actual defense/hit-handler tests across both ranks and 50 seeds each pass; full local core suite passes 2657 tests.
+
+Source gate 42164692041 failed Android instrumentation compilation: wildcard imports made Window ambiguous. Core 2654 passed in that failed gate; it is not a successful complete verification. Added an explicit game Window import for the next gate. No native execution claimed.
+
+Prior successful spell gate 42163784292 receipt downloaded and inspected: artifact 13478405976, 493236 bytes, SHA256 2a5b470d5e0364bc5313ba61b9181fd32ee464f2e77aed31ddc57d5c478aff0e; source 795c53d69e36acb3cf18979fd17c3ba3db8b68aa, 2654 tests/445 suites, zero failures/errors/skips. No APK or physical-phone testing.

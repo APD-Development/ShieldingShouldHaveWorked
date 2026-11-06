@@ -98,7 +98,10 @@ public final class MechanicsDetails {
         return (extra+glossary(visibleDescription)).trim();
     }
     public static String talent(Talent talent,int points,String visibleDescription){
-        String specific=TalentExplanation.details(talent,points);
+        return talent(talent,points,visibleDescription,false);
+    }
+    public static String talent(Talent talent,int points,String visibleDescription,boolean alternateDescription){
+        String specific=TalentExplanation.details(talent,points,alternateDescription);
         if(!specific.isEmpty())specific+="\n\n";
         if(talent==Talent.ENHANCED_RINGS)specific="_Enhanced Rings calculation_\nQualifying artifact use grants +1 effective ring level for 3 × talent rank = "+(3*points)+" turns. This is temporary, not an actual upgrade. Effects using ordinary rather than effective ring level, such as Might's strength points and Sharpshooting's durability, do not gain that extra level. Rank zero grants no effect.\n\n";
         if(talent==Talent.HOLD_FAST)specific="_Hold Fast calculation_\nAt this rank the added per-hit armor roll is "+points+"–"+(2*points)+" damage-blocking points before its class/equipment cap. It is not a percentage reduction. While the position is held, qualifying buff-decay rates use a factor of "+(points==1?"0.5":points==2?"0.25":points==3?"0":"1")+"; a zero rate pauses that decay. Warrior's armor-roll cap is 6; other heroes use equipped armor tier + effective level. It ends on moving. Rank zero grants no armor benefit.\n\n";

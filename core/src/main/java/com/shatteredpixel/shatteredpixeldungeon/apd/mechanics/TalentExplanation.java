@@ -23,7 +23,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 /** Read-only rank and public maximum-HP calculations; no effect or attack handlers. */
 public final class TalentExplanation {
     private TalentExplanation() {}
-    public static String details(Talent talent, int rank) {
+    public static String details(Talent talent, int rank) { return details(talent, rank, false); }
+    public static String details(Talent talent, int rank, boolean alternateDescription) {
         if (rank <= 0) return "";
         int hp = Dungeon.hero == null ? 0 : Dungeon.hero.HT;
         switch (talent) {
@@ -42,6 +43,19 @@ public final class TalentExplanation {
                 return "_Empowered wand uses_\nAn ordinary scroll offers " + (1 + rank)
                     + " empowered wand uses. Each qualifying use gains +2 effective wand levels, rather than +2 damage points. Damage and other level-dependent effects follow that wand's own rules. "
                     + "Uses offered = truncate((1 + rank) × the consumed item's talent-effect factor). A new application keeps the larger remaining use count instead of adding the counts. It does not permanently upgrade the wand.";
+            case SHIELD_OF_LIGHT:
+                if(alternateDescription || (Dungeon.hero!=null&&Dungeon.hero.heroClass!=com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.CLERIC))
+                    return "_Alternate targeted protection_\nWhen a qualifying incoming attack comes from the currently selected enemy, the six-outcome check succeeds on 1 + rank outcomes: current chance " + ObfuscationExplanation.number(100f*(1+rank)/6f)
+                        + "% for that matching attack. A success subtracts one damage point at this defense step. This is not a percentage reduction in the whole hit, and attacks from other enemies do not gain this passive check. It is the non-Cleric benefit rather than granting the Cleric's targeted spell.";
+                return "_Targeted spell protection_\nThe spell offers a middle-favoring block roll from " + (1+rank) + " to " + (2*(1+rank))
+                    + " damage points against its selected enemy. This is armor blocking at that step rather than Barrier points or a reduction against every attacker. The spell costs one Tome charge and takes no game time to cast; its four scheduled units normally appear as five on the counter because of the following status update.";
+            case BLESS:
+                if(alternateDescription || (Dungeon.hero!=null&&Dungeon.hero.heroClass!=com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.CLERIC))
+                    return "_Alternate allied accuracy and evasion_\nAllied characters, including the hero, multiply the normal accuracy and evasion rolls by 1.01 + 0.02 × rank = " + ObfuscationExplanation.number(1.01f+.02f*rank)
+                        + ". These are factors in the opposed hit contest, not added percentage points to hit or dodge chance. Each side's bonuses and special rules still matter. This passive does not require or grant the Cleric's Bless spell, and it is distinct from the temporary Bless status's 1.25 factor.";
+                return "_Bless spell amounts_\nOn the hero, offer " + (2+4*rank) + " scheduled turns of Bless and " + (5+5*rank)
+                    + " Barrier points. On another eligible creature, offer " + (5+5*rank) + " turns of Bless and up to " + (5+5*rank)
+                    + " HP healing, with unused healing offered as Barrier points. A stronger Barrier is kept instead of simply adding the full offer. The temporary Bless status multiplies accuracy and evasion contest scores by 1.25; it does not add 25 percentage points to either chance.";
             case STRONGMAN:
                 float strengthFraction = .03f + .05f * rank;
                 return "_Added strength points_\nAdds floor(base strength × " + ObfuscationExplanation.number(strengthFraction)

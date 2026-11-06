@@ -77,7 +77,7 @@ public class WndInfoTalent extends Window {
 		}
 		titlebar.setRect( 0, 0, width, 0 );
         final String visibleDescription=description;
-        float descriptionBottom=com.shatteredpixel.shatteredpixeldungeon.ui.MechanicsInfoPanel.add(this,txtInfo,titlebar.left(),titlebar.bottom()+2*GAP,width,buttonCallback==null?0:22,()->com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.MechanicsDetails.talent(talent,points,visibleDescription));
+        float descriptionBottom=com.shatteredpixel.shatteredpixeldungeon.ui.MechanicsInfoPanel.add(this,txtInfo,titlebar.left(),titlebar.bottom()+2*GAP,width,buttonCallback==null?0:22,()->com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.MechanicsDetails.talent(talent,points,visibleDescription,metaDesc));
         resize(width,(int)(descriptionBottom+GAP));
 
 		if (buttonCallback != null) {

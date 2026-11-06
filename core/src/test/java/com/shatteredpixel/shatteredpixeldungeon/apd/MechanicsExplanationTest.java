@@ -517,4 +517,26 @@ public class MechanicsExplanationTest {
   com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyWeapon.HolyWepBuff weaponBuff=Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyWeapon.HolyWepBuff.class,50);com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyWard.HolyArmBuff armorBuff=Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyWard.HolyArmBuff.class,50);RingOfArcana ring=ring(0);
   for(int level=0;level<=2;level++){ring.level(level);StatusDamageObserver enemy=new StatusDamageObserver();sword.proc(hero,enemy,10);assertTrue(MechanicsDetails.buff(weaponBuff,weaponBuff.desc()).contains("offers "+enemy.received+" raw magic damage points"));int block=10-armor.proc(enemy,hero,10);assertTrue(MechanicsDetails.buff(armorBuff,armorBuff.desc()).contains("offers "+block+" blocking points when active"));}
  }
+
+ public static class SelectedEnemyProbe extends com.shatteredpixel.shatteredpixeldungeon.ui.TargetHealthIndicator {public com.shatteredpixel.shatteredpixeldungeon.actors.Char selected;@Override public com.shatteredpixel.shatteredpixeldungeon.actors.Char target(){return selected;}}
+ @Test public void alternateShieldOfLightDescriptionMatchesActualSelectedEnemyDefense()throws Exception{
+  java.lang.reflect.Field field=Class.forName("sun.misc.Unsafe").getDeclaredField("theUnsafe");field.setAccessible(true);Object unsafe=field.get(null);SelectedEnemyProbe probe=(SelectedEnemyProbe)unsafe.getClass().getMethod("allocateInstance",Class.class).invoke(unsafe,SelectedEnemyProbe.class);com.shatteredpixel.shatteredpixeldungeon.ui.TargetHealthIndicator previous=com.shatteredpixel.shatteredpixeldungeon.ui.TargetHealthIndicator.instance;
+  try{com.shatteredpixel.shatteredpixeldungeon.ui.TargetHealthIndicator.instance=probe;PlainStatusTarget enemy=new PlainStatusTarget();probe.selected=enemy;
+   for(int rank=1;rank<=2;rank++){hero.talents.get(0).put(Talent.SHIELD_OF_LIGHT,rank);assertTrue(MechanicsDetails.talent(Talent.SHIELD_OF_LIGHT,rank,"").contains(ObfuscationExplanation.number(100f*(1+rank)/6f)+"% for that matching attack"));
+    for(int seed=0;seed<50;seed++){Random.pushGenerator(seed);boolean blocks=Random.Int(6)<1+rank;Random.popGenerator();Random.pushGenerator(seed);try{assertEquals(blocks?9:10,hero.defenseProc(enemy,10));}finally{Random.popGenerator();}}
+    assertEquals(10,hero.defenseProc(new PlainStatusTarget(),10));
+   }
+  }finally{com.shatteredpixel.shatteredpixeldungeon.ui.TargetHealthIndicator.instance=previous;}
+ }
+ public static class ContestScoreTarget extends PlainStatusTarget {@Override public int attackSkill(com.shatteredpixel.shatteredpixeldungeon.actors.Char other){return 20;}@Override public int defenseSkill(com.shatteredpixel.shatteredpixeldungeon.actors.Char other){return 20;}}
+ @Test public void alternateBlessDescriptionMatchesActualAlliedAccuracyAndEvasionRolls(){
+  ContestScoreTarget ally=new ContestScoreTarget(),enemy=new ContestScoreTarget();ally.alignment=com.shatteredpixel.shatteredpixeldungeon.actors.Char.Alignment.ALLY;enemy.alignment=com.shatteredpixel.shatteredpixeldungeon.actors.Char.Alignment.ENEMY;
+  for(int rank=1;rank<=2;rank++){hero.talents.get(1).put(Talent.BLESS,rank);float factor=1.01f+.02f*rank;assertTrue(MechanicsDetails.talent(Talent.BLESS,rank,"").contains("= "+ObfuscationExplanation.number(factor)));
+   for(int seed=0;seed<50;seed++){Random.pushGenerator(seed);boolean hit=Random.Float(20)*factor>=Random.Float(20);Random.popGenerator();Random.pushGenerator(seed);try{assertEquals(hit,com.shatteredpixel.shatteredpixeldungeon.actors.Char.hit(ally,enemy,1,false));}finally{Random.popGenerator();}
+    Random.pushGenerator(seed);boolean enemyHit=Random.Float(20)>=Random.Float(20)*factor;Random.popGenerator();Random.pushGenerator(seed);try{assertEquals(enemyHit,com.shatteredpixel.shatteredpixeldungeon.actors.Char.hit(enemy,ally,1,false));}finally{Random.popGenerator();}}
+  }
+ }
+ @Test public void talentDetailsRespectExplicitAlternatePreviewEvenOnACleric(){
+  hero.heroClass=HeroClass.CLERIC;String regular=MechanicsDetails.talent(Talent.SHIELD_OF_LIGHT,1,"",false),alternate=MechanicsDetails.talent(Talent.SHIELD_OF_LIGHT,1,"",true);assertTrue(regular.contains("block roll from 2 to 4"));assertTrue(alternate.contains("33.333%"));assertFalse(alternate.contains("block roll from 2 to 4"));assertTrue(MechanicsDetails.talent(Talent.BLESS,2,"",true).contains("1.05"));assertTrue(MechanicsDetails.talent(Talent.BLESS,2,"",false).contains("15 Barrier points"));
+ }
 }

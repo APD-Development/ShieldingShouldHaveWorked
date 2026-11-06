@@ -1,3 +1,7 @@
+## 2026-11-06 alternate talent checkpoint
+
+Local full core: 2657 tests pass. Alternate Shield of Light/Bless now reflect actual selected-target defense and allied contest-score behavior; Metamorphosis preview is explicit. Failed source gate 42164692041 exposed ambiguous Window imports in new instrumentation assertions; fixed with explicit game Window import, pending remote compilation. Prior spell receipt verified as recorded in mechanics report. No new APK assembled; whole-game audit and native UI acceptance remain incomplete. Continue implementation after checkpoint.
+
 ## 2026-11-06 — vision source verified; spell information follows
 
 Source9a466733008aeb07f1deaa8d54a8549dc4be43fe/run42161008405 verified2647 tests445 suites and all Android/desktop Java source gates. Actual artifact13476388289 downloaded489977bytes SHA2568140ce38cac544b79cec5fa343ddab3efc01a36e0eebd1b100cec483d8997224, JSON inspected. Current Tome spell window/11 effects/shared holy status batch local2654 tests445 suites green, remote source gate pending. No game calculations, class restrictions or save schema changed. Existing unarmored Holy Ward attacker-power branch is explained/preserved, not balance-fixed.
