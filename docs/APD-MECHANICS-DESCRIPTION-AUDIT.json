@@ -3857,6 +3857,11 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/TalentExplanation.java",
       "sha256": "1bc2cd7b255db41ea8e17c7e7edc772edb1c2fb2ceae870ca725c61e6a51f5ba",
       "boundary": "Heroic Energy exact common charge factors, Deathless Fury base XP-equivalent recovery and Evasive Armor defense/identification explanation. Shared factor expressions preserve original operation/order/defaults. Not full ability-specific or death/VFX closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/TalentExplanation.java",
+      "sha256": "c53902542b19701a3d45aeda060e6bccc1fb101d70ef7a7de076a81da7337058",
+      "boundary": "56 current selected-armor-ability T4 talent bindings reuse reviewed live primary effects across19 abilities, preserving focused Wild Power/Heroic Energy cases and context guards. Full Hero/RNG invariance tested, not complete all nested ability interactions."
     }
   ]
 }

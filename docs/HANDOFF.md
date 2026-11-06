@@ -1,3 +1,7 @@
+## 2026-11-06 associated armor talent checkpoint
+
+Full local2785/446 passed, raw local JUnit/summary/log preserved.56 current T4 talent bindings reuse reviewed primary effects across19 selected armor abilities; existing Wild Power/Heroic Energy focused cases retained.57 non-Heroic slots all nonempty,56 exact bindings, Hero saved state and RNG unchanged. Foreign/alternate/zero/no ability contexts excluded; no invented upgrade preview. Remote686e9c930 actual2783/446 compile receipt downloaded and digest verified, ledger updated. New source-only2785 gate pending; no APK assembly/delivery. Continue remaining T1–T3 numerical talent semantics, Enhanced Combo next; all-game/nested audit and rendered acceptance remain incomplete.
+
 ## 2026-11-06 heroic/recovery/evasion checkpoint
 
 Full local2783/446 passed, raw local JUnit/summary/log preserved. Three talent descriptions now backed by actual chargeUse(legacy default included), recovery-state partial XP and Hero.defenseSkill/unknown armor tests. Shared pure factors retain original operations and no balance changes. Remote2ab53bd24 exact2780/446 source compile receipt downloaded, raw/digest verified and ledger updated. New source-only request2783 pending exact remote result. No APK assembly/delivery, broad audit/native rendering unfinished. Continue by reusing reviewed current armor-ability calculations for its associated T4 talent panels where applicable, avoiding invented preview ranks.

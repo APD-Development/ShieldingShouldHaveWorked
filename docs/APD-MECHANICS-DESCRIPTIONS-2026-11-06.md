@@ -528,3 +528,12 @@ Heroic Energy explains live shared0.88/0.77/0.68/0.6 charge-cost factors and dis
 Evasive Armor explains added score points per excess strength while the armor path is freerunning, basic floor(heroL/2) separate, no-armor and invisible-speed-only exceptions, and personal number withheld for unidentified armor/Might. Actual Hero.defenseSkill differences match allthree ranks with worn armor, return to baseline without armor, and hidden upgrade changes do not alter preview. Full2783/446 zero failures/errors/skips,41s; raw local `/workspace/apd-hero-talents-local-junit.zip`, summary/log preserved. No new native activation/rendering evidence.
 
 Remote2ab53bd24 actual2780/446 compile receipt downloaded and digest matched GitHub:run42237924942/job127960334024/artifact13512203074 SHAb5600c40bbfecc577b0d4cdea09432d4b5ef7243507da211da1ee8d8b1028da0.
+
+
+### Current armor-ability talent bindings
+
+Uncustomized associated T4 talent panels now reuse the selected ability's already-reviewed primary calculations, labelled as current trained ranks and known equipment. This links56 associated panels across19 armor abilities; Wild Power retains its separate focused explanation and Heroic Energy retains the common cost explanation. No guessed untrained rank, unrelated selected ability or alternate Metamorph description is assigned an inappropriate context. Current rank changes refresh the live ability result.
+
+Targeted integration tests cover all19 abilities/57 non-Heroic slots with56 exact helper bindings, full Hero saved-state equality and RNG preservation; unrelated/no ability/alternate/zero-rank contexts stay out. These bindings reuse reviewed formulas; they do not imply full VFX/AI/status interaction semantic closure. Full suite follows.
+
+Full armor-talent binding2785/446 zero failures/errors/skips,41s. Raw `/workspace/apd-armor-talents-local-junit.zip`, summary/full log preserved. Downloaded remote686e9c930 proof2783/446 + Android/desktop compilation:run42239260446/job127964908314/artifact13514936219 SHA4e8f0de019f54be3f34b71f278caf000b630f97a5d3816f12f447059a693d8fd, matched GitHub digest. No APK assembly or new native/phone proof.

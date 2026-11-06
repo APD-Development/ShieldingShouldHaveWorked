@@ -219,7 +219,15 @@ public final class TalentExplanation {
                     + " turns of Roots and up to " + (2 + 2 * rank) + " nearby tiles are selected for tall grass. "
                     + "The affected area is the potion's tile and its eight neighbors. Only suitable terrain without a plant can become tall grass, so the selected count is not guaranteed grass. "
                     + "Roots duration = rank × the consumed item's talent-effect factor; selected grass tiles = truncate((2 + 2 × rank) × that factor), limited by the nine-tile area. Other eligible empty tiles in the area become short grass. No extra movement or free searching is granted.";
-            default: return "";
+            default:
+                if(!alternateDescription && Dungeon.hero!=null && Dungeon.hero.armorAbility!=null){
+                    com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility ability=Dungeon.hero.armorAbility;
+                    for(Talent associated:ability.talents())if(associated==talent){
+                        String current=AbilityExplanation.effects(ability,Dungeon.hero);
+                        if(!current.isEmpty())return "_Current armor-ability rules and results_\nThese calculations use your current trained ranks and known equipment. Training the talent refreshes the results under the ability's own formulas and conditions.\n\n"+current;
+                    }
+                }
+                return "";
         }
     }
 }
