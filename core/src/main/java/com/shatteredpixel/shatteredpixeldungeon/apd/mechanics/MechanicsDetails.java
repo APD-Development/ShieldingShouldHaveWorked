@@ -57,6 +57,7 @@ public final class MechanicsDetails {
         if(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll)result.append(ScrollExplanation.details((com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll)item,Dungeon.hero)).append("\n\n");
         result.append(UtilityItemExplanation.details(item,Dungeon.hero)).append("\n\n");
         if(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb)result.append(BombExplanation.details((com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb)item)).append("\n\n");
+        result.append(CraftingEffectExplanation.details(item)).append("\n\n");
         if(item instanceof Armor){
             Armor armor=(Armor)item;
             if(armor instanceof com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor && Dungeon.hero!=null && Dungeon.hero.armorAbility!=null)

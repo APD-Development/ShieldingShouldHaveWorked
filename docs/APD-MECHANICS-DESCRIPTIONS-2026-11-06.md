@@ -572,3 +572,6 @@ Added known-only descriptions for ordinary/exotic potion effects, eight elixirs 
 ## Scroll, utility and bomb primary effects
 
 Added26 known scroll types with effect-specific durations, resource rules, generation/identification boundaries and visible-snapshot damage previews. No target HP is read by inspection. Added11 bomb-family explanations and utility units for bags, Holster recharge/wear, dew, Ankh revival, Torch, resin, metal, inscription and currency. Armed-fuse/state/RNG/floor-knowledge and live container tests pass. Null/incomplete floor snapshots are withheld. Initial full source-contract failures after a formula-call-site refactor were resolved by restoring the exact original gameplay call-sites; pure numerical previews match unchanged guarded formulas. No tests weakened. Full local2829/446 passed; remote8b246abad2825/446 plus Android/desktop receipt verified. No APK/native acceptance of newest source yet; runestone/alchemy and remaining nested audit still open.
+
+### Crafting effects
+23 runestone/alchemy descriptions added without executing uses or selectors. Full2831/446 local passed; infusion and augmentation equations compared to real methods; intuition/reclaimed-trap saved state and RNG preserved. No APK/native acceptance claimed.
