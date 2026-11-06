@@ -1,8 +1,4 @@
 {
-  "source": "7ef0800dfd6c4e624d3c001e886eb1a711d80a68",
-  "purpose": "Discover existing final daily candidate runs through pending link-only statuses; never rebuild or claim verification/delivery",
-  "tester_source": "98ed2fc50ff21cb32ac5009333c7f1cd7743f143",
-  "refresh": "Discover already-requested exact private delivery run; no application rebuild, no completion claim",
-  "qol_source": "4f076319d44df4bd808f32451d0ed526b5633392",
-  "delivery_source": "0863c487b81a05c71a19f34c2b4008fb6b2318a0"
+  "source": "b8283598a43e13a2259d65cae69bf0529b7a65e2",
+  "purpose": "Discover owner-authorized extra pair369 producer/Alpha/display runs; link metadata only, never rebuild or claim verification"
 }

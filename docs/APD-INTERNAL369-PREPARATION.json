@@ -1,0 +1,10 @@
+{
+  "source": "b8283598a43e13a2259d65cae69bf0529b7a65e2",
+  "expected_number": 369,
+  "owner_exception": "Owner replied Yes to one additional Developer/Alpha pair on2026-11-06 after daily limit. No further pair authorized.",
+  "status": "requested_not_yet_verified",
+  "previous_verified_local_pair": 368,
+  "whole_semantic_audit_complete": false,
+  "physical_phone_tested": false,
+  "github_release_delivery_complete": false
+}
