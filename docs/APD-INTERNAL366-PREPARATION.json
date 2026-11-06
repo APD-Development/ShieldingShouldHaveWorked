@@ -1,0 +1,30 @@
+{
+  "status": "BUILT_INTERNAL_NATIVE_VERIFICATION_PENDING_NOT_DELIVERED",
+  "source": "89663e4c0c29bb1867c58f32a999e80b5fed5b06",
+  "build": 366,
+  "developer_run": 42205507851,
+  "alpha_run": 42205507813,
+  "native_followup_run": 42205750375,
+  "source_gate": 42205507799,
+  "core_tests": 2665,
+  "physical_phone_tested": false,
+  "signature_and_package_verification": "pending; unchanged source configuration is not signature proof",
+  "whole_game_audit": "incomplete",
+  "fallback": "private released TEST365 preserved",
+  "artifacts": [
+    {
+      "variant": "developer",
+      "path": "/workspace/apd-internal366-developer.apk",
+      "bytes": 39023237,
+      "sha256": "ba82e29f0003992ed22b87edf6b8a6d97758327cb20d7e44fc079b24964a4c68",
+      "sidecar_matches": true
+    },
+    {
+      "variant": "alpha",
+      "path": "/workspace/apd-internal366-alpha.apk",
+      "bytes": 39023205,
+      "sha256": "2eebaf59167ae7912eb711734ed01594cfc699039585363ebbe173a03c3d7c8f",
+      "sidecar_matches": true
+    }
+  ]
+}

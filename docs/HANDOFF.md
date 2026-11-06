@@ -1,3 +1,7 @@
+## 2026-11-06 Warrior ability explanation checkpoint
+
+Newer source-only Heroic Leap/Shockwave/Endure explanations: full2669 local core pass; real Endure handlers and pure inspection tested. They postdate internal366 and are not in those APKs. Internal366 has both variants locally staged, sidecars matched, feature isolation inspected; receipt docs/APD-INTERNAL366-PREPARATION.json deliberately says native/signature/package verification pending, not delivered. Full72 emulator, targeted3-method QoL acceptance and six-display checks still running. Whole-game audit remains unfinished; keep developing without rebuilding for docs/test-only fixes.
+
 ## 2026-11-06 exact candidate native follow-up
 
 Internal366 source89663e4c0/run42205507851 producing; matching Alpha42205507813, source gate42205507799, display matrix42205507796. Added test-only follow-up for actual pointer expand/collapse/bounds and waiting settings independence/persistence with six screenshots; it verifies source/artifact digests and application-input equivalence, compiles instrumentation only, never assembles an application. Native results pending; not a delivery. Continue source audit while checks run.

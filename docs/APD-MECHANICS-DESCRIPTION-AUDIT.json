@@ -3487,6 +3487,26 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/MissileWeapon.java",
       "sha256": "e7d79831c5076e5a0848f1a7e648bcb9a894a440c2d0a53a445031e18d656d94",
       "boundary": "Reviewed food talent healing/protection, Hold Fast block/selected decay, and five intuition identification-progress facets only; not full source-file semantic closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/abilities/warrior/HeroicLeap.java",
+      "sha256": "3dd2dab25b34fcc0e23ff151ad9209e8957dafbfb156a652ec8199f76e2c5708",
+      "boundary": "Warrior leap/shockwave/endure effect, exposure/storage and hit-consumption explanation facets; no complete file/gameplay semantic closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/abilities/warrior/Shockwave.java",
+      "sha256": "f29d4ee315cf62459cd396a86b29494ffb6e7e6e059e494c88da8660971b07f9",
+      "boundary": "Warrior leap/shockwave/endure effect, exposure/storage and hit-consumption explanation facets; no complete file/gameplay semantic closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/abilities/warrior/Endure.java",
+      "sha256": "e6bb778bf39b02a67aec2fb4b8abd15ff888afb581f4299f281284539a776f1f",
+      "boundary": "Warrior leap/shockwave/endure effect, exposure/storage and hit-consumption explanation facets; no complete file/gameplay semantic closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/Char.java",
+      "sha256": "0eb2099aa13798f4f132cdc58c8c45331e3731f8e3d3801e8b7e069e73844b53",
+      "boundary": "Warrior leap/shockwave/endure effect, exposure/storage and hit-consumption explanation facets; no complete file/gameplay semantic closure."
     }
   ]
 }
