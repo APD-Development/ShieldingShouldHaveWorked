@@ -4190,6 +4190,31 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/BrokenSeal.java",
       "sha256": "3e367e9128eda897b80abe26057b47792ad9563b7ad553997af7c801d821d1e8",
       "boundary": "WarriorShield resource/cooldown/credit and refund detail; actual damage threshold/hunger exclusion, countdown/refund/Hold Fast/save and inspection purity tested. All shield combinations, translations and native/phone acceptance remain unfinished."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/keys/Key.java",
+      "sha256": "f0c0840e37f8cd2ad68d85dff33b126a43a3232b7c01f815d9c4576629d1c358",
+      "boundary": "Ordinary lock purpose/type/floor matching, journal storage, consumption and time cost traced through Hero and Notes. Four concrete type/save/purity checks and actual Notes wrong-floor/type consumption regression pass. No lock or room behavior change. Other translations and native/phone text acceptance unfinished."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/keys/GoldenKey.java",
+      "sha256": "c115580fde5c0e4602c5edf1258d4a256246fa16ff3791ddb97a904309877cb2",
+      "boundary": "Ordinary lock purpose/type/floor matching, journal storage, consumption and time cost traced through Hero and Notes. Four concrete type/save/purity checks and actual Notes wrong-floor/type consumption regression pass. No lock or room behavior change. Other translations and native/phone text acceptance unfinished."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/keys/CrystalKey.java",
+      "sha256": "6affd7abd9de8a6297ae2edb98dab83e7e0c9ebb2f7b9e2de504b68034f2a721",
+      "boundary": "Ordinary lock purpose/type/floor matching, journal storage, consumption and time cost traced through Hero and Notes. Four concrete type/save/purity checks and actual Notes wrong-floor/type consumption regression pass. No lock or room behavior change. Other translations and native/phone text acceptance unfinished."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/keys/IronKey.java",
+      "sha256": "5f77eed2b1e98681ff21de33c85505ccd9d56135a5f8ead0edc87e97e91f5fb4",
+      "boundary": "Ordinary lock purpose/type/floor matching, journal storage, consumption and time cost traced through Hero and Notes. Four concrete type/save/purity checks and actual Notes wrong-floor/type consumption regression pass. No lock or room behavior change. Other translations and native/phone text acceptance unfinished."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/keys/WornKey.java",
+      "sha256": "371fbd18f65c295599f8bf8aea79d6a02da319bf9112950181d12d7f841fd017",
+      "boundary": "Ordinary lock purpose/type/floor matching, journal storage, consumption and time cost traced through Hero and Notes. Four concrete type/save/purity checks and actual Notes wrong-floor/type consumption regression pass. No lock or room behavior change. Other translations and native/phone text acceptance unfinished."
     }
   ]
 }

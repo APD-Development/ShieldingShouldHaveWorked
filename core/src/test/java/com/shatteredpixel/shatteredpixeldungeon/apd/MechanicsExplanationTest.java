@@ -686,6 +686,20 @@ public class MechanicsExplanationTest {
   try{for(int draw=0;draw<100;draw++){Class<?> previous=target.glyph==null?null:target.glyph.getClass();target.inscribe();assertNotEquals(previous,target.glyph.getClass());assertEquals(3,target.level());}}finally{Random.popGenerator();}
   String text=UtilityItemExplanation.details(new com.shatteredpixel.shatteredpixeldungeon.items.Stylus(),hero);assertTrue(text.contains("excludes the selected armor's existing glyph"));assertTrue(text.contains("does not raise armor upgrade level"));
  }
+ @Test public void keyDescriptionsDistinguishLockTypesAndRecordedFloorWithoutUsingKeys() throws Exception {
+  String[] names={"GoldenKey","CrystalKey","IronKey","WornKey"},targets={"a locked chest","a crystal chest or crystal door","an ordinary locked door","a locked exit"};
+  for(int index=0;index<names.length;index++){
+   com.shatteredpixel.shatteredpixeldungeon.items.keys.Key key=(com.shatteredpixel.shatteredpixeldungeon.items.keys.Key)Class.forName("com.shatteredpixel.shatteredpixeldungeon.items.keys."+names[index]).getConstructor(int.class).newInstance(8);com.shatteredpixel.shatteredpixeldungeon.journal.Notes.add(key);int count=com.shatteredpixel.shatteredpixeldungeon.journal.Notes.keyCount(key);String heroBefore=savedDescriptionHero();com.watabou.utils.Bundle before=new com.watabou.utils.Bundle(),after=new com.watabou.utils.Bundle();key.storeInBundle(before);
+   Random.pushGenerator(424);int expected=Random.Int();Random.popGenerator();Random.pushGenerator(424);try{String text=UtilityItemExplanation.details(key,hero);assertTrue(text,text.contains("opens "+targets[index]));assertTrue(text,text.contains("belongs to Floor 8"));assertTrue(key.info(),key.info().contains("matching dungeon floor"));assertTrue(text,text.contains(ObfuscationExplanation.number(com.shatteredpixel.shatteredpixeldungeon.items.keys.Key.TIME_TO_UNLOCK)+" game-time unit"));assertEquals(expected,Random.Int());}finally{Random.popGenerator();}
+   key.storeInBundle(after);assertEquals(before.toString(),after.toString());assertEquals(heroBefore,savedDescriptionHero());assertEquals(count,com.shatteredpixel.shatteredpixeldungeon.journal.Notes.keyCount(key));
+   com.shatteredpixel.shatteredpixeldungeon.items.keys.Key restored=(com.shatteredpixel.shatteredpixeldungeon.items.keys.Key)key.getClass().getConstructor().newInstance();restored.restoreFromBundle(before);assertEquals(UtilityItemExplanation.details(key,hero),UtilityItemExplanation.details(restored,hero));
+  }
+ }
+ @Test public void keyFloorMatchingDescriptionAgreesWithRealJournalConsumption(){
+  com.shatteredpixel.shatteredpixeldungeon.items.keys.GoldenKey key=new com.shatteredpixel.shatteredpixeldungeon.items.keys.GoldenKey(8);com.shatteredpixel.shatteredpixeldungeon.journal.Notes.add(key);
+  assertFalse(com.shatteredpixel.shatteredpixeldungeon.journal.Notes.remove(new com.shatteredpixel.shatteredpixeldungeon.items.keys.GoldenKey(9)));assertFalse(com.shatteredpixel.shatteredpixeldungeon.journal.Notes.remove(new com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey(8)));assertEquals(1,com.shatteredpixel.shatteredpixeldungeon.journal.Notes.keyCount(key));assertTrue(com.shatteredpixel.shatteredpixeldungeon.journal.Notes.remove(key));assertEquals(0,com.shatteredpixel.shatteredpixeldungeon.journal.Notes.keyCount(key));
+  String catalog=UtilityItemExplanation.details(new com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey(),null);assertTrue(catalog,catalog.contains("No floor is recorded"));assertFalse(catalog,catalog.contains("Floor 0"));
+ }
  @Test public void sealShieldDefaultTooltipDistinguishesReadyWaitingAndSavedCredit(){
   com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal.WarriorShield shield=new com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal.WarriorShield();shield.target=hero;
   String ready=shield.desc();assertTrue(ready,ready.contains("cooldown is ready"));assertFalse(ready,ready.contains("recharging"));

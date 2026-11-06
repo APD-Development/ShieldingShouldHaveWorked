@@ -65,6 +65,7 @@ public final class UtilityItemExplanation {
         return text.append(" Unidentified wand calculations are withheld; inspection does not charge a wand or spend game time.").toString();
     }
     public static String details(Item item,Hero hero){
+        if(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.keys.Key)return KeyExplanation.details((com.shatteredpixel.shatteredpixeldungeon.items.keys.Key)item);
         if(item instanceof Bag){Bag bag=(Bag)item;String text="_Container slots_\nCurrent capacity: "+bag.capacity()+" item slots. A compatible stack generally occupies one slot regardless of its quantity; nested-container and secondary-weapon rules keep their normal accounting. Capacity is not a weight limit, gold value or a guarantee that every item type belongs in this container. Inventory capacity and automatic pickup rules are unchanged.";
             if(item instanceof MagicalHolster)text+=holsterDetails((MagicalHolster)item);
             return text;}

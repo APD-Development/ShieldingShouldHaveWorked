@@ -910,6 +910,40 @@
       "skipped": 0,
       "apk_assembled": false,
       "physical_phone_tested": false
+    },
+    {
+      "workflow_run": 42294244429,
+      "job_id": 128155244022,
+      "artifact_id": 13540414013,
+      "artifact_bytes": 505270,
+      "artifact_sha256": "7fec791b3ab0a214931df426cc430b169eb29ad80f74bd03cc707230a2467f57",
+      "local_evidence": "/workspace/attachments/c4ca5013-248c-4de5-8253-cad84a288ccd/github-actions-artifact-13540414013.zip",
+      "checks": "Full core; Android debug/release/instrumentation Java and desktop compilation; exact source receipt and all raw XML independently downloaded/checked; no APK assembly",
+      "source_commit": "cc712faf419f84d093421b6d0d2a676c0d5838dc",
+      "suites": 446,
+      "tests": 2877,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "apk_assembled": false,
+      "physical_phone_tested": false
+    },
+    {
+      "workflow_run": 42294813157,
+      "job_id": 128157174437,
+      "artifact_id": 13542145946,
+      "artifact_bytes": 506953,
+      "artifact_sha256": "d29fc91b270b21177041c8f9f1fcc0b5b1d8635d983b0f3eed51479ceb8a6d1d",
+      "local_evidence": "/workspace/attachments/ec900966-d09d-46a3-ad22-4b8dc2b316eb/github-actions-artifact-13542145946.zip",
+      "checks": "Full core; Android debug/release/instrumentation Java and desktop compilation; exact source receipt and all raw XML independently downloaded/checked; no APK assembly",
+      "source_commit": "3144b201936f6ead8fb74007a117999d258b6875",
+      "suites": 446,
+      "tests": 2878,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "apk_assembled": false,
+      "physical_phone_tested": false
     }
   ]
 }
