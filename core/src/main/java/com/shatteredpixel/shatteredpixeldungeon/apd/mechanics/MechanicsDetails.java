@@ -28,6 +28,13 @@ import java.util.Locale;
 /** Public-value explanations; never asks for a damage roll, hidden enemy stat, or proc. */
 public final class MechanicsDetails {
     private MechanicsDetails(){}
+    private static float holdFastDecay(com.shatteredpixel.shatteredpixeldungeon.actors.Char target){
+        if(target instanceof com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero){
+            com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero owner=(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero)target;HoldFast hold=owner.buff(HoldFast.class);
+            if(hold!=null&&owner.pos==hold.pos){int points=owner.pointsInTalent(Talent.HOLD_FAST);return points==1?.5f:points==2?.25f:points==3?0:1;}
+        }
+        return 1;
+    }
     public static String glossary(String description){
         String text=description.toLowerCase(Locale.ROOT);StringBuilder out=new StringBuilder();
         if(text.contains("accuracy")||text.contains("evasion"))out.append("_Accuracy and evasion_\nThese are competing scores, not hit/dodge percentages. A normal attack rolls a value from zero up to the attacker's final accuracy and another from zero up to the defender's final evasion. The attack hits when its roll is at least the defense roll.\nFor positive finite scores after applicable modifiers: if accuracy ≥ evasion, hit chance = 1 − evasion / (2 × accuracy); otherwise hit chance = accuracy / (2 × evasion). Guaranteed hits/dodges and other special rules override this normal contest. The target and current effects matter, so a weapon's accuracy percentage is not a fixed chance to hit.\n\n");
@@ -45,7 +52,7 @@ public final class MechanicsDetails {
         if(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring)result.append(RingExplanation.details((com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring)item)).append("\n\n");
         if(item instanceof Armor){
             Armor armor=(Armor)item;
-            if(ObfuscationExplanation.applies(armor))result.append(ObfuscationExplanation.details(armor,Dungeon.hero)).append("\n\n");
+            result.append(GlyphExplanation.details(armor,Dungeon.hero)).append("\n\n");
             if(armor.levelKnown)result.append("_Armor's current base absorption_\n").append(armor.DRMin()).append("–").append(armor.DRMax()).append(" damage points per applicable hit before other defensive effects. Strength requirement: ").append(armor.STRReq()).append(" points. Upgrades and augmentation change these displayed values; this range is not a flat reduction percentage.\n\n");
             else result.append("Armor-level calculations stay hidden until its upgrades are identified.\n\n");
         }
@@ -68,12 +75,12 @@ public final class MechanicsDetails {
         if(buff instanceof Bleeding){Bleeding bleeding=(Bleeding)buff;extra+="_Bleeding calculation_\nThe next unmodified tick rounds the current strength to "+bleeding.apdNextRaw()+" damage points. Source-specific rules can change the amount sent to the target. After a tick, strength is randomly reduced to between half and all of its previous value, with results biased toward the middle. It ends when the rounded strength reaches zero. Normal new applications keep the stronger randomly reduced strength; they do not simply add their totals.\n\n";}
         if(buff instanceof Barkskin)extra+="_Current Barkskin roll_\nAdds a protection roll from 0 to "+((Barkskin)buff).level()+" damage points on an applicable physical hit. This adds damage-blocking points rather than a percentage reduction.\n\n";
         if(buff instanceof ArcaneArmor)extra+="_Current Arcane Armor roll_\nAdds a protection roll from 0 to "+((ArcaneArmor)buff).level()+" damage points against qualifying magical damage, before the remaining defenses apply.\n\n";
+        if(buff instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blocking.BlockBuff){
+            com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blocking.BlockBuff block=(com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blocking.BlockBuff)buff;
+            extra+="_Blocking shield duration_\nRemaining baseline decay units: "+ObfuscationExplanation.number(block.remainingDecay())+". A normal tick consumes one unit; active Hold Fast changes this rate. Current decay rate: "+ObfuscationExplanation.number(holdFastDecay(buff.target))+" units per tick. At zero units the shield expires; damage can consume it sooner. A new application resets its duration to five units, rather than promising five turns regardless of other effects.\n\n";
+        }
         if(buff instanceof Barrier){
-            Barrier barrier=(Barrier)buff;float factor=1;
-            if(buff.target instanceof com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero){
-                com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero owner=(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero)buff.target;HoldFast hold=owner.buff(HoldFast.class);
-                if(hold!=null&&owner.pos==hold.pos){int points=owner.pointsInTalent(Talent.HOLD_FAST);factor=points==1?.5f:points==2?.25f:points==3?0:1;}
-            }
+            Barrier barrier=(Barrier)buff;float factor=holdFastDecay(buff.target);
             float rate=Math.min(1f,barrier.shielding()/20f)*factor;
             extra+="_Barrier decay_\nEach normal barrier tick adds min(1, current shield / 20) × the active Hold Fast factor toward losing one shield point. With the current state, that is "+ObfuscationExplanation.number(rate)+" per tick. Progress toward the next point lost is currently "+ObfuscationExplanation.number(100*barrier.decayProgress())+"%. At one whole point of progress, one shield point is removed and that progress resets. Incoming damage can also consume shielding.\n\n";
         }

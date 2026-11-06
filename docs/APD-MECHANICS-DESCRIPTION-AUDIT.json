@@ -2817,6 +2817,71 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/Talent.java",
       "sha256": "7488c8315c351c286cf3674af8f5f0a2ad1fb45098b0ee8e9d16df7ee60a73ef",
       "boundary": "Selected numerical explanation facets only; not a complete semantic audit of this entire file."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Affection.java",
+      "sha256": "f084cc97130012e8b06edf3406237acccc8eeafd0eba0c316220072f246e1f86",
+      "boundary": "Ordinary glyph numerical effect, trigger conditions, units and limits reviewed. Full engine and translated-copy audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/AntiMagic.java",
+      "sha256": "d22f4145b475c99bb2386e2f5a381a6a0dcf7aeca596c7e871091f650282edf2",
+      "boundary": "Ordinary glyph numerical effect, trigger conditions, units and limits reviewed. Full engine and translated-copy audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Brimstone.java",
+      "sha256": "1bc08b0a40fe75c331d392282b23b66e87f8342e17a49a3655b0676f7117a66a",
+      "boundary": "Ordinary glyph numerical effect, trigger conditions, units and limits reviewed. Full engine and translated-copy audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Camouflage.java",
+      "sha256": "591a3f2657629c8c6c7a826879430b6001aaa9b33818f8eac3b17ac93d51f2a0",
+      "boundary": "Ordinary glyph numerical effect, trigger conditions, units and limits reviewed. Full engine and translated-copy audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Entanglement.java",
+      "sha256": "2602f0d4b3f5ef180fe03358f08ff2752647b8bbdbfa7e569f5084c7d51df59f",
+      "boundary": "Ordinary glyph numerical effect, trigger conditions, units and limits reviewed. Full engine and translated-copy audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Flow.java",
+      "sha256": "c1e110c0960108059c0aa3e87f94bee4df43dadfd54e8ecff1f6f5e1d581555e",
+      "boundary": "Ordinary glyph numerical effect, trigger conditions, units and limits reviewed. Full engine and translated-copy audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Obfuscation.java",
+      "sha256": "ddc25431e8a9fab83b411e2fc99bf97abf63b007716eacf4ad27611d873315da",
+      "boundary": "Ordinary glyph numerical effect, trigger conditions, units and limits reviewed. Full engine and translated-copy audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Potential.java",
+      "sha256": "4fc766e080d06addb1a28a8d71294d296a891b872da5259f5ef12fb52226354c",
+      "boundary": "Ordinary glyph numerical effect, trigger conditions, units and limits reviewed. Full engine and translated-copy audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Repulsion.java",
+      "sha256": "693a8928e729fc4ea39e793664b52479de8f7e156883d39683fd9612aa10f615",
+      "boundary": "Ordinary glyph numerical effect, trigger conditions, units and limits reviewed. Full engine and translated-copy audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Stone.java",
+      "sha256": "7a06e42130ab82587deff2dc80bc19e487dd09b14e5ce0fc1bc5927a11959159",
+      "boundary": "Ordinary glyph numerical effect, trigger conditions, units and limits reviewed. Full engine and translated-copy audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Swiftness.java",
+      "sha256": "c06760c19c68dc739b5a60674665e9a0fe66d112b992c37dacf3ea5cd2a0a0ad",
+      "boundary": "Ordinary glyph numerical effect, trigger conditions, units and limits reviewed. Full engine and translated-copy audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Thorns.java",
+      "sha256": "89ae3e2c7c95ea43078fcbe69262e4478e1d6ef8177480058c44360117c1bda4",
+      "boundary": "Ordinary glyph numerical effect, trigger conditions, units and limits reviewed. Full engine and translated-copy audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Viscosity.java",
+      "sha256": "8d664a6b1ab6f546e7afe3e0ab763ffb6713bb5874a320ffceca147b061dd4a1",
+      "boundary": "Ordinary glyph numerical effect, trigger conditions, units and limits reviewed. Full engine and translated-copy audit remains separate."
     }
   ]
 }

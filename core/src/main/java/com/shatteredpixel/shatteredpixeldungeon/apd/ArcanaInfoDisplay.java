@@ -188,7 +188,7 @@ public final class ArcanaInfoDisplay {
                 && !pkg.equals("com.shatteredpixel.shatteredpixeldungeon.items.armor.curses")) {
             return "\n\n" + text("custom", number(multi));
         }
-        if (name.equals("Brimstone")) return "\n\n" + text("brimstone") + effect(name);
+        if (name.equals("Brimstone")) return "\n\n" + (armor.levelKnown&&armor.buffedLvl()<0?text("inactive"):text("brimstone") + effect(name));
         if (!armor.levelKnown) return "\n\n" + result + " " + text("unknown_level");
         float actualLevel=armor.buffedLvl(), level=Math.max(0, actualLevel), base;
         if (actualLevel < 0 && (name.equals("Obfuscation") || name.equals("Swiftness")

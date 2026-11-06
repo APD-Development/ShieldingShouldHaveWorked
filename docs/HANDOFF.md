@@ -1,3 +1,7 @@
+## 2026-11-06T01:49:46Z — artifact/status and healing follow-up source verified
+
+Exact source `28b36a65a6174ba8b264096d794e4b63574eb9ca`; run42146155274/job127658011805 passed2568 tests445 suites, Android debug/release/instrumentation Java and desktop compilation. Artifact13469573962 downloaded and checked:483313 bytes SHA256`dfbb718b9645249d2bd00d1c73a7e16fc0513401b6a5176b4527fc554de51b1f`; real JSON confirms exact source/count, no APK and no physical-phone test. This includes the five healing full-health interruption paths and reviewed Force/artifact/status/talent facets. Ordinary glyph explanations are the next in-progress batch. Full whole-game audit remains open and TEST365 remains unchanged verified playable fallback.
+
 ## 2026-11-06T01:36:01Z — mechanics foundation source verified; audit continues
 
 Exact source `9749e461ce804328c42e64a9558201d8aaeb04fa`; source-only run42144593564/job127652893980 passed2552 tests445 suites, Android debug/release/instrumentation Java and desktop compilation. Artifact13468714546 actual downloaded/hash verified,484119 bytes SHA256`0389d8bc9de006b53b4b524161621dc594e143fdc34e6c267837fe22e5f6d944`. Native pointer expansion checks compile but are not called executed. No APK assembled. The full460-path semantic audit remains pending; this is the tested foundation/selected corrections, not whole-game completion. Additional full-health healing paths and Force formula follow-up are being verified separately. Keep TEST365 unchanged as last verified playable fallback.

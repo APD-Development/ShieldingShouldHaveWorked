@@ -87,9 +87,9 @@ public class ArcanaInfoDisplayTest {
     @Test public void descriptionsAreWiredForMeleeMissileAndArmor() {
         equip(0); assertTrue(sword.info().contains("Arcana only"));
         HeavyBoomerang missile=new HeavyBoomerang(); missile.enchant(new Blazing());
-        assertTrue(missile.info().contains("Arcana only")); assertTrue(armor.info().contains("Movement speed without Arcana:"));
+        assertTrue(missile.info().contains("Arcana only")); assertTrue(armor.info().contains("movement rate is"));
         Dungeon.hero.belongings.ring=null;
-        assertFalse(sword.info().contains("Arcana only")); assertFalse(armor.info().contains("Movement speed without Arcana:"));
+        assertFalse(sword.info().contains("Arcana only")); assertTrue(armor.info(),armor.info().contains("movement rate is 2 times normal"));
     }
     @Test public void magicImmunityAndMissingEnchantmentsShowNothing() {
         equip(0); Buff.affect(Dungeon.hero,MagicImmune.class);
@@ -118,7 +118,7 @@ public class ArcanaInfoDisplayTest {
         equip(2); sword.enchant(new Vampiric());
         assertTrue(ArcanaInfoDisplay.weapon(sword).contains("current HP"));
         armor.inscribe(new Stone()); assertTrue(ArcanaInfoDisplay.armor(armor).contains("depends on the attacker"));
-        armor.inscribe(new Brimstone()); assertTrue(ArcanaInfoDisplay.armor(armor).contains("does not increase"));
+        armor.inscribe(new Brimstone()); assertTrue(ArcanaInfoDisplay.armor(armor).contains("does not strengthen"));
         armor.inscribe(new Viscosity()); assertTrue(ArcanaInfoDisplay.armor(armor).contains("remainder prevented"));
         assertTrue(ArcanaInfoDisplay.armor(armor).length()<250);
     }

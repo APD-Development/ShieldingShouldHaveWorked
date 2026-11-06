@@ -622,7 +622,11 @@ public class Armor extends EquipableItem {
 			info += " " + glyph.desc();
             if(glyph instanceof com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Obfuscation)
                 info += "\n\n"+com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.ObfuscationExplanation.summary(this,Dungeon.hero);
-            else info += com.shatteredpixel.shatteredpixeldungeon.apd.ArcanaInfoDisplay.armor(this);
+            else {
+                String explanation=com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.GlyphExplanation.summary(this,Dungeon.hero);
+                if(!explanation.isEmpty())info+="\n\n"+explanation;
+                else info+=com.shatteredpixel.shatteredpixeldungeon.apd.ArcanaInfoDisplay.armor(this);
+            }
 		} else if (glyphHardened){
 			info += "\n\n" + Messages.get(Armor.class, "hardened_no_glyph");
 		}
