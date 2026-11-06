@@ -592,6 +592,12 @@ public class ApdSettingsClickDeviceTest {
 	// This is the remainder of the APD Settings touch surface. The older method named
 	// "every control" predates these controls and did not cover them; this explicit method
 	// prevents another visible-but-dead setting from reaching an owner build.
+    private static void tapWaitingControl(com.watabou.noosa.ui.Component component)throws Exception{
+        AtomicReference<Point> at=new AtomicReference<>();
+        onRender(()->at.set(component.camera().cameraToScreen(component.left()+component.width()/2,component.top()+component.height()/2)));
+        tap(at.get());
+    }
+
 	@Test
 	public void remainingApdSettingsControlsRespondToActualTouches() throws Exception {
 		try (ActivityScenario<AndroidLauncher> scenario = ActivityScenario.launch(AndroidLauncher.class)) {
@@ -601,6 +607,8 @@ public class ApdSettingsClickDeviceTest {
 			final boolean oldStairs = SPDSettings.stairNavigationShortcut();
             final boolean oldAutoEnter = SPDSettings.autoEnterStairs();
             final boolean oldSingleTapSearch = SPDSettings.singleTapSearch();
+            final boolean[] oldWaiting={SPDSettings.waitStopFullHealth(),SPDSettings.waitStopStarving(),SPDSettings.waitStopCritical(),SPDSettings.autoEatWhileWaiting(),SPDSettings.autoEatWhenHungry()};
+            final int oldCriticalPercent=SPDSettings.waitCriticalPercent();
             final int oldWaterskinStart = SPDSettings.waterskinStartingSlot();
 			final AtomicReference<WndAPDSettings> window = new AtomicReference<>();
 			try {
@@ -642,6 +650,27 @@ public class ApdSettingsClickDeviceTest {
                 tapUntil("Single-tap Search toggle",scroll,(Gizmo)field(pane,"chkSingleTapSearch"),()->SPDSettings.singleTapSearch()!=oldSingleTapSearch,30000);
                 assertEquals(!oldSingleTapSearch,((com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox)field(pane,"chkSingleTapSearch")).checked());
                 tapUntil("Single-tap Search original mode",scroll,(Gizmo)field(pane,"chkSingleTapSearch"),()->SPDSettings.singleTapSearch()==oldSingleTapSearch,30000);
+
+                tapUntil("Auto-Eat While Waiting toggle",scroll,(Gizmo)field(pane,"chkAutoEatWaiting"),()->SPDSettings.autoEatWhileWaiting()!=oldWaiting[3],30000);
+                assertEquals(!oldWaiting[3],((com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox)field(pane,"chkAutoEatWaiting")).checked());
+                tapUntil("Auto-Eat trigger picker",scroll,(Gizmo)field(pane,"btnAutoEatTrigger"),()->find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions.class)!=null,30000);
+                com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions trigger=find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions.class);
+                java.util.List<RedButton> triggerButtons=TopScoresDeviceTest.find(trigger,RedButton.class);assertEquals(2,triggerButtons.size());
+                tapWaitingControl(triggerButtons.get(0));assertTrue(SPDSettings.autoEatWhenHungry());
+                tapUntil("Waiting interruptions",scroll,(Gizmo)field(pane,"btnWaitingInterruptions"),()->find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.windows.WndWaitingSettings.class)!=null,30000);
+                com.shatteredpixel.shatteredpixeldungeon.windows.WndWaitingSettings waiting=find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.windows.WndWaitingSettings.class);
+                java.util.List<com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox> waitChecks=TopScoresDeviceTest.find(waiting,com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox.class);assertEquals(3,waitChecks.size());
+                boolean[] prior={SPDSettings.waitStopFullHealth(),SPDSettings.waitStopStarving(),SPDSettings.waitStopCritical()};
+                for(int index=0;index<3;index++){assertEquals(prior[index],waitChecks.get(index).checked());tapWaitingControl(waitChecks.get(index));}
+                assertEquals(!prior[0],SPDSettings.waitStopFullHealth());assertEquals(!prior[1],SPDSettings.waitStopStarving());assertEquals(!prior[2],SPDSettings.waitStopCritical());
+                RedButton none=null;for(RedButton button:TopScoresDeviceTest.find(waiting,RedButton.class))if(button.text().equals("Disable these three stops"))none=button;
+                assertNotNull(none);tapWaitingControl(none);assertFalse(SPDSettings.waitStopFullHealth());assertFalse(SPDSettings.waitStopStarving());assertFalse(SPDSettings.waitStopCritical());
+                assertEquals("preset does not alter Auto-Eat",!oldWaiting[3],SPDSettings.autoEatWhileWaiting());assertTrue(SPDSettings.autoEatWhenHungry());
+                final com.shatteredpixel.shatteredpixeldungeon.windows.WndWaitingSettings closeWaiting=waiting;onRender(closeWaiting::hide);
+                tapUntil("Reopen saved waiting choices",scroll,(Gizmo)field(pane,"btnWaitingInterruptions"),()->find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.windows.WndWaitingSettings.class)!=null,30000);
+                waiting=find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.windows.WndWaitingSettings.class);
+                for(com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox check:TopScoresDeviceTest.find(waiting,com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox.class))assertFalse("disabled state restored",check.checked());
+                final com.shatteredpixel.shatteredpixeldungeon.windows.WndWaitingSettings closeReopened=waiting;onRender(closeReopened::hide);
 
                 // The shared player/developer APD pane must expose all eight
                 // Waterskin choices. Verify actual screen touches and persistence.
@@ -698,6 +727,7 @@ public class ApdSettingsClickDeviceTest {
 					SPDSettings.stairNavigationShortcut(oldStairs);
                     SPDSettings.autoEnterStairs(oldAutoEnter);
                 SPDSettings.singleTapSearch(oldSingleTapSearch);
+                    SPDSettings.waitStopFullHealth(oldWaiting[0]);SPDSettings.waitStopStarving(oldWaiting[1]);SPDSettings.waitStopCritical(oldWaiting[2]);SPDSettings.autoEatWhileWaiting(oldWaiting[3]);SPDSettings.autoEatWhenHungry(oldWaiting[4]);SPDSettings.waitCriticalPercent(oldCriticalPercent);
                     SPDSettings.waterskinStartingSlot(oldWaterskinStart);
 				});
 			}
@@ -716,7 +746,10 @@ public class ApdSettingsClickDeviceTest {
 		owners.put("chkTileVisibility", new Object[]{ ApdSettingsClickDeviceTest.class, "remainingApdSettingsControlsRespondToActualTouches" });
 		owners.put("chkStairNavigation", new Object[]{ ApdSettingsClickDeviceTest.class, "remainingApdSettingsControlsRespondToActualTouches" });
         owners.put("chkAutoEnterStairs", new Object[]{ ApdSettingsClickDeviceTest.class, "remainingApdSettingsControlsRespondToActualTouches" });
-		owners.put("chkSingleTapSearch", new Object[]{ ApdSettingsClickDeviceTest.class, "remainingApdSettingsControlsRespondToActualTouches" });
+		owners.put("btnWaitingInterruptions", new Object[]{ ApdSettingsClickDeviceTest.class, "remainingApdSettingsControlsRespondToActualTouches" });
+        owners.put("chkAutoEatWaiting", new Object[]{ ApdSettingsClickDeviceTest.class, "remainingApdSettingsControlsRespondToActualTouches" });
+        owners.put("btnAutoEatTrigger", new Object[]{ ApdSettingsClickDeviceTest.class, "remainingApdSettingsControlsRespondToActualTouches" });
+        owners.put("chkSingleTapSearch", new Object[]{ ApdSettingsClickDeviceTest.class, "remainingApdSettingsControlsRespondToActualTouches" });
         owners.put("btnPlaybackSpeed", new Object[]{ ApdSettingsClickDeviceTest.class, "adultHumorControlWorksWithoutAnAgeProviderAndReopensWithSavedChoice" });
         owners.put("btnWaterskinSlot", new Object[]{ ApdSettingsClickDeviceTest.class, "remainingApdSettingsControlsRespondToActualTouches" });
 		owners.put("btnHealingConfirmation", new Object[]{ ApdSettingsClickDeviceTest.class, "remainingApdSettingsControlsRespondToActualTouches" });

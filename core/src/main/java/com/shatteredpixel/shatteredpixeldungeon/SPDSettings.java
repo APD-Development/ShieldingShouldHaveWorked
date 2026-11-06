@@ -716,6 +716,18 @@ public class SPDSettings extends GameSettings {
 	public static int fulLScreenMonitor(){
 		return getInt( KEY_FULLSCREEN_MONITOR, 0 );
 	}
+    public static boolean waitStopFullHealth(){return getBoolean("apd_wait_stop_full",true);}
+    public static void waitStopFullHealth(boolean value){put("apd_wait_stop_full",value);}
+    public static boolean waitStopStarving(){return getBoolean("apd_wait_stop_starving",true);}
+    public static void waitStopStarving(boolean value){put("apd_wait_stop_starving",value);}
+    public static boolean waitStopCritical(){return getBoolean("apd_wait_stop_critical",false);}
+    public static void waitStopCritical(boolean value){put("apd_wait_stop_critical",value);}
+    public static int waitCriticalPercent(){int value=getInt("apd_wait_critical_percent",20);return value>=10&&value<=50&&value%10==0?value:20;}
+    public static void waitCriticalPercent(int value){put("apd_wait_critical_percent",value>=10&&value<=50&&value%10==0?value:20);}
+    public static boolean autoEatWhileWaiting(){return getBoolean("apd_wait_auto_eat",false);}
+    public static void autoEatWhileWaiting(boolean value){put("apd_wait_auto_eat",value);}
+    public static boolean autoEatWhenHungry(){return getBoolean("apd_wait_eat_hungry",false);}
+    public static void autoEatWhenHungry(boolean value){put("apd_wait_eat_hungry",value);}
     public static boolean singleTapSearch(){return getBoolean("apd_single_tap_search",false);}
     public static void singleTapSearch(boolean enabled){put("apd_single_tap_search",enabled);}
     public static int playbackSpeed() {

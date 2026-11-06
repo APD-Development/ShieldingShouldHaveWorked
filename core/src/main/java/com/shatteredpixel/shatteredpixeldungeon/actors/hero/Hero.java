@@ -236,6 +236,8 @@ public class Hero extends Char {
 	private Char attackTarget;
 	
 	public boolean resting = false;
+    /** Transient cancellation token; never saved as an active waiting command. */
+    public long apdWaitCancellationEpoch;
     public com.shatteredpixel.shatteredpixeldungeon.apd.qol.RatKingQuickSearch.Payment ratSearch;
     public float apdBaseWalkingSpeed(){return baseSpeed;}
     public final com.shatteredpixel.shatteredpixeldungeon.apd.qol.WallSearchSession wallSearch = new com.shatteredpixel.shatteredpixeldungeon.apd.qol.WallSearchSession();
@@ -932,8 +934,10 @@ public class Hero extends Char {
 		if (curAction == null) {
 			
 			if (resting) {
-				spendConstant( TIME_TO_REST );
-				next();
+                com.shatteredpixel.shatteredpixeldungeon.apd.qol.WaitingPolicy.Turn waiting=com.shatteredpixel.shatteredpixeldungeon.apd.qol.WaitingPolicy.beforeWaitTurn(this);
+                if(waiting==com.shatteredpixel.shatteredpixeldungeon.apd.qol.WaitingPolicy.Turn.ATE)return false;
+                if(waiting==com.shatteredpixel.shatteredpixeldungeon.apd.qol.WaitingPolicy.Turn.STOP){resting=false;ready();}
+                else {spendConstant(TIME_TO_REST);next();}
 			} else {
 				ready();
 			}
@@ -1046,6 +1050,7 @@ public class Hero extends Char {
 	}
 	
 	public void interrupt() {
+        apdWaitCancellationEpoch++;
         if(curAction instanceof com.shatteredpixel.shatteredpixeldungeon.apd.qol.RatKingQuickSearch.Action){ratSearch=null;curAction=null;lastAction=null;}
         if(curAction instanceof com.shatteredpixel.shatteredpixeldungeon.apd.qol.WallSearchSession.Walk){curAction=null;lastAction=null;}
         apdTrapGeneration++;
@@ -1818,6 +1823,7 @@ public class Hero extends Char {
 		int effectiveDamage = preHP - postHP;
 
 		if (effectiveDamage <= 0) return;
+        if(resting&&com.shatteredpixel.shatteredpixeldungeon.apd.qol.WaitingPolicy.critical(this))interrupt();
 
         // A real hit still stops stair autopilot. Ordinary travel retains the game's
         // original mild-DOT and explicit "continue moving" behavior.
@@ -1847,8 +1853,8 @@ public class Hero extends Char {
 				} else {
 					Sample.INSTANCE.play(Assets.Sounds.HEALTH_WARN, 1/3f + flashIntensity * 4f);
 				}
-				//hero gets interrupted on taking serious damage, regardless of any other factor
-				interrupt();
+                // Keep ordinary danger interruptions. Only configured starvation waiting may continue.
+                if(!(src instanceof Hunger)||com.shatteredpixel.shatteredpixeldungeon.apd.qol.WaitingPolicy.interruptOnStarvationDamage(this))interrupt();
 				damageInterrupt = true;
 			}
 		}
