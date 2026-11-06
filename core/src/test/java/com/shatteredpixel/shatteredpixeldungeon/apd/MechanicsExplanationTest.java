@@ -366,4 +366,18 @@ public class MechanicsExplanationTest {
   com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile wand=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile();wand.levelKnown=true;wand.level(6);wand.cursed=true;wand.curseInfusionBonus=true;wand.resinBonus=2;wand.charge(hero);Buff.affect(hero,Degrade.class);assertEquals(wand.buffedLvl(),wand.previewEffectiveLevels()[0]);assertEquals(wand.buffedLvl(),wand.previewEffectiveLevels()[1]);
   com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile.MagicCharge charge=Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile.MagicCharge.class);com.watabou.utils.Bundle state=new com.watabou.utils.Bundle();charge.storeInBundle(state);state.put("level",20);charge.restoreFromBundle(state);assertEquals(wand.buffedLvl(),wand.previewEffectiveLevels()[0]);assertEquals(wand.buffedLvl(),wand.previewEffectiveLevels()[1]);
  }
+
+ @Test public void strongmanUsesBaseStrengthAndDoesNotMultiplyRingContribution(){
+  for(int rank=1;rank<=3;rank++){hero.talents.get(2).put(Talent.STRONGMAN,rank);for(int strength=10;strength<=20;strength++){hero.STR=strength;int added=(int)Math.floor(strength*(.03f+.05f*rank));assertEquals(strength+5+added,hero.previewStrength(5));String text=MechanicsDetails.talent(Talent.STRONGMAN,rank,"");assertTrue(text.contains("this rank adds "+added+" strength points"));assertTrue(text.contains("excluding Ring of Might"));}}
+ }
+ public static class RangeAccuracyDart extends com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart {public float rangeFactor(Hero owner,com.shatteredpixel.shatteredpixeldungeon.actors.Char enemy){return adjacentAccFactor(owner,enemy);}}
+ @Test public void pointBlankDetailsMatchActualAdjacentAndDistantFactors(){
+  RangeAccuracyDart dart=new RangeAccuracyDart();PlainStatusTarget enemy=new PlainStatusTarget();hero.pos=24;
+  for(int rank=1;rank<=3;rank++){hero.talents.get(2).put(Talent.POINT_BLANK,rank);enemy.pos=25;float adjacent=dart.rangeFactor(hero,enemy);assertTrue(MechanicsDetails.talent(Talent.POINT_BLANK,rank,"").contains("by "+ObfuscationExplanation.number(adjacent)));enemy.pos=26;assertEquals(1.5f,dart.rangeFactor(hero,enemy),0);}
+ }
+ @Test public void empoweredStrikeDamageDetailsMatchActualStaffProcAndPowerFactor(){
+  com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff staff=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff();PlainStatusTarget target=new PlainStatusTarget();
+  for(int rank=1;rank<=3;rank++){hero.talents.get(2).put(Talent.EMPOWERED_STRIKE,rank);for(int damage:new int[]{1,7,18}){Buff.affect(hero,Talent.EmpoweredStrikeTracker.class);assertEquals(Math.round(damage*(1f+rank/6f)),staff.proc(hero,target,damage));assertNull(hero.buff(Talent.EmpoweredStrikeTracker.class));}
+   String text=MechanicsDetails.talent(Talent.EMPOWERED_STRIKE,rank,"");assertTrue(text.contains("by "+ObfuscationExplanation.number(1f+rank/6f)));Buff.affect(hero,Talent.EmpoweredStrikeTracker.class);assertTrue(text.contains("factor of "+ObfuscationExplanation.number(com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand.procChanceMultiplier(hero))));hero.buff(Talent.EmpoweredStrikeTracker.class).detach();}
+ }
 }

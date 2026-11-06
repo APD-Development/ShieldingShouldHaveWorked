@@ -3195,8 +3195,8 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/TalentExplanation.java",
-      "sha256": "da1d0ed13bd1998fd9e40b1475bcd1b0f4fb44c1a42e8a4c0cab6cc3fc31b69b",
-      "boundary": "Selected Liquid Willpower, Shield Battery, Inscribed Power, Liquid Nature, Liquid Agility and Precise Assault explanation facets only; remaining talents and abilities remain open."
+      "sha256": "1b8c81c92d6f7a8a4f80e0621cd26c51bbc619bde831c2cd9aeef898875d965d",
+      "boundary": "Selected Liquid Willpower, Shield Battery, Inscribed Power, Liquid Nature, Liquid Agility and Precise Assault explanation facets only; remaining talents and abilities remain open. Additional Strongman, Desperate/Wild Power, Point Blank, Projectile Momentum, Speedy Stealth, Empowered Strike and Shared Enchantment facets; not all talent closure."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/Hero.java",
@@ -3242,6 +3242,21 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfTransfusion.java",
       "sha256": "de517b5d881a6925317b5f3bcb9d2c6123a5dcd975ee2d386727078c77c503c9",
       "boundary": "Read-only known wand level/damage/charge explanation and Wild Magic preview facets. Not all targeting, wand-specific secondary effects, staff abilities or non-damaging wand mechanics closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Momentum.java",
+      "sha256": "f6a6bdea085c6b6e494b24f254a6fd74ad9efa89193d7ff0767aa3d2325a9cb2",
+      "boundary": "Selected range accuracy, freerunning and Empowered Strike explanation facets only; other item abilities/secondary effects remain open."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/MissileWeapon.java",
+      "sha256": "e7d79831c5076e5a0848f1a7e648bcb9a894a440c2d0a53a445031e18d656d94",
+      "boundary": "Selected range accuracy, freerunning and Empowered Strike explanation facets only; other item abilities/secondary effects remain open."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/MagesStaff.java",
+      "sha256": "c535ecb3ccbd3b8933e519e4e6a2fe4d2d370b7962b826357a44cbd991cb6672",
+      "boundary": "Selected range accuracy, freerunning and Empowered Strike explanation facets only; other item abilities/secondary effects remain open."
     }
   ]
 }

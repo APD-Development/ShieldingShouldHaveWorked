@@ -42,6 +42,43 @@ public final class TalentExplanation {
                 return "_Empowered wand uses_\nAn ordinary scroll offers " + (1 + rank)
                     + " empowered wand uses. Each qualifying use gains +2 effective wand levels, rather than +2 damage points. Damage and other level-dependent effects follow that wand's own rules. "
                     + "Uses offered = truncate((1 + rank) × the consumed item's talent-effect factor). A new application keeps the larger remaining use count instead of adding the counts. It does not permanently upgrade the wand.";
+            case STRONGMAN:
+                float strengthFraction = .03f + .05f * rank;
+                return "_Added strength points_\nAdds floor(base strength × " + ObfuscationExplanation.number(strengthFraction)
+                    + ") strength points. The percentage uses base strength, excluding Ring of Might, Adrenaline Surge and this talent's own bonus. Those separate added bonuses are not multiplied again. "
+                    + (Dungeon.hero == null ? "" : "Current base strength: " + Dungeon.hero.STR + " points; this rank adds " + (int)Math.floor(Dungeon.hero.STR * strengthFraction) + " strength points. ")
+                    + "The result is rounded down to whole strength points and can stay unchanged until enough base strength is gained. Strength requirements and strength-based damage effects use their own rules; this is not a direct damage percentage.";
+            case DESPERATE_POWER:
+                return "_Last-charge wand level_\nWhen a charged wand is down to exactly one charge, this talent adds " + rank
+                    + " effective wand levels to its cast. It does not add that many damage points or permanent upgrades. The wand's level-dependent effects determine the result. A stronger Magic Charge and Wild Magic's own cap/order can affect the resulting effective level; wand details show the current result without spending the charge.";
+            case WILD_POWER:
+                return "_Wild Magic's temporary level bonus_\nBefore the cap, the two equally likely bonus branches add " + ((4+rank)/2)
+                    + " or " + ((5+rank)/2) + " effective wand levels. When both amounts are equal, there is no difference between the branches. "
+                    + "If the incoming effective level is below " + (3+rank) + ", add the selected bonus but stop at " + (3+rank)
+                    + ". A wand already at or above that level is not lowered by this cap. A stronger Magic Charge is considered afterward. These are temporary casting levels, not permanent upgrades or added damage points.";
+            case POINT_BLANK:
+                return "_Thrown-attack accuracy by range_\nAt adjacent range, multiply the bow or thrown weapon's accuracy contribution by "
+                    + ObfuscationExplanation.number(.5f+.25f*rank) + "; without the talent it is 0.5. At non-adjacent range, the factor remains 1.5. "
+                    + "Formula at adjacent range: 0.5 + 0.25 × rank. These are accuracy-score factors, not fixed hit percentages. Target evasion, other accuracy effects and special hit rules still matter.";
+            case PROJECTILE_MOMENTUM:
+                return "_Thrown attacks while freerunning_\nMultiply the qualifying thrown attack's accuracy score by "
+                    + ObfuscationExplanation.number(1f+rank/2f) + " and its weapon damage roll by "
+                    + ObfuscationExplanation.number(1f+.15f*rank) + ", rounding the damage to the nearest point. "
+                    + "The damage step follows applicable excess-strength damage. These bonuses require active freerunning, not merely stored momentum. Accuracy is an opposed score, not a hit percentage, and later defenses can change final HP loss.";
+            case SPEEDY_STEALTH:
+                return "_Invisible momentum and movement_\nWhile invisible, with freerunning ready and not already active, each normal one-turn momentum update adds two stacks, capped at ten. Cooldown blocks this stack gain. "
+                    + (rank >= 2 ? "At this rank, invisibility also pauses the active freerunning countdown. " : "This rank does not pause the freerunning countdown. ")
+                    + (rank == 3 ? "Invisible movement uses a speed factor of 2 even outside freerunning, so otherwise unchanged steps take half their usual game time. It is the same factor while freerunning, not 2 × 2. " : "This rank does not separately double movement speed outside freerunning. ")
+                    + "This movement benefit does not multiply attack speed or damage.";
+            case EMPOWERED_STRIKE:
+                return "_Ready staff strike_\nThe ready staff strike multiplies damage at its staff-effect step by "
+                    + ObfuscationExplanation.number(1f+rank/6f) + " and rounds to a whole damage point. Formula: round(damage entering this step × (1 + rank / 6)). "
+                    + "Its supported staff on-hit effect uses a separate power factor of " + ObfuscationExplanation.number(1f+rank/2f)
+                    + ". That second factor strengthens the particular wand's staff effect; it does not multiply all weapon damage again. Chance, duration or amount can use it differently for different wands. The ready effect is consumed by the qualifying staff strike, with delayed resolution where required.";
+            case SHARED_ENCHANTMENT:
+                return "_Borrowing the bow's enchantment_\nOn each eligible borrowing check, chance = talent rank / 3. Current chance "
+                    + ObfuscationExplanation.number(100f*rank/3f) + "%. This offers the bow's enchantment an opportunity to run; the enchantment's own activation roll and target restrictions still apply. "
+                    + "At rank three, borrowing is guaranteed, but the enchantment's effect is not necessarily guaranteed. Magic immunity prevents the borrowed on-hit effect. The thrown weapon's own enchantment can also apply, and Projecting has a separate range check.";
             case PROVOKED_ANGER:
                 return "_Added attack damage_\nA ready benefit adds " + (1 + 2 * rank)
                     + " damage points to the next qualifying attack at the talent damage stage, then is consumed. Formula: 1 + 2 × rank. It is an added amount, not a percentage. The ready benefit lasts five turns after damage breaks a shielding buff; later defenses, shielding and attack effects can still change final HP loss.";
