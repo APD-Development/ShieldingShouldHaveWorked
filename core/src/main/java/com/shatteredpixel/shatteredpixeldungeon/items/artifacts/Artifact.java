@@ -177,6 +177,7 @@ public class Artifact extends KindofMisc {
 
     /** Read-only values for identified-item explanations; UI must retain identification gates. */
     public int currentCharges(){return charge;}
+    public int maximumUpgradeSteps(){return levelCap;}
     public int maximumCharges(){return chargeCap;}
     public int effectCountdown(){return cooldown;}
 

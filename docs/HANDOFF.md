@@ -1,3 +1,7 @@
+## 2026-11-06T02:19:21Z — known curses verified; artifact resource follow-up
+
+Source761ecd66a699fd06c89154bc10c9e6c883daf44f/run42149213613/job127668046248 passed2585 tests445 suites, Android debug/release/instrumentation Java and desktop compilation. Artifact13471766717 actual downloaded487959 bytes SHA256584f07aed4d00f60f67d553db30ed85a0794af08e9366032d9b5bbab55e41ec1 verified. No APK. Artifact resource follow-up has local2592 tests445 suites green; its source gate is next. Continue remaining talent/status/ability-selection semantic audit afterward; do not claim the460 inventory entries fully reviewed. TEST365 remains the unchanged verified playable pair; no new APK/version request and all QoL/source/key/appID/player data preserved.
+
 ## 2026-11-06T02:11:02Z — ordinary enchantment source verified; known curses follow-up
 
 Source758c98385985757dc5393cbac6bcbba8702d16ad/run42148388149/job127665313901 passed2580 tests445 suites and Android debug/release/instrumentation Java plus desktop compilation. Artifact13471241467 downloaded485930 bytes SHA2564be1e3859c62539730b00c19db40d6f4ac27b19abd80ae58b2695fad6899fa79 verified. No APK assembled. Known curse source adds all10 weapon/8 armor specific paths with local2585 tests445 suites green; its source gate is pending. Continue the remaining artifact/talent/status audit; do not claim the460-path whole-game semantic audit complete. Preserve TEST365 playable pair and all current QoL changes; do not increment build request or exceed daily pair cap.

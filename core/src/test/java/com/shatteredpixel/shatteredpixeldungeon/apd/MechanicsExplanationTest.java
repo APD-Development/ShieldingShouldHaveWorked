@@ -184,4 +184,41 @@ public class MechanicsExplanationTest {
    for(int seed=0;seed<100;seed++){Buff.detach(hero,Bleeding.class);Random.pushGenerator(seed);boolean trigger=Random.Float()<first&&Random.Float()<second;Random.popGenerator();Random.pushGenerator(seed);try{sword.enchantment.proc(sword,hero,null,10);}finally{Random.popGenerator();}assertEquals(trigger,hero.buff(Bleeding.class)!=null);}
   }
  }
+ @Test public void artifactRechargeRatesMatchRealPassiveAndEventHandlers()throws Exception{
+  RingOfEnergy energy=new RingOfEnergy();energy.anonymize();energy.level(2);energy.levelKnown=energy.cursedKnown=true;hero.belongings.ring=energy;energy.activate(hero);
+  java.lang.reflect.Field charge=com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact.class.getDeclaredField("charge"),partial=com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact.class.getDeclaredField("partialCharge");charge.setAccessible(true);partial.setAccessible(true);
+  for(String name:new String[]{"AlchemistsToolkit","HornOfPlenty","MasterThievesArmband","SandalsOfNature","CloakOfShadows","HolyTome","TimekeepersHourglass","UnstableSpellbook","SkeletonKey","LloydsBeacon","TalismanOfForesight","DriedRose","EtherealChains"}){
+   com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact item=(com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact)Class.forName("com.shatteredpixel.shatteredpixeldungeon.items.artifacts."+name).getConstructor().newInstance();item.levelKnown=item.cursedKnown=true;hero.belongings.artifact=item;charge.setInt(item,0);partial.setFloat(item,0);
+   java.lang.reflect.Method factory=item.getClass().getDeclaredMethod("passiveBuff");factory.setAccessible(true);Buff effect=(Buff)factory.invoke(item);effect.target=hero;
+   float expected=ArtifactEconomyExplanation.knownGain(item,hero);
+   if(name.equals("AlchemistsToolkit")||name.equals("HornOfPlenty")||name.equals("MasterThievesArmband"))effect.getClass().getMethod("gainCharge",float.class).invoke(effect,1f);
+   else if(name.equals("SandalsOfNature"))effect.getClass().getMethod("charge").invoke(effect);
+   else effect.getClass().getMethod("act").invoke(effect);
+   assertEquals(name,expected,item.currentCharges()+partial.getFloat(item),.00001f);assertFalse(name,ArtifactEconomyExplanation.details(item,hero).isEmpty());
+  }
+ }
+ @Test public void unidentifiedRechargeRingCannotBeInferredFromArtifactRate(){
+  com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass item=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass();item.levelKnown=item.cursedKnown=true;RingOfEnergy energy=new RingOfEnergy();hero.belongings.ring=energy;energy.levelKnown=false;String first=ArtifactEconomyExplanation.summary(item,hero);assertTrue(Float.isNaN(ArtifactEconomyExplanation.knownGain(item,hero)));hero.belongings.ring=new RingOfHaste();assertEquals(first,ArtifactEconomyExplanation.summary(item,hero));assertTrue(Float.isNaN(ArtifactEconomyExplanation.knownGain(item,hero)));
+ }
+ @Test public void artifactRatesExplainDifferentEventsAndPausedFullMeters(){
+  com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty horn=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty();horn.levelKnown=horn.cursedKnown=true;assertTrue(ArtifactEconomyExplanation.summary(horn,hero).contains("per whole hero-level"));
+  com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature sandals=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature();sandals.levelKnown=sandals.cursedKnown=true;assertTrue(ArtifactEconomyExplanation.summary(sandals,hero).contains("per eligible grass tile"));
+  com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows cloak=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows();cloak.levelKnown=cloak.cursedKnown=true;assertTrue(ArtifactEconomyExplanation.summary(cloak,hero).contains("currently full"));
+ }
+ @Test public void cursedArmbandDescriptionMatchesActualGoldChanceAndZeroGoldGuard()throws Exception{
+  int prior=Dungeon.gold;try{com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband armband=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband();armband.cursed=armband.levelKnown=armband.cursedKnown=true;assertTrue(ArtifactEconomyExplanation.summary(armband,hero).contains("20%"));java.lang.reflect.Method factory=armband.getClass().getDeclaredMethod("passiveBuff");factory.setAccessible(true);Buff effect=(Buff)factory.invoke(armband);effect.target=hero;
+   for(int seed=0;seed<100;seed++){Dungeon.gold=10;Random.pushGenerator(seed);boolean loss=Random.Int(5)==0;Random.popGenerator();Random.pushGenerator(seed);try{effect.getClass().getMethod("act").invoke(effect);}finally{Random.popGenerator();}assertEquals(loss?9:10,Dungeon.gold);}
+   Dungeon.gold=0;Random.pushGenerator(456);int next=Random.Int();Random.popGenerator();Random.pushGenerator(456);try{effect.getClass().getMethod("act").invoke(effect);assertEquals(next,Random.Int());}finally{Random.popGenerator();}assertEquals(0,Dungeon.gold);
+  }finally{Dungeon.gold=prior;}
+ }
+ @Test public void cursedHourglassDescriptionMatchesExtraTimeChance()throws Exception{
+  com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass item=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass();item.cursed=item.levelKnown=item.cursedKnown=true;assertTrue(ArtifactEconomyExplanation.summary(item,hero).contains("10%"));java.lang.reflect.Method factory=item.getClass().getDeclaredMethod("passiveBuff");factory.setAccessible(true);Buff effect=(Buff)factory.invoke(item);effect.target=hero;
+  for(int seed=0;seed<100;seed++){Random.pushGenerator(seed);boolean delay=Random.Int(10)==0;Random.popGenerator();float before=hero.cooldown();Random.pushGenerator(seed);try{effect.getClass().getMethod("act").invoke(effect);}finally{Random.popGenerator();}assertEquals(delay?1:0,hero.cooldown()-before,0);}
+ }
+ @Test public void cursedChaliceExplainsActualSlowerRegeneration(){
+  hero.HP=10;com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood item=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood();item.cursed=item.levelKnown=item.cursedKnown=true;hero.belongings.artifact=item;item.activate(hero);Regeneration regen=Buff.affect(hero,Regeneration.class);regen.act();com.watabou.utils.Bundle state=new com.watabou.utils.Bundle();regen.storeInBundle(state);assertEquals(1/15f,state.getFloat(Regeneration.PARTIAL_REGEN),.00001f);assertTrue(ArtifactEconomyExplanation.summary(item,hero).contains("delay by 1.5"));
+ }
+ @Test public void cursedHornNourishmentTextMatchesRealFoodHandler()throws Exception{
+  com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty horn=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty();horn.cursed=horn.levelKnown=horn.cursedKnown=true;hero.belongings.artifact=horn;horn.activate(hero);Hunger hunger=Buff.affect(hero,Hunger.class);java.lang.reflect.Field level=Hunger.class.getDeclaredField("level");level.setAccessible(true);level.setFloat(hunger,300);com.shatteredpixel.shatteredpixeldungeon.items.food.Food food=new com.shatteredpixel.shatteredpixeldungeon.items.food.Food();food.energy=100;java.lang.reflect.Method satisfy=com.shatteredpixel.shatteredpixeldungeon.items.food.Food.class.getDeclaredMethod("satisfy",Hero.class);satisfy.setAccessible(true);satisfy.invoke(food,hero);assertEquals(300-100*.67f,level.getFloat(hunger),.00001f);assertTrue(ArtifactEconomyExplanation.summary(horn,hero).contains("0.67"));
+ }
 }

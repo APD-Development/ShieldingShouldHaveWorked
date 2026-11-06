@@ -37,6 +37,14 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 public final class RingItemEffects {
     private RingItemEffects(){}
 
+    /** Public-value numerical authority for description helpers, with the same privacy guards. */
+    public static Integer knownBonus(Hero hero,Class<? extends Ring> type,boolean buffed){
+        if(hero==null||hero.buff(MagicImmune.class)!=null)return null;
+        for(Item worn:new Item[]{hero.belongings.ring(),hero.belongings.misc()})if(worn instanceof Ring&&!worn.isIdentified())return null;
+        SpiritForm.SpiritFormBuff spirit=hero.buff(SpiritForm.SpiritFormBuff.class);
+        if(spirit!=null&&!spirit.previewRingIdentified())return null;
+        return bonus(hero,type,buffed);
+    }
     private static int bonus(Hero hero, Class<? extends Ring> type, boolean buffed) {
         int total=0;
         for (Item item : new Item[]{hero.belongings.ring(),hero.belongings.misc()}) {

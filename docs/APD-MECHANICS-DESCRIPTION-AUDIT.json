@@ -3057,6 +3057,86 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/curses/Stench.java",
       "sha256": "6051f4c923916d11f4076058f8b5095b9ea5805593d882e4f109b55878946df0",
       "boundary": "Known-curse trigger, conditional effect and numerical explanation facets reviewed; untranslated/full engine audit remains separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/AlchemistsToolkit.java",
+      "sha256": "8a61e86d42104e47d79f902de6703672683c9ac67e58d7ba67c32ce6a8eabfab",
+      "boundary": "Artifact resource/recharge and selected cursed/ability unit facets reviewed. Remaining target/selection/ability and full translated-copy audit separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/Artifact.java",
+      "sha256": "1cbb8564cdc61263e5274929f70e8df5f5663ff69afc0a9f7e61688274fae13e",
+      "boundary": "Artifact resource/recharge and selected cursed/ability unit facets reviewed. Remaining target/selection/ability and full translated-copy audit separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/CapeOfThorns.java",
+      "sha256": "3b409f5f6a5156fb3e5ba198fb3d0f47115923393f274cbdb93344030b01d60c",
+      "boundary": "Artifact resource/recharge and selected cursed/ability unit facets reviewed. Remaining target/selection/ability and full translated-copy audit separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/ChaliceOfBlood.java",
+      "sha256": "489f94d26d346bc1cac68afc7d5d2f6d49a2b602706ee46e5b69fb77531ecb97",
+      "boundary": "Artifact resource/recharge and selected cursed/ability unit facets reviewed. Remaining target/selection/ability and full translated-copy audit separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/CloakOfShadows.java",
+      "sha256": "3175339411c5a062bd984e39ee27a6ebd517185d623c66d22a51cdb1e0385a6f",
+      "boundary": "Artifact resource/recharge and selected cursed/ability unit facets reviewed. Remaining target/selection/ability and full translated-copy audit separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/DriedRose.java",
+      "sha256": "5872598870678087478d947ec8cafb7130ea86c3d6caa4b0390099c876a94562",
+      "boundary": "Artifact resource/recharge and selected cursed/ability unit facets reviewed. Remaining target/selection/ability and full translated-copy audit separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/EtherealChains.java",
+      "sha256": "4132242fed0dc6f836556b33ff0b2228b9e6a93dc14847ad87a19a209c6e09f8",
+      "boundary": "Artifact resource/recharge and selected cursed/ability unit facets reviewed. Remaining target/selection/ability and full translated-copy audit separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/HolyTome.java",
+      "sha256": "2c50135839e0d44e47165bf77c3b1e7334c827d805e638e17938501af9f1773d",
+      "boundary": "Artifact resource/recharge and selected cursed/ability unit facets reviewed. Remaining target/selection/ability and full translated-copy audit separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/HornOfPlenty.java",
+      "sha256": "a19082d3277f56d485d9c447c3d5596fbb1f83b94d1bb1b05071316770bfc130",
+      "boundary": "Artifact resource/recharge and selected cursed/ability unit facets reviewed. Remaining target/selection/ability and full translated-copy audit separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/LloydsBeacon.java",
+      "sha256": "7fad1678021e0adfc533eaa3f9d0b3aeb7928fbd96edaa11d706518b7a068fc2",
+      "boundary": "Artifact resource/recharge and selected cursed/ability unit facets reviewed. Remaining target/selection/ability and full translated-copy audit separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/MasterThievesArmband.java",
+      "sha256": "16bc75eee609d09fc401e869e315fae4e714ccf5211b5ab3677a15d533dbebec",
+      "boundary": "Artifact resource/recharge and selected cursed/ability unit facets reviewed. Remaining target/selection/ability and full translated-copy audit separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/SandalsOfNature.java",
+      "sha256": "60136b1b4b7823a8723729d74d49ff1a79096677c53399dead036a2a5f44321c",
+      "boundary": "Artifact resource/recharge and selected cursed/ability unit facets reviewed. Remaining target/selection/ability and full translated-copy audit separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/SkeletonKey.java",
+      "sha256": "ed0a1565b5f34c81f94bdd2f3143d6f6f1945705c8ee148199b064ee004be406",
+      "boundary": "Artifact resource/recharge and selected cursed/ability unit facets reviewed. Remaining target/selection/ability and full translated-copy audit separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/TalismanOfForesight.java",
+      "sha256": "30179e55ad8f08753b4237227b5ea74ed8d19417c305e9bc1b95f53bc33c8304",
+      "boundary": "Artifact resource/recharge and selected cursed/ability unit facets reviewed. Remaining target/selection/ability and full translated-copy audit separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/TimekeepersHourglass.java",
+      "sha256": "2dfcbcb3b8bdc3b0e19dbeb0269c902e91ffdfaa8cc4e3dd22b544ae71885390",
+      "boundary": "Artifact resource/recharge and selected cursed/ability unit facets reviewed. Remaining target/selection/ability and full translated-copy audit separate."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/UnstableSpellbook.java",
+      "sha256": "d76ee2ed3dee3f1a1ddd6fd02cce2cc4d892df0f9fd8d540d5e728fd6324f20b",
+      "boundary": "Artifact resource/recharge and selected cursed/ability unit facets reviewed. Remaining target/selection/ability and full translated-copy audit separate."
     }
   ]
 }
