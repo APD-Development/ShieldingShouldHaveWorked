@@ -3812,6 +3812,16 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/MonkEnergy.java",
       "sha256": "ff1a841cdc420bac7e993e142793bc58efcef5910edf188974200e252f34c140",
       "boundary": "Five ability description resource-creation bug reproduced/fixed; strength privacy; energy capacity/gain/overflow/spend and equipment-tier facets explained/tested. Not complete five active ability effect, Combined Energy or VFX/UI semantic closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/MonkEnergy.java",
+      "sha256": "041c584779aadc862e62efe84fdff87d0f7d27815e97e4a493e92165460c8f8e",
+      "boundary": "All five Monk ability primary effect/timing explanations in existing collapsed buff panel, low-strength displayed endpoint correction, and actual Focus setup/energy/parry tests. Full VFX/displacement/AI/Combined Energy/native chooser coverage remains open."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/MonkAbilityExplanation.java",
+      "sha256": "dbd9e8ae7e45a2a5f0edfe2afb27b125b204f5f14f0af2b24cddc794233bbd88",
+      "boundary": "All five Monk ability primary effect/timing explanations in existing collapsed buff panel, low-strength displayed endpoint correction, and actual Focus setup/energy/parry tests. Full VFX/displacement/AI/Combined Energy/native chooser coverage remains open."
     }
   ]
 }

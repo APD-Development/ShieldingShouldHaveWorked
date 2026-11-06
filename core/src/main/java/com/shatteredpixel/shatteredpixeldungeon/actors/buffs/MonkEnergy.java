@@ -349,10 +349,10 @@ public class MonkEnergy extends Buff implements ActionIndicator.Action {
                 if(strength==null)return "Two instant, armor-ignoring strikes. Damage preview is unavailable while strength bonuses are unidentified or suppressed. This ability cannot be repeated immediately."+(empoweredForDescription()?" The empowered strikes also use your weapon's enchantment.":"");
 				if (empoweredForDescription()){
 					//1.5x hero unarmed damage (rounds the result)
-					return Messages.get(this, "empower_desc", 2, Math.round(1.5f*(strength-8)));
+					return Messages.get(this, "empower_desc", 2, Math.round(1.5f*Math.max(strength-8,1)));
 				} else {
 					//1.5x hero unarmed damage (rounds the result)
-					return Messages.get(this, "desc", 2, Math.round(1.5f*(strength-8)));
+					return Messages.get(this, "desc", 2, Math.round(1.5f*Math.max(strength-8,1)));
 				}
 
 			}
@@ -545,13 +545,13 @@ public class MonkEnergy extends Buff implements ActionIndicator.Action {
 			@Override
 			public String desc() {
                 Integer strength=com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.ArmorExplanation.knownStrength(Dungeon.hero);
-                if(strength==null)return "An armor-ignoring kick. Damage preview is unavailable while strength bonuses are unidentified or suppressed. Knocks the target back and paralyzes it based on travel distance."+(empoweredForDescription()?" The empowered kick also knocks adjacent targets away.":"");
+                if(strength==null)return "An armor-ignoring kick. Damage preview is unavailable while strength bonuses are unidentified or suppressed. Attempts knockback and paralysis based on the push path."+(empoweredForDescription()?" The empowered kick also knocks adjacent targets away.":"");
 				if (empoweredForDescription()){
 					//9x hero unarmed damage
-					return Messages.get(this, "empower_desc", 9, 9*(strength-8));
+					return Messages.get(this, "empower_desc", 9, 9*Math.max(strength-8,1));
 				} else {
 					//6x hero unarmed damage
-					return Messages.get(this, "desc", 6, 6*(strength-8));
+					return Messages.get(this, "desc", 6, 6*Math.max(strength-8,1));
 				}
 			}
 
