@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -247,6 +250,14 @@ public class AscensionChallenge extends Buff {
 	private float damageInc = 0;
 
 	private boolean stacksLowered = false;
+
+    public float pressure(){return stacks;}
+    public float damageProgress(){return damageInc;}
+    public int nextPressureInput(){
+        if(stacks<8 || Dungeon.bossLevel())return 0;
+        float progress=damageInc+(stacks-4)/4f;
+        return progress>=1?(int)progress:0;
+    }
 
 	public void onLevelSwitch(){
 		if (Dungeon.depth < Statistics.highestAscent){

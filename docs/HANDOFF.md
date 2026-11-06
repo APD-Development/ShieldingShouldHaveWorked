@@ -1,3 +1,7 @@
+## 2026-11-06 ascension pressure checkpoint
+
+Local full2765/446 passed, raw local JUnit/summary/log preserved. Live pressure/reserve thresholds and actual damage, movement-cap, boss exception and takedown type-credit tests pass. UI never calls mutable statModifier/getOriginal or scans hidden enemies. Remote89e7894d0 receipt2759/446 downloaded/hash-verified; Android/desktop compile passed, ledger updated. No new app assembly/delivery. Continue Monk description purity: source inspection finds Buff.affect creating MonkEnergy from three ability desc methods; reproduce before fixing.
+
 ## 2026-11-06 Momentum/Shadows checkpoint
 
 Full local2762/446 pass, raw JUnit and summary preserved /workspace/apd-momentum-shadows-local-*. Freerun counter/armor contribution and shadowmeld refresh/expiry/adjacency tests match actual handlers. Corrected universal invisibility protection and unconditional no-armor evasion default claims without changing mechanics. Last remote source-only2759 run42231749749 pending retrieval. No APK assembly/delivery; broad semantic audit continues with ascension pressure/timing.

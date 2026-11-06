@@ -467,3 +467,10 @@ Momentum panel shows separate stored charges, freerun countdown and recharge cou
 Shadows is a subclass of Invisibility, so specialized explanation now precedes generic invisibility. Details cover nearby senses, hunger accumulation÷1.5, existing starvation not prevented, short counter refreshedto2 (replacement), countdown, differently aligned adjacent monster and normal dispel rules. Default universal attack-protection claim removed. Controlled real act() trigger tests verify refresh/expiry/adjacency; test double records detach request instead of rendering floor-observation cleanup. No claim of physical-phone testing.
 
 Full Momentum/Shadows2762/446 zero failures/errors/skips, preserved raw local summary/JUnit and42s full log. New text remains unrendered on a native device.
+
+
+### Ascension pressure
+
+Panel separates pressure from enemy-type stat boosts, gives live pressure/reserve/next damage input,2/4/6/8 thresholds, far>8 beckoning, nonhunting/nonfleeing enemy speed×2, hero min(speed/2,1), and non-boss reserve+(pressure−4)/4 with≥1 whole-request rule. Boss/below-threshold reset and eligible1/0.5 takedown credits/exclusions explained. Existing calculations unchanged; no statModifier/getOriginal or hidden creature scan called during inspection. Actual16 reserve/boss cases, seven pressure movement boundaries and enemy-state cases, four type credits plus blocker tested. Full2765/446 zero failures/errors/skips, preserved `/workspace/apd-ascent-pressure-local-junit.zip` and summary/log. Floor spawning/reset/type-stat strengthening not claimed fully audited.
+
+Remote food/hunger89e7894d0 full2759/446 + Android/desktop compile receipt downloaded:run42231749749/job127939104530/artifact13511175520 SHAa8ac7a398b26b990aa8c5fffd8c6c485247b49c7a69a0cf134aaa3e4e925c4b9.

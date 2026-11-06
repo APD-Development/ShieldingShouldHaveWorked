@@ -3802,6 +3802,11 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Shadows.java",
       "sha256": "e8272b9c742ade454b8d795518a4f7623a4e45e0c25cafbb068c38f648ba4709",
       "boundary": "Freerun counters/speed/armor evasion path and Speedy Stealth timing; shadowmeld refresh/sensing/hunger and adjacent-enemy exit explanation. Actual counter/evasion/expiry handlers tested; no complete stealth AI/movement semantic closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/AscensionChallenge.java",
+      "sha256": "c9d56104ba500e7c9ec7edfbe07260c1f7e4106ab7fc5373ffaa73859762ac79",
+      "boundary": "Ascension pressure/speed/damage-reserve/boss exception/takedown-credit explanation, with actual handlers and read-only state tests. Not full type-stat multiplier, floor reset/spawn or scoring semantic closure."
     }
   ]
 }
