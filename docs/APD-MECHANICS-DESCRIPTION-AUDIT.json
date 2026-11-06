@@ -3907,6 +3907,21 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/PotionExplanation.java",
       "sha256": "279cab67ab68648e6888463ec3edefcd0d169e126034c833dac1bf46dcfe6d0e",
       "boundary": "Known potion/exotic/elixir/brew primary effect descriptions; actual healing, shielding, prolong, Might and Aquatic resources tested. Not closure of every cloud/effect or entire inventory."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/ScrollExplanation.java",
+      "sha256": "6925dc0b0013bce0677859310cd4863e8eaff28f6971f64406995559cb1e95c6",
+      "boundary": "Known scroll, bomb and utility primary effect/resource facets; visible-snapshot privacy and unchanged source formula guards, fuse/floor/Hero/RNG/capacity purity tested. Not all nested interaction or full inventory closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/BombExplanation.java",
+      "sha256": "4a23a9e2fa061d7d88be27d8cf223945fd845845e3d60c46dcb84cf5c9652ba7",
+      "boundary": "Known scroll, bomb and utility primary effect/resource facets; visible-snapshot privacy and unchanged source formula guards, fuse/floor/Hero/RNG/capacity purity tested. Not all nested interaction or full inventory closure."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/UtilityItemExplanation.java",
+      "sha256": "6daba6052493249725694b07a5bdda8c195e9b2bf71f33aa796366825427910a",
+      "boundary": "Known scroll, bomb and utility primary effect/resource facets; visible-snapshot privacy and unchanged source formula guards, fuse/floor/Hero/RNG/capacity purity tested. Not all nested interaction or full inventory closure."
     }
   ]
 }

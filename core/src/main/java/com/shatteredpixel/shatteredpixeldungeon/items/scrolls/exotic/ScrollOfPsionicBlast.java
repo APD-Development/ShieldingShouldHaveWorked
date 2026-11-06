@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -44,6 +47,9 @@ public class ScrollOfPsionicBlast extends ExoticScroll {
 		icon = ItemSpriteSheet.Icons.SCROLL_PSIBLAST;
 	}
 	
+    /** Description preview of the unchanged self-damage arithmetic below. */
+    public static int baseSelfDamage(int maximumHp,int targets){return Math.max(0,Math.round(maximumHp*(.5f*(float)Math.pow(.9,targets))));}
+
 	@Override
 	public void doRead() {
 

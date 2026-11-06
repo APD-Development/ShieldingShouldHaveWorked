@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -42,6 +45,10 @@ public class ScrollOfRetribution extends Scroll {
 		icon = ItemSpriteSheet.Icons.SCROLL_RETRIB;
 	}
 	
+    /** Pure description preview matching the unchanged execution arithmetic below. */
+    public static float powerForHealth(int hp,int maximumHp){return Math.min(4f,4.45f*((maximumHp-hp)/(float)maximumHp));}
+    public static int baseDamageForHealth(int hp,int maximumHp,float power){return Math.round(maximumHp/10f+(hp*power*.225f));}
+
 	@Override
 	public void doRead() {
 
