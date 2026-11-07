@@ -4294,17 +4294,17 @@
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/food/ChargrilledMeat.java",
       "sha256": "b35199a59cc2ab63e4303740bb22cf565be5d966671b35a3a6fb0e41c4151e2a",
-      "boundary": "Sets nutrition to Hunger.HUNGRY/2 and sale value8\u00d7quantity; inherits actual eating/satisfaction and FoodExplanation. cook only preserves requested stack quantity. Existing actual satisfaction tests cover this type and On Diet. Source review only in this checkpoint; no application changes or new build. Whole translation/native/phone acceptance remains separate."
+      "boundary": "Sets nutrition to Hunger.HUNGRY/2 and sale value8×quantity; inherits actual eating/satisfaction and FoodExplanation. cook only preserves requested stack quantity. Existing actual satisfaction tests cover this type and On Diet. Source review only in this checkpoint; no application changes or new build. Whole translation/native/phone acceptance remains separate."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/food/SmallRation.java",
       "sha256": "6f14d1f56a534ec3961b3df30f1bb1382852dce5c50d074fad7e796800d58752",
-      "boundary": "Sets nutrition to Hunger.HUNGRY/2 and sale value10\u00d7quantity; no distinct eating/effect override. Inherits shared live nutrition/time explanation. Existing actual satisfaction tests cover this type and On Diet. Source review only in this checkpoint; no application changes or new build. Whole translation/native/phone acceptance remains separate."
+      "boundary": "Sets nutrition to Hunger.HUNGRY/2 and sale value10×quantity; no distinct eating/effect override. Inherits shared live nutrition/time explanation. Existing actual satisfaction tests cover this type and On Diet. Source review only in this checkpoint; no application changes or new build. Whole translation/native/phone acceptance remains separate."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/food/StewedMeat.java",
       "sha256": "c7243e0780902f9dd9983b7f8d6e7edfe348e487e260f29307e8086d0d0b3e22",
-      "boundary": "Sets nutrition to Hunger.HUNGRY/2 and sale value8\u00d7quantity; inherits normal Food satisfaction/time. Source-reviewed batch recipes:1/2/3 raw meat become matching cooked quantities for1/2/2 energy. No new recipe test or tooltip change claimed. Source review only in this checkpoint; no application changes or new build. Whole translation/native/phone acceptance remains separate."
+      "boundary": "Sets nutrition to Hunger.HUNGRY/2 and sale value8×quantity; inherits normal Food satisfaction/time. Source-reviewed batch recipes:1/2/3 raw meat become matching cooked quantities for1/2/2 energy. No new recipe test or tooltip change claimed. Source review only in this checkpoint; no application changes or new build. Whole translation/native/phone acceptance remains separate."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/food/PhantomMeat.java",
@@ -4329,7 +4329,7 @@
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/food/MeatPie.java",
       "sha256": "2f954a5a820f2075646f4f5343fd5abcd496452da75bd8cc7a36d9e2f8db8781",
-      "boundary": "Source review: nutrition2\u00d7STARVING plus reset (not add) of real WellFed reserve; On Diet changes nutrition and reserve separately. Shared expanded explanation matches reset, HEAL_INTERVAL18 and SaltCube spacing. Existing real WellFed regression exercises18 updates, HP offer, save/load, On Diet150 reserve and inspection purity; no new actual pie-consumption or recipe regression claimed. Recipe requires qualifying Pasty/Phantom, ordinary ration and meat for6 energy; unchanged. Whole translations/native/phone acceptance remain open."
+      "boundary": "Source review: nutrition2×STARVING plus reset (not add) of real WellFed reserve; On Diet changes nutrition and reserve separately. Shared expanded explanation matches reset, HEAL_INTERVAL18 and SaltCube spacing. Existing real WellFed regression exercises18 updates, HP offer, save/load, On Diet150 reserve and inspection purity; no new actual pie-consumption or recipe regression claimed. Recipe requires qualifying Pasty/Phantom, ordinary ration and meat for6 energy; unchanged. Whole translations/native/phone acceptance remain open."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/food/Berry.java",
@@ -4360,6 +4360,11 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/TalismanOfForesight.java",
       "sha256": "30179e55ad8f08753b4237227b5ea74ed8d19417c305e9bc1b95f53bc33c8304",
       "boundary": "Active Scrying described separately from passive recharge/warning. Live level-dependent awareness duration and upgrade threshold; public-state range matches actual private maxDist across88 upgrade/charge combinations. Actual source cone-angle, nominal cost/fractional debit, turn cost, invisibility loss, cone secret mapping and eligibility reviewed. New inspection never constructs cone/reads floor; unknown level/curse gated. Full validation recorded in Talisman report. No actual native Scry cast, translated/phone UI or all combinations claimed."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/food/Berry.java",
+      "sha256": "7a27def08dad592cc327b865dc555d2e14895aca6a62b06d554e221139eddab9",
+      "boundary": "Actual two-meal acceptance: first meal creates revive-persistent SeedCounter count1 with no drop; compressed counter round-trip retained; inspection preserves hero/counter/RNG/world; second meal creates exactly one real default-table Plant.Seed and detaches counter. Production Berry/Generator/Food unchanged. Full source gates2931/448 and later combined2933/449 passed; native rendered/phone/full translations remain open."
     }
   ]
 }

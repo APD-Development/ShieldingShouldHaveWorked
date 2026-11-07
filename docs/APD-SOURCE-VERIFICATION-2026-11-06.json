@@ -1114,6 +1114,57 @@
       "skipped": 0,
       "apk_assembled": false,
       "physical_phone_tested": false
+    },
+    {
+      "workflow_run": 42409994980,
+      "job": 128515841166,
+      "artifact_id": 13588724425,
+      "artifact_bytes": 513069,
+      "artifact_sha256": "fdf5a0bc6e40c8a7ae2772a1bf33979a6b633d96abe7bf7849b5963001c217eb",
+      "checks": "Downloaded artifact: embedded exact source SHA, Berry regression and all 448 raw JUnit XML suites verified; full core plus Android debug/release/instrumentation Java and desktop compilation succeeded.",
+      "source_commit": "a7d48990f4a74551acff6a5b21e4732753a88748",
+      "completed_at": "2026-11-07T20:16:23Z",
+      "suites": 448,
+      "tests": 2931,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "apk_assembled": false,
+      "physical_phone_tested": false
+    },
+    {
+      "workflow_run": 42410294358,
+      "job": 128516760866,
+      "artifact_id": 13589171503,
+      "artifact_bytes": 513119,
+      "artifact_sha256": "1175ee7074c7a6ca1220028c5d1a8d7cc9f5727ae9d24765ffbfb6d3ee6d3a3e",
+      "checks": "Downloaded artifact: embedded exact source SHA, two Talisman cases, Berry regression and all 449 raw JUnit XML suites verified; full core plus Android debug/release/instrumentation Java and desktop compilation succeeded.",
+      "source_commit": "421ed48d78a001c5aebb98abd7011da3ba035dd3",
+      "completed_at": "2026-11-07T20:20:11Z",
+      "suites": 449,
+      "tests": 2933,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "apk_assembled": false,
+      "physical_phone_tested": false
+    },
+    {
+      "workflow_run": 42410597354,
+      "job": 128517676080,
+      "artifact_id": 13589865220,
+      "artifact_bytes": 509804,
+      "artifact_sha256": "53ebf07ebaab70581bc6085355f127a2b0828975428bf9e9dcb3436f3510c486",
+      "checks": "Downloaded artifact: embedded exact source SHA and all 449 raw JUnit XML suites verified after removal of the unauthorized universal item calculations control; full core plus Android debug/release/instrumentation Java and desktop compilation succeeded.",
+      "source_commit": "c8faf5947dc7b27e6f95db65c2946d2a1dcb7e41",
+      "completed_at": "2026-11-07T20:22:48Z",
+      "suites": 449,
+      "tests": 2933,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "apk_assembled": false,
+      "physical_phone_tested": false
     }
   ]
 }

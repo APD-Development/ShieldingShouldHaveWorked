@@ -17,3 +17,6 @@ QolItemFeedbackDeviceTest.showItem now asserts both WndInfoItem and WndUseItem c
 Full local core suite and required Android/desktop compilation are recorded below when completed. Native assertions are added but are not counted as executed unless an actual emulator/device run completes. No physical-phone, install-over or fresh APK/publication claim is made.
 
 Local full core suite:2933 tests/449 suites, zero failures/errors/skips. Log /workspace/apd-remove-item-calculations-full.log. Exact source platform gate requested; Android runtime/native test not executed at this point.
+
+
+Exact source-only platform gate42410597354/job128517676080 completed successfully at2026-11-07T20:22:48Z on c8faf5947dc7b27e6f95db65c2946d2a1dcb7e41:2933 tests/449 suites, zero failures/errors/skips, with Android debug/release/instrumentation Java and desktop compilation. Artifact13589865220 is509804bytes, SHA256 53ebf07ebaab70581bc6085355f127a2b0828975428bf9e9dcb3436f3510c486; embedded source receipt and all449 raw XML suites downloaded and checked. No APK assembled; native runtime and physical phone remain untested.
