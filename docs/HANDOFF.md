@@ -1,3 +1,7 @@
+## 371 wall-correction pair preparation
+
+Source796dc13b2 full2918/447 and required Android/desktop source gate42403809979 passed. Actual new native WallGeometryDeviceTest added for observed corner suppression, positive face, hidden-backing invariance, save/FOV retention and opened-door cleanup on the real Android tile layer. Preparing one371 pair with9 targeted native cases (including wall case in both variants) plus full core/identity/source scan/download-back; no success claim until actual results.370 remains fallback. Observed game APK count before this pair4 this NY day, pair adds2 within10 limit.
+
 ## Wall geometry correction — local verified, remote pending
 
 Reproduced unknown-frame/unknown-approach false marks and geometry-driven disappearance. Positive door feedback now requires observed side frames and an observed approach, without reading hidden backing. Saved uncertain searches retain normal paid resumption through a separate possibility predicate. Seven new tests; full2918/447 pass, actual generated doors checked through6 seeds/26 floors and partial visibility. Report APD-WALL-OBSERVED-GEOMETRY-2026-11-07.md. Android source checks requested; no runtime/new APK proof yet;370 remains delivered fallback. No claim all wall issues universally resolved.
