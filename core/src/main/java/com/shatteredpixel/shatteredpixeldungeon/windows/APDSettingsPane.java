@@ -75,6 +75,7 @@ public class APDSettingsPane extends Component {
     private RedButton btnWaitingInterruptions,btnAutoEatTrigger;
     private CheckBox chkAutoEatWaiting;
     private CheckBox chkSingleTapSearch;
+    private CheckBox chkContinueTrapDiscovery;
     private RedButton btnPlaybackSpeed;
     private RedButton btnWaterskinSlot;
     private RedButton btnHealingConfirmation;
@@ -236,6 +237,11 @@ public class APDSettingsPane extends Component {
             @Override protected void onClick(){super.onClick();SPDSettings.singleTapSearch(checked());}
         };
         chkSingleTapSearch.checked(SPDSettings.singleTapSearch());add(chkSingleTapSearch);
+        chkContinueTrapDiscovery=new SettingCheckBox("Continue when traps are revealed"){
+            @Override protected void onClick(){super.onClick();SPDSettings.continueOnTrapDiscovery(checked());}
+        };
+        chkContinueTrapDiscovery.checked(SPDSettings.continueOnTrapDiscovery());add(chkContinueTrapDiscovery);
+
 
         btnPlaybackSpeed = new SettingButton("Game speed: "
                 + com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.label(SPDSettings.playbackSpeed())) {
@@ -437,6 +443,7 @@ public class APDSettingsPane extends Component {
         row(ApdSettingsSection.GAMEPLAY,chkAutoEatWaiting,"Off by default. While waiting, automatically eat available ordinary rations or safely cooked meat at the selected trigger. Pays normal eating time and consumes one food. If none is suitable, your interruption preferences apply.");
         row(ApdSettingsSection.GAMEPLAY,btnAutoEatTrigger,"Saved independently of Auto-Eat and interruption choices. Special, raw and unknown food is never automatically consumed.");
         row(ApdSettingsSection.GAMEPLAY,chkSingleTapSearch,"On: tap to search nearby; hold to examine a tile, enemy or item. Off: tap to examine; hold to search. A search costs the normal turns; examining is free.");
+        row(ApdSettingsSection.GAMEPLAY,chkContinueTrapDiscovery,"Off by default. On: revealing a hidden trap while moving keeps your destination and held movement. Normal pathfinding still avoids discovered hazards where it normally would. Stepping onto a trap, trap confirmation, enemies, damage, blocked routes and manual cancellation keep their normal behavior. Off: trap discovery can stop movement. Manual Search and other secret discoveries keep their normal interruptions.");
         row(ApdSettingsSection.GAMEPLAY,btnPlaybackSpeed,"Immediate visual playback speed. Turn costs and combat rules stay unchanged.");
         row(ApdSettingsSection.GAMEPLAY,btnHealingConfirmation,"Immediate. Choose which healing actions ask first, including low-health thresholds.");
         row(ApdSettingsSection.GAMEPLAY,chkAdult,"Immediate content preference. Off keeps humor clean; verified under-18 accounts cannot enable adult humor.");

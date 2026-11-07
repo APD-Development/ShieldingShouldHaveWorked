@@ -1952,6 +1952,7 @@ public class Hero extends Char {
 	}
 	
 	private boolean walkingToVisibleTrapInFog = false;
+    private transient boolean apdSearchingAfterMovement;
     private transient com.shatteredpixel.shatteredpixeldungeon.apd.qol.TrapStepPermit apdTrapPermit=new com.shatteredpixel.shatteredpixeldungeon.apd.qol.TrapStepPermit();
     private transient long apdTrapGeneration;
     protected void requestKnownTrapConfirmation(com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap trap,
@@ -2094,7 +2095,10 @@ public class Hero extends Char {
 
 			spend( delay / speed() );
 			
-			search(false);
+			boolean previousSearchContext = apdSearchingAfterMovement;
+            apdSearchingAfterMovement = true;
+            try { search(false); }
+            finally { apdSearchingAfterMovement = previousSearchContext; }
 
 			return true;
 
@@ -2684,12 +2688,17 @@ public class Hero extends Char {
 		}
 	}
 
+    /** Visual phases remain on either side of the real map discovery. */
+    protected void showSearchDiscoveryTile(int cell,int oldValue){GameScene.discoverTile(cell,oldValue);}
+    protected void showSearchDiscoveryParticles(int cell){ScrollOfMagicMapping.discover(cell);}
+
 	public boolean search( boolean intentional ) {
         if(intentional && com.shatteredpixel.shatteredpixeldungeon.apd.qol.RatKingQuickSearch.start(this))return false;
 		
 		if (!isAlive()) return false;
 		
 		boolean smthFound = false;
+        boolean nonTrapFound = false;
 
 		boolean circular = pointsInTalent(Talent.WIDE_SEARCH) == 1;
 		int distance = heroClass == HeroClass.ROGUE ? 2 : 1;
@@ -2780,13 +2789,16 @@ public class Hero extends Char {
 						
 							int oldValue = Dungeon.level.map[curr];
 							
-							GameScene.discoverTile( curr, oldValue );
+							showSearchDiscoveryTile(curr, oldValue);
 							
 							Dungeon.level.discover( curr );
 							
-							ScrollOfMagicMapping.discover( curr );
+							showSearchDiscoveryParticles(curr);
 							
-							if (fieldOfView[curr]) smthFound = true;
+							if (fieldOfView[curr]) {
+                                smthFound = true;
+                                if (oldValue != Terrain.SECRET_TRAP) nonTrapFound = true;
+                            }
 	
 							if (talisman != null){
 								if (oldValue == Terrain.SECRET_TRAP){
@@ -2827,7 +2839,11 @@ public class Hero extends Char {
 		if (smthFound) {
 			GLog.w( Messages.get(this, "noticed_smth") );
 			Sample.INSTANCE.play( Assets.Sounds.SECRET );
-			interrupt();
+            // Only suppress discovery-only cancellation of movement. Never resume a command
+            // already cancelled by damage, enemies, a triggered trap or the player.
+            boolean moving = curAction != null && (apdSearchingAfterMovement
+                    || curAction instanceof HeroAction.Move || curAction instanceof HeroAction.LvlTransition);
+            if (intentional || nonTrapFound || !moving || !SPDSettings.continueOnTrapDiscovery()) interrupt();
 		}
 
 		if (foresight){
