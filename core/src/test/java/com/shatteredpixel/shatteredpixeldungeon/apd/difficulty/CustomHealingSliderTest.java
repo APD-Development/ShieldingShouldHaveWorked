@@ -6,27 +6,29 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
 import com.shatteredpixel.shatteredpixeldungeon.apd.HeadlessTestSupport;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.SupplyRation;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 import org.junit.*;
 import static org.junit.Assert.*;
 public class CustomHealingSliderTest {
-    private Hero previous;private Hero hero;private com.shatteredpixel.shatteredpixeldungeon.levels.Level previousLevel;
+    private Hero previous;private Hero hero;private Quiet sprite;private com.shatteredpixel.shatteredpixeldungeon.levels.Level previousLevel;
     private static class Empty extends com.shatteredpixel.shatteredpixeldungeon.levels.Level {
         protected boolean build(){return true;}protected void createMobs(){}protected void createItems(){}
     }
     private static class Quiet extends HeroSprite {
+        String lastStatus;
         Quiet(Hero h){ch=h;h.sprite=this;visible=false;}
         @Override public void place(int cell){}
         @Override public void idle(){}
         @Override public void showStatus(int color,String text,Object...args){}
-        @Override public void showStatusWithIcon(int color,String text,int icon,Object...args){}
+        @Override public void showStatusWithIcon(int color,String text,int icon,Object...args){lastStatus=text;}
     }
     @Before public void setup(){HeadlessTestSupport.start();previous=Dungeon.hero;previousLevel=Dungeon.level;
         Dungeon.level=new Empty();Dungeon.level.setSize(25,25);Dungeon.level.mobs=new java.util.HashSet<>();
         hero=new Hero();hero.heroClass=HeroClass.WARRIOR;
-        Talent.initClassTalents(hero);hero.HT=1000;hero.HP=100;Dungeon.hero=hero;new Quiet(hero);}
+        Talent.initClassTalents(hero);hero.HT=1000;hero.HP=100;Dungeon.hero=hero;sprite=new Quiet(hero);}
     @After public void clear(){Dungeon.hero=previous;Dungeon.level=previousLevel;Dungeon.apdRestoreCustomRules(new Bundle());}
     private void rules(int p){Bundle b=new Bundle(),r=new Bundle();CustomDungeonRules.defaults().with(CustomDungeonRules.Slider.HEALING,p).store(r);
         b.put("apd_custom_rules",r);Dungeon.apdRestoreCustomRules(b);}
@@ -93,6 +95,22 @@ public class CustomHealingSliderTest {
             }
         }
         assertTrue(ankh.isBlessed());assertEquals(0,hero.HP);
+    }
+    @Test public void supplyRationShowsScaledAndCappedHealingWhileNeutralKeepsOriginalText() throws Exception {
+        SupplyRation ration=new SupplyRation();
+        java.lang.reflect.Method satisfy=SupplyRation.class.getDeclaredMethod("satisfy",Hero.class);
+        satisfy.setAccessible(true);
+        for(int percent:new int[]{0,25,100,200}){
+            rules(percent);hero.HT=1000;hero.HP=100;hero.apdCustomHealingFraction=0;sprite.lastStatus=null;
+            satisfy.invoke(ration,hero);
+            int gained=5*percent/100;
+            assertEquals(100+gained,hero.HP);
+            assertEquals(Integer.toString(percent==100?5:gained),sprite.lastStatus);
+        }
+        rules(200);hero.HT=1000;hero.HP=999;hero.apdCustomHealingFraction=0;sprite.lastStatus=null;
+        satisfy.invoke(ration,hero);assertEquals(1000,hero.HP);assertEquals("1",sprite.lastStatus);
+        rules(100);hero.HP=999;sprite.lastStatus=null;
+        satisfy.invoke(ration,hero);assertEquals(1000,hero.HP);assertEquals("5",sprite.lastStatus);
     }
     @Test public void actualHealingTicksWorkForEveryClassAtMinimumNeutralAndMaximum() {
         for (HeroClass type : HeroClass.values()) {
