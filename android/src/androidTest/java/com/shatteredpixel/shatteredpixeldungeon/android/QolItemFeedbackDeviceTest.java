@@ -140,7 +140,23 @@ public class QolItemFeedbackDeviceTest {
         calculationWindow(()->{com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows cloak=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows();cloak.levelKnown=cloak.cursedKnown=true;return new WndInfoItem(cloak);},"4 scheduled updates","qol-cloak-explanation-expanded.png");
         calculationWindow(()->{com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose rose=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose();rose.levelKnown=rose.cursedKnown=true;return new WndInfoItem(rose);},"remaining health percentage instead of this meter","qol-rose-explanation-expanded.png");
 
-        calculationWindow(()->{RingOfArcana ring=new RingOfArcana();ring.anonymize();ring.level(3);ring.levelKnown=ring.cursedKnown=true;return new WndInfoItem(ring);},"1.175^bonus","qol-arcana-calculations-retained.png");
+        RingOfArcana arcana=new RingOfArcana();
+        TopScoresDeviceTest.render(()->{arcana.level(3);arcana.identify();});
+        showItem(arcana,"90.61%","qol-arcana-percentage.png");
+        TopScoresDeviceTest.render(()->{
+            for(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff buff:new java.util.ArrayList<>(Dungeon.hero.buffs(Ring.RingBuff.class)))buff.detach();
+            Dungeon.hero.belongings.ring=arcana;arcana.activate(Dungeon.hero);
+        });
+        AtomicReference<WndInfoItem> luckyWindow=new AtomicReference<>();float[] luckyTime=new float[1];
+        TopScoresDeviceTest.render(()->{
+            Sword lucky=new Sword();lucky.levelKnown=lucky.cursedKnown=true;lucky.enchant(new com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Lucky());
+            assertTrue(lucky.info(),lucky.info().contains("10% to 19.06%"));assertTrue(lucky.info().contains("adds 9.06 percentage points"));
+            luckyTime[0]=Dungeon.hero.cooldown();WndInfoItem window=new WndInfoItem(lucky);GameScene.show(window);luckyWindow.set(window);
+        });
+        Thread.sleep(300);
+        TopScoresDeviceTest.render(()->{try{ScrollPane scroll=TopScoresDeviceTest.find(luckyWindow.get(),ScrollPane.class).get(0);scroll.scrollTo(0,Math.max(0,scroll.content().height()-scroll.height()));}catch(Exception e){throw new RuntimeException(e);}});
+        Thread.sleep(200);TopScoresDeviceTest.screenshot("qol-lucky-arcana-increase.png");
+        TopScoresDeviceTest.render(()->{assertEquals(luckyTime[0],Dungeon.hero.cooldown(),0);luckyWindow.get().hide();});
         calculationWindow(()->{com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor armor=new com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor();armor.level(3);armor.levelKnown=armor.cursedKnown=true;armor.glyph=new com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Obfuscation();return new WndInfoItem(armor);},"stealth","qol-obfuscation-calculations-retained.png");
 
         calculationWindow(()->{com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier b=new com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier();b.setShield(17);return new WndInfoBuff(b);},"17 shield points","qol-mechanics-buff-expanded.png");

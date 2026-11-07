@@ -27,10 +27,10 @@ public final class RingExplanation {
     private static String n(float value){return ObfuscationExplanation.number(value);}
     public static String details(Ring ring){
         if(!ring.isIdentified())return "Identify this ring before viewing its exact effect or upgrade-dependent calculations.";
+        if(ring instanceof RingOfArcana)return ((RingOfArcana)ring).statsInfo();
         int b=ring.soloBuffedBonus(),plain=ring.soloBonus();String effect;
         if(ring instanceof RingOfAccuracy)effect="Attack accuracy score × 1.3^bonus = × "+n(RingOfAccuracy.accuracyMultiplier(b))+". This scales the attack score, not a fixed hit probability. The enemy's evasion still matters.";
         else if(ring instanceof RingOfEvasion)effect="Evasion score × 1.125^bonus = × "+n(RingOfEvasion.evasionMultiplier(b))+". This scales the defense score, not a fixed dodge probability. The enemy's accuracy still matters.";
-        else if(ring instanceof RingOfArcana)effect="Enchantment/glyph power × 1.175^bonus = × "+n((float)Math.pow(1.175f,b))+". Passive effects scale their stated benefit. Triggered effects use their own chance and strength rules: a chance cannot exceed 100%, and only effects whose rules allow excess power become stronger after that point. Curses can also be strengthened.";
         else if(ring instanceof RingOfElements)effect="Supported elemental damage or duration × 0.825^bonus = × "+n(RingOfElements.elementalMultiplier(b))+". A factor below one reduces the supported amount; this is not protection from every kind of damage or every debuff.";
         else if(ring instanceof RingOfEnergy)effect="Wand/artifact/heroic-armor recharge rate × 1.175^bonus = × "+n(RingOfEnergy.ringChargeMultiplier(b))+". For an otherwise unchanged recharge, time is divided by this factor. This does not add that many charges or lower a charge cost.";
         else if(ring instanceof RingOfFuror)effect="Attack rate × 1.09051^bonus = × "+n(RingOfFuror.attackSpeedMultiplier(b))+". Attack time is divided by this factor; damage per hit and movement speed are separate.";

@@ -43,8 +43,8 @@ public final class ObfuscationExplanation {
         if(base==0)return "This glyph is inactive at the current effective armor level. "+meaning;
         String text="While worn, this armor adds _"+number(base)+" stealth points_ before bonuses. ";
         float power=ArcanaInfoDisplay.knownArcanaPower(hero);
-        if(Float.isFinite(power))text+="With your identified ring bonuses: _"+number(base*power)+" points_ before other effects. ";
-        else text+="Unidentified or unavailable bonuses are not included in a numerical preview. ";
+        if(Float.isFinite(power)&&ArcanaInfoDisplay.hasKnownArcana(hero))text+="With Arcana: _"+number(base)+" → "+number(base*power)+" stealth points_ ("+(power>=1?"+":"")+number(base*(power-1))+" points), before other effects. ";
+        else if(!Float.isFinite(power))text+="Unidentified or unavailable bonuses are not included in a numerical preview. ";
         if(Float.isFinite(power)&&aura(hero)>0)text+="With your current protective aura: _"+number(base*(power+aura(hero)))+" points_. ";
         return text+meaning;
     }

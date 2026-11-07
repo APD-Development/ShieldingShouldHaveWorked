@@ -1,3 +1,20 @@
+/*
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 package com.shatteredpixel.shatteredpixeldungeon.apd;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -43,6 +60,11 @@ public final class ArcanaInfoDisplay {
         return equipped ? (float)Math.pow(1.175f, bonus) : Float.NaN;
     }
 
+    public static boolean hasKnownArcana(Hero hero){
+        float total=knownArcanaPower(hero);
+        return Float.isFinite(visibleMultiplier(hero))||(Float.isFinite(total)&&total!=1f);
+    }
+
     /** Read-only public-value preview; unknown rings are never identified by their numerical effect. */
     public static float knownArcanaPower(Hero hero){
         if(hero==null||hero.buff(MagicImmune.class)!=null)return Float.NaN;
@@ -62,20 +84,25 @@ public final class ArcanaInfoDisplay {
         return Messages.get(ArcanaInfoDisplay.class, key, values);
     }
     private static String power(float multi) {
-        return text("power", number(multi), number(100f*(multi-1f)));
+        return text(multi>=1?"power":"power_decrease", number(100f*Math.abs(multi-1f)));
     }
     private static String metric(String key, float before, float after) {
         return text(key, number(before), number(after));
     }
     private static String chance(float base, float multi) {
         // Probability saturates at 100%; excess is effect strength, never a >100% chance.
-        return text("chance", number(100f*Math.max(0, Math.min(1, base))),
-                number(100f*Math.max(0, Math.min(1, base*multi))));
+        float before=100f*Math.max(0,Math.min(1,base)),after=100f*Math.max(0,Math.min(1,base*multi));
+        return text("chance",number(before),number(after))+" "+text(after>=before?"chance_increase":"chance_decrease",number(Math.abs(after-before)));
     }
 
 
     private static String effect(String name) {
         return " " + text("effect_" + name.toLowerCase(java.util.Locale.ROOT));
+    }
+    private static String weaponChance(float base,float ringPower,Hero hero){
+        float before=com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.EnchantmentExplanation.knownPowerWithoutArcana(hero);
+        float after=com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.EnchantmentExplanation.knownPower(hero);
+        return Float.isFinite(before)&&Float.isFinite(after)&&before>0?chance(base*before,after/before):chance(base,ringPower);
     }
     private static String weaponStrength(String name, Weapon weapon, float baseChance, float multi) {
         float strength=Math.max(1f,baseChance*multi);
@@ -151,7 +178,7 @@ public final class ArcanaInfoDisplay {
         if (name.equals("Explosive")) return "\n\n" + result + " " + text("explosive") + effect(name);
         if (name.equals("Vampiric")) {
             float base = hero.HT > 0 ? 0.05f + 0.25f*(hero.HT-hero.HP)/(float)hero.HT : 0.05f;
-            return "\n\n" + result + " " + chance(base, multi) + " " + text("current_hp") + effect(name);
+            return "\n\n" + result + " " + weaponChance(base, multi, hero) + " " + text("current_hp") + effect(name);
         }
         if (!weapon.levelKnown) return "\n\n" + result + " " + text("unknown_level");
         float level = Math.max(0, weapon.buffedLvl()), base;
@@ -172,7 +199,7 @@ public final class ArcanaInfoDisplay {
             case "Sacrificial": return "\n\n" + result + " " + text("sacrificial") + effect(name);
             default: return "\n\n" + text("custom", number(multi));
         }
-        return "\n\n" + result + " " + chance(base, multi) + weaponStrength(name,weapon,base,multi) + effect(name);
+        return "\n\n" + result + " " + weaponChance(base, multi, hero) + weaponStrength(name,weapon,base,multi) + effect(name);
     }
 
     public static String armor(Armor armor) {

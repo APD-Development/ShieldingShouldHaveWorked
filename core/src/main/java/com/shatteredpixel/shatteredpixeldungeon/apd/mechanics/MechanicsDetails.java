@@ -48,8 +48,8 @@ public final class MechanicsDetails {
     }
     /** Owner-approved complex item effects; never the generic item/glossary dispatcher. */
     public static String itemCalculations(Item item){
-        if(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfArcana
-                ||item instanceof com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce
+        if(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfArcana)return "";
+        if(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce
                 ||item instanceof com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfTenacity)
             return item.isIdentified()?RingExplanation.details((com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring)item):"";
         // Owner explicitly retained existing artifact/trinket-specific panels pending review.

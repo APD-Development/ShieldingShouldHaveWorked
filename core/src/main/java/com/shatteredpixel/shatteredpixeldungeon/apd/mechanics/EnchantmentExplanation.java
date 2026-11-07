@@ -33,7 +33,14 @@ public final class EnchantmentExplanation {
     private static String n(float x){return ObfuscationExplanation.number(x);}
     private static String pct(float x){return n(100*Math.max(0,Math.min(1,x)))+"%";}
     public static float knownPower(Hero hero){
-        float power=ArcanaInfoDisplay.knownArcanaPower(hero);if(!Float.isFinite(power))return Float.NaN;
+        return withRingPower(hero,ArcanaInfoDisplay.knownArcanaPower(hero));
+    }
+    public static float knownPowerWithoutArcana(Hero hero){
+        if(!Float.isFinite(ArcanaInfoDisplay.knownArcanaPower(hero)))return Float.NaN;
+        return withRingPower(hero,1f);
+    }
+    private static float withRingPower(Hero hero,float power){
+        if(!Float.isFinite(power))return Float.NaN;
         Berserk rage=hero.buff(Berserk.class);if(rage!=null)power=rage.enchantFactor(power);
         RunicBlade.RunicSlashTracker slash=hero.buff(RunicBlade.RunicSlashTracker.class);if(slash!=null)power+=slash.boost;
         if(hero.buff(Smite.SmiteTracker.class)!=null)power+=3;
@@ -68,7 +75,7 @@ public final class EnchantmentExplanation {
             default:return "";
         }
     }
-    public static String itemSummary(Weapon weapon,Hero hero){String text=describe(weapon,hero,false);if(text.isEmpty())text=CurseExplanation.weapon(weapon,hero,false);return text.isEmpty()?ArcanaInfoDisplay.weapon(weapon):"\n\n"+text;}
+    public static String itemSummary(Weapon weapon,Hero hero){String text=describe(weapon,hero,false);if(text.isEmpty())text=CurseExplanation.weapon(weapon,hero,false);return (text.isEmpty()?"":"\n\n"+text)+ArcanaInfoDisplay.weapon(weapon);}
     public static String describe(Weapon weapon,Hero hero,boolean detailed){
         if(weapon.enchantment==null||weapon.enchantment.curse()||!weapon.enchantment.getClass().getPackage().getName().equals(Blazing.class.getPackage().getName()))return "";
         if(hero!=null&&(!weapon.hasEnchant(weapon.enchantment.getClass(),hero)||hero.buff(MagicImmune.class)!=null))return "This enchantment is currently suppressed or overridden; no active benefit is claimed.";
