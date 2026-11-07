@@ -1,3 +1,17 @@
+## APD374 delivered — requested Arcana percentage and actual increases, 2026-11-07
+
+Current delivered source/tag: 9041b7a155f97def09648b4d277996cab0f72c58 / apd-alpha-preview-374. Ring of Arcana normal description shows percentage, no calculations control. Affected enchantments/glyphs show actual before/after values and increase; Lucky +0 with Arcana +3 shows 10% to 19.06%, adds 9.06 percentage points. Other known modifiers are held constant; chance caps and unidentified-information guards remain. Obfuscation shows stealth points gained. Existing relevant detailed mechanic panels retained. Gameplay/proc/balance/save formulas unchanged.
+
+Exact pair preparation 42426299732 passed required build/compilation/signing/source checks, 2954 core tests /451 suites zero failures/errors/skips and ten targeted API34 emulator cases. Producing workflow raw XML/native results independently downloaded and checked. Eight actual Arcana/Lucky/Obfuscation/Sword PNGs reviewed; manifest docs/APD-374-VISUAL-REVIEW.json. No physical-phone testing or whole-description audit claimed.
+
+Private publication 42427095094/job128567588295 succeeded; published 2026-11-07T23:51:55Z. Exact prepared APK/source bytes reused, no publication rebuild. Both completed release APK downloads independently checked against sidecars/proof, runner also downloaded back APK/source. Original application ID, versionCode920 and signing certificate retained. Links actually sent in task commentary after verification. Install over existing app; do not uninstall/clear data. Existing releases/assets, main and player saves/statistics preserved. Full hashes/artifacts/timing/links in docs/APD-374-OWNER-DELIVERY-RECEIPT.json. Active-chat delivery, not schedule metadata.
+
+Quota correction supersedes prior APD373 count: owner limit concerned released APKs. Today published five Developer/Alpha pairs =10 released APKs. Two earlier internal Developer trap test APKs bring created total to12 (7 Developer,5 Alpha), not12 releases. No additional published pair today without owner authorization. Evidence-only record does not require another APK.
+
+Developer: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-alpha-preview-374/APD-Developer-374.apk
+Alpha: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-alpha-preview-374/APD-Alpha-Testers-374.apk
+Matching source: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-alpha-preview-374/APD-Source-374.zip
+
 ## APD373 delivered — Cloak and Rose explanations, 2026-11-07
 
 Owner explicitly approved the additional Developer build and ordered publication. Exact producing source/tagcfca230d94821364debec48479948b544c74a557 / apd-alpha-preview-373. One pair built in42420372918:2951 core tests/451 suites, required compilation, signature/appID920, corresponding key-free source and10 API34 cases passed. Both variants actually opened Cloak/Rose details and retained Arcana/Obfuscation panels; ordinary item windows/actions/state, wall layers and3 trap/persistence/movement cases each also passed. Full raw core/native evidence independently downloaded/checked. Eight actual Cloak/Rose/Sword/Arcana PNGs visually reviewed and bound in docs/APD-373-VISUAL-REVIEW.json. Physical phone and whole-description audit remain unclaimed.
