@@ -1,3 +1,7 @@
+## Cloak explanation continuation — local2946/450 verified, source gate pending
+
+Approved description audit continues within clarified interface scope: no new panel or setting. Existing Cloak summary/details now explain first charge/four scheduled updates, dispel/exhaustion, live nonlinear upgrade progress, save countdown and separate recharge eligibility. Actual mechanics/serialization unchanged; only pure countdown getter added to Cloak class. Six real-path regressions pass with full2946/450 zero failures/errors/skips; report APD-CLOAK-EXPLANATION-2026-11-07.md, exact-source platform gate pending. No APK;372 remains current delivered pair. Continue next approved facet after backup; no additional Developer APK within recorded Nov7 allowance.
+
 ## APD372 delivered — current corrected APK pair
 
 Owner explicitly requested the corrected APK now. Exact producing source/tag65cf38c03b5527d4d79eb506885e3aed1652b476 / apd-alpha-preview-372. Full2940 core tests/449 suites, required compilation, signing/appID920 checks and10 targeted API34 cases passed in42412846345: both variants actual ordinary inspect/use descriptions/actions/state with no unwanted expander, retained Arcana/Obfuscation pointer expansion, wall-layer and3 trap/persistence/movement cases. All raw core/native records independently downloaded; eight actual changed-interface PNGs visually reviewed, hashes docs/APD-372-VISUAL-REVIEW.json. Physical phone and full audit remain unclaimed.
