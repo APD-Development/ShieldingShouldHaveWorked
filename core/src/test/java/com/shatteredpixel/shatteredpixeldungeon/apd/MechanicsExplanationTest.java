@@ -1698,4 +1698,9 @@ public class MechanicsExplanationTest {
   com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ExoticCrystals crystal=new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ExoticCrystals();crystal.levelKnown=crystal.cursedKnown=true;assertEquals(TrinketExplanation.details(crystal),MechanicsDetails.itemCalculations(crystal));
   com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand ward=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding();ward.levelKnown=ward.cursedKnown=ward.curChargeKnown=true;assertEquals(WandExplanation.details(ward),MechanicsDetails.itemCalculations(ward));ward.curChargeKnown=false;assertEquals("",MechanicsDetails.itemCalculations(ward));
  }
+ @Test public void nonlinearBlastScrollCalculationsRemainWhileRoutineScrollsDoNot(){
+  com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll retribution=new com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetribution();retribution.anonymize();assertTrue(MechanicsDetails.itemCalculations(retribution).contains("4.45"));
+  com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll blast=new com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast();blast.anonymize();assertTrue(MechanicsDetails.itemCalculations(blast).contains("0.9^N"));
+  com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll recharge=new com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging();recharge.anonymize();assertEquals("",MechanicsDetails.itemCalculations(recharge));
+ }
 }

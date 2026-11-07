@@ -61,6 +61,12 @@ public final class MechanicsDetails {
         if(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding
                 ||item instanceof com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth)
             return item.isIdentified()?WandExplanation.details((com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand)item):"";
+        // Health-dependent blast power and crowd-dependent self-damage are not routine scroll text.
+        if(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetribution
+                ||item instanceof com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast){
+            com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll scroll=(com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll)item;
+            return scroll.isKnown()?ScrollExplanation.details(scroll,Dungeon.hero):"";
+        }
         if(item instanceof Armor){
             Armor armor=(Armor)item;
             return armor.levelKnown&&armor.glyph!=null&&!armor.glyph.curse()?GlyphExplanation.details(armor,Dungeon.hero):"";
