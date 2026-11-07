@@ -137,6 +137,9 @@ public class QolItemFeedbackDeviceTest {
         TopScoresDeviceTest.render(()->{assertEquals("Pointer closes advanced explanation","Show calculations",expander.get().text());assertEquals(time[0],Dungeon.hero.cooldown(),0);assertEquals(hp[0],Dungeon.hero.HP);window.hide();});
     }
     private static void calculationWindowsRenderAndRespond()throws Exception{
+        calculationWindow(()->{com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows cloak=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows();cloak.levelKnown=cloak.cursedKnown=true;return new WndInfoItem(cloak);},"4 scheduled updates","qol-cloak-explanation-expanded.png");
+        calculationWindow(()->{com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose rose=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose();rose.levelKnown=rose.cursedKnown=true;return new WndInfoItem(rose);},"remaining health percentage instead of this meter","qol-rose-explanation-expanded.png");
+
         calculationWindow(()->{RingOfArcana ring=new RingOfArcana();ring.anonymize();ring.level(3);ring.levelKnown=ring.cursedKnown=true;return new WndInfoItem(ring);},"1.175^bonus","qol-arcana-calculations-retained.png");
         calculationWindow(()->{com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor armor=new com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor();armor.level(3);armor.levelKnown=armor.cursedKnown=true;armor.glyph=new com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Obfuscation();return new WndInfoItem(armor);},"stealth","qol-obfuscation-calculations-retained.png");
 
