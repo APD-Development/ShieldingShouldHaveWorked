@@ -49,6 +49,7 @@ public final class FoodExplanation {
         float time=food.previewEatingTime();
         if(Float.isFinite(time))text+=" Current eating action: _"+ObfuscationExplanation.number(time)+" game turns_ before effects that change all action times.";
         if(food instanceof Blandfruit)text+="\n"+BlandfruitExplanation.summary((Blandfruit)food);
+        if(food instanceof Pasty)text+="\n"+PastyExplanation.summary(Dungeon.hero);
         return text;
     }
     public static String details(Food food){
@@ -66,7 +67,7 @@ public final class FoodExplanation {
         if(food instanceof Berry)return "\n_Berry seeds_\nEvery second eaten berry creates one random seed through the normal seed table. The saved counter carries between berries and is cleared after the seed is produced. Inspection does not increment it or choose a seed.";
         if(food instanceof SupplyRation)return "\n_Supply Ration_\nOffers 5 base HP of healing, subject to healing modifiers and missing health. If a Cloak of Shadows is carried, it also offers 1 direct Cloak charge and the ordinary recharge visual feedback. Capacity and item rules still apply; this is separate from its nutrition and fast eating time.";
         if(food instanceof Blandfruit)return "\n"+BlandfruitExplanation.details((Blandfruit)food,hero);
-        if(food instanceof Pasty)return "\n_Seasonal food_\nIts visible holiday form determines its extra effect under the existing calendar: Lunar New Year adds a separate leftover meal; April Fools and Easter offer 2 artifact recharge power; Pride attempts a 5-unit Charm on an adjacent eligible non-boss enemy; birthday forms offer max(2, floor(level experience requirement / 10)) experience; Halloween offers max(3, floor(maximum HP / 20)) base healing; winter offers 0.5 supported wand charge; New Year offers max(5, floor(maximum HP / 10)) Barrier shielding. Normal capacity, defense, healing and reapplication rules apply. Other dates add none of those effects. These are conditional holiday effects, not benefits every Pasty grants at once.";
+        if(food instanceof Pasty)return "\n"+PastyExplanation.details(hero);
         return "";
     }
 

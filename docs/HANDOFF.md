@@ -1,3 +1,7 @@
+## Seasonal-food continuation — local2930/448 verified, platform gate pending
+
+New current-form summary/details replace generic all-holiday list. Live HP/XP, conditional Charm, artifact power, lunar leftovers, fractional wand charges and stronger Barrier retention explained; actual Pasty effects unchanged. Two new real-action tests plus existing suite pass2930/448 with zero failure/error/skip. Cooked-fruit8c9d6a167 source gate42409005559 independently downloaded/XML/hash/source verified2928/448. Reports APD-SEASONAL-FOOD-2026-11-07.md and source receipt registry. No APK/version/release operation;371 remains current. Continue approved audit after backup; native/phone/translations/unreviewed mechanics remain open.
+
 ## Cooked-fruit explanation continuation — local2928/448 verified, platform gate pending
 
 Three description helpers now explain12 cooked forms, actual hazard/throw/leftover behavior, local-only potion knowledge, live HP/duration/XP and Pharmacophobia. Removed unsupported Strength/HT promise. Nine actual-effect/dispatch/purity/save cases plus existing327 mechanics cases pass; full2928/448 zero failures/errors/skips. No food/potion mechanics changed; no APK/version/signing/delivery operation. Report APD-COOKED-FRUIT-2026-11-07.md; source-only gate requested.371 remains current playable release; full audit/native/phone/translations still open. Continue seasonal-food/live-value review while validation runs.

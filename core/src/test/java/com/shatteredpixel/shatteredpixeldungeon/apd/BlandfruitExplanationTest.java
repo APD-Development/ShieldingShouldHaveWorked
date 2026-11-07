@@ -41,6 +41,7 @@ public class BlandfruitExplanationTest {
     private final Map<Field,Object> badgeFields=new HashMap<>();
     private final Map<Catalog,Map<Field,Map>> catalogFields=new HashMap<>();private Field journalDirty;private boolean oldJournalDirty;
     public static class Quiet extends HeroSprite {
+        @Override public com.watabou.noosa.particles.Emitter centerEmitter(){return null;}
         @Override public void add(CharSprite.State state){} @Override public void remove(CharSprite.State state){}
         @Override public void sprint(float speed){} @Override public void showStatus(int color,String text,Object...args){}
         @Override public void showStatusWithIcon(int color,String text,int icon,Object...args){}
@@ -151,4 +152,41 @@ public class BlandfruitExplanationTest {
         }
     }
 
+    @Test public void seasonalDescriptionsTrackCurrentFormAndRealHealingAndShieldOffers()throws Exception{
+        Field cached=com.shatteredpixel.shatteredpixeldungeon.utils.Holiday.class.getDeclaredField("cached");cached.setAccessible(true);Object previous=cached.get(null);
+        Method satisfy=Pasty.class.getDeclaredMethod("satisfy",Hero.class);satisfy.setAccessible(true);
+        try{
+            for(int maximum:new int[]{20,79,100,151}){
+                cached.set(null,com.shatteredpixel.shatteredpixeldungeon.utils.Holiday.HALLOWEEN);hero.HT=maximum;hero.HP=1;
+                Pasty meal=new Pasty();String description=FoodExplanation.specialEffect(meal,hero);
+                int offer=Math.max(3,maximum/20);assertTrue(description,description.contains(offer+" base HP"));assertEquals(1,hero.HP);
+                satisfy.invoke(meal,hero);assertEquals(Math.min(maximum,1+offer),hero.HP);
+                cached.set(null,com.shatteredpixel.shatteredpixeldungeon.utils.Holiday.NEW_YEARS);
+                Barrier barrier=Buff.affect(hero,Barrier.class);barrier.setShield(100);
+                String shield=PastyExplanation.details(hero);assertTrue(shield,shield.contains("100 shield points"));assertEquals(100,barrier.shielding());
+                satisfy.invoke(new Pasty(),hero);assertEquals(100,barrier.shielding());barrier.detach();
+            }
+            for(com.shatteredpixel.shatteredpixeldungeon.utils.Holiday holiday:com.shatteredpixel.shatteredpixeldungeon.utils.Holiday.values()){
+                cached.set(null,holiday);Pasty meal=new Pasty();float energy=meal.energy;int hp=hero.HP;
+                String detail=PastyExplanation.details(hero);assertFalse(detail.isEmpty());assertFalse(PastyExplanation.details(null).isEmpty());assertTrue(FoodExplanation.summary(meal).contains(PastyExplanation.summary(hero)));
+                assertEquals(energy,meal.energy,0);assertEquals(hp,hero.HP);
+                if(holiday==com.shatteredpixel.shatteredpixeldungeon.utils.Holiday.NONE)assertFalse(detail.contains("Charm"));
+            }
+        }finally{cached.set(null,previous);}
+    }
+    @Test public void seasonalExperienceAndFractionalWandChargeMatchRealFoodAction()throws Exception{
+        Field cached=com.shatteredpixel.shatteredpixeldungeon.utils.Holiday.class.getDeclaredField("cached");cached.setAccessible(true);Object previous=cached.get(null);
+        Method satisfy=Pasty.class.getDeclaredMethod("satisfy",Hero.class);satisfy.setAccessible(true);
+        try{
+            cached.set(null,com.shatteredpixel.shatteredpixeldungeon.utils.Holiday.PD_BIRTHDAY);hero.lvl=8;hero.exp=0;
+            int experience=Math.max(2,hero.maxExp()/10);assertTrue(PastyExplanation.summary(hero).contains(experience+" XP"));
+            satisfy.invoke(new Pasty(),hero);assertEquals(experience,hero.exp);
+            cached.set(null,com.shatteredpixel.shatteredpixeldungeon.utils.Holiday.WINTER_HOLIDAYS);
+            com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand wand=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile();wand.maxCharges=3;wand.curCharges=1;wand.partialCharge=0;wand.charge(hero);
+            try{
+                for(int expected:new int[]{1,2,2,3,3}){int charges=wand.curCharges;float partial=wand.partialCharge;PastyExplanation.details(hero);assertEquals(charges,wand.curCharges);assertEquals(partial,wand.partialCharge,0);satisfy.invoke(new Pasty(),hero);assertEquals(expected,wand.curCharges);}
+                assertEquals(0,wand.partialCharge,0);
+            }finally{wand.stopCharging();}
+        }finally{cached.set(null,previous);}
+    }
 }
