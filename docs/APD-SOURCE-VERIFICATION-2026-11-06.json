@@ -1097,6 +1097,23 @@
       "skipped": 0,
       "apk_assembled": false,
       "physical_phone_tested": false
+    },
+    {
+      "workflow_run": 42409618215,
+      "job": 128514705701,
+      "artifact_id": 13588064378,
+      "artifact_bytes": 510327,
+      "artifact_sha256": "8e57be5e06982bcfb137c92da475fedfac665dabbe6d60620612d1b2f4933c1d",
+      "checks": "Downloaded artifact: embedded exact source SHA and all 448 raw JUnit XML suites independently verified; full core plus Android debug/release/instrumentation Java and desktop compilation succeeded.",
+      "source_commit": "49a933bb114cff4ab4c593635e41f658268f4dac",
+      "completed_at": "2026-11-07T20:11:20Z",
+      "suites": 448,
+      "tests": 2930,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "apk_assembled": false,
+      "physical_phone_tested": false
     }
   ]
 }
