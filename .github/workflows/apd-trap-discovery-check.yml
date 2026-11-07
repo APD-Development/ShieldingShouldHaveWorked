@@ -56,7 +56,10 @@ jobs:
           apk=pathlib.Path('android/build/outputs/apk/debug/android-debug.apk')
           tools=sorted(pathlib.Path(os.environ['ANDROID_HOME']).glob('build-tools/*/apksigner'))[-1].parent
           cert=subprocess.check_output([str(tools/'apksigner'),'verify','--print-certs',str(apk)],text=True)
-          digest=re.search(r'Signer #1 certificate SHA-256 digest: ([0-9a-fA-F]+)',cert).group(1).lower()
+          pathlib.Path('trap-signing-certificate.txt').write_text(cert)
+          digests=re.findall(r'certificate SHA-256 digest:\s*([0-9a-fA-F]{64})',cert)
+          assert len(digests)==1,cert
+          digest=digests[0].lower()
           assert digest=='067688b3ab6bd5820a67f4c1ba7d5859db578173771cf31d3252b3e4e012246e'
           badging=subprocess.check_output([str(tools/'aapt'),'dump','badging',str(apk)],text=True)
           package=re.search(r"package: name='([^']+)'",badging).group(1)
@@ -102,6 +105,7 @@ jobs:
           path: |
             core/build/test-results/test/
             trap-source-and-build.json
+            trap-signing-certificate.txt
             trap-native-*.txt
             trap-logcat.txt
             trap-visual-evidence/
