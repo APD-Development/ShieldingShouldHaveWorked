@@ -1,3 +1,7 @@
+## Owner correction: remove universal item calculations interface — validation pending
+
+No explicit authorization for the universal Show calculations interface was found. The earlier undated description request was overextended; commit9749e461c dated2026-11-06T01:33:06Z records introduction, not approval. Current owner explicitly orders removal. WndInfoItem supplier removed and existing scroll layout given no details; ordinary item.info() improvements/actions remain. Native regression updated for real inspect/use windows, absence of expansion and unchanged descriptions/resources. No new interface/design/gameplay/save changes. Report APD-ITEM-CALCULATIONS-REMOVAL-2026-11-07.md. Full validation pending; no APK published.
+
 ## Talisman active explanation — local2932/449 verified, platform gate pending
 
 Active cone search now distinguished from passive trap warning/recharge; live awareness/range/threshold and actual costs/eligibility explained without scanning floor or revealing unknown artifact state. Actual maxDist comparison88 states and privacy/purity tests pass with full2932/449 zero failures/errors/skips. No gameplay/save/generation changes or APK. Seasonal49a933bb1 full source gate42409618215 also passed2930/448 and required Android/desktop compilation; downloaded artifact13588064378 independently verified. Reports APD-TALISMAN-EXPLANATION-2026-11-07.md and receipt registry. Continue approved review after backup. Native/phone/translations and whole audit remain open;371 stays current.

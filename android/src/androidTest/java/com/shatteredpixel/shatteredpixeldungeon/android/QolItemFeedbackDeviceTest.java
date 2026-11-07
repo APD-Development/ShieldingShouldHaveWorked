@@ -56,36 +56,40 @@ public class QolItemFeedbackDeviceTest {
         Thread.sleep(250);
     }
     private static void showItem(Item item,String expected,String image)throws Exception{
-        AtomicReference<WndUseItem> shown=new AtomicReference<>();
-        TopScoresDeviceTest.render(()->{
-            assertTrue(item.info(),item.info().contains(expected));WndUseItem w=new WndUseItem(null,item);GameScene.show(w);shown.set(w);
-            try{for(RedButton b:TopScoresDeviceTest.find(w,RedButton.class)){
-                Point a=b.camera().cameraToScreen(b.left(),b.top()),z=b.camera().cameraToScreen(b.right(),b.bottom());
-                assertTrue("Item action remains visible",a.x>=0&&a.y>=0&&z.x<=Game.width&&z.y<=Game.height);
-            }}catch(Exception e){throw new RuntimeException(e);}
-        });
-        Thread.sleep(300);
-        Point[] expandAt=new Point[1];java.util.Map<RedButton,float[]> actions=new java.util.IdentityHashMap<>();
-        AtomicReference<RedButton> expander=new AtomicReference<>();float[] time=new float[1];int[] hp=new int[1];
-        TopScoresDeviceTest.render(()->{
-            time[0]=Dungeon.hero.cooldown();hp[0]=Dungeon.hero.HP;
-            try{for(RedButton b:TopScoresDeviceTest.find(shown.get(),RedButton.class)){
-                if(b.text().equals("Show calculations")){expander.set(b);expandAt[0]=b.camera().cameraToScreen(b.left()+b.width()/2,b.top()+b.height()/2);}
-                else actions.put(b,new float[]{b.left(),b.top(),b.width(),b.height()});
-            }}catch(Exception e){throw new RuntimeException(e);}
-        });
-        if(expander.get()!=null){
-            touch(expandAt[0]);TopScoresDeviceTest.render(()->{
-                assertEquals("Actual pointer expands details","Hide calculations",expander.get().text());
-                for(java.util.Map.Entry<RedButton,float[]> entry:actions.entrySet()){
-                    RedButton b=entry.getKey();float[] before=entry.getValue();
-                    assertEquals(before[0],b.left(),0);assertEquals(before[1],b.top(),0);assertEquals(before[2],b.width(),0);assertEquals(before[3],b.height(),0);
-                }
-                assertEquals(time[0],Dungeon.hero.cooldown(),0);assertEquals(hp[0],Dungeon.hero.HP);
+        for(boolean useWindow:new boolean[]{false,true}){
+            AtomicReference<WndInfoItem> shown=new AtomicReference<>();
+            float[] time=new float[1];int[] hp=new int[1];String[] saved=new String[1];
+            TopScoresDeviceTest.render(()->{
+                time[0]=Dungeon.hero.cooldown();hp[0]=Dungeon.hero.HP;
+                com.watabou.utils.Bundle before=new com.watabou.utils.Bundle();item.storeInBundle(before);saved[0]=before.toString();
+                assertTrue(item.info(),item.info().contains(expected));
+                WndInfoItem window=useWindow?new WndUseItem(null,item):new WndInfoItem(item);
+                GameScene.show(window);shown.set(window);
             });
-            touch(expandAt[0]);TopScoresDeviceTest.render(()->assertEquals("Actual pointer collapses details","Show calculations",expander.get().text()));
+            Thread.sleep(300);
+            TopScoresDeviceTest.render(()->{try{
+                WndInfoItem window=shown.get();assertDescriptionViewport(window);
+                ScrollPane scroll=TopScoresDeviceTest.find(window,ScrollPane.class).get(0);
+                boolean found=false;
+                for(RenderedTextBlock text:TopScoresDeviceTest.find(scroll.content(),RenderedTextBlock.class)){
+                    if(text.text().equals(item.info())){found=true;assertTrue(text.text().contains(expected));}
+                }
+                assertTrue("Approved ordinary description remains intact",found);
+                java.util.List<RedButton> buttons=TopScoresDeviceTest.find(window,RedButton.class);
+                for(RedButton button:buttons){
+                    assertNotEquals("No unauthorized item expander","Show calculations",button.text());
+                    assertNotEquals("No unauthorized item expander","Hide calculations",button.text());
+                    Point a=button.camera().cameraToScreen(button.left(),button.top()),z=button.camera().cameraToScreen(button.right(),button.bottom());
+                    assertTrue("Item action remains visible",a.x>=0&&a.y>=0&&z.x<=Game.width&&z.y<=Game.height);
+                }
+                int expectedButtons=useWindow&&Dungeon.hero.isAlive()&&Dungeon.hero.belongings.contains(item)?item.actions(Dungeon.hero).size():0;
+                assertEquals("Only existing item actions appear",expectedButtons,buttons.size());
+                assertEquals(time[0],Dungeon.hero.cooldown(),0);assertEquals(hp[0],Dungeon.hero.HP);
+                com.watabou.utils.Bundle after=new com.watabou.utils.Bundle();item.storeInBundle(after);assertEquals(saved[0],after.toString());
+            }catch(Exception e){throw new RuntimeException(e);}});
+            if(useWindow)TopScoresDeviceTest.screenshot(image);
+            TopScoresDeviceTest.render(()->shown.get().hide());
         }
-        TopScoresDeviceTest.screenshot(image);TopScoresDeviceTest.render(()->shown.get().hide());
     }
     private static void calculationWindow(java.util.concurrent.Callable<Window> factory,String expected,String screenshot)throws Exception{
         AtomicReference<Window> shown=new AtomicReference<>();
