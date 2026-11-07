@@ -1,3 +1,7 @@
+## Berry saved-counter acceptance — candidate pending source gate
+
+Added an actual two-meal Berry regression: first meal creates the revive-persistent saved count without a drop; compressed counter round-trip retains count1; inspection preserves hero/counter/RNG/world state; second meal creates exactly one default-table seed and detaches the counter. Production Berry/Food/Generator code is unchanged. Expected2931 tests/448 suites; exact source-only platform gate requested. No APK/version/signing/save-schema/statistics/scoring/delivery change.371 remains current.
+
 ## Seasonal-food continuation — source verified, no APK
 
 New current-form summary/details replace generic all-holiday list. Live HP/XP, conditional Charm, artifact power, lunar leftovers, fractional wand charges and stronger Barrier retention explained; actual Pasty effects unchanged. Exact source49a933bb114cff4ab4c593635e41f658268f4dac passed run42409618215/job128514705701:2930 tests/448 suites, zero failures/errors/skips, and required Android debug/release/instrumentation Java plus desktop compilation. Artifact13588064378 is510327bytes, SHA256 8e57be5e06982bcfb137c92da475fedfac665dabbe6d60620612d1b2f4933c1d; downloaded receipt and all448 raw XML suites independently checked. No APK/version/release operation;371 remains current. Continue approved audit; native/phone/translations/unreviewed mechanics remain open.
