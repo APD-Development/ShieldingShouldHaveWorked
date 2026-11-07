@@ -1,9 +1,9 @@
 {
-  "active": true,
-  "owner_instruction": "Do not send me another APK until you are done.",
-  "recorded_date": "2026-11-06",
+  "active": false,
+  "owner_instruction": "Publish everything completed so far to private GitHub Releases.",
+  "recorded_date": "2026-11-07",
   "scope": "Remaining approved work, including description audit and verification. Continue implementation/tests/backups without routine approval.",
   "preserve_delivered_build": 369,
-  "additional_apk_delivery": "HOLD until remaining approved work complete and verified; do not resend an older fallback as a new delivery while this hold is active.",
+  "additional_apk_delivery": "Owner explicitly superseded prior hold for this completed-work snapshot. Unfinished work must remain clearly labelled.",
   "daily_limit_when_delivery_resumes": "10 APKs total per New York day, five Developer and five Alpha. A maximum, not a build target."
 }

@@ -1,3 +1,7 @@
+## Owner authorized completed-work publication, 2026-11-07
+
+Owner explicitly said to publish everything completed so far. Prior hold superseded for this snapshot; do not claim unfinished walls or whole description audit complete. Preparing one370 Developer/Alpha pair with full2911 core, required compilation, exact signatures/IDs, actual Android native tests, source scan and download-back verification. Existing369/368 remain untouched. New workflow APD370 publication; no claim publication has completed until actual assets verified.
+
 ## 2026-11-07 latest verified status — trap movement and food continuation
 
 Trap option implemented0b4e890de; same application verified at946cc3cea in run42400199124/job128486107636. Full2909/447 plus actual API34 native cases all pass: real On/Off touch, saved preference after actual force-stop (PIDs2347→2583), real discovery/continued movement/safe reroute/actual Ooze trap effect. Unchanged application ID/signing digest verified. Evidence902909 bytes SHA256efdceaf31f97f3b0e05227126b360ba3b0d743a9ab6ec65604fa95cdd1a8115c downloaded and inspected; report and machine receipt `docs/APD-TRAP-DISCOVERY-2026-11-07.md`, `docs/APD-TRAP-DISCOVERY-VERIFICATION-2026-11-07.json`. First attempt42399787845 built but receipt parser failed; preserved honestly. Two internal game APK attempts total; zero application APK uploads, releases or deliveries. Physical phone not tested.
