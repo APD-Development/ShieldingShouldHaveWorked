@@ -1,26 +1,25 @@
 {
-  "number": 372,
-  "core_tests": 2940,
+  "number": 373,
+  "core_tests": 2951,
   "android_tests": 10,
   "application_id": "com.charltonchris29.adhdpixeldungeon.indev",
   "version_code": 920,
   "signing_certificate": "067688b3ab6bd5820a67f4c1ba7d5859db578173771cf31d3252b3e4e012246e",
   "apk_hashes": {
-    "Developer": "dfff4141f8c4a0802709617af110df49808418e75c13362d58c15dfe37c79cc0",
-    "Alpha-Testers": "ef5eacdb057353f139c31f8908d5737632ff98e5b5c6ad6e46ec2b49a2d38ccb"
+    "Developer": "d9356d8c84ab5328f3e1d44412f6fd206577a245a185e954b28876da448acf1f",
+    "Alpha-Testers": "e29a661a8ff09dcf4538c77db3df1a6195595cad63af29bc00e892f8d254405f"
   },
-  "source_sha256": "45ceb3c55b5e16b0c0b24a9b289a2142a866f48a0919a1bd5bc171c57c61d073",
-  "source": "65cf38c03b5527d4d79eb506885e3aed1652b476",
-  "artifact_id": 13590701646,
-  "artifact_sha256": "a52e612bfcd3bcedd2a3a1e510f0d5cbc06e6a4bcc0467bb8e5bbdc4628a19ab",
-  "prepared_run": 42412846345,
-  "prepared_source": "65cf38c03b5527d4d79eb506885e3aed1652b476",
-  "status_note": "docs/APD-372-DELIVERY-BOUNDARIES.md",
-  "title": "APD372 \u2014 corrected item descriptions and selective calculations",
+  "source_sha256": "1f0a4f7727fa1a1fc4c47401e1a30e1c7a8e657590d29166e62e25c2031ee6c2",
+  "source": "cfca230d94821364debec48479948b544c74a557",
+  "artifact_id": 13593059509,
+  "artifact_sha256": "32138dab90907eb49dfd68e11f4141899ef7655b28a76b83a3b762c269e0d862",
+  "prepared_run": 42420372918,
+  "prepared_source": "cfca230d94821364debec48479948b544c74a557",
+  "status_note": "docs/APD-373-DELIVERY-BOUNDARIES.md",
+  "title": "APD373 \u2014 Cloak and Rose explanations",
   "variants": [
     "Developer",
     "Alpha-Testers"
   ],
-  "purpose": "Publish the exact tested owner pair after actual native logs, eight PNGs, source scan, signing and hashes were independently checked. No application rebuild.",
-  "visual_review": "docs/APD-372-VISUAL-REVIEW.json"
+  "visual_review": "docs/APD-373-VISUAL-REVIEW.json"
 }
