@@ -1012,6 +1012,24 @@
       "skipped": 0,
       "apk_assembled": false,
       "physical_phone_tested": false
+    },
+    {
+      "workflow_run": 42384738067,
+      "workflow_job": 128439632946,
+      "artifact_id": 13579340583,
+      "artifact_bytes": 508428,
+      "artifact_sha256": "a1db3504c08abd6e856b709ef2dd6cbfaaf9c2ad7ba1efa3ef1eeb9a406b644f",
+      "local_evidence": "/workspace/scratch/684482312665/apd-qol-source-verification-13579340583.zip",
+      "checks": "Full core; Android debug/release/instrumentation Java and desktop compilation; exact Supply Ration satisfy/display regression inspected; no APK assembly",
+      "source_commit": "d94ed511ec99d90c9fcd99470e852b0120c7be1e",
+      "suites": 446,
+      "tests": 2887,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "apk_assembled": false,
+      "physical_phone_tested": false,
+      "completed_at": "2026-11-07T15:09:39Z"
     }
   ]
 }
