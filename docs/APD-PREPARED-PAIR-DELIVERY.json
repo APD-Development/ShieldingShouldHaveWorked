@@ -1,26 +1,26 @@
 {
-  "number": 368,
-  "core_tests": 2835,
-  "android_tests": 72,
+  "number": 371,
+  "core_tests": 2918,
+  "android_tests": 9,
   "application_id": "com.charltonchris29.adhdpixeldungeon.indev",
   "version_code": 920,
   "signing_certificate": "067688b3ab6bd5820a67f4c1ba7d5859db578173771cf31d3252b3e4e012246e",
   "apk_hashes": {
-    "Developer": "8e23c1cb147a536212142a3f23d923773f02a9857e47a28a5d64a874c016ed12",
-    "Alpha-Testers": "f3228dd0259848d756a88d063fa11a84176ac483c7dd2bd97b4d7706362f1fd8"
+    "Developer": "9ac9819fcdd13b936376cd7deb7b3c6464ee3055f4f2720e44c7697d5604bf9d",
+    "Alpha-Testers": "6ffd5c9965994cee650bf256dbb5a4a38cabb22e8f3eee8cac125045e576ab0d"
   },
-  "source_sha256": "c52135f8b66da133fc1f117bc006b4452440f0a1ce81faa356b3b68479a26241",
-  "source": "7ef0800dfd6c4e624d3c001e886eb1a711d80a68",
-  "artifact_id": 13526323860,
-  "artifact_sha256": "cac7436863477f01822174f91c9911d53b2cf6046c104c2c45c8b94fa9c277a0",
-  "prepared_run": 42264869642,
-  "prepared_source": "0863c487b81a05c71a19f34c2b4008fb6b2318a0",
-  "status_note": "docs/APD-368-KNOWN-SOURCE-BOUNDARIES.md",
-  "title": "APD368 \u2014 verified statistics memory fix; later candidate pending",
+  "source_sha256": "11520e41fc807411b918d646bb20e26342d9b4af068278199c93c3b7620ebedb",
+  "source": "5b7e7250b63072e52c5cebd1a45ea9bbf1132aa4",
+  "artifact_id": 13587148146,
+  "artifact_sha256": "1e90498af8946b71af9184c94beb5064d03317eddbd62dba2935ee6b2198b8ab",
+  "prepared_run": 42406279502,
+  "prepared_source": "b33363038b5f622d3fb59b55b0de9880d04403b7",
+  "status_note": "docs/APD-371-VERIFICATION-BOUNDARIES.md",
+  "title": "APD371 \u2014 verified wall-search geometry correction",
   "variants": [
     "Developer",
     "Alpha-Testers"
   ],
-  "purpose": "One diagnostic publication attempt with actual safe API denial capture; reuse exact verified fallback, no APK build or permission change",
-  "existing_tag_only": "Use documented existing-tag request, omitting unused target_commitish; exact tag/source checked before/after, no reference creation/update or permission change."
+  "purpose": "Publish the exact retained pair only after clear Developer/Alpha screenshots were actually reviewed. No application rebuild or version advancement.",
+  "visual_review": "docs/APD-371-VISUAL-REVIEW.json"
 }
