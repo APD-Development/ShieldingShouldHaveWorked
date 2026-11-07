@@ -1,3 +1,15 @@
+## APD370 privately published and owner links sent — 2026-11-07
+
+Owner explicitly authorized publishing all completed work, superseding the previous hold. Exact source/tag46c193de78e7cee29c78856c07f38d766fac6027 / apd-alpha-preview-370. Manual publication workflow42402274403/job128492430257 ran18:38:21–18:44:39UTC; published18:44:25UTC. Full2911 core cases/447 suites, required Android/desktop compilation, exact signing/application identity and7 targeted API34 native cases passed (Developer4, Alpha3; not complete Android suite or physical-phone testing).
+
+Both APKs and matching sanitized source published on private release437765751; downloaded back by workflow, then BOTH APKs independently downloaded locally and verified against sidecars/GitHub digests. Developer39174377bytes SHA2566d4425d861f9d26a3875a3af868f2f17fd8cb06b68f94a160c520e069e358b5c; Alpha39174341bytes SHA25615a4887fcab6ac1f33de207916c9c9e86f260f0f35a0adc8be41c60732c83c61. Source72535119bytes SHA2568b2d04a56c66522807f99dba4e41738832f3493083c072201e4a6a0037c0376b.
+
+Direct Developer/Alpha/source links actually sent in commentary before18:46:26UTC (exact message timestamp unavailable). Receipt `docs/APD-370-OWNER-DELIVERY-RECEIPT.json`; local APKs/sidecars/scan/proof `/workspace/apd370-delivered`. Release notes updated to actual results and clearly state remaining impossible-door wall marks and broader audit are UNFINISHED. No new wall fix claimed. Physical phone not tested. Install over existing app, never uninstall/clear data. AppID/certificate/versionCode920 preserved.
+
+Both369/368 releases retain8 assets each; no existing assets replaced. Source/full reachable history scans completed; history findings retained/reported, no history rewrite or whole GPL compliance claim. Only one new370 pair (two game APKs) built; preceding two Nov7 internal trap attempts make four game APKs observed this day. No public release, online activation, external tester posting, main overwrite or extra application rebuild.
+
+Current downloadable release: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-370 . Earlier hold/pending369 status below is historical and superseded by this receipt. Wall work was stopped before changes; requires further actual reproduction/fix.
+
 ## Owner authorized completed-work publication, 2026-11-07
 
 Owner explicitly said to publish everything completed so far. Prior hold superseded for this snapshot; do not claim unfinished walls or whole description audit complete. Preparing one370 Developer/Alpha pair with full2911 core, required compilation, exact signatures/IDs, actual Android native tests, source scan and download-back verification. Existing369/368 remain untouched. New workflow APD370 publication; no claim publication has completed until actual assets verified.
