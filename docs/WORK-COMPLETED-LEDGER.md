@@ -2,9 +2,9 @@
 
 Active cone search now distinguished from passive trap warning/recharge; live awareness/range/threshold and actual costs/eligibility explained without scanning floor or revealing unknown artifact state. Actual maxDist comparison88 states and privacy/purity tests pass with full2932/449 zero failures/errors/skips. No gameplay/save/generation changes or APK. Seasonal49a933bb1 full source gate42409618215 also passed2930/448 and required Android/desktop compilation; downloaded artifact13588064378 independently verified. Reports APD-TALISMAN-EXPLANATION-2026-11-07.md and receipt registry. Continue approved review after backup. Native/phone/translations and whole audit remain open;371 stays current.
 
-## Seasonal-food continuation — local2930/448 verified, platform gate pending
+## Seasonal-food continuation — source verified, no APK
 
-New current-form summary/details replace generic all-holiday list. Live HP/XP, conditional Charm, artifact power, lunar leftovers, fractional wand charges and stronger Barrier retention explained; actual Pasty effects unchanged. Two new real-action tests plus existing suite pass2930/448 with zero failure/error/skip. Cooked-fruit8c9d6a167 source gate42409005559 independently downloaded/XML/hash/source verified2928/448. Reports APD-SEASONAL-FOOD-2026-11-07.md and source receipt registry. No APK/version/release operation;371 remains current. Continue approved audit after backup; native/phone/translations/unreviewed mechanics remain open.
+New current-form summary/details replace generic all-holiday list. Live HP/XP, conditional Charm, artifact power, lunar leftovers, fractional wand charges and stronger Barrier retention explained; actual Pasty effects unchanged. Exact source49a933bb114cff4ab4c593635e41f658268f4dac passed run42409618215/job128514705701:2930 tests/448 suites, zero failures/errors/skips, and required Android debug/release/instrumentation Java plus desktop compilation. Artifact13588064378 is510327bytes, SHA256 8e57be5e06982bcfb137c92da475fedfac665dabbe6d60620612d1b2f4933c1d; downloaded receipt and all448 raw XML suites independently checked. No APK/version/release operation;371 remains current. Continue approved audit; native/phone/translations/unreviewed mechanics remain open.
 
 ## Cooked-fruit explanation continuation — source verified, no APK
 
