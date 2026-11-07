@@ -1,3 +1,20 @@
+/*
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 package com.shatteredpixel.shatteredpixeldungeon.apd.difficulty;
 import com.shatteredpixel.shatteredpixeldungeon.*;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.*;
@@ -22,6 +39,8 @@ public class CustomHealingSliderTest {
         Quiet(Hero h){ch=h;h.sprite=this;visible=false;}
         @Override public void place(int cell){}
         @Override public void idle(){}
+        @Override public void add(com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite.State state){}
+        @Override public void remove(com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite.State state){}
         @Override public void showStatus(int color,String text,Object...args){}
         @Override public void showStatusWithIcon(int color,String text,int icon,Object...args){lastStatus=text;}
     }
@@ -111,6 +130,27 @@ public class CustomHealingSliderTest {
         satisfy.invoke(ration,hero);assertEquals(1000,hero.HP);assertEquals("1",sprite.lastStatus);
         rules(100);hero.HP=999;sprite.lastStatus=null;
         satisfy.invoke(ration,hero);assertEquals(1000,hero.HP);assertEquals("5",sprite.lastStatus);
+    }
+    @Test public void frozenMeatHealingFeedbackMatchesActualRollAndModifiedHp() {
+        long healingSeed=-1;
+        for(long seed=0;seed<1000;seed++){Random.pushGenerator(seed);int roll;try{roll=Random.Int(5);}finally{Random.popGenerator();}if(roll==3){healingSeed=seed;break;}}
+        assertTrue(healingSeed>=0);
+        for(int percent:new int[]{0,25,100,200})for(int missing:new int[]{1,900}){
+            rules(percent);hero.HT=1000;hero.HP=hero.HT-missing;hero.apdCustomHealingFraction=0;sprite.lastStatus=null;int before=hero.HP;
+            Random.pushGenerator(healingSeed);try{com.shatteredpixel.shatteredpixeldungeon.items.food.FrozenCarpaccio.effect(hero);}finally{Random.popGenerator();}
+            int gained=Math.min(missing,250*percent/100);assertEquals(before+gained,hero.HP);
+            assertEquals(Integer.toString(percent==100?250:gained),sprite.lastStatus);
+        }
+    }
+    @Test public void phantomMeatFeedbackPreservesAllBenefitsAndActualHealing() {
+        for(int percent:new int[]{0,25,100,200})for(int missing:new int[]{1,900}){
+            rules(percent);hero.HT=1000;hero.HP=hero.HT-missing;hero.apdCustomHealingFraction=0;sprite.lastStatus=null;int before=hero.HP;
+            Buff.affect(hero,Slow.class,8);
+            com.shatteredpixel.shatteredpixeldungeon.items.food.PhantomMeat.effect(hero);
+            int gained=Math.min(missing,250*percent/100);assertEquals(before+gained,hero.HP);
+            assertEquals(Integer.toString(percent==100?250:gained),sprite.lastStatus);
+            assertEquals(250,Barkskin.currentLevel(hero));assertNotNull(hero.buff(Invisibility.class));assertNull(hero.buff(Slow.class));
+        }
     }
     @Test public void actualHealingTicksWorkForEveryClassAtMinimumNeutralAndMaximum() {
         for (HeroClass type : HeroClass.values()) {

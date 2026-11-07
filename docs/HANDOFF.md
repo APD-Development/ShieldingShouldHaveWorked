@@ -1,3 +1,7 @@
+## 2026-11-07 meat feedback continuation — local verified, remote pending
+
+Frozen/phantom meat non-neutral Healing floating feedback corrected through unchanged shared display policy; real effects/RNG preserved. Two real-effect tests; full local2911/447 green. Report `docs/APD-MEAT-FEEDBACK-2026-11-07.md`. Remote source-only platform checks requested; separate trap native run42400199124 on946cc3cea still pending. Owner APK hold remains active; no delivery/release.
+
 ## Trap discovery movement preference — implemented, Android verification pending
 
 Owner approved this feature and continuation of previous work. Preserved newer Supply Ration changes via normal fast-forward828b1f9ad. New Gameplay checkbox Continue when traps are revealed defaultsOff and persists immediately. Only passive trap-only discovery during movement avoids its own Hero.interrupt; real triggers, damage/enemies/manual cancellation, door discovery, confirmation and path/hazard rules stay intact. Actual cache/held input preserved; post-movement context covers pickup/chest travel. Full local2909/447 passed;22 new behavior/persistence/RNG/save cases and3 evidence-validator tests passed. Full report APD-TRAP-DISCOVERY-2026-11-07.md, local log /workspace/apd-trap-discovery-final-full.log, raw /workspace/apd-trap-discovery-final-local-junit.zip.

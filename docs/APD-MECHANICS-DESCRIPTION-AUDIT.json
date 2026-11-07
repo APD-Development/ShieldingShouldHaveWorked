@@ -4308,13 +4308,23 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/food/PhantomMeat.java",
-      "sha256": "d88f951d40deaf9af4df6728819d57e73d2eea8b039c23000f5cc29a8ae55496",
-      "boundary": "Sets nutrition to Hunger.STARVING and applies all four effects: quarter-HT Barkskin with one-unit decay, normal Invisibility, quarter-HT base healing through normal modifiers/cap, and PotionOfHealing.cure. Existing FoodExplanation matches these conditions and current-HT quantities; existing inspection purity tests cover it. No new actual-consumption test claimed. Source review only in this checkpoint; no application changes or new build. Whole translation/native/phone acceptance remains separate."
+      "sha256": "67bf6157f8268c24497b1a028df2dcb4ca5761c0d59e96ee6ab5c759a79300af",
+      "boundary": "Actual quarter-HT Barkskin, Invisibility, quarter-HT modified/capped healing and supported ailment cure source reviewed. Heal floating feedback corrected through unchanged shared display policy: non-neutral Healing shows actual HP delta, neutral100 retains existing base text. Actual effect regression spans Healing0/25/100/200 and missing1/900 HP; asserts Barkskin, Invisibility and real Slow removal alongside HP/text. No effect/calculation/save/RNG change. Native/phone/full translations remain open."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/food/SupplyRation.java",
       "sha256": "a3a1fc995d002b0d953d69f208ad73b1e95bc3b70f10655670527c41b8d0d399",
       "boundary": "Actual nutrition, fast eating, base5 HP offer, Healing-slider scaling/cap, Cloak direct charge and display path source-reviewed. Confirmed hard-coded healing text corrected to actual non-neutral HP delta while neutral100% preserves original text. Real satisfy-path regression covers Healing0/25/100/200% and capped cases; full remote2887/446 plus Android/desktop compilation passed. No gameplay/save/RNG change; native/phone/full translations pending."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/food/FrozenCarpaccio.java",
+      "sha256": "c074b3cae395116fd63887d69778fdb0b2fb87e2be983dd123c7cf3700e1049e",
+      "boundary": "Source traced five equally likely Random.Int(5) initial outcomes and shared live nutrition/time description. Corrected heal floating feedback through the existing CustomHealingHooks.display: non-neutral Healing shows actual capped HP delta; neutral100 retains existing base text. Actual healing-roll regression spans Healing0/25/100/200 and missing1/900 HP, without changing RNG, healing or other outcomes. Existing inspection-purity tests remain. Other four actual random branches are not newly tested. Native/phone/full translations remain open."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/food/MysteryMeat.java",
+      "sha256": "054ee03c86e8299c9d4cd01edb5ee265c4e5810b888df413b712e68b2462a151",
+      "boundary": "Source traced actual Random.Int(5) outcomes: Burning reignition, Roots.DURATION*2, Poison duration integer HT/5 (not total damage), Slow.DURATION, or no extra effect. Existing expanded explanation accurately distinguishes five equal initial probabilities from immunity/resistance/reapplication and excludes raw meat from auto-eating. Existing regression exercises actual Poison branch at three HT values and inspection purity; other four actual outcomes not newly tested. Crafting placeholder has empty info and is not advertised as edible. Source review only; no application change or new build. Native/phone/full translations remain open."
     }
   ]
 }
