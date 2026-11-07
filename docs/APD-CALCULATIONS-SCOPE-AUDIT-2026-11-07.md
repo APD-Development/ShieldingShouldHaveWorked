@@ -43,3 +43,26 @@ Verification history: targeted MechanicsExplanation/ArcanaInfoDisplay/ItemDescri
 Final local result:2939 tests/449 suites, zero failures/errors/skips. Raw XML archived /workspace/apd-selective-calculations-owner-final-junit.zip. Required exact-source full-core/Android-debug-release-instrumentation-Java/desktop gate requested. No native test execution or physical-phone claim.
 
 Final completed blast-scroll-inclusive local result supersedes2939:2940 tests/449 suites, zero failures/errors/skips. Log /workspace/apd-selective-calculations-blast-final.log and raw XML /workspace/apd-selective-calculations-final-2940-junit.zip. Final exact-source platform gate requested; do not substitute the earlier2939 gate as evidence for the added scroll dispatch.
+
+## Complete former item-dispatch branch inventory
+
+| Former branch | Current item-interface outcome |
+|---|---|
+| Food, including cooked/seasonal food | No calculation panel; ordinary description improvements retained. |
+| Plant.Seed | No calculation panel. |
+| Wand | Warding/Regrowth retained; routine wand panels withheld and borderline modifier interactions flagged for review. |
+| Artifact | Existing specific helper retained pending owner review. |
+| Ring | Arcana/Force/Tenacity retained; other standalone ring panels flagged, existing affected-item before/after text retained. |
+| Trinket | Existing specific helper retained pending owner review. |
+| Potion | No automatic panel; exceptional potion cases can be reviewed individually. |
+| Scroll | Retribution/Psionic Blast retained; routine scrolls do not get panels. |
+| UtilityItemExplanation | No automatic item panel; unusual Ankh/Seal/Waterskin cases remain available in their underlying helpers for individual review. |
+| Bomb / CraftingEffectExplanation | No automatic item panel; unusual distribution/recipe cases flagged. |
+| Armor/ClassArmor | Known beneficial glyph detail only in item panel; ordinary base statistics and unidentified origins remain in normal text; separate armor-ability panel retained pending review. |
+| MagesStaff | No automatic embedded-wand calculation panel; ordinary staff/wand description remains; detailed helper preserved for review. |
+| MeleeWeapon ability | No automatic panel just because a weapon has an ability; helper preserved for individual review. |
+| MissileWeapon | No automatic panel; approved affected-item before/after ring values remain ordinary text. |
+| Weapon | Known beneficial enchantment detail only; no generic base-weapon/glossary panel. Curse-specific advanced panels flagged for review rather than newly enabled. |
+| Generic glossary | No longer enables any ordinary item control, and no longer appended to buff/talent interface details. |
+
+Final source verification completed: b447729795c4d975d45e061ea275780dffee1e04 passed run42411569092/job128520629618. All2940 tests/449 suites have zero failures/errors/skips; required Android debug/release/instrumentation Java and desktop compilation succeeded. Artifact13590115511 is513653bytes, SHA2565f90229279bcd9c62f68e2af341abb6186a1213e91bf8beda7cc0d63f3db7d38; downloaded archive, embedded source and all raw XML independently checked. This is compilation/core evidence, not execution of native UI assertions or physical-phone acceptance. No APK assembled/published.

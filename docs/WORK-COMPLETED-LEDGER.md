@@ -1,6 +1,8 @@
-## Owner scope correction — selective calculations, local2940/449 verified
+## Owner scope correction — selective calculations, source2940/449 verified
 
 Arcana request was not blanket authority for universal item inspection. Owner explicitly clarifies advanced math only where genuinely needed, and answers “Keep existing mechanic-specific panels pending review” for artifact/trinket and separate talent/buff/ability/spell cases. WndInfoItem now uses a narrow itemCalculations path: Arcana, Force, Tenacity, beneficial glyph/enchantment effects, Warding/Regrowth, nonlinear Retribution/Psionic Blast, and owner-retained artifact/trinket helpers. Food/seeds/routine consumables/plain gear/utility items do not get panels; ordinary text remains. Buff/talent glossary/rank/duration-only fallback cannot create controls; specific panels remain pending review. No new setting/control/gameplay/save change. Full2940/449 zero failure/error/skip; one new wand-identification fixture failure corrected without weakening production guard. Updated native assertions compile in pending source gate, not claimed executed. Audit APD-CALCULATIONS-SCOPE-AUDIT-2026-11-07.md inventories every UI entry point, retained/removed cases, reasons and borderline cases. No APK. This supersedes blanket-removal scope below.
+Final source verification completed: b447729795c4d975d45e061ea275780dffee1e04 passed run42411569092/job128520629618. All2940 tests/449 suites have zero failures/errors/skips; required Android debug/release/instrumentation Java and desktop compilation succeeded. Artifact13590115511 is513653bytes, SHA2565f90229279bcd9c62f68e2af341abb6186a1213e91bf8beda7cc0d63f3db7d38; downloaded archive, embedded source and all raw XML independently checked. This is compilation/core evidence, not execution of native UI assertions or physical-phone acceptance. No APK assembled/published.
+
 
 ## Owner correction: universal item calculations interface removed and source verified
 
