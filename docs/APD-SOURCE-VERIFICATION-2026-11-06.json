@@ -1064,6 +1064,23 @@
       "skipped": 0,
       "apk_assembled": false,
       "physical_phone_tested": false
+    },
+    {
+      "workflow_run": 42406808069,
+      "job_id": 128506154083,
+      "artifact_id": 13588250061,
+      "artifact_bytes": 507240,
+      "artifact_sha256": "fff7bdeed0ac36218dc1c02045483aefbef3207d4c0c1b1dcac9a11c494589d0",
+      "local_evidence": "/workspace/attachments/41257c8e-aed8-4f90-bd61-954af9502c3d/github-actions-artifact-13588250061.zip",
+      "checks": "Full2919/447 plus Android debug/release/instrumentation Java and desktop; additional actual compressed Level geometry regression, application source unchanged from371 candidate",
+      "source_commit": "ee351784475aa00bb9326416d9aa39e41988edf6",
+      "suites": 447,
+      "tests": 2919,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "apk_assembled": false,
+      "physical_phone_tested": false
     }
   ]
 }
