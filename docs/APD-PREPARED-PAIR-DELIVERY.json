@@ -1,25 +1,25 @@
 {
-  "number": 373,
-  "core_tests": 2951,
+  "number": 374,
+  "core_tests": 2954,
   "android_tests": 10,
   "application_id": "com.charltonchris29.adhdpixeldungeon.indev",
   "version_code": 920,
   "signing_certificate": "067688b3ab6bd5820a67f4c1ba7d5859db578173771cf31d3252b3e4e012246e",
   "apk_hashes": {
-    "Developer": "d9356d8c84ab5328f3e1d44412f6fd206577a245a185e954b28876da448acf1f",
-    "Alpha-Testers": "e29a661a8ff09dcf4538c77db3df1a6195595cad63af29bc00e892f8d254405f"
+    "Developer": "96869c0cbf9205a8f22094ead3fd8af45a2395d7dbaa87655eb377a9332c2a43",
+    "Alpha-Testers": "3aca21efe6a123090096d760271491cebf6faff67d9c24d6e9d523316ee46e1d"
   },
-  "source_sha256": "1f0a4f7727fa1a1fc4c47401e1a30e1c7a8e657590d29166e62e25c2031ee6c2",
-  "source": "cfca230d94821364debec48479948b544c74a557",
-  "artifact_id": 13593059509,
-  "artifact_sha256": "32138dab90907eb49dfd68e11f4141899ef7655b28a76b83a3b762c269e0d862",
-  "prepared_run": 42420372918,
-  "prepared_source": "cfca230d94821364debec48479948b544c74a557",
-  "status_note": "docs/APD-373-DELIVERY-BOUNDARIES.md",
-  "title": "APD373 \u2014 Cloak and Rose explanations",
+  "source_sha256": "3b5616507dcc7b754fcc375028dd172d99564645126ffaf495f595e105c25649",
+  "source": "9041b7a155f97def09648b4d277996cab0f72c58",
+  "artifact_id": 13595389716,
+  "artifact_sha256": "0892b42eb47cdbc2ddd6e56e6931961161a8c5810655ba9926cbd73c19f94bf6",
+  "prepared_run": 42426299732,
+  "prepared_source": "9041b7a155f97def09648b4d277996cab0f72c58",
+  "status_note": "docs/APD-374-DELIVERY-BOUNDARIES.md",
+  "title": "APD374 \u2014 Arcana percentages and actual effect increases",
   "variants": [
     "Developer",
     "Alpha-Testers"
   ],
-  "visual_review": "docs/APD-373-VISUAL-REVIEW.json"
+  "visual_review": "docs/APD-374-VISUAL-REVIEW.json"
 }
