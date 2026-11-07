@@ -4325,6 +4325,21 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/food/MysteryMeat.java",
       "sha256": "054ee03c86e8299c9d4cd01edb5ee265c4e5810b888df413b712e68b2462a151",
       "boundary": "Source traced actual Random.Int(5) outcomes: Burning reignition, Roots.DURATION*2, Poison duration integer HT/5 (not total damage), Slow.DURATION, or no extra effect. Existing expanded explanation accurately distinguishes five equal initial probabilities from immunity/resistance/reapplication and excludes raw meat from auto-eating. Existing regression exercises actual Poison branch at three HT values and inspection purity; other four actual outcomes not newly tested. Crafting placeholder has empty info and is not advertised as edible. Source review only; no application change or new build. Native/phone/full translations remain open."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/food/MeatPie.java",
+      "sha256": "2f954a5a820f2075646f4f5343fd5abcd496452da75bd8cc7a36d9e2f8db8781",
+      "boundary": "Source review: nutrition2×STARVING plus reset (not add) of real WellFed reserve; On Diet changes nutrition and reserve separately. Shared expanded explanation matches reset, HEAL_INTERVAL18 and SaltCube spacing. Existing real WellFed regression exercises18 updates, HP offer, save/load, On Diet150 reserve and inspection purity; no new actual pie-consumption or recipe regression claimed. Recipe requires qualifying Pasty/Phantom, ordinary ration and meat for6 energy; unchanged. Whole translations/native/phone acceptance remain open."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/food/Berry.java",
+      "sha256": "7a27def08dad592cc327b865dc555d2e14895aca6a62b06d554e221139eddab9",
+      "boundary": "Source review: HUNGRY/3 nutrition, own1-turn action or0 under qualifying meal talent; actual second-berry SeedCounter>=2 creates one default random seed then detaches. Shared explanation accurately separates this saved counter from inspection; existing preview/purity tests cover berry time and no inspection RNG. Actual second-eat seed generation, revive persistence and recipe/source RNG not newly tested. No application change or new build; whole translations/native/phone acceptance remain open."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/food/Blandfruit.java",
+      "sha256": "d9e064205cf27451f102d9c7560725546f4188734d5b26a26b2c6f3ee7b6f791",
+      "boundary": "Source review only: raw fruit cannot be eaten; cooked fruit has visible potion-specific name and full STARVING base nutrition, applies actual imbued potion after food action. Six eligible thrown potion types shatter and leave chunks except well/pit; other types use ordinary throw. Embedded potion saved/restored through imbue; no fabricated hidden values in shared generic explanation. Existing raw-fruit unavailable/purity assertions do not prove all cooked/throw/save branches. Complete type-specific effect details and branch tests remain open; no application change/build claimed."
     }
   ]
 }

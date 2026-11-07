@@ -1,3 +1,11 @@
+## 2026-11-07 latest verified status — trap movement and food continuation
+
+Trap option implemented0b4e890de; same application verified at946cc3cea in run42400199124/job128486107636. Full2909/447 plus actual API34 native cases all pass: real On/Off touch, saved preference after actual force-stop (PIDs2347→2583), real discovery/continued movement/safe reroute/actual Ooze trap effect. Unchanged application ID/signing digest verified. Evidence902909 bytes SHA256efdceaf31f97f3b0e05227126b360ba3b0d743a9ab6ec65604fa95cdd1a8115c downloaded and inspected; report and machine receipt `docs/APD-TRAP-DISCOVERY-2026-11-07.md`, `docs/APD-TRAP-DISCOVERY-VERIFICATION-2026-11-07.json`. First attempt42399787845 built but receipt parser failed; preserved honestly. Two internal game APK attempts total; zero application APK uploads, releases or deliveries. Physical phone not tested.
+
+Later actual application7f9eeedd4 corrects frozen/phantom meat modified-healing feedback. Full2911/447 and Android debug/release/instrumentation Java plus desktop checks passed run42400510717/job128487031019. Downloaded raw source receipt/artifact13585213109 verified. No APK assembled for this later continuation; do not conflate its source with earlier native fixture. Food leaf reviews record actual limits and remaining type-specific gaps.
+
+Owner APK HOLD stays active; current delivered369 unchanged. Earlier pending paragraphs below are historical checkpoints superseded by this status. Broader descriptions/translations/native/physical-phone acceptance remain open. Continue substantive approved source work; no claim all prior requirements are complete.
+
 ## 2026-11-07 meat feedback continuation — local verified, remote pending
 
 Frozen/phantom meat non-neutral Healing floating feedback corrected through unchanged shared display policy; real effects/RNG preserved. Two real-effect tests; full local2911/447 green. Report `docs/APD-MEAT-FEEDBACK-2026-11-07.md`. Remote source-only platform checks requested; separate trap native run42400199124 on946cc3cea still pending. Owner APK hold remains active; no delivery/release.
