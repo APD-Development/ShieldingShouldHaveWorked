@@ -42,6 +42,16 @@ import org.junit.runner.RunWith;
 public class WallGeometryDeviceTest {
     private static void waitFor(Callable<Boolean> test)throws Exception{long until=SystemClock.uptimeMillis()+120000;while(SystemClock.uptimeMillis()<until){if(test.call())return;Thread.sleep(100);}fail("Wall geometry fixture timed out");}
     private static int visual(SearchedWallTilemap layer,int cell)throws Exception{Field f=Tilemap.class.getDeclaredField("data");f.setAccessible(true);return ((int[])f.get(layer))[cell];}
+    private static void waitForBanners()throws Exception{
+        waitFor(()->{
+            java.util.concurrent.atomic.AtomicBoolean clear=new java.util.concurrent.atomic.AtomicBoolean();
+            TopScoresDeviceTest.render(()->{try{
+                clear.set(TopScoresDeviceTest.find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.effects.BadgeBanner.class)
+                        .stream().noneMatch(b->b.exists&&b.visible));
+            }catch(Exception error){throw new RuntimeException(error);}});
+            return clear.get();
+        });
+    }
     @Test public void observedGeometryAndRetainedMarksUseTheActualAndroidLayer()throws Exception{
         final boolean intro=SPDSettings.intro();final int oldSlot=GamesInProgress.curSlot;final HeroClass oldClass=GamesInProgress.selectedClass;final int[] slot={-1},wall={-1};final Bundle saved=new Bundle();
         try(ActivityScenario<AndroidLauncher> app=ActivityScenario.launch(AndroidLauncher.class)){
@@ -49,11 +59,11 @@ public class WallGeometryDeviceTest {
             TopScoresDeviceTest.render(()->ShatteredPixelDungeon.switchNoFade(TitleScene.class));waitFor(()->Game.scene() instanceof TitleScene);
             TopScoresDeviceTest.render(()->{SPDSettings.intro(false);slot[0]=GamesInProgress.firstEmpty(HeroClass.WARRIOR);assertTrue(slot[0]>0);GamesInProgress.curSlot=slot[0];GamesInProgress.selectedClass=HeroClass.WARRIOR;Dungeon.hero=null;Dungeon.daily=false;Dungeon.dailyReplay=false;Dungeon.customSeedText="";Dungeon.initSeed();InterlevelScene.mode=InterlevelScene.Mode.DESCEND;Game.switchScene(InterlevelScene.class);});
             waitFor(()->Game.scene() instanceof GameScene&&Dungeon.hero!=null&&Dungeon.hero.ready);
-            QolItemFeedbackDeviceTest.prepareSearchableFloor();
+            QolItemFeedbackDeviceTest.prepareSearchableFloor();Thread.sleep(300);waitForBanners();
             TopScoresDeviceTest.render(()->{try{
                 Hero hero=Dungeon.hero;Level l=Dungeon.level;int w=l.width(),anchor=w*(l.height()/2)+w/2,p=anchor-w;wall[0]=p;
                 for(Mob mob:new ArrayList<>(l.mobs)){Actor.remove(mob);if(mob.sprite!=null)mob.sprite.killAndErase();}l.mobs.clear();
-                for(int y=-5;y<=5;y++)for(int x=-5;x<=5;x++){int c=anchor+y*w+x;Level.set(c,Terrain.EMPTY);l.heroFOV[c]=l.visited[c]=true;}
+                for(int y=-5;y<=5;y++)for(int x=-5;x<=5;x++){int c=anchor+y*w+x;Level.set(c,Terrain.EMPTY);l.heroFOV[c]=l.visited[c]=l.discoverable[c]=true;}
                 for(int x=-3;x<=3;x++)Level.set(p+x,Terrain.WALL);
                 hero.curAction=null;hero.lastAction=null;hero.pos=anchor;hero.sprite.place(anchor);hero.fieldOfView=l.heroFOV;Camera.main.snapTo(hero.sprite.center());
                 Level.set(p-1,Terrain.EMPTY);l.heroFOV[p-1]=l.visited[p-1]=l.mapped[p-1]=false;
