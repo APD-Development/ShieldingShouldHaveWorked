@@ -10,4 +10,6 @@
 
 2026-11-07 seasonal current-form descriptions: local2930/448 zero failure/error/skip. Real Pasty healing/Barrier/XP/fractional wand capacity regressions, every calendar form/no-hero inspection. Source-only full core/Android debug-release-instrumentation Java/desktop; no APK assembly.
 
-2026-11-07 Talisman active explanation: local2932/449 zero failure/error/skip. Actual target-cutoff comparison88 states; hidden-level/curse gating, no floor/hero dependency or stored-state mutation. Source-only full core and required Android/desktop compilation, no APK.
+2026-11-07 Berry saved-counter acceptance after seasonal gate: one new actual two-meal regression verifies first-meal count, revive persistence, compressed counter round-trip, inspection purity, one second-meal default-table seed drop and counter detach. Production application code unchanged. Expected2931 tests/448 suites; full core plus Android debug/release/instrumentation Java and desktop compilation; no APK.371 remains current.
+
+2026-11-07 Talisman active explanation: combined inventory2933/449 (local Talisman-only2932 verified; combined full validation pending) zero failure/error/skip. Actual target-cutoff comparison88 states; hidden-level/curse gating, no floor/hero dependency or stored-state mutation. Source-only full core and required Android/desktop compilation, no APK.

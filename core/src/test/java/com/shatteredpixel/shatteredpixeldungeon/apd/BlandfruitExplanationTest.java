@@ -135,6 +135,19 @@ public class BlandfruitExplanationTest {
         Item dropped;ItemSprite dropSprite;
         @Override public Heap drop(Item item,int cell){dropped=item;Heap h=new Heap();h.items.add(item);h.pos=cell;h.sprite=dropSprite;return h;}
     }
+    @Test public void actualSecondBerryCreatesOneDefaultSeedAndClearsItsSavedCounter()throws Exception{
+        DropLevel l=new DropLevel();l.setSize(33,33);l.blobs=new HashMap<>();Arrays.fill(l.map,com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY);l.buildFlagMaps();l.mobs=new HashSet<>();l.heaps=new SparseArray<>();l.traps=new SparseArray<>();l.plants=new SparseArray<>();Dungeon.level=l;
+        Field unsafeField=Class.forName("sun.misc.Unsafe").getDeclaredField("theUnsafe");unsafeField.setAccessible(true);Object unsafe=unsafeField.get(null);l.dropSprite=(DropSprite)unsafe.getClass().getMethod("allocateInstance",Class.class).invoke(unsafe,DropSprite.class);
+        Method satisfy=Berry.class.getDeclaredMethod("satisfy",Hero.class);satisfy.setAccessible(true);Berry berry=new Berry();
+        Random.pushGenerator(7731);
+        try{
+            satisfy.invoke(berry,hero);assertNull(l.dropped);
+            Berry.SeedCounter counter=hero.buff(Berry.SeedCounter.class);assertNotNull(counter);assertEquals(1,counter.count(),0);assertTrue(counter.revivePersists);
+            Bundle stored=new Bundle();counter.storeInBundle(stored);Berry.SeedCounter copy=new Berry.SeedCounter();copy.restoreFromBundle(stored);assertEquals(1,copy.count(),0);assertTrue(copy.revivePersists);
+            String heroBefore=saved(hero);String detail=FoodExplanation.specialEffect(berry,hero);assertTrue(detail.contains("Every second eaten berry"));assertEquals(heroBefore,saved(hero));assertEquals(1,counter.count(),0);assertNull(l.dropped);
+            satisfy.invoke(berry,hero);assertTrue(l.dropped instanceof com.shatteredpixel.shatteredpixeldungeon.plants.Plant.Seed);assertEquals(1,l.dropped.quantity());assertNull(hero.buff(Berry.SeedCounter.class));
+        }finally{Random.popGenerator();}
+    }
     @Test public void actualFruitThrowDispatchMatchesAllSixChunkFormsAndWellPitExceptions()throws Exception{
         DropLevel l=new DropLevel();l.setSize(33,33);l.blobs=new HashMap<>();Arrays.fill(l.map,com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY);l.buildFlagMaps();Dungeon.level=l;
         Field f=Class.forName("sun.misc.Unsafe").getDeclaredField("theUnsafe");f.setAccessible(true);Object u=f.get(null);l.dropSprite=(DropSprite)u.getClass().getMethod("allocateInstance",Class.class).invoke(u,DropSprite.class);
