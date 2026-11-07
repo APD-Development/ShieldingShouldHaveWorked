@@ -1,3 +1,5 @@
+> Delivered as APD373 after the owner-approved exception. Full2951 core/10 API34 and signing/source/download checks passed. See APD-373-OWNER-DELIVERY-RECEIPT.json. Earlier local-only and quota-blocker paragraphs below are historical.
+
 # Dried Rose explanation work — local, not delivered
 
 The user requested continued approved work, then explicitly stopped source-only uploads and required actual APK delivery. No Rose source commit has been uploaded. APD372 remains the delivered game; neither newer Cloak nor Rose text is included there.

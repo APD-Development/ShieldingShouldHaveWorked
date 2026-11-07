@@ -1,3 +1,19 @@
+## APD373 delivered — Cloak and Rose explanations, 2026-11-07
+
+Owner explicitly approved the additional Developer build and ordered publication. Exact producing source/tagcfca230d94821364debec48479948b544c74a557 / apd-alpha-preview-373. One pair built in42420372918:2951 core tests/451 suites, required compilation, signature/appID920, corresponding key-free source and10 API34 cases passed. Both variants actually opened Cloak/Rose details and retained Arcana/Obfuscation panels; ordinary item windows/actions/state, wall layers and3 trap/persistence/movement cases each also passed. Full raw core/native evidence independently downloaded/checked. Eight actual Cloak/Rose/Sword/Arcana PNGs visually reviewed and bound in docs/APD-373-VISUAL-REVIEW.json. Physical phone and whole-description audit remain unclaimed.
+
+Cloak describes actual first payment/four-update budget, dispel/exhaustion, live upgrade progress, saved countdown and recharge conditions; only a pure getter added to original class. Rose describes known potential ghost stats, equipment restrictions, actual upgrade HP timing, and correct health% versus stored charge distinction. No new interface or mechanics/balance/save changes. Existing artifact-specific panels are retained pending owner review under the clarified scope.
+
+Prepared artifact13593059509 is145187576bytes SHA25632138dab90907eb49dfd68e11f4141899ef7655b28a76b83a3b762c269e0d862. Developer d9356d8c84ab5328f3e1d44412f6fd206577a245a185e954b28876da448acf1f; Alpha e29a661a8ff09dcf4538c77db3df1a6195595cad63af29bc00e892f8d254405f; corresponding source1f0a4f7727fa1a1fc4c47401e1a30e1c7a8e657590d29166e62e25c2031ee6c2. Original certificate/application ID/versionCode920 preserved. No rebuild for delivery.
+
+Actual private publication42421180954/job128549732379 succeeded; published2026-11-07T22:34:41Z. Runner downloaded back and verified APK/source bytes. Both release APKs independently downloaded locally after completion; hashes matched proof/sidecars. Direct links actually sent in commentary in this turn after local verification. Receipt docs/APD-373-OWNER-DELIVERY-RECEIPT.json; downloads /workspace/apd373-delivered. This was active-chat owner delivery, not a scheduled invocation. Existing372/371/370 releases/assets, main and player data preserved. Install over; never uninstall/clear data.
+
+Observed Nov7 total now10 actual game APKs (6 Developer with the one explicit373 exception,4 Alpha). No further game APK builds today without explicit additional authorization. The owner stopped source-only deliveries: future application-work deliveries require an actual APK/release link; do not present commits as completion. This evidence-only record uses the already delivered373 and does not justify another rebuild.
+
+Developer: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-alpha-preview-373/APD-Developer-373.apk
+Alpha: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-alpha-preview-373/APD-Alpha-Testers-373.apk
+Source: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-alpha-preview-373/APD-Source-373.zip
+
 ## Cloak explanation continuation — local2946/450 verified, source gate pending
 
 Approved description audit continues within clarified interface scope: no new panel or setting. Existing Cloak summary/details now explain first charge/four scheduled updates, dispel/exhaustion, live nonlinear upgrade progress, save countdown and separate recharge eligibility. Actual mechanics/serialization unchanged; only pure countdown getter added to Cloak class. Six real-path regressions pass with full2946/450 zero failures/errors/skips; report APD-CLOAK-EXPLANATION-2026-11-07.md, exact-source platform gate pending. No APK;372 remains current delivered pair. Continue next approved facet after backup; no additional Developer APK within recorded Nov7 allowance.
