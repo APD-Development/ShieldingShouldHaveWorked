@@ -1,3 +1,7 @@
+## Talisman active explanation — local2932/449 verified, platform gate pending
+
+Active cone search now distinguished from passive trap warning/recharge; live awareness/range/threshold and actual costs/eligibility explained without scanning floor or revealing unknown artifact state. Actual maxDist comparison88 states and privacy/purity tests pass with full2932/449 zero failures/errors/skips. No gameplay/save/generation changes or APK. Seasonal49a933bb1 full source gate42409618215 also passed2930/448 and required Android/desktop compilation; downloaded artifact13588064378 independently verified. Reports APD-TALISMAN-EXPLANATION-2026-11-07.md and receipt registry. Continue approved review after backup. Native/phone/translations and whole audit remain open;371 stays current.
+
 ## Berry saved-counter acceptance — candidate pending source gate
 
 Added an actual two-meal Berry regression: first meal creates the revive-persistent saved count without a drop; compressed counter round-trip retains count1; inspection preserves hero/counter/RNG/world state; second meal creates exactly one default-table seed and detaches the counter. Production Berry/Food/Generator code is unchanged. Expected2931 tests/448 suites; exact source-only platform gate requested. No APK/version/signing/save-schema/statistics/scoring/delivery change.371 remains current.
