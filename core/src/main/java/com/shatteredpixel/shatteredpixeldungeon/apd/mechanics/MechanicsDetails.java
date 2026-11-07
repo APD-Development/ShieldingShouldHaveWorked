@@ -46,6 +46,34 @@ public final class MechanicsDetails {
         if(text.contains("multiplier")||text.contains("×")||text.contains("1x"))out.append("_Added amounts and multiplied amounts_\nAn added bonus increases a score by that amount. A multiplier scales the stated quantity: a factor above one increases it, below one reduces it. Do not add two percentage bonuses together unless that effect's rule says to; different effects can combine at different stages. Caps and rounding belong to the particular effect.\n\n");
         return out.toString().trim();
     }
+    /** Owner-approved complex item effects; never the generic item/glossary dispatcher. */
+    public static String itemCalculations(Item item){
+        if(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfArcana
+                ||item instanceof com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce
+                ||item instanceof com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfTenacity)
+            return item.isIdentified()?RingExplanation.details((com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring)item):"";
+        // Owner explicitly retained existing artifact/trinket-specific panels pending review.
+        if(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact)
+            return item.isIdentified()?ArtifactExplanation.details((com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact)item):"";
+        if(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket)
+            return item.isIdentified()?TrinketExplanation.details((com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket)item):"";
+        // Separate ward lifecycles and cumulative regrowth depletion are genuinely multi-stage.
+        if(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding
+                ||item instanceof com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth)
+            return item.isIdentified()?WandExplanation.details((com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand)item):"";
+        if(item instanceof Armor){
+            Armor armor=(Armor)item;
+            return armor.levelKnown&&armor.glyph!=null&&!armor.glyph.curse()?GlyphExplanation.details(armor,Dungeon.hero):"";
+        }
+        if(item instanceof Weapon){
+            Weapon weapon=(Weapon)item;
+            if(!weapon.levelKnown||weapon.enchantment==null||weapon.enchantment.curse())return "";
+            if(weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart)
+                return com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart.inspect(()->EnchantmentExplanation.describe(weapon,Dungeon.hero,true));
+            return EnchantmentExplanation.describe(weapon,Dungeon.hero,true);
+        }
+        return "";
+    }
     public static String item(Item item,String visibleDescription){
         if(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart)
             return com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart.inspect(()->itemInContext(item,visibleDescription));
@@ -113,8 +141,8 @@ public final class MechanicsDetails {
             float rate=Math.min(1f,barrier.shielding()/20f)*factor;
             extra+="_Barrier decay_\nEach normal barrier tick adds min(1, current shield / 20) × the active Hold Fast factor toward losing one shield point. With the current state, that is "+ObfuscationExplanation.number(rate)+" per tick. Progress toward the next point lost is currently "+ObfuscationExplanation.number(100*barrier.decayProgress())+"%. At one whole point of progress, one shield point is removed and that progress resets. Incoming damage can also consume shielding.\n\n";
         }
-        if(buff instanceof FlavourBuff)extra+="_Current displayed duration_\n"+ObfuscationExplanation.number(Math.max(0,buff.visualcooldown()))+" game-time units. Time until this effect's scheduled update: "+ObfuscationExplanation.number(Math.max(0,buff.cooldown()))+" game-time units. The standard timed-effect counter adds one because these updates follow character actions; individual effects can use a different display rule. Action costs can differ from one turn, and the icon can round its number. These are not real-world seconds.\n\n";
-        return (extra+glossary(visibleDescription)).trim();
+        if(buff instanceof FlavourBuff&&!extra.isEmpty())extra+="_Current displayed duration_\n"+ObfuscationExplanation.number(Math.max(0,buff.visualcooldown()))+" game-time units. Time until this effect's scheduled update: "+ObfuscationExplanation.number(Math.max(0,buff.cooldown()))+" game-time units. The standard timed-effect counter adds one because these updates follow character actions; individual effects can use a different display rule. Action costs can differ from one turn, and the icon can round its number. These are not real-world seconds.\n\n";
+        return extra.trim();
     }
     public static String talent(Talent talent,int points,String visibleDescription){
         return talent(talent,points,visibleDescription,false);
@@ -126,6 +154,7 @@ public final class MechanicsDetails {
         if(talent==Talent.PROTECTIVE_SHADOWS)specific="_Protective Shadows calculation_\nWhile invisible and below this talent's shield threshold, its tracker adds 0.5 × rank toward the next shield point each tick. Threshold at this rank: "+(1+2*points)+" shield points. At a whole point of progress it grants one point and resets progress. This limits new gain from this talent, not larger shielding supplied by other effects. The tracker refreshes barrier decay while it runs. Rank zero grants no effect.\n\n";
         if(talent==Talent.SILENT_STEPS)specific="_Sleeping-enemy condition_\nThe standard sleeping-enemy check does not wake for your footsteps at distance ≥ 4 − rank tiles. This is a condition on that sleeping check, not invisibility, immunity to alarms or a rule making already-alert enemies forget you. Rank zero grants no effect.\n\n";
         if(!alternateDescription&&points>0){String spell=SpellExplanation.talentDetails(talent,com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero);if(!spell.isEmpty())specific+=spell+"\n\n";}
-        return "_Talent rank_\nCurrent rank: "+points+" / "+talent.maxPoints()+". The description's rank-specific amounts are the benefits for those ranks, not amounts to add across every rank unless explicitly stated. Conditional effects apply only when their requirements are met.\n\n"+specific+glossary(visibleDescription);
+        if(specific.isEmpty())return "";
+        return "_Talent rank_\nCurrent rank: "+points+" / "+talent.maxPoints()+". The description's rank-specific amounts are the benefits for those ranks, not amounts to add across every rank unless explicitly stated. Conditional effects apply only when their requirements are met.\n\n"+specific;
     }
 }

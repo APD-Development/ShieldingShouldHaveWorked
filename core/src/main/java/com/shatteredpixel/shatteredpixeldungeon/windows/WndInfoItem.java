@@ -40,6 +40,7 @@ public class WndInfoItem extends Window {
 
 	//only one WndInfoItem can appear at a time
 	private static WndInfoItem INSTANCE;
+    private Item displayedItem;
 
 	public WndInfoItem( Heap heap ) {
 
@@ -89,6 +90,7 @@ public class WndInfoItem extends Window {
 	}
 	
 	private void fillFields( Item item ) {
+        displayedItem=item;
 		
 		int color = TITLE_COLOR;
 		if (item.levelKnown && item.level() > 0) {
@@ -127,7 +129,7 @@ public class WndInfoItem extends Window {
 		}
 		add( title );
 
-        float bottom=com.shatteredpixel.shatteredpixeldungeon.ui.MechanicsInfoPanel.add(this,info,title.left(),title.bottom()+GAP,width,this instanceof WndUseItem?72:0,null);
+        float bottom=com.shatteredpixel.shatteredpixeldungeon.ui.MechanicsInfoPanel.add(this,info,title.left(),title.bottom()+GAP,width,this instanceof WndUseItem?72:0,()->com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.MechanicsDetails.itemCalculations(displayedItem));
         resize(width,(int)(bottom+2));
 	}
 }

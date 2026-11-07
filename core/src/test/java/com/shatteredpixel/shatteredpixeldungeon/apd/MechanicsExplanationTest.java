@@ -1667,4 +1667,35 @@ public class MechanicsExplanationTest {
  @Test public void everySelectableClericSpellHasASpecificPrimaryExplanation(){
   Dungeon.level.blobs=new java.util.HashMap<>();java.util.List<com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.ClericSpell> spells=com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.ClericSpell.getAllSpells();assertEquals(27,spells.size());Random.pushGenerator(78531);float expected=Random.Float();Random.popGenerator();Random.pushGenerator(78531);try{for(com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.ClericSpell spell:spells)assertFalse(spell.getClass().getSimpleName(),SpellExplanation.effects(spell,hero).isEmpty());assertEquals(expected,Random.Float(),0);}finally{Random.popGenerator();}
  }
+ @Test public void ordinaryItemWindowsDoNotGetPanelsFromGenericWordsOrSimpleResources(){
+  com.shatteredpixel.shatteredpixeldungeon.items.Item[] ordinary={new com.shatteredpixel.shatteredpixeldungeon.items.food.Food(),new com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation(),new com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty(),new com.shatteredpixel.shatteredpixeldungeon.plants.Sungrass.Seed(),new com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing(),new com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword(),new com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor()};
+  for(com.shatteredpixel.shatteredpixeldungeon.items.Item item:ordinary){item.levelKnown=item.cursedKnown=true;String before=item.info();com.watabou.utils.Bundle state=new com.watabou.utils.Bundle();item.storeInBundle(state);assertEquals(item.getClass().getSimpleName(),"",MechanicsDetails.itemCalculations(item));assertEquals(before,item.info());com.watabou.utils.Bundle after=new com.watabou.utils.Bundle();item.storeInBundle(after);assertEquals(state.toString(),after.toString());}
+  assertEquals("",MechanicsDetails.itemCalculations(null));
+ }
+ @Test public void arcanaAndAffectedGlyphEnchantmentsRetainTheirSpecificMathWithoutGenericItemSections(){
+  RingOfArcana ring=new RingOfArcana();ring.anonymize();ring.level(3);ring.levelKnown=ring.cursedKnown=true;
+  assertTrue(MechanicsDetails.itemCalculations(ring).contains("1.175^bonus"));
+  MailArmor armor=new MailArmor();armor.level(3);armor.levelKnown=armor.cursedKnown=true;armor.glyph=new com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Obfuscation();
+  String glyph=MechanicsDetails.itemCalculations(armor);assertTrue(glyph,glyph.contains("stealth"));assertFalse(glyph.contains("_Armor damage"));
+  com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword sword=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword();sword.levelKnown=sword.cursedKnown=true;sword.enchant(new com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blazing());String enchantment=MechanicsDetails.itemCalculations(sword);assertTrue(enchantment,enchantment.contains("Blazing calculations"));assertFalse(enchantment.contains("_Damage numbers_"));
+  ring.levelKnown=false;armor.levelKnown=false;sword.levelKnown=false;assertEquals("",MechanicsDetails.itemCalculations(ring));assertEquals("",MechanicsDetails.itemCalculations(armor));assertEquals("",MechanicsDetails.itemCalculations(sword));
+ }
+ @Test public void genericGlossaryAndDurationDoNotCreateBuffPanels(){
+  assertEquals("",MechanicsDetails.buff(new Buff(),"damage chance speed turns strength shielding"));
+  assertEquals("",MechanicsDetails.buff(new FlavourBuff(),"lasts 10 turns"));
+ }
+ @Test public void genuinelyNonlinearForceTenacityAndChaliceExplanationsRemainAvailable(){
+  for(com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring ring:new com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring[]{new RingOfForce(),new RingOfTenacity()}){ring.anonymize();ring.levelKnown=ring.cursedKnown=true;String text=MechanicsDetails.itemCalculations(ring);assertFalse(text.isEmpty());assertFalse(text.contains("_Time and speed_"));}
+  com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood chalice=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood();chalice.levelKnown=chalice.cursedKnown=true;String text=MechanicsDetails.itemCalculations(chalice);assertTrue(text,text.contains("level²"));assertTrue(text.contains("healing"));
+ }
+ @Test public void complexArtifactTimeBudgetResourceLimitsAndConeGeometryRemainAvailable(){
+  com.shatteredpixel.shatteredpixeldungeon.items.artifacts.EtherealChains chains=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.EtherealChains();chains.levelKnown=chains.cursedKnown=true;assertTrue(MechanicsDetails.itemCalculations(chains).contains("twice the soft target"));
+  com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass hourglass=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass();hourglass.levelKnown=hourglass.cursedKnown=true;assertTrue(MechanicsDetails.itemCalculations(hourglass).contains("0.001"));
+  com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight talisman=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight();talisman.levelKnown=talisman.cursedKnown=true;assertTrue(MechanicsDetails.itemCalculations(talisman).contains("0.92^d"));
+ }
+ @Test public void ownerRetainedArtifactAndTrinketPanelsStaySpecificPendingReview(){
+  com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty horn=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty();horn.levelKnown=horn.cursedKnown=true;assertEquals(ArtifactExplanation.details(horn),MechanicsDetails.itemCalculations(horn));
+  com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ExoticCrystals crystal=new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ExoticCrystals();crystal.levelKnown=crystal.cursedKnown=true;assertEquals(TrinketExplanation.details(crystal),MechanicsDetails.itemCalculations(crystal));
+  com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand ward=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding();ward.levelKnown=ward.cursedKnown=ward.curChargeKnown=true;assertEquals(WandExplanation.details(ward),MechanicsDetails.itemCalculations(ward));ward.curChargeKnown=false;assertEquals("",MechanicsDetails.itemCalculations(ward));
+ }
 }

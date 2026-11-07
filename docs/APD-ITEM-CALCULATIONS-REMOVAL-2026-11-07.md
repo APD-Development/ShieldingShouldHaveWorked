@@ -1,3 +1,5 @@
+> Superseded for scope by the owner’s subsequent clarification and explicit retention reply. See APD-CALCULATIONS-SCOPE-AUDIT-2026-11-07.md. Blanket removal is not the final implementation.
+
 # Ordinary item calculations interface removal — 2026-11-07
 
 ## Authorization finding
