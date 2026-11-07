@@ -9,3 +9,5 @@
 2026-11-07 cooked-fruit descriptions: full local2928/448 zero failures/errors/skips. Nine new cases cover12 actual recipes, description/hero/fruit/RNG/identity purity, real heal/cure and Pharmacophobia poison, actual Strength without HP change, real timed prolonging, actual Food satisfaction and preview time, compressed fruit saves, no-hero/unexpected contexts, and24 real throw-dispatch/well/pit branches (effect/drop rendering isolated). Source-only core/Android debug-release-instrumentation Java/desktop checks; no APK.371 remains current.
 
 2026-11-07 seasonal current-form descriptions: local2930/448 zero failure/error/skip. Real Pasty healing/Barrier/XP/fractional wand capacity regressions, every calendar form/no-hero inspection. Source-only full core/Android debug-release-instrumentation Java/desktop; no APK assembly.
+
+2026-11-07 Talisman active explanation: local2932/449 zero failure/error/skip. Actual target-cutoff comparison88 states; hidden-level/curse gating, no floor/hero dependency or stored-state mutation. Source-only full core and required Android/desktop compilation, no APK.
