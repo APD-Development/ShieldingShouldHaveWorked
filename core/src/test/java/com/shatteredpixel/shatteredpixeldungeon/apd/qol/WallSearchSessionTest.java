@@ -61,4 +61,14 @@ public class WallSearchSessionTest {
     @Test public void doorlessFloorsKeepNormalSearchTurnsWithoutPhantomWallTargets(){for(int depth:new int[]{1,10,15,20,25,26}){Dungeon.depth=depth;hero.ready=true;hero.wallSearch.clear();float before=hero.cooldown();hero.search(true);assertEquals(2,hero.cooldown()-before,0.001f);assertFalse(hero.wallSearch.exists());assertFalse(hero.wallSearch.select(hero,41));}}
     @Test public void bookshelvesAndImpossibleGeometryCannotBecomeDoorSearchTargets(){level.map[41]=Terrain.BOOKSHELF;assertFalse(hero.wallSearch.select(hero,41));level.map[41]=Terrain.WALL;level.map[32]=level.map[50]=Terrain.EMPTY;assertFalse(hero.wallSearch.select(hero,41));assertFalse(hero.wallSearch.exists());}
 
+    @Test public void legacyUncertainTargetStillResumesOrdinaryPaidSearchWithoutFalseImpossibility(){
+        assertTrue(hero.wallSearch.select(hero,41));hero.search(true);hero.ready=true;
+        level.visited[32]=level.visited[50]=false;level.heroFOV[32]=level.heroFOV[50]=false;
+        assertFalse(DoorSearchEligibility.candidate(level,41));assertTrue(DoorSearchEligibility.couldHaveDoor(level,41));
+        Bundle before=new Bundle();hero.wallSearch.store(before);WallSearchSession saved=new WallSearchSession();saved.restore(before);
+        assertEquals(41,saved.target());assertEquals(1,saved.searches());
+        level.locked=false;float turn=hero.cooldown();assertNull(hero.wallSearch.resume(hero));
+        assertEquals(2,hero.cooldown()-turn,0.001f);assertEquals(41,hero.wallSearch.target());assertEquals(2,hero.wallSearch.searches());
+    }
+
 }

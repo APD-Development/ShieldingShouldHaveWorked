@@ -51,4 +51,15 @@ public class SearchedWallLayerRetentionTest {
   Bundle saved=new Bundle();level.searchedWalls.store(saved);level.searchedWalls.clear();layer.refreshKnownGeometry();assertEquals(-1,layer.visual(24));assertEquals(-1,layer.visual(17));
   level.searchedWalls.restore(saved,49);layer.refreshKnownGeometry();assertEquals(SearchedWallMarkers.FACE,layer.visual(24));assertEquals(SearchedWallMarkers.OVERHANG,layer.visual(17));
  }
+ @Test public void actualLayerWaitsForObservedSupportAndThenKeepsTheRememberedMark(){
+  level.heroFOV[23]=false;layer=new Layer();layer.updateMap();
+  assertEquals(-1,layer.visual(24));assertEquals(-1,layer.visual(17));
+  Bundle before=new Bundle();level.searchedWalls.store(before);
+  level.heroFOV[23]=true;level.visited[23]=true;layer.refreshKnownGeometry();
+  assertEquals(SearchedWallMarkers.FACE,layer.visual(24));assertEquals(SearchedWallMarkers.OVERHANG,layer.visual(17));
+  Arrays.fill(level.visited,true);Arrays.fill(level.heroFOV,false);layer.refreshKnownGeometry();
+  assertEquals(SearchedWallMarkers.FACE,layer.visual(24));assertEquals(SearchedWallMarkers.OVERHANG,layer.visual(17));
+  Bundle after=new Bundle();level.searchedWalls.store(after);assertEquals(before.toString(),after.toString());
+ }
+
 }

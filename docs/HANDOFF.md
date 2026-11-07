@@ -1,3 +1,7 @@
+## Wall geometry correction — local verified, remote pending
+
+Reproduced unknown-frame/unknown-approach false marks and geometry-driven disappearance. Positive door feedback now requires observed side frames and an observed approach, without reading hidden backing. Saved uncertain searches retain normal paid resumption through a separate possibility predicate. Seven new tests; full2918/447 pass, actual generated doors checked through6 seeds/26 floors and partial visibility. Report APD-WALL-OBSERVED-GEOMETRY-2026-11-07.md. Android source checks requested; no runtime/new APK proof yet;370 remains delivered fallback. No claim all wall issues universally resolved.
+
 ## APD370 privately published and owner links sent — 2026-11-07
 
 Owner explicitly authorized publishing all completed work, superseding the previous hold. Exact source/tag46c193de78e7cee29c78856c07f38d766fac6027 / apd-alpha-preview-370. Manual publication workflow42402274403/job128492430257 ran18:38:21–18:44:39UTC; published18:44:25UTC. Full2911 core cases/447 suites, required Android/desktop compilation, exact signing/application identity and7 targeted API34 native cases passed (Developer4, Alpha3; not complete Android suite or physical-phone testing).

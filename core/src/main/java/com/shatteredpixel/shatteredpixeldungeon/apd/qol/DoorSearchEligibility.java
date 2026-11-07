@@ -54,11 +54,27 @@ public final class DoorSearchEligibility {
         // A visible door immediately in front/behind is not an interior passage tile.
         return (Terrain.flags[t]&Terrain.SOLID)==0&&t!=Terrain.DOOR&&t!=Terrain.OPEN_DOOR&&t!=Terrain.HERO_LKD_DR;
     }
-    public static boolean candidate(Level l,int p){
+    /** Keeps uncertainty separate from proof that the public geometry rules a doorway out.
+     * Used only to preserve a previously selected investigation, never to advertise a mark. */
+    public static boolean couldHaveDoor(Level l,int p){
         if(!supportsDoors(l)||!known(l,p)||!wallDisguise(l.map[p]))return false;
         int w=l.width();
         if(w<3||p<w||p>=l.length()-w||p%w==0||p%w==w-1)return false;
         return frame(l,p-1)&&frame(l,p+1)&&passage(l,p-w)&&passage(l,p+w)
                 ||frame(l,p-w)&&frame(l,p+w)&&passage(l,p-1)&&passage(l,p+1);
     }
+    /** Positive doorway feedback needs observed side frames and an observed approach.
+     * The far side may remain unknown; its actual hidden terrain is never inspected. */
+    public static boolean candidate(Level l,int p){
+        if(!couldHaveDoor(l,p))return false;
+        int w=l.width();
+        return observedOrientation(l,p-1,p+1,p-w,p+w)
+                ||observedOrientation(l,p-w,p+w,p-1,p+1);
+    }
+    private static boolean observedOrientation(Level l,int firstFrame,int secondFrame,int firstPassage,int secondPassage){
+        return known(l,firstFrame)&&known(l,secondFrame)&&frame(l,firstFrame)&&frame(l,secondFrame)
+                &&passage(l,firstPassage)&&passage(l,secondPassage)
+                &&(known(l,firstPassage)||known(l,secondPassage));
+    }
+
 }
