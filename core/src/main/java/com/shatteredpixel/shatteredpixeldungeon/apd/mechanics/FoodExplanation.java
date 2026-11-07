@@ -33,6 +33,9 @@ public final class FoodExplanation {
     }
     public static float nutritionBeforeHorn(Food food){
         float base=baseNutrition(food);
+        return nutritionBeforeHorn(base);
+    }
+    public static float nutritionBeforeHorn(float base){
         return Dungeon.isChallenged(Challenges.NO_FOOD)?base/3f:base;
     }
     private static String unavailable(Food food){
@@ -45,6 +48,7 @@ public final class FoodExplanation {
         String text="Nutrition: _"+ObfuscationExplanation.number(nutritionBeforeHorn(food))+" hunger points_ before a cursed Horn's penalty and the fully-fed limit. Eating subtracts hunger points; it does not restore that many HP.";
         float time=food.previewEatingTime();
         if(Float.isFinite(time))text+=" Current eating action: _"+ObfuscationExplanation.number(time)+" game turns_ before effects that change all action times.";
+        if(food instanceof Blandfruit)text+="\n"+BlandfruitExplanation.summary((Blandfruit)food);
         return text;
     }
     public static String details(Food food){
@@ -61,7 +65,7 @@ public final class FoodExplanation {
         if(food instanceof MeatPie)return "\n_Well Fed_\nResets the Well Fed reserve to "+n(Dungeon.isChallenged(Challenges.NO_FOOD)?Hunger.STARVING/3:Hunger.STARVING)+" scheduled updates. It offers 1 base HP at each supported multiple of "+WellFed.HEAL_INTERVAL+" remaining updates when health is missing. Salt Cube changes update spacing rather than the base heal per offer; healing modifiers still apply. Well Fed pauses ordinary hunger accumulation. Eating another pie resets this reserve rather than adding a second independent reserve.";
         if(food instanceof Berry)return "\n_Berry seeds_\nEvery second eaten berry creates one random seed through the normal seed table. The saved counter carries between berries and is cleared after the seed is produced. Inspection does not increment it or choose a seed.";
         if(food instanceof SupplyRation)return "\n_Supply Ration_\nOffers 5 base HP of healing, subject to healing modifiers and missing health. If a Cloak of Shadows is carried, it also offers 1 direct Cloak charge and the ordinary recharge visual feedback. Capacity and item rules still apply; this is separate from its nutrition and fast eating time.";
-        if(food instanceof Blandfruit)return "\n_Cooked fruit_\nIts visible fruit type specifies the imbued potion effect. Eating applies that potion's existing effect after the food action; throwing uses its existing shatter and leftover rules. The nutrition, potion resource and action time are separate. This description does not identify other potions or apply the imbued effect.";
+        if(food instanceof Blandfruit)return "\n"+BlandfruitExplanation.details((Blandfruit)food,hero);
         if(food instanceof Pasty)return "\n_Seasonal food_\nIts visible holiday form determines its extra effect under the existing calendar: Lunar New Year adds a separate leftover meal; April Fools and Easter offer 2 artifact recharge power; Pride attempts a 5-unit Charm on an adjacent eligible non-boss enemy; birthday forms offer max(2, floor(level experience requirement / 10)) experience; Halloween offers max(3, floor(maximum HP / 20)) base healing; winter offers 0.5 supported wand charge; New Year offers max(5, floor(maximum HP / 10)) Barrier shielding. Normal capacity, defense, healing and reapplication rules apply. Other dates add none of those effects. These are conditional holiday effects, not benefits every Pasty grants at once.";
         return "";
     }

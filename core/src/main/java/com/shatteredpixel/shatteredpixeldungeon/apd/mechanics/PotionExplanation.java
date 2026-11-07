@@ -28,7 +28,13 @@ public final class PotionExplanation {
     private static String n(float value){return ObfuscationExplanation.number(value);}
     private static String timed(String effect,float duration){return "Offers "+effect+" for "+n(duration)+" game-time units before normal resistance and reapplication rules. The ordinary prolonging path preserves a longer existing scheduled duration rather than adding another full duration. This is time in the game, not real-world seconds.";}
     public static String details(Potion potion,Hero hero){
-        if(!potion.isKnown())return "";
+        String text=effect(potion,hero);
+        if(text.isEmpty())return "";
+        return "_Known potion effect_\n"+text+" Where ordinary drinking is available, it spends one game-time unit and consumes the potion; special targeting and shattering paths retain their own action rules. Viewing this explanation never drinks, throws or identifies an unknown potion.";
+    }
+    /** Effect body only, so an imbued food is not described as a separate potion-drinking action. */
+    public static String effect(Potion potion,Hero hero){
+        if(potion==null||!potion.isKnown())return "";
         String text;
         switch(potion.getClass().getSimpleName()){
             case "ElixirOfMight":text="Permanently adds one base Strength point and resets its temporary maximum-health contribution to five remaining level-up steps. At full strength the base contribution is round(4 + (15 + 5 × hero level) / 20). "+(hero==null?"":"At the current hero level that is "+com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight.HTBoost.boost(15+5*hero.lvl)+" base maximum-HP points before run modifiers. ")+"The remaining contribution is round(remaining level steps × that full contribution / 5). Each hero level-up spends one step; ordinary turns do not spend steps. Reapplication resets the five-step reserve rather than adding another independent stack. Maximum-health updates and other modifiers retain their normal behavior.";break;
@@ -46,7 +52,7 @@ public final class PotionExplanation {
             case "UnstableBrew":text="Selects an effect from its existing weighted regular-potion table. Drinking rerolls throw-only effects; shattering rerolls outcomes that are neither required nor supported throw effects. The weights are conditional on the chosen use and challenges, so the result is not uniform across all potion types. Pharmacophobia removes Healing from the drinking selection. Each selected potion uses its own effect, target and duration rules; inspection does not choose an outcome or advance randomness.";break;
             case "PotionOfHealing":text="The base healing pool is the integer part of 0.8 × maximum HP + 14. "+(hero==null?"":"At current maximum HP, that is "+(int)(.8f*hero.HT+14)+" base HP before Vial, healing modifiers and missing-health limits. ")+"It is delivered by Healing's gradual pool, not all restored instantly. The setup also cures Poison, Cripple, Weakness, Vulnerable, Bleeding, Blindness, Drowsy, Slow and Vertigo through its existing cure list. Pharmacophobia replaces the healing branch with its poison effect. Inspect the active Healing effect for its actual remaining pool and next scheduled offer; this panel never spends fractional healing credit.";break;
             case "PotionOfShielding":text="Offers a Barrier of the integer part of 0.6 × maximum HP + 10. "+(hero==null?"":"At current maximum HP, that is "+(int)(.6f*hero.HT+10)+" shield points. ")+"A stronger existing Barrier is kept rather than adding the full offer. This does not heal HP or increase maximum HP; normal shield decay and damage consumption remain. Pharmacophobia uses its poison branch instead.";break;
-            case "PotionOfStrength":text="Permanently adds one point to base Strength and updates the hero's health limits under the existing Strength rules. A point is a score, not a percentage increase to all damage. Equipment requirements and any strength-based bonuses use their own formulas; this potion does not itself identify or upgrade a weapon.";break;
+            case "PotionOfStrength":text="Permanently adds one point to base Strength. A point is a score, not a percentage increase to all damage or an immediate HP heal. Equipment requirements and any strength-based bonuses use their own formulas; this potion does not itself identify or upgrade a weapon.";break;
             case "PotionOfExperience":text="Offers the hero's current full level-experience requirement as experience. "+(hero==null?"":"Current offer: "+hero.maxExp()+" experience points. ")+"Existing saved progress, maximum-level handling and experience-related effects still apply. This is not a permanent experience-gain multiplier or automatic talent selection.";break;
             case "PotionOfInvisibility":text=timed("Invisibility",Invisibility.DURATION)+" Supported attacks and other breaking actions still end invisibility. Sensing and special enemy detection remain separate; invisibility is not immunity to every damage source.";break;
             case "PotionOfHaste":text=timed("Haste",Haste.DURATION)+" Haste multiplies movement rate by 3, dividing an otherwise unchanged walking step's time by 3. Attack and recharge rates are separate.";break;
@@ -69,6 +75,6 @@ public final class PotionExplanation {
             case "PotionOfDivineInspiration":text="Adds 2 bonus talent points to one eligible selected tier under the existing entitlement rule. Previously boosted tiers cannot be boosted again by the same tracker rule, and normal tier/class availability still applies. This does not train every talent, remove rank limits or identify equipment. Selecting a tier and spending its points remain separate player choices.";break;
             default:return "";
         }
-        return "_Known potion effect_\n"+text+" Where ordinary drinking is available, it spends one game-time unit and consumes the potion; special targeting and shattering paths retain their own action rules. Viewing this explanation never drinks, throws or identifies an unknown potion.";
+        return text;
     }
 }

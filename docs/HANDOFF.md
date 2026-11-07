@@ -1,3 +1,7 @@
+## Cooked-fruit explanation continuation — local2928/448 verified, platform gate pending
+
+Three description helpers now explain12 cooked forms, actual hazard/throw/leftover behavior, local-only potion knowledge, live HP/duration/XP and Pharmacophobia. Removed unsupported Strength/HT promise. Nine actual-effect/dispatch/purity/save cases plus existing327 mechanics cases pass; full2928/448 zero failures/errors/skips. No food/potion mechanics changed; no APK/version/signing/delivery operation. Report APD-COOKED-FRUIT-2026-11-07.md; source-only gate requested.371 remains current playable release; full audit/native/phone/translations still open. Continue seasonal-food/live-value review while validation runs.
+
 ## APD371 delivered — wall correction verified, 2026-11-07
 
 Exact retained source/tag5b7e7250b63072e52c5cebd1a45ea9bbf1132aa4 / apd-alpha-preview-371. Targeted correction796dc13b2 requires observed side frames and an observed approach for positive wall feedback, preserves unknown-vs-impossible distinction and ordinary paid search resumption. No search-cost/probability/generation/save-schema change.
