@@ -1081,6 +1081,22 @@
       "skipped": 0,
       "apk_assembled": false,
       "physical_phone_tested": false
+    },
+    {
+      "workflow_run": 42409005559,
+      "job": 128512838533,
+      "artifact": 13588159508,
+      "artifact_size_bytes": 508666,
+      "artifact_sha256": "a5c260bb85313eae338db0ee5cfcdb98fef25176b922e01842e19bd0bdb7486a",
+      "source_commit": "8c9d6a1675dc4443cda9eee9273596ef744f2adc",
+      "completed_at": "2026-11-07T20:03:34Z",
+      "suites": 448,
+      "tests": 2928,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "apk_assembled": false,
+      "physical_phone_tested": false
     }
   ]
 }
