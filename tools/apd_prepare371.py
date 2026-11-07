@@ -21,7 +21,7 @@ from apd_existing_build_evidence import certificates,xml_summary
 from apd_owner_delivery_policy import require_apk_delivery_allowed
 ROOT=pathlib.Path.cwd();OUT=ROOT/'owner-delivery';OUT.mkdir(exist_ok=True)
 require_apk_delivery_allowed(ROOT)
-source=os.environ['GITHUB_SHA'];number=371;tag='apd-alpha-preview-371'
+source=os.environ.get('APD_SOURCE_SHA',os.environ['GITHUB_SHA']);number=371;tag='apd-alpha-preview-371'
 sha=lambda p:hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest()
 api=lambda p:json.loads(subprocess.check_output(['gh','api',p]))
 repo=os.environ['GITHUB_REPOSITORY'];assert api('repos/'+repo)['private']
@@ -87,6 +87,8 @@ with zipfile.ZipFile(sourcezip,'w',zipfile.ZIP_DEFLATED,compresslevel=9) as arch
 side=pathlib.Path(str(sourcezip)+'.sha256');side.write_text(sha(sourcezip)+'  '+sourcezip.name+'\n');files.extend([sourcezip,side])
 
 proof=dict(source_commit=source,number=371,tag=tag,core_tests=2918,android_tests=9,application_id='com.charltonchris29.adhdpixeldungeon.indev',version_code=920,signing_certificate=expected,apk_hashes=hashes,source_sha256=sha(sourcezip),physical_phone_verified=False,whole_semantic_audit_complete=False,wall_marker_fix_complete=False,reproduced_unknown_geometry_false_marks_fixed=True,new_application_apks_created=2,prepared_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),workflow_run=os.environ['GITHUB_RUN_ID'],native_scope='API34: actual wall-layer regression and three trap-setting/persistence/movement cases in each variant; combined QoL UI case in Developer. Nine targeted cases; not a complete Android suite.',fallback_preserved=True)
+if os.environ.get('APD_REUSE_371')=='true':
+ proof.update(application_rebuilt=False,new_application_apks_created=0,original_pair_apks_created=2,retained_producer_run=42404197897,retained_producer_source=source,original_producer_conclusion='failure',original_interruption='adb closed during force-stop; emulator host connection lost; original failure retained',verification_source=os.environ['GITHUB_SHA'],graphics_environment='API34 software swiftshader, Vulkan disabled; separate VM per variant')
 (OUT/'APD-Preview-371-Verification.json').write_text(json.dumps(proof,indent=2)+'\n')
 notes=f"""Fixes a reproduced cause of incorrect wall-search feedback in370: unseen side tiles were treated as valid door frames and unseen approach tiles as valid passage space. Positive wall marks and per-wall feedback now require observed or remembered side frames and at least one observed approach. The hidden far side is never inspected. Saved uncertain investigations still resume with ordinary Search time/cost, without falsely declaring the location impossible. Existing history is retained and valid known marks survive loss of sight and save/reload. Search probabilities, turn costs, door generation and balance are unchanged.
 

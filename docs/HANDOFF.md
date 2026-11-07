@@ -1,3 +1,7 @@
+## 371 verification retry, same APK bytes — owner requested correctness
+
+Original run42404197897 full build/core passed; native later lost emulator connection during force-stop (adb closed; TCP5554 refused). Developer wall and QoL outputs are actually complete OK1; retrieved original artifact74062096bytes SHA2564104caacfb8901bcbe35f4688d51719e6615a335c481e49d4395a923e1f73693 and inspected. Not a full native pass;371 stays draft. Resume owner asked to ensure correction correct. New workflow reuses both exact APKs/source5b7e7250b and original2918/447 reports, compiles instrumentation only, isolates variants in separate API34 VMs, uses software swiftshader without Vulkan, captures wall PNGs immediately. Reuses only genuinely completed original Developer QoL result. Full9-case proof required before release. No additional game APKs or version advancement. Exact host-disconnect root cause remains unproven; no app/OOM root cause claimed.
+
 ## 371 wall-correction pair preparation
 
 Source796dc13b2 full2918/447 and required Android/desktop source gate42403809979 passed. Actual new native WallGeometryDeviceTest added for observed corner suppression, positive face, hidden-backing invariance, save/FOV retention and opened-door cleanup on the real Android tile layer. Preparing one371 pair with9 targeted native cases (including wall case in both variants) plus full core/identity/source scan/download-back; no success claim until actual results.370 remains fallback. Observed game APK count before this pair4 this NY day, pair adds2 within10 limit.
