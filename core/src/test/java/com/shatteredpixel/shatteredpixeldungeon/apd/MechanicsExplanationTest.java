@@ -1973,6 +1973,16 @@ public class MechanicsExplanationTest {
    hero.lvl=30;assertEquals(first,vial.statsDesc());
   }
  }
+ @Test public void bloodVialShowsActualRuleAdjustedLimitWithoutInventingACatalogHero()throws Exception{
+  com.shatteredpixel.shatteredpixeldungeon.items.trinkets.VialOfBlood vial=new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.VialOfBlood();vial.identify();assertTrue(vial.collect());hero.sprite=quietSprite();
+  for(int level=0;level<=3;level++)for(int maximum:new int[]{20,85,140})for(int percent=0;percent<=200;percent+=25){
+   com.watabou.utils.Bundle all=new com.watabou.utils.Bundle(),settings=new com.watabou.utils.Bundle();com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.defaults().with(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.Slider.HEALING,percent).store(settings);all.put("apd_custom_rules",settings);Dungeon.apdRestoreCustomRules(all);
+   vial.level(level);hero.HT=maximum;hero.HP=1;hero.apdCustomHealingFraction=.999f;int cap=(int)Math.ceil((double)com.shatteredpixel.shatteredpixeldungeon.items.trinkets.VialOfBlood.maxHealPerTurn(level)*percent/100.0);
+   assertTrue(vial.statsDesc(),vial.statsDesc().contains("_"+cap+" HP per turn_"));assertEquals(.999f,hero.apdCustomHealingFraction,0);assertEquals(1,hero.HP);
+   Healing actual=new Healing();actual.target=hero;actual.setHeal(10000,1,0,true);actual.act();assertEquals(cap,hero.HP-1);
+  }
+  Dungeon.hero=null;try{String catalog=vial.statsDesc();assertTrue(catalog.contains("maximum health"));assertFalse(catalog.contains("HP per turn"));vial.levelKnown=false;String unknown=vial.statsDesc();vial.level(0);assertEquals(unknown,vial.statsDesc());}finally{Dungeon.hero=hero;}
+ }
  @Test public void shardDescriptionExplainsManualIdentificationAndScrollReadiness(){
   com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion shard=new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion();shard.identify();
   for(int level=0;level<=3;level++){shard.level(level);String text=shard.statsDesc();assertTrue(text,text.contains("counting up to _"+(level+1)+"_"));assertTrue(text.contains("use the shard"));assertTrue(text.contains("scroll of identify makes equipment ready"));assertFalse(text.contains("item(s)"));}

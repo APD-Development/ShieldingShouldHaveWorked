@@ -39,18 +39,28 @@ public class VialOfBlood extends Trinket {
 
 	@Override
 	public String statsDesc() {
+        if(Dungeon.hero==null){
+            int level=isIdentified()?buffedLvl():0;
+            return Messages.get(this,"stats_without_hero",isIdentified()?"":"At +0: ",Messages.decimalFormat("#.##",100*(totalHealMultiplier(level)-1f)));
+        }
 		if (isIdentified()){
 			return Messages.get(this,
 					"stats_desc",
 					Messages.decimalFormat("#.##", 100*(totalHealMultiplier(buffedLvl())-1f)),
-					Integer.toString(maxHealPerTurn(buffedLvl())));
+					Integer.toString(displayHealLimit(buffedLvl())));
 		} else {
 			return Messages.get(this,
 					"typical_stats_desc",
 					Messages.decimalFormat("#.##", 100*(totalHealMultiplier(0)-1f)),
-					Integer.toString(maxHealPerTurn(0)));
+					Integer.toString(displayHealLimit(0)));
 		}
 	}
+
+    private static int displayHealLimit(int level){
+        // The displayed maximum includes run healing and possible fractional carry, without spending it.
+        int percent=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomCombatHooks.percentage(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.Slider.HEALING);
+        return (int)Math.ceil((double)maxHealPerTurn(level)*percent/100.0);
+    }
 
 	public static boolean delayBurstHealing(){
 		return trinketLevel(VialOfBlood.class) != -1;

@@ -273,6 +273,16 @@ public class QolItemFeedbackDeviceTest {
             TopScoresDeviceTest.render(()->{Dungeon.challenges=previous;Dungeon.hero.belongings.backpack.items.remove(haste);Dungeon.hero.belongings.backpack.items.remove(shielding);Dungeon.hero.belongings.backpack.items.remove(noisemaker);Dungeon.hero.belongings.backpack.items.remove(regrowthBomb);});
         }
     }
+    private static void retainedTrinketDescriptionsRender()throws Exception{
+        Item[] items={new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.PetrifiedSeed(),new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MossyClump(),new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ExoticCrystals(),new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.FerretTuft(),new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.EyeOfNewt(),new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.CrackedSpyglass(),new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.VialOfBlood(),new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.SaltCube()};
+        String[] expected={"seeds or runestones","Excludes Floor 1","cannot be spent as alchemy energy","harder to hit","sense enemies through walls","Search can uncover it","maximum health","slows natural healing"};
+        for(int i=0;i<items.length;i++)for(boolean use:new boolean[]{false,true}){
+            Item item=items[i];String required=expected[i];AtomicReference<WndInfoItem> shown=new AtomicReference<>();
+            TopScoresDeviceTest.render(()->{item.level(3);item.levelKnown=item.cursedKnown=true;assertTrue(item.info(),item.info().contains(required));WndInfoItem window=use?new WndUseItem(null,item):new WndInfoItem(item);GameScene.show(window);assertDescriptionViewport(window);shown.set(window);});Thread.sleep(300);
+            if(use)TopScoresDeviceTest.screenshot("qol-retained-trinket-"+i+"-normal-description.png");
+            TopScoresDeviceTest.render(()->shown.get().hide());
+        }
+    }
     private static void retainedArtifactDescriptionsRender()throws Exception{
         com.shatteredpixel.shatteredpixeldungeon.items.KindofMisc previous=Dungeon.hero.belongings.misc;
         Item[] items={new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass(),new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.UnstableSpellbook(),new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband(),new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature()};
@@ -331,7 +341,17 @@ public class QolItemFeedbackDeviceTest {
         }
     }
     private static void questDescriptionsRender()throws Exception{
-        Item[] items={new com.shatteredpixel.shatteredpixeldungeon.items.quest.CeremonialCandle(),new com.shatteredpixel.shatteredpixeldungeon.items.quest.CorpseDust(),new com.shatteredpixel.shatteredpixeldungeon.items.quest.EscapeCrystal()};
+        com.shatteredpixel.shatteredpixeldungeon.items.quest.EscapeCrystal escape=new com.shatteredpixel.shatteredpixeldungeon.items.quest.EscapeCrystal();
+        TopScoresDeviceTest.render(()->{
+            escape.storedItems=new com.watabou.utils.Bundle();
+            com.watabou.utils.Bundle gear=new com.watabou.utils.Bundle(),slots=new com.watabou.utils.Bundle();
+            Dungeon.hero.belongings.storeInBundle(gear);Dungeon.quickslot.storePlaceholders(slots);
+            escape.storedItems.put(com.shatteredpixel.shatteredpixeldungeon.items.quest.EscapeCrystal.BELONGINGS,gear);
+            escape.storedItems.put(com.shatteredpixel.shatteredpixeldungeon.items.quest.EscapeCrystal.QUICKSLOTS,slots);
+            escape.storedItems.put(com.shatteredpixel.shatteredpixeldungeon.items.quest.EscapeCrystal.GOLD,Dungeon.gold);
+            escape.storedItems.put(com.shatteredpixel.shatteredpixeldungeon.items.quest.EscapeCrystal.ENERGY,Dungeon.energy);
+        });
+        Item[] items={new com.shatteredpixel.shatteredpixeldungeon.items.quest.CeremonialCandle(),new com.shatteredpixel.shatteredpixeldungeon.items.quest.CorpseDust(),escape};
         String[] expected={"north, east, south and west","banishes its wraiths","returns your original equipment"};
         for(int i=0;i<items.length;i++)showItem(items[i],expected[i],"qol-quest-"+i+"-concise.png",true);
     }
@@ -504,6 +524,7 @@ public class QolItemFeedbackDeviceTest {
             missileEffectDescriptionsRender();
             additionalDuelistDescriptionsRender();
             retainedArtifactDescriptionsRender();
+            retainedTrinketDescriptionsRender();
             inventoryOrderShowsAutomatically();
             prepareSearchableFloor();
             final int[] center={0};

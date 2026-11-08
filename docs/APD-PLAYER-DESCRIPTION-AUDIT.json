@@ -2794,7 +2794,7 @@
         "statsDesc"
       ],
       "wording_corrected": true,
-      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete."
+      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete. Ordinary prose individually re-read against actual helpers/call sites: seed/runestone bonus excludes dew, floor-theme exclusions stated, vision/evasion/hidden-loot tradeoffs clear, Salt Cube slows hunger and regeneration. Vial ordinary cap includes actual healing rules without spending fraction credit; no-character catalog does not invent20HP. Existing optional panel retained pending review; broader source/secondary review remains partial. Native383 actual windows pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/trinkets/DimensionalSundial.java",
@@ -2816,7 +2816,7 @@
         "statsDesc"
       ],
       "wording_corrected": true,
-      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete."
+      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete. Ordinary prose individually re-read against actual helpers/call sites: seed/runestone bonus excludes dew, floor-theme exclusions stated, vision/evasion/hidden-loot tradeoffs clear, Salt Cube slows hunger and regeneration. Vial ordinary cap includes actual healing rules without spending fraction credit; no-character catalog does not invent20HP. Existing optional panel retained pending review; broader source/secondary review remains partial. Native383 actual windows pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/trinkets/EyeOfNewt.java",
@@ -2827,7 +2827,7 @@
         "statsDesc"
       ],
       "wording_corrected": true,
-      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete."
+      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete. Ordinary prose individually re-read against actual helpers/call sites: seed/runestone bonus excludes dew, floor-theme exclusions stated, vision/evasion/hidden-loot tradeoffs clear, Salt Cube slows hunger and regeneration. Vial ordinary cap includes actual healing rules without spending fraction credit; no-character catalog does not invent20HP. Existing optional panel retained pending review; broader source/secondary review remains partial. Native383 actual windows pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/trinkets/FerretTuft.java",
@@ -2838,7 +2838,7 @@
         "statsDesc"
       ],
       "wording_corrected": true,
-      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete."
+      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete. Ordinary prose individually re-read against actual helpers/call sites: seed/runestone bonus excludes dew, floor-theme exclusions stated, vision/evasion/hidden-loot tradeoffs clear, Salt Cube slows hunger and regeneration. Vial ordinary cap includes actual healing rules without spending fraction credit; no-character catalog does not invent20HP. Existing optional panel retained pending review; broader source/secondary review remains partial. Native383 actual windows pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/trinkets/MimicTooth.java",
@@ -2860,7 +2860,7 @@
         "statsDesc"
       ],
       "wording_corrected": true,
-      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete."
+      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete. Ordinary prose individually re-read against actual helpers/call sites: seed/runestone bonus excludes dew, floor-theme exclusions stated, vision/evasion/hidden-loot tradeoffs clear, Salt Cube slows hunger and regeneration. Vial ordinary cap includes actual healing rules without spending fraction credit; no-character catalog does not invent20HP. Existing optional panel retained pending review; broader source/secondary review remains partial. Native383 actual windows pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/trinkets/ParchmentScrap.java",
@@ -2882,7 +2882,7 @@
         "statsDesc"
       ],
       "wording_corrected": true,
-      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete."
+      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete. Ordinary prose individually re-read against actual helpers/call sites: seed/runestone bonus excludes dew, floor-theme exclusions stated, vision/evasion/hidden-loot tradeoffs clear, Salt Cube slows hunger and regeneration. Vial ordinary cap includes actual healing rules without spending fraction credit; no-character catalog does not invent20HP. Existing optional panel retained pending review; broader source/secondary review remains partial. Native383 actual windows pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/trinkets/RatSkull.java",
@@ -2904,7 +2904,7 @@
         "statsDesc"
       ],
       "wording_corrected": true,
-      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete."
+      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete. Ordinary prose individually re-read against actual helpers/call sites: seed/runestone bonus excludes dew, floor-theme exclusions stated, vision/evasion/hidden-loot tradeoffs clear, Salt Cube slows hunger and regeneration. Vial ordinary cap includes actual healing rules without spending fraction credit; no-character catalog does not invent20HP. Existing optional panel retained pending review; broader source/secondary review remains partial. Native383 actual windows pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/trinkets/ShardOfOblivion.java",
@@ -2960,14 +2960,14 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/trinkets/VialOfBlood.java",
-      "sha256": "3305937e3ea29004c1e84d6b7d2939d83a55509bc3ac204b6189eb823acff4cc",
+      "sha256": "2386adb48dc3af0f541c5b39e1eee4dee18137261718e2ea7c28e27d0c54bf6d",
       "category": "trinkets",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
         "statsDesc"
       ],
       "wording_corrected": true,
-      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete."
+      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete. Ordinary prose individually re-read against actual helpers/call sites: seed/runestone bonus excludes dew, floor-theme exclusions stated, vision/evasion/hidden-loot tradeoffs clear, Salt Cube slows hunger and regeneration. Vial ordinary cap includes actual healing rules without spending fraction credit; no-character catalog does not invent20HP. Existing optional panel retained pending review; broader source/secondary review remains partial. Native383 actual windows pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/trinkets/WondrousResin.java",
