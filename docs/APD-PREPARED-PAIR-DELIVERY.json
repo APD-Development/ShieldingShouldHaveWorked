@@ -1,25 +1,25 @@
 {
-  "number": 376,
-  "core_tests": 2956,
-  "android_tests": 10,
+  "number": 377,
+  "core_tests": 2972,
+  "android_tests": 12,
   "application_id": "com.charltonchris29.adhdpixeldungeon.indev",
   "version_code": 920,
   "signing_certificate": "067688b3ab6bd5820a67f4c1ba7d5859db578173771cf31d3252b3e4e012246e",
   "apk_hashes": {
-    "Developer": "d8daca8d50bed28f4a2be64194f5c46d364788f8414fe2239a90d58587645ca3",
-    "Alpha-Testers": "7a54ef6ec0858e5dd68b470f17a37e45925de385d590f2f5ce6b2f2216187017"
+    "Developer": "45a38fb012dea8795d5edcd4af2750eff23ba7278ddc4babf98de57356ed55be",
+    "Alpha-Testers": "d1aaeb7292b27dd473577cbe21a13c7ae8e409d776da782db743f9005b1a2e9d"
   },
-  "source_sha256": "bba16e20cb9166b9b2ed13926711ade9e001e0c64490f3e2a4ceb4aeb1d535c8",
-  "source": "2c3f736887c92c133e2623448768ae8635054eda",
-  "artifact_id": 13597465413,
-  "artifact_sha256": "49490872483a9c7fe04ce89d9909cf0a6daca23c4938a819ab7d575012f02ddd",
-  "prepared_run": 42429291798,
-  "prepared_source": "2c3f736887c92c133e2623448768ae8635054eda",
-  "status_note": "docs/APD-376-DELIVERY-BOUNDARIES.md",
-  "title": "APD376 \u2014 shorter descriptions and complete item text",
+  "source_sha256": "674426c5952a52dd88feb64b87ab73114899dc9ed96027e8daae6c88234ad150",
+  "source": "52e00c273064dd43ade94dde88b851369aaa0ddc",
+  "artifact_id": 13621809555,
+  "artifact_sha256": "e36915ed6c85841034e0ea7622c0114942d829a1729f058bb830db56375bf0ea",
+  "prepared_run": 42493014905,
+  "prepared_source": "ebbef9b61705cb0be51f07cd398c854054e10489",
+  "status_note": "docs/APD-377-DELIVERY-BOUNDARIES.md",
+  "title": "APD377 \u2014 turn-queue correction and clearer descriptions",
   "variants": [
     "Developer",
     "Alpha-Testers"
   ],
-  "visual_review": "docs/APD-376-VISUAL-REVIEW.json"
+  "visual_review": "docs/APD-377-VISUAL-REVIEW.json"
 }
