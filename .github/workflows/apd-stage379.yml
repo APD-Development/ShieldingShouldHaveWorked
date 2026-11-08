@@ -37,7 +37,7 @@ jobs:
           gh run download "$(cat stage-run.txt)" --repo "$GITHUB_REPOSITORY" --name apd379-source-and-native-evidence --dir complete-evidence
           python3 - <<'PYSTAGE'
           import pathlib,json,subprocess,hashlib,zipfile
-          repo=__import__('os').environ['GITHUB_REPOSITORY'];tag='apd-alpha-preview-379';api=lambda p:json.loads(subprocess.check_output(['gh','api',p]));assert api('repos/'+repo)['private'];release=api('repos/'+repo+'/releases/tags/'+tag);assert release['draft'];proof=json.loads(pathlib.Path('owner-delivery/APD-Preview-379-Verification.json').read_text());assert proof['source_commit']=='e439e068a232f20c6a381b522dbb7a7add3cd84e';assert proof['core_tests']==3027 and proof['android_tests']==12
+          repo=__import__('os').environ['GITHUB_REPOSITORY'];tag='apd-alpha-preview-379';api=lambda p:json.loads(subprocess.check_output(['gh','api',p]));assert api('repos/'+repo)['private'];matches=[r for r in api('repos/'+repo+'/releases?per_page=100') if r['tag_name']==tag];assert len(matches)==1;release=matches[0];assert release['draft'];proof=json.loads(pathlib.Path('owner-delivery/APD-Preview-379-Verification.json').read_text());assert proof['source_commit']=='e439e068a232f20c6a381b522dbb7a7add3cd84e';assert proof['core_tests']==3027 and proof['android_tests']==12
           for label,digest in proof['apk_hashes'].items():assert hashlib.sha256(pathlib.Path('owner-delivery/APD-'+label+'-379.apk').read_bytes()).hexdigest()==digest
           images=list(pathlib.Path('complete-evidence').rglob('*.png'));assert images
           with zipfile.ZipFile('owner-delivery/APD-379-Native-Visuals.zip','w',zipfile.ZIP_DEFLATED) as z:

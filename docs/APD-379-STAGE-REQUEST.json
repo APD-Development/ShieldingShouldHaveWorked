@@ -1,1 +1,5 @@
-{"run_id":42528440660,"authorization":"Owner requested GitHub APKs every30minutes through7pmEST. Stage only verified original379 files; keep draft unpublished until actual screenshots are reviewed."}
+{
+  "run_id": 42528440660,
+  "authorization": "Owner requested GitHub APKs every30minutes through7pmEST. Stage only verified original379 files; keep draft unpublished until actual screenshots are reviewed.",
+  "retry": "Locate the existing draft through release listing; release-by-tag endpoint excludes drafts."
+}

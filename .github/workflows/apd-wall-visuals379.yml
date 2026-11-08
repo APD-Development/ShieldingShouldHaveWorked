@@ -32,7 +32,7 @@ jobs:
           cat wall-evidence/wall.txt
           python3 - <<'PYZIP'
           import pathlib,zipfile,subprocess,json,os
-          repo=os.environ['GITHUB_REPOSITORY'];d=json.loads(subprocess.check_output(['gh','api','repos/'+repo+'/releases/tags/apd-alpha-preview-379']));assert d['draft'];images=list(pathlib.Path('wall-evidence').rglob('*.png'));assert images
+          repo=os.environ['GITHUB_REPOSITORY'];matches=[r for r in json.loads(subprocess.check_output(['gh','api','repos/'+repo+'/releases?per_page=100'])) if r['tag_name']=='apd-alpha-preview-379'];assert len(matches)==1;d=matches[0];assert d['draft'];images=list(pathlib.Path('wall-evidence').rglob('*.png'));assert images
           with zipfile.ZipFile('APD379-Wall-Lifecycle-Visuals.zip','w',zipfile.ZIP_DEFLATED) as z:
             for p in images:z.write(p,p.relative_to('wall-evidence'))
           subprocess.run(['gh','release','upload','apd-alpha-preview-379','APD379-Wall-Lifecycle-Visuals.zip','--repo',repo],check=True)
