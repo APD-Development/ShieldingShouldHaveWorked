@@ -4,9 +4,9 @@
   "counting": "Source units, not distinct item types. reviewed_units includes partial reviews; completed_units excludes partial/pending dependency. corrected_units counts source units with corrections, including incomplete reviews. Inventory/export/tests alone are not an individual review.",
   "source_units": 427,
   "message_entries": 2411,
-  "reviewed_units": 195,
-  "corrected_units": 187,
-  "unresolved_units": 360,
+  "reviewed_units": 223,
+  "corrected_units": 210,
+  "unresolved_units": 332,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -2443,207 +2443,263 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/spells/Alchemize.java",
       "sha256": "661c357e58366213d8c2a6b0439657b134a896a4a7b1c0819a92180c5d5a4e9e",
       "category": "spells",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually checked normal descriptions against actual selection/cast/activation and saved variant rules. Summon variants, hostile effects, Intuition consumption, Detect Magic knowledge and augmentation trade-offs distinguished. No new panels or gameplay changes. Native crafted-spell windows staged for380."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/spells/BeaconOfReturning.java",
       "sha256": "b8b1eae06fe10d742e13e5e8671765f0f83bf646d5a250b66649f47003f32266",
       "category": "spells",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "desc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Individually checked normal descriptions against actual selection/cast/activation and saved variant rules. Summon variants, hostile effects, Intuition consumption, Detect Magic knowledge and augmentation trade-offs distinguished. No new panels or gameplay changes. Native crafted-spell windows staged for380."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/spells/CurseInfusion.java",
       "sha256": "396aad97af6e12d605177b69c85a872fc7dd47fa45f1604148fa243e7bb12739",
       "category": "spells",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually checked normal descriptions against actual selection/cast/activation and saved variant rules. Summon variants, hostile effects, Intuition consumption, Detect Magic knowledge and augmentation trade-offs distinguished. No new panels or gameplay changes. Native crafted-spell windows staged for380."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/spells/InventorySpell.java",
       "sha256": "a0ee6eebfcd7c558bce8bb36c1f217a1ade6dd7292553bdd60fbc82280ab3f50",
       "category": "spells",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_UNCHANGED",
+      "description_methods": [],
+      "wording_corrected": false,
+      "review_notes": "Individually checked normal descriptions against actual selection/cast/activation and saved variant rules. Summon variants, hostile effects, Intuition consumption, Detect Magic knowledge and augmentation trade-offs distinguished. No new panels or gameplay changes. Native crafted-spell windows staged for380."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/spells/MagicalInfusion.java",
       "sha256": "fe4ea44a5d8345503c9f73676bda0e1673e17c76187640b7ee9e6d813f394736",
       "category": "spells",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually checked normal descriptions against actual selection/cast/activation and saved variant rules. Summon variants, hostile effects, Intuition consumption, Detect Magic knowledge and augmentation trade-offs distinguished. No new panels or gameplay changes. Native crafted-spell windows staged for380."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/spells/PhaseShift.java",
       "sha256": "c75b4a968cfc293c6a238f62a66d4025ecc26ef56df7cd19ad215e76e6987526",
       "category": "spells",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually checked normal descriptions against actual selection/cast/activation and saved variant rules. Summon variants, hostile effects, Intuition consumption, Detect Magic knowledge and augmentation trade-offs distinguished. No new panels or gameplay changes. Native crafted-spell windows staged for380."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/spells/ReclaimTrap.java",
       "sha256": "ccb28971085e1b74f7802a1e5f83a3c6a4b25e816840e06a81846480b01ec50f",
       "category": "spells",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "desc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Individually checked normal descriptions against actual selection/cast/activation and saved variant rules. Summon variants, hostile effects, Intuition consumption, Detect Magic knowledge and augmentation trade-offs distinguished. No new panels or gameplay changes. Native crafted-spell windows staged for380."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/spells/Recycle.java",
       "sha256": "2d06aaac1f78ad3587e13fb3f597bc26e1c26678c2dce19b074e61b351b83bad",
       "category": "spells",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually checked normal descriptions against actual selection/cast/activation and saved variant rules. Summon variants, hostile effects, Intuition consumption, Detect Magic knowledge and augmentation trade-offs distinguished. No new panels or gameplay changes. Native crafted-spell windows staged for380."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/spells/Spell.java",
       "sha256": "0da613c35d95b3ed813cc9dd941c262960abd86cb01c25ec2db4ddf7d4d90ab8",
       "category": "spells",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_UNCHANGED",
+      "description_methods": [],
+      "wording_corrected": false,
+      "review_notes": "Individually checked normal descriptions against actual selection/cast/activation and saved variant rules. Summon variants, hostile effects, Intuition consumption, Detect Magic knowledge and augmentation trade-offs distinguished. No new panels or gameplay changes. Native crafted-spell windows staged for380."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/spells/SummonElemental.java",
       "sha256": "531f946a195851a367b691222fad6a964f5c3708a41e62a133de02d1927a1736",
       "category": "spells",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "desc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Individually checked normal descriptions against actual selection/cast/activation and saved variant rules. Summon variants, hostile effects, Intuition consumption, Detect Magic knowledge and augmentation trade-offs distinguished. No new panels or gameplay changes. Native crafted-spell windows staged for380."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/spells/TargetedSpell.java",
       "sha256": "5dd21dd59d279bb5c0ce8e2c5d69a6dfba47e4959cd8a605170d35457a5b377e",
       "category": "spells",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_UNCHANGED",
+      "description_methods": [],
+      "wording_corrected": false,
+      "review_notes": "Individually checked normal descriptions against actual selection/cast/activation and saved variant rules. Summon variants, hostile effects, Intuition consumption, Detect Magic knowledge and augmentation trade-offs distinguished. No new panels or gameplay changes. Native crafted-spell windows staged for380."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/spells/TelekineticGrab.java",
       "sha256": "25b3d32f9a38ff4589495f2ef67ae556b3ed6ac9234ec52f4abfc81b673f30e1",
       "category": "spells",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually checked normal descriptions against actual selection/cast/activation and saved variant rules. Summon variants, hostile effects, Intuition consumption, Detect Magic knowledge and augmentation trade-offs distinguished. No new panels or gameplay changes. Native crafted-spell windows staged for380."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/spells/UnstableSpell.java",
       "sha256": "b48f1a2f697e7daf47e6a11a0b7429406ca53891a89afcca61067b683f6fc39f",
       "category": "spells",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually checked normal descriptions against actual selection/cast/activation and saved variant rules. Summon variants, hostile effects, Intuition consumption, Detect Magic knowledge and augmentation trade-offs distinguished. No new panels or gameplay changes. Native crafted-spell windows staged for380."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/spells/WildEnergy.java",
       "sha256": "00d554cc2be3e47b7a6c7f0d4515813012013695101702853fa569540caecbee",
       "category": "spells",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually checked normal descriptions against actual selection/cast/activation and saved variant rules. Summon variants, hostile effects, Intuition consumption, Detect Magic knowledge and augmentation trade-offs distinguished. No new panels or gameplay changes. Native crafted-spell windows staged for380."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/stones/InventoryStone.java",
       "sha256": "f5a55302efca97beeaf6a75dd40ee46b3dafd4035cbaefe3ca71c87d0f37fab0",
       "category": "stones",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_UNCHANGED",
+      "description_methods": [],
+      "wording_corrected": false,
+      "review_notes": "Individually checked normal descriptions against actual selection/cast/activation and saved variant rules. Summon variants, hostile effects, Intuition consumption, Detect Magic knowledge and augmentation trade-offs distinguished. No new panels or gameplay changes. Native crafted-spell windows staged for380."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/stones/Runestone.java",
       "sha256": "6e58582a25e2eaab4720376b48bc695bb5b7a79b4e30d6e8f179d7cc6b1cd061",
       "category": "stones",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [
         "info"
-      ]
+      ],
+      "wording_corrected": false,
+      "review_notes": "Individually checked normal descriptions against actual selection/cast/activation and saved variant rules. Summon variants, hostile effects, Intuition consumption, Detect Magic knowledge and augmentation trade-offs distinguished. No new panels or gameplay changes. Native crafted-spell windows staged for380."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/stones/StoneOfAggression.java",
       "sha256": "c1543b9f80acaae0ede1af337394ad0935846eec7c140e4acc6ca244b3534fab",
       "category": "stones",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually checked normal descriptions against actual selection/cast/activation and saved variant rules. Summon variants, hostile effects, Intuition consumption, Detect Magic knowledge and augmentation trade-offs distinguished. No new panels or gameplay changes. Native crafted-spell windows staged for380."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/stones/StoneOfAugmentation.java",
       "sha256": "51572a737b36ebc968874c7c9a77065466a680c9a71192287906c9be2035aed4",
       "category": "stones",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually checked normal descriptions against actual selection/cast/activation and saved variant rules. Summon variants, hostile effects, Intuition consumption, Detect Magic knowledge and augmentation trade-offs distinguished. No new panels or gameplay changes. Native crafted-spell windows staged for380."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/stones/StoneOfBlast.java",
       "sha256": "5b7a8d0593a9b3f46de3a64a30da4b2720f4ac792975b2274b9939b3baa6bf3d",
       "category": "stones",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually checked normal descriptions against actual selection/cast/activation and saved variant rules. Summon variants, hostile effects, Intuition consumption, Detect Magic knowledge and augmentation trade-offs distinguished. No new panels or gameplay changes. Native crafted-spell windows staged for380."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/stones/StoneOfBlink.java",
       "sha256": "dd8ff573f72a699dbc114628ecea7084b784030b158df73dfc8589f0e8ed88da",
       "category": "stones",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually checked normal descriptions against actual selection/cast/activation and saved variant rules. Summon variants, hostile effects, Intuition consumption, Detect Magic knowledge and augmentation trade-offs distinguished. No new panels or gameplay changes. Native crafted-spell windows staged for380."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/stones/StoneOfClairvoyance.java",
       "sha256": "86ca3c4574b258d07b9994f6ea3925410c0a60b4e35ca915f4c718efa2b3bd86",
       "category": "stones",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually checked normal descriptions against actual selection/cast/activation and saved variant rules. Summon variants, hostile effects, Intuition consumption, Detect Magic knowledge and augmentation trade-offs distinguished. No new panels or gameplay changes. Native crafted-spell windows staged for380."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/stones/StoneOfDeepSleep.java",
       "sha256": "cd43f7a6d86d4031ba049dcbacbd875fc79aa3c4434fbc4648247acacf07c1a5",
       "category": "stones",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually checked normal descriptions against actual selection/cast/activation and saved variant rules. Summon variants, hostile effects, Intuition consumption, Detect Magic knowledge and augmentation trade-offs distinguished. No new panels or gameplay changes. Native crafted-spell windows staged for380."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/stones/StoneOfDetectMagic.java",
       "sha256": "e57b059256ba30bc7d53cd9c4e9a14863d77c8e5a5005024fa4ea042a738c90a",
       "category": "stones",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually checked normal descriptions against actual selection/cast/activation and saved variant rules. Summon variants, hostile effects, Intuition consumption, Detect Magic knowledge and augmentation trade-offs distinguished. No new panels or gameplay changes. Native crafted-spell windows staged for380."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/stones/StoneOfEnchantment.java",
       "sha256": "e3184251d1b1288c9163b7474389393afa9040ac3129bd425435cc0421da2d9e",
       "category": "stones",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually checked normal descriptions against actual selection/cast/activation and saved variant rules. Summon variants, hostile effects, Intuition consumption, Detect Magic knowledge and augmentation trade-offs distinguished. No new panels or gameplay changes. Native crafted-spell windows staged for380."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/stones/StoneOfFear.java",
       "sha256": "82e3e8a0e6fba3982822c3e87dad0b4b09b5ce1ec50f45bf633c02b6962f15b5",
       "category": "stones",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually checked normal descriptions against actual selection/cast/activation and saved variant rules. Summon variants, hostile effects, Intuition consumption, Detect Magic knowledge and augmentation trade-offs distinguished. No new panels or gameplay changes. Native crafted-spell windows staged for380."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/stones/StoneOfFlock.java",
       "sha256": "8ae0cf19e3dc02428dc9a75653d67724d62856a29355cc34ab7583bce1c4ee26",
       "category": "stones",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually checked normal descriptions against actual selection/cast/activation and saved variant rules. Summon variants, hostile effects, Intuition consumption, Detect Magic knowledge and augmentation trade-offs distinguished. No new panels or gameplay changes. Native crafted-spell windows staged for380."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/stones/StoneOfIntuition.java",
       "sha256": "2dfff45760af1951221048ea1598e206bd0e6b8ab1376e9c4e8604e1c11494fb",
       "category": "stones",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "desc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Individually checked normal descriptions against actual selection/cast/activation and saved variant rules. Summon variants, hostile effects, Intuition consumption, Detect Magic knowledge and augmentation trade-offs distinguished. No new panels or gameplay changes. Native crafted-spell windows staged for380."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/stones/StoneOfShock.java",
       "sha256": "f7a29f7254b56d14e0494fa3738ee68d35262f72b4639bf1aa0156a414e26818",
       "category": "stones",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually checked normal descriptions against actual selection/cast/activation and saved variant rules. Summon variants, hostile effects, Intuition consumption, Detect Magic knowledge and augmentation trade-offs distinguished. No new panels or gameplay changes. Native crafted-spell windows staged for380."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/trinkets/ChaoticCenser.java",
@@ -3246,7 +3302,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/BattleAxe.java",
-      "sha256": "6fc873ef32fb74fdb48c61e450be4b0581cdd3c963ed7a336a3cd308f4f66204",
+      "sha256": "87fdc3cb26d67a1a939f7d0d66a2207f2ad40f33a1440df10248de931ae31e67",
       "category": "weapon",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -3266,7 +3322,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Cudgel.java",
-      "sha256": "c60c10ffe3e4e849a63681407907def44d714d51e74aa1b3f511904a2a5c0040",
+      "sha256": "4dd41849c29ce29dd78d1cb7b48f5f5aac0c2df0e88144204944e8ee131ffe3e",
       "category": "weapon",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -3314,7 +3370,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Glaive.java",
-      "sha256": "bdd18f91336673e74c88fb156cbc3be4b777a2a220717b53a9e73008c14dd1fd",
+      "sha256": "e8a42d5a382b552d9f2e6bd6bf9022c94fd55d307bc15c75518af1e43db94d4a",
       "category": "weapon",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -3334,7 +3390,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Greataxe.java",
-      "sha256": "2008641e7876ae735e7b2f94daadb864a2249c19c74bb6dec3ec9d1dcd727c64",
+      "sha256": "d5138db1158a0a5052b694e0e0dbefe46d889ced1d5d9d161ab6e3591fa8219b",
       "category": "weapon",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -3354,7 +3410,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Greatsword.java",
-      "sha256": "0f701e10105a4b3ed5f270575904398a477e680ab56dbbf7aa3c2c4d53eb19db",
+      "sha256": "3b38f23f37e011d4fc7e982b597b3551d519f5230dba4c213dc5c729f6d94625",
       "category": "weapon",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -3365,7 +3421,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/HandAxe.java",
-      "sha256": "84a5ee159deb56f4ca788a8c2f307eedf45555f03441918397d6d04ddd878e66",
+      "sha256": "4b5ff1cf472b7c8e04cbd2758ef6f1524d1a09a638eaf91208c6228704b84781",
       "category": "weapon",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -3376,7 +3432,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Katana.java",
-      "sha256": "8864ac36a401fae7d0ed9b171045896901f0704affdd293990fd231311e4b068",
+      "sha256": "c50025b7f60e7de6783eddd639d359098a6d53b0134738f1153e36ab8c475d6b",
       "category": "weapon",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -3387,7 +3443,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Longsword.java",
-      "sha256": "6026a48fbbe5a0c12f14f3325663e67d518cd49548c106af52787dd522874c4d",
+      "sha256": "8918cd9db1920f85a042665a8b2aa878154d70ef0e617e3699c93b897c1737cf",
       "category": "weapon",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -3398,7 +3454,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Mace.java",
-      "sha256": "062f0d12e6f21f0d51d05120049284b81094631bc3abf51e8a962bb24f8f164b",
+      "sha256": "e706004399ab30a47e9998a30887fbeb753b9a2cb163df6fcb9af231eb380acc",
       "category": "weapon",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -3439,7 +3495,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Rapier.java",
-      "sha256": "1fc9f87b9451b67c3222f7d218a19ce39a87b20c490dc843271dcf56fe781770",
+      "sha256": "4c233e48b3b2b5f5f22145581658eb155c5002443872b12105552ca4bbb3ab7f",
       "category": "weapon",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -3487,7 +3543,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Shortsword.java",
-      "sha256": "2408823f09c22d7ffccdb91cf8ce0cc4970189b0d86f49f10191b534cd17c02b",
+      "sha256": "d24bc5edd90f6a428f49e9be35d88f5b3fdc2c8f925ab46aedc89e6cbe6c270f",
       "category": "weapon",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -3507,7 +3563,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Spear.java",
-      "sha256": "7758627420b572cd7ba2aa042127a7701a65ee18d11080f9c21915df244c7716",
+      "sha256": "f01db4221073f7657750c3b5d29eff1caab7bbb5243d83e0099b6778514d9e1d",
       "category": "weapon",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -3518,7 +3574,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Sword.java",
-      "sha256": "1f888002ec7c782c84c046e33e99ad7850aaacb6bc3e4bd10088e2ae11ab3cb1",
+      "sha256": "bfa9cde91364612738e0a2661f99f27bb2ed5d9bb672db3be034cf067d613882",
       "category": "weapon",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -3529,7 +3585,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/WarHammer.java",
-      "sha256": "1ad0438f7e4ff3758ceba48c3e0594f19f02314a1cced7d9069f8a5848f9c9ef",
+      "sha256": "bf62eccc6dbb3be60d84b0f0cec694c086d8a6fe3e6d3311dd07fd3f3e1117d2",
       "category": "weapon",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -3558,7 +3614,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/WornShortsword.java",
-      "sha256": "cc31b897ecca3f2fd74b3de81fe634be4135cc3a2f4cefc50e50e68560449856",
+      "sha256": "62e7665d401e049f51550c2d17bd0dde52138bdfcaa0df64e30060cb5f9415da",
       "category": "weapon",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -3611,7 +3667,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/MissileWeapon.java",
-      "sha256": "aa2324a2a69e3d2c44c2ae931e0f18223311b2ae94d4f8c6fee3229608c84b7f",
+      "sha256": "019c6c386ff876b527b2fb970f970a6956acc29d756075cb18d2c9fbbf340d4e",
       "category": "weapon",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -3963,16 +4019,16 @@
       "review_notes": "Added missing display provider to inventory. Reading its output is not a complete provenance/generation audit."
     }
   ],
-  "completed_units": 67,
+  "completed_units": 95,
   "latest_tests": {
-    "core_tests": 3016,
-    "suites": 456,
+    "core_tests": 3030,
+    "suites": 457,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "log": "/workspace/apd-bombs-plants-verified-evidence-20261108/full.log",
+    "log": "/workspace/apd-runes-spells-ability-evidence-20261108/full.log",
     "android_verified": false,
     "new_apk_built": false,
-    "scope": "Combined core suite after bomb/plant behavior checks; final Noisemaker arming and plant wording receive separate targeted checks. Android fixtures prepared but not compiled or executed."
+    "scope": "Rune/spell wording; actual Detect Magic curse/upgrade knowledge, saved Summon Elemental variants and public-augmentation-only unknown ability examples. New source pending380 Android verification."
   }
 }

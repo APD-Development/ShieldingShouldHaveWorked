@@ -119,6 +119,22 @@ public class MechanicsExplanationTest {
  @Test public void craftingExplanationDoesNotSpendAnIntuitionUseOrReclaimedTrap(){
   com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfIntuition.IntuitionUseTracker intuition=Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfIntuition.IntuitionUseTracker.class);com.shatteredpixel.shatteredpixeldungeon.items.spells.ReclaimTrap.ReclaimedTrap trap=Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.items.spells.ReclaimTrap.ReclaimedTrap.class);com.watabou.utils.Bundle captured=new com.watabou.utils.Bundle();captured.put("trap",com.shatteredpixel.shatteredpixeldungeon.levels.traps.GeyserTrap.class);trap.restoreFromBundle(captured);String before=savedDescriptionHero();Random.pushGenerator(274);int next=Random.Int();Random.popGenerator();Random.pushGenerator(274);try{CraftingEffectExplanation.details(new com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfIntuition());CraftingEffectExplanation.details(new com.shatteredpixel.shatteredpixeldungeon.items.spells.ReclaimTrap());assertEquals(next,Random.Int());assertEquals(before,savedDescriptionHero());assertSame(intuition,hero.buff(com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfIntuition.IntuitionUseTracker.class));com.watabou.utils.Bundle retained=new com.watabou.utils.Bundle();trap.storeInBundle(retained);assertEquals(com.shatteredpixel.shatteredpixeldungeon.levels.traps.GeyserTrap.class,retained.getClass("trap"));}finally{Random.popGenerator();}
  }
+ @Test public void summonElementalDescriptionsFollowItsSavedVariantWithoutRollingOrSummoning(){
+  Class[] variants={com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental.AllyNewBornElemental.class,com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental.FireElemental.class,com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental.FrostElemental.class,com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental.ShockElemental.class,com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental.ChaosElemental.class};
+  String[] effects={"no ranged attack","50% chance","one-in-three","including you and your allies","random cursed wand effects"};
+  for(int i=0;i<variants.length;i++){
+   com.shatteredpixel.shatteredpixeldungeon.items.spells.SummonElemental spell=new com.shatteredpixel.shatteredpixeldungeon.items.spells.SummonElemental();com.watabou.utils.Bundle state=new com.watabou.utils.Bundle();spell.storeInBundle(state);state.put("summon_class",variants[i]);spell.restoreFromBundle(state);
+   Random.pushGenerator(81129);int next=Random.Int();Random.popGenerator();Random.pushGenerator(81129);
+   try{String text=spell.info();assertTrue(text,text.contains(effects[i]));assertTrue(text.contains("Recalling still takes a turn"));com.watabou.utils.Bundle saved=new com.watabou.utils.Bundle();spell.storeInBundle(saved);com.shatteredpixel.shatteredpixeldungeon.items.spells.SummonElemental copy=new com.shatteredpixel.shatteredpixeldungeon.items.spells.SummonElemental();copy.restoreFromBundle(saved);assertEquals(text,copy.info());assertEquals(next,Random.Int());}finally{Random.popGenerator();}
+  }
+ }
+ @Test public void detectMagicRevealsAnExistingCurseWithoutIdentifyingTheUpgrade()throws Exception{
+  hero.sprite=new com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite(){@Override public void operate(int cell){}};com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword sword=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword();sword.level(3);sword.levelKnown=sword.cursedKnown=false;sword.enchant(new com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Displacing());
+  com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfDetectMagic stone=new com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfDetectMagic();stone.anonymize();
+  java.lang.reflect.Field user=com.shatteredpixel.shatteredpixeldungeon.items.Item.class.getDeclaredField("curUser");user.setAccessible(true);Object previous=user.get(null);user.set(null,hero);
+  java.lang.reflect.Method apply=stone.getClass().getDeclaredMethod("onItemSelected",com.shatteredpixel.shatteredpixeldungeon.items.Item.class);apply.setAccessible(true);
+  try{assertFalse(sword.name().toLowerCase(java.util.Locale.ROOT).contains("displacing"));apply.invoke(stone,sword);assertTrue(sword.cursedKnown);assertFalse(sword.levelKnown);assertEquals(3,sword.trueLevel());assertTrue(sword.name().toLowerCase(java.util.Locale.ROOT).contains("displacing"));assertTrue(stone.desc().contains("Does not identify its upgrade level"));}finally{user.set(null,previous);}
+ }
  @Test public void noisemakerRequiresOccupancyOfItsOwnTileRatherThanAnAdjacentCreature()throws Exception{
   class ObservedNoisemaker extends com.shatteredpixel.shatteredpixeldungeon.items.bombs.Noisemaker {int explodedAt=-1;@Override public void explode(int cell){explodedAt=cell;}}
   Dungeon.level.heaps=new com.watabou.utils.SparseArray<>();ObservedNoisemaker bomb=new ObservedNoisemaker();com.shatteredpixel.shatteredpixeldungeon.items.Heap heap=new com.shatteredpixel.shatteredpixeldungeon.items.Heap();heap.pos=hero.pos+1;heap.items.add(bomb);Dungeon.level.heaps.put(heap.pos,heap);
@@ -1837,6 +1853,13 @@ public class MechanicsExplanationTest {
    String name=page.document().pageNames().iterator().next();page.page(name);boolean found=page.document().isPageFound(name);
    assertTrue(page.desc().contains(page.document().pageTitle(name)));assertEquals(found,page.document().isPageFound(name));
    com.watabou.utils.Bundle before=new com.watabou.utils.Bundle(),after=new com.watabou.utils.Bundle();page.storeInBundle(before);page.info();page.storeInBundle(after);assertEquals(before.toString(),after.toString());
+  }
+ }
+ @Test public void unknownAbilityExamplesUseOnlyPublicAugmentationAndTheLabelledZeroLevel()throws Exception{
+  String[] names={"WornShortsword","Shortsword","Sword","Longsword","Greatsword","Cudgel","HandAxe","Mace","BattleAxe","WarHammer","Greataxe","Rapier","Katana","Spear","Glaive"};
+  for(String name:names)for(com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon.Augment augment:com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon.Augment.values()){
+   com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon weapon=(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon)Class.forName("com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee."+name).getDeclaredConstructor().newInstance();weapon.augment=augment;String expected=weapon.upgradeAbilityStat(0);String first=null;
+   for(int hidden:new int[]{0,3,8}){weapon.level(hidden);weapon.levelKnown=false;String text=weapon.abilityInfo();assertTrue(name+" "+augment+" "+text,text.contains(expected));assertTrue(text.contains("Unupgraded example (+0)"));if(first!=null)assertEquals(first,text);first=text;}
   }
  }
  @Test public void cleaveAndHeavyBlowPreviewsRoundBaseAndBonusSeparately(){

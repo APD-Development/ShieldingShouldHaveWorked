@@ -72,7 +72,7 @@ public class Mace extends MeleeWeapon {
 		if (levelKnown){
 			return Messages.get(this, "ability_desc", (augment.damageFactor(min()) + augment.damageFactor(dmgBoost)), (augment.damageFactor(max()) + augment.damageFactor(dmgBoost)));
 		} else {
-			return Messages.get(this, "typical_ability_desc", min(0)+dmgBoost, max(0)+dmgBoost);
+			return Messages.get(this, "typical_ability_desc", augment.damageFactor(min(0)) + augment.damageFactor(dmgBoost), augment.damageFactor(max(0)) + augment.damageFactor(dmgBoost));
 		}
 	}
 

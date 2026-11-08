@@ -1,3 +1,7 @@
+## Latest continuation — crafted spells, runestones and Duelist examples
+
+223 source units have full or partial reviews; 210 have corrections and 95 source reviews are complete. 332 remain unresolved. All 3,030 core tests / 457 suites passed. The source audit is unfinished. New Summon Elemental variant windows are staged for380 Android checks. Existing379 is delivered; no physical-phone or Prison/Tengu audio-fix claim.
+
 ## Latest continuation — bombs, seeds and plants
 
 195 source units now have full or partial reviews; 187 have corrections and 67 source reviews are complete. 360 units remain unresolved. The combined 3,016-test / 456-suite run passed with zero failures/errors/skips, followed by targeted final wording checks. Android window fixtures are prepared but have not been run; no new APK is claimed. See the correction record for scope and exact evidence.

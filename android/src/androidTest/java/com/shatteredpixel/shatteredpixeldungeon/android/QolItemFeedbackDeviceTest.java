@@ -273,6 +273,14 @@ public class QolItemFeedbackDeviceTest {
             TopScoresDeviceTest.render(()->{Dungeon.challenges=previous;Dungeon.hero.belongings.backpack.items.remove(haste);Dungeon.hero.belongings.backpack.items.remove(shielding);Dungeon.hero.belongings.backpack.items.remove(noisemaker);Dungeon.hero.belongings.backpack.items.remove(regrowthBomb);});
         }
     }
+    private static void craftedSpellVariantsRender()throws Exception{
+        com.shatteredpixel.shatteredpixeldungeon.items.spells.SummonElemental spell=new com.shatteredpixel.shatteredpixeldungeon.items.spells.SummonElemental();
+        Class<?>[] variants={com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental.AllyNewBornElemental.class,com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental.FireElemental.class,com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental.FrostElemental.class,com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental.ShockElemental.class,com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental.ChaosElemental.class};
+        String[] expected={"no ranged attack","50% chance","one-in-three","including you and your allies","random cursed wand effects"};
+        try{TopScoresDeviceTest.render(()->assertTrue(spell.collect()));
+            for(int i=0;i<variants.length;i++){final Class<?> variant=variants[i];TopScoresDeviceTest.render(()->{com.watabou.utils.Bundle state=new com.watabou.utils.Bundle();spell.storeInBundle(state);state.put("summon_class",variant);spell.restoreFromBundle(state);});showItem(spell,expected[i],"qol-summon-"+i+"-concise.png",true);}
+        }finally{TopScoresDeviceTest.render(()->Dungeon.hero.belongings.backpack.items.remove(spell));}
+    }
     static void combinedOriginsAndRatPreferenceRenderAndRespond()throws Exception{
         boolean previous=SPDSettings.ratKingQuickSearch();AtomicReference<WndAPDSettings> shown=new AtomicReference<>();Point[] at=new Point[1];
         try{
@@ -405,6 +413,7 @@ public class QolItemFeedbackDeviceTest {
             calculationWindowsRenderAndRespond();
             ordinaryEffectsMatchOwnerScreenshots();
             ordinaryConsumableDescriptionsRender();
+            craftedSpellVariantsRender();
             inventoryOrderShowsAutomatically();
             prepareSearchableFloor();
             final int[] center={0};
