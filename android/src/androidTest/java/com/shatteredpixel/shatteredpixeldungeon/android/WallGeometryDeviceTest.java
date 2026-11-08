@@ -60,9 +60,9 @@ public class WallGeometryDeviceTest {
         try{int count=0;for(int y=Math.max(0,corners[0].y);y<Math.min(bitmap.getHeight(),corners[1].y);y++)for(int x=Math.max(0,corners[0].x);x<Math.min(bitmap.getWidth(),corners[1].x);x++){int c=bitmap.getPixel(x,y);if(Math.abs(android.graphics.Color.red(c)-255)<=24&&Math.abs(android.graphics.Color.green(c)-102)<=24&&Math.abs(android.graphics.Color.blue(c)-204)<=24)count++;}assertTrue("rendered magenta checkmark pixels, not only retained model data: "+count,count>=4);}finally{bitmap.recycle();}
     }
     @Test public void observedGeometryAndRetainedMarksUseTheActualAndroidLayer()throws Exception{
-        final boolean intro=SPDSettings.intro();final int oldMarkColor=SPDSettings.searchedWallColor();final int oldSlot=GamesInProgress.curSlot;final HeroClass oldClass=GamesInProgress.selectedClass;final int[] slot={-1},wall={-1};final Bundle saved=new Bundle();
+        final boolean intro=SPDSettings.intro();final int[] oldMarkColor={-1};final int oldSlot=GamesInProgress.curSlot;final HeroClass oldClass=GamesInProgress.selectedClass;final int[] slot={-1},wall={-1};final Bundle saved=new Bundle();
         try(ActivityScenario<AndroidLauncher> app=ActivityScenario.launch(AndroidLauncher.class)){
-            waitFor(()->Game.scene()!=null&&PixelScene.uiCamera!=null);
+            waitFor(()->Game.scene()!=null&&PixelScene.uiCamera!=null);TopScoresDeviceTest.render(()->oldMarkColor[0]=SPDSettings.searchedWallColor());
             TopScoresDeviceTest.render(()->ShatteredPixelDungeon.switchNoFade(TitleScene.class));waitFor(()->Game.scene() instanceof TitleScene);
             TopScoresDeviceTest.render(()->{SPDSettings.intro(false);slot[0]=GamesInProgress.firstEmpty(HeroClass.WARRIOR);assertTrue(slot[0]>0);GamesInProgress.curSlot=slot[0];GamesInProgress.selectedClass=HeroClass.WARRIOR;Dungeon.hero=null;Dungeon.daily=false;Dungeon.dailyReplay=false;Dungeon.customSeedText="";Dungeon.initSeed();InterlevelScene.mode=InterlevelScene.Mode.DESCEND;Game.switchScene(InterlevelScene.class);});
             waitFor(()->Game.scene() instanceof GameScene&&Dungeon.hero!=null&&Dungeon.hero.ready);
@@ -103,6 +103,6 @@ public class WallGeometryDeviceTest {
                 l.heroFOV[p]=true;Level.set(p,Terrain.DOOR);GameScene.updateMap();GameScene.updateFog();layer.refreshKnownGeometry();assertEquals(-1,visual(layer,p));assertEquals(-1,SearchedWallMarkers.visual(l,p-l.width()));
             }catch(Exception error){throw new RuntimeException(error);}});
             Thread.sleep(300);TopScoresDeviceTest.screenshot("wall-geometry-door-no-stale-check.png");
-        }finally{SPDSettings.searchedWallColor(oldMarkColor);SPDSettings.intro(intro);if(slot[0]>0)Dungeon.deleteGame(slot[0],true);GamesInProgress.curSlot=oldSlot;GamesInProgress.selectedClass=oldClass;}
+        }finally{if(oldMarkColor[0]>=0)SPDSettings.searchedWallColor(oldMarkColor[0]);SPDSettings.intro(intro);if(slot[0]>0)Dungeon.deleteGame(slot[0],true);GamesInProgress.curSlot=oldSlot;GamesInProgress.selectedClass=oldClass;}
     }
 }
